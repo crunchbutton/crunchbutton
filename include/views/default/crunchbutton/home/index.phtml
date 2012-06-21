@@ -1,0 +1,26 @@
+<?
+	$this->title = 'Crunchbutton';
+?>
+
+<? $count = 6; ?>
+
+<? if ($count == 4) : ?>
+	<style>
+		@media only screen
+		and (min-width : 1224px) {
+			.content {
+				width: 676px;
+			}
+		}
+	</style>
+<? endif ; ?>
+
+<div class="meal-items">
+	<? for ($x=1;$x<=$count;$x++) : ?>
+	<div class="meal-item">
+		<div class="meal-pic" style="background: url(/assets/images/food/wenzel.png);"></div>
+		<h1 class="meal-restaurant">Alpha Delta Pizza</h1>
+		<h2 class="meal-food">Top Item: Wenzel Sandwich</h2>
+	</div>
+	<? endfor; ?>
+</div>

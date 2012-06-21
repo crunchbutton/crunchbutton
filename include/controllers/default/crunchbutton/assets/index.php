@@ -1,0 +1,42 @@
+<?php
+
+class Controller_assets extends Cana_Controller {   
+	public function init() {
+		$page = Cana::app()->pages();
+		if ($page[1] == 'images') {
+
+			$page[4] = explode('.',$page[4]);
+			array_pop($page[4]);
+			$page[4] = implode('.',$page[4]);
+
+			$exts = array('jpg','png','gif');
+			foreach ($exts as $ext) {
+				if (file_exists(Cana::config()->dirs->storage.$page[2].'/'.$page[4]).'.'.$ext) {
+					$file = $page[2].'/'.$page[4].'.'.$ext;
+					break;
+				}
+			}
+			
+			$file = $file ? $file : 'error.jpg';
+
+			$page[3] = explode('x',$page[3]);
+			$params['height'] = $page[3][1];
+			$params['width'] = $page[3][0];
+			$params['crop'] = 1;
+			$params['gravity'] = $page[2] == 'portfolio' ? 'north' : 'center';
+			$params['format'] = $page[4][1];
+			if ($params['format'] != 'jpg' && $params['format'] != 'png') {
+				$params['format'] = 'jpg';
+			}
+
+			$params['img']			= $file;
+			$params['cache'] 		= Cana::config()->dirs->cache.$page[2].'/';
+			$params['path'] 		= Cana::config()->dirs->storage;
+
+			$thumb = new Cana_Thumb($params);
+			$thumb->displayThumb();
+
+			exit;	
+		}
+	}
+}
