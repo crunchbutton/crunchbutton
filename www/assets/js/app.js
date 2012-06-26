@@ -20,6 +20,6 @@ $(function() {
 	});
 
 	var App = {
-	
+		service: '/api/'
 	};
 });
