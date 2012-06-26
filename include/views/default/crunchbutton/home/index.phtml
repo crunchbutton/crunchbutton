@@ -19,12 +19,12 @@
 
 <div class="content-padder">
 	<div class="meal-items">
-		<? for ($x=1;$x<=$count;$x++) : ?>
+		<? foreach ($this->restaurants as $restaurant) : ?>
 		<div class="meal-item">
-			<div class="meal-pic" style="background: url(/assets/images/food/wenzel.png);"></div>
-			<h2 class="meal-restaurant">Alpha Delta Pizza</h2>
+			<div class="meal-pic" style="background: url(/assets/images/food/<?=$restaurant->image?>);"></div>
+			<h2 class="meal-restaurant"><?=$restaurant->name?></h2>
 			<h3 class="meal-food">Top Item: Wenzel Sandwich</h3>
 		</div>
-		<? endfor; ?>
+		<? endforeach; ?>
 	</div>
 </div>

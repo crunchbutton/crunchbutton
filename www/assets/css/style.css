@@ -286,4 +286,7 @@ and (min-width : 1224px) {
 	.footer {
 		margin-bottom: 35px;
 	}
+	.meal-pic {
+		background-position: center 40% !important;
+	}
 }
