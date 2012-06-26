@@ -2,18 +2,24 @@
 	$this->title = 'Crunchbutton';
 ?>
 
-<? $count = 5; ?>
 
-<? if ($count == 4) : ?>
-	<style>
-		@media only screen
-		and (min-width : 1224px) {
+<style>
+	@media only screen
+	and (min-width : 1224px) {
+		<? if (count($this->restaurants) == 4) : ?>
 			.content {
-				width: 676px;
+				width: 690px;
 			}
+			.meal-item:nth-child(2n+1) {
+				margin-left: 0px;
+			}
+		<? else : ?>
+		.meal-item:nth-child(3n+1) {
+			margin-left: 0px;
 		}
-	</style>
-<? endif ; ?>
+		<? endif ; ?>
+	}
+</style>
 
 <div class="home-tagline"><h1>one click food ordering</h1></div>
 
@@ -30,19 +36,5 @@
 		</div>
 		<? endforeach; ?>
 
-		<div class="meal-item">
-		<div class="meal-item-content">
-			<div class="meal-pic" style="background: url(/assets/images/food/<?=$restaurant->image?>);"></div>
-			<h2 class="meal-restaurant"><?=$restaurant->name?></h2>
-			<h3 class="meal-food">Top Item: Wenzel Sandwich</h3>
-		</div>
-				</div>
-		<div class="meal-item">
-		<div class="meal-item-content">
-			<div class="meal-pic" style="background: url(/assets/images/food/<?=$restaurant->image?>);"></div>
-			<h2 class="meal-restaurant"><?=$restaurant->name?></h2>
-			<h3 class="meal-food">Top Item: Wenzel Sandwich</h3>
-					</div>
-		</div>
 	</div>
 </div>

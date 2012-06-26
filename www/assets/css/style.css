@@ -125,10 +125,6 @@ body {
 	transition-timing-function: ease-out;
 }
 
-.meal-item:nth-child(3n+1) {
-	margin-left: 0px;
-}
-
 .meal-pic {
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
@@ -193,7 +189,7 @@ body {
 	font-weight: bold;
 	text-align: center;
 	line-height: 25px;
-	text-shadow: 1px 1px 0 rgba(255,255,255,.6);
+	text-shadow: 1px 1px 0 rgba(255,255,255,1);
 	margin-bottom: 10px;
 }
 
@@ -287,6 +283,7 @@ and (max-device-width : 480px) {
 	}
 	.footer {
 		margin-top: 20px;
+		text-shadow: 1px 1px 0 rgba(255,255,255,.6);
 	}
 }
 
