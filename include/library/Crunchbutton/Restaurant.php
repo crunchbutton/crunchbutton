@@ -36,6 +36,13 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 		return $this->_hours;
 	}
+	
+	public function notification() {
+		if (!isset($this->_notification)) {
+			$this->_notification = Notification::q('select * from notification where id_notification="'.$this->id_notification.'"');
+		}
+		return $this->_notification;
+	}
 
 	public function exports() {
 		$out = $this->properties();

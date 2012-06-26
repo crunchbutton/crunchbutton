@@ -4,12 +4,13 @@ class Controller_api_community extends Crunchbutton_Controller_Rest {
 	public function init() {
 		switch ($this->method()) {
 			case 'get':
-				$out = Community::o(1)->exports();
-				print_r($out); exit;
-				echo json_encode($out);
-				
+				$out = Community::o(c::getPagePiece(2));
+				if ($out->id_community) {
+					echo $out->json();
+				} else {
+					echo json_encode(['error' => 'invalid object']);
+				}
 				break;
-
 		}
 	}
 }
