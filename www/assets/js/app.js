@@ -1,10 +1,11 @@
 $(function() {
-	$('.meal-item').mousedown(function() {
+	$('.meal-item-content').mousedown(function() {
 		$(this).addClass('meal-item-down');
 	});
-	$('.meal-item').mouseup(function() {
+	$('.meal-item-content').mouseup(function() {
 		$(this).removeClass('meal-item-down');
 	});
+	/*
 	if (document.documentElement.clientWidth > 900) {	
 		$('.meal-items').masonry({
 			itemSelector: '.meal-item',
@@ -12,6 +13,7 @@ $(function() {
 			isFitWidth: true
 		});
 	}
+	*/
 	
 	$('.meal-item').live('click',function() {
 

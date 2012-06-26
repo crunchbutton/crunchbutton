@@ -21,10 +21,28 @@
 	<div class="meal-items">
 		<? foreach ($this->restaurants as $restaurant) : ?>
 		<div class="meal-item">
+			<div class="meal-item-spacer"></div>
+			<div class="meal-item-content">
+				<div class="meal-pic" style="background: url(/assets/images/food/<?=$restaurant->image?>);"></div>
+				<h2 class="meal-restaurant"><?=$restaurant->name?></h2>
+				<h3 class="meal-food">Top Item: Wenzel Sandwich</h3>
+			</div>
+		</div>
+		<? endforeach; ?>
+
+		<div class="meal-item">
+		<div class="meal-item-content">
 			<div class="meal-pic" style="background: url(/assets/images/food/<?=$restaurant->image?>);"></div>
 			<h2 class="meal-restaurant"><?=$restaurant->name?></h2>
 			<h3 class="meal-food">Top Item: Wenzel Sandwich</h3>
 		</div>
-		<? endforeach; ?>
+				</div>
+		<div class="meal-item">
+		<div class="meal-item-content">
+			<div class="meal-pic" style="background: url(/assets/images/food/<?=$restaurant->image?>);"></div>
+			<h2 class="meal-restaurant"><?=$restaurant->name?></h2>
+			<h3 class="meal-food">Top Item: Wenzel Sandwich</h3>
+					</div>
+		</div>
 	</div>
 </div>
