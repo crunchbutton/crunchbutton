@@ -2,7 +2,7 @@
 	$this->title = 'Crunchbutton';
 ?>
 
-<? $count = 6; ?>
+<? $count = 5; ?>
 
 <? if ($count == 4) : ?>
 	<style>
@@ -15,12 +15,16 @@
 	</style>
 <? endif ; ?>
 
-<div class="meal-items">
-	<? for ($x=1;$x<=$count;$x++) : ?>
-	<div class="meal-item">
-		<div class="meal-pic" style="background: url(/assets/images/food/wenzel.png);"></div>
-		<h1 class="meal-restaurant">Alpha Delta Pizza</h1>
-		<h2 class="meal-food">Top Item: Wenzel Sandwich</h2>
+<div class="home-tagline"><h1>one click food ordering</h1></div>
+
+<div class="content-padder">
+	<div class="meal-items">
+		<? for ($x=1;$x<=$count;$x++) : ?>
+		<div class="meal-item">
+			<div class="meal-pic" style="background: url(/assets/images/food/wenzel.png);"></div>
+			<h2 class="meal-restaurant">Alpha Delta Pizza</h2>
+			<h3 class="meal-food">Top Item: Wenzel Sandwich</h3>
+		</div>
+		<? endfor; ?>
 	</div>
-	<? endfor; ?>
 </div>

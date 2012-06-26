@@ -2,10 +2,10 @@
 <html>
 <head>
 <title><?=$this->title ? $this->title : 'Crunchbutton'?></title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable = no">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="apple-touch-icon-precomposed" href="/assets/images/burger.png">
+<link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
 
 <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
 <link rel="shortcut icon" href="/favicon.ico">
@@ -14,20 +14,30 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
 <script src="/assets/js/jquery.masonry.min.js"></script>
 <script src="/assets/js/app.js"></script>
-<script type="application/x-javascript">addEventListener('load', function(event) {setTimeout(scrollTo, 80, 0, 1);}, false);</script>
+<script type="application/x-javascript">addEventListener("touchstart",function(){}); addEventListener('load', function(event) {setTimeout(scrollTo, 80, 0, 1);}, false);</script>
 </head>
 
 <body>
 	<div class="wrapper">
 		<div class="nav">
 			<div class="content">
-				<div class="logo"><img src="/assets/images/logo.png"></div>
+				<div class="logo"><div class="logo-img"></div></div>
 			</div>
 		</div>
 		<div class="body">
 			<div class="content">
-				<?=$this->content?>
+				<div class="main-content">
+					<?=$this->content?>
+				</div>
 			</div>
+		</div>
+		<div class="divider"></div>
+		<div class="footer">
+			<a href="/help">Help</a>
+			<a href="/support">Support</a>
+			<a href="/legal">Legal</a>
+			<br />
+			<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
 		</div>
 	</div>
 </body>

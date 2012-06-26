@@ -8,9 +8,16 @@ $(function() {
 	if (document.documentElement.clientWidth > 900) {	
 		$('.meal-items').masonry({
 			itemSelector: '.meal-item',
-			gutterWidth: 12, 
+			gutterWidth: 18, 
 			isFitWidth: true
 		});
 	}
+	
+	$('.meal-item').live('click',function() {
 
+	});
+
+	var App = {
+	
+	};
 });
