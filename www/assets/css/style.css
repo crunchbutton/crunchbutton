@@ -90,7 +90,7 @@ body {
 .meal-item {
 	display: inline-block;
 	width: auto;
-	height: 212px;
+	height: 211px;
 	margin-left: 14px;
 	margin-bottom: 12px;
 }
@@ -106,6 +106,7 @@ body {
 	float: left;
 	color: #7e7e7e;
 	cursor: pointer;
+	text-align: left;
 
 	-webkit-transition-property: border;
 	-webkit-transition-duration: .25s;
@@ -223,10 +224,16 @@ and (max-device-width : 480px) {
 		padding: 5px 0 12px 0;
 	}
 
-	.meal-item {
+	.meal-item-content {
 		width: 304px;
 		height: 121px;
 		margin-bottom: 6px;
+	}
+	
+	.meal-item {
+		height: 133px;
+		margin-left: 0;
+		margin-bottom: 2px;
 	}
 
 	.logo {
@@ -277,6 +284,9 @@ and (max-device-width : 480px) {
 	}
 	.meal-pic {
 		background-position: center center !important;
+	}
+	.footer {
+		margin-top: 20px;
 	}
 }
 
