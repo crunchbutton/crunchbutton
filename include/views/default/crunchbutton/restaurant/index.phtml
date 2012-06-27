@@ -1,0 +1,42 @@
+<?
+	$this->title = $this->restaurant->name;
+?>
+
+
+<div class="restaurant-name"><h1><?=$this->restaurant->name?></h1></div>
+
+<div class="restaurant-pic-wrapper">
+	<div class="restaurant-pic" style="background: url(/assets/images/food/<?=$this->restaurant->image?>);"></div>
+</div>
+
+<div class="restaurant-items">
+	<div class="restaurant-item-title">top items</div>
+	<ul class="resturant-dishes">
+		<? foreach ($this->restaurant->dishes() as $dish) : ?>
+			<li><a href="javascript:;" data-id_dish="<?=$dish->id_dish?>"><?=$dish->name?></a> ($<?=$dish->price?>)</li>
+		<? endforeach ; ?>
+	</ul>
+	
+	<div class="restaurant-item-title">top sides</div>
+	<ul class="resturant-dishes">
+		<? foreach ($this->restaurant->sides() as $sides) : ?>
+			<li><a href="javascript:;" data-id_side="<?=$side->id_side?>"><?=$sides->name?></a> ($<?=$sides->price?>)</li>
+		<? endforeach ; ?>
+		<? foreach ($this->restaurant->extras() as $sides) : ?>
+			<li><a href="javascript:;" data-id_extra="<?=$side->id_extra?>"><?=$sides->name?></a> ($<?=$sides->price?>)</li>
+		<? endforeach ; ?>
+	</ul>
+	
+	<? if ($this->restaurant->menu) : ?>
+		<div class="restaurant-item-title">want something else?</div>
+		<ul class="resturant-dishes">
+			<li><a href="javascript:;" class="restaurant-menu">View the full menu</a></li>
+		</ul>
+	<? endif ; ?>
+</div>
+
+<div class="cart-items">
+
+</div>
+
+<div class="cart-total"></div>

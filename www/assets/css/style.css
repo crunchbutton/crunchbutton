@@ -48,12 +48,12 @@ a {
 }
 
 ::selection {
-	background: #2f9ad3;
+	background: rgba(47,154,211,.5);
 	color: #fff;
 	text-shadow: none;
 }
 ::-moz-selection {
-	background: #2f9ad3;
+	background: rgba(47,154,211,.5);
 	color: #fff;
 	text-shadow: none;
 }
@@ -134,6 +134,20 @@ body {
 	background-size: 100%;
 }
 
+.restaurant-pic-wrapper {
+	box-shadow: 0px 0px 6px rgba(0,0,0,.6);
+
+	width: 300px;
+}
+
+.restaurant-pic {
+	overflow: hidden;
+	height: 155px;
+	margin-bottom: 12px;
+	background-size: 100%;
+	width: 300px;
+}
+
 .meal-restaurant {
 	font-size: 16px;
 	font-weight: bold;
@@ -169,6 +183,14 @@ body {
 .meal-item-down {
 	margin-top: 2px;
 	box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.15);
+}
+
+.restaurant-name {
+	color: #d74924;
+	font-size: 40px;
+	margin: 15px 0 40px 0;
+	font-weight: 100;
+
 }
 
 .home-tagline {
@@ -209,6 +231,38 @@ p {
 
 b {
 	font-weight: bold;
+}
+
+.restaurant-item-title {
+	text-transform: uppercase;
+	color: #969696;
+	font-size: 13px;
+	font-weight: 600;
+	margin-bottom: 8px;
+}
+
+.resturant-dishes li {
+	color: #e3937d;
+}
+
+.resturant-dishes a {
+	color: #d74924;
+	text-decoration: underline;
+}
+
+.resturant-dishes {
+	line-height: 1.4em;
+	margin-bottom: 19px;
+}
+
+.cart-items {
+	width: 400px;
+}
+
+.cart-item {
+	padding: 10px;
+	background: #f6e5e0;
+	margin-bottom: 2px;
 }
 
 
