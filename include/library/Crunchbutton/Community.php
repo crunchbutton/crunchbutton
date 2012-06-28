@@ -19,6 +19,10 @@ class Crunchbutton_Community extends Cana_Table {
 		}
 		return $out;
 	}
+	
+	public static function permalink($permalink) {
+		return self::q('select * from community where permalink="'.$permalink.'"')->get(0);
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();

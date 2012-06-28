@@ -14,6 +14,15 @@ var Restaurant = function(id) {
 		return self.loadType('Side','sides');
 	}
 	
+	self.top = function() {
+		var dishes = self.dishes();
+		for (x in dishes) {
+			if (dishes[x].top) {
+				return dishes[x];
+			}
+		}
+	}
+
 	self.loadType = function(cls, data) {
 		if (!self['__' + data]) {
 			self['__' + data] = [];

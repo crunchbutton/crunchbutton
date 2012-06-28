@@ -43,7 +43,7 @@ App.cache = function(type, id) {
 	var finalid, args = arguments;
 	
 	if (arguments[2]) {
-		$('body').bind('cache-item-loaded-' + type,function() {
+		$('body').one('cache-item-loaded-' + type, function() {
 			args[2]();
 		});
 	}
@@ -74,8 +74,10 @@ App.loadRestaurant = function(id) {
 };
 
 App.page.community = function(id) {
-	App.community = App.cache('Community',id,function() {
-	
+	App.community = App.cache('Community', id, function() {
+
+		document.title = 'Crunchbutton - ' + App.community.name;
+
 		$('.main-content').html(
 			'<div class="home-tagline"><h1>one click food ordering</h1></div>' + 
 			'<div class="content-padder"><div class="meal-items"></div></div>');
@@ -95,7 +97,7 @@ App.page.community = function(id) {
 			restaurantContent
 				.append('<div class="meal-pic" style="background: url(/assets/images/food/' + rs[x]['image'] + ');"></div>')
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
-				.append('<h3 class="meal-food">Top Item: Wenzel Sandwich</h3>');
+				.append('<h3 class="meal-food">Top Item: ' + rs[x].top().name + '</h3>');
 			
 			restaurant
 				.append('<div class="meal-item-spacer"></div>')
@@ -121,7 +123,7 @@ App.loadPage = function() {
 			break;
 
 		default:
-			App.page.community(1);
+			App.page.community('yale');
 			break;
 	}
 };
@@ -185,6 +187,7 @@ App.cart = {
 
 
 $(function() {
+
 	$('.meal-item-content').live('mousedown',function() {
 		$(this).addClass('meal-item-down');
 	});
@@ -231,7 +234,10 @@ $(function() {
 		$(this).removeClass('button-submitorder-click');
 	});
 	
-	App.loadPage();
+	App.community = App.cache('Community','yale', function() {
+		App.loadPage();
+	});
+	
 });
 
 String.prototype.capitalize = function(){
