@@ -53,7 +53,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			$out['_sides'][$side->id_side] = $side->exports();
 		}
 		foreach ($this->extras() as $extra) {
-			$out['_extra'][$extra->id_extra] = $extra->exports();
+			$out['_extras'][$extra->id_extra] = $extra->exports();
 		}
 		foreach ($this->hours() as $hours) {
 			$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];

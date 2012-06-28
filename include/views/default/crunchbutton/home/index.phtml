@@ -21,20 +21,3 @@
 	}
 </style>
 
-<div class="home-tagline"><h1>one click food ordering</h1></div>
-
-<div class="content-padder">
-	<div class="meal-items">
-		<? foreach ($this->restaurants as $restaurant) : ?>
-		<div class="meal-item" data-id_restaurant="<?=$restaurant->id_restaurant?>">
-			<div class="meal-item-spacer"></div>
-			<div class="meal-item-content">
-				<div class="meal-pic" style="background: url(/assets/images/food/<?=$restaurant->image?>);"></div>
-				<h2 class="meal-restaurant"><?=$restaurant->name?></h2>
-				<h3 class="meal-food">Top Item: Wenzel Sandwich</h3>
-			</div>
-		</div>
-		<? endforeach; ?>
-
-	</div>
-</div>

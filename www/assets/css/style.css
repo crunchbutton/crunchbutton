@@ -63,7 +63,7 @@ a {
 }
 
 body {
-	background: #f5f5f5;
+	background: #f5f5f5 url(/assets/images/crisp_paper_ruffles.png);
 	color: #666;
 	font-size: 14px;
 }
@@ -190,7 +190,6 @@ body {
 	font-size: 40px;
 	margin: 15px 0 40px 0;
 	font-weight: 100;
-
 }
 
 .home-tagline {
@@ -261,8 +260,76 @@ b {
 
 .cart-item {
 	padding: 10px;
-	background: #f6e5e0;
+	#background: #f6e5e0;
+	background: rgba(249,216,206, .5);
 	margin-bottom: 2px;
+}
+
+.cart-button {
+	width: 14px;
+	height: 14px;
+	-webkit-border-radius: 7px;
+	-moz-border-radius: 7px;
+	background: #d74924;
+	color: #fff;
+	float: left;
+	cursor: pointer;
+}
+
+.cart-item-name {
+	float: left;
+	margin-left: 15px;
+}
+
+.divider {
+	clear: both;
+}
+
+.cart-item-config a {
+	color: #d74924;
+	text-decoration: underline;
+}
+
+.cart-item-config {
+	float: right;
+}
+
+.button-submitorder {
+	width: 300px;
+	height: 45px;
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fb422e), to(#fb2418));
+	border: 1px solid #ae4939;
+	box-shadow:
+		inset 0 0 6px rgba(255,254,196,.8),
+		0px 2px 5px 0px rgba(0, 0, 0, 0.15)
+	;
+	cursor: pointer;
+	border-radius: 4px;
+	text-transform: uppercase;
+	color: #fff4f3;
+	font-size: 20px;
+	font-weight: 600;
+	text-shadow: -1px -1px 0px rgba(0,0,0,.2);;
+}
+
+.button-submitorder:hover {
+	box-shadow:
+		inset 0 0 12px rgba(255,254,196,.8),
+		0px 2px 5px 0px rgba(0, 0, 0, 0.15)
+	;
+}
+
+.button-submitorder-click {
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fb422e), to(#fb2418)) !important;
+	box-shadow:
+		inset 0 0 18px rgba(0,0,0,.2),
+		inset 0 0 2px rgba(255,254,196,.9),
+		0px 2px 5px 0px rgba(0, 0, 0, 0.15) !important
+	;
+}
+
+.button-submitorder-click div {
+	padding-top: 2px;
 }
 
 
@@ -339,6 +406,11 @@ and (max-device-width : 480px) {
 		margin-top: 20px;
 		text-shadow: 1px 1px 0 rgba(255,255,255,.6);
 	}
+	
+	.restaurant-name {
+		font-size: 25px;
+		font-weight: 100;
+	}
 }
 
 @media only screen 
@@ -363,5 +435,15 @@ and (min-width : 1224px) {
 	}
 	.meal-pic {
 		background-position: center 40% !important;
+	}
+	.meal-item:nth-child(3n+1) {
+		margin-left: 0px;
+	}
+	
+	.content.short-meal-list {
+		width: 690px;
+	}
+	.short-meal-list .meal-item:nth-child(2n+1) {
+		margin-left: 0px;
 	}
 }

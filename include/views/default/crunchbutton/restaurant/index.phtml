@@ -19,11 +19,11 @@
 	
 	<div class="restaurant-item-title">top sides</div>
 	<ul class="resturant-dishes">
-		<? foreach ($this->restaurant->sides() as $sides) : ?>
-			<li><a href="javascript:;" data-id_side="<?=$side->id_side?>"><?=$sides->name?></a> ($<?=$sides->price?>)</li>
+		<? foreach ($this->restaurant->sides() as $side) : ?>
+			<li><a href="javascript:;" data-id_side="<?=$side->id_side?>"><?=$side->name?></a> ($<?=$side->price?>)</li>
 		<? endforeach ; ?>
-		<? foreach ($this->restaurant->extras() as $sides) : ?>
-			<li><a href="javascript:;" data-id_extra="<?=$side->id_extra?>"><?=$sides->name?></a> ($<?=$sides->price?>)</li>
+		<? foreach ($this->restaurant->extras() as $extra) : ?>
+			<li><a href="javascript:;" data-id_extra="<?=$extra->id_extra?>"><?=$extra->name?></a> ($<?=$extra->price?>)</li>
 		<? endforeach ; ?>
 	</ul>
 	
@@ -40,3 +40,15 @@
 </div>
 
 <div class="cart-total"></div>
+<div class="divider"></div>
+<br /><br />
+
+<div class="personal-info">
+
+</div>
+
+<div class="payment-info">
+
+</div>
+
+<button class="button-submitorder"><div>Submit Order</div></button>

@@ -22,7 +22,7 @@ var Community = function(id) {
 			for (x in json) {
 				self[x] = json[x];
 			}
-			self.restaurants()
+			self.restaurants();
 			App.itemLoaded(self.type);
 		});
 	}

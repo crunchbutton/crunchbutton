@@ -7,7 +7,9 @@ if (typeof(console) == 'undefined') {
 var App = {
 	service: '/api/',
 	cached: {},
-	cart: {}
+	cart: {},
+	community: null,
+	page: {}
 };
 
 if (typeof(Ti) != 'undefined') {
@@ -71,39 +73,124 @@ App.loadRestaurant = function(id) {
 	location.href = '/restaurant/' + id;
 };
 
+App.page.community = function(id) {
+	App.community = App.cache('Community',id,function() {
+	
+		$('.main-content').html(
+			'<div class="home-tagline"><h1>one click food ordering</h1></div>' + 
+			'<div class="content-padder"><div class="meal-items"></div></div>');
+	
+		var rs = App.community.restaurants();
+	
+		if (rs.length == 4) {
+			$('.content').addClass('short-meal-list');
+		} else {
+			$('.content').removeClass('short-meal-list');
+		}
+	
+		for (x in rs) {
+			var restaurant = $('<div class="meal-item" data-id_restaurant="' + rs[x]['id_restaurant'] + '"></div>');
+			var restaurantContent = $('<div class="meal-item-content">');
+	
+			restaurantContent
+				.append('<div class="meal-pic" style="background: url(/assets/images/food/' + rs[x]['image'] + ');"></div>')
+				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
+				.append('<h3 class="meal-food">Top Item: Wenzel Sandwich</h3>');
+			
+			restaurant
+				.append('<div class="meal-item-spacer"></div>')
+				.append(restaurantContent);
+	
+			$('.meal-items').append(restaurant);
+		}
+	});
+};
+
+App.page.restaurant = function(id) {
+
+};
+
+App.loadPage = function() {
+	switch (true) {
+		case /^\/restaurant/.test(location.pathname):
+			
+			break;
+
+		case /^\/pay/.test(location.pathname):
+			
+			break;
+
+		default:
+			App.page.community(1);
+			break;
+	}
+};
+
 App.cart = {
 	items: {
 		dishes: [],
 		sides: [],
 		extras: [],
-		custom: []
 	},
 	add: function(type, item) {
-		var el = $('<div class="cart-item cart-item-dish">TEST</div>');
+
+		switch (type) {
+			case 'Dish':
+				App.cart.items.dishes[App.cart.items.dishes.length] = {
+					id: item,
+					substitutions: [],
+					toppings: []
+				};
+				break;
+			case 'Side':
+				App.cart.items.sides[App.cart.items.sides.length] = {
+					id: item
+				};
+				break;
+			case 'Extra':
+				App.cart.items.extras[App.cart.items.extras.length] = {
+					id: item
+				};
+				break;
+		}
+
+		var el = $('<div class="cart-item cart-item-dish"></div>');
+		el
+			.append('<div class="cart-button">-</div>')
+			.append('<div class="cart-item-name">' + App.cache(type,item).name + '</div>');
+		
+		if (type == 'Dish')	{
+			el.append('<div class="cart-item-config"><a href="javascript:;">Customize</a></div>');
+		}
+		el.append('<div class="divider"></div>');
+		el.hide();
+
 		$('.cart-items').append(el);
+		el.fadeIn();
+
 	},
-	remove: function(type, item) {
-	
+	remove: function(item) {
+		item.remove();
 	},
 	updateTotal: function() {
 		$('.cart-total').html();
+	},
+	customize: function(item) {
+		
+	},
+	submit: function() {
+		console.log(JSON.stringify(App.cart.items));
 	}
 };
 
 
-
 $(function() {
-	$('.meal-item-content').mousedown(function() {
+	$('.meal-item-content').live('mousedown',function() {
 		$(this).addClass('meal-item-down');
 	});
-	$('.meal-item-content').mouseup(function() {
+	$('.meal-item-content').live('mouseup',function() {
 		$(this).removeClass('meal-item-down');
 	});
-
-	community = App.cache('Community','1',function() {
-		console.log(community.__restaurants);
-	});
-
 
 	$('.meal-item').live('click',function() {
 		App.loadRestaurant($(this).attr('data-id_restaurant'));
@@ -111,19 +198,42 @@ $(function() {
 	
 	$('.resturant-dishes a').live('click',function() {
 		if ($(this).attr('data-id_dish')) {
-		
+			App.cart.add('Dish',$(this).attr('data-id_dish'));
+
 		} else if ($(this).attr('data-id_side')) {
-		
+			App.cart.add('Side',$(this).attr('data-id_side'));
+
 		} else if ($(this).attr('data-id_extra')) {
-		
+			App.cart.add('Extra',$(this).attr('data-id_extra'));
+
 		} else if ($(this).hasClass('restaurant-menu')) {
 			return;
 		}
-		
-		App.cart.add();
 	});
 	
+	$('.cart-button').live('click',function() {
+		App.cart.remove($(this).closest('.cart-item'));
+	});
 	
-
-
+	$('.cart-item-config a').live('click',function() {
+		App.cart.customize($(this).closest('.cart-item'));
+	});
+	
+	$('.button-submitorder').live('click',function() {
+		App.cart.submit();
+	});
+	
+	$('.button-submitorder').live('mousedown',function() {
+		$(this).addClass('button-submitorder-click');
+	});
+	
+	$('.button-submitorder').live('mouseup',function() {
+		$(this).removeClass('button-submitorder-click');
+	});
+	
+	App.loadPage();
 });
+
+String.prototype.capitalize = function(){
+	return this.replace( /(^|\s)([a-z])/g , function(m,p1,p2){ return p1+p2.toUpperCase(); } );
+};
