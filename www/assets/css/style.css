@@ -332,6 +332,28 @@ b {
 	padding-top: 2px;
 }
 
+input, textarea {
+	width: 200px;
+}
+input, textarea, select {
+	overflow: auto;
+	padding: 2px 4px 2px 4px;
+	font-size: 15px;
+	border: 1px solid #aaa;
+	border-radius: 4px;
+	font-weight: normal;
+	font-family: Helvetica;
+	background: #fff;
+}
+
+textarea {
+	height: 3em;
+}
+
+select {
+	height: 2.2em;
+}
+
 
 @media only screen 
 and (min-device-width : 320px) 

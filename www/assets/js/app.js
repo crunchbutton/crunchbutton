@@ -74,7 +74,7 @@ App.loadRestaurant = function(id) {
 };
 
 App.page.community = function(id) {
-	App.community = App.cache('Community', id, function() {
+	//App.community = App.cache('Community', id, function() {
 
 		document.title = 'Crunchbutton - ' + App.community.name;
 
@@ -105,7 +105,7 @@ App.page.community = function(id) {
 	
 			$('.meal-items').append(restaurant);
 		}
-	});
+	//});
 };
 
 App.page.restaurant = function(id) {
@@ -123,7 +123,7 @@ App.loadPage = function() {
 			break;
 
 		default:
-			App.page.community('yale');
+			App.page.community(1);
 			break;
 	}
 };
@@ -178,10 +178,11 @@ App.cart = {
 		$('.cart-total').html();
 	},
 	customize: function(item) {
-		
+		alert('nope.');
 	},
 	submit: function() {
 		console.log(JSON.stringify(App.cart.items));
+		alert(JSON.stringify(App.cart.items));
 	}
 };
 
@@ -234,7 +235,7 @@ $(function() {
 		$(this).removeClass('button-submitorder-click');
 	});
 	
-	App.community = App.cache('Community','yale', function() {
+	App.community = App.cache('Community',1, function() {
 		App.loadPage();
 	});
 	

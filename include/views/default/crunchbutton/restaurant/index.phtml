@@ -43,12 +43,41 @@
 <div class="divider"></div>
 <br /><br />
 
-<div class="personal-info">
-
+<div class="personal-info field-container">
+	<label>Name</label>
+	<div class="input-item"><input type="text" name="name"></div>
+	
+	<label>Phone #</label>
+	<div class="input-item"><input type="text" name="phone"></div>
+	
+	<label>Deliver</label>
+	<div class="input-item"><textarea name="deliver"></textarea></div>
 </div>
 
-<div class="payment-info">
-
+<div class="payment-info field-container">
+	<label>Credit card #</label>
+	<div class="input-item"><input type="text" name="card"></div>
+	
+	<label>Expiration</label>
+	<div class="input-item">
+		<select><option>Month</option></select>
+		<select><option>Year</option></select>
+	</div>
+	
+	<label>Tip</label>
+	<div class="input-item">
+		<select>
+			<option>0%</option>
+			<option>5%</option>
+			<option>10%</option>
+			<option>15%</option>
+			<option>20%</option>
+		</select>
+	</div>
+	
+	
 </div>
+
+<br /><br />
 
 <button class="button-submitorder"><div>Submit Order</div></button>
