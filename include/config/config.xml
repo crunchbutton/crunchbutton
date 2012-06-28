@@ -4,9 +4,9 @@
     <timezone>America/Los_Angeles</timezone>
     <db>
         <live>
-            <user></user>
-            <pass></pass>
-            <db></db>
+            <user>crunch</user>
+            <pass>***REMOVED***</pass>
+            <db>crunchbutton</db>
             <host>localhost</host>
             <prefix></prefix>
         </live>
