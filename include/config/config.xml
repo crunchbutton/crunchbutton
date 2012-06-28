@@ -4,9 +4,9 @@
     <timezone>America/Los_Angeles</timezone>
     <db>
         <live>
-            <user>fundr</user>
-            <pass>b1gf4tfund</pass>
-            <db>crowdfund</db>
+            <user></user>
+            <pass></pass>
+            <db></db>
             <host>localhost</host>
             <prefix></prefix>
         </live>
@@ -25,7 +25,7 @@
         <theme>crunchbutton</theme>
     </defaults>
     <facebook>
-		<app>***REMOVED***</app>
-		<secret>***REMOVED***</secret>
+		<app></app>
+		<secret></secret>
     </facebook>
 </data>
