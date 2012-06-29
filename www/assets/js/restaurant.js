@@ -22,6 +22,20 @@ var Restaurant = function(id) {
 			}
 		}
 	}
+	
+	self.defaultOrder = function() {
+		if (!self['__defaultOrder']) {
+		console.log(self['_defaultOrder']);
+			try {
+				self['__defaultOrder'] = JSON.parse(self['_defaultOrder']);
+			} catch (e) {
+				self['__defaultOrder'] = null;
+			}
+			self['_defaultOrder'] = null;
+		}
+		return self['__defaultOrder'];
+
+	}
 
 	self.loadType = function(cls, data) {
 		if (!self['__' + data]) {

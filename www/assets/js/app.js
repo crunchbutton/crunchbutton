@@ -85,10 +85,6 @@ App.loadRestaurant = function(id) {
 	App.loadPage();
 };
 
-App.configureCartItem = function(item) {
-
-};
-
 App.page.community = function(id) {
 
 	// probably dont need this since we force community to be loaded
@@ -175,6 +171,36 @@ App.page.restaurant = function(id) {
 			var extra = $('<li><a href="javascript:;" data-id_extra="' + extras[x].id_extra + '">' + extras[x].name + '</a> ($' + extras[x].price + ')</li>');
 			$('.resturant-sides').append(extra);
 		}
+		
+		var order = App.restaurant.defaultOrder();
+console.log(order);
+		if (order) {
+			for (x in order) {
+				switch (x) {
+					case 'dishes':
+						for (xx in order[x]) {
+							App.cart.add('Dish',order[x][xx].id,{
+								toppings: order[x][xx].toppings,
+								substitutions: order[x][xx].substitutions
+							});
+						}
+						break;
+	
+					case 'sides':
+						for (xx in order[x]) {
+							App.cart.add('Side',order[x][xx].id);
+						}
+						break;
+	
+					case 'extras':
+						for (xx in order[x]) {
+							App.cart.add('Extra',order[x][xx].id);
+						}
+						break;
+				}
+			}
+		}
+		
 	});
 
 
@@ -244,7 +270,7 @@ App.loadPage = function() {
 			App.page.community(1);
 			break;
 	}
-	
+	setTimeout(scrollTo, 80, 0, 1);
 	$('.main-content').fadeIn();
 };
 

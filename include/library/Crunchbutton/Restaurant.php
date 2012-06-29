@@ -43,6 +43,13 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 		return $this->_notification;
 	}
+	
+	public function defaultOrder() {
+		return Restaurant_DefaultOrder::q('
+			select * from restaurant_default_order where id_restaurant="'.$this->id_restaurant.'"
+			and id_user is null
+		');
+	}
 
 	public function exports() {
 		$out = $this->properties();
@@ -58,6 +65,9 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		foreach ($this->hours() as $hours) {
 			$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 		}
+
+		$out['_defaultOrder'] = $this->defaultOrder()->config;
+
 		return $out;
 	}
 }

@@ -68,6 +68,7 @@ a {
 
 .button-bottom, .meal-item, .meal-item-content {
 	-webkit-tap-highlight-color: transparent;
+	-webkit-user-select: none;
 }
 
 
