@@ -243,21 +243,42 @@ App.cart = {
 		extras: {},
 	},
 	add: function(type, item) {
-		var id = _.uniqueId('cart-');
+		var
+			id = _.uniqueId('cart-'),
+			top = App.cached['Dish'][item].toppings(),
+			sub = App.cached['Dish'][item].substitutions(),
+			toppings = {},
+			substitutions = {};
 
 		switch (type) {
 			case 'Dish':
+				
+				for (x in top) {
+					if (top[x]['default'] == 1) {
+						toppings[top[x].id_topping] = true;
+					}
+				}
+
+				for (x in sub) {
+					if (sub[x]['default'] == 1) {
+						substitutions[sub[x].id_substitution] = true;
+					}
+				}
+
 				App.cart.items.dishes[id] = {
 					id: item,
-					substitutions: [],
-					toppings: []
+					substitutions: substitutions,
+					toppings: toppings
 				};
+
 				break;
+
 			case 'Side':
 				App.cart.items.sides[id] = {
 					id: item
 				};
 				break;
+
 			case 'Extra':
 				App.cart.items.extras[id] = {
 					id: item
@@ -321,15 +342,23 @@ App.cart = {
 				sub = obj.substitutions();
 	
 			for (x in top) {
+				var check = $('<input type="checkbox" class="cart-customize-check">');
+				if (cartitem.toppings[top[x].id_topping]) {
+					check.attr('checked','checked');
+				}
 				var topping = $('<div class="cart-item-customize-item" data-id_topping="' + top[x].id_topping + '"></div>')
-					.append('<input type="checkbox" class="cart-customize-check">')
+					.append(check)
 					.append('<label>' + top[x].name + '</label>');
 				el.append(topping);
 			}
 			
 			for (x in sub) {
+				var check = $('<input type="checkbox" class="cart-customize-check">');
+				if (cartitem.substitutions[sub[x].id_substitution]) {
+					check.attr('checked','checked');
+				}
 				var substitution = $('<div class="cart-item-customize-item" data-id_substitution="' + sub[x].id_substitution + '"></div>')
-					.append('<input type="checkbox" class="cart-customize-check">')
+					.append(check)
 					.append('<label>' + sub[x].name + '</label>');
 				el.append(substitution);
 			}

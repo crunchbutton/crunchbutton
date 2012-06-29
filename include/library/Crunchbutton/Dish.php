@@ -26,7 +26,7 @@ class Crunchbutton_Dish extends Cana_Table {
 	public function toppings() {
 		if (!isset($this->_toppings)) {
 			$this->_toppings = Topping::q('
-				select topping.* from topping
+				select topping.*, dish_topping.default from topping
 				left join dish_topping using(id_topping)
 				where id_dish="'.$this->id_dish.'"
 			');
@@ -36,8 +36,8 @@ class Crunchbutton_Dish extends Cana_Table {
 
 	public function substitutions() {
 		if (!isset($this->_substitution)) {
-			$this->_substitution = Topping::q('
-				select substitution.* from substitution
+			$this->_substitution = Substitution::q('
+				select substitution.*, dish_substitution.default from substitution
 				left join dish_substitution using(id_substitution)
 				where id_dish="'.$this->id_dish.'"
 			');

@@ -149,6 +149,7 @@ body {
 	padding: 5px;
 	width: 300px;
 	float: right;
+	background: #fff;
 }
 
 .restaurant-pic {
@@ -435,6 +436,7 @@ and (max-device-width : 480px) {
 	}
 	body {
 		background: #fff url(/assets/images/bg.gif);
+		background: #fff url(/assets/images/crisp_paper_ruffles-mobile.png);
 	}
 	.logo-img {
 		width: 184px;
