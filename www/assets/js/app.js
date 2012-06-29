@@ -139,8 +139,13 @@ App.page.restaurant = function(id) {
 			'<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' + 
 			'<div class="restaurant-items"></div>' + 
 			'<div class="cart-items"></div>' + 
-			'<div class="cart-total"></div>' + 
-			'<button class="button-submitorder"><div>Submit Order</div></button>');
+			'<div class="cart-total"></div>');
+			
+		if (!App.config.user.id_user) {
+			$('.main-content').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
+		} else {
+			$('.main-content').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
+		}
 			
 		$('.restaurant-items').append(
 			'<div class="restaurant-item-title">top items</div>' + 
@@ -249,6 +254,11 @@ App.cart = {
 			sub = App.cached['Dish'][item].substitutions(),
 			toppings = {},
 			substitutions = {};
+			
+		if (arguments[2]) {
+			toppings = arguments[2]['toppings'];
+			substitutions = arguments[2]['substitutions'];
+		}
 
 		switch (type) {
 			case 'Dish':
@@ -289,10 +299,11 @@ App.cart = {
 
 		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '" data-cart_type="' + type + '"></div>');
 		el
-			.append('<div class="cart-button">-</div>')
+			.append('<div class="cart-button cart-button-remove">-</div>')
+			.append('<div class="cart-button cart-button-add">+</div>')
 			.append('<div class="cart-item-name">' + App.cache(type,item).name + '</div>');
 		
-		if (type == 'Dish')	{
+		if (type == 'Dish' && (App.cached['Dish'][item].toppings().length || App.cached['Dish'][item].substitutions().length)) {
 			el.append('<div class="cart-item-config"><a href="javascript:;">Customize</a></div>');
 		}
 		el.append('<div class="divider"></div>');
@@ -301,6 +312,16 @@ App.cart = {
 		$('.cart-items').append(el);
 		el.fadeIn();
 
+	},
+	clone: function(item) {
+		var
+			cartid = item.attr('data-cart_id'),
+			cart = App.cart.items.dishes[cartid];
+
+		App.cart.add('Dish',cart.id, {
+			toppings: cart.toppings,
+			substitutions: cart.substitutions
+		});
 	},
 	remove: function(item) {
 		var
@@ -434,8 +455,12 @@ $(function() {
 		}
 	});
 	
-	$('.cart-button').live('click',function() {
+	$('.cart-button-remove').live('click',function() {
 		App.cart.remove($(this).closest('.cart-item'));
+	});
+	
+	$('.cart-button-add').live('click',function() {
+		App.cart.clone($(this).closest('.cart-item'));
 	});
 	
 	$('.cart-item-config a').live('click',function() {
@@ -446,20 +471,20 @@ $(function() {
 		App.cart.submit();
 	});
 	
-	$('.button-submitorder').live({
+	$('.button-bottom').live({
 		mousedown: function() {
-			$(this).addClass('button-submitorder-click');
+			$(this).addClass('button-bottom-click');
 		},
 		touchstart: function() {
-			$(this).addClass('button-submitorder-click');
+			$(this).addClass('button-bottom-click');
 		}
 	});
-	$('.button-submitorder').live({
+	$('.button-bottom').live({
 		mouseup: function() {
-			$(this).removeClass('button-submitorder-click');
+			$(this).removeClass('button-bottom-click');
 		},
 		touchend: function() {
-			$(this).removeClass('button-submitorder-click');
+			$(this).removeClass('button-bottom-click');
 		}
 	});
 	

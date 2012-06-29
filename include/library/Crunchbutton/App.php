@@ -52,7 +52,7 @@ class Crunchbutton_App extends Cana_App {
 	}
 	
 	public function user() {
-		return $this->_user;
+		return $this->auth()->user();
 	}
 	
 	public function displayPage($page = null) {

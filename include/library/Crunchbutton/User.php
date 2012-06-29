@@ -28,6 +28,18 @@ class Crunchbutton_User extends Cana_Table {
 				and user_auth.active=1
 			');
 	}
+	
+	public function defaults() {
+		return Restaurant_DefaultOrder::q('
+			select * from restaurant_default_order where id_user="'.$this->id_user.'"
+		');
+	}
+	
+	public function exports() {
+		$out = $this->properties();
+		$out['defaults'] = $this->defaults();
+		return $out;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
