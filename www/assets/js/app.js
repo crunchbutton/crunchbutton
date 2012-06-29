@@ -105,7 +105,7 @@ App.page.community = function(id) {
 		}
 	
 		for (x in rs) {
-			var restaurant = $('<div class="meal-item" data-id_restaurant="' + rs[x]['id_restaurant'] + '"></div>');
+			var restaurant = $('<div class="meal-item" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
 			var restaurantContent = $('<div class="meal-item-content">');
 	
 			restaurantContent
@@ -173,7 +173,7 @@ App.page.restaurant = function(id) {
 		}
 		
 		var order = App.restaurant.defaultOrder();
-console.log(order);
+
 		if (order) {
 			for (x in order) {
 				switch (x) {
@@ -504,7 +504,7 @@ $(function() {
 	});
 
 	$('.meal-item').live('click',function() {
-		App.loadRestaurant($(this).attr('data-id_restaurant'));
+		App.loadRestaurant($(this).attr('data-permalink'));
 	});
 	
 	$('.resturant-dish-container a').live('click',function() {
@@ -569,6 +569,12 @@ $(function() {
 		
 		// force load of community reguardless of landing (this contains everything we need)
 		App.community = App.cache('Community',1, function() {
+			for (x in App.cached['Community']) {
+				App.cached['Community'][App.cached['Community'][x].permalink] = App.cached['Community'][x];
+			}
+			for (x in App.cached['Restaurant']) {
+				App.cached['Restaurant'][App.cached['Restaurant'][x].permalink] = App.cached['Restaurant'][x];
+			}
 			App.loadPage();
 		});
 	});
