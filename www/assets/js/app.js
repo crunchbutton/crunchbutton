@@ -4,12 +4,22 @@ if (typeof(console) == 'undefined') {
 	};
 }
 
+if (typeof(history.pushState) === 'undefined') {
+	history.pushState = function() { return null; }
+	history.replaceState = function() { return null; }
+} else {
+	window.onpopstate = function (e) { 
+		return App.loadPage();
+	}
+}
+
 var App = {
 	service: '/api/',
 	cached: {},
 	cart: {},
 	community: null,
-	page: {}
+	page: {},
+	config: {}
 };
 
 if (typeof(Ti) != 'undefined') {
@@ -70,10 +80,14 @@ App.cache = function(type, id) {
 };
 
 App.loadRestaurant = function(id) {
-	location.href = '/restaurant/' + id;
+	var loc = '/restaurant/' + id;
+	history.pushState({}, loc, loc);
+	App.loadPage();
+//	App.page.restaurant(id);
 };
 
 App.page.community = function(id) {
+
 	//App.community = App.cache('Community', id, function() {
 
 		document.title = 'Crunchbutton - ' + App.community.name;
@@ -109,17 +123,107 @@ App.page.community = function(id) {
 };
 
 App.page.restaurant = function(id) {
+	$('.content').addClass('short-meal-list');
+
+	App.cache('Restaurant', id, function() {
+		App.restaurant = App.cached['Restaurant'][id];
+
+		document.title = App.restaurant.name;
+		
+		$('.main-content').html(
+			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
+			'<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' + 
+			'<div class="restaurant-items"></div>' + 
+			'<div class="cart-items"></div>' + 
+			'<div class="cart-total"></div>' + 
+			'<button class="button-submitorder"><div>Submit Order</div></button>');
+			
+		$('.restaurant-items').append(
+			'<div class="restaurant-item-title">top items</div>' + 
+			'<ul class="resturant-dishes resturant-dish-container"></ul>' + 
+			'<div class="restaurant-item-title">top sides</div>' + 
+			'<ul class="resturant-sides resturant-dish-container">'
+		);
+	
+		var
+			dishes = App.restaurant.dishes(),
+			sides = App.restaurant.sides(),
+			extras = App.restaurant.extras();
+	
+		for (x in dishes) {
+			var dish = $('<li><a href="javascript:;" data-id_dish="' + dishes[x].id_dish + '">' + dishes[x].name + '</a> ($' + dishes[x].price + ')</li>');
+			$('.resturant-dishes').append(dish);
+		}
+		
+		for (x in sides) {
+			var side = $('<li><a href="javascript:;" data-id_side="' + sides[x].id_side + '">' + sides[x].name + '</a> ($' + sides[x].price + ')</li>');
+			$('.resturant-sides').append(side);
+		}
+		for (x in extras) {
+			var extra = $('<li><a href="javascript:;" data-id_extra="' + extras[x].id_extra + '">' + extras[x].name + '</a> ($' + extras[x].price + ')</li>');
+			$('.resturant-sides').append(extra);
+		}
+	});
+
+
+/*
+<a href="" class="delivery-toggle-delivery">delivery</a> | <a href="" class="delivery-toggle-takeout">takeout</a>
+
+<div class="personal-info field-container">
+	<label>Name</label>
+	<div class="input-item"><input type="text" name="name"></div>
+	
+	<label>Phone #</label>
+	<div class="input-item"><input type="text" name="phone"></div>
+	
+	<label class="delivery-only">Deliver to</label>
+	<div class="input-item delivery-only"><textarea name="deliver"></textarea></div>
+</div>
+
+<a href="" class="pay-toggle-credit">credit</a> | <a href="" class="pay-toggle-cash">cash</a>
+
+<div class="payment-info field-container">
+	<label>Credit card #</label>
+	<div class="input-item"><input type="text" name="card"></div>
+	
+	<label>Expiration</label>
+	<div class="input-item">
+		<select><option>Month</option></select>
+		<select><option>Year</option></select>
+	</div>
+	
+	<label>Tip</label>
+	<div class="input-item">
+		<select>
+			<option>0%</option>
+			<option>5%</option>
+			<option>10%</option>
+			<option>15%</option>
+			<option>20%</option>
+		</select>
+	</div>
+</div>
+*/
 
 };
 
 App.loadPage = function() {
+
+	// only fires on chrome
+	if (!App.community) return;
+
+	var path = location.pathname.split('/');
 	switch (true) {
 		case /^\/restaurant/.test(location.pathname):
-			
+			App.page.restaurant(path[2]);
 			break;
 
 		case /^\/pay/.test(location.pathname):
 			
+			break;
+			
+		case /^\/(help)|(legal)|(support)/.test(location.pathname):
+
 			break;
 
 		default:
@@ -200,7 +304,7 @@ $(function() {
 		App.loadRestaurant($(this).attr('data-id_restaurant'));
 	});
 	
-	$('.resturant-dishes a').live('click',function() {
+	$('.resturant-dish-container a').live('click',function() {
 		if ($(this).attr('data-id_dish')) {
 			App.cart.add('Dish',$(this).attr('data-id_dish'));
 
@@ -235,12 +339,20 @@ $(function() {
 		$(this).removeClass('button-submitorder-click');
 	});
 	
-	App.community = App.cache('Community',1, function() {
-		App.loadPage();
+	// load our config first (not async)
+	$.getJSON('/api/config', function(json) {
+		App.config = json;
+		
+		// force load of community reguardless of landing (this contains everything we need)
+		App.community = App.cache('Community',1, function() {
+			App.loadPage();
+		});
 	});
+
 	
 });
 
+// trash
 String.prototype.capitalize = function(){
 	return this.replace( /(^|\s)([a-z])/g , function(m,p1,p2){ return p1+p2.toUpperCase(); } );
 };

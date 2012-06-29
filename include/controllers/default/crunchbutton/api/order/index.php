@@ -14,9 +14,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 			case 'post':
 				$order = new Order;
-				$order->serialize($this->request());
-				$order->save();
-				$order->notify();
+				$order->process($this->request());
 				break;
 		}
 	}

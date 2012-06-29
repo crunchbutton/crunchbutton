@@ -46,6 +46,9 @@ class Crunchbutton_App extends Cana_App {
 			->config($config)
 			->postInit($params);
 
+		require_once c::config()->dirs->library . '/Cana/Stripe.php';			
+		Stripe::setApiKey(c::config()->stripe->dev->secret);
+
 	}
 	
 	public function user() {

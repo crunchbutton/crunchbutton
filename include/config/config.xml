@@ -28,4 +28,14 @@
 		<app></app>
 		<secret></secret>
     </facebook>
+    <stripe>
+    	<dev>
+    		<secret>***REMOVED***</secret>
+    		<public>***REMOVED***</public>
+    	</dev>
+    	<live>
+    		<secret>Mcr6bpPCOCLU8VmHEmMKIkTIHlbRcRrJ</secret>
+    		<public>***REMOVED***</public>
+    	</live>
+    </stripe>
 </data>
