@@ -150,6 +150,7 @@ body {
 	width: 300px;
 	float: right;
 	background: #fff;
+	display: none;
 }
 
 .restaurant-pic {
@@ -266,7 +267,8 @@ b {
 }
 
 .cart-items {
-	width: 400px;
+	width: 310px;
+	float: right;
 }
 
 .cart-item {
@@ -297,16 +299,26 @@ b {
 	clear: both;
 }
 
+.cart-total {
+	font-size: 20px;
+	color: #d74924;
+	float: right;
+}
+
 .cart-item-config a {
 	color: #d74924;
 	text-decoration: underline;
 }
 
-.cart-item-customize-item label {
+.cart-item-customize-name {
 	cursor: pointer;
 	color: #d74924;
 	text-decoration: underline;
 	margin-left: 15px;
+}
+
+.cart-item-customize-price {
+	color: #e3937d;
 }
 
 .cart-item-customize {
@@ -396,9 +408,29 @@ b {
 	margin-bottom: 25px;
 }
 
+.restaurant-items {
+	float: left;
+}
+
 .clearfix:after {
+	content: ".";
+	display: block;
 	clear: both;
-	content:"";
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
 }
 
 

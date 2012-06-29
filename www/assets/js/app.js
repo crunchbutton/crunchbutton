@@ -139,7 +139,10 @@ App.page.restaurant = function(id) {
 			'<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' + 
 			'<div class="restaurant-items"></div>' + 
 			'<div class="cart-items"></div>' + 
-			'<div class="cart-total"></div>');
+			'<div class="divider"></div>' + 
+			'<div class="cart-total"></div>' + 
+			'<div class="divider"></div>'
+		);
 			
 		if (!App.config.user.id_user) {
 			$('.main-content').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
@@ -220,7 +223,9 @@ App.loadPage = function() {
 
 	// only fires on chrome
 	if (!App.community) return;
+	$('.main-content').hide();
 
+	// page path handler
 	var path = location.pathname.split('/');
 	switch (true) {
 		case /^\/restaurant/.test(location.pathname):
@@ -239,6 +244,8 @@ App.loadPage = function() {
 			App.page.community(1);
 			break;
 	}
+	
+	$('.main-content').fadeIn();
 };
 
 App.cart = {
@@ -311,7 +318,8 @@ App.cart = {
 
 		$('.cart-items').append(el);
 		el.fadeIn();
-
+		
+		App.cart.updateTotal();
 	},
 	clone: function(item) {
 		var
@@ -343,9 +351,11 @@ App.cart = {
 
 		item.remove();
 		$('.cart-item-customize[data-id_cart_item="' + cart + '"]').remove();
+
+		App.cart.updateTotal();
 	},
 	updateTotal: function() {
-		$('.cart-total').html();
+		$('.cart-total').html('$' + App.cart.total());
 	},
 	customize: function(item) {
 		var
@@ -369,7 +379,7 @@ App.cart = {
 				}
 				var topping = $('<div class="cart-item-customize-item" data-id_topping="' + top[x].id_topping + '"></div>')
 					.append(check)
-					.append('<label>' + top[x].name + '</label>');
+					.append('<label class="cart-item-customize-name">' + top[x].name + '</label><label class="cart-item-customize-price">' + (top[x].price != '0.00' ? '&nbsp;($' + top[x].price + ')' : '') + '</label></label>');
 				el.append(topping);
 			}
 			
@@ -380,7 +390,7 @@ App.cart = {
 				}
 				var substitution = $('<div class="cart-item-customize-item" data-id_substitution="' + sub[x].id_substitution + '"></div>')
 					.append(check)
-					.append('<label>' + sub[x].name + '</label>');
+					.append('<label class="cart-item-customize-name">' + sub[x].name + '</label><label class="cart-item-customize-price">' + (sub[x].price != '0.00' ? '&nbsp;($' + sub[x].price + ')' : '') + '</label></label>');
 				el.append(substitution);
 			}
 		}
@@ -408,11 +418,42 @@ App.cart = {
 				delete cartitem.substitutions[sub];
 			}
 		}
+		
+		App.cart.updateTotal();
 			
 	},
 	submit: function() {
 		console.log(JSON.stringify(App.cart.items));
 		alert(JSON.stringify(App.cart.items));
+	},
+	total: function() {
+		var
+			total = 0,
+			dish;
+		for (x in App.cart.items) {
+			for (xx in App.cart.items[x]) {
+				switch (x) {
+					case 'dishes':
+						total += parseFloat(App.cached['Dish'][App.cart.items[x][xx].id].price);
+						for (xxx in App.cart.items[x][xx].toppings) {
+							total += parseFloat(App.cached['Topping'][xxx].price);
+						}
+						for (xxx in App.cart.items[x][xx].substitutions) {
+							total += parseFloat(App.cached['Substitution'][xxx].price);
+						}
+						break;
+
+					case 'sides':
+						total += parseFloat(App.cached['Side'][App.cart.items[x][xx].id].price);
+						break;
+						
+					case 'extras':
+						total += parseFloat(App.cached['Extra'][App.cart.items[x][xx].id].price);
+						break;
+				}
+			}
+		}
+		return total.toFixed(2);
 	}
 };
 

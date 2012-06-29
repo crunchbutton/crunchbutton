@@ -14,6 +14,7 @@ class Crunchbutton_Dish extends Cana_Table {
 
 	public function exports() {
 		$out = $this->properties();
+		$out['price'] = number_format($out['price'],2);
 		foreach ($this->toppings() as $topping) {
 			$out['_toppings'][$topping->id_topping] = $topping->exports();
 		}
