@@ -3,25 +3,37 @@ var Dish = function(id) {
 	var self = this;
 
 	self.toppings = function() {
-		if (!self.__toppings) {
-			self.__toppings = [];
-			for (x in self._toppings) {
-				self.__toppings[self.__toppings.length] = App.cache('Toppings', self._toppings[x]);
+		return self.loadType('Topping','toppings');
+	}
+	
+	self.substitutions = function() {
+		return self.loadType('Substitution','substitutions');
+	}
+	
+	self.loadType = function(cls, data) {
+		if (!self['__' + data]) {
+			self['__' + data] = [];
+			for (x in self['_' + data]) {
+				self['__' + data][self['__' + data].length] = App.cache(cls, self['_' + data][x]);
 			}
-			self._toppings = null;
+			self['_' + data] = null;
 		}
-		return self.__toppings;
+		return self['__' + data];
 	}
 	
 	if (typeof(id) == 'object') {
 		for (x in id) {
 			self[x] = id[x];
 		}
+		self.toppings();
+		self.substitutions();
 	} else {
 		App.request(App.service + '/dish/' + id, function(json) {
 			for (x in json) {
 				self[x] = json[x];
 			}
+			self.toppings();
+			self.substitutions();
 		});
 	}
 }

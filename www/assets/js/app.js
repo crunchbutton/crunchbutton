@@ -83,11 +83,15 @@ App.loadRestaurant = function(id) {
 	var loc = '/restaurant/' + id;
 	history.pushState({}, loc, loc);
 	App.loadPage();
-//	App.page.restaurant(id);
+};
+
+App.configureCartItem = function(item) {
+
 };
 
 App.page.community = function(id) {
 
+	// probably dont need this since we force community to be loaded
 	//App.community = App.cache('Community', id, function() {
 
 		document.title = 'Crunchbutton - ' + App.community.name;
@@ -234,33 +238,35 @@ App.loadPage = function() {
 
 App.cart = {
 	items: {
-		dishes: [],
-		sides: [],
-		extras: [],
+		dishes: {},
+		sides: {},
+		extras: {},
 	},
 	add: function(type, item) {
+		var id = _.uniqueId('cart-');
 
 		switch (type) {
 			case 'Dish':
-				App.cart.items.dishes[App.cart.items.dishes.length] = {
+				App.cart.items.dishes[id] = {
 					id: item,
 					substitutions: [],
 					toppings: []
 				};
 				break;
 			case 'Side':
-				App.cart.items.sides[App.cart.items.sides.length] = {
+				App.cart.items.sides[id] = {
 					id: item
 				};
 				break;
 			case 'Extra':
-				App.cart.items.extras[App.cart.items.extras.length] = {
+				App.cart.items.extras[id] = {
 					id: item
 				};
 				break;
 		}
 
-		var el = $('<div class="cart-item cart-item-dish"></div>');
+
+		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '" data-cart_type="' + type + '"></div>');
 		el
 			.append('<div class="cart-button">-</div>')
 			.append('<div class="cart-item-name">' + App.cache(type,item).name + '</div>');
@@ -276,13 +282,58 @@ App.cart = {
 
 	},
 	remove: function(item) {
+		var
+			name,
+			cart = item.attr('data-cart_id');
+
+		switch (item.attr('data-cart_type')) {
+			case 'Dish':
+				name = 'dishes';
+				break;
+			case 'Side':
+				name = 'sides';
+				break;
+			case 'Extra':
+				name = 'extras';
+				break;
+		}
+		delete App.cart.items[name][cart];
+
 		item.remove();
+		$('.cart-item-customize[data-id_cart_item="' + cart + '"]').remove();
 	},
 	updateTotal: function() {
 		$('.cart-total').html();
 	},
 	customize: function(item) {
-		alert('nope.');
+		var
+			cart = item.attr('data-cart_id'),
+			old = $('.cart-item-customize[data-id_cart_item="' + cart + '"]');
+
+		if (old.length) {
+			old.remove();
+		} else {
+			var
+				el = $('<div class="cart-item-customize" data-id_cart_item="' + cart + '"></div>').insertAfter(item),
+				cartitem = App.cart.items.dishes[cart],
+				obj = App.cached['Dish'][cartitem.id],
+				top = obj.toppings(),
+				sub = obj.substitutions();
+	
+			for (x in top) {
+				var topping = $('<div class="cart-item-customize-item" data-id_topping="' + top[x].id_topping + '"></div>')
+					.append('<input type="checkbox" class="cart-customize-check">')
+					.append('<label>' + top[x].name + '</label>');
+				el.append(topping);
+			}
+			
+			for (x in sub) {
+				var substitution = $('<div class="cart-item-customize-item" data-id_substitution="' + sub[x].id_substitution + '"></div>')
+					.append('<input type="checkbox" class="cart-customize-check">')
+					.append('<label>' + sub[x].name + '</label>');
+				el.append(substitution);
+			}
+		}
 	},
 	submit: function() {
 		console.log(JSON.stringify(App.cart.items));
@@ -293,11 +344,21 @@ App.cart = {
 
 $(function() {
 
-	$('.meal-item-content').live('mousedown',function() {
-		$(this).addClass('meal-item-down');
+	$('.meal-item-content').live({
+		mousedown: function() {
+			$(this).addClass('meal-item-down');
+		},
+		touchstart: function() {
+			$(this).addClass('meal-item-down');
+		}
 	});
-	$('.meal-item-content').live('mouseup',function() {
-		$(this).removeClass('meal-item-down');
+	$('.meal-item-content').live({
+		mouseup: function() {
+			$(this).removeClass('meal-item-down');
+		},
+		touchend: function() {
+			$(this).removeClass('meal-item-down');
+		}
 	});
 
 	$('.meal-item').live('click',function() {
@@ -331,14 +392,23 @@ $(function() {
 		App.cart.submit();
 	});
 	
-	$('.button-submitorder').live('mousedown',function() {
-		$(this).addClass('button-submitorder-click');
+	$('.button-submitorder').live({
+		mousedown: function() {
+			$(this).addClass('button-submitorder-click');
+		},
+		touchstart: function() {
+			$(this).addClass('button-submitorder-click');
+		}
 	});
-	
-	$('.button-submitorder').live('mouseup',function() {
-		$(this).removeClass('button-submitorder-click');
+	$('.button-submitorder').live({
+		mouseup: function() {
+			$(this).removeClass('button-submitorder-click');
+		},
+		touchend: function() {
+			$(this).removeClass('button-submitorder-click');
+		}
 	});
-	
+
 	// load our config first (not async)
 	$.getJSON('/api/config', function(json) {
 		App.config = json;

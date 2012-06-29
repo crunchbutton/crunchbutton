@@ -15,10 +15,10 @@ class Crunchbutton_Dish extends Cana_Table {
 	public function exports() {
 		$out = $this->properties();
 		foreach ($this->toppings() as $topping) {
-			$out['_topping'][$topping->id_topping] = $topping->exports();
+			$out['_toppings'][$topping->id_topping] = $topping->exports();
 		}
 		foreach ($this->substitutions() as $substitution) {
-			$out['_substitution'][$substitution->id_substitution] = $substitution->exports();
+			$out['_substitutions'][$substitution->id_substitution] = $substitution->exports();
 		}
 		return $out;
 	}

@@ -62,6 +62,16 @@ a {
 	outline: none;
 }
 
+* {
+	-webkit-tap-highlight-color: rgba(205,69,29,.5);
+}
+
+.button-submitorder, .meal-item, .meal-item-content {
+	-webkit-tap-highlight-color: transparent;
+}
+
+
+
 body {
 	background: #f5f5f5 url(/assets/images/crisp_paper_ruffles.png);
 	color: #666;
@@ -343,10 +353,10 @@ b {
 	padding-top: 2px;
 }
 
-input, textarea {
+.field-container input, .field-container textarea {
 	width: 200px;
 }
-input, textarea, select {
+.field-container input, .field-container textarea, .field-container select {
 	overflow: auto;
 	padding: 2px 4px 2px 4px;
 	font-size: 15px;
@@ -357,11 +367,11 @@ input, textarea, select {
 	background: #fff;
 }
 
-textarea {
+.field-container textarea {
 	height: 3em;
 }
 
-select {
+.field-container select {
 	height: 2.2em;
 }
 
