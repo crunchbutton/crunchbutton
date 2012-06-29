@@ -301,6 +301,21 @@ b {
 	text-decoration: underline;
 }
 
+.cart-item-customize-item label {
+	cursor: pointer;
+	color: #d74924;
+	text-decoration: underline;
+	margin-left: 15px;
+}
+
+.cart-item-customize {
+	margin: 10px 0 10px 15px;
+}
+
+.cart-item-customize-item {
+	margin-bottom: 4px;
+}
+
 .cart-item-config {
 	float: right;
 }

@@ -365,7 +365,28 @@ App.cart = {
 		}
 	},
 	customizeItem: function(item) {
-//		var
+
+		var
+			cart = item.closest('.cart-item-customize').attr('data-id_cart_item'),
+			cartitem = App.cart.items.dishes[cart],
+			customitem = item.closest('.cart-item-customize-item'),
+			top = customitem.attr('data-id_topping')
+			sub = customitem.attr('data-id_substitution');
+
+		if (top) {
+			if (item.is(':checked')) {
+				cartitem.toppings[top] = true;
+			} else {
+				delete cartitem.toppings[top];
+			}
+		}
+		if (sub) {
+			if (item.is(':checked')) {
+				cartitem.substitutions[sub] = true;
+			} else {
+				delete cartitem.substitutions[sub];
+			}
+		}
 			
 	},
 	submit: function() {
@@ -444,6 +465,10 @@ $(function() {
 	
 	$('.cart-customize-check').live('change',function() {
 		App.cart.customizeItem($(this));
+	});
+	
+	$('.cart-item-customize-item label').live('click', function() {
+		$(this).prev('input').click();
 	});
 
 	// load our config first (not async)
