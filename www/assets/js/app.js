@@ -364,6 +364,10 @@ App.cart = {
 			}
 		}
 	},
+	customizeItem: function(item) {
+//		var
+			
+	},
 	submit: function() {
 		console.log(JSON.stringify(App.cart.items));
 		alert(JSON.stringify(App.cart.items));
@@ -436,6 +440,10 @@ $(function() {
 		touchend: function() {
 			$(this).removeClass('button-submitorder-click');
 		}
+	});
+	
+	$('.cart-customize-check').live('change',function() {
+		App.cart.customizeItem($(this));
 	});
 
 	// load our config first (not async)

@@ -25,7 +25,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
-	font-family: "Helvetica Neue", Helvetica, "Open Sans", Arial, Verdana, sans-serif;
+	font-family: "Helvetica Neue", "Dosis", "Open Sans", Helvetica, Arial, Verdana, sans-serif;
 }
 ol, ul {
 	list-style: none;
@@ -190,7 +190,6 @@ body {
 	border: 1px solid rgba(255,40,31,.8);
 }
 
-
 .meal-item-down {
 	margin-top: 2px;
 	box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.15);
@@ -307,7 +306,7 @@ b {
 }
 
 .button-submitorder {
-	width: 300px;
+	width: 310px;
 	height: 45px;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fb422e), to(#fb2418));
 	border: 1px solid #ae4939;
@@ -437,6 +436,7 @@ and (max-device-width : 480px) {
 	body {
 		background: #fff url(/assets/images/bg.gif);
 		background: #fff url(/assets/images/crisp_paper_ruffles-mobile.png);
+		font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
 	}
 	.logo-img {
 		width: 184px;
@@ -451,6 +451,9 @@ and (max-device-width : 480px) {
 	.meal-pic {
 		background-position: center center !important;
 	}
+	.restaurant-pic {
+		height: 140px;
+	}
 	.footer {
 		margin-top: 20px;
 		text-shadow: 1px 1px 0 rgba(255,255,255,.6);
@@ -459,6 +462,7 @@ and (max-device-width : 480px) {
 	.restaurant-name {
 		font-size: 25px;
 		font-weight: 100;
+		text-align: center;
 	}
 }
 
