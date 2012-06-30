@@ -1,17 +1,6 @@
 <?php
 
 class Crunchbutton_Dish extends Cana_Table {
-	public function restaurants() {
-		if (!isset($this->_restaurants)) {
-			$this->_restaurants = Restaurant::q('
-				select restaurant.* from restaurant
-				left join restaurant_community using(id_restaurant)
-				where id_community="'.$this->id_community.'"
-			');
-		}
-		return $this->_restaurants;
-	}
-
 	public function exports() {
 		$out = $this->properties();
 		$out['price'] = number_format($out['price'],2);
@@ -22,6 +11,10 @@ class Crunchbutton_Dish extends Cana_Table {
 			$out['_substitutions'][$substitution->id_substitution] = $substitution->exports();
 		}
 		return $out;
+	}
+	
+	public function restaurant() {
+		return Restaurant::o($this->id_restaurant);
 	}
 
 	public function toppings() {

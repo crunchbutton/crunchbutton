@@ -1,6 +1,12 @@
 <?php
 
 class Crunchbutton_Util extends Cana_Model {
+
+	public static function ceil($value, $precision) {
+		$pow = pow ( 10, $precision ); 
+		return ( ceil ( $pow * $value ) + ceil ( $pow * $value - ceil ( $pow * $value ) ) ) / $pow;
+	}
+
 	public static function encodeTitle($title) {
 
 		$find = array(

@@ -63,7 +63,7 @@ class Cana_Table extends Cana_Model { //
 		} else {
 
 			$fields = [];
-			$res = $this->db()->query('SHOW COLUMNS FROM '.$this->table());
+			$res = $this->db()->query('SHOW COLUMNS FROM `'.$this->table().'`');
 			while ($row = $res->fetch()) {
 				$row->Null = $row->Null == 'YES' ? true : false;
 				$fields[] = $row;

@@ -488,15 +488,31 @@ App.cart = {
 			
 	},
 	submit: function() {
+		$('.button-submitorder').attr('disabled', 'disabled');
+
 		var order = {
 			cart: App.cart.items,
 			address: App.order.address,
-			tip: App.order.tip,
+			tip: App.order.tip ? App.order.tip : '10',
 			phone: App.order.phone,
-			name: App.order.name
+			name: App.order.name,
+			pay_type: 'credit',
+			delivery_type: 'delivery',
+			restaurant: App.restaurant.id
 		};
-		console.log(JSON.stringify(order));
-		alert(JSON.stringify(order));
+
+		console.log(order);
+
+		$.ajax({
+			url: App.service + 'order',
+			data: order,
+			dataType: 'json',
+			type: 'POST',
+			complete: function(json) {
+				console.log(json);
+				$('.button-submitorder').removeAttr('disabled');
+			}
+		});
 	},
 	total: function() {
 		var
