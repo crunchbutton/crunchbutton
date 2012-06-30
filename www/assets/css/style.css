@@ -44,7 +44,8 @@ table {
 }
 
 a {
-	text-decoration: none;
+	color: #d74924;
+	text-decoration: underline;
 }
 
 ::selection {
@@ -89,10 +90,6 @@ body {
 	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
 }
 
-.meal-item-button {
-
-}
-
 .meal-items {
 	text-align: center;
 }
@@ -101,7 +98,7 @@ body {
 	display: inline-block;
 	width: auto;
 	height: 211px;
-	margin-left: 14px;
+	margin-left: 16px;
 	margin-bottom: 10px;
 }
 
@@ -207,7 +204,6 @@ body {
 }
 
 .footer a {
-	text-decoration: underline;
 	color: #666;
 	margin: 5px;
 }
@@ -252,11 +248,6 @@ b {
 	color: #e3937d;
 }
 
-.resturant-dish-container a {
-	color: #d74924;
-	text-decoration: underline;
-}
-
 .resturant-dish-container {
 	line-height: 1.4em;
 	margin-bottom: 19px;
@@ -299,11 +290,6 @@ b {
 	font-size: 20px;
 	color: #d74924;
 	float: right;
-}
-
-.cart-item-config a {
-	color: #d74924;
-	text-decoration: underline;
 }
 
 .cart-item-customize-name {
@@ -429,6 +415,13 @@ html[xmlns] .clearfix {
 	height: 1%;
 }
 
+.delivery-payment-info {
+	line-height: 1.4em;
+}
+.dp-display-item {
+	margin-bottom: 15px;
+}
+
 
 @media only screen 
 and (min-device-width : 320px) 
@@ -512,7 +505,6 @@ and (max-device-width : 480px) {
 	.restaurant-name {
 		font-size: 25px;
 		font-weight: 100;
-		text-align: center;
 	}
 	.meal-item-down {
 		border: 1px solid rgba(255,40,31,.8);
@@ -520,7 +512,17 @@ and (max-device-width : 480px) {
 }
 
 @media only screen 
-and (min-width : 1224px) {
+and (max-width : 1024px) {
+	.home-tagline {
+		text-align: center;
+	}
+	.restaurant-name {
+		text-align: center;
+	}
+}
+
+@media only screen 
+and (min-width : 1024px) {
 	.content {
 		width: 1024px;
 		margin: 0 auto;
@@ -532,9 +534,18 @@ and (min-width : 1224px) {
 	}
 
 	.content-padder {
-		background: #f1e7df;
-		border-radius: 8px;
-		padding: 18px;
+		background: rgba(250,164,118,.12);
+		border-bottom-right-radius: 8px;
+		border-bottom-left-radius: 8px;
+		padding: 18px 18px 8px 18px;
+	}
+	.content-padder-before {
+		background: rgba(238,127,33,.22);
+		height: 8px;
+		width: 100%;
+		content: " ";
+		border-top-right-radius: 8px;
+		border-top-left-radius: 8px;
 	}
 	.footer {
 		margin-bottom: 35px;
@@ -543,7 +554,7 @@ and (min-width : 1224px) {
 		background-position: center 40% !important;
 	}
 	.meal-item:nth-child(3n+1) {
-		margin-left: 12px;
+		margin-left: 0px;
 	}
 	
 	.content.short-meal-list {

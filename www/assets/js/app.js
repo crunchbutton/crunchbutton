@@ -117,7 +117,7 @@ App.page.community = function(id) {
 
 		$('.main-content').html(
 			'<div class="home-tagline"><h1>one click food ordering</h1></div>' + 
-			'<div class="content-padder"><div class="meal-items"></div></div>');
+			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>');
 	
 		var rs = App.community.restaurants();
 	
@@ -203,6 +203,14 @@ App.page.restaurant = function(id) {
 		} else {
 			App.cart.loadOrder(App.restaurant.defaultOrder());
 		}
+
+		var dp = $('<div class="delivery-payment-info"></div>')
+			.append('<div class="dp-display-delivery"></div>')
+			.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label><br /><a href="javascript:;">' + App.config.user.phone + '</a></div>')
+			.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + App.config.user.address.replace("\n",'<br />') + '</a></div>')
+			.append('<div class="dp-display-payment dp-display-item"><label>Your are paying by:</label><br /><a href="javascript:;">credit card</a></div>');
+		
+		$('.main-content').append(dp);
 	});
 
 
