@@ -88,6 +88,26 @@ App.loadRestaurant = function(id) {
 	App.loadPage();
 };
 
+App.loadCommunity = function(id) {
+	App.cache('Community',id, function() {
+		App.community = App.cached['Community'][id];
+
+		if (!App.community.id_community) {
+			$('.main-content').show();
+			$('.main-content').html('invalid community');
+			return;
+		}
+		for (var x in App.cached['Community']) {
+			App.cached['Community'][App.cached['Community'][x].permalink] = App.cached['Community'][x];
+			App.cached['Community'][App.cached['Community'][x].id_community] = App.cached['Community'][x];
+		}
+		for (var x in App.cached['Restaurant']) {
+			App.cached['Restaurant'][App.cached['Restaurant'][x].permalink] = App.cached['Restaurant'][x];
+		}
+		App.loadPage();
+	});
+};
+
 App.page.community = function(id) {
 
 	// probably dont need this since we force community to be loaded
@@ -131,7 +151,6 @@ App.page.restaurant = function(id) {
 	App.cache('Restaurant', id, function() {
 		if (App.restaurant && App.restaurant.permalink != id) {
 			App.cart.resetOrder();
-			alert('reset')
 		}
 		App.restaurant = App.cached['Restaurant'][id];
 
@@ -256,23 +275,8 @@ App.loadPage = function() {
 
 	if (!App.community) {
 		// force load of community reguardless of landing (this contains everything we need)
-		App.cache('Community',path[1], function() {
-			App.community = App.cached['Community'][path[1]];
-
-			if (!App.community.id_community) {
-				$('.main-content').show();
-				$('.main-content').html('invalid community');
-				return;
-			}
-			for (var x in App.cached['Community']) {
-				App.cached['Community'][App.cached['Community'][x].permalink] = App.cached['Community'][x];
-				App.cached['Community'][App.cached['Community'][x].id_community] = App.cached['Community'][x];
-			}
-			for (var x in App.cached['Restaurant']) {
-				App.cached['Restaurant'][App.cached['Restaurant'][x].permalink] = App.cached['Restaurant'][x];
-			}
-			App.loadPage();
-		});
+		App.loadCommunity(path[1]);
+		
 		return;
 	}
 
