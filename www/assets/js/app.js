@@ -107,7 +107,7 @@ App.page.community = function(id) {
 			$('.content').removeClass('short-meal-list');
 		}
 	
-		for (x in rs) {
+		for (var x in rs) {
 			var restaurant = $('<div class="meal-item" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
 			var restaurantContent = $('<div class="meal-item-content">');
 	
@@ -129,12 +129,11 @@ App.page.restaurant = function(id) {
 	$('.content').addClass('short-meal-list');
 
 	App.cache('Restaurant', id, function() {
+		if (App.restaurant && App.restaurant.permalink != id) {
+			App.cart.resetOrder();
+			alert('reset')
+		}
 		App.restaurant = App.cached['Restaurant'][id];
-		App.cart.items = {
-			dishes: {},
-			sides: {},
-			extras: {},
-		};
 
 		document.title = App.restaurant.name;
 		
@@ -166,49 +165,25 @@ App.page.restaurant = function(id) {
 			sides = App.restaurant.sides(),
 			extras = App.restaurant.extras();
 	
-		for (x in dishes) {
+		for (var x in dishes) {
 			var dish = $('<li><a href="javascript:;" data-id_dish="' + dishes[x].id_dish + '">' + dishes[x].name + '</a> ($' + dishes[x].price + ')</li>');
 			$('.resturant-dishes').append(dish);
 		}
 		
-		for (x in sides) {
+		for (var x in sides) {
 			var side = $('<li><a href="javascript:;" data-id_side="' + sides[x].id_side + '">' + sides[x].name + '</a> ($' + sides[x].price + ')</li>');
 			$('.resturant-sides').append(side);
 		}
-		for (x in extras) {
+		for (var x in extras) {
 			var extra = $('<li><a href="javascript:;" data-id_extra="' + extras[x].id_extra + '">' + extras[x].name + '</a> ($' + extras[x].price + ')</li>');
 			$('.resturant-sides').append(extra);
 		}
-		
-		var order = App.restaurant.defaultOrder();
 
-		if (order) {
-			for (x in order) {
-				switch (x) {
-					case 'dishes':
-						for (xx in order[x]) {
-							App.cart.add('Dish',order[x][xx].id,{
-								toppings: order[x][xx].toppings,
-								substitutions: order[x][xx].substitutions
-							});
-						}
-						break;
-	
-					case 'sides':
-						for (xx in order[x]) {
-							App.cart.add('Side',order[x][xx].id);
-						}
-						break;
-	
-					case 'extras':
-						for (xx in order[x]) {
-							App.cart.add('Extra',order[x][xx].id);
-						}
-						break;
-				}
-			}
+		if (App.cart.hasItems()) {
+			App.cart.reloadOrder();
+		} else {
+			App.cart.loadOrder(App.restaurant.defaultOrder());
 		}
-		
 	});
 
 
@@ -289,11 +264,11 @@ App.loadPage = function() {
 				$('.main-content').html('invalid community');
 				return;
 			}
-			for (x in App.cached['Community']) {
+			for (var x in App.cached['Community']) {
 				App.cached['Community'][App.cached['Community'][x].permalink] = App.cached['Community'][x];
 				App.cached['Community'][App.cached['Community'][x].id_community] = App.cached['Community'][x];
 			}
-			for (x in App.cached['Restaurant']) {
+			for (var x in App.cached['Restaurant']) {
 				App.cached['Restaurant'][App.cached['Restaurant'][x].permalink] = App.cached['Restaurant'][x];
 			}
 			App.loadPage();
@@ -306,7 +281,10 @@ App.loadPage = function() {
 
 	switch (true) {
 		case communityRegex.test(location.pathname):
+			setTimeout(scrollTo, 80, 0, 1);
+			$('.main-content').show();
 			App.page.community(App.community.id);
+			return;
 			break;
 
 		case restaurantRegex.test(location.pathname):
@@ -343,13 +321,13 @@ App.cart = {
 		switch (type) {
 			case 'Dish':
 				
-				for (x in top) {
+				for (var x in top) {
 					if (top[x]['default'] == 1) {
 						toppings[top[x].id_topping] = true;
 					}
 				}
 
-				for (x in sub) {
+				for (var x in sub) {
 					if (sub[x]['default'] == 1) {
 						substitutions[sub[x].id_substitution] = true;
 					}
@@ -445,7 +423,7 @@ App.cart = {
 				top = obj.toppings(),
 				sub = obj.substitutions();
 	
-			for (x in top) {
+			for (var x in top) {
 				var check = $('<input type="checkbox" class="cart-customize-check">');
 				if (cartitem.toppings[top[x].id_topping]) {
 					check.attr('checked','checked');
@@ -456,7 +434,7 @@ App.cart = {
 				el.append(topping);
 			}
 			
-			for (x in sub) {
+			for (var x in sub) {
 				var check = $('<input type="checkbox" class="cart-customize-check">');
 				if (cartitem.substitutions[sub[x].id_substitution]) {
 					check.attr('checked','checked');
@@ -503,15 +481,15 @@ App.cart = {
 		var
 			total = 0,
 			dish;
-		for (x in App.cart.items) {
-			for (xx in App.cart.items[x]) {
+		for (var x in App.cart.items) {
+			for (var xx in App.cart.items[x]) {
 				switch (x) {
 					case 'dishes':
 						total += parseFloat(App.cached['Dish'][App.cart.items[x][xx].id].price);
-						for (xxx in App.cart.items[x][xx].toppings) {
+						for (var xxx in App.cart.items[x][xx].toppings) {
 							total += parseFloat(App.cached['Topping'][xxx].price);
 						}
-						for (xxx in App.cart.items[x][xx].substitutions) {
+						for (var xxx in App.cart.items[x][xx].substitutions) {
 							total += parseFloat(App.cached['Substitution'][xxx].price);
 						}
 						break;
@@ -527,6 +505,55 @@ App.cart = {
 			}
 		}
 		return total.toFixed(2);
+	},
+	resetOrder: function() {
+		App.cart.items = {
+			dishes: {},
+			sides: {},
+			extras: {},
+		};
+		$('.cart-items, .cart-total').html('');
+	},
+	reloadOrder: function() {
+		var cart = App.cart.items;
+		App.cart.resetOrder();
+		App.cart.loadOrder(cart);
+	},
+	loadOrder: function(order) {
+		try {
+			if (order) {
+				for (var x in order) {
+					switch (x) {
+						case 'dishes':
+							for (var xx in order[x]) {
+								App.cart.add('Dish',order[x][xx].id,{
+									toppings: order[x][xx].toppings,
+									substitutions: order[x][xx].substitutions
+								});
+							}
+							break;
+		
+						case 'sides':
+							for (var xx in order[x]) {
+								App.cart.add('Side',order[x][xx].id);
+							}
+							break;
+		
+						case 'extras':
+							for (var xx in order[x]) {
+								App.cart.add('Extra',order[x][xx].id);
+							}
+							break;
+					}
+				}
+			}
+		} catch (e) { console.log(e.stack); }
+	},
+	hasItems: function() {
+		if (!$.isEmptyObject(App.cart.items.dishes) || !$.isEmptyObject(App.cart.items.sides) || !$.isEmptyObject(App.cart.items.extras)) {
+			return true;
+		}
+		return false;
 	}
 };
 
@@ -617,8 +644,6 @@ $(function() {
 		App.loadPage();
 
 	});
-
-	
 });
 
 // trash
