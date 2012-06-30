@@ -8,8 +8,10 @@ if (typeof(history.pushState) === 'undefined') {
 	history.pushState = function() { return null; }
 	history.replaceState = function() { return null; }
 } else {
-	window.onpopstate = function (e) { 
-		return App.loadPage();
+	window.onpopstate = function (e) {
+		if (App._init) {
+			return App.loadPage();
+		}
 	}
 }
 
@@ -19,7 +21,8 @@ var App = {
 	cart: {},
 	community: null,
 	page: {},
-	config: {}
+	config: {},
+	_init: false
 };
 
 if (typeof(Ti) != 'undefined') {
@@ -80,7 +83,7 @@ App.cache = function(type, id) {
 };
 
 App.loadRestaurant = function(id) {
-	var loc = '/restaurant/' + id;
+	var loc = '/' + App.community.permalink + '/' + id;
 	history.pushState({}, loc, loc);
 	App.loadPage();
 };
@@ -127,6 +130,11 @@ App.page.restaurant = function(id) {
 
 	App.cache('Restaurant', id, function() {
 		App.restaurant = App.cached['Restaurant'][id];
+		App.cart.items = {
+			dishes: {},
+			sides: {},
+			extras: {},
+		};
 
 		document.title = App.restaurant.name;
 		
@@ -248,26 +256,65 @@ App.page.restaurant = function(id) {
 App.loadPage = function() {
 
 	// only fires on chrome
-	if (!App.community) return;
-	$('.main-content').hide();
+	if (!App.config) return;
+	
+	// non app methods
+	switch (true) {
+		case /^\/help|legal|support|pay/.test(location.pathname):
+			return;
+			break;
+	}
 
+	// hide whatever we have
+	$('.main-content').hide();
+	
 	// page path handler
 	var path = location.pathname.split('/');
+	
+	// force to yale if there isnt a place yet
+	// @todo: detect community
+	if (location.pathname == '/') {
+		loc = '/yale';
+		history.replaceState({},loc,loc);
+		path = ['','yale'];
+	}
+
+	if (!App.community) {
+		// force load of community reguardless of landing (this contains everything we need)
+		App.cache('Community',path[1], function() {
+			App.community = App.cached['Community'][path[1]];
+
+			if (!App.community.id_community) {
+				$('.main-content').show();
+				$('.main-content').html('invalid community');
+				return;
+			}
+			for (x in App.cached['Community']) {
+				App.cached['Community'][App.cached['Community'][x].permalink] = App.cached['Community'][x];
+				App.cached['Community'][App.cached['Community'][x].id_community] = App.cached['Community'][x];
+			}
+			for (x in App.cached['Restaurant']) {
+				App.cached['Restaurant'][App.cached['Restaurant'][x].permalink] = App.cached['Restaurant'][x];
+			}
+			App.loadPage();
+		});
+		return;
+	}
+
+	var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
+	var restaurantRegex = new RegExp('^\/(restaurant|)(' + App.community.permalink + ')/', 'i');
+
 	switch (true) {
-		case /^\/restaurant/.test(location.pathname):
+		case communityRegex.test(location.pathname):
+			App.page.community(App.community.id);
+			break;
+
+		case restaurantRegex.test(location.pathname):
 			App.page.restaurant(path[2]);
 			break;
 
-		case /^\/pay/.test(location.pathname):
-			
-			break;
-			
-		case /^\/(help)|(legal)|(support)/.test(location.pathname):
-
-			break;
-
 		default:
-			App.page.community(1);
+			App.page.community(App.community.id);
 			break;
 	}
 	setTimeout(scrollTo, 80, 0, 1);
@@ -566,17 +613,9 @@ $(function() {
 	// load our config first (not async)
 	$.getJSON('/api/config', function(json) {
 		App.config = json;
-		
-		// force load of community reguardless of landing (this contains everything we need)
-		App.community = App.cache('Community',1, function() {
-			for (x in App.cached['Community']) {
-				App.cached['Community'][App.cached['Community'][x].permalink] = App.cached['Community'][x];
-			}
-			for (x in App.cached['Restaurant']) {
-				App.cached['Restaurant'][App.cached['Restaurant'][x].permalink] = App.cached['Restaurant'][x];
-			}
-			App.loadPage();
-		});
+		App._init = true;
+		App.loadPage();
+
 	});
 
 	
