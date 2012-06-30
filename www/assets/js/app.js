@@ -22,6 +22,7 @@ var App = {
 	community: null,
 	page: {},
 	config: {},
+	order: {},
 	_init: false
 };
 
@@ -161,8 +162,6 @@ App.page.restaurant = function(id) {
 			'<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' + 
 			'<div class="restaurant-items"></div>' + 
 			'<div class="cart-items"></div>' + 
-			'<div class="divider"></div>' + 
-			'<div class="cart-total"></div>' + 
 			'<div class="divider"></div>'
 		);
 			
@@ -204,13 +203,16 @@ App.page.restaurant = function(id) {
 			App.cart.loadOrder(App.restaurant.defaultOrder());
 		}
 
-		var dp = $('<div class="delivery-payment-info"></div>')
-			.append('<div class="dp-display-delivery"></div>')
-			.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label><br /><a href="javascript:;">' + App.config.user.phone + '</a></div>')
-			.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + App.config.user.address.replace("\n",'<br />') + '</a></div>')
-			.append('<div class="dp-display-payment dp-display-item"><label>Your are paying by:</label><br /><a href="javascript:;">credit card</a></div>');
-		
-		$('.main-content').append(dp);
+		if (App.config.user.id_user) {
+			var dp = $('<div class="delivery-payment-info content-padder"></div>')
+				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label><br /><a href="javascript:;">' + App.config.user.phone + '</a></div>')
+				.append('<div class="dp-display-payment dp-display-item"><label>Your are paying:</label><br /><span class="cart-total">$0.00</span> and <a href="javascript:;">10% tip</a> by <a href="javascript:;">card</a></div>')
+				.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + App.config.user.address.replace("\n",'<br />') + '</a></div>')
+				.append('<div class="divider"></div>');
+	
+			$('.main-content').append(dp);
+			$('<div class="content-padder-before"></div>').insertBefore(dp);
+		}
 	});
 
 
@@ -486,8 +488,15 @@ App.cart = {
 			
 	},
 	submit: function() {
-		console.log(JSON.stringify(App.cart.items));
-		alert(JSON.stringify(App.cart.items));
+		var order = {
+			cart: App.cart.items,
+			address: App.order.address,
+			tip: App.order.tip,
+			phone: App.order.phone,
+			name: App.order.name
+		};
+		console.log(JSON.stringify(order));
+		alert(JSON.stringify(order));
 	},
 	total: function() {
 		var
@@ -560,6 +569,7 @@ App.cart = {
 				}
 			}
 		} catch (e) { console.log(e.stack); }
+		App.cart.updateTotal();
 	},
 	hasItems: function() {
 		if (!$.isEmptyObject(App.cart.items.dishes) || !$.isEmptyObject(App.cart.items.sides) || !$.isEmptyObject(App.cart.items.extras)) {

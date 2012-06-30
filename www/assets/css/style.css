@@ -286,12 +286,6 @@ b {
 	clear: both;
 }
 
-.cart-total {
-	font-size: 20px;
-	color: #d74924;
-	float: right;
-}
-
 .cart-item-customize-name {
 	cursor: pointer;
 	color: #d74924;
@@ -316,8 +310,10 @@ b {
 }
 
 .button-bottom {
-	margin-top: 25px;
 	width: 310px;
+	margin: 0 auto;
+	margin-top: 25px;
+	margin-bottom: 25px;	
 	height: 45px;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fb422e), to(#fb2418));
 	border: 1px solid #ae4939;
@@ -417,9 +413,27 @@ html[xmlns] .clearfix {
 
 .delivery-payment-info {
 	line-height: 1.4em;
+	text-align: center;
 }
+
+.dp-display-item:first-child {
+	margin-left: 5px;
+}
+
+.dp-display-item:last-child {
+	margin-right: 5px;
+}
+
 .dp-display-item {
-	margin-bottom: 15px;
+	display: inline-block;
+	width: auto;
+	margin: 5px 14px 8px 14px;
+	vertical-align: top;
+	text-align: left;
+}
+
+.delivery-payment-info label {
+	font-weight: bold;
 }
 
 
