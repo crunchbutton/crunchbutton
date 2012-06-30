@@ -16,7 +16,11 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				$order = new Order;
 				$charge = $order->process($this->request());
 				if ($charge) {
-					c::auth()->session()->id_user
+					echo json_encode([
+						'id_user' => c::auth()->session()->id_user,
+						'txn' => $order->txn,
+						'final_price' => $order->final_price
+					]);
 				} else {
 					echo json_encode(['error' => 'failed for something']);
 				}

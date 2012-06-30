@@ -59,8 +59,9 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->txn = $this->transaction()->id;
 		}
 		
-		c::auth()->session()->id_user = $user->id_user;
+		c::auth()->session()->id_user = $this->_user->id_user;
 		
+		$this->save();
 		return true;
 	}
 	
@@ -89,6 +90,7 @@ class Crunchbutton_Order extends Cana_Table {
 				]);
 				if ($r['status']) {
 					$this->_txn = $r['txn'];
+					$this->_user = $r['user'];
 					return true;
 				} else {
 					return false;
