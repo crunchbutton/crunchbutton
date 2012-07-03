@@ -613,6 +613,7 @@ App.cart = {
 
 				} else {
 					order.cardChanged = false;
+					alert('Success!! ... or something...');
 				}
 
 			}
