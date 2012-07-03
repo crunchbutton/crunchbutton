@@ -22,7 +22,7 @@ var App = {
 	community: null,
 	page: {},
 	config: {},
-	order: {},
+	order: {cardChanged: false},
 	_init: false
 };
 
@@ -63,18 +63,18 @@ App.cache = function(type, id) {
 	}
 
 	if (typeof(id) == 'object') {
-		console.log ('storing object',type,id);
+		///console.log ('storing object',type,id);
 		App.cached[type][id.id] = id;
 		eval('App.cached[type][id.id] = new '+type+'(id)');
 		finalid = id.id;
 		$('body').triggerHandler('cache-item-loaded-' + type);
 
 	} else if (!App.cached[type][id]) {
-		console.log ('creating from network',type,id);
+		//console.log ('creating from network',type,id);
 		eval('App.cached[type][id] = new '+type+'(id)');
 		
 	} else {
-		console.log ('loading from cache',type,id);
+		//console.log ('loading from cache',type,id);
 		$('body').triggerHandler('cache-item-loaded-' + type);
 	}
 
@@ -88,6 +88,12 @@ App.loadRestaurant = function(id) {
 	history.pushState({}, loc, loc);
 	App.loadPage();
 };
+
+App.loadPaymentinfo = function() {
+	var loc = '/' + App.community.permalink + '/' + App.restaurant.permalink + '/order';
+	history.pushState({}, loc, loc);
+	App.loadPage();
+}
 
 App.loadCommunity = function(id) {
 	App.cache('Community',id, function() {
@@ -118,29 +124,30 @@ App.page.community = function(id) {
 
 		$('.main-content').html(
 			'<div class="home-tagline"><h1>one click food ordering</h1></div>' + 
-			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>');
-	
+			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
+		);
+
 		var rs = App.community.restaurants();
-	
+
 		if (rs.length == 4) {
 			$('.content').addClass('short-meal-list');
 		} else {
 			$('.content').removeClass('short-meal-list');
 		}
-	
+
 		for (var x in rs) {
 			var restaurant = $('<div class="meal-item" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
 			var restaurantContent = $('<div class="meal-item-content">');
-	
+
 			restaurantContent
 				.append('<div class="meal-pic" style="background: url(/assets/images/food/' + rs[x]['image'] + ');"></div>')
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
 				.append('<h3 class="meal-food">Top Item: ' + rs[x].top().name + '</h3>');
-			
+
 			restaurant
 				.append('<div class="meal-item-spacer"></div>')
 				.append(restaurantContent);
-	
+
 			$('.meal-items').append(restaurant);
 		}
 	//});
@@ -164,20 +171,20 @@ App.page.restaurant = function(id) {
 			'<div class="cart-items"></div>' + 
 			'<div class="divider"></div>'
 		);
-			
+
 		if (!App.config.user.id_user) {
 			$('.main-content').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
 		} else {
 			$('.main-content').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
 		}
-			
+
 		$('.restaurant-items').append(
 			'<div class="restaurant-item-title">top items</div>' + 
 			'<ul class="resturant-dishes resturant-dish-container"></ul>' + 
 			'<div class="restaurant-item-title">top sides</div>' + 
 			'<ul class="resturant-sides resturant-dish-container">'
 		);
-	
+
 		var
 			dishes = App.restaurant.dishes(),
 			sides = App.restaurant.sides(),
@@ -214,46 +221,93 @@ App.page.restaurant = function(id) {
 			$('<div class="content-padder-before"></div>').insertBefore(dp);
 		}
 	});
+};
 
 
-/*
-<a href="" class="delivery-toggle-delivery">delivery</a> | <a href="" class="delivery-toggle-takeout">takeout</a>
+App.page.paymentinfo = function() {
+	var total = App.cart.total();
+	if (total == '0.00') {
+		App.loadRestaurant(App.restaurant.permalink);
+		return;
+	}
+	$('.content').addClass('short-meal-list');
 
-<div class="personal-info field-container">
-	<label>Name</label>
-	<div class="input-item"><input type="text" name="name"></div>
+	$('.main-content').html(
+		'<div class="payment-total">Your total is $' + total + '</div>' +
+		'<form class="payment-form">' + 
+		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
+		'<div class="payment-info-container"></div><div class="divider"></div>' + 
+		'</form>' + 
+		'<button class="button-submitorder-form button-bottom"><div>Submit Order</div></button>'
+	);
+
+	$('.delivery-info-container').append(
+
+		'<div class="personal-info field-container">' + 
+		
+			'<label>Delivery Info</label>' + 
+			'<div class="input-item">' +
+				'<a href="javascript:;" class="delivery-toggle-delivery toggle-item">delivery</a> <span class="toggle-spacer">or</span> <a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>' + 
+			'</div><div class="divider"></div>' + 
+
+			'<label>Name</label>' + 
+			'<div class="input-item"><input type="text" name="pay-name"></div><div class="divider"></div>' + 
 	
-	<label>Phone #</label>
-	<div class="input-item"><input type="text" name="phone"></div>
+			'<label>Phone #</label>' + 
+			'<div class="input-item"><input type="text" name="pay-phone"></div><div class="divider"></div>' + 
 	
-	<label class="delivery-only">Deliver to</label>
-	<div class="input-item delivery-only"><textarea name="deliver"></textarea></div>
-</div>
+			'<label class="delivery-only">Deliver to</label>' + 
+			'<div class="input-item delivery-only"><textarea name="pay-deliver"></textarea></div><div class="divider"></div>' + 
+		'</div>'
+	);
 
-<a href="" class="pay-toggle-credit">credit</a> | <a href="" class="pay-toggle-cash">cash</a>
+	$('.payment-info-container').append(
 
-<div class="payment-info field-container">
-	<label>Credit card #</label>
-	<div class="input-item"><input type="text" name="card"></div>
+		'<div class="payment-info field-container">' + 
+
+			'<label>Payment Info</label>' + 
+			'<div class="input-item">' +
+				'<a href="javascript:;" class="pay-toggle-credit toggle-item">card</a> <span class="toggle-spacer">or</span>  <a href="javascript:;" class="pay-toggle-cash toggle-item">cash</a>' + 
+			'</div><div class="divider"></div>' + 
+
+			'<div class="payment-card-info card-only"><p>Your credit card information is secure and encrypted.<br /><br /></p>' + 
+				'<img src="/assets/images/payment/Visa-40.png" alt="visa">' + 
+				'<img src="/assets/images/payment/Mastercard-40.png" alt="master card">' + 
+				'<img src="/assets/images/payment/Amex-40.png" alt="american express">' + 
+				'<img src="/assets/images/payment/Discover-40.png" alt="discover card">' + 
+			'</div>' + 
+
+			'<label class="card-only">Credit card #</label>' + 
+			'<div class="input-item card-only"><input type="text" name="pay-card-number"></div><div class="divider"></div>' + 
+
+			'<label class="card-only">Expiration</label>' + 
+			'<div class="input-item card-only">' + 
+				'<select name="pay-card-month"><option>Month</option></select>' + 
+				'<select name="pay-card-year"><option>Year</option></select><div class="divider"></div>' + 
+			'</div>' + 
+
+			'<label>Tip</label>' + 
+			'<div class="input-item">' + 
+				'<select name="pay-tip"></select>' + 
+				'<div class="divider"></div>' + 
+			'</div>' + 
+		'</div>'
+	);
+
+	var tips = [0,5,10,15,20];
+	for (var x in tips) {
+		$('[name="pay-tip"]').append('<option value="' + tips[x] + '">' + tips[x] + '%</option>');
+	}	
+	for (var x=1; x<=12; x++) {
+		$('[name="pay-card-month"]').append('<option>' + x + '</option>');
+	}
+	var date = new Date().getFullYear();
+	for (var x=date; x<=date+20; x++) {
+		$('[name="pay-card-year"]').append('<option>' + x + '</option>');
+	}
 	
-	<label>Expiration</label>
-	<div class="input-item">
-		<select><option>Month</option></select>
-		<select><option>Year</option></select>
-	</div>
-	
-	<label>Tip</label>
-	<div class="input-item">
-		<select>
-			<option>0%</option>
-			<option>5%</option>
-			<option>10%</option>
-			<option>15%</option>
-			<option>20%</option>
-		</select>
-	</div>
-</div>
-*/
+	$('.delivery-toggle-delivery, .pay-toggle-credit').click();
+	$('[name="pay-tip"]').val('10');
 
 };
 
@@ -292,8 +346,26 @@ App.loadPage = function() {
 
 	var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
 	var restaurantRegex = new RegExp('^\/(restaurant|)(' + App.community.permalink + ')/', 'i');
+	
+	// retaurant only
+
+	if (restaurantRegex.test(location.pathname)) {
+
+		var restaurant = App.cached['Restaurant'][path[2]];
+		var orderRegex = new RegExp('^\/' + App.community.permalink + '\/' + restaurant.permalink + '\/order$', 'i');
+		switch (true) {
+			case orderRegex.test(location.pathname):
+				App.restaurant = restaurant;
+				App.page.paymentinfo();
+				setTimeout(scrollTo, 80, 0, 1);
+				$('.main-content').fadeIn();
+				return;
+				break;
+		}
+	}
 
 	switch (true) {
+
 		case communityRegex.test(location.pathname):
 			setTimeout(scrollTo, 80, 0, 1);
 			$('.main-content').show();
@@ -488,18 +560,37 @@ App.cart = {
 			
 	},
 	submit: function() {
-		$('.button-submitorder').attr('disabled', 'disabled');
-
+		var read = arguments[1] ? true : false;
+		
+		if (read) {
+			App.config.user.name = $('[name="pay-name"]').val();
+			App.config.user.phone = $('[name="pay-phone"]').val();
+			if (App.order['delivery_type'] == 'deliver') {
+				App.config.user.address = $('[name="pay-deliver"]').val();
+			}
+			App.order.tip = $('[name="pay-tip"]').val();
+		}
 		var order = {
 			cart: App.cart.items,
-			address: App.order.address,
 			tip: App.order.tip ? App.order.tip : '10',
-			phone: App.order.phone,
-			name: App.order.name,
-			pay_type: 'credit',
-			delivery_type: 'delivery',
+			pay_type: App.order['pay_type'],
+			deliver_type: App.order['deliver_type'],
 			restaurant: App.restaurant.id
 		};
+		
+		if (read) {
+			order.address = App.config.user.address;
+			order.phone = App.config.user.phone;
+			order.name = App.config.user.name;
+
+			if (order.cardChanged) {
+				order.card = {
+					number: $('[name="pay-card-number"]').val(),
+					month: $('[name="pay-card-month"]').val(),
+					year: $('[name="pay-card-year"]').val()
+				};
+			}
+		}
 
 		console.log(order);
 
@@ -509,8 +600,21 @@ App.cart = {
 			dataType: 'json',
 			type: 'POST',
 			complete: function(json) {
+				
+				json = $.parseJSON(json.responseText);
 				console.log(json);
-				$('.button-submitorder').removeAttr('disabled');
+				
+				if (json.status == 'false') {
+					var error = '';
+					for (x in json.errors) {
+						error += json.errors[x] + "\n";
+					}
+					alert(error);
+
+				} else {
+					order.cardChanged = false;
+				}
+
 			}
 		});
 	},
@@ -596,7 +700,48 @@ App.cart = {
 };
 
 
+App.test = {
+	card: function() {
+		$('[name="pay-card-number"]').val('4242424242424242');
+		$('[name="pay-card-month"]').val('1');
+		$('[name="pay-card-year"]').val('2020');
+	}
+};
+
 $(function() {
+
+	$('.pay-card-number, .pay-card-month, .pay-card-year').live('change',function() {
+		order.cardChanged = true;
+	});
+
+	$('.delivery-toggle-delivery').live('click',function() {
+		$('.delivery-toggle-takeout').removeClass('toggle-active');
+		$('.delivery-toggle-delivery').addClass('toggle-active');
+		$('.delivery-only').show();
+		App.order['deliver_type'] = 'deliver';
+
+	});
+	
+	$('.delivery-toggle-takeout').live('click',function() {
+		$('.delivery-toggle-delivery').removeClass('toggle-active');
+		$('.delivery-toggle-takeout').addClass('toggle-active');
+		$('.delivery-only').hide();
+		App.order['deliver_type'] = 'takeout';
+	});
+	
+	$('.pay-toggle-credit').live('click',function() {
+		$('.pay-toggle-cash').removeClass('toggle-active');
+		$('.pay-toggle-credit').addClass('toggle-active');
+		$('.card-only').show();
+		App.order['pay_type'] = 'card';
+	});
+	
+	$('.pay-toggle-cash').live('click',function() {
+		$('.pay-toggle-credit').removeClass('toggle-active');
+		$('.pay-toggle-cash').addClass('toggle-active');
+		$('.card-only').hide();
+		App.order['pay_type'] = 'credit';
+	});
 
 	$('.meal-item-content').live({
 		mousedown: function() {
@@ -649,6 +794,13 @@ $(function() {
 	$('.button-submitorder').live('click',function() {
 		App.cart.submit();
 	});
+	$('.button-submitorder-form').live('click',function() {
+		App.cart.submit(true);
+	});
+	
+	$('.button-deliver-payment').live('click',function() {
+		App.loadPaymentinfo();
+	});
 	
 	$('.button-bottom').live({
 		mousedown: function() {
@@ -676,6 +828,7 @@ $(function() {
 	});
 
 	// load our config first (not async)
+	// @todo: encode this data into the initial request
 	$.getJSON('/api/config', function(json) {
 		App.config = json;
 		App._init = true;

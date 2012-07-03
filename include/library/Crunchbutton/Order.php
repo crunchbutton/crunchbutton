@@ -44,24 +44,44 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'credit';
 		$this->delivery_type = $params['delivery_type'] == 'delivery' ? 'delivery' : 'takeout';
-		$this->_deliver = $request['deliver'];
+		$this->_address = $request['address'];
 		$this->_name = $request['name'];
 		
 		$this->_number = $request['card']['number'];
-		$this->_exp_month = $request['card']['exp_month'];
-		$this->_exp_year = $request['card']['exp_year'];
+		$this->_exp_month = $request['card']['month'];
+		$this->_exp_year = $request['card']['year'];
 		
 		$this->order = json_encode($params['cart']);
-		
-		if (!$this->verifyPayment()) {
-			return false;
+
+		if (!c::user()->id_user) {
+			if (!$params['name']) {
+				$errors[] = 'Please enter a name.';
+			}
+			if (!$params['phone']) {
+				$errors[] = 'Please enter a phone #.';
+			}
+			if (!$params['address'] && $this->delivery_type == 'delivery') {
+				$errors[] = 'Please enter an address.';			
+			}
+		}
+
+		if ($errors) {
+			return $errors;
+		}
+
+		if ($res = $this->verifyPayment() !== true) {
+			print_r($res);
+			die('barf');
+			exit;
 		} else {
 			$this->txn = $this->transaction()->id;
 		}
 		
 		c::auth()->session()->id_user = $this->_user->id_user;
 		
+		$this->user = $this->_user->id_user;
 		$this->save();
+
 		return true;
 	}
 	
@@ -93,7 +113,7 @@ class Crunchbutton_Order extends Cana_Table {
 					$this->_user = $r['user'];
 					return true;
 				} else {
-					return false;
+					return $r;
 				}
 				break;
 		}

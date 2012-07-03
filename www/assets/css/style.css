@@ -359,29 +359,6 @@ b {
 .button-bottom-click div {
 	padding-top: 2px;
 }
-
-.field-container input, .field-container textarea {
-	width: 200px;
-}
-.field-container input, .field-container textarea, .field-container select {
-	overflow: auto;
-	padding: 2px 4px 2px 4px;
-	font-size: 15px;
-	border: 1px solid #aaa;
-	border-radius: 4px;
-	font-weight: normal;
-	font-family: Helvetica;
-	background: #fff;
-}
-
-.field-container textarea {
-	height: 3em;
-}
-
-.field-container select {
-	height: 2.2em;
-}
-
 .field-container {
 	margin-bottom: 25px;
 }
@@ -435,6 +412,117 @@ html[xmlns] .clearfix {
 .delivery-payment-info label {
 	font-weight: bold;
 }
+
+.payment-card-info {
+	margin-left: 125px;
+	margin-bottom: 20px;
+	font-size: 12px;
+}
+
+.payment-card-info img {
+	margin-right: 5px;
+}
+
+.field-container input, .field-container textarea {
+	-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-webkit-transition:border linear 0.2s,box-shadow linear 0.2s;
+	-moz-transition:border linear 0.2s,box-shadow linear 0.2s;
+	-ms-transition:border linear 0.2s,box-shadow linear 0.2s;
+	-o-transition:border linear 0.2s,box-shadow linear 0.2s;
+	transition:border linear 0.2s,box-shadow linear 0.2s;
+}
+.field-container input:focus, .field-container textarea:focus {
+	border-color:rgba(82, 168, 236, 0.8);
+	-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
+	-moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
+	box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
+	outline:0;
+	outline:thin dotted \9;
+}
+
+
+.field-container input, .field-container textarea {
+	width: 200px;
+}
+.field-container input, .field-container textarea, .field-container select {
+	overflow: auto;
+	padding: 1px 3px 1px 3px;
+	font-size: 13px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-weight: normal;
+	font-family: Helvetica;
+	background: #fff;
+	color: #555;
+}
+
+.field-container textarea {
+	height: 3em;
+}
+
+.field-container select {
+	height: 2.2em;
+	width: 100px;
+	font-size: 12px;
+	margin-right: 25px;
+}
+
+.delivery-info-container label, .payment-info-container label {
+	float: left;
+	text-align: right;
+	width: 100px;
+	font-weight: bold;
+	font-size: 12px;
+	margin-right: 25px;
+}
+
+.input-item {
+	float: left;
+	margin-bottom: 3px;
+}
+
+.field-container {
+	width: 400px;
+}
+
+.payment-total {
+	font-size: 20px;
+	text-align: center;
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+
+.toggle-active {
+	color: #222;
+	text-decoration: none;
+	cursor: default;
+	font-weight: bold;
+}
+
+.toggle-spacer {
+	margin: 2px 12px 0 12px;
+	color: #aaa;
+	float: left;
+	font-size: 12px;
+}
+
+.toggle-item {
+	display: block;
+	float: left;
+}
+
+.toggle-item:not(.toggle-active) {
+	margin-top: 1px;
+}
+.personal-info .toggle-item {
+	width: 54px;
+}
+.payment-info .toggle-item {
+	width: 33px;
+}
+
 
 
 @media only screen 
