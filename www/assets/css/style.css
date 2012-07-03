@@ -347,13 +347,25 @@ b {
 	-webkit-transition-duration: .01s;
 	-webkit-transition-timing-function: ease-out;
 
-
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fb422e), to(#fb2418)) !important;
 	box-shadow:
 		inset 0 0 18px rgba(0,0,0,.2),
 		inset 0 0 2px rgba(255,254,196,.9),
 		0px 2px 5px 0px rgba(0, 0, 0, 0.15) !important
 	;
+}
+
+.button-bottom-disabled, .button-bottom-disabled:hover {
+	box-shadow:
+		inset 0 0 6px rgba(255,255,255,.3),
+		0px 2px 5px 0px rgba(0, 0, 0, 0.15)
+	;
+}
+
+.button-bottom-disabled {
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#606060), to(#5c5c5c)) !important;
+	border: 1px solid #494949 !important;
+	color: #fff4f3 !important;
 }
 
 .button-bottom-click div {

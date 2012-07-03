@@ -558,8 +558,13 @@ App.cart = {
 		App.cart.updateTotal();
 			
 	},
-	submit: function() {
-		var read = arguments[0] ? true : false;
+	submit: function(el) {
+		if (el.hasClass('button-bottom-disabled')) {
+			return;
+		}
+		el.addClass('button-bottom-disabled');
+
+		var read = arguments[1] ? true : false;
 
 		if (read) {
 			App.config.user.name = $('[name="pay-name"]').val();
@@ -615,6 +620,7 @@ App.cart = {
 					order.cardChanged = false;
 					alert('Success!! ... or something...');
 				}
+				el.removeClass('button-bottom-disabled');
 
 			}
 		});
@@ -797,10 +803,10 @@ $(function() {
 	});
 	
 	$('.button-submitorder').live('click',function() {
-		App.cart.submit();
+		App.cart.submit($(this));
 	});
 	$('.button-submitorder-form').live('click',function() {
-		App.cart.submit(true);
+		App.cart.submit($(this),true);
 	});
 	
 	$('.button-deliver-payment').live('click',function() {
