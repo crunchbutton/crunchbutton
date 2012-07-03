@@ -44,12 +44,12 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'credit';
 		$this->delivery_type = $params['delivery_type'] == 'delivery' ? 'delivery' : 'takeout';
-		$this->_address = $request['address'];
-		$this->_name = $request['name'];
+		$this->_address = $params['address'];
+		$this->_name = $params['name'];
 		
-		$this->_number = $request['card']['number'];
-		$this->_exp_month = $request['card']['month'];
-		$this->_exp_year = $request['card']['year'];
+		$this->_number = $params['card']['number'];
+		$this->_exp_month = $params['card']['month'];
+		$this->_exp_year = $params['card']['year'];
 		
 		$this->order = json_encode($params['cart']);
 
@@ -69,10 +69,11 @@ class Crunchbutton_Order extends Cana_Table {
 			return $errors;
 		}
 
-		if ($res = $this->verifyPayment() !== true) {
-			print_r($res);
-			die('barf');
-			exit;
+		$res = $this->verifyPayment();
+
+		if ($res !== true) {
+			return $res['errors'];
+
 		} else {
 			$this->txn = $this->transaction()->id;
 		}

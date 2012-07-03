@@ -214,7 +214,7 @@ App.page.restaurant = function(id) {
 			var dp = $('<div class="delivery-payment-info content-padder"></div>')
 				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label><br /><a href="javascript:;">' + App.config.user.phone + '</a></div>')
 				.append('<div class="dp-display-payment dp-display-item"><label>Your are paying:</label><br /><span class="cart-total">$0.00</span> and <a href="javascript:;">10% tip</a> by <a href="javascript:;">card</a></div>')
-				.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + App.config.user.address.replace("\n",'<br />') + '</a></div>')
+				.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</a></div>')
 				.append('<div class="divider"></div>');
 	
 			$('.main-content').append(dp);
@@ -353,6 +353,7 @@ App.loadPage = function() {
 
 		var restaurant = App.cached['Restaurant'][path[2]];
 		var orderRegex = new RegExp('^\/' + App.community.permalink + '\/' + restaurant.permalink + '\/order$', 'i');
+
 		switch (true) {
 			case orderRegex.test(location.pathname):
 				App.restaurant = restaurant;
@@ -365,7 +366,6 @@ App.loadPage = function() {
 	}
 
 	switch (true) {
-
 		case communityRegex.test(location.pathname):
 			setTimeout(scrollTo, 80, 0, 1);
 			$('.main-content').show();
@@ -439,7 +439,6 @@ App.cart = {
 				};
 				break;
 		}
-
 
 		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '" data-cart_type="' + type + '"></div>');
 		el
@@ -560,8 +559,8 @@ App.cart = {
 			
 	},
 	submit: function() {
-		var read = arguments[1] ? true : false;
-		
+		var read = arguments[0] ? true : false;
+
 		if (read) {
 			App.config.user.name = $('[name="pay-name"]').val();
 			App.config.user.phone = $('[name="pay-phone"]').val();
@@ -570,6 +569,7 @@ App.cart = {
 			}
 			App.order.tip = $('[name="pay-tip"]').val();
 		}
+
 		var order = {
 			cart: App.cart.items,
 			tip: App.order.tip ? App.order.tip : '10',
@@ -577,13 +577,13 @@ App.cart = {
 			deliver_type: App.order['deliver_type'],
 			restaurant: App.restaurant.id
 		};
-		
+
 		if (read) {
 			order.address = App.config.user.address;
 			order.phone = App.config.user.phone;
 			order.name = App.config.user.name;
 
-			if (order.cardChanged) {
+			if (order.cardChanged || !App.config.user.id_user) {
 				order.card = {
 					number: $('[name="pay-card-number"]').val(),
 					month: $('[name="pay-card-month"]').val(),
@@ -705,6 +705,10 @@ App.test = {
 		$('[name="pay-card-number"]').val('4242424242424242');
 		$('[name="pay-card-month"]').val('1');
 		$('[name="pay-card-year"]').val('2020');
+		
+		$('[name="pay-name"]').val('MR TEST');
+		$('[name="pay-phone"]').val('***REMOVED***');
+		$('[name="pay-deliver"]').val("123 main\nsanta monica ca");
 	}
 };
 
