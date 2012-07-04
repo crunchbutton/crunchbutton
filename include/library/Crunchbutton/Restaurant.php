@@ -37,6 +37,23 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_hours;
 	}
 	
+	public function open() {
+		$hours = $this->hours();
+		$today = new DateTime('today', new DateTimeZone($this->timezone));
+		$day = strtolower($today->format('D'));
+		foreach ($hours as $hour) {
+			if ($hour->day != $day) {
+				continue;
+			}
+			$open = new DateTime('today '.$hour->time_open, new DateTimeZone($this->timezone));
+			$close = new DateTime('today '.$hour->time_close, new DateTimeZone($this->timezone));
+			if ($today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public function notification() {
 		if (!isset($this->_notification)) {
 			$this->_notification = Notification::q('select * from notification where id_notification="'.$this->id_notification.'"');
@@ -65,6 +82,8 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		foreach ($this->hours() as $hours) {
 			$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 		}
+		
+		$out['_open'] = $this->open();
 
 		$out['_defaultOrder'] = $this->defaultOrder()->config;
 

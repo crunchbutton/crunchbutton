@@ -470,10 +470,11 @@ App.cart = {
 		}
 
 		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '" data-cart_type="' + type + '"></div>');
-		el
-			.append('<div class="cart-button cart-button-remove"></div>')
-			.append('<div class="cart-button cart-button-add"></div>')
-			.append('<div class="cart-item-name">' + App.cache(type,item).name + '</div>');
+		el.append('<div class="cart-button cart-button-remove"></div>');
+		if (type == 'Dish') {
+			el.append('<div class="cart-button cart-button-add"></div>');
+		}
+		el.append('<div class="cart-item-name">' + App.cache(type,item).name + '</div>');
 		
 		if (type == 'Dish' && (App.cached['Dish'][item].toppings().length || App.cached['Dish'][item].substitutions().length)) {
 			el.append('<div class="cart-item-config"><a href="javascript:;">Customize</a></div>');
@@ -681,6 +682,7 @@ App.cart = {
 				}
 			}
 		}
+		total = total * (total * (App.restaurant.tax/100));
 		return total.toFixed(2);
 	},
 	resetOrder: function() {
