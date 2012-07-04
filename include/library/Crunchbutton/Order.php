@@ -45,6 +45,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'credit';
 		$this->delivery_type = $params['delivery_type'] == 'delivery' ? 'delivery' : 'takeout';
 		$this->_address = $params['address'];
+		$this->_phone = $params['phone'];
 		$this->_name = $params['name'];
 		
 		$this->_number = $params['card']['number'];
@@ -80,7 +81,7 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		c::auth()->session()->id_user = $this->_user->id_user;
 		
-		$this->user = $this->_user->id_user;
+		$this->id_user = $this->_user->id_user;
 		$this->save();
 
 		return true;
@@ -107,6 +108,8 @@ class Crunchbutton_Order extends Cana_Table {
 					'exp_month' => $this->_exp_month,
 					'exp_year' => $this->_exp_year,
 					'name' => $this->_name,
+					'address' => $this->_address,
+					'phone' => $this->_phone,
 					'user' => c::user()->id_user ? c::user() : null
 				]);
 				if ($r['status']) {

@@ -71,7 +71,9 @@ a {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-user-select: none;
 }
-
+i {
+	font-style:italic;
+}
 
 body {
 	background: #f5f5f5 url(/assets/images/crisp_paper_ruffles.png);
@@ -147,7 +149,7 @@ body {
 	width: 300px;
 	float: right;
 	background: #fff;
-	display: none;
+
 }
 
 .restaurant-pic {
@@ -194,6 +196,7 @@ body {
 	font-size: 40px;
 	margin: 15px 0 40px 0;
 	font-weight: 100;
+	float: left;
 }
 
 .home-tagline {
@@ -256,6 +259,7 @@ b {
 .cart-items {
 	width: 310px;
 	float: right;
+	margin-top: 25px;
 }
 
 .cart-item {
@@ -264,12 +268,18 @@ b {
 	background: rgba(249,216,206, .5);
 	margin-bottom: 2px;
 }
+.cart-button-add {
+	background: url(/assets/images/plus.png) no-repeat;
+}
+.cart-button-remove {
+	background: url(/assets/images/minus.png) no-repeat;
+	margin-right: 4px;
+}
 
 .cart-button {
-	width: 14px;
-	height: 14px;
-	border-radius: 7px;
-	background: #d74924;
+	width: 18px;
+	height: 18px;
+	background-size: 100%;
 	color: #fff;
 	float: left;
 	cursor: pointer;
@@ -535,6 +545,54 @@ html[xmlns] .clearfix {
 	width: 33px;
 }
 
+.button-bottom-disabled:after {
+	content: " ";
+	height: 24px;
+	width: 24px;
+	background: url(/assets/images/submit-loader.gif) no-repeat;
+	display: block;
+	position: absolute;
+	margin-left: 268px;
+	margin-top: -22px;
+}
+
+.app-busy {
+	top: 0;
+	left: 0;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background: rgba(0,0,0,.2);
+}
+
+.app-busy-loader {
+	height: 100px;
+	width: 100px;
+	border-radius: 12px;
+	background: #343434;
+	left: 50%;
+    top: 200px;
+	margin-left: -50px;
+	position: absolute;
+}
+
+@-webkit-keyframes spin
+{
+	from { -webkit-transform: rotate(0deg); }
+	50%  { -webkit-transform: rotate(180deg);  }
+	to   { -webkit-transform: rotate(360deg);  }
+}
+
+.app-busy-loader-icon {
+	margin: 26px 0 0 26px;
+    position: absolute;  
+    width: 30px;  
+    height: 30px;  
+    border: 8px solid #d9e0ff;  
+    border-right-color: transparent;  
+    border-radius: 50%;
+	-webkit-animation: spin 1s linear infinite;
+}  
 
 
 @media only screen 
@@ -619,9 +677,17 @@ and (max-device-width : 480px) {
 	.restaurant-name {
 		font-size: 25px;
 		font-weight: 100;
+		margin-bottom: 20px;
+		margin-top: 5px;
 	}
 	.meal-item-down {
 		border: 1px solid rgba(255,40,31,.8);
+	}
+	.restaurant-pic-wrapper {
+		margin-bottom: 20px;
+	}	
+	.app-busy-loader {
+	    top: 100px;
 	}
 }
 
@@ -680,6 +746,9 @@ and (min-width : 1024px) {
 
 	.meal-item-content:hover {
 		border: 1px solid rgba(255,40,31,.8);
+	}
+	.restaurant-pic-wrapper {
+		margin-top: 13px;
 	}
 
 }

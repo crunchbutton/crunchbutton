@@ -22,7 +22,12 @@ var App = {
 	community: null,
 	page: {},
 	config: {},
-	order: {cardChanged: false},
+	order: {
+		cardChanged: false,
+		pay_type: 'card',
+		deliver_type: 'deliver',
+		tip: '10'
+	},
 	_init: false
 };
 
@@ -212,7 +217,7 @@ App.page.restaurant = function(id) {
 
 		if (App.config.user.id_user) {
 			var dp = $('<div class="delivery-payment-info content-padder"></div>')
-				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label><br /><a href="javascript:;">' + App.config.user.phone + '</a></div>')
+				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label><br /><a href="javascript:;">' + (App.config.user.phone ? App.config.user.phone : '<i>no phone # provied</i>') + '</a></div>')
 				.append('<div class="dp-display-payment dp-display-item"><label>Your are paying:</label><br /><span class="cart-total">$0.00</span> and <a href="javascript:;">10% tip</a> by <a href="javascript:;">card</a></div>')
 				.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</a></div>')
 				.append('<div class="divider"></div>');
@@ -306,8 +311,27 @@ App.page.paymentinfo = function() {
 		$('[name="pay-card-year"]').append('<option>' + x + '</option>');
 	}
 	
-	$('.delivery-toggle-delivery, .pay-toggle-credit').click();
-	$('[name="pay-tip"]').val('10');
+	if (App.order['pay_type'] == 'cash') {
+		$('.pay-toggle-cash').click();
+	} else {
+		$('.pay-toggle-credit').click();
+	}
+	
+	if (App.order['pay_type'] == 'takeout') {
+		$('.delivery-toggle-takeout').click();
+	} else {
+		$('.delivery-toggle-delivery').click();
+	}
+	$('[name="pay-tip"]').val(App.order.tip);
+	
+	//$('[name="pay-card-number"]').val('4242424242424242');
+	//$('[name="pay-card-month"]').val('1');
+	//$('[name="pay-card-year"]').val('2020');
+		
+	$('[name="pay-name"]').val(App.config.user.name);
+	$('[name="pay-phone"]').val(App.config.user.phone);
+	$('[name="pay-deliver"]').val(App.config.user.address);
+	
 
 };
 
@@ -442,8 +466,8 @@ App.cart = {
 
 		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '" data-cart_type="' + type + '"></div>');
 		el
-			.append('<div class="cart-button cart-button-remove">-</div>')
-			.append('<div class="cart-button cart-button-add">+</div>')
+			.append('<div class="cart-button cart-button-remove"></div>')
+			.append('<div class="cart-button cart-button-add"></div>')
 			.append('<div class="cart-item-name">' + App.cache(type,item).name + '</div>');
 		
 		if (type == 'Dish' && (App.cached['Dish'][item].toppings().length || App.cached['Dish'][item].substitutions().length)) {
@@ -559,10 +583,11 @@ App.cart = {
 			
 	},
 	submit: function(el) {
-		if (el.hasClass('button-bottom-disabled')) {
+		if (App.busy.isBusy()) {
 			return;
 		}
-		el.addClass('button-bottom-disabled');
+
+		App.busy.makeBusy();
 
 		var read = arguments[1] ? true : false;
 
@@ -620,8 +645,7 @@ App.cart = {
 					order.cardChanged = false;
 					alert('Success!! ... or something...');
 				}
-				el.removeClass('button-bottom-disabled');
-
+				App.busy.unBusy();
 			}
 		});
 	},
@@ -706,6 +730,24 @@ App.cart = {
 	}
 };
 
+App.busy = {
+	isBusy: function() {
+		return $('.app-busy').length ? true : false;
+	},
+	makeBusy: function() {
+		//el.addClass('button-bottom-disabled');
+		var busy = $('<div class="app-busy"></div>')
+				.append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>'))
+				
+
+		$('body').append(busy);
+	},
+	unBusy: function() {
+		$('.app-busy').remove();
+		//el.removeClass('button-bottom-disabled');
+	}
+};
+
 
 App.test = {
 	card: function() {
@@ -716,6 +758,20 @@ App.test = {
 		$('[name="pay-name"]').val('MR TEST');
 		$('[name="pay-phone"]').val('***REMOVED***');
 		$('[name="pay-deliver"]').val("123 main\nsanta monica ca");
+	},
+	logout: function() {
+		$.getJSON('/api/logout',function(){ location.reload()});
+	},
+	orders: function() {
+		$.getJSON('/api/user/orders',function(json) {
+			var c = '';
+			for (var x in json) {
+				for (var xx in json[x]) {
+					c += xx + ' - ' + json[x][xx] + '<br />';
+				}
+			}
+			$('.main-content').html(c);
+		});
 	}
 };
 
@@ -751,7 +807,7 @@ $(function() {
 		$('.pay-toggle-credit').removeClass('toggle-active');
 		$('.pay-toggle-cash').addClass('toggle-active');
 		$('.card-only').hide();
-		App.order['pay_type'] = 'credit';
+		App.order['pay_type'] = 'cash';
 	});
 
 	$('.meal-item-content').live({
