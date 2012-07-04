@@ -38,4 +38,18 @@
     		<public>***REMOVED***</public>
     	</live>
     </stripe>
+	<twilio>
+		<sid>_KEY_</sid>
+		<token>_KEY_</token>
+		<hostname>_DOMAIN_</hostname>
+		<outgoing>+1_PHONE_</outgoing>
+	</twilio>
+	<phaxio>
+    	<key>_KEY_</key>
+		<secret>_KEY_</secret>
+	</phaxio>
+	<phaxio2>
+    	<key>_KEY_</key>
+		<secret>_KEY_</secret>
+	</phaxio2>
 </data>

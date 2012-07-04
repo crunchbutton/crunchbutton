@@ -98,7 +98,7 @@ App.loadPaymentinfo = function() {
 App.loadCommunity = function(id) {
 	App.cache('Community',id, function() {
 		App.community = App.cached['Community'][id];
-
+		console.log(App.community, id);
 		if (!App.community.id_community) {
 			$('.main-content').show();
 			$('.main-content').html('invalid community');
