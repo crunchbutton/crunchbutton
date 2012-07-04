@@ -42,7 +42,7 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->price
 		, 2); // price
 
-		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'credit';
+		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'card';
 		$this->delivery_type = $params['delivery_type'] == 'delivery' ? 'delivery' : 'takeout';
 		$this->_address = $params['address'];
 		$this->_phone = $params['phone'];
@@ -101,7 +101,7 @@ class Crunchbutton_Order extends Cana_Table {
 				return true;
 				break;
 
-			case 'credit':
+			case 'card':
 				$r = Charge::charge([
 					'amount' => $this->final_price,
 					'number' => $this->_number,

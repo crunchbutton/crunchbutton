@@ -120,6 +120,11 @@ App.loadCommunity = function(id) {
 	});
 };
 
+App.page.order = function(data) {
+	$('.main-content').html(JSON.stringify(data));
+
+};
+
 App.page.community = function(id) {
 
 	// probably dont need this since we force community to be loaded
@@ -643,7 +648,7 @@ App.cart = {
 
 				} else {
 					order.cardChanged = false;
-					alert('Success!! ... or something...');
+					App.page.order(json);
 				}
 				App.busy.unBusy();
 			}
@@ -865,7 +870,7 @@ $(function() {
 		App.cart.submit($(this),true);
 	});
 	
-	$('.button-deliver-payment').live('click',function() {
+	$('.button-deliver-payment, .dp-display-item a').live('click',function() {
 		App.loadPaymentinfo();
 	});
 	
