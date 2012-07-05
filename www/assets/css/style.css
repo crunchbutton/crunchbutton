@@ -149,7 +149,6 @@ body {
 	width: 300px;
 	float: right;
 	background: #fff;
-
 }
 
 .restaurant-pic {
@@ -260,6 +259,7 @@ b {
 	width: 310px;
 	float: right;
 	margin-top: 25px;
+	clear: right;
 }
 
 .cart-item {
@@ -386,6 +386,7 @@ b {
 }
 
 .restaurant-items {
+	clear: left;
 	float: left;
 }
 
@@ -563,6 +564,7 @@ html[xmlns] .clearfix {
 	height: 100%;
 	width: 100%;
 	background: rgba(0,0,0,.2);
+	z-index: 1000;
 }
 
 .app-busy-loader {
@@ -593,6 +595,10 @@ html[xmlns] .clearfix {
     border-radius: 50%;
 	-webkit-animation: spin 1s linear infinite;
 }  
+
+.main-content-item {
+
+}
 
 
 @media only screen 
@@ -647,6 +653,7 @@ and (max-device-width : 480px) {
 		background: url(/assets/images/nav.png);
 		height: 44px;
 		background-size: 44px;
+		z-index: 100;
 	}
 	body {
 		background: #fff url(/assets/images/bg.gif);
@@ -654,8 +661,8 @@ and (max-device-width : 480px) {
 		font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
 	}
 	.logo-img {
-		width: 184px;
-		height: 24px;
+		width: 168px;
+		height: 23px;
 		background: url(/assets/images/logo.png) no-repeat;
 		background-size: 100%;
 		margin-left: 70px;
@@ -667,24 +674,37 @@ and (max-device-width : 480px) {
 		background-position: center center !important;
 	}
 	.restaurant-pic {
-		height: 140px;
+		height: 160px;
+		width: 100%;
 	}
 	.footer {
 		margin-top: 20px;
 		text-shadow: 1px 1px 0 rgba(255,255,255,.6);
 	}
-	
 	.restaurant-name {
-		font-size: 25px;
-		font-weight: 100;
-		margin-bottom: 20px;
-		margin-top: 5px;
+		background: rgba(255,255,255,.8);
+		width: 100%;
+		padding: 10px;
+		font-size: 20px;
+		font-weight: bold;
+		margin-left: -10px;
+		margin-top: 100px;
+		position: absolute;
+		z-index: 20;
+		box-shadow: -1px -1px 0 rgba(255,255,255,.9), 1px 1px 0 rgba(0,0,0,.1);
+	}
+	.restaurant-name h1 {
+		text-align: left;
+		margin-left: 10px;
 	}
 	.meal-item-down {
 		border: 1px solid rgba(255,40,31,.8);
 	}
 	.restaurant-pic-wrapper {
 		margin-bottom: 20px;
+		box-shadow: none;
+		padding: 0;
+		width: 100%;
 	}	
 	.app-busy-loader {
 	    top: 100px;

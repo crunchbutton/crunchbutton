@@ -23,6 +23,31 @@ var Restaurant = function(id) {
 		}
 	}
 	
+	self.open = function() {
+		var hours = self._hours;
+		var today = new Date();  
+		var offset = -(today.getTimezoneOffset()/60);  
+		alert(offset);
+		/*
+		var today = new DateTime('today', new DateTimeZone($this->timezone));
+		var totay = new Date(Date.UTC(year, month, day, hour, minute, second))
+		$day = strtolower($today->format('D'));
+
+		foreach ($hours as $hour) {
+			if ($hour->day != $day) {
+				continue;
+			}
+			$open = new DateTime('today '.$hour->time_open, new DateTimeZone($this->timezone));
+			$close = new DateTime('today '.$hour->time_close, new DateTimeZone($this->timezone));
+			if ($today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp()) {
+				return true;
+			}
+		}
+
+		return false;
+		*/
+	}
+	
 	self.defaultOrder = function() {
 		if (!self['__defaultOrder']) {
 			try {

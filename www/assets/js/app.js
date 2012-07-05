@@ -105,8 +105,10 @@ App.loadCommunity = function(id) {
 		App.community = App.cached['Community'][id];
 		console.log(App.community, id);
 		if (!App.community.id_community) {
-			$('.main-content').show();
-			$('.main-content').html('invalid community');
+			$('.main-content-item').show();
+			$('.main-content-item').html('invalid community');
+			alert('x');
+			setTimeout(App.loadPage,100);
 			return;
 		}
 		for (var x in App.cached['Community']) {
@@ -121,7 +123,7 @@ App.loadCommunity = function(id) {
 };
 
 App.page.order = function(data) {
-	$('.main-content').html(JSON.stringify(data));
+	$('.main-content-item').html(JSON.stringify(data));
 
 };
 
@@ -132,7 +134,7 @@ App.page.community = function(id) {
 
 		document.title = 'Crunchbutton - ' + App.community.name;
 
-		$('.main-content').html(
+		$('.main-content-item').html(
 			'<div class="home-tagline"><h1>one click food ordering</h1></div>' + 
 			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
 		);
@@ -174,7 +176,7 @@ App.page.restaurant = function(id) {
 
 		document.title = App.restaurant.name;
 		
-		$('.main-content').html(
+		$('.main-content-item').html(
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
 			'<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' + 
 			'<div class="restaurant-items"></div>' + 
@@ -183,9 +185,9 @@ App.page.restaurant = function(id) {
 		);
 
 		if (!App.config.user.id_user) {
-			$('.main-content').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
+			$('.main-content-item').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
 		} else {
-			$('.main-content').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
+			$('.main-content-item').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
 		}
 
 		$('.restaurant-items').append(
@@ -227,7 +229,7 @@ App.page.restaurant = function(id) {
 				.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</a></div>')
 				.append('<div class="divider"></div>');
 	
-			$('.main-content').append(dp);
+			$('.main-content-item').append(dp);
 			$('<div class="content-padder-before"></div>').insertBefore(dp);
 		}
 	});
@@ -242,7 +244,7 @@ App.page.paymentinfo = function() {
 	}
 	$('.content').addClass('short-meal-list');
 
-	$('.main-content').html(
+	$('.main-content-item').html(
 		'<div class="payment-total">Your total is $' + total + '</div>' +
 		'<form class="payment-form">' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
@@ -353,7 +355,7 @@ App.loadPage = function() {
 	}
 
 	// hide whatever we have
-	$('.main-content').hide();
+	$('.main-content-item').hide();
 	
 	// page path handler
 	var path = location.pathname.split('/');
@@ -388,7 +390,7 @@ App.loadPage = function() {
 				App.restaurant = restaurant;
 				App.page.paymentinfo();
 				setTimeout(scrollTo, 80, 0, 1);
-				$('.main-content').fadeIn();
+				$('.main-content-item').fadeIn();
 				return;
 				break;
 		}
@@ -397,7 +399,7 @@ App.loadPage = function() {
 	switch (true) {
 		case communityRegex.test(location.pathname):
 			setTimeout(scrollTo, 80, 0, 1);
-			$('.main-content').show();
+			$('.main-content-item').show();
 			App.page.community(App.community.id);
 			return;
 			break;
@@ -411,7 +413,7 @@ App.loadPage = function() {
 			break;
 	}
 	setTimeout(scrollTo, 80, 0, 1);
-	$('.main-content').fadeIn();
+	$('.main-content-item').fadeIn();
 };
 
 App.cart = {
@@ -777,7 +779,7 @@ App.test = {
 					c += xx + ' - ' + json[x][xx] + '<br />';
 				}
 			}
-			$('.main-content').html(c);
+			$('.main-content-item').html(c);
 		});
 	}
 };
@@ -900,6 +902,10 @@ $(function() {
 	$('.cart-item-customize-item label').live('click', function() {
 		$(this).prev('input').click();
 	});
+	
+	if (screen.width <= 480) {
+		
+	}
 
 	// load our config first (not async)
 	// @todo: encode this data into the initial request

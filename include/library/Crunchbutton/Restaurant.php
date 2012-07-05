@@ -30,17 +30,30 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_extras;
 	}
 	
-	public function hours() {
-		if (!isset($this->_hours)) {
-			$this->_hours = Hour::q('select * from hour where id_restaurant="'.$this->id_restaurant.'"');
+	public function hours($gmt = false) {
+		if (!isset($this->_hours[$gmt])) {
+			$hours = Hour::q('select * from hour where id_restaurant="'.$this->id_restaurant.'"');
+			if ($gmt) {
+
+				foreach ($hours as $hour) {
+					$open = new DateTime('today '.$hour->time_open, new DateTimeZone($this->timezone));
+					$open->setTimezone(new DateTimeZone('GMT'));
+					$close = new DateTime('today '.$hour->time_close, new DateTimeZone($this->timezone));
+					$close->setTimezone(new DateTimeZone('GMT'));
+					$hour->time_open = $open->format('Y-m-d H:i');
+					$hour->time_close = $open->format('Y-m-d H:i');
+				}
+			}
+			$this->_hours[$gmt] = $hours;
 		}
-		return $this->_hours;
+		return $this->_hours[$gmt];
 	}
-	
+
 	public function open() {
 		$hours = $this->hours();
 		$today = new DateTime('today', new DateTimeZone($this->timezone));
 		$day = strtolower($today->format('D'));
+
 		foreach ($hours as $hour) {
 			if ($hour->day != $day) {
 				continue;
@@ -51,6 +64,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 				return true;
 			}
 		}
+
 		return false;
 	}
 	
@@ -79,7 +93,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		foreach ($this->extras() as $extra) {
 			$out['_extras'][$extra->id_extra] = $extra->exports();
 		}
-		foreach ($this->hours() as $hours) {
+		foreach ($this->hours(true) as $hours) {
 			$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 		}
 		
