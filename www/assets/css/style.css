@@ -749,7 +749,7 @@ and (max-width : 768px) {
 		clear: both;
 	}
 	.main-content-readable {
-		background: #f4f4f4;
+		background: #f8f8f8;
 		padding: 5px;
 		border: 1px solid #c1c1c1;
 		border-radius: 4px;
@@ -892,4 +892,13 @@ and (min-width : 1024px) {
 
 
 
+}
+
+
+
+.cart-items:before {
+	content: "Your order";
+	font-weight: bold;
+	margin-bottom: 8px;
+	display: block;
 }
