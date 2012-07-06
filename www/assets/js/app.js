@@ -28,7 +28,8 @@ var App = {
 		deliver_type: 'deliver',
 		tip: '10'
 	},
-	_init: false
+	_init: false,
+	_pageInit: false
 };
 
 if (typeof(Ti) != 'undefined') {
@@ -179,15 +180,17 @@ App.page.restaurant = function(id) {
 		$('.main-content-item').html(
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
 			'<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' + 
-			'<div class="restaurant-items"></div>' + 
-			'<div class="cart-items"></div>' + 
-			'<div class="divider"></div>'
+			'<div class="main-content-readable">' + 
+				'<div class="restaurant-items"></div>' + 
+				'<div class="cart-items"></div>' + 
+				'<div class="divider"></div>' + 
+			'</div>'
 		);
 
 		if (!App.config.user.id_user) {
-			$('.main-content-item').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
+			$('.main-content-readable').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
 		} else {
-			$('.main-content-item').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
+			$('.main-content-readable').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
 		}
 
 		$('.restaurant-items').append(
@@ -246,7 +249,7 @@ App.page.paymentinfo = function() {
 
 	$('.main-content-item').html(
 		'<div class="payment-total">Your total is $' + total + '</div>' +
-		'<form class="payment-form">' + 
+		'<form class="payment-form main-content-readable">' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-info-container"></div><div class="divider"></div>' + 
 		'</form>' + 
@@ -257,8 +260,8 @@ App.page.paymentinfo = function() {
 
 		'<div class="personal-info field-container">' + 
 		
-			'<label>Delivery Info</label>' + 
-			'<div class="input-item">' +
+			'<label class="pay-title-label">Delivery Info</label>' + 
+			'<div class="input-item toggle-wrapper clearfix">' +
 				'<a href="javascript:;" class="delivery-toggle-delivery toggle-item">delivery</a> <span class="toggle-spacer">or</span> <a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>' + 
 			'</div><div class="divider"></div>' + 
 
@@ -277,16 +280,18 @@ App.page.paymentinfo = function() {
 
 		'<div class="payment-info field-container">' + 
 
-			'<label>Payment Info</label>' + 
-			'<div class="input-item">' +
-				'<a href="javascript:;" class="pay-toggle-credit toggle-item">card</a> <span class="toggle-spacer">or</span>  <a href="javascript:;" class="pay-toggle-cash toggle-item">cash</a>' + 
+			'<label class="pay-title-label">Payment Info</label>' + 
+			'<div class="input-item toggle-wrapper">' +
+				'<a href="javascript:;" class="pay-toggle-credit toggle-item"><span>card</span></a> <span class="toggle-spacer">or</span>  <a href="javascript:;" class="pay-toggle-cash toggle-item"><span>cash</span></a>' + 
 			'</div><div class="divider"></div>' + 
 
-			'<div class="payment-card-info card-only"><p>Your credit card information is secure and encrypted.<br /><br /></p>' + 
-				'<img src="/assets/images/payment/Visa-40.png" alt="visa">' + 
-				'<img src="/assets/images/payment/Mastercard-40.png" alt="master card">' + 
-				'<img src="/assets/images/payment/Amex-40.png" alt="american express">' + 
-				'<img src="/assets/images/payment/Discover-40.png" alt="discover card">' + 
+			'<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>' + 
+				'<div class="card-icons">' +
+					'<img src="/assets/images/payment/Visa-40.png" alt="visa">' + 
+					'<img src="/assets/images/payment/Mastercard-40.png" alt="master card">' + 
+					'<img src="/assets/images/payment/Amex-40.png" alt="american express">' + 
+					'<img src="/assets/images/payment/Discover-40.png" alt="discover card">' + 
+				'</div>' + 
 			'</div>' + 
 
 			'<label class="card-only">Credit card #</label>' + 
@@ -298,7 +303,7 @@ App.page.paymentinfo = function() {
 				'<select name="pay-card-year"><option>Year</option></select><div class="divider"></div>' + 
 			'</div>' + 
 
-			'<label>Tip</label>' + 
+			'<div class="divider"></div><label>Tip</label>' + 
 			'<div class="input-item">' + 
 				'<select name="pay-tip"></select>' + 
 				'<div class="divider"></div>' + 
@@ -355,7 +360,11 @@ App.loadPage = function() {
 	}
 
 	// hide whatever we have
-	$('.main-content-item').hide();
+	if (App._pageInit) {
+		$('.main-content-item').hide();
+	} else {
+		App._pageInit = true;
+	}
 	
 	// page path handler
 	var path = location.pathname.split('/');
@@ -795,7 +804,6 @@ $(function() {
 		$('.delivery-toggle-delivery').addClass('toggle-active');
 		$('.delivery-only').show();
 		App.order['deliver_type'] = 'deliver';
-
 	});
 	
 	$('.delivery-toggle-takeout').live('click',function() {

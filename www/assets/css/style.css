@@ -67,7 +67,7 @@ a {
 	-webkit-tap-highlight-color: rgba(205,69,29,.5);
 }
 
-.button-bottom, .meal-item, .meal-item-content {
+.button-bottom, .meal-item, .meal-item-content, .toggle-item {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-user-select: none;
 }
@@ -487,7 +487,7 @@ html[xmlns] .clearfix {
 
 .field-container select {
 	height: 2.2em;
-	width: 100px;
+	width: 80px;
 	font-size: 12px;
 	margin-right: 25px;
 }
@@ -495,7 +495,7 @@ html[xmlns] .clearfix {
 .delivery-info-container label, .payment-info-container label {
 	float: left;
 	text-align: right;
-	width: 100px;
+	width: 90px;
 	font-weight: bold;
 	font-size: 12px;
 	margin-right: 25px;
@@ -613,6 +613,7 @@ and (max-device-width : 480px) {
 		width: 304px;
 		height: 121px;
 		margin-bottom: 6px;
+		border-radius: 3px;
 	}
 	
 	.meal-item {
@@ -656,8 +657,10 @@ and (max-device-width : 480px) {
 		z-index: 100;
 	}
 	body {
-		background: #fff url(/assets/images/bg.gif);
-		background: #fff url(/assets/images/crisp_paper_ruffles-mobile.png);
+		#background: #333 url(/assets/images/bg2.png);
+		background: #e0d1c6;
+		background-scale: 50%;
+		#background: #fff url(/assets/images/crisp_paper_ruffles-mobile.png);
 		font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
 	}
 	.logo-img {
@@ -709,6 +712,85 @@ and (max-device-width : 480px) {
 	.app-busy-loader {
 	    top: 100px;
 	}
+	.field-container select {
+		margin-right: 10px;
+	}
+	.main-content-readable:before {
+		content: " ";
+		clear: both;
+	}
+	.main-content-readable {
+		background: #f4f4f4;
+		padding: 6px;
+		border: 1px solid #e5e1dc;
+		border-radius: 4px;
+		box-shadow: inset 0 0 2px #fafafa, 0px 1px 6px 0px rgba(0, 0, 0, 0.25);
+		margin-top: 25px;
+	}
+	.footer {
+		opacity: .7;
+	}
+	
+	.card-icons, .payment-card-info p {
+		text-align: center;
+	}
+	.field-container {
+		width: auto;
+	}
+	.pay-title-label {
+		display: none;
+	}
+	.toggle-item.toggle-active {
+		color: #d74924;
+		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+		background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+		background-color:#dfdfdf;
+	}
+	.toggle-spacer {
+		display: none;
+	}
+	.toggle-item {
+		-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+		-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+		box-shadow:inset 0px 1px 0px 0px #ffffff;
+		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+		background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+		background-color:#ededed;
+		-moz-border-radius:6px;
+		-webkit-border-radius:6px;
+		border-radius:6px;
+		border:1px solid #dcdcdc;
+		display:inline-block;
+		color:#777777;
+		font-family:arial;
+		font-size:15px;
+		font-weight:bold;
+		padding:6px 24px;
+		text-decoration:none;
+		text-shadow:1px 1px 0px #ffffff;
+		margin-top: 0 !important;
+	}
+	.toggle-item:first-child {
+		margin-right: 16px;
+	}
+	.toggle-wrapper {
+		float: none;
+		width: 100%;
+		margin-bottom: 25px;
+		text-align: center;
+	}
+	.field-container input, .field-container textarea {
+		width: 160px;
+		padding: 4px;
+	}
+	.payment-card-info {
+		margin-left: 0px;
+	}
+
+
+
 }
 
 @media only screen 
