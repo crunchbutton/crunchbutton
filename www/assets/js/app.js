@@ -188,9 +188,9 @@ App.page.restaurant = function(id) {
 		);
 
 		if (!App.config.user.id_user) {
-			$('.main-content-readable').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
+			$('.main-content-item').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
 		} else {
-			$('.main-content-readable').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
+			$('.main-content-item').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
 		}
 
 		$('.restaurant-items').append(
