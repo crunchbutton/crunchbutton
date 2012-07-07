@@ -251,7 +251,7 @@ b {
 	margin-bottom: 8px;
 }
 
-.resturant-dish-container li {
+.resturant-dish-container .dish-price {
 	color: #e3937d;
 }
 
@@ -299,6 +299,16 @@ b {
 
 .divider {
 	clear: both;
+}
+
+.divider.dots {
+	height: 1px;
+	background: url(/assets/images/bg_divider.gif);
+	opacity: .3;
+}
+
+.restaurant-payment-div {
+	margin: 10px 0 10px 0;
 }
 
 .cart-item-customize-name {
@@ -604,6 +614,10 @@ html[xmlns] .clearfix {
 
 }
 
+.resturant-dishes {
+	width: 100%;
+}
+
 
 @media only screen 
 and (max-width : 1024px) {
@@ -636,6 +650,31 @@ and (max-width : 768px) {
 	.content {
 		width: 100%;
 		padding: 5px 0 12px 0;
+	}
+	.restaurant-items {
+		width: 100%;
+		float: none;
+	}
+	.resturant-dish-container a {
+		display: block;
+		padding: 6px;
+		background: #f4e9e3;
+		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff6f4), to(#fff0ec));
+		border: 1px solid #ffd1bd;
+		border-radius: 2px;
+		margin-bottom: 4px;
+		box-shadow: inset 0px 1px 0px 0px #fff;
+	}
+	
+	.resturant-dish-container .dish-name {
+		text-decoration: underline;
+	}
+	
+	.resturant-dish-container a {
+		text-decoration: none;
+	}
+	.resturant-dish-container .dish-price {
+		float: right;
 	}
 
 	.meal-item-content {
@@ -708,35 +747,41 @@ and (max-width : 768px) {
 	.restaurant-pic {
 		height: 160px;
 		width: 100%;
+		border-radius: 4px;
+		border: 1px solid #999;
+		box-shadow: inset 0 0 0 #fafafa, 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
 	}
 	.footer {
 		margin-top: 20px;
 		text-shadow: 1px 1px 0 rgba(255,255,255,.6);
 	}
 	.restaurant-name {
-		background: rgba(255,255,255,.85);
-
-		padding: 10px;
-		font-size: 20px;
+		background: #ff3f1f;
+		border: 1px solid #ff6648;
+		padding: 6px 20px 6px 15px;
+		font-size: 16px;
 		font-weight: bold;
-		margin-right: -10px;
+		margin-left: -10px;
 		margin-top: 100px;
 		position: absolute;
 		z-index: 20;
-		box-shadow: -1px -1px 0 rgba(255,255,255,.9), 1px 1px 0 rgba(0,0,0,.1);
+		box-shadow: 1px 1px 1px rgba(0,0,0,.3);
 	}
 	.restaurant-name h1 {
 		text-align: left;
 		margin-left: 10px;
+		color: #fff;
+		text-shadow: 1px 1px 0px #e0221a;
 	}
 	.meal-item-down {
 		border: 1px solid rgba(255,40,31,.8);
 	}
 	.restaurant-pic-wrapper {
-		margin-bottom: 20px;
+		margin-bottom: 0px;
 		box-shadow: none;
 		padding: 0;
 		width: 100%;
+		float: none;
 	}	
 	.app-busy-loader {
 	    top: 100px;
@@ -754,12 +799,11 @@ and (max-width : 768px) {
 		border: 1px solid #c1c1c1;
 		border-radius: 4px;
 		box-shadow: inset 0 0 0 #fafafa, 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
-		margin-top: 25px;
+		margin-top: 20px;
 	}
 	.footer {
 		opacity: .7;
 	}
-	
 	.card-icons, .payment-card-info p {
 		text-align: center;
 	}
@@ -787,9 +831,7 @@ and (max-width : 768px) {
 		background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
 		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
 		background-color:#ededed;
-		-moz-border-radius:6px;
-		-webkit-border-radius:6px;
-		border-radius:6px;
+		border-radius: 4px;
 		border:1px solid #dcdcdc;
 		display:inline-block;
 		color:#777777;
@@ -800,6 +842,7 @@ and (max-width : 768px) {
 		text-decoration:none;
 		text-shadow:1px 1px 0px #ffffff;
 		margin-top: 0 !important;
+		float: none;
 	}
 	.toggle-item:first-child {
 		margin-right: 16px;
@@ -807,7 +850,7 @@ and (max-width : 768px) {
 	.toggle-wrapper {
 		float: none;
 		width: 100%;
-		margin-bottom: 25px;
+		margin-bottom: 15px;
 		text-align: center;
 	}
 	.field-container input, .field-container textarea {
@@ -820,8 +863,9 @@ and (max-width : 768px) {
 	.button-bottom {
 		width: 100%;
 	}
-
-
+	.restaurant-item-title:first-child {
+		margin-top: 10px;
+	}
 }
 
 @media only screen 

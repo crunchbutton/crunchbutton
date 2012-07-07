@@ -184,11 +184,12 @@ App.page.restaurant = function(id) {
 				'<div class="restaurant-items"></div>' + 
 				'<div class="cart-items"></div>' + 
 				'<div class="divider"></div>' + 
-			'</div>'
+			'</div>' + 
+			'<div class="divider dots restaurant-payment-div"></div>'
 		);
 
 		if (!App.config.user.id_user) {
-			$('.main-content-item').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
+			//$('.main-content-item').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
 		} else {
 			$('.main-content-item').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
 		}
@@ -206,16 +207,16 @@ App.page.restaurant = function(id) {
 			extras = App.restaurant.extras();
 	
 		for (var x in dishes) {
-			var dish = $('<li><a href="javascript:;" data-id_dish="' + dishes[x].id_dish + '">' + dishes[x].name + '</a> ($' + dishes[x].price + ')</li>');
+			var dish = $('<li><a href="javascript:;" data-id_dish="' + dishes[x].id_dish + '"><span class="dish-name">' + dishes[x].name + '</span><span class="dish-price">($' + dishes[x].price + ')</span></a></li>');
 			$('.resturant-dishes').append(dish);
 		}
 		
 		for (var x in sides) {
-			var side = $('<li><a href="javascript:;" data-id_side="' + sides[x].id_side + '">' + sides[x].name + '</a> ($' + sides[x].price + ')</li>');
+			var side = $('<li><a href="javascript:;" data-id_side="' + sides[x].id_side + '"><span class="dish-name">' + sides[x].name + '</span><span class="dish-price">($' + sides[x].price + ')</span></a></li>');
 			$('.resturant-sides').append(side);
 		}
 		for (var x in extras) {
-			var extra = $('<li><a href="javascript:;" data-id_extra="' + extras[x].id_extra + '">' + extras[x].name + '</a> ($' + extras[x].price + ')</li>');
+			var extra = $('<li><a href="javascript:;" data-id_extra="' + extras[x].id_extra + '"><span class="dish-name">' + extras[x].name + '</span><span class="dish-price">($' + extras[x].price + ')</span></a></li>');
 			$('.resturant-sides').append(extra);
 		}
 
@@ -236,18 +237,14 @@ App.page.restaurant = function(id) {
 			$('<div class="content-padder-before"></div>').insertBefore(dp);
 		}
 	});
+	
+	App.drawPay();
 };
 
-
-App.page.paymentinfo = function() {
+App.drawPay = function() {
 	var total = App.cart.total();
-	if (total == '0.00') {
-		App.loadRestaurant(App.restaurant.permalink);
-		return;
-	}
-	$('.content').addClass('short-meal-list');
 
-	$('.main-content-item').html(
+	$('.main-content-item').append(
 		'<div class="payment-total">Your total is $' + total + '</div>' +
 		'<form class="payment-form main-content-readable">' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
@@ -343,6 +340,18 @@ App.page.paymentinfo = function() {
 	$('[name="pay-name"]').val(App.config.user.name);
 	$('[name="pay-phone"]').val(App.config.user.phone);
 	$('[name="pay-deliver"]').val(App.config.user.address);
+
+};
+
+
+App.page.paymentinfo = function() {
+	var total = App.cart.total();
+	if (total == '0.00') {
+		App.loadRestaurant(App.restaurant.permalink);
+		return;
+	}
+	$('.content').addClass('short-meal-list');
+	App.drawCart();
 	
 
 };
