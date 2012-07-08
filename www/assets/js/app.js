@@ -245,7 +245,7 @@ App.drawPay = function() {
 	var total = App.cart.total();
 
 	$('.main-content-item').append(
-		'<div class="payment-total">Your total is $' + total + '</div>' +
+		'<div class="payment-total">Your total is <span class="cart-total">$' + total + '</span></div>' +
 		'<form class="payment-form main-content-readable">' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-info-container"></div><div class="divider"></div>' + 
@@ -702,8 +702,13 @@ App.cart = {
 				}
 			}
 		}
-		total = total * (total * (App.restaurant.tax/100));
-		return total.toFixed(2);
+		var final = total + (total * (App.restaurant.tax/100));
+
+		if (App.order['pay_type'] == 'card') {
+			final += (total * (App.order.tip/100));
+		}
+
+		return final.toFixed(2);
 	},
 	resetOrder: function() {
 		App.cart.items = {
@@ -827,6 +832,7 @@ $(function() {
 		$('.pay-toggle-credit').addClass('toggle-active');
 		$('.card-only').show();
 		App.order['pay_type'] = 'card';
+		App.cart.updateTotal();
 	});
 	
 	$('.pay-toggle-cash').live('click',function() {
@@ -834,6 +840,7 @@ $(function() {
 		$('.pay-toggle-cash').addClass('toggle-active');
 		$('.card-only').hide();
 		App.order['pay_type'] = 'cash';
+		App.cart.updateTotal();
 	});
 
 	$('.meal-item-content').live({
@@ -918,6 +925,14 @@ $(function() {
 	
 	$('.cart-item-customize-item label').live('click', function() {
 		$(this).prev('input').click();
+	});
+	
+	$('[name="pay-tip"]').live('change',function() {
+		App.order.tip = $(this).val();
+		console.log(App.order.tip);
+		var total = App.cart.total();
+		console.log(total);
+		App.cart.updateTotal();
 	});
 	
 	if (screen.width <= 480) {
