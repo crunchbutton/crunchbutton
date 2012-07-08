@@ -245,11 +245,11 @@ App.drawPay = function() {
 	var total = App.cart.total();
 
 	$('.main-content-item').append(
-		'<div class="payment-total">Your total is <span class="cart-total">$' + total + '</span></div>' +
 		'<form class="payment-form main-content-readable">' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-info-container"></div><div class="divider"></div>' + 
 		'</form>' + 
+		'<div class="payment-total">Your total is <span class="cart-total">$' + total + '</span></div>' +
 		'<button class="button-submitorder-form button-bottom"><div>Submit Order</div></button>'
 	);
 
@@ -300,8 +300,8 @@ App.drawPay = function() {
 				'<select name="pay-card-year"><option>Year</option></select><div class="divider"></div>' + 
 			'</div>' + 
 
-			'<div class="divider"></div><label>Tip</label>' + 
-			'<div class="input-item">' + 
+			'<div class="divider"></div><label class="card-only">Tip</label>' + 
+			'<div class="input-item card-only">' + 
 				'<select name="pay-tip"></select>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
