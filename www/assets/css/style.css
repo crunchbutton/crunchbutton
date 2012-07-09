@@ -525,10 +525,12 @@ html[xmlns] .clearfix {
 }
 
 .payment-total {
-	font-size: 20px;
+	margin-top: 25px;
+	margin-bottom: 10px;
+	font-size: 12px;
 	text-align: center;
 	font-weight: bold;
-	margin-bottom: 15px;
+
 }
 
 .toggle-active {

@@ -250,8 +250,9 @@ App.drawPay = function() {
 		'<form class="payment-form main-content-readable">' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-info-container"></div><div class="divider"></div>' + 
+		'<div class="payment-total">Your total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"> and tip</span>)</div>' +
 		'</form>' + 
-		'<div class="payment-total">Your total is <span class="cart-total">$' + total + '</span></div>' +
+
 		'<button class="button-submitorder-form button-bottom"><div>Submit Order</div></button>'
 	);
 
@@ -544,6 +545,11 @@ App.cart = {
 	},
 	updateTotal: function() {
 		$('.cart-total').html('$' + App.cart.total());
+		if (App.order['pay_type'] == 'card') {
+			$('.includes-tip').show();
+		} else {
+			$('.includes-tip').hide();		
+		}
 	},
 	customize: function(item) {
 		var
