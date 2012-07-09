@@ -108,8 +108,10 @@ App.loadCommunity = function(id) {
 		if (!App.community.id_community) {
 			$('.main-content-item').show();
 			$('.main-content-item').html('invalid community');
-			alert('x');
-			setTimeout(App.loadPage,100);
+
+			setTimeout(function() {
+				App.page.community('yale');
+			},500);
 			return;
 		}
 		for (var x in App.cached['Community']) {
