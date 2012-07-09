@@ -905,6 +905,15 @@ and (min-width : 768px) {
 	.restaurant-pic-wrapper {
 		margin-top: 13px;
 	}
+	.dish-price {
+		margin-left: 10px;
+	}
+	.resturant-dish-container a {
+		text-decoration: none;
+	}
+	.dish-name {
+		text-decoration: underline;
+	}
 }
 
 
@@ -935,7 +944,12 @@ and (min-width : 1024px) {
 	.meal-item:nth-child(3n+1) {
 		margin-left: 0px;
 	}
-
+	.payment-card-info {
+		margin-left: 395px;
+		font-size: 12px;
+		position: absolute;
+		margin-top: -4px;
+	}
 
 
 }

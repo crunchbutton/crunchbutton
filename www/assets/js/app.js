@@ -494,9 +494,9 @@ App.cart = {
 
 		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '" data-cart_type="' + type + '"></div>');
 		el.append('<div class="cart-button cart-button-remove"></div>');
-		if (type == 'Dish') {
+		//if (type == 'Dish') {
 			el.append('<div class="cart-button cart-button-add"></div>');
-		}
+		//}
 		el.append('<div class="cart-item-name">' + App.cache(type,item).name + '</div>');
 		
 		if (type == 'Dish' && (App.cached['Dish'][item].toppings().length || App.cached['Dish'][item].substitutions().length)) {
@@ -511,11 +511,25 @@ App.cart = {
 		App.cart.updateTotal();
 	},
 	clone: function(item) {
+	console.log(item);
 		var
 			cartid = item.attr('data-cart_id'),
-			cart = App.cart.items.dishes[cartid];
+			type = item.attr('data-cart_type'),
+			cart;
+			
+		switch (type) {
+			case 'Dish':
+				cart = App.cart.items.dishes[cartid];
+				break;
+			case 'Side':
+				cart = App.cart.items.sides[cartid];
+				break;
+			case 'Extra':
+				cart = App.cart.items.extras[cartid];
+				break;
+		}
 
-		App.cart.add('Dish',cart.id, {
+		App.cart.add(type,cart.id, {
 			toppings: cart.toppings,
 			substitutions: cart.substitutions
 		});
@@ -961,3 +975,35 @@ $(function() {
 String.prototype.capitalize = function(){
 	return this.replace( /(^|\s)([a-z])/g , function(m,p1,p2){ return p1+p2.toUpperCase(); } );
 };
+
+/*
+(function(){  
+var init = function() {  
+  var updateOrientation = function() {
+  	var html = $('.wrapper, .content, body').css('width',document.body.clientWidth + 'px');
+  	alert('asd');
+    var orientation = window.orientation;  
+  
+    switch(orientation) {  
+      case 90: case -90:  
+        orientation = 'landscape';  
+      break;  
+      default:  
+        orientation = 'portrait';  
+    }  
+  
+    // set the class on the HTML element (i.e. )  
+    document.body.parentNode.setAttribute('class', orientation);  
+  };  
+  
+  // event triggered every 90 degrees of rotation  
+  window.addEventListener('orientationchange', updateOrientation, false);  
+  
+  // initialize the orientation  
+  updateOrientation();  
+}  
+  
+window.addEventListener('DOMContentLoaded', init, false);  
+  
+})();  
+*/
