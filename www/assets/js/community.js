@@ -1,6 +1,12 @@
 var Community = function(id) {
 	this.type = 'Community';
 	var self = this;
+	
+	if (arguments[1]) {
+		complete = arguments[1];
+	} else {
+		complete = function() {};
+	}
 
 	self.restaurants = function() {
 		if (!self.__restaurants) {
@@ -13,17 +19,22 @@ var Community = function(id) {
 		return self.__restaurants;
 	}
 	
-	if (typeof(id) == 'object') {
-		for (x in id) {
-			self[x] = id[x];
+	self.finished = function(data) {
+		for (x in data) {
+			self[x] = data[x];
 		}
+		self.restaurants();
+
+		if (complete) {
+			complete();
+		}
+	}
+	
+	if (typeof(id) == 'object') {
+		self.finished(id);
 	} else {
 		App.request(App.service + 'community/' + id, function(json) {
-			for (x in json) {
-				self[x] = json[x];
-			}
-			self.restaurants();
-			App.itemLoaded(self.type);
+			self.finished(json);
 		});
 	}
 }

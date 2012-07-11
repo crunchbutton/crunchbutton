@@ -1,6 +1,14 @@
 var Restaurant = function(id) {
 	this.type = 'Restaurant';
-	var self = this;
+	var
+		self = this,
+		complete;
+	
+	if (arguments[1]) {
+		complete = arguments[1];
+	} else {
+		complete = function() {};
+	}
 
 	self.dishes = function() {
 		return self.loadType('Dish','dishes');
@@ -72,21 +80,24 @@ var Restaurant = function(id) {
 		return self['__' + data];
 	}
 	
-	if (typeof(id) == 'object') {
-		for (x in id) {
-			self[x] = id[x];
+	self.finished = function(data) {
+		for (x in data) {
+			self[x] = data[x];
 		}
 		self.dishes();
 		self.sides();
 		self.extras();
+
+		if (complete) {
+			complete();
+		}
+	}
+	
+	if (typeof(id) == 'object') {
+		self.finished(id);
 	} else {
 		App.request(App.service + '/restaurant/' + id, function(json) {
-			for (x in json) {
-				self[x] = json[x];
-			}
-			self.dishes();
-			self.sides();
-			self.extras();
+			self.finished(json);
 		});
 	}
 }

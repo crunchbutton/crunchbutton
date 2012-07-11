@@ -30,13 +30,13 @@ $(function() {
 	App.loc.lat = google.loader.ClientLocation.latitude;
 	App.loc.lon = google.loader.ClientLocation.longitude;
 
+	App.communities = {};
 	<? foreach (Community::all() as $community) : ?>
-		App.cached['Community']['<?=$community->id_community?>'] = new Community({
+		App.communities['<?=$community->permalink?>'] = {
 			<? foreach ($community->properties() as $key => $val) : ?>
 				'<?=$key?>': "<?=$val?>",
 			<? endforeach ; ?>
-		});
-		
+		};
 	<? endforeach ; ?>
 })
 </script>
@@ -58,7 +58,7 @@ $(function() {
 	<div class="wrapper">
 		<div class="nav">
 			<div class="content">
-				<div class="logo"><a href="/"><div class="logo-img"></div></a></div>
+				<div class="logo"><a href="/"><div class="logo-img"></div></a><div class="community-selector"></div></div>
 			</div>
 		</div>
 		<div class="body">

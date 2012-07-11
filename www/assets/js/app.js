@@ -9,8 +9,10 @@ if (typeof(history.pushState) === 'undefined') {
 	history.replaceState = function() { return null; }
 } else {
 	window.onpopstate = function (e) {
+		if (!App.config) return;
+
 		if (App._init) {
-			return App.loadPage();
+			setTimeout(App.loadPage,1);
 		}
 	}
 }
@@ -43,47 +45,35 @@ if (typeof(Ti) != 'undefined') {
 	};
 } else {
 	App.request = function(url, complete) {
-		var triggerCache = arguments[2] ? true : false;
 		$.getJSON(url,function(json) {
-			if (triggerCache) {
-				setTimeout(function() {
-					$('body').triggerHandler('cache-item-loaded-' + arguments[2]);
-				},10);		
-			}
 			complete(json);
 		});
 	};
 }
 
-App.itemLoaded = function(type) {
-	$('body').triggerHandler('cache-item-loaded-' + type);
-};
-
-
 // quick and dirty
 App.cache = function(type, id) {
-	var finalid, args = arguments;
-	
-	if (arguments[2]) {
-		$('body').one('cache-item-loaded-' + type, function() {
-			args[2]();
-		});
+	var finalid, args = arguments, complete;
+
+	if (args[2]) {
+		complete = args[2];
+	} else {
+		complete = function() {};
 	}
 
 	if (typeof(id) == 'object') {
-		///console.log ('storing object',type,id);
+		//console.log ('storing object',type,id);
 		App.cached[type][id.id] = id;
-		eval('App.cached[type][id.id] = new '+type+'(id)');
+		eval('App.cached[type][id.id] = new '+type+'(id,complete)');
 		finalid = id.id;
-		$('body').triggerHandler('cache-item-loaded-' + type);
 
 	} else if (!App.cached[type][id]) {
 		//console.log ('creating from network',type,id);
-		eval('App.cached[type][id] = new '+type+'(id)');
-		
+		eval('App.cached[type][id] = new '+type+'(id,complete)');
+
 	} else {
 		//console.log ('loading from cache',type,id);
-		$('body').triggerHandler('cache-item-loaded-' + type);
+		complete();
 	}
 
 	// only works sync (Ti)
@@ -104,9 +94,12 @@ App.loadPaymentinfo = function() {
 }
 
 App.loadCommunity = function(id) {
-	if (id == 'brown' || id == 'santa-monica') {
+	var onHold = ['brown','santa-monica'];
+	$('.community-select').val(id);
+
+	if (onHold.indexOf(id) != -1) {
 		$('.main-content-item').show();
-		$('.main-content-item').html('coming soon');
+		$('.main-content-item').html('<div class="soon">It\'s a pleasure serving you ' + App.communities[id].name + '. We\'ll be back bigger and better for fall semester.</div>');
 		return;
 	}
 	App.cache('Community',id, function() {
@@ -971,9 +964,23 @@ $(function() {
 		App.cart.updateTotal();
 	});
 	
+	$('.community-select').live('change',function() {
+		var loc = '/' + $(this).val();
+		App.community = null;
+		$('.main-content-item').hide();
+		history.pushState({}, loc, loc);
+		App.loadPage();
+	});
+	
 	if (screen.width <= 480) {
 		
 	}
+	
+	var select = $('<select class="community-select">');
+	for (x in App.communities) {
+		select.append('<option value="' + x + '">' + App.communities[x].name + '</option>');
+	}
+	$('.community-selector').append(select);
 
 	// load our config first (not async)
 	// @todo: encode this data into the initial request
@@ -981,7 +988,6 @@ $(function() {
 		App.config = json;
 		App._init = true;
 		App.loadPage();
-
 	});
 });
 
@@ -1039,21 +1045,43 @@ App.loc = {
 	},
 	closest: function() {
 		var closest;
-		for (x in App.cached['Community']) {
-			App.cached['Community'][x].distance = App.loc.distance({
+		for (x in App.communities) {
+			App.communities[x].distance = App.loc.distance({
 				from: {lat: App.loc.lat, lon: App.loc.lon},
-				to: {lat: parseFloat(App.cached['Community'][x].loc_lat), lon: parseFloat(App.cached['Community'][x].loc_lon)}
+				to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
 			});
-			if (!closest || App.cached['Community'][x].distance < closest.distance) {
-				closest = App.cached['Community'][x];
+			if (!closest || App.communities[x].distance < closest.distance) {
+				closest = App.communities[x];
 			}
 		}
 		return closest;
 	}
 }
 
+
+/*
+if (navigator.geolocation) {
+
+} else {
+
+}
+
+navigator.geolocation.getCurrentPosition(function(position){
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    var marker = new GMarker(new GLatLng(lat, lon));
+    
+    var jsMap = new GMap2(document.getElementById("jsMap"));
+    jsMap.addOverlay(marker);
+},function(error){
+
+});
+*/
+
 if (typeof(Number.prototype.toRad) === "undefined") {
 	Number.prototype.toRad = function() {
 		return this * Math.PI / 180;
 	}
 }
+
+
