@@ -18,8 +18,28 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
 */ ?>
+
+
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/js/jquery-ui.min.js"></script>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+google.load('maps', '2');
+$(function() {
+	App.loc.lat = google.loader.ClientLocation.latitude;
+	App.loc.lon = google.loader.ClientLocation.longitude;
+
+	<? foreach (Community::all() as $community) : ?>
+		App.cached['Community']['<?=$community->id_community?>'] = new Community({
+			<? foreach ($community->properties() as $key => $val) : ?>
+				'<?=$key?>': "<?=$val?>",
+			<? endforeach ; ?>
+		});
+		
+	<? endforeach ; ?>
+})
+</script>
 
 <script src="/assets/js/underscore-min.js"></script>
 <script src="/assets/js/app.js"></script>

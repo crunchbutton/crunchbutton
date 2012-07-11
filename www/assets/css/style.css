@@ -868,6 +868,14 @@ and (max-width : 768px) {
 	.restaurant-item-title:first-child {
 		margin-top: 10px;
 	}
+	.cart-summary {
+		height: 30px;
+		background: red;
+		position: fixed;
+		width: 100%;
+		left: 0;
+		margin-top: -9px;
+	}
 }
 
 @media only screen 
@@ -950,8 +958,6 @@ and (min-width : 1024px) {
 		position: absolute;
 		margin-top: -4px;
 	}
-
-
 }
 
 

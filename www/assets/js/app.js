@@ -46,7 +46,9 @@ if (typeof(Ti) != 'undefined') {
 		var triggerCache = arguments[2] ? true : false;
 		$.getJSON(url,function(json) {
 			if (triggerCache) {
-				$('body').triggerHandler('cache-item-loaded-' + arguments[2]);
+				setTimeout(function() {
+					$('body').triggerHandler('cache-item-loaded-' + arguments[2]);
+				},10);		
 			}
 			complete(json);
 		});
@@ -102,12 +104,17 @@ App.loadPaymentinfo = function() {
 }
 
 App.loadCommunity = function(id) {
+	if (id == 'brown' || id == 'santa-monica') {
+		$('.main-content-item').show();
+		$('.main-content-item').html('coming soon');
+		return;
+	}
 	App.cache('Community',id, function() {
 		App.community = App.cached['Community'][id];
 		console.log(App.community, id);
 		if (!App.community.id_community) {
 			$('.main-content-item').show();
-			$('.main-content-item').html('invalid community');
+			$('.main-content-item').html('just a sec...');
 
 			setTimeout(function() {
 				App.page.community('yale');
@@ -180,6 +187,7 @@ App.page.restaurant = function(id) {
 		document.title = App.restaurant.name;
 		
 		$('.main-content-item').html(
+			'<div class="cart-summary"></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
 			'<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' + 
 			'<div class="main-content-readable">' + 
@@ -384,9 +392,15 @@ App.loadPage = function() {
 	// force to yale if there isnt a place yet
 	// @todo: detect community
 	if (location.pathname == '/') {
-		loc = '/yale';
+		var closest = App.loc.closest();
+		if (closest.permalink) {
+			loc = '/' + closest.permalink;
+			path = ['',closest.permalink];
+		} else {
+			loc = '/yale';
+			path = ['','yale'];
+		}
 		history.replaceState({},loc,loc);
-		path = ['','yale'];
 	}
 
 	if (!App.community) {
@@ -1007,3 +1021,39 @@ window.addEventListener('DOMContentLoaded', init, false);
   
 })();  
 */
+
+App.loc = {
+	distance: function(params) {
+		// {from: {lat: 1, lon: 1}, to: {lat: 2, lon: 2}}
+		var R = 6371; // Radius of the earth in km
+		var dLat = (params.to.lat - params.from.lat).toRad();  // Javascript functions in radians
+
+		var dLon = (params.to.lon - params.from.lon).toRad(); 
+		var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+			Math.cos(params.from.lat.toRad()) * Math.cos(params.to.lat.toRad()) * 
+			Math.sin(dLon/2) * Math.sin(dLon/2); 
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		var d = R * c; // Distance in km
+
+		return d;
+	},
+	closest: function() {
+		var closest;
+		for (x in App.cached['Community']) {
+			App.cached['Community'][x].distance = App.loc.distance({
+				from: {lat: App.loc.lat, lon: App.loc.lon},
+				to: {lat: parseFloat(App.cached['Community'][x].loc_lat), lon: parseFloat(App.cached['Community'][x].loc_lon)}
+			});
+			if (!closest || App.cached['Community'][x].distance < closest.distance) {
+				closest = App.cached['Community'][x];
+			}
+		}
+		return closest;
+	}
+}
+
+if (typeof(Number.prototype.toRad) === "undefined") {
+	Number.prototype.toRad = function() {
+		return this * Math.PI / 180;
+	}
+}

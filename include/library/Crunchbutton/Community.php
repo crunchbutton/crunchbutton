@@ -1,6 +1,9 @@
 <?php
 
 class Crunchbutton_Community extends Cana_Table {
+	public static function all() {
+		return self::q('select community.* from community order by name');
+	}
 	public function restaurants() {
 		if (!isset($this->_restaurants)) {
 			$this->_restaurants = Restaurant::q('
