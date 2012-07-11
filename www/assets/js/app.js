@@ -877,6 +877,9 @@ $(function() {
 			$(this).addClass('meal-item-down');
 		},
 		touchstart: function() {
+			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
+				return;
+			}
 			$(this).addClass('meal-item-down');
 		}
 	});
@@ -885,6 +888,9 @@ $(function() {
 			$(this).removeClass('meal-item-down');
 		},
 		touchend: function() {
+			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
+				return;
+			}
 			$(this).removeClass('meal-item-down');
 		}
 	});
