@@ -16,13 +16,15 @@ class Crunchbutton_App extends Cana_App {
 		$params['postInitSkip'] = true;
 		switch ($_SERVER['__HTTP_HOST']) {
 			case 'crunchbutton.localhost':
-			default:
 				$params['env'] = 'local';
 				break;
 			default:
 				switch ($_SERVER['SERVER_ADDR']) {
 					case '74.207.245.57':
 						$params['env'] = 'live';
+						break;
+					default:
+						$params['env'] = 'local';
 						break;
 				}
 		}

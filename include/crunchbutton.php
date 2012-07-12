@@ -23,7 +23,7 @@ $GLOBALS['config'] = [
 		'root'				=> dirname(__FILE__).'/../',
 		'www'				=> dirname(__FILE__).'/../www/',
 		'storage'			=> dirname(__FILE__).'/../storage/',
-	],'libraries' 			=> ['Crunchbutton','Cana'],
+	],'libraries' 			=> ['Crunchbutton','Cana','Services'],
 	'alias'					=> []
 ];
 

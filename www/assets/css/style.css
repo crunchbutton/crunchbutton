@@ -645,9 +645,6 @@ and (max-device-width : 480px) {
 */
 @media only screen 
 and (max-width : 769px) {
-	.content.short-meal-list {
-		max-width: 600px;
-	}
 	.content {
 		width: 100%;
 		padding: 5px 0 12px 0;
@@ -909,6 +906,10 @@ and (max-width : 769px) {
 		float: left;
 		width: 100%;
 	}
+	
+	.content.short-meal-list {
+		max-width: 650px;
+	}
 }
 
 @media only screen 
@@ -917,6 +918,7 @@ and (max-width : 769px) {
 	.meal-item:nth-child(2n+1) {
 		margin-right: 12px;
 	}
+
 
 }
 
