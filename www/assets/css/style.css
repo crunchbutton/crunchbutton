@@ -647,9 +647,9 @@ and (max-width : 1024px) {
 	position: absolute;
 	z-index: 20;
 	box-shadow: 1px 1px 1px rgba(0,0,0,.3);
-
+	font-weight: bold;
 	text-align: left;
-	margin-left: 206px;
+	margin-left: 203px;
 	color: #fff;
 	text-shadow: 1px 1px 0px #e0221a;
 }
@@ -663,7 +663,7 @@ and (max-device-width : 480px) {
 and (max-width : 769px) {
 
 	.meal-item-tag {
-		margin-left: 198px;
+		margin-left: 191px;
 		margin-top: -72px;
 	}
 
