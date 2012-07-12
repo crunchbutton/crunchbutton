@@ -764,7 +764,7 @@ and (max-width : 768px) {
 		font-size: 16px;
 		font-weight: bold;
 		margin-left: -10px;
-		margin-top: 100px;
+		margin-top: 140px;
 		position: absolute;
 		z-index: 20;
 		box-shadow: 1px 1px 1px rgba(0,0,0,.3);
@@ -784,6 +784,8 @@ and (max-width : 768px) {
 		padding: 0;
 		width: 100%;
 		float: none;
+		padding-top: 35px;
+		background: none;
 	}	
 	.app-busy-loader {
 	    top: 100px;
@@ -869,15 +871,38 @@ and (max-width : 768px) {
 		margin-top: 10px;
 	}
 	.cart-summary {
-		height: 30px;
-		background: red;
+		height: 35px;
 		position: fixed;
+		z-index: 99;
 		width: 100%;
 		left: 0;
 		margin-top: -9px;
+		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ededed), to(#ccc));
+		border: 1px solid #aaa;
+		box-shadow:
+			inset 0 0 2px #fafafa,
+			0px 2px 5px 0px rgba(0, 0, 0, 0.25)
+		;
 	}
 	.community-selector {
 		display: none;
+	}
+	.cart-summary-icon {
+		background: url(/assets/images/cart.png) no-repeat;
+		height: 24px;
+		width: 30px;
+		margin: 5px 18px 0 10px;
+		float: left;
+		background-size: contain;
+	}
+	.cart-summary-items {
+		float: left;
+		margin-top:10px;
+		height: 15px;
+		overflow: hidden;
+	}
+	.cart-items {
+		float: left;
 	}
 }
 
@@ -934,7 +959,7 @@ and (min-width : 768px) {
 		margin: 10px 0 0 10px;
 	}
 	.community-select {
-		height: 100px;
+
 	}
 }
 

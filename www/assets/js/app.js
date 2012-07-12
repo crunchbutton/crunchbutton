@@ -180,7 +180,7 @@ App.page.restaurant = function(id) {
 		document.title = App.restaurant.name;
 		
 		$('.main-content-item').html(
-			'<div class="cart-summary"></div>' +
+			'<div class="cart-summary"><div class="cart-summary-icon"></div><div class="cart-summary-items"></div></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
 			'<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' + 
 			'<div class="main-content-readable">' + 
@@ -571,6 +571,47 @@ App.cart = {
 		} else {
 			$('.includes-tip').hide();		
 		}
+
+		var
+			totalItems = {},
+			key, name, text = '';
+		$('.cart-summary-items').html('');
+
+		for (var x in App.cart.items) {
+			for (var xx in App.cart.items[x]) {
+				switch (x) {
+					case 'dishes':
+						key = 'Dish';
+						break;
+
+					case 'sides':
+						key = 'Side';
+						break;
+						
+					case 'extras':
+						key = 'Extra';
+						break;
+				}
+
+				name = App.cached[key][App.cart.items[x][xx].id].name;
+				if (totalItems[name]) {
+					totalItems[name]++;
+				} else {
+					totalItems[name] = 1;
+				}
+			}
+		}
+
+		for (x in totalItems) {
+			text += x;
+			if (totalItems[x] > 1) {
+				text += '&nbsp;(' + totalItems[x] + ')';
+			}
+			text += ',&nbsp;&nbsp;';
+		}
+
+		$('.cart-summary-items').html(text.substr(0,text.length-13));
+		
 	},
 	customize: function(item) {
 		var
@@ -984,7 +1025,7 @@ $(function() {
 	
 	var select = $('<select class="community-select">');
 	for (x in App.communities) {
-		select.append('<option value="' + x + '">' + App.communities[x].name + '</option>');
+		select.append('<option value="' + x + '"' + (x == 'yale' ? ' selected' : '') + '>' + App.communities[x].name + '</option>');
 	}
 	$('.community-selector').append(select);
 
