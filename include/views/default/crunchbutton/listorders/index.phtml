@@ -1,0 +1,74 @@
+<table class="list-orders">
+	<tr>
+		<th class="list-order-header">Restaurant</th>
+		<th class="list-order-header">Order</th>
+		<th class="list-order-header">Price</th>
+		<th class="list-order-header">Total</th>
+		<th class="list-order-header">Pay Type</th>
+		<th class="list-order-header">Order Type</th>
+		<th class="list-order-header">Customer</th>
+	</tr>
+	<? foreach (Order::recent() as $order) : ?>
+		<tr class="list-order-item">
+			<td><?=$order->restaurant()->name?></td>
+			<td style="width: 300px; white-space: normal;">
+				<ul>
+				<? foreach ($order->order() as $item) : ?>
+					<li>
+						<?=$item->name?>
+						<? if ($item->_toppings) : ?>
+						<ul>
+						<? foreach ($item->_toppings as $topping) : ?>
+							<li><?=$topping->name?></li>
+						<? endforeach ; ?>
+						</ul>
+						<? endif ; ?>
+						<? if ($item->_substitutions) : ?>
+						<ul>
+						<? foreach ($item->_substitutions as $topping) : ?>
+							<li><?=$topping->name?></li>
+						<? endforeach ; ?>
+						</ul>
+						<? endif ; ?>
+					</li>
+				<? endforeach ; ?>
+				</ul>
+			</td>
+			<td>
+				<table>
+					<tr>
+						<th>Price</th>
+						<td>$<?=$order->price?></td>
+					</tr>
+					<tr>
+						<th>Tax</th>
+						<td>$<?=$order->tax?></td>
+					</tr>
+					<tr>
+						<th>Tip</th>
+						<td><?=$order->tip ? $order->tip.'%' : ''?></td>
+					</tr>
+				</table>
+			</td>
+			<td>$<?=$order->final_price?></td>
+			<td><?=$order->pay_type?></td>
+			<td><?=$order->delivery_type?></td>
+			<td>
+				<table>
+					<tr>
+						<th>Name</th>
+						<td><?=$order->name?></td>
+					</tr>
+					<tr>
+						<th>Phone</th>
+						<td><?=$order->phone?></td>
+					</tr>
+					<tr>
+						<th>Address</th>
+						<td><?=$order->address?></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	<? endforeach ; ?>
+</table>

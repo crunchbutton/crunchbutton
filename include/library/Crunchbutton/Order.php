@@ -91,6 +91,10 @@ class Crunchbutton_Order extends Cana_Table {
 		return Restaurant::o($this->id_restaurant);
 	}
 	
+	public function user() {
+		return User::o($this->id_user);
+	}
+	
 	public function transaction() {
 		return $this->_txn;
 	}
@@ -121,6 +125,46 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 				break;
 		}
+	}
+	
+	public static function recent() {
+		return self::q('select * from `order` order by `date`');
+	}
+	
+	public function order() {
+		if (!isset($this->_order)) {
+			$order = json_decode($this->order,'array');
+
+			foreach ($order as $type => $typeItem) {
+				switch ($type) {
+					case 'dishes':
+						foreach ($typeItem as $item) {
+							$dish = Dish::o($item['id']);
+							foreach ($item['toppings'] as $topping => $bleh) {
+								$dish->_toppings[] = Topping::o($topping);
+							}
+							foreach ($item['toppings'] as $topping => $bleh) {
+								$dish->_substitution[] += Substitution::o($topping);
+							}
+							$orderItems[] = $dish;
+						}		
+						break;
+					case 'sides':
+						foreach ($typeItem as $item) {
+							$orderItems[] = Side::o($item['id']);
+						}
+						break;
+					case 'extras':
+						foreach ($typeItem as $item) {
+							$orderItems[] = Extra::o($item['id']);
+						}					
+						break;
+				}
+			}
+			$this->_order = $orderItems;
+		}
+		
+		return $this->_order;
 	}
 
 	public function __construct($id = null) {
