@@ -638,6 +638,22 @@ and (max-width : 1024px) {
 	}
 }
 
+.meal-item-tag {
+	background: #ff3f1f;
+	border: 1px solid #ff6648;
+	padding: 5px 20px 5px 15px;
+	font-size: 12px;
+	margin-top: -80px;
+	position: absolute;
+	z-index: 20;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.3);
+
+	text-align: left;
+	margin-left: 206px;
+	color: #fff;
+	text-shadow: 1px 1px 0px #e0221a;
+}
+
 /*
 @media only screen 
 and (min-device-width : 320px) 
@@ -645,6 +661,12 @@ and (max-device-width : 480px) {
 */
 @media only screen 
 and (max-width : 769px) {
+
+	.meal-item-tag {
+		margin-left: 198px;
+		margin-top: -72px;
+	}
+
 	.content {
 		width: 100%;
 		padding: 5px 0 12px 0;
@@ -1071,3 +1093,5 @@ th {
 	margin-left: 20px;
 	line-height: 14px;
 }
+
+

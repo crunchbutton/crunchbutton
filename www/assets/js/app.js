@@ -159,6 +159,10 @@ App.page.community = function(id) {
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
 				.append('<h3 class="meal-food">Top Item: ' + rs[x].top().name + '</h3>');
 
+			if (rs[x].delivery != '1') {
+				restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
+			}
+
 			restaurant
 				.append('<div class="meal-item-spacer"></div>')
 				.append(restaurantContent);
