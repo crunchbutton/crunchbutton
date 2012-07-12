@@ -185,7 +185,7 @@ App.page.restaurant = function(id) {
 			'<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' + 
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-items"></div>' + 
-				'<div class="cart-items"></div>' + 
+				'<div class="cart-items"><div class="restaurant-item-title">your order</div><div class="cart-items-content"></div></div>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
 			'<div class="divider dots restaurant-payment-div"></div>'
@@ -512,7 +512,7 @@ App.cart = {
 		el.append('<div class="divider"></div>');
 		el.hide();
 
-		$('.cart-items').append(el);
+		$('.cart-items-content').append(el);
 		el.fadeIn();
 		
 		App.cart.updateTotal();
@@ -786,7 +786,7 @@ App.cart = {
 			sides: {},
 			extras: {},
 		};
-		$('.cart-items, .cart-total').html('');
+		$('.cart-items-content, .cart-total').html('');
 	},
 	reloadOrder: function() {
 		var cart = App.cart.items;
@@ -993,6 +993,10 @@ $(function() {
 		touchend: function() {
 			$(this).removeClass('button-bottom-click');
 		}
+	});
+	
+	$('.cart-summary').live('click', function() {
+		
 	});
 	
 	$('.cart-customize-check').live('change',function() {

@@ -645,7 +645,7 @@ and (min-device-width : 320px)
 and (max-device-width : 480px) {
 */
 @media only screen 
-and (max-width : 768px) {
+and (max-width : 769px) {
 	.content.short-meal-list {
 		max-width: 600px;
 	}
@@ -657,7 +657,7 @@ and (max-width : 768px) {
 		width: 100%;
 		float: none;
 	}
-	.resturant-dish-container a {
+	.resturant-dish-container a, .cart-item {
 		display: block;
 		padding: 6px;
 		background: #f4e9e3;
@@ -778,13 +778,17 @@ and (max-width : 768px) {
 	.meal-item-down {
 		border: 1px solid rgba(255,40,31,.8);
 	}
+	.restaurant-pic-wrapper:before {
+		content: " ";
+		height: 35px;
+		display: block;
+	}
 	.restaurant-pic-wrapper {
 		margin-bottom: 0px;
 		box-shadow: none;
 		padding: 0;
 		width: 100%;
 		float: none;
-		padding-top: 35px;
 		background: none;
 	}	
 	.app-busy-loader {
@@ -883,6 +887,7 @@ and (max-width : 768px) {
 			inset 0 0 2px #fafafa,
 			0px 2px 5px 0px rgba(0, 0, 0, 0.25)
 		;
+		cursor: pointer;
 	}
 	.community-selector {
 		display: none;
@@ -903,12 +908,13 @@ and (max-width : 768px) {
 	}
 	.cart-items {
 		float: left;
+		width: 100%;
 	}
 }
 
 @media only screen 
 and (min-width : 633px)
-and (max-width : 768px) {
+and (max-width : 769px) {
 	.meal-item:nth-child(2n+1) {
 		margin-right: 12px;
 	}
@@ -916,7 +922,7 @@ and (max-width : 768px) {
 }
 
 @media only screen 
-and (min-width : 768px) {
+and (min-width : 769px) {
 	.content {
 		margin: 0 auto;
 	}
@@ -961,6 +967,9 @@ and (min-width : 768px) {
 	.community-select {
 
 	}
+	.cart-summary {
+		display: none;
+	}
 }
 
 
@@ -1002,14 +1011,6 @@ and (min-width : 1024px) {
 	}
 }
 
-
-
-.cart-items:before {
-	content: "Your order";
-	font-weight: bold;
-	margin-bottom: 8px;
-	display: block;
-}
 
 span.customStyleSelectBox {
 	font-size: 20px;
