@@ -1095,6 +1095,7 @@ App.loc = {
 		return d;
 	},
 	closest: function() {
+		return App.communities['yale'];
 		var closest;
 		for (x in App.communities) {
 			App.communities[x].distance = App.loc.distance({
