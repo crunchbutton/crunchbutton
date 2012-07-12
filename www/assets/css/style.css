@@ -263,7 +263,6 @@ b {
 .cart-items {
 	width: 310px;
 	float: right;
-	margin-top: 25px;
 	clear: right;
 }
 
@@ -947,6 +946,7 @@ and (min-width : 769px) {
 	}
 	.restaurant-pic-wrapper {
 		margin-top: 13px;
+		margin-bottom: 25px;
 	}
 	.dish-price {
 		margin-left: 10px;
@@ -958,7 +958,7 @@ and (min-width : 769px) {
 		text-decoration: underline;
 	}
 	.restaurant-items {
-		margin-top: 80px;
+
 	}
 	
 	.community-selector {

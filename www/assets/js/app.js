@@ -94,7 +94,7 @@ App.loadPaymentinfo = function() {
 }
 
 App.loadCommunity = function(id) {
-	var onHold = ['brown','santa-monica'];
+	var onHold = ['santa-monica'];
 	$('.community-select').val(id);
 
 	if (onHold.indexOf(id) != -1) {
@@ -182,7 +182,7 @@ App.page.restaurant = function(id) {
 		$('.main-content-item').html(
 			'<div class="cart-summary"><div class="cart-summary-icon"></div><div class="cart-summary-items"></div></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
-			'<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' + 
+			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-items"></div>' + 
 				'<div class="cart-items"><div class="restaurant-item-title">your order</div><div class="cart-items-content"></div></div>' + 
@@ -874,6 +874,9 @@ App.test = {
 			}
 			$('.main-content-item').html(c);
 		});
+	},
+	cart: function() {
+		alert(JSON.stringify(App.cart.items));
 	}
 };
 
@@ -1095,18 +1098,24 @@ App.loc = {
 		return d;
 	},
 	closest: function() {
-		return App.communities['yale'];
-		var closest;
-		for (x in App.communities) {
-			App.communities[x].distance = App.loc.distance({
-				from: {lat: App.loc.lat, lon: App.loc.lon},
-				to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
-			});
-			if (!closest || App.communities[x].distance < closest.distance) {
-				closest = App.communities[x];
+		try {
+			App.loc.lat = google.loader.ClientLocation.latitude;
+			App.loc.lon = google.loader.ClientLocation.longitude;
+	
+			var closest;
+			for (x in App.communities) {
+				App.communities[x].distance = App.loc.distance({
+					from: {lat: App.loc.lat, lon: App.loc.lon},
+					to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
+				});
+				if (!closest || App.communities[x].distance < closest.distance) {
+					closest = App.communities[x];
+				}
 			}
+			return closest;
+		} catch (e) {
+			return App.communities['yale'];
 		}
-		return closest;
 	}
 }
 
