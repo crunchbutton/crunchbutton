@@ -73,10 +73,12 @@ $(function() {
 			<a href="/help">Help</a>
 			<a href="/support">Support</a>
 			<a href="/legal">Legal</a>
-			<a href="javascript:App.test.card();">TEST: card</a>
-			<a href="javascript:App.test.logout();">TEST: logout</a>
-			<a href="javascript:App.test.orders();">TEST: orders</a>
-			<a href="javascript:App.test.cart();">TEST: cart</a>
+			<? if (c::env() == 'beta') : ?>
+				<a href="javascript:App.test.card();">TEST: card</a>
+				<a href="javascript:App.test.logout();">TEST: logout</a>
+				<a href="javascript:App.test.orders();">TEST: orders</a>
+				<a href="javascript:App.test.cart();">TEST: cart</a>
+			<? endif ; ?>
 			<br />
 			<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
 		</div>
