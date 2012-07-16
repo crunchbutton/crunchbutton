@@ -18,9 +18,19 @@ class Crunchbutton_App extends Cana_App {
 			case 'crunchbutton.localhost':
 				$params['env'] = 'local';
 				break;
+			case 'crunchr.co':
+				$params['env'] = 'live';
+				break;
+			case 'beta.crunchr.co':
+			case 'alpha.crunchr.co':
+			case 'test.crunchr.co':
+				$params['env'] = 'beta';
+				break;
+
 			default:
 				switch ($_SERVER['SERVER_ADDR']) {
 					case '74.207.245.57':
+					case '_IP_':
 						$params['env'] = 'live';
 						break;
 					default:

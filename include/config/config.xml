@@ -10,6 +10,13 @@
             <host>localhost</host>
             <prefix></prefix>
         </live>
+        <beta>
+            <user>crunch</user>
+            <pass>***REMOVED***</pass>
+            <db>crunchbutton</db>
+            <host>localhost</host>
+            <prefix></prefix>
+        </beta>
 		<local>
 			<user>root</user>
 			<pass>root</pass>
