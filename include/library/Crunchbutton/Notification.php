@@ -1,7 +1,7 @@
 <?php
 
 class Crunchbutton_Notification extends Cana_Table {
-	public function send() {
+	public function send(Crunchbutton_Order $order) {
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
@@ -24,26 +24,23 @@ class Crunchbutton_Notification extends Cana_Table {
 				break;
 
 			case 'phone':
-				/*
-				$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-				$call = $twilio->account->calls->create(
-					c::config()->twilio->{$env}->outgoing,
-					'+1'.$num,
-					'http://crunchr.co/api/recieved'
-				);
-				*/
-				//$twilio->account->sms_messages->create(c::config()->twilio->{$env}->outgoing, '+1'.$num, 'this is a test');
-				
-//				$token = new Services_Twilio_Capability(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-//				$token->allowClientOutgoing(c::config()->twilio->{$env}->sid);
-//				http://twimlets.com/message?Message%5B0%5D=Hello%20World
 
-				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+ 				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoing,
 					'+1'.$num,
-					'http://twimlets.com/message?Message%5B0%5D=Hello%20World'
+					'http://beta.crunchr.co/api/order/34/say'
+//					'http://twimlets.com/message?Message='.urlencode($msg)
 				);
+
+				$log = new Notification_Log;
+				$log->id_notification = $this->id_notification;
+				$log->status = $call->status;
+				$log->type = 'twilio';
+				$log->remote = $call->uri;
+				$log->id_order = $order->id_order;
+				$log->save();
+
 				break;
 
 			case 'email':

@@ -68,11 +68,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return false;
 	}
 	
-	public function notification() {
-		if (!isset($this->_notification)) {
-			$this->_notification = Notification::q('select * from notification where id_notification="'.$this->id_notification.'"');
+	public function notifications() {
+		if (!isset($this->_notifications)) {
+			$this->_notifications = Notification::q('select * from notification where id_restaurant="'.$this->id_restaurant.'"');
 		}
-		return $this->_notification;
+		return $this->_notifications;
 	}
 	
 	public function defaultOrder() {

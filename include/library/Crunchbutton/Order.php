@@ -166,6 +166,24 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		return $this->_order;
 	}
+	
+	public function notify() {
+		foreach ($this->restaurant()->notifications() as $n) {
+			$n->send($this);
+		}
+	}
+	
+	public function message($type) {
+		switch ($type) {
+			case 'phone':
+				$msg = 'This is an automated order.  A customer ordered some food. Name. '.$this->name.'.  Phone number. '.preg_replace('/[^\d.]/','',$this->phone).'.  Customer paying by '.$this->pay_type.'.';
+				if ($this->delivery_type == 'delivery') {
+					$msg .= ' Deliver to '.$this->address;				
+				}
+				break;
+		}
+		return $msg;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
