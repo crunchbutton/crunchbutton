@@ -1165,5 +1165,3 @@ if (typeof(Number.prototype.toRad) === "undefined") {
 		return this * Math.PI / 180;
 	}
 }
-
-
