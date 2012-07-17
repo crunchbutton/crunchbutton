@@ -1066,6 +1066,10 @@ $(function() {
 		App._init = true;
 		App.loadPage();
 	});
+	
+	$('.cart-summary').live('click', function() {
+		$('body').scrollTop($('.cart-items').position().top-80);
+	});
 });
 
 // trash
