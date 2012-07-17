@@ -898,14 +898,19 @@ and (max-width : 769px) {
 		z-index: 99;
 		width: 100%;
 		left: 0;
-		margin-top: -9px;
-		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ededed), to(#ccc));
+		top: 43px;
+
+		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #ccc) );
+		background:-moz-linear-gradient( center top, #ededed 5%, #ccc 100% );
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ccc');
+
 		border: 1px solid #aaa;
 		box-shadow:
 			inset 0 0 2px #fafafa,
 			0px 2px 5px 0px rgba(0, 0, 0, 0.25)
 		;
 		cursor: pointer;
+
 	}
 	.community-selector {
 		display: none;

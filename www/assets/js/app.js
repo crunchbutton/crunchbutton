@@ -423,7 +423,6 @@ App.loadPage = function() {
 
 	var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
 	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
-	console.log('^\/(restaurant|)(' + App.community.permalink + ')/');
 	// retaurant only
 
 	if (restaurantRegex.test(url)) {
