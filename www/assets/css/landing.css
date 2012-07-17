@@ -145,21 +145,22 @@ and (max-width : 1024px) {
 and (max-width : 500px) {
 	.logo {
 		width: 250px;
-		margin-top: 30px;
+		margin-top: 15px;
 	}
 	.tagline {
 		width: 230px;
-		margin-top: 15px;
+		margin-top: 10px;
 	}
 	.cake {
-		margin-top: 40px;
+		margin-top: 35px;
 		width: 100px;
 	}
 	.desc {
-		margin-top: 20px;
+		margin-top: 16px;
 	}
 	p {
 		font-size: 14px;
 		line-height: 20px;
+		padding: 4px;
 	}
 }
