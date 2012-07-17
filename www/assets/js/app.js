@@ -1139,6 +1139,9 @@ App.loc = {
 					closest = App.communities[x];
 				}
 			}
+			if (closest.distance > 10) {
+				location.href = '/landing';
+			}
 			return closest;
 		} catch (e) {
 			return App.communities['yale'];

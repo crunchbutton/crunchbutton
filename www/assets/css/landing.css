@@ -1,3 +1,16 @@
+
+
+@font-face {
+    font-family: 'Museo Slab';
+    src: url('/assets/fonts/museo_slab_500-webfont.eot');
+    src: url('/assets/fonts/museo_slab_500-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/assets/fonts/museo_slab_500-webfont.woff') format('woff'),
+         url('/assets/fonts/museo_slab_500-webfont.ttf') format('truetype'),
+         url('/assets/fonts/museo_slab_500-webfont.svg#MuseoSlab500Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -64,9 +77,89 @@ a {
 }
 
 body {
-	background: url(/assets/images/landing-bg-tile.gif);
+	background: url(/assets/images/landing-bg-tile.gif) repeat-x;
 }
 
 .wrapper {
 	background: url(/assets/images/landing-bg.gif);
+	min-height: 922px;
+}
+
+.content {
+	background: url(/assets/images/landing-home.jpg) no-repeat;
+	background-position: top center;
+	width: 1024px;
+	margin: 0 auto;
+	min-height: 900px;
+}
+
+
+p {
+	font-family: Museo Slab, Times New Roman, serif;
+	max-width: 700px;
+	text-shadow: 1px 0 3px rgba(80,17,12,.5);
+	color: #fff;
+	font-size: 20px;
+	line-height: 25px;
+
+}
+
+.dotted {
+	border-top: 1px dotted rgba(255,0,0,.4);
+	border-bottom: 1px dotted rgba(255,255,255,.1);
+	height: 0px;
+	width: 80%;
+	margin: 0 auto;
+}
+
+.logo {
+	margin-top: 70px;
+}
+
+.tagline {
+	margin-top: 23px;
+}
+
+.desc {
+	margin-top: 40px;
+}
+.cake {
+	margin-top: 60px;
+}
+
+a {
+	font-family: Museo Slab, Times New Roman, serif;
+	color: #fff;
+	text-shadow: 1px 0 3px rgba(80,17,12,.5);
+	text-decoration: none;
+}
+
+@media only screen 
+and (max-width : 1024px) {
+	.content {
+		width: 100%;
+	}
+}
+
+@media only screen 
+and (max-width : 500px) {
+	.logo {
+		width: 250px;
+		margin-top: 30px;
+	}
+	.tagline {
+		width: 230px;
+		margin-top: 15px;
+	}
+	.cake {
+		margin-top: 40px;
+		width: 100px;
+	}
+	.desc {
+		margin-top: 20px;
+	}
+	p {
+		font-size: 14px;
+		line-height: 20px;
+	}
 }
