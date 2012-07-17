@@ -914,7 +914,7 @@ and (max-width : 769px) {
 	}
 	.community-selector {
 		position: fixed;
-		top: 7px;
+		top: 8px;
 		right: 10px;
 		width: 45px;
 	}
@@ -927,19 +927,27 @@ and (max-width : 769px) {
 		background-size: contain;
 		color: rgba(0,0,0,.01);
 	}
+	.cart-summary {
+		width: 100%;
+		white-space: nowrap;
+	}
 	.cart-summary-icon {
 		background: url(/assets/images/cart.png) no-repeat;
 		height: 24px;
 		width: 30px;
 		margin: 5px 18px 0 10px;
-		float: left;
 		background-size: contain;
+		float: left;
 	}
 	.cart-summary-items {
-		float: left;
-		margin-top:10px;
-		height: 15px;
+		margin-top: 11px;
+		height: 18px;
 		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		width: 320px;
+
+		float: left;
 	}
 	.cart-items {
 		float: left;
