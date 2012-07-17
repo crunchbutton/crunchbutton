@@ -405,6 +405,10 @@ App.loadPage = function() {
 			loc = '/' + $.cookie('community');
 
 		} else if (closest.permalink) {
+			if (closest.distance > 10) {
+				location.href = '/landing';
+				return;
+			}
 			loc = '/' + closest.permalink;
 
 		} else {
@@ -1138,9 +1142,6 @@ App.loc = {
 				if (!closest || App.communities[x].distance < closest.distance) {
 					closest = App.communities[x];
 				}
-			}
-			if (closest.distance > 10) {
-				location.href = '/landing';
 			}
 			return closest;
 		} catch (e) {
