@@ -406,7 +406,7 @@ App.loadPage = function() {
 
 		} else if (closest.permalink) {
 			if (closest.distance > 10) {
-				location.href = '/landing';
+				location.href = '/hello';
 				return;
 			}
 			loc = '/' + closest.permalink;
