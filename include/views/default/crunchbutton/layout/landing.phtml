@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<title><?=$this->title ? $this->title : 'Crunchbutton'?></title>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
+
+<link rel="stylesheet" type="text/css" href="/assets/css/landing.css">
+<link rel="shortcut icon" href="/favicon.ico">
+
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="nav">
+			<div class="content">
+				<div class="logo"><a href="/"><div class="logo-img"></div></a><div class="community-selector"></div></div>
+				<div class="config-icon"></div>
+			</div>
+		</div>
+		<div class="body">
+			<div class="content">
+				<div class="main-content">
+					<div class="main-content-item">
+						<?=$this->content?>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="divider"></div>
+		<div class="footer">
+			<a href="/help">Help</a>
+			<a href="/support">Support</a>
+			<a href="/legal">Legal</a>
+			<? if (c::env() == 'beta') : ?>
+				<a href="javascript:App.test.card();">TEST: card</a>
+				<a href="javascript:App.test.logout();">TEST: logout</a>
+				<a href="javascript:App.test.orders();">TEST: orders</a>
+				<a href="javascript:App.test.cart();">TEST: cart</a>
+			<? endif ; ?>
+			<br />
+			<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
+		</div>
+	</div>
+</body>
+</html>
