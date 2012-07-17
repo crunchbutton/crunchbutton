@@ -4,6 +4,9 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		$order = Order::o(c::getPagePiece(2));
+		if (!$order->id_order) {
+			$order = Order::uuid(c::getPagePiece(2));
+		}
 		switch (c::getPagePiece(3)) {
 			case 'say':
 				$say = 'tester';

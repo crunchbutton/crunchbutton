@@ -31,11 +31,34 @@ var Restaurant = function(id) {
 		}
 	}
 	
+	self.dateFromItem = function(item) {
+		var
+			theTime = item.split(':'),
+			theDate = new Date();
+		theDate.setTimezone(self.timezone);
+		theDate.setHours(theTime[0]);
+		theDate.setMinutes(theTime[1]);
+		return theDate;
+	}
+	
 	self.open = function() {
-		var hours = self._hours;
-		var today = new Date();  
-		var offset = -(today.getTimezoneOffset()/60);  
-		alert(offset);
+		var
+			hours = self._hours,
+			today = new Date(),
+			offset = -(today.getTimezoneOffset()/60);
+			
+		today.setTimezone(self.timezone);
+
+		for (x in hours) {
+			var
+				open = self.dateFromItem(hours[x].time_open),
+				close = self.dateFromItem(hours[x].time_close);
+			if (today >= open && today <= close) {
+				return true;
+			}
+		}
+
+		return false;
 		/*
 		var today = new DateTime('today', new DateTimeZone($this->timezone));
 		var totay = new Date(Date.UTC(year, month, day, hour, minute, second))

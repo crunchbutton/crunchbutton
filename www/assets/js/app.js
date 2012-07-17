@@ -55,23 +55,30 @@ if (typeof(Ti) != 'undefined') {
 
 // quick and dirty
 App.cache = function(type, id) {
-	var finalid, args = arguments, complete;
+	var finalid, args = arguments, complete, partComplete;
 
-	if (args[2]) {
-		complete = args[2];
-	} else {
-		complete = function() {};
+	complete = args[2] ? args[2] : function() {};
+
+	partComplete = function() {
+		if (this.uuid) {
+			App.cached[type][id.uuid] = this;
+		}
+		if (this.permalink) {
+			App.cached[type][id.permalink] = this;
+		}
+		complete.call(this);
 	}
 
 	if (typeof(id) == 'object') {
 		//console.log ('storing object',type,id);
-		App.cached[type][id.id] = id;
-		eval('App.cached[type][id.id] = new '+type+'(id,complete)');
+		//App.cached[type][id.id] = id;
+
+		eval('App.cached[type][id.id] = new '+type+'(id,partComplete)');
 		finalid = id.id;
 
 	} else if (!App.cached[type][id]) {
 		//console.log ('creating from network',type,id);
-		eval('App.cached[type][id] = new '+type+'(id,complete)');
+		eval('App.cached[type][id] = new '+type+'(id,partComplete)');
 
 	} else {
 		//console.log ('loading from cache',type,id);
@@ -129,10 +136,6 @@ App.loadCommunity = function(id) {
 		}
 		App.loadPage();
 	});
-};
-
-App.page.order = function(data) {
-	$('.main-content-item').html(JSON.stringify(data));
 };
 
 App.page.community = function(id) {
@@ -356,6 +359,9 @@ App.drawPay = function() {
 
 };
 
+App.page.order = function(id) {
+	$('.main-content-item').html(JSON.stringify(data));
+};
 
 App.page.paymentinfo = function() {
 	var total = App.cart.total();
@@ -429,6 +435,7 @@ App.loadPage = function() {
 
 	var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
 	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
+	var orderRegex = new RegExp('^\/order\//', 'i');
 	// retaurant only
 
 	if (restaurantRegex.test(url)) {
@@ -457,6 +464,10 @@ App.loadPage = function() {
 
 		case restaurantRegex.test(url):
 			App.page.restaurant(path[1]);
+			break;
+
+		case orderRegex.test(url):
+			App.page.order(path[1]);
 			break;
 
 		default:
@@ -762,7 +773,7 @@ App.cart = {
 
 				} else {
 					order.cardChanged = false;
-					App.page.order(json);
+					App.cached('Order',json);
 				}
 				App.busy.unBusy();
 			}

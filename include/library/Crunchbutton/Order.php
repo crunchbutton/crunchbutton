@@ -87,6 +87,10 @@ class Crunchbutton_Order extends Cana_Table {
 		return true;
 	}
 	
+	public static function uuid($uuid) {
+		return self::q('select * from `order` where uuid="'.$uuid.'"');
+	}
+	
 	public function restaurant() {
 		return Restaurant::o($this->id_restaurant);
 	}
@@ -183,6 +187,14 @@ class Crunchbutton_Order extends Cana_Table {
 				break;
 		}
 		return $msg;
+	}
+	
+	public function exports() {
+		$out = $this->properties();
+		unset($out['id_user']);
+		unset($out['uuid']);
+		$out['user'] = $this->user()->uuid;
+		return $out;
 	}
 
 	public function __construct($id = null) {
