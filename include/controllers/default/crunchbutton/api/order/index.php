@@ -5,8 +5,18 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		switch ($this->method()) {
 			case 'get':
 				$order = Order::o(c::getPagePiece(2));
+
 				if ($order->id_order) {
-					echo $order->json();
+					$say = 'this is a fucking test';
+					switch (c::getPagePiece(3)) {
+						case 'say':
+							echo '<?xml version="1.0" encoding="UTF-8"?><Response><Say voice="woman" loop="3">'.htmlspecialchars($say).'</Say></Response>';
+							break;
+						default:
+							echo $order->json();
+							break;
+					}
+
 				} else {
 					echo json_encode(['error' => 'invalid object']);
 				}

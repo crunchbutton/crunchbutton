@@ -46,10 +46,18 @@
     	</live>
     </stripe>
 	<twilio>
-		<sid>_KEY_</sid>
-		<token>_KEY_</token>
-		<hostname>_DOMAIN_</hostname>
-		<outgoing>+1_PHONE_</outgoing>
+		<live>
+			<sid>_KEY_</sid>
+			<token>_KEY_</token>
+			<hostname>_DOMAIN_</hostname>
+			<outgoing>+1_PHONE_</outgoing>
+		</live>
+		<dev>
+			<sid>_KEY_</sid>
+			<token>_KEY_</token>
+			<outgoing>_PHONE_</outgoing>
+		</dev>
+		<testnumber>_PHONE_</testnumber>
 	</twilio>
 	<phaxio>
     	<key>_KEY_</key>

@@ -100,7 +100,7 @@ class Cana_Table extends Cana_Model { //
 				}
 
 				if (!$node) {
-					$query = 'SELECT * FROM ' . $this->table() . ' WHERE '.$this->idVar().'="'.$this->db()->escape($id).'" LIMIT 1';
+					$query = 'SELECT * FROM `' . $this->table() . '` WHERE `'.$this->idVar().'`="'.$this->db()->escape($id).'" LIMIT 1';
 					$node = $this->db()->get($query)->get(0);
 				}				
 
