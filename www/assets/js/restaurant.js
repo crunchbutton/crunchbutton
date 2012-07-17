@@ -89,7 +89,7 @@ var Restaurant = function(id) {
 		self.extras();
 
 		if (complete) {
-			complete();
+			complete.call(self);
 		}
 	}
 	

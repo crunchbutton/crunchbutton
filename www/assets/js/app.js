@@ -4,18 +4,20 @@ if (typeof(console) == 'undefined') {
 	};
 }
 
-if (typeof(history.pushState) === 'undefined') {
-	history.pushState = function() { return null; }
-	history.replaceState = function() { return null; }
-} else {
-	window.onpopstate = function (e) {
-		if (!App.config) return;
 
-		if (App._init) {
-			setTimeout(App.loadPage,1);
-		}
+var History = window.History;
+
+History.Adapter.bind(window,'statechange',function() {
+	var State = History.getState();
+	History.log(State.data, State.title, State.url);
+
+	if (!App.config) return;
+
+	if (App._init) {
+		App.loadPage();
 	}
-}
+});
+    
 
 var App = {
 	service: '/api/',
@@ -73,7 +75,7 @@ App.cache = function(type, id) {
 
 	} else {
 		//console.log ('loading from cache',type,id);
-		complete();
+		complete.call(App.cached[type][id]);
 	}
 
 	// only works sync (Ti)
@@ -83,14 +85,14 @@ App.cache = function(type, id) {
 
 App.loadRestaurant = function(id) {
 	var loc = '/' + App.community.permalink + '/' + id;
-	history.pushState({}, loc, loc);
-	App.loadPage();
+	History.pushState({}, loc, loc);
+	//App.loadPage();
 };
 
 App.loadPaymentinfo = function() {
 	var loc = '/' + App.community.permalink + '/' + App.restaurant.permalink + '/order';
-	history.pushState({}, loc, loc);
-	App.loadPage();
+	History.pushState({}, loc, loc);
+	//App.loadPage();
 }
 
 App.loadCommunity = function(id) {
@@ -102,18 +104,22 @@ App.loadCommunity = function(id) {
 		$('.main-content-item').html('<div class="soon">It\'s a pleasure serving you ' + App.communities[id].name + '. We\'ll be back bigger and better for fall semester.</div>');
 		return;
 	}
+
 	App.cache('Community',id, function() {
-		App.community = App.cached['Community'][id];
+		App.community = this;
 		console.log(App.community, id);
 		if (!App.community.id_community) {
 			$('.main-content-item').show();
 			$('.main-content-item').html('just a sec...');
 
 			setTimeout(function() {
-				App.page.community('yale');
+				// @todo: fix this so it works
+				//History.replaceState({},'/yale','/yale');
 			},500);
 			return;
 		}
+		
+		// force build permalink ids
 		for (var x in App.cached['Community']) {
 			App.cached['Community'][App.cached['Community'][x].permalink] = App.cached['Community'][x];
 			App.cached['Community'][App.cached['Community'][x].id_community] = App.cached['Community'][x];
@@ -127,7 +133,6 @@ App.loadCommunity = function(id) {
 
 App.page.order = function(data) {
 	$('.main-content-item').html(JSON.stringify(data));
-
 };
 
 App.page.community = function(id) {
@@ -179,8 +184,9 @@ App.page.restaurant = function(id) {
 		if (App.restaurant && App.restaurant.permalink != id) {
 			App.cart.resetOrder();
 		}
-		App.restaurant = App.cached['Restaurant'][id];
-
+		
+		// @todo: fix it so it just pulls from this
+		App.restaurant = this;
 		document.title = App.restaurant.name;
 		
 		$('.main-content-item').html(
@@ -366,12 +372,20 @@ App.page.paymentinfo = function() {
 
 App.loadPage = function() {
 
+	var
+		url = History.getState().url.replace(/http:\/\/.*?\/(.*)/,'$1'), //location.pathname
+		path = url.split('/');
+
+	console.log(url,path);
+
 	// only fires on chrome
-	if (!App.config) return;
+	if (!App.config) {
+		return;
+	}
 	
-	// non app methods
+	// non app methods. just display the page.
 	switch (true) {
-		case /^\/help|legal|support|pay/.test(location.pathname):
+		case /^help|legal|support|pay/.test(url):
 			return;
 			break;
 	}
@@ -382,43 +396,43 @@ App.loadPage = function() {
 	} else {
 		App._pageInit = true;
 	}
-	
-	// page path handler
-	var path = location.pathname.split('/');
+
 	
 	// force to yale if there isnt a place yet
 	// @todo: detect community
-	if (location.pathname == '/') {
+	if (!url) {
 		var closest = App.loc.closest();
 		if (closest.permalink) {
 			loc = '/' + closest.permalink;
-			path = ['',closest.permalink];
+			path = [closest.permalink];
 		} else {
 			loc = '/yale';
-			path = ['','yale'];
+			path = ['yale'];
 		}
-		history.replaceState({},loc,loc);
+		History.replaceState({},loc,loc);
+		return;
 	}
 
 	if (!App.community) {
 		// force load of community reguardless of landing (this contains everything we need)
-		App.loadCommunity(path[1]);
+		console.log('loading',path[0])
+		App.loadCommunity(path[0]);
 		
 		return;
 	}
 
 	var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
-	var restaurantRegex = new RegExp('^\/(restaurant|)(' + App.community.permalink + ')/', 'i');
-	
+	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
+	console.log('^\/(restaurant|)(' + App.community.permalink + ')/');
 	// retaurant only
 
-	if (restaurantRegex.test(location.pathname)) {
+	if (restaurantRegex.test(url)) {
 
-		var restaurant = App.cached['Restaurant'][path[2]];
+		var restaurant = App.cached['Restaurant'][path[1]];
 		var orderRegex = new RegExp('^\/' + App.community.permalink + '\/' + restaurant.permalink + '\/order$', 'i');
 
 		switch (true) {
-			case orderRegex.test(location.pathname):
+			case orderRegex.test(url):
 				App.restaurant = restaurant;
 				App.page.paymentinfo();
 				setTimeout(scrollTo, 80, 0, 1);
@@ -429,15 +443,15 @@ App.loadPage = function() {
 	}
 
 	switch (true) {
-		case communityRegex.test(location.pathname):
+		case communityRegex.test(url):
 			setTimeout(scrollTo, 80, 0, 1);
 			$('.main-content-item').show();
 			App.page.community(App.community.id);
 			return;
 			break;
 
-		case restaurantRegex.test(location.pathname):
-			App.page.restaurant(path[2]);
+		case restaurantRegex.test(url):
+			App.page.restaurant(path[1]);
 			break;
 
 		default:
@@ -1026,8 +1040,8 @@ $(function() {
 		var loc = '/' + $(this).val();
 		App.community = null;
 		$('.main-content-item').hide();
-		history.pushState({}, loc, loc);
-		App.loadPage();
+		History.pushState({}, loc, loc);
+		//App.loadPage();
 	});
 	
 	if (screen.width <= 480) {

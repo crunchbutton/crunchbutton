@@ -26,7 +26,7 @@ var Community = function(id) {
 		self.restaurants();
 
 		if (complete) {
-			complete();
+			complete.call(self);
 		}
 	}
 	

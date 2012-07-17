@@ -193,7 +193,7 @@ class Cana_App extends Cana_Model {
 		$pageClass = explode('/',$pageClass);
 		
 		foreach ($pageClass as $posiblePage) {
-			$posiblePages[] = 'Controller'.$fullPageNext.'_'.$posiblePage;
+			$posiblePages[] = 'Controller'.$fullPageNext.'_'.str_replace('.','_',$posiblePage);
 			$fullPageNext .= '_'.$posiblePage;
 		}	
 		$posiblePages = array_reverse($posiblePages);
