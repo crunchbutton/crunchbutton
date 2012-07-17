@@ -184,8 +184,7 @@ App.page.restaurant = function(id) {
 		if (App.restaurant && App.restaurant.permalink != id) {
 			App.cart.resetOrder();
 		}
-		
-		// @todo: fix it so it just pulls from this
+
 		App.restaurant = this;
 		document.title = App.restaurant.name;
 		
@@ -402,13 +401,16 @@ App.loadPage = function() {
 	// @todo: detect community
 	if (!url) {
 		var closest = App.loc.closest();
-		if (closest.permalink) {
+		if ($.cookie('community')) {
+			loc = '/' + $.cookie('community');
+
+		} else if (closest.permalink) {
 			loc = '/' + closest.permalink;
-			path = [closest.permalink];
+
 		} else {
 			loc = '/yale';
-			path = ['yale'];
 		}
+
 		History.replaceState({},loc,loc);
 		return;
 	}
@@ -1037,6 +1039,9 @@ $(function() {
 	
 	$('.community-select').live('change',function() {
 		var loc = '/' + $(this).val();
+		
+		$.cookie('community', $(this).val(), { expires: new Date(3000,01,01), path: '/', });
+		
 		App.community = null;
 		$('.main-content-item').hide();
 		History.pushState({}, loc, loc);
@@ -1048,8 +1053,9 @@ $(function() {
 	}
 	
 	var select = $('<select class="community-select">');
+	var selected = $.cookie('community') ? $.cookie('community') : 'yale';
 	for (x in App.communities) {
-		select.append('<option value="' + x + '"' + (x == 'yale' ? ' selected' : '') + '>' + App.communities[x].name + '</option>');
+		select.append('<option value="' + x + '"' + (x == selected ? ' selected' : '') + '>' + App.communities[x].name + '</option>');
 	}
 	$('.community-selector').append(select);
 
@@ -1136,25 +1142,23 @@ App.loc = {
 	}
 }
 
-
 /*
-if (navigator.geolocation) {
+try {
+	if (navigator.geolocation) {
+	
+	navigator.geolocation.getCurrentPosition(function(position){
+	    var lat = position.coords.latitude;
+	    var lon = position.coords.longitude;
 
-} else {
-
-}
-
-navigator.geolocation.getCurrentPosition(function(position){
-    var lat = position.coords.latitude;
-    var lon = position.coords.longitude;
-    var marker = new GMarker(new GLatLng(lat, lon));
-    
-    var jsMap = new GMap2(document.getElementById("jsMap"));
-    jsMap.addOverlay(marker);
-},function(error){
-
-});
+	},function(error){
+	
+	});
+	
+	}
+} catch (e) {}
 */
+
+
 
 if (typeof(Number.prototype.toRad) === "undefined") {
 	Number.prototype.toRad = function() {
