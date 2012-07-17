@@ -1049,6 +1049,12 @@ and (min-width : 1024px) {
 	.meal-item:nth-child(3n+1) {
 		margin-left: 0px;
 	}
+	.short-meal-list .meal-item {
+		margin-left: 0;
+	}
+	.short-meal-list .meal-item:nth-child(2n+2) {
+		margin-left: 16px;
+	}
 	.payment-card-info {
 		margin-left: 395px;
 		font-size: 12px;
