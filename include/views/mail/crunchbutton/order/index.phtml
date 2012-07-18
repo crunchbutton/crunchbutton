@@ -13,6 +13,7 @@
 		<td>Item</td>
 		<td>Price</td>
 	</thead>
+
 	<? foreach ($order->order() as $item) : ?>
 		<tr>
 			<td>1</td>
@@ -34,6 +35,14 @@
 			<td><?=number_format($cartPrice,2)?></td>
 		</tr>
 	<? endforeach ; ?>
+	
+	<? if ($order->notes) : ?>
+		<tr>
+			<td>NOTES</td>
+			<td><?=nl2br(strip_tags($order->notes))?></td>
+			<td></td>
+		</tr>
+	<? endif ; ?>
 
 	<tr class="class">
 		<td></td>

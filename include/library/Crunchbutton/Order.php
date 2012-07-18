@@ -84,6 +84,8 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->id_user = $this->_user->id_user;
 		$this->date = date('Y-m-d H:i:s');
 		$this->save();
+		
+		$this->notify();
 
 		return true;
 	}
@@ -198,11 +200,35 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function message($type) {
+		foreach ($order->order() as $item) {
+			$food .= $item->name.' ';
+			if ($item->_toppings || $item->_substitutions) {
+				$food .= 'with ';
+			}
+			if ($item->_toppings) {
+				foreach ($item->_toppings as $topping) {
+					$food .= $topping->name.', ';
+				}
+			}
+			if ($item->_substitutions) {
+				foreach ($item->_substitutions as $topping) {
+					$food .= $topping->name.', ';
+				}
+			}
+		}
+
 		switch ($type) {
-			case 'phone':
-				$msg = 'This is an automated order.  A customer ordered some food. Name. '.$this->name.'.  Phone number. '.preg_replace('/[^\d.]/','',$this->phone).'.  Customer paying by '.$this->pay_type.'.';
+			case 'sms':
+				$msg = $this->name.' ordered '.$this->delivery_type.' paying by '.$this->pay_type.'. '.$food.'.  phone: '.preg_replace('/[^\d.]/','',$this->phone).'.';
 				if ($this->delivery_type == 'delivery') {
-					$msg .= ' Deliver to '.$this->address;				
+					$msg .= ' address: '.$this->address;
+				}
+				break;
+
+			case 'phone':
+				$msg = 'This is an automated order. A customer ordered '.$food.'. Name. '.$this->name.'.  Phone number. '.preg_replace('/[^\d.]/','',$this->phone).'.  Customer paying by '.$this->pay_type.'.';
+				if ($this->delivery_type == 'delivery') {
+					$msg .= ' Deliver to '.$this->address;
 				}
 				break;
 		}

@@ -3,7 +3,8 @@
 class Crunchbutton_Notification extends Cana_Table {
 	public function send(Crunchbutton_Order $order) {
 
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		//$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = 'dev';
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
 
 		switch ($this->type) {
@@ -29,7 +30,7 @@ class Crunchbutton_Notification extends Cana_Table {
 				$twilio->account->sms_messages->create(
 					c::config()->twilio->{$env}->outgoing,
 					'+1'.$num,
-					'this is a test'
+					$order->message('sms')
 				);
 				break;
 
@@ -53,6 +54,9 @@ class Crunchbutton_Notification extends Cana_Table {
 				break;
 
 			case 'email':
+				$mail = new Email_Order([
+					'order' => $order
+				]);
 				break;
 		}	
 	}
