@@ -257,8 +257,10 @@ App.page.restaurant = function(id) {
 
 			App.drawPay();
 			$('.payment-form').hide();
+		} else {
+			App.drawPay();
 		}
-		
+
 		var total = App.cart.updateTotal();
 	});
 
