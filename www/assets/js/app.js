@@ -125,15 +125,7 @@ App.loadCommunity = function(id) {
 			},500);
 			return;
 		}
-		
-		// force build permalink ids
-		for (var x in App.cached['Community']) {
-			App.cached['Community'][App.cached['Community'][x].permalink] = App.cached['Community'][x];
-			App.cached['Community'][App.cached['Community'][x].id_community] = App.cached['Community'][x];
-		}
-		for (var x in App.cached['Restaurant']) {
-			App.cached['Restaurant'][App.cached['Restaurant'][x].permalink] = App.cached['Restaurant'][x];
-		}
+
 		App.loadPage();
 	});
 };
@@ -360,7 +352,13 @@ App.drawPay = function() {
 };
 
 App.page.order = function(id) {
-	$('.main-content-item').html(JSON.stringify(data));
+	App.cache('Order', id, function() {
+		if (App.justCompleted) {
+			App.justCompleted = false;
+		}
+		$('.main-content-item').html(this.uuid);
+	});
+
 };
 
 App.page.paymentinfo = function() {
@@ -774,6 +772,9 @@ App.cart = {
 				} else {
 					order.cardChanged = false;
 					App.cached('Order',json);
+					App.justCompleted = true;
+					var loc = '/order/' + json.uuid;
+					History.pushState({},loc,loc);
 				}
 				App.busy.unBusy();
 			}

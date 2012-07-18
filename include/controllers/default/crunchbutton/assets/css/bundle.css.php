@@ -1,7 +1,7 @@
 <?
 
-class Controller_assets_css_bundle_css extends Cana_Controller {
+class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBundle {
 	public function init() {
-		// bundle all the css assets
+		$this->serve($this->assets('css'));
 	}
 }
