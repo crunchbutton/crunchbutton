@@ -116,17 +116,18 @@ App.loadCommunity = function(id) {
 		App.community = this;
 		console.log(App.community, id);
 		if (!App.community.id_community) {
+		
+			App.cache('Community','yale', function() {
+				App.community = this;
+				App.loadPage();
+			});
 			$('.main-content-item').show();
 			$('.main-content-item').html('just a sec...');
 
-			setTimeout(function() {
-				// @todo: fix this so it works
-				//History.replaceState({},'/yale','/yale');
-			},500);
 			return;
+		} else {
+			App.loadPage();
 		}
-
-		App.loadPage();
 	});
 };
 
@@ -198,7 +199,7 @@ App.page.restaurant = function(id) {
 		if (!App.config.user.id_user) {
 			//$('.main-content-item').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
 		} else {
-			$('.main-content-item').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
+//			$('.main-content-item').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
 		}
 
 		$('.restaurant-items').append(
@@ -234,18 +235,33 @@ App.page.restaurant = function(id) {
 		}
 
 		if (App.config.user.id_user) {
+
 			var dp = $('<div class="delivery-payment-info content-padder"></div>')
-				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label><br /><a href="javascript:;">' + (App.config.user.phone ? App.config.user.phone : '<i>no phone # provied</i>') + '</a></div>')
-				.append('<div class="dp-display-payment dp-display-item"><label>Your are paying:</label><br /><span class="cart-total">$0.00</span> and <a href="javascript:;">10% tip</a> by <a href="javascript:;">card</a></div>')
-				.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</a></div>')
-				.append('<div class="divider"></div>');
+				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label><br /><a href="javascript:;">' + (App.config.user.phone ? App.config.user.phone : '<i>no phone # provied</i>') + '</a></div>');
+			var paying = $('<div class="dp-display-payment dp-display-item"><label>Your are paying:</label><br /><span class="cart-total">$0.00</span></div>');
+			if (App.config.user.pay_type == 'card') {
+				paying.append('&nbsp;and <a href="javascript:;">10% tip</a> by <a href="javascript:;">card</a>');
+			} else {
+				paying.append('&nbsp;using <a href="javascript:;">cash</a>');			
+			}
+			dp.append(paying);
+			if (App.config.user.deliver_type == 'delivery') {
+				dp.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</a></div>');
+			} else {
+				dp.append('<div class="dp-display-address dp-display-item"><label>For takeout:</label><br /><a href="javascript:;"><i>change</i></a></div>');			
+			}
+			dp.append('<div class="divider"></div>');
 	
 			$('.main-content-item').append(dp);
 			$('<div class="content-padder-before"></div>').insertBefore(dp);
+
+			App.drawPay();
+			$('.payment-form').hide();
 		}
+		
+		var total = App.cart.updateTotal();
 	});
-	
-	App.drawPay();
+
 };
 
 App.drawPay = function() {
@@ -356,7 +372,28 @@ App.page.order = function(id) {
 		if (App.justCompleted) {
 			App.justCompleted = false;
 		}
-		$('.main-content-item').html(this.uuid);
+		$('.content').addClass('short-meal-list');
+		$('.main-content-item').html(
+			'<div class="content-padder-before"></div>' +
+			'<div class="delivery-payment-info content-padder"></div>'
+		);
+		$('.delivery-payment-info').html(
+			'<span class="order-thanks-message">Your order has been sent!</span>' + 
+			'<br /><br />' + 
+			'Total: $' + parseInt(this.price).toFixed(2) +
+			'<br />'
+		);
+
+		if (this.delivery_type == 'delivery') {
+			$('.delivery-payment-info').append('Delivered to ' + this.address + '<br />');
+		} else {
+			$('.delivery-payment-info').append('For pickup<br />');		
+		}
+		if (this.pay_type == 'card') {
+			$('.delivery-payment-info').append('Paid by card<br />');
+		} else {
+			$('.delivery-payment-info').append('Paid using cash<br />');
+		}
 	});
 
 };
@@ -433,13 +470,13 @@ App.loadPage = function() {
 
 	var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
 	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
-	var orderRegex = new RegExp('^\/order\//', 'i');
+	var orderRegex = new RegExp('^order\/', 'i');
+
 	// retaurant only
-
+	/*
 	if (restaurantRegex.test(url)) {
-
 		var restaurant = App.cached['Restaurant'][path[1]];
-		var orderRegex = new RegExp('^\/' + App.community.permalink + '\/' + restaurant.permalink + '\/order$', 'i');
+//		var orderRegex = new RegExp('^\/' + App.community.permalink + '\/' + restaurant.permalink + '\/order$', 'i');
 
 		switch (true) {
 			case orderRegex.test(url):
@@ -451,6 +488,7 @@ App.loadPage = function() {
 				break;
 		}
 	}
+	*/
 
 	switch (true) {
 		case communityRegex.test(url):
@@ -722,7 +760,7 @@ App.cart = {
 		if (read) {
 			App.config.user.name = $('[name="pay-name"]').val();
 			App.config.user.phone = $('[name="pay-phone"]').val();
-			if (App.order['delivery_type'] == 'deliver') {
+			if (App.order['delivery_type'] == 'delivery') {
 				App.config.user.address = $('[name="pay-deliver"]').val();
 			}
 			App.order.tip = $('[name="pay-tip"]').val();
@@ -771,7 +809,7 @@ App.cart = {
 
 				} else {
 					order.cardChanged = false;
-					App.cached('Order',json);
+					App.cache('Order',json);
 					App.justCompleted = true;
 					var loc = '/order/' + json.uuid;
 					History.pushState({},loc,loc);
@@ -1013,7 +1051,8 @@ $(function() {
 	});
 	
 	$('.button-deliver-payment, .dp-display-item a').live('click',function() {
-		App.loadPaymentinfo();
+		$('.payment-form').show();
+		$('.delivery-payment-info, .content-padder-before').hide();
 	});
 	
 	$('.button-bottom').live({

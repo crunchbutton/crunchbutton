@@ -8,10 +8,20 @@ class Crunchbutton_Notification extends Cana_Table {
 
 		switch ($this->type) {
 			case 'fax':
+				$mail = new Email_Order([
+					'order' => $order
+				]);
+
+				$temp = tmpfile();
+				file_put_contents($temp, $mail->message());
+				die($temp);
+
 				$fax = new Phaxio([
 					'to' => $this->value,
-					'file' => $file
+					'file' => $temp
 				]);
+
+				//unlink($temp);
 				break;
 
 			case 'sms':

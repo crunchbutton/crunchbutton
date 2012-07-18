@@ -76,7 +76,7 @@ $(function() {
 			<a href="/help">Help</a>
 			<a href="/support">Support</a>
 			<a href="/legal">Legal</a>
-			<? if (c::env() == 'beta') : ?>
+			<? if (c::env() == 'beta' || c::env() == 'local') : ?>
 				<a href="javascript:App.test.card();">TEST: card</a>
 				<a href="javascript:App.test.logout();">TEST: logout</a>
 				<a href="javascript:App.test.orders();">TEST: orders</a>

@@ -337,6 +337,7 @@ b {
 	width: 310px;
 	margin: 0 auto;
 	margin-top: 25px;
+	display: block;
 	height: 45px;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fb422e), to(#fb2418));
 	border: 1px solid #ae4939;
@@ -965,8 +966,6 @@ and (max-width : 769px) {
 	.meal-item:nth-child(2n+1) {
 		margin-right: 12px;
 	}
-
-
 }
 
 @media only screen 
@@ -1126,3 +1125,7 @@ th {
 }
 
 
+.order-thanks-message {
+	font-size: 15px;
+	font-weight: bold;
+}

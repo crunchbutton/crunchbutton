@@ -7,6 +7,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		if (!$order->id_order) {
 			$order = Order::uuid(c::getPagePiece(2));
 		}
+
 		switch (c::getPagePiece(3)) {
 			case 'say':
 				$say = 'tester';
@@ -19,7 +20,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						
 		switch ($this->method()) {
 			case 'get':
-
+				$order = $order->get(0);
 				if ($order->id_order) {
 					$say = 'this is a test';
 					echo $order->json();
@@ -31,13 +32,14 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'post':
-
+				$order = new Order;
 				$charge = $order->process($this->request());
 				if ($charge === true) {
 					echo json_encode([
 						'id_user' => c::auth()->session()->id_user,
 						'txn' => $order->txn,
-						'final_price' => $order->final_price
+						'final_price' => $order->final_price,
+						'uuid' => (new Order($order->id_order))->uuid
 					]);
 				} else {
 					echo json_encode(['status' => 'false', 'errors' => $charge]);

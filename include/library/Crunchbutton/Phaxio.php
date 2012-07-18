@@ -3,7 +3,6 @@
 /* ghetto verion */
 class Crunchbutton_Phaxio {
 	public function __construct($params = []) {
-		
 		$cmd = 'curl https://api.phaxio.com/v1/send '
 			.'-F "to='.$params['to'].'" '
 			.'-F "filename=@'.$params['file'].'"'

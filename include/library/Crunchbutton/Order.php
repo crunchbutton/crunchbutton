@@ -82,6 +82,7 @@ class Crunchbutton_Order extends Cana_Table {
 		c::auth()->session()->id_user = $this->_user->id_user;
 		
 		$this->id_user = $this->_user->id_user;
+		$this->date = date('Y-m-d H:i:s');
 		$this->save();
 
 		return true;
@@ -101,6 +102,13 @@ class Crunchbutton_Order extends Cana_Table {
 	
 	public function transaction() {
 		return $this->_txn;
+	}
+	
+	public function date() {
+		if (!isset($this->_date)) {
+			$this->_date = new DateTime($this->date, new DateTimeZone($this->restaurant()->timezone));
+		}
+		return $this->_date;
 	}
 	
 	public function verifyPayment() {
@@ -144,11 +152,15 @@ class Crunchbutton_Order extends Cana_Table {
 					case 'dishes':
 						foreach ($typeItem as $item) {
 							$dish = Dish::o($item['id']);
-							foreach ($item['toppings'] as $topping => $bleh) {
-								$dish->_toppings[] = Topping::o($topping);
+							if ($item['toppings']) {
+								foreach ($item['toppings'] as $topping => $bleh) {
+									$dish->_toppings[] = Topping::o($topping);
+								}
 							}
-							foreach ($item['toppings'] as $topping => $bleh) {
-								$dish->_substitution[] += Substitution::o($topping);
+							if ($item['substitutions']) {
+								foreach ($item['substitutions'] as $topping => $bleh) {
+									$dish->_substitution[] += Substitution::o($topping);
+								}
 							}
 							$orderItems[] = $dish;
 						}		
@@ -169,6 +181,14 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		
 		return $this->_order;
+	}
+	
+	public function tip() {
+		return number_format($this->price * ($this->tip/100),2);
+	}
+	
+	public function tax() {
+		return number_format($this->price * ($this->tax/100),2);
 	}
 	
 	public function notify() {
@@ -192,7 +212,6 @@ class Crunchbutton_Order extends Cana_Table {
 	public function exports() {
 		$out = $this->properties();
 		unset($out['id_user']);
-		unset($out['uuid']);
 		unset($out['id']);
 		unset($out['id_order']);
 		$out['user'] = $this->user()->uuid;

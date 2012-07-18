@@ -9,11 +9,11 @@
  */
 
 
-require_once Cana::config()->dirs->library.'PEAR/Mail.php';
-require_once Cana::config()->dirs->library.'PEAR/Mail/mime.php';
-require_once Cana::config()->dirs->library.'PEAR/Mail/sendmail.php';
-require_once Cana::config()->dirs->library.'PEAR/Mail/RFC822.php';
-require_once Cana::config()->dirs->library.'PEAR/Mail/mimePart.php';
+require_once 'Mail.php';
+require_once 'Mail/mime.php';
+require_once 'Mail/sendmail.php';
+require_once 'Mail/RFC822.php';
+require_once 'Mail/mimePart.php';
 
 class Cana_Email extends Cana_Model {
 
