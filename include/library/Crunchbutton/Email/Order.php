@@ -6,12 +6,10 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 	
 	public function __construct($params) {
 		
-		$params['toEmail'] 				= '_EMAIL';
-		$params['toName'] 				= 'TREST';	
-		$params['subject'] 				= 'Contact';		
-		$params['fromEmail'] 			= 'ubertest@arzynik.com';
-		$params['replyTo']				= 'replytome@arzynik.com';
-		$params['fromName'] 			= 'TRESTER';
+		$params['to'] 				= $params['email'];
+		$params['subject'] 				= 'Customer Order';		
+		$params['from'] 			= 'Crunchbutton <devin@_DOMAIN_>';
+		$params['reply']				= 'replytome@arzynik.com';
 
 		$this->buildView($params);
 		$this->view()->subject		= $params['subject'];
@@ -19,6 +17,7 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 		$this->view()->message	= $params['message'];
 		
 		$params['messageHtml']			= $this->view()->render('order/index',['display' => true, 'set' => ['order' => $params['order']]]);
+
 		parent::__construct($params);				
 	}
 }
