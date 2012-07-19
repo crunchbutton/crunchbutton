@@ -245,6 +245,8 @@ App.page.restaurant = function(id) {
 
 		if (App.cart.hasItems()) {
 			App.cart.reloadOrder();
+		} else if (App.config.user.defaults[App.restaurant.id_restaurant]) {
+			App.cart.loadOrder(App.config.user.defaults[App.restaurant.id_restaurant]);		
 		} else {
 			App.cart.loadOrder(App.restaurant.defaultOrder());
 		}

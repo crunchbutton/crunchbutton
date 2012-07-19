@@ -88,11 +88,14 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		$this->notify();
 		
-		$defaultOrder = new Restaurant_DefaultOrder;
-		$defaultOrder->id_user = $this->id_user;
-		$defaultOrder->id_restaurant = $this->id_restaurant;
-		$defaultOrder->config = json_encode($params['cart']);
-		$defaultOrder->save();
+		$def = json_encode($params['cart']);
+		if ($def != $this->restaurant()->defaultOrder()->config) {
+			$defaultOrder = new Restaurant_DefaultOrder;
+			$defaultOrder->id_user = $this->id_user;
+			$defaultOrder->id_restaurant = $this->id_restaurant;
+			$defaultOrder->config = $def;
+			$defaultOrder->save();
+		}
 
 		return true;
 	}

@@ -37,7 +37,10 @@ class Crunchbutton_User extends Cana_Table {
 	
 	public function exports() {
 		$out = $this->properties();
-		$out['defaults'] = $this->defaults();
+		foreach ($this->defaults() as $default) {
+			$out['defaults'][$default->id_restaurant] = $default->exports();
+		}
+		
 		return $out;
 	}
 
