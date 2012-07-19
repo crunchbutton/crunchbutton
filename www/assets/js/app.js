@@ -1074,7 +1074,7 @@ $(function() {
 
 	$('.meal-item-content').live({
 		mousedown: function() {
-			if (navigator.userAgent.toLowerCase().indexOf('ios') > -1) {
+			if (navigator.userAgent.toLowerCase().indexOf('ios') > -1 || navigator.userAgent.toLowerCase().indexOf('android') > -1) {
 				return;
 			}
 			$(this).addClass('meal-item-down');
@@ -1088,7 +1088,7 @@ $(function() {
 		},
 		touchstart: function(e) {
 			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-				return;
+				//return;
 			}
 			App.startX = event.touches[0].pageX;
 			App.startY = event.touches[0].pageY;
@@ -1101,7 +1101,7 @@ $(function() {
 		},
 		touchend: function(e) {
 			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-				return;
+				//return;
 			}
 			
 			var maxDistance = 10;
