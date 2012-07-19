@@ -17,20 +17,28 @@
 	<? foreach ($order->order() as $item) : ?>
 		<tr>
 			<td>1</td>
-			<td><?=$item->name?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<? $cartPrice = $item->price; ?>
-				<? if ($item->_toppings) : ?>
-					<? foreach ($item->_toppings as $topping) : ?>
-						<? $cartPrice += $topping->price; ?>
-						<?=$topping->name?>, 
-					<? endforeach ; ?>
-				<? endif ; ?>
-				<? if ($item->_substitutions) : ?>
-					<? foreach ($item->_substitutions as $topping) : ?>
-						<? $cartPrice += $topping->price; ?>
-						<?=$topping->name?>
-					<? endforeach ; ?>
-				<? endif ; ?>
+			<td><?
+				$food = $item->name;
+				$cartPrice = $item->price;
+				if ($item->_substitutions || $item->_toppings) {
+					$food .= '&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
+				}
+				if ($item->_toppings) {
+					foreach ($item->_toppings as $topping) {
+						$cartPrice += $topping->price;
+						$food .= $topping->name.', ';
+					}
+					$food = substr($food, 0, -2);
+				}
+				if ($item->_substitutions) {
+					foreach ($item->_substitutions as $topping) {
+						$cartPrice += $topping->price;
+						$food .= $topping->name.', ';
+					}
+					$food = substr($food, 0, -2);
+				}
+				?>
+				<?=$food?>
 			</td>
 			<td><?=number_format($cartPrice,2)?></td>
 		</tr>

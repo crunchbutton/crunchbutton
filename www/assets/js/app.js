@@ -44,7 +44,7 @@ var App = {
 	order: {
 		cardChanged: false,
 		pay_type: 'card',
-		delivery_type: 'deliver',
+		delivery_type: 'delivery',
 		tip: '10'
 	},
 	_init: false,
@@ -372,8 +372,8 @@ App.drawPay = function() {
 	} else {
 		$('.pay-toggle-credit').click();
 	}
-	
-	if (App.order['pay_type'] == 'takeout') {
+
+	if (App.order['delivery_type'] == 'takeout') {
 		$('.delivery-toggle-takeout').click();
 	} else {
 		$('.delivery-toggle-delivery').click();
@@ -782,11 +782,14 @@ App.cart = {
 
 		var order = {
 			cart: App.cart.items,
-			tip: App.order.tip ? App.order.tip : '10',
 			pay_type: App.order['pay_type'],
 			delivery_type: App.order['delivery_type'],
 			restaurant: App.restaurant.id
 		};
+		
+		if (order.pay_type == 'card') {
+			order.tip = App.order.tip ? App.order.tip : '10';
+		}
 
 		if (read) {
 			order.address = App.config.user.address;
@@ -1173,6 +1176,10 @@ $(function() {
 	// @todo: encode this data into the initial request and update as needed
 	var haveConfig = function(json) {
 		App.config = json;
+		if (App.config.user) {
+			App.order['pay_type'] = App.config.user['pay_type'];
+			App.order['delivery_type'] = App.config.user['delivery_type'];
+		}
 		App._init = true;
 		App.loadPage();
 	};
