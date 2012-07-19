@@ -250,7 +250,8 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function que() {
-		exec('nohup '.c::config()->dirs->root.'cli/notify.php '.$this->id_order.' > /dev/null 2>&1 &');
+		//exec('nohup '.c::config()->dirs->root.'cli/notify.php '.$this->id_order.' > /dev/null 2>&1 &');
+		exec('nohup '.c::config()->dirs->root.'cli/notify.php '.$this->id_order.' &> /dev/null');
 	}
 	
 	public function message($type) {

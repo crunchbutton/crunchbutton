@@ -48,12 +48,14 @@ var Restaurant = function(id) {
 			offset = -(today.getTimezoneOffset()); // @todo: ensure this works on positive tz
 
 		for (x in hours) {
-			console.log(hours);
-			var
-				open = self.dateFromItem(hours[x][0], offset),
-				close = self.dateFromItem(hours[x][1], offset);
-			if (today >= open && today <= close) {
-				return true;
+			for (xx in hours[x]) {
+				console.log(hours[x]);
+				var
+					open = self.dateFromItem(hours[x][xx][0], offset),
+					close = self.dateFromItem(hours[x][xx][1], offset);
+				if (today >= open && today <= close) {
+					return true;
+				}
 			}
 		}
 
