@@ -154,7 +154,7 @@ App.page.community = function(id) {
 		document.title = 'Crunchbutton - ' + App.community.name;
 
 		$('.main-content-item').html(
-			'<div class="home-tagline"><h1>one click food ordering</h1></div>' + 
+			'<div class="home-tagline"><h1>streamlined food ordering</h1></div>' + 
 			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
 		);
 
