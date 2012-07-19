@@ -11,11 +11,15 @@ class Crunchbutton_Order extends Cana_Table {
 				case 'dishes':
 					foreach ($typeItem as $item) {
 						$total += Dish::o($item['id'])->price;
-						foreach ($item['toppings'] as $topping => $bleh) {
-							$total += Topping::o($topping)->price;
+						if ($item['toppings']) {
+							foreach ($item['toppings'] as $topping => $bleh) {
+								$total += Topping::o($topping)->price;
+							}
 						}
-						foreach ($item['toppings'] as $topping => $bleh) {
-							$total += Substitution::o($topping)->price;
+						if ($item['substitutions']) {
+							foreach ($item['substitutions'] as $topping => $bleh) {
+								$total += Substitution::o($topping)->price;
+							}
 						}
 					}		
 					break;
@@ -74,6 +78,10 @@ class Crunchbutton_Order extends Cana_Table {
 			if (!$params['name']) {
 				$this->name = c::user()->name;
 			}
+		}
+		
+		if (!$this->restaurant()->open()) {
+			$errors[] = 'This restaurant is closed.';
 		}
 
 		if ($errors) {
