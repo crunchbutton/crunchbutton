@@ -262,9 +262,10 @@ class Crunchbutton_Order extends Cana_Table {
 		exec('nohup '.c::config()->dirs->root.'cli/notify.php '.$this->id_order.' &> /dev/null');
 	}
 	
-	public function message($type) {
+	public function orderMessage($type) {
 		switch ($type) {
 			case 'sms':
+			case 'web':
 				$with = 'w/';
 				break;
 
@@ -298,6 +299,12 @@ class Crunchbutton_Order extends Cana_Table {
 				$food .= '. ';
 			}
 		}
+		return $food;
+	}
+	
+	public function message($type) {
+
+		$food = $this->orderMessage($type);
 
 		switch ($type) {
 			case 'sms':
@@ -324,6 +331,7 @@ class Crunchbutton_Order extends Cana_Table {
 		unset($out['id']);
 		unset($out['id_order']);
 		$out['user'] = $this->user()->uuid;
+		$out['_message'] = nl2br($this->orderMessage('web'));
 		return $out;
 	}
 

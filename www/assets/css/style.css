@@ -975,6 +975,13 @@ and (max-width : 769px) {
 	.resturant-dish-container a {
 		white-space: nowrap;
 	}
+	.dp-display-item:first-child {
+		margin-left: 0;
+	}
+	.dp-display-item {
+		margin: 5px 0 15px 0;
+		display: block;
+	}
 }
 
 
@@ -1153,6 +1160,6 @@ th {
 
 
 .order-thanks-message {
-	font-size: 15px;
+	font-size: 18px;
 	font-weight: bold;
 }

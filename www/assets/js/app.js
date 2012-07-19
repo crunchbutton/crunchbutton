@@ -257,7 +257,7 @@ App.page.restaurant = function(id) {
 
 		if (App.config.user.id_user) {
 
-			var dp = $('<div class="delivery-payment-info content-padder"></div>')
+			var dp = $('<div class="delivery-payment-info content-padder main-content-readable"></div>')
 				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label><br /><a href="javascript:;">' + (App.config.user.phone ? App.config.user.phone : '<i>no phone # provied</i>') + '</a></div>');
 			var paying = $('<div class="dp-display-payment dp-display-item"><label>Your are paying:</label><br /><span class="cart-total">$0.00</span></div>');
 			if (App.config.user.pay_type == 'card') {
@@ -393,36 +393,50 @@ App.drawPay = function() {
 
 App.page.order = function(id) {
 	App.cache('Order', id, function() {
-		var message;
+		var message, order = this;
 
 		if (App.justCompleted) {
 			App.justCompleted = false;
-			message = 'Your order has been sent!';
+			message = 'Thanks ' + this.name + '!';
 		} else {
-			message = this.uuid;
+			message = 'Your order';
 		}
 		$('.content').addClass('short-meal-list');
+		$('.main-content-item').css('width','auto');
 		$('.main-content-item').html(
 			'<div class="content-padder-before"></div>' +
-			'<div class="delivery-payment-info content-padder"></div>'
+			'<div class="delivery-payment-info content-padder main-content-readable"></div>'
 		);
 		$('.delivery-payment-info').html(
 			'<span class="order-thanks-message">'+ message +'</span>' + 
-			'<br /><br />' + 
-			'Total: $' + parseInt(this.price).toFixed(2) +
-			'<br />'
+			'<br /><br />'
 		);
 
 		if (this.delivery_type == 'delivery') {
-			$('.delivery-payment-info').append('Delivered to ' + this.address + '<br />');
+			$('.delivery-payment-info').append('<b>Your delivery address is:</b><br />' + this.address + '<br /><br />');
 		} else {
-			$('.delivery-payment-info').append('For pickup<br />');		
+			$('.delivery-payment-info').append('<b>For pickup</b><br />');
 		}
+		
+		$('.delivery-payment-info').append('<b>Your phone # is:</b><br />' + this.phone + '<br /><br />');
+		
+		
+		$('.delivery-payment-info').append('<b>Your ordered:</b>' + order._message + '<br /><br />');
+		
 		if (this.pay_type == 'card') {
-			$('.delivery-payment-info').append('Paid by card<br />');
+			$('.delivery-payment-info').append('<b>Your total is:</b><br />$' + parseInt(this.price).toFixed(2) + '<br /><br />');
 		} else {
-			$('.delivery-payment-info').append('Paid using cash<br />');
+			$('.delivery-payment-info').append('<b>Total approximate total is</b>:<br />$' + parseInt(this.price).toFixed(2) + '<br /><br />');
 		}
+		
+		App.cache('Restaurant',order.id_restaurant, function() {
+			$('.delivery-payment-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
+			
+			$('.delivery-payment-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="$(\'.habla_button\').click();">message us</a><br />or call <b>(213) 2 WENZEL</b><br /><br />');
+			
+			
+		});
+
 	});
 
 };
