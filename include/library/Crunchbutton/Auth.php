@@ -7,6 +7,15 @@ class Crunchbutton_Auth {
 	public function __construct() {
 		$this->_session = new Crunchbutton_Session;
 		session_start();
+		
+		if ($_COOKIE['token'] && !$this->session()->id_user) {
+			$sess = Session::token($_COOKIE['token']);
+			if ($sess->id_user) {
+				Session::deleteToken($_COOKIE['token']);
+				$this->session()->id_user = $sess->id_user;
+				$this->session()->token = $_COOKIE['token'];
+			}
+		}
 
 		if ($this->session()->id_user) {
 			if ($this->session()->ip == $_SERVER['REMOTE_ADDR']) {

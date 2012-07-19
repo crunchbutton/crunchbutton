@@ -59,7 +59,32 @@ class Crunchbutton_Session extends Cana_Table {
 	}
 
 	public function gc($maxlifetime) {
-		Cana::db()->query('DELETE FROM session WHERE date_activity < "'.(time() - $maxlifetime).'"');
+		// only delete if there is no token
+		Cana::db()->query('DELETE FROM session WHERE date_activity < "'.(time() - $maxlifetime).'" and token is null');
+	}
+	
+	public function generateAndSaveToken() {
+		if ($this->id_user && !$this->token) {
+			$fields = '-=d4sh0fs4|t?&4ndM4YB350m35ymb0||0v3!!!!!!=-'.$this->id_session.$this->id_user.uniqid();
+			$this->token = strtoupper(hash('sha512', $fields));
+			$this->save();
+		}
+	}
+	
+	public static function token($token) {
+		if (!$token) return false;
+		$res = Cana::db()->query('select * from session where token="'.c::db()->escape($token).'"');
+		$session = $res->fetch();
+
+		if ($session->id_session) {
+			return $session;
+		}
+		return false;
+	}
+	
+	public static function deleteToken($token) {
+		if (!$token) return false;
+		Cana::db()->query('delete from session where token="'.c::db()->escape($token).'"');	
 	}
 	
 	public function auth() {

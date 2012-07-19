@@ -143,7 +143,7 @@ class Crunchbutton_App extends Cana_App {
 	
 	public function crypt($crypt = null) {
 		if (is_null($crypt)) {
-			return $this->_crypt = new Cana_Crypt(mb_convert_encoding($this->config()->crypt->key,'7bit'));
+			return $this->_crypt = new Cana_Crypt($this->config()->crypt->key);
 		} else {
 			return $this->_crypt;
 		}

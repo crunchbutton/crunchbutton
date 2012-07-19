@@ -1,9 +1,24 @@
+/**
+ *
+ * Crunchbutton
+ *
+ * @author: 	Devin Smith (http://devin.la)
+ * @date: 		2012-06-20
+ *
+ */
+
+
 if (typeof(console) == 'undefined') {
 	console = {
 		log: function() { return null; }
 	};
 }
 
+if (typeof(Number.prototype.toRad) === 'undefined') {
+	Number.prototype.toRad = function() {
+		return this * Math.PI / 180;
+	}
+}
 
 var History = window.History;
 
@@ -25,7 +40,7 @@ var App = {
 	cart: {},
 	community: null,
 	page: {},
-	config: {},
+	config: null,
 	order: {
 		cardChanged: false,
 		pay_type: 'card',
@@ -295,7 +310,7 @@ App.drawPay = function() {
 			'<div class="input-item"><input type="text" name="pay-phone"></div><div class="divider"></div>' + 
 	
 			'<label class="delivery-only">Deliver to</label>' + 
-			'<div class="input-item delivery-only"><textarea name="pay-deliver"></textarea></div><div class="divider"></div>' + 
+			'<div class="input-item delivery-only"><textarea name="pay-address"></textarea></div><div class="divider"></div>' + 
 		'</div>'
 	);
 
@@ -365,7 +380,7 @@ App.drawPay = function() {
 		
 	$('[name="pay-name"]').val(App.config.user.name);
 	$('[name="pay-phone"]').val(App.config.user.phone);
-	$('[name="pay-deliver"]').val(App.config.user.address);
+	$('[name="pay-address"]').val(App.config.user.address);
 
 };
 
@@ -440,25 +455,9 @@ App.loadPage = function() {
 	}
 
 	
-	// force to yale if there isnt a place yet
-	// @todo: detect community
+	// force to a specific community
 	if (!url) {
-		var closest = App.loc.closest();
-		if ($.cookie('community')) {
-			loc = '/' + $.cookie('community');
-
-		} else if (closest.permalink) {
-			if (closest.distance > 10) {
-				location.href = '/hello';
-				return;
-			}
-			loc = '/' + closest.permalink;
-
-		} else {
-			loc = '/yale';
-		}
-
-		History.replaceState({},loc,loc);
+		App.loc.process();
 		return;
 	}
 
@@ -763,7 +762,7 @@ App.cart = {
 			App.config.user.name = $('[name="pay-name"]').val();
 			App.config.user.phone = $('[name="pay-phone"]').val();
 			if (App.order['delivery_type'] == 'delivery') {
-				App.config.user.address = $('[name="pay-deliver"]').val();
+				App.config.user.address = $('[name="pay-address"]').val();
 			}
 			App.order.tip = $('[name="pay-tip"]').val();
 		}
@@ -772,7 +771,7 @@ App.cart = {
 			cart: App.cart.items,
 			tip: App.order.tip ? App.order.tip : '10',
 			pay_type: App.order['pay_type'],
-			deliver_type: App.order['deliver_type'],
+			deliver_type: App.order['delivery_type'],
 			restaurant: App.restaurant.id
 		};
 
@@ -810,6 +809,10 @@ App.cart = {
 					alert(error);
 
 				} else {
+					if (json.token) {
+						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/', });
+					}
+
 					order.cardChanged = false;
 					App.cache('Order',json);
 					App.justCompleted = true;
@@ -934,7 +937,7 @@ App.test = {
 		
 		$('[name="pay-name"]').val('MR TEST');
 		$('[name="pay-phone"]').val('***REMOVED***');
-		$('[name="pay-deliver"]').val("123 main\nsanta monica ca");
+		$('[name="pay-address"]').val("123 main\nsanta monica ca");
 	},
 	logout: function() {
 		$.getJSON('/api/logout',function(){ location.reload()});
@@ -965,14 +968,14 @@ $(function() {
 		$('.delivery-toggle-takeout').removeClass('toggle-active');
 		$('.delivery-toggle-delivery').addClass('toggle-active');
 		$('.delivery-only').show();
-		App.order['deliver_type'] = 'deliver';
+		App.order['delivery_type'] = 'delivery';
 	});
 	
 	$('.delivery-toggle-takeout').live('click',function() {
 		$('.delivery-toggle-delivery').removeClass('toggle-active');
 		$('.delivery-toggle-takeout').addClass('toggle-active');
 		$('.delivery-only').hide();
-		App.order['deliver_type'] = 'takeout';
+		App.order['delivery_type'] = 'takeout';
 	});
 	
 	$('.pay-toggle-credit').live('click',function() {
@@ -1116,14 +1119,19 @@ $(function() {
 	}
 	$('.community-selector').append(select);
 
-	// load our config first (not async)
-	// @todo: encode this data into the initial request
-	$.getJSON('/api/config', function(json) {
+	// make sure we have our config loaded
+	// @todo: encode this data into the initial request and update as needed
+	var haveConfig = function(json) {
 		App.config = json;
 		App._init = true;
 		App.loadPage();
-	});
-	
+	};
+	if (App.config) {
+		haveConfig(App.config)
+	} else {
+		$.getJSON('/api/config', haveConfig);
+	}
+
 	$('.cart-summary').live('click', function() {
 		$('body').scrollTop($('.cart-items').position().top-80);
 	});
@@ -1168,11 +1176,11 @@ window.addEventListener('DOMContentLoaded', init, false);
 
 App.loc = {
 	distance: function(params) {
-		// {from: {lat: 1, lon: 1}, to: {lat: 2, lon: 2}}
-		var R = 6371; // Radius of the earth in km
-		var dLat = (params.to.lat - params.from.lat).toRad();  // Javascript functions in radians
 
-		var dLon = (params.to.lon - params.from.lon).toRad(); 
+		var R = 6371; // Radius of the earth in km
+		var dLat = (params.to.lat - params.from.lat).toRad();
+
+		var dLon = (params.to.lon - params.from.lon).toRad();
 		var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
 			Math.cos(params.from.lat.toRad()) * Math.cos(params.to.lat.toRad()) * 
 			Math.sin(dLon/2) * Math.sin(dLon/2); 
@@ -1181,48 +1189,66 @@ App.loc = {
 
 		return d;
 	},
-	closest: function() {
-		try {
+	getClosest: function() {
+		var closest;
+		for (x in App.communities) {
+			App.communities[x].distance = App.loc.distance({
+				from: {lat: App.loc.lat, lon: App.loc.lon},
+				to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
+			});
+			if (!closest || App.communities[x].distance < closest.distance) {
+				closest = App.communities[x];
+			}
+		}
+		return closest || App.communities['yale'];
+	},
+	closest: function(complete) {
+
+		if (google.loader.ClientLocation) {
 			App.loc.lat = google.loader.ClientLocation.latitude;
 			App.loc.lon = google.loader.ClientLocation.longitude;
-	
-			var closest;
-			for (x in App.communities) {
-				App.communities[x].distance = App.loc.distance({
-					from: {lat: App.loc.lat, lon: App.loc.lon},
-					to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
+
+			complete();
+
+		} else {
+
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function(position){
+				    App.loc.lat = position.coords.latitude;
+				    App.loc.lon = position.coords.longitude;
+
+				    complete();
 				});
-				if (!closest || App.communities[x].distance < closest.distance) {
-					closest = App.communities[x];
-				}
 			}
-			return closest;
-		} catch (e) {
-			return App.communities['yale'];
 		}
-	}
-}
+	},
+	process: function() {
+		App.loc.closest(function() {
+			var
+				closest = App.loc.getClosest(),
+				loc;
 
-/*
-try {
-	if (navigator.geolocation) {
+			if ($.cookie('community') && !App.community) {
+				loc = '/' + $.cookie('community');
 	
-	navigator.geolocation.getCurrentPosition(function(position){
-	    var lat = position.coords.latitude;
-	    var lon = position.coords.longitude;
+			} else if (closest.permalink) {
+				if (closest.distance > 25) {
+					location.href = '/hello';
+					return;
+				}
 
-	},function(error){
+			    if (closest.permalink != App.community.permalink) {
+			    	loc = '/'.closest.permalink;
+				}
 	
-	});
-	
-	}
-} catch (e) {}
-*/
+			} else if (!App.community) {
+				loc = '/yale';
+			}
 
+			if (loc) {
+				History.replaceState({},loc,loc);
+			}
+		});
 
-
-if (typeof(Number.prototype.toRad) === "undefined") {
-	Number.prototype.toRad = function() {
-		return this * Math.PI / 180;
 	}
 }

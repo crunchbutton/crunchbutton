@@ -39,7 +39,8 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						'id_user' => c::auth()->session()->id_user,
 						'txn' => $order->txn,
 						'final_price' => $order->final_price,
-						'uuid' => (new Order($order->id_order))->uuid
+						'uuid' => (new Order($order->id_order))->uuid,
+						'token' => c::auth()->session()->token
 					]);
 				} else {
 					echo json_encode(['status' => 'false', 'errors' => $charge]);

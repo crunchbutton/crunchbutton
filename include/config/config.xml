@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <data version="1">
-    <viewfilter>false</viewfilter>
+    <viewfilter>true</viewfilter>
     <timezone>America/Los_Angeles</timezone>
     <db>
         <live>
@@ -67,4 +67,7 @@
     	<key>_KEY_</key>
 		<secret>_KEY_</secret>
 	</phaxio2>
+	<crypt>
+		<key>_KEY_a6050723</key>
+	</crypt>
 </data>
