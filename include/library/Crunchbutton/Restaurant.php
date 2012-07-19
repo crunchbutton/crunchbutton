@@ -38,9 +38,9 @@ class Crunchbutton_Restaurant extends Cana_Table {
 				$timezone = $timezone->format('O');
 
 				foreach ($hours as $hour) {
-					$open = new DateTime('today '.$hour->time_open, new DateTimeZone($this->timezone));
+					$open = new DateTime('next '.$hour->day. ' ' .$hour->time_open, new DateTimeZone($this->timezone));
 					$open->setTimezone(new DateTimeZone('GMT'));
-					$close = new DateTime('today '.$hour->time_close, new DateTimeZone($this->timezone));
+					$close = new DateTime('next '.$hour->day. ' ' .$hour->time_close, new DateTimeZone($this->timezone));
 					$close->setTimezone(new DateTimeZone('GMT'));
 					$hour->time_open = $open->format('Y-m-d H:i');
 					$hour->time_close = $open->format('Y-m-d H:i');
