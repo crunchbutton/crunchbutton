@@ -21,7 +21,7 @@
 				$food = $item->name;
 				$cartPrice = $item->price;
 				if ($item->_substitutions || $item->_toppings) {
-					$food .= '&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
+					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
 				}
 				if ($item->_toppings) {
 					foreach ($item->_toppings as $topping) {
@@ -36,6 +36,9 @@
 						$food .= $topping->name.', ';
 					}
 					$food = substr($food, 0, -2);
+				}
+				if ($item->_substitutions || $item->_toppings) {
+					$food .= '</i>';
 				}
 				?>
 				<?=$food?>
