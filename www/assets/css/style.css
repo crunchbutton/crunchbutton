@@ -961,7 +961,23 @@ and (max-width : 769px) {
 	.content.short-meal-list {
 		max-width: 650px;
 	}
+	.dish-name {
+		display: inline-block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		width: 78%;
+		height: 20px;
+		white-space: nowrap;
+	}
+	.dish-price {
+		display: inline-block;
+	}
+	.resturant-dish-container a {
+		white-space: nowrap;
+	}
 }
+
+
 
 @media only screen 
 and (min-width : 633px)
@@ -1020,6 +1036,14 @@ and (min-width : 769px) {
 	}
 	.cart-summary {
 		display: none;
+	}
+	.dish-name {
+		display: inline-block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 240px;
+		height: 20px;
+		white-space: nowrap;
 	}
 }
 
