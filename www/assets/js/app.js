@@ -208,7 +208,7 @@ App.page.restaurant = function(id) {
 				'<div class="cart-items"><div class="restaurant-item-title">your order</div><div class="cart-items-content"></div></div>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
-			'<div class="divider dots restaurant-payment-div"></div>'
+			'<div class="restaurant-payment-div"></div>'
 		);
 
 		if (!App.config.user.id_user) {
@@ -256,10 +256,12 @@ App.page.restaurant = function(id) {
 		}
 
 		if (App.config.user.id_user) {
+			App.drawPay();
+			$('.payment-form').hide();
 
-			var dp = $('<div class="delivery-payment-info content-padder main-content-readable"></div>')
-				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label><br /><a href="javascript:;">' + (App.config.user.phone ? App.config.user.phone : '<i>no phone # provied</i>') + '</a></div>');
-			var paying = $('<div class="dp-display-payment dp-display-item"><label>Your are paying:</label><br /><span class="cart-total">$0.00</span></div>');
+			var dp = $('<div class="delivery-payment-info main-content-readable"></div>')
+				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label> <a href="javascript:;">' + (App.config.user.phone ? App.config.user.phone : '<i>no phone # provied</i>') + '</a></div>');
+			var paying = $('<div class="dp-display-payment dp-display-item"><label>Your are paying:</label> <span class="cart-total">$0.00</span></div>');
 			if (App.config.user.pay_type == 'card') {
 				paying.append('&nbsp;and <a href="javascript:;">10% tip</a> by <a href="javascript:;">card</a>');
 			} else {
@@ -269,15 +271,13 @@ App.page.restaurant = function(id) {
 			if (App.config.user.delivery_type == 'delivery') {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</a></div>');
 			} else {
-				dp.append('<div class="dp-display-address dp-display-item"><label>Delivered to:</label><br /><a href="javascript:;"><i>takeout</i></a></div>');			
+				dp.append('<div class="dp-display-address dp-display-item"><label>Deliver to:</label> <a href="javascript:;"><i>takeout</i></a></div>');			
 			}
 			dp.append('<div class="divider"></div>');
 	
 			$('.main-content-item').append(dp);
-			$('<div class="content-padder-before"></div>').insertBefore(dp);
 
-			App.drawPay();
-			$('.payment-form').hide();
+
 		} else {
 			App.drawPay();
 		}

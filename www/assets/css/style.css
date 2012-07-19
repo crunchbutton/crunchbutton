@@ -428,18 +428,21 @@ html[xmlns] .clearfix {
 .delivery-payment-info {
 	line-height: 1.4em;
 	text-align: center;
+	width: 330px;
+	margin: 0 auto;
+	margin-top: 25px;
 }
 
 .dp-display-item:first-child {
-	margin-left: 5px;
+
 }
 
 .dp-display-item:last-child {
-	margin-right: 5px;
+
 }
 
 .dp-display-item {
-	display: inline-block;
+	display: block;
 	width: auto;
 	margin: 5px 14px 8px 14px;
 	vertical-align: top;
@@ -983,6 +986,9 @@ and (max-width : 769px) {
 		margin: 5px 0 15px 0;
 		display: block;
 	}
+	.delivery-payment-info {
+		width: 100%;
+	}
 }
 
 
@@ -1052,6 +1058,9 @@ and (min-width : 769px) {
 		max-width: 240px;
 		height: 20px;
 		white-space: nowrap;
+	}
+	.restaurant-payment-div {
+		margin-top: 40px;
 	}
 }
 
