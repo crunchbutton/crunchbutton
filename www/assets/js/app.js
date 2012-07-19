@@ -393,8 +393,13 @@ App.drawPay = function() {
 
 App.page.order = function(id) {
 	App.cache('Order', id, function() {
+		var message;
+
 		if (App.justCompleted) {
 			App.justCompleted = false;
+			message = 'Your order has been sent!';
+		} else {
+			message = this.uuid;
 		}
 		$('.content').addClass('short-meal-list');
 		$('.main-content-item').html(
@@ -402,7 +407,7 @@ App.page.order = function(id) {
 			'<div class="delivery-payment-info content-padder"></div>'
 		);
 		$('.delivery-payment-info').html(
-			'<span class="order-thanks-message">Your order has been sent!</span>' + 
+			'<span class="order-thanks-message">'+ message +'</span>' + 
 			'<br /><br />' + 
 			'Total: $' + parseInt(this.price).toFixed(2) +
 			'<br />'
@@ -788,12 +793,14 @@ App.cart = {
 			order.phone = App.config.user.phone;
 			order.name = App.config.user.name;
 
-			if (order.cardChanged || !App.config.user.id_user) {
+			if (App.order.cardChanged) {
 				order.card = {
 					number: $('[name="pay-card-number"]').val(),
 					month: $('[name="pay-card-month"]').val(),
 					year: $('[name="pay-card-year"]').val()
 				};
+			} else {
+				order.card = {};
 			}
 		}
 
@@ -813,7 +820,7 @@ App.cart = {
 			errors[errors.length] = 'Please enter an address.';
 		}
 		
-		if (order.pay_type == 'card' && (!order.card || !order.card.number)) {
+		if (order.pay_type == 'card' && ((App.order.cardChanged && !order.card.number) || (!App.config.user.id_user && !order.card.number))) {
 			errors[errors.length] = 'Please enter a valid card #.';
 		}
 		
@@ -1001,10 +1008,6 @@ App.test = {
 };
 
 $(function() {
-
-	$('.pay-card-number, .pay-card-month, .pay-card-year').live('change',function() {
-		order.cardChanged = true;
-	});
 
 	$('.delivery-toggle-delivery').live('click',function() {
 		$('.delivery-toggle-takeout').removeClass('toggle-active');

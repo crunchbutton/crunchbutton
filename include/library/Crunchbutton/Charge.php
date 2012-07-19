@@ -12,7 +12,7 @@ class Crunchbutton_Charge extends Cana_Model {
 		$reason = false;
 		
 		// if there is any card information provided, charge with it
-		if ($params['number'] && $params['exp_month'] && $params['exp_year']) {
+		if ($params['number']) {
 			$reason = true;
 			try {
 				$c = Stripe_Charge::create([
@@ -25,8 +25,7 @@ class Crunchbutton_Charge extends Cana_Model {
 					]
 				]);
 			} catch (Exception $e) {
-				print_r($e);
-				die('stripe error');
+				$errors[] = 'Card declined.';
 				$success = false;
 			}
 			if ($c->paid && !$c->refunded) {
@@ -76,32 +75,6 @@ class Crunchbutton_Charge extends Cana_Model {
 					die('c');
 				}
 			}
-
-			// if there was no user, create them
-			if (!$user) {
-				$user = $params['user'] ? $params['user'] : new User;
-				if (!$user->id) {
-					$user->name = $params['name'];
-					$user->phone = $params['phone'];
-					$user->address = $params['address'];
-					$user->stripe_id = $customer->id;
-					$user->active = 1;
-					$user->card = str_repeat('*',strlen($params['number'])-4).substr($params['number'],-4);
-					$user->save();
-				}
-			} else {
-				// if there was already a user, update their info if needed
-				$properties = ['name','address','phone','card'];
-				foreach ($properties as $property) {
-					if ($params[$property] != $user->{$property}) {
-						$save = true;
-						$user->{$property} = $params[$property];
-					}
-				}
-				if ($save) {
-					$user->save();
-				}
-			}
 		}
 		
 		// if there was no number, and there was a user with a stored card, use the users stored card
@@ -114,8 +87,7 @@ class Crunchbutton_Charge extends Cana_Model {
 					'customer' => $params['user']->stripe_id
 				]);
 			} catch (Exception $e) {
-				print_r($e);
-				die('stripe error 2');
+				$errors[] = 'Card declined.';
 				$success = false;
 			}
 			if ($c->paid && !$c->refunded) {
@@ -131,7 +103,7 @@ class Crunchbutton_Charge extends Cana_Model {
 			$errors[] = 'No card information.';
 		}
 
-		return ['status' => $success, 'user' => $user, 'txn' => $txn, 'errors' => $errors];
+		return ['status' => $success, 'user' => $user, 'txn' => $txn, 'errors' => $errors, 'customer' => $customer];
 
 	}
 }

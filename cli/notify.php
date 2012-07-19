@@ -6,7 +6,7 @@ set_time_limit(10);
 
 require_once('../include/crunchbutton.php');
 
-$notification = new Notification($argv[1]);
-$notification->send();
+$order = new Order($argv[1]);
+$order->notify();
 
 //exec('nohup /usr/bin/my-command > /dev/null 2>&1 &');

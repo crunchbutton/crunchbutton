@@ -64,6 +64,16 @@ class Crunchbutton_Order extends Cana_Table {
 			if (!$params['address'] && $this->delivery_type == 'delivery') {
 				$errors[] = 'Please enter an address.';			
 			}
+		} else {
+			if (!$params['address']) {
+				$this->address = c::user()->address;
+			}
+			if (!$params['phone']) {
+				$this->phone = c::user()->phone;
+			}
+			if (!$params['name']) {
+				$this->name = c::user()->name;
+			}
 		}
 
 		if ($errors) {
@@ -79,14 +89,42 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->txn = $this->transaction()->id;
 		}
 		
-		c::auth()->session()->id_user = $this->_user->id_user;
+		$user = c::user()->id_user ? c::user() : new User;
+		
+		if (!c::user()->id_user) {
+			$user->active = 1;
+			$user->stripe_id = $this->_customer->id;
+		}
+
+		$user->name = $this->name;
+		$user->phone = $this->phone;
+		
+		if ($this->delivery_type == 'delivery') {
+			$user->address = $this->address;
+		}
+
+		if ($this->pay_type == 'card' && $params['card']['number']) {
+			$user->card = str_repeat('*',strlen($params['card']['number'])-4).substr($params['card']['number'],-4);
+		}
+		
+		$user->pay_type = $this->pay_type;
+		$user->delivery_type = $this->delivery_type;
+
+		$user->save();
+		$this->_user = $user;
+		
+		c::auth()->session()->id_user = $user->id_user;
 		c::auth()->session()->generateAndSaveToken();
 		
 		$this->id_user = $this->_user->id_user;
 		$this->date = date('Y-m-d H:i:s');
 		$this->save();
 		
-		$this->notify();
+		if (c::env() == 'live') {
+			$this->que();
+		} else {
+			$this->notify();
+		}
 		
 		$def = json_encode($params['cart']);
 		if ($def != $this->restaurant()->defaultOrder()->config) {
@@ -97,10 +135,6 @@ class Crunchbutton_Order extends Cana_Table {
 			$defaultOrder->save();
 		}
 		
-		$this->_user->pay_type = $this->pay_type;
-		$this->_user->delivery_type = $this->delivery_type;
-		$this->_user->save();
-
 		return true;
 	}
 	
@@ -130,7 +164,7 @@ class Crunchbutton_Order extends Cana_Table {
 	public function verifyPayment() {
 		switch ($this->pay_type) {
 			case 'cash':
-				return true;
+				$status = true;
 				break;
 
 			case 'card':
@@ -147,12 +181,14 @@ class Crunchbutton_Order extends Cana_Table {
 				if ($r['status']) {
 					$this->_txn = $r['txn'];
 					$this->_user = $r['user'];
-					return true;
+					$this->_customer = $r['customer'];
+					$status = true;
 				} else {
-					return $r;
+					$status = $r;
 				}
 				break;
 		}
+		return $status;
 	}
 	
 	public static function recent() {
@@ -213,6 +249,10 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 	}
 	
+	public function que() {
+		exec('nohup '.c::config()->dirs->root.'cli/notify.php '.$this->id_order.' > /dev/null 2>&1 &');
+	}
+	
 	public function message($type) {
 		switch ($type) {
 			case 'sms':
@@ -265,7 +305,7 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 				break;
 		}
-		die($msg);
+
 		return $msg;
 	}
 	

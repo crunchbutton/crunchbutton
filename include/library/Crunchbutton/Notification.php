@@ -64,10 +64,6 @@ class Crunchbutton_Notification extends Cana_Table {
 				break;
 		}	
 	}
-	
-	public function que() {
-		exec('nohup '.c::config()->dirs->root.'cli/notify.php '.$this->id_notification.' > /dev/null 2>&1 &');
-	}
 
 	public function __construct($id = null) {
 		parent::__construct();
