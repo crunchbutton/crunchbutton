@@ -6,8 +6,8 @@ class Crunchbutton_Notification extends Cana_Table {
 		//$env = c::env() == 'live' ? 'live' : 'dev';
 		$env = 'dev';
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
-		$mail = ($env == 'live' ? $this->value : '_EMAIL');
-		$fax = ($env == 'live' ? $this->value : '_EMAIL');
+		$mail = ($env == 'live' ? $this->value : 'arzynik@gmail.com');
+		$fax = ($env == 'live' ? $this->value : '_PHONE_');
 
 		switch ($this->type) {
 			case 'fax':
@@ -15,16 +15,36 @@ class Crunchbutton_Notification extends Cana_Table {
 					'order' => $order
 				]);
 
-				$temp = tmpfile();
+				$temp = tempnam('/tmp','fax');
 				file_put_contents($temp, $mail->message());
-				die($temp);
+				//chmod($temp, 0777);
+				rename($temp, $temp.'.html');
+				
+				$log = new Notification_Log;
+				$log->id_notification = $this->id_notification;
+				$log->status = 'pending';
+				$log->type = 'phaxio';
+				$log->id_order = $order->id_order;
+				$log->save();
 
 				$fax = new Phaxio([
-					'to' => $this->value,
-					'file' => $temp
+					'to' => $fax,
+					'file' => $temp.'.html',
+					'id_notification_log' => $log->id_notification_log
 				]);
 
-				//unlink($temp);
+				unlink($temp.'.html');
+				
+				if ($fax->success) {
+					$log->remote = $fax->faxId;
+					$log->status = 'queued';
+					$log->save();
+				} else {
+					$log->status = 'error';
+					$log->save();
+				}				
+				
+
 				break;
 
 			case 'sms':
@@ -41,20 +61,26 @@ class Crunchbutton_Notification extends Cana_Table {
 				break;
 
 			case 'phone':
+				$log = new Notification_Log;
+				$log->id_notification = $this->id_notification;
+				$log->status = 'pending';
+				$log->type = 'twilio';
+				$log->id_order = $order->id_order;
+				$log->save();
+
+			
  				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoing,
 					'+1'.$num,
-					'http://'.$_SERVER['__HTTP_HOST'].'/api/order/34/say'
+					'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$order->id_order.'/say',
+					['StatusCallback' => 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/callback']
 				);
 
-				$log = new Notification_Log;
-				$log->id_notification = $this->id_notification;
+				$log->remote = $call->sid;
 				$log->status = $call->status;
-				$log->type = 'twilio';
-				$log->remote = $call->uri;
-				$log->id_order = $order->id_order;
 				$log->save();
+
 
 				break;
 

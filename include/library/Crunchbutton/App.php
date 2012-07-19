@@ -38,9 +38,26 @@ class Crunchbutton_App extends Cana_App {
 						$params['env'] = 'live';
 						break;
 					default:
-						$params['env'] = 'local';
+						switch (dirname(__FILE__)) {
+							case '/home/beta.crunchbutton/include/library/Crunchbutton':
+								$params['env'] = 'beta';
+								$_SERVER['__HTTP_HOST'] = 'beta.crunchr.co';
+								break;
+							case '/home/crunchbutton/include/library/Crunchbutton':
+								$params['env'] = 'live';
+								$_SERVER['__HTTP_HOST'] = 'crunchr.co';
+								break;
+							default:
+								$params['env'] = 'local';
+								break;
+						}
+						
 						break;
 				}
+		}
+		
+		if ($params['env'] == 'live') {
+			error_reporting(E_ERROR | E_PARSE);
 		}
 
 		parent::init($params);

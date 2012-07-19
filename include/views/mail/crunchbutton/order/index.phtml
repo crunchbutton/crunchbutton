@@ -4,7 +4,7 @@
 <h2>Name: <?=$order->name?></h2>
 <h2>Phone: <?=$order->phone?></h2>
 <? if ($order->delivery_type == 'delivery') : ?>
-	<h2>Address: <?=$order->address?></h2>
+	<h2>Address: <?=nl2br(strip_tags($order->address))?></h2>
 <? endif ; ?>
 
 <table border="1" width="100%" cellpadding="10">
@@ -17,20 +17,28 @@
 	<? foreach ($order->order() as $item) : ?>
 		<tr>
 			<td>1</td>
-			<td><?=$item->name?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<? $cartPrice = $item->price; ?>
-				<? if ($item->_toppings) : ?>
-					<? foreach ($item->_toppings as $topping) : ?>
-						<? $cartPrice += $topping->price; ?>
-						<?=$topping->name?>, 
-					<? endforeach ; ?>
-				<? endif ; ?>
-				<? if ($item->_substitutions) : ?>
-					<? foreach ($item->_substitutions as $topping) : ?>
-						<? $cartPrice += $topping->price; ?>
-						<?=$topping->name?>
-					<? endforeach ; ?>
-				<? endif ; ?>
+			<td><?
+				$food = $item->name;
+				$cartPrice = $item->price;
+				if ($item->_substitutions || $item->_toppings) {
+					$food .= '&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
+				}
+				if ($item->_toppings) {
+					foreach ($item->_toppings as $topping) {
+						$cartPrice += $topping->price;
+						$food .= $topping->name.', ';
+					}
+					$food = substr($food, 0, -2);
+				}
+				if ($item->_substitutions) {
+					foreach ($item->_substitutions as $topping) {
+						$cartPrice += $topping->price;
+						$food .= $topping->name.', ';
+					}
+					$food = substr($food, 0, -2);
+				}
+				?>
+				<?=$food?>
 			</td>
 			<td><?=number_format($cartPrice,2)?></td>
 		</tr>
