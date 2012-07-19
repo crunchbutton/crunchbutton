@@ -269,7 +269,7 @@ App.page.restaurant = function(id) {
 			if (App.config.user.delivery_type == 'delivery') {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</a></div>');
 			} else {
-				dp.append('<div class="dp-display-address dp-display-item"><label>For takeout:</label><br /><a href="javascript:;"><i>change</i></a></div>');			
+				dp.append('<div class="dp-display-address dp-display-item"><label>Delivered to:</label><br /><a href="javascript:;"><i>takeout</i></a></div>');			
 			}
 			dp.append('<div class="divider"></div>');
 	
@@ -1074,30 +1074,39 @@ $(function() {
 
 	$('.meal-item-content').live({
 		mousedown: function() {
+			if (navigator.userAgent.toLowerCase().indexOf('ios') > -1) {
+				return;
+			}
 			$(this).addClass('meal-item-down');
 			var self = $(this);
 			setTimeout(function() {
 				App.loadRestaurant(self.closest('.meal-item').attr('data-permalink'));
 			},100);
 		},
-		touchstart: function() {
-			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-				return;
-			}
-			var self = $(this);
-			setTimeout(function() {
-				App.loadRestaurant(self.closest('.meal-item').attr('data-permalink'));
-			},100);
-			$(this).addClass('meal-item-down');
-		}
-	});
-	$('.meal-item-content').live({
 		mouseup: function() {
 			$(this).removeClass('meal-item-down');
 		},
-		touchend: function() {
+		touchstart: function(e) {
 			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
 				return;
+			}
+			App.startX = event.touches[0].pageX;
+			App.startY = event.touches[0].pageY;
+
+			$(this).addClass('meal-item-down');
+		},
+		touchmove: function(e) {
+			App.touchX = event.touches[0].pageX;
+			App.touchY = event.touches[0].pageY;
+		},
+		touchend: function(e) {
+			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
+				return;
+			}
+			
+			var maxDistance = 10;
+			if (Math.abs(App.startX-App.touchX) < maxDistance && Math.abs(App.startY-App.touchY) < maxDistance) {
+				App.loadRestaurant($(this).closest('.meal-item').attr('data-permalink'));
 			}
 			$(this).removeClass('meal-item-down');
 		}
