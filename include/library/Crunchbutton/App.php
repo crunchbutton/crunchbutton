@@ -55,6 +55,10 @@ class Crunchbutton_App extends Cana_App {
 						break;
 				}
 		}
+		
+		if ($params['env'] == 'live') {
+			error_reporting(E_ERROR | E_PARSE);
+		}
 
 		parent::init($params);
 
