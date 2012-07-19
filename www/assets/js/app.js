@@ -1061,11 +1061,19 @@ $(function() {
 	$('.meal-item-content').live({
 		mousedown: function() {
 			$(this).addClass('meal-item-down');
+			var self = $(this);
+			setTimeout(function() {
+				App.loadRestaurant(self.closest('.meal-item').attr('data-permalink'));
+			},100);
 		},
 		touchstart: function() {
 			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
 				return;
 			}
+			var self = $(this);
+			setTimeout(function() {
+				App.loadRestaurant(self.closest('.meal-item').attr('data-permalink'));
+			},100);
 			$(this).addClass('meal-item-down');
 		}
 	});
@@ -1082,7 +1090,7 @@ $(function() {
 	});
 
 	$('.meal-item').live('click',function() {
-		App.loadRestaurant($(this).attr('data-permalink'));
+		//App.loadRestaurant($(this).attr('data-permalink'));
 	});
 	
 	$('.resturant-dish-container a').live('click',function() {
