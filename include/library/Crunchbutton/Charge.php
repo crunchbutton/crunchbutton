@@ -86,6 +86,7 @@ class Crunchbutton_Charge extends Cana_Model {
 					$user->address = $params['address'];
 					$user->stripe_id = $customer->id;
 					$user->active = 1;
+					$user->card = str_repeat('*',strlen($params['number'])-4).substr($params['number'],-4);
 					$user->save();
 				}
 			} else {

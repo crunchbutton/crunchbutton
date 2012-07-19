@@ -96,6 +96,10 @@ class Crunchbutton_Order extends Cana_Table {
 			$defaultOrder->config = $def;
 			$defaultOrder->save();
 		}
+		
+		$this->_user->pay_type = $this->pay_type;
+		$this->_user->delivery_type = $this->delivery_type;
+		$this->_user->save();
 
 		return true;
 	}

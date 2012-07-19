@@ -245,8 +245,12 @@ App.page.restaurant = function(id) {
 
 		if (App.cart.hasItems()) {
 			App.cart.reloadOrder();
-		} else if (App.config.user.defaults[App.restaurant.id_restaurant]) {
-			App.cart.loadOrder(App.config.user.defaults[App.restaurant.id_restaurant]);		
+		} else if (App.config.user && App.config.user.defaults && App.config.user.defaults[App.restaurant.id_restaurant]) {
+			try {
+				App.cart.loadOrder(App.config.user.defaults[App.restaurant.id_restaurant]);
+			} catch (e) {
+				App.cart.loadOrder(App.restaurant.defaultOrder());
+			}
 		} else {
 			App.cart.loadOrder(App.restaurant.defaultOrder());
 		}
@@ -383,6 +387,7 @@ App.drawPay = function() {
 	$('[name="pay-name"]').val(App.config.user.name);
 	$('[name="pay-phone"]').val(App.config.user.phone);
 	$('[name="pay-address"]').val(App.config.user.address);
+	$('[name="pay-card-number"]').val(App.config.user.card);
 
 };
 
@@ -758,7 +763,8 @@ App.cart = {
 
 		App.busy.makeBusy();
 
-		var read = arguments[1] ? true : false;
+		var read = $('.payment-form').length ? true : false;
+		console.log(read);
 
 		if (read) {
 			App.config.user.name = $('[name="pay-name"]').val();
@@ -791,7 +797,39 @@ App.cart = {
 			}
 		}
 
-		console.log(order);
+		console.log('ORDER:',order);
+		
+		var errors = [];
+		
+		if (!order.name) {
+			errors[errors.length] = 'Please enter your name.';
+		}
+		
+		if (!order.phone) {
+			errors[errors.length] = 'Please enter a valid phone #.';
+		}
+		
+		if (order.delivery_type == 'delivery' && !order.address) {
+			errors[errors.length] = 'Please enter an address.';
+		}
+		
+		if (order.pay_type == 'card' && (!order.card || !order.card.number)) {
+			errors[errors.length] = 'Please enter a valid card #.';
+		}
+		
+		if (!App.cart.hasItems()) {
+			errors[errors.length] = 'Please add something to your order.';
+		}
+		
+		if (errors.length) {
+			var error = '';
+			for (x in errors) {
+				error += errors[x] + "\n";
+			}
+			alert(error);
+			App.busy.unBusy();
+			return;
+		}
 
 		$.ajax({
 			url: App.service + 'order',
@@ -940,6 +978,8 @@ App.test = {
 		$('[name="pay-name"]').val('MR TEST');
 		$('[name="pay-phone"]').val('***REMOVED***');
 		$('[name="pay-address"]').val("123 main\nsanta monica ca");
+		
+		App.order.cardChanged = true;
 	},
 	logout: function() {
 		$.getJSON('/api/logout',function(){ location.reload()});
@@ -1108,6 +1148,10 @@ $(function() {
 		$('.main-content-item').hide();
 		History.pushState({}, loc, loc);
 		//App.loadPage();
+	});
+	
+	$('[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]').live('change', function() {
+		App.order.cardChanged = true;
 	});
 	
 	if (screen.width <= 480) {
