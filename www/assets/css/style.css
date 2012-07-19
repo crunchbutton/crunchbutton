@@ -900,6 +900,8 @@ and (max-width : 769px) {
 		width: 100%;
 		left: 0;
 		top: 43px;
+		white-space: nowrap;
+		overflow: hidden;
 
 		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #ccc) );
 		background:-moz-linear-gradient( center top, #ededed 5%, #ccc 100% );
@@ -938,7 +940,7 @@ and (max-width : 769px) {
 		width: 30px;
 		margin: 5px 18px 0 10px;
 		background-size: contain;
-		float: left;
+		display: inline-block;
 	}
 	.cart-summary-items {
 		margin-top: 11px;
@@ -946,9 +948,10 @@ and (max-width : 769px) {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		width: 320px;
+		width: 80%;
+		vertical-align: top;
 
-		float: left;
+		display: inline-block;
 	}
 	.cart-items {
 		float: left;
