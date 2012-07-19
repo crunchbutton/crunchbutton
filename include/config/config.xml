@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <data version="1">
-    <viewfilter>true</viewfilter>
+    <viewfilter>false</viewfilter>
     <timezone>America/Los_Angeles</timezone>
     <db>
         <live>

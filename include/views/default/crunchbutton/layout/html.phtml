@@ -29,7 +29,6 @@
 
 
 $(function() {
-
 	App.communities = {};
 	<? foreach (Community::all() as $community) : ?>
 		App.communities['<?=$community->permalink?>'] = {
@@ -38,6 +37,7 @@ $(function() {
 			<? endforeach ; ?>
 		};
 	<? endforeach ; ?>
+	App.config = <?=json_encode(c::appConfig())?>;
 })
 </script>
 
