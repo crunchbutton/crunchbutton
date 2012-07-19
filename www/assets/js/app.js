@@ -864,10 +864,17 @@ App.cart = {
 					}
 
 					order.cardChanged = false;
-					App.cache('Order',json);
 					App.justCompleted = true;
-					var loc = '/order/' + json.uuid;
-					History.pushState({},loc,loc);
+					
+					$.getJSON('/api/config', App.processConfig);
+					App.cache('Order',json.uuid,function() {
+						var loc = '/order/' + this.uuid;
+						History.pushState({},loc,loc);
+					});
+
+					
+
+					
 				}
 				App.busy.unBusy();
 			}
@@ -1008,6 +1015,14 @@ App.test = {
 	},
 	cart: function() {
 		alert(JSON.stringify(App.cart.items));
+	}
+};
+
+App.processConfig = function(json) {
+	App.config = json;
+	if (App.config.user) {
+		App.order['pay_type'] = App.config.user['pay_type'];
+		App.order['delivery_type'] = App.config.user['delivery_type'];
 	}
 };
 
@@ -1175,11 +1190,7 @@ $(function() {
 	// make sure we have our config loaded
 	// @todo: encode this data into the initial request and update as needed
 	var haveConfig = function(json) {
-		App.config = json;
-		if (App.config.user) {
-			App.order['pay_type'] = App.config.user['pay_type'];
-			App.order['delivery_type'] = App.config.user['delivery_type'];
-		}
+		App.processConfig(json);
 		App._init = true;
 		App.loadPage();
 	};

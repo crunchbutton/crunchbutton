@@ -4,7 +4,7 @@
 <h2>Name: <?=$order->name?></h2>
 <h2>Phone: <?=$order->phone?></h2>
 <? if ($order->delivery_type == 'delivery') : ?>
-	<h2>Address: <?=$order->address?></h2>
+	<h2>Address: <?=nl2br(strip_tags($order->address))?></h2>
 <? endif ; ?>
 
 <table border="1" width="100%" cellpadding="10">
