@@ -247,7 +247,7 @@ App.page.restaurant = function(id) {
 			App.cart.reloadOrder();
 		} else if (App.config.user && App.config.user.defaults && App.config.user.defaults[App.restaurant.id_restaurant]) {
 			try {
-				App.cart.loadOrder(App.config.user.defaults[App.restaurant.id_restaurant]);
+				App.cart.loadOrder(JSON.parse(App.config.user.defaults[App.restaurant.id_restaurant].config));
 			} catch (e) {
 				App.cart.loadOrder(App.restaurant.defaultOrder());
 			}
@@ -919,6 +919,7 @@ App.cart = {
 		App.cart.loadOrder(cart);
 	},
 	loadOrder: function(order) {
+	console.log('LOAD',order);
 		try {
 			if (order) {
 				for (var x in order) {

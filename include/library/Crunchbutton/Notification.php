@@ -6,6 +6,8 @@ class Crunchbutton_Notification extends Cana_Table {
 		//$env = c::env() == 'live' ? 'live' : 'dev';
 		$env = 'dev';
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
+		$mail = ($env == 'live' ? $this->value : '_EMAIL');
+		$fax = ($env == 'live' ? $this->value : '_EMAIL');
 
 		switch ($this->type) {
 			case 'fax':
@@ -43,8 +45,7 @@ class Crunchbutton_Notification extends Cana_Table {
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoing,
 					'+1'.$num,
-					'http://beta.crunchr.co/api/order/34/say'
-//					'http://twimlets.com/message?Message='.urlencode($msg)
+					'http://'.$_SERVER['__HTTP_HOST'].'/api/order/34/say'
 				);
 
 				$log = new Notification_Log;
@@ -59,8 +60,10 @@ class Crunchbutton_Notification extends Cana_Table {
 
 			case 'email':
 				$mail = new Email_Order([
-					'order' => $order
+					'order' => $order,
+					'email' => $mail
 				]);
+				$mail->send();
 				break;
 		}	
 	}

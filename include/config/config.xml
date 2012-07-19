@@ -41,7 +41,7 @@
     		<public>***REMOVED***</public>
     	</dev>
     	<live>
-    		<secret>Mcr6bpPCOCLU8VmHEmMKIkTIHlbRcRrJ</secret>
+    		<secret>***REMOVED***</secret>
     		<public>***REMOVED***</public>
     	</live>
     </stripe>
@@ -60,13 +60,19 @@
 		<testnumber>_PHONE_</testnumber>
 	</twilio>
 	<phaxio>
-    	<key>_KEY_</key>
-		<secret>_KEY_</secret>
+		<old>
+	    	<key>_KEY_</key>
+			<secret>_KEY_</secret>
+		</old>
+		<live>
+			<key>_KEY_</key>
+			<secret>_KEY_</secret>
+		</live>
+		<dev>
+			<key>_KEY_</key>
+			<secret>_KEY_</secret>
+		</dev>
 	</phaxio>
-	<phaxio2>
-    	<key>_KEY_</key>
-		<secret>_KEY_</secret>
-	</phaxio2>
 	<crypt>
 		<key>_KEY_a6050723</key>
 	</crypt>
