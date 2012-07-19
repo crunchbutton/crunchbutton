@@ -34,6 +34,8 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		if (!isset($this->_hours[$gmt])) {
 			$hours = Hour::q('select * from hour where id_restaurant="'.$this->id_restaurant.'"');
 			if ($gmt) {
+				$timezone = new DateTime('today ', new DateTimeZone($this->timezone));
+				$timezone = $timezone->format('O');
 
 				foreach ($hours as $hour) {
 					$open = new DateTime('today '.$hour->time_open, new DateTimeZone($this->timezone));

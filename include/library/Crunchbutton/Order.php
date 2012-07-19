@@ -44,9 +44,9 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'card';
 		$this->delivery_type = $params['delivery_type'] == 'delivery' ? 'delivery' : 'takeout';
-		$this->_address = $params['address'];
-		$this->_phone = $params['phone'];
-		$this->_name = $params['name'];
+		$this->address = $params['address'];
+		$this->phone = $params['phone'];
+		$this->name = $params['name'];
 		
 		$this->_number = $params['card']['number'];
 		$this->_exp_month = $params['card']['month'];
@@ -135,9 +135,9 @@ class Crunchbutton_Order extends Cana_Table {
 					'number' => $this->_number,
 					'exp_month' => $this->_exp_month,
 					'exp_year' => $this->_exp_year,
-					'name' => $this->_name,
-					'address' => $this->_address,
-					'phone' => $this->_phone,
+					'name' => $this->name,
+					'address' => $this->address,
+					'phone' => $this->phone,
 					'user' => c::user()->id_user ? c::user() : null
 				]);
 				if ($r['status']) {
@@ -163,15 +163,15 @@ class Crunchbutton_Order extends Cana_Table {
 				switch ($type) {
 					case 'dishes':
 						foreach ($typeItem as $item) {
-							$dish = Dish::o($item['id']);
+							$dish = new Dish($item['id']);
 							if ($item['toppings']) {
 								foreach ($item['toppings'] as $topping => $bleh) {
-									$dish->_toppings[] = Topping::o($topping);
+									$dish->_toppings[] = new Topping($topping);
 								}
 							}
 							if ($item['substitutions']) {
 								foreach ($item['substitutions'] as $topping => $bleh) {
-									$dish->_substitution[] += Substitution::o($topping);
+									$dish->_substitution[] += new Substitution($topping);
 								}
 							}
 							$orderItems[] = $dish;
@@ -179,12 +179,12 @@ class Crunchbutton_Order extends Cana_Table {
 						break;
 					case 'sides':
 						foreach ($typeItem as $item) {
-							$orderItems[] = Side::o($item['id']);
+							$orderItems[] = new Side($item['id']);
 						}
 						break;
 					case 'extras':
 						foreach ($typeItem as $item) {
-							$orderItems[] = Extra::o($item['id']);
+							$orderItems[] = new Extra($item['id']);
 						}					
 						break;
 				}
@@ -210,28 +210,47 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function message($type) {
-		foreach ($order->order() as $item) {
-			$food .= $item->name.' ';
+		switch ($type) {
+			case 'sms':
+				$with = 'w/';
+				break;
+
+			case 'phone':
+				$with = 'with';
+				break;
+
+		}
+		foreach ($this->order() as $item) {
+			$foodItem = "\n- ".$item->name.' ';
 			if ($item->_toppings || $item->_substitutions) {
-				$food .= 'with ';
+				$foodItem .= $with.' ';
 			}
 			if ($item->_toppings) {
 				foreach ($item->_toppings as $topping) {
-					$food .= $topping->name.', ';
+					$foodItem .= $topping->name.', ';
 				}
+				
+				$foodItem = substr($foodItem, 0, -2).'. ';
 			}
 			if ($item->_substitutions) {
 				foreach ($item->_substitutions as $topping) {
-					$food .= $topping->name.', ';
+					$foodItem .= $topping->name.', ';
 				}
+				$foodItem = substr($foodItem, 0, -2).'. ';
+			}
+			
+			$food .= $foodItem;
+			
+			if (!$item->_substitutions && !$item->_toppings) {
+				$food .= '. ';
 			}
 		}
 
 		switch ($type) {
 			case 'sms':
-				$msg = $this->name.' ordered '.$this->delivery_type.' paying by '.$this->pay_type.'. '.$food.'.  phone: '.preg_replace('/[^\d.]/','',$this->phone).'.';
+				$msg = $this->name.' ordered '.$this->delivery_type.' paying by '.$this->pay_type.". \n".$food."\n\nphone: ".preg_replace('/[^\d.]/','',$this->phone).'.';
 				if ($this->delivery_type == 'delivery') {
-					$msg .= ' address: '.$this->address;
+					$msg .= " \naddress: ".$this->address;
 				}
 				break;
 
@@ -242,6 +261,7 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 				break;
 		}
+		die($msg);
 		return $msg;
 	}
 	

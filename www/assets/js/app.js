@@ -44,7 +44,7 @@ var App = {
 	order: {
 		cardChanged: false,
 		pay_type: 'card',
-		deliver_type: 'deliver',
+		delivery_type: 'deliver',
 		tip: '10'
 	},
 	_init: false,
@@ -262,7 +262,7 @@ App.page.restaurant = function(id) {
 				paying.append('&nbsp;using <a href="javascript:;">cash</a>');			
 			}
 			dp.append(paying);
-			if (App.config.user.deliver_type == 'delivery') {
+			if (App.config.user.delivery_type == 'delivery') {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</a></div>');
 			} else {
 				dp.append('<div class="dp-display-address dp-display-item"><label>For takeout:</label><br /><a href="javascript:;"><i>change</i></a></div>');			
@@ -773,7 +773,7 @@ App.cart = {
 			cart: App.cart.items,
 			tip: App.order.tip ? App.order.tip : '10',
 			pay_type: App.order['pay_type'],
-			deliver_type: App.order['delivery_type'],
+			delivery_type: App.order['delivery_type'],
 			restaurant: App.restaurant.id
 		};
 

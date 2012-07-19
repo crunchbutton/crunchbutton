@@ -31,13 +31,13 @@ var Restaurant = function(id) {
 		}
 	}
 	
-	self.dateFromItem = function(item) {
+	self.dateFromItem = function(item, offset) {
 		var
 			theTime = item.split(':'),
 			theDate = new Date();
-		theDate.setTimezone(self.timezone);
+
 		theDate.setHours(theTime[0]);
-		theDate.setMinutes(theTime[1]);
+		theDate.setMinutes(theTime[1] + offset);
 		return theDate;
 	}
 	
@@ -45,14 +45,13 @@ var Restaurant = function(id) {
 		var
 			hours = self._hours,
 			today = new Date(),
-			offset = -(today.getTimezoneOffset()/60);
-			
-		today.setTimezone(self.timezone);
+			offset = -(today.getTimezoneOffset()); // @todo: ensure this works on positive tz
 
 		for (x in hours) {
+			console.log(hours);
 			var
-				open = self.dateFromItem(hours[x].time_open),
-				close = self.dateFromItem(hours[x].time_close);
+				open = self.dateFromItem(hours[x][0], offset),
+				close = self.dateFromItem(hours[x][1], offset);
 			if (today >= open && today <= close) {
 				return true;
 			}

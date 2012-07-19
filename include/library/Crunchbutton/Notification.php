@@ -27,11 +27,15 @@ class Crunchbutton_Notification extends Cana_Table {
 
 			case 'sms':
 				$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-				$twilio->account->sms_messages->create(
-					c::config()->twilio->{$env}->outgoing,
-					'+1'.$num,
-					$order->message('sms')
-				);
+				$message = str_split($order->message('sms'),160);
+
+				foreach ($message as $msg) {
+					$twilio->account->sms_messages->create(
+						c::config()->twilio->{$env}->outgoing,
+						'+1'.$num,
+						$msg
+					);
+				}
 				break;
 
 			case 'phone':
