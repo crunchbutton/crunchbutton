@@ -35,6 +35,7 @@ History.Adapter.bind(window,'statechange',function() {
     
 
 var App = {
+	slogans: ['streamlined food ordering','hungry ?','only the best'],
 	service: '/api/',
 	cached: {},
 	cart: {},
@@ -172,9 +173,10 @@ App.page.community = function(id) {
 	//App.community = App.cache('Community', id, function() {
 
 		document.title = 'Crunchbutton - ' + App.community.name;
+		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
 
 		$('.main-content-item').html(
-			'<div class="home-tagline"><h1>streamlined food ordering</h1></div>' + 
+			'<div class="home-tagline"><h1>' + slogan + '</h1></div>' + 
 			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
 		);
 
