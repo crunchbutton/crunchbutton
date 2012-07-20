@@ -415,7 +415,7 @@ App.page.order = function(id) {
 		if (this.delivery_type == 'delivery') {
 			$('.order-info').append('<b>Your delivery address is:</b><br />' + this.address + '<br /><br />');
 		} else {
-			$('.order-info').append('<b>For pickup</b><br />');
+			$('.order-info').append('<b>For pickup</b><br /><br />');
 		}
 		
 		$('.order-info').append('<b>Your phone # is:</b><br />' + this.phone + '<br /><br />');
@@ -431,7 +431,7 @@ App.page.order = function(id) {
 		
 		App.cache('Restaurant',order.id_restaurant, function() {
 			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
-			$('.order-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="$(\'.link-help\').click();">message us</a><br />or call <b><a href="tel:(213) 293-6935">(213) 2 WENZEL</a></b><br /><br />');
+			$('.order-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="App.olark.show();">message us</a><br />or call <b><a href="tel:(213) 293-6935">(213) 2 WENZEL</a></b><br /><br />');
 		});
 
 	});
@@ -1064,6 +1064,23 @@ App.processConfig = function(json) {
 	}
 };
 
+App.olark = {
+	timer: null,
+	hide: function() {
+		olark('api.box.hide');
+		App.olark.timer = null;
+	},
+	show: function() {
+		olark('api.box.show');
+		$('.habla_button').click();
+		
+		if (screen.width <= 480) {
+			clearTimeout(App.olark.timer);
+			App.olark.timer = setTimeout(App.olark.hide,1000);
+		}
+	}
+};
+
 $(function() {
 
 	$('.delivery-toggle-delivery').live('click',function() {
@@ -1234,8 +1251,7 @@ $(function() {
 	$('.link-help').live('click',function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		olark('api.box.show');
-		$('.habla_button').click();
+		App.olark.show(false);
 	});
 	
 	if (screen.width <= 480) {
