@@ -405,36 +405,33 @@ App.page.order = function(id) {
 		$('.main-content-item').css('width','auto');
 		$('.main-content-item').html(
 			'<div class="content-padder-before"></div>' +
-			'<div class="delivery-payment-info content-padder main-content-readable"></div>'
+			'<div class="order-info content-padder main-content-readable"></div>'
 		);
-		$('.delivery-payment-info').html(
+		$('.order-info').html(
 			'<span class="order-thanks-message">'+ message +'</span>' + 
 			'<br /><br />'
 		);
 
 		if (this.delivery_type == 'delivery') {
-			$('.delivery-payment-info').append('<b>Your delivery address is:</b><br />' + this.address + '<br /><br />');
+			$('.order-info').append('<b>Your delivery address is:</b><br />' + this.address + '<br /><br />');
 		} else {
-			$('.delivery-payment-info').append('<b>For pickup</b><br />');
+			$('.order-info').append('<b>For pickup</b><br />');
 		}
 		
-		$('.delivery-payment-info').append('<b>Your phone # is:</b><br />' + this.phone + '<br /><br />');
+		$('.order-info').append('<b>Your phone # is:</b><br />' + this.phone + '<br /><br />');
 		
 		
-		$('.delivery-payment-info').append('<b>Your ordered:</b>' + order._message + '<br /><br />');
+		$('.order-info').append('<b>Your ordered:</b>' + order._message + '<br /><br />');
 		
 		if (this.pay_type == 'card') {
-			$('.delivery-payment-info').append('<b>Your total is:</b><br />$' + parseInt(this.price).toFixed(2) + '<br /><br />');
+			$('.order-info').append('<b>Your total is:</b><br />$' + parseInt(this.price).toFixed(2) + '<br /><br />');
 		} else {
-			$('.delivery-payment-info').append('<b>Total approximate total is</b>:<br />$' + parseInt(this.price).toFixed(2) + '<br /><br />');
+			$('.order-info').append('<b>Total approximate total is</b>:<br />$' + parseInt(this.price).toFixed(2) + '<br /><br />');
 		}
 		
 		App.cache('Restaurant',order.id_restaurant, function() {
-			$('.delivery-payment-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
-			
-			$('.delivery-payment-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="	olark(\'api.box.show\'); $(\'.habla_button\').click();">message us</a><br />or call <b><a href="tel:(213) 293-6935">(213) 2 WENZEL</a></b><br /><br />');
-			
-			
+			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
+			$('.order-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="	olark(\'api.box.show\'); $(\'.habla_button\').click();">message us</a><br />or call <b><a href="tel:(213) 293-6935">(213) 2 WENZEL</a></b><br /><br />');
 		});
 
 	});

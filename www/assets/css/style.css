@@ -429,11 +429,13 @@ html[xmlns] .clearfix {
 }
 
 .delivery-payment-info {
+	margin-top: 25px;
+}
+.delivery-payment-info, .order-info {
 	line-height: 1.4em;
 	text-align: center;
-
 	margin: 0 auto;
-	margin-top: 25px;
+	font-size: 14px;
 }
 
 .dp-display-item:first-child {
@@ -624,10 +626,6 @@ html[xmlns] .clearfix {
 
 .resturant-dishes {
 	width: 100%;
-}
-
-.delivery-payment-info {
-	font-size: 14px;
 }
 
 
@@ -993,9 +991,6 @@ and (max-width : 769px) {
 		margin: 5px 0 15px 0;
 		display: block;
 	}
-	.delivery-payment-info {
-
-	}
 }
 
 
@@ -1012,6 +1007,7 @@ and (max-width : 769px) {
 and (min-width : 769px) {
 	.content {
 		margin: 0 auto;
+		padding: 20px 0 20px 0;
 	}
 	.content.short-meal-list {
 		width: 690px;
@@ -1076,7 +1072,6 @@ and (min-width : 769px) {
 and (min-width : 1024px) {
 	.content {
 		width: 1024px;
-		padding: 20px 0 20px 0;
 	}
 
 	.content-padder {
