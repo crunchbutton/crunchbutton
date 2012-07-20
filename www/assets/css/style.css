@@ -631,7 +631,9 @@ html[xmlns] .clearfix {
 }
 
 .meal-item-closed {
-	opacity: .5;
+	-moz-opacity: .40;
+	filter: alpha(opacity=40);
+	opacity: .40;
 }
 
 
