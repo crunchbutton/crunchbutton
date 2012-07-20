@@ -15,6 +15,9 @@ var Community = function(id) {
 				self.__restaurants[self.__restaurants.length] = App.cache('Restaurant', self._restaurants[x]);
 			}
 			self._restaurants = null;
+			self.__restaurants.sort(function(a, b) {
+				return (b._open ? 1 : 0) - (a._open ? 1 : 0);
+			});
 		}
 		return self.__restaurants;
 	}

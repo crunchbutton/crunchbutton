@@ -630,6 +630,10 @@ html[xmlns] .clearfix {
 	width: 100%;
 }
 
+.meal-item-closed {
+	opacity: .5;
+}
+
 
 @media only screen 
 and (max-width : 1024px) {

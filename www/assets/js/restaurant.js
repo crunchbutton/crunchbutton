@@ -42,8 +42,9 @@ var Restaurant = function(id) {
 	}
 	
 	self.open = function() {
+		return this._open;
 		var
-			hours = self._hours,
+			hours = self._hoursFormat,
 			today = new Date(),
 			offset = -(today.getTimezoneOffset()); // @todo: ensure this works on positive tz
 

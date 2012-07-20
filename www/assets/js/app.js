@@ -106,9 +106,26 @@ App.cache = function(type, id) {
 };
 
 App.loadRestaurant = function(id) {
-	var loc = '/' + App.community.permalink + '/' + id;
-	History.pushState({}, loc, loc);
-	//App.loadPage();
+	App.cache('Restaurant',id,function() {
+		if (!this.open()) {
+			var hours = '';
+			for (var x in this._hours) {
+				hours += x + ': ';
+				for (var xx in this._hours[x]) {
+					console.log(this._hours[x]);
+					hours += this._hours[x][xx][0] + ' - ' + this._hours[x][xx][1] + (xx == 0 ? ', ' : '');
+				}
+				hours += "\n";
+			}
+			alert(
+				"This restaurant is currently closed. It will be open during the following hours:\n\n" + hours
+			);
+		} else {
+			var loc = '/' + App.community.permalink + '/' + id;
+			History.pushState({}, loc, loc);
+		
+		}
+	});
 };
 
 App.loadPaymentinfo = function() {
@@ -167,7 +184,7 @@ App.page.community = function(id) {
 		}
 
 		for (var x in rs) {
-			var restaurant = $('<div class="meal-item" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
+			var restaurant = $('<div class="meal-item'+ (!rs[x].open() ? ' meal-item-closed' : '') +'" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
 			var restaurantContent = $('<div class="meal-item-content">');
 
 			restaurantContent

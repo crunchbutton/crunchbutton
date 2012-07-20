@@ -96,6 +96,9 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			$out['_extras'][$extra->id_extra] = $extra->exports();
 		}
 		foreach ($this->hours(true) as $hours) {
+			$out['_hoursFormat'][$hours->day][] = [$hours->time_open, $hours->time_close];
+		}
+		foreach ($this->hours() as $hours) {
 			$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 		}
 		
