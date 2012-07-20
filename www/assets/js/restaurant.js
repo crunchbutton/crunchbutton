@@ -106,9 +106,11 @@ var Restaurant = function(id) {
 	}
 	
 	self.finished = function(data) {
+
 		for (x in data) {
 			self[x] = data[x];
 		}
+
 		self.dishes();
 		self.sides();
 		self.extras();
@@ -116,6 +118,7 @@ var Restaurant = function(id) {
 		if (complete) {
 			complete.call(self);
 		}
+
 	}
 	
 	if (typeof(id) == 'object') {
