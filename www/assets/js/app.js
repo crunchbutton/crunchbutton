@@ -431,7 +431,7 @@ App.page.order = function(id) {
 		
 		App.cache('Restaurant',order.id_restaurant, function() {
 			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
-			$('.order-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="	olark(\'api.box.show\'); $(\'.habla_button\').click();">message us</a><br />or call <b><a href="tel:(213) 293-6935">(213) 2 WENZEL</a></b><br /><br />');
+			$('.order-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="$(\'.link-help\').click();">message us</a><br />or call <b><a href="tel:(213) 293-6935">(213) 2 WENZEL</a></b><br /><br />');
 		});
 
 	});
@@ -516,17 +516,19 @@ App.loadPage = function() {
 
 	switch (true) {
 		case communityRegex.test(url):
-			setTimeout(scrollTo, 80, 0, 1);
+			App.refreshLayout();
 			$('.main-content-item').show();
 			App.page.community(App.community.id);
 			return;
 			break;
 
 		case restaurantRegex.test(url):
+			App.refreshLayout();
 			App.page.restaurant(path[1]);
 			break;
 
 		case orderRegex.test(url):
+			App.refreshLayout();
 			App.page.order(path[1]);
 			break;
 
@@ -534,8 +536,33 @@ App.loadPage = function() {
 			App.page.community(App.community.id);
 			break;
 	}
-	setTimeout(scrollTo, 80, 0, 1);
+	App.refreshLayout();
 	$('.main-content-item').fadeIn();
+};
+
+App.refreshLayout = function() {
+	// a really stupid fix for ios and fixed position
+	setTimeout(function() {
+	    scrollTo(0, 1);
+	    var el = $('.cart-summary');
+
+	    if (el.length) {
+			if (App.cartTimer) {
+				clearTimeout(App.cartTimer);
+			} else {
+				var top = el.css('top');
+				el.css('position','relative');
+				el.css('top',0);
+			}
+				
+		    App.cartTimer = setTimeout(function() {
+				el.css('top','43px');
+				el.css('position','fixed');
+				App.cartTimer = null;
+			}, 1);
+
+		}
+	}, 80);
 };
 
 App.cart = {
@@ -1204,8 +1231,14 @@ $(function() {
 		App.order.cardChanged = true;
 	});
 	
+	$('.link-help').live('click',function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		olark('api.box.show');
+		$('.habla_button').click();
+	});
+	
 	if (screen.width <= 480) {
-		
 		olark('api.box.onShow',function() {
 			olark('api.box.hide');
 		});
