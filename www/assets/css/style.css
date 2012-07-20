@@ -62,6 +62,9 @@ a {
 :focus {
 	outline: none;
 }
+html {
+	-webkit-text-size-adjust: none;
+}
 
 * {
 	-webkit-tap-highlight-color: rgba(205,69,29,.5);
@@ -428,7 +431,7 @@ html[xmlns] .clearfix {
 .delivery-payment-info {
 	line-height: 1.4em;
 	text-align: center;
-	width: 330px;
+
 	margin: 0 auto;
 	margin-top: 25px;
 }
@@ -504,7 +507,7 @@ html[xmlns] .clearfix {
 
 .field-container select {
 	height: 2.2em;
-	width: 80px;
+	width: 70px;
 	font-size: 12px;
 	margin-right: 25px;
 }
@@ -623,6 +626,10 @@ html[xmlns] .clearfix {
 	width: 100%;
 }
 
+.delivery-payment-info {
+	font-size: 14px;
+}
+
 
 @media only screen 
 and (max-width : 1024px) {
@@ -736,7 +743,7 @@ and (max-width : 769px) {
 	}
 
 	.main-content {
-		margin: 48px 5px 0 5px;
+		margin: 48px 8px 0 8px;
 		min-height: 240px;
 	}
 	.nav {
@@ -769,7 +776,7 @@ and (max-width : 769px) {
 		background-position: center center !important;
 	}
 	.restaurant-pic {
-		height: 160px;
+		height: 140px;
 		width: 100%;
 		border-radius: 4px;
 		border: 1px solid #999;
@@ -787,7 +794,7 @@ and (max-width : 769px) {
 		font-size: 16px;
 		font-weight: bold;
 		margin-left: -10px;
-		margin-top: 140px;
+		margin-top: 120px;
 		position: absolute;
 		z-index: 20;
 		box-shadow: 1px 1px 1px rgba(0,0,0,.3);
@@ -987,7 +994,7 @@ and (max-width : 769px) {
 		display: block;
 	}
 	.delivery-payment-info {
-		width: 100%;
+
 	}
 }
 
