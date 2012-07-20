@@ -428,14 +428,16 @@ html[xmlns] .clearfix {
 	height: 1%;
 }
 
-.delivery-payment-info {
-	margin-top: 25px;
-}
+
 .delivery-payment-info, .order-info {
 	line-height: 1.4em;
 	text-align: center;
 	margin: 0 auto;
-	font-size: 14px;
+
+}
+.delivery-payment-info {
+	margin-top: 25px;
+	font-size: 13px;
 }
 
 .dp-display-item:first-child {
@@ -661,6 +663,7 @@ and (max-width : 1024px) {
 	margin-left: 203px;
 	color: #fff;
 	text-shadow: 1px 1px 0px #e0221a;
+	white-space: nowrap;
 }
 
 /*
@@ -672,8 +675,9 @@ and (max-device-width : 480px) {
 and (max-width : 769px) {
 
 	.meal-item-tag {
-		margin-left: 191px;
+		margin-left: 188px;
 		margin-top: -72px;
+		white-space: nowrap;
 	}
 
 	.content {
@@ -1064,6 +1068,9 @@ and (min-width : 769px) {
 	}
 	.restaurant-payment-div {
 		margin-top: 40px;
+	}
+	.delivery-payment-info {
+		width: 300px;
 	}
 }
 
