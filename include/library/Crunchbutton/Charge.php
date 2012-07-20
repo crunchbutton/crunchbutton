@@ -7,6 +7,7 @@ class Crunchbutton_Charge extends Cana_Model {
 	
 	public static function charge($params = []) {
 		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = 'dev';
 		Stripe::setApiKey(c::config()->stripe->{$env}->secret);
 		$success = false;
 		$reason = false;
