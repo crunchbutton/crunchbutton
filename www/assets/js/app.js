@@ -201,8 +201,11 @@ App.page.community = function(id) {
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
 				.append('<h3 class="meal-food">Top Item: ' + rs[x].top().name + '</h3>');
 
-			if (rs[x].delivery != '1') {
+			if (rs[x].open() && rs[x].delivery != '1') {
 				restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
+			}
+			if (!rs[x].open()) {
+				restaurantContent.append('<div class="meal-item-tag-closed">Closed</div>');
 			}
 
 			restaurant
@@ -231,7 +234,7 @@ App.page.restaurant = function(id) {
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-items"></div>' + 
-				'<div class="cart-items"><div class="restaurant-item-title">your order</div><div class="cart-items-content"></div></div>' + 
+				'<div class="cart-items"><div class="restaurant-item-title">your order</div><div class="divider"></div><div class="cart-items-content"></div></div>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
 			'<div class="restaurant-payment-div"></div>'
@@ -332,7 +335,7 @@ App.drawPay = function(restaurant) {
 		
 			'<label class="pay-title-label">Delivery Info</label>' + 
 			'<div class="input-item toggle-wrapper clearfix">' +
-				'<a href="javascript:;" class="delivery-toggle-delivery toggle-item delivery-only">delivery</a> <span class="toggle-spacer delivery-only">or</span> <a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>' + 
+				'<a href="javascript:;" class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</a> <span class="toggle-spacer delivery-only-text">or</span> <a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>' + 
 			'</div><div class="divider"></div>' + 
 
 			'<label>Name</label>' + 
@@ -416,7 +419,7 @@ App.drawPay = function(restaurant) {
 	$('[name="pay-card-number"]').val(App.config.user.card);
 	
 	if (!restaurant.delivery) {
-		$('.delivery-only').hide();
+		$('.delivery-only-text').hide();
 	}
 
 };
@@ -665,7 +668,7 @@ App.cart = {
 		if (type == 'Dish' && (App.cached['Dish'][item].toppings().length || App.cached['Dish'][item].substitutions().length)) {
 			el.append('<div class="cart-item-config"><a href="javascript:;">Customize</a></div>');
 		}
-		el.append('<div class="divider"></div>');
+
 		el.hide();
 
 		$('.cart-items-content').append(el);

@@ -292,10 +292,11 @@ b {
 }
 
 .cart-item-name {
-	float: left;
 	margin-left: 15px;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 160px;
 }
 
 .divider {
@@ -306,6 +307,8 @@ b {
 	height: 1px;
 	background: url(/assets/images/bg_divider.gif);
 	opacity: .3;
+	-moz-opacity: .30;
+	filter: alpha(opacity=30);
 }
 
 .restaurant-payment-div {
@@ -632,9 +635,6 @@ html[xmlns] .clearfix {
 }
 
 .meal-item-closed {
-	-moz-opacity: .40;
-	filter: alpha(opacity=40);
-	opacity: .40;
 }
 
 
@@ -656,9 +656,11 @@ and (max-width : 1024px) {
 	}
 }
 
-.meal-item-tag {
-	background: #ff3f1f;
-	border: 1px solid #ff6648;
+.nav-back {
+	display: none;
+}
+
+.meal-item-tag, .meal-item-tag-closed {
 	padding: 5px 20px 5px 15px;
 	font-size: 12px;
 	margin-top: -80px;
@@ -667,15 +669,28 @@ and (max-width : 1024px) {
 	box-shadow: 1px 1px 1px rgba(0,0,0,.3);
 	font-weight: bold;
 	text-align: left;
-	margin-left: 203px;
 	color: #fff;
 	text-shadow: 1px 1px 0px #e0221a;
 	white-space: nowrap;
 }
 
-.nav-back {
-	display: none;
+.meal-item-tag {
+	background: #ff3f1f;
+	border: 1px solid #ff6648;
+	margin-left: 203px;
 }
+
+.meal-item-tag-closed {
+	background: #ff281f;
+	border: 1px solid #ff645d;
+	width: 284px;
+	text-align: center;
+	margin-left: -6px;
+	font-size: 14px;
+	margin-top: -81px;
+}
+
+
 
 /*
 @media only screen 
@@ -684,6 +699,9 @@ and (max-device-width : 480px) {
 */
 @media only screen 
 and (max-width : 769px) {
+	.cart-item-name {
+		width: 54%;
+	}
 	.nav-back-show {
 		display: block;
 	}
@@ -711,8 +729,9 @@ and (max-width : 769px) {
 		border-radius: 2px;
 		margin-bottom: 4px;
 		box-shadow: inset 0px 1px 0px 0px #fff;
+		white-space: nowrap;
 	}
-	
+
 	.resturant-dish-container .dish-name {
 		text-decoration: underline;
 	}
@@ -856,6 +875,8 @@ and (max-width : 769px) {
 	}
 	.footer {
 		opacity: .7;
+		-moz-opacity: .70;
+		filter: alpha(opacity=70);
 	}
 	.card-icons, .payment-card-info p {
 		text-align: center;
@@ -1007,6 +1028,11 @@ and (max-width : 769px) {
 	.cart-items {
 		float: left;
 		width: 100%;
+		
+	}
+	.cart-item div {
+		display: inline-block;
+		height: 20px;
 	}
 	
 	.content.short-meal-list {
@@ -1023,9 +1049,7 @@ and (max-width : 769px) {
 	.dish-price {
 		display: inline-block;
 	}
-	.resturant-dish-container a {
-		white-space: nowrap;
-	}
+
 	.dp-display-item:first-child {
 		margin-left: 0;
 	}
