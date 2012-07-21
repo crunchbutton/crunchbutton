@@ -1046,7 +1046,7 @@ and (max-width : 769px) {
 }
 
 @media only screen 
-and (min-width : 769px) {
+and (min-width : 770px) {
 	.content {
 		margin: 0 auto;
 		padding: 20px 0 20px 0;
@@ -1115,6 +1115,9 @@ and (min-width : 769px) {
 	}
 	.button-bottom {
 		width: 310px;
+	}
+	.input-item {
+		min-height: 25px;
 	}
 }
 
