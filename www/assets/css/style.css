@@ -213,7 +213,7 @@ body {
 }
 
 .footer a {
-	color: #666;
+	color: #888;
 	margin: 5px;
 }
 .footer {
@@ -269,8 +269,7 @@ b {
 }
 
 .cart-item {
-	padding: 10px;
-	#background: #f6e5e0;
+	padding: 6px;
 	background: rgba(249,216,206, .5);
 	margin-bottom: 2px;
 }
@@ -292,7 +291,7 @@ b {
 }
 
 .cart-item-name {
-	margin-left: 15px;
+	padding-left: 15px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -361,13 +360,6 @@ b {
 	-webkit-transition-duration: .2s;
 	-webkit-transition-timing-function: ease-out;
 
-}
-
-.button-bottom:hover {
-	box-shadow:
-		inset 0 0 12px rgba(255,254,196,.8),
-		0px 2px 5px 0px rgba(0, 0, 0, 0.15)
-	;
 }
 
 .button-bottom-click {
@@ -635,9 +627,7 @@ html[xmlns] .clearfix {
 }
 
 .meal-item-closed {
-	opacity: .5;
-	-moz-opacity: .50;
-	filter: alpha(opacity=50);
+
 }
 
 
@@ -693,6 +683,15 @@ and (max-width : 1024px) {
 	margin-top: -81px;
 }
 
+.cart-item div {
+	display: inline-block;
+	height: 20px;
+	vertical-align: top;
+}
+.cart-item .cart-item-config, .cart-item .cart-item-name {
+	margin-top: 2px;
+	height: 18px;
+}
 
 
 /*
@@ -702,6 +701,12 @@ and (max-device-width : 480px) {
 */
 @media only screen 
 and (max-width : 769px) {
+	.button-bottom {
+		box-shadow:
+			inset 0 0 12px rgba(255,254,196,.8),
+			0px 2px 5px 0px rgba(0, 0, 0, 0.15)
+		;
+	}
 	.cart-item-name {
 		width: 54%;
 	}
@@ -882,11 +887,6 @@ and (max-width : 769px) {
 		box-shadow: inset 0 0 0 #fafafa, 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
 		margin-top: 15px;
 	}
-	.footer {
-		opacity: .7;
-		-moz-opacity: .70;
-		filter: alpha(opacity=70);
-	}
 	.card-icons, .payment-card-info p {
 		text-align: center;
 	}
@@ -1039,10 +1039,6 @@ and (max-width : 769px) {
 		width: 100%;
 		
 	}
-	.cart-item div {
-		display: inline-block;
-		height: 20px;
-	}
 	
 	.content.short-meal-list {
 		max-width: 650px;
@@ -1078,8 +1074,10 @@ and (max-width : 769px) {
 	}
 }
 
+
 @media only screen 
 and (min-width : 770px) {
+
 	.content {
 		margin: 0 auto;
 		padding: 20px 0 20px 0;
@@ -1152,6 +1150,13 @@ and (min-width : 770px) {
 	.input-item {
 		min-height: 25px;
 	}
+	.button-bottom:hover {
+		box-shadow:
+			inset 0 0 12px rgba(255,254,196,.8),
+			0px 2px 5px 0px rgba(0, 0, 0, 0.15)
+		;
+	}
+
 }
 
 
