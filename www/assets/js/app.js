@@ -445,11 +445,11 @@ App.page.order = function(id) {
 		
 		
 		$('.order-info').append('<b>Your ordered:</b>' + order._message + '<br /><br />');
-		
+
 		if (this.pay_type == 'card') {
-			$('.order-info').append('<b>Your total is:</b><br />$' + parseInt(this.price).toFixed(2) + '<br /><br />');
+			$('.order-info').append('<b>Your total is:</b><br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
 		} else {
-			$('.order-info').append('<b>Total approximate total is</b>:<br />$' + parseInt(this.price).toFixed(2) + '<br /><br />');
+			$('.order-info').append('<b>Total approximate total is</b>:<br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
 		}
 		
 		App.cache('Restaurant',order.id_restaurant, function() {
