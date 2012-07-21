@@ -68,7 +68,6 @@ class Crunchbutton_Notification extends Cana_Table {
 				$log->id_order = $order->id_order;
 				$log->save();
 
-			
  				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoing,
@@ -80,7 +79,6 @@ class Crunchbutton_Notification extends Cana_Table {
 				$log->remote = $call->sid;
 				$log->status = $call->status;
 				$log->save();
-
 
 				break;
 

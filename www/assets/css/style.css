@@ -632,7 +632,7 @@ html[xmlns] .clearfix {
 
 
 @media only screen 
-and (max-width : 1024px) {
+and (max-width : 1023px) {
 	.home-tagline {
 		text-align: center;
 	}
@@ -691,6 +691,10 @@ and (max-width : 1024px) {
 .cart-item .cart-item-config, .cart-item .cart-item-name {
 	margin-top: 2px;
 	height: 18px;
+}
+
+.your-orders .dish-name {
+	width: 60%;
 }
 
 

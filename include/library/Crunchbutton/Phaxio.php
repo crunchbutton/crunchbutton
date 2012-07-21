@@ -13,9 +13,12 @@ class Crunchbutton_Phaxio {
 
 		exec($cmd, $return);
 
-		$return = json_decode($return[1]);
-		foreach ($return as $key => $value) {
-			$this->{$key} = $value;
+		$return = json_decode(trim(join('',$return)));
+
+		if ($return) {
+			foreach ($return as $key => $value) {
+				$this->{$key} = $value;
+			}
 		}
 
 		$this->response = $return;

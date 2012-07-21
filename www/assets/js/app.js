@@ -35,6 +35,7 @@ History.Adapter.bind(window,'statechange',function() {
 	
 
 var App = {
+	currentPage: null,
 	slogans: ['streamlined food ordering','hungry ?','only the best'],
 	service: '/api/',
 	cached: {},
@@ -108,9 +109,7 @@ App.cache = function(type, id) {
 
 App.loadRestaurant = function(id) {
 	App.cache('Restaurant',id,function() {
-
 		if (!this.open()) {
-
 			var hours = '';
 
 			for (var x in this._hours) {
@@ -121,26 +120,19 @@ App.loadRestaurant = function(id) {
 				hours += "\n";
 			}
 
-			alert(
-				"This restaurant is currently closed. It will be open during the following hours:\n\n" + hours
-			);
+			alert("This restaurant is currently closed. It will be open during the following hours:\n\n" + hours);
 		} else {
-			var loc = '/' + App.community.permalink + '/' + id;
-			History.pushState({}, loc, loc);
+			var loc = '/' + App.community.permalink + '/' + this.permalink;
+			History.pushState({}, 'Crunchbutton - ' + this.name, loc);
 		
 		}
 	});
 };
 
 App.loadHome = function() {
+	App.currentPage = 'home';
 	History.pushState({}, 'Crunchbutton', '/');
 };
-
-App.loadPaymentinfo = function() {
-	var loc = '/' + App.community.permalink + '/' + App.restaurant.permalink + '/order';
-	History.pushState({}, loc, loc);
-	//App.loadPage();
-}
 
 App.loadCommunity = function(id) {
 	var onHold = ['santa-monica'];
@@ -154,7 +146,7 @@ App.loadCommunity = function(id) {
 
 	App.cache('Community',id, function() {
 		App.community = this;
-		console.log(App.community, id);
+
 		if (!App.community.id_community) {
 		
 			App.cache('Community','yale', function() {
@@ -172,11 +164,12 @@ App.loadCommunity = function(id) {
 };
 
 App.page.community = function(id) {
+	App.currentPage = 'community';
 
-	// probably dont need this since we force community to be loaded
-	//App.community = App.cache('Community', id, function() {
+	App.cache('Community', id, function() {
 
-		document.title = 'Crunchbutton - ' + App.community.name;
+		document.title = 'Crunchbutton - ' + this.name;
+		App.community = this;
 		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
 
 		$('.main-content-item').html(
@@ -184,7 +177,7 @@ App.page.community = function(id) {
 			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
 		);
 
-		var rs = App.community.restaurants();
+		var rs = this.restaurants();
 
 		if (rs.length == 4) {
 			$('.content').addClass('short-meal-list');
@@ -214,10 +207,13 @@ App.page.community = function(id) {
 
 			$('.meal-items').append(restaurant);
 		}
-	//});
+
+	});
 };
 
 App.page.restaurant = function(id) {
+	App.currentPage = 'restaurant';
+
 	$('.content').addClass('short-meal-list');
 
 	App.cache('Restaurant', id, function() {
@@ -226,7 +222,7 @@ App.page.restaurant = function(id) {
 		}
 
 		App.restaurant = this;
-		document.title = App.restaurant.name;
+		document.title = 'Crunchbutton - ' + App.restaurant.name;
 		
 		$('.main-content-item').html(
 			'<div class="cart-summary"><div class="cart-summary-icon"></div><div class="cart-summary-items"></div></div>' +
@@ -239,12 +235,6 @@ App.page.restaurant = function(id) {
 			'</div>' + 
 			'<div class="restaurant-payment-div"></div>'
 		);
-
-		if (!App.config.user.id_user) {
-			//$('.main-content-item').append('<button class="button-deliver-payment button-bottom"><div>Next</div></button>');
-		} else {
-//			$('.main-content-item').append('<button class="button-submitorder button-bottom"><div>Submit Order</div></button>');
-		}
 
 		$('.restaurant-items').append(
 			'<div class="restaurant-item-title">top items</div>' + 
@@ -408,11 +398,6 @@ App.drawPay = function(restaurant) {
 		$('.delivery-toggle-delivery').click();
 	}
 	$('[name="pay-tip"]').val(App.order.tip);
-	
-	//$('[name="pay-card-number"]').val('4242424242424242');
-	//$('[name="pay-card-month"]').val('1');
-	//$('[name="pay-card-year"]').val('2020');
-		
 	$('[name="pay-name"]').val(App.config.user.name);
 	$('[name="pay-phone"]').val(App.phone.format(App.config.user.phone));
 	$('[name="pay-address"]').val(App.config.user.address);
@@ -425,7 +410,14 @@ App.drawPay = function(restaurant) {
 };
 
 App.page.order = function(id) {
+
+	App.currentPage = 'order';
+
 	App.cache('Order', id, function() {
+
+		document.title = 'Crunchbutton - Your Order';
+		App.order = this;
+		console.log(this);
 		var message, order = this;
 
 		if (App.justCompleted) {
@@ -434,6 +426,7 @@ App.page.order = function(id) {
 		} else {
 			message = 'Your order';
 		}
+
 		$('.content').addClass('short-meal-list');
 		$('.main-content-item').css('width','auto');
 		$('.main-content-item').html(
@@ -468,40 +461,56 @@ App.page.order = function(id) {
 		});
 
 	});
-
 };
 
-App.page.paymentinfo = function() {
-	var total = App.cart.total();
-	if (total == '0.00') {
-		App.loadRestaurant(App.restaurant.permalink);
-		return;
-	}
-	$('.content').addClass('short-meal-list');
-	App.drawCart();
-	
+App.page.legal = function() {
+	App.currentPage = 'legal';
+	$.getJSON('/api/legal',function(json) {
+		$('.main-content-item').html(json.data);
+		App.refreshLayout();
+	});
+};
 
+App.page.orders = function() {
+	$.getJSON('/api/user/orders',function(json) {
+	
+		$('.main-content-item').html(
+			'<div class="main-content-readable">' + 
+				'<div class="restaurant-item-title">my orders</div>' + 
+				'<ul class="resturant-dishes resturant-dish-container your-orders"></ul>' +
+			'</div>'
+		);
+
+		for (var x in json) {
+			App.cache('Restaurant',json[x].id_restaurant,function() {
+				var date = String(new Date(json[x].date));
+				date = date.replace(/^[a-z]+ ([a-z]+ [0-9]+ [0-9]+ [0-9]+:[0-9]+:[0-9]+).*?$/i,'$1');
+				var order = $('<li><a href="javascript:;" data-id_order="' + json[x].uuid + '"><span class="dish-name">' + this.name + '</span><span class="dish-price">' + date + '</span></a></li>');
+				$('.resturant-dishes').append(order);
+			});
+		}
+		App.refreshLayout();
+
+	});
 };
 
 App.loadPage = function() {
-
 	var
-		url = History.getState().url.replace(/http:\/\/.*?\/(.*)/,'$1'), //location.pathname
+		url = History.getState().url.replace(/http:\/\/.*?\/(.*)/,'$1'),
 		path = url.split('/');
 
-	console.log(url,path);
-
-	// only fires on chrome
 	if (!App.config) {
 		return;
 	}
 	
 	// non app methods. just display the page.
+	/*
 	switch (true) {
 		case /^help|legal|support|pay/.test(url):
 			return;
 			break;
 	}
+	*/
 
 	// hide whatever we have
 	if (App._pageInit) {
@@ -509,7 +518,6 @@ App.loadPage = function() {
 	} else {
 		App._pageInit = true;
 	}
-
 	
 	// force to a specific community
 	if (!url) {
@@ -519,69 +527,53 @@ App.loadPage = function() {
 
 	if (!App.community) {
 		// force load of community reguardless of landing (this contains everything we need)
-		console.log('loading',path[0])
 		App.loadCommunity(path[0]);
-		
 		return;
 	}
 
 	var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
 	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
-	var orderRegex = new RegExp('^order\/', 'i');
-
-	// retaurant only
-	/*
-	if (restaurantRegex.test(url)) {
-		var restaurant = App.cached['Restaurant'][path[1]];
-//		var orderRegex = new RegExp('^\/' + App.community.permalink + '\/' + restaurant.permalink + '\/order$', 'i');
-
-		switch (true) {
-			case orderRegex.test(url):
-				App.restaurant = restaurant;
-				App.page.paymentinfo();
-				setTimeout(scrollTo, 80, 0, 1);
-				$('.main-content-item').fadeIn();
-				return;
-				break;
-		}
-	}
-	*/
 
 	switch (true) {
 		case communityRegex.test(url):
-			App.refreshLayout();
+		default:
 			$('.nav-back').removeClass('nav-back-show');
-			$('.main-content-item').show();
 			App.page.community(App.community.id);
 			return;
 			break;
 
 		case restaurantRegex.test(url):
 			$('.nav-back').addClass('nav-back-show');
-			App.refreshLayout();
 			App.page.restaurant(path[1]);
 			break;
 
-		case orderRegex.test(url):
+		case /^order\//i.test(url):
 			$('.nav-back').addClass('nav-back-show');
-			App.refreshLayout();
 			App.page.order(path[1]);
 			break;
-
-		default:
-			$('.nav-back').removeClass('nav-back-show');
-			App.page.community(App.community.id);
+			
+		case /^legal/i.test(url):
+			$('.nav-back').addClass('nav-back-show');
+			App.page.legal();
+			break;
+			
+		case /^orders/i.test(url):
+			$('.nav-back').addClass('nav-back-show');
+			App.page.orders();
 			break;
 	}
+
 	App.refreshLayout();
 	$('.main-content-item').css('visibility','1');
 };
 
 App.refreshLayout = function() {
-	// a really stupid fix for ios and fixed position
+
 	setTimeout(function() {
 		scrollTo(0, 1);
 		return;
+
+		// a really stupid fix for ios and fixed position with fadein
 		var el = $('.cart-summary');
 
 		if (el.length) {
@@ -660,9 +652,9 @@ App.cart = {
 
 		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '" data-cart_type="' + type + '"></div>');
 		el.append('<div class="cart-button cart-button-remove"></div>');
-		//if (type == 'Dish') {
-			el.append('<div class="cart-button cart-button-add"></div>');
-		//}
+
+		el.append('<div class="cart-button cart-button-add"></div>');
+
 		el.append('<div class="cart-item-name">' + App.cache(type,item).name + '</div>');
 		
 		if (type == 'Dish' && (App.cached['Dish'][item].toppings().length || App.cached['Dish'][item].substitutions().length)) {
@@ -677,7 +669,7 @@ App.cart = {
 		App.cart.updateTotal();
 	},
 	clone: function(item) {
-	console.log(item);
+
 		var
 			cartid = item.attr('data-cart_id'),
 			type = item.attr('data-cart_type'),
@@ -845,7 +837,6 @@ App.cart = {
 		App.busy.makeBusy();
 
 		var read = $('.payment-form').length ? true : false;
-		console.log(read);
 
 		if (read) {
 
@@ -949,10 +940,6 @@ App.cart = {
 						var loc = '/order/' + this.uuid;
 						History.pushState({},loc,loc);
 					});
-
-					
-
-					
 				}
 				App.busy.unBusy();
 			}
@@ -1007,7 +994,6 @@ App.cart = {
 		App.cart.loadOrder(cart);
 	},
 	loadOrder: function(order) {
-	console.log('LOAD',order);
 		try {
 			if (order) {
 				for (var x in order) {
@@ -1020,7 +1006,7 @@ App.cart = {
 								});
 							}
 							break;
-		
+
 						case 'sides':
 							for (var xx in order[x]) {
 								App.cart.add('Side',order[x][xx].id);
@@ -1079,17 +1065,6 @@ App.test = {
 	},
 	logout: function() {
 		$.getJSON('/api/logout',function(){ location.reload()});
-	},
-	orders: function() {
-		$.getJSON('/api/user/orders',function(json) {
-			var c = '';
-			for (var x in json) {
-				for (var xx in json[x]) {
-					c += xx + ' - ' + json[x][xx] + '<br />';
-				}
-			}
-			$('.main-content-item').html(c);
-		});
 	},
 	cart: function() {
 		alert(JSON.stringify(App.cart.items));
@@ -1192,10 +1167,6 @@ $(function() {
 			$(this).removeClass('meal-item-down');
 		}
 	});
-
-	$('.meal-item').live('click',function() {
-		//App.loadRestaurant($(this).attr('data-permalink'));
-	});
 	
 	$('.resturant-dish-container a').live('click',function() {
 		if ($(this).attr('data-id_dish')) {
@@ -1209,6 +1180,12 @@ $(function() {
 
 		} else if ($(this).hasClass('restaurant-menu')) {
 			return;
+		}
+	});
+	
+	$('.your-orders a').live('click',function() {
+		if ($(this).attr('data-id_order')) {
+			History.pushState({},'Crunchbutton - Your Order', '/order/' + $(this).attr('data-id_order'));
 		}
 	});
 	
@@ -1253,10 +1230,6 @@ $(function() {
 		}
 	});
 	
-	$('.cart-summary').live('click', function() {
-		
-	});
-	
 	$('.cart-customize-check').live('change',function() {
 		App.cart.customizeItem($(this));
 	});
@@ -1274,7 +1247,25 @@ $(function() {
 	});
 	
 	$('.nav-back').live('click',function() {
-		History.back();
+
+		switch (App.currentPage) {
+			case 'restaurant':
+				if (App.community) {
+					History.pushState({}, 'Crunchbutton - ' + App.community.name, '/' + App.community.permalink);
+				}
+				break;
+
+			case 'order':
+				App.loadRestaurant(App.order.id_restaurant);
+				break;
+
+			case 'community':
+				break;
+				
+			case 'legal':
+				History.back();
+				break;
+		}
 	});
 	
 	$('.link-home').live('click',function() {
@@ -1282,7 +1273,7 @@ $(function() {
 			App.loadHome();
 		}
 	});
-	
+
 	$('.community-select').live('change',function() {
 		var loc = '/' + $(this).val();
 		
@@ -1290,10 +1281,9 @@ $(function() {
 		
 		App.community = null;
 		$('.main-content-item').css('visibility','0');
-		History.pushState({}, loc, loc);
-		//App.loadPage();
+		History.pushState({}, 'Crunchbutton', loc);
 	});
-	
+
 	$('[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]').live('change', function() {
 		App.order.cardChanged = true;
 	});
@@ -1303,6 +1293,15 @@ $(function() {
 		e.stopPropagation();
 		App.olark.show(false);
 	});
+	
+	$('.link-legal').live('click',function() {
+		History.pushState({}, 'Crunchbutton - Legal', '/legal');
+	});
+	
+	$('.link-orders').live('click',function() {
+		History.pushState({}, 'Crunchbutton - Orders', '/orders');
+	});
+
 	
 	$('[name="pay-phone"]').live('keyup', function(e) {
 		$(this).val( App.phone.format($(this).val()) );
@@ -1322,12 +1321,12 @@ $(function() {
 	$('.community-selector').append(select);
 
 	// make sure we have our config loaded
-	// @todo: encode this data into the initial request and update as needed
 	var haveConfig = function(json) {
 		App.processConfig(json);
 		App._init = true;
 		App.loadPage();
 	};
+
 	if (App.config) {
 		haveConfig(App.config)
 	} else {
@@ -1355,43 +1354,6 @@ App.phone = {
 		return num;	
 	}
 };
-
-// trash
-String.prototype.capitalize = function(){
-	return this.replace( /(^|\s)([a-z])/g , function(m,p1,p2){ return p1+p2.toUpperCase(); } );
-};
-
-/*
-(function(){  
-var init = function() {  
-  var updateOrientation = function() {
-  	var html = $('.wrapper, .content, body').css('width',document.body.clientWidth + 'px');
-  	alert('asd');
-	var orientation = window.orientation;  
-  
-	switch(orientation) {  
-  	case 90: case -90:  
-		orientation = 'landscape';  
-  	break;  
-  	default:  
-		orientation = 'portrait';  
-	}  
-  
-	// set the class on the HTML element (i.e. )  
-	document.body.parentNode.setAttribute('class', orientation);  
-  };  
-  
-  // event triggered every 90 degrees of rotation  
-  window.addEventListener('orientationchange', updateOrientation, false);  
-  
-  // initialize the orientation  
-  updateOrientation();  
-}  
-  
-window.addEventListener('DOMContentLoaded', init, false);  
-  
-})();  
-*/
 
 App.loc = {
 	distance: function(params) {
@@ -1468,7 +1430,5 @@ App.loc = {
 				History.replaceState({},loc,loc);
 			}
 		});
-
 	}
 }
-
