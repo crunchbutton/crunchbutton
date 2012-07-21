@@ -320,7 +320,7 @@ App.drawPay = function() {
 		'<div class="payment-total">Your total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"> and tip</span>)</div>' +
 		'</form>' + 
 
-		'<button class="button-submitorder-form button-bottom"><div>Submit Order</div></button>'
+		'<div class="button-bottom-wrapper"><button class="button-submitorder-form button-bottom"><div>Submit Order</div></button></div>'
 	);
 
 	$('.delivery-info-container').append(

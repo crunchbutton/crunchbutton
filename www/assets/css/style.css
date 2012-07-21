@@ -337,7 +337,6 @@ b {
 }
 
 .button-bottom {
-	width: 310px;
 	margin: 0 auto;
 	margin-top: 25px;
 	display: block;
@@ -906,8 +905,23 @@ and (max-width : 769px) {
 	.payment-card-info {
 		margin-left: 0px;
 	}
-	.button-bottom {
+	.button-bottom-wrapper {
+		z-index: 102;
+		position: fixed;
+		bottom: 0;
 		width: 100%;
+		box-shadow: 0px -1px 4px 0px rgba(0, 0, 0, 0.35);
+		background: #444;
+		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #444), color-stop(1, #333) );
+		height: 52px;
+		margin-left: -8px;
+		border-top: 1px solid #000;
+	}
+	.button-bottom {
+		margin-top: 5px;
+		width: 306px;
+		font-size: 18px;
+		height: 40px;
 	}
 	.restaurant-item-title:first-child {
 		margin-top: 10px;
@@ -1077,6 +1091,9 @@ and (min-width : 769px) {
 	}
 	.delivery-payment-info {
 		width: 300px;
+	}
+	.button-bottom {
+		width: 310px;
 	}
 }
 
