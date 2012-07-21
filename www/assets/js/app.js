@@ -414,6 +414,10 @@ App.page.order = function(id) {
 	App.currentPage = 'order';
 
 	App.cache('Order', id, function() {
+console.log(this);
+		if (!this.uuid) {
+//			History.replaceState({},'Crunchbutton','/')
+		}
 
 		document.title = 'Crunchbutton - Your Order';
 		App.order = this;
@@ -524,7 +528,7 @@ App.loadPage = function() {
 		App.loc.process();
 		return;
 	}
-
+// &&!/^legal|order|orders/.test(url)
 	if (!App.community) {
 		// force load of community reguardless of landing (this contains everything we need)
 		App.loadCommunity(path[0]);
@@ -548,6 +552,7 @@ App.loadPage = function() {
 			break;
 
 		case /^order\//i.test(url):
+
 			$('.nav-back').addClass('nav-back-show');
 			App.page.order(path[1]);
 			break;
@@ -558,6 +563,7 @@ App.loadPage = function() {
 			break;
 			
 		case /^orders/i.test(url):
+
 			$('.nav-back').addClass('nav-back-show');
 			App.page.orders();
 			break;

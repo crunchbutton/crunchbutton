@@ -20,7 +20,10 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						
 		switch ($this->method()) {
 			case 'get':
-//				$order = $order->get(0);
+				if (get_class($order) != 'Crunchbutton_Order') {
+					$order = $order->get(0);
+				}
+
 				if ($order->id_order) {
 					$say = 'this is a test';
 					echo $order->json();
