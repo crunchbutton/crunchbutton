@@ -578,7 +578,7 @@ App.refreshLayout = function() {
 				el.css('position','relative');
 				el.css('top',0);
 			}
-				
+
 			App.cartTimer = setTimeout(function() {
 				el.css('top','43px');
 				el.css('position','fixed');
