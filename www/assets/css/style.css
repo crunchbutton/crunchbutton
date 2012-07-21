@@ -635,6 +635,9 @@ html[xmlns] .clearfix {
 }
 
 .meal-item-closed {
+	opacity: .5;
+	-moz-opacity: .50;
+	filter: alpha(opacity=50);
 }
 
 
@@ -707,7 +710,13 @@ and (max-width : 769px) {
 	}
 
 	.meal-item-tag {
-		margin-left: 188px;
+		margin-left: 184px;
+		margin-top: -72px;
+		white-space: nowrap;
+	}
+	
+	.meal-item-tag-closed {
+		width: 272px;
 		margin-top: -72px;
 		white-space: nowrap;
 	}
