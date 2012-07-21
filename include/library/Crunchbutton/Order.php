@@ -257,8 +257,45 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 	}
 	
+	public function receipt() {
+		//$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = 'dev';
+		//$num = ($env == 'live' ? $this->phone : c::config()->twilio->testnumber);
+		$num = $this->phone;
+		
+		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+		$message = str_split($this->message('selfsms'),160);
+
+		$type = 'textbelt';
+
+
+		foreach ($message as $msg) {
+			switch ($type) {
+				case 'twilio':
+					$twilio->account->sms_messages->create(
+						c::config()->twilio->{$env}->outgoing,
+						'+1'.$num,
+						$msg
+					);
+					break;
+	
+				case 'textbelt':
+				default:
+					$cmd = 'curl http://textbelt.com/text \\'
+						.'-d number='.$num.' \\'
+						.'-d "message='.$msg.'"';
+					exec($cmd, $return);
+					print_r($return);
+					break;
+			}
+		}
+	}
+	
 	public function que() {
-		exec('nohup '.c::config()->dirs->root.'cli/notify.php '.$this->id_order.' > /dev/null 2>&1 &');
+		$scripts = ['notify','receipt'];
+		foreach ($scripts as $script) {
+			exec('nohup '.c::config()->dirs->root.'cli/'.$script.'.php '.$this->id_order.' > /dev/null 2>&1 &');
+		}
 		//exec('nohup '.c::config()->dirs->root.'cli/notify.php '.$this->id_order.' &> /dev/null');
 	}
 	
@@ -307,6 +344,13 @@ class Crunchbutton_Order extends Cana_Table {
 		$food = $this->orderMessage($type);
 
 		switch ($type) {
+			case 'selfsms':
+				$msg = 'You ordered '.$this->delivery_type.' paying by '.$this->pay_type.". \n".$food."\n\n";
+				if ($this->delivery_type == 'delivery') {
+					$msg .= " \naddress: ".$this->address;
+				}
+				break;
+
 			case 'sms':
 				$msg = $this->name.' ordered '.$this->delivery_type.' paying by '.$this->pay_type.". \n".$food."\n\nphone: ".preg_replace('/[^\d.]/','',$this->phone).'.';
 				if ($this->delivery_type == 'delivery') {

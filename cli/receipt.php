@@ -7,4 +7,4 @@ set_time_limit(10);
 require_once('../include/crunchbutton.php');
 
 $order = new Order($argv[1]);
-$order->notify();
+$order->receipt();
