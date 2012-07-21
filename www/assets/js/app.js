@@ -495,7 +495,7 @@ App.loadPage = function() {
 
 	// hide whatever we have
 	if (App._pageInit) {
-		$('.main-content-item').hide();
+		$('.main-content-item').css('visibility','0');
 	} else {
 		App._pageInit = true;
 	}
@@ -560,13 +560,14 @@ App.loadPage = function() {
 			break;
 	}
 	App.refreshLayout();
-	$('.main-content-item').fadeIn();
+	$('.main-content-item').css('visibility','1');
 };
 
 App.refreshLayout = function() {
 	// a really stupid fix for ios and fixed position
 	setTimeout(function() {
 		scrollTo(0, 1);
+		return;
 		var el = $('.cart-summary');
 
 		if (el.length) {
@@ -1101,7 +1102,7 @@ App.olark = {
 		
 		if (screen.width <= 480) {
 			clearTimeout(App.olark.timer);
-			App.olark.timer = setTimeout(App.olark.hide,1000);
+			App.olark.timer = setTimeout(App.olark.hide,1000*60*60); // one hour
 		}
 	}
 };
@@ -1264,7 +1265,7 @@ $(function() {
 		$.cookie('community', $(this).val(), { expires: new Date(3000,01,01), path: '/', });
 		
 		App.community = null;
-		$('.main-content-item').hide();
+		$('.main-content-item').css('visibility','0');
 		History.pushState({}, loc, loc);
 		//App.loadPage();
 	});

@@ -344,7 +344,7 @@ b {
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fb422e), to(#fb2418));
 	border: 1px solid #ae4939;
 	box-shadow:
-		inset 0 0 6px rgba(255,254,196,.8),
+		inset 0 0 2px rgba(255,254,196,.8),
 		0px 2px 5px 0px rgba(0, 0, 0, 0.15)
 	;
 	cursor: pointer;
@@ -622,7 +622,10 @@ html[xmlns] .clearfix {
 }  
 
 .main-content-item {
-
+	-webkit-transition-property: visibility;
+	-webkit-transition-duration: 2s;
+	-webkit-transition-timing-function: ease-out;
+	
 }
 
 .resturant-dishes {
