@@ -673,6 +673,10 @@ and (max-width : 1024px) {
 	white-space: nowrap;
 }
 
+.nav-back {
+	display: none;
+}
+
 /*
 @media only screen 
 and (min-device-width : 320px) 
@@ -680,6 +684,9 @@ and (max-device-width : 480px) {
 */
 @media only screen 
 and (max-width : 769px) {
+	.nav-back-show {
+		display: block;
+	}
 
 	.meal-item-tag {
 		margin-left: 188px;
@@ -963,6 +970,16 @@ and (max-width : 769px) {
 		-webkit-appearance: none;
 		background-size: contain;
 		color: rgba(0,0,0,.01);
+	}
+	.nav-back {
+		position: fixed;
+		top: 8px;
+		left: 10px;
+		background: url(/assets/images/back.png) no-repeat;
+		width: 51px;
+		height: 31px;
+		background-size: contain;
+		cursor: pointer;
 	}
 	.cart-summary {
 		width: 100%;

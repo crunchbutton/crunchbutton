@@ -540,22 +540,26 @@ App.loadPage = function() {
 	switch (true) {
 		case communityRegex.test(url):
 			App.refreshLayout();
+			$('.nav-back').removeClass('nav-back-show');
 			$('.main-content-item').show();
 			App.page.community(App.community.id);
 			return;
 			break;
 
 		case restaurantRegex.test(url):
+			$('.nav-back').addClass('nav-back-show');
 			App.refreshLayout();
 			App.page.restaurant(path[1]);
 			break;
 
 		case orderRegex.test(url):
+			$('.nav-back').addClass('nav-back-show');
 			App.refreshLayout();
 			App.page.order(path[1]);
 			break;
 
 		default:
+			$('.nav-back').removeClass('nav-back-show');
 			App.page.community(App.community.id);
 			break;
 	}
@@ -1257,6 +1261,10 @@ $(function() {
 		var total = App.cart.total();
 		console.log(total);
 		App.cart.updateTotal();
+	});
+	
+	$('.nav-back').live('click',function() {
+		window.history.back();
 	});
 	
 	$('.community-select').live('change',function() {
