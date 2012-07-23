@@ -332,7 +332,7 @@ App.drawPay = function(restaurant) {
 			'<div class="input-item"><input type="text" name="pay-name"></div><div class="divider"></div>' + 
 	
 			'<label>Phone #</label>' + 
-			'<div class="input-item"><input type="text" name="pay-phone"></div><div class="divider"></div>' + 
+			'<div class="input-item"><input type="tel" name="pay-phone"></div><div class="divider"></div>' + 
 	
 			'<label class="delivery-only">Deliver to</label>' + 
 			'<div class="input-item delivery-only"><textarea name="pay-address"></textarea></div><div class="divider"></div>' + 
@@ -480,7 +480,7 @@ App.page.orders = function() {
 	
 		$('.main-content-item').html(
 			'<div class="main-content-readable">' + 
-				'<div class="restaurant-item-title">my orders</div>' + 
+				'<div class="restaurant-item-title">order history</div>' + 
 				'<ul class="resturant-dishes resturant-dish-container your-orders"></ul>' +
 			'</div>'
 		);
@@ -937,6 +937,8 @@ App.cart = {
 					if (json.token) {
 						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/', });
 					}
+					
+					$('.link-orders').show();
 
 					order.cardChanged = false;
 					App.justCompleted = true;
