@@ -1,0 +1,22 @@
+CREATE TRIGGER 
+newid
+BEFORE INSERT ON 
+`order` 
+FOR EACH ROW
+SET NEW.uuid =  UNHEX(REPLACE(UUID(),'-',''))
+
+
+CREATE TRIGGER 
+order_uuid
+BEFORE INSERT ON 
+`order` 
+FOR EACH ROW
+SET NEW.uuid =  REPLACE(UUID(),'-','')
+
+
+CREATE TRIGGER 
+user_uuid
+BEFORE INSERT ON 
+`user` 
+FOR EACH ROW
+SET NEW.uuid =  REPLACE(UUID(),'-','')
