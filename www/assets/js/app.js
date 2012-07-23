@@ -888,24 +888,23 @@ App.cart = {
 		if (!order.name) {
 			errors[errors.length] = 'Please enter your name.';
 		}
-		
 
-		if (!order.phone || order.phone.length != 10) {
+		if (!App.phone.validate(order.phone)) {
 			errors[errors.length] = 'Please enter a valid phone #.';
 		}
-		
+
 		if (order.delivery_type == 'delivery' && !order.address) {
 			errors[errors.length] = 'Please enter an address.';
 		}
-		
+
 		if (order.pay_type == 'card' && ((App.order.cardChanged && !order.card.number) || (!App.config.user.id_user && !order.card.number))) {
 			errors[errors.length] = 'Please enter a valid card #.';
 		}
-		
+
 		if (!App.cart.hasItems()) {
 			errors[errors.length] = 'Please add something to your order.';
 		}
-		
+
 		if (errors.length) {
 			var error = '';
 			for (x in errors) {
@@ -1360,6 +1359,29 @@ App.phone = {
 		}
 
 		return num;	
+	},
+	validate: function(num) {
+
+		if (!num || num.length != 10) {
+			return false;
+		}
+		
+		var
+			nums = num.split(''),
+			prev;
+		
+		for (x in nums) {
+			if (!prev) {
+				prev = nums[x];
+				continue;
+			}
+			
+			if (nums[x] != prev) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 };
 
