@@ -36,7 +36,7 @@ History.Adapter.bind(window,'statechange',function() {
 
 var App = {
 	currentPage: null,
-	slogans: ['streamlined food ordering','hungry ?','only the best'],
+	slogans: ['streamlined food ordering','hungry ?','only the best','order food in 5 seconds'],
 	service: '/api/',
 	cached: {},
 	cart: {},
