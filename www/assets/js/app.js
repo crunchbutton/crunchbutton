@@ -239,7 +239,7 @@ App.page.restaurant = function(id) {
 		);
 
 		$('.restaurant-items').append(
-			'<div class="restaurant-item-title">top items</div>' + 
+			'<div class="restaurant-item-title">most popular at ' + App.community.name + '</div>' + 
 			'<ul class="resturant-dishes resturant-dish-container"></ul>' + 
 			'<div class="restaurant-item-title">top sides</div>' + 
 			'<ul class="resturant-sides resturant-dish-container">'
