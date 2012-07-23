@@ -31,10 +31,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 	}
 	
 	public function hours($gmt = false) {
+		$gmt = $gmt ? '1' : '0';
 		if (!isset($this->_hours[$gmt])) {
 			$hours = Hour::q('select * from hour where id_restaurant="'.$this->id_restaurant.'"');
 			if ($gmt) {
-				$timezone = new DateTime('today ', new DateTimeZone($this->timezone));
+				$timezone = new DateTime('now ', new DateTimeZone($this->timezone));
 				$timezone = $timezone->format('O');
 
 				foreach ($hours as $hour) {
@@ -43,7 +44,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 					$close = new DateTime('next '.$hour->day. ' ' .$hour->time_close, new DateTimeZone($this->timezone));
 					$close->setTimezone(new DateTimeZone('GMT'));
 					$hour->time_open = $open->format('Y-m-d H:i');
-					$hour->time_close = $open->format('Y-m-d H:i');
+					$hour->time_close = $close->format('Y-m-d H:i');
 				}
 			}
 			$this->_hours[$gmt] = $hours;
@@ -52,16 +53,19 @@ class Crunchbutton_Restaurant extends Cana_Table {
 	}
 
 	public function open() {
+
 		$hours = $this->hours();
-		$today = new DateTime('today', new DateTimeZone($this->timezone));
+		$today = new DateTime('now', new DateTimeZone($this->timezone));
 		$day = strtolower($today->format('D'));
 
 		foreach ($hours as $hour) {
 			if ($hour->day != $day) {
 				continue;
 			}
+
 			$open = new DateTime('today '.$hour->time_open, new DateTimeZone($this->timezone));
 			$close = new DateTime('today '.$hour->time_close, new DateTimeZone($this->timezone));
+
 			if ($today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp()) {
 				return true;
 			}
@@ -87,6 +91,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 	public function exports() {
 		$out = $this->properties();
 		//$out['img'] = (new ImageBase64(c::config()->dirs->www.'assets/images/food/'.$this->image))->output();
+		$out['_open'] = $this->open();
 		$out['img'] = '/assets/images/food/'.$this->image;
 		foreach ($this->dishes() as $dish) {
 			$out['_dishes'][$dish->id_dish] = $dish->exports();
@@ -103,8 +108,6 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		foreach ($this->hours() as $hours) {
 			$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 		}
-		
-		$out['_open'] = $this->open();
 
 		$out['_defaultOrder'] = $this->defaultOrder()->config;
 

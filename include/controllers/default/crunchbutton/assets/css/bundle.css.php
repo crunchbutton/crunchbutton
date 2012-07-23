@@ -23,9 +23,6 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 			c::cache()->write($cache, $css);
 		}
 		
-
-
-		
 		$headers = apache_request_headers();
 
 		if (isset($headers['If-Modified-Since'])) {

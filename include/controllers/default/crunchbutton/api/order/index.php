@@ -17,7 +17,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					exit;
 				break;
 		}
-						
+
 		switch ($this->method()) {
 			case 'get':
 				if (get_class($order) != 'Crunchbutton_Order') {
