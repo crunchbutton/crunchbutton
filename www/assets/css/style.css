@@ -1208,25 +1208,6 @@ and (min-width : 1024px) {
 }
 
 
-span.customStyleSelectBox {
-	font-size: 20px;
-	background-color: #c93000;
-	font-weight: bold;
-	color: #fcf3f2;
-	padding: 5px 7px;
-	border: 3px solid #c93000;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px 5px;
-	line-height: 11px;
-	white-space: nowrap;
-}
-span.customStyleSelectBox.changed {
-
-}
-.customStyleSelectBoxInner {
-	background:url(images/arrow.gif) no-repeat center right;
-}
 
 .community-select {
 	width: 140px;

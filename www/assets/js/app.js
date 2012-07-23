@@ -79,9 +79,11 @@ App.cache = function(type, id) {
 	partComplete = function() {
 		if (this.uuid) {
 			App.cached[type][id.uuid] = this;
+			App.cached[type][id] = this;
 		}
 		if (this.permalink) {
 			App.cached[type][id.permalink] = this;
+			App.cached[type][id] = this;
 		}
 		complete.call(this);
 	}
@@ -124,7 +126,6 @@ App.loadRestaurant = function(id) {
 		} else {
 			var loc = '/' + App.community.permalink + '/' + this.permalink;
 			History.pushState({}, 'Crunchbutton - ' + this.name, loc);
-		
 		}
 	});
 };
@@ -167,9 +168,10 @@ App.page.community = function(id) {
 	App.currentPage = 'community';
 
 	App.cache('Community', id, function() {
-
-		document.title = 'Crunchbutton - ' + this.name;
 		App.community = this;
+
+		document.title = 'Crunchbutton - ' + App.community.name;
+
 		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
 
 		$('.main-content-item').html(
@@ -190,7 +192,7 @@ App.page.community = function(id) {
 			var restaurantContent = $('<div class="meal-item-content">');
 
 			restaurantContent
-				.append('<div class="meal-pic" style="background: url(/assets/images/food/' + rs[x]['image'] + ');"></div>')
+				.append('<div class="meal-pic" style="background: url(' + rs[x]['img'] + ');"></div>')
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
 				.append('<h3 class="meal-food">Top Item: ' + rs[x].top().name + '</h3>');
 
@@ -227,7 +229,7 @@ App.page.restaurant = function(id) {
 		$('.main-content-item').html(
 			'<div class="cart-summary"><div class="cart-summary-icon"></div><div class="cart-summary-items"></div></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
-			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(/assets/images/food/' + App.restaurant.image + ');"></div></div>' : '') + 
+			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-items"></div>' + 
 				'<div class="cart-items"><div class="restaurant-item-title">your order</div><div class="divider"></div><div class="cart-items-content"></div></div>' + 
@@ -1103,6 +1105,124 @@ App.olark = {
 	}
 };
 
+App.phone = {
+	format: function(num) {
+
+		num = num.replace(/^0|^1/,'');
+		num = num.replace(/[^\d]*/gi,'');
+		num = num.substr(0,10);
+	
+		if (num.length >= 7) {
+			num = num.replace(/(\d{3})(\d{3})(.*)/, "$1-$2-$3");
+		} else if (num.length >= 4) {
+			num = num.replace(/(\d{3})(.*)/, "$1-$2");
+		}
+
+		return num;	
+	},
+	validate: function(num) {
+
+		if (!num || num.length != 10) {
+			return false;
+		}
+		
+		var
+			nums = num.split(''),
+			prev;
+		
+		for (x in nums) {
+			if (!prev) {
+				prev = nums[x];
+				continue;
+			}
+			
+			if (nums[x] != prev) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+};
+
+App.loc = {
+	distance: function(params) {
+
+		var R = 6371; // Radius of the earth in km
+		var dLat = (params.to.lat - params.from.lat).toRad();
+
+		var dLon = (params.to.lon - params.from.lon).toRad();
+		var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+			Math.cos(params.from.lat.toRad()) * Math.cos(params.to.lat.toRad()) * 
+			Math.sin(dLon/2) * Math.sin(dLon/2); 
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		var d = R * c; // Distance in km
+
+		return d;
+	},
+	getClosest: function() {
+		var closest;
+		for (x in App.communities) {
+			App.communities[x].distance = App.loc.distance({
+				from: {lat: App.loc.lat, lon: App.loc.lon},
+				to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
+			});
+			if (!closest || App.communities[x].distance < closest.distance) {
+				closest = App.communities[x];
+			}
+		}
+		return closest || App.communities['yale'];
+	},
+	closest: function(complete) {
+
+		if (google.loader.ClientLocation) {
+			App.loc.lat = google.loader.ClientLocation.latitude;
+			App.loc.lon = google.loader.ClientLocation.longitude;
+
+			complete();
+
+		} else {
+
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function(position){
+					App.loc.lat = position.coords.latitude;
+					App.loc.lon = position.coords.longitude;
+
+					complete();
+				});
+			}
+		}
+	},
+	process: function() {
+		App.loc.closest(function() {
+			var
+				closest = App.loc.getClosest(),
+				loc;
+
+			if ($.cookie('community') && !App.community) {
+				loc = '/' + $.cookie('community');
+	
+			} else if (closest.permalink) {
+				if (closest.distance > 25) {
+					location.href = '/hello';
+					return;
+				}
+
+				if (closest.permalink != App.community.permalink) {
+					loc = '/'.closest.permalink;
+				}
+	
+			} else if (!App.community) {
+				loc = '/yale';
+			}
+
+			if (loc) {
+				History.replaceState({},loc,loc);
+			}
+		});
+	}
+}
+
 $(function() {
 
 	$('.delivery-toggle-delivery').live('click',function() {
@@ -1276,7 +1396,7 @@ $(function() {
 	});
 	
 	$('.link-home').live('click',function() {
-		if (screen.width > 769) {
+		if (screen.width > 768) {
 			App.loadHome();
 		}
 	});
@@ -1344,121 +1464,3 @@ $(function() {
 		$('body').scrollTop($('.cart-items').position().top-80);
 	});
 });
-
-App.phone = {
-	format: function(num) {
-
-		num = num.replace(/^0|^1/,'');
-		num = num.replace(/[^\d]*/gi,'');
-		num = num.substr(0,10);
-	
-		if (num.length >= 7) {
-			num = num.replace(/(\d{3})(\d{3})(.*)/, "$1-$2-$3");
-		} else if (num.length >= 4) {
-			num = num.replace(/(\d{3})(.*)/, "$1-$2");
-		}
-
-		return num;	
-	},
-	validate: function(num) {
-
-		if (!num || num.length != 10) {
-			return false;
-		}
-		
-		var
-			nums = num.split(''),
-			prev;
-		
-		for (x in nums) {
-			if (!prev) {
-				prev = nums[x];
-				continue;
-			}
-			
-			if (nums[x] != prev) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-};
-
-App.loc = {
-	distance: function(params) {
-
-		var R = 6371; // Radius of the earth in km
-		var dLat = (params.to.lat - params.from.lat).toRad();
-
-		var dLon = (params.to.lon - params.from.lon).toRad();
-		var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-			Math.cos(params.from.lat.toRad()) * Math.cos(params.to.lat.toRad()) * 
-			Math.sin(dLon/2) * Math.sin(dLon/2); 
-		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-		var d = R * c; // Distance in km
-
-		return d;
-	},
-	getClosest: function() {
-		var closest;
-		for (x in App.communities) {
-			App.communities[x].distance = App.loc.distance({
-				from: {lat: App.loc.lat, lon: App.loc.lon},
-				to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
-			});
-			if (!closest || App.communities[x].distance < closest.distance) {
-				closest = App.communities[x];
-			}
-		}
-		return closest || App.communities['yale'];
-	},
-	closest: function(complete) {
-
-		if (google.loader.ClientLocation) {
-			App.loc.lat = google.loader.ClientLocation.latitude;
-			App.loc.lon = google.loader.ClientLocation.longitude;
-
-			complete();
-
-		} else {
-
-			if (navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(function(position){
-					App.loc.lat = position.coords.latitude;
-					App.loc.lon = position.coords.longitude;
-
-					complete();
-				});
-			}
-		}
-	},
-	process: function() {
-		App.loc.closest(function() {
-			var
-				closest = App.loc.getClosest(),
-				loc;
-
-			if ($.cookie('community') && !App.community) {
-				loc = '/' + $.cookie('community');
-	
-			} else if (closest.permalink) {
-				if (closest.distance > 25) {
-					location.href = '/hello';
-					return;
-				}
-
-				if (closest.permalink != App.community.permalink) {
-					loc = '/'.closest.permalink;
-				}
-	
-			} else if (!App.community) {
-				loc = '/yale';
-			}
-
-			if (loc) {
-				History.replaceState({},loc,loc);
-			}
-		});
-	}
-}

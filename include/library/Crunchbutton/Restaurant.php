@@ -86,6 +86,8 @@ class Crunchbutton_Restaurant extends Cana_Table {
 
 	public function exports() {
 		$out = $this->properties();
+		//$out['img'] = (new ImageBase64(c::config()->dirs->www.'assets/images/food/'.$this->image))->output();
+		$out['img'] = '/assets/images/food/'.$this->image;
 		foreach ($this->dishes() as $dish) {
 			$out['_dishes'][$dish->id_dish] = $dish->exports();
 		}
