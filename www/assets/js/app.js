@@ -922,7 +922,7 @@ App.cart = {
 
 				} else {
 					if (json.token) {
-						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/', });
+						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
 					}
 					
 					$('.link-orders').show();
