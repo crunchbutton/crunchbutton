@@ -6,7 +6,7 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 	
 	public function __construct($params) {
 		
-		$params['to'] 				= $params['email'];
+		$params['to'] 				= $params['email'].', Crunchbutton Copy <devin@_DOMAIN_>';
 		$params['subject'] 			= 'Customer Order #'.$params['order']->id_order;		
 		$params['from'] 			= ($params['order']->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton').' <devin@_DOMAIN_>';
 		$params['reply']			= 'Tech Support <devin@_DOMAIN_>';
