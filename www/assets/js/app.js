@@ -502,7 +502,7 @@ App.page.orders = function() {
 
 App.loadPage = function() {
 	var
-		url = History.getState().url.replace(/http:\/\/.*?\/(.*)/,'$1'),
+		url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/'),
 		path = url.split('/');
 
 	if (!App.config) {
