@@ -59,9 +59,13 @@ a {
 	text-shadow: none;
 }
 
-:focus {
-	outline: none;
+input[type="submit"]:focus, input[type="button"]:focus, input[type="text"]:focus, button, :focus {
+	outline : none;
 }
+input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, button::-moz-focus-inner {
+	border : 0;
+}
+
 html {
 	-webkit-text-size-adjust: none;
 }
