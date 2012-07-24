@@ -28,18 +28,6 @@
 	<script src="/assets/js/jquery.history.js"></script>
 	<script src="/assets/js/jquery.cookie.js"></script>
 	
-	<script src="/assets/js/underscore-min.js"></script>
-	<script src="/assets/js/app.js"></script>
-	<script src="/assets/js/community.js"></script>
-	<script src="/assets/js/restaurant.js"></script>
-	<script src="/assets/js/dish.js"></script>
-	<script src="/assets/js/side.js"></script>
-	<script src="/assets/js/extra.js"></script>
-	<script src="/assets/js/topping.js"></script>
-	<script src="/assets/js/substitution.js"></script>
-	<script src="/assets/js/order.js"></script>
-<? endif ; ?>
-
 <script type="text/javascript">
 $(function() {
 	App.communities = {};
@@ -53,6 +41,20 @@ $(function() {
 	App.config = <?=json_encode(c::appConfig())?>;
 })
 </script>
+	
+	<script src="/assets/js/underscore-min.js"></script>
+	<script src="/assets/js/app.js"></script>
+	<script src="/assets/js/community.js"></script>
+	<script src="/assets/js/restaurant.js"></script>
+	<script src="/assets/js/dish.js"></script>
+	<script src="/assets/js/side.js"></script>
+	<script src="/assets/js/extra.js"></script>
+	<script src="/assets/js/topping.js"></script>
+	<script src="/assets/js/substitution.js"></script>
+	<script src="/assets/js/order.js"></script>
+<? endif ; ?>
+
+
 <script type="application/x-javascript">addEventListener('touchstart',function(){}); addEventListener('load', function(event) {setTimeout(scrollTo, 80, 0, 1);}, false);</script>
 
 </head>
