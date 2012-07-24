@@ -55,9 +55,14 @@ class Crunchbutton_App extends Cana_App {
 						break;
 				}
 		}
-		
+
 		if ($params['env'] == 'live') {
 			error_reporting(E_ERROR | E_PARSE);
+			
+			if ($_SERVER['HTTPS'] != 'on') {
+				header('Location: https://_DOMAIN_'.$_SERVER['REQUEST_URI']);
+				exit;
+			}
 		}
 
 		parent::init($params);
