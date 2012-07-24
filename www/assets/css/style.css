@@ -124,22 +124,12 @@ body {
 	color: #7e7e7e;
 	cursor: pointer;
 	text-align: left;
-
-	-webkit-transition-property: border;
-	-webkit-transition-duration: .25s;
-	-webkit-transition-timing-function: ease-out;
 	
-	-moz-transition-property: border;
-	-moz-transition-duration: 1s;
-	-moz-transition-timing-function: ease-out;
-	
-	-o-transition-property: border;
-	-o-transition-duration: 1s;
-	-o-transition-timing-function: ease-out;
-	
-	transition-property: border;
-	transition-duration: 1s;
-	transition-timing-function: ease-out;
+	-webkit-transition: border ease-out 1s;
+	-moz-transition: border ease-out 1s;
+	-ms-transition: border ease-out 1s;
+	-o-transition: border ease-out 1s;
+	transition: border ease-out 1s;
 }
 
 .meal-pic {
@@ -148,7 +138,7 @@ body {
 	overflow: hidden;
 	height: 145px;
 	margin-bottom: 12px;
-	background-size: 100%;
+	background-size: cover !important;
 }
 
 .restaurant-pic-wrapper {
@@ -343,6 +333,11 @@ b {
 	display: block;
 	height: 45px;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fb422e), to(#fb2418));
+	background-image: -moz-linear-gradient( center top, #fb422e 5%, #fb2418 100% );
+	background-image: -o-linear-gradient(center top, #fb422e 0%, #fb2418 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fb422e', endColorstr='#fb2418');
+	background-image: linear-gradient(to bottom, #fb422e 0%, #fb2418 100%);
+
 	border: 1px solid #ae4939;
 	box-shadow:
 		inset 0 0 2px rgba(255,254,196,.8),
@@ -356,23 +351,27 @@ b {
 	font-weight: 600;
 	text-shadow: -1px -1px 0px rgba(0,0,0,.2);
 	
-	-webkit-transition-property: box-shadow;
-	-webkit-transition-duration: .2s;
-	-webkit-transition-timing-function: ease-out;
+	-webkit-transition: box-shadow ease-out 0.2s;
+	-moz-transition: box-shadow ease-out 0.2s;
+	-ms-transition: box-shadow ease-out 0.2s;
+	-o-transition: box-shadow ease-out 0.2s;
+	transition: box-shadow ease-out 0.2s;
 
 }
 
 .button-bottom-click {
-	-webkit-transition-property: box-shadow;
-	-webkit-transition-duration: .01s;
-	-webkit-transition-timing-function: ease-out;
 
-	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fb422e), to(#fb2418)) !important;
 	box-shadow:
 		inset 0 0 18px rgba(0,0,0,.2),
 		inset 0 0 2px rgba(255,254,196,.9),
 		0px 2px 5px 0px rgba(0, 0, 0, 0.15) !important
 	;
+
+	-webkit-transition: box-shadow ease-out 0.01s;
+	-moz-transition: box-shadow ease-out 0.01s;
+	-ms-transition: box-shadow ease-out 0.01s;
+	-o-transition: box-shadow ease-out 0.01s;
+	transition: box-shadow ease-out 0.01s;
 }
 
 .button-bottom-disabled, .button-bottom-disabled:hover {
@@ -380,12 +379,6 @@ b {
 		inset 0 0 6px rgba(255,255,255,.3),
 		0px 2px 5px 0px rgba(0, 0, 0, 0.15)
 	;
-}
-
-.button-bottom-disabled {
-	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#606060), to(#5c5c5c)) !important;
-	border: 1px solid #494949 !important;
-	color: #fff4f3 !important;
 }
 
 .button-bottom-click div {
@@ -464,20 +457,21 @@ html[xmlns] .clearfix {
 }
 
 .field-container input, .field-container textarea {
-	-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075);
-	-moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075);
-	box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075);
-	-webkit-transition:border linear 0.2s,box-shadow linear 0.2s;
-	-moz-transition:border linear 0.2s,box-shadow linear 0.2s;
-	-ms-transition:border linear 0.2s,box-shadow linear 0.2s;
-	-o-transition:border linear 0.2s,box-shadow linear 0.2s;
-	transition:border linear 0.2s,box-shadow linear 0.2s;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+
+	-webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+	-moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+	-ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+	-o-transition: border linear 0.2s, box-shadow linear 0.2s;
+	transition: border linear 0.2s, box-shadow linear 0.2s;
 }
 .field-container input:focus, .field-container textarea:focus {
 	border-color:rgba(82, 168, 236, 0.8);
-	-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
-	-moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
-	box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
+	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
 	outline:0;
 	outline:thin dotted \9;
 }
@@ -533,7 +527,6 @@ html[xmlns] .clearfix {
 	font-size: 12px;
 	text-align: center;
 	font-weight: bold;
-
 }
 
 .toggle-active {
@@ -616,10 +609,7 @@ html[xmlns] .clearfix {
 }  
 
 .main-content-item {
-	-webkit-transition-property: visibility;
-	-webkit-transition-duration: 2s;
-	-webkit-transition-timing-function: ease-out;
-	
+	/* @todo: fade */
 }
 
 .resturant-dishes {
