@@ -128,7 +128,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->date = date('Y-m-d H:i:s');
 		$this->save();
 		
-		if (c::env() == 'live') {
+		if (1==1 || c::env() == 'live') {
 			$this->que();
 		} else {
 			$this->notify();

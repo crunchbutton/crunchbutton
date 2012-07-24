@@ -8,6 +8,14 @@
 	<h2>Address: <?=nl2br(strip_tags($order->address))?></h2>
 <? endif ; ?>
 
+<br />
+<? if ($order->pay_type == 'card') : ?>
+	<h2>Already paid & tipped by CARD</h2>
+<? else : ?>
+	<h2>Paying by CASH</h2>
+<? endif ; ?>
+<br /><br />
+
 <table border="1" width="100%" cellpadding="10">
 	<thead style="font-weight:bold">
 		<td>Qty</td>
@@ -78,9 +86,6 @@
 	</tr>
 </table>
 
-<? if ($order->pay_type == 'card') : ?>
-	<h2>Already paid & tipped by CREDIT</h2>
-<? endif ; ?>
 
 <br /><br />
 <div style="border-top: 1px dashed black"> </div>

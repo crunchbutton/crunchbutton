@@ -1402,7 +1402,7 @@ $(function() {
 	$('.community-select').live('change',function() {
 		var loc = '/' + $(this).val();
 		
-		$.cookie('community', $(this).val(), { expires: new Date(3000,01,01), path: '/', });
+		$.cookie('community', $(this).val(), { expires: new Date(3000,01,01), path: '/'});
 		
 		App.community = null;
 		$('.main-content-item').css('visibility','0');
