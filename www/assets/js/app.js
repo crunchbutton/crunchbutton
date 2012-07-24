@@ -593,7 +593,7 @@ App.cart = {
 	items: {
 		dishes: {},
 		sides: {},
-		extras: {},
+		extras: {}
 	},
 	add: function(type, item) {
 		var
