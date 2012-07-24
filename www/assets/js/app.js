@@ -1185,7 +1185,7 @@ App.loc = {
 					App.loc.lon = position.coords.longitude;
 
 					complete();
-				});
+				}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
 			}
 		}
 	},
