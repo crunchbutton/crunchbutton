@@ -416,9 +416,9 @@ App.page.order = function(id) {
 	App.currentPage = 'order';
 
 	App.cache('Order', id, function() {
-console.log(this);
+
 		if (!this.uuid) {
-//			History.replaceState({},'Crunchbutton','/')
+			History.replaceState({},'Crunchbutton','/');
 		}
 
 		document.title = 'Crunchbutton - Your Order';
@@ -508,15 +508,6 @@ App.loadPage = function() {
 	if (!App.config) {
 		return;
 	}
-	
-	// non app methods. just display the page.
-	/*
-	switch (true) {
-		case /^help|legal|support|pay/.test(url):
-			return;
-			break;
-	}
-	*/
 
 	// hide whatever we have
 	if (App._pageInit) {
@@ -549,28 +540,23 @@ App.loadPage = function() {
 			break;
 
 		case restaurantRegex.test(url):
-			$('.nav-back').addClass('nav-back-show');
 			App.page.restaurant(path[1]);
 			break;
 
 		case /^order\//i.test(url):
-
-			$('.nav-back').addClass('nav-back-show');
 			App.page.order(path[1]);
 			break;
 			
 		case /^legal/i.test(url):
-			$('.nav-back').addClass('nav-back-show');
 			App.page.legal();
 			break;
 			
 		case /^orders/i.test(url):
-
-			$('.nav-back').addClass('nav-back-show');
 			App.page.orders();
 			break;
 	}
 
+	$('.nav-back').addClass('nav-back-show');
 	App.refreshLayout();
 	$('.main-content-item').css('visibility','1');
 };
@@ -1090,11 +1076,15 @@ App.processConfig = function(json) {
 
 App.olark = {
 	timer: null,
+	booted: false,
 	hide: function() {
 		olark('api.box.hide');
 		App.olark.timer = null;
 	},
 	show: function() {
+		if (!App.olark.booted) {
+			App.olark.boot();
+		}
 		olark('api.box.show');
 		$('.habla_button').click();
 		
@@ -1102,6 +1092,12 @@ App.olark = {
 			clearTimeout(App.olark.timer);
 			App.olark.timer = setTimeout(App.olark.hide,1000*60*60); // one hour
 		}
+	},
+	boot: function() {
+		App.olark.booted = true;
+		window.olark||(function(c){var f=window,d=document,l=f.location.protocol=="https:"?"https:":"http:",z=c.name,r="load";var nt=function(){f[z]=function(){(a.s=a.s||[]).push(arguments)};var a=f[z]._={},q=c.methods.length;while(q--){(function(n){f[z][n]=function(){f[z]("call",n,arguments)}})(c.methods[q])}a.l=c.loader;a.i=nt;a.p={0:+new Date};a.P=function(u){a.p[u]=new Date-a.p[0]};function s(){a.P(r);f[z](r)}f.addEventListener?f.addEventListener(r,s,false):f.attachEvent("on"+r,s);var ld=function(){function p(hd){hd="head";return["<",hd,"></",hd,"><",i,' onl' + 'oad="var d=',g,";d.getElementsByTagName('head')[0].",j,"(d.",h,"('script')).",k,"='",l,"//",a.l,"'",'"',"></",i,">"].join("")}var i="body",m=d[i];if(!m){return setTimeout(ld,100)}a.P(1);var j="appendChild",h="createElement",k="src",n=d[h]("div"),v=n[j](d[h](z)),b=d[h]("iframe"),g="document",e="domain",o;n.style.display="none";m.insertBefore(n,m.firstChild).id=z;b.frameBorder="0";b.id=z+"-loader";if(/MSIE[ ]+6/.test(navigator.userAgent)){b.src="javascript:false"}b.allowTransparency="true";v[j](b);try{b.contentWindow[g].open()}catch(w){c[e]=d[e];o="javascript:var d="+g+".open();d.domain='"+d.domain+"';";b[k]=o+"void(0);"}try{var t=b.contentWindow[g];t.write(p());t.close()}catch(x){b[k]=o+'d.write("'+p().replace(/"/g,String.fromCharCode(92)+'"')+'");d.close();'}a.P(2)};ld()};nt()})({loader: "static.olark.com/jsclient/loader0.js",name:"olark",methods:["configure","extend","declare","identify"]});
+		olark.configure('system.allow_mobile_boot', true);
+		olark.identify('1498-430-10-9332');
 	}
 };
 
@@ -1434,10 +1430,8 @@ $(function() {
 		$(this).val( App.phone.format($(this).val()) );
 	});
 	
-	if (screen.width <= 480) {
-		olark('api.box.onShow',function() {
-			olark('api.box.hide');
-		});
+	if (screen.width >= 768) {
+		App.olark.boot();
 	}
 	
 	var select = $('<select class="community-select">');

@@ -2,7 +2,24 @@
 
 class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle {
 	public function init() {
-		$files = $this->assets('js');
+//		$files = $this->assets('js');
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/jquery.min.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/jquery-ui.min.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/jquery.cookie.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/jquery.history.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/underscore-min.js';
+		
+				
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/app.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/community.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/dish.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/extra.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/order.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/restaurant.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/side.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/substitution.js';
+		$files[] = '/Users/arzynik/Sites/crunchbutton/include/../www/assets/js/topping.js';
+
 		usort($files,'self::jSort');
 		$this->serve($files);
 	}
