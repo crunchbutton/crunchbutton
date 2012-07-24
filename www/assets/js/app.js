@@ -979,7 +979,7 @@ App.cart = {
 		App.cart.items = {
 			dishes: {},
 			sides: {},
-			extras: {},
+			extras: {}
 		};
 		$('.cart-items-content, .cart-total').html('');
 	},
