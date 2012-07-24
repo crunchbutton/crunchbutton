@@ -1204,7 +1204,7 @@ App.loc = {
 					return;
 				}
 
-				if (closest.permalink != App.community.permalink) {
+				if (!App.community || closest.permalink != App.community.permalink) {
 					loc = '/'.closest.permalink;
 				}
 	
