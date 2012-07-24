@@ -1,3 +1,4 @@
+<style>body, td { font-size: 16px; } h1 { font-size: 20px; } h2 {font-size: 17px; } .customer td { font-size: 12px;}</style>
 <h1 style="text-align: center"><u><strong><?=strtoupper($order->delivery_type)?></u></strong> order<br>#<?=$order->id_order?></h1>
 <h2><?=$order->restaurant()->name?></h2>
 <h2><?=$order->date()->format('r (T)')?></h2>
@@ -76,6 +77,82 @@
 		<td><?=number_format($order->final_price,2)?></td>
 	</tr>
 </table>
+
 <? if ($order->pay_type == 'card') : ?>
 	<h2>Already paid & tipped by CREDIT</h2>
 <? endif ; ?>
+
+<br /><br />
+<div style="border-top: 1px dashed black"> </div>
+<br /><br />
+
+<h2 align="center">Customer Copy</h2>
+<table border="0" cellpadding="5" class="customer" align="center">
+	<thead style="font-weight:bold">
+		<td>Qty</td>
+		<td>Item</td>
+		<td>Price</td>
+	</thead>
+
+	<? foreach ($order->order() as $item) : ?>
+		<tr>
+			<td>1</td>
+			<td><?
+				$food = $item->name;
+				$cartPrice = $item->price;
+				if ($item->_substitutions || $item->_toppings) {
+					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
+				}
+				if ($item->_toppings) {
+					foreach ($item->_toppings as $topping) {
+						$cartPrice += $topping->price;
+						$food .= $topping->name.', ';
+					}
+					$food = substr($food, 0, -2);
+				}
+				if ($item->_substitutions) {
+					foreach ($item->_substitutions as $topping) {
+						$cartPrice += $topping->price;
+						$food .= $topping->name.', ';
+					}
+					$food = substr($food, 0, -2);
+				}
+				if ($item->_substitutions || $item->_toppings) {
+					$food .= '</i>';
+				}
+				?>
+				<?=$food?>
+			</td>
+			<td><?=number_format($cartPrice,2)?></td>
+		</tr>
+	<? endforeach ; ?>
+	
+	<? if ($order->notes) : ?>
+		<tr>
+			<td>NOTES</td>
+			<td><?=nl2br(strip_tags($order->notes))?></td>
+			<td></td>
+		</tr>
+	<? endif ; ?>
+
+	<tr class="class">
+		<td></td>
+		<td style="text-align:right">Subtotal</td>
+		<td><?=number_format($order->price,2)?></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td style="text-align:right">Tax</td>
+		<td><?=$order->tax()?></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td style="text-align:right">Tip (<?=$order->tip?>%)</td>
+		<td><?=$order->tip()?></td>
+	</tr>
+	<tr style="font-weight:bold;">
+		<td></td>
+		<td style="text-align:right">Total</td>
+		<td><?=number_format($order->final_price,2)?></td>
+	</tr>
+</table>
