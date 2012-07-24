@@ -37,6 +37,7 @@ $(function() {
 			<? foreach ($community->properties() as $key => $val) : ?>
 				'<?=$key?>': "<?=$val?>",
 			<? endforeach ; ?>
+			stored: true
 		};
 	<? endforeach ; ?>
 	App.config = <?=json_encode(c::appConfig())?>;
