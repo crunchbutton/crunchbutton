@@ -10,6 +10,7 @@ class Crunchbutton_Community extends Cana_Table {
 				select restaurant.* from restaurant
 				left join restaurant_community using(id_restaurant)
 				where id_community="'.$this->id_community.'"
+				and restaurant.active=1
 				order by restaurant_community.sort, restaurant.delivery desc
 			');
 		}
