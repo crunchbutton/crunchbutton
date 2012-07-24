@@ -332,11 +332,18 @@ b {
 	margin-top: 25px;
 	display: block;
 	height: 45px;
-	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fb422e), to(#fb2418));
-	background-image: -moz-linear-gradient( center top, #fb422e 5%, #fb2418 100% );
-	background-image: -o-linear-gradient(center top, #fb422e 0%, #fb2418 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fb422e', endColorstr='#fb2418');
-	background-image: linear-gradient(to bottom, #fb422e 0%, #fb2418 100%);
+	
+	
+
+	background: -moz-linear-gradient(#fb422e, #fb2418);
+	background: -ms-linear-gradient(#fb422e, #fb2418);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #000000), color-stop(100%, #fb2418));
+	background: -webkit-linear-gradient(#fb422e, #fb2418);
+	background: -o-linear-gradient(#fb422e, #fb2418);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#fb2418');
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#fb422e', endColorstr='#fb2418')";
+	background: linear-gradient(#fb422e, #fb2418);
+
 
 	border: 1px solid #ae4939;
 	box-shadow:
