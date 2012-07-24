@@ -1392,6 +1392,8 @@ $(function() {
 	});
 	
 	$('.link-home').live('click',function() {
+		location.href = '/';
+		return;
 		if (screen.width > 768) {
 			App.loadHome();
 		}
