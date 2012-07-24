@@ -258,8 +258,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function receipt() {
-		//$env = c::env() == 'live' ? 'live' : 'dev';
-		$env = 'dev';
+		$env = c::env() == 'live' ? 'live' : 'dev';
 		//$num = ($env == 'live' ? $this->phone : c::config()->twilio->testnumber);
 		$num = $this->phone;
 		

@@ -756,7 +756,9 @@ and (max-width : 769px) {
 	.cart-item {
 		background: #ecf1fb;
 		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f4f7fd), to(#ecf1fb));
-		border: 1px solid #bcd5f3;
+		background: #f4e9e3;
+		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff6f4), to(#fff0ec));
+		border: 1px solid #975a2c;
 	}
 
 	.resturant-dish-container .dish-name {

@@ -3,8 +3,7 @@
 class Crunchbutton_Notification extends Cana_Table {
 	public function send(Crunchbutton_Order $order) {
 
-		//$env = c::env() == 'live' ? 'live' : 'dev';
-		$env = 'dev';
+		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
 		$mail = ($env == 'live' ? $this->value : 'arzynik@gmail.com');
 		$fax = ($env == 'live' ? $this->value : '_PHONE_');
