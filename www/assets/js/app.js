@@ -1446,12 +1446,25 @@ $(function() {
 		App.olark.boot();
 	}
 	
+	$('select, input, textarea').live('focus',function() {
+		if ($(window).width() < 768) {
+			$('[data-role="header"], [data-role="footer"]').fixedtoolbar('hide');	
+		}
+	});
+	
+	$('select, input, textarea').live('blur',function() {
+		if ($(window).width() < 768) {
+			$('[data-role="header"], [data-role="footer"]').fixedtoolbar('show');	
+		}
+	});
+	
+	
 
 });
 
 App.layout = {
 	init: function() {
-		$('[data-role="header"], [data-role="footer"]').fixedtoolbar({ tapToggle: false});
+		$('[data-role="header"], [data-role="footer"]').fixedtoolbar({ tapToggle: false, transition: 'none'});
 		if ($(window).width() >= 768) {
 			$('[data-role="header"], [data-role="footer"]').fixedtoolbar('hide');
 		} else {
