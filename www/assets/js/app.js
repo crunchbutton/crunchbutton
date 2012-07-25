@@ -33,6 +33,7 @@ History.Adapter.bind(window,'statechange',function() {
 	
 
 var App = {
+	cartHighlightEnabled: false,
 	currentPage: null,
 	slogans: ['order food in 5 seconds'],
 	service: '/api/',
@@ -198,6 +199,7 @@ App.page.community = function(id) {
 
 App.page.restaurant = function(id) {
 	App.currentPage = 'restaurant';
+	App.cartHighlightEnabled = false;
 
 	$('.content').addClass('short-meal-list');
 
@@ -210,7 +212,7 @@ App.page.restaurant = function(id) {
 		document.title = 'Crunchbutton - ' + App.restaurant.name;
 		
 		$('.main-content').html(
-			'<div class="cart-summary" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-items"></div></div>' +
+			'<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-items"></div></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
@@ -287,6 +289,7 @@ App.page.restaurant = function(id) {
 		}
 
 		var total = App.cart.updateTotal();
+		App.cartHighlightEnabled = true;
 		
 		App.layout.init();
 		App.busy.unBusy();
@@ -698,7 +701,14 @@ App.cart = {
 		App.cart.updateTotal();
 	},
 	updateTotal: function() {
-		$('.cart-total').html('$' + App.cart.total());
+		var totalText = '$' + App.cart.total();
+
+		if ($('.cart-total').html() == totalText) {
+			return;
+		}
+
+		$('.cart-total').html(totalText);
+
 		if (App.order['pay_type'] == 'card') {
 			$('.includes-tip').show();
 		} else {
@@ -744,6 +754,13 @@ App.cart = {
 		}
 
 		$('.cart-summary-items').html(text.substr(0,text.length-13));
+		
+		if (App.cartHighlightEnabled) {
+			$('.cart-summary').removeClass('cart-summary-detail');
+			$('.cart-summary').effect('highlight', {}, 500, function() {
+				$('.cart-summary').addClass('cart-summary-detail');
+			});
+		}
 		
 	},
 	customize: function(item) {
@@ -1469,3 +1486,4 @@ $(window).resize(function() {
 	clearTimeout(App.resizeTimer);
 	App.resizeTimer = setTimeout(App.layout.init, 100);
 });
+
