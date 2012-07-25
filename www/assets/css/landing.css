@@ -131,7 +131,8 @@ a {
 	font-family: Museo Slab, Times New Roman, serif;
 	color: #fff;
 	text-shadow: 1px 0 3px rgba(80,17,12,.5);
-	text-decoration: none;
+	text-decoration: underline;
+	font-size: 18px;
 }
 
 @media only screen 
@@ -152,8 +153,8 @@ and (max-width : 500px) {
 		margin-top: 10px;
 	}
 	.cake {
-		margin-top: 35px;
-		width: 100px;
+		margin-top: 25px;
+		width: 80px;
 	}
 	.desc {
 		margin-top: 16px;
