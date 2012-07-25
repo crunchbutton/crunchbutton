@@ -812,6 +812,7 @@ and (max-width : 769px) {
 		min-height: 240px;
 	}
 	.nav {
+		position: fixed;
 		box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.35);
 		background: url(/assets/images/nav.png);
 		height: 44px;
@@ -960,6 +961,8 @@ and (max-width : 769px) {
 		margin-left: 0px;
 	}
 	.button-bottom-wrapper {
+		position: fixed;
+		margin-left: -8px;
 		z-index: 102;
 		bottom: 0;
 		width: 100%;
@@ -979,6 +982,7 @@ and (max-width : 769px) {
 		margin-top: 10px;
 	}
 	.cart-summary {
+		position: fixed;
 		height: 35px;
 		z-index: 99;
 		width: 100%;
