@@ -848,6 +848,7 @@ and (max-width : 769px) {
 	}
 	.footer {
 		margin-top: 20px;
+		margin-bottom: 30px;
 		text-shadow: 1px 1px 0 rgba(255,255,255,.6);
 	}
 	.restaurant-name {
@@ -1074,6 +1075,13 @@ and (max-width : 769px) {
 		margin: 5px 0 15px 0;
 		display: block;
 	}
+	.footer-hide .footer-content {
+		display: none;
+	}
+	.footer.footer-hide {
+		margin-bottom: 0px;
+		margin-top: 14px;
+	}
 }
 
 
@@ -1089,6 +1097,12 @@ and (max-width : 769px) {
 
 @media only screen 
 and (min-width : 770px) {
+	.ui-footer-fixed {
+		left: auto;
+		right: auto;
+		width: auto;
+		position: relative;
+	}
 
 	.content {
 		margin: 0 auto;

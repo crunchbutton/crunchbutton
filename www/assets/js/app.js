@@ -318,13 +318,13 @@ App.drawPay = function(restaurant) {
 			'</div><div class="divider"></div>' + 
 
 			'<label>Name</label>' + 
-			'<div class="input-item"><input type="text" name="pay-name"></div><div class="divider"></div>' + 
+			'<div class="input-item"><input type="text" name="pay-name" tabindex="2"></div><div class="divider"></div>' + 
 	
 			'<label>Phone #</label>' + 
-			'<div class="input-item"><input type="tel" name="pay-phone"></div><div class="divider"></div>' + 
+			'<div class="input-item"><input type="tel" name="pay-phone" tabindex="3"></div><div class="divider"></div>' + 
 	
 			'<label class="delivery-only">Deliver to</label>' + 
-			'<div class="input-item delivery-only"><textarea name="pay-address"></textarea></div><div class="divider"></div>' + 
+			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="4"></textarea></div><div class="divider"></div>' + 
 		'</div>'
 	);
 
@@ -347,17 +347,17 @@ App.drawPay = function(restaurant) {
 			'</div>' + 
 
 			'<label class="card-only">Credit card #</label>' + 
-			'<div class="input-item card-only"><input type="text" name="pay-card-number"></div><div class="divider"></div>' + 
+			'<div class="input-item card-only"><input type="text" name="pay-card-number" tabindex="5"></div><div class="divider"></div>' + 
 
 			'<label class="card-only">Expiration</label>' + 
 			'<div class="input-item card-only">' + 
-				'<select name="pay-card-month"><option>Month</option></select>' + 
-				'<select name="pay-card-year"><option>Year</option></select><div class="divider"></div>' + 
+				'<select name="pay-card-month" tabindex="6"><option>Month</option></select>' + 
+				'<select name="pay-card-year" tabindex="7"><option>Year</option></select><div class="divider"></div>' + 
 			'</div>' + 
 
 			'<div class="divider"></div><label class="card-only">Tip</label>' + 
 			'<div class="input-item card-only">' + 
-				'<select name="pay-tip"></select>' + 
+				'<select name="pay-tip" tabindex="8"></select>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
 		'</div>'
@@ -522,6 +522,7 @@ App.loadPage = function() {
 		case communityRegex.test(url):
 		default:
 			$('.nav-back').removeClass('nav-back-show');
+			$('.footer').removeClass('footer-hide');
 			App.page.community(App.community.id);
 			return;
 			break;
@@ -542,7 +543,9 @@ App.loadPage = function() {
 			App.page.orders();
 			break;
 	}
-
+	if (App.config.env == 'live') {
+		$('.footer').addClass('footer-hide');
+	}
 	$('.nav-back').addClass('nav-back-show');
 	App.refreshLayout();
 	$('.main-content').css('visibility','1');
@@ -1457,9 +1460,6 @@ $(function() {
 			$('[data-role="header"], [data-role="footer"]').fixedtoolbar('show');	
 		}
 	});
-	
-	
-
 });
 
 App.layout = {
