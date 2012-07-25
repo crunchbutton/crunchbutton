@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
 
+<link rel="stylesheet" type="text/css" href="/assets/css/jquery.mobile.css">
 <link rel="stylesheet" type="text/css" href="/assets/css/<?=c::config()->bundle ? 'bundle' : 'style'?>.css">
 <link rel="shortcut icon" href="/favicon.ico">
 
@@ -25,7 +26,7 @@
 <? else : ?>
 	<script src="/assets/js/json2.js"></script>
 	<script src="/assets/js/jquery.min.js"></script>
-	<script src="/assets/js/jquery-ui.min.js"></script>
+	<script src="/assets/js/jquery.mobile.js"></script>
 	<script src="/assets/js/jquery.history.js"></script>
 	<script src="/assets/js/jquery.cookie.js"></script>
 	
@@ -62,24 +63,22 @@ $(function() {
 </head>
 
 <body>
-	<div class="wrapper">
-		<div class="nav">
+	<div class="wrapper" data-role="page" id="base">
+		<div class="nav" data-role="header" data-position="fixed" data-id="nav">
 			<div class="content">
 				<div class="logo"><a href="javascript:;" class="link-home"><div class="logo-img"></div></a><div class="community-selector"></div><div class="nav-back"></div></div>
 				<div class="config-icon"></div>
 			</div>
 		</div>
-		<div class="body">
+		<div class="body" data-role="content">
 			<div class="content">
 				<div class="main-content">
-					<div class="main-content-item">
-						<?=$this->content?>
-					</div>
+					<?=$this->content?>
 				</div>
 			</div>
 		</div>
 		<div class="divider"></div>
-		<div class="footer">
+		<div class="footer" data-role="footer">
 			<a href="javascript:;" class="link-help">Help</a>
 			<a href="javascript:;" class="link-legal">Legal</a>
 			<a href="javascript:;" class="link-orders"<?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
@@ -92,6 +91,7 @@ $(function() {
 			<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
 		</div>
 	</div>
+	<div class="pages"></div>
 </body>
 <script type="text/javascript">
 

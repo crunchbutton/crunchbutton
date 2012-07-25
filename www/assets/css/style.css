@@ -808,11 +808,11 @@ and (max-width : 769px) {
 	}
 
 	.main-content {
-		margin: 48px 8px 0 8px;
+		margin: 6px 8px 0 8px;
 		min-height: 240px;
 	}
 	.nav {
-		position: fixed;
+
 		box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.35);
 		background: url(/assets/images/nav.png);
 		height: 44px;
@@ -848,6 +848,7 @@ and (max-width : 769px) {
 		background-position: center center !important;
 	}
 	.footer {
+		display: none;
 		margin-top: 20px;
 		text-shadow: 1px 1px 0 rgba(255,255,255,.6);
 	}
@@ -961,14 +962,12 @@ and (max-width : 769px) {
 	}
 	.button-bottom-wrapper {
 		z-index: 102;
-		position: fixed;
 		bottom: 0;
 		width: 100%;
 		box-shadow: 0px -1px 4px 0px rgba(0, 0, 0, 0.35);
 		background: #444;
 		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #444), color-stop(1, #333) );
 		height: 52px;
-		margin-left: -8px;
 		border-top: 1px solid #000;
 	}
 	.button-bottom {
@@ -982,7 +981,6 @@ and (max-width : 769px) {
 	}
 	.cart-summary {
 		height: 35px;
-		position: fixed;
 		z-index: 99;
 		width: 100%;
 		left: 0;
@@ -1003,9 +1001,9 @@ and (max-width : 769px) {
 
 	}
 	.community-selector {
-		position: fixed;
+		position: absolute;
 		top: 8px;
-		right: 10px;
+		right: 7px;
 		width: 45px;
 	}
 	.community-select {
@@ -1018,9 +1016,9 @@ and (max-width : 769px) {
 		color: rgba(0,0,0,.01);
 	}
 	.nav-back {
-		position: fixed;
+		position: absolute;
 		top: 8px;
-		left: 10px;
+		left: 7px;
 		background: url(/assets/images/back.png) no-repeat;
 		width: 51px;
 		height: 31px;

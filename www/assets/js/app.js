@@ -20,9 +20,23 @@ if (typeof(Number.prototype.toRad) === 'undefined') {
 	}
 }
 
+window.History = {
+	pushState: function() {
+		alert('asd');
+		history.pushState(arguments[0],arguments[1],arguments[3]);
+	}
+};
+
 var History = window.History;
 
-History.Adapter.bind(window,'statechange',function() {
+
+//History.Adapter.bind(window,'popstate',function(e) {
+//});
+
+/*
+History.Adapter.bind(window,'pushstate',function(e) {
+alert('asd');
+console.log(e);
 	var State = History.getState();
 	History.log(State.data, State.title, State.url);
 
@@ -32,6 +46,8 @@ History.Adapter.bind(window,'statechange',function() {
 		App.loadPage();
 	}
 });
+*/
+	
 	
 
 var App = {
@@ -53,22 +69,12 @@ var App = {
 	_pageInit: false
 };
 
-if (typeof(Ti) != 'undefined') {
-	App.request = function(url, complete) {
-		var client = Ti.Network.createHTTPClient();
-		client.open("GET", url, false);
-		client.send();
-		console.log('[REQUEST]',url);
-		console.log('[RESPONSE]',client.responseText);
-		complete($.parseJSON(client.responseText),client.responseText);
-	};
-} else {
-	App.request = function(url, complete) {
-		$.getJSON(url,function(json) {
-			complete(json);
-		});
-	};
-}
+
+App.request = function(url, complete) {
+	$.getJSON(url,function(json) {
+		complete(json);
+	});
+};
 
 // quick and dirty
 App.cache = function(type, id) {
@@ -126,6 +132,7 @@ App.loadRestaurant = function(id) {
 		} else {
 			var loc = '/' + App.community.permalink + '/' + this.permalink;
 			History.pushState({}, 'Crunchbutton - ' + this.name, loc);
+			App.loadPage();
 		}
 	});
 };
@@ -133,6 +140,7 @@ App.loadRestaurant = function(id) {
 App.loadHome = function() {
 	App.currentPage = 'home';
 	History.pushState({}, 'Crunchbutton', '/');
+	App.loadPage();
 };
 
 App.loadCommunity = function(id) {
@@ -140,8 +148,8 @@ App.loadCommunity = function(id) {
 	$('.community-select').val(id);
 
 	if (onHold.indexOf(id) != -1) {
-		$('.main-content-item').show();
-		$('.main-content-item').html('<div class="soon">It\'s a pleasure serving you ' + App.communities[id].name + '. We\'ll be back bigger and better for fall semester.</div>');
+		$('.main-content').show();
+		$('.main-content').html('<div class="soon">It\'s a pleasure serving you ' + App.communities[id].name + '. We\'ll be back bigger and better for fall semester.</div>');
 		return;
 	}
 
@@ -154,8 +162,8 @@ App.loadCommunity = function(id) {
 				App.community = this;
 				App.loadPage();
 			});
-			$('.main-content-item').show();
-			$('.main-content-item').html('just a sec...');
+			$('.main-content').show();
+			$('.main-content').html('just a sec...');
 
 			return;
 		} else {
@@ -164,20 +172,36 @@ App.loadCommunity = function(id) {
 	});
 };
 
+App.page.nav = function(el) {
+el.prepend(
+		'<div class="nav" data-role="header" data-position="fixed" data-id="nav">'+
+			'<div class="content">'+
+				'<div class="logo"><a href="javascript:;" class="link-home"><div class="logo-img"></div></a><div class="community-selector"></div><div class="nav-back"></div></div>'+
+				'<div class="config-icon"></div>'+
+			'</div>'+
+		'</div>'
+	);
+};
+
 App.page.community = function(id) {
+
 	App.currentPage = 'community';
 
 	App.cache('Community', id, function() {
+		if (App.community.id == id && $('.content-item-community')) {
+			$.mobile.changePage('#content-item-community')
+		}
 		App.community = this;
 
 		document.title = 'Crunchbutton - ' + App.community.name;
 
 		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
 
-		$('.main-content-item').html(
+		var el = $('<div class="content-item content-item-community" id="content-item-community" data-role="page"></div>').html(
 			'<div class="home-tagline"><h1>' + slogan + '</h1></div>' + 
 			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
-		);
+		).appendTo('.pages');
+		App.page.nav(el);
 
 		var rs = this.restaurants();
 
@@ -209,6 +233,10 @@ App.page.community = function(id) {
 
 			$('.meal-items').append(restaurant);
 		}
+		//el.page();
+		$.mobile.changePage(el,{
+			pageContainer: $('.main-content')
+		});
 
 	});
 };
@@ -226,8 +254,8 @@ App.page.restaurant = function(id) {
 		App.restaurant = this;
 		document.title = 'Crunchbutton - ' + App.restaurant.name;
 		
-		$('.main-content-item').html(
-			'<div class="cart-summary"><div class="cart-summary-icon"></div><div class="cart-summary-items"></div></div>' +
+		var el = $('<div class="content-item content-item-restaurant" id="content-item-restaurant" data-role="page"></div>').html(
+			'<div class="cart-summary" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-items"></div></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
@@ -236,7 +264,13 @@ App.page.restaurant = function(id) {
 				'<div class="divider"></div>' + 
 			'</div>' + 
 			'<div class="restaurant-payment-div"></div>'
-		);
+		).appendTo('.pages');
+		App.page.nav(el);
+		
+		el.page();
+		$.mobile.changePage(el,{
+			pageContainer: $('.main-content')
+		});
 
 		$('.restaurant-items').append(
 			'<div class="restaurant-item-title">most popular at ' + App.community.name + '</div>' + 
@@ -296,7 +330,7 @@ App.page.restaurant = function(id) {
 			}
 			dp.append('<div class="divider"></div>');
 	
-			$('.main-content-item').append(dp);
+			$('.content-item-restaurant').append(dp);
 
 
 		} else {
@@ -304,6 +338,10 @@ App.page.restaurant = function(id) {
 		}
 
 		var total = App.cart.updateTotal();
+		
+		$.mobile.changePage('#content-item-restaurant',{
+			pageContainer: $('.main-content')
+		});
 	});
 
 };
@@ -311,15 +349,16 @@ App.page.restaurant = function(id) {
 App.drawPay = function(restaurant) {
 	var total = App.cart.total();
 
-	$('.main-content-item').append(
+	$('.content-item-restaurant').append(
 		'<form class="payment-form main-content-readable">' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-total">Your total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"> and tip</span>)</div>' +
 		'</form>' + 
 
-		'<div class="button-bottom-wrapper"><button class="button-submitorder-form button-bottom"><div>Submit Order</div></button></div>'
+		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Submit Order</div></button></div>'
 	);
+	App.layout.init();
 
 	$('.delivery-info-container').append(
 
@@ -434,11 +473,13 @@ App.page.order = function(id) {
 		}
 
 		$('.content').addClass('short-meal-list');
-		$('.main-content-item').css('width','auto');
-		$('.main-content-item').html(
+//		$('.main-content').css('width','auto');
+		
+		var el = $('<div class="content-item content-item-order" id="content-item-order" data-role="page"></div>').html(
 			'<div class="content-padder-before"></div>' +
 			'<div class="order-info content-padder main-content-readable"></div>'
-		);
+		).appendTo('.pages');
+
 		$('.order-info').html(
 			'<span class="order-thanks-message">'+ message +'</span>' + 
 			'<br /><br />'
@@ -465,6 +506,8 @@ App.page.order = function(id) {
 			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
 			$('.order-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="App.olark.show();">message us</a><br />or call <b><a href="tel:(213) 293-6935">(213) 2 WENZEL</a></b><br /><br />');
 		});
+		
+		$.mobile.changePage(el);		
 
 	});
 };
@@ -472,7 +515,7 @@ App.page.order = function(id) {
 App.page.legal = function() {
 	App.currentPage = 'legal';
 	$.getJSON('/api/legal',function(json) {
-		$('.main-content-item').html(json.data);
+		$('.main-content').html(json.data);
 		App.refreshLayout();
 	});
 };
@@ -480,7 +523,7 @@ App.page.legal = function() {
 App.page.orders = function() {
 	$.getJSON('/api/user/orders',function(json) {
 	
-		$('.main-content-item').html(
+		$('.main-content').html(
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-item-title">order history</div>' + 
 				'<ul class="resturant-dishes resturant-dish-container your-orders"></ul>' +
@@ -502,16 +545,16 @@ App.page.orders = function() {
 
 App.loadPage = function() {
 	var
-		url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/'),
+		url = $.mobile.path.parseUrl.pathname,
+//		url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/'),
 		path = url.split('/');
-
 	if (!App.config) {
 		return;
 	}
 
 	// hide whatever we have
 	if (App._pageInit) {
-		$('.main-content-item').css('visibility','0');
+		$('.main-content').css('visibility','0');
 	} else {
 		App._pageInit = true;
 	}
@@ -558,7 +601,7 @@ App.loadPage = function() {
 
 	$('.nav-back').addClass('nav-back-show');
 	App.refreshLayout();
-	$('.main-content-item').css('visibility','1');
+	$('.main-content').css('visibility','1');
 };
 
 App.refreshLayout = function() {
@@ -934,6 +977,7 @@ App.cart = {
 					App.cache('Order',json.uuid,function() {
 						var loc = '/order/' + this.uuid;
 						History.pushState({},loc,loc);
+						App.loadPage();
 					});
 				}
 				App.busy.unBusy();
@@ -1158,13 +1202,15 @@ App.loc = {
 	},
 	getClosest: function() {
 		var closest;
-		for (x in App.communities) {
-			App.communities[x].distance = App.loc.distance({
-				from: {lat: App.loc.lat, lon: App.loc.lon},
-				to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
-			});
-			if (!closest || App.communities[x].distance < closest.distance) {
-				closest = App.communities[x];
+		if (App.loc) {
+			for (x in App.communities) {
+				App.communities[x].distance = App.loc.distance({
+					from: {lat: App.loc.lat, lon: App.loc.lon},
+					to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
+				});
+				if (!closest || App.communities[x].distance < closest.distance) {
+					closest = App.communities[x];
+				}
 			}
 		}
 		return closest || App.communities['yale'];
@@ -1309,6 +1355,7 @@ $(function() {
 	$('.your-orders a').live('click',function() {
 		if ($(this).attr('data-id_order')) {
 			History.pushState({},'Crunchbutton - Your Order', '/order/' + $(this).attr('data-id_order'));
+			App.loadPage();
 		}
 	});
 	
@@ -1370,6 +1417,8 @@ $(function() {
 	});
 	
 	$('.nav-back').live('click',function() {
+		History.back();
+		return;
 
 		switch (App.currentPage) {
 			case 'restaurant':
@@ -1405,7 +1454,7 @@ $(function() {
 		$.cookie('community', $(this).val(), { expires: new Date(3000,01,01), path: '/'});
 		
 		App.community = null;
-		$('.main-content-item').css('visibility','0');
+		$('.main-content').css('visibility','0');
 		History.pushState({}, 'Crunchbutton', loc);
 	});
 
@@ -1432,10 +1481,6 @@ $(function() {
 		$(this).val( App.phone.format($(this).val()) );
 	});
 	
-	if (screen.width >= 768) {
-		App.olark.boot();
-	}
-	
 	var select = $('<select class="community-select">');
 	var selected = $.cookie('community') ? $.cookie('community') : 'yale';
 	for (x in App.communities) {
@@ -1459,4 +1504,40 @@ $(function() {
 	$('.cart-summary').live('click', function() {
 		$('body').scrollTop($('.cart-items').position().top-80);
 	});
+
+	if (screen.width >= 768) {
+		App.olark.boot();
+
+	} else {
+
+	}
+	
+	App.layout.init();
 });
+
+App.layout = {
+	init: function() {
+
+		$('[data-role=header]').fixedtoolbar({
+			tapToggle: false,
+			create: function() {
+			alert('ad');
+				console.log(this);
+			}
+		});
+
+		if (window.width >= 768) {
+			//$('[data-position="fixed"]').fixedtoolbar('hide');
+			$.extend($.mobile, {
+				defaultPageTransition: 'fade'
+			});
+		} else {
+			$.extend($.mobile, {
+				defaultPageTransition: 'slide'
+			});
+			$('[data-role=footer]').fixedtoolbar({ tapToggle: false });
+		}
+	}
+};
+
+//$.mobile.changePage("#page2");
