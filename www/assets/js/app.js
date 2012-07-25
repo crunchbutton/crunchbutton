@@ -755,7 +755,7 @@ App.cart = {
 
 		$('.cart-summary-items').html(text.substr(0,text.length-13));
 		
-		if (App.cartHighlightEnabled) {
+		if (App.cartHighlightEnabled && $('.cart-summary').css('display') != 'none') {
 			$('.cart-summary').removeClass('cart-summary-detail');
 			$('.cart-summary').effect('highlight', {}, 500, function() {
 				$('.cart-summary').addClass('cart-summary-detail');
