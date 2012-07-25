@@ -291,6 +291,7 @@ App.page.restaurant = function(id) {
 		var total = App.cart.updateTotal();
 		
 		App.layout.init();
+		App.busy.unBusy();
 	});
 
 };
@@ -1241,13 +1242,19 @@ $(function() {
 	});
 
 	$('.meal-item-content').live({
-		mousedown: function() {
+		mousedown: function() {		
+			if (App.busy.isBusy()) {
+				return;
+			}
+
 			if (navigator.userAgent.toLowerCase().indexOf('ios') > -1 || navigator.userAgent.toLowerCase().indexOf('android') > -1) {
 				return;
 			}
 			$(this).addClass('meal-item-down');
 			var self = $(this);
+
 			setTimeout(function() {
+				App.busy.makeBusy();
 				App.loadRestaurant(self.closest('.meal-item').attr('data-permalink'));
 			},100);
 		},
@@ -1271,9 +1278,13 @@ $(function() {
 			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
 				//return;
 			}
+			if (App.busy.isBusy()) {
+				return;
+			}
 			
 			var maxDistance = 10;
 			if (Math.abs(App.startX-App.touchX) < maxDistance && Math.abs(App.startY-App.touchY) < maxDistance) {
+				App.busy.makeBusy();
 				App.loadRestaurant($(this).closest('.meal-item').attr('data-permalink'));
 			}
 			$(this).removeClass('meal-item-down');
