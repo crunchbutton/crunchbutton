@@ -808,7 +808,7 @@ and (max-width : 769px) {
 	}
 
 	.main-content {
-		margin: 6px 8px 0 8px;
+		margin: 48px 8px 34px 8px;
 		min-height: 240px;
 	}
 	.nav {
@@ -962,7 +962,7 @@ and (max-width : 769px) {
 	}
 	.button-bottom-wrapper {
 		position: fixed;
-		margin-left: -8px;
+		left: 0;
 		z-index: 102;
 		bottom: 0;
 		width: 100%;
