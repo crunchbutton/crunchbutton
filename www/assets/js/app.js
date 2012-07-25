@@ -1382,7 +1382,8 @@ $(function() {
 	});
 	
 	$('.nav-back').live('click',function() {
-
+		History.back();
+		return;
 		switch (App.currentPage) {
 			case 'restaurant':
 				if (App.community) {
@@ -1473,6 +1474,18 @@ $(function() {
 	if ($(window).width() >= 768) {
 		App.olark.boot();
 	}
+	
+	var unHideBars = function() {
+		$('[data-position="fixed"]').show();
+	}
+	$('select, input, textarea').live('focus', function() {
+		clearTimeout(App.unHideBars);
+		$('[data-position="fixed"]').hide();
+	});
+	$('select, input, textarea').live('blur', function() {
+		clearTimeout(App.unHideBars);
+		setTimeout(unHideBars, 100);
+	});
 
 });
 
