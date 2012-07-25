@@ -14,6 +14,8 @@ class Crunchbutton_Auth {
 				Session::deleteToken($_COOKIE['token']);
 				$this->session()->id_user = $sess->id_user;
 				$this->session()->token = $_COOKIE['token'];
+			} else {
+				setcookie('token','',0,'/');
 			}
 		}
 
