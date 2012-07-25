@@ -812,7 +812,6 @@ and (max-width : 769px) {
 		min-height: 240px;
 	}
 	.nav {
-
 		box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.35);
 		background: url(/assets/images/nav.png);
 		height: 44px;
@@ -848,7 +847,6 @@ and (max-width : 769px) {
 		background-position: center center !important;
 	}
 	.footer {
-		display: none;
 		margin-top: 20px;
 		text-shadow: 1px 1px 0 rgba(255,255,255,.6);
 	}
@@ -1003,7 +1001,7 @@ and (max-width : 769px) {
 	.community-selector {
 		position: absolute;
 		top: 8px;
-		right: 7px;
+		right: 8px;
 		width: 45px;
 	}
 	.community-select {
@@ -1018,7 +1016,7 @@ and (max-width : 769px) {
 	.nav-back {
 		position: absolute;
 		top: 8px;
-		left: 7px;
+		left: 8px;
 		background: url(/assets/images/back.png) no-repeat;
 		width: 51px;
 		height: 31px;

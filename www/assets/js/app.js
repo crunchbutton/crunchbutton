@@ -20,23 +20,9 @@ if (typeof(Number.prototype.toRad) === 'undefined') {
 	}
 }
 
-window.History = {
-	pushState: function() {
-		alert('asd');
-		history.pushState(arguments[0],arguments[1],arguments[3]);
-	}
-};
-
 var History = window.History;
 
-
-//History.Adapter.bind(window,'popstate',function(e) {
-//});
-
-/*
-History.Adapter.bind(window,'pushstate',function(e) {
-alert('asd');
-console.log(e);
+History.Adapter.bind(window,'statechange',function() {
 	var State = History.getState();
 	History.log(State.data, State.title, State.url);
 
@@ -46,8 +32,6 @@ console.log(e);
 		App.loadPage();
 	}
 });
-*/
-	
 	
 
 var App = {
@@ -69,14 +53,12 @@ var App = {
 	_pageInit: false
 };
 
-
 App.request = function(url, complete) {
 	$.getJSON(url,function(json) {
 		complete(json);
 	});
 };
 
-// quick and dirty
 App.cache = function(type, id) {
 	var finalid, args = arguments, complete, partComplete;
 
@@ -95,18 +77,15 @@ App.cache = function(type, id) {
 	}
 
 	if (typeof(id) == 'object') {
-		//console.log ('storing object',type,id);
 		//App.cached[type][id.id] = id;
 
 		eval('App.cached[type][id.id] = new '+type+'(id,partComplete)');
 		finalid = id.id;
 
 	} else if (!App.cached[type][id]) {
-		//console.log ('creating from network',type,id);
 		eval('App.cached[type][id] = new '+type+'(id,partComplete)');
 
 	} else {
-		//console.log ('loading from cache',type,id);
 		complete.call(App.cached[type][id]);
 	}
 
@@ -132,7 +111,6 @@ App.loadRestaurant = function(id) {
 		} else {
 			var loc = '/' + App.community.permalink + '/' + this.permalink;
 			History.pushState({}, 'Crunchbutton - ' + this.name, loc);
-			App.loadPage();
 		}
 	});
 };
@@ -140,7 +118,6 @@ App.loadRestaurant = function(id) {
 App.loadHome = function() {
 	App.currentPage = 'home';
 	History.pushState({}, 'Crunchbutton', '/');
-	App.loadPage();
 };
 
 App.loadCommunity = function(id) {
@@ -172,36 +149,20 @@ App.loadCommunity = function(id) {
 	});
 };
 
-App.page.nav = function(el) {
-el.prepend(
-		'<div class="nav" data-role="header" data-position="fixed" data-id="nav">'+
-			'<div class="content">'+
-				'<div class="logo"><a href="javascript:;" class="link-home"><div class="logo-img"></div></a><div class="community-selector"></div><div class="nav-back"></div></div>'+
-				'<div class="config-icon"></div>'+
-			'</div>'+
-		'</div>'
-	);
-};
-
 App.page.community = function(id) {
-
 	App.currentPage = 'community';
 
 	App.cache('Community', id, function() {
-		if (App.community.id == id && $('.content-item-community')) {
-			$.mobile.changePage('#content-item-community')
-		}
 		App.community = this;
 
 		document.title = 'Crunchbutton - ' + App.community.name;
 
 		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
 
-		var el = $('<div class="content-item content-item-community" id="content-item-community" data-role="page"></div>').html(
+		$('.main-content').html(
 			'<div class="home-tagline"><h1>' + slogan + '</h1></div>' + 
 			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
-		).appendTo('.pages');
-		App.page.nav(el);
+		);
 
 		var rs = this.restaurants();
 
@@ -233,10 +194,6 @@ App.page.community = function(id) {
 
 			$('.meal-items').append(restaurant);
 		}
-		//el.page();
-		$.mobile.changePage(el,{
-			pageContainer: $('.main-content')
-		});
 
 	});
 };
@@ -254,7 +211,7 @@ App.page.restaurant = function(id) {
 		App.restaurant = this;
 		document.title = 'Crunchbutton - ' + App.restaurant.name;
 		
-		var el = $('<div class="content-item content-item-restaurant" id="content-item-restaurant" data-role="page"></div>').html(
+		$('.main-content').html(
 			'<div class="cart-summary" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-items"></div></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
@@ -264,13 +221,7 @@ App.page.restaurant = function(id) {
 				'<div class="divider"></div>' + 
 			'</div>' + 
 			'<div class="restaurant-payment-div"></div>'
-		).appendTo('.pages');
-		App.page.nav(el);
-		
-		el.page();
-		$.mobile.changePage(el,{
-			pageContainer: $('.main-content')
-		});
+		);
 
 		$('.restaurant-items').append(
 			'<div class="restaurant-item-title">most popular at ' + App.community.name + '</div>' + 
@@ -330,7 +281,7 @@ App.page.restaurant = function(id) {
 			}
 			dp.append('<div class="divider"></div>');
 	
-			$('.content-item-restaurant').append(dp);
+			$('.main-content').append(dp);
 
 
 		} else {
@@ -339,9 +290,7 @@ App.page.restaurant = function(id) {
 
 		var total = App.cart.updateTotal();
 		
-		$.mobile.changePage('#content-item-restaurant',{
-			pageContainer: $('.main-content')
-		});
+		App.layout.init();
 	});
 
 };
@@ -349,7 +298,7 @@ App.page.restaurant = function(id) {
 App.drawPay = function(restaurant) {
 	var total = App.cart.total();
 
-	$('.content-item-restaurant').append(
+	$('.main-content').append(
 		'<form class="payment-form main-content-readable">' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-info-container"></div><div class="divider"></div>' + 
@@ -358,7 +307,6 @@ App.drawPay = function(restaurant) {
 
 		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Submit Order</div></button></div>'
 	);
-	App.layout.init();
 
 	$('.delivery-info-container').append(
 
@@ -462,7 +410,7 @@ App.page.order = function(id) {
 
 		document.title = 'Crunchbutton - Your Order';
 		App.order = this;
-		console.log(this);
+
 		var message, order = this;
 
 		if (App.justCompleted) {
@@ -473,13 +421,11 @@ App.page.order = function(id) {
 		}
 
 		$('.content').addClass('short-meal-list');
-//		$('.main-content').css('width','auto');
-		
-		var el = $('<div class="content-item content-item-order" id="content-item-order" data-role="page"></div>').html(
+		$('.main-content').css('width','auto');
+		$('.main-content').html(
 			'<div class="content-padder-before"></div>' +
 			'<div class="order-info content-padder main-content-readable"></div>'
-		).appendTo('.pages');
-
+		);
 		$('.order-info').html(
 			'<span class="order-thanks-message">'+ message +'</span>' + 
 			'<br /><br />'
@@ -506,8 +452,6 @@ App.page.order = function(id) {
 			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
 			$('.order-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="App.olark.show();">message us</a><br />or call <b><a href="tel:(213) 293-6935">(213) 2 WENZEL</a></b><br /><br />');
 		});
-		
-		$.mobile.changePage(el);		
 
 	});
 };
@@ -545,9 +489,9 @@ App.page.orders = function() {
 
 App.loadPage = function() {
 	var
-		url = $.mobile.path.parseUrl.pathname,
-//		url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/'),
+		url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/'),
 		path = url.split('/');
+
 	if (!App.config) {
 		return;
 	}
@@ -954,7 +898,6 @@ App.cart = {
 			complete: function(json) {
 				
 				json = $.parseJSON(json.responseText);
-				console.log(json);
 				
 				if (json.status == 'false') {
 					var error = '';
@@ -977,7 +920,6 @@ App.cart = {
 					App.cache('Order',json.uuid,function() {
 						var loc = '/order/' + this.uuid;
 						History.pushState({},loc,loc);
-						App.loadPage();
 					});
 				}
 				App.busy.unBusy();
@@ -1202,15 +1144,13 @@ App.loc = {
 	},
 	getClosest: function() {
 		var closest;
-		if (App.loc) {
-			for (x in App.communities) {
-				App.communities[x].distance = App.loc.distance({
-					from: {lat: App.loc.lat, lon: App.loc.lon},
-					to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
-				});
-				if (!closest || App.communities[x].distance < closest.distance) {
-					closest = App.communities[x];
-				}
+		for (x in App.communities) {
+			App.communities[x].distance = App.loc.distance({
+				from: {lat: App.loc.lat, lon: App.loc.lon},
+				to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
+			});
+			if (!closest || App.communities[x].distance < closest.distance) {
+				closest = App.communities[x];
 			}
 		}
 		return closest || App.communities['yale'];
@@ -1355,7 +1295,6 @@ $(function() {
 	$('.your-orders a').live('click',function() {
 		if ($(this).attr('data-id_order')) {
 			History.pushState({},'Crunchbutton - Your Order', '/order/' + $(this).attr('data-id_order'));
-			App.loadPage();
 		}
 	});
 	
@@ -1410,15 +1349,11 @@ $(function() {
 	
 	$('[name="pay-tip"]').live('change',function() {
 		App.order.tip = $(this).val();
-		console.log(App.order.tip);
 		var total = App.cart.total();
-		console.log(total);
 		App.cart.updateTotal();
 	});
 	
 	$('.nav-back').live('click',function() {
-		History.back();
-		return;
 
 		switch (App.currentPage) {
 			case 'restaurant':
@@ -1504,40 +1439,28 @@ $(function() {
 	$('.cart-summary').live('click', function() {
 		$('body').scrollTop($('.cart-items').position().top-80);
 	});
-
-	if (screen.width >= 768) {
-		App.olark.boot();
-
-	} else {
-
-	}
 	
 	App.layout.init();
+	
+	if ($(window).width() >= 768) {
+		App.olark.boot();
+	}
+	
+
 });
 
 App.layout = {
 	init: function() {
-
-		$('[data-role=header]').fixedtoolbar({
-			tapToggle: false,
-			create: function() {
-			alert('ad');
-				console.log(this);
-			}
-		});
-
-		if (window.width >= 768) {
-			//$('[data-position="fixed"]').fixedtoolbar('hide');
-			$.extend($.mobile, {
-				defaultPageTransition: 'fade'
-			});
+		$('[data-role="header"], [data-role="footer"]').fixedtoolbar({ tapToggle: false});
+		if ($(window).width() >= 768) {
+			$('[data-role="header"], [data-role="footer"]').fixedtoolbar('hide');
 		} else {
-			$.extend($.mobile, {
-				defaultPageTransition: 'slide'
-			});
-			$('[data-role=footer]').fixedtoolbar({ tapToggle: false });
+			$('[data-role="header"], [data-role="footer"]').fixedtoolbar('show');	
 		}
 	}
 };
 
-//$.mobile.changePage("#page2");
+$(window).resize(function() {
+	clearTimeout(App.resizeTimer);
+	App.resizeTimer = setTimeout(App.layout.init, 100);
+});
