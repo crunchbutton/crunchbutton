@@ -467,7 +467,7 @@ App.page.legal = function() {
 
 App.page.orders = function() {
 	$.getJSON('/api/user/orders',function(json) {
-	
+
 		$('.main-content').html(
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-item-title">order history</div>' + 
@@ -477,8 +477,9 @@ App.page.orders = function() {
 
 		for (var x in json) {
 			App.cache('Restaurant',json[x].id_restaurant,function() {
-				var date = String(new Date(json[x].date));
-				date = date.replace(/^[a-z]+ ([a-z]+ [0-9]+ [0-9]+ [0-9]+:[0-9]+:[0-9]+).*?$/i,'$1');
+
+				var date = json[x].date.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i,'$1/$2 $3');
+				console.log(date);
 				var order = $('<li><a href="javascript:;" data-id_order="' + json[x].uuid + '"><span class="dish-name">' + this.name + '</span><span class="dish-price">' + date + '</span></a></li>');
 				$('.resturant-dishes').append(order);
 			});
