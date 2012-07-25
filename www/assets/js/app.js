@@ -25,9 +25,7 @@ var History = window.History;
 History.Adapter.bind(window,'statechange',function() {
 	var State = History.getState();
 	History.log(State.data, State.title, State.url);
-
 	if (!App.config) return;
-
 	if (App._init) {
 		App.loadPage();
 	}
@@ -36,7 +34,7 @@ History.Adapter.bind(window,'statechange',function() {
 
 var App = {
 	currentPage: null,
-	slogans: ['streamlined food ordering','hungry ?','only the best','order food in 5 seconds'],
+	slogans: ['order food in 5 seconds'],
 	service: '/api/',
 	cached: {},
 	cart: {},
@@ -106,8 +104,8 @@ App.loadRestaurant = function(id) {
 				}
 				hours += "\n";
 			}
-
 			alert("This restaurant is currently closed. It will be open during the following hours:\n\n" + hours);
+			App.busy.unBusy();
 		} else {
 			var loc = '/' + App.community.permalink + '/' + this.permalink;
 			History.pushState({}, 'Crunchbutton - ' + this.name, loc);
@@ -416,7 +414,7 @@ App.page.order = function(id) {
 
 		if (App.justCompleted) {
 			App.justCompleted = false;
-			message = 'Thanks ' + this.name + '!';
+			message = 'Thanks, ' + this.name + '!';
 		} else {
 			message = 'Your order';
 		}
@@ -477,9 +475,7 @@ App.page.orders = function() {
 
 		for (var x in json) {
 			App.cache('Restaurant',json[x].id_restaurant,function() {
-
 				var date = json[x].date.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i,'$1/$2 $3');
-				console.log(date);
 				var order = $('<li><a href="javascript:;" data-id_order="' + json[x].uuid + '"><span class="dish-name">' + this.name + '</span><span class="dish-price">' + date + '</span></a></li>');
 				$('.resturant-dishes').append(order);
 			});
