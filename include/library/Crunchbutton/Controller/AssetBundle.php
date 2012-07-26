@@ -20,11 +20,10 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 	
 	public function serve($files) {
 		Minify::setCache(c::config()->dirs->cache.'/min/');
-		Minify::serve('Files', [
+		return Minify::serve('Files', [
 			'files'  => $files,
-			'maxAge' => 86400
+			'maxAge' => 86400,
+			'quiet' => true
 		]);
-		exit;
-
     }
 }

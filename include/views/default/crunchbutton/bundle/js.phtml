@@ -1,0 +1,34 @@
+<script src="/assets/js/json2.js"></script>
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/jquery-ui.min.js"></script>
+<script src="/assets/js/jquery.history.js"></script>
+<script src="/assets/js/jquery.cookie.js"></script>
+
+<script type="text/javascript">
+$(function() {
+	App.communities = {};
+	<? foreach (Community::all() as $community) : ?>
+		App.communities['<?=$community->permalink?>'] = {
+			<? foreach ($community->properties() as $key => $val) : ?>
+				'<?=$key?>': "<?=$val?>",
+			<? endforeach ; ?>
+			stored: true
+		};
+	<? endforeach ; ?>
+	App.config = <?=json_encode(c::appConfig())?>;
+})
+</script>
+
+<script src="/assets/js/app.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/community.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/restaurant.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/dish.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/side.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/extra.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/topping.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/substitution.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/order.js?v=<?=Cana_Util::gitVersion()?>"></script>
+
+<script type="application/x-javascript">
+	addEventListener('touchstart',function(){}); addEventListener('load', function(event) {setTimeout(scrollTo, 80, 0, 1);}, false);
+</script>

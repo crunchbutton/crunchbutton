@@ -583,14 +583,20 @@ App.refreshLayout = function() {
 };
 
 App.cart = {
+	uuidInc: 0,
 	items: {
 		dishes: {},
 		sides: {},
 		extras: {}
 	},
+	uuid: function() {
+		var id = 'cart-' + App.uuidInc;
+		App.uuidInc++;
+		return id;
+	},
 	add: function(type, item) {
 		var
-			id = _.uniqueId('cart-'),
+			id = App.cart.uuid(),
 			top = App.cached['Dish'][item].toppings(),
 			sub = App.cached['Dish'][item].substitutions(),
 			toppings = {},

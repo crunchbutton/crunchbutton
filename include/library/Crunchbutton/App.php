@@ -60,6 +60,7 @@ class Crunchbutton_App extends Cana_App {
 			error_reporting(E_ERROR | E_PARSE);
 			
 			if ($_SERVER['HTTPS'] != 'on') {
+				// @todo: add ssl back
 				//header('Location: https://_DOMAIN_'.$_SERVER['REQUEST_URI']);
 				//exit;
 			}
@@ -79,6 +80,11 @@ class Crunchbutton_App extends Cana_App {
 
 		$config = $this->config();
 		$config->domain = $domain;
+		
+		
+		if ($params['env'] != 'local') {
+			$config->bundle = true;
+		}
 
 		$this
 			->config($config)
