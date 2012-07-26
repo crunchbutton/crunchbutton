@@ -3,6 +3,9 @@
     <viewfilter>false</viewfilter>
     <bundle>false</bundle>
     <timezone>America/Los_Angeles</timezone>
+    <cache>
+    	<mysql>false</mysql>
+    </cache>
     <db>
         <live>
             <user>crunch</user>

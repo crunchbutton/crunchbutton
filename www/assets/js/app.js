@@ -287,8 +287,10 @@ App.page.restaurant = function(id) {
 		} else {
 			App.drawPay(this);
 		}
+		setTimeout(function() {
+			var total = App.cart.updateTotal();
+		},200);
 
-		var total = App.cart.updateTotal();
 		App.cartHighlightEnabled = true;
 		
 		App.layout.init();
@@ -1162,13 +1164,15 @@ App.loc = {
 	},
 	getClosest: function() {
 		var closest;
-		for (x in App.communities) {
-			App.communities[x].distance = App.loc.distance({
-				from: {lat: App.loc.lat, lon: App.loc.lon},
-				to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
-			});
-			if (!closest || App.communities[x].distance < closest.distance) {
-				closest = App.communities[x];
+		if (App.loc) {
+			for (x in App.communities) {
+				App.communities[x].distance = App.loc.distance({
+					from: {lat: App.loc.lat, lon: App.loc.lon},
+					to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
+				});
+				if (!closest || App.communities[x].distance < closest.distance) {
+					closest = App.communities[x];
+				}
 			}
 		}
 		return closest || App.communities['yale'];
@@ -1397,7 +1401,7 @@ $(function() {
 
 			case 'community':
 				break;
-				
+
 			case 'legal':
 				History.back();
 				break;

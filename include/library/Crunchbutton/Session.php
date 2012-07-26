@@ -1,96 +1,15 @@
 <?php
 
-class Crunchbutton_Session extends Cana_Table {
-
+class Crunchbutton_Session extends Crunchbutton_Session_Adapter implements SessionHandlerInterface {
 	public function __construct($id = null) {
 		session_set_save_handler(
-			array($this, 'open'),
-			array($this, 'close'),
-			array($this, 'read'),
-			array($this, 'write'),
-			array($this, 'destroy'),
-			array($this, 'gc')
+			[$this, 'open'],
+			[$this, 'close'],
+			[$this, 'read'],
+			[$this, 'write'],
+			[$this, 'destroy'],
+			[$this, 'gc']
 		);
 		parent::__construct();
-	}
-	
-	public function destroy($id = null) {
-		if ($this->id_session) {
-			$this->delete();
-		}
-	}
-	
-	public function set($var, $value) {
-		$_SESSION[$var] = $value;
-		return $this;
-	}
-	public function get($var) {
-		return $_SESSION[$var];
-	}
-	
-	public function open($savePath, $sessionName) {
-		$this
-			->table('session')
-			->idVar('id_session')
-			->load(session_id());
-
-		return true;
-	}
-
-	public function close() {
-		return true;
-	}
-
-	public function read($id = null) {
-		return $this->data;
-	}
-
-	public function write($id = null, $data = null) {
-		if (!$this->id_session) {
-			$this->date_create = date('Y-m-d H:i:s');
-			$this->active = 1;
-			$this->id_user = $this->get('id_user');
-			$this->ip = $_SERVER['REMOTE_ADDR'];
-		}
-
-		$this->date_activity = date('Y-m-d H:i:s');
-		$this->data = $data;
-		$this->save($this->id_session ? null : $id);
-	}
-
-	public function gc($maxlifetime) {
-		// only delete if there is no token
-		Cana::db()->query('DELETE FROM session WHERE date_activity < "'.(time() - $maxlifetime).'" and token is null');
-	}
-	
-	public function generateAndSaveToken() {
-		if ($this->id_user && !$this->token) {
-			$fields = '-=d4sh0fs4|t?&4ndM4YB350m35ymb0||0v3!!!!!!=-'.$this->id_session.$this->id_user.uniqid();
-			$this->token = strtoupper(hash('sha512', $fields));
-			$this->save();
-		}
-	}
-	
-	public static function token($token) {
-		if (!$token) return false;
-		$res = Cana::db()->query('select * from session where token="'.c::db()->escape($token).'"');
-		$session = $res->fetch();
-
-		if ($session->id_session) {
-			return $session;
-		}
-		return false;
-	}
-	
-	public static function deleteToken($token) {
-		if (!$token) return false;
-		Cana::db()->query('delete from session where token="'.c::db()->escape($token).'"');	
-	}
-	
-	public function auth() {
-		if (!isset($this->_auth)) {
-			$this->_auth = new Crunchbutton_User_Auth($this->id_user_auth);
-		}
-		return $this->_auth;
 	}
 }
