@@ -119,15 +119,23 @@ class Crunchbutton_Order extends Cana_Table {
 		} else {
 			$this->notify();
 		}
-		
-		$def = json_encode($params['cart']);
-		if ($def != $this->restaurant()->defaultOrder()->config) {
-			$defaultOrder = new Restaurant_DefaultOrder;
-			$defaultOrder->id_user = $this->id_user;
-			$defaultOrder->id_restaurant = $this->id_restaurant;
-			$defaultOrder->config = $def;
-			$defaultOrder->save();
+
+		$preset = $user->preset($this->restaurant()->id_restaurant);
+		if ($preset->id_preset) {
+			$preset->delete();
 		}
+
+		foreach ($this->_dishes as $dish) {
+			$dish->id_order = $this->id_order;
+			$dish->save();
+
+			foreach ($dish->options() as $option) {
+				$option->id_order_dish = $dish->id_order_dish;
+				$option->save();
+			}
+		}
+
+		Preset::cloneFromOrder($this);
 		
 		return true;
 	}
@@ -189,44 +197,11 @@ class Crunchbutton_Order extends Cana_Table {
 		return self::q('select * from `order` order by `date`');
 	}
 	
-	public function order() {
-		if (!isset($this->_order)) {
-			$order = json_decode($this->order,'array');
-
-			foreach ($order as $type => $typeItem) {
-				switch ($type) {
-					case 'dishes':
-						foreach ($typeItem as $item) {
-							$dish = new Dish($item['id']);
-							if ($item['toppings']) {
-								foreach ($item['toppings'] as $topping => $bleh) {
-									$dish->_toppings[] = new Topping($topping);
-								}
-							}
-							if ($item['substitutions']) {
-								foreach ($item['substitutions'] as $topping => $bleh) {
-									$dish->_substitution[] += new Substitution($topping);
-								}
-							}
-							$orderItems[] = $dish;
-						}		
-						break;
-					case 'sides':
-						foreach ($typeItem as $item) {
-							$orderItems[] = new Side($item['id']);
-						}
-						break;
-					case 'extras':
-						foreach ($typeItem as $item) {
-							$orderItems[] = new Extra($item['id']);
-						}					
-						break;
-				}
-			}
-			$this->_order = $orderItems;
+	public function dishes() {
+		if (!isset($this->_dishes)) {
+			$this->_dishes = Order_Dish::q('select * from order_dish where id_order="'.$this->id_order.'"');
 		}
-		
-		return $this->_order;
+		return $this->_dishes;
 	}
 	
 	public function tip() {
@@ -296,31 +271,26 @@ class Crunchbutton_Order extends Cana_Table {
 				break;
 
 		}
-		foreach ($this->order() as $item) {
-			$foodItem = "\n- ".$item->name.' ';
-			if ($item->_toppings || $item->_substitutions) {
-				$foodItem .= $with.' ';
-			}
-			if ($item->_toppings) {
-				foreach ($item->_toppings as $topping) {
-					$foodItem .= $topping->name.', ';
+		foreach ($this->dishes() as $dish) {
+
+			$foodItem = "\n- ".$dish->dish()->name;
+
+			if ($dish->options()->count()) {
+				$foodItem .= ' '.$with.' ';
+
+				foreach ($dish->options() as $option) {
+					$foodItem .= $option->option()->name.', ';
 				}
 				
 				$foodItem = substr($foodItem, 0, -2).'. ';
+
+
+			} else {
+				$foodItem .= '. ';
 			}
-			if ($item->_substitutions) {
-				foreach ($item->_substitutions as $topping) {
-					$foodItem .= $topping->name.', ';
-				}
-				$foodItem = substr($foodItem, 0, -2).'. ';
-			}
-			
 			$food .= $foodItem;
-			
-			if (!$item->_substitutions && !$item->_toppings) {
-				$food .= '. ';
-			}
 		}
+
 		return $food;
 	}
 	
@@ -359,6 +329,7 @@ class Crunchbutton_Order extends Cana_Table {
 		unset($out['id_user']);
 		unset($out['id']);
 		unset($out['id_order']);
+
 		$out['user'] = $this->user()->uuid;
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		return $out;

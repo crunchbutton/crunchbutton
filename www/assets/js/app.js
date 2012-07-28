@@ -260,7 +260,7 @@ App.page.restaurant = function(id) {
 
 			var dp = $('<div class="delivery-payment-info main-content-readable"></div>')
 				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label> <a href="javascript:;">' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provied</i>') + '</a></div>');
-			var paying = $('<div class="dp-display-payment dp-display-item"><label>Your are paying:</label> <span class="cart-total">$0.00</span></div>');
+			var paying = $('<div class="dp-display-payment dp-display-item"><label>You are paying:</label> <span class="cart-total">$0.00</span></div>');
 			if (App.config.user.pay_type == 'card') {
 				paying.append('&nbsp;and <a href="javascript:;">10% tip</a> by <a href="javascript:;">card</a>');
 			} else {
@@ -645,11 +645,11 @@ App.cart = {
 	updateTotal: function() {
 		var totalText = '$' + App.cart.total();
 
+		$('.cart-total').html(totalText);
+		
 		if ($('.cart-total').html() == totalText) {
 			return;
 		}
-
-		$('.cart-total').html(totalText);
 
 		if (App.order['pay_type'] == 'card') {
 			$('.includes-tip').show();

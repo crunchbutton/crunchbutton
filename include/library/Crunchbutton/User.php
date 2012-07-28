@@ -30,9 +30,21 @@ class Crunchbutton_User extends Cana_Table {
 	}
 	
 	public function presets() {
-		return Preset::q('
-			select * from preset where id_user="'.$this->id_user.'"
-		');
+		if (!isset($this->_presets)) {
+			$this->_presets = Preset::q('
+				select * from preset where id_user="'.$this->id_user.'"
+			');
+		}
+		return $this->_presets;
+	}
+	
+	public function preset($id_restaurant) {
+		foreach ($this->presets() as $preset) {
+			if ($preset->id_restaurant == $id_restaurant) {
+				return $preset;
+			}
+		}
+		return false;
 	}
 	
 	public function exports() {
