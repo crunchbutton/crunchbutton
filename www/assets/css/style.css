@@ -25,7 +25,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
-	font-family: "Helvetica Neue", "Dosis", "Open Sans", Helvetica, Arial, Verdana, sans-serif;
+	font-family: "Helvetica Neue", "Aliquam", "Droid Sans", "Open Sans", "Helvetica", "Arial", sans-serif;
 }
 ol, ul {
 	list-style: none;
@@ -492,8 +492,7 @@ html[xmlns] .clearfix {
 	width: 200px;
 }
 .field-container input, .field-container textarea, .field-container select {
-	overflow: auto;
-	padding: 1px 3px 1px 3px;
+	padding: 7px 3px 7px 3px;
 	font-size: 13px;
 	border: 1px solid #ddd;
 	border-radius: 4px;

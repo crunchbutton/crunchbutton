@@ -178,7 +178,7 @@ App.page.community = function(id) {
 			restaurantContent
 				.append('<div class="meal-pic" style="background: url(' + rs[x]['img'] + ');"></div>')
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
-				.append('<h3 class="meal-food">Top Item: ' + rs[x].top().name + '</h3>');
+				.append('<h3 class="meal-food">Top Item: ' + (rs[x].top() ? rs[x].top().name : '') + '</h3>');
 
 			if (rs[x].open() && rs[x].delivery != '1') {
 				restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
@@ -223,30 +223,23 @@ App.page.restaurant = function(id) {
 			'<div class="restaurant-payment-div"></div>'
 		);
 
-		$('.restaurant-items').append(
-			'<div class="restaurant-item-title">most popular at ' + App.community.name + '</div>' + 
-			'<ul class="resturant-dishes resturant-dish-container"></ul>' + 
-			'<div class="restaurant-item-title">top sides</div>' + 
-			'<ul class="resturant-sides resturant-dish-container">'
-		);
-
 		var
-			dishes = App.restaurant.dishes(),
-			sides = App.restaurant.sides(),
-			extras = App.restaurant.extras();
+			categories = App.restaurant.categories(),
+			dishes, list;
 	
-		for (var x in dishes) {
-			var dish = $('<li><a href="javascript:;" data-id_dish="' + dishes[x].id_dish + '"><span class="dish-name">' + dishes[x].name + '</span><span class="dish-price">($' + dishes[x].price + ')</span></a></li>');
-			$('.resturant-dishes').append(dish);
-		}
-		
-		for (var x in sides) {
-			var side = $('<li><a href="javascript:;" data-id_side="' + sides[x].id_side + '"><span class="dish-name">' + sides[x].name + '</span><span class="dish-price">($' + sides[x].price + ')</span></a></li>');
-			$('.resturant-sides').append(side);
-		}
-		for (var x in extras) {
-			var extra = $('<li><a href="javascript:;" data-id_extra="' + extras[x].id_extra + '"><span class="dish-name">' + extras[x].name + '</span><span class="dish-price">($' + extras[x].price + ')</span></a></li>');
-			$('.resturant-sides').append(extra);
+		for (var x in categories) {
+			dishes = categories[x].dishes();
+			
+			list = $('<ul class="resturant-dishes resturant-dish-container" date-id_category="' + categories[x].id_category + '"></ul>');
+			
+			$('.restaurant-items').append('<div class="restaurant-item-title">' + categories[x].name + (categories[x].loc == '1' ? (' at ' + App.community.name) : '') + '</div>',
+				list
+			);
+
+			for (var xx in dishes) {
+				var dish = $('<li><a href="javascript:;" data-id_dish="' + dishes[xx].id_dish + '"><span class="dish-name">' + dishes[xx].name + '</span><span class="dish-price">($' + dishes[xx].price + ')</span></a></li>');
+				list.append(dish);
+			}
 		}
 
 		if (App.cart.hasItems()) {
@@ -255,10 +248,10 @@ App.page.restaurant = function(id) {
 			try {
 				App.cart.loadOrder(JSON.parse(App.config.user.defaults[App.restaurant.id_restaurant].config));
 			} catch (e) {
-				App.cart.loadOrder(App.restaurant.defaultOrder());
+				App.cart.loadOrder(App.restaurant.preset());
 			}
 		} else {
-			App.cart.loadOrder(App.restaurant.defaultOrder());
+			App.cart.loadOrder(App.restaurant.preset());
 		}
 
 		if (App.config.user.id_user) {
@@ -511,7 +504,7 @@ App.loadPage = function() {
 		App.loc.process();
 		return;
 	}
-// &&!/^legal|order|orders/.test(url)
+
 	if (!App.community) {
 		// force load of community reguardless of landing (this contains everything we need)
 		App.loadCommunity(path[0]);
@@ -584,73 +577,41 @@ App.refreshLayout = function() {
 
 App.cart = {
 	uuidInc: 0,
-	items: {
-		dishes: {},
-		sides: {},
-		extras: {}
-	},
+	items: {},
 	uuid: function() {
-		var id = 'cart-' + App.uuidInc;
-		App.uuidInc++;
+		var id = 'c-' + App.cart.uuidInc;
+		App.cart.uuidInc++;
 		return id;
 	},
-	add: function(type, item) {
+	add: function(item) {
 		var
 			id = App.cart.uuid(),
-			top = App.cached['Dish'][item].toppings(),
-			sub = App.cached['Dish'][item].substitutions(),
-			toppings = {},
-			substitutions = {};
+			opt = App.cached['Dish'][item].options(),
+			options = [];
 			
-		if (arguments[2]) {
-			toppings = arguments[2]['toppings'];
-			substitutions = arguments[2]['substitutions'];
+		if (arguments[1]) {
+			options = arguments[1].options;
+		} else {
+			for (var x in opt) {
+				if (opt[x]['default'] == 1) {
+					options[options.length] = opt[x].id_option;
+				}
+			}
 		}
 
-		switch (type) {
-			case 'Dish':
-				
-				for (var x in top) {
-					if (top[x]['default'] == 1) {
-						toppings[top[x].id_topping] = true;
-					}
-				}
+		App.cart.items[id] = {
+			id: item,
+			options: options
+		};
 
-				for (var x in sub) {
-					if (sub[x]['default'] == 1) {
-						substitutions[sub[x].id_substitution] = true;
-					}
-				}
-
-				App.cart.items.dishes[id] = {
-					id: item,
-					substitutions: substitutions,
-					toppings: toppings
-				};
-
-				break;
-
-			case 'Side':
-				App.cart.items.sides[id] = {
-					id: item
-				};
-				break;
-
-			case 'Extra':
-				App.cart.items.extras[id] = {
-					id: item
-				};
-				break;
-		}
-
-		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '" data-cart_type="' + type + '"></div>');
+		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '"></div>');
 		el.append('<div class="cart-button cart-button-remove"></div>');
 
 		el.append('<div class="cart-button cart-button-add"></div>');
 
-		el.append('<div class="cart-item-name">' + App.cache(type,item).name + '</div>');
+		el.append('<div class="cart-item-name">' + App.cache('Dish',item).name + '</div>');
 		
-		if (type == 'Dish' && (App.cached['Dish'][item].toppings().length || App.cached['Dish'][item].substitutions().length)) {
+		if (App.cached['Dish'][item].options().length) {
 			el.append('<div class="cart-item-config"><a href="javascript:;">Customize</a></div>');
 		}
 
@@ -662,46 +623,19 @@ App.cart = {
 		App.cart.updateTotal();
 	},
 	clone: function(item) {
-
 		var
 			cartid = item.attr('data-cart_id'),
-			type = item.attr('data-cart_type'),
-			cart;
-			
-		switch (type) {
-			case 'Dish':
-				cart = App.cart.items.dishes[cartid];
-				break;
-			case 'Side':
-				cart = App.cart.items.sides[cartid];
-				break;
-			case 'Extra':
-				cart = App.cart.items.extras[cartid];
-				break;
-		}
+			cart = App.cart.items[cartid];
 
-		App.cart.add(type,cart.id, {
-			toppings: cart.toppings,
-			substitutions: cart.substitutions
+		App.cart.add(cart.id, {
+			options: cart.options
 		});
 	},
 	remove: function(item) {
 		var
-			name,
 			cart = item.attr('data-cart_id');
 
-		switch (item.attr('data-cart_type')) {
-			case 'Dish':
-				name = 'dishes';
-				break;
-			case 'Side':
-				name = 'sides';
-				break;
-			case 'Extra':
-				name = 'extras';
-				break;
-		}
-		delete App.cart.items[name][cart];
+		delete App.cart.items[cart];
 
 		item.remove();
 		$('.cart-item-customize[data-id_cart_item="' + cart + '"]').remove();
@@ -725,31 +659,16 @@ App.cart = {
 
 		var
 			totalItems = {},
-			key, name, text = '';
+			name,
+			text = '';
 		$('.cart-summary-items').html('');
 
 		for (var x in App.cart.items) {
-			for (var xx in App.cart.items[x]) {
-				switch (x) {
-					case 'dishes':
-						key = 'Dish';
-						break;
-
-					case 'sides':
-						key = 'Side';
-						break;
-						
-					case 'extras':
-						key = 'Extra';
-						break;
-				}
-
-				name = App.cached[key][App.cart.items[x][xx].id].name;
-				if (totalItems[name]) {
-					totalItems[name]++;
-				} else {
-					totalItems[name] = 1;
-				}
+			name = App.cached['Dish'][App.cart.items[x].id].name;
+			if (totalItems[name]) {
+				totalItems[name]++;
+			} else {
+				totalItems[name] = 1;
 			}
 		}
 
@@ -781,31 +700,20 @@ App.cart = {
 		} else {
 			var
 				el = $('<div class="cart-item-customize" data-id_cart_item="' + cart + '"></div>').insertAfter(item),
-				cartitem = App.cart.items.dishes[cart],
+				cartitem = App.cart.items[cart],
 				obj = App.cached['Dish'][cartitem.id],
-				top = obj.toppings(),
-				sub = obj.substitutions();
+				opt = obj.options();
 	
-			for (var x in top) {
+			for (var x in opt) {
 				var check = $('<input type="checkbox" class="cart-customize-check">');
-				if (cartitem.toppings[top[x].id_topping]) {
+
+				if ($.inArray(opt[x].id_option, cartitem.options) !== -1) {
 					check.attr('checked','checked');
 				}
-				var topping = $('<div class="cart-item-customize-item" data-id_topping="' + top[x].id_topping + '"></div>')
+				var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
 					.append(check)
-					.append('<label class="cart-item-customize-name">' + top[x].name + '</label><label class="cart-item-customize-price">' + (top[x].price != '0.00' ? '&nbsp;($' + top[x].price + ')' : '') + '</label></label>');
-				el.append(topping);
-			}
-			
-			for (var x in sub) {
-				var check = $('<input type="checkbox" class="cart-customize-check">');
-				if (cartitem.substitutions[sub[x].id_substitution]) {
-					check.attr('checked','checked');
-				}
-				var substitution = $('<div class="cart-item-customize-item" data-id_substitution="' + sub[x].id_substitution + '"></div>')
-					.append(check)
-					.append('<label class="cart-item-customize-name">' + sub[x].name + '</label><label class="cart-item-customize-price">' + (sub[x].price != '0.00' ? '&nbsp;($' + sub[x].price + ')' : '') + '</label></label>');
-				el.append(substitution);
+					.append('<label class="cart-item-customize-name">' + opt[x].name + '</label><label class="cart-item-customize-price">' + (opt[x].price != '0.00' ? '&nbsp;($' + opt[x].price + ')' : '') + '</label></label>');
+				el.append(option);
 			}
 		}
 	},
@@ -815,26 +723,25 @@ App.cart = {
 			cart = item.closest('.cart-item-customize').attr('data-id_cart_item'),
 			cartitem = App.cart.items.dishes[cart],
 			customitem = item.closest('.cart-item-customize-item'),
-			top = customitem.attr('data-id_topping')
-			sub = customitem.attr('data-id_substitution');
+			opt = customitem.attr('data-id_option');
 
-		if (top) {
+		if (opt) {
 			if (item.is(':checked')) {
-				cartitem.toppings[top] = true;
+				cartitem.options[opt] = true;
 			} else {
-				delete cartitem.toppings[top];
+				delete cartitem.options[opt];
 			}
 		}
-		if (sub) {
-			if (item.is(':checked')) {
-				cartitem.substitutions[sub] = true;
-			} else {
-				delete cartitem.substitutions[sub];
-			}
-		}
-		
+
 		App.cart.updateTotal();
 			
+	},
+	getCart: function() {
+		var cart = [];
+		for (x in App.cart.items) {
+			cart[cart.length] = App.cart.items[x];
+		}
+		return cart;
 	},
 	submit: function(el) {
 		if (App.busy.isBusy()) {
@@ -846,7 +753,6 @@ App.cart = {
 		var read = $('.payment-form').length ? true : false;
 
 		if (read) {
-
 			App.config.user.name = $('[name="pay-name"]').val();
 			App.config.user.phone = $('[name="pay-phone"]').val().replace(/[^\d]*/gi,'');
 			if (App.order['delivery_type'] == 'delivery') {
@@ -856,7 +762,7 @@ App.cart = {
 		}
 
 		var order = {
-			cart: App.cart.items,
+			cart: App.cart.getCart(),
 			pay_type: App.order['pay_type'],
 			delivery_type: App.order['delivery_type'],
 			restaurant: App.restaurant.id
@@ -955,28 +861,15 @@ App.cart = {
 	total: function() {
 		var
 			total = 0,
-			dish;
+			dish,
+			options;
 		for (var x in App.cart.items) {
-			for (var xx in App.cart.items[x]) {
-				switch (x) {
-					case 'dishes':
-						total += parseFloat(App.cached['Dish'][App.cart.items[x][xx].id].price);
-						for (var xxx in App.cart.items[x][xx].toppings) {
-							total += parseFloat(App.cached['Topping'][xxx].price);
-						}
-						for (var xxx in App.cart.items[x][xx].substitutions) {
-							total += parseFloat(App.cached['Substitution'][xxx].price);
-						}
-						break;
+			total += parseFloat(App.cached['Dish'][App.cart.items[x].id].price);
+			options = App.cart.items[x].options;
 
-					case 'sides':
-						total += parseFloat(App.cached['Side'][App.cart.items[x][xx].id].price);
-						break;
-						
-					case 'extras':
-						total += parseFloat(App.cached['Extra'][App.cart.items[x][xx].id].price);
-						break;
-				}
+			for (var xx in options) {
+
+				total += parseFloat(App.cached['Option'][options[xx]].price);
 			}
 		}
 		var final = total + (total * (App.restaurant.tax/100));
@@ -988,11 +881,7 @@ App.cart = {
 		return final.toFixed(2);
 	},
 	resetOrder: function() {
-		App.cart.items = {
-			dishes: {},
-			sides: {},
-			extras: {}
-		};
+		App.cart.items = {};
 		$('.cart-items-content, .cart-total').html('');
 	},
 	reloadOrder: function() {
@@ -1001,38 +890,25 @@ App.cart = {
 		App.cart.loadOrder(cart);
 	},
 	loadOrder: function(order) {
+		// @todo: convert this to preset object
 		try {
 			if (order) {
-				for (var x in order) {
-					switch (x) {
-						case 'dishes':
-							for (var xx in order[x]) {
-								App.cart.add('Dish',order[x][xx].id,{
-									toppings: order[x][xx].toppings,
-									substitutions: order[x][xx].substitutions
-								});
-							}
-							break;
-
-						case 'sides':
-							for (var xx in order[x]) {
-								App.cart.add('Side',order[x][xx].id);
-							}
-							break;
-		
-						case 'extras':
-							for (var xx in order[x]) {
-								App.cart.add('Extra',order[x][xx].id);
-							}
-							break;
+				var dishes = order['_dishes'];
+				for (var x in dishes) {
+					var options = [];
+					for (var xx in dishes[x]['_options']) {
+						options[options.length] = dishes[x]['_options'][xx].id_option;
 					}
+					App.cart.add(dishes[x].id_dish,{
+						options: options
+					});
 				}
 			}
 		} catch (e) { console.log(e.stack); }
 		App.cart.updateTotal();
 	},
 	hasItems: function() {
-		if (!$.isEmptyObject(App.cart.items.dishes) || !$.isEmptyObject(App.cart.items.sides) || !$.isEmptyObject(App.cart.items.extras)) {
+		if (!$.isEmptyObject(App.cart.items)) {
 			return true;
 		}
 		return false;
@@ -1317,13 +1193,7 @@ $(function() {
 	
 	$('.resturant-dish-container a').live('click',function() {
 		if ($(this).attr('data-id_dish')) {
-			App.cart.add('Dish',$(this).attr('data-id_dish'));
-
-		} else if ($(this).attr('data-id_side')) {
-			App.cart.add('Side',$(this).attr('data-id_side'));
-
-		} else if ($(this).attr('data-id_extra')) {
-			App.cart.add('Extra',$(this).attr('data-id_extra'));
+			App.cart.add($(this).attr('data-id_dish'));
 
 		} else if ($(this).hasClass('restaurant-menu')) {
 			return;
@@ -1489,10 +1359,16 @@ $(function() {
 		$('[data-position="fixed"]').show();
 	}
 	$('select, input, textarea').live('focus', function() {
+		if ($(window).width() >= 768) {
+			return;
+		}
 		clearTimeout(App.unHideBars);
 		$('[data-position="fixed"]').hide();
 	});
 	$('select, input, textarea').live('blur', function() {
+		if ($(window).width() >= 768) {
+			return;
+		}
 		clearTimeout(App.unHideBars);
 		setTimeout(unHideBars, 100);
 	});

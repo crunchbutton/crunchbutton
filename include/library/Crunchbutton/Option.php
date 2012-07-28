@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Extra extends Cana_Table {
+class Crunchbutton_Option extends Cana_Table {
 	public function exports() {
 		$out = $this->properties();
 		$out['price'] = number_format($out['price'],2);
@@ -10,8 +10,8 @@ class Crunchbutton_Extra extends Cana_Table {
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
-			->table('extra')
-			->idVar('id_extra')
+			->table('option')
+			->idVar('id_option')
 			->load($id);
 	}
 }

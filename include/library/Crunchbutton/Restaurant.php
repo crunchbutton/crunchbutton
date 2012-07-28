@@ -16,18 +16,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_dishes;
 	}
 	
-	public function sides() {
-		if (!isset($this->_sides)) {
-			$this->_sides = Side::q('select * from side where id_restaurant="'.$this->id_restaurant.'"');
+	public function categories() {
+		if (!isset($this->_categories)) {
+			$this->_categories = Category::q('select * from category where id_restaurant="'.$this->id_restaurant.'"');
 		}
-		return $this->_sides;
-	}
-	
-	public function extras() {
-		if (!isset($this->_extras)) {
-			$this->_extras = Extra::q('select * from extra where id_restaurant="'.$this->id_restaurant.'"');
-		}
-		return $this->_extras;
+		return $this->_categories;
 	}
 	
 	public function hours($gmt = false) {
@@ -81,9 +74,9 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_notifications;
 	}
 	
-	public function defaultOrder() {
-		return Restaurant_DefaultOrder::q('
-			select * from restaurant_default_order where id_restaurant="'.$this->id_restaurant.'"
+	public function preset() {
+		return Preset::q('
+			select * from preset where id_restaurant="'.$this->id_restaurant.'"
 			and id_user is null
 		');
 	}
@@ -93,14 +86,9 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		//$out['img'] = (new ImageBase64(c::config()->dirs->www.'assets/images/food/'.$this->image))->output();
 		$out['_open'] = $this->open();
 		$out['img'] = '/assets/images/food/'.$this->image;
-		foreach ($this->dishes() as $dish) {
-			$out['_dishes'][$dish->id_dish] = $dish->exports();
-		}
-		foreach ($this->sides() as $side) {
-			$out['_sides'][$side->id_side] = $side->exports();
-		}
-		foreach ($this->extras() as $extra) {
-			$out['_extras'][$extra->id_extra] = $extra->exports();
+
+		foreach ($this->categories() as $category) {
+			$out['_categories'][$category->id_category] = $category->exports();
 		}
 		foreach ($this->hours(true) as $hours) {
 			$out['_hoursFormat'][$hours->day][] = [$hours->time_open, $hours->time_close];
@@ -108,9 +96,9 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		foreach ($this->hours() as $hours) {
 			$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 		}
-
-		$out['_defaultOrder'] = $this->defaultOrder()->config;
-
+		if ($this->preset()->count()) {
+			$out['_preset'] = $this->preset()->get(0)->exports();
+		}
 		return $out;
 	}
 }

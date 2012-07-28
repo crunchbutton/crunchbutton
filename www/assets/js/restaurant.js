@@ -10,24 +10,14 @@ var Restaurant = function(id) {
 		complete = function() {};
 	}
 
-	self.dishes = function() {
-		return self.loadType('Dish','dishes');
-	}
-	
-	self.extras = function() {
-		return self.loadType('Extra','extras');
-	}
-	
-	self.sides = function() {
-		return self.loadType('Side','sides');
+	self.categories = function() {
+		return self.loadType('Category','categories');
 	}
 	
 	self.top = function() {
-		var dishes = self.dishes();
-		for (x in dishes) {
-			if (dishes[x].top) {
-				return dishes[x];
-			}
+		var categories = self.categories();
+		for (x in categories) {
+			return categories[x].top();
 		}
 	}
 	
@@ -81,17 +71,8 @@ var Restaurant = function(id) {
 		*/
 	}
 	
-	self.defaultOrder = function() {
-		if (!self['__defaultOrder']) {
-			try {
-				self['__defaultOrder'] = JSON.parse(self['_defaultOrder']);
-			} catch (e) {
-				self['__defaultOrder'] = null;
-			}
-			self['_defaultOrder'] = null;
-		}
-		return self['__defaultOrder'];
-
+	self.preset = function() {
+		return self['_preset'];
 	}
 
 	self.loadType = function(cls, data) {
@@ -106,14 +87,11 @@ var Restaurant = function(id) {
 	}
 	
 	self.finished = function(data) {
-
 		for (x in data) {
 			self[x] = data[x];
 		}
 
-		self.dishes();
-		self.sides();
-		self.extras();
+		self.categories();
 
 		if (complete) {
 			complete.call(self);

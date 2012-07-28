@@ -1,11 +1,20 @@
-var Dish = function(id) {
+var Category = function(id) {
 	this.type = 'Dish';
 	var self = this;
 
-	self.options = function() {
-		return self.loadType('Option','options');
+	self.dishes = function() {
+		return self.loadType('Dish','dishes');
 	}
-	
+
+	self.top = function() {
+		var dishes = self.dishes();
+		for (x in dishes) {
+			if (dishes[x].top) {
+				return dishes[x];
+			}
+		}
+	}
+
 	self.loadType = function(cls, data) {
 		if (!self['__' + data]) {
 			self['__' + data] = [];
@@ -21,9 +30,9 @@ var Dish = function(id) {
 		for (x in id) {
 			self[x] = id[x];
 		}
-		self.options();
+		self.dishes();
 	} else {
-		App.request(App.service + '/dish/' + id, function(json) {
+		App.request(App.service + '/category/' + id, function(json) {
 			for (x in json) {
 				self[x] = json[x];
 			}
@@ -32,4 +41,4 @@ var Dish = function(id) {
 	}
 }
 
-App.cached.Dish = {};
+App.cached.Category = {};

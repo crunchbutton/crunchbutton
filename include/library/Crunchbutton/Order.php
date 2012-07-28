@@ -4,39 +4,25 @@ class Crunchbutton_Order extends Cana_Table {
 	public function process($params) {
 		// @todo: add more security here
 
-		$total = 0;
+		$subtotal = 0;
 
-		foreach ($params['cart'] as $type => $typeItem) {
-			switch ($type) {
-				case 'dishes':
-					foreach ($typeItem as $item) {
-						$total += Dish::o($item['id'])->price;
-						if ($item['toppings']) {
-							foreach ($item['toppings'] as $topping => $bleh) {
-								$total += Topping::o($topping)->price;
-							}
-						}
-						if ($item['substitutions']) {
-							foreach ($item['substitutions'] as $topping => $bleh) {
-								$total += Substitution::o($topping)->price;
-							}
-						}
-					}		
-					break;
-				case 'sides':
-					foreach ($typeItem as $item) {
-						$total += Side::o($item['id'])->price;
-					}
-					break;
-				case 'extras':
-					foreach ($typeItem as $item) {
-						$total += Extra::o($item['id'])->price;
-					}					
-					break;
+		foreach ($params['cart'] as $d) {
+			$dish = new Order_Dish;
+			$dish->id_dish = $d['id'];
+			$subtotal += $dish->dish()->price;
+			if ($d['options']) {
+				foreach ($d['options'] as $o) {
+					$option = new Order_Dish_Option;
+					$option->id_option = $o;
+					$total += $option->option()->price;
+					$dish->_options[] = $option;
+				}
 			}
+			
+			$this->_dishes[] = $dish;
 		}
 
-		$this->price = number_format($total, 2);
+		$this->price = number_format($subtotal, 2);
 		$this->tip = $params['tip'];
 		$this->id_restaurant = $params['restaurant'];
 		$this->tax = $this->restaurant()->tax;
