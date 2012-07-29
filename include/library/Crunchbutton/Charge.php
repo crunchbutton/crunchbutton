@@ -25,7 +25,7 @@ class Crunchbutton_Charge extends Cana_Model {
 					]
 				]);
 			} catch (Exception $e) {
-				$errors[] = 'Card declined.';
+				$errors[] = 'Your card was declined. Please try again!';
 				$success = false;
 			}
 			if ($c->paid && !$c->refunded) {
@@ -87,7 +87,7 @@ class Crunchbutton_Charge extends Cana_Model {
 					'customer' => $params['user']->stripe_id
 				]);
 			} catch (Exception $e) {
-				$errors[] = 'Card declined.';
+				$errors[] = 'Your card was declined. Please try again!';
 				$success = false;
 			}
 			if ($c->paid && !$c->refunded) {
@@ -100,7 +100,7 @@ class Crunchbutton_Charge extends Cana_Model {
 		}
 		
 		if (!$reason) {
-			$errors[] = 'No card information.';
+			$errors[] = 'Not enough card information.';
 		}
 
 		return ['status' => $success, 'user' => $user, 'txn' => $txn, 'errors' => $errors, 'customer' => $customer];
