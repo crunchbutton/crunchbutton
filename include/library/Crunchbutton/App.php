@@ -83,7 +83,7 @@ class Crunchbutton_App extends Cana_App {
 		
 		
 		if ($params['env'] != 'local') {
-			$config->bundle = true;
+			//$config->bundle = true;
 		}
 
 		$this
