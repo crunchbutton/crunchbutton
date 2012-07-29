@@ -23,30 +23,21 @@
 		<td>Price</td>
 	</thead>
 
-	<? foreach ($order->order() as $item) : ?>
+	<? foreach ($order->dishes() as $dish) : ?>
 		<tr>
 			<td>1</td>
 			<td><?
-				$food = $item->name;
-				$cartPrice = $item->price;
-				if ($item->_substitutions || $item->_toppings) {
+				$food = $dish->dish()->name;
+				$cartPrice = $dish->dish()->price;
+				if ($dish->options()->count()) {
 					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
-				}
-				if ($item->_toppings) {
-					foreach ($item->_toppings as $topping) {
-						$cartPrice += $topping->price;
-						$food .= $topping->name.', ';
+
+					foreach ($dish->options() as $option) {
+						$cartPrice += $option->option()->price;
+						$food .= $option->option()->name.', ';
 					}
 					$food = substr($food, 0, -2);
-				}
-				if ($item->_substitutions) {
-					foreach ($item->_substitutions as $topping) {
-						$cartPrice += $topping->price;
-						$food .= $topping->name.', ';
-					}
-					$food = substr($food, 0, -2);
-				}
-				if ($item->_substitutions || $item->_toppings) {
+
 					$food .= '</i>';
 				}
 				?>
@@ -99,30 +90,21 @@
 		<td>Price</td>
 	</thead>
 
-	<? foreach ($order->order() as $item) : ?>
+	<? foreach ($order->dishes() as $dish) : ?>
 		<tr>
 			<td>1</td>
 			<td><?
-				$food = $item->name;
-				$cartPrice = $item->price;
-				if ($item->_substitutions || $item->_toppings) {
+				$food = $dish->dish()->name;
+				$cartPrice = $dish->dish()->price;
+				if ($dish->options()->count()) {
 					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
-				}
-				if ($item->_toppings) {
-					foreach ($item->_toppings as $topping) {
-						$cartPrice += $topping->price;
-						$food .= $topping->name.', ';
+
+					foreach ($dish->options() as $option) {
+						$cartPrice += $option->option()->price;
+						$food .= $option->option()->name.', ';
 					}
 					$food = substr($food, 0, -2);
-				}
-				if ($item->_substitutions) {
-					foreach ($item->_substitutions as $topping) {
-						$cartPrice += $topping->price;
-						$food .= $topping->name.', ';
-					}
-					$food = substr($food, 0, -2);
-				}
-				if ($item->_substitutions || $item->_toppings) {
+
 					$food .= '</i>';
 				}
 				?>

@@ -1,34 +1,33 @@
 <table class="list-orders">
 	<tr>
+		<th class="list-order-header">Date / ID</th>
 		<th class="list-order-header">Restaurant</th>
 		<th class="list-order-header">Order</th>
 		<th class="list-order-header">Price</th>
-		<th class="list-order-header">Total</th>
 		<th class="list-order-header">Pay Type</th>
 		<th class="list-order-header">Order Type</th>
 		<th class="list-order-header">Customer</th>
 	</tr>
 	<? foreach (Order::recent() as $order) : ?>
 		<tr class="list-order-item">
+			<td>
+				<table>
+					<tr><td><b>Date</b>: <?=$order->date?></td></tr>
+					<tr><td><a href="/vieworder/<?=$order->uuid?>"><?=$order->uuid?></a></td></tr>
+				</table>
+			</td>
 			<td><?=$order->restaurant()->name?></td>
 			<td style="width: 300px; white-space: normal;">
 				<ul>
-				<? foreach ($order->order() as $item) : ?>
+				<? foreach ($order->dishes() as $dish) : ?>
 					<li>
-						<?=$item->name?>
-						<? if ($item->_toppings) : ?>
-						<ul>
-						<? foreach ($item->_toppings as $topping) : ?>
-							<li><?=$topping->name?></li>
-						<? endforeach ; ?>
-						</ul>
-						<? endif ; ?>
-						<? if ($item->_substitutions) : ?>
-						<ul>
-						<? foreach ($item->_substitutions as $topping) : ?>
-							<li><?=$topping->name?></li>
-						<? endforeach ; ?>
-						</ul>
+						<?=$dish->dish()->name?>
+						<? if ($dish->options()->count()) : ?>
+							<ul>
+							<? foreach ($dish->options() as $option) : ?>
+								<li><?=$option->option()->name?></li>
+							<? endforeach ; ?>
+							</ul>
 						<? endif ; ?>
 					</li>
 				<? endforeach ; ?>
@@ -37,7 +36,7 @@
 			<td>
 				<table>
 					<tr>
-						<th>Price</th>
+						<th>Subtotal</th>
 						<td>$<?=$order->price?></td>
 					</tr>
 					<tr>
@@ -48,9 +47,12 @@
 						<th>Tip</th>
 						<td><?=$order->tip ? $order->tip.'%' : ''?></td>
 					</tr>
+					<tr>
+						<th>Total</th>
+						<td>$<?=$order->final_price?></td>
+					</tr>
 				</table>
 			</td>
-			<td>$<?=$order->final_price?></td>
 			<td><?=$order->pay_type?></td>
 			<td><?=$order->delivery_type?></td>
 			<td>

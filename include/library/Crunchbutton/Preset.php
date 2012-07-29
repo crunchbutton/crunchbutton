@@ -22,18 +22,17 @@ class Crunchbutton_Preset extends Cana_Table {
 		$preset->id_user = $order->user()->id_user;
 		$preset->save();
 		
-		foreach ($preset->dishes() as $dish) {
-			$dish = clone $dish;
-			$dish->id = $dish->id_order_dish = null;
-			$dish->id_order = null;
+		foreach ($order->dishes() as $d) {
+			$dish = new Order_Dish;
+			$dish->id_dish = $d->id_dish;
 			$dish->id_preset = $preset->id_preset;
-			$dish->save(1);
+			$dish->save();
 
-			foreach ($dish->options() as $option) {
-				$option = clone $option;
-				$option->id = $option->id_order_dish_option = null;
+			foreach ($d->options() as $o) {
+				$option = new Order_Dish_Option;
+				$option->id_option = $o->id_option;
 				$option->id_order_dish = $dish->id_order_dish;
-				$option->save(1);
+				$option->save();
 			}
 		}
 

@@ -244,9 +244,9 @@ App.page.restaurant = function(id) {
 
 		if (App.cart.hasItems()) {
 			App.cart.reloadOrder();
-		} else if (App.config.user && App.config.user.defaults && App.config.user.defaults[App.restaurant.id_restaurant]) {
+		} else if (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) {
 			try {
-				App.cart.loadOrder(JSON.parse(App.config.user.defaults[App.restaurant.id_restaurant].config));
+				App.cart.loadOrder(App.config.user.presets[App.restaurant.id_restaurant]);
 			} catch (e) {
 				App.cart.loadOrder(App.restaurant.preset());
 			}
@@ -721,15 +721,21 @@ App.cart = {
 
 		var
 			cart = item.closest('.cart-item-customize').attr('data-id_cart_item'),
-			cartitem = App.cart.items.dishes[cart],
+			cartitem = App.cart.items[cart],
 			customitem = item.closest('.cart-item-customize-item'),
 			opt = customitem.attr('data-id_option');
 
 		if (opt) {
+		
 			if (item.is(':checked')) {
-				cartitem.options[opt] = true;
+				cartitem.options[cartitem.options.length] = opt;
 			} else {
-				delete cartitem.options[opt];
+				for (x in cartitem.options) {
+					if (cartitem.options[x] == opt) {
+						cartitem.options.splice(x, 1);
+						break;
+					}
+				}
 			}
 		}
 
@@ -847,7 +853,7 @@ App.cart = {
 
 					order.cardChanged = false;
 					App.justCompleted = true;
-					
+
 					$.getJSON('/api/config', App.processConfig);
 					App.cache('Order',json.uuid,function() {
 						var loc = '/order/' + this.uuid;
@@ -887,7 +893,14 @@ App.cart = {
 	reloadOrder: function() {
 		var cart = App.cart.items;
 		App.cart.resetOrder();
-		App.cart.loadOrder(cart);
+		App.cart.loadFlatOrder(cart);
+	},
+	loadFlatOrder: function(cart) {
+		for (var x in cart) {
+			App.cart.add(cart[x].id,{
+				options: cart[x].options ? cart[x].options : []
+			});
+		}
 	},
 	loadOrder: function(order) {
 		// @todo: convert this to preset object

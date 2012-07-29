@@ -194,7 +194,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public static function recent() {
-		return self::q('select * from `order` order by `date`');
+		return self::q('select * from `order` order by `date` DESC');
 	}
 	
 	public function dishes() {
@@ -271,6 +271,7 @@ class Crunchbutton_Order extends Cana_Table {
 				break;
 
 		}
+
 		foreach ($this->dishes() as $dish) {
 
 			$foodItem = "\n- ".$dish->dish()->name;
@@ -281,9 +282,7 @@ class Crunchbutton_Order extends Cana_Table {
 				foreach ($dish->options() as $option) {
 					$foodItem .= $option->option()->name.', ';
 				}
-				
 				$foodItem = substr($foodItem, 0, -2).'. ';
-
 
 			} else {
 				$foodItem .= '. ';
