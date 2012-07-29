@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <data version="1">
-    <viewfilter>false</viewfilter>
+    <viewfilter>true</viewfilter>
     <bundle>false</bundle>
     <timezone>America/Los_Angeles</timezone>
     <cache>
