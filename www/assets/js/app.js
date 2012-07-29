@@ -360,7 +360,7 @@ App.drawPay = function(restaurant) {
 		'</div>'
 	);
 
-	var tips = [0,5,10,15,20];
+	var tips = [0,5,10,15,20,25];
 	for (var x in tips) {
 		$('[name="pay-tip"]').append('<option value="' + tips[x] + '">' + tips[x] + '%</option>');
 	}	
