@@ -35,7 +35,7 @@ History.Adapter.bind(window,'statechange',function() {
 var App = {
 	cartHighlightEnabled: false,
 	currentPage: null,
-	slogans: ['order food in 5 seconds'],
+	slogans: ['get food in 15 seconds'],
 	service: '/api/',
 	cached: {},
 	cart: {},
@@ -262,7 +262,7 @@ App.page.restaurant = function(id) {
 				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label> <a href="javascript:;">' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provied</i>') + '</a></div>');
 			var paying = $('<div class="dp-display-payment dp-display-item"><label>You are paying:</label> <span class="cart-total">$0.00</span></div>');
 			if (App.config.user.pay_type == 'card') {
-				paying.append('&nbsp;and <a href="javascript:;">10% tip</a> by <a href="javascript:;">card</a>');
+				paying.append('&nbsp;including <a href="javascript:;">10% tip</a> by <a href="javascript:;">card</a>');
 			} else {
 				paying.append('&nbsp;using <a href="javascript:;">cash</a>');			
 			}
@@ -302,7 +302,7 @@ App.drawPay = function(restaurant) {
 		'<div class="payment-total">Your total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"> and tip</span>)</div>' +
 		'</form>' + 
 
-		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Submit Order</div></button></div>'
+		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
 	);
 
 	$('.delivery-info-container').append(

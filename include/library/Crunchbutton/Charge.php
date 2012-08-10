@@ -18,10 +18,12 @@ class Crunchbutton_Charge extends Cana_Model {
 				$c = Stripe_Charge::create([
 					'amount' => $params['amount'] * 100,
 					'currency' => 'usd',
+					'description' => $params['restaurant']->name,
 					'card' => [
 						'number' => $params['number'],
 						'exp_month' => $params['exp_month'],
-						'exp_year' => $params['exp_year']
+						'exp_year' => $params['exp_year'],
+						'name' => $params['name'],
 					]
 				]);
 			} catch (Exception $e) {

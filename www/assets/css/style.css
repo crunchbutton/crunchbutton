@@ -1238,6 +1238,19 @@ and (min-width : 1024px) {
 	.community-selector {
 		margin: -25px 0 0 350px;
 	}
+	.toggle-item.toggle-active {
+		border-color: #ff8d37;
+	}
+	
+	.toggle-active {
+		margin-top: 2px;
+	}
+	
+	.toggle-item {
+		border-radius: 2px;
+		border: 1px solid #ddd;
+		padding: 2px 4px 2px 4px;
+	}
 }
 
 

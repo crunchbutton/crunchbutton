@@ -103,6 +103,8 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		$user->pay_type = $this->pay_type;
 		$user->delivery_type = $this->delivery_type;
+		
+		$this->env = c::env();
 
 		$user->save();
 		$this->_user = $user;
@@ -231,6 +233,11 @@ class Crunchbutton_Order extends Cana_Table {
 
 		foreach ($message as $msg) {
 			switch ($type) {
+				case 'googlevoice':
+					$gv = new GoogleVoice('cbvoice@arzynik.com', '***REMOVED***');
+					$gv->sms($num, $msg);
+					break;
+
 				case 'twilio':
 					$twilio->account->sms_messages->create(
 						c::config()->twilio->{$env}->outgoing,
@@ -241,7 +248,7 @@ class Crunchbutton_Order extends Cana_Table {
 	
 				case 'textbelt':
 				default:
-					$cmd = 'curl http://textbelt.com/text \\'
+					$cmd = 'curl http://crunchr.co:9090/text \\'
 						.'-d number='.$num.' \\'
 						.'-d "message='.$msg.'"';
 					exec($cmd, $return);
@@ -332,6 +339,21 @@ class Crunchbutton_Order extends Cana_Table {
 		$out['user'] = $this->user()->uuid;
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		return $out;
+	}
+	
+	public function refund() {
+		$env = c::env() == 'live' ? 'live' : 'dev';
+		Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+		$ch = Stripe_Charge::retrieve($this->txn);
+		try {
+			$ch->refund();
+		} catch (Exception $e) {
+			return false;
+		}
+
+		$this->refunded = 1;
+		$this->save();
+		return true;
 	}
 
 	public function __construct($id = null) {

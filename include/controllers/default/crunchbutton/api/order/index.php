@@ -9,6 +9,13 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		}
 
 		switch (c::getPagePiece(3)) {
+			case 'refund':
+				if (!$order->get(0)->refund()) {
+					echo json_encode(['status' => 'false', 'errors' => 'failed to refund']);
+					exit;
+				}
+				break;
+
 			case 'say':
 				$say = 'tester';
 			    header('Content-type: text/xml');

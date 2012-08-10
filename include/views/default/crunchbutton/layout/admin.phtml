@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<title><?=$this->title ? $this->title : 'Crunchbutton'?></title>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
+
+<link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+<link rel="shortcut icon" href="/favicon.ico">
+
+<? /*
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600,800' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Dosis:200,300,400,500,700' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Oswald:400,700,300' rel='stylesheet' type='text/css'>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+*/ ?>
+
+
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/jquery-ui.min.js"></script>
+
+
+
+<script src="/assets/js/json2.js"></script>
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/jquery-ui.min.js"></script>
+<script src="/assets/js/jquery.history.js"></script>
+<script src="/assets/js/jquery.cookie.js"></script>
+
+<script type="text/javascript">
+$(function() {
+	App.communities = {};
+	<? foreach (Community::all() as $community) : ?>
+		App.communities['<?=$community->permalink?>'] = {
+			<? foreach ($community->properties() as $key => $val) : ?>
+				'<?=$key?>': "<?=$val?>",
+			<? endforeach ; ?>
+			stored: true
+		};
+	<? endforeach ; ?>
+	App.config = <?=json_encode(c::appConfig())?>;
+})
+</script>
+
+<script src="/assets/js/admin.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/community.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/restaurant.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/dish.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/side.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/extra.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/option.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/category.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/order.js?v=<?=Cana_Util::gitVersion()?>"></script>
+
+<script type="application/x-javascript">
+	addEventListener('touchstart',function(){}); addEventListener('load', function(event) {setTimeout(scrollTo, 80, 0, 1);}, false);
+</script>
+
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="nav">
+			<div class="content">
+				<div class="logo"><a href="/"><div class="logo-img"></div></a><div class="community-selector"></div></div>
+			</div>
+		</div>
+		<div class="body">
+			<div class="content">
+				<div class="main-content">
+					<div class="main-content-item">
+						<?=$this->content?>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="divider"></div>
+		<div class="footer">
+			<a href="/help">Help</a>
+			<a href="/support">Support</a>
+			<a href="/legal">Legal</a>
+			<a href="javascript:App.test.card();">TEST: card</a>
+			<a href="javascript:App.test.logout();">TEST: logout</a>
+			<a href="javascript:App.test.orders();">TEST: orders</a>
+			<br />
+			<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
+		</div>
+	</div>
+</body>
+</html>
