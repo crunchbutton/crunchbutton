@@ -14,7 +14,8 @@
 		<tr class="list-order-item">
 			<td>
 				<table>
-					<tr><td><b>ID</b></td><td><a href="/vieworder/<?=$order->uuid?>"><?=$order->uuid?></a></td></tr>
+					<tr><td><b>ID</b></td><td>#<?=$order->id?></td></tr>
+					<tr><td><b>UUID</b></td><td><a href="/vieworder/<?=$order->uuid?>"><?=$order->uuid?></a></td></tr>
 					<tr><td><b>Environment</b></td><td><?=$order->env?></td></tr>
 					<tr><td><br />
 						<? if ($order->refunded) : ?>

@@ -17,7 +17,7 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	
 <? if (c::config()->bundle) : ?>
-	<script src="/assets/js/bundle.js"></script>
+	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <? else : ?>
 	<?=$this->display('bundle/js')?>
 <? endif ; ?>
