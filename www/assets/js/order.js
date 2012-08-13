@@ -1,5 +1,7 @@
 var Order = function(id) {
 	this.type = 'Order';
+	this.id_var = 'id_order';
+	this.resource = 'order';
 	var self = this;
 	
 	if (arguments[1]) {
@@ -18,13 +20,7 @@ var Order = function(id) {
 		}
 	}
 	
-	if (typeof(id) == 'object') {
-		self.finished(id);
-	} else {
-		App.request(App.service + 'order/' + id, function(json) {
-			self.finished(json);
-		});
-	}
+	self.load(id);
 }
 
 App.cached.Order = {};

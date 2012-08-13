@@ -1298,3 +1298,11 @@ th {
 	font-size: 18px;
 	font-weight: bold;
 }
+
+.admin-restaurant-panel {
+	display: none;	
+}
+
+.admin-restaurant-inactive {
+	text-decoration: line-through;
+}

@@ -1,63 +1,9 @@
-<!doctype html>
-<html>
-<head>
-<title><?=$this->title ? $this->title : 'Crunchbutton'?></title>
-<meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
+<?=$this->display('layout/html.top')?>
 
-<link rel="stylesheet" type="text/css" href="/assets/css/<?=c::config()->bundle ? 'bundle' : 'style'?>.css">
-<link rel="shortcut icon" href="/favicon.ico">
-
-<? if (c::browser()->platform != 'Mac') : ?>
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
-<? endif ; ?>
-
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-	
 <? if (c::config()->bundle) : ?>
-	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>"></script>
+	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=app"></script>
 <? else : ?>
-	<?=$this->display('bundle/js')?>
+	<?=$this->display('bundle/js', ['set' => ['scripts' => ['app']]])?>
 <? endif ; ?>
 
-</head>
-
-<body>
-	<div class="wrapper">
-		<div class="nav" data-role="header" data-position="fixed">
-			<div class="content">
-				<div class="logo"><a href="javascript:;" class="link-home"><div class="logo-img"></div></a><div class="community-selector"></div><div class="nav-back"></div></div>
-				<div class="config-icon"></div>
-			</div>
-		</div>
-		<div class="body">
-			<div class="content">
-				<div class="main-content pages">
-					<?=$this->content?>
-				</div>
-			</div>
-		</div>
-		<div class="divider"></div>
-		<div class="footer">
-			<div class="footer-content">
-				<a href="javascript:;" class="link-help">Help</a>
-				<a href="javascript:;" class="link-legal">Legal</a>
-				<a href="javascript:;" class="link-orders"<?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
-				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
-					<a href="javascript:App.test.card();">TEST: card</a>
-					<a href="javascript:App.test.logout();">TEST: logout</a>
-					<a href="javascript:App.test.cart();">TEST: cart</a>
-				<? endif ; ?>
-				<br />
-				<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
-			</div>
-		</div>
-	</div>
-
-</body>
-<script type="text/javascript">
-
-</script>
-</html>
+<?=$this->display('layout/html.bottom')?>

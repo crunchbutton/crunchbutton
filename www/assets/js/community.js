@@ -1,5 +1,7 @@
 var Community = function(id) {
 	this.type = 'Community';
+	this.id_var = 'id_community';
+	this.resource = 'community';
 	var self = this;
 	
 	if (arguments[1]) {
@@ -33,13 +35,7 @@ var Community = function(id) {
 		}
 	}
 	
-	if (typeof(id) == 'object') {
-		self.finished(id);
-	} else {
-		App.request(App.service + 'community/' + id, function(json) {
-			self.finished(json);
-		});
-	}
+	self.load(id);
 }
 
 App.cached.Community = {};

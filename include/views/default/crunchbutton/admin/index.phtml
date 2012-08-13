@@ -1,80 +1,87 @@
-<div style="width: 200px; float: left; border: 1px solid #ddd; padding: 10px;">
-	<? foreach (Restaurant::q('select * from restaurant') as $restaurant) :  ?>
-		<a href="javascript:;" data-id_restaurant="<?=$restaurant->id_restaurant?>" class="admin-restaurant-link"><?=$restaurant->name?></a><br />
-	<? endforeach ?>
-	<br />
-	<a href="javascript:;" data-id_restaurant="" class="admin-restaurant-link">NEW</a><br />
+<div style="width: 200px; float: left;">
+	<div style="border: 1px solid #ddd; padding: 10px;">
+		<? foreach (Restaurant::q('select * from restaurant') as $restaurant) :  ?>
+			<a href="javascript:;" data-id_restaurant="<?=$restaurant->id_restaurant?>" class="admin-restaurant-link<?=$restaurant->active ? '' : ' admin-restaurant-inactive'?>"><?=$restaurant->name?></a><br />
+		<? endforeach ?>
+		<br />
+		<a href="javascript:;" data-id_restaurant="" class="admin-restaurant-link">NEW</a><br />
+	</div>
 </div>
 
-<div style="width: 500px; float: left; border: 1px solid #ddd; padding: 10px; margin-left: 20px;">
-	<h1 class="restaurant-item-title">Restaurant Information</h1>
-	<br />
-	<table class="admin-restaurant-form">
-		<tr>
-			<td>Name</td>
-			<td><input type="text" name="name" value=""></td>
-		</tr>
-		<tr>
-			<td>Timezone</td>
-			<td><input type="text" name="timezone" value="America/New_York"></td>
-		</tr>
-		<tr>
-			<td>Location</td>
-			<td>
-				Lat <input type="text" name="loc_lat" value="41.2">
-				Long <input type="text" name="loc_long" value="-70">
-			</td>
-		</tr>
-		<tr>
-			<td>Delivery</td>
-			<td><input type="checkbox" name="delivery" value="1"></td>
-		</tr>
-		<tr>
-			<td>Credit</td>
-			<td><input type="checkbox" name="credit" value="1"></td>
-		</tr>
-		<tr>
-			<td>Maxitems</td>
-			<td><input type="text" name="maxitems" value=""></td>
-		</tr>
-		<tr>
-			<td>Tax</td>
-			<td><input type="text" name="tax" value="">%</td>
-		</tr>
-		<tr>
-			<td>Fee Customer</td>
-			<td><input type="text" name="fee_customer" value=""></td>
-		</tr>
-		<tr>
-			<td>Phone</td>
-			<td><input type="text" name="phone" value=""></td>
-		</tr>
-		<tr>
-			<td>Permalink</td>
-			<td><input type="text" name="permalink" value=""></td>
-		</tr>
-		<tr>
-			<td>Delivery Min</td>
-			<td><input type="text" name="delivery_min" value="">$</td>
-		</tr>
-		<tr>
-			<td>Delivery Radius</td>
-			<td><input type="text" name="delivery_radius" value="">KM</td>
-		</tr>
-		<tr>
-			<td>Delivery Estimated Time</td>
-			<td><input type="text" name="delivery_estimated_time" value=""> minites</td>
-		</tr>
-		<tr>
-			<td>Delivery Fee</td>
-			<td><input type="text" name="delivery_fee" value="">$</td>
-		</tr>
-		
-	</table>
+<div style="width: 500px; float: left;">
+	<div style="border: 1px solid #ddd; padding: 10px; margin-left: 20px;">
+		<h1 class="restaurant-item-title">Restaurant Information</h1>
+		<br />
+		<table class="admin-restaurant-form" data-id_restaurant="">
+			<tr>
+				<td>Name</td>
+				<td><input type="text" name="name" value=""></td>
+			</tr>
+			<tr>
+				<td>Timezone</td>
+				<td><input type="text" name="timezone" value="America/New_York"></td>
+			</tr>
+			<tr>
+				<td>Location</td>
+				<td>
+					Lat <input type="text" name="loc_lat" value="41.2">
+					Long <input type="text" name="loc_long" value="-70">
+				</td>
+			</tr>
+			<tr>
+				<td>Delivery</td>
+				<td><input type="checkbox" name="delivery" value="1"></td>
+			</tr>
+			<tr>
+				<td>Credit</td>
+				<td><input type="checkbox" name="credit" value="1"></td>
+			</tr>
+			<tr>
+				<td>Maxitems</td>
+				<td><input type="text" name="max_items" value=""></td>
+			</tr>
+			<tr>
+				<td>Tax</td>
+				<td><input type="text" name="tax" value="">%</td>
+			</tr>
+			<tr>
+				<td>Fee Customer</td>
+				<td><input type="text" name="fee_customer" value=""></td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td><input type="text" name="phone" value=""></td>
+			</tr>
+			<tr>
+				<td>Permalink</td>
+				<td><input type="text" name="permalink" value=""></td>
+			</tr>
+			<tr>
+				<td>Delivery Min</td>
+				<td><input type="text" name="delivery_min" value="">$</td>
+			</tr>
+			<tr>
+				<td>Delivery Radius</td>
+				<td><input type="text" name="delivery_radius" value="">KM</td>
+			</tr>
+			<tr>
+				<td>Delivery Estimated Time</td>
+				<td><input type="text" name="delivery_estimated_time" value=""> minites</td>
+			</tr>
+			<tr>
+				<td>Delivery Fee</td>
+				<td><input type="text" name="delivery_fee" value="">$</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="text-align: left;"><br /><a href="javascript:;" class="admin-restaurant-save">Save</a></td>
+			</tr>
+			
+		</table>
+	</div>
+	
+	<div style="border: 1px solid #ddd; padding: 10px; margin-left: 20px; margin-top: 20px;" class="admin-restaurant-panel">
+		<h1 class="restaurant-item-title">Notifications</h1>
+	</div>
 </div>
-
-<div style="width: 500px; float: left; border: 1px solid #ddd; padding: 10px; margin-left: 20px;">
-	<h1 class="restaurant-item-title">Notifications</h1>
-</div>
-
+	
 <div class="divider"></div>

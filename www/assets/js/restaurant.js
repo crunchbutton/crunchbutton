@@ -1,8 +1,12 @@
 var Restaurant = function(id) {
 	this.type = 'Restaurant';
+	this.id_var = 'id_restaurant';
+	this.resource = 'restaurant';
 	var
 		self = this,
 		complete;
+		
+	$.extend(self,Orm);
 	
 	if (arguments[1]) {
 		complete = arguments[1];
@@ -75,17 +79,6 @@ var Restaurant = function(id) {
 		return self['_preset'];
 	}
 
-	self.loadType = function(cls, data) {
-		if (!self['__' + data]) {
-			self['__' + data] = [];
-			for (x in self['_' + data]) {
-				self['__' + data][self['__' + data].length] = App.cache(cls, self['_' + data][x]);
-			}
-			self['_' + data] = null;
-		}
-		return self['__' + data];
-	}
-	
 	self.finished = function(data) {
 		for (x in data) {
 			self[x] = data[x];
@@ -99,13 +92,7 @@ var Restaurant = function(id) {
 
 	}
 	
-	if (typeof(id) == 'object') {
-		self.finished(id);
-	} else {
-		App.request(App.service + '/restaurant/' + id, function(json) {
-			self.finished(json);
-		});
-	}
+	self.load(id);
 }
 
 App.cached.Restaurant = {};

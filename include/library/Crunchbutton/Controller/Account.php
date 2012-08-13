@@ -13,6 +13,8 @@ class Crunchbutton_Controller_Account extends Cana_Controller {
 		    die('unauth.');
 		    exit;
 		}
+		
+		$_SESSION['admin'] = true;
 
 
     }

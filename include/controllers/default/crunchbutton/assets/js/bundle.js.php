@@ -8,12 +8,17 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 			$data = Cana::app()->cache()->read($cacheid);
 
 		} else {
+			if ($this->request()['s']) {
+				$scripts = explode(',',$this->request()['s']);
+			} else {
+				$scripts = [];
+			}
 
-			$src = c::view()->render('bundle/js');
+			$src = c::view()->render('bundle/js',['set' => ['scripts' => $scripts]]);
 
 			$doc = new DOMDocument('1.0');
 			@$doc->loadHTML($src);
-	
+
 			foreach ($doc->getElementsByTagName('script') as $script) {
 				if ($script->getAttribute('src')) {
 					$files[] = c::config()->dirs->www.preg_replace('/^(.*)(\?.*)$/','\\1',$script->getAttribute('src'));
