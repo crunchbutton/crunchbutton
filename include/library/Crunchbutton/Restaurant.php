@@ -23,6 +23,18 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_categories;
 	}
 	
+	public function community() {
+		$communities = $this->communities();
+		return $communities;
+	}
+	
+	public function communities() {
+		if (!isset($this->_communities)) {
+			$this->_communities = Community::q('select community.* from community left join restaurant_community using(id_community) where id_restaurant="'.$this->id_restaurant.'"');
+		}
+		return $this->_communities;
+	}
+	
 	public function hours($gmt = false) {
 		$gmt = $gmt ? '1' : '0';
 		if (!isset($this->_hours[$gmt])) {
@@ -99,6 +111,15 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		if ($this->preset()->count()) {
 			$out['_preset'] = $this->preset()->get(0)->exports();
 		}
+		
+		$out['id_community'] = $this->community()->id_community;
 		return $out;
+	}
+	
+	public function save() {
+		if (!$this->timezone) {
+			$this->timezone = 'America/New_York';
+		}
+		parent::save();
 	}
 }

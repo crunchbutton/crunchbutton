@@ -28,12 +28,11 @@ var Orm = {
 
 	save: function() {
 		if (!this.type) return;
-		console.log(this, this.properties());
 		$.post(App.service + this.resource + (this.id ? ('/' + this.id) : ''), this.properties(), function(result) {
 			console.log(result);
 		});
 	},
-	
+
 	load: function(id) {
 		var self = this;
 		if (typeof(id) == 'object') {

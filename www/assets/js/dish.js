@@ -3,6 +3,8 @@ var Dish = function(id) {
 	this.id_var = 'id_dish';
 	this.resource = 'dish';
 	var self = this;
+	
+	$.extend(self,Orm);
 
 	self.options = function() {
 		return self.loadType('Option','options');

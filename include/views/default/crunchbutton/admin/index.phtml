@@ -18,6 +18,16 @@
 				<td><input type="text" name="name" value=""></td>
 			</tr>
 			<tr>
+				<td>Community</td>
+				<td>
+					<select name="id_community">
+						<? foreach (Community::q('select * from community') as $community) : ?>
+							<option value="<?=$community->id_community?>"><?=$community->name?></option>
+						<? endforeach ; ?>
+					</select>
+				</td>
+			</tr>
+			<tr>
 				<td>Timezone</td>
 				<td><input type="text" name="timezone" value="America/New_York"></td>
 			</tr>

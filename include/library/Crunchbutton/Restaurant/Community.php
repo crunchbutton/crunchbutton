@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Community extends Cana_Table {
+class Crunchbutton_Restaurant_Community extends Cana_Table {
 	public function __construct($id = null) {
 		parent::__construct();
 		$this

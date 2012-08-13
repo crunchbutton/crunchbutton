@@ -1,6 +1,8 @@
 var Category = function(id) {
 	this.type = 'Dish';
 	var self = this;
+	
+	$.extend(self,Orm);
 
 	self.dishes = function() {
 		return self.loadType('Dish','dishes');

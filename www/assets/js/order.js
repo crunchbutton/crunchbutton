@@ -4,6 +4,8 @@ var Order = function(id) {
 	this.resource = 'order';
 	var self = this;
 	
+	$.extend(self,Orm);
+	
 	if (arguments[1]) {
 		complete = arguments[1];
 	} else {
