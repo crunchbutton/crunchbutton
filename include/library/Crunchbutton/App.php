@@ -28,6 +28,7 @@ class Crunchbutton_App extends Cana_App {
 			case 'beta._DOMAIN_':
 			case 'alpha._DOMAIN_':
 			case 'test._DOMAIN_':
+			case 'dev._DOMAIN_':
 				$params['env'] = 'beta';
 				break;
 
