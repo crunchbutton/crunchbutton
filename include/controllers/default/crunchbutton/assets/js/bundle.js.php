@@ -12,8 +12,10 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 				switch ($_REQUEST['s']) {
 					case 'app':
 						$scripts = ['app'];
+						break;
 					case 'admin':
 						$scripts = ['admin'];
+						break;
 					default:
 						$scripts = [];
 						break;
