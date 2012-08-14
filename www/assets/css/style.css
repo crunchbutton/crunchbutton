@@ -1306,3 +1306,11 @@ th {
 .admin-restaurant-inactive {
 	text-decoration: line-through;
 }
+
+.hours-date-label {
+	font-weight: bold;
+}
+
+.hours-date {
+	margin-bottom: 14px;
+}

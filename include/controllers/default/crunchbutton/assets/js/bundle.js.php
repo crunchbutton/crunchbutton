@@ -9,9 +9,15 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 
 		} else {
 			if ($_REQUEST['s']) {
-				$scripts = explode(',',$_REQUEST['s']);
-			} else {
-				$scripts = [];
+				switch ($_REQUEST['s']) {
+					case 'app':
+						$scripts = ['app'];
+					case 'admin':
+						$scripts = ['admin'];
+					default:
+						$scripts = [];
+						break;
+				}
 			}
 
 			$src = c::view()->render('bundle/js',['set' => ['scripts' => $scripts]]);
