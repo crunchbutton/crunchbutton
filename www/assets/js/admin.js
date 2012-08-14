@@ -49,6 +49,7 @@ $(function() {
 			for (var d in days) {
 
 				var day = $('<div class="hours-date"><span class="hours-date-label">' + days[d] + '</span></div>');
+				var dayWrap = $('<div class="hours-date-hours"></div>').appendTo(day);
 
 				if (!restaurant._hours) {
 					continue;
@@ -59,12 +60,12 @@ $(function() {
 				for (var x in dayitem) {
 					var row = $('<div class="hours-date-hour"></div>');
 					row.append('<input type="text" value="' + dayitem[x][0] + '" name="' + days[d] + '-open"> - <input type="text" value="' + dayitem[x][1] + '" name="' + days[d] + '-close">');
-					day.append(row);
+					dayWrap.append(row);
 				}
 				
 				var row = $('<div class="hours-date-hour"></div>');
 				row.append('<input type="text" name="' + days[d] + '-open"> - <input type="text" name="' + days[d] + '-close">');
-				day.append(row);
+				dayWrap.append(row);
 
 				$('.admin-restaurant-hours').append(day);
 
@@ -74,7 +75,7 @@ $(function() {
 	
 	$('.hours-date-hour input').live('keyup', function() {
 		var allfull = true;
-		$(this).closest('.hours-date-hour').find('input').each(function() {
+		$(this).closest('.hours-date-hours').find('input').each(function() {
 			if ($(this).val() == '') {
 				allfull = false;
 			}
@@ -157,10 +158,14 @@ $(function() {
 					});
 				}
 				console.log(hours);
-				$.post('/api/restaurant/' + id + '/hours', hours, function() {
+				$.post('/api/restaurant/' + id + '/hours', {hours: hours}, function() {
 				
 				});
 			});
 		}
+	});
+	
+	$('.admin-restaurant-hours-save-all').live('click',function() {
+		$('.admin-restaurant-hours-save-link').click();
 	});
 });

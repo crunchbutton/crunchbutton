@@ -5,7 +5,7 @@ class Crunchbutton_Hour extends Cana_Table {
 		parent::__construct();
 		$this
 			->table('hour')
-			->idVar('id_hours')
+			->idVar('id_hour')
 			->load($id);
 	}
 }

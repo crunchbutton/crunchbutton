@@ -8,26 +8,39 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 				if ($_SESSION['admin']) {
 					// save the restaurant
 					$r = Restaurant::o(c::getPagePiece(2));
-					$r->serialize($this->request());
-					$r->save();
-					
-					// save the community
-					if ($this->request()['id_community']) {
-						$c = Community::o($this->request()['id_community']);
-						
-						// only save if its a valid community
-						if ($c->id_community) {
-							$rc = Restaurant_Community::q('select * from restaurant_community where id_restaurant="'.$r->id_restaurant.'"');
-							if (!$rc->id_restaurant_community) {
-								$rc = new Restaurant_Community;
-								$rc->id_restaurant = $r->id_restaurant;
+
+					switch (c::getPagePiece(3)) {
+						case 'hours':
+							if ($r->id_restaurant) {
+								$r->saveHours($this->request()['hours']);
+								echo json_encode($this->request()['hours']);
 							}
-							$rc->id_community = $this->request()['id_community'];
-							$rc->save();
-						}
+							break;
+
+						default:
+							$r->serialize($this->request());
+							$r->save();
+							
+							// save the community
+							if ($this->request()['id_community']) {
+								$c = Community::o($this->request()['id_community']);
+								
+								// only save if its a valid community
+								if ($c->id_community) {
+									$rc = Restaurant_Community::q('select * from restaurant_community where id_restaurant="'.$r->id_restaurant.'"');
+									if (!$rc->id_restaurant_community) {
+										$rc = new Restaurant_Community;
+										$rc->id_restaurant = $r->id_restaurant;
+									}
+									$rc->id_community = $this->request()['id_community'];
+									$rc->save();
+								}
+							}
+							echo $r->json();
+							break;
 					}
 					
-					echo $r->json();
+					
 				}
 				break;
 

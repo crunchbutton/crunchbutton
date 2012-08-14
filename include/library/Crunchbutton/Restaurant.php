@@ -35,6 +35,22 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_communities;
 	}
 	
+	public function saveHours($hours) {
+		c::db()->query('delete from hour where id_restaurant="'.$this->id_restaurant.'"');
+		foreach ($hours as $day => $times) {
+			foreach ($times as $time) {
+				$hour = new Hour;
+				$hour->id_restaurant = $this->id_restaurant;
+				$hour->day = $day;
+				$hour->time_open = $time[0];
+				$hour->time_close = $time[1];
+				$hour->save();
+			}
+		}
+		unset($this->_hours);
+		$this->hours();
+	}
+	
 	public function hours($gmt = false) {
 		$gmt = $gmt ? '1' : '0';
 		if (!isset($this->_hours[$gmt])) {
