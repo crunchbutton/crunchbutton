@@ -25,6 +25,7 @@ class Crunchbutton_App extends Cana_App {
 			case 'beta.crunchr.co':
 			case 'alpha.crunchr.co':
 			case 'test.crunchr.co':
+			case 'dev.crunchr.co':
 			case 'beta._DOMAIN_':
 			case 'alpha._DOMAIN_':
 			case 'test._DOMAIN_':
