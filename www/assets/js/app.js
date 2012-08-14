@@ -11,7 +11,7 @@
 var App = {
 	cartHighlightEnabled: false,
 	currentPage: null,
-	slogans: ['get food in 15 seconds'],
+	slogans: ['food in 15 seconds'],
 	service: '/api/',
 	cached: {},
 	cart: {},
