@@ -105,6 +105,7 @@ App.page.community = function(id) {
 		} else {
 			$('.content').removeClass('short-meal-list');
 		}
+		$('.content').removeClass('smaller-width');
 
 		for (var x in rs) {
 			var restaurant = $('<div class="meal-item'+ (!rs[x].open() ? ' meal-item-closed' : '') +'" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
@@ -136,7 +137,7 @@ App.page.restaurant = function(id) {
 	App.currentPage = 'restaurant';
 	App.cartHighlightEnabled = false;
 
-	$('.content').addClass('short-meal-list');
+	$('.content').addClass('smaller-width');
 
 	App.cache('Restaurant', id, function() {
 		if (App.restaurant && App.restaurant.permalink != id) {
@@ -152,7 +153,7 @@ App.page.restaurant = function(id) {
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-items"></div>' + 
-				'<div class="cart-items"><div class="restaurant-item-title">your order</div><div class="divider"></div><div class="cart-items-content"></div></div>' + 
+				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="divider"></div><div class="cart-items-content"></div></div>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
 			'<div class="restaurant-payment-div"></div>'
@@ -161,6 +162,8 @@ App.page.restaurant = function(id) {
 		var
 			categories = App.restaurant.categories(),
 			dishes, list;
+			
+		$('.restaurant-items').append('<div class="content-item-name"><h1>Menu</h1></div>')
 	
 		for (var x in categories) {
 			dishes = categories[x].dishes();
@@ -232,6 +235,7 @@ App.drawPay = function(restaurant) {
 
 	$('.main-content').append(
 		'<form class="payment-form main-content-readable">' + 
+		'<div class="content-item-name"><h1>Your Info</h1></div>' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-total">Your total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"> and tip</span>)</div>' +
@@ -352,7 +356,8 @@ App.page.order = function(id) {
 			message = 'Your order';
 		}
 
-		$('.content').addClass('short-meal-list');
+		$('.content').addClass('smaller-width');
+
 		$('.main-content').css('width','auto');
 		$('.main-content').html(
 			'<div class="content-padder-before"></div>' +

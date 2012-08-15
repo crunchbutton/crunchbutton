@@ -146,17 +146,16 @@ body {
 }
 
 .restaurant-pic-wrapper {
-	box-shadow: 0px 0px 6px rgba(0,0,0,.6);
 	padding: 5px;
-	width: 300px;
+	width: 630px;
 	float: right;
 	background: #fff;
 }
 
 .restaurant-pic {
 	overflow: hidden;
-	height: 165px;
-	background-size: 100%;
+	height: 300px;
+	background-size: cover !important;
 }
 
 .meal-restaurant {
@@ -189,14 +188,6 @@ body {
 .meal-item-down {
 	margin-top: 2px;
 	box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.15);
-}
-
-.restaurant-name {
-	color: #d74924;
-	font-size: 40px;
-	margin: 15px 0 40px 0;
-	font-weight: 100;
-	float: left;
 }
 
 .home-tagline {
@@ -257,16 +248,10 @@ b {
 }
 
 .cart-items {
-	width: 310px;
 	float: right;
 	clear: right;
 }
 
-.cart-item {
-	padding: 6px;
-	background: rgba(249,216,206, .5);
-	margin-bottom: 2px;
-}
 .cart-button-add {
 	background: url(/assets/images/plus.png) no-repeat;
 }
@@ -618,18 +603,9 @@ html[xmlns] .clearfix {
 	-webkit-animation: spin 1s linear infinite;
 }  
 
-.main-content-item {
-
-}
-
 .resturant-dishes {
 	width: 100%;
 }
-
-.meal-item-closed {
-
-}
-
 
 @media only screen 
 and (max-width : 1023px) {
@@ -1093,6 +1069,9 @@ and (max-width : 769px) {
 		margin-bottom: 0px;
 		margin-top: 14px;
 	}
+	.content-item-name {
+		display: none;
+	}
 }
 
 
@@ -1143,8 +1122,38 @@ and (min-width : 770px) {
 		margin-bottom: 25px;
 	}
 	.restaurant-pic {
-		width: 300px;
+
 	}
+	
+	.content-item-name, .text-your-order {
+		text-transform: none;
+		color: #D74924;
+		font-weight: 100;
+		font-size: 30px;
+		margin-bottom: 20px;
+	}
+
+	.restaurant-name {
+		background: #ff3f1f;
+		border: 1px solid #ff6648;
+		padding: 9px 20px 9px 15px;
+		font-size: 26px;
+		font-weight: 200;
+		width: 602px;
+		margin-left: 310px;
+		margin-top: 220px;
+		position: absolute;
+		z-index: 20;
+		box-shadow: 1px 1px 1px rgba(0,0,0,.3);
+	}
+
+	.restaurant-name h1 {
+		text-align: left;
+		margin-left: 10px;
+		color: #fff;
+		text-shadow: 1px 1px 0px #e0221a;
+	}
+
 	.dish-price {
 		margin-left: 10px;
 	}
@@ -1153,9 +1162,6 @@ and (min-width : 770px) {
 	}
 	.dish-name {
 		text-decoration: underline;
-	}
-	.restaurant-items {
-
 	}
 	
 	.community-selector {
@@ -1192,6 +1198,46 @@ and (min-width : 770px) {
 			inset 0 0 12px rgba(255,254,196,.8),
 			0px 2px 5px 0px rgba(0, 0, 0, 0.15)
 		;
+	}
+	
+
+	.cart-item {
+		background: #F4E9E3;
+		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF6F4), to(#FFF0EC));
+		border: 1px solid #FFD1BD;
+		padding: 6px;
+		border-radius: 2px;
+		margin-bottom: 4px;
+		box-shadow: inset 0px 1px 0px 0px white;
+		white-space: nowrap;
+	}
+	
+	.cart-items {
+		width: 625px;
+		float: right;
+		clear: right;
+		margin-right: 5px;
+	}
+	.payment-form {
+		width: 630px;
+		float: right;
+	}
+	.field-container input, .field-container textarea {
+		width: 400px;
+	}
+	.field-container {
+		width: 600px;
+	}
+	.content.smaller-width {
+		max-width: 950px;
+	}
+	.button-bottom-wrapper:after {
+		content: " ";
+		clear: both;
+	}
+	.button-bottom-wrapper {
+		margin-top: 25px;
+		clear: both;
 	}
 
 }
@@ -1251,6 +1297,7 @@ and (min-width : 1024px) {
 		border: 1px solid #ddd;
 		padding: 2px 4px 2px 4px;
 	}
+
 }
 
 
