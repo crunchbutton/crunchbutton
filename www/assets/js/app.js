@@ -1014,7 +1014,7 @@ App.loc = {
 	},
 	closest: function(complete) {
 
-		if (google.loader.ClientLocation) {
+		if (google && google.loader && google.loader.ClientLocation) {
 			App.loc.lat = google.loader.ClientLocation.latitude;
 			App.loc.lon = google.loader.ClientLocation.longitude;
 
