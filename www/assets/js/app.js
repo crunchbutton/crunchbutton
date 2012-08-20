@@ -1041,6 +1041,8 @@ App.loc = {
 				closest = App.loc.getClosest(),
 				loc;
 
+			console.log('closest',closest);
+
 			if ($.cookie('community') && !App.community) {
 				loc = '/' + $.cookie('community');
 	
