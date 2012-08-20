@@ -22,7 +22,7 @@ var App = {
 		cardChanged: false,
 		pay_type: 'card',
 		delivery_type: 'delivery',
-		tip: '10'
+		tip: '15'
 	},
 	_init: false,
 	_pageInit: false
@@ -202,7 +202,7 @@ App.page.restaurant = function(id) {
 				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label> <a href="javascript:;">' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provied</i>') + '</a></div>');
 			var paying = $('<div class="dp-display-payment dp-display-item"><label>You are paying:</label> <span class="cart-total">$0.00</span></div>');
 			if (App.config.user.pay_type == 'card') {
-				paying.append('&nbsp;including <a href="javascript:;">10% tip</a> by <a href="javascript:;">card</a>');
+				paying.append('&nbsp;including <a href="javascript:;">15% tip</a> by <a href="javascript:;">card</a>');
 			} else {
 				paying.append('&nbsp;using <a href="javascript:;">cash</a>');			
 			}
