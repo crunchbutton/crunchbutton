@@ -179,6 +179,8 @@ App.page.restaurant = function(id) {
 				list.append(dish);
 			}
 		}
+		
+		$('.cart-items').append('<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for ' + App.restaurant.name + '</label></div>');
 
 		if (App.cart.hasItems()) {
 			App.cart.reloadOrder();
@@ -711,7 +713,8 @@ App.cart = {
 			cart: App.cart.getCart(),
 			pay_type: App.order['pay_type'],
 			delivery_type: App.order['delivery_type'],
-			restaurant: App.restaurant.id
+			restaurant: App.restaurant.id,
+			make_default: $('#default-order-check').is(':checked')
 		};
 		
 		if (order.pay_type == 'card') {

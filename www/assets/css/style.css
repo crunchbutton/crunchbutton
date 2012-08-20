@@ -906,7 +906,7 @@ and (max-width : 769px) {
 	.field-container {
 		width: auto;
 	}
-	.pay-title-label, .toggle-spacer {
+	.pay-title-label, .toggle-spacerr {
 		display: none;
 	}
 	.toggle-item:first-child {
@@ -1263,10 +1263,17 @@ and (min-width : 770px) {
 		text-align: left;
 		margin-top: .8em;
 	}
+	
+	.input[name="pay-card-number"] {
+		width : 300px;
+	}
 
 }
 
-
+.default-order-check {
+	font-size: 12px;
+	margin-top: 20px;
+}
 
 
 

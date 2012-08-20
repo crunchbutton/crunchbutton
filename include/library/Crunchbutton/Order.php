@@ -122,11 +122,13 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->notify();
 		}
 
-		$preset = $user->preset($this->restaurant()->id_restaurant);
-		if ($preset->id_preset) {
-			$preset->delete();
+		if ($params['make_default']) {
+			$preset = $user->preset($this->restaurant()->id_restaurant);
+			if ($preset->id_preset) {
+				$preset->delete();
+			}
 		}
-
+	
 		foreach ($this->_dishes as $dish) {
 			$dish->id_order = $this->id_order;
 			$dish->save();
@@ -137,7 +139,9 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
-		Preset::cloneFromOrder($this);
+		if ($params['make_default']) {	
+			Preset::cloneFromOrder($this);
+		}
 		
 		return true;
 	}
