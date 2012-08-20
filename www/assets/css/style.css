@@ -906,7 +906,7 @@ and (max-width : 769px) {
 	.field-container {
 		width: auto;
 	}
-	.pay-title-label, .toggle-spacerr {
+	.pay-title-label, .toggle-spacer {
 		display: none;
 	}
 	.toggle-item:first-child {
