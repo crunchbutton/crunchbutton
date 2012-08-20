@@ -1104,6 +1104,8 @@ and (max-width : 769px) {
 }
 
 
+
+
 @media only screen 
 and (min-width : 770px) {
 	.ui-footer-fixed {
@@ -1263,9 +1265,14 @@ and (min-width : 770px) {
 		text-align: left;
 		margin-top: .8em;
 	}
-	
-	.input[name="pay-card-number"] {
-		width : 300px;
+	input[name="pay-card-number"] {
+		width : 200px;
+	}
+	.payment-card-info {
+		margin-left: 395px;
+		font-size: 12px;
+		position: absolute;
+		margin-top: -4px;
 	}
 
 }
@@ -1309,17 +1316,41 @@ and (min-width : 1024px) {
 	.short-meal-list .meal-item:nth-child(2n+2) {
 		margin-left: 16px;
 	}
-	.payment-card-info {
-		margin-left: 395px;
-		font-size: 12px;
-		position: absolute;
-		margin-top: -4px;
-	}
+
 	.community-selector {
 		margin: -25px 0 0 350px;
 	}
+	.button-bottom-wrapper {
+		padding-top: 20px;
+		margin-left: 300px;
+	}
+	.button-bottom {
+		margin: 0 auto;
+	}
+}
 
-
+@media only screen 
+and (min-width : 770px)
+and (max-width : 1023px) {
+	
+	.restaurant-items, .restaurant-pic-wrapper, .cart-items, .payment-form {
+		float: none;	
+		width: 625px;
+		margin: 0 auto;
+	}
+	
+	.restaurant-items {
+		margin-top: 20px;
+	}
+	
+	.cart-items {
+		margin-top: 10px;	
+	}
+	
+	.restaurant-name {
+		margin-left: -321px;
+		left: 50%;
+	}
 }
 
 
