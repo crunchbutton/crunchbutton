@@ -40,7 +40,7 @@ var Orm = {
 		} else {
 			App.request(App.service + this.resource + '/' + id, function(json) {
 				if (json.error) {
-					throw 'ORM load error: ' + json.error;
+					throw 'ORM load error: ' + json.error + "\n" + this.type + '/' + this.resource;
 					alert('asd');
 				} else {
 					self.finished(json);
