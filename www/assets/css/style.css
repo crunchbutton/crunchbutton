@@ -154,7 +154,7 @@ body {
 
 .restaurant-pic {
 	overflow: hidden;
-	height: 300px;
+	height: 280px;
 	background-size: cover !important;
 }
 
@@ -673,6 +673,27 @@ and (max-width : 1023px) {
 	width: 60%;
 }
 
+.toggle-spacer {
+	margin-top: 10px;
+}
+
+.toggle-item.toggle-active {
+	color: #fff;
+	text-shadow: 1px 1px 0px rgba(0,0,0,.22);
+	background: -webkit-linear-gradient(#f57333, #f26926);
+}
+
+.toggle-active {
+	margin-top: 2px;
+}
+
+.toggle-item {
+	border-radius: 4px;
+	border: 1px solid #cb5921;
+	padding: 6px 10px 6px 12px;
+	text-decoration: none;
+}
+
 
 /*
 @media only screen 
@@ -885,26 +906,21 @@ and (max-width : 769px) {
 	.field-container {
 		width: auto;
 	}
-	.pay-title-label {
+	.pay-title-label, .toggle-spacer {
 		display: none;
 	}
-	.toggle-item.toggle-active {
-		color: #d74924;
-		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
-		background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
-		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
-		background-color:#dfdfdf;
-	}
-	.toggle-spacer {
-		display: none;
+	.toggle-item:first-child {
+		margin-right: 16px;
 	}
 	.toggle-item {
 		-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
 		-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
 		box-shadow:inset 0px 1px 0px 0px #ffffff;
-		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
-		background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
-		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+
+		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #eee) );
+		background:-moz-linear-gradient( center top, #ededed 5%, #eee 100% );
+		filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#eee');
+
 		background-color:#ededed;
 		border-radius: 4px;
 		border:1px solid #dcdcdc;
@@ -919,8 +935,11 @@ and (max-width : 769px) {
 		margin-top: 0 !important;
 		float: none;
 	}
-	.toggle-item:first-child {
-		margin-right: 16px;
+	.toggle-active {
+		-moz-box-shadow:inset 0px 1px 0px 0px #f9a074;
+		-webkit-box-shadow:inset 0px 1px 0px 0px #f9a074;
+		box-shadow:inset 0px 1px 0px 0px #f9a074;
+		border-color: #cb5921;
 	}
 	.toggle-wrapper {
 		float: none;
@@ -1240,7 +1259,15 @@ and (min-width : 770px) {
 		clear: both;
 	}
 
+	.delivery-info-container label, .payment-info-container label {
+		text-align: left;
+		margin-top: .8em;
+	}
+
 }
+
+
+
 
 
 @media only screen 
@@ -1284,19 +1311,7 @@ and (min-width : 1024px) {
 	.community-selector {
 		margin: -25px 0 0 350px;
 	}
-	.toggle-item.toggle-active {
-		border-color: #ff8d37;
-	}
-	
-	.toggle-active {
-		margin-top: 2px;
-	}
-	
-	.toggle-item {
-		border-radius: 2px;
-		border: 1px solid #ddd;
-		padding: 2px 4px 2px 4px;
-	}
+
 
 }
 
