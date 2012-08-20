@@ -589,14 +589,14 @@ App.cart = {
 
 		$('.cart-total').html(totalText);
 		
-		if ($('.cart-total').html() == totalText) {
-			return;
-		}
-
 		if (App.order['pay_type'] == 'card') {
 			$('.includes-tip').show();
 		} else {
 			$('.includes-tip').hide();		
+		}
+		
+		if ($('.cart-total').html() == totalText) {
+			return;
 		}
 
 		var
