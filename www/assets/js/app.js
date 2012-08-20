@@ -1053,7 +1053,7 @@ App.loc = {
 				}
 
 				if (!App.community || closest.permalink != App.community.permalink) {
-					loc = '/'.closest.permalink;
+					loc = '/' + closest.permalink;
 				}
 	
 			} else if (!App.community) {
