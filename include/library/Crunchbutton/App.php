@@ -12,6 +12,10 @@
 class Crunchbutton_App extends Cana_App {
 	private $_crypt;
 	public function init($params = null) {
+	
+		if (!$_SERVER['__HTTP_HOST']) {
+			$cli = true;
+		}
 
 		$params['postInitSkip'] = true;
 		switch ($_SERVER['__HTTP_HOST']) {
@@ -59,7 +63,7 @@ class Crunchbutton_App extends Cana_App {
 				}
 		}
 
-		if ($params['env'] == 'live') {
+		if ($params['env'] == 'live' && !$cli) {
 			error_reporting(E_ERROR | E_PARSE);
 			
 			if ($_SERVER['HTTPS'] != 'on') {
