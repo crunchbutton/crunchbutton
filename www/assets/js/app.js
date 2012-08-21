@@ -138,6 +138,7 @@ App.page.restaurant = function(id) {
 	App.cartHighlightEnabled = false;
 
 	$('.content').addClass('smaller-width');
+	$('.content').removeClass('short-meal-list');
 
 	App.cache('Restaurant', id, function() {
 		if (App.restaurant && App.restaurant.permalink != id) {
