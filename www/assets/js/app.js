@@ -1129,7 +1129,7 @@ $(function() {
 				return;
 			}
 
-			if (navigator.userAgent.toLowerCase().indexOf('ios') > -1 || navigator.userAgent.toLowerCase().indexOf('android') > -1) {
+			if (navigator.userAgent.toLowerCase().indexOf('ios') > -1) {
 				return;
 			}
 			$(this).addClass('meal-item-down');
