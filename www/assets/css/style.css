@@ -1220,8 +1220,6 @@ and (min-width : 770px) {
 			0px 2px 5px 0px rgba(0, 0, 0, 0.15)
 		;
 	}
-	
-
 	.cart-item {
 		background: #F4E9E3;
 		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF6F4), to(#FFF0EC));
@@ -1326,6 +1324,9 @@ and (min-width : 1024px) {
 	}
 	.button-bottom {
 		margin: 0 auto;
+	}
+	.restaurant-items {
+		position: absolute;
 	}
 }
 
