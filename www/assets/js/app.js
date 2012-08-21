@@ -240,7 +240,7 @@ App.drawPay = function(restaurant) {
 		'<div class="content-item-name"><h1>Your Info</h1></div>' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-info-container"></div><div class="divider"></div>' + 
-		'<div class="payment-total">Your total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"> and tip</span>)</div>' +
+		'<div class="payment-total">Your <span class="cash-order-aprox"></span> total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"> and tip</span>)</div>' +
 		'</form>' + 
 
 		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
@@ -591,8 +591,10 @@ App.cart = {
 		
 		if (App.order['pay_type'] == 'card') {
 			$('.includes-tip').show();
+			$('.cash-order-aprox').html('');
 		} else {
-			$('.includes-tip').hide();		
+			$('.includes-tip').hide();
+			$('.cash-order-aprox').html('approximate');
 		}
 		
 		if (App.cartHighlightEnabled && $('.cart-summary').css('display') != 'none') {
@@ -603,7 +605,7 @@ App.cart = {
 		}
 		
 		if ($('.cart-total').html() == totalText) {
-			return;
+			//return;
 		}
 
 		var
@@ -630,9 +632,6 @@ App.cart = {
 		}
 
 		$('.cart-summary-items').html(text.substr(0,text.length-13));
-		
-
-		
 	},
 	customize: function(item) {
 		var
