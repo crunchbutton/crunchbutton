@@ -20,5 +20,10 @@ if (isset($_REQUEST['__url']) && $_REQUEST['__url'] == 'index.php') {
 	$_REQUEST['__url'] = '';
 }
 
+if (preg_match('/^www\..*$/',$_SERVER['SERVER_ADDR'])) {
+	header('Location: http:/'.str_replace('www',$_SERVER['SERVER_ADDR']).$_SERVER['REQUEST_URI']);
+	exit;
+}
+
 require_once '../include/crunchbutton.php';
 Cana::app()->displayPage();

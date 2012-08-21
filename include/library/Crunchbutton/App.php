@@ -62,9 +62,8 @@ class Crunchbutton_App extends Cana_App {
 			error_reporting(E_ERROR | E_PARSE);
 			
 			if ($_SERVER['HTTPS'] != 'on') {
-				// @todo: add ssl back
-				//header('Location: https://_DOMAIN_'.$_SERVER['REQUEST_URI']);
-				//exit;
+				header('Location: https://_DOMAIN_'.$_SERVER['REQUEST_URI']);
+				exit;
 			}
 		}
 
