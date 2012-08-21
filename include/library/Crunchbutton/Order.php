@@ -32,7 +32,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// user fee percent
 		if ($this->restaurant()->delivery_fee) {
-			$feeTotal += $feeTotal * ($this->restaurant()->fee_customer/100));
+			$feeTotal += $feeTotal * ($this->restaurant()->fee_customer/100);
 		}
 
 		$this->tip = $params['tip'];
