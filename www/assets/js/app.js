@@ -596,7 +596,7 @@ App.cart = {
 			tipText = App.restaurant.delivery_fee ? ', tip and fees' : 'and tip';
 			$('.cash-order-aprox').html('');
 		} else {
-			tipText = App.restaurant.delivery_fee ? 'and fees' : '';
+			tipText = App.restaurant.delivery_fee ? ' and fees' : '';
 			$('.cash-order-aprox').html('approximate');
 		}
 		
@@ -817,21 +817,39 @@ App.cart = {
 		var
 			total = 0,
 			dish,
-			options;
+			options,
+			feeTotal = 0;
 		for (var x in App.cart.items) {
 			total += parseFloat(App.cached['Dish'][App.cart.items[x].id].price);
 			options = App.cart.items[x].options;
 
 			for (var xx in options) {
-
 				total += parseFloat(App.cached['Option'][options[xx]].price);
 			}
 		}
-		var final = total + (App.restaurant.delivery_fee || 0)  + (total * (App.restaurant.tax/100));
+		
+		feeTotal = total;
+
+		console.log('total',total);
+		if (App.restaurant.delivery_fee) {
+			feeTotal += parseFloat(App.restaurant.delivery_fee);
+		}
+		console.log('total with fee',feeTotal);
+		
+		if (App.restaurant.fee_customer) {
+			feeTotal += (feeTotal * (parseFloat(App.restaurant.fee_customer)/100));
+		}
+		console.log('total with customer fee percent',feeTotal);
+		
+		var final = feeTotal + (feeTotal * (App.restaurant.tax/100));
+		
+		console.log('total with tax',final);
 
 		if (App.order['pay_type'] == 'card') {
 			final += (total * (App.order.tip/100));
 		}
+		
+		console.log('total with tip',final);
 
 		return final.toFixed(2);
 	},

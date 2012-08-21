@@ -23,14 +23,25 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		$this->price = number_format($subtotal, 2);
+		$feeTotal = $this->price;
+		
+		// delivery fee
+		if ($this->restaurant()->delivery_fee) {
+			$feeTotal += $this->restaurant()->delivery_fee;
+		}
+
+		// user fee percent
+		if ($this->restaurant()->delivery_fee) {
+			$feeTotal += $feeTotal * ($this->restaurant()->fee_customer/100));
+		}
+
 		$this->tip = $params['tip'];
 		$this->id_restaurant = $params['restaurant'];
 		$this->tax = $this->restaurant()->tax;
 		$this->final_price = Util::ceil(
 			($this->price * ($this->tip/100)) + // tip
-			($this->price * ($this->tax/100)) + // tax
-			$this->price + // price of items
-			$this->restaurant()->delivery_fee // delivery fee
+			($feeTotal * ($this->tax/100)) + // tax
+			$feeTotal // price of items
 		, 2); // price
 
 		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'card';
