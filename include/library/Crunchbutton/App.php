@@ -48,7 +48,7 @@ class Crunchbutton_App extends Cana_App {
 								break;
 							case '/home/crunchbutton/include/library/Crunchbutton':
 								$params['env'] = 'live';
-								$_SERVER['__HTTP_HOST'] = '_DOMAIN_';
+								$_SERVER['__HTTP_HOST'] = 'crunchr.co';
 								break;
 							default:
 								$params['env'] = 'local';
