@@ -25,24 +25,41 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				
 			case 'doconfirm':
 			    header('Content-type: text/xml');
-				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
+					.'<Response>';
 
 				switch ($this->request()['Digits']) {
 					case '1':
-						echo '<Response><Say voice="female" loop="3">Thank you. This order has been confirmed.</Say></Response>';
+						echo '<Say voice="female">Thank you. This order has been confirmed.</Say>';
 						$order->confirmed = 1;
 						$order->save();
 						break;
 
 					case '2':
-						echo '<Response><Say voice="female" loop="3">Thank you. We will resend the order confirmation.</Say></Response>';
+						echo '<Say voice="female">Thank you. We will resend the order confirmation.</Say>';
 						$order->que();
 						break;
+					case '0':
+						echo '<Dial timeout="10" record="true">213-293-6935</Dial>';
 
 					default:
-						echo '<Response><Gather action="/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="12" method="get"><Say voice="female" loop="3">Hi. this is Crunchbutton. Please press 1 to confirm that you just received order number '.$order->id_order.'. Or press 2 and we will resend the order.</Say></Gather></Response>';
+						echo '<Say voice="female">Hi. this is Crunchbutton.</Say>';
+					case '3':
+					case '4':
+					case '5':
+					case '6':
+					case '7':
+					case '8':
+					case '9':
+					case '#':
+					case '*':					
+						echo '<Gather action="/api/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="12" method="get">'
+							.'<Say voice="female" loop="3">Please press 1 to confirm that you just received order number '.$order->id_order.'. Or press 2 and we will resend the order. . . .</Say>'
+							.'</Gather>';
 						break;
 				}
+				
+				echo '</Response>';
 				
 				exit;
 				break;
