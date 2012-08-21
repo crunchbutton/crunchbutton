@@ -40,7 +40,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						break;
 
 					default:
-						echo '<Gather action="/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="12" method="get"><Say voice="female" loop="3">Hi. this is Crunchbutton. Please press 1 to confirm that you just received order number '.$order->id_order.'. Or press 2 and we will resend the order.</Say></Gather>';
+						echo '<Response><Gather action="/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="12" method="get"><Say voice="female" loop="3">Hi. this is Crunchbutton. Please press 1 to confirm that you just received order number '.$order->id_order.'. Or press 2 and we will resend the order.</Say></Gather></Response>';
 						break;
 				}
 				
