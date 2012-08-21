@@ -241,7 +241,7 @@ App.drawPay = function(restaurant) {
 		'<div class="content-item-name"><h1>Your Info</h1></div>' + 
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-info-container"></div><div class="divider"></div>' + 
-		'<div class="payment-total">Your <span class="cash-order-aprox"></span> total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"> and tip</span>)</div>' +
+		'<div class="payment-total">Your <span class="cash-order-aprox"></span> total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"></span>)</div>' +
 		'</form>' + 
 
 		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
@@ -586,15 +586,17 @@ App.cart = {
 		App.cart.updateTotal();
 	},
 	updateTotal: function() {
-		var totalText = '$' + App.cart.total();
+		var
+			totalText = '$' + App.cart.total(),
+			tipText = '';
 
 		$('.cart-total').html(totalText);
 		
 		if (App.order['pay_type'] == 'card') {
-			$('.includes-tip').show();
+			tipText = App.restaurant.delivery_fee ? ', tip and fees' : 'and tip';
 			$('.cash-order-aprox').html('');
 		} else {
-			$('.includes-tip').hide();
+			tipText = App.restaurant.delivery_fee ? 'and fees' : '';
 			$('.cash-order-aprox').html('approximate');
 		}
 		
@@ -604,6 +606,8 @@ App.cart = {
 				$('.cart-summary').addClass('cart-summary-detail');
 			});
 		}
+		
+		$('.includes-tip').html(tipText);
 		
 		if ($('.cart-total').html() == totalText) {
 			//return;
@@ -823,7 +827,7 @@ App.cart = {
 				total += parseFloat(App.cached['Option'][options[xx]].price);
 			}
 		}
-		var final = total + (total * (App.restaurant.tax/100));
+		var final = total + (App.restaurant.delivery_fee || 0)  + (total * (App.restaurant.tax/100));
 
 		if (App.order['pay_type'] == 'card') {
 			final += (total * (App.order.tip/100));
