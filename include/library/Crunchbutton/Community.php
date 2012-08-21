@@ -1,8 +1,13 @@
 <?php
 
 class Crunchbutton_Community extends Cana_Table {
-	public static function all() {
+	public static function all($force = null) {
 		$ip = preg_replace('/[^0-9\.]+/','',$_SERVER['REMOTE_ADDR']);
+		$force = preg_replace('/[^a-z\-]+/','',$force);
+		if ($force) {
+			$forceq = ' OR (community.permalink="'.c::db()->escape($force).'") ';
+		}
+
 		$q = '
 			select community.* from community
 			left join community_ip on community_ip.id_community=community.id_community
@@ -11,10 +16,13 @@ class Crunchbutton_Community extends Cana_Table {
 				AND (
 					( community.private=0 )
 					OR
-					(community.private=1 AND community_ip.ip="'.$ip.'")
+					(community.private=1 AND community_ip.ip="'.c::db()->escape($ip).'")
+					'.$forceq.'
 				)
+			group by community.id_community
 			order by name
 		';
+
 		return self::q($q);
 	}
 	public function restaurants() {

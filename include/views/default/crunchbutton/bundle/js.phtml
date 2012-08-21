@@ -7,7 +7,7 @@
 <script type="text/javascript">
 $(function() {
 	App.communities = {};
-	<? foreach (Community::all() as $community) : ?>
+	<? foreach (Community::all(c::getPagePiece(0)) as $community) : ?>
 		App.communities['<?=$community->permalink?>'] = {
 			<? foreach ($community->properties() as $key => $val) : ?>
 				'<?=$key?>': "<?=$val?>",
