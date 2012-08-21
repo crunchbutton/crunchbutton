@@ -17,11 +17,34 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'say':
-				$say = 'tester';
 			    header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 					.'<Response><Say voice="female" loop="3">'.htmlspecialchars($order->message('phone')).'</Say></Response>';
 					exit;
+				break;
+				
+			case 'doconfirm':
+			    header('Content-type: text/xml');
+				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+
+				switch ($this->request()['Digits']) {
+					case '1':
+						echo '<Response><Say voice="female" loop="3">Thank you. This order has been confirmed.</Say></Response>';
+						$order->confirmed = 1;
+						$order->save();
+						break;
+
+					case '2':
+						echo '<Response><Say voice="female" loop="3">Thank you. We will resend the order confirmation.</Say></Response>';
+						$order->que();
+						break;
+
+					default:
+						echo '<Gather action="/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="12" method="get"><Say voice="female" loop="3">Hi. this is Crunchbutton. Please press 1 to confirm that you just received order number '.$order->id_order.'. Or press 2 and we will resend the order.</Say></Gather>';
+						break;
+				}
+				
+				exit;
 				break;
 		}
 
@@ -32,7 +55,6 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				}
 
 				if ($order->id_order) {
-					$say = 'this is a test';
 					echo $order->json();
 					break;
 
