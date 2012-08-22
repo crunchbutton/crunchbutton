@@ -1,145 +1,202 @@
-<style>body, td { font-size: 16px; } h1 { font-size: 20px; } h2 {font-size: 17px; } .customer td { font-size: 12px;}</style>
-<h1 style="text-align: center"><u><strong><?=strtoupper($order->delivery_type)?></u></strong> order<br>#<?=$order->id_order?></h1>
-<h2><?=$order->restaurant()->name?></h2>
-<h2><?=$order->date()->format('r (T)')?></h2>
-<h2>Name: <?=$order->name?></h2>
-<h2>Phone: <?=$order->phone?></h2>
-<? if ($order->delivery_type == 'delivery') : ?>
-	<h2>Address: <?=nl2br(strip_tags($order->address))?></h2>
+<table width="100%" style="background: #333; border: 0;" cellpadding="0" cellspacing="0">
+	<tr>
+		<td style="border: 0; padding: 5px;">
+			<h1 style="color: #fff; margin: 0;"><?=$order->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton'?></h1>
+		</td>
+		<td style="border: 0; padding: 5px; text-align: right;">
+			<h1 style="color: #fff; margin: 0;">order #<?=$order->id_order?></h1>
+		</td>
+	</tr>
+</table>
+
+<br />
+
+<table width="100%" celpadding="0" cellspacing="0">
+	<tr>
+		<td><b>Customer</b></td>
+		<td><b>Restaurant</b></td>
+	</tr>
+	<tr>
+		<td width="50%" valign="top">
+			<h1><?=$order->name?></h1>
+			<h2><?=$order->phone?></h2>
+			<h2>
+				<? if ($order->delivery_type == 'delivery') : ?>
+					<?=nl2br(strip_tags($order->address))?><br />
+				<? endif ; ?>
+			</h2>
+		</td>
+		<td width="50%" valign="top">
+			<h1><?=$order->restaurant()->name?></h1>
+			<h2><?=$order->date()->format('D, M jS Y, H:i:s (T)')?></h2>
+		</td>
+	</tr>
+</table>
+
+<br /><br />
+
+<h1 style="text-align: center">
+	<u><strong><?=strtoupper($order->delivery_type)?></u></strong>, 
+	
+<? if ($order->pay_type == 'card') : ?>
+	already paid & tipped by CARD
+<? else : ?>
+	paying by CASH
+<? endif ; ?>
+<br />
+	
+</h1>
+
+<br />
+
+
+
+
+<? if ($order->notes) : ?>
+	<h2>NOTES:<br />
+		<?=nl2br(strip_tags($order->notes))?>
+	</h2><br />
 <? endif ; ?>
 
 <br />
-<? if ($order->pay_type == 'card') : ?>
-	<h2>Already paid & tipped by CARD</h2>
-<? else : ?>
-	<h2>Paying by CASH</h2>
+
+<table width="100%" celpadding="0" cellspacing="0">
+	<thead style="font-weight:bold">
+		<td>Qty</td>
+		<td>Item</td>
+		<td>Price</td>
+	</thead>
+
+	<? foreach ($order->dishes() as $dish) : ?>
+		<tr>
+			<td>1</td>
+			<td><?
+				$food = $dish->dish()->name;
+				$cartPrice = $dish->dish()->price;
+				if ($dish->options()->count()) {
+					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
+
+					foreach ($dish->options() as $option) {
+						$cartPrice += $option->option()->price;
+						$food .= $option->option()->name.', ';
+					}
+					$food = substr($food, 0, -2);
+
+					$food .= '</i>';
+				}
+				?>
+				<?=$food?>
+			</td>
+			<td>$<?=number_format($cartPrice,2)?></td>
+		</tr>
+	<? endforeach ; ?>
+
+	<tr class="class">
+		<td></td>
+		<td style="text-align:right">Subtotal</td>
+		<td>$<?=number_format($order->price,2)?></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td style="text-align:right">Tax</td>
+		<td>$<?=$order->tax()?></td>
+	</tr>
+	<? if ($order->pay_type == 'card' && $order->tip) : ?>
+		<tr>
+			<td></td>
+			<td style="text-align:right">Tip (<?=$order->tip?>%)</td>
+			<td><?=$order->tip()?></td>
+		</tr>
+	<? endif ; ?>
+	<? if ($order->restaurant()->delivery_fee) : ?>
+		<tr>
+			<td></td>
+			<td style="text-align:right">Delivery Fee</td>
+			<td>$<?=number_format($order->restaurant()->delivery_fee,2)?></td>
+		</tr>
+	<? endif ; ?>
+	<tr style="font-weight:bold;">
+		<td></td>
+		<td style="text-align:right">Total</td>
+		<td>$<?=number_format($order->final_price,2)?></td>
+	</tr>
+</table>
+
+
+
+
+
+
+
+<br /><br /><br />
+For Crunchbutton support:<br />
+<h2>213-293-6935</h2>
+<h2>restaurant-support@crunchbutton.com</h2>
+
+
+
+
+
+
+
+<? if ($order->restaurant()->customer_receipt) : ?>
+	<br /><br />
+	<div style="border-top: 1px dashed black"> </div>
+	<br /><br />
+	
+	<h2 align="center">Customer Copy</h2>
+	<table border="0" cellpadding="5" class="customer" align="center">
+		<thead style="font-weight:bold">
+			<td>Qty</td>
+			<td>Item</td>
+			<td>Price</td>
+		</thead>
+	
+		<? foreach ($order->dishes() as $dish) : ?>
+			<tr>
+				<td>1</td>
+				<td><?
+					$food = $dish->dish()->name;
+					$cartPrice = $dish->dish()->price;
+					if ($dish->options()->count()) {
+						$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
+	
+						foreach ($dish->options() as $option) {
+							$cartPrice += $option->option()->price;
+							$food .= $option->option()->name.', ';
+						}
+						$food = substr($food, 0, -2);
+	
+						$food .= '</i>';
+					}
+					?>
+					<?=$food?>
+				</td>
+				<td><?=number_format($cartPrice,2)?></td>
+			</tr>
+		<? endforeach ; ?>
+		
+		<tr class="class">
+			<td></td>
+			<td style="text-align:right">Subtotal</td>
+			<td><?=number_format($order->price,2)?></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td style="text-align:right">Tax</td>
+			<td><?=$order->tax()?></td>
+		</tr>
+		<? if ($order->pay_type == 'card' && $order->tip) : ?>
+			<tr>
+				<td></td>
+				<td style="text-align:right">Tip (<?=$order->tip?>%)</td>
+				<td><?=$order->tip()?></td>
+			</tr>
+		<? endif ; ?>
+		<tr style="font-weight:bold;">
+			<td></td>
+			<td style="text-align:right">Total</td>
+			<td><?=number_format($order->final_price,2)?></td>
+		</tr>
+	</table>
 <? endif ; ?>
-<br /><br />
-
-<table border="1" width="100%" cellpadding="10">
-	<thead style="font-weight:bold">
-		<td>Qty</td>
-		<td>Item</td>
-		<td>Price</td>
-	</thead>
-
-	<? foreach ($order->dishes() as $dish) : ?>
-		<tr>
-			<td>1</td>
-			<td><?
-				$food = $dish->dish()->name;
-				$cartPrice = $dish->dish()->price;
-				if ($dish->options()->count()) {
-					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
-
-					foreach ($dish->options() as $option) {
-						$cartPrice += $option->option()->price;
-						$food .= $option->option()->name.', ';
-					}
-					$food = substr($food, 0, -2);
-
-					$food .= '</i>';
-				}
-				?>
-				<?=$food?>
-			</td>
-			<td><?=number_format($cartPrice,2)?></td>
-		</tr>
-	<? endforeach ; ?>
-	
-	<? if ($order->notes) : ?>
-		<tr>
-			<td>NOTES</td>
-			<td><?=nl2br(strip_tags($order->notes))?></td>
-			<td></td>
-		</tr>
-	<? endif ; ?>
-
-	<tr class="class">
-		<td></td>
-		<td style="text-align:right">Subtotal</td>
-		<td><?=number_format($order->price,2)?></td>
-	</tr>
-	<tr>
-		<td></td>
-		<td style="text-align:right">Tax</td>
-		<td><?=$order->tax()?></td>
-	</tr>
-	<tr>
-		<td></td>
-		<td style="text-align:right">Tip (<?=$order->tip?>%)</td>
-		<td><?=$order->tip()?></td>
-	</tr>
-	<tr style="font-weight:bold;">
-		<td></td>
-		<td style="text-align:right">Total</td>
-		<td><?=number_format($order->final_price,2)?></td>
-	</tr>
-</table>
-
-
-<br /><br />
-<div style="border-top: 1px dashed black"> </div>
-<br /><br />
-
-<h2 align="center">Customer Copy</h2>
-<table border="0" cellpadding="5" class="customer" align="center">
-	<thead style="font-weight:bold">
-		<td>Qty</td>
-		<td>Item</td>
-		<td>Price</td>
-	</thead>
-
-	<? foreach ($order->dishes() as $dish) : ?>
-		<tr>
-			<td>1</td>
-			<td><?
-				$food = $dish->dish()->name;
-				$cartPrice = $dish->dish()->price;
-				if ($dish->options()->count()) {
-					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
-
-					foreach ($dish->options() as $option) {
-						$cartPrice += $option->option()->price;
-						$food .= $option->option()->name.', ';
-					}
-					$food = substr($food, 0, -2);
-
-					$food .= '</i>';
-				}
-				?>
-				<?=$food?>
-			</td>
-			<td><?=number_format($cartPrice,2)?></td>
-		</tr>
-	<? endforeach ; ?>
-	
-	<? if ($order->notes) : ?>
-		<tr>
-			<td>NOTES</td>
-			<td><?=nl2br(strip_tags($order->notes))?></td>
-			<td></td>
-		</tr>
-	<? endif ; ?>
-
-	<tr class="class">
-		<td></td>
-		<td style="text-align:right">Subtotal</td>
-		<td><?=number_format($order->price,2)?></td>
-	</tr>
-	<tr>
-		<td></td>
-		<td style="text-align:right">Tax</td>
-		<td><?=$order->tax()?></td>
-	</tr>
-	<tr>
-		<td></td>
-		<td style="text-align:right">Tip (<?=$order->tip?>%)</td>
-		<td><?=$order->tip()?></td>
-	</tr>
-	<tr style="font-weight:bold;">
-		<td></td>
-		<td style="text-align:right">Total</td>
-		<td><?=number_format($order->final_price,2)?></td>
-	</tr>
-</table>

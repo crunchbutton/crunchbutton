@@ -1,12 +1,32 @@
 <html>
+<style>
+	body, td {
+		font-size: 14px;
+	}
+	h1 {
+		font-size: 19px;
+	}
+	h2 {
+		font-size: 14px;
+		margin-bottom: 0;
+		margin-top: .25em;
+	}
+	.customer td {
+		font-size: 12px;
+	}
+	td {
+		border: 0;
+		border-right: 1px solid #bbb;
+		border-bottom: 1px solid #bbb;
+		padding: 5px;
+	}
+	table {
+		border-top: 1px solid #bbb;
+		border-left: 1px solid #bbb;
+	}
+</style>
 <body style="font-family:Helvetica,Arial">
 
-<h1 style="text-align: center">
-	<?=$order->id_restaurant == 1 ? 'One Button Wenzel' : 'Crunchbutton'?>
-	<br />213 293 6935
-	<br />tech@crunchbutton.com
-</h1>
-<br /><br />
 <?=$this->content?>
 
 </body>
