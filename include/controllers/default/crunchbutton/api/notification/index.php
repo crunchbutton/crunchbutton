@@ -17,6 +17,9 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 									$notification->status = 'success';
 									$notification->data = $_REQUEST['fax'];
 									$notification->save();
+									if ($notification->order()->restaurant()->confirmation) {
+										$notification->order()->queConfirm();
+									}
 								}
 								break;
 

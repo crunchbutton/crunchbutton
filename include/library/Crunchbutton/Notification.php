@@ -41,8 +41,7 @@ class Crunchbutton_Notification extends Cana_Table {
 				} else {
 					$log->status = 'error';
 					$log->save();
-				}				
-				
+				}
 
 				break;
 
@@ -56,6 +55,11 @@ class Crunchbutton_Notification extends Cana_Table {
 						'+1'.$num,
 						$msg
 					);
+				}
+				
+				if ($order->restaurant()->confirmation && !$notification->_confirm_trigger) {
+					$notification->_confirm_trigger = true;
+					$order->queConfirm();
 				}
 				break;
 
@@ -87,8 +91,21 @@ class Crunchbutton_Notification extends Cana_Table {
 					'email' => $mail
 				]);
 				$mail->send();
+
+				if ($order->restaurant()->confirmation && !$notification->_confirm_trigger) {
+					$notification->_confirm_trigger = true;
+					$order->queConfirm();
+				}
 				break;
 		}	
+	}
+	
+	public function queConfirm() {
+	
+	}
+	
+	public function confirm() {
+	
 	}
 
 	public function __construct($id = null) {

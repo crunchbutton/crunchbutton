@@ -1272,6 +1272,9 @@ and (min-width : 770px) {
 		position: absolute;
 		margin-top: -4px;
 	}
+	.cart-item-name {
+		width: 470px;
+	}
 
 }
 
