@@ -355,7 +355,11 @@ class Crunchbutton_Order extends Cana_Table {
 				break;
 
 			case 'phone':
-				$msg = 'This is an automated order. A customer ordered '.$food.'. Name. '.$this->name.'.  Phone number. '.preg_replace('/[^\d.]/','',$this->phone).'.  Customer paying by '.$this->pay_type.'.';
+				$spacedPhone = preg_replace('/[^\d.]/','',$this->phone);
+				for ($x=0; $x<strlen($spacedPhone); $x++) {
+					$spacedPhones .= $spacedPhone{$x}.'. ';
+				}
+				$msg = 'Hi. this is Crunchbutton. A customer ordered '.$food.'. Name. '.$this->name.'.  Phone number. '.$spacedPhones.'.  Customer paying by '.$this->pay_type.'.';
 				if ($this->delivery_type == 'delivery') {
 					$msg .= ' Deliver to '.$this->address;
 				}
