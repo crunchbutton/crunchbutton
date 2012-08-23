@@ -1,0 +1,72 @@
+
+<table width="100%" celpadding="0" cellspacing="0">
+	<thead style="font-weight:bold">
+		<td>Qty</td>
+		<td>Item</td>
+		<td>Price</td>
+	</thead>
+
+	<? foreach ($order->dishes() as $dish) : ?>
+		<tr>
+			<td>1</td>
+			<td><?
+				$food = $dish->dish()->name;
+				$cartPrice = $dish->dish()->price;
+				if ($dish->options()->count()) {
+					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
+
+					foreach ($dish->options() as $option) {
+						$cartPrice += $option->option()->price;
+						$food .= $option->option()->name.', ';
+					}
+					$food = substr($food, 0, -2);
+
+					$food .= '</i>';
+				}
+				?>
+				<?=$food?>
+			</td>
+			<td>$<?=number_format($cartPrice,2)?></td>
+		</tr>
+	<? endforeach ; ?>
+
+	<tr class="class">
+		<td></td>
+		<td style="text-align:right">Subtotal</td>
+		<td>$<?=number_format($order->price,2)?></td>
+	</tr>
+	<? if ($order->pay_type == 'card' && $order->tip) : ?>
+		<tr>
+			<td></td>
+			<td style="text-align:right">Tip (<?=$order->tip?>%)</td>
+			<td><?=$order->tip()?></td>
+		</tr>
+	<? endif ; ?>
+	<? if ($order->restaurant()->delivery_fee) : ?>
+		<tr>
+			<td></td>
+			<td style="text-align:right">Delivery Fee</td>
+			<td>$<?=$order->deliveryFee()?></td>
+		</tr>
+	<? endif ; ?>
+
+	<? if ($order->restaurant()->fee_customer) : ?>
+		<tr>
+			<td></td>
+			<td style="text-align:right">Service Fee</td>
+			<td>$<?=$order->serviceFee()?></td>
+		</tr>
+	<? endif ; ?>
+	
+	<tr>
+		<td></td>
+		<td style="text-align:right">Tax</td>
+		<td>$<?=$order->tax()?></td>
+	</tr>
+
+	<tr style="font-weight:bold;">
+		<td></td>
+		<td style="text-align:right">Total</td>
+		<td>$<?=number_format($order->final_price,2)?></td>
+	</tr>
+</table>

@@ -59,69 +59,7 @@
 <? endif ; ?>
 
 <br />
-
-<table width="100%" celpadding="0" cellspacing="0">
-	<thead style="font-weight:bold">
-		<td>Qty</td>
-		<td>Item</td>
-		<td>Price</td>
-	</thead>
-
-	<? foreach ($order->dishes() as $dish) : ?>
-		<tr>
-			<td>1</td>
-			<td><?
-				$food = $dish->dish()->name;
-				$cartPrice = $dish->dish()->price;
-				if ($dish->options()->count()) {
-					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
-
-					foreach ($dish->options() as $option) {
-						$cartPrice += $option->option()->price;
-						$food .= $option->option()->name.', ';
-					}
-					$food = substr($food, 0, -2);
-
-					$food .= '</i>';
-				}
-				?>
-				<?=$food?>
-			</td>
-			<td>$<?=number_format($cartPrice,2)?></td>
-		</tr>
-	<? endforeach ; ?>
-
-	<tr class="class">
-		<td></td>
-		<td style="text-align:right">Subtotal</td>
-		<td>$<?=number_format($order->price,2)?></td>
-	</tr>
-	<tr>
-		<td></td>
-		<td style="text-align:right">Tax</td>
-		<td>$<?=$order->tax()?></td>
-	</tr>
-	<? if ($order->pay_type == 'card' && $order->tip) : ?>
-		<tr>
-			<td></td>
-			<td style="text-align:right">Tip (<?=$order->tip?>%)</td>
-			<td><?=$order->tip()?></td>
-		</tr>
-	<? endif ; ?>
-	<? if ($order->restaurant()->delivery_fee) : ?>
-		<tr>
-			<td></td>
-			<td style="text-align:right">Delivery Fee</td>
-			<td>$<?=number_format($order->restaurant()->delivery_fee,2)?></td>
-		</tr>
-	<? endif ; ?>
-	<tr style="font-weight:bold;">
-		<td></td>
-		<td style="text-align:right">Total</td>
-		<td>$<?=number_format($order->final_price,2)?></td>
-	</tr>
-</table>
-
+<?=$this->render('order/details',['set' => ['order' => $order]])?>
 
 
 
@@ -145,58 +83,8 @@ For Crunchbutton support:<br />
 	<br /><br />
 	
 	<h2 align="center">Customer Copy</h2>
-	<table border="0" cellpadding="5" class="customer" align="center">
-		<thead style="font-weight:bold">
-			<td>Qty</td>
-			<td>Item</td>
-			<td>Price</td>
-		</thead>
-	
-		<? foreach ($order->dishes() as $dish) : ?>
-			<tr>
-				<td>1</td>
-				<td><?
-					$food = $dish->dish()->name;
-					$cartPrice = $dish->dish()->price;
-					if ($dish->options()->count()) {
-						$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
-	
-						foreach ($dish->options() as $option) {
-							$cartPrice += $option->option()->price;
-							$food .= $option->option()->name.', ';
-						}
-						$food = substr($food, 0, -2);
-	
-						$food .= '</i>';
-					}
-					?>
-					<?=$food?>
-				</td>
-				<td><?=number_format($cartPrice,2)?></td>
-			</tr>
-		<? endforeach ; ?>
-		
-		<tr class="class">
-			<td></td>
-			<td style="text-align:right">Subtotal</td>
-			<td><?=number_format($order->price,2)?></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td style="text-align:right">Tax</td>
-			<td><?=$order->tax()?></td>
-		</tr>
-		<? if ($order->pay_type == 'card' && $order->tip) : ?>
-			<tr>
-				<td></td>
-				<td style="text-align:right">Tip (<?=$order->tip?>%)</td>
-				<td><?=$order->tip()?></td>
-			</tr>
-		<? endif ; ?>
-		<tr style="font-weight:bold;">
-			<td></td>
-			<td style="text-align:right">Total</td>
-			<td><?=number_format($order->final_price,2)?></td>
-		</tr>
-	</table>
+	<br /><br />
+	<h1 style="text-align: center"><?=$order->restaurant()->name?></h1>
+	<br /><br />
+	<?=$this->display('order/details',['set' => ['order' => $order]])?>
 <? endif ; ?>

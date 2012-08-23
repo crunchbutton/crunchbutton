@@ -21,28 +21,30 @@ class Crunchbutton_Order extends Cana_Table {
 			
 			$this->_dishes[] = $dish;
 		}
+		
+		$this->id_restaurant = $params['restaurant'];
 
+		// price
 		$this->price = number_format($subtotal, 2);
-		$feeTotal = $this->price;
 		
 		// delivery fee
-		if ($this->restaurant()->delivery_fee) {
-			$feeTotal += $this->restaurant()->delivery_fee;
-		}
+		$this->delivery_fee = $this->restaurant()->delivery_fee;
 
-		// user fee percent
-		if ($this->restaurant()->delivery_fee) {
-			$feeTotal += $feeTotal * ($this->restaurant()->fee_customer/100);
-		}
+		// service fee for customer
+		$this->service_fee = ($this->price + $this->delivery_fee) * ($this->restaurant()->fee_customer/100);
+		
+		$totalWithFees = $this->price + $this->delivery_fee + $this->service_fee;
 
+		// tip
 		$this->tip = $params['tip'];
-		$this->id_restaurant = $params['restaurant'];
+		$tip = ($this->price * ($this->tip/100));
+		
+		
+		// tax
 		$this->tax = $this->restaurant()->tax;
-		$this->final_price = Util::ceil(
-			($this->price * ($this->tip/100)) + // tip
-			($feeTotal * ($this->tax/100)) + // tax
-			$feeTotal // price of items
-		, 2); // price
+		$tax = $totalWithFees * ($this->tax/100);
+
+		$this->final_price = Util::ceil($totalWithFees + $tip + $tax, 2); // price
 
 		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'card';
 		$this->delivery_type = $params['delivery_type'] == 'delivery' ? 'delivery' : 'takeout';
@@ -78,7 +80,7 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 		
-		if (!$this->restaurant()->open()) {
+		if (!$this->restaurant()->open() && c::env() == 'live') {
 			$errors[] = 'This restaurant is closed.';
 		}
 
@@ -228,7 +230,15 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function tax() {
-		return number_format($this->price * ($this->tax/100),2);
+		return number_format(($this->price + $this->deliveryFee() + $this->serviceFee()) * ($this->tax/100),2);
+	}
+	
+	public function deliveryFee() {
+		return number_format($this->delivery_fee,2);
+	}
+	
+	public function serviceFee() {
+		return number_format($this->service_fee,2);
 	}
 	
 	public function notify() {
@@ -257,7 +267,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$message = str_split($this->message('selfsms'),160);
 
-		$type = 'textbelt';
+		$type = 'twilio';
 
 
 		foreach ($message as $msg) {

@@ -120,7 +120,7 @@ App.page.community = function(id) {
 				restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
 			}
 			if (!rs[x].open()) {
-				restaurantContent.append('<div class="meal-item-tag-closed">Closed</div>');
+				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
 			}
 
 			restaurant
