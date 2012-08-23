@@ -20,8 +20,16 @@ var Restaurant = function(id) {
 	
 	self.top = function() {
 		var categories = self.categories();
-		for (x in categories) {
-			return categories[x].top();
+
+		for (var x in categories) {
+
+			var dishes = categories[x].dishes();
+
+			for (var xx in dishes) {
+				if (dishes[xx].top == 1) {
+					return dishes[xx];
+				}
+			}
 		}
 	}
 	
