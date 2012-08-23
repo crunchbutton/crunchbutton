@@ -114,7 +114,7 @@ App.page.community = function(id) {
 			restaurantContent
 				.append('<div class="meal-pic" style="background: url(' + rs[x]['img'] + ');"></div>')
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
-				.append('<h3 class="meal-food">Top Item: ' + (rs[x].top() ? rs[x].top().name : '') + '</h3>');
+				.append('<h3 class="meal-food">Top Item: ' + (rs[x].top() ? (rs[x].top().top_name || rs[x].top().name) : '') + '</h3>');
 
 			if (rs[x].open() && rs[x].delivery != '1') {
 				restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
