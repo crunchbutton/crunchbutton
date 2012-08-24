@@ -370,7 +370,7 @@ class Crunchbutton_Order extends Cana_Table {
 				for ($x=0; $x<strlen($spacedPhone); $x++) {
 					$spacedPhones .= $spacedPhone{$x}.'. ';
 				}
-				$msg = 'Hi. this is Crunchbutton. A customer ordered '.$food.'. Name. '.$this->name.'.  Phone number. '.$spacedPhones.'.  Customer paying by '.$this->pay_type.'.';
+				$msg = 'A customer ordered '.$food.'.</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Customer Name. '.$this->name.'.<Say voice="'.c::config()->twilio->voice.'"><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Phone number. '.$spacedPhones.'.</Say><Pause length="1"><Say voice="'.c::config()->twilio->voice.'">Customer paying by '.$this->pay_type.'.';
 				if ($this->delivery_type == 'delivery') {
 					$msg .= ' Deliver to '.$this->address;
 				}

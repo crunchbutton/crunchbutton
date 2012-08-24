@@ -62,6 +62,7 @@
 			<outgoing>_PHONE_</outgoing>
 		</dev>
 		<testnumber>_PHONE_</testnumber>
+		<voice>male</voice>
 	</twilio>
 	<phaxio>
 		<old>

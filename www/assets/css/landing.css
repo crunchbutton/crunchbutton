@@ -111,10 +111,12 @@ p {
 
 .logo {
 	margin-top: 70px;
+	width: 400px;
 }
 
 .tagline {
 	margin-top: 23px;
+	width: 300px;
 }
 
 .desc {
