@@ -116,10 +116,13 @@ App.page.community = function(id) {
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
 				.append('<h3 class="meal-food">Top Item: ' + (rs[x].top() ? (rs[x].top().top_name || rs[x].top().name) : '') + '</h3>');
 
-			if (rs[x].open() && rs[x].delivery != '1') {
-				restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
-			}
-			if (!rs[x].open()) {
+			if (rs[x].open()) {
+				if (rs[x].delivery != '1') {
+					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
+				} else if (!rs[x].delivery_fee) {
+					restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');		
+				}
+			} else {
 				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
 			}
 
@@ -1353,6 +1356,23 @@ $(function() {
 		}
 		clearTimeout(App.unHideBars);
 		setTimeout(unHideBars, 100);
+	});
+	
+	var checkForDistance = function() {
+		if (App.order['delivery_type'] == 'takeout') {
+			return;
+		}
+				
+	};
+	
+	$('[name="pay-address"]').live('blur', function() {
+		clearTimeout(App.checkForDistance);
+		App.checkForDistance = setTimeout(checkForDistance, 100);
+	});
+	
+	$('[name="pay-address"]').live('change', function() {
+		clearTimeout(App.checkForDistance);
+		App.checkForDistance = setTimeout(checkForDistance, 1000);
 	});
 
 });
