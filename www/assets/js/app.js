@@ -670,7 +670,7 @@ App.cart = {
 				}
 				var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
 					.append(check)
-					.append('<label class="cart-item-customize-name">' + opt[x].name + '</label><label class="cart-item-customize-price">' + (opt[x].price != '0.00' ? '&nbsp;($' + opt[x].price + ')' : '') + '</label></label>');
+					.append('<label class="cart-item-customize-name">' + opt[x].name + (opt[x].description || '') + '</label><label class="cart-item-customize-price">' + (opt[x].price != '0.00' ? '&nbsp;($' + opt[x].price + ')' : '') + '</label></label>');
 				el.append(option);
 			}
 		}

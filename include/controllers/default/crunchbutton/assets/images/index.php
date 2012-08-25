@@ -32,12 +32,13 @@ class Controller_assets extends Cana_Controller {
 			}
 
 			$params['img']			= $file;
-			$params['cache'] 		= Cana::config()->dirs->cache.'thumb/';
+			$params['cache'] 		= Cana::config()->dirs->pubcache.'images/';
 			$params['path'] 		= $path;
 
 			$thumb = new Cana_Thumb($params);
-			$thumb->displayThumb();
-
+			$url = '/cache/images/'.$thumb->getFileName();
+			header('Location: '.$url);
+			//$thumb->displayThumb();
 			exit;	
 		}
 	}

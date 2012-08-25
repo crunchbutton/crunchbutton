@@ -1429,13 +1429,13 @@ th {
 	border-radius: 10px;
 	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
 	border: 1px solid #fff;
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(223, 52, 52, 1)), to(rgba(196, 0, 0, 1)));
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(223, 110, 110, 1)), to(rgba(196, 0, 0, 1)));
 }
 
 .cart-summary-item-count span {
-	margin: 1px 0 0 3px;
+	margin: 1px 3px 0 3px;
 	display: block;
-	text-shadow: 1px 1px 0px rgba(0,0,0,.5);
+	text-shadow: 1px 1px 0px rgba(0,0,0,.1);
 	color: #fff;
 	font-size: 10px;
 	font-weight: bold;

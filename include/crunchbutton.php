@@ -18,6 +18,7 @@ $GLOBALS['config'] = [
 	'dirs' => [
 		'controller'		=> dirname(__FILE__).'/controllers/',
 		'cache'				=> dirname(__FILE__).'/../cache/',
+		'pubcache'			=> dirname(__FILE__).'/../www/cache/',
 		'config'			=> dirname(__FILE__).'/config/',
 		'view'				=> dirname(__FILE__).'/views/',
 		'library'			=> dirname(__FILE__).'/library/',
