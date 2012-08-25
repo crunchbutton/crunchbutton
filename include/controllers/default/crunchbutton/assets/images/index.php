@@ -8,30 +8,32 @@ class Controller_assets extends Cana_Controller {
 			$page[4] = explode('.',$page[4]);
 			array_pop($page[4]);
 			$page[4] = implode('.',$page[4]);
+			
+			$path = Cana::config()->dirs->www.'assets/images/';
 
-			$exts = array('jpg','png','gif');
+			$exts = ['jpg','jpeg','png','gif'];
 			foreach ($exts as $ext) {
-				if (file_exists(Cana::config()->dirs->storage.$page[2].'/'.$page[4]).'.'.$ext) {
+				$im = $page[2].'/'.$page[4].'.'.$ext;
+
+				if (file_exists($path.$im)) {
 					$file = $page[2].'/'.$page[4].'.'.$ext;
 					break;
 				}
 			}
-			
-			$file = $file ? $file : 'error.jpg';
 
 			$page[3] = explode('x',$page[3]);
 			$params['height'] = $page[3][1];
 			$params['width'] = $page[3][0];
 			$params['crop'] = 1;
-			$params['gravity'] = $page[2] == 'portfolio' ? 'north' : 'center';
+			$params['gravity'] = 'center';
 			$params['format'] = $page[4][1];
 			if ($params['format'] != 'jpg' && $params['format'] != 'png') {
 				$params['format'] = 'jpg';
 			}
 
 			$params['img']			= $file;
-			$params['cache'] 		= Cana::config()->dirs->cache.$page[2].'/';
-			$params['path'] 		= Cana::config()->dirs->storage;
+			$params['cache'] 		= Cana::config()->dirs->cache.'thumb/';
+			$params['path'] 		= $path;
 
 			$thumb = new Cana_Thumb($params);
 			$thumb->displayThumb();

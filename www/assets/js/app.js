@@ -112,7 +112,7 @@ App.page.community = function(id) {
 			var restaurantContent = $('<div class="meal-item-content">');
 
 			restaurantContent
-				.append('<div class="meal-pic" style="background: url(' + rs[x]['img'] + ');"></div>')
+				.append('<div class="meal-pic" style="background: url(' + rs[x]['img64'] + ');"></div>')
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
 				.append('<h3 class="meal-food">Top Item: ' + (rs[x].top() ? (rs[x].top().top_name || rs[x].top().name) : '') + '</h3>');
 
@@ -152,7 +152,7 @@ App.page.restaurant = function(id) {
 		document.title = 'Crunchbutton - ' + App.restaurant.name;
 		
 		$('.main-content').html(
-			'<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-items"></div></div>' +
+			'<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-item-count"><span></span></div><div class="cart-summary-items"></div></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
@@ -591,7 +591,14 @@ App.cart = {
 	updateTotal: function() {
 		var
 			totalText = '$' + App.cart.total(),
-			tipText = '';
+			tipText = '',
+			totalItems = 0;
+
+		for (var x in App.cart.items) {
+			totalItems++;
+		}
+
+		$('.cart-summary-item-count span').html(totalItems);
 
 		$('.cart-total').html(totalText);
 		
@@ -821,7 +828,9 @@ App.cart = {
 			total = 0,
 			dish,
 			options,
-			feeTotal = 0;
+			feeTotal = 0,
+			totalItems = 0;
+
 		for (var x in App.cart.items) {
 			total += parseFloat(App.cached['Dish'][App.cart.items[x].id].price);
 			options = App.cart.items[x].options;

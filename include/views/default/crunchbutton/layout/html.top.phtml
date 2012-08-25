@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
 
-<link rel="stylesheet" type="text/css" href="/assets/css/<?=c::config()->bundle ? 'bundle' : 'style'?>.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/<?=c::config()->bundle ? 'bundle' : 'style'?>.css?v=<?=Cana_Util::gitVersion()?>">
 <link rel="shortcut icon" href="/favicon.ico">
 
 <? if (c::browser()->platform != 'Mac') : ?>
