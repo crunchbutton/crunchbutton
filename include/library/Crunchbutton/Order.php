@@ -31,9 +31,9 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->delivery_fee = $this->restaurant()->delivery_fee;
 
 		// service fee for customer
-		$this->service_fee = ($this->price + $this->delivery_fee) * ($this->restaurant()->fee_customer/100);
-		
-		$totalWithFees = $this->price + $this->delivery_fee + $this->service_fee;
+		$this->service_fee = $this->restaurant()->fee_customer;
+		$serviceFee = ($this->price + $this->delivery_fee) * ($this->service_fee/100);
+		$totalWithFees = $this->price + $this->delivery_fee + $serviceFee;
 
 		// tip
 		$this->tip = $params['tip'];
@@ -238,7 +238,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function serviceFee() {
-		return number_format($this->service_fee,2);
+		return number_format(($this->price + $this->delivery_fee) * ($this->service_fee/100),2);
 	}
 	
 	public function notify() {

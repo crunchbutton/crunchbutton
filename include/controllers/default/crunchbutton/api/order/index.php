@@ -19,7 +19,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 			case 'say':
 			    header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
-					.'<Say voice="'.c::config()->twilio->voice.'">Hi. this is Crunchbutton.</Say>'
+					.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for you.</Say>'
 					.'<Pause length="1" />'
 					.'<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="20" finishOnKey="#" method="get">'
 						.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>'
@@ -60,7 +60,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						echo '<Dial timeout="10" record="true">213-293-6935</Dial>';
 
 					default:
-						echo '<Say voice="'.c::config()->twilio->voice.'">Hi. this is Crunchbutton.</Say>';
+						echo '<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.'.</Say>';
 					case '3':
 					case '4':
 					case '5':

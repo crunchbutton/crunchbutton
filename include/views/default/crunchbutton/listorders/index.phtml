@@ -49,19 +49,27 @@
 				<table>
 					<tr>
 						<th>Subtotal</th>
-						<td>$<?=$order->price?></td>
+						<td>$<?=number_format($order->price,2)?></td>
+					</tr>
+					<tr>
+						<th>Service Fee</th>
+						<td>$<?=$order->serviceFee()?> (<?=$order->service_fee ? $order->service_fee : '0'?>%) </td>
+					</tr>
+					<tr>
+						<th>Delivery Fee</th>
+						<td>$<?=$order->deliveryFee()?></td>
 					</tr>
 					<tr>
 						<th>Tax</th>
-						<td>$<?=$order->tax?></td>
+						<td>$<?=$order->tax()?> (<?=$order->tax ? $order->tax : '0'?>%)</td>
 					</tr>
 					<tr>
 						<th>Tip</th>
-						<td><?=$order->tip ? $order->tip.'%' : ''?></td>
+						<td>$<?=$order->tip()?> (<?=$order->tip ? $order->tip : '0'?>%)</td>
 					</tr>
 					<tr>
 						<th>Total</th>
-						<td>$<?=$order->final_price?></td>
+						<td>$<?=number_format($order->final_price,2)?></td>
 					</tr>
 				</table>
 			</td>
