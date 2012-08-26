@@ -382,7 +382,6 @@ App.page.order = function(id) {
 		
 		$('.order-info').append('<b>Your phone # is:</b><br />' + this.phone + '<br /><br />');
 		
-		
 		$('.order-info').append('<b>Your ordered:</b>' + order._message + '<br /><br />');
 
 		if (this.pay_type == 'card') {

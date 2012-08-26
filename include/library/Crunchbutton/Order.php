@@ -324,16 +324,21 @@ class Crunchbutton_Order extends Cana_Table {
 				break;
 
 		}
+		
+		if ($type == 'phone') {
+			$pFind = ['/fries/i'];
+			$pReplace = ['frys'];
+		}
 
 		foreach ($this->dishes() as $dish) {
 
-			$foodItem = "\n- ".$dish->dish()->name;
+			$foodItem = "\n- ".preg_replace($pFind, $pReplace, $dish->dish()->name);
 
 			if ($dish->options()->count()) {
 				$foodItem .= ' '.$with.' ';
 
 				foreach ($dish->options() as $option) {
-					$foodItem .= $option->option()->name.', ';
+					$foodItem .= preg_replace($pFind, $pReplace, $option->option()->name).', ';
 				}
 				$foodItem = substr($foodItem, 0, -2).'. ';
 

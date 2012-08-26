@@ -20,7 +20,6 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 			    header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
 					.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for you.</Say>'
-					.'<Pause length="1" />'
 					.'<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="20" finishOnKey="#" method="get">'
 						.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>'
 						.'<Pause length="2" />'
@@ -33,6 +32,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 			    header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
 					.'<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+						.'<Pause length="1" />'
 						.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>'
 						.'<Pause length="2" />'
 						.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat this message.</Say>'
