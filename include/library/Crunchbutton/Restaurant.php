@@ -11,7 +11,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 
 	public function dishes() {
 		if (!isset($this->_dishes)) {
-			$this->_dishes = Dish::q('select * from dish where id_restaurant="'.$this->id_restaurant.'"');
+			$this->_dishes = Dish::q('select * from dish where id_restaurant="'.$this->id_restaurant.'" and active=1');
 		}
 		return $this->_dishes;
 	}
