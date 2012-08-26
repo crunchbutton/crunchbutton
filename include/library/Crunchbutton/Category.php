@@ -7,7 +7,7 @@ class Crunchbutton_Category extends Cana_Table {
 	
 	public function dishes() {
 		if (!isset($this->_dishes)) {
-			$this->_dishes = Dish::q('select * from dish where id_category="'.$this->id_category.'"');
+			$this->_dishes = Dish::q('select * from dish where id_category="'.$this->id_category.'" and dish.active=1');
 		}
 		return $this->_dishes;
 	}
