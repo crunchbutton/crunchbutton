@@ -662,16 +662,41 @@ App.cart = {
 				opt = obj.options();
 	
 			for (var x in opt) {
-				var check = $('<input type="checkbox" class="cart-customize-check">');
-
-				if ($.inArray(opt[x].id_option, cartitem.options) !== -1) {
-					check.attr('checked','checked');
+				if (opt[x].id_option_parent) {
+					continue;
 				}
-				var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
-					.append(check)
-					.append('<label class="cart-item-customize-name">' + opt[x].name + (opt[x].description || '') + '</label><label class="cart-item-customize-price">' + (opt[x].price != '0.00' ? '&nbsp;($' + opt[x].price + ')' : '') + '</label></label>');
-				el.append(option);
+				if (opt[x].type == 'check') {
+					var check = $('<input type="checkbox" class="cart-customize-check">');
+	
+					if ($.inArray(opt[x].id_option, cartitem.options) !== -1) {
+						check.attr('checked','checked');
+					}
+					var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
+						.append(check)
+						.append('<label class="cart-item-customize-name">' + opt[x].name + (opt[x].description || '') + '</label><label class="cart-item-customize-price">' + (opt[x].price != '0.00' ? '&nbsp;($' + opt[x].price + ')' : '') + '</label>');
+					el.append(option);
+
+				} else if (opt[x].type == 'select') {
+					var select = $('<select class="cart-customize-select">');
+					for (var i in opt) {
+
+						if (opt[i].id_option_parent == opt[x].id_option) {
+							var option = $('<option value="' + opt[i].id_option + '">' + opt[i].name + (opt[i].description || '') + (opt[x].price != '0.00' ? '&nbsp;($' + opt[x].price + ')' : '') + '</option>');
+							if ($.inArray(opt[i].id_option, cartitem.options) !== -1) {
+								option.attr('selected','selected');
+							}
+							select.append(option);
+						}
+					}
+					var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
+						.append('<label class="cart-item-customize-select-name">' + opt[x].name + (opt[x].description || '') + '</label>')
+						.append(select);
+
+					el.append(option);
+					
+				}
 			}
+
 		}
 	},
 	customizeItem: function(item) {
@@ -683,18 +708,40 @@ App.cart = {
 			opt = customitem.attr('data-id_option');
 
 		if (opt) {
-		
-			if (item.is(':checked')) {
-				cartitem.options[cartitem.options.length] = opt;
-			} else {
-				for (x in cartitem.options) {
-					if (cartitem.options[x] == opt) {
-						cartitem.options.splice(x, 1);
-						break;
+			if (item.hasClass('cart-customize-select')) {
+
+				var obj = App.cached['Dish'][cartitem.id],
+					opts = obj.options();
+	
+				for (var i in opts) {
+					if (opts[i].id_option_parent != opt) {
+						continue;
+					}
+					for (var x in cartitem.options) {
+						if (cartitem.options[x] == opts[i].id) {
+							cartitem.options.splice(x, 1);
+							break;
+						}
+					}
+				}
+
+				cartitem.options[cartitem.options.length] = item.val();
+
+			} else if(item.hasClass('cart-customize-check')) {
+
+				if (item.is(':checked')) {
+					cartitem.options[cartitem.options.length] = opt;
+				} else {
+					for (var x in cartitem.options) {
+						if (cartitem.options[x] == opt) {
+							cartitem.options.splice(x, 1);
+							break;
+						}
 					}
 				}
 			}
 		}
+		console.log(cartitem.options);
 
 		App.cart.updateTotal();
 			
@@ -1240,7 +1287,7 @@ $(function() {
 		}
 	});
 	
-	$('.cart-customize-check').live('change',function() {
+	$('.cart-customize-check, .cart-customize-select').live('change',function() {
 		App.cart.customizeItem($(this));
 	});
 	

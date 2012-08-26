@@ -300,6 +300,21 @@ b {
 	margin-left: 15px;
 }
 
+.cart-item-customize-select-name {
+	color: #d74924;
+	width: 100px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin-right: 10px;
+	display: block;
+	float: left;
+}
+
+.cart-customize-select {
+	width: 220px;
+}
+
 .cart-item-customize-price {
 	color: #e3937d;
 }
@@ -1090,6 +1105,12 @@ and (max-width : 769px) {
 	}
 	.content-item-name {
 		display: none;
+	}
+	.cart-item-customize-select-name {
+		width: 100px;
+	}
+	.cart-customize-select {
+		width: 220px;
 	}
 }
 
