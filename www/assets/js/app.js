@@ -120,7 +120,7 @@ App.page.community = function(id) {
 				if (rs[x].delivery != '1') {
 					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
 				} else if (!rs[x].delivery_fee) {
-					restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');		
+					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');		
 				}
 			} else {
 				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
