@@ -39,7 +39,6 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->tip = $params['tip'];
 		$tip = ($this->price * ($this->tip/100));
 		
-		
 		// tax
 		$this->tax = $this->restaurant()->tax;
 		$tax = $totalWithFees * ($this->tax/100);
@@ -82,6 +81,10 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		if (!$this->restaurant()->open() && c::env() == 'live') {
 			$errors[] = 'This restaurant is closed.';
+		}
+
+		if ($this->final_price < $this->restaurant()->delivery_min) {
+			$errors[] = 'Please meet the delivery minimum of '.$this->restaurant()->delivery_min.'.';
 		}
 
 		if ($errors) {
