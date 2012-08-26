@@ -450,23 +450,29 @@ App.loadPage = function() {
 		return;
 	}
 
-	if (!App.community) {
-		// force load of community reguardless of landing (this contains everything we need)
-		App.loadCommunity(path[0]);
-		return;
+	switch (true) {
+		case /^legal/i.test(url):
+			App.page.legal();
+			break;
+			
+		case /^orders/i.test(url):
+			App.page.orders();
+			break;
+
+		default:
+			if (!App.community) {
+				// force load of community reguardless of landing (this contains everything we need)
+				App.loadCommunity(path[0]);
+				return;
+			}
+			break;
 	}
+
 
 	var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
 	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
 
 	switch (true) {
-		case communityRegex.test(url):
-		default:
-			$('.nav-back').removeClass('nav-back-show');
-			$('.footer').removeClass('footer-hide');
-			App.page.community(App.community.id);
-			return;
-			break;
 
 		case restaurantRegex.test(url):
 			App.page.restaurant(path[1]);
@@ -477,11 +483,20 @@ App.loadPage = function() {
 			break;
 			
 		case /^legal/i.test(url):
+
 			App.page.legal();
 			break;
 			
 		case /^orders/i.test(url):
 			App.page.orders();
+			break;
+			
+		case communityRegex.test(url):
+		default:
+			$('.nav-back').removeClass('nav-back-show');
+			$('.footer').removeClass('footer-hide');
+			App.page.community(App.community.id);
+			return;
 			break;
 	}
 	if (App.config.env == 'live') {
