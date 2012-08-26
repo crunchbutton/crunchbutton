@@ -328,6 +328,8 @@ class Crunchbutton_Order extends Cana_Table {
 		if ($type == 'phone') {
 			$pFind = ['/fries/i'];
 			$pReplace = ['frys'];
+		} else {
+			$pFind = $pReplace = [];
 		}
 
 		foreach ($this->dishes() as $dish) {
