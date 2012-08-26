@@ -228,7 +228,7 @@ App.page.restaurant = function(id) {
 			var total = App.cart.updateTotal();
 		},200);
 
-		App.cartHighlightEnabled = true;
+		App.cartHighlightEnabled = false;
 		
 		App.layout.init();
 		App.busy.unBusy();
