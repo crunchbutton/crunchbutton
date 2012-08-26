@@ -695,7 +695,16 @@ and (max-width : 1023px) {
 .toggle-item.toggle-active {
 	color: #fff;
 	text-shadow: 1px 1px 0px rgba(0,0,0,.22);
+	
+	background: -moz-linear-gradient(#f57333, #f26926);
+	background: -ms-linear-gradient(#f57333, #f26926);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f57333), color-stop(100%, #f26926));
 	background: -webkit-linear-gradient(#f57333, #f26926);
+	background: -o-linear-gradient(#f57333, #f26926);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926');
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926')";
+	background: linear-gradient(#f57333, #f26926);
+	
 }
 
 .toggle-active {
@@ -1460,4 +1469,11 @@ th {
 	color: #fff;
 	font-size: 10px;
 	font-weight: bold;
+}
+
+
+@-moz-document url-prefix() { 
+	.cart-item-config {
+		margin-top: -18px !important;
+	}
 }
