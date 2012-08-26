@@ -99,7 +99,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 			case 'post':
 				$order = new Order;
-				$charge = $order->process($this->request());
+				$charge = $order->process($_POST);
 				if ($charge === true) {
 					echo json_encode([
 						'id_user' => c::auth()->session()->id_user,
