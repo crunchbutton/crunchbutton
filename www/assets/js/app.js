@@ -157,7 +157,7 @@ App.page.restaurant = function(id) {
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-items"></div>' + 
-				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="divider"></div><div class="cart-items-content"></div></div>' + 
+				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="divider"></div><div class="delivery-minimum-error">Please add more items to your cart to meet the delivery minimum of $' + parseFloat(App.restaurant.delivery_min).toFixed(2) + '.</div><div class="cart-items-content"></div></div>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
 			'<div class="restaurant-payment-div"></div>'
@@ -185,7 +185,7 @@ App.page.restaurant = function(id) {
 		}
 		
 		$('.cart-items').append('<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for ' + App.restaurant.name + '</label></div>');
-
+		
 		if (App.cart.hasItems()) {
 			App.cart.reloadOrder();
 		} else if (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) {
@@ -610,6 +610,12 @@ App.cart = {
 
 		for (var x in App.cart.items) {
 			totalItems++;
+		}
+		console.log(App.cart.total(), App.restaurant.delivery_min);
+		if (App.cart.total() < parseFloat(App.restaurant.delivery_min)) {
+			$('.delivery-minimum-error').show();
+		} else {
+			$('.delivery-minimum-error').hide();
 		}
 
 		$('.cart-summary-item-count span').html(totalItems);
