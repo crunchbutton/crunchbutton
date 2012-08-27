@@ -88,6 +88,8 @@ App.page.community = function(id) {
 
 	App.cache('Community', id, function() {
 		App.community = this;
+		
+		mixpanel.track('Community page loaded', {community: App.community.name});
 
 		document.title = 'Crunchbutton - ' + App.community.name;
 
@@ -149,8 +151,11 @@ App.page.restaurant = function(id) {
 		}
 
 		App.restaurant = this;
-		document.title = 'Crunchbutton - ' + App.restaurant.name;
 		
+		mixpanel.track('Restaurant page loaded', {restaurant: App.restaurant.name});
+
+		document.title = 'Crunchbutton - ' + App.restaurant.name;
+
 		$('.main-content').html(
 			'<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-item-count"><span></span></div><div class="cart-summary-items"></div></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
@@ -581,6 +586,8 @@ App.cart = {
 		el.fadeIn();
 		
 		App.cart.updateTotal();
+		
+		mixpanel.track('Dish added');
 	},
 	clone: function(item) {
 		var
@@ -590,10 +597,14 @@ App.cart = {
 		App.cart.add(cart.id, {
 			options: cart.options
 		});
+		
+		mixpanel.track('Dish cloned');
 	},
 	remove: function(item) {
 		var
 			cart = item.attr('data-cart_id');
+			
+		mixpanel.track('Dish removed');
 
 		delete App.cart.items[cart];
 
@@ -611,7 +622,7 @@ App.cart = {
 		for (var x in App.cart.items) {
 			totalItems++;
 		}
-		console.log(App.cart.total(), App.restaurant.delivery_min);
+
 		if (App.cart.total() < parseFloat(App.restaurant.delivery_min)) {
 			$('.delivery-minimum-error').show();
 		} else {
@@ -717,8 +728,9 @@ App.cart = {
 					
 				}
 			}
-
 		}
+		
+		mixpanel.track('Dish customized');
 	},
 	customizeItem: function(item) {
 
@@ -822,35 +834,36 @@ App.cart = {
 
 		console.log('ORDER:',order);
 		
-		var errors = [];
+		var errors = {};
 		
 		if (!order.name) {
-			errors[errors.length] = 'Please enter your name.';
+			errors['name'] = 'Please enter your name.';
 		}
 
 		if (!App.phone.validate(order.phone)) {
-			errors[errors.length] = 'Please enter a valid phone #.';
+			errors['phone'] = 'Please enter a valid phone #.';
 		}
 
 		if (order.delivery_type == 'delivery' && !order.address) {
-			errors[errors.length] = 'Please enter an address.';
+			errors['address'] = 'Please enter an address.';
 		}
 
 		if (order.pay_type == 'card' && ((App.order.cardChanged && !order.card.number) || (!App.config.user.id_user && !order.card.number))) {
-			errors[errors.length] = 'Please enter a valid card #.';
+			errors['card'] = 'Please enter a valid card #.';
 		}
 
 		if (!App.cart.hasItems()) {
-			errors[errors.length] = 'Please add something to your order.';
+			errors['noorder'] = 'Please add something to your order.';
 		}
 
 		if (errors.length) {
 			var error = '';
-			for (x in errors) {
+			for (var x in errors) {
 				error += errors[x] + "\n";
 			}
 			alert(error);
 			App.busy.unBusy();
+			mixpanel.track('Order', errors);
 			return;
 		}
 
@@ -868,6 +881,7 @@ App.cart = {
 					for (x in json.errors) {
 						error += json.errors[x] + "\n";
 					}
+					mixpanel.track('Order', json.errors);
 					alert(error);
 
 				} else {
@@ -882,6 +896,15 @@ App.cart = {
 
 					$.getJSON('/api/config', App.processConfig);
 					App.cache('Order',json.uuid,function() {
+						mixpanel.track('Ordered', {
+							'total':this.final_price,
+							'subtotal':this.price,
+							'tip':this.tip,
+							'restaurant': App.restaurant.name,
+							'paytype': this.pay_type,
+							'ordertype': this.order_type,
+							'user': this.user
+						});
 						var loc = '/order/' + this.uuid;
 						History.pushState({},loc,loc);
 					});
@@ -1177,6 +1200,7 @@ $(function() {
 		$('.delivery-toggle-delivery').addClass('toggle-active');
 		$('.delivery-only').show();
 		App.order['delivery_type'] = 'delivery';
+		mixpanel.track('Switch to delivery');
 	});
 	
 	$('.delivery-toggle-takeout').live('click',function() {
@@ -1184,6 +1208,7 @@ $(function() {
 		$('.delivery-toggle-takeout').addClass('toggle-active');
 		$('.delivery-only').hide();
 		App.order['delivery_type'] = 'takeout';
+		mixpanel.track('Switch to takeout');
 	});
 	
 	$('.pay-toggle-credit').live('click',function() {
@@ -1192,6 +1217,7 @@ $(function() {
 		$('.card-only').show();
 		App.order['pay_type'] = 'card';
 		App.cart.updateTotal();
+		mixpanel.track('Switch to card');
 	});
 	
 	$('.pay-toggle-cash').live('click',function() {
@@ -1200,6 +1226,7 @@ $(function() {
 		$('.card-only').hide();
 		App.order['pay_type'] = 'cash';
 		App.cart.updateTotal();
+		mixpanel.track('Switch to cash');
 	});
 
 	$('.meal-item-content').live({
@@ -1361,6 +1388,8 @@ $(function() {
 		App.community = null;
 		$('.main-content').css('visibility','0');
 		History.pushState({}, 'Crunchbutton', loc);
+		
+		mixpanel.track('Community changed', {community: $(this).val()});
 	});
 
 	$('[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]').live('change', function() {
@@ -1381,7 +1410,6 @@ $(function() {
 		History.pushState({}, 'Crunchbutton - Orders', '/orders');
 	});
 
-	
 	$('[name="pay-phone"]').live('keyup', function(e) {
 		$(this).val( App.phone.format($(this).val()) );
 	});

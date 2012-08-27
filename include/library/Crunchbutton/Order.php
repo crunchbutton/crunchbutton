@@ -59,13 +59,13 @@ class Crunchbutton_Order extends Cana_Table {
 
 		if (!c::user()->id_user) {
 			if (!$params['name']) {
-				$errors[] = 'Please enter a name.';
+				$errors['name'] = 'Please enter a name.';
 			}
 			if (!$params['phone']) {
-				$errors[] = 'Please enter a phone #.';
+				$errors['phone'] = 'Please enter a phone #.';
 			}
 			if (!$params['address'] && $this->delivery_type == 'delivery') {
-				$errors[] = 'Please enter an address.';			
+				$errors['address'] = 'Please enter an address.';			
 			}
 		} else {
 			if (!$params['address']) {
@@ -80,11 +80,11 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		
 		if (!$this->restaurant()->open() && c::env() == 'live') {
-			$errors[] = 'This restaurant is closed.';
+			$errors['closed'] = 'This restaurant is closed.';
 		}
 
 		if ($this->final_price < $this->restaurant()->delivery_min) {
-			$errors[] = 'Please meet the delivery minimum of '.$this->restaurant()->delivery_min.'.';
+			$errors['minimum'] = 'Please meet the delivery minimum of '.$this->restaurant()->delivery_min.'.';
 		}
 
 		if ($errors) {
