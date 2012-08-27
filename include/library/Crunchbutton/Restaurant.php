@@ -74,6 +74,10 @@ class Crunchbutton_Restaurant extends Cana_Table {
 	}
 
 	public function open() {
+	
+		if (c::env() != 'live' && ($this->id_restaurant == 1 || $this->id_restaurant == 18)) {
+			return true;
+		}
 
 		$hours = $this->hours();
 		$today = new DateTime('now', new DateTimeZone($this->timezone));
