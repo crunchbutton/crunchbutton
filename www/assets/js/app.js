@@ -294,7 +294,7 @@ App.drawPay = function(restaurant) {
 			'</div>' + 
 
 			'<label class="card-only">Credit card #</label>' + 
-			'<div class="input-item card-only"><input type="text" name="pay-card-number" tabindex="5"></div><div class="divider"></div>' + 
+			'<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="5"></div><div class="divider"></div>' + 
 
 			'<label class="card-only">Expiration</label>' + 
 			'<div class="input-item card-only">' + 
