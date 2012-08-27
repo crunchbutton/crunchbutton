@@ -272,6 +272,10 @@ App.drawPay = function(restaurant) {
 	
 			'<label class="delivery-only">Deliver to</label>' + 
 			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="4"></textarea></div><div class="divider"></div>' + 
+			
+			'<label>Notes</label>' + 
+			'<div class="input-item"><textarea name="notes" tabindex="5"></textarea></div><div class="divider"></div>' + 
+
 		'</div>'
 	);
 
@@ -294,17 +298,17 @@ App.drawPay = function(restaurant) {
 			'</div>' + 
 
 			'<label class="card-only">Credit card #</label>' + 
-			'<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="5"></div><div class="divider"></div>' + 
+			'<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6"></div><div class="divider"></div>' + 
 
 			'<label class="card-only">Expiration</label>' + 
 			'<div class="input-item card-only">' + 
-				'<select name="pay-card-month" tabindex="6"><option>Month</option></select>' + 
-				'<select name="pay-card-year" tabindex="7"><option>Year</option></select><div class="divider"></div>' + 
+				'<select name="pay-card-month" tabindex="7"><option>Month</option></select>' + 
+				'<select name="pay-card-year" tabindex="8"><option>Year</option></select><div class="divider"></div>' + 
 			'</div>' + 
 
 			'<div class="divider"></div><label class="card-only">Tip</label>' + 
 			'<div class="input-item card-only">' + 
-				'<select name="pay-tip" tabindex="8"></select>' + 
+				'<select name="pay-tip" tabindex="9"></select>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
 		'</div>'
@@ -387,7 +391,11 @@ App.page.order = function(id) {
 		
 		$('.order-info').append('<b>Your phone # is:</b><br />' + this.phone + '<br /><br />');
 		
-		$('.order-info').append('<b>Your ordered:</b>' + order._message + '<br /><br />');
+		$('.order-info').append('<b>Your order:</b>' + order._message + '<br /><br />');
+		
+		if (order.notes) {
+			$('.order-info').append('<i>' + order.notes + '<br /><br />');
+		}
 
 		if (this.pay_type == 'card') {
 			$('.order-info').append('<b>Your total is:</b><br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
@@ -809,7 +817,8 @@ App.cart = {
 			pay_type: App.order['pay_type'],
 			delivery_type: App.order['delivery_type'],
 			restaurant: App.restaurant.id,
-			make_default: $('#default-order-check').is(':checked')
+			make_default: $('#default-order-check').is(':checked'),
+			notes: $('[name="notes"]').val()
 		};
 		
 		if (order.pay_type == 'card') {

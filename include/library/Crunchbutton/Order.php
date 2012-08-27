@@ -50,6 +50,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->address = $params['address'];
 		$this->phone = $params['phone'];
 		$this->name = $params['name'];
+		$this->notes = $params['notes'];
 		
 		$this->_number = $params['card']['number'];
 		$this->_exp_month = $params['card']['month'];
