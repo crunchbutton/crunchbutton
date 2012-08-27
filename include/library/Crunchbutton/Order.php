@@ -343,6 +343,9 @@ class Crunchbutton_Order extends Cana_Table {
 				$foodItem .= ' '.$with.' ';
 
 				foreach ($dish->options() as $option) {
+					if ($option->option()->type == 'select') {
+						continue;
+					}
 					$foodItem .= preg_replace($pFind, $pReplace, $option->option()->name).', ';
 				}
 				$foodItem = substr($foodItem, 0, -2).'. ';

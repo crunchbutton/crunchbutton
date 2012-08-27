@@ -16,6 +16,9 @@
 					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
 
 					foreach ($dish->options() as $option) {
+						if ($option->option()->type == 'select') {
+							continue;
+						}
 						$cartPrice += $option->option()->price;
 						$food .= $option->option()->name.', ';
 					}
