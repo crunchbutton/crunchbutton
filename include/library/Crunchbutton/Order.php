@@ -376,6 +376,9 @@ class Crunchbutton_Order extends Cana_Table {
 				if ($this->notes) {
 					$msg .= " \nNOTES: ".$this->notes;
 				}
+				if ($this->pay_type == 'card' && $this->tip) {
+					$msg .= " \nTIP: $".$this->tip();
+				}
 				break;
 
 			case 'phone':
@@ -389,6 +392,9 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 				if ($this->notes) {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Customer Notes. '.$this->notes;
+				}
+				if ($this->pay_type == 'card' && $this->tip) {
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">A tip of '.$this->tip().' dollars has been included.';
 				}
 				break;
 		}
