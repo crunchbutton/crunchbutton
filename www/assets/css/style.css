@@ -1477,3 +1477,8 @@ th {
 		margin-top: -18px !important;
 	}
 }
+
+.delivery-minimum-error {
+	color: #d40000;
+	margin-bottom: 10px;
+}
