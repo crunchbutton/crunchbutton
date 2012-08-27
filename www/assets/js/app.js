@@ -893,6 +893,12 @@ App.cart = {
 
 					order.cardChanged = false;
 					App.justCompleted = true;
+					
+					var totalItems = 0;
+
+					for (var x in App.cart.items) {
+						totalItems++;
+					}
 
 					$.getJSON('/api/config', App.processConfig);
 					App.cache('Order',json.uuid,function() {
@@ -903,7 +909,8 @@ App.cart = {
 							'restaurant': App.restaurant.name,
 							'paytype': this.pay_type,
 							'ordertype': this.order_type,
-							'user': this.user
+							'user': this.user,
+							'items': totalItems
 						});
 						var loc = '/order/' + this.uuid;
 						History.pushState({},loc,loc);
