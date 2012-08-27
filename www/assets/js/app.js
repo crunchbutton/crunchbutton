@@ -323,15 +323,15 @@ App.drawPay = function(restaurant) {
 	}
 	
 	if (App.order['pay_type'] == 'cash') {
-		$('.pay-toggle-cash').click();
+		App.trigger.cash();
 	} else {
-		$('.pay-toggle-credit').click();
+		App.trigger.credit();
 	}
 
 	if (App.order['delivery_type'] == 'takeout') {
-		$('.delivery-toggle-takeout').click();
+		App.trigger.takeout();
 	} else {
-		$('.delivery-toggle-delivery').click();
+		App.trigger.delivery();
 	}
 	$('[name="pay-tip"]').val(App.order.tip);
 	$('[name="pay-name"]').val(App.config.user.name);
@@ -1193,39 +1193,54 @@ App.loc = {
 	}
 }
 
-$(function() {
-
-	$('.delivery-toggle-delivery').live('click',function() {
+App.trigger = {
+	delivery: function() {
 		$('.delivery-toggle-takeout').removeClass('toggle-active');
 		$('.delivery-toggle-delivery').addClass('toggle-active');
 		$('.delivery-only').show();
 		App.order['delivery_type'] = 'delivery';
-		mixpanel.track('Switch to delivery');
-	});
-	
-	$('.delivery-toggle-takeout').live('click',function() {
+	},
+	takeout: function() {
 		$('.delivery-toggle-delivery').removeClass('toggle-active');
 		$('.delivery-toggle-takeout').addClass('toggle-active');
 		$('.delivery-only').hide();
 		App.order['delivery_type'] = 'takeout';
-		mixpanel.track('Switch to takeout');
-	});
-	
-	$('.pay-toggle-credit').live('click',function() {
+	},
+	credit: function() {
 		$('.pay-toggle-cash').removeClass('toggle-active');
 		$('.pay-toggle-credit').addClass('toggle-active');
 		$('.card-only').show();
 		App.order['pay_type'] = 'card';
 		App.cart.updateTotal();
-		mixpanel.track('Switch to card');
-	});
-	
-	$('.pay-toggle-cash').live('click',function() {
+	},
+	cash: function() {
 		$('.pay-toggle-credit').removeClass('toggle-active');
 		$('.pay-toggle-cash').addClass('toggle-active');
 		$('.card-only').hide();
 		App.order['pay_type'] = 'cash';
 		App.cart.updateTotal();
+	}
+}
+
+$(function() {
+
+	$('.delivery-toggle-delivery').live('click',function() {
+		App.trigger.delivery();
+		mixpanel.track('Switch to delivery');
+	});
+	
+	$('.delivery-toggle-takeout').live('click',function() {
+		App.trigger.takeout();
+		mixpanel.track('Switch to takeout');
+	});
+	
+	$('.pay-toggle-credit').live('click',function() {
+		App.trigger.credit();
+		mixpanel.track('Switch to card');
+	});
+	
+	$('.pay-toggle-cash').live('click',function() {
+		App.trigger.cash();
 		mixpanel.track('Switch to cash');
 	});
 
