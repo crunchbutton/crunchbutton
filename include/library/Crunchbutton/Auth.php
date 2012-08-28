@@ -7,7 +7,7 @@ class Crunchbutton_Auth {
 	public function __construct() {
 		$this->_session = new Crunchbutton_Session;
 		session_start();
-		
+
 		if ($_COOKIE['token'] && !$this->session()->id_user) {
 			$sess = Session::token($_COOKIE['token']);
 			if ($sess->id_user) {
@@ -20,14 +20,15 @@ class Crunchbutton_Auth {
 		}
 
 		if ($this->session()->id_user) {
-			if ($this->session()->ip == $_SERVER['REMOTE_ADDR']) {
+//			if ($this->session()->ip == $_SERVER['REMOTE_ADDR']) {
 				$this->_user = new Crunchbutton_User($this->session()->id_user);
 				$this->session()->date_active = date('Y-m-d H:i:s');
 				$this->session()->save();
-			}
+//			}
 		} else {
 			$this->_user = new Crunchbutton_User;
 		}
+
 	}
 	
 	public function doAuth($type, $id) {

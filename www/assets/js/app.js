@@ -89,7 +89,7 @@ App.page.community = function(id) {
 	App.cache('Community', id, function() {
 		App.community = this;
 		
-		mixpanel.track('Community page loaded', {community: App.community.name});
+		App.track('Community page loaded', {community: App.community.name});
 
 		document.title = 'Crunchbutton - ' + App.community.name;
 
@@ -152,7 +152,7 @@ App.page.restaurant = function(id) {
 
 		App.restaurant = this;
 		
-		mixpanel.track('Restaurant page loaded', {restaurant: App.restaurant.name});
+		App.track('Restaurant page loaded', {restaurant: App.restaurant.name});
 
 		document.title = 'Crunchbutton - ' + App.restaurant.name;
 
@@ -548,6 +548,17 @@ App.refreshLayout = function() {
 	}, 80);
 };
 
+App.track = function() {
+	if (App.config.env != 'live') {
+		return;
+	}
+	if (arguments[1]) {
+		mixpanel.track(arguments[0],arguments[1]);
+	} else {
+		mixpanel.track(arguments[0]);
+	}
+};
+
 App.cart = {
 	uuidInc: 0,
 	items: {},
@@ -578,9 +589,9 @@ App.cart = {
 		};
 
 		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '"></div>');
-		el.append('<div class="cart-button cart-button-remove"></div>');
+		el.append('<div class="cart-button cart-button-remove"><span></span></div>');
 
-		el.append('<div class="cart-button cart-button-add"></div>');
+		el.append('<div class="cart-button cart-button-add"><span></span></div>');
 
 		el.append('<div class="cart-item-name">' + App.cache('Dish',item).name + '</div>');
 		
@@ -595,7 +606,7 @@ App.cart = {
 		
 		App.cart.updateTotal();
 		
-		mixpanel.track('Dish added');
+		App.track('Dish added');
 	},
 	clone: function(item) {
 		var
@@ -606,13 +617,13 @@ App.cart = {
 			options: cart.options
 		});
 		
-		mixpanel.track('Dish cloned');
+		App.track('Dish cloned');
 	},
 	remove: function(item) {
 		var
 			cart = item.attr('data-cart_id');
 			
-		mixpanel.track('Dish removed');
+		App.track('Dish removed');
 
 		delete App.cart.items[cart];
 
@@ -738,7 +749,7 @@ App.cart = {
 			}
 		}
 		
-		mixpanel.track('Dish customized');
+		App.track('Dish customized');
 	},
 	customizeItem: function(item) {
 
@@ -872,7 +883,7 @@ App.cart = {
 			}
 			alert(error);
 			App.busy.unBusy();
-			mixpanel.track('Order', errors);
+			App.track('Order', errors);
 			return;
 		}
 
@@ -890,7 +901,7 @@ App.cart = {
 					for (x in json.errors) {
 						error += json.errors[x] + "\n";
 					}
-					mixpanel.track('Order', json.errors);
+					App.track('Order', json.errors);
 					alert(error);
 
 				} else {
@@ -911,7 +922,7 @@ App.cart = {
 
 					$.getJSON('/api/config', App.processConfig);
 					App.cache('Order',json.uuid,function() {
-						mixpanel.track('Ordered', {
+						App.track('Ordered', {
 							'total':this.final_price,
 							'subtotal':this.price,
 							'tip':this.tip,
@@ -1242,22 +1253,22 @@ $(function() {
 
 	$('.delivery-toggle-delivery').live('click',function() {
 		App.trigger.delivery();
-		mixpanel.track('Switch to delivery');
+		App.track('Switch to delivery');
 	});
 	
 	$('.delivery-toggle-takeout').live('click',function() {
 		App.trigger.takeout();
-		mixpanel.track('Switch to takeout');
+		App.track('Switch to takeout');
 	});
 	
 	$('.pay-toggle-credit').live('click',function() {
 		App.trigger.credit();
-		mixpanel.track('Switch to card');
+		App.track('Switch to card');
 	});
 	
 	$('.pay-toggle-cash').live('click',function() {
 		App.trigger.cash();
-		mixpanel.track('Switch to cash');
+		App.track('Switch to cash');
 	});
 
 	$('.meal-item-content').live({
@@ -1420,7 +1431,7 @@ $(function() {
 		$('.main-content').css('visibility','0');
 		History.pushState({}, 'Crunchbutton', loc);
 		
-		mixpanel.track('Community changed', {community: $(this).val()});
+		App.track('Community changed', {community: $(this).val()});
 	});
 
 	$('[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]').live('change', function() {

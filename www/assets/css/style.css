@@ -79,7 +79,7 @@ html {
 	margin: 0 auto;
 }
 
-.button-bottom, .meal-item, .meal-item-content, .toggle-item, .nav-back, .community-select {
+* {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-user-select: none;
 }
@@ -733,7 +733,8 @@ and (max-width : 769px) {
 		;
 	}
 	.cart-item-name {
-		width: 54%;
+		width: 44%;
+		padding-left: 10px;
 	}
 	.nav-back-show {
 		display: block;
@@ -1121,6 +1122,67 @@ and (max-width : 769px) {
 	.cart-customize-select {
 		width: 220px;
 	}
+
+	.cart-button-add span {
+		display: block;
+		background: url(/assets/images/plus2.png) no-repeat;
+		height: 17px;
+		width: 18px;
+		background-size: contain;
+		margin: 0 auto;
+		margin-top: 5px;
+		margin-left: 7px;
+	}
+	.cart-button-remove span {
+		display: block;
+		background: url(/assets/images/minus2.png) no-repeat;
+		width: 14px;
+		height: 8px;
+		background-size: contain;
+		margin: 0 auto;
+		margin-top: 10px;
+	}
+	
+	.cart-button {
+		float: left;
+		width: 30px;
+		height: 26px !important;
+
+		cursor: pointer;
+		font-size: 8px;
+		margin-top: -4px;
+		border-radius: 2px;
+	
+		background: -moz-linear-gradient(#fb422e, #fb2418);
+		background: -ms-linear-gradient(#fb422e, #fb2418);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fb422e), color-stop(100%, #fb2418));
+		background: -webkit-linear-gradient(#fb422e, #fb2418);
+		background: -o-linear-gradient(#fb422e, #fb2418);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fb422e', endColorstr='#fb2418');
+		-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#fb422e', endColorstr='#fb2418')";
+		background: linear-gradient(#fb422e, #fb2418);
+	
+		border: 1px solid #ae4939;
+		box-shadow:
+			inset 0 0 2px rgba(255,254,196,.8),
+			0px 2px 5px 0px rgba(0, 0, 0, 0.15)
+		;
+
+		color: #fff4f3;
+		text-shadow: -1px -1px 0px rgba(0,0,0,.2);
+		
+		-webkit-transition: box-shadow ease-out 0.2s;
+		-moz-transition: box-shadow ease-out 0.2s;
+		-ms-transition: box-shadow ease-out 0.2s;
+		-o-transition: box-shadow ease-out 0.2s;
+		transition: box-shadow ease-out 0.2s;
+
+	}
+
+	.cart-button:first-child {
+		margin-left: -4px;
+	}
+
 }
 
 
@@ -1304,6 +1366,9 @@ and (min-width : 770px) {
 	}
 	.cart-item-name {
 		width: 470px;
+	}
+	.cart-button span {
+		display: none;
 	}
 
 }
