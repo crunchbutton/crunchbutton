@@ -611,10 +611,14 @@ App.cart = {
 	clone: function(item) {
 		var
 			cartid = item.attr('data-cart_id'),
-			cart = App.cart.items[cartid];
+			cart = App.cart.items[cartid],
+			newoptions = [];
 
+		for (var x in cart.options) {
+			newoptions[newoptions.length] = cart.options[x];
+		}
 		App.cart.add(cart.id, {
-			options: cart.options
+			options: newoptions
 		});
 		
 		App.track('Dish cloned');
