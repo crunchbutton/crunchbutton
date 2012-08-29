@@ -594,7 +594,7 @@ App.cart = {
 		el.append('<div class="cart-button cart-button-add"><span></span></div>');
 
 		el.append('<div class="cart-item-name">' + App.cache('Dish',item).name + '</div>');
-		
+
 		if (App.cached['Dish'][item].options().length) {
 			el.append('<div class="cart-item-config"><a href="javascript:;">Customize</a></div>');
 		}
