@@ -81,7 +81,9 @@ html {
 
 * {
 	-webkit-tap-highlight-color: transparent;
-	-webkit-user-select: none;
+/*	-webkit-user-select: none; */
+
+
 }
 i {
 	font-style:italic;

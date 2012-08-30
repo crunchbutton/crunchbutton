@@ -90,6 +90,7 @@ class Crunchbutton_App extends Cana_App {
 		
 		if ($params['env'] != 'local' && $_SERVER['__HTTP_HOST'] != 'dev.crunchr.co') {
 			$config->bundle = true;
+
 		}
 
 		$this
