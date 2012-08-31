@@ -658,7 +658,7 @@ App.cart = {
 		$('.cart-total').html(totalText);
 		
 		if (App.order['pay_type'] == 'card') {
-			tipText = App.restaurant.delivery_fee ? ', tip and fees' : 'and tip';
+			tipText = App.restaurant.delivery_fee ? ', tip and fees' : ' and tip';
 			$('.cash-order-aprox').html('');
 		} else {
 			tipText = App.restaurant.delivery_fee ? ' and fees' : '';
