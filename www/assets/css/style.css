@@ -594,29 +594,20 @@ html[xmlns] .clearfix {
 	height: 100px;
 	width: 100px;
 	border-radius: 12px;
-	background: #343434;
+	background: rgba(52,52,52,.8);
 	left: 50%;
     top: 200px;
 	margin-left: -50px;
 	position: absolute;
 }
 
-@-webkit-keyframes spin
-{
-	from { -webkit-transform: rotate(0deg); }
-	50%  { -webkit-transform: rotate(180deg);  }
-	to   { -webkit-transform: rotate(360deg);  }
-}
 
 .app-busy-loader-icon {
-	margin: 26px 0 0 26px;
-    position: absolute;  
-    width: 30px;  
-    height: 30px;  
-    border: 8px solid #d9e0ff;  
-    border-right-color: transparent;  
-    border-radius: 50%;
-	-webkit-animation: spin 1s linear infinite;
+	margin: 0 auto;
+	background: url(/assets/images/loader.gif) no-repeat;
+	width: 48px;
+	height: 48px;
+	margin-top: 25px;
 }  
 
 .resturant-dishes {
