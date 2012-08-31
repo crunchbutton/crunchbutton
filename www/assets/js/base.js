@@ -10,7 +10,6 @@ if (typeof(Number.prototype.toRad) === 'undefined') {
 	}
 }
 
-
 var History = window.History;
 
 History.Adapter.bind(window,'statechange',function() {

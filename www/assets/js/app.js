@@ -429,12 +429,34 @@ App.page.orders = function() {
 				'<ul class="resturant-dishes resturant-dish-container your-orders"></ul>' +
 			'</div>'
 		);
-
+		
+		var count = 0, restaurants = {};
+		var orders = '';
 		for (var x in json) {
-			App.cache('Restaurant',json[x].id_restaurant,function() {
+			restaurants[json[x].id_restaurant] = true;
+		}
+		var triggerComplete = function() {
+			count++;
+			var y = 0;
+			for (var i in restaurants) {
+				y++;
+			}
+
+			if (count != y) {
+				return;
+			}
+			for (var x in json) {
 				var date = json[x].date.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i,'$1/$2 $3');
-				var order = $('<li><a href="javascript:;" data-id_order="' + json[x].uuid + '"><span class="dish-name">' + this.name + '</span><span class="dish-price">' + date + '</span></a></li>');
-				$('.resturant-dishes').append(order);
+				var order = '<li><a href="javascript:;" data-id_order="' + json[x].uuid + '"><span class="dish-name">' + App.cached['Restaurant'][json[x].id_restaurant].name + '</span><span class="dish-price">' + date + '</span></a></li>';
+				orders += order;
+			}
+			$('.resturant-dishes').append(orders);
+
+		};
+
+		for (var x in restaurants) {
+			App.cache('Restaurant',x,function() {
+				triggerComplete();
 			});
 		}
 		App.refreshLayout();
