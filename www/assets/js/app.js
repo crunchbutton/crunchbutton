@@ -602,7 +602,8 @@ App.cart = {
 		el.hide();
 
 		$('.cart-items-content').append(el);
-		el.fadeIn();
+		//el.fadeIn();
+		el.show();
 		
 		App.cart.updateTotal();
 		
