@@ -24,12 +24,13 @@ class Controller_assets extends Cana_Controller {
 			$page[3] = explode('x',$page[3]);
 			$params['height'] = $page[3][1];
 			$params['width'] = $page[3][0];
-			$params['crop'] = 1;
+			$params['crop'] = $_REQUEST['crop'] == 1 ? 1 : 0;
 			$params['gravity'] = 'center';
 			$params['format'] = $page[4][1];
 			if ($params['format'] != 'jpg' && $params['format'] != 'png') {
 				$params['format'] = 'jpg';
 			}
+			$params['quality'] = 70;
 
 			$params['img']			= $file;
 			$params['cache'] 		= Cana::config()->dirs->pubcache.'images/';
