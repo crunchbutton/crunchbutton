@@ -14,7 +14,7 @@ class Crunchbutton_Order extends Cana_Table {
 				foreach ($d['options'] as $o) {
 					$option = new Order_Dish_Option;
 					$option->id_option = $o;
-					$total += $option->option()->price;
+					$subtotal += $option->option()->price;
 					$dish->_options[] = $option;
 				}
 			}
