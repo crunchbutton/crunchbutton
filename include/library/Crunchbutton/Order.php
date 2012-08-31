@@ -3,6 +3,17 @@
 class Crunchbutton_Order extends Cana_Table {
 	public function process($params) {
 		// @todo: add more security here
+		
+		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'card';
+		$this->delivery_type = $params['delivery_type'] == 'delivery' ? 'delivery' : 'takeout';
+		$this->address = $params['address'];
+		$this->phone = $params['phone'];
+		$this->name = $params['name'];
+		$this->notes = $params['notes'];
+		
+		$this->_number = $params['card']['number'];
+		$this->_exp_month = $params['card']['month'];
+		$this->_exp_year = $params['card']['year'];
 
 		$subtotal = 0;
 
@@ -28,7 +39,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->price = number_format($subtotal, 2);
 		
 		// delivery fee
-		$this->delivery_fee = $this->restaurant()->delivery_fee;
+		$this->delivery_fee = ($this->restaurant()->delivery_fee && $this->delivery_type == 'delivery') ? $this->restaurant()->delivery_fee : 0;
 
 		// service fee for customer
 		$this->service_fee = $this->restaurant()->fee_customer;
@@ -44,17 +55,6 @@ class Crunchbutton_Order extends Cana_Table {
 		$tax = $totalWithFees * ($this->tax/100);
 
 		$this->final_price = Util::ceil($totalWithFees + $tip + $tax, 2); // price
-
-		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'card';
-		$this->delivery_type = $params['delivery_type'] == 'delivery' ? 'delivery' : 'takeout';
-		$this->address = $params['address'];
-		$this->phone = $params['phone'];
-		$this->name = $params['name'];
-		$this->notes = $params['notes'];
-		
-		$this->_number = $params['card']['number'];
-		$this->_exp_month = $params['card']['month'];
-		$this->_exp_year = $params['card']['year'];
 		
 		$this->order = json_encode($params['cart']);
 

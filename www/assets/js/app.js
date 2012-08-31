@@ -212,9 +212,9 @@ App.page.restaurant = function(id) {
 				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number:</label> <a href="javascript:;">' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provied</i>') + '</a></div>');
 			var paying = $('<div class="dp-display-payment dp-display-item"><label>You are paying:</label> <span class="cart-total">$0.00</span></div>');
 			if (App.config.user.pay_type == 'card') {
-				paying.append('&nbsp;including <a href="javascript:;"><span class="delivery-tip-amount">15%</span> tip</a> by <a href="javascript:;">card</a>');
+				paying.append('&nbsp;incl tax<span class="includes-fees"></span> and <a href="javascript:;"><span class="delivery-tip-amount">15%</span> tip</a>, by <a href="javascript:;">card</a>');
 			} else {
-				paying.append('&nbsp;using <a href="javascript:;">cash</a>');			
+				paying.append('&nbsp;incl tax<span class="includes-fees"></span>&nbsp;using <a href="javascript:;">cash</a>');			
 			}
 			dp.append(paying);
 			if (App.config.user.delivery_type == 'delivery') {
@@ -664,7 +664,9 @@ App.cart = {
 		var
 			totalText = '$' + App.cart.total(),
 			tipText = '',
-			totalItems = 0;
+			feesText = '',
+			totalItems = 0,
+			hasFees = ((App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') || App.restaurant.fee_customer) ? true : false;
 
 		for (var x in App.cart.items) {
 			totalItems++;
@@ -681,10 +683,12 @@ App.cart = {
 		$('.cart-total').html(totalText);
 		
 		if (App.order['pay_type'] == 'card') {
-			tipText = App.restaurant.delivery_fee ? ', tip and fees' : ' and tip';
+			tipText = hasFees ? ', tip and fees' : ' and tip';
+			feesText = hasFees ? ', fees' : '';
 			$('.cash-order-aprox').html('');
 		} else {
-			tipText = App.restaurant.delivery_fee ? ' and fees' : '';
+			tipText = hasFees ? ' and fees' : '';
+			feesText = hasFees ? ' and fees' : '';
 			$('.cash-order-aprox').html('approximate');
 		}
 		
@@ -696,6 +700,7 @@ App.cart = {
 		}
 		
 		$('.includes-tip').html(tipText);
+		$('.includes-fees').html(feesText);
 		
 		if ($('.cart-total').html() == totalText) {
 			//return;
@@ -993,7 +998,7 @@ App.cart = {
 		feeTotal = total;
 
 		console.log('total',total);
-		if (App.restaurant.delivery_fee) {
+		if (App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') {
 			feeTotal += parseFloat(App.restaurant.delivery_fee);
 		}
 		console.log('total with fee',feeTotal);
