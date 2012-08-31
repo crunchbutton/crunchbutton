@@ -135,10 +135,13 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->date = date('Y-m-d H:i:s');
 		$this->save();
 		
-		if (1==1 || c::env() == 'live') {
-			$this->que();
-		} else {
-			$this->notify();
+		if (c::env() != 'local') {
+		
+			if (1==1 || c::env() == 'live') {
+				$this->que();
+			} else {
+				$this->notify();
+			}
 		}
 
 		if ($params['make_default']) {
