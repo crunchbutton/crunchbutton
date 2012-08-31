@@ -387,7 +387,7 @@ App.page.order = function(id) {
 		if (this.delivery_type == 'delivery') {
 			$('.order-info').append('<b>Your delivery address:</b><br />' + this.address + '<br /><br />');
 		} else {
-			$('.order-info').append('<b>For pickup</b><br /><br />');
+			$('.order-info').append('<b>Takeout order</b><br /><br />');
 		}
 		
 		$('.order-info').append('<b>Your phone #:</b><br />' + this.phone + '<br /><br />');
