@@ -65,3 +65,9 @@ App.cache = function(type, id) {
 	return App.cached[type][finalid || id];
 
 };
+
+App.ceil = function(num) {
+	num = num*100;
+	num = Math.ceil(num);
+	return num / 100;
+};

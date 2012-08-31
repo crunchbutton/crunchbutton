@@ -1018,7 +1018,8 @@ App.cart = {
 		
 		console.log('total with tip',final);
 
-		return final.toFixed(2);
+		//return final.toFixed(2);
+		return App.ceil(final).toFixed(2);
 	},
 	resetOrder: function() {
 		App.cart.items = {};
