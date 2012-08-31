@@ -121,6 +121,7 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		$user->pay_type = $this->pay_type;
 		$user->delivery_type = $this->delivery_type;
+		$user->tip = $this->tip;
 		
 		$this->env = c::env();
 

@@ -211,7 +211,7 @@ App.page.restaurant = function(id) {
 				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label> <a href="javascript:;">' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provied</i>') + '</a></div>');
 			var paying = $('<div class="dp-display-payment dp-display-item"><label>You are paying:</label> <span class="cart-total">$0.00</span></div>');
 			if (App.config.user.pay_type == 'card') {
-				paying.append('&nbsp;including <a href="javascript:;">15% tip</a> by <a href="javascript:;">card</a>');
+				paying.append('&nbsp;including <a href="javascript:;"><span class="delivery-tip-amount">15%</span> tip</a> by <a href="javascript:;">card</a>');
 			} else {
 				paying.append('&nbsp;using <a href="javascript:;">cash</a>');			
 			}
@@ -224,7 +224,7 @@ App.page.restaurant = function(id) {
 			dp.append('<div class="divider"></div>');
 	
 			$('.main-content').append(dp);
-
+			$('.delivery-tip-amount').html(App.order.tip ? App.order.tip + '%' : 'no');
 
 		} else {
 			App.drawPay(this);
@@ -702,6 +702,7 @@ App.cart = {
 		}
 
 		$('.cart-summary-items').html(text.substr(0,text.length-13));
+		
 	},
 	customize: function(item) {
 		var
@@ -838,7 +839,7 @@ App.cart = {
 		};
 		
 		if (order.pay_type == 'card') {
-			order.tip = App.order.tip ? App.order.tip : '10';
+			order.tip = App.order.tip ? App.order.tip : '15';
 		}
 
 		if (read) {
@@ -1073,6 +1074,7 @@ App.processConfig = function(json) {
 	if (App.config.user) {
 		App.order['pay_type'] = App.config.user['pay_type'];
 		App.order['delivery_type'] = App.config.user['delivery_type'];
+		App.order['tip'] = App.config.user['tip'] || 15;
 	}
 };
 
