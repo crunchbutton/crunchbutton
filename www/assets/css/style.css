@@ -25,7 +25,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
-	font-family: "Helvetica Neue", "Aliquam", "Droid Sans", "Open Sans", "Helvetica", "Arial", sans-serif;
+	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 }
 ol, ul {
 	list-style: none;
@@ -193,9 +193,10 @@ body {
 
 .home-tagline {
 	color: #d74924;
-	font-size: 50px;
+	font-size: 28px;
 	margin: 15px 0 40px 0;
 	font-weight: 100;
+	line-height: 1.4em;
 }
 
 .footer a {
@@ -836,7 +837,6 @@ and (max-width : 769px) {
 	body {
 		background: #f5f5f5 url(/assets/images/crisp_paper_ruffles-mobile.png);
 		background-scale: 50%;
-		font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
 	}
 	.logo-img {
 		width: 168px;
