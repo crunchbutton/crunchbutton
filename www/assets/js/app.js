@@ -738,7 +738,11 @@ App.cart = {
 					for (var i in opt) {
 
 						if (opt[i].id_option_parent == opt[x].id_option) {
-							var option = $('<option value="' + opt[i].id_option + '">' + opt[i].name + (opt[i].description || '') + (opt[x].price != '0.00' ? '&nbsp;($' + opt[x].price + ')' : '') + '</option>');
+
+
+						
+						
+							var option = $('<option value="' + opt[i].id_option + '">' + opt[i].name + (opt[i].description || '') + (opt[i].price != '0.00' || opt[x].price_linked == '1' ? (' ($' + (parseFloat(opt[i].price) + parseFloat(obj.price)).toFixed(2) + ')') : '') + '</option>');
 							if ($.inArray(opt[i].id_option, cartitem.options) !== -1) {
 								option.attr('selected','selected');
 							}
