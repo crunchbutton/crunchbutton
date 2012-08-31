@@ -647,7 +647,7 @@ App.cart = {
 			totalItems++;
 		}
 
-		if (App.cart.total() < parseFloat(App.restaurant.delivery_min)) {
+		if (App.cart.total() < parseFloat(App.restaurant.delivery_min) && App.order.delivery_type == 'delivery') {
 			$('.delivery-minimum-error').show();
 		} else {
 			$('.delivery-minimum-error').hide();
@@ -1237,12 +1237,14 @@ App.trigger = {
 		$('.delivery-toggle-delivery').addClass('toggle-active');
 		$('.delivery-only').show();
 		App.order['delivery_type'] = 'delivery';
+		App.cart.updateTotal();
 	},
 	takeout: function() {
 		$('.delivery-toggle-delivery').removeClass('toggle-active');
 		$('.delivery-toggle-takeout').addClass('toggle-active');
 		$('.delivery-only').hide();
 		App.order['delivery_type'] = 'takeout';
+		App.cart.updateTotal();
 	},
 	credit: function() {
 		$('.pay-toggle-cash').removeClass('toggle-active');

@@ -84,7 +84,7 @@ class Crunchbutton_Order extends Cana_Table {
 			$errors['closed'] = 'This restaurant is closed.';
 		}
 
-		if ($this->final_price < $this->restaurant()->delivery_min) {
+		if ($this->final_price < $this->restaurant()->delivery_min && $this->delivery_type == 'delivery') {
 			$errors['minimum'] = 'Please meet the delivery minimum of '.$this->restaurant()->delivery_min.'.';
 		}
 
