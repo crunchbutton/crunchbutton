@@ -79,12 +79,11 @@ html {
 	margin: 0 auto;
 }
 
-* {
+.button-bottom, .meal-item, .meal-item-content, .toggle-item, .nav-back, .community-select {
 	-webkit-tap-highlight-color: transparent;
-/*	-webkit-user-select: none; */
-
-
+	-webkit-user-select: none;
 }
+
 i {
 	font-style:italic;
 }
