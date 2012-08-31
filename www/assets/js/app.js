@@ -209,7 +209,7 @@ App.page.restaurant = function(id) {
 			$('.payment-form').hide();
 
 			var dp = $('<div class="delivery-payment-info main-content-readable"></div>')
-				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number is:</label> <a href="javascript:;">' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provied</i>') + '</a></div>');
+				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number:</label> <a href="javascript:;">' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provied</i>') + '</a></div>');
 			var paying = $('<div class="dp-display-payment dp-display-item"><label>You are paying:</label> <span class="cart-total">$0.00</span></div>');
 			if (App.config.user.pay_type == 'card') {
 				paying.append('&nbsp;including <a href="javascript:;"><span class="delivery-tip-amount">15%</span> tip</a> by <a href="javascript:;">card</a>');
@@ -385,12 +385,12 @@ App.page.order = function(id) {
 		);
 
 		if (this.delivery_type == 'delivery') {
-			$('.order-info').append('<b>Your delivery address is:</b><br />' + this.address + '<br /><br />');
+			$('.order-info').append('<b>Your delivery address:</b><br />' + this.address + '<br /><br />');
 		} else {
 			$('.order-info').append('<b>For pickup</b><br /><br />');
 		}
 		
-		$('.order-info').append('<b>Your phone # is:</b><br />' + this.phone + '<br /><br />');
+		$('.order-info').append('<b>Your phone #:</b><br />' + this.phone + '<br /><br />');
 		
 		$('.order-info').append('<b>Your order:</b>' + order._message + '<br /><br />');
 		
@@ -399,9 +399,9 @@ App.page.order = function(id) {
 		}
 
 		if (this.pay_type == 'card') {
-			$('.order-info').append('<b>Your total is:</b><br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
+			$('.order-info').append('<b>Your total:</b><br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
 		} else {
-			$('.order-info').append('<b>Total approximate total is</b>:<br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
+			$('.order-info').append('<b>Your approximate total</b>:<br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
 		}
 		
 		App.cache('Restaurant',order.id_restaurant, function() {
