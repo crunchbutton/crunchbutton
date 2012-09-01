@@ -11,7 +11,7 @@
 var App = {
 	cartHighlightEnabled: false,
 	currentPage: null,
-	slogans: ['Order with ONE CLICK at Crunchbutton %s. Just the best restaurants. Just the best food. It\'s easy, tasty, and fast as hell.'],
+	slogans: ['Order delivery from these top %s restaurants'],
 	service: '/api/',
 	cached: {},
 	cart: {},
@@ -77,7 +77,7 @@ App.loadCommunity = function(id) {
 			$('.main-content').html('just a sec...');
 
 			return;
-		} else {
+		} else {x
 			App.loadPage();
 		}
 	});
@@ -95,7 +95,7 @@ App.page.community = function(id) {
 
 		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
 //		slogan = slogan.replace('%s', App.community.permalink == 'yale' ? 'at Yale' : 'in Providence');
-		slogan = slogan.replace('%s', App.community.permalink == 'yale' ? 'Yale' : 'Providence');
+		slogan = slogan.replace('%s', App.community.name);
 
 		$('.main-content').html(
 			'<div class="home-tagline"><h1>' + slogan + '</h1></div>' + 
