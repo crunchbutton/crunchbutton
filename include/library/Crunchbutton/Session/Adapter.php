@@ -38,6 +38,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 			$this->active = 1;
 			$this->id_user = $this->get('id_user');
 			$this->ip = $_SERVER['REMOTE_ADDR'];
+			$this->id_session = $id;
 		}
 
 		$this->date_activity = date('Y-m-d H:i:s');
@@ -45,10 +46,12 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 
 		$sess = new Session_Adapter($id);
 		try {
-			if ($sess->id_session) {
+			if ($sess->id_session && $id) {
 				$this->save();
-			} else {
+			} elseif ($id) {
 				$this->save($id);
+			} else {
+				// no session id?
 			}
 
 		} catch (Exception $e) {}
