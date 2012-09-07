@@ -127,14 +127,34 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		$params['path'] 		= Cana::config()->dirs->www.'assets/images/food/';
 
 		$thumb = new Cana_Thumb($params);
-		return $thumb->_image['file'];
+		return $thumb;
+
+	}
+	
+	
+	public function image($params = []) {
+
+		$params['height'] = 280;
+		$params['width'] = 630;
+		$params['crop'] = 1;
+		$params['gravity'] = 'center';
+		$params['format'] = 'jpg';
+		$params['quality'] = '70';
+
+		$params['img']			= $this->image;
+		$params['cache'] 		= Cana::config()->dirs->cache.'thumb/';
+		$params['path'] 		= Cana::config()->dirs->www.'assets/images/food/';
+
+		$thumb = new Cana_Thumb($params);
+		return $thumb;
 
 	}
 
 	public function exports() {
 		$out = $this->properties();
 		$out['_open'] = $this->open();
-		$out['img'] = '/assets/images/food/630x280/'.$this->image.'?crop=1';
+//		$out['img'] = '/assets/images/food/630x280/'.$this->image.'?crop=1';
+		$out['img'] = '/cache/images/'.$this->image()->getFileName();
 		//$out['img64'] = (new ImageBase64($this->thumb()))->output();
 		$out['img64'] = '/assets/images/food/310x310/'.$this->image;
 
