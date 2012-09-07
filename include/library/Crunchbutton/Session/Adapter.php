@@ -45,7 +45,12 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 
 		$sess = new Session_Adapter($id);
 		try {
-			$this->save($sess->id_session ? null : $id);
+			if ($sess->id_session) {
+				$this->save();
+			} else {
+				$this->save($id);
+			}
+
 		} catch (Exception $e) {}
 	}
 
