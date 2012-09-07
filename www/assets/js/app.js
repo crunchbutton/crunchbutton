@@ -532,7 +532,7 @@ App.loadPage = function() {
 		default:
 			$('.nav-back').removeClass('nav-back-show');
 			$('.footer').removeClass('footer-hide');
-			App.page.community(App.community.id);
+			App.page.community(App.community.permalink);
 			return;
 			break;
 	}
