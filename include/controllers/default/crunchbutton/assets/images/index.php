@@ -38,6 +38,7 @@ class Controller_assets extends Cana_Controller {
 
 			$thumb = new Cana_Thumb($params);
 			$url = '/cache/images/'.$thumb->getFileName();
+			header('HTTP/1.1 301 Moved Permanently');
 			header('Location: '.$url);
 			//$thumb->displayThumb();
 			exit;	
