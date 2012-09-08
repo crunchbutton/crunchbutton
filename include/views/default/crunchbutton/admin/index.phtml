@@ -1,5 +1,5 @@
-<div style="width: 200px; float: left;">
-	<div style="border: 1px solid #ddd; padding: 10px;">
+<div class="admin-content-wrapper" style="width: 200px; float: left;">
+	<div class="admin-content">
 		<? foreach (Restaurant::q('select * from restaurant') as $restaurant) :  ?>
 			<a href="javascript:;" data-id_restaurant="<?=$restaurant->id_restaurant?>" class="admin-restaurant-link<?=$restaurant->active ? '' : ' admin-restaurant-inactive'?>"><?=$restaurant->name?></a><br />
 		<? endforeach ?>
@@ -7,17 +7,105 @@
 		<a href="javascript:;" data-id_restaurant="" class="admin-restaurant-link">NEW</a><br />
 	</div>
 </div>
+
 <div class="admin-id_restaurant" data-id_restaurant=""></div>
 
-<div style="width: 500px; float: left;">
-	<div style="border: 1px solid #ddd; padding: 10px; margin-left: 20px;">
+<div class="admin-content-wrapper" style="width: 650px; float: left; margin-left: 20px;">
+	<div class="admin-content">
 		<h1 class="restaurant-item-title">Restaurant Information</h1>
 		<br />
 		<table class="admin-restaurant-form">
 			<tr>
-				<td>Name</td>
-				<td><input type="text" name="name" value=""></td>
+				<td class="label-primary">Restaurant Name:</td>
+				<td class="content-primary"><input type="text" name="name" value="" class="input-primary"></td>
 			</tr>
+			<tr>
+				<td class="label-primary">Phone Number:</td>
+				<td class="content-primary"><input type="text" name="phone" value="" class="input-primary"></td>
+			</tr>
+
+			<tr>
+				<td class="label-primary">Order Notification Methods:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>Fax</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>Email</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>Text Message</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>Phone Call</label></div>
+						<div class="check-content">Okay, well call blah blah</div>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="label-primary">Food Items:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>No, I'll add some items later.</label></div>
+					</div>
+
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="label-primary">Open Hours:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>We're always open!</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>We're open during these hours</label></div>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="label-primary">Delivery Options:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>We do not offer delivery</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>Yes! We deliver!</label></div>
+						<div class="check-content">
+							<table class="admin-restaurant-form-sub">
+								<tr>
+									<td class="label-sub">Average Delivery Time:</td>
+									<td class="content-sub"><input type="number" class="form-number"></td>
+								</tr>
+								<tr>
+									<td class="label-sub">Delivery Radius:</td>
+									<td class="content-sub"><input type="number" class="form-number"></td>
+								</tr>
+								<tr>
+									<td class="label-sub">Delivery Fee?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox"><label>Yes</label></div>
+											<div class="check-content">
+												<input type="text">
+											</div>
+										</div>
+									</td>
+								</tr>
+								
+
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			
+			
 			<tr>
 				<td>Community</td>
 				<td>
@@ -59,10 +147,7 @@
 				<td>Fee Customer</td>
 				<td><input type="text" name="fee_customer" value=""></td>
 			</tr>
-			<tr>
-				<td>Phone</td>
-				<td><input type="text" name="phone" value=""></td>
-			</tr>
+
 			<tr>
 				<td>Permalink</td>
 				<td><input type="text" name="permalink" value=""></td>

@@ -1,4 +1,16 @@
-<?=$this->display('layout/html.top')?>
+<!doctype html>
+<html>
+<head>
+<title><?=$this->title ? $this->title : 'Crunchbutton'?></title>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale = 1.0,maximum-scale = 1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
+
+<link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
+<link rel="shortcut icon" href="/favicon.ico">
+
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
 
 <? if (c::config()->bundle) : ?>
 	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=admin"></script>
@@ -6,4 +18,25 @@
 	<?=$this->display('bundle/js', ['set' => ['scripts' => ['admin']]])?>
 <? endif ; ?>
 
-<?=$this->display('layout/html.bottom')?>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="nav" data-role="header" data-position="fixed">
+			<div class="content">
+				<div class="logo"><a href="/admin" class="link-home"><div class="logo-img"></div></a></div>
+				<div class="config-icon"></div>
+			</div>
+		</div>
+		<div class="body">
+			<div class="content">
+				<div class="main-content pages">
+					<?=$this->content?>
+				</div>
+			</div>
+		</div>
+		<div class="divider"></div>
+	</div>
+
+</body>
+</html>
