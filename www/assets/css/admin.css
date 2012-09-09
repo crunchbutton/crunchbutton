@@ -348,3 +348,23 @@ th {
 .order-range-all label {
 	cursor: pointer;
 }
+
+.hours-date-hour, .hours-date-label {
+	font-size: 11px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.hours-date-hour input {
+	width: 80px;
+}
+
+.hours-date-label, .hours-date-hours {
+	float: left;
+	color: #838383;
+}
+
+.hours-date-label {
+	width: 90px;
+	margin-top: 9px;
+}

@@ -70,33 +70,44 @@ $(function() {
 
 			$('.admin-restaurant-content').html('');
 
-			var days = ['sun','mon','tue','wed','thu','fri','sat'];
+			var days = {
+				'sun': 'Sunday',
+				'mon': 'Monday',
+				'tue': 'Tuesday',
+				'wed': 'Wednesday',
+				'thu': 'Thursday',
+				'fri': 'Friday',
+				'sat': 'Saturday'
+			};
 
 			for (var d in days) {
 
 				var day = $('<div class="hours-date"><span class="hours-date-label">' + days[d] + '</span></div>');
 				var dayWrap = $('<div class="hours-date-hours"></div>').appendTo(day);
+				dayWrap.after('<div class="divider"></div>');
 
 				if (!restaurant._hours) {
 					$('input[name="hours_check"][value="0"]').prop('checked', true);
 					$('input[name="hours_check"][value="1"]').prop('checked', false);
+					$('.admin-restaurant-hours').hide();
 					continue;
 
 				} else {
 					$('input[name="hours_check"][value="0"]').prop('checked', false);
 					$('input[name="hours_check"][value="1"]').prop('checked', true);
+					$('.admin-restaurant-hours').show();
 				}
 
-				var dayitem = restaurant._hours[days[d]];
+				var dayitem = restaurant._hours[d];
 
 				for (var x in dayitem) {
 					var row = $('<div class="hours-date-hour"></div>');
-					row.append('<input type="text" value="' + dayitem[x][0] + '" name="' + days[d] + '-open"> - <input type="text" value="' + dayitem[x][1] + '" name="' + days[d] + '-close">');
+					row.append('<input type="text" value="' + dayitem[x][0] + '" name="' + days[d] + '-open">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" value="' + dayitem[x][1] + '" name="' + days[d] + '-close">');
 					dayWrap.append(row);
 				}
 				
 				var row = $('<div class="hours-date-hour"></div>');
-				row.append('<input type="text" name="' + days[d] + '-open"> - <input type="text" name="' + days[d] + '-close">');
+				row.append('<input type="text" name="' + days[d] + '-open">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" name="' + days[d] + '-close">');
 				dayWrap.append(row);
 
 				$('.admin-restaurant-hours').append(day);
@@ -115,7 +126,7 @@ $(function() {
 		if (allfull) {
 			var day = $(this).attr('name').replace(/-open|-close/,'');
 			var row = $('<div class="hours-date-hour"></div>');
-			row.append('<input type="text" name="' + day + '-open"> - <input type="text" name="' + day + '-close">');
+			row.append('<input type="text" name="' + day + '-open">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" name="' + day + '-close">');
 			$(this).closest('.hours-date-hour').append(row);
 		}
 	});
@@ -123,7 +134,7 @@ $(function() {
 	var getValues = function(selector, restaurant) {
 		$('input.' + selector + ', select.' + selector).each(function() {
 			var name, value, group = false;
-			console.log(this);
+
 			if ($(this).attr('name').match(/^.*\[\]$/)) {
 				group = true;
 				name = $(this).attr('name').replace(/^(.*)\[\]$/,'$1');
@@ -155,9 +166,7 @@ $(function() {
 
 		if (id) {
 			App.cache('Restaurant', id, function() {
-				var restaurant = getValues(selector, {});
-				console.log(restaurant);
-				return;
+				var restaurant = getValues(selector, restaurant);
 				restaurant.save();
 			});
 		} else {
