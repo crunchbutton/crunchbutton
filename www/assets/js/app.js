@@ -1139,46 +1139,6 @@ App.olark = {
 	}
 };
 
-App.phone = {
-	format: function(num) {
-
-		num = num.replace(/^0|^1/,'');
-		num = num.replace(/[^\d]*/gi,'');
-		num = num.substr(0,10);
-	
-		if (num.length >= 7) {
-			num = num.replace(/(\d{3})(\d{3})(.*)/, "$1-$2-$3");
-		} else if (num.length >= 4) {
-			num = num.replace(/(\d{3})(.*)/, "$1-$2");
-		}
-
-		return num;	
-	},
-	validate: function(num) {
-
-		if (!num || num.length != 10) {
-			return false;
-		}
-		
-		var
-			nums = num.split(''),
-			prev;
-		
-		for (x in nums) {
-			if (!prev) {
-				prev = nums[x];
-				continue;
-			}
-			
-			if (nums[x] != prev) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-};
-
 App.loc = {
 	distance: function(params) {
 

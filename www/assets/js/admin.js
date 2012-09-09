@@ -168,11 +168,13 @@ $(function() {
 	$('.admin-restaurant-hours-save-all').live('click',function() {
 		$('.admin-restaurant-hours-save-link').click();
 	});
-	
-	
+
 	$('.check label').live('click',function() {
 		var checked = $(this).closest('.check').find('input').prop('checked');
 		$(this).closest('.check').find('input').prop('checked', checked ? false : true);
 	});
-
+	
+	$('[name="phone"]').live('keyup', function(e) {
+		$(this).val( App.phone.format($(this).val()) );
+	});
 });
