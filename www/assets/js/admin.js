@@ -88,9 +88,10 @@ $(function() {
 		}
 	});
 
-	var saveRestaurant = function(selector, restaurant) {
-		$(selector + ' input, ' + selector + ' select').each(function() {
+	var getValues = function(selector, restaurant) {
+		$('input.' + selector + ', select.' + selector).each(function() {
 			var name, value, group = false;
+			console.log(this);
 			if ($(this).attr('name').match(/^.*\[\]$/)) {
 				group = true;
 				name = $(this).attr('name').replace(/^(.*)\[\]$/,'$1');
@@ -117,12 +118,14 @@ $(function() {
 	}
 
 	$('.admin-restaurant-save').live('click',function() {
-		var selector = '.admin-restaurant-form';
+		var selector = 'dataset-restaurant';
 		var id = App.restaurant;
 
 		if (id) {
 			App.cache('Restaurant', id, function() {
-				var restaurant = saveRestaurant(selector, this);
+				var restaurant = getValues(selector, {});
+				console.log(restaurant);
+				return;
 				restaurant.save();
 			});
 		} else {
@@ -171,10 +174,37 @@ $(function() {
 
 	$('.check label').live('click',function() {
 		var checked = $(this).closest('.check').find('input').prop('checked');
-		$(this).closest('.check').find('input').prop('checked', checked ? false : true);
+		$(this).closest('.check').find('input').click();
 	});
 	
 	$('[name="phone"]').live('keyup', function(e) {
 		$(this).val( App.phone.format($(this).val()) );
+	});
+	
+	var changeACheck = function() {
+		var name = $(this).attr('name');
+		var parent = $(this).closest('.content-sub').length ? $(this).closest('.content-sub') : $(this).closest('.content-primary');
+		parent.find('input[name="' + name + '_check"][value="1"]').prop('checked', true);
+		parent.find('input[name="' + name + '_check"][value="0"]').prop('checked', false);
+	};
+	
+	$('.change-a-check').live('change', changeACheck).live('keyup', changeACheck);
+
+	$('.bind-a-check').click(function(e) {
+		var name = $(this).attr('name');
+		var value = $(this).attr('value');
+		var parent = $(this).closest('.content-sub').length ? $(this).closest('.content-sub') : $(this).closest('.content-primary');
+		
+		$(this).prop('checked', true);
+		parent.find('input[name="' + name + '"][value="' + (value == '1' ? '0' : '1') + '"]').prop('checked', false);
+
+		if (value == '1') {
+			parent.find('.check-content').fadeIn();
+		} else {
+			parent.find('.check-content').fadeOut(100);
+		}
+
+		e.stopPropagation();
+		return false;
 	});
 });
