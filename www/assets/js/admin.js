@@ -24,13 +24,19 @@ $(function() {
 	$('.admin-restaurant-link').live('click',function() {
 		if (!$(this).attr('data-id_restaurant')) {
 			$('.admin-restaurant-form input, admin-restaurant-form select').val('').prop('checked',false);
-			$('.admin-restaurant-panel').hide();
 			App.restaurant = null;
 			$('.admin-restaurant-content').html('');
 			return;
 		}
 		App.cache('Restaurant', $(this).attr('data-id_restaurant'), function() {
 			var restaurant = this;
+			var checkswap = {
+				'delivery_fee_check' : 'delivery_fee',
+				'delivery_min_check': 'delivery_min',
+				'fee_restaurant_check': 'fee_restaurant',
+				'fee_customer_check': 'fee_customer',
+				'id_community_check': 'id_community',
+			};
 
 			$('.admin-restaurant-form input, .admin-restaurant-form select').each(function() {
 				if ($(this).attr('type') == 'checkbox') {
@@ -44,12 +50,26 @@ $(function() {
 				} else {
 					$(this).val(restaurant[$(this).attr('name')]);
 				}
+				
+				for (var x in checkswap) {
+					if ($(this).attr('name') == x) {
+						if (restaurant[checkswap[x]] && restaurant[checkswap[x]] != '0') {
+
+							$('input[name="' + x + '"][value="0"]').prop('checked', false);
+							$('input[name="' + x + '"][value="1"]').prop('checked', true);
+						} else {
+
+							$('input[name="' + x + '"][value="0"]').prop('checked', true);
+							$('input[name="' + x + '"][value="1"]').prop('checked', false);						
+						}
+					}
+				}
 			});
-			$('.admin-restaurant-panel').show();
+
 			App.restaurant = restaurant.id_restaurant;
 
 			$('.admin-restaurant-content').html('');
-			
+
 			var days = ['sun','mon','tue','wed','thu','fri','sat'];
 
 			for (var d in days) {
