@@ -132,10 +132,52 @@ body {
 
 .admin-content-wrapper {
 	border: 1px solid #2b323b;
-	box-shadow: inset 0 0 2px #5a626e;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
 	padding: 12px;
 	border-radius: 5px;
 	background: #49525f;
+	float: left;
+	width: 100%;
+}
+
+.admin-tab {
+	border: 1px solid #2b323b;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 -4px 1px rgba(0,0,0,.50);
+	border-bottom: none;
+	width: auto;
+	padding: 10px 15px 13px 15px;
+	color: #b2b5b9;
+	float: left;
+	margin-right: 5px;
+	font-size: 15px;
+	text-shadow: 1px 1px rgba(0,0,0,.3);
+	font-weight: bold;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	background: #3c4450;
+	cursor: pointer;
+	margin-bottom: -3px;
+	text-decoration: none;
+	width: 100px;
+	text-align: center;
+}
+
+.admin-tab-active {
+	background: #49525f;
+	color: #fff;
+	z-index: 900;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+	background: #49525f -webkit-linear-gradient(top,  #586372 0%,#49525f 90%);
+}
+.admin-tab-active:after {
+	content: "";
+	background: #49525f;
+	width: 130px;
+	position: absolute;
+	z-index: 9000;
+	height: 4px;
+	margin-left: -15px;
+	margin-top: 23px;
 }
 
 .admin-content {
@@ -253,4 +295,38 @@ input[type="number"], input[type="text"], textarea {
 
 .body {
 	margin-bottom: 50px;
+}
+
+
+.list-orders {
+	font-size: 12px;
+	line-height: 12px;
+}
+
+.list-order-header {
+	text-decoration: underline;
+}
+
+.list-orders td, .list-orders th {
+	white-space: nowrap;
+	padding: 3px;
+}
+
+.list-order-item:nth-child(2n+3) {
+	background: rgba(0,0,0,.1);
+}
+
+.list-orders table {
+	width: 120px;
+}
+
+.list-orders ul {
+	list-style-type:circle;
+	margin-left: 20px;
+	line-height: 14px;
+}
+
+th {
+	text-align: left;
+	font-weight: bold;
 }

@@ -30,9 +30,14 @@
 		</div>
 		<div class="body">
 			<div class="content">
-				<div class="main-content pages">
-					<?=$this->content?>
+				<div class="tabs">
+					<a class="admin-tab<?=$this->page == 'admin' ? ' admin-tab-active' : ''?>" href="/admin">Dashboard</a>
+					<a class="admin-tab<?=$this->page == 'admin/orders' ? ' admin-tab-active' : ''?>" href="/admin/orders">Orders</a>
+					<a class="admin-tab<?=$this->page == 'admin/restaurants' ? ' admin-tab-active' : ''?>" href="/admin/restaurants">Restaurants</a>
+					<a class="admin-tab<?=$this->page == 'admin/customers' ? ' admin-tab-active' : ''?>" href="/admin/customers">Customers</a>
+					<div class="divider"></div>
 				</div>
+				<?=$this->content?>
 			</div>
 		</div>
 		<div class="divider"></div>
