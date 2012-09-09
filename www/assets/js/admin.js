@@ -34,7 +34,13 @@ $(function() {
 
 			$('.admin-restaurant-form input, .admin-restaurant-form select').each(function() {
 				if ($(this).attr('type') == 'checkbox') {
-					$(this).prop('checked', restaurant[$(this).attr('name')] == 1 ? true : false);
+					if (restaurant[$(this).attr('name')] == 1 && $(this).attr('value') == '1') {
+						$(this).click();
+					}
+					if (restaurant[$(this).attr('name')] == 0 && $(this).attr('value') == '0') {
+						$(this).click();
+					}
+
 				} else {
 					$(this).val(restaurant[$(this).attr('name')]);
 				}
@@ -52,7 +58,13 @@ $(function() {
 				var dayWrap = $('<div class="hours-date-hours"></div>').appendTo(day);
 
 				if (!restaurant._hours) {
+					$('input[name="hours_check"][value="0"]').prop('checked', true);
+					$('input[name="hours_check"][value="1"]').prop('checked', false);
 					continue;
+
+				} else {
+					$('input[name="hours_check"][value="0"]').prop('checked', false);
+					$('input[name="hours_check"][value="1"]').prop('checked', true);
 				}
 
 				var dayitem = restaurant._hours[days[d]];
@@ -173,8 +185,11 @@ $(function() {
 	});
 
 	$('.check label').live('click',function() {
-		var checked = $(this).closest('.check').find('input').prop('checked');
 		$(this).closest('.check').find('input').click();
+	});
+	
+	$('.order-range-all label').live('click', function() {
+		$(this).parent().find('input').click();	
 	});
 	
 	$('[name="phone"]').live('keyup', function(e) {
@@ -206,5 +221,33 @@ $(function() {
 
 		e.stopPropagation();
 		return false;
+	});
+	
+	$('.date-picker').DatePicker({
+		format:'m/d/Y',
+		date: $('.date-picker').val(),
+		current: $('.date-picker').val(),
+		starts: 1,
+		mode: 'range',
+		calendars: 3,
+		position: 'r',
+		onBeforeShow: function(){
+			//$('.date-picker').DatePickerSetDate($('.date-picker').val(), true);
+		},
+		onChange: function(formated, dates){
+			$('.date-picker').val(formated);
+			if ($('#closeOnSelect input').attr('checked')) {
+				$('.date-picker').DatePickerHide();
+			}
+		}
+	});
+	
+	$('input[name="order-range-all"]').live('change', function() {
+		if ($(this).prop('checked')) {
+			$('.date-picker').attr('disabled', 'disabled');
+			$('.date-picker').val('');
+		} else {
+			$('.date-picker').removeAttr('disabled');
+		}
 	});
 });

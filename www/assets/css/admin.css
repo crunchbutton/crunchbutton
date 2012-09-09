@@ -334,3 +334,17 @@ th {
 .admin-restaurant-form-sub {
 	width: 100%;
 }
+
+.divider.dots {
+	background: url(/assets/images/divider.gif);
+	height: 1px;
+	opacity: .3;
+}
+
+.order-range-all {
+	white-space: nowrap;
+}
+
+.order-range-all label {
+	cursor: pointer;
+}

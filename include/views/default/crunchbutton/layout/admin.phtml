@@ -8,6 +8,7 @@
 <link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
 
 <link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/datepicker.css">
 <link rel="shortcut icon" href="/favicon.ico">
 
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
@@ -15,7 +16,7 @@
 <? if (c::config()->bundle) : ?>
 	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=admin"></script>
 <? else : ?>
-	<?=$this->display('bundle/js', ['set' => ['scripts' => ['admin']]])?>
+	<?=$this->display('bundle/js', ['set' => ['scripts' => ['datepicker/eye','datepicker/layout','datepicker/utils','datepicker/datepicker','admin']]])?>
 <? endif ; ?>
 
 </head>
