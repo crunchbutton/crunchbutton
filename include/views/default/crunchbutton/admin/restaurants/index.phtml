@@ -123,16 +123,20 @@
 						<div class="check-content">
 							<table class="admin-restaurant-form-sub">
 								<tr>
+									<td class="label-sub">Average Pickup Time:</td>
+									<td class="content-sub"><input type="number" name="pickup_estimated_time" min="0" class="form-number dataset-restaurant"> minites</td>
+								</tr>
+								<tr>
 									<td class="label-sub">Restaurant Address:</td>
 									<td class="content-sub"><textarea class="form-sub dataset-restaurant" name="address"></textarea></td>
 								</tr>
 								<tr>
 									<td class="label-sub">Contact Email:</td>
-									<td class="content-sub"><input type="text" class="form-sub"></td>
+									<td class="content-sub"><input type="text" class="form-sub dataset-restaurant" name="email"></td>
 								</tr>
 								<tr>
 									<td class="label-sub">Manager/Owner can be reached at:</td>
-									<td class="content-sub"><textarea class="form-sub"></textarea></td>
+									<td class="content-sub"><textarea class="form-sub dataset-restaurant" name="notes_owner"></textarea></td>
 								</tr>
 								<tr>
 									<td class="label-sub">Include in a community?</td>
@@ -276,7 +280,11 @@
 								</tr>
 								<tr>
 									<td class="label-sub">Notes:</td>
-									<td class="content-sub"><textarea class="form-sub dataset-restaurant" name="notes"></textarea></td>
+									<td class="content-sub"><textarea class="form-sub dataset-restaurant form-sub-big" name="notes"></textarea></td>
+								</tr>
+								<tr>
+									<td class="label-sub">Todo:</td>
+									<td class="content-sub"><textarea class="form-sub dataset-restaurant form-sub-big" name="notes_todo"></textarea></td>
 								</tr>
 							</table>
 						</div>

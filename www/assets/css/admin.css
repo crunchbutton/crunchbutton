@@ -203,6 +203,10 @@ input[type="number"], input[type="text"], textarea {
 	background: #f1f1f1;
 }
 
+textarea {
+	height: 2.5em;
+}
+
 .input-primary {
 	width: 450px;
 }
@@ -259,7 +263,7 @@ input[type="number"], input[type="text"], textarea {
 }
 
 .form-sub {
-	width: 192px;
+	width: 270px;
 }
 
 .action-button {
@@ -390,4 +394,8 @@ th {
 	background: url(/assets/images/admin/arrow-down.png);
 	float: right;
 	margin-top: 5px;
+}
+
+.form-sub-big {
+	height: 3.8em;
 }
