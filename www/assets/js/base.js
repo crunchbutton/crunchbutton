@@ -122,6 +122,10 @@ App.pad = function(number, length) {
 };
 
 App.formatTime = function(time) {
+	if (!time) {
+		return '';
+	}
+
 	var vals = time.split(':');
 	var pm = false;
 	

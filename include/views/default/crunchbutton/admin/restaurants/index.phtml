@@ -39,9 +39,15 @@
 				<td class="label-primary">Food Items:</td>
 				<td class="content-primary">
 					<div class="check-wrap">
-						<div class="check"><input type="checkbox"><label>No, I'll add some items later.</label></div>
+						<div class="check"><input type="checkbox" value="0" name="hours_check" class="bind-a-check"><label>No, I'll add some items later.</label></div>
 					</div>
-
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox" value="1" name="hours_check" class="bind-a-check"><label>Our best items:</label></div>
+						<div class="check-content">
+							<div class="admin-food-item"><span class="food-title">Wenzel</a><div class="food-drop-down"></div></div>
+							<div class="admin-food-item-content"></div>
+						</div>
+					</div>
 				</td>
 			</tr>
 			
@@ -267,6 +273,10 @@
 											<div class="check"><input type="checkbox" name="active" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
 										</div>
 									</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Notes:</td>
+									<td class="content-sub"><textarea class="form-sub dataset-restaurant" name="notes"></textarea></td>
 								</tr>
 							</table>
 						</div>

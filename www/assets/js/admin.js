@@ -23,7 +23,7 @@ var App = {
 $(function() {
 	$('.admin-restaurant-link').live('click',function() {
 		if (!$(this).attr('data-id_restaurant')) {
-			$('.admin-restaurant-form input, admin-restaurant-form select').val('').prop('checked',false);
+			$('.admin-restaurant-form input, .admin-restaurant-form select, .admin-restaurant-form textarea').val('').prop('checked',false);
 			App.restaurant = null;
 			$('.admin-restaurant-content').html('');
 			return;
@@ -38,7 +38,7 @@ $(function() {
 				'id_community_check': 'id_community'
 			};
 
-			$('.admin-restaurant-form input, .admin-restaurant-form select').each(function() {
+			$('.admin-restaurant-form input, .admin-restaurant-form select, .admin-restaurant-form textarea').each(function() {
 				if ($(this).attr('type') == 'checkbox') {
 					if (restaurant[$(this).attr('name')] == 1 && $(this).attr('value') == '1') {
 						$(this).click();
@@ -54,13 +54,13 @@ $(function() {
 				for (var x in checkswap) {
 					if ($(this).attr('name') == x) {
 						if (restaurant[checkswap[x]] && restaurant[checkswap[x]] != '0') {
-
-							$('input[name="' + x + '"][value="0"]').prop('checked', false);
-							$('input[name="' + x + '"][value="1"]').prop('checked', true);
+							//$('input[name="' + x + '"][value="0"]').prop('checked', false);
+							//$('input[name="' + x + '"][value="1"]').prop('checked', true);
+							$('input[name="' + x + '"][value="1"]').click();
 						} else {
-
-							$('input[name="' + x + '"][value="0"]').prop('checked', true);
-							$('input[name="' + x + '"][value="1"]').prop('checked', false);						
+							//$('input[name="' + x + '"][value="0"]').prop('checked', true);
+							//$('input[name="' + x + '"][value="1"]').prop('checked', false);
+							$('input[name="' + x + '"][value="0"]').click();
 						}
 					}
 				}
@@ -104,7 +104,7 @@ $(function() {
 						dayWrap.append(row);
 					}
 				}
-				
+
 				var row = $('<div class="hours-date-hour"></div>');
 				row.append('<input type="text" name="' + d + '-open[]">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" name="' + d + '-close[]">');
 				dayWrap.append(row);
@@ -166,7 +166,7 @@ $(function() {
 	});
 
 	var saveRestaurant = function() {
-		var selector = 'input.dataset-restaurant, select.dataset-restaurant';
+		var selector = 'input.dataset-restaurant, select.dataset-restaurant, textarea.dataset-restaurant';
 		var id = App.restaurant;
 
 		if (id) {
@@ -188,7 +188,6 @@ $(function() {
 		if (id) {
 			App.cache('Restaurant', id, function() {
 				var h = getValues(selector, {});
-				console.log('hours',h);
 
 				var hours = {'sun': [],'mon': [],'tue': [],'wed': [],'thu': [],'fri': [],'sat': []};
 				var vals = getValues('input.dataset-restaurant', {});
@@ -201,7 +200,7 @@ $(function() {
 						}
 					}
 				}
-console.log(hours); return;
+
 				$.post('/api/restaurant/' + id + '/hours', {hours: hours});
 			});
 		}
