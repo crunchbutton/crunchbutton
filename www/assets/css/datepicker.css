@@ -89,7 +89,6 @@ div.datepicker table {
 div.datepicker a {
 	color: #eee;
 	text-decoration: none;
-	cursor: default;
 	outline: none;
 }
 div.datepicker table td {
@@ -188,4 +187,7 @@ td.datepickerSpecial a {
 }
 td.datepickerSpecial.datepickerSelected a {
 	background: #a00;
+}
+.datepickerMonth {
+	vertical-align: top;
 }

@@ -112,3 +112,60 @@ App.phone = {
 		return false;
 	}
 };
+
+App.pad = function(number, length) {
+	var str = '' + number;
+	while (str.length < length) {
+		str = '0' + str;
+	}
+	return str;
+};
+
+App.formatTime = function(time) {
+	var vals = time.split(':');
+	var pm = false;
+	
+	vals[0] = new String(vals[0]);
+	vals[1] = vals[1] ? new String(vals[1]) : 0;
+	
+	if (vals[0].match(/^[0-9]{3,4}$/i)) {
+		vals[1] = vals[0].substr(-2,2);
+		vals[0] = vals[0].substr(0,vals[0].length - 2);
+	}
+
+	if (!vals[1]) {
+
+		if (vals[0].match(/pm/i)) {
+			pm = true;
+		}
+		if (vals[0] > 12) {
+			vals[0] -= 12;
+			pm = true;
+		}
+
+		vals[1] = '00';
+
+	} else {
+
+		if (vals[1].match(/pm/i)) {
+			pm = true;
+		}
+		if (vals[0] > 12) {
+			vals[0] -= 12;
+			pm = true;
+		}
+
+		vals[1] = vals[1].replace(/[^0-9]+/,'');
+	}
+
+	vals[0] = new String(vals[0]).replace(/[^0-9]+/,'');
+
+	vals[0] = App.pad(vals[0],2);
+	vals[1] = App.pad(vals[1],2);
+	
+	if (vals[0] == '00') {
+		vals[0] = 12;
+	}
+
+	return vals.join(':') + (pm ? ' PM' : ' AM');
+};

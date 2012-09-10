@@ -35,7 +35,7 @@ $(function() {
 				'delivery_min_check': 'delivery_min',
 				'fee_restaurant_check': 'fee_restaurant',
 				'fee_customer_check': 'fee_customer',
-				'id_community_check': 'id_community',
+				'id_community_check': 'id_community'
 			};
 
 			$('.admin-restaurant-form input, .admin-restaurant-form select').each(function() {
@@ -90,24 +90,23 @@ $(function() {
 					$('input[name="hours_check"][value="0"]').prop('checked', true);
 					$('input[name="hours_check"][value="1"]').prop('checked', false);
 					$('.admin-restaurant-hours').hide();
-					continue;
 
 				} else {
 					$('input[name="hours_check"][value="0"]').prop('checked', false);
 					$('input[name="hours_check"][value="1"]').prop('checked', true);
 					$('.admin-restaurant-hours').show();
-				}
-
-				var dayitem = restaurant._hours[d];
-
-				for (var x in dayitem) {
-					var row = $('<div class="hours-date-hour"></div>');
-					row.append('<input type="text" value="' + dayitem[x][0] + '" name="' + days[d] + '-open">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" value="' + dayitem[x][1] + '" name="' + days[d] + '-close">');
-					dayWrap.append(row);
+					
+					var dayitem = restaurant._hours[d];
+	
+					for (var x in dayitem) {
+						var row = $('<div class="hours-date-hour"></div>');
+						row.append('<input type="text" value="' + App.formatTime(dayitem[x][0]) + '" name="' + d + '-open[]">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" value="' + App.formatTime(dayitem[x][1]) + '" name="' + d + '-close[]">');
+						dayWrap.append(row);
+					}
 				}
 				
 				var row = $('<div class="hours-date-hour"></div>');
-				row.append('<input type="text" name="' + days[d] + '-open">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" name="' + days[d] + '-close">');
+				row.append('<input type="text" name="' + d + '-open[]">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" name="' + d + '-close[]">');
 				dayWrap.append(row);
 
 				$('.admin-restaurant-hours').append(day);
@@ -126,13 +125,13 @@ $(function() {
 		if (allfull) {
 			var day = $(this).attr('name').replace(/-open|-close/,'');
 			var row = $('<div class="hours-date-hour"></div>');
-			row.append('<input type="text" name="' + day + '-open">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" name="' + day + '-close">');
+			row.append('<input type="text" name="' + day + '-open[]">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" name="' + day + '-close[]">');
 			$(this).closest('.hours-date-hour').append(row);
 		}
 	});
 
 	var getValues = function(selector, restaurant) {
-		$('input.' + selector + ', select.' + selector).each(function() {
+		$(selector).each(function() {
 			var name, value, group = false;
 
 			if ($(this).attr('name').match(/^.*\[\]$/)) {
@@ -150,64 +149,63 @@ $(function() {
 			} else {
 				value = $(this).val();
 			}
-			
+
 			if (group) {
 				restaurant[name][restaurant[name].length] = value;
 			} else {
 				restaurant[name] = value;
 			}
 		});
+
 		return restaurant;
 	}
 
-	$('.admin-restaurant-save').live('click',function() {
-		var selector = 'dataset-restaurant';
+	$('.admin-restaurant-save').live('click', function() {
+		saveRestaurant();
+		saveHours();
+	});
+
+	var saveRestaurant = function() {
+		var selector = 'input.dataset-restaurant, select.dataset-restaurant';
 		var id = App.restaurant;
 
 		if (id) {
 			App.cache('Restaurant', id, function() {
-				var restaurant = getValues(selector, restaurant);
+				var restaurant = getValues(selector, this);
 				restaurant.save();
 			});
 		} else {
-			var restaurant = saveRestaurant(selector, {});
+			var restaurant = getValues(selector, {});
 			restaurant = new Restaurant(restaurant)
 			restaurant.save();
 		}
-	});
+	};
 
-	$('.admin-restaurant-hours-save').live('click',function() {
-		var selector = '.admin-restaurant-hours';
+	var saveHours = function() {
+		var selector = '.hours-date-hour input';
 		var id = App.restaurant;
 
 		if (id) {
 			App.cache('Restaurant', id, function() {
-				var h = saveRestaurant(selector, {});
+				var h = getValues(selector, {});
+				console.log('hours',h);
+
 				var hours = {'sun': [],'mon': [],'tue': [],'wed': [],'thu': [],'fri': [],'sat': []};
+				var vals = getValues('input.dataset-restaurant', {});
 
-				for (var d in hours) {
-
-					$(selector).find('[name="' + d + '-open"]').each(function() {
-
-						if (!$(this).val()) {
-							return;
+				if (vals.hours_check) {
+					for (var d in hours) {
+						for (var x in h[d + '-open']) {
+							if (!h[d + '-open'][x]) continue;
+							hours[d][hours[d].length] = [h[d + '-open'][x], h[d + '-close'][x]];
 						}
-						var close = $($(selector).find('[name="' + d + '-close"]').get(0)).val();
-						if (!close) {
-							return;
-						}
-
-						var hour = [$(this).val(), close];
-						hours[d][hours[d].length] = hour;
-					});
+					}
 				}
-				console.log(hours);
-				$.post('/api/restaurant/' + id + '/hours', {hours: hours}, function() {
-				
-				});
+
+				$.post('/api/restaurant/' + id + '/hours', {hours: hours});
 			});
 		}
-	});
+	};
 	
 	$('.admin-restaurant-hours-save-all').live('click',function() {
 		$('.admin-restaurant-hours-save-link').click();
@@ -278,5 +276,9 @@ $(function() {
 		} else {
 			$('.date-picker').removeAttr('disabled');
 		}
+	});
+	
+	$('.hours-date-hour input').live('change', function() {
+		$(this).val(App.formatTime($(this).val()));
 	});
 });

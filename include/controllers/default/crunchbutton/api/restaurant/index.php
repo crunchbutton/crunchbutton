@@ -40,7 +40,6 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							break;
 					}
 					
-					
 				}
 				break;
 
