@@ -132,6 +132,10 @@ App.formatTime = function(time) {
 		vals[1] = vals[0].substr(-2,2);
 		vals[0] = vals[0].substr(0,vals[0].length - 2);
 	}
+	
+	if (vals[0] == '24') {
+		vals[0] = '00';
+	}
 
 	if (!vals[1]) {
 
@@ -168,4 +172,25 @@ App.formatTime = function(time) {
 	}
 
 	return vals.join(':') + (pm ? ' PM' : ' AM');
+};
+
+App.unFormatTime = function(time) {
+	var end = arguments[1];
+	var part = time.split(' ');
+
+	part[0] = part[0].split(':');
+	part[0][0] = parseInt(part[0][0]);
+
+	if (part[1] == 'PM') {
+		if (part[0][0] == 12) {
+			part[0][0] = '12';
+		} else {
+			part[0][0] = App.pad(part[0][0] + 12,2);
+		}
+	} else {
+		if (part[0][0] == 12) {
+			part[0][0] = end ? '24' : '00';
+		}
+	}
+	return part[0][0] + ':' + part[0][1];
 };

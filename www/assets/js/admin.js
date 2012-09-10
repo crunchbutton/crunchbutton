@@ -197,11 +197,11 @@ $(function() {
 					for (var d in hours) {
 						for (var x in h[d + '-open']) {
 							if (!h[d + '-open'][x]) continue;
-							hours[d][hours[d].length] = [h[d + '-open'][x], h[d + '-close'][x]];
+							hours[d][hours[d].length] = [App.unFormatTime(h[d + '-open'][x]), App.unFormatTime(h[d + '-close'][x],true)];
 						}
 					}
 				}
-
+console.log(hours); return;
 				$.post('/api/restaurant/' + id + '/hours', {hours: hours});
 			});
 		}
