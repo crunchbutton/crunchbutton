@@ -300,6 +300,12 @@ textarea {
 	cursor: pointer;
 }
 
+.action-button-small {
+	width: 160px;
+	padding: 7px 0 7px 0;
+	font-size: 14px;
+}
+
 .action-button.green {
 	border: 1px solid #5e8c22;
 	background: #a9d44e; /* Old browsers */
@@ -311,6 +317,19 @@ textarea {
 	background: linear-gradient(to bottom,  #a9d44e 0%,#72b72f 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a9d44e', endColorstr='#72b72f',GradientType=0 ); /* IE6-9 */
 	box-shadow: inset 0 1px 0 rgba(255,255,255,.25), inset 0 -2px 0 rgba(0,0,0,.1);
+}
+
+.action-button.red {
+	border: 1px solid #b63540;
+	background: #f77087; /* Old browsers */
+	background: -moz-linear-gradient(top,  #f77087 0%, #f34755 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f77087), color-stop(100%,#f34755)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #f77087 0%,#f34755 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #f77087 0%,#f34755 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #f77087 0%,#f34755 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #f77087 0%,#f34755 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f77087', endColorstr='#f34755',GradientType=0 ); /* IE6-9 */
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.25), inset 0 -1px 0 rgba(0,0,0,.1);
 }
 
 .divider {
@@ -475,4 +494,29 @@ th {
 
 .food-price {
 	margin-left: 10px;
+}
+
+.admin-restaurant-dishes-controls {
+	margin-top: 30px;
+}
+
+.control-icon-plus {
+	height: 16px;
+	width: 17px;
+	background: url(/assets/images/admin/plus.png);
+}
+
+.control-icon, .control-label {
+	float: left;
+}
+
+.control-label {
+	color: #395ca1;
+	text-decoration: underline;
+	margin-left: 10px;
+	cursor: pointer;
+}
+
+.admin-food-item-delete {
+	margin-top: 5px;
 }

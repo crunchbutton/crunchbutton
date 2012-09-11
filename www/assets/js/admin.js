@@ -77,36 +77,7 @@ $(function() {
 				var dishes = categories[i].dishes();
 
 				for (var x in dishes) {
-					var dishItem = dishes[x];
-
-					var dish = $('<div class="admin-food-item-wrap"></div>');
-					dish.append('<div class="admin-food-item admin-food-item-collapsed"><span class="food-name">' + dishItem.name + '</span><span class="food-price">($<span class="food-price-num">' + dishItem.price + '</span>)</span><div class="food-drop-down"></div></div>')
-					var content = $('<div class="admin-food-item-content" style="display: none;"></div>');
-					var padding = $('<div class="admin-food-item-content-padding">');
-					dish.append(content);
-					content.append(padding);
-					
-					padding
-						.append('<input type="text" placeholder="Name" name="dish-name" class="clean-input dish-name" value="' + dishItem.name + '">')
-						.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="clean-input"><div class="divider"></div></div>')
-						.append('<textarea placeholder="Description" name="dish-description" class="clean-input dish-description" value="' + dishItem.description + '"></textarea>');
-	
-										
-	
-									/*
-									<div class="divider dots"></div>
-									<div class="admin-food-item-content-padding">
-										Toppings/options for this item:
-										<div class="input-faker dish-options">
-											<input type="text" placeholder="Name" name="dish-options">
-											<input type="text" placeholder="" name="dish-options">
-											<div class="input-faker-content">$ </div>
-											<div class="divider"></div>
-										</div>
-									</div>
-									*/
-	
-					$('.admin-restaurant-dishes').append(dish);
+					App.showDish(dishes[x]);
 					isDishes = true;
 				}
 			}
@@ -336,7 +307,7 @@ $(function() {
 	});
 	
 	$('.admin-food-item').live('click', function() {
-		$(this).closest('.admin-food-item-wrap').find('.admin-food-item-content').toggle();
+		$(this).closest('.admin-food-item-wrap').find('.admin-food-item-content').slideToggle(100);
 		$(this).toggleClass('admin-food-item-collapsed');
 	});
 	
@@ -368,8 +339,85 @@ $(function() {
 	};
 	
 	$('.dish-price input').live('keyup', changePrice).live('change', changePrice);
+	
+	$('.control-link-add').live('click', function() {
+		App.showDish({});
+	});
+	
+	$('.admin-food-item-delete').live('click', function() {
+
+		var parent = $(this).closest('.admin-food-item-wrap');
+		var id_dish = parent.attr('data-id_dish');
+		var name = parent.find('.dish-name').val();
+		
+		var remove = function() {
+			parent.fadeOut(100,function() {
+				$(this).remove();
+			});
+		};
+
+		if (!id_dish) {
+			remove();
+		} else {
+			if (confirm('Are you sure you want to delete "' + name + '"')) {
+				remove();
+			}
+		}
+	});
+
 
 });
+
+App.showDish = function(dishItem) {
+	if (!dishItem.id_dish) {
+		dishItem = {
+			'name': '',
+			'description': '',
+			'id_dish': '',
+			'price': ''
+		};
+	}
+
+	var dish = $('<div class="admin-food-item-wrap" data-id_dish="' + dishItem.id_dish + '"' + (dishItem.id_dish ? '' : ' style="display: none;"') + '></div>');
+	dish.append('<div class="admin-food-item ' + (dishItem.id_dish ? 'admin-food-item-collapsed' : '') + '"><span class="food-name">' + dishItem.name + '</span><span class="food-price">($<span class="food-price-num">' + dishItem.price + '</span>)</span><div class="food-drop-down"></div></div>')
+	var content = $('<div class="admin-food-item-content" ' + (dishItem.id_dish ? 'style="display: none;"' : '') + '></div>');
+	var padding = $('<div class="admin-food-item-content-padding">');
+	dish.append(content);
+	content.append(padding);
+	
+	padding
+		.append('<input type="text" placeholder="Name" name="dish-name" class="clean-input dish-name" value="' + dishItem.name + '">')
+		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="clean-input" data-clean_type="float"><div class="divider"></div></div>')
+		.append('<textarea placeholder="Description" name="dish-description" class="clean-input dish-description" value="' + dishItem.description + '"></textarea>');
+
+
+						
+
+					/*
+					<div class="divider dots"></div>
+					<div class="admin-food-item-content-padding">
+						Toppings/options for this item:
+						<div class="input-faker dish-options">
+							<input type="text" placeholder="Name" name="dish-options">
+							<input type="text" placeholder="" name="dish-options">
+							<div class="input-faker-content">$ </div>
+							<div class="divider"></div>
+						</div>
+					</div>
+					*/
+					
+	content
+		.append('<div class="divider dots"></div>')
+		.append('<div class="admin-food-item-content-padding"><div class="action-button red action-button-small admin-food-item-delete"><span>Delete</span></div><div class="divider"></div></div>')
+		.append('<div class="divider"></div>');
+
+	$('.admin-restaurant-dishes .admin-restaurant-content').append(dish);
+	
+	if (!dishItem.id_dish) {
+		dish.find('.dish-name').focus();
+		dish.fadeIn(200);
+	}
+};
 
 
 
