@@ -70,6 +70,46 @@ $(function() {
 
 			$('.admin-restaurant-content').html('');
 
+			var categories = restaurant.categories();
+
+			for (var i in categories) {
+				var dishes = categories[i].dishes();
+
+				for (var x in dishes) {
+					var dishItem = dishes[x];
+
+					var dish = $('<div class="admin-food-item-wrap"></div>');
+					dish.append('<div class="admin-food-item admin-food-item-collapsed"><span class="food-title">' + dishItem.name + '</a><div class="food-drop-down"></div></div>')
+					var content = $('<div class="admin-food-item-content" style="display: none;"></div>');
+					var padding = $('<div class="admin-food-item-content-padding">');
+					dish.append(content);
+					content.append(padding);
+					
+					padding
+						.append('<input type="text" placeholder="Name" name="dish-name" class="dish-name" value="' + dishItem.name + '">')
+						.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '"><div class="divider"></div></div>')
+						.append('<textarea placeholder="Description" name="dish-description" class="dish-description" value="' + dishItem.description + '"></textarea>');
+	
+										
+	
+									/*
+									<div class="divider dots"></div>
+									<div class="admin-food-item-content-padding">
+										Toppings/options for this item:
+										<div class="input-faker dish-options">
+											<input type="text" placeholder="Name" name="dish-options">
+											<input type="text" placeholder="" name="dish-options">
+											<div class="input-faker-content">$ </div>
+											<div class="divider"></div>
+										</div>
+									</div>
+									*/
+	
+					$('.admin-restaurant-dishes').append(dish);
+	
+				}
+			}
+
 			var days = {
 				'sun': 'Sunday',
 				'mon': 'Monday',
@@ -279,5 +319,10 @@ $(function() {
 	
 	$('.hours-date-hour input').live('change', function() {
 		$(this).val(App.formatTime($(this).val()));
+	});
+	
+	$('.admin-food-item').live('click', function() {
+		$(this).closest('.admin-food-item-wrap').find('.admin-food-item-content').toggle();
+		$(this).toggleClass('admin-food-item-collapsed');
 	});
 });
