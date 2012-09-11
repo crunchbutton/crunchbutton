@@ -105,6 +105,8 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		if (!c::user()->id_user) {
 			$user->active = 1;
+		}
+		if ($this->_customer->id) {
 			$user->stripe_id = $this->_customer->id;
 		}
 
