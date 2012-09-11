@@ -415,7 +415,7 @@ th {
 	border-bottom-left-radius: 0;
 }
 
-.admin-food-item .food-title {
+.admin-food-item .food-name {
 	font-weight: bold;
 }
 
@@ -471,4 +471,8 @@ th {
 	margin: 10px 0 0 0;
 	width: 403px;
 	height: 3.7em;
+}
+
+.food-price {
+	margin-left: 10px;
 }

@@ -71,6 +71,7 @@ $(function() {
 			$('.admin-restaurant-content').html('');
 
 			var categories = restaurant.categories();
+			var isDishes = false;
 
 			for (var i in categories) {
 				var dishes = categories[i].dishes();
@@ -79,16 +80,16 @@ $(function() {
 					var dishItem = dishes[x];
 
 					var dish = $('<div class="admin-food-item-wrap"></div>');
-					dish.append('<div class="admin-food-item admin-food-item-collapsed"><span class="food-title">' + dishItem.name + '</a><div class="food-drop-down"></div></div>')
+					dish.append('<div class="admin-food-item admin-food-item-collapsed"><span class="food-name">' + dishItem.name + '</span><span class="food-price">($<span class="food-price-num">' + dishItem.price + '</span>)</span><div class="food-drop-down"></div></div>')
 					var content = $('<div class="admin-food-item-content" style="display: none;"></div>');
 					var padding = $('<div class="admin-food-item-content-padding">');
 					dish.append(content);
 					content.append(padding);
 					
 					padding
-						.append('<input type="text" placeholder="Name" name="dish-name" class="dish-name" value="' + dishItem.name + '">')
-						.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '"><div class="divider"></div></div>')
-						.append('<textarea placeholder="Description" name="dish-description" class="dish-description" value="' + dishItem.description + '"></textarea>');
+						.append('<input type="text" placeholder="Name" name="dish-name" class="clean-input dish-name" value="' + dishItem.name + '">')
+						.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="clean-input"><div class="divider"></div></div>')
+						.append('<textarea placeholder="Description" name="dish-description" class="clean-input dish-description" value="' + dishItem.description + '"></textarea>');
 	
 										
 	
@@ -106,9 +107,22 @@ $(function() {
 									*/
 	
 					$('.admin-restaurant-dishes').append(dish);
-	
+					isDishes = true;
 				}
 			}
+			
+			
+			if (!isDishes) {
+				$('input[name="dish_check"][value="0"]').prop('checked', true);
+				$('input[name="dish_check"][value="1"]').prop('checked', false);
+				$('.admin-restaurant-dishes').hide();
+
+			} else {
+				$('input[name="dish_check"][value="0"]').prop('checked', false);
+				$('input[name="dish_check"][value="1"]').prop('checked', true);
+				$('.admin-restaurant-dishes').show();
+			}
+			
 
 			var days = {
 				'sun': 'Sunday',
@@ -325,4 +339,78 @@ $(function() {
 		$(this).closest('.admin-food-item-wrap').find('.admin-food-item-content').toggle();
 		$(this).toggleClass('admin-food-item-collapsed');
 	});
+	
+	var ignoreKeys = [37,38,39,40,16,9]; //,17,18,91,13,16
+	
+	
+	var cleanInput = function(e) {
+		if (ignoreKeys.indexOf(e.which) !== -1) {
+			return;
+		}
+		var cleaned = App.cleanInput($(this).val(), $(this).attr('data-clean_type') || 'text');
+		var caret = $(this).getCursorPosition();
+		$(this).val(cleaned);
+		if (e.type == 'keyup') {
+			$(this).setCursorPosition(caret);
+		}
+	};
+	
+	$('.clean-input').live('keyup', cleanInput).live('change', cleanInput);
+	
+	var changeDish = function(e) {
+		$(this).closest('.admin-food-item-wrap').find('.food-name').html($(this).val());
+	};
+
+	$('.dish-name').live('keyup', changeDish).live('change', changeDish);
+	
+	var changePrice = function(e) {
+		$(this).closest('.admin-food-item-wrap').find('.food-price-num').html($(this).val());
+	};
+	
+	$('.dish-price input').live('keyup', changePrice).live('change', changePrice);
+
 });
+
+
+
+(function($) {
+	$.fn.getCursorPosition = function() {
+		var input = this.get(0);
+		if (!input) return; // No (input) element found
+		if ('selectionStart' in input) {
+			// Standard-compliant browsers
+			return input.selectionStart;
+		} else if (document.selection) {
+			// IE
+			input.focus();
+			var sel = document.selection.createRange();
+			var selLen = document.selection.createRange().text.length;
+			sel.moveStart('character', -input.value.length);
+			return sel.text.length - selLen;
+		}
+	}
+
+	$.fn.setCursorPosition = function(position){
+		if(this.length == 0) return this;
+		return $(this).setSelection(position, position);
+	}
+	
+	$.fn.setSelection = function(selectionStart, selectionEnd) {
+		if(this.length == 0) return this;
+		input = this[0];
+	
+		if (input.createTextRange) {
+			var range = input.createTextRange();
+			range.collapse(true);
+			range.moveEnd('character', selectionEnd);
+			range.moveStart('character', selectionStart);
+			range.select();
+		} else if (input.setSelectionRange) {
+			input.focus();
+			input.setSelectionRange(selectionStart, selectionEnd);
+		}
+	
+		return this;
+	}
+
+})(jQuery);

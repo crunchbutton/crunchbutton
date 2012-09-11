@@ -198,3 +198,18 @@ App.unFormatTime = function(time) {
 	}
 	return part[0][0] + ':' + part[0][1];
 };
+
+App.cleanInput = function(text) {
+	var type = arguments[1];
+	switch (type) {
+		case 'float':
+			text = text.replace(/[^0-9\.]+/i,'');
+			break;
+		case 'text':
+		default:
+			text = text.replace(/[^a-z0-9\-_ \(\)\+\.\@\%\&\!\;\:\"\'\,\\\/]+/i,'');
+			break;
+	}
+
+	return text
+};
