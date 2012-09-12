@@ -144,7 +144,11 @@ class Crunchbutton_Order extends Cana_Table {
 			switch (c::config()->processor) {
 				case 'balanced':
 					$this->_customer->email_address = 'uuid-'.$user->uuid.'@_DOMAIN_';
-					$this->_customer->save();
+					try {
+						$this->_customer->save();
+					} catch (Exception $e) {
+						print_r($e);
+					}
 					break;
 			}
 		}
