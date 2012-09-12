@@ -50,6 +50,9 @@
     	</live>
     </stripe>
     <balanced>
+    	<live>
+    		<secret>9d5c3d58fc5e11e1aa05026ba7c1aba6</secret>
+    	</live>
     	<dev>
     		<secret>9d5c3d58fc5e11e1aa05026ba7c1aba6</secret>
     	</dev>

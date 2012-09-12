@@ -99,6 +99,11 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 			
 		}
 		
+		if (!$reason && $params['user'] && $params['user']->balanced_id) {
+			$reason = true;
+			$errors[] = 'Please update your credit card information.';
+		}
+		
 		if (!$reason) {
 			$errors[] = 'Not enough card information.';
 		}

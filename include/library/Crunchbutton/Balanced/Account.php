@@ -14,12 +14,10 @@ class Crunchbutton_Balanced_Account extends Cana_Model {
 
 		try {
 			$account = c::balanced()->accounts->query()
-				->filter(Balanced\Account::$f->email_address->eq('generic@_DOMAIN_'))
+				->filter(Balanced\Account::$f->email_address->eq($email))
 				->one();
 		
-		} catch (Balanced\Exceptions\MultipleResultsFound $e) {
-
-		} catch (Balanced\Exceptions\NoResultsFound $e) {
+		} catch (Exception $e) {
 
 		}
 		return $account;

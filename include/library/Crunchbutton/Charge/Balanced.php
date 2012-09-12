@@ -84,6 +84,11 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 			
 		}
 		
+		if (!$reason && $params['user'] && $params['user']->stripe_id) {
+			$reason = true;
+			$errors[] = 'Please update your credit card information.';
+		}
+		
 		if (!$reason) {
 			$errors[] = 'Not enough card information.';
 		}
