@@ -98,7 +98,7 @@ class Crunchbutton_Order extends Cana_Table {
 			return $res['errors'];
 
 		} else {
-			$this->txn = $this->transaction()->id;
+			$this->txn = $this->transaction();
 		}
 		
 		$user = c::user()->id_user ? c::user() : new User;
@@ -107,7 +107,16 @@ class Crunchbutton_Order extends Cana_Table {
 			$user->active = 1;
 		}
 		if ($this->_customer->id) {
-			$user->stripe_id = $this->_customer->id;
+			switch (c::config()->processor) {
+				case 'stripe':
+				default:
+					$user->stripe_id = $this->_customer->id;
+					break;
+
+				case 'balanced':
+					$user->balanced_id = $this->_customer->id;
+					break;
+			}
 		}
 
 		$user->name = $this->name;
@@ -126,9 +135,19 @@ class Crunchbutton_Order extends Cana_Table {
 		$user->tip = $this->tip;
 		
 		$this->env = c::env();
+		$this->processor = c::config()->processor;
 
 		$user->save();
 		$this->_user = $user;
+		
+		if ($this->_customer->id) {
+			switch (c::config()->processor) {
+				case 'balanced':
+					$this->_customer->email_address = 'uuid-'.$user->uuid.'@_DOMAIN_';
+					$this->_customer->save();
+					break;
+			}
+		}
 		
 		c::auth()->session()->id_user = $user->id_user;
 		c::auth()->session()->generateAndSaveToken();
@@ -201,7 +220,22 @@ class Crunchbutton_Order extends Cana_Table {
 				break;
 
 			case 'card':
-				$r = Charge::charge([
+				$user = c::user()->id_user ? c::user() : null;
+				switch (c::config()->processor) {
+					case 'stripe':
+					default:
+						$charge = new Charge_Stripe([
+							'stripe_id' => $user->stripe_id
+						]);
+						break;
+
+					case 'balanced':
+						$charge = new Charge_Balanced([
+							'balanced_id' => $user->balanced_id
+						]);
+						break;
+				}
+				$r = $charge->charge([
 					'amount' => $this->final_price,
 					'number' => $this->_number,
 					'exp_month' => $this->_exp_month,
@@ -209,11 +243,11 @@ class Crunchbutton_Order extends Cana_Table {
 					'name' => $this->name,
 					'address' => $this->address,
 					'phone' => $this->phone,
-					'user' => c::user()->id_user ? c::user() : null
+					'user' => $user
 				]);
 				if ($r['status']) {
 					$this->_txn = $r['txn'];
-					$this->_user = $r['user'];
+					$this->_user = $user;
 					$this->_customer = $r['customer'];
 					$status = true;
 				} else {
@@ -425,12 +459,26 @@ class Crunchbutton_Order extends Cana_Table {
 	
 	public function refund() {
 		$env = c::env() == 'live' ? 'live' : 'dev';
-		Stripe::setApiKey(c::config()->stripe->{$env}->secret);
-		$ch = Stripe_Charge::retrieve($this->txn);
-		try {
-			$ch->refund();
-		} catch (Exception $e) {
-			return false;
+		switch ($this->processor) {
+			case 'stripe':
+			default:
+				Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+				$ch = Stripe_Charge::retrieve($this->txn);
+				try {
+					$ch->refund();
+				} catch (Exception $e) {
+					return false;
+				}
+			break;
+
+			case 'balanced':
+				$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
+				try {
+					$ch->refund();
+				} catch (Exception $e) {
+					return false;
+				}
+				break;
 		}
 
 		$this->refunded = 1;

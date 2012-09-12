@@ -25,7 +25,7 @@ $GLOBALS['config'] = [
 		'root'				=> dirname(__FILE__).'/../',
 		'www'				=> dirname(__FILE__).'/../www/',
 		'storage'			=> dirname(__FILE__).'/../storage/',
-	],'libraries' 			=> ['Crunchbutton','Cana','Services'],
+	],'libraries' 			=> ['Crunchbutton','Cana','Services','Balanced'],
 	'alias'					=> []
 ];
 
@@ -36,17 +36,9 @@ if (!isset($_SERVER['HTTP_HOST'])) {
 
 $_SERVER['__HTTP_HOST'] = $_SERVER['HTTP_HOST'];
 
-// init (construct) the static Caffeine application and display the page requested
-Cana::init([
-	'app' => 'Crunchbutton_App',
-	'config' => (new Cana_Config($GLOBALS['config']['dirs']['config'].'config.xml'))->merge($GLOBALS['config'])
-]);
 
-/**
- * Magic autoload function
- * This function will include classes automaticly so we never have to do a require or include
- */
-function __autoload($className) {
+spl_autoload_register(function ($className) {
+
 	foreach ($GLOBALS['config']['alias'] as $k => $v) {
 		if ($className == $k) {
 			$className = $v;
@@ -56,24 +48,53 @@ function __autoload($className) {
 			break;
 		}
 	}
+	
+	if (strpos($className, '\\') !== false) {
+
+		$classes = explode('\\', $className);
+		$dir = array_shift($classes);
+		$classes = implode('\\', $classes);
+
+		$className = str_replace('\\','/',$classes);
+
+		$libraries = [$dir];
+		$ignoreAlias = true;
+
+	} else {
+		$libraries = $GLOBALS['config']['libraries'];
+	}
 
 	$class = str_replace('_','/',$className);
+
 	if (file_exists($GLOBALS['config']['dirs']['library'] . $class . '.php')) {
 		require_once $GLOBALS['config']['dirs']['library'] . $class . '.php';
 		if ($setAlias) $setAlias($v, $k);
 		return;
 	}
 
-	foreach ($GLOBALS['config']['libraries'] as $prefix) {
+	foreach ($libraries as $prefix) {
 		$fileName = $GLOBALS['config']['dirs']['library'] . $prefix . '/' . $class . '.php';
 
 		if (file_exists($fileName)) {
 			require_once $fileName;
-			class_alias($prefix.'_'.$className, $className);
+			if (!$ignoreAlias) {
+				class_alias($prefix.'_'.$className, $className);
+			}
 			return;
 		}
     }
 
 	throw new Cana_Exception_MissingLibrary('The file '.$GLOBALS['config']['dirs']['library'] . $className . '.php'.' does not exist');
 	exit;
-}
+});
+
+
+\Httpful\Bootstrap::init();
+\Balanced\Bootstrap::init();
+
+// init (construct) the static Caffeine application and display the page requested
+Cana::init([
+	'app' => 'Crunchbutton_App',
+	'config' => (new Cana_Config($GLOBALS['config']['dirs']['config'].'config.xml'))->merge($GLOBALS['config'])
+]);
+

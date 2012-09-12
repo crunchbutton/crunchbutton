@@ -49,6 +49,11 @@
     		<public>***REMOVED***</public>
     	</live>
     </stripe>
+    <balanced>
+    	<dev>
+    		<secret>9d5c3d58fc5e11e1aa05026ba7c1aba6</secret>
+    	</dev>
+    </balanced>
 	<twilio>
 		<live>
 			<sid>_KEY_</sid>
@@ -82,4 +87,5 @@
 	<crypt>
 		<key>_KEY_</key>
 	</crypt>
+	<processor>balanced</processor>
 </data>

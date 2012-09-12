@@ -208,4 +208,14 @@ class Crunchbutton_App extends Cana_App {
 		return $config;
 	}
 	
+	public function balanced() {
+		if (!$this->_balanced) {
+			$env = c::env() == 'live' ? 'live' : 'dev';
+			\Balanced\Settings::$api_key = c::config()->balanced->{$env}->secret;
+			$marketplace = Balanced\Marketplace::mine();
+			$this->_balanced = $marketplace;
+		}
+		return $this->_balanced;
+	}
+	
 } 
