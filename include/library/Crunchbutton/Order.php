@@ -138,6 +138,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->processor = c::config()->processor;
 
 		$user->save();
+		$user = new User($user->id_user);
 		$this->_user = $user;
 		
 		if ($this->_customer->id) {
@@ -147,7 +148,7 @@ class Crunchbutton_Order extends Cana_Table {
 					try {
 						$this->_customer->save();
 					} catch (Exception $e) {
-						print_r($e);
+
 					}
 					break;
 			}
