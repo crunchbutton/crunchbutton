@@ -7,6 +7,12 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 		}
 	}
 	
+	public function save($newItem = 0) {
+		if ($this->id_session || $newItem) {
+			parent::save($newItem);
+		}
+	}
+	
 	public function set($var, $value) {
 		$_SESSION[$var] = $value;
 		return $this;
@@ -46,7 +52,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 
 		$sess = new Session_Adapter($id);
 		try {
-			if ($sess->id_session && $id) {
+			if ($sess->id_session) {
 				$this->save();
 			} elseif ($id) {
 				$this->save($id);
