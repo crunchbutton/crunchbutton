@@ -678,7 +678,7 @@ App.cart = {
 			totalItems++;
 		}
 
-		if (App.cart.total() < parseFloat(App.restaurant.delivery_min) && App.order.delivery_type == 'delivery') {
+		if (App.cart.subtotal() < parseFloat(App.restaurant.delivery_min) && App.order.delivery_type == 'delivery') {
 			$('.delivery-minimum-error').show();
 		} else {
 			$('.delivery-minimum-error').hide();
@@ -984,13 +984,10 @@ App.cart = {
 			}
 		});
 	},
-	total: function() {
+	subtotal: function() {
 		var
 			total = 0,
-			dish,
-			options,
-			feeTotal = 0,
-			totalItems = 0;
+			options;
 
 		for (var x in App.cart.items) {
 			total += parseFloat(App.cached['Dish'][App.cart.items[x].id].price);
@@ -1000,7 +997,18 @@ App.cart = {
 				total += parseFloat(App.cached['Option'][options[xx]].price);
 			}
 		}
-		
+
+		return total;
+	},
+	total: function() {
+		var
+			total = 0,
+			dish,
+			options,
+			feeTotal = 0,
+			totalItems = 0;
+
+		total = App.cart.subtotal();
 		feeTotal = total;
 
 		if (App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') {
