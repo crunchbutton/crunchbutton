@@ -354,7 +354,7 @@ App.drawPay = function(restaurant) {
 App.page.order = function(id) {
 
 	App.currentPage = 'order';
-
+	console.log('order');
 	App.cache('Order', id, function() {
 
 		if (!this.uuid) {
@@ -495,6 +495,10 @@ App.loadPage = function() {
 		case /^orders/i.test(url):
 			App.page.orders();
 			break;
+			
+		case /^order/i.test(url):
+			App.page.order();
+			break;
 
 		default:
 			if (!App.community) {
@@ -505,15 +509,12 @@ App.loadPage = function() {
 			break;
 	}
 
-
-	var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
-	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
+	if (App.community) {
+		var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
+		var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
+	}
 
 	switch (true) {
-
-		case restaurantRegex.test(url):
-			App.page.restaurant(path[1]);
-			break;
 
 		case /^order\//i.test(url):
 			App.page.order(path[1]);
@@ -526,6 +527,10 @@ App.loadPage = function() {
 			
 		case /^orders/i.test(url):
 			App.page.orders();
+			break;
+			
+		case restaurantRegex.test(url):
+			App.page.restaurant(path[1]);
 			break;
 			
 		case communityRegex.test(url):
@@ -998,26 +1003,19 @@ App.cart = {
 		
 		feeTotal = total;
 
-		console.log('total',total);
 		if (App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') {
 			feeTotal += parseFloat(App.restaurant.delivery_fee);
 		}
-		console.log('total with fee',feeTotal);
 		
 		if (App.restaurant.fee_customer) {
 			feeTotal += (feeTotal * (parseFloat(App.restaurant.fee_customer)/100));
 		}
-		console.log('total with customer fee percent',feeTotal);
 		
 		var final = feeTotal + (feeTotal * (App.restaurant.tax/100));
-		
-		console.log('total with tax',final);
 
 		if (App.order['pay_type'] == 'card') {
 			final += (total * (App.order.tip/100));
 		}
-		
-		console.log('total with tip',final);
 
 		//return final.toFixed(2);
 		return App.ceil(final).toFixed(2);

@@ -38,10 +38,9 @@ var Orm = {
 		if (typeof(id) == 'object') {
 			this.finished(id);
 		} else {
-			App.request(App.service + this.resource + '/' + id, function(json) {
+			App.request(App.service + self.resource + '/' + id, function(json) {
 				if (json.error) {
-					throw 'ORM load error: ' + json.error + "\n" + this.type + '/' + this.resource;
-					alert('asd');
+					throw 'ORM load error: ' + json.error + "\nType: " + self.type + "\nResource: " + self.resource + "\nID: " + id;
 				} else {
 					self.finished(json);
 				}
