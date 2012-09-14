@@ -1238,6 +1238,10 @@ and (min-width : 770px) {
 		margin-bottom: 8px;
 	}
 	
+	.content-item-main-name {
+		margin-bottom: 25px;	
+	}
+	
 	.your-info-label, .your-order-label {
 		font-size: 12px;
 		margin-bottom: 15px;

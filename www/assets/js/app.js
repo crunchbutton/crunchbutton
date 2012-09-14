@@ -174,7 +174,7 @@ App.page.restaurant = function(id) {
 			categories = App.restaurant.categories(),
 			dishes, list;
 			
-		$('.restaurant-items').append('<div class="content-item-name"><h1>Food you can order</h1></div>')
+		$('.restaurant-items').append('<div class="content-item-name content-item-main-name"><h1>The best food here</h1></div>')
 	
 		for (var x in categories) {
 			dishes = categories[x].dishes();
