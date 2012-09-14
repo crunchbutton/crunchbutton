@@ -286,7 +286,7 @@ App.drawPay = function(restaurant) {
 
 		'<div class="payment-info field-container">' + 
 
-			'<label class="pay-title-label">Payment Info</label>' + 
+			'<label class="pay-title-label">Payment Method</label>' + 
 			'<div class="input-item toggle-wrapper">' +
 				'<a href="javascript:;" class="pay-toggle-credit toggle-item"><span>card</span></a> <span class="toggle-spacer">or</span>  <a href="javascript:;" class="pay-toggle-cash toggle-item"><span>cash</span></a>' + 
 			'</div><div class="divider"></div>' + 
