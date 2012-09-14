@@ -1105,7 +1105,7 @@ and (max-width : 769px) {
 		margin-bottom: 0px;
 		margin-top: 14px;
 	}
-	.content-item-name, .your-info-label {
+	.content-item-name, .your-info-label, .your-order-label {
 		display: none;
 	}
 	.cart-item-customize-select-name {
@@ -1238,7 +1238,7 @@ and (min-width : 770px) {
 		margin-bottom: 8px;
 	}
 	
-	.your-info-label {
+	.your-info-label, .your-order-label {
 		font-size: 12px;
 		margin-bottom: 15px;
 	}
