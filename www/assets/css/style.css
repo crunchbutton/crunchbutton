@@ -1105,7 +1105,7 @@ and (max-width : 769px) {
 		margin-bottom: 0px;
 		margin-top: 14px;
 	}
-	.content-item-name {
+	.content-item-name, .your-info-label {
 		display: none;
 	}
 	.cart-item-customize-select-name {
@@ -1235,7 +1235,12 @@ and (min-width : 770px) {
 		color: #D74924;
 		font-weight: 100;
 		font-size: 30px;
-		margin-bottom: 20px;
+		margin-bottom: 8px;
+	}
+	
+	.your-info-label {
+		font-size: 12px;
+		margin-bottom: 15px;
 	}
 
 	.restaurant-name {

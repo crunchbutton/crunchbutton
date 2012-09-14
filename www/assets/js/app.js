@@ -249,6 +249,7 @@ App.drawPay = function(restaurant) {
 	$('.main-content').append(
 		'<form class="payment-form main-content-readable">' + 
 		'<div class="content-item-name"><h1>Your Info</h1></div>' + 
+		'<div class="your-info-label">(enter this once, and we\'ll save it for next time)</div>' +
 		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-info-container"></div><div class="divider"></div>' + 
 		'<div class="payment-total">Your <span class="cash-order-aprox"></span> total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"></span>)</div>' +
