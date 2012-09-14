@@ -735,6 +735,19 @@ App.cart = {
 
 		$('.cart-summary-items').html(text.substr(0,text.length-13));
 		
+		$('.cart-item-customize-price').each(function() {
+			var dish = $(this).closest('.cart-item-customize').attr('data-id_cart_item'),
+				option = $(this).closest('.cart-item-customize-item').attr('data-id_option'),
+				cartitem = App.cart.items[dish],
+				opt = App.cached['Option'][option],
+				price = opt.optionPrice(cartitem.options);
+
+			$(this).html(App.cart.customizeItemPrice(price));
+		});
+		
+	},
+	customizeItemPrice: function(price) {
+		return price != '0.00' ? '&nbsp;($' + price + ')' : '';
 	},
 	customize: function(item) {
 		var
@@ -755,6 +768,8 @@ App.cart = {
 					continue;
 				}
 				if (opt[x].type == 'check') {
+
+					var price = opt[x].optionPrice(cartitem.options);
 					var check = $('<input type="checkbox" class="cart-customize-check">');
 	
 					if ($.inArray(opt[x].id_option, cartitem.options) !== -1) {
@@ -762,18 +777,16 @@ App.cart = {
 					}
 					var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
 						.append(check)
-						.append('<label class="cart-item-customize-name">' + opt[x].name + (opt[x].description || '') + '</label><label class="cart-item-customize-price">' + (opt[x].price != '0.00' ? '&nbsp;($' + opt[x].price + ')' : '') + '</label>');
+						.append('<label class="cart-item-customize-name">' + opt[x].name + (opt[x].description || '') + '</label><label class="cart-item-customize-price">' + App.cart.customizeItemPrice(price) + '</label>');
 					el.append(option);
 
 				} else if (opt[x].type == 'select') {
+
 					var select = $('<select class="cart-customize-select">');
 					for (var i in opt) {
 
 						if (opt[i].id_option_parent == opt[x].id_option) {
 
-
-						
-						
 							var option = $('<option value="' + opt[i].id_option + '">' + opt[i].name + (opt[i].description || '') + (opt[i].price != '0.00' || opt[x].price_linked == '1' ? (' ($' + (parseFloat(opt[i].price) + parseFloat(obj.price)).toFixed(2) + ')') : '') + '</option>');
 							if ($.inArray(opt[i].id_option, cartitem.options) !== -1) {
 								option.attr('selected','selected');
@@ -992,7 +1005,7 @@ App.cart = {
 			options = App.cart.items[x].options;
 
 			for (var xx in options) {
-				total += parseFloat(App.cached['Option'][options[xx]].price);
+				total += parseFloat(App.cached['Option'][options[xx]].optionPrice(options));
 			}
 		}
 
