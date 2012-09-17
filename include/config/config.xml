@@ -71,7 +71,7 @@
 		</dev>
 		<testnumber>_PHONE_</testnumber>
 		<voice>male</voice>
-		<greeting>Hi. This is crunchbutton</greeting>
+		<greeting>This is crunchbutton</greeting>
 	</twilio>
 	<phaxio>
 		<old>

@@ -19,25 +19,42 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 			case 'say':
 			    header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
-					.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for you.</Say>'
+					.'<Pause length="2" />'
+					.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
 					.'<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="20" finishOnKey="#" method="get">'
-						.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>'
-						.'<Pause length="2" />'
-						.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat this message.</Say>'
+						.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
+						.'<Pause length="5" />'
+						.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
+						.'<Pause length="5" />'
+						.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
+						.'<Pause length="5" />'
 					.'</Gather></Response>';
 					exit;
 				break;
 				
 			case 'sayorder':
 			    header('Content-type: text/xml');
-				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
-					.'<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="10" finishOnKey="#" method="get">'
-						.'<Pause length="1" />'
-						.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>'
-						.'<Pause length="2" />'
-						.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat this message.</Say>'
-					.'</Gather></Response>';
-					exit;
+				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";
+				
+				switch ($this->request()['Digits']) {
+					case '1':
+					default:
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+							.'<Say voice="'.c::config()->twilio->voice.'">Thank you. At the end of the message, you must confirm the order.</Say>'
+							.'<Pause length="5" />'
+							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>'
+							.'<Pause length="2" />'
+							.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat this message, or press 2 to confirm this order.</Say>';
+						break;
+					case '2':
+						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. This order has been confirmed.</Say>';
+						$order->confirmed = 1;
+						$order->save();
+						break;
+
+				}
+				echo '</Gather></Response>';
+				exit;
 				break;
 				
 			case 'doconfirm':
