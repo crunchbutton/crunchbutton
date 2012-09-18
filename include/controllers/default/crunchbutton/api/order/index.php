@@ -9,9 +9,9 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		}
 		
 		$pauseRepeat =
-			'<Pause length="2" />'
+			'<Pause length="3" />'
 			.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat the order. Press 2 to confirm the order. Press 3 to spell out the street name.</Say>';
-		$repeat = 5;
+		$repeat = 3;
 
 		switch (c::getPagePiece(3)) {
 			case 'refund':
