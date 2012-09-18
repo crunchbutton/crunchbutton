@@ -312,7 +312,6 @@ $(function() {
 	
 	var ignoreKeys = [37,38,39,40,16,9]; //,17,18,91,13,16
 	
-	
 	var cleanInput = function(e) {
 		if (ignoreKeys.indexOf(e.which) !== -1) {
 			return;
@@ -364,19 +363,37 @@ $(function() {
 		}
 	});
 	
-	$('.admin-food-item-option-padding input[type="text"]').live('keyup', function() {
+	$('.admin-dish-options-wrapper input[type="text"]').live('keyup', function() {
 		var allfull = true;
-		$(this).closest('.admin-food-item-option-padding').find('input[type="text"]').each(function() {
-			if ($(this).val() == '') {
+
+		$(this).closest('.admin-dish-options-wrapper').find('input[type="text"]').each(function() {
+
+			if ($(this).val() == '' || !$(this).val()) {
 				allfull = false;
 			}
 		});
+
 		if (allfull) {
-			$(this).closest('.input-faker').append(App.returnOption({price: '',name:'',id_option:''},$(this).closest('.admin-food-item-option-padding').attr('data-type'),$(this).closest('.admin-food-item-option-padding').attr('data-parent')));
+			$(this).closest('.input-faker').append(App.returnOption({price: '', name: '', id_option: ''},$(this).closest('.admin-dish-options-wrapper').attr('data-type'),$(this).closest('.admin-dish-options-wrapper').attr('data-parent')));
 		}
 	});
 
-
+	$('.control-link-add-option').live('click', function() {
+		$('#dialog-option-group').dialog({
+			resizable: false,
+			height: 200,
+			modal: true,
+			buttons: {
+				'Create': function() {
+					App.createOptionGroup(this);
+					$(this).dialog('close');
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+	});
 });
 
 App.showDish = function(dishItem) {
@@ -419,7 +436,7 @@ App.showDish = function(dishItem) {
 		} else if (option.type == 'select') {
 
 			var optionAdder = $('<div class="input-faker"></div>');
-			var optionWrapper = $('<div class="admin-dish-options-wrapper"><div class="admin-dish-options-title">' + option.name + ':</div></div>')
+			var optionWrapper = $('<div class="admin-dish-options-wrapper" data-type="' + option.type + '" data-parent="' + option.id + '"><div class="admin-dish-options-title">' + option.name + ':</div></div>')
 				.append(optionAdder);
 
 			var select = $('<select class="cart-customize-select">');
@@ -435,6 +452,15 @@ App.showDish = function(dishItem) {
 	
 	basicOptions.append(App.returnOption({price: '',name:'',id_option:''},'check'));
 	
+	options.append('<div class="admin-restaurant-options-controls">'
+		+ '<div class="control-link">'
+			+ '<a href="javascript:;" class="control-link-add-option">'
+				+ '<div class="control-icon-plus control-icon"></div>'
+				+ '<label class="control-label">Add another option group?</label>'
+			+ '</a>'
+		+ '</div>'
+	+ '</div><div class="divider"></div>');
+	
 	padding
 		.append('<input type="text" placeholder="Name" name="dish-name" class="clean-input dish-name" value="' + dishItem.name + '">')
 		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="clean-input" data-clean_type="float"><div class="divider"></div></div>')
@@ -449,19 +475,45 @@ App.showDish = function(dishItem) {
 
 	$('.admin-restaurant-dishes .admin-restaurant-content').append(dish);
 
-	
 	if (!dishItem.id_dish) {
 		dish.find('.dish-name').focus();
 		dish.fadeIn(200);
 	}
-	
-	
-
-	
-	
 };
 
-	
+App.createOptionGroup = function(el) {
+	el = $(el);
+	var option = {
+		name: el.find('[name="admin-option-name"]').val(),
+		price: el.find('[name="admin-option-price"]').attr('checked') ? true : false,
+		type: el.find('[name="admin-option-type"]').val(),
+		id_option: '',
+		id: ''
+	};
+	console.log(option);
+	var optionAdder = $('<div class="input-faker"></div>');
+	var optionWrapper = $('<div class="admin-dish-options-wrapper" data-type="' + option.type + '" data-parent="' + option.id + '"><div class="admin-dish-options-title">' + option.name + ':</div></div>')
+		.append(optionAdder);
+
+	optionAdder.append(App.returnOption({price: '',name:'',id_option:''}, option.type, option.id_option));
+	$('.admin-dish-options').append(optionWrapper);	
+};
+/*
+App.addOptionGroup = function(option) {
+	var optionAdder = $('<div class="input-faker"></div>');
+	var optionWrapper = $('<div class="admin-dish-options-wrapper"><div class="admin-dish-options-title">' + option.name + ':</div></div>')
+		.append(optionAdder);
+
+	var select = $('<select class="cart-customize-select">');
+	for (var i in opts) {
+		if (opts[i].id_option_parent == option.id_option) {
+			optionAdder.append(App.returnOption(opts[i],option.type,option.id_option));
+		}
+	}
+	optionAdder.append(App.returnOption({price: '',name:'',id_option:''},option.type,option.id_option));
+	options.append(optionWrapper);
+};
+*/
 App.returnOption = function(o, type, parent) {
 	var defaulted  = '';
 	switch (type) {
@@ -485,8 +537,7 @@ App.returnOption = function(o, type, parent) {
 				+ '<div class="divider"></div>'
 			+ '</div>'
 		+ '</div>');
-}
-;
+};
 
 
 (function($) {

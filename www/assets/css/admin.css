@@ -556,3 +556,7 @@ input[name="dish-options-price"] {
 .admin-dish-options input[type="radio"], .admin-dish-options input[type="checkbox"] {
 	margin-right: 5px;
 }
+
+.admin-restaurant-options-controls {
+	margin-bottom: 15px;
+}
