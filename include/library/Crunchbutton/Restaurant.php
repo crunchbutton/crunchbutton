@@ -40,6 +40,10 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_communities;
 	}
 	
+	public function saveDishes($dishes) {
+		
+	}
+	
 	public function saveHours($hours) {
 		c::db()->query('delete from hour where id_restaurant="'.$this->id_restaurant.'"');
 		foreach ($hours as $day => $times) {

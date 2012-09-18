@@ -16,6 +16,13 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								echo json_encode($this->request()['hours']);
 							}
 							break;
+							
+						case 'dishes':
+							if ($r->id_restaurant) {
+								$r->saveDishes($this->request()['dishes']);
+								echo json_encode($this->request()['dishes']);
+							}
+							break;
 
 						default:
 							$r->serialize($this->request());

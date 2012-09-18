@@ -560,3 +560,11 @@ input[name="dish-options-price"] {
 .admin-restaurant-options-controls {
 	margin-bottom: 15px;
 }
+
+.control-link {
+	margin-left: 150px;
+}
+
+.control-link:first-child {
+	margin: 0;
+}

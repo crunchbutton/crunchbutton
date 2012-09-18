@@ -187,7 +187,28 @@ $(function() {
 	$('.admin-restaurant-save').live('click', function() {
 		saveRestaurant();
 		saveHours();
+		saveDishes();
 	});
+	
+	var saveDishes = function() {
+		var selector = 'input.dataset-dish, select.dataset-dish, textarea.dataset-dish';
+
+		$('.admin-food-item-wrap').each(function() {
+
+			var id = $(this).attr('data-id_dish');
+			
+			if (id) {
+				App.cache('Dish', id, function() {
+					var dish = getValues(selector, this);
+//					dish.save();
+				});
+			} else {
+				var dish = getValues(selector, {});
+				dish = new Dish(dish);
+				// dish.save();
+			}
+		});
+	}
 
 	var saveRestaurant = function() {
 		var selector = 'input.dataset-restaurant, select.dataset-restaurant, textarea.dataset-restaurant';
@@ -381,19 +402,52 @@ $(function() {
 	$('.control-link-add-option').live('click', function() {
 		$('#dialog-option-group').dialog({
 			resizable: false,
-			height: 200,
+			height: 250,
+			width: 400,
 			modal: true,
 			buttons: {
 				'Create': function() {
 					App.createOptionGroup(this);
 					$(this).dialog('close');
+					$(this).find('[name="admin-option-name"]').val('');
+					$(this).find('[name="admin-option-price"]').removeAttr('checked');
+					$(this).find('[name="admin-option-type"]').val('check');
 				},
 				Cancel: function() {
 					$(this).dialog('close');
+					$(this).find('[name="admin-option-name"]').val('');
+					$(this).find('[name="admin-option-price"]').removeAttr('checked');
+					$(this).find('[name="admin-option-type"]').val('check');
 				}
 			}
 		});
 	});
+	
+	$('.control-link-add-menu').live('click', function() {
+		$('#dialog-add-menu').dialog({
+			resizable: false,
+			height: 160,
+			width: 315,
+			modal: true,
+			buttons: {
+				'Create': function() {
+					App.createOptionGroup(this);
+					$(this).dialog('close');
+					$(this).find('[name="admin-option-name"]').val('');
+					$(this).find('[name="admin-option-price"]').removeAttr('checked');
+					$(this).find('[name="admin-option-type"]').val('check');
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+					$(this).find('[name="admin-option-name"]').val('');
+					$(this).find('[name="admin-option-price"]').removeAttr('checked');
+					$(this).find('[name="admin-option-type"]').val('check');
+				}
+			}
+		});
+	});
+	
+	
 });
 
 App.showDish = function(dishItem) {
@@ -420,51 +474,53 @@ App.showDish = function(dishItem) {
 
 	var optGroups = [];
 
-	var opts = dishItem.options();
+	if (dishItem.options) {
+		var opts = dishItem.options();
+		
+		options.append(basicWrapper);
 	
-	options.append(basicWrapper);
-
-	for (var x in opts) {
-		var option = opts[x];
-		if (option.id_option_parent) {
-			continue;
-		}
-
-		if (option.type == 'check') {
-			basicOptions.append(App.returnOption(option,option.type));
-
-		} else if (option.type == 'select') {
-
-			var optionAdder = $('<div class="input-faker"></div>');
-			var optionWrapper = $('<div class="admin-dish-options-wrapper" data-type="' + option.type + '" data-parent="' + option.id + '"><div class="admin-dish-options-title">' + option.name + ':</div></div>')
-				.append(optionAdder);
-
-			var select = $('<select class="cart-customize-select">');
-			for (var i in opts) {
-				if (opts[i].id_option_parent == option.id_option) {
-					optionAdder.append(App.returnOption(opts[i],option.type,option.id_option));
-				}
+		for (var x in opts) {
+			var option = opts[x];
+			if (option.id_option_parent) {
+				continue;
 			}
-			optionAdder.append(App.returnOption({price: '',name:'',id_option:''},option.type,option.id_option));
-			options.append(optionWrapper);	
+	
+			if (option.type == 'check') {
+				basicOptions.append(App.returnOption(option,option.type));
+	
+			} else if (option.type == 'select') {
+	
+				var optionAdder = $('<div class="input-faker"></div>');
+				var optionWrapper = $('<div class="admin-dish-options-wrapper" data-type="' + option.type + '" data-parent="' + option.id + '"><div class="admin-dish-options-title">' + option.name + ':</div></div>')
+					.append(optionAdder);
+	
+				var select = $('<select class="cart-customize-select">');
+				for (var i in opts) {
+					if (opts[i].id_option_parent == option.id_option) {
+						optionAdder.append(App.returnOption(opts[i],option.type,option.id_option));
+					}
+				}
+				optionAdder.append(App.returnOption({price: '',name:'',id_option:''},option.type,option.id_option));
+				options.append(optionWrapper);	
+			}
 		}
+		
+		basicOptions.append(App.returnOption({price: '',name:'',id_option:''},'check'));
+		
+		options.append('<div class="admin-restaurant-options-controls">'
+			+ '<div class="control-link">'
+				+ '<a href="javascript:;" class="control-link-add-option">'
+					+ '<div class="control-icon-plus control-icon"></div>'
+					+ '<label class="control-label">Add another option group?</label>'
+				+ '</a>'
+			+ '</div>'
+		+ '</div><div class="divider"></div>');
 	}
 	
-	basicOptions.append(App.returnOption({price: '',name:'',id_option:''},'check'));
-	
-	options.append('<div class="admin-restaurant-options-controls">'
-		+ '<div class="control-link">'
-			+ '<a href="javascript:;" class="control-link-add-option">'
-				+ '<div class="control-icon-plus control-icon"></div>'
-				+ '<label class="control-label">Add another option group?</label>'
-			+ '</a>'
-		+ '</div>'
-	+ '</div><div class="divider"></div>');
-	
 	padding
-		.append('<input type="text" placeholder="Name" name="dish-name" class="clean-input dish-name" value="' + dishItem.name + '">')
-		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="clean-input" data-clean_type="float"><div class="divider"></div></div>')
-		.append('<textarea placeholder="Description" name="dish-description" class="clean-input dish-description" value="' + dishItem.description + '"></textarea>')
+		.append('<input type="text" placeholder="Name" name="dish-name" class="dataset-dish clean-input dish-name" value="' + dishItem.name + '">')
+		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="dataset-dish clean-input" data-clean_type="float"><div class="divider"></div></div>')
+		.append('<textarea placeholder="Description" name="dish-description" class="dataset-dish clean-input dish-description" value="' + dishItem.description + '"></textarea>')
 		.append('<div class="divider"></div><div class="divider dots" style="margin: 10px 0 10px 0;"></div>')
 		.append(options);
 					
@@ -496,7 +552,7 @@ App.createOptionGroup = function(el) {
 		.append(optionAdder);
 
 	optionAdder.append(App.returnOption({price: '',name:'',id_option:''}, option.type, option.id_option));
-	$('.admin-dish-options').append(optionWrapper);	
+	$('.admin-dish-options .admin-restaurant-options-controls').before(optionWrapper);
 };
 /*
 App.addOptionGroup = function(option) {

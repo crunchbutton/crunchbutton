@@ -52,6 +52,12 @@
 										<label class="control-label">Add another item?</label>
 									</a>
 								</div>
+								<div class="control-link">
+									<a href="javascript:;" class="control-link-add-menu">
+										<div class="control-icon-plus control-icon"></div>
+										<label class="control-label">Add another menu group?</label>
+									</a>
+								</div>
 							</div>
 							<div class="divider"></div>
 						</div>
@@ -327,14 +333,32 @@
 <div class="divider"></div>
 	
 
-<div id="dialog-option-group" title="Create Option Group">
-	<p></p>
-	<input type="text" name="admin-option-name" placeholder="Name" style="width: 200px;">
-	<br />
-	<select name="admin-option-type">
-		<option value="check">checkboxes</option>
-		<option value="select">select</option>
-	</select>
-	<br />
-	modifys the price<input type="checkbox" name="admin-option-price">
+<div id="dialog-option-group" title="Create Option Group" style="display: none;">
+	<table class="admin-restaurant-form-sub">
+		<tr>
+			<td colspan="2" class="label-sub"><input type="text" name="admin-option-name" placeholder="Name" class="form-sub"></td>
+		</tr>
+		<tr>
+			<td class="label-sub">Display type:</td>
+			<td class="content-sub">
+				<select name="admin-option-type">
+					<option value="check">Checkboxes</option>
+					<option value="select">Select</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="label-sub">Modifies the base price?</td>
+			<td class="content-sub">
+				<input type="checkbox" name="admin-option-price">
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div id="dialog-add-menu" title="Create Menu Group" style="display: none;">
+	<table class="admin-restaurant-form-sub">
+		<tr>
+			<td colspan="2" class="label-sub"><input type="text" name="admin-menu-name" placeholder="Name" class="form-sub"></td>
+	</table>
 </div>
