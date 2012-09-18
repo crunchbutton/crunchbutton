@@ -319,7 +319,6 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$type = 'twilio';
 
-
 		foreach ($message as $msg) {
 			switch ($type) {
 				case 'googlevoice':
@@ -372,7 +371,6 @@ class Crunchbutton_Order extends Cana_Table {
 			case 'phone':
 				$with = 'with';
 				break;
-
 		}
 		
 		if ($type == 'phone') {
@@ -381,10 +379,18 @@ class Crunchbutton_Order extends Cana_Table {
 		} else {
 			$pFind = $pReplace = [];
 		}
+		
+		$i = 1;
+		$d = new DateTime('01-01-2000');
 
 		foreach ($this->dishes() as $dish) {
 
-			$foodItem = "\n- ".preg_replace($pFind, $pReplace, $dish->dish()->name);
+			if ($type == 'phone') {
+				$prefix = $d->format('jS').' item: ';
+				$d->modify('+1 day');
+			}
+
+			$foodItem = "\n- ".$prefix.preg_replace($pFind, $pReplace, $dish->dish()->name);
 
 			if ($dish->options()->count()) {
 				$foodItem .= ' '.$with.' ';
@@ -400,10 +406,32 @@ class Crunchbutton_Order extends Cana_Table {
 			} else {
 				$foodItem .= '. ';
 			}
+
+			if ($type == 'phone') {
+				$foodItem .= ']]></Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[';
+			}
 			$food .= $foodItem;
 		}
 
 		return $food;
+	}
+	
+	public function streetName() {
+		$name = explode("\n",$this->address);
+		$name = preg_replace('/^[0-9]+ (.*)$/i','\\1',$name[0]);
+		$spaceName = '';
+
+		for ($x=0; $x<strlen($name); $x++) {
+			$spaceName .= $name{$x}.'. ';
+		}
+		return $spaceName;
+	}
+	
+	public function phoneticStreet($st) {
+		$pFind = ['/(st\.)|( st($|\n))/i','/(ct\.)|( ct($|\n))/i','/(ave\.)|( ave($|\n))/i'];
+		$pReplace = [' street. ',' court. ',' avenue. '];
+		$st = preg_replace($pFind,$pReplace,$st);
+		return $st;
 	}
 	
 	public function message($type) {
@@ -436,20 +464,36 @@ class Crunchbutton_Order extends Cana_Table {
 				for ($x=0; $x<strlen($spacedPhone); $x++) {
 					$spacedPhones .= $spacedPhone{$x}.'. ';
 				}
-				$msg = '<![CDATA[A customer ordered '.$food.'.]]></Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[Customer Name. '.$this->name.'.]]></Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Phone number. '.$spacedPhones.'.</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Customer paying by '.$this->pay_type.'.';
+				$msg = '<![CDATA['.$food.'.]]></Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[Customer Name. '.$this->name.'.]]></Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Phone number. '.$spacedPhones.'.';
+
 				if ($this->delivery_type == 'delivery') {
-					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Deliver to '.$this->address;
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Deliver to '.$this->phoneticStreet($this->address);
 				}
+				
+				if ($this->pay_type == 'card') {
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">This order has been prepaid by credit card.';
+				} else {
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will pay for this order with cash.';				
+				}
+
 				if ($this->notes) {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Customer Notes. '.$this->notes;
 				}
 				if ($this->pay_type == 'card' && $this->tip) {
-					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">A tip of '.$this->tip().' dollars has been included.';
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">A tip of '.$this->phoeneticNumber($this->tip()).' has been charged to the customer\'s credit card.';
 				}
+				
+				$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Order total: '.$this->phoeneticNumber($this->final_price);
+
 				break;
 		}
 
 		return $msg;
+	}
+	
+	public function phoeneticNumber($num) {
+		$num = explode('.',$num);
+		return $num[0].' dollar'.($num[0] == 1 ? '' : 's').' and '.$num[1].' cent'.($num[1] == '1' ? '' : 's');
 	}
 	
 	public function exports() {
