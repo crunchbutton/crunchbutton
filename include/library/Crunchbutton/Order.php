@@ -471,7 +471,7 @@ class Crunchbutton_Order extends Cana_Table {
 					$spacedPhones .= $spacedPhone{$x}.'. ';
 				}
 				$msg = 
-						'Phone number. '.$spacedPhones.'.'
+						'Customer Phone number. '.$spacedPhones.'.'
 						.'</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[Customer Name. '.$this->name.'.]]></Say><Pause length="1" /><Say>';
 
 				if ($this->delivery_type == 'delivery') {
