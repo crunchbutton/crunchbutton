@@ -335,6 +335,29 @@ textarea {
 	box-shadow: inset 0 1px 0 rgba(255,255,255,.25), inset 0 -1px 0 rgba(0,0,0,.1);
 }
 
+.blue {
+	border: 1px solid #4b9cd9;
+	background: #4b9cd9; /* Old browsers */
+	background: -moz-linear-gradient(top,  #8cbfe5 0%, #6aabdd 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#8cbfe5), color-stop(100%,#6aabdd)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #8cbfe5 0%,#6aabdd 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #8cbfe5 0%,#6aabdd 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #8cbfe5 0%,#6aabdd 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #8cbfe5 0%,#6aabdd 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8cbfe5', endColorstr='#6aabdd',GradientType=0 ); /* IE6-9 */
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.25), inset 0 -1px 0 rgba(0,0,0,.1), 0 1px 0 rgba(0,0,0,.05);
+}
+
+.dish-options.blue {
+	border-radius: 7px;
+	padding: 2px 0 2px 0;
+}
+
+.dish-options.blue, .dish-options.blue input {
+	color: #fff !important;
+	text-shadow: -1px -1px 0 rgba(0,0,0,.15);
+}
+
 .divider {
 	clear: both;
 }
@@ -525,7 +548,7 @@ th {
 }
 
 .admin-food-item-option-padding {
-	margin: 0 0 10px 0;
+	margin: 0 0 4px 0;
 }
 
 .admin-food-item-option-padding:last-child {
@@ -533,7 +556,7 @@ th {
 }
 
 input[name="dish-options"] {
-	width: 320px;
+	width: 300px;
 }
 
 input[name="dish-options-price"] {
@@ -554,7 +577,7 @@ input[name="dish-options-price"] {
 }
 
 .admin-dish-options input[type="radio"], .admin-dish-options input[type="checkbox"] {
-	margin-right: 5px;
+	margin: 2px 5px 0 5px;
 }
 
 .admin-restaurant-options-controls {
@@ -567,4 +590,8 @@ input[name="dish-options-price"] {
 
 .control-link:first-child {
 	margin: 0;
+}
+
+.dish-options-delete {
+	border-radius: 4px;
 }
