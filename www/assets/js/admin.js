@@ -363,6 +363,18 @@ $(function() {
 			}
 		}
 	});
+	
+	$('.admin-food-item-option-padding input[type="text"]').live('keyup', function() {
+		var allfull = true;
+		$(this).closest('.admin-food-item-option-padding').find('input[type="text"]').each(function() {
+			if ($(this).val() == '') {
+				allfull = false;
+			}
+		});
+		if (allfull) {
+			$(this).closest('.input-faker').append(App.returnOption({price: '',name:'',id_option:''},$(this).closest('.admin-food-item-option-padding').attr('data-type'),$(this).closest('.admin-food-item-option-padding').attr('data-parent')));
+		}
+	});
 
 
 });
@@ -389,22 +401,39 @@ App.showDish = function(dishItem) {
 	var basicWrapper = $('<div class="admin-dish-options-wrapper"><div class="admin-dish-options-title">Basic options:</div></div>')
 		.append(basicOptions);
 
+	var optGroups = [];
+
 	var opts = dishItem.options();
-	for (var x in opts) {
-		var option = opts[x];
-		basicOptions.append('<div class="divider"></div>'
-			+ '<div class="admin-food-item-option-padding">'
-				+ '<div class="dish-options" data-id_option="' + option.id_option + '">'
-					+ '<input type="text" placeholder="Name" name="dish-options" value="' + option.name + '">'
-					+ '<div class="input-faker-content">$ </div>'
-					+ '<input type="text" placeholder="" name="dish-options-price" value="' + option.price + '">'
-					+ '<div class="divider"></div>'
-				+ '</div>'
-			+ '</div>');
-	}
 	
 	options.append(basicWrapper);
+
+	for (var x in opts) {
+		var option = opts[x];
+		if (option.id_option_parent) {
+			continue;
+		}
+
+		if (option.type == 'check') {
+			basicOptions.append(App.returnOption(option,option.type));
+
+		} else if (option.type == 'select') {
+
+			var optionAdder = $('<div class="input-faker"></div>');
+			var optionWrapper = $('<div class="admin-dish-options-wrapper"><div class="admin-dish-options-title">' + option.name + ':</div></div>')
+				.append(optionAdder);
+
+			var select = $('<select class="cart-customize-select">');
+			for (var i in opts) {
+				if (opts[i].id_option_parent == option.id_option) {
+					optionAdder.append(App.returnOption(opts[i],option.type,option.id_option));
+				}
+			}
+			optionAdder.append(App.returnOption({price: '',name:'',id_option:''},option.type,option.id_option));
+			options.append(optionWrapper);	
+		}
+	}
 	
+	basicOptions.append(App.returnOption({price: '',name:'',id_option:''},'check'));
 	
 	padding
 		.append('<input type="text" placeholder="Name" name="dish-name" class="clean-input dish-name" value="' + dishItem.name + '">')
@@ -419,13 +448,45 @@ App.showDish = function(dishItem) {
 		.append('<div class="divider"></div>');
 
 	$('.admin-restaurant-dishes .admin-restaurant-content').append(dish);
+
 	
 	if (!dishItem.id_dish) {
 		dish.find('.dish-name').focus();
 		dish.fadeIn(200);
 	}
+	
+	
+
+	
+	
 };
 
+	
+App.returnOption = function(o, type, parent) {
+	var defaulted  = '';
+	switch (type) {
+		case 'select':
+			defaulted = '<input type="radio" name="dish-options-default-' + parent + '" value="1" ' + (o['default'] == '1' ? 'checked="checked"' : '') + '>';
+			break;
+
+		default:
+		case 'check':
+			defaulted = '<input type="checkbox" name="dish-options-default" value="1" ' + (o['default'] == '1' ? 'checked="checked"' : '') + '>';
+			break;
+	}
+
+	return $('<div class="divider"></div>'
+		+ '<div class="admin-food-item-option-padding" data-type="' + type + '" data-parent="' + parent + '">'
+			+ '<div class="dish-options" data-id_option="' + o.id_option + '">'
+				+ defaulted
+				+ '<input type="text" placeholder="Name" name="dish-options" value="' + o.name + '">'
+				+ '<div class="input-faker-content">$ </div>'
+				+ '<input type="text" placeholder="" name="dish-options-price" value="' + o.price + '">'
+				+ '<div class="divider"></div>'
+			+ '</div>'
+		+ '</div>');
+}
+;
 
 
 (function($) {

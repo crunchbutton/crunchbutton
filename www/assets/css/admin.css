@@ -548,3 +548,11 @@ input[name="dish-options-price"] {
 	font-weight: bold;
 	margin-bottom: 5px;
 }
+
+.admin-dish-options-wrapper {
+	margin-bottom: 10px;
+}
+
+.admin-dish-options input[type="radio"], .admin-dish-options input[type="checkbox"] {
+	margin-right: 5px;
+}
