@@ -82,7 +82,6 @@ $(function() {
 				}
 			}
 			
-			
 			if (!isDishes) {
 				$('input[name="dish_check"][value="0"]').prop('checked', true);
 				$('input[name="dish_check"][value="1"]').prop('checked', false);
@@ -385,26 +384,25 @@ App.showDish = function(dishItem) {
 	dish.append(content);
 	content.append(padding);
 	
+	var options = $('<div class="admin-dish-options"></div>');
+
+	options.append('<div class="divider dots"></div>'
+					+ '<div class="admin-food-item-content-padding">'
+						+ 'Toppings/options for this item:'
+						+ '<div class="input-faker dish-options">'
+							+ '<input type="text" placeholder="Name" name="dish-options">'
+							+ '<input type="text" placeholder="" name="dish-options">'
+							+ '<div class="input-faker-content">$ </div>'
+							+ '<div class="divider"></div>'
+						+ '</div>'
+					+ '</div>');
+	
+	
 	padding
 		.append('<input type="text" placeholder="Name" name="dish-name" class="clean-input dish-name" value="' + dishItem.name + '">')
 		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="clean-input" data-clean_type="float"><div class="divider"></div></div>')
-		.append('<textarea placeholder="Description" name="dish-description" class="clean-input dish-description" value="' + dishItem.description + '"></textarea>');
-
-
-						
-
-					/*
-					<div class="divider dots"></div>
-					<div class="admin-food-item-content-padding">
-						Toppings/options for this item:
-						<div class="input-faker dish-options">
-							<input type="text" placeholder="Name" name="dish-options">
-							<input type="text" placeholder="" name="dish-options">
-							<div class="input-faker-content">$ </div>
-							<div class="divider"></div>
-						</div>
-					</div>
-					*/
+		.append('<textarea placeholder="Description" name="dish-description" class="clean-input dish-description" value="' + dishItem.description + '"></textarea>')
+		.append(options);
 					
 	content
 		.append('<div class="divider dots"></div>')
