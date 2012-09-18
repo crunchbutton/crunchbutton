@@ -8,6 +8,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			->idVar('id_restaurant')
 			->load($id);
 	}
+	
+	public function meetDeliveryMin($order) {
+		$price = $this->delivery_min_amt == 'subtotal' ? $order->price : $order->final_price;
+		return $price < $this.delivery_min ? true : false;
+	}
 
 	public function dishes() {
 		if (!isset($this->_dishes)) {

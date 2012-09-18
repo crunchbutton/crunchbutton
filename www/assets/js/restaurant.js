@@ -33,6 +33,11 @@ var Restaurant = function(id) {
 		}
 	}
 	
+	self.meetDeliveryMin = function() {
+		var total = self.delivery_min_amt == 'subtotal' ? App.cart.subtotal() : App.cart.total();
+		return total < parseFloat(self.delivery_min) ? true : false;
+	}
+	
 	self.dateFromItem = function(item, offset) {
 		var
 			theTime = item.split(':'),

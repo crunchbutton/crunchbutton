@@ -677,7 +677,7 @@ App.cart = {
 			totalItems++;
 		}
 
-		if (App.cart.subtotal() < parseFloat(App.restaurant.delivery_min) && App.order.delivery_type == 'delivery') {
+		if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
 			$('.delivery-minimum-error').show();
 		} else {
 			$('.delivery-minimum-error').hide();
