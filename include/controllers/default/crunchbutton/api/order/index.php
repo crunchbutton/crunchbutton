@@ -18,42 +18,66 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 			case 'say':
 			    header('Content-type: text/xml');
+			    $message = '<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
+						.'<Pause length="5" />';
+
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
 					.'<Pause length="2" />'
 					.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
-					.'<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="20" finishOnKey="#" method="get">'
-						.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
-						.'<Pause length="5" />'
-						.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
-						.'<Pause length="5" />'
-						.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
-						.'<Pause length="5" />'
-					.'</Gather></Response>';
-					exit;
+					.'<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="10" finishOnKey="#" method="get">';
+
+				for ($x = 0; $x <= 5; $x++) {
+					echo $message;
+				}
+				echo '</Gather></Response>';
+				exit;
+
 				break;
 				
 			case 'sayorder':
 			    header('Content-type: text/xml');
+				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
+					.'<Gather action="/api/order/'.$order->id_order.'/sayorderonly" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+					.'<Say voice="'.c::config()->twilio->voice.'">Thank you. At the end of the message, you must confirm the order.</Say>'
+					.'<Pause length="2" />'
+					.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>'
+					.'<Pause length="2" />'
+					.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to confirm the order. Press 2 to repeat the order. Press 3 to spell out the street name.</Say>'
+					.'</Gather>'
+					.'</Response>';
+				exit;
+				break;
+				
+			case 'sayorderonly':
+			    header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";
 				
 				switch ($this->request()['Digits']) {
-					case '1':
+					case '2':
 					default:
-						echo '<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="10" finishOnKey="#" method="get">'
-							.'<Say voice="'.c::config()->twilio->voice.'">Thank you. At the end of the message, you must confirm the order.</Say>'
-							.'<Pause length="5" />'
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>'
 							.'<Pause length="2" />'
-							.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat this message, or press 2 to confirm this order.</Say>';
+							.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to confirm the order. Press 2 to repeat the order. Press 3 to spell out the street name.</Say>'
+							.'</Gather>';
 						break;
-					case '2':
+
+					case '1':
 						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. This order has been confirmed.</Say>';
 						$order->confirmed = 1;
 						$order->save();
 						break;
 
+					case '3':
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->streetName().'</Say>'
+							.'<Pause length="2" />'
+							.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to confirm the order. Press 2 to repeat the order. Press 3 to spell out the street name.</Say>'
+							.'</Gather>';
+						break;
+
 				}
-				echo '</Gather></Response>';
+				echo '</Response>';
 				exit;
 				break;
 				
