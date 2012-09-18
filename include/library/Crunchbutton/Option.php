@@ -18,6 +18,23 @@ class Crunchbutton_Option extends Cana_Table {
 		}
 		return $this->_prices;
 	}
+	
+	public function optionPrice($options) {
+	return $this->price;
+		$price = $this->price;
+		return $price;
+print_r($options);
+print_r($price);
+print_r($this->prices());
+exit;
+		foreach ($this->prices() as $price) {
+			if (in_array($price->id_option_parent, $options)) {
+				$price += $price->price;
+			}
+		}
+
+		return $price;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
