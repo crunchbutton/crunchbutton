@@ -441,10 +441,14 @@ class Crunchbutton_Order extends Cana_Table {
 
 		switch ($type) {
 			case 'selfsms':
-				$msg = 'You ordered '.$this->delivery_type.' paying by '.$this->pay_type.". \n".$food."\n\n";
+				$msg = "Crunchbutton\n\n";
 				if ($this->delivery_type == 'delivery') {
-					$msg .= " \naddress: ".$this->address;
+					$msg .= "Your delivery should arrive within ".($this->restaurant()->delivery_estimated_time ? $this->restaurant()->delivery_estimated_time : 60)." minutes.\n";
+				} else {
+					$msg .= "Your order will be ready within ".($this->restaurant()->pickup_estimated_time ? $this->restaurant()->pickup_estimated_time : ($this->restaurant()->delivery_estimated_time ? $this->restaurant()->delivery_estimated_time : 60))." minutes.\n";				
 				}
+				$msg .= "To contact ".$this->restaurant()->name.", call ".$this->restaurant()->phone.".\n\n";
+				$msg .= 'Total: $'.$this->final_price.'';
 				break;
 
 			case 'sms':
