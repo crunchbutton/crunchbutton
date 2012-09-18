@@ -30,6 +30,9 @@ body {
 	line-height: 1.2em;
 	color: #555555;
 }
+input , textarea{
+	font-family: "Helvetica Neue", "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
+}
 ol, ul {
 	list-style: none;
 }
@@ -220,7 +223,7 @@ input[type="number"], input[type="text"], textarea, .input-faker {
 
 .input-faker-content {
 	float: left;
-	margin-top: 2px;
+	margin-top: 1px;
 }
 
 textarea {
@@ -519,4 +522,29 @@ th {
 
 .admin-food-item-delete {
 	margin-top: 5px;
+}
+
+.admin-food-item-option-padding {
+	margin: 0 0 10px 0;
+}
+
+.admin-food-item-option-padding:last-child {
+	margin: 0;
+}
+
+input[name="dish-options"] {
+	width: 320px;
+}
+
+input[name="dish-options-price"] {
+	width: 50px;
+}
+
+.admin-food-item-option-padding .input-faker-content {
+	margin-right: 5px;
+}
+
+.admin-dish-options-title {
+	font-weight: bold;
+	margin-bottom: 5px;
 }

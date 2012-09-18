@@ -385,23 +385,32 @@ App.showDish = function(dishItem) {
 	content.append(padding);
 	
 	var options = $('<div class="admin-dish-options"></div>');
+	var basicOptions = $('<div class="input-faker"></div>');
+	var basicWrapper = $('<div class="admin-dish-options-wrapper"><div class="admin-dish-options-title">Basic options:</div></div>')
+		.append(basicOptions);
 
-	options.append('<div class="divider dots"></div>'
-					+ '<div class="admin-food-item-content-padding">'
-						+ 'Toppings/options for this item:'
-						+ '<div class="input-faker dish-options">'
-							+ '<input type="text" placeholder="Name" name="dish-options">'
-							+ '<input type="text" placeholder="" name="dish-options">'
-							+ '<div class="input-faker-content">$ </div>'
-							+ '<div class="divider"></div>'
-						+ '</div>'
-					+ '</div>');
+	var opts = dishItem.options();
+	for (var x in opts) {
+		var option = opts[x];
+		basicOptions.append('<div class="divider"></div>'
+			+ '<div class="admin-food-item-option-padding">'
+				+ '<div class="dish-options" data-id_option="' + option.id_option + '">'
+					+ '<input type="text" placeholder="Name" name="dish-options" value="' + option.name + '">'
+					+ '<div class="input-faker-content">$ </div>'
+					+ '<input type="text" placeholder="" name="dish-options-price" value="' + option.price + '">'
+					+ '<div class="divider"></div>'
+				+ '</div>'
+			+ '</div>');
+	}
+	
+	options.append(basicWrapper);
 	
 	
 	padding
 		.append('<input type="text" placeholder="Name" name="dish-name" class="clean-input dish-name" value="' + dishItem.name + '">')
 		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="clean-input" data-clean_type="float"><div class="divider"></div></div>')
 		.append('<textarea placeholder="Description" name="dish-description" class="clean-input dish-description" value="' + dishItem.description + '"></textarea>')
+		.append('<div class="divider"></div><div class="divider dots" style="margin: 10px 0 10px 0;"></div>')
 		.append(options);
 					
 	content
