@@ -365,16 +365,18 @@ class Crunchbutton_Order extends Cana_Table {
 			case 'sms':
 			case 'web':
 				$with = 'w/';
+				$space = ',';
 				break;
 
 			case 'phone':
-				$with = 'with';
+				$with = '. ';
+				$space = '.';
 				break;
 		}
 		
 		if ($type == 'phone') {
-			$pFind = ['/fries/i'];
-			$pReplace = ['frys'];
+			$pFind = ['/fries/i','/BBQ/i'];
+			$pReplace = ['frys','barbecue'];
 		} else {
 			$pFind = $pReplace = [];
 		}
@@ -385,7 +387,7 @@ class Crunchbutton_Order extends Cana_Table {
 		foreach ($this->dishes() as $dish) {
 
 			if ($type == 'phone') {
-				$prefix = $d->format('jS').' item: ';
+				$prefix = $d->format('jS').' item. ';
 				$d->modify('+1 day');
 			}
 
@@ -398,7 +400,7 @@ class Crunchbutton_Order extends Cana_Table {
 					if ($option->option()->type == 'select') {
 						continue;
 					}
-					$foodItem .= preg_replace($pFind, $pReplace, $option->option()->name).', ';
+					$foodItem .= preg_replace($pFind, $pReplace, $option->option()->name).$space.' ';
 				}
 				$foodItem = substr($foodItem, 0, -2).'. ';
 
@@ -407,7 +409,7 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 
 			if ($type == 'phone') {
-				$foodItem .= ']]></Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[';
+				$foodItem .= ']]></Say><Pause length="2" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[';
 			}
 			$food .= $foodItem;
 		}
@@ -463,10 +465,14 @@ class Crunchbutton_Order extends Cana_Table {
 				for ($x=0; $x<strlen($spacedPhone); $x++) {
 					$spacedPhones .= $spacedPhone{$x}.'. ';
 				}
-				$msg = '<![CDATA['.$food.'.]]></Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[Customer Name. '.$this->name.'.]]></Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Phone number. '.$spacedPhones.'.';
+				$msg = 
+						'Phone number. '.$spacedPhones.'.'
+						.'</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[Customer Name. '.$this->name.'.]]></Say><Pause length="1" /><Say>';
 
 				if ($this->delivery_type == 'delivery') {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Deliver to '.$this->phoneticStreet($this->address);
+				} else {
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">This order is for pickup. ';
 				}
 				
 				if ($this->pay_type == 'card') {
@@ -474,6 +480,8 @@ class Crunchbutton_Order extends Cana_Table {
 				} else {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will pay for this order with cash.';				
 				}
+
+				$msg .= '</Say><Pause length="2" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA['.$food.'.]]>';
 
 				if ($this->notes) {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Customer Notes. '.$this->notes;

@@ -7,6 +7,11 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		if (!$order->id_order) {
 			$order = Order::o(c::getPagePiece(2));
 		}
+		
+		$pauseRepeat =
+			'<Pause length="2" />'
+			.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat the order. Press 2 to confirm the order. Press 3 to spell out the street name.</Say>';
+		$repeat = 5;
 
 		switch (c::getPagePiece(3)) {
 			case 'refund':
@@ -26,7 +31,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
 					.'<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="10" finishOnKey="#" method="get">';
 
-				for ($x = 0; $x <= 5; $x++) {
+				for ($x = 0; $x <= $repeat; $x++) {
 					echo $message;
 				}
 				echo '</Gather></Response>';
@@ -40,10 +45,13 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					.'<Gather action="/api/order/'.$order->id_order.'/sayorderonly" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 					.'<Say voice="'.c::config()->twilio->voice.'">Thank you. At the end of the message, you must confirm the order.</Say>'
 					.'<Pause length="2" />'
-					.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>'
-					.'<Pause length="2" />'
-					.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to confirm the order. Press 2 to repeat the order. Press 3 to spell out the street name.</Say>'
-					.'</Gather>'
+					.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>';
+
+				for ($x = 0; $x <= $repeat; $x++) {
+					echo $pauseRepeat;
+				}
+
+				echo '</Gather>'
 					.'</Response>';
 				exit;
 				break;
@@ -53,16 +61,19 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";
 				
 				switch ($this->request()['Digits']) {
-					case '2':
+					case '1':
 					default:
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly" numDigits="1" timeout="10" finishOnKey="#" method="get">'
-							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>'
-							.'<Pause length="2" />'
-							.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to confirm the order. Press 2 to repeat the order. Press 3 to spell out the street name.</Say>'
-							.'</Gather>';
+							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>';
+
+						for ($x = 0; $x <= $repeat; $x++) {
+							echo $pauseRepeat;
+						}
+
+						echo '</Gather>';
 						break;
 
-					case '1':
+					case '2':
 						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. This order has been confirmed.</Say>';
 						$order->confirmed = 1;
 						$order->save();
@@ -70,10 +81,13 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 					case '3':
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly" numDigits="1" timeout="10" finishOnKey="#" method="get">'
-							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->streetName().'</Say>'
-							.'<Pause length="2" />'
-							.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to confirm the order. Press 2 to repeat the order. Press 3 to spell out the street name.</Say>'
-							.'</Gather>';
+							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->streetName().'</Say>';
+
+						for ($x = 0; $x <= $repeat; $x++) {
+							echo $pauseRepeat;
+						}
+						
+						echo '</Gather>';
 						break;
 
 				}
