@@ -555,7 +555,7 @@ th {
 	margin: 0;
 }
 
-input[name="dish-options"] {
+input[name="dish-options-name"] {
 	width: 300px;
 }
 
@@ -593,5 +593,14 @@ input[name="dish-options-price"] {
 }
 
 .dish-options-delete {
-	border-radius: 4px;
+	display: block;
+	height: 9px;
+	width: 9px;
+	background: url(/assets/images/admin/option-delete.png);
+	float: right;
+	margin: 4px 6px 0 0;
+}
+
+.admin-dish-options-wrapper .admin-food-item-option-padding:last-child .dish-options-delete {
+	display: none;
 }

@@ -384,13 +384,40 @@ $(function() {
 		}
 	});
 	
+	$('.dish-options-delete').live('click', function() {
+		var parent = $(this).closest('.dish-options');
+		var id_option = parent.attr('data-id_option');
+		var name = parent.find('input[name="dish-options-name"]').val();
+		
+		var remove = function() {
+			parent.fadeOut(100,function() {
+				$(this).remove();
+			});
+		};
+
+		if (!id_option) {
+			remove();
+		} else {
+			if (confirm('Are you sure you want to delete "' + name + '"')) {
+				remove();
+			}
+		}
+	});
+	
 	$('.admin-dish-options-wrapper input[type="text"]').live('keyup', function() {
 		var allfull = true;
 
-		$(this).closest('.admin-dish-options-wrapper').find('input[type="text"]').each(function() {
-
-			if ($(this).val() == '' || !$(this).val()) {
-				allfull = false;
+		$(this).closest('.admin-dish-options-wrapper').find('.dish-options').each(function() {
+		console.log(this)
+			var selfComplete = true;
+			$(this).find('input[type="text"]').each(function() {
+				if ($(this).val() == '' || !$(this).val()) {
+				console.log(this);
+					allfull = selfComplete = false;
+				}
+			});
+			if (selfComplete) {
+				$(this).addClass('blue');
 			}
 		});
 
@@ -585,11 +612,12 @@ App.returnOption = function(o, type, parent) {
 
 	return $('<div class="divider"></div>'
 		+ '<div class="admin-food-item-option-padding" data-type="' + type + '" data-parent="' + parent + '">'
-			+ '<div class="dish-options blue" data-id_option="' + o.id_option + '">'
+			+ '<div class="dish-options ' + (o.id_option ? 'blue' : '') + '" data-id_option="' + o.id_option + '">'
 				+ defaulted
-				+ '<input type="text" placeholder="Name" name="dish-options" value="' + o.name + '">'
+				+ '<input type="text" placeholder="Name" name="dish-options-name" value="' + o.name + '">'
 				+ '<div class="input-faker-content">$ </div>'
 				+ '<input type="text" placeholder="" name="dish-options-price" value="' + o.price + '">'
+				+ '<a class="dish-options-delete" href="javascript:;"></a>'
 				+ '<div class="divider"></div>'
 			+ '</div>'
 		+ '</div>');
