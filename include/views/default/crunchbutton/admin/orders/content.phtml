@@ -1,0 +1,100 @@
+<? if (!$this->orders->count()) : ?>
+	No results found
+<? else : ?>
+
+	<table class="list-orders">
+		<tr>
+			<th class="list-order-header">Info</th>
+			<th class="list-order-header">Date</th>
+			<th class="list-order-header">Restaurant</th>
+			<th class="list-order-header">Order</th>
+			<th class="list-order-header">Price</th>
+			<th class="list-order-header">Pay Type</th>
+			<th class="list-order-header">Order Type</th>
+			<th class="list-order-header">Customer</th>
+		</tr>
+		<? foreach ($this->orders as $order) : ?>
+			<? $date = $order->date(); ?>
+			<tr class="list-order-item">
+				<td>
+					<table>
+						<tr><td><b>ID</b></td><td><a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a></td></tr>
+						<tr><td><b>Env</b></td><td><?=$order->env?></td></tr>
+						<tr><td><br />
+							<? if ($order->refunded) : ?>
+								REFUNDED
+							<? else : ?>
+								<a href="javascript:;" class="refund" data-uuid="<?=$order->uuid?>">REFUND</a></td></tr>
+							<? endif ; ?>
+					</table>
+				</td>
+				<td>
+					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
+				</td>
+				<td><?=$order->restaurant()->name?></td>
+				<td style="width: 300px; white-space: normal;">
+					<ul>
+					<? foreach ($order->dishes() as $dish) : ?>
+						<li>
+							<?=$dish->dish()->name?>
+							<? if ($dish->options()->count()) : ?>
+								<ul>
+								<? foreach ($dish->options() as $option) : ?>
+									<li><?=$option->option()->name?></li>
+								<? endforeach ; ?>
+								</ul>
+							<? endif ; ?>
+						</li>
+					<? endforeach ; ?>
+					</ul>
+				</td>
+				<td>
+					<table>
+						<tr>
+							<th>Subtotal</th>
+							<td>$<?=number_format($order->price,2)?></td>
+						</tr>
+						<tr>
+							<th>Service Fee</th>
+							<td>$<?=$order->serviceFee()?> ($<?=$order->service_fee ? $order->service_fee : '0'?>) </td>
+						</tr>
+						<tr>
+							<th>Delivery Fee</th>
+							<td>$<?=$order->deliveryFee()?></td>
+						</tr>
+						<tr>
+							<th>Tax</th>
+							<td>$<?=$order->tax()?> (<?=$order->tax ? $order->tax : '0'?>%)</td>
+						</tr>
+						<tr>
+							<th>Tip</th>
+							<td>$<?=$order->tip()?> (<?=$order->tip ? $order->tip : '0'?>%)</td>
+						</tr>
+						<tr>
+							<th>Total</th>
+							<td>$<?=number_format($order->final_price,2)?></td>
+						</tr>
+					</table>
+				</td>
+				<td><?=$order->pay_type?></td>
+				<td><?=$order->delivery_type?></td>
+				<td>
+					<table>
+						<tr>
+							<th>Name</th>
+							<td style="white-space: normal;"><?=$order->name?></td>
+						</tr>
+						<tr>
+							<th>Phone</th>
+							<td><?=$order->phone?></td>
+						</tr>
+						<tr>
+							<th>Address</th>
+							<td style="white-space: normal;"><?=$order->address?></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		<? endforeach ; ?>
+	</table>
+<? endif ; ?>

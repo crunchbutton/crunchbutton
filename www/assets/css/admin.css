@@ -604,3 +604,14 @@ input[name="dish-options-price"] {
 .admin-dish-options-wrapper .admin-food-item-option-padding:last-child .dish-options-delete {
 	display: none;
 }
+
+.orders-loader {
+	position: absolute;
+	width: 997px;
+	margin-top: 50px;
+	text-align: center;
+}
+
+.admin-content-orders {
+	min-height: 350px;
+}

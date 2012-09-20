@@ -1,113 +1,75 @@
 <div class="admin-content-wrapper">
-	<div class="admin-content">
+	<div class="admin-content admin-content-orders">
 		<table class="admin-orders-filter">
 			<tr>
 				<td class="label-sub">SEARCH</td>
-				<td class="content-sub"><input name="order-search" type="text" style="width: 200px;"></td>
+				<td class="content-sub"><input name="order-search" type="text" style="width: 200px;" value="<?=strip_tags($_REQUEST['search'])?>"></td>
 				<td style="width: 100%"></td>
 				<td class="label-sub">DATE&nbsp;RANGE</td>
-				<td class="content-sub"><input name="date-range" class="date-picker" type="text" style="width: 200px;"></td>
+				<?
+					$date = new DateTime('now');
+					$start = $date->format('m/d/Y');
+					$date->modify('14 days ago');
+					$end = $date->format('m/d/Y');
+				?>
+				<td class="content-sub"><input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>"></td>
 				<td class="order-range-all">&nbsp;&nbsp;<input type="checkbox" name="order-range-all"><label>&nbsp;All Dates</label></td>
+			</tr>
+			<tr>
+				<td class="label-sub">ENVIRONMENT</td>
+				<td class="content-sub">
+					<? $envs = ['live','beta','dev','local']; ?>
+					<select name="env">
+						<? foreach ($envs as $env) : ?>
+							<option value="<?=$env?>"<?=c::env() == $env ? ' selected' : ''?>><?=$env?></option>
+						<? endforeach ; ?>
+					</select>
+				</td>
+				<td style="width: 100%"></td>
+				<td class="label-sub">PROCESSOR</td>
+				<td class="content-sub" colspan="2">
+					<select name="processor">
+						<option value="balanced" selected>balanced</option>
+						<option value="stripe">stripe</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-sub">LIMIT</td>
+				<td class="content-sub">
+					<input type="number" name="limit" value="25" min="0">
+				</td>
+				<td style="width: 100%"></td>
+				<td class="label-sub">RESTAURANT</td>
+				<td class="content-sub" colspan="2">
+					<select name="restaurant">
+						<option value="" selected>[ All ]</option>
+						<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
+							<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+						<? endforeach ; ?>
+					</select>
+				</td>
+				
+			</tr>
+			
+			
+			<tr>
+				<td colspan="6">
+					<table cellpadding="3" cellspacing="3" style="width: auto; margin: 0 auto;">
+						<tr>
+							<td><div class="action-button green action-button-small admin-order-search"><span>Search</span></div></td>
+							<td><a href="javascript:;" class="control-label admin-order-export">Export</a></td>
+						</tr>
+					</table>
+				</td>
+				
 			</tr>
 		</table>
 		<br /><br />
 		<div class="divider dots"></div>
 		<br />
-		<table class="list-orders">
-			<tr>
-				<th class="list-order-header">Info</th>
-				<th class="list-order-header">Date</th>
-				<th class="list-order-header">Restaurant</th>
-				<th class="list-order-header">Order</th>
-				<th class="list-order-header">Price</th>
-				<th class="list-order-header">Pay Type</th>
-				<th class="list-order-header">Order Type</th>
-				<th class="list-order-header">Customer</th>
-			</tr>
-			<? foreach (Order::recent() as $order) : ?>
-				<? $date = new DateTime($order->date); ?>
-				<tr class="list-order-item">
-					<td>
-						<table>
-							<tr><td><b>ID</b></td><td><a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a></td></tr>
-							<tr><td><b>Env</b></td><td><?=$order->env?></td></tr>
-							<tr><td><br />
-								<? if ($order->refunded) : ?>
-									REFUNDED
-								<? else : ?>
-									<a href="javascript:;" class="refund" data-uuid="<?=$order->uuid?>">REFUND</a></td></tr>
-								<? endif ; ?>
-						</table>
-					</td>
-					<td>
-						<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
-					</td>
-					<td><?=$order->restaurant()->name?></td>
-					<td style="width: 300px; white-space: normal;">
-						<ul>
-						<? foreach ($order->dishes() as $dish) : ?>
-							<li>
-								<?=$dish->dish()->name?>
-								<? if ($dish->options()->count()) : ?>
-									<ul>
-									<? foreach ($dish->options() as $option) : ?>
-										<li><?=$option->option()->name?></li>
-									<? endforeach ; ?>
-									</ul>
-								<? endif ; ?>
-							</li>
-						<? endforeach ; ?>
-						</ul>
-					</td>
-					<td>
-						<table>
-							<tr>
-								<th>Subtotal</th>
-								<td>$<?=number_format($order->price,2)?></td>
-							</tr>
-							<tr>
-								<th>Service Fee</th>
-								<td>$<?=$order->serviceFee()?> ($<?=$order->service_fee ? $order->service_fee : '0'?>) </td>
-							</tr>
-							<tr>
-								<th>Delivery Fee</th>
-								<td>$<?=$order->deliveryFee()?></td>
-							</tr>
-							<tr>
-								<th>Tax</th>
-								<td>$<?=$order->tax()?> (<?=$order->tax ? $order->tax : '0'?>%)</td>
-							</tr>
-							<tr>
-								<th>Tip</th>
-								<td>$<?=$order->tip()?> (<?=$order->tip ? $order->tip : '0'?>%)</td>
-							</tr>
-							<tr>
-								<th>Total</th>
-								<td>$<?=number_format($order->final_price,2)?></td>
-							</tr>
-						</table>
-					</td>
-					<td><?=$order->pay_type?></td>
-					<td><?=$order->delivery_type?></td>
-					<td>
-						<table>
-							<tr>
-								<th>Name</th>
-								<td style="white-space: normal;"><?=$order->name?></td>
-							</tr>
-							<tr>
-								<th>Phone</th>
-								<td><?=$order->phone?></td>
-							</tr>
-							<tr>
-								<th>Address</th>
-								<td style="white-space: normal;"><?=$order->address?></td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			<? endforeach ; ?>
-		</table>
+		<div class="orders-loader"><img src="/assets/images/admin/loader.gif"></div>
+		<div class="orders-content"></div>
 	</div>
 </div>		
 <script>
@@ -121,5 +83,15 @@
 				el.replaceWith('REFUNDED');
 			});
 		});
+		
+		$('.admin-order-search').live('click', function() {
+			App.orders.load();
+		});
+		
+		$('.admin-order-export').live('click', function() {
+			App.orders.export();
+		});
+		
+		App.orders.load();
 	});
 </script>

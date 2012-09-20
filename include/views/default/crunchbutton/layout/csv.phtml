@@ -1,0 +1,10 @@
+<?php
+
+header('Expires: 0');
+header('Cache-control: private');
+header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+header('Content-Description: File Transfer');
+header('Content-Type: text/csv');
+header('Content-disposition: attachment; filename="'.($this->title ? $this->title : 'export').'.csv"');
+
+echo preg_replace(["/\r\n/","/\r/"],["\n","\n"],$this->content);

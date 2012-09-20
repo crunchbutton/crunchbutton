@@ -268,6 +268,65 @@ class Crunchbutton_Order extends Cana_Table {
 		return self::q('select * from `order` order by `date` DESC');
 	}
 	
+	public static function find($search = []) {
+		$query = '
+			select `order`.* from `order`
+			left join restaurant using(id_restaurant)
+			where id_order is not null
+		';
+		if ($search['env']) {
+			$query .= ' and env="'.$search['env'].'" ';
+		}
+		if ($search['processor']) {
+			$query .= ' and processor="'.$search['processor'].'" ';
+		}
+		if ($search['start']) {
+			$s = new DateTime($search['start']);
+			$query .= ' and DATE(`date`)>="'.$s->format('Y-m-d').'" ';
+		}
+		if ($search['end']) {
+			$s = new DateTime($search['end']);
+			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';
+		}
+		
+		if ($search['restaurant']) {
+			$query .= ' and `order`.id_restaurant="'.$search['restaurant'].'" ';
+		}
+		
+		if ($search['search']) {
+			$qn =  '';
+			$q = '';
+			$searches = explode(' ',$search['search']);
+			foreach ($searches as $word) {
+				if ($word{0} == '-') {
+					$qn .= ' and `order`.name not like "%'.substr($word,1).'%" ';
+					$qn .= ' and `order`.address not like "%'.substr($word,1).'%" ';
+					$qn .= ' and `order`.phone not like "%'.substr($word,1).'%" ';
+					$qn .= ' and `restaurant`.name not like "%'.substr($word,1).'%" ';
+				} else {
+					$q .= '
+						and (`order`.name like "%'.$word.'%"
+						or `order`.address like "%'.$word.'%"
+						or `restaurant`.name like "%'.$word.'%"
+						or `order`.phone like "%'.$word.'%")
+					';
+				}
+			}
+			$query .= $q.$qn;
+		}
+
+		$query .= '
+			order by `date` DESC
+		';
+		
+		if ($search['limit']) {
+			$query .= ' limit '.$search['limit'].' ';
+		}
+
+		$orders = self::q($query);
+		return $orders;
+	}
+	
 	public function dishes() {
 		if (!isset($this->_dishes)) {
 			$this->_dishes = Order_Dish::q('select * from order_dish where id_order="'.$this->id_order.'"');

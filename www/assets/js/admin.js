@@ -623,6 +623,37 @@ App.returnOption = function(o, type, parent) {
 		+ '</div>');
 };
 
+App.orders = {
+	params: function() {
+		return {
+			search: $('input[name="order-search"]').val(),
+			env: $('select[name="env"]').val(),
+			processor: $('select[name="processor"]').val(),
+			limit: $('input[name="limit"]').val(),
+			dates: $('input[name="date-range"]').val(),
+			restaurant: $('select[name="restaurant"]').val()
+		};
+	},
+	load: function() {
+		//admin-orders-filter
+		$('.orders-loader').show();
+		$('.orders-content').html('');
+		$.ajax({
+			url: '/admin/orders/content',
+			data: App.orders.params(),
+			complete: function(content) {
+				$('.orders-content').html(content.responseText);
+				$('.orders-loader').hide();
+			}
+		});
+	},
+	export: function() {
+		var params = App.orders.params();
+		params.export = 'csv';
+		location.href = '/admin/orders/content?' + jQuery.param(params);
+	}
+};
+
 
 (function($) {
 	$.fn.getCursorPosition = function() {
