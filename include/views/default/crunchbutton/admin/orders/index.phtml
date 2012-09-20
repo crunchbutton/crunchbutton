@@ -29,6 +29,7 @@
 				<td class="label-sub">PROCESSOR</td>
 				<td class="content-sub" colspan="2">
 					<select name="processor">
+						<option value="" selected>[ All ]</option>
 						<option value="balanced" selected>balanced</option>
 						<option value="stripe">stripe</option>
 					</select>
@@ -90,6 +91,12 @@
 		
 		$('.admin-order-export').live('click', function() {
 			App.orders.export();
+		});
+		
+		$('[name="order-search"]').live('keyup', function(e) {
+			if (e.which == 13) {
+				App.orders.load();
+			}
 		});
 		
 		App.orders.load();
