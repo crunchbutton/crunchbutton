@@ -294,13 +294,16 @@ $(function() {
 		return false;
 	});
 	
+	var d = $('.date-picker').val();
+	d = d.split(',');
+	
 	$('.date-picker').DatePicker({
-		format:'m/d/Y',
-		date: $('.date-picker').val(),
-		current: $('.date-picker').val(),
+		format: 'm/d/Y',
+		date: d,
+		current: d[0],
 		starts: 1,
 		mode: 'range',
-		calendars: 3,
+		calendars: 2,
 		position: 'r',
 		onBeforeShow: function(){
 			//$('.date-picker').DatePickerSetDate($('.date-picker').val(), true);
