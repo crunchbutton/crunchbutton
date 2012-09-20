@@ -9,7 +9,13 @@ class Controller_admin_orders_content extends Crunchbutton_Controller_Account {
 		}
 
 		if ($_REQUEST['search']) {
-			$search['search'] = $_REQUEST['search'];
+
+			if ($_REQUEST['search']{0} == '#') {
+				$search['order'] = substr($_REQUEST['search'],1);
+			} else {
+				$search['search'] = $_REQUEST['search'];
+			}
+
 		}
 		
 		if ($_REQUEST['env']) {
