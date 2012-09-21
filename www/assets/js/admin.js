@@ -185,29 +185,64 @@ $(function() {
 	}
 
 	$('.admin-restaurant-save').live('click', function() {
-		saveRestaurant();
-		saveHours();
+		//saveRestaurant();
+		//saveHours();
 		saveDishes();
 	});
 	
 	var saveDishes = function() {
 		var selector = 'input.dataset-dish, select.dataset-dish, textarea.dataset-dish';
+		var dishes = [];
 
 		$('.admin-food-item-wrap').each(function() {
-
 			var id = $(this).attr('data-id_dish');
-			
+			var values = getValues(selector, {});
+			var dish = {
+				name: values['dish-name'],
+				description: values['dish-description'],
+				price: values['dish-price']
+			};
+
 			if (id) {
-				App.cache('Dish', id, function() {
-					var dish = getValues(selector, this);
-//					dish.save();
-				});
-			} else {
-				var dish = getValues(selector, {});
-				dish = new Dish(dish);
-				// dish.save();
+				dish.id_dish = id;
 			}
+			
+			dish.optionsGroups = [];
+			$(this).find('.admin-dish-options .admin-dish-options-wrapper').each(function() {
+				var id = $(this).attr('data-parent');
+				
+				var optionGroup = {
+					name: $(this).find('.admin-dish-options-title').html(),
+					price: values['dish-options-price'] || 0.00,
+					'default': values['dish-options-default'],
+				};
+			
+				$(this).find('.admin-dish-options .dish-options').each(function() {
+					var id = $(this).attr('data-id_option');
+					var values = getValues($(this).find('input'), {});
+
+					if (values['dish-options-name']) {
+						var option = {
+							name: values['dish-options-name'],
+							price: values['dish-options-price'] || 0.00,
+							'default': values['dish-options-default'],
+						};
+						
+						if (id) {
+							option.id_option = id;
+						}
+						dish.options[dish.options.length] = option;
+					}
+	
+				});
+			});
+			
+			dishes[dishes.length] = dish;
+
 		});
+			
+		console.log(dishes);
+//		$.post('/api/restaurant/' + App.restaurant + '/dishes', {dishes: dishes});
 	}
 
 	var saveRestaurant = function() {
@@ -294,27 +329,30 @@ $(function() {
 		return false;
 	});
 	
-	var d = $('.date-picker').val();
-	d = d.split(',');
+	if ($('.date-picker').length) {
+		var d = $('.date-picker').val();
+		d = d.split(',');
+
 	
-	$('.date-picker').DatePicker({
-		format: 'm/d/Y',
-		date: d,
-		current: d[0],
-		starts: 1,
-		mode: 'range',
-		calendars: 2,
-		position: 'r',
-		onBeforeShow: function(){
-			//$('.date-picker').DatePickerSetDate($('.date-picker').val(), true);
-		},
-		onChange: function(formated, dates){
-			$('.date-picker').val(formated);
-			if ($('#closeOnSelect input').attr('checked')) {
-				$('.date-picker').DatePickerHide();
+		$('.date-picker').DatePicker({
+			format: 'm/d/Y',
+			date: d,
+			current: d[0],
+			starts: 1,
+			mode: 'range',
+			calendars: 2,
+			position: 'r',
+			onBeforeShow: function(){
+				//$('.date-picker').DatePickerSetDate($('.date-picker').val(), true);
+			},
+			onChange: function(formated, dates){
+				$('.date-picker').val(formated);
+				if ($('#closeOnSelect input').attr('checked')) {
+					$('.date-picker').DatePickerHide();
+				}
 			}
-		}
-	});
+		});
+	}
 	
 	$('input[name="order-range-all"]').live('change', function() {
 		if ($(this).prop('checked')) {
