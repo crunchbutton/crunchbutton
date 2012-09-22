@@ -44,19 +44,29 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		
 	}
 	
-	public function createMerchant() {
+	public function createMerchant($type = 'person', $taxid = '', $dob = '1842-01', $person = '') {
 		try {
-			$merchant = Balanced\Marketplace::mine()->createMerchant(
+			$params = [
+				'type' => $type,
+				'name' => $this->name,
+				'phone_number' => $this->phone,
+				'country_code' => 'USA',
+				'street_address' => $this->address,
+				'postal_code' => $this->zip
+			];
+			switch ($type) {
+				case 'person':
+					$params['dob'] = $dob;
+					break;
+				case 'business':
+					$params['tax_id'] = $taxid;
+					$params['person'] = $person;
+					break;
+			}
+
+			$merchant = c::balanced()->createMerchant(
 		        'restaurant-'.$this->id_restaurant.'@_DOMAIN_',
-				[
-					'type' => 'person',
-					'name' => $this->name,
-					'phone_number' => $this->phone,
-					'country_code' => 'USA',
-					'dob' => '1842-01',
-					'street_address' => $this->address,
-					'postal_code' => $this->zip
-				],
+				$params,
 				null,
 		        null,
 				$this->name

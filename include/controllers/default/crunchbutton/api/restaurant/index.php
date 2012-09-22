@@ -10,6 +10,12 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 					$r = Restaurant::o(c::getPagePiece(2));
 
 					switch (c::getPagePiece(3)) {
+						case 'merchant':
+							if ($r->id_restaurant) {
+								$r->createMerchant($this->request()['type'], $this->request()['taxid'], $this->request()['dob'], $this->request()['person']);
+							}
+							break;					
+
 						case 'credit':
 							if ($r->id_restaurant) {
 								$p = Payment::credit([

@@ -1,5 +1,55 @@
 <div class="admin-content-wrapper">
 	<div class="admin-content">
+	
+
+		<h1>create merchant account</h1>
+		<form id="restaurant-merchant" onsubmit="return false;">
+			<table>
+				<tr>
+					<td>restaurant</td>
+					<td>
+						<select name="restaurant">
+						<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
+							<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+						<? endforeach ; ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>type</td>
+					<td>
+						<select name="type">
+							<option value="person">person</option>
+							<option value="business">business</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>taxid (business)</td>
+					<td>
+						<input type="text" name="taxid">
+					</td>
+				</tr>
+				<tr>
+					<td>person name (business)</td>
+					<td>
+						<input type="text" name="person">
+					</td>
+				</tr>
+				<tr>
+					<td>dob (person) YYYY-MM</td>
+					<td>
+						<input type="text" name="dob">
+					</td>
+				</tr>
+				
+				<tr>
+					<td><button class="restaurant-merchant-button">submit</button></td>
+				</tr>
+			</table>
+		</form>
+
+		<br /><br /><br /><br /><br />
 		<h1>add bank info</h1>
 		<form id="restaurant-bank-info" onsubmit="return false;">
 			<table>
@@ -70,11 +120,25 @@
 				</tr>
 			</table>
 		</form>
+		
+		
 	</div>
 </div>
 
 <script>
 	$(function() {
+		$('.restaurant-merchant-button').click(function() {
+			var form = $('#restaurant-merchant');
+			$.post('/api/restaurant/' + form.find('[name="restaurant"]').val() + '/merchant', {
+				type: form.find('[name="type"]').val(),
+				person: form.find('[name="person"]').val(),
+				taxid: form.find('[name="taxid"]').val(),
+				dob: form.find('[name="dob"]').val()
+			}, function() {
+				alert('done');
+			});
+		});
+	
 		$('.restaurant-bank-info-button').click(function() {
 
 			var form = $('#restaurant-bank-info');

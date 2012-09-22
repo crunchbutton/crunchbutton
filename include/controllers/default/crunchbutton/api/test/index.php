@@ -2,6 +2,7 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+	exit;
 //		$r = Restaurant::o(1);
 //		$r->saveBankInfo('321174851','1234567890','test');
 		$p = Payment::credit([
