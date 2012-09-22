@@ -2,6 +2,13 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+//		$r = Restaurant::o(1);
+//		$r->saveBankInfo('321174851','1234567890','test');
+		$p = Payment::credit([
+			'id_restaurant' => 1,
+			'amount' => 5.00,
+			'note' => 'another test'
+		]);
 
 		exit;
 		$q = 'select dish_option.* from dish_option left join dish using(id_dish) where dish.id_restaurant="18" and dish_option.id_dish="126"';

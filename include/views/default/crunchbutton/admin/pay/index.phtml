@@ -1,0 +1,102 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content">
+		<h1>add bank info</h1>
+		<form id="restaurant-bank-info" onsubmit="return false;">
+			<table>
+				<tr>
+					<td>restaurant</td>
+					<td>
+						<select name="restaurant">
+						<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
+							<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+						<? endforeach ; ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>routing</td>
+					<td>
+						<input type="text" name="routing">
+					</td>
+				</tr>
+				<tr>
+					<td>account</td>
+					<td>
+						<input type="text" name="account">
+					</td>
+				</tr>
+				<tr>
+					<td>name on account</td>
+					<td>
+						<input type="text" name="name">
+					</td>
+				</tr>
+				
+				<tr>
+					<td><button class="restaurant-bank-info-button">submit</button></td>
+				</tr>
+			</table>
+		</form>
+
+		<br /><br /><br /><br /><br />
+		<h1>send money</h1>
+		<form id="restaurant-pay" onsubmit="return false;">
+			<table>
+				<tr>
+					<td>restaurant</td>
+					<td>
+						<select name="restaurant">
+						<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
+							<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+						<? endforeach ; ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>amount</td>
+					<td>
+						<input type="text" name="amount">
+					</td>
+				</tr>
+				<tr>
+					<td>note</td>
+					<td>
+						<input type="text" name="note">
+					</td>
+				</tr>
+				
+				<tr>
+					<td><button class="restaurant-pay-button">submit</button></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
+
+<script>
+	$(function() {
+		$('.restaurant-bank-info-button').click(function() {
+
+			var form = $('#restaurant-bank-info');
+			$.post('/api/restaurant/' + form.find('[name="restaurant"]').val() + '/bankinfo', {
+				routing: form.find('[name="routing"]').val(),
+				account: form.find('[name="account"]').val(),
+				name: form.find('[name="name"]').val()
+			}, function() {
+				alert('done');
+			});
+		});
+
+		$('.restaurant-pay-button').click(function() {
+			var form = $('#restaurant-pay');
+			$.post('/api/restaurant/' + form.find('[name="restaurant"]').val() + '/credit', {
+				amount: form.find('[name="amount"]').val(),
+				note: form.find('[name="note"]').val()
+			}, function() {
+				alert('done');
+			});
+		});
+
+	})
+</script>
+

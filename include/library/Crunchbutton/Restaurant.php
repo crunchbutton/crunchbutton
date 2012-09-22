@@ -44,6 +44,64 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		
 	}
 	
+	public function createMerchant() {
+		try {
+			$merchant = Balanced\Marketplace::mine()->createMerchant(
+		        'restaurant-'.$this->id_restaurant.'@_DOMAIN_',
+				[
+					'type' => 'person',
+					'name' => $this->name,
+					'phone_number' => $this->phone,
+					'country_code' => 'USA',
+					'dob' => '1842-01',
+					'street_address' => $this->address,
+					'postal_code' => $this->zip
+				],
+				null,
+		        null,
+				$this->name
+			);
+		} catch (Balanced\Exceptions\HTTPError $e) {
+			print_r($e); exit;
+		}
+		
+		$this->balanced_id = $merchant->id;
+		$this->save();
+		
+		return $merchant;
+	
+	}
+	
+	public function merchant() {
+	
+		if ($this->balanced_id) {
+			$a = Crunchbutton_Balanced_Merchant::byId($this->balanced_id);
+			if ($a->id) {
+				$merchant = $a;
+			}
+		}
+
+		if (!$merchant) {
+			$a = Crunchbutton_Balanced_Merchant::byRestaurant($this);
+			if ($a->id) {
+				$this->balanced_id = $a->id;
+				$this->save();
+				$merchant = $a;
+			}
+		}
+
+		if (!$merchant) {
+			$merchant = $this->createMerchant();
+		}
+		
+		return $merchant;
+	}
+	
+	public function saveBankInfo($routing, $account, $name) {
+		$bank = c::balanced()->createBankAccount($account, $routing, $name);
+		$this->merchant()->addBankAccount($bank);
+	}
+	
 	public function saveHours($hours) {
 		c::db()->query('delete from hour where id_restaurant="'.$this->id_restaurant.'"');
 		foreach ($hours as $day => $times) {

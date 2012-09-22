@@ -10,6 +10,22 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 					$r = Restaurant::o(c::getPagePiece(2));
 
 					switch (c::getPagePiece(3)) {
+						case 'credit':
+							if ($r->id_restaurant) {
+								$p = Payment::credit([
+									'id_restaurant' => $r->id_restaurant,
+									'amount' => $this->request()['amount'],
+									'note' => $this->request()['note']
+								]);
+							}
+							break;
+
+						case 'bankinfo':
+							if ($r->id_restaurant) {
+								$r->saveBankInfo($this->request()['routing'],$this->request()['account'],$this->request()['name']);
+							}
+							break;
+
 						case 'hours':
 							if ($r->id_restaurant) {
 								$r->saveHours($this->request()['hours']);
