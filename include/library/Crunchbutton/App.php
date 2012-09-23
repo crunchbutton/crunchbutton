@@ -24,6 +24,7 @@ class Crunchbutton_App extends Cana_App {
 				break;
 			case 'crunchr.co':
 			case '_DOMAIN_':
+			case 'staging._DOMAIN_':
 				$params['env'] = 'live';
 				break;
 			case 'beta.crunchr.co':
@@ -52,6 +53,7 @@ class Crunchbutton_App extends Cana_App {
 								$_SERVER['__HTTP_HOST'] = 'beta.crunchr.co';
 								break;
 							case '/home/crunchbutton/include/library/Crunchbutton':
+							case '/home/staging.crunchbutton/include/library/Crunchbutton':
 								$params['env'] = 'live';
 								$_SERVER['__HTTP_HOST'] = 'crunchr.co';
 								break;
@@ -64,7 +66,7 @@ class Crunchbutton_App extends Cana_App {
 				}
 		}
 
-		if ($params['env'] == 'live' && !$cli) {
+		if ($params['env'] == 'live' && !$cli && $_SERVER['__HTTP_HOST'] == '_DOMAIN_') {
 			error_reporting(E_ERROR | E_PARSE);
 			
 			if ($_SERVER['HTTPS'] != 'on') {
@@ -91,7 +93,6 @@ class Crunchbutton_App extends Cana_App {
 		
 		if ($params['env'] != 'local' && $_SERVER['__HTTP_HOST'] != 'dev.crunchr.co') {
 			$config->bundle = true;
-
 		}
 
 		$this
