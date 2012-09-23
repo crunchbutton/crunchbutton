@@ -103,6 +103,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 
 		if (!$merchant) {
+			die('no merchant');
 			$merchant = $this->createMerchant();
 		}
 		
