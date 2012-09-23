@@ -6,6 +6,7 @@ class Crunchbutton_Payment extends Cana_Table {
 		$payment->date = date('Y-m-d H:i:s');
 		$credit = Crunchbutton_Balanced_Credit::credit($payment->restaurant(), $payment->amount, $payment->note);
 		$payment->balanced_id = $credit->id;
+		$payment->env = c::env();
 		$payment->save();
 	}
 	

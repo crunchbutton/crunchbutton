@@ -94,8 +94,10 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		if (!$merchant) {
 			$a = Crunchbutton_Balanced_Merchant::byRestaurant($this);
 			if ($a->id) {
-				$this->balanced_id = $a->id;
-				$this->save();
+				if (c::env() == 'live') {
+					$this->balanced_id = $a->id;
+					$this->save();
+				}
 				$merchant = $a;
 			}
 		}
