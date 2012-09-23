@@ -120,8 +120,24 @@
 				</tr>
 			</table>
 		</form>
-		
-		
+		<br /><br /><br /><br /><br />
+		<h1>recent payments</h1>
+		<table width="100%" cellpadding="4" cellspacing="4">
+			<tr>
+				<th>restaurant</th>
+				<th>date</th>
+				<th>amount</th>
+				<th>note</th>
+			</tr>
+		<? foreach (Payment::q('select * from payment where env="'.c::env().'"') as $payment) : ?>
+			<tr>
+				<td><?=$payment->restaurant()->name?></td>
+				<td><?=$payment->date?></td>
+				<td>$<?=$payment->amount?></td>
+				<td><?=$payment->note?></td>
+			</tr>
+		<? endforeach; ?>
+		</table>
 	</div>
 </div>
 
@@ -138,7 +154,7 @@
 				alert('done');
 			});
 		});
-	
+
 		$('.restaurant-bank-info-button').click(function() {
 
 			var form = $('#restaurant-bank-info');
