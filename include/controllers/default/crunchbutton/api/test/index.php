@@ -2,6 +2,14 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+
+		$r = Restaurant::o(11);
+		$r->createMerchant([
+			'name' => 'Devin Smith',
+			'zip' => '90292',
+			'address' => '13701 marina pointe drive',
+			'dob' => '1984-09'
+		]);
 	exit;
 //		$r = Restaurant::o(1);
 //		$r->saveBankInfo('321174851','1234567890','test');

@@ -44,35 +44,39 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		
 	}
 	
-	public function createMerchant($type = 'person', $taxid = '', $dob = '1842-01', $person = '') {
+	public function createMerchant($params = []) {
+
+		$type = $params['type'] == 'business' ? 'business' : 'person';
+
 		try {
-			$params = [
+			$p = [
 				'type' => $type,
-				'name' => $this->name,
+				'name' => $params['name'] ? $params['name'] : $this->name,
 				'phone_number' => $this->phone,
 				'country_code' => 'USA',
-				'street_address' => $this->address,
-				'postal_code' => $this->zip
+				'street_address' => $params['address'] ? $params['address'] : $this->address,
+				'postal_code' => $params['zip'] ? $params['zip'] : $this->zip
 			];
 			switch ($type) {
 				case 'person':
-					$params['dob'] = $dob;
+					$p['dob'] = $params['dob'];
 					break;
 				case 'business':
-					$params['tax_id'] = $taxid;
-					$params['person'] = $person;
+					$p['tax_id'] = $params['taxid'];
+					$p['person'] = $params['person'];
 					break;
 			}
 
 			$merchant = c::balanced()->createMerchant(
 		        'restaurant-'.$this->id_restaurant.'@_DOMAIN_',
-				$params,
+				$p,
 				null,
 		        null,
 				$this->name
 			);
 		} catch (Balanced\Exceptions\HTTPError $e) {
-			print_r($e); exit;
+			print_r($e);
+			exit;
 		}
 		
 		$this->balanced_id = $merchant->id;
@@ -110,9 +114,17 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $merchant;
 	}
 	
-	public function saveBankInfo($routing, $account, $name) {
-		$bank = c::balanced()->createBankAccount($account, $routing, $name);
-		$this->merchant()->addBankAccount($bank);
+	public function saveBankInfo($name, $account, $routing) {
+		try {
+			$bank = c::balanced()->createBankAccount($name, $account, $routing);
+			$info = $this->merchant()->addBankAccount($bank);
+
+			$this->balanced_bank = $bank->id;
+			$this->save();
+		} catch (Exception $e) {
+			print_r($e);
+			exit;
+		}
 	}
 	
 	public function saveHours($hours) {

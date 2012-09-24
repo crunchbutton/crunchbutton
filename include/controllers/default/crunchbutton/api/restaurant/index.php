@@ -33,7 +33,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 
 						case 'bankinfo':
 							if ($r->id_restaurant) {
-								$r->saveBankInfo($this->request()['routing'],$this->request()['account'],$this->request()['name']);
+								$r->saveBankInfo($this->request()['name'],$this->request()['account'],$this->request()['routing']);
 							}
 							break;
 
