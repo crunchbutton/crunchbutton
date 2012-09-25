@@ -56,6 +56,7 @@
     	<dev>
     		<secret>9d5c3d58fc5e11e1aa05026ba7c1aba6</secret>
     	</dev>
+    	<sharedMerchant>_KEY_</sharedMerchant>
     </balanced>
 	<twilio>
 		<live>

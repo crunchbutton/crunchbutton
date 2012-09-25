@@ -22,13 +22,12 @@ var App = {
 
 $(function() {
 	$('.admin-restaurant-link').live('click',function() {
-		if (!$(this).attr('data-id_restaurant')) {
-			$('.admin-restaurant-form input, .admin-restaurant-form select, .admin-restaurant-form textarea').val('').prop('checked',false);
-			App.restaurant = null;
-			$('.admin-restaurant-content').html('');
-			return;
-		}
-		App.cache('Restaurant', $(this).attr('data-id_restaurant'), function() {
+		App.loadRestaurant($(this).attr('data-id_restaurant'));
+	});
+
+	App.loadRestaurant = function(id_restaurant) {
+		
+		App.cache('Restaurant', id_restaurant , function() {
 			var restaurant = this;
 			var checkswap = {
 				'delivery_fee_check' : 'delivery_fee',
@@ -137,7 +136,7 @@ $(function() {
 
 			}			
 		});
-	});
+	};
 	
 	$('.hours-date-hour input').live('keyup', function() {
 		var allfull = true;

@@ -10,6 +10,27 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 					$r = Restaurant::o(c::getPagePiece(2));
 
 					switch (c::getPagePiece(3)) {
+						case 'fake-merchant':
+							if ($r->id_restaurant) {
+								$r->balanced_id = c::config()->balanced->sharedMerchant;
+								$r->save();
+							}
+							break;
+							
+						case 'fakeremove-merchant':
+							if ($r->id_restaurant) {
+								$r->balanced_id = null;
+								$r->save();
+							}
+							break;
+							
+						case 'remove-bankinfo':
+							if ($r->id_restaurant) {
+								$r->balanced_bank = null;
+								$r->save();
+							}
+							break;
+
 						case 'merchant':
 							if ($r->id_restaurant) {
 								$r->createMerchant([

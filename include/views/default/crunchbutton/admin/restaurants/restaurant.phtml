@@ -1,0 +1,370 @@
+
+
+<div class="admin-id_restaurant" data-id_restaurant=""></div>
+
+<div class="admin-content-wrapper" style="width: 700px; ">
+	<div class="admin-content">
+		<h1 class="restaurant-item-title">Restaurant Information</h1>
+		<br /><br />
+		<table class="admin-restaurant-form">
+			<tr>
+				<td class="label-primary">Restaurant Name:</td>
+				<td class="content-primary"><input type="text" name="name" value="" class="input-primary dataset-restaurant"></td>
+			</tr>
+			<tr>
+				<td class="label-primary">Phone Number:</td>
+				<td class="content-primary"><input type="text" name="phone" value="" class="input-primary dataset-restaurant"></td>
+			</tr>
+
+			<tr>
+				<td class="label-primary">Order Notification Methods:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>Fax</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>Email</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>Text Message</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox"><label>Phone Call</label></div>
+						<div class="check-content">Okay, well call blah blah</div>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="label-primary">Food Items:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox" value="0" name="dish_check" class="bind-a-check"><label>No, I'll add some items later.</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox" value="1" name="dish_check" class="bind-a-check"><label>Our best items:</label></div>
+						<div class="check-content admin-restaurant-dishes">
+							<div class="admin-restaurant-content"></div>
+							<div class="admin-restaurant-dishes-controls">
+								<div class="control-link">
+									<a href="javascript:;" class="control-link-add">
+										<div class="control-icon-plus control-icon"></div>
+										<label class="control-label">Add another item?</label>
+									</a>
+								</div>
+								<div class="control-link">
+									<a href="javascript:;" class="control-link-add-menu">
+										<div class="control-icon-plus control-icon"></div>
+										<label class="control-label">Add another menu group?</label>
+									</a>
+								</div>
+							</div>
+							<div class="divider"></div>
+						</div>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="label-primary">Open Hours:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox" value="0" name="hours_check" class="bind-a-check dataset-restaurant"><label>We're always open!</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox" value="1" name="hours_check" class="bind-a-check dataset-restaurant"><label>We're open during these hours</label></div>
+						<div class="check-content admin-restaurant-hours admin-restaurant-content"></div>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="label-primary">Delivery Options:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox" name="delivery" value="0" class="bind-a-check"><label>We do not offer delivery</label></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check"><input type="checkbox" name="delivery" value="1" class="bind-a-check"><label>Yes! We deliver!</label></div>
+						<div class="check-content">
+							<table class="admin-restaurant-form-sub">
+								<tr>
+									<td class="label-sub">Average Delivery Time:</td>
+									<td class="content-sub"><input type="number" name="delivery_estimated_time" min="0" class="form-number dataset-restaurant"> minutes</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Delivery Radius:</td>
+									<td class="content-sub"><input type="number" name="delivery_radius" min="0" class="form-number dataset-restaurant" step="any"> miles</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Delivery Fee?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="delivery_fee_check" value="0" class="bind-a-check"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="delivery_fee_check" value="1" class="bind-a-check"><label>Yes</label></div>
+											<div class="check-content">
+												$ <input type="number" name="delivery_fee" step="any" min="0" class="form-number dataset-restaurant">
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Minimum order for delivery?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="delivery_min_check" value="0" class="bind-a-check"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="delivery_min_check" value="1" class="bind-a-check"><label>Yes</label></div>
+											<div class="check-content">
+												$ <input type="number" name="delivery_min" step="any" min="0" class="form-number dataset-restaurant">
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="label-primary">More Information:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table class="admin-restaurant-form-sub">
+								<tr>
+									<td class="label-sub">Average Pickup Time:</td>
+									<td class="content-sub"><input type="number" name="pickup_estimated_time" min="0" class="form-number dataset-restaurant"> minites</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Restaurant Address:</td>
+									<td class="content-sub"><textarea class="form-sub dataset-restaurant" name="address"></textarea></td>
+								</tr>
+								<tr>
+									<td class="label-sub">Contact Email:</td>
+									<td class="content-sub"><input type="text" class="form-sub dataset-restaurant" name="email"></td>
+								</tr>
+								<tr>
+									<td class="label-sub">Manager/Owner can be reached at:</td>
+									<td class="content-sub"><textarea class="form-sub dataset-restaurant" name="notes_owner"></textarea></td>
+								</tr>
+								<tr>
+									<td class="label-sub">Include in a community?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="id_community_check" value="0" class="bind-a-check"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="id_community_check" value="1" class="bind-a-check"><label>Yes</label></div>
+											<div class="check-content">
+												<select name="id_community">
+													<? foreach (Community::q('select * from community') as $community) : ?>
+														<option value="<?=$community->id_community?>"><?=$community->name?></option>
+													<? endforeach ; ?>
+												</select>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="label-primary">Admin shit:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table class="admin-restaurant-form-sub">
+								<tr>
+									<td class="label-sub">Permalink:</td>
+									<td class="content-sub"><input type="text" name="permalink" value="" class="form-sub dataset-restaurant"></td>
+								</tr>
+								<tr>
+									<td class="label-sub">Timezone:</td>
+									<td class="content-sub"><input type="text" name="timezone" value="America/New_York" class="form-sub dataset-restaurant"></td>
+								</tr>
+								<tr>
+									<td class="label-sub">Location:</td>
+									<td class="content-sub">
+										<table class="admin-restaurant-form-sub">
+											<tr>
+												<td class="labcon-sub-sub">Lat:</td>
+												<td class="labcon-sub-sub"><input type="number" name="loc_lat" value="41.2" step="any" class="form-number dataset-restaurant"></td>
+											</tr>
+											<tr>
+												<td class="labcon-sub-sub">Long:</td>
+												<td class="labcon-sub-sub"><input type="number" name="loc_long" value="-70" step="any" class="form-number dataset-restaurant"></td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Tax:</td>
+									<td class="content-sub"><input type="number" name="tax" value="" step="any" min="0" class="form-number dataset-restaurant"> %</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Require confirmation?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="confirmation" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="confirmation" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Customer receipt on fax?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="customer_receipt" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="customer_receipt" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Restaurant Fee?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="fee_restaurant_check" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="fee_restaurant_check" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
+											<div class="check-content">
+												<input type="number" name="fee_restaurant" step="any" min="0" class="form-number dataset-restaurant change-a-check"> %
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Customer Fee?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="fee_customer_check" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="fee_customer_check" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
+											<div class="check-content">
+												<input type="number" name="fee_customer" step="any" min="0" class="form-number dataset-restaurant change-a-check"> %
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Accepts Credit Cards?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="credit" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="credit" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Accepts Cash?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="cash" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="cash" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Active?</td>
+									<td class="content-sub">
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="active" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
+										</div>
+										<div class="check-wrap">
+											<div class="check"><input type="checkbox" name="active" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-sub">Notes:</td>
+									<td class="content-sub"><textarea class="form-sub dataset-restaurant form-sub-big" name="notes"></textarea></td>
+								</tr>
+								<tr>
+									<td class="label-sub">Todo:</td>
+									<td class="content-sub"><textarea class="form-sub dataset-restaurant form-sub-big" name="notes_todo"></textarea></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="2" style="text-align: right;"><br />
+					<div class="action-button green admin-restaurant-save">
+						<span>Save Restaurant</span>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	
+</div>
+
+
+<div class="admin-content-wrapper" style="width: 252px; margin-left: 20px;">
+	<div class="admin-content">
+		<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/pay">
+			<div class="admin-food-item admin-restaurant-button">
+				<span class="food-name">Payments &amp; Settings</span>
+			</div>
+		</a>
+	</div>
+</div>
+
+<div class="divider"></div>
+	
+
+<div id="dialog-option-group" title="Create Option Group" style="display: none;">
+	<table class="admin-restaurant-form-sub">
+		<tr>
+			<td colspan="2" class="label-sub"><input type="text" name="admin-option-name" placeholder="Name" class="form-sub"></td>
+		</tr>
+		<tr>
+			<td class="label-sub">Display type:</td>
+			<td class="content-sub">
+				<select name="admin-option-type">
+					<option value="check">Checkboxes</option>
+					<option value="select">Select</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="label-sub">Modifies the base price?</td>
+			<td class="content-sub">
+				<input type="checkbox" name="admin-option-price">
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div id="dialog-add-menu" title="Create Menu Group" style="display: none;">
+	<table class="admin-restaurant-form-sub">
+		<tr>
+			<td colspan="2" class="label-sub"><input type="text" name="admin-menu-name" placeholder="Name" class="form-sub"></td>
+	</table>
+</div>
+
+<script>
+$(function() {
+	App.loadRestaurant(<?=$this->restaurant->id_restaurant?>);
+});
+</script>

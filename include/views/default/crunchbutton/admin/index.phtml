@@ -1,7 +1,23 @@
 <div class="admin-content-wrapper">
 	<div class="admin-content">
-		<br />
-		<h1>O hai! there is nothing here. click some shit up there &uarr;</h1>
-		<br />
+
+		<h1 class="restaurant-item-title">Recent Payments</h1>
+		<br /><br />
+		<table width="100%" cellpadding="4" cellspacing="4">
+			<tr>
+				<th>restaurant</th>
+				<th>date</th>
+				<th>amount</th>
+				<th>note</th>
+			</tr>
+		<? foreach (Payment::q('select * from payment where env="'.c::env().'" order by date desc') as $payment) : ?>
+			<tr>
+				<td><?=$payment->restaurant()->name?></td>
+				<td><?=$payment->date?></td>
+				<td>$<?=$payment->amount?></td>
+				<td><?=$payment->note?></td>
+			</tr>
+		<? endforeach; ?>
+		</table>
 	</div>
-</div>		
+</div>

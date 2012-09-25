@@ -615,3 +615,17 @@ input[name="dish-options-price"] {
 .admin-content-orders {
 	min-height: 350px;
 }
+
+.admin-restaurant-item {
+	width: 250px;
+	float: left;
+	margin: 0 20px 10px 0;
+}
+
+.admin-restaurant-button {
+	text-decoration: none;
+}
+
+.admin-restaurant-pay-form {
+	width: 400px;
+}

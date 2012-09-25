@@ -44,6 +44,10 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		
 	}
 	
+	public function payments() {
+		return Payment::q('select * from payment where env="'.c::env().'" and id_restaurant="'.$this->id_restaurant.'" order by date desc');
+	}
+	
 	public function createMerchant($params = []) {
 
 		$type = $params['type'] == 'business' ? 'business' : 'person';
