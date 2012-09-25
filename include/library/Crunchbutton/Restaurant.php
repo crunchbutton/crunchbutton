@@ -56,7 +56,6 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			$category->save();
 		}
 
-	
 		$dishes = $this->dishes();
 		
 		foreach ($newDishes as $dish) {
@@ -66,7 +65,9 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			$dishO->name = $dish['name'];
 			$dishO->description = $dish['description'];
 			$dishO->price = $dish['price'];
-			$dishO->id_category = $category->id_category;
+			if (!$dishO->id_category) {
+				$dishO->id_category = $category->id_category;
+			}
 			$dishO->save();
 			
 			$options = $dishO->options();
@@ -74,32 +75,35 @@ class Crunchbutton_Restaurant extends Cana_Table {
 
 			if ($dish['optionGroups']) {
 				foreach ($dish['optionGroups'] as $optionGroup) {
-					if ($optionGroup['id_parent'] == 'BASIC') {
+					if ($optionGroup['id_option'] == 'BASIC') {
 						$parent = null;
 	
 					} else {
-						$group = new Option($optionGroup['id_parent']);
+
+						$group = new Option($optionGroup['id_option']);
 						$group->name = $optionGroup->name;
-						$group->id_restaurant = $dishO->id_restaurant;
+						$group->id_restaurant = $this->id_restaurant;
 						$group->save();
 						$parent = $group->id_option;
 						$newOptions[$group->id_option] = $group->id_option;
+						
+						if (!$doid = $this->_hasOption($group, $options)) {
+							$do = new Dish_Option;
+							$do->id_dish = $dish->id_dish;
+							$do->id_option = $group->id_option;
+							$do->save();
+						} else {
+							$do = new Dish_Option($doid);
+							$do->default = $opt->default;
+						}
 					}
 					
-					if (!$doid = $this->_hasOption($group, $options)) {
-						$do = new Dish_Option;
-						$do->id_dish = $dish->id_dish;
-						$do->id_option = $group->id_option;
-						$do->save();
-					} else {
-						$do = new Dish_Option($doid);
-						$do->default = $opt->default;
-					}
+
 					
 					if ($optionGroup['options']) {
 						foreach ($optionGroup['options'] as $opt) {
 							$option = new Option($opt['id_option']);
-							$option->id_restaurant = $dish->id_restaurant;
+							$option->id_restaurant = $this->id_restaurant;
 							$option->id_option_parent = $parent;
 							$option->price = $opt['price'];
 							$option->name = $opt['name'];
