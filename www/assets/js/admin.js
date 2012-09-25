@@ -91,7 +91,6 @@ $(function() {
 				$('input[name="dish_check"][value="1"]').prop('checked', true);
 				$('.admin-restaurant-dishes').show();
 			}
-			
 
 			var days = {
 				'sun': 'Sunday',
@@ -167,7 +166,7 @@ $(function() {
 				name = $(this).attr('name');
 			}
 
-			if ($(this).attr('type') == 'checkbox') {
+			if ($(this).attr('type') == 'checkbox' || $(this).attr('type') == 'radio') {
 				value = $(this).prop('checked') ? true : false;
 			} else {
 				value = $(this).val();
@@ -231,9 +230,9 @@ $(function() {
 						var option = {
 							name: values['dish-options-name'],
 							price: values['dish-options-price'] || 0.00,
-							'default': values['dish-options-default'],
+							'default': $(this).find('input[type="checkbox"], input[type="radio"]').prop('checked'),
 						};
-						
+
 						if (id) {
 							option.id_option = id;
 						}
@@ -286,7 +285,7 @@ $(function() {
 						}
 					}
 				}
-
+				console.log(hours);
 				$.post('/api/restaurant/' + id + '/hours', {hours: hours});
 			});
 		}

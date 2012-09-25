@@ -111,18 +111,24 @@ class Crunchbutton_Restaurant extends Cana_Table {
 							$option->type = 'check';
 							$option->save();
 							$newOptions[$option->id_option] = $option->id_option;
-							
+							$opt['default'] = $opt['default'] == 'true' ? 1 : 0;
+
 							if (!$doid = $this->_hasOption($option, $options)) {
 								$do = new Dish_Option;
 								$do->id_dish = $dishO->id_dish;
 								$do->id_option = $option->id_option;
-								$do->default = $opt->default;
+								$do->default = $opt['default'];
 
 								$do->save();
 							} else {
 								$do = new Dish_Option($doid);
-								$do->default = $opt->default;
+								if ($opt['default'] != $do->default) {
+									$do->default = $opt['default'];
+									$do->save();
+								}
 							}
+							
+							
 						}
 					}
 				}
