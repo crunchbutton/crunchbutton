@@ -41,7 +41,16 @@ class Crunchbutton_Restaurant extends Cana_Table {
 	}
 	
 	public function saveDishes($dishes) {
-		
+		foreach ($dishes as $dish) {
+			foreach ($dish['optionGroups'] as $optionGroup) {
+				if ($optionGroup['id_parent'] == 'BASIC') {
+					$parent = null;
+				} else {
+				
+				}
+				print_r($optionGroups);
+			}
+		}
 	}
 	
 	public function payments() {

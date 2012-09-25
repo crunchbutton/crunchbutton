@@ -206,7 +206,7 @@ $(function() {
 				dish.id_dish = id;
 			}
 			
-			dish.optionsGroups = [];
+			dish.optionGroups = [];
 			$(this).find('.admin-dish-options .admin-dish-options-wrapper').each(function() {
 				var id = $(this).attr('data-parent');
 				
@@ -214,9 +214,13 @@ $(function() {
 					name: $(this).find('.admin-dish-options-title').html(),
 					price: values['dish-options-price'] || 0.00,
 					'default': values['dish-options-default'],
+					options: []
 				};
-			
-				$(this).find('.admin-dish-options .dish-options').each(function() {
+				if (id) {
+					optionGroup.id_option = id;
+				}
+
+				$(this).find('.dish-options').each(function() {
 					var id = $(this).attr('data-id_option');
 					var values = getValues($(this).find('input'), {});
 
@@ -230,10 +234,10 @@ $(function() {
 						if (id) {
 							option.id_option = id;
 						}
-						dish.options[dish.options.length] = option;
+						optionGroup.options[optionGroup.options.length] = option;
 					}
-	
 				});
+				dish.optionGroups[dish.optionGroups.length] = optionGroup;
 			});
 			
 			dishes[dishes.length] = dish;
@@ -241,7 +245,7 @@ $(function() {
 		});
 			
 		console.log(dishes);
-//		$.post('/api/restaurant/' + App.restaurant + '/dishes', {dishes: dishes});
+		$.post('/api/restaurant/' + App.restaurant + '/dishes', {dishes: dishes});
 	}
 
 	var saveRestaurant = function() {
@@ -536,7 +540,7 @@ App.showDish = function(dishItem) {
 	
 	var options = $('<div class="admin-dish-options"></div>');
 	var basicOptions = $('<div class="input-faker"></div>');
-	var basicWrapper = $('<div class="admin-dish-options-wrapper"><div class="admin-dish-options-title">Basic options:</div></div>')
+	var basicWrapper = $('<div class="admin-dish-options-wrapper" data-parent="BASIC"><div class="admin-dish-options-title">Basic options:</div></div>')
 		.append(basicOptions);
 
 	var optGroups = [];
@@ -641,12 +645,12 @@ App.returnOption = function(o, type, parent) {
 	var defaulted  = '';
 	switch (type) {
 		case 'select':
-			defaulted = '<input type="radio" name="dish-options-default-' + parent + '" value="1" ' + (o['default'] == '1' ? 'checked="checked"' : '') + '>';
+			defaulted = '<input type="radio" class="dataset-dish" name="dish-options-default-' + parent + '" value="1" ' + (o['default'] == '1' ? 'checked="checked"' : '') + '>';
 			break;
 
 		default:
 		case 'check':
-			defaulted = '<input type="checkbox" name="dish-options-default" value="1" ' + (o['default'] == '1' ? 'checked="checked"' : '') + '>';
+			defaulted = '<input type="checkbox" class="dataset-dish" name="dish-options-default" value="1" ' + (o['default'] == '1' ? 'checked="checked"' : '') + '>';
 			break;
 	}
 
