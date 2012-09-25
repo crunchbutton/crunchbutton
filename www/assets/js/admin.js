@@ -209,11 +209,14 @@ $(function() {
 			dish.optionGroups = [];
 			$(this).find('.admin-dish-options .admin-dish-options-wrapper').each(function() {
 				var id = $(this).attr('data-parent');
+				var name = $(this).find('.admin-dish-options-title').html();
+				name = name.substr(0,name.length-1);
 				
 				var optionGroup = {
-					name: $(this).find('.admin-dish-options-title').html(),
-					price: values['dish-options-price'] || 0.00,
+					name: name,
 					'default': values['dish-options-default'],
+					type: $(this).attr('data-type'),
+					price: $(this).attr('data-modifies_price') == 'true' ? true : false,
 					options: []
 				};
 				if (id) {
@@ -470,6 +473,7 @@ $(function() {
 	});
 
 	$('.control-link-add-option').live('click', function() {
+		var self = $(this);
 		$('#dialog-option-group').dialog({
 			resizable: false,
 			height: 250,
@@ -477,11 +481,13 @@ $(function() {
 			modal: true,
 			buttons: {
 				'Create': function() {
-					App.createOptionGroup(this);
-					$(this).dialog('close');
-					$(this).find('[name="admin-option-name"]').val('');
-					$(this).find('[name="admin-option-price"]').removeAttr('checked');
-					$(this).find('[name="admin-option-type"]').val('check');
+					if ($(this).find('[name="admin-option-name"]').val()) {
+						App.createOptionGroup(this, self);
+						$(this).dialog('close');
+						$(this).find('[name="admin-option-name"]').val('');
+						$(this).find('[name="admin-option-price"]').removeAttr('checked');
+						$(this).find('[name="admin-option-type"]').val('check');
+					}
 				},
 				Cancel: function() {
 					$(this).dialog('close');
@@ -501,11 +507,13 @@ $(function() {
 			modal: true,
 			buttons: {
 				'Create': function() {
-					App.createOptionGroup(this);
-					$(this).dialog('close');
-					$(this).find('[name="admin-option-name"]').val('');
-					$(this).find('[name="admin-option-price"]').removeAttr('checked');
-					$(this).find('[name="admin-option-type"]').val('check');
+					if ($(this).find('[name="admin-option-name"]').val()) {
+						App.createOptionGroup(this);
+						$(this).dialog('close');
+						$(this).find('[name="admin-option-name"]').val('');
+						$(this).find('[name="admin-option-price"]').removeAttr('checked');
+						$(this).find('[name="admin-option-type"]').val('check');
+					}
 				},
 				Cancel: function() {
 					$(this).dialog('close');
@@ -607,8 +615,10 @@ App.showDish = function(dishItem) {
 	}
 };
 
-App.createOptionGroup = function(el) {
+App.createOptionGroup = function(el, source) {
 	el = $(el);
+	var parent = source.closest('.admin-food-item-wrap');
+
 	var option = {
 		name: el.find('[name="admin-option-name"]').val(),
 		price: el.find('[name="admin-option-price"]').attr('checked') ? true : false,
@@ -616,13 +626,13 @@ App.createOptionGroup = function(el) {
 		id_option: '',
 		id: ''
 	};
-	console.log(option);
+
 	var optionAdder = $('<div class="input-faker"></div>');
-	var optionWrapper = $('<div class="admin-dish-options-wrapper" data-type="' + option.type + '" data-parent="' + option.id + '"><div class="admin-dish-options-title">' + option.name + ':</div></div>')
+	var optionWrapper = $('<div class="admin-dish-options-wrapper" data-modifies_price="' + option.price + '" data-type="' + option.type + '" data-parent="' + option.id + '"><div class="admin-dish-options-title">' + option.name + ':</div></div>')
 		.append(optionAdder);
 
 	optionAdder.append(App.returnOption({price: '',name:'',id_option:''}, option.type, option.id_option));
-	$('.admin-dish-options .admin-restaurant-options-controls').before(optionWrapper);
+	parent.find('.admin-dish-options .admin-restaurant-options-controls').before(optionWrapper);
 };
 /*
 App.addOptionGroup = function(option) {

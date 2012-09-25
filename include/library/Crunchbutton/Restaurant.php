@@ -81,15 +81,17 @@ class Crunchbutton_Restaurant extends Cana_Table {
 					} else {
 
 						$group = new Option($optionGroup['id_option']);
-						$group->name = $optionGroup->name;
+						$group->name = $optionGroup['name'];
+						$group->price_linked = $optionGroup['price'];
+						$group->type = $optionGroup['type'];
 						$group->id_restaurant = $this->id_restaurant;
 						$group->save();
 						$parent = $group->id_option;
 						$newOptions[$group->id_option] = $group->id_option;
-						
+
 						if (!$doid = $this->_hasOption($group, $options)) {
 							$do = new Dish_Option;
-							$do->id_dish = $dish->id_dish;
+							$do->id_dish = $dishO->id_dish;
 							$do->id_option = $group->id_option;
 							$do->save();
 						} else {
@@ -97,8 +99,6 @@ class Crunchbutton_Restaurant extends Cana_Table {
 							$do->default = $opt->default;
 						}
 					}
-					
-
 					
 					if ($optionGroup['options']) {
 						foreach ($optionGroup['options'] as $opt) {
@@ -117,6 +117,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 								$do->id_dish = $dishO->id_dish;
 								$do->id_option = $option->id_option;
 								$do->default = $opt->default;
+
 								$do->save();
 							} else {
 								$do = new Dish_Option($doid);
@@ -124,22 +125,21 @@ class Crunchbutton_Restaurant extends Cana_Table {
 							}
 						}
 					}
-					print_r($optionGroups);
 				}
 			}
-		}
-		
-		foreach ($options as $option) {
-			if (!in_array($option->id_option, $newOptions)) {
-				$do = new Dish_Option($option->id_dish_option);
-				$do->delete();
+
+			foreach ($options as $option) {
+				if (!in_array($option->id_option, $newOptions)) {
+					$do = new Dish_Option($option->id_dish_option);
+					$do->delete();
+				}
 			}
 		}
 	}
 	
 	public function _hasOption($option, $options) {
 		foreach ($options as $o) {
-			if ($o->id_options == $option->id_option) {
+			if ($o->id_option == $option->id_option) {
 				return $o->id_dish_option;
 			}
 		}
