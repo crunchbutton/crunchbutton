@@ -1,6 +1,10 @@
 <?php
 
 class Crunchbutton_Dish_Option extends Cana_Table {
+	public function byDishOption($dish, $option) {
+
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this

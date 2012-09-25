@@ -17,7 +17,7 @@ class Crunchbutton_Dish extends Cana_Table {
 	public function options() {
 		if (!isset($this->_options)) {
 			$this->_options = Option::q('
-				select `option`.*, dish_option.default from `option`
+				select `option`.*, dish_option.default, dish_option.id_dish_option from `option`
 				left join dish_option using(id_option)
 				where id_dish="'.$this->id_dish.'"
 			');

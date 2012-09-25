@@ -195,7 +195,7 @@ $(function() {
 
 		$('.admin-food-item-wrap').each(function() {
 			var id = $(this).attr('data-id_dish');
-			var values = getValues(selector, {});
+			var values = getValues($(this).find(selector), {});
 			var dish = {
 				name: values['dish-name'],
 				description: values['dish-description'],
@@ -452,11 +452,10 @@ $(function() {
 		var allfull = true;
 
 		$(this).closest('.admin-dish-options-wrapper').find('.dish-options').each(function() {
-		console.log(this)
+
 			var selfComplete = true;
 			$(this).find('input[type="text"]').each(function() {
 				if ($(this).val() == '' || !$(this).val()) {
-				console.log(this);
 					allfull = selfComplete = false;
 				}
 			});

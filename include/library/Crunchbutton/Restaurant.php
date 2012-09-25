@@ -40,17 +40,106 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_communities;
 	}
 	
-	public function saveDishes($dishes) {
-		foreach ($dishes as $dish) {
-			foreach ($dish['optionGroups'] as $optionGroup) {
-				if ($optionGroup['id_parent'] == 'BASIC') {
-					$parent = null;
-				} else {
-				
+	public function saveDishes($newDishes) {
+		foreach ($this->categories() as $cat) {
+			if (!$category) {
+				$category = $cat;
+			}
+		}		
+
+		if (!$category) {
+			$category = new Category;
+			$category->id_restaurant = $this->id_restaurant;
+			$category->name = 'Most Popular';
+			$category->sort = 1;
+			$category->loc = 1;
+			$category->save();
+		}
+
+	
+		$dishes = $this->dishes();
+		
+		foreach ($newDishes as $dish) {
+			$dishO = new Dish($dish['id_dish']);
+			$dishO->active = 1;
+			$dishO->id_restaurant = $this->id_restaurant;
+			$dishO->name = $dish['name'];
+			$dishO->description = $dish['description'];
+			$dishO->price = $dish['price'];
+			$dishO->id_category = $category->id_category;
+			$dishO->save();
+			
+			$options = $dishO->options();
+			$newOptions = [];
+
+			if ($dish['optionGroups']) {
+				foreach ($dish['optionGroups'] as $optionGroup) {
+					if ($optionGroup['id_parent'] == 'BASIC') {
+						$parent = null;
+	
+					} else {
+						$group = new Option($optionGroup['id_parent']);
+						$group->name = $optionGroup->name;
+						$group->id_restaurant = $dishO->id_restaurant;
+						$group->save();
+						$parent = $group->id_option;
+						$newOptions[$group->id_option] = $group->id_option;
+					}
+					
+					if (!$doid = $this->_hasOption($group, $options)) {
+						$do = new Dish_Option;
+						$do->id_dish = $dish->id_dish;
+						$do->id_option = $group->id_option;
+						$do->save();
+					} else {
+						$do = new Dish_Option($doid);
+						$do->default = $opt->default;
+					}
+					
+					if ($optionGroup['options']) {
+						foreach ($optionGroup['options'] as $opt) {
+							$option = new Option($opt['id_option']);
+							$option->id_restaurant = $dish->id_restaurant;
+							$option->id_option_parent = $parent;
+							$option->price = $opt['price'];
+							$option->name = $opt['name'];
+							$option->active = 1;
+							$option->type = 'check';
+							$option->save();
+							$newOptions[$option->id_option] = $option->id_option;
+							
+							if (!$doid = $this->_hasOption($option, $options)) {
+								$do = new Dish_Option;
+								$do->id_dish = $dishO->id_dish;
+								$do->id_option = $option->id_option;
+								$do->default = $opt->default;
+								$do->save();
+							} else {
+								$do = new Dish_Option($doid);
+								$do->default = $opt->default;
+							}
+						}
+					}
+					print_r($optionGroups);
 				}
-				print_r($optionGroups);
 			}
 		}
+		
+		foreach ($options as $option) {
+			if (!in_array($option->id_option, $newOptions)) {
+				$do = new Dish_Option($option->id_dish_option);
+				$do->delete();
+			}
+		}
+	}
+	
+	public function _hasOption($option, $options) {
+		foreach ($options as $o) {
+			if ($o->id_options == $option->id_option) {
+				return $o->id_dish_option;
+			}
+		}
+		return false;
 	}
 	
 	public function payments() {
