@@ -183,7 +183,7 @@ App.unFormatTime = function(time) {
 	var part = time.split(' ');
 
 	part[0] = part[0].split(':');
-	part[0][0] = parseInt(part[0][0]);
+	part[0][0] = parseInt(part[0][0], 10);
 
 	if (part[1] == 'PM') {
 		if (part[0][0] == 12) {
