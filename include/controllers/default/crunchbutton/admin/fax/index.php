@@ -6,8 +6,14 @@ class Controller_admin_fax extends Crunchbutton_Controller_Account {
 
 		c::view()->layout('layout/admin');
 		$r = new Restaurant($_REQUEST['id_restaurant']);
+		foreach ($r->notifications() as $notification) {
+			if ($notification->type == 'fax') {
+				$n = $notification->value;
+			}
+		}
+						
+		$num = ($env == 'live' ? $n : '_PHONE_');
 
-		$num = '_PHONE_';
 		$ext = explode('.',$_FILES['fax']['name']);
 		$ext = array_pop($ext);
 

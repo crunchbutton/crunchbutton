@@ -4,7 +4,7 @@
 		<? if (!$this->notification) : ?>
 			<b>This restaurant does not currently have a fax # set up</b>
 		<? else : ?>
-			<h1 class="restaurant-item-title">Send a fax to <?=$notification->value?></h1>
+			<h1 class="restaurant-item-title">Send a fax to <?=$this->notification?></h1>
 			<br /><br />
 			
 			<form enctype="multipart/form-data" id="restaurant-fax" method="post" action="/admin/fax">

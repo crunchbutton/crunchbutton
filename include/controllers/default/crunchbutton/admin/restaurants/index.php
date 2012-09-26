@@ -19,9 +19,10 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account {
 				case 'fax':
 					foreach ($restaurant->notifications() as $notification) {
 						if ($notification->type == 'fax') {
-							c::view()->notification = $notification;
+							c::view()->notification = $notification->value;
 						}
 					}
+
 					c::view()->display('admin/restaurants/fax');					
 					break;
 				default:
