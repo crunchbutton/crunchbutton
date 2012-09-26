@@ -12,7 +12,7 @@ class Controller_admin_fax extends Crunchbutton_Controller_Account {
 			}
 		}
 						
-		$num = ($env == 'live' ? $n : '_PHONE_');
+		$num = (c::env() == 'live' ? $n : '_PHONE_');
 
 		$ext = explode('.',$_FILES['fax']['name']);
 		$ext = array_pop($ext);
