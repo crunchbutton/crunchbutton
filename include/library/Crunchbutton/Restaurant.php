@@ -144,13 +144,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		foreach ($newDishes as $dish) {
 			$nd[$dish['id_dish']] = $dish['id_dish'];
 		}
-print_r($nd);
-print_r($dishes);
-exit;
+
 		foreach ($dishes as $dish) {
 			if (!in_array($dish->id_dish, $nd)) {
 				$d = new Dish($dish->id_dish);
-				//$d->delete();
+				$d->delete();
 			}
 		}
 

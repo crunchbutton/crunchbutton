@@ -73,7 +73,13 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							break;
 
 						default:
-							$r->serialize($this->request());
+							$request = $this->request();
+							foreach ($request as $key => $value) {
+								if ($value == 'null') {
+									$request[$key] = null;
+								}
+							}
+							$r->serialize($request);
 							$r->save();
 							
 							// save the community

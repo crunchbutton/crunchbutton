@@ -183,9 +183,7 @@ $(function() {
 	}
 
 	$('.admin-restaurant-save').live('click', function() {
-		//saveRestaurant();
-		//saveHours();
-		saveDishes();
+		saveRestaurant();
 	});
 	
 	var saveDishes = function() {
@@ -257,12 +255,22 @@ $(function() {
 		if (id) {
 			App.cache('Restaurant', id, function() {
 				var restaurant = getValues(selector, this);
-				restaurant.save();
+				restaurant.save(function() {
+					location.href = location.href;
+				});
 			});
 		} else {
 			var restaurant = getValues(selector, {});
-			restaurant = new Restaurant(restaurant)
-			restaurant.save();
+			restaurant = new Restaurant(restaurant);
+			restaurant.save(function(r) {
+
+				App.cache('Restaurant', r.id_restaurant, function() {
+					App.restaurant = this.id_restaurant;
+					saveHours();
+					saveDishes();
+					location.href = '/admin/restaurants/' + App.restaurant;
+				});
+			});
 		}
 	};
 

@@ -26,10 +26,12 @@ var Orm = {
 		return this['__' + data];
 	},
 
-	save: function() {
+	save: function(complete) {
 		if (!this.type) return;
 		$.post(App.service + this.resource + (this.id ? ('/' + this.id) : ''), this.properties(), function(result) {
-			console.log(result);
+			if (complete) {
+				complete(result);
+			}
 		});
 	},
 
