@@ -624,6 +624,7 @@ input[name="dish-options-price"] {
 
 .admin-restaurant-button {
 	text-decoration: none;
+	margin-bottom: 10px;
 }
 
 .admin-restaurant-pay-form {

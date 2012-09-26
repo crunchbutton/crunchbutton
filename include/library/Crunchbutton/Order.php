@@ -249,7 +249,8 @@ class Crunchbutton_Order extends Cana_Table {
 					'name' => $this->name,
 					'address' => $this->address,
 					'phone' => $this->phone,
-					'user' => $user
+					'user' => $user,
+					'restaurant' => $this->restaurant()
 				]);
 				if ($r['status']) {
 					$this->_txn = $r['txn'];
