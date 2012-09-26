@@ -127,8 +127,6 @@ class Crunchbutton_Restaurant extends Cana_Table {
 									$do->save();
 								}
 							}
-							
-							
 						}
 					}
 				}
