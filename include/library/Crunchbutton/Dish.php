@@ -24,6 +24,18 @@ class Crunchbutton_Dish extends Cana_Table {
 		}
 		return $this->_options;
 	}
+	
+	public function delete() {
+		$od = Order_Dish::q('select * from order_dish where id_order is not null and id_dish="'.$this->id_dish.'"');
+
+		if (!$od->count()) {
+			parent::delete();
+		} else {
+			$this->active = 0;
+			$this->save();
+		}
+		
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
