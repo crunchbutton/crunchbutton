@@ -256,6 +256,9 @@ $(function() {
 			App.cache('Restaurant', id, function() {
 				var restaurant = getValues(selector, this);
 				restaurant.save(function() {
+					saveHours();
+					saveDishes();
+
 					location.href = location.href;
 				});
 			});
