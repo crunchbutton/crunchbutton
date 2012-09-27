@@ -75,7 +75,7 @@ class Crunchbutton_Notification extends Cana_Table {
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoing,
 					'+1'.$num,
-					'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$order->id_order.'/say',
+					'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$order->id_order.'/say?id_notification='.$this->id_notification,
 					['StatusCallback' => 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/callback']
 				);
 

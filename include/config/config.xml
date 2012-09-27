@@ -39,6 +39,10 @@
 		<app></app>
 		<secret></secret>
     </facebook>
+    <phone>
+    	<support>213-293-6935</support>
+    	<restaurant>213-293-6935</restaurant>
+    </phone>
     <stripe>
     	<dev>
     		<secret>***REMOVED***</secret>

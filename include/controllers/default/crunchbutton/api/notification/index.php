@@ -16,6 +16,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 								if ($data->id == $notification->remote) {
 									$notification->status = 'success';
 									$notification->data = $_REQUEST['fax'];
+									$notification->date = date('Y-m-d H:i:s');
 									$notification->save();
 									if ($notification->order()->restaurant()->confirmation) {
 										$notification->order()->queConfirm();
@@ -29,6 +30,12 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 										$notification->status = 'success';
 									}
 									$notification->data = json_encode($_REQUEST);
+									$notification->date = date('Y-m-d H:i:s');
+									$notification->save();
+								} else {
+									$notification->status = 'mismatch';
+									$notification->data = json_encode($_REQUEST);
+									$notification->date = date('Y-m-d H:i:s');
 									$notification->save();
 								}
 
