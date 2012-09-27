@@ -186,7 +186,7 @@ $(function() {
 		saveRestaurant();
 	});
 	
-	var saveDishes = function() {
+	var saveDishes = function(complete) {
 		var selector = 'input.dataset-dish, select.dataset-dish, textarea.dataset-dish';
 		var dishes = [];
 
@@ -245,7 +245,11 @@ $(function() {
 		});
 			
 		console.log(dishes);
-		$.post('/api/restaurant/' + App.restaurant + '/dishes', {dishes: dishes});
+		$.post('/api/restaurant/' + App.restaurant + '/dishes', {dishes: dishes}, function() {
+			if (complete) {
+				complete();
+			}
+		});
 	}
 
 	var saveRestaurant = function() {
@@ -256,10 +260,11 @@ $(function() {
 			App.cache('Restaurant', id, function() {
 				var restaurant = getValues(selector, this);
 				restaurant.save(function() {
-					saveHours();
-					saveDishes();
-
-					location.href = location.href;
+					saveHours(function() {
+						saveDishes(function() {
+							location.href = location.href;
+						});
+					});
 				});
 			});
 		} else {
@@ -269,15 +274,18 @@ $(function() {
 
 				App.cache('Restaurant', r.id_restaurant, function() {
 					App.restaurant = this.id_restaurant;
-					saveHours();
-					saveDishes();
-					location.href = '/admin/restaurants/' + App.restaurant;
+					saveHours(function() {
+						saveDishes(function() {
+							location.href = '/admin/restaurants/' + App.restaurant;
+						});
+					});
+					
 				});
 			});
 		}
 	};
 
-	var saveHours = function() {
+	var saveHours = function(complete) {
 		var selector = '.hours-date-hour input';
 		var id = App.restaurant;
 
@@ -297,7 +305,11 @@ $(function() {
 					}
 				}
 				console.log(hours);
-				$.post('/api/restaurant/' + id + '/hours', {hours: hours});
+				$.post('/api/restaurant/' + id + '/hours', {hours: hours}, function() {
+					if (complete) {
+						complete();
+					}
+				});
 			});
 		}
 	};
