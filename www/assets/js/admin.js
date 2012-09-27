@@ -262,7 +262,7 @@ $(function() {
 				restaurant.save(function() {
 					saveHours(function() {
 						saveDishes(function() {
-							location.href = location.href;
+							//location.href = location.href;
 						});
 					});
 				});
