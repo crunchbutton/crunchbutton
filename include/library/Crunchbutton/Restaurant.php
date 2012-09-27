@@ -10,11 +10,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 	}
 	
 	public function meetDeliveryMin($order) {
-		if (!$this->restaurant()->delivery_min) {
+		if (!$this->delivery_min) {
 			return true;
 		}
 		$price = $this->delivery_min_amt == 'subtotal' ? $order->price : $order->final_price;
-		return $price < $this.delivery_min ? true : false;
+		return $price < $this->delivery_min ? true : false;
 	}
 
 	public function dishes() {
@@ -41,6 +41,18 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			$this->_communities = Community::q('select community.* from community left join restaurant_community using(id_community) where id_restaurant="'.$this->id_restaurant.'"');
 		}
 		return $this->_communities;
+	}
+	
+	public function phone() {
+		$phone = $this->phone;
+		$phone = preg_replace('/[^\d]*/i','',$phone);
+		$phone = preg_replace('/(\d{3})(\d{3})(.*)/', '\\1-\\2-\\3', $phone);
+		
+		return $phone;
+	}
+	
+	public function shortName() {
+		return $this->short_name ? $this->short_name : $this->name;
 	}
 	
 	public function saveDishes($newDishes) {

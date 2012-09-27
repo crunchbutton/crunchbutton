@@ -2,8 +2,9 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
-
 		$r = Restaurant::o(11);
+		echo $r->phone();
+		exit;
 		$r->createMerchant([
 			'name' => 'Devin Smith',
 			'zip' => '90292',
