@@ -29,7 +29,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
 					.'<Pause length="2" />'
 					.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
-					.'<Gather action="/api/order/'.$order->id_order.'/sayorder" numDigits="1" timeout="10" finishOnKey="#" method="get">';
+					.'<Gather action="/api/order/'.$order->id_order.'/sayorder'.$this->request()['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
 
 				for ($x = 0; $x <= $repeat; $x++) {
 					echo $message;
@@ -40,9 +40,16 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 				
 			case 'sayorder':
+				$log = new Notification_Log;
+				$log->id_notification = $this->request()['id_notification'];
+				$log->status = 'accepted';
+				$log->type = 'twilio';
+				$log->id_order = $order->id_order;
+				$log->save();
+
 			    header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
-					.'<Gather action="/api/order/'.$order->id_order.'/sayorderonly" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+					.'<Gather action="/api/order/'.$order->id_order.'/sayorderonly'.$this->request()['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 					.'<Say voice="'.c::config()->twilio->voice.'">Thank you. At the end of the message, you must confirm the order.</Say>'
 					.'<Pause length="2" />'
 					.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>';
@@ -63,7 +70,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				switch ($this->request()['Digits']) {
 					case '1':
 					default:
-						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly'.$this->request()['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>';
 
 						for ($x = 0; $x <= $repeat; $x++) {
@@ -80,7 +87,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						break;
 
 					case '3':
-						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly'.$this->request()['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->streetName().'</Say>';
 
 						for ($x = 0; $x <= $repeat; $x++) {
@@ -112,7 +119,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						$order->que();
 						break;
 					case '0':
-						echo '<Dial timeout="10" record="true">213-293-6935</Dial>';
+						echo '<Dial timeout="10" record="true">'.c::config()->phone->restaurant.'</Dial>';
 
 					default:
 						echo '<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.'.</Say>';

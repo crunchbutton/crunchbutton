@@ -30,6 +30,10 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 									}
 									$notification->data = json_encode($_REQUEST);
 									$notification->save();
+								} else {
+									$notification->status = 'mismatch';
+									$notification->data = json_encode($_REQUEST);
+									$notification->save();
 								}
 
 								break;
