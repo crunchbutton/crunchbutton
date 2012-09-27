@@ -5,7 +5,7 @@ class Crunchbutton_Dish extends Cana_Table {
 		$out = $this->properties();
 		$out['price'] = number_format($out['price'],2);
 		foreach ($this->options() as $option) {
-			$out['_options'][$option->id_option] = $option->exports();
+			$out['_options'][] = $option->exports();
 		}
 		return $out;
 	}
@@ -20,6 +20,7 @@ class Crunchbutton_Dish extends Cana_Table {
 				select `option`.*, dish_option.default, dish_option.id_dish_option from `option`
 				left join dish_option using(id_option)
 				where id_dish="'.$this->id_dish.'"
+				order by option.type asc, dish_option.sort desc, option.name
 			');
 		}
 		return $this->_options;
