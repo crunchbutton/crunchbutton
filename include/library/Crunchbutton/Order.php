@@ -416,7 +416,12 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function que() {
-		$scripts = ['notify','receipt'];
+		$scripts = ['notify'];
+
+		if (!$this->restaurant()->confirmation) {
+			$scripts[] = 'receipt';
+		}
+
 		foreach ($scripts as $script) {
 			$this->spawnScript($script);
 		}
