@@ -56,7 +56,7 @@ class Crunchbutton_Notification extends Cana_Table {
 						$msg
 					);
 				}
-				
+
 				if ($order->restaurant()->confirmation && !$notification->_confirm_trigger) {
 					$notification->_confirm_trigger = true;
 					$order->queConfirm();
@@ -106,10 +106,6 @@ class Crunchbutton_Notification extends Cana_Table {
 	
 	public function confirm() {
 	
-	}
-	
-	public function queCallback() {
-		exec('nohup '.c::config()->dirs->root.'cli/callback.php '.$this->id_notification.' > /dev/null 2>&1 &');
 	}
 
 	public function __construct($id = null) {

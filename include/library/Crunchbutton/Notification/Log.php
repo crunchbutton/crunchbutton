@@ -15,12 +15,20 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 	
 	public function callback() {
 		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and status="callback"');
+
 		if ($nl->count() >= c::config()->twilio->maxcallback) {
 			$this->status = 'maxcallbackexceeded';
 			$this->save();
 		} else {
-			$this->notification()->queCallback();
+			$this->queCallback();
 		}
+	}
+	
+	
+	public function queCallback() {
+//		exec(c::config()->dirs->root.'cli/callback.php '.$this->id_notification.' '.$this->id_order.' 2>&1', $o);
+//		print_r($o);
+		exec('nohup '.c::config()->dirs->root.'cli/callback.php '.$this->id_notification.' > /dev/null 2>&1 &');
 	}
 
 	public function __construct($id = null) {

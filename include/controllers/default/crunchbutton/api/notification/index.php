@@ -4,12 +4,14 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		$notification = Notification_Log::o(c::getPagePiece(2));
-						
+
+
 		switch ($this->method()) {
 			case 'post':
 			case 'get':
 				switch (c::getPagePiece(3)) {
 					case 'callback':
+
 						switch ($notification->type) {
 							case 'phaxio':
 								$data = json_decode($_REQUEST['fax']);
@@ -25,7 +27,8 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 								break;
 
 							case 'twilio':
-								if ($notification->accepted()) {									
+
+								if ($notification->order()->accepted()) {									
 									if ($_REQUEST['CallSid'] == $notification->remote) {
 										if ($_REQUEST['Duration']) {
 											$notification->status = 'success';
