@@ -207,6 +207,11 @@ class Crunchbutton_Order extends Cana_Table {
 		return User::o($this->id_user);
 	}
 	
+	public function accepted() {
+		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and status="accepted"');
+		return $nl->count() ? true : false;
+	}
+	
 	public function transaction() {
 		return $this->_txn;
 	}

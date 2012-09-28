@@ -77,6 +77,7 @@
 		<testnumber>_PHONE_</testnumber>
 		<voice>male</voice>
 		<greeting>This is crunchbutton</greeting>
+		<maxcallback>3</maxcallback>
 	</twilio>
 	<phaxio>
 		<old>

@@ -25,18 +25,26 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 								break;
 
 							case 'twilio':
-								if ($_REQUEST['CallSid'] == $notification->remote) {
-									if ($_REQUEST['Duration']) {
-										$notification->status = 'success';
+								if ($notification->accepted()) {									
+									if ($_REQUEST['CallSid'] == $notification->remote) {
+										if ($_REQUEST['Duration']) {
+											$notification->status = 'success';
+										}
+										$notification->data = json_encode($_REQUEST);
+										$notification->date = date('Y-m-d H:i:s');
+										$notification->save();
+									} else {
+										$notification->status = 'mismatch';
+										$notification->data = json_encode($_REQUEST);
+										$notification->date = date('Y-m-d H:i:s');
+										$notification->save();
 									}
-									$notification->data = json_encode($_REQUEST);
-									$notification->date = date('Y-m-d H:i:s');
-									$notification->save();
 								} else {
-									$notification->status = 'mismatch';
+									$notification->status = 'callback';
 									$notification->data = json_encode($_REQUEST);
 									$notification->date = date('Y-m-d H:i:s');
 									$notification->save();
+									$notification->callback();
 								}
 
 								break;
