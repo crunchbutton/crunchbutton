@@ -28,7 +28,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 	public function queCallback() {
 //		exec(c::config()->dirs->root.'cli/callback.php '.$this->id_notification.' '.$this->id_order.' 2>&1', $o);
 //		print_r($o);
-		exec('nohup '.c::config()->dirs->root.'cli/callback.php '.$this->id_notification.' > /dev/null 2>&1 &');
+		exec('nohup '.c::config()->dirs->root.'cli/callback.php '.$this->id_notification.' '.$this->id_order.' > /dev/null 2>&1 &');
 	}
 
 	public function __construct($id = null) {

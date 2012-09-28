@@ -5,7 +5,6 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 
 		$notification = Notification_Log::o(c::getPagePiece(2));
 
-
 		switch ($this->method()) {
 			case 'post':
 			case 'get':

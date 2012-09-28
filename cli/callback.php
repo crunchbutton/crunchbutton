@@ -4,8 +4,7 @@ error_reporting(E_ERROR | E_PARSE);
 ini_set('display_errors',true);
 set_time_limit(10);
 
-//sleep(5);
-
+sleep(2 * 60); // 2 minites
 
 require_once('../include/crunchbutton.php');
 
