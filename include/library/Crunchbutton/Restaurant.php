@@ -344,8 +344,8 @@ class Crunchbutton_Restaurant extends Cana_Table {
 	}
 	
 	public function thumb($params = []) {
-		$params['height'] = 310;
-		$params['width'] = 310;
+		$params['height'] = 596; //310 *2;
+		$params['width'] = 596; //310 *2;
 		$params['crop'] = 0;
 		$params['gravity'] = 'center';
 		$params['format'] = 'jpg';
