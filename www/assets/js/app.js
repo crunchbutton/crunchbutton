@@ -12,6 +12,7 @@ var App = {
 	cartHighlightEnabled: false,
 	currentPage: null,
 	slogans: ['Order the best food %s with a click'],
+	tagline: 'We\'ve chosen the best food from the best restaurants %s. We save your order, delivery and payment info, so reordering is as easy as the click of a button. Click on a restaurant below to get started.',
 	service: '/api/',
 	cached: {},
 	cart: {},
@@ -94,11 +95,12 @@ App.page.community = function(id) {
 		document.title = 'Crunchbutton - ' + App.community.name;
 
 		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
-		slogan = slogan.replace('%s', App.community.permalink == 'yale' ? 'at Yale' : 'in Providence');
-//		slogan = slogan.replace('%s', App.community.name);
+		var sloganReplace = App.community.permalink == 'yale' ? 'at Yale' : 'in Providence';
+		var tagline = App.tagline.replace('%s', sloganReplace);
+		slogan = slogan.replace('%s', sloganReplace);
 
 		$('.main-content').html(
-			'<div class="home-tagline"><h1>' + slogan + '</h1></div>' + 
+			'<div class="home-tagline"><h1>' + slogan + '</h1><h2>' + tagline + '</h2></div>' + 
 			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
 		);
 
