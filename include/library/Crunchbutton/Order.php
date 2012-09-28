@@ -562,6 +562,8 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 				if ($this->pay_type == 'card' && $this->tip) {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">A tip of '.$this->phoeneticNumber($this->tip()).' has been charged to the customer\'s credit card.';
+				} else {
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will be paying the tip by cash.';				
 				}
 				
 				$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Order total: '.$this->phoeneticNumber($this->final_price);
