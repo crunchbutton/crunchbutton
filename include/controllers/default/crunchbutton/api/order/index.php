@@ -29,7 +29,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
 					.'<Pause length="2" />'
 					.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
-					.'<Gather action="/api/order/'.$order->id_order.'/sayorder?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
+					.'<Gather action="/api/order/'.$order->id_order.'/sayorder?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get"><Pause length="1" />';
 
 				for ($x = 0; $x <= $repeat; $x++) {
 					echo $message;
@@ -91,7 +91,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 					case '3':
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">'
-							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->streetName().'</Say>';
+							.$order->streetName();
 
 						for ($x = 0; $x <= $repeat; $x++) {
 							echo $pauseRepeat;

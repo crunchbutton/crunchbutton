@@ -2,3 +2,6 @@ logs/*
 cache/*
 www/cache/*
 workflow*
+*.mov
+*.mp4
+*.m4v

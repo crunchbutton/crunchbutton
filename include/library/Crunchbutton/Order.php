@@ -498,7 +498,25 @@ class Crunchbutton_Order extends Cana_Table {
 		$spaceName = '';
 
 		for ($x=0; $x<strlen($name); $x++) {
-			$spaceName .= $name{$x}.'. ';
+			$letter = strtolower($name{$x});
+			switch ($letter) {
+				case ' ':
+				case '.':
+				case ',':
+				case "\n":
+					$addPause = true;
+					break;
+				case 'c':
+					$letter = 'see.';
+				default:
+					if ($addPause) {
+						$spaceName .= '<Pause length="1" />';	
+					}
+					$spaceName .= '<Say voice="'.c::config()->twilio->voice.'"><![CDATA['.$letter.']]></Say><Pause length="1" />';
+					$addPause = false;
+					break;
+			}
+
 		}
 		return $spaceName;
 	}
@@ -549,7 +567,7 @@ class Crunchbutton_Order extends Cana_Table {
 						.'</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[Customer Name. '.$this->name.'.]]></Say><Pause length="1" /><Say>';
 
 				if ($this->delivery_type == 'delivery') {
-					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Deliver to '.$this->phoneticStreet($this->address);
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[Deliver to '.$this->phoneticStreet($this->address).'.]]>';
 				} else {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">This order is for pickup. ';
 				}
@@ -563,15 +581,16 @@ class Crunchbutton_Order extends Cana_Table {
 				$msg .= '</Say><Pause length="2" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA['.$food.'.]]>';
 
 				if ($this->notes) {
-					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Customer Notes. '.$this->notes;
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[Customer Notes. '.$this->notes.'.]]>';
 				}
+				
+				$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Order total: '.$this->phoeneticNumber($this->final_price);
+
 				if ($this->pay_type == 'card' && $this->tip) {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">A tip of '.$this->phoeneticNumber($this->tip()).' has been charged to the customer\'s credit card.';
 				} else {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will be paying the tip by cash.';				
 				}
-				
-				$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Order total: '.$this->phoeneticNumber($this->final_price);
 
 				break;
 		}
