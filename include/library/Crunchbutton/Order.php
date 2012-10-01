@@ -642,6 +642,14 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->save();
 		return true;
 	}
+	
+	public function phone() {
+		$phone = $this->phone;
+		$phone = preg_replace('/[^\d]*/i','',$phone);
+		$phone = preg_replace('/(\d{3})(\d{3})(.*)/', '\\1-\\2-\\3', $phone);
+		
+		return $phone;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();

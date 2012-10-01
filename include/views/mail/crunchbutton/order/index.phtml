@@ -19,7 +19,7 @@
 	<tr>
 		<td width="50%" valign="top">
 			<h1><?=$order->name?></h1>
-			<h2><?=$order->phone?></h2>
+			<h2><?=$order->phone()?></h2>
 			<h2>
 				<? if ($order->delivery_type == 'delivery') : ?>
 					<?=nl2br(strip_tags($order->address))?><br />
@@ -67,7 +67,10 @@
 
 
 <br /><br /><br />
-For Crunchbutton support:<br />
+This order was send on behalf of <b><?=$order->name?></b>.<br />
+Contact the customer at:
+<h2><?=$order->phone()?></h2><br />
+For technical related issues, contact Crunchbutton at:<br />
 <h2>213-293-6935</h2>
 <h2>restaurant-support@crunchbutton.com</h2>
 
