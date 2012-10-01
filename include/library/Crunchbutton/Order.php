@@ -375,7 +375,10 @@ class Crunchbutton_Order extends Cana_Table {
 			c::config()->twilio->{$env}->outgoing,
 			'+1'.$num,
 			'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$this->id_order.'/doconfirm',
-			['StatusCallback' => 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/callback']
+			[
+				'StatusCallback' => 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/callback',
+				'IfMachine' => 'Hangup'
+			]
 		);
 	}
 	
@@ -420,7 +423,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$order = $this;
 		c::timeout(function() use($order) {
 			$order->notify();
-		}, false, false);
+		});
 
 		if (!$this->restaurant()->confirmation) {
 			c::timeout(function() use($order) {
@@ -433,7 +436,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$order = $this;
 		c::timeout(function() use($order) {
 			$order->confirm();
-		}, false, false); // 2 minites
+		}, 2 * 60 * 1000, false); // 2 minites
 	}
 	
 	public function orderMessage($type) {
@@ -546,7 +549,8 @@ class Crunchbutton_Order extends Cana_Table {
 				break;
 
 			case 'sms':
-				$msg = $this->name.' ordered '.$this->delivery_type.' paying by '.$this->pay_type.". \n".$food."\n\nphone: ".preg_replace('/[^\d.]/','',$this->phone).'.';
+				$msg = "Crunchbutton #".$this->id_order."\n\n";
+				$msg .= $this->name.' ordered '.$this->delivery_type.' paying by '.$this->pay_type.". \n".$food."\n\nphone: ".preg_replace('/[^\d.]/','',$this->phone).'.';
 				if ($this->delivery_type == 'delivery') {
 					$msg .= " \naddress: ".$this->address;
 				}

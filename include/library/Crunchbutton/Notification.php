@@ -60,6 +60,7 @@ class Crunchbutton_Notification extends Cana_Table {
 						'+1'.$num,
 						$msg
 					);
+					continue;
 				}
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
