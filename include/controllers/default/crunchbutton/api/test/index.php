@@ -2,6 +2,18 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+
+		$order = new Order(635);
+		$order->que();
+		exit;
+		
+
+		c::timeout(function() {
+			mail('_EMAIL','asdasdsad','fdfdfd');
+		});
+		exit;
+
+		
 		$r = Restaurant::o(11);
 		echo $r->phone();
 		exit;

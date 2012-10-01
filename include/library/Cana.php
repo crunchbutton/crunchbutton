@@ -146,6 +146,23 @@ class Cana extends Cana_Model {
 		return (new ReflectionMethod(self::app(), 'extend'))->invokeArgs(self::app(), func_get_args());
 	}
 	
+	public function timeout($func, $ms = null, $async = true) {
+		$closure = new SuperClosure($func);
+		$encoded = base64_encode(serialize($closure));
+		
+		if ($ms) {
+			$sleep = ' -s='.$ms;
+		}
+
+		$cmd = c::config()->dirs->root.'cli/timeout.php'.$sleep.' -c='.str_replace("'",'"',escapeshellarg($encoded));
+		if ($async) {
+			exec('nohup '.$cmd.' > /dev/null 2>&1 &');
+		} else {
+			exec($cmd, $o);
+			print_r($o);
+		}
+	}
+	
 	public function __call($name, $arguments) {
 		return (new ReflectionMethod(self::app(), $name))->invokeArgs(self::app(), $arguments);
 	}

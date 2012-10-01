@@ -367,13 +367,14 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function confirm() {
+		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
 
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoing,
 			'+1'.$num,
-			'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$order->id_order.'/say',
+			'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$this->id_order.'/doconfirm',
 			['StatusCallback' => 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/callback']
 		);
 	}
@@ -391,7 +392,7 @@ class Crunchbutton_Order extends Cana_Table {
 		foreach ($message as $msg) {
 			switch ($type) {
 				case 'googlevoice':
-					$gv = new GoogleVoice('cbvoice@arzynik.com', '***REMOVED***');
+					$gv = new GoogleVoice('cbvoice@arzynik.com', base64_decode('eXVtbWllc3Q='));
 					$gv->sms($num, $msg);
 					break;
 
@@ -416,23 +417,23 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function que() {
-		$scripts = ['notify'];
+		$order = $this;
+		c::timeout(function() use($order) {
+			$order->notify();
+		}, false, false);
 
 		if (!$this->restaurant()->confirmation) {
-			$scripts[] = 'receipt';
-		}
-
-		foreach ($scripts as $script) {
-			$this->spawnScript($script);
+			c::timeout(function() use($order) {
+				$order->receipt();
+			}, 30 * 1000); // 30 seconds
 		}
 	}
 	
 	public function queConfirm() {
-		$this->spawnScript('confirm');
-	}
-	
-	public function spawnScript($script) {
-		exec('nohup '.c::config()->dirs->root.'cli/'.$script.'.php '.$this->id_order.' > /dev/null 2>&1 &');
+		$order = $this;
+		c::timeout(function() use($order) {
+			$order->confirm();
+		}, false, false); // 2 minites
 	}
 	
 	public function orderMessage($type) {
