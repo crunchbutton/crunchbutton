@@ -67,13 +67,20 @@
 
 
 <br /><br /><br />
-This order was send on behalf of <b><?=$order->name?></b>.<br />
-Contact the customer at:
-<h2><?=$order->phone()?></h2><br />
-For technical related issues, contact Crunchbutton at:<br />
-<h2>213-293-6935</h2>
-<h2>restaurant-support@crunchbutton.com</h2>
-
+<table width="100%" celpadding="0" cellspacing="0" class="noborder">
+	<tr>
+		<td class="imporant">
+			This order was send on behalf of <b><?=$order->name?></b>.<br />
+			Contact the customer at:
+			<h1><?=$order->phone()?></h1><br />
+		</td>
+		<td>
+			For technical related issues, contact Crunchbutton at:<br />
+			<h2>213-293-6935</h2>
+			<h2>restaurant-support@crunchbutton.com</h2>
+		</td>
+	</tr>
+</table>
 
 
 
