@@ -37,14 +37,31 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$rsess = new Session_Twilio($_SESSION['support-respond-sess']);
 					$message = $rep.': '.$body;
 					$message = str_split($message,160);
-			
-					foreach ($message as $msg) {
-						$twilio->account->sms_messages->create(
-							c::config()->twilio->{$env}->outgoingTextCustomer,
-							'+1'.$rsess->phone,
-							$msg
-						);
+					
+					$nums = [$rsess->phone];
+					
+					foreach (c::config()->text as $supportName => $supportPhone) {
+						if ($supportName == $rep) continue;
+						$nums[] = $supportPhone;
 					}
+
+					$b = $message;
+					c::timeout(function() use ($nums, $b, $twilio, $env) {
+						foreach ($nums as $num) {
+							foreach ($b as $msg) {
+								try {
+									$twilio->account->sms_messages->create(
+										c::config()->twilio->{$env}->outgoingTextCustomer,
+										'+1'.$num,
+										$msg
+									);
+								} catch (Exception $e) {
+
+								}
+							}
+						}
+					});
+
 				} else {
 					$msg = 'Invalid ID. Enter a session id to reply to. ex: "@123"';
 				}
@@ -86,7 +103,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 								break;
 		
 							default:
-								$msg = 'I did\'nt understand that. Is this about order #'.$order->id_order.'?';
+								$msg = 'I didn\'t understand that. Is this about order #'.$order->id_order.'?';
 								break;
 								
 						}
@@ -108,7 +125,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							$_SESSION['sms-action'] = 'support-ask';
 							$msg = 'Great. What can we help you with?';
 						} else {
-							$msg = 'I could\'nt find that order. What was it again?';				
+							$msg = 'I couldn\'t find that order. What was it again?';				
 						}
 						echo '<Sms>'.$msg.'</Sms>';
 						break;
@@ -127,15 +144,22 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						$message .= htmlspecialchars($body);
 						$message = str_split($message,160);
 
-						foreach (c::config()->text as $supportName => $supportPhone) {
-							foreach ($message as $msg) {
-								$twilio->account->sms_messages->create(
-									c::config()->twilio->{$env}->outgoingTextCustomer,
-									'+1'.$supportPhone,
-									$msg
-								);
+						$b = $message;
+						c::timeout(function() use ($b, $env, $twilio) {
+							foreach (c::config()->text as $supportName => $supportPhone) {
+								foreach ($b as $msg) {
+									try {
+										$twilio->account->sms_messages->create(
+											c::config()->twilio->{$env}->outgoingTextCustomer,
+											'+1'.$supportPhone,
+											$msg
+										);
+									} catch (Exception $e) {
+									
+									}
+								}
 							}
-						}
+						});
 						break;
 		
 					default:

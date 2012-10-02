@@ -2,7 +2,14 @@
 
 class Controller_api_test extends Crunchbutton_Controller_Rest {
 	public function init() {
+	exit;
+		$b = ['cock'];
 
+		c::timeout(function() use ($b) {
+			print_r($b);
+		}, false, false);
+
+		exit;
 		$order = new Order(635);
 		$order->que();
 		exit;
