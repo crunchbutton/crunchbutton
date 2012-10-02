@@ -56,7 +56,7 @@ class Crunchbutton_Notification extends Cana_Table {
 
 				foreach ($message as $msg) {
 					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoingRestaurant,
+						c::config()->twilio->{$env}->outgoingTextRestaurant,
 						'+1'.$num,
 						$msg
 					);

@@ -67,13 +67,17 @@
 			<sid>_KEY_</sid>
 			<token>_KEY_</token>
 			<hostname>_DOMAIN_</hostname>
-			<outgoing>+18002421444</outgoing>
+			<outgoingTextCustomer>+1_PHONE_</outgoingTextCustomer>
+			<outgoingTextRestaurant>+1_PHONE_</outgoingTextRestaurant>
+			<outgoingCustomer>+18002421444</outgoingCustomer>
 			<outgoingRestaurant>+18003514161</outgoingRestaurant>
 		</live>
 		<dev>
 			<sid>_KEY_</sid>
 			<token>_KEY_</token>
-			<outgoing>+18002421444</outgoing>
+			<outgoingTextCustomer>_PHONE_</outgoingTextCustomer>
+			<outgoingTextRestaurant>_PHONE_</outgoingTextRestaurant>
+			<outgoingCustomer>+18002421444</outgoingCustomer>
 			<outgoingRestaurant>+18003514161</outgoingRestaurant>
 		</dev>
 		<testnumber>_PHONE_</testnumber>

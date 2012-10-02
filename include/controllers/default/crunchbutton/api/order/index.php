@@ -87,6 +87,9 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. This order has been confirmed.</Say>';
 						$order->confirmed = 1;
 						$order->save();
+						if ($order->restaurant()->confirmation) {
+							$order->receipt();
+						}
 						break;
 
 					case '3':
@@ -115,7 +118,9 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. This order has been confirmed.</Say>';
 						$order->confirmed = 1;
 						$order->save();
-						$order->receipt();
+						if ($order->restaurant()->confirmation) {
+							$order->receipt();
+						}
 						break;
 
 					case '2':

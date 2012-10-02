@@ -381,7 +381,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		//$num = ($env == 'live' ? $this->phone : c::config()->twilio->testnumber);
 		$num = $this->phone;
-		
+
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$message = str_split($this->message('selfsms'),160);
 
@@ -396,7 +396,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 				case 'twilio':
 					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoing,
+						c::config()->twilio->{$env}->outgoingTextCustomer,
 						'+1'.$num,
 						$msg
 					);
