@@ -36,7 +36,6 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				} elseif ($_SESSION['support-respond-sess']) {
 					$rsess = new Session_Twilio($_SESSION['support-respond-sess']);
 					$message = $rep.': '.$body;
-					$message = str_split($message,160);
 					
 					$nums = [$rsess->phone];
 					
@@ -46,9 +45,14 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					}
 
 					$b = $message;
-					c::timeout(function() use ($nums, $b, $twilio, $env) {
-						foreach ($nums as $num) {
-							foreach ($b as $msg) {
+					$id = $rsess->id_session_twilio;
+					c::timeout(function() use ($nums, $b, $twilio, $env, $id) {
+
+						$opMessage = str_split('@'.$id.'  '.$b,160);
+						$message = str_split($b,160);
+
+						foreach ($nums as $i => $num) {
+							foreach (($i == 0 ? $message : $opMessage ) as $msg) {
 								try {
 									$twilio->account->sms_messages->create(
 										c::config()->twilio->{$env}->outgoingTextCustomer,
