@@ -43,6 +43,11 @@
     	<support>800-242-1444</support>
     	<restaurant>800-351-4161</restaurant>
     </phone>
+    <text>
+    	<Judd>_PHONE_</Judd>
+    	<Devin>_PHONE_</Devin>
+    	<David>_PHONE_</David>
+    </text>
     <stripe>
     	<dev>
     		<secret>***REMOVED***</secret>
