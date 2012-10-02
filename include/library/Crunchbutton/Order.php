@@ -163,12 +163,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->save();
 		
 		if (c::env() != 'local') {
-		
-			if (1==1 || c::env() == 'live') {
-				$this->que();
-			} else {
-				$this->notify();
-			}
+			$this->que();
 		}
 
 		if ($params['make_default']) {
@@ -440,6 +435,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function orderMessage($type) {
+
 		switch ($type) {
 			case 'sms':
 			case 'web':
@@ -471,8 +467,13 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 
 			$foodItem = "\n- ".$prefix.preg_replace($pFind, $pReplace, $dish->dish()->name);
+			$options = $dish->options();
 
-			if ($dish->options()->count()) {
+			if (gettype($options) == 'array') {
+				$options = i::o($options);
+			}
+
+			if ($options->count()) {
 				$foodItem .= ' '.$with.' ';
 
 				foreach ($dish->options() as $option) {

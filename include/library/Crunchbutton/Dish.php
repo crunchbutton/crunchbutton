@@ -23,6 +23,9 @@ class Crunchbutton_Dish extends Cana_Table {
 				order by option.type asc, dish_option.sort desc, option.name
 			');
 		}
+		if (gettype($this->_options) == 'array') {
+			$this->_options = i::o($this->_options);
+		}
 		return $this->_options;
 	}
 	

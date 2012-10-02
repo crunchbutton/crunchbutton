@@ -12,7 +12,13 @@
 			<td><?
 				$food = $dish->dish()->name;
 				$cartPrice = $dish->dish()->price;
-				if ($dish->options()->count()) {
+				$options = $dish->options();
+
+				if (gettype($options) == 'array') {
+					$options = i::o($options);
+				}
+
+				if ($options->count()) {
 					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
 
 					foreach ($dish->options() as $option) {
