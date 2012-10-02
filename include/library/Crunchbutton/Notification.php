@@ -56,7 +56,7 @@ class Crunchbutton_Notification extends Cana_Table {
 
 				foreach ($message as $msg) {
 					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoing,
+						c::config()->twilio->{$env}->outgoingRestaurant,
 						'+1'.$num,
 						$msg
 					);
@@ -79,7 +79,7 @@ class Crunchbutton_Notification extends Cana_Table {
 
  				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				$call = $twilio->account->calls->create(
-					c::config()->twilio->{$env}->outgoing,
+					c::config()->twilio->{$env}->outgoingRestaurant,
 					'+1'.$num,
 					'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$order->id_order.'/say?id_notification='.$this->id_notification,
 					[

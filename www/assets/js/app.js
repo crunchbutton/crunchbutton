@@ -410,7 +410,7 @@ App.page.order = function(id) {
 		
 		App.cache('Restaurant',order.id_restaurant, function() {
 			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
-			$('.order-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="App.olark.show();">message us</a><br />or call <b>(213) 2 WENZEL</b><br /><br />');
+			$('.order-info').append('To reach Crunchbutton, <a href="javascript:;" onclick="App.olark.show();">message us</a><br />or call <b>(800) 242-1444</b><br /><br />');
 		});
 
 	});

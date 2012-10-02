@@ -40,8 +40,8 @@
 		<secret></secret>
     </facebook>
     <phone>
-    	<support>213-293-6935</support>
-    	<restaurant>213-293-6935</restaurant>
+    	<support>800-242-1444</support>
+    	<restaurant>800-351-4161</restaurant>
     </phone>
     <stripe>
     	<dev>
@@ -67,12 +67,14 @@
 			<sid>_KEY_</sid>
 			<token>_KEY_</token>
 			<hostname>_DOMAIN_</hostname>
-			<outgoing>+1_PHONE_</outgoing>
+			<outgoing>+18002421444</outgoing>
+			<outgoingRestaurant>+18003514161</outgoingRestaurant>
 		</live>
 		<dev>
 			<sid>_KEY_</sid>
 			<token>_KEY_</token>
-			<outgoing>_PHONE_</outgoing>
+			<outgoing>+18002421444</outgoing>
+			<outgoingRestaurant>+18003514161</outgoingRestaurant>
 		</dev>
 		<testnumber>_PHONE_</testnumber>
 		<voice>male</voice>
