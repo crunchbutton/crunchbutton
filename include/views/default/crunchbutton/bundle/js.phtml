@@ -6,6 +6,9 @@
 
 <script type="text/javascript">
 $(function() {
+	<? if (!c::isBot()) : ?>
+		$('.home-text').hide();
+	<? endif ; ?>
 	App.communities = {};
 	<? foreach (Community::all(c::getPagePiece(0)) as $community) : ?>
 		App.communities['<?=$community->permalink?>'] = {
@@ -15,6 +18,14 @@ $(function() {
 			stored: true
 		};
 	<? endforeach ; ?>
+	<? if ($this->community) : ?>
+		App.cached['Community'][<?=$this->community->id_community?>] = new Community(<?=str_replace("'","\\'",json_encode($this->community->exports()))?>);
+		App.cached['Community']['<?=$this->community->permalink?>'] = App.cached['Community'][<?=$this->community->id_community?>];
+		<? if (!c::getPagePiece(1)) : ?>
+			App.loadedPage = '<?=$this->community->permalink?>';
+		<? endif ; ?>
+	<? endif ; ?>
+
 });
 </script>
 

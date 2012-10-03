@@ -126,7 +126,7 @@ class Crunchbutton_App extends Cana_App {
 			$pageName = $page;
 		}
 
-		parent::displayPage($pageName);
+		parent::displayPage($pageName == 'error' ? 'home' : $pageName);
 		
 		return $this;
 	}
@@ -218,6 +218,13 @@ class Crunchbutton_App extends Cana_App {
 			$this->_balanced = $marketplace;
 		}
 		return $this->_balanced;
+	}
+	
+	public function isBot() {
+		if (!isset($this->_isBot)) {
+			$this->_isBot = preg_match('/googlebot|slurp|yahoo|bingbot|jeeves|scoutjet|webcrawl/i',$_SERVER['HTTP_USER_AGENT']);
+		}
+		return $this->_isBot;
 	}
 	
 } 

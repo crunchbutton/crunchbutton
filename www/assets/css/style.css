@@ -622,6 +622,67 @@ html[xmlns] .clearfix {
 	width: 100%;
 }
 
+.location-address {
+	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
+	border: 1px solid #f78160;
+	font-size: 22px;
+	padding: .45em .6em .5em .6em;
+	box-shadow: inset 0 0 6px rgba(0,0,0,.2);
+	width: 600px;
+	color: #888;
+	font-weight: 100px;
+	float: left;
+	border-top-left-radius: 2px;
+	border-bottom-left-radius: 2px;
+	
+	-webkit-transition: box-shadow ease-out 0.2s;
+	-moz-transition: box-shadow ease-out 0.2s;
+	-ms-transition: box-shadow ease-out 0.2s;
+	-o-transition: box-shadow ease-out 0.2s;
+	transition: box-shadow ease-out 0.2s;
+}
+
+.location-address:focus {
+	box-shadow: inset 0 0 8px rgba(247,129,96,.6);
+}
+
+.content-item-locations h1 {
+	font-size: 28px;
+}
+
+.location-detect {
+	margin: 2px 0 0 0;
+	height: 51px;
+	width: 51px;
+	background: #f78160;
+	float: left;
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+	cursor: pointer;
+
+	background: -moz-linear-gradient(#ff7149, #ff5626);
+	background: -ms-linear-gradient(#ff7149, #ff5626);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ff7149), color-stop(100%, #ff5626));
+	background: -webkit-linear-gradient(#ff7149, #ff5626);
+	background: -o-linear-gradient(#fb422e, #ff5626);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff7149', endColorstr='#ff5626');
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff7149', endColorstr='#ff5626')";
+	background: linear-gradient(#ff7149, #ff5626);
+
+	border: 1px solid #ae4939;
+	box-shadow:
+		inset 0 0 2px rgba(255,254,196,.8),
+		0px 2px 5px 0px rgba(0, 0, 0, 0.15)
+	;
+}
+
+.location-detect-icon {
+	background: url(/assets/images/locate.png);
+	background-size: contain;
+	height: 50px;
+	width: 50px;
+}
+
 @media only screen 
 and (max-width : 1023px) {
 	.home-tagline {

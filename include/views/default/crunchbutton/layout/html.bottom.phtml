@@ -1,15 +1,23 @@
 </head>
-
+<?
+	if ($this->community->id_community && !c::getPagePiece(1)) {
+		$cc = $this->community->restaurants()->count();
+		$e = $cc == 4 ? ' short-meal-list' : '';
+	}
+	if (!c::getPagePiece(0)) {
+		$e = ' short-meal-list';
+	}
+?>
 <body>
 	<div class="wrapper">
 		<div class="nav" data-role="header" data-position="fixed">
-			<div class="content">
+			<div class="content<?=$e?>">
 				<div class="logo"><a href="javascript:;" class="link-home"><div class="logo-img"></div></a><div class="community-selector"></div><div class="nav-back"></div></div>
 				<div class="config-icon"></div>
 			</div>
 		</div>
 		<div class="body">
-			<div class="content">
+			<div class="content<?=$e?>">
 				<div class="main-content pages">
 					<?=$this->content?>
 				</div>

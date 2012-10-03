@@ -1,3 +1,101 @@
 <?
-	$this->title = 'Crunchbutton';
+	$this->title = 'Food Delivery | Order Food Online from Local Restaurants for Takeout &amp; Delivery';
 ?>
+
+<? if ($this->community->id_community) : ?>
+	<? if (!c::isBot()) : ?>
+		<div class="home-text">
+			<h1><?=$this->community->name?> Online Food Delivery</h1>
+			<h2>Mobile food delivery</h2>
+			<p>Order delivery or takeout food in <?=$this->community->name?>. Order food on your <b>iPhone</b> or <b>Android</b> phone.</p>
+		</div>
+	<? endif ; ?>
+
+	<? $this->title .= ' | '.$this->community->name; ?>
+	<div class="home-tagline">
+		<h1>Order the best food <?=$this->community->prep?> <?=$this->community->name?> with a click</h1>
+		<h2>We've chosen the best food from the best restaurants <?=$this->community->prep?> <?=$this->community->name?>. We save your order, delivery and payment info, so reordering is as easy as the click of a button. Click on a restaurant below to get started.</h2>
+	</div>
+	<div class="content-padder-before"></div>
+	<div class="content-padder">
+		<div class="meal-items">
+			<? foreach ($this->community->restaurants() as $restaurant) : ?>
+				<div class="meal-item" data-id_restaurant="<?=$restaurant->id_restaurant?>" data-permalink="<?=$restaurant->permalink?>">
+					<div class="meal-item-spacer"></div>
+					<div class="meal-item-content">
+						<div class="meal-pic" style="background: url(/cache/images/<?=$restaurant->thumb()->getFileName()?>);"></div>
+						<h2 class="meal-restaurant">
+							<?=$restaurant->name?>
+							<b><a href="/<?=$this->community->permalink?>/<?=$restaurant->permalink?>" class="home-text"><?=$restaurant->name?></a></b>
+						</h2>
+						<h3 class="meal-food">Top Order: <?=$restaurant->top()->top_name ? $restaurant->top()->top_name : $restaurant->top()->name?></h3>
+					</div>
+				</div>
+			<? endforeach ; ?>
+		</div>
+	</div>
+
+<? else : ?>
+	<? if (!c::isBot()) : ?>
+		<div class="home-text">
+			<h1>Online Food Ordering. </h1>
+			<h2>Order <b>delivery</b> &amp; <b>takeout</b> online using crunchbutton or our <b>iPhone</b> or <b>Android</b> apps.</h2>
+			<p>
+				Order your favorite <b>Pizza</b> with any topping online, delivered to your home. Add toppings to your pizza. Pepperoni, sausage, cheese, sauce, whatever!
+				Don't want pizza? How about other <b>Italian food</b> like pasta, or a sandwich? Build your own sandwich, or order a <b>Wenzel</b>.
+				We also have lots of <b>wings</b>, BBQ wings, spicy wings, hot wings, teriyaki wings. 
+				Or how about some appetizers, or deserts?
+				<br /><br />
+				Try our <b>iPhone</b> and <b>Android</b> App for mobile food ordering.
+				<br /><br />
+				Love <b>Chinese food</b> or <b>asian food</b>? have some General Tso's Chicken, or Pad Thai, or fried rice, or egg rolls.
+				O! Don't forget <b>sushi</b>! Get some sushi delivered online.
+				<b>Mediterranean food</b>! Falafel, soup, hummus, Grape Leaves, and some Baba Ghannoush!
+			</p>
+		</div>
+	<? endif ; ?>
+
+	<div class="home-tagline">
+		<h1>Order the best food with a click</h1>
+		<h2>We've chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as the click of a button. Click on a restaurant below to get started.</h2>
+	</div>
+	<div class="enter-location">
+		<form onsubmit="App.loc.geocode(); return false;">
+		<input type="text" class="location-address" placeholder="Enter your address and lets eat!">
+		<div class="location-detect"><div class="location-detect-icon"></div></div>
+		<input type="submit" style="visibility: hidden">
+		</form>
+	</div>
+	<div class="divider"></div>
+	<br /><br />
+	<button class="button-letseat-form button-bottom"><div>Let's Eat</div></button>
+
+	<br /><br /><br />
+	<div class="divider dots"></div>
+	<br /><br />
+
+	<div class="content-item-name content-item-main-name content-item-locations">
+		<h1>Favorite locations, favorite restaurants!</h1>
+	</div>
+	
+	<div class="content-padder-before"></div>
+	<div class="content-padder">
+		<div class="meal-items">
+			<? foreach (Restaurant::o(1, 18) as $restaurant) : ?>
+				<div class="meal-item" data-id_restaurant="<?=$restaurant->id_restaurant?>" data-permalink-community="<?=$restaurant->community()->permalink?>">
+					<div class="meal-item-spacer"></div>
+					<div class="meal-item-content">
+						<div class="meal-pic" style="background: url(/cache/images/<?=$restaurant->thumb()->getFileName()?>);"></div>
+						<h2 class="meal-restaurant">
+							<?=$restaurant->community()->name?>
+							<b><a href="/<?=$restaurant->community()->permalink?>" class="home-text"><?=$restaurant->community()->name?>></a></b>
+						</h2>
+						<h3 class="meal-food">Top Restaurant: <?=$restaurant->name?></h3>
+					</div>
+				</div>
+			<? endforeach ; ?>
+		</div>
+	</div>
+<? endif ; ?>
+
+<? $this->title .= ' | Crunchbutton'; ?>

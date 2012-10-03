@@ -56,6 +56,12 @@ App.loadHome = function() {
 };
 
 App.loadCommunity = function(id) {
+
+	if (App.loadedPage == id) {
+		App.community = App.cached['Community'][id];
+		App.loadedPage = null;
+		/* return; */
+	}
 	var onHold = ['santa-monica'];
 	$('.community-select').val(id);
 
@@ -68,8 +74,7 @@ App.loadCommunity = function(id) {
 	App.cache('Community',id, function() {
 		App.community = this;
 
-		if (!App.community.id_community) {
-		
+		if (!App.community.id_community) {		
 			App.cache('Community','yale', function() {
 				App.community = this;
 				App.loadPage();
@@ -78,13 +83,14 @@ App.loadCommunity = function(id) {
 			$('.main-content').html('just a sec...');
 
 			return;
-		} else {x
+		} else {
 			App.loadPage();
 		}
 	});
 };
 
 App.page.community = function(id) {
+
 	App.currentPage = 'community';
 
 	App.cache('Community', id, function() {
@@ -95,7 +101,7 @@ App.page.community = function(id) {
 		document.title = 'Crunchbutton - ' + App.community.name;
 
 		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
-		var sloganReplace = App.community.permalink == 'yale' ? 'at Yale' : 'in Providence';
+		var sloganReplace = App.community.prep + ' ' + App.community.name;
 		var tagline = App.tagline.replace('%s', sloganReplace);
 		slogan = slogan.replace('%s', sloganReplace);
 
@@ -483,7 +489,7 @@ App.loadPage = function() {
 	} else {
 		App._pageInit = true;
 	}
-	
+
 	// force to a specific community
 	if (!url) {
 		App.loc.process();
@@ -1190,23 +1196,25 @@ App.loc = {
 		return closest || App.communities['yale'];
 	},
 	closest: function(complete) {
-
 		if (google && google.loader && google.loader.ClientLocation) {
 			App.loc.lat = google.loader.ClientLocation.latitude;
 			App.loc.lon = google.loader.ClientLocation.longitude;
 
 			complete();
+		}
+	},
+	getLocation: function() {
+		var complete = function() {
+			App.loc.reverseGeocode();
+		};
 
-		} else {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position){
+				App.loc.lat = position.coords.latitude;
+				App.loc.lon = position.coords.longitude;
 
-			if (navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(function(position){
-					App.loc.lat = position.coords.latitude;
-					App.loc.lon = position.coords.longitude;
-
-					complete();
-				}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
-			}
+				complete();
+			}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
 		}
 	},
 	process: function() {
@@ -1222,7 +1230,7 @@ App.loc = {
 	
 			} else if (closest.permalink) {
 				if (closest.distance > 25) {
-					location.href = '/hello';
+
 					return;
 				}
 
@@ -1238,6 +1246,34 @@ App.loc = {
 				History.replaceState({},loc,loc);
 			}
 		});
+	},
+	geocode: function() {
+		var geocoder = new google.maps.Geocoder();;
+		geocoder.geocode({'address': $('location-address').val()}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+					console.log(results);
+			} else {
+				alert('Geocode was not successful for the following reason: ' + status);
+			}
+		});
+	},
+	reverseGeocode: function() {
+		var geocoder = new google.maps.Geocoder();;
+		var latlng = new google.maps.LatLng(App.loc.lat, App.loc.lon);
+
+		geocoder.geocode({'latLng': latlng}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				if (results[1]) {
+
+									$('.location-address').val(results[0].formatted_address);
+				} else {
+					alert('No results found');
+				}
+			} else {
+				alert('Geocoder failed due to: ' + status);
+			}
+		});
+
 	}
 }
 
@@ -1293,6 +1329,10 @@ $(function() {
 		App.trigger.cash();
 		App.track('Switch to cash');
 	});
+	
+	$('.location-detect').live('click', function() {
+		App.loc.getLocation();
+	});
 
 	$('.meal-item-content').live({
 		mousedown: function() {		
@@ -1305,10 +1345,16 @@ $(function() {
 			}
 			$(this).addClass('meal-item-down');
 			var self = $(this);
+			var r = self.closest('.meal-item').attr('data-permalink');
+			var c = self.closest('.meal-item').attr('data-permalink-community');
 
 			setTimeout(function() {
-				App.busy.makeBusy();
-				App.loadRestaurant(self.closest('.meal-item').attr('data-permalink'));
+				if (r) {
+					App.loadRestaurant(r);
+				} else if (c) {
+					History.replaceState({},c,c);
+					App.loadCommunity(c);
+				}
 			},100);
 		},
 		mouseup: function() {
@@ -1336,9 +1382,16 @@ $(function() {
 			}
 			
 			var maxDistance = 10;
+			var r = $(this).closest('.meal-item').attr('data-permalink');
+			var c = $(this).closest('.meal-item').attr('data-permalink-community');
+
 			if (Math.abs(App.startX-App.touchX) < maxDistance && Math.abs(App.startY-App.touchY) < maxDistance) {
-				App.busy.makeBusy();
-				App.loadRestaurant($(this).closest('.meal-item').attr('data-permalink'));
+				if (r) {
+					App.loadRestaurant(r);
+				} else if (c) {
+					History.pushState({},c,c);
+					App.loadCommunity(c);
+				}
 			}
 			$(this).removeClass('meal-item-down');
 		}

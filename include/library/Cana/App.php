@@ -214,7 +214,7 @@ class Cana_App extends Cana_Model {
 		$this->view->headers->http[] = array(
 			'value'		=> 'HTTP/1.0 404 Not Found'
 		);
-		$this->view()->display('error/404');
+		$this->displayPage('error');
 	}
 
 	
@@ -348,8 +348,7 @@ class Cana_App extends Cana_Model {
 	
 	public function dbWrite() {
 		return $this->db();
-	}
-	
+	}	
 	
 	public function cache() {
 		if (!isset($this->_cache)) {
