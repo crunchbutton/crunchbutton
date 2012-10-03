@@ -1333,6 +1333,23 @@ $(function() {
 	$('.location-detect').live('click', function() {
 		App.loc.getLocation();
 	});
+	
+	$('.location-detect').live({
+		mousedown: function() {
+			$(this).addClass('location-detect-click');
+			App.loc.getLocation();
+		},
+		touchstart: function() {
+			$(this).addClass('location-detect-click');
+			App.loc.getLocation();
+		},
+		mouseup: function() {
+			$(this).removeClass('location-detect-click');
+		},
+		touchend: function() {
+			$(this).removeClass('location-detect-click');
+		}
+	});
 
 	$('.meal-item-content').live({
 		mousedown: function() {		

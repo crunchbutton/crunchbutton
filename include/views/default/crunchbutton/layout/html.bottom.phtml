@@ -4,7 +4,8 @@
 		$cc = $this->community->restaurants()->count();
 		$e = $cc == 4 ? ' short-meal-list' : '';
 	}
-	if (!c::getPagePiece(0)) {
+	$basicPages = ['legal','help','faq','hello'];
+	if (!c::getPagePiece(0) || (c::getPagePiece(0) && !in_array(c::getPagePiece(0), $basicPages) && !$this->community)) {
 		$e = ' short-meal-list';
 	}
 ?>
