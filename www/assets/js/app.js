@@ -81,6 +81,10 @@ App.loadCommunity = function(id) {
 	});
 };
 
+App.loadHome = function() {
+	History.pushState({}, '/', '/');
+};
+
 App.page.home = function() {
 	$('.content').addClass('short-meal-list');
 
@@ -1643,18 +1647,6 @@ $(function() {
 		}
 	});
 
-	$('.community-select').live('change',function() {
-		var loc = '/' + $(this).val();
-		
-		$.cookie('community', $(this).val(), { expires: new Date(3000,01,01), path: '/'});
-		
-		App.community = null;
-		$('.main-content').css('visibility','0');
-		History.pushState({}, 'Crunchbutton', loc);
-		
-		App.track('Community changed', {community: $(this).val()});
-	});
-
 	$('[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]').live('change', function() {
 		App.order.cardChanged = true;
 	});
@@ -1733,6 +1725,12 @@ $(function() {
 	$('[name="pay-address"]').live('change', function() {
 		clearTimeout(App.checkForDistance);
 		App.checkForDistance = setTimeout(checkForDistance, 1000);
+	});
+	
+	$('.config-icon').live('click', function() {
+		App.page.home();
+		setTimeout(scrollTo, 80, 0, 1);
+		$('input').blur();
 	});
 
 });

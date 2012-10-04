@@ -79,7 +79,7 @@ html {
 	margin: 0 auto;
 }
 
-.button-bottom, .meal-item, .meal-item-content, .toggle-item, .nav-back, .community-select {
+.button-bottom, .meal-item, .meal-item-content, .toggle-item, .nav-back, .config-icon {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-user-select: none;
 }
@@ -727,6 +727,24 @@ html[xmlns] .clearfix {
 	display: none;
 }
 
+
+.config-icon {
+	float: right;
+	top: 8px;
+	right: 8px;
+	width: 45px;
+	height: 30px;
+	margin: 12px 0 0 10px;
+	background: url(/assets/images/config.png) no-repeat;
+	background-size: contain;
+	cursor: pointer;
+}
+
+.logo {
+	float: left;
+}
+
+
 @media only screen 
 and (max-width : 1023px) {
 	.home-tagline, .home-welcome {
@@ -843,6 +861,12 @@ and (max-device-width : 480px) {
 */
 @media only screen 
 and (max-width : 769px) {
+
+	.config-icon {
+		margin-top: -2px;
+		margin-right: 8px;
+	}
+
 	.button-bottom.button-letseat-form {
 		margin-top: 25px;
 	}
@@ -1193,21 +1217,7 @@ and (max-width : 769px) {
 
 
 	}
-	.community-selector {
-		position: absolute;
-		top: 8px;
-		right: 8px;
-		width: 45px;
-	}
-	.community-select {
-		background: url(/assets/images/config.png) no-repeat;
-		border: 0;
-		width: 45px;
-		height: 30px;
-		-webkit-appearance: none;
-		background-size: contain;
-		color: rgba(0,0,0,.01);
-	}
+
 	.nav-back {
 		position: absolute;
 		top: 8px;
@@ -1456,13 +1466,7 @@ and (min-width : 770px) {
 	.dish-name {
 		text-decoration: underline;
 	}
-	
-	.community-selector {
-		margin: 10px 0 0 10px;
-	}
-	.community-select {
 
-	}
 	.cart-summary {
 		display: none;
 	}
@@ -1598,9 +1602,6 @@ and (min-width : 1024px) {
 		margin-left: 16px;
 	}
 
-	.community-selector {
-		margin: -25px 0 0 350px;
-	}
 	.button-bottom-wrapper {
 		padding-top: 20px;
 		margin-left: 300px;
@@ -1616,6 +1617,10 @@ and (min-width : 1024px) {
 @media only screen 
 and (min-width : 770px)
 and (max-width : 1023px) {
+
+	.config-icon {
+		margin-right: 10px;
+	}
 
 	.content-item-locations h1 {
 		text-align: center;
@@ -1639,12 +1644,6 @@ and (max-width : 1023px) {
 		margin-left: -321px;
 		left: 50%;
 	}
-}
-
-
-
-.community-select {
-	width: 140px;
 }
 
 th {
