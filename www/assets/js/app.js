@@ -62,14 +62,6 @@ App.loadCommunity = function(id) {
 		App.loadedPage = null;
 		/* return; */
 	}
-	var onHold = ['santa-monica'];
-	$('.community-select').val(id);
-
-	if (onHold.indexOf(id) != -1) {
-		$('.main-content').show();
-		$('.main-content').html('<div class="soon">It\'s a pleasure serving you ' + App.communities[id].name + '. We\'ll be back bigger and better for fall semester.</div>');
-		return;
-	}
 
 	App.cache('Community',id, function() {
 		App.community = this;
@@ -87,6 +79,58 @@ App.loadCommunity = function(id) {
 			App.loadPage();
 		}
 	});
+};
+
+App.page.home = function() {
+	$('.content').addClass('short-meal-list');
+
+	var top = '';
+	for (var x in App.topCommunities) {
+		top += '<div class="meal-item" data-permalink-community="' + App.topCommunities[x].id_community + '">' +
+			'<div class="meal-item-spacer"></div>' +
+			'<div class="meal-item-content">' +
+				'<div class="meal-pic" style="background: url(' + App.topCommunities[x].image + ');"></div>' +
+					'<h2 class="meal-restaurant">' + App.topCommunities[x].name + '</h2>' +
+					'<h3 class="meal-food">Top Restaurant: ' + App.topCommunities[x].restaurant + '</h3>' +
+				'</div>' +
+			'</div>';
+	}
+
+
+	$('.main-content').html('<div class="main-content-readable">' +
+		'<div class="home-welcome home-welcome-click">' +
+			'<h1>Order the best food with a click</h1>' +
+			'<h2>We\'ve chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as the click of a button.</h2>' +
+		'</div>' +
+		'<div class="home-welcome home-welcome-touch">' +
+			'<h1>Order the best food with a tap</h1>' +
+			'<h2>We\'ve chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as a tap of a button.</h2>' +
+		'</div>' +
+	'</div>' +
+	'<div class="enter-location">' +
+		'<form class="button-letseat-formform" onsubmit="return false;">' +
+		'<table class="button-letseat-table" cellpadding="0" cellspacing="0">' +
+			'<tr>' +
+				'<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your address and lets eat!" autofocus="autofocus"></td>' +
+				'<td>' +
+					'<div class="location-detect">' +
+						'<div class="location-detect-icon"></div>' +
+						'<div class="location-detect-loader"></div>' +
+					'</div>' +
+					'<input type="submit" style="visibility: hidden; position: absolute; bottom: 0;">' +
+				'</td>' +
+			'</tr>' +
+		'</table>' +
+		'</form>' +
+	'</div>' +
+	'<div class="divider"></div>' +
+	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' + 
+	'<div class="content-item-locations">' +
+		'<h1>Have a taste of our most popular locations!</h1>' +
+	'</div>' +
+	'<div class="content-padder-before"></div>' +
+	'<div class="content-padder">' +
+		'<div class="meal-items">' + top + '</div></div>');
 };
 
 App.page.community = function(id) {
@@ -351,7 +395,7 @@ App.drawPay = function(restaurant) {
 	$('[name="pay-tip"]').val(App.order.tip);
 	$('[name="pay-name"]').val(App.config.user.name);
 	$('[name="pay-phone"]').val(App.phone.format(App.config.user.phone));
-	$('[name="pay-address"]').val(App.config.user.address);
+	$('[name="pay-address"]').val(App.loc.enteredLoc || App.config.user.address);
 	$('[name="pay-card-number"]').val(App.config.user.card);
 	
 	if (!restaurant.delivery) {
@@ -893,7 +937,9 @@ App.cart = {
 			delivery_type: App.order['delivery_type'],
 			restaurant: App.restaurant.id,
 			make_default: $('#default-order-check').is(':checked'),
-			notes: $('[name="notes"]').val()
+			notes: $('[name="notes"]').val(),
+			lat: App.loc.lat,
+			lon: App.loc.lon
 		};
 		
 		if (order.pay_type == 'card') {
@@ -1126,6 +1172,10 @@ App.test = {
 	},
 	cart: function() {
 		alert(JSON.stringify(App.cart.items));
+	},
+	clearloc: function() {
+		$.cookie('community', '', { expires: new Date(3000,01,01), path: '/'});
+		location.href = '/';
 	}
 };
 
@@ -1182,7 +1232,7 @@ App.loc = {
 	},
 	getClosest: function() {
 		var closest;
-		if (App.loc) {
+		if (App.loc.lat) {
 			for (x in App.communities) {
 				App.communities[x].distance = App.loc.distance({
 					from: {lat: App.loc.lat, lon: App.loc.lon},
@@ -1193,7 +1243,7 @@ App.loc = {
 				}
 			}
 		}
-		return closest || App.communities['yale'];
+		return closest;
 	},
 	closest: function(complete) {
 		if (google && google.loader && google.loader.ClientLocation) {
@@ -1204,20 +1254,47 @@ App.loc = {
 		}
 	},
 	getLocation: function() {
+		$('.location-detect-loader').show();
+		$('.location-detect-icon').hide();
+
 		var complete = function() {
-			App.loc.reverseGeocode();
+			App.loc.reverseGeocode(function() {
+				$('.location-detect-loader').hide();
+				$('.location-detect-icon').show();
+				$('.button-letseat-form').click();
+			});
 		};
 
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position){
 				App.loc.lat = position.coords.latitude;
 				App.loc.lon = position.coords.longitude;
-
 				complete();
 			}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
 		}
 	},
 	process: function() {
+		var did = false;
+		if (App.config.user) {
+			App.loc.lat = parseFloat(App.config.user.location_lat);
+			App.loc.lon = parseFloat(App.config.user.location_lon);
+			
+			closest = App.loc.getClosest();
+			
+			if (closest) {
+				if (closest.distance < 25) {
+					did = true;
+					App.community = closest;
+					var loc = '/' + closest.permalink;
+					App.community = null;
+					History.pushState({}, 'Crunchbutton', loc);
+				}
+			}
+		}
+		if (!did) {
+			App.page.home();
+		}
+	return;
 		App.loc.closest(function() {
 			var
 				closest = App.loc.getClosest(),
@@ -1230,7 +1307,6 @@ App.loc = {
 	
 			} else if (closest.permalink) {
 				if (closest.distance > 25) {
-
 					return;
 				}
 
@@ -1247,31 +1323,45 @@ App.loc = {
 			}
 		});
 	},
-	geocode: function() {
+	geocode: function(complete) {
 		var geocoder = new google.maps.Geocoder();;
-		geocoder.geocode({'address': $('location-address').val()}, function(results, status) {
+		geocoder.geocode({'address': $('.location-address').val()}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
-					console.log(results);
+				App.loc.lat = results[0].geometry.location.Xa;
+				App.loc.lon = results[0].geometry.location.Ya;
 			} else {
-				alert('Geocode was not successful for the following reason: ' + status);
+				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
+				console.log('Geocode was not successful for the following reason: ' + status);
 			}
+			complete();
 		});
 	},
-	reverseGeocode: function() {
-		var geocoder = new google.maps.Geocoder();;
+	reverseGeocode: function(complete) {
+		if (App.loc.reverseGeocodeResults) {
+			$('.location-address').val(App.loc.reverseGeocodeResults);
+			complete();
+			return;
+		}
+
+		var geocoder = new google.maps.Geocoder();
 		var latlng = new google.maps.LatLng(App.loc.lat, App.loc.lon);
 
 		geocoder.geocode({'latLng': latlng}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
 				if (results[1]) {
-
-									$('.location-address').val(results[0].formatted_address);
+					$('.location-address').val(results[0].formatted_address);
 				} else {
-					alert('No results found');
+					$('.location-address').val('Where are you?!');
 				}
 			} else {
-				alert('Geocoder failed due to: ' + status);
+				$('.location-address').val('Oh no! ' + status);
 			}
+
+			App.loc.reverseGeocodeResults = results[0].formatted_address;
+			complete();
+			setTimeout(function() {
+				App.loc.reverseGeocodeResults = null;
+			}, 1000 * 60 * 2)
 		});
 
 	}
@@ -1309,6 +1399,41 @@ App.trigger = {
 }
 
 $(function() {
+	$('.button-letseat-formform').live('submit', function () {
+		$('.button-letseat-form').click();
+	});
+
+	$('.button-letseat-form').live('click', function() {
+		var complete = function() {
+			var closest = App.loc.getClosest();
+			if (closest) {
+				if (closest.distance < 25) {
+					App.community = closest;
+					var loc = '/' + closest.permalink;
+					App.community = null;
+					History.pushState({}, 'Crunchbutton', loc);
+					$.cookie('community', closest.permalink, { expires: new Date(3000,01,01), path: '/'});
+					$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
+					$.cookie('location_lon', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
+
+				} else {
+					$('.enter-location, .button-letseat-form').fadeOut(100, function() {
+						$('.enter-location').html('<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in your area. Come back next time you are hungry!</h1></div>').fadeIn();
+					});
+				}
+			}
+		};
+
+		if ($('.location-address').val() && $('.location-address').val() != App.loc.reverseGeocodeResults) {
+			App.loc.enteredLoc = $('.location-address').val();
+			$.cookie('entered_address', App.loc.enteredLoc, { expires: new Date(3000,01,01), path: '/'});
+			App.loc.geocode(complete);
+		} else if (App.loc.lat) {
+			complete();
+		} else {
+			$('.location-address').val('').attr('placeholder','Hey! Let\'s try that address thing one more time, mkay?');
+		}
+	});
 
 	$('.delivery-toggle-delivery').live('click',function() {
 		App.trigger.delivery();
@@ -1337,11 +1462,9 @@ $(function() {
 	$('.location-detect').live({
 		mousedown: function() {
 			$(this).addClass('location-detect-click');
-			App.loc.getLocation();
 		},
 		touchstart: function() {
 			$(this).addClass('location-detect-click');
-			App.loc.getLocation();
 		},
 		mouseup: function() {
 			$(this).removeClass('location-detect-click');
@@ -1369,8 +1492,13 @@ $(function() {
 				if (r) {
 					App.loadRestaurant(r);
 				} else if (c) {
-					History.replaceState({},c,c);
-					App.loadCommunity(c);
+					App.cache('Community',c, function() {
+						App.community = this;
+				
+						if (App.community.id_community) {		
+							History.pushState({},c,c);
+						}
+					});
 				}
 			},100);
 		},
@@ -1548,13 +1676,6 @@ $(function() {
 	$('[name="pay-phone"]').live('keyup', function(e) {
 		$(this).val( App.phone.format($(this).val()) );
 	});
-	
-	var select = $('<select class="community-select">');
-	var selected = $.cookie('community') ? $.cookie('community') : 'yale';
-	for (x in App.communities) {
-		select.append('<option value="' + x + '"' + (x == selected ? ' selected' : '') + '>' + App.communities[x].name + '</option>');
-	}
-	$('.community-selector').append(select);
 
 	// make sure we have our config loaded
 	var haveConfig = function(json) {
@@ -1583,7 +1704,7 @@ $(function() {
 		$('[data-position="fixed"]').show();
 	}
 	$('select, input, textarea').live('focus', function() {
-		if ($(window).width() >= 768) {
+		if ($(window).width() >= 768 || navigator.userAgent.toLowerCase().indexOf('android') > -1 || $(this).hasClass('location-address')) {
 			return;
 		}
 		clearTimeout(App.unHideBars);

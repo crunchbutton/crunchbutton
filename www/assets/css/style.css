@@ -89,7 +89,8 @@ i {
 }
 
 body {
-	background: #f5f5f5 url(/assets/images/crisp_paper_ruffles.png);
+	/* background: #f5f5f5 url(/assets/images/crisp_paper_ruffles.png); */
+	background: #f5f5f5 url(/assets/images/groovepaper.png);
 	color: #666;
 	font-size: 14px;
 }
@@ -191,7 +192,7 @@ body {
 	box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.15);
 }
 
-.home-tagline {
+.home-tagline, .home-welcome {
 	color: #d74924;
 	font-size: 28px;
 	margin: 15px 0 40px 0;
@@ -199,7 +200,7 @@ body {
 	line-height: 1.4em;
 }
 
-.home-tagline h2 {
+.home-tagline h2, .home-welcome h2 {
 	margin-top: .4em;
 	font-size: 18px;
 	color: #888;
@@ -627,13 +628,18 @@ html[xmlns] .clearfix {
 	border: 1px solid #f78160;
 	font-size: 22px;
 	padding: .45em .6em .5em .6em;
-	box-shadow: inset 0 0 6px rgba(0,0,0,.2);
-	width: 600px;
+
+	box-shadow:
+		inset 0 0 6px rgba(0,0,0,.2)
+	;
+	width: 100%;
 	color: #888;
+	box-sizing: border-box;
 	font-weight: 100px;
-	float: left;
 	border-top-left-radius: 2px;
 	border-bottom-left-radius: 2px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
 	
 	-webkit-transition: box-shadow ease-out 0.2s;
 	-moz-transition: box-shadow ease-out 0.2s;
@@ -643,19 +649,25 @@ html[xmlns] .clearfix {
 }
 
 .location-address:focus {
-	box-shadow: inset 0 0 8px rgba(247,129,96,.6);
+	box-shadow:
+		inset 0 0 8px rgba(247,129,96,.6)
+	;
 }
 
 .content-item-locations h1 {
+	margin-top: 80px;
 	font-size: 28px;
+	color: #D74924;
+	font-weight: 100;
+	font-size: 27px;
+	margin-bottom: 22px;
 }
 
 .location-detect {
-	margin: 2px 0 0 0;
+	margin: 1px 0 0 0;
 	height: 51px;
 	width: 51px;
 	background: #f78160;
-	float: left;
 	border-top-right-radius: 2px;
 	border-bottom-right-radius: 2px;
 	cursor: pointer;
@@ -672,18 +684,20 @@ html[xmlns] .clearfix {
 	border: 1px solid #ae4939;
 	box-shadow:
 		inset 0 0 2px rgba(255,254,196,.8),
-		0px 2px 5px 0px rgba(0, 0, 0, 0.15)
+		0px 0px 5px 0px rgba(0, 0, 0, 0.15)
 	;
 	-webkit-transition: box-shadow ease-out 0.2s;
 	-moz-transition: box-shadow ease-out 0.2s;
 	-ms-transition: box-shadow ease-out 0.2s;
 	-o-transition: box-shadow ease-out 0.2s;
 	transition: box-shadow ease-out 0.2s;
+}
 
+.button-letseat-table td {
+	vertical-align: top;
 }
 
 .location-detect-click {
-
 	box-shadow:
 		inset 0 0 18px rgba(0,0,0,.2),
 		inset 0 0 2px rgba(255,254,196,.9),
@@ -704,9 +718,18 @@ html[xmlns] .clearfix {
 	width: 50px;
 }
 
+.location-detect-loader {
+	background: url(/assets/images/loader-location.gif);
+	background-size: contain;
+	height: 24px;
+	width: 24px;
+	margin: 14px;
+	display: none;
+}
+
 @media only screen 
 and (max-width : 1023px) {
-	.home-tagline {
+	.home-tagline, .home-welcome {
 		text-align: center;
 	}
 	.restaurant-name {
@@ -800,6 +823,18 @@ and (max-width : 1023px) {
 	text-decoration: none;
 }
 
+.button-letseat-table {
+	width: 100%;
+}
+
+.button-letseat-form {
+	height: 50px;
+	font-size: 25px;
+	text-transform: none;
+	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
+	margin-top: 40px;
+}
+
 
 /*
 @media only screen 
@@ -808,6 +843,54 @@ and (max-device-width : 480px) {
 */
 @media only screen 
 and (max-width : 769px) {
+	.button-bottom.button-letseat-form {
+		margin-top: 25px;
+	}
+	.content-item-locations h1 {
+		font-size: 15px;
+		text-align: center;
+		margin-bototm: 5px;
+		margin-top: 45px;
+	}
+
+	.home-welcome-click {
+		display: none;
+	}
+	.home-welcome h1 {
+		font-size: 20px;
+	}
+	.home-welcom-error h1 {
+		margin-top: 20px;
+		line-height: 1.4em;
+	}
+	.home-welcome h2 {
+		font-size: 14px;
+	}
+	.home-welcome {
+		margin-top: 0;
+		margin-bottom: 10px;
+	}
+	.location-address {
+		width: 100%;
+		font-size: 14px;
+	}
+	.location-detect {
+		height: 32px;
+		width: 32px;
+		margin: 2px 0 0 0;
+	}
+	.enter-location {
+		margin-top: 10px;
+	}
+	.location-detect-icon {
+		height: 32px;
+		width: 32px;
+	}
+	.location-detect-loader {
+		height: 20px;
+		width: 20px;
+		margin: 6px 0 0 6px;
+	}
 	.button-bottom {
 		box-shadow:
 			inset 0 0 10px rgba(255,254,196,.8),
@@ -925,7 +1008,6 @@ and (max-width : 769px) {
 	}
 	body {
 		background: #f5f5f5 url(/assets/images/crisp_paper_ruffles-mobile.png);
-		background-scale: 50%;
 	}
 	.logo-img {
 		width: 168px;
@@ -1263,6 +1345,11 @@ and (max-width : 769px) {
 	.cart-button:first-child {
 		margin-left: -4px;
 	}
+	
+	.button-letseat-form {
+		width: 100%;
+		font-size: 20px;
+	}
 
 }
 
@@ -1281,6 +1368,9 @@ and (max-width : 769px) {
 
 @media only screen 
 and (min-width : 770px) {
+	.home-welcome-touch {
+		display: none;
+	}
 	.ui-footer-fixed {
 		left: auto;
 		right: auto;
@@ -1473,6 +1563,10 @@ and (min-width : 770px) {
 
 @media only screen 
 and (min-width : 1024px) {
+	.button-bottom.button-letseat-form {
+		margin-top: 45px;
+	}
+
 	.content {
 		width: 1024px;
 	}
@@ -1522,6 +1616,10 @@ and (min-width : 1024px) {
 @media only screen 
 and (min-width : 770px)
 and (max-width : 1023px) {
+
+	.content-item-locations h1 {
+		text-align: center;
+	}
 	
 	.restaurant-items, .restaurant-pic-wrapper, .cart-items, .payment-form {
 		float: none;	

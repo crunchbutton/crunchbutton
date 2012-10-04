@@ -119,6 +119,9 @@ class Crunchbutton_Order extends Cana_Table {
 					break;
 			}
 		}
+		
+		$user->location_lat = $params['lat'];
+		$user->location_lon = $params['lon'];
 
 		$user->name = $this->name;
 		$user->phone = $this->phone;

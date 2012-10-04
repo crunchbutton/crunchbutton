@@ -3,7 +3,7 @@
 ?>
 
 <? if ($this->community->id_community) : ?>
-	<? if (!c::isBot()) : ?>
+	<? if (c::app()->isBot()) : ?>
 		<div class="home-text">
 			<h1><?=$this->community->name?> Online Food Delivery</h1>
 			<h2>Mobile food delivery</h2>
@@ -26,7 +26,9 @@
 						<div class="meal-pic" style="background: url(/cache/images/<?=$restaurant->thumb()->getFileName()?>);"></div>
 						<h2 class="meal-restaurant">
 							<?=$restaurant->name?>
-							<b><a href="/<?=$this->community->permalink?>/<?=$restaurant->permalink?>" class="home-text"><?=$restaurant->name?></a></b>
+							<? if (c::app()->isBot()) : ?>
+								<b><a href="/<?=$this->community->permalink?>/<?=$restaurant->permalink?>" class="home-text"><?=$restaurant->name?></a></b>
+							<? endif ; ?>
 						</h2>
 						<h3 class="meal-food">Top Order: <?=$restaurant->top()->top_name ? $restaurant->top()->top_name : $restaurant->top()->name?></h3>
 					</div>
@@ -36,7 +38,7 @@
 	</div>
 
 <? else : ?>
-	<? if (!c::isBot()) : ?>
+	<? if (c::app()->isBot()) : ?>
 		<div class="home-text">
 			<h1>Online Food Ordering. </h1>
 			<h2>Order <b>delivery</b> &amp; <b>takeout</b> online using crunchbutton or our <b>iPhone</b> or <b>Android</b> apps.</h2>
@@ -55,27 +57,39 @@
 		</div>
 	<? endif ; ?>
 
-	<div class="home-tagline">
-		<h1>Order the best food with a click</h1>
-		<h2>We've chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as the click of a button. Click on a restaurant below to get started.</h2>
+	<div class="main-content-readable">
+		<div class="home-welcome home-welcome-click">
+			<h1>Order the best food with a click</h1>
+			<h2>We've chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as the click of a button.</h2>
+		</div>
+		<div class="home-welcome home-welcome-touch">
+			<h1>Order the best food with a tap</h1>
+			<h2>We've chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as a tap of a button.</h2>
+		</div>
+
 	</div>
 	<div class="enter-location">
-		<form onsubmit="App.loc.geocode(); return false;">
-		<input type="text" class="location-address" placeholder="Enter your address and lets eat!">
-		<div class="location-detect"><div class="location-detect-icon"></div></div>
-		<input type="submit" style="visibility: hidden">
+		<form class="button-letseat-formform" onsubmit="return false;">
+		<table class="button-letseat-table" cellpadding="0" cellspacing="0">
+			<tr>
+				<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your address and lets eat!" autofocus="autofocus"></td>
+				<td>
+					<div class="location-detect">
+						<div class="location-detect-icon"></div>
+						<div class="location-detect-loader"></div>
+					</div>
+					<input type="submit" style="visibility: hidden; position: absolute; bottom: 0;">
+				</td>
+			</tr>
+		</table>
 		</form>
 	</div>
 	<div class="divider"></div>
-	<br /><br />
-	<button class="button-letseat-form button-bottom"><div>Let's Eat</div></button>
 
-	<br /><br /><br />
-	<div class="divider dots"></div>
-	<br /><br />
+	<button class="button-letseat-form button-bottom"><div>Let's Eat!</div></button>
 
-	<div class="content-item-name content-item-main-name content-item-locations">
-		<h1>Favorite locations, favorite restaurants!</h1>
+	<div class="content-item-locations">
+		<h1>Have a taste of our most popular locations!</h1>
 	</div>
 	
 	<div class="content-padder-before"></div>
@@ -88,7 +102,9 @@
 						<div class="meal-pic" style="background: url(/cache/images/<?=$restaurant->thumb()->getFileName()?>);"></div>
 						<h2 class="meal-restaurant">
 							<?=$restaurant->community()->name?>
-							<b><a href="/<?=$restaurant->community()->permalink?>" class="home-text"><?=$restaurant->community()->name?>></a></b>
+							<? if (c::app()->isBot()) : ?>
+								<b><a href="/<?=$restaurant->community()->permalink?>" class="home-text"><?=$restaurant->community()->name?>></a></b>
+							<? endif ; ?>
 						</h2>
 						<h3 class="meal-food">Top Restaurant: <?=$restaurant->name?></h3>
 					</div>
