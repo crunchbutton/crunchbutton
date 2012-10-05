@@ -19,6 +19,7 @@ var App = {
 	community: null,
 	page: {},
 	config: null,
+	forceHome: false,
 	order: {
 		cardChanged: false,
 		pay_type: 'card',
@@ -52,7 +53,7 @@ App.loadRestaurant = function(id) {
 
 App.loadHome = function() {
 	App.currentPage = 'home';
-	History.pushState({}, 'Crunchbutton', '/');
+	History.pushState({}, 'Crunchbutton', '');
 };
 
 App.loadCommunity = function(id) {
@@ -86,6 +87,9 @@ App.loadHome = function() {
 };
 
 App.page.home = function() {
+	document.title = 'Food Delivery | Order Food Online from Local Restaurants for Takeout & Delivery | Crunchbutton';
+	$('.nav-back').removeClass('nav-back-show');
+
 	$('.content').addClass('short-meal-list');
 
 	var top = '';
@@ -99,7 +103,6 @@ App.page.home = function() {
 				'</div>' +
 			'</div>';
 	}
-
 
 	$('.main-content').html('<div class="main-content-readable">' +
 		'<div class="home-welcome home-welcome-click">' +
@@ -595,6 +598,7 @@ App.loadPage = function() {
 			$('.nav-back').removeClass('nav-back-show');
 			$('.footer').removeClass('footer-hide');
 			App.page.community(App.community.permalink);
+			setTimeout(scrollTo, 80, 0, 1);
 			return;
 			break;
 	}
@@ -604,6 +608,7 @@ App.loadPage = function() {
 	$('.nav-back').addClass('nav-back-show');
 	App.refreshLayout();
 	$('.main-content').css('visibility','1');
+	setTimeout(scrollTo, 80, 0, 1);
 };
 
 App.refreshLayout = function() {
@@ -1279,7 +1284,7 @@ App.loc = {
 	},
 	process: function() {
 		var did = false;
-		if (App.config.user) {
+		if (App.config.user && !App.forceHome) {
 			App.loc.lat = parseFloat(App.config.user.location_lat);
 			App.loc.lon = parseFloat(App.config.user.location_lon);
 			
@@ -1296,6 +1301,7 @@ App.loc = {
 			}
 		}
 		if (!did) {
+			App.forceHome = false;
 			App.page.home();
 		}
 	return;
@@ -1640,8 +1646,12 @@ $(function() {
 	});
 	
 	$('.link-home').live('click',function() {
-		location.href = '/';
+		App.forceHome = true;
+		App.loadHome();
+		$('input').blur();
+
 		return;
+		location.href = '/';
 		if (screen.width > 768) {
 			App.loadHome();
 		}
@@ -1728,8 +1738,8 @@ $(function() {
 	});
 	
 	$('.config-icon').live('click', function() {
-		App.page.home();
-		setTimeout(scrollTo, 80, 0, 1);
+		App.forceHome = true;
+		App.loadHome();
 		$('input').blur();
 	});
 
