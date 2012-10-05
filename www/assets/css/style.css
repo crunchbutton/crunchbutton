@@ -730,8 +730,6 @@ html[xmlns] .clearfix {
 
 .config-icon {
 	float: right;
-	top: 8px;
-	right: 8px;
 	width: 45px;
 	height: 30px;
 	margin: 12px 0 0 10px;
@@ -863,7 +861,7 @@ and (max-device-width : 480px) {
 and (max-width : 769px) {
 
 	.config-icon {
-		margin-top: -2px;
+		margin-top: -1px;
 		margin-right: 8px;
 	}
 

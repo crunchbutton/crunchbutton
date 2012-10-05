@@ -88,6 +88,7 @@ App.loadHome = function() {
 
 App.page.home = function() {
 	document.title = 'Food Delivery | Order Food Online from Local Restaurants for Takeout & Delivery | Crunchbutton';
+
 	$('.nav-back').removeClass('nav-back-show');
 
 	$('.content').addClass('short-meal-list');
@@ -124,7 +125,6 @@ App.page.home = function() {
 						'<div class="location-detect-icon"></div>' +
 						'<div class="location-detect-loader"></div>' +
 					'</div>' +
-					'<input type="submit" style="visibility: hidden; position: absolute; bottom: 0;">' +
 				'</td>' +
 			'</tr>' +
 		'</table>' +
