@@ -59,58 +59,13 @@
 
 	<div class="main-content-readable">
 		<div class="home-welcome home-welcome-click">
-			<h1>Order the best food with a click</h1>
-			<h2>We've chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as the click of a button.</h2>
+			<h1>Finding you the best food...</h1>
 		</div>
 		<div class="home-welcome home-welcome-touch">
-			<h1>Order the best food with a tap</h1>
-			<h2>We've chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as a tap of a button.</h2>
-		</div>
-
-	</div>
-	<div class="enter-location">
-		<form class="button-letseat-formform" onsubmit="return false;">
-		<table class="button-letseat-table" cellpadding="0" cellspacing="0">
-			<tr>
-				<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your address and lets eat!"></td>
-				<td>
-					<div class="location-detect">
-						<div class="location-detect-icon"></div>
-						<div class="location-detect-loader"></div>
-					</div>
-				</td>
-			</tr>
-		</table>
-		</form>
-	</div>
-	<div class="divider"></div>
-
-	<button class="button-letseat-form button-bottom"><div>Let's Eat!</div></button>
-
-	<div class="content-item-locations">
-		<h1>Have a taste of our most popular locations!</h1>
-	</div>
-	
-	<div class="content-padder-before"></div>
-	<div class="content-padder">
-		<div class="meal-items">
-			<? foreach (Restaurant::o(1, 18) as $restaurant) : ?>
-				<div class="meal-item" data-id_restaurant="<?=$restaurant->id_restaurant?>" data-permalink-community="<?=$restaurant->community()->permalink?>">
-					<div class="meal-item-spacer"></div>
-					<div class="meal-item-content">
-						<div class="meal-pic" style="background: url(<?=$restaurant->thumb() ? '/cache/images/'.$restaurant->thumb()->getFileName() : ''?>);"></div>
-						<h2 class="meal-restaurant">
-							<?=$restaurant->community()->name?>
-							<? if (c::app()->isBot()) : ?>
-								<b><a href="/<?=$restaurant->community()->permalink?>" class="home-text"><?=$restaurant->community()->name?>></a></b>
-							<? endif ; ?>
-						</h2>
-						<h3 class="meal-food">Top Restaurant: <?=$restaurant->name?></h3>
-					</div>
-				</div>
-			<? endforeach ; ?>
+			<h1>Finding you the best food...</h1>
 		</div>
 	</div>
+
 <? endif ; ?>
 
 <? $this->title .= ' | Crunchbutton'; ?>

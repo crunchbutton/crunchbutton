@@ -1032,9 +1032,10 @@ App.cart = {
 			for (var x in errors) {
 				error += errors[x] + "\n";
 			}
+			$('body').scrollTop($('.payment-form').position().top-80);
 			alert(error);
 			App.busy.unBusy();
-			App.track('Order', errors);
+			App.track('OrderError', errors);
 			return;
 		}
 
@@ -1052,7 +1053,7 @@ App.cart = {
 					for (x in json.errors) {
 						error += json.errors[x] + "\n";
 					}
-					App.track('Order', json.errors);
+					App.track('OrderError', json.errors);
 					alert(error);
 
 				} else {
