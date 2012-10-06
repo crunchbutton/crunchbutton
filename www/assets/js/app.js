@@ -87,7 +87,7 @@ App.loadHome = function() {
 };
 
 App.page.home = function() {
-	document.title = 'Food Delivery | Order Food Online from Local Restaurants for Takeout & Delivery | Crunchbutton';
+	document.title = 'Crunchbutton';
 
 	$('.nav-back').removeClass('nav-back-show');
 
@@ -138,10 +138,27 @@ App.page.home = function() {
 	'<div class="content-padder-before"></div>' +
 	'<div class="content-padder">' +
 		'<div class="meal-items">' + top + '</div></div>');
+
+	//$('.location-address').val($.cookie('entered_address'));
+	if (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('mobile') == -1 && navigator.userAgent.toLowerCase().indexOf('chrome') == -1) {
+		// safari desktop
+		$('.location-detect').css({
+			'margin-top': '2px',
+			'height': '50px'
+		});
+	} else if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+		// firefox desktop
+		$('.location-detect').css({
+			'margin-top': '0px',
+			'height': '52px'
+		});
+	}
+
+		
 };
 
 App.page.community = function(id) {
-
+	App.lastCommunity = id;
 	App.currentPage = 'community';
 
 	App.cache('Community', id, function() {
@@ -1285,53 +1302,47 @@ App.loc = {
 	process: function() {
 		var did = false;
 		if (App.config.user && !App.forceHome) {
-			App.loc.lat = parseFloat(App.config.user.location_lat);
-			App.loc.lon = parseFloat(App.config.user.location_lon);
+
+			if ($.cookie('location_lat')) {
+				App.loc.lat = parseFloat($.cookie('location_lat'));
+				App.loc.lon = parseFloat($.cookie('location_lon'));
 			
-			closest = App.loc.getClosest();
-			
-			if (closest) {
-				if (closest.distance < 25) {
-					did = true;
-					App.community = closest;
-					var loc = '/' + closest.permalink;
-					App.community = null;
-					History.pushState({}, 'Crunchbutton', loc);
+			} else if (App.config.user.location_lat) {
+				App.loc.lat = parseFloat(App.config.user.location_lat);
+				App.loc.lon = parseFloat(App.config.user.location_lon);
+			}
+
+			if (App.loc.lat) {
+				closest = App.loc.getClosest();
+				
+				if (closest) {
+					if (closest.distance < 25) {
+						did = true;
+						App.community = closest;
+						var loc = '/' + closest.permalink;
+						App.community = null;
+						History.pushState({}, 'Crunchbutton', loc);
+					}
 				}
 			}
 		}
+		
+		if (!did && !App.forceHome && navigator.geolocation) {
+			var complete = function() {
+				$('.button-letseat-form').click();
+			};
+			navigator.geolocation.getCurrentPosition(function(position){
+				App.loc.lat = position.coords.latitude;
+				App.loc.lon = position.coords.longitude;
+				complete();
+			}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
+		}
+		
 		if (!did) {
 			App.forceHome = false;
 			App.page.home();
 		}
-	return;
-		App.loc.closest(function() {
-			var
-				closest = App.loc.getClosest(),
-				loc;
 
-			console.log('closest',closest);
-
-			if ($.cookie('community') && !App.community) {
-				loc = '/' + $.cookie('community');
-	
-			} else if (closest.permalink) {
-				if (closest.distance > 25) {
-					return;
-				}
-
-				if (!App.community || closest.permalink != App.community.permalink) {
-					loc = '/' + closest.permalink;
-				}
-	
-			} else if (!App.community) {
-				loc = '/yale';
-			}
-
-			if (loc) {
-				History.replaceState({},loc,loc);
-			}
-		});
 	},
 	geocode: function(complete) {
 		var geocoder = new google.maps.Geocoder();;
@@ -1424,7 +1435,7 @@ $(function() {
 					History.pushState({}, 'Crunchbutton', loc);
 					$.cookie('community', closest.permalink, { expires: new Date(3000,01,01), path: '/'});
 					$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
-					$.cookie('location_lon', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
+					$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
 
 				} else {
 					$('.enter-location, .button-letseat-form').fadeOut(100, function() {
@@ -1441,7 +1452,7 @@ $(function() {
 		} else if (App.loc.lat) {
 			complete();
 		} else {
-			$('.location-address').val('').attr('placeholder','Hey! Let\'s try that address thing one more time, mkay?');
+			$('.location-address').val('').attr('placeholder','Hey! Enter your address here');
 		}
 	});
 
@@ -1646,14 +1657,12 @@ $(function() {
 	});
 	
 	$('.link-home').live('click',function() {
-		App.forceHome = true;
-		App.loadHome();
-		$('input').blur();
-
-		return;
-		location.href = '/';
-		if (screen.width > 768) {
+		if (App.lastCommunity) {
+			History.pushState({}, 'Crunchbutton', '/' + App.lastCommunity);
+		} else {
+			App.forceHome = true;
 			App.loadHome();
+			$('input').blur();
 		}
 	});
 

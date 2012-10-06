@@ -1676,7 +1676,6 @@ th {
 	font-weight: bold;
 }
 
-
 @-moz-document url-prefix() { 
 	.cart-item-config {
 		margin-top: -18px !important;
@@ -1686,4 +1685,11 @@ th {
 .delivery-minimum-error {
 	color: #d40000;
 	margin-bottom: 10px;
+}
+
+	
+@-moz-document url-prefix() {
+    .location-address {
+        width: 609px;
+    }
 }
