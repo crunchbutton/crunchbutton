@@ -401,7 +401,6 @@ class Crunchbutton_Restaurant extends Cana_Table {
 	public function exports() {
 
 		$out = $this->properties();
-			return $out;
 		$out['_open'] = $this->open();
 //		$out['img'] = '/assets/images/food/630x280/'.$this->image.'?crop=1';
 		$out['img'] = '/cache/images/'.($this->image() ? $this->image()->getFileName() : '');
