@@ -119,7 +119,7 @@ App.page.home = function() {
 		'<form class="button-letseat-formform" onsubmit="return false;">' +
 		'<table class="button-letseat-table" cellpadding="0" cellspacing="0">' +
 			'<tr>' +
-				'<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your address and lets eat!" autofocus="autofocus"></td>' +
+				'<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your address and lets eat!" '+ ($(window).width() >= 768 ? 'autofocus="autofocus"' : '') + '></td>' +
 				'<td>' +
 					'<div class="location-detect">' +
 						'<div class="location-detect-icon"></div>' +
@@ -1362,15 +1362,19 @@ App.loc = {
 				} else {
 					$('.location-address').val('Where are you?!');
 				}
+				
+				App.loc.reverseGeocodeResults = results[0].formatted_address;
+				complete();
+				setTimeout(function() {
+					App.loc.reverseGeocodeResults = null;
+				}, 1000 * 60 * 2);
+			
 			} else {
-				$('.location-address').val('Oh no! ' + status);
+				$('.location-address').val('Oh no! We couldn\'t locate you');
+				$('.location-detect-loader').hide();
+				$('.location-detect-icon').show();
 			}
 
-			App.loc.reverseGeocodeResults = results[0].formatted_address;
-			complete();
-			setTimeout(function() {
-				App.loc.reverseGeocodeResults = null;
-			}, 1000 * 60 * 2)
 		});
 
 	}
