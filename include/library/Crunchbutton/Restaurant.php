@@ -367,7 +367,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		$params['cache'] 		= Cana::config()->dirs->www.'cache/images/';
 		$params['path'] 		= Cana::config()->dirs->www.'assets/images/food/';
 
-		$thumb = new Cana_Thumb($params);
+		try {	
+			$thumb = new Cana_Thumb($params);
+		} catch (Exception $e) {
+			return null;
+		}
 		return $thumb;
 
 	}
@@ -385,19 +389,25 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		$params['cache'] 		= Cana::config()->dirs->www.'cache/images/';
 		$params['path'] 		= Cana::config()->dirs->www.'assets/images/food/';
 
-		$thumb = new Cana_Thumb($params);
+		try {	
+			$thumb = new Cana_Thumb($params);
+		} catch (Exception $e) {
+			return null;
+		}
 		return $thumb;
 
 	}
 
 	public function exports() {
+
 		$out = $this->properties();
+			return $out;
 		$out['_open'] = $this->open();
 //		$out['img'] = '/assets/images/food/630x280/'.$this->image.'?crop=1';
-		$out['img'] = '/cache/images/'.$this->image()->getFileName();
+		$out['img'] = '/cache/images/'.($this->image() ? $this->image()->getFileName() : '');
 		//$out['img64'] = (new ImageBase64($this->thumb()))->output();
 //		$out['img64'] = '/assets/images/food/310x310/'.$this->image;
-		$out['img64'] = '/cache/images/'.$this->thumb()->getFileName();
+		$out['img64'] = '/cache/images/'.($this->thumb() ? $this->thumb()->getFileName() : '');
 
 		foreach ($this->categories() as $category) {
 			$out['_categories'][$category->id_category] = $category->exports();

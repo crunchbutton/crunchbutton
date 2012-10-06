@@ -23,7 +23,7 @@
 				<div class="meal-item" data-id_restaurant="<?=$restaurant->id_restaurant?>" data-permalink="<?=$restaurant->permalink?>">
 					<div class="meal-item-spacer"></div>
 					<div class="meal-item-content">
-						<div class="meal-pic" style="background: url(/cache/images/<?=$restaurant->thumb()->getFileName()?>);"></div>
+						<div class="meal-pic" style="background: url(<?=$restaurant->thumb() ? '/cache/images/'.$restaurant->thumb()->getFileName() : ''?>);"></div>
 						<h2 class="meal-restaurant">
 							<?=$restaurant->name?>
 							<? if (c::app()->isBot()) : ?>
@@ -98,7 +98,7 @@
 				<div class="meal-item" data-id_restaurant="<?=$restaurant->id_restaurant?>" data-permalink-community="<?=$restaurant->community()->permalink?>">
 					<div class="meal-item-spacer"></div>
 					<div class="meal-item-content">
-						<div class="meal-pic" style="background: url(/cache/images/<?=$restaurant->thumb()->getFileName()?>);"></div>
+						<div class="meal-pic" style="background: url(<?=$restaurant->thumb() ? '/cache/images/'.$restaurant->thumb()->getFileName() : ''?>);"></div>
 						<h2 class="meal-restaurant">
 							<?=$restaurant->community()->name?>
 							<? if (c::app()->isBot()) : ?>

@@ -133,7 +133,7 @@ App.page.home = function() {
 	'<div class="divider"></div>' +
 	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' + 
 	'<div class="content-item-locations">' +
-		'<h1>Have a taste of our most popular locations!</h1>' +
+		'<h1>Our most popular locations</h1>' +
 	'</div>' +
 	'<div class="content-padder-before"></div>' +
 	'<div class="content-padder">' +
