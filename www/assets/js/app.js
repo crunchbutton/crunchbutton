@@ -1027,7 +1027,7 @@ App.cart = {
 			errors['noorder'] = 'Please add something to your order.';
 		}
 
-		if (errors.length) {
+		if (!$.isEmptyObject(errors)) {
 			var error = '';
 			for (var x in errors) {
 				error += errors[x] + "\n";
