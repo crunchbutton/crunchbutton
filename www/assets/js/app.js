@@ -1218,6 +1218,8 @@ App.test = {
 	},
 	clearloc: function() {
 		$.cookie('community', '', { expires: new Date(3000,01,01), path: '/'});
+		$.cookie('location_lat', '', { expires: new Date(3000,01,01), path: '/'});
+		$.cookie('location_lon', '', { expires: new Date(3000,01,01), path: '/'});
 		location.href = '/';
 	}
 };
@@ -1287,6 +1289,14 @@ App.loc = {
 				App.loc.lon = position.coords.longitude;
 				complete();
 			}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
+		}
+	},
+	preProcess: function() {
+		if (google.loader.ClientLocation) {
+			if (!$.cookie('location_lat')) {
+				App.loc.lat = google.loader.ClientLocation.latitude;
+				App.loc.lon = google.loader.ClientLocation.longitude;
+			}
 		}
 	},
 	process: function() {
@@ -1378,7 +1388,6 @@ App.loc = {
 			}
 
 		});
-
 	}
 }
 
@@ -1741,5 +1750,4 @@ $(function() {
 
 });
 
-
-
+google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
