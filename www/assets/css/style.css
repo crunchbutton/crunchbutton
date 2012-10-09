@@ -638,8 +638,8 @@ html[xmlns] .clearfix {
 	font-weight: 100px;
 	border-top-left-radius: 2px;
 	border-bottom-left-radius: 2px;
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
 	
 	-webkit-transition: box-shadow ease-out 0.2s;
 	-moz-transition: box-shadow ease-out 0.2s;
@@ -894,7 +894,7 @@ and (max-width : 769px) {
 	}
 	.location-address {
 		width: 100%;
-		font-size: 14px;
+		font-size: 16px;
 	}
 	.location-detect {
 		height: 32px;
@@ -1376,6 +1376,14 @@ and (max-width : 769px) {
 
 @media only screen 
 and (min-width : 770px) {
+	.config-icon {
+		width: 175px;
+		height: 30px;
+		margin: 12px 0 0 10px;
+		background: url(/assets/images/change-location.png) no-repeat;
+		background-size: contain;
+		cursor: pointer;
+	}
 	.home-welcome-touch {
 		display: none;
 	}

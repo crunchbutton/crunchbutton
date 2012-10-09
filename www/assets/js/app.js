@@ -119,25 +119,29 @@ App.page.home = function() {
 		'<form class="button-letseat-formform" onsubmit="return false;">' +
 		'<table class="button-letseat-table" cellpadding="0" cellspacing="0">' +
 			'<tr>' +
-				'<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your address and let\'s eat!" '+ ($(window).width() >= 768 ? 'autofocus="autofocus"' : '') + '></td>' +
+				'<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your full address or zip code here" '+ ($(window).width() >= 768 ? 'autofocus="autofocus"' : '') + '></td>' +
+				/*
 				'<td>' +
 					'<div class="location-detect">' +
 						'<div class="location-detect-icon"></div>' +
 						'<div class="location-detect-loader"></div>' +
 					'</div>' +
 				'</td>' +
+				*/
 			'</tr>' +
 		'</table>' +
 		'</form>' +
 	'</div>' +
 	'<div class="divider"></div>' +
-	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' + 
+	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>');
+	/*
 	'<div class="content-item-locations">' +
 		'<h1>Our most popular locations</h1>' +
 	'</div>' +
 	'<div class="content-padder-before"></div>' +
 	'<div class="content-padder">' +
 		'<div class="meal-items">' + top + '</div></div>');
+	*/
 
 	//$('.location-address').val($.cookie('entered_address'));
 	if (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('mobile') == -1 && navigator.userAgent.toLowerCase().indexOf('chrome') == -1) {
@@ -1445,7 +1449,7 @@ $(function() {
 		} else if (App.loc.lat) {
 			complete();
 		} else {
-			$('.location-address').val('').attr('placeholder','Hey! Enter your address here');
+//			$('.location-address').val('').attr('placeholder','Hey! Enter your address here');
 		}
 	});
 
