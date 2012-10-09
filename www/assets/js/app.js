@@ -133,15 +133,17 @@ App.page.home = function() {
 		'</form>' +
 	'</div>' +
 	'<div class="divider"></div>' +
-	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>');
-	/*
-	'<div class="content-item-locations">' +
-		'<h1>Our most popular locations</h1>' +
-	'</div>' +
-	'<div class="content-padder-before"></div>' +
-	'<div class="content-padder">' +
-		'<div class="meal-items">' + top + '</div></div>');
-	*/
+	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' + 
+	'<div class="error-location" style="display: none;">' + 
+		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in your area. Come back next time you are hungry!</h1></div>' +
+		'<div class="content-item-locations">' +
+			'<h1>Our most popular locations</h1>' +
+		'</div>' +
+		'<div class="content-padder-before"></div>' +
+		'<div class="content-padder">' +
+			'<div class="meal-items">' + top + '</div></div>' +
+	'</div>');
+
 
 	//$('.location-address').val($.cookie('entered_address'));
 	if (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('mobile') == -1 && navigator.userAgent.toLowerCase().indexOf('chrome') == -1) {
@@ -1442,7 +1444,7 @@ $(function() {
 
 				} else {
 					$('.enter-location, .button-letseat-form').fadeOut(100, function() {
-						$('.enter-location').html('<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in your area. Come back next time you are hungry!</h1></div>').fadeIn();
+						$('.error-location').fadeIn();
 					});
 				}
 			}
@@ -1746,8 +1748,6 @@ $(function() {
 		App.loadHome();
 		$('input').blur();
 	});
-
-
 });
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
