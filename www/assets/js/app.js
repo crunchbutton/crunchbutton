@@ -316,9 +316,6 @@ App.page.restaurant = function(id) {
 		},200);
 
 		App.cartHighlightEnabled = false;
-		
-		App.layout.init();
-		App.busy.unBusy();
 	});
 
 };
@@ -1700,8 +1697,6 @@ $(function() {
 		$('body').scrollTop($('.cart-items').position().top-80);
 	});
 	
-	App.layout.init();
-	
 	var unHideBars = function() {
 		$('[data-position="fixed"]').show();
 	}
@@ -1743,16 +1738,8 @@ $(function() {
 		$('input').blur();
 	});
 
+
 });
 
-App.layout = {
-	init: function() {
 
-	}
-};
-
-$(window).resize(function() {
-	clearTimeout(App.resizeTimer);
-	App.resizeTimer = setTimeout(App.layout.init, 100);
-});
 
