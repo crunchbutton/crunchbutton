@@ -51,11 +51,6 @@ App.loadRestaurant = function(id) {
 	});
 };
 
-App.loadHome = function() {
-	App.currentPage = 'home';
-	History.pushState({}, 'Crunchbutton', '');
-};
-
 App.loadCommunity = function(id) {
 
 	if (App.loadedPage == id) {
@@ -82,8 +77,20 @@ App.loadCommunity = function(id) {
 	});
 };
 
+
 App.loadHome = function() {
-	History.pushState({}, '/', '/');
+	App.currentPage = 'home';
+	History.pushState({}, 'Crunchbutton', '/');
+	
+	App.loc.lat = 0;
+	App.loc.lon = 0;
+
+	if ($('.enter-location').length) {
+		$('.location-address').val('');
+		$('.error-location').fadeOut(100, function() {
+			$('.enter-location, .button-letseat-form').fadeIn();
+		});
+	}
 };
 
 App.page.home = function() {
@@ -135,7 +142,7 @@ App.page.home = function() {
 	'<div class="divider"></div>' +
 	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' + 
 	'<div class="error-location" style="display: none;">' + 
-		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in your area. Come back next time you are hungry!</h1></div>' +
+		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in <span class="loc-your-area">your area</span>. Come back next time you are hungry!</h1></div>' +
 		'<div class="content-item-locations">' +
 			'<h1>Our most popular locations</h1>' +
 		'</div>' +
@@ -1293,11 +1300,43 @@ App.loc = {
 			}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
 		}
 	},
+	setFormattedLoc: function(results, raw) {
+		if (raw) {
+			App.loc.reverseGeocodeCity = raw;
+		} else {
+			switch (results[0].types[0]) {
+				default:
+				case 'administrative_area_level_1':
+					App.loc.reverseGeocodeCity = results[0].address_components[0].long_name;
+					break;
+				case 'locality':
+					App.loc.reverseGeocodeCity = results[0].address_components[0].long_name + ', ' + results[0].address_components[2].short_name;
+					break;
+				case 'street_address':
+					App.loc.reverseGeocodeCity = results[0].address_components[2].long_name + ', ' + results[0].address_components[4].short_name;
+					break;
+				case 'postal_code':
+					App.loc.reverseGeocodeCity = results[0].address_components[1].long_name + ', ' + results[0].address_components[3].short_name;
+					break;
+				case 'route':
+					App.loc.reverseGeocodeCity = results[0].address_components[1].long_name + ', ' + results[0].address_components[3].short_name;
+					break;
+			}
+		}
+		$('.loc-your-area').html(App.loc.reverseGeocodeCity || 'your area');
+		
+	},
 	preProcess: function() {
 		if (google.loader.ClientLocation) {
 			if (!$.cookie('location_lat')) {
 				App.loc.lat = google.loader.ClientLocation.latitude;
 				App.loc.lon = google.loader.ClientLocation.longitude;
+				
+				if (google.loader.ClientLocation.address.country_code == 'US' && google.loader.ClientLocation.address.region) {
+					App.loc.setFormattedLoc(null, google.loader.ClientLocation.address.city + ', ' + google.loader.ClientLocation.address.region.toUpperCase());
+				} else {
+					App.loc.setFormattedLoc(null, google.loader.ClientLocation.address.city + ', ' + google.loader.ClientLocation.address.country_code);
+				}
 			}
 		}
 	},
@@ -1352,6 +1391,7 @@ App.loc = {
 			if (status == google.maps.GeocoderStatus.OK) {
 				App.loc.lat = results[0].geometry.location.Xa;
 				App.loc.lon = results[0].geometry.location.Ya;
+				App.loc.setFormattedLoc(results);
 			} else {
 				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
 				console.log('Geocode was not successful for the following reason: ' + status);
@@ -1376,8 +1416,9 @@ App.loc = {
 				} else {
 					$('.location-address').val('Where are you?!');
 				}
-				
+
 				App.loc.reverseGeocodeResults = results[0].formatted_address;
+				App.loc.setFormattedLoc(results);
 				complete();
 				setTimeout(function() {
 					App.loc.reverseGeocodeResults = null;
