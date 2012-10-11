@@ -5,11 +5,20 @@
 <? /* <meta name="viewport" content="user-scalable=no, initial-scale = 1.0,maximum-scale = 1.0"> */ ?>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
 
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
 
-<link rel="stylesheet" type="text/css" href="/assets/css/<?=c::config()->bundle ? 'bundle' : 'style'?>.css?v=<?=Cana_Util::gitVersion()?>">
+<? if(c::config()->bundle) : ?>
+	<link rel="stylesheet" type="text/css" href="/assets/css/bundle.css?v=<?=Cana_Util::gitVersion()?>">
+<? else : ?>
+	<link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=<?=Cana_Util::gitVersion()?>">
+	<? if (strpos($_SERVER['HTTP_USER_AGENT'],'Windows') !== false) : ?>
+		<link rel="stylesheet" type="text/css" href="/assets/css/windows.css?v=<?=Cana_Util::gitVersion()?>">
+	<? endif ; ?>
+<? endif ; ?>
 <link rel="shortcut icon" href="/favicon.ico">
 
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">

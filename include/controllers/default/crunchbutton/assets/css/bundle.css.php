@@ -10,6 +10,11 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 	
 			$file = c::config()->dirs->www.'assets/css/style.css';
 			$css = file_get_contents($file);
+			
+			if (strpos($_SERVER['HTTP_USER_AGENT'],'Windows') !== false) {
+				$file = c::config()->dirs->www.'assets/css/windows.css';
+				$css .= file_get_contents($file);
+			}
 	
 			$callback = function($matches) {
 				$img = new ImageBase64(c::config()->dirs->www.$matches[1]);
@@ -21,7 +26,7 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 				$css = c::cache()->read($cache);
 				$mtime = c::cache()->mtime($cache);
 			} else {
-				$css = preg_replace_callback('/url\(([a-z0-9\/\-_\.]+)\)/i',$callback,$css);
+				$css = preg_replace_callback('/url\(([a-z0-9\/\-_\.]+)\)/i',$callback, $css);
 				$css = preg_replace('/\t|\n/','',$css);
 	
 				$mtime = filemtime($file);

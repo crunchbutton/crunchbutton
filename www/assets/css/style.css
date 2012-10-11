@@ -313,7 +313,6 @@ b {
 .cart-item-customize-select-name {
 	color: #d74924;
 	width: 100px;
-	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	margin-right: 10px;
