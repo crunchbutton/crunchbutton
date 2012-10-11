@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<title>♥ Crunchbutton, Like us!!! ♥</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<link rel="stylesheet" type="text/css" href="/assets/css/micro.css?v=<?=Cana_Util::gitVersion()?>">
+<link rel="shortcut icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
+
+<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png"/>
+<meta property="og:site_name" content="Crunchbutton"/>
+<meta property="og:url" content="http://<?=$_SERVER['HTTP_HOST']?>/like"/>
+<meta property="og:title" content="♥ Crunchbutton, Like us!!! ♥"/>
+<meta property="og:description" content="Like crunchbutton on facebook! Because we like YOU!"/>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/assets/js/confetti.js"></script>
+
+</head>
+<body>
+<div class="content"><?=$this->content?></div>
+<div id="background" class="noselect"></div>
+<div id="fb-root"></div>
+<script>
+	var confetti;
+	window.fbAsyncInit = function() {
+		FB.init({
+			appId      : '411729638889643',
+			status     : true,
+			cookie     : true,
+			xfbml      : true
+		});
+
+		FB.Event.subscribe('edge.create', function(response) {
+			$.cookie('liked', '1', { expires: new Date(3000,01,01), path: '/'});
+			confetti.start();
+			$('#audio').get(0).play();
+		});
+	};
+	(function(d){
+		var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+		if (d.getElementById(id)) {return;}
+		js = d.createElement('script'); js.id = id; js.async = true;
+		js.src = "//connect.facebook.net/en_US/all.js";
+		ref.parentNode.insertBefore(js, ref);
+	}(document));
+	
+	$(document).ready(function () {
+		if ($.cookie('liked')) {
+			confetti.start();
+			$('#audio').get(0).play();
+		}
+	});
+</script>
+</body>
+</html>
