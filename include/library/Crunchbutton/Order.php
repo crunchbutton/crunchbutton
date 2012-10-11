@@ -132,6 +132,8 @@ class Crunchbutton_Order extends Cana_Table {
 
 		if ($this->pay_type == 'card' && $params['card']['number']) {
 			$user->card = str_repeat('*',strlen($params['card']['number'])-4).substr($params['card']['number'],-4);
+			$user->card_exp_year = $params['card']['year'];
+			$user->card_exp_month = $params['card']['month'];
 		}
 		
 		$user->pay_type = $this->pay_type;

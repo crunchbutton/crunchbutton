@@ -429,11 +429,25 @@ App.drawPay = function(restaurant) {
 	$('[name="pay-tip"]').val(App.order.tip);
 	$('[name="pay-name"]').val(App.config.user.name);
 	$('[name="pay-phone"]').val(App.phone.format(App.config.user.phone));
-	$('[name="pay-address"]').val(App.loc.enteredLoc || App.config.user.address);
+	$('[name="pay-address"]').val(App.config.user.address || App.loc.enteredLoc);
 	$('[name="pay-card-number"]').val(App.config.user.card);
+	$('[name="pay-card-month"]').val(App.config.user.card_exp_month);
+	$('[name="pay-card-year"]').val(App.config.user.card_exp_year);
+	
+	if (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) {
+		try {
+			console.log(App.config.user.presets[App.restaurant.id_restaurant]);
+			$('[name="notes"]').val(App.config.user.presets[App.restaurant.id_restaurant].notes);
+		} catch (e) {}
+	}
 	
 	if (!restaurant.delivery) {
 		$('.delivery-only-text').hide();
+	}
+	
+	if (!App.config.user.id_user) {
+		App.config.user.address = App.loc.enteredLoc;
+		App.loc.enteredLoc = '';
 	}
 
 };
@@ -1789,6 +1803,17 @@ $(function() {
 		App.loadHome();
 		$('input').blur();
 	});
+	
+	$('[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]').live('change', function() {
+		App.config.user.name = $('[name="pay-name"]').val();
+		App.config.user.phone = App.phone.format($('[name="pay-phone"]').val());
+		App.config.user.address = $('[name="pay-address"]').val();
+		App.config.user.card = $('[name="pay-card-number"]').val();
+		App.config.user.notes = $('[name="notes"]').val();
+		App.config.user.card_exp_month = $('[name="pay-card-month"]').val();
+		App.config.user.card_exp_year = $('[name="pay-card-year"]').val();
+	});
+	
 });
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});

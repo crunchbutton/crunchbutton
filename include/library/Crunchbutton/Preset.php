@@ -20,6 +20,7 @@ class Crunchbutton_Preset extends Cana_Table {
 		$preset = new Preset;
 		$preset->id_restaurant = $order->id_restaurant;
 		$preset->id_user = $order->user()->id_user;
+		$preset->notes = $order->notes;
 		$preset->save();
 		
 		foreach ($order->dishes() as $d) {
