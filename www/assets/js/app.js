@@ -738,7 +738,7 @@ App.cart = {
 		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '"></div>');
 		el.append('<div class="cart-button cart-button-remove"><span></span></div>');
 
-		el.append('<div class="cart-item-name">' + App.cache('Dish',item).name + '</div>');
+		el.append('<div class="cart-item-name">' + App.cache('Dish',item).name + ' <span class="cart-item-description">' + (App.cache('Dish',item).description != null ? App.cache('Dish',item).description : '') + '</span></div>');
 
 		if (App.cached['Dish'][item].options().length) {
 			el.append('<div class="cart-item-config"><a href="javascript:;">Customize</a></div>');

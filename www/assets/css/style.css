@@ -434,6 +434,12 @@ html[xmlns] .clearfix {
 	height: 1%;
 }
 
+.cart-item-description {
+	font-size: .9em;
+	font-style: italic;
+	margin-left: 1em;
+}
+
 
 .delivery-payment-info, .order-info {
 	line-height: 1.4em;
