@@ -16,6 +16,7 @@
 				<div class="nav-back"></div>
 				<div class="logo"><a href="javascript:;" class="link-home"><div class="logo-img"></div></a></div>
 				<div class="config-icon"></div>
+				<div class="fb-like fb-like-desktop" data-href="http://www.facebook.com/crunchbutton" data-send="false" data-layout="button_count" data-width="40" data-show-faces="false" data-font="lucida grande"></div>
 			</div>
 		</div>
 		<div class="body">
@@ -27,6 +28,8 @@
 		</div>
 		<div class="divider"></div>
 		<div class="footer">
+			<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
+
 			<div class="footer-content">
 				<a href="javascript:;" class="link-help">Help</a>
 				<a href="javascript:;" class="link-legal">Legal</a>
@@ -42,11 +45,18 @@
 			</div>
 		</div>
 	</div>
-
+	<div id="fb-root"></div>
 </body>
 <script type="text/javascript">
 $(function() {
 	App.config = <?=json_encode(c::appConfig())?>;
 })
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=411729638889643";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
 </script>
 </html>
