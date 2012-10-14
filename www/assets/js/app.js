@@ -126,7 +126,7 @@ App.page.home = function() {
 		'<form class="button-letseat-formform" onsubmit="return false;">' +
 		'<table class="button-letseat-table" cellpadding="0" cellspacing="0">' +
 			'<tr>' +
-				'<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your full address or zip code" '+ ($(window).width() >= 768 ? 'autofocus="autofocus"' : '') + '></td>' +
+				'<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your zip code or full address" '+ ($(window).width() >= 768 ? 'autofocus="autofocus"' : '') + '></td>' +
 				/*
 				'<td>' +
 					'<div class="location-detect">' +
