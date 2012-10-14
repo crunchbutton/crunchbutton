@@ -754,7 +754,6 @@ html[xmlns] .clearfix {
 	margin-left: 20px;
 }
 
-
 @media only screen 
 and (max-width : 1023px) {
 	.home-tagline, .home-welcome {
@@ -1073,7 +1072,7 @@ and (max-width : 769px) {
 		text-shadow: 1px 1px 0 rgba(255,255,255,.6);
 	}
 	.fb-like-mobile {
-		margin-bottom: 30px;
+		margin-bottom: 50px;
 	}
 	.restaurant-name {
 		background: #ff3f1f;
