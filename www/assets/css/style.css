@@ -750,10 +750,9 @@ html[xmlns] .clearfix {
 .fb-like {
 	float: right;
 	margin-top: 16px;
-	width: 80px;
+	width: 90px;
 	margin-left: 20px;
 }
-
 
 @media only screen 
 and (max-width : 1023px) {
@@ -765,11 +764,6 @@ and (max-width : 1023px) {
 	}
 	.logo {
 		margin: 0 auto;
-	}
-	.logo-img {
-		margin-left: -149px;
-		position: absolute;
-		left: 50%;
 	}
 }
 
@@ -871,6 +865,11 @@ and (max-device-width : 480px) {
 */
 @media only screen 
 and (max-width : 769px) {
+	.logo-img {
+		margin-left: -149px;
+		position: absolute;
+		left: 50%;
+	}
 	.fb-like-desktop {
 		display: none !important;
 	}
@@ -1073,7 +1072,7 @@ and (max-width : 769px) {
 		text-shadow: 1px 1px 0 rgba(255,255,255,.6);
 	}
 	.fb-like-mobile {
-		margin-bottom: 30px;
+		margin-bottom: 50px;
 	}
 	.restaurant-name {
 		background: #ff3f1f;
@@ -1643,9 +1642,8 @@ and (min-width : 1024px) {
 @media only screen 
 and (min-width : 770px)
 and (max-width : 1023px) {
-
-	.config-icon {
-		margin-right: 10px;
+	.content {
+		width: 670px;
 	}
 
 	.content-item-locations h1 {

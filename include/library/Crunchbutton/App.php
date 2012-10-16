@@ -55,7 +55,7 @@ class Crunchbutton_App extends Cana_App {
 							case '/home/crunchbutton/include/library/Crunchbutton':
 							case '/home/staging.crunchbutton/include/library/Crunchbutton':
 								$params['env'] = 'live';
-								$_SERVER['__HTTP_HOST'] = 'crunchr.co';
+								$_SERVER['__HTTP_HOST'] = '_DOMAIN_';
 								break;
 							default:
 								$params['env'] = 'local';
@@ -64,6 +64,12 @@ class Crunchbutton_App extends Cana_App {
 						
 						break;
 				}
+		}
+		
+		if ($_SERVER['__HTTP_HOST'] == 'crunchr.co') {
+			header ('HTTP/1.1 301 Moved Permanently');
+			header('Location: http://_DOMAIN_/');
+			exit;
 		}
 
 		if ($params['env'] == 'live' && !$cli && $_SERVER['__HTTP_HOST'] == '_DOMAIN_') {
