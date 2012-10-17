@@ -171,6 +171,7 @@ App.page.home = function() {
 };
 
 App.page.community = function(id) {
+
 	App.lastCommunity = id;
 	App.currentPage = 'community';
 
@@ -179,7 +180,7 @@ App.page.community = function(id) {
 		
 		App.track('Community page loaded', {community: App.community.name});
 
-		document.title = 'Crunchbutton - ' + App.community.name;
+		document.title = App.community.name + (App.community.name_alt ? ' | ' + App.community.name_alt : '') + ' Food Delivery | Order Food from Local Restaurants | Crunchbutton';
 
 		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
 		var sloganReplace = App.community.prep + ' ' + App.community.name;
@@ -230,6 +231,7 @@ App.page.community = function(id) {
 };
 
 App.page.restaurant = function(id) {
+
 	App.currentPage = 'restaurant';
 	App.cartHighlightEnabled = false;
 

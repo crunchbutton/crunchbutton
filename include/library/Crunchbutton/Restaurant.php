@@ -9,6 +9,10 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			->load($id);
 	}
 	
+	public static function permalink($permalink) {
+		return self::q('select * from restaurant where permalink="'.$permalink.'"')->get(0);
+	}
+	
 	public function meetDeliveryMin($order) {
 		if (!$this->delivery_min) {
 			return true;
