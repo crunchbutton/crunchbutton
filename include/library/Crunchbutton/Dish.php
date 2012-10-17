@@ -40,6 +40,19 @@ class Crunchbutton_Dish extends Cana_Table {
 		}
 		
 	}
+	
+	public function ratingCount() {
+		if (!isset($this->_ratingCount)) {
+			$this->_ratingCount = Order::q('
+				select count(*) as c from `order`
+				left join order_dish using(id_order)
+				where id_restaurant="'.$this->id_restaurant.'"
+				and id_dish="'.$this->id_dish.'"
+				and env="live"
+			')->c;
+		}
+		return $this->_ratingCount;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();

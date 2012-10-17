@@ -450,6 +450,13 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_priceRange;
 	}
 	
+	public function ratingCount() {
+		if (!isset($this->_ratingCount)) {
+			$this->_ratingCount = Order::q('select count(*) as c from `order` where id_restaurant="'.$this->id_restaurant.'" and env="live"')->c;
+		}
+		return $this->_ratingCount;
+	}
+	
 	public function save() {
 		if (!$this->timezone) {
 			$this->timezone = 'America/New_York';
