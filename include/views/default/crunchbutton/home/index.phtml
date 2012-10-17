@@ -1,6 +1,6 @@
 <? if ($this->restaurant->id_restaurant) : ?>
 	<?
-		$this->title = $this->restaurant->name.' Delivery | '.$this->restaurant->community()->name.' | Food Delivery | Order from Local Restaurants | Crunchbutton';
+		$this->title = $this->restaurant->name.' | '.$this->community->name.' Food Delivery | Order from '.($this->community->name_alt ? $this->community->name_alt : 'Local').' Restaurants | Crunchbutton';
 	?>
 
 	<? if (c::app()->isBot()) : ?>
@@ -10,38 +10,38 @@
 	<? endif ; ?>
 	
 	<div itemscope itemtype="http://schema.org/Restaurant">
-		<link itemprop="name" href="<?=$this->restaurant->name?>"/>
-		<link itemprop="description" href="Order food delivery or takeout from <?=$this->restaurant->name?> in <?=$this->community->name?> on Crunchbutton"/>
+
 		<link itemprop="url" href="/<?=$this->community->permalink?>/<?=$this->restaurant->permalink?>"/>
 		<link itemprop="image" href="<?=$this->restaurant->image() ? '/cache/images/'.$this->restaurant->image()->getFileName() : ''?>"/>
-	</div>
-
-	<div class="restaurant-name"><h1><?=$this->restaurant->name?></h1></div>
-	<div class="restaurant-pic-wrapper">
-		<div class="restaurant-pic" style="background: url(<?=$this->restaurant->image() ? '/cache/images/'.$this->restaurant->image()->getFileName() : ''?>);"></div>
-	</div>
-
-	<div class="main-content-readable">
-		<div class="restaurant-items">
-			<div class="content-item-name content-item-main-name"><h1>Add to your order</h1></div>
-			<? foreach ($this->restaurant->categories() as $category) : ?>
-				<div class="restaurant-item-title"><?=$category->name()?></div>
-				<ul class="resturant-dishes resturant-dish-container" date-id_category="1">
-					<? foreach ($category->dishes() as $dish) : ?>
-						<li>
-							<a href="javascript:;" data-id_dish="1">
-								<span class="dish-name"><?=$dish->name?></span><span class="dish-price">($<?=number_format($dish->price,2)?>)</span>
-							</a>
-						</li>
-					<? endforeach ; ?>
-				</ul>
-			<? endforeach ; ?>
+		<link itemprop="photo" href="<?=$this->restaurant->image() ? '/cache/images/'.$this->restaurant->image()->getFileName() : ''?>"/>
+		<!--span itemprop="priceRange"><?=$this->restaurant->priceRange()?></span -->
+	
+		<div itemprop="name" class="restaurant-name"><h1><?=$this->restaurant->name?></h1></div>
+		<div class="restaurant-pic-wrapper">
+			<div class="restaurant-pic" style="background: url(<?=$this->restaurant->image() ? '/cache/images/'.$this->restaurant->image()->getFileName() : ''?>);"></div>
+		</div>
+	
+		<div class="main-content-readable">
+			<div class="restaurant-items">
+				<div class="content-item-name content-item-main-name"><h1>Add to your order</h1></div>
+				<? foreach ($this->restaurant->categories() as $category) : ?>
+					<div class="restaurant-item-title"><?=$category->name()?></div>
+					<ul class="resturant-dishes resturant-dish-container" date-id_category="1">
+						<? foreach ($category->dishes() as $dish) : ?>
+							<li>
+								<a href="javascript:;" data-id_dish="1">
+									<span class="dish-name"><?=$dish->name?></span><span class="dish-price">($<?=number_format($dish->price,2)?>)</span>
+								</a>
+							</li>
+						<? endforeach ; ?>
+					</ul>
+				<? endforeach ; ?>
+			</div>
 		</div>
 	</div>
-
 <? elseif ($this->community->id_community) : ?>
 	<?
-		$this->title = $this->community->name.($this->community->name_alt ? ' | '.$this->community->name_alt : '').' Food Delivery | Order Food from Local Restaurants | Crunchbutton';
+		$this->title = $this->community->name.' Food Delivery | Order Food from '.($this->community->name_alt ? $this->community->name_alt : 'Local').' Restaurants | Crunchbutton';
 	?>
 	<? if (c::app()->isBot()) : ?>
 		<div class="home-text">
