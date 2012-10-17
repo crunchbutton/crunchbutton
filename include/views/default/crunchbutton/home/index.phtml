@@ -1,8 +1,48 @@
-<?
-	$this->title = 'Food Delivery | Order Food Online from Local Restaurants for Takeout &amp; Delivery';
-?>
+<? if ($this->restaurant->id_restaurant) : ?>
+	<?
+		$this->title = $this->restaurant->name.' Delivery | '.$this->restaurant->community()->name.' | Food Delivery | Order from Local Restaurants | Crunchbutton';
+	?>
 
-<? if ($this->community->id_community) : ?>
+	<? if (c::app()->isBot()) : ?>
+		<div class="home-text">
+			<h2>Order <b>delivery</b> or <b>takeout</b> from <?=$this->restaurant->name?>.</h2>
+		</div>
+	<? endif ; ?>
+	
+	<div itemscope itemtype="http://schema.org/Restaurant">
+		<link itemprop="name" href="<?=$this->restaurant->name?>"/>
+		<link itemprop="description" href="Order food delivery or takeout from <?=$this->restaurant->name?> in <?=$this->community->name?> on Crunchbutton"/>
+		<link itemprop="url" href="/<?=$this->community->permalink?>/<?=$this->restaurant->permalink?>"/>
+		<link itemprop="image" href="<?=$this->restaurant->image() ? '/cache/images/'.$this->restaurant->image()->getFileName() : ''?>"/>
+	</div>
+
+	<div class="restaurant-name"><h1><?=$this->restaurant->name?></h1></div>
+	<div class="restaurant-pic-wrapper">
+		<div class="restaurant-pic" style="background: url(<?=$this->restaurant->image() ? '/cache/images/'.$this->restaurant->image()->getFileName() : ''?>);"></div>
+	</div>
+
+	<div class="main-content-readable">
+		<div class="restaurant-items">
+			<div class="content-item-name content-item-main-name"><h1>Add to your order</h1></div>
+			<? foreach ($this->restaurant->categories() as $category) : ?>
+				<div class="restaurant-item-title"><?=$category->name()?></div>
+				<ul class="resturant-dishes resturant-dish-container" date-id_category="1">
+					<? foreach ($category->dishes() as $dish) : ?>
+						<li>
+							<a href="javascript:;" data-id_dish="1">
+								<span class="dish-name"><?=$dish->name?></span><span class="dish-price">($<?=number_format($dish->price,2)?>)</span>
+							</a>
+						</li>
+					<? endforeach ; ?>
+				</ul>
+			<? endforeach ; ?>
+		</div>
+	</div>
+
+<? elseif ($this->community->id_community) : ?>
+	<?
+		$this->title = $this->community->name.($this->community->name_alt ? ' | '.$this->community->name_alt : '').' Food Delivery | Order Food from Local Restaurants | Crunchbutton';
+	?>
 	<? if (c::app()->isBot()) : ?>
 		<div class="home-text">
 			<h1><?=$this->community->name?> Online Food Delivery</h1>
@@ -11,7 +51,6 @@
 		</div>
 	<? endif ; ?>
 
-	<? $this->title .= ' | '.$this->community->name; ?>
 	<div class="home-tagline">
 		<h1>Order the best food <?=$this->community->prep?> <?=$this->community->name?> with a click</h1>
 		<h2>We've chosen the best food from the best restaurants <?=$this->community->prep?> <?=$this->community->name?>. We save your order, delivery and payment info, so reordering is as easy as the click of a button. Click on a restaurant below to get started.</h2>
@@ -38,10 +77,14 @@
 	</div>
 
 <? else : ?>
+	<?
+		$this->title = 'Food Delivery | Order Food Online from Local Restaurants for Takeout &amp; Delivery | Crunchbutton';
+	?>
+
 	<? if (c::app()->isBot()) : ?>
 		<div class="home-text">
 			<h1>Online Food Ordering. </h1>
-			<h2>Order <b>delivery</b> &amp; <b>takeout</b> online using crunchbutton or our <b>iPhone</b> or <b>Android</b> apps.</h2>
+			<h2>Order <b>delivery</b> &amp; <b>takeout</b> using crunchbutton on your iPhone or Android.</h2>
 			<p>
 				Order your favorite <b>Pizza</b> with any topping online, delivered to your home. Add toppings to your pizza. Pepperoni, sausage, cheese, sauce, whatever!
 				Don't want pizza? How about other <b>Italian food</b> like pasta, or a sandwich? Build your own sandwich, or order a <b>Wenzel</b>.
@@ -67,5 +110,3 @@
 	</div>
 
 <? endif ; ?>
-
-<? $this->title .= ' | Crunchbutton'; ?>
