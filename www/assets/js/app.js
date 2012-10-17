@@ -180,7 +180,7 @@ App.page.community = function(id) {
 		
 		App.track('Community page loaded', {community: App.community.name});
 
-		document.title = App.community.name + (App.community.name_alt ? ' | ' + App.community.name_alt : '') + ' Food Delivery | Order Food from Local Restaurants | Crunchbutton';
+		document.title = App.community.name + ' Food Delivery | Order Food from ' + (App.community.name_alt ? App.community.name_alt : 'Local') + ' Restaurants | Crunchbutton';
 
 		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
 		var sloganReplace = App.community.prep + ' ' + App.community.name;
@@ -231,7 +231,6 @@ App.page.community = function(id) {
 };
 
 App.page.restaurant = function(id) {
-
 	App.currentPage = 'restaurant';
 	App.cartHighlightEnabled = false;
 
@@ -246,8 +245,7 @@ App.page.restaurant = function(id) {
 		App.restaurant = this;
 		
 		App.track('Restaurant page loaded', {restaurant: App.restaurant.name});
-
-		document.title = 'Crunchbutton - ' + App.restaurant.name;
+		document.title = App.restaurant.name + ' | ' + App.community.name + ' Food Delivery | Order from ' + (App.community.name_alt ? App.community.name_alt : 'Local') + ' Restaurants | Crunchbutton';
 
 		$('.main-content').html(
 			'<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-item-count"><span></span></div><div class="cart-summary-items"></div></div>' +

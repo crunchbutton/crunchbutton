@@ -429,6 +429,27 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $out;
 	}
 	
+	public function priceRange() {
+		if (!isset($this->_priceRange)) {
+			$price = 0;
+			foreach ($this->dishes() as $dish) {
+				$price += $dish->price;
+			}
+			$price = $price / $this->dishes()->count();
+
+			if ($price > 60) {
+				$this->_priceRange = '$$$$';
+			} elseif ($price > 30) {
+				$this->_priceRange = '$$$';
+			} elseif ($price > 10) {
+				$this->_priceRange = '$$';
+			} else {
+				$this->_priceRange = '$';
+			}
+		}
+		return $this->_priceRange;
+	}
+	
 	public function save() {
 		if (!$this->timezone) {
 			$this->timezone = 'America/New_York';
