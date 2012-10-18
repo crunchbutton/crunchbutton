@@ -183,7 +183,19 @@ $(function() {
 	}
 
 	$('.admin-restaurant-save').live('click', function() {
-		saveRestaurant();
+		saveRestaurant(true);
+	});
+	
+	$('.admin-restaurant-save-details').live('click', function() {
+		saveRestaurant(false);
+	});
+	
+	$('.admin-restaurant-save-hours').live('click', function() {
+		saveHours();
+	});
+	
+	$('.admin-restaurant-save-dishes').live('click', function() {
+		saveDishes();
 	});
 	
 	var saveDishes = function(complete) {
@@ -252,7 +264,7 @@ $(function() {
 		});
 	}
 
-	var saveRestaurant = function() {
+	var saveRestaurant = function(all) {
 		var selector = 'input.dataset-restaurant, select.dataset-restaurant, textarea.dataset-restaurant';
 		var id = App.restaurant;
 
@@ -260,11 +272,13 @@ $(function() {
 			App.cache('Restaurant', id, function() {
 				var restaurant = getValues(selector, this);
 				restaurant.save(function() {
-					saveHours(function() {
-						saveDishes(function() {
-
+					if (all) {
+						saveHours(function() {
+							saveDishes(function() {
+	
+							});
 						});
-					});
+					}
 				});
 			});
 		} else {
@@ -274,12 +288,13 @@ $(function() {
 
 				App.cache('Restaurant', r.id_restaurant, function() {
 					App.restaurant = this.id_restaurant;
-					saveHours(function() {
-						saveDishes(function() {
-							location.href = '/admin/restaurants/' + App.restaurant;
+					if (all) {
+						saveHours(function() {
+							saveDishes(function() {
+								location.href = '/admin/restaurants/' + App.restaurant;
+							});
 						});
-					});
-					
+					}
 				});
 			});
 		}
