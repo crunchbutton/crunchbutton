@@ -508,7 +508,7 @@ App.page.order = function(id) {
 		
 		App.cache('Restaurant',order.id_restaurant, function() {
 			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
-			$('.order-info').append('To reach Crunchbutton, send us a text to (646) 783-1444<br />or call <b>(800) 242-1444</b><br /><br />');
+			$('.order-info').append('To reach Crunchbutton, send a text to (646) 783-1444<br />or call <b>(800) 242-1444</b><br /><br />');
 		});
 
 	});
