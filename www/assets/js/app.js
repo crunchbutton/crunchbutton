@@ -165,9 +165,7 @@ App.page.home = function() {
 			'margin-top': '0px',
 			'height': '52px'
 		});
-	}
-
-		
+	}		
 };
 
 App.page.community = function(id) {
@@ -253,7 +251,7 @@ App.page.restaurant = function(id) {
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-items"></div>' + 
-				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="your-order-label">(we\'ve chosen the most popular order, but you can order anything you want)</div><div class="divider"></div><div class="delivery-minimum-error">Please add more items to your order to meet the delivery minimum of $' + parseFloat(App.restaurant.delivery_min).toFixed(2) + '.</div><div class="cart-items-content"></div></div>' + 
+				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="your-order-label" style="font-weight: bold;">(we\'ve chosen the most popular order, but you can order anything you want)</div><div class="divider"></div><div class="delivery-minimum-error">Please add more items to your order to meet the delivery minimum of $' + parseFloat(App.restaurant.delivery_min).toFixed(2) + '.</div><div class="cart-items-content"></div></div>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
 			'<div class="restaurant-payment-div"></div>'
@@ -1400,7 +1398,24 @@ App.loc = {
 
 	},
 	geocode: function(complete) {
-		var geocoder = new google.maps.Geocoder();;
+		var geocoder = new google.maps.Geocoder();
+		switch ($('.location-address').val().toLowerCase()) {
+			case 'dc':
+			case 'gwu':
+			case 'gw':
+			case 'george washington':
+			case 'george washington university':
+			case 'the district':
+			case 'district of columbia':
+			case 'foggy bottom':
+			case 'georgetown':
+			case 'gu':
+			case 'georgetown university':
+				App.community = null;
+				var loc = '/' + App.communities.dc.permalink;
+				History.pushState({}, 'Crunchbutton', loc);
+				break;
+		}
 		geocoder.geocode({'address': $('.location-address').val()}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
 				App.loc.lat = results[0].geometry.location.Xa;
