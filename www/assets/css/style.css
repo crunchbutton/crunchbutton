@@ -1719,3 +1719,12 @@ th {
         width: 609px;
     }
 }
+
+.field-error {
+	font-weight: bold;
+	color: #ff0000;
+	float: left;
+	margin-left: 115px;
+	margin-bottom: 15px;
+	font-size: 12px;
+}

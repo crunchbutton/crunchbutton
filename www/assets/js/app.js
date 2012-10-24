@@ -358,7 +358,8 @@ App.drawPay = function(restaurant) {
 			'<div class="input-item"><input type="tel" name="pay-phone" tabindex="3"></div><div class="divider"></div>' + 
 	
 			'<label class="delivery-only">Deliver to</label>' + 
-			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="4"></textarea></div><div class="divider"></div>' + 
+			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="4"></textarea></div>' + 
+			'<div class="field-error">Include ZIP code</div><div class="divider"></div>' +
 			
 			'<label>Notes</label>' + 
 			'<div class="input-item"><textarea name="notes" tabindex="5"></textarea></div><div class="divider"></div>' + 
