@@ -341,6 +341,8 @@ App.drawPay = function(restaurant) {
 
 		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
 	);
+	
+	var fieldError = App.community.id_community == 'gw' ? '<div class="field-error">Include ZIP code</div>' : '';
 
 	$('.delivery-info-container').append(
 
@@ -359,7 +361,8 @@ App.drawPay = function(restaurant) {
 	
 			'<label class="delivery-only">Deliver to</label>' + 
 			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="4"></textarea></div>' + 
-			'<div class="field-error">Include ZIP code</div><div class="divider"></div>' +
+			fieldError + 
+			'<div class="divider"></div>' +
 			
 			'<label>Notes</label>' + 
 			'<div class="input-item"><textarea name="notes" tabindex="5"></textarea></div><div class="divider"></div>' + 
@@ -1402,6 +1405,7 @@ App.loc = {
 	},
 	geocode: function(complete) {
 		var geocoder = new google.maps.Geocoder();
+
 		switch ($('.location-address').val().toLowerCase()) {
 			case 'dc':
 			case 'gwu':
@@ -1419,15 +1423,17 @@ App.loc = {
 				History.pushState({}, 'Crunchbutton', loc);
 				break;
 		}
+
 		geocoder.geocode({'address': $('.location-address').val()}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
-				App.loc.lat = results[0].geometry.location.Xa;
-				App.loc.lon = results[0].geometry.location.Ya;
+				App.loc.lat = results[0].geometry.location.Xa ? results[0].geometry.location.Xa : results[0].geometry.location.Ya;
+				App.loc.lon = results[0].geometry.location.Za ? results[0].geometry.location.Za : results[0].geometry.location.Ya;
 				App.loc.setFormattedLoc(results);
 			} else {
 				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
 				console.log('Geocode was not successful for the following reason: ' + status);
 			}
+			console.log(App.loc.lat, App.loc.lon);
 			complete();
 		});
 	},
@@ -1505,6 +1511,7 @@ $(function() {
 	$('.button-letseat-form').live('click', function() {
 		var complete = function() {
 			var closest = App.loc.getClosest();
+
 			if (closest) {
 				if (closest.distance < 25) {
 					App.community = closest;
