@@ -1421,6 +1421,7 @@ App.loc = {
 				App.community = null;
 				var loc = '/' + App.communities.gw.permalink;
 				History.pushState({}, 'Crunchbutton', loc);
+				return;
 				break;
 		}
 
