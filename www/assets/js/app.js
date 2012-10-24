@@ -1419,7 +1419,7 @@ App.loc = {
 			case 'gu':
 			case 'georgetown university':
 				App.community = null;
-				var loc = '/' + App.communities.dc.permalink;
+				var loc = '/' + App.communities.gw.permalink;
 				History.pushState({}, 'Crunchbutton', loc);
 				break;
 		}
