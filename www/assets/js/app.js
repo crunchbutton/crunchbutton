@@ -1405,6 +1405,7 @@ App.loc = {
 	},
 	geocode: function(complete) {
 		var geocoder = new google.maps.Geocoder();
+		var forceLoc = null;
 
 		switch ($('.location-address').val().toLowerCase()) {
 			case 'dc':
@@ -1418,11 +1419,30 @@ App.loc = {
 			case 'georgetown':
 			case 'gu':
 			case 'georgetown university':
-				App.community = null;
-				var loc = '/' + App.communities.gw.permalink;
-				History.pushState({}, 'Crunchbutton', loc);
-				return;
+				forceLoc = App.communities.gw.permalink;
 				break;
+			case 'la':
+			case 'los angeles':
+			case 'venice':
+			case 'playa':
+			case 'loyola':
+			case 'lmu':
+			case 'ucla':
+			case 'santa monica':
+			case 'sm':
+			case 'mdr':
+			case 'marina del rey':
+			case 'culver':
+				if (App.communities['los-angeles']) {
+					forceLoc = App.communities['los-angeles'].permalink;
+				}
+				break;
+		}
+		if (forceLoc) {
+			App.community = null;
+			var loc = '/' + forceLoc;
+			History.pushState({}, 'Crunchbutton', loc);
+			return;
 		}
 
 		geocoder.geocode({'address': $('.location-address').val()}, function(results, status) {
