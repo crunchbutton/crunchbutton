@@ -251,7 +251,7 @@ App.page.restaurant = function(id) {
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-items"></div>' + 
-				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="your-order-label" style="font-weight: bold; display: none;">(we\'ve chosen the most popular order, but you can order anything you want)</div><div class="divider"></div><div class="delivery-minimum-error">Please add more items to your order to meet the delivery minimum of $' + parseFloat(App.restaurant.delivery_min).toFixed(2) + '.</div><div class="cart-items-content"></div></div>' + 
+				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="your-order-label" style="font-weight: bold; display: none;">(we\'ve chosen the most popular order, but you can order anything you want)</div><div class="divider"></div><div class="delivery-minimum-error">Please add $<span class="delivery-min-diff">' + parseFloat(App.restaurant.delivery_min -  App.cart.total()).toFixed(2) + '</span> more to your order to meet the delivery minimum of $' + parseFloat(App.restaurant.delivery_min).toFixed(2) + '.</div><div class="cart-items-content"></div></div>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
 			'<div class="restaurant-payment-div"></div>'
@@ -795,6 +795,8 @@ App.cart = {
 
 		if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
 			$('.delivery-minimum-error').show();
+			$('.delivery-min-diff').html(parseFloat(App.restaurant.delivery_min -  App.cart.total()).toFixed(2));
+
 		} else {
 			$('.delivery-minimum-error').hide();
 		}
