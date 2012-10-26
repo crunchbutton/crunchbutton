@@ -1592,6 +1592,18 @@ and (min-width : 770px) {
 
 @media only screen 
 and (min-width : 1024px) {
+	.restaurant-pic-wrapper {
+		display: none;
+	}
+	
+	.restaurant-name {
+		margin-top: 0px;
+	}
+	
+	.cart-items {
+		margin-top: 70px;
+	}
+
 	.button-bottom.button-letseat-form {
 		margin-top: 45px;
 	}
