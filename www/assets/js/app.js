@@ -342,7 +342,7 @@ App.drawPay = function(restaurant) {
 		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
 	);
 	
-	var fieldError = App.community.id_community == 'gw' ? '<div class="field-error">Include ZIP code</div>' : '';
+	var fieldError = (App.community.permalink == 'gw' || App.community.permalink == 'providence') ? '<div class="field-error">Include ZIP code</div>' : '';
 
 	$('.delivery-info-container').append(
 
