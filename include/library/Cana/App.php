@@ -89,7 +89,7 @@ class Cana_App extends Cana_Model {
 		
 		$this->view(new Cana_View($params));
 		
-		$headers = array();
+		$headers = [];
 		$this->view()->headers->http = $headers;
 		$this->view()->useFilter($this->_config->viewfilter);
 		

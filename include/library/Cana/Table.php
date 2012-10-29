@@ -251,16 +251,21 @@ class Cana_Table extends Cana_Model { //
 	}
 
 	public function db($db = null) {
-		if (is_null($db)) {
-			return $this->_db ? $this->_db : Cana::db();
-		} else {
+		if (!is_null($db)) {
 			$this->_db = $db;
-			return $this;
+		} else if (!isset($this->_db)) {
+			$this->_db = c::db();
 		}
+		return $this->_db;
 	}
 
-	public function dbWrite() {
-		return Cana::dbWrite() ? Cana::dbWrite() : $this->db();
+	public function dbWrite($db = null) {
+		if (!is_null($db)) {
+			$this->_dbWrite = $db;
+		} else if (!isset($this->_dbWrite)) {
+			$this->_dbWrite = c::dbWrite();
+		}
+		return $this->_dbWrite;
 	}
 	
 	public function idVar($id_var = null) {
@@ -350,8 +355,9 @@ class Cana_Table extends Cana_Model { //
 		return self::o($list);
 	}
 	
-	public static function q($query) {
-		$res = Cana::db()->query($query);
+	public static function q($query, $db = null) {
+		$db = $db ? $db : Cana::db();
+		$res = $db->query($query);
 		$classname = get_called_class();
 		while ($row = $res->fetch()) {
 			$items[] = new $classname($row);

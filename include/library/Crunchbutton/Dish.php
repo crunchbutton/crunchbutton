@@ -21,7 +21,7 @@ class Crunchbutton_Dish extends Cana_Table {
 				left join dish_option using(id_option)
 				where id_dish="'.$this->id_dish.'"
 				order by option.type asc, dish_option.sort desc, option.name
-			');
+			', $this->db());
 		}
 		if (gettype($this->_options) == 'array') {
 			$this->_options = i::o($this->_options);
