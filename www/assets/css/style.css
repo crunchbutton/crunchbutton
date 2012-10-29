@@ -1392,6 +1392,9 @@ and (max-width : 769px) {
 
 @media only screen 
 and (min-width : 770px) {
+	.location-address {
+		width: 609px;
+	}
 	.fb-like-mobile {
 		display: none !important;
 	}
