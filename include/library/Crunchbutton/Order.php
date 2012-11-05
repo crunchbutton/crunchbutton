@@ -165,6 +165,7 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		$this->id_user = $this->_user->id_user;
 		$this->date = date('Y-m-d H:i:s');
+		$this->id_community = $this->restaurant()->community()->id_community;
 		$this->save();
 		
 		if (c::env() != 'local') {
