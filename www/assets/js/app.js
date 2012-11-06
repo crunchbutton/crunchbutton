@@ -701,6 +701,9 @@ App.track = function() {
 	if (App.config.env != 'live') {
 		return;
 	}
+	if (arguments[0] == 'Ordered') {
+		var i = $('<img src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + arguments[1].total + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0">');
+	}
 	if (arguments[1]) {
 		mixpanel.track(arguments[0],arguments[1]);
 	} else {
