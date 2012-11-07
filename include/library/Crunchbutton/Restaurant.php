@@ -18,7 +18,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			return true;
 		}
 		$price = $this->delivery_min_amt == 'subtotal' ? $order->price : $order->final_price;
-		return $price < $this->delivery_min ? true : false;
+		return $price < $this->delivery_min ? false : true;
 	}
 	
 	public function top() {
