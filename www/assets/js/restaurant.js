@@ -33,6 +33,13 @@ var Restaurant = function(id) {
 		}
 	}
 	
+	self.deliveryDiff = function() {
+		var total = self.delivery_min_amt == 'subtotal' ? App.cart.subtotal() : App.cart.total();
+		var diff = parseFloat(App.restaurant.delivery_min - total).toFixed(2);
+		/* console.log(App.cart.subtotal(), App.cart.total(),self.delivery_min_amt, total, diff); */
+		return diff;
+	}
+	
 	self.meetDeliveryMin = function() {
 		var total = self.delivery_min_amt == 'subtotal' ? App.cart.subtotal() : App.cart.total();
 		return total < parseFloat(self.delivery_min) ? true : false;

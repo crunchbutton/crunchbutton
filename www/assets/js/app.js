@@ -801,7 +801,7 @@ App.cart = {
 
 		if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
 			$('.delivery-minimum-error').show();
-			$('.delivery-min-diff').html(parseFloat(App.restaurant.delivery_min -  App.cart.total()).toFixed(2));
+			$('.delivery-min-diff').html(App.restaurant.deliveryDiff());
 
 		} else {
 			$('.delivery-minimum-error').hide();
