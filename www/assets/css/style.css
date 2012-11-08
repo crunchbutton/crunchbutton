@@ -1743,3 +1743,10 @@ th {
 	margin-bottom: 15px;
 	font-size: 12px;
 }
+
+h1.about-header {
+	font-weight: bold;
+	font-size: 16px;
+	margin-bottom: 10px;
+	text-decoration: underline;
+}
