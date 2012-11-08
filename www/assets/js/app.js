@@ -702,7 +702,7 @@ App.track = function() {
 		return;
 	}
 	if (arguments[0] == 'Ordered') {
-		var i = $('<img src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + arguments[1].total + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0">');
+		var i = $('<img src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0">');
 	}
 	if (arguments[1]) {
 		mixpanel.track(arguments[0],arguments[1]);
@@ -1325,6 +1325,7 @@ App.loc = {
 		if (raw) {
 			App.loc.reverseGeocodeCity = raw;
 		} else {
+			console.log(results	)
 			switch (results[0].types[0]) {
 				default:
 				case 'administrative_area_level_1':
