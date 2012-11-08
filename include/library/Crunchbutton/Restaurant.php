@@ -380,6 +380,26 @@ class Crunchbutton_Restaurant extends Cana_Table {
 
 	}
 	
+	public function facebook($params = []) {
+		$params['height'] = 100; //310 *2;
+		$params['width'] = 100; //310 *2;
+		$params['crop'] = 1;
+		$params['gravity'] = 'center';
+		$params['format'] = 'jpg';
+		$params['quality'] = '70';
+
+		$params['img']			= $this->image;
+		$params['cache'] 		= Cana::config()->dirs->www.'cache/images/';
+		$params['path'] 		= Cana::config()->dirs->www.'assets/images/food/';
+
+		try {	
+			$thumb = new Cana_Thumb($params);
+		} catch (Exception $e) {
+			return null;
+		}
+		return $thumb;
+	}
+	
 	
 	public function image($params = []) {
 		$params['height'] = 280;

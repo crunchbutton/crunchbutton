@@ -28,3 +28,41 @@
 <link href="/assets/images/startup-640x1096.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+
+<? if (strpos($_SERVER['HTTP_USER_AGENT'],'facebookexternalhit') !== false) : ?>
+	
+	<? if ($this->restaurant->id_restaurant) : ?>
+		<meta property="og:title" content="<?=$this->restaurant->name?> on Crunchbutton">
+		<meta property="og:description" content="One click food ordering from <?=$this->restaurant->name?>. We find the best restaurants <?=$this->community->prep?> <?=$this->community->name?> and make ordering your favorite dishes as easy as one click.">
+		<? if ($this->restaurant->image()) : ?>
+			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$this->restaurant->facebook()->getFileName()?>">
+		<? else : ?>
+			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/share.jpg">
+		<? endif ; ?>
+		
+	<? elseif ($this->community->id_community) : ?>
+		<meta property="og:title" content="Crunchbutton - One click food ordering from <?=$this->community->name?>">
+		<meta property="og:description" content="We feature the top restaurants <?=$this->community->prep?> <?=$this->community->name?>. Order your favorite dishes with a click of one button from your computer or phone.">
+		<? foreach ($this->community->restaurants() as $restaurant) : ?>
+			<? if ($restaurant->image()) : ?>
+				<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$restaurant->facebook()->getFileName()?>">
+			<? else : ?>
+				<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/share.jpg">
+			<? endif ; ?>
+		
+			<? break;?>
+		<? endforeach; ?>
+
+	<? else : ?>
+		<meta property="og:title" content="Crunchbutton - One click food ordering">
+		<meta property="og:description" content="We feature the top restaurants in your neighborhood. Order your favorite dishes with a click of one button from your computer or phone.">
+		<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/share.jpg">
+	<? endif ; ?>
+
+	<meta property="og:type" content="company">
+	<meta property="og:url" content="http://<?=$_SERVER['HTTP_HOST']?><?=$_SERVER['REQUEST_URI']?>">
+	<meta property="og:site_name" content="Crunchbutton">
+	<meta property="fb:app_id" content="***REMOVED***">
+<? endif ; ?>
+
