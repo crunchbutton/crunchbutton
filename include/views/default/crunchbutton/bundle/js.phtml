@@ -27,7 +27,7 @@ $(function() {
 	<? endif ; ?>
 	
 	App.topCommunities = [];	
-	<? foreach (Restaurant::o(1, 36) as $restaurant) : ?>
+	<? foreach (Restaurant::o(1, 18) as $restaurant) : ?>
 		App.topCommunities[App.topCommunities.length] = {
 			id_community: '<?=$restaurant->community()->permalink?>',
 			name: '<?=$restaurant->community()->name?>',
