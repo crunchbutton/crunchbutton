@@ -40,7 +40,7 @@
 		<? else : ?>
 			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/share.jpg">
 		<? endif ; ?>
-		
+
 	<? elseif ($this->community->id_community) : ?>
 		<meta property="og:title" content="Crunchbutton - One click food ordering from <?=$this->community->name?>">
 		<meta property="og:description" content="We feature the top restaurants <?=$this->community->prep?> <?=$this->community->name?>. Order your favorite dishes with a click of one button from your computer or phone.">
@@ -50,7 +50,7 @@
 			<? else : ?>
 				<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/share.jpg">
 			<? endif ; ?>
-		
+
 			<? break;?>
 		<? endforeach; ?>
 
@@ -61,7 +61,7 @@
 	<? endif ; ?>
 
 	<meta property="og:type" content="company">
-	<meta property="og:url" content="http://<?=$_SERVER['HTTP_HOST']?><?=$_SERVER['REQUEST_URI']?>">
+	<meta property="og:url" content="https://<?=$_SERVER['HTTP_HOST']?><?=$_SERVER['REQUEST_URI']?>">
 	<meta property="og:site_name" content="Crunchbutton">
 	<meta property="fb:app_id" content="***REMOVED***">
 <? endif ; ?>
