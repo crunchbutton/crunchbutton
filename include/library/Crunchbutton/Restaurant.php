@@ -381,8 +381,8 @@ class Crunchbutton_Restaurant extends Cana_Table {
 	}
 	
 	public function facebook($params = []) {
-		$params['height'] = 100; //310 *2;
-		$params['width'] = 100; //310 *2;
+		$params['height'] = 400; //310 *2;
+		$params['width'] = 400; //310 *2;
 		$params['crop'] = 1;
 		$params['gravity'] = 'center';
 		$params['format'] = 'jpg';
