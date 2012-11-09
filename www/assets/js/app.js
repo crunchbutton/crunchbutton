@@ -1306,6 +1306,10 @@ App.loc = {
 		$('.location-detect-icon').hide();
 
 		var complete = function() {
+			App.track('Geolocated', {
+				lat: App.loc.lat,
+				lon: App.loc.lon
+			});
 			App.loc.reverseGeocode(function() {
 				$('.location-detect-loader').hide();
 				$('.location-detect-icon').show();
@@ -1410,6 +1414,10 @@ App.loc = {
 	geocode: function(complete) {
 		var geocoder = new google.maps.Geocoder();
 		var forceLoc = null;
+		
+		App.track('Entered Loc', {
+			address: $('.location-address').val().toLowerCase()
+		});
 
 		switch ($('.location-address').val().toLowerCase()) {
 			case 'dc':
@@ -1463,6 +1471,12 @@ App.loc = {
 		});
 	},
 	reverseGeocode: function(complete) {
+	
+		App.track('Revere Geocode', {
+			lat: App.loc.lat,
+			lon: App.loc.lon
+		});
+
 		if (App.loc.reverseGeocodeResults) {
 			$('.location-address').val(App.loc.reverseGeocodeResults);
 			complete();
@@ -1546,11 +1560,25 @@ $(function() {
 					$.cookie('community', closest.permalink, { expires: new Date(3000,01,01), path: '/'});
 					$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
 					$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
+					
+					App.track('Location Success', {
+						lat: App.loc.lat,
+						lon: App.loc.lon,
+						address: $('.location-address').val(),
+						community: closest.permalink
+					});
 
 				} else {
 					$('.enter-location, .button-letseat-form').fadeOut(100, function() {
 						$('.error-location').fadeIn();
 					});
+					
+					App.track('Location Error', {
+						lat: App.loc.lat,
+						lon: App.loc.lon,
+						address: $('.location-address').val()
+					});
+
 				}
 			}
 		};
