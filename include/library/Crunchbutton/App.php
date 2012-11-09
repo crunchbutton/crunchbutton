@@ -110,6 +110,14 @@ class Crunchbutton_App extends Cana_App {
 
 	}
 	
+	public function isCompat() {
+		if (preg_match('/(Firefox\/1\.)|(MSIE (1|2|3|4|5|6|7|8|9))/i',$_SERVER['HTTP_USER_AGENT'])) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	public function user() {
 		return $this->auth()->user();
 	}
@@ -167,6 +175,12 @@ class Crunchbutton_App extends Cana_App {
 
 		foreach ($params['theme'] as $theme) {
 			$this->controllerStack($theme);
+		}
+		
+		if (!$this->isCompat()) {
+			$params['layout'] =  'layout/compat';		
+		} else {
+			$params['layout'] =  $this->config()->defaults->layout;
 		}
 
 		parent::buildView($params);
