@@ -580,6 +580,11 @@ App.loadPage = function() {
 	var
 		url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/'),
 		path = url.split('/');
+		
+	if (!path[path.length-1]) {
+		delete path[path.length-1];
+	}
+	console.log(path)
 
 	if (!App.config) {
 		return;
