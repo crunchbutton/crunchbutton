@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<title><?=$this->title ? $this->title : 'Crunchbutton'?></title>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
+
+<link rel="stylesheet" type="text/css" href="/assets/css/landing.css">
+<link rel="shortcut icon" href="/favicon.ico">
+
+<script type="application/x-javascript">addEventListener("touchstart",function(){}); addEventListener('load', function(event) {setTimeout(scrollTo, 80, 0, 1);}, false);</script>
+
+
+<style>
+
+</style>
+
+
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="body">
+			<div class="content">
+				<div style="width: 550px; margin: 0 auto;">
+
+					<br /><br /><br />
+					<p>
+					We're sorry, but your web browser is not currently supported with our new version of Crunchbutton.
+					<br /><br />
+					We optimize our website for the latest and greatest, and are always making improvements. To properly view our site, you will need a newer web browser. We recommend <a href="http://www.google.com/chrome/" target="_blank">Google Chrome</a>, but we support other browsers for your Operating System as well:
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="divider"></div>
+	<br /><br />
+			<div class="bottom">
+				<div style="width: 550px; margin: 0 auto;">
+					<br />
+					<table cellpadding="2" cellspacing="2" width="100%">
+						<tr>
+							<td><a href="http://www.google.com/chrome/" target="_blank"><img src="/assets/images/compat/chrome.jpg"></a></td>
+							<? if (preg_match('/mac/i',$_SERVER['HTTP_USER_AGENT'])) : ?>
+								<td><a href="http://www.apple.com/safari/" target="_blank"><img src="/assets/images/compat/safari.jpg"></a></td>
+							<? endif ; ?>
+							<td><a href="http://www.mozilla.com/en-US/firefox/RC/" target="_blank"><img src="/assets/images/compat/firefox.jpg"></a.</td>
+							<td><a href="http://www.opera.com/download/" target="_blank"><img src="/assets/images/compat/opera.jpg"></a.</td>
+					
+							<? if (preg_match('/windows/i',$_SERVER['HTTP_USER_AGENT'])) : ?>
+								<td><a href="http://ie.microsoft.com/testdrive/" target="_blank"><img src="/assets/images/compat/msie.jpg"></a></td>
+							<? endif ; ?>
+						</tr>
+						<tr>
+							<td><a href="http://www.google.com/chrome/" target="_blank">Chrome</a></td>
+							<? if (preg_match('/mac/i',$_SERVER['HTTP_USER_AGENT'])) : ?>
+								<td><a href="http://www.apple.com/safari/" target="_blank">Safari</a></td>
+							<? endif ; ?>
+							<td><a href="http://www.mozilla.com/en-US/firefox/RC/" target="_blank">Firefox</a></td>
+							<td><a href="http://www.opera.com/download/" target="_blank">Opera</a></td>
+							<? if (preg_match('/windows/i',$_SERVER['HTTP_USER_AGENT'])) : ?>
+								<td><a href="http://ie.microsoft.com/testdrive/" target="_blank">MSIE 10</a></td>
+							<? endif; ?>
+						</tr>
+					</table>
+				</div>
+
+		<div class="divider"></div>
+	</div>
+</body>
+</html>

@@ -75,12 +75,12 @@ a {
 }
 
 body {
-	background: url(/assets/images/landing-bg-tile.gif) repeat-x;
+	background: white;
 }
 
 .wrapper {
 	background: url(/assets/images/landing-bg.gif);
-	min-height: 922px;
+	border-bottom: 1px solid rgba(0,0,0,.1);
 }
 
 .content {
@@ -88,7 +88,8 @@ body {
 	background-position: top center;
 	width: 1024px;
 	margin: 0 auto;
-	min-height: 900px;
+	min-height: 200px;
+	padding-bottom: 40px;
 }
 
 p {
@@ -218,4 +219,16 @@ and (max-width : 500px) {
 
 .info-block-icon {
 	margin-right: 10px;
+}
+
+.bottom {
+	background: white;
+}
+
+.bottom a {
+	color: black !important;
+}
+td {
+	text-align: center;
+	margin-top: 10px;
 }
