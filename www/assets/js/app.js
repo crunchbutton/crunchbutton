@@ -457,7 +457,6 @@ App.drawPay = function(restaurant) {
 App.page.order = function(id) {
 
 	App.currentPage = 'order';
-	console.log('order');
 	App.cache('Order', id, function() {
 
 		if (!this.uuid) {
@@ -703,12 +702,12 @@ App.refreshLayout = function() {
 };
 
 App.track = function() {
-	if (App.config.env != 'local') {
+	if (App.config.env != 'live') {
 		return;
 	}
 	if (arguments[0] == 'Ordered') {
 		$('img.conversion').remove();
-		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0">').appendTo($('body'));
+		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + History.getState().url + '">').appendTo($('body'));
 	}
 	if (arguments[1]) {
 		mixpanel.track(arguments[0],arguments[1]);
