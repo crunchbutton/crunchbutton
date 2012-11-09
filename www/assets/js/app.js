@@ -703,11 +703,12 @@ App.refreshLayout = function() {
 };
 
 App.track = function() {
-	if (App.config.env != 'live') {
+	if (App.config.env != 'local') {
 		return;
 	}
 	if (arguments[0] == 'Ordered') {
-		var i = $('<img src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0">');
+		$('img.conversion').remove();
+		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0">').appendTo($('body'));
 	}
 	if (arguments[1]) {
 		mixpanel.track(arguments[0],arguments[1]);
