@@ -1311,7 +1311,7 @@ App.loc = {
 		$('.location-detect-icon').hide();
 
 		var complete = function() {
-			App.track('Geolocated', {
+			App.track('Locations Shared', {
 				lat: App.loc.lat,
 				lon: App.loc.lon
 			});
@@ -1406,6 +1406,12 @@ App.loc = {
 			navigator.geolocation.getCurrentPosition(function(position){
 				App.loc.lat = position.coords.latitude;
 				App.loc.lon = position.coords.longitude;
+				
+				App.track('Locations Shared', {
+					lat: App.loc.lat,
+					lon: App.loc.lon
+				});
+
 				complete();
 			}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
 		}
@@ -1420,7 +1426,7 @@ App.loc = {
 		var geocoder = new google.maps.Geocoder();
 		var forceLoc = null;
 		
-		App.track('Entered Loc', {
+		App.track('Location Entered', {
 			address: $('.location-address').val().toLowerCase()
 		});
 
@@ -1477,7 +1483,7 @@ App.loc = {
 	},
 	reverseGeocode: function(complete) {
 	
-		App.track('Revere Geocode', {
+		App.track('Location Reverse Geocode', {
 			lat: App.loc.lat,
 			lon: App.loc.lon
 		});
