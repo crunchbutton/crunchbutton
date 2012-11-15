@@ -202,11 +202,11 @@ App.page.community = function(id) {
 		for (var x in rs) {
 			var restaurant = $('<div class="meal-item'+ (!rs[x].open() ? ' meal-item-closed' : '') +'" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
 			var restaurantContent = $('<div class="meal-item-content">');
-
+console.log(rs[x])
 			restaurantContent
 				.append('<div class="meal-pic" style="background: url(' + rs[x]['img64'] + ');"></div>')
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
-				.append('<h3 class="meal-food">Top Order: ' + (rs[x].top() ? (rs[x].top().top_name || rs[x].top().name) : '') + '</h3>');
+				.append('<h3 class="meal-food">' + (rs[x].short_description || ('Top Order: ' + (rs[x].top() ? (rs[x].top().top_name || rs[x].top().name) : ''))) + '</h3>');
 
 			if (rs[x].open()) {
 				if (rs[x].delivery != '1') {
