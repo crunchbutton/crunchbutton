@@ -251,7 +251,7 @@ App.page.restaurant = function(id) {
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
 			'<div class="main-content-readable">' + 
 				'<div class="restaurant-items"></div>' + 
-				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="your-order-label" style="font-weight: bold; display: none;">(we\'ve chosen the most popular order, but you can order anything you want)</div><div class="divider"></div><div class="delivery-minimum-error">Add $<span class="delivery-min-diff">' + parseFloat(App.restaurant.delivery_min -  App.cart.total()).toFixed(2) + '</span> from menu to meet delivery minimum.</div><div class="cart-items-content"></div></div>' + 
+				'<div class="cart-items"><div class="restaurant-item-title text-your-order">You Just Ordered Awesome Food!</div><div class="your-order-label" style="font-weight: bold; display: none;">(we\'ve chosen the most popular order, but you can order anything you want)</div><div class="divider"></div><div class="delivery-minimum-error">Add $<span class="delivery-min-diff">' + parseFloat(App.restaurant.delivery_min -  App.cart.total()).toFixed(2) + '</span> from menu to meet delivery minimum.</div><div class="cart-items-content"></div></div>' + 
 				'<div class="divider"></div>' + 
 			'</div>' + 
 			'<div class="restaurant-payment-div"></div>'
@@ -510,6 +510,8 @@ App.page.order = function(id) {
 		App.cache('Restaurant',order.id_restaurant, function() {
 			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
 			$('.order-info').append('To reach Crunchbutton, send a text to (646) 783-1444<br />or call <b>(800) 242-1444</b><br /><br />');
+			$('.order-info').append('We\'ve saved your order for easy 1 click ordering next time!<br /><br />');
+			
 		});
 
 	});
