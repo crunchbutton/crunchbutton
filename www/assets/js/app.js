@@ -842,6 +842,12 @@ App.cart = {
 			//return;
 		}
 
+		if (!totalItems) {
+			$('.default-order-check').hide();
+		} else {
+			$('.default-order-check').show();		
+		}
+
 		var
 			totalItems = {},
 			name,
