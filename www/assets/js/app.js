@@ -305,7 +305,7 @@ App.page.restaurant = function(id) {
 				paying.append('&nbsp;incl tax<span class="includes-fees"></span>&nbsp;using <a href="javascript:;">cash</a>');			
 			}
 			dp.append(paying);
-			if (App.config.user.delivery_type == 'delivery') {
+			if (App.config.user.delivery_type == 'delivery' && App.restaurant.delivery == '1') {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br /><a href="javascript:;">' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</a></div>');
 			} else {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Deliver to:</label> <a href="javascript:;"><i>takeout</i></a></div>');			
@@ -342,17 +342,21 @@ App.drawPay = function(restaurant) {
 		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
 	);
 	
-	var fieldError = (App.community.permalink == 'gw' || App.community.permalink == 'providence') ? '<div class="field-error">Include ZIP code</div>' : '';
+	var fieldError = (App.community.permalink == 'gw' || App.community.permalink == 'providence') ? '<div class="field-error field-error-zip">Include ZIP code</div>' : '';
 
+	if (restaurant.delivery == '1') {
+		var deliveryInfo = '<label class="pay-title-label">Delivery Info</label>' + 
+			'<div class="input-item toggle-wrapper clearfix">' +
+				'<a href="javascript:;" class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</a> <span class="toggle-spacer delivery-only-text">or</span> <a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>' + 
+			'</div>';
+	} else {
+		var deliveryInfo = '<label class="pay-title-label">Takeout Info</label>';
+	}
 	$('.delivery-info-container').append(
 
 		'<div class="personal-info field-container">' + 
-		
-			'<label class="pay-title-label">Delivery Info</label>' + 
-			'<div class="input-item toggle-wrapper clearfix">' +
-				'<a href="javascript:;" class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</a> <span class="toggle-spacer delivery-only-text">or</span> <a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>' + 
-			'</div><div class="divider"></div>' + 
-
+			deliveryInfo +
+			'<div class="divider"></div>' +
 			'<label>Name</label>' + 
 			'<div class="input-item"><input type="text" name="pay-name" tabindex="2"></div><div class="divider"></div>' + 
 	
@@ -423,7 +427,7 @@ App.drawPay = function(restaurant) {
 		App.trigger.credit();
 	}
 
-	if (App.order['delivery_type'] == 'takeout') {
+	if (App.order['delivery_type'] == 'takeout' || restaurant.delivery != '1') {
 		App.trigger.takeout();
 	} else {
 		App.trigger.delivery();
@@ -441,10 +445,6 @@ App.drawPay = function(restaurant) {
 			console.log(App.config.user.presets[App.restaurant.id_restaurant]);
 			$('[name="notes"]').val(App.config.user.presets[App.restaurant.id_restaurant].notes);
 		} catch (e) {}
-	}
-	
-	if (!restaurant.delivery) {
-		$('.delivery-only-text').hide();
 	}
 	
 	if (!App.config.user.id_user) {
@@ -1533,7 +1533,7 @@ App.trigger = {
 	takeout: function() {
 		$('.delivery-toggle-delivery').removeClass('toggle-active');
 		$('.delivery-toggle-takeout').addClass('toggle-active');
-		$('.delivery-only').hide();
+		$('.delivery-only, .field-error-zip').hide();
 		App.order['delivery_type'] = 'takeout';
 		App.cart.updateTotal();
 	},
