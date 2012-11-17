@@ -1442,6 +1442,14 @@ App.loc = {
 		});
 
 		switch ($('.location-address').val().toLowerCase()) {
+			case 'harvard':
+			case 'cambridge':
+			case 'the game':
+			case 'hahvahd':
+			case 'boston':
+			case 'somerville':
+				forceLoc = App.communities.harvard.permalink;
+				break;
 			case 'dc':
 			case 'gwu':
 			case 'gw':
