@@ -202,7 +202,7 @@ App.page.community = function(id) {
 		for (var x in rs) {
 			var restaurant = $('<div class="meal-item'+ (!rs[x].open() ? ' meal-item-closed' : '') +'" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
 			var restaurantContent = $('<div class="meal-item-content">');
-console.log(rs[x])
+
 			restaurantContent
 				.append('<div class="meal-pic" style="background: url(' + rs[x]['img64'] + ');"></div>')
 				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
@@ -1489,14 +1489,14 @@ App.loc = {
 
 		geocoder.geocode({'address': $('.location-address').val()}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
-				App.loc.lat = results[0].geometry.location.Xa ? results[0].geometry.location.Xa : results[0].geometry.location.Ya;
-				App.loc.lon = results[0].geometry.location.Za ? results[0].geometry.location.Za : results[0].geometry.location.Ya;
+				App.loc.lat = results[0].geometry.location.lat();
+				App.loc.lon = results[0].geometry.location.lng();
 				App.loc.setFormattedLoc(results);
 			} else {
 				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
 				console.log('Geocode was not successful for the following reason: ' + status);
 			}
-			console.log(App.loc.lat, App.loc.lon);
+			console.log('LAT LNG', App.loc.lat, App.loc.lon);
 			complete();
 		});
 	},
