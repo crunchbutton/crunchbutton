@@ -20,6 +20,7 @@ class Crunchbutton_App extends Cana_App {
 		$params['postInitSkip'] = true;
 		switch ($_SERVER['__HTTP_HOST']) {
 			case 'crunchbutton.localhost':
+			case 'wenzel.localhost':
 				$params['env'] = 'local';
 				break;
 			case 'crunchr.co':
@@ -89,7 +90,15 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$domain->version = 'default';
 		}
-		$domain->theme = 'default';
+		switch ($_SERVER['__HTTP_HOST']) {
+			case 'wenzel.localhost':
+				$domain->theme = 'onebuttonwenzel';
+				break;
+			default:
+				$domain->theme = 'crunchbutton';
+				break;
+		}
+
 
 		$this->buildAuth($this->db());
 
