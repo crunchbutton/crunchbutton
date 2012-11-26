@@ -1,0 +1,80 @@
+</head>
+<?
+	if ($this->community->id_community) {
+		if ($this->restaurant->id_restaurant) {
+			$e = ' smaller-width';
+		} else {
+			$cc = $this->community->restaurants()->count();
+			$e = $cc == 4 ? ' short-meal-list' : '';
+		}
+	}
+	$basicPages = ['legal','help','faq','hello'];
+	if (!c::getPagePiece(0) || (c::getPagePiece(0) && !in_array(c::getPagePiece(0), $basicPages) && !$this->community)) {
+		$e = ' short-meal-list';
+	}
+?>
+<body>
+	<div class="wrapper">
+		<div class="nav" data-role="header" data-position="fixed">
+			<div class="content<?=$e?>">
+				<div class="nav-back"></div>
+				<div class="logo"><a href="javascript:;" class="link-home"><div class="logo-img"></div></a></div>
+
+				<div class="fb-like fb-like-desktop" data-href="http://www.facebook.com/crunchbutton" data-send="false" data-layout="button_count" data-width="40" data-show-faces="false" data-font="lucida grande"></div>
+			</div>
+		</div>
+		<div class="body">
+			<div class="content<?=$e?>">
+				<div class="main-content pages">
+					<?=$this->content?>
+				</div>
+			</div>
+		</div>
+		<div class="divider"></div>
+		<div class="footer">
+			<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
+
+			<div class="footer-content">
+				<a href="javascript:;" class="link-help">Help</a>
+				<a href="javascript:;" class="link-legal">Legal</a>
+				<a href="javascript:;" class="link-orders"<?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
+				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
+					<a href="javascript:App.test.card();">TEST: card</a>
+					<a href="javascript:App.test.logout();">TEST: logout</a>
+					<a href="javascript:App.test.cart();">TEST: cart</a>
+					<a href="javascript:App.test.clearloc();">TEST: clear loc</a>
+				<? endif ; ?>
+				<br />
+				<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
+			</div>
+		</div>
+	</div>
+	<div id="fb-root"></div>
+</body>
+<script type="text/javascript">
+$(function() {
+	App.config = <?=json_encode(c::appConfig())?>;
+})
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=411729638889643";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
+<? if ($_SERVER['__HTTP_HOST'] == 'crunchbutton.com') : ?>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36135548-1']);
+  _gaq.push(['_setDomainName', 'crunchbutton.com']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<? endif ; ?>
+</html>
