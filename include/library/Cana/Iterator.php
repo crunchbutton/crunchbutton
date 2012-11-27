@@ -140,6 +140,45 @@ class Cana_Iterator implements Iterator {
 		return isset($this->_items[$this->_position]);
 	}
 	
+	public function sort($args) {
+
+		if ($args['key']) {
+			$key = $args['key'];
+
+		} elseif ($args['function']) {
+			$function = $args['function'];
+
+		} else {
+			return false;
+		}
+
+		$reverse = isset($args['reverse']) ? $args['reverse'] : false;
+		$sort = $args['sort'] ? $args['sort'] : 'strcasecmp';
+
+		if (is_array($this->_items))
+			foreach ($this->_items as $item)
+				break;
+
+		if (is_array($item)) {
+			$f = function($a, $b) use ($key, $sort, $function) { return $sort($a[$key],$b[$key]); };
+
+		} elseif(is_object($item)) {
+			$f = function($a, $b) use ($key, $sort, $function) {
+				if ($function) {
+					return $sort($a->$function(),$b->$function());
+				} else {
+					return $sort($a->{$key},$b->{$key});
+				}
+			};
+		}
+
+		uasort($this->_items, $f);
+
+		$this->_items = $reverse ? array_reverse($this->_items) : $this->_items;
+
+		return true;
+	}
+	
 	public function json() {
 		foreach ($this->_items as $key => $item) {
 			if (is_callable($item, 'exports') || method_exists($item, 'exports')) {

@@ -142,7 +142,8 @@
 								<b><a href="/<?=$this->community->permalink?>/<?=$restaurant->permalink?>" class="home-text"><?=$restaurant->name?></a></b>
 							<? endif ; ?>
 						</h2>
-						<h3 class="meal-food">Top Order: <?=$restaurant->top()->top_name ? $restaurant->top()->top_name : $restaurant->top()->name?></h3>
+						<h3 class="meal-food"><?=$restaurant->short_description ? $restaurant->short_description : ('Top Order: ' . ($restaurant->top()->top_name ? $restaurant->top()->top_name : $restaurant->top()->name))?></h3>
+						
 					</div>
 				</div>
 			<? endforeach ; ?>
