@@ -1,5 +1,5 @@
-Restaurant Name, Customer name,Order Date,Order Time,Total,Subtotal,Tax,Tip,Delivery Fee,Service Fee,Customer Fee Percent,Restaurant Fee Percent,Cash or Card,Refunded,Payment Method,Check address or bank info,Payment frequency,Last date paid,Customer Phone
+Restaurant Name, Customer name,Order Date,Order Time,Total,Subtotal,Tax,Tip,Delivery Fee,Service Fee,Customer Fee Percent,Restaurant Fee Percent,Cash or Card,Refunded,Payment Method,Check address or bank info,Payment frequency,Last date paid,Customer Phone,Community
 <? foreach ($this->orders as $order) : ?>
-<? $date = $order->date(); ?>"<?=$order->restaurant()->name?>","<?=$order->name?>","<?=$date->format('M jS Y')?>","<?=$date->format('g:i:s A')?>",<?=number_format($order->final_price,2)?>,<?=number_format($order->price,2)?>,<?=$order->tax()?>,<?=$order->tip()?>,<?=$order->deliveryFee()?>,<?=$order->serviceFee()?>,<?=$order->service_fee?>,<?=$order->restaurant()->fee_restaurant?>,"<?=$order->pay_type?>","<?=$order->refunded ? 'yes' : ''?>",,,,,<?=$order->phone?>
+<? $date = $order->date(); ?>"<?=$order->restaurant()->name?>","<?=$order->name?>","<?=$date->format('M jS Y')?>","<?=$date->format('g:i:s A')?>",<?=number_format($order->final_price,2)?>,<?=number_format($order->price,2)?>,<?=$order->tax()?>,<?=$order->tip()?>,<?=$order->deliveryFee()?>,<?=$order->serviceFee()?>,<?=$order->service_fee?>,<?=$order->restaurant()->fee_restaurant?>,"<?=$order->pay_type?>","<?=$order->refunded ? 'yes' : ''?>",,,,,<?=$order->phone?>,<?=$order->community()->name?>
 
 <? endforeach ; ?>
