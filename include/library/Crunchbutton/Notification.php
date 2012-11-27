@@ -108,11 +108,7 @@ class Crunchbutton_Notification extends Cana_Table {
 				break;
 		}	
 	}
-	
-	public function queConfirm() {
-	
-	}
-	
+
 	public function confirm() {
 	
 	}

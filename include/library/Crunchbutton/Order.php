@@ -368,8 +368,33 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function confirm() {
+
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
+		
+		$log = new Notification_Log;
+		$log->type = 'confirm';
+		$log->id_order = $this->id_order;
+		$log->date = date('Y-m-d H:i:s');
+		$log->status = 'created';
+		$log->save();
+
+		/*
+		$num = '_PHONE_';
+		$_SERVER['__HTTP_HOST'] = 'dev.crunchr.co';
+		*/
+
+
+		$callback = 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/confirm';
+
+		Log::debug([
+			'order' => $this->id_order, 
+			'action' => 'dial confirm call',
+			'num' => $num,
+			'host' => $_SERVER['__HTTP_HOST'],
+			'callback' => $callback,
+			'type' => 'notification'
+		]);
 
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$call = $twilio->account->calls->create(
@@ -377,10 +402,14 @@ class Crunchbutton_Order extends Cana_Table {
 			'+1'.$num,
 			'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$this->id_order.'/doconfirm',
 			[
-				'StatusCallback' => 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/callback',
+				'StatusCallback' => $callback,
 				'IfMachine' => 'Hangup'
 			]
 		);
+
+		$log->remote = $call->sid;
+		$log->status = $call->status;
+		$log->save();
 	}
 	
 	public function receipt() {
@@ -435,9 +464,16 @@ class Crunchbutton_Order extends Cana_Table {
 	
 	public function queConfirm() {
 		$order = $this;
+
+		Log::debug([
+			'order' => $this->id_order, 
+			'action' => 'confirm qued',
+			'type' => 'notification'
+		]);
+
 		c::timeout(function() use($order) {
 			$order->confirm();
-		}, 2 * 60 * 1000, false); // 2 minites
+		}, c::config()->twilio->confirmTime, false);
 	}
 	
 	public function orderMessage($type) {

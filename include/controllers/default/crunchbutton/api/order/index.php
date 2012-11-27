@@ -115,6 +115,12 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 				switch ($this->request()['Digits']) {
 					case '1':
+						Log::debug([
+							'order' => $order->id_order, 
+							'action' => 'CONFIRMED',
+							'host' => $_SERVER['__HTTP_HOST'],
+							'type' => 'notification'
+						]);
 						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. This order has been confirmed.</Say>';
 						$order->confirmed = 1;
 						$order->save();
@@ -124,6 +130,13 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						break;
 
 					case '2':
+						Log::debug([
+							'order' => $order->id_order, 
+							'action' => 'RESEND',
+							'host' => $_SERVER['__HTTP_HOST'],
+							'type' => 'notification'
+						]);
+
 						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. We will resend the order confirmation.</Say>';
 						$order->que();
 						break;
