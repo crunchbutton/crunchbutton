@@ -99,8 +99,7 @@
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>
 		<maxconfirmback>3</maxconfirmback>
-		<confirmTime>1000</confirmTime>
-		<confirmTimex>120000</confirmTimex>
+		<confirmTime>120000</confirmTime>
 		<callbackTime>120000</callbackTime>
 	</twilio>
 	<phaxio>
