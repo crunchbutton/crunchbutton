@@ -698,6 +698,10 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		return $phone;
 	}
+	
+	public function community() {
+		return Community::o($this->id_community);
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
