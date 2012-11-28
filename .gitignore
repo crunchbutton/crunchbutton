@@ -1,6 +1,5 @@
 logs/*
-cache/*
-www/cache/*
+www/cache/images/*
 workflow*
 *.mov
 *.mp4
