@@ -12,6 +12,7 @@
 class Crunchbutton_App extends Cana_App {
 	private $_crypt;
 	public function init($params = null) {
+		set_exception_handler([$this, 'exception']);
 	
 		if (!$_SERVER['__HTTP_HOST']) {
 			$cli = true;
@@ -117,6 +118,31 @@ class Crunchbutton_App extends Cana_App {
 		require_once c::config()->dirs->library . '/Cana/Stripe.php';			
 		Stripe::setApiKey(c::config()->stripe->dev->secret);
 
+	}
+	
+	public function exception($e) {
+		if ($this->env == 'live') {
+			echo
+				'<title>Error</title><style>body {font-family: sans-serif; }.wrapper{ width: 400px; margin: 0 auto; margin-top: 25px;}</style>'.
+				'<div class="wrapper">'.
+				'<h1>Crunchbutton</h1>'.
+				'<p style="color: #666;">HEY! Your broke it! No just kidding. There was some sort of error we did not expect. An admin has been notified.</p>'.
+				'<br><p style="background: #fff7e0; color: #ff0000; padding: 3px;">Error: '.$e->getMessage().
+				'</div>';
+			mail('_EMAIL','CRUNCHBUTTON CRITICAL ERROR',$e->getMessage());
+			exit;
+		} else {
+			echo "\n<br />".$e->getMessage()."\n<br /><pre>";
+			foreach($e->getTrace() as $k=>$v){ 
+				if ($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){ 
+					$backtracel .= "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]<br />"; 
+				} else { 
+					$backtracel .= "#".$k." ".$v['function']."() called at [".$v['file'].":".$v['line']."]<br />"; 
+				} 
+			} 
+			echo $backtracel;
+			exit;
+		}
 	}
 	
 	public function isCompat() {
