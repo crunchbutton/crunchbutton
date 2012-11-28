@@ -3,11 +3,11 @@
 
 		
 		
-		<form id="restaurant-pay" onsubmit="return false;">
+		<form id="restaurant-image" action="" method="post" enctype="multipart/form-data">
 			<table class="admin-restaurant-pay-form">
 				<tr>
 					<td>
-						<img src="/assets/images/food/<?=$this->restaurant->image?>" style="max-width: 600px;">
+						<img src="http://i.crunchr.co/<?=$this->restaurant->image?>" style="max-width: 600px;">
 					</td>
 				</tr>
 				<tr>
@@ -19,7 +19,7 @@
 				<tr>
 					<td>
 						<br />
-						<div class="action-button action-button-small green restaurant-pay-button" style="float: left;"><span>Upload</span></div>
+						<div class="action-button action-button-small green restaurant-image-button" style="float: left;"><span>Upload</span></div>
 					</td>
 				</tr>
 			</table>
@@ -29,58 +29,9 @@
 
 <script>
 	$(function() {
-		$('.restaurant-merchant-button').click(function() {
+		$('.restaurant-image-button').click(function() {
 			var form = $(this).closest('form');
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/merchant', {
-				type: 'person', /* form.find('[name="type"]').val() */
-				name: form.find('[name="name"]').val(),
-				address: form.find('[name="address"]').val(),
-				zip: form.find('[name="zip"]').val(),
-/*				person: form.find('[name="person"]').val(),
-				taxid: form.find('[name="taxid"]').val(), */
-				dob: form.find('[name="dob"]').val()
-			}, function() {
-				location.href = location.href;
-			});
-		});
-		
-		$('.restaurant-merchant-button-fake').click(function() {
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/fake-merchant', function() {
-				location.href = location.href;
-			});
-		});
-		
-		$('.restaurant-merchant-button-fakeremove').click(function() {
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/fakeremove-merchant', function() {
-				location.href = location.href;
-			});
-		});
-		
-		$('.restaurant-merchant-button-accountremove').click(function() {
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/remove-bankinfo', function() {
-				location.href = location.href;
-			});
-		});		
-
-		$('.restaurant-bank-info-button').click(function() {
-			var form = $(this).closest('form');
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/bankinfo', {
-				routing: form.find('[name="routing"]').val(),
-				account: form.find('[name="account"]').val(),
-				name: form.find('[name="name"]').val()
-			}, function() {
-				location.href = location.href;
-			});
-		});
-
-		$('.restaurant-pay-button').click(function() {
-			var form = $(this).closest('form');
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/credit', {
-				amount: form.find('[name="amount"]').val(),
-				note: form.find('[name="note"]').val()
-			}, function() {
-				location.href = location.href;
-			});
+			form.get(0).submit();
 		});
 	});
 </script>
