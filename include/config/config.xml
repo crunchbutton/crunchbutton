@@ -6,6 +6,7 @@
     <cache>
     	<mysql>false</mysql>
     </cache>
+    <imgCache>http://i._DOMAIN_/cache/</imgCache>
     <db>
         <live>
             <user>crunch</user>

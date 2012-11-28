@@ -16,6 +16,9 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account {
 				case 'pay':
 					c::view()->display('admin/restaurants/pay');					
 					break;
+				case 'image':
+					c::view()->display('admin/restaurants/image');					
+					break;
 				case 'fax':
 					foreach ($restaurant->notifications() as $notification) {
 						if ($notification->type == 'fax') {

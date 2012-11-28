@@ -368,8 +368,8 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		$params['quality'] = '70';
 
 		$params['img']			= $this->image;
-		$params['cache'] 		= Cana::config()->dirs->www.'cache/images/';
-		$params['path'] 		= Cana::config()->dirs->www.'assets/images/food/';
+		$params['cache'] 		= '/home/i.crunchbutton/www/cache/';
+		$params['path'] 		= '/home/i.crunchbutton/www/image/';
 
 		try {	
 			$thumb = new Cana_Thumb($params);
@@ -389,8 +389,8 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		$params['quality'] = '70';
 
 		$params['img']			= $this->image;
-		$params['cache'] 		= Cana::config()->dirs->www.'cache/images/';
-		$params['path'] 		= Cana::config()->dirs->www.'assets/images/food/';
+		$params['cache'] 		= '/home/i.crunchbutton/www/cache/';
+		$params['path'] 		= '/home/i.crunchbutton/www/image/';
 
 		try {	
 			$thumb = new Cana_Thumb($params);
@@ -410,8 +410,8 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		$params['quality'] = '70';
 
 		$params['img']			= $this->image;
-		$params['cache'] 		= Cana::config()->dirs->www.'cache/images/';
-		$params['path'] 		= Cana::config()->dirs->www.'assets/images/food/';
+		$params['cache'] 		= '/home/i.crunchbutton/www/cache/';
+		$params['path'] 		= '/home/i.crunchbutton/www/image/';
 
 		try {	
 			$thumb = new Cana_Thumb($params);
