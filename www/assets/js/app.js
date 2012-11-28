@@ -347,11 +347,13 @@ App.drawPay = function(restaurant) {
 	
 	var fieldError = (App.community.permalink == 'gw' || App.community.permalink == 'providence') ? '<div class="field-error field-error-zip">Include ZIP code</div>' : '';
 
-	if (restaurant.delivery == '1') {
+	if (restaurant.delivery == '1' && restaurant.takeout == '1') {
 		var deliveryInfo = '<label class="pay-title-label">Delivery Info</label>' + 
 			'<div class="input-item toggle-wrapper clearfix">' +
 				'<a href="javascript:;" class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</a> <span class="toggle-spacer delivery-only-text">or</span> <a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>' + 
 			'</div>';
+	} else if (restaurant.delivery == '1') {
+		var deliveryInfo = '<label class="pay-title-label">Delivery Info</label>';
 	} else {
 		var deliveryInfo = '<label class="pay-title-label">Takeout Info</label>';
 	}
