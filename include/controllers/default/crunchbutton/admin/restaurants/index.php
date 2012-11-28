@@ -17,6 +17,17 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account {
 					c::view()->display('admin/restaurants/pay');					
 					break;
 				case 'image':
+					if ($_FILES['image']) {
+						$ext = explode('.',$_FILES['image']['name']);
+						$file = '/home/i.crunchbutton/www/image/'.$restaurant->permalink.'.'.$ext[1];
+
+						if (copy($_FILES['image']['tmp_name'],$file)) {
+							$restaurant->image = $restaurant->permalink.'.'.$ext[1];
+							$restaurant->save();
+							chmod($file,0777);
+						}
+
+					}
 					c::view()->display('admin/restaurants/image');					
 					break;
 				case 'fax':
