@@ -9,7 +9,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		}
 		
 		$pauseRepeat =
-			'<Pause length="3" />'
+			'<Pause length="1" />'
 			.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat the order. Press 2 to confirm the order. '.($order->delivery_type == 'delivery' ? 'Press 3 to spell out the street name.' : '').'</Say>';
 		$repeat = 3;
 
@@ -27,7 +27,6 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						.'<Pause length="5" />';
 
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
-					.'<Pause length="2" />'
 					.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
 					.'<Gather action="/api/order/'.$order->id_order.'/sayorder?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get"><Pause length="1" />';
 
