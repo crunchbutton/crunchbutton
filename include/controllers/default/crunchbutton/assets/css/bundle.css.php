@@ -26,7 +26,7 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 				$css = c::cache()->read($cache);
 				$mtime = c::cache()->mtime($cache);
 			} else {
-				$css = preg_replace_callback('/url\(([a-z0-9\/\-_\.]+)\)/i',$callback, $css);
+				//$css = preg_replace_callback('/url\(([a-z0-9\/\-_\.]+)\)/i',$callback, $css);
 				$css = preg_replace('/\t|\n/','',$css);
 	
 				$mtime = filemtime($file);
