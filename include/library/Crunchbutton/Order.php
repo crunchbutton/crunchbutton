@@ -366,8 +366,12 @@ class Crunchbutton_Order extends Cana_Table {
 			$n->send($this);
 		}
 	}
-	
+
 	public function confirm() {
+	
+		if ($this->confirmed || !$this->restaurant()->confirmation) {
+			return;
+		}
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
@@ -383,7 +387,6 @@ class Crunchbutton_Order extends Cana_Table {
 		$num = '_PHONE_';
 		$_SERVER['__HTTP_HOST'] = 'dev.crunchr.co';
 		*/
-
 
 		$callback = 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/confirm';
 
@@ -464,7 +467,9 @@ class Crunchbutton_Order extends Cana_Table {
 	
 	public function queConfirm() {
 		$order = $this;
-
+		if ($this->confirmed || !$this->restaurant()->confirmation) {
+			return;
+		}
 		Log::debug([
 			'order' => $this->id_order, 
 			'action' => 'confirm qued',
