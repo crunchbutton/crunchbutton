@@ -53,6 +53,24 @@
 				
 			</tr>
 			
+			<tr>
+				<td class="label-sub"></td>
+				<td class="content-sub">
+					
+				</td>
+				<td style="width: 100%"></td>
+				<td class="label-sub">COMMUNITY</td>
+				<td class="content-sub" colspan="2">
+					<select name="community">
+						<option value="" selected>[ All ]</option>
+						<? foreach (Community::q('select * from community order by name') as $community) : ?>
+							<option value="<?=$community->id_community?>"><?=$community->name?></option>
+						<? endforeach ; ?>
+					</select>
+				</td>
+				
+			</tr>
+			
 			
 			<tr>
 				<td colspan="6">
