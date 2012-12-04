@@ -35,6 +35,10 @@ class Controller_admin_orders_content extends Crunchbutton_Controller_Account {
 		if ($_REQUEST['restaurant']) {
 			$search['restaurant'] = $_REQUEST['restaurant'];
 		}
+		
+		if ($_REQUEST['community']) {
+			$search['community'] = $_REQUEST['community'];
+		}
 
 		c::view()->orders = Order::find($search);
 
