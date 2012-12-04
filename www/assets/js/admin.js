@@ -721,7 +721,8 @@ App.orders = {
 			processor: $('select[name="processor"]').val(),
 			limit: $('input[name="limit"]').val(),
 			dates: $('input[name="date-range"]').val(),
-			restaurant: $('select[name="restaurant"]').val()
+			restaurant: $('select[name="restaurant"]').val(),
+			community: $('select[name="community"]').val()
 		};
 	},
 	load: function() {
