@@ -586,7 +586,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		switch ($type) {
 			case 'selfsms':
-				$msg = "Crunchbutton #".$this->id_order."\n\n";
+				$msg = "Crunchbutton.com #".$this->id_order."\n\n";
 				if ($this->delivery_type == 'delivery') {
 					$msg .= "Your delivery should arrive within ".($this->restaurant()->delivery_estimated_time ? $this->restaurant()->delivery_estimated_time : 60)." minutes.\n";
 				} else {
