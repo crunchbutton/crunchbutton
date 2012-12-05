@@ -36,8 +36,8 @@
 	<div itemscope itemtype="http://schema.org/restaurant">
 
 		<link itemprop="url" href="/<?=$this->community->permalink?>/<?=$this->restaurant->permalink?>"/>
-		<link itemprop="image" href="<?=$this->restaurant->image() ? '/cache/images/'.$this->restaurant->image()->getFileName() : ''?>"/>
-		<link itemprop="photo" href="<?=$this->restaurant->image() ? '/cache/images/'.$this->restaurant->image()->getFileName() : ''?>"/>
+		<link itemprop="image" href="<?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>"/>
+		<link itemprop="photo" href="<?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>"/>
 
 		<meta itemprop="priceRange" content="<?=$this->restaurant->priceRange()?>">
 		<div itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">
@@ -52,7 +52,7 @@
 	
 		<div itemprop="name" class="restaurant-name"><h1><?=$this->restaurant->name?></h1></div>
 		<div class="restaurant-pic-wrapper">
-			<div class="restaurant-pic" style="background: url(<?=$this->restaurant->image() ? '/cache/images/'.$this->restaurant->image()->getFileName() : ''?>);"></div>
+			<div class="restaurant-pic" style="background: url(<?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>);"></div>
 		</div>
 	
 		<div class="main-content-readable">
@@ -64,7 +64,7 @@
 
 						<? foreach ($category->dishes() as $dish) : ?>
 							<li itemscope itemtype="http://data-vocabulary.org/Product">
-								<meta itemprop="image" content="http://<?=$_SERVER['HTTP_HOST']?><?=$this->restaurant->image() ? '/cache/images/'.$this->restaurant->image()->getFileName() : ''?>" />
+								<meta itemprop="image" content="http://<?=$_SERVER['HTTP_HOST']?><?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>" />
 								<? if ($dish->description) : ?>
 									<meta itemprop="description" content="<?=$dish->description?>" />
 								<? endif ; ?>
@@ -130,12 +130,12 @@
 				<div class="meal-item" data-id_restaurant="<?=$restaurant->id_restaurant?>" data-permalink="<?=$restaurant->permalink?>" itemscope itemtype="http://schema.org/restaurant">
 				
 					<link itemprop="url" href="/<?=$this->community->permalink?>/<?=$restaurant->permalink?>"/>
-					<link itemprop="image" href="<?=$restaurant->image() ? '/cache/images/'.$restaurant->image()->getFileName() : ''?>"/>
-					<link itemprop="photo" href="<?=$restaurant->image() ? '/cache/images/'.$restaurant->image()->getFileName() : ''?>"/>
+					<link itemprop="image" href="<?=$restaurant->image() ? $restaurant->publicImagePath().$restaurant->image()->getFileName() : ''?>"/>
+					<link itemprop="photo" href="<?=$restaurant->image() ? $restaurant->publicImagePath().$restaurant->image()->getFileName() : ''?>"/>
 				
 					<div class="meal-item-spacer"></div>
 					<div class="meal-item-content">
-						<div class="meal-pic" style="background: url(<?=$restaurant->thumb() ? '/cache/images/'.$restaurant->thumb()->getFileName() : ''?>);"></div>
+						<div class="meal-pic" style="background: url(<?=$restaurant->thumb() ? $restaurant->publicImagePath().$restaurant->thumb()->getFileName() : ''?>);"></div>
 						<h2 class="meal-restaurant">
 							<span itemprop="name"><?=$restaurant->name?></span>
 							<? if (c::app()->isBot()) : ?>
