@@ -90,6 +90,8 @@
 		<olddev>
 			<sid>_KEY_</sid>
 			<token>_KEY_</token>
+			<sid>_KEY_</sid>
+			<token>_KEY_</token>
 			<outgoingTextCustomer>_PHONE_</outgoingTextCustomer>
 			<outgoingTextRestaurant>_PHONE_</outgoingTextRestaurant>
 			<outgoingCustomer>+18002421444</outgoingCustomer>
