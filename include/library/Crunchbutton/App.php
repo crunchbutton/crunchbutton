@@ -119,6 +119,25 @@ class Crunchbutton_App extends Cana_App {
 		require_once c::config()->dirs->library . '/Cana/Stripe.php';			
 		Stripe::setApiKey(c::config()->stripe->dev->secret);
 
+		switch ($_SERVER['__HTTP_HOST']) {
+			case 'spicywithdelivery.com':
+				$r = Restaurant::o(74);
+
+				if (!c::getPagePiece(0)) {
+					header('Location: http://spicywithdelivery.com/providence/'.$r->permalink);
+					exit;
+
+				} elseif (c::getPagePiece(0) != 'providence' && c::getPagePiece(0) != $r->permalink) {
+					header('Location: https://_DOMAIN_'.$_SERVER['REQUEST_URI']);
+					exit;
+				} else {
+					// ??
+				}
+
+				break;
+
+		}
+
 	}
 	
 	public function exception($e) {
