@@ -46,6 +46,7 @@ class Crunchbutton_App extends Cana_App {
 				switch ($_SERVER['SERVER_ADDR']) {
 					case '74.207.245.57':
 					case '_IP_':
+					case '66.175.217.154':
 						$params['env'] = 'live';
 						break;
 					default:
@@ -77,9 +78,9 @@ class Crunchbutton_App extends Cana_App {
 
 		if ($params['env'] == 'live' && !$cli && $_SERVER['__HTTP_HOST'] == '_DOMAIN_') {
 			error_reporting(E_ERROR | E_PARSE);
-			
+
 			if ($_SERVER['HTTPS'] != 'on') {
-				header('Location: https://_DOMAIN_'.$_SERVER['REQUEST_URI']);
+				header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 				exit;
 			}
 		}
