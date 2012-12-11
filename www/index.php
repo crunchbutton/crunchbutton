@@ -21,7 +21,7 @@ if (isset($_REQUEST['__url']) && $_REQUEST['__url'] == 'index.php') {
 }
 
 if (preg_match('/^www\..*$/',$_SERVER['HTTP_HOST'])) {
-	header('Location: http://'.str_replace('www.',$_SERVER['HTTP_HOST']).$_SERVER['REQUEST_URI']);
+	header('Location: http://'.str_replace('www.','',$_SERVER['HTTP_HOST']).$_SERVER['REQUEST_URI']);
 	exit;
 }
 
