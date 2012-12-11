@@ -78,7 +78,7 @@ class Crunchbutton_App extends Cana_App {
 			exit;
 		}
 
-		if ($params['env'] == 'live' && !$cli && $_SERVER['__HTTP_HOST'] == '_DOMAIN_') {
+		if ($params['env'] == 'live' && !$cli && ($_SERVER['__HTTP_HOST'] == '_DOMAIN_' || $_SERVER['__HTTP_HOST'] == 'spicywithdelivery.com')) {
 			error_reporting(E_ERROR | E_PARSE);
 
 			if ($_SERVER['HTTPS'] != 'on') {
