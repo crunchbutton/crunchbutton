@@ -39,6 +39,8 @@ class Crunchbutton_App extends Cana_App {
 			case 'test._DOMAIN_':
 			case 'brad.crunchr.co':
 			case 'dev._DOMAIN_':
+			case 'beta.spicywithdelivery.com':
+			case 'dev.spicywithdelivery.com':
 				$params['env'] = 'beta';
 				break;
 
@@ -69,7 +71,7 @@ class Crunchbutton_App extends Cana_App {
 						break;
 				}
 		}
-		
+
 		if ($_SERVER['__HTTP_HOST'] == 'crunchr.co') {
 			header ('HTTP/1.1 301 Moved Permanently');
 			header('Location: http://_DOMAIN_/');
@@ -125,10 +127,10 @@ class Crunchbutton_App extends Cana_App {
 				$r = Restaurant::o(74);
 
 				if (!c::getPagePiece(0)) {
-					header('Location: http://spicywithdelivery.com/providence/'.$r->permalink);
+					header('Location: https://spicywithdelivery.com/providence/'.$r->permalink);
 					exit;
 
-				} elseif (c::getPagePiece(0) != 'providence' && c::getPagePiece(0) != $r->permalink) {
+				} elseif (c::getPagePiece(0) != 'api' && (c::getPagePiece(0) != 'providence' && c::getPagePiece(0) != $r->permalink)) {
 					header('Location: https://_DOMAIN_'.$_SERVER['REQUEST_URI']);
 					exit;
 				} else {
