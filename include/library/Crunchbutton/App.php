@@ -124,10 +124,12 @@ class Crunchbutton_App extends Cana_App {
 
 		switch ($_SERVER['__HTTP_HOST']) {
 			case 'spicywithdelivery.com':
+			case 'beta.spicywithdelivery.com':
+			case 'dev.spicywithdelivery.com':
 				$r = Restaurant::o(74);
 
 				if (!c::getPagePiece(0)) {
-					header('Location: https://spicywithdelivery.com/providence/'.$r->permalink);
+					header('Location: https://'.$_SERVER['HTTP_HOST'].'/'.$r->community()->permalink.'/'.$r->permalink);
 					exit;
 
 				} elseif (c::getPagePiece(0) != 'api' && (c::getPagePiece(0) != 'providence' && c::getPagePiece(0) != $r->permalink)) {
