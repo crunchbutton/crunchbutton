@@ -3,7 +3,7 @@
 class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle {
 	public function init() {
 		$cacheid = 'crunchr-bundle-node-code'.$_REQUEST['v'].$_REQUEST['s'];
-		
+
 		if (Cana::app()->cache()->cached($cacheid)) {
 			$data = Cana::app()->cache()->read($cacheid);
 
