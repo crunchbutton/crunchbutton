@@ -517,6 +517,21 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_ratingCount;
 	}
 	
+	public function byRange($params) {
+		$query = '
+			SET @lat = '.$params['lat'].', @lon = '.$params['lon'].';
+
+			SELECT ((ACOS(SIN(@lat * PI() / 180) * SIN(loc_lat * PI() / 180) + COS(@lat * PI() / 180) * COS(loc_lat * PI() / 180) * COS((@lon - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`, name, delivery_radius, delivery, takeout
+			FROM `restaurant`
+			WHERE
+				active=1
+				AND delivery=1
+			HAVING `distance`<=`delivery_radius`
+			ORDER BY name ASC;
+		';
+		return self::q($query);
+	}
+	
 	public function save() {
 		if (!$this->timezone) {
 			$this->timezone = 'America/New_York';
