@@ -409,8 +409,8 @@ class Crunchbutton_Order extends Cana_Table {
 			'+1'.$num,
 			'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$this->id_order.'/doconfirm',
 			[
-				'StatusCallback' => $callback,
-				'IfMachine' => 'Hangup'
+				'StatusCallback' => $callback
+//				'IfMachine' => 'Hangup'
 			]
 		);
 

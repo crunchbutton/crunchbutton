@@ -83,8 +83,8 @@ class Crunchbutton_Notification extends Cana_Table {
 					'+1'.$num,
 					'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$order->id_order.'/say?id_notification='.$this->id_notification,
 					[
-						'StatusCallback' => 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/callback',
-						'IfMachine' => 'Hangup'
+						'StatusCallback' => 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/callback'
+//						'IfMachine' => 'Hangup'
 					]
 				);
 
