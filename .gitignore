@@ -1,3 +1,6 @@
+.buildpath
+.project
+.settings
 logs/*
 www/cache/images/*
 workflow*
@@ -9,3 +12,4 @@ workflow*
 *.psd
 *.pdf
 cache/*
+include/config/config.xml
