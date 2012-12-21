@@ -9,7 +9,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 				'lon' => $_REQUEST['lon']
 			]);
 			foreach ($restaurants as $restaurant) {
-				$config['restaurants'][] = $restaurant->exports();
+				$config['restaurants'][] = $restaurant->exports(['categories' => true]);
 			}
 		}
 		echo json_encode($config);
