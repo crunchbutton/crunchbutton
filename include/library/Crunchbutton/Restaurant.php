@@ -461,7 +461,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 
 	}
 
-	public function exports() {
+	public function exports($ignore = []) {
 
 		$out = $this->properties();
 		$out['_open'] = $this->open();
@@ -471,9 +471,10 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		//$out['img64'] = (new ImageBase64($this->thumb()))->output();
 //		$out['img64'] = '/assets/images/food/310x310/'.$this->image;
 
-
-		foreach ($this->categories() as $category) {
-			$out['_categories'][$category->id_category] = $category->exports();
+		if (!$ignore['categories']) {
+			foreach ($this->categories() as $category) {
+				$out['_categories'][$category->id_category] = $category->exports();
+			}
 		}
 		foreach ($this->hours(true) as $hours) {
 			$out['_hoursFormat'][$hours->day][] = [$hours->time_open, $hours->time_close];
@@ -517,11 +518,9 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_ratingCount;
 	}
 	
-	public function byRange($params) {
+	public static function byRange($params) {
 		$query = '
-			SET @lat = '.$params['lat'].', @lon = '.$params['lon'].';
-
-			SELECT ((ACOS(SIN(@lat * PI() / 180) * SIN(loc_lat * PI() / 180) + COS(@lat * PI() / 180) * COS(loc_lat * PI() / 180) * COS((@lon - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`, name, delivery_radius, delivery, takeout
+			SELECT ((ACOS(SIN('.$params['lat'].' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$params['lat'].' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$params['lon'].' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`, restaurant.*
 			FROM `restaurant`
 			WHERE
 				active=1
