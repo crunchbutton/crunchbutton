@@ -7,8 +7,8 @@ b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
 	margin: 0;
@@ -19,7 +19,7 @@ time, mark, audio, video {
 	vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
+article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
@@ -130,7 +130,7 @@ body {
 	color: #7e7e7e;
 	cursor: pointer;
 	text-align: left;
-	
+
 	-webkit-transition: border ease-out 1s;
 	-moz-transition: border ease-out 1s;
 	-ms-transition: border ease-out 1s;
@@ -345,8 +345,8 @@ b {
 	margin-top: 25px;
 	display: block;
 	height: 45px;
-	
-	
+
+
 
 	background: -moz-linear-gradient(#fb422e, #fb2418);
 	background: -ms-linear-gradient(#fb422e, #fb2418);
@@ -370,7 +370,7 @@ b {
 	font-size: 20px;
 	font-weight: 600;
 	text-shadow: -1px -1px 0px rgba(0,0,0,.2);
-	
+
 	-webkit-transition: box-shadow ease-out 0.2s;
 	-moz-transition: box-shadow ease-out 0.2s;
 	-ms-transition: box-shadow ease-out 0.2s;
@@ -421,15 +421,15 @@ b {
 	line-height: 0;
 	height: 0;
 }
- 
+
 .clearfix {
 	display: inline-block;
 }
- 
+
 html[xmlns] .clearfix {
 	display: block;
 }
- 
+
 * html .clearfix {
 	height: 1%;
 }
@@ -610,7 +610,7 @@ html[xmlns] .clearfix {
 	border-radius: 12px;
 	background: rgba(52,52,52,.8);
 	left: 50%;
-    top: 200px;
+	top: 200px;
 	margin-left: -50px;
 	position: absolute;
 }
@@ -622,7 +622,7 @@ html[xmlns] .clearfix {
 	width: 48px;
 	height: 48px;
 	margin-top: 25px;
-}  
+}
 
 .resturant-dishes {
 	width: 100%;
@@ -645,7 +645,7 @@ html[xmlns] .clearfix {
 	border-bottom-left-radius: 2px;
 	border-top-right-radius: 2px;
 	border-bottom-right-radius: 2px;
-	
+
 	-webkit-transition: box-shadow ease-out 0.2s;
 	-moz-transition: box-shadow ease-out 0.2s;
 	-ms-transition: box-shadow ease-out 0.2s;
@@ -754,7 +754,7 @@ html[xmlns] .clearfix {
 	margin-left: 20px;
 }
 
-@media only screen 
+@media only screen
 and (max-width : 1023px) {
 	.home-tagline, .home-welcome {
 		text-align: center;
@@ -822,7 +822,7 @@ and (max-width : 1023px) {
 .toggle-item.toggle-active {
 	color: #fff;
 	text-shadow: 1px 1px 0px rgba(0,0,0,.22);
-	
+
 	background: -moz-linear-gradient(#f57333, #f26926);
 	background: -ms-linear-gradient(#f57333, #f26926);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f57333), color-stop(100%, #f26926));
@@ -831,7 +831,7 @@ and (max-width : 1023px) {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926');
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926')";
 	background: linear-gradient(#f57333, #f26926);
-	
+
 }
 
 .toggle-active {
@@ -859,11 +859,11 @@ and (max-width : 1023px) {
 
 
 /*
-@media only screen 
-and (min-device-width : 320px) 
+@media only screen
+and (min-device-width : 320px)
 and (max-device-width : 480px) {
 */
-@media only screen 
+@media only screen
 and (max-width : 769px) {
 	.logo-img {
 		margin-left: -149px;
@@ -945,7 +945,7 @@ and (max-width : 769px) {
 		margin-top: -72px;
 		white-space: nowrap;
 	}
-	
+
 	.meal-item-tag-closed {
 		width: 272px;
 		margin-top: -72px;
@@ -968,13 +968,13 @@ and (max-width : 769px) {
 		box-shadow: inset 0px 1px 0px 0px #fff;
 		white-space: nowrap;
 	}
-	
+
 	.resturant-dish-container a {
 		background: #f4e9e3;
 		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff6f4), to(#fff0ec));
 		border: 1px solid #ffd1bd;
 	}
-	
+
 	.cart-item {
 		background: #ecf1fb;
 		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f4f7fd), to(#ecf1fb));
@@ -986,7 +986,7 @@ and (max-width : 769px) {
 	.resturant-dish-container .dish-name {
 		text-decoration: underline;
 	}
-	
+
 	.resturant-dish-container a {
 		text-decoration: none;
 	}
@@ -1001,7 +1001,7 @@ and (max-width : 769px) {
 		border-radius: 4px;
 		border: 1px solid #c1c1c1;
 	}
-	
+
 	.meal-item {
 		height: 133px;
 		margin-left: 0;
@@ -1107,9 +1107,9 @@ and (max-width : 769px) {
 		width: 100%;
 		float: none;
 		background: none;
-	}	
+	}
 	.app-busy-loader {
-	    top: 100px;
+		top: 100px;
 	}
 	.field-container select {
 		margin-right: 10px;
@@ -1268,9 +1268,9 @@ and (max-width : 769px) {
 	.cart-items {
 		float: left;
 		width: 100%;
-		
+
 	}
-	
+
 	.content.short-meal-list {
 		max-width: 650px;
 	}
@@ -1329,7 +1329,7 @@ and (max-width : 769px) {
 		margin: 0 auto;
 		margin-top: 10px;
 	}
-	
+
 	.cart-button {
 		float: left;
 		width: 30px;
@@ -1339,7 +1339,7 @@ and (max-width : 769px) {
 		font-size: 8px;
 		margin-top: -4px;
 		border-radius: 2px;
-	
+
 		background: -moz-linear-gradient(#fb422e, #fb2418);
 		background: -ms-linear-gradient(#fb422e, #fb2418);
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fb422e), color-stop(100%, #fb2418));
@@ -1348,7 +1348,7 @@ and (max-width : 769px) {
 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fb422e', endColorstr='#fb2418');
 		-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#fb422e', endColorstr='#fb2418')";
 		background: linear-gradient(#fb422e, #fb2418);
-	
+
 		border: 1px solid #ae4939;
 		box-shadow:
 			inset 0 0 2px rgba(255,254,196,.8),
@@ -1357,7 +1357,7 @@ and (max-width : 769px) {
 
 		color: #fff4f3;
 		text-shadow: -1px -1px 0px rgba(0,0,0,.2);
-		
+
 		-webkit-transition: box-shadow ease-out 0.2s;
 		-moz-transition: box-shadow ease-out 0.2s;
 		-ms-transition: box-shadow ease-out 0.2s;
@@ -1369,7 +1369,7 @@ and (max-width : 769px) {
 	.cart-button:first-child {
 		margin-left: -4px;
 	}
-	
+
 	.button-letseat-form {
 		width: 100%;
 		font-size: 20px;
@@ -1379,7 +1379,7 @@ and (max-width : 769px) {
 
 
 
-@media only screen 
+@media only screen
 and (min-width : 633px)
 and (max-width : 769px) {
 	.meal-item:nth-child(2n+1) {
@@ -1390,7 +1390,7 @@ and (max-width : 769px) {
 
 
 
-@media only screen 
+@media only screen
 and (min-width : 770px) {
 	.location-address {
 		width: 609px;
@@ -1446,7 +1446,7 @@ and (min-width : 770px) {
 	.restaurant-pic {
 
 	}
-	
+
 	.content-item-name, .text-your-order {
 		text-transform: none;
 		color: #D74924;
@@ -1454,11 +1454,11 @@ and (min-width : 770px) {
 		font-size: 30px;
 		margin-bottom: 8px;
 	}
-	
+
 	.content-item-main-name {
-		margin-bottom: 25px;	
+		margin-bottom: 25px;
 	}
-	
+
 	.your-info-label, .your-order-label {
 		font-size: 12px;
 		margin-bottom: 15px;
@@ -1535,7 +1535,7 @@ and (min-width : 770px) {
 		box-shadow: inset 0px 1px 0px 0px white;
 		white-space: nowrap;
 	}
-	
+
 	.cart-items {
 		width: 625px;
 		float: right;
@@ -1593,16 +1593,16 @@ and (min-width : 770px) {
 
 
 
-@media only screen 
+@media only screen
 and (min-width : 1024px) {
 	.restaurant-pic-wrapper {
 		display: none;
 	}
-	
+
 	.restaurant-name {
 		margin-top: 0px;
 	}
-	
+
 	.cart-items {
 		margin-top: 70px;
 	}
@@ -1654,7 +1654,7 @@ and (min-width : 1024px) {
 	}
 }
 
-@media only screen 
+@media only screen
 and (min-width : 770px)
 and (max-width : 1023px) {
 	.content {
@@ -1664,21 +1664,21 @@ and (max-width : 1023px) {
 	.content-item-locations h1 {
 		text-align: center;
 	}
-	
+
 	.restaurant-items, .restaurant-pic-wrapper, .cart-items, .payment-form {
-		float: none;	
+		float: none;
 		width: 625px;
 		margin: 0 auto;
 	}
-	
+
 	.restaurant-items {
 		margin-top: 20px;
 	}
-	
+
 	.cart-items {
-		margin-top: 10px;	
+		margin-top: 10px;
 	}
-	
+
 	.restaurant-name {
 		margin-left: -321px;
 		left: 50%;
@@ -1717,7 +1717,7 @@ th {
 	font-weight: bold;
 }
 
-@-moz-document url-prefix() { 
+@-moz-document url-prefix() {
 	.cart-item-config {
 		margin-top: -18px !important;
 	}
@@ -1728,11 +1728,11 @@ th {
 	margin-bottom: 10px;
 }
 
-	
+
 @-moz-document url-prefix() {
-    .location-address {
-        width: 609px;
-    }
+	.location-address {
+		width: 609px;
+	}
 }
 
 .field-error {
@@ -1749,4 +1749,8 @@ h1.about-header {
 	font-size: 16px;
 	margin-bottom: 10px;
 	text-decoration: underline;
+}
+
+strong {
+	font-weight: bold;
 }

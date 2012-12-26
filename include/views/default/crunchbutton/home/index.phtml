@@ -6,7 +6,7 @@
 	<? if (c::app()->isBot()) : ?>
 		<div class="home-text">
 			<h2>Order <b>delivery</b> or <b>takeout</b> from <?=$this->restaurant->name?>.</h2>
-			
+
 			<div class="breadcrumb">
 				<div itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
 					<a href="/" itemprop="url">
@@ -29,10 +29,10 @@
 					</a>
 				</div>
 			</div>
-	
+
 		</div>
 	<? endif ; ?>
-	
+
 	<div itemscope itemtype="http://schema.org/restaurant">
 
 		<link itemprop="url" href="/<?=$this->community->permalink?>/<?=$this->restaurant->permalink?>"/>
@@ -49,12 +49,12 @@
 			<meta itemprop="ratingValue" content="5.0">
 			<meta itemprop="reviewCount" content="<?=$this->restaurant->ratingCount()?>">
 		</div>
-	
+
 		<div itemprop="name" class="restaurant-name"><h1><?=$this->restaurant->name?></h1></div>
 		<div class="restaurant-pic-wrapper">
 			<div class="restaurant-pic" style="background: url(<?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>);"></div>
 		</div>
-	
+
 		<div class="main-content-readable">
 			<div class="restaurant-items">
 				<div class="content-item-name content-item-main-name"><h1>Add to your order</h1></div>
@@ -73,11 +73,11 @@
 
 								<? if ($dish->ratingCount()) : ?>
 									<span itemprop="review" itemscope itemtype="http://data-vocabulary.org/Review-aggregate">
-									    <meta itemprop="rating" content="5">
+										<meta itemprop="rating" content="5">
 										<meta itemprop="count" content="<?=$dish->ratingCount()?>">
 									</span>
 								<? endif ; ?>
-								
+
 								<a href="javascript:;" data-id_dish="1">
 									<span class="dish-name" itemprop="name"><?=$dish->name?></span><span class="dish-price">($<span itemprop="price"><?=number_format($dish->price,2)?></span>)</span>
 								</a>
@@ -97,7 +97,7 @@
 			<h1><?=$this->community->name?> Online Food Delivery</h1>
 			<h2>Mobile food delivery</h2>
 			<p>Order delivery or takeout food in <?=$this->community->name?>. Order food on your <b>iPhone</b> or <b>Android</b> phone.</p>
-			
+
 			<div class="breadcrumb">
 				<div itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
 					<a href="/" itemprop="url">
@@ -120,19 +120,23 @@
 	<? endif ; ?>
 
 	<div class="home-tagline">
-		<h1>Order the best food <?=$this->community->prep?> <?=$this->community->name?> with a click</h1>
-		<h2>We've chosen the best food from the best restaurants <?=$this->community->prep?> <?=$this->community->name?>. We save your order, delivery and payment info, so reordering is as easy as the click of a button. Click on a restaurant below to get started.</h2>
+		<h1>Push a button. Get Food.</h1>
+		<h2>
+			- Order the top food <?=$this->community->prep?> <?=$this->community->name?>. With a click. For free. <br />
+			- After you order, everything is saved for future 1 click ordering.
+			<br /><br /> <strong>Choose a restaurant:</strong>
+		</h2>
 	</div>
 	<div class="content-padder-before"></div>
 	<div class="content-padder">
 		<div class="meal-items">
 			<? foreach ($this->community->restaurants() as $restaurant) : ?>
 				<div class="meal-item" data-id_restaurant="<?=$restaurant->id_restaurant?>" data-permalink="<?=$restaurant->permalink?>" itemscope itemtype="http://schema.org/restaurant">
-				
+
 					<link itemprop="url" href="/<?=$this->community->permalink?>/<?=$restaurant->permalink?>"/>
 					<link itemprop="image" href="<?=$restaurant->image() ? $restaurant->publicImagePath().$restaurant->image()->getFileName() : ''?>"/>
 					<link itemprop="photo" href="<?=$restaurant->image() ? $restaurant->publicImagePath().$restaurant->image()->getFileName() : ''?>"/>
-				
+
 					<div class="meal-item-spacer"></div>
 					<div class="meal-item-content">
 						<div class="meal-pic" style="background: url(<?=$restaurant->thumb() ? $restaurant->publicImagePath().$restaurant->thumb()->getFileName() : ''?>);"></div>
@@ -143,7 +147,7 @@
 							<? endif ; ?>
 						</h2>
 						<h3 class="meal-food"><?=$restaurant->short_description ? $restaurant->short_description : ('Top Order: ' . ($restaurant->top()->top_name ? $restaurant->top()->top_name : $restaurant->top()->name))?></h3>
-						
+
 					</div>
 				</div>
 			<? endforeach ; ?>
@@ -162,7 +166,7 @@
 			<p>
 				Order a <b>Wenzel</b>, your favorite <b>Pizza</b>, some General Tso's Chicken, or something else! Customize the toppings one your pizza and have it delivered to your home. Pepperoni, sausage, cheese, sauce, whatever!
 				Don't want pizza? How about other <b>Italian food</b> like pasta, or a sandwich? Build your own sandwich, or order a <b>Wenzel</b>.
-				We also have lots of <b>wings</b>, BBQ wings, spicy wings, hot wings, teriyaki wings. 
+				We also have lots of <b>wings</b>, BBQ wings, spicy wings, hot wings, teriyaki wings.
 				Or how about some appetizers, or deserts?
 				<br /><br />
 				Try our <b>iPhone</b> and <b>Android</b> App for mobile food ordering.
@@ -171,14 +175,14 @@
 				O! Don't forget <b>sushi</b>! Get some sushi delivered online.
 				<b>Mediterranean food</b>! Falafel, soup, hummus, Grape Leaves, and some Baba Ghannoush!
 			</p>
-			
-			<div itemscope itemtype="http://schema.org/localbusiness">		
+
+			<div itemscope itemtype="http://schema.org/localbusiness">
 				<link itemprop="url" href="/"/>
 				<link itemprop="image" href="/assets/images/appicon.png"/>
 				<link itemprop="photo" href="/assets/images/appicon.png"/>
 				<meta itemprop="name" content="Crunchbutton"/>
 			</div>
-			
+
 		</div>
 	<? endif ; ?>
 
