@@ -11,8 +11,11 @@
 var App = {
 	cartHighlightEnabled: false,
 	currentPage: null,
-	slogans: ['Order the best food %s with a click'],
-	tagline: 'We\'ve chosen the best food from the best restaurants %s. We save your order, delivery and payment info, so reordering is as easy as the click of a button. Click on a restaurant below to get started.',
+	slogans: ['Push a button. Get Food.'],
+	tagline: '- Order the top food %s. With a click. For free. <br /> \
+		- After you order, everything is saved for future 1 click ordering. \
+		<br /><br /> <strong>Choose a restaurant:</strong> \
+		',
 	service: '/api/',
 	cached: {},
 	cart: {},
@@ -67,7 +70,7 @@ App.loadCommunity = function(id) {
 	App.cache('Community',id, function() {
 		App.community = this;
 
-		if (!App.community.id_community) {		
+		if (!App.community.id_community) {
 			App.cache('Community','yale', function() {
 				App.community = this;
 				App.loadPage();
@@ -86,7 +89,7 @@ App.loadCommunity = function(id) {
 App.loadHome = function() {
 	App.currentPage = 'home';
 	History.pushState({}, 'Crunchbutton', '/');
-	
+
 	App.loc.lat = 0;
 	App.loc.lon = 0;
 
@@ -145,8 +148,8 @@ App.page.home = function() {
 		'</form>' +
 	'</div>' +
 	'<div class="divider"></div>' +
-	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' + 
-	'<div class="error-location" style="display: none;">' + 
+	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' +
+	'<div class="error-location" style="display: none;">' +
 		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in <span class="loc-your-area">your area</span>. Come back next time you are hungry!</h1></div>' +
 		'<div class="content-item-locations">' +
 			'<h1>Our most popular locations</h1>' +
@@ -170,7 +173,7 @@ App.page.home = function() {
 			'margin-top': '0px',
 			'height': '52px'
 		});
-	}		
+	}
 };
 
 App.page.community = function(id) {
@@ -180,7 +183,7 @@ App.page.community = function(id) {
 
 	App.cache('Community', id, function() {
 		App.community = this;
-		
+
 		App.track('Community page loaded', {community: App.community.name});
 
 		document.title = App.community.name + ' Food Delivery | Order Food from ' + (App.community.name_alt ? App.community.name_alt : 'Local') + ' Restaurants | Crunchbutton';
@@ -191,7 +194,7 @@ App.page.community = function(id) {
 		slogan = slogan.replace('%s', sloganReplace);
 
 		$('.main-content').html(
-			'<div class="home-tagline"><h1>' + slogan + '</h1><h2>' + tagline + '</h2></div>' + 
+			'<div class="home-tagline"><h1>' + slogan + '</h1><h2>' + tagline + '</h2></div>' +
 			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
 		);
 
@@ -217,7 +220,7 @@ App.page.community = function(id) {
 				if (rs[x].delivery != '1') {
 					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
 				} else if (!rs[x].delivery_fee) {
-					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');		
+					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
 				}
 			} else {
 				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
@@ -246,33 +249,33 @@ App.page.restaurant = function(id) {
 		}
 
 		App.restaurant = this;
-		
+
 		App.track('Restaurant page loaded', {restaurant: App.restaurant.name});
 		document.title = App.restaurant.name + ' | ' + App.community.name + ' Food Delivery | Order from ' + (App.community.name_alt ? App.community.name_alt : 'Local') + ' Restaurants | Crunchbutton';
 
 		$('.main-content').html(
 			'<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-item-count"><span></span></div><div class="cart-summary-items"></div></div>' +
-			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' + 
-			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') + 
-			'<div class="main-content-readable">' + 
-				'<div class="restaurant-items"></div>' + 
-				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="your-order-label" style="font-weight: bold; display: none;">(we\'ve chosen the most popular order, but you can order anything you want)</div><div class="divider"></div><div class="delivery-minimum-error">Add $<span class="delivery-min-diff">' + parseFloat(App.restaurant.delivery_min -  App.cart.total()).toFixed(2) + '</span> from menu to meet delivery minimum.</div><div class="cart-items-content"></div></div>' + 
-				'<div class="divider"></div>' + 
-			'</div>' + 
+			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' +
+			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') +
+			'<div class="main-content-readable">' +
+				'<div class="restaurant-items"></div>' +
+				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="your-order-label" style="font-weight: bold; display: none;">(we\'ve chosen the most popular order, but you can order anything you want)</div><div class="divider"></div><div class="delivery-minimum-error">Add $<span class="delivery-min-diff">' + parseFloat(App.restaurant.delivery_min -  App.cart.total()).toFixed(2) + '</span> from menu to meet delivery minimum.</div><div class="cart-items-content"></div></div>' +
+				'<div class="divider"></div>' +
+			'</div>' +
 			'<div class="restaurant-payment-div"></div>'
 		);
 
 		var
 			categories = App.restaurant.categories(),
 			dishes, list;
-			
+
 		$('.restaurant-items').append('<div class="content-item-name content-item-main-name"><h1>Add to your order</h1></div>')
-	
+
 		for (var x in categories) {
 			dishes = categories[x].dishes();
-			
+
 			list = $('<ul class="resturant-dishes resturant-dish-container" date-id_category="' + categories[x].id_category + '"></ul>');
-			
+
 			$('.restaurant-items').append('<div class="restaurant-item-title">' + categories[x].name + (categories[x].loc == '1' ? (' at ' + App.community.name) : '') + '</div>',
 				list
 			);
@@ -282,9 +285,9 @@ App.page.restaurant = function(id) {
 				list.append(dish);
 			}
 		}
-		
+
 		$('.cart-items').append('<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for ' + App.restaurant.name + '</label></div>');
-		
+
 		if (App.cart.hasItems()) {
 			App.cart.reloadOrder();
 		} else if (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) {
@@ -307,7 +310,7 @@ App.page.restaurant = function(id) {
 			if (App.config.user.pay_type == 'card') {
 				paying.append('&nbsp;incl tax<span class="includes-fees"></span> and <span class="delivery-tip-amount">15%</span> tip, by card');
 			} else {
-				paying.append('&nbsp;incl tax<span class="includes-fees"></span>&nbsp;using cash');			
+				paying.append('&nbsp;incl tax<span class="includes-fees"></span>&nbsp;using cash');
 			}
 			dp.append(paying);
 			if (App.config.user.delivery_type == 'delivery' && App.restaurant.delivery == '1') {
@@ -315,11 +318,11 @@ App.page.restaurant = function(id) {
 			} else {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Deliver to:</label> <i>takeout</i></div>');
 			}
-			
+
 			dp.append('<div class="dp-display-address dp-display-item"><a href="javascript:;"><i>Change delivery or payment details</i></a></div>');
 
 			dp.append('<div class="divider"></div>');
-	
+
 			$('.main-content').append(dp);
 			$('.delivery-tip-amount').html(App.order.tip ? App.order.tip + '%' : 'no');
 
@@ -339,23 +342,23 @@ App.drawPay = function(restaurant) {
 	var total = App.cart.total();
 
 	$('.main-content').append(
-		'<form class="payment-form main-content-readable">' + 
-		'<div class="content-item-name"><h1>Your Info</h1></div>' + 
+		'<form class="payment-form main-content-readable">' +
+		'<div class="content-item-name"><h1>Your Info</h1></div>' +
 		'<div class="your-info-label">(enter this once, and we\'ll save it for next time)</div>' +
-		'<div class="delivery-info-container"></div><div class="divider"></div>' + 
-		'<div class="payment-info-container"></div><div class="divider"></div>' + 
+		'<div class="delivery-info-container"></div><div class="divider"></div>' +
+		'<div class="payment-info-container"></div><div class="divider"></div>' +
 		'<div class="payment-total">Your <span class="cash-order-aprox"></span> total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"></span>)</div>' +
-		'</form>' + 
+		'</form>' +
 
 		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
 	);
-	
+
 	var fieldError = (App.community.permalink == 'gw' || App.community.permalink == 'providence') ? '<div class="field-error field-error-zip">Include ZIP code</div>' : '';
 
 	if (restaurant.delivery == '1' && restaurant.takeout == '1') {
-		var deliveryInfo = '<label class="pay-title-label">Delivery Info</label>' + 
+		var deliveryInfo = '<label class="pay-title-label">Delivery Info</label>' +
 			'<div class="input-item toggle-wrapper clearfix">' +
-				'<a href="javascript:;" class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</a> <span class="toggle-spacer delivery-only-text">or</span> <a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>' + 
+				'<a href="javascript:;" class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</a> <span class="toggle-spacer delivery-only-text">or</span> <a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>' +
 			'</div>';
 	} else if (restaurant.delivery == '1') {
 		var deliveryInfo = '<label class="pay-title-label">Delivery Info</label>';
@@ -364,65 +367,65 @@ App.drawPay = function(restaurant) {
 	}
 	$('.delivery-info-container').append(
 
-		'<div class="personal-info field-container">' + 
+		'<div class="personal-info field-container">' +
 			deliveryInfo +
 			'<div class="divider"></div>' +
-			'<label>Name</label>' + 
-			'<div class="input-item"><input type="text" name="pay-name" tabindex="2"></div><div class="divider"></div>' + 
-	
-			'<label>Phone #</label>' + 
-			'<div class="input-item"><input type="tel" name="pay-phone" tabindex="3"></div><div class="divider"></div>' + 
-	
-			'<label class="delivery-only">Deliver to</label>' + 
-			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="4"></textarea></div>' + 
-			fieldError + 
+			'<label>Name</label>' +
+			'<div class="input-item"><input type="text" name="pay-name" tabindex="2"></div><div class="divider"></div>' +
+
+			'<label>Phone #</label>' +
+			'<div class="input-item"><input type="tel" name="pay-phone" tabindex="3"></div><div class="divider"></div>' +
+
+			'<label class="delivery-only">Deliver to</label>' +
+			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="4"></textarea></div>' +
+			fieldError +
 			'<div class="divider"></div>' +
-			
-			'<label>Notes</label>' + 
-			'<div class="input-item"><textarea name="notes" tabindex="5"></textarea></div><div class="divider"></div>' + 
+
+			'<label>Notes</label>' +
+			'<div class="input-item"><textarea name="notes" tabindex="5"></textarea></div><div class="divider"></div>' +
 
 		'</div>'
 	);
 
 	$('.payment-info-container').append(
 
-		'<div class="payment-info field-container">' + 
+		'<div class="payment-info field-container">' +
 
-			'<label class="pay-title-label">Payment Method</label>' + 
+			'<label class="pay-title-label">Payment Method</label>' +
 			'<div class="input-item toggle-wrapper">' +
-				'<a href="javascript:;" class="pay-toggle-credit toggle-item"><span>card</span></a> <span class="toggle-spacer">or</span>  <a href="javascript:;" class="pay-toggle-cash toggle-item"><span>cash</span></a>' + 
-			'</div><div class="divider"></div>' + 
+				'<a href="javascript:;" class="pay-toggle-credit toggle-item"><span>card</span></a> <span class="toggle-spacer">or</span>  <a href="javascript:;" class="pay-toggle-cash toggle-item"><span>cash</span></a>' +
+			'</div><div class="divider"></div>' +
 
-			'<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>' + 
+			'<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>' +
 				'<div class="card-icons">' +
-					'<img src="/assets/images/payment/Visa-40.png" alt="visa">' + 
-					'<img src="/assets/images/payment/Mastercard-40.png" alt="master card">' + 
-					'<img src="/assets/images/payment/Amex-40.png" alt="american express">' + 
-					'<img src="/assets/images/payment/Discover-40.png" alt="discover card">' + 
-				'</div>' + 
-			'</div>' + 
+					'<img src="/assets/images/payment/Visa-40.png" alt="visa">' +
+					'<img src="/assets/images/payment/Mastercard-40.png" alt="master card">' +
+					'<img src="/assets/images/payment/Amex-40.png" alt="american express">' +
+					'<img src="/assets/images/payment/Discover-40.png" alt="discover card">' +
+				'</div>' +
+			'</div>' +
 
-			'<label class="card-only">Credit card #</label>' + 
-			'<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6"></div><div class="divider"></div>' + 
+			'<label class="card-only">Credit card #</label>' +
+			'<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6"></div><div class="divider"></div>' +
 
-			'<label class="card-only">Expiration</label>' + 
-			'<div class="input-item card-only">' + 
-				'<select name="pay-card-month" tabindex="7"><option>Month</option></select>' + 
-				'<select name="pay-card-year" tabindex="8"><option>Year</option></select><div class="divider"></div>' + 
-			'</div>' + 
+			'<label class="card-only">Expiration</label>' +
+			'<div class="input-item card-only">' +
+				'<select name="pay-card-month" tabindex="7"><option>Month</option></select>' +
+				'<select name="pay-card-year" tabindex="8"><option>Year</option></select><div class="divider"></div>' +
+			'</div>' +
 
-			'<div class="divider"></div><label class="card-only">Tip</label>' + 
-			'<div class="input-item card-only">' + 
-				'<select name="pay-tip" tabindex="9"></select>' + 
-				'<div class="divider"></div>' + 
-			'</div>' + 
+			'<div class="divider"></div><label class="card-only">Tip</label>' +
+			'<div class="input-item card-only">' +
+				'<select name="pay-tip" tabindex="9"></select>' +
+				'<div class="divider"></div>' +
+			'</div>' +
 		'</div>'
 	);
 
 	var tips = [0,5,10,15,20,25];
 	for (var x in tips) {
 		$('[name="pay-tip"]').append('<option value="' + tips[x] + '">' + tips[x] + '%</option>');
-	}	
+	}
 	for (var x=1; x<=12; x++) {
 		$('[name="pay-card-month"]').append('<option>' + x + '</option>');
 	}
@@ -430,7 +433,7 @@ App.drawPay = function(restaurant) {
 	for (var x=date; x<=date+20; x++) {
 		$('[name="pay-card-year"]').append('<option>' + x + '</option>');
 	}
-	
+
 	if (App.order['pay_type'] == 'cash') {
 		App.trigger.cash();
 	} else {
@@ -449,14 +452,14 @@ App.drawPay = function(restaurant) {
 	$('[name="pay-card-number"]').val(App.config.user.card);
 	$('[name="pay-card-month"]').val(App.config.user.card_exp_month);
 	$('[name="pay-card-year"]').val(App.config.user.card_exp_year);
-	
+
 	if (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) {
 		try {
 			console.log(App.config.user.presets[App.restaurant.id_restaurant]);
 			$('[name="notes"]').val(App.config.user.presets[App.restaurant.id_restaurant].notes);
 		} catch (e) {}
 	}
-	
+
 	if (!App.config.user.id_user) {
 		App.config.user.address = App.loc.enteredLoc;
 		App.loc.enteredLoc = '';
@@ -493,7 +496,7 @@ App.page.order = function(id) {
 			'<div class="order-info content-padder main-content-readable"></div>'
 		);
 		$('.order-info').html(
-			'<span class="order-thanks-message">'+ message +'</span>' + 
+			'<span class="order-thanks-message">'+ message +'</span>' +
 			'<br /><br />'
 		);
 
@@ -502,11 +505,11 @@ App.page.order = function(id) {
 		} else {
 			$('.order-info').append('<b>Takeout order</b><br /><br />');
 		}
-		
+
 		$('.order-info').append('<b>Your phone #:</b><br />' + this.phone + '<br /><br />');
-		
+
 		$('.order-info').append('<b>Your order:</b>' + order._message + '<br /><br />');
-		
+
 		if (order.notes) {
 			$('.order-info').append('<i>' + order.notes + '<br /><br />');
 		}
@@ -516,12 +519,12 @@ App.page.order = function(id) {
 		} else {
 			$('.order-info').append('<b>Your approximate total</b>:<br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
 		}
-		
+
 		App.cache('Restaurant',order.id_restaurant, function() {
 			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
 			$('.order-info').append('To reach Crunchbutton, send a text to (646) 783-1444<br />or call <b>(800) 242-1444</b><br /><br />');
 			$('.order-info').append('We\'ve saved your order for easy 1 click ordering next time!<br /><br />');
-			
+
 		});
 
 	});
@@ -547,12 +550,12 @@ App.page.orders = function() {
 	$.getJSON('/api/user/orders',function(json) {
 
 		$('.main-content').html(
-			'<div class="main-content-readable">' + 
-				'<div class="restaurant-item-title">order history</div>' + 
+			'<div class="main-content-readable">' +
+				'<div class="restaurant-item-title">order history</div>' +
 				'<ul class="resturant-dishes resturant-dish-container your-orders"></ul>' +
 			'</div>'
 		);
-		
+
 		var count = 0, restaurants = {};
 		var orders = '';
 		for (var x in json) {
@@ -591,7 +594,7 @@ App.loadPage = function() {
 	var
 		url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/'),
 		path = url.split('/');
-		
+
 	if (!path[path.length-1]) {
 		delete path[path.length-1];
 	}
@@ -618,15 +621,15 @@ App.loadPage = function() {
 		case /^legal/i.test(url):
 			App.page.legal();
 			break;
-			
+
 		case /^help/i.test(url):
 			App.page.help();
 			break;
-			
+
 		case /^orders/i.test(url):
 			App.page.orders();
 			break;
-			
+
 		case /^order/i.test(url):
 			App.page.order();
 			break;
@@ -650,23 +653,23 @@ App.loadPage = function() {
 		case /^order\//i.test(url):
 			App.page.order(path[1]);
 			break;
-			
+
 		case /^legal/i.test(url):
 			App.page.legal();
 			break;
-			
+
 		case /^help/i.test(url):
 			App.page.help();
 			break;
-			
+
 		case /^orders/i.test(url):
 			App.page.orders();
 			break;
-			
+
 		case restaurantRegex.test(url):
 			App.page.restaurant(path[1]);
 			break;
-			
+
 		case communityRegex.test(url):
 		default:
 			$('.nav-back').removeClass('nav-back-show');
@@ -741,7 +744,7 @@ App.cart = {
 			id = App.cart.uuid(),
 			opt = App.cached['Dish'][item].options(),
 			options = [];
-			
+
 		if (arguments[1]) {
 			options = arguments[1].options;
 		} else {
@@ -771,9 +774,9 @@ App.cart = {
 		$('.cart-items-content').append(el);
 		//el.fadeIn();
 		el.show();
-		
+
 		App.cart.updateTotal();
-		
+
 		App.track('Dish added');
 	},
 	clone: function(item) {
@@ -788,13 +791,13 @@ App.cart = {
 		App.cart.add(cart.id, {
 			options: newoptions
 		});
-		
+
 		App.track('Dish cloned');
 	},
 	remove: function(item) {
 		var
 			cart = item.attr('data-cart_id');
-			
+
 		App.track('Dish removed');
 
 		delete App.cart.items[cart];
@@ -827,7 +830,7 @@ App.cart = {
 		$('.cart-summary-item-count span').html(totalItems);
 
 		$('.cart-total').html(totalText);
-		
+
 		if (App.order['pay_type'] == 'card') {
 			tipText = hasFees ? ', tip and fees' : ' and tip';
 			feesText = hasFees ? ', fees' : '';
@@ -837,17 +840,17 @@ App.cart = {
 			feesText = hasFees ? ' and fees' : '';
 			$('.cash-order-aprox').html('approximate');
 		}
-		
+
 		if (App.cartHighlightEnabled && $('.cart-summary').css('display') != 'none') {
 			$('.cart-summary').removeClass('cart-summary-detail');
 			$('.cart-summary').effect('highlight', {}, 500, function() {
 				$('.cart-summary').addClass('cart-summary-detail');
 			});
 		}
-		
+
 		$('.includes-tip').html(tipText);
 		$('.includes-fees').html(feesText);
-		
+
 		if ($('.cart-total').html() == totalText) {
 			//return;
 		}
@@ -855,7 +858,7 @@ App.cart = {
 		if (!totalItems) {
 			$('.default-order-check').hide();
 		} else {
-			$('.default-order-check').show();		
+			$('.default-order-check').show();
 		}
 
 		var
@@ -882,7 +885,7 @@ App.cart = {
 		}
 
 		$('.cart-summary-items').html(text.substr(0,text.length-13));
-		
+
 		$('.cart-item-customize-price').each(function() {
 			var dish = $(this).closest('.cart-item-customize').attr('data-id_cart_item'),
 				option = $(this).closest('.cart-item-customize-item').attr('data-id_option'),
@@ -892,7 +895,7 @@ App.cart = {
 
 			$(this).html(App.cart.customizeItemPrice(price));
 		});
-		
+
 	},
 	customizeItemPrice: function(price) {
 		return price != '0.00' ? '&nbsp;($' + price + ')' : '';
@@ -910,7 +913,7 @@ App.cart = {
 				cartitem = App.cart.items[cart],
 				obj = App.cached['Dish'][cartitem.id],
 				opt = obj.options();
-	
+
 			for (var x in opt) {
 				if (opt[x].id_option_parent) {
 					continue;
@@ -919,7 +922,7 @@ App.cart = {
 
 					var price = opt[x].optionPrice(cartitem.options);
 					var check = $('<input type="checkbox" class="cart-customize-check">');
-	
+
 					if ($.inArray(opt[x].id_option, cartitem.options) !== -1) {
 						check.attr('checked','checked');
 					}
@@ -947,11 +950,11 @@ App.cart = {
 						.append(select);
 
 					el.append(option);
-					
+
 				}
 			}
 		}
-		
+
 		App.track('Dish customized');
 	},
 	customizeItem: function(item) {
@@ -967,7 +970,7 @@ App.cart = {
 
 				var obj = App.cached['Dish'][cartitem.id],
 					opts = obj.options();
-	
+
 				for (var i in opts) {
 					if (opts[i].id_option_parent != opt) {
 						continue;
@@ -999,7 +1002,7 @@ App.cart = {
 		console.log(cartitem.options);
 
 		App.cart.updateTotal();
-			
+
 	},
 	getCart: function() {
 		var cart = [];
@@ -1036,7 +1039,7 @@ App.cart = {
 			lat: App.loc.lat,
 			lon: App.loc.lon
 		};
-		
+
 		if (order.pay_type == 'card') {
 			order.tip = App.order.tip ? App.order.tip : '15';
 		}
@@ -1058,9 +1061,9 @@ App.cart = {
 		}
 
 		console.log('ORDER:',order);
-		
+
 		var errors = {};
-		
+
 		if (!order.name) {
 			errors['name'] = 'Please enter your name.';
 		}
@@ -1099,9 +1102,9 @@ App.cart = {
 			dataType: 'json',
 			type: 'POST',
 			complete: function(json) {
-				
+
 				json = $.parseJSON(json.responseText);
-				
+
 				if (json.status == 'false') {
 					var error = '';
 					for (x in json.errors) {
@@ -1114,12 +1117,12 @@ App.cart = {
 					if (json.token) {
 						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
 					}
-					
+
 					$('.link-orders').show();
 
 					order.cardChanged = false;
 					App.justCompleted = true;
-					
+
 					var totalItems = 0;
 
 					for (var x in App.cart.items) {
@@ -1176,11 +1179,11 @@ App.cart = {
 		if (App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') {
 			feeTotal += parseFloat(App.restaurant.delivery_fee);
 		}
-		
+
 		if (App.restaurant.fee_customer) {
 			feeTotal += (feeTotal * (parseFloat(App.restaurant.fee_customer)/100));
 		}
-		
+
 		var final = feeTotal + (feeTotal * (App.restaurant.tax/100));
 
 		if (App.order['pay_type'] == 'card') {
@@ -1240,7 +1243,7 @@ App.busy = {
 		//el.addClass('button-bottom-disabled');
 		var busy = $('<div class="app-busy"></div>')
 				.append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>'))
-				
+
 
 		$('body').append(busy);
 	},
@@ -1256,11 +1259,11 @@ App.test = {
 		$('[name="pay-card-number"]').val('4242424242424242');
 		$('[name="pay-card-month"]').val('1');
 		$('[name="pay-card-year"]').val('2020');
-		
+
 		$('[name="pay-name"]').val('MR TEST');
 		$('[name="pay-phone"]').val('***REMOVED***');
 		$('[name="pay-address"]').val("123 main\nsanta monica ca");
-		
+
 		App.order.cardChanged = true;
 	},
 	logout: function() {
@@ -1294,9 +1297,9 @@ App.loc = {
 
 		var dLon = (params.to.lon - params.from.lon).toRad();
 		var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-			Math.cos(params.from.lat.toRad()) * Math.cos(params.to.lat.toRad()) * 
-			Math.sin(dLon/2) * Math.sin(dLon/2); 
-		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+			Math.cos(params.from.lat.toRad()) * Math.cos(params.to.lat.toRad()) *
+			Math.sin(dLon/2) * Math.sin(dLon/2);
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 		var d = R * c; // Distance in km
 
 		return d;
@@ -1373,14 +1376,14 @@ App.loc = {
 			}
 		}
 		$('.loc-your-area').html(App.loc.reverseGeocodeCity || 'your area');
-		
+
 	},
 	preProcess: function() {
 		if (google.loader.ClientLocation) {
 			if (!$.cookie('location_lat')) {
 				App.loc.lat = google.loader.ClientLocation.latitude;
 				App.loc.lon = google.loader.ClientLocation.longitude;
-				
+
 				if (google.loader.ClientLocation.address.country_code == 'US' && google.loader.ClientLocation.address.region) {
 					App.loc.setFormattedLoc(null, google.loader.ClientLocation.address.city + ', ' + google.loader.ClientLocation.address.region.toUpperCase());
 				} else {
@@ -1396,7 +1399,7 @@ App.loc = {
 			if ($.cookie('location_lat')) {
 				App.loc.lat = parseFloat($.cookie('location_lat'));
 				App.loc.lon = parseFloat($.cookie('location_lon'));
-			
+
 			} else if (App.config.user.location_lat) {
 				App.loc.lat = parseFloat(App.config.user.location_lat);
 				App.loc.lon = parseFloat(App.config.user.location_lon);
@@ -1404,7 +1407,7 @@ App.loc = {
 
 			if (App.loc.lat) {
 				closest = App.loc.getClosest();
-				
+
 				if (closest) {
 					if (closest.distance < 25) {
 						did = true;
@@ -1416,7 +1419,7 @@ App.loc = {
 				}
 			}
 		}
-		
+
 		if (!did && !App.forceHome && navigator.geolocation) {
 			var complete = function() {
 				$('.button-letseat-form').click();
@@ -1424,7 +1427,7 @@ App.loc = {
 			navigator.geolocation.getCurrentPosition(function(position){
 				App.loc.lat = position.coords.latitude;
 				App.loc.lon = position.coords.longitude;
-				
+
 				App.track('Locations Shared', {
 					lat: App.loc.lat,
 					lon: App.loc.lon
@@ -1433,7 +1436,7 @@ App.loc = {
 				complete();
 			}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
 		}
-		
+
 		if (!did) {
 			App.forceHome = false;
 			App.page.home();
@@ -1443,7 +1446,7 @@ App.loc = {
 	geocode: function(complete) {
 		var geocoder = new google.maps.Geocoder();
 		var forceLoc = null;
-		
+
 		App.track('Location Entered', {
 			address: $('.location-address').val().toLowerCase()
 		});
@@ -1508,7 +1511,7 @@ App.loc = {
 		});
 	},
 	reverseGeocode: function(complete) {
-	
+
 		App.track('Location Reverse Geocode', {
 			lat: App.loc.lat,
 			lon: App.loc.lon
@@ -1537,7 +1540,7 @@ App.loc = {
 				setTimeout(function() {
 					App.loc.reverseGeocodeResults = null;
 				}, 1000 * 60 * 2);
-			
+
 			} else {
 				$('.location-address').val('Oh no! We couldn\'t locate you');
 				$('.location-detect-loader').hide();
@@ -1597,7 +1600,7 @@ $(function() {
 					$.cookie('community', closest.permalink, { expires: new Date(3000,01,01), path: '/'});
 					$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
 					$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
-					
+
 					App.track('Location Success', {
 						lat: App.loc.lat,
 						lon: App.loc.lon,
@@ -1609,7 +1612,7 @@ $(function() {
 					$('.enter-location, .button-letseat-form').fadeOut(100, function() {
 						$('.error-location').fadeIn();
 					});
-					
+
 					App.track('Location Error', {
 						lat: App.loc.lat,
 						lon: App.loc.lon,
@@ -1635,26 +1638,26 @@ $(function() {
 		App.trigger.delivery();
 		App.track('Switch to delivery');
 	});
-	
+
 	$('.delivery-toggle-takeout').live('click',function() {
 		App.trigger.takeout();
 		App.track('Switch to takeout');
 	});
-	
+
 	$('.pay-toggle-credit').live('click',function() {
 		App.trigger.credit();
 		App.track('Switch to card');
 	});
-	
+
 	$('.pay-toggle-cash').live('click',function() {
 		App.trigger.cash();
 		App.track('Switch to cash');
 	});
-	
+
 	$('.location-detect').live('click', function() {
 		App.loc.getLocation();
 	});
-	
+
 	$('.location-detect').live({
 		mousedown: function() {
 			$(this).addClass('location-detect-click');
@@ -1671,7 +1674,7 @@ $(function() {
 	});
 
 	$('.meal-item-content').live({
-		mousedown: function() {		
+		mousedown: function() {
 			if (App.busy.isBusy()) {
 				return;
 			}
@@ -1690,8 +1693,8 @@ $(function() {
 				} else if (c) {
 					App.cache('Community',c, function() {
 						App.community = this;
-				
-						if (App.community.id_community) {		
+
+						if (App.community.id_community) {
 							History.pushState({},c,c);
 						}
 					});
@@ -1721,7 +1724,7 @@ $(function() {
 			if (App.busy.isBusy()) {
 				return;
 			}
-			
+
 			var maxDistance = 10;
 			var r = $(this).closest('.meal-item').attr('data-permalink');
 			var c = $(this).closest('.meal-item').attr('data-permalink-community');
@@ -1737,7 +1740,7 @@ $(function() {
 			$(this).removeClass('meal-item-down');
 		}
 	});
-	
+
 	$('.resturant-dish-container a').live('click',function() {
 		if ($(this).attr('data-id_dish')) {
 			App.cart.add($(this).attr('data-id_dish'));
@@ -1746,37 +1749,37 @@ $(function() {
 			return;
 		}
 	});
-	
+
 	$('.your-orders a').live('click',function() {
 		if ($(this).attr('data-id_order')) {
 			History.pushState({},'Crunchbutton - Your Order', '/order/' + $(this).attr('data-id_order'));
 		}
 	});
-	
+
 	$('.cart-button-remove').live('click',function() {
 		App.cart.remove($(this).closest('.cart-item'));
 	});
-	
+
 	$('.cart-button-add').live('click',function() {
 		App.cart.clone($(this).closest('.cart-item'));
 	});
-	
+
 	$('.cart-item-config a').live('click',function() {
 		App.cart.customize($(this).closest('.cart-item'));
 	});
-	
+
 	$('.button-submitorder').live('click',function() {
 		App.cart.submit($(this));
 	});
 	$('.button-submitorder-form').live('click',function() {
 		App.cart.submit($(this),true);
 	});
-	
+
 	$('.button-deliver-payment, .dp-display-item a').live('click',function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();
 	});
-	
+
 	$('.button-bottom').live({
 		mousedown: function() {
 			$(this).addClass('button-bottom-click');
@@ -1793,21 +1796,21 @@ $(function() {
 			$(this).removeClass('button-bottom-click');
 		}
 	});
-	
+
 	$('.cart-customize-check, .cart-customize-select').live('change',function() {
 		App.cart.customizeItem($(this));
 	});
-	
+
 	$('.cart-item-customize-item label').live('click', function() {
 		$(this).prev('input').click();
 	});
-	
+
 	$('[name="pay-tip"]').live('change',function() {
 		App.order.tip = $(this).val();
 		var total = App.cart.total();
 		App.cart.updateTotal();
 	});
-	
+
 	$('.nav-back').live('click',function() {
 		History.back();
 		return;
@@ -1830,7 +1833,7 @@ $(function() {
 				break;
 		}
 	});
-	
+
 	$('.link-home').live('click',function() {
 		if (App.lastCommunity) {
 			History.pushState({}, 'Crunchbutton', '/' + App.lastCommunity);
@@ -1844,15 +1847,15 @@ $(function() {
 	$('[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]').live('change', function() {
 		App.order.cardChanged = true;
 	});
-	
+
 	$('.link-help').live('click',function(e) {
 		History.pushState({}, 'Crunchbutton - Legal', '/help');
 	});
-	
+
 	$('.link-legal').live('click',function() {
 		History.pushState({}, 'Crunchbutton - Legal', '/legal');
 	});
-	
+
 	$('.link-orders').live('click',function() {
 		History.pushState({}, 'Crunchbutton - Orders', '/orders');
 	});
@@ -1877,7 +1880,7 @@ $(function() {
 	$('.cart-summary').live('click', function() {
 		$('body').scrollTop($('.cart-items').position().top-80);
 	});
-	
+
 	var unHideBars = function() {
 		$('[data-position="fixed"]').show();
 	}
@@ -1895,30 +1898,30 @@ $(function() {
 		clearTimeout(App.unHideBars);
 		setTimeout(unHideBars, 100);
 	});
-	
+
 	var checkForDistance = function() {
 		if (App.order['delivery_type'] == 'takeout') {
 			return;
 		}
-				
+
 	};
-	
+
 	$('[name="pay-address"]').live('blur', function() {
 		clearTimeout(App.checkForDistance);
 		App.checkForDistance = setTimeout(checkForDistance, 100);
 	});
-	
+
 	$('[name="pay-address"]').live('change', function() {
 		clearTimeout(App.checkForDistance);
 		App.checkForDistance = setTimeout(checkForDistance, 1000);
 	});
-	
+
 	$('.config-icon').live('click', function() {
 		App.forceHome = true;
 		App.loadHome();
 		$('input').blur();
 	});
-	
+
 	$('[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]').live('change', function() {
 		App.config.user.name = $('[name="pay-name"]').val();
 		App.config.user.phone = App.phone.format($('[name="pay-phone"]').val());
@@ -1928,7 +1931,7 @@ $(function() {
 		App.config.user.card_exp_month = $('[name="pay-card-month"]').val();
 		App.config.user.card_exp_year = $('[name="pay-card-year"]').val();
 	});
-	
+
 });
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
