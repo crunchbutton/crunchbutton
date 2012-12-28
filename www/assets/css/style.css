@@ -754,8 +754,7 @@ html[xmlns] .clearfix {
 	margin-left: 20px;
 }
 
-@media only screen
-and (max-width : 1023px) {
+@media only screen and (max-width : 1023px) {
 	.home-tagline, .home-welcome {
 		text-align: center;
 	}
@@ -858,13 +857,7 @@ and (max-width : 1023px) {
 }
 
 
-/*
-@media only screen
-and (min-device-width : 320px)
-and (max-device-width : 480px) {
-*/
-@media only screen
-and (max-width : 769px) {
+@media only screen and (max-width : 769px) {
 	.logo-img {
 		margin-left: -149px;
 		position: absolute;
@@ -1379,9 +1372,7 @@ and (max-width : 769px) {
 
 
 
-@media only screen
-and (min-width : 633px)
-and (max-width : 769px) {
+@media only screen and (min-width : 633px) and (max-width : 769px) {
 	.meal-item:nth-child(2n+1) {
 		margin-right: 12px;
 	}
@@ -1390,8 +1381,7 @@ and (max-width : 769px) {
 
 
 
-@media only screen
-and (min-width : 770px) {
+@media only screen and (min-width : 770px) {
 	.location-address {
 		width: 609px;
 	}
@@ -1593,8 +1583,7 @@ and (min-width : 770px) {
 
 
 
-@media only screen
-and (min-width : 1024px) {
+@media only screen and (min-width : 1024px) {
 	.restaurant-pic-wrapper {
 		display: none;
 	}
@@ -1654,9 +1643,7 @@ and (min-width : 1024px) {
 	}
 }
 
-@media only screen
-and (min-width : 770px)
-and (max-width : 1023px) {
+@media only screen and (min-width : 770px) and (max-width : 1023px) {
 	.content {
 		width: 670px;
 	}
