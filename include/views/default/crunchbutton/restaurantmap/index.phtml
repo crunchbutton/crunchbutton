@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Crunchbutton Restaurant Map</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<meta charset="utf-8">
+		<style>
+			html, body {
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				font: 12px Helvetica, sans-serif;
+			}
+			
+			#map_canvas {
+				height: 100%;
+			}
+			
+			h2 {
+				padding: 0;
+				margin: 0;
+			}
+			
+			@media print {
+				html, body {
+					height: auto;
+				}
+			
+				#map_canvas {
+					height: 650px;
+				}
+			}
+		</style>
+		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+		<script>
+			function initialize() {
+
+				var settings = {
+					<? if (!$this->community) : ?>
+						zoom: 4,
+						center: new google.maps.LatLng(39.0997, -94.5783),
+					<? else : ?>
+						zoom: 12,
+						center: new google.maps.LatLng(<?=$this->community->loc_lat?>, <?=$this->community->loc_lon?>),
+					<? endif; ?>
+					mapTypeControl: false,
+					streetViewControl: false,
+					mapTypeControlOptions: {
+						style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+					},
+					navigationControl: true,
+					navigationControlOptions: {
+						style: google.maps.NavigationControlStyle.SMALL
+					},
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+
+				var map = new google.maps.Map(document.getElementById('map_canvas'), settings);
+				var windows = [];
+				
+				<? foreach (Community::all() as $community) : ?>
+
+					var myCircle = new google.maps.Circle({
+						center: new google.maps.LatLng(<?=$community->loc_lat?>,<?=$community->loc_lon?>),
+						radius: 1609 * 5,
+						map: map
+					});
+
+				<? endforeach ; ?>
+				
+				<? foreach ($this->restaurants as $restaurant) : ?>
+					var point<?=$restaurant->id_restaurant?> = new google.maps.LatLng(<?=$restaurant->loc_lat?>,<?=$restaurant->loc_long?>);
+					var marker<?=$restaurant->id_restaurant?> = new google.maps.Marker({
+						draggable: true,
+						raiseOnDrag: false,
+						map: map,
+						position: point<?=$restaurant->id_restaurant?>,
+						title: "<?=$restaurant->name?>",
+					});
+
+					var contentString<?=$restaurant->id_restaurant?> = '<div style="width: 200px;">'
+						+ "<h2><b><?=$restaurant->name?></b></h2>"
+						+ "<p style='margin-top: 7px;'><?=str_replace("\n",'<br>',$restaurant->address)?></p>"
+						+ '</div>';
+					var infowindow<?=$restaurant->id_restaurant?> = new google.maps.InfoWindow({
+						content: contentString<?=$restaurant->id_restaurant?>
+					});
+					windows[windows.length] = infowindow<?=$restaurant->id_restaurant?>;
+					google.maps.event.addListener(marker<?=$restaurant->id_restaurant?>, 'click', function() {
+						for (var x in windows) {
+							windows[x].close();
+						}
+						infowindow<?=$restaurant->id_restaurant?>.open(map,marker<?=$restaurant->id_restaurant?>);
+					});
+
+				<? endforeach; ?>
+
+			}
+			google.maps.event.addDomListener(window, 'load', initialize);
+		</script>
+	</head>
+	<body>
+		<div id="map_canvas"></div>
+	</body>
+</html>
