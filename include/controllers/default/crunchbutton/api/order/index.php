@@ -4,10 +4,11 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		$order = Order::uuid(c::getPagePiece(2));
+		/* @var $order Crunchbutton_Order */
 		if (!$order->id_order) {
 			$order = Order::o(c::getPagePiece(2));
 		}
-		
+
 		$pauseRepeat =
 			'<Pause length="1" />'
 			.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat the order. Press 2 to confirm the order. '.($order->delivery_type == 'delivery' ? 'Press 3 to spell out the street name.' : '').'</Say>';
@@ -22,8 +23,8 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'say':
-			    header('Content-type: text/xml');
-			    $message = '<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
+				header('Content-type: text/xml');
+				$message = '<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
 						.'<Pause length="5" />';
 
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
@@ -37,7 +38,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				exit;
 
 				break;
-				
+
 			case 'sayorder':
 				$log = new Notification_Log;
 				$log->id_notification = $_REQUEST['id_notification'];
@@ -49,7 +50,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				$log->date = date('Y-m-d H:i:s');
 				$log->save();
 
-			    header('Content-type: text/xml');
+				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
 					.'<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 					.'<Say voice="'.c::config()->twilio->voice.'">Thank you. At the end of the message, you must confirm the order.</Say>'
@@ -64,11 +65,11 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					.'</Response>';
 				exit;
 				break;
-				
+
 			case 'sayorderonly':
-			    header('Content-type: text/xml');
+				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";
-				
+
 				switch ($this->request()['Digits']) {
 					case '1':
 					default:
@@ -98,7 +99,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						for ($x = 0; $x <= $repeat; $x++) {
 							echo $pauseRepeat;
 						}
-						
+
 						echo '</Gather>';
 						break;
 
@@ -106,16 +107,16 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				echo '</Response>';
 				exit;
 				break;
-				
+
 			case 'doconfirm':
-			    header('Content-type: text/xml');
+				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 					.'<Response>';
 
 				switch ($this->request()['Digits']) {
 					case '1':
 						Log::debug([
-							'order' => $order->id_order, 
+							'order' => $order->id_order,
 							'action' => 'CONFIRMED',
 							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
@@ -130,7 +131,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 					case '2':
 						Log::debug([
-							'order' => $order->id_order, 
+							'order' => $order->id_order,
 							'action' => 'RESEND',
 							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
@@ -152,15 +153,15 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					case '8':
 					case '9':
 					case '#':
-					case '*':					
+					case '*':
 						echo '<Gather action="/api/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="12" method="get">'
 							.'<Say voice="'.c::config()->twilio->voice.'" loop="3">Please press 1 to confirm that you just received order number '.$order->id_order.'. Or press 2 and we will resend the order. . . .</Say>'
 							.'</Gather>';
 						break;
 				}
-				
+
 				echo '</Response>';
-				
+
 				exit;
 				break;
 		}

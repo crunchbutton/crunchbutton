@@ -1849,7 +1849,7 @@ $(function() {
 	});
 
 	$('.link-help').live('click',function(e) {
-		History.pushState({}, 'Crunchbutton - Legal', '/help');
+		History.pushState({}, 'Crunchbutton - About', '/help');
 	});
 
 	$('.link-legal').live('click',function() {
