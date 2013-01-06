@@ -106,6 +106,9 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 
 			case 'get':
 				$out = Restaurant::o(c::getPagePiece(2));
+				if (!$out->id_restaurant) {
+					$out = Restaurant::permalink(c::getPagePiece(2));
+				}
 				if ($out->id_restaurant) {
 					echo $out->json();
 				} else {
