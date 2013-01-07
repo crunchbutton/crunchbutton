@@ -85,7 +85,6 @@ App.loadCommunity = function(id) {
 	});
 };
 
-
 App.loadHome = function() {
 	App.currentPage = 'home';
 	History.pushState({}, 'Crunchbutton', '/');
@@ -733,12 +732,15 @@ App.track = function() {
 
 App.cart = {
 	uuidInc: 0,
-	items: {},
+
+	items:   {},
+
 	uuid: function() {
 		var id = 'c-' + App.cart.uuidInc;
 		App.cart.uuidInc++;
 		return id;
 	},
+
 	add: function(item) {
 		var
 			id = App.cart.uuid(),
@@ -779,6 +781,7 @@ App.cart = {
 
 		App.track('Dish added');
 	},
+
 	clone: function(item) {
 		var
 			cartid = item.attr('data-cart_id'),
@@ -794,6 +797,7 @@ App.cart = {
 
 		App.track('Dish cloned');
 	},
+
 	remove: function(item) {
 		var
 			cart = item.attr('data-cart_id');
@@ -807,13 +811,14 @@ App.cart = {
 
 		App.cart.updateTotal();
 	},
+
 	updateTotal: function() {
 		var
-			totalText = '$' + App.cart.total(),
-			tipText = '',
-			feesText = '',
+			totalText  = '$' + App.cart.total(),
+			tipText    = '',
+			feesText   = '',
 			totalItems = 0,
-			hasFees = ((App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') || App.restaurant.fee_customer) ? true : false;
+			hasFees    = ((App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') || App.restaurant.fee_customer) ? true : false;
 
 		for (var x in App.cart.items) {
 			totalItems++;
@@ -897,9 +902,11 @@ App.cart = {
 		});
 
 	},
+
 	customizeItemPrice: function(price) {
 		return price != '0.00' ? '&nbsp;($' + price + ')' : '';
 	},
+
 	customize: function(item) {
 		var
 			cart = item.attr('data-cart_id'),
@@ -957,6 +964,7 @@ App.cart = {
 
 		App.track('Dish customized');
 	},
+
 	customizeItem: function(item) {
 
 		var
@@ -1004,6 +1012,7 @@ App.cart = {
 		App.cart.updateTotal();
 
 	},
+
 	getCart: function() {
 		var cart = [];
 		for (x in App.cart.items) {
@@ -1011,6 +1020,7 @@ App.cart = {
 		}
 		return cart;
 	},
+
 	submit: function(el) {
 		if (App.busy.isBusy()) {
 			return;
@@ -1149,6 +1159,7 @@ App.cart = {
 			}
 		});
 	},
+
 	subtotal: function() {
 		var
 			total = 0,
@@ -1165,43 +1176,97 @@ App.cart = {
 
 		return total;
 	},
+
+	/**
+	 * delivery cost
+	 *
+	 * @return float
+	 */
+	_breackDownDelivery: function() {
+		var delivery = 0;
+		if (App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') {
+			delivery = parseFloat(App.restaurant.delivery_fee);
+		}
+		return delivery;
+	},
+
+	/**
+	 * Crunchbutton service
+	 *
+	 * @return float
+	 */
+	_breackDownFee: function(feeTotal) {
+		var fee = 0;
+		if (App.restaurant.fee_customer) {
+			fee = (feeTotal * (parseFloat(App.restaurant.fee_customer)/100));
+		}
+		return fee;
+	},
+
+	_breackDownTaxes: function(feeTotal) {
+		var taxes = (feeTotal * (App.restaurant.tax/100));
+		return taxes;
+	},
+
+	_breakDownTip: function(total) {
+		var tip = 0;
+		if (App.order['pay_type'] == 'card') {
+			tip = (total * (App.order.tip/100));
+		}
+		return tip;
+	},
+
 	total: function() {
 		var
 			total = 0,
 			dish,
 			options,
-			feeTotal = 0,
-			totalItems = 0;
-
-		total = App.cart.subtotal();
-		feeTotal = total;
-
-		if (App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') {
-			feeTotal += parseFloat(App.restaurant.delivery_fee);
-		}
-
-		if (App.restaurant.fee_customer) {
-			feeTotal += (feeTotal * (parseFloat(App.restaurant.fee_customer)/100));
-		}
-
-		var final = feeTotal + (feeTotal * (App.restaurant.tax/100));
-
-		if (App.order['pay_type'] == 'card') {
-			final += (total * (App.order.tip/100));
-		}
-
-		//return final.toFixed(2);
-		return App.ceil(final).toFixed(2);
+			feeTotal    = 0,
+			totalItems  = 0,
+			finalAmount = 0
+		;
+		total        = App.cart.subtotal();
+		feeTotal     = total;
+		feeTotal    += this._breackDownDelivery();
+		feeTotal    += this._breackDownFee(feeTotal);
+		finalAmount  = feeTotal + this._breackDownTaxes(feeTotal);
+		finalAmount += this._breakDownTip(total);
+		this.totalBreakDown();
+		return App.ceil(finalAmount).toFixed(2);
 	},
+
+	/**
+	 * returns the elements that calculates the total
+	 *
+	 * @return array
+	 */
+	totalBreakDown: function() {
+		var elements = {};
+		var total    = this.subtotal();
+		var feeTotal = total;
+
+		elements['subtotal'] = this.subtotal();
+		elements['delivery'] = this._breackDownDelivery();
+		feeTotal            += elements['delivery'];
+		elements['fee']      = this._breackDownDelivery(feeTotal);
+		feeTotal            += elements['fee'];
+		elements['taxes']    = this._breackDownTaxes(feeTotal);
+		elements['tip']      = this._breackDownTaxes(total);
+		console.log(elements);
+		return elements;
+	},
+
 	resetOrder: function() {
 		App.cart.items = {};
 		$('.cart-items-content, .cart-total').html('');
 	},
+
 	reloadOrder: function() {
 		var cart = App.cart.items;
 		App.cart.resetOrder();
 		App.cart.loadFlatOrder(cart);
 	},
+
 	loadFlatOrder: function(cart) {
 		for (var x in cart) {
 			App.cart.add(cart[x].id,{
@@ -1209,6 +1274,7 @@ App.cart = {
 			});
 		}
 	},
+
 	loadOrder: function(order) {
 		// @todo: convert this to preset object
 		try {
@@ -1227,6 +1293,7 @@ App.cart = {
 		} catch (e) { console.log(e.stack); }
 		App.cart.updateTotal();
 	},
+
 	hasItems: function() {
 		if (!$.isEmptyObject(App.cart.items)) {
 			return true;
@@ -1234,6 +1301,7 @@ App.cart = {
 		return false;
 	}
 };
+
 
 App.busy = {
 	isBusy: function() {
