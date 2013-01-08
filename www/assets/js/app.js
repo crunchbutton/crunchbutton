@@ -338,7 +338,6 @@ App.page.restaurant = function(id) {
 };
 
 App.drawPay = function(restaurant) {
-	var total = App.cart.total();
 
 	$('.main-content').append(
 		'<form class="payment-form main-content-readable">' +
@@ -346,7 +345,8 @@ App.drawPay = function(restaurant) {
 		'<div class="your-info-label">(enter this once, and we\'ll save it for next time)</div>' +
 		'<div class="delivery-info-container"></div><div class="divider"></div>' +
 		'<div class="payment-info-container"></div><div class="divider"></div>' +
-		'<div class="payment-total">Your <span class="cash-order-aprox"></span> total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"></span>)</div>' +
+		// '<div class="payment-total">Your <span class="cash-order-aprox"></span> total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"></span>)</div>' +
+		'<div class="payment-total">You\'re <span class="cash-order-aprox"></span> paying <span class="cart-total"></span> <span class="cart-extraCharges"></span>, by card</div>' +
 		'</form>' +
 
 		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
@@ -814,7 +814,6 @@ App.cart = {
 
 	updateTotal: function() {
 		var
-			totalText  = '$' + App.cart.total(),
 			tipText    = '',
 			feesText   = '',
 			totalItems = 0,
@@ -834,7 +833,17 @@ App.cart = {
 
 		$('.cart-summary-item-count span').html(totalItems);
 
+		var breakDown    = App.cart.totalBreakDown();
+		var extraCharges = App.cart.extraChargesText(breakDown);
+		if (extraCharges) {
+			$('.cart-extraCharges').html('('+ extraCharges +') = $' + App.cart.total());
+		} else {
+			$('.cart-extraCharges').html('');
+		}
+
+		var totalText  = '$' + breakDown.subtotal;
 		$('.cart-total').html(totalText);
+
 
 		if (App.order['pay_type'] == 'card') {
 			tipText = hasFees ? ', tip and fees' : ' and tip';
@@ -1013,6 +1022,39 @@ App.cart = {
 
 	},
 
+	/**
+	 * subtotal, delivery, fee, taxes and tip
+	 *
+	 * @category view
+	 */
+	extraChargesText: function(breakDown) {
+		var elements = [];
+		var text     = '';
+		if (breakDown.delivery) {
+			elements.push('$' + breakDown.delivery.toFixed(2) + ' delivery');
+		}
+
+		if (breakDown.fee) {
+			elements.push('$' + breakDown.fee.toFixed(2) + ' fee');
+		}
+		if (breakDown.taxes) {
+			elements.push('$' + breakDown.taxes.toFixed(2) + ' taxes');
+		}
+		if (breakDown.tip) {
+			elements.push('$' + breakDown.tip.toFixed(2) + ' tip');
+		}
+
+		if (elements.length) {
+			if (elements.length > 2) {
+				var lastOne  = elements.pop();
+				var elements = [elements.join(', ')];
+				elements.push(lastOne);
+			}
+			var text     =  elements.join(' and ');
+		}
+		return text;
+	},
+
 	getCart: function() {
 		var cart = [];
 		for (x in App.cart.items) {
@@ -1187,6 +1229,7 @@ App.cart = {
 		if (App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') {
 			delivery = parseFloat(App.restaurant.delivery_fee);
 		}
+		delivery = App.ceil(delivery);
 		return delivery;
 	},
 
@@ -1200,11 +1243,13 @@ App.cart = {
 		if (App.restaurant.fee_customer) {
 			fee = (feeTotal * (parseFloat(App.restaurant.fee_customer)/100));
 		}
+		fee = App.ceil(fee);
 		return fee;
 	},
 
 	_breackDownTaxes: function(feeTotal) {
 		var taxes = (feeTotal * (App.restaurant.tax/100));
+		taxes = App.ceil(taxes);
 		return taxes;
 	},
 
@@ -1213,6 +1258,7 @@ App.cart = {
 		if (App.order['pay_type'] == 'card') {
 			tip = (total * (App.order.tip/100));
 		}
+		tip = App.ceil(tip);
 		return tip;
 	},
 
@@ -1225,18 +1271,22 @@ App.cart = {
 			totalItems  = 0,
 			finalAmount = 0
 		;
-		total        = App.cart.subtotal();
+
+		var breakDown = this.totalBreakDown();
+		total        = breakDown.subtotal;
 		feeTotal     = total;
-		feeTotal    += this._breackDownDelivery();
-		feeTotal    += this._breackDownFee(feeTotal);
-		finalAmount  = feeTotal + this._breackDownTaxes(feeTotal);
+		feeTotal    += breakDown.delivery;
+		feeTotal    += breakDown.fee;
+		finalAmount  = feeTotal + breakDown.taxes;
 		finalAmount += this._breakDownTip(total);
-		this.totalBreakDown();
+
 		return App.ceil(finalAmount).toFixed(2);
 	},
 
 	/**
-	 * returns the elements that calculates the total
+	 * Returns the elements that calculates the total
+	 *
+	 * BreakDown elements are: subtotal, delivery, fee, taxes and tip
 	 *
 	 * @return array
 	 */
@@ -1248,10 +1298,10 @@ App.cart = {
 		elements['subtotal'] = this.subtotal();
 		elements['delivery'] = this._breackDownDelivery();
 		feeTotal            += elements['delivery'];
-		elements['fee']      = this._breackDownDelivery(feeTotal);
+		elements['fee']      = this._breackDownFee(feeTotal);
 		feeTotal            += elements['fee'];
 		elements['taxes']    = this._breackDownTaxes(feeTotal);
-		elements['tip']      = this._breackDownTaxes(total);
+		elements['tip']      = this._breakDownTip(total);
 		console.log(elements);
 		return elements;
 	},
