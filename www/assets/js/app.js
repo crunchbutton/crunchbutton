@@ -12,9 +12,9 @@ var App = {
 	cartHighlightEnabled: false,
 	currentPage: null,
 	slogans: ['Push a button. Get Food.'],
-	tagline: '- Order the top food %s. With a click. For free. <br /> \
-		- After you order, everything is saved for future 1 click ordering. \
-		<br /><br /> <strong>Choose a restaurant:</strong> \
+	tagline: 'Order the top food %s. For free. <br /> \
+		After you order, everything is saved for future 1 click ordering. <br /> \
+		<strong>Choose a restaurant:</strong> \
 		',
 	service: '/api/',
 	cached: {},
