@@ -337,16 +337,29 @@ App.page.restaurant = function(id) {
 
 };
 
-App.drawPay = function(restaurant) {
-
+/**
+ * Adds the DOM elements for the payment information
+ *
+ * Adds order amount info, delivery info, payment info DOM (including tip%
+ * selector. They method is called before the App.cart.updateTotal() method
+ * gets called, so there is no information about the amount to pay yet.
+ *
+ * @returns void
+ */
+App.drawPay = function(restaurant)
+{
 	$('.main-content').append(
 		'<form class="payment-form main-content-readable">' +
-		'<div class="content-item-name"><h1>Your Info</h1></div>' +
-		'<div class="your-info-label">(enter this once, and we\'ll save it for next time)</div>' +
-		'<div class="delivery-info-container"></div><div class="divider"></div>' +
-		'<div class="payment-info-container"></div><div class="divider"></div>' +
-		// '<div class="payment-total">Your <span class="cash-order-aprox"></span> total is <span class="cart-total">$' + total + '</span> (incl tax<span class="includes-tip"></span>)</div>' +
-		'<div class="payment-total">You\'re <span class="cash-order-aprox"></span> paying <span class="cart-total"></span> <span class="cart-extraCharges"></span>, by card</div>' +
+			'<div class="content-item-name"><h1>Your Info</h1></div>' +
+			'<div class="your-info-label">(enter this once, and we\'ll save it for next time)</div>' +
+			'<div class="delivery-info-container"></div><div class="divider"></div>' +
+			'<div class="payment-info-container"></div><div class="divider"></div>' +
+			'<div class="payment-total">' +
+				'You\'re <span class="cash-order-aprox"></span> paying ' +
+				'<span class="cart-breakdownDescription"></span> ' +
+				'for a total of <span class="cart-total"></span> ' +
+				'<span class="cart-paymentType"></span>' +
+			' </div>' +
 		'</form>' +
 
 		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
@@ -812,8 +825,16 @@ App.cart = {
 		App.cart.updateTotal();
 	},
 
+	/**
+	 * Gets called after the cart is updarted to refresh the total
+	 *
+	 * @todo Gets called many times before the cart is updated, on load, and shouldn't
+	 *
+	 * @return void
+	 */
 	updateTotal: function() {
 		var
+			totalText  = '$' + this.total();
 			tipText    = '',
 			feesText   = '',
 			totalItems = 0,
@@ -833,26 +854,36 @@ App.cart = {
 
 		$('.cart-summary-item-count span').html(totalItems);
 
-		var breakDown    = App.cart.totalBreakDown();
-		var extraCharges = App.cart.extraChargesText(breakDown);
-		if (extraCharges) {
-			$('.cart-extraCharges').html('('+ extraCharges +') = $' + App.cart.total());
+		if (!this.subtotal()) {
+			$('.payment-total').hide();
 		} else {
-			$('.cart-extraCharges').html('');
+			$('.payment-total').show();
 		}
 
-		var totalText  = '$' + breakDown.subtotal;
+		var breakdown    = App.cart.totalbreakdown();
+		var extraCharges = App.cart.extraChargesText(breakdown);
+		if (extraCharges) {
+			$('.cart-breakdownDescription').html('$' + this.subtotal() + ' (+'+ extraCharges +')' );
+		} else {
+			$('.cart-breakdownDescription').html('$' + this.subtotal());
+		}
+
 		$('.cart-total').html(totalText);
 
 
+		/**
+		 * Crunchbutton doesnt collect the cash, the restaurant will ring up
+		 * the order in their register, which may have different prices. The
+		 * restaurant collects the cash, so its posible things may be
+		 * different. This differs from when its card, crunchbutton collects
+		 * the money directly so the price cant vary
+		 */
 		if (App.order['pay_type'] == 'card') {
-			tipText = hasFees ? ', tip and fees' : ' and tip';
-			feesText = hasFees ? ', fees' : '';
 			$('.cash-order-aprox').html('');
+			$('.cart-paymentType').html('by card');
 		} else {
-			tipText = hasFees ? ' and fees' : '';
-			feesText = hasFees ? ' and fees' : '';
-			$('.cash-order-aprox').html('approximate');
+			$('.cash-order-aprox').html('approximately');
+			$('.cart-paymentType').html('');
 		}
 
 		if (App.cartHighlightEnabled && $('.cart-summary').css('display') != 'none') {
@@ -861,9 +892,6 @@ App.cart = {
 				$('.cart-summary').addClass('cart-summary-detail');
 			});
 		}
-
-		$('.includes-tip').html(tipText);
-		$('.includes-fees').html(feesText);
 
 		if ($('.cart-total').html() == totalText) {
 			//return;
@@ -1027,21 +1055,21 @@ App.cart = {
 	 *
 	 * @category view
 	 */
-	extraChargesText: function(breakDown) {
+	extraChargesText: function(breakdown) {
 		var elements = [];
 		var text     = '';
-		if (breakDown.delivery) {
-			elements.push('$' + breakDown.delivery.toFixed(2) + ' delivery');
+		if (breakdown.delivery) {
+			elements.push('$' + breakdown.delivery.toFixed(2) + ' delivery');
 		}
 
-		if (breakDown.fee) {
-			elements.push('$' + breakDown.fee.toFixed(2) + ' fee');
+		if (breakdown.fee) {
+			elements.push('$' + breakdown.fee.toFixed(2) + ' fee');
 		}
-		if (breakDown.taxes) {
-			elements.push('$' + breakDown.taxes.toFixed(2) + ' taxes');
+		if (breakdown.taxes) {
+			elements.push('$' + breakdown.taxes.toFixed(2) + ' taxes');
 		}
-		if (breakDown.tip) {
-			elements.push('$' + breakDown.tip.toFixed(2) + ' tip');
+		if (breakdown.tip) {
+			elements.push('$' + breakdown.tip.toFixed(2) + ' tip');
 		}
 
 		if (elements.length) {
@@ -1253,7 +1281,7 @@ App.cart = {
 		return taxes;
 	},
 
-	_breakDownTip: function(total) {
+	_breakdownTip: function(total) {
 		var tip = 0;
 		if (App.order['pay_type'] == 'card') {
 			tip = (total * (App.order.tip/100));
@@ -1272,13 +1300,13 @@ App.cart = {
 			finalAmount = 0
 		;
 
-		var breakDown = this.totalBreakDown();
-		total        = breakDown.subtotal;
+		var breakdown = this.totalbreakdown();
+		total        = breakdown.subtotal;
 		feeTotal     = total;
-		feeTotal    += breakDown.delivery;
-		feeTotal    += breakDown.fee;
-		finalAmount  = feeTotal + breakDown.taxes;
-		finalAmount += this._breakDownTip(total);
+		feeTotal    += breakdown.delivery;
+		feeTotal    += breakdown.fee;
+		finalAmount  = feeTotal + breakdown.taxes;
+		finalAmount += this._breakdownTip(total);
 
 		return App.ceil(finalAmount).toFixed(2);
 	},
@@ -1286,11 +1314,11 @@ App.cart = {
 	/**
 	 * Returns the elements that calculates the total
 	 *
-	 * BreakDown elements are: subtotal, delivery, fee, taxes and tip
+	 * breakdown elements are: subtotal, delivery, fee, taxes and tip
 	 *
 	 * @return array
 	 */
-	totalBreakDown: function() {
+	totalbreakdown: function() {
 		var elements = {};
 		var total    = this.subtotal();
 		var feeTotal = total;
@@ -1301,7 +1329,7 @@ App.cart = {
 		elements['fee']      = this._breackDownFee(feeTotal);
 		feeTotal            += elements['fee'];
 		elements['taxes']    = this._breackDownTaxes(feeTotal);
-		elements['tip']      = this._breakDownTip(total);
+		elements['tip']      = this._breakdownTip(total);
 		console.log(elements);
 		return elements;
 	},
