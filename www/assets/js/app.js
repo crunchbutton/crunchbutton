@@ -834,7 +834,7 @@ App.cart = {
 	 */
 	updateTotal: function() {
 		var
-			totalText  = '$' + this.total();
+			totalText  = '$' + this.total(),
 			tipText    = '',
 			feesText   = '',
 			totalItems = 0,
