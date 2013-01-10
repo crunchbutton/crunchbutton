@@ -200,6 +200,16 @@ body {
 	line-height: 1.4em;
 }
 
+/**
+ * This rule shouldn't be required, doesn't make sense to me
+ *
+ * The normal weight is the default one, but it's forcing me to set it here as
+ * a new rule. It looks like it's having "inherit" set.
+ */
+.home-tagline h1 {
+	font-weight: normal;
+}
+
 .home-tagline h2, .home-welcome h2 {
 	margin-top: .4em;
 	font-size: 18px;
