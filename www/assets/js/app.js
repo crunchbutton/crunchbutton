@@ -305,12 +305,15 @@ App.page.restaurant = function(id) {
 
 			var dp = $('<div class="delivery-payment-info main-content-readable"></div>')
 				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number:</label> ' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provied</i>') + '</div>');
-			var paying = $('<div class="dp-display-payment dp-display-item"><label>You are paying:</label> <span class="cart-total">$0.00</span></div>');
-			if (App.config.user.pay_type == 'card') {
-				paying.append('&nbsp;incl tax<span class="includes-fees"></span> and <span class="delivery-tip-amount">15%</span> tip, by card');
-			} else {
-				paying.append('&nbsp;incl tax<span class="includes-fees"></span>&nbsp;using cash');
-			}
+
+			var paying = $(
+					'<div class="dp-display-payment dp-display-item ">' +
+						'<label>You are paying:</label> ' +
+						'<span class="cart-breakdownDescription"></span> ' +
+						'for a total of <span class="cart-total">$0.00</span> ' +
+						'<span class="cart-paymentType"></span>' +
+					'</div>');
+
 			dp.append(paying);
 			if (App.config.user.delivery_type == 'delivery' && App.restaurant.delivery == '1') {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br />' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</div>');
@@ -854,18 +857,22 @@ App.cart = {
 
 		$('.cart-summary-item-count span').html(totalItems);
 
+		/* If no items, hide payment line
+		 * .payment-total      line for new customers
+		 * .dp-display-payment is for stored customers
+		 */
 		if (!this.subtotal()) {
-			$('.payment-total').hide();
+			$('.payment-total, .dp-display-payment').hide();
 		} else {
-			$('.payment-total').show();
+			$('.payment-total, .dp-display-payment').show();
 		}
 
 		var breakdown    = App.cart.totalbreakdown();
 		var extraCharges = App.cart.extraChargesText(breakdown);
 		if (extraCharges) {
-			$('.cart-breakdownDescription').html('$' + this.subtotal() + ' (+'+ extraCharges +')' );
+			$('.cart-breakdownDescription').html('$' + this.subtotal().toFixed(2) + ' (+'+ extraCharges +')' );
 		} else {
-			$('.cart-breakdownDescription').html('$' + this.subtotal());
+			$('.cart-breakdownDescription').html('$' + this.subtotal().toFixed(2));
 		}
 
 		$('.cart-total').html(totalText);
@@ -1243,7 +1250,7 @@ App.cart = {
 				total += parseFloat(App.cached['Option'][options[xx]].optionPrice(options));
 			}
 		}
-
+		total = App.ceil(total);
 		return total;
 	},
 
