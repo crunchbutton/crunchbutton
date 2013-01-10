@@ -308,7 +308,7 @@ App.page.restaurant = function(id) {
 
 			var paying = $(
 					'<div class="dp-display-payment dp-display-item ">' +
-						'<label>You are paying:</label> ' +
+						'<label>You are paying <span class="cash-order-aprox"></span> :</label> ' +
 						'<span class="cart-breakdownDescription"></span> ' +
 						'for a total of <span class="cart-total">$0.00</span> ' +
 						'<span class="cart-paymentType"></span>' +
@@ -358,7 +358,7 @@ App.drawPay = function(restaurant)
 			'<div class="delivery-info-container"></div><div class="divider"></div>' +
 			'<div class="payment-info-container"></div><div class="divider"></div>' +
 			'<div class="payment-total">' +
-				'You\'re <span class="cash-order-aprox"></span> paying ' +
+				'You\'re paying <span class="cash-order-aprox"></span> ' +
 				'<span class="cart-breakdownDescription"></span> ' +
 				'for a total of <span class="cart-total"></span> ' +
 				'<span class="cart-paymentType"></span>' +
