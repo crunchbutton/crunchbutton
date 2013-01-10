@@ -1498,12 +1498,20 @@ html[xmlns] .clearfix {
 	.cart-summary {
 		display: none;
 	}
+
+	/**
+	 * space between dishes in the left menu
+	 *
+	 * removed the display:inline-block and height from .dish-name to fix this.
+	 */
+	.resturant-dishes li {
+		height: 25px;
+	}
+
 	.dish-name {
-		display: inline-block;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		max-width: 240px;
-		height: 20px;
 		white-space: nowrap;
 	}
 	.restaurant-payment-div {
