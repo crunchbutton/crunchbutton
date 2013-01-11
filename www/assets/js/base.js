@@ -78,6 +78,10 @@ App.ceil = function(num) {
 };
 
 App.phone = {
+
+	/**
+	 * Add dashes to the phone number, unifying how phone number looks
+	 */
 	format: function(num) {
 
 		num = num.replace(/^0|^1/,'');
