@@ -66,12 +66,16 @@ App.cache = function(type, id) {
 
 };
 
+/**
+ * Rounds a float number rounded up with 2 digits.
+ *
+ * @return float
+ */
 App.ceil = function(num) {
 	num = num*100;
 	num = Math.ceil(num);
 	return num / 100;
 };
-
 
 App.phone = {
 	format: function(num) {
@@ -79,31 +83,31 @@ App.phone = {
 		num = num.replace(/^0|^1/,'');
 		num = num.replace(/[^\d]*/gi,'');
 		num = num.substr(0,10);
-	
+
 		if (num.length >= 7) {
 			num = num.replace(/(\d{3})(\d{3})(.*)/, "$1-$2-$3");
 		} else if (num.length >= 4) {
 			num = num.replace(/(\d{3})(.*)/, "$1-$2");
 		}
 
-		return num;	
+		return num;
 	},
 	validate: function(num) {
 
 		if (!num || num.length != 10) {
 			return false;
 		}
-		
+
 		var
 			nums = num.split(''),
 			prev;
-		
+
 		for (x in nums) {
 			if (!prev) {
 				prev = nums[x];
 				continue;
 			}
-			
+
 			if (nums[x] != prev) {
 				return true;
 			}
@@ -128,15 +132,15 @@ App.formatTime = function(time) {
 
 	var vals = time.split(':');
 	var pm = false;
-	
+
 	vals[0] = new String(vals[0]);
 	vals[1] = vals[1] ? new String(vals[1]) : 0;
-	
+
 	if (vals[0].match(/^[0-9]{3,4}$/i)) {
 		vals[1] = vals[0].substr(-2,2);
 		vals[0] = vals[0].substr(0,vals[0].length - 2);
 	}
-	
+
 	if (vals[0] == '24') {
 		vals[0] = '00';
 	}
@@ -170,7 +174,7 @@ App.formatTime = function(time) {
 
 	vals[0] = App.pad(vals[0],2);
 	vals[1] = App.pad(vals[1],2);
-	
+
 	if (vals[0] == '00') {
 		vals[0] = 12;
 	}
@@ -178,22 +182,26 @@ App.formatTime = function(time) {
 	return vals.join(':') + (pm ? ' PM' : ' AM');
 };
 
+/**
+ * Turns AM/PM format in 24h
+ *
+ * It was storing 12:00 AM as 24:00, or even worse, 12:30 AM as 24:30.
+ * 12:00 AM should be 00:00 everywhere
+ *
+ * @return string
+ */
 App.unFormatTime = function(time) {
-	var end = arguments[1];
-	var part = time.split(' ');
-
-	part[0] = part[0].split(':');
+	var part   = time.split(' ');
+	part[0]    = part[0].split(':');
 	part[0][0] = parseInt(part[0][0], 10);
 
 	if (part[1] == 'PM') {
-		if (part[0][0] == 12) {
-			part[0][0] = '12';
-		} else {
+		if (part[0][0] != 12) {
 			part[0][0] = App.pad(part[0][0] + 12,2);
 		}
 	} else {
 		if (part[0][0] == 12) {
-			part[0][0] = end ? '24' : '00';
+			part[0][0] = '00';
 		}
 	}
 	return part[0][0] + ':' + part[0][1];
