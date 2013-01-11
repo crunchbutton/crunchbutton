@@ -948,7 +948,7 @@ App.cart = {
 	},
 
 	customizeItemPrice: function(price) {
-		return price != '0.00' ? '&nbsp;($' + price + ')' : '';
+		return price != '0.00' ? '&nbsp;($' + price.toFixed(2) + ')' : '';
 	},
 
 	customize: function(item) {
@@ -979,7 +979,11 @@ App.cart = {
 					}
 					var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
 						.append(check)
-						.append('<label class="cart-item-customize-name">' + opt[x].name + (opt[x].description || '') + '</label><label class="cart-item-customize-price">' + App.cart.customizeItemPrice(price) + '</label>');
+						.append('<label class="cart-item-customize-name">' +
+							opt[x].name + (opt[x].description || '') +
+							'</label><label class="cart-item-customize-price">' +
+							App.cart.customizeItemPrice(price) + '</label>'
+						);
 					el.append(option);
 
 				} else if (opt[x].type == 'select') {
