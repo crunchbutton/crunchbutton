@@ -26,7 +26,7 @@ $(function() {
 	});
 
 	App.loadRestaurant = function(id_restaurant) {
-		
+
 		App.cache('Restaurant', id_restaurant , function() {
 			var restaurant = this;
 			var checkswap = {
@@ -49,7 +49,7 @@ $(function() {
 				} else {
 					$(this).val(restaurant[$(this).attr('name')]);
 				}
-				
+
 				for (var x in checkswap) {
 					if ($(this).attr('name') == x) {
 						if (restaurant[checkswap[x]] && restaurant[checkswap[x]] != '0') {
@@ -80,7 +80,7 @@ $(function() {
 					isDishes = true;
 				}
 			}
-			
+
 			if (!isDishes) {
 				$('input[name="dish_check"][value="0"]').prop('checked', true);
 				$('input[name="dish_check"][value="1"]').prop('checked', false);
@@ -117,26 +117,33 @@ $(function() {
 					$('input[name="hours_check"][value="0"]').prop('checked', false);
 					$('input[name="hours_check"][value="1"]').prop('checked', true);
 					$('.admin-restaurant-hours').show();
-					
+
 					var dayitem = restaurant._hours[d];
-	
+
 					for (var x in dayitem) {
 						var row = $('<div class="hours-date-hour"></div>');
-						row.append('<input type="text" value="' + App.formatTime(dayitem[x][0]) + '" name="' + d + '-open[]">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" value="' + App.formatTime(dayitem[x][1]) + '" name="' + d + '-close[]">');
+						row.append('<input type="text" value="' + App.formatTime(dayitem[x][0]) + '" name="' + d + '-open[]">' +
+								' TO ' +
+								' <input type="text" value="' + App.formatTime(dayitem[x][1]) + '" name="' + d + '-close[]">');
 						dayWrap.append(row);
 					}
 				}
 
 				var row = $('<div class="hours-date-hour"></div>');
-				row.append('<input type="text" name="' + d + '-open[]">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" name="' + d + '-close[]">');
+				row.append('<input type="text" name="' + d + '-open[]"> TO <input type="text" name="' + d + '-close[]">');
 				dayWrap.append(row);
 
 				$('.admin-restaurant-hours').append(day);
 
-			}			
+			}
 		});
 	};
-	
+
+	/**
+	 * Adds a new hours range if they are all filled up
+	 *
+	 * @return void
+	 */
 	$('.hours-date-hour input').live('keyup', function() {
 		var allfull = true;
 		$(this).closest('.hours-date-hours').find('input').each(function() {
@@ -147,7 +154,7 @@ $(function() {
 		if (allfull) {
 			var day = $(this).attr('name').replace(/-open|-close/,'');
 			var row = $('<div class="hours-date-hour"></div>');
-			row.append('<input type="text" name="' + day + '-open[]">&nbsp;&nbsp;&nbsp;TO&nbsp;&nbsp;&nbsp;<input type="text" name="' + day + '-close[]">');
+			row.append('<input type="text" name="' + day + '-open[]"> TO <input type="text" name="' + day + '-close[]">');
 			$(this).closest('.hours-date-hour').append(row);
 		}
 	});
@@ -185,19 +192,19 @@ $(function() {
 	$('.admin-restaurant-save').live('click', function() {
 		saveRestaurant(true);
 	});
-	
+
 	$('.admin-restaurant-save-details').live('click', function() {
 		saveRestaurant(false);
 	});
-	
+
 	$('.admin-restaurant-save-hours').live('click', function() {
 		saveHours();
 	});
-	
+
 	$('.admin-restaurant-save-dishes').live('click', function() {
 		saveDishes();
 	});
-	
+
 	var saveDishes = function(complete) {
 		var selector = 'input.dataset-dish, select.dataset-dish, textarea.dataset-dish';
 		var dishes = [];
@@ -214,13 +221,13 @@ $(function() {
 			if (id) {
 				dish.id_dish = id;
 			}
-			
+
 			dish.optionGroups = [];
 			$(this).find('.admin-dish-options .admin-dish-options-wrapper').each(function() {
 				var id = $(this).attr('data-parent');
 				var name = $(this).find('.admin-dish-options-title').html();
 				name = name.substr(0,name.length-1);
-				
+
 				var optionGroup = {
 					name: name,
 					'default': values['dish-options-default'],
@@ -251,11 +258,11 @@ $(function() {
 				});
 				dish.optionGroups[dish.optionGroups.length] = optionGroup;
 			});
-			
+
 			dishes[dishes.length] = dish;
 
 		});
-			
+
 		console.log(dishes);
 		$.post('/api/restaurant/' + App.restaurant + '/dishes', {dishes: dishes}, function() {
 			if (complete) {
@@ -275,7 +282,7 @@ $(function() {
 					if (all) {
 						saveHours(function() {
 							saveDishes(function() {
-	
+
 							});
 						});
 					}
@@ -315,7 +322,7 @@ $(function() {
 					for (var d in hours) {
 						for (var x in h[d + '-open']) {
 							if (!h[d + '-open'][x]) continue;
-							hours[d][hours[d].length] = [App.unFormatTime(h[d + '-open'][x]), App.unFormatTime(h[d + '-close'][x],true)];
+							hours[d][hours[d].length] = [App.unFormatTime(h[d + '-open'][x]), App.unFormatTime(h[d + '-close'][x])];
 						}
 					}
 				}
@@ -328,7 +335,7 @@ $(function() {
 			});
 		}
 	};
-	
+
 	$('.admin-restaurant-hours-save-all').live('click',function() {
 		$('.admin-restaurant-hours-save-link').click();
 	});
@@ -336,29 +343,29 @@ $(function() {
 	$('.check label').live('click',function() {
 		$(this).closest('.check').find('input').click();
 	});
-	
+
 	$('.order-range-all label').live('click', function() {
-		$(this).parent().find('input').click();	
+		$(this).parent().find('input').click();
 	});
-	
+
 	$('[name="phone"]').live('keyup', function(e) {
 		$(this).val( App.phone.format($(this).val()) );
 	});
-	
+
 	var changeACheck = function() {
 		var name = $(this).attr('name');
 		var parent = $(this).closest('.content-sub').length ? $(this).closest('.content-sub') : $(this).closest('.content-primary');
 		parent.find('input[name="' + name + '_check"][value="1"]').prop('checked', true);
 		parent.find('input[name="' + name + '_check"][value="0"]').prop('checked', false);
 	};
-	
+
 	$('.change-a-check').live('change', changeACheck).live('keyup', changeACheck);
 
 	$('.bind-a-check').click(function(e) {
 		var name = $(this).attr('name');
 		var value = $(this).attr('value');
 		var parent = $(this).closest('.content-sub').length ? $(this).closest('.content-sub') : $(this).closest('.content-primary');
-		
+
 		$(this).prop('checked', true);
 		parent.find('input[name="' + name + '"][value="' + (value == '1' ? '0' : '1') + '"]').prop('checked', false);
 
@@ -371,12 +378,12 @@ $(function() {
 		e.stopPropagation();
 		return false;
 	});
-	
+
 	if ($('.date-picker').length) {
 		var d = $('.date-picker').val();
 		d = d.split(',');
 
-	
+
 		$('.date-picker').DatePicker({
 			format: 'm/d/Y',
 			date: d,
@@ -396,7 +403,7 @@ $(function() {
 			}
 		});
 	}
-	
+
 	$('input[name="order-range-all"]').live('change', function() {
 		if ($(this).prop('checked')) {
 			$('.date-picker').attr('disabled', 'disabled');
@@ -405,18 +412,18 @@ $(function() {
 			$('.date-picker').removeAttr('disabled');
 		}
 	});
-	
+
 	$('.hours-date-hour input').live('change', function() {
 		$(this).val(App.formatTime($(this).val()));
 	});
-	
+
 	$('.admin-food-item').live('click', function() {
 		$(this).closest('.admin-food-item-wrap').find('.admin-food-item-content').slideToggle(100);
 		$(this).toggleClass('admin-food-item-collapsed');
 	});
-	
+
 	var ignoreKeys = [37,38,39,40,16,9]; //,17,18,91,13,16
-	
+
 	var cleanInput = function(e) {
 		if (ignoreKeys.indexOf(e.which) !== -1) {
 			return;
@@ -428,31 +435,31 @@ $(function() {
 			$(this).setCursorPosition(caret);
 		}
 	};
-	
+
 	$('.clean-input').live('keyup', cleanInput).live('change', cleanInput);
-	
+
 	var changeDish = function(e) {
 		$(this).closest('.admin-food-item-wrap').find('.food-name').html($(this).val());
 	};
 
 	$('.dish-name').live('keyup', changeDish).live('change', changeDish);
-	
+
 	var changePrice = function(e) {
 		$(this).closest('.admin-food-item-wrap').find('.food-price-num').html($(this).val());
 	};
-	
+
 	$('.dish-price input').live('keyup', changePrice).live('change', changePrice);
-	
+
 	$('.control-link-add').live('click', function() {
 		App.showDish({});
 	});
-	
+
 	$('.admin-food-item-delete').live('click', function() {
 
 		var parent = $(this).closest('.admin-food-item-wrap');
 		var id_dish = parent.attr('data-id_dish');
 		var name = parent.find('.dish-name').val();
-		
+
 		var remove = function() {
 			parent.fadeOut(100,function() {
 				$(this).remove();
@@ -467,12 +474,12 @@ $(function() {
 			}
 		}
 	});
-	
+
 	$('.dish-options-delete').live('click', function() {
 		var parent = $(this).closest('.dish-options');
 		var id_option = parent.attr('data-id_option');
 		var name = parent.find('input[name="dish-options-name"]').val();
-		
+
 		var remove = function() {
 			parent.fadeOut(100,function() {
 				$(this).remove();
@@ -487,7 +494,7 @@ $(function() {
 			}
 		}
 	});
-	
+
 	$('.admin-dish-options-wrapper input[type="text"]').live('keyup', function() {
 		var allfull = true;
 
@@ -535,7 +542,7 @@ $(function() {
 			}
 		});
 	});
-	
+
 	$('.control-link-add-menu').live('click', function() {
 		$('#dialog-add-menu').dialog({
 			resizable: false,
@@ -561,8 +568,8 @@ $(function() {
 			}
 		});
 	});
-	
-	
+
+
 });
 
 App.showDish = function(dishItem) {
@@ -581,7 +588,7 @@ App.showDish = function(dishItem) {
 	var padding = $('<div class="admin-food-item-content-padding">');
 	dish.append(content);
 	content.append(padding);
-	
+
 	var options = $('<div class="admin-dish-options"></div>');
 	var basicOptions = $('<div class="input-faker"></div>');
 	var basicWrapper = $('<div class="admin-dish-options-wrapper" data-parent="BASIC"><div class="admin-dish-options-title">Basic options:</div></div>')
@@ -591,24 +598,24 @@ App.showDish = function(dishItem) {
 
 	if (dishItem.options) {
 		var opts = dishItem.options();
-		
+
 		options.append(basicWrapper);
-	
+
 		for (var x in opts) {
 			var option = opts[x];
 			if (option.id_option_parent) {
 				continue;
 			}
-	
+
 			if (option.type == 'check') {
 				basicOptions.append(App.returnOption(option,option.type));
-	
+
 			} else if (option.type == 'select') {
-	
+
 				var optionAdder = $('<div class="input-faker"></div>');
 				var optionWrapper = $('<div class="admin-dish-options-wrapper" data-type="' + option.type + '" data-parent="' + option.id + '"><div class="admin-dish-options-title">' + option.name + ':</div></div>')
 					.append(optionAdder);
-	
+
 				var select = $('<select class="cart-customize-select">');
 				for (var i in opts) {
 					if (opts[i].id_option_parent == option.id_option) {
@@ -616,12 +623,12 @@ App.showDish = function(dishItem) {
 					}
 				}
 				optionAdder.append(App.returnOption({price: '',name:'',id_option:''},option.type,option.id_option));
-				options.append(optionWrapper);	
+				options.append(optionWrapper);
 			}
 		}
-		
+
 		basicOptions.append(App.returnOption({price: '',name:'',id_option:''},'check'));
-		
+
 		options.append('<div class="admin-restaurant-options-controls">'
 			+ '<div class="control-link">'
 				+ '<a href="javascript:;" class="control-link-add-option">'
@@ -631,14 +638,14 @@ App.showDish = function(dishItem) {
 			+ '</div>'
 		+ '</div><div class="divider"></div>');
 	}
-	
+
 	padding
 		.append('<input type="text" placeholder="Name" name="dish-name" class="dataset-dish clean-input dish-name" value="' + dishItem.name + '">')
 		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="dataset-dish clean-input" data-clean_type="float"><div class="divider"></div></div>')
 		.append('<textarea placeholder="Description" name="dish-description" class="dataset-dish clean-input dish-description" value="' + dishItem.description + '"></textarea>')
 		.append('<div class="divider"></div><div class="divider dots" style="margin: 10px 0 10px 0;"></div>')
 		.append(options);
-					
+
 	content
 		.append('<div class="divider dots"></div>')
 		.append('<div class="admin-food-item-content-padding"><div class="action-button red action-button-small admin-food-item-delete"><span>Delete</span></div><div class="divider"></div></div>')
@@ -767,11 +774,11 @@ App.orders = {
 		if(this.length == 0) return this;
 		return $(this).setSelection(position, position);
 	}
-	
+
 	$.fn.setSelection = function(selectionStart, selectionEnd) {
 		if(this.length == 0) return this;
 		input = this[0];
-	
+
 		if (input.createTextRange) {
 			var range = input.createTextRange();
 			range.collapse(true);
@@ -782,7 +789,7 @@ App.orders = {
 			input.focus();
 			input.setSelectionRange(selectionStart, selectionEnd);
 		}
-	
+
 		return this;
 	}
 
