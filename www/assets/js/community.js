@@ -3,9 +3,9 @@ var Community = function(id) {
 	this.id_var = 'id_community';
 	this.resource = 'community';
 	var self = this;
-	
+
 	$.extend(self,Orm);
-	
+
 	if (arguments[1]) {
 		complete = arguments[1];
 	} else {
@@ -19,13 +19,34 @@ var Community = function(id) {
 				self.__restaurants[self.__restaurants.length] = App.cache('Restaurant', self._restaurants[x]);
 			}
 			self._restaurants = null;
+
+			/**
+			 * Bubble sort mechanism
+			 *
+			 * if a < b, returns negative
+			 * if a = b, returns zero
+			 * if a > b returns positive
+			 *
+			 * @return int
+			 */
 			self.__restaurants.sort(function(a, b) {
-				return (b._open ? 1 : 0) - (a._open ? 1 : 0);
+				var bubble; // = (b._open ? 1 : 0) - (a._open ? 1 : 0);
+				console.log(a);
+				if ((a.open() && b.open()) || (!a.open() && !b.open())) {
+					bubble = parseInt(a.sort) - parseInt(b.sort);
+				} else if (a.open() && !b.open()) {
+					bubble = -1;
+				} else if (!a.open() && b.open()) {
+					bubble = 1;
+				} else {
+					console.log('Should not be here', a, b);
+				}
+				return bubble;
 			});
 		}
 		return self.__restaurants;
 	}
-	
+
 	self.finished = function(data) {
 		for (x in data) {
 			self[x] = data[x];
@@ -36,7 +57,7 @@ var Community = function(id) {
 			complete.call(self);
 		}
 	}
-	
+
 	self.load(id);
 }
 

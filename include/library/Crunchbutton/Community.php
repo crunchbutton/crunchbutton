@@ -25,14 +25,28 @@ class Crunchbutton_Community extends Cana_Table {
 
 		return self::q($q);
 	}
+
+	/**
+	 * Returns all the restaurants that belong to this Community
+	 *
+	 * @return Cana_Iterator
+	 *
+	 * @todo probably not required to sort them as the front end sorts them
+	 */
 	public function restaurants() {
 		if (!isset($this->_restaurants)) {
 			$this->_restaurants = Restaurant::q('
-				select restaurant.* from restaurant
-				left join restaurant_community using(id_restaurant)
-				where id_community="'.$this->id_community.'"
-				and restaurant.active=1
-				order by restaurant_community.sort, restaurant.delivery desc
+				SELECT
+					restaurant.*
+					, restaurant_community.sort
+				FROM restaurant
+					left join restaurant_community using(id_restaurant)
+				WHERE
+						id_community="'.$this->id_community.'"
+					and restaurant.active=1
+				ORDER by
+					restaurant_community.sort,
+					restaurant.delivery DESC
 			');
 
 			$this->_restaurants->sort([
@@ -41,7 +55,7 @@ class Crunchbutton_Community extends Cana_Table {
 		}
 		return $this->_restaurants;
 	}
-	
+
 	public function exports() {
 		$out = $this->properties();
 		foreach ($this->restaurants() as $restaurant) {
@@ -49,7 +63,7 @@ class Crunchbutton_Community extends Cana_Table {
 		}
 		return $out;
 	}
-	
+
 	public static function permalink($permalink) {
 		return self::q('select * from community where permalink="'.$permalink.'"')->get(0);
 	}
