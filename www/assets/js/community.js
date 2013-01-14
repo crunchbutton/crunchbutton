@@ -23,6 +23,8 @@ var Community = function(id) {
 			/**
 			 * Bubble sort mechanism
 			 *
+			 *  if both restaurants are open or both are closed, use sort value.
+			 *
 			 * if a < b, returns negative
 			 * if a = b, returns zero
 			 * if a > b returns positive
@@ -30,8 +32,7 @@ var Community = function(id) {
 			 * @return int
 			 */
 			self.__restaurants.sort(function(a, b) {
-				var bubble; // = (b._open ? 1 : 0) - (a._open ? 1 : 0);
-				console.log(a);
+				var bubble;
 				if ((a.open() && b.open()) || (!a.open() && !b.open())) {
 					bubble = parseInt(a.sort) - parseInt(b.sort);
 				} else if (a.open() && !b.open()) {
