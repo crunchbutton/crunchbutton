@@ -318,7 +318,7 @@ App.page.restaurant = function(id) {
 			if (App.config.user.delivery_type == 'delivery' && App.restaurant.delivery == '1') {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br />' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</div>');
 			} else {
-				dp.append('<div class="dp-display-address dp-display-item"><label>Deliver to:</label> <i>takeout</i></div>');
+				dp.append('<div class="dp-display-address dp-display-item"><label>Address:</label> <i>takeout</i></div>');
 			}
 
 			dp.append('<div class="dp-display-address dp-display-item"><a href="javascript:;"><i>Change delivery or payment details</i></a></div>');
@@ -391,7 +391,7 @@ App.drawPay = function(restaurant)
 			'<label>Phone #</label>' +
 			'<div class="input-item"><input type="tel" name="pay-phone" tabindex="3"></div><div class="divider"></div>' +
 
-			'<label class="delivery-only">Deliver to</label>' +
+			'<label class="delivery-only">Address</label>' +
 			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="4"></textarea></div>' +
 			fieldError +
 			'<div class="divider"></div>' +
