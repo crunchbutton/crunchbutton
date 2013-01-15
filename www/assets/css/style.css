@@ -217,6 +217,14 @@ body {
 	line-height: 1.45em;
 }
 
+.home-tagline h2 {
+	margin-bottom: .6em;
+}
+
+.home-welcome h2 {
+	margin-bottom: 1.5em;
+}
+
 .footer a {
 	color: #888;
 	margin: 5px;
