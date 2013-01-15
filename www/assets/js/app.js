@@ -1609,6 +1609,10 @@ App.loc = {
 		});
 
 		switch ($('.location-address').val().toLowerCase()) {
+			case 'brown':
+			case 'providence':
+				forceLoc = App.communities.providence.permalink;
+				break;
 			case 'harvard':
 			case 'cambridge':
 			case 'the game':
