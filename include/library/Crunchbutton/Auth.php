@@ -3,7 +3,7 @@
 class Crunchbutton_Auth {
 	private $_user;
 	private $_session;
-	
+
 	public function __construct() {
 		$this->_session = new Crunchbutton_Session;
 		session_start();
@@ -11,10 +11,10 @@ class Crunchbutton_Auth {
 		if ($_COOKIE['token'] && !$this->session()->id_user) {
 			$sess = Session::token($_COOKIE['token']);
 			if ($sess->id_user) {
-				Session::deleteToken($_COOKIE['token']);
 				$this->session()->id_user = $sess->id_user;
-				$this->session()->token = $_COOKIE['token'];
-			} else {
+				$this->session()->token   = $_COOKIE['token'];
+			} else { // if no id_user in session, delete cookie and session in DB as it's not used, see #624
+				Session::deleteToken($_COOKIE['token']);
 				setcookie('token','',0,'/');
 			}
 		}
@@ -30,7 +30,7 @@ class Crunchbutton_Auth {
 		}
 
 	}
-	
+
 	public function doAuth($type, $id) {
 		$auth = Crunchbutton_User_Auth::byTypeId($type,$id);
 
@@ -52,9 +52,9 @@ class Crunchbutton_Auth {
 			'appId' => Cana::config()->facebook->app,
 			'secret' => Cana::config()->facebook->secret
 		]);
-		
+
 		$fbUser = $facebook->getUser();
-		
+
 		if ($fbUser) {
 			try {
 				$profile = (object)$facebook->api('/me');
@@ -67,7 +67,7 @@ class Crunchbutton_Auth {
 			$user = User::facebook($profile->id);
 
 			if (!$user->id_user) {
-	
+
 				if ($profile && $profile->id) {
 					$user = new User;
 					self::load($user,$profile);
@@ -76,7 +76,7 @@ class Crunchbutton_Auth {
 		}
 		return $user ? $user : false;
 	}
-	
+
 	public function user($user = null) {
 		if ($user) $this->_user = $user;
 
@@ -86,7 +86,7 @@ class Crunchbutton_Auth {
 
 		return $this->_user;
 	}
-	
+
 
 	public function get($var) {
 		return $_SESSION[$var];
@@ -103,7 +103,7 @@ class Crunchbutton_Auth {
 	public function ip() {
 		return $this->_ip;
 	}
-	
+
 	public function destroy() {
 		$this->_session = session_id();
 		Caffeine::db()->query('UPDATE session SET active=0 WHERE session="'.$this->id().'"');
@@ -112,7 +112,7 @@ class Crunchbutton_Auth {
 		$this->_user = new Crunchbutton_User;
 	}
 
-	
+
 	public static function load($user, $profile) {
 		$user->permalink = $profile->username ? $profile->username : $profile->id;
 		$user->fbid = $profile->id;
@@ -123,9 +123,9 @@ class Crunchbutton_Auth {
 		$user->locale = $profile->locale;
 		$user->gender = $profile->gender;
 		$user->timezone = $profile->timezone;
-		$user->save();	
+		$user->save();
 	}
-	
+
 	public function session() {
 		return $this->_session;
 	}
