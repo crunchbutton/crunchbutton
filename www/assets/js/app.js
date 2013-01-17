@@ -1301,6 +1301,13 @@ App.cart = {
 		return tip;
 	},
 
+	/**
+	 * Sums the breakdown and returns formated number
+	 *
+	 * Because of the JS math problem we can't sum decimals, let's multiply it all by 100
+	 *
+	 * @return string
+	 */
 	total: function() {
 		var
 			total = 0,
@@ -1311,15 +1318,21 @@ App.cart = {
 			finalAmount = 0
 		;
 
-		var breakdown = this.totalbreakdown();
+		var breakdown = this.totalbreakdown() ;
+		//  Because of the JS math problem we can't sum decimals, let's multiply it all by 100
+		for (i in breakdown) {
+			breakdown[i] *= 100;
+		}
 		total        = breakdown.subtotal;
 		feeTotal     = total;
 		feeTotal    += breakdown.delivery;
 		feeTotal    += breakdown.fee;
 		finalAmount  = feeTotal + breakdown.taxes;
-		finalAmount += this._breakdownTip(total);
+		finalAmount += breakdown.tip;
+		finalAmount /=100; // return it to decimals
+		finalAmount  = App.ceil(finalAmount).toFixed(2);
 
-		return App.ceil(finalAmount).toFixed(2);
+		return finalAmount;
 	},
 
 	/**
@@ -1341,7 +1354,6 @@ App.cart = {
 		feeTotal            += elements['fee'];
 		elements['taxes']    = this._breackDownTaxes(feeTotal);
 		elements['tip']      = this._breakdownTip(total);
-		console.log(elements);
 		return elements;
 	},
 
