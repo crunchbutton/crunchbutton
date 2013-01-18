@@ -47,10 +47,13 @@ class Crunchbutton_Order extends Cana_Table {
 		// delivery fee
 		$this->delivery_fee = ($this->restaurant()->delivery_fee && $this->delivery_type == 'delivery') ? $this->restaurant()->delivery_fee : 0;
 
+
 		// service fee for customer
 		$this->service_fee = $this->restaurant()->fee_customer;
-		$serviceFee = ($this->price + $this->delivery_fee) * ($this->service_fee/100);
+		$serviceFee = ($this->price + $this->delivery_fee) * Util::ceil(($this->service_fee/100),2);
+		$serviceFee = Util::ceil($serviceFee, 2);
 		$totalWithFees = $this->price + $this->delivery_fee + $serviceFee;
+		$totalWithFees = Util::ceil($totalWithFees, 2);
 
 		// tip
 		$this->tip = $params['tip'];
