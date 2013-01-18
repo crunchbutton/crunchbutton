@@ -852,16 +852,23 @@ App.cart = {
 		 * the default tip will be 15% (variable App.order.tip). 
 		 * If the user had changed the tip value the default value will be chosed one.
 		 */
+		var wasTipChanged = false;
 		if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
-				$('[name="pay-tip"]').val( 0 );
 				App.order.tip = 0;
+				wasTipChanged = true;
 			}
 		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = 15;
-				$('[name="pay-tip"]').val( App.order.tip );
+				App.order.tip = 15; // Default value is 15
+				wasTipChanged = true;
+				
 			}
+		}
+		if( wasTipChanged ){
+			$('[name="pay-tip"]').val( App.order.tip );
+			// Forces the recalculation of total because the tip was changed.
+			totalText  = '$' + this.total();
 		}
 
 		if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
