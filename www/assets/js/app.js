@@ -1633,6 +1633,10 @@ App.loc = {
 		});
 
 		switch ($('.location-address').val().toLowerCase()) {
+			case 'yale':
+			case 'new haven':
+				forceLoc = App.communities.yale.permalink;
+				break;		
 			case 'brown':
 			case 'providence':
 				forceLoc = App.communities.providence.permalink;
