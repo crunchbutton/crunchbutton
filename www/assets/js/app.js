@@ -855,9 +855,11 @@ App.cart = {
 		if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
 				$('[name="pay-tip"]').val( 0 );
+				App.order.tip = 0;
 			}
 		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
+				App.order.tip = 15;
 				$('[name="pay-tip"]').val( App.order.tip );
 			}
 		}
@@ -1316,13 +1318,6 @@ App.cart = {
 		return tip;
 	},
 
-	/**
-	 * Sums the breakdown and returns formated number
-	 *
-	 * Because of the JS math problem we can't sum decimals, let's multiply it all by 100
-	 *
-	 * @return string
-	 */
 	total: function() {
 		var
 			total = 0,
@@ -1333,21 +1328,15 @@ App.cart = {
 			finalAmount = 0
 		;
 
-		var breakdown = this.totalbreakdown() ;
-		//  Because of the JS math problem we can't sum decimals, let's multiply it all by 100
-		for (i in breakdown) {
-			breakdown[i] *= 100;
-		}
+		var breakdown = this.totalbreakdown();
 		total        = breakdown.subtotal;
 		feeTotal     = total;
 		feeTotal    += breakdown.delivery;
 		feeTotal    += breakdown.fee;
 		finalAmount  = feeTotal + breakdown.taxes;
-		finalAmount += breakdown.tip;
-		finalAmount /=100; // return it to decimals
-		finalAmount  = App.ceil(finalAmount).toFixed(2);
+		finalAmount += this._breakdownTip(total);
 
-		return finalAmount;
+		return App.ceil(finalAmount).toFixed(2);
 	},
 
 	/**
@@ -1369,6 +1358,7 @@ App.cart = {
 		feeTotal            += elements['fee'];
 		elements['taxes']    = this._breackDownTaxes(feeTotal);
 		elements['tip']      = this._breakdownTip(total);
+		console.log(elements);
 		return elements;
 	},
 
@@ -1636,10 +1626,6 @@ App.loc = {
 		});
 
 		switch ($('.location-address').val().toLowerCase()) {
-			case 'new haven':
-			case 'yale':
-				forceLoc = App.communities.yale.permalink;
-				break;
 			case 'brown':
 			case 'providence':
 				forceLoc = App.communities.providence.permalink;
@@ -1999,7 +1985,6 @@ $(function() {
 
 	$('[name="pay-tip"]').live('change',function() {
 		App.order.tip = $(this).val();
-		// This variable is used to know if the user had changed the tip: 850
 		App.order.tipHasChanged = true;
 		var total = App.cart.total();
 		App.cart.updateTotal();
