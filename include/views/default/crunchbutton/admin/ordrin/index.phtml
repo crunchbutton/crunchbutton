@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN
+        "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  
+  <title>Ordrin PHP API Demo</title>
+  
+  <script type="text/javascript" src="/assets/admin/ordrin/datetimepicker.js"></script>
+  
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="/assets/admin/ordrin/jquery.json2html-2.0-min.js"></script>
+  
+  <script type="text/javascript">
+  function APISubmit(api) {
+    switch (api) {
+      case 'r':
+        $.post("/admin/ordrin/api?api=r", $("#restAPIForm").serialize(), function(data) { feed(data); }, "json"); 
+      break;
+      case 'u':
+        $.post("/admin/ordrin/api?api=u", $("#userAPIForm").serialize(), function(data) { feed(data); }, "json"); 
+      break;
+      case 'o':
+        $.post("/admin/ordrin/api?api=o", $("#orderAPIForm").serialize(), function(data) { feed(data); }, "json"); 
+      break;
+    }
+  }
+  
+  var transform = [{"tag":"div","html":function(obj) {
+    if (obj.id) {
+      var id = obj.id;
+    } else if (obj.rid) {
+      var id = obj.rid;
+    } else if (obj.em) {
+      var id = obj.em;
+    } else if (obj.name) {
+      var id = obj.name;
+    } else {
+      var id = obj.msg;
+    } // set identifier as ID, restaurant ID, or name returned
+    return("<b>" + id + "</b>: " + JSON.stringify(obj)); // generate list of JSON data returned
+  }}]
+
+  function feed(data) {
+    $("#jsonOutput").json2html(data, transform);// document.getElementById('jsonOutput').innerHTML = JSON.stringify(data);
+  }
+  
+  function showForm(form) {
+    document.restAPIForm.setAttribute('style', 'display:none');
+    document.userAPIForm.setAttribute('style', 'display:none');
+    document.orderAPIForm.setAttribute('style', 'display:none');
+
+    document.getElementById('jsonOutput').innerHTML = "";
+    
+    document.getElementById(form).setAttribute('style', 'display:inline');
+  }
+  
+  function restAPIDisplay() {
+    document.getElementById("initialR").style.display = "inline";
+    var display = [];
+    switch(document.restAPIForm.func.value) {
+      case "dl": display = ["hidden", "hidden", "hidden", "visible", "visible", "visible", "visible"]; break;
+      case "dc": display = ["hidden", "hidden", "visible", "visible", "visible", "visible", "visible"]; break;
+      case "df": display = ["visible", "visible", "visible", "visible", "visible", "visible", "visible"]; break;
+      case "rd": display = ["hidden", "hidden", "visible", "hidden", "hidden", "hidden", "hidden"]; break;
+    }
+    
+    document.restAPIForm.sT.style.visibility = display[0];
+    document.restAPIForm.tip.style.visibility = display[1];
+    document.restAPIForm.rid.style.visibility = display[2];
+    document.restAPIForm.dT.style.visibility = display[3];
+    document.restAPIForm.addr.style.visibility = display[4];
+    document.restAPIForm.city.style.visibility = display[5];
+    document.restAPIForm.zip.style.visibility = display[6];
+  }
+  
+  function userAPIDisplay() {
+    document.getElementById("initialU").style.display = "inline";
+    var display = [];
+    switch(document.userAPIForm.func.value) {
+      case "gacc": display = ["visible", "visible", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden"]; break;
+      case "macc": display = ["visible", "visible", "hidden", "visible", "visible", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden"]; break;
+      case "upass": display = ["visible", "visible", "visible", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden"]; break;
+      case "gaddr": display = ["visible", "visible", "hidden", "hidden", "hidden", "visible", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden"]; break;
+      case "uaddr": display = ["visible", "visible", "hidden", "hidden", "hidden", "visible", "visible", "visible", "visible", "visible", "visible", "visible", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden"]; break;
+      case "daddr": display = ["visible", "visible", "hidden", "hidden", "hidden", "visible", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden"]; break;
+      case "gcar": display = ["visible", "visible", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "visible", "hidden", "hidden", "hidden", "hidden", "hidden"]; break;
+      case "ucar": display = ["visible", "visible", "hidden", "visible", "visible", "hidden", "visible", "visible", "visible", "visible", "visible", "visible", "visible", "visible", "visible", "visible", "visible", "hidden"]; break;
+      case "dcar": display = ["visible", "visible", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "visible", "hidden", "hidden", "hidden", "hidden", "hidden"]; break;
+      case "gordr": display = ["visible", "visible", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden"]; break;
+      case "gordrs": display = ["visible", "visible", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "hidden", "visible"]; break;
+    }
+    
+    document.userAPIForm.email.style.visibility = display[0];
+    document.userAPIForm.pass.style.visibility = display[1];
+    document.userAPIForm.oldPass.style.visibility = display[2]
+    document.userAPIForm.fName.style.visibility = display[3];
+    document.userAPIForm.lName.style.visibility = display[4];
+    document.userAPIForm.addrNick.style.visibility = display[5];
+    document.userAPIForm.addr.style.visibility = display[6];
+    document.userAPIForm.addr2.style.visibility = display[7];
+    document.userAPIForm.city.style.visibility = display[8];
+    document.userAPIForm.state.style.visibility = display[9];
+    document.userAPIForm.zip.style.visibility = display[10];
+    document.userAPIForm.phone.style.visibility = display[11];
+    document.userAPIForm.cardNick.style.visibility = display[12];
+    document.userAPIForm.cardNum.style.visibility = display[13];
+    document.userAPIForm.csc.style.visibility = display[14];
+    document.userAPIForm.expMo.style.visibility = display[15];
+    document.userAPIForm.expYr.style.visibility = display[16];
+    document.userAPIForm.ordrID.style.visibility = display[17];
+  }
+  </script>
+
+  <style type="text/css" media="screen">
+  body {
+    background-color: #FFF;
+    font-size: 13px;
+    font-family: Arial, SunSans-Regular, Sans-Serif;
+    color:#564b47;  
+    padding:0 20px;
+    margin:0;
+  }
+  
+  p, pre{
+    padding:10px;
+    margin:0;
+  }
+   
+   
+  h1 {
+    font-size: 14px;
+    text-transform:uppercase;
+    text-align: right;
+    color: #564b47;
+    background-color: #ecefe9;
+    padding:5px 15px;
+    margin:0;
+  }
+   
+  h3 {
+    font-size:16px;
+    padding-top:10px;
+    text-transform:uppercase;
+    padding-left:0px;
+    color: #564b47;
+    background-color: transparent;
+  }
+  
+  a { 
+    color: #FFF;
+    font-size: 16px;
+    background-color:transparent;
+    text-decoration: none;
+    font-weight:bold;
+    margin:14px;
+  }
+    
+  #menu {
+    position: absolute;
+    width: 200px;
+    left: 20px;
+    background-color: #ff1415;
+    padding:10px 0 10px 0;
+    margin:0;
+  }
+  #content {
+    margin-left: 200px;
+    padding-left:25px;
+    padding-bottom:25px;
+    background-color:#f4f4ef;
+    overflow: auto;
+  }
+  #initialU, #initialR, #restAPIForm, #userAPIForm, #orderAPIForm {
+    display:none;
+  }
+</style>
+
+</head>
+
+<body>
+
+<h1>ordrin php demo</h1>
+
+<div id="menu"> 
+  <a href="#restAPI" onclick="showForm('restAPIForm');">Restaurant API</a><br />
+  <a href="#userAPI" onclick="showForm('userAPIForm');">User API</a><br />
+  <a href="#orderAPI" onclick="showForm('orderAPIForm');">Order API</a><br />
+</div> 
+ 
+<div id="content"> 
+  <h3>Select an API to the left and one of its functions below to begin testing.</h3>
+  <form name="restAPIForm" id="restAPIForm">
+    <select name="func" onchange="restAPIDisplay();">
+      <option value="select">Select an API function</option>
+      <option value="dl">Delivery List</option>
+      <option value="dc">Delivery Check</option>
+      <option value="df">Delivery Fee</option>
+      <option value="rd">Restaurant Details</option>
+    </select><br /><br />
+    <div id="initialR">
+    Subtotal: <input name="sT" type="text" size="4"><br />
+    Tip: <input name="tip" type="text" size="4"><br /><br />
+    Restaurant ID: <input name="rid" type="text" size="4"> <br />
+    
+    Date/time (Either "ASAP" or formatted like '6/12/12 13:02'): <input name="dT" type="text" size="25"><br />
+    Street address: <input name="addr" type="text" size="35" value="1 Main St"> <br />
+    City: <input name="city" type="text" size="15" value="College Station"> <br />
+    State: <input name="state" type="text" size"5" value="TX"> <br />
+    Zip code: <input name="zip" type="text" size="5" value="77840"> <br /><br />
+    <input type="submit"onclick="APISubmit('r'); return false;"> <input type="reset"></div>
+  </form>
+
+  <form name="userAPIForm" id="userAPIForm">
+    <select name="func" onchange="userAPIDisplay();">
+      <option>Select function</option>
+      <optgroup label="Account Settings">
+        <option value="gacc">Get account info</option>
+        <option value="macc">Create account</option>
+        <option value="upass">Update password</option>
+      </optgroup>
+      <optgroup label="Addresses">
+        <option value="gaddr">Get saved address(es)</option>
+        <option value="uaddr">Save/update address</option>
+        <option value="daddr">Delete address</option>
+      </optgroup>
+      <optgroup label="Credit cards">
+        <option value="gcar">Get saved card(s)</option>
+        <option value="ucar">Save/update card</option>
+        <option value="dcar">Delete card</option>
+      </optgroup>
+      <optgroup label="Order History">
+        <option value="gordr">Get previous orders</option>
+        <option value="gordrs">Get info on specific order</option>
+      </optgroup>
+    </select><br /><br />
+    <div id="initialU">
+    Email: <input name="email" type="text" size="20" value="test0@testing.com"> <br />
+    Password: <input name="pass" type="text" size="20" value="testing3"> <input name="oldPass" type="text" size="20" value="old password (if updating)"> <br /><br />
+    First name: <input name="fName" type="text" size="12" value="Test"> Last name: <input name="lName" type="text" size="12" value="Testing"><br />
+    
+    Address name (home, work, etc.): <input name="addrNick" type="text" size="10" value="Home"><br />
+    Address: <input name="addr" type="text" size="20" value="12 Main Street"> <input name="addr2" type="text" size="10" value="Suite 200"><br />
+    City: <input name="city" type="text" size="20" value="College Station"> State: <input name="state" type="text" size="2" value="TX"> ZIP: <input name="zip" type="text" size="5" value="77840"><br />
+    Phone number: <input name="phone" type="text" size="10" value="6789101112"><br /><br />
+    
+    Card name (personal, business, etc.): <input name="cardNick" type="text" size="10" value="Home"><br />
+    Card number: <input name="cardNum" type="text" size="16" value="4111111111111111"> Security code (3 or 4 digits): <input name="csc" type="text" size="4" value="777"><br />
+    Expiration month: <input name="expMo" type="text" size="2" value="12"> Expiration year: <input name="expYr" type="text" size="4" value="2012"><br /><br />
+    Order ID: <input name="ordrID" type="text" size="4" value=""><br /><br />
+    <input type="submit" onclick="APISubmit('u'); return false;"> <input type="reset"></div>
+  </form>
+  <form name="orderAPIForm" id="orderAPIForm">
+    <input name="_auth" value="1,iqR9QxyZ4BGaRMJBVL260g" type=hidden>
+    Restaurant ID: <input name="rid" type="text" size="4" value="141"><br /><br />
+
+    Tip: <input name="tip" type="text" size="3" value="10"><br />
+    Tray: A tray will be automatically built for demo purposes.<br />
+    
+    Email: <input name="email" type="text" size="20" value="test0@testing.com"><br />
+    Password: <input name="pass" type="text" size="20" value="testing3"><br />
+    First name: <input name="fName" type="text" size="12" value="Test"> Last name: <input name="lName" type="text" size="12" value="Testing"><br />
+
+    Date/time (Either "ASAP" or formatted like '6/12/12 13:02'): <input name="dT" type="text" size="25" value="ASAP"><br />
+
+    Address: <input name="addr" type="text" size="20" value="1 Main Street"> <input name="addr2" type="text" size="10" value=""><br />
+    City: <input name="city" type="text" size="20" value="College Station"> State: <input name="state" type="text" size="2" value="TX"> ZIP: <input name="zip" type="text" size="5" value="77840"><br />
+    Phone number: <input name="phone" type="text" size="10" value="6789101112"><br /><br />
+    
+    Card number: <input name="cardNum" type="text" size="16" value="4111111111111111"> Security code (3 or 4 digits): <input name="csc" type="text" size="4" value="123"><br />
+    Expiration month: <input name="expMo" type="text" size="2" value="12"> Expiration year: <input name="expYr" type="text" size="2" value="18"><br /><br />
+
+    <input type="submit" onclick="APISubmit('o'); return false;"> <input type="reset">
+  </form>
+
+  <h3>Response</h3>
+  <div id="jsonOutput">
+
+</div>
+</div> 
+
+</body>
+</html>
