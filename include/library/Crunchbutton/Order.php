@@ -619,7 +619,7 @@ class Crunchbutton_Order extends Cana_Table {
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
 					$msg .= "Remember to tip!\n\n";
 				}
-				$msg .= 'Total: $'.$this->final_price.'';
+				// $msg .= 'Total: $'.$this->final_price.'';
 				break;
 
 			case 'sms':
