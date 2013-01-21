@@ -14,7 +14,7 @@ var App = {
 	slogans: ['Push a button. Get Food.'],
 	tagline: 'Order the top food %s. For free. <br /> \
 		After you order, everything is saved for future 1 click ordering. <br /> \
-		<strong style="display: block; margin-top: 10px;">Choose a restaurant:</strong> \
+		<strong>Choose a restaurant:</strong> \
 		',
 	service: '/api/',
 	cached: {},
