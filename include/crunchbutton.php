@@ -2,12 +2,12 @@
 
 /**
  * Bootloader
- * 
+ *
  * @author    Devin Smith <devin@cana.la>
  * @date     2009.09.17
  *
  * The bootloader to include the luma application class
- * 
+ *
  */
 
 // keep the directory setup in here so we can change its path later
@@ -48,7 +48,7 @@ spl_autoload_register(function ($className) {
 			break;
 		}
 	}
-	
+
 	if (strpos($className, '\\') !== false) {
 
 		$classes = explode('\\', $className);
@@ -82,7 +82,7 @@ spl_autoload_register(function ($className) {
 			}
 			return;
 		}
-    }
+	}
 
 	throw new Cana_Exception_MissingLibrary('The file '.$GLOBALS['config']['dirs']['library'] . $className . '.php'.' does not exist');
 	exit;
@@ -93,9 +93,15 @@ spl_autoload_register(function ($className) {
 \Balanced\Bootstrap::init();
 \Ordrin\Bootstrap::init();
 
+$configFile = $GLOBALS['config']['dirs']['config'].'config.demo.xml';
+if (file_exists($GLOBALS['config']['dirs']['config'].'config.xml')) {
+	$configFile = $GLOBALS['config']['dirs']['config'].'config.xml';
+}
+
+
 // init (construct) the static Caffeine application and display the page requested
 Cana::init([
 	'app' => 'Crunchbutton_App',
-	'config' => (new Cana_Config($GLOBALS['config']['dirs']['config'].'config.demo.xml'))->merge($GLOBALS['config'])
+	'config' => (new Cana_Config($configFile))->merge($GLOBALS['config'])
 ]);
 
