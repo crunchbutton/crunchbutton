@@ -262,8 +262,6 @@ $(function() {
 			dishes[dishes.length] = dish;
 
 		});
-
-		console.log(dishes);
 		$.post('/api/restaurant/' + App.restaurant + '/dishes', {dishes: dishes}, function() {
 			if (complete) {
 				complete();
@@ -572,6 +570,11 @@ $(function() {
 
 });
 
+/**
+ * Generates HTML to show dish and it's items
+ *
+ * @todo Not sure if hide purges HTML or what.
+ */
 App.showDish = function(dishItem) {
 	if (!dishItem.id_dish) {
 		dishItem = {
@@ -639,10 +642,12 @@ App.showDish = function(dishItem) {
 		+ '</div><div class="divider"></div>');
 	}
 
+	var dishDescription = dishItem.description ? dishItem.description : '';
+
 	padding
 		.append('<input type="text" placeholder="Name" name="dish-name" class="dataset-dish clean-input dish-name" value="' + dishItem.name + '">')
 		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="dataset-dish clean-input" data-clean_type="float"><div class="divider"></div></div>')
-		.append('<textarea placeholder="Description" name="dish-description" class="dataset-dish clean-input dish-description" value="' + dishItem.description + '"></textarea>')
+		.append('<textarea placeholder="Description" name="dish-description" class="dataset-dish clean-input dish-description">' + dishDescription + '</textarea>')
 		.append('<div class="divider"></div><div class="divider dots" style="margin: 10px 0 10px 0;"></div>')
 		.append(options);
 

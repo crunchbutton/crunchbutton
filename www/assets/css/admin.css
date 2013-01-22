@@ -81,7 +81,7 @@ html {
 }
 
 .content {
-	width: 1024px;
+	width: 1010px;
 	margin: 0 auto;
 }
 
@@ -173,16 +173,23 @@ body {
 	box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
 	background: #49525f -webkit-linear-gradient(top,  #586372 0%,#49525f 90%);
 }
+
+/**
+ * Disable active tab down border as it's not working
+ *
+ * @todo make it work
+ *
 .admin-tab-active:after {
-	content: "";
-	background: #49525f;
-	width: 130px;
-	position: absolute;
-	z-index: 9000;
-	height: 4px;
+	content:    "";
+	background:  #49525f;
+	width:       130px;
+	position:    absolute;
+	z-index:     9000;
+	height:      4px;
 	margin-left: -15px;
-	margin-top: 23px;
+	margin-top:  23px;
 }
+*/
 
 .admin-content {
 	background: #fff;

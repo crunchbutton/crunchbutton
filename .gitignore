@@ -1,9 +1,9 @@
+# root hidden files
 .buildpath
 .project
 .settings
-logs/*
-www/cache/images/*
-workflow*
+
+# filetypes
 *.mov
 *.mp4
 *.m4v
@@ -11,5 +11,15 @@ workflow*
 *.zip
 *.psd
 *.pdf
-cache/*
+
+# config and specific files
 include/config/config.xml
+
+# files in cache
+cache/*
+logs/*
+www/cache/images/*
+
+# huh?
+workflow*
+

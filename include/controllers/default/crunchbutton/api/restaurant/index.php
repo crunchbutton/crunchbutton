@@ -8,6 +8,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 				if ($_SESSION['admin']) {
 					// save the restaurant
 					$r = Restaurant::o(c::getPagePiece(2));
+					/* @var $r Crunchbutton_Restaurant */
 
 					switch (c::getPagePiece(3)) {
 						case 'fake-merchant':
@@ -16,14 +17,14 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								$r->save();
 							}
 							break;
-							
+
 						case 'fakeremove-merchant':
 							if ($r->id_restaurant) {
 								$r->balanced_id = null;
 								$r->save();
 							}
 							break;
-							
+
 						case 'remove-bankinfo':
 							if ($r->id_restaurant) {
 								$r->balanced_bank = null;
@@ -40,7 +41,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 									'dob' => $this->request()['dob']
 								]);
 							}
-							break;					
+							break;
 
 						case 'credit':
 							if ($r->id_restaurant) {
@@ -64,7 +65,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								echo json_encode($this->request()['hours']);
 							}
 							break;
-							
+
 						case 'dishes':
 							if ($r->id_restaurant) {
 								$r->saveDishes($this->request()['dishes']);
@@ -81,11 +82,11 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							}
 							$r->serialize($request);
 							$r->save();
-							
+
 							// save the community
 							if ($this->request()['id_community']) {
 								$c = Community::o($this->request()['id_community']);
-								
+
 								// only save if its a valid community
 								if ($c->id_community) {
 									$rc = Restaurant_Community::q('select * from restaurant_community where id_restaurant="'.$r->id_restaurant.'"');
@@ -100,7 +101,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							echo $r->json();
 							break;
 					}
-					
+
 				}
 				break;
 
