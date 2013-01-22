@@ -72,14 +72,39 @@ $(function() {
 			var categories = restaurant.categories();
 			var isDishes = false;
 
+			var $categoriesContainer = $('<div class="accordion"></div>');
+			$('.admin-restaurant-dishes .admin-restaurant-content').append($categoriesContainer);
+
 			for (var i in categories) {
-				var dishes = categories[i].dishes();
+				var dishes       = categories[i].dishes();
+				var $categoryTab = $('<h3 data-id_category="'+ categories[i].id_category +'">'+ categories[i].name+'</h3><div></div>');
+				$categoriesContainer.append($categoryTab);
 
 				for (var x in dishes) {
 					App.showDish(dishes[x]);
 					isDishes = true;
 				}
 			}
+			$('.accordion').accordion({
+				collapsible: true,
+				active:      false,
+				heightStyle: "content",
+				beforeActivate: function( event, ui ) {
+					console.log('antes', event, ui);
+				},
+				activate:    function( event, ui ){
+					console.log('entro', event, ui);
+					var speed = 100;
+					var accordionOptions = $('.accordion').accordion('option');
+					setTimeout(function() {
+						$('.accordion').accordion('destroy');
+						$('.accordion').accordion(accordionOptions);
+					}, 1.1 * speed);
+				}
+			});
+
+			// $('.accordion .ui-accordion-content').sortable().disableSelection();
+
 
 			if (!isDishes) {
 				$('input[name="dish_check"][value="0"]').prop('checked', true);
@@ -324,7 +349,6 @@ $(function() {
 						}
 					}
 				}
-				console.log(hours);
 				$.post('/api/restaurant/' + id + '/hours', {hours: hours}, function() {
 					if (complete) {
 						complete();
@@ -415,9 +439,23 @@ $(function() {
 		$(this).val(App.formatTime($(this).val()));
 	});
 
+    /**
+     * What to do when clicking a dish
+     * 
+     * @todo refactorize how the accordion should be redrawn in a private method
+     */
 	$('.admin-food-item').live('click', function() {
-		$(this).closest('.admin-food-item-wrap').find('.admin-food-item-content').slideToggle(100);
+		var speed = 100;
+		$(this).closest('.admin-food-item-wrap').find('.admin-food-item-content').slideToggle(speed);
 		$(this).toggleClass('admin-food-item-collapsed');
+
+		// re-draws the dishes accordion after expanding/collapsing dish
+		var accordionOptions = $('.accordion').accordion('option');
+		setTimeout(function() {
+			$('.accordion').accordion('destroy');
+			$('.accordion').accordion(accordionOptions);
+		}, 1.1 * speed);
+
 	});
 
 	var ignoreKeys = [37,38,39,40,16,9]; //,17,18,91,13,16
@@ -656,7 +694,7 @@ App.showDish = function(dishItem) {
 		.append('<div class="admin-food-item-content-padding"><div class="action-button red action-button-small admin-food-item-delete"><span>Delete</span></div><div class="divider"></div></div>')
 		.append('<div class="divider"></div>');
 
-	$('.admin-restaurant-dishes .admin-restaurant-content').append(dish);
+	$('[data-id_category="'+ dishItem.id_category +'"] + div').append(dish);
 
 	if (!dishItem.id_dish) {
 		dish.find('.dish-name').focus();
@@ -683,6 +721,7 @@ App.createOptionGroup = function(el, source) {
 	optionAdder.append(App.returnOption({price: '',name:'',id_option:''}, option.type, option.id_option));
 	parent.find('.admin-dish-options .admin-restaurant-options-controls').before(optionWrapper);
 };
+
 /*
 App.addOptionGroup = function(option) {
 	var optionAdder = $('<div class="input-faker"></div>');
@@ -699,6 +738,7 @@ App.addOptionGroup = function(option) {
 	options.append(optionWrapper);
 };
 */
+
 App.returnOption = function(o, type, parent) {
 	var defaulted  = '';
 	switch (type) {
