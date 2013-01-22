@@ -1,6 +1,23 @@
+<style>
 
+#right-panel {margin-left: 740px; width: 240px}
+
+#right-panel .admin-content,
+#right-panel .admin-content > a,
+#right-panel .admin-content > div
+{
+	float: left;
+	width: 220px
+}
+
+.fixed { position: fixed;}
+.clear { clear: both;}
+
+</style>
 
 <div class="admin-id_restaurant" data-id_restaurant=""></div>
+
+
 
 <div class="admin-content-wrapper" style="width: 700px; ">
 	<div class="admin-content">
@@ -34,7 +51,7 @@
 					</div>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td class="label-primary">Food Items:</td>
 				<td class="content-primary">
@@ -64,7 +81,7 @@
 					</div>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td class="label-primary">Open Hours:</td>
 				<td class="content-primary">
@@ -77,7 +94,7 @@
 					</div>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td class="label-primary">Delivery Options:</td>
 				<td class="content-primary">
@@ -129,7 +146,7 @@
 					</div>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td class="label-primary">More Information:</td>
 				<td class="content-primary">
@@ -175,7 +192,7 @@
 					</div>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td class="label-primary">Admin shit:</td>
 				<td class="content-primary">
@@ -314,31 +331,14 @@
 					</div>
 				</td>
 			</tr>
-
-			<tr>
-				<td colspan="2" style="text-align: right;"><br />
-					<div class="action-button action-button-small green admin-restaurant-save-details">
-						<span>Save Details</span>
-					</div>
-					<div class="action-button action-button-small green admin-restaurant-save-hours" style="margin-right: 10px;">
-						<span>Save Hours</span>
-					</div>
-					<div class="action-button action-button-small green admin-restaurant-save-dishes" style="margin-right: 10px;">
-						<span>Save Dishes</span>
-					</div>
-					<div class="action-button action-button-small green admin-restaurant-save" style="margin-right: 10px;">
-						<span>Save All</span>
-					</div>
-				</td>
-			</tr>
 		</table>
 	</div>
 
-	
+
 </div>
 
 
-<div class="admin-content-wrapper" style="width: 252px; margin-left: 20px;">
+<div id="right-panel" class="admin-content-wrapper fixed">
 	<div class="admin-content">
 		<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/pay">
 			<div class="admin-food-item admin-restaurant-button">
@@ -355,11 +355,25 @@
 				<span class="food-name">Upload image</span>
 			</div>
 		</a>
+
+		<div class="action-button action-button-small green admin-restaurant-save-details">
+			<span>Save Details</span>
+		</div>
+		<div class="action-button action-button-small green admin-restaurant-save-hours" style="margin-right: 10px;">
+			<span>Save Hours</span>
+		</div>
+		<div class="action-button action-button-small green admin-restaurant-save-dishes" style="margin-right: 10px;">
+			<span>Save Dishes</span>
+		</div>
+		<div class="action-button action-button-small green admin-restaurant-save" style="margin-right: 10px;">
+			<span>Save All</span>
+		</div>
+		<div class="clear"></div>
 	</div>
 </div>
 
 <div class="divider"></div>
-	
+
 
 <div id="dialog-option-group" title="Create Option Group" style="display: none;">
 	<table class="admin-restaurant-form-sub">
