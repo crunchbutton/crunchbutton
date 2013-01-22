@@ -752,6 +752,52 @@ App.orders = {
 	}
 };
 
+App.suggestions = {
+	params: function() {
+		return {
+			search: $('input[name="suggestion-search"]').val(),
+			type: $('select[name="type"]').val(),
+			status: $('select[name="status"]').val(),
+			limit: $('input[name="limit"]').val(),
+			dates: $('input[name="date-range"]').val(),
+			restaurant: $('select[name="restaurant"]').val(),
+			community: $('select[name="community"]').val()
+		};
+	},
+	load: function() {
+		$('.suggestions-loader').show();
+		$('.suggestions-content').html('');
+		$.ajax({
+			url: '/admin/suggestions/content',
+			data: App.suggestions.params(),
+			complete: function(content) {
+				$('.suggestions-content').html(content.responseText);
+				$('.suggestions-loader').hide();
+			}
+		});
+	},
+	prepareForm: function( id_suggetion ){
+		$( '.admin-suggestion-save' ).live( 'click', function(){
+			$( '#suggestion-status' ).html( '' );
+			var status = $( '#status' ).val();
+			var data = { 'status' : status };
+			var url = App.service + 'suggestion/' + id_suggetion;
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				data: data,
+				url: url,
+				success: function(content) {
+					$( '#suggestion-status' ).html( 'Status saved!' );
+				}, 
+				error: function( ){
+					$( '#suggestion-status' ).html( 'Error, please try it again.' );	
+				}
+			});
+		} );
+	}
+};
+
 
 (function($) {
 	$.fn.getCursorPosition = function() {

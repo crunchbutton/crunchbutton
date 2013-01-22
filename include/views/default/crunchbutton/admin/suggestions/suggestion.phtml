@@ -1,0 +1,119 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content admin-content-suggestions">
+		<h1 class="suggestion-item-title">Suggestion</h1>
+		<br /><br />
+		<table class="admin-suggestion-form">
+			<tr>
+				<td class="label-primary">Suggestion:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<tr>
+										<td class="label-sub">Name:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->name;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Content:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->content;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Type:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->type;?></div></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-primary">Place:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<tr>
+										<td class="label-sub">Community:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->community()->name;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Restaurant:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->restaurant()->name;?></div></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-primary">More information:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<?php if( $this->suggestion->user() != NULL ) { ?>
+									<tr>
+										<td class="label-sub">User:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->user()->name;?></div></td>
+									</tr>
+									<?php } ?>
+									<tr>
+										<td class="label-sub">IP:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->ip;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Date:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->date()->format('M jS Y')?> - <?=$this->suggestion->date()->format('g:i:s A')?></div></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-primary">Status:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<tr>
+										<td class="label-sub">Status:</td>
+										<td class="content-sub">
+											<? $states = ['new','deleted','applied']; ?>
+											<select name="status" id="status">
+												<? 
+												foreach ($states as $status) { 
+													$selected = ( $status == $this->suggestion->status ) ? 'selected="selected"' : '';
+												?>
+													<option <?=$selected?> value="<?=$status?>"><?=$status?></option>
+												<? } ?>
+											</select>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<div id="suggestion-status"></div>
+					<div class="action-button action-button-small green admin-suggestion-save"><span>Save</span></div></td>
+			</tr>
+		</table>
+	</div>
+</div>
+<script>
+$(function() {
+	App.suggestions.prepareForm(<?=$this->suggestion->id_suggestion?>);
+});
+</script>
