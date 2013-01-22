@@ -29,6 +29,7 @@ var App = {
 		delivery_type: 'delivery',
 		tip: '15'
 	},
+	suggestion : {},
 	_init: false,
 	_pageInit: false
 };
@@ -285,6 +286,9 @@ App.page.restaurant = function(id) {
 			}
 		}
 
+		$('.restaurant-items').append('<div class="suggest-food"><a href="javascript:;">Suggest other food</div>');
+
+
 		$('.cart-items').append('<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for ' + App.restaurant.name + '</label></div>');
 
 		if (App.cart.hasItems()) {
@@ -331,8 +335,13 @@ App.page.restaurant = function(id) {
 		} else {
 			App.drawPay(this);
 		}
+
+		// Appends the suggestion's form
+		$('.main-content').append( App.suggestion.html() );
+
 		setTimeout(function() {
 			var total = App.cart.updateTotal();
+			App.suggestion.init();
 		},200);
 
 		App.cartHighlightEnabled = false;
@@ -2123,5 +2132,85 @@ $(function() {
 	});
 
 });
+
+App.suggestion.init = function(){
+	$( '.suggest-food' ).find( 'a' ).live( 'click', function() {
+		App.suggestion.show();
+	} );
+
+	$( '.button-submit-suggetion-form' ).live( 'click', function( e ){
+		App.suggestion.send();
+	} )
+
+	$( '.suggestion-form' ).submit(function() {
+  	return false;
+	} );
+}
+
+App.suggestion.html = function(){
+	var html = new Array();
+	html.push( '<div class="suggestion-container">' );
+		html.push( '<form class="suggestion-form">' );
+			html.push( '<h1>Suggest other food</h1>' );
+			html.push( '<div>"Crunchbutton "curates" menus. We\'ve curated just the top food here. You can suggest food, and, if it\'s really good, you\'ll see it on the menu soon.</div>' );
+			html.push( '<label>Name</label><div class="input-item"><input type="text" name="suggestion-name" tabindex="2"></div>' );
+			html.push( '<div class="divider"></div>' );
+			html.push( '<label>Comment</label><div class="input-item"><textarea name="suggestion-content"></textarea></div>' );
+			html.push( '<div class="divider"></div>' );
+			html.push( '<a href="javascript:;" class="button-submit-suggetion-form">Suggest</a>' );
+		html.push( '</form>' );
+		html.push( '<div class="suggestion-message">' );
+		html.push( '</div>' );
+	html.push( '</div>' );
+	return html.join( '' );
+}
+
+App.suggestion.send = function(){
+	var suggestionURL = App.service + 'suggestion/new';
+	var data = {};
+
+	data[ 'type' ] = 'dish';
+	data[ 'status' ] = 'new';
+	data[ 'id_user' ] = ( App.config.user.id_user ) ? App.config.user.id_user : 0;
+	data[ 'id_restaurant' ] = App.restaurant.id;
+	data[ 'id_community' ] = App.restaurant.id_community;
+	data[ 'name' ] = $( 'input[name=suggestion-name]' ).val();
+	data[ 'content' ] = $( 'textarea[name=suggestion-content]' ).val();
+	
+	if( $.trim( data[ 'name' ] ) == '' ){
+		alert( 'Please enter the food\'s name.' );
+		$( 'input[name=suggestion-name]' ).focus();
+		return;
+	}
+
+	$.ajax({
+		type: "POST",
+		dataType: 'json',
+		data: data,
+		url: suggestionURL,
+		success: function(content) {
+			App.suggestion.message( 'Thanks' )
+		}
+	});
+}
+
+App.suggestion.message = function( msg ){
+	// Hides the form and shows the message box
+	$( '.suggestion-form' ).hide();
+	$( '.suggestion-message' ).show();
+	$( '.suggestion-message' ).html( msg );
+}
+
+App.suggestion.show = function(){
+	// Resets the default values
+	$( 'input[name=suggestion-name]' ).val( '' );
+	$( 'textarea[name=suggestion-content]' ).val( '' );
+	// Shows the form and hides the message box
+	$( '.suggestion-form' ).show();
+	$( '.suggestion-message' ).hide();
+	setTimeout( function(){$( '.suggestion-container' ).dialog(  );},100 )	
+}
+
+
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});

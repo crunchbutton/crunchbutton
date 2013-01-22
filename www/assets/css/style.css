@@ -1614,6 +1614,15 @@ html[xmlns] .clearfix {
 	margin-top: 20px;
 }
 
+.suggest-food a{
+	font-style: italic;
+}
+	.suggestion-container{
+		background: #FFF;
+		display: none;
+		border: 1px solid #CCC;
+		padding: 10px;
+	}
 
 
 @media only screen and (min-width : 1024px) {
