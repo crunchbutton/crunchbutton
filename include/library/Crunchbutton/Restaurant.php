@@ -8,11 +8,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			->idVar('id_restaurant')
 			->load($id);
 	}
-	
+
 	public static function permalink($permalink) {
 		return self::q('select * from restaurant where permalink="'.$permalink.'"')->get(0);
 	}
-	
+
 	public function meetDeliveryMin($order) {
 		if (!$this->delivery_min) {
 			return true;
@@ -20,7 +20,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		$price = $this->delivery_min_amt == 'subtotal' ? $order->price : $order->final_price;
 		return $price < $this->delivery_min ? false : true;
 	}
-	
+
 	public function top() {
 		if (!isset($this->_top)) {
 			foreach ($this->dishes() as $dish) {
@@ -39,44 +39,44 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 		return $this->_dishes;
 	}
-	
+
 	public function categories() {
 		if (!isset($this->_categories)) {
 			$this->_categories = Category::q('select * from category where id_restaurant="'.$this->id_restaurant.'"');
 		}
 		return $this->_categories;
 	}
-	
+
 	public function community() {
 		$communities = $this->communities();
 		return $communities;
 	}
-	
+
 	public function communities() {
 		if (!isset($this->_communities)) {
 			$this->_communities = Community::q('select community.* from community left join restaurant_community using(id_community) where id_restaurant="'.$this->id_restaurant.'"');
 		}
 		return $this->_communities;
 	}
-	
+
 	public function phone() {
 		$phone = $this->phone;
 		$phone = preg_replace('/[^\d]*/i','',$phone);
 		$phone = preg_replace('/(\d{3})(\d{3})(.*)/', '\\1-\\2-\\3', $phone);
-		
+
 		return $phone;
 	}
-	
+
 	public function shortName() {
 		return $this->short_name ? $this->short_name : $this->name;
 	}
-	
+
 	public function saveDishes($newDishes) {
 		foreach ($this->categories() as $cat) {
 			if (!$category) {
 				$category = $cat;
 			}
-		}		
+		}
 
 		if (!$category) {
 			$category = new Category;
@@ -88,19 +88,22 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 
 		$dishes = $this->dishes();
-		
+
 		foreach ($newDishes as $dish) {
-			$dishO = new Dish($dish['id_dish']);
-			$dishO->active = 1;
+			$dishO                = new Dish($dish['id_dish']);
+			$dishO->active        = 1;
 			$dishO->id_restaurant = $this->id_restaurant;
-			$dishO->name = $dish['name'];
-			$dishO->description = $dish['description'];
-			$dishO->price = $dish['price'];
-			if (!$dishO->id_category) {
+			$dishO->name          = $dish['name'];
+			$dishO->description   = $dish['description'];
+			$dishO->price         = $dish['price'];
+			if (isset($dish['id_category']) && $dish['id_category']) {
+				$dishO->id_category = $dish['id_category'];
+			} elseif (!$dishO->id_category) { // this else doesn't make sense to me, but it is what it was before my changes
 				$dishO->id_category = $category->id_category;
 			}
+
 			$dishO->save();
-			
+
 			$options = $dishO->options();
 			$newOptions = [];
 
@@ -108,7 +111,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 				foreach ($dish['optionGroups'] as $optionGroup) {
 					if ($optionGroup['id_option'] == 'BASIC') {
 						$parent = null;
-	
+
 					} else {
 
 						$group = new Option($optionGroup['id_option']);
@@ -130,7 +133,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 							$do->default = $opt->default;
 						}
 					}
-					
+
 					if ($optionGroup['options']) {
 						foreach ($optionGroup['options'] as $opt) {
 							$option = new Option($opt['id_option']);
@@ -184,7 +187,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 
 	}
-	
+
 	public function _hasOption($option, $options) {
 		foreach ($options as $o) {
 			if ($o->id_option == $option->id_option) {
@@ -193,11 +196,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 		return false;
 	}
-	
+
 	public function payments() {
 		return Payment::q('select * from payment where env="'.c::env().'" and id_restaurant="'.$this->id_restaurant.'" order by date desc');
 	}
-	
+
 	public function createMerchant($params = []) {
 
 		$type = $params['type'] == 'business' ? 'business' : 'person';
@@ -222,26 +225,26 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			}
 
 			$merchant = c::balanced()->createMerchant(
-		        'restaurant-'.$this->id_restaurant.'@_DOMAIN_',
+				'restaurant-'.$this->id_restaurant.'@_DOMAIN_',
 				$p,
 				null,
-		        null,
+				null,
 				$this->name
 			);
 		} catch (Balanced\Exceptions\HTTPError $e) {
 			print_r($e);
 			exit;
 		}
-		
+
 		$this->balanced_id = $merchant->id;
 		$this->save();
-		
+
 		return $merchant;
-	
+
 	}
-	
+
 	public function merchant() {
-	
+
 		if ($this->balanced_id) {
 			$a = Crunchbutton_Balanced_Merchant::byId($this->balanced_id);
 			if ($a->id) {
@@ -264,10 +267,10 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			die('no merchant');
 			$merchant = $this->createMerchant();
 		}
-		
+
 		return $merchant;
 	}
-	
+
 	public function saveBankInfo($name, $account, $routing) {
 		try {
 			$bank = c::balanced()->createBankAccount($name, $account, $routing);
@@ -280,7 +283,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			exit;
 		}
 	}
-	
+
 	public function saveHours($hours) {
 		c::db()->query('delete from hour where id_restaurant="'.$this->id_restaurant.'"');
 		foreach ($hours as $day => $times) {
@@ -296,7 +299,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		unset($this->_hours);
 		$this->hours();
 	}
-	
+
 	public function hours($gmt = false) {
 		$gmt = $gmt ? '1' : '0';
 		if (!isset($this->_hours[$gmt])) {
@@ -320,7 +323,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 	}
 
 	public function open() {
-	
+
 		if (c::env() != 'live' && ($this->id_restaurant == 1 || $this->id_restaurant == 18)) {
 			return true;
 		}
@@ -344,21 +347,21 @@ class Crunchbutton_Restaurant extends Cana_Table {
 
 		return false;
 	}
-	
+
 	public function notifications() {
 		if (!isset($this->_notifications)) {
 			$this->_notifications = Notification::q('select * from notification where id_restaurant="'.$this->id_restaurant.'" and active=1');
 		}
 		return $this->_notifications;
 	}
-	
+
 	public function preset() {
 		return Preset::q('
 			select * from preset where id_restaurant="'.$this->id_restaurant.'"
 			and id_user is null
 		');
 	}
-	
+
 	public function cachePath() {
 		switch (c::env()) {
 			case 'local':
@@ -367,11 +370,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			default:
 				$path = '/home/i.crunchbutton/www/cache/';
 				break;
-			
+
 		}
 		return $path;
 	}
-	
+
 	public function imagePath() {
 		switch (c::env()) {
 			case 'local':
@@ -380,11 +383,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			default:
 				$path = '/home/i.crunchbutton/www/image/';
 				break;
-			
+
 		}
 		return $path;
 	}
-	
+
 	public function publicImagePath() {
 		switch (c::env()) {
 			case 'local':
@@ -393,11 +396,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			default:
 				$path = '/cache/images/';
 				break;
-			
+
 		}
 		return $path;
 	}
-	
+
 	public function thumb($params = []) {
 		$params['height'] = 596; //310 *2;
 		$params['width'] = 596; //310 *2;
@@ -410,7 +413,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		$params['cache'] 		= $this->cachePath();
 		$params['path'] 		= $this->imagePath();
 
-		try {	
+		try {
 			$thumb = new Cana_Thumb($params);
 		} catch (Exception $e) {
 			return null;
@@ -418,7 +421,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $thumb;
 
 	}
-	
+
 	public function facebook($params = []) {
 		$params['height'] = 400; //310 *2;
 		$params['width'] = 400; //310 *2;
@@ -431,15 +434,15 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		$params['cache'] 		= $this->cachePath();
 		$params['path'] 		= $this->imagePath();
 
-		try {	
+		try {
 			$thumb = new Cana_Thumb($params);
 		} catch (Exception $e) {
 			return null;
 		}
 		return $thumb;
 	}
-	
-	
+
+
 	public function image($params = []) {
 		$params['height'] = 280;
 		$params['width'] = 630;
@@ -452,7 +455,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		$params['cache'] 		= $this->cachePath();
 		$params['path'] 		= $this->imagePath();
 
-		try {	
+		try {
 			$thumb = new Cana_Thumb($params);
 		} catch (Exception $e) {
 			return null;
@@ -485,11 +488,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		if ($this->preset()->count()) {
 			$out['_preset'] = $this->preset()->get(0)->exports();
 		}
-		
+
 		$out['id_community'] = $this->community()->id_community;
 		return $out;
 	}
-	
+
 	public function priceRange() {
 		if (!isset($this->_priceRange)) {
 			$price = 0;
@@ -510,14 +513,14 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 		return $this->_priceRange;
 	}
-	
+
 	public function ratingCount() {
 		if (!isset($this->_ratingCount)) {
 			$this->_ratingCount = Order::q('select count(*) as c from `order` where id_restaurant="'.$this->id_restaurant.'" and env="live"')->c;
 		}
 		return $this->_ratingCount;
 	}
-	
+
 	public static function byRange($params) {
 		$query = '
 			SELECT ((ACOS(SIN('.$params['lat'].' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$params['lat'].' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$params['lon'].' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`, restaurant.*
@@ -530,7 +533,7 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		';
 		return self::q($query);
 	}
-	
+
 	public function save() {
 		if (!$this->timezone) {
 			$this->timezone = 'America/New_York';
