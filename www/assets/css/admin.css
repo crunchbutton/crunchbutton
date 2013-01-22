@@ -631,3 +631,30 @@ input[name="dish-options-price"] {
 .admin-restaurant-pay-form {
 	width: 400px;
 }
+
+.list-suggestions{
+	width: 100%;
+}
+	.list-suggestions th, td {
+		padding: 5px;
+	}
+	.list-suggestions tr:nth-of-type(even) {
+		background: #F5F5F5;
+	}
+	.list-suggestions tr.deleted {
+		color: #CCC;
+		text-decoration: line-through;
+	}
+		.list-suggestions a{
+			color:#666;
+		}
+	.list-suggestions tr.new .status {
+		color: #FFF;
+		background: green;
+		padding: 2px;
+	}
+	#suggestion-status{
+		color:green;
+		font-weight: bold;
+		text-align: center;
+	}
