@@ -231,6 +231,13 @@ $(function() {
 		saveDishes();
 	});
 
+	/**
+	 * Method to be called to save all dishes
+	 *
+	 * @param function compelte What to trigger after the dishes are stored
+	 *
+	 * @return void
+	 */
 	var saveDishes = function(complete) {
 		var selector = 'input.dataset-dish, select.dataset-dish, textarea.dataset-dish';
 		var dishes = [];
