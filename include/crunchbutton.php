@@ -96,6 +96,6 @@ spl_autoload_register(function ($className) {
 // init (construct) the static Caffeine application and display the page requested
 Cana::init([
 	'app' => 'Crunchbutton_App',
-	'config' => (new Cana_Config($GLOBALS['config']['dirs']['config'].'config.xml'))->merge($GLOBALS['config'])
+	'config' => (new Cana_Config($GLOBALS['config']['dirs']['config'].'config.demo.xml'))->merge($GLOBALS['config'])
 ]);
 
