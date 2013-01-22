@@ -65,7 +65,8 @@ $(function() {
 				}
 			});
 
-			App.restaurant = restaurant.id_restaurant;
+			App.restaurant       = restaurant.id_restaurant; // Should be App.id_restaurant IMHO
+			App.restaurantObject = restaurant;               // and this one should rellay be App.restaurant
 
 			$('.admin-restaurant-content').html('');
 
@@ -230,6 +231,13 @@ $(function() {
 		saveDishes();
 	});
 
+	/**
+	 * Method to be called to save all dishes
+	 *
+	 * @param function compelte What to trigger after the dishes are stored
+	 *
+	 * @return void
+	 */
 	var saveDishes = function(complete) {
 		var selector = 'input.dataset-dish, select.dataset-dish, textarea.dataset-dish';
 		var dishes = [];
@@ -238,9 +246,10 @@ $(function() {
 			var id = $(this).attr('data-id_dish');
 			var values = getValues($(this).find(selector), {});
 			var dish = {
-				name: values['dish-name'],
+				name:        values['dish-name'],
 				description: values['dish-description'],
-				price: values['dish-price']
+				price:       values['dish-price'],
+				id_category: values['dish-id_category'],
 			};
 
 			if (id) {
@@ -439,11 +448,11 @@ $(function() {
 		$(this).val(App.formatTime($(this).val()));
 	});
 
-    /**
-     * What to do when clicking a dish
-     * 
-     * @todo refactorize how the accordion should be redrawn in a private method
-     */
+	/**
+	 * What to do when clicking a dish
+	 *
+	 * @todo refactorize how the accordion should be redrawn in a private method
+	 */
 	$('.admin-food-item').live('click', function() {
 		var speed = 100;
 		$(this).closest('.admin-food-item-wrap').find('.admin-food-item-content').slideToggle(speed);
@@ -624,7 +633,9 @@ App.showDish = function(dishItem) {
 	}
 
 	var dish = $('<div class="admin-food-item-wrap" data-id_dish="' + dishItem.id_dish + '"' + (dishItem.id_dish ? '' : ' style="display: none;"') + '></div>');
-	dish.append('<div class="admin-food-item ' + (dishItem.id_dish ? 'admin-food-item-collapsed' : '') + '"><span class="food-name">' + dishItem.name + '</span><span class="food-price">($<span class="food-price-num">' + dishItem.price + '</span>)</span><div class="food-drop-down"></div></div>')
+	dish.append('<div class="admin-food-item ' + (dishItem.id_dish ? 'admin-food-item-collapsed' : '') + '"> ' +
+			'<span class="food-name">' + dishItem.name + '</span>' +
+			'<span class="food-price">($<span class="food-price-num">' + dishItem.price + '</span>)</span><div class="food-drop-down"></div></div>')
 	var content = $('<div class="admin-food-item-content" ' + (dishItem.id_dish ? 'style="display: none;"' : '') + '></div>');
 	var padding = $('<div class="admin-food-item-content-padding">');
 	dish.append(content);
@@ -681,10 +692,17 @@ App.showDish = function(dishItem) {
 	}
 
 	var dishDescription = dishItem.description ? dishItem.description : '';
+	var categories      = App.restaurantObject.categories();
+	var categoryOptions = '';
+	for (var i in categories) {
+		var selected     = (categories[i].id_category == dishItem.id_category) ? ' selected="selected" ' : '';
+		categoryOptions += '<option value="' + categories[i].id_category+ '" ' + selected + '>' + categories[i].name+ '</option>';
+	}
 
 	padding
 		.append('<input type="text" placeholder="Name" name="dish-name" class="dataset-dish clean-input dish-name" value="' + dishItem.name + '">')
 		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="dataset-dish clean-input" data-clean_type="float"><div class="divider"></div></div>')
+		.append('<label><span>Move to category</span><select name="dish-id_category" class="dataset-dish clean-input">' + categoryOptions + '</select></label')
 		.append('<textarea placeholder="Description" name="dish-description" class="dataset-dish clean-input dish-description">' + dishDescription + '</textarea>')
 		.append('<div class="divider"></div><div class="divider dots" style="margin: 10px 0 10px 0;"></div>')
 		.append(options);
