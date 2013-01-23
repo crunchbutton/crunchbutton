@@ -56,7 +56,7 @@
 						<div class="check-content">
 							<table style="width:90%;">
 								<tbody>
-									<?php if( $this->suggestion->user() != NULL ) { ?>
+									<?php if( $this->suggestion->user()->id_user ) { ?>
 									<tr>
 										<td class="label-sub">User:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->user()->name;?></div></td>
