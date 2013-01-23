@@ -25,7 +25,7 @@ $GLOBALS['config'] = [
 		'root'				=> dirname(__FILE__).'/../',
 		'www'				=> dirname(__FILE__).'/../www/',
 		'storage'			=> dirname(__FILE__).'/../storage/',
-	],'libraries' 			=> ['Crunchbutton','Cana','Services','Balanced','Ordrin'],
+	],'libraries' 			=> ['Crunchbutton','Cana','Services','Balanced','Ordrin','QueryPath'],
 	'alias'					=> []
 ];
 
@@ -92,6 +92,7 @@ spl_autoload_register(function ($className) {
 \Httpful\Bootstrap::init();
 \Balanced\Bootstrap::init();
 \Ordrin\Bootstrap::init();
+\QueryPath\Bootstrap::init();
 
 $configFile = $GLOBALS['config']['dirs']['config'].'config.demo.xml';
 if (file_exists($GLOBALS['config']['dirs']['config'].'config.xml')) {
