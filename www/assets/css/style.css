@@ -1614,15 +1614,82 @@ html[xmlns] .clearfix {
 	margin-top: 20px;
 }
 
-.suggest-food a{
+
+.suggest-shield{
+	background: #000;
+	top: 0;
+	left: 0;
+	position: fixed;
+	z-index: 1000;
+	opacity:0.4;
+	filter:alpha(opacity=40);
+}
+
+.suggestion-container{
+	background: #FFF;
+	display: none;
+	border: 1px solid #CCC;
+	padding: 10px;
+	width: 500px;
+}
+	.suggestion-container h1{
+		color:#D74924;
+		font-size: 1.4em;
+		font-weight: 400;
+		margin: 10px 0;
+	}
+		.suggestion-container label{
+			float: left;
+			text-align: right;
+			width: 90px;
+			font-weight: bold;
+			font-size: 12px;
+			margin-right: 25px;
+		}
+		.suggestion-form-button{
+			border-radius: 4px;
+			border: 1px solid #cb5921;
+			padding: 6px 10px 6px 12px;
+			color: #fff;
+			float: right;
+			margin-right: 75px;
+			text-decoration: none;
+			text-shadow: 1px 1px 0px rgba(0,0,0,.22);
+			background: -moz-linear-gradient(#f57333, #f26926);
+			background: -ms-linear-gradient(#f57333, #f26926);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f57333), color-stop(100%, #f26926));
+			background: -webkit-linear-gradient(#f57333, #f26926);
+			background: -o-linear-gradient(#f57333, #f26926);
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926');
+			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926')";
+			background: linear-gradient(#f57333, #f26926);
+		}
+.suggestion-link{
+	font-style: italic;
+	font-weight: bold;
+}
+
+.suggestion-help{
+	cursor: pointer;
+	font-weight: bold;
 	font-style: italic;
 }
-	.suggestion-container{
-		background: #FFF;
-		display: none;
-		border: 1px solid #CCC;
-		padding: 10px;
-	}
+.suggestion-help-content{
+	border: 1px solid #d74924;
+	background: #FFF;
+	display: none;
+	font-size:.9em;
+	margin: 5px 0;
+	padding:3px;
+	width: 200px;
+}
+.ui-icon-closethick{
+	color: #FFF;
+	font-weight: bold;
+	text-decoration: none;
+	float: right;
+	margin-bottom: 5px;
+}
 
 
 @media only screen and (min-width : 1024px) {
@@ -1683,6 +1750,7 @@ html[xmlns] .clearfix {
 	.restaurant-items {
 		position: absolute;
 	}
+
 }
 
 @media only screen and (min-width : 770px) and (max-width : 1023px) {
@@ -1711,6 +1779,9 @@ html[xmlns] .clearfix {
 	.restaurant-name {
 		margin-left: -321px;
 		left: 50%;
+	}
+	.suggestion-link-container{
+		margin-bottom: 30px;
 	}
 }
 

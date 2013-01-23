@@ -286,7 +286,7 @@ App.page.restaurant = function(id) {
 			}
 		}
 
-		$('.restaurant-items').append('<div class="suggest-food"><a href="javascript:;">Suggest other food</div>');
+		$('.restaurant-items').append( App.suggestion.link() );
 
 
 		$('.cart-items').append('<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for ' + App.restaurant.name + '</label></div>');
@@ -337,7 +337,7 @@ App.page.restaurant = function(id) {
 		}
 
 		// Appends the suggestion's form
-		$('.main-content').append( App.suggestion.html() );
+		$('.main-content').append( App.suggestion.form() );
 
 		setTimeout(function() {
 			var total = App.cart.updateTotal();
@@ -2134,54 +2134,61 @@ $(function() {
 });
 
 App.suggestion.init = function(){
-	$( '.suggest-food' ).find( 'a' ).live( 'click', function() {
+
+	$( '.suggestion-link' ).live( 'click', function() {
 		App.suggestion.show();
 	} );
 
-	$( '.button-submit-suggetion-form' ).live( 'click', function( e ){
+	$( '.suggestion-form-button' ).live( 'click', function( e ){
 		App.suggestion.send();
 	} )
 
 	$( '.suggestion-form' ).submit(function() {
   	return false;
 	} );
+
+	$( '.suggestion-help' ).live( 'click', function( e ){
+		$( '.suggestion-help-content' ).toggle( 'fast' );
+	} )
+	App.suggestion.shield.init();
+	
 }
 
-App.suggestion.html = function(){
-	var html = new Array();
-	html.push( '<div class="suggestion-container">' );
-		html.push( '<form class="suggestion-form">' );
-			html.push( '<h1>Suggest other food</h1>' );
-			html.push( '<div>"Crunchbutton "curates" menus. We\'ve curated just the top food here. You can suggest food, and, if it\'s really good, you\'ll see it on the menu soon.</div>' );
-			html.push( '<label>Name</label><div class="input-item"><input type="text" name="suggestion-name" tabindex="2"></div>' );
-			html.push( '<div class="divider"></div>' );
-			html.push( '<label>Comment</label><div class="input-item"><textarea name="suggestion-content"></textarea></div>' );
-			html.push( '<div class="divider"></div>' );
-			html.push( '<a href="javascript:;" class="button-submit-suggetion-form">Suggest</a>' );
-		html.push( '</form>' );
-		html.push( '<div class="suggestion-message">' );
-		html.push( '</div>' );
-	html.push( '</div>' );
-	return html.join( '' );
+App.suggestion.form = function(){
+	return '' +
+	'<div class="suggestion-container field-container">' +
+		'<form class="suggestion-form">' +
+			'<h1>Suggest other food</h1>' +
+			'<label>Name</label><div class="input-item "><input type="text" name="suggestion-name" tabindex="10"></div>' +
+			'<div class="divider"></div>' +
+			'<label>Comment</label><div class="input-item"><textarea name="suggestion-content" tabindex="11"></textarea></div>' +
+			'<div class="divider"></div>' +
+			'<a href="javascript:;" class="suggestion-form-button">Suggest</a>' +
+			'<div class="divider"></div>' + 
+		'</form>' +
+		'<div class="suggestion-message">' +
+		'</div>' +
+	'</div>';
 }
 
 App.suggestion.send = function(){
-	var suggestionURL = App.service + 'suggestion/new';
-	var data = {};
 
-	data[ 'type' ] = 'dish';
-	data[ 'status' ] = 'new';
-	data[ 'id_user' ] = ( App.config.user.id_user ) ? App.config.user.id_user : 0;
-	data[ 'id_restaurant' ] = App.restaurant.id;
-	data[ 'id_community' ] = App.restaurant.id_community;
-	data[ 'name' ] = $( 'input[name=suggestion-name]' ).val();
-	data[ 'content' ] = $( 'textarea[name=suggestion-content]' ).val();
-	
-	if( $.trim( data[ 'name' ] ) == '' ){
+	if( $.trim( $( 'input[name=suggestion-name]' ).val() ) == '' ){
 		alert( 'Please enter the food\'s name.' );
 		$( 'input[name=suggestion-name]' ).focus();
 		return;
 	}
+	
+	var suggestionURL = App.service + 'suggestion/new';
+
+	var data = {};
+	data[ 'type' ] = 'dish';
+	data[ 'status' ] = 'new';
+	data[ 'id_user' ] = ( App.config.user.id_user ) ? App.config.user.id_user : 'null';
+	data[ 'id_restaurant' ] = App.restaurant.id;
+	data[ 'id_community' ] = App.restaurant.id_community;
+	data[ 'name' ] = $( 'input[name=suggestion-name]' ).val();
+	data[ 'content' ] = $( 'textarea[name=suggestion-content]' ).val();
 
 	$.ajax({
 		type: "POST",
@@ -2189,9 +2196,21 @@ App.suggestion.send = function(){
 		data: data,
 		url: suggestionURL,
 		success: function(content) {
-			App.suggestion.message( 'Thanks' )
+			console.log( 'oi' )
+			App.suggestion.message( 'Thanks' );
 		}
 	});
+}
+
+App.suggestion.link = function(){
+	return '<div class="suggestion-link-container">' + 
+						'<a href="javascript:;" class="suggestion-link"> Suggest other food </a>' + 
+						'<span class="suggestion-help"> ? </span>' + 
+						'<div class="suggestion-help-content">' + 
+							'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' + 
+							'You can suggest food, and, if it\'s really good, you\'ll see it on the menu soon.' + 
+						'</div>' + 
+					'</div>';
 }
 
 App.suggestion.message = function( msg ){
@@ -2208,9 +2227,51 @@ App.suggestion.show = function(){
 	// Shows the form and hides the message box
 	$( '.suggestion-form' ).show();
 	$( '.suggestion-message' ).hide();
-	setTimeout( function(){$( '.suggestion-container' ).dialog(  );},100 )	
+	// Shows the modal
+	setTimeout( function(){
+			// Shows the shield
+			App.suggestion.shield.show();
+			$( '.suggestion-container' ).dialog( { 
+																				width: App.suggestion.contentWidth(),  
+																				close: function( event, ui ) { App.suggestion.shield.close(); },
+																				open: function( event, ui ) { $( '.suggestion-name' ).focus(); } 
+																				} );
+		},100 );
 }
 
+App.suggestion.contentWidth = function(){
+	if( $( window ).width() > 700 ){
+		return 600;	
+	}
+	if( $( window ).width() <= 700 ){
+		return $( window ).width() - 50;	
+	}
+}
 
+App.suggestion.shield = { 'isVisible' : false }
+App.suggestion.shield.resize = function(){
+	if( App.suggestion.shield.isVisible ){
+		$( '.suggest-shield' ).width( $( window ).width() );
+		$( '.suggest-shield' ).height( $( window ).height() );	
+	}
+}
+
+App.suggestion.shield.init = function(){
+	$( 'body' ).append( '<div class="suggest-shield"></div>' );
+	$( window ).resize( function() {
+			App.suggestion.shield.resize();
+	} );
+}
+
+App.suggestion.shield.show = function(){
+	$( '.suggest-shield' ).show();
+	App.suggestion.shield.isVisible = true;
+	App.suggestion.shield.resize();
+}
+
+App.suggestion.shield.close = function(){
+	$( '.suggest-shield' ).hide();
+	App.suggestion.shield.isVisible = false;
+}
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
