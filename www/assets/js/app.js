@@ -2151,7 +2151,6 @@ App.suggestion.init = function(){
 		$( '.suggestion-help-content' ).toggle( 'fast' );
 	} )
 	App.suggestion.shield.init();
-	
 }
 
 App.suggestion.form = function(){
@@ -2197,15 +2196,15 @@ App.suggestion.send = function(){
 		url: suggestionURL,
 		success: function(content) {
 			console.log( 'oi' )
-			App.suggestion.message( 'Thanks' );
+			App.suggestion.message( '<h1>Thanks</h1>' );
 		}
 	});
 }
 
 App.suggestion.link = function(){
 	return '<div class="suggestion-link-container">' + 
-						'<a href="javascript:;" class="suggestion-link"> Suggest other food </a>' + 
-						'<span class="suggestion-help"> ? </span>' + 
+						'<a href="javascript:;" class="suggestion-link">Suggest other food</a>' + 
+						'<span class="suggestion-help"> ( ? ) </span>' + 
 						'<div class="suggestion-help-content">' + 
 							'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' + 
 							'You can suggest food, and, if it\'s really good, you\'ll see it on the menu soon.' + 
@@ -2231,17 +2230,18 @@ App.suggestion.show = function(){
 	setTimeout( function(){
 			// Shows the shield
 			App.suggestion.shield.show();
-			$( '.suggestion-container' ).dialog( { 
-																				width: App.suggestion.contentWidth(),  
-																				close: function( event, ui ) { App.suggestion.shield.close(); },
-																				open: function( event, ui ) { $( '.suggestion-name' ).focus(); } 
-																				} );
+			$( '.suggestion-container' )
+				.dialog( { 
+					width: App.suggestion.contentWidth(),  
+					close: function( event, ui ) { App.suggestion.shield.close(); },
+					open: function( event, ui ) { $( '.suggestion-name' ).focus(); } 
+				} );
 		},100 );
 }
 
 App.suggestion.contentWidth = function(){
 	if( $( window ).width() > 700 ){
-		return 600;	
+		return 566;	
 	}
 	if( $( window ).width() <= 700 ){
 		return $( window ).width() - 50;	
@@ -2249,6 +2249,7 @@ App.suggestion.contentWidth = function(){
 }
 
 App.suggestion.shield = { 'isVisible' : false }
+
 App.suggestion.shield.resize = function(){
 	if( App.suggestion.shield.isVisible ){
 		$( '.suggest-shield' ).width( $( window ).width() );
@@ -2257,7 +2258,7 @@ App.suggestion.shield.resize = function(){
 }
 
 App.suggestion.shield.init = function(){
-	$( 'body' ).append( '<div class="suggest-shield"></div>' );
+	$( '.wrapper' ).append( '<div class="suggest-shield"></div>' );
 	$( window ).resize( function() {
 			App.suggestion.shield.resize();
 	} );
