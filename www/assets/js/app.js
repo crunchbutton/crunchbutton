@@ -339,6 +339,9 @@ App.page.restaurant = function(id) {
 		// Appends the suggestion's form
 		$('.main-content').append( App.suggestion.form() );
 
+		// As the div restaurant-items has position:absolute this line will make sure the footer will not go up.
+		$('.body').css( { 'min-height' : $('.restaurant-items').height() } )
+
 		setTimeout(function() {
 			var total = App.cart.updateTotal();
 			App.suggestion.init();
