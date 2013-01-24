@@ -7,6 +7,10 @@ class Crunchbutton_Auth {
 	public function __construct() {
 		$this->_session = new Crunchbutton_Session;
 		session_start();
+		
+		// here we need to check for a token
+		// if we dont have a valid token, we need to check for a facebook cookie
+		// then if none of thats good just return a blank user object
 
 		if ($_COOKIE['token'] && !$this->session()->id_user) {
 			$sess = Session::token($_COOKIE['token']);
@@ -43,38 +47,6 @@ class Crunchbutton_Auth {
 			return true;
 		}
 		return false;
-	}
-
-
-	public static function facebook() {
-		// verify that a facebook user exists to create it
-		$facebook = new Cana_Facebook([
-			'appId' => Cana::config()->facebook->app,
-			'secret' => Cana::config()->facebook->secret
-		]);
-
-		$fbUser = $facebook->getUser();
-
-		if ($fbUser) {
-			try {
-				$profile = (object)$facebook->api('/me');
-			} catch (Cana_Facebook_Exception $e) {
-				$profile = null;
-			}
-		}
-
-		if ($profile && $profile->id) {
-			$user = User::facebook($profile->id);
-
-			if (!$user->id_user) {
-
-				if ($profile && $profile->id) {
-					$user = new User;
-					self::load($user,$profile);
-				}
-			}
-		}
-		return $user ? $user : false;
 	}
 
 	public function user($user = null) {
