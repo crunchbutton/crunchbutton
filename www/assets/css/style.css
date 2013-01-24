@@ -1621,38 +1621,41 @@ html[xmlns] .clearfix {
 	left: 0;
 	position: fixed;
 	z-index: 1000;
-	opacity:0.4;
-	filter:alpha(opacity=40);
+	opacity:0.5;
+	filter:alpha(opacity=50);
 }
 
 .suggestion-container{
-	background: #FFF;
+	background: #f5f5f5 url(/assets/images/groovepaper.png);
+	border: 1px solid #F5F5F5;
+	border-radius: 4px;
 	display: none;
-	border: 1px solid #CCC;
-	padding: 10px;
+	padding: 20px;
 	width: 500px;
 }
 	.suggestion-container h1{
 		color:#D74924;
 		font-size: 1.4em;
 		font-weight: 400;
-		margin: 10px 0;
+		margin-bottom:22px;
 	}
 		.suggestion-container label{
 			float: left;
-			text-align: right;
+			text-align: left;
 			width: 90px;
 			font-weight: bold;
 			font-size: 12px;
 			margin-right: 25px;
+			padding-top: 12px;
 		}
 		.suggestion-form-button{
 			border-radius: 4px;
 			border: 1px solid #cb5921;
 			padding: 6px 10px 6px 12px;
 			color: #fff;
-			float: right;
-			margin-right: 75px;
+			float: left;
+			margin-left: 115px;
+			margin-top: 10px;
 			text-decoration: none;
 			text-shadow: 1px 1px 0px rgba(0,0,0,.22);
 			background: -moz-linear-gradient(#f57333, #f26926);
@@ -1664,31 +1667,46 @@ html[xmlns] .clearfix {
 			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926')";
 			background: linear-gradient(#f57333, #f26926);
 		}
-.suggestion-link{
-	font-style: italic;
-	font-weight: bold;
+.suggestion-link-container{
+	margin-bottom: 30px;
 }
+	.suggestion-link{
+		font-style: italic;
+		font-weight: bold;
+	}
 
 .suggestion-help{
+	color: #CCC;
 	cursor: pointer;
+	display: inline-block;
 	font-weight: bold;
 	font-style: italic;
+	margin-left: 5px;
+	-moz-user-select: none; 
+	-khtml-user-select: none; 
+	-webkit-user-select: none; 
+	-o-user-select: none; 
 }
 .suggestion-help-content{
-	border: 1px solid #d74924;
-	background: #FFF;
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	color: #999;
 	display: none;
-	font-size:.9em;
+	font-size:.85em;
+	line-height: 1.6em;
 	margin: 5px 0;
-	padding:3px;
-	width: 200px;
+	padding:5px;
+	width: auto;
 }
 .ui-icon-closethick{
 	color: #FFF;
 	font-weight: bold;
 	text-decoration: none;
+	display: block;
 	float: right;
-	margin-bottom: 5px;
+	font-weight: normal;
+	margin-bottom: 8px;
+	margin-right: 6px;
 }
 
 
@@ -1750,7 +1768,9 @@ html[xmlns] .clearfix {
 	.restaurant-items {
 		position: absolute;
 	}
-
+	.suggestion-help-content{
+		width: 180px;
+	}
 }
 
 @media only screen and (min-width : 770px) and (max-width : 1023px) {
@@ -1779,9 +1799,6 @@ html[xmlns] .clearfix {
 	.restaurant-name {
 		margin-left: -321px;
 		left: 50%;
-	}
-	.suggestion-link-container{
-		margin-bottom: 30px;
 	}
 }
 
