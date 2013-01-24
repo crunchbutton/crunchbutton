@@ -11,26 +11,29 @@ class Crunchbutton_Auth_Facebook extends Cana_Model {
 
 	public function check() {
 
-		$this->_facebook = new Cana_Facebook(array(
+		$this->_facebook = new Cana_Facebook([
 			'appId'	=> Cana::config()->facebook->appId,
-			'secret' => Cana::config()->facebook->secret,
-		));
+			'secret' => Cana::config()->facebook->secret
+		]);
 
 		$user = $this->_facebook->getUser();
 
 		if ($user) {
 			try {
-				$userObject = $this->_facebook->api('/me');
+				$userObject = $this->_facebook->api('/'.$user);
 			} catch (Cana_Facebook_Exception $e) {
+				// debug for now
+				print_r($e);
 				$userObject = null;
 			}
 		}
+
 		$this->_user = Cana_Model::toModel($userObject);
 		return $this;
 	}
 
 	public function login() {
-		header('Location: '.$this->_facebook->getLoginUrl().'&scope=email,user_location,user_birthday');	
+		header('Location: '.$this->_facebook->getLoginUrl().'&scope=email');	
 		exit;
 	}
 

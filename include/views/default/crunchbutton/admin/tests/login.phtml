@@ -1,0 +1,75 @@
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script>
+
+var FBAPP = {};
+FBAPP.processStatus = function(session) {
+	if (session.status === 'connected' && session.authResponse) {
+	
+		$('.login').hide();
+		$('.logout').show();
+
+		FB.api('/me', { fields: 'name, picture' }, function(response) {
+			if (response.error) {
+				console.log('some sort of error');
+				return;
+			}
+
+			// user is logged in
+			$('.user-name').html(response.name);
+			$('.user-image').attr('src', response.picture.data ? response.picture.data.url : response.picture);
+			$('.user').show();
+
+			// now we double check with the server what our logged in user is. the php will handle the rest
+			$.getJSON('/api/user',function(json) {
+				console.log(json);
+			});
+		});
+
+	} else {
+		$('.user').hide();
+		$('.login').show();
+		$('.logout').hide();
+	}
+};
+
+FBAPP.login = function() {
+	FB.login(FBAPP.processStatus,{perms:'email'});
+};
+
+FBAPP.logout = function() {
+	FB.logout();
+};
+
+$(function() {
+	$('.login, .logout, .user').hide();
+
+	window.fbAsyncInit = function() {
+		FB.init({
+			appId: '479805915398705', //'***REMOVED***', this is the real fb app id
+			cookie: true,
+			xfbml: true,
+			oauth: true
+		});
+
+		FB.getLoginStatus(FBAPP.processStatus);					
+		FB.Event.subscribe('auth.statusChange', FBAPP.processStatus);
+	};
+
+	(function() {
+		var e = document.createElement('script'); e.async = true;
+		e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+		document.getElementById('fb-root').appendChild(e);
+	}());
+
+});
+</script>
+
+<a href="javascript: FBAPP.login();" class="login">login</a>
+<a href="javascript: FBAPP.logout();" class="logout">logout</a>
+
+<div class="user">
+	<img class="user-image"></img>
+	<div class="user-name"></div>
+</div>
+
+<div id="fb-root"></div>
