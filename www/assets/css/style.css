@@ -1648,14 +1648,22 @@ html[xmlns] .clearfix {
 			margin-right: 25px;
 			padding-top: 12px;
 		}
+
+		.suggestion-form-tip{
+			border-top: 1px solid #F5F5F5;
+			color: #999;
+			font-size: 12px;
+			line-height: 16px;
+			margin-top: 30px;
+			padding-top: 10px;
+		}
+
 		.suggestion-form-button{
 			border-radius: 4px;
 			border: 1px solid #cb5921;
 			padding: 6px 10px 6px 12px;
 			color: #fff;
-			float: left;
-			margin-left: 115px;
-			margin-top: 10px;
+			float: right;
 			text-decoration: none;
 			text-shadow: 1px 1px 0px rgba(0,0,0,.22);
 			background: -moz-linear-gradient(#f57333, #f26926);
@@ -1667,36 +1675,31 @@ html[xmlns] .clearfix {
 			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926')";
 			background: linear-gradient(#f57333, #f26926);
 		}
+		
 .suggestion-link-container{
 	margin-bottom: 30px;
 }
+	.suggestion-link-title{
+		text-transform: uppercase;
+		color: #969696;
+		font-size: 13px;
+		font-weight: 600;
+		margin-bottom: 10px;
+	}
 	.suggestion-link{
 		font-style: italic;
 		font-weight: bold;
 	}
 
-.suggestion-help{
-	color: #CCC;
-	cursor: pointer;
-	display: inline-block;
-	font-weight: bold;
-	font-style: italic;
-	margin-left: 5px;
-	-moz-user-select: none; 
-	-khtml-user-select: none; 
-	-webkit-user-select: none; 
-	-o-user-select: none; 
+.suggestion-fixed-dialog{
+	position: fixed;
 }
-.suggestion-help-content{
-	border: 1px solid #CCC;
-	border-radius: 3px;
-	color: #999;
-	display: none;
-	font-size:.85em;
-	line-height: 1.6em;
-	margin: 5px 0;
-	padding:5px;
-	width: auto;
+
+.suggestion-thanks-text{
+	font-size: 12px;
+	line-height: 17px;
+	font-weight: bold;
+	width: 100%;
 }
 .ui-icon-closethick{
 	color: #FFF;
@@ -1709,6 +1712,51 @@ html[xmlns] .clearfix {
 	margin-right: 6px;
 }
 
+.tooltip-help{
+	color: #CCC;
+	cursor: pointer;
+	border-radius: 10px;
+	margin-left: 5px;
+	margin-top: 18px;
+	text-align: center;
+	padding-top: 2px;
+	position: absolute;
+	-moz-user-select: none; 
+	-khtml-user-select: none; 
+	-webkit-user-select: none; 
+	-o-user-select: none; 
+	position: absolute;
+	height: 16px;
+	min-width: 18px;
+	border-radius: 10px;
+	box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.5);
+	_border: 1px solid #fff;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(251, 60, 42, 1)), to(rgba(251, 57, 39, 1)));
+}
+
+.tooltip-help  span {
+	margin: 1px 3px 0 3px;
+	display: block;
+	text-shadow: 1px 1px 0px rgba(0,0,0,0.5);
+	color: #fff;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.tooltip-help-content{
+	background: #f5f5f5 url(/assets/images/groovepaper.png);
+	border: 1px solid #CCC;
+	border-radius: 3px;
+	color:#999;
+	display: none;
+	font-size: 12px;
+	line-height: 16px;
+	margin-left: 20px;
+	margin-top: 8px;
+	padding: 5px;
+	position: absolute;
+	width: 250px;
+}
 
 @media only screen and (min-width : 1024px) {
 	.restaurant-pic-wrapper {
@@ -1771,6 +1819,14 @@ html[xmlns] .clearfix {
 	.suggestion-help-content{
 		width: 180px;
 	}
+	.suggestion-form-button{
+		float: left;
+		margin-left: 165px;
+		margin-top: 10px;
+	}
+	.suggestion-thanks-text{
+		width: 400px;
+	}
 }
 
 @media only screen and (min-width : 770px) and (max-width : 1023px) {
@@ -1800,6 +1856,16 @@ html[xmlns] .clearfix {
 		margin-left: -321px;
 		left: 50%;
 	}
+
+	.suggestion-form-button{
+		float: left;
+		margin-left: 165px;
+		margin-top: 10px;
+	}
+	.suggestion-thanks-text{
+		width: 400px;
+	}
+
 }
 
 th {

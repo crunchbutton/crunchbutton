@@ -269,7 +269,13 @@ App.page.restaurant = function(id) {
 			categories = App.restaurant.categories(),
 			dishes, list;
 
-		$('.restaurant-items').append('<div class="content-item-name content-item-main-name"><h1>Add to your order</h1></div>')
+		var tooltip = '<span class="tooltip-help"><span>?</span></span>' + 
+									'<div class="tooltip-help-content">' + 
+										'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' + 
+										'If you really want something else, suggest it below.' + 
+									'</div>';
+
+		$('.restaurant-items').append('<div class="content-item-name content-item-main-name"><h1>Add to your order' + tooltip +  '</h1></div>')
 
 		for (var x in categories) {
 			dishes = categories[x].dishes();
@@ -345,6 +351,10 @@ App.page.restaurant = function(id) {
 		setTimeout(function() {
 			var total = App.cart.updateTotal();
 			App.suggestion.init();
+			// ToolTip
+			$( '.tooltip-help' ).live( 'click', function() {
+				$( '.tooltip-help-content' ).toggle();
+			} )
 		},200);
 
 		App.cartHighlightEnabled = false;
@@ -2150,26 +2160,27 @@ App.suggestion.init = function(){
   	return false;
 	} );
 
-	$( '.suggestion-help' ).live( 'click', function( e ){
-		$( '.suggestion-help-content' ).toggle( 'fast' );
-	} )
 	App.suggestion.shield.init();
 }
 
 App.suggestion.form = function(){
 	return '' +
 	'<div class="suggestion-container field-container">' +
-		'<form class="suggestion-form">' +
-			'<h1>Suggest other food</h1>' +
-			'<label>Name</label><div class="input-item "><input type="text" name="suggestion-name" tabindex="10"></div>' +
-			'<div class="divider"></div>' +
-			'<label>Comment</label><div class="input-item"><textarea name="suggestion-content" tabindex="11"></textarea></div>' +
-			'<div class="divider"></div>' +
-			'<a href="javascript:;" class="suggestion-form-button">Suggest</a>' +
-			'<div class="divider"></div>' + 
-		'</form>' +
-		'<div class="suggestion-message">' +
+		'<div class="suggestion-form-container field-container">' +
+			'<form class="suggestion-form">' +
+				'<h1>What do you suggest?</h1>' +
+				'<input type="text" maxlength="250" name="suggestion-name" tabindex="10">' +
+				'<a href="javascript:;" class="suggestion-form-button">Suggest</a>' +
+				'<div class="divider"></div>' + 
+			'</form>' +
+			'<div class="suggestion-message">' +
+			'</div>' +
 		'</div>' +
+		'<div class="suggestion-form-tip">' + 
+			'Crunchbutton "curates" menus. <br/>' + 
+			'We\'ve curated just the top food here. <br/>' + 
+			'You can suggest food, and, if it\'s really good, you\'ll see it on the menu soon.' + 
+		'</div>' + 
 	'</div>';
 }
 
@@ -2190,7 +2201,6 @@ App.suggestion.send = function(){
 	data[ 'id_restaurant' ] = App.restaurant.id;
 	data[ 'id_community' ] = App.restaurant.id_community;
 	data[ 'name' ] = $( 'input[name=suggestion-name]' ).val();
-	data[ 'content' ] = $( 'textarea[name=suggestion-content]' ).val();
 
 	$.ajax({
 		type: "POST",
@@ -2198,20 +2208,16 @@ App.suggestion.send = function(){
 		data: data,
 		url: suggestionURL,
 		success: function(content) {
-			console.log( 'oi' )
-			App.suggestion.message( '<h1>Thanks</h1>' );
+			App.suggestion.message( '<h1>Awesome, thanks!!</h1>' + 
+															'<div class="suggestion-thanks-text">If you really really wanna make sure we add it asap, feel free to call us at 800-242-1444</div>' );
 		}
 	});
 }
 
 App.suggestion.link = function(){
 	return '<div class="suggestion-link-container">' + 
-						'<a href="javascript:;" class="suggestion-link">Suggest other food</a>' + 
-						'<span class="suggestion-help"> ( ? ) </span>' + 
-						'<div class="suggestion-help-content">' + 
-							'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' + 
-							'You can suggest food, and, if it\'s really good, you\'ll see it on the menu soon.' + 
-						'</div>' + 
+						'<div class="suggestion-link-title">Really want something else?</div>' +
+						'<a href="javascript:;" class="suggestion-link">Suggest other food</a>' +
 					'</div>';
 }
 
@@ -2225,7 +2231,6 @@ App.suggestion.message = function( msg ){
 App.suggestion.show = function(){
 	// Resets the default values
 	$( 'input[name=suggestion-name]' ).val( '' );
-	$( 'textarea[name=suggestion-content]' ).val( '' );
 	// Shows the form and hides the message box
 	$( '.suggestion-form' ).show();
 	$( '.suggestion-message' ).hide();
@@ -2235,16 +2240,17 @@ App.suggestion.show = function(){
 			App.suggestion.shield.show();
 			$( '.suggestion-container' )
 				.dialog( { 
+					dialogClass: 'suggestion-fixed-dialog',
 					width: App.suggestion.contentWidth(),  
 					close: function( event, ui ) { App.suggestion.shield.close(); },
 					open: function( event, ui ) { $( '.suggestion-name' ).focus(); } 
 				} );
-		},100 );
+		}, 100 );
 }
 
 App.suggestion.contentWidth = function(){
 	if( $( window ).width() > 700 ){
-		return 566;	
+		return 450;	
 	}
 	if( $( window ).width() <= 700 ){
 		return $( window ).width() - 50;	
@@ -2256,7 +2262,8 @@ App.suggestion.shield = { 'isVisible' : false }
 App.suggestion.shield.resize = function(){
 	if( App.suggestion.shield.isVisible ){
 		$( '.suggest-shield' ).width( $( window ).width() );
-		$( '.suggest-shield' ).height( $( window ).height() );	
+		// Plus 60 due to iphone's title bar.
+		$( '.suggest-shield' ).height( $( window ).height() + 60 );	
 	}
 }
 
