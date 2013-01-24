@@ -1699,6 +1699,7 @@ html[xmlns] .clearfix {
 	font-size: 12px;
 	line-height: 17px;
 	font-weight: bold;
+	width: 100%;
 }
 .ui-icon-closethick{
 	color: #FFF;
@@ -1823,6 +1824,9 @@ html[xmlns] .clearfix {
 		margin-left: 165px;
 		margin-top: 10px;
 	}
+	.suggestion-thanks-text{
+		width: 400px;
+	}
 }
 
 @media only screen and (min-width : 770px) and (max-width : 1023px) {
@@ -1857,6 +1861,9 @@ html[xmlns] .clearfix {
 		float: left;
 		margin-left: 165px;
 		margin-top: 10px;
+	}
+	.suggestion-thanks-text{
+		width: 400px;
 	}
 
 }
