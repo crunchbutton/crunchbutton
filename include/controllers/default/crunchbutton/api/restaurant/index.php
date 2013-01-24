@@ -1,6 +1,27 @@
 <?php
 
 class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
+
+    /**
+     * Stores the notifications
+     *
+     * @param Crunchbutton_Restaurant $restaurant Current restaurant
+     *
+     * @return void
+     */
+	private function _saveNotifications(Crunchbutton_Restaurant $restaurant)
+	{
+		if (!$restaurant->id_restaurant) return;
+		$elements = $restaurant->saveNotifications($this->request()['elements']);
+
+		$out = [];
+		foreach ($elements as $notification) {
+			/* @var $notification Crunchbutton_Notification */
+			$out['_notifications'][$notification->id_notification] = $notification->exports();
+		}
+		echo json_encode($out);
+	}
+
 	public function init() {
 		switch ($this->method()) {
 			case 'post':
@@ -10,7 +31,8 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 					$r = Restaurant::o(c::getPagePiece(2));
 					/* @var $r Crunchbutton_Restaurant */
 
-					switch (c::getPagePiece(3)) {
+					$action = c::getPagePiece(3);
+					switch ($action) {
 						case 'fake-merchant':
 							if ($r->id_restaurant) {
 								$r->balanced_id = c::config()->balanced->sharedMerchant;
@@ -41,6 +63,9 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 									'dob' => $this->request()['dob']
 								]);
 							}
+							break;
+						case 'notifications':
+							$this->_saveNotifications($r);
 							break;
 
 						case 'credit':
