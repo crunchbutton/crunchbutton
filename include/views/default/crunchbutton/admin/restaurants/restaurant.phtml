@@ -18,6 +18,8 @@
 .fixed { position: fixed;}
 .clear { clear: both;}
 
+input.notification {width: 400px;}
+
 
 </style>
 
@@ -41,19 +43,26 @@
 
 			<tr>
 				<td class="label-primary">Order Notification Methods:</td>
-				<td class="content-primary">
+				<td class="content-primary" id="notifications">
 					<div class="check-wrap">
-						<div class="check"><input type="checkbox"><label>Fax</label></div>
+						<div class="check">Text Message</div>
+						<div class="check-content sms"></div>
 					</div>
 					<div class="check-wrap">
-						<div class="check"><input type="checkbox"><label>Email</label></div>
+						<div class="check">Email</div>
+						<div class="check-content email"></div>
 					</div>
 					<div class="check-wrap">
-						<div class="check"><input type="checkbox"><label>Text Message</label></div>
+						<div class="check">Phone Call</div>
+						<div class="check-content phone"></div>
 					</div>
 					<div class="check-wrap">
-						<div class="check"><input type="checkbox"><label>Phone Call</label></div>
-						<div class="check-content">Okay, well call blah blah</div>
+						<div class="check">URL</div>
+						<div class="check-content url"></div>
+					</div>
+					<div class="check-wrap">
+						<div class="check">Fax</div>
+						<div class="check-content fax"></div>
 					</div>
 				</td>
 			</tr>

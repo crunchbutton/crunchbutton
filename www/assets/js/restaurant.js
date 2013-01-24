@@ -23,6 +23,10 @@ var Restaurant = function(id) {
 		return self.loadType('Category','categories');
 	}
 
+	self.notifications = function() {
+		return self.loadType('Notification','notifications');
+	}
+
 	self.top = function() {
 		var categories = self.categories();
 

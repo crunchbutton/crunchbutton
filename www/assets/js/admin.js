@@ -19,6 +19,33 @@ var App = {
 	_pageInit: false
 };
 
+/**
+ * Sets the notifications in the restaurant form
+ *
+ * @param notifications
+ */
+function _loadNotifications(notifications) {
+	for (var i in notifications) {
+		var notification = notifications[i];
+		var $wrapper = 'div.check-content.' + notification.type;
+			// console.log($wrapper);
+			$wrapper = $($wrapper);
+		var active   = parseInt(notification.active) ? 'checked="checked"' : '';
+		var id       = parseInt(notification.id) ? notification.id : '';
+
+		html = '<div data-id_notification="' + id +'" class="notification-wrap">' +
+					'<input type="checkbox" '+ active    +
+					' name="notification-active" class="dataset-notification"' +
+					' />' +
+					'<input value="' + notification.value+ '" '  +
+					' name="notification-value" class="dataset-notification notification" ' +
+					' />'+
+				'</div>';
+		$wrapper.append(html);
+	}
+}
+
+
 
 $(function() {
 	$('.admin-restaurant-link').live('click',function() {
@@ -69,6 +96,8 @@ $(function() {
 			App.restaurantObject = restaurant;               // and this one should rellay be App.restaurant
 
 			$('.admin-restaurant-content').html('');
+
+			_loadNotifications(restaurant.notifications());
 
 			var categories = restaurant.categories();
 			var isDishes = false;
@@ -303,6 +332,45 @@ $(function() {
 		});
 	}
 
+
+
+	/**
+	 * Method to be called to save notifications
+	 *
+	 * @param function compelte What to trigger after the dishes are stored
+	 *
+	 * @return void
+	 */
+	function _saveNotifications(complete) {
+		var selector = 'input.dataset-notification, select.dataset-notification, textarea.dataset-notification';
+		var elements = [];
+
+		$('.notification-wrap').each(function() {
+			var id      = $(this).attr('data-id_notification');
+			var values  = getValues($(this).find(selector), {});
+			var element = {
+				active: values['notification-active'],
+				value:  values['notification-value']
+				// @todo get type
+			};
+
+			if (id) {
+				element.id_notification = id;
+			}
+
+			elements[elements.length] = element;
+
+		});
+		console.log(elements);
+		/* $.post('/api/restaurant/' + App.restaurant + '/notifications', {elements: elements}, function() {
+			if (complete) {
+				// complete();
+			}
+		});
+		*/
+	}
+
+
 	var saveRestaurant = function(all) {
 		var selector = 'input.dataset-restaurant, select.dataset-restaurant, textarea.dataset-restaurant';
 		var id = App.restaurant;
@@ -314,7 +382,9 @@ $(function() {
 					if (all) {
 						saveHours(function() {
 							saveDishes(function() {
+								_saveNotifications(function() {
 
+								});
 							});
 						});
 					}
@@ -330,7 +400,9 @@ $(function() {
 					if (all) {
 						saveHours(function() {
 							saveDishes(function() {
-								location.href = '/admin/restaurants/' + App.restaurant;
+								_saveNotifications(function() {
+									location.href = '/admin/restaurants/' + App.restaurant;
+								});
 							});
 						});
 					}
@@ -852,9 +924,9 @@ App.suggestions = {
 				url: url,
 				success: function(content) {
 					$( '#suggestion-status' ).html( 'Status saved!' );
-				}, 
+				},
 				error: function( ){
-					$( '#suggestion-status' ).html( 'Error, please try it again.' );	
+					$( '#suggestion-status' ).html( 'Error, please try it again.' );
 				}
 			});
 		} );

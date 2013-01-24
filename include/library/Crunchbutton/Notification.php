@@ -18,7 +18,7 @@ class Crunchbutton_Notification extends Cana_Table {
 				file_put_contents($temp, $mail->message());
 				//chmod($temp, 0777);
 				rename($temp, $temp.'.html');
-				
+
 				$log = new Notification_Log;
 				$log->id_notification = $this->id_notification;
 				$log->status = 'pending';
@@ -33,7 +33,7 @@ class Crunchbutton_Notification extends Cana_Table {
 				]);
 
 				unlink($temp.'.html');
-				
+
 				if ($fax->success) {
 					$log->remote = $fax->faxId;
 					$log->status = 'queued';
@@ -42,7 +42,7 @@ class Crunchbutton_Notification extends Cana_Table {
 					$log->status = 'error';
 					$log->save();
 				}
-				
+
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
 					$order->queConfirm();
@@ -77,7 +77,7 @@ class Crunchbutton_Notification extends Cana_Table {
 				$log->id_order = $order->id_order;
 				$log->save();
 
- 				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoingRestaurant,
 					'+1'.$num,
@@ -106,11 +106,11 @@ class Crunchbutton_Notification extends Cana_Table {
 					$order->queConfirm();
 				}
 				break;
-		}	
+		}
 	}
 
 	public function confirm() {
-	
+
 	}
 
 	public function __construct($id = null) {
@@ -119,5 +119,30 @@ class Crunchbutton_Notification extends Cana_Table {
 			->table('notification')
 			->idVar('id_notification')
 			->load($id);
+	}
+
+	/**
+	 * Gets an array of possible Notification types
+	 *
+	 * Method is not ready yet, it's just coppied text I found to make it work later when needed
+	 *
+	 * @return array
+	 *
+	 * @todo make this code work
+	 */
+	public function getTypes()
+	{
+
+		$sql = "SELECT SUBSTRING(COLUMN_TYPE,5) FROM information_schema.COLUMNS WHERE TABLE_NAME='notification' AND COLUMN_NAME='type' ";
+		$rs = c::db()->query($sql);
+		$x = eval("return   ['sms','email','phone','url','fax', 'foo'] ; ");
+
+		$type = $this->db->query( "SHOW COLUMNS FROM {$table} WHERE Field = '{$field}'" )->row( 0 )->Type;
+		preg_match('/^enum\((.*)\)$/', $type, $matches);
+		foreach( explode(',', $matches[1]) as $value )
+		{
+			$enum[] = trim( $value, "'" );
+		}
+		return $enum;
 	}
 }
