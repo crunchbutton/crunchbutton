@@ -348,9 +348,30 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return false;
 	}
 
-	public function notifications() {
+	/**
+	 * Returns all the notifications linked to this restaurant
+	 *
+	 * @param array $where asociative values to filter the where
+	 *
+	 * @todo $where only handles AND keys, where engine should probably be stored in the Cana_Table class
+	 *
+	 * @return Cana_Iterator
+	 */
+	public function notifications($where = []) {
+		$originalWhere = [
+			'id_restaurant' => $this->id_restaurant,
+			'active'        => 1,
+		];
+		$where    = array_merge($originalWhere, $where);
+		$whereSql = '1 = 1 ';
+		foreach ($where as $key => $value) {
+			if ($value !== NULL) {
+				$whereSql .= " AND $key = '$value'";
+			}
+		}
+
 		if (!isset($this->_notifications)) {
-			$this->_notifications = Notification::q('select * from notification where id_restaurant="'.$this->id_restaurant.'" and active=1');
+			$this->_notifications = Notification::q("SELECT * FROM notification WHERE $whereSql");
 		}
 		return $this->_notifications;
 	}
@@ -464,21 +485,41 @@ class Crunchbutton_Restaurant extends Cana_Table {
 
 	}
 
+	/**
+	 * Returns an array with all the information for a Restaurant.
+	 *
+	 * This is usualy used to JSON encode and send to the browser
+	 *
+	 * @param array $ignore An indexed array of what items not to ad to the export array
+	 *
+	 * @return array
+	 */
 	public function exports($ignore = []) {
-
-		$out = $this->properties();
-		$out['_open'] = $this->open();
-//		$out['img'] = '/assets/images/food/630x280/'.$this->image.'?crop=1';
-		$out['img'] = $this->publicImagePath().($this->image() ? $this->image()->getFileName() : '');
-		$out['img64'] = $this->publicImagePath().($this->thumb() ? $this->thumb()->getFileName() : '');
-		//$out['img64'] = (new ImageBase64($this->thumb()))->output();
-//		$out['img64'] = '/assets/images/food/310x310/'.$this->image;
+		$out             = $this->properties();
+		$out['_open']    = $this->open();
+		// $out['img']   = '/assets/images/food/630x280/'.$this->image.'?crop=1';
+		$out['img']      = $this->publicImagePath().($this->image() ? $this->image()->getFileName() : '');
+		$out['img64']    = $this->publicImagePath().($this->thumb() ? $this->thumb()->getFileName() : '');
+		// $out['img64'] = (new ImageBase64($this->thumb()))->output();
+		// $out['img64'] = '/assets/images/food/310x310/'.$this->image;
 
 		if (!$ignore['categories']) {
 			foreach ($this->categories() as $category) {
 				$out['_categories'][$category->id_category] = $category->exports();
 			}
 		}
+
+		if (!$ignore['notifications']) {
+			$where = [];
+			if (isset($_SESSION['admin'])) {
+				$where['active'] = NULL;
+			}
+			foreach ($this->notifications($where) as $notification) {
+				/* @var $notification Crunchbutton_Notification */
+				$out['_notifications'][$notification->id_notification] = $notification->exports();
+			}
+		}
+
 		foreach ($this->hours(true) as $hours) {
 			$out['_hoursFormat'][$hours->day][] = [$hours->time_open, $hours->time_close];
 		}
