@@ -19,6 +19,79 @@ var App = {
 	_pageInit: false
 };
 
+/**
+ * Populates notifications types with empty fields to be inserted
+ *
+ * @return void
+ */
+function _loadEmptyNotifications() {
+	var types = ['sms', 'email', 'phone', 'url', 'fax'];
+	for(var i in types) {
+		var notification = {
+				id_notification: '',
+				type: types[i],
+				value: '',
+				active: false,
+
+		}
+		_loadNotification(notification);
+	}
+}
+
+/**
+ * Sets the notifications in the restaurant form
+ *
+ * @param notifications
+ */
+function _loadNotification(notification) {
+		var $wrapper = 'div.check-content.' + notification.type;
+			// console.log($wrapper);
+			$wrapper = $($wrapper);
+		var active   = parseInt(notification.active) ? 'checked="checked"' : '';
+		var id       = parseInt(notification.id) ? notification.id : '';
+
+		html = '<div data-id_notification="' + id +'" class="notification-wrap">' +
+					'<input type="checkbox" '+ active    +
+					' name="notification-active" class="dataset-notification"' +
+					' />' +
+					'<input value="' + notification.value+ '" '  +
+					' name="notification-value" class="dataset-notification notification" ' +
+					' />'+
+				'</div>';
+		$wrapper.append(html);
+}
+
+/**
+ * Adds a new hours range if they are all filled up
+ *
+ * @return void
+ */
+function _newNotificationFields() {
+	var inputSelector = '.notification-wrap input[name="notification-value"]';
+	$(inputSelector).live('keyup', function() {
+		var $container = $(this).closest('.check-content');
+		var allfull    = true;
+		$container.find(inputSelector).each(function() {
+			if ($(this).val() == '') {
+				allfull = false;
+			}
+		});
+		if (allfull) {
+			var notification = {
+				id_notification: '',
+				value: '',
+				active: false,
+			}
+			var types = ['sms', 'email', 'phone', 'url', 'fax'];
+			for (var i in types) {
+				if ($container.hasClass(types[i])) {
+					notification.type = types[i];
+				}
+			}
+			_loadNotification(notification);
+		}
+	});
+}
 
 $(function() {
 	$('.admin-restaurant-link').live('click',function() {
@@ -69,6 +142,14 @@ $(function() {
 			App.restaurantObject = restaurant;               // and this one should rellay be App.restaurant
 
 			$('.admin-restaurant-content').html('');
+
+
+			var notifications = restaurant.notifications();
+			for (var i in notifications) {
+				_loadNotification(notifications[i]);
+			}
+			_loadEmptyNotifications();
+			_newNotificationFields();
 
 			var categories = restaurant.categories();
 			var isDishes = false;
@@ -303,6 +384,53 @@ $(function() {
 		});
 	}
 
+
+
+	/**
+	 * Method to be called to save notifications
+	 *
+	 * @param function compelte What to trigger after the dishes are stored
+	 *
+	 * @return void
+	 *
+	 * @todo wasn't able to take the function out becaues of the getValue() method which needs to be refactorized and moved out
+	 * @todo returned elements need to be reloaded
+	 */
+	function _saveNotifications(complete) {
+		var selector = 'input.dataset-notification, select.dataset-notification, textarea.dataset-notification';
+		var elements = [];
+
+		$('.notification-wrap').each(function() {
+			var id      = $(this).attr('data-id_notification');
+			var values  = getValues($(this).find(selector), {});
+			var element = {
+				active: values['notification-active'],
+				value:  values['notification-value']
+			};
+
+			var types = ['sms', 'email', 'phone', 'url', 'fax'];
+			for (var i in types) {
+				var $container = $(this).closest('.check-content');
+				if ($container.hasClass(types[i])) {
+					element.type = types[i];
+				}
+			}
+
+			if (id) {
+				element.id_notification = id;
+			}
+
+			elements[elements.length] = element;
+
+		});
+		$.post('/api/restaurant/' + App.restaurant + '/notifications', {elements: elements}, function() {
+			if (complete) {
+				complete();
+			}
+		});
+	}
+
+
 	var saveRestaurant = function(all) {
 		var selector = 'input.dataset-restaurant, select.dataset-restaurant, textarea.dataset-restaurant';
 		var id = App.restaurant;
@@ -314,7 +442,9 @@ $(function() {
 					if (all) {
 						saveHours(function() {
 							saveDishes(function() {
-
+								_saveNotifications(function() {
+									location.href = '/admin/restaurants/' + App.restaurant;
+								});
 							});
 						});
 					}
@@ -330,7 +460,9 @@ $(function() {
 					if (all) {
 						saveHours(function() {
 							saveDishes(function() {
-								location.href = '/admin/restaurants/' + App.restaurant;
+								_saveNotifications(function() {
+									location.href = '/admin/restaurants/' + App.restaurant;
+								});
 							});
 						});
 					}
@@ -852,9 +984,9 @@ App.suggestions = {
 				url: url,
 				success: function(content) {
 					$( '#suggestion-status' ).html( 'Status saved!' );
-				}, 
+				},
 				error: function( ){
-					$( '#suggestion-status' ).html( 'Error, please try it again.' );	
+					$( '#suggestion-status' ).html( 'Error, please try it again.' );
 				}
 			});
 		} );
