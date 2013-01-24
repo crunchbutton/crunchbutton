@@ -2169,7 +2169,7 @@ App.suggestion.form = function(){
 		'<div class="suggestion-form-container field-container">' +
 			'<form class="suggestion-form">' +
 				'<h1>What do you suggest?</h1>' +
-				'<input type="text" name="suggestion-name" tabindex="10">' +
+				'<input type="text" maxlength="250" name="suggestion-name" tabindex="10">' +
 				'<a href="javascript:;" class="suggestion-form-button">Suggest</a>' +
 				'<div class="divider"></div>' + 
 			'</form>' +
