@@ -392,6 +392,9 @@ $(function() {
 	 * @param function compelte What to trigger after the dishes are stored
 	 *
 	 * @return void
+	 *
+	 * @todo wasn't able to take the function out becaues of the getValue() method which needs to be refactorized and moved out
+	 * @todo returned elements need to be reloaded
 	 */
 	function _saveNotifications(complete) {
 		var selector = 'input.dataset-notification, select.dataset-notification, textarea.dataset-notification';
@@ -403,8 +406,15 @@ $(function() {
 			var element = {
 				active: values['notification-active'],
 				value:  values['notification-value']
-				// @todo get type
 			};
+
+			var types = ['sms', 'email', 'phone', 'url', 'fax'];
+			for (var i in types) {
+				var $container = $(this).closest('.check-content');
+				if ($container.hasClass(types[i])) {
+					element.type = types[i];
+				}
+			}
 
 			if (id) {
 				element.id_notification = id;
@@ -413,13 +423,11 @@ $(function() {
 			elements[elements.length] = element;
 
 		});
-		console.log(elements);
-		/* $.post('/api/restaurant/' + App.restaurant + '/notifications', {elements: elements}, function() {
+		$.post('/api/restaurant/' + App.restaurant + '/notifications', {elements: elements}, function() {
 			if (complete) {
-				// complete();
+				complete();
 			}
 		});
-		*/
 	}
 
 
@@ -435,7 +443,7 @@ $(function() {
 						saveHours(function() {
 							saveDishes(function() {
 								_saveNotifications(function() {
-
+									location.href = '/admin/restaurants/' + App.restaurant;
 								});
 							});
 						});

@@ -284,6 +284,32 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 	}
 
+	/**
+	 * Save the notifications as they are send by the API
+	 *
+	 * @param array $elements
+	 */
+	public function saveNotifications($elements) {
+		// c::db()->query('DELETE FROM notification WHERE id_restaurant="'.$this->id_restaurant.'"');
+		foreach ($elements as $data) {
+			if (!$data['value']) continue;
+			$element                = new Crunchbutton_Notification($data['id_notification']);
+			$element->id_restaurant = $this->id_restaurant;
+			$element->active        = ($data['active'] == 'true') ? "1" : "0";
+			$element->type          = $data['type'];
+			$element->value         = $data['value'];
+			$element->save();
+		}
+
+		$this->_notifications = null;
+		$where           = [];
+		$where['active'] = NULL;
+		$elements = $this->notifications($where);
+		return $elements;
+	}
+
+
+
 	public function saveHours($hours) {
 		c::db()->query('delete from hour where id_restaurant="'.$this->id_restaurant.'"');
 		foreach ($hours as $day => $times) {
