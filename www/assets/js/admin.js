@@ -20,13 +20,30 @@ var App = {
 };
 
 /**
+ * Populates notifications types with empty fields to be inserted
+ *
+ * @return void
+ */
+function _loadEmptyNotifications() {
+	var types = ['sms', 'email', 'phone', 'url', 'fax'];
+	for(var i in types) {
+		var notification = {
+				id_notification: '',
+				type: types[i],
+				value: '',
+				active: false,
+
+		}
+		_loadNotification(notification);
+	}
+}
+
+/**
  * Sets the notifications in the restaurant form
  *
  * @param notifications
  */
-function _loadNotifications(notifications) {
-	for (var i in notifications) {
-		var notification = notifications[i];
+function _loadNotification(notification) {
 		var $wrapper = 'div.check-content.' + notification.type;
 			// console.log($wrapper);
 			$wrapper = $($wrapper);
@@ -42,10 +59,39 @@ function _loadNotifications(notifications) {
 					' />'+
 				'</div>';
 		$wrapper.append(html);
-	}
 }
 
-
+/**
+ * Adds a new hours range if they are all filled up
+ *
+ * @return void
+ */
+function _newNotificationFields() {
+	var inputSelector = '.notification-wrap input[name="notification-value"]';
+	$(inputSelector).live('keyup', function() {
+		var $container = $(this).closest('.check-content');
+		var allfull    = true;
+		$container.find(inputSelector).each(function() {
+			if ($(this).val() == '') {
+				allfull = false;
+			}
+		});
+		if (allfull) {
+			var notification = {
+				id_notification: '',
+				value: '',
+				active: false,
+			}
+			var types = ['sms', 'email', 'phone', 'url', 'fax'];
+			for (var i in types) {
+				if ($container.hasClass(types[i])) {
+					notification.type = types[i];
+				}
+			}
+			_loadNotification(notification);
+		}
+	});
+}
 
 $(function() {
 	$('.admin-restaurant-link').live('click',function() {
@@ -97,7 +143,13 @@ $(function() {
 
 			$('.admin-restaurant-content').html('');
 
-			_loadNotifications(restaurant.notifications());
+
+			var notifications = restaurant.notifications();
+			for (var i in notifications) {
+				_loadNotification(notifications[i]);
+			}
+			_loadEmptyNotifications();
+			_newNotificationFields();
 
 			var categories = restaurant.categories();
 			var isDishes = false;
