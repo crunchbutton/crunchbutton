@@ -284,6 +284,32 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 	}
 
+	/**
+	 * Save the notifications as they are send by the API
+	 *
+	 * @param array $elements
+	 */
+	public function saveNotifications($elements) {
+		// c::db()->query('DELETE FROM notification WHERE id_restaurant="'.$this->id_restaurant.'"');
+		foreach ($elements as $data) {
+			if (!$data['value']) continue;
+			$element                = new Crunchbutton_Notification($data['id_notification']);
+			$element->id_restaurant = $this->id_restaurant;
+			$element->active        = ($data['active'] == 'true') ? "1" : "0";
+			$element->type          = $data['type'];
+			$element->value         = $data['value'];
+			$element->save();
+		}
+
+		$this->_notifications = null;
+		$where           = [];
+		$where['active'] = NULL;
+		$elements = $this->notifications($where);
+		return $elements;
+	}
+
+
+
 	public function saveHours($hours) {
 		c::db()->query('delete from hour where id_restaurant="'.$this->id_restaurant.'"');
 		foreach ($hours as $day => $times) {
@@ -348,9 +374,30 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return false;
 	}
 
-	public function notifications() {
+	/**
+	 * Returns all the notifications linked to this restaurant
+	 *
+	 * @param array $where asociative values to filter the where
+	 *
+	 * @todo $where only handles AND keys, where engine should probably be stored in the Cana_Table class
+	 *
+	 * @return Cana_Iterator
+	 */
+	public function notifications($where = []) {
+		$originalWhere = [
+			'id_restaurant' => $this->id_restaurant,
+			'active'        => 1,
+		];
+		$where    = array_merge($originalWhere, $where);
+		$whereSql = '1 = 1 ';
+		foreach ($where as $key => $value) {
+			if ($value !== NULL) {
+				$whereSql .= " AND $key = '$value'";
+			}
+		}
+
 		if (!isset($this->_notifications)) {
-			$this->_notifications = Notification::q('select * from notification where id_restaurant="'.$this->id_restaurant.'" and active=1');
+			$this->_notifications = Notification::q("SELECT * FROM notification WHERE $whereSql");
 		}
 		return $this->_notifications;
 	}
@@ -464,21 +511,41 @@ class Crunchbutton_Restaurant extends Cana_Table {
 
 	}
 
+	/**
+	 * Returns an array with all the information for a Restaurant.
+	 *
+	 * This is usualy used to JSON encode and send to the browser
+	 *
+	 * @param array $ignore An indexed array of what items not to ad to the export array
+	 *
+	 * @return array
+	 */
 	public function exports($ignore = []) {
-
-		$out = $this->properties();
-		$out['_open'] = $this->open();
-//		$out['img'] = '/assets/images/food/630x280/'.$this->image.'?crop=1';
-		$out['img'] = $this->publicImagePath().($this->image() ? $this->image()->getFileName() : '');
-		$out['img64'] = $this->publicImagePath().($this->thumb() ? $this->thumb()->getFileName() : '');
-		//$out['img64'] = (new ImageBase64($this->thumb()))->output();
-//		$out['img64'] = '/assets/images/food/310x310/'.$this->image;
+		$out             = $this->properties();
+		$out['_open']    = $this->open();
+		// $out['img']   = '/assets/images/food/630x280/'.$this->image.'?crop=1';
+		$out['img']      = $this->publicImagePath().($this->image() ? $this->image()->getFileName() : '');
+		$out['img64']    = $this->publicImagePath().($this->thumb() ? $this->thumb()->getFileName() : '');
+		// $out['img64'] = (new ImageBase64($this->thumb()))->output();
+		// $out['img64'] = '/assets/images/food/310x310/'.$this->image;
 
 		if (!$ignore['categories']) {
 			foreach ($this->categories() as $category) {
 				$out['_categories'][$category->id_category] = $category->exports();
 			}
 		}
+
+		if (!$ignore['notifications']) {
+			$where = [];
+			if (isset($_SESSION['admin'])) {
+				$where['active'] = NULL;
+			}
+			foreach ($this->notifications($where) as $notification) {
+				/* @var $notification Crunchbutton_Notification */
+				$out['_notifications'][$notification->id_notification] = $notification->exports();
+			}
+		}
+
 		foreach ($this->hours(true) as $hours) {
 			$out['_hoursFormat'][$hours->day][] = [$hours->time_open, $hours->time_close];
 		}
