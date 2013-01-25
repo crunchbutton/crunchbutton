@@ -7,7 +7,7 @@ class Crunchbutton_Auth {
 	public function __construct() {
 		$this->_session = new Crunchbutton_Session;
 		session_start();
-		
+
 		// here we need to check for a token
 		// if we dont have a valid token, we need to check for a facebook cookie
 		// then if none of thats good just return a blank user object
@@ -30,8 +30,10 @@ class Crunchbutton_Auth {
 			$this->session()->date_active = date('Y-m-d H:i:s');
 			$this->session()->save();
 		}
-		
-		// if we dont have a user lets check for a facebook user
+
+		// if we dont have a user lets check for a facebook user.
+		// not sure if theres any way to avoid this, but if a fb user is found, we have to make a fb request
+		// which take a little bit of time
 		if (!$this->_user) {
 
 			// check for a facebook cookie
@@ -48,9 +50,19 @@ class Crunchbutton_Auth {
 						if (!$user->id_user) {
 							// we dont have a user, and we need to make one
 							$user = new User;
+							$user->active = 1;
 							$user->name = $fb->user()->name;
 							$user->email = $fb->user()->email;
 							$user->save();
+							
+							$userAuth = new User_Auth;
+							$userAuth->active = 1;
+							$userAuth->id_user = $user->id_user;
+							$userAuth->type = 'facebook';
+							$userAuth->auth = $fb->user()->id;
+							$userAuth->save();
+						} else {
+							$user = $user->get(0);
 						}
 						
 						$this->_user = $user;
