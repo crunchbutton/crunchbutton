@@ -11,6 +11,7 @@
 *.zip
 *.psd
 *.pdf
+*~
 
 # config and specific files
 include/config/config.xml
