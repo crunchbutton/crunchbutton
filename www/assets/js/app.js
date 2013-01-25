@@ -2161,15 +2161,17 @@ App.suggestion.init = function(){
 	} );
 
 	App.suggestion.shield.init();
+
 }
 
 App.suggestion.form = function(){
 	return '' +
-	'<div class="suggestion-container field-container">' +
-		'<div class="suggestion-form-container field-container">' +
+	'<div class="suggestion-container">' +
+		'<div class="suggestion-form-container">' +
 			'<form class="suggestion-form">' +
 				'<h1>What do you suggest?</h1>' +
-				'<input type="text" maxlength="250" name="suggestion-name" tabindex="10">' +
+				'<input type="text" maxlength="250" name="suggestion-name" tabindex="10" />' +
+				'<div class="divider"></div>' + 
 				'<a href="javascript:;" class="suggestion-form-button">Suggest</a>' +
 				'<div class="divider"></div>' + 
 			'</form>' +
@@ -2224,6 +2226,7 @@ App.suggestion.link = function(){
 App.suggestion.message = function( msg ){
 	// Hides the form and shows the message box
 	$( '.suggestion-form' ).hide();
+	$( '.suggestion-form-tip' ).hide();
 	$( '.suggestion-message' ).show();
 	$( '.suggestion-message' ).html( msg );
 }
@@ -2233,6 +2236,7 @@ App.suggestion.show = function(){
 	$( 'input[name=suggestion-name]' ).val( '' );
 	// Shows the form and hides the message box
 	$( '.suggestion-form' ).show();
+	$( '.suggestion-form-tip' ).show();
 	$( '.suggestion-message' ).hide();
 	// Shows the modal
 	setTimeout( function(){
