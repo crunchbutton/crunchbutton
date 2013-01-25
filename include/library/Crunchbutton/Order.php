@@ -607,19 +607,12 @@ class Crunchbutton_Order extends Cana_Table {
 		switch ($type) {
 			case 'selfsms':
 				$msg = "Crunchbutton.com #".$this->id_order."\n\n";
-				if ($this->delivery_type == 'delivery') {
-					// issue #620, time estimation not ready yet
-					// $msg .= "Your delivery should arrive within ".($this->restaurant()->delivery_estimated_time ? $this->restaurant()->delivery_estimated_time : 60)." minutes.\n";
-					$msg .= "Order confirmed!\n";
-				} else {
-					$msg .= "Your order will be ready within ".($this->restaurant()->pickup_estimated_time ? $this->restaurant()->pickup_estimated_time : ($this->restaurant()->delivery_estimated_time ? $this->restaurant()->delivery_estimated_time : 60))." minutes.\n";
-				}
-				$msg .= "Contact ".$this->restaurant()->shortName().": ".$this->restaurant()->phone().".\n\n";
-				$msg .= "Contact Crunchbutton.com: ".Cana::config()->phone->support.".\n\n";
+				$msg .= "Order confirmed!\n\n";
+				$msg .= "Contact ".$this->restaurant()->shortName().": ".$this->restaurant()->phone().".\n";
+				$msg .= "Contact Crunchbutton.com: ".Cana::config()->phone->support."  or text back.\n\n";
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
 					$msg .= "Remember to tip!\n\n";
 				}
-				// $msg .= 'Total: $'.$this->final_price.'';
 				break;
 
 			case 'sms':
