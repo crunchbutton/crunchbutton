@@ -23,7 +23,6 @@ class Crunchbutton_Auth_Facebook extends Cana_Model {
 				$userObject = $this->_facebook->api('/'.$user);
 			} catch (Cana_Facebook_Exception $e) {
 				// debug for now
-				print_r($e);
 				$userObject = null;
 			}
 		}
