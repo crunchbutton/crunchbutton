@@ -8,6 +8,10 @@ class Crunchbutton_Auth {
 		$this->_session = new Crunchbutton_Session;
 		session_start();
 		
+		// set these to debug shit for now
+		Cana::config()->facebook->appId = '479805915398705';
+		Cana::config()->facebook->secret = '0c3c8b3cc5b1ee36fa6726d53663a576';
+		
 		// here we need to check for a token
 		// if we dont have a valid token, we need to check for a facebook cookie
 		// then if none of thats good just return a blank user object
@@ -23,13 +27,54 @@ class Crunchbutton_Auth {
 			}
 		}
 
+		// we have a successful user
 		if ($this->session()->id_user) {
-//			if ($this->session()->ip == $_SERVER['REMOTE_ADDR']) {
-				$this->_user = new Crunchbutton_User($this->session()->id_user);
-				$this->session()->date_active = date('Y-m-d H:i:s');
-				$this->session()->save();
-//			}
-		} else {
+			// if ($this->session()->ip == $_SERVER['REMOTE_ADDR']) {
+			$this->_user = new Crunchbutton_User($this->session()->id_user);
+			$this->session()->date_active = date('Y-m-d H:i:s');
+			$this->session()->save();
+		}
+		
+		// if we dont have a user lets check for a facebook user
+		if (!$this->_user) {
+
+			// check for a facebook cookie
+			foreach ($_COOKIE as $key => $value) {
+				if (preg_match('/^fbsr_.*$/', $key)) {
+				
+					// we found a cookie!
+					$fb = new Crunchbutton_Auth_Facebook;
+					
+					if ($fb->user()->id) {
+						// we have a facebook user
+						$user = User::facebook($fb->user()->id);
+	
+						if (!$user->id_user) {
+							// we dont have a user, and we need to make one
+							$user = new User;
+							$user->name = $fb->user()->name;
+							$user->email = $fb->user()->email;
+							$user->save();
+						}
+						
+						$this->_user = $user;
+						$this->session()->id_user = $user->id_user;
+						$this->session()->date_active = date('Y-m-d H:i:s');
+						$this->session()->generateAndSaveToken();
+						setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');
+	
+					} else {
+						// we dont have a facebook user
+					}
+	
+					break;
+				}
+			}
+		
+		}
+		
+		// we still dont have a user, so just set a blan object
+		if (!$this->_user) {
 			$this->_user = new Crunchbutton_User;
 		}
 

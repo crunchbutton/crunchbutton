@@ -21,7 +21,7 @@ FBAPP.processStatus = function(session) {
 
 			// now we double check with the server what our logged in user is. the php will handle the rest
 			$.getJSON('/api/user',function(json) {
-				console.log(json);
+				$('.user-id').html(json.id + ' - ' + json.uuid);
 			});
 		});
 
@@ -38,6 +38,12 @@ FBAPP.login = function() {
 
 FBAPP.logout = function() {
 	FB.logout();
+};
+
+FBAPP.localLogout = function() {
+	$.getJSON('/api/logout',function(json) {
+		console.log(json);
+	});
 };
 
 $(function() {
@@ -66,10 +72,12 @@ $(function() {
 
 <a href="javascript: FBAPP.login();" class="login">login</a>
 <a href="javascript: FBAPP.logout();" class="logout">logout</a>
+<a href="javascript: FBAPP.localLogout();" class="logout">local-logout</a>
 
 <div class="user">
 	<img class="user-image"></img>
 	<div class="user-name"></div>
+	<div class="user-id"></div>
 </div>
 
 <div id="fb-root"></div>
