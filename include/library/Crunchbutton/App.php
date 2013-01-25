@@ -111,6 +111,10 @@ class Crunchbutton_App extends Cana_App {
 		$config->domain = $domain;
 		
 		
+		$config->facebook->appId = $config->facebook->{$params['env']}->appId;
+		$config->facebook->secret = $config->facebook->{$params['env']}->secret;
+		
+		
 		if ($params['env'] != 'local' && $_SERVER['__HTTP_HOST'] != 'dev.crunchr.co') {
 			$config->bundle = true;
 		}

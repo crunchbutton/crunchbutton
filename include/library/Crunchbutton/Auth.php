@@ -8,10 +8,6 @@ class Crunchbutton_Auth {
 		$this->_session = new Crunchbutton_Session;
 		session_start();
 		
-		// set these to debug shit for now
-		Cana::config()->facebook->appId = '479805915398705';
-		Cana::config()->facebook->secret = '0c3c8b3cc5b1ee36fa6726d53663a576';
-		
 		// here we need to check for a token
 		// if we dont have a valid token, we need to check for a facebook cookie
 		// then if none of thats good just return a blank user object
