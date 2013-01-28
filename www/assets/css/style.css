@@ -1765,6 +1765,12 @@ html[xmlns] .clearfix {
 	_border: 1px solid #fff;
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(251, 60, 42, 1)), to(rgba(251, 57, 39, 1)));
 }
+	.tooltip-help-mobile{
+		margin-top: -1px;
+		position: fixed;
+		right: 10px;
+		z-index: 100;
+	}
 
 .tooltip-help  span {
 	margin: 1px 3px 0 3px;
@@ -1789,6 +1795,13 @@ html[xmlns] .clearfix {
 	position: absolute;
 	width: 250px;
 }
+	.tooltip-help-content-mobile{
+		position: fixed;
+		top:65px;
+		right: 15px;
+		z-index: 101;
+	}
+
 
 @media only screen and (min-width : 1024px) {
 	.restaurant-pic-wrapper {
@@ -1851,6 +1864,9 @@ html[xmlns] .clearfix {
 	.suggestion-help-content{
 		width: 180px;
 	}
+	.tooltip-help-mobile-container{
+		display: none
+	}	
 }
 
 @media only screen and (min-width : 770px) and (max-width : 1023px) {
@@ -1880,6 +1896,9 @@ html[xmlns] .clearfix {
 		margin-left: -321px;
 		left: 50%;
 	}
+	.tooltip-help-mobile-container{
+		display: none
+	}	
 }
 
 th {
