@@ -254,6 +254,7 @@ App.page.restaurant = function(id) {
 		document.title = App.restaurant.name + ' | ' + App.community.name + ' Food Delivery | Order from ' + (App.community.name_alt ? App.community.name_alt : 'Local') + ' Restaurants | Crunchbutton';
 
 		$('.main-content').html(
+			App.suggestion.tooltipContainer( 'mobile' ) + 
 			'<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-item-count"><span></span></div><div class="cart-summary-items"></div></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' +
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') +
@@ -269,13 +270,7 @@ App.page.restaurant = function(id) {
 			categories = App.restaurant.categories(),
 			dishes, list;
 
-		var tooltip = '<span class="tooltip-help"><span>?</span></span>' + 
-									'<div class="tooltip-help-content">' + 
-										'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' + 
-										'If you really want something else, suggest it below.' + 
-									'</div>';
-
-		$('.restaurant-items').append('<div class="content-item-name content-item-main-name"><h1>Add to your order' + tooltip +  '</h1></div>')
+		$('.restaurant-items').append('<div class="content-item-name content-item-main-name"><h1>Add to your order' + App.suggestion.tooltipContainer( 'desktop' ) +  '</h1></div>')
 
 		for (var x in categories) {
 			dishes = categories[x].dishes();
@@ -351,10 +346,6 @@ App.page.restaurant = function(id) {
 		setTimeout(function() {
 			var total = App.cart.updateTotal();
 			App.suggestion.init();
-			// ToolTip
-			$( '.tooltip-help' ).live( 'click', function() {
-				$( '.tooltip-help-content' ).toggle();
-			} )
 		},200);
 
 		App.cartHighlightEnabled = false;
@@ -2115,7 +2106,6 @@ $(function() {
 		if (App.order['delivery_type'] == 'takeout') {
 			return;
 		}
-
 	};
 
 	$('[name="pay-address"]').live('blur', function() {
@@ -2158,6 +2148,32 @@ App.suggestion.init = function(){
 
 	$( '.suggestion-form' ).submit(function() {
   	return false;
+	} );
+
+	// ToolTip
+	$( '.tooltip-help-mobile' ).live( 'click', function( e ) {
+		if( $( '.tooltip-help-content-mobile' ).is(':visible') ){
+			return;
+		}
+		setTimeout( function(){
+			$( '.tooltip-help-content-mobile' ).show();
+		}, 100 );
+	} );
+	$( '.tooltip-help-desktop' ).live( 'click', function() {
+		if( $( '.tooltip-help-content-desktop' ).is(':visible') ){
+			return;
+		}
+		setTimeout( function(){
+			$( '.tooltip-help-content-desktop' ).show();	
+		}, 100 );
+	} );
+	$( '.tooltip-help-content' ).live( 'click', function( e ){ 
+		e.stopPropagation();
+	} );
+
+	$( 'body' ).live( 'click', function(){
+		$( '.tooltip-help-content-mobile:visible' ).hide();
+		$( '.tooltip-help-content-desktop:visible' ).hide();
 	} );
 
 	App.suggestion.shield.init();
@@ -2211,7 +2227,7 @@ App.suggestion.send = function(){
 		url: suggestionURL,
 		success: function(content) {
 			App.suggestion.message( '<h1>Awesome, thanks!!</h1>' + 
-															'<div class="suggestion-thanks-text">If you really really wanna make sure we add it asap, feel free to call us at 800-242-1444</div>' );
+															'<div class="suggestion-thanks-text">If you really really wanna make sure we add it asap, feel free to call us at <br/>800-242-1444</div>' );
 		}
 	});
 }
@@ -2224,7 +2240,7 @@ App.suggestion.link = function(){
 }
 
 App.suggestion.message = function( msg ){
-	// Hides the form and shows the message box
+	/* Hides the form and shows the message box */
 	$( '.suggestion-form' ).hide();
 	$( '.suggestion-form-tip' ).hide();
 	$( '.suggestion-message' ).show();
@@ -2232,15 +2248,15 @@ App.suggestion.message = function( msg ){
 }
 
 App.suggestion.show = function(){
-	// Resets the default values
+	/* Resets the default values */
 	$( 'input[name=suggestion-name]' ).val( '' );
-	// Shows the form and hides the message box
+	/* Shows the form and hides the message box  */
 	$( '.suggestion-form' ).show();
 	$( '.suggestion-form-tip' ).show();
 	$( '.suggestion-message' ).hide();
-	// Shows the modal
+	/* Shows the modal */
 	setTimeout( function(){
-			// Shows the shield
+			/* Shows the shield */
 			App.suggestion.shield.show();
 			$( '.suggestion-container' )
 				.dialog( { 
@@ -2254,11 +2270,21 @@ App.suggestion.show = function(){
 
 App.suggestion.contentWidth = function(){
 	if( $( window ).width() > 700 ){
-		return 450;	
+		return 280;	
 	}
 	if( $( window ).width() <= 700 ){
 		return $( window ).width() - 50;	
 	}
+}
+
+App.suggestion.tooltipContainer = function( device ){
+	var help = 'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' + 
+											'If you really want something else, suggest it below.'
+
+	return '<span class="tooltip-help-' + device + '-container"><span class="tooltip-help tooltip-help-' + device + '"><span>?</span></span>' + 
+											'<div class="tooltip-help-content tooltip-help-content-' + device + '">' + 
+												help + 
+											'</div></span>';
 }
 
 App.suggestion.shield = { 'isVisible' : false }
@@ -2266,7 +2292,7 @@ App.suggestion.shield = { 'isVisible' : false }
 App.suggestion.shield.resize = function(){
 	if( App.suggestion.shield.isVisible ){
 		$( '.suggest-shield' ).width( $( window ).width() );
-		// Plus 60 due to iphone's title bar.
+		/* Plus 60 due to iphone's title bar. */
 		$( '.suggest-shield' ).height( $( window ).height() + 60 );	
 	}
 }
