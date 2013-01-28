@@ -2211,7 +2211,7 @@ App.suggestion.send = function(){
 		url: suggestionURL,
 		success: function(content) {
 			App.suggestion.message( '<h1>Awesome, thanks!!</h1>' + 
-															'<div class="suggestion-thanks-text">If you really really wanna make sure we add it asap, feel free to call us at 800-242-1444</div>' );
+															'<div class="suggestion-thanks-text">If you really really wanna make sure we add it asap, feel free to call us at <br/>800-242-1444</div>' );
 		}
 	});
 }
@@ -2224,7 +2224,7 @@ App.suggestion.link = function(){
 }
 
 App.suggestion.message = function( msg ){
-	// Hides the form and shows the message box
+	/* Hides the form and shows the message box */
 	$( '.suggestion-form' ).hide();
 	$( '.suggestion-form-tip' ).hide();
 	$( '.suggestion-message' ).show();
@@ -2232,15 +2232,15 @@ App.suggestion.message = function( msg ){
 }
 
 App.suggestion.show = function(){
-	// Resets the default values
+	/* Resets the default values */
 	$( 'input[name=suggestion-name]' ).val( '' );
-	// Shows the form and hides the message box
+	/* Shows the form and hides the message box  */
 	$( '.suggestion-form' ).show();
 	$( '.suggestion-form-tip' ).show();
 	$( '.suggestion-message' ).hide();
-	// Shows the modal
+	/* Shows the modal */
 	setTimeout( function(){
-			// Shows the shield
+			/* Shows the shield */
 			App.suggestion.shield.show();
 			$( '.suggestion-container' )
 				.dialog( { 
@@ -2254,7 +2254,7 @@ App.suggestion.show = function(){
 
 App.suggestion.contentWidth = function(){
 	if( $( window ).width() > 700 ){
-		return 450;	
+		return 280;	
 	}
 	if( $( window ).width() <= 700 ){
 		return $( window ).width() - 50;	
@@ -2266,7 +2266,7 @@ App.suggestion.shield = { 'isVisible' : false }
 App.suggestion.shield.resize = function(){
 	if( App.suggestion.shield.isVisible ){
 		$( '.suggest-shield' ).width( $( window ).width() );
-		// Plus 60 due to iphone's title bar.
+		/* Plus 60 due to iphone's title bar. */
 		$( '.suggest-shield' ).height( $( window ).height() + 60 );	
 	}
 }
