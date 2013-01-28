@@ -14,10 +14,12 @@
 										<td class="label-sub">Name:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->name;?></div></td>
 									</tr>
+									<?php if( trim( $this->suggestion->content ) != '' ) { ?>
 									<tr>
 										<td class="label-sub">Content:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->content;?></div></td>
 									</tr>
+									<?php } ?>
 									<tr>
 										<td class="label-sub">Type:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->type;?></div></td>

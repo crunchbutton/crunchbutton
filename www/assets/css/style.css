@@ -1631,8 +1631,9 @@ html[xmlns] .clearfix {
 	border-radius: 4px;
 	display: none;
 	padding: 20px;
-	width: 500px;
+	width: 280px;
 }
+
 	.suggestion-container h1{
 		color:#D74924;
 		font-size: 1.4em;
@@ -1850,9 +1851,6 @@ html[xmlns] .clearfix {
 	.suggestion-help-content{
 		width: 180px;
 	}
-	.suggestion-thanks-text{
-		width: 400px;
-	}
 }
 
 @media only screen and (min-width : 770px) and (max-width : 1023px) {
@@ -1882,10 +1880,6 @@ html[xmlns] .clearfix {
 		margin-left: -321px;
 		left: 50%;
 	}
-	.suggestion-thanks-text{
-		width: 400px;
-	}
-
 }
 
 th {
