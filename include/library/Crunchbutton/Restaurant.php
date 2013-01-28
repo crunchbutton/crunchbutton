@@ -284,6 +284,26 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 	}
 
+    /**
+     * Stores the Dish Categories for this restaurant
+     *
+     * @param array $rawData array with the JS restaurants
+     */
+	public function saveCategories($rawData)
+	{
+		foreach ($rawData as $data) {
+			// if (!$data['name']) continue;
+			$element                = new Crunchbutton_Category($data['id_category']);
+			$element->id_restaurant = $this->id_restaurant;
+			$element->name          = $data['name'];
+			$element->save();
+		}
+
+		$this->_categories = null;
+		$elements = $this->categories();
+		return $elements;
+	}
+
 	/**
 	 * Save the notifications as they are send by the API
 	 *
