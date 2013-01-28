@@ -102,7 +102,7 @@ function _newNotificationFields() {
  *
  * @todo returned elements need to be reloaded
  */
-function _saveCategories(complet {
+function _saveCategories(complete) {
 	var selector = 'input.dataset-notification, select.dataset-notification, textarea.dataset-notification';
 	var elements = [];
 
@@ -494,14 +494,13 @@ App.loadRestaurant = function(id_restaurant) {
  * @todo Not sure if hide purges HTML or what.
  */
 App.showDish = function(dishItem) {
-	if (!dishItem.id_dish) {
-		dishItem = {
-			'name': '',
-			'description': '',
-			'id_dish': '',
-			'price': ''
-		};
-	}
+	dishItem = $.extend({
+		id_dish:     '',
+		// id_category: '',
+		name:        '',
+		description: '',
+		price:       ''
+	}, dishItem);
 
 	var dish = $('<div class="admin-food-item-wrap" data-id_dish="' + dishItem.id_dish + '"' + (dishItem.id_dish ? '' : ' style="display: none;"') + '></div>');
 	dish.append('<div class="admin-food-item ' + (dishItem.id_dish ? 'admin-food-item-collapsed' : '') + '"> ' +
@@ -565,6 +564,9 @@ App.showDish = function(dishItem) {
 	var dishDescription = dishItem.description ? dishItem.description : '';
 	var categories      = App.restaurantObject.categories();
 	var categoryOptions = '';
+	if (!dishItem.id_category) {
+		console.log('ERROR, no category for this dish');
+	}
 	for (var i in categories) {
 		var selected     = (categories[i].id_category == dishItem.id_category) ? ' selected="selected" ' : '';
 		categoryOptions += '<option value="' + categories[i].id_category+ '" ' + selected + '>' + categories[i].name+ '</option>';
@@ -923,8 +925,48 @@ $(function() {
 
 	$('.dish-price input').live('keyup', changePrice).live('change', changePrice);
 
-	$('.control-link-add').live('click', function() {
-		App.showDish({});
+	/**
+	 * Show the new dish dialog to set a category for it
+	 *
+	 * @todo Make the categories select a function to be reused
+	 *
+	 * @return boolean
+	 */
+	$('.control-link-add-dish').live('click', function() {
+
+		var categories      = App.restaurantObject.categories();
+		var categoryOptions = '';
+		for (var i in categories) {
+			// var selected     = (categories[i].id_category == dishItem.id_category) ? ' selected="selected" ' : '';
+			var selected     = '';
+			categoryOptions += '<option value="' + categories[i].id_category + '" ' + selected + '>' + categories[i].name + '</option>';
+		}
+
+		var html = '<div id="dialog-add-dish" title="Create new Dish"> ' +
+			'<select name="dish-id_category">' + categoryOptions + '</select>' +
+		'</div>';
+		$(html).dialog({
+			resizable: false,
+			height:    160,
+			width:     315,
+			modal:     true,
+			buttons: {
+				'Create': function() {
+					var category = $('[name="dish-id_category"]', this).val();
+					App.showDish({
+						id_category:category
+					});
+					$(this).dialog('close');
+					$(this).remove();
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+					$(this).remove();
+				}
+			}
+		});
+
+		return false;
 	});
 
 	$('.admin-food-item-delete').live('click', function() {
