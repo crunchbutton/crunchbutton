@@ -346,14 +346,6 @@ App.page.restaurant = function(id) {
 		setTimeout(function() {
 			var total = App.cart.updateTotal();
 			App.suggestion.init();
-			// ToolTip
-			$( '.tooltip-help-mobile' ).live( 'click', function( e ) {
-				e.preventDefault();
-				$( '.tooltip-help-content-mobile' ).toggle();
-			} );
-			$( '.tooltip-help-desktop' ).live( 'click', function() {
-				$( '.tooltip-help-content-desktop' ).toggle();
-			} );
 		},200);
 
 		App.cartHighlightEnabled = false;
@@ -2114,7 +2106,6 @@ $(function() {
 		if (App.order['delivery_type'] == 'takeout') {
 			return;
 		}
-
 	};
 
 	$('[name="pay-address"]').live('blur', function() {
@@ -2157,6 +2148,32 @@ App.suggestion.init = function(){
 
 	$( '.suggestion-form' ).submit(function() {
   	return false;
+	} );
+
+	// ToolTip
+	$( '.tooltip-help-mobile' ).live( 'click', function( e ) {
+		if( $( '.tooltip-help-content-mobile' ).is(':visible') ){
+			return;
+		}
+		setTimeout( function(){
+			$( '.tooltip-help-content-mobile' ).show();
+		}, 100 );
+	} );
+	$( '.tooltip-help-desktop' ).live( 'click', function() {
+		if( $( '.tooltip-help-content-desktop' ).is(':visible') ){
+			return;
+		}
+		setTimeout( function(){
+			$( '.tooltip-help-content-desktop' ).show();	
+		}, 100 );
+	} );
+	$( '.tooltip-help-content' ).live( 'click', function( e ){ 
+		e.stopPropagation();
+	} );
+
+	$( 'body' ).live( 'click', function(){
+		$( '.tooltip-help-content-mobile:visible' ).hide();
+		$( '.tooltip-help-content-desktop:visible' ).hide();
 	} );
 
 	App.suggestion.shield.init();
