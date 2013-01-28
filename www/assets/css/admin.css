@@ -593,11 +593,8 @@ input[name="dish-options-price"] {
 }
 
 .control-link {
-	margin-left: 150px;
-}
-
-.control-link:first-child {
-	margin: 0;
+	float:left;
+	margin-right: 20px;
 }
 
 .dish-options-delete {

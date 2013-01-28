@@ -17,9 +17,9 @@
 include/config/config.xml
 
 # files in cache
-cache/*
+cache
 logs/*
-www/cache/images/*
+www/cache/*
 
 # huh?
 workflow*

@@ -2,13 +2,33 @@
 
 class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 
-    /**
-     * Stores the notifications
-     *
-     * @param Crunchbutton_Restaurant $restaurant Current restaurant
-     *
-     * @return void
-     */
+	/**
+	 * Stores the categories
+	 *
+	 * @param Crunchbutton_Restaurant $restaurant Current restaurant
+	 *
+	 * @return void
+	 */
+	private function _saveCategories(Crunchbutton_Restaurant $restaurant)
+	{
+		if (!$restaurant->id_restaurant) return;
+		$elements = $restaurant->saveCategories($this->request()['elements']);
+
+		$out = [];
+		foreach ($elements as $element) {
+			/* @var $element Crunchbutton_Category */
+			$out['_categories'][$element->id_category] = $element->exports();
+		}
+		echo json_encode($out);
+	}
+
+	/**
+	 * Stores the notifications
+	 *
+	 * @param Crunchbutton_Restaurant $restaurant Current restaurant
+	 *
+	 * @return void
+	 */
 	private function _saveNotifications(Crunchbutton_Restaurant $restaurant)
 	{
 		if (!$restaurant->id_restaurant) return;
@@ -33,6 +53,9 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 
 					$action = c::getPagePiece(3);
 					switch ($action) {
+						case 'categories':
+							$this->_saveCategories($r);
+							break;
 						case 'fake-merchant':
 							if ($r->id_restaurant) {
 								$r->balanced_id = c::config()->balanced->sharedMerchant;
