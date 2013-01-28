@@ -12,7 +12,7 @@ class Crunchbutton_Auth_Facebook extends Cana_Model {
 	public function check() {
 
 		$this->_facebook = new Cana_Facebook([
-			'appId'	=> Cana::config()->facebook->appId,
+			'appId'	=> Cana::config()->facebook->app,
 			'secret' => Cana::config()->facebook->secret
 		]);
 

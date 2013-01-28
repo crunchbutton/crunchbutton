@@ -19,6 +19,13 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 	}
 	
 	public function serve($files) {
+		foreach ($files as $key => $file) {
+			if (!file_exists($file)) {
+
+				unset($files[$key]);
+			}
+		}
+
 		Minify::setCache(c::config()->dirs->cache.'/min/');
 		return Minify::serve('Files', [
 			'files'  => $files,

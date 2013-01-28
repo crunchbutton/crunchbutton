@@ -33,16 +33,20 @@ FBAPP.processStatus = function(session) {
 };
 
 FBAPP.login = function() {
-	FB.login(FBAPP.processStatus,{perms:'email'});
+	FB.login(FBAPP.processStatus,{scope:'email'});
+};
+
+FBAPP.FBlogout = function() {
+	FB.logout();
 };
 
 FBAPP.logout = function() {
-	FB.logout();
+	FB.logout(FBAPP.localLogout);
 };
 
 FBAPP.localLogout = function() {
 	$.getJSON('/api/logout',function(json) {
-		console.log(json);
+		FBAPP.processStatus({})
 	});
 };
 
@@ -51,7 +55,7 @@ $(function() {
 
 	window.fbAsyncInit = function() {
 		FB.init({
-			appId: '479805915398705', //'***REMOVED***', this is the real fb app id
+			appId: '<?=Cana::config()->facebook->app?>',
 			cookie: true,
 			xfbml: true,
 			oauth: true
@@ -72,7 +76,8 @@ $(function() {
 
 <a href="javascript: FBAPP.login();" class="login">login</a>
 <a href="javascript: FBAPP.logout();" class="logout">logout</a>
-<a href="javascript: FBAPP.localLogout();" class="logout">local-logout</a>
+<a href="javascript: FBAPP.FBlogout();" class="logout">fb-logout-only</a>
+<a href="javascript: FBAPP.localLogout();" class="logout">local-logout-only</a>
 
 <div class="user">
 	<img class="user-image"></img>
