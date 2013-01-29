@@ -762,10 +762,11 @@ App.track = function() {
 };
 
 App.identify = function() {
+
 	if (App.config.env != 'live') {
 		return;
 	}
-	if (!App._identified) {
+	if (!App._identified && App.config.user.uuid) {
 		mixpanel.identify(App.config.user.uuid);
 		App._identified = true;
 	}
