@@ -873,11 +873,11 @@ App.cart = {
 			}
 		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = 15; // Default value is 15
+				App.order.tip = ( App.config.user.last_tip ) ? App.config.user.last_tip : 15; // Default value is 15
 				wasTipChanged = true;
-				
 			}
 		}
+
 		if( wasTipChanged ){
 			$('[name="pay-tip"]').val( App.order.tip );
 			// Forces the recalculation of total because the tip was changed.
