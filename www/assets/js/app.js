@@ -31,7 +31,8 @@ var App = {
 	},
 	suggestion : {},
 	_init: false,
-	_pageInit: false
+	_pageInit: false,
+	_identified: false
 };
 
 App.loadRestaurant = function(id) {
@@ -750,12 +751,23 @@ App.track = function() {
 	}
 	if (arguments[0] == 'Ordered') {
 		$('img.conversion').remove();
+		mixpanel.people.track_charge(arguments[1].total);
 		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + History.getState().url + '">').appendTo($('body'));
 	}
 	if (arguments[1]) {
 		mixpanel.track(arguments[0],arguments[1]);
 	} else {
 		mixpanel.track(arguments[0]);
+	}
+};
+
+App.identify = function() {
+	if (App.config.env != 'live') {
+		return;
+	}
+	if (!App._identified) {
+		mixpanel.identify(App.config.user.uuid);
+		App._identified = true;
 	}
 };
 
@@ -1269,6 +1281,7 @@ App.cart = {
 							'user': this.user,
 							'items': totalItems
 						});
+						
 						var loc = '/order/' + this.uuid;
 						History.pushState({},loc,loc);
 					});
@@ -1477,6 +1490,7 @@ App.test = {
 App.processConfig = function(json) {
 	App.config = json;
 	if (App.config.user) {
+		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];
 		App.order['delivery_type'] = App.config.user['delivery_type'];
 		App.order['tip'] = App.config.user['tip'] || 15;
