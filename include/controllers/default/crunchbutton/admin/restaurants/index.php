@@ -1,12 +1,38 @@
 <?php
 
-class Controller_admin_restaurants extends Crunchbutton_Controller_Account {
+/**
+ *
+ * @property $restaurant Crunchbutton_Restaurant
+ */
+class Controller_admin_restaurants extends Crunchbutton_Controller_Account
+{
+
+	/**
+	 * Default method to show a restaurant form
+	 *
+	 * @return void
+	 */
+	private function _restaurantForm()
+	{
+		$view = Cana::view();
+		/* @var $view Cana_View */
+
+		$communities = Community::q('select * from community');
+		$community   = $this->restaurant->community()->items()[0];
+
+		$view->communities = $communities;
+		$view->community   = $community;
+		$view->display('admin/restaurants/restaurant');
+	}
+
+
 	public function init() {
 		c::view()->layout('layout/admin');
 		c::view()->page = 'admin/restaurants';
 
-		$restaurant = Restaurant::o(c::getPagePiece(2));
-		
+		$restaurant       = Restaurant::o(c::getPagePiece(2));
+		$this->restaurant = $restaurant;
+
 		if (c::getPagePiece(2) == 'new') {
 			c::view()->display('admin/restaurants/restaurant');
 
@@ -14,7 +40,7 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account {
 			c::view()->restaurant = $restaurant;
 			switch (c::getPagePiece(3)) {
 				case 'pay':
-					c::view()->display('admin/restaurants/pay');					
+					c::view()->display('admin/restaurants/pay');
 					break;
 				case 'image':
 					if ($_FILES['image']) {
@@ -28,7 +54,7 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account {
 						}
 
 					}
-					c::view()->display('admin/restaurants/image');					
+					c::view()->display('admin/restaurants/image');
 					break;
 				case 'fax':
 					foreach ($restaurant->notifications() as $notification) {
@@ -37,10 +63,10 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account {
 						}
 					}
 
-					c::view()->display('admin/restaurants/fax');					
+					c::view()->display('admin/restaurants/fax');
 					break;
 				default:
-					c::view()->display('admin/restaurants/restaurant');
+					$this->_restaurantForm();
 					break;
 			}
 
