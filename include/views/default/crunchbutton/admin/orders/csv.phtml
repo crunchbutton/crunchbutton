@@ -1,5 +1,60 @@
-Restaurant Name, Customer name,Order Date,Order Time,Total,Subtotal,Tax,Tip,Delivery Fee,Service Fee,Customer Fee Percent,Restaurant Fee Percent,Cash or Card,Refunded,Payment Method,Check address or bank info,Payment frequency,Last date paid,Customer Phone,Community
-<? foreach ($this->orders as $order) : ?>
-<? $date = $order->date(); ?>"<?=$order->restaurant()->name?>","<?=$order->name?>","<?=$date->format('M jS Y')?>","<?=$date->format('g:i:s A')?>",<?=number_format($order->final_price,2)?>,<?=number_format($order->price,2)?>,<?=$order->tax()?>,<?=$order->tip()?>,<?=$order->deliveryFee()?>,<?=$order->serviceFee()?>,<?=$order->service_fee?>,<?=$order->restaurant()->fee_restaurant?>,"<?=$order->pay_type?>","<?=$order->refunded ? 'yes' : ''?>",,,,,<?=$order->phone?>,<?=$order->community()->name?>
+<?
+/**
+ * Exports the order information in a CSV file
+ *
+ * @package Crunchbutton.Admin.Order
+ * @category view
+ */
 
+$headers = [
+	'Restaurant Name',
+	'Customer name',
+	'Order Date',
+	'Order Time',
+	'Total',
+	'Subtotal',
+	'Tax',
+	'Tip',
+	'Delivery Fee',
+	'Service Fee',
+	'Customer Fee Percent',
+	'Restaurant Fee Percent',
+	'Cash or Card',
+	'Refunded',
+	'Payment Method',
+	'Check address or bank info',
+	'Payment frequency',
+	'Last date paid',
+	'Customer Phone',
+	'Community',
+	'Notes',
+];
+
+echo implode(',', $headers)."\n";
+?>
+<? foreach ($this->orders as $order) : ?><? ob_start()?>
+		<? $date = $order->date(); ?>
+		"<?=$order->restaurant()->name?>",
+		"<?=$order->name?>",
+		"<?=$date->format('M jS Y')?>",
+		"<?=$date->format('g:i:s A')?>",
+		<?=number_format($order->final_price,2)?>,
+		<?=number_format($order->price,2)?>,
+		<?=$order->tax()?>,
+		<?=$order->tip()?>,
+		<?=$order->deliveryFee()?>,
+		<?=$order->serviceFee()?>,
+		<?=$order->service_fee?>,
+		<?=$order->restaurant()->fee_restaurant?>,
+		"<?=$order->pay_type?>",
+		"<?=$order->refunded ? 'yes' : ''?>"
+		,,,,,
+		<?=$order->phone?>,
+		<?=$order->community()->name?>,
+		"<?=$order->notes?>"
+	<?
+		$output = ob_get_clean();
+		$output = preg_replace('/\n|\r|\t/i', '', $output);
+		echo "$output\n";
+	?>
 <? endforeach ; ?>
