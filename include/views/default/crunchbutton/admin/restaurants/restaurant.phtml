@@ -1,3 +1,29 @@
+<?
+/**
+ * Shows the Restaurant form for the admin
+ *
+ * @package Crunchbutton.Admin.Restaurant
+ * @category view
+ */
+/* @var $this Cana_View */
+
+/**
+ * View helper to preselect the <select> community form input
+ *
+ * @param Crunchbutton_Community $current Which community is the current restaurant linked to
+ * @param Crunchbutton_Community $tested  Which community we are listing in the <select>
+ *
+ * @return string
+ */
+function _selectedCommunity(Crunchbutton_Community $current, Crunchbutton_Community $tested) {
+	$selected = '';
+	if ($current->id_community == $tested->id_community) {
+		$selected = ' selected="selected" ';
+	}
+	return $selected;
+}
+
+?>
 <style>
 
 #right-panel {margin-left: 740px; width: 240px}
@@ -201,9 +227,12 @@ input.notification {width: 400px;}
 										<div class="check-wrap">
 											<div class="check"><input type="checkbox" name="id_community_check" value="1" class="bind-a-check"><label>Yes</label></div>
 											<div class="check-content">
-												<select name="id_community">
-													<? foreach (Community::q('select * from community') as $community) : ?>
-														<option value="<?=$community->id_community?>"><?=$community->name?></option>
+												<select name="id_community" class="dataset-restaurant">
+													<? foreach ($this->communities as $community) : ?>
+														<? /* @var $community Crunchbutton_Community */ ?>
+														<option value="<?=$community->id_community?>" <?=_selectedCommunity($this->community, $community)?>>
+															<?=$community->name?>
+														</option>
 													<? endforeach ; ?>
 												</select>
 											</div>
