@@ -108,6 +108,10 @@ class Crunchbutton_App extends Cana_App {
 
 		$config->facebook->app = $config->facebook->{$params['env']}->app;
 		$config->facebook->secret = $config->facebook->{$params['env']}->secret;
+		
+		$config->github->id = $config->github->{$params['env']}->id;
+		$config->github->secret = $config->github->{$params['env']}->secret;
+
 		$this->config($config);
 
 		$this->buildAuth($this->db());
