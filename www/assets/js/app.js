@@ -29,7 +29,11 @@ var App = {
 		delivery_type: 'delivery',
 		tip: '15'
 	},
+	signin : {},
 	suggestion : {},
+	modal : {
+		shield : { 'isVisible' : false }
+	},
 	_init: false,
 	_pageInit: false,
 	_identified: false
@@ -339,7 +343,7 @@ App.page.restaurant = function(id) {
 		}
 
 		// Appends the suggestion's form
-		$('.main-content').append( App.suggestion.form() );
+		$('.main-content').append( App.suggestion.html() );
 
 		// As the div restaurant-items has position:absolute this line will make sure the footer will not go up.
 		$('.body').css( { 'min-height' : $('.restaurant-items').height() } )
@@ -2149,7 +2153,14 @@ $(function() {
 		App.config.user.card_exp_year = $('[name="pay-card-year"]').val();
 	});
 
+	App.signin.init();
+	App.modal.shield.init();
+
 });
+
+/**************************
+*  Suggestion's methods
+**************************/
 
 App.suggestion.init = function(){
 
@@ -2159,10 +2170,10 @@ App.suggestion.init = function(){
 
 	$( '.suggestion-form-button' ).live( 'click', function( e ){
 		App.suggestion.send();
-	} )
+	} );
 
 	$( '.suggestion-form' ).submit(function() {
-	return false;
+		return false;
 	} );
 
 	// ToolTip
@@ -2190,12 +2201,9 @@ App.suggestion.init = function(){
 		$( '.tooltip-help-content-mobile:visible' ).hide();
 		$( '.tooltip-help-content-desktop:visible' ).hide();
 	} );
-
-	App.suggestion.shield.init();
-
 }
 
-App.suggestion.form = function(){
+App.suggestion.html = function(){
 	return '' +
 	'<div class="suggestion-container">' +
 		'<div class="suggestion-form-container">' +
@@ -2272,24 +2280,15 @@ App.suggestion.show = function(){
 	/* Shows the modal */
 	setTimeout( function(){
 			/* Shows the shield */
-			App.suggestion.shield.show();
+			App.modal.shield.show();
 			$( '.suggestion-container' )
 				.dialog( {
-					dialogClass: 'suggestion-fixed-dialog',
-					width: App.suggestion.contentWidth(),
-					close: function( event, ui ) { App.suggestion.shield.close(); },
+					dialogClass: 'modal-fixed-dialog',
+					width: App.modal.contentWidth(),
+					close: function( event, ui ) { App.modal.shield.close(); },
 					open: function( event, ui ) { $( '.suggestion-name' ).focus(); }
 				} );
 		}, 100 );
-}
-
-App.suggestion.contentWidth = function(){
-	if( $( window ).width() > 700 ){
-		return 280;
-	}
-	if( $( window ).width() <= 700 ){
-		return $( window ).width() - 50;
-	}
 }
 
 App.suggestion.tooltipContainer = function( device ){
@@ -2302,32 +2301,193 @@ App.suggestion.tooltipContainer = function( device ){
 											'</div></span>';
 }
 
-App.suggestion.shield = { 'isVisible' : false }
+/**************************
+*  Signin's methods
+**************************/
+App.signin.init = function(){
+	
+	$( '.wrapper' ).append( App.signin.html() );
 
-App.suggestion.shield.resize = function(){
-	if( App.suggestion.shield.isVisible ){
-		$( '.suggest-shield' ).width( $( window ).width() );
-		/* Plus 60 due to iphone's title bar. */
-		$( '.suggest-shield' ).height( $( window ).height() + 60 );
+	$( '.suggestion-link' ).live( 'click', function() {
+		App.suggestion.show();
+	} );
+
+	$( '.signin-facebook-button' ).live( 'click', function( e ){
+		App.signin.facebook();
+	} );
+
+	$( '.signin-form-button' ).live( 'click', function( e ){
+		App.signin.sendForm();
+	} );
+
+	$( '.signin-password-help' ).live( 'click', function( e ){
+		App.signin.passwordHelp();
+	} );
+
+	$( '.signin-password-help-back' ).live( 'click', function( e ){
+		App.signin.passwordBack();
+	} );
+
+	$( '.signin-password-help-button' ).live( 'click', function( e ){
+		App.signin.passwordSend();
+	} );
+	
+	$( '.signin-help-form' ).submit(function() {
+		return false;
+	} );
+
+	$( '.suggestion-form' ).submit(function() {
+		return false;
+	} );
+	
+	$( '.signin-icon' ).live( 'click', function() {
+		App.signin.show();
+	} );
+
+	$( '.signin-user' ).live( 'click', function() {
+		App.signin.signOut();
+	} );
+App.signin.show();
+}
+
+App.signin.html = function(){
+	return '' +
+	'<div class="signin-container">' +
+		'<div class="signin-form-container">' +
+			'<div class="signin-form-options">' +
+				'<form class="signin-form">' +
+					'<h1>Sing in</h1>' +
+					'<input type="text" maxlength="250" name="signin-name" placeholder="username" tabindex="10" />' +
+					'<div class="divider"></div>' +
+					'<input type="password" maxlength="250" name="signin-name" placeholder="password" tabindex="10" />' +
+					'<div class="divider"></div>' +
+					'<a href="javascript:;" class="signin-password-help">Password help?</a>' +
+					'<a href="javascript:;" class="signin-form-button">Log in</a>' +
+					'<div class="divider"></div>' +
+				'</form>' +
+				'<div class="signin-facebook-container">' + 
+					'<div class="signin-facebook">' +
+						'<a href="javascript:;" class="signin-facebook-button">' + 
+							'<span class="signin-facebook-icon"></span>' + 
+							'<span class="signin-facebook-text">Login with Facebook</span>' +
+							'<div class="divider"></div>' +
+						'</a>' + 
+					'</div>' +
+				'</div>' +
+			'</div>' +
+			'<div class="signin-help-container">' + 
+				'<form class="signin-help-form">' +
+					'<h1>Password help?</h1>' +
+					'<input type="text" maxlength="250" name="password-name" placeholder="username or phone number" tabindex="10" />' +
+					'<div class="divider"></div>' +
+					'<a href="javascript:;" class="signin-password-help-back">Nevermind</a>' +
+					'<a href="javascript:;" class="signin-password-help-button">Reset</a>' +
+					'<div class="divider"></div>' +
+				'</form>' +
+				'<div class="signin-password-help-message"></div>' +
+			'</div>' +
+		'</div>' +
+	'</div>';
+}
+
+App.signin.sendForm = function(){
+	alert( '... sending the form... ' );
+	App.signin.signIn();
+}
+
+App.signin.signIn = function(){
+	$( '.signin-user' ).show();
+	$( '.signin-icon' ).hide();
+	$( '.signin-user' ).html( 'Hi, pererinha' );
+	$( '.signin-container' ).dialog( 'close' );
+}
+
+App.signin.signOut = function(){
+	if( confirm( 'Confirm sign out?' ) ){
+		$( '.signin-user' ).hide();
+		$( '.signin-icon' ).show();
+		$( '.signin-user' ).html( '' );
 	}
 }
 
-App.suggestion.shield.init = function(){
-	$( '.wrapper' ).append( '<div class="suggest-shield"></div>' );
+App.signin.passwordHelp = function(){
+	$( '.signin-help-container' ).show();
+	$( '.signin-form-options' ).hide();
+	$( '.signin-password-help-message' ).hide();
+	$( '.signin-password-help-message' ).html( '' );
+	$( 'input[name=password-name]' ).val( '' );
+	$( 'input[name=password-name]' ).focus();
+}
+
+App.signin.passwordBack = function(){
+	$( '.signin-help-container' ).hide();
+	$( '.signin-form-options' ).show();
+}
+
+App.signin.passwordSend = function(){
+	if( $.trim( $( 'input[name=password-name]' ).val() ) == '' ){
+		alert( 'Please enter your phone or username.' );
+		$( 'input[name=password-name]' ).focus();
+		return;
+	}
+	$( '.signin-password-help-message' ).show();
+	$( '.signin-password-help-message' ).html( '...we need to define the success and the error message..' );
+}
+
+
+
+App.signin.facebook = function(){
+	alert( ' ... facebooking ... ' );	
+}
+
+App.signin.show = function(){
+	App.signin.passwordBack();
+	setTimeout( function(){
+			/* Shows the shield */
+			App.modal.shield.show();
+			$( '.signin-container' )
+				.dialog( {
+					dialogClass: 'modal-fixed-dialog',
+					width: App.modal.contentWidth(),
+					close: function( event, ui ) { App.modal.shield.close(); },
+					open: function( event, ui ) { $( '.sign-name' ).focus(); }
+				} );
+		}, 100 );
+}
+
+App.modal.shield.resize = function(){
+	if( App.modal.shield.isVisible ){
+		$( '.modal-shield' ).width( $( window ).width() );
+		/* Plus 60 due to iphone's title bar. */
+		$( '.modal-shield' ).height( $( window ).height() + 60 );
+	}
+}
+
+App.modal.shield.init = function(){
+	$( '.wrapper' ).append( '<div class="modal-shield"></div>' );
 	$( window ).resize( function() {
-			App.suggestion.shield.resize();
+			App.modal.shield.resize();
 	} );
 }
 
-App.suggestion.shield.show = function(){
-	$( '.suggest-shield' ).show();
-	App.suggestion.shield.isVisible = true;
-	App.suggestion.shield.resize();
+App.modal.shield.show = function(){
+	$( '.modal-shield' ).show();
+	App.modal.shield.isVisible = true;
+	App.modal.shield.resize();
 }
 
-App.suggestion.shield.close = function(){
-	$( '.suggest-shield' ).hide();
-	App.suggestion.shield.isVisible = false;
+App.modal.shield.close = function(){
+	$( '.modal-shield' ).hide();
+	App.modal.shield.isVisible = false;
+}
+
+App.modal.contentWidth = function(){
+	if( $( window ).width() > 700 ){
+		return 280;
+	}
+	if( $( window ).width() <= 700 ){
+		return $( window ).width() - 50;
+	}
 }
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
