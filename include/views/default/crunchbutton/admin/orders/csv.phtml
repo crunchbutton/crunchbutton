@@ -27,34 +27,44 @@ $headers = [
 	'Last date paid',
 	'Customer Phone',
 	'Community',
+	'Restaurant Fax',
+	'Restaurant Email',
 	'Notes',
 ];
 
 echo implode(',', $headers)."\n";
 ?>
-<? foreach ($this->orders as $order) : ?><? ob_start()?>
-		<? $date = $order->date(); ?>
-		"<?=$order->restaurant()->name?>",
-		"<?=$order->name?>",
-		"<?=$date->format('M jS Y')?>",
-		"<?=$date->format('g:i:s A')?>",
-		<?=number_format($order->final_price,2)?>,
-		<?=number_format($order->price,2)?>,
-		<?=$order->tax()?>,
-		<?=$order->tip()?>,
-		<?=$order->deliveryFee()?>,
-		<?=$order->serviceFee()?>,
-		<?=$order->service_fee?>,
-		<?=$order->restaurant()->fee_restaurant?>,
-		"<?=$order->pay_type?>",
-		"<?=$order->refunded ? 'yes' : ''?>"
-		,,,,,
+<? foreach ($this->orders as $order) :
+	/* @var $order Crunchbutton_Order */
+	$date = $order->date();
+	ob_start();
+?>
+		"<?=$order->restaurant()->name          // Restaurant Name?>",
+		"<?=$order->name                        // Customer name?>",
+		"<?=$date->format('M jS Y')             // Order Date?>",
+		"<?=$date->format('g:i:s A')            // Order Time?>",
+		<?=number_format($order->final_price,2) // Total?>,
+		<?=number_format($order->price,2)       // Subtotal?>,
+		<?=$order->tax()                        // Tax?>,
+		<?=$order->tip()                        // Tip?>,
+		<?=$order->deliveryFee()                // Delivery Fee?>,
+		<?=$order->serviceFee()                 // Service Fee?>,
+		<?=$order->service_fee                  // Customer Fee Percent?>,
+		<?=$order->restaurant()->fee_restaurant // Restaurant Fee Percent?>,
+		"<?=$order->pay_type                    // Cash or Card?>",
+		"<?=$order->refunded ? 'yes' : ''       // Refunded?>",
+		"<?=''                                  // Payment Method?>",
+		"<?=''                                  // Check address or bank info?>",
+		"<?=''                                  // Payment frequency?>",
+		"<?=''                                  // Last date paid?>",
 		<?=$order->phone?>,
 		<?=$order->community()->name?>,
+		"<?=$order->restaurant()->fax()         // Restaurant fax?>",
+		"<?=$order->restaurant()->email()       // Restaurant email?>",
 		"<?=$order->notes?>"
-	<?
-		$output = ob_get_clean();
-		$output = preg_replace('/\n|\r|\t/i', '', $output);
-		echo "$output\n";
-	?>
+<?
+	$output = ob_get_clean();
+	$output = preg_replace('/\n|\r|\t/i', '', $output);
+	echo "$output\n";
+?>
 <? endforeach ; ?>
