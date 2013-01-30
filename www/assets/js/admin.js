@@ -822,9 +822,14 @@ $(function() {
 
 	$('.change-a-check').live('change', changeACheck).live('keyup', changeACheck);
 
+	/**
+	 * Folds/unfolds the checkbox options
+	 *
+	 * @todo There is a strange bug in the checkbox, If the label is selected, it does work, if you click on the checkbox, it doesnt
+	 */
 	$('.bind-a-check').click(function(e) {
-		var name = $(this).attr('name');
-		var value = $(this).attr('value');
+		var name   = $(this).attr('name');
+		var value  = $(this).attr('value');
 		var parent = $(this).closest('.content-sub').length ? $(this).closest('.content-sub') : $(this).closest('.content-primary');
 
 		$(this).prop('checked', true);
