@@ -230,7 +230,7 @@ input.notification {width: 400px;}
 												<select name="id_community" class="dataset-restaurant">
 													<? foreach ($this->communities as $community) : ?>
 														<? /* @var $community Crunchbutton_Community */ ?>
-														<option value="<?=$community->id_community?>" <?=_selectedCommunity($this->community, $community)?>>
+														<option value="<?=$community->id_community?>" <?=($this->community) ? _selectedCommunity($this->community, $community) : ''?>>
 															<?=$community->name?>
 														</option>
 													<? endforeach ; ?>
