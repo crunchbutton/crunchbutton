@@ -75,4 +75,16 @@ class Crunchbutton_Community extends Cana_Table {
 			->idVar('id_community')
 			->load($id);
 	}
+
+	/**
+	 * Returns the Testing community
+	 *
+	 * @return Crunchbutton_Community
+	 */
+	public function getTest()
+	{
+		$row = $this->q('SELECT * FROM community WHERE name="Testing" ')->current();
+		return $row;
+	}
+
 }
