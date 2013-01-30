@@ -2347,7 +2347,6 @@ App.signin.init = function(){
 	$( '.signin-user' ).live( 'click', function() {
 		App.signin.signOut();
 	} );
-App.signin.show();
 }
 
 App.signin.html = function(){
