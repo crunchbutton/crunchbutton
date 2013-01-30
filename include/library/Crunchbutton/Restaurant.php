@@ -496,6 +496,27 @@ class Crunchbutton_Restaurant extends Cana_Table {
 
 	}
 
+
+	/**
+	 * Restaurant's email address, if any
+	 *
+	 * @return string|null
+	 */
+	public function email()
+	{
+		$email = null;
+		if ($this->email) {
+			$email =  $this->email;
+		} else {
+			foreach ($this->notifications() as $notification) {
+				if ($notification->type == Crunchbutton_Notification::TYPE_EMAIL) {
+					$email = $notification->value;
+				}
+			}
+		}
+		return $email;
+	}
+
 	public function facebook($params = []) {
 		$params['height'] = 400; //310 *2;
 		$params['width'] = 400; //310 *2;
@@ -516,6 +537,21 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $thumb;
 	}
 
+	/**
+	 * Restaurant's fax number, if any
+	 *
+	 * @return string|null
+	 */
+	public function fax()
+	{
+		$fax = null;
+		foreach ($this->notifications() as $notification) {
+			if ($notification->type == Crunchbutton_Notification::TYPE_FAX) {
+				$fax = $notification->value;
+			}
+		}
+		return $fax;
+	}
 
 	public function image($params = []) {
 		$params['height'] = 280;

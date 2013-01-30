@@ -1,6 +1,13 @@
 <?php
 
-class Crunchbutton_Notification extends Cana_Table {
+class Crunchbutton_Notification extends Cana_Table
+{
+	const TYPE_SMS   = 'sms';
+	const TYPE_EMAIL = 'email';
+	const TYPE_PHONE = 'phone';
+	const TYPE_URL   = 'url';
+	const TYPE_FAX   = 'fax';
+
 	public function send(Crunchbutton_Order $order) {
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
