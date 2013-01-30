@@ -31,6 +31,7 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account
 		c::view()->page = 'admin/restaurants';
 
 		$restaurant       = Restaurant::o(c::getPagePiece(2));
+		/* @var $restaurant Crunchbutton_Restaurant */
 		$this->restaurant = $restaurant;
 
 		if (c::getPagePiece(2) == 'new') {
@@ -57,12 +58,7 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account
 					c::view()->display('admin/restaurants/image');
 					break;
 				case 'fax':
-					foreach ($restaurant->notifications() as $notification) {
-						if ($notification->type == 'fax') {
-							c::view()->notification = $notification->value;
-						}
-					}
-
+					c::view()->notification = $restaurant->fax();
 					c::view()->display('admin/restaurants/fax');
 					break;
 				default:
