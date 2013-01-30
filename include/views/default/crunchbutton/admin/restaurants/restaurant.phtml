@@ -156,11 +156,11 @@ input.notification {width: 400px;}
 							<table class="admin-restaurant-form-sub">
 								<tr>
 									<td class="label-sub">Average Delivery Time:</td>
-									<td class="content-sub"><input type="number" name="delivery_estimated_time" min="0" class="form-number dataset-restaurant"> minutes</td>
+									<td class="content-sub"><input name="delivery_estimated_time" min="0" class="form-number dataset-restaurant"> minutes</td>
 								</tr>
 								<tr>
 									<td class="label-sub">Delivery Radius:</td>
-									<td class="content-sub"><input type="number" name="delivery_radius" min="0" class="form-number dataset-restaurant" step="any"> miles</td>
+									<td class="content-sub"><input name="delivery_radius" min="0" class="form-number dataset-restaurant" step="any"> miles</td>
 								</tr>
 								<tr>
 									<td class="label-sub">Delivery Fee?</td>
@@ -171,7 +171,7 @@ input.notification {width: 400px;}
 										<div class="check-wrap">
 											<div class="check"><input type="checkbox" name="delivery_fee_check" value="1" class="bind-a-check"><label>Yes</label></div>
 											<div class="check-content">
-												$ <input type="number" name="delivery_fee" step="any" min="0" class="form-number dataset-restaurant">
+												$ <input name="delivery_fee" step="any" min="0" class="form-number dataset-restaurant">
 											</div>
 										</div>
 									</td>
@@ -185,7 +185,7 @@ input.notification {width: 400px;}
 										<div class="check-wrap">
 											<div class="check"><input type="checkbox" name="delivery_min_check" value="1" class="bind-a-check"><label>Yes</label></div>
 											<div class="check-content">
-												$ <input type="number" name="delivery_min" step="any" min="0" class="form-number dataset-restaurant">
+												$ <input name="delivery_min" step="any" min="0" class="form-number dataset-restaurant">
 											</div>
 										</div>
 									</td>
@@ -204,7 +204,7 @@ input.notification {width: 400px;}
 							<table class="admin-restaurant-form-sub">
 								<tr>
 									<td class="label-sub">Average Pickup Time:</td>
-									<td class="content-sub"><input type="number" name="pickup_estimated_time" min="0" class="form-number dataset-restaurant"> minutes</td>
+									<td class="content-sub"><input name="pickup_estimated_time" min="0" class="form-number dataset-restaurant"> minutes</td>
 								</tr>
 								<tr>
 									<td class="label-sub">Restaurant Address:</td>
@@ -265,18 +265,18 @@ input.notification {width: 400px;}
 										<table class="admin-restaurant-form-sub">
 											<tr>
 												<td class="labcon-sub-sub">Lat:</td>
-												<td class="labcon-sub-sub"><input type="number" name="loc_lat" value="41.2" step="any" class="form-number dataset-restaurant"></td>
+												<td class="labcon-sub-sub"><input name="loc_lat" value="41.2" step="any" class="form-number dataset-restaurant"></td>
 											</tr>
 											<tr>
 												<td class="labcon-sub-sub">Long:</td>
-												<td class="labcon-sub-sub"><input type="number" name="loc_long" value="-70" step="any" class="form-number dataset-restaurant"></td>
+												<td class="labcon-sub-sub"><input name="loc_long" value="-70" step="any" class="form-number dataset-restaurant"></td>
 											</tr>
 										</table>
 									</td>
 								</tr>
 								<tr>
 									<td class="label-sub">Tax:</td>
-									<td class="content-sub"><input type="number" name="tax" value="" step="any" min="0" class="form-number dataset-restaurant"> %</td>
+									<td class="content-sub"><input name="tax" value="" step="any" min="0" class="form-number dataset-restaurant"> %</td>
 								</tr>
 								<tr>
 									<td class="label-sub">Deliv Min Applies to:</td>
@@ -318,7 +318,7 @@ input.notification {width: 400px;}
 										<div class="check-wrap">
 											<div class="check"><input type="checkbox" name="fee_restaurant_check" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
 											<div class="check-content">
-												<input type="number" name="fee_restaurant" step="any" min="0" class="form-number dataset-restaurant change-a-check"> %
+												<input name="fee_restaurant" step="any" min="0" class="form-number dataset-restaurant change-a-check"> %
 											</div>
 										</div>
 									</td>
@@ -332,7 +332,7 @@ input.notification {width: 400px;}
 										<div class="check-wrap">
 											<div class="check"><input type="checkbox" name="fee_customer_check" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
 											<div class="check-content">
-												<input type="number" name="fee_customer" step="any" min="0" class="form-number dataset-restaurant change-a-check"> %
+												<input name="fee_customer" step="any" min="0" class="form-number dataset-restaurant change-a-check"> %
 											</div>
 										</div>
 									</td>
