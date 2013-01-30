@@ -4,8 +4,6 @@
 class Controller_admin_issues extends Crunchbutton_Controller_Account {
 	public function init() {
 		c::view()->layout('layout/admin');
-		$clientId = '_KEY_'; //'_KEY_';
-		$secret = '_KEY_';
 
 		$client = new Github\Client(
 			new Github\HttpClient\CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache'))
@@ -65,7 +63,7 @@ class Controller_admin_issues extends Crunchbutton_Controller_Account {
 				
 			case 'auth':
 				$redir = 'http://'.$_SERVER['HTTP_HOST'].'admin/issues/authcallback';
-				header('Location: https://github.com/login/oauth/authorize?client_id='.$clientId.'&scope=user,repo');
+				header('Location: https://github.com/login/oauth/authorize?client_id='.c::config()->github->id.'&scope=user,repo');
 				exit;
 
 				break;
@@ -73,7 +71,7 @@ class Controller_admin_issues extends Crunchbutton_Controller_Account {
 			case 'authcallback':
 				$code = $_REQUEST['code'];
 				if ($code) {
-					$data = ['client_id' => $clientId, 'client_secret' => $secret, 'code' => $code];
+					$data = ['client_id' => c::config()->github->id, 'client_secret' => c::config()->github->secret, 'code' => $code];
 					$r = new Cana_Curl('https://github.com/login/oauth/access_token', $data);
 					parse_str($r->output, $params);
 
