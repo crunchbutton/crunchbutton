@@ -47,6 +47,13 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		return $this->_categories;
 	}
 
+	/**
+	 * Returns... the same as communities()?
+	 *
+	 * @todo Shouldn't this return only the first community? I mean...
+	 *
+	 * @return Cana_Iterator
+	 */
 	public function community() {
 		$communities = $this->communities();
 		return $communities;
@@ -284,11 +291,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 		}
 	}
 
-    /**
-     * Stores the Dish Categories for this restaurant
-     *
-     * @param array $rawData array with the JS restaurants
-     */
+	/**
+	 * Stores the Dish Categories for this restaurant
+	 *
+	 * @param array $rawData array with the JS restaurants
+	 */
 	public function saveCategories($rawData)
 	{
 		foreach ($rawData as $data) {
