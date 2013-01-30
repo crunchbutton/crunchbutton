@@ -662,3 +662,18 @@ input[name="dish-options-price"] {
 		font-weight: bold;
 		text-align: center;
 	}
+
+
+.issue-user {
+	line-height: 1.8em;
+	margin-bottom: 25px;
+}
+
+.issue-label {
+	margin: 3px;
+	padding: 3px;
+	color: #fff;
+	font-weight: bold;
+	text-shadow: 1px 1px #000;
+	border-radius: 2px;
+}
