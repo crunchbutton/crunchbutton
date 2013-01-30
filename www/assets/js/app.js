@@ -255,13 +255,13 @@ App.page.restaurant = function(id) {
 		document.title = App.restaurant.name + ' | ' + App.community.name + ' Food Delivery | Order from ' + (App.community.name_alt ? App.community.name_alt : 'Local') + ' Restaurants | Crunchbutton';
 
 		$('.main-content').html(
-			App.suggestion.tooltipContainer( 'mobile' ) + 
+			App.suggestion.tooltipContainer( 'mobile' ) +
 			'<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-item-count"><span></span></div><div class="cart-summary-items"></div></div>' +
 			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' +
 			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') +
 			'<div class="main-content-readable">' +
-				'<div class="restaurant-items"></div>' +
 				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="your-order-label" style="font-weight: bold; display: none;">(we\'ve chosen the most popular order, but you can order anything you want)</div><div class="divider"></div><div class="delivery-minimum-error">Add $<span class="delivery-min-diff">' + parseFloat(App.restaurant.delivery_min -  App.cart.total()).toFixed(2) + '</span> from menu to meet delivery minimum.</div><div class="cart-items-content"></div></div>' +
+				'<div class="restaurant-items"></div>' +
 				'<div class="divider"></div>' +
 			'</div>' +
 			'<div class="restaurant-payment-div"></div>'
@@ -874,8 +874,8 @@ App.cart = {
 		}
 
 		/* If the user changed the delivery method to takeout and the payment is card
-		 * the default tip will be 0%. If the delivery method is delivery and the payment is card  
-		 * the default tip will be 15% (variable App.order.tip). 
+		 * the default tip will be 0%. If the delivery method is delivery and the payment is card
+		 * the default tip will be 15% (variable App.order.tip).
 		 * If the user had changed the tip value the default value will be chosed one.
 		 */
 		var wasTipChanged = false;
@@ -1282,7 +1282,7 @@ App.cart = {
 							'user': this.user,
 							'items': totalItems
 						});
-						
+
 						var loc = '/order/' + this.uuid;
 						History.pushState({},loc,loc);
 					});
@@ -1664,7 +1664,7 @@ App.loc = {
 			case 'yale':
 			case 'new haven':
 				forceLoc = App.communities.yale.permalink;
-				break;		
+				break;
 			case 'brown':
 			case 'providence':
 				forceLoc = App.communities.providence.permalink;
@@ -2162,7 +2162,7 @@ App.suggestion.init = function(){
 	} )
 
 	$( '.suggestion-form' ).submit(function() {
-  	return false;
+	return false;
 	} );
 
 	// ToolTip
@@ -2179,10 +2179,10 @@ App.suggestion.init = function(){
 			return;
 		}
 		setTimeout( function(){
-			$( '.tooltip-help-content-desktop' ).show();	
+			$( '.tooltip-help-content-desktop' ).show();
 		}, 100 );
 	} );
-	$( '.tooltip-help-content' ).live( 'click', function( e ){ 
+	$( '.tooltip-help-content' ).live( 'click', function( e ){
 		e.stopPropagation();
 	} );
 
@@ -2202,18 +2202,18 @@ App.suggestion.form = function(){
 			'<form class="suggestion-form">' +
 				'<h1>What do you suggest?</h1>' +
 				'<input type="text" maxlength="250" name="suggestion-name" tabindex="10" />' +
-				'<div class="divider"></div>' + 
+				'<div class="divider"></div>' +
 				'<a href="javascript:;" class="suggestion-form-button">Suggest</a>' +
-				'<div class="divider"></div>' + 
+				'<div class="divider"></div>' +
 			'</form>' +
 			'<div class="suggestion-message">' +
 			'</div>' +
 		'</div>' +
-		'<div class="suggestion-form-tip">' + 
-			'Crunchbutton "curates" menus. <br/>' + 
-			'We\'ve curated just the top food here. <br/>' + 
-			'You can suggest food, and, if it\'s really good, you\'ll see it on the menu soon.' + 
-		'</div>' + 
+		'<div class="suggestion-form-tip">' +
+			'Crunchbutton "curates" menus. <br/>' +
+			'We\'ve curated just the top food here. <br/>' +
+			'You can suggest food, and, if it\'s really good, you\'ll see it on the menu soon.' +
+		'</div>' +
 	'</div>';
 }
 
@@ -2224,7 +2224,7 @@ App.suggestion.send = function(){
 		$( 'input[name=suggestion-name]' ).focus();
 		return;
 	}
-	
+
 	var suggestionURL = App.service + 'suggestion/new';
 
 	var data = {};
@@ -2241,14 +2241,14 @@ App.suggestion.send = function(){
 		data: data,
 		url: suggestionURL,
 		success: function(content) {
-			App.suggestion.message( '<h1>Awesome, thanks!!</h1>' + 
+			App.suggestion.message( '<h1>Awesome, thanks!!</h1>' +
 															'<div class="suggestion-thanks-text">If you really really wanna make sure we add it asap, feel free to call us at <br/>800-242-1444</div>' );
 		}
 	});
 }
 
 App.suggestion.link = function(){
-	return '<div class="suggestion-link-container">' + 
+	return '<div class="suggestion-link-container">' +
 						'<div class="suggestion-link-title">Really want something else?</div>' +
 						'<a href="javascript:;" class="suggestion-link">Suggest other food</a>' +
 					'</div>';
@@ -2274,31 +2274,31 @@ App.suggestion.show = function(){
 			/* Shows the shield */
 			App.suggestion.shield.show();
 			$( '.suggestion-container' )
-				.dialog( { 
+				.dialog( {
 					dialogClass: 'suggestion-fixed-dialog',
-					width: App.suggestion.contentWidth(),  
+					width: App.suggestion.contentWidth(),
 					close: function( event, ui ) { App.suggestion.shield.close(); },
-					open: function( event, ui ) { $( '.suggestion-name' ).focus(); } 
+					open: function( event, ui ) { $( '.suggestion-name' ).focus(); }
 				} );
 		}, 100 );
 }
 
 App.suggestion.contentWidth = function(){
 	if( $( window ).width() > 700 ){
-		return 280;	
+		return 280;
 	}
 	if( $( window ).width() <= 700 ){
-		return $( window ).width() - 50;	
+		return $( window ).width() - 50;
 	}
 }
 
 App.suggestion.tooltipContainer = function( device ){
-	var help = 'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' + 
+	var help = 'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' +
 											'If you really want something else, suggest it below.'
 
-	return '<span class="tooltip-help-' + device + '-container"><span class="tooltip-help tooltip-help-' + device + '"><span>?</span></span>' + 
-											'<div class="tooltip-help-content tooltip-help-content-' + device + '">' + 
-												help + 
+	return '<span class="tooltip-help-' + device + '-container"><span class="tooltip-help tooltip-help-' + device + '"><span>?</span></span>' +
+											'<div class="tooltip-help-content tooltip-help-content-' + device + '">' +
+												help +
 											'</div></span>';
 }
 
@@ -2308,7 +2308,7 @@ App.suggestion.shield.resize = function(){
 	if( App.suggestion.shield.isVisible ){
 		$( '.suggest-shield' ).width( $( window ).width() );
 		/* Plus 60 due to iphone's title bar. */
-		$( '.suggest-shield' ).height( $( window ).height() + 60 );	
+		$( '.suggest-shield' ).height( $( window ).height() + 60 );
 	}
 }
 
