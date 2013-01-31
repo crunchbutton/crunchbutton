@@ -18,7 +18,6 @@ var App = {
 		',
 	service: '/api/',
 	cached: {},
-	cart: {},
 	community: null,
 	page: {},
 	config: null,
@@ -1156,7 +1155,12 @@ App.cart = {
 		return cart;
 	},
 
-	submit: function(el) {
+	/**
+	 * Submits the cart order
+	 *
+	 * @returns void
+	 */
+	submit: function() {
 		if (App.busy.isBusy()) {
 			return;
 		}
@@ -1166,7 +1170,7 @@ App.cart = {
 		var read = $('.payment-form').length ? true : false;
 
 		if (read) {
-			App.config.user.name = $('[name="pay-name"]').val();
+			App.config.user.name  = $('[name="pay-name"]').val();
 			App.config.user.phone = $('[name="pay-phone"]').val().replace(/[^\d]*/gi,'');
 			if (App.order['delivery_type'] == 'delivery') {
 				App.config.user.address = $('[name="pay-address"]').val();
@@ -1175,14 +1179,14 @@ App.cart = {
 		}
 
 		var order = {
-			cart: App.cart.getCart(),
-			pay_type: App.order['pay_type'],
+			cart:          App.cart.getCart(),
+			pay_type:      App.order['pay_type'],
 			delivery_type: App.order['delivery_type'],
-			restaurant: App.restaurant.id,
-			make_default: $('#default-order-check').is(':checked'),
-			notes: $('[name="notes"]').val(),
-			lat: App.loc.lat,
-			lon: App.loc.lon
+			restaurant:    App.restaurant.id,
+			make_default:  $('#default-order-check').is(':checked'),
+			notes:         $('[name="notes"]').val(),
+			lat: 		   App.loc.lat,
+			lon: 		   App.loc.lon
 		};
 
 		if (order.pay_type == 'card') {
@@ -1191,8 +1195,8 @@ App.cart = {
 
 		if (read) {
 			order.address = App.config.user.address;
-			order.phone = App.config.user.phone;
-			order.name = App.config.user.name;
+			order.phone   = App.config.user.phone;
+			order.name    = App.config.user.name;
 
 			if (App.order.cardChanged) {
 				order.card = {
@@ -1294,7 +1298,7 @@ App.cart = {
 				App.busy.unBusy();
 			}
 		});
-	},
+	}, // end App.cart.submit()
 
 	subtotal: function() {
 		var
@@ -1396,7 +1400,6 @@ App.cart = {
 		feeTotal            += elements['fee'];
 		elements['taxes']    = this._breackDownTaxes(feeTotal);
 		elements['tip']      = this._breakdownTip(total);
-		console.log(elements);
 		return elements;
 	},
 
@@ -2305,7 +2308,7 @@ App.suggestion.tooltipContainer = function( device ){
 *  Signin's methods
 **************************/
 App.signin.init = function(){
-	
+
 	$( '.wrapper' ).append( App.signin.html() );
 
 	$( '.suggestion-link' ).live( 'click', function() {
@@ -2331,7 +2334,7 @@ App.signin.init = function(){
 	$( '.signin-password-help-button' ).live( 'click', function( e ){
 		App.signin.passwordSend();
 	} );
-	
+
 	$( '.signin-help-form' ).submit(function() {
 		return false;
 	} );
@@ -2339,7 +2342,7 @@ App.signin.init = function(){
 	$( '.suggestion-form' ).submit(function() {
 		return false;
 	} );
-	
+
 	$( '.signin-icon' ).live( 'click', function() {
 		App.signin.show();
 	} );
@@ -2364,17 +2367,17 @@ App.signin.html = function(){
 					'<a href="javascript:;" class="signin-form-button">Log in</a>' +
 					'<div class="divider"></div>' +
 				'</form>' +
-				'<div class="signin-facebook-container">' + 
+				'<div class="signin-facebook-container">' +
 					'<div class="signin-facebook">' +
-						'<a href="javascript:;" class="signin-facebook-button">' + 
-							'<span class="signin-facebook-icon"></span>' + 
+						'<a href="javascript:;" class="signin-facebook-button">' +
+							'<span class="signin-facebook-icon"></span>' +
 							'<span class="signin-facebook-text">Login with Facebook</span>' +
 							'<div class="divider"></div>' +
-						'</a>' + 
+						'</a>' +
 					'</div>' +
 				'</div>' +
 			'</div>' +
-			'<div class="signin-help-container">' + 
+			'<div class="signin-help-container">' +
 				'<form class="signin-help-form">' +
 					'<h1>Password help?</h1>' +
 					'<input type="text" maxlength="250" name="password-name" placeholder="username or phone number" tabindex="10" />' +
@@ -2436,7 +2439,7 @@ App.signin.passwordSend = function(){
 
 
 App.signin.facebook = function(){
-	alert( ' ... facebooking ... ' );	
+	alert( ' ... facebooking ... ' );
 }
 
 App.signin.show = function(){

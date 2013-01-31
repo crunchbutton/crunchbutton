@@ -4,20 +4,43 @@ class Crunchbutton_Order extends Cana_Table {
 
 	const PAY_TYPE_CASH        = 'cash';
 	const PAY_TYPE_CREDIT_CARD = 'card';
+	const SHIPPING_DELIVERY    = 'delivery';
+	const SHIPPING_TAKEOUT     = 'takeout';
 
-	public function process($params) {
-		// @todo: add more security here
+	/**
+	 * Process an order
+	 *
+	 *
+	 * @param array $params
+	 *
+	 * @return string|Ambigous <>|boolean
+	 *
+	 * @todo Add more security here
+	 * @todo It looks like if there are orders not set as delivery nor takeout, we need to log them.
+	 */
+	public function process($params)
+	{
+		$this->pay_type = ($params['pay_type'] == 'cash') ? 'cash' : 'card';
+		$this->address  = $params['address'];
+		$this->phone    = $params['phone'];
+		$this->name     = $params['name'];
+		$this->notes    = $params['notes'];
 
-		$this->pay_type = $params['pay_type'] == 'cash' ? 'cash' : 'card';
-		$this->delivery_type = $params['delivery_type'] == 'delivery' ? 'delivery' : 'takeout';
-		$this->address = $params['address'];
-		$this->phone = $params['phone'];
-		$this->name = $params['name'];
-		$this->notes = $params['notes'];
+		// set delivery as default,
+		$this->delivery_type = self::SHIPPING_DELIVERY;
+		if ($params['delivery_type'] == self::SHIPPING_TAKEOUT)  {
+			$this->delivery_type = self::SHIPPING_TAKEOUT;
+		} elseif ($params['delivery_type'] != self::SHIPPING_DELIVERY ) {
+			// log when an order is not delivery nor takeout
+			Crunchbutton_Log::error([
+				'type'         => 'wrong delivery type',
+				'order_params' => $params,
+			]);
+		}
 
-		$this->_number = $params['card']['number'];
+		$this->_number    = $params['card']['number'];
 		$this->_exp_month = $params['card']['month'];
-		$this->_exp_year = $params['card']['year'];
+		$this->_exp_year  = $params['card']['year'];
 
 		$subtotal = 0;
 
@@ -728,8 +751,8 @@ class Crunchbutton_Order extends Cana_Table {
 			$id_user = ( $id_user ) ? $id_user : $this->id_user;
 			// Gets the last order tipped by the user
 			$last_order = self::q('
-				select * from `order` where id_user="'.$id_user.'" and tip is not null order by id_order desc limit 0,1 
-			');	
+				select * from `order` where id_user="'.$id_user.'" and tip is not null order by id_order desc limit 0,1
+			');
 			if( $last_order->tip ){
 				return $last_order->tip;
 			}
