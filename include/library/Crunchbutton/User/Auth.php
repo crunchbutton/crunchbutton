@@ -1,6 +1,16 @@
 <?php
 
 class Crunchbutton_User_Auth extends Cana_Table {
+
+	/**
+	* This method returns the encrypted password
+	* It uses a salt in order to make it impossible to be decrypted
+	**/
+	public static function passwordEncrypt( $password ){
+		$salt = 'Crunchbutton';
+		return md5( $salt . $password );
+	}
+
 	public static function byTypeId($type, $id) {
 		 $row = Cana::db()->get('
 			SELECT * 
@@ -13,6 +23,25 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return new Crunchbutton_User_Auth($row);
 	}
 	
+	public static function localLogin( $email, $password ) {
+		$password = static::passwordEncrypt( $password );
+		$query = sprintf(" SELECT * 
+												FROM user_auth
+												WHERE
+													type='local'
+													AND email='%s'
+													AND auth='%s'
+													AND active=1
+												LIMIT 1",
+		mysql_real_escape_string( $email ),
+		mysql_real_escape_string( $password ) );
+		$row = Cana::db()->get( $query );
+		if( $row->_items && $row->_items[0] ){
+				$row = $row->_items[0];
+		}
+		return new Crunchbutton_User_Auth($row);
+	}
+
 	public static function byUser($user) {
 		 $res = Cana::db()->query('
 			SELECT * 
@@ -35,6 +64,21 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return $this->_user;
 	}
 	
+	public function checkEmailExists( $email ){
+		$row = Cana::db()->get('
+			SELECT * 
+			FROM user_auth
+			WHERE
+				email="' . $email . '"
+				AND active=1
+		');
+		if( $row->_items && $row->_items[0] ){
+				$row = $row->_items[0];
+				return true;
+		}
+		return false;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this

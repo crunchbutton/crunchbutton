@@ -1734,19 +1734,26 @@ html[xmlns] .clearfix {
 	width: 100%;
 }
 
-.signin-box{
-	display: none;
+.signin-box-header{
 	float: right;
 	height: 30px;
 	margin: 12px 0 0 10px;
-	width: 98px;
 }
 	.signin-icon {
 		background: url(/assets/images/sign-in.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
+		display: none;
 		height: 30px;
 		width: 98px;
+	}
+	.signout-icon {
+		background: url(/assets/images/sign-out.png) no-repeat;
+		background-size: contain;
+		cursor: pointer;
+		display: none;
+		height: 30px;
+		width: 110px;
 	}
 	.signin-user{
 		color: #FFF;
@@ -1756,8 +1763,20 @@ html[xmlns] .clearfix {
 		text-align: center;
 		text-shadow: 1px 1px 0px rgba(0,0,0,.22);
 	}
-
-.signin-container{
+.signup-success-container{
+	display: none;
+}
+.signin-error, .signup-error{
+	color: #ff0000;
+	display: none;
+	font-size: 12px;
+	text-align: center;
+	margin: 12px 0;
+}
+	.signup-success{
+		font-size: 12px;
+	}
+.signin-container, .signup-container{
 	background: #f5f5f5 url(/assets/images/groovepaper.png);
 	border: 1px solid #F5F5F5;
 	border-radius: 4px;
@@ -1765,13 +1784,13 @@ html[xmlns] .clearfix {
 	padding: 20px;
 	width: 250px;
 }
-	.signin-container h1{
+	.signin-container h1, .signup-container h1{
 		color:#D74924;
 		font-size: 1.4em;
 		font-weight: 400;
 		margin-bottom:22px;
 	}
-		.signin-container input {
+		.signin-container input, .signup-container input {
 			display: block;
 			width: 98%;
 			margin-bottom: 7px;
@@ -1793,7 +1812,7 @@ html[xmlns] .clearfix {
 			-o-transition: border linear 0.2s, box-shadow linear 0.2s;
 			transition: border linear 0.2s, box-shadow linear 0.2s;
 		}
-		.signin-container input:focus{
+		.signin-container input:focus, .signup-container input:focus {
 			border-color:rgba(82, 168, 236, 0.8);
 			-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
 			-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
@@ -1812,7 +1831,7 @@ html[xmlns] .clearfix {
 			margin-top: 12px;
 			text-decoration: none;
 		}
-		.signin-form-button, .signin-password-help-button{
+		.signin-form-button, .signin-password-help-button, .signup-form-button, .signup-add-password-button {
 			border-radius: 4px;
 			border: 1px solid #cb5921;
 			padding: 6px 10px 6px 12px;
@@ -1833,6 +1852,11 @@ html[xmlns] .clearfix {
 			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926')";
 			background: linear-gradient(#f57333, #f26926);
 		}
+			.signup-add-password-button{
+				float: none;
+				margin: 10px auto; 
+				width: 150px;
+			}
 		.signin-password-help-message{
 			border-top: 1px solid #F5F5F5;
 			color: #666;
@@ -1842,12 +1866,12 @@ html[xmlns] .clearfix {
 			margin-top: 10px;
 			padding-top: 10px;
 		}
-		.signin-facebook-container{
+		.signin-facebook-container, .signup-facebook-container{
 			border-top: 1px solid #F5F5F5;
 			margin-top: 10px;
 			padding-top: 17px;
 		}
-			.signin-facebook{
+			.signin-facebook, .signup-facebook{
 				border-radius: 4px;
 				border: 1px solid #0b3c6e;
 				padding: 0;
@@ -1865,17 +1889,17 @@ html[xmlns] .clearfix {
 				background-image: linear-gradient(top, rgb(33, 83, 135), rgb(25, 68, 113));
 				filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#215387', EndColorStr='#194471');
 			}
-				.signin-facebook a{
+				.signin-facebook a, .signup-facebook a{
 					text-decoration: none;
 				}
-				.signin-facebook-icon{
+				.signin-facebook-icon, .signup-facebook-icon{
 					background: url(/assets/images/signin-facebook.png);
 					display: block;
 					float: left;
 					height: 40px;
 					width: 40px;
 				}
-				.signin-facebook-text{
+				.signin-facebook-text, .signup-facebook-text{
 					color: #fff;
 					float: left;
 					padding-top:12px; 
@@ -2016,7 +2040,7 @@ html[xmlns] .clearfix {
 	.tooltip-help-mobile-container{
 		display: none
 	}
-	.signin-box{
+	.signin-box-header{
 		display: block;
 	}
 }
