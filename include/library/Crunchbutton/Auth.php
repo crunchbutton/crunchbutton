@@ -90,13 +90,25 @@ class Crunchbutton_Auth {
 
 	public function doAuth($type, $id) {
 		$auth = Crunchbutton_User_Auth::byTypeId($type,$id);
-
 		if ($auth->active && $auth->user()->active) {
 			$this->_user = $auth->user();
 			$this->session()->id_user = $this->user()->id_user;
 			$this->session()->id_user_auth = $auth->id_user_auth;
 			$this->session()->save();
+			return true;
+		}
+		return false;
+	}
 
+	public function doAuthByLocalUser( $params ) {
+		$auth = User_Auth::localLogin( $params['email'], $params['password'] );
+		if ( $auth->user()->active ) {
+			$this->_user = $auth->user();			
+			$this->session()->id_user = $this->user()->id_user;
+			$this->session()->id_user_auth = $auth->id_user_auth;
+			$this->session()->date_active = date('Y-m-d H:i:s');
+			$this->session()->generateAndSaveToken();
+			setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');
 			return true;
 		}
 		return false;
