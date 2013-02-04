@@ -11,6 +11,16 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return md5( $salt . $password );
 	}
 
+	public static function resetCodeGenerator(){
+		$random_id_length = 6; 
+		$rnd_id = crypt( uniqid( rand(), 1 ) ); 
+		$rnd_id = strip_tags( stripslashes( $rnd_id ) ); 
+		$rnd_id = str_replace( '.', '', $rnd_id ); 
+		$rnd_id = strrev( str_replace( '/', '', $rnd_id ) ); 
+		$rnd_id = substr( $rnd_id, 0, $random_id_length ); 
+		return strtolower( $rnd_id );
+	}
+
 	public static function byTypeId($type, $id) {
 		 $row = Cana::db()->get('
 			SELECT * 
@@ -74,7 +84,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		');
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
-				return true;
+				return  new Crunchbutton_User_Auth($row);;
 		}
 		return false;
 	}

@@ -39,6 +39,9 @@ var App = {
 };
 
 App.loadRestaurant = function(id) {
+
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+
 	App.cache('Restaurant',id,function() {
 
 		if (!this.open()) {
@@ -94,6 +97,8 @@ App.loadHome = function() {
 	App.currentPage = 'home';
 	History.pushState({}, 'Crunchbutton', '/');
 
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+
 	App.loc.lat = 0;
 	App.loc.lon = 0;
 
@@ -109,6 +114,8 @@ App.page.home = function() {
 	document.title = 'Crunchbutton';
 
 	$('.nav-back').removeClass('nav-back-show');
+
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 
 	$('.content').addClass('short-meal-list');
 
@@ -185,6 +192,8 @@ App.page.community = function(id) {
 	App.lastCommunity = id;
 	App.currentPage = 'community';
 
+	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
+
 	App.cache('Community', id, function() {
 		App.community = this;
 
@@ -241,6 +250,7 @@ App.page.community = function(id) {
 };
 
 App.page.restaurant = function(id) {
+
 	App.currentPage = 'restaurant';
 	App.cartHighlightEnabled = false;
 
@@ -408,13 +418,19 @@ App.drawPay = function(restaurant)
 			'<label>Phone #</label>' +
 			'<div class="input-item"><input type="tel" name="pay-phone" tabindex="3"></div><div class="divider"></div>' +
 
+			'<div class="password-field">' +
+				'<label>Password (optional)</label>' +
+				'<div class="input-item"><input type="password" name="pay-password" tabindex="4">' + 
+				'</div><div class="divider"></div>' +
+			'</div>' + 
+
 			'<label class="delivery-only">Address</label>' +
-			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="4"></textarea></div>' +
+			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="5"></textarea></div>' +
 			fieldError +
 			'<div class="divider"></div>' +
 
 			'<label>Notes</label>' +
-			'<div class="input-item"><textarea name="notes" tabindex="5"></textarea></div><div class="divider"></div>' +
+			'<div class="input-item"><textarea name="notes" tabindex="6"></textarea></div><div class="divider"></div>' +
 
 		'</div>'
 	);
@@ -497,6 +513,12 @@ App.drawPay = function(restaurant)
 		App.loc.enteredLoc = '';
 	}
 
+	App.signup.checkLogin();
+
+	$( 'input[name=pay-phone]' ).change( function(){
+		App.signup.checkLogin();
+	} );
+
 };
 
 App.page.order = function(id) {
@@ -515,10 +537,8 @@ App.page.order = function(id) {
 
 		if (App.justCompleted) {
 			App.justCompleted = false;
-			message = 'You Just Ordered Awesome Food!';
-		} else {
-			message = 'You Just Ordered Awesome Food!';
 		}
+		message = 'You Just Ordered Awesome Food!';
 
 		$('.content').addClass('smaller-width');
 
@@ -557,7 +577,6 @@ App.page.order = function(id) {
 			$('.order-info').append('To reach Crunchbutton, send a text to (646) 783-1444<br />or call <b>(800) 242-1444</b><br /><br />');
 			$('.order-info').append('<span class="order-thanks-message">We\'ve saved your order for easy 1 click ordering next time.</span><br /><br />');
 			$('.order-info').append('<span class="signup-call-to-action"></span>');
-			
 			$('.signup-call-to-action').html( 'If you added a password, you can place 1 click orders at crunchbutton.com on your phone too.' + 
 																 				'<a href="javascript:;" class="signup-add-password-button">Add a password now</a>' );
 			$( '.signup-add-password-button' ).live( 'click', function(){
@@ -625,6 +644,20 @@ App.page.orders = function() {
 				triggerComplete();
 			});
 		}
+
+		var signout = '' +
+								'<div class="signout-container">' + 
+									'<a href="javascript:;" class="signout-button">Sign out</a>' + 
+								'</div>';
+		$( '.main-content-readable' ).append( signout );
+
+		if( !App.signoutBinded ){
+			$( '.signout-button' ).live( 'click', function(){
+				App.signin.signOut();
+			} );
+			App.signoutBinded = true;
+		}
+
 		App.refreshLayout();
 
 	});
@@ -725,6 +758,7 @@ App.loadPage = function() {
 		$('.footer').addClass('footer-hide');
 	}
 	$('.nav-back').addClass('nav-back-show');
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 	App.refreshLayout();
 	$('.main-content').css('visibility','1');
 	setTimeout(scrollTo, 80, 0, 1);
@@ -1205,9 +1239,10 @@ App.cart = {
 		}
 
 		if (read) {
-			order.address = App.config.user.address;
-			order.phone   = App.config.user.phone;
-			order.name    = App.config.user.name;
+			order.address  = App.config.user.address;
+			order.phone    = App.config.user.phone;
+			order.name     = App.config.user.name;
+			order.password = $( 'input[name=pay-password]' ).val( );
 
 			if (App.order.cardChanged) {
 				order.card = {
@@ -2355,6 +2390,14 @@ App.signin.init = function(){
 		App.signin.show();
 	} );
 
+	$( '.sign-in-icon' ).live( 'click', function() {
+		if( App.config.user.id_user ){
+			History.pushState({}, 'Crunchbutton - Orders', '/orders');
+		} else {
+			App.signin.show();
+		}
+	} );
+
 	$( '.signout-icon' ).live( 'click', function() {
 		App.signin.signOut();
 	} );
@@ -2375,7 +2418,7 @@ App.signin.html = function(){
 			'<div class="signin-form-options">' +
 				'<form class="signin-form">' +
 					'<h1>Sign in</h1>' +
-					'<input type="text" maxlength="250" name="signin-email" placeholder="phone" tabindex="10" />' +
+					'<input type="text" maxlength="250" name="signin-email" placeholder="email or phone" tabindex="10" />' +
 					'<div class="divider"></div>' +
 					'<input type="password" maxlength="250" name="signin-password" placeholder="password" tabindex="10" />' +
 					'<div class="divider"></div>' +
@@ -2399,8 +2442,9 @@ App.signin.html = function(){
 			'<div class="signin-help-container">' +
 				'<form class="signin-help-form">' +
 					'<h1>Password help?</h1>' +
-					'<input type="text" maxlength="250" name="password-email" placeholder="email" tabindex="10" />' +
+					'<input type="text" maxlength="250" name="password-help-email" placeholder="email or phone" tabindex="10" />' +
 					'<div class="divider"></div>' +
+					'<div class="password-help-error"></div>' +
 					'<a href="javascript:;" class="signin-password-help-back">Nevermind</a>' +
 					'<a href="javascript:;" class="signin-password-help-button">Reset</a>' +
 					'<div class="divider"></div>' +
@@ -2417,12 +2461,27 @@ App.signin.sendForm = function(){
 		$( 'input[name=signin-email]' ).focus();
 		return;
 	}
+	// Checks it fhe login is a phone
+	var login = $( 'input[name=signin-email]' ).val().replace(/[^\d]*/gi,'');
+	if( !App.phone.validate( login ) ){
+		// It seems not to be a phone number, lets check if it is a email
+		login = $.trim( $( 'input[name=signup-email]' ).val() );
+		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
+			login = false;
+		}
+	}
+	if( !login ){
+		alert( 'Please enter a valid email or phone.' );
+		$( 'input[name=signin-email]' ).focus();
+		return;
+	}
+
 	if( $.trim( $( 'input[name=signin-password]' ).val() ) == '' ){
 		alert( 'Please enter your password.' );
 		$( 'input[name=signin-password]' ).focus();
 		return;
 	}
-	var email = $.trim( $( 'input[name=signin-email]' ).val() ),
+	var email = login,
 			password = $.trim( $( 'input[name=signin-password]' ).val() ),
 			url = App.service + 'user/auth';
 	$('.signin-error').hide();
@@ -2438,6 +2497,10 @@ App.signin.sendForm = function(){
 				App.config.user = data;
 				App.signin.checkUser();
 				$( '.signin-container' ).dialog( 'close' );
+				// If the user is at the restaurant's page - reload it
+				if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
+					App.page.restaurant( App.restaurant.permalink );
+				}
 			}
 		} 
 	} );
@@ -2453,6 +2516,9 @@ App.signin.signOut = function(){
 }
 
 App.signin.passwordHelp = function(){
+	if( $.trim( $( 'input[name=signin-email]' ).val() ) != '' ){
+		$( 'input[name=password-help-email]' ).val( $.trim( $( 'input[name=signin-email]' ).val() ) );
+	}
 	$( '.signin-help-container' ).show();
 	$( '.signin-form-options' ).hide();
 	$( '.signin-password-help-message' ).hide();
@@ -2467,13 +2533,43 @@ App.signin.passwordBack = function(){
 }
 
 App.signin.passwordSend = function(){
-	if( $.trim( $( 'input[name=password-email]' ).val() ) == '' ){
-		alert( 'Please enter your email.' );
-		$( 'input[name=password-email]' ).focus();
+	// Checks it fhe login is a phone
+	var login = $( 'input[name=password-help-email]' ).val().replace(/[^\d]*/gi,'');
+	if( !App.phone.validate( login ) ){
+		// It seems not to be a phone number, lets check if it is a email
+		login = $.trim( $( 'input[name=password-help-email]' ).val() );
+		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
+			login = false;
+		}
+	}
+	if( !login ){
+		alert( 'Please enter a valid email or phone.' );
+		$( 'input[name=password-help-email]' ).focus();
 		return;
 	}
-	$( '.signin-password-help-message' ).show();
-	$( '.signin-password-help-message' ).html( '...we need to define the success and the error message..' );
+	$( '.password-help-error' ).html( '' );	
+	$( '.password-help-error' ).hide();
+	var url = App.service + 'user/reset';
+	$.ajax( {
+		type: 'POST',
+		url: url,
+		data: { 'email' : login },
+		dataType: 'json',
+		success: function( json ){
+			if( json.error ){
+				if( json.error == 'user is not registred' ){
+					$( '.password-help-error' ).html( 'Sorry, that email/phone is not registered with us.' );	
+					$( '.password-help-error' ).fadeIn();	
+					$( 'input[name=password-help-email]' ).focus()
+				}
+			} else {
+				if( json.success = 'success' ){
+					$( '.signin-password-help-message' ).show();
+					$( '.signin-password-help-message' ).html( 'You will receive a code to reset your password! It will expire in 24 hours.' );
+				}
+			}
+		} 
+	} );
 }
 
 
@@ -2504,16 +2600,16 @@ App.signin.checkUser = function(){
 	// If the user is logged
 	if( App.config.user.id_user ){
 		// If the user is at the order page show the sign-out button
-		if( App.currentPage == 'orders' ){
+		/* if( App.currentPage == 'orders' ){
 			$( '.signin-user' ).hide();
 			$( '.signin-icon' ).hide();
 			$( '.signout-icon' ).show();
-		}	else {
+		}	else { */
 			$( '.signin-user' ).html( 'Hi, ' + App.config.user.name );
 			$( '.signin-user' ).show();
 			$( '.signin-icon' ).hide();
 			$( '.signout-icon' ).hide();
-		}
+		// }
 	} else {
 		$( '.signin-user' ).hide();
 		$( '.signin-icon' ).show();
@@ -2545,7 +2641,7 @@ App.signup.html = function(){
 			'<div class="signup-form-options">' +
 				'<form class="signup-form">' +
 					'<h1>Sign up</h1>' +
-					'<input type="text" maxlength="250" name="signup-email" readonly="readonly" placeholder="phone" tabindex="10" />' +
+					'<input type="text" maxlength="250" name="signup-email" placeholder="email or phone" tabindex="10" />' +
 					'<div class="divider"></div>' +
 					'<input type="password" maxlength="250" name="signup-password" placeholder="password" tabindex="10" />' +
 					'<div class="divider"></div>' +
@@ -2593,7 +2689,44 @@ App.signup.show = function(){
 		}, 100 );
 }
 
+App.signup.checkLogin = function(){
+	var login = $( 'input[name=pay-phone]' ).val().replace(/[^\d]*/gi,'');
+	var url = App.service + 'user/verify/' + login
+	$.getJSON( url, function( json ) {
+		if( json.error ){
+			if( json.error == 'user exists' ){
+				$( 'input[name=pay-password]' ).val( '' );
+				$( '.password-field' ).hide();
+			}
+		} else {
+			$( '.password-field' ).fadeIn();
+			$( 'input[name=pay-password]' ).val( '' );
+			$( 'input[name=pay-password]' ).focus();
+		}
+	} );	
+}
+
 App.signup.sendForm = function(){
+	if( $.trim( $( 'input[name=signup-email]' ).val() ) == '' ){
+		alert( 'Please enter your email or phone.' );
+		$( 'input[name=signup-email]' ).focus();
+		return;
+	}
+	// Checks it fhe login is a phone
+	var login = $( 'input[name=signup-email]' ).val().replace(/[^\d]*/gi,'');
+	if( !App.phone.validate( login ) ){
+		// It seems not to be a phone number, lets check if it is a email
+		login = $.trim( $( 'input[name=signup-email]' ).val() );
+		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
+			login = false;
+		}
+	}
+	if( !login ){
+		alert( 'Please enter a valid email or phone.' );
+		$( 'input[name=signup-email]' ).focus();
+		return;
+	}
+
 	if( $.trim( $( 'input[name=signup-password]' ).val() ) == '' ){
 		alert( 'Please enter your password.' );
 		$( 'input[name=signup-password]' ).focus();
@@ -2605,10 +2738,9 @@ App.signup.sendForm = function(){
 	$.ajax( {
 		type: 'POST',
 		url: url,
-		data: { 'email' : App.config.user.phone, 'password' : password },
+		data: { 'email' : login, 'password' : password },
 		dataType: 'json',
 		success: function( data ){
-			console.log(data)
 			if( data.error ){
 				if( data.error == 'user exists' ){
 					$('.signup-error').html( 'It seems that the phone that is already registered!' );
