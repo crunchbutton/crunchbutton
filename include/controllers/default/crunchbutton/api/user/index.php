@@ -82,6 +82,25 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						break;
 				}
 			break;
+			case 'reset':
+				switch ( $this->method() ) {
+					case 'post':
+						$params = array();
+						$params[ 'email' ] = $_POST[ 'email' ];
+						$user_auth = User_Auth::checkEmailExists( $params[ 'email' ] );
+						if( !$user_auth ){
+							echo json_encode(['error' => 'user is not registred']);
+							exit;
+						} 
+						$code = User_Auth::resetCodeGenerator();
+						$user_auth->reset_code = $code;
+						$user_auth->reset_date = date('Y-m-d H:i:s');
+						$user_auth->save();
+						echo json_encode(['success' => 'code generated']);
+						exit;
+					break;
+				}
+			break;
 			default:
 				switch ($this->method()) {
 					case 'get':

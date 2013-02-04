@@ -180,6 +180,23 @@ class Crunchbutton_Order extends Cana_Table {
 		$user = new User($user->id_user);
 		$this->_user = $user;
 
+		// If the user typed a password it will create a new user auth
+		if( $params['password'] != '' ){
+			$params_auth = array();
+			$params_auth[ 'email' ] = $params['phone'];
+			$params_auth[ 'password' ] = $params[ 'password' ];
+			$emailExists = User_Auth::checkEmailExists( $params_auth[ 'email' ] );
+			if( !$emailExists ){
+				$user_auth = new User_Auth();
+				$user_auth->id_user = $user->id_user;
+				$user_auth->type = 'local';
+				$user_auth->auth = User_Auth::passwordEncrypt( $params_auth[ 'password' ] );
+				$user_auth->email = $params_auth[ 'email' ];
+				$user_auth->active = 1;
+				$user_auth->save();
+			}
+		}
+
 		if ($this->_customer->id) {
 			switch (c::config()->processor) {
 				case 'balanced':
