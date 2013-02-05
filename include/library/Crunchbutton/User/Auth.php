@@ -89,6 +89,23 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return false;
 	}
 
+	public function validateResetCode( $code ){
+		$query = sprintf(" SELECT * 
+												FROM user_auth
+												WHERE
+													type='local'
+													AND reset_code='%s'
+													AND active=1
+												LIMIT 1",
+		mysql_real_escape_string( $code ) );
+		$row = Cana::db()->get( $query );
+		if( $row->_items && $row->_items[0] ){
+				$row = $row->_items[0];
+				return  new Crunchbutton_User_Auth($row);;
+		}
+		return false;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
