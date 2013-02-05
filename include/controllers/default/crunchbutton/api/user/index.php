@@ -17,6 +17,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						break;
 				}
 				break;
+			// Verify if the login was already taken
 			case 'verify':
 				switch ($this->method()) {
 					case 'get':
@@ -36,6 +37,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 					break;
 				}
 				break;
+			// Sign in the user
 			case 'auth':
 				switch ($this->method()) {
 					case 'post':
@@ -53,6 +55,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						echo json_encode(['error' => 'invalid request']);
 						break;
 				}
+			// Create a user
 			case 'create':
 				switch ($this->method()) {
 					case 'post':
@@ -82,12 +85,12 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						break;
 				}
 			break;
+			// Reset the user password - create a reset code
 			case 'reset':
 				switch ( $this->method() ) {
 					case 'post':
-						$params = array();
-						$params[ 'email' ] = $_POST[ 'email' ];
-						$user_auth = User_Auth::checkEmailExists( $params[ 'email' ] );
+						$email = $_POST[ 'email' ];
+						$user_auth = User_Auth::checkEmailExists( $email );
 						if( !$user_auth ){
 							echo json_encode(['error' => 'user is not registred']);
 							exit;
@@ -96,11 +99,104 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						$user_auth->reset_code = $code;
 						$user_auth->reset_date = date('Y-m-d H:i:s');
 						$user_auth->save();
-						echo json_encode(['success' => 'code generated']);
+						echo json_encode(['success' => 'code generated', 'code' => $code]);
 						exit;
 					break;
 				}
-			break;
+			// Validate a reset code
+			case 'code-validate':
+				switch ( $this->method() ) {
+					case 'post':
+						$code = $_POST[ 'code' ];
+						$user_auth = User_Auth::validateResetCode( $code );
+						if( !$user_auth ){
+							echo json_encode(['error' => 'invalid code']);
+							exit;
+						} else {
+							$now = strtotime( 'now' );
+							$reset_date = strtotime( $user_auth->reset_date );
+							$time = 86400; // 24 hours has 86400 seconds
+							// The code is valid for 24 hours
+							if( ( $reset_date + $time ) < $now ){
+								echo json_encode(['error' => 'expired code']);
+								exit;
+							} else {
+								echo json_encode(['success' => 'valid code']);
+								exit;
+							}
+						}
+						break;
+				}
+			// Change the user password
+			case 'change-password':
+				switch ( $this->method() ) {
+					case 'post':
+						$code = $_POST[ 'code' ];
+						// Make sure that the user is not cheating!
+						$user_auth = User_Auth::validateResetCode($code );
+						if( !$user_auth ){
+							echo json_encode(['error' => 'invalid code']);
+							exit;
+						} else {
+							$now = strtotime( 'now' );
+							$reset_date = strtotime( $user_auth->reset_date );
+							$time = 86400; // 24 hours has 86400 seconds
+							// The code is valid for 24 hours
+							if( ( $reset_date + $time ) < $now ){
+								echo json_encode(['error' => 'expired code']);
+								exit;
+							} else {
+								$password = $_POST[ 'password' ];
+								$password = User_Auth::passwordEncrypt( $password  );
+								$user_auth->auth = $password;
+								$user_auth->reset_code = NULL;
+								$user_auth->reset_date = NULL;
+								$user_auth->save();
+								echo json_encode(['success' => 'password changed']);
+							}
+						}
+						break;
+					default:
+						echo json_encode(['error' => 'invalid request']);
+						break;
+				}
+				break;
+			// Force register the facebook
+			case 'facebook':
+				foreach ( $_COOKIE as $key => $value ) {
+						if ( preg_match('/^fbsr_.*$/', $key ) ) {
+							$fb = new Crunchbutton_Auth_Facebook;
+							$user = c::user();
+							if ( $fb->user()->id ) {
+								// It seems the facebook user is already related with other user
+								$fb_user = User::facebook( $fb->user()->id );	
+								if ( $fb_user->id_user && $user->id_user ) {
+									if( $fb_user->id_user != $user->id_user ){
+										echo json_encode(['error' => 'facebook id already in use']);
+										exit;
+									}
+								}
+								if ( !$fb_user->id_user ) {
+									$user->active = 1;
+									$user->name = $fb->user()->name;
+									$user->email = $fb->user()->email;
+									$user->save();
+
+									$userAuth = new User_Auth;
+									$userAuth->active = 1;
+									$userAuth->id_user = $user->id_user;
+									$userAuth->type = 'facebook';
+									$userAuth->auth = $fb->user()->id;
+									$userAuth->save();
+								} 
+							} else {
+								// we dont have a facebook user
+							}
+							break;
+						}
+					}
+					echo c::user()->json();
+				break;
 			default:
 				switch ($this->method()) {
 					case 'get':

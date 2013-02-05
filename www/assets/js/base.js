@@ -83,17 +83,17 @@ App.phone = {
 	 * Add dashes to the phone number, unifying how phone number looks
 	 */
 	format: function(num) {
+		if( num != null ){
+			num = num.replace(/^0|^1/,'');
+			num = num.replace(/[^\d]*/gi,'');
+			num = num.substr(0,10);
 
-		num = num.replace(/^0|^1/,'');
-		num = num.replace(/[^\d]*/gi,'');
-		num = num.substr(0,10);
-
-		if (num.length >= 7) {
-			num = num.replace(/(\d{3})(\d{3})(.*)/, "$1-$2-$3");
-		} else if (num.length >= 4) {
-			num = num.replace(/(\d{3})(.*)/, "$1-$2");
+			if (num.length >= 7) {
+				num = num.replace(/(\d{3})(\d{3})(.*)/, "$1-$2-$3");
+			} else if (num.length >= 4) {
+				num = num.replace(/(\d{3})(.*)/, "$1-$2");
+			}
 		}
-
 		return num;
 	},
 	validate: function(num) {

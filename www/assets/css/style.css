@@ -1814,7 +1814,7 @@ html[xmlns] .clearfix {
 .signup-success-container{
 	display: none;
 }
-.signin-error, .signup-error, .password-help-error{
+.signin-error, .signup-error, .password-help-error, .password-reset-code-error, .password-change-error{
 	color: #ff0000;
 	display: none;
 	font-size: 12px;
@@ -1828,7 +1828,7 @@ html[xmlns] .clearfix {
 		text-align: left;
 		line-height: 16px;
 	}
-.signin-container, .signup-container{
+.signin-container, .signup-container, .password-reset-container{
 	background: #f5f5f5 url(/assets/images/groovepaper.png);
 	border: 1px solid #F5F5F5;
 	border-radius: 4px;
@@ -1836,13 +1836,13 @@ html[xmlns] .clearfix {
 	padding: 20px;
 	width: 250px;
 }
-	.signin-container h1, .signup-container h1{
+	.signin-container h1, .signup-container h1, .password-reset-container h1{
 		color:#D74924;
 		font-size: 1.4em;
 		font-weight: 400;
 		margin-bottom:22px;
 	}
-		.signin-container input, .signup-container input {
+		.signin-container input, .signup-container input, .password-reset-container input {
 			display: block;
 			width: 98%;
 			margin-bottom: 7px;
@@ -1864,7 +1864,7 @@ html[xmlns] .clearfix {
 			-o-transition: border linear 0.2s, box-shadow linear 0.2s;
 			transition: border linear 0.2s, box-shadow linear 0.2s;
 		}
-		.signin-container input:focus, .signup-container input:focus {
+		.signin-container input:focus, .signup-container input:focus, .password-reset-container input:focus {
 			border-color:rgba(82, 168, 236, 0.8);
 			-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
 			-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
@@ -1883,7 +1883,7 @@ html[xmlns] .clearfix {
 			margin-top: 12px;
 			text-decoration: none;
 		}
-		.signin-form-button, .signin-password-help-button, .signup-form-button, .signup-add-password-button {
+		.signin-form-button, .signin-password-help-button, .signup-form-button, .signup-add-password-button, .password-reset-code-button, .password-change-button {
 			border-radius: 4px;
 			border: 1px solid #cb5921;
 			padding: 6px 10px 6px 12px;
@@ -1909,7 +1909,7 @@ html[xmlns] .clearfix {
 				margin: 10px auto; 
 				width: 150px;
 			}
-		.signin-password-help-message{
+		.signin-password-help-message, .password-change-message, .signin-facebook-message, .signup-facebook-message{
 			border-top: 1px solid #F5F5F5;
 			color: #666;
 			font-size: 12px;
@@ -1918,6 +1918,11 @@ html[xmlns] .clearfix {
 			margin-top: 10px;
 			padding-top: 10px;
 		}
+			.password-change-message, .signin-facebook-message, .signup-facebook-message{
+				border: none;
+				display: none;
+				text-align: center;
+			}
 		.signin-facebook-container, .signup-facebook-container{
 			border-top: 1px solid #F5F5F5;
 			margin-top: 10px;
@@ -1956,6 +1961,9 @@ html[xmlns] .clearfix {
 					float: left;
 					padding-top:12px; 
 					text-align: center;
+				}
+				.password-change-block{
+					display: none;
 				}
 .ui-icon-closethick{
 	color: #FFF;

@@ -110,6 +110,15 @@ App.loadHome = function() {
 	}
 };
 
+App.page.resetPassword = function( path ){
+	if( !App.signin.passwordHelp.reset.hasStarted ){
+		App.signin.passwordHelp.reset.hasStarted = true;
+		$( '.wrapper' ).append( App.signin.passwordHelp.reset.html( path ) );
+		App.showReset = true;
+		App.page.home();
+	}
+}
+
 App.page.home = function() {
 	document.title = 'Crunchbutton';
 
@@ -184,6 +193,9 @@ App.page.home = function() {
 			'margin-top': '0px',
 			'height': '52px'
 		});
+	}
+	if( App.showReset ){
+		App.signin.passwordHelp.reset.init();
 	}
 };
 
@@ -672,7 +684,6 @@ App.loadPage = function() {
 	if (!path[path.length-1]) {
 		delete path[path.length-1];
 	}
-	console.log(path)
 
 	if (!App.config) {
 		return;
@@ -705,7 +716,11 @@ App.loadPage = function() {
 			break;
 
 		case /^order/i.test(url):
-			App.page.order();
+			App.page.order(path[1]);
+			break;
+
+		case /^reset/i.test(url):
+			App.page.resetPassword( path );
 			break;
 
 		default:
@@ -720,24 +735,15 @@ App.loadPage = function() {
 	if (App.community) {
 		var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
 		var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
-	}
+	} 
 
 	switch (true) {
 
 		case /^order\//i.test(url):
-			App.page.order(path[1]);
-			break;
-
 		case /^legal/i.test(url):
-			App.page.legal();
-			break;
-
 		case /^help/i.test(url):
-			App.page.help();
-			break;
-
 		case /^orders/i.test(url):
-			App.page.orders();
+		case /^reset/i.test(url):
 			break;
 
 		case restaurantRegex.test(url):
@@ -2359,7 +2365,7 @@ App.signin.init = function(){
 	$( '.wrapper' ).append( App.signin.html() );
 
 	$( '.signin-facebook-button' ).live( 'click', function( e ){
-		App.signin.facebook();
+		App.signin.facebook.login();
 	} );
 
 	$( '.signin-form-button' ).live( 'click', function( e ){
@@ -2367,15 +2373,15 @@ App.signin.init = function(){
 	} );
 
 	$( '.signin-password-help' ).live( 'click', function( e ){
-		App.signin.passwordHelp();
+		App.signin.passwordHelp.show();
 	} );
 
 	$( '.signin-password-help-back' ).live( 'click', function( e ){
-		App.signin.passwordBack();
+		App.signin.passwordHelp.hide();
 	} );
 
 	$( '.signin-password-help-button' ).live( 'click', function( e ){
-		App.signin.passwordSend();
+		App.signin.passwordHelp.sendForm();
 	} );
 
 	$( '.signin-help-form' ).submit(function() {
@@ -2409,6 +2415,8 @@ App.signin.init = function(){
 	History.Adapter.bind(window,'statechange',function() {
 		App.signin.checkUser();
 	});
+
+	App.signin.facebook.init();
 }
 
 App.signin.html = function(){
@@ -2437,6 +2445,9 @@ App.signin.html = function(){
 							'<div class="divider"></div>' +
 						'</a>' +
 					'</div>' +
+					'<div class="signin-facebook-message">' +
+						'Just a sec...' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
 			'<div class="signin-help-container">' +
@@ -2456,16 +2467,12 @@ App.signin.html = function(){
 }
 
 App.signin.sendForm = function(){
-	if( $.trim( $( 'input[name=signin-email]' ).val() ) == '' ){
-		alert( 'Please enter your phone.' );
-		$( 'input[name=signin-email]' ).focus();
-		return;
-	}
 	// Checks it fhe login is a phone
-	var login = $( 'input[name=signin-email]' ).val().replace(/[^\d]*/gi,'');
+	var login = $( 'input[name=signin-email]' ).val();
+	login = login.replace(/[^\d]*/gi,'')
 	if( !App.phone.validate( login ) ){
 		// It seems not to be a phone number, lets check if it is a email
-		login = $.trim( $( 'input[name=signup-email]' ).val() );
+		login = $.trim( $( 'input[name=signin-email]' ).val() );
 		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
 			login = false;
 		}
@@ -2490,11 +2497,11 @@ App.signin.sendForm = function(){
 		url: url,
 		data: { 'email' : email, 'password' : password },
 		dataType: 'json',
-		success: function( data ){
+		success: function( json ){
 			if( data.error ){
 				$('.signin-error').fadeIn();
 			} else{
-				App.config.user = data;
+				App.config.user = json;
 				App.signin.checkUser();
 				$( '.signin-container' ).dialog( 'close' );
 				// If the user is at the restaurant's page - reload it
@@ -2508,78 +2515,82 @@ App.signin.sendForm = function(){
 
 App.signin.signOut = function(){
 	if( confirm( 'Confirm sign out?' ) ){
-		$.getJSON('/api/logout',function(){
-			$( '.signout-icon' ).hide();
-			location.href = '/';
-		} );
-	}
-}
-
-App.signin.passwordHelp = function(){
-	if( $.trim( $( 'input[name=signin-email]' ).val() ) != '' ){
-		$( 'input[name=password-help-email]' ).val( $.trim( $( 'input[name=signin-email]' ).val() ) );
-	}
-	$( '.signin-help-container' ).show();
-	$( '.signin-form-options' ).hide();
-	$( '.signin-password-help-message' ).hide();
-	$( '.signin-password-help-message' ).html( '' );
-	$( 'input[name=password-name]' ).val( '' );
-	$( 'input[name=password-name]' ).focus();
-}
-
-App.signin.passwordBack = function(){
-	$( '.signin-help-container' ).hide();
-	$( '.signin-form-options' ).show();
-}
-
-App.signin.passwordSend = function(){
-	// Checks it fhe login is a phone
-	var login = $( 'input[name=password-help-email]' ).val().replace(/[^\d]*/gi,'');
-	if( !App.phone.validate( login ) ){
-		// It seems not to be a phone number, lets check if it is a email
-		login = $.trim( $( 'input[name=password-help-email]' ).val() );
-		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
-			login = false;
+		if( App.signin.facebook.isLogged ){
+			FB.logout( function(){
+				$.getJSON('/api/logout',function(){
+					$( '.signout-icon' ).hide();
+					location.href = '/';
+				} );	
+			} );	
+		} else {
+			$.getJSON('/api/logout',function(){
+				$( '.signout-icon' ).hide();
+				location.href = '/';
+			} );	
 		}
 	}
-	if( !login ){
-		alert( 'Please enter a valid email or phone.' );
-		$( 'input[name=password-help-email]' ).focus();
-		return;
-	}
-	$( '.password-help-error' ).html( '' );	
-	$( '.password-help-error' ).hide();
-	var url = App.service + 'user/reset';
-	$.ajax( {
-		type: 'POST',
-		url: url,
-		data: { 'email' : login },
-		dataType: 'json',
-		success: function( json ){
-			if( json.error ){
-				if( json.error == 'user is not registred' ){
-					$( '.password-help-error' ).html( 'Sorry, that email/phone is not registered with us.' );	
-					$( '.password-help-error' ).fadeIn();	
-					$( 'input[name=password-help-email]' ).focus()
-				}
-			} else {
-				if( json.success = 'success' ){
-					$( '.signin-password-help-message' ).show();
-					$( '.signin-password-help-message' ).html( 'You will receive a code to reset your password! It will expire in 24 hours.' );
-				}
-			}
-		} 
-	} );
 }
 
 
-
-App.signin.facebook = function(){
-	alert( ' ... facebooking ... ' );
+App.signin.facebook = {};
+App.signin.facebook.init = function(){}
+App.signin.facebook.processStatus = function( session ){
+	if ( session.status === 'connected' && session.authResponse ) {
+		App.signin.facebook.isLogged = true;
+		if( App.signin.facebook.shouldAuth ){
+			FB.api( '/me', { fields: 'name' }, function( response ) {
+				if ( response.error ) {
+					return;
+				}
+				if( response.id ){
+					App.signin.facebook.shouldAuth
+					$( '.signin-facebook-message' ).show();
+					$( '.signup-facebook-message' ).show();
+					$( '.signin-facebook' ).hide();
+					$( '.signup-facebook' ).hide();
+					// Just call the user api, this will create a facebook user
+					var url = App.service + 'user/facebook';
+					$.ajax( {
+						type: 'GET',
+						url: url,
+						dataType: 'json',
+						success: function( json ){
+							console.log(json)
+							if( json.error ){
+								if( json.error == 'facebook id already in use' ){
+									alert( 'Sorry, It seems the facebook user is already related with other user.' );
+								}
+							} else {
+								App.config.user = json;
+								App.signin.checkUser();
+							}
+							$( '.signin-container' ).dialog( 'close' );
+							$( '.signup-container' ).dialog( 'close' );
+							// If the user is at the restaurant's page - reload it
+							if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
+								App.page.restaurant( App.restaurant.permalink );
+							}
+						} 
+					} );
+				}
+			});			
+		}
+	} 
 }
+App.signin.facebook.login = function() {
+	App.signin.facebook.shouldAuth = true;
+	FB.login( App.signin.facebook.processStatus,{ scope:'email' } );
+};
 
 App.signin.show = function(){
-	App.signin.passwordBack();
+	App.signin.passwordHelp.hide();
+	$( '.signin-facebook-message' ).hide();
+	$( '.signin-facebook' ).show();
+	if( App.signin.facebook.isLogged ){
+		$( '.signin-facebook-container' ).hide();
+	} else {
+		$( '.signin-facebook-container' ).show();
+	}
 	setTimeout( function(){
 			/* Shows the shield */
 			App.modal.shield.show();
@@ -2617,15 +2628,223 @@ App.signin.checkUser = function(){
 	}
 }
 
+App.signin.passwordHelp = {};
+
+App.signin.passwordHelp.show = function(){
+	if( $.trim( $( 'input[name=signin-email]' ).val() ) != '' ){
+		$( 'input[name=password-help-email]' ).val( $.trim( $( 'input[name=signin-email]' ).val() ) );
+	}
+	$( '.signin-password-help-button' ).show();
+	$( '.signin-password-help-back' ).show();
+	$( '.signin-help-container' ).show();
+	$( '.signin-form-options' ).hide();
+	$( '.signin-password-help-message' ).hide();
+	$( '.signin-password-help-message' ).html( '' );
+	$( 'input[name=password-help-email]' ).focus();
+}
+
+App.signin.passwordHelp.hide = function(){
+	$( '.signin-help-container' ).hide();
+	$( '.signin-form-options' ).show();
+}
+
+App.signin.passwordHelp.sendForm = function(){
+	// Checks it fhe login is a phone
+	var login = $( 'input[name=password-help-email]' ).val();
+	login = login.replace(/[^\d]*/gi,'')
+	if( !App.phone.validate( login ) ){
+		// It seems not to be a phone number, lets check if it is a email
+		login = $.trim( $( 'input[name=password-help-email]' ).val() );
+		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
+			login = false;
+		}
+	}
+	if( !login ){
+		alert( 'Please enter a valid email or phone.' );
+		$( 'input[name=password-help-email]' ).focus();
+		return;
+	}
+	$( '.password-help-error' ).html( '' );	
+	$( '.password-help-error' ).hide();
+	var url = App.service + 'user/reset';
+	$.ajax( {
+		type: 'POST',
+		url: url,
+		data: { 'email' : login },
+		dataType: 'json',
+		success: function( json ){
+			if( json.error ){
+				if( json.error == 'user is not registred' ){
+					$( '.password-help-error' ).html( 'Sorry, that email/phone is not registered with us.' );	
+					$( '.password-help-error' ).fadeIn();	
+					$( 'input[name=password-help-email]' ).focus()
+				}
+			} else {
+				if( json.success = 'success' ){
+					$( '.signin-password-help-message' ).show();
+					$( '.signin-password-help-button' ).hide();
+					$( '.signin-password-help-back' ).hide();
+					$( '.signin-password-help-message' ).html( 'You will receive a code to reset your password! It will expire in 24 hours.' );
+					/////////////// TODO: REMOVE THIS DEBUG AND REMOVE THE CODE THAT THE API RETURNS
+					var resetURL = '/reset/' + json.code;
+					$( '.signin-password-help-message' ).append( '<br/><br/><hr/>DEBUG<br/>' );
+					$( '.signin-password-help-message' ).append( '<a href="' + resetURL + '">reset code: ' + json.code + '</a><hr/>' );
+				}
+			}
+		} 
+	} );
+}
+
+App.signin.passwordHelp.reset = {};
+
+App.signin.passwordHelp.reset.init = function(){
+	setTimeout( function(){
+		/* Shows the shield */
+		App.modal.shield.show();
+		$( '.password-reset-container' )
+			.dialog( {
+				dialogClass: 'modal-fixed-dialog',
+				width: App.modal.contentWidth(),
+				close: function( event, ui ) { App.modal.shield.close(); App.signin.passwordHelp.reset.close(); },
+				open: function( event, ui ) { $( 'input[name=password-reset-code]' ).focus(); }
+			} );
+		$( '.password-reset-code-button' ).live( 'click', function(){
+			App.signin.passwordHelp.reset.sendForm();
+		} );
+		$( '.password-change-button' ).live( 'click', function(){
+			App.signin.passwordHelp.reset.change();
+		} );
+		$( '.password-reset-form' ).submit(function() {
+			return false;
+		} );
+		$( '.password-change-form' ).submit(function() {
+			return false;
+		} );
+	}, 100 );
+}
+
+App.signin.passwordHelp.reset.sendForm = function(){
+	$( '.password-reset-code-error' ).html( '' );	
+	$( '.password-reset-code-error' ).hide();	
+	var code = $.trim( $( 'input[name=password-reset-code]' ).val() );
+	if( code == '' ){
+		alert( 'Please enter the reset code.' );
+		$( 'input[name=password-reset-code]' ).focus();
+		return;
+	}
+	var url = App.service + 'user/code-validate';
+	$.ajax( {
+		type: 'POST',
+		url: url,
+		data: { 'code' : code },
+		dataType: 'json',
+		success: function( json ){
+			if( json.error ){
+				if( json.error == 'invalid code' ){
+					$( '.password-reset-code-error' ).html( 'Sorry, this code is invalid.' );	
+				}
+				if( json.error == 'expired code' ){
+					$( '.password-reset-code-error' ).html( 'Sorry, this code is expired.' );	
+				}
+				$( '.password-reset-code-error' ).fadeIn();	
+				$( 'input[name=password-reset-code]' ).focus()
+			} else {
+				if( json.success = 'valid code' ){
+					$( '.password-reset-block' ).hide();
+					$( '.password-change-block' ).show();
+					$( 'input[name=password-new]' ).focus();
+				}
+			}
+		} 
+	} );
+}
+
+App.signin.passwordHelp.reset.change = function(){
+	var code = $.trim( $( 'input[name=password-reset-code]' ).val() );
+	var password = $.trim( $( 'input[name=password-new]' ).val() );
+	if( password == '' ){
+		alert( 'Please enter your password.' );
+		$( 'input[name=password-new]' ).focus();
+		return;
+	}
+	var url = App.service + 'user/change-password';
+	$.ajax( {
+		type: 'POST',
+		url: url,
+		data: { 'code' : code, 'password' : password },
+		dataType: 'json',
+		success: function( json ){
+			if( json.error ){
+				if( json.error == 'invalid code' ){
+					$( '.password-change-error' ).html( 'Sorry, this code is invalid.' );	
+				}
+				if( json.error == 'expired code' ){
+					$( '.password-change-error' ).html( 'Sorry, this code is expired.' );	
+				}
+				$( '.password-change-error' ).fadeIn();	
+			} else {
+				if( json.success = 'password changed' ){
+					$( '.password-change-message' ).fadeIn();
+					$( '.password-change-block' ).find( 'h1' ).html( 'Done!' );
+					$( '.password-change-message' ).html( 'Your password has changed!' );
+					App.signin.passwordHelp.hasChanged = true;
+				}
+			}
+			$( 'input[name=password-new]' ).hide();
+			$( '.password-change-button' ).hide();
+		} 
+	} );
+}
+
+App.signin.passwordHelp.reset.close = function(){
+	if( App.signin.passwordHelp.hasChanged ){
+		location.href = '/';
+	}
+}
+
+App.signin.passwordHelp.reset.html = function( path ){
+	var code = ( path.length > 1 ) ? path[ 1 ] : '';
+	return '' +
+	'<div class="password-reset-container">' +
+			'<div class="password-reset-block">' +
+				'<form class="password-reset-form">' +
+					'<h1>Password reset</h1>' +
+					'<input type="text" maxlength="250" name="password-reset-code" value="' + code + '" placeholder="enter the reset code" tabindex="10" />' +
+					'<div class="divider"></div>' +
+					'<div class="password-reset-code-error"></div>' +
+					'<a href="javascript:;" class="password-reset-code-button">Reset</a>' +
+					'<div class="divider"></div>' +
+				'</form>' +
+			'</div>' +
+			'<div class="password-change-block">' +
+				'<form class="password-change-form">' +
+					'<h1>Type your new password</h1>' +
+					'<input type="password" maxlength="250" name="password-new" value="" placeholder="password" tabindex="10" />' +
+					'<div class="divider"></div>' +
+					'<div class="password-change-error"></div>' +
+					'<a href="javascript:;" class="password-change-button">Change</a>' +
+					'<div class="divider"></div>' +
+					'<div class="password-change-message"></div>' +
+				'</form>' +
+			'</div>' +
+		'</div>' +
+	'</div>';
+}
+
 /**************************
 *  Signup's methods
 **************************/
 App.signup = {};
 App.signup.init = function(){
+
 	$( '.wrapper' ).append( App.signup.html() );
 
 	$( '.signup-form-button' ).live( 'click', function(){
 		App.signup.sendForm();
+	} );
+
+	$( '.signup-facebook-button' ).live( 'click', function(){
+		App.signin.facebook.login();
 	} );
 
 	$( '.signup-form' ).submit(function() {
@@ -2657,12 +2876,15 @@ App.signup.html = function(){
 							'<div class="divider"></div>' +
 						'</a>' +
 					'</div>' +
+					'<div class="signup-facebook-message">' +
+						'Just a sec...' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
 			'<div class="signup-success-container">' + 
 				'<h1>Well done!</h1>' +
 				'<div class="signup-success">' + 
-					'Now you can use your phone <strong class="success-phone"></strong> ... some text here!' +
+					'Now you can use your <strong class="success-phone"></strong> ... some text here!' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
@@ -2670,7 +2892,13 @@ App.signup.html = function(){
 }
 
 App.signup.show = function(){
-	App.signin.passwordBack();
+	$( '.signup-facebook' ).show();
+	$( '.signup-facebook-message' ).hide();
+	if( App.signin.facebook.isLogged ){
+		$( '.signup-facebook-container' ).hide();
+	} else {
+		$( '.signup-facebook-container' ).show();
+	}
 	setTimeout( function(){
 			/* Shows the shield */
 			App.modal.shield.show();
@@ -2713,7 +2941,8 @@ App.signup.sendForm = function(){
 		return;
 	}
 	// Checks it fhe login is a phone
-	var login = $( 'input[name=signup-email]' ).val().replace(/[^\d]*/gi,'');
+	var login = $( 'input[name=signup-email]' ).val();
+	login = login.replace(/[^\d]*/gi,'');
 	if( !App.phone.validate( login ) ){
 		// It seems not to be a phone number, lets check if it is a email
 		login = $.trim( $( 'input[name=signup-email]' ).val() );
@@ -2743,11 +2972,11 @@ App.signup.sendForm = function(){
 		success: function( data ){
 			if( data.error ){
 				if( data.error == 'user exists' ){
-					$('.signup-error').html( 'It seems that the phone that is already registered!' );
+					$('.signup-error').html( 'It seems that the email/phone that is already registered!' );
 				}
 				$('.signup-error').fadeIn();
 			} else{
-				$( '.success-phone' ).html( App.config.user.phone );
+				$( '.success-phone' ).html( login );
 				$( '.signup-call-to-action' ).hide();
 				$( '.signup-form-options' ).hide();
 				$( '.signup-success-container' ).show();
