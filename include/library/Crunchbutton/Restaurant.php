@@ -390,8 +390,14 @@ class Crunchbutton_Restaurant extends Cana_Table {
 				continue;
 			}
 
-			$open = new DateTime('today '.$hour->time_open, new DateTimeZone($this->timezone));
+			$open  = new DateTime('today '.$hour->time_open, new DateTimeZone($this->timezone));
 			$close = new DateTime('today '.$hour->time_close, new DateTimeZone($this->timezone));
+
+			// if closeTime before openTime, then closeTime should be for tomorrow
+			if ($close->getTimestamp() < $open->getTimestamp()) {
+				$close = new DateTime('+1 day '.$hour->time_close, new DateTimeZone($this->timezone));
+			}
+
 
 			if ($today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp()) {
 				return true;
