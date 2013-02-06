@@ -663,7 +663,30 @@ App.page.orders = function() {
 			});
 		}
 
+		var signupFacebook = '';
+		if( App.signin.facebook.isLogged || App.config.user.facebook ){
+			signupFacebook = '<a href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>';
+		}
+		
+		var bottomMenu = '<div class="order-options">' + 
+										signupFacebook +
+										'<a href="javascript:;" class="signout-button">Sign out</a>' + 
+										'<div class="divider"></div>' + 
+									'</div>';
+							
+		$( '.main-content-readable' ).append( bottomMenu );
+		if( !App.bottomMenuBinded ){
+			
+			$( '.signout-button' ).live( 'click', function(){
+				App.signin.signOut();
+			} );
 
+			$( '.signup-add-facebook-button' ).live( 'click', function(){
+				App.signup.show( true );
+			} );
+			
+			App.bottomMenuBinded = true;
+		}
 
 		App.refreshLayout();
 
