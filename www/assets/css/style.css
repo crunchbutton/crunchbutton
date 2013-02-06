@@ -843,6 +843,9 @@ html[xmlns] .clearfix {
 	border: 1px solid #ff6648;
 	margin-left: 203px;
 }
+.meal-item-tag.about-to-close {
+	margin-left: 147px;
+}
 
 .meal-item-tag-closed {
 	background: #ff281f;
@@ -1906,7 +1909,7 @@ html[xmlns] .clearfix {
 		}
 			.signup-add-password-button{
 				float: none;
-				margin: 10px auto; 
+				margin: 10px auto;
 				width: 150px;
 			}
 		.signin-password-help-message, .password-change-message, .signin-facebook-message, .signup-facebook-message{
@@ -1933,7 +1936,7 @@ html[xmlns] .clearfix {
 				border: 1px solid #0b3c6e;
 				padding: 0;
 				display: block;
-				
+
 				margin: 3px auto 0 auto;
 				text-align: center;
 				text-shadow: 1px 1px 0px rgba(0,0,0,.22);
@@ -1959,7 +1962,7 @@ html[xmlns] .clearfix {
 				.signin-facebook-text, .signup-facebook-text{
 					color: #fff;
 					float: left;
-					padding-top:12px; 
+					padding-top:12px;
 					text-align: center;
 				}
 				.password-change-block{
@@ -1985,10 +1988,10 @@ html[xmlns] .clearfix {
 	text-align: center;
 	padding-top: 2px;
 	position: absolute;
-	-moz-user-select: none; 
-	-khtml-user-select: none; 
-	-webkit-user-select: none; 
-	-o-user-select: none; 
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
 	position: absolute;
 	height: 16px;
 	min-width: 18px;
@@ -2135,7 +2138,7 @@ html[xmlns] .clearfix {
 	}
 	.tooltip-help-mobile-container{
 		display: none
-	}	
+	}
 }
 
 th {

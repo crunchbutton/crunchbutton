@@ -19,6 +19,47 @@ var Restaurant = function(id) {
 		complete = function() {};
 	}
 
+	/**
+	 * Returns the minutes if it's about to close
+	 *
+	 * @return int|boolean
+	 */
+	this.isAboutToClose = function() {
+		/**
+		 * How many minutes to closing time to trigger the notification
+		 *
+		 * @var int
+		 */
+		var minimumTime = 15;
+		var today       = Date.today().toString('ddd').toLowerCase();
+		if (this._hours == undefined ||  this._hours[today] == undefined) {
+			return false;
+		}
+		todayHours  = this._hours[today];
+		for (i in todayHours) {
+			var openTime  = Date.parse(todayHours[i][0]);
+			var closeTime = Date.parse(todayHours[i][1]);
+			// there is no real 24:00 hours, it's 00:00 for tomorrow
+			if (todayHours[i][1] == '24:00') {
+				closeTime = Date.parse('00:00');
+				closeTime.addDays(1);
+			}
+			// if closeTime before openTime, then closeTime should be for tomorrow
+			if (closeTime.compareTo(openTime) == -1) {
+				closeTime.addDays(1);
+			}
+
+
+			openTime = closeTime.clone().addMinutes(-1 * minimumTime);
+			if (Date.now().between(openTime, closeTime)) {
+				var minutes = (openTime.getTime() - Date.today().getTime()) /1000/60/60;
+				minutes = Math.floor(minutes);
+				return minutes;
+			}
+		}
+		return false;
+	}
+
 	self.categories = function() {
 		return self.loadType('Category','categories');
 	}

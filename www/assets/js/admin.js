@@ -61,6 +61,146 @@ function _loadNotification(notification) {
 		$wrapper.append(html);
 }
 
+function _loadRestaurant() {
+	var restaurant = this;
+	var checkswap = {
+		'delivery_fee_check' : 'delivery_fee',
+		'delivery_min_check': 'delivery_min',
+		'fee_restaurant_check': 'fee_restaurant',
+		'fee_customer_check': 'fee_customer',
+		'id_community_check': 'id_community'
+	};
+
+	$('.admin-restaurant-form input, .admin-restaurant-form select, .admin-restaurant-form textarea').each(function() {
+		if ($(this).attr('type') == 'checkbox') {
+			if (restaurant[$(this).attr('name')] == 1 && $(this).attr('value') == '1') {
+				$(this).click();
+			}
+			if (restaurant[$(this).attr('name')] == 0 && $(this).attr('value') == '0') {
+				$(this).click();
+			}
+
+		} else {
+			$(this).val(restaurant[$(this).attr('name')]);
+		}
+
+		for (var x in checkswap) {
+			if ($(this).attr('name') == x) {
+				if (restaurant[checkswap[x]] && restaurant[checkswap[x]] != '0') {
+					//$('input[name="' + x + '"][value="0"]').prop('checked', false);
+					//$('input[name="' + x + '"][value="1"]').prop('checked', true);
+					$('input[name="' + x + '"][value="1"]').click();
+				} else {
+					//$('input[name="' + x + '"][value="0"]').prop('checked', true);
+					//$('input[name="' + x + '"][value="1"]').prop('checked', false);
+					$('input[name="' + x + '"][value="0"]').click();
+				}
+			}
+		}
+	});
+
+	App.restaurant       = restaurant.id_restaurant; // Should be App.id_restaurant IMHO
+	App.restaurantObject = restaurant;               // and this one should rellay be App.restaurant
+
+	$('.admin-restaurant-content').html('');
+
+	var notifications = restaurant.notifications();
+	for (var i in notifications) {
+		_loadNotification(notifications[i]);
+	}
+	_loadEmptyNotifications();
+	_newNotificationFields();
+
+	var categories = restaurant.categories();
+	var isDishes = false;
+
+	var $categoriesContainer = $('<div class="accordion"></div>');
+	$('.admin-restaurant-dishes .admin-restaurant-content').append($categoriesContainer);
+
+	for (var i in categories) {
+		var dishes       = categories[i].dishes();
+		var $categoryTab = $('<h3 data-id_category="'+ categories[i].id_category +'">'+ categories[i].name+'</h3><div></div>');
+		$categoriesContainer.append($categoryTab);
+
+		for (var x in dishes) {
+			App.showDish(dishes[x]);
+			isDishes = true;
+		}
+	}
+	$('.accordion').accordion({
+		collapsible: true,
+		active:      false,
+		heightStyle: "content",
+		activate:    function( event, ui ){
+			var speed = 100;
+			var accordionOptions = $('.accordion').accordion('option');
+			setTimeout(function() {
+				$('.accordion').accordion('destroy');
+				$('.accordion').accordion(accordionOptions);
+			}, 1.1 * speed);
+		}
+	});
+
+	// $('.accordion .ui-accordion-content').sortable().disableSelection();
+
+
+	if (!isDishes) {
+		$('input[name="dish_check"][value="0"]').prop('checked', true);
+		$('input[name="dish_check"][value="1"]').prop('checked', false);
+		$('.admin-restaurant-dishes').hide();
+
+	} else {
+		$('input[name="dish_check"][value="0"]').prop('checked', false);
+		$('input[name="dish_check"][value="1"]').prop('checked', true);
+		$('.admin-restaurant-dishes').show();
+	}
+
+	var days = {
+		'sun': 'Sunday',
+		'mon': 'Monday',
+		'tue': 'Tuesday',
+		'wed': 'Wednesday',
+		'thu': 'Thursday',
+		'fri': 'Friday',
+		'sat': 'Saturday'
+	};
+
+	for (var d in days) {
+
+		var day = $('<div class="hours-date"><span class="hours-date-label">' + days[d] + '</span></div>');
+		var dayWrap = $('<div class="hours-date-hours"></div>').appendTo(day);
+		dayWrap.after('<div class="divider"></div>');
+
+		if (!restaurant._hours) {
+			$('input[name="hours_check"][value="0"]').prop('checked', true);
+			$('input[name="hours_check"][value="1"]').prop('checked', false);
+			$('.admin-restaurant-hours').hide();
+
+		} else {
+			$('input[name="hours_check"][value="0"]').prop('checked', false);
+			$('input[name="hours_check"][value="1"]').prop('checked', true);
+			$('.admin-restaurant-hours').show();
+
+			var dayitem = restaurant._hours[d];
+
+			for (var x in dayitem) {
+				var row = $('<div class="hours-date-hour"></div>');
+				row.append('<input type="text" value="' + App.formatTime(dayitem[x][0]) + '" name="' + d + '-open[]">' +
+						' TO ' +
+						' <input type="text" value="' + App.formatTime(dayitem[x][1]) + '" name="' + d + '-close[]">');
+				dayWrap.append(row);
+			}
+		}
+
+		var row = $('<div class="hours-date-hour"></div>');
+		row.append('<input type="text" name="' + d + '-open[]"> TO <input type="text" name="' + d + '-close[]">');
+		dayWrap.append(row);
+
+		$('.admin-restaurant-hours').append(day);
+
+	}
+}
+
 /**
  * Adds a new hours range if they are all filled up
  *
@@ -347,145 +487,7 @@ function getValues(selector, restaurant) {
 
 App.loadRestaurant = function(id_restaurant) {
 
-	App.cache('Restaurant', id_restaurant , function() {
-		var restaurant = this;
-		var checkswap = {
-			'delivery_fee_check' : 'delivery_fee',
-			'delivery_min_check': 'delivery_min',
-			'fee_restaurant_check': 'fee_restaurant',
-			'fee_customer_check': 'fee_customer',
-			'id_community_check': 'id_community'
-		};
-
-		$('.admin-restaurant-form input, .admin-restaurant-form select, .admin-restaurant-form textarea').each(function() {
-			if ($(this).attr('type') == 'checkbox') {
-				if (restaurant[$(this).attr('name')] == 1 && $(this).attr('value') == '1') {
-					$(this).click();
-				}
-				if (restaurant[$(this).attr('name')] == 0 && $(this).attr('value') == '0') {
-					$(this).click();
-				}
-
-			} else {
-				$(this).val(restaurant[$(this).attr('name')]);
-			}
-
-			for (var x in checkswap) {
-				if ($(this).attr('name') == x) {
-					if (restaurant[checkswap[x]] && restaurant[checkswap[x]] != '0') {
-						//$('input[name="' + x + '"][value="0"]').prop('checked', false);
-						//$('input[name="' + x + '"][value="1"]').prop('checked', true);
-						$('input[name="' + x + '"][value="1"]').click();
-					} else {
-						//$('input[name="' + x + '"][value="0"]').prop('checked', true);
-						//$('input[name="' + x + '"][value="1"]').prop('checked', false);
-						$('input[name="' + x + '"][value="0"]').click();
-					}
-				}
-			}
-		});
-
-		App.restaurant       = restaurant.id_restaurant; // Should be App.id_restaurant IMHO
-		App.restaurantObject = restaurant;               // and this one should rellay be App.restaurant
-
-		$('.admin-restaurant-content').html('');
-
-		var notifications = restaurant.notifications();
-		for (var i in notifications) {
-			_loadNotification(notifications[i]);
-		}
-		_loadEmptyNotifications();
-		_newNotificationFields();
-
-		var categories = restaurant.categories();
-		var isDishes = false;
-
-		var $categoriesContainer = $('<div class="accordion"></div>');
-		$('.admin-restaurant-dishes .admin-restaurant-content').append($categoriesContainer);
-
-		for (var i in categories) {
-			var dishes       = categories[i].dishes();
-			var $categoryTab = $('<h3 data-id_category="'+ categories[i].id_category +'">'+ categories[i].name+'</h3><div></div>');
-			$categoriesContainer.append($categoryTab);
-
-			for (var x in dishes) {
-				App.showDish(dishes[x]);
-				isDishes = true;
-			}
-		}
-		$('.accordion').accordion({
-			collapsible: true,
-			active:      false,
-			heightStyle: "content",
-			activate:    function( event, ui ){
-				var speed = 100;
-				var accordionOptions = $('.accordion').accordion('option');
-				setTimeout(function() {
-					$('.accordion').accordion('destroy');
-					$('.accordion').accordion(accordionOptions);
-				}, 1.1 * speed);
-			}
-		});
-
-		// $('.accordion .ui-accordion-content').sortable().disableSelection();
-
-
-		if (!isDishes) {
-			$('input[name="dish_check"][value="0"]').prop('checked', true);
-			$('input[name="dish_check"][value="1"]').prop('checked', false);
-			$('.admin-restaurant-dishes').hide();
-
-		} else {
-			$('input[name="dish_check"][value="0"]').prop('checked', false);
-			$('input[name="dish_check"][value="1"]').prop('checked', true);
-			$('.admin-restaurant-dishes').show();
-		}
-
-		var days = {
-			'sun': 'Sunday',
-			'mon': 'Monday',
-			'tue': 'Tuesday',
-			'wed': 'Wednesday',
-			'thu': 'Thursday',
-			'fri': 'Friday',
-			'sat': 'Saturday'
-		};
-
-		for (var d in days) {
-
-			var day = $('<div class="hours-date"><span class="hours-date-label">' + days[d] + '</span></div>');
-			var dayWrap = $('<div class="hours-date-hours"></div>').appendTo(day);
-			dayWrap.after('<div class="divider"></div>');
-
-			if (!restaurant._hours) {
-				$('input[name="hours_check"][value="0"]').prop('checked', true);
-				$('input[name="hours_check"][value="1"]').prop('checked', false);
-				$('.admin-restaurant-hours').hide();
-
-			} else {
-				$('input[name="hours_check"][value="0"]').prop('checked', false);
-				$('input[name="hours_check"][value="1"]').prop('checked', true);
-				$('.admin-restaurant-hours').show();
-
-				var dayitem = restaurant._hours[d];
-
-				for (var x in dayitem) {
-					var row = $('<div class="hours-date-hour"></div>');
-					row.append('<input type="text" value="' + App.formatTime(dayitem[x][0]) + '" name="' + d + '-open[]">' +
-							' TO ' +
-							' <input type="text" value="' + App.formatTime(dayitem[x][1]) + '" name="' + d + '-close[]">');
-					dayWrap.append(row);
-				}
-			}
-
-			var row = $('<div class="hours-date-hour"></div>');
-			row.append('<input type="text" name="' + d + '-open[]"> TO <input type="text" name="' + d + '-close[]">');
-			dayWrap.append(row);
-
-			$('.admin-restaurant-hours').append(day);
-
-		}
-	});
+	App.cache('Restaurant', id_restaurant , _loadRestaurant);
 };
 
 /**
