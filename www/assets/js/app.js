@@ -332,12 +332,15 @@ App.page.restaurant = function(id) {
 			App.cart.loadOrder(App.restaurant.preset());
 		}
 
-		if (App.config.user.id_user) {
+		if (App.config.user.presets) {
+			
 			App.drawPay(this);
-			$('.payment-form').hide();
-
-			var dp = $('<div class="delivery-payment-info main-content-readable"></div>')
-				.append('<div class="dp-display-phone dp-display-item"><label>Your phone number:</label> ' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provied</i>') + '</div>');
+			
+			$('.payment-form').hide();	
+			
+			var dp = $('<div class="delivery-payment-info main-content-readable"></div>');
+				
+			dp.append('<div class="dp-display-phone dp-display-item"><label>Your phone number:</label> ' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provided</i>') + '</div>');
 
 			var paying = $(
 					'<div class="dp-display-payment dp-display-item ">' +
@@ -348,11 +351,12 @@ App.page.restaurant = function(id) {
 					'</div>');
 
 			dp.append(paying);
+		
 			if (App.config.user.delivery_type == 'delivery' && App.restaurant.delivery == '1') {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br />' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</div>');
 			} else {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Address:</label> <i>takeout</i></div>');
-			}
+			}	
 
 			dp.append('<div class="dp-display-address dp-display-item"><a href="javascript:;"><i>Change delivery or payment details</i></a></div>');
 
@@ -594,7 +598,7 @@ App.page.order = function(id) {
 			$('.signup-call-to-action').html( 'If you added a password, you can place 1 click orders at crunchbutton.com on your phone too.' +
 																				'<a href="javascript:;" class="signup-add-password-button">Add a password now</a>' );
 			$( '.signup-add-password-button' ).live( 'click', function(){
-				App.signup.show();
+				App.signup.show( false );
 			} );
 		});
 	});
@@ -659,17 +663,29 @@ App.page.orders = function() {
 			});
 		}
 
-		var signout = '' +
-								'<div class="signout-container">' +
-									'<a href="javascript:;" class="signout-button">Sign out</a>' +
-								'</div>';
-		$( '.main-content-readable' ).append( signout );
-
-		if( !App.signoutBinded ){
+		var signupFacebook = '<a href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>';
+		if( App.signin.facebook.isLogged || App.config.user.facebook ){
+			signupFacebook = '';
+		}
+		
+		var bottomMenu = '<div class="order-options">' + 
+										signupFacebook +
+										'<a href="javascript:;" class="signout-button">Sign out</a>' + 
+										'<div class="divider"></div>' +
+									'</div>';
+							
+		$( '.main-content-readable' ).append( bottomMenu );
+		if( !App.bottomMenuBinded ){
+			
 			$( '.signout-button' ).live( 'click', function(){
 				App.signin.signOut();
 			} );
-			App.signoutBinded = true;
+
+			$( '.signup-add-facebook-button' ).live( 'click', function(){
+				App.signup.show( true );
+			} );
+			
+			App.bottomMenuBinded = true;
 		}
 
 		App.refreshLayout();
@@ -2460,7 +2476,7 @@ App.signin.html = function(){
 					'<input type="text" maxlength="250" name="password-help-email" placeholder="email or phone" tabindex="10" />' +
 					'<div class="divider"></div>' +
 					'<div class="password-help-error"></div>' +
-					'<a href="javascript:;" class="signin-password-help-back">Nevermind</a>' +
+					'<a href="javascript:;" class="signin-password-help-back">Never mind</a>' +
 					'<a href="javascript:;" class="signin-password-help-button">Reset</a>' +
 					'<div class="divider"></div>' +
 				'</form>' +
@@ -2502,7 +2518,7 @@ App.signin.sendForm = function(){
 		data: { 'email' : email, 'password' : password },
 		dataType: 'json',
 		success: function( json ){
-			if( data.error ){
+			if( json.error ){
 				$('.signin-error').fadeIn();
 			} else{
 				App.config.user = json;
@@ -2574,6 +2590,9 @@ App.signin.facebook.processStatus = function( session ){
 							if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
 								App.page.restaurant( App.restaurant.permalink );
 							}
+							if( App.currentPage == 'orders' ){
+								App.page.orders()								
+							}
 						}
 					} );
 				}
@@ -2590,11 +2609,11 @@ App.signin.show = function(){
 	App.signin.passwordHelp.hide();
 	$( '.signin-facebook-message' ).hide();
 	$( '.signin-facebook' ).show();
-	if( App.signin.facebook.isLogged ){
+	/* if( App.signin.facebook.isLogged ){
 		$( '.signin-facebook-container' ).hide();
 	} else {
 		$( '.signin-facebook-container' ).show();
-	}
+	} */
 	setTimeout( function(){
 			/* Shows the shield */
 			App.modal.shield.show();
@@ -2614,21 +2633,23 @@ App.signin.show = function(){
 App.signin.checkUser = function(){
 	// If the user is logged
 	if( App.config.user.id_user ){
-		// If the user is at the order page show the sign-out button
-		/* if( App.currentPage == 'orders' ){
-			$( '.signin-user' ).hide();
-			$( '.signin-icon' ).hide();
-			$( '.signout-icon' ).show();
-		}	else { */
-			$( '.signin-user' ).html( 'Hi, ' + App.config.user.name );
-			$( '.signin-user' ).show();
-			$( '.signin-icon' ).hide();
-			$( '.signout-icon' ).hide();
-		// }
+		// $( '.signin-user' ).html( 'Hi, ' + App.config.user.name );
+		$( '.signin-user' ).show();
+		$( '.signin-icon' ).hide();
+		$( '.signout-icon' ).hide();
+		$( '.signup-icon' ).hide();
+		$( '.signin-box-header' ).addClass( 'signin-box-header-min' );
 	} else {
 		$( '.signin-user' ).hide();
 		$( '.signin-icon' ).show();
+		$( '.signup-icon' ).show();
 		$( '.signout-icon' ).hide();
+		$( '.signin-box-header' ).removeClass( 'signin-box-header-min' );
+	}
+	if( App.currentPage == 'home' ){
+		$( '.config-icon' ).addClass( 'config-icon-desktop-hide' );
+	} else {
+		$( '.config-icon' ).removeClass( 'config-icon-desktop-hide' );
 	}
 }
 
@@ -2839,9 +2860,14 @@ App.signin.passwordHelp.reset.html = function( path ){
 *  Signup's methods
 **************************/
 App.signup = {};
+
 App.signup.init = function(){
 
 	$( '.wrapper' ).append( App.signup.html() );
+
+	$( '.signup-icon' ).live( 'click', function(){
+		App.signup.show( false );
+	} );
 
 	$( '.signup-form-button' ).live( 'click', function(){
 		App.signup.sendForm();
@@ -2876,7 +2902,7 @@ App.signup.html = function(){
 					'<div class="signup-facebook">' +
 						'<a href="javascript:;" class="signup-facebook-button">' +
 							'<span class="signup-facebook-icon"></span>' +
-							'<span class="signup-facebook-text">Login with Facebook</span>' +
+							'<span class="signup-facebook-text">Signup with Facebook</span>' +
 							'<div class="divider"></div>' +
 						'</a>' +
 					'</div>' +
@@ -2895,10 +2921,10 @@ App.signup.html = function(){
 	'</div>';
 }
 
-App.signup.show = function(){
+App.signup.show = function( justFacebook ){
 	$( '.signup-facebook' ).show();
 	$( '.signup-facebook-message' ).hide();
-	if( App.signin.facebook.isLogged ){
+	if( App.config.user.facebook ){
 		$( '.signup-facebook-container' ).hide();
 	} else {
 		$( '.signup-facebook-container' ).show();
@@ -2910,6 +2936,11 @@ App.signup.show = function(){
 			$( 'input[name=signup-password]' ).val( '' );
 			$( '.signup-form-options' ).show();
 			$( '.signup-success-container' ).hide();
+			if( justFacebook ){
+				$( '.signup-form' ).hide();
+			} else {
+				$( '.signup-form' ).show();
+			}
 			$( '.signin-error' ).hide();
 			$( '.signup-container' )
 				.dialog( {
@@ -2973,17 +3004,23 @@ App.signup.sendForm = function(){
 		url: url,
 		data: { 'email' : login, 'password' : password },
 		dataType: 'json',
-		success: function( data ){
-			if( data.error ){
-				if( data.error == 'user exists' ){
+		success: function( json ){
+			if( json.error ){
+				if( json.error == 'user exists' ){
 					$('.signup-error').html( 'It seems that the email/phone that is already registered!' );
 				}
 				$('.signup-error').fadeIn();
 			} else{
+				App.config.user = json;
 				$( '.success-phone' ).html( login );
 				$( '.signup-call-to-action' ).hide();
 				$( '.signup-form-options' ).hide();
 				$( '.signup-success-container' ).show();
+				App.signin.checkUser();
+				// If the user is at the restaurant's page - reload it
+				if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
+					App.page.restaurant( App.restaurant.permalink );
+				}
 			}
 		}
 	} );
