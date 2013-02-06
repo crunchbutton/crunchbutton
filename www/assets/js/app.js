@@ -244,6 +244,8 @@ App.page.community = function(id) {
 			if (rs[x].open()) {
 				if (rs[x].delivery != '1') {
 					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
+				} else if (rs[x].isAboutToClose()) {
+					restaurantContent.append('<div class="meal-item-tag about-to-close">Hurry, closes in ' + rs[x].isAboutToClose() +' min!</div>');			
 				} else if (!rs[x].delivery_fee) {
 					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
 				}
@@ -436,9 +438,9 @@ App.drawPay = function(restaurant)
 
 			'<div class="password-field">' +
 				'<label>Password (optional)</label>' +
-				'<div class="input-item"><input type="password" name="pay-password" tabindex="4">' + 
+				'<div class="input-item"><input type="password" name="pay-password" tabindex="4">' +
 				'</div><div class="divider"></div>' +
-			'</div>' + 
+			'</div>' +
 
 			'<label class="delivery-only">Address</label>' +
 			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="5"></textarea></div>' +
@@ -593,8 +595,8 @@ App.page.order = function(id) {
 			$('.order-info').append('To reach Crunchbutton, send a text to (646) 783-1444<br />or call <b>(800) 242-1444</b><br /><br />');
 			$('.order-info').append('<span class="order-thanks-message">We\'ve saved your order for easy 1 click ordering next time.</span><br /><br />');
 			$('.order-info').append('<span class="signup-call-to-action"></span>');
-			$('.signup-call-to-action').html( 'If you added a password, you can place 1 click orders at crunchbutton.com on your phone too.' + 
-																 				'<a href="javascript:;" class="signup-add-password-button">Add a password now</a>' );
+			$('.signup-call-to-action').html( 'If you added a password, you can place 1 click orders at crunchbutton.com on your phone too.' +
+																				'<a href="javascript:;" class="signup-add-password-button">Add a password now</a>' );
 			$( '.signup-add-password-button' ).live( 'click', function(){
 				App.signup.show( false );
 			} );
@@ -661,16 +663,15 @@ App.page.orders = function() {
 			});
 		}
 
+
 		var options = '' +
 									'<div class="order-options">' + 
 										( ( App.signin.facebook.isLogged || App.config.user.facebook ) ? '' : '<a href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>' ) +
 										'<a href="javascript:;" class="signout-button">Sign out</a>' + 
 										'<div class="divider"></div>'
 									'</div>';
-		
-					
+							
 		$( '.main-content-readable' ).append( options );
-
 		if( !App.orderOptionsBinded ){
 			
 			$( '.signout-button' ).live( 'click', function(){
@@ -747,9 +748,9 @@ App.loadPage = function() {
 	}
 
 	if (App.community) {
-		var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
-		var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
-	} 
+		var communityRegex  = new RegExp('^\/' + App.community.permalink + '$', 'i');
+		var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/.+', 'i');
+	}
 
 	switch (true) {
 
@@ -1376,7 +1377,9 @@ App.cart = {
 			options = App.cart.items[x].options;
 
 			for (var xx in options) {
-				total += parseFloat(App.cached['Option'][options[xx]].optionPrice(options));
+				var option = App.cached['Option'][options[xx]];
+				if (option === undefined) continue; // option does not exist anymore
+				total += parseFloat(option.optionPrice(options));
 			}
 		}
 		total = App.ceil(total);
@@ -2445,7 +2448,7 @@ App.signin.html = function(){
 					'<input type="password" maxlength="250" name="signin-password" placeholder="password" tabindex="10" />' +
 					'<div class="divider"></div>' +
 					'<div class="signin-error">' +
-						'Your email or password were incorrect.' + 
+						'Your email or password were incorrect.' +
 					'</div>' +
 					'<a href="javascript:;" class="signin-password-help">Password help?</a>' +
 					'<a href="javascript:;" class="signin-form-button">Log in</a>' +
@@ -2523,7 +2526,7 @@ App.signin.sendForm = function(){
 					App.page.restaurant( App.restaurant.permalink );
 				}
 			}
-		} 
+		}
 	} );
 }
 
@@ -2534,13 +2537,13 @@ App.signin.signOut = function(){
 				$.getJSON('/api/logout',function(){
 					$( '.signout-icon' ).hide();
 					location.href = '/';
-				} );	
-			} );	
+				} );
+			} );
 		} else {
 			$.getJSON('/api/logout',function(){
 				$( '.signout-icon' ).hide();
 				location.href = '/';
-			} );	
+			} );
 		}
 	}
 }
@@ -2584,12 +2587,12 @@ App.signin.facebook.processStatus = function( session ){
 							if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
 								App.page.restaurant( App.restaurant.permalink );
 							}
-						} 
+						}
 					} );
 				}
-			});			
+			});
 		}
-	} 
+	}
 }
 App.signin.facebook.login = function() {
 	App.signin.facebook.shouldAuth = true;
@@ -2680,7 +2683,7 @@ App.signin.passwordHelp.sendForm = function(){
 		$( 'input[name=password-help-email]' ).focus();
 		return;
 	}
-	$( '.password-help-error' ).html( '' );	
+	$( '.password-help-error' ).html( '' );
 	$( '.password-help-error' ).hide();
 	var url = App.service + 'user/reset';
 	$.ajax( {
@@ -2691,8 +2694,8 @@ App.signin.passwordHelp.sendForm = function(){
 		success: function( json ){
 			if( json.error ){
 				if( json.error == 'user is not registred' ){
-					$( '.password-help-error' ).html( 'Sorry, that email/phone is not registered with us.' );	
-					$( '.password-help-error' ).fadeIn();	
+					$( '.password-help-error' ).html( 'Sorry, that email/phone is not registered with us.' );
+					$( '.password-help-error' ).fadeIn();
 					$( 'input[name=password-help-email]' ).focus()
 				}
 			} else {
@@ -2707,7 +2710,7 @@ App.signin.passwordHelp.sendForm = function(){
 					$( '.signin-password-help-message' ).append( '<a href="' + resetURL + '">reset code: ' + json.code + '</a><hr/>' );
 				}
 			}
-		} 
+		}
 	} );
 }
 
@@ -2740,8 +2743,8 @@ App.signin.passwordHelp.reset.init = function(){
 }
 
 App.signin.passwordHelp.reset.sendForm = function(){
-	$( '.password-reset-code-error' ).html( '' );	
-	$( '.password-reset-code-error' ).hide();	
+	$( '.password-reset-code-error' ).html( '' );
+	$( '.password-reset-code-error' ).hide();
 	var code = $.trim( $( 'input[name=password-reset-code]' ).val() );
 	if( code == '' ){
 		alert( 'Please enter the reset code.' );
@@ -2757,12 +2760,12 @@ App.signin.passwordHelp.reset.sendForm = function(){
 		success: function( json ){
 			if( json.error ){
 				if( json.error == 'invalid code' ){
-					$( '.password-reset-code-error' ).html( 'Sorry, this code is invalid.' );	
+					$( '.password-reset-code-error' ).html( 'Sorry, this code is invalid.' );
 				}
 				if( json.error == 'expired code' ){
-					$( '.password-reset-code-error' ).html( 'Sorry, this code is expired.' );	
+					$( '.password-reset-code-error' ).html( 'Sorry, this code is expired.' );
 				}
-				$( '.password-reset-code-error' ).fadeIn();	
+				$( '.password-reset-code-error' ).fadeIn();
 				$( 'input[name=password-reset-code]' ).focus()
 			} else {
 				if( json.success = 'valid code' ){
@@ -2771,7 +2774,7 @@ App.signin.passwordHelp.reset.sendForm = function(){
 					$( 'input[name=password-new]' ).focus();
 				}
 			}
-		} 
+		}
 	} );
 }
 
@@ -2792,12 +2795,12 @@ App.signin.passwordHelp.reset.change = function(){
 		success: function( json ){
 			if( json.error ){
 				if( json.error == 'invalid code' ){
-					$( '.password-change-error' ).html( 'Sorry, this code is invalid.' );	
+					$( '.password-change-error' ).html( 'Sorry, this code is invalid.' );
 				}
 				if( json.error == 'expired code' ){
-					$( '.password-change-error' ).html( 'Sorry, this code is expired.' );	
+					$( '.password-change-error' ).html( 'Sorry, this code is expired.' );
 				}
-				$( '.password-change-error' ).fadeIn();	
+				$( '.password-change-error' ).fadeIn();
 			} else {
 				if( json.success = 'password changed' ){
 					$( '.password-change-message' ).fadeIn();
@@ -2808,7 +2811,7 @@ App.signin.passwordHelp.reset.change = function(){
 			}
 			$( 'input[name=password-new]' ).hide();
 			$( '.password-change-button' ).hide();
-		} 
+		}
 	} );
 }
 
@@ -2902,9 +2905,9 @@ App.signup.html = function(){
 					'</div>' +
 				'</div>' +
 			'</div>' +
-			'<div class="signup-success-container">' + 
+			'<div class="signup-success-container">' +
 				'<h1>Well done!</h1>' +
-				'<div class="signup-success">' + 
+				'<div class="signup-success">' +
 					'Now you can use your <strong class="success-phone"></strong> ... some text here!' +
 				'</div>' +
 			'</div>' +
@@ -2957,7 +2960,7 @@ App.signup.checkLogin = function(){
 			$( 'input[name=pay-password]' ).val( '' );
 			$( 'input[name=pay-password]' ).focus();
 		}
-	} );	
+	} );
 }
 
 App.signup.sendForm = function(){
@@ -3013,7 +3016,7 @@ App.signup.sendForm = function(){
 					App.page.restaurant( App.restaurant.permalink );
 				}
 			}
-		} 
+		}
 	} );
 }
 
