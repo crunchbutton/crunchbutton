@@ -663,15 +663,15 @@ App.page.orders = function() {
 			});
 		}
 
-		var signupFacebook = '';
+		var signupFacebook = '<a href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>';
 		if( App.signin.facebook.isLogged || App.config.user.facebook ){
-			signupFacebook = '<a href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>';
+			signupFacebook = '';
 		}
 		
 		var bottomMenu = '<div class="order-options">' + 
 										signupFacebook +
 										'<a href="javascript:;" class="signout-button">Sign out</a>' + 
-										'<div class="divider"></div>' + 
+										'<div class="divider"></div>' +
 									'</div>';
 							
 		$( '.main-content-readable' ).append( bottomMenu );
