@@ -69,13 +69,27 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 									echo json_encode(['error' => 'user exists']);
 									exit;
 								}
+								$user = c::user();
+								if (!$user->id_user) {
+									// we dont have a user, and we need to make one
+									$user = new User;
+									$user->active = 1;
+									if( filter_var( $_POST[ 'email' ], FILTER_VALIDATE_EMAIL ) ){
+										$user->email = $_POST[ 'email' ];
+									} else {
+										$user->phone = $_POST[ 'email' ];
+									}
+									$user->name = '';
+									$user->save();
+								}
 								$user_auth = new User_Auth();
-								$user_auth->id_user = c::user()->id_user;
+								$user_auth->id_user = $user->id_user;
 								$user_auth->type = 'local';
 								$user_auth->auth = User_Auth::passwordEncrypt( $params[ 'password' ] );
 								$user_auth->email = $params[ 'email' ];
 								$user_auth->active = 1;
 								$user_auth->save();
+								$user = c::auth()->doAuthByLocalUser( $params );
 								echo c::user()->json();
 								break;
 						}
@@ -101,6 +115,14 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						$user_auth->save();
 						echo json_encode(['success' => 'code generated', 'code' => $code]);
 						exit;
+					break;
+					case 'get':
+
+							$mail = new Crunchbutton_User_Auth_Reset_Email([
+							'order' => $order,
+							'email' => $mail
+							]);
+							$mail->send();
 					break;
 				}
 			// Validate a reset code
