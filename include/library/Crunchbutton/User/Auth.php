@@ -66,14 +66,14 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		}
 		return $auths;
 	}
-	
+
 	public function user() {
 		if (!isset($this->_user)) {
 			return new Crunchbutton_User($this->id_user);
 		}
 		return $this->_user;
 	}
-	
+
 	public function checkEmailExists( $email ){
 		$row = Cana::db()->get('
 			SELECT * 
@@ -85,6 +85,22 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
 				return  new Crunchbutton_User_Auth($row);;
+		}
+		return false;
+	}
+
+	public function userHasFacebookAuth( $id_user ){
+		$row = Cana::db()->get('
+			SELECT * 
+			FROM user_auth
+			WHERE
+				id_user="' . $id_user . '"
+				AND type = "facebook"
+				AND active=1
+		');
+		if( $row->_items && $row->_items[0] ){
+				$row = $row->_items[0];
+				return  true;
 		}
 		return false;
 	}
