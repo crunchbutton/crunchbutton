@@ -770,19 +770,20 @@ html[xmlns] .clearfix {
 .sign-in-icon{
 	display: none;
 }
-.signout-container{
-	display: block;
-	margin: 10px;
-	text-align: center;
+.order-options{
+	border-top: 1px solid #F5F5F5;
+	margin-top: 10px;
+	padding: 10px;
 }
-	.signout-button{
+	.signout-button, .signup-add-facebook-button{
 		border-radius: 4px;
 		border: 1px solid #cb5921;
 		padding: 6px 10px 6px 12px;
 		color: #fff;
-		display: block !important;
+		float: left;
+		display: block inline !important;
 		width: 60px;
-		margin: 10px auto;
+		margin:0 10px 10px 0;
 		text-decoration: none;
 		text-align: center;
 		text-shadow: 1px 1px 0px rgba(0,0,0,.22);
@@ -795,7 +796,13 @@ html[xmlns] .clearfix {
 		-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926')";
 		background: linear-gradient(#f57333, #f26926);
 	}
+		.signup-add-facebook-button{
+			width: 190px;
+		}
 
+.config-icon-desktop-hide{
+	display: none;
+}
 
 .logo {
 	float: left;
@@ -1424,6 +1431,9 @@ html[xmlns] .clearfix {
 	.config-icon-mobile-hide{
 		display: none;
 	}
+	.config-icon-desktop-hide{
+		display: block;
+	}
 	.config-icon {
 		float: left;
 	}
@@ -1786,11 +1796,16 @@ html[xmlns] .clearfix {
 	float: right;
 	height: 30px;
 	margin: 12px 0 0 10px;
+	width: 215px;
 }
+	.signin-box-header-min{
+		width: 60px;
+	}
 	.signin-icon {
 		background: url(/assets/images/sign-in.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
+		float: right;
 		display: none;
 		height: 30px;
 		width: 98px;
@@ -1800,17 +1815,37 @@ html[xmlns] .clearfix {
 		background-size: contain;
 		cursor: pointer;
 		display: none;
+		float: right;
 		height: 30px;
 		width: 110px;
 	}
+	.signup-icon {
+		background: url(/assets/images/sign-up.png) no-repeat;
+		background-size: contain;
+		cursor: pointer;
+		float: left;
+		display: none;
+		height: 30px;
+		width: 103px;
+	}
 	.signin-user{
+		background: url(/assets/images/sign-in-icon.png) no-repeat;
+		background-size: contain;
+		cursor: pointer;
+		float: right;
+		display: none;
+		height: 30px;
+		width: 45px;
+		/*
 		color: #FFF;
 		cursor: pointer;
 		display: none;
 		margin-top: 8px;
 		text-align: center;
 		text-shadow: 1px 1px 0px rgba(0,0,0,.22);
+		*/
 	}
+	
 .signup-success-container{
 	display: none;
 }
