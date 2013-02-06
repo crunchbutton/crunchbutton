@@ -116,14 +116,6 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						echo json_encode(['success' => 'code generated', 'code' => $code]);
 						exit;
 					break;
-					case 'get':
-
-							$mail = new Crunchbutton_User_Auth_Reset_Email([
-							'order' => $order,
-							'email' => '_EMAIL'
-							]);
-							$mail->send();
-					break;
 				}
 			// Validate a reset code
 			case 'code-validate':
