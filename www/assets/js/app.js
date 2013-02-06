@@ -2590,6 +2590,9 @@ App.signin.facebook.processStatus = function( session ){
 							if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
 								App.page.restaurant( App.restaurant.permalink );
 							}
+							if( App.currentPage == 'orders' ){
+								App.page.orders()								
+							}
 						}
 					} );
 				}
