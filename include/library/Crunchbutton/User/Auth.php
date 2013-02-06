@@ -95,6 +95,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 			FROM user_auth
 			WHERE
 				id_user="' . $id_user . '"
+				AND type = "facebook"
 				AND active=1
 		');
 		if( $row->_items && $row->_items[0] ){
