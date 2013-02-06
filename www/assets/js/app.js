@@ -664,30 +664,6 @@ App.page.orders = function() {
 		}
 
 
-		var facebook = '';
-		if( App.signin.facebook.isLogged || App.config.user.facebook ){
-			facebook = '<a href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>';
-		}
-		var options = '' +
-									'<div class="order-options">' + 
-										facebook +
-										'<a href="javascript:;" class="signout-button">Sign out</a>' + 
-										'<div class="divider"></div>'
-									'</div>';
-							
-		$( '.main-content-readable' ).append( options );
-		if( !App.orderOptionsBinded ){
-			
-			$( '.signout-button' ).live( 'click', function(){
-				App.signin.signOut();
-			} );
-
-			$( '.signup-add-facebook-button' ).live( 'click', function(){
-				App.signup.show( true );
-			} );
-			
-			App.orderOptionsBinded = true;
-		}
 
 		App.refreshLayout();
 
