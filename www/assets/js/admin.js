@@ -666,6 +666,7 @@ App.returnOption = function(o, type, parent) {
 	return $('<div class="divider"></div>'
 		+ '<div class="admin-food-item-option-padding" data-type="' + type + '" data-parent="' + parent + '">'
 			+ '<div class="dish-options ' + (o.id_option ? 'blue' : '') + '" data-id_option="' + o.id_option + '">'
+				// + '<input type="text" placeholder="0" name="dish-options-sort" value="' + o.sort + '" />'
 				+ defaulted
 				+ '<input type="text" placeholder="Name" name="dish-options-name" value="' + o.name + '">'
 				+ '<div class="input-faker-content">$ </div>'
