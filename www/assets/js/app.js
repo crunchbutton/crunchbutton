@@ -664,9 +664,13 @@ App.page.orders = function() {
 		}
 
 
+		var facebook = '';
+		if( App.signin.facebook.isLogged || App.config.user.facebook ){
+			facebook = '<a href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>';
+		}
 		var options = '' +
 									'<div class="order-options">' + 
-										( ( App.signin.facebook.isLogged || App.config.user.facebook ) ? '' : '<a href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>' ) +
+										facebook +
 										'<a href="javascript:;" class="signout-button">Sign out</a>' + 
 										'<div class="divider"></div>'
 									'</div>';
