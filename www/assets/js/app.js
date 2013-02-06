@@ -245,7 +245,7 @@ App.page.community = function(id) {
 				if (rs[x].delivery != '1') {
 					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
 				} else if (rs[x].isAboutToClose()) {
-					restaurantContent.append('<div class="meal-item-tag about-to-close">Hurry, closes in ' + rs[x].isAboutToClose() +' min!</div>');			
+					restaurantContent.append('<div class="meal-item-tag about-to-close">Hurry, closes in ' + rs[x].isAboutToClose() +' min!</div>');
 				} else if (!rs[x].delivery_fee) {
 					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
 				}
@@ -333,13 +333,13 @@ App.page.restaurant = function(id) {
 		}
 
 		if (App.config.user.presets) {
-			
+
 			App.drawPay(this);
-			
-			$('.payment-form').hide();	
-			
+
+			$('.payment-form').hide();
+
 			var dp = $('<div class="delivery-payment-info main-content-readable"></div>');
-				
+
 			dp.append('<div class="dp-display-phone dp-display-item"><label>Your phone number:</label> ' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provided</i>') + '</div>');
 
 			var paying = $(
@@ -351,12 +351,12 @@ App.page.restaurant = function(id) {
 					'</div>');
 
 			dp.append(paying);
-		
+
 			if (App.config.user.delivery_type == 'delivery' && App.restaurant.delivery == '1') {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br />' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</div>');
 			} else {
 				dp.append('<div class="dp-display-address dp-display-item"><label>Address:</label> <i>takeout</i></div>');
-			}	
+			}
 
 			dp.append('<div class="dp-display-address dp-display-item"><a href="javascript:;"><i>Change delivery or payment details</i></a></div>');
 
@@ -667,16 +667,16 @@ App.page.orders = function() {
 		if( App.signin.facebook.isLogged || App.config.user.facebook ){
 			signupFacebook = '';
 		}
-		
-		var bottomMenu = '<div class="order-options">' + 
+
+		var bottomMenu = '<div class="order-options">' +
 										signupFacebook +
-										'<a href="javascript:;" class="signout-button">Sign out</a>' + 
+										'<a href="javascript:;" class="signout-button">Sign out</a>' +
 										'<div class="divider"></div>' +
 									'</div>';
-							
+
 		$( '.main-content-readable' ).append( bottomMenu );
 		if( !App.bottomMenuBinded ){
-			
+
 			$( '.signout-button' ).live( 'click', function(){
 				App.signin.signOut();
 			} );
@@ -684,7 +684,7 @@ App.page.orders = function() {
 			$( '.signup-add-facebook-button' ).live( 'click', function(){
 				App.signup.show( true );
 			} );
-			
+
 			App.bottomMenuBinded = true;
 		}
 
@@ -1504,12 +1504,18 @@ App.cart = {
 					for (var xx in dishes[x]['_options']) {
 						options[options.length] = dishes[x]['_options'][xx].id_option;
 					}
-					App.cart.add(dishes[x].id_dish,{
-						options: options
-					});
+					if (App.cached.Dish[dishes[x].id_dish] != undefined) {
+						App.cart.add(dishes[x].id_dish,{
+							options: options
+						});
+					}
+
 				}
 			}
-		} catch (e) { console.log(e.stack); }
+		} catch (e) {
+			console.log(e.stack);
+			// throw e;
+		}
 		App.cart.updateTotal();
 	},
 
@@ -2591,7 +2597,7 @@ App.signin.facebook.processStatus = function( session ){
 								App.page.restaurant( App.restaurant.permalink );
 							}
 							if( App.currentPage == 'orders' ){
-								App.page.orders()								
+								App.page.orders()
 							}
 						}
 					} );
