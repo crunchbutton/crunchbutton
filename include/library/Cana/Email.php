@@ -10,10 +10,10 @@
 
 
 require_once 'Mail.php';
-require_once 'Mail/mime.php';
+// require_once 'Mail/mime.php';
 require_once 'Mail/sendmail.php';
 require_once 'Mail/RFC822.php';
-require_once 'Mail/mimePart.php';
+// require_once 'Mail/mimePart.php';
 
 class Cana_Email extends Cana_Model {
 

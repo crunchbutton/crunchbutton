@@ -120,7 +120,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 							$mail = new Crunchbutton_User_Auth_Reset_Email([
 							'order' => $order,
-							'email' => $mail
+							'email' => '_EMAIL'
 							]);
 							$mail->send();
 					break;
