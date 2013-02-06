@@ -510,13 +510,15 @@ th {
 }
 
 .dish-price {
-	width: 85px;
+	width: 70px;
 	float: right;
 }
 
 .dish-price input {
-	width: 65px;
+	width:       50px;
 	margin-left: .5em;
+	text-align:  right;
+
 }
 
 .dish-name {
