@@ -244,6 +244,8 @@ App.page.community = function(id) {
 			if (rs[x].open()) {
 				if (rs[x].delivery != '1') {
 					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
+				} else if (rs[x].isAboutToClose()) {
+					restaurantContent.append('<div class="meal-item-tag about-to-close">Hurry, closes in ' + rs[x].isAboutToClose() +' min!</div>');			
 				} else if (!rs[x].delivery_fee) {
 					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
 				}
@@ -733,8 +735,8 @@ App.loadPage = function() {
 	}
 
 	if (App.community) {
-		var communityRegex = new RegExp('^\/' + App.community.permalink + '$', 'i');
-		var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/', 'i');
+		var communityRegex  = new RegExp('^\/' + App.community.permalink + '$', 'i');
+		var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/.+', 'i');
 	}
 
 	switch (true) {
