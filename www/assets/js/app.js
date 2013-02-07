@@ -3027,7 +3027,7 @@ App.signup.sendForm = function(){
 		success: function( json ){
 			if( json.error ){
 				if( json.error == 'user exists' ){
-					$('.signup-error').html( 'It seems that the email/phone that is already registered!' );
+					$('.signup-error').html( 'It seems that the email is already registered!' );
 				}
 				$('.signup-error').fadeIn();
 			} else{
