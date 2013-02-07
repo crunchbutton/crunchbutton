@@ -2553,6 +2553,7 @@ App.signin.signOut = function(){
 
 
 App.signin.facebook = {};
+App.signin.facebook.running = false;
 App.signin.facebook.init = function(){}
 App.signin.facebook.processStatus = function( session ){
 	if ( session.status === 'connected' && session.authResponse ) {
@@ -2570,31 +2571,35 @@ App.signin.facebook.processStatus = function( session ){
 					$( '.signup-facebook' ).hide();
 					// Just call the user api, this will create a facebook user
 					var url = App.service + 'user/facebook';
-					$.ajax( {
-						type: 'GET',
-						url: url,
-						dataType: 'json',
-						success: function( json ){
-							console.log(json)
-							if( json.error ){
-								if( json.error == 'facebook id already in use' ){
-									alert( 'Sorry, It seems the facebook user is already related with other user.' );
+					if( !App.signin.facebook.running ){
+						App.signin.facebook.running = true;
+						$.ajax( {
+							type: 'GET',
+							url: url,
+							dataType: 'json',
+							success: function( json ){
+								App.signin.facebook.running = true;
+								if( json.error ){
+									if( json.error == 'facebook id already in use' ){
+										alert( 'Sorry, It seems the facebook user is already related with other user.' );
+									}
+								} else {
+									App.config.user = json;
+									App.signin.checkUser();
 								}
-							} else {
-								App.config.user = json;
-								App.signin.checkUser();
+								$( '.signin-container' ).dialog( 'close' );
+								$( '.signup-container' ).dialog( 'close' );
+								// If the user is at the restaurant's page - reload it
+								if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
+									App.page.restaurant( App.restaurant.permalink );
+								}
+								if( App.currentPage == 'orders' ){
+									App.page.orders()								
+								}
 							}
-							$( '.signin-container' ).dialog( 'close' );
-							$( '.signup-container' ).dialog( 'close' );
-							// If the user is at the restaurant's page - reload it
-							if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-								App.page.restaurant( App.restaurant.permalink );
-							}
-							if( App.currentPage == 'orders' ){
-								App.page.orders()								
-							}
-						}
-					} );
+						} );
+					}
+
 				}
 			});
 		}
@@ -2710,10 +2715,6 @@ App.signin.passwordHelp.sendForm = function(){
 					$( '.signin-password-help-button' ).hide();
 					$( '.signin-password-help-back' ).hide();
 					$( '.signin-password-help-message' ).html( 'You will receive a code to reset your password! It will expire in 24 hours.' );
-					/////////////// TODO: REMOVE THIS DEBUG AND REMOVE THE CODE THAT THE API RETURNS
-					var resetURL = '/reset/' + json.code;
-					$( '.signin-password-help-message' ).append( '<br/><br/><hr/>DEBUG<br/>' );
-					$( '.signin-password-help-message' ).append( '<a href="' + resetURL + '">reset code: ' + json.code + '</a><hr/>' );
 				}
 			}
 		}
@@ -2828,7 +2829,7 @@ App.signin.passwordHelp.reset.close = function(){
 }
 
 App.signin.passwordHelp.reset.html = function( path ){
-	var code = ( path.length > 1 ) ? path[ 1 ] : '';
+	var code = ( path.length > 1 ) ? ( path[ 1 ] ? path[ 1 ] : '' ) : '';
 	return '' +
 	'<div class="password-reset-container">' +
 			'<div class="password-reset-block">' +
@@ -2914,7 +2915,7 @@ App.signup.html = function(){
 			'<div class="signup-success-container">' +
 				'<h1>Well done!</h1>' +
 				'<div class="signup-success">' +
-					'Now you can use your <strong class="success-phone"></strong> ... some text here!' +
+					'Now you can use your <strong class="success-phone"></strong>!' +
 				'</div>' +
 			'</div>' +
 		'</div>' +

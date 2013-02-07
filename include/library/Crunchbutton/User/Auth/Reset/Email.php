@@ -16,7 +16,9 @@ class Crunchbutton_User_Auth_Reset_Email extends Crunchbutton_Email {
 		$this->view()->email			= $params['email'];
 		$this->view()->message		= $params['message'];
 		
-		$params['messageHtml']		= $this->view()->render('order/index',['display' => true, 'set' => ['order' => $params['order']]]);
+		$url = $_SERVER['HTTP_HOST'];
+
+		$params['messageHtml'] = $this->view()->render( 'auth/reset/index', [ 'display' => true, 'set' => [ 'code' => $params[ 'code' ], 'url' => $url ] ] );
 
 		parent::__construct($params);				
 	}

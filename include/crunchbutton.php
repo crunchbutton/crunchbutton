@@ -12,6 +12,7 @@
 
 // keep the directory setup in here so we can change its path later
 
+set_include_path(get_include_path() . PATH_SEPARATOR . '/Users/arzynik/pear/share/pear');
 set_include_path(get_include_path() . PATH_SEPARATOR . '/Users/pererinha/pear/share/pear');
 
 $GLOBALS['config'] = [
