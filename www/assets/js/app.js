@@ -2431,8 +2431,8 @@ App.signin.init = function(){
 
 	$( '.signup-link' ).live( 'click', function() {
 		App.dialogForceStayShield = true;
-		$( '.signin-container' ).dialog( 'close' );
 		App.signup.show( false );
+		$( '.signin-container' ).dialog( 'close' );
 	} );
 
 	$( '.sign-in-icon' ).live( 'click', function() {
@@ -2898,8 +2898,8 @@ App.signup.init = function(){
 
 	$( '.signin-link' ).live( 'click', function(){
 		App.dialogForceStayShield = true;
-		$( '.signup-container' ).dialog( 'close' );
 		App.signin.show();
+		$( '.signup-container' ).dialog( 'close' );
 	} );
 
 	$( '.signup-form' ).submit(function() {
