@@ -1,6 +1,69 @@
+<?
+/**
+ * List all restaurants and the add-new-restaurant button
+ *
+ * @package  Crunchbutton.Restaurant
+ * @category view
+ */
+?>
+
+<? ob_start() ?>
+<? foreach ($this->communities as $community) : ?>
+	<? /* @var $community Crunchbutton_Community */ ?>
+	<option value="<?=$community->id_community?>">
+		<?=$community->name?>
+	</option>
+<? endforeach ?>
+<? $communityOptions = preg_replace('/\s+/', ' ', ob_get_clean());?>
+
+<script type="text/javascript">
+$(function() {
+	$('a[href="/admin/restaurants/new"]').click(function(){
+		$('<div id="admin-new-restaurant-form" class="labeled-form" title="Create New Restaurant">'+
+			'<label><span class="label">Name</span>      <input  class="dataset-restaurant" name="name" /></label>' +
+			'<label><span class="label">Community</span> <select class="dataset-restaurant" name="id_community"><?=$communityOptions?></select></label>' +
+		'</div>').dialog({
+			height: 200,
+			width: 350,
+			modal: true,
+			buttons: {
+				'save': function() {
+					// App.busy.makeBusy();
+					saveRestaurant();
+					$(this).dialog('destroy');
+					// App.busy.unBusy();
+				},
+				'cancel': function() {
+					$(this).dialog('destroy');
+				}
+			},
+			close: function() {
+				$(this).dialog('destroy');
+			}
+		});
+		return false;
+	});
+});
+</script>
+
+<style>
+.labeled-form label      { display: block; }
+.labeled-form span.label {
+	display:       inline-block;
+	margin-bottom: 10px;
+	width:         100px;
+}
+</style>
 
 <div class="admin-content-wrapper">
 	<div class="admin-content">
+
+		<a href="/admin/restaurants/new">
+			<div class="admin-food-item admin-restaurant-item">
+				<span class="food-name">Create New</span>
+			</div>
+		</a>
+		<hr class="divider" />
 		<? foreach (Restaurant::q('select * from restaurant') as $restaurant) :  ?>
 			<a href="/admin/restaurants/<?=$restaurant->id_restaurant?>">
 				<div class="admin-food-item admin-restaurant-item">
@@ -8,14 +71,9 @@
 				</div>
 			</a>
 		<? endforeach ?>
-
-		<a href="/admin/restaurants/new">
-			<div class="admin-food-item admin-restaurant-item">
-				<span class="food-name">Create New</span>
-			</div>
-		</a>
-
 		<div class="divider"></div>
+
+
 	</div>
 </div>
 

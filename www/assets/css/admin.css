@@ -365,6 +365,10 @@ textarea {
 	text-shadow: -1px -1px 0 rgba(0,0,0,.15);
 }
 
+.dish-options input[name="dish-options-sort"]  { width: 20px;}
+.dish-options input[name="dish-options-price"] { width: 34px; text-align: right;}
+.dish-options input[name="dish-options-name"]  { width: 280px; }
+
 .divider {
 	clear: both;
 }
@@ -506,13 +510,15 @@ th {
 }
 
 .dish-price {
-	width: 85px;
+	width: 70px;
 	float: right;
 }
 
 .dish-price input {
-	width: 65px;
+	width:       50px;
 	margin-left: .5em;
+	text-align:  right;
+
 }
 
 .dish-name {
