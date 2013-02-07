@@ -98,8 +98,8 @@ class Crunchbutton_Restaurant extends Cana_Table {
 
 		foreach ($newDishes as $dish) {
 			$dishO                = new Dish($dish['id_dish']);
-			$dishO->active        = 1;
 			$dishO->id_restaurant = $this->id_restaurant;
+			$dishO->active        = isset($dish['active']) ? $dish['active'] : 1;
 			$dishO->name          = $dish['name'];
 			$dishO->description   = $dish['description'];
 			$dishO->price         = $dish['price'];
