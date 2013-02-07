@@ -7,7 +7,7 @@ class Crunchbutton_User_Auth_Reset_Email extends Crunchbutton_Email {
 	public function __construct($params) {
 		
 		$params['to'] 				= $params['email'];
-		$params['subject'] 		= 'Customer Password reset';		
+		$params['subject'] 		= 'Crunchbutton password reset';		
 		$params['from'] 			= '<tech@_DOMAIN_>';
 		$params['reply']			= 'Tech Support <tech@_DOMAIN_>';
 
