@@ -113,9 +113,38 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						$user_auth->reset_code = $code;
 						$user_auth->reset_date = date('Y-m-d H:i:s');
 						$user_auth->save();
-						echo json_encode(['success' => 'code generated', 'code' => $code]);
+
+						// Send the code by email
+						if( filter_var( $_POST[ 'email' ], FILTER_VALIDATE_EMAIL ) ){
+							$mail = new User_Auth_Reset_Email( [
+								'code' => $code,
+								'email' => $email
+							] );
+							$mail->send();
+						} 
+						// Send the code by sms
+						else {
+							$phone = $email;
+							$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+
+							$url = 'http://' . $_SERVER['HTTP_HOST'] .  '/reset/';
+
+							$message = "Your crunchbutton password reset code is '".$code."'.\n\n";
+							$message .= "Access ".$url." to reset your password.\n\n";
+		
+							$message = str_split($order->message('sms'),160);
+							foreach ($message as $msg) {
+								$twilio->account->sms_messages->create(
+									c::config()->twilio->{$env}->outgoingTextCustomer,
+									'+1'.$phone,
+									$msg
+								);
+								continue;
+							}
+						}
+						echo json_encode(['success' => 'code generated']);
 						exit;
-					break;
+						break;
 				}
 			// Validate a reset code
 			case 'code-validate':
