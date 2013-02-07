@@ -12,12 +12,12 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account
 	 *
 	 * @return void
 	 */
-	private function _restaurantForm()
+	private function _form()
 	{
 		$view = Cana::view();
 		/* @var $view Cana_View */
 
-		$communities = Community::q('select * from community');
+		$communities = Community::q('SELECT * FROM community');
 		if (count($this->restaurant->community()->items())) {
 			$community   = $this->restaurant->community()->items()[0];
 		} else {
@@ -30,6 +30,20 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account
 		$view->display('admin/restaurants/restaurant');
 	}
 
+    /**
+     * Shows all the restaurants
+     *
+     * @return void
+     */
+	private function _list()
+	{
+		$view = Cana::view();
+		/* @var $view Cana_View */
+
+		$communities       = Crunchbutton_Community::q('SELECT * FROM community');
+		$view->communities = $communities;
+		$view->display('admin/restaurants/index');
+	}
 
 	public function init() {
 		c::view()->layout('layout/admin');
@@ -66,12 +80,12 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account
 					c::view()->display('admin/restaurants/fax');
 					break;
 				default:
-					$this->_restaurantForm();
+					$this->_form();
 					break;
 			}
 
 		} else {
-			c::view()->display('admin/restaurants/index');
+			$this->_list();
 		}
 
 

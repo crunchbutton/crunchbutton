@@ -422,6 +422,8 @@ function saveRestaurant (all) {
 							});
 						});
 					});
+				} else {
+					location.href = '/admin/restaurants/' + App.restaurant;
 				}
 			});
 		});
