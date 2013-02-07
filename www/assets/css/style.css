@@ -1674,6 +1674,11 @@ html[xmlns] .clearfix {
 	margin-top: 20px;
 }
 
+.change-location-inline{
+	color:#888;
+	cursor: pointer;
+	font-size: 16px;
+}
 
 .modal-shield{
 	background: #000;
@@ -1799,10 +1804,17 @@ html[xmlns] .clearfix {
 	float: right;
 	height: 30px;
 	margin: 12px 0 0 10px;
-	width: 215px;
+	width: 100px;
 }
 	.signin-box-header-min{
 		width: 60px;
+	}
+	.signup-link, .signin-link{
+		color:#4168b8 !important;
+		cursor: pointer;
+		text-decoration: underline;
+		float:right;
+		margin-right: 91px;
 	}
 	.signin-icon {
 		background: url(/assets/images/sign-in.png) no-repeat;
@@ -1822,15 +1834,6 @@ html[xmlns] .clearfix {
 		height: 30px;
 		width: 110px;
 	}
-	.signup-icon {
-		background: url(/assets/images/sign-up.png) no-repeat;
-		background-size: contain;
-		cursor: pointer;
-		float: left;
-		display: none;
-		height: 30px;
-		width: 103px;
-	}
 	.signin-user{
 		background: url(/assets/images/sign-in-icon.png) no-repeat;
 		background-size: contain;
@@ -1839,14 +1842,6 @@ html[xmlns] .clearfix {
 		display: none;
 		height: 30px;
 		width: 45px;
-		/*
-		color: #FFF;
-		cursor: pointer;
-		display: none;
-		margin-top: 8px;
-		text-align: center;
-		text-shadow: 1px 1px 0px rgba(0,0,0,.22);
-		*/
 	}
 	
 .signup-success-container{

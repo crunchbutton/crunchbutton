@@ -170,7 +170,7 @@ App.page.home = function() {
 	'<div class="divider"></div>' +
 	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' +
 	'<div class="error-location" style="display: none;">' +
-		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in <span class="loc-your-area">your area</span>. Come back next time you are hungry!</h1></div>' +
+		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in <span class="loc-your-area">your area</span>. <span class="change-location-inline">(Change Location)</span><br/> Come back next time you are hungry!</h1></div>' +
 		'<div class="content-item-locations">' +
 			'<h1>Our most popular locations</h1>' +
 		'</div>' +
@@ -178,6 +178,12 @@ App.page.home = function() {
 		'<div class="content-padder">' +
 			'<div class="meal-items">' + top + '</div></div>' +
 	'</div>');
+
+	$( '.change-location-inline' ).live( 'click', function(){
+		App.forceHome = true;
+		App.loadHome();
+		$('input').blur();
+	} );
 
 
 	//$('.location-address').val($.cookie('entered_address'));
@@ -533,7 +539,7 @@ App.drawPay = function(restaurant)
 
 	App.signup.checkLogin();
 
-	$( 'input[name=pay-phone]' ).change( function(){
+	$( 'input[name=pay-phone]' ).live( 'change', function(){
 		App.signup.checkLogin();
 	} );
 
@@ -682,7 +688,8 @@ App.page.orders = function() {
 			} );
 
 			$( '.signup-add-facebook-button' ).live( 'click', function(){
-				App.signup.show( true );
+				// App.signup.facebook( true );
+				App.signin.facebook.login();
 			} );
 			
 			App.bottomMenuBinded = true;
@@ -2416,6 +2423,12 @@ App.signin.init = function(){
 		App.signin.show();
 	} );
 
+	$( '.signup-link' ).live( 'click', function() {
+		App.dialogForceStayShield = true;
+		$( '.signin-container' ).dialog( 'close' );
+		App.signup.show( false );
+	} );
+
 	$( '.sign-in-icon' ).live( 'click', function() {
 		if( App.config.user.id_user ){
 			History.pushState({}, 'Crunchbutton - Orders', '/orders');
@@ -2445,6 +2458,7 @@ App.signin.html = function(){
 		'<div class="signin-form-container">' +
 			'<div class="signin-form-options">' +
 				'<form class="signin-form">' +
+					'<h1 class="signup-link">Sign up</h1>' +
 					'<h1>Sign in</h1>' +
 					'<input type="text" maxlength="250" name="signin-email" placeholder="email or phone" tabindex="10" />' +
 					'<div class="divider"></div>' +
@@ -2642,7 +2656,6 @@ App.signin.checkUser = function(){
 		$( '.signin-user' ).show();
 		$( '.signin-icon' ).hide();
 		$( '.signout-icon' ).hide();
-		$( '.signup-icon' ).hide();
 		$( '.signin-box-header' ).addClass( 'signin-box-header-min' );
 	} else {
 		$( '.signin-user' ).hide();
@@ -2878,6 +2891,12 @@ App.signup.init = function(){
 		App.signin.facebook.login();
 	} );
 
+	$( '.signin-link' ).live( 'click', function(){
+		App.dialogForceStayShield = true;
+		$( '.signup-container' ).dialog( 'close' );
+		App.signin.show();
+	} );
+
 	$( '.signup-form' ).submit(function() {
 		return false;
 	} );
@@ -2890,8 +2909,9 @@ App.signup.html = function(){
 		'<div class="signup-form-container">' +
 			'<div class="signup-form-options">' +
 				'<form class="signup-form">' +
+					'<h1 class="signin-link">Sign in</h1>' +
 					'<h1>Sign up</h1>' +
-					'<input type="text" maxlength="250" name="signup-email" placeholder="email or phone" tabindex="10" />' +
+					'<input type="text" maxlength="250" name="signup-email" placeholder="email address" tabindex="10" />' +
 					'<div class="divider"></div>' +
 					'<input type="password" maxlength="250" name="signup-password" placeholder="password" tabindex="10" />' +
 					'<div class="divider"></div>' +
@@ -2933,7 +2953,7 @@ App.signup.show = function( justFacebook ){
 	setTimeout( function(){
 			/* Shows the shield */
 			App.modal.shield.show();
-			$( 'input[name=signup-email]' ).val( App.config.user.phone );
+			// $( 'input[name=signup-email]' ).val( App.config.user.phone );
 			$( 'input[name=signup-password]' ).val( '' );
 			$( '.signup-form-options' ).show();
 			$( '.signup-success-container' ).hide();
@@ -2955,39 +2975,33 @@ App.signup.show = function( justFacebook ){
 
 App.signup.checkLogin = function(){
 	var login = $( 'input[name=pay-phone]' ).val().replace(/[^\d]*/gi,'');
-	var url = App.service + 'user/verify/' + login
-	$.getJSON( url, function( json ) {
-		if( json.error ){
-			if( json.error == 'user exists' ){
+	if( App.phone.format( login ) ){
+		var url = App.service + 'user/verify/' + login	
+		$.getJSON( url, function( json ) {
+			if( json.error ){
+				if( json.error == 'user exists' ){
+					$( 'input[name=pay-password]' ).val( '' );
+					$( '.password-field' ).hide();
+				}
+			} else {
+				$( '.password-field' ).fadeIn();
 				$( 'input[name=pay-password]' ).val( '' );
-				$( '.password-field' ).hide();
+				$( 'input[name=pay-password]' ).focus();
 			}
-		} else {
-			$( '.password-field' ).fadeIn();
-			$( 'input[name=pay-password]' ).val( '' );
-			$( 'input[name=pay-password]' ).focus();
-		}
-	} );
+		} );
+	} else {
+		$( 'input[name=pay-password]' ).val( '' );
+		$( '.password-field' ).hide();
+	}
 }
 
 App.signup.sendForm = function(){
-	if( $.trim( $( 'input[name=signup-email]' ).val() ) == '' ){
-		alert( 'Please enter your email or phone.' );
-		$( 'input[name=signup-email]' ).focus();
-		return;
-	}
-	// Checks it fhe login is a phone
-	var login = $( 'input[name=signup-email]' ).val();
-	login = login.replace(/[^\d]*/gi,'');
-	if( !App.phone.validate( login ) ){
-		// It seems not to be a phone number, lets check if it is a email
-		login = $.trim( $( 'input[name=signup-email]' ).val() );
-		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
-			login = false;
-		}
+	login = $.trim( $( 'input[name=signup-email]' ).val() );
+	if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
+		login = false;
 	}
 	if( !login ){
-		alert( 'Please enter a valid email or phone.' );
+		alert( 'Please enter a valid email email address.' );
 		$( 'input[name=signup-email]' ).focus();
 		return;
 	}
@@ -3049,6 +3063,10 @@ App.modal.shield.show = function(){
 }
 
 App.modal.shield.close = function(){
+	if( App.dialogForceStayShield ){
+		App.dialogForceStayShield = false;
+		return;
+	}
 	$( '.modal-shield' ).hide();
 	App.modal.shield.isVisible = false;
 }
