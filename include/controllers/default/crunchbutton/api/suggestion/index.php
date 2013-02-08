@@ -16,6 +16,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 							$request[$key] = null;
 						}
 					}
+
 					$request[ 'ip' ] = $_SERVER['REMOTE_ADDR'];
 					$request[ 'date' ] = date('Y-m-d H:i:s');
 					$s->serialize($request);
@@ -23,8 +24,19 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 
 					$url = 'http://' . $_SERVER['HTTP_HOST'] .  '/reset/';
 
-					$message = "A new suggestion was submitted'".$code."'.\n\n";
+					$user = c::user();
+					if (!$user->name) {
+						$user_name = 'Anonymous';
+					} else {
+						$user_name = $user->name;
+					}
+
+					$restaurant = Restaurant::o( $request[ 'id_restaurant' ] );
+
+					$message = $user_name . " suggested.\n\n";
 					$message .= $request[ 'name' ];
+					$message .= "\n\n";
+					$message .= "at " . $restaurant->name . "\n\n";
 
 					$message = str_split( $message, 160 );
 					
