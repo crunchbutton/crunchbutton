@@ -125,15 +125,18 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						// Send the code by sms
 						else {
 							$phone = $email;
+
+							$env = c::env() == 'live' ? 'live' : 'dev';
+
 							$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
 							$url = 'http://' . $_SERVER['HTTP_HOST'] .  '/reset/';
 
 							$message = "Your crunchbutton password reset code is '".$code."'.\n\n";
 							$message .= "Access ".$url." to reset your password.\n\n";
-		
-							$message = str_split($order->message('sms'),160);
-							foreach ($message as $msg) {
+
+							$message = str_split( $message, 160 );
+							foreach ( $message as $msg ) {
 								$twilio->account->sms_messages->create(
 									c::config()->twilio->{$env}->outgoingTextCustomer,
 									'+1'.$phone,
