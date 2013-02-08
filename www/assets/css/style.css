@@ -1683,6 +1683,7 @@ html[xmlns] .clearfix {
 	display: inline-block;
 	width: 30px;
 	height: 30px;
+	cursor: pointer;
 	background: url(/assets/images/change-location-icon.png) no-repeat;
 	background-size: contain;
 	cursor: pointer;
