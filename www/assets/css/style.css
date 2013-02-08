@@ -767,6 +767,7 @@ html[xmlns] .clearfix {
 	background-size: contain;
 	cursor: pointer;
 }
+
 .sign-in-icon{
 	display: none;
 }
@@ -933,6 +934,10 @@ html[xmlns] .clearfix {
 	.config-icon {
 		margin-top: -1px;
 		margin-right: 8px;
+	}
+	.change-location-inline{
+		display: block !important;
+		margin: 10px auto -15px auto !important;
 	}
 
 	.button-bottom.button-letseat-form {
@@ -1674,10 +1679,13 @@ html[xmlns] .clearfix {
 	margin-top: 20px;
 }
 
-.change-location-inline{
-	color:#888;
+.change-location-inline{	
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	background: url(/assets/images/change-location-icon.png) no-repeat;
+	background-size: contain;
 	cursor: pointer;
-	font-size: 16px;
 }
 
 .modal-shield{
