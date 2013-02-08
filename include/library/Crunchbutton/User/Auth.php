@@ -105,6 +105,21 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return false;
 	}
 
+	public function userHasAuth( $id_user ){
+		$row = Cana::db()->get('
+			SELECT * 
+			FROM user_auth
+			WHERE
+				id_user="' . $id_user . '"
+				AND active=1
+		');
+		if( $row->_items && $row->_items[0] ){
+				$row = $row->_items[0];
+				return  true;
+		}
+		return false;
+	}
+
 	public function validateResetCode( $code ){
 		$query = sprintf(" SELECT * 
 												FROM user_auth
