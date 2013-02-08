@@ -2347,7 +2347,7 @@ App.suggestion.send = function(){
 		url: suggestionURL,
 		success: function(content) {
 			App.suggestion.message( '<h1>Awesome, thanks!!</h1>' +
-															'<div class="suggestion-thanks-text">If you really really wanna make sure we add it asap, feel free to call us at <br/>800-242-1444</div>' );
+															'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at 800-242-1444</div>' );
 		}
 	});
 }
