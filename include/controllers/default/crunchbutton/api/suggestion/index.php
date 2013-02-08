@@ -20,6 +20,27 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					$request[ 'date' ] = date('Y-m-d H:i:s');
 					$s->serialize($request);
 					$s->save();
+
+					$url = 'http://' . $_SERVER['HTTP_HOST'] .  '/reset/';
+
+					$message = "A new suggestion was submitted'".$code."'.\n\n";
+					$message .= $request[ 'name' ];
+
+					$message = str_split( $message, 160 );
+					
+					$env = c::env() == 'live' ? 'live' : 'dev';
+					$phones = c::config()->suggestion->{'live'}->phone;
+					$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+					foreach ( $message as $msg ) {
+						foreach ( $phones as $phone ) {
+							$twilio->account->sms_messages->create(
+								c::config()->twilio->{$env}->outgoingTextCustomer,
+								'+1'.$phone,
+								$msg
+							);
+							continue;	
+						}
+					}
 					echo $s->json();
 					exit;
 				}
