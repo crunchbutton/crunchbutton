@@ -170,7 +170,7 @@ App.page.home = function() {
 	'<div class="divider"></div>' +
 	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' +
 	'<div class="error-location" style="display: none;">' +
-		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in <span class="loc-your-area">your area</span>. <span class="change-location-inline">(Change Location)</span><br/> Come back next time you are hungry!</h1></div>' +
+		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in <span class="loc-your-area">your area</span>. <span title="Change location" class="change-location-inline"></span><br/> Come back next time you are hungry!</h1></div>' +
 		'<div class="content-item-locations">' +
 			'<h1>Our most popular locations</h1>' +
 		'</div>' +
@@ -441,13 +441,14 @@ App.drawPay = function(restaurant)
 
 			'<label>Phone #</label>' +
 			'<div class="input-item"><input type="tel" name="pay-phone" tabindex="3"></div><div class="divider"></div>' +
-
+/*
+Issue 13: Removed the password for while
 			'<div class="password-field">' +
 				'<label>Password (optional)</label>' +
 				'<div class="input-item"><input type="password" name="pay-password" tabindex="4">' +
 				'</div><div class="divider"></div>' +
 			'</div>' +
-
+*/
 			'<label class="delivery-only">Address</label>' +
 			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="5"></textarea></div>' +
 			fieldError +
@@ -536,13 +537,14 @@ App.drawPay = function(restaurant)
 		App.config.user.address = App.loc.enteredLoc;
 		App.loc.enteredLoc = '';
 	}
-
+/*
+Issue 13: Removed the password for while
 	App.signup.checkLogin();
 
 	$( 'input[name=pay-phone]' ).live( 'change', function(){
 		App.signup.checkLogin();
 	} );
-
+*/
 };
 
 App.page.order = function(id) {
@@ -600,12 +602,16 @@ App.page.order = function(id) {
 			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
 			$('.order-info').append('To reach Crunchbutton, send a text to (646) 783-1444<br />or call <b>(800) 242-1444</b><br /><br />');
 			$('.order-info').append('<span class="order-thanks-message">We\'ve saved your order for easy 1 click ordering next time.</span><br /><br />');
-			$('.order-info').append('<span class="signup-call-to-action"></span>');
-			$('.signup-call-to-action').html( 'If you added a password, you can place 1 click orders at crunchbutton.com on your phone too.' +
-																				'<a href="javascript:;" class="signup-add-password-button">Add a password now</a>' );
-			$( '.signup-add-password-button' ).live( 'click', function(){
-				App.signup.show( false );
-			} );
+			if( !App.config.user.has_auth ){
+				$('.order-info').append('<span class="signup-call-to-action"></span>');
+				$('.signup-call-to-action').html( 'If you add a password, your favorite food can be 1 click ordered anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.' +
+													'<a href="javascript:;" class="signup-add-password-button">Add a password now</a>' );
+				$( '.signup-add-password-button' ).live( 'click', function(){
+					App.signup.show( false );
+				} );
+			} else {
+				$('.order-info').append( 'You can 1 click order anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.' );
+			}
 		});
 	});
 };
@@ -1273,8 +1279,10 @@ App.cart = {
 			order.address  = App.config.user.address;
 			order.phone    = App.config.user.phone;
 			order.name     = App.config.user.name;
+/*
+Issue 13: Removed the password for while
 			order.password = $( 'input[name=pay-password]' ).val( );
-
+*/
 			if (App.order.cardChanged) {
 				order.card = {
 					number: $('[name="pay-card-number"]').val(),
