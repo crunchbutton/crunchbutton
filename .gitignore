@@ -4,13 +4,14 @@
 .settings
 
 # filetypes
+*.bz2
 *.mov
 *.mp4
 *.m4v
+*.pdf
+*.psd
 *.sql
 *.zip
-*.psd
-*.pdf
 *~
 
 # config and specific files

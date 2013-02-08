@@ -644,12 +644,18 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$food = $this->orderMessage($type);
 
+		/**
+		 * Not used anymore but could in the future, so, I'm leaving it here
+		 * @var string
+		 */
+		$supportPhone = Cana::config()->phone->support;
+
 		switch ($type) {
 			case 'selfsms':
-				$msg = "Crunchbutton.com #".$this->id_order."\n\n";
+				$msg  = "Crunchbutton.com #".$this->id_order."\n\n";
 				$msg .= "Order confirmed!\n\n";
 				$msg .= "Contact ".$this->restaurant()->shortName().": ".$this->restaurant()->phone().".\n";
-				$msg .= "Contact Crunchbutton.com: ".Cana::config()->phone->support."  or text back.\n\n";
+				$msg .= "To contact Crunchbutton, text us back.\n\n";
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
 					$msg .= "Remember to tip!\n\n";
 				}
