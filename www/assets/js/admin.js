@@ -287,6 +287,7 @@ function saveDishes (complete) {
 			price:       values['dish-price'],
 			id_category: values['dish-id_category'],
 			active:      values['dish-active'],
+			sort:        values['dish-sort']
 		};
 
 		if (id) {
@@ -584,6 +585,7 @@ App.showDish = function(dishItem) {
 		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="dataset-dish clean-input" data-clean_type="float"><div class="divider"></div></div>')
 		.append('<label><span>Move to category</span><select name="dish-id_category" class="dataset-dish clean-input">' + categoryOptions + '</select></label')
 		.append('<label><span>Active</span><input type="checkbox" name="dish-active" class="dataset-dish clean-input" ' + active + ' /></label')
+		.append('<label><span>Sort order</span><input name="dish-sort" class="dataset-dish clean-input" value="' + dishItem.sort + '" /></label')
 		.append('<textarea placeholder="Description" name="dish-description" class="dataset-dish clean-input dish-description">' + dishDescription + '</textarea>')
 		.append('<div class="divider"></div><div class="divider dots" style="margin: 10px 0 10px 0;"></div>')
 		.append(options);

@@ -118,6 +118,10 @@ var Restaurant = function(id) {
 	 *       offset = -(today.getTimezoneOffset()); // @todo: ensure this works on positive tz
 	 */
 	self.open = function() {
+
+		// console.log(this.timezone);
+
+
 		var isOpen =  false;
 		var today = Date.today().toString('ddd').toLowerCase();
 		if (this._hours == undefined ||  this._hours[today] == undefined) {

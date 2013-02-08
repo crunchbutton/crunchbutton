@@ -1,6 +1,43 @@
 <?php
 
-class Crunchbutton_Restaurant extends Cana_Table {
+class Crunchbutton_Restaurant extends Cana_Table
+{
+	/**
+	 * Json booleans are tricky as the can return different values for true or false
+	 *
+	 * Cana_Table does not store boolean values, so the boolean is turned to
+	 * integer to be stored.
+	 *
+	 * @param array  $array    Where to look for the key
+	 * @param string $key      What to look in the $array
+	 * @param bool   $default  What to return if not found
+	 *
+	 * @todo Move to somewhere else where
+	 */
+	protected function _jsonBoolean($array, $key, $default = false)
+	{
+		$return = $default;
+		if (isset($array[$key])){
+			switch ($array[$key]) {
+				case 'true':
+				case '1':
+				// case 1:
+				// case true:
+					$return = true;
+					break;
+				case 'false':
+				case '0':
+				// case 0:
+				// case false:
+					$return = false;
+					break;
+				default:
+					throw new Exception("Unrecognized JSON boolean value '{$array[$key]}' for key '$key'");
+			}
+		}
+		return (int) $return;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -222,10 +259,11 @@ class Crunchbutton_Restaurant extends Cana_Table {
 			foreach ($newDishes as $dish) {
 				$dishO                = new Dish($dish['id_dish']);
 				$dishO->id_restaurant = $this->id_restaurant;
-				$dishO->active        = isset($dish['active']) ? $dish['active'] : 1;
+				$dishO->active        = $this->_jsonBoolean($dish, 'active', true);
 				$dishO->name          = $dish['name'];
 				$dishO->description   = $dish['description'];
 				$dishO->price         = $dish['price'];
+				$dishO->sort          = isset($dish['sort']) ? $dish['sort'] : 0;
 				if (isset($dish['id_category']) && $dish['id_category']) {
 					$dishO->id_category = $dish['id_category'];
 				} elseif (!$dishO->id_category) { // this else doesn't make sense to me, but it is what it was before my changes
