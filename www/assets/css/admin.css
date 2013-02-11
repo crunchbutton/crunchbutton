@@ -80,8 +80,13 @@ html {
 	-webkit-tap-highlight-color: rgba(205,69,29,.5);
 }
 
+/**
+ * A max width of 1000px is set to fit in a 1024 window
+ *
+ * remember that the window border and the scroll bar use space
+ */
 .content {
-	width: 1010px;
+	width: 1000px;
 	margin: 0 auto;
 }
 
