@@ -2,7 +2,7 @@
 
 /**
  * Table class
- * 
+ *
  * @author		Devin Smith <devin@cana.la>
  * @date		2009.09.22
  *
@@ -39,8 +39,8 @@
  *		}
  */
 
- 
-class Cana_Table extends Cana_Model { // 
+
+class Cana_Table extends Cana_Model { //
 	private $_table;
 	private $_id_var;
 	private $_fields;
@@ -49,14 +49,73 @@ class Cana_Table extends Cana_Model { //
 	private $_jsonParsing = false;
 
 	/**
+	 * Json booleans are tricky as the can return different values for true or false
+	 *
+	 * Cana_Table does not store boolean values, so the boolean is turned to
+	 * integer to be stored.
+	 *
+	 * @param array  $array    Where to look for the key
+	 * @param string $key      What to look in the $array
+	 * @param bool   $default  What to return if not found
+	 *
+	 * @return int
+	 */
+	protected function _jsonBoolean($array, $key, $default = false)
+	{
+		$return = $default;
+		if (isset($array[$key])){
+			switch ($array[$key]) {
+				case 'true':
+				case '1':
+					// case 1:
+					// case true:
+					$return = true;
+					break;
+				case 'false':
+				case '0':
+					// case 0:
+					// case false:
+					$return = false;
+					break;
+				default:
+					throw new Exception("Unrecognized JSON boolean value '{$array[$key]}' for key '$key'");
+			}
+		}
+		return (int) $return;
+	}
+
+	/**
+	 * Allows to overwrite a default filter for the where param
+	 *
+	 * @param array $default Default values
+	 * @param array $param   The params to overwrite the defaults
+	 *
+	 * @return string
+	 *
+	 * @todo Function only allos AND concatenations
+	 * @todo forces all values to be strings
+	 * @todo does not clear SQL injection
+	 */
+	protected function _mergeWhere($default, $param)
+	{
+		$where    = array_merge($default, $param);
+		$whereSql = '1 = 1 ';
+		foreach ($where as $key => $value) {
+			if ($value !== NULL) {
+				$whereSql .= " AND $key = '$value'";
+			}
+		}
+		return $whereSql;
+	}
+
+	/**
 	 * Retrieve a field list from the db
-	 * 
+	 *
 	 * Will populate $this->fields based on he columns in the db for the
 	 * current objects table.
-	 * 
+	 *
 	 * @return array
 	 */
-	 
 	public function fields() {
 		if ($fields = $this->db()->fields($this->table())) {
 			$this->_fields = $fields;
@@ -77,11 +136,11 @@ class Cana_Table extends Cana_Model { //
 
 	/**
 	 * Load the object with properties
-	 * 
+	 *
 	 * Passing in an object will populate $this with the current vars of that object
-	 * as public properties. Passing in an int id will load the object with the 
+	 * as public properties. Passing in an int id will load the object with the
 	 * table and key associated with the object.
-	 * 
+	 *
 	 * @param $id object|int
 	 */
 	public function load($id = null) {
@@ -102,7 +161,7 @@ class Cana_Table extends Cana_Model { //
 				if (!$node) {
 					$query = 'SELECT * FROM `' . $this->table() . '` WHERE `'.$this->idVar().'`="'.$this->db()->escape($id).'" LIMIT 1';
 					$node = $this->db()->get($query)->get(0);
-				}				
+				}
 
 				if (!$node) {
 					$node = new Cana_Model;
@@ -119,7 +178,7 @@ class Cana_Table extends Cana_Model { //
 				}
 			}
 		}
-			
+
 		if (isset($node)) {
 			if (isset($node->id)) {
 				$this->id = $node->id;
@@ -127,10 +186,10 @@ class Cana_Table extends Cana_Model { //
 			foreach(get_object_vars($node) as $var => $value) {
 				$this->$var = $value;
 			}
-			if (!isset($this->id) && $this->idVar()) { 
+			if (!isset($this->id) && $this->idVar()) {
 				$id_var = $this->idVar();
 			}
-			if (!isset($this->id) && isset($node->$id_var)) { 
+			if (!isset($this->id) && isset($node->$id_var)) {
 				$this->id = $node->$id_var;
 			}
 		}
@@ -141,8 +200,8 @@ class Cana_Table extends Cana_Model { //
 
 		return $this;
 	}
-	
-	
+
+
 	/**
 	 * Saves an entry in the db. if there is no curerent id it will add one
 	 */
@@ -156,14 +215,14 @@ class Cana_Table extends Cana_Model { //
 			$newItem = 0;
 		} else {
 			$newItem = 1;
-		}	
-		
+		}
+
 		if ($newItem) {
 			$query = 'INSERT INTO `'.$this->table().'`';
 		} else {
 			$query = 'UPDATE `'.$this->table().'`';
 		}
-		
+
 		$fields = $this->fields();
 
 		$numset = 0;
@@ -176,7 +235,7 @@ class Cana_Table extends Cana_Model { //
 				} elseif ($this->{$field->Field} == null && !$field->Null) {
 					$this->{$field->Field} = '';
 				}
-				
+
 				$query .= !$numset ? ' SET' : ',';
 				$query .= ' `'.$field->Field.'`='.(is_null($this->{$field->Field}) ? 'NULL' : ('"'.$this->dbWrite()->escape($this->{$field->Field}).'"'));
 				$numset++;
@@ -207,7 +266,7 @@ class Cana_Table extends Cana_Model { //
 		}
 		return $this;
 	}
-	
+
 	public function strip() {
 		$fieldsMeta = $this->fields();
 		foreach ($fieldsMeta as $field) {
@@ -267,7 +326,7 @@ class Cana_Table extends Cana_Model { //
 		}
 		return $this->_dbWrite;
 	}
-	
+
 	public function idVar($id_var = null) {
 		if (is_null($id_var)) {
 			return $this->_id_var;
@@ -309,11 +368,11 @@ class Cana_Table extends Cana_Model { //
 			return $this->_properties[$name] = $value;
 		}
 	}
-	
+
 	public function __isset($name) {
 		return $name{0} == '_' ? isset($this->{$name}) : isset($this->_properties[$name]);
 	}
-	
+
 	public static function o() {
 		$classname = get_called_class();
 		foreach (func_get_args() as $arg) {
@@ -333,7 +392,7 @@ class Cana_Table extends Cana_Model { //
 		}
 
 	}
-	
+
 	public function s() {
 		if (func_num_args() == 2) {
 			$this->{func_get_arg(0)} = func_get_arg(1);
@@ -344,17 +403,17 @@ class Cana_Table extends Cana_Model { //
 		}
 		return $this;
 	}
-	
+
 	public static function l($list) {
 		$list = Cana_Model::l2a($list);
 		return self::o($list);
 	}
-	
+
 	public static function c($list) {
 		$list = Cana_Model::l2a($list, ',');
 		return self::o($list);
 	}
-	
+
 	public static function q($query, $db = null) {
 		$db = $db ? $db : Cana::db();
 		$res = $db->query($query);
@@ -364,15 +423,15 @@ class Cana_Table extends Cana_Model { //
 		}
 		return new Cana_Iterator($items);
 	}
-	
+
 	public function json() {
 		return json_encode($this->exports());
 	}
-	
+
 	public function exports() {
 		return $this->properties();
 	}
-	
+
 	public function csv() {
 		$csv = $this->properties();
 		if ($this->idVar() != 'id') {
@@ -380,11 +439,11 @@ class Cana_Table extends Cana_Model { //
 		}
 		return $csv;
 	}
-	
+
 	public function __toString() {
 		return print_r($this->properties(),1);
 	}
-	
+
 	public function dump() {
 		echo get_class()." Object (\n";
 		foreach ($this->properties() as $key => $value) {
@@ -393,4 +452,4 @@ class Cana_Table extends Cana_Model { //
 		echo ")\n";
 	}
 
-}	
+}

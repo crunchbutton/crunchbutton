@@ -2,41 +2,6 @@
 
 class Crunchbutton_Restaurant extends Cana_Table
 {
-	/**
-	 * Json booleans are tricky as the can return different values for true or false
-	 *
-	 * Cana_Table does not store boolean values, so the boolean is turned to
-	 * integer to be stored.
-	 *
-	 * @param array  $array    Where to look for the key
-	 * @param string $key      What to look in the $array
-	 * @param bool   $default  What to return if not found
-	 *
-	 * @todo Move to somewhere else where
-	 */
-	protected function _jsonBoolean($array, $key, $default = false)
-	{
-		$return = $default;
-		if (isset($array[$key])){
-			switch ($array[$key]) {
-				case 'true':
-				case '1':
-				// case 1:
-				// case true:
-					$return = true;
-					break;
-				case 'false':
-				case '0':
-				// case 0:
-				// case false:
-					$return = false;
-					break;
-				default:
-					throw new Exception("Unrecognized JSON boolean value '{$array[$key]}' for key '$key'");
-			}
-		}
-		return (int) $return;
-	}
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -470,20 +435,13 @@ class Crunchbutton_Restaurant extends Cana_Table
 	 * @return Cana_Iterator
 	 */
 	public function notifications($where = []) {
-		$originalWhere = [
+		$defaultFilters = [
 			'id_restaurant' => $this->id_restaurant,
 			'active'        => 1,
 		];
-		$where    = array_merge($originalWhere, $where);
-		$whereSql = '1 = 1 ';
-		foreach ($where as $key => $value) {
-			if ($value !== NULL) {
-				$whereSql .= " AND $key = '$value'";
-			}
-		}
-
+		$whereSql = $this->_mergeWhere($defaultFilters, $where);
 		if (!isset($this->_notifications)) {
-			$this->_notifications = Notification::q("SELECT * FROM notification WHERE $whereSql");
+			$this->_notifications = Crunchbutton_Notification::q("SELECT * FROM notification WHERE $whereSql");
 		}
 		return $this->_notifications;
 	}
@@ -653,6 +611,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 		if (!$ignore['categories']) {
 			foreach ($this->categories() as $category) {
+				/* @var $category Crunchbutton_Category */
 				$out['_categories'][$category->id_category] = $category->exports();
 			}
 		}
