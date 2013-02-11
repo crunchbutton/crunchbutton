@@ -935,10 +935,6 @@ html[xmlns] .clearfix {
 		margin-top: -1px;
 		margin-right: 8px;
 	}
-	.change-location-inline{
-		display: block !important;
-		margin: 10px auto -15px auto !important;
-	}
 
 	.button-bottom.button-letseat-form {
 		margin-top: 25px;
@@ -1680,12 +1676,7 @@ html[xmlns] .clearfix {
 }
 
 .change-location-inline{	
-	display: inline-block;
-	width: 30px;
-	height: 30px;
-	cursor: pointer;
-	background: url(/assets/images/change-location-icon.png) no-repeat;
-	background-size: contain;
+	text-decoration: underline;
 	cursor: pointer;
 }
 
