@@ -42,6 +42,36 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 		echo json_encode($out);
 	}
 
+	private function _saveRestaurant(Crunchbutton_Restaurant $restaurant)
+	{
+		$request = $this->request();
+		foreach ($request as $key => $value) {
+			if ($value == 'null') {
+				$request[$key] = null;
+			}
+		}
+		$restaurant->serialize($request);
+		$restaurant->save();
+
+		// save the community
+		if ($this->request()['id_community']) {
+			$c = Crunchbutton_Community::o($this->request()['id_community']);
+
+			// only save if its a valid community
+			if ($c->id_community) {
+				$rc = Crunchbutton_Restaurant_Community::q('select * from restaurant_community where id_restaurant="'.$restaurant->id_restaurant.'"');
+				if (!$rc->id_restaurant_community) {
+					$rc = new Crunchbutton_Restaurant_Community;
+					$rc->id_restaurant = $restaurant->id_restaurant;
+				}
+				$rc->id_community = $this->request()['id_community'];
+				$rc->save();
+			}
+		}
+		Crunchbutton_Session::flashMessage('Your data has been saved.');
+		echo $restaurant->json();
+	}
+
 	public function init() {
 		switch ($this->method()) {
 			case 'post':
@@ -122,31 +152,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							break;
 
 						default:
-							$request = $this->request();
-							foreach ($request as $key => $value) {
-								if ($value == 'null') {
-									$request[$key] = null;
-								}
-							}
-							$r->serialize($request);
-							$r->save();
-
-							// save the community
-							if ($this->request()['id_community']) {
-								$c = Community::o($this->request()['id_community']);
-
-								// only save if its a valid community
-								if ($c->id_community) {
-									$rc = Restaurant_Community::q('select * from restaurant_community where id_restaurant="'.$r->id_restaurant.'"');
-									if (!$rc->id_restaurant_community) {
-										$rc = new Restaurant_Community;
-										$rc->id_restaurant = $r->id_restaurant;
-									}
-									$rc->id_community = $this->request()['id_community'];
-									$rc->save();
-								}
-							}
-							echo $r->json();
+							$this->_saveRestaurant($r);
 							break;
 					}
 
