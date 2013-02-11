@@ -25,15 +25,26 @@ function _selectedCommunity(Crunchbutton_Community $current, Crunchbutton_Commun
 
 ?>
 <style>
+/**
+ * sets the page one column only
+ */
+.admin-content-wrapper { width: 980px;}
+.admin-restaurant-form { width: 100%; }
+.check-wrap            { width: 650px;}
 
-#right-panel {margin-left: 740px; width: 240px}
+/**
+ * Link buttons without underline
+ */
+.action-button, #sub-tasks > a {
+	text-decoration: none;
+}
 
-#right-panel .admin-content,
-#right-panel .admin-content > a,
-#right-panel .admin-content > div
-{
-	float: left;
-	width: 220px
+/**
+ * The buttons at the top
+ */
+#sub-tasks > a {
+	display: inline-block;
+	width:   200px;
 }
 
 /* adds/removes spacing where needed for the dishes */
@@ -60,13 +71,29 @@ input.notification {width: 400px;}
 </style>
 
 <div class="admin-id_restaurant" data-id_restaurant=""></div>
-
-
-
-<div class="admin-content-wrapper" style="width: 700px; ">
+<div class="admin-content-wrapper">
 	<div class="admin-content">
 		<h1 class="restaurant-item-title">Restaurant Information</h1>
 		<br /><br />
+
+		<div id="sub-tasks">
+			<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/pay">
+				<div class="admin-food-item admin-restaurant-button">
+					<span class="food-name">Payments &amp; Settings</span>
+				</div>
+			</a>
+			<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/fax">
+				<div class="admin-food-item admin-restaurant-button">
+					<span class="food-name">Send a Fax</span>
+				</div>
+			</a>
+			<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/image">
+				<div class="admin-food-item admin-restaurant-button">
+					<span class="food-name">Upload image</span>
+				</div>
+			</a>
+		</div>
+
 		<table class="admin-restaurant-form">
 			<tr>
 				<td class="label-primary">Restaurant Name:</td>
@@ -386,30 +413,8 @@ input.notification {width: 400px;}
 				</td>
 			</tr>
 		</table>
-	</div>
-
-
-</div>
-
-
-<div id="right-panel" class="admin-content-wrapper fixed">
-	<div class="admin-content">
-		<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/pay">
-			<div class="admin-food-item admin-restaurant-button">
-				<span class="food-name">Payments &amp; Settings</span>
-			</div>
-		</a>
-		<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/fax">
-			<div class="admin-food-item admin-restaurant-button">
-				<span class="food-name">Send a Fax</span>
-			</div>
-		</a>
-		<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/image">
-			<div class="admin-food-item admin-restaurant-button">
-				<span class="food-name">Upload image</span>
-			</div>
-		</a>
-
+		<!--
+		Let's try having only a save all method
 		<div class="action-button action-button-small green admin-restaurant-save-details">
 			<span>Save Details</span>
 		</div>
@@ -419,12 +424,20 @@ input.notification {width: 400px;}
 		<div class="action-button action-button-small green admin-restaurant-save-dishes" style="margin-right: 10px;">
 			<span>Save Dishes</span>
 		</div>
+		-->
+		<a class="action-button action-button-small red " style="margin-right: 10px;" href="/admin/restaurants">
+			<span>cancel</span>
+		</a>
 		<div class="action-button action-button-small green admin-restaurant-save" style="margin-right: 10px;">
-			<span>Save All</span>
+			<span>save restaurant</span>
 		</div>
 		<div class="clear"></div>
 	</div>
+
+
 </div>
+
+
 
 <div class="divider"></div>
 
