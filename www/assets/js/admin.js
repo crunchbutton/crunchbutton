@@ -385,7 +385,31 @@ function _saveNotifications(complete) {
 	});
 }
 
+/**
+ *
+ * @param all
+ */
 function saveRestaurant (all) {
+
+
+	var html = '<div id="dialog-add-dish" title="Create new Dish"> ' +
+		'<div style="text-align:center; margin-top: 2em;">' +
+			'<p>Please wait while saving...</p>' +
+			'<img src="/assets/images/admin/ajax-loader-bar.gif" />' +
+		'</div>'
+	'</div>';
+	$(html).dialog({
+		resizable:     false,
+		height:        160,
+		width:         315,
+		modal:         true,
+		closeOnEscape: false,
+		open:          function(event, ui) { $(".ui-dialog-titlebar-close, .ui-icon-closethick", ui.dialog || ui).hide(); },
+
+	});
+	$(".ui-dialog-titlebar-close, .ui-icon-closethick").hide();
+
+
 	var selector = 'input.dataset-restaurant, select.dataset-restaurant, textarea.dataset-restaurant';
 	var id = App.restaurant;
 
