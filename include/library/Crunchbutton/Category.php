@@ -9,13 +9,22 @@ class Crunchbutton_Category extends Cana_Table {
 		return $this->restaurant()->community();
 	}
 
-	public function dishes() {
+	public function dishes($where = []) {
 		if (!isset($this->_dishes)) {
-			$this->_dishes = Dish::q('select * from dish where id_category="'.$this->id_category.'" and dish.active=1');
+			$defaultFilters = [
+				'id_category' => $this->id_category,
+				'active'      => 1,
+			];
+			if (isset($_SESSION['admin'])) {
+				$where['active'] = NULL;
+			}
+			$whereSql = $this->_mergeWhere($defaultFilters, $where);
+
+			$this->_dishes = Dish::q("SELECT * FROM dish WHERE $whereSql ORDER BY sort DESC");
 		}
 		return $this->_dishes;
 	}
-	
+
 	public function exports() {
 		$out = $this->properties();
 		foreach ($this->dishes() as $dish) {
@@ -23,7 +32,7 @@ class Crunchbutton_Category extends Cana_Table {
 		}
 		return $out;
 	}
-	
+
 	public function name() {
 		return $this->name.($this->loc ? (' '.$this->community()->prep.' '.$this->community()->name) : '');
 	}
