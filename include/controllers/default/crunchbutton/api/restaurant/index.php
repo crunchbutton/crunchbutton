@@ -65,6 +65,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 					$rc->id_restaurant = $restaurant->id_restaurant;
 				}
 				$rc->id_community = $this->request()['id_community'];
+				$rc->sort         = $this->request()['sort'];
 				$rc->save();
 			}
 		}

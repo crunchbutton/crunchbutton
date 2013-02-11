@@ -284,7 +284,8 @@ textarea {
 }
 
 .form-number {
-	width: 100px;
+	text-align: right;
+	width:      100px;
 }
 
 .label-sub, .label-primary {
