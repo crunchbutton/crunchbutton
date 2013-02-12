@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Restaurant model
+ *
+ * @package  Crunchbutton.Restaurant
+ * @category model
+ *
+ * @property int id_restaurant
+ */
 class Crunchbutton_Restaurant extends Cana_Table
 {
 
@@ -44,7 +52,8 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 	public function categories() {
 		if (!isset($this->_categories)) {
-			$this->_categories = Crunchbutton_Category::q('SELECT * FROM category WHERE id_restaurant="'.$this->id_restaurant.'" ORDER BY sort ASC ');
+			$sql               = "SELECT * FROM category WHERE id_restaurant={$this->id_restaurant} ORDER BY sort ASC";
+			$this->_categories = Crunchbutton_Category::q($sql);
 		}
 		return $this->_categories;
 	}
@@ -198,7 +207,6 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $elements;
 	}
 
-
 	/**
 	 * Stores the dishes and it's options
 	 *
@@ -323,7 +331,6 @@ class Crunchbutton_Restaurant extends Cana_Table
 			}
 		}
 	}
-
 
 	/**
 	 * Save the notifications as they are send by the API
@@ -513,7 +520,6 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $thumb;
 
 	}
-
 
 	/**
 	 * Restaurant's email address, if any
