@@ -44,7 +44,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 	public function categories() {
 		if (!isset($this->_categories)) {
-			$this->_categories = Category::q('select * from category where id_restaurant="'.$this->id_restaurant.'"');
+			$this->_categories = Crunchbutton_Category::q('SELECT * FROM category WHERE id_restaurant="'.$this->id_restaurant.'" ORDER BY sort ASC ');
 		}
 		return $this->_categories;
 	}
@@ -189,6 +189,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 				$element                = new Crunchbutton_Category($data['id_category']);
 				$element->id_restaurant = $this->id_restaurant;
 				$element->name          = $data['name'];
+				$element->sort          = $data['sort'];
 				$element->save();
 			}
 		}

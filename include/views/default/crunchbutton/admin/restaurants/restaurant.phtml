@@ -57,16 +57,18 @@ function _selectedCommunity(Crunchbutton_Community $current, Crunchbutton_Commun
 
 input.notification {width: 400px;}
 
-/* space between the category switcher and the dish name input */
-.admin-food-item-content-padding > label {
-	float: left;
-	clear: both;
+
+.labeled-fields > label {
+	float:         none;
+	display:       block;
+	margin-bottom: 5px;
 }
 
-.admin-food-item-content-padding > label span {
+.labeled-fields > label span {
 	display: inline-block;
 	width:   115px;
 }
+.labeled-fields .clear + label { margin-top: 5px; }
 
 </style>
 
