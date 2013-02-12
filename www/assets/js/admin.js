@@ -412,8 +412,7 @@ function saveRestaurant (all) {
 		width:         315,
 		modal:         true,
 		closeOnEscape: false,
-		open:          function(event, ui) { $(".ui-dialog-titlebar-close, .ui-icon-closethick", ui.dialog || ui).hide(); },
-
+		open:          function(event, ui) { $(".ui-dialog-titlebar-close, .ui-icon-closethick", ui.dialog || ui).hide(); }
 	});
 	$(".ui-dialog-titlebar-close, .ui-icon-closethick").hide();
 
