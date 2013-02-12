@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * Dish categories to group the dishes in a restaurant.
+ *
+ * @package  Crunchbutton.Category
+ * @category model
+ *
+ * @property int    id_restaurant
+ * @property int    id_category
+ * @property string name
+ * @property int    sort
+ */
 class Crunchbutton_Category extends Cana_Table {
 	public function restaurant() {
 		return Restaurant::o($this->id_restaurant);
@@ -12,15 +22,17 @@ class Crunchbutton_Category extends Cana_Table {
 	public function dishes($where = []) {
 		if (!isset($this->_dishes)) {
 			$defaultFilters = [
-				'id_category' => $this->id_category,
-				'active'      => 1,
+				'id_restaurant' => $this->id_restaurant,
+				'id_category'   => $this->id_category,
+				'active'        => 1,
 			];
+
 			if (isset($_SESSION['admin'])) {
 				$where['active'] = NULL;
 			}
-			$whereSql = $this->_mergeWhere($defaultFilters, $where);
-
-			$this->_dishes = Dish::q("SELECT * FROM dish WHERE $whereSql ORDER BY sort DESC");
+			$whereSql      = $this->_mergeWhere($defaultFilters, $where);
+			$sql           = "SELECT * FROM dish WHERE $whereSql ORDER BY sort ASC";
+			$this->_dishes = Dish::q($sql);
 		}
 		return $this->_dishes;
 	}
