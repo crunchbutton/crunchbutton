@@ -328,7 +328,7 @@ function saveDishes (complete) {
 						name:      values['dish-options-name'],
 						price:     values['dish-options-price'] || 0.00,
 						'default': $(this).find('input[type="checkbox"], input[type="radio"]').prop('checked'),
-						sort:      values['dish-options-sort'],
+						sort:      values['dish-options-sort']
 					};
 					if (id) {
 						option.id_option = id;
