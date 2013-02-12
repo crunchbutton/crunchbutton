@@ -404,7 +404,7 @@ function saveRestaurant (all) {
 		'<div style="text-align:center; margin-top: 2em;">' +
 			'<p>Please wait while saving...</p>' +
 			'<img src="/assets/images/admin/ajax-loader-bar.gif" />' +
-		'</div>'
+		'</div>' +
 	'</div>';
 	$(html).dialog({
 		resizable:     false,
