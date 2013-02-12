@@ -61,6 +61,11 @@ function _loadNotification(notification) {
 		$wrapper.append(html);
 }
 
+/**
+ * Load the restaurant
+ *
+ * @return void
+ */
 function _loadRestaurant() {
 	var restaurant = this;
 	var checkswap = {
@@ -114,12 +119,25 @@ function _loadRestaurant() {
 	var categories = restaurant.categories();
 	var isDishes = false;
 
-	var $categoriesContainer = $('<div class="accordion"></div>');
+	var $categoriesContainer = $('<div id="categories" class="accordion"></div>');
 	$('.admin-restaurant-dishes .admin-restaurant-content').append($categoriesContainer);
 
+	/**
+	 * Swip all categories
+	 *
+	 * @todo Use the App.createCategory
+	 */
 	for (var i in categories) {
 		var dishes       = categories[i].dishes();
-		var $categoryTab = $('<h3 data-id_category="'+ categories[i].id_category +'">'+ categories[i].name+'</h3><div></div>');
+		var name         = categories[i].name;
+		var sort         = categories[i].sort;
+		var $categoryTab = $('<h3 data-id_category="'+ categories[i].id_category +'">'+ name+'</h3>' +
+		'<div>' +
+			'<div class="labeled-fields category">' +
+				'<label><span class="label">Name</span>       <input name="name" value="' + name + '" /></label>' +
+				'<label><span class="label">Sort Order</span> <input name="sort" value="' + sort + '" /></label>' +
+			'</div>' +
+		'</div>');
 		$categoriesContainer.append($categoryTab);
 
 		for (var x in dishes) {
@@ -140,9 +158,6 @@ function _loadRestaurant() {
 			}, 1.1 * speed);
 		}
 	});
-
-	// $('.accordion .ui-accordion-content').sortable().disableSelection();
-
 
 	if (!isDishes) {
 		$('input[name="dish_check"][value="0"]').prop('checked', true);
@@ -243,21 +258,14 @@ function _newNotificationFields() {
  * @todo returned elements need to be reloaded
  */
 function _saveCategories(complete) {
-	var selector = 'input.dataset-notification, select.dataset-notification, textarea.dataset-notification';
-	var elements = [];
-
-	$('.accordion h3').each(function() {
-		var id      = $(this).attr('data-id_category');
-		var element = {
-			name: $(this).children().end().text()
-		};
-
-		if (id) {
-			element.id_category = id;
-		}
-
-		elements[elements.length] = element;
-
+	var selector  = 'input , select, textarea';
+	var container = '#categories .labeled-fields.category';
+	var elements  = [];
+	$(container).each(function(){
+		var inputs = $(selector, this);
+		var data   = $(this).parent().prev().data();
+		data       = getValues(inputs, data);
+		elements[elements.length] = data;
 	});
 
 	$.post('/api/restaurant/' + App.restaurant + '/categories', {elements: elements}, function() {
@@ -537,7 +545,7 @@ App.showDish = function(dishItem) {
 			'<span class="food-name">' + dishItem.name + '</span>' +
 			'<span class="food-price">($<span class="food-price-num">' + dishItem.price + '</span>)</span><div class="food-drop-down"></div></div>')
 	var content = $('<div class="admin-food-item-content" ' + (dishItem.id_dish ? 'style="display: none;"' : '') + '></div>');
-	var padding = $('<div class="admin-food-item-content-padding">');
+	var padding = $('<div class="admin-food-item-content-padding labeled-fields">');
 	dish.append(content);
 	content.append(padding);
 
@@ -607,6 +615,7 @@ App.showDish = function(dishItem) {
 	padding
 		.append('<input type="text" placeholder="Name" name="dish-name" class="dataset-dish clean-input dish-name" value="' + dishItem.name + '">')
 		.append('<div class="input-faker dish-price"><div class="input-faker-content">$&nbsp;</div><input type="text" placeholder="" name="dish-price" value="' + dishItem.price + '" class="dataset-dish clean-input" data-clean_type="float"><div class="divider"></div></div>')
+		.append('<div class="clear"></div>')
 		.append('<label><span>Move to category</span><select name="dish-id_category" class="dataset-dish clean-input">' + categoryOptions + '</select></label')
 		.append('<label><span>Active</span><input type="checkbox" name="dish-active" class="dataset-dish clean-input" ' + active + ' /></label')
 		.append('<label><span>Sort order</span><input name="dish-sort" class="dataset-dish clean-input" value="' + dishItem.sort + '" /></label')
@@ -633,11 +642,13 @@ App.showDish = function(dishItem) {
  * @returns void
  */
 App.createCategory = function(dialog) {
-
 	var name                 = $('[name="admin-category-name"]',dialog).val();
 	var $categoriesContainer = $('.accordion');
 	var options              = $categoriesContainer.accordion('option');
-	var $categoryTab         = $('<h3 data-id_category="">' + name + '</h3><div></div>');
+	var $categoryTab         = $('<h3 data-id_category="">' + name + '</h3><div>' +
+		'<label><span class="label">Name</span>       <input name="name" value="' + name + '" /></label>' +
+		'<label><span class="label">Sort Order</span> <input name="sort" /></label>' +
+	'</div>');
 
 	$categoriesContainer.accordion('destroy');
 	$categoriesContainer.append($categoryTab);
