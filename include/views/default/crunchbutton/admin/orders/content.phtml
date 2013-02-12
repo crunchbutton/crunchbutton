@@ -1,3 +1,7 @@
+<style>
+.comments .ui-state-default {border: 0;}
+</style>
+
 <? if (!$this->orders->count()) : ?>
 	No results found
 <? else : ?>
@@ -13,13 +17,21 @@
 			<th class="list-order-header">Order Type</th>
 			<th class="list-order-header">Customer</th>
 		</tr>
-		<? foreach ($this->orders as $order) : ?>
+		<? foreach ($this->orders as $order) :  /* @var $order Crunchbutton_Order */?>
 			<? $date = $order->date(); ?>
 			<tr class="list-order-item">
 				<td>
 					<table>
-						<tr><td><b>ID</b></td><td><a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a></td></tr>
+						<tr><td><b>ID</b></td><td>
+							<a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a>
+						</td></tr>
 						<tr><td><b>Env</b></td><td><?=$order->env?></td></tr>
+						<? if ($order->notes) :?>
+						<tr class="comments">
+							<td><b>Comment</b></td>
+							<td><a href="#" title="<?=$order->notes?>" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-comment"></span></a></td>
+						</tr>
+						<? endif ?>
 						<tr><td><br />
 							<? if ($order->refunded) : ?>
 								REFUNDED

@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * Order placed
+ *
+ * (also known as listorders)
+ *
+ * @package  Crunchbutton.Order
+ * @category model
+ *
+ * @property notes The comments the user set for the order
+ */
 class Crunchbutton_Order extends Cana_Table {
 
 	const PAY_TYPE_CASH        = 'cash';
