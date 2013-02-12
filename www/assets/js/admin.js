@@ -325,11 +325,11 @@ function saveDishes (complete) {
 
 				if (values['dish-options-name']) {
 					var option = {
-						name: values['dish-options-name'],
-						price: values['dish-options-price'] || 0.00,
+						name:      values['dish-options-name'],
+						price:     values['dish-options-price'] || 0.00,
 						'default': $(this).find('input[type="checkbox"], input[type="radio"]').prop('checked'),
+						sort:      values['dish-options-sort'],
 					};
-
 					if (id) {
 						option.id_option = id;
 					}
@@ -706,10 +706,13 @@ App.returnOption = function(o, type, parent) {
 			break;
 	}
 
+	var sort = (o.sort)? o.sort : 0;
+
 	return $('<div class="divider"></div>'
 		+ '<div class="admin-food-item-option-padding" data-type="' + type + '" data-parent="' + parent + '">'
 			+ '<div class="dish-options ' + (o.id_option ? 'blue' : '') + '" data-id_option="' + o.id_option + '">'
-				// + '<input type="text" placeholder="0" name="dish-options-sort" value="' + o.sort + '" />'
+				+ '<input type="text" placeholder="0" name="dish-options-sort" value="' + sort + '" />'
+				+ '<span class="sortDesc">)</span>'
 				+ defaulted
 				+ '<input type="text" placeholder="Name" name="dish-options-name" value="' + o.name + '">'
 				+ '<div class="input-faker-content">$ </div>'

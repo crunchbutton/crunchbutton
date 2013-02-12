@@ -17,10 +17,18 @@ class Crunchbutton_Dish extends Cana_Table {
 	public function options() {
 		if (!isset($this->_options)) {
 			$this->_options = Option::q('
-				select `option`.*, dish_option.default, dish_option.id_dish_option from `option`
-				left join dish_option using(id_option)
-				where id_dish="'.$this->id_dish.'"
-				order by option.type asc, dish_option.sort desc, option.name
+				SELECT
+					`option`.*,
+					dish_option.default,
+					dish_option.sort,
+					dish_option.id_dish_option
+				FROM
+					`option`
+					LEFT JOIN dish_option using(id_option)
+				WHERE
+					id_dish="'.$this->id_dish.'"
+				ORDER BY
+					dish_option.sort ASC, option.type asc, option.name
 			', $this->db());
 		}
 		if (gettype($this->_options) == 'array') {
@@ -28,7 +36,7 @@ class Crunchbutton_Dish extends Cana_Table {
 		}
 		return $this->_options;
 	}
-	
+
 	public function delete() {
 		$od = Order_Dish::q('select * from order_dish where id_order is not null and id_dish="'.$this->id_dish.'"');
 
@@ -38,9 +46,9 @@ class Crunchbutton_Dish extends Cana_Table {
 			$this->active = 0;
 			$this->save();
 		}
-		
+
 	}
-	
+
 	public function ratingCount() {
 		if (!isset($this->_ratingCount)) {
 			$this->_ratingCount = Order::q('

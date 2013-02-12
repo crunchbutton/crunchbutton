@@ -371,8 +371,9 @@ textarea {
 	text-shadow: -1px -1px 0 rgba(0,0,0,.15);
 }
 
-.dish-options input[name="dish-options-sort"]  { width: 20px;}
+.dish-options input[name="dish-options-sort"]  { width: 20px; text-align: right;}
 .dish-options input[name="dish-options-price"] { width: 34px; text-align: right;}
+.dish-options span.sortDesc                    { float: left;}
 .dish-options input[name="dish-options-name"]  { width: 280px; }
 
 .divider {
