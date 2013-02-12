@@ -278,31 +278,30 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 						if ($optionGroup['options']) {
 							foreach ($optionGroup['options'] as $opt) {
-								$option = new Option($opt['id_option']);
-								$option->id_restaurant = $this->id_restaurant;
+								$option                   = new Option($opt['id_option']);
+								$option->id_restaurant    = $this->id_restaurant;
 								$option->id_option_parent = $parent;
-								$option->price = $opt['price'];
-								$option->name = $opt['name'];
-								$option->active = 1;
-								$option->type = 'check';
+								$option->price            = $opt['price'];
+								$option->name             = $opt['name'];
+								$option->active           = 1;
+								$option->type             = 'check';
 								$option->save();
 								$newOptions[$option->id_option] = $option->id_option;
 								$opt['default'] = $opt['default'] == 'true' ? 1 : 0;
 
 								if (!$doid = $this->_hasOption($option, $options)) {
-									$do = new Dish_Option;
-									$do->id_dish = $dishO->id_dish;
+									$do            = new Dish_Option;
+									$do->id_dish   = $dishO->id_dish;
 									$do->id_option = $option->id_option;
-									$do->default = $opt['default'];
-
-									$do->save();
+									$do->default   = $opt['default'];
 								} else {
 									$do = new Dish_Option($doid);
 									if ($opt['default'] != $do->default) {
 										$do->default = $opt['default'];
-										$do->save();
 									}
 								}
+								$do->sort    = $opt['sort'];
+								$do->save();
 							}
 						}
 					}
