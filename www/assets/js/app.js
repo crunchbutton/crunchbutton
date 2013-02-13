@@ -30,6 +30,9 @@ var App = {
 	},
 	signin : {},
 	suggestion : {},
+	restaurants: {
+		permalink : 'food-delivery'
+	},
 	modal : {
 		shield : { 'isVisible' : false }
 	},
@@ -42,7 +45,7 @@ App.loadRestaurant = function(id) {
 
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 
-	App.cache('Restaurant',id,function() {
+	App.cache('Restaurant', id,function() {
 
 		if (!this.open()) {
 			var hours = '';
@@ -61,7 +64,7 @@ App.loadRestaurant = function(id) {
 				location.href = this.redirect;
 				return;
 			}
-			var loc = '/' + App.community.permalink + '/' + this.permalink;
+			var loc = '/' + App.restaurants.permalink + '/' + this.permalink;
 			History.pushState({}, 'Crunchbutton - ' + this.name, loc);
 		}
 	});
@@ -93,20 +96,51 @@ App.loadCommunity = function(id) {
 	});
 };
 
+App.routeCommunity = function(id) {
+	if (App.loadedPage == id) {
+		App.community = App.cached['Community'][id];
+		App.loadedPage = null;
+	}
+	console.log(App.cached['Community'][id]);
+	App.cache('Community',id, function() {
+		App.community = this;
+		console.log(App.community);
+		var community = this;
+		if( community.loc_lat && App.community.loc_lon ){
+			App.loc.lat = community.loc_lat;
+			App.loc.lon = community.loc_lon;
+			$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
+			$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});	
+			App.page.foodDelivery()
+			return;
+		}
+	});
+};
+
 App.loadHome = function() {
+	
 	App.currentPage = 'home';
+
 	History.pushState({}, 'Crunchbutton', '/');
 
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-
-	App.loc.lat = 0;
-	App.loc.lon = 0;
-
-	if ($('.enter-location').length) {
-		$('.location-address').val('');
-		$('.error-location').fadeOut(100, function() {
-			$('.enter-location, .button-letseat-form').fadeIn();
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );	
+	if( App.showErrorLocation ){
+		App.showErrorLocation = false;
+		$('.enter-location, .button-letseat-form').fadeOut(100, function() {
+			$('.error-location').fadeIn();
 		});
+		App.track('Location Error', {
+			lat: App.loc.lat,
+			lon: App.loc.lon,
+			address: $('.location-address').val()
+		});
+	} else {
+		if ($('.enter-location').length) {
+			$('.location-address').val('');
+			$('.error-location').fadeOut(100, function() {
+				$('.enter-location, .button-letseat-form').fadeIn();
+			});
+		}
 	}
 };
 
@@ -200,6 +234,9 @@ App.page.home = function() {
 			'height': '52px'
 		});
 	}
+
+	$('.loc-your-area').html(App.loc.reverseGeocodeCity || 'your area');
+
 	if( App.showReset ){
 		App.signin.passwordHelp.reset.init();
 	}
@@ -269,6 +306,84 @@ App.page.community = function(id) {
 	});
 };
 
+App.page.foodDelivery = function() {
+
+	App.currentPage = 'food-delivery';
+	App.loc.lat = ( App.loc.lat && App.loc.lat != 0 ) ? App.loc.lat : parseFloat( $.cookie( 'location_lat' ) );
+	App.loc.lon = ( App.loc.lon && App.loc.lon != 0 ) ? App.loc.lon : parseFloat( $.cookie( 'location_lon' ) );
+
+	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
+
+	// Go home you don't have lat neither lon
+	if( !App.loc.lat || !App.loc.lon ){
+		App.forceHome = true;
+		App.loadHome();
+		$('input').blur();
+		return;
+	}
+
+	document.title = 'Food Delivery | Order Food from Local Restaurants | Crunchbutton';
+
+	var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
+	var sloganReplace = '[some slogan here]';
+	var tagline = App.tagline.replace('%s', sloganReplace);
+	slogan = slogan.replace('%s', sloganReplace);
+
+	var url = App.service + 'restaurants?lat=' + App.loc.lat + '&lon=' + App.loc.lon;
+	$.getJSON( url ,function(json) {
+
+		// There is no restaurant near to the user. Go home and show the error.
+		if( typeof json['restaurants'] == 'undefined' || json['restaurants'].length == 0 ){
+			App.forceHome = true;
+			App.showErrorLocation = true;
+			App.loadHome();
+			$('input').blur();
+			return;
+		}
+
+		// TODO: define the headline
+		$('.main-content').html(
+			'<div class="home-tagline"><h1>' + slogan + '</h1><h2>' + tagline + '</h2></div>' +
+			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
+		);
+
+		var rs = json.restaurants;
+		if (rs.length == 4) {
+			$('.content').addClass('short-meal-list');
+		} else {
+			$('.content').removeClass('short-meal-list');
+		}
+		$('.content').removeClass('smaller-width');
+		App.hasLocation = true;
+		for (var x in rs) {
+
+			var restaurant = $('<div class="meal-item'+ (!rs[x]._open ? ' meal-item-closed' : '') +'" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
+			var restaurantContent = $('<div class="meal-item-content">');
+
+			restaurantContent
+				.append('<div class="meal-pic" style="background: url(' + rs[x]['img64'] + ');"></div>')
+				.append('<h2 class="meal-restaurant">' + rs[x].name + '</h2>')
+				.append('<h3 class="meal-food">' + (rs[x].short_description || ('Top Order: ' + (rs[x].top_name ? (rs[x].top_name || rs[x].top_name) : ''))) + '</h3>');
+
+			if (rs[x]._open) {
+				if (rs[x].delivery != '1') {
+					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
+				} else if (!rs[x].delivery_fee) {
+					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
+				}
+			} else {
+				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
+			}
+
+			restaurant
+				.append('<div class="meal-item-spacer"></div>')
+				.append(restaurantContent);
+
+			$('.meal-items').append(restaurant);
+		}
+ });
+};
+
 App.page.restaurant = function(id) {
 
 	App.currentPage = 'restaurant';
@@ -285,7 +400,7 @@ App.page.restaurant = function(id) {
 		App.restaurant = this;
 
 		App.track('Restaurant page loaded', {restaurant: App.restaurant.name});
-		document.title = App.restaurant.name + ' | ' + App.community.name + ' Food Delivery | Order from ' + (App.community.name_alt ? App.community.name_alt : 'Local') + ' Restaurants | Crunchbutton';
+		document.title = App.restaurant.name + ' | Food Delivery | Order from Local Restaurants | Crunchbutton';
 
 		$('.main-content').html(
 			App.suggestion.tooltipContainer( 'mobile' ) +
@@ -419,7 +534,7 @@ App.drawPay = function(restaurant)
 		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
 	);
 
-	var fieldError = (App.community.permalink == 'gw' || App.community.permalink == 'providence') ? '<div class="field-error field-error-zip">Include ZIP code</div>' : '';
+	var fieldError = '';
 
 	if (restaurant.delivery == '1' && restaurant.takeout == '1') {
 		var deliveryInfo = '<label class="pay-title-label">Delivery Info</label>' +
@@ -528,7 +643,6 @@ Issue 13: Removed the password for while
 
 	if (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) {
 		try {
-			console.log(App.config.user.presets[App.restaurant.id_restaurant]);
 			$('[name="notes"]').val(App.config.user.presets[App.restaurant.id_restaurant].notes);
 		} catch (e) {}
 	}
@@ -733,6 +847,8 @@ App.loadPage = function() {
 		return;
 	}
 
+	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.restaurants.permalink + ')/', 'i');
+
 	switch (true) {
 		case /^legal/i.test(url):
 			App.page.legal();
@@ -754,43 +870,24 @@ App.loadPage = function() {
 			App.page.resetPassword( path );
 			break;
 
-		default:
-			if (!App.community) {
-				// force load of community reguardless of landing (this contains everything we need)
-				App.loadCommunity(path[0]);
-				return;
-			}
-			break;
-	}
-
-	if (App.community) {
-		var communityRegex  = new RegExp('^\/' + App.community.permalink + '$', 'i');
-		var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.community.permalink + ')/.+', 'i');
-	}
-
-	switch (true) {
-
-		case /^order\//i.test(url):
-		case /^legal/i.test(url):
-		case /^help/i.test(url):
-		case /^orders/i.test(url):
-		case /^reset/i.test(url):
-			break;
-
 		case restaurantRegex.test(url):
 			App.page.restaurant(path[1]);
 			break;
 
-		case communityRegex.test(url):
+		case new RegExp( App.restaurants.permalink +  '$', 'i' ).test(url):
+			App.page.foodDelivery();
+			break;
+
 		default:
 			$('.nav-back').removeClass('nav-back-show');
 			$('.footer').removeClass('footer-hide');
-			App.page.community(App.community.permalink);
+			// App.page.community(App.community.permalink);
 			setTimeout(scrollTo, 80, 0, 1);
 			setTimeout( function(){ App.signin.checkUser(); }, 300 );
-			return;
+			//return;
 			break;
 	}
+
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
@@ -1664,7 +1761,6 @@ App.loc = {
 		if (raw) {
 			App.loc.reverseGeocodeCity = raw;
 		} else {
-			console.log(results	)
 			switch (results[0].types[0]) {
 				default:
 				case 'administrative_area_level_1':
@@ -1685,7 +1781,6 @@ App.loc = {
 			}
 		}
 		$('.loc-your-area').html(App.loc.reverseGeocodeCity || 'your area');
-
 	},
 	preProcess: function() {
 		if (google.loader.ClientLocation) {
@@ -1714,6 +1809,11 @@ App.loc = {
 				App.loc.lon = parseFloat(App.config.user.location_lon);
 			}
 
+//return;
+			var loc = '/' + App.restaurants.permalink;
+			History.pushState({}, 'Crunchbutton', loc);			
+return;
+			/*
 			if (App.loc.lat) {
 				closest = App.loc.getClosest();
 
@@ -1727,6 +1827,7 @@ App.loc = {
 					}
 				}
 			}
+			*/
 		}
 
 		if (!did && !App.forceHome && navigator.geolocation) {
@@ -1807,6 +1908,7 @@ App.loc = {
 				}
 				break;
 		}
+
 		if (forceLoc) {
 			App.community = null;
 			var loc = '/' + forceLoc;
@@ -1817,13 +1919,15 @@ App.loc = {
 		geocoder.geocode({'address': $('.location-address').val()}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
 				App.loc.lat = results[0].geometry.location.lat();
-				App.loc.lon = results[0].geometry.location.lng();
-				App.loc.setFormattedLoc(results);
+				App.loc.lon = results[0].geometry.location.lng();	
+				var loc = '/' + App.restaurants.permalink;
+				$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
+				$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
+				App.loc.setFormattedLoc( results );
+				History.pushState({}, 'Crunchbutton', loc);
 			} else {
 				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
-				console.log('Geocode was not successful for the following reason: ' + status);
 			}
-			console.log('LAT LNG', App.loc.lat, App.loc.lon);
 			complete();
 		});
 	},
@@ -1902,9 +2006,11 @@ App.trigger = {
 $(function() {
 	$('.button-letseat-formform').live('submit', function () {
 		$('.button-letseat-form').click();
+		return false;
 	});
 
 	$('.button-letseat-form').live('click', function() {
+		
 		var complete = function() {
 			var closest = App.loc.getClosest();
 
@@ -1926,16 +2032,13 @@ $(function() {
 					});
 
 				} else {
-					$('.enter-location, .button-letseat-form').fadeOut(100, function() {
-						$('.error-location').fadeIn();
-					});
 
 					App.track('Location Error', {
 						lat: App.loc.lat,
 						lon: App.loc.lon,
 						address: $('.location-address').val()
 					});
-
+					return;
 				}
 			}
 		};
@@ -2153,8 +2256,8 @@ $(function() {
 	});
 
 	$('.link-home').live('click',function() {
-		if (App.lastCommunity) {
-			History.pushState({}, 'Crunchbutton', '/' + App.lastCommunity);
+		if (App.hasLocation) {
+			History.pushState({}, 'Crunchbutton', '/' + App.restaurants.permalink );
 		} else {
 			App.forceHome = true;
 			App.loadHome();
