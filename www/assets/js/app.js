@@ -72,6 +72,8 @@ App.loadRestaurant = function(id) {
 
 App.loadCommunity = function(id) {
 
+	return App.routeCommunity( id );
+	/* deprecated */
 	if (App.loadedPage == id) {
 		App.community = App.cached['Community'][id];
 		App.loadedPage = null;
@@ -101,28 +103,24 @@ App.routeCommunity = function(id) {
 		App.community = App.cached['Community'][id];
 		App.loadedPage = null;
 	}
-	console.log(App.cached['Community'][id]);
 	App.cache('Community',id, function() {
 		App.community = this;
-		console.log(App.community);
 		var community = this;
 		if( community.loc_lat && App.community.loc_lon ){
 			App.loc.lat = community.loc_lat;
 			App.loc.lon = community.loc_lon;
 			$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
 			$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});	
-			App.page.foodDelivery()
+			var loc = '/' + App.restaurants.permalink;
+			History.pushState({}, 'Crunchbutton', loc);		
 			return;
 		}
 	});
 };
 
 App.loadHome = function() {
-	
 	App.currentPage = 'home';
-
 	History.pushState({}, 'Crunchbutton', '/');
-
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );	
 	if( App.showErrorLocation ){
 		App.showErrorLocation = false;
@@ -879,6 +877,7 @@ App.loadPage = function() {
 			break;
 
 		default:
+			App.routeCommunity( path[ 0 ] );
 			$('.nav-back').removeClass('nav-back-show');
 			$('.footer').removeClass('footer-hide');
 			// App.page.community(App.community.permalink);
@@ -1808,26 +1807,9 @@ App.loc = {
 				App.loc.lat = parseFloat(App.config.user.location_lat);
 				App.loc.lon = parseFloat(App.config.user.location_lon);
 			}
-
-//return;
 			var loc = '/' + App.restaurants.permalink;
 			History.pushState({}, 'Crunchbutton', loc);			
-return;
-			/*
-			if (App.loc.lat) {
-				closest = App.loc.getClosest();
-
-				if (closest) {
-					if (closest.distance < 25) {
-						did = true;
-						App.community = closest;
-						var loc = '/' + closest.permalink;
-						App.community = null;
-						History.pushState({}, 'Crunchbutton', loc);
-					}
-				}
-			}
-			*/
+			return;
 		}
 
 		if (!did && !App.forceHome && navigator.geolocation) {
@@ -1854,6 +1836,7 @@ return;
 
 	},
 	geocode: function(complete) {
+
 		var geocoder = new google.maps.Geocoder();
 		var forceLoc = null;
 
@@ -1864,11 +1847,13 @@ return;
 		switch ($('.location-address').val().toLowerCase()) {
 			case 'yale':
 			case 'new haven':
-				forceLoc = App.communities.yale.permalink;
+				return App.routeCommunity( 'yale' );
+				// forceLoc = App.communities.yale.permalink;
 				break;
 			case 'brown':
 			case 'providence':
-				forceLoc = App.communities.providence.permalink;
+				return App.routeCommunity( 'providence' );
+				// forceLoc = App.communities.providence.permalink;
 				break;
 			case 'harvard':
 			case 'cambridge':
@@ -1876,7 +1861,8 @@ return;
 			case 'hahvahd':
 			case 'boston':
 			case 'somerville':
-				forceLoc = App.communities.harvard.permalink;
+				return App.routeCommunity( 'harvard' );
+				// forceLoc = App.communities.harvard.permalink;
 				break;
 			case 'dc':
 			case 'gwu':
@@ -1889,7 +1875,8 @@ return;
 			case 'georgetown':
 			case 'gu':
 			case 'georgetown university':
-				forceLoc = App.communities.gw.permalink;
+				return App.routeCommunity( 'gw' );
+				// forceLoc = App.communities.gw.permalink;
 				break;
 			case 'la':
 			case 'los angeles':
@@ -1904,7 +1891,8 @@ return;
 			case 'marina del rey':
 			case 'culver':
 				if (App.communities['los-angeles']) {
-					forceLoc = App.communities['los-angeles'].permalink;
+					return App.routeCommunity( 'los-angeles' );
+					// forceLoc = App.communities['los-angeles'].permalink;
 				}
 				break;
 		}
@@ -2154,7 +2142,7 @@ $(function() {
 					App.loadRestaurant(r);
 				} else if (c) {
 					History.pushState({},c,c);
-					App.loadCommunity(c);
+					App.routeCommunity(c);
 				}
 			}
 			$(this).removeClass('meal-item-down');
