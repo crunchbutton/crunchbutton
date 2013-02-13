@@ -400,22 +400,31 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $this->_hours[$gmt];
 	}
 
+	/**
+	 * Confirms a restaurant is open
+	 *
+	 * Uses TimeMachine to test if the restaurant is open forcing time travel
+	 *
+	 * @link /api/TimeMachine/set?time=12:30am
+	 * @link /api/TimeMachine/reset
+	 */
 	public function open() {
 
 		if (c::env() != 'live' && ($this->id_restaurant == 1 || $this->id_restaurant == 18)) {
-			return true;
+			// return true;
 		}
 
 		$hours = $this->hours();
-		$today = new DateTime('now', new DateTimeZone($this->timezone));
-		$day = strtolower($today->format('D'));
+		$DeLorean = new TimeMachine($this->timezone);
+		$today    = $DeLorean->now();
+		$day      = strtolower($today->format('D'));
 
 		foreach ($hours as $hour) {
 			if ($hour->day != $day) {
 				continue;
 			}
 
-			$open  = new DateTime('today '.$hour->time_open, new DateTimeZone($this->timezone));
+			$open  = new DateTime('today '.$hour->time_open,  new DateTimeZone($this->timezone));
 			$close = new DateTime('today '.$hour->time_close, new DateTimeZone($this->timezone));
 
 			// if closeTime before openTime, then closeTime should be for tomorrow
