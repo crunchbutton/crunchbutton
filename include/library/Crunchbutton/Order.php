@@ -125,6 +125,20 @@ class Crunchbutton_Order extends Cana_Table {
 
 		if (!$this->restaurant()->open()) {
 			$errors['closed'] = 'This restaurant is closed.';
+
+			$DeLorean = new TimeMachine($this->restaurant()->timezone);
+			$debug    = [
+				'type'       => 'closed',
+				'now'        => $DeLorean->now(),
+				'cart'       => $params['cart'],
+				'params'     => $params,
+				'restaurant' => $this->restaurant()->exports(['categories' => true, 'notifications' => true]),
+			];
+			Crunchbutton_Log::error($debug);
+
+			if (Cana::env() != 'live') {
+				$errors['debug']  = $debug;
+			}
 		}
 
 		if (!$this->restaurant()->meetDeliveryMin($this) && $this->delivery_type == 'delivery') {
@@ -256,6 +270,11 @@ class Crunchbutton_Order extends Cana_Table {
 		return self::q('select * from `order` where uuid="'.$uuid.'"');
 	}
 
+	/**
+	 * The restaurant to process the order
+	 *
+	 * @return Crunchbutton_Restaurant
+	 */
 	public function restaurant() {
 		return Restaurant::o($this->id_restaurant);
 	}
