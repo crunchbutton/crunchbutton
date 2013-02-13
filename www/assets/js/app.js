@@ -170,7 +170,7 @@ App.page.home = function() {
 	'<div class="divider"></div>' +
 	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' +
 	'<div class="error-location" style="display: none;">' +
-		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in <span class="loc-your-area change-location-inline">your area</span>. Come back next time you are hungry!</h1></div>' +
+		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in <span class="loc-your-area change-location-inline">your area</span>.</h1></div>' +
 		'<div class="content-item-locations">' +
 			'<h1>Our most popular locations</h1>' +
 		'</div>' +
