@@ -123,7 +123,7 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
-		if (!$this->restaurant()->open() && c::env() == 'live') {
+		if (!$this->restaurant()->open()) {
 			$errors['closed'] = 'This restaurant is closed.';
 		}
 
