@@ -11,6 +11,7 @@ $(function() {
 	<? if (!c::isBot()) : ?>
 		$('.home-text').hide();
 	<? endif ; ?>
+	App.aliases = <?php echo json_encode( Community_Alias::all() ); ?>;
 	App.communities = {};
 	<? foreach (Community::all(c::getPagePiece(0)) as $community) : ?>
 		App.communities['<?=$community->permalink?>'] = {

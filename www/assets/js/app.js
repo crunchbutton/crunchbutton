@@ -71,31 +71,8 @@ App.loadRestaurant = function(id) {
 };
 
 App.loadCommunity = function(id) {
-
+	/* App.loadCommunity is deprecated */
 	return App.routeCommunity( id );
-	/* deprecated */
-	if (App.loadedPage == id) {
-		App.community = App.cached['Community'][id];
-		App.loadedPage = null;
-		/* return; */
-	}
-
-	App.cache('Community',id, function() {
-		App.community = this;
-
-		if (!App.community.id_community) {
-			App.cache('Community','yale', function() {
-				App.community = this;
-				App.loadPage();
-			});
-			$('.main-content').show();
-			$('.main-content').html('just a sec...');
-
-			return;
-		} else {
-			App.loadPage();
-		}
-	});
 };
 
 App.routeCommunity = function(id) {
@@ -103,19 +80,34 @@ App.routeCommunity = function(id) {
 		App.community = App.cached['Community'][id];
 		App.loadedPage = null;
 	}
-	App.cache('Community',id, function() {
-		App.community = this;
-		var community = this;
-		if( community.loc_lat && App.community.loc_lon ){
-			App.loc.lat = community.loc_lat;
-			App.loc.lon = community.loc_lon;
-			$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
-			$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});	
-			var loc = '/' + App.restaurants.permalink;
-			History.pushState({}, 'Crunchbutton', loc);		
-			return;
+	// If it doesn't find a community it'll try to find an alias.
+	if( !App.communities[ id ] ){
+		alias = App.aliases[ id ] || false;
+		if( alias ){
+			id = alias;
 		}
-	});
+	}
+	// Make sure that the community exists.
+	if( App.communities[ id ] ){
+		App.cache('Community',id, function() {
+			App.community = this;
+			var community = this;
+			if( community.loc_lat && App.community.loc_lon ){
+				App.loc.lat = community.loc_lat;
+				App.loc.lon = community.loc_lon;
+				$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
+				$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});	
+				var loc = '/' + App.restaurants.permalink;
+				History.pushState({}, 'Crunchbutton', loc);		
+				return;
+			}
+		});
+	} else {
+		// If the community doesn't exist show the home with the error location message.
+		App.forceHome = true;
+		App.showErrorLocation = true;
+		App.loadHome();
+	}
 };
 
 App.loadHome = function() {
@@ -851,39 +843,30 @@ App.loadPage = function() {
 		case /^legal/i.test(url):
 			App.page.legal();
 			break;
-
 		case /^help/i.test(url):
 			App.page.help();
 			break;
-
 		case /^orders/i.test(url):
 			App.page.orders();
 			break;
-
 		case /^order/i.test(url):
 			App.page.order(path[1]);
 			break;
-
 		case /^reset/i.test(url):
 			App.page.resetPassword( path );
 			break;
-
 		case restaurantRegex.test(url):
 			App.page.restaurant(path[1]);
 			break;
-
 		case new RegExp( App.restaurants.permalink +  '$', 'i' ).test(url):
 			App.page.foodDelivery();
 			break;
-
 		default:
 			App.routeCommunity( path[ 0 ] );
 			$('.nav-back').removeClass('nav-back-show');
 			$('.footer').removeClass('footer-hide');
-			// App.page.community(App.community.permalink);
 			setTimeout(scrollTo, 80, 0, 1);
-			setTimeout( function(){ App.signin.checkUser(); }, 300 );
-			//return;
+			setTimeout( function(){ App.signin.checkUser(); }, 100 );
 			break;
 	}
 
@@ -1839,69 +1822,16 @@ App.loc = {
 
 		var geocoder = new google.maps.Geocoder();
 		var forceLoc = null;
+		var address = $('.location-address').val().toLowerCase();
 
 		App.track('Location Entered', {
-			address: $('.location-address').val().toLowerCase()
+			address: address
 		});
 
-		switch ($('.location-address').val().toLowerCase()) {
-			case 'yale':
-			case 'new haven':
-				return App.routeCommunity( 'yale' );
-				// forceLoc = App.communities.yale.permalink;
-				break;
-			case 'brown':
-			case 'providence':
-				return App.routeCommunity( 'providence' );
-				// forceLoc = App.communities.providence.permalink;
-				break;
-			case 'harvard':
-			case 'cambridge':
-			case 'the game':
-			case 'hahvahd':
-			case 'boston':
-			case 'somerville':
-				return App.routeCommunity( 'harvard' );
-				// forceLoc = App.communities.harvard.permalink;
-				break;
-			case 'dc':
-			case 'gwu':
-			case 'gw':
-			case 'george washington':
-			case 'george washington university':
-			case 'the district':
-			case 'district of columbia':
-			case 'foggy bottom':
-			case 'georgetown':
-			case 'gu':
-			case 'georgetown university':
-				return App.routeCommunity( 'gw' );
-				// forceLoc = App.communities.gw.permalink;
-				break;
-			case 'la':
-			case 'los angeles':
-			case 'venice':
-			case 'playa':
-			case 'loyola':
-			case 'lmu':
-			case 'ucla':
-			case 'santa monica':
-			case 'sm':
-			case 'mdr':
-			case 'marina del rey':
-			case 'culver':
-				if (App.communities['los-angeles']) {
-					return App.routeCommunity( 'los-angeles' );
-					// forceLoc = App.communities['los-angeles'].permalink;
-				}
-				break;
-		}
-
-		if (forceLoc) {
-			App.community = null;
-			var loc = '/' + forceLoc;
-			History.pushState({}, 'Crunchbutton', loc);
-			return;
+		// Check if the typed address has an alias
+		var permalink = App.aliases[ alias ] || false;
+		if( permalink ){
+			return App.routeCommunity( permalink );
 		}
 
 		geocoder.geocode({'address': $('.location-address').val()}, function(results, status) {
@@ -2343,7 +2273,6 @@ $(function() {
 	App.signin.init();
 	App.signup.init();
 	App.modal.shield.init();
-
 });
 
 /**************************
