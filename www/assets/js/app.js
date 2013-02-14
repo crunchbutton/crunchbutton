@@ -2294,7 +2294,7 @@ App.suggestion.init = function(){
 	} );
 
 	// ToolTip
-	$( '.tooltip-help-mobile' ).live( 'click', function( e ) {
+	$( '.tooltip-help-mobile-touchable' ).live( 'click', function( e ) {
 		if( $( '.tooltip-help-content-mobile' ).is(':visible') ){
 			return;
 		}
@@ -2302,6 +2302,7 @@ App.suggestion.init = function(){
 			$( '.tooltip-help-content-mobile' ).show();
 		}, 100 );
 	} );
+
 	$( '.tooltip-help-desktop' ).live( 'click', function() {
 		if( $( '.tooltip-help-content-desktop' ).is(':visible') ){
 			return;
@@ -2310,6 +2311,7 @@ App.suggestion.init = function(){
 			$( '.tooltip-help-content-desktop' ).show();
 		}, 100 );
 	} );
+	
 	$( '.tooltip-help-content' ).live( 'click', function( e ){
 		e.stopPropagation();
 	} );
@@ -2412,7 +2414,10 @@ App.suggestion.tooltipContainer = function( device ){
 	var help = 'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' +
 											'If you really want something else, suggest it below.'
 
-	return '<span class="tooltip-help-' + device + '-container"><span class="tooltip-help tooltip-help-' + device + '"><span>?</span></span>' +
+	return '<span class="tooltip-help-' + device + '-container">' + 
+											( device == 'mobile' ? '<span class="tooltip-help-mobile-touchable">' : '' ) + 
+												'<span class="tooltip-help tooltip-help-' + device + '"><span>?</span>' + 
+											( device == 'mobile' ? '</span>' : '' ) + '</span>' +
 											'<div class="tooltip-help-content tooltip-help-content-' + device + '">' +
 												help +
 											'</div></span>';
