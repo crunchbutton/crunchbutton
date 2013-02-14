@@ -1829,7 +1829,7 @@ App.loc = {
 		});
 
 		// Check if the typed address has an alias
-		var permalink = App.aliases[ alias ] || false;
+		var permalink = App.aliases[ address ] || false;
 		if( permalink ){
 			return App.routeCommunity( permalink );
 		}
