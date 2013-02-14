@@ -2027,14 +2027,20 @@ html[xmlns] .clearfix {
 	min-width: 18px;
 	border-radius: 10px;
 	box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.5);
-	_border: 1px solid #fff;
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(251, 60, 42, 1)), to(rgba(251, 57, 39, 1)));
 }
-	.tooltip-help-mobile{
-		margin-top: -1px;
+	.tooltip-help-mobile-touchable{
+		cursor: pointer;
+		height: 20px;
+		margin-top: -8px;
 		position: fixed;
 		right: 10px;
-		z-index: 100;
+		padding: 5px;
+		z-index: 1000;
+		width: 20px;
+	}
+	.tooltip-help-mobile{
+		margin: 0;
 	}
 
 .tooltip-help  span {
