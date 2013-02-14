@@ -1,3 +1,6 @@
+<? if ((Cana::env() != 'live' ) && (isset($this->restaurant)) && (!$this->restaurant->open()) ) :?>
+	<style> .wrapper { background: lightgray;} </style>
+<? endif?>
 </head>
 <?
 	if ($this->community->id_community) {
@@ -12,6 +15,7 @@
 	if (!c::getPagePiece(0) || (c::getPagePiece(0) && !in_array(c::getPagePiece(0), $basicPages) && !$this->community)) {
 		$e = ' short-meal-list';
 	}
+
 ?>
 <body>
 	<div class="wrapper">
@@ -67,30 +71,30 @@ window.fbAsyncInit = function() {
 		xfbml: true,
 		oauth: true
 	});
-	FB.getLoginStatus( App.signin.facebook.processStatus );					
+	FB.getLoginStatus( App.signin.facebook.processStatus );
 	FB.Event.subscribe('auth.statusChange', App.signin.facebook.processStatus );
 	};
 });
 (function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js";
-  fjs.parentNode.insertBefore(js, fjs);
+var js, fjs = d.getElementsByTagName(s)[0];
+if (d.getElementById(id)) return;
+js = d.createElement(s); js.id = id;
+js.src = "//connect.facebook.net/en_US/all.js";
+fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 </script>
 <? if ($_SERVER['__HTTP_HOST'] == 'crunchbutton.com') : ?>
 <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-36135548-1']);
-  _gaq.push(['_setDomainName', 'crunchbutton.com']);
-  _gaq.push(['_setAllowLinker', true]);
-  _gaq.push(['_trackPageview']);
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36135548-1']);
+_gaq.push(['_setDomainName', 'crunchbutton.com']);
+_gaq.push(['_setAllowLinker', true]);
+_gaq.push(['_trackPageview']);
+(function() {
+	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
 </script>
 <? endif ; ?>
 </html>
