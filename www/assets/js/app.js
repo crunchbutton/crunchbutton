@@ -72,42 +72,34 @@ App.loadRestaurant = function(id) {
 
 App.loadCommunity = function(id) {
 	/* App.loadCommunity is deprecated */
-	return App.routeCommunity( id );
+	return App.routeAlias( id );
 };
 
-App.routeCommunity = function(id) {
-	if (App.loadedPage == id) {
-		App.community = App.cached['Community'][id];
-		App.loadedPage = null;
-	}
-	// If it doesn't find a community it'll try to find an alias.
-	if( !App.communities[ id ] ){
-		alias = App.aliases[ id ] || false;
-		if( alias ){
-			id = alias;
+App.routeAlias = function(id) {
+	// Get the alias
+	alias = App.aliases[ id ] || false;
+	if( alias ){
+		// Get the location of the alias
+		var loc = App.locations[ alias.id_community ];
+		if( loc.loc_lat && loc.loc_lon ){
+			App.loc.lat = loc.loc_lat;
+			App.loc.lon = loc.loc_lon;
+			App.loc.prep = alias.prep;
+			App.loc.name_alt = alias.name_alt;
+			$.cookie( 'location_prep', alias.prep, { expires: new Date(3000,01,01), path: '/'});
+			$.cookie( 'location_name_lat', alias.name_alt, { expires: new Date(3000,01,01), path: '/'});
+			$.cookie( 'location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
+			$.cookie( 'location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});	
+			var url = '/' + App.restaurants.permalink;
+			History.pushState( {}, 'Crunchbutton', url );		
+			return;
 		}
 	}
-	// Make sure that the community exists.
-	if( App.communities[ id ] ){
-		App.cache('Community',id, function() {
-			App.community = this;
-			var community = this;
-			if( community.loc_lat && App.community.loc_lon ){
-				App.loc.lat = community.loc_lat;
-				App.loc.lon = community.loc_lon;
-				$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
-				$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});	
-				var loc = '/' + App.restaurants.permalink;
-				History.pushState({}, 'Crunchbutton', loc);		
-				return;
-			}
-		});
-	} else {
-		// If the community doesn't exist show the home with the error location message.
-		App.forceHome = true;
-		App.showErrorLocation = true;
-		App.loadHome();
-	}
+	// If the alias doesn't exist show the home with the error location message.
+	App.forceHome = true;
+	App.showErrorLocation = true;
+	App.loadHome();
+	return;
 };
 
 App.loadHome = function() {
@@ -232,80 +224,18 @@ App.page.home = function() {
 	}
 };
 
-App.page.community = function(id) {
-
-	App.lastCommunity = id;
-	App.currentPage = 'community';
-
-	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
-
-	App.cache('Community', id, function() {
-		App.community = this;
-
-		App.track('Community page loaded', {community: App.community.name});
-
-		document.title = App.community.name + ' Food Delivery | Order Food from ' + (App.community.name_alt ? App.community.name_alt : 'Local') + ' Restaurants | Crunchbutton';
-
-		var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
-		var sloganReplace = App.community.prep + ' ' + App.community.name;
-		var tagline = App.tagline.replace('%s', sloganReplace);
-		slogan = slogan.replace('%s', sloganReplace);
-
-		$('.main-content').html(
-			'<div class="home-tagline"><h1>' + slogan + '</h1><h2>' + tagline + '</h2></div>' +
-			'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
-		);
-
-		var rs = this.restaurants();
-
-		if (rs.length == 4) {
-			$('.content').addClass('short-meal-list');
-		} else {
-			$('.content').removeClass('short-meal-list');
-		}
-		$('.content').removeClass('smaller-width');
-
-		for (var x in rs) {
-			var restaurant = $('<div class="meal-item'+ (!rs[x].open() ? ' meal-item-closed' : '') +'" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
-			var restaurantContent = $('<div class="meal-item-content">');
-
-			restaurantContent
-				.append('<div class="meal-pic" style="background: url(' + rs[x]['img64'] + ');"></div>')
-				.append('<h2 class="meal-restaurant">' + rs[x]['name'] + '</h2>')
-				.append('<h3 class="meal-food">' + (rs[x].short_description || ('Top Order: ' + (rs[x].top() ? (rs[x].top().top_name || rs[x].top().name) : ''))) + '</h3>');
-
-			if (rs[x].open()) {
-				if (rs[x].delivery != '1') {
-					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
-				} else if (rs[x].isAboutToClose()) {
-					restaurantContent.append('<div class="meal-item-tag about-to-close">Hurry, closes in ' + rs[x].isAboutToClose() +' min!</div>');
-				} else if (!rs[x].delivery_fee) {
-					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
-				}
-			} else {
-				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
-			}
-
-			restaurant
-				.append('<div class="meal-item-spacer"></div>')
-				.append(restaurantContent);
-
-			$('.meal-items').append(restaurant);
-		}
-
-	});
-};
-
 App.page.foodDelivery = function() {
 
 	App.currentPage = 'food-delivery';
 	App.loc.lat = ( App.loc.lat && App.loc.lat != 0 ) ? App.loc.lat : parseFloat( $.cookie( 'location_lat' ) );
 	App.loc.lon = ( App.loc.lon && App.loc.lon != 0 ) ? App.loc.lon : parseFloat( $.cookie( 'location_lon' ) );
+	App.loc.prep = ( App.loc.prep && App.loc.prep != '' ) ? App.loc.prep : $.cookie( 'location_prep' );
+	App.loc.name_alt = ( App.loc.name_alt && App.loc.name_alt != '' ) ? App.loc.name_alt : $.cookie( 'location_name_lat' );
 
 	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
 
 	// Go home you don't have lat neither lon
-	if( !App.loc.lat || !App.loc.lon ){
+	if( !App.loc.lat || !App.loc.lon || !App.loc.prep || !App.loc.name_alt  ){
 		App.forceHome = true;
 		App.loadHome();
 		$('input').blur();
@@ -315,7 +245,7 @@ App.page.foodDelivery = function() {
 	document.title = 'Food Delivery | Order Food from Local Restaurants | Crunchbutton';
 
 	var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
-	var sloganReplace = '[some slogan here]';
+	var sloganReplace = App.loc.prep + ' ' + App.loc.name_alt;
 	var tagline = App.tagline.replace('%s', sloganReplace);
 	slogan = slogan.replace('%s', sloganReplace);
 
@@ -388,6 +318,8 @@ App.page.restaurant = function(id) {
 		}
 
 		App.restaurant = this;
+
+		App.community = App.getCommunityById( App.restaurant.id_community );
 
 		App.track('Restaurant page loaded', {restaurant: App.restaurant.name});
 		document.title = App.restaurant.name + ' | Food Delivery | Order from Local Restaurants | Crunchbutton';
@@ -838,6 +770,7 @@ App.loadPage = function() {
 	}
 
 	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.restaurants.permalink + ')/', 'i');
+	var cleaned_url = $.trim( url.replace( '/', '' ) );
 
 	switch (true) {
 		case /^legal/i.test(url):
@@ -855,14 +788,14 @@ App.loadPage = function() {
 		case /^reset/i.test(url):
 			App.page.resetPassword( path );
 			break;
+		case new RegExp( App.restaurants.permalink + '$', 'i' ).test( cleaned_url ):
+			App.page.foodDelivery();
+			break;
 		case restaurantRegex.test(url):
 			App.page.restaurant(path[1]);
 			break;
-		case new RegExp( App.restaurants.permalink +  '$', 'i' ).test(url):
-			App.page.foodDelivery();
-			break;
 		default:
-			App.routeCommunity( path[ 0 ] );
+			App.routeAlias( path[ 0 ] );
 			$('.nav-back').removeClass('nav-back-show');
 			$('.footer').removeClass('footer-hide');
 			setTimeout(scrollTo, 80, 0, 1);
@@ -1755,8 +1688,6 @@ App.loc = {
 					App.loc.reverseGeocodeCity = results[0].address_components[2].long_name + ', ' + results[0].address_components[4].short_name;
 					break;
 				case 'postal_code':
-					App.loc.reverseGeocodeCity = results[0].address_components[1].long_name + ', ' + results[0].address_components[3].short_name;
-					break;
 				case 'route':
 					App.loc.reverseGeocodeCity = results[0].address_components[1].long_name + ', ' + results[0].address_components[3].short_name;
 					break;
@@ -1829,9 +1760,8 @@ App.loc = {
 		});
 
 		// Check if the typed address has an alias
-		var permalink = App.aliases[ address ] || false;
-		if( permalink ){
-			return App.routeCommunity( permalink );
+		if( App.aliases[ address ] ){
+			return App.routeAlias( address );
 		}
 
 		geocoder.geocode({'address': $('.location-address').val()}, function(results, status) {
@@ -1931,7 +1861,6 @@ $(function() {
 		
 		var complete = function() {
 			var closest = App.loc.getClosest();
-
 			if (closest) {
 				if (closest.distance < 25) {
 					App.community = closest;
@@ -2072,7 +2001,7 @@ $(function() {
 					App.loadRestaurant(r);
 				} else if (c) {
 					History.pushState({},c,c);
-					App.routeCommunity(c);
+					App.routeAlias(c);
 				}
 			}
 			$(this).removeClass('meal-item-down');
@@ -3116,6 +3045,15 @@ App.modal.contentWidth = function(){
 	if( $( window ).width() <= 700 ){
 		return $( window ).width() - 50;
 	}
+}
+
+App.getCommunityById = function( id ){
+	for (x in App.communities) {	
+		if( App.communities[x].id_community == id ){
+			return App.communities[x];
+		}
+	}
+	return false;
 }
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});

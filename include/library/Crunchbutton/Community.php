@@ -68,6 +68,15 @@ class Crunchbutton_Community extends Cana_Table {
 		return self::q('select * from community where permalink="'.$permalink.'"')->get(0);
 	}
 
+	public static function all_locations(){
+		$res = Cana::db()->query( 'SELECT c.id_community, c.loc_lat, c.loc_lon FROM community c' );
+		$locations = array();
+		while ( $row = $res->fetch() ) {
+			$locations[ $row->id_community ] = array( 'loc_lat' => $row->loc_lat, 'loc_lon' => $row->loc_lon );
+		}
+		return $locations;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
