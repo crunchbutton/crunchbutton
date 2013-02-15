@@ -319,7 +319,7 @@ App.page.restaurant = function(id) {
 
 		App.restaurant = this;
 
-		App.community = App.getCommunityById( App.restaurant.id_community );
+		var community = App.getCommunityById( App.restaurant.id_community );
 
 		App.track('Restaurant page loaded', {restaurant: App.restaurant.name});
 		document.title = App.restaurant.name + ' | Food Delivery | Order from Local Restaurants | Crunchbutton';
@@ -348,7 +348,9 @@ App.page.restaurant = function(id) {
 
 			list = $('<ul class="resturant-dishes resturant-dish-container" date-id_category="' + categories[x].id_category + '"></ul>');
 
-			$('.restaurant-items').append('<div class="restaurant-item-title">' + categories[x].name + (categories[x].loc == '1' ? (' at ' + App.community.name) : '') + '</div>',
+			var community_name = ( community.name ) ? (' at ' + community.name ) : '';
+
+			$('.restaurant-items').append('<div class="restaurant-item-title">' + categories[x].name + (categories[x].loc == '1' ? community_name : '') + '</div>',
 				list
 			);
 
