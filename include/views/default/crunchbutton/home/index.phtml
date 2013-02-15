@@ -1,6 +1,6 @@
 <? if ($this->restaurant->id_restaurant) : ?>
 	<?
-		$this->title = $this->restaurant->name.' | '.$this->community->name.' Food Delivery | Order from '.($this->community->name_alt ? $this->community->name_alt : 'Local').' Restaurants | Crunchbutton';
+		$this->title = $this->restaurant->name.' | '.$this->community->name.' Food Delivery | Order from '.($this->community->name_alt() ? $this->community->name_alt() : 'Local').' Restaurants | Crunchbutton';
 	?>
 
 	<? if (c::app()->isBot()) : ?>
@@ -90,7 +90,7 @@
 	</div>
 <? elseif ($this->community->id_community) : ?>
 	<?
-		$this->title = $this->community->name.' Food Delivery | Order Food from '.($this->community->name_alt ? $this->community->name_alt : 'Local').' Restaurants | Crunchbutton';
+		$this->title = $this->community->name.' Food Delivery | Order Food from '.($this->community->name_alt() ? $this->community->name_alt() : 'Local').' Restaurants | Crunchbutton';
 	?>
 	<? if (c::app()->isBot()) : ?>
 		<div class="home-text">

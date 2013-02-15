@@ -58,6 +58,8 @@ class Crunchbutton_Community extends Cana_Table {
 
 	public function exports() {
 		$out = $this->properties();
+		$out[ 'name_alt' ] = $this->name_alt();
+		$out[ 'prep' ] = $this->prep();
 		foreach ($this->restaurants() as $restaurant) {
 			$out['_restaurants'][$restaurant->id_restaurant.' '] = $restaurant->exports();
 		}
@@ -75,6 +77,28 @@ class Crunchbutton_Community extends Cana_Table {
 			$locations[ $row->id_community ] = array( 'loc_lat' => $row->loc_lat, 'loc_lon' => $row->loc_lon );
 		}
 		return $locations;
+	}
+
+	public function name_alt(){
+		$alias = Community_Alias::alias( $this->permalink );
+		if( !$alias ){
+			$alias = Community_Alias::community( $this->id_community );
+		}
+		if( $alias ){
+			return $alias[ 'name_alt' ];
+		}
+		return false;
+	}
+
+	public function prep(){
+		$alias = Community_Alias::alias( $this->permalink );
+		if( !$alias ){
+			$alias = Community_Alias::community( $this->id_community );
+		}
+		if( $alias ){
+			return $alias[ 'prep' ];
+		}
+		return false;
 	}
 
 	public function __construct($id = null) {
