@@ -87,7 +87,7 @@ App.routeAlias = function(id) {
 			App.loc.prep = alias.prep;
 			App.loc.name_alt = alias.name_alt;
 			$.cookie( 'location_prep', alias.prep, { expires: new Date(3000,01,01), path: '/'});
-			$.cookie( 'location_name_lat', alias.name_alt, { expires: new Date(3000,01,01), path: '/'});
+			$.cookie( 'location_name_alt', alias.name_alt, { expires: new Date(3000,01,01), path: '/'});
 			$.cookie( 'location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
 			$.cookie( 'location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});	
 			App.foodDelivery.preProcess();
@@ -210,7 +210,7 @@ App.page.home = function() {
 	}
 
 	if( App.showErrorLocation ){
-		setTimeout( function(){ App.showErrorLocation = false; }, 500 );
+		setTimeout( function(){ App.showErrorLocation = false; }, 100 );
 		$('.enter-location, .button-letseat-form').hide();
 		$('.error-location').show();
 		App.track('Location Error', {
@@ -1720,11 +1720,18 @@ App.loc = {
 		geocoder.geocode({'address': $('.location-address').val()}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
 				App.loc.lat = results[0].geometry.location.lat();
-				App.loc.lon = results[0].geometry.location.lng();	
+				App.loc.lon = results[0].geometry.location.lng();					
+				App.loc.name_alt = null;
+				App.loc.prep = null;
 				$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
 				$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
+				$.cookie('location_name_alt', App.loc.name_alt, { expires: new Date(3000,01,01), path: '/'});
+				$.cookie('location_prep', App.loc.prep, { expires: new Date(3000,01,01), path: '/'});
 				App.loc.setFormattedLoc( results );
-				App.foodDelivery.preProcess();
+				setTimeout( function(){
+					App.foodDelivery.preProcess();	
+				}, 50 );
+				
 			} else {
 				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
 			}
@@ -3009,10 +3016,10 @@ App.foodDelivery.positions = function(){
 	App.loc.lat = ( App.loc.lat && App.loc.lat != 0 ) ? App.loc.lat : parseFloat( $.cookie( 'location_lat' ) );
 	App.loc.lon = ( App.loc.lon && App.loc.lon != 0 ) ? App.loc.lon : parseFloat( $.cookie( 'location_lon' ) );
 	App.loc.prep = ( App.loc.prep && App.loc.prep != '' ) ? App.loc.prep : $.cookie( 'location_prep' );
-	App.loc.name_alt = ( App.loc.name_alt && App.loc.name_alt != '' ) ? App.loc.name_alt : $.cookie( 'location_name_lat' );
-
+	App.loc.name_alt = ( App.loc.name_alt && App.loc.name_alt != '' ) ? App.loc.name_alt : $.cookie( 'location_name_alt' );
+	
 	// Go home you don't have lat neither lon
-	if( !App.loc.lat || !App.loc.lon || !App.loc.prep || !App.loc.name_alt  ){
+	if( !App.loc.lat || !App.loc.lon || !App.loc.prep || !App.loc.name_alt ){
 		App.forceHome = true;
 		App.showErrorLocation = true;
 		App.loadHome();
