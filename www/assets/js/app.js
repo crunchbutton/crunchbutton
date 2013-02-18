@@ -226,6 +226,12 @@ App.page.home = function() {
 
 App.page.foodDelivery = function() {
 
+	// Flag to make sure that this function will not be run twice.
+	if( App.page.foodDeliveryIsLoading ){
+		return true;
+	}
+	App.page.foodDeliveryIsLoading = true;
+
 	App.currentPage = 'food-delivery';
 	App.loc.lat = ( App.loc.lat && App.loc.lat != 0 ) ? App.loc.lat : parseFloat( $.cookie( 'location_lat' ) );
 	App.loc.lon = ( App.loc.lon && App.loc.lon != 0 ) ? App.loc.lon : parseFloat( $.cookie( 'location_lon' ) );
@@ -248,6 +254,8 @@ App.page.foodDelivery = function() {
 	var sloganReplace = App.loc.prep + ' ' + App.loc.name_alt;
 	var tagline = App.tagline.replace('%s', sloganReplace);
 	slogan = slogan.replace('%s', sloganReplace);
+
+	$('.main-content').html( '<div class="home-tagline"><h1> Just a sec... </h1></div>' );
 
 	var url = App.service + 'restaurants?lat=' + App.loc.lat + '&lon=' + App.loc.lon;
 	$.getJSON( url ,function(json) {
@@ -300,6 +308,11 @@ App.page.foodDelivery = function() {
 				.append(restaurantContent);
 
 			$('.meal-items').append(restaurant);
+
+			// Reset the flag to make sure that this function will not be run twice.
+			setTimeout( function(){
+				App.page.foodDeliveryIsLoading = false;	
+			}, 200 );
 		}
  });
 };
