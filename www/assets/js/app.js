@@ -43,8 +43,6 @@ var App = {
 
 App.loadRestaurant = function(id) {
 
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-
 	App.cache('Restaurant', id,function() {
 
 		if (!this.open()) {
@@ -104,7 +102,6 @@ App.routeAlias = function(id) {
 App.loadHome = function() {
 	App.currentPage = 'home';
 	History.pushState({}, 'Crunchbutton', '/');
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );	
 	if( App.forceHome ){
 		App.page.home();	
 	}
@@ -123,8 +120,7 @@ App.page.resetPassword = function( path ){
 App.page.home = function() {
 	document.title = 'Crunchbutton';
 
-	$('.nav-back').removeClass('nav-back-show');
-
+	$( '.nav-back' ).removeClass( 'nav-back-show' );
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 
 	$('.content').addClass('short-meal-list');
@@ -240,6 +236,9 @@ App.page.foodDelivery = function() {
 App.page.restaurant = function(id) {
 
 	App.currentPage = 'restaurant';
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+	$( '.nav-back' ).addClass( 'nav-back-show' );
+
 	App.cartHighlightEnabled = false;
 
 	$('.content').addClass('smaller-width');
@@ -302,7 +301,6 @@ App.page.restaurant = function(id) {
 		}
 
 		$('.restaurant-items').append( App.suggestion.link() );
-
 
 		$('.cart-items').append('<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for ' + App.restaurant.name + '</label></div>');
 
@@ -529,6 +527,9 @@ Issue 13: Removed the password for while
 App.page.order = function(id) {
 
 	App.currentPage = 'order';
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+	$( '.nav-back' ).addClass( 'nav-back-show' );
+
 	App.cache('Order', id, function() {
 
 		if (!this.uuid) {
@@ -631,6 +632,8 @@ App.page.help = function() {
 App.page.orders = function() {
 
 	App.currentPage = 'orders';
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+	$( '.nav-back' ).addClass( 'nav-back-show' );
 
 	$.getJSON('/api/user/orders',function(json) {
 
@@ -756,7 +759,6 @@ App.loadPage = function() {
 			break;
 		default:
 			App.routeAlias( path[ 0 ] );
-			$('.nav-back').removeClass('nav-back-show');
 			$('.footer').removeClass('footer-hide');
 			setTimeout(scrollTo, 80, 0, 1);
 			setTimeout( function(){ App.signin.checkUser(); }, 100 );
@@ -766,8 +768,6 @@ App.loadPage = function() {
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
-	$('.nav-back').addClass('nav-back-show');
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 	App.refreshLayout();
 	$('.main-content').css('visibility','1');
 	setTimeout(scrollTo, 80, 0, 1);
@@ -3006,7 +3006,6 @@ App.foodDelivery.preProcess = function() {
 			return;
 		} else {
 			App.restaurants.list = json.restaurants;
-			$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
 			if( App.foodDelivery.forceProcess ){
 				App.foodDelivery.forceProcess = false;
 				App.page.foodDelivery.load();
@@ -3037,6 +3036,8 @@ App.foodDelivery.positions = function(){
 
 App.page.foodDelivery.load = function(){
 
+	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
+	$( '.nav-back' ).removeClass( 'nav-back-show' );
 	App.currentPage = 'food-delivery';
 
 	document.title = App.loc.name_alt + ' Food Delivery | Order Food from ' + ( App.loc.name_alt ? App.loc.name_alt : 'Local') + ' Restaurants | Crunchbutton';
