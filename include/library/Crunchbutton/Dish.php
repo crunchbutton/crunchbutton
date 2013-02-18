@@ -14,6 +14,11 @@ class Crunchbutton_Dish extends Cana_Table {
 		return Restaurant::o($this->id_restaurant);
 	}
 
+	/**
+	 * The options for the dish
+	 *
+	 * @return Crunchbutton_Option[]
+	 */
 	public function options() {
 		if (!isset($this->_options)) {
 			$this->_options = Option::q('

@@ -19,6 +19,13 @@ class Crunchbutton_Category extends Cana_Table {
 		return $this->restaurant()->community();
 	}
 
+	/**
+	 * Return the dishes ffor the current category
+	 *
+	 * @param array $where Associative array with the WHERE filters
+	 *
+	 * @return Crunchbutton_Dish[]
+	 */
 	public function dishes($where = []) {
 		if (!isset($this->_dishes)) {
 			$defaultFilters = [
@@ -40,7 +47,7 @@ class Crunchbutton_Category extends Cana_Table {
 	public function exports() {
 		$out = $this->properties();
 		foreach ($this->dishes() as $dish) {
-			$out['_dishes'][$dish->id_dish] = $dish->exports();
+			$out['_dishes'][] = $dish->exports();
 		}
 		return $out;
 	}
