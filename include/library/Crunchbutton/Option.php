@@ -1,6 +1,16 @@
 <?php
 
 class Crunchbutton_Option extends Cana_Table {
+
+	/**
+	 * Returns the dish options with it's prices
+	 *
+	 * @see Cana_Table::exports()
+	 *
+	 * @return Crunchbutton_Option[]
+	 *
+	 * @todo Should the prices be stored ordered by id?
+	 */
 	public function exports() {
 		$out = $this->properties();
 		$out['price'] = number_format($out['price'],2);
@@ -18,7 +28,7 @@ class Crunchbutton_Option extends Cana_Table {
 		}
 		return $this->_prices;
 	}
-	
+
 	public function optionPrice($options) {
 	return $this->price;
 		$price = $this->price;

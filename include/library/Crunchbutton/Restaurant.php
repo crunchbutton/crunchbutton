@@ -50,6 +50,11 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $this->_dishes;
 	}
 
+	/**
+	 * Returns the categories for this restaurant order as their sort field
+	 *
+	 * @return Crunchbutton_Category[]
+	 */
 	public function categories() {
 		if (!isset($this->_categories)) {
 			$sql               = "SELECT * FROM category WHERE id_restaurant={$this->id_restaurant} ORDER BY sort ASC";
@@ -625,9 +630,9 @@ class Crunchbutton_Restaurant extends Cana_Table
 		// $out['img64'] = '/assets/images/food/310x310/'.$this->image;
 
 		if (!$ignore['categories']) {
+			$categories = $this->categories();
 			foreach ($this->categories() as $category) {
-				/* @var $category Crunchbutton_Category */
-				$out['_categories'][$category->id_category] = $category->exports();
+				$out['_categories'][] = $category->exports();
 			}
 		}
 
