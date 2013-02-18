@@ -227,7 +227,7 @@ App.page.home = function() {
 App.page.foodDelivery = function() {
 
 	if( App.page.foodDeliveryIsLoading ){
-		return true;
+		// return true;
 	}
 	
 	App.currentPage = 'food-delivery';
