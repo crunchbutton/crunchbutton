@@ -255,7 +255,8 @@ App.page.restaurant = function(id) {
 		var community = App.getCommunityById( App.restaurant.id_community );
 
 		App.track('Restaurant page loaded', {restaurant: App.restaurant.name});
-		document.title = App.restaurant.name + ' | Food Delivery | Order from Local Restaurants | Crunchbutton';
+
+		document.title = App.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
 		$('.main-content').html(
 			App.suggestion.tooltipContainer( 'mobile' ) +
@@ -3033,7 +3034,7 @@ App.page.foodDelivery.load = function(){
 
 	App.currentPage = 'food-delivery';
 
-	document.title = 'Food Delivery | Order Food from Local Restaurants | Crunchbutton';
+	document.title = App.loc.name_alt + ' Food Delivery | Order Food from ' + ( App.loc.name_alt ? App.loc.name_alt : 'Local') + ' Restaurants | Crunchbutton';
 
 	var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
 	var sloganReplace = App.loc.prep + ' ' + App.loc.name_alt;
