@@ -245,7 +245,9 @@ body {
 	text-shadow: 1px 1px 0 rgba(255,255,255,1);
 	margin-bottom: 90px;
 }
-
+.error-location, .enter-location, .button-letseat-form{
+	display: none;
+}
 .copyright {
 	color: #fff;
 	font-size: 11px;
