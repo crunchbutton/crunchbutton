@@ -244,6 +244,13 @@ App.page.restaurant = function(id) {
 
 	$('.content').addClass('smaller-width');
 	$('.content').removeClass('short-meal-list');
+	
+	if ( !App.loc.lat ) {
+		App.loc.lat = ( $.cookie('location_lat') ) ? parseFloat( $.cookie('location_lat') ) : App.config.user.location_lat;
+	}
+	if ( !App.loc.lon ) {
+		App.loc.lon = ( $.cookie('location_lon') ) ? parseFloat( $.cookie('location_lon') ) : App.config.user.location_lon;
+	}
 
 	App.cache('Restaurant', id, function() {
 		if (App.restaurant && App.restaurant.permalink != id) {
@@ -1664,18 +1671,17 @@ App.loc = {
 		}
 	},
 	process: function() {
+
 		var did = false;
 		if (App.config.user && !App.forceHome) {
 
 			if ($.cookie('location_lat')) {
 				App.loc.lat = parseFloat($.cookie('location_lat'));
 				App.loc.lon = parseFloat($.cookie('location_lon'));
-
 			} else if (App.config.user.location_lat) {
 				App.loc.lat = parseFloat(App.config.user.location_lat);
 				App.loc.lon = parseFloat(App.config.user.location_lon);
 			}
-
 			App.foodDelivery.preProcess();
 			return;
 		}
@@ -1740,7 +1746,6 @@ App.loc = {
 		});
 	},
 	reverseGeocode: function(complete) {
-
 		App.track('Location Reverse Geocode', {
 			lat: App.loc.lat,
 			lon: App.loc.lon
