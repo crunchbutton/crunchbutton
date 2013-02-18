@@ -615,8 +615,7 @@ App.page.order = function(id) {
 		if (App.justCompleted) {
 			App.justCompleted = false;
 		}
-		message = 'You Just Ordered Awesome Food!';
-
+		
 		$('.content').addClass('smaller-width');
 
 		$('.main-content').css('width','auto');
@@ -624,46 +623,64 @@ App.page.order = function(id) {
 			'<div class="content-padder-before"></div>' +
 			'<div class="order-info content-padder main-content-readable"></div>'
 		);
-		$('.order-info').html(
-			'<span class="order-thanks-message">'+ message +'</span>' +
-			'<br /><br />'
-		);
 
-		if (this.delivery_type == 'delivery') {
-			$('.order-info').append('<b>Your delivery address:</b><br />' + this.address + '<br /><br />');
-		} else {
-			$('.order-info').append('<b>Takeout order</b><br /><br />');
-		}
+		$('.order-info').html( '' );
 
-		$('.order-info').append('<b>Your phone #:</b><br />' + App.phone.format(this.phone) + '<br /><br />');
-
-		$('.order-info').append('<b>Your order:</b>' + order._message + '<br /><br />');
-
-		if (order.notes) {
-			$('.order-info').append('<i>' + order.notes + '<br /><br />');
-		}
-
-		if (this.pay_type == 'card') {
-			$('.order-info').append('<b>Your total:</b><br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
-		} else {
-			$('.order-info').append('<b>Your approximate total</b>:<br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
-		}
-
-		App.cache('Restaurant',order.id_restaurant, function() {
-			$('.order-info').append('For updates on your order, please call<br />' + this.name + ': <b>' + this.phone + '</b><br /><br />');
-			$('.order-info').append('To reach Crunchbutton, send a text to (646) 783-1444<br />or call <b>(800) 242-1444</b><br /><br />');
-			$('.order-info').append('<span class="order-thanks-message">We\'ve saved your order for easy 1 click ordering next time.</span><br /><br />');
+		$('.order-info').append('<span class="order-thanks-message">Crunched! We\'ve saved your order for easy 1 click ordering next time.</span><br /><br />');
+			
 			if( !App.config.user.has_auth ){
+				
 				$('.order-info').append('<span class="signup-call-to-action"></span>');
 				$('.signup-call-to-action').html( 'If you add a password, your favorite food can be 1 click ordered anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.' +
 													'<a href="javascript:;" class="signup-add-password-button">Add a password now</a>' );
 				$( '.signup-add-password-button' ).live( 'click', function(){
 					App.signup.show( false );
 				} );
+			
 			} else {
+			
 				$('.order-info').append( 'You can 1 click order anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.' );
+			
 			}
+
+		var order_details = new Array();
+
+		order_details.push( '<div class="order-details">' );
+
+		if (this.delivery_type == 'delivery') {
+			order_details.push('<b>Your delivery address:</b><br />' + this.address + '<br /><br />');
+		} else {
+			order_details.push('<b>Takeout order</b><br /><br />');
+		}
+
+		order_details.push('<b>Your phone #:</b><br />' + App.phone.format(this.phone) + '<br /><br />');
+
+		order_details.push('<b>Your order:</b>' + order._message + '<br /><br />');
+
+		if (order.notes) {
+			order_details.push('<i>' + order.notes + '<br /><br />');
+		}
+
+		if (this.pay_type == 'card') {
+			order_details.push('<b>Your total:</b><br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
+		} else {
+			order_details.push('<b>Your approximate total</b>:<br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
+		}
+
+		App.cache('Restaurant',order.id_restaurant, function() {
+
+			order_details.push('For updates on your order, please call<br />' + this.name + ': <b>' + App.callPhone( this.phone ) + '</b><br /><br />');
+
+			order_details.push('You can reach Crunchbutton by texting or calling <b>' + App.callPhone( '(646) 783-1444' ) +  '</b> <br /><br />');
+
+			order_details.push( 'We\'ve saved your order for easy 1 click ordering next time.' );
+
+			order_details.push( '</div>' );
+
+			$('.order-info').append( order_details.join( '' ) );
+
 		});
+
 	});
 };
 
@@ -3069,6 +3086,18 @@ App.getCommunityById = function( id ){
 		}
 	}
 	return false;
+}
+
+App.isMobile = function(){
+	return $.browser.mobile;
+}
+
+App.callPhone = function( phone ){
+	if( App.isMobile() ){
+		return '<a href="tel:' + App.phone.format( phone ).replace( /\-/g, '' ) + '">' + phone + '</a>'; 
+	} else {
+		return phone;
+	}
 }
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});

@@ -552,7 +552,13 @@ html[xmlns] .clearfix {
 	font-size: 12px;
 	margin-right: 25px;
 }
-
+.order-details{
+	border-top: 1px solid #fbdbc0;
+	margin: 10px;
+	padding-bottom: 10px;
+	padding-top: 10px;
+	font-size: 13px !important;
+}
 .delivery-info-container label, .payment-info-container label {
 	float: left;
 	text-align: right;
@@ -825,6 +831,9 @@ html[xmlns] .clearfix {
 	}
 	.logo {
 		margin: 0 auto;
+	}
+	.order-details{
+		border-top: 1px solid #CCC;
 	}
 }
 
@@ -1438,6 +1447,7 @@ html[xmlns] .clearfix {
 	.config-icon-desktop-hide{
 		display: block;
 	}
+
 	.config-icon {
 		float: left;
 	}
