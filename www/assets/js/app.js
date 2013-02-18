@@ -226,12 +226,10 @@ App.page.home = function() {
 
 App.page.foodDelivery = function() {
 
-	// Flag to make sure that this function will not be run twice.
 	if( App.page.foodDeliveryIsLoading ){
 		return true;
 	}
-	App.page.foodDeliveryIsLoading = true;
-
+	
 	App.currentPage = 'food-delivery';
 	App.loc.lat = ( App.loc.lat && App.loc.lat != 0 ) ? App.loc.lat : parseFloat( $.cookie( 'location_lat' ) );
 	App.loc.lon = ( App.loc.lon && App.loc.lon != 0 ) ? App.loc.lon : parseFloat( $.cookie( 'location_lon' ) );
@@ -259,6 +257,13 @@ App.page.foodDelivery = function() {
 
 	var url = App.service + 'restaurants?lat=' + App.loc.lat + '&lon=' + App.loc.lon;
 	$.getJSON( url ,function(json) {
+
+		// Flag to make sure that this function will not be run twice.
+		App.page.foodDeliveryIsLoading = true;
+		// Reset the flag to make sure that this function will not be run twice.
+		setTimeout( function(){
+			App.page.foodDeliveryIsLoading = false;	
+		}, 200 );
 
 		// There is no restaurant near to the user. Go home and show the error.
 		if( typeof json['restaurants'] == 'undefined' || json['restaurants'].length == 0 ){
@@ -308,11 +313,6 @@ App.page.foodDelivery = function() {
 				.append(restaurantContent);
 
 			$('.meal-items').append(restaurant);
-
-			// Reset the flag to make sure that this function will not be run twice.
-			setTimeout( function(){
-				App.page.foodDeliveryIsLoading = false;	
-			}, 200 );
 		}
  });
 };
@@ -2330,7 +2330,7 @@ App.suggestion.send = function(){
 		url: suggestionURL,
 		success: function(content) {
 			App.suggestion.message( '<h1>Awesome, thanks!!</h1>' +
-															'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at 800-242-1444</div>' );
+															'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at ' + App.callPhone( '800-242-1444' ) +  '</div>' );
 		}
 	});
 }
@@ -3092,6 +3092,9 @@ App.isMobile = function(){
 	return $.browser.mobile;
 }
 
+/********************************************************************************************
+* This function will return a callble phone link in case the user is using a mobile device. *
+*********************************************************************************************/
 App.callPhone = function( phone ){
 	if( App.isMobile() ){
 		return '<a href="tel:' + App.phone.format( phone ).replace( /\-/g, '' ) + '">' + phone + '</a>'; 
