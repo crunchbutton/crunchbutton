@@ -42,6 +42,16 @@ class Crunchbutton_Dish extends Cana_Table {
 		return $this->_options;
 	}
 
+	/**
+	 * Deletes a dish if there is no order linked to it
+	 *
+	 * If an order is already placed ordering this dish, we can't delete it.
+	 * Instead, we turn the dish to inactive
+	 *
+	 * @see Cana_Table::delete()
+	 *
+	 * @todo We should probably show a flash message about that
+	 */
 	public function delete() {
 		$od = Order_Dish::q('select * from order_dish where id_order is not null and id_dish="'.$this->id_dish.'"');
 
