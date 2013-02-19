@@ -36,6 +36,7 @@ var App = {
 	modal : {
 		shield : { 'isVisible' : false }
 	},
+	hasBack: false,
 	_init: false,
 	_pageInit: false,
 	_identified: false
@@ -726,6 +727,13 @@ App.loadPage = function() {
 		App._pageInit = true;
 	}
 
+	// check if the user clicked at the back button
+	if( !url && App.hasBack ){
+		App.forceHome = false;
+		App.page.home();
+		return;
+	}
+
 	// force to a specific community
 	if (!url) {
 		App.loc.process();
@@ -734,6 +742,8 @@ App.loadPage = function() {
 
 	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.restaurants.permalink + ')/', 'i');
 	var cleaned_url = $.trim( url.replace( '/', '' ) );
+
+	App.hasBack = true;
 
 	switch (true) {
 		case /^legal/i.test(url):
@@ -1735,6 +1745,7 @@ App.loc = {
 				$.cookie('location_name_alt', App.loc.name_alt, { expires: new Date(3000,01,01), path: '/'});
 				$.cookie('location_prep', App.loc.prep, { expires: new Date(3000,01,01), path: '/'});
 				App.loc.setFormattedLoc( results );
+
 				setTimeout( function(){
 					App.foodDelivery.preProcess();	
 				}, 50 );
@@ -1828,13 +1839,8 @@ $(function() {
 			var closest = App.loc.getClosest();
 			if (closest) {
 				if (closest.distance < 25) {
-					App.community = closest;
-					var loc = '/' + closest.permalink;
-					App.community = null;
-					History.pushState({}, 'Crunchbutton', loc);
-					$.cookie('community', closest.permalink, { expires: new Date(3000,01,01), path: '/'});
-					$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
-					$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
+
+					App.routeAlias( closest.permalink );
 
 					App.track('Location Success', {
 						lat: App.loc.lat,
@@ -2984,6 +2990,7 @@ App.foodDelivery.preProcess = function() {
 	if( !App.foodDelivery.positions() ){
 		return;
 	}
+
 	var url = App.service + 'restaurants?lat=' + App.loc.lat + '&lon=' + App.loc.lon;
 
 	App.restaurants.list = false;
@@ -3141,6 +3148,52 @@ App.getCommunityById = function( id ){
 
 App.isMobile = function(){
 	return $.browser.mobile;
+}
+
+App.iOS = function(){
+	return /ipad|iphone|ipod/i.test( navigator.userAgent.toLowerCase() );
+}
+
+App.isChrome = function(){
+	// As the user agent can be changed, let make sure if the browser is chrome or not.
+	return /chrom(e|ium)/.test( navigator.userAgent.toLowerCase() ) || ( typeof window.chrome === 'object' );
+}
+
+
+App.message = {};
+App.message.show = function( title, message ) {
+	if( $( '.message-container' ).length > 0 ){
+		$( '.message-container' ).html( '<h1>' + title + '</h1>' + message );
+	} else {
+		var html = '<div class="message-container">' +
+								'<h1>' + title + '</h1>' +
+									message +
+							'</div>';
+		$( '.wrapper' ).append( html );	
+	}
+	
+	setTimeout( function(){
+		/* Shows the shield */
+		App.modal.shield.show();
+		$( '.message-container' )
+			.dialog( {
+				dialogClass: 'modal-fixed-dialog',
+				width: App.modal.contentWidth(),
+				close: function( event, ui ) { App.modal.shield.close(); },
+			} );
+	}, 100 );
+}
+
+App.message.chrome = function( ){
+	var title = 'Ops',
+			message = '<p>' +
+				'We\'ve notice that you are using Chrome for iPhone and iPad.' + 
+				'</p><p>' + 
+				'Unfortunately we do not support this browser yet.' + 
+				'</p><p>' + 
+				'<b> What about using Safari for iOS and order awesome food? </b>' +
+				'</p>';
+	App.message.show( title, message );
 }
 
 /********************************************************************************************

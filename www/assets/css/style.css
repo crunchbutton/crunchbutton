@@ -1873,7 +1873,7 @@ html[xmlns] .clearfix {
 		text-align: left;
 		line-height: 16px;
 	}
-.signin-container, .signup-container, .password-reset-container{
+.signin-container, .signup-container, .password-reset-container, .message-container{
 	background: #f5f5f5 url(/assets/images/groovepaper.png);
 	border: 1px solid #F5F5F5;
 	border-radius: 4px;
@@ -1881,7 +1881,13 @@ html[xmlns] .clearfix {
 	padding: 20px;
 	width: 250px;
 }
-	.signin-container h1, .signup-container h1, .password-reset-container h1{
+	.message-container{
+		line-height: 20px;
+	}
+		.message-container p{
+			margin-bottom: 10px;
+		}
+	.signin-container h1, .signup-container h1, .password-reset-container h1, .message-container h1{
 		color:#D74924;
 		font-size: 1.4em;
 		font-weight: 400;
