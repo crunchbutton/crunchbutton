@@ -707,6 +707,12 @@ App.page.orders = function() {
 };
 
 App.loadPage = function() {
+	
+	// If the user is using Chrome for iOS show the message:	
+	if( App.iOS() && App.isMobile() && App.isChrome() ){
+		App.message.chrome();
+	}
+
 	App.signin.checkUser();
 	var
 		url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/'),
@@ -3156,9 +3162,8 @@ App.iOS = function(){
 
 App.isChrome = function(){
 	// As the user agent can be changed, let make sure if the browser is chrome or not.
-	return /chrom(e|ium)/.test( navigator.userAgent.toLowerCase() ) || ( typeof window.chrome === 'object' );
+	return /chrom(e|ium)/.test( navigator.userAgent.toLowerCase() ) || /crios/.test( navigator.userAgent.toLowerCase() ) || ( typeof window.chrome === 'object' );
 }
-
 
 App.message = {};
 App.message.show = function( title, message ) {
