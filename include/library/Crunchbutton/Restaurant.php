@@ -43,9 +43,25 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $this->_top;
 	}
 
-	public function dishes() {
+	/**
+	 * Return active the dishes for the restaurant
+	 *
+	 * If the admin user is logged in, we return both active and inactive
+	 *
+	 * @param string[] $where Associative array with the filters to use to fetch the dishes
+	 */
+	public function dishes($where = []) {
 		if (!isset($this->_dishes)) {
-			$this->_dishes = Dish::q('select * from dish where id_restaurant="'.$this->id_restaurant.'" and active=1', $this->db());
+			$defaultFilters = [
+				'id_restaurant' => $this->id_restaurant,
+				'active'        => 1,
+			];
+			if (isset($_SESSION['admin'])) {
+				$where['active'] = NULL;
+			}
+			$where = $this->_mergeWhere($defaultFilters, $where);
+			$sql   = "SELECT * FROM dish WHERE $where";
+			$this->_dishes = Dish::q($sql, $this->db());
 		}
 		return $this->_dishes;
 	}
