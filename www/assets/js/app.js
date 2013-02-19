@@ -632,6 +632,11 @@ App.page.help = function() {
 
 App.page.orders = function() {
 
+	if( !App.config.user.id_user ){
+		History.pushState({}, 'Crunchbutton', '/');
+		return;
+	}
+
 	App.currentPage = 'orders';
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 	$( '.nav-back' ).addClass( 'nav-back-show' );
@@ -709,7 +714,7 @@ App.page.orders = function() {
 App.loadPage = function() {
 	
 	// If the user is using Chrome for iOS show the message:	
-	if( App.iOS() && App.isMobile() && App.isChrome() ){
+	if( App.isChromeForIOS() ){
 		App.message.chrome();
 	}
 
@@ -3152,19 +3157,6 @@ App.getCommunityById = function( id ){
 	return false;
 }
 
-App.isMobile = function(){
-	return $.browser.mobile;
-}
-
-App.iOS = function(){
-	return /ipad|iphone|ipod/i.test( navigator.userAgent.toLowerCase() );
-}
-
-App.isChrome = function(){
-	// As the user agent can be changed, let make sure if the browser is chrome or not.
-	return /chrom(e|ium)/.test( navigator.userAgent.toLowerCase() ) || /crios/.test( navigator.userAgent.toLowerCase() ) || ( typeof window.chrome === 'object' );
-}
-
 App.message = {};
 App.message.show = function( title, message ) {
 	if( $( '.message-container' ).length > 0 ){
@@ -3189,6 +3181,39 @@ App.message.show = function( title, message ) {
 	}, 100 );
 }
 
+/********************************************************************************************
+* This function will return a callble phone link in case the user is using a mobile device. *
+*********************************************************************************************/
+App.callPhone = function( phone ){
+	if( App.isMobile() ){
+		return '<a href="tel:' + App.phone.format( phone ).replace( /\-/g, '' ) + '">' + phone + '</a>'; 
+	} else {
+		return phone;
+	}
+}
+
+
+/**************************************************
+* Functions to identify the user's browser/device *
+**************************************************/
+
+App.isMobile = function(){
+	return $.browser.mobile;
+}
+
+App.iOS = function(){
+	return /ipad|iphone|ipod/i.test( navigator.userAgent.toLowerCase() );
+}
+
+App.isChrome = function(){
+	// As the user agent can be changed, let make sure if the browser is chrome or not.
+	return /chrom(e|ium)/.test( navigator.userAgent.toLowerCase() ) || /crios/.test( navigator.userAgent.toLowerCase() ) || ( typeof window.chrome === 'object' );
+}
+
+App.isChromeForIOS = function(){
+	return App.isMobile() && App.iOS() && App.isChrome();
+}
+
 App.message.chrome = function( ){
 	var title = 'Ops',
 			message = '<p>' +
@@ -3201,15 +3226,5 @@ App.message.chrome = function( ){
 	App.message.show( title, message );
 }
 
-/********************************************************************************************
-* This function will return a callble phone link in case the user is using a mobile device. *
-*********************************************************************************************/
-App.callPhone = function( phone ){
-	if( App.isMobile() ){
-		return '<a href="tel:' + App.phone.format( phone ).replace( /\-/g, '' ) + '">' + phone + '</a>'; 
-	} else {
-		return phone;
-	}
-}
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
