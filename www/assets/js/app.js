@@ -3042,7 +3042,7 @@ App.foodDelivery.positions = function(){
 	App.loc.name_alt = ( App.loc.name_alt && App.loc.name_alt != '' ) ? App.loc.name_alt : $.cookie( 'location_name_alt' );
 	
 	// Go home you don't have lat neither lon
-	if( !App.loc.lat || !App.loc.lon || !App.loc.prep || !App.loc.name_alt ){
+	if( !App.loc.lat || !App.loc.lon) {
 		App.forceHome = true;
 		App.showErrorLocation = true;
 		App.loadHome();
