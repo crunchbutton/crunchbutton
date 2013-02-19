@@ -107,8 +107,8 @@ class Crunchbutton_App extends Cana_App {
 		
 		$config = $this->config();
 
-		$config->facebook->app = $config->facebook->{$isStaging ? 'staging' : $params['env']}->app;
-		$config->facebook->secret = $config->facebook->{$isStaging ? 'staging' : $params['env']}->secret;
+		$config->facebook->app = $config->facebook->{$isStaging ? 'beta' : $params['env']}->app;
+		$config->facebook->secret = $config->facebook->{$isStaging ? 'beta' : $params['env']}->secret;
 		
 		$config->github->id = $config->github->{$params['env']}->id;
 		$config->github->secret = $config->github->{$params['env']}->secret;
