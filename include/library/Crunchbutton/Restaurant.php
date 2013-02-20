@@ -43,25 +43,9 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $this->_top;
 	}
 
-	/**
-	 * Return active the dishes for the restaurant
-	 *
-	 * If the admin user is logged in, we return both active and inactive
-	 *
-	 * @param string[] $where Associative array with the filters to use to fetch the dishes
-	 */
-	public function dishes($where = []) {
+	public function dishes() {
 		if (!isset($this->_dishes)) {
-			$defaultFilters = [
-				'id_restaurant' => $this->id_restaurant,
-				'active'        => 1,
-			];
-			if (isset($_SESSION['admin'])) {
-				$where['active'] = NULL;
-			}
-			$where = $this->_mergeWhere($defaultFilters, $where);
-			$sql   = "SELECT * FROM dish WHERE $where";
-			$this->_dishes = Dish::q($sql, $this->db());
+			$this->_dishes = Dish::q('select * from dish where id_restaurant="'.$this->id_restaurant.'" and active=1', $this->db());
 		}
 		return $this->_dishes;
 	}
@@ -637,13 +621,15 @@ class Crunchbutton_Restaurant extends Cana_Table
 	 * @return array
 	 */
 	public function exports($ignore = []) {
-		$out             = $this->properties();
-		$out['_open']    = $this->open();
-		// $out['img']   = '/assets/images/food/630x280/'.$this->image.'?crop=1';
-		$out['img']      = $this->publicImagePath().($this->image() ? $this->image()->getFileName() : '');
-		$out['img64']    = $this->publicImagePath().($this->thumb() ? $this->thumb()->getFileName() : '');
-		// $out['img64'] = (new ImageBase64($this->thumb()))->output();
-		// $out['img64'] = '/assets/images/food/310x310/'.$this->image;
+		$out              = $this->properties();
+		$out['_open']     = $this->open();
+		// Return the offset to help the Javascript to calculate the open/close hour correctly
+		$out['_tzoffset'] = ( ( new DateTime( 'now ', new DateTimeZone( $this->timezone ) ) )->getOffset() ) / 60 / 60;
+		// $out['img']    = '/assets/images/food/630x280/'.$this->image.'?crop=1';
+		$out['img']       = $this->publicImagePath().($this->image() ? $this->image()->getFileName() : '');
+		$out['img64']     = $this->publicImagePath().($this->thumb() ? $this->thumb()->getFileName() : '');
+		// $out['img64']  = (new ImageBase64($this->thumb()))->output();
+		// $out['img64']  = '/assets/images/food/310x310/'.$this->image;
 
 		if (!$ignore['categories']) {
 			$categories = $this->categories();
