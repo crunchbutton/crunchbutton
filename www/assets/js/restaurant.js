@@ -19,6 +19,12 @@ var Restaurant = function(id) {
 		complete = function() {};
 	}
 
+	this._utcTime = function(localTime)
+	{
+		var utcTime = Date.parse( localTime.add( - this._tzoffset ).hours().toUTCString() );
+		return utcTime;
+	}
+
 	/**
 	 * Returns the minutes if it's about to close
 	 *
@@ -49,8 +55,11 @@ var Restaurant = function(id) {
 				closeTime.addDays(1);
 			}
 
+			closeTime = this._utcTime(closeTime);
+
 
 			openTime = closeTime.clone().addMinutes(-1 * minimumTime);
+			console.log(this.id_restaurant, openTime, closeTime);
 			if (Date.now().between(openTime, closeTime)) {
 				var minutes = (openTime.getTime() - Date.today().getTime()) /1000/60/60;
 				minutes = Math.floor(minutes);
@@ -139,16 +148,16 @@ var Restaurant = function(id) {
 			// there is no real 24:00 hours, it's 00:00 for tomorrow
 			if (todayHours[i][1] == '24:00') {
 				closeTime = Date.parse('00:00');
-				closeTime.addDays(1);	
+				closeTime.addDays(1);
 			}
 
 			// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
 			if( openTime ){
-				var openTime_utc = Date.parse( openTime.add( - this._tzoffset ).hours().toUTCString() );	
+				var openTime_utc = Date.parse( openTime.add( - this._tzoffset ).hours().toUTCString() );
 			}
 			// Convert the close hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
 			if( closeTime ){
-				var closeTime_utc = Date.parse( closeTime.add( - this._tzoffset ).hours().toUTCString() );	
+				var closeTime_utc = Date.parse( closeTime.add( - this._tzoffset ).hours().toUTCString() );
 			}
 			// Convert current user date to UTC.
 			var now_utc = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
