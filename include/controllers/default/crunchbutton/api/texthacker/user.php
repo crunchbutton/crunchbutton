@@ -2,7 +2,13 @@
 
 class Controller_api_texthacker_user extends Crunchbutton_Controller_Rest {
 	public function init() {
-		$user = User::byPhone($this->request()['phone']);
+		$phone = $this->request()['phone'];
+		$phone = preg_replace('/[^0-9]/','',$phone);
+
+		if (strlen($phone) == 11) {
+			$phone = substr($phone, 1, 10);
+		}
+		$user = User::byPhone($phone);
 		if (!$user->count()) {
 			echo json_encode([]);
 			exit;
