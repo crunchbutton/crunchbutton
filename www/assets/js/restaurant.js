@@ -126,11 +126,17 @@ var Restaurant = function(id) {
 			return false;
 		}
 		todayHours  = this._hours[today];
-
+console.log('today', today)
 		for (i in todayHours) {
 
 			var openTime  = Date.parse(todayHours[i][0]);
 			var closeTime = Date.parse(todayHours[i][1]);
+
+			// there is no real 24:00 hours, it's 00:00 for tomorrow
+			if (todayHours[i][1] == '24:00') {
+				closeTime = Date.parse('00:00');
+				closeTime.addDays(1);	
+			}
 
 			// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
 			if( openTime ){
@@ -143,13 +149,10 @@ var Restaurant = function(id) {
 			// Convert current user date to UTC.
 			var now_utc = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
 			
-			// there is no real 24:00 hours, it's 00:00 for tomorrow
-			if (todayHours[i][1] == '24:00') {
-				if( closeTime_utc ){
-					closeTime_utc = Date.parse('00:00');
-					closeTime_utc.addDays(1);	
-				}
-			}
+			console.log('now_utc', now_utc )
+			console.log('closeTime_utc', closeTime_utc )
+			console.log('openTime_utc', openTime_utc )
+
 			// if closeTime before openTime, then closeTime should be for tomorrow
 			if( closeTime_utc ){
 				if (closeTime_utc.compareTo(openTime_utc) == -1) {
