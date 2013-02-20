@@ -19,10 +19,21 @@ var Restaurant = function(id) {
 		complete = function() {};
 	}
 
+	/**
+	 * Turns local time to UTC to compare it with a base and not client's side timezone
+	 *
+	 * @returns Date
+	 */
 	this._utcTime = function(localTime)
 	{
 		var utcTime = Date.parse( localTime.add( - this._tzoffset ).hours().toUTCString() );
 		return utcTime;
+	}
+
+	this._utcNow = function()
+	{
+		var utcNow = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
+		return utcNow;
 	}
 
 	/**
@@ -56,12 +67,12 @@ var Restaurant = function(id) {
 			}
 
 			closeTime = this._utcTime(closeTime);
+			openTime  = closeTime.clone().addMinutes(-1 * minimumTime);
+			utcNow    = this._utcNow();
+			console.log(this.id_restaurant, utcNow, openTime, closeTime);
 
-
-			openTime = closeTime.clone().addMinutes(-1 * minimumTime);
-			console.log(this.id_restaurant, openTime, closeTime);
-			if (Date.now().between(openTime, closeTime)) {
-				var minutes = (openTime.getTime() - Date.today().getTime()) /1000/60/60;
+			if (utcNow.between(openTime, closeTime)) {
+				var minutes = (openTime.getTime() - utcNow.getTime()) /1000/60/60;
 				minutes = Math.floor(minutes);
 				return minutes;
 			}
