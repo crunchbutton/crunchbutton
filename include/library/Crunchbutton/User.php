@@ -4,7 +4,7 @@ class Crunchbutton_User extends Cana_Table {
 
 	public function byPhone($phone) {
 		$phone = preg_replace('/[^0-9]/i','',$phone);
-		return User::q('select * from user where phone="'.$phone.'"');
+		return User::q('select * from user where phone="'.$phone.'" order by id_user desc limit 1');
 	}
 	
 	public function lastOrder() {
