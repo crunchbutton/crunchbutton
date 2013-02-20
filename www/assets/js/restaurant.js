@@ -119,14 +119,18 @@ var Restaurant = function(id) {
 	 */
 	self.open = function() {
 
-		// console.log(this.timezone);
+		// If it doesn't have hours it means it is always opened
+		if( !this._hours ){
+			return true;
+		}
+
 		var isOpen =  false;
 		var today = Date.today().toString('ddd').toLowerCase();
 		if (this._hours == undefined ||  this._hours[today] == undefined) {
 			return false;
 		}
 		todayHours  = this._hours[today];
-console.log('today', today)
+
 		for (i in todayHours) {
 
 			var openTime  = Date.parse(todayHours[i][0]);
