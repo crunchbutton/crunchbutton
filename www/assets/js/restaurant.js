@@ -148,11 +148,7 @@ console.log('today', today)
 			}
 			// Convert current user date to UTC.
 			var now_utc = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
-			/*
-			console.log('now_utc', now_utc )
-			console.log('closeTime_utc', closeTime_utc )
-			console.log('openTime_utc', openTime_utc )
-			*/
+
 			// if closeTime before openTime, then closeTime should be for tomorrow
 			if( closeTime_utc ){
 				if (closeTime_utc.compareTo(openTime_utc) == -1) {
