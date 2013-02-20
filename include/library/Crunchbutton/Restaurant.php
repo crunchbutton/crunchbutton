@@ -43,9 +43,22 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $this->_top;
 	}
 
-	public function dishes() {
+	/**
+	 * Return the dishes for the restaurant
+     *
+     * Save actions should fetch all by addint active=null in the $where param
+	 *
+	 * @param string[] $where Associative array with the filters to use to fetch the dishes
+	 */
+	public function dishes($where = []) {
 		if (!isset($this->_dishes)) {
-			$this->_dishes = Dish::q('select * from dish where id_restaurant="'.$this->id_restaurant.'" and active=1', $this->db());
+			$defaultFilters = [
+				'id_restaurant' => $this->id_restaurant,
+				'active'        => 1,
+			];
+			$where = $this->_mergeWhere($defaultFilters, $where);
+			$sql   = "SELECT * FROM dish WHERE $where";
+			$this->_dishes = Dish::q($sql, $this->db());
 		}
 		return $this->_dishes;
 	}
@@ -233,7 +246,8 @@ class Crunchbutton_Restaurant extends Cana_Table
 			$category->save();
 		}
 
-		$dishes = $this->dishes();
+		// fetch all (active and inactive dishes) before any changes
+		$originalDishes = $this->dishes(['active' => null]);
 		if ($newDishes) {
 			foreach ($newDishes as $dish) {
 				$dishO                = new Dish($dish['id_dish']);
@@ -328,7 +342,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 			}
 		}
 
-		foreach ($dishes as $dish) {
+		foreach ($originalDishes as $dish) {
 			if (!in_array($dish->id_dish, $nd)) {
 				$d = new Dish($dish->id_dish);
 				$d->delete();
