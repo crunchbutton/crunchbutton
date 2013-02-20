@@ -23,6 +23,21 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 	}
 
 	/**
+	 * Save all dishes for this restaurant
+	 *
+	 * @param Crunchbutton_Restaurant $restaurant
+	 *
+	 * @todo shouldn't we return the saved dishes to confirm?
+	 */
+	private function _saveDishes(Crunchbutton_Restaurant $restaurant)
+	{
+		if ($restaurant->id_restaurant) {
+			$restaurant->saveDishes($this->request()['dishes']);
+			echo json_encode($this->request()['dishes']);
+		}
+	}
+
+	/**
 	 * Stores the notifications
 	 *
 	 * @param Crunchbutton_Restaurant $restaurant Current restaurant
@@ -71,6 +86,24 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 		}
 		Crunchbutton_Session::flashMessage('Your data has been saved.');
 		echo $restaurant->json();
+	}
+
+	/**
+	 * Echo JSON with restaurant data
+	 *
+	 * @return void
+	 */
+	private function _returnRestaurant()
+	{
+		$out = Restaurant::o(c::getPagePiece(2));
+		if (!$out->id_restaurant) {
+			$out = Restaurant::permalink(c::getPagePiece(2));
+		}
+		if ($out->id_restaurant) {
+			echo $out->json();
+		} else {
+			echo json_encode(['error' => 'invalid object']);
+		}
 	}
 
 	public function init() {
@@ -146,10 +179,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							break;
 
 						case 'dishes':
-							if ($r->id_restaurant) {
-								$r->saveDishes($this->request()['dishes']);
-								echo json_encode($this->request()['dishes']);
-							}
+							$this->_saveDishes($r);
 							break;
 
 						default:
@@ -161,15 +191,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'get':
-				$out = Restaurant::o(c::getPagePiece(2));
-				if (!$out->id_restaurant) {
-					$out = Restaurant::permalink(c::getPagePiece(2));
-				}
-				if ($out->id_restaurant) {
-					echo $out->json();
-				} else {
-					echo json_encode(['error' => 'invalid object']);
-				}
+				$this->_returnRestaurant();
 				break;
 		}
 	}
