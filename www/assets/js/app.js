@@ -3082,29 +3082,37 @@ App.page.foodDelivery.load = function(){
 	App.hasLocation = true;
 	for (var x in rs) {
 
-		var restaurant = $('<div class="meal-item'+ (!rs[x]._open ? ' meal-item-closed' : '') +'" data-id_restaurant="' + rs[x]['id_restaurant'] + '" data-permalink="' + rs[x]['permalink'] + '"></div>');
-		var restaurantContent = $('<div class="meal-item-content">');
+		var id = rs[x].id_restaurant;
 
-		restaurantContent
-			.append('<div class="meal-pic" style="background: url(' + rs[x]['img64'] + ');"></div>')
-			.append('<h2 class="meal-restaurant">' + rs[x].name + '</h2>')
-			.append('<h3 class="meal-food">' + (rs[x].short_description || ('Top Order: ' + (rs[x].top_name ? (rs[x].top_name || rs[x].top_name) : ''))) + '</h3>');
+		App.cache('Restaurant', id,function() {
+		
+			var restaurant = $('<div class="meal-item'+ (!this.open() ? ' meal-item-closed' : '') +'" data-id_restaurant="' + this.id_restaurant + '" data-permalink="' + this.permalink + '"></div>');
+			var restaurantContent = $('<div class="meal-item-content">');
 
-		if (rs[x]._open) {
-			if (rs[x].delivery != '1') {
-				restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
-			} else if (!rs[x].delivery_fee) {
-				// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
+			restaurantContent
+				.append('<div class="meal-pic" style="background: url(' + this.img64 + ');"></div>')
+				.append('<h2 class="meal-restaurant">' + this.name + '</h2>')
+				.append('<h3 class="meal-food">' + (this.short_description || ('Top Order: ' + (this.top_name ? (this.top_name || this.top_name) : ''))) + '</h3>');
+
+			if (this.open()) {
+				if (this.delivery != '1') {
+					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
+				} else if (!this.delivery_fee) {
+					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
+				}
+			} else {
+				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
 			}
-		} else {
-			restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
-		}
 
-		restaurant
-			.append('<div class="meal-item-spacer"></div>')
-			.append(restaurantContent);
+			restaurant
+				.append('<div class="meal-item-spacer"></div>')
+				.append(restaurantContent);
 
-		$('.meal-items').append(restaurant);
+			$('.meal-items').append(restaurant);
+		});
+
+
+
 	}
 }
 
