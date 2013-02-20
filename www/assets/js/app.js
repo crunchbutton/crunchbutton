@@ -3225,6 +3225,4 @@ App.message.chrome = function( ){
 				'</p>';
 	App.message.show( title, message );
 }
-
-
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
