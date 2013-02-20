@@ -3097,12 +3097,16 @@ App.page.foodDelivery.load = function(){
 			if (this.open()) {
 				if (this.delivery != '1') {
 					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
+				} else if (this.isAboutToClose()) {
+					restaurantContent.append('<div class="meal-item-tag about-to-close">Hurry, closes in ' + this.isAboutToClose() +' min!</div>');
 				} else if (!this.delivery_fee) {
 					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
 				}
 			} else {
 				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
 			}
+
+
 
 			restaurant
 				.append('<div class="meal-item-spacer"></div>')
