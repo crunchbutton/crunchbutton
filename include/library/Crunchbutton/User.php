@@ -1,6 +1,17 @@
 <?php
 
 class Crunchbutton_User extends Cana_Table {
+
+	public function byPhone($phone) {
+		$phone = preg_replace('/[^0-9]/i','',$phone);
+		return User::q('select * from user where phone="'.$phone.'" order by id_user desc limit 1');
+	}
+	
+	public function lastOrder() {
+		$order = Order::q('select * from `order` where id_user="'.$this->id_user.'" and id_user is not null order by date desc limit 1');
+		return $order;
+	}
+
 	public function watched() {
 		return Project::q('
 			SELECT project.* FROM project
