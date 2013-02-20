@@ -424,7 +424,12 @@ class Crunchbutton_Restaurant extends Cana_Table
 		$today    = $DeLorean->now();
 		$day      = strtolower($today->format('D'));
 
+		$hasHours = false;
+
 		foreach ($hours as $hour) {
+
+			$hasHours = true;
+
 			if ($hour->day != $day) {
 				continue;
 			}
@@ -441,6 +446,10 @@ class Crunchbutton_Restaurant extends Cana_Table
 			if ($today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp()) {
 				return true;
 			}
+		}
+
+		if( !$hasHours ){
+			return true;
 		}
 
 		return false;
