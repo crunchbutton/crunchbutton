@@ -120,29 +120,47 @@ var Restaurant = function(id) {
 	self.open = function() {
 
 		// console.log(this.timezone);
-
-
 		var isOpen =  false;
 		var today = Date.today().toString('ddd').toLowerCase();
 		if (this._hours == undefined ||  this._hours[today] == undefined) {
 			return false;
 		}
 		todayHours  = this._hours[today];
+
 		for (i in todayHours) {
+
 			var openTime  = Date.parse(todayHours[i][0]);
 			var closeTime = Date.parse(todayHours[i][1]);
+
+			// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
+			if( openTime ){
+				var openTime_utc = Date.parse( openTime.add( - this._tzoffset ).hours().toUTCString() );	
+			}
+			// Convert the close hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
+			if( closeTime ){
+				var closeTime_utc = Date.parse( closeTime.add( - this._tzoffset ).hours().toUTCString() );	
+			}
+			// Convert current user date to UTC.
+			var now_utc = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
+			
 			// there is no real 24:00 hours, it's 00:00 for tomorrow
 			if (todayHours[i][1] == '24:00') {
-				closeTime = Date.parse('00:00');
-				closeTime.addDays(1);
+				if( closeTime_utc ){
+					closeTime_utc = Date.parse('00:00');
+					closeTime_utc.addDays(1);	
+				}
 			}
 			// if closeTime before openTime, then closeTime should be for tomorrow
-			if (closeTime.compareTo(openTime) == -1) {
-				closeTime.addDays(1);
+			if( closeTime_utc ){
+				if (closeTime_utc.compareTo(openTime_utc) == -1) {
+					closeTime_utc.addDays(1);
+				}
 			}
-			if (Date.now().between(openTime, closeTime)) {
-				isOpen = true;
-				break;
+			if( openTime_utc &&  closeTime_utc ){
+				if (now_utc.between(openTime_utc, closeTime_utc)) {
+					isOpen = true;
+					break;
+				}
 			}
 		}
 		return isOpen;
