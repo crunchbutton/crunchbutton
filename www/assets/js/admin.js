@@ -130,7 +130,7 @@ function _loadRestaurant() {
 	for (var i in categories) {
 		var dishes       = categories[i].dishes();
 		var name         = categories[i].name;
-		var sort         = categories[i].sort;
+		var sort         = (categories[i].sort && (categories[i].sort != 'null')) ? categories[i].sort : 0;
 		var $categoryTab = $('<h3 data-id_category="'+ categories[i].id_category +'">'+ name+'</h3>' +
 		'<div>' +
 			'<div class="labeled-fields category">' +
