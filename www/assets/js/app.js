@@ -3225,7 +3225,6 @@ App.isChrome = function(){
 }
 
 App.isChromeForIOS = function(){
-	return true;
 	return App.isMobile() && App.iOS() && App.isChrome();
 }
 
