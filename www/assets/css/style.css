@@ -1887,6 +1887,16 @@ html[xmlns] .clearfix {
 		.message-container p{
 			margin-bottom: 10px;
 		}
+		.message-container h3{
+			border-top: 1px solid #CCC;
+			font-weight: bold;
+			margin-top: 10px;
+			padding-top: 10px;
+		}
+			.message-container-content{
+				height: 250px;
+				overflow: auto;
+			}
 	.signin-container h1, .signup-container h1, .password-reset-container h1, .message-container h1{
 		color:#D74924;
 		font-size: 1.4em;
