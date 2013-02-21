@@ -642,11 +642,15 @@ App.showDish = function(dishItem) {
  */
 App.createCategory = function(dialog) {
 	var name                 = $('[name="admin-category-name"]',dialog).val();
+	var sort                 = $('.accordion h3').length +1;
 	var $categoriesContainer = $('.accordion');
 	var options              = $categoriesContainer.accordion('option');
-	var $categoryTab         = $('<h3 data-id_category="">' + name + '</h3><div>' +
-		'<label><span class="label">Name</span>       <input name="name" value="' + name + '" /></label>' +
-		'<label><span class="label">Sort Order</span> <input name="sort" /></label>' +
+	var $categoryTab         = $('<h3 data-id_category="">' + name + '</h3>' +
+	'<div>' +
+		'<div class="labeled-fields category">' +
+			'<label><span class="label">Name</span>       <input name="name" value="' + name + '" /></label>' +
+			'<label><span class="label">Sort Order</span> <input name="sort" value="' + sort + '" /></label>' +
+		'</div>' +
 	'</div>');
 
 	$categoriesContainer.accordion('destroy');
