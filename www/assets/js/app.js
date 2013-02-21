@@ -2568,6 +2568,7 @@ App.signin.facebook.processStatus = function( session ){
 		}
 	}
 }
+
 App.signin.facebook.login = function() {
 	App.signin.facebook.shouldAuth = true;
 	FB.login( App.signin.facebook.processStatus,{ scope:'email' } );
@@ -3228,21 +3229,16 @@ App.isChromeForIOS = function(){
 	return App.isMobile() && App.iOS() && App.isChrome();
 }
 
+
+
 App.message.chrome = function( ){
-	var title = 'Oops',
+	var title = 'How to use Chrome',
 			message = '<p>' +
-				'We\'ve notice that you are using Chrome for iPhone and iPad.' + 
-				'</p><p>' + 
-					'Unfortunately we do not fully support this browser yet.' + 
-				'</p><p>' + 
-					'<b> What about using Safari for iOS or changing your browser to "Request desktop site" mode and order awesome food? </b>' +
-				'</p>' + 
-				'<h3>' + 
-					'How to change your browser to "Request desktop site" mode:' +
-				'</h3>' +
-				'<p>' +
-					'Access your browser settings <img src="/assets/images/chrome-options.png" /> and choose the option "Request desktop site".' +
-				'</p>'
+					'Just tap "Request Desktop Site.' +
+				'</p>' +
+				'<p align="center">' +
+					'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' + 
+				'</p>';
 	App.message.show( title, message );
 }
 
