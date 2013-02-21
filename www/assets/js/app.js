@@ -3172,11 +3172,13 @@ App.getCommunityById = function( id ){
 App.message = {};
 App.message.show = function( title, message ) {
 	if( $( '.message-container' ).length > 0 ){
-		$( '.message-container' ).html( '<h1>' + title + '</h1>' + message );
+		$( '.message-container' ).html( '<h1>' + title + '</h1><div class="message-container-content">' +   message + '</div>' );
 	} else {
 		var html = '<div class="message-container">' +
 								'<h1>' + title + '</h1>' +
+								'<div class="message-container-content">' + 
 									message +
+								'</div>' +
 							'</div>';
 		$( '.wrapper' ).append( html );	
 	}
@@ -3223,18 +3225,26 @@ App.isChrome = function(){
 }
 
 App.isChromeForIOS = function(){
+	return true;
 	return App.isMobile() && App.iOS() && App.isChrome();
 }
 
 App.message.chrome = function( ){
-	var title = 'Ops',
+	var title = 'Oops',
 			message = '<p>' +
 				'We\'ve notice that you are using Chrome for iPhone and iPad.' + 
 				'</p><p>' + 
-				'Unfortunately we do not support this browser yet.' + 
+					'Unfortunately we do not fully support this browser yet.' + 
 				'</p><p>' + 
-				'<b> What about using Safari for iOS and order awesome food? </b>' +
-				'</p>';
+					'<b> What about using Safari for iOS or changing your browser to "Request desktop site" mode and order awesome food? </b>' +
+				'</p>' + 
+				'<h3>' + 
+					'How to change your browser to "Request desktop site" mode:' +
+				'</h3>' +
+				'<p>' +
+					'Access your browser settings <img src="/assets/images/chrome-options.png" /> and choose the option "Request desktop site".' +
+				'</p>'
 	App.message.show( title, message );
 }
+
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
