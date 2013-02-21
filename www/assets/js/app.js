@@ -1756,7 +1756,6 @@ App.loc = {
 				$.cookie('location_name_alt', App.loc.name_alt, { expires: new Date(3000,01,01), path: '/'});
 				$.cookie('location_prep', App.loc.prep, { expires: new Date(3000,01,01), path: '/'});
 				App.loc.setFormattedLoc( results );
-
 				setTimeout( function(){
 					App.foodDelivery.preProcess();	
 				}, 50 );
@@ -3039,9 +3038,15 @@ App.foodDelivery.positions = function(){
 	// Make sure that the positons were setted up.
 	App.loc.lat = ( App.loc.lat && App.loc.lat != 0 ) ? App.loc.lat : parseFloat( $.cookie( 'location_lat' ) );
 	App.loc.lon = ( App.loc.lon && App.loc.lon != 0 ) ? App.loc.lon : parseFloat( $.cookie( 'location_lon' ) );
+
 	App.loc.prep = ( App.loc.prep && App.loc.prep != '' ) ? App.loc.prep : $.cookie( 'location_prep' );
 	App.loc.name_alt = ( App.loc.name_alt && App.loc.name_alt != '' ) ? App.loc.name_alt : $.cookie( 'location_name_alt' );
-	
+
+	// If we don't have the community try to load the place name.
+	if( !App.loc.prep || !App.loc.name_alt ) {
+		App.foodDelivery.loadPlaceName();
+	}
+
 	// Go home you don't have lat neither lon
 	if( !App.loc.lat || !App.loc.lon) {
 		App.forceHome = true;
@@ -3053,25 +3058,47 @@ App.foodDelivery.positions = function(){
 	return true;
 }
 
+App.foodDelivery.loadPlaceName = function(){
+	if( google.maps.Geocoder ){
+		App.loc.reverseGeocode( function(){ App.foodDelivery.tagLine(); } );
+	} else {
+		setTimeout( function(){
+			App.foodDelivery.loadPlaceName();
+		}, 100 );
+	}
+}
+
+App.foodDelivery.tagLine = function(){
+	var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
+	var sloganReplace = ( App.loc.prep || ( App.loc.reverseGeocodeCity ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.reverseGeocodeCity || '' ) ;
+	sloganReplace = $.trim( sloganReplace );
+	var tagline = App.tagline.replace('%s', sloganReplace);
+	slogan = slogan.replace('%s', sloganReplace);
+	$( '.home-tagline' ).html( '<h1>' + slogan + '</h1><h2>' + tagline + '</h2>' );
+	App.foodDelivery.title();
+}
+
+App.foodDelivery.title = function(){
+	document.title =  ( App.loc.name_alt || App.loc.reverseGeocodeCity || '' ) + ' Food Delivery | Order Food from ' + ( App.loc.name_alt ? App.loc.name_alt : 'Local') + ' Restaurants | Crunchbutton';
+}
+
 App.page.foodDelivery.load = function(){
 
 	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
 	$( '.nav-back' ).removeClass( 'nav-back-show' );
+
 	App.currentPage = 'food-delivery';
 
-	document.title = App.loc.name_alt + ' Food Delivery | Order Food from ' + ( App.loc.name_alt ? App.loc.name_alt : 'Local') + ' Restaurants | Crunchbutton';
-
-	var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
-	var sloganReplace = App.loc.prep + ' ' + App.loc.name_alt;
-	var tagline = App.tagline.replace('%s', sloganReplace);
-	slogan = slogan.replace('%s', sloganReplace);
+	App.foodDelivery.title();
 
 	$('.main-content').html( '<div class="home-tagline"><h1> Just a sec... </h1></div>' );
 
 	$('.main-content').html(
-		'<div class="home-tagline"><h1>' + slogan + '</h1><h2>' + tagline + '</h2></div>' +
+		'<div class="home-tagline"></div>' +
 		'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
 	);
+
+	App.foodDelivery.tagLine();
 
 	var rs = App.restaurants.list;
 	if (rs.length == 4) {
@@ -3107,17 +3134,12 @@ App.page.foodDelivery.load = function(){
 				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
 			}
 
-
-
 			restaurant
 				.append('<div class="meal-item-spacer"></div>')
 				.append(restaurantContent);
 
 			$('.meal-items').append(restaurant);
 		});
-
-
-
 	}
 }
 
