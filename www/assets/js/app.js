@@ -2206,6 +2206,7 @@ App.suggestion.init = function(){
 
 	$( '.suggestion-link' ).live( 'click', function() {
 		App.suggestion.show();
+		App.suggestion.itIsSending = false;
 	} );
 
 	$( '.suggestion-form-button' ).live( 'click', function( e ){
@@ -2285,16 +2286,19 @@ App.suggestion.send = function(){
 	data[ 'id_community' ] = App.restaurant.id_community;
 	data[ 'name' ] = $( 'input[name=suggestion-name]' ).val();
 
-	$.ajax({
-		type: "POST",
-		dataType: 'json',
-		data: data,
-		url: suggestionURL,
-		success: function(content) {
-			App.suggestion.message( '<h1>Awesome, thanks!!</h1>' +
-															'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at ' + App.callPhone( '800-242-1444' ) +  '</div>' );
-		}
-	});
+	if( !App.suggestion.itIsSending ){
+		App.suggestion.itIsSending = true;
+		$.ajax({
+			type: "POST",
+			dataType: 'json',
+			data: data,
+			url: suggestionURL,
+			success: function(content) {
+				App.suggestion.message( '<h1>Awesome, thanks!!</h1>' +
+																'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at ' + App.callPhone( '800-242-1444' ) +  '</div>' );
+			}
+		});
+	}
 }
 
 App.suggestion.link = function(){
