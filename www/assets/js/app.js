@@ -3038,7 +3038,23 @@ App.foodDelivery.preProcess = function() {
 			$('input').blur();
 			return;
 		} else {
-			App.restaurants.list = json.restaurants;
+			App.restaurants.list = [];
+			for (var x in json.restaurants) {
+				var res = new Restaurant(json.restaurants[x]);
+				res.open();
+				App.restaurants.list[App.restaurants.list.length] = res;
+			};
+			
+			App.restaurants.list.sort(sort_by({
+			    name: '_open',
+			    reverse: true
+			}, {
+			    name: '_weight',
+			    primer: parseInt,
+			    reverse: true
+			}));
+			
+			console.log(App.restaurants.list);
 			if( App.foodDelivery.forceProcess ){
 				App.foodDelivery.forceProcess = false;
 				App.page.foodDelivery.load();
@@ -3125,36 +3141,34 @@ App.page.foodDelivery.load = function(){
 	App.hasLocation = true;
 	for (var x in rs) {
 
-		var id = rs[x].id_restaurant;
+		var r = rs[x];
 
-		App.cache('Restaurant', id,function() {
-		
-			var restaurant = $('<div class="meal-item'+ (!this.open() ? ' meal-item-closed' : '') +'" data-id_restaurant="' + this.id_restaurant + '" data-permalink="' + this.permalink + '"></div>');
-			var restaurantContent = $('<div class="meal-item-content">');
+		var restaurant = $('<div class="meal-item'+ (!r.open() ? ' meal-item-closed' : '') +'" data-id_restaurant="' + r.id_restaurant + '" data-permalink="' + r.permalink + '"></div>');
+		var restaurantContent = $('<div class="meal-item-content">');
 
-			restaurantContent
-				.append('<div class="meal-pic" style="background: url(' + this.img64 + ');"></div>')
-				.append('<h2 class="meal-restaurant">' + this.name + '</h2>')
-				.append('<h3 class="meal-food">' + (this.short_description || ('Top Order: ' + (this.top_name ? (this.top_name || this.top_name) : ''))) + '</h3>');
+		restaurantContent
+			.append('<div class="meal-pic" style="background: url(' + r.img64 + ');"></div>')
+			.append('<h2 class="meal-restaurant">' + r.name + '</h2>')
+			.append('<h3 class="meal-food">' + (r.short_description || ('Top Order: ' + (r.top_name ? (r.top_name || r.top_name) : ''))) + '</h3>');
 
-			if (this.open()) {
-				if (this.delivery != '1') {
-					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
-				} else if (this.isAboutToClose()) {
-					restaurantContent.append('<div class="meal-item-tag about-to-close">Hurry, closes in ' + this.isAboutToClose() +' min!</div>');
-				} else if (!this.delivery_fee) {
-					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
-				}
-			} else {
-				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
+		if (r.open()) {
+			if (r.delivery != '1') {
+				restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
+			} else if (r.isAboutToClose()) {
+				restaurantContent.append('<div class="meal-item-tag about-to-close">Hurry, closes in ' + r.isAboutToClose() +' min!</div>');
+			} else if (!r.delivery_fee) {
+				// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
 			}
+		} else {
+			restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
+		}
 
-			restaurant
-				.append('<div class="meal-item-spacer"></div>')
-				.append(restaurantContent);
+		restaurant
+			.append('<div class="meal-item-spacer"></div>')
+			.append(restaurantContent);
 
-			$('.meal-items').append(restaurant);
-		});
+		$('.meal-items').append(restaurant);
+
 	}
 }
 
@@ -3280,3 +3294,65 @@ App.message.chrome = function( ){
 }
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
+
+
+var sort_by;
+(function() {
+    // utility functions
+    var default_cmp = function(a, b) {
+        if (a == b) return 0;
+        return a < b ? -1 : 1;
+    },
+        getCmpFunc = function(primer, reverse) {
+            var cmp = default_cmp;
+            if (primer) {
+                cmp = function(a, b) {
+                    return default_cmp(primer(a), primer(b));
+                };
+            }
+            if (reverse) {
+                return function(a, b) {
+                    return -1 * cmp(a, b);
+                };
+            }
+            return cmp;
+        };
+
+    // actual implementation
+    sort_by = function() {
+        var fields = [],
+            n_fields = arguments.length,
+            field, name, reverse, cmp;
+
+        // preprocess sorting options
+        for (var i = 0; i < n_fields; i++) {
+            field = arguments[i];
+            if (typeof field === 'string') {
+                name = field;
+                cmp = default_cmp;
+            }
+            else {
+                name = field.name;
+                cmp = getCmpFunc(field.primer, field.reverse);
+            }
+            fields.push({
+                name: name,
+                cmp: cmp
+            });
+        }
+
+        return function(A, B) {
+            var a, b, name, cmp, result;
+            for (var i = 0, l = n_fields; i < l; i++) {
+                result = 0;
+                field = fields[i];
+                name = field.name;
+                cmp = field.cmp;
+
+                result = cmp(A[name], B[name]);
+                if (result !== 0) break;
+            }
+            return result;
+        }
+    }
+}());
