@@ -138,266 +138,6 @@ App.showPage = function(params) {
 	$('.main-content').html(App.render(params.page, params.data));
 };
 
-App.page.home = function() {
-
-	$( '.nav-back' ).removeClass( 'nav-back-show' );
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-
-	$('.content').addClass('short-meal-list');
-	
-	App.showPage({
-		page: 'home',
-		title: 'Crunchbutton',
-		data: {
-			topCommunities: App.topCommunities,
-			yourArea: App.loc.reverseGeocodeCity || 'your area',
-			autofocus: $(window).width() >= 768 ? ' autofocus="autofocus"' : ''
-		}
-	});
-
-	// @hacks
-	if (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('mobile') == -1 && navigator.userAgent.toLowerCase().indexOf('chrome') == -1) {
-		// safari desktop
-		$('.location-detect').css({
-			'margin-top': '2px',
-			'height': '50px'
-		});
-	} else if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-		// firefox desktop
-		$('.location-detect').css({
-			'margin-top': '0px',
-			'height': '52px'
-		});
-	}
-
-	if (App.showReset){
-		App.signin.passwordHelp.reset.init();
-	}
-
-	if (App.showErrorLocation) {
-		setTimeout(function() {
-			App.showErrorLocation = false;
-		}, 100);
-		$('.enter-location, .button-letseat-form').hide();
-		$('.error-location').show();
-		App.track('Location Error', {
-			lat: App.loc.lat,
-			lon: App.loc.lon,
-			address: $('.location-address').val()
-		});
-	} else {
-		if ($('.enter-location').length) {
-			$('.location-address').val('');
-			$('.error-location').fadeOut(100, function() {
-				$('.enter-location, .button-letseat-form').fadeIn();
-			});
-		}
-	}
-};
-
-App.page.foodDelivery = function() {
-	if (!App.restaurants.list){
-		App.foodDelivery.forceProcess = true;
-		App.foodDelivery.preProcess();
-		return;
-	}
-	App.page.foodDelivery.load();
-};
-
-App.page.restaurant = function(id) {
-
-	App.currentPage = 'restaurant';
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-	$( '.nav-back' ).addClass( 'nav-back-show' );
-
-	App.cartHighlightEnabled = false;
-
-	$('.content').addClass('smaller-width');
-	$('.content').removeClass('short-meal-list');
-	
-	if ( !App.loc.lat ) {
-		App.loc.lat = ( $.cookie('location_lat') ) ? parseFloat( $.cookie('location_lat') ) : App.config.user.location_lat;
-	}
-	if ( !App.loc.lon ) {
-		App.loc.lon = ( $.cookie('location_lon') ) ? parseFloat( $.cookie('location_lon') ) : App.config.user.location_lon;
-	}
-
-	App.cache('Restaurant', id, function() {
-		if (App.restaurant && App.restaurant.permalink != id) {
-			App.cart.resetOrder();
-		}
-
-		App.restaurant = this;		
-		var community = App.getCommunityById(App.restaurant.id_community);
-
-		App.showPage({
-			tracking: {
-				title: 'Restaurant page loaded',
-				data: {
-					restaurant: App.restaurant.name
-				}
-			},
-			page: 'restaurant',
-			title: App.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton',
-			data: {
-				restaurant: App.restaurant,
-				presets: App.config.user.presets,
-				user: App.config.user,
-				community: community,
-				form: {
-					tip: App.order.tip,
-					name: App.config.user.name,
-					phone: App.phone.format(App.config.user.phone),
-					address: App.config.user.address || App.loc.enteredLoc,
-					notes: (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) ? App.config.user.presets[App.restaurant.id_restaurant].notes : '',
-					card: {
-						number: App.config.user.card,
-						month: App.config.user.card_exp_month,
-						year: App.config.user.card_exp_year
-					}
-				}
-			}
-		});
-
-		if (App.cart.hasItems()) {
-			App.cart.reloadOrder();
-		} else if (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) {
-			try {
-				App.cart.loadOrder(App.config.user.presets[App.restaurant.id_restaurant]);
-			} catch (e) {
-				App.cart.loadOrder(App.restaurant.preset());
-			}
-		} else {
-			App.cart.loadOrder(App.restaurant.preset());
-		}
-
-		// As the div restaurant-items has position:absolute this line will make sure the footer will not go up.
-		$('.body').css({
-			'min-height': $('.restaurant-items').height()
-		});
-
-		setTimeout(function() {
-			var total = App.cart.updateTotal();
-			App.suggestion.init();
-		},200);
-
-		App.cartHighlightEnabled = false;
-	
-		if (App.order['pay_type'] == 'cash') {
-			App.trigger.cash();
-		} else {
-			App.trigger.credit();
-		}
-	
-		if (App.order['delivery_type'] == 'takeout' || restaurant.delivery != '1') {
-			App.trigger.takeout();
-		} else {
-			App.trigger.delivery();
-		}
-	
-		if (!App.config.user.id_user) {
-			App.config.user.address = App.loc.enteredLoc;
-			App.loc.enteredLoc = '';
-		}
-		
-	});
-
-};
-
-
-/**
- * Order page. displayed after order, or at order history
- */
-App.page.order = function(id) {
-
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-	$( '.nav-back' ).addClass( 'nav-back-show' );
-
-	if (App.justCompleted) {
-		App.justCompleted = false;
-	}
-
-	$('.content').addClass('smaller-width');
-	$('.main-content').css('width','auto');
-	
-	App.cache('Order', id, function() {
-		var order = this;
-		
-		if (!order.uuid) {
-			History.replaceState({},'Crunchbutton','/orders');
-			return;
-		}
-		
-		App.cache('Restaurant',order.id_restaurant, function() {
-			var restaurant = this;
-
-			App.showPage({
-				title: 'Crunchbutton - Your Order',
-				page: 'order',
-				data: {
-					order: order,
-					restaurant: restaurant,
-					user: App.user
-				}
-			});
-			
-		});
-	});
-};
-
-
-/**
- * Legal page. loaded from xhr.
- */
-App.page.legal = function() {
-	App.currentPage = 'legal';
-	$.getJSON('/api/legal',function(json) {
-		$('.main-content').html(json.data);
-		App.refreshLayout();
-	});
-};
-
-
-/**
- * Help page. loaded from xhr.
- */
-App.page.help = function() {
-	App.currentPage = 'help';
-	$.getJSON('/api/help',function(json) {
-		$('.main-content').html(json.data);
-		App.refreshLayout();
-	});
-};
-
-
-/**
- * Order page. only avaiable after a user has placed an order or signed up.
- * @todo: change to account page
- */
-App.page.orders = function() {
-	if (!App.config.user.id_user) {
-		History.pushState({}, 'Crunchbutton', '/');
-		return;
-	}
-
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-	$( '.nav-back' ).addClass( 'nav-back-show' );
-
-	$.getJSON('/api/user/orders',function(json) {
-		App.showPage({
-			title: 'Crunchbutton - Your Account',
-			page: 'orders',
-			data: {
-				orders: json,
-				user: App.user
-			}
-		});
-	});
-
-	App.refreshLayout();
-};
-
-
 /**
  * Router init
  * @todo replace with router
@@ -1335,9 +1075,13 @@ App.loc = {
 	},
 	setFormattedLoc: function(results, raw) {
 
+
 		if (raw) {
 			App.loc.reverseGeocodeCity = raw;
 		} else {
+			if (!results) {
+				return;
+			}
 			switch (results[0].types[0]) {
 				default:
 				case 'administrative_area_level_1':
@@ -1359,6 +1103,10 @@ App.loc = {
 		
 		// Get the city's name
 		App.loc.city_name = null;
+		
+		if (!results) {
+			return;
+		}
 		for (var x = 0; x < results.length; x++) {
 			for (var i = 0; i < results[x].address_components.length; i++) {
 				for (var j = 0; j < results[x].address_components[i].types.length; j++) {
@@ -1536,28 +1284,27 @@ App.trigger = {
  */
 $(function() {
 
-
-	$('.signout-button').live('click', function() {
+	$(document).on('click', '.signout-button', function() {
 		App.signin.signOut();
 	});
 
-	$('.signup-add-facebook-button').live('click', function() {
+	$(document).on('click', '.signup-add-facebook-button', function() {
 		App.signin.facebook.login();
 	});
 
-	$('.change-location-inline').live('click', function() {
+	$(document).on('click', '.change-location-inline', function() {
 		App.forceHome = true;
 		App.showErrorLocation = false;
 		App.loadHome();
 		$('input').blur();
 	});
 
-	$('.button-letseat-formform').live('submit', function () {
+	$(document).on('click', '.button-letseat-formform', function() {
 		$('.button-letseat-form').click();
 		return false;
 	});
 
-	$('.button-letseat-form').live('click', function() {
+	$(document).on('click', '.button-letseat-form', function() {
 		
 		var complete = function() {
 			var closest = App.loc.getClosest();
@@ -1596,31 +1343,31 @@ $(function() {
 		}
 	});
 
-	$('.delivery-toggle-delivery').live('click',function() {
+	$(document).on('click', '.delivery-toggle-delivery', function() {
 		App.trigger.delivery();
 		App.track('Switch to delivery');
 	});
 
-	$('.delivery-toggle-takeout').live('click',function() {
+	$(document).on('click', '.delivery-toggle-takeout', function() {
 		App.trigger.takeout();
 		App.track('Switch to takeout');
 	});
 
-	$('.pay-toggle-credit').live('click',function() {
+	$(document).on('click', '.pay-toggle-credit', function() {
 		App.trigger.credit();
 		App.track('Switch to card');
 	});
 
-	$('.pay-toggle-cash').live('click',function() {
+	$(document).on('click', '.pay-toggle-cash', function() {
 		App.trigger.cash();
 		App.track('Switch to cash');
 	});
 
-	$('.location-detect').live('click', function() {
+	$(document).on('click', '.location-detect', function() {
 		App.loc.getLocation();
 	});
-
-	$('.location-detect').live({
+	
+	$(document).on({
 		mousedown: function() {
 			$(this).addClass('location-detect-click');
 		},
@@ -1633,9 +1380,8 @@ $(function() {
 		touchend: function() {
 			$(this).removeClass('location-detect-click');
 		}
-	});
-
-	$('.meal-item-content').live({
+	}, '.location-detect');
+	$(document).on({
 		mousedown: function() {
 			if (App.busy.isBusy()) {
 				return;
@@ -1701,9 +1447,10 @@ $(function() {
 			}
 			$(this).removeClass('meal-item-down');
 		}
-	});
+	}, '.meal-item-content');
 
-	$('.resturant-dish-container a').live('click',function() {
+
+	$(document).on('click', '.resturant-dish-container a', function() {
 		if ($(this).attr('data-id_dish')) {
 			App.cart.add($(this).attr('data-id_dish'));
 
@@ -1712,36 +1459,38 @@ $(function() {
 		}
 	});
 
-	$('.your-orders a').live('click',function() {
+	$(document).on('click', '.your-orders a', function() {
 		if ($(this).attr('data-id_order')) {
 			History.pushState({},'Crunchbutton - Your Order', '/order/' + $(this).attr('data-id_order'));
 		}
 	});
 
-	$('.cart-button-remove').live('click',function() {
+	$(document).on('click', '.cart-button-remove', function() {
 		App.cart.remove($(this).closest('.cart-item'));
 	});
 
-	$('.cart-button-add').live('click',function() {
+	$(document).on('click', '.cart-button-add', function() {
 		App.cart.clone($(this).closest('.cart-item'));
 	});
 
-	$('.cart-item-config a').live('click',function() {
+	$(document).on('click', '.cart-item-config a', function() {
 		App.cart.customize($(this).closest('.cart-item'));
 	});
 
-	$('.button-submitorder').live('click',function() {
+	$(document).on('click', '.button-submitorder', function() {
 		App.cart.submit($(this));
 	});
-	$('.button-submitorder-form').live('click',function() {
+	
+	$(document).on('click', '.button-submitorder-form', function() {
 		App.cart.submit($(this),true);
 	});
 
-	$('.button-deliver-payment, .dp-display-item a').live('click',function() {
+	$(document).on('click', '.button-deliver-payment, .dp-display-item a', function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();
 	});
 
+	/*
 	$('.button-bottom').live({
 		mousedown: function() {
 			$(this).addClass('button-bottom-click');
@@ -1758,46 +1507,28 @@ $(function() {
 			$(this).removeClass('button-bottom-click');
 		}
 	});
+	*/
 
-	$('.cart-customize-check, .cart-customize-select').live('change',function() {
+	$(document).on('click', '.cart-customize-check, .cart-customize-select', function() {
 		App.cart.customizeItem($(this));
 	});
 
-	$('.cart-item-customize-item label').live('click', function() {
+	$(document).on('click', '.cart-item-customize-item label', function() {
 		$(this).prev('input').click();
 	});
 
-	$('[name="pay-tip"]').live('change',function() {
+	$(document).on('click', '[name="pay-tip"]', function() {
 		App.order.tip = $(this).val();
 		App.order.tipHasChanged = true;
 		var total = App.cart.total();
 		App.cart.updateTotal();
 	});
 
-	$('.nav-back').live('click',function() {
+	$(document).on('click', '.nav-back', function() {
 		History.back();
-		return;
-		switch (App.currentPage) {
-			case 'restaurant':
-				if (App.community) {
-					History.pushState({}, 'Crunchbutton - ' + App.community.name, '/' + App.community.permalink);
-				}
-				break;
-
-			case 'order':
-				App.loadRestaurant(App.order.id_restaurant);
-				break;
-
-			case 'community':
-				break;
-
-			case 'legal':
-				History.back();
-				break;
-		}
 	});
 
-	$('.link-home').live('click',function() {
+	$(document).on('click', '.link-home', function() {
 		if (App.hasLocation) {
 			App.foodDelivery.preProcess();
 		} else {
@@ -1807,23 +1538,23 @@ $(function() {
 		}
 	});
 
-	$('[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]').live('change', function() {
+	$(document).on('click', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
 		App.order.cardChanged = true;
 	});
 
-	$('.link-help').live('click',function(e) {
+	$(document).on('click', '.link-help', function() {
 		History.pushState({}, 'Crunchbutton - About', '/help');
 	});
 
-	$('.link-legal').live('click',function() {
+	$(document).on('click', '.link-legal', function() {
 		History.pushState({}, 'Crunchbutton - Legal', '/legal');
 	});
 
-	$('.link-orders').live('click',function() {
+	$(document).on('click', '.link-orders', function() {
 		History.pushState({}, 'Crunchbutton - Orders', '/orders');
 	});
 
-	$('[name="pay-phone"]').live('keyup', function(e) {
+	$(document).on('keyup', '[name="pay-phone"]', function() {
 		$(this).val( App.phone.format($(this).val()) );
 	});
 
@@ -1840,21 +1571,22 @@ $(function() {
 		$.getJSON('/api/config', haveConfig);
 	}
 
-	$('.cart-summary').live('click', function() {
+	$(document).on('click', '.cart-summary', function() {
 		$('body').scrollTop($('.cart-items').position().top-80);
 	});
 
 	var unHideBars = function() {
 		$('[data-position="fixed"]').show();
 	}
-	$('select, input, textarea').live('focus', function() {
+	$(document).on('focus', 'select, input, textarea', function() {
+
 		if ($(window).width() >= 768 || navigator.userAgent.toLowerCase().indexOf('android') > -1 || $(this).hasClass('location-address')) {
 			return;
 		}
 		clearTimeout(App.unHideBars);
 		$('[data-position="fixed"]').hide();
 	});
-	$('select, input, textarea').live('blur', function() {
+	$(document).on('blur', 'select, input, textarea', function() {
 		if ($(window).width() >= 768) {
 			return;
 		}
@@ -1868,23 +1600,23 @@ $(function() {
 		}
 	};
 
-	$('[name="pay-address"]').live('blur', function() {
+	$(document).on('blur', '[name="pay-address"]', function() {
 		clearTimeout(App.checkForDistance);
 		App.checkForDistance = setTimeout(checkForDistance, 100);
 	});
 
-	$('[name="pay-address"]').live('change', function() {
+	$(document).on('change', '[name="pay-address"]', function() {
 		clearTimeout(App.checkForDistance);
 		App.checkForDistance = setTimeout(checkForDistance, 1000);
 	});
-
-	$('.config-icon').live('click', function() {
+	
+	$(document).on('click', '.config-icon', function() {
 		App.forceHome = true;
 		App.loadHome();
 		$('input').blur();
 	});
 
-	$('[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]').live('change', function() {
+	$(document).on('change', '[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]', function() {
 		App.config.user.name = $('[name="pay-name"]').val();
 		App.config.user.phone = App.phone.format($('[name="pay-phone"]').val());
 		App.config.user.address = $('[name="pay-address"]').val();
@@ -1899,961 +1631,6 @@ $(function() {
 	App.modal.shield.init();
 });
 
-/**************************
-*  Suggestion's methods
-**************************/
-
-App.suggestion.init = function(){
-
-	$( '.suggestion-link' ).live( 'click', function() {
-		App.suggestion.show();
-		App.suggestion.itIsSending = false;
-	} );
-
-	$( '.suggestion-form-button' ).live( 'click', function( e ){
-		App.suggestion.send();
-	} );
-
-	$( '.suggestion-form' ).submit(function() {
-		return false;
-	} );
-
-	// ToolTip
-	$( '.tooltip-help-mobile-touchable' ).live( 'click', function( e ) {
-		if( $( '.tooltip-help-content-mobile' ).is(':visible') ){
-			return;
-		}
-		setTimeout( function(){
-			$( '.tooltip-help-content-mobile' ).show();
-		}, 100 );
-	} );
-
-	$( '.tooltip-help-desktop' ).live( 'click', function() {
-		if( $( '.tooltip-help-content-desktop' ).is(':visible') ){
-			return;
-		}
-		setTimeout( function(){
-			$( '.tooltip-help-content-desktop' ).show();
-		}, 100 );
-	} );
-	
-	$( '.tooltip-help-content' ).live( 'click', function( e ){
-		e.stopPropagation();
-	} );
-
-	$( 'body' ).live( 'click', function(){
-		$( '.tooltip-help-content-mobile:visible' ).hide();
-		$( '.tooltip-help-content-desktop:visible' ).hide();
-	} );
-}
-
-App.suggestion.html = function(){
-	return '' +
-	'<div class="suggestion-container">' +
-		'<div class="suggestion-form-container">' +
-			'<form class="suggestion-form">' +
-				'<h1>What do you suggest?</h1>' +
-				'<input type="text" maxlength="250" name="suggestion-name" tabindex="10" />' +
-				'<div class="divider"></div>' +
-				'<a href="javascript:;" class="suggestion-form-button">Suggest</a>' +
-				'<div class="divider"></div>' +
-			'</form>' +
-			'<div class="suggestion-message">' +
-			'</div>' +
-		'</div>' +
-		'<div class="suggestion-form-tip">' +
-			'Crunchbutton "curates" menus. <br/>' +
-			'We\'ve curated just the top food here. <br/>' +
-			'You can suggest food, and, if it\'s really good, you\'ll see it on the menu soon.' +
-		'</div>' +
-	'</div>';
-}
-
-App.suggestion.send = function(){
-
-	if( $.trim( $( 'input[name=suggestion-name]' ).val() ) == '' ){
-		alert( 'Please enter the food\'s name.' );
-		$( 'input[name=suggestion-name]' ).focus();
-		return;
-	}
-
-	var suggestionURL = App.service + 'suggestion/new';
-
-	var data = {};
-	data[ 'type' ] = 'dish';
-	data[ 'status' ] = 'new';
-	data[ 'id_user' ] = ( App.config.user.id_user ) ? App.config.user.id_user : 'null';
-	data[ 'id_restaurant' ] = App.restaurant.id;
-	data[ 'id_community' ] = App.restaurant.id_community;
-	data[ 'name' ] = $( 'input[name=suggestion-name]' ).val();
-
-	if( !App.suggestion.itIsSending ){
-		App.suggestion.itIsSending = true;
-		$.ajax({
-			type: "POST",
-			dataType: 'json',
-			data: data,
-			url: suggestionURL,
-			success: function(content) {
-				App.suggestion.message( '<h1>Awesome, thanks!!</h1>' +
-																'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at ' + App.callPhone( '800-242-1444' ) +  '</div>' );
-			}
-		});
-	}
-}
-
-App.suggestion.link = function(){
-	return '<div class="suggestion-link-container">' +
-						'<div class="suggestion-link-title">Really want something else?</div>' +
-						'<a href="javascript:;" class="suggestion-link">Suggest other food</a>' +
-					'</div>';
-}
-
-App.suggestion.message = function( msg ){
-	/* Hides the form and shows the message box */
-	$( '.suggestion-form' ).hide();
-	$( '.suggestion-form-tip' ).hide();
-	$( '.suggestion-message' ).show();
-	$( '.suggestion-message' ).html( msg );
-}
-
-App.suggestion.show = function(){
-	/* Resets the default values */
-	$( 'input[name=suggestion-name]' ).val( '' );
-	/* Shows the form and hides the message box  */
-	$( '.suggestion-form' ).show();
-	$( '.suggestion-form-tip' ).show();
-	$( '.suggestion-message' ).hide();
-	/* Shows the modal */
-	setTimeout( function(){
-			/* Shows the shield */
-			App.modal.shield.show();
-			$( '.suggestion-container' )
-				.dialog( {
-					dialogClass: 'modal-fixed-dialog',
-					width: App.modal.contentWidth(),
-					close: function( event, ui ) { App.modal.shield.close(); },
-					open: function( event, ui ) { $( '.suggestion-name' ).focus(); }
-				} );
-		}, 100 );
-}
-
-App.suggestion.tooltipContainer = function( device ){
-	var help = 'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' +
-											'If you really want something else, suggest it below.'
-
-	return '<span class="tooltip-help-' + device + '-container">' + 
-											( device == 'mobile' ? '<span class="tooltip-help-mobile-touchable">' : '' ) + 
-												'<span class="tooltip-help tooltip-help-' + device + '"><span>?</span>' + 
-											( device == 'mobile' ? '</span>' : '' ) + '</span>' +
-											'<div class="tooltip-help-content tooltip-help-content-' + device + '">' +
-												help +
-											'</div></span>';
-}
-
-/**************************
-*  Signin's methods
-**************************/
-App.signin.init = function(){
-
-	$( '.wrapper' ).append( App.signin.html() );
-
-	$( '.signin-facebook-button' ).live( 'click', function( e ){
-		App.signin.facebook.login();
-	} );
-
-	$( '.signin-form-button' ).live( 'click', function( e ){
-		App.signin.sendForm();
-	} );
-
-	$( '.signin-password-help' ).live( 'click', function( e ){
-		App.signin.passwordHelp.show();
-	} );
-
-	$( '.signin-password-help-back' ).live( 'click', function( e ){
-		App.signin.passwordHelp.hide();
-	} );
-
-	$( '.signin-password-help-button' ).live( 'click', function( e ){
-		App.signin.passwordHelp.sendForm();
-	} );
-
-	$( '.signin-help-form' ).submit(function() {
-		return false;
-	} );
-
-	$( '.suggestion-form' ).submit(function() {
-		return false;
-	} );
-
-	$( '.signin-icon' ).live( 'click', function() {
-		App.signin.show();
-	} );
-
-	$( '.signup-link' ).live( 'click', function() {
-		App.dialogForceStayShield = true;
-		App.signup.show( false );
-		$( '.signin-container' ).dialog( 'close' );
-	} );
-
-	$( '.sign-in-icon' ).live( 'click', function() {
-		if( App.config.user.id_user ){
-			History.pushState({}, 'Crunchbutton - Orders', '/orders');
-		} else {
-			App.signin.show();
-		}
-	} );
-
-	$( '.signout-icon' ).live( 'click', function() {
-		App.signin.signOut();
-	} );
-
-	$( '.signin-user' ).live( 'click', function() {
-		History.pushState({}, 'Crunchbutton - Orders', '/orders');;
-	} );
-
-	History.Adapter.bind(window,'statechange',function() {
-		App.signin.checkUser();
-	});
-
-	App.signin.facebook.init();
-}
-
-App.signin.html = function(){
-	return '' +
-	'<div class="signin-container">' +
-		'<div class="signin-form-container">' +
-			'<div class="signin-form-options">' +
-				'<form class="signin-form">' +
-					'<h1 class="signup-link">Sign up</h1>' +
-					'<h1>Sign in</h1>' +
-					'<input type="text" maxlength="250" name="signin-email" placeholder="email or phone" tabindex="10" />' +
-					'<div class="divider"></div>' +
-					'<input type="password" maxlength="250" name="signin-password" placeholder="password" tabindex="10" />' +
-					'<div class="divider"></div>' +
-					'<div class="signin-error">' +
-						'Your email or password were incorrect.' +
-					'</div>' +
-					'<a href="javascript:;" class="signin-password-help">Password help?</a>' +
-					'<a href="javascript:;" class="signin-form-button">Log in</a>' +
-					'<div class="divider"></div>' +
-				'</form>' +
-				'<div class="signin-facebook-container">' +
-					'<div class="signin-facebook">' +
-						'<a href="javascript:;" class="signin-facebook-button">' +
-							'<span class="signin-facebook-icon"></span>' +
-							'<span class="signin-facebook-text">Login with Facebook</span>' +
-							'<div class="divider"></div>' +
-						'</a>' +
-					'</div>' +
-					'<div class="signin-facebook-message">' +
-						'Just a sec...' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-			'<div class="signin-help-container">' +
-				'<form class="signin-help-form">' +
-					'<h1>Password help?</h1>' +
-					'<input type="text" maxlength="250" name="password-help-email" placeholder="email or phone" tabindex="10" />' +
-					'<div class="divider"></div>' +
-					'<div class="password-help-error"></div>' +
-					'<a href="javascript:;" class="signin-password-help-back">Never mind</a>' +
-					'<a href="javascript:;" class="signin-password-help-button">Reset</a>' +
-					'<div class="divider"></div>' +
-				'</form>' +
-				'<div class="signin-password-help-message"></div>' +
-			'</div>' +
-		'</div>' +
-	'</div>';
-}
-
-App.signin.sendForm = function(){
-	// Checks it fhe login is a phone
-	var login = $( 'input[name=signin-email]' ).val();
-	login = login.replace(/[^\d]*/gi,'')
-	if( !App.phone.validate( login ) ){
-		// It seems not to be a phone number, lets check if it is a email
-		login = $.trim( $( 'input[name=signin-email]' ).val() );
-		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
-			login = false;
-		}
-	}
-	if( !login ){
-		alert( 'Please enter a valid email or phone.' );
-		$( 'input[name=signin-email]' ).focus();
-		return;
-	}
-
-	if( $.trim( $( 'input[name=signin-password]' ).val() ) == '' ){
-		alert( 'Please enter your password.' );
-		$( 'input[name=signin-password]' ).focus();
-		return;
-	}
-	var email = login,
-			password = $.trim( $( 'input[name=signin-password]' ).val() ),
-			url = App.service + 'user/auth';
-	$('.signin-error').hide();
-	$.ajax( {
-		type: 'POST',
-		url: url,
-		data: { 'email' : email, 'password' : password },
-		dataType: 'json',
-		success: function( json ){
-			if( json.error ){
-				$('.signin-error').fadeIn();
-			} else{
-				App.config.user = json;
-				App.signin.checkUser();
-				$( '.signin-container' ).dialog( 'close' );
-				// If the user is at the restaurant's page - reload it
-				if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-					App.page.restaurant( App.restaurant.permalink );
-				}
-			}
-		}
-	} );
-}
-
-App.signin.signOut = function(){
-	if( confirm( 'Confirm sign out?' ) ){
-		if( App.signin.facebook.isLogged ){
-			FB.logout( function(){
-				$.getJSON('/api/logout',function(){
-					$( '.signout-icon' ).hide();
-					location.href = '/';
-				} );
-			} );
-		} else {
-			$.getJSON('/api/logout',function(){
-				$( '.signout-icon' ).hide();
-				location.href = '/';
-			} );
-		}
-	}
-}
-
-
-App.signin.facebook = {};
-App.signin.facebook.running = false;
-App.signin.facebook.init = function(){}
-App.signin.facebook.processStatus = function( session ){
-	if ( session.status === 'connected' && session.authResponse ) {
-		App.signin.facebook.isLogged = true;
-		if( App.signin.facebook.shouldAuth ){
-			FB.api( '/me', { fields: 'name' }, function( response ) {
-				if ( response.error ) {
-					return;
-				}
-				if( response.id ){
-					App.signin.facebook.shouldAuth
-					$( '.signin-facebook-message' ).show();
-					$( '.signup-facebook-message' ).show();
-					$( '.signin-facebook' ).hide();
-					$( '.signup-facebook' ).hide();
-					// Just call the user api, this will create a facebook user
-					var url = App.service + 'user/facebook';
-					if( !App.signin.facebook.running ){
-						App.signin.facebook.running = true;
-						$.ajax( {
-							type: 'GET',
-							url: url,
-							dataType: 'json',
-							success: function( json ){
-								App.signin.facebook.running = true;
-								if( json.error ){
-									if( json.error == 'facebook id already in use' ){
-										alert( 'Sorry, It seems the facebook user is already related with other user.' );
-									}
-								} else {
-									App.config.user = json;
-									App.signin.checkUser();
-								}
-								$( '.signin-container' ).dialog( 'close' );
-								$( '.signup-container' ).dialog( 'close' );
-								// If the user is at the restaurant's page - reload it
-								if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-									App.page.restaurant( App.restaurant.permalink );
-								}
-								if( App.currentPage == 'orders' ){
-									App.page.orders()								
-								}
-							}
-						} );
-					}
-				}
-			});
-		}
-	}
-}
-
-App.signin.facebook.login = function() {
-	App.signin.facebook.shouldAuth = true;
-	FB.login( App.signin.facebook.processStatus,{ scope:'email' } );
-};
-
-App.signin.show = function(){
-	App.signin.passwordHelp.hide();
-	$( '.signin-facebook-message' ).hide();
-	$( '.signin-facebook' ).show();
-	/* if( App.signin.facebook.isLogged ){
-		$( '.signin-facebook-container' ).hide();
-	} else {
-		$( '.signin-facebook-container' ).show();
-	} */
-	setTimeout( function(){
-			/* Shows the shield */
-			App.modal.shield.show();
-			$( 'input[name=signin-email]' ).val( '' );
-			$( 'input[name=signin-password]' ).val( '' );
-			$('.signin-error').hide();
-			$( '.signin-container' )
-				.dialog( {
-					dialogClass: 'modal-fixed-dialog',
-					width: App.modal.contentWidth(),
-					close: function( event, ui ) { App.modal.shield.close(); },
-					open: function( event, ui ) { $( '.signin-email' ).focus(); }
-				} );
-		}, 100 );
-}
-
-App.signin.checkUser = function(){
-	// If the user is logged
-	if( App.config.user.id_user ){
-		// $( '.signin-user' ).html( 'Hi, ' + App.config.user.name );
-		$( '.signin-user' ).show();
-		$( '.signin-icon' ).hide();
-		$( '.signout-icon' ).hide();
-		$( '.signin-box-header' ).addClass( 'signin-box-header-min' );
-	} else {
-		$( '.signin-user' ).hide();
-		$( '.signin-icon' ).show();
-		$( '.signup-icon' ).show();
-		$( '.signout-icon' ).hide();
-		$( '.signin-box-header' ).removeClass( 'signin-box-header-min' );
-	}
-	if( App.currentPage == 'home' ){
-		$( '.config-icon' ).addClass( 'config-icon-desktop-hide' );
-	} else {
-		$( '.config-icon' ).removeClass( 'config-icon-desktop-hide' );
-	}
-}
-
-App.signin.passwordHelp = {};
-
-App.signin.passwordHelp.show = function(){
-	if( $.trim( $( 'input[name=signin-email]' ).val() ) != '' ){
-		$( 'input[name=password-help-email]' ).val( $.trim( $( 'input[name=signin-email]' ).val() ) );
-	}
-	$( '.signin-password-help-button' ).show();
-	$( '.signin-password-help-back' ).show();
-	$( '.signin-help-container' ).show();
-	$( '.signin-form-options' ).hide();
-	$( '.signin-password-help-message' ).hide();
-	$( '.signin-password-help-message' ).html( '' );
-	$( 'input[name=password-help-email]' ).focus();
-}
-
-App.signin.passwordHelp.hide = function(){
-	$( '.signin-help-container' ).hide();
-	$( '.signin-form-options' ).show();
-}
-
-App.signin.passwordHelp.sendForm = function(){
-	// Checks it fhe login is a phone
-	var login = $( 'input[name=password-help-email]' ).val();
-	login = login.replace(/[^\d]*/gi,'')
-	if( !App.phone.validate( login ) ){
-		// It seems not to be a phone number, lets check if it is a email
-		login = $.trim( $( 'input[name=password-help-email]' ).val() );
-		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
-			login = false;
-		}
-	}
-	if( !login ){
-		alert( 'Please enter a valid email or phone.' );
-		$( 'input[name=password-help-email]' ).focus();
-		return;
-	}
-	$( '.password-help-error' ).html( '' );
-	$( '.password-help-error' ).hide();
-	var url = App.service + 'user/reset';
-	$.ajax( {
-		type: 'POST',
-		url: url,
-		data: { 'email' : login },
-		dataType: 'json',
-		success: function( json ){
-			if( json.error ){
-				if( json.error == 'user is not registred' ){
-					$( '.password-help-error' ).html( 'Sorry, that email/phone is not registered with us.' );
-					$( '.password-help-error' ).fadeIn();
-					$( 'input[name=password-help-email]' ).focus()
-				}
-			} else {
-				if( json.success = 'success' ){
-					$( '.signin-password-help-message' ).show();
-					$( '.signin-password-help-button' ).hide();
-					$( '.signin-password-help-back' ).hide();
-					$( '.signin-password-help-message' ).html( 'You will receive a code to reset your password! It will expire in 24 hours.' );
-				}
-			}
-		}
-	} );
-}
-
-App.signin.passwordHelp.reset = {};
-
-App.signin.passwordHelp.reset.init = function(){
-	setTimeout( function(){
-		/* Shows the shield */
-		App.modal.shield.show();
-		$( '.password-reset-container' )
-			.dialog( {
-				dialogClass: 'modal-fixed-dialog',
-				width: App.modal.contentWidth(),
-				close: function( event, ui ) { App.modal.shield.close(); App.signin.passwordHelp.reset.close(); },
-				open: function( event, ui ) { $( 'input[name=password-reset-code]' ).focus(); }
-			} );
-		$( '.password-reset-code-button' ).live( 'click', function(){
-			App.signin.passwordHelp.reset.sendForm();
-		} );
-		$( '.password-change-button' ).live( 'click', function(){
-			App.signin.passwordHelp.reset.change();
-		} );
-		$( '.password-reset-form' ).submit(function() {
-			return false;
-		} );
-		$( '.password-change-form' ).submit(function() {
-			return false;
-		} );
-	}, 100 );
-}
-
-App.signin.passwordHelp.reset.sendForm = function(){
-	$( '.password-reset-code-error' ).html( '' );
-	$( '.password-reset-code-error' ).hide();
-	var code = $.trim( $( 'input[name=password-reset-code]' ).val() );
-	if( code == '' ){
-		alert( 'Please enter the reset code.' );
-		$( 'input[name=password-reset-code]' ).focus();
-		return;
-	}
-	var url = App.service + 'user/code-validate';
-	$.ajax( {
-		type: 'POST',
-		url: url,
-		data: { 'code' : code },
-		dataType: 'json',
-		success: function( json ){
-			if( json.error ){
-				if( json.error == 'invalid code' ){
-					$( '.password-reset-code-error' ).html( 'Sorry, this code is invalid.' );
-				}
-				if( json.error == 'expired code' ){
-					$( '.password-reset-code-error' ).html( 'Sorry, this code is expired.' );
-				}
-				$( '.password-reset-code-error' ).fadeIn();
-				$( 'input[name=password-reset-code]' ).focus()
-			} else {
-				if( json.success = 'valid code' ){
-					$( '.password-reset-block' ).hide();
-					$( '.password-change-block' ).show();
-					$( 'input[name=password-new]' ).focus();
-				}
-			}
-		}
-	} );
-}
-
-App.signin.passwordHelp.reset.change = function(){
-	var code = $.trim( $( 'input[name=password-reset-code]' ).val() );
-	var password = $.trim( $( 'input[name=password-new]' ).val() );
-	if( password == '' ){
-		alert( 'Please enter your password.' );
-		$( 'input[name=password-new]' ).focus();
-		return;
-	}
-	var url = App.service + 'user/change-password';
-	$.ajax( {
-		type: 'POST',
-		url: url,
-		data: { 'code' : code, 'password' : password },
-		dataType: 'json',
-		success: function( json ){
-			if( json.error ){
-				if( json.error == 'invalid code' ){
-					$( '.password-change-error' ).html( 'Sorry, this code is invalid.' );
-				}
-				if( json.error == 'expired code' ){
-					$( '.password-change-error' ).html( 'Sorry, this code is expired.' );
-				}
-				$( '.password-change-error' ).fadeIn();
-			} else {
-				if( json.success = 'password changed' ){
-					$( '.password-change-message' ).fadeIn();
-					$( '.password-change-block' ).find( 'h1' ).html( 'Done!' );
-					$( '.password-change-message' ).html( 'Your password has changed!' );
-					App.signin.passwordHelp.hasChanged = true;
-				}
-			}
-			$( 'input[name=password-new]' ).hide();
-			$( '.password-change-button' ).hide();
-		}
-	} );
-}
-
-App.signin.passwordHelp.reset.close = function(){
-	if( App.signin.passwordHelp.hasChanged ){
-		location.href = '/';
-	}
-}
-
-App.signin.passwordHelp.reset.html = function( path ){
-	var code = ( path.length > 1 ) ? ( path[ 1 ] ? path[ 1 ] : '' ) : '';
-	return '' +
-	'<div class="password-reset-container">' +
-			'<div class="password-reset-block">' +
-				'<form class="password-reset-form">' +
-					'<h1>Password reset</h1>' +
-					'<input type="text" maxlength="250" name="password-reset-code" value="' + code + '" placeholder="enter the reset code" tabindex="10" />' +
-					'<div class="divider"></div>' +
-					'<div class="password-reset-code-error"></div>' +
-					'<a href="javascript:;" class="password-reset-code-button">Reset</a>' +
-					'<div class="divider"></div>' +
-				'</form>' +
-			'</div>' +
-			'<div class="password-change-block">' +
-				'<form class="password-change-form">' +
-					'<h1>Type your new password</h1>' +
-					'<input type="password" maxlength="250" name="password-new" value="" placeholder="password" tabindex="10" />' +
-					'<div class="divider"></div>' +
-					'<div class="password-change-error"></div>' +
-					'<a href="javascript:;" class="password-change-button">Change</a>' +
-					'<div class="divider"></div>' +
-					'<div class="password-change-message"></div>' +
-				'</form>' +
-			'</div>' +
-		'</div>' +
-	'</div>';
-}
-
-/**************************
-*  Signup's methods
-**************************/
-App.signup = {};
-
-App.signup.init = function(){
-
-	$('.signup-add-password-button').live('click', function() {
-		App.signup.show(false);
-	});
-
-	$( '.wrapper' ).append( App.signup.html() );
-
-	$( '.signup-icon' ).live( 'click', function(){
-		App.signup.show( false );
-	} );
-
-	$( '.signup-form-button' ).live( 'click', function(){
-		App.signup.sendForm();
-	} );
-
-	$( '.signup-facebook-button' ).live( 'click', function(){
-		App.signin.facebook.login();
-	} );
-
-	$( '.signin-link' ).live( 'click', function(){
-		App.dialogForceStayShield = true;
-		App.signin.show();
-		$( '.signup-container' ).dialog( 'close' );
-	} );
-
-	$( '.signup-form' ).submit(function() {
-		return false;
-	} );
-
-}
-
-App.signup.html = function(){
-	return '' +
-	'<div class="signup-container">' +
-		'<div class="signup-form-container">' +
-			'<div class="signup-form-options">' +
-				'<form class="signup-form">' +
-					'<h1 class="signin-link">Sign in</h1>' +
-					'<h1>Sign up</h1>' +
-					'<input type="text" maxlength="250" name="signup-email" placeholder="email address" tabindex="10" />' +
-					'<div class="divider"></div>' +
-					'<input type="password" maxlength="250" name="signup-password" placeholder="password" tabindex="10" />' +
-					'<div class="divider"></div>' +
-					'<a href="javascript:;" class="signup-form-button">Save</a>' +
-					'<div class="divider"></div>' +
-					'<div class="signup-error"></div>' +
-				'</form>' +
-				'<div class="signup-facebook-container">' +
-					'<div class="signup-facebook">' +
-						'<a href="javascript:;" class="signup-facebook-button">' +
-							'<span class="signup-facebook-icon"></span>' +
-							'<span class="signup-facebook-text">Signup with Facebook</span>' +
-							'<div class="divider"></div>' +
-						'</a>' +
-					'</div>' +
-					'<div class="signup-facebook-message">' +
-						'Just a sec...' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-			'<div class="signup-success-container">' +
-				'<h1>Well done!</h1>' +
-				'<div class="signup-success">' +
-					'Now you can use your <strong class="success-phone"></strong>!' +
-				'</div>' +
-			'</div>' +
-		'</div>' +
-	'</div>';
-}
-
-App.signup.show = function( justFacebook ){
-	$( '.signup-facebook' ).show();
-	$( '.signup-facebook-message' ).hide();
-	if( App.config.user.facebook ){
-		$( '.signup-facebook-container' ).hide();
-	} else {
-		$( '.signup-facebook-container' ).show();
-	}
-	setTimeout( function(){
-			/* Shows the shield */
-			App.modal.shield.show();
-			// $( 'input[name=signup-email]' ).val( App.config.user.phone );
-			$( 'input[name=signup-password]' ).val( '' );
-			$( '.signup-form-options' ).show();
-			$( '.signup-success-container' ).hide();
-			if( justFacebook ){
-				$( '.signup-form' ).hide();
-			} else {
-				$( '.signup-form' ).show();
-			}
-			$( '.signin-error' ).hide();
-			$( '.signup-container' )
-				.dialog( {
-					dialogClass: 'modal-fixed-dialog',
-					width: App.modal.contentWidth(),
-					close: function( event, ui ) { App.modal.shield.close(); },
-					open: function( event, ui ) { $( '.signup-phone' ).focus(); }
-				} );
-		}, 100 );
-}
-
-App.signup.checkLogin = function(){
-	var login = $( 'input[name=pay-phone]' ).val().replace(/[^\d]*/gi,'');
-	if( App.phone.validate( login ) ){
-		var url = App.service + 'user/verify/' + login	
-		$.getJSON( url, function( json ) {
-			if( json.error ){
-				if( json.error == 'user exists' ){
-					$( 'input[name=pay-password]' ).val( '' );
-					$( '.password-field' ).hide();
-				}
-			} else {
-				$( '.password-field' ).fadeIn();
-				$( 'input[name=pay-password]' ).val( '' );
-				$( 'input[name=pay-password]' ).focus();
-			}
-		} );
-	} else {
-		$( 'input[name=pay-password]' ).val( '' );
-		$( '.password-field' ).hide();
-	}
-}
-
-App.signup.sendForm = function(){
-	login = $.trim( $( 'input[name=signup-email]' ).val() );
-	if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
-		login = false;
-	}
-	if( !login ){
-		alert( 'Please enter a valid email email address.' );
-		$( 'input[name=signup-email]' ).focus();
-		return;
-	}
-
-	if( $.trim( $( 'input[name=signup-password]' ).val() ) == '' ){
-		alert( 'Please enter your password.' );
-		$( 'input[name=signup-password]' ).focus();
-		return;
-	}
-	var password = $.trim( $( 'input[name=signup-password]' ).val() ),
-			url = App.service + 'user/create/local';
-	$( '.signup-error' ).hide();
-	$.ajax( {
-		type: 'POST',
-		url: url,
-		data: { 'email' : login, 'password' : password },
-		dataType: 'json',
-		success: function( json ){
-			if( json.error ){
-				if( json.error == 'user exists' ){
-					$('.signup-error').html( 'It seems that the email is already registered!' );
-				}
-				$('.signup-error').fadeIn();
-			} else{
-				App.config.user = json;
-				$( '.success-phone' ).html( login );
-				$( '.signup-call-to-action' ).hide();
-				$( '.signup-form-options' ).hide();
-				$( '.signup-success-container' ).show();
-				App.signin.checkUser();
-				// If the user is at the restaurant's page - reload it
-				if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-					App.page.restaurant( App.restaurant.permalink );
-				}
-			}
-		}
-	} );
-}
-
-
-/**
- * FoodDelivery's methods
- *
- * @author		pererinha
- */
-App.foodDelivery = {};
-
-// Before we change the url we need to make sure that there are restaurants at the typed place.
-App.foodDelivery.preProcess = function() { 
-	if( !App.foodDelivery.positions() ){
-		return;
-	}
-
-	var url = App.service + 'restaurants?lat=' + App.loc.lat + '&lon=' + App.loc.lon;
-	App.restaurants.list = false;
-
-	$.getJSON( url ,function(json) {	
-
-		// Flag to make sure that this function will not be run twice.
-		App.foodDelivery.IsLoading = true;
-		// Reset the flag to make sure that this function will not be run twice.
-		setTimeout( function(){
-			App.foodDelivery.IsLoading = false;	
-		}, 200 );
-
-		// There is no restaurant near to the user. Go home and show the error.
-		if( typeof json['restaurants'] == 'undefined' || json['restaurants'].length == 0 ){
-			App.forceHome = true;
-			App.showErrorLocation = true;
-			App.loadHome();
-			$('input').blur();
-			return;
-		} else {
-			App.restaurants.list = [];
-			for (var x in json.restaurants) {
-				var res = new Restaurant(json.restaurants[x]);
-				res.open();
-				App.restaurants.list[App.restaurants.list.length] = res;
-			};
-			
-			App.restaurants.list.sort(sort_by({
-			    name: '_open',
-			    reverse: true
-			}, {
-			    name: '_weight',
-			    primer: parseInt,
-			    reverse: true
-			}));
-			
-			console.log(App.restaurants.list);
-			if( App.foodDelivery.forceProcess ){
-				App.foodDelivery.forceProcess = false;
-				App.page.foodDelivery.load();
-			}
-			var loc = '/' + App.restaurants.permalink;
-			History.pushState({}, 'Crunchbutton', loc);		
-		}
-	}	);
-}
-
-App.foodDelivery.positions = function(){
-	// Make sure that the positons were setted up.
-	App.loc.lat = ( App.loc.lat && App.loc.lat != 0 ) ? App.loc.lat : parseFloat( $.cookie( 'location_lat' ) );
-	App.loc.lon = ( App.loc.lon && App.loc.lon != 0 ) ? App.loc.lon : parseFloat( $.cookie( 'location_lon' ) );
-
-	App.loc.prep = ( App.loc.prep && App.loc.prep != '' ) ? App.loc.prep : $.cookie( 'location_prep' );
-	App.loc.name_alt = ( App.loc.name_alt && App.loc.name_alt != '' ) ? App.loc.name_alt : $.cookie( 'location_name_alt' );
-
-	// If we don't have the community try to load the place name.
-	if( !App.loc.prep || !App.loc.name_alt ) {
-		App.foodDelivery.loadPlaceName();
-	}
-
-	// Go home you don't have lat neither lon
-	if( !App.loc.lat || !App.loc.lon) {
-		App.forceHome = true;
-		App.showErrorLocation = true;
-		App.loadHome();
-		$('input').blur();
-		return false;
-	} 
-	return true;
-}
-
-App.foodDelivery.loadPlaceName = function() {
-	if (google.maps.Geocoder){
-		App.loc.reverseGeocode(function() {
-			App.foodDelivery.tagLine();
-			App.foodDelivery.title();
-		});
-	} else {
-		setTimeout( function(){
-			App.foodDelivery.loadPlaceName();
-		}, 100 );
-	}
-}
-
-App.foodDelivery.tagLine = function(){
-	var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
-	var sloganReplace = ( App.loc.prep || ( App.loc.city_name ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.city_name || '' ) ;
-	sloganReplace = $.trim( sloganReplace );
-	var tagline = App.tagline.replace('%s', sloganReplace);
-	slogan = slogan.replace('%s', sloganReplace);
-	return {
-		slogan: slogan,
-		tagline: tagline
-	};
-}
-
-App.foodDelivery.title = function(){
-	document.title =  ( App.loc.name_alt || App.loc.city_name || '' ) + ' Food Delivery | Order Food from ' + ( App.loc.name_alt || App.loc.city_name || 'Local') + ' Restaurants | Crunchbutton';
-}
-
-App.page.foodDelivery.load = function(){
-
-	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
-	$( '.nav-back' ).removeClass( 'nav-back-show' );
-
-	if (App.restaurants.list.length == 4) {
-		$('.content').addClass('short-meal-list');
-	} else {
-		$('.content').removeClass('short-meal-list');
-	}
-	$('.content').removeClass('smaller-width');
-
-	App.currentPage = 'food-delivery';
-	
-	App.foodDelivery.title();
-	var titles = App.foodDelivery.tagLine();
-	
-	App.hasLocation = true;
-	
-	App.showPage({
-		page: 'restaurants',
-		data: {
-			slogan: titles.slogan,
-			tagline: titles.tagline,
-			restaurants: App.restaurants.list
-		}
-	});
-}
 
 
 App.modal.shield.resize = function(){
@@ -2930,41 +1707,6 @@ App.message.show = function( title, message ) {
 	}, 100 );
 }
 
-/********************************************************************************************
-* This function will return a callble phone link in case the user is using a mobile device. *
-*********************************************************************************************/
-App.callPhone = function( phone ){
-	if( App.isMobile() ){
-		return '<a href="tel:' + App.phone.format( phone ).replace( /\-/g, '' ) + '">' + phone + '</a>'; 
-	} else {
-		return phone;
-	}
-}
-
-
-/**************************************************
-* Functions to identify the user's browser/device *
-**************************************************/
-
-App.isMobile = function(){
-	return $.browser.mobile;
-}
-
-App.iOS = function(){
-	return /ipad|iphone|ipod/i.test( navigator.userAgent.toLowerCase() );
-}
-
-App.isChrome = function(){
-	// As the user agent can be changed, let make sure if the browser is chrome or not.
-	return /chrom(e|ium)/.test( navigator.userAgent.toLowerCase() ) || /crios/.test( navigator.userAgent.toLowerCase() ) || ( typeof window.chrome === 'object' );
-}
-
-App.isChromeForIOS = function(){
-	return App.isMobile() && App.iOS() && App.isChrome();
-}
-
-
-
 App.message.chrome = function( ){
 	var title = 'How to use Chrome',
 			message = '<p>' +
@@ -2977,65 +1719,3 @@ App.message.chrome = function( ){
 }
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
-
-
-var sort_by;
-(function() {
-    // utility functions
-    var default_cmp = function(a, b) {
-        if (a == b) return 0;
-        return a < b ? -1 : 1;
-    },
-        getCmpFunc = function(primer, reverse) {
-            var cmp = default_cmp;
-            if (primer) {
-                cmp = function(a, b) {
-                    return default_cmp(primer(a), primer(b));
-                };
-            }
-            if (reverse) {
-                return function(a, b) {
-                    return -1 * cmp(a, b);
-                };
-            }
-            return cmp;
-        };
-
-    // actual implementation
-    sort_by = function() {
-        var fields = [],
-            n_fields = arguments.length,
-            field, name, reverse, cmp;
-
-        // preprocess sorting options
-        for (var i = 0; i < n_fields; i++) {
-            field = arguments[i];
-            if (typeof field === 'string') {
-                name = field;
-                cmp = default_cmp;
-            }
-            else {
-                name = field.name;
-                cmp = getCmpFunc(field.primer, field.reverse);
-            }
-            fields.push({
-                name: name,
-                cmp: cmp
-            });
-        }
-
-        return function(A, B) {
-            var a, b, name, cmp, result;
-            for (var i = 0, l = n_fields; i < l; i++) {
-                result = 0;
-                field = fields[i];
-                name = field.name;
-                cmp = field.cmp;
-
-                result = cmp(A[name], B[name]);
-                if (result !== 0) break;
-            }
-            return result;
-        }
-    }
-}());
