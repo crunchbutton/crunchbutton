@@ -646,8 +646,14 @@ class Crunchbutton_Restaurant extends Cana_Table
 	public function exports($ignore = []) {
 		$out              = $this->properties();
 		$out['_open']     = $this->open();
+
+		$timezone = new DateTimeZone( $this->timezone );
+		$date = new DateTime( 'now ', $timezone ) ;
+		
 		// Return the offset to help the Javascript to calculate the open/close hour correctly
-		$out['_tzoffset'] = ( ( new DateTime( 'now ', new DateTimeZone( $this->timezone ) ) )->getOffset() ) / 60 / 60;
+		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
+		$out['_tzabbr'] = $date->format('T');
+
 		// $out['img']    = '/assets/images/food/630x280/'.$this->image.'?crop=1';
 		$out['img']       = $this->publicImagePath().($this->image() ? $this->image()->getFileName() : '');
 		$out['img64']     = $this->publicImagePath().($this->thumb() ? $this->thumb()->getFileName() : '');
