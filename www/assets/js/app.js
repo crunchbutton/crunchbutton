@@ -122,22 +122,29 @@ App.render = function(template, data) {
 	return compiled(data);
 };
 
-App.showPage = function(template, data) {
-	$('.main-content').html(App.render(template, data));
+App.showPage = function(params) {
+	App.currentPage = params.page;
+	if (params.title) {
+		document.title = params.title;
+	}
+	$('.main-content').html(App.render(params.page, params.data));
 };
 
 App.page.home = function() {
-	document.title = 'Crunchbutton';
 
 	$( '.nav-back' ).removeClass( 'nav-back-show' );
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 
 	$('.content').addClass('short-meal-list');
 	
-	App.showPage('home',{
-		topCommunities: App.topCommunities,
-		yourArea: App.loc.reverseGeocodeCity || 'your area',
-		autofocus: $(window).width() >= 768 ? ' autofocus="autofocus"' : ''
+	App.showPage({
+		page: 'home',
+		title: 'Crunchbutton',
+		data: {
+			topCommunities: App.topCommunities,
+			yourArea: App.loc.reverseGeocodeCity || 'your area',
+			autofocus: $(window).width() >= 768 ? ' autofocus="autofocus"' : ''
+		}
 	});
 
 	// @hacks
@@ -482,90 +489,40 @@ Issue 13: Removed the password for while
 
 App.page.order = function(id) {
 
-	App.currentPage = 'order';
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 	$( '.nav-back' ).addClass( 'nav-back-show' );
 
+	
+
+	if (App.justCompleted) {
+		App.justCompleted = false;
+	}
+
+	$('.content').addClass('smaller-width');
+	$('.main-content').css('width','auto');
+	
 	App.cache('Order', id, function() {
-
-		if (!this.uuid) {
-			History.replaceState({},'Crunchbutton','/');
-		}
-
-		document.title = 'Crunchbutton - Your Order';
-		App.order = this;
-
-		var message, order = this;
-
-		if (App.justCompleted) {
-			App.justCompleted = false;
+		var order = this;
+		
+		if (!order.uuid) {
+			History.replaceState({},'Crunchbutton','/orders');
+			return;
 		}
 		
-		$('.content').addClass('smaller-width');
-
-		$('.main-content').css('width','auto');
-		$('.main-content').html(
-			'<div class="content-padder-before"></div>' +
-			'<div class="order-info content-padder main-content-readable"></div>'
-		);
-
-		$('.order-info').html( '' );
-
-		$('.order-info').append('<span class="order-thanks-message">Crunched! We\'ve saved your order for easy 1 click ordering next time.</span><br /><br />');
-			
-			if( !App.config.user.has_auth ){
-				
-				$('.order-info').append('<span class="signup-call-to-action"></span>');
-				$('.signup-call-to-action').html( 'If you add a password, your favorite food can be 1 click ordered anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.' +
-													'<a href="javascript:;" class="signup-add-password-button">Add a password now</a>' );
-				$( '.signup-add-password-button' ).live( 'click', function(){
-					App.signup.show( false );
-				} );
-			
-			} else {
-			
-				$('.order-info').append( 'You can 1 click order anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.' );
-			
-			}
-
-		var order_details = new Array();
-
-		order_details.push( '<div class="order-details">' );
-
-		if (this.delivery_type == 'delivery') {
-			order_details.push('<b>Your delivery address:</b><br />' + this.address + '<br /><br />');
-		} else {
-			order_details.push('<b>Takeout order</b><br /><br />');
-		}
-
-		order_details.push('<b>Your phone #:</b><br />' + App.phone.format(this.phone) + '<br /><br />');
-
-		order_details.push('<b>Your order:</b>' + order._message + '<br /><br />');
-
-		if (order.notes) {
-			order_details.push('<i>' + order.notes + '<br /><br />');
-		}
-
-		if (this.pay_type == 'card') {
-			order_details.push('<b>Your total:</b><br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
-		} else {
-			order_details.push('<b>Your approximate total</b>:<br />$' + parseFloat(this.final_price).toFixed(2) + '<br /><br />');
-		}
-
 		App.cache('Restaurant',order.id_restaurant, function() {
+			var restaurant = this;
 
-			order_details.push('For updates on your order, please call<br />' + this.name + ': <b>' + App.callPhone( this.phone ) + '</b><br /><br />');
-
-			order_details.push('You can reach Crunchbutton by texting or calling <b>' + App.callPhone( '(646) 783-1444' ) +  '</b> <br /><br />');
-
-			order_details.push( 'We\'ve saved your order for easy 1 click ordering next time.' );
-
-			order_details.push( '</div>' );
-
-			$('.order-info').append( order_details.join( '' ) );
-
+			App.showPage({
+				title: 'Crunchbutton - Your Order',
+				page: 'order',
+				data: {
+					order: order,
+					restaurant: restaurant,
+					user: App.user
+				}
+			});
+			
 		});
-
 	});
 };
 
@@ -2778,6 +2735,10 @@ App.signup = {};
 
 App.signup.init = function(){
 
+	$('.signup-add-password-button').live('click', function() {
+		App.signup.show(false);
+	});
+
 	$( '.wrapper' ).append( App.signup.html() );
 
 	$( '.signup-icon' ).live( 'click', function(){
@@ -3065,10 +3026,13 @@ App.page.foodDelivery.load = function(){
 	
 	App.hasLocation = true;
 	
-	App.showPage('restaurants',{
-		slogan: titles.slogan,
-		tagline: titles.tagline,
-		restaurants: App.restaurants.list,
+	App.showPage({
+		page: 'restaurants',
+		data: {
+			slogan: titles.slogan,
+			tagline: titles.tagline,
+			restaurants: App.restaurants.list
+		}
 	});
 
 }
