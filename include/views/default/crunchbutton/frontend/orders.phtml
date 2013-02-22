@@ -1,0 +1,21 @@
+<div class="main-content-readable">
+	<div class="restaurant-item-title">order history</div>
+	<ul class="resturant-dishes resturant-dish-container your-orders">
+		<% _.each(orders, function(order) { %>
+			<li><a href="javascript:;" data-id_order="<%= order.uuid %>">
+				<span class="dish-name"><%= order._restaurant_name %></span>
+				<span class="dish-price"><%= order._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i,'$1/$2 $3') %> (<%= order._tz %>)</span>
+			</a></li>
+		<% }); %>
+	</ul>
+	
+	<div class="order-options">
+		<% if (!App.signin.facebook.isLogged && !App.config.user.facebook) { %>
+			<a href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>
+		<% } %>
+	
+		<a href="javascript:;" class="signout-button">Sign out</a>
+		<div class="divider"></div>
+	</div>
+	
+</div>
