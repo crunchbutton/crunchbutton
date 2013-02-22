@@ -56,7 +56,7 @@ App.loadRestaurant = function(id) {
 				}
 				hours += "\n";
 			}
-			alert("This restaurant is currently closed. It will be open during the following hours:\n\n" + hours);
+			alert("This restaurant is currently closed. It will be open during the following hours (" + this._tzabbr + "):\n\n" + hours);
 			App.busy.unBusy();
 		} else {
 			if (this.redirect) {
