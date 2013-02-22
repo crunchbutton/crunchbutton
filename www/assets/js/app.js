@@ -124,9 +124,16 @@ App.render = function(template, data) {
 };
 
 App.showPage = function(params) {
+	// switch here for AB testing
+
 	App.currentPage = params.page;
 	if (params.title) {
 		document.title = params.title;
+	}
+
+	// track different AB pages
+	if (params.tracking) {
+		App.track(params.tracking.title, params.tracking.data);
 	}
 	$('.main-content').html(App.render(params.page, params.data));
 };
@@ -220,19 +227,35 @@ App.page.restaurant = function(id) {
 			App.cart.resetOrder();
 		}
 
-		App.restaurant = this;
-		
-		var community = App.getCommunityById( App.restaurant.id_community );
-		App.track('Restaurant page loaded', {restaurant: App.restaurant.name});
+		App.restaurant = this;		
+		var community = App.getCommunityById(App.restaurant.id_community);
 
 		App.showPage({
+			tracking: {
+				title: 'Restaurant page loaded',
+				data: {
+					restaurant: App.restaurant.name
+				}
+			},
 			page: 'restaurant',
 			title: App.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton',
 			data: {
 				restaurant: App.restaurant,
 				presets: App.config.user.presets,
 				user: App.config.user,
-				community: community
+				community: community,
+				form: {
+					tip: App.order.tip,
+					name: App.config.user.name,
+					phone: App.phone.format(App.config.user.phone),
+					address: App.config.user.address || App.loc.enteredLoc,
+					notes: (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) ? App.config.user.presets[App.restaurant.id_restaurant].notes : '',
+					card: {
+						number: App.config.user.card,
+						month: App.config.user.card_exp_month,
+						year: App.config.user.card_exp_year
+					}
+				}
 			}
 		});
 
@@ -249,7 +272,9 @@ App.page.restaurant = function(id) {
 		}
 
 		// As the div restaurant-items has position:absolute this line will make sure the footer will not go up.
-		$('.body').css( { 'min-height' : $('.restaurant-items').height() } )
+		$('.body').css({
+			'min-height': $('.restaurant-items').height()
+		});
 
 		setTimeout(function() {
 			var total = App.cart.updateTotal();
@@ -257,171 +282,36 @@ App.page.restaurant = function(id) {
 		},200);
 
 		App.cartHighlightEnabled = false;
+	
+		if (App.order['pay_type'] == 'cash') {
+			App.trigger.cash();
+		} else {
+			App.trigger.credit();
+		}
+	
+		if (App.order['delivery_type'] == 'takeout' || restaurant.delivery != '1') {
+			App.trigger.takeout();
+		} else {
+			App.trigger.delivery();
+		}
+	
+		if (!App.config.user.id_user) {
+			App.config.user.address = App.loc.enteredLoc;
+			App.loc.enteredLoc = '';
+		}
+		
 	});
 
 };
 
+
 /**
- * Adds the DOM elements for the payment information
- *
- * Adds order amount info, delivery info, payment info DOM (including tip%
- * selector. They method is called before the App.cart.updateTotal() method
- * gets called, so there is no information about the amount to pay yet.
- *
- * @returns void
+ * Order page. displayed after order, or at order history
  */
-App.drawPay = function(restaurant)
-{
-	$('.main-content').append(
-		'<form class="payment-form main-content-readable">' +
-			'<div class="content-item-name"><h1>Your Info</h1></div>' +
-			'<div class="your-info-label">(enter this once, and we\'ll save it for next time)</div>' +
-			'<div class="delivery-info-container"></div><div class="divider"></div>' +
-			'<div class="payment-info-container"></div><div class="divider"></div>' +
-			'<div class="payment-total">' +
-				'You\'re paying <span class="cash-order-aprox"></span> ' +
-				'<span class="cart-breakdownDescription"></span> ' +
-				'for a total of <span class="cart-total"></span> ' +
-				'<span class="cart-paymentType"></span>' +
-			' </div>' +
-		'</form>' +
-
-		'<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>'
-	);
-
-	var fieldError = '';
-
-	if (restaurant.delivery == '1' && restaurant.takeout == '1') {
-		var deliveryInfo = '<label class="pay-title-label">Delivery Info</label>' +
-			'<div class="input-item toggle-wrapper clearfix">' +
-				'<a href="javascript:;" class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</a> <span class="toggle-spacer delivery-only-text">or</span> <a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>' +
-			'</div>';
-	} else if (restaurant.delivery == '1') {
-		var deliveryInfo = '<label class="pay-title-label">Delivery Info</label>';
-	} else {
-		var deliveryInfo = '<label class="pay-title-label">Takeout Info</label>';
-	}
-	$('.delivery-info-container').append(
-
-		'<div class="personal-info field-container">' +
-			deliveryInfo +
-			'<div class="divider"></div>' +
-			'<label>Name</label>' +
-			'<div class="input-item"><input type="text" name="pay-name" tabindex="2"></div><div class="divider"></div>' +
-
-			'<label>Phone #</label>' +
-			'<div class="input-item"><input type="tel" name="pay-phone" tabindex="3"></div><div class="divider"></div>' +
-/*
-Issue 13: Removed the password for while
-			'<div class="password-field">' +
-				'<label>Password (optional)</label>' +
-				'<div class="input-item"><input type="password" name="pay-password" tabindex="4">' +
-				'</div><div class="divider"></div>' +
-			'</div>' +
-*/
-			'<label class="delivery-only">Address</label>' +
-			'<div class="input-item delivery-only"><textarea name="pay-address" tabindex="5"></textarea></div>' +
-			fieldError +
-			'<div class="divider"></div>' +
-
-			'<label>Notes</label>' +
-			'<div class="input-item"><textarea name="notes" tabindex="6"></textarea></div><div class="divider"></div>' +
-
-		'</div>'
-	);
-
-	$('.payment-info-container').append(
-
-		'<div class="payment-info field-container">' +
-
-			'<label class="pay-title-label">Payment Method</label>' +
-			'<div class="input-item toggle-wrapper">' +
-				'<a href="javascript:;" class="pay-toggle-credit toggle-item"><span>card</span></a> <span class="toggle-spacer">or</span>  <a href="javascript:;" class="pay-toggle-cash toggle-item"><span>cash</span></a>' +
-			'</div><div class="divider"></div>' +
-
-			'<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>' +
-				'<div class="card-icons">' +
-					'<img src="/assets/images/payment/Visa-40.png" alt="visa">' +
-					'<img src="/assets/images/payment/Mastercard-40.png" alt="master card">' +
-					'<img src="/assets/images/payment/Amex-40.png" alt="american express">' +
-					'<img src="/assets/images/payment/Discover-40.png" alt="discover card">' +
-				'</div>' +
-			'</div>' +
-
-			'<label class="card-only">Credit card #</label>' +
-			'<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6"></div><div class="divider"></div>' +
-
-			'<label class="card-only">Expiration</label>' +
-			'<div class="input-item card-only">' +
-				'<select name="pay-card-month" tabindex="7"><option>Month</option></select>' +
-				'<select name="pay-card-year" tabindex="8"><option>Year</option></select><div class="divider"></div>' +
-			'</div>' +
-
-			'<div class="divider"></div><label class="card-only">Tip</label>' +
-			'<div class="input-item card-only">' +
-				'<select name="pay-tip" tabindex="9"></select>' +
-				'<div class="divider"></div>' +
-			'</div>' +
-		'</div>'
-	);
-
-	var tips = [0,5,10,15,20,25];
-	for (var x in tips) {
-		$('[name="pay-tip"]').append('<option value="' + tips[x] + '">' + tips[x] + '%</option>');
-	}
-	for (var x=1; x<=12; x++) {
-		$('[name="pay-card-month"]').append('<option>' + x + '</option>');
-	}
-	var date = new Date().getFullYear();
-	for (var x=date; x<=date+20; x++) {
-		$('[name="pay-card-year"]').append('<option>' + x + '</option>');
-	}
-
-	if (App.order['pay_type'] == 'cash') {
-		App.trigger.cash();
-	} else {
-		App.trigger.credit();
-	}
-
-	if (App.order['delivery_type'] == 'takeout' || restaurant.delivery != '1') {
-		App.trigger.takeout();
-	} else {
-		App.trigger.delivery();
-	}
-	$('[name="pay-tip"]').val(App.order.tip);
-	$('[name="pay-name"]').val(App.config.user.name);
-	$('[name="pay-phone"]').val(App.phone.format(App.config.user.phone));
-	$('[name="pay-address"]').val(App.config.user.address || App.loc.enteredLoc);
-	$('[name="pay-card-number"]').val(App.config.user.card);
-	$('[name="pay-card-month"]').val(App.config.user.card_exp_month);
-	$('[name="pay-card-year"]').val(App.config.user.card_exp_year);
-
-	if (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) {
-		try {
-			$('[name="notes"]').val(App.config.user.presets[App.restaurant.id_restaurant].notes);
-		} catch (e) {}
-	}
-
-	if (!App.config.user.id_user) {
-		App.config.user.address = App.loc.enteredLoc;
-		App.loc.enteredLoc = '';
-	}
-/*
-Issue 13: Removed the password for while
-	App.signup.checkLogin();
-
-	$( 'input[name=pay-phone]' ).live( 'change', function(){
-		App.signup.checkLogin();
-	} );
-*/
-};
-
 App.page.order = function(id) {
 
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 	$( '.nav-back' ).addClass( 'nav-back-show' );
-
-	
 
 	if (App.justCompleted) {
 		App.justCompleted = false;
@@ -455,6 +345,10 @@ App.page.order = function(id) {
 	});
 };
 
+
+/**
+ * Legal page. loaded from xhr.
+ */
 App.page.legal = function() {
 	App.currentPage = 'legal';
 	$.getJSON('/api/legal',function(json) {
@@ -463,6 +357,10 @@ App.page.legal = function() {
 	});
 };
 
+
+/**
+ * Help page. loaded from xhr.
+ */
 App.page.help = function() {
 	App.currentPage = 'help';
 	$.getJSON('/api/help',function(json) {
@@ -471,92 +369,43 @@ App.page.help = function() {
 	});
 };
 
-App.page.orders = function() {
 
-	if( !App.config.user.id_user ){
+/**
+ * Order page. only avaiable after a user has placed an order or signed up.
+ * @todo: change to account page
+ */
+App.page.orders = function() {
+	if (!App.config.user.id_user) {
 		History.pushState({}, 'Crunchbutton', '/');
 		return;
 	}
 
-	App.currentPage = 'orders';
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 	$( '.nav-back' ).addClass( 'nav-back-show' );
 
 	$.getJSON('/api/user/orders',function(json) {
-
-		$('.main-content').html(
-			'<div class="main-content-readable">' +
-				'<div class="restaurant-item-title">order history</div>' +
-				'<ul class="resturant-dishes resturant-dish-container your-orders"></ul>' +
-			'</div>'
-		);
-
-		var count = 0, restaurants = {};
-		var orders = '';
-		for (var x in json) {
-			restaurants[json[x].id_restaurant] = true;
-		}
-		var triggerComplete = function() {
-			count++;
-			var y = 0;
-			for (var i in restaurants) {
-				y++;
+		App.showPage({
+			title: 'Crunchbutton - Your Account',
+			page: 'orders',
+			data: {
+				orders: json,
+				user: App.user
 			}
-
-			if (count != y) {
-				return;
-			}
-			for (var x in json) {
-				var date = json[x].date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i,'$1/$2 $3') + ' (' + json[x].tz + ') ';
-				var order = '<li><a href="javascript:;" data-id_order="' + json[x].uuid + '"><span class="dish-name">' + App.cached['Restaurant'][json[x].id_restaurant].name + '</span><span class="dish-price">' + date + '</span></a></li>';
-				orders += order;
-			}
-			$('.resturant-dishes').append(orders);
-
-		};
-
-		for (var x in restaurants) {
-			App.cache('Restaurant',x,function() {
-				triggerComplete();
-			});
-		}
-
-		var signupFacebook = '<a href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>';
-		if( App.signin.facebook.isLogged || App.config.user.facebook ){
-			signupFacebook = '';
-		}
-
-		var bottomMenu = '<div class="order-options">' +
-										signupFacebook +
-										'<a href="javascript:;" class="signout-button">Sign out</a>' +
-										'<div class="divider"></div>' +
-									'</div>';
-
-		$( '.main-content-readable' ).append( bottomMenu );
-		if( !App.bottomMenuBinded ){
-
-			$( '.signout-button' ).live( 'click', function(){
-				App.signin.signOut();
-			} );
-
-			$( '.signup-add-facebook-button' ).live( 'click', function(){
-				// App.signup.facebook( true );
-				App.signin.facebook.login();
-			} );
-
-			App.bottomMenuBinded = true;
-		}
-
-		App.refreshLayout();
-
+		});
 	});
+
+	App.refreshLayout();
 };
 
-// @todo replace with router
+
+/**
+ * Router init
+ * @todo replace with router
+ */
 App.loadPage = function() {
 	
 	// If the user is using Chrome for iOS show the message:	
-	if( App.isChromeForIOS() ){
+	if (App.isChromeForIOS() ){
 		App.message.chrome();
 	}
 
@@ -636,6 +485,7 @@ App.loadPage = function() {
 	setTimeout(scrollTo, 80, 0, 1);
 	setTimeout( function(){ App.signin.checkUser(); }, 300 );
 };
+
 
 /**
  * Refresh the pages layout for a blank page
@@ -1680,7 +1530,20 @@ App.trigger = {
 	}
 }
 
+
+/**
+ * global event binding and init
+ */
 $(function() {
+
+
+	$('.signout-button').live('click', function() {
+		App.signin.signOut();
+	});
+
+	$('.signup-add-facebook-button').live('click', function() {
+		App.signin.facebook.login();
+	});
 
 	$('.change-location-inline').live('click', function() {
 		App.forceHome = true;

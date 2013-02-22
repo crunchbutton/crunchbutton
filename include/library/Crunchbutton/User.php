@@ -11,6 +11,17 @@ class Crunchbutton_User extends Cana_Table {
 		$order = Order::q('select * from `order` where id_user="'.$this->id_user.'" and id_user is not null order by date desc limit 1');
 		return $order;
 	}
+	
+	public function orders() {
+		$orders = Order::q('
+			select * from `order`
+			where
+				id_user="'.$this->id_user.'"
+				and id_user is not null
+				order by date desc
+		');
+		return $orders;
+	}
 
 	public function watched() {
 		return Project::q('
