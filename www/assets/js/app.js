@@ -69,11 +69,10 @@ App.loadRestaurant = function(id) {
 	});
 };
 
-App.loadCommunity = function(id) {
-	/* App.loadCommunity is deprecated */
-	return App.routeAlias( id );
-};
 
+/**
+ * Loads up "community" keyword pages
+ */
 App.routeAlias = function(id) {
 	// Get the alias
 	alias = App.aliases[ id ] || false;
@@ -118,6 +117,15 @@ App.page.resetPassword = function( path ){
 	}
 }
 
+App.render = function(template, data) {
+	var compiled = _.template($('.template-' + template).html());
+	return compiled(data);
+};
+
+App.showPage = function(template, data) {
+	$('.main-content').html(App.render(template, data));
+};
+
 App.page.home = function() {
 	document.title = 'Crunchbutton';
 
@@ -125,67 +133,14 @@ App.page.home = function() {
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 
 	$('.content').addClass('short-meal-list');
+	
+	App.showPage('home',{
+		topCommunities: App.topCommunities,
+		yourArea: App.loc.reverseGeocodeCity || 'your area',
+		autofocus: $(window).width() >= 768 ? ' autofocus="autofocus"' : ''
+	});
 
-	var top = '';
-	for (var x in App.topCommunities) {
-		top += '<div class="meal-item" data-permalink-community="' + App.topCommunities[x].id_community + '">' +
-			'<div class="meal-item-spacer"></div>' +
-			'<div class="meal-item-content">' +
-				'<div class="meal-pic" style="background: url(' + App.topCommunities[x].image + ');"></div>' +
-					'<h2 class="meal-restaurant">' + App.topCommunities[x].name + '</h2>' +
-					'<h3 class="meal-food">Top Restaurant: ' + App.topCommunities[x].restaurant + '</h3>' +
-				'</div>' +
-			'</div>';
-	}
-
-	$('.main-content').html('<div class="main-content-readable">' +
-		'<div class="home-welcome home-welcome-click">' +
-			'<h1>Order the best food with a click</h1>' +
-			'<h2>We\'ve chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as the click of a button.</h2>' +
-		'</div>' +
-		'<div class="home-welcome home-welcome-touch">' +
-			'<h1>Order the best food with a tap</h1>' +
-			'<h2>We\'ve chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as a tap of a button.</h2>' +
-		'</div>' +
-	'</div>' +
-	'<div class="enter-location">' +
-		'<form class="button-letseat-formform" onsubmit="return false;">' +
-		'<table class="button-letseat-table" cellpadding="0" cellspacing="0">' +
-			'<tr>' +
-				'<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your zip code or full address" '+ ($(window).width() >= 768 ? 'autofocus="autofocus"' : '') + '></td>' +
-				/*
-				'<td>' +
-					'<div class="location-detect">' +
-						'<div class="location-detect-icon"></div>' +
-						'<div class="location-detect-loader"></div>' +
-					'</div>' +
-				'</td>' +
-				*/
-			'</tr>' +
-		'</table>' +
-		'</form>' +
-	'</div>' +
-	'<div class="divider"></div>' +
-	'<button class="button-letseat-form button-bottom"><div>Let\'s Eat!</div></button>' +
-	'<div class="error-location" style="display: none;">' +
-		'<div class="home-welcome home-welcom-error"><h1>Oh no! We aren\'t quite ready in <span class="loc-your-area change-location-inline">your area</span>.</h1></div>' +
-		'<div class="content-item-locations">' +
-			'<h1>Our most popular locations</h1>' +
-		'</div>' +
-		'<div class="content-padder-before"></div>' +
-		'<div class="content-padder">' +
-			'<div class="meal-items">' + top + '</div></div>' +
-	'</div>');
-
-	$( '.change-location-inline' ).live( 'click', function(){
-		App.forceHome = true;
-		App.showErrorLocation = false;
-		App.loadHome();
-		$('input').blur();
-	} );
-
-
-	//$('.location-address').val($.cookie('entered_address'));
+	// @hacks
 	if (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('mobile') == -1 && navigator.userAgent.toLowerCase().indexOf('chrome') == -1) {
 		// safari desktop
 		$('.location-detect').css({
@@ -200,14 +155,14 @@ App.page.home = function() {
 		});
 	}
 
-	$('.loc-your-area').html(App.loc.reverseGeocodeCity || 'your area');
-
-	if( App.showReset ){
+	if (App.showReset){
 		App.signin.passwordHelp.reset.init();
 	}
 
-	if( App.showErrorLocation ){
-		setTimeout( function(){ App.showErrorLocation = false; }, 100 );
+	if (App.showErrorLocation) {
+		setTimeout(function() {
+			App.showErrorLocation = false;
+		}, 100);
 		$('.enter-location, .button-letseat-form').hide();
 		$('.error-location').show();
 		App.track('Location Error', {
@@ -226,7 +181,7 @@ App.page.home = function() {
 };
 
 App.page.foodDelivery = function() {
-	if( !App.restaurants.list ){
+	if (!App.restaurants.list){
 		App.foodDelivery.forceProcess = true;
 		App.foodDelivery.preProcess();
 		return;
@@ -711,6 +666,7 @@ App.page.orders = function() {
 	});
 };
 
+// @todo replace with router
 App.loadPage = function() {
 	
 	// If the user is using Chrome for iOS show the message:	
@@ -795,34 +751,19 @@ App.loadPage = function() {
 	setTimeout( function(){ App.signin.checkUser(); }, 300 );
 };
 
+/**
+ * Refresh the pages layout for a blank page
+ */
 App.refreshLayout = function() {
-
 	setTimeout(function() {
 		scrollTo(0, 1);
-		return;
-
-		// a really stupid fix for ios and fixed position with fadein
-		var el = $('.cart-summary');
-
-		if (el.length) {
-			if (App.cartTimer) {
-				clearTimeout(App.cartTimer);
-			} else {
-				var top = el.css('top');
-				el.css('position','relative');
-				el.css('top',0);
-			}
-
-			App.cartTimer = setTimeout(function() {
-				el.css('top','43px');
-				el.css('position','fixed');
-				App.cartTimer = null;
-			}, 1);
-
-		}
 	}, 80);
 };
 
+
+/**
+ * Sends a tracking item to mixpanel, or to google ads if its an order
+ */
 App.track = function() {
 	if (App.config.env != 'live') {
 		return;
@@ -839,8 +780,11 @@ App.track = function() {
 	}
 };
 
-App.identify = function() {
 
+/**
+ * Itendity the user to mixpanel
+ */
+App.identify = function() {
 	if (App.config.env != 'live') {
 		return;
 	}
@@ -942,10 +886,10 @@ App.cart = {
 	updateTotal: function() {
 		var
 			totalText  = '$' + this.total(),
-			tipText    = '',
+			tipText	= '',
 			feesText   = '',
 			totalItems = 0,
-			hasFees    = ((App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') || App.restaurant.fee_customer) ? true : false;
+			hasFees	= ((App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') || App.restaurant.fee_customer) ? true : false;
 
 		for (var x in App.cart.items) {
 			totalItems++;
@@ -986,7 +930,7 @@ App.cart = {
 		$('.cart-summary-item-count span').html(totalItems);
 
 		/* If no items, hide payment line
-		 * .payment-total      line for new customers
+		 * .payment-total  	line for new customers
 		 * .dp-display-payment is for stored customers
 		 */
 		if (!this.subtotal()) {
@@ -995,7 +939,7 @@ App.cart = {
 			$('.payment-total, .dp-display-payment').show();
 		}
 
-		var breakdown    = App.cart.totalbreakdown();
+		var breakdown	= App.cart.totalbreakdown();
 		var extraCharges = App.cart.extraChargesText(breakdown);
 		if (extraCharges) {
 			$('.cart-breakdownDescription').html('$' + this.subtotal().toFixed(2) + ' (+'+ extraCharges +')' );
@@ -1196,7 +1140,7 @@ App.cart = {
 	 */
 	extraChargesText: function(breakdown) {
 		var elements = [];
-		var text     = '';
+		var text 	= '';
 		if (breakdown.delivery) {
 			elements.push('$' + breakdown.delivery.toFixed(2) + ' delivery');
 		}
@@ -1217,7 +1161,7 @@ App.cart = {
 				var elements = [elements.join(', ')];
 				elements.push(lastOne);
 			}
-			var text     =  elements.join(' and ');
+			var text 	=  elements.join(' and ');
 		}
 		return text;
 	},
@@ -1254,12 +1198,12 @@ App.cart = {
 		}
 
 		var order = {
-			cart:          App.cart.getCart(),
-			pay_type:      App.order['pay_type'],
+			cart:  		App.cart.getCart(),
+			pay_type:  	App.order['pay_type'],
 			delivery_type: App.order['delivery_type'],
-			restaurant:    App.restaurant.id,
+			restaurant:	App.restaurant.id,
 			make_default:  $('#default-order-check').is(':checked'),
-			notes:         $('[name="notes"]').val(),
+			notes: 		$('[name="notes"]').val(),
 			lat: 		   App.loc.lat,
 			lon: 		   App.loc.lon
 		};
@@ -1270,8 +1214,8 @@ App.cart = {
 
 		if (read) {
 			order.address  = App.config.user.address;
-			order.phone    = App.config.user.phone;
-			order.name     = App.config.user.name;
+			order.phone	= App.config.user.phone;
+			order.name 	= App.config.user.name;
 /*
 Issue 13: Removed the password for while
 			order.password = $( 'input[name=pay-password]' ).val( );
@@ -1445,16 +1389,16 @@ Issue 13: Removed the password for while
 			total = 0,
 			dish,
 			options,
-			feeTotal    = 0,
+			feeTotal	= 0,
 			totalItems  = 0,
 			finalAmount = 0
 		;
 
 		var breakdown = this.totalbreakdown();
-		total        = breakdown.subtotal;
-		feeTotal     = total;
-		feeTotal    += breakdown.delivery;
-		feeTotal    += breakdown.fee;
+		total		= breakdown.subtotal;
+		feeTotal 	= total;
+		feeTotal	+= breakdown.delivery;
+		feeTotal	+= breakdown.fee;
 		finalAmount  = feeTotal + breakdown.taxes;
 		finalAmount += this._breakdownTip(total);
 
@@ -1470,16 +1414,16 @@ Issue 13: Removed the password for while
 	 */
 	totalbreakdown: function() {
 		var elements = {};
-		var total    = this.subtotal();
+		var total	= this.subtotal();
 		var feeTotal = total;
 
 		elements['subtotal'] = this.subtotal();
 		elements['delivery'] = this._breackDownDelivery();
-		feeTotal            += elements['delivery'];
-		elements['fee']      = this._breackDownFee(feeTotal);
-		feeTotal            += elements['fee'];
-		elements['taxes']    = this._breackDownTaxes(feeTotal);
-		elements['tip']      = this._breakdownTip(total);
+		feeTotal			+= elements['delivery'];
+		elements['fee']  	= this._breackDownFee(feeTotal);
+		feeTotal			+= elements['fee'];
+		elements['taxes']	= this._breackDownTaxes(feeTotal);
+		elements['tip']  	= this._breakdownTip(total);
 		return elements;
 	},
 
@@ -1838,6 +1782,14 @@ App.trigger = {
 }
 
 $(function() {
+
+	$('.change-location-inline').live('click', function() {
+		App.forceHome = true;
+		App.showErrorLocation = false;
+		App.loadHome();
+		$('input').blur();
+	});
+
 	$('.button-letseat-formform').live('submit', function () {
 		$('.button-letseat-form').click();
 		return false;
@@ -2990,15 +2942,17 @@ App.signup.sendForm = function(){
 	} );
 }
 
-/**************************
-*  FoodDelivery's methods
-**************************/
+
+/**
+ * FoodDelivery's methods
+ *
+ * @author		pererinha
+ */
 App.foodDelivery = {};
 
 // Before we change the url we need to make sure that there are restaurants at the typed place.
 App.foodDelivery.preProcess = function() { 
-
-	if( !App.foodDelivery.positions() ){
+	if (!App.foodDelivery.positions()) {
 		return;
 	}
 
@@ -3023,7 +2977,12 @@ App.foodDelivery.preProcess = function() {
 			$('input').blur();
 			return;
 		} else {
-			App.restaurants.list = json.restaurants;
+			App.restaurants.list = [];
+			_.each(json.restaurants, function(res) {
+				App.restaurants.list[App.restaurants.list.length] = new Restaurant(res);
+				// App.cached['Restaurant'][res.id] 
+			});
+
 			if( App.foodDelivery.forceProcess ){
 				App.foodDelivery.forceProcess = false;
 				App.page.foodDelivery.load();
@@ -3058,9 +3017,12 @@ App.foodDelivery.positions = function(){
 	return true;
 }
 
-App.foodDelivery.loadPlaceName = function(){
-	if( google.maps.Geocoder ){
-		App.loc.reverseGeocode( function(){ App.foodDelivery.tagLine(); } );
+App.foodDelivery.loadPlaceName = function() {
+	if (google.maps.Geocoder){
+		App.loc.reverseGeocode(function() {
+			App.foodDelivery.tagLine();
+			App.foodDelivery.title();
+		});
 	} else {
 		setTimeout( function(){
 			App.foodDelivery.loadPlaceName();
@@ -3074,8 +3036,10 @@ App.foodDelivery.tagLine = function(){
 	sloganReplace = $.trim( sloganReplace );
 	var tagline = App.tagline.replace('%s', sloganReplace);
 	slogan = slogan.replace('%s', sloganReplace);
-	$( '.home-tagline' ).html( '<h1>' + slogan + '</h1><h2>' + tagline + '</h2>' );
-	App.foodDelivery.title();
+	return {
+		slogan: slogan,
+		tagline: tagline
+	};
 }
 
 App.foodDelivery.title = function(){
@@ -3087,60 +3051,26 @@ App.page.foodDelivery.load = function(){
 	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
 	$( '.nav-back' ).removeClass( 'nav-back-show' );
 
-	App.currentPage = 'food-delivery';
-
-	App.foodDelivery.title();
-
-	$('.main-content').html( '<div class="home-tagline"><h1> Just a sec... </h1></div>' );
-
-	$('.main-content').html(
-		'<div class="home-tagline"></div>' +
-		'<div class="content-padder-before"></div><div class="content-padder"><div class="meal-items"></div></div>'
-	);
-
-	App.foodDelivery.tagLine();
-
-	var rs = App.restaurants.list;
-	if (rs.length == 4) {
+	if (App.restaurants.list.length == 4) {
 		$('.content').addClass('short-meal-list');
 	} else {
 		$('.content').removeClass('short-meal-list');
 	}
 	$('.content').removeClass('smaller-width');
+
+	App.currentPage = 'food-delivery';
+	
+	App.foodDelivery.title();
+	var titles = App.foodDelivery.tagLine();
+	
 	App.hasLocation = true;
-	for (var x in rs) {
+	
+	App.showPage('restaurants',{
+		slogan: titles.slogan,
+		tagline: titles.tagline,
+		restaurants: App.restaurants.list,
+	});
 
-		var id = rs[x].id_restaurant;
-
-		App.cache('Restaurant', id,function() {
-		
-			var restaurant = $('<div class="meal-item'+ (!this.open() ? ' meal-item-closed' : '') +'" data-id_restaurant="' + this.id_restaurant + '" data-permalink="' + this.permalink + '"></div>');
-			var restaurantContent = $('<div class="meal-item-content">');
-
-			restaurantContent
-				.append('<div class="meal-pic" style="background: url(' + this.img64 + ');"></div>')
-				.append('<h2 class="meal-restaurant">' + this.name + '</h2>')
-				.append('<h3 class="meal-food">' + (this.short_description || ('Top Order: ' + (this.top_name ? (this.top_name || this.top_name) : ''))) + '</h3>');
-
-			if (this.open()) {
-				if (this.delivery != '1') {
-					restaurantContent.append('<div class="meal-item-tag">Take out only</div>');
-				} else if (this.isAboutToClose()) {
-					restaurantContent.append('<div class="meal-item-tag about-to-close">Hurry, closes in ' + this.isAboutToClose() +' min!</div>');
-				} else if (!this.delivery_fee) {
-					// restaurantContent.append('<div class="meal-item-tag">Free Delivery</div>');
-				}
-			} else {
-				restaurantContent.append('<div class="meal-item-tag-closed">Opens in a few hours</div>');
-			}
-
-			restaurant
-				.append('<div class="meal-item-spacer"></div>')
-				.append(restaurantContent);
-
-			$('.meal-items').append(restaurant);
-		});
-	}
 }
 
 
