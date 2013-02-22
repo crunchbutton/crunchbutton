@@ -338,10 +338,12 @@ function saveDishes (complete) {
 			});
 			dish.optionGroups[dish.optionGroups.length] = optionGroup;
 		});
-
-		dishes[dishes.length] = dish;
-
+		// Just to make sure that the name was typed and the user don't clicked at 'Add another dish?' by mistake.
+		if( dish.name && dish.name != 'null' && dish.name != '' ){
+			dishes[dishes.length] = dish;	
+		}
 	});
+
 	$.post('/api/restaurant/' + App.restaurant + '/dishes', {dishes: dishes}, function() {
 		if (complete) {
 			complete();
