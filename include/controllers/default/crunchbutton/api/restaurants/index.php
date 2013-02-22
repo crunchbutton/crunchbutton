@@ -6,7 +6,8 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 		if ($_REQUEST['lat'] && $_REQUEST['lon']) {
 			$restaurants = Restaurant::byRange([
 				'lat' => $_REQUEST['lat'],
-				'lon' => $_REQUEST['lon']
+				'lon' => $_REQUEST['lon'],
+				'miles' => $_REQUEST['miles'],
 			]);
 			foreach ($restaurants as $restaurant) {
 				$data = $restaurant->exports(['categories' => true]);

@@ -145,12 +145,14 @@ var Restaurant = function(id) {
 
 		// If it doesn't have hours it means it is always opened
 		if( !this._hours ){
+			this._open = true;
 			return true;
 		}
 
 		var isOpen =  false;
 		var today = Date.today().toString('ddd').toLowerCase();
 		if (this._hours == undefined ||  this._hours[today] == undefined) {
+			this._open = false;
 			return false;
 		}
 		todayHours  = this._hours[today];
@@ -190,6 +192,7 @@ var Restaurant = function(id) {
 				}
 			}
 		}
+		this._open = isOpen;
 		return isOpen;
 	}
 

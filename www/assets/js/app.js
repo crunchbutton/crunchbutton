@@ -57,7 +57,7 @@ App.loadRestaurant = function(id) {
 				}
 				hours += "\n";
 			}
-			alert("This restaurant is currently closed. It will be open during the following hours:\n\n" + hours);
+			alert("This restaurant is currently closed. It will be open during the following hours (" + this._tzabbr + "):\n\n" + hours);
 			App.busy.unBusy();
 		} else {
 			if (this.redirect) {
@@ -1484,6 +1484,7 @@ App.loc = {
 		}
 	},
 	setFormattedLoc: function(results, raw) {
+
 		if (raw) {
 			App.loc.reverseGeocodeCity = raw;
 		} else {
@@ -1505,6 +1506,18 @@ App.loc = {
 			}
 		}
 		$('.loc-your-area').html(App.loc.reverseGeocodeCity || 'your area');
+		
+		// Get the city's name
+		App.loc.city_name = null;
+		for (var x = 0; x < results.length; x++) {
+			for (var i = 0; i < results[x].address_components.length; i++) {
+				for (var j = 0; j < results[x].address_components[i].types.length; j++) {
+					if(results[x].address_components[i].types[j] == 'locality') {
+						App.loc.city_name = results[x].address_components[i].long_name;
+					}
+				}
+			}
+		}
 	},
 	preProcess: function() {
 
@@ -2031,6 +2044,7 @@ App.suggestion.init = function(){
 
 	$( '.suggestion-link' ).live( 'click', function() {
 		App.suggestion.show();
+		App.suggestion.itIsSending = false;
 	} );
 
 	$( '.suggestion-form-button' ).live( 'click', function( e ){
@@ -2110,16 +2124,19 @@ App.suggestion.send = function(){
 	data[ 'id_community' ] = App.restaurant.id_community;
 	data[ 'name' ] = $( 'input[name=suggestion-name]' ).val();
 
-	$.ajax({
-		type: "POST",
-		dataType: 'json',
-		data: data,
-		url: suggestionURL,
-		success: function(content) {
-			App.suggestion.message( '<h1>Awesome, thanks!!</h1>' +
-															'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at ' + App.callPhone( '800-242-1444' ) +  '</div>' );
-		}
-	});
+	if( !App.suggestion.itIsSending ){
+		App.suggestion.itIsSending = true;
+		$.ajax({
+			type: "POST",
+			dataType: 'json',
+			data: data,
+			url: suggestionURL,
+			success: function(content) {
+				App.suggestion.message( '<h1>Awesome, thanks!!</h1>' +
+																'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at ' + App.callPhone( '800-242-1444' ) +  '</div>' );
+			}
+		});
+	}
 }
 
 App.suggestion.link = function(){
@@ -2842,12 +2859,11 @@ App.foodDelivery = {};
 
 // Before we change the url we need to make sure that there are restaurants at the typed place.
 App.foodDelivery.preProcess = function() { 
-	if (!App.foodDelivery.positions()) {
+	if( !App.foodDelivery.positions() ){
 		return;
 	}
 
 	var url = App.service + 'restaurants?lat=' + App.loc.lat + '&lon=' + App.loc.lon;
-
 	App.restaurants.list = false;
 
 	$.getJSON( url ,function(json) {	
@@ -2868,11 +2884,22 @@ App.foodDelivery.preProcess = function() {
 			return;
 		} else {
 			App.restaurants.list = [];
-			_.each(json.restaurants, function(res) {
-				App.restaurants.list[App.restaurants.list.length] = new Restaurant(res);
-				// App.cached['Restaurant'][res.id] 
-			});
-
+			for (var x in json.restaurants) {
+				var res = new Restaurant(json.restaurants[x]);
+				res.open();
+				App.restaurants.list[App.restaurants.list.length] = res;
+			};
+			
+			App.restaurants.list.sort(sort_by({
+			    name: '_open',
+			    reverse: true
+			}, {
+			    name: '_weight',
+			    primer: parseInt,
+			    reverse: true
+			}));
+			
+			console.log(App.restaurants.list);
 			if( App.foodDelivery.forceProcess ){
 				App.foodDelivery.forceProcess = false;
 				App.page.foodDelivery.load();
@@ -2922,7 +2949,7 @@ App.foodDelivery.loadPlaceName = function() {
 
 App.foodDelivery.tagLine = function(){
 	var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
-	var sloganReplace = ( App.loc.prep || ( App.loc.reverseGeocodeCity ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.reverseGeocodeCity || '' ) ;
+	var sloganReplace = ( App.loc.prep || ( App.loc.city_name ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.city_name || '' ) ;
 	sloganReplace = $.trim( sloganReplace );
 	var tagline = App.tagline.replace('%s', sloganReplace);
 	slogan = slogan.replace('%s', sloganReplace);
@@ -2933,7 +2960,7 @@ App.foodDelivery.tagLine = function(){
 }
 
 App.foodDelivery.title = function(){
-	document.title =  ( App.loc.name_alt || App.loc.reverseGeocodeCity || '' ) + ' Food Delivery | Order Food from ' + ( App.loc.name_alt ? App.loc.name_alt : 'Local') + ' Restaurants | Crunchbutton';
+	document.title =  ( App.loc.name_alt || App.loc.city_name || '' ) + ' Food Delivery | Order Food from ' + ( App.loc.name_alt || App.loc.city_name || 'Local') + ' Restaurants | Crunchbutton';
 }
 
 App.page.foodDelivery.load = function(){
@@ -2963,7 +2990,6 @@ App.page.foodDelivery.load = function(){
 			restaurants: App.restaurants.list
 		}
 	});
-
 }
 
 
@@ -3088,3 +3114,65 @@ App.message.chrome = function( ){
 }
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
+
+
+var sort_by;
+(function() {
+    // utility functions
+    var default_cmp = function(a, b) {
+        if (a == b) return 0;
+        return a < b ? -1 : 1;
+    },
+        getCmpFunc = function(primer, reverse) {
+            var cmp = default_cmp;
+            if (primer) {
+                cmp = function(a, b) {
+                    return default_cmp(primer(a), primer(b));
+                };
+            }
+            if (reverse) {
+                return function(a, b) {
+                    return -1 * cmp(a, b);
+                };
+            }
+            return cmp;
+        };
+
+    // actual implementation
+    sort_by = function() {
+        var fields = [],
+            n_fields = arguments.length,
+            field, name, reverse, cmp;
+
+        // preprocess sorting options
+        for (var i = 0; i < n_fields; i++) {
+            field = arguments[i];
+            if (typeof field === 'string') {
+                name = field;
+                cmp = default_cmp;
+            }
+            else {
+                name = field.name;
+                cmp = getCmpFunc(field.primer, field.reverse);
+            }
+            fields.push({
+                name: name,
+                cmp: cmp
+            });
+        }
+
+        return function(A, B) {
+            var a, b, name, cmp, result;
+            for (var i = 0, l = n_fields; i < l; i++) {
+                result = 0;
+                field = fields[i];
+                name = field.name;
+                cmp = field.cmp;
+
+                result = cmp(A[name], B[name]);
+                if (result !== 0) break;
+            }
+            return result;
+        }
+    }
+}());
