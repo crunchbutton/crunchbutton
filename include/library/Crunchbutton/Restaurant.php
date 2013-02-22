@@ -721,14 +721,23 @@ class Crunchbutton_Restaurant extends Cana_Table
 	}
 
 	public static function byRange($params) {
+		$params[ 'miles' ] = ( $params[ 'miles' ] ) ? $params[ 'miles' ] : 2;
 		$query = '
 			SELECT ((ACOS(SIN('.$params['lat'].' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$params['lat'].' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$params['lon'].' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`, restaurant.*
-			FROM `restaurant`
-			WHERE
-				active=1
-				AND delivery=1
-			HAVING `distance`<=`delivery_radius`
-			ORDER BY name ASC;
+				FROM `restaurant`
+				 WHERE
+					active = 1
+				HAVING
+						takeout = 1 
+					AND
+						delivery = 0
+					AND 
+						`distance` <= ' . $params[ 'miles' ] . ' 
+					OR 
+						delivery = 1
+					AND 
+						`distance` <= `delivery_radius`
+				ORDER BY name ASC;
 		';
 		return self::q($query);
 	}
