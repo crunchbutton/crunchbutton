@@ -70,17 +70,17 @@
 		<div class="personal-info field-container">
 			<div class="divider"></div>
 			<label>Name</label>
-			<div class="input-item"><input type="text" name="pay-name" tabindex="2"></div><div class="divider"></div>
+			<div class="input-item"><input type="text" name="pay-name" tabindex="2" value="<%= form.name %>"></div><div class="divider"></div>
 
 			<label>Phone #</label>
-			<div class="input-item"><input type="tel" name="pay-phone" tabindex="3"></div><div class="divider"></div>
+			<div class="input-item"><input type="tel" name="pay-phone" tabindex="3" value="<%= form.phone %>"></div><div class="divider"></div>
 
 			<label class="delivery-only">Address</label>
-			<div class="input-item delivery-only"><textarea name="pay-address" tabindex="5"></textarea></div>
+			<div class="input-item delivery-only"><textarea name="pay-address" tabindex="5"><%= form.address %></textarea></div>
 			<div class="divider"></div>
 
 			<label>Notes</label>
-			<div class="input-item"><textarea name="notes" tabindex="6"></textarea></div><div class="divider"></div>
+			<div class="input-item"><textarea name="notes" tabindex="6"><%= form.notes %></textarea></div><div class="divider"></div>
 		</div>
 	</div>
 
@@ -106,21 +106,21 @@
 			</div>
 
 			<label class="card-only">Credit card #</label>
-			<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6"></div><div class="divider"></div>
+			<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6" value="<%= form.card.number %>"></div><div class="divider"></div>
 
 			<label class="card-only">Expiration</label>
 			<div class="input-item card-only">
 				<select name="pay-card-month" tabindex="7">
 					<option>Month</option>
 					<% for (var x=1; x<=12; x++) { %>
-						<option value="<%= x %>"><%= x %></option>
+						<option value="<%= x %>"<%= form.card.month == x ? ' selected' : '' %>><%= x %></option>
 					<% } %>
 				</select>
 				<select name="pay-card-year" tabindex="8">
 					<option>Year</option>
 					<% var date = new Date().getFullYear(); %>
 					<% for (var x=date; x<=date+20; x++) { %>
-						<option value="<%= x %>"><%= x %></option>
+						<option value="<%= x %>"<%= form.card.year == x ? ' selected' : '' %>><%= x %></option>
 					<% } %>
 
 				</select>
@@ -131,7 +131,7 @@
 			<div class="input-item card-only">
 				<select name="pay-tip" tabindex="9">
 					<% _.each(App.tips, function(tip) { %>
-						<option value="<%= tip %>"><%= tip %>%</option>
+						<option value="<%= tip %>"<%= form.tip == x ? ' selected' : '' %>><%= tip %>%</option>
 					<% }); %>
 				</select>
 				<div class="divider"></div>
