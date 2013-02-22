@@ -1654,6 +1654,7 @@ App.loc = {
 		}
 	},
 	setFormattedLoc: function(results, raw) {
+
 		if (raw) {
 			App.loc.reverseGeocodeCity = raw;
 		} else {
@@ -1675,6 +1676,18 @@ App.loc = {
 			}
 		}
 		$('.loc-your-area').html(App.loc.reverseGeocodeCity || 'your area');
+		
+		// Get the city's name
+		App.loc.city_name = null;
+		for (var x = 0; x < results.length; x++) {
+			for (var i = 0; i < results[x].address_components.length; i++) {
+				for (var j = 0; j < results[x].address_components[i].types.length; j++) {
+					if(results[x].address_components[i].types[j] == 'locality') {
+						App.loc.city_name = results[x].address_components[i].long_name;
+					}
+				}
+			}
+		}
 	},
 	preProcess: function() {
 
@@ -2997,13 +3010,11 @@ App.foodDelivery = {};
 
 // Before we change the url we need to make sure that there are restaurants at the typed place.
 App.foodDelivery.preProcess = function() { 
-
 	if( !App.foodDelivery.positions() ){
 		return;
 	}
 
 	var url = App.service + 'restaurants?lat=' + App.loc.lat + '&lon=' + App.loc.lon;
-
 	App.restaurants.list = false;
 
 	$.getJSON( url ,function(json) {	
@@ -3070,7 +3081,7 @@ App.foodDelivery.loadPlaceName = function(){
 
 App.foodDelivery.tagLine = function(){
 	var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
-	var sloganReplace = ( App.loc.prep || ( App.loc.reverseGeocodeCity ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.reverseGeocodeCity || '' ) ;
+	var sloganReplace = ( App.loc.prep || ( App.loc.city_name ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.city_name || '' ) ;
 	sloganReplace = $.trim( sloganReplace );
 	var tagline = App.tagline.replace('%s', sloganReplace);
 	slogan = slogan.replace('%s', sloganReplace);
@@ -3079,7 +3090,7 @@ App.foodDelivery.tagLine = function(){
 }
 
 App.foodDelivery.title = function(){
-	document.title =  ( App.loc.name_alt || App.loc.reverseGeocodeCity || '' ) + ' Food Delivery | Order Food from ' + ( App.loc.name_alt ? App.loc.name_alt : 'Local') + ' Restaurants | Crunchbutton';
+	document.title =  ( App.loc.name_alt || App.loc.city_name || '' ) + ' Food Delivery | Order Food from ' + ( App.loc.name_alt || App.loc.city_name || 'Local') + ' Restaurants | Crunchbutton';
 }
 
 App.page.foodDelivery.load = function(){
