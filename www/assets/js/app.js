@@ -39,7 +39,8 @@ var App = {
 	hasBack: false,
 	_init: false,
 	_pageInit: false,
-	_identified: false
+	_identified: false,
+	tips: [0,5,10,15,20,25]
 };
 
 App.loadRestaurant = function(id) {
@@ -220,52 +221,20 @@ App.page.restaurant = function(id) {
 		}
 
 		App.restaurant = this;
-
+		
 		var community = App.getCommunityById( App.restaurant.id_community );
-
 		App.track('Restaurant page loaded', {restaurant: App.restaurant.name});
 
-		document.title = App.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
-
-		$('.main-content').html(
-			App.suggestion.tooltipContainer( 'mobile' ) +
-			'<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed"><div class="cart-summary-icon"></div><div class="cart-summary-item-count"><span></span></div><div class="cart-summary-items"></div></div>' +
-			'<div class="restaurant-name"><h1>' + App.restaurant.name + '</h1></div>' +
-			(App.restaurant.image ? '<div class="restaurant-pic-wrapper"><div class="restaurant-pic" style="background: url(' + App.restaurant.img + ');"></div></div>' : '') +
-			'<div class="main-content-readable">' +
-				'<div class="cart-items"><div class="restaurant-item-title text-your-order">Your Order</div><div class="your-order-label" style="font-weight: bold; display: none;">(we\'ve chosen the most popular order, but you can order anything you want)</div><div class="divider"></div><div class="delivery-minimum-error">Add $<span class="delivery-min-diff">' + parseFloat(App.restaurant.delivery_min -  App.cart.total()).toFixed(2) + '</span> from menu to meet delivery minimum.</div><div class="cart-items-content"></div></div>' +
-				'<div class="restaurant-items"></div>' +
-				'<div class="divider"></div>' +
-			'</div>' +
-			'<div class="restaurant-payment-div"></div>'
-		);
-
-		var
-			categories = App.restaurant.categories(),
-			dishes, list;
-
-		$('.restaurant-items').append('<div class="content-item-name content-item-main-name"><h1>Add to your order' + App.suggestion.tooltipContainer( 'desktop' ) +  '</h1></div>')
-
-		for (var x in categories) {
-			dishes = categories[x].dishes();
-
-			list = $('<ul class="resturant-dishes resturant-dish-container" date-id_category="' + categories[x].id_category + '"></ul>');
-
-			var community_name = ( community.name ) ? (' at ' + community.name ) : '';
-
-			$('.restaurant-items').append('<div class="restaurant-item-title">' + categories[x].name + (categories[x].loc == '1' ? community_name : '') + '</div>',
-				list
-			);
-
-			for (var xx in dishes) {
-				var dish = $('<li><a href="javascript:;" data-id_dish="' + dishes[xx].id_dish + '"><span class="dish-name">' + dishes[xx].name + '</span><span class="dish-price">($' + dishes[xx].price + ')</span></a></li>');
-				list.append(dish);
+		App.showPage({
+			page: 'restaurant',
+			title: App.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton',
+			data: {
+				restaurant: App.restaurant,
+				presets: App.config.user.presets,
+				user: App.config.user,
+				community: community
 			}
-		}
-
-		$('.restaurant-items').append( App.suggestion.link() );
-
-		$('.cart-items').append('<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for ' + App.restaurant.name + '</label></div>');
+		});
 
 		if (App.cart.hasItems()) {
 			App.cart.reloadOrder();
@@ -278,46 +247,6 @@ App.page.restaurant = function(id) {
 		} else {
 			App.cart.loadOrder(App.restaurant.preset());
 		}
-
-		if (App.config.user.presets) {
-
-			App.drawPay(this);
-
-			$('.payment-form').hide();
-
-			var dp = $('<div class="delivery-payment-info main-content-readable"></div>');
-
-			dp.append('<div class="dp-display-phone dp-display-item"><label>Your phone number:</label> ' + (App.config.user.phone ? App.phone.format(App.config.user.phone) : '<i>no phone # provided</i>') + '</div>');
-
-			var paying = $(
-					'<div class="dp-display-payment dp-display-item ">' +
-						'<label>You are paying <span class="cash-order-aprox"></span> :</label> ' +
-						'<span class="cart-breakdownDescription"></span> ' +
-						'for a total of <span class="cart-total">$0.00</span> ' +
-						'<span class="cart-paymentType"></span>' +
-					'</div>');
-
-			dp.append(paying);
-
-			if (App.config.user.delivery_type == 'delivery' && App.restaurant.delivery == '1') {
-				dp.append('<div class="dp-display-address dp-display-item"><label>Your food will be delivered to:</label><br />' + (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>') + '</div>');
-			} else {
-				dp.append('<div class="dp-display-address dp-display-item"><label>Address:</label> <i>takeout</i></div>');
-			}
-
-			dp.append('<div class="dp-display-address dp-display-item"><a href="javascript:;"><i>Change delivery or payment details</i></a></div>');
-
-			dp.append('<div class="divider"></div>');
-
-			$('.main-content').append(dp);
-			$('.delivery-tip-amount').html(App.order.tip ? App.order.tip + '%' : 'no');
-
-		} else {
-			App.drawPay(this);
-		}
-
-		// Appends the suggestion's form
-		$('.main-content').append( App.suggestion.html() );
 
 		// As the div restaurant-items has position:absolute this line will make sure the footer will not go up.
 		$('.body').css( { 'min-height' : $('.restaurant-items').height() } )
