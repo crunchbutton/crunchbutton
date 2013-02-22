@@ -41,7 +41,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					$message = str_split( $message, 160 );
 					
 					$env = c::env() == 'live' ? 'live' : 'dev';
-					$phones = c::config()->suggestion->{'live'}->phone;
+					$phones = c::config()->suggestion->{$env}->phone;
 					$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 					foreach ( $message as $msg ) {
 						foreach ( $phones as $phone ) {
