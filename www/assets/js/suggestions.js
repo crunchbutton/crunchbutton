@@ -121,13 +121,11 @@ App.suggestion.show = function(){
 	$( '.suggestion-message' ).hide();
 	/* Shows the modal */
 	setTimeout( function(){
-			/* Shows the shield */
-			App.modal.shield.show();
 			$( '.suggestion-container' )
 				.dialog( {
+					modal: true,
 					dialogClass: 'modal-fixed-dialog',
 					width: App.modal.contentWidth(),
-					close: function( event, ui ) { App.modal.shield.close(); },
 					open: function( event, ui ) { $( '.suggestion-name' ).focus(); }
 				} );
 		}, 100 );
