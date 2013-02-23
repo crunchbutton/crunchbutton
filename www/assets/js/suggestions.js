@@ -1,4 +1,6 @@
-App.suggestion.init = function(){
+App.suggestion.init = function() {
+
+	$('.wrapper').append(App.render('suggestion'));
 
 	$(document).on('click', '.suggestion-link', function() {
 		App.suggestion.show();
@@ -42,56 +44,33 @@ App.suggestion.init = function(){
 	});
 }
 
-App.suggestion.html = function(){
-	return '' +
-	'<div class="suggestion-container">' +
-		'<div class="suggestion-form-container">' +
-			'<form class="suggestion-form">' +
-				'<h1>What do you suggest?</h1>' +
-				'<input type="text" maxlength="250" name="suggestion-name" tabindex="10" />' +
-				'<div class="divider"></div>' +
-				'<a href="javascript:;" class="suggestion-form-button">Suggest</a>' +
-				'<div class="divider"></div>' +
-			'</form>' +
-			'<div class="suggestion-message">' +
-			'</div>' +
-		'</div>' +
-		'<div class="suggestion-form-tip">' +
-			'Crunchbutton "curates" menus. <br/>' +
-			'We\'ve curated just the top food here. <br/>' +
-			'You can suggest food, and, if it\'s really good, you\'ll see it on the menu soon.' +
-		'</div>' +
-	'</div>';
-}
-
 App.suggestion.send = function(){
 
-	if( $.trim( $( 'input[name=suggestion-name]' ).val() ) == '' ){
-		alert( 'Please enter the food\'s name.' );
-		$( 'input[name=suggestion-name]' ).focus();
+	if ($.trim($('input[name=suggestion-name]').val()) == '' ){
+		alert( 'Please enter a suggestion.' );
+		$('input[name=suggestion-name]').focus();
 		return;
 	}
 
-	var suggestionURL = App.service + 'suggestion/new';
+	var data = {
+		restaurant: App.restaurant.permalink,
+		name: $('input[name=suggestion-name]').val()
+	};
 
-	var data = {};
-	data[ 'type' ] = 'dish';
-	data[ 'status' ] = 'new';
-	data[ 'id_user' ] = ( App.config.user.id_user ) ? App.config.user.id_user : 'null';
-	data[ 'id_restaurant' ] = App.restaurant.id;
-	data[ 'id_community' ] = App.restaurant.id_community;
-	data[ 'name' ] = $( 'input[name=suggestion-name]' ).val();
-
-	if( !App.suggestion.itIsSending ){
+	if (!App.suggestion.itIsSending){
 		App.suggestion.itIsSending = true;
+		console.log('saving', new Date);
 		$.ajax({
-			type: "POST",
+			type: 'POST',
 			dataType: 'json',
 			data: data,
-			url: suggestionURL,
+			url:  App.service + 'suggestion/new',
 			success: function(content) {
-				App.suggestion.message( '<h1>Awesome, thanks!!</h1>' +
-																'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at ' + App.callPhone( '800-242-1444' ) +  '</div>' );
+				console.log('saveds', new Date);
+				App.suggestion.message(
+					'<h1>Awesome, thanks!!</h1>' +
+					'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at ' + App.callPhone( '800-242-1444' ) +  '</div>'
+				);
 			}
 		});
 	}
@@ -115,20 +94,24 @@ App.suggestion.message = function( msg ){
 App.suggestion.show = function(){
 	/* Resets the default values */
 	$( 'input[name=suggestion-name]' ).val( '' );
+
 	/* Shows the form and hides the message box  */
 	$( '.suggestion-form' ).show();
 	$( '.suggestion-form-tip' ).show();
 	$( '.suggestion-message' ).hide();
+
 	/* Shows the modal */
-	setTimeout( function(){
-			$( '.suggestion-container' )
-				.dialog( {
-					modal: true,
-					dialogClass: 'modal-fixed-dialog',
-					width: App.modal.contentWidth(),
-					open: function( event, ui ) { $( '.suggestion-name' ).focus(); }
-				} );
-		}, 100 );
+	setTimeout(function() {
+		$('.suggestion-container')
+			.dialog({
+				modal: true,
+				dialogClass: 'modal-fixed-dialog',
+				width: App.modal.contentWidth(),
+				open: function(event, ui) {
+					$('.suggestion-name').focus();
+				}
+			});
+	}, 100 );
 }
 
 App.suggestion.tooltipContainer = function( device ){
