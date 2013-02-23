@@ -1481,7 +1481,7 @@ html[xmlns] .clearfix {
 
 @media only screen and (min-width : 770px) {
 	.location-address {
-		width: 609px;
+		width: 100%;
 	}
 	.fb-like-mobile {
 		margin-bottom: 50px;
