@@ -33,9 +33,7 @@ var App = {
 	restaurants: {
 		permalink : 'food-delivery'
 	},
-	modal : {
-		shield : { 'isVisible' : false }
-	},
+	modal: {},
 	hasBack: false,
 	_init: false,
 	_pageInit: false,
@@ -1624,44 +1622,10 @@ $(function() {
 
 	App.signin.init();
 	App.signup.init();
-	App.modal.shield.init();
+	App.suggestion.init();
+
 });
 
-
-
-App.modal.shield.resize = function(){
-	return;
-	if( App.modal.shield.isVisible ){
-		$( '.modal-shield' ).width( $( window ).width() );
-		/* Plus 60 due to iphone's title bar. */
-		$( '.modal-shield' ).height( $( window ).height() + 60 );
-	}
-}
-
-App.modal.shield.init = function(){
-	return;
-	$( '.wrapper' ).append( '<div class="modal-shield"></div>' );
-	$( window ).resize( function() {
-			App.modal.shield.resize();
-	} );
-}
-
-App.modal.shield.show = function(){
-	return;
-	$( '.modal-shield' ).show();
-	App.modal.shield.isVisible = true;
-	App.modal.shield.resize();
-}
-
-App.modal.shield.close = function(){
-	return;
-	if( App.dialogForceStayShield ){
-		App.dialogForceStayShield = false;
-		return;
-	}
-	$( '.modal-shield' ).hide();
-	App.modal.shield.isVisible = false;
-}
 
 App.modal.contentWidth = function(){
 	if( $( window ).width() > 700 ){
@@ -1687,35 +1651,33 @@ App.message.show = function( title, message ) {
 		$( '.message-container' ).html( '<h1>' + title + '</h1><div class="message-container-content">' +   message + '</div>' );
 	} else {
 		var html = '<div class="message-container">' +
-								'<h1>' + title + '</h1>' +
-								'<div class="message-container-content">' + 
-									message +
-								'</div>' +
-							'</div>';
-		$( '.wrapper' ).append( html );	
+			'<h1>' + title + '</h1>' +
+			'<div class="message-container-content">' + 
+			message +
+			'</div>' +
+			'</div>';
+		$('.wrapper').append(html);
 	}
-	
-	setTimeout( function(){
-		/* Shows the shield */
-		App.modal.shield.show();
-		$( '.message-container' )
-			.dialog( {
-				dialogClass: 'modal-fixed-dialog',
-				width: App.modal.contentWidth(),
-				close: function( event, ui ) { App.modal.shield.close(); },
-			} );
-	}, 100 );
+
+	$('.message-container')
+		.dialog({
+			modal: true,
+			dialogClass: 'modal-fixed-dialog',
+			width: App.modal.contentWidth(),
+			close: function( event, ui ) { App.modal.shield.close(); },
+		});
+
 }
 
 App.message.chrome = function( ){
 	var title = 'How to use Chrome',
-			message = '<p>' +
-					'Just tap "Request Desktop Site.' +
-				'</p>' +
-				'<p align="center">' +
-					'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' + 
-				'</p>';
-	App.message.show( title, message );
+		message = '<p>' +
+		'Just tap "Request Desktop Site.' +
+		'</p>' +
+		'<p align="center">' +
+		'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' + 
+		'</p>';
+	App.message.show(title, message);
 }
 
 google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});

@@ -67,13 +67,12 @@ App.page.foodDelivery = function() {
 
 App.page.restaurant = function(id) {
 
-	App.currentPage = 'restaurant';
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-	$( '.nav-back' ).addClass( 'nav-back-show' );
+	$('.config-icon').addClass('config-icon-mobile-hide');
+	$('.nav-back').addClass('nav-back-show');
 
 	App.cartHighlightEnabled = false;
 
-	$('.content').addClass('smaller-width');
+	$('.content').removeClass('smaller-width');
 	$('.content').removeClass('short-meal-list');
 	
 	if ( !App.loc.lat ) {
@@ -143,7 +142,6 @@ App.page.restaurant = function(id) {
 
 		setTimeout(function() {
 			var total = App.cart.updateTotal();
-			App.suggestion.init();
 		},200);
 
 		App.cartHighlightEnabled = false;
