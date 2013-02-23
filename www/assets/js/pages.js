@@ -360,11 +360,17 @@ App.foodDelivery.loadPlaceName = function() {
 }
 
 App.foodDelivery.tagLine = function(){
-	var slogan = App.slogan;
-	var sloganReplace = ( App.loc.prep || ( App.loc.city_name ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.city_name || '' ) ;
-	sloganReplace = $.trim(sloganReplace);
-	var tagline = App.tagline.tagline.replace('%s', sloganReplace);
-	slogan = slogan.replace('%s', sloganReplace);
+	try {
+		var slogan = App.slogan;
+		var sloganReplace = ( App.loc.prep || ( App.loc.city_name ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.city_name || '' ) ;
+		sloganReplace = $.trim(sloganReplace);
+		var tagline = App.tagline.tagline.replace('%s', sloganReplace);
+		slogan = slogan.replace('%s', sloganReplace);
+	} catch (e) {
+		console.log(App.slogan, App.tagline);
+		var slogan = '';
+		var tagline = ''; 
+	}
 	return {
 		slogan: slogan,
 		tagline: tagline
