@@ -12,10 +12,7 @@ var App = {
 	cartHighlightEnabled: false,
 	currentPage: null,
 	slogans: ['Push a button. Get Food.'],
-	tagline: 'Order the top food %s. For free. <br /> \
-		After you order, everything is saved for future 1 click ordering. <br /> \
-		<strong>Choose a restaurant:</strong> \
-		',
+	tagline: '',
 	service: '/api/',
 	cached: {},
 	community: null,
@@ -256,16 +253,53 @@ App.track = function() {
 
 
 /**
+ * Tracks a property to mixpanel
+ */
+App.trackProperty = function(prop, value) {
+	if (App.config.env != 'live') {
+		return;
+	}
+	
+	var params = {};
+	params[prop] = value;
+	
+	mixpanel.register_once(params);
+};
+
+
+/**
  * Itendity the user to mixpanel
  */
 App.identify = function() {
 	if (App.config.env != 'live') {
+		App.AB();
 		return;
 	}
 	if (!App._identified && App.config.user.uuid) {
 		mixpanel.identify(App.config.user.uuid);
 		App._identified = true;
+		App.AB();
 	}
+};
+
+/**
+ * generate ab formulas
+ */
+App.AB = function() {
+	// random taglines
+	App.taglines = [
+		{
+			name: 'tagline-for-free',
+			tagline: 'Order the top food %s. For free. <br /> After you order, everything is saved for future 1 click ordering. <br /><strong>Choose a restaurant:</strong>'
+		},
+		{ name: 'tagline-no-free',
+			tagline: 'Order the top food %s. <br /> After you order, everything is saved for future 1 click ordering. <br /><strong>Choose a restaurant:</strong>'		
+		}
+	];
+	
+	App.slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
+	App.tagline = App.taglines[Math.floor(Math.random()*App.taglines.length)];
+	App.trackProperty('restaurant-tagline', App.tagline.name);
 };
 
 App.cart = {
