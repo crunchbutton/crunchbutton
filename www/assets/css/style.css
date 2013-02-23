@@ -1559,7 +1559,7 @@ html[xmlns] .clearfix {
 		font-size: 26px;
 		font-weight: 200;
 		width: 602px;
-		margin-left: 310px;
+		margin-left: 385px;
 		margin-top: 220px;
 		position: absolute;
 		z-index: 20;
@@ -2105,7 +2105,9 @@ html[xmlns] .clearfix {
 
 @media only screen and (min-width : 1024px) {
 	.restaurant-pic-wrapper {
-		display: none;
+		height: 190px;
+		overflow: hidden;
+		margin-bottom: 0px;
 	}
 
 	.restaurant-name {
@@ -2113,7 +2115,7 @@ html[xmlns] .clearfix {
 	}
 
 	.cart-items {
-		margin-top: 70px;
+		margin-top: 20px;
 	}
 
 	.button-bottom.button-letseat-form {
