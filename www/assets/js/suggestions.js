@@ -101,17 +101,14 @@ App.suggestion.show = function(){
 	$( '.suggestion-message' ).hide();
 
 	/* Shows the modal */
-	setTimeout(function() {
-		$('.suggestion-container')
-			.dialog({
-				modal: true,
-				dialogClass: 'modal-fixed-dialog',
-				width: App.modal.contentWidth(),
-				open: function(event, ui) {
-					$('.suggestion-name').focus();
-				}
-			});
-	}, 100 );
+	$('.suggestion-container').dialog({
+		modal: true,
+		dialogClass: 'modal-fixed-dialog',
+		width: App.modal.contentWidth(),
+		open: function(event, ui) {
+			$('.suggestion-name').focus();
+		}
+	});
 }
 
 App.suggestion.tooltipContainer = function( device ){
