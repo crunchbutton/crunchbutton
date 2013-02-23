@@ -360,10 +360,10 @@ App.foodDelivery.loadPlaceName = function() {
 }
 
 App.foodDelivery.tagLine = function(){
-	var slogan = App.slogans[Math.floor(Math.random()*App.slogans.length)];
+	var slogan = App.slogan;
 	var sloganReplace = ( App.loc.prep || ( App.loc.city_name ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.city_name || '' ) ;
-	sloganReplace = $.trim( sloganReplace );
-	var tagline = App.tagline.replace('%s', sloganReplace);
+	sloganReplace = $.trim(sloganReplace);
+	var tagline = App.tagline.tagline.replace('%s', sloganReplace);
 	slogan = slogan.replace('%s', sloganReplace);
 	return {
 		slogan: slogan,
