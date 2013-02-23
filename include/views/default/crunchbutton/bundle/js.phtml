@@ -55,6 +55,7 @@ $(function() {
 	if (!$scripts) {
 		$scripts = ['app'];
 	}
+
 ?>
 <? foreach ($scripts as $script) : ?>
 	<script src="/assets/js/<?=$script?>.js?v=<?=Cana_Util::gitVersion()?>"></script>
@@ -62,9 +63,13 @@ $(function() {
 
 <script src="/assets/js/base.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/util.js?v=<?=Cana_Util::gitVersion()?>"></script>
-<script src="/assets/js/pages.js?v=<?=Cana_Util::gitVersion()?>"></script>
-<script src="/assets/js/accounts.js?v=<?=Cana_Util::gitVersion()?>"></script>
-<script src="/assets/js/suggestions.js?v=<?=Cana_Util::gitVersion()?>"></script>
+
+<? if (!in_array('admin', $scripts)) : ?>
+	<script src="/assets/js/pages.js?v=<?=Cana_Util::gitVersion()?>"></script>
+	<script src="/assets/js/accounts.js?v=<?=Cana_Util::gitVersion()?>"></script>
+	<script src="/assets/js/suggestions.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<? endif ; ?>
+
 <script src="/assets/js/orm.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/community.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/restaurant.js?v=<?=Cana_Util::gitVersion()?>"></script>

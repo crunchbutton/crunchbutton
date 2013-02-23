@@ -223,7 +223,7 @@ function _loadRestaurant() {
  */
 function _newNotificationFields() {
 	var inputSelector = '.notification-wrap input[name="notification-value"]';
-	$(inputSelector).live('keyup', function() {
+	$(document).on('keyup', inputSelector, function() {
 		var $container = $(this).closest('.check-content');
 		var allfull    = true;
 		$container.find(inputSelector).each(function() {
@@ -785,7 +785,7 @@ App.suggestions = {
 		});
 	},
 	prepareForm: function( id_suggetion ){
-		$( '.admin-suggestion-save' ).live( 'click', function(){
+		$(document).on('click', '.admin-suggestion-save', function() {
 			$( '#suggestion-status' ).html( '' );
 			var status = $( '#status' ).val();
 			var data = { 'status' : status };
@@ -808,7 +808,7 @@ App.suggestions = {
 
 
 $(function() {
-	$('.admin-restaurant-link').live('click',function() {
+	$(document).on('click', '.admin-restaurant-link', function() {
 		App.loadRestaurant($(this).attr('data-id_restaurant'));
 	});
 
@@ -817,7 +817,7 @@ $(function() {
 	 *
 	 * @return void
 	 */
-	$('.hours-date-hour input').live('keyup', function() {
+	$(document).on('keyup', '.hours-date-hour input', function() {
 		var allfull = true;
 		$(this).closest('.hours-date-hours').find('input').each(function() {
 			if ($(this).val() == '') {
@@ -832,38 +832,37 @@ $(function() {
 		}
 	});
 
-
-	$('.admin-restaurant-save').live('click', function() {
+	$(document).on('click', '.admin-restaurant-save', function() {
 		saveRestaurant(true);
 	});
 
-	$('.admin-restaurant-save-details').live('click', function() {
+	$(document).on('click', '.admin-restaurant-save-details', function() {
 		saveRestaurant(false);
 	});
 
-	$('.admin-restaurant-save-hours').live('click', function() {
+	$(document).on('click', '.admin-restaurant-save-hours', function() {
 		saveHours();
 	});
 
-	$('.admin-restaurant-save-dishes').live('click', function() {
+	$(document).on('click', '.admin-restaurant-save-dishes', function() {
 		_saveCategories(function(){
 			saveDishes();
 		});
 	});
 
-	$('.admin-restaurant-hours-save-all').live('click',function() {
+	$(document).on('click', '.admin-restaurant-hours-save-all', function() {
 		$('.admin-restaurant-hours-save-link').click();
 	});
 
-	$('.check label').live('click',function() {
+	$(document).on('click', '.check label', function() {
 		$(this).closest('.check').find('input').click();
 	});
 
-	$('.order-range-all label').live('click', function() {
+	$(document).on('click', '.order-range-all label', function() {
 		$(this).parent().find('input').click();
 	});
 
-	$('[name="phone"]').live('keyup', function(e) {
+	$(document).on('keyup', '[name="phone"]', function() {
 		$(this).val( App.phone.format($(this).val()) );
 	});
 
@@ -874,14 +873,15 @@ $(function() {
 		parent.find('input[name="' + name + '_check"][value="0"]').prop('checked', false);
 	};
 
-	$('.change-a-check').live('change', changeACheck).live('keyup', changeACheck);
+	$(document).on('change', '.change-a-check', changeACheck);
+	$(document).on('keyup', '.change-a-check', changeACheck);
 
 	/**
 	 * Folds/unfolds the checkbox options
 	 *
 	 * @todo There is a strange bug in the checkbox, If the label is selected, it does work, if you click on the checkbox, it doesnt
 	 */
-	$('.bind-a-check').click(function(e) {
+	$(document).on('click', '.bind-a-check', function(e) {
 		var name   = $(this).attr('name');
 		var value  = $(this).attr('value');
 		var parent = $(this).closest('.content-sub').length ? $(this).closest('.content-sub') : $(this).closest('.content-primary');
@@ -924,7 +924,7 @@ $(function() {
 		});
 	}
 
-	$('input[name="order-range-all"]').live('change', function() {
+	$(document).on('change', 'input[name="order-range-all"]', function() {
 		if ($(this).prop('checked')) {
 			$('.date-picker').attr('disabled', 'disabled');
 			$('.date-picker').val('');
@@ -933,7 +933,7 @@ $(function() {
 		}
 	});
 
-	$('.hours-date-hour input').live('change', function() {
+	$(document).on('change', '.hours-date-hour input', function() {
 		$(this).val(App.formatTime($(this).val()));
 	});
 
@@ -942,7 +942,7 @@ $(function() {
 	 *
 	 * @todo refactorize how the accordion should be redrawn in a private method
 	 */
-	$('.admin-food-item').live('click', function() {
+	$(document).on('click', '.admin-food-item', function() {
 		var speed = 100;
 		$(this).closest('.admin-food-item-wrap').find('.admin-food-item-content').slideToggle(speed);
 		$(this).toggleClass('admin-food-item-collapsed');
@@ -970,19 +970,23 @@ $(function() {
 		}
 	};
 
-	$('.clean-input').live('keyup', cleanInput).live('change', cleanInput);
+	$(document).on('keyup', '.clean-input', cleanInput);
+	$(document).on('change', '.clean-input', cleanInput);
 
 	var changeDish = function(e) {
 		$(this).closest('.admin-food-item-wrap').find('.food-name').html($(this).val());
 	};
 
-	$('.dish-name').live('keyup', changeDish).live('change', changeDish);
+
+	$(document).on('keyup', '.dish-name', changeDish);
+	$(document).on('change', '.dish-name', changeDish);
 
 	var changePrice = function(e) {
 		$(this).closest('.admin-food-item-wrap').find('.food-price-num').html($(this).val());
 	};
 
-	$('.dish-price input').live('keyup', changePrice).live('change', changePrice);
+	$(document).on('keyup', '.dish-price input', changePrice);
+	$(document).on('change', '.dish-price input', changePrice);
 
 	/**
 	 * Show the new dish dialog to set a category for it
@@ -991,7 +995,7 @@ $(function() {
 	 *
 	 * @return boolean
 	 */
-	$('.control-link-add-dish').live('click', function() {
+	$(document).on('click', '.control-link-add-dish', function() {
 
 		var categories      = App.restaurantObject.categories();
 		var categoryOptions = '';
@@ -1028,7 +1032,7 @@ $(function() {
 		return false;
 	});
 
-	$('.admin-food-item-delete').live('click', function() {
+	$(document).on('click', '.admin-food-item-delete', function() {
 
 		var parent = $(this).closest('.admin-food-item-wrap');
 		var id_dish = parent.attr('data-id_dish');
@@ -1049,7 +1053,7 @@ $(function() {
 		}
 	});
 
-	$('.dish-options-delete').live('click', function() {
+	$(document).on('click', '.dish-options-delete', function() {
 		var parent = $(this).closest('.dish-options');
 		var id_option = parent.attr('data-id_option');
 		var name = parent.find('input[name="dish-options-name"]').val();
@@ -1069,7 +1073,7 @@ $(function() {
 		}
 	});
 
-	$('.admin-dish-options-wrapper input[type="text"]').live('keyup', function() {
+	$(document).on('keyup', '.admin-dish-options-wrapper input[type="text"]', function() {
 		var allfull = true;
 
 		$(this).closest('.admin-dish-options-wrapper').find('.dish-options').each(function() {
@@ -1090,7 +1094,7 @@ $(function() {
 		}
 	});
 
-	$('.control-link-add-option').live('click', function() {
+	$(document).on('click', '.control-link-add-option', function() {
 		var self = $(this);
 		$('#dialog-option-group').dialog({
 			resizable: false,
@@ -1122,7 +1126,7 @@ $(function() {
 	 *
 	 * @returns boolean
 	 */
-	$('.control-link-add-category').live('click', function() {
+	$(document).on('click', '.control-link-add-category', function() {
 		$('#dialog-add-menu').dialog({
 			resizable: false,
 			height: 160,
