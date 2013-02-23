@@ -757,7 +757,15 @@ class Crunchbutton_Restaurant extends Cana_Table
 					`distance` <= `delivery_radius`
 			ORDER BY _weight DESC;
 		';
-		return self::q($query);
+		$restaurants = self::q($query);
+		foreach ($restaurants as $restaurant) {
+			$sum += $restaurant->_weight;
+		}
+		foreach ($restaurants as $restaurant) {
+			$restaurant->_weight = (($restaurant->_weight / $sum) * 100) + $restaurant->weight_adj;
+		}
+		
+		return $restaurants;
 	}
 
 	public function save() {
