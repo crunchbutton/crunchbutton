@@ -1299,7 +1299,7 @@ $(function() {
 		$('input').blur();
 	});
 
-	$(document).on('click', '.button-letseat-formform', function() {
+	$(document).on('submit', '.button-letseat-formform', function() {
 		$('.button-letseat-form').click();
 		return false;
 	});
@@ -1490,24 +1490,20 @@ $(function() {
 		$('.delivery-payment-info, .content-padder-before').hide();
 	});
 
-	/*
-	$('.button-bottom').live({
+	$(document).on({
 		mousedown: function() {
 			$(this).addClass('button-bottom-click');
 		},
 		touchstart: function() {
 			$(this).addClass('button-bottom-click');
-		}
-	});
-	$('.button-bottom').live({
+		},
 		mouseup: function() {
 			$(this).removeClass('button-bottom-click');
 		},
 		touchend: function() {
 			$(this).removeClass('button-bottom-click');
 		}
-	});
-	*/
+	}, '.button-bottom');
 
 	$(document).on('click', '.cart-customize-check, .cart-customize-select', function() {
 		App.cart.customizeItem($(this));
@@ -1517,7 +1513,7 @@ $(function() {
 		$(this).prev('input').click();
 	});
 
-	$(document).on('click', '[name="pay-tip"]', function() {
+	$(document).on('change', '[name="pay-tip"]', function() {
 		App.order.tip = $(this).val();
 		App.order.tipHasChanged = true;
 		var total = App.cart.total();
@@ -1538,7 +1534,7 @@ $(function() {
 		}
 	});
 
-	$(document).on('click', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
+	$(document).on('change', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
 		App.order.cardChanged = true;
 	});
 
