@@ -313,8 +313,7 @@ App.foodDelivery.preProcess = function() {
 			    primer: parseInt,
 			    reverse: true
 			}));
-			
-			console.log(App.restaurants.list);
+
 			if( App.foodDelivery.forceProcess ){
 				App.foodDelivery.forceProcess = false;
 				App.page.foodDelivery.load();
