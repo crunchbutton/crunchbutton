@@ -211,18 +211,17 @@ App.signin.show = function(){
 	$('.signin-facebook-message').hide();
 	$('.signin-facebook').show();
 
-	setTimeout( function(){
-		$( 'input[name=signin-email]' ).val( '' );
-		$( 'input[name=signin-password]' ).val( '' );
-		$('.signin-error').hide();
-		$( '.signin-container' )
-			.dialog( {
-				dialogClass: 'modal-fixed-dialog',
-				modal: true,
-				width: App.modal.contentWidth(),
-				open: function( event, ui ) { $( '.signin-email' ).focus(); }
-			} );
-	}, 100 );
+	$( 'input[name=signin-email]' ).val( '' );
+	$( 'input[name=signin-password]' ).val( '' );
+	$('.signin-error').hide();
+	$( '.signin-container' )
+		.dialog( {
+			dialogClass: 'modal-fixed-dialog',
+			modal: true,
+			width: App.modal.contentWidth(),
+			open: function( event, ui ) { $( '.signin-email' ).focus(); }
+		} );
+
 }
 
 App.signin.checkUser = function(){
@@ -313,28 +312,26 @@ App.signin.passwordHelp.sendForm = function(){
 App.signin.passwordHelp.reset = {};
 
 App.signin.passwordHelp.reset.init = function(){
-	setTimeout( function(){
-		$( '.password-reset-container' )
-			.dialog( {
-				modal: true,
-				dialogClass: 'modal-fixed-dialog',
-				width: App.modal.contentWidth(),
-				close: function( event, ui ) { App.signin.passwordHelp.reset.close(); },
-				open: function( event, ui ) { $( 'input[name=password-reset-code]' ).focus(); }
-			} );
-		$( '.password-reset-code-button' ).live( 'click', function(){
-			App.signin.passwordHelp.reset.sendForm();
+	$( '.password-reset-container' )
+		.dialog( {
+			modal: true,
+			dialogClass: 'modal-fixed-dialog',
+			width: App.modal.contentWidth(),
+			close: function( event, ui ) { App.signin.passwordHelp.reset.close(); },
+			open: function( event, ui ) { $( 'input[name=password-reset-code]' ).focus(); }
 		} );
-		$( '.password-change-button' ).live( 'click', function(){
-			App.signin.passwordHelp.reset.change();
-		} );
-		$( '.password-reset-form' ).submit(function() {
-			return false;
-		} );
-		$( '.password-change-form' ).submit(function() {
-			return false;
-		} );
-	}, 100 );
+	$( '.password-reset-code-button' ).live( 'click', function(){
+		App.signin.passwordHelp.reset.sendForm();
+	} );
+	$( '.password-change-button' ).live( 'click', function(){
+		App.signin.passwordHelp.reset.change();
+	} );
+	$( '.password-reset-form' ).submit(function() {
+		return false;
+	} );
+	$( '.password-change-form' ).submit(function() {
+		return false;
+	} );
 }
 
 App.signin.passwordHelp.reset.sendForm = function(){
@@ -474,25 +471,25 @@ App.signup.show = function( justFacebook ){
 	} else {
 		$( '.signup-facebook-container' ).show();
 	}
-	setTimeout( function(){
-			// $( 'input[name=signup-email]' ).val( App.config.user.phone );
-			$( 'input[name=signup-password]' ).val( '' );
-			$( '.signup-form-options' ).show();
-			$( '.signup-success-container' ).hide();
-			if( justFacebook ){
-				$( '.signup-form' ).hide();
-			} else {
-				$( '.signup-form' ).show();
-			}
-			$( '.signin-error' ).hide();
-			$( '.signup-container' )
-				.dialog( {
-					modal: true,
-					dialogClass: 'modal-fixed-dialog',
-					width: App.modal.contentWidth(),
-					open: function( event, ui ) { $( '.signup-phone' ).focus(); }
-				} );
-		}, 100 );
+
+
+	$( 'input[name=signup-password]' ).val( '' );
+	$( '.signup-form-options' ).show();
+	$( '.signup-success-container' ).hide();
+	if( justFacebook ){
+		$( '.signup-form' ).hide();
+	} else {
+		$( '.signup-form' ).show();
+	}
+	$( '.signin-error' ).hide();
+	$( '.signup-container' )
+		.dialog( {
+			modal: true,
+			dialogClass: 'modal-fixed-dialog',
+			width: App.modal.contentWidth(),
+			open: function( event, ui ) { $( '.signup-phone' ).focus(); }
+		} );
+
 }
 
 App.signup.checkLogin = function(){

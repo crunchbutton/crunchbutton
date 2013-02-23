@@ -5,7 +5,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 
 		switch ( $this->method() ) {
 			// Saves a suggestion
-			case 'get':
+			case 'post':
 
 				if (c::getPagePiece(2) == 'new') {
 				
