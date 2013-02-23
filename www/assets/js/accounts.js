@@ -116,8 +116,12 @@ App.signin.sendForm = function(){
 	} );
 }
 
+
+/**
+ * sign out and go to the home page
+ */
 App.signin.signOut = function(){
-	if( confirm( 'Confirm sign out?' ) ){
+	if (confirm( 'Confirm sign out?')){
 		if( App.signin.facebook.isLogged ){
 			FB.logout( function(){
 				$.getJSON('/api/logout',function(){
