@@ -1634,6 +1634,7 @@ $(function() {
 
 
 App.modal.shield.resize = function(){
+	return;
 	if( App.modal.shield.isVisible ){
 		$( '.modal-shield' ).width( $( window ).width() );
 		/* Plus 60 due to iphone's title bar. */
@@ -1642,6 +1643,7 @@ App.modal.shield.resize = function(){
 }
 
 App.modal.shield.init = function(){
+	return;
 	$( '.wrapper' ).append( '<div class="modal-shield"></div>' );
 	$( window ).resize( function() {
 			App.modal.shield.resize();
@@ -1649,12 +1651,14 @@ App.modal.shield.init = function(){
 }
 
 App.modal.shield.show = function(){
+	return;
 	$( '.modal-shield' ).show();
 	App.modal.shield.isVisible = true;
 	App.modal.shield.resize();
 }
 
 App.modal.shield.close = function(){
+	return;
 	if( App.dialogForceStayShield ){
 		App.dialogForceStayShield = false;
 		return;

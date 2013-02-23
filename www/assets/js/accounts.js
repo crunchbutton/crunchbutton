@@ -30,10 +30,10 @@ App.signin.init = function() {
 		return false;
 	});
 	
-	$(document).on('submit', '.signin-form', function() {
+	$(document).on('submit', '.signin-form', function(e) {
 		App.signin.sendForm();
-		console.log('asd')
-
+		e.stopPropagation();
+		return false;
 	});
 
 	$(document).on('click', '.signin-icon', function() {
@@ -41,7 +41,6 @@ App.signin.init = function() {
 	});
 
 	$(document).on('click', '.signup-link', function() {
-		App.dialogForceStayShield = true;
 		App.signup.show( false );
 		$('.signin-container').dialog('close');
 	});
@@ -213,16 +212,14 @@ App.signin.show = function(){
 	$('.signin-facebook').show();
 
 	setTimeout( function(){
-		/* Shows the shield */
-		App.modal.shield.show();
 		$( 'input[name=signin-email]' ).val( '' );
 		$( 'input[name=signin-password]' ).val( '' );
 		$('.signin-error').hide();
 		$( '.signin-container' )
 			.dialog( {
 				dialogClass: 'modal-fixed-dialog',
+				modal: true,
 				width: App.modal.contentWidth(),
-				close: function( event, ui ) { App.modal.shield.close(); },
 				open: function( event, ui ) { $( '.signin-email' ).focus(); }
 			} );
 	}, 100 );
@@ -317,13 +314,12 @@ App.signin.passwordHelp.reset = {};
 
 App.signin.passwordHelp.reset.init = function(){
 	setTimeout( function(){
-		/* Shows the shield */
-		App.modal.shield.show();
 		$( '.password-reset-container' )
 			.dialog( {
+				modal: true,
 				dialogClass: 'modal-fixed-dialog',
 				width: App.modal.contentWidth(),
-				close: function( event, ui ) { App.modal.shield.close(); App.signin.passwordHelp.reset.close(); },
+				close: function( event, ui ) { App.signin.passwordHelp.reset.close(); },
 				open: function( event, ui ) { $( 'input[name=password-reset-code]' ).focus(); }
 			} );
 		$( '.password-reset-code-button' ).live( 'click', function(){
@@ -456,7 +452,6 @@ App.signup.init = function() {
 	});
 
 	$(document).on('click','.signin-link', function() {
-		App.dialogForceStayShield = true;
 		App.signin.show();
 		$('.signup-container').dialog('close');
 	});
@@ -480,8 +475,6 @@ App.signup.show = function( justFacebook ){
 		$( '.signup-facebook-container' ).show();
 	}
 	setTimeout( function(){
-			/* Shows the shield */
-			App.modal.shield.show();
 			// $( 'input[name=signup-email]' ).val( App.config.user.phone );
 			$( 'input[name=signup-password]' ).val( '' );
 			$( '.signup-form-options' ).show();
@@ -494,9 +487,9 @@ App.signup.show = function( justFacebook ){
 			$( '.signin-error' ).hide();
 			$( '.signup-container' )
 				.dialog( {
+					modal: true,
 					dialogClass: 'modal-fixed-dialog',
 					width: App.modal.contentWidth(),
-					close: function( event, ui ) { App.modal.shield.close(); },
 					open: function( event, ui ) { $( '.signup-phone' ).focus(); }
 				} );
 		}, 100 );
