@@ -755,8 +755,18 @@ class Crunchbutton_Order extends Cana_Table {
 		unset($out['id']);
 		unset($out['id_order']);
 
+		$out['_restaurant_name'] = $this->restaurant()->name;
 		$out['user'] = $this->user()->uuid;
 		$out['_message'] = nl2br($this->orderMessage('web'));
+		
+		$timezone = new DateTimeZone($this->restaurant()->timezone);
+
+		$date = new DateTime($this->date);
+		$date->setTimeZone($timezone);
+		
+		$out['_date_tz'] = $date->format('Y-m-d H:i:s');
+		$out['_tz'] = $date->format('T');
+
 		return $out;
 	}
 

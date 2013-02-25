@@ -15,7 +15,12 @@
 
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
 
-<? if (c::config()->bundle) : ?>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+
+<? if (1==2 && c::config()->bundle) : ?>
 	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=admin"></script>
 <? else : ?>
 	<?=$this->display('bundle/js', ['set' => ['scripts' => ['datepicker/eye','datepicker/layout','datepicker/utils','datepicker/datepicker','admin']]])?>

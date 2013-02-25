@@ -635,6 +635,18 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $thumb;
 
 	}
+	
+	public function weight() {
+		if (!isset($this->_weight)) {
+			$res = self::q('
+				select count(*) as `weight`, `restaurant`.name from `order`
+				left join `restaurant` using(id_restaurant)
+				where id_restaurant='.$this->id_restaurant.'
+			');
+			$this->_weight = $res->weight;
+		}
+		return $this->_weight;
+	}
 
 	/**
 	 * Returns an array with all the information for a Restaurant.
@@ -648,8 +660,15 @@ class Crunchbutton_Restaurant extends Cana_Table
 	public function exports($ignore = []) {
 		$out              = $this->properties();
 		$out['_open']     = $this->open();
+		$out['_weight']    = $this->weight();
+
+		$timezone = new DateTimeZone( $this->timezone );
+		$date = new DateTime( 'now ', $timezone ) ;
+		
 		// Return the offset to help the Javascript to calculate the open/close hour correctly
-		$out['_tzoffset'] = ( ( new DateTime( 'now ', new DateTimeZone( $this->timezone ) ) )->getOffset() ) / 60 / 60;
+		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
+		$out['_tzabbr'] = $date->format('T');
+
 		// $out['img']    = '/assets/images/food/630x280/'.$this->image.'?crop=1';
 		$out['img']       = $this->publicImagePath().($this->image() ? $this->image()->getFileName() : '');
 		$out['img64']     = $this->publicImagePath().($this->thumb() ? $this->thumb()->getFileName() : '');
@@ -717,16 +736,38 @@ class Crunchbutton_Restaurant extends Cana_Table
 	}
 
 	public static function byRange($params) {
+		$params[ 'miles' ] = ( $params[ 'miles' ] ) ? $params[ 'miles' ] : 2;
 		$query = '
-			SELECT ((ACOS(SIN('.$params['lat'].' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$params['lat'].' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$params['lon'].' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`, restaurant.*
+			SELECT 
+				count(*) as _weight,
+				((ACOS(SIN('.$params['lat'].' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$params['lat'].' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$params['lon'].' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`,
+				restaurant.*
 			FROM `restaurant`
+			LEFT JOIN `order` using(id_restaurant)
 			WHERE
-				active=1
-				AND delivery=1
-			HAVING `distance`<=`delivery_radius`
-			ORDER BY name ASC;
+				active = 1
+			GROUP BY restaurant.id_restaurant
+			HAVING
+					takeout = 1 
+				AND
+					delivery = 0
+				AND 
+					`distance` <= ' . $params[ 'miles' ] . ' 
+				OR 
+					delivery = 1
+				AND 
+					`distance` <= `delivery_radius`
+			ORDER BY _weight DESC;
 		';
-		return self::q($query);
+		$restaurants = self::q($query);
+		foreach ($restaurants as $restaurant) {
+			$sum += $restaurant->_weight;
+		}
+		foreach ($restaurants as $restaurant) {
+			$restaurant->_weight = (($restaurant->_weight / $sum) * 100) + $restaurant->weight_adj;
+		}
+		
+		return $restaurants;
 	}
 
 	public function save() {
