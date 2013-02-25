@@ -1431,13 +1431,7 @@ $(function() {
 				if (r) {
 					App.loadRestaurant(r);
 				} else if (c) {
-					App.cache('Community',c, function() {
-						App.community = this;
-
-						if (App.community.id_community) {
-							History.pushState({},c,c);
-						}
-					});
+					App.routeAlias(c);
 				}
 			},100);
 		},
