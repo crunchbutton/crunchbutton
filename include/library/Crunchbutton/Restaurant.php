@@ -45,10 +45,12 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 	/**
 	 * Return the dishes for the restaurant
-     *
-     * Save actions should fetch all by addint active=null in the $where param
+	 *
+	 * Save actions should fetch all by addint active=null in the $where param
 	 *
 	 * @param string[] $where Associative array with the filters to use to fetch the dishes
+	 *
+	 * @todo Why is the restaurant calling the dishes directly instead of using the categoyr->dishes() method?
 	 */
 	public function dishes($where = []) {
 		if (!isset($this->_dishes)) {
