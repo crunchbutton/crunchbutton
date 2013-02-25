@@ -1045,18 +1045,25 @@ App.processConfig = function(json) {
 
 App.loc = {
 	distance: function(params) {
+		try{
+			var R = 6371; // Radius of the earth in km
+			var dLat = (params.to.lat - params.from.lat).toRad();
 
-		var R = 6371; // Radius of the earth in km
-		var dLat = (params.to.lat - params.from.lat).toRad();
+			var dLon = (params.to.lon - params.from.lon).toRad();
+			var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				Math.cos(params.from.lat.toRad()) * Math.cos(params.to.lat.toRad()) *
+				Math.sin(dLon/2) * Math.sin(dLon/2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+			var d = R * c; // Distance in km
 
-		var dLon = (params.to.lon - params.from.lon).toRad();
-		var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-			Math.cos(params.from.lat.toRad()) * Math.cos(params.to.lat.toRad()) *
-			Math.sin(dLon/2) * Math.sin(dLon/2);
-		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-		var d = R * c; // Distance in km
-
-		return d;
+			return d;
+		} catch( e ) {
+			App.track('Location Error', {
+				lat: App.loc.lat,
+				lon: App.loc.lon,
+				address: $('.location-address').val()
+			});
+		}
 	},
 	getClosest: function() {
 		var closest;
