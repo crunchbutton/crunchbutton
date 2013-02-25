@@ -33,12 +33,9 @@ class Crunchbutton_Category extends Cana_Table {
 				'id_category'   => $this->id_category,
 				'active'        => 1,
 			];
-
-			if (isset($_SESSION['admin'])) {
-				$where['active'] = NULL;
-			}
 			$whereSql      = $this->_mergeWhere($defaultFilters, $where);
 			$sql           = "SELECT * FROM dish WHERE $whereSql ORDER BY sort ASC";
+			throw new Exception('ADMIN');
 			$this->_dishes = Dish::q($sql);
 		}
 		return $this->_dishes;
