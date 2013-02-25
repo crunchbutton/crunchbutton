@@ -256,7 +256,7 @@ App.track = function() {
  * Tracks a property to mixpanel
  */
 App.trackProperty = function(prop, value) {
-	if (App.config.env != 'live') {
+	if (!App.config || App.config.env != 'live') {
 		return;
 	}
 	
@@ -272,13 +272,11 @@ App.trackProperty = function(prop, value) {
  */
 App.identify = function() {
 	if (App.config.env != 'live') {
-		App.AB();
 		return;
 	}
 	if (!App._identified && App.config.user.uuid) {
 		mixpanel.identify(App.config.user.uuid);
 		App._identified = true;
-		App.AB();
 	}
 };
 
@@ -1035,6 +1033,7 @@ App.test = {
 
 App.processConfig = function(json) {
 	App.config = json;
+	App.AB();
 	if (App.config.user) {
 		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];
