@@ -56,6 +56,13 @@ class Crunchbutton_Community extends Cana_Table {
 		return $this->_restaurants;
 	}
 
+	/**
+	 * Returns all data related to this Community
+	 *
+	 * @return array
+	 *
+	 * @see Cana_Table::exports()
+	 */
 	public function exports() {
 		$out = $this->properties();
 		$out[ 'name_alt' ] = $this->name_alt();

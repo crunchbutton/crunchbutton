@@ -10,6 +10,9 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account
 	/**
 	 * Default method to show a restaurant form
 	 *
+	 * You can't use the $view->community var to set the current restaurant community
+	 * as that var is used for something else.
+	 *
 	 * @return void
 	 */
 	private function _form()
@@ -19,22 +22,22 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account
 
 		$communities = Community::q('SELECT * FROM community');
 		if (count($this->restaurant->community()->items())) {
-			$community   = $this->restaurant->community()->items()[0];
+			$community = $this->restaurant->community()->items()[0];
 		} else {
-			$community  = new Crunchbutton_Community();
-			$community  = $community->getTest();
+			$community = new Crunchbutton_Community();
+			$community = $community->getTest();
 		}
 
-		$view->communities = $communities;
-		$view->community   = $community;
+		$view->communities         = $communities;
+		$view->restaurantCommunity = $community;
 		$view->display('admin/restaurants/restaurant');
 	}
 
-    /**
-     * Shows all the restaurants
-     *
-     * @return void
-     */
+	/**
+	 * Shows all the restaurants
+	 *
+	 * @return void
+	 */
 	private function _list()
 	{
 		$view = Cana::view();
