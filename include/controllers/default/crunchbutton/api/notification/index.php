@@ -7,7 +7,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 		Log::debug([
 			'id_notification_log' => $notification->id_notification_log,
 			'id_order' => $notification->id_order,
-			'action' => 'notification callback',
+			'action' => 'notification API : CONFIRMED ' . $notification->order()->confirmed,
 			'type' => 'notification'
 		]);
 
@@ -24,7 +24,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 							'type' => 'notification'
 						]);
 		
-						if ($notification->order()->confirmed) {									
+						if ($notification->order()->confirmed) {
 							if ($_REQUEST['CallSid'] == $notification->remote) {
 								if ($_REQUEST['Duration']) {
 									$notification->status = 'success';
@@ -39,16 +39,23 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 								$notification->save();
 							}
 						} else {
-						//	$notification->status = 'callback';
-						//	$notification->data = json_encode($_REQUEST);
-						//	$notification->date = date('Y-m-d H:i:s');
-						//	$notification->save();
-						//$notification->confirm();
+							$notification->status = 'callback';
+							$notification->data = json_encode($_REQUEST);
+							$notification->date = date('Y-m-d H:i:s');
+							$notification->save();
+							$notification->confirm();
 						}
 
 						break;
 
 					case 'callback':
+						Log::debug([
+							'id_notification_log' => $notification->id_notification_log,
+							'id_order' => $notification->id_order,
+							'action' => 'notification callback',
+							'confirmed' => $notification->order()->confirmed,
+							'type' => 'notification'
+						]);
 						switch ($notification->type) {
 							case 'phaxio':
 								$data = json_decode($_REQUEST['fax']);
