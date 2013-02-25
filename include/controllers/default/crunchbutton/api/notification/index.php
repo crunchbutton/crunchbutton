@@ -39,11 +39,11 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 								$notification->save();
 							}
 						} else {
-							$notification->status = 'callback';
-							$notification->data = json_encode($_REQUEST);
-							$notification->date = date('Y-m-d H:i:s');
-							$notification->save();
-							$notification->confirm();
+						//	$notification->status = 'callback';
+						//	$notification->data = json_encode($_REQUEST);
+						//	$notification->date = date('Y-m-d H:i:s');
+						//	$notification->save();
+						//$notification->confirm();
 						}
 
 						break;
