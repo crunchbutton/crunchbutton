@@ -45,10 +45,12 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 	/**
 	 * Return the dishes for the restaurant
-     *
-     * Save actions should fetch all by addint active=null in the $where param
+	 *
+	 * Save actions should fetch all by addint active=null in the $where param
 	 *
 	 * @param string[] $where Associative array with the filters to use to fetch the dishes
+	 *
+	 * @todo Why is the restaurant calling the dishes directly instead of using the categoyr->dishes() method?
 	 */
 	public function dishes($where = []) {
 		if (!isset($this->_dishes)) {
@@ -633,7 +635,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $thumb;
 
 	}
-	
+
 	public function weight() {
 		if (!isset($this->_weight)) {
 			$res = self::q('
@@ -652,17 +654,18 @@ class Crunchbutton_Restaurant extends Cana_Table
 	 * This is usualy used to JSON encode and send to the browser
 	 *
 	 * @param array $ignore An indexed array of what items not to ad to the export array
+	 * @param array $where  Adds a layer to filter the SQL WHERE statements
 	 *
 	 * @return array
 	 */
-	public function exports($ignore = []) {
+	public function exports($ignore = [], $where = []) {
 		$out              = $this->properties();
 		$out['_open']     = $this->open();
 		$out['_weight']    = $this->weight();
 
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
-		
+
 		// Return the offset to help the Javascript to calculate the open/close hour correctly
 		$out['_tzoffset'] = ( $date->getOffset() ) / 60 / 60;
 		$out['_tzabbr'] = $date->format('T');
@@ -674,9 +677,8 @@ class Crunchbutton_Restaurant extends Cana_Table
 		// $out['img64']  = '/assets/images/food/310x310/'.$this->image;
 
 		if (!$ignore['categories']) {
-			$categories = $this->categories();
 			foreach ($this->categories() as $category) {
-				$out['_categories'][] = $category->exports();
+				$out['_categories'][] = $category->exports($where);
 			}
 		}
 
@@ -736,7 +738,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 	public static function byRange($params) {
 		$params[ 'miles' ] = ( $params[ 'miles' ] ) ? $params[ 'miles' ] : 2;
 		$query = '
-			SELECT 
+			SELECT
 				count(*) as _weight,
 				((ACOS(SIN('.$params['lat'].' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$params['lat'].' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$params['lon'].' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`,
 				restaurant.*
@@ -746,14 +748,14 @@ class Crunchbutton_Restaurant extends Cana_Table
 				active = 1
 			GROUP BY restaurant.id_restaurant
 			HAVING
-					takeout = 1 
+					takeout = 1
 				AND
 					delivery = 0
-				AND 
-					`distance` <= ' . $params[ 'miles' ] . ' 
-				OR 
+				AND
+					`distance` <= ' . $params[ 'miles' ] . '
+				OR
 					delivery = 1
-				AND 
+				AND
 					`distance` <= `delivery_radius`
 			ORDER BY _weight DESC;
 		';
@@ -764,7 +766,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 		foreach ($restaurants as $restaurant) {
 			$restaurant->_weight = (($restaurant->_weight / $sum) * 100) + $restaurant->weight_adj;
 		}
-		
+
 		return $restaurants;
 	}
 

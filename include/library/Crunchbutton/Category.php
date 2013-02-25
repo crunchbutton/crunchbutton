@@ -33,10 +33,6 @@ class Crunchbutton_Category extends Cana_Table {
 				'id_category'   => $this->id_category,
 				'active'        => 1,
 			];
-
-			if (isset($_SESSION['admin'])) {
-				$where['active'] = NULL;
-			}
 			$whereSql      = $this->_mergeWhere($defaultFilters, $where);
 			$sql           = "SELECT * FROM dish WHERE $whereSql ORDER BY sort ASC";
 			$this->_dishes = Dish::q($sql);
@@ -44,8 +40,23 @@ class Crunchbutton_Category extends Cana_Table {
 		return $this->_dishes;
 	}
 
-	public function exports() {
+	/**
+	 * Exports the category and it's active dishes
+	 *
+	 * You can overwrite the thishes filter like sending both active and inactive
+	 * dishes by sending $where = ['Dish']['active' => NULL];
+	 *
+	 * @param array $where SQL WHERE filters
+	 * @return array
+	 */
+	public function exports($where = []) {
 		$out = $this->properties();
+
+		if (isset($where['Dish'])) {
+			$dishes = $this->dishes($where['Dish']);
+		} else {
+			$dishes = $this->dishes();
+		}
 		foreach ($this->dishes() as $dish) {
 			$out['_dishes'][] = $dish->exports();
 		}

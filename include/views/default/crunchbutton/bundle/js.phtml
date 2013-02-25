@@ -1,11 +1,45 @@
-<? /*
+<?
+/**
+ * Still not sure what this does
+ *
+ * View variables you can't overwrite (see Controller_admin_restaurants::_form())
+ * - $this->category
+ *
+ * @package  Cruncbutton.Bundle
+ * @category view
+ *
+ */
+
+/* @var $this Cana_View */
+
+
+/* Exports current community as JSON
+ *
+ * @todo move this to a controller
+ */
+if ($this->community) {
+	/* @var $this->community Crunchbutton_Community */
+	if ($this->admin) {
+		$community = $this->community->exports();
+	} else {
+		$community = $this->community->exports();
+	}
+	$communityJson = json_encode($community);
+	$communityJson = str_replace("'","\\'", $communityJson);
+}
+
+
+/*
 <script src="/assets/js/json2.js"></script>
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/js/jquery-ui.min.js"></script>
 <script src="/assets/js/underscore-min.js"></script>
-
 */
+
+
 ?>
+
+
 
 <script src="/assets/js/jquery.history.js"></script>
 <script src="/assets/js/jquery.cookie.js"></script>
@@ -31,8 +65,8 @@ $(function() {
 			stored: true
 		};
 	<? endforeach ; ?>
-	<? if ($this->community) : ?>
-		App.cached['Community'][<?=$this->community->id_community?>] = new Community(<?=str_replace("'","\\'",json_encode($this->community->exports()))?>);
+	<? if ($this->community && $communityJson) : ?>
+		App.cached['Community'][<?=$this->community->id_community?>] = new Community(<?=$communityJson?>);
 		App.cached['Community']['<?=$this->community->permalink?>'] = App.cached['Community'][<?=$this->community->id_community?>];
 		<? if (!c::getPagePiece(1)) : ?>
 			App.loadedPage = '<?=$this->community->permalink?>';
