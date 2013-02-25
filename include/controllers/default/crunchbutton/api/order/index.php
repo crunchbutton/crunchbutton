@@ -84,6 +84,12 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						break;
 
 					case '2':
+						Log::debug([
+							'order' => $order->id_order,
+							'action' => 'sayorderonly: 2: CONFIRMED',
+							'host' => $_SERVER['__HTTP_HOST'],
+							'type' => 'notification'
+						]);
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
 						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. This order has been confirmed.</Say>';
 						echo '<Pause length="1" />';
@@ -124,7 +130,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					case '1':
 						Log::debug([
 							'order' => $order->id_order,
-							'action' => 'CONFIRMED',
+							'action' => 'doconfirm: 1: CONFIRMED',
 							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
 						]);
