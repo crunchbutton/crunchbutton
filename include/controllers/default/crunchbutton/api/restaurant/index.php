@@ -91,19 +91,30 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 	/**
 	 * Echo JSON with restaurant data
 	 *
+	 * We do not use the Restaurant->json() method as we need to send the $where
+	 * variable to the Restaurant->export() metod after we detected the API was
+	 * called from the admin side
+	 *
 	 * @return void
 	 */
 	private function _returnRestaurant()
 	{
-		$out = Restaurant::o(c::getPagePiece(2));
-		if (!$out->id_restaurant) {
-			$out = Restaurant::permalink(c::getPagePiece(2));
+		$restaurant = Crunchbutton_Restaurant::o(c::getPagePiece(2));
+		/* @var $restaurant Crunchbutton_Restaurant */
+		if (!$restaurant->id_restaurant) {
+			$restaurant = Crunchbutton_Restaurant::permalink(c::getPagePiece(2));
 		}
-		if ($out->id_restaurant) {
-			echo $out->json();
+
+		if ($restaurant->id_restaurant) {
+			$where = [];
+			if (preg_match('/admin/i',$_SERVER['HTTP_REFERER'])) { // if API is being called by the admin
+				$where['Dish']['active'] = NULL;
+			}
+			$json = json_encode($restaurant->exports($ignore = [], $where));
 		} else {
-			echo json_encode(['error' => 'invalid object']);
+			$json = json_encode(['error' => 'invalid object']);
 		}
+		echo $json;
 	}
 
 	public function init() {

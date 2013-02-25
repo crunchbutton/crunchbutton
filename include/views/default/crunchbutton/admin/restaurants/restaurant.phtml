@@ -5,7 +5,9 @@
  * @package Crunchbutton.Admin.Restaurant
  * @category view
  */
+
 /* @var $this Cana_View */
+/* @var $this->restaurantCommunity Crunchbutton_Community */
 
 /**
  * View helper to preselect the <select> community form input
@@ -261,7 +263,9 @@ input.notification {width: 400px;}
 												<select name="id_community" class="dataset-restaurant">
 													<? foreach ($this->communities as $community) : ?>
 														<? /* @var $community Crunchbutton_Community */ ?>
-														<option value="<?=$community->id_community?>" <?=($this->community) ? _selectedCommunity($this->community, $community) : ''?>>
+														<option value="<?=$community->id_community?>"
+														<?=($this->restaurantCommunity) ? _selectedCommunity($this->restaurantCommunity, $community) : ''?>
+														>
 															<?=$community->name?>
 														</option>
 													<? endforeach ; ?>
