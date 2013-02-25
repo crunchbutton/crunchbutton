@@ -19,7 +19,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 						Log::debug([
 							'id_notification_log' => $notification->id_notification_log,
 							'id_order' => $notification->id_order,
-							'action' => 'notification confirm',
+							'action' => 'notification/confirm',
 							'confirmed' => $notification->order()->confirmed,
 							'type' => 'notification'
 						]);
@@ -52,7 +52,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 						Log::debug([
 							'id_notification_log' => $notification->id_notification_log,
 							'id_order' => $notification->id_order,
-							'action' => 'notification callback',
+							'action' => 'notification/callback (accepted:' . $notification->order()->accepted() . ')',
 							'confirmed' => $notification->order()->confirmed,
 							'type' => 'notification'
 						]);
@@ -71,8 +71,8 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 								break;
 
 							case 'twilio':
-
-								if ($notification->order()->accepted() || $notification->order()->confirmed ) {									
+// 
+								if ( $notification->order()->accepted() || $notification->order()->confirmed ) {									
 									if ($_REQUEST['CallSid'] == $notification->remote) {
 										if ($_REQUEST['Duration']) {
 											$notification->status = 'success';
