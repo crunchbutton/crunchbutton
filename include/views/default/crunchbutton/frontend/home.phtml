@@ -1,0 +1,44 @@
+<div class="main-content-readable">
+	<div class="home-welcome home-welcome-click">
+		<h1>Order the best food with a click</h1>
+		<h2>We've chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as the click of a button.</h2>
+	</div>
+	<div class="home-welcome home-welcome-touch">
+		<h1>Order the best food with a tap</h1>
+		<h2>We've chosen the best food from the best restaurants. We save your order, delivery and payment info, so reordering is as easy as a tap of a button.</h2>
+	</div>
+</div>
+<div class="enter-location">
+	<form class="button-letseat-formform" onsubmit="return false;">
+		<table class="button-letseat-table" cellpadding="0" cellspacing="0">
+			<tr>
+				<td style="width: 100%;"><input type="text" class="location-address" placeholder="Enter your zip code or full address"<%= autofocus %>></td>
+			</tr>
+		</table>
+	</form>
+</div>
+<div class="divider"></div>
+<button class="button-letseat-form button-bottom"><div>Let's Eat!</div></button>
+<div class="error-location" style="display: none;">
+	<div class="home-welcome home-welcom-error">
+		<h1>Oh no! We aren't quite ready in <span class="loc-your-area change-location-inline"><%= yourArea %></span>.</h1>
+	</div>
+	<div class="content-item-locations">
+		<h1>Our most popular locations</h1>
+	</div>
+	<div class="content-padder-before"></div>
+	<div class="content-padder">
+		<div class="meal-items">
+			<% _.each(topCommunities, function(community) { %>
+				<div class="meal-item" data-permalink-community="<%= community.id_community %>">
+					<div class="meal-item-spacer"></div>
+					<div class="meal-item-content">
+						<div class="meal-pic" style="background: url(<%= community.image %>);"></div>
+						<h2 class="meal-restaurant"><%= community.name %></h2>
+						<h3 class="meal-food">Top Restaurant: <%= community.restaurant %></h3>
+					</div>
+				</div>
+			<% }); %>
+		</div>
+	</div>
+</div>

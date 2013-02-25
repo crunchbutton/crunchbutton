@@ -7,5 +7,6 @@ class Controller_api_logout extends Crunchbutton_Controller_Rest {
 			setcookie( $key, '', time() -3600, '/' );
 		}
 		session_destroy();
+		echo json_encode(['status' => true]);
 	}
 }

@@ -9,6 +9,40 @@ class Crunchbutton_Suggestion extends Cana_Table {
 			->load($id);
 	}
 	
+	public function queNotify() {
+		$suggestion = $this;
+		Cana::timeout(function() use($suggestion) {
+			$suggestion->notify();
+		});
+	}
+	
+	public function notify() {
+		$env = c::env() == 'live' ? 'live' : 'dev';
+		$phones = c::config()->suggestion->{$env}->phone;
+		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+
+		$message =
+			($this->user()->name ? $this->user()->name : 'A guest').
+			" suggested:\n\n".
+			$this->name."\n\n".
+			"at ".
+			$this->restaurant()->name.
+			"\n\n";
+
+		$message = str_split($message, 160);
+		
+		foreach ($message as $msg) {
+			foreach ($phones as $phone) {
+				$twilio->account->sms_messages->create(
+					c::config()->twilio->{$env}->outgoingTextCustomer,
+					'+1'.$phone,
+					$msg
+				);
+				continue;	
+			}
+		}
+	}
+	
 	public static function find($search = []) {
 		$query = 'SELECT `suggestion`.* FROM `suggestion` LEFT JOIN restaurant USING(id_restaurant) WHERE id_suggestion IS NOT NULL ';
 		

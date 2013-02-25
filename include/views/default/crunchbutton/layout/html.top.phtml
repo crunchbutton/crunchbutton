@@ -29,6 +29,18 @@
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
+<? /* TEMPLATES */ ?>
+
+<? foreach (new DirectoryIterator(c::config()->dirs->view.'default/crunchbutton/frontend') as $fileInfo) : ?>
+	<? if (!$fileInfo->isDot()) : ?>
+		<script type="text/template" class="template-<?=$fileInfo->getBasename('.phtml')?>">
+			<?=file_get_contents($fileInfo->getPathname())?>
+		</script>
+	<? endif ; ?>
+<? endforeach; ?>
+
+<? /* END TEMPLATES */ ?>
+
 
 <? if (strpos($_SERVER['HTTP_USER_AGENT'],'facebookexternalhit') !== false) : ?>
 	

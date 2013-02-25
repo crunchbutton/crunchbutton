@@ -7,53 +7,29 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 			// Saves a suggestion
 			case 'post':
 
-				if( c::getPagePiece(2) == 'new' ){
-					// If is not admin a new Suggestion will be added
-					$s = Suggestion::o(0);
-					$request = $this->request();
-					foreach ($request as $key => $value) {
-						if ($value == 'null') {
-							$request[$key] = null;
-						}
+				if (c::getPagePiece(2) == 'new') {
+				
+					$suggesion = new Suggestion;
+					$restaurant = Restaurant::permalink($this->request()['restaurant']);
+				
+					if (!$restaurant->id_restaurant || !$this->request()['name']) {
+						echo json_encode(['status' => false]);
+						exit;
 					}
 
-					$request[ 'ip' ] = $_SERVER['REMOTE_ADDR'];
-					$request[ 'date' ] = date('Y-m-d H:i:s');
-					$s->serialize($request);
-					$s->save();
+					$suggesion->id_user = c::user()->name ? c::user()->id_user : null;
 
-					$url = 'http://' . $_SERVER['HTTP_HOST'] .  '/reset/';
-
-					$user = c::user();
-					if (!$user->name) {
-						$user_name = 'Anonymous';
-					} else {
-						$user_name = $user->name;
-					}
-
-					$restaurant = Restaurant::o( $request[ 'id_restaurant' ] );
-
-					$message = $user_name . " suggested.\n\n";
-					$message .= $request[ 'name' ];
-					$message .= "\n\n";
-					$message .= "at " . $restaurant->name . "\n\n";
-
-					$message = str_split( $message, 160 );
+					$suggesion->status = 'new';
+					$suggesion->type = 'dish';
+					$suggesion->id_restaurant = $restaurant->id_restaurant;
+					$suggesion->name = $this->request()['name'];
+					$suggesion->ip = $_SERVER['REMOTE_ADDR'];
+					$suggesion->date = date('Y-m-d H:i:s');
+					$suggesion->save();
 					
-					$env = c::env() == 'live' ? 'live' : 'dev';
-					$phones = c::config()->suggestion->{'live'}->phone;
-					$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-					foreach ( $message as $msg ) {
-						foreach ( $phones as $phone ) {
-							$twilio->account->sms_messages->create(
-								c::config()->twilio->{$env}->outgoingTextCustomer,
-								'+1'.$phone,
-								$msg
-							);
-							continue;	
-						}
-					}
-					echo $s->json();
+					$suggesion->queNotify();
+
+					echo $suggesion->json();
 					exit;
 				}
 

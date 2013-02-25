@@ -1,0 +1,43 @@
+<div class="content-padder-before"></div>
+<div class="order-info content-padder main-content-readable">
+	<span class="order-thanks-message">Crunched! We've saved your order for easy 1 click ordering next time.</span><br /><br />
+
+	<% if (user) { %>
+		<span class="signup-call-to-action">
+			If you add a password, your favorite food can be 1 click ordered anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+			<a href="javascript:;" class="signup-add-password-button">Add a password now</a>
+		</span>			
+	<% } else { %>
+		You can one click order anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+	<% } %>
+
+	<div class="order-details">
+
+		<% if (order.delivery_type == 'delivery') { %>
+			<b>Your delivery address:</b><br /><%= order.address %><br /><br />
+		<% } else { %>
+			<b>Takeout order</b><br /><br />
+		<% } %>
+
+		<b>Your phone #:</b><br /><%= App.phone.format(order.phone) %><br /><br />
+
+		<b>Your order:</b><%= order._message %><br /><br />
+
+		<% if (order.notes) { %>
+			<i><%= order.notes %><br /><br />
+		<% } %>
+
+		<% if (order.pay_type == 'card') { %>
+			<b>Your total:</b><br />$<%= parseFloat(order.final_price).toFixed(2) %><br /><br />
+		<% } else { %>
+			<b>Your approximate total</b>:<br />$<%= parseFloat(order.final_price).toFixed(2) %><br /><br />
+		<% } %>
+
+		For updates on your order, please call<br /><%= restaurant.name %>: <b><%= App.callPhone( restaurant.phone ) %></b><br /><br />
+
+		You can reach Crunchbutton by texting or calling <b><%= App.callPhone( '(646) 783-1444' ) %></b> <br /><br />
+
+		We've saved your order for easy 1 click ordering next time
+
+	</div>
+</div>
