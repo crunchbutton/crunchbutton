@@ -320,10 +320,10 @@ App.signin.passwordHelp.reset.init = function(){
 			close: function( event, ui ) { App.signin.passwordHelp.reset.close(); },
 			open: function( event, ui ) { $( 'input[name=password-reset-code]' ).focus(); }
 		} );
-	$( '.password-reset-code-button' ).live( 'click', function(){
+	$( '.password-reset-code-button' ).on( 'click', function(){
 		App.signin.passwordHelp.reset.sendForm();
 	} );
-	$( '.password-change-button' ).live( 'click', function(){
+	$( '.password-change-button' ).on( 'click', function(){
 		App.signin.passwordHelp.reset.change();
 	} );
 	$( '.password-reset-form' ).submit(function() {
