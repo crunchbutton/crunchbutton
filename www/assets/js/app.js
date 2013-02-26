@@ -30,6 +30,7 @@ var App = {
 	restaurants: {
 		permalink : 'food-delivery'
 	},
+	defaultRange : 2,
 	modal: {},
 	hasBack: false,
 	_init: false,
@@ -78,12 +79,13 @@ App.routeAlias = function(id) {
 		if( loc.loc_lat && loc.loc_lon ){
 			App.loc.lat = loc.loc_lat;
 			App.loc.lon = loc.loc_lon;
+			App.loc.range = loc.range;
 			App.loc.prep = alias.prep;
 			App.loc.name_alt = alias.name_alt;
 			$.cookie( 'location_prep', alias.prep, { expires: new Date(3000,01,01), path: '/'});
 			$.cookie( 'location_name_alt', alias.name_alt, { expires: new Date(3000,01,01), path: '/'});
-			$.cookie( 'location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
-			$.cookie( 'location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});	
+			App.registerLocationsCookies();
+			App.loc.range
 			App.foodDelivery.preProcess();
 			return;
 		}
@@ -138,7 +140,7 @@ App.showPage = function(params) {
  * @todo replace with router
  */
 App.loadPage = function() {
-	
+
 	// If the user is using Chrome for iOS show the message:	
 	if (App.isChromeForIOS() ){
 		App.message.chrome();
@@ -1083,7 +1085,7 @@ App.loc = {
 		if (google && google.loader && google.loader.ClientLocation) {
 			App.loc.lat = google.loader.ClientLocation.latitude;
 			App.loc.lon = google.loader.ClientLocation.longitude;
-
+			App.loc.range = App.defaultRange;
 			complete();
 		}
 	},
@@ -1107,6 +1109,7 @@ App.loc = {
 			navigator.geolocation.getCurrentPosition(function(position){
 				App.loc.lat = position.coords.latitude;
 				App.loc.lon = position.coords.longitude;
+				App.loc.range = App.defaultRange;
 				complete();
 			}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
 		}
@@ -1161,7 +1164,8 @@ App.loc = {
 			if (!$.cookie('location_lat')) {
 				App.loc.lat = google.loader.ClientLocation.latitude;
 				App.loc.lon = google.loader.ClientLocation.longitude;
-
+				App.loc.range = App.defaultRange;
+				App.registerLocationsCookies();
 				if (google.loader.ClientLocation.address.country_code == 'US' && google.loader.ClientLocation.address.region) {
 					App.loc.setFormattedLoc(null, google.loader.ClientLocation.address.city + ', ' + google.loader.ClientLocation.address.region.toUpperCase());
 				} else {
@@ -1178,9 +1182,12 @@ App.loc = {
 			if ($.cookie('location_lat')) {
 				App.loc.lat = parseFloat($.cookie('location_lat'));
 				App.loc.lon = parseFloat($.cookie('location_lon'));
+				App.loc.range = parseFloat($.cookie('location_range'));
 			} else if (App.config.user.location_lat) {
 				App.loc.lat = parseFloat(App.config.user.location_lat);
 				App.loc.lon = parseFloat(App.config.user.location_lon);
+				App.loc.range = App.defaultRange;
+				App.registerLocationsCookies();
 			}
 			App.foodDelivery.preProcess();
 			return;
@@ -1193,7 +1200,7 @@ App.loc = {
 			navigator.geolocation.getCurrentPosition(function(position){
 				App.loc.lat = position.coords.latitude;
 				App.loc.lon = position.coords.longitude;
-
+				App.registerLocationsCookies();
 				App.track('Locations Shared', {
 					lat: App.loc.lat,
 					lon: App.loc.lon
@@ -1230,8 +1237,7 @@ App.loc = {
 				App.loc.lon = results[0].geometry.location.lng();					
 				App.loc.name_alt = null;
 				App.loc.prep = null;
-				$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
-				$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
+				App.registerLocationsCookies();
 				$.cookie('location_name_alt', App.loc.name_alt, { expires: new Date(3000,01,01), path: '/'});
 				$.cookie('location_prep', App.loc.prep, { expires: new Date(3000,01,01), path: '/'});
 				App.loc.setFormattedLoc( results );
@@ -1701,6 +1707,12 @@ App.message.show = function( title, message ) {
 			close: function( event, ui ) { App.modal.shield.close(); },
 		});
 
+}
+
+App.registerLocationsCookies = function(){
+	$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
+	$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
+	$.cookie('location_range', ( App.loc.range || App.defaultRange ), { expires: new Date(3000,01,01), path: '/'});
 }
 
 App.message.chrome = function( ){
