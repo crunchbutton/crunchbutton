@@ -52,21 +52,34 @@
     </github>
     <facebook>
     	<local>
-			<app>***REMOVED***</app>
-			<secret>***REMOVED***</secret>
-		</local>
-		<live>
-			<app>_KEY_</app>
-			<secret>_KEY_</secret>
-		</live>
-		<beta>
-			<app>_KEY_</app>
-			<secret>_KEY_</secret>
-		</beta>
-		<staging>
-			<app>_KEY_</app>
-			<secret>_KEY_</secret>
-		</staging>
+				<app>***REMOVED***</app>
+				<secret>***REMOVED***</secret>
+			</local>
+			<live>
+				<app>_KEY_</app>
+				<secret>_KEY_</secret>
+			</live>
+			<beta>
+				<app>_KEY_</app>
+				<secret>_KEY_</secret>
+			</beta>
+			<staging>
+				<app>_KEY_</app>
+				<secret>_KEY_</secret>
+			</staging>
+			<default>
+				<scope>user_status,publish_stream</scope>
+				<poststatus>
+					<message>I just ordered awsome food!</message>
+					<name>CrunchButton</name>
+					<caption>Curated Online Food Ordering.</caption>
+					<link>http://_DOMAIN_/</link>
+					<description>Some awesome call to action message here!</description>
+					<picture>http://_DOMAIN_/assets/images/appicon.png</picture>
+					<site_name>CrunchButton</site_name>
+					<site_url>http://_DOMAIN_/</site_url>
+				</poststatus>
+			</default>	
     </facebook>
     <phone>
     	<support>800-242-1444</support>
