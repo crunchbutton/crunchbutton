@@ -212,6 +212,8 @@ class Crunchbutton_Restaurant extends Cana_Table
 	 */
 	public function saveCategories($rawData)
 	{
+		$originalCategories = $this->categories();
+		$doNotDelete        = [];
 		if ($rawData) {
 			foreach ($rawData as $data) {
 				// if (!$data['name']) continue;
@@ -220,8 +222,16 @@ class Crunchbutton_Restaurant extends Cana_Table
 				$element->name          = $data['name'];
 				$element->sort          = $data['sort'];
 				$element->save();
+				$doNotDelete[]          = $element->id_category;
 			}
 		}
+		foreach($originalCategories as $toDelete) {
+			/* @var $toDelete Crunchbutton_Category */
+			if (!in_array($toDelete->id_category, $doNotDelete)) {
+				$toDelete->delete();
+			}
+		}
+
 		$this->_categories = null;
 		$elements = $this->categories();
 		return $elements;
