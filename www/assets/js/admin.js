@@ -19,6 +19,49 @@ var App = {
 	_pageInit: false
 };
 
+
+function _deleteCategoryDialog(){
+	$('body').on('click', '.jqui-button.button-delete', function(){
+		var category_id = $(this).parent('.ui-accordion-content').prev('h3').data().id_category;
+		var categories  = App.restaurantObject.categories();
+		var catOptions  = '';
+		for(var i = 0; i < categories.length; i++) {
+			var disabled = false
+			if (categories[i].id_category == category_id) {
+				disabled = ' disabled="disabled" ';
+			}
+			catOptions += '<option value="' + categories[i].id_category + '" ' + disabled + '>' + categories[i].name + '</option>';
+		}
+
+
+		var html = '<div id="dialog-delete-category" title="Delete category" class="labeled-fields"> ' +
+			'<p>You are about to delete this category. Existing dishes in the category will be moved to another category.<p>' +
+			'<br />' +
+			'<label><span class="label">Move dishes to:</span><select>' + catOptions + '</select><label>'
+			'<p>Are you sure you want to delete the category?</p>' +
+		'</div>';
+		$(html).dialog({
+			resizable: false,
+			height:    200,
+			width:     400,
+			modal:     true,
+			buttons: {
+				Delete: function() {
+					var to_id = $('select', this).val();
+					deleteCategory(category_id, to_id);
+					$(this).dialog('close');
+					$(this).remove();
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+					$(this).remove();
+				}
+			}
+		});
+	});
+}
+
+
 /**
  * Populates notifications types with empty fields to be inserted
  *
@@ -126,6 +169,7 @@ function _loadRestaurant() {
 	 * Swip all categories
 	 *
 	 * @todo Use the App.createCategory
+	 * @todo Encapsulate the categories loading in a private _loadCategories() method
 	 */
 	for (var i in categories) {
 		var dishes       = categories[i].dishes();
@@ -133,6 +177,7 @@ function _loadRestaurant() {
 		var sort         = (categories[i].sort && (categories[i].sort != 'null')) ? categories[i].sort : 0;
 		var $categoryTab = $('<h3 data-id_category="'+ categories[i].id_category +'">'+ name+'</h3>' +
 		'<div>' +
+			'<div title="delete" class="ui-state-default ui-corner-all jqui-button button-delete"><span class="ui-icon ui-icon-trash"></span></div>'+
 			'<div class="labeled-fields category">' +
 				'<label><span class="label">Name</span>       <input name="name" value="' + name + '" /></label>' +
 				'<label><span class="label">Sort Order</span> <input name="sort" value="' + sort + '" /></label>' +
@@ -158,6 +203,8 @@ function _loadRestaurant() {
 			}, 1.1 * speed);
 		}
 	});
+	_deleteCategoryDialog();
+	// end of loadingCategories;
 
 	if (!isDishes) {
 		$('input[name="dish_check"][value="0"]').prop('checked', true);
@@ -340,7 +387,7 @@ function saveDishes (complete) {
 		});
 		// Just to make sure that the name was typed and the user don't clicked at 'Add another dish?' by mistake.
 		if( dish.name && dish.name != 'null' && dish.name != '' ){
-			dishes[dishes.length] = dish;	
+			dishes[dishes.length] = dish;
 		}
 	});
 
@@ -491,6 +538,16 @@ function saveHours (complete) {
 		});
 	}
 };
+
+function deleteCategory(from_id, to_id) {
+	var $toDelete = $('h3[data-id_category="'+from_id+'"]');
+	var dishes    = $('.admin-food-item-wrap', $toDelete.next());
+	$('select[name="dish-id_category"]').val(to_id);
+	$('h3[data-id_category="'+to_id+'"]').next().append(dishes);
+	$toDelete.next().remove();
+	$toDelete.remove();
+}
+
 
 function getValues(selector, restaurant) {
 	$(selector).each(function() {
@@ -1142,7 +1199,7 @@ $(function() {
 				},
 				Cancel: function() {
 					$(this).dialog('close');
-					$(this).find('[admin-category-name"]').val('');
+					$(this).find('[name="admin-category-name"]').val('');
 				}
 			}
 		});
