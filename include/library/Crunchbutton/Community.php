@@ -78,10 +78,10 @@ class Crunchbutton_Community extends Cana_Table {
 	}
 
 	public static function all_locations(){
-		$res = Cana::db()->query( 'SELECT c.id_community, c.loc_lat, c.loc_lon FROM community c' );
+		$res = Cana::db()->query( 'SELECT c.id_community, c.loc_lat, c.loc_lon, c.range FROM community c' );
 		$locations = array();
 		while ( $row = $res->fetch() ) {
-			$locations[ $row->id_community ] = array( 'loc_lat' => $row->loc_lat, 'loc_lon' => $row->loc_lon );
+			$locations[ $row->id_community ] = array( 'loc_lat' => $row->loc_lat, 'loc_lon' => $row->loc_lon, 'range' => $row->range );
 		}
 		return $locations;
 	}

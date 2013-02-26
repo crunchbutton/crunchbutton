@@ -276,7 +276,7 @@ App.foodDelivery.preProcess = function() {
 		return;
 	}
 
-	var url = App.service + 'restaurants?lat=' + App.loc.lat + '&lon=' + App.loc.lon;
+	var url = App.service + 'restaurants?lat=' + App.loc.lat + '&lon=' + App.loc.lon + '&range=' + ( App.loc.range || App.defaultRange );
 	App.restaurants.list = false;
 
 	$.getJSON( url ,function(json) {	
@@ -326,6 +326,7 @@ App.foodDelivery.positions = function(){
 	// Make sure that the positons were setted up.
 	App.loc.lat = ( App.loc.lat && App.loc.lat != 0 ) ? App.loc.lat : parseFloat( $.cookie( 'location_lat' ) );
 	App.loc.lon = ( App.loc.lon && App.loc.lon != 0 ) ? App.loc.lon : parseFloat( $.cookie( 'location_lon' ) );
+	App.loc.range  = ( App.loc.range && App.loc.range > 0 ) ? App.loc.range : ( parseFloat( $.cookie( 'location_range' ) ) || App.defaultRange );
 
 	App.loc.prep = ( App.loc.prep && App.loc.prep != '' ) ? App.loc.prep : $.cookie( 'location_prep' );
 	App.loc.name_alt = ( App.loc.name_alt && App.loc.name_alt != '' ) ? App.loc.name_alt : $.cookie( 'location_name_alt' );
