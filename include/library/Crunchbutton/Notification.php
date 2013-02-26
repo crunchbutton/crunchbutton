@@ -77,6 +77,16 @@ class Crunchbutton_Notification extends Cana_Table
 				break;
 
 			case 'phone':
+
+				Log::debug([
+					'order' => $order->id_order,
+					'action' => 'send order call',
+					'num' => $num,
+					'host' => $_SERVER['__HTTP_HOST'],
+					'callback' => $callback,
+					'type' => 'notification'
+				]);
+
 				$log = new Notification_Log;
 				$log->id_notification = $this->id_notification;
 				$log->status = 'pending';
