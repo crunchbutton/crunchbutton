@@ -1,0 +1,160 @@
+<style>
+#test-frame {
+	height: 80%;
+	width: 100%;
+}
+#test-config{
+	height: 100%;
+	width: 100%;
+}
+#test-console{
+	height: 100%;
+	width: 100%;
+	font-family: monospace;
+	padding: 5px;
+	font-size: 10px;
+}
+#test-wrapper {
+	height: 20%;
+	width: 100%;
+}
+td {
+	width: 50%;
+}
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 10px;
+}
+.log.log-debug {
+	color: #888;
+}
+.log.log-error {
+	color: #dd0000;
+}
+.log.log-warn {
+	color: #c89816;
+}
+.log.log-success {
+	color: #009f0f;
+}
+</style>
+
+<table cellpadding="0" cellspacing="0" id="test-wrapper">
+	<tr><td>
+<textarea id="test-config"></textarea>
+<td>
+<div id="test-console"></div>
+</td></tr>
+</table>
+
+
+<iframe src="about:blank" id="test-frame"></iframe>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+
+<script type="text/javascript">
+	var $test = {
+		tests: {}
+	};
+	var $t;
+	$(function() {
+		$test.defaultConfig = {
+			user: {
+				username: 'trest@arzynik.com',
+				password: 'nigger'
+			}
+		};
+		$('#test-config').html(JSON.stringify($test.defaultConfig));
+		
+		$test.config = JSON.parse($('#test-config').html());
+
+		$test.frame = $('#test-frame');
+		$test.page = function() {
+			return $('#test-frame').contents();
+		};
+		$test.pageFind = function(selector) {
+			return $('#test-frame').get(0).contentWindow.$(selector);
+		};
+
+		$t = $test.pageFind;
+
+		$test.processLoadEvent = function() {
+			$(document).trigger('test-frame-loaded');
+		};
+		
+		$test.pageDocument = function() {
+			return $('#test-frame').get(0).contentDocument;
+		};
+
+		$test.frame.on('load', $test.processLoadEvent);
+
+		$test.init = function() {
+			$.getJSON('/api/logout',function() {
+				$test.go('/', function() {
+					$test.debug('Successfully logged out and ready to begin testing.');
+				});
+			});
+		};
+
+		$test.go = function(url, callback) {
+			$(document).one('test-frame-loaded', callback);
+			$test.frame.attr('src', url);
+		};
+
+		$test.log = function(message, level) {
+			$('<div class="log log-'+level+'">'+message+'</div>').appendTo($('#test-console'));
+		};
+
+		$test.error = function(message) {
+			$test.log(message, 'error');
+		};
+
+		$test.warn = function(message) {
+			$test.log(message, 'warn');
+		};
+
+		$test.debug = function(message) {
+			$test.log(message, 'debug');
+		};
+
+		$test.success = function(message) {
+			$test.log(message, 'success');
+		};
+
+		$test.start = function() {
+			if (!_.size($test.tests)) {
+				$test.error('There are no scripts loaded!');
+				return;
+			}
+
+			_.each($test.tests, function(script) {
+				$test.debug('<b>' + script.name + '</b> starting...');
+				script.init(function(status) {
+					if (status) {
+						$test.success('<b>' + script.name + '</b> has completed successfully!');
+					} else {
+						$test.error('<b>' + script.name + '</b> has failed!');
+						if (script.onFail) {
+							script.onFail();
+						}
+					}
+				});
+			});
+			return 'Starting tests...';
+		};
+
+		$test.init();
+	});
+</script>
+
+
+<? foreach (new DirectoryIterator(c::config()->dirs->www.'assets/admin/tests') as $fileInfo) : ?>
+	<? if (!$fileInfo->isDot()) : ?>
+		<script type="text/javascript" src="/assets/admin/tests/<?=$fileInfo->getBasename()?>">
+
+		</script>
+	<? endif ; ?>
+<? endforeach; ?>
