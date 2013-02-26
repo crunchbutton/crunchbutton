@@ -93,7 +93,7 @@
 </div>		
 <script>
 	$(function() {
-		$('.refund').live('click',function() {
+		$(document).on('click', '.refund', function() {
 			if (!confirm('Are you sure you want to refund this?')) {
 				return;
 			}
@@ -102,16 +102,16 @@
 				el.replaceWith('REFUNDED');
 			});
 		});
-		
-		$('.admin-order-search').live('click', function() {
+
+		$(document).on('click', '.admin-order-search', function() {
 			App.orders.load();
 		});
-		
-		$('.admin-order-export').live('click', function() {
+
+		$(document).on('click', '.admin-order-export', function() {
 			App.orders.export();
 		});
 		
-		$('[name="order-search"]').live('keyup', function(e) {
+		$(document).on('keyup', '.[name="order-search"]', function(e) {
 			if (e.which == 13) {
 				App.orders.load();
 			}
