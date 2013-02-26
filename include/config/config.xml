@@ -138,7 +138,7 @@
 			<outgoingCustomer>+18002421444</outgoingCustomer>
 			<outgoingRestaurant>+18003514161</outgoingRestaurant>
 		</olddev>
-		<testnumber>_PHONE_</testnumber>
+		<testnumber>***REMOVED***</testnumber>
 		<voice>male</voice>
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>
