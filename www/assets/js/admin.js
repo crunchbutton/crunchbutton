@@ -530,6 +530,7 @@ function saveHours (complete) {
 					}
 				}
 			}
+			console.log(hours);
 			$.post('/api/restaurant/' + id + '/hours', {hours: hours}, function() {
 				if (complete) {
 					complete();
@@ -882,7 +883,7 @@ $(function() {
 			}
 		});
 		if (allfull) {
-			var day = $(this).attr('name').replace(/-open|-close/,'');
+			var day = $(this).attr('name').replace(/(-open|-close)(\[\])/,'');
 			var row = $('<div class="hours-date-hour"></div>');
 			row.append('<input type="text" name="' + day + '-open[]"> TO <input type="text" name="' + day + '-close[]">');
 			$(this).closest('.hours-date-hour').append(row);
