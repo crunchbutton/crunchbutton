@@ -5,6 +5,7 @@ class Crunchbutton_Facebook extends Cana_Model {
 	private $_facebook;
 	private $_user;
 	private $_permissions;
+	private $auth;
 
 	public function postOrderStatus( $uuid ){
 			$status = $this->getOrderStatus( $uuid ); 
@@ -76,7 +77,7 @@ class Crunchbutton_Facebook extends Cana_Model {
 			$restaurantName = $restaurant->name;
 			$restaurantURL = 'http://'.$_SERVER['__HTTP_HOST']. '/food-delivery/' . $restaurant->permalink;
 			$restaurantDescription = $restaurant->short_description;
-			if( $restaurant->thumb() ){
+			if( $restaurant->thumb() && $restaurant->thumb()->getFileName() != '' ){
 				$restaurantImage = 'http://'.$_SERVER['__HTTP_HOST']. '/cache/images/' .  $restaurant->thumb()->getFileName();	
 			} 
 			
@@ -101,6 +102,10 @@ class Crunchbutton_Facebook extends Cana_Model {
 		}
 	}
 
+	public function setToken( $token ){
+		$this->facebook()->setAccessToken( $token );
+	}
+
 	public function hasPermission( $permission ){
 		if( $this->user() && $this->permissions() ){
 			if( isset( $this->permissions()[ 'data' ] ) && isset( $this->permissions()[ 'data' ][0][ $permission ]  ) ){
@@ -115,18 +120,21 @@ class Crunchbutton_Facebook extends Cana_Model {
 	}
 
 	public function user(){
-		if( !$this->_user ){
-			$this->_user = $this->facebook()->getUser();
-			if ( $this->_user ) {
-				try {
-					$user = $this->facebook()->api( '/' . $this->_user );
-				} catch ( Cana_Facebook_Exception $e ) {
-					$user = null;
+		if( $this->auth ){
+			if( !$this->_user ){
+				$this->_user = $this->facebook()->getUser();
+				if ( $this->_user ) {
+					try {
+						$user = $this->facebook()->api( '/' . $this->_user );
+					} catch ( Cana_Facebook_Exception $e ) {
+						$user = null;
+					}
+					$this->_user = $user;
 				}
-				$this->_user = $user;
 			}
+			return $this->_user;	
 		}
-		return $this->_user;
+		return false;
 	}
 
 	public function userID(){
@@ -148,4 +156,14 @@ class Crunchbutton_Facebook extends Cana_Model {
 		}	
 		return false;
 	}
+
+	public function __construct(){
+		$token = $_COOKIE[ 'fbtoken' ];
+		if( $token ){
+			$this->setToken( $token );
+			$this->auth = true;
+		}
+		
+	}
+
 }

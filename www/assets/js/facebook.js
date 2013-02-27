@@ -7,11 +7,13 @@ App.facebook = {
 			order : 'facebook/publish/order/',
 			permission : 'facebook/publish/permission'
 		},
-		url_auth : 'facebook/url',
+		token : 'facebook/token',
+		login : 'facebook/url',
 	},
 	maxtries : 2,
 	tries : 0,
-	postType : 'user'
+	postType : 'auto',
+	token : false
 }
 
 App.facebook.postOrderResetTries = function(){
@@ -24,17 +26,25 @@ App.facebook.postOrder = function( uuid ){
 }
 
 App.facebook.checkPublishPermission = function( success, error ){
-	FB.api( '/me/permissions', function ( response ) {
+	var url = App.service + App.facebook.api.publish.permission;
+	$.getJSON( url, function( json ) {
+		if( json.success ){
+			success();
+		} else if( json.error ){
+			error();
+		}
+	} );
+	/*FB.api( '/me/permissions', function ( response ) {
 		if( response.data[0].publish_stream ){
 			success();
 		} else {
 			error();
 		}
-	} );
+	} );*/
 }
 
 App.facebook.postOrderRun = function( uuid ){
-	if( !App.signin.facebook.isLogged ) {
+	if( !App.facebook.token ) {
 		App.facebook.requestLogin( function(){ App.facebook.postOrderRun( uuid ); } )
 	} else {
 		App.facebook.checkPublishPermission( 
@@ -61,21 +71,28 @@ App.facebook.postOrderRun = function( uuid ){
 }
 
 App.facebook.postOrderAuto = function( uuid ){
-	var url = App.service + App.facebook.api.publish.order + uuid;
-	$.getJSON( url, function( json ) {
-		if( json.success ){
-			if( json.success == 'status posted' ){
-				App.facebook.postOrderResetTries();
-				alert( 'Thank you for sharing!' );
+	if( App.facebook.token ){
+		var url = App.service + App.facebook.api.publish.order;
+		$.ajax( {
+			type: 'POST',
+			url: url,
+			data: { 'uuid': uuid },
+			dataType: 'json',
+			success: function( json ){
+				if( json.success ){
+					if( json.success == 'status posted' ){
+						App.facebook.postOrderResetTries();
+						alert( 'Thank you for sharing!' );
+					}
+				} else if( json.error ){
+					alert( 'Oops, error. Please try it again.' );
+				}
 			}
-		} else if( json.error ){
-			alert( 'Oops, error. Please try it again.' );
-		}
-	} );
+		} );
+	}
 }
 
 App.facebook.postOrderUser = function( uuid ){
-	console.log('App.facebook.postOrderUser');
 	var url = App.service + App.facebook.api.status.order + uuid;
 	console.log('url', url);
 	$.getJSON( url, function( json ) {
@@ -113,6 +130,14 @@ App.facebook.requestLogin = function( callback ){
 	FB.login( function( response ){ App.facebook.processStatus( response, callback ); }, { scope : App.facebookScope } );
 }
 
+App.facebook.registerToken = function( token ){
+	if( !App.facebook.token ){
+		App.facebook.token = token;
+		var url = App.service + App.facebook.api.token;
+		$.cookie( 'fbtoken', token, { expires: new Date(3000,01,01), path: '/'});
+	}
+}
+
 App.facebook.requestPermission = function( callback ){
 	FB.ui({
 		 method: 'permissions.request',
@@ -127,6 +152,9 @@ App.facebook.requestPermission = function( callback ){
 
 App.facebook.processStatus = function( response, callback ){
 	if ( response.status === 'connected' && response.authResponse ) {
+		if( response.authResponse.accessToken ){
+			App.facebook.registerToken( response.authResponse.accessToken );	
+		}
 		callback();
 	}
 }
@@ -134,7 +162,7 @@ App.facebook.processStatus = function( response, callback ){
 $(function() {
 	$(document).on( 'click', '.post-order-facebook-auto', function() {
 		var uuid = $( this ).attr( 'uuid' );
-		//App.facebook.postType = 'auto';
+		App.facebook.postType = 'auto';
 		App.facebook.postOrder( uuid );
 	});
 	$(document).on( 'click', '.post-order-facebook-user', function() {

@@ -145,6 +145,9 @@ App.signin.facebook = {
 
 App.signin.facebook.processStatus = function( session ){
 	if ( session.status === 'connected' && session.authResponse ) {
+		if( session.authResponse.accessToken ){
+			App.facebook.registerToken( session.authResponse.accessToken );	
+		}
 		App.signin.facebook.isLogged = true;
 		if( App.signin.facebook.shouldAuth ){
 			FB.api( '/me', { fields: 'name' }, function( response ) {
