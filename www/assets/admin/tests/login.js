@@ -1,20 +1,23 @@
 $(function() {
-	return;
+
 	$test.tests['login'] = {
 		name: 'Login',
 		maxExecution: 5000,
 		init: function(callback) {
 
 			$t($test.pageDocument()).ajaxComplete(function(event, xhr, settings) {
-				if (settings.url == '/api/user/auth') {
+
+				if (settings.url === '/api/user/auth') {
+					$t($test.pageDocument()).unbind('ajaxComplete');
 					var auth = JSON.parse(xhr.responseText);
 					if (auth.id) {
 						$(document).trigger('test-state-change', 'login.logedin');
 						callback(true);
 						return;
+					} else {
+						callback(false);
 					}
 				}
-				callback(false);
 			});
 
 			$t('.signin-icon').click();
@@ -29,6 +32,11 @@ $(function() {
 		},
 		onFail: function() {
 		
+		},
+		sates: {
+			logedin: function(callback) {
+				$test.tests['login'].init(callback);
+			}
 		}
 	};
 });
