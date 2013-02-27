@@ -71,6 +71,7 @@ body {
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+<script src="/assets/js/async.js"></script>
 
 <script type="text/javascript">
 	var $test = {
@@ -115,6 +116,9 @@ body {
 		$test.frame.on('load', $test.processLoadEvent);
 
 		$test.init = function(callback) {
+			$test.running = false;
+			$test.state.clear();
+
 			$.getJSON('/api/logout',function() {
 				$test.go('/', function() {
 					$test.debug('Successfully logged out and ready to begin testing.');
@@ -131,6 +135,7 @@ body {
 		};
 
 		$test.log = function(message, level) {
+			console.log(level, message);
 			var c = $('#test-console');
 			$('<div class="log log-'+level+'">'+message+'</div>').appendTo(c);
 			c.stop().animate({ scrollTop: c[0].scrollHeight }, 800);
@@ -153,6 +158,9 @@ body {
 		};
 		
 		$(document).on('test-state-change', function(e, state) {
+			if ($.inArray(state, $test.states)) {
+				
+			}
 			console.log(state);
 		});
 		
@@ -162,11 +170,12 @@ body {
 			var timeout = setTimeout(function() {
 				$test.error('<b>' + script.name + '</b> has timed out!');
 			}, script.maxExecution || $test.maxExecution);
-			
+
 			script.init(function(status) {
 				clearTimeout(timeout);
 
 				$(document).trigger('test-complete', status);
+				console.log('complte', $test.states)
 
 				if (status) {
 					$test.success('<b>' + script.name + '</b> has completed successfully!');
@@ -183,15 +192,46 @@ body {
 
 		};
 		
-		$test.hasState = function(state) {
-			return $.inArray(state, $test.states);
+		$test.state = {
+			has: function(state) {
+				return $.inArray(state, $test.states);
+			},
+			add: function(state) {
+				if ($.inArray(state, $test.states)) {
+					$test.states[$test.states.length] = state;
+				}
+				if (!$test.requires.length) {
+					//$test.runRequires();
+				}
+			},
+			remove: function(state) {
+			
+			},
+			clear: function() {
+				$test.states = [];
+			}
+		};
+		
+		$test.runRequires = function() {
+			if (!$test.requires.length) {
+				$(document).trigger('test-state-complete');
+				return;
+			}
+			
+			var k = $test.requires.shift();
+			$test.debug('<b>Running required</b> ' + k + '...');
+
+			k = k.split('.');
+
+			$test.tests[k[0]][k[1]](function() {
+				// no need for a callback since were already 
+				$test.runRequires();
+			});
 		};
 
 		$test.next = function(force) {
 			var k = $test.que.shift();
 			var script = $test.tests[k];
-			
-			console.log('next', $test.que)
 			
 			if (!script) {
 				$test.running = false;
@@ -203,16 +243,26 @@ body {
 			if (!$test.playThru && !force) {
 				return;
 			}
+
+			$test.requires = [];
 			
 			if (script.requires && script.requires.length) {
+				console.log('REQUIRES', script.requires)
 				_.each(script.requires, function(s) {
-					if (!$test.hasState(s)) {
+					if (!$test.state.has(s)) {
+						// que required action
 						$test.warn('<b>' + script.name + '</b> missing required <b>' + s + '</b>');
+						$test.requires[requires.length] = s;
 					}
 				});
 			}
-
-			$test.run(script);
+			
+			$(document).one('test-state-complete', function(e, state) {
+				$test.run(script);
+			});
+			
+			$test.runRequires();
+			
 		};
 
 		$(document).on('test-complete', $test.next);
@@ -233,7 +283,7 @@ body {
 					_.each($test.tests, function(script, k) {
 						$test.que[$test.que.length] = k;
 					});
-	
+
 					// for first init
 					$(document).trigger('test-complete');
 	
