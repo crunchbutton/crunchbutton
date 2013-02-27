@@ -281,6 +281,8 @@ textarea {
 .check label {
 	margin-left: 5px;
 	cursor: pointer;
+	display: inline-block;
+	width: 90%;
 }
 
 .check {
