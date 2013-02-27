@@ -1,6 +1,6 @@
 <style>
 #test-frame {
-	height: 80%;
+	height: 100%;
 	width: 100%;
 }
 #test-config{
@@ -8,15 +8,24 @@
 	width: 100%;
 }
 #test-console{
-	height: 100%;
+	height: 130px;
+	overflow: auto;
 	width: 100%;
 	font-family: monospace;
-	padding: 5px;
+	margin: 5px;
 	font-size: 10px;
 }
-#test-wrapper {
-	height: 20%;
-	width: 100%;
+.test-controls {
+	height: 30px;
+	background: red;
+}
+.test-output {
+	height: 130px;
+}
+.test-wrapper {
+	height: 100%;
+	width: 95%;
+	margin: 0 auto;
 }
 td {
 	width: 50%;
@@ -25,6 +34,7 @@ body {
 	margin: 0;
 	padding: 0;
 	font-size: 10px;
+	overflow: none;
 }
 .log.log-debug {
 	color: #888;
@@ -40,16 +50,23 @@ body {
 }
 </style>
 
-<table cellpadding="0" cellspacing="0" id="test-wrapper">
-	<tr><td>
+<table cellpadding="0" cellspacing="0" class="test-wrapper">
+	<tr><td class="test-controls" colspan="3">
+		<button class="test-controls-start">start</button>
+		<button class="test-controls-startall">start all</button>
+		<button class="test-controls-clear">clear console</button>
+	</td></tr>
+	<tr><td class="test-output">
 <textarea id="test-config"></textarea>
 <td>
 <div id="test-console"></div>
 </td></tr>
+<tr><td colspan="3"><iframe src="about:blank" id="test-frame"></iframe></td>
+</tr>
 </table>
 
 
-<iframe src="about:blank" id="test-frame"></iframe>
+
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
@@ -57,10 +74,16 @@ body {
 
 <script type="text/javascript">
 	var $test = {
-		tests: {}
+		tests: {},
+		que: [],
+		maxExecution: 5000,
+		states: [],
+		playThru: true,
+		running: false
 	};
 	var $t;
 	$(function() {
+		$('.test-wrapper').css('width', window.innerWidth + 'px');
 		$test.defaultConfig = {
 			user: {
 				username: 'trest@arzynik.com',
@@ -91,10 +114,13 @@ body {
 
 		$test.frame.on('load', $test.processLoadEvent);
 
-		$test.init = function() {
+		$test.init = function(callback) {
 			$.getJSON('/api/logout',function() {
 				$test.go('/', function() {
 					$test.debug('Successfully logged out and ready to begin testing.');
+					if (callback) {
+						callback();
+					}
 				});
 			});
 		};
@@ -105,7 +131,9 @@ body {
 		};
 
 		$test.log = function(message, level) {
-			$('<div class="log log-'+level+'">'+message+'</div>').appendTo($('#test-console'));
+			var c = $('#test-console');
+			$('<div class="log log-'+level+'">'+message+'</div>').appendTo(c);
+			c.stop().animate({ scrollTop: c[0].scrollHeight }, 800);
 		};
 
 		$test.error = function(message) {
@@ -123,30 +151,114 @@ body {
 		$test.success = function(message) {
 			$test.log(message, 'success');
 		};
+		
+		$(document).on('test-state-change', function(e, state) {
+			console.log(state);
+		});
+		
+		$test.run = function(script) {
+			$test.debug('<b>' + script.name + '</b> starting...');
+			
+			var timeout = setTimeout(function() {
+				$test.error('<b>' + script.name + '</b> has timed out!');
+			}, script.maxExecution || $test.maxExecution);
+			
+			script.init(function(status) {
+				clearTimeout(timeout);
 
-		$test.start = function() {
-			if (!_.size($test.tests)) {
-				$test.error('There are no scripts loaded!');
+				$(document).trigger('test-complete', status);
+
+				if (status) {
+					$test.success('<b>' + script.name + '</b> has completed successfully!');
+					if (script.onSuccess) {
+						script.onSuccess();
+					}
+				} else {
+					$test.error('<b>' + script.name + '</b> has failed!');
+					if (script.onFail) {
+						script.onFail();
+					}
+				}
+			});
+
+		};
+		
+		$test.hasState = function(state) {
+			return $.inArray(state, $test.states);
+		};
+
+		$test.next = function(force) {
+			var k = $test.que.shift();
+			var script = $test.tests[k];
+			
+			console.log('next', $test.que)
+			
+			if (!script) {
+				$test.running = false;
+				$('.test-controls-start').html('start');
+				$test.debug('Que completed');
 				return;
 			}
-
-			_.each($test.tests, function(script) {
-				$test.debug('<b>' + script.name + '</b> starting...');
-				script.init(function(status) {
-					if (status) {
-						$test.success('<b>' + script.name + '</b> has completed successfully!');
-					} else {
-						$test.error('<b>' + script.name + '</b> has failed!');
-						if (script.onFail) {
-							script.onFail();
-						}
+			
+			if (!$test.playThru && !force) {
+				return;
+			}
+			
+			if (script.requires && script.requires.length) {
+				_.each(script.requires, function(s) {
+					if (!$test.hasState(s)) {
+						$test.warn('<b>' + script.name + '</b> missing required <b>' + s + '</b>');
 					}
 				});
-			});
-			return 'Starting tests...';
+			}
+
+			$test.run(script);
+		};
+
+		$(document).on('test-complete', $test.next);
+
+		$test.start = function() {
+			if ($test.que.length) {
+				$test.next(true);
+
+			} else {
+				$test.que = [];
+	
+				if (!_.size($test.tests)) {
+					$test.error('There are no scripts loaded!');
+					return;
+				}
+	
+				$test.init(function() {
+					_.each($test.tests, function(script, k) {
+						$test.que[$test.que.length] = k;
+					});
+	
+					// for first init
+					$(document).trigger('test-complete');
+	
+					return 'Queing tests and starting...';
+				});
+			}
 		};
 
 		$test.init();
+
+		$('.test-controls-start').on('click', function() {
+			$('.test-controls-start').html('next');
+			$test.running = true;
+			$test.playThru = false;
+			$test.start();
+		});
+		$('.test-controls-startall').on('click', function() {
+			$test.running = true;
+			$test.playThru = true;
+			$test.start();
+		});
+		$('.test-controls-clear').on('click', function() {
+			$('#test-console').html('');
+		});
+		
 	});
 </script>
 
