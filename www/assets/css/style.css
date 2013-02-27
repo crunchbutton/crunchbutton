@@ -862,8 +862,16 @@ html[xmlns] .clearfix {
 	border: 1px solid #ff6648;
 	margin-left: 203px;
 }
+
+/**
+ * Shows the hurry-up-about-to-close tag
+ *
+ * tested in firefox, chrome and iphone
+ */
 .meal-item-tag.about-to-close {
-	margin-left: 147px;
+	position: relative;
+	right:    48px;
+	width:    130px;
 }
 
 .meal-item-tag-closed {
@@ -1687,7 +1695,7 @@ html[xmlns] .clearfix {
 	margin-top: 20px;
 }
 
-.change-location-inline{	
+.change-location-inline{
 	text-decoration: underline;
 	cursor: pointer;
 }
@@ -1846,7 +1854,7 @@ html[xmlns] .clearfix {
 		height: 30px;
 		width: 45px;
 	}
-	
+
 .signup-success-container{
 	display: none;
 }
