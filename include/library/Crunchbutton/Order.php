@@ -557,9 +557,18 @@ class Crunchbutton_Order extends Cana_Table {
 			'type' => 'notification'
 		]);
 
+		// If restaurant has fax notification we should wait 5 min before send the confirmation #784
+		if( $this->restaurant()->hasFaxNotification() ){
+			$confirmationTime = c::config()->twilio->confirmFaxTime;
+			Log::debug([ 'order' => $this->id_order, 'action' => 'hasFaxNotification - confirmationTime :' . $confirmationTime, 'type' => 'notification' ]);
+		} else {
+			$confirmationTime = c::config()->twilio->confirmTime;
+				Log::debug([ 'order' => $this->id_order, 'action' => 'confirmationTime :' . $confirmationTime, 'type' => 'notification' ]);
+		}
+
 		c::timeout(function() use($order) {
 			$order->confirm();
-		}, c::config()->twilio->confirmTime, false);
+		}, $confirmationTime, false);
 	}
 
 	public function orderMessage($type) {
