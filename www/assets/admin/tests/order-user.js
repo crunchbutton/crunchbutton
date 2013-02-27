@@ -1,9 +1,10 @@
 $(function() {
 	$test.tests['order-user'] = {
 		name: 'User Order',
-		requires: ['login'],
+		requires: ['login.logedin'],
 		init: function(callback) {
-			callback(false);
+		
+			callback(true);
 		},
 		onFail: function() {
 		
