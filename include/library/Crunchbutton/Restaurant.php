@@ -780,6 +780,15 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $restaurants;
 	}
 
+	public function hasFaxNotification(){
+		foreach ( $this->notifications() as $notification ){
+			if( $notification->type == 'fax' ){
+				return true;
+			}
+		}	
+		return false;	
+	}
+
 	public function save() {
 		if (!$this->timezone) {
 			$this->timezone = 'America/New_York';
