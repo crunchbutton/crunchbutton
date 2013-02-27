@@ -1,0 +1,272 @@
+<style>
+#test-frame {
+	height: 100%;
+	width: 100%;
+}
+#test-config{
+	height: 100%;
+	width: 100%;
+}
+#test-console{
+	height: 130px;
+	overflow: auto;
+	width: 100%;
+	font-family: monospace;
+	margin: 5px;
+	font-size: 10px;
+}
+.test-controls {
+	height: 30px;
+	background: red;
+}
+.test-output {
+	height: 130px;
+}
+.test-wrapper {
+	height: 100%;
+	width: 95%;
+	margin: 0 auto;
+}
+td {
+	width: 50%;
+}
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 10px;
+	overflow: none;
+}
+.log.log-debug {
+	color: #888;
+}
+.log.log-error {
+	color: #dd0000;
+}
+.log.log-warn {
+	color: #c89816;
+}
+.log.log-success {
+	color: #009f0f;
+}
+</style>
+
+<table cellpadding="0" cellspacing="0" class="test-wrapper">
+	<tr><td class="test-controls" colspan="3">
+		<button class="test-controls-start">start</button>
+		<button class="test-controls-startall">start all</button>
+		<button class="test-controls-clear">clear console</button>
+	</td></tr>
+	<tr><td class="test-output">
+<textarea id="test-config"></textarea>
+<td>
+<div id="test-console"></div>
+</td></tr>
+<tr><td colspan="3"><iframe src="about:blank" id="test-frame"></iframe></td>
+</tr>
+</table>
+
+
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+
+<script type="text/javascript">
+	var $test = {
+		tests: {},
+		que: [],
+		maxExecution: 5000,
+		states: [],
+		playThru: true,
+		running: false
+	};
+	var $t;
+	$(function() {
+		$('.test-wrapper').css('width', window.innerWidth + 'px');
+		$test.defaultConfig = {
+			user: {
+				username: 'trest@arzynik.com',
+				password: 'nigger'
+			}
+		};
+		$('#test-config').html(JSON.stringify($test.defaultConfig));
+		
+		$test.config = JSON.parse($('#test-config').html());
+
+		$test.frame = $('#test-frame');
+		$test.page = function() {
+			return $('#test-frame').contents();
+		};
+		$test.pageFind = function(selector) {
+			return $('#test-frame').get(0).contentWindow.$(selector);
+		};
+
+		$t = $test.pageFind;
+
+		$test.processLoadEvent = function() {
+			$(document).trigger('test-frame-loaded');
+		};
+		
+		$test.pageDocument = function() {
+			return $('#test-frame').get(0).contentDocument;
+		};
+
+		$test.frame.on('load', $test.processLoadEvent);
+
+		$test.init = function(callback) {
+			$.getJSON('/api/logout',function() {
+				$test.go('/', function() {
+					$test.debug('Successfully logged out and ready to begin testing.');
+					if (callback) {
+						callback();
+					}
+				});
+			});
+		};
+
+		$test.go = function(url, callback) {
+			$(document).one('test-frame-loaded', callback);
+			$test.frame.attr('src', url);
+		};
+
+		$test.log = function(message, level) {
+			var c = $('#test-console');
+			$('<div class="log log-'+level+'">'+message+'</div>').appendTo(c);
+			c.stop().animate({ scrollTop: c[0].scrollHeight }, 800);
+		};
+
+		$test.error = function(message) {
+			$test.log(message, 'error');
+		};
+
+		$test.warn = function(message) {
+			$test.log(message, 'warn');
+		};
+
+		$test.debug = function(message) {
+			$test.log(message, 'debug');
+		};
+
+		$test.success = function(message) {
+			$test.log(message, 'success');
+		};
+		
+		$(document).on('test-state-change', function(e, state) {
+			console.log(state);
+		});
+		
+		$test.run = function(script) {
+			$test.debug('<b>' + script.name + '</b> starting...');
+			
+			var timeout = setTimeout(function() {
+				$test.error('<b>' + script.name + '</b> has timed out!');
+			}, script.maxExecution || $test.maxExecution);
+			
+			script.init(function(status) {
+				clearTimeout(timeout);
+
+				$(document).trigger('test-complete', status);
+
+				if (status) {
+					$test.success('<b>' + script.name + '</b> has completed successfully!');
+					if (script.onSuccess) {
+						script.onSuccess();
+					}
+				} else {
+					$test.error('<b>' + script.name + '</b> has failed!');
+					if (script.onFail) {
+						script.onFail();
+					}
+				}
+			});
+
+		};
+		
+		$test.hasState = function(state) {
+			return $.inArray(state, $test.states);
+		};
+
+		$test.next = function(force) {
+			var k = $test.que.shift();
+			var script = $test.tests[k];
+			
+			console.log('next', $test.que)
+			
+			if (!script) {
+				$test.running = false;
+				$('.test-controls-start').html('start');
+				$test.debug('Que completed');
+				return;
+			}
+			
+			if (!$test.playThru && !force) {
+				return;
+			}
+			
+			if (script.requires && script.requires.length) {
+				_.each(script.requires, function(s) {
+					if (!$test.hasState(s)) {
+						$test.warn('<b>' + script.name + '</b> missing required <b>' + s + '</b>');
+					}
+				});
+			}
+
+			$test.run(script);
+		};
+
+		$(document).on('test-complete', $test.next);
+
+		$test.start = function() {
+			if ($test.que.length) {
+				$test.next(true);
+
+			} else {
+				$test.que = [];
+	
+				if (!_.size($test.tests)) {
+					$test.error('There are no scripts loaded!');
+					return;
+				}
+	
+				$test.init(function() {
+					_.each($test.tests, function(script, k) {
+						$test.que[$test.que.length] = k;
+					});
+	
+					// for first init
+					$(document).trigger('test-complete');
+	
+					return 'Queing tests and starting...';
+				});
+			}
+		};
+
+		$test.init();
+
+		$('.test-controls-start').on('click', function() {
+			$('.test-controls-start').html('next');
+			$test.running = true;
+			$test.playThru = false;
+			$test.start();
+		});
+		$('.test-controls-startall').on('click', function() {
+			$test.running = true;
+			$test.playThru = true;
+			$test.start();
+		});
+		$('.test-controls-clear').on('click', function() {
+			$('#test-console').html('');
+		});
+		
+	});
+</script>
+
+
+<? foreach (new DirectoryIterator(c::config()->dirs->www.'assets/admin/tests') as $fileInfo) : ?>
+	<? if (!$fileInfo->isDot()) : ?>
+		<script type="text/javascript" src="/assets/admin/tests/<?=$fileInfo->getBasename()?>">
+
+		</script>
+	<? endif ; ?>
+<? endforeach; ?>
