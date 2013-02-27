@@ -1,13 +1,13 @@
 App.facebook = {
 	api : {
 		status : {
-			order : '/facebook/status/order/'
+			order : 'facebook/status/order/'
 		},
 		publish : {
-			order : '/facebook/publish/order/',
-			permission : '/facebook/publish/permission'
+			order : 'facebook/publish/order/',
+			permission : 'facebook/publish/permission'
 		},
-		url_auth : '/facebook/url',
+		url_auth : 'facebook/url',
 	},
 	maxtries : 2,
 	tries : 0,
@@ -45,7 +45,6 @@ App.facebook.postOrderRun = function( uuid ){
 				} else {
 					App.facebook.postOrderAuto( uuid );	
 				}
-				
 			}, 
 			// This function will be called if the user has NOT allowed the publish_stream or he is not logged in
 			function(){ 
@@ -80,13 +79,12 @@ App.facebook.postOrderUser = function( uuid ){
 	var url = App.service + App.facebook.api.status.order + uuid;
 	console.log('url', url);
 	$.getJSON( url, function( json ) {
-		console.log('json', json);
 		if( json.success ){
 			var status = json.success;
 			App.facebook.postOrderResetTries();
 			FB.ui({
 				method: 'stream.publish',
-				// display: 'touch|frame|popup',
+				display: 'none',
 				user_message_prompt: 'CrunchButton: Publish This!',
 				message: status.message,
 				attachment: {
