@@ -11,7 +11,7 @@ App.facebook = {
 	},
 	maxtries : 2,
 	tries : 0,
-	postType : 'auto'
+	postType : 'user'
 }
 
 App.facebook.postOrderResetTries = function(){
@@ -84,7 +84,7 @@ App.facebook.postOrderUser = function( uuid ){
 			App.facebook.postOrderResetTries();
 			FB.ui({
 				method: 'stream.publish',
-				display: 'none',
+				display: ( App.isMobile() ? 'none' : 'iframe' ),
 				user_message_prompt: 'CrunchButton: Publish This!',
 				message: status.message,
 				attachment: {
@@ -134,7 +134,7 @@ App.facebook.processStatus = function( response, callback ){
 $(function() {
 	$(document).on( 'click', '.post-order-facebook-auto', function() {
 		var uuid = $( this ).attr( 'uuid' );
-		App.facebook.postType = 'auto';
+		//App.facebook.postType = 'auto';
 		App.facebook.postOrder( uuid );
 	});
 	$(document).on( 'click', '.post-order-facebook-user', function() {
