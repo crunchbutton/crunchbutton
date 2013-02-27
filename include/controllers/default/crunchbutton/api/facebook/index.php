@@ -9,22 +9,56 @@ public function init() {
 
 			switch ( c::getPagePiece( 2 ) ) {
 				
-				case 'publish_permission':
+				// url
+				case 'url':
+					$facebook = new Crunchbutton_Facebook();
+					echo json_encode(['url' => $facebook->getLoginURL() ]);
+					break;
 
+				// url auth
+				case 'url_auth':
+					echo json_encode(['success' => 'success']);
+					break;
+
+				// status
+				case 'status' :
 					$facebook = new Crunchbutton_Facebook();
 
-					if( $facebook->hasPublishPermission() ){
-						echo json_encode(['success' => 'has permission']);
+					switch ( c::getPagePiece( 3 ) ) {
 
-					} else {
-						echo json_encode(['error' => 'not allowed', 'url' => $facebook->getLoginURL() ]);
+							// status/order/x
+							case 'order':
+
+								$uuid = c::getPagePiece( 4 );
+
+								if( $uuid ){
+									$status = $facebook->getOrderStatus( $uuid );
+									if ( $status ){
+										echo json_encode(['success' => $status]);
+									} else {
+										// @todo catch the error
+										echo json_encode(['error' => 'invalid resource']);	
+									}
+
+								} else {
+									
+									echo json_encode(['error' => 'invalid resource']);
+								}
+
+							break;
 					}
 
-					break;
+				break;
+
 				// publish
 				case 'publish':
 
 					$facebook = new Crunchbutton_Facebook();
+
+					if( !$facebook->isLogged() ){
+						echo json_encode(['error' => 'not logged']);
+						exit;
+					}
 
 					if( $facebook->hasPublishPermission() ){
 						
@@ -33,17 +67,32 @@ public function init() {
 							// publish/order/x
 							case 'order':
 
-								$order_id = c::getPagePiece( 4 );
-								
-								if( $order_id ){
-									
-									$facebook->postOrderStatus( $order_id );
-									echo json_encode(['success' => 'status posted']);
+								$uuid = c::getPagePiece( 4 );
+
+								if( $uuid ){
+									if ( $facebook->postOrderStatus( $uuid ) ){
+										echo json_encode(['success' => 'status posted']);
+									} else {
+										// @todo catch the error
+										echo json_encode(['error' => 'invalid resource']);	
+									}
 
 								} else {
 									
 									echo json_encode(['error' => 'invalid resource']);
 								}
+
+							break;
+
+						// permission
+						case 'permission':
+
+							if( $facebook->hasPublishPermission() ){
+								echo json_encode(['success' => 'has permission']);
+
+							} else {
+								echo json_encode(['error' => 'not allowed', 'url' => $facebook->getLoginURL() ]);
+							}
 
 							break;
 				

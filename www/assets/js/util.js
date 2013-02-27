@@ -33,9 +33,6 @@ App.isChromeForIOS = function(){
 }
 
 
-
-
-
 var sort_by;
 (function() {
     // utility functions
