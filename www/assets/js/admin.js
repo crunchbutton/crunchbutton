@@ -937,7 +937,7 @@ $(function() {
 	/**
 	 * Folds/unfolds the checkbox options
 	 *
-	 * @todo There is a strange bug in the checkbox, If the label is selected, it does work, if you click on the checkbox, it doesnt
+	 * @return void
 	 */
 	$(document).on('click', '.bind-a-check', function(e) {
 		var name   = $(this).attr('name');
@@ -952,9 +952,6 @@ $(function() {
 		} else {
 			parent.find('.check-content').fadeOut(100);
 		}
-
-		e.stopPropagation();
-		return false;
 	});
 
 	if ($('.date-picker').length) {
