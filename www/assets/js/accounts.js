@@ -199,9 +199,8 @@ App.signin.facebook.processStatus = function( session ){
  */
 App.signin.facebook.login = function() {
 	App.signin.facebook.shouldAuth = true;
-	FB.login( App.signin.facebook.processStatus,{ scope:'email' } );
+	FB.login( App.signin.facebook.processStatus,{ scope: App.facebookScope } );
 };
-
 
 /**
  * show the signin modal

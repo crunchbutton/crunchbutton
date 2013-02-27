@@ -6,25 +6,17 @@ class Crunchbutton_Facebook extends Cana_Model {
 	private $_user;
 	private $_permissions;
 
-	public function postOrderStatus( $id_order ){
-		
-		$order = Order::o( $id_order );
-		$restaurant = $order->restaurant();
-	
-		$restaurantName = $restaurant->name;
-		$restaurantURL = 'http://'.$_SERVER['__HTTP_HOST']. '/food-delivery/' . $restaurant->permalink;
-		$restaurantDescription = $restaurant->short_description;
-		if( $restaurant->thumb() ){
-			$restaurantImage = $restaurant->thumb()->getFileName();	
-		} 
-		
-		$status = array( 
-									'name' => $restaurantName,
-									'caption' => $restaurantDescription,
-									'link' => $restaurantURL,
-									'picture' => $restaurantImage
-								);
-		return $this->postStatus( $status );
+	public function postOrderStatus( $uuid ){
+			$status = $this->getOrderStatus( $uuid ); 
+		if( $status ){
+			return $this->postStatus( $status );
+		} else {
+			return false;
+		}
+	}
+
+	public function isLogged(){
+		return $this->user();
 	}
 
 	public function facebook(){
@@ -44,15 +36,6 @@ class Crunchbutton_Facebook extends Cana_Model {
 	public function postStatus( $status ){
 
 		if( $this->hasPublishPermission() ){
-
-			$status[ 'message' ] = ( $status[ 'message' ] && $status[ 'message' ] != '' ) ? $status[ 'message' ] : c::config()->facebook->default->poststatus->message;
-			$status[ 'name' ] = ( $status[ 'name' ] && $status[ 'name' ] != '' ) ? $status[ 'name' ] : c::config()->facebook->default->poststatus->name;
-			$status[ 'caption' ] = ( $status[ 'caption' ] && $status[ 'caption' ] != '' ) ? $status[ 'caption' ] : c::config()->facebook->default->poststatus->caption;
-			$status[ 'linklink' ] = ( $status[ 'link' ] && $status[ 'link' ] != '' ) ? $status[ 'link' ] : c::config()->facebook->default->poststatus->link;
-			$status[ 'description' ] = ( $status[ 'description' ] && $status[ 'description' ] != '' ) ? $status[ 'description' ] : c::config()->facebook->default->poststatus->description;
-			$status[ 'picture' ] = ( $status[ 'picture' ] && $status[ 'picture' ] != '' ) ? $status[ 'picture' ] : c::config()->facebook->default->poststatus->picture;
-			$status[ 'site_name' ] = ( $status[ 'site_name' ] && $status[ 'site_name' ] != '' ) ? $status[ 'site_name' ] : c::config()->facebook->default->poststatus->site_name;
-			$status[ 'site_url' ] = ( $status[ 'site_url' ] && $status[ 'site_url' ] != '' ) ? $status[ 'site_url' ] : c::config()->facebook->default->poststatus->site_url;
 
 			$mural = array(
 				'message'     => $status[ 'message' ],
@@ -85,11 +68,50 @@ class Crunchbutton_Facebook extends Cana_Model {
 		}
 	}
 
+	public function getOrderStatus( $uuid  ){
+		$order = Order::uuid( $uuid );
+
+		if( $order->id_order ){
+			$restaurant = $order->restaurant();
+			$restaurantName = $restaurant->name;
+			$restaurantURL = 'http://'.$_SERVER['__HTTP_HOST']. '/food-delivery/' . $restaurant->permalink;
+			$restaurantDescription = $restaurant->short_description;
+			if( $restaurant->thumb() ){
+				$restaurantImage = $restaurant->thumb()->getFileName();	
+			} 
+			
+			$status = array( 
+										'name' => $restaurantName,
+										'caption' => $restaurantDescription,
+										'link' => $restaurantURL,
+										'picture' => $restaurantImage
+									);
+
+			$status[ 'message' ] = ( $status[ 'message' ] && $status[ 'message' ] != '' ) ? $status[ 'message' ] : c::config()->facebook->default->poststatus->message;
+			$status[ 'name' ] = ( $status[ 'name' ] && $status[ 'name' ] != '' ) ? $status[ 'name' ] : c::config()->facebook->default->poststatus->name;
+			$status[ 'caption' ] = ( $status[ 'caption' ] && $status[ 'caption' ] != '' ) ? $status[ 'caption' ] : c::config()->facebook->default->poststatus->caption;
+			$status[ 'linklink' ] = ( $status[ 'link' ] && $status[ 'link' ] != '' ) ? $status[ 'link' ] : c::config()->facebook->default->poststatus->link;
+			$status[ 'description' ] = ( $status[ 'description' ] && $status[ 'description' ] != '' ) ? $status[ 'description' ] : c::config()->facebook->default->poststatus->description;
+			$status[ 'picture' ] = ( $status[ 'picture' ] && $status[ 'picture' ] != '' ) ? $status[ 'picture' ] : c::config()->facebook->default->poststatus->picture;
+			$status[ 'site_name' ] = ( $status[ 'site_name' ] && $status[ 'site_name' ] != '' ) ? $status[ 'site_name' ] : c::config()->facebook->default->poststatus->site_name;
+			$status[ 'site_url' ] = ( $status[ 'site_url' ] && $status[ 'site_url' ] != '' ) ? $status[ 'site_url' ] : c::config()->facebook->default->poststatus->site_url;
+			return $status;
+		} else {
+			return false;
+		}
+	}
+
 	public function hasPermission( $permission ){
-		if( isset( $this->permissions()[ 'data' ] ) && isset( $this->permissions()[ 'data' ][0][ $permission ]  ) ){
-    	return true;
-  	}
-  	return false;
+		if( $this->user() && $this->permissions() ){
+			if( isset( $this->permissions()[ 'data' ] ) && isset( $this->permissions()[ 'data' ][0][ $permission ]  ) ){
+				return true;
+			}	
+		}
+		return false;
+	}
+
+	public function redirect_uri_api(){
+		return 'http://'.$_SERVER['__HTTP_HOST'].'/api/facebook/url_auth';
 	}
 
 	public function user(){
@@ -111,18 +133,19 @@ class Crunchbutton_Facebook extends Cana_Model {
 		return $this->user()[ 'id' ];
 	}
 
-	public function getLoginURL(){
-		$params = array(
-		  'scope' =>  c::config()->facebook->default->scope,
-		);
+	public function getLoginURL( $params = array() ){
+		$params[ 'scope' ] = ( $params[ 'scope' ] && $params[ 'scope' ] != '' ) ? $params[ 'scope' ] : c::config()->facebook->default->scope;
+		$params[ 'redirect_uri' ] = ( $params[ 'redirect_uri' ] && $params[ 'redirect_uri' ] != '' ) ? $params[ 'redirect_uri' ] : $this->redirect_uri_api();
 		return $this->facebook()->getLoginURL( $params );
 	}
 
 	public function permissions(){
-		if( !$this->_permissions ){
+		if( $this->user() ){
+			if( !$this->_permissions ){
 			$this->_permissions = $this->facebook()->api( '/me/permissions' );	
 		}
-		return $this->_permissions;
+			return $this->_permissions;	
+		}	
+		return false;
 	}
-
 }
