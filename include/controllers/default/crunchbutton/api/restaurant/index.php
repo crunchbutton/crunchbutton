@@ -91,6 +91,11 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 	/**
 	 * Echo JSON with restaurant data
 	 *
+	 * Let's see first if we got a permalink, or else, try to load it by ID.
+	 * See issue #776, the problem is that restaurants starting with a number
+	 * in their permalink, are used as the number, ignoring the rest of the
+	 * text.
+	 *
 	 * We do not use the Restaurant->json() method as we need to send the $where
 	 * variable to the Restaurant->export() metod after we detected the API was
 	 * called from the admin side
@@ -99,10 +104,10 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 	 */
 	private function _returnRestaurant()
 	{
-		$restaurant = Crunchbutton_Restaurant::o(c::getPagePiece(2));
+		$restaurant = Crunchbutton_Restaurant::permalink(c::getPagePiece(2));
 		/* @var $restaurant Crunchbutton_Restaurant */
 		if (!$restaurant->id_restaurant) {
-			$restaurant = Crunchbutton_Restaurant::permalink(c::getPagePiece(2));
+			$restaurant = Crunchbutton_Restaurant::o(c::getPagePiece(2));
 		}
 
 		if ($restaurant->id_restaurant) {
