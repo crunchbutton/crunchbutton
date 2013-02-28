@@ -203,7 +203,7 @@ App.page.order = function(id) {
 				data: {
 					order: order,
 					restaurant: restaurant,
-					user: App.user
+					user: App.config.user.has_auth
 				}
 			});
 			
