@@ -112,7 +112,7 @@ App.suggestion.show = function(){
 }
 
 App.suggestion.tooltipContainer = function( device ){
-	var help = 'Crunchbutton "curates" menus. We\'ve curated just the top food here. ' +
+	var help = 'Crunchbutton curates menus. We\'ve curated just the top food here. ' +
 											'If you really want something else, suggest it below.'
 
 	return '<span class="tooltip-help-' + device + '-container">' + 
