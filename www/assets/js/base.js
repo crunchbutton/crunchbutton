@@ -10,6 +10,12 @@ if (typeof(Number.prototype.toRad) === 'undefined') {
 	}
 }
 
+// Sometimes jQuery doesn't understand the Number.toRad()
+function _toRad(Value) {
+    /** Converts numeric degrees to radians */
+    return Value * Math.PI / 180;
+}
+
 var History = window.History;
 
 History.Adapter.bind(window,'statechange',function() {
