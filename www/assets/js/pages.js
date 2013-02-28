@@ -365,13 +365,13 @@ App.foodDelivery.loadPlaceName = function() {
 
 App.foodDelivery.tagLine = function(){
 	try {
-		var slogan = App.slogan;
+		var slogan = App.slogan.slogan;
 		var sloganReplace = ( App.loc.prep || ( App.loc.city_name ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.city_name || '' ) ;
 		sloganReplace = $.trim(sloganReplace);
 		var tagline = App.tagline.tagline.replace('%s', sloganReplace);
 		slogan = slogan.replace('%s', sloganReplace);
 	} catch (e) {
-		console.log(App.slogan, App.tagline);
+		console.log('Failed to load dynamic text', App.slogan, App.tagline);
 		var slogan = '';
 		var tagline = ''; 
 	}
