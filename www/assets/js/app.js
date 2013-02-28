@@ -339,8 +339,8 @@ App.AB = {
 		
 	},
 	load: function() {
-		App.slogan = _.where(App.AB.options.slogans, {name: App.config.ab.slogan});
-		App.tagline = _.where(App.AB.options.tagline, {name: App.config.ab.tagline});
+		App.slogan = _.findWhere(App.AB.options.slogan, {name: App.config.ab.slogan});
+		App.tagline = _.findWhere(App.AB.options.tagline, {name: App.config.ab.tagline});
 
 		if (!App.slogan || !App.tagline) {
 			App.AB.create(true);
