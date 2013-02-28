@@ -53,6 +53,20 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						break;
 					default:
 						echo json_encode(['error' => 'invalid request']);
+						exit;
+						break;
+				}
+			case 'auths':
+				switch ($this->method()) {
+					case 'get':
+						$user = c::user();
+						if( $user->id_user ){
+							$auths = User_Auth::byUserExport( $user->id_user );
+							echo json_encode( [ 'auths' => $auths ] );
+							exit;
+						} 
+						echo json_encode(['error' => 'invalid request']);
+						exit;
 						break;
 				}
 			// Create a user
