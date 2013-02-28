@@ -183,6 +183,9 @@ App.page.order = function(id) {
 	$('.content').addClass('smaller-width');
 	$('.main-content').css('width','auto');
 	
+	// Just to make sure the user button will be shown
+	App.signin.checkUser();
+
 	App.cache('Order', id, function() {
 		var order = this;
 		
