@@ -300,6 +300,7 @@ class Crunchbutton_App extends Cana_App {
 		$config = [];
 		$config['user'] = c::user()->exports();
 		$config['env'] = $this->env();
+		$config['ab'] = json_decode($this->auth()->get('ab'));
 		return $config;
 	}
 	

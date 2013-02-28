@@ -9,7 +9,7 @@
 <div class="restaurant-name"><h1><%= restaurant.name %></h1></div>
 
 <% if (restaurant.image) { %>
-	<div class="restaurant-pic-wrapper">
+	<div class="restaurant-pic-wrapper<%= (App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : '' %>">
 		<div class="restaurant-pic" style="background: url(<%= restaurant.img %>);"></div>
 	</div>
 <% } %>
