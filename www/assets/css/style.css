@@ -2106,7 +2106,11 @@ html[xmlns] .clearfix {
 	.restaurant-pic-wrapper {
 		height: 190px;
 		overflow: hidden;
-		margin-bottom: 0px;
+		margin-bottom: -50px;
+	}
+	
+	.restaurant-pic-wrapper.restaurant-pic-wrapper-hidden {
+		display: none;
 	}
 
 	.restaurant-name {
@@ -2114,7 +2118,7 @@ html[xmlns] .clearfix {
 	}
 
 	.cart-items {
-		margin-top: 20px;
+		margin-top: 70px;
 	}
 
 	.button-bottom.button-letseat-form {
