@@ -879,6 +879,8 @@ Issue 13: Removed the password for while
 							'user': this.user,
 							'items': totalItems
 						});
+						
+						App.order.cardChanged = false;
 
 						var loc = '/order/' + this.uuid;
 						History.pushState({},loc,loc);
