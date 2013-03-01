@@ -1988,12 +1988,11 @@ html[xmlns] .clearfix {
 			margin-top: 10px;
 			padding-top: 17px;
 		}
-			.signin-facebook, .signup-facebook{
+			.signin-facebook, .signup-facebook, .share-order-facebook{
 				border-radius: 4px;
 				border: 1px solid #0b3c6e;
 				padding: 0;
 				display: block;
-
 				margin: 3px auto 0 auto;
 				text-align: center;
 				text-shadow: 1px 1px 0px rgba(0,0,0,.22);
@@ -2006,22 +2005,36 @@ html[xmlns] .clearfix {
 				background-image: linear-gradient(top, rgb(33, 83, 135), rgb(25, 68, 113));
 				filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#215387', EndColorStr='#194471');
 			}
-				.signin-facebook a, .signup-facebook a{
+				.share-order-facebook{
+					margin-bottom: 15px;
+					margin-top: 25px;
+					width: 200px;
+				}
+				.signin-facebook a, .signup-facebook a, .share-order-facebook a{
 					text-decoration: none;
 				}
-				.signin-facebook-icon, .signup-facebook-icon{
+				.signin-facebook-icon, .signup-facebook-icon, .share-facebook-icon{
 					background: url(/assets/images/signin-facebook.png);
 					display: block;
 					float: left;
 					height: 40px;
 					width: 40px;
 				}
-				.signin-facebook-text, .signup-facebook-text{
+					.share-facebook-icon{
+						background: url(/assets/images/share-facebook-icon.png);
+						margin: 6px;
+						height: 13px;
+						width: 13px;
+					}
+				.signin-facebook-text, .signup-facebook-text, .share-facebook-text{
 					color: #fff;
 					float: left;
 					padding-top:12px;
 					text-align: center;
-				}
+				}	
+					.share-facebook-text{
+						padding-top:3px;
+					}
 				.password-change-block{
 					display: none;
 				}

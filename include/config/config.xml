@@ -68,7 +68,7 @@
 				<secret>_KEY_</secret>
 			</staging>
 			<default>
-				<scope>user_status,publish_stream</scope>
+				<scope>email</scope>
 				<poststatus>
 					<message>I just ordered awsome food!</message>
 					<name>CrunchButton</name>

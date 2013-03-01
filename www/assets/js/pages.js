@@ -194,6 +194,10 @@ App.page.order = function(id) {
 			return;
 		}
 		
+		App._order_uuid = id;
+
+		App.facebook.preLoadOrderStatus();
+
 		App.cache('Restaurant',order.id_restaurant, function() {
 			var restaurant = this;
 

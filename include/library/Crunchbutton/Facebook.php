@@ -81,18 +81,20 @@ class Crunchbutton_Facebook extends Cana_Model {
 				$restaurantImage = 'http://'.$_SERVER['__HTTP_HOST']. '/cache/images/' .  $restaurant->thumb()->getFileName();	
 			} 
 			
+			$description = nl2br( $order->orderMessage( 'web' ) );
+
 			$status = array( 
-										'name' => $restaurantName,
-										'caption' => $restaurantDescription,
+										'name' => $restaurantName . ' on Crunchbutton.com',
 										'link' => $restaurantURL,
-										'picture' => $restaurantImage
+										'picture' => $restaurantImage,
+										'description' => $description
 									);
 
 			$status[ 'message' ] = ( $status[ 'message' ] && $status[ 'message' ] != '' ) ? $status[ 'message' ] : c::config()->facebook->default->poststatus->message;
 			$status[ 'name' ] = ( $status[ 'name' ] && $status[ 'name' ] != '' ) ? $status[ 'name' ] : c::config()->facebook->default->poststatus->name;
-			$status[ 'caption' ] = ( $status[ 'caption' ] && $status[ 'caption' ] != '' ) ? $status[ 'caption' ] : c::config()->facebook->default->poststatus->caption;
+			// $status[ 'caption' ] = ( $status[ 'caption' ] && $status[ 'caption' ] != '' ) ? $status[ 'caption' ] : c::config()->facebook->default->poststatus->caption;
 			$status[ 'link' ] = ( $status[ 'link' ] && $status[ 'link' ] != '' ) ? $status[ 'link' ] : c::config()->facebook->default->poststatus->link;
-			$status[ 'description' ] = ( $status[ 'description' ] && $status[ 'description' ] != '' ) ? $status[ 'description' ] : c::config()->facebook->default->poststatus->description;
+			$status[ 'description' ] = $description;
 			$status[ 'picture' ] = ( $status[ 'picture' ] && $status[ 'picture' ] != '' ) ? $status[ 'picture' ] : c::config()->facebook->default->poststatus->picture;
 			$status[ 'site_name' ] = ( $status[ 'site_name' ] && $status[ 'site_name' ] != '' ) ? $status[ 'site_name' ] : c::config()->facebook->default->poststatus->site_name;
 			$status[ 'site_url' ] = ( $status[ 'site_url' ] && $status[ 'site_url' ] != '' ) ? $status[ 'site_url' ] : c::config()->facebook->default->poststatus->site_url;

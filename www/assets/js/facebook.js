@@ -12,17 +12,57 @@ App.facebook = {
 	},
 	maxtries : 2,
 	tries : 0,
-	postType : 'auto',
-	token : false
+	token : false,
+	orderStatus : false
+}
+
+// This method pre load the order info that could be posted
+App.facebook.preLoadOrderStatus = function(){
+	var url = App.service + App.facebook.api.status.order + App._order_uuid;
+	$.getJSON( url, function( json ) {
+		if( json.success ){
+			App.facebook.orderStatus = json.success;
+		} else {
+			App.facebook.orderStatus = false;
+		}
+	} );
+}
+
+// This method let the user type his message before post
+App.facebook.postOrder = function(){
+	if( !App.facebook.orderStatus ){
+		App.facebook.preLoadOrderStatus();
+		alert( 'Oops, please try again!' );
+		return;
+	}
+	var status = App.facebook.orderStatus;
+	FB.ui({
+		method: 'stream.publish',
+		user_message_prompt: 'CrunchButton: Publish This!',
+		message: status.message,
+		attachment: {
+		name: status.name,
+		caption: status.caption,
+		description: status.description,
+		href: status.link,
+		media:[{'type':'image','src':status.picture,'href':status.link}],
+		},
+		action_links: [{ text: status.site_name, href: status.site_url }]
+	},
+	function(response) {
+		if (response && response.post_id) {
+			alert( 'Thank you for sharing!' );
+		}
+	} );
+}
+
+App.facebook.postOrderByAPI = function( uuid ){
+	App.facebook.postOrderResetTries();
+	App.facebook.postOrderRun( uuid );
 }
 
 App.facebook.postOrderResetTries = function(){
 	App.facebook.tries = 0;
-}
-
-App.facebook.postOrder = function( uuid ){
-	App.facebook.postOrderResetTries();
-	App.facebook.postOrderRun( uuid );
 }
 
 App.facebook.checkPublishPermission = function( success, error ){
@@ -34,13 +74,6 @@ App.facebook.checkPublishPermission = function( success, error ){
 			error();
 		}
 	} );
-	/*FB.api( '/me/permissions', function ( response ) {
-		if( response.data[0].publish_stream ){
-			success();
-		} else {
-			error();
-		}
-	} );*/
 }
 
 App.facebook.postOrderRun = function( uuid ){
@@ -50,11 +83,7 @@ App.facebook.postOrderRun = function( uuid ){
 		App.facebook.checkPublishPermission( 
 			// This function will be called if the user has allowed the publish_stream
 			function(){
-				if( App.facebook.postType == 'user' ){
-					App.facebook.postOrderUser( uuid );	
-				} else {
-					App.facebook.postOrderAuto( uuid );	
-				}
+				App.facebook.postOrderAuto( uuid );	
 			}, 
 			// This function will be called if the user has NOT allowed the publish_stream or he is not logged in
 			function(){ 
@@ -92,40 +121,6 @@ App.facebook.postOrderAuto = function( uuid ){
 	}
 }
 
-App.facebook.postOrderUser = function( uuid ){
-	var url = App.service + App.facebook.api.status.order + uuid;
-	console.log('url', url);
-	$.getJSON( url, function( json ) {
-		if( json.success ){
-			var status = json.success;
-			App.facebook.postOrderResetTries();
-			FB.ui({
-				method: 'stream.publish',
-				display: ( App.isMobile() ? 'none' : 'iframe' ),
-				user_message_prompt: 'CrunchButton: Publish This!',
-				message: status.message,
-				attachment: {
-				name: status.name,
-				caption: status.caption,
-				description: status.description,
-				href: status.link,
-				media:[{'type':'image','src':status.picture,'href':status.link}],
-				},
-				action_links: [{ text: status.site_name, href: status.site_url }]
-			},
-			function(response) {
-				if (response && response.post_id) {
-					alert( 'Thank you for sharing!' );
-				} else {
-					alert( 'Oops, error. Please try it again.' );
-				}
-			} );
-		} else if( json.error ){
-			alert( 'Oops, error. Please try it again.' );
-		}
-	} );
-}
-
 App.facebook.requestLogin = function( callback ){
 	FB.login( function( response ){ App.facebook.processStatus( response, callback ); }, { scope : App.facebookScope } );
 }
@@ -160,14 +155,7 @@ App.facebook.processStatus = function( response, callback ){
 }
 
 $(function() {
-	$(document).on( 'click', '.post-order-facebook-auto', function() {
-		var uuid = $( this ).attr( 'uuid' );
-		App.facebook.postType = 'auto';
-		App.facebook.postOrder( uuid );
-	});
-	$(document).on( 'click', '.post-order-facebook-user', function() {
-		var uuid = $( this ).attr( 'uuid' );
-		App.facebook.postType = 'user';
-		App.facebook.postOrder( uuid );
+	$(document).on( 'click', '.share-order-facebook-button', function() {
+		App.facebook.postOrder();
 	});
 });
