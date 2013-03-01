@@ -321,4 +321,11 @@ class Crunchbutton_App extends Cana_App {
 		return $this->_isBot;
 	}
 	
+	public function isMobile() {
+		if (!isset($this->_detect)) {
+			$this->_detect = new Crunchbutton_Detect;
+		}
+		return $this->_detect->isMobile();
+	}
+	
 } 
