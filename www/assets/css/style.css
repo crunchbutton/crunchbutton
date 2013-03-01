@@ -1909,11 +1909,11 @@ html[xmlns] .clearfix {
 				text-shadow: none !important;
 			}	
 			.sign-form-links h1.link{
+				color:#4168b8 !important;
 				cursor: pointer;
 				text-decoration: underline;
 			}	
 				.sign-form-links h1.signup{
-					color:#4168b8 !important;
 					text-align: right !important;
 				}
 				.sign-form-links h1.signup{
