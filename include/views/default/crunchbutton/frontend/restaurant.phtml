@@ -153,7 +153,7 @@
 	<div class="divider"></div>
 	<div class="payment-total">
 		You're paying:&nbsp;<span class="cash-order-aprox"></span>
-		<span class="cart-breakdownDescription"></span>&nbsp;
+		&nbsp;<span class="cart-breakdownDescription"></span>&nbsp;
 		for a total of <span class="cart-total"></span>
 		&nbsp;<span class="cart-paymentType"></span>
 	</div>
@@ -171,10 +171,10 @@
 			<label>Your phone number:</label> <%= (user.phone ? App.phone.format(user.phone) : '<i>no phone # provided</i>') %></div>
 
 			<div class="dp-display-payment dp-display-item ">
-				<label>You are paying <span class="cash-order-aprox"></span> :</label>
+				<label>You are paying&nbsp;<span class="cash-order-aprox"></span>: &nbsp;</label>
 				<span class="cart-breakdownDescription"></span>
-				for a total of <span class="cart-total">$0.00</span>
-				<span class="cart-paymentType"></span>
+				&nbsp;for a total of <span class="cart-total">$0.00</span>
+				&nbsp;<span class="cart-paymentType"></span>
 			</div>
 
 		<% if (App.config.user.delivery_type == 'delivery' && App.restaurant.delivery == '1') { %>
