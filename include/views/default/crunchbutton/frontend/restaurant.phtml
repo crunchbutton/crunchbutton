@@ -48,6 +48,13 @@
 
 <? /* payment and user info */ ?>
 <form class="payment-form main-content-readable">
+
+	<% if (restaurant.message) { %>
+		<div class="restaurant-message">
+			<%= restaurant.message %>
+		</div>
+	<% } %>
+
 	<div class="content-item-name"><h1>Your Info</h1></div>
 	<div class="your-info-label">(enter this once, and we'll save it for next time)</div>
 	

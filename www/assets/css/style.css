@@ -17,7 +17,8 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
-}
+	}
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
@@ -282,6 +283,14 @@ b {
 .resturant-dish-container {
 	line-height: 1.4em;
 	margin-bottom: 19px;
+}
+
+.restaurant-message{
+	color: #D74924;
+	font-size: 14px;
+	font-weight: 400;
+	margin: 15px 0;
+	text-shadow:none !important;
 }
 
 .cart-items {
@@ -569,7 +578,10 @@ html[xmlns] .clearfix {
 	font-size: 12px;
 	margin-right: 25px;
 }
-
+	.restaurant-message{
+		margin-left: 10px;
+		margin-right: 10px;
+	}
 .input-item {
 	float: left;
 	margin-bottom: 3px;
@@ -1169,6 +1181,7 @@ html[xmlns] .clearfix {
 		color: #fff;
 		text-shadow: 1px 1px 0px #e0221a;
 	}
+
 	.meal-item-down {
 		border: 1px solid rgba(255,40,31,.8);
 	}
