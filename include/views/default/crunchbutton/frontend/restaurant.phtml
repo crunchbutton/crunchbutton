@@ -79,8 +79,11 @@
 			<div class="input-item delivery-only"><textarea name="pay-address" tabindex="5"><%= form.address %></textarea></div>
 			<div class="divider"></div>
 
-			<label>Notes</label>
-			<div class="input-item"><textarea name="notes" tabindex="6"><%= form.notes %></textarea></div><div class="divider"></div>
+			<% if( restaurant.id != 74 ) { %>
+				<label>Notes</label>
+				<div class="input-item"><textarea name="notes" tabindex="6"><%= form.notes %></textarea></div><div class="divider"></div>
+			<% } %>
+
 		</div>
 	</div>
 
