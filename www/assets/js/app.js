@@ -728,7 +728,7 @@ App.cart = {
 				var elements = [elements.join(', ')];
 				elements.push(lastOne);
 			}
-			var text 	=  elements.join(' and ');
+			var text 	=  elements.join(' & ');
 		}
 		return text;
 	},
