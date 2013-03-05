@@ -81,10 +81,10 @@ class Crunchbutton_Facebook extends Cana_Model {
 				$restaurantImage = 'http://'.$_SERVER['__HTTP_HOST']. '/cache/images/' .  $restaurant->thumb()->getFileName();	
 			} 
 			
-			$description = nl2br( $order->orderMessage( 'web' ) );
+			$description = nl2br( $order->orderMessage( 'facebook' ) );
 
 			$status = array( 
-										'name' => $restaurantName . ' on Crunchbutton.com',
+										'name' => $restaurantName,
 										'link' => $restaurantURL,
 										'picture' => $restaurantImage,
 										'description' => $description
@@ -92,12 +92,15 @@ class Crunchbutton_Facebook extends Cana_Model {
 
 			$status[ 'message' ] = ( $status[ 'message' ] && $status[ 'message' ] != '' ) ? $status[ 'message' ] : c::config()->facebook->default->poststatus->message;
 			$status[ 'name' ] = ( $status[ 'name' ] && $status[ 'name' ] != '' ) ? $status[ 'name' ] : c::config()->facebook->default->poststatus->name;
-			// $status[ 'caption' ] = ( $status[ 'caption' ] && $status[ 'caption' ] != '' ) ? $status[ 'caption' ] : c::config()->facebook->default->poststatus->caption;
+			$status[ 'caption' ] = 'I ordered ' . $restaurantName . ' with just 1 click';
 			$status[ 'link' ] = ( $status[ 'link' ] && $status[ 'link' ] != '' ) ? $status[ 'link' ] : c::config()->facebook->default->poststatus->link;
 			$status[ 'description' ] = $description;
 			$status[ 'picture' ] = ( $status[ 'picture' ] && $status[ 'picture' ] != '' ) ? $status[ 'picture' ] : c::config()->facebook->default->poststatus->picture;
 			$status[ 'site_name' ] = ( $status[ 'site_name' ] && $status[ 'site_name' ] != '' ) ? $status[ 'site_name' ] : c::config()->facebook->default->poststatus->site_name;
 			$status[ 'site_url' ] = ( $status[ 'site_url' ] && $status[ 'site_url' ] != '' ) ? $status[ 'site_url' ] : c::config()->facebook->default->poststatus->site_url;
+// echo '<pre>';
+			// var_dump($status);
+			// exit;
 			return $status;
 		} else {
 			return false;

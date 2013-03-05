@@ -606,6 +606,14 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 
 			$foodItem = "\n- ".$prefix.preg_replace($pFind, $pReplace, $dish->dish()->name);
+			
+			// Facebook does not share the options
+			if( $type == 'facebook' ){
+				$foodItem .= '. ';
+				$food .= $foodItem;
+				continue;
+			}
+
 			$options = $dish->options();
 
 			if (gettype($options) == 'array') {
