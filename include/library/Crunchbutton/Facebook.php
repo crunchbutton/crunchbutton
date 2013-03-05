@@ -98,9 +98,6 @@ class Crunchbutton_Facebook extends Cana_Model {
 			$status[ 'picture' ] = ( $status[ 'picture' ] && $status[ 'picture' ] != '' ) ? $status[ 'picture' ] : c::config()->facebook->default->poststatus->picture;
 			$status[ 'site_name' ] = ( $status[ 'site_name' ] && $status[ 'site_name' ] != '' ) ? $status[ 'site_name' ] : c::config()->facebook->default->poststatus->site_name;
 			$status[ 'site_url' ] = ( $status[ 'site_url' ] && $status[ 'site_url' ] != '' ) ? $status[ 'site_url' ] : c::config()->facebook->default->poststatus->site_url;
-// echo '<pre>';
-			// var_dump($status);
-			// exit;
 			return $status;
 		} else {
 			return false;
