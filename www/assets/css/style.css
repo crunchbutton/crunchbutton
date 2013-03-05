@@ -2358,7 +2358,9 @@ strong {
 	margin: 0;
 	cursor: pointer;
 }
-
+.support-maximized, .support-minimized{
+	z-index: 110:;
+}
 .support-minimized{
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
