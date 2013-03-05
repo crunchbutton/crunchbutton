@@ -59,7 +59,6 @@ App.suggestion.send = function(){
 
 	if (!App.suggestion.itIsSending){
 		App.suggestion.itIsSending = true;
-		console.log('saving', new Date);
 		$.ajax({
 			type: 'POST',
 			dataType: 'json',
