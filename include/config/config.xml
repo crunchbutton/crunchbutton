@@ -122,6 +122,14 @@
 			<phone>_PHONE_</phone>
 		</live>
 	</suggestion>
+	<support>
+		<dev>
+			<phone>_PHONE_</phone>
+		</dev>
+		<live>
+			<phone>_PHONE_</phone>
+		</live>
+	</support>
 	<twilio>
 		<live>
 			<sid>_KEY_</sid>
