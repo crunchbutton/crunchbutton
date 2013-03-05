@@ -6,7 +6,7 @@ App.support = {
 }
 
 App.support.init = function(){
-	$( '.wrapper' ).append( App.render( 'support' ) );
+	$( 'body' ).append( App.render( 'support' ) );
 
 	$(document).on('click', '.support-minimized', function() {
 		App.support.maxi();
