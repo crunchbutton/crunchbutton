@@ -2359,7 +2359,7 @@ strong {
 	cursor: pointer;
 }
 .support-maximized, .support-minimized{
-	z-index: 110:;
+	z-index: 1100:;
 }
 .support-minimized{
 	border-top-left-radius: 5px;
