@@ -103,6 +103,12 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 								$user_auth->email = $params[ 'email' ];
 								$user_auth->active = 1;
 								$user_auth->save();
+
+								// This line will create a phone user auth just if the user already has an email auth
+								if( $user->phone ){
+									User_Auth::createPhoneAuth( $user->id_user, $user->phone );	
+								}
+								
 								$user = c::auth()->doAuthByLocalUser( $params );
 								echo c::user()->json();
 								break;
