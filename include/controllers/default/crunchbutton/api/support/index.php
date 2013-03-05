@@ -28,17 +28,15 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 
 					$message = str_split($message, 160);
 
-					$phones = c::config()->support->{$env}->phone;
+					$phones= c::config()->support->{$env}->phone;
 
 					foreach ($message as $msg) {
-						foreach ($phones as $phone) {
-							$twilio->account->sms_messages->create(
-								c::config()->twilio->{$env}->outgoingTextCustomer,
-								'+1'.$phone,
-								$msg
-							);
-							continue;	
-						}
+						$twilio->account->sms_messages->create(
+							c::config()->twilio->{$env}->outgoingTextCustomer,
+							'+1'.$phone,
+							$msg
+						);
+						continue;	
 					}
 
 					echo json_encode(['success' => 'success']);
