@@ -2427,6 +2427,7 @@ strong {
 			text-shadow: 1px 1px 1px #000;
 		}
 	.support-maximized-content{
+		background: #FFF;
 		border-left: 1px solid #831a01;
 		border-right: 1px solid #831a01;
 		font-size:12px;
