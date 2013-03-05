@@ -260,6 +260,13 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 		// fetch all (active and inactive dishes) before any changes
 		$originalDishes = $this->dishes(['active' => null]);
+			
+			Log::debug([
+				'newDishes' => $newDishes,
+				'type' => 'dishes'
+			]);
+	
+
 		if ($newDishes) {
 			foreach ($newDishes as $dish) {
 				$dishO                = new Dish($dish['id_dish']);
@@ -278,6 +285,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 				$dishO->save();
 
 				$options = $dishO->options();
+
 				$newOptions = [];
 
 				if ($dish['optionGroups']) {
@@ -307,8 +315,13 @@ class Crunchbutton_Restaurant extends Cana_Table
 							}
 						}
 
+						$_debug_opts = array();
+
 						if ($optionGroup['options']) {
 							foreach ($optionGroup['options'] as $opt) {
+
+								$_debug_opts[] = $opt;
+
 								$option                   = new Option($opt['id_option']);
 								$option->id_restaurant    = $this->id_restaurant;
 								$option->id_option_parent = $parent;
@@ -335,15 +348,37 @@ class Crunchbutton_Restaurant extends Cana_Table
 								$do->save();
 							}
 						}
+
+						Log::debug([
+							'id_dish' => $dish['id_dish'],
+							'id_option' => $optionGroup['id_option'],
+							'options' => $_debug_opts,
+							'type' => 'options-dishes'
+						]);
+
 					}
 				}
+
+				$removed = array();
 
 				foreach ($options as $option) {
 					if (!in_array($option->id_option, $newOptions)) {
 						$do = new Dish_Option($option->id_dish_option);
+						$removed[] = $option->id_dish_option;
 						$do->delete();
 					}
 				}
+
+
+				Log::debug([
+					'id_dish' => $dish['id_dish'],
+					'id_option' => $optionGroup['id_option'],
+					'removed' => $removed,
+					'newOptions' => $newOptions,
+					'type' => 'options-dishes-removed'
+				]);
+
+
 			}
 		}
 
