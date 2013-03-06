@@ -115,7 +115,7 @@ class Crunchbutton_Suggestion extends Cana_Table {
 	public function date() {
 		if (!isset($this->_date)) {
 			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
-			$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+			$this->_date->setTimezone(new DateTimeZone( c::config()->timezone ));
 		}
 		return $this->_date;
 	}

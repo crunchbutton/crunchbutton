@@ -1,6 +1,6 @@
 App.recommend = {
 	api : {
-		sms : 'support/sms',
+		add : 'suggestion/restaurant'
 	},
 	itIsSending : false
 }
@@ -20,7 +20,32 @@ App.recommend.send = function(){
 		$( '.home-recommend-text' ).focus();
 		return;
 	}
-	App.recommend.showThankYou();
+
+	var content = 'Geocode city: ' + App.loc.reverseGeocodeCity + 
+								'\n' + 
+								'City name: ' + App.loc.city_name +
+								'\n' + 
+								'Lat: ' + App.loc.lat + 
+								'\n' + 
+								'Lon: ' + App.loc.lon;
+	var data = {
+		name: $( '.home-recommend-text' ).val(),
+		content : content
+	};
+
+	if (!App.recommend.itIsSending){
+		App.recommend.itIsSending = true;
+		$.ajax({
+			type: 'POST',
+			dataType: 'json',
+			data: data,
+			url:  App.service + App.recommend.api.add,
+			success: function(content) {
+				App.recommend.itIsSending = false;
+				App.recommend.showThankYou();	
+			}
+		});
+	}
 }
 
 App.recommend.showThankYou = function(){
