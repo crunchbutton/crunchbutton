@@ -2475,3 +2475,85 @@ strong {
 		margin-top: 10px;
 		margin-right: 3px;
 	}
+
+.home-recommend{
+	margin:40px auto;
+	width: 687px;
+}
+	.home-recommend-title{
+		font-size: 28px;
+		color: #D74924;
+		font-weight: 100;
+		font-size: 25px;
+		margin-bottom: 22px;
+		display: block;
+		float: left;
+		margin:9px 10px 0 0;
+		font-family: 'Open Sans', 'Droid Sans', Helvetica, Arial, sans-serif;
+	}
+	.home-recommend-text{
+		float: left;
+		background-color: #FFF;
+		border:1px solid #f78160;
+		border-radius: 2px;
+		box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 6px 0px inset;
+		box-sizing: border-box;
+		color: #888888;
+		cursor: auto;
+		display: inline-block;
+		font-family: 'Open Sans', 'Droid Sans', Helvetica, Arial, sans-serif;
+		font-size: 18px;
+		height: 40px;
+		margin:3px 10px 0 0;
+		padding:9px 13px 11px 13px;
+		float: left;
+		width: 240px;
+		-webkit-box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 6px 0px inset;
+		-webkit-rtl-ordering: logical;
+		-webkit-tap-highlight-color: rgba(205, 69, 29, 0.498039);
+		-webkit-user-select: text;
+		-webkit-writing-mode: horizontal-tb;
+	}
+	.home-recommend-button{
+		float: left;
+		background-attachment: scroll;
+		background-clip: border-box;
+		background-color: rgba(0, 0, 0, 0);
+		background-image: -webkit-linear-gradient(top, rgb(251, 66, 46), rgb(251, 36, 24));
+		background-origin: padding-box;
+		background-size: auto;
+		border:1px solid #ae4939;
+		border-radius: 4px;
+		box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 18px 0px inset, rgba(255, 254, 196, 0.901961) 0px 0px 2px 0px inset, rgba(0, 0, 0, 0.14902) 0px 2px 5px 0px;
+		box-sizing: border-box;
+		cursor: pointer;
+		display: block;
+		font-size: 25px;
+		margin-bottom: 0px;
+		outline-color: rgb(255, 244, 243);
+		padding: 2px 5px 3px 5px;
+		text-align: center;
+		text-shadow: rgba(0, 0, 0, 0.2) -1px -1px 0px;
+		-webkit-background-clip: border-box;
+		-webkit-background-origin: padding-box;
+		-webkit-background-size: auto;
+		-webkit-box-align: center;
+		-webkit-box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 18px 0px inset, rgba(255, 254, 196, 0.901961) 0px 0px 2px 0px inset, rgba(0, 0, 0, 0.14902) 0px 2px 5px 0px;
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+		-webkit-user-select: none;
+		-webkit-writing-mode: horizontal-tb;
+	}
+
+		.home-recommend-button div{
+			border:none;
+			color: #fff4f3;
+			font-family: 'Open Sans', 'Droid Sans', Helvetica, Arial, sans-serif;
+			font-size: 15px;
+			font-weight: 600;
+			margin: 0;
+			padding: 7px 10px;
+			text-align: center;
+			text-shadow: rgba(0, 0, 0, 0.2) -1px -1px 0px;
+			vertical-align: baseline;
+			-webkit-tap-highlight-color: rgba(205, 69, 29, 0.498039);
+		}
