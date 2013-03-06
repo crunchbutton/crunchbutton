@@ -2575,3 +2575,10 @@ strong {
 	margin-top: -60px;
 	font-size: 16px;
 }
+.icon-pencil{
+	background: url(/assets/images/pencil.png);
+	display: inline-block;
+	margin: 0 0 0 5px;
+	height: 16px;
+	width: 16px;
+}
