@@ -1724,7 +1724,7 @@ $(function() {
 	App.signin.init();
 	App.signup.init();
 	App.suggestion.init();
-
+	App.recommend.init();
 });
 
 

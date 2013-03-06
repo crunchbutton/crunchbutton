@@ -18,8 +18,7 @@ App.support.init = function(){
 
 	$(document).on('click', '.support-maximized-button', function() {
 		App.support.sendSMS();
-	});
-	
+	});	
 }
 
 App.support.maxi = function(){

@@ -2481,12 +2481,15 @@ strong {
 	width: 687px;
 	font-weight: 100;
 }
+	.home-recommend-thank-you{
+		display: none;
+	}
 	.home-recommend-message{
 		color: #888;
 		display: block;
-		font-size: 16px;
+		font-size: 14px;
 		line-height: 24px;
-		margin:10px 0 0 0;
+		margin:5px 0 0 0;
 	}
 	.home-recommend-title{
 		font-size: 28px;
