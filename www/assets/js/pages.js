@@ -39,6 +39,7 @@ App.page.home = function() {
 		setTimeout(function() {
 			App.showErrorLocation = false;
 		}, 100);
+		$('.home-greeting, .enter-location, .button-letseat-form').hide();
 		$('.enter-location, .button-letseat-form').hide();
 		$('.error-location').show();
 		App.track('Location Error', {
@@ -50,7 +51,7 @@ App.page.home = function() {
 		if ($('.enter-location').length) {
 			$('.location-address').val('');
 			$('.error-location').fadeOut(100, function() {
-				$('.enter-location, .button-letseat-form').fadeIn();
+				$('.home-greeting, .enter-location, .button-letseat-form').fadeIn();
 			});
 		}
 	}
