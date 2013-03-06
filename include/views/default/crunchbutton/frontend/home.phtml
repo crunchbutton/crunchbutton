@@ -25,16 +25,31 @@
 	</div>
 	<div class="divider"></div>
 	<div class="home-recommend">
-		<div class="home-recommend-title">
-			<h1>Recommend a restaurant:</h1>
+		<div class="home-recommend-form">
+			<div class="home-recommend-title">
+				<h1>Recommend a restaurant:</h1>
+			</div>
+			<input type="text" class="home-recommend-text">
+			<button class="home-recommend-button"><div>Recommend!</div></button>
+			<div class="divider"></div>
+			<div class="home-recommend-message">
+				What's your absolute favorite? What should be on Crunchbutton? <br/> Tell us, and we'll actually add it and get back to you.
+			</div>
+			<div class="divider"></div>
 		</div>
-		<input type="text" class="home-recommend-text">
-		<button class="home-recommend-button"><div>Recommend!</div></button>
-		<div class="divider"></div>
-		<div class="home-recommend-message">
-			What's your absolute favorite? What should be on Crunchbutton? <br/> Tell us, and we'll actually add it and get back to you.
+		<div class="home-recommend-thank-you">
+			<div class="home-recommend-title">
+				<h1>Awesome, thanks!</h1>
+			</div>
+			<div class="divider"></div>
+			<div class="home-recommend-message">
+				<% if( App.config.user.has_auth ) { %>
+					We'll let you know if they make it to Crunchbutton.
+				<% } else { %>
+					<a href="#" class="home-recommend-message-create-account">Create an account</a>, and when we'll let you know when we launch in your area!
+				<% } %>
+			</div>
 		</div>
-		<div class="divider"></div>
 	</div>
 	
 	<div class="content-item-locations">
