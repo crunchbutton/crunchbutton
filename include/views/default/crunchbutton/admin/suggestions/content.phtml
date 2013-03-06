@@ -16,7 +16,7 @@
 			<tr class="list-suggestion-item <?=$suggestion->status; ?>">
 				<td> <?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?> </td>
 				<td> <a href="/admin/suggestions/<?=$suggestion->id_suggestion;?>"><?=$suggestion->name; ?></a> </td>
-				<td> <?=$suggestion->content; ?> </td>
+				<td> <?=nl2br( $suggestion->content ); ?> </td>
 				<td> <?=$suggestion->community()->name; ?> </td>
 				<td> <?=$suggestion->restaurant()->name; ?> </td>
 				<td><span class="status"><?=$suggestion->status; ?></div></td>

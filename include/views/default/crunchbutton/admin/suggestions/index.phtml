@@ -18,7 +18,7 @@
 			<tr>
 				<td class="label-sub">TYPE</td>
 				<td class="content-sub">
-					<? $types = ['dish']; ?>
+					<? $types = ['dish','restaurant']; ?>
 					<select name="type">
 						<option value="" selected>[ All ]</option>
 						<? foreach ($types as $type) : ?>
@@ -92,15 +92,17 @@
 </div>		
 <script>
 	$(function() {		
-		$('.admin-suggestion-search').live('click', function() {
+		$(document).on('click', '.admin-suggestion-search', function() {
 			App.suggestions.load();
-		});
-		$('[name="suggestion-search"]').live('keyup', function(e) {
+		} );
+
+		$(document).on('keyup', '[name="suggestion-search"]', function( e ) {
 			if (e.which == 13) {
 				App.suggestions.load();
 			}
-		});
-		$('input[name="suggestion-range-all"]').live('change', function() {
+		} );
+
+		$(document).on('change', 'input[name="suggestion-range-all"]', function( e ) {
 			if ($(this).prop('checked')) {
 				$('.date-picker').attr('disabled', 'disabled');
 				$('.date-picker').val('');

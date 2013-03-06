@@ -79,7 +79,7 @@ $(function() {
 		App.topCommunities[App.topCommunities.length] = {
 			id_community: '<?=$restaurant->community()->permalink?>',
 			name: '<?=$restaurant->community()->name?>',
-			image: '/cache/images/<?//=$restaurant->thumb()->getFileName()?>',
+			image: '/cache/images/<?=$restaurant->thumb()->getFileName()?>',
 			restaurant: '<?=str_replace("'","\'",$restaurant->name)?>'
 		};
 	<? endforeach ; ?>

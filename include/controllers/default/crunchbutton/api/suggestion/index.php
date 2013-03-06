@@ -33,6 +33,24 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					exit;
 				}
 
+				if (c::getPagePiece(2) == 'restaurant') {
+				
+					$suggesion = new Suggestion;
+
+					$suggesion->id_user = c::user()->name ? c::user()->id_user : null;
+
+					$suggesion->status = 'new';
+					$suggesion->type = 'restaurant';
+					$suggesion->name = $this->request()['name'];
+					$suggesion->content = $this->request()['content'];
+					$suggesion->ip = $_SERVER['REMOTE_ADDR'];
+					$suggesion->date = date('Y-m-d H:i:s');
+					$suggesion->save();
+					
+					echo $suggesion->json();
+					exit;
+				}
+
 				// If is admin changes the Suggestion attributes
 				if ($_SESSION['admin']) {
 					$s = Suggestion::o(c::getPagePiece(2));

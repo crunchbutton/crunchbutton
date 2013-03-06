@@ -17,7 +17,7 @@
 									<?php if( trim( $this->suggestion->content ) != '' ) { ?>
 									<tr>
 										<td class="label-sub">Content:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->content;?></div></td>
+										<td class="content-sub"><div class="input-faker"><?=nl2br($this->suggestion->content);?></div></td>
 									</tr>
 									<?php } ?>
 									<tr>
@@ -30,6 +30,7 @@
 					</div>
 				</td>
 			</tr>
+			<?php if( $this->suggestion->community()->name || $this->suggestion->restaurant()->name ) { ?>
 			<tr>
 				<td class="label-primary">Place:</td>
 				<td class="content-primary">
@@ -51,6 +52,7 @@
 					</div>
 				</td>
 			</tr>
+			<?php } ?>
 			<tr>
 				<td class="label-primary">More information:</td>
 				<td class="content-primary">
