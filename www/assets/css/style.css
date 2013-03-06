@@ -2477,9 +2477,17 @@ strong {
 	}
 
 .home-recommend{
-	margin:40px auto;
+	margin:60px auto;
 	width: 687px;
+	font-weight: 100;
 }
+	.home-recommend-message{
+		color: #888;
+		display: block;
+		font-size: 16px;
+		line-height: 24px;
+		margin:10px 0 0 0;
+	}
 	.home-recommend-title{
 		font-size: 28px;
 		color: #D74924;
