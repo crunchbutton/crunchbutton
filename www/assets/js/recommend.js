@@ -2,13 +2,21 @@ App.recommend = {
 	api : {
 		add : 'suggestion/restaurant'
 	},
-	itIsSending : false
+	itIsSending : false,
+	recommendations : false
 }
 
 App.recommend.init = function(){
 	$( document ).on( 'click', '.home-recommend-button', function() {
 		App.recommend.send();
 	} );	
+
+	$( document ).on( 'keyup', '.home-recommend-text', function( e ) {
+		if (e.which == 13) {
+			App.recommend.send();
+		}
+	} );
+
 	$( document ).on( 'click', '.home-recommend-message-create-account', function(){
 		App.signup.show( false );
 	} );
@@ -34,15 +42,19 @@ App.recommend.send = function(){
 	};
 
 	if (!App.recommend.itIsSending){
+		App.recommend.showThankYou();	
 		App.recommend.itIsSending = true;
 		$.ajax({
 			type: 'POST',
 			dataType: 'json',
 			data: data,
 			url:  App.service + App.recommend.api.add,
-			success: function(content) {
+			success: function( json ) {
 				App.recommend.itIsSending = false;
-				App.recommend.showThankYou();	
+				if( !App.recommend.recommendations ){
+					App.recommend.recommendations = [];
+				}
+				App.recommend.recommendations.push( json.id_suggestion );
 			}
 		});
 	}
