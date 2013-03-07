@@ -1127,21 +1127,6 @@ App.loc = {
 			});
 		}
 	},
-	getClosest: function() {
-		var closest;
-		if (App.loc.lat) {
-			for (x in App.communities) {
-				App.communities[x].distance = App.loc.distance({
-					from: {lat: App.loc.lat, lon: App.loc.lon},
-					to: {lat: parseFloat(App.communities[x].loc_lat), lon: parseFloat(App.communities[x].loc_lon)}
-				});
-				if (!closest || App.communities[x].distance < closest.distance) {
-					closest = App.communities[x];
-				}
-			}
-		}
-		return closest;
-	},
 	closest: function(complete) {
 		if (google && google.loader && google.loader.ClientLocation) {
 			App.loc.lat = google.loader.ClientLocation.latitude;
@@ -1299,9 +1284,11 @@ App.loc = {
 				App.loc.name_alt = null;
 				App.loc.prep = null;
 				App.registerLocationsCookies();
+
 				$.cookie('location_name_alt', App.loc.name_alt, { expires: new Date(3000,01,01), path: '/'});
 				$.cookie('location_prep', App.loc.prep, { expires: new Date(3000,01,01), path: '/'});
 				App.loc.setFormattedLoc( results );
+
 				setTimeout( function(){
 					App.foodDelivery.preProcess();	
 				}, 50 );
@@ -1319,7 +1306,7 @@ App.loc = {
 		});
 
 		if (App.loc.reverseGeocodeResults) {
-			$('.location-address').val(App.loc.reverseGeocodeResults);
+			// $('.location-address').val(App.loc.reverseGeocodeResults);
 			complete();
 			return;
 		}
@@ -1330,7 +1317,7 @@ App.loc = {
 		geocoder.geocode({'latLng': latlng}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
 				if (results[1]) {
-					$('.location-address').val(results[0].formatted_address);
+					// $('.location-address').val(results[0].formatted_address);
 				} else {
 					$('.location-address').val('Where are you?!');
 				}
@@ -1338,9 +1325,6 @@ App.loc = {
 				App.loc.reverseGeocodeResults = results[0].formatted_address;
 				App.loc.setFormattedLoc(results);
 				complete();
-				setTimeout(function() {
-					App.loc.reverseGeocodeResults = null;
-				}, 1000 * 60 * 2);
 
 			} else {
 				$('.location-address').val('Oh no! We couldn\'t locate you');
@@ -1412,29 +1396,7 @@ $(function() {
 	$(document).on('click', '.button-letseat-form', function() {
 		
 		var complete = function() {
-			var closest = App.loc.getClosest();
-			if (closest) {
-				if (closest.distance < 25) {
-
-					App.routeAlias( closest.permalink );
-
-					App.track('Location Success', {
-						lat: App.loc.lat,
-						lon: App.loc.lon,
-						address: $('.location-address').val(),
-						community: closest.permalink
-					});
-
-				} else {
-
-					App.track('Location Error', {
-						lat: App.loc.lat,
-						lon: App.loc.lon,
-						address: $('.location-address').val()
-					});
-					return;
-				}
-			}
+			
 		};
 
 		if ($('.location-address').val() && $('.location-address').val() != App.loc.reverseGeocodeResults) {
@@ -1442,9 +1404,9 @@ $(function() {
 			$.cookie('entered_address', App.loc.enteredLoc, { expires: new Date(3000,01,01), path: '/'});
 			App.loc.geocode(complete);
 		} else if (App.loc.lat) {
-			complete();
+			App.page.foodDelivery();
 		} else {
-//			$('.location-address').val('').attr('placeholder','Hey! Enter your address here');
+			$('.location-address').val('').attr('placeholder','Please enter your address here');
 		}
 	});
 
