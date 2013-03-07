@@ -1,6 +1,7 @@
 App.recommend = {
 	api : {
-		add : 'suggestion/restaurant'
+		add : 'suggestion/restaurant',
+		relateuser : 'suggestion/relateuser'
 	},
 	itIsSending : false,
 	recommendations : false
@@ -57,6 +58,24 @@ App.recommend.send = function(){
 				App.recommend.recommendations.push( json.id_suggestion );
 			}
 		});
+	}
+}
+
+App.recommend.relateUser = function(){
+	if( App.recommend.recommendations ){
+		var url = App.service + App.recommend.api.relateuser;
+		$.each( App.recommend.recommendations, function(index, value) {
+			var id_suggestion = value;
+			var data = { id_suggestion : id_suggestion, id_user : App.config.user.id_user };
+			$.ajax({
+				type: 'POST',
+				dataType: 'json',
+				data: data,
+				url:  url,
+				success: function( json ) {}
+			});
+		} );
+		App.recommend.recommendations = false;
 	}
 }
 

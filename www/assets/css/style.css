@@ -2484,13 +2484,18 @@ strong {
 	.home-recommend-thank-you{
 		display: none;
 	}
-	.home-recommend-message{
+	.home-recommend-message, .home-recommend-message-thank-you{
 		color: #888;
 		display: block;
 		font-size: 12px;
 		line-height: 24px;
 		margin:5px 0 0 0;
 	}
+		.home-recommend-message-thank-you{
+			font-size: 14px;
+			margin-top: 10px;
+		}
+
 	.home-recommend-title{
 		font-size: 28px;
 		color: #D74924;
@@ -2568,6 +2573,29 @@ strong {
 			vertical-align: baseline;
 			-webkit-tap-highlight-color: rgba(205, 69, 29, 0.498039);
 		}
+		.home-recommend-message-create-account{
+			display: inline-block;
+			color: #FFF;
+			border-radius: 4px;
+			border:1px solid #a01c00;
+			font-weight: 400;
+			background-color: #e9481a;
+			background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(230, 47, 0)), to(rgb(236, 97, 52)));
+			background-image: -webkit-linear-gradient(top, rgb(230, 47, 0), rgb(236, 97, 52));
+			background-image: -moz-linear-gradient(top, rgb(230, 47, 0), rgb(236, 97, 52));
+			background-image: -o-linear-gradient(top, rgb(230, 47, 0), rgb(236, 97, 52));
+			background-image: -ms-linear-gradient(top, rgb(230, 47, 0), rgb(236, 97, 52));
+			background-image: linear-gradient(top, rgb(230, 47, 0), rgb(236, 97, 52));
+			filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#e62f00', EndColorStr='#ec6134');
+			text-decoration: none;
+			text-shadow: #a01c00 1px 1px 1px;
+		}	
+			.home-recommend-message-create-account span{
+				border-radius: 4px;
+				display: inline-block;
+				border: 1px solid #ff8d61;
+				padding: 6px 10px;
+			}
 .home-welcome-click{
 	margin-bottom: 0;
 }
