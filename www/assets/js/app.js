@@ -35,6 +35,7 @@ var App = {
 	_init: false,
 	_pageInit: false,
 	_identified: false,
+	isDeliveryAddressOk : false,
 	tips: [0,5,10,15,20,25]
 };
 
@@ -834,6 +835,27 @@ Issue 13: Removed the password for while
 			return;
 		}
 
+		// Check the distance between the user and the restaurant
+		if( order.delivery_type == 'delivery' && !App.isDeliveryAddressOk ){
+			App.loc.geocodeDelivery( order.address, 
+				function(){
+					if( App.isDeliveryAddressOk ){
+						if( !App.restaurant.deliveryHere( { lat : App.loc.lat, lon : App.loc.lon } )){
+							alert( 'Sorry, you are too far from this restaurant!' );
+							App.isDeliveryAddressOk = false;
+							App.busy.unBusy();
+							return;
+						} else {
+							App.busy.unBusy();
+							App.cart.submit();
+						}
+					} else {
+						App.busy.unBusy();
+					}
+				} );
+			return;
+		}
+
 		$.ajax({
 			url: App.service + 'order',
 			data: order,
@@ -1076,7 +1098,7 @@ App.test = {
 
 		$('[name="pay-name"]').val('MR TEST');
 		$('[name="pay-phone"]').val('***REMOVED***');
-		$('[name="pay-address"]').val("123 main\nsanta monica ca");
+		$('[name="pay-address"]').val( App.restaurant.address || "123 main\nsanta monica ca" );
 
 		App.order.cardChanged = true;
 	},
@@ -1109,17 +1131,16 @@ App.loc = {
 	distance: function(params) {
 		try{
 			var R = 6371; // Radius of the earth in km
-			var dLat = (params.to.lat - params.from.lat).toRad();
-
-			var dLon = (params.to.lon - params.from.lon).toRad();
+			var dLat = _toRad(params.to.lat - params.from.lat);
+			var dLon = _toRad(params.to.lon - params.from.lon);
 			var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-				Math.cos(params.from.lat.toRad()) * Math.cos(params.to.lat.toRad()) *
+				Math.cos(_toRad(params.from.lat)) * Math.cos(_toRad(params.to.lat)) *
 				Math.sin(dLon/2) * Math.sin(dLon/2);
 			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 			var d = R * c; // Distance in km
-
 			return d;
 		} catch( e ) {
+			console.log( 'error', e );
 			App.track('Location Error', {
 				lat: App.loc.lat,
 				lon: App.loc.lon,
@@ -1299,6 +1320,21 @@ App.loc = {
 			complete();
 		});
 	},
+	geocodeDelivery : function( address, complete ){
+			var geocoder = new google.maps.Geocoder();
+			geocoder.geocode({'address': address}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				App.loc.lat = results[0].geometry.location.lat();
+				App.loc.lon = results[0].geometry.location.lng();
+				App.isDeliveryAddressOk = true;
+				App.registerLocationsCookies();
+			} else {
+				alert( 'Oops! We couldn\'t find that address!' );
+				App.isDeliveryAddressOk = false;
+			}
+			complete();
+		});
+	},
 	reverseGeocode: function(complete) {
 		App.track('Location Reverse Geocode', {
 			lat: App.loc.lat,
@@ -1333,6 +1369,12 @@ App.loc = {
 			}
 
 		});
+	},
+	km2Miles : function( km ){
+		return km * 0.621371;
+	},
+	Miles2Km : function( miles ){
+		return miles * 1.60934;
 	}
 }
 
@@ -1539,10 +1581,12 @@ $(function() {
 	});
 
 	$(document).on('click', '.button-submitorder', function() {
+		App.isDeliveryAddressOk = false;
 		App.cart.submit($(this));
 	});
 	
 	$(document).on('click', '.button-submitorder-form', function() {
+		App.isDeliveryAddressOk = false;
 		App.cart.submit($(this),true);
 	});
 
