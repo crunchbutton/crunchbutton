@@ -74,7 +74,7 @@
 			<% commas = ''; %>
 			<% _.each(topCommunities, function(alias) { %>
 				<%= commas %>
-				<span class="content-item-locations-city" permalink="<%= alias.alias %>"> <%= alias.name %></span><% commas = ','; %>
+				<span class="content-item-locations-city" permalink="<%= alias.alias %>"> <%= alias.name %></span><% commas = ',&nbsp;&nbsp;'; %>
 			<% }); %>.
 		</div>
 	</div>

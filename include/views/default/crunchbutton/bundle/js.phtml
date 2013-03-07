@@ -75,7 +75,7 @@ $(function() {
 	<? endif ; ?>
 
 	App.topCommunities = [];
-	<? foreach (Community_Alias::o(1, 33, 8, 42, 28) as $community_alias) : ?>
+	<? foreach (Community_Alias::q('select * from community_alias where top="1"') as $community_alias) : ?>
 		App.topCommunities[App.topCommunities.length] = {
 			alias: '<?=$community_alias->alias;?>',
 			name: '<?=$community_alias->name_alt;?>'
