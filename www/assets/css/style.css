@@ -971,11 +971,8 @@ html[xmlns] .clearfix {
 .content-item-locations-city {
 	color: #D74924;	
 	cursor: pointer;
-	margin-left: .5em;
 }
-.content-item-locations-city:first-child {
-	margin-left: 0;
-}
+
 .home-recommend-title h1 strong{
 	font-weight: 600;
 }
