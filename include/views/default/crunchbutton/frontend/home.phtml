@@ -69,30 +69,11 @@
 	<div class="content-item-locations">
 		<h1>Crunchbutton by city:<h1> 
 		<div class="content-item-locations-cities">
-			<a href="/new haven">New Haven</a>, 
-			<a href="/providence">Providence</a>, 
-			<a href="/dc">DC</a>, 
-			<a href="/boulder">Boulder</a>, 
-			<a href="/marina del rey">Marina Del Rey</a>.
+			<% commas = ''; %>
+			<% _.each(topCommunities, function(alias) { %>
+				<%= commas %>
+				<span class="content-item-locations-city" permalink="<%= alias.alias %>"> <%= alias.name %></span><% commas = ','; %>
+			<% }); %>.
 		</div>
 	</div>
-	<!-- 
-	<div class="content-item-locations">
-		<h1>Our most popular locations</h1>
-	</div>
-	<div class="content-padder-before"></div>
-	<div class="content-padder">
-		<div class="meal-items">
-			<% _.each(topCommunities, function(community) { %>
-				<div class="meal-item" data-permalink-community="<%= community.id_community %>">
-					<div class="meal-item-spacer"></div>
-					<div class="meal-item-content">
-						<div class="meal-pic" style="background: url(<%= community.image %>);"></div>
-						<h2 class="meal-restaurant"><%= community.name %></h2>
-						<h3 class="meal-food">Top Restaurant: <%= community.restaurant %></h3>
-					</div>
-				</div>
-			<% }); %>
-		</div>
-	</div> -->
 </div>
