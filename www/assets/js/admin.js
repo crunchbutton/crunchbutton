@@ -390,7 +390,7 @@ function saveDishes (complete) {
 			dishes[dishes.length] = dish;
 		}
 	});
-
+	console.log(dishes);
 	$.post('/api/restaurant/' + App.restaurant + '/dishes', {dishes: dishes}, function() {
 		if (complete) {
 			complete();
@@ -478,7 +478,7 @@ function saveRestaurant (all) {
 						_saveCategories(function() {
 							saveDishes(function() {
 								_saveNotifications(function() {
-									location.href = '/admin/restaurants/' + App.restaurant;
+									// location.href = '/admin/restaurants/' + App.restaurant;
 								});
 							});
 						});
@@ -498,13 +498,15 @@ function saveRestaurant (all) {
 						_saveCategories(function(){
 							saveDishes(function() {
 								_saveNotifications(function() {
-									location.href = '/admin/restaurants/' + App.restaurant;
+									alert('ok');
+									// location.href = '/admin/restaurants/' + App.restaurant;
 								});
 							});
 						});
 					});
 				} else {
-					location.href = '/admin/restaurants/' + App.restaurant;
+					alert('ok');
+					// locatifion.href = '/admin/restaurants/' + App.restaurant;
 				}
 			});
 		});

@@ -260,7 +260,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 		// fetch all (active and inactive dishes) before any changes
 		$originalDishes = $this->dishes(['active' => null]);
-			
+	
 			Log::debug([
 				'newDishes' => $newDishes,
 				'type' => 'dishes'
@@ -349,12 +349,12 @@ class Crunchbutton_Restaurant extends Cana_Table
 							}
 						}
 
-						Log::debug([
-							'id_dish' => $dish['id_dish'],
-							'id_option' => $optionGroup['id_option'],
-							'options' => $_debug_opts,
-							'type' => 'options-dishes'
-						]);
+						// Log::debug([
+						// 	'id_dish' => $dish['id_dish'],
+						// 	'id_option' => $optionGroup['id_option'],
+						// 	'options' => $_debug_opts,
+						// 	'type' => 'options-dishes'
+						// ]);
 
 					}
 				}
@@ -370,13 +370,13 @@ class Crunchbutton_Restaurant extends Cana_Table
 				}
 
 
-				Log::debug([
-					'id_dish' => $dish['id_dish'],
-					'id_option' => $optionGroup['id_option'],
-					'removed' => $removed,
-					'newOptions' => $newOptions,
-					'type' => 'options-dishes-removed'
-				]);
+				// Log::debug([
+				// 	'id_dish' => $dish['id_dish'],
+				// 	'id_option' => $optionGroup['id_option'],
+				// 	'removed' => $removed,
+				// 	'newOptions' => $newOptions,
+				// 	'type' => 'options-dishes-removed'
+				// ]);
 
 
 			}
