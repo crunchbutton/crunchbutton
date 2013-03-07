@@ -51,6 +51,21 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 					exit;
 				}
 
+				if (c::getPagePiece(2) == 'relateuser') {
+
+					$id_suggestion = $this->request()['id_suggestion'];
+					$id_user = $this->request()['id_user'];
+					$suggesion = Suggestion::o( $id_suggestion );
+					if( $suggesion->id_suggestion && $id_user ){
+						$suggesion->id_user = $id_user;
+						$suggesion->save();
+						echo json_encode(['success' => 'success']);
+						exit;
+					}
+					echo json_encode(['error' => 'error']);
+					exit;
+				}
+
 				// If is admin changes the Suggestion attributes
 				if ($_SESSION['admin']) {
 					$s = Suggestion::o(c::getPagePiece(2));
