@@ -2603,6 +2603,9 @@ strong {
 	margin-top: -60px;
 	font-size: 16px;
 }
+	.content-item-locations-city{
+		cursor: pointer;
+	}
 	.home-recommend-title h1 strong{
 		font-weight: 600;
 	}

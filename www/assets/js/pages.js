@@ -268,9 +268,6 @@ App.page.orders = function() {
 	App.refreshLayout();
 };
 
-
-
-
 /**
  * FoodDelivery's methods
  *

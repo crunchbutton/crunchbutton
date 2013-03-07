@@ -1721,6 +1721,12 @@ $(function() {
 		App.config.user.card_exp_year = $('[name="pay-card-year"]').val();
 	});
 
+
+	$(document).on('click', '.content-item-locations-city', function() {
+		var permalink = $( this ).attr( 'permalink' );
+		App.routeAlias( permalink );
+	});
+
 	App.signin.init();
 	App.signup.init();
 	App.suggestion.init();
