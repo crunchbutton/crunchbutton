@@ -32,42 +32,44 @@
 <div class="divider"></div>
 <button class="button-letseat-form button-bottom"><div>Let's Eat!</div></button>
 <div class="error-location" style="display: none;">
-	<div class="home-welcome home-welcom-error">
-		<h1>Sorry!</h1>
-		<h2>
-				We don't serve <span class="loc-your-area change-location-inline"><%= yourArea %></span> yet.</span> But we can. Just tell us where's awesome to eat there!
-		</h2>
-	</div>
-	<div class="divider"></div>
-	<div class="home-recommend">
-		<div class="home-recommend-form">
-			<div class="home-recommend-title">
-				<h1><strong>Recommend a restaurant:</strong></h1>
-			</div>
-			<input type="text" class="home-recommend-text">
-			<button class="home-recommend-button"><div>Recommend!</div></button>
-			<div class="divider"></div>
-			<div class="home-recommend-message">
-				What's your absolute favorite? What should be on Crunchbutton? Tell us, and we'll actually add it and get back to you.
-			</div>
-			<div class="divider"></div>
+	<div class="main-content-readable">
+		<div class="home-welcome home-welcom-error">
+			<h1>Sorry!</h1>
+			<h2>
+					We don't serve <span class="loc-your-area change-location-inline"><%= yourArea %></span> yet.</span> But we can. Just tell us where's awesome to eat there!
+			</h2>
 		</div>
-		<div class="home-recommend-thank-you">
-			<div class="home-recommend-title">
-				<h1>Awesome, thanks!</h1>
+		<div class="divider"></div>
+		<div class="home-recommend">
+			<div class="home-recommend-form">
+				<div class="home-recommend-title">
+					<h1><strong>Recommend a restaurant:</strong></h1>
+				</div>
+				<input type="text" class="home-recommend-text">
+				<button class="home-recommend-button"><div>Recommend!</div></button>
+				<div class="divider"></div>
+				<div class="home-recommend-message">
+					What's your absolute favorite? What should be on Crunchbutton? Tell us, and we'll actually add it and get back to you.
+				</div>
+				<div class="divider"></div>
 			</div>
-			<div class="divider"></div>
-			<div class="home-recommend-message-thank-you">
-				<% if( App.config.user.has_auth ) { %>
-					We'll let you know if they make it to Crunchbutton.
-				<% } else { %>
-					<a href="#" class="home-recommend-message-create-account"><span>Create an account</span></a> and when we'll let you know when we launch in your area!
-				<% } %>
+			<div class="home-recommend-thank-you">
+				<div class="home-recommend-title">
+					<h1>Awesome, thanks!</h1>
+				</div>
+				<div class="divider"></div>
+				<div class="home-recommend-message-thank-you">
+					<% if( App.config.user.has_auth ) { %>
+						We'll let you know if they make it to Crunchbutton.
+					<% } else { %>
+						<a href="#" class="home-recommend-message-create-account"><span>Create an account</span></a> and when we'll let you know when we launch in your area!
+					<% } %>
+				</div>
 			</div>
 		</div>
 	</div>
 	<div class="content-item-locations">
-		<h1>Crunchbutton by city:<h1> 
+		<h1>Crunchbutton by city:</h1> 
 		<div class="content-item-locations-cities">
 			<% commas = ''; %>
 			<% _.each(topCommunities, function(alias) { %>
