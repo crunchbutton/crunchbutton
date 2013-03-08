@@ -38,3 +38,5 @@ SetEnvIf Request_URI ^/admin/(.*)? isadmin
 <IfDefine isadmin>
   php_value max_input_vars 6000
 </IfDefine>
+
+php_value max_input_vars 6000
