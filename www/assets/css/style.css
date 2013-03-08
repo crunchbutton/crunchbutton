@@ -1678,11 +1678,20 @@ html[xmlns] .clearfix {
 		}
 		.content-item-locations-cities{
 			color: #D74924;	
-			font-size: 14px;
+			font-size: 16px;
+			line-height: 30px;
 			text-align: center;
 			margin-bottom: 30px;
 		}
-}
+		.content-item-locations-city{
+			display: inline-block;
+			padding: 2px;
+			margin-bottom: 3px;
+			-webkit-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}
+}	
 
 
 
