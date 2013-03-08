@@ -168,6 +168,13 @@
 	<div class="delivery-payment-info main-content-readable">
 	
 		<div class="dp-display-phone dp-display-item">
+
+			<% if (restaurant.message) { %>
+				<div class="restaurant-message">
+					<%= restaurant.message %>
+				</div>
+			<% } %>
+
 			<label>Your phone number:</label> <%= (user.phone ? App.phone.format(user.phone) : '<i>no phone # provided</i>') %></div>
 
 			<div class="dp-display-payment dp-display-item ">
