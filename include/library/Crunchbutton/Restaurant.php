@@ -781,7 +781,9 @@ class Crunchbutton_Restaurant extends Cana_Table
 	}
 
 	public static function byRange($params) {
-		$params[ 'miles' ] = ( $params[ 'miles' ] ) ? $params[ 'miles' ] : 2;
+		$params['range'] = $params['range'] ? $params['range'] : 2;
+		$rangeDif = $params['range']-2;
+
 		$query = '
 			SELECT
 				count(*) as _weight,
@@ -797,11 +799,11 @@ class Crunchbutton_Restaurant extends Cana_Table
 				AND
 					delivery = 0
 				AND
-					`distance` <= ' . $params[ 'miles' ] . '
+					`distance` <= '.$params['range'].'
 				OR
 					delivery = 1
 				AND
-					`distance` <= `delivery_radius`
+					`distance` <= (`delivery_radius`+'.$rangeDif.')
 			ORDER BY _weight DESC;
 		';
 		$restaurants = self::q($query);

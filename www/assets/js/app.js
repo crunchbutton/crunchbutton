@@ -91,6 +91,7 @@ App.routeAlias = function(id) {
 		}
 	}
 	// If the alias doesn't exist show the home with the error location message.
+	App.loc.range = App.defaultRange;
 	App.forceHome = true;
 	App.showErrorLocation = true;
 	App.loadHome();
