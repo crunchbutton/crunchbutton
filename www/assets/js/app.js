@@ -1641,6 +1641,16 @@ $(function() {
 	});
 
 	$(document).on('change', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
+		if( !App.order.cardChanged ){
+			var self = $( this );
+			var cardInfo = [ '[name="pay-card-number"]', '[name="pay-card-month"]', '[name="pay-card-year"]' ];
+			$( cardInfo ).each( function( index, value ){
+				var input = $( value );
+				if( self.attr( 'name' ) != input.attr( 'name' ) ){
+					input.val( '' );
+				}
+			} )
+		}
 		App.order.cardChanged = true;
 	});
 
