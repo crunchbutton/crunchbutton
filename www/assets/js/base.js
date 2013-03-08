@@ -139,7 +139,7 @@ App.formatTime = function(time) {
 	if (!time) {
 		return '';
 	}
-
+console.log(time)
 	var vals = time.split(':');
 	var pm = false;
 
@@ -149,6 +149,10 @@ App.formatTime = function(time) {
 	if (vals[0].match(/^[0-9]{3,4}$/i)) {
 		vals[1] = vals[0].substr(-2,2);
 		vals[0] = vals[0].substr(0,vals[0].length - 2);
+	}
+
+	if (vals[0] == '12') {
+		pm =  true;
 	}
 
 	if (vals[0] == '24') {
