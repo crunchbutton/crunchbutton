@@ -33,7 +33,7 @@ AddOutputFilterByType DEFLATE application/x-javascript
 
 AddDefaultCharset UTF-8
 
-SetEnvIf Request_URI ^/admin/? isadmin
+SetEnvIf Request_URI ^/admin/(.*)? isadmin
 
 <IfDefine isadmin>
   php_value max_input_vars 6000
