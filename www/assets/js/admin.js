@@ -478,7 +478,7 @@ function saveRestaurant (all) {
 						_saveCategories(function() {
 							saveDishes(function() {
 								_saveNotifications(function() {
-									// location.href = '/admin/restaurants/' + App.restaurant;
+									location.href = '/admin/restaurants/' + App.restaurant;
 								});
 							});
 						});
@@ -499,14 +499,14 @@ function saveRestaurant (all) {
 							saveDishes(function() {
 								_saveNotifications(function() {
 									alert('ok');
-									// location.href = '/admin/restaurants/' + App.restaurant;
+									location.href = '/admin/restaurants/' + App.restaurant;
 								});
 							});
 						});
 					});
 				} else {
 					alert('ok');
-					// locatifion.href = '/admin/restaurants/' + App.restaurant;
+					locatifion.href = '/admin/restaurants/' + App.restaurant;
 				}
 			});
 		});
