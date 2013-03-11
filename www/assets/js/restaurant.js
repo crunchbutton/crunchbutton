@@ -26,7 +26,7 @@ var Restaurant = function(id) {
 	 */
 	this._utcTime = function(serverTime)
 	{
-		var utcTime = Date.parse( serverTime.add( - this._tzoffset                   ).hours().toUTCString() );
+		var utcTime = Date.parse( serverTime.add( - this._tzoffset ).hours().toUTCString() );
 		return utcTime;
 	}
 
@@ -37,8 +37,7 @@ var Restaurant = function(id) {
 	 */
 	this._utcNow = function()
 	{
-		var utcNow = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
-		return utcNow;
+		return Date.parse( dateTime.toString() );
 	}
 
 	/**
@@ -177,7 +176,8 @@ var Restaurant = function(id) {
 				var closeTime_utc = Date.parse( closeTime.add( - this._tzoffset ).hours().toUTCString() );
 			}
 			// Convert current user date to UTC.
-			var now_utc = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
+			// var now_utc = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
+			var now_utc = this._utcNow();
 
 			// if closeTime before openTime, then closeTime should be for tomorrow
 			if( closeTime_utc ){
