@@ -71,11 +71,9 @@
 	<div class="content-item-locations">
 		<h1>Crunchbutton by city:</h1> 
 		<div class="content-item-locations-cities">
-			<% commas = ''; %>
 			<% _.each(topCommunities, function(alias) { %>
-				<%= commas %>
-				<span class="content-item-locations-city" permalink="<%= alias.alias %>"> <%= alias.name %></span><% commas = ',&nbsp;&nbsp;'; %>
-			<% }); %>.
+				<span class="content-item-locations-city" permalink="<%= alias.alias %>"> <%= alias.name %></span>&nbsp;&nbsp;&nbsp;
+			<% }); %>
 		</div>
 	</div>
 </div>
