@@ -17,7 +17,7 @@ var App = {
 	_init: false,
 	_pageInit: false,
 	deletedDishes : [],
-	deletedOption : []
+	selectedCategory : false
 };
 
 
@@ -1085,8 +1085,7 @@ $(function() {
 		var categories      = App.restaurantObject.categories();
 		var categoryOptions = '';
 		for (var i in categories) {
-			// var selected     = (categories[i].id_category == dishItem.id_category) ? ' selected="selected" ' : '';
-			var selected     = '';
+			var selected     = (categories[i].id_category == $('.ui-accordion-header-active').attr('data-id_category')) ? ' selected="selected" ' : '';
 			categoryOptions += '<option value="' + categories[i].id_category + '" ' + selected + '>' + categories[i].name + '</option>';
 		}
 
