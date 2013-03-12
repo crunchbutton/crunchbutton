@@ -1316,7 +1316,7 @@ html[xmlns] .clearfix {
 		margin-bottom: 50px;
 	}
 	.restaurant-name {
-		background: #ff3f1f;
+		background: rgba(255, 63, 31, 0.75);
 		border: 1px solid #ff6648;
 		padding: 6px 20px 6px 15px;
 		font-size: 16px;
@@ -1778,7 +1778,7 @@ html[xmlns] .clearfix {
 	}
 
 	.restaurant-name {
-		background: #ff3f1f;
+		background: rgba(255, 63, 31, 0.75);
 		border: 1px solid #ff6648;
 		padding: 9px 20px 9px 15px;
 		font-size: 26px;
