@@ -1790,14 +1790,15 @@ html[xmlns] .clearfix {
 	.restaurant-name h1 {
 		text-align: left;
 		margin-left: 10px;
-		color:rgb(2, 2, 2);
+		color: rgb(2, 2, 2);
 		text-shadow: 1px 1px 0px #e0221a;
 	}
 
 	.text-your-order{
-		margin-top: 20px;
+		margin-top: 10px;
 	}
 	.restaurant-message{
+		color: rgb(2, 2, 2);
 		font-size: 11px !important;
 		margin-left: 385px;
 		margin-top: 50px;
