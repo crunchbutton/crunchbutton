@@ -397,6 +397,135 @@ class Crunchbutton_Restaurant extends Cana_Table
 		}
 	}
 
+/**
+	 * Stores the dish and it's options
+	 *
+	 * @return void
+	 */
+	public function saveDish($dish) {
+		foreach ($this->categories() as $cat) {
+			if (!$category) {
+				$category = $cat;
+			}
+		}
+
+		if (!$category) {
+			$category = new Category;
+			$category->id_restaurant = $this->id_restaurant;
+			$category->name = 'Most Popular';
+			$category->sort = 1;
+			$category->loc = 1;
+			$category->save();
+		}
+
+		$dishO                = new Dish($dish['id_dish']);
+		$dishO->id_restaurant = $this->id_restaurant;
+		$dishO->active        = $this->_jsonBoolean($dish, 'active', true);
+		$dishO->name          = $dish['name'];
+		$dishO->description   = $dish['description'];
+		$dishO->price         = $dish['price'];
+		$dishO->sort          = isset($dish['sort']) ? $dish['sort'] : 0;
+		if (isset($dish['id_category']) && $dish['id_category']) {
+			$dishO->id_category = $dish['id_category'];
+		} elseif (!$dishO->id_category) { // this else doesn't make sense to me, but it is what it was before my changes
+			$dishO->id_category = $category->id_category;
+		}
+
+		$dishO->save();
+
+		$options = $dishO->options();
+
+		$newOptions = [];
+
+		if ($dish['optionGroups']) {
+			foreach ($dish['optionGroups'] as $optionGroup) {
+				if ($optionGroup['id_option'] == 'BASIC') {
+					$parent = null;
+
+				} else {
+
+					$group = new Option($optionGroup['id_option']);
+					$group->name = $optionGroup['name'];
+					$group->price_linked = $optionGroup['price'];
+					$group->type = $optionGroup['type'];
+					$group->id_restaurant = $this->id_restaurant;
+					$group->save();
+					$parent = $group->id_option;
+					$newOptions[$group->id_option] = $group->id_option;
+
+					if (!$doid = $this->_hasOption($group, $options)) {
+						$do = new Dish_Option;
+						$do->id_dish = $dishO->id_dish;
+						$do->id_option = $group->id_option;
+						$do->save();
+					} else {
+						$do = new Dish_Option($doid);
+						$do->default = $opt->default;
+					}
+				}
+
+				if ($optionGroup['options']) {
+					foreach ($optionGroup['options'] as $opt) {
+
+						$option                   = new Option($opt['id_option']);
+						$option->id_restaurant    = $this->id_restaurant;
+						$option->id_option_parent = $parent;
+						$option->price            = $opt['price'];
+						$option->name             = $opt['name'];
+						$option->active           = 1;
+						$option->type             = 'check';
+						$option->save();
+						$newOptions[$option->id_option] = $option->id_option;
+						$opt['default'] = $opt['default'] == 'true' ? 1 : 0;
+
+						if (!$doid = $this->_hasOption($option, $options)) {
+							$do            = new Dish_Option;
+							$do->id_dish   = $dishO->id_dish;
+							$do->id_option = $option->id_option;
+							$do->default   = $opt['default'];
+						} else {
+							$do = new Dish_Option($doid);
+							if ($opt['default'] != $do->default) {
+								$do->default = $opt['default'];
+							}
+						}
+						$do->sort    = $opt['sort'];
+						$do->save();
+					}
+				}
+			}
+		}
+
+		$removed = array();
+		foreach ($options as $option) {
+			if (!in_array($option->id_option, $newOptions)) {
+				$do = new Dish_Option($option->id_dish_option);
+				$removed[] = $option->id_dish_option;
+				$do->delete();
+			}
+		}
+		return true;
+	}
+
+	public function deleteDish( $id_dish ){
+		$dish = new Dish( $id_dish );
+		if( $dish->id_dish ){
+			$dish->delete();
+			return true;
+		}
+		return false;
+	}
+
+	public function deleteCategory( $id_category ){
+		$category = new Category( $id_category );
+		if( $category->id_dish ){
+			$category->delete();
+			return true;
+		}
+		return false;
+	}
+	
+
 	/**
 	 * Save the notifications as they are send by the API
 	 *
