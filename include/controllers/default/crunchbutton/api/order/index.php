@@ -99,7 +99,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							'type' => 'notification'
 						]);
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
-						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. This order has been confirmed.</Say>';
+						echo '<Say voice="'.c::config()->twilio->voice.'">Order confirmed. Thank you</Say>';
 						echo '<Pause length="1" />';
 						echo '<Say voice="'.c::config()->twilio->voice.'">If you have any questions, please press 0 or call us at 2. 1. 3. 2. 9. 3. 6. 9. 3. 5.</Say>';
 						echo '</Gather>';
@@ -143,7 +143,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							'type' => 'notification'
 						]);
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
-						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. This order has been confirmed.</Say>';
+						echo '<Say voice="'.c::config()->twilio->voice.'">Order confirmed. Thank you.</Say>';
 						echo '<Pause length="1" />';
 						echo '<Say voice="'.c::config()->twilio->voice.'">If you have any questions, please press 0 or call us at 2. 1. 3. 2. 9. 3. 6. 9. 3. 5.</Say>';
 						echo '</Gather>';
