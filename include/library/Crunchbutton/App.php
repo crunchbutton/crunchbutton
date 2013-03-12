@@ -301,6 +301,24 @@ class Crunchbutton_App extends Cana_App {
 		$config['user'] = c::user()->exports();
 		$config['env'] = $this->env();
 		$config['ab'] = json_decode($this->auth()->get('ab'));
+		
+		if (!$this->auth()->get('loc_lat')) {
+			$geo = new Crunchbutton_Geo([
+				'adapter' => 'Geoip_Binary',
+				'file' => c::config()->dirs->root.'db/GeoLiteCity.dat'
+			]);
+			$geo->setIp('76.90.138.20')->populateByIp();
+			$this->auth()->set('loc_lat', $geo->getLatitude());
+			$this->auth()->set('loc_lon', $geo->getLongitude());
+			$this->auth()->set('city', $geo->getCity());
+			$this->auth()->set('region', $geo->getRegion());
+		}
+
+		$config['loc']['lat'] = $this->auth()->get('loc_lat');
+		$config['loc']['lon'] = $this->auth()->get('loc_lon');
+		$config['loc']['city'] = $this->auth()->get('city');
+		$config['loc']['region'] = $this->auth()->get('region');
+
 		return $config;
 	}
 	

@@ -688,8 +688,8 @@ html[xmlns] .clearfix {
 	font-weight: 100px;
 	border-top-left-radius: 2px;
 	border-bottom-left-radius: 2px;
-	border-top-right-radius: 2px;
-	border-bottom-right-radius: 2px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
 
 	-webkit-transition: box-shadow ease-out 0.2s;
 	-moz-transition: box-shadow ease-out 0.2s;
@@ -714,7 +714,7 @@ html[xmlns] .clearfix {
 }
 
 .location-detect {
-	margin: 1px 0 0 0;
+	margin: 2px 0 0 0;
 	height: 51px;
 	width: 51px;
 	background: #f78160;
@@ -1151,21 +1151,21 @@ html[xmlns] .clearfix {
 		font-size: 16px;
 	}
 	.location-detect {
-		height: 32px;
-		width: 32px;
+		height: 37px;
+		width: 37px;
 		margin: 2px 0 0 0;
 	}
 	.enter-location {
 		margin-top: 10px;
 	}
 	.location-detect-icon {
-		height: 32px;
-		width: 32px;
+		height: 37px;
+		width: 37px;
 	}
 	.location-detect-loader {
 		height: 20px;
 		width: 20px;
-		margin: 6px 0 0 6px;
+		margin: 8px 0 0 8px;
 	}
 	.button-bottom {
 		box-shadow:
@@ -2504,7 +2504,7 @@ th {
 
 @-moz-document url-prefix() {
 	.location-address {
-		width: 609px;
+		width: 100%;
 	}
 }
 
@@ -2679,3 +2679,8 @@ strong {
 		margin-top: 10px;
 		margin-right: 3px;
 	}
+	
+	
+.location-detect {
+	display: none !important;
+}
