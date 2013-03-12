@@ -18,6 +18,7 @@ var App = {
 	page: {},
 	config: null,
 	forceHome: false,
+	cookieExpire: new Date(3000,01,01),
 	order: {
 		cardChanged: false,
 		pay_type: 'card',
@@ -27,7 +28,8 @@ var App = {
 	signin : {},
 	suggestion : {},
 	restaurants: {
-		permalink : 'food-delivery'
+		permalink : 'food-delivery',
+		list: false
 	},
 	defaultRange : 2,
 	modal: {},
@@ -55,7 +57,9 @@ App.loadRestaurant = function(id) {
 			}
 			alert("This restaurant is currently closed. It will be open during the following hours (" + this._tzabbr + "):\n\n" + hours);
 			App.busy.unBusy();
+
 		} else {
+
 			if (this.redirect) {
 				location.href = this.redirect;
 				return;
@@ -70,40 +74,41 @@ App.loadRestaurant = function(id) {
 /**
  * Loads up "community" keyword pages
  */
-App.routeAlias = function(id) {
-	// Get the alias
-	alias = App.aliases[ id ] || false;
-	if( alias ){
+App.routeAlias = function(id, success, error) {
+	id = id.toLowerCase();
+	alias = App.aliases[id] || false;
+	success = success || function(){};
+	error = error || function(){};
+
+	if (alias) {
 		// Get the location of the alias
-		var loc = App.locations[ alias.id_community ];
-		if( loc.loc_lat && loc.loc_lon ){
-			App.loc.lat = loc.loc_lat;
-			App.loc.lon = loc.loc_lon;
-			App.loc.range = loc.range;
-			App.loc.prep = alias.prep;
-			App.loc.name_alt = alias.name_alt;
-			$.cookie( 'location_prep', alias.prep, { expires: new Date(3000,01,01), path: '/'});
-			$.cookie( 'location_name_alt', alias.name_alt, { expires: new Date(3000,01,01), path: '/'});
-			App.registerLocationsCookies();
-			App.loc.range
-			App.foodDelivery.preProcess();
+		var loc = App.locations[alias.id_community];
+
+		if (loc.loc_lat && loc.loc_lon) {
+			var res = {
+				lat: loc.loc_lat,
+				lon: loc.loc_lon,
+				prep: alias.prep,
+				city: alias.name_alt,
+				address: alias.name_alt
+			};
+			App.loc.range = loc.range || App.defaultRange;
+
+			success({alias: res});
 			return;
 		}
 	}
-	// If the alias doesn't exist show the home with the error location message.
-	App.loc.range = App.defaultRange;
-	App.forceHome = true;
-	App.showErrorLocation = true;
-	App.loadHome();
-	return;
+	
+	error();
 };
 
-App.loadHome = function() {
+App.loadHome = function(force) {
+	$('input').blur();
+
 	App.currentPage = 'home';
 	History.pushState({}, 'Crunchbutton', '/');
-	if( App.forceHome ){
-		App.page.home();	
-	}
+	
+	App.page.home(force);
 
 };
 
@@ -176,7 +181,7 @@ App.loadPage = function() {
 
 	// force to a specific community
 	if (!url) {
-		App.loc.process();
+		App.loadHome();
 		return;
 	}
 
@@ -836,24 +841,27 @@ Issue 13: Removed the password for while
 			return;
 		}
 
-		// Check the distance between the user and the restaurant
-		if( order.delivery_type == 'delivery' && !App.isDeliveryAddressOk ){
-			App.loc.geocodeDelivery( order.address, 
-				function(){
-					if( App.isDeliveryAddressOk ){
-						if( !App.restaurant.deliveryHere( { lat : App.loc.lat, lon : App.loc.lon } )){
-							alert( 'Sorry, you are too far from this restaurant!' );
-							App.isDeliveryAddressOk = false;
-							App.busy.unBusy();
-							return;
-						} else {
-							App.busy.unBusy();
-							App.cart.submit();
-						}
-					} else {
-						App.busy.unBusy();
-					}
-				} );
+		// verify the distance between the user and the restaurant
+		if (order.delivery_type == 'delivery') {
+			var success = function() {
+				if (!App.restaurant.deliveryHere({
+					lat: App.loc.lat, lon: App.loc.lon
+				})) {
+					alert( 'Sorry, you are too far from this restaurant!' );
+					App.busy.unBusy();
+					return;
+				} else {
+					App.busy.unBusy();
+					App.cart.submit();
+				}
+			};
+			
+			var error = function() {
+				App.busy.unBusy();
+				alert('Oops! We couldn\'t find that address!');
+			};
+
+			App.loc.geocode(order.address, success, error);
 			return;
 		}
 
@@ -1128,257 +1136,6 @@ App.processConfig = function(json) {
 	}
 };
 
-App.loc = {
-	distance: function(params) {
-		try{
-			var R = 6371; // Radius of the earth in km
-			var dLat = _toRad(params.to.lat - params.from.lat);
-			var dLon = _toRad(params.to.lon - params.from.lon);
-			var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-				Math.cos(_toRad(params.from.lat)) * Math.cos(_toRad(params.to.lat)) *
-				Math.sin(dLon/2) * Math.sin(dLon/2);
-			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-			var d = R * c; // Distance in km
-			return d;
-		} catch( e ) {
-			console.log( 'error', e );
-			App.track('Location Error', {
-				lat: App.loc.lat,
-				lon: App.loc.lon,
-				address: $('.location-address').val()
-			});
-		}
-	},
-	closest: function(complete) {
-		if (google && google.loader && google.loader.ClientLocation) {
-			App.loc.lat = google.loader.ClientLocation.latitude;
-			App.loc.lon = google.loader.ClientLocation.longitude;
-			App.loc.range = App.defaultRange;
-			complete();
-		}
-	},
-	getLocation: function() {
-		$('.location-detect-loader').show();
-		$('.location-detect-icon').hide();
-
-		var complete = function() {
-			App.track('Locations Shared', {
-				lat: App.loc.lat,
-				lon: App.loc.lon
-			});
-			App.loc.reverseGeocode(function() {
-				$('.location-detect-loader').hide();
-				$('.location-detect-icon').show();
-				$('.button-letseat-form').click();
-			});
-		};
-
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(function(position){
-				App.loc.lat = position.coords.latitude;
-				App.loc.lon = position.coords.longitude;
-				App.loc.range = App.defaultRange;
-				complete();
-			}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
-		}
-	},
-	setFormattedLoc: function(results, raw) {
-
-
-		if (raw) {
-			App.loc.reverseGeocodeCity = raw;
-		} else {
-			if (!results) {
-				return;
-			}
-			switch (results[0].types[0]) {
-				default:
-				case 'administrative_area_level_1':
-					App.loc.reverseGeocodeCity = results[0].address_components[0].long_name;
-					break;
-				case 'locality':
-					App.loc.reverseGeocodeCity = results[0].address_components[0].long_name + ', ' + results[0].address_components[2].short_name;
-					break;
-				case 'street_address':
-					App.loc.reverseGeocodeCity = results[0].address_components[2].long_name + ', ' + results[0].address_components[4].short_name;
-					break;
-				case 'postal_code':
-				case 'route':
-					App.loc.reverseGeocodeCity = results[0].address_components[1].long_name + ', ' + results[0].address_components[3].short_name;
-					break;
-			}
-		}
-		$('.loc-your-area').html(App.loc.reverseGeocodeCity || 'your area');
-		
-		// Get the city's name
-		App.loc.city_name = null;
-		
-		if (!results) {
-			return;
-		}
-		for (var x = 0; x < results.length; x++) {
-			for (var i = 0; i < results[x].address_components.length; i++) {
-				for (var j = 0; j < results[x].address_components[i].types.length; j++) {
-					if(results[x].address_components[i].types[j] == 'locality') {
-						App.loc.city_name = results[x].address_components[i].long_name;
-					}
-				}
-			}
-		}
-	},
-	preProcess: function() {
-
-		if (google.loader.ClientLocation) {
-			if (!$.cookie('location_lat')) {
-				App.loc.lat = google.loader.ClientLocation.latitude;
-				App.loc.lon = google.loader.ClientLocation.longitude;
-				App.loc.range = App.defaultRange;
-				App.registerLocationsCookies();
-				if (google.loader.ClientLocation.address.country_code == 'US' && google.loader.ClientLocation.address.region) {
-					App.loc.setFormattedLoc(null, google.loader.ClientLocation.address.city + ', ' + google.loader.ClientLocation.address.region.toUpperCase());
-				} else {
-					App.loc.setFormattedLoc(null, google.loader.ClientLocation.address.city + ', ' + google.loader.ClientLocation.address.country_code);
-				}
-			}
-		}
-	},
-	process: function() {
-
-		var did = false;
-		if (App.config.user && !App.forceHome) {
-
-			if ($.cookie('location_lat')) {
-				App.loc.lat = parseFloat($.cookie('location_lat'));
-				App.loc.lon = parseFloat($.cookie('location_lon'));
-				App.loc.range = parseFloat($.cookie('location_range'));
-			} else if (App.config.user.location_lat) {
-				App.loc.lat = parseFloat(App.config.user.location_lat);
-				App.loc.lon = parseFloat(App.config.user.location_lon);
-				App.loc.range = App.defaultRange;
-				App.registerLocationsCookies();
-			}
-			App.foodDelivery.preProcess();
-			return;
-		}
-
-		if (!did && !App.forceHome && navigator.geolocation) {
-			var complete = function() {
-				$('.button-letseat-form').click();
-			};
-			navigator.geolocation.getCurrentPosition(function(position){
-				App.loc.lat = position.coords.latitude;
-				App.loc.lon = position.coords.longitude;
-				App.registerLocationsCookies();
-				App.track('Locations Shared', {
-					lat: App.loc.lat,
-					lon: App.loc.lon
-				});
-
-				complete();
-			}, complete, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
-		}
-
-		if (!did) {
-			App.forceHome = false;
-			App.page.home();
-		}
-
-	},
-	geocode: function(complete) {
-
-		var geocoder = new google.maps.Geocoder();
-		var forceLoc = null;
-		var address = $('.location-address').val().toLowerCase();
-
-		App.track('Location Entered', {
-			address: address
-		});
-
-		// Check if the typed address has an alias
-		if( App.aliases[ address ] ){
-			return App.routeAlias( address );
-		}
-
-		geocoder.geocode({'address': $('.location-address').val()}, function(results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				App.loc.lat = results[0].geometry.location.lat();
-				App.loc.lon = results[0].geometry.location.lng();					
-				App.loc.name_alt = null;
-				App.loc.prep = null;
-				App.registerLocationsCookies();
-
-				$.cookie('location_name_alt', App.loc.name_alt, { expires: new Date(3000,01,01), path: '/'});
-				$.cookie('location_prep', App.loc.prep, { expires: new Date(3000,01,01), path: '/'});
-				App.loc.setFormattedLoc( results );
-
-				setTimeout( function(){
-					App.foodDelivery.preProcess();	
-				}, 50 );
-				
-			} else {
-				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
-			}
-			complete();
-		});
-	},
-	geocodeDelivery : function( address, complete ){
-			var geocoder = new google.maps.Geocoder();
-			geocoder.geocode({'address': address}, function(results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				App.loc.lat = results[0].geometry.location.lat();
-				App.loc.lon = results[0].geometry.location.lng();
-				App.isDeliveryAddressOk = true;
-				App.registerLocationsCookies();
-			} else {
-				alert( 'Oops! We couldn\'t find that address!' );
-				App.isDeliveryAddressOk = false;
-			}
-			complete();
-		});
-	},
-	reverseGeocode: function(complete) {
-		App.track('Location Reverse Geocode', {
-			lat: App.loc.lat,
-			lon: App.loc.lon
-		});
-
-		if (App.loc.reverseGeocodeResults) {
-			// $('.location-address').val(App.loc.reverseGeocodeResults);
-			complete();
-			return;
-		}
-
-		var geocoder = new google.maps.Geocoder();
-		var latlng = new google.maps.LatLng(App.loc.lat, App.loc.lon);
-
-		geocoder.geocode({'latLng': latlng}, function(results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				if (results[1]) {
-					// $('.location-address').val(results[0].formatted_address);
-				} else {
-					$('.location-address').val('Where are you?!');
-				}
-
-				App.loc.reverseGeocodeResults = results[0].formatted_address;
-				App.loc.setFormattedLoc(results);
-				complete();
-
-			} else {
-				$('.location-address').val('Oh no! We couldn\'t locate you');
-				$('.location-detect-loader').hide();
-				$('.location-detect-icon').show();
-			}
-
-		});
-	},
-	km2Miles : function( km ){
-		return km * 0.621371;
-	},
-	Miles2Km : function( miles ){
-		return miles * 1.60934;
-	}
-}
-
 App.trigger = {
 	delivery: function() {
 		$('.delivery-toggle-takeout').removeClass('toggle-active');
@@ -1425,10 +1182,7 @@ $(function() {
 	});
 
 	$(document).on('click', '.change-location-inline', function() {
-		App.forceHome = true;
-		App.showErrorLocation = false;
-		App.loadHome();
-		$('input').blur();
+		App.loadHome(true);
 	});
 
 	$(document).on('submit', '.button-letseat-formform', function() {
@@ -1437,19 +1191,30 @@ $(function() {
 	});
 
 	$(document).on('click', '.button-letseat-form', function() {
-		
-		var complete = function() {
-			
+
+		var success = function() {
+			App.page.foodDelivery(true);
 		};
 
-		if ($('.location-address').val() && $('.location-address').val() != App.loc.reverseGeocodeResults) {
-			App.loc.enteredLoc = $('.location-address').val();
-			$.cookie('entered_address', App.loc.enteredLoc, { expires: new Date(3000,01,01), path: '/'});
-			App.loc.geocode(complete);
-		} else if (App.loc.lat) {
-			App.page.foodDelivery();
-		} else {
+		var error = function() {
+			$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
+		};
+
+		var address = $.trim($('.location-address').val());
+
+		if (!address) {
+			// the user didnt enter any address
 			$('.location-address').val('').attr('placeholder','Please enter your address here');
+
+		} else if (address && address == App.loc.address()) {
+			// we already have a geocode result of that address. dont do it again
+			console.log('SAME')
+			success();
+
+		} else {
+			// we need a new geocode result set
+			console.log('DIFF')
+			App.loc.geocode(address, success, error);
 		}
 	});
 
@@ -1474,7 +1239,24 @@ $(function() {
 	});
 
 	$(document).on('click', '.location-detect', function() {
-		App.loc.getLocation();
+		// detect location from the browser
+		$('.location-detect-loader').show();
+		$('.location-detect-icon').hide();
+		
+		var error = function() {
+			$('.location-address').val('Oh no! We couldn\'t locate you');
+			$('.location-detect-loader').hide();
+			$('.location-detect-icon').show();
+		};
+
+		var success = function() {
+			App.page.foodDelivery();
+//			$('.location-detect-loader').hide();
+//			$('.location-detect-icon').show();
+//			$('.button-letseat-form').click();
+		};
+		
+		App.loc.getLocationByBrowser(success, error);
 	});
 	
 	$(document).on({
@@ -1631,13 +1413,7 @@ $(function() {
 	});
 
 	$(document).on('click', '.link-home', function() {
-		if (App.hasLocation) {
-			App.foodDelivery.preProcess();
-		} else {
-			App.forceHome = true;
-			App.loadHome();
-			$('input').blur();
-		}
+		App.loadHome(true);
 	});
 
 	$(document).on('change', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
@@ -1672,6 +1448,7 @@ $(function() {
 
 	// make sure we have our config loaded
 	var haveConfig = function(json) {
+		$(document).trigger('have-config');
 		App.processConfig(json);
 		App._init = true;
 		App.loadPage();
@@ -1723,9 +1500,7 @@ $(function() {
 	});
 	
 	$(document).on('click', '.config-icon', function() {
-		App.forceHome = true;
-		App.loadHome();
-		$('input').blur();
+		App.loadHome(true);
 	});
 
 	$(document).on('change', '[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]', function() {
@@ -1748,6 +1523,7 @@ $(function() {
 	App.signup.init();
 	App.suggestion.init();
 	App.recommend.init();
+	App.loc.init();
 });
 
 
@@ -1793,7 +1569,7 @@ App.message.show = function( title, message ) {
 
 }
 
-App.registerLocationsCookies = function(){
+App.registerLocationsCookies = function() {
 	$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
 	$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
 	$.cookie('location_range', ( App.loc.range || App.defaultRange ), { expires: new Date(3000,01,01), path: '/'});
@@ -1810,4 +1586,4 @@ App.message.chrome = function( ){
 	App.message.show(title, message);
 }
 
-google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
+
