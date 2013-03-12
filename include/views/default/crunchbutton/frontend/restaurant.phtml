@@ -6,7 +6,15 @@
 	<div class="cart-summary-items"></div>
 </div>
 
-<div class="restaurant-name"><h1><%= restaurant.name %></h1></div>
+<div class="restaurant-name">
+	<h1><%= restaurant.name %></h1>
+</div>
+
+<% if (restaurant.message) { %>
+	<div class="restaurant-message">
+		<%= restaurant.message %>
+	</div>
+<% } %>
 
 <% if (restaurant.image) { %>
 	<div class="restaurant-pic-wrapper<%= (App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : '' %>">
@@ -14,7 +22,15 @@
 	</div>
 <% } %>
 
-<div class="main-content-readable">
+<% if (restaurant.message) { %>
+	<div class="main-content-readable">
+		<div class="restaurant-message-mobile">
+			<%= restaurant.message %>
+		</div>
+	</div>
+<% } %>
+
+<div class="main-content-readable <% if (restaurant.message) { %>main-content-readable-margin<% } %>">
 	<? /* cart */ ?>
 	<div class="cart-items">
 		<div class="restaurant-item-title text-your-order">Your Order</div>
@@ -48,12 +64,6 @@
 
 <? /* payment and user info */ ?>
 <form class="payment-form main-content-readable">
-
-	<% if (restaurant.message) { %>
-		<div class="restaurant-message">
-			<%= restaurant.message %>
-		</div>
-	<% } %>
 
 	<div class="content-item-name"><h1>Your Info</h1></div>
 	<div class="your-info-label">(enter this once, and we'll save it for next time)</div>
@@ -169,17 +179,12 @@
 	
 		<div class="dp-display-phone dp-display-item">
 
-			<% if (restaurant.message) { %>
-				<div class="restaurant-message">
-					<%= restaurant.message %>
-				</div>
-			<% } %>
-
 			<label>Your phone number:</label> <%= (user.phone ? App.phone.format(user.phone) : '<i>no phone # provided</i>') %></div>
 
 			<div class="dp-display-payment dp-display-item ">
 				<label>You are paying&nbsp;<span class="cash-order-aprox"></span>: &nbsp;</label>
 				<span class="cart-breakdownDescription"></span>
+				&nbsp; <strong class="cart-credit"></strong> &nbsp;
 				&nbsp;for a total of <span class="cart-total">$0.00</span>
 				&nbsp;<span class="cart-paymentType"></span>
 			</div>

@@ -194,6 +194,31 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							}
 							break;
 
+						case 'delete-category': 
+								if( $r->deleteCategory( $this->request()[ 'id_category' ] ) ){
+									echo json_encode( [ 'success' => 'category deleted' ] );
+								} else {
+									echo json_encode( [ 'error' => 'category not deleted' ] );
+								}
+							break;
+
+
+						case 'delete-dish': 
+								if( $r->deleteDish( $this->request()[ 'id_dish' ] ) ){
+									echo json_encode( [ 'success' => 'dish deleted' ] );
+								} else {
+									echo json_encode( [ 'error' => 'dish not deleted' ] );
+								}
+							break;
+
+					case 'save-dish': 
+								if( $r->saveDish( $this->request()[ 'dish' ] ) ){
+									echo json_encode( [ 'success' => 'dish saved' ] );
+								} else {
+									echo json_encode( [ 'error' => 'dish not saved' ] );
+								}
+							break;
+
 						case 'dishes':
 							$this->_saveDishes($r);
 							break;

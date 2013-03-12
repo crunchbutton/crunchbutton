@@ -97,7 +97,7 @@ App.page.restaurant = function(id) {
 			App.cart.resetOrder();
 		}
 
-		App.restaurant = this;		
+		App.restaurant = this;
 		var community = App.getCommunityById(App.restaurant.id_community);
 
 		App.showPage({

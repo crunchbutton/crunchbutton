@@ -139,7 +139,7 @@ App.formatTime = function(time) {
 	if (!time) {
 		return '';
 	}
-console.log(time)
+
 	var vals = time.split(':');
 	var pm = false;
 

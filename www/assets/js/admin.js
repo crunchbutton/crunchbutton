@@ -1,4 +1,3 @@
-
 var App = {
 	cartHighlightEnabled: false,
 	currentPage: null,
@@ -16,7 +15,9 @@ var App = {
 		tip: '10'
 	},
 	_init: false,
-	_pageInit: false
+	_pageInit: false,
+	deletedDishes : [],
+	selectedCategory : false
 };
 
 
@@ -32,7 +33,6 @@ function _deleteCategoryDialog(){
 			}
 			catOptions += '<option value="' + categories[i].id_category + '" ' + disabled + '>' + categories[i].name + '</option>';
 		}
-
 
 		var html = '<div id="dialog-delete-category" title="Delete category" class="labeled-fields"> ' +
 			'<p>You are about to delete this category. Existing dishes in the category will be moved to another category.<p>' +
@@ -314,7 +314,6 @@ function _saveCategories(complete) {
 		data       = getValues(inputs, data);
 		elements[elements.length] = data;
 	});
-
 	$.post('/api/restaurant/' + App.restaurant + '/categories', {elements: elements}, function() {
 		if (complete) {
 			complete();
@@ -387,15 +386,21 @@ function saveDishes (complete) {
 		});
 		// Just to make sure that the name was typed and the user don't clicked at 'Add another dish?' by mistake.
 		if( dish.name && dish.name != 'null' && dish.name != '' ){
-			dishes[dishes.length] = dish;
+			$.post('/api/restaurant/' + App.restaurant + '/save-dish', {dish: dish}, function() {});
 		}
 	});
-	console.log(dishes);
-	$.post('/api/restaurant/' + App.restaurant + '/dishes', {dishes: dishes}, function() {
-		if (complete) {
-			complete();
-		}
-	});
+	
+	if( App.deletedDishes.length > 0 ){
+		$.each( App.deletedDishes, function( i, value ) {
+			$.post('/api/restaurant/' + App.restaurant + '/delete-dish', {id_dish: value}, function() {
+				if (complete && i == App.deletedDishes.length - 1 ) {
+					complete();
+				}
+			});
+		});
+	} else {
+		complete();
+	}
 }
 
 /**
@@ -447,9 +452,7 @@ function _saveNotifications(complete) {
  * @param all
  */
 function saveRestaurant (all) {
-
-
-	var html = '<div id="dialog-add-dish" title="Create new Dish"> ' +
+	var html = '<div id="dialog-add-dish" title="Please wait while saving..."> ' +
 		'<div style="text-align:center; margin-top: 2em;">' +
 			'<p>Please wait while saving...</p>' +
 			'<img src="/assets/images/admin/ajax-loader-bar.gif" />' +
@@ -464,8 +467,6 @@ function saveRestaurant (all) {
 		open:          function(event, ui) { $(".ui-dialog-titlebar-close, .ui-icon-closethick", ui.dialog || ui).hide(); }
 	});
 	$(".ui-dialog-titlebar-close, .ui-icon-closethick").hide();
-
-
 	var selector = 'input.dataset-restaurant, select.dataset-restaurant, textarea.dataset-restaurant';
 	var id = App.restaurant;
 
@@ -498,14 +499,12 @@ function saveRestaurant (all) {
 						_saveCategories(function(){
 							saveDishes(function() {
 								_saveNotifications(function() {
-									alert('ok');
 									location.href = '/admin/restaurants/' + App.restaurant;
 								});
 							});
 						});
 					});
 				} else {
-					alert('ok');
 					locatifion.href = '/admin/restaurants/' + App.restaurant;
 				}
 			});
@@ -532,7 +531,7 @@ function saveHours (complete) {
 					}
 				}
 			}
-			console.log(hours);
+			// console.log(hours);
 			$.post('/api/restaurant/' + id + '/hours', {hours: hours}, function() {
 				if (complete) {
 					complete();
@@ -545,8 +544,13 @@ function saveHours (complete) {
 function deleteCategory(from_id, to_id) {
 	var $toDelete = $('h3[data-id_category="'+from_id+'"]');
 	var dishes    = $('.admin-food-item-wrap', $toDelete.next());
-	$('select[name="dish-id_category"]').val(to_id);
+	// $('select[name="dish-id_category"]').val(to_id);
 	$('h3[data-id_category="'+to_id+'"]').next().append(dishes);
+	$('select[name="dish-id_category"]').each(function(){ 
+		if( $(this).val() == from_id ){
+			$(this).val( to_id );
+		}
+	});
 	$toDelete.next().remove();
 	$toDelete.remove();
 }
@@ -694,6 +698,8 @@ App.showDish = function(dishItem) {
 	}
 
 	var active = (parseInt(dishItem.active)) ? 'checked="checked"' : '';
+
+	dishItem.sort = ( dishItem.sort ) ? dishItem.sort : ( $('[data-id_category="'+ dishItem.id_category +'"] + div').find('.admin-food-item').length ? ( $('[data-id_category="'+ dishItem.id_category +'"] + div').find('.admin-food-item').length + 1 ) : 1 );
 
 	padding
 		.append('<input type="text" placeholder="Name" name="dish-name" class="dataset-dish clean-input dish-name" value="' + dishItem.name + '">')
@@ -1079,8 +1085,7 @@ $(function() {
 		var categories      = App.restaurantObject.categories();
 		var categoryOptions = '';
 		for (var i in categories) {
-			// var selected     = (categories[i].id_category == dishItem.id_category) ? ' selected="selected" ' : '';
-			var selected     = '';
+			var selected     = (categories[i].id_category == $('.ui-accordion-header-active').attr('data-id_category')) ? ' selected="selected" ' : '';
 			categoryOptions += '<option value="' + categories[i].id_category + '" ' + selected + '>' + categories[i].name + '</option>';
 		}
 
@@ -1128,6 +1133,7 @@ $(function() {
 		} else {
 			if (confirm('Are you sure you want to delete "' + name + '"')) {
 				remove();
+				App.deletedDishes.push( id_dish );
 			}
 		}
 	});
@@ -1235,6 +1241,7 @@ $(function() {
 (function($) {
 	$.fn.getCursorPosition = function() {
 		var input = this.get(0);
+		if( $( input ).attr( 'type' ) == 'checkbox' ){return;}
 		if (!input) return; // No (input) element found
 		if ('selectionStart' in input) {
 			// Standard-compliant browsers

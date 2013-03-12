@@ -737,12 +737,6 @@ class Crunchbutton_Order extends Cana_Table {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">This order is for pickup. ';
 				}
 
-				if ($this->pay_type == 'card') {
-					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">This order has been prepaid by credit card.';
-				} else {
-					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will pay for this order with cash.';
-				}
-
 				$msg .= '</Say><Pause length="2" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA['.$food.'.]]>';
 
 				if ($this->notes) {
@@ -754,7 +748,13 @@ class Crunchbutton_Order extends Cana_Table {
 				if ($this->pay_type == 'card' && $this->tip) {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">A tip of '.$this->phoeneticNumber($this->tip()).' has been charged to the customer\'s credit card.';
 				} else {
-					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will be paying the tip by cash.';
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will be paying the tip . by cash.';
+				}
+
+				if ($this->pay_type == 'card') {
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer has already paid for this order by credit card.';
+				} else {
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will pay for this order with cash.';
 				}
 
 				break;

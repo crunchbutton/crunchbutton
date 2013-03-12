@@ -270,7 +270,7 @@ b {
 
 .restaurant-item-title {
 	text-transform: uppercase;
-	color: #969696;
+	color: rgb(2, 2, 2) ;
 	font-size: 13px;
 	font-weight: 600;
 	margin-bottom: 8px;
@@ -287,9 +287,7 @@ b {
 
 .restaurant-message{
 	color: #D74924;
-	font-size: 14px;
 	font-weight: 400;
-	margin: 15px 0;
 	text-shadow:none !important;
 }
 
@@ -578,10 +576,7 @@ html[xmlns] .clearfix {
 	font-size: 12px;
 	margin-right: 25px;
 }
-	.restaurant-message{
-		margin-left: 10px;
-		margin-right: 10px;
-	}
+
 .input-item {
 	float: left;
 	margin-bottom: 3px;
@@ -1316,7 +1311,7 @@ html[xmlns] .clearfix {
 		margin-bottom: 50px;
 	}
 	.restaurant-name {
-		background: #ff3f1f;
+		background: rgba(255, 63, 31, 0.75);
 		border: 1px solid #ff6648;
 		padding: 6px 20px 6px 15px;
 		font-size: 16px;
@@ -1333,7 +1328,16 @@ html[xmlns] .clearfix {
 		color: #fff;
 		text-shadow: 1px 1px 0px #e0221a;
 	}
-
+	.restaurant-message{
+		display: none;
+	}
+	.restaurant-message-mobile{	
+		color: #D74924;
+		margin: 5px;
+		font-size: 12px;
+		line-height: 18px;
+		display: block !important;
+	}	
 	.meal-item-down {
 		border: 1px solid rgba(255,40,31,.8);
 	}
@@ -1694,6 +1698,9 @@ html[xmlns] .clearfix {
 }	
 
 
+.restaurant-message-mobile{
+	display: none;
+}
 
 @media only screen and (min-width : 633px) and (max-width : 769px) {
 	.meal-item:nth-child(2n+1) {
@@ -1778,11 +1785,11 @@ html[xmlns] .clearfix {
 	}
 
 	.restaurant-name {
-		background: #ff3f1f;
+		background: rgba(255, 63, 31, 0.75);
 		border: 1px solid #ff6648;
 		padding: 9px 20px 9px 15px;
-		font-size: 26px;
-		font-weight: 200;
+		font-size: 20px;
+		font-weight: 400;
 		width: 602px;
 		margin-left: 385px;
 		margin-top: 220px;
@@ -1794,8 +1801,17 @@ html[xmlns] .clearfix {
 	.restaurant-name h1 {
 		text-align: left;
 		margin-left: 10px;
-		color: #fff;
+		color: rgb(2, 2, 2);
 		text-shadow: 1px 1px 0px #e0221a;
+	}
+
+	.restaurant-message{
+		color: rgb(2, 2, 2);
+		font-size: 11px !important;
+		margin-left: 385px;
+		margin-top: 50px;
+		position: absolute;
+		width: 600px;
 	}
 
 	.dish-price {
@@ -2007,7 +2023,7 @@ html[xmlns] .clearfix {
 }
 	.suggestion-link-title{
 		text-transform: uppercase;
-		color: #969696;
+		color: rgb(2, 2, 2);
 		font-size: 13px;
 		font-weight: 600;
 		margin-bottom: 10px;
@@ -2453,6 +2469,16 @@ html[xmlns] .clearfix {
 		margin-left: -321px;
 		left: 50%;
 	}
+	.restaurant-message{	
+		color: #D74924;
+		margin-left: 20px;
+		margin-top: 295px;
+	}
+
+	.main-content-readable-margin{
+		margin-top: 30px;
+	}
+
 	.tooltip-help-mobile-container{
 		display: none
 	}
