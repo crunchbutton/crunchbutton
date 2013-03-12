@@ -752,7 +752,7 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 
 				if ($this->pay_type == 'card') {
-					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">This order has been prepaid by credit card.';
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer has already paid for this order by credit card.';
 				} else {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will pay for this order with cash.';
 				}
