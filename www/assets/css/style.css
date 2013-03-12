@@ -1777,8 +1777,8 @@ html[xmlns] .clearfix {
 		background: rgba(255, 63, 31, 0.75);
 		border: 1px solid #ff6648;
 		padding: 9px 20px 9px 15px;
-		font-size: 26px;
-		font-weight: 200;
+		font-size: 20px;
+		font-weight: 400;
 		width: 602px;
 		margin-left: 385px;
 		margin-top: 220px;
@@ -1798,10 +1798,11 @@ html[xmlns] .clearfix {
 		margin-top: 20px;
 	}
 	.restaurant-message{
-		width: 600px;
+		font-size: 11px !important;
 		margin-left: 385px;
-		margin-top: 60px;
+		margin-top: 50px;
 		position: absolute;
+		width: 600px;
 	}
 
 	.dish-price {
