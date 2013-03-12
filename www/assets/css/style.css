@@ -2475,6 +2475,10 @@ html[xmlns] .clearfix {
 		margin-top: 295px;
 	}
 
+	.main-content-readable-margin{
+		margin-top: 30px;
+	}
+
 	.tooltip-help-mobile-container{
 		display: none
 	}
