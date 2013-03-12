@@ -289,7 +289,6 @@ b {
 	color: #D74924;
 	font-size: 14px;
 	font-weight: 400;
-	margin: 15px 0;
 	text-shadow:none !important;
 }
 
@@ -578,10 +577,7 @@ html[xmlns] .clearfix {
 	font-size: 12px;
 	margin-right: 25px;
 }
-	.restaurant-message{
-		margin-left: 10px;
-		margin-right: 10px;
-	}
+
 .input-item {
 	float: left;
 	margin-bottom: 3px;
@@ -1798,6 +1794,16 @@ html[xmlns] .clearfix {
 		text-shadow: 1px 1px 0px #e0221a;
 	}
 
+	.text-your-order{
+		margin-top: 20px;
+	}
+	.restaurant-message{
+		width: 600px;
+		margin-left: 385px;
+		margin-top: 60px;
+		position: absolute;
+	}
+
 	.dish-price {
 		margin-left: 10px;
 	}
@@ -2453,6 +2459,7 @@ html[xmlns] .clearfix {
 		margin-left: -321px;
 		left: 50%;
 	}
+	.
 	.tooltip-help-mobile-container{
 		display: none
 	}
