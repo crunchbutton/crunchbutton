@@ -2007,7 +2007,7 @@ html[xmlns] .clearfix {
 }
 	.suggestion-link-title{
 		text-transform: uppercase;
-		color: #969696;
+		color: rgb(2, 2, 2);
 		font-size: 13px;
 		font-weight: 600;
 		margin-bottom: 10px;
