@@ -287,7 +287,6 @@ b {
 
 .restaurant-message{
 	color: #D74924;
-	font-size: 14px;
 	font-weight: 400;
 	text-shadow:none !important;
 }
@@ -1329,7 +1328,16 @@ html[xmlns] .clearfix {
 		color: #fff;
 		text-shadow: 1px 1px 0px #e0221a;
 	}
-
+	.restaurant-message{
+		display: none;
+	}
+	.restaurant-message-mobile{	
+		color: #D74924;
+		margin: 5px;
+		font-size: 12px;
+		line-height: 18px;
+		display: block !important;
+	}	
 	.meal-item-down {
 		border: 1px solid rgba(255,40,31,.8);
 	}
@@ -1690,6 +1698,9 @@ html[xmlns] .clearfix {
 }	
 
 
+.restaurant-message-mobile{
+	display: none;
+}
 
 @media only screen and (min-width : 633px) and (max-width : 769px) {
 	.meal-item:nth-child(2n+1) {
@@ -1794,9 +1805,6 @@ html[xmlns] .clearfix {
 		text-shadow: 1px 1px 0px #e0221a;
 	}
 
-	.text-your-order{
-		margin-top: 10px;
-	}
 	.restaurant-message{
 		color: rgb(2, 2, 2);
 		font-size: 11px !important;
@@ -2461,7 +2469,12 @@ html[xmlns] .clearfix {
 		margin-left: -321px;
 		left: 50%;
 	}
-	.
+	.restaurant-message{	
+		color: #D74924;
+		margin-left: 20px;
+		margin-top: 295px;
+	}
+
 	.tooltip-help-mobile-container{
 		display: none
 	}

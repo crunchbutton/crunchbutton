@@ -22,6 +22,14 @@
 	</div>
 <% } %>
 
+<% if (restaurant.message) { %>
+	<div class="main-content-readable">
+		<div class="restaurant-message-mobile">
+			<%= restaurant.message %>
+		</div>
+	</div>
+<% } %>
+
 <div class="main-content-readable">
 	<? /* cart */ ?>
 	<div class="cart-items">
