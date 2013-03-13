@@ -73,7 +73,6 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->id_restaurant = $params['restaurant'];
 
 		// price
-		// $this->price = number_format($subtotal, 2);
 		$this->price = Util::ceil($subtotal, 2);
 
 		// delivery fee
@@ -219,6 +218,7 @@ class Crunchbutton_Order extends Cana_Table {
 				$user_auth->save();
 			}
 		}
+
 		// This line will create a phone user auth just if the user already has an email auth
 		User_Auth::createPhoneAuth( $user->id_user, $user->phone );
 
@@ -244,6 +244,8 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->save();
 		$this->que();
 
+		$this->debitFromUserCredit();
+
 		if ($params['make_default']) {
 			$preset = $user->preset($this->restaurant()->id_restaurant);
 			if ($preset->id_preset) {
@@ -266,6 +268,68 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		return true;
+	}
+
+
+	public function calcFinalPriceMinusUsersCredit(){
+		if( c::user()->id_user ){
+			$credit = Crunchbutton_Credit::creditByUserRestaurant( c::user()->id_user, $this->id_restaurant );
+		} else {
+			$credit = 0;
+		}
+		$final = $this->final_price - $credit;
+		if( $final < 0 ){
+			$final = 0;
+		}
+		return Util::ceil($final, 2);
+	}
+
+	public function charged(){
+		if( $this->id_credit ){
+			$credit = Crunchbutton_Credit::o( $this->id_credit );
+			if( $credit->id_credit ){
+				$charged = $this->final_price - $credit->value;
+				return $charged;
+			}
+		}
+		return $this->final_price;
+	}
+
+	public function debitFromUserCredit(){
+		if( c::user()->id_user ){
+			$credit = Crunchbutton_Credit::creditByUserRestaurant( c::user()->id_user, $this->id_restaurant );
+		} else {
+			$credit = 0;
+		}
+		// Debit from the user's credit
+		if( $credit > 0 ){
+			$debit = new Crunchbutton_Credit();
+			$debit->id_user = $this->_user->id_user;
+			$debit->type = Crunchbutton_Credit::TYPE_DEBIT;
+			$debit->id_order = $this->id_order;
+			$debit->id_restaurant = $this->id_restaurant;
+			$debit->date = date('Y-m-d H:i:s');
+			$debit->value = $credit;
+			$debit->save();
+			if( $debit->id_credit ){
+				$order = Crunchbutton_Order::o( $this->id_order );
+				$order->id_credit = $debit->id_credit;
+				$order->save();
+			}
+			// If the user's credit amount is bigger then the order we will give to him the credit back ( final_price - credit = how much his alredy have )
+			if( $this->final_price < $credit ){
+				$credit = $credit - $this->final_price;
+				$debit = new Crunchbutton_Credit();
+				$debit->id_user = $this->_user->id_user;
+				$debit->type = Crunchbutton_Credit::TYPE_CREDIT;
+				$debit->id_order = $this->id_order;
+				$debit->id_restaurant = $this->id_restaurant;
+				$debit->date = date('Y-m-d H:i:s');
+				$debit->value = $credit;
+				$debit->note = 'Order: ' . $this->id_order;
+				$debit->save();
+			}
+		}
 	}
 
 	public static function uuid($uuid) {
@@ -324,8 +388,11 @@ class Crunchbutton_Order extends Cana_Table {
 						]);
 						break;
 				}
+
+				$amount = $this->calcFinalPriceMinusUsersCredit();
+
 				$r = $charge->charge([
-					'amount' => $this->final_price,
+					'amount' => $amount,
 					'number' => $this->_number,
 					'exp_month' => $this->_exp_month,
 					'exp_year' => $this->_exp_year,
@@ -770,6 +837,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function exports() {
 		$out = $this->properties();
+
 		unset($out['id_user']);
 		unset($out['id']);
 		unset($out['id_order']);
@@ -777,6 +845,13 @@ class Crunchbutton_Order extends Cana_Table {
 		$out['_restaurant_name'] = $this->restaurant()->name;
 		$out['user'] = $this->user()->uuid;
 		$out['_message'] = nl2br($this->orderMessage('web'));
+		$out['charged'] = $this->charged();
+		if( $this->id_credit ){
+			$credit = Crunchbutton_Credit::o( $this->id_credit );
+			$out['credit'] = $credit->value;
+		} else {
+			$out['credit'] = 0;
+		}
 		
 		$timezone = new DateTimeZone($this->restaurant()->timezone);
 

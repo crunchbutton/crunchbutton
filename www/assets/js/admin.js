@@ -20,7 +20,6 @@ var App = {
 	selectedCategory : false
 };
 
-
 function _deleteCategoryDialog(){
 	$('body').on('click', '.jqui-button.button-delete', function(){
 		var category_id = $(this).parent('.ui-accordion-content').prev('h3').data().id_category;

@@ -568,6 +568,10 @@ html[xmlns] .clearfix {
 	padding-top: 10px;
 	font-size: 13px !important;
 }
+	.order-details .credit{
+		color: #999;
+		font-size: 11px;
+	}
 .delivery-info-container label, .payment-info-container label {
 	float: left;
 	text-align: right;
