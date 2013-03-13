@@ -303,31 +303,28 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		// Debit from the user's credit
 		if( $credit > 0 ){
+
+			if( $this->final_price < $credit ){
+				$amount = $this->final_price;
+				$creditLeft = $credit - $this->final_price;
+			} else {
+				$amount = $credit;
+				$creditLeft = 0;
+			}
+			$amount = Util::ceil( $amount, 2);
+
 			$debit = new Crunchbutton_Credit();
 			$debit->id_user = $this->_user->id_user;
 			$debit->type = Crunchbutton_Credit::TYPE_DEBIT;
 			$debit->id_order = $this->id_order;
 			$debit->id_restaurant = $this->id_restaurant;
 			$debit->date = date('Y-m-d H:i:s');
-			$debit->value = $credit;
+			$debit->value = $amount;
 			$debit->save();
 			if( $debit->id_credit ){
 				$order = Crunchbutton_Order::o( $this->id_order );
 				$order->id_credit = $debit->id_credit;
 				$order->save();
-			}
-			// If the user's credit amount is bigger then the order we will give to him the credit back ( final_price - credit = how much his alredy have )
-			if( $this->final_price < $credit ){
-				$credit = $credit - $this->final_price;
-				$debit = new Crunchbutton_Credit();
-				$debit->id_user = $this->_user->id_user;
-				$debit->type = Crunchbutton_Credit::TYPE_CREDIT;
-				$debit->id_order = $this->id_order;
-				$debit->id_restaurant = $this->id_restaurant;
-				$debit->date = date('Y-m-d H:i:s');
-				$debit->value = $credit;
-				$debit->note = 'Order: ' . $this->id_order;
-				$debit->save();
 			}
 		}
 	}
@@ -390,26 +387,31 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 
 				$amount = $this->calcFinalPriceMinusUsersCredit();
-
-				$r = $charge->charge([
-					'amount' => $amount,
-					'number' => $this->_number,
-					'exp_month' => $this->_exp_month,
-					'exp_year' => $this->_exp_year,
-					'name' => $this->name,
-					'address' => $this->address,
-					'phone' => $this->phone,
-					'user' => $user,
-					'restaurant' => $this->restaurant()
-				]);
-				if ($r['status']) {
-					$this->_txn = $r['txn'];
-					$this->_user = $user;
-					$this->_customer = $r['customer'];
-					$status = true;
+				// If the amount is 0 it means that the user used his credit.
+				if( $amount > 0 ){
+						$r = $charge->charge([
+						'amount' => $amount,
+						'number' => $this->_number,
+						'exp_month' => $this->_exp_month,
+						'exp_year' => $this->_exp_year,
+						'name' => $this->name,
+						'address' => $this->address,
+						'phone' => $this->phone,
+						'user' => $user,
+						'restaurant' => $this->restaurant()
+					]);
+					if ($r['status']) {
+						$this->_txn = $r['txn'];
+						$this->_user = $user;
+						$this->_customer = $r['customer'];
+						$status = true;
+					} else {
+						$status = $r;
+					}	
 				} else {
-					$status = $r;
+					$status = true;
 				}
+
 				break;
 		}
 		return $status;

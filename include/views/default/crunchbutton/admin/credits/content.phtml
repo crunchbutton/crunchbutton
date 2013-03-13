@@ -1,0 +1,27 @@
+<? if (!$this->credits->count()) : ?>
+	No results found
+<? else : ?>
+	<table class="list-credits">
+		<tr>
+			<th>Date</th>
+			<th>Value</th>
+			<th>Restaurant</th>
+			<th>User</th>
+			<th>Order</th>
+			<th>Type</th>
+			<th>Note</th>
+		</tr>
+		<? foreach ($this->credits as $credit) : ?>
+			<? $date = $credit->date(); ?>
+			<tr class="<?=strtolower($credit->type); ?>">
+				<td> <?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?> </td>
+				<td> <a href="/admin/credits/<?=$credit->id_credit;?>">$<?= Util::ceil($credit->value, 2); ?></a> </td>
+				<td> <?=$credit->restaurant()->name; ?> </td>
+				<td> <?=$credit->user()->name; ?> </td>
+				<td> <?=$credit->id_order; ?> </td>
+				<td> <?=$credit->type; ?> </td>
+				<td> <?=$credit->note; ?> </td>
+			</tr>
+		<? endforeach ; ?>
+	</table>
+<? endif ; ?>

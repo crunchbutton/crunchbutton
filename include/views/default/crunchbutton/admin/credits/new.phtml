@@ -1,0 +1,61 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content admin-content-credits">
+		<h1 class="credit-item-title">Credit</h1>
+		<br /><br />
+		<table class="admin-credit-form">
+			<tr>
+				<td class="label-primary">Credit:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<tr>
+										<td class="label-sub">Value:</td>
+										<td class="content-sub"><input type="text" id="value" name="value"></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">User ID:</td>
+										<td class="content-sub"><input type="text" id="id_user" name="id_user"></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Note:</td>
+										<td class="content-sub"><textarea name="note" id="note"></textarea></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Type:</td>
+										<td class="content-sub">CREDIT</td>
+									</tr>
+									<tr>
+										<td class="label-sub">Restaurant:</td>
+										<td class="content-sub">
+											<select id="id_restaurant" name="id_restaurant">
+												<option value="" selected></option>
+												<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
+													<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+												<? endforeach ; ?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td></td>
+										<td>
+											<div class="action-button action-button-small green admin-credit-save">
+												<span>Save</span>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<script>
+$(function() {
+	App.credits.prepareForm();
+});
+</script>

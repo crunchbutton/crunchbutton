@@ -459,7 +459,7 @@ App.cart = {
 	 */
 	updateTotal: function() {
 		var
-			totalText  = '$' + this.total(),
+			totalText  = this.charged(),
 			tipText	= '',
 			feesText   = '',
 			totalItems = 0,
@@ -467,7 +467,7 @@ App.cart = {
 			hasFees	= ((App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') || App.restaurant.fee_customer) ? true : false;
 
 		if( App.credit.restaurant[ App.restaurant.id ] ){
-			credit = App.credit.restaurant[ App.restaurant.id ];
+			credit = parseFloat( App.credit.restaurant[ App.restaurant.id ] );
 		}
 
 		for (var x in App.cart.items) {
@@ -495,7 +495,7 @@ App.cart = {
 		if( wasTipChanged ){
 			$('[name="pay-tip"]').val( App.order.tip );
 			// Forces the recalculation of total because the tip was changed.
-			totalText  = '$' + this.total();
+			totalText  = this.charged();
 		}
 
 		if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
@@ -527,13 +527,18 @@ App.cart = {
 		}
 
 		if( credit > 0 ){
-			$('.cart-credit').html( '(- $' + credit + ' credit)' )
+			var creditLeft = '';
+			if( this.total() < credit ){
+				var creditLeft = '<span class="credit-left"> - You\'ll still have $' + App.ceil( ( credit - this.total() ) ).toFixed( 2 ) + ' credit left </span>';
+				credit = this.total();
+			} 
+			// credit = App.ceil( ( credit ) ).toFixed( 2 );
+			$('.cart-credit').html( '(- $' + credit + ' credit ' + creditLeft + ')' );
 		} else {
 			$('.cart-credit').html();
 		}
-
-		$('.cart-total').html(totalText);
-
+		totalText = '$' + App.ceil( ( totalText ) ).toFixed( 2 );
+		$('.cart-total').html( totalText );
 
 		/**
 		 * Crunchbutton doesnt collect the cash, the restaurant will ring up
@@ -1013,14 +1018,21 @@ Issue 13: Removed the password for while
 		finalAmount  = feeTotal + breakdown.taxes;
 		finalAmount += this._breakdownTip(total);
 
+
+		return App.ceil(finalAmount).toFixed(2);
+	},
+
+	charged : function(){
+
+		var finalAmount = this.total();
+
 		if( App.credit.restaurant[ App.restaurant.id ] ){
 			finalAmount = finalAmount - App.ceil( App.credit.restaurant[ App.restaurant.id ] ).toFixed(2);
 			if( finalAmount < 0 ){
 				finalAmount = 0;
 			}
 		}
-
-		return App.ceil(finalAmount).toFixed(2);
+		return finalAmount;
 	},
 
 	/**

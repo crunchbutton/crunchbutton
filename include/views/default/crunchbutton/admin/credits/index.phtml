@@ -1,0 +1,105 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content admin-content-credits">
+		<table class="admin-credits-filter">
+			<tr>
+				<td class="label-sub" nowrap="nowrap">ORDER ID</td>
+				<td class="content-sub"><input name="id_order" type="text" style="width: 200px;" value="<?=strip_tags($_REQUEST['id_order'])?>"></td>
+				<td style="width: 100%"></td>
+				<td class="label-sub">DATE&nbsp;RANGE</td>
+				<?
+					$date = new DateTime('now');
+					$start = $date->format('m/d/Y');
+					$date->modify('14 days ago');
+					$end = $date->format('m/d/Y');
+				?>
+				<td class="content-sub"><input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>"></td>
+				<td class="credit-range-all" nowrap>&nbsp;&nbsp;<input type="checkbox" name="credit-range-all"><label>&nbsp;All Dates</label></td>
+			</tr>
+			<tr>
+				<td class="label-sub" nowrap="nowrap">USER ID</td>
+				<td class="content-sub"><input name="id_user" type="text" style="width: 200px;" value="<?=strip_tags($_REQUEST['id_user'])?>"></td>
+				
+				<td style="width: 100%"></td>
+				<td class="label-sub">TYPE</td>
+				<td class="content-sub">
+					<? $types = ['credit','debit']; ?>
+					<select name="type">
+						<option value="" selected>[ All ]</option>
+						<? foreach ($types as $type) : ?>
+							<option value="<?=$type?>"><?=$type?></option>
+						<? endforeach ; ?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-sub">LIMIT</td>
+				<td class="content-sub">
+					<input type="number" name="limit" value="25" min="0">
+				</td>
+				<td style="width: 100%"></td>
+				<td class="label-sub">RESTAURANT</td>
+				<td class="content-sub" colspan="2">
+					<select name="restaurant">
+						<option value="" selected>[ All ]</option>
+						<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
+							<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+						<? endforeach ; ?>
+					</select>
+				</td>
+				
+			</tr>
+			
+			
+			<tr>
+				<td colspan="6">
+					<table cellpadding="3" cellspacing="3" style="width: 100%; margin: 0 auto;">
+						<tr>
+							<td><div class="action-button green action-button-small admin-credit-search"><span>Search</span></div></td>
+							<td><div class="action-button green action-button-small admin-credit-new"><span>Add Credit</span></div></td>
+						</tr>
+					</table>
+				</td>
+				
+			</tr>
+		</table>
+		<br /><br />
+		<div class="divider dots"></div>
+		<br />
+		<div class="credits-loader"><img src="/assets/images/admin/loader.gif"></div>
+		<div class="credits-content"></div>
+	</div>
+</div>		
+<script>
+	$(function() {		
+		$(document).on('click', '.admin-credit-search', function() {
+			App.credits.load();
+		} );
+
+		$(document).on('keyup', '[name="id_order"]', function( e ) {
+			if (e.which == 13) {
+				App.credits.load();
+			}
+		} );
+
+		$(document).on('keyup', '[name="id_user"]', function( e ) {
+			if (e.which == 13) {
+				App.credits.load();
+			}
+		} );
+
+		$(document).on('click', '.admin-credit-new', function() {
+			location.href="/admin/credits/new";
+		} );
+		
+
+		$(document).on('change', 'input[name="credit-range-all"]', function( e ) {
+			if ($(this).prop('checked')) {
+				$('.date-picker').attr('disabled', 'disabled');
+				$('.date-picker').val('');
+			} else {
+				$('.date-picker').removeAttr('disabled');
+			}
+		});
+		App.credits.load();
+	});
+</script>
