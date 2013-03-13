@@ -1311,7 +1311,7 @@ html[xmlns] .clearfix {
 		margin-bottom: 50px;
 	}
 	.restaurant-name {
-		background: rgba(255, 63, 31, 0.75);
+		background: #ff591f;
 		border: 1px solid #ff6648;
 		padding: 6px 20px 6px 15px;
 		font-size: 16px;
@@ -1785,23 +1785,23 @@ html[xmlns] .clearfix {
 	}
 
 	.restaurant-name {
-		background: rgba(255, 63, 31, 0.75);
+		background: #ff591f;
 		border: 1px solid #ff6648;
-		padding: 9px 20px 9px 15px;
-		font-size: 20px;
+		padding: 9px 5px 9px 5px;
+		font-size: 22px;
 		font-weight: 400;
 		width: 602px;
 		margin-left: 385px;
 		margin-top: 220px;
 		position: absolute;
 		z-index: 20;
-		box-shadow: 1px 1px 1px rgba(0,0,0,.3);
+		box-shadow: 1px 1px 5px rgba(0,0,0,.2);
 	}
 
 	.restaurant-name h1 {
 		text-align: left;
 		margin-left: 10px;
-		color: rgb(2, 2, 2);
+		color: #fff;
 		text-shadow: 1px 1px 0px #e0221a;
 	}
 
