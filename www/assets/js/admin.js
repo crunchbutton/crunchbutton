@@ -893,6 +893,74 @@ App.suggestions = {
 	}
 };
 
+App.credits = {
+	params: function() {
+		return {
+			id_order: $('input[name="id_order"]').val(),
+			id_user: $('input[name="id_user"]').val(),
+			type: $('select[name="type"]').val(),
+			limit: $('input[name="limit"]').val(),
+			dates: $('input[name="date-range"]').val(),
+			restaurant: $('select[name="restaurant"]').val()
+		};
+	},
+	load: function() {
+		$('.credits-loader').show();
+		$('.credits-content').html('');
+		$.ajax({
+			url: '/admin/credits/content',
+			data: App.credits.params(),
+			complete: function(content) {
+				$('.credits-content').html(content.responseText);
+				$('.credits-loader').hide();
+			}
+		});
+	},
+	prepareForm: function( id_suggetion ){
+		$(document).on('click', '.admin-credit-save', function() {
+			
+			var value = $.trim( $( '#value' ).val() );
+			var id_restaurant = $( '#id_restaurant' ).val();
+			var id_user = $( '#id_user' ).val();
+			var note = $( '#note' ).val();
+
+			if( value == '' ){
+				alert( 'Please type a value!' );
+				$( '#value' ).focus();
+				return;
+			}
+			if( id_restaurant == '' ){
+				alert( 'Please choose a restaurant!' );
+				$( '#id_restaurant' ).focus();
+				return;
+			}
+			if( id_user == '' ){
+				alert( 'Please type the user id!' );
+				$( '#id_user' ).focus();
+				return;
+			}
+			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'note' : note };
+			var url = App.service + 'credit/new';
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				data: data,
+				url: url,
+				success: function( json ) {
+					if( json.error ){
+						alert( 'Error at adding a new credit!' );
+					} else {
+						alert( 'Credit added!' );
+						location.href = '/admin/credits';
+					}
+				},
+				error: function( ){
+					alert( 'Error at adding a new credit!' );
+				}
+			});
+		} );
+	}
+};
 
 $(function() {
 	$(document).on('click', '.admin-restaurant-link', function() {

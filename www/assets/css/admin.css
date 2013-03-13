@@ -651,13 +651,13 @@ input[name="dish-options-price"] {
 	width: 400px;
 }
 
-.list-suggestions{
+.list-suggestions, .list-credits{
 	width: 100%;
 }
-	.list-suggestions th, td {
+	.list-suggestions th, .list-suggestions td, .list-credits th, .list-credits td {
 		padding: 5px;
 	}
-	.list-suggestions tr:nth-of-type(even) {
+	.list-suggestions tr:nth-of-type(even), .list-credits tr:nth-of-type(even) {
 		background: #F5F5F5;
 	}
 	.list-suggestions tr.deleted {
@@ -672,6 +672,15 @@ input[name="dish-options-price"] {
 		background: green;
 		padding: 2px;
 	}
+	
+	.list-credits tr.credit{
+		color:green;
+	}
+
+	.list-credits tr.debit{
+		color:blue;
+	}
+
 	#suggestion-status{
 		color:green;
 		font-weight: bold;
