@@ -1,69 +1,85 @@
 
-App.page.home = function() {
+App.page.home = function(force) {
 
-	$( '.nav-back' ).removeClass( 'nav-back-show' );
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-
-	$('.content').addClass('short-meal-list');
-	
-	App.showPage({
-		page: 'home',
-		title: 'Crunchbutton',
-		data: {
-			topCommunities: App.topCommunities,
-			yourArea: App.loc.reverseGeocodeCity || 'your area',
-			autofocus: $(window).width() >= 768 ? ' autofocus="autofocus"' : ''
-		}
-	});
-
-	// @hacks
-	if (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('mobile') == -1 && navigator.userAgent.toLowerCase().indexOf('chrome') == -1) {
-		// safari desktop
-		$('.location-detect').css({
-			'margin-top': '2px',
-			'height': '50px'
+	if (!force && !App.loc.loaded) {
+		// if we arent forcing and theres no pos, then this was a home request. we need to wait a second
+		console.log('QUE HOME PAGE')
+		App.loc.bind('location-loaded', function() {
+			App.page.home(force);
 		});
-	} else if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-		// firefox desktop
-		$('.location-detect').css({
-			'margin-top': '0px',
-			'height': '52px'
+		App.loc.bind('location-detected', function() {
+			App.page.home(force);
 		});
-	}
 
-	if (App.showReset){
-		App.signin.passwordHelp.reset.init();
-	}
-
-	if (App.showErrorLocation) {
-		setTimeout(function() {
-			App.showErrorLocation = false;
-		}, 100);
-		$('.home-greeting, .enter-location, .button-letseat-form').hide();
-		$('.enter-location, .button-letseat-form').hide();
-		$('.error-location').show();
-		App.track('Location Error', {
-			lat: App.loc.lat,
-			lon: App.loc.lon,
-			address: $('.location-address').val()
-		});
-	} else {
-		if ($('.enter-location').length) {
-			$('.location-address').val('');
-			$('.error-location').fadeOut(100, function() {
-				$('.home-greeting, .enter-location, .button-letseat-form').fadeIn();
-			});
-		}
-	}
-};
-
-App.page.foodDelivery = function() {
-	if (!App.restaurants.list){
-		App.foodDelivery.forceProcess = true;
-		App.foodDelivery.preProcess();
 		return;
 	}
-	App.page.foodDelivery.load();
+	console.log('HOME PAGE')
+
+	var homeSuccess = function() {
+		$('.nav-back').removeClass('nav-back-show');
+		$('.config-icon').addClass('config-icon-mobile-hide');
+		$('.content').addClass('short-meal-list');
+	
+		App.showPage({
+			page: 'home',
+			title: 'Crunchbutton',
+			data: {
+				topCommunities: App.topCommunities,
+				yourArea: App.loc.city() || 'your area',
+				autofocus: $(window).width() >= 768 ? ' autofocus="autofocus"' : ''
+			}
+		});
+	
+		// @todo: put these in the css. @hacks
+		if (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('mobile') == -1 && navigator.userAgent.toLowerCase().indexOf('chrome') == -1) {
+			// safari desktop
+			$('.location-detect').css({
+				'margin-top': '2px',
+				'height': '50px'
+			});
+		} else if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+			// firefox desktop
+			$('.location-detect').css({
+				'margin-top': '0px',
+				'height': '52px'
+			});
+		}
+	
+		// @todo: why is this here??
+		if (App.showReset){
+			App.signin.passwordHelp.reset.init();
+		}
+	};
+
+	if (!force && App.loc.address() && App.restaurants.list === false) {
+		// we have an address, but no restaurants
+console.log('LOCATION NO REST')
+		App.page.foodDelivery();
+
+		return;
+
+	} else {
+		homeSuccess();
+	}
+		
+	if (!force && App.loc.address() && App.restaurants.list && App.restaurants.list.length == 0) {
+
+		$('.home-greeting, .enter-location, .button-letseat-form').hide();
+		$('.error-location').show();
+console.log('LOCATION ERROR')
+		App.track('Location Error', {
+			lat: App.loc.pos().lat,
+			lon: App.loc.pos().lon,
+			address: App.loc.address()
+		});
+
+	} else {
+console.log('JUST HOME')
+		$('.location-address').val('');
+		$('.error-location').hide();
+		$('.home-greeting, .enter-location, .button-letseat-form').show();
+
+	}
 };
 
 App.page.restaurant = function(id) {
@@ -75,13 +91,6 @@ App.page.restaurant = function(id) {
 
 	$('.content').removeClass('smaller-width');
 	$('.content').removeClass('short-meal-list');
-	
-	if ( !App.loc.lat ) {
-		App.loc.lat = ( $.cookie('location_lat') ) ? parseFloat( $.cookie('location_lat') ) : App.config.user.location_lat;
-	}
-	if ( !App.loc.lon ) {
-		App.loc.lon = ( $.cookie('location_lon') ) ? parseFloat( $.cookie('location_lon') ) : App.config.user.location_lon;
-	}
 
 	App.cache('Restaurant', id, function() {
 		if (App.restaurant && App.restaurant.permalink != id) {
@@ -109,7 +118,7 @@ App.page.restaurant = function(id) {
 					tip: App.order.tip,
 					name: App.config.user.name,
 					phone: App.phone.format(App.config.user.phone),
-					address: App.config.user.address || App.loc.enteredLoc,
+					address: App.config.user.address || App.loc.address(),
 					notes: (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) ? App.config.user.presets[App.restaurant.id_restaurant].notes : '',
 					card: {
 						number: App.config.user.card,
@@ -273,150 +282,139 @@ App.page.orders = function() {
 	App.refreshLayout();
 };
 
+
 /**
  * FoodDelivery's methods
- *
- * @author		pererinha
  */
 App.foodDelivery = {};
 
-// Before we change the url we need to make sure that there are restaurants at the typed place.
-App.foodDelivery.preProcess = function() { 
-	if( !App.foodDelivery.positions() ){
+// before we change the url we need to make sure that there are restaurants at the typed place.
+App.foodDelivery.getRestaurants = function(success, error) { 
+	if (!App.loc.pos()) {
+		error();
 		return;
 	}
 
-	var url = App.service + 'restaurants?lat=' + App.loc.lat + '&lon=' + App.loc.lon + '&range=' + ( App.loc.range || App.defaultRange );
+	var url = App.service + 'restaurants?lat=' + App.loc.pos().lat + '&lon=' + App.loc.pos().lon + '&range=' + ( App.loc.range || App.defaultRange );
 	App.restaurants.list = false;
 
-	$.getJSON( url ,function(json) {	
-
-		// Flag to make sure that this function will not be run twice.
-		App.foodDelivery.IsLoading = true;
-		// Reset the flag to make sure that this function will not be run twice.
-		setTimeout( function(){
-			App.foodDelivery.IsLoading = false;	
-		}, 200 );
+	$.getJSON(url, function(json) {
+		App.restaurants.list = [];
 
 		// There is no restaurant near to the user. Go home and show the error.
-		if( typeof json['restaurants'] == 'undefined' || json['restaurants'].length == 0 ){
-			App.forceHome = true;
-			App.showErrorLocation = true;
-			App.loadHome();
-			$('input').blur();
-			return;
+		if (typeof json['restaurants'] == 'undefined' || json['restaurants'].length == 0) {
+			error();
+
 		} else {
-			App.restaurants.list = [];
+
 			for (var x in json.restaurants) {
 				var res = new Restaurant(json.restaurants[x]);
 				res.open();
 				App.restaurants.list[App.restaurants.list.length] = res;
 			};
-			
-			App.restaurants.list.sort(sort_by({
-			    name: '_open',
-			    reverse: true
-			}, {
-			    name: '_weight',
-			    primer: parseInt,
-			    reverse: true
-			}));
-
-			if( App.foodDelivery.forceProcess ){
-				App.foodDelivery.forceProcess = false;
-				App.page.foodDelivery.load();
-			}
-			var loc = '/' + App.restaurants.permalink;
-			History.pushState({}, 'Crunchbutton', loc);		
+			success();
 		}
-	}	);
+	});
 }
 
-App.foodDelivery.positions = function(){
-	// Make sure that the positons were setted up.
-	App.loc.lat = ( App.loc.lat && App.loc.lat != 0 ) ? App.loc.lat : parseFloat( $.cookie( 'location_lat' ) );
-	App.loc.lon = ( App.loc.lon && App.loc.lon != 0 ) ? App.loc.lon : parseFloat( $.cookie( 'location_lon' ) );
-	App.loc.range  = ( App.loc.range && App.loc.range > 0 ) ? App.loc.range : App.defaultRange ;
-
-	App.loc.prep = ( App.loc.prep && App.loc.prep != '' ) ? App.loc.prep : $.cookie( 'location_prep' );
-	App.loc.name_alt = ( App.loc.name_alt && App.loc.name_alt != '' ) ? App.loc.name_alt : $.cookie( 'location_name_alt' );
-
-	// If we don't have the community try to load the place name.
-	if( !App.loc.prep || !App.loc.name_alt ) {
-		App.foodDelivery.loadPlaceName();
-	}
-
-	// Go home you don't have lat neither lon
-	if( !App.loc.lat || !App.loc.lon) {
-		App.forceHome = true;
-		App.showErrorLocation = true;
-		App.loadHome();
-		$('input').blur();
-		return false;
-	} 
-	return true;
-}
-
-App.foodDelivery.loadPlaceName = function() {
-	if (google.maps.Geocoder){
-		App.loc.reverseGeocode(function() {
-			App.foodDelivery.tagLine();
-			App.foodDelivery.title();
-		});
-	} else {
-		setTimeout( function(){
-			App.foodDelivery.loadPlaceName();
-		}, 100 );
-	}
-}
-
-App.foodDelivery.tagLine = function(){
+App.foodDelivery.localizedContent = function(){
+	// set the slogan and tagline
 	try {
 		var slogan = App.slogan.slogan;
-		var sloganReplace = ( App.loc.prep || ( App.loc.city_name ? 'at' : '' ) ) + ' ' + ( App.loc.name_alt || App.loc.city_name || '' ) ;
+		var sloganReplace = App.loc.prep() + ' ' + App.loc.city();
+
 		sloganReplace = $.trim(sloganReplace);
 		var tagline = App.tagline.tagline.replace('%s', sloganReplace);
 		slogan = slogan.replace('%s', sloganReplace);
+
 	} catch (e) {
 		console.log('Failed to load dynamic text', App.slogan, App.tagline);
 		var slogan = '';
 		var tagline = ''; 
 	}
+	
+	// set title
+	var title = App.loc.city() + ' Food Delivery | Order Food from ' + (App.loc.city() || 'Local') + ' Restaurants | Crunchbutton';
+	document.title = title;
+	
 	return {
 		slogan: slogan,
-		tagline: tagline
+		tagline: tagline,
+		title: title
 	};
 }
-
-App.foodDelivery.title = function(){
-	document.title =  ( App.loc.name_alt || App.loc.city_name || '' ) + ' Food Delivery | Order Food from ' + ( App.loc.name_alt || App.loc.city_name || 'Local') + ' Restaurants | Crunchbutton';
-}
-
-App.page.foodDelivery.load = function(){
-
-	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
-	$( '.nav-back' ).removeClass( 'nav-back-show' );
-
-	if (App.restaurants.list.length == 4) {
-		$('.content').addClass('short-meal-list');
-	} else {
-		$('.content').removeClass('short-meal-list');
+/**
+ * food delivery page
+ */
+App.page.foodDelivery = function(refresh) {
+	if (refresh) {
+		App.restaurants.list = false;
 	}
-	$('.content').removeClass('smaller-width');
+	
+	//App.loc.reverseGeocode(App.loc.pos().lat, App.loc.pos().lon, success, error);
 
-	App.currentPage = 'food-delivery';
-	
-	App.foodDelivery.title();
-	var titles = App.foodDelivery.tagLine();
-	
-	App.hasLocation = true;
-	
-	App.showPage({
-		page: 'restaurants',
-		data: {
-			slogan: titles.slogan,
-			tagline: titles.tagline,
-			restaurants: App.restaurants.list
+	console.log('FOOD DELIVERY')
+	var success = function() {
+		// if we have a success and
+		var loc = '/' + App.restaurants.permalink;
+		if (loc != location.pathname) {
+			History.pushState({}, 'Crunchbutton', '/' + App.restaurants.permalink);
+			return;
 		}
-	});
+
+		$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
+		$( '.nav-back' ).removeClass( 'nav-back-show' );
+	
+		if (App.restaurants.list.length == 4) {
+			$('.content').addClass('short-meal-list');
+		} else {
+			$('.content').removeClass('short-meal-list');
+		}
+		$('.content').removeClass('smaller-width');
+	
+		App.currentPage = 'food-delivery';
+	
+		var titles = App.foodDelivery.localizedContent();
+		
+		// sort the list by open or not
+		App.restaurants.list.sort(sort_by(
+			{
+				name: '_open',
+				reverse: true
+			},
+			{
+				name: '_weight',
+				primer: parseInt,
+				reverse: true
+			}
+		));
+		
+		App.showPage({
+			page: 'restaurants',
+			data: {
+				slogan: titles.slogan,
+				tagline: titles.tagline,
+				restaurants: App.restaurants.list
+			}
+		});
+	};
+	
+	// we dont have any restaurants
+	var error = function() {
+		App.loadHome();
+	};
+
+	if (App.restaurants.list === false) {
+		// we have not checked for restaurants. do that now.
+		App.foodDelivery.getRestaurants(success, error);
+
+	} else if (App.restaurants.list === []) {
+		// there are no restaurants for this area. go back home
+		error();
+
+	} else {
+		// we already have a restaurant list. display the restaurant page
+		success();
+
+	}
 }
