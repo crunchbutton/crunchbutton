@@ -28,10 +28,17 @@
 		<% } %>
 
 		<% if (order.pay_type == 'card') { %>
-			<b>Your total:</b><br />$<%= parseFloat(order.final_price).toFixed(2) %><br /><br />
+			<b>Your total:</b><br />
 		<% } else { %>
-			<b>Your approximate total</b>:<br />$<%= parseFloat(order.final_price).toFixed(2) %><br /><br />
+			<b>Your approximate total</b>:<br />
 		<% } %>
+		
+		$<%= parseFloat(order.charged).toFixed(2) %>
+
+		<% if( order.credit && order.credit > 0 ){ %>
+			<div class="credit">( $<%= parseFloat(order.final_price).toFixed(2) %> - $<%= parseFloat(order.credit).toFixed(2) %> credit )</div>
+		<% }  %>
+		<br /><br />
 
 		For updates on your order, please call<br /><%= restaurant.name %>: <b><%= App.callPhone( restaurant.phone ) %></b><br /><br />
 

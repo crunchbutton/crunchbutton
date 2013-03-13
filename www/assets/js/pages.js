@@ -158,7 +158,12 @@ App.page.restaurant = function(id) {
 		} else {
 			App.trigger.delivery();
 		}
-	
+		
+
+		App.credit.getCredit( function(){
+			App.cart.updateTotal();
+		} );
+
 		if (!App.config.user.id_user) {
 			App.config.user.address = App.loc.enteredLoc;
 			App.loc.enteredLoc = '';

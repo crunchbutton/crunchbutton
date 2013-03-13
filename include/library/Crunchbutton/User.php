@@ -68,18 +68,42 @@ class Crunchbutton_User extends Cana_Table {
 		}
 		return false;
 	}
-	
+
 	public function exports() {
 		$out = $this->properties();
 		$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
 		$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
 		$out[ 'has_auth' ] = User_Auth::userHasAuth( $this->id_user );
-
 		foreach ($this->presets() as $preset) {
 			$out['presets'][$preset->id_restaurant] = $preset->exports();
 		}
-		
 		return $out;
+	}
+
+	public function  creditsExport(){
+		$credits = $this->credits();
+		$out = array();
+		foreach ( $credits  as $credit ) {
+			$out[ $credit->id_credit ] = $credit->exports();;
+		}
+		return $out;
+	}
+
+	public function  debitsExport(){
+		$debits = $this->debits();
+		$out = array();
+		foreach ( $debits  as $debit ) {
+			$out[ $debit->id_credit ] = $debit->exports();;
+		}
+		return $out;
+	}
+
+	public function credits(){
+		return Crunchbutton_Credit::creditByUser( $this->id_user );
+	}
+
+	public function debits(){
+		return Crunchbutton_Credit::debitByUser( $this->id_user );
 	}
 
 	public function __construct($id = null) {

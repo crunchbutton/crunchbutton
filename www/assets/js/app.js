@@ -458,7 +458,12 @@ App.cart = {
 			tipText	= '',
 			feesText   = '',
 			totalItems = 0,
+			credit = 0,
 			hasFees	= ((App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') || App.restaurant.fee_customer) ? true : false;
+
+		if( App.credit.restaurant[ App.restaurant.id ] ){
+			credit = App.credit.restaurant[ App.restaurant.id ];
+		}
 
 		for (var x in App.cart.items) {
 			totalItems++;
@@ -514,6 +519,12 @@ App.cart = {
 			$('.cart-breakdownDescription').html('$' + this.subtotal().toFixed(2) + ' (+'+ extraCharges +')' );
 		} else {
 			$('.cart-breakdownDescription').html('$' + this.subtotal().toFixed(2));
+		}
+
+		if( credit > 0 ){
+			$('.cart-credit').html( '(- $' + credit + ' credit)' )
+		} else {
+			$('.cart-credit').html();
 		}
 
 		$('.cart-total').html(totalText);
@@ -993,6 +1004,13 @@ Issue 13: Removed the password for while
 		feeTotal	+= breakdown.fee;
 		finalAmount  = feeTotal + breakdown.taxes;
 		finalAmount += this._breakdownTip(total);
+
+		if( App.credit.restaurant[ App.restaurant.id ] ){
+			finalAmount = finalAmount - App.ceil( App.credit.restaurant[ App.restaurant.id ] ).toFixed(2);
+			if( finalAmount < 0 ){
+				finalAmount = 0;
+			}
+		}
 
 		return App.ceil(finalAmount).toFixed(2);
 	},
