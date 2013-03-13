@@ -11,7 +11,7 @@ dateTime.update = function(){
 }
 
 dateTime.toString = function(){
-	return dateTime.now.toLocaleString();
+	return dateTime.now.toString( 'dd MMMM yyyy HH:mm:ss' );
 }
 
 dateTime.update();
