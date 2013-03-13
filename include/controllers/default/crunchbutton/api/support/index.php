@@ -28,7 +28,7 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 
 					$message = str_split($message, 160);
 
-					$phones= c::config()->support->{$env}->phone;
+					$phone = c::config()->support->{$env}->phone;
 
 					foreach ($message as $msg) {
 						$twilio->account->sms_messages->create(
