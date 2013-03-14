@@ -529,13 +529,12 @@ App.cart = {
 		if( credit > 0 ){
 			var creditLeft = '';
 			if( this.total() < credit ){
-				var creditLeft = '<span class="credit-left"> - You\'ll still have $' + App.ceil( ( credit - this.total() ) ).toFixed( 2 ) + ' credit left </span>';
+				var creditLeft = '<span class="gift-left"> - You\'ll still have $' + App.ceil( ( credit - this.total() ) ).toFixed( 2 ) + ' gift card left </span>';
 				credit = this.total();
 			} 
-			// credit = App.ceil( ( credit ) ).toFixed( 2 );
-			$('.cart-credit').html( '(- $' + credit + ' credit ' + creditLeft + ')' );
+			$('.cart-gift').html( '(- $' + credit + ' credit ' + creditLeft + ')' );
 		} else {
-			$('.cart-credit').html();
+			$('.cart-gift').html();
 		}
 		totalText = '$' + App.ceil( ( totalText ) ).toFixed( 2 );
 		$('.cart-total').html( totalText );

@@ -20,3 +20,14 @@ App.credit.getCredit = function( complete ){
 		} );	
 	}
 }
+
+App.credit.show = function(){
+	var gift = App.credit.restaurant[App.restaurant.id];
+	if( parseFloat( gift ) ){
+		$( '.restaurant-gift-value' ).html( gift );
+		$( '.restaurant-gift' ).show();
+	} else {
+		$( '.restaurant-gift' ).hide();
+	}
+	
+}

@@ -168,8 +168,10 @@ App.page.restaurant = function(id) {
 			App.trigger.delivery();
 		}
 		
+		$( '.restaurant-gift' ).hide();
 
 		App.credit.getCredit( function(){
+			App.credit.show();
 			App.cart.updateTotal();
 		} );
 
