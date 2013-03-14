@@ -60,7 +60,11 @@
 								<tbody>
 									<?php if( $this->credit->user()->id_user ) { ?>
 									<tr>
-										<td class="label-sub">User:</td>
+										<td class="label-sub">User ID:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->credit->user()->id_user;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">User name:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->credit->user()->name;?></div></td>
 									</tr>
 									<?php } ?>
