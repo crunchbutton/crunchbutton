@@ -86,6 +86,16 @@
 							<th>Total</th>
 							<td>$<?=number_format($order->final_price,2)?></td>
 						</tr>
+						<?php if( $order->id_credit ) { ?>
+						<tr style="background:#CCC;">
+							<th>Gift card</th>
+							<td>$<?=$order->credit()->value;?></td>
+						</tr>
+						<tr style="background:#CCC;">
+							<th>Charged</th>
+							<td>$<?=$order->charged();?></td>
+						</tr>
+						<?php } ?>
 					</table>
 				</td>
 				<td><?=$order->pay_type?></td>
