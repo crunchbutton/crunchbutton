@@ -157,8 +157,8 @@ body {
 	padding: 10px 15px 13px 15px;
 	color: #b2b5b9;
 	float: left;
-	margin-right: 5px;
-	font-size: 15px;
+	margin-right: 3px;
+	font-size: 14px;
 	text-shadow: 1px 1px rgba(0,0,0,.3);
 	font-weight: bold;
 	border-top-right-radius: 5px;
@@ -167,7 +167,7 @@ body {
 	cursor: pointer;
 	margin-bottom: -3px;
 	text-decoration: none;
-	width: 100px;
+	width: 80px;
 	text-align: center;
 }
 
