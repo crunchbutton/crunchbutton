@@ -74,7 +74,8 @@ App.support.sendSMS = function(){
 			data: data,
 			url:  App.service + App.support.api.sms,
 			success: function( json ) {
-				if( json.success ){
+				console.log(json)
+				if( json.id_support ){
 					alert( 'Thank you!' );
 					App.support.mini();
 				}

@@ -8,38 +8,22 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 			case 'post':
 
 				if (c::getPagePiece(2) == 'sms') {
-				
-					$env = c::env() == 'live' ? 'live' : 'dev';
-					$phones = c::config()->suggestion->{$env}->phone;
-					$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-
-					$name = $_POST[ 'name' ];
-					$phone = $_POST[ 'phone' ];
-					$message = $_POST[ 'message' ];
-
-					$message =
-						"(support-" . $env . "): ".
-						$name.
-						"\n\n".
-						"phone: ".
-						$phone.
-						"\n\n".
-						$message;
-
-					$message = str_split($message, 160);
-
-					$phone = c::config()->support->{$env}->phone;
-
-					foreach ($message as $msg) {
-						$twilio->account->sms_messages->create(
-							c::config()->twilio->{$env}->outgoingTextCustomer,
-							'+1'.$phone,
-							$msg
-						);
-						continue;	
+					
+					$support = new Crunchbutton_Support;
+					$support->type = 'sms';
+					$support->name = $this->request()['name'];
+					$support->phone = $this->request()['phone'];
+					$support->message = $this->request()['message'];
+					$support->ip = $_SERVER['REMOTE_ADDR'];
+					$support->date = date('Y-m-d H:i:s');
+					if( c::user()->id_user ){
+						$support->id_user = c::user()->id_user;	
 					}
+					$support->save();
 
-					echo json_encode(['success' => 'success']);
+					$support->queNotify();
+
+					echo $support->json();
 				}
 
 			break;
