@@ -1699,6 +1699,9 @@ html[xmlns] .clearfix {
 			-o-user-select: none;
 			user-select: none;
 		}
+	.restaurant-gift{
+		top: 250px !important;
+	}
 }	
 
 
@@ -1924,7 +1927,6 @@ html[xmlns] .clearfix {
 	.cart-button span {
 		display: none;
 	}
-
 }
 
 .default-order-check {
@@ -2443,7 +2445,6 @@ html[xmlns] .clearfix {
 	.signin-box-header{
 		display: block;
 	}
-
 }
 
 @media only screen and (min-width : 770px) and (max-width : 1023px) {
@@ -2485,6 +2486,9 @@ html[xmlns] .clearfix {
 
 	.tooltip-help-mobile-container{
 		display: none
+	}
+	.restaurant-gift{
+		top: 390px !important;
 	}
 }
 
@@ -2709,8 +2713,24 @@ strong {
 		margin-top: 10px;
 		margin-right: 3px;
 	}
-	
-.credit-left{
+
+.restaurant-gift{
+	background: #ff591f;
+	box-shadow: -1px 1px 5px rgba(0,0,0,.2);
+	border-radius: 3px;
+	border: 1px solid #d34616;
+	border-right: none;
+	color: #FFF;
+	padding: 6px 14px 6px 8px;
+	position:absolute;
+	right: -3px;
+	text-shadow: 1px 1px 0px rgba(0,0,0,.5);
+	text-align: center;
+	display: none;
+	top:150px;
+}
+
+.gift-left{
 	font-size: 11px;
 	font-weight: normal;
 }	
