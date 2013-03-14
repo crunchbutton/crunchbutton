@@ -916,6 +916,10 @@ class Crunchbutton_Order extends Cana_Table {
 			return null;
 	}
 
+	public function credit() {
+		return Crunchbutton_Credit::o( $this->id_credit );
+	}
+
 	public function community() {
 		return Community::o($this->id_community);
 	}

@@ -78,4 +78,18 @@
 		<td style="text-align:right">Total</td>
 		<td>$<?=number_format($order->final_price,2)?></td>
 	</tr>
+
+	<tr style="font-weight:bold;">
+		<td></td>
+		<td style="text-align:right">Gift Card</td>
+		<td>$<?=number_format($order->credit()->value,2)?></td>
+	</tr>
+
+	<tr style="font-weight:bold;">
+		<td></td>
+		<td style="text-align:right">Total Charged</td>
+		<td>$<?=number_format($order->charged(),2)?></td>
+	</tr>
+
+
 </table>
