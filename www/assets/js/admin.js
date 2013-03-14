@@ -893,6 +893,29 @@ App.suggestions = {
 	}
 };
 
+App.supportAdmin = {
+	params: function() {
+		return {
+			search: $('input[name="support-search"]').val(),
+			type: $('select[name="type"]').val(),
+			limit: $('input[name="limit"]').val(),
+			dates: $('input[name="date-range"]').val()
+		};
+	},
+	load: function() {
+		$('.support-loader').show();
+		$('.support-content').html('');
+		$.ajax({
+			url: '/admin/support/content',
+			data: App.supportAdmin.params(),
+			complete: function(content) {
+				$('.support-content').html(content.responseText);
+				$('.support-loader').hide();
+			}
+		});
+	}
+};
+
 App.credits = {
 	params: function() {
 		return {
