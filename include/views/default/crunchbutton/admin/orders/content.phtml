@@ -80,7 +80,7 @@
 						</tr>
 						<tr>
 							<th>Tip</th>
-							<td>$<?=$order->tip()?> (<?=$order->tip ? $order->tip : '0'?>%)</td>
+							<td>$<?=$order->tip()?> <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo '(' . $order->tip . '%)'; } ?></td>
 						</tr>
 						<tr>
 							<th>Total</th>

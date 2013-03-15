@@ -479,15 +479,16 @@ App.cart = {
 		 * the default tip will be 15% (variable App.order.tip).
 		 * If the user had changed the tip value the default value will be chosed one.
 		 */
+
 		var wasTipChanged = false;
 		if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = 2;
+				App.order.tip = App.config.user.last_tip || 3; // Default value is $3
 				wasTipChanged = true;
 			}
 		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = ( App.config.user.last_tip ) ? App.config.user.last_tip : 2; // Default value is $2
+				App.order.tip = App.config.user.last_tip || 3; // Default value is $3
 				wasTipChanged = true;
 			}
 		}
@@ -519,7 +520,7 @@ App.cart = {
 		}
 
 		var breakdown	= App.cart.totalbreakdown();
-		console.log(breakdown)
+
 		var extraCharges = App.cart.extraChargesText(breakdown);
 		if (extraCharges) {
 			$('.cart-breakdownDescription').html('$' + this.subtotal().toFixed(2) + ' (+'+ extraCharges +')' );
@@ -799,7 +800,7 @@ App.cart = {
 		};
 
 		if (order.pay_type == 'card') {
-			order.tip = App.order.tip ? App.order.tip : '15';
+			order.tip = App.order.tip || '3';
 		}
 
 		if (read) {
@@ -992,7 +993,11 @@ Issue 13: Removed the password for while
 	},
 
 	_breakdownTip: function() {
-		return App.ceil(App.order.tip).toFixed(2);
+		var tip = 0;
+		if (App.order['pay_type'] == 'card') {
+			tip = App.order.tip;
+		}
+		return App.ceil(tip).toFixed(2);
 	},
 
 	total: function() {
@@ -1156,7 +1161,12 @@ App.processConfig = function(json) {
 		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];
 		App.order['delivery_type'] = App.config.user['delivery_type'];
-		App.order['tip'] = App.config.user['tip'] || 3;
+		var tip = App.config.user.last_tip || 3;
+		// If the last_tip_type is != of 'number'
+		if( App.config.user.last_tip_type && App.config.user.last_tip_type != 'number' ){
+			tip = 3;
+		}
+		App.order['tip'] = tip;
 	}
 };
 

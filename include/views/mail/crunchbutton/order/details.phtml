@@ -47,7 +47,7 @@
 	<? if ($order->pay_type == 'card' && $order->tip) : ?>
 		<tr>
 			<td></td>
-			<td style="text-align:right">Tip (<?=$order->tip?>%)</td>
+			<td style="text-align:right">Tip <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $order->tip . '%'; } ?></td>
 			<td>$<?=$order->tip()?></td>
 		</tr>
 	<? endif ; ?>

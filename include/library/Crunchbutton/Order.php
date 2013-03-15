@@ -15,6 +15,8 @@ class Crunchbutton_Order extends Cana_Table {
 	const PAY_TYPE_CREDIT_CARD = 'card';
 	const SHIPPING_DELIVERY    = 'delivery';
 	const SHIPPING_TAKEOUT     = 'takeout';
+	const TIP_PERCENT 				 = 'percent';
+	const TIP_NUMBER				 	 = 'number';
 
 	/**
 	 * Process an order
@@ -88,8 +90,13 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// tip
 		$this->tip = $params['tip'];
+		$this->tip_type = self::TIP_NUMBER;
+		$tip = $this->tip;
+
+		/******************
 		$tip = ($this->price * ($this->tip/100));
 		$tip = Util::ceil($tip, 2);
+		********/
 
 		// tax
 		$this->tax = $this->restaurant()->tax;
@@ -496,7 +503,11 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function tip() {
-		return number_format($this->price * ($this->tip/100),2);
+		if( $this->tip_type == self::TIP_NUMBER ){
+			return number_format( $this->tip, 2 );
+		} else {
+			return number_format($this->price * ($this->tip/100),2);	
+		}
 	}
 
 	public function tax() {
@@ -814,7 +825,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 				$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Order total: '.$this->phoeneticNumber($this->final_price);
 
-				if ($this->pay_type == 'card' && $this->tip) {
+				if ($this->pay_type == 'card' && $this->tip ) {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">A tip of '.$this->phoeneticNumber($this->tip()).' has been charged to the customer\'s credit card.';
 				} else {
 					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will be paying the tip . by cash.';
@@ -944,15 +955,23 @@ class Crunchbutton_Order extends Cana_Table {
 		return $phone;
 	}
 
-	// Returns the last tip the user gave.
+	// Gets the last order tipped by the user
+	public function lastTippedOrder( $id_user = null ) {
+		$id_user = ( $id_user ) ? $id_user : $this->id_user;		
+		return self::q('select * from `order` where id_user="'.$id_user.'" and tip is not null order by id_order desc limit 0,1');
+	}
+
 	public function lastTip( $id_user = null ) {
-			$id_user = ( $id_user ) ? $id_user : $this->id_user;
-			// Gets the last order tipped by the user
-			$last_order = self::q('
-				select * from `order` where id_user="'.$id_user.'" and tip is not null order by id_order desc limit 0,1
-			');
+			$last_order = self::lastTippedOrder( $id_user );
 			if( $last_order->tip ){
 				return $last_order->tip;
+			}
+			return null;
+	}
+	public function lastTipType( $id_user = null ) {
+			$last_order = self::lastTippedOrder( $id_user );
+			if( $last_order->tip_type ){
+				return strtolower( $last_order->tip_type );
 			}
 			return null;
 	}
