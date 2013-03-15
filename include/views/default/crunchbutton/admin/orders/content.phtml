@@ -36,7 +36,7 @@
 							<? if ($order->refunded) : ?>
 								REFUNDED
 							<? else : ?>
-								<a href="javascript:;" class="refund" data-uuid="<?=$order->uuid?>">REFUND</a></td></tr>
+								<a href="javascript:;" class="refund" data-charged="<?php echo $order->charged(); ?>" data-gift="<?php if( $order->id_credit ){ echo $order->credit()->value; } else { echo '0'; } ?>" data-uuid="<?=$order->uuid?>">REFUND</a></td></tr>
 							<? endif ; ?>
 					</table>
 				</td>
