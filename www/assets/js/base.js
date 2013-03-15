@@ -141,6 +141,7 @@ App.formatTime = function(time) {
 	}
 
 	var vals = time.split(':');
+
 	var pm = false;
 
 	vals[0] = new String(vals[0]);
@@ -159,31 +160,23 @@ App.formatTime = function(time) {
 		vals[0] = '00';
 	}
 
-	if (!vals[1]) {
-
-		if (vals[0].match(/pm/i)) {
+	if (vals[0] > 12) {
+		vals[0] -= 12;
+		pm = true;
+	} else{
+		if (!pm && time.match(/p/i)) {
 			pm = true;
-		}
-		if (vals[0] > 12) {
-			vals[0] -= 12;
-			pm = true;
-		}
-
-		vals[1] = '00';
-
-	} else {
-
-		if (vals[1].match(/pm/i)) {
-			pm = true;
-		}
-		if (vals[0] > 12) {
-			vals[0] -= 12;
-			pm = true;
-		}
-
-		vals[1] = vals[1].replace(/[^0-9]+/,'');
+		} 
+		if (pm && time.match(/a/i)) {
+			pm = false;
+		} 	
 	}
-
+	
+	if (!vals[1]) {
+		vals[1] = '00';
+	} 
+	
+	vals[1] = vals[1].replace(/[^0-9]+/,'');
 	vals[0] = new String(vals[0]).replace(/[^0-9]+/,'');
 
 	vals[0] = App.pad(vals[0],2);
