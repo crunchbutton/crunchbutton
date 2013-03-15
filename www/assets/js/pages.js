@@ -168,6 +168,11 @@ App.page.restaurant = function(id) {
 			App.trigger.delivery();
 		}
 		
+		// Force delivery case the restaurant doesn't takeout anymore
+		if( App.restaurant.delivery == '1' && App.restaurant.takeout == '0' ){
+			App.trigger.delivery();	
+		}
+		
 		$( '.restaurant-gift' ).hide();
 
 		App.credit.getCredit( function(){

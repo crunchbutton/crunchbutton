@@ -153,9 +153,11 @@
 
 			<div class="divider"></div><label class="card-only">Tip</label>
 			<div class="input-item card-only">
-				<select name="pay-tip" tabindex="9">
-					<% _.each(App.tips, function(tip) { %>
-						<option value="<%= tip %>"<%= form.tip == x ? ' selected' : '' %>><%= tip %>%</option>
+				<select name="pay-tip" class="tip" tabindex="9">
+					<% _.each(App.tips, function(tip) { 
+							text = ( tip == 0 ) ? 'tip with cash' : '$' + tip;
+						%>
+						<option value="<%= tip %>"<%= form.tip == x ? ' selected' : '' %>><%= text %></option>
 					<% }); %>
 				</select>
 				<div class="divider"></div>

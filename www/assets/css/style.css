@@ -561,6 +561,9 @@ html[xmlns] .clearfix {
 	font-size: 12px;
 	margin-right: 25px;
 }
+	.field-container .tip{
+		width: 100px;
+	}
 .order-details{
 	border-top: 1px solid #fbdbc0;
 	margin: 10px;
