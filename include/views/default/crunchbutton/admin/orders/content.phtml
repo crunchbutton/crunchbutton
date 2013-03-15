@@ -110,10 +110,12 @@
 							<th>Phone</th>
 							<td><?=$order->phone?></td>
 						</tr>
+						<?php if ($order->delivery_type == 'delivery') { ?>
 						<tr>
 							<th>Address</th>
 							<td style="white-space: normal;"><?=$order->address?></td>
 						</tr>
+						<?php } ?>
 					</table>
 				</td>
 			</tr>
