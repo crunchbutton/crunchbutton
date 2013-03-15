@@ -887,33 +887,53 @@ class Crunchbutton_Order extends Cana_Table {
 		return $out;
 	}
 
-	public function refund() {
-		$env = c::env() == 'live' ? 'live' : 'dev';
-		switch ($this->processor) {
-			case 'stripe':
-			default:
-				Stripe::setApiKey(c::config()->stripe->{$env}->secret);
-				$ch = Stripe_Charge::retrieve($this->txn);
-				try {
-					$ch->refund();
-				} catch (Exception $e) {
-					return false;
-				}
-			break;
-
-			case 'balanced':
-				$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
-				try {
-					$ch->refund();
-				} catch (Exception $e) {
-					return false;
-				}
-				break;
+	public function refundGiftFromOrder(){
+		if( $this->id_credit ){
+			$value = $this->credit()->value;
+			$gift = new Crunchbutton_Credit();
+			$gift->id_user = $this->id_user;
+			$gift->type = Crunchbutton_Credit::TYPE_CREDIT;
+			$gift->id_restaurant = $this->id_restaurant;
+			$gift->date = date('Y-m-d H:i:s');
+			$gift->value = $value;
+			$gift->note = 'Refunded from order: ' . $this->id_order . '.';
+			$gift->save();
 		}
+	}
 
-		$this->refunded = 1;
-		$this->save();
-		return true;
+	public function refund() {
+		if( $this->refunded < 1 ){
+			// Refund the gift
+			$this->refundGiftFromOrder();
+
+			if( $this->charged() > 0 ){
+				$env = c::env() == 'live' ? 'live' : 'dev';
+				switch ($this->processor) {
+					case 'stripe':
+					default:
+						Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+						$ch = Stripe_Charge::retrieve($this->txn);
+						try {
+							$ch->refund();
+						} catch (Exception $e) {
+							return false;
+						}
+					break;
+
+					case 'balanced':
+						$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
+						try {
+							$ch->refund();
+						} catch (Exception $e) {
+							return false;
+						}
+						break;
+				}
+			} 
+			$this->refunded = 1;
+			$this->save();
+			return true;
+		}
 	}
 
 	public function phone() {

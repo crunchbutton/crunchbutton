@@ -94,13 +94,18 @@
 <script>
 	$(function() {
 		$(document).on('click', '.refund', function() {
-			if (!confirm('Are you sure you want to refund this?')) {
+			var el = $(this);
+			var question = 'Are you sure you want to refund this?';
+			if( parseFloat( el.attr( 'data-gift' ) ) > 0 ){
+				question += "\n";
+				question += 'A gift card was used at this order the refund value will be $' + el.attr( 'data-charged' ) + ' + $' + el.attr( 'data-gift' ) + ' as gift card.' ;
+			}
+			if (!confirm( question )) {
 				return;
 			}
-			var el = $(this);
-			$.getJSON('/api/order/' + $(this).attr('data-uuid') + '/refund',function(json) {
+			$.getJSON('/api/order/' + el.attr('data-uuid') + '/refund',function(json) {
 				el.replaceWith('REFUNDED');
-			});
+			});				
 		});
 
 		$(document).on('click', '.admin-order-search', function() {
