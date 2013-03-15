@@ -23,7 +23,7 @@ var App = {
 		cardChanged: false,
 		pay_type: 'card',
 		delivery_type: 'delivery',
-		tip: '15'
+		tip: '3'
 	},
 	signin : {},
 	suggestion : {},
@@ -38,7 +38,7 @@ var App = {
 	_pageInit: false,
 	_identified: false,
 	isDeliveryAddressOk : false,
-	tips: [0,5,10,15,20,25]
+	tips: [0,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]
 };
 
 App.loadRestaurant = function(id) {
@@ -482,12 +482,12 @@ App.cart = {
 		var wasTipChanged = false;
 		if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = 0;
+				App.order.tip = 2;
 				wasTipChanged = true;
 			}
 		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = ( App.config.user.last_tip ) ? App.config.user.last_tip : 15; // Default value is 15
+				App.order.tip = ( App.config.user.last_tip ) ? App.config.user.last_tip : 2; // Default value is $2
 				wasTipChanged = true;
 			}
 		}
@@ -519,6 +519,7 @@ App.cart = {
 		}
 
 		var breakdown	= App.cart.totalbreakdown();
+		console.log(breakdown)
 		var extraCharges = App.cart.extraChargesText(breakdown);
 		if (extraCharges) {
 			$('.cart-breakdownDescription').html('$' + this.subtotal().toFixed(2) + ' (+'+ extraCharges +')' );
@@ -740,8 +741,8 @@ App.cart = {
 		if (breakdown.taxes) {
 			elements.push('$' + breakdown.taxes.toFixed(2) + ' taxes');
 		}
-		if (breakdown.tip) {
-			elements.push('$' + breakdown.tip.toFixed(2) + ' tip');
+		if (breakdown.tip && breakdown.tip > 0) {
+			elements.push('$' + breakdown.tip + ' tip');
 		}
 
 		if (elements.length) {
@@ -990,13 +991,8 @@ Issue 13: Removed the password for while
 		return taxes;
 	},
 
-	_breakdownTip: function(total) {
-		var tip = 0;
-		if (App.order['pay_type'] == 'card') {
-			tip = (total * (App.order.tip/100));
-		}
-		tip = App.ceil(tip);
-		return tip;
+	_breakdownTip: function() {
+		return App.ceil(App.order.tip).toFixed(2);
 	},
 
 	total: function() {
@@ -1015,8 +1011,7 @@ Issue 13: Removed the password for while
 		feeTotal	+= breakdown.delivery;
 		feeTotal	+= breakdown.fee;
 		finalAmount  = feeTotal + breakdown.taxes;
-		finalAmount += this._breakdownTip(total);
-
+		finalAmount += parseFloat( this._breakdownTip() );
 
 		return App.ceil(finalAmount).toFixed(2);
 	},
@@ -1052,7 +1047,7 @@ Issue 13: Removed the password for while
 		elements['fee']  	= this._breackDownFee(feeTotal);
 		feeTotal			+= elements['fee'];
 		elements['taxes']	= this._breackDownTaxes(feeTotal);
-		elements['tip']  	= this._breakdownTip(total);
+		elements['tip']  	= this._breakdownTip();
 		return elements;
 	},
 
@@ -1161,7 +1156,7 @@ App.processConfig = function(json) {
 		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];
 		App.order['delivery_type'] = App.config.user['delivery_type'];
-		App.order['tip'] = App.config.user['tip'] || 15;
+		App.order['tip'] = App.config.user['tip'] || 3;
 	}
 };
 
