@@ -29,14 +29,19 @@ App.recommend.send = function(){
 		$( '.home-recommend-text' ).focus();
 		return;
 	}
+	var pos = App.loc.pos();
 
-	var content = 'Geocode city: ' + App.loc.reverseGeocodeCity + 
+	var content = 'Address entered: ' + pos.addressEntered + 
 								'\n' + 
-								'City name: ' + App.loc.city_name +
+								'Address reverse: ' + pos.addressReverse +
 								'\n' + 
-								'Lat: ' + App.loc.lat + 
+								'City: ' + pos.city +
 								'\n' + 
-								'Lon: ' + App.loc.lon;
+								'Region: ' + pos.region + 
+								'\n' + 
+								'Lat: ' + pos.lat + 
+								'\n' + 
+								'Lon: ' + pos.lon;
 	var data = {
 		name: $( '.home-recommend-text' ).val(),
 		content : content
