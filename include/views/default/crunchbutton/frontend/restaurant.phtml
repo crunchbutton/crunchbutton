@@ -195,8 +195,7 @@
 				&nbsp;for a total of <span class="cart-total">$0.00</span>
 				&nbsp;<span class="cart-paymentType"></span>
 			</div>
-
-		<% if (App.config.user.delivery_type == 'delivery' && App.restaurant.delivery == '1') { %>
+		<% if ( ( lastOrderDelivery || App.config.user.delivery_type == 'delivery' ) && App.restaurant.delivery == '1' ) { %>
 			<div class="dp-display-address dp-display-item">
 				<label>Your food will be delivered to:</label><br />
 				<%= (user.address ? user.address.replace("\n",'<br />') : '<i>no address provided</i>') %>
