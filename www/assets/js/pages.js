@@ -169,7 +169,7 @@ App.page.restaurant = function(id) {
 		}
 		
 		// Force delivery case the restaurant doesn't takeout
-		if( App.restaurant.delivery == '1' && App.restaurant.takeout == '0' ){
+		if( parseInt( App.restaurant.delivery ) == 1 && parseInt( App.restaurant.takeout ) == 0 ){
 			App.trigger.delivery();	
 		}
 
