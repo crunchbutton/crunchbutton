@@ -628,10 +628,12 @@ App.cart = {
 				obj = App.cached['Dish'][cartitem.id],
 				opt = obj.options();
 
+			// First the basic options
 			for (var x in opt) {
 				if (opt[x].id_option_parent) {
 					continue;
 				}
+
 				if (opt[x].type == 'check') {
 
 					var price = opt[x].optionPrice(cartitem.options);
@@ -649,7 +651,16 @@ App.cart = {
 						);
 					el.append(option);
 
-				} else if (opt[x].type == 'select') {
+				}
+			}
+
+			// Second the customizable options 
+			for (var x in opt) {
+				if (opt[x].id_option_parent) {
+					continue;
+				}
+
+				if (opt[x].type == 'select') {
 
 					var select = $('<select class="cart-customize-select">');
 					for (var i in opt) {
