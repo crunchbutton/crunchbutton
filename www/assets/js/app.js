@@ -534,7 +534,7 @@ App.cart = {
 				var creditLeft = '<span class="gift-left"> - You\'ll still have $' + App.ceil( ( credit - this.total() ) ).toFixed( 2 ) + ' gift card left </span>';
 				credit = this.total();
 			} 
-			$('.cart-gift').html( '(- $' + credit + ' credit ' + creditLeft + ')' );
+			$('.cart-gift').html( '&nbsp;(- $' + credit + ' credit ' + creditLeft + ')' );
 		} else {
 			$('.cart-gift').html();
 		}
