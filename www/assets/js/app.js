@@ -483,12 +483,12 @@ App.cart = {
 		var wasTipChanged = false;
 		if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = App.config.user.last_tip || 3; // Default value is $3
+				App.order.tip = App.config.user.last_tip_takeout || 0; // Default value is 0
 				wasTipChanged = true;
 			}
 		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = App.config.user.last_tip || 3; // Default value is $3
+				App.order.tip = App.config.user.last_tip_delivery || 3; // Default value is $3
 				wasTipChanged = true;
 			}
 		}
@@ -1160,12 +1160,6 @@ App.processConfig = function(json) {
 		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];
 		App.order['delivery_type'] = App.config.user['delivery_type'];
-		var tip = App.config.user.last_tip || 3;
-		// If the last_tip_type is != of 'number'
-		if( App.config.user.last_tip_type && App.config.user.last_tip_type != 'number' ){
-			tip = 3;
-		}
-		App.order['tip'] = tip;
 	}
 };
 
