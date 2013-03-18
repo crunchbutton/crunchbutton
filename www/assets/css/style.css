@@ -973,6 +973,7 @@ html[xmlns] .clearfix {
 .content-item-locations-city {
 	color: #666;	
 	cursor: pointer;
+	text-decoration: underline;
 }
 
 .home-recommend-title h1 strong{
