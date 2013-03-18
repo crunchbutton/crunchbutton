@@ -1557,6 +1557,7 @@ $(function() {
 
 
 	$(document).on('click', '.content-item-locations-city', function() {
+		$( '.main-content' ).html( '' );
 		var permalink = $( this ).attr( 'permalink' );
 		App.routeAlias( permalink, function( result ){
 			App.loc.realLoc = {
