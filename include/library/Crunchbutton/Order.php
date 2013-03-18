@@ -961,6 +961,15 @@ class Crunchbutton_Order extends Cana_Table {
 		return self::q('select * from `order` where id_user="'.$id_user.'" and tip is not null order by id_order desc limit 0,1');
 	}
 
+	public function lastTipByDelivery($id_user = null, $delivery ) {
+		$id_user = ( $id_user ) ? $id_user : $this->id_user;
+		$order = self::q('select * from `order` where id_user="'.$id_user.'" and delivery_type = "' . $delivery . '" and tip is not null order by id_order desc limit 0,1');
+		if( $order->tip ){
+			return $order->tip;
+		}
+		return null;
+	}
+
 	public function lastTip( $id_user = null ) {
 			$last_order = self::lastTippedOrder( $id_user );
 			if( $last_order->tip ){
