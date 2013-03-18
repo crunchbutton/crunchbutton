@@ -718,7 +718,6 @@ App.cart = {
 				}
 			}
 		}
-		console.log(cartitem.options);
 
 		App.cart.updateTotal();
 
@@ -1427,7 +1426,11 @@ $(function() {
 		}
 	}, '.button-bottom');
 
-	$(document).on('click', '.cart-customize-check, .cart-customize-select', function() {
+	$(document).on('click', '.cart-customize-check', function() {
+		App.cart.customizeItem($(this));
+	});
+
+	$(document).on('change', '.cart-customize-select', function() {
 		App.cart.customizeItem($(this));
 	});
 
