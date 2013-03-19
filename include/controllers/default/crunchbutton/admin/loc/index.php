@@ -11,7 +11,7 @@ class Controller_Admin_Loc extends Crunchbutton_Controller_Account {
 			c::view()->layout('layout/admin');
 			c::view()->total = Crunchbutton_Loc_Log::countAll();
 			c::view()->cities = Crunchbutton_Loc_Log::countCities();
-			c::view()->regions = Crunchbutton_Loc_Log::countRegions();
+			c::view()->last = Crunchbutton_Loc_Log::last();
 			c::view()->display('admin/loc/index');
 		}
 	}
