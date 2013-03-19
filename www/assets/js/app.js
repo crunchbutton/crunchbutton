@@ -38,7 +38,7 @@ var App = {
 	_pageInit: false,
 	_identified: false,
 	isDeliveryAddressOk : false,
-	tips: [0,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]
+	tips: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]
 };
 
 App.loadRestaurant = function(id) {
@@ -869,26 +869,30 @@ Issue 13: Removed the password for while
 		}
 
 		// verify the distance between the user and the restaurant
-		if (order.delivery_type == 'delivery') {
-			var success = function() {
-				if (!App.restaurant.deliveryHere({
-					lat: App.loc.lat, lon: App.loc.lon
-				})) {
-					alert( 'Sorry, you are too far from this restaurant!' );
+		if (order.delivery_type == 'delivery' && !App.isDeliveryAddressOk) {
+			var success = function( results ) {
+				var lat = results[0].geometry.location.lat();
+				var lon = results[0].geometry.location.lng();
+				if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
+					alert( 'Sorry, that address seems invalid to us. \nTry again, or order takeout' );
 					App.busy.unBusy();
-					return;
 				} else {
 					App.busy.unBusy();
+					App.isDeliveryAddressOk = true;
 					App.cart.submit();
 				}
 			};
-			
 			var error = function() {
 				App.busy.unBusy();
 				alert('Oops! We couldn\'t find that address!');
 			};
+			App.loc.doGeocode( order.address, success, error);
+			return;
+		} else {
+			isDeliveryAddressOk = true;
+		}
 
-			App.loc.geocode(order.address, success, error);
+		if( !App.isDeliveryAddressOk ){
 			return;
 		}
 

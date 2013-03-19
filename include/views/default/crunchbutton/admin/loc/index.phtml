@@ -1,0 +1,45 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content">
+		<h1 class="restaurant-item-title">Places</h1>
+		<br /><br />
+		<a href="/admin/loc/export" target="_blank">Export all <?php echo $this->total; ?> places</a>
+		<br /><br />
+		<table width="100%" cellpadding="4" class="list" cellspacing="4">
+			<tr>
+				<th>Top 10 Cities</th>
+				<th>Searches</th>
+				<th>Lat</th>
+				<th>Long</th>
+			</tr>
+			<?php foreach ( $this->cities as $city) {
+				?>
+				<tr>
+					<td><?php echo $city['place']; ?></td>
+					<td><?php echo $city['total']; ?></td>
+					<td><?php echo $city['lat']; ?></td>
+					<td><?php echo $city['long']; ?></td>
+				</tr>
+				<?php
+			} ?>
+		</table>
+		<br /><br />
+		<table width="100%" cellpadding="4" class="list" cellspacing="4">
+			<tr>
+				<th>Top 10 Regions</th>
+				<th>Searches</th>
+				<th>Lat</th>
+				<th>Long</th>
+			</tr>
+			<?php foreach ( $this->regions as $region) {
+				?>
+				<tr>
+					<td><?php echo $region['place']; ?></td>
+					<td><?php echo $region['total']; ?></td>
+					<td><?php echo $city['lat']; ?></td>
+					<td><?php echo $city['long']; ?></td>
+				</tr>
+				<?php
+			} ?>
+		</table>
+	</div>
+</div>

@@ -303,10 +303,20 @@ App.loc = {
 			}
 		});
 	},
+
 	km2Miles : function( km ){
 		return km * 0.621371;
 	},
 	Miles2Km : function( miles ){
 		return miles * 1.60934;
+	},
+	log: function(){
+		$.ajax({
+		type: 'POST',
+		dataType: 'json',
+		data: App.loc.pos(),
+		url:  App.service + 'loc_log/new',
+		success: function( json ) {}
+		});	
 	}
 }
