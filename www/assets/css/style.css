@@ -1297,9 +1297,6 @@ html[xmlns] .clearfix {
 		position: absolute;
 		left: 50%;
 	}
-	.home-tagline {
-		display: none;
-	}
 	.meal-pic {
 		background-position: center center !important;
 	}
