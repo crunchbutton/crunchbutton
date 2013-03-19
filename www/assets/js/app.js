@@ -888,8 +888,10 @@ Issue 13: Removed the password for while
 			};
 			App.loc.doGeocode( order.address, success, error);
 			return;
-		} else {
-			isDeliveryAddressOk = true;
+		} 
+
+		if( order.delivery_type == 'takeout' ){
+			App.isDeliveryAddressOk = true;
 		}
 
 		if( !App.isDeliveryAddressOk ){

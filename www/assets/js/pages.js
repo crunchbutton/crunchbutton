@@ -103,8 +103,11 @@ App.page.restaurant = function(id) {
 		App.restaurant = this;
 		var community = App.getCommunityById(App.restaurant.id_community);
 
+		var lastOrderDelivery = false;
 		// Check if the last user's order at this restaurant was a delivery type
-		var lastOrderDelivery = ( App.config && App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant] && App.config.user.presets[App.restaurant.id_restaurant].delivery_type == 'delivery' ) || false;
+		if( App.config && App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant] ){
+			lastOrderDelivery = App.config.user.presets[App.restaurant.id_restaurant].delivery_type;
+		}
 
 		App.showPage({
 			tracking: {
@@ -169,20 +172,16 @@ App.page.restaurant = function(id) {
 			App.trigger.credit();
 		}
 
-		if (App.order['delivery_type'] == 'takeout' || App.restaurant.delivery != '1') {
+		// Rules at #669
+		if( ( lastOrderDelivery == 'delivery' && App.restaurant.delivery == '1' ) || 
+				( App.order['delivery_type'] == 'delivery' && App.restaurant.delivery == '1' ) ||
+				( !App.config.user.delivery_type && App.restaurant.delivery == '1' ) ){
+				App.trigger.delivery();
+		} 
+
+		if( App.order['delivery_type'] == 'takeout' || App.restaurant.delivery != '1') {
 			App.trigger.takeout();
-		} else {
-			App.trigger.delivery();
-		}
-
-		// Force delivery case the restaurant doesn't takeout
-		if( parseInt( App.restaurant.delivery ) == 1 && parseInt( App.restaurant.takeout ) == 0 ){
-			App.trigger.delivery();	
-		}
-
-		if(  parseInt( App.restaurant.delivery ) == 1 && lastOrderDelivery ){
-			App.trigger.delivery();		
-		}
+		} 
 
 		$( '.restaurant-gift' ).hide();
 
