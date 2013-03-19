@@ -38,7 +38,7 @@ var App = {
 	_pageInit: false,
 	_identified: false,
 	isDeliveryAddressOk : false,
-	tips: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]
+	tips: [0,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]
 };
 
 App.loadRestaurant = function(id) {
@@ -47,7 +47,6 @@ App.loadRestaurant = function(id) {
 
 		if (!this.open()) {
 			var hours = '';
-
 			for (var x in this._hours) {
 				hours += x + ': ';
 				for (var xx in this._hours[x]) {
