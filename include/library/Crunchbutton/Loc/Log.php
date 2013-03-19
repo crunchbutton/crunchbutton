@@ -18,9 +18,9 @@ class Crunchbutton_Loc_Log extends Cana_Table {
 		return static::countByQuery( $query );
 	}
 
-	public static function countRegions(){
-		$query = 'SELECT DISTINCT region AS place, lat, `long`, SUM(1) AS total FROM loc_log GROUP BY city, lat, `long` ORDER BY total DESC LIMIT 0,10';
-		return static::countByQuery( $query );
+	public static function last(){
+		$query = 'SELECT * FROM loc_log ORDER BY id_loc_log DESC LIMIT 0,10';
+		return Crunchbutton_Loc_Log::q( $query );
 	}
 
 	public static function countByQuery( $query ){
