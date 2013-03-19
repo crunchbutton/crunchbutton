@@ -14,7 +14,6 @@
 <?
 foreach ( $this->places as $place ){ 
 	$date = $place->date();
-	ob_start();
 ?><tr>
 		<td><?=$place->user()->name;?></td>
 		<td><?=$place->address_entered;?></td>

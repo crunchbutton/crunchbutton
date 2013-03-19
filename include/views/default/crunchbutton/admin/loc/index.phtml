@@ -18,6 +18,7 @@
 					<td><?php echo $city['total']; ?></td>
 					<td><?php echo $city['lat']; ?></td>
 					<td><?php echo $city['long']; ?></td>
+					<td><?php echo $city['date']; ?></td>
 				</tr>
 				<?php
 			} ?>
@@ -32,6 +33,7 @@
 				<th>Reverse Address</th>
 				<th>Lat</th>
 				<th>Long</th>
+				<th>Date</th>
 			</tr>
 			<?php foreach ( $this->last as $loc) {
 				?>
@@ -41,6 +43,7 @@
 					<td><?php echo $loc->address_reverse; ?></td>
 					<td><?php echo $loc->lat; ?></td>
 					<td><?php echo $loc->long; ?></td>
+					<td><?php echo $loc->date; ?></td>
 				</tr>
 				<?php
 			} ?>
