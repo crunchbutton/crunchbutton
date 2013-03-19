@@ -1,0 +1,31 @@
+<table>
+	<tr>
+		<td>User</td>
+		<td>Address Entered</td>
+		<td>Address Reverse</td>
+		<td>City</td>
+		<td>Region</td>
+		<td>Lat</td>
+		<td>Long</td>
+		<td>Date</td>
+		<td>Time</td>
+		<td>IP</td>
+	</tr>
+<?
+foreach ( $this->places as $place ){ 
+	$date = $place->date();
+	ob_start();
+?><tr>
+		<td><?=$place->user()->name;?></td>
+		<td><?=$place->address_entered;?></td>
+		<td><?=$place->address_reverse;?></td>
+		<td><?=$place->city;?></td>
+		<td><?=$place->region;?></td>
+		<td><?=$place->lat;?></td>
+		<td><?=$place->long;?></td>
+		<td><?=$date->format('M jS Y');?></td>
+		<td><?=$date->format('g:i:s A');?></td>
+		<td><?=$place->ip;?></td>	
+	</tr>
+<? } ?>
+</table>

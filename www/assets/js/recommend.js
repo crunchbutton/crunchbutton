@@ -29,6 +29,7 @@ App.recommend.send = function(){
 		$( '.home-recommend-text' ).focus();
 		return;
 	}
+
 	var pos = App.loc.pos();
 
 	var content = 'Address entered: ' + pos.addressEntered + 

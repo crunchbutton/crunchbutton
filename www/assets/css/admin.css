@@ -167,7 +167,7 @@ body {
 	cursor: pointer;
 	margin-bottom: -3px;
 	text-decoration: none;
-	width: 80px;
+	width: 75px;
 	text-align: center;
 }
 
@@ -706,3 +706,14 @@ input[name="dish-options-price"] {
 	text-shadow: 1px 1px #000;
 	border-radius: 2px;
 }
+
+table.list{
+	width: 100%;
+}
+	table.list th, table.list td{
+		padding: 5px;
+	}
+		table.list tr:nth-of-type(even){
+			background: #F5F5F5;
+		}
+

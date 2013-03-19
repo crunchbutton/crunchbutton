@@ -63,6 +63,9 @@ console.log('LOCATION NO REST')
 	}
 		
 	if (!force && App.loc.address() && App.restaurants.list && App.restaurants.list.length == 0) {
+		App.loc.log();
+
+		
 
 		$('.home-greeting, .enter-location, .button-letseat-form').hide();
 		$('.error-location').show();
