@@ -1201,6 +1201,30 @@ App.processConfig = function(json) {
 	}
 };
 
+App.detectCardType = function(){
+	var cardvalue = $( '[name="pay-card-number"]' ).val();
+	console.log('cardvalue',cardvalue);
+	var type = false;
+	if ( /^5[1-5]/.test( cardvalue ) ) {
+		type = "master-card";
+	}
+	else if ( /^4/.test( cardvalue ) ){
+		type = "visa";
+	} 
+	else if ( /^3[47]/.test( cardvalue ) ){
+		type = "amex";
+	}
+	else if ( /^6/.test( cardvalue ) ){
+		type = "discover";
+	}
+	if( type ){
+		$( '.payment-card' ).css( 'backgroundPosition', '-40px 0' );
+		$( '.card-' + type ).css( 'backgroundPosition', '0 0' );
+	} else {
+		$( '.payment-card' ).css( 'backgroundPosition', '0 0' );
+	}
+}
+
 App.trigger = {
 	delivery: function() {
 		$('.delivery-toggle-takeout').removeClass('toggle-active');
@@ -1498,6 +1522,10 @@ $(function() {
 		}
 		App.order.cardChanged = true;
 	});
+
+	$(document).on('change, keyup', '[name="pay-card-number"]', function() {
+		App.detectCardType();
+	} );
 
 	$(document).on('click', '.link-help', function() {
 		History.pushState({}, 'Crunchbutton - About', '/help');

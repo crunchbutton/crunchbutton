@@ -1380,6 +1380,7 @@ html[xmlns] .clearfix {
 	.card-icons, .payment-card-info p {
 		text-align: center;
 	}
+
 	.field-container {
 		width: auto;
 	}
@@ -2731,6 +2732,25 @@ strong {
 	top:150px;
 }
 
+.payment-card{
+	background-repeat: no-repeat;
+	display: inline-block;
+	margin-right: 4px;
+	height: 29px;
+	width: 40px;
+}
+	.card-visa{
+		background: url( ../images/payment/Visa-40.png );
+	}
+	.card-master-card{
+		background: url( ../images/payment/Mastercard-40.png );
+	}
+	.card-amex{
+		background: url( ../images/payment/Amex-40.png );
+	}
+	.card-discover{
+		background: url( ../images/payment/Discover-40.png );
+	}
 .gift-left{
 	font-size: 11px;
 	font-weight: normal;
