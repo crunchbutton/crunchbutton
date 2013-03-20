@@ -203,10 +203,10 @@ var Restaurant = function(id) {
 	}
 
 	self.closedMessage = function(){
-		
 		var isOpenedAt = {};
 		var openTime = this._hours;
 		var weekdayOrder = [ 'Sun','Mon','Tue','Wed','Thu','Fri','Sat' ];
+		var patternHour = /([0])([1-9])(:)([0-9]{2})/;
 		for ( var day in openTime ) {
 			var hours = openTime[ day ];
 			var key = '';
@@ -216,10 +216,12 @@ var Restaurant = function(id) {
 				 var open = hours[ hour ][ 0 ];
 				 var close = hours[ hour ][ 1 ];
 				 key += open + close;
-				 openedHoursText += openedHoursTextDivisor + App.formatTime( open ).toLowerCase() + ' - ' + App.formatTime( close ).toLowerCase();
+				 var formatedOpen = App.formatTime( open ).toLowerCase().replace( patternHour, '\$2\$3\$4' ).replace( /:00/g, '' ).replace( ' ', '' );
+				 var formatedClose = App.formatTime( close ).toLowerCase().replace( patternHour, '\$2\$3\$4' ).replace( /:00/g, '' ).replace( ' ', '' );
+				 openedHoursText += openedHoursTextDivisor + formatedOpen + ' - ' + formatedClose;
 				 openedHoursTextDivisor = ', ';
 			}
-			// Remove the : to create an object key
+			// Remove the ':' to create an object key
 			key = key.replace( /\:/g, '' );
 			if( !isOpenedAt[ key ] ){
 				isOpenedAt[ key ] = { days : {}, hours : {} };
@@ -227,7 +229,6 @@ var Restaurant = function(id) {
 			isOpenedAt[ key ][ 'days' ][ day ] = true;
 			isOpenedAt[ key ][ 'hour' ] = openedHoursText;
 		}
-
 		var _opened = {};
 		for( var hour in isOpenedAt ){
 			var days = isOpenedAt[ hour ][ 'days' ];
@@ -241,15 +242,55 @@ var Restaurant = function(id) {
 			hours = isOpenedAt[hour][ 'hour' ];
 			_opened[ keys ] = hours;
 		}
+		var _groupedDays = {};
+		for( var days in _opened ){
+			var weekdays = days.replace( ':', '' ).split( ',' );
+			var nextPosition = -1;
+			var sequenceStartedAt = false;
+			var groupedDays = {};
+			var totalWeekdays = weekdays.length;
+			for ( var i = 0; i <= totalWeekdays; ++i) {
+				var weekday = $.trim( weekdays[ i ] );
+				var position = weekdayOrder.indexOf( weekday );
+				if( nextPosition != position ){
+					sequenceStartedAt = weekday;
+					groupedDays[sequenceStartedAt] = [];
+					groupedDays[sequenceStartedAt] = [weekday];
+				}
+				if( nextPosition == position ){
+					groupedDays[sequenceStartedAt].push( weekday );
+				}
+				nextPosition = position + 1;
+			}
+			var key = '';
+			for( var group in groupedDays ){
+				if( group != '' ){
+					if( groupedDays[group].length == 1 ){
+						if( key != '' ){ key += ', '; }
+						key += groupedDays[group][0];
+					}
+					if( groupedDays[group].length == 2 ){
+						if( key != '' ){ key += ', '; }
+						key += groupedDays[group][0] + ', ' + groupedDays[group][1];
+					}
+					if( groupedDays[group].length > 2 ){
+						if( key != '' ){ key += ', '; }
+						key += groupedDays[group][0] + ' - ' + groupedDays[group][groupedDays[group].length-1];
+					}		
+				}
+			}
+			key += ': ';
+			_groupedDays[ key ] = _opened[days];
+		}
 
 		// Sort the hours according to the weekdayOrder sequence
 		var ordered = [];
 		for ( var index = 0; index < weekdayOrder.length; ++index) {
 			var weekday = weekdayOrder[ index ];
-			for( var day in _opened ){
+			for( var day in _groupedDays ){
 				var regexp = new RegExp( '^' + weekday, 'i' )
 				if( regexp.test( day ) ){
-					ordered.push( day + _opened[ day ] );
+					ordered.push( day + _groupedDays[ day ] );
 				}
 			}
 		}
