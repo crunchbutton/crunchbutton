@@ -31,6 +31,10 @@ if (!typeof(App) == 'undefined') {
 	App = {};
 }
 
+App.capitalize = function( word ){
+	return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
 App.request = function(url, complete) {
 	$.getJSON(url,function(json) {
 		complete(json);

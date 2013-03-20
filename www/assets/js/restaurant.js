@@ -202,6 +202,60 @@ var Restaurant = function(id) {
 		return ( miles <= this.delivery_radius )
 	}
 
+	self.closedMessage = function(){
+		
+		var isOpenedAt = {};
+		var openTime = this._hours;
+		var weekdayOrder = [ 'Sun','Mon','Tue','Wed','Thu','Fri','Sat' ];
+		for ( var day in openTime ) {
+			var hours = openTime[ day ];
+			var key = '';
+			var openedHoursText = '';
+			var openedHoursTextDivisor = '';
+			for( var hour in hours ){
+				 var open = hours[ hour ][ 0 ];
+				 var close = hours[ hour ][ 1 ];
+				 key += open + close;
+				 openedHoursText += openedHoursTextDivisor + App.formatTime( open ).toLowerCase() + ' - ' + App.formatTime( close ).toLowerCase();
+				 openedHoursTextDivisor = ', ';
+			}
+			// Remove the : to create an object key
+			key = key.replace( /\:/g, '' );
+			if( !isOpenedAt[ key ] ){
+				isOpenedAt[ key ] = { days : {}, hours : {} };
+			}
+			isOpenedAt[ key ][ 'days' ][ day ] = true;
+			isOpenedAt[ key ][ 'hour' ] = openedHoursText;
+		}
+
+		var _opened = {};
+		for( var hour in isOpenedAt ){
+			var days = isOpenedAt[ hour ][ 'days' ];
+			var commas = '';
+			var keys = '';
+			for( day in days ){
+				keys += commas + App.capitalize( day );
+				commas = ', ';
+			}
+			keys += ': ';
+			hours = isOpenedAt[hour][ 'hour' ];
+			_opened[ keys ] = hours;
+		}
+
+		// Sort the hours according to the weekdayOrder sequence
+		var ordered = [];
+		for ( var index = 0; index < weekdayOrder.length; ++index) {
+			var weekday = weekdayOrder[ index ];
+			for( var day in _opened ){
+				var regexp = new RegExp( '^' + weekday, 'i' )
+				if( regexp.test( day ) ){
+					ordered.push( day + _opened[ day ] );
+				}
+			}
+		}
+		return ordered.join( '\n' );
+	}
+
 	self.preset = function() {
 		return self['_preset'];
 	}

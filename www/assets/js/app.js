@@ -46,15 +46,7 @@ App.loadRestaurant = function(id) {
 	App.cache('Restaurant', id,function() {
 
 		if (!this.open()) {
-			var hours = '';
-			for (var x in this._hours) {
-				hours += x + ': ';
-				for (var xx in this._hours[x]) {
-					hours += this._hours[x][xx][0] + ' - ' + this._hours[x][xx][1] + (xx == 0 ? ', ' : '');
-				}
-				hours += "\n";
-			}
-			alert("This restaurant is currently closed. It will be open during the following hours (" + this._tzabbr + "):\n\n" + hours);
+			alert("This restaurant is currently closed. It will be open during the following hours (" + this._tzabbr + "):\n\n" + this.closedMessage());
 			App.busy.unBusy();
 
 		} else {
