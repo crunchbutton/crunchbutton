@@ -207,6 +207,7 @@ var Restaurant = function(id) {
 		var openTime = this._hours;
 		var weekdayOrder = [ 'Sun','Mon','Tue','Wed','Thu','Fri','Sat' ];
 		var patternHour = /([0])([1-9])(:)([0-9]{2})/;
+		// Format the hour and group the day with the same hour
 		for ( var day in openTime ) {
 			var hours = openTime[ day ];
 			var key = '';
@@ -221,7 +222,7 @@ var Restaurant = function(id) {
 				 openedHoursText += openedHoursTextDivisor + formatedOpen + ' - ' + formatedClose;
 				 openedHoursTextDivisor = ', ';
 			}
-			// Remove the ':' to create an object key
+			// Remove the ':' to create a cleaner object key
 			key = key.replace( /\:/g, '' );
 			if( !isOpenedAt[ key ] ){
 				isOpenedAt[ key ] = { days : {}, hours : {} };
@@ -229,6 +230,7 @@ var Restaurant = function(id) {
 			isOpenedAt[ key ][ 'days' ][ day ] = true;
 			isOpenedAt[ key ][ 'hour' ] = openedHoursText;
 		}
+		// Create an object with all days and its hours
 		var _opened = {};
 		for( var hour in isOpenedAt ){
 			var days = isOpenedAt[ hour ][ 'days' ];
@@ -238,13 +240,13 @@ var Restaurant = function(id) {
 				keys += commas + App.capitalize( day );
 				commas = ', ';
 			}
-			keys += ': ';
 			hours = isOpenedAt[hour][ 'hour' ];
 			_opened[ keys ] = hours;
 		}
+		// Group the days e.g. 'Mon, Tue, Wed, Sat' will became 'Mon - Wed, Sat'
 		var _groupedDays = {};
 		for( var days in _opened ){
-			var weekdays = days.replace( ':', '' ).split( ',' );
+			var weekdays = days.split( ',' );
 			var nextPosition = -1;
 			var sequenceStartedAt = false;
 			var groupedDays = {};
@@ -282,8 +284,7 @@ var Restaurant = function(id) {
 			key += ': ';
 			_groupedDays[ key ] = _opened[days];
 		}
-
-		// Sort the hours according to the weekdayOrder sequence
+		// Sort the hours according to the weekdayOrder sequence Sun to Sat
 		var ordered = [];
 		for ( var index = 0; index < weekdayOrder.length; ++index) {
 			var weekday = weekdayOrder[ index ];
