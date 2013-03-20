@@ -402,7 +402,7 @@ App.cart = {
 
 		el.hide();
 
-		$('.cart-items-content').append(el);
+		$('.cart-items-content').prepend(el);
 		//el.fadeIn();
 		el.show();
 
