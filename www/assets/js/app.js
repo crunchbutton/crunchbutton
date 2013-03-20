@@ -440,6 +440,53 @@ App.cart = {
 
 		App.cart.updateTotal();
 	},
+	/**
+	 * If the user changed the delivery method to takeout and the payment is card
+	 * the default tip will be $0. 
+	 * If the delivery method is delivery and the payment is card
+	 * the default tip will be $3.
+	 * If the user had changed the tip value the default value will be chosen one.
+	 */
+	tip: function(){
+		// It means the user did not change the tip yet - So let's calculate the default tip
+		if( typeof App.order.tipHasChanged == 'undefined' ){
+			var tip = 0;
+			if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
+				tip = ( App.config.user.last_tip_takeout || App.config.user.last_tip_delivery );
+			} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
+				tip = ( App.config.user.last_tip_delivery || App.config.user.last_tip_takeout );
+			}
+			if( !tip || parseFloat( tip ) == 0 ){
+				tip = App.cart.calculateTip();
+			}
+			App.order.tip = tip; 
+			$('[name="pay-tip"]').val( App.order.tip );
+			// Forces the recalculation of total because the tip was changed.
+			totalText  = this.charged();
+		}
+	},
+
+	calculateTip: function(){
+		var subtotal = App.cart.subtotal();
+		var porcent = 18; // % do calculate the tip
+		var tipPorcent = ( subtotal * porcent ) / 100;
+		var tip = parseInt( tipPorcent );
+		if( ( tip - tipPorcent ) <= 0.5 ){
+			var sum = 0.5;
+		} else {
+			var sum = 1;
+		}
+		tip += sum;
+		var maxTip = App.tips[ App.tips.length - 1 ];
+		var minTip = App.tips[ 1 ];
+		if( tip > maxTip ){
+			tip = maxTip;
+		}
+		if( tip < minTip ){
+			tip = minTip;
+		}
+		return tip;
+	},
 
 	/**
 	 * Gets called after the cart is updarted to refresh the total
@@ -465,31 +512,6 @@ App.cart = {
 			totalItems++;
 		}
 
-		/* If the user changed the delivery method to takeout and the payment is card
-		 * the default tip will be 0%. If the delivery method is delivery and the payment is card
-		 * the default tip will be 15% (variable App.order.tip).
-		 * If the user had changed the tip value the default value will be chosed one.
-		 */
-
-		var wasTipChanged = false;
-		if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
-			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = App.config.user.last_tip_takeout || 0; // Default value is 0
-				wasTipChanged = true;
-			}
-		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
-			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = App.config.user.last_tip_delivery || 3; // Default value is $3
-				wasTipChanged = true;
-			}
-		}
-
-		if( wasTipChanged ){
-			$('[name="pay-tip"]').val( App.order.tip );
-			// Forces the recalculation of total because the tip was changed.
-			totalText  = this.charged();
-		}
-
 		if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
 			$('.delivery-minimum-error').show();
 			$('.delivery-min-diff').html(App.restaurant.deliveryDiff());
@@ -509,6 +531,9 @@ App.cart = {
 		} else {
 			$('.payment-total, .dp-display-payment').show();
 		}
+
+		// Calculates the tip.
+		App.cart.tip();
 
 		var breakdown	= App.cart.totalbreakdown();
 
