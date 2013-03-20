@@ -452,11 +452,11 @@ App.cart = {
 		if( typeof App.order.tipHasChanged == 'undefined' ){
 			var tip = 0;
 			if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
-				tip = ( App.config.user.last_tip_takeout || App.config.user.last_tip_delivery );
+				tip = ( App.config.user.last_tip_takeout || 0 );
 			} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
 				tip = ( App.config.user.last_tip_delivery || App.config.user.last_tip_takeout );
 			}
-			if( !tip || parseFloat( tip ) == 0 ){
+			if( !tip && App.order.delivery_type != 'takeout' ){
 				tip = App.cart.calculateTip();
 			}
 			App.order.tip = tip; 
