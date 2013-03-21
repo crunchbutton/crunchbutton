@@ -13,9 +13,8 @@
 <div class="restaurant-gift">
 	<h1>You have $<span class="restaurant-gift-value"></span> gift card!</h1>
 </div>
-
 <% if (restaurant.message) { %>
-	<div class="restaurant-message">
+	<div class="restaurant-message<%= (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? '' : ' restaurant-with-image' %>">
 		<%= restaurant.message %>
 	</div>
 <% } %>
@@ -36,7 +35,7 @@
 
 <div class="main-content-readable <% if (restaurant.message) { %>main-content-readable-margin<% } %>">
 	<? /* cart */ ?>
-	<div class="cart-items">
+	<div class="cart-items <%= (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? '' : ' restaurant-with-image' %>">
 		<div class="restaurant-item-title text-your-order">Your Order</div>
 		<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
 		<div class="divider"></div>
