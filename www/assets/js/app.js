@@ -1203,7 +1203,6 @@ App.processConfig = function(json) {
 
 App.detectCardType = function(){
 	var cardvalue = $( '[name="pay-card-number"]' ).val();
-	console.log('cardvalue',cardvalue);
 	var type = false;
 	if ( /^5[1-5]/.test( cardvalue ) ) {
 		type = "master-card";
