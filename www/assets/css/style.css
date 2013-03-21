@@ -2384,6 +2384,12 @@ html[xmlns] .clearfix {
 	.restaurant-pic-wrapper.restaurant-pic-wrapper-hidden {
 		display: none;
 	}
+	.restaurant-message.restaurant-with-image{
+		margin-top: 210px;
+	}
+	.cart-items.restaurant-with-image{
+		padding-top: 15px;
+	}
 
 	.restaurant-name {
 		margin-top: 0px;
