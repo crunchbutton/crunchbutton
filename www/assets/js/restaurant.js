@@ -227,6 +227,8 @@ var Restaurant = function(id) {
 			if( !isOpenedAt[ key ] ){
 				isOpenedAt[ key ] = { days : {}, hours : {} };
 			}
+			// Hours "12 am, 12 am" doesn't need to be shown
+			openedHoursText = openedHoursText.replace( '- 12am, 12am ', '' );
 			isOpenedAt[ key ][ 'days' ][ day ] = true;
 			isOpenedAt[ key ][ 'hour' ] = openedHoursText;
 		}
