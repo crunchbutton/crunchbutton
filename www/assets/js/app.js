@@ -966,7 +966,7 @@ Issue 13: Removed the password for while
 						});
 						
 						App.order.cardChanged = false;
-
+						delete App.order.tipHasChanged;
 						var loc = '/order/' + this.uuid;
 						History.pushState({},loc,loc);
 					});
