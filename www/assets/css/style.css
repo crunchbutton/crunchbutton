@@ -969,8 +969,12 @@ html[xmlns] .clearfix {
 	font-weight: normal !important;
 }
 
-.content-item-locations-cities{
+.content-item-locations-city{
 	font-size: 16px;
+	text-decoration: underline;
+}
+.content-item-locations-city, .loc-your-area{
+	color: #4168b8 !important;
 }
 
 .content-item-locations-city {
