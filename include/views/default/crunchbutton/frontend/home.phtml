@@ -38,6 +38,14 @@
 <div class="divider"></div>
 <button class="button-letseat-form button-bottom"><div>Let's Eat!</div></button>
 <div class="error-location" style="display: none;">
+	<div class="content-item-locations">
+		<h1>Crunchbutton by city:</h1> 
+		<div class="content-item-locations-cities">
+			<% _.each(topCommunities, function(alias) { %>
+				<span class="content-item-locations-city" permalink="<%= alias.alias %>"><%= alias.name %></span>&nbsp;&nbsp;&nbsp;&nbsp;
+			<% }); %>
+		</div>
+	</div>
 	<div class="main-content-readable">
 		<div class="home-welcome home-welcom-error">
 			<h1>Sorry!</h1>
@@ -72,14 +80,6 @@
 					<% } %>
 				</div>
 			</div>
-		</div>
-	</div>
-	<div class="content-item-locations">
-		<h1>Crunchbutton by city:</h1> 
-		<div class="content-item-locations-cities">
-			<% _.each(topCommunities, function(alias) { %>
-				<span class="content-item-locations-city" permalink="<%= alias.alias %>"><%= alias.name %></span>&nbsp;&nbsp;&nbsp;&nbsp;
-			<% }); %>
 		</div>
 	</div>
 </div>
