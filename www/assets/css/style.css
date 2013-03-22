@@ -1101,7 +1101,7 @@ html[xmlns] .clearfix {
 
 .button-letseat-form {
 	height: 50px;
-	font-size: 25px;
+	font-size: 20px;
 	text-transform: none;
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 	margin-top: 40px;
@@ -1864,7 +1864,7 @@ html[xmlns] .clearfix {
 		float: right;
 	}
 	.button-bottom {
-		width: 310px;
+		width: 380px;
 	}
 	.input-item {
 		min-height: 25px;
