@@ -432,6 +432,11 @@ App.page.foodDelivery = function(refresh) {
 	} else {
 		// we already have a restaurant list. display the restaurant page
 		success();
-
 	}
+}
+/**
+ * Gift card page
+ */
+App.page.giftCard = function(){
+	App.giftcard.show();
 }
