@@ -23,6 +23,10 @@ App.iOS = function(){
 	return /ipad|iphone|ipod/i.test( navigator.userAgent.toLowerCase() );
 }
 
+App.isAndroid = function(){
+    return /android/i.test( navigator.userAgent.toLowerCase() );
+}
+
 App.isChrome = function(){
 	// As the user agent can be changed, let make sure if the browser is chrome or not.
 	return /chrom(e|ium)/.test( navigator.userAgent.toLowerCase() ) || /crios/.test( navigator.userAgent.toLowerCase() ) || ( typeof window.chrome === 'object' );
