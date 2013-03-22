@@ -10,7 +10,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
-
+<script type="text/javascript">
+<?php 
+// Get server's date time converted to GMD
+$utc_str = gmdate( 'Y/n/d/H/i/s', time() );
+$utc = strtotime( $utc_str );
+?>
+var _gmtServer = '<?php echo $utc_str;?>';
+</script>
 <? if (c::config()->bundle) : ?>
 	<link rel="stylesheet" type="text/css" href="/assets/css/bundle.css?v=<?=Cana_Util::gitVersion()?>">
 <? else : ?>
