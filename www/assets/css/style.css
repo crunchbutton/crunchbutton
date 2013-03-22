@@ -707,13 +707,16 @@ html[xmlns] .clearfix {
 }
 
 .content-item-locations h1 {
-	margin-top: 80px;
+	margin-top: 10px;
 	font-size: 28px;
 	color: #D74924;
 	font-weight: 100;
 	font-size: 27px;
 	margin-bottom: 22px;
 }
+	.content-item-locations{
+		margin-bottom: 50px;
+	}
 
 .location-detect {
 	margin: 2px 0 0 0;
@@ -1125,12 +1128,14 @@ html[xmlns] .clearfix {
 	.button-bottom.button-letseat-form {
 		margin-top: 25px;
 	}
-	.content-item-locations h1 {
-		font-size: 15px;
-		text-align: center;
-		margin-bototm: 5px;
-		margin-top: 45px;
+	.content-item-locations{
+		margin-top: 70px !important;
 	}
+		.content-item-locations h1 {
+			font-size: 15px;
+			text-align: center;
+			margin-bototm: 5px;
+		}
 
 	.home-welcome-click {
 		display: none;
