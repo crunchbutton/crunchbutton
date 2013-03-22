@@ -82,12 +82,6 @@ $(function() {
 		};
 	<? endforeach ; ?>
 });
-	<?php 
-	// Get server's date time converted to GMD
-	$utc_str = gmdate( 'Y/n/d/H/i/s', time() );
-	$utc = strtotime( $utc_str );
-	?>
-	var _gmtServer = '<?php echo $utc_str;?>';
 </script>
 
 <?
