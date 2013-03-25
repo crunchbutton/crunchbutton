@@ -531,6 +531,13 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function confirm() {
 
+		Log::debug([
+			'order' => $this->id_order,
+			'method' => 'Order::confirm()',
+			'confirmed' => $this->confirmed ,
+			'type' => 'test_notification'
+		]);
+
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
 		}
@@ -552,7 +559,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$callback = 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/confirm';
 
-		Log::debug([
+/*		Log::debug([
 			'order' => $this->id_order,
 			'action' => 'dial confirm call',
 			'num' => $num,
@@ -560,12 +567,21 @@ class Crunchbutton_Order extends Cana_Table {
 			'callback' => $callback,
 			'type' => 'notification'
 		]);
+*/
+		Log::debug([
+			'order' => $this->id_order,
+			'step' => '0 - confirm',
+			'num' => $num,
+			'host' => $_SERVER['__HTTP_HOST'],
+			'callback' => $callback,
+			'type' => 'test_notification'
+		]);
 
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingRestaurant,
 			'+1'.$num,
-			'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$this->id_order.'/doconfirm',
+			'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$this->id_order.'/doconfirm?id_notification=',
 			[
 				'StatusCallback' => $callback
 //                'IfMachine' => 'Hangup'
@@ -615,6 +631,13 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function que() {
+
+		Log::debug([
+			'order' => $this->id_order,
+			'method' => 'Order::que()',
+			'type' => 'test_notification'
+		]);
+
 		$order = $this;
 		Cana::timeout(function() use($order) {
 			/* @var $order Crunchbutton_Order */
@@ -632,11 +655,17 @@ class Crunchbutton_Order extends Cana_Table {
 		$order = $this;
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
-		}
+		}/*
 		Log::debug([
 			'order' => $this->id_order,
 			'action' => 'confirm qued',
 			'type' => 'notification'
+		]);
+*/
+Log::debug([
+			'order' => $this->id_order,
+			'method' => 'Order::queConfirm()',
+			'type' => 'test_notification'
 		]);
 
 		// If restaurant has fax notification we should wait 5 min before send the confirmation #784

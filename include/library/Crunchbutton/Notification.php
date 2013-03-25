@@ -13,16 +13,7 @@ class Crunchbutton_Notification extends Cana_Table
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
 		$mail = ($env == 'live' ? $this->value : '_EMAIL');
-		// $mail = ($env == 'live' ? $this->value : '_EMAIL');
 		$fax = ($env == 'live' ? $this->value : '_PHONE_');
-
-				Log::debug([
-					'step' => '0',
-					'id_notification' => $this->id_notification,
-					'order' => $order->id_order,
-					'notification_type' => $this->type,
-					'type' => 'testing_notification'
-				]);
 
 		switch ($this->type) {
 			case 'fax':
@@ -86,7 +77,7 @@ class Crunchbutton_Notification extends Cana_Table
 				break;
 
 			case 'phone':
-				/*
+
 				Log::debug([
 					'order' => $order->id_order,
 					'action' => 'send order call',
@@ -95,7 +86,6 @@ class Crunchbutton_Notification extends Cana_Table
 					'callback' => $callback,
 					'type' => 'notification'
 				]);
-				*/
 
 				$log = new Notification_Log;
 				$log->id_notification = $this->id_notification;
@@ -103,16 +93,6 @@ class Crunchbutton_Notification extends Cana_Table
 				$log->type = 'twilio';
 				$log->id_order = $order->id_order;
 				$log->save();
-
-				Log::debug([
-					'step' => '1',
-					'id_notification' => $this->id_notification,
-					'order' => $order->id_order,
-					'action' => 'starting notification call',
-					'num' => $num,
-					'callback' => $callback,
-					'type' => 'testing_notification'
-				]);
 
 				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				$call = $twilio->account->calls->create(
