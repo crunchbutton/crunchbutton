@@ -7,8 +7,10 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 		Log::debug([
 			'id_notification_log' => $notification->id_notification_log,
 			'id_order' => $notification->id_order,
+			'c::getPagePiece(2)' => c::getPagePiece(2),
+			'c::getPagePiece(3)' => c::getPagePiece(3),
 			'action' => 'notification API : CONFIRMED ' . $notification->order()->confirmed,
-			'type' => 'notification'
+			'type' => 'test_notification'
 		]);
 
 		switch ($this->method()) {
@@ -16,6 +18,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 			case 'get':
 				switch (c::getPagePiece(3)) {
 					case 'confirm':
+
 						Log::debug([
 							'id_notification_log' => $notification->id_notification_log,
 							'id_order' => $notification->id_order,
