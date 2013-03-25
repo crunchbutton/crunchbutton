@@ -196,6 +196,13 @@ App.page.restaurant = function(id) {
 			App.trigger.takeout();
 		} 
 
+		// If the user has presets at other's restaurants but he did not typed his address yet
+		// and the actual restaurant is a delivery only #875
+		if( App.restaurant.takeout == '0' && !App.config.user.address ){
+			$('.payment-form').show();
+			$('.delivery-payment-info, .content-padder-before').hide();
+		}
+
 		$( '.restaurant-gift' ).hide();
 
 		App.credit.getCredit( function(){
