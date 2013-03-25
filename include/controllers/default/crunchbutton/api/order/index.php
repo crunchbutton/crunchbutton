@@ -136,21 +136,12 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 				switch ($this->request()['Digits']) {
 					case '1':
-						/*Log::debug([
+						Log::debug([
 							'order' => $order->id_order,
 							'action' => '/doconfirm: 1: CONFIRMED',
 							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
-						]);*/
-
-		Log::debug([
-			'order' => $this->id_order,
-			'step' => 'doconfirm/1',
-			'host' => $_SERVER['__HTTP_HOST'],
-			'callback' => $callback,
-			'type' => 'test_notification'
-		]);
-
+						]);
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
 						echo '<Say voice="'.c::config()->twilio->voice.'">Order confirmed. Thank you.</Say>';
 						echo '<Pause length="1" />';
@@ -163,20 +154,13 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						}
 						break;
 
-					case '2':/*
+					case '2':
 						Log::debug([
 							'order' => $order->id_order,
 							'action' => 'RESEND',
 							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
-						]);*/
-		Log::debug([
-			'order' => $this->id_order,
-			'step' => 'doconfirm/2',
-			'host' => $_SERVER['__HTTP_HOST'],
-			'callback' => $callback,
-			'type' => 'test_notification'
-		]);
+						]);
 
 						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. We will resend the order confirmation.</Say>';
 						$order->que();
@@ -185,13 +169,6 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						echo '<Dial timeout="10" record="true">'.c::config()->phone->restaurant.'</Dial>';
 
 					default:
-		Log::debug([
-			'order' => $this->id_order,
-			'step' => 'doconfirm/*',
-			'host' => $_SERVER['__HTTP_HOST'],
-			'callback' => $callback,
-			'type' => 'test_notification'
-		]);
 						echo '<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.'.</Say>';
 					case '3':
 					case '4':
