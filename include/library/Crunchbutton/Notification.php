@@ -16,6 +16,14 @@ class Crunchbutton_Notification extends Cana_Table
 		// $mail = ($env == 'live' ? $this->value : '_EMAIL');
 		$fax = ($env == 'live' ? $this->value : '_PHONE_');
 
+				Log::debug([
+					'step' => '0',
+					'id_notification' => $this->id_notification,
+					'order' => $order->id_order,
+					'notification_type' => $this->type,
+					'type' => 'testing_notification'
+				]);
+
 		switch ($this->type) {
 			case 'fax':
 				$mail = new Email_Order([
