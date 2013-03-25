@@ -23,6 +23,17 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'say':
+
+
+				Log::debug([
+					'step' => '2',
+					'id_notification' => $_REQUEST['id_notification'],
+					'order' => $order->id_order,
+					'action' => 'api/order/say',
+					'type' => 'testing_notification'
+				]);
+
+
 				header('Content-type: text/xml');
 				$message = '<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
 						.'<Pause length="5" />';
@@ -41,13 +52,13 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 			case 'sayorder':
 
-					Log::debug([
+		/*			Log::debug([
 							'order' => $order->id_order,
 							'action' => '/sayorder (accepted)',
 							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
 						]);
-
+*/
 				$log = new Notification_Log;
 				$log->id_notification = $_REQUEST['id_notification'];
 				$log->status = 'accepted';
@@ -57,6 +68,14 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				$log->data = json_encode($_REQUEST);
 				$log->date = date('Y-m-d H:i:s');
 				$log->save();
+
+				Log::debug([
+					'step' => '3',
+					'id_notification' => $_REQUEST['id_notification'],
+					'order' => $order->id_order,
+					'action' => 'api/order/sayorder (accepted)',
+					'type' => 'testing_notification'
+				]);
 
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
@@ -90,14 +109,32 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 						echo '</Gather>';
 						break;
+						Log::debug([
+							'step' => '4',
+							'id_notification' => $_REQUEST['id_notification'],
+							'order' => $order->id_order,
+							'action' => 'api/order/sayorderonly/1 | default',
+							'type' => 'testing_notification'
+						]);
 
 					case '2':
+						/*
 						Log::debug([
 							'order' => $order->id_order,
 							'action' => '/sayorderonly: 2: CONFIRMED',
 							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
 						]);
+						*/
+						Log::debug([
+							'step' => '4',
+							'id_notification' => $_REQUEST['id_notification'],
+							'order' => $order->id_order,
+							'action' => 'api/order/sayorderonly/2',
+							'type' => 'testing_notification'
+						]);
+
+
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
 						echo '<Say voice="'.c::config()->twilio->voice.'">Order confirmed. Thank you</Say>';
 						echo '<Pause length="1" />';
@@ -118,6 +155,14 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							echo $pauseRepeat;
 						}
 
+						Log::debug([
+							'step' => '4',
+							'id_notification' => $_REQUEST['id_notification'],
+							'order' => $order->id_order,
+							'action' => 'api/order/sayorderonly/3',
+							'type' => 'testing_notification'
+						]);
+
 						echo '</Gather>';
 						break;
 
@@ -136,12 +181,21 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 				switch ($this->request()['Digits']) {
 					case '1':
-						Log::debug([
+						/*Log::debug([
 							'order' => $order->id_order,
 							'action' => '/doconfirm: 1: CONFIRMED',
 							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
+						]);*/
+
+						Log::debug([
+							'step' => '4',
+							'id_notification' => $_REQUEST['id_notification'],
+							'order' => $order->id_order,
+							'action' => 'api/order/doconfirm/1',
+							'type' => 'testing_notification'
 						]);
+
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
 						echo '<Say voice="'.c::config()->twilio->voice.'">Order confirmed. Thank you.</Say>';
 						echo '<Pause length="1" />';
@@ -155,17 +209,32 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						break;
 
 					case '2':
+						/*
 						Log::debug([
 							'order' => $order->id_order,
 							'action' => 'RESEND',
 							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
+						]);*/
+						Log::debug([
+							'step' => '4',
+							'id_notification' => $_REQUEST['id_notification'],
+							'order' => $order->id_order,
+							'action' => 'api/order/doconfirm/2',
+							'type' => 'testing_notification'
 						]);
 
 						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. We will resend the order confirmation.</Say>';
 						$order->que();
 						break;
 					case '0':
+						Log::debug([
+							'step' => '4',
+							'id_notification' => $_REQUEST['id_notification'],
+							'order' => $order->id_order,
+							'action' => 'api/order/doconfirm/0',
+							'type' => 'testing_notification'
+						]);
 						echo '<Dial timeout="10" record="true">'.c::config()->phone->restaurant.'</Dial>';
 
 					default:
@@ -183,6 +252,13 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							.'<Say voice="'.c::config()->twilio->voice.'" loop="3">Please press 1 to confirm that you just received order number '.$order->id_order.'. Or press 2 and we will resend the order. . . .</Say>'
 							.'</Gather>';
 						break;
+						Log::debug([
+							'step' => '4',
+							'id_notification' => $_REQUEST['id_notification'],
+							'order' => $order->id_order,
+							'action' => 'api/order/doconfirm/*',
+							'type' => 'testing_notification'
+						]);
 				}
 
 				echo '</Response>';
