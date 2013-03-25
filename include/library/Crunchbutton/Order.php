@@ -655,7 +655,19 @@ class Crunchbutton_Order extends Cana_Table {
 		$order = $this;
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
-		}/*
+		}
+
+		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type = "confirm" and ( status = "queued" or status = "queued" ) ');
+		
+
+Log::debug([
+			'order' => $this->id_order,
+			'method' => 'confirm:queue',
+			'count' => $nl->count(),
+			'type' => 'test_notification'
+		]);
+
+		/*
 		Log::debug([
 			'order' => $this->id_order,
 			'action' => 'confirm qued',
