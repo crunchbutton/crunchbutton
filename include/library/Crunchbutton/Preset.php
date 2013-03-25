@@ -12,6 +12,7 @@ class Crunchbutton_Preset extends Cana_Table {
 		$out = $this->properties();
 		$order = Order::q('select * from `order` where id_restaurant="'.$this->id_restaurant.'" and id_user="'.$this->id_user.'" order by id_order desc limit 0,1' );
 		$out['delivery_type'] = $order->delivery_type;
+		$out['pay_type'] = $order->pay_type;
 		foreach ($this->dishes() as $dish) {
 			$out['_dishes'][$dish->id_order_dish] = $dish->exports();
 		}

@@ -104,13 +104,13 @@ App.page.restaurant = function(id) {
 		var community = App.getCommunityById(App.restaurant.id_community);
 
 		var lastOrderDelivery = false;
-		// var lastPayCash = false;
+		var lastPayCash = false;
 		
 		if( App.config && App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant] ){
 			// Check if the last user's order at this restaurant was a delivery type
 			lastOrderDelivery = App.config.user.presets[App.restaurant.id_restaurant].delivery_type;
 			// Check if the last user's order at this restaurant was cash type	
-			// lastPayCash = App.config.user.presets[App.restaurant.id_restaurant].pay_type;
+			lastPayCash = App.config.user.presets[App.restaurant.id_restaurant].pay_type;
 		}
 		App.showPage({
 			tracking: {
@@ -169,11 +169,17 @@ App.page.restaurant = function(id) {
 
 		App.cartHighlightEnabled = false;
 
-		if (App.order['pay_type'] == 'cash') {
+		if ( App.order['pay_type'] == 'cash' || lastPayCash == 'cash' ) {
 			App.trigger.cash();
 		} else {
 			App.trigger.credit();
 		}
+
+		// if( lastPayCash == 'cash' ){
+		// 	App.trigger.cash();
+		// } else if ( lastPayCash == 'card' ){
+		// 	App.trigger.credit();	
+		// }
 
 		// Rules at #669
 		if( ( lastOrderDelivery == 'delivery' && App.restaurant.delivery == '1' ) || 
