@@ -187,6 +187,7 @@ App.page.restaurant = function(id) {
 		// Rules at #669
 		if( ( lastOrderDelivery == 'delivery' && App.restaurant.delivery == '1' ) || 
 				( App.order['delivery_type'] == 'delivery' && App.restaurant.delivery == '1' ) ||
+				( App.restaurant.takeout == '0' ) ||
 				( !App.config.user.delivery_type && App.restaurant.delivery == '1' ) ){
 				App.trigger.delivery();
 		} 
