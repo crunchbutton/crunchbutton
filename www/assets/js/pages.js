@@ -111,6 +111,8 @@ App.page.restaurant = function(id) {
 			lastOrderDelivery = App.config.user.presets[App.restaurant.id_restaurant].delivery_type;
 			// Check if the last user's order at this restaurant was cash type	
 			lastPayCash = App.config.user.presets[App.restaurant.id_restaurant].pay_type;
+			App.order['delivery_type'] = lastOrderDelivery;
+			App.order['pay_type'] = lastPayCash;
 		}
 			console.log('lastOrderDelivery',lastOrderDelivery);
 			console.log('lastPayCash',lastPayCash);			
