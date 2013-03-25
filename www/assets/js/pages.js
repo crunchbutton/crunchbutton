@@ -114,8 +114,6 @@ App.page.restaurant = function(id) {
 			App.order['delivery_type'] = lastOrderDelivery;
 			App.order['pay_type'] = lastPayCash;
 		}
-			console.log('lastOrderDelivery',lastOrderDelivery);
-			console.log('lastPayCash',lastPayCash);			
 		
 		App.showPage({
 			tracking: {
