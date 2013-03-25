@@ -79,12 +79,6 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			]);
 		} else {
 
-Log::debug([
-			'order' => $this->id_order,
-			'method' => 'Notification_Log::confirm()',
-			'type' => 'test_notification'
-		]);
-
 			$this->order()->queConfirm();
 		}
 	}
