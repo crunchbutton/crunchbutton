@@ -112,6 +112,7 @@ App.page.restaurant = function(id) {
 			// Check if the last user's order at this restaurant was cash type	
 			lastPayCash = App.config.user.presets[App.restaurant.id_restaurant].pay_type;
 		}
+
 		App.showPage({
 			tracking: {
 				title: 'Restaurant page loaded',
@@ -186,12 +187,10 @@ App.page.restaurant = function(id) {
 				( App.order['delivery_type'] == 'delivery' && App.restaurant.delivery == '1' ) ||
 				( !App.config.user.delivery_type && App.restaurant.delivery == '1' ) ){
 				App.trigger.delivery();
-			console.log('delivery:',App.order);
 		} 
 
 		if( App.order['delivery_type'] == 'takeout' || App.restaurant.delivery != '1') {
 			App.trigger.takeout();
-			console.log('takeout:',App.order);
 		} 
 
 		$( '.restaurant-gift' ).hide();
