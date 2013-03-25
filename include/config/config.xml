@@ -137,7 +137,7 @@
 			<hostname>_DOMAIN_</hostname>
 			<outgoingTextCustomer>+1_PHONE_</outgoingTextCustomer>
 			<outgoingTextRestaurant>+1_PHONE_</outgoingTextRestaurant>
-			<outgoingCustomer>+18002421444</outgoingCustomer>
+			<outgoingCustomer>+18003514161</outgoingCustomer>
 			<outgoingRestaurant>+18003514161</outgoingRestaurant>
 		</live>
 		<dev>
@@ -146,7 +146,7 @@
 			<hostname>_DOMAIN_</hostname>
 			<outgoingTextCustomer>+1_PHONE_</outgoingTextCustomer>
 			<outgoingTextRestaurant>+1_PHONE_</outgoingTextRestaurant>
-			<outgoingCustomer>+18002421444</outgoingCustomer>
+			<outgoingCustomer>+18003514161</outgoingCustomer>
 			<outgoingRestaurant>+18003514161</outgoingRestaurant>
 		</dev>
 		<olddev>
@@ -156,7 +156,7 @@
 			<token>_KEY_</token>
 			<outgoingTextCustomer>_PHONE_</outgoingTextCustomer>
 			<outgoingTextRestaurant>_PHONE_</outgoingTextRestaurant>
-			<outgoingCustomer>+18002421444</outgoingCustomer>
+			<outgoingCustomer>+18003514161</outgoingCustomer>
 			<outgoingRestaurant>+18003514161</outgoingRestaurant>
 		</olddev>
 		<testnumber>_PHONE_</testnumber>
