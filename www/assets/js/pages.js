@@ -175,21 +175,23 @@ App.page.restaurant = function(id) {
 			App.trigger.credit();
 		}
 
-		// if( lastPayCash == 'cash' ){
-		// 	App.trigger.cash();
-		// } else if ( lastPayCash == 'card' ){
-		// 	App.trigger.credit();	
-		// }
+		if( lastPayCash == 'cash' ){
+			App.trigger.cash();
+		} else if ( lastPayCash == 'card' ){
+			App.trigger.credit();	
+		}
 
 		// Rules at #669
 		if( ( lastOrderDelivery == 'delivery' && App.restaurant.delivery == '1' ) || 
 				( App.order['delivery_type'] == 'delivery' && App.restaurant.delivery == '1' ) ||
 				( !App.config.user.delivery_type && App.restaurant.delivery == '1' ) ){
 				App.trigger.delivery();
+			console.log('delivery:',App.order);
 		} 
 
 		if( App.order['delivery_type'] == 'takeout' || App.restaurant.delivery != '1') {
 			App.trigger.takeout();
+			console.log('takeout:',App.order);
 		} 
 
 		$( '.restaurant-gift' ).hide();
