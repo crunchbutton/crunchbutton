@@ -168,7 +168,7 @@ App.page.restaurant = function(id) {
 		},200);
 
 		App.cartHighlightEnabled = false;
-	console.log('App.config',App.config);
+
 		if (App.order['pay_type'] == 'cash') {
 			App.trigger.cash();
 		} else {
