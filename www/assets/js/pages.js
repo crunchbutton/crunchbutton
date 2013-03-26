@@ -183,7 +183,7 @@ App.page.restaurant = function(id) {
 		if( ( lastOrderDelivery == 'delivery' && App.restaurant.delivery == '1' ) || 
 				( App.order['delivery_type'] == 'delivery' && App.restaurant.delivery == '1' ) ||
 				( App.restaurant.takeout == '0' ) ||
-				( !App.config.user.delivery_type && App.restaurant.delivery == '1' ) ){
+				( lastOrderDelivery != 'takeout' && App.restaurant.delivery == '1' ) ){
 				App.trigger.delivery();
 		} 
 
@@ -194,7 +194,7 @@ App.page.restaurant = function(id) {
 
 		// If the user has presets at other's restaurants but he did not typed his address yet
 		// and the actual restaurant is a delivery only #875
-		if( App.restaurant.takeout == '0' && !App.config.user.address ){
+		if( ( App.restaurant.takeout == '0' || App.order['delivery_type'] == 'delivery' ) && !App.config.user.address ){
 			$('.payment-form').show();
 			$('.delivery-payment-info, .content-padder-before').hide();
 		}
