@@ -44,11 +44,6 @@ App.page.home = function(force) {
 				'height': '52px'
 			});
 		}
-	
-		// @todo: why is this here??
-		if (App.showReset){
-			App.signin.passwordHelp.reset.init();
-		}
 	};
 
 	if (!force && App.loc.address() && App.restaurants.list === false) {

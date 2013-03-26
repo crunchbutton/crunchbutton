@@ -109,6 +109,7 @@ App.page.resetPassword = function( path ){
 		$( '.wrapper' ).append( App.signin.passwordHelp.reset.html( path ) );
 		App.showReset = true;
 		App.page.home();
+		App.signin.passwordHelp.reset.init();
 	}
 }
 
@@ -1505,7 +1506,11 @@ $(function() {
 	});
 
 	$(document).on('click', '.link-home', function() {
-		App.loadHome(true);
+		if( App.restaurants.list ){
+			App.page.foodDelivery();
+		} else {
+			App.loadHome(true);
+		}
 	});
 
 	$(document).on('change', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
