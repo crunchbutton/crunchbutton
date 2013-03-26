@@ -462,17 +462,16 @@ App.cart = {
 			}
 			App.order.tip = tip; 
 			$('[name="pay-tip"]').val( App.order.tip );
-			// Forces the recalculation of total because the tip was changed.
-			totalText  = this.charged();
 		}
+		return App.order.tip;
 	},
 
 	calculateTip: function(){
 		var subtotal = App.cart.subtotal();
-		var porcent = 18; // % do calculate the tip
+		var porcent = 18; // % to calculate the tip
 		var tipPorcent = ( subtotal * porcent ) / 100;
 		var tip = parseInt( tipPorcent );
-		if( ( tip - tipPorcent ) <= 0.5 ){
+		if( parseFloat( tipPorcent - tip  ) <= 0.5 ){
 			var sum = 0.5;
 		} else {
 			var sum = 1;
@@ -534,7 +533,13 @@ App.cart = {
 		}
 
 		// Calculates the tip.
-		App.cart.tip();
+		// If the tip was changed, force recalculation.
+		var tipBefore = App.order.tip;
+		if( tipBefore != App.cart.tip() ){
+			console.log('force',tipBefore, App.order.tip);
+			App.cart.updateTotal();
+			return;
+		}
 
 		var breakdown	= App.cart.totalbreakdown();
 
