@@ -187,6 +187,7 @@ App.page.restaurant = function(id) {
 				App.trigger.delivery();
 		} 
 
+		// If the restaurant doesn't delivery
 		if( App.order['delivery_type'] == 'takeout' || App.restaurant.delivery != '1') {
 			App.trigger.takeout();
 		} 
