@@ -2345,10 +2345,10 @@ html[xmlns] .clearfix {
 		cursor: pointer;
 		height: 20px;
 		margin-top: -8px;
-		position: fixed;
+		position: absolute;
 		right: 10px;
 		padding: 5px;
-		z-index: 100;
+		z-index: 90;
 		width: 20px;
 	}
 	.tooltip-help-mobile{
@@ -2380,9 +2380,9 @@ html[xmlns] .clearfix {
 	width: 250px;
 }
 	.tooltip-help-content-mobile{
-		position: fixed;
+		position: absolute;
 		right: 15px;
-		z-index: 101;
+		z-index: 91;
 		text-transform:none;
 	}
 
