@@ -536,7 +536,6 @@ App.cart = {
 		// If the tip was changed, force recalculation.
 		var tipBefore = App.order.tip;
 		if( tipBefore != App.cart.tip() ){
-			console.log('force',tipBefore, App.order.tip);
 			App.cart.updateTotal();
 			return;
 		}
