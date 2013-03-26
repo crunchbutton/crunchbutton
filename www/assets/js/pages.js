@@ -17,9 +17,9 @@ App.page.home = function(force) {
 
 	var homeSuccess = function() {
 		$('.nav-back').removeClass('nav-back-show');
-		$('.config-icon').addClass('config-icon-mobile-hide');
+		$('.config-icon').addClass('config-icon-mobile-hide, config-icon-desktop-hide');
 		$('.content').addClass('short-meal-list');
-	
+		
 		App.showPage({
 			page: 'home',
 			title: 'Crunchbutton',
