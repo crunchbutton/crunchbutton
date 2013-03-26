@@ -193,7 +193,7 @@
 				&nbsp;for a total of <span class="cart-total">$0.00</span>
 				&nbsp;<span class="cart-paymentType"></span>
 			</div>
-		<% if ( ( lastOrderDelivery == 'delivery' && App.restaurant.delivery == '1' ) || App.restaurant.takeout == '0' ) { %>
+		<% if ( ( lastOrderDelivery == 'delivery' || App.restaurant.delivery == '1' || App.restaurant.takeout == '0' ) && lastOrderDelivery != 'takeout' ) { %>
 			<div class="dp-display-address dp-display-item">
 				<label>Your food will be delivered to:</label><br />
 				<%= (user.address ? user.address.replace("\n",'<br />') : '<i>no address provided</i>') %>
