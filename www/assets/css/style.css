@@ -2348,7 +2348,7 @@ html[xmlns] .clearfix {
 		position: fixed;
 		right: 10px;
 		padding: 5px;
-		z-index: 90;
+		z-index: 100;
 		width: 20px;
 	}
 	.tooltip-help-mobile{
@@ -2383,7 +2383,7 @@ html[xmlns] .clearfix {
 		position: fixed;
 		top:65px;
 		right: 15px;
-		z-index: 91;
+		z-index: 101;
 	}
 
 
