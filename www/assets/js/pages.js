@@ -455,4 +455,18 @@ App.page.foodDelivery = function(refresh) {
  */
 App.page.giftCard = function(){
 	App.giftcard.show();
+	// App.page.home();
+}
+
+/**
+ * Reset password page
+ */
+App.page.resetPassword = function( path ){
+	if( !App.signin.passwordHelp.reset.hasStarted ){
+		App.signin.passwordHelp.reset.hasStarted = true;
+		$( '.wrapper' ).append( App.signin.passwordHelp.reset.html( path ) );
+		App.showReset = true;
+		App.page.home();
+		App.signin.passwordHelp.reset.init();
+	}
 }

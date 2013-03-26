@@ -103,16 +103,6 @@ App.loadHome = function(force) {
 
 };
 
-App.page.resetPassword = function( path ){
-	if( !App.signin.passwordHelp.reset.hasStarted ){
-		App.signin.passwordHelp.reset.hasStarted = true;
-		$( '.wrapper' ).append( App.signin.passwordHelp.reset.html( path ) );
-		App.showReset = true;
-		App.page.home();
-		App.signin.passwordHelp.reset.init();
-	}
-}
-
 App.render = function(template, data) {
 	var compiled = _.template($('.template-' + template).html());
 	return compiled(data);
@@ -197,6 +187,9 @@ App.loadPage = function() {
 			break;
 		case /^reset/i.test(url):
 			App.page.resetPassword( path );
+			break;
+		case /^giftcard/i.test(url):
+			App.page.giftCard( path );
 			break;
 		case new RegExp( App.restaurants.permalink + '$', 'i' ).test( cleaned_url ):
 			App.page.foodDelivery();
