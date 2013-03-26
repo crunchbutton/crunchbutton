@@ -1506,7 +1506,7 @@ $(function() {
 	});
 
 	$(document).on('click', '.link-home', function() {
-		if( App.restaurants.list && App.restaurants.lis.length > 0 ){
+		if( App.restaurants.list && App.restaurants.list.length > 0 ){
 			App.page.foodDelivery();
 		} else {
 			App.loadHome(true);
