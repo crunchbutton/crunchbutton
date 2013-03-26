@@ -135,6 +135,9 @@ App.loadPage = function() {
 	}
 
 	App.signin.checkUser();
+	// Force it!
+	setTimeout( function(){App.signin.checkUser()}, 500 );
+
 	var
 		url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/'),
 		path = url.split('/');
