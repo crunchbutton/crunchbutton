@@ -194,11 +194,7 @@ App.page.restaurant = function(id) {
 
 		// If the user has presets at other's restaurants but he did not typed his address yet
 		// and the actual restaurant is a delivery only #875
-<<<<<<< HEAD
 		if( ( App.restaurant.takeout == '0' || App.order['delivery_type'] == 'delivery' ) && !App.config.user.address ){
-=======
-		if( App.restaurant.takeout == '0' || App.order['delivery_type'] == 'delivery' && !App.config.user.address ){
->>>>>>> dd3d3dbad9973f2aaed676b0c006b3a6d528fa4e
 			$('.payment-form').show();
 			$('.delivery-payment-info, .content-padder-before').hide();
 		}
