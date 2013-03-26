@@ -229,8 +229,7 @@ App.signin.show = function(){
 
 App.signin.checkUser = function(){
 	// If the user is logged
-	if( App.config.user.id_user ){
-		// $( '.signin-user' ).html( 'Hi, ' + App.config.user.name );
+	if( App.config.user.id_user && $.trim( App.config.user.id_user ) != '' ){
 		$( '.signin-user' ).show();
 		$( '.signin-icon' ).hide();
 		$( '.signout-icon' ).hide();
