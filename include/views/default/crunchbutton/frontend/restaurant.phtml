@@ -1,4 +1,4 @@
-<%= App.suggestion.tooltipContainer( 'mobile' ) %>
+
 
 <div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
 	<div class="cart-summary-icon"></div>
@@ -36,7 +36,7 @@
 <div class="main-content-readable <% if (restaurant.message) { %>main-content-readable-margin<% } %>">
 	<? /* cart */ ?>
 	<div class="cart-items <%= (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? '' : ' restaurant-with-image' %>">
-		<div class="restaurant-item-title text-your-order">Your Order</div>
+		<div class="restaurant-item-title text-your-order">Your Order <%= App.suggestion.tooltipContainer( 'mobile' ) %></div>
 		<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
 		<div class="divider"></div>
 		<div class="delivery-minimum-error">Add $<span class="delivery-min-diff"><%= parseFloat(restaurant.delivery_min -  App.cart.total()).toFixed(2) %></span> from menu to meet delivery minimum.</div>

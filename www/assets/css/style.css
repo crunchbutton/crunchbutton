@@ -2381,9 +2381,9 @@ html[xmlns] .clearfix {
 }
 	.tooltip-help-content-mobile{
 		position: fixed;
-		top:65px;
 		right: 15px;
 		z-index: 101;
+		text-transform:none;
 	}
 
 
