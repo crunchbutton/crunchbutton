@@ -36,6 +36,9 @@ class Crunchbutton_App extends Cana_App {
 			case 'crunchbutton.localhost':
 				$env = 'local';
 				break;
+			default:
+				$env = 'local';
+				break;
 		}
 
 		switch ($_SERVER['__HTTP_HOST']) {

@@ -155,6 +155,7 @@ class Cana extends Cana_Model {
 		}
 
 		$cmd = c::config()->dirs->root.'cli/timeout.php'.$sleep.' -c='.str_replace("'",'"',escapeshellarg($encoded));
+
 		if ($async) {
 			exec('nohup '.$cmd.' > /dev/null 2>&1 &');
 		} else {
