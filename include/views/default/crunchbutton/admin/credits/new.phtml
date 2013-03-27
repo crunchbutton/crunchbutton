@@ -17,10 +17,10 @@
 									<tr>
 										<td class="label-sub">User ID:</td>
 										<td class="content-sub">
-											<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:350px;" >
+											<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:365px;" >
 											<option></option>
 											<?php foreach( $this->users as $user ) { ?>
-												<option search="oi" value="<?php echo $user->id_user; ?>"><?php echo $user->name; ?> <?php if( $user->phone != '' ) { echo '( ' . $user->phone . ' )'; } ?></option>
+												<option value="<?php echo $user->id_user; ?>"><?php echo $user->name; ?> <?php if( $user->phone != '' ) { echo ' - ' . $user->phone ; } ?> <?php if( $user->email != '' ) { echo ' - ' . $user->email; } ?></option>
 											<?php } ?>
 											</select>
 											<!-- <input type="text" id="id_user" name="id_user"> -->
