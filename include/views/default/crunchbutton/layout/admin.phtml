@@ -9,9 +9,19 @@
 
 <link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
 <link rel="stylesheet" type="text/css" href="/assets/css/datepicker.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/chosen.css">
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/flick/jquery-ui.css">
 <link rel="shortcut icon" href="/favicon-admin.ico">
+<script type="text/javascript">
+<?php 
+// Get server's date time converted to GMD
+$utc_str = gmdate( 'Y/n/d/H/i/s', time() );
+$utc = strtotime( $utc_str );
+?>
+var _gmtServer = '<?php echo $utc_str;?>';
+</script>
+
 
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
 
@@ -20,12 +30,12 @@
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 
+
 <? if (1==2 && c::config()->bundle) : ?>
 	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=admin"></script>
 <? else : ?>
-	<?=$this->display('bundle/js', ['set' => ['scripts' => ['datepicker/eye','datepicker/layout','datepicker/utils','datepicker/datepicker','admin']]])?>
+	<?=$this->display('bundle/js', ['set' => ['scripts' => ['datepicker/eye','datepicker/layout','datepicker/utils','datepicker/datepicker','admin','chosen.jquery']]])?>
 <? endif ; ?>
-
 </head>
 
 <body>

@@ -952,14 +952,16 @@ App.credits = {
 				$( '#value' ).focus();
 				return;
 			}
+
+			if( id_user == '' ){
+				alert( 'Please choose an user!' );
+				$( '#id_user' ).focus();
+				return;
+			}
+
 			if( id_restaurant == '' ){
 				alert( 'Please choose a restaurant!' );
 				$( '#id_restaurant' ).focus();
-				return;
-			}
-			if( id_user == '' ){
-				alert( 'Please type the user id!' );
-				$( '#id_user' ).focus();
 				return;
 			}
 			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'note' : note };

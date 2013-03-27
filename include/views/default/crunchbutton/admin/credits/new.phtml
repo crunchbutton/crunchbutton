@@ -16,7 +16,15 @@
 									</tr>
 									<tr>
 										<td class="label-sub">User ID:</td>
-										<td class="content-sub"><input type="text" id="id_user" name="id_user"></div></td>
+										<td class="content-sub">
+											<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:350px;" >
+											<option></option>
+											<?php foreach( $this->users as $user ) { ?>
+												<option search="oi" value="<?php echo $user->id_user; ?>"><?php echo $user->name; ?> <?php if( $user->phone != '' ) { echo '( ' . $user->phone . ' )'; } ?></option>
+											<?php } ?>
+											</select>
+											<!-- <input type="text" id="id_user" name="id_user"> -->
+											</div></td>
 									</tr>
 									<tr>
 										<td class="label-sub">Note:</td>
@@ -29,7 +37,7 @@
 									<tr>
 										<td class="label-sub">Restaurant:</td>
 										<td class="content-sub">
-											<select id="id_restaurant" name="id_restaurant">
+											<select id="id_restaurant" class="chosen-select" name="id_restaurant" data-placeholder="Choose a restaurant" style="width:350px;">
 												<option value="" selected></option>
 												<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
 													<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
@@ -57,5 +65,6 @@
 <script>
 $(function() {
 	App.credits.prepareForm();
+	$(".chosen-select").chosen();
 });
 </script>
