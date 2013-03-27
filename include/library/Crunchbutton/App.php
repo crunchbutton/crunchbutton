@@ -20,6 +20,25 @@ class Crunchbutton_App extends Cana_App {
 
 		$params['postInitSkip'] = true;
 		switch ($_SERVER['__HTTP_HOST']) {
+			case 'staging.crunchr.co':
+				$env = 'staging';
+				break;
+			case 'crunchr.co':
+			case '_DOMAIN_':
+				$env = 'staging';
+				break;
+			case 'beta.crunchr.co':
+				$env = 'beta';
+				break;
+			case 'dev.crunchr.co':
+				$env = 'dev';
+				break;
+			case 'crunchbutton.localhost':
+				$env = 'local';
+				break;
+		}
+
+		switch ($_SERVER['__HTTP_HOST']) {
 			case 'crunchbutton.localhost':
 			case 'wenzel.localhost':
 				$params['env'] = 'local';
@@ -107,8 +126,8 @@ class Crunchbutton_App extends Cana_App {
 		
 		$config = $this->config();
 
-		$config->facebook->app = $config->facebook->{$isStaging ? 'beta' : $params['env']}->app;
-		$config->facebook->secret = $config->facebook->{$isStaging ? 'beta' : $params['env']}->secret;
+		$config->facebook->app = $config->facebook->{$env}->app;
+		$config->facebook->secret = $config->facebook->{$env}->secret;
 		
 		$config->github->id = $config->github->{$params['env']}->id;
 		$config->github->secret = $config->github->{$params['env']}->secret;
