@@ -38,7 +38,7 @@ var App = {
 	_pageInit: false,
 	_identified: false,
 	isDeliveryAddressOk : false,
-	tips: [0,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10]
+	tips: [0,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,11,12,13,14,15,16,17,18,19,20]
 };
 
 App.loadRestaurant = function(id) {
@@ -445,6 +445,10 @@ App.cart = {
 	 * If the user had changed the tip value the default value will be chosen one.
 	 */
 	tip: function(){
+		// @URGENT temp fix
+		App.config.user.last_tip_takeout = 0;
+		App.config.user.last_tip_delivery = 0;
+	
 		// It means the user did not change the tip yet - So let's calculate the default tip
 		if( typeof App.order.tipHasChanged == 'undefined' ){
 			var tip = 0;
@@ -1194,6 +1198,7 @@ App.test = {
 
 App.processConfig = function(json) {
 	App.config = json;
+
 	App.AB.init();
 	if (App.config.user) {
 		App.identify();
