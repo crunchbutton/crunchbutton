@@ -453,9 +453,8 @@ App.page.foodDelivery = function(refresh) {
 /**
  * Gift card page
  */
-App.page.giftCard = function(){
-	App.giftcard.show();
-	// App.page.home();
+App.page.giftCard = function( path ){
+	App.giftcard.show( path );
 }
 
 /**

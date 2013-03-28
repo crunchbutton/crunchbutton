@@ -14,6 +14,8 @@ class Crunchbutton_Auth {
 
 		if ($_COOKIE['token'] && !$this->session()->id_user) {
 			$sess = Session::token($_COOKIE['token']);
+// echo '<pre>';
+			// var_dump($sess);exit;
 			if ($sess->id_user) {
 				$this->session()->id_user = $sess->id_user;
 				$this->session()->token   = $_COOKIE['token'];
