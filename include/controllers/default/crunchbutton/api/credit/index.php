@@ -8,7 +8,6 @@ class Controller_api_Credit extends Crunchbutton_Controller_Rest {
 			// Saves a credit
 			case 'post':
 				if (c::getPagePiece(2) == 'new') {
-					
 					if ($_SESSION['admin']) {
 						$credit = new Crunchbutton_Credit();
 						$credit->id_user = $this->request()['id_user'];

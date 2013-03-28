@@ -1630,7 +1630,6 @@ $(function() {
 			App.page.foodDelivery( true );
 		});
 	});
-
 	App.signin.init();
 	App.signup.init();
 	App.suggestion.init();
