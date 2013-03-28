@@ -90,13 +90,9 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// tip
 		$this->tip = $params['tip'];
-		$this->tip_type = self::TIP_NUMBER;
-		$tip = $this->tip;
-
-		/******************
 		$tip = ($this->price * ($this->tip/100));
 		$tip = Util::ceil($tip, 2);
-		********/
+		$this->tip_type = static::TIP_PERCENT;
 
 		// tax
 		$this->tax = $this->restaurant()->tax;

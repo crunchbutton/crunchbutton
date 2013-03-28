@@ -23,7 +23,7 @@ var App = {
 		cardChanged: false,
 		pay_type: 'card',
 		delivery_type: 'delivery',
-		tip: '3'
+		tip: '18'
 	},
 	signin : {},
 	suggestion : {},
@@ -38,7 +38,7 @@ var App = {
 	_pageInit: false,
 	_identified: false,
 	isDeliveryAddressOk : false,
-	tips: [10,15,18,20,25,30]
+	tips: [0,10,15,18,20,25,30]
 };
 
 App.loadRestaurant = function(id) {
@@ -437,56 +437,6 @@ App.cart = {
 
 		App.cart.updateTotal();
 	},
-	/**
-	 * If the user changed the delivery method to takeout and the payment is card
-	 * the default tip will be $0. 
-	 * If the delivery method is delivery and the payment is card
-	 * the default tip will be $3.
-	 * If the user had changed the tip value the default value will be chosen one.
-	 */
-	tip: function(){
-		// @URGENT temp fix
-		App.config.user.last_tip_takeout = 0;
-		App.config.user.last_tip_delivery = 0;
-	
-		// It means the user did not change the tip yet - So let's calculate the default tip
-		if( typeof App.order.tipHasChanged == 'undefined' ){
-			var tip = 0;
-			if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
-				tip = ( App.config.user.last_tip_takeout || 0 );
-			} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
-				tip = ( App.config.user.last_tip_delivery || App.config.user.last_tip_takeout );
-			}
-			if( !tip && App.order.delivery_type != 'takeout' ){
-				tip = App.cart.calculateTip();
-			}
-			App.order.tip = tip; 
-			$('[name="pay-tip"]').val( App.order.tip );
-		}
-		return App.order.tip;
-	},
-
-	calculateTip: function(){
-		var subtotal = App.cart.subtotal();
-		var porcent = 18; // % to calculate the tip
-		var tipPorcent = ( subtotal * porcent ) / 100;
-		var tip = parseInt( tipPorcent );
-		if( parseFloat( tipPorcent - tip  ) <= 0.5 ){
-			var sum = 0.5;
-		} else {
-			var sum = 1;
-		}
-		tip += sum;
-		var maxTip = App.tips[ App.tips.length - 1 ];
-		var minTip = App.tips[ 1 ];
-		if( tip > maxTip ){
-			tip = maxTip;
-		}
-		if( tip < minTip ){
-			tip = minTip;
-		}
-		return tip;
-	},
 
 	/**
 	 * Gets called after the cart is updarted to refresh the total
@@ -497,7 +447,7 @@ App.cart = {
 	 */
 	updateTotal: function() {
 		var
-			totalText  = this.charged(),
+			totalText  = '$' + this.total(),
 			tipText	= '',
 			feesText   = '',
 			totalItems = 0,
@@ -510,6 +460,30 @@ App.cart = {
 
 		for (var x in App.cart.items) {
 			totalItems++;
+		}
+
+		/* If the user changed the delivery method to takeout and the payment is card
+		 * the default tip will be 0%. If the delivery method is delivery and the payment is card
+		 * the default tip will be 15% (variable App.order.tip).
+		 * If the user had changed the tip value the default value will be chosed one.
+		 */
+		var wasTipChanged = false;
+		if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
+			if( typeof App.order.tipHasChanged == 'undefined' ){
+				App.order.tip = 0;
+				wasTipChanged = true;
+			}
+		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
+			if( typeof App.order.tipHasChanged == 'undefined' ){
+				App.order.tip = ( App.config.user.last_tip ) ? App.config.user.last_tip : 18; // Default value is 18
+				wasTipChanged = true;
+			}
+		}
+
+		if( wasTipChanged ){
+			$('[name="pay-tip"]').val( App.order.tip );
+			// Forces the recalculation of total because the tip was changed.
+			totalText  = '$' + this.total();
 		}
 
 		if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
@@ -532,14 +506,6 @@ App.cart = {
 			$('.payment-total, .dp-display-payment').show();
 		}
 
-		// Calculates the tip.
-		// If the tip was changed, force recalculation.
-		var tipBefore = App.order.tip;
-		if( tipBefore != App.cart.tip() ){
-			App.cart.updateTotal();
-			return;
-		}
-
 		var breakdown	= App.cart.totalbreakdown();
 
 		var extraCharges = App.cart.extraChargesText(breakdown);
@@ -559,7 +525,7 @@ App.cart = {
 		} else {
 			$('.cart-gift').html();
 		}
-		totalText = '$' + App.ceil( ( totalText ) ).toFixed( 2 );
+		// totalText = '$' + App.ceil( ( totalText ) ).toFixed( 2 );
 		$('.cart-total').html( totalText );
 
 		/**
@@ -1034,12 +1000,14 @@ Issue 13: Removed the password for while
 		return taxes;
 	},
 
-	_breakdownTip: function() {
+	_breakdownTip: function(total) {
 		var tip = 0;
+		console.log('App.order.tip',App.order.tip);
 		if (App.order['pay_type'] == 'card') {
-			tip = App.order.tip;
+			tip = (total * (App.order.tip/100));
 		}
-		return App.ceil(tip).toFixed(2);
+		tip = App.ceil(tip);
+		return tip;
 	},
 
 	total: function() {
@@ -1058,8 +1026,7 @@ Issue 13: Removed the password for while
 		feeTotal	+= breakdown.delivery;
 		feeTotal	+= breakdown.fee;
 		finalAmount  = feeTotal + breakdown.taxes;
-		finalAmount += parseFloat( this._breakdownTip() );
-
+		finalAmount += this._breakdownTip(total);
 		return App.ceil(finalAmount).toFixed(2);
 	},
 
@@ -1094,7 +1061,7 @@ Issue 13: Removed the password for while
 		elements['fee']  	= this._breackDownFee(feeTotal);
 		feeTotal			+= elements['fee'];
 		elements['taxes']	= this._breackDownTaxes(feeTotal);
-		elements['tip']  	= this._breakdownTip();
+		elements['tip']  	= this._breakdownTip( total );
 		return elements;
 	},
 
@@ -1198,12 +1165,12 @@ App.test = {
 
 App.processConfig = function(json) {
 	App.config = json;
-
 	App.AB.init();
 	if (App.config.user) {
 		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];
 		App.order['delivery_type'] = App.config.user['delivery_type'];
+		App.order['tip'] = App.config.user['last_tip'] || 18;
 	}
 };
 

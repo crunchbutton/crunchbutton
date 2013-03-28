@@ -35,7 +35,7 @@ App.giftcard.show = function( path ){
 				};
 				$('.giftcard-container').dialog('close');
 				App.signin.show();
-			});
+			});	
 		}
 	}, 300 );	
 }
