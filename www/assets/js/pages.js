@@ -454,6 +454,7 @@ App.page.foodDelivery = function(refresh) {
  * Gift card page
  */
 App.page.giftCard = function( path ){
+	App.page.home();
 	App.giftcard.show( path );
 }
 
@@ -465,7 +466,7 @@ App.page.resetPassword = function( path ){
 		App.signin.passwordHelp.reset.hasStarted = true;
 		$( '.wrapper' ).append( App.signin.passwordHelp.reset.html( path ) );
 		App.showReset = true;
-		App.page.home();
+		App.page.home( true );
 		App.signin.passwordHelp.reset.init();
 	}
 }

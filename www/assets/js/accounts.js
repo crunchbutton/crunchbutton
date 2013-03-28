@@ -110,6 +110,9 @@ App.signin.sendForm = function(){
 				if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
 					App.page.restaurant( App.restaurant.permalink );
 				}
+				if( App.giftcard.callback ){
+					App.giftcard.callback();
+				}
 			}
 		}
 	} );
