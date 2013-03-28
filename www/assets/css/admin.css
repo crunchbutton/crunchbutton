@@ -651,18 +651,20 @@ input[name="dish-options-price"] {
 	width: 400px;
 }
 
-.list-suggestions, .list-credits, .list-support{
+.list-suggestions, .list-credits, .list-support, .list-giftcards{
 	width: 100%;
 }
 	.list-suggestions th, 
 	.list-suggestions td, 
 	.list-support th, 
-	.list-support td, 
+	.list-support td,
+	.list-giftcards th, 
+	.list-giftcards td, 
 	.list-credits th, 
 	.list-credits td {
 		padding: 5px;
 	}
-	.list-suggestions tr:nth-of-type(even), .list-credits tr:nth-of-type(even), .list-support tr:nth-of-type(even) {
+	.list-suggestions tr:nth-of-type(even), .list-credits tr:nth-of-type(even), .list-support tr:nth-of-type(even), .list-giftcards tr:nth-of-type(even) {
 		background: #F5F5F5;
 	}
 	.list-suggestions tr.deleted {
