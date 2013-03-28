@@ -2786,3 +2786,10 @@ strong {
 .location-detect {
 	display: none !important;
 }
+
+.giftcard-sign-in{
+	color: #4168b8;	
+	cursor: pointer;
+	text-decoration: underline;	
+}
+

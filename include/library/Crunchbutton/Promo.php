@@ -23,7 +23,7 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public function addCredit(){
 		$credit = new Crunchbutton_Credit();
-		$credit->id_user = $this->id_user;
+		$credit->id_user = c::user()->id_user;
 		$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
 		$credit->id_restaurant = $this->id_restaurant;
 		$credit->id_promo = $this->id_promo;
