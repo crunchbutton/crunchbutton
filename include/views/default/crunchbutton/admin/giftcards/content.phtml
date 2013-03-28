@@ -1,0 +1,30 @@
+<? if (!$this->giftcards->count()) : ?>
+	No results found
+<? else : ?>
+	<table class="list-giftcards">
+		<tr>
+			<th>Date</th>
+			<th>Code</th>
+			<th>Value</th>
+			<th>Restaurant</th>
+			<th>User</th>
+			<th>Type</th>
+			<th>Used</th>
+		</tr>
+		<? foreach ($this->giftcards as $giftcard) : ?>
+			<? 
+				$date = $giftcard->date(); 
+				$wasUsed = CrunchButton_Promo::giftWasAlreadyUsed( $giftcard->id_promo );
+			?>
+			<tr class="<?=strtolower($giftcard->type); ?>">
+				<td> <?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?> </td>
+				<td> <a href="/admin/giftcards/<?=$giftcard->id_promo;?>"><?=$giftcard->code; ?></a> </td>
+				<td> $<?= Util::ceil($giftcard->value, 2); ?></td>
+				<td> <?=$giftcard->restaurant()->name; ?> </td>
+				<td> <? if( $giftcard->user()->name != '' ){ echo $giftcard->user()->name; } else { echo '-'; } ?> </td>
+				<td> <?=$giftcard->type; ?> </td>
+				<td> <span class="<? if( $wasUsed  ){ echo ' used '; } else { 'not-used'; } ?>"> <? if( $wasUsed  ){ echo ' Was used '; } else { 'Not used yet'; } ?> </span> </td>
+			</tr>
+		<? endforeach ; ?>
+	</table>
+<? endif ; ?>

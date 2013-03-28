@@ -4,6 +4,7 @@ class Crunchbutton_Promo extends Cana_Table
 {
 
 	const TYPE_SHARE = 'user_share';
+	const TYPE_GIFTCARD = 'gift_card';
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -21,6 +22,23 @@ class Crunchbutton_Promo extends Cana_Table
 		return ( $gift->count() > 0 );
 	}
 
+	public static function promoCodeGenerator(){
+		$random_id_length = 6; 
+		$rnd_id = crypt( uniqid( rand(), 1 ) ); 
+		$rnd_id = strip_tags( stripslashes( $rnd_id ) ); 
+		$rnd_id = str_replace( '.', '', $rnd_id ); 
+		$rnd_id = strrev( str_replace( '/', '', $rnd_id ) ); 
+		$rnd_id = substr( $rnd_id, 0, $random_id_length ); 
+
+		// make sure the code do not exist
+		$promo = Crunchbutton_Promo::byCode( $rnd_id );
+		if( $promo->count() > 0 ){
+			return $this->promoCodeGenerator();
+		} else {
+			return strtolower( $rnd_id );	
+		}
+	}
+
 	public function addCredit(){
 		$credit = new Crunchbutton_Credit();
 		$credit->id_user = c::user()->id_user;
@@ -30,6 +48,10 @@ class Crunchbutton_Promo extends Cana_Table
 		$credit->date = date('Y-m-d H:i:s');
 		$credit->value = $this->value;
 		$credit->save();
+
+		$this->id_user = c::user()->id_user;
+		$this->save();
+
 		if( $credit->id_credit ){
 			return $credit;
 		} else {
@@ -45,4 +67,47 @@ class Crunchbutton_Promo extends Cana_Table
 		return Restaurant::o($this->id_restaurant);
 	}
 
+	public static function find($search = []) {
+
+		$query = 'SELECT `promo`.*, user.name FROM `promo` LEFT JOIN restaurant USING(id_restaurant) LEFT OUTER JOIN user USING(id_user) WHERE id_promo IS NOT NULL ';
+		
+		if ($search['type']) {
+			$query .= ' and type="'.$search['type'].'" ';
+		}
+		
+		if ($search['start']) {
+			$s = new DateTime($search['start']);
+			$query .= ' and DATE(`date`)>="'.$s->format('Y-m-d').'" ';
+		}
+		
+		if ($search['end']) {
+			$s = new DateTime($search['end']);
+			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';
+		}
+
+		if ($search['restaurant']) {
+			$query .= ' and `promo`.id_restaurant="'.$search['restaurant'].'" ';
+		}
+
+		if ($search['id_user']) {
+			$query .= ' and `promo`.id_user="'.$search['id_user'].'" ';
+		}
+
+		$query .= 'ORDER BY `date` DESC';
+
+		if ($search['limit']) {
+			$query .= ' limit '.$search['limit'].' ';
+		}
+
+		$gifts = self::q($query);
+		return $gifts;
+	}
+
+	public function date() {
+		if (!isset($this->_date)) {
+			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
+			$this->_date->setTimezone(new DateTimeZone( c::config()->timezone ));
+		}
+		return $this->_date;
+	}
 }

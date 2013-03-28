@@ -1372,3 +1372,78 @@ $(function() {
 	}
 
 })(jQuery);
+
+
+
+App.giftcards = {
+	params: function() {
+		return {
+			id_order: $('input[name="id_order"]').val(),
+			id_user: $('input[name="id_user"]').val(),
+			type: $('select[name="type"]').val(),
+			limit: $('input[name="limit"]').val(),
+			dates: $('input[name="date-range"]').val(),
+			restaurant: $('select[name="restaurant"]').val()
+		};
+	},
+	load: function() {
+		$('.giftcards-loader').show();
+		$('.giftcards-content').html('');
+		$.ajax({
+			url: '/admin/giftcards/content',
+			data: App.giftcards.params(),
+			complete: function(content) {
+				$('.giftcards-content').html(content.responseText);
+				$('.giftcards-loader').hide();
+			}
+		});
+	},
+	prepareForm: function( id_suggetion ){
+		$(document).on('click', '.admin-giftcard-save', function() {
+			
+			var value = $.trim( $( '#value' ).val() );
+			var id_restaurant = $( '#id_restaurant' ).val();
+			var id_user = $( '#id_user' ).val();
+			var total = $( '#total' ).val();
+
+			if( value == '' ){
+				alert( 'Please type a value!' );
+				$( '#value' ).focus();
+				return;
+			}
+
+			if( total == '' ){
+				alert( 'Please type the number of gift cards!' );
+				$( '#total' ).focus();
+				return;
+			}
+
+			if( id_restaurant == '' ){
+				alert( 'Please choose a restaurant!' );
+				$( '#id_restaurant' ).focus();
+				return;
+			}
+			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total };
+			var url = App.service + 'giftcard/generate';
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				data: data,
+				url: url,
+				success: function( json ) {
+					if( json.error ){
+						alert( 'Error at adding a new giftcard!' );
+					} else {
+						alert( 'Gift card(s) created!' );
+						location.href = '/admin/giftcards';
+					}
+				},
+				error: function( ){
+					alert( 'Error at adding a new giftcard!' );
+				}
+			});
+		} );
+	}
+};
+
+
