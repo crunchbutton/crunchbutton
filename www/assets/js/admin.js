@@ -1398,7 +1398,7 @@ App.giftcards = {
 			}
 		});
 	},
-	prepareForm: function( id_suggetion ){
+	prepareForm: function( ){
 		$(document).on('click', '.admin-giftcard-save', function() {
 			
 			var value = $.trim( $( '#value' ).val() );
@@ -1440,6 +1440,111 @@ App.giftcards = {
 				},
 				error: function( ){
 					alert( 'Error at adding a new giftcard!' );
+				}
+			});
+		} );
+	},
+	prepareFormBunchSMS : function(){
+		$(document).on('click', '.admin-giftcard-save', function() {
+
+			var value = $.trim( $( '#value' ).val() );
+			var id_restaurant = $( '#id_restaurant' ).val();
+			var phones = $( '#phones' ).val();
+			
+			if( phones == '' ){
+				alert( 'Please enter the phone(s) number!' );
+				$( '#phones' ).focus();
+				return;
+			}
+
+			if( value == '' ){
+				alert( 'Please type a value!' );
+				$( '#value' ).focus();
+				return;
+			}
+
+			if( id_restaurant == '' ){
+				alert( 'Please choose a restaurant!' );
+				$( '#id_restaurant' ).focus();
+				return;
+			}
+
+			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'phones' : phones };
+			var url = App.service + 'giftcard/bunchsms';
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				data: data,
+				url: url,
+				success: function( json ) {
+					if( json.error ){
+						alert( 'Oops, error!' );
+					} else {
+						alert( 'Great! SMS was sent!' );
+						location.reload();
+					}
+				},
+				error: function( ){
+					alert( 'Oops, error!' );
+				}
+			});
+		} );
+	},
+	prepareFormSendSMS : function(){
+		$(document).on('click', '.admin-giftcard-sms', function() {
+			var id_user = $( '#id_user' ).val();
+			var id_promo = $( '#id_promo' ).val();
+			if( id_user == '' ){
+				alert( 'Please choose an user!' );
+				$( '#id_user' ).focus();
+				return;
+			}
+			var data = { 'id_promo' : id_promo, 'id_user' : id_user };
+			var url = App.service + 'giftcard/sms';
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				data: data,
+				url: url,
+				success: function( json ) {
+					if( json.error ){
+						alert( 'Oops, error!' );
+					} else {
+						alert( 'Great! SMS was sent!' );
+					}
+				},
+				error: function( ){
+					alert( 'Oops, error!' );
+				}
+			});
+		} );
+	},
+	prepareFormAddUser: function(){
+		$(document).on('click', '.admin-giftcard-save', function() {
+			var id_user = $( '#id_user' ).val();
+			var id_promo = $( '#id_promo' ).val();
+			if( id_user == '' ){
+				alert( 'Please choose an user!' );
+				$( '#id_user' ).focus();
+				return;
+			}
+			var data = { 'id_promo' : id_promo, 'id_user' : id_user };
+			var url = App.service + 'giftcard/relateuser';
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				data: data,
+				url: url,
+				success: function( json ) {
+					if( json.error ){
+						alert( 'Oops, error!' );
+					} else {
+						alert( 'Great!' );
+						location.reload();
+					}
+				},
+				error: function( ){
+					alert( 'Oops, error!' );
 				}
 			});
 		} );

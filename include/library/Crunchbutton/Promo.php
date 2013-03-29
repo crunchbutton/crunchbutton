@@ -67,6 +67,45 @@ class Crunchbutton_Promo extends Cana_Table
 		return Restaurant::o($this->id_restaurant);
 	}
 
+	
+
+	public function queNotify() {
+		$promo = $this;
+		Cana::timeout(function() use($promo) {
+			$promo->notify();
+		});
+	}
+
+	public function notify() {
+		
+		$env = c::env() == 'live' ? 'live' : 'dev';
+		
+		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+		$phone = $this->phone;
+
+		$url = 'http://' . $_SERVER['SERVER_NAME'] . '/giftcard/'. $this->code;
+
+		// Alpha Delta has a special message
+		if( $this->id_restaurant == 1 ){
+			$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Wenzel away at {$url}.";
+		} else {
+			$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Enjoy: {$url}.";
+		}
+		
+		$this->note = $this->note . 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n";
+		$this->save();
+
+		$message = str_split($message, 160);
+		
+		foreach ($message as $msg) {
+			$twilio->account->sms_messages->create(
+				c::config()->twilio->{$env}->outgoingTextCustomer,
+				'+1'.$phone,
+				$msg
+			);
+		}
+	}
+
 	public static function find($search = []) {
 
 		$query = 'SELECT `promo`.*, user.name FROM `promo` LEFT JOIN restaurant USING(id_restaurant) LEFT OUTER JOIN user USING(id_user) WHERE id_promo IS NOT NULL ';

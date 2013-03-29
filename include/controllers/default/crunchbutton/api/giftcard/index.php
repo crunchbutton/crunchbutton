@@ -24,35 +24,77 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							}
 							echo json_encode(['success' => 'success']);
 							break;
-						default:
-							# code...
+					case 'bunchsms':
+							
+							$id_restaurant = $this->request()['id_restaurant'];
+							$value = $this->request()['value'];
+							$phones = $this->request()['phones'];
+
+							$phones = explode("\n", $phones);
+
+							foreach ( $phones as $phone ) {
+								if( trim( $phone ) != '' ){
+									$giftcard = new Crunchbutton_Promo;
+									$giftcard->id_restaurant = $id_restaurant;
+									$giftcard->code = $giftcard->promoCodeGenerator();
+									$giftcard->value = $value;
+									$giftcard->phone = $phone;
+									$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
+									$giftcard->date = date('Y-m-d H:i:s');
+									$giftcard->save();
+									$giftcard->queNotify();
+								}
+							}
+							echo json_encode(['success' => 'success']);
+
+						break;
+					case 'relateuser':
+							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
+							if( $giftcard->id_promo ){
+								$giftcard->id_user =  $this->request()['id_user'];
+								$giftcard->save();
+								$giftcard->phone =  $giftcard->user()->phone;
+								$giftcard->save();
+								echo $giftcard->json();
+							} else {
+								echo json_encode(['error' => 'error']);
+							}
+							break;
+					case 'sms':
+							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
+							if( $giftcard->id_promo ){
+								$giftcard->queNotify();
+								echo $giftcard->json();
+							} else {
+								echo json_encode(['error' => 'error']);
+							}
 							break;
 					}
 				}
- 				else {
-					if ( c::getPagePiece(2) == 'code' ) {
-						// Get the giftcard (promo) by code
-						$giftcard = Crunchbutton_Promo::byCode( $this->request()['code'] );
-						// Check if the giftcard is valid
-						if( $giftcard->id_promo ){
-							// Check if the giftcard was already used
-							// if( Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
-							if( false ){
-								echo json_encode(['error' => 'gift card already used']);
-							} else {
-								// Add credit to user
-								$credit = $giftcard->addCredit();
-								if( $credit->id_credit ){
-									echo json_encode( [ 'success' => [ 'value' => $credit->value, 'restaurant' => $credit->restaurant()->name, 'permalink' => $credit->restaurant()->permalink ] ] );
-								} else {
-									echo json_encode(['error' => 'gift card not added']);
-								}
-							}
+
+				if ( c::getPagePiece(2) == 'code' ) {
+					// Get the giftcard (promo) by code
+					$giftcard = Crunchbutton_Promo::byCode( $this->request()['code'] );
+					// Check if the giftcard is valid
+					if( $giftcard->id_promo ){
+						// Check if the giftcard was already used
+						// if( Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
+						if( false ){
+							echo json_encode(['error' => 'gift card already used']);
 						} else {
-							echo json_encode(['error' => 'invalid gift card']);
+							// Add credit to user
+							$credit = $giftcard->addCredit();
+							if( $credit->id_credit ){
+								echo json_encode( [ 'success' => [ 'value' => $credit->value, 'restaurant' => $credit->restaurant()->name, 'permalink' => $credit->restaurant()->permalink ] ] );
+							} else {
+								echo json_encode(['error' => 'gift card not added']);
+							}
 						}
+					} else {
+						echo json_encode(['error' => 'invalid gift card']);
 					}
- 				}
+				}
+ 				
 			break;
 			default:
 				echo json_encode(['error' => 'invalid object']);

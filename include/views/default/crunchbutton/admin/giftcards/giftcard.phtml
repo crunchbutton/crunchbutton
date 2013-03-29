@@ -1,0 +1,136 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content admin-content-giftcards">
+		<h1 class="giftcard-item-title">giftcard</h1>
+		<br /><br />
+		<table class="admin-giftcard-form">
+			<tr>
+				<td class="label-primary">giftcard:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<tr>
+										<td class="label-sub">Code:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->code;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Value:</td>
+										<td class="content-sub"><div class="input-faker">$<?=$this->giftcard->value;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Type:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->type;?></div></td>
+									</tr>
+									<?php if( $this->giftcard->id_order ) { ?>
+									<tr>
+										<td class="label-sub">Order:</td>
+										<td class="content-sub"><div class="input-faker">
+											<a href="/vieworder/<?php echo $this->giftcard->order()->uuid; ?>">#<?=$this->giftcard->id_order;?></a>
+										</div></td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<?php if( $this->giftcard->restaurant()->name ) { ?>
+			<tr>
+				<td class="label-primary">Place:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<tr>
+										<td class="label-sub">Restaurant:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->restaurant()->name;?></div></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<?php } ?>
+			<tr>
+				<td class="label-primary">More information:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<input type="hidden" name="id_promo" id="id_promo" value="<?=$this->giftcard->id_promo;?>" />
+									<?php if( $this->giftcard->user()->id_user ) { ?>
+									<input type="hidden" name="id_user" id="id_user" value="<?=$this->giftcard->user()->id_user;?>" />
+									<tr>
+										<td class="label-sub">User ID:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->user()->id_user;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">User name:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->user()->name;?></div></td>
+									</tr>
+									<?php } else { ?>
+									<tr>
+										<td class="label-sub">User:</td>
+										<td class="content-sub">
+											<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:365px;" >
+											<option></option>
+											<?php foreach( $this->users as $user ) { ?>
+												<option value="<?php echo $user->id_user; ?>"><?php echo $user->name; ?> <?php if( $user->phone != '' ) { echo ' - ' . $user->phone ; } ?> <?php if( $user->email != '' ) { echo ' - ' . $user->email; } ?></option>
+											<?php } ?>
+											</select>
+											</div></td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->giftcard->phone ) { ?>
+									<tr>
+										<td class="label-sub">Phone:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->phone;?></div></td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->giftcard->note ) { ?>
+									<tr>
+										<td class="label-sub">Note:</td>
+										<td class="content-sub"><div class="input-faker"><?=nl2br( $this->giftcard->note );?></div></td>
+									</tr>
+									<?php } ?>
+									<tr>
+										<td class="label-sub">Date:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->date()->format('M jS Y')?> - <?=$this->giftcard->date()->format('g:i:s A')?></div></td>
+									</tr>
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+					<table>
+							<tr>
+								<td>
+									<?php if( $this->giftcard->user()->id_user ) { ?>
+									<div class="action-button action-button-small green admin-giftcard-sms">
+											<span>Send by sms</span>
+									</div>
+									<?php } else { ?>
+									<div class="action-button action-button-small green admin-giftcard-save">
+											<span>Save</span>
+									</div>
+									<?php } ?>
+								</td>
+							</tr>
+						</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<script>
+$(function() {
+	App.giftcards.prepareFormAddUser();
+	App.giftcards.prepareFormSendSMS();
+	$(".chosen-select").chosen();
+});
+</script>

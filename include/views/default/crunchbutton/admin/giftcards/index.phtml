@@ -36,7 +36,10 @@
 					<table cellpadding="3" cellspacing="3" style="width: 100%; margin: 0 auto;">
 						<tr>
 							<td><div class="action-button green action-button-small admin-giftcard-search"><span>Search</span></div></td>
-							<td><div class="action-button green action-button-small admin-giftcard-new"><span>Create promo codes</span></div></td>
+							<td>
+							<div class="action-button green action-button-small admin-giftcard-sms" style="margin:0 5px;"><span>Promo code by SMS</span></div>
+							<div class="action-button green action-button-small admin-giftcard-new"><span>Create promo codes</span></div>
+							</td>
 						</tr>
 					</table>
 				</td>
@@ -73,6 +76,11 @@
 		$(document).on('click', '.admin-giftcard-new', function() {
 			location.href="/admin/giftcards/new";
 		} );
+
+		$(document).on('click', '.admin-giftcard-sms', function() {
+			location.href="/admin/giftcards/sms";
+		} );
+		
 		
 
 		$(document).on('change', 'input[name="giftcard-range-all"]', function( e ) {
