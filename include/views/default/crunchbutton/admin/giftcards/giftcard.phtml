@@ -109,18 +109,21 @@
 					</div>
 					<table>
 							<tr>
-								<td>
-									<?php if( $this->giftcard->user()->id_user ) { ?>
+									<?php if( $this->giftcard->phone ) { ?>
+									<td>
 									<div class="action-button action-button-small green admin-giftcard-sms">
 											<span>Send by sms</span>
 									</div>
+									</td>
 									<?php } ?>
-									<?php if( $this->giftcard->phone ) { ?>
+									
+									<?php if( $this->giftcard->user()->id_user ) { ?>
+									<td>
 									<div class="action-button action-button-small green admin-giftcard-save">
 											<span>Save</span>
 									</div>
+									</td>
 									<?php } ?>
-								</td>
 							</tr>
 						</table>
 				</td>

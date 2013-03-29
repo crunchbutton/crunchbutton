@@ -1492,14 +1492,8 @@ App.giftcards = {
 	},
 	prepareFormSendSMS : function(){
 		$(document).on('click', '.admin-giftcard-sms', function() {
-			var id_user = $( '#id_user' ).val();
 			var id_promo = $( '#id_promo' ).val();
-			if( id_user == '' ){
-				alert( 'Please choose an user!' );
-				$( '#id_user' ).focus();
-				return;
-			}
-			var data = { 'id_promo' : id_promo, 'id_user' : id_user };
+			var data = { 'id_promo' : id_promo };
 			var url = App.service + 'giftcard/sms';
 			$.ajax({
 				type: "POST",
