@@ -13,11 +13,15 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$id_restaurant = $this->request()['id_restaurant'];
 							$value = $this->request()['value'];
 							$total = $this->request()['total'];
+							$id_user = $this->request()['id_user'];
 							for( $i = 1; $i<= $total; $i++){
 								$giftcard = new Crunchbutton_Promo;
 								$giftcard->id_restaurant = $id_restaurant;
 								$giftcard->code = $giftcard->promoCodeGenerator();
 								$giftcard->value = $value;
+								if( $id_user ){
+									$giftcard->id_user = $id_user;	
+								}
 								$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
 								$giftcard->date = date('Y-m-d H:i:s');
 								$giftcard->save();
@@ -25,13 +29,10 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							echo json_encode(['success' => 'success']);
 							break;
 					case 'bunchsms':
-							
 							$id_restaurant = $this->request()['id_restaurant'];
 							$value = $this->request()['value'];
 							$phones = $this->request()['phones'];
-
 							$phones = explode("\n", $phones);
-
 							foreach ( $phones as $phone ) {
 								if( trim( $phone ) != '' ){
 									$giftcard = new Crunchbutton_Promo;
@@ -78,10 +79,15 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 					// Check if the giftcard is valid
 					if( $giftcard->id_promo ){
 						// Check if the giftcard was already used
-						// if( Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
-						if( false ){
+						if( Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
 							echo json_encode(['error' => 'gift card already used']);
 						} else {
+							// It the gift has a user_id just this user will be able to use it
+							if( $giftcard->id_user && $giftcard->id_user != c::user()->id_user ){
+								echo json_encode(['error' => 'invalid gift card']);
+								exit;		
+							}
+
 							// Add credit to user
 							$credit = $giftcard->addCredit();
 							if( $credit->id_credit ){
