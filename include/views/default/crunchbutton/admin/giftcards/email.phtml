@@ -1,0 +1,103 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content admin-content-giftcards">
+		<h1 class="giftcard-item-title">Gift card</h1>
+		<br /><br />
+		<table><tr><td>
+		<table class="admin-giftcard-form">
+			<tr>
+				<td class="label-primary">Promo code:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:100%;">
+								<tbody>
+									<tr>
+										<td class="label-sub">Value:</td>
+										<td class="content-sub"><input type="text" id="value" name="value"></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Emails:</td>
+										<td class="content-sub">
+											<textarea style="height:100px;width:300px;" name="emails" id="emails"></textarea>
+											<br/>
+											*One email per line.
+										</td>
+									</tr>
+									<tr>
+										<td class="label-sub">Type:</td>
+										<td class="content-sub">gift_card</td>
+									</tr>
+									<tr>
+										<td class="label-sub">Restaurant:</td>
+										<td class="content-sub">
+											<select id="id_restaurant" class="chosen-select" name="id_restaurant" data-placeholder="Choose a restaurant" style="width:350px;">
+												<option value="" selected></option>
+												<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
+													<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+												<? endforeach ; ?>
+											</select>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-primary">Email:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:100%;">
+								<tbody>
+									<tr>
+										<td class="label-sub">Subject:</td>
+										<td class="content-sub">
+											<input type="text" name="subject" id="subject"></textarea>
+										</td>
+									</tr>
+									<tr>
+										<td class="label-sub">Content:</td>
+										<td class="content-sub">
+											<textarea style="height:100px;width:300px;" name="content" id="content">Congrats, you just got a <?php echo Crunchbutton_Promo::TAG_GIFT_VALUE; ?> gift card to <?php echo Crunchbutton_Promo::TAG_RESTAURANT_NAME; ?>. Enjoy: <?php echo Crunchbutton_Promo::TAG_GIFT_URL; ?>.</textarea>
+										</td>
+									</tr>
+									<tr>
+										<td></td>
+										<td>
+											<div class="action-button action-button-small green admin-giftcard-save">
+												<span>Save</span>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		</td>
+		<td>
+			<div style="margin:10px;">
+			<h2 style="font-weight:bold;">Email tags:</h2>
+			<br/>
+			<ul>
+				<li style="margin:5px;"><strong style="font-weight:bold;"><?php echo Crunchbutton_Promo::TAG_GIFT_VALUE; ?></strong> - gift's value</li>
+				<li style="margin:5px;"><strong style="font-weight:bold;"><?php echo Crunchbutton_Promo::TAG_GIFT_URL; ?></strong> - url to get the gift</li>
+				<li style="margin:5px;"><strong style="font-weight:bold;"><?php echo Crunchbutton_Promo::TAG_RESTAURANT_NAME; ?></strong> - restaurant's name</li>
+			</ul>
+			<br/>
+			<i>*use this tags at the content field.</i>
+			</div>
+		</td>
+		</tr></table>
+	</div>
+</div>
+<script>
+$(function() {
+	App.giftcards.prepareFormBunchEMAIL();
+	$(".chosen-select").chosen();
+});
+</script>

@@ -37,6 +37,7 @@
 						<tr>
 							<td><div class="action-button green action-button-small admin-giftcard-search"><span>Search</span></div></td>
 							<td>
+							<div class="action-button green action-button-small admin-giftcard-email"><span>Promo code by EMAIL</span></div>
 							<div class="action-button green action-button-small admin-giftcard-sms" style="margin:0 5px;"><span>Promo code by SMS</span></div>
 							<div class="action-button green action-button-small admin-giftcard-new"><span>Create promo codes</span></div>
 							</td>
@@ -81,6 +82,9 @@
 			location.href="/admin/giftcards/sms";
 		} );
 		
+		$(document).on('click', '.admin-giftcard-email', function() {
+			location.href="/admin/giftcards/email";
+		} );
 		
 
 		$(document).on('change', 'input[name="giftcard-range-all"]', function( e ) {
