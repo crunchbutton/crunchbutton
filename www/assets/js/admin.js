@@ -1439,7 +1439,7 @@ App.giftcards = {
 					}
 				},
 				error: function( ){
-					alert( 'Error at adding a new giftcard!' );
+					alert( 'Error at adding a new gift card!' );
 				}
 			});
 		} );
@@ -1480,8 +1480,8 @@ App.giftcards = {
 					if( json.error ){
 						alert( 'Oops, error!' );
 					} else {
-						alert( 'Great! SMS was sent!' );
-						location.reload();
+						alert( 'Gift card(s) created and sent!' );
+						location.href = '/admin/giftcards';
 					}
 				},
 				error: function( ){
@@ -1510,7 +1510,8 @@ App.giftcards = {
 					if( json.error ){
 						alert( 'Oops, error!' );
 					} else {
-						alert( 'Great! SMS was sent!' );
+						alert( 'Gift card(s) sent!' );
+						location.reload();
 					}
 				},
 				error: function( ){
@@ -1539,7 +1540,7 @@ App.giftcards = {
 					if( json.error ){
 						alert( 'Oops, error!' );
 					} else {
-						alert( 'Great!' );
+						alert( 'Gift card(s) saved!' );
 						location.reload();
 					}
 				},

@@ -67,13 +67,11 @@ class Crunchbutton_Promo extends Cana_Table
 		return Restaurant::o($this->id_restaurant);
 	}
 
-	
-
 	public function queNotify() {
-		$promo = $this;
-		Cana::timeout(function() use($promo) {
+		//$promo = $this;
+		//Cana::timeout(function() use($promo) {
 			$promo->notify();
-		});
+		//});
 	}
 
 	public function notify() {
