@@ -114,7 +114,8 @@
 									<div class="action-button action-button-small green admin-giftcard-sms">
 											<span>Send by sms</span>
 									</div>
-									<?php } else { ?>
+									<?php } ?>
+									<?php if( $this->giftcard->phone ) { ?>
 									<div class="action-button action-button-small green admin-giftcard-save">
 											<span>Save</span>
 									</div>
