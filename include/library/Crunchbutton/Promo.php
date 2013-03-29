@@ -70,7 +70,7 @@ class Crunchbutton_Promo extends Cana_Table
 	public function queNotify() {
 		//$promo = $this;
 		//Cana::timeout(function() use($promo) {
-			$promo->notify();
+			$this->notify();
 		//});
 	}
 
