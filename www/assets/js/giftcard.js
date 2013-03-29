@@ -24,8 +24,8 @@ App.giftcard.show = function( path ){
 		if( App.config.user.id_user && $.trim( App.config.user.id_user ) != '' ){
 			App.giftcard.process( path );
 		} else {
-			$( '.giftcard-message-title' ).html( 'Oops, error.' );
-			$( '.giftcard-message-text' ).html( 'You must be <span class="giftcard-sign-in">signed in</span>.' );
+			$( '.giftcard-message-title' ).html( 'Welcome' );
+			$( '.giftcard-message-text' ).html( 'Please <span class="giftcard-sign-in">sign in</span> to claim your gift card.' );
 			$(document).on('click', '.giftcard-sign-in', function() {
 				App.giftcard.callback = function(){
 					App.giftcard.callback = false;
