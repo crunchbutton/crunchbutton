@@ -8,6 +8,8 @@
 			<th>Value</th>
 			<th>Restaurant</th>
 			<th>User</th>
+			<th>Phone</th>
+			<th>Note</th>
 			<th>Type</th>
 			<th>Used</th>
 		</tr>
@@ -22,8 +24,10 @@
 				<td> $<?= Util::ceil($giftcard->value, 2); ?></td>
 				<td> <?=$giftcard->restaurant()->name; ?> </td>
 				<td> <? if( $giftcard->user()->name != '' ){ echo $giftcard->user()->name; } else { echo '-'; } ?> </td>
+				<td> <?=$giftcard->phone; ?> </td>
+				<td> <?=nl2br( $giftcard->note ); ?> </td>
 				<td> <?=$giftcard->type; ?> </td>
-				<td> <span class="<? if( $wasUsed  ){ echo ' used '; } else { 'not-used'; } ?>"> <? if( $wasUsed  ){ echo ' Was used '; } else { 'Not used yet'; } ?> </span> </td>
+				<td> <span class="<? if( $wasUsed  ){ echo ' used '; } else { echo 'not-used'; } ?>"> <? if( $wasUsed  ){ echo ' Was used '; } else { echo 'Not used yet'; } ?> </span> </td>
 			</tr>
 		<? endforeach ; ?>
 	</table>
