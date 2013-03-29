@@ -73,7 +73,7 @@
 										<td class="label-sub">User name:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->user()->name;?></div></td>
 									</tr>
-									<?php } else { ?>
+									<?php } else if( !$this->giftcard->phone && !$this->giftcard->email ) { ?>
 									<tr>
 										<td class="label-sub">User:</td>
 										<td class="content-sub">
@@ -90,6 +90,24 @@
 									<tr>
 										<td class="label-sub">Phone:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->phone;?></div></td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->giftcard->email ) { ?>
+									<tr>
+										<td class="label-sub">Email:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->email;?></div></td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->giftcard->email_subject ) { ?>
+									<tr>
+										<td class="label-sub">Subject:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->email_subject;?></div></td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->giftcard->email_content ) { ?>
+									<tr>
+										<td class="label-sub">Content:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->email_content;?></div></td>
 									</tr>
 									<?php } ?>
 									<?php if( $this->giftcard->note ) { ?>
@@ -116,8 +134,14 @@
 									</div>
 									</td>
 									<?php } ?>
-									
-									<?php if( !$this->giftcard->user()->id_user ) { ?>
+									<?php if( $this->giftcard->email ) { ?>
+									<td>
+									<div class="action-button action-button-small green admin-giftcard-email">
+											<span>Send by email</span>
+									</div>
+									</td>
+									<?php } ?>
+									<?php if( !$this->giftcard->user()->id_user && !$this->giftcard->note ) { ?>
 									<td>
 									<div style="margin:0 5px;" class="action-button action-button-small green admin-giftcard-save">
 											<span>Save</span>
@@ -135,6 +159,7 @@
 $(function() {
 	App.giftcards.prepareFormAddUser();
 	App.giftcards.prepareFormSendSMS();
+	App.giftcards.prepareFormSendEMAIL();
 	$(".chosen-select").chosen();
 });
 </script>

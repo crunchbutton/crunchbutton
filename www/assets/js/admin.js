@@ -1574,6 +1574,30 @@ App.giftcards = {
 			});
 		} );
 	},
+	prepareFormSendEMAIL: function(){
+		$(document).on('click', '.admin-giftcard-email', function() {
+			var id_promo = $( '#id_promo' ).val();
+			var data = { 'id_promo' : id_promo };
+			var url = App.service + 'giftcard/email';
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				data: data,
+				url: url,
+				success: function( json ) {
+					if( json.error ){
+						alert( 'Oops, error!' );
+					} else {
+						alert( 'Gift card(s) sent!' );
+						location.reload();
+					}
+				},
+				error: function( ){
+					alert( 'Oops, error!' );
+				}
+			});
+		} );
+	},
 	prepareFormAddUser: function(){
 		$(document).on('click', '.admin-giftcard-save', function() {
 			var id_user = $( '#id_user' ).val();

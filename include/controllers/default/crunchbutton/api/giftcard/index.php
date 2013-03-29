@@ -84,6 +84,15 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								echo json_encode(['error' => 'error']);
 							}
 							break;
+					case 'email':
+							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
+							if( $giftcard->id_promo ){
+								$giftcard->queNotifyEMAIL();
+								echo $giftcard->json();
+							} else {
+								echo json_encode(['error' => 'error']);
+							}
+							break;
 					case 'sms':
 							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
 							if( $giftcard->id_promo ){
