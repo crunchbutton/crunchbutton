@@ -1002,7 +1002,6 @@ Issue 13: Removed the password for while
 
 	_breakdownTip: function(total) {
 		var tip = 0;
-		console.log('App.order.tip',App.order.tip);
 		if (App.order['pay_type'] == 'card') {
 			tip = (total * (App.order.tip/100));
 		}

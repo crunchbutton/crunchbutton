@@ -158,7 +158,7 @@ App.signin.facebook.processStatus = function( session ){
 					return;
 				}
 				if( response.id ){
-					App.signin.facebook.shouldAuth
+					App.signin.facebook.shouldAuth = false;
 					$( '.signin-facebook-message' ).show();
 					$( '.signup-facebook-message' ).show();
 					$( '.signin-facebook' ).hide();
@@ -180,6 +180,10 @@ App.signin.facebook.processStatus = function( session ){
 								} else {
 									App.config.user = json;
 									App.signin.checkUser();
+									if( App.giftcard.callback ){
+										App.giftcard.callback();	
+									}
+
 								}
 								$( '.signin-container' ).dialog( 'close' );
 								$( '.signup-container' ).dialog( 'close' );
@@ -559,6 +563,10 @@ App.signup.sendForm = function(){
 				// If the user is at the restaurant's page - reload it
 				if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
 					App.page.restaurant( App.restaurant.permalink );
+				}
+				if( App.giftcard.callback ){
+					$( '.signup-container' ).dialog( 'close' );
+					App.giftcard.callback();
 				}
 				App.recommend.relateUser();
 			}
