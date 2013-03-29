@@ -119,7 +119,6 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								echo json_encode(['error' => 'invalid gift card']);
 								exit;		
 							}
-
 							// Add credit to user
 							$credit = $giftcard->addCredit();
 							if( $credit->id_credit ){
