@@ -201,7 +201,18 @@ App.loadPage = function() {
 			App.page.restaurant(path[1]);
 			break;
 		default:
-			App.routeAlias( path[ 0 ] );
+			App.routeAlias( path[ 0 ],
+				function( result ){
+					App.loc.realLoc = {
+						addressAlias: result.alias.address,
+						lat: result.alias.lat,
+						lon: result.alias.lon,
+						prep: result.alias.prep,
+						city: result.alias.city
+					};
+					App.loc.setFormattedLocFromResult();
+					App.page.foodDelivery( true );
+			});
 			$('.footer').removeClass('footer-hide');
 			setTimeout(scrollTo, 80, 0, 1);
 			setTimeout( function(){ App.signin.checkUser(); }, 100 );

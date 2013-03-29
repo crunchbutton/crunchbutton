@@ -118,39 +118,12 @@
 
 		</div>
 	<? endif ; ?>
-
-	<div class="home-tagline">
-		<h1>Push a button. Get Food.</h1>
-		<h2>
-			Order the top food <?=$this->community->prep?> <?=$this->community->name?>. For free. <br />
-			After you order, everything is saved for future 1 click ordering.<br />
-			<strong  style="display: block; margin-top: 10px;">Choose a restaurant:</strong>
-		</h2>
-	</div>
-	<div class="content-padder-before"></div>
-	<div class="content-padder">
-		<div class="meal-items">
-			<? foreach ($this->community->restaurants() as $restaurant) : ?>
-				<div class="meal-item" data-id_restaurant="<?=$restaurant->id_restaurant?>" data-permalink="<?=$restaurant->permalink?>" itemscope itemtype="http://schema.org/restaurant">
-
-					<link itemprop="url" href="/<?=$this->community->permalink?>/<?=$restaurant->permalink?>"/>
-					<link itemprop="image" href="<?=$restaurant->image() ? $restaurant->publicImagePath().$restaurant->image()->getFileName() : ''?>"/>
-					<link itemprop="photo" href="<?=$restaurant->image() ? $restaurant->publicImagePath().$restaurant->image()->getFileName() : ''?>"/>
-
-					<div class="meal-item-spacer"></div>
-					<div class="meal-item-content">
-						<div class="meal-pic" style="background: url(<?=$restaurant->thumb() ? $restaurant->publicImagePath().$restaurant->thumb()->getFileName() : ''?>);"></div>
-						<h2 class="meal-restaurant">
-							<span itemprop="name"><?=$restaurant->name?></span>
-							<? if (c::app()->isBot()) : ?>
-								<b><a href="/<?=$this->community->permalink?>/<?=$restaurant->permalink?>" class="home-text"><?=$restaurant->name?></a></b>
-							<? endif ; ?>
-						</h2>
-						<h3 class="meal-food"><?=$restaurant->short_description ? $restaurant->short_description : ('Top Order: ' . ($restaurant->top()->top_name ? $restaurant->top()->top_name : $restaurant->top()->name))?></h3>
-
-					</div>
-				</div>
-			<? endforeach ; ?>
+		<div class="main-content-readable">
+		<div class="home-welcome home-welcome-click">
+			<h1>Finding you the best food...</h1>
+		</div>
+		<div class="home-welcome home-welcome-touch">
+			<h1>Finding you the best food...</h1>
 		</div>
 	</div>
 
