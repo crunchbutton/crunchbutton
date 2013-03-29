@@ -62,10 +62,10 @@ App.giftcard.process = function( path ){
 				}
 			} else {
 				if( json.success ){
-					title = 'Gift card addedd!';
+					title = 'Gift card added!';
 					var restaurant = '<a href="/food-delivery/' + json.success['permalink'] + '">' + json.success['restaurant'] + '</a>';
 					var value = '$' + json.success['value'];
-					text = 'It was added <span class="giftcard-value">' + value + '</span> for you spend at <span class="giftcard-restaurant">' + restaurant + '</span>.'
+					text = 'You\'ve got a  <span class="giftcard-value">' + value + '</span> gift card to <span class="giftcard-restaurant">' + restaurant + '</span>.'
 				}
 			}
 			$( '.giftcard-message-title' ).html( title );

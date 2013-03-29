@@ -43,11 +43,34 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 									$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
 									$giftcard->date = date('Y-m-d H:i:s');
 									$giftcard->save();
-									$giftcard->queNotify();
+									$giftcard->queNotifySMS();
 								}
 							}
 							echo json_encode(['success' => 'success']);
-
+						break;
+					case 'bunchemail':
+							$id_restaurant = $this->request()['id_restaurant'];
+							$value = $this->request()['value'];
+							$emails = $this->request()['emails'];
+							$subject = $this->request()['subject'];
+							$content = $this->request()['content'];
+							$emails = explode("\n", $emails);
+							foreach ( $emails as $email ) {
+								if( trim( $email ) != '' ){
+									$giftcard = new Crunchbutton_Promo;
+									$giftcard->id_restaurant = $id_restaurant;
+									$giftcard->code = $giftcard->promoCodeGenerator();
+									$giftcard->value = $value;
+									$giftcard->email = $email;
+									$giftcard->email_subject = $subject;
+									$giftcard->email_content = $content;
+									$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
+									$giftcard->date = date('Y-m-d H:i:s');
+									$giftcard->save();
+									$giftcard->queNotifyEMAIL();
+								}
+							}
+							echo json_encode(['success' => 'success']);
 						break;
 					case 'relateuser':
 							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
@@ -64,7 +87,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 					case 'sms':
 							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
 							if( $giftcard->id_promo ){
-								$giftcard->queNotify();
+								$giftcard->queNotifySMS();
 								echo $giftcard->json();
 							} else {
 								echo json_encode(['error' => 'error']);

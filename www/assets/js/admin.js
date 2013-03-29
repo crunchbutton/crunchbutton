@@ -1490,6 +1490,66 @@ App.giftcards = {
 			});
 		} );
 	},
+	prepareFormBunchEMAIL: function(){
+		$(document).on('click', '.admin-giftcard-save', function() {
+
+			var value = $.trim( $( '#value' ).val() );
+			var id_restaurant = $( '#id_restaurant' ).val();
+			var emails = $( '#emails' ).val();
+			var subject = $( '#subject' ).val();
+			var content = $( '#content' ).val();
+			
+			if( emails == '' ){
+				alert( 'Please enter the email(s) number!' );
+				$( '#emails' ).focus();
+				return;
+			}
+
+			if( value == '' ){
+				alert( 'Please type a value!' );
+				$( '#value' ).focus();
+				return;
+			}
+
+			if( id_restaurant == '' ){
+				alert( 'Please choose a restaurant!' );
+				$( '#id_restaurant' ).focus();
+				return;
+			}
+
+			if( subject == '' ){
+				alert( 'Please type the subject!' );
+				$( '#subject' ).focus();
+				return;
+			}
+
+			if( content == '' ){
+				alert( 'Please type the content!' );
+				$( '#content' ).focus();
+				return;
+			}
+
+			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'emails' : emails, 'subject':subject, 'content': content };
+			var url = App.service + 'giftcard/bunchemail';
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				data: data,
+				url: url,
+				success: function( json ) {
+					if( json.error ){
+						alert( 'Oops, error!' );
+					} else {
+						alert( 'Gift card(s) created and sent!' );
+						location.href = '/admin/giftcards';
+					}
+				},
+				error: function( ){
+					alert( 'Oops, error!' );
+				}
+			});
+		} );
+	},
 	prepareFormSendSMS : function(){
 		$(document).on('click', '.admin-giftcard-sms', function() {
 			var id_promo = $( '#id_promo' ).val();
