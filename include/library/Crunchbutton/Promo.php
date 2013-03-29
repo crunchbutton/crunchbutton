@@ -124,9 +124,9 @@ class Crunchbutton_Promo extends Cana_Table
 
 		// Alpha Delta has a special message
 		if( $this->id_restaurant == 1 ){
-			$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Wenzel away at {$url}.";
+			$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Wenzel away at {$url}";
 		} else {
-			$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Enjoy: {$url}.";
+			$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Enjoy: {$url}";
 		}
 		
 		$this->note = $this->note . 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n";
