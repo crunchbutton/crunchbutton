@@ -1,7 +1,7 @@
 <?php
 
 
-class Crunchbutton_Promo_Order extends Crunchbutton_Email {
+class Crunchbutton_Email_Promo extends Crunchbutton_Email {
 	private $_mailConfig;
 	
 	public function __construct($params) {
