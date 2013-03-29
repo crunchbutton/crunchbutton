@@ -97,7 +97,7 @@ class Crunchbutton_Promo extends Cana_Table
 		$email = $this->email;
 		$subject = $this->email_subject;
 
-		$mail = new Crunchbutton_Promo_Order([
+		$mail = new Crunchbutton_Email_Promo([
 			'message' => $content,
 			'subject' => $subject,
 			'email' => $email
