@@ -49,13 +49,12 @@ var Restaurant = function(id) {
 	 *
 	 * @return int|boolean
 	 */
-	this.isAboutToClose = function() { return false; }
+	this.isAboutToClose = function() {
 		/**
 		 * How many minutes to closing time to trigger the notification
 		 *
 		 * @var int
 		 */
-  /*
 		var minimumTime = 15;
 		var today       = Date.today().toString('ddd').toLowerCase();
 		if (this._hours == undefined ||  this._hours[today] == undefined) {
@@ -88,7 +87,6 @@ var Restaurant = function(id) {
 		}
 		return false;
 	}
-  */
 
 	self.categories = function() {
 		return self.loadType('Category','categories');
