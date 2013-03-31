@@ -30,6 +30,9 @@ var Restaurant = function(id) {
 	}
 	
 	this._parseDate = function(dateStr) {
+		if (!dateStr) {
+			return null;
+		}
 		dateStr = dateStr.split(',');
 		dateStr = (dateStr.length == 2 ? dateStr[1] : dateStr[0]).trim();
 		return Date.parse(dateStr);
