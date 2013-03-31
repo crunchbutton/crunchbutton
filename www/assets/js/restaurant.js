@@ -26,7 +26,11 @@ var Restaurant = function(id) {
 	 */
 	this._utcTime = function(serverTime)
 	{
-		var utcTime = Date.parse( serverTime.add( - this._tzoffset ).hours().toUTCString() );
+		var t = serverTime.add( - this._tzoffset ).hours().toUTCString();
+		t = t.split(',');
+		t = (t.length == 2 ? t[1] : t[0]).trim();
+
+		var utcTime = Date.parse(t + '  ');
 		return utcTime;
 	}
 
@@ -71,6 +75,7 @@ var Restaurant = function(id) {
 			}
 
 			closeTime = this._utcTime(closeTime);
+
 			openTime  = closeTime.clone().addMinutes(-1 * minimumTime);
 			utcNow    = this._utcNow();
 
