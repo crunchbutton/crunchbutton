@@ -26,12 +26,13 @@ var Restaurant = function(id) {
 	 */
 	this._utcTime = function(serverTime)
 	{
-		var t = serverTime.add( - this._tzoffset ).hours().toUTCString();
-		t = t.split(',');
-		t = (t.length == 2 ? t[1] : t[0]).trim();
-
-		var utcTime = Date.parse(t + '  ');
-		return utcTime;
+		return this._parseDate(serverTime.add( - this._tzoffset ).hours().toUTCString());
+	}
+	
+	this._parseDate = function(dateStr) {
+		dateStr = dateStr.split(',');
+		dateStr = (dateStr.length == 2 ? dateStr[1] : dateStr[0]).trim();
+		return Date.parse(dateStr);
 	}
 
 	/**
@@ -163,22 +164,22 @@ var Restaurant = function(id) {
 
 		for (i in todayHours) {
 
-			var openTime  = Date.parse(todayHours[i][0]);
-			var closeTime = Date.parse(todayHours[i][1]);
+			var openTime  = this._parseDate(todayHours[i][0]);
+			var closeTime = this._parseDate(todayHours[i][1]);
 
 			// there is no real 24:00 hours, it's 00:00 for tomorrow
 			if (todayHours[i][1] == '24:00') {
-				closeTime = Date.parse('00:00');
+				closeTime = this._parseDate('00:00');
 				closeTime.addDays(1);
 			}
 
 			// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
 			if( openTime ){
-				var openTime_utc = Date.parse( openTime.add( - this._tzoffset ).hours().toUTCString() );
+				var openTime_utc = this._parseDate(openTime.add( - this._tzoffset ).hours().toUTCString());
 			}
 			// Convert the close hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
 			if( closeTime ){
-				var closeTime_utc = Date.parse( closeTime.add( - this._tzoffset ).hours().toUTCString() );
+				var closeTime_utc = this._parseDate(closeTime.add( - this._tzoffset ).hours().toUTCString());
 			}
 			// Convert current user date to UTC.
 			// var now_utc = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
