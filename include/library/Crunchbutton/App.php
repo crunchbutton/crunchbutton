@@ -329,7 +329,7 @@ class Crunchbutton_App extends Cana_App {
 				'adapter' => 'Geoip_Binary',
 				'file' => c::config()->dirs->root.'db/GeoLiteCity.dat'
 			]);
-			$geo->setIp('76.90.138.20')->populateByIp();
+			$geo->setIp($_SERVER['REMOTE_ADDR'])->populateByIp();
 			$this->auth()->set('loc_lat', $geo->getLatitude());
 			$this->auth()->set('loc_lon', $geo->getLongitude());
 			$this->auth()->set('city', $geo->getCity());
