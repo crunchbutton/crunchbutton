@@ -244,7 +244,7 @@ App.refreshLayout = function() {
  */
 App.track = function() {
 	if (App.config.env != 'live') {
-		return;
+		// return;
 	}
 	if (arguments[0] == 'Ordered') {
 		$('img.conversion').remove();
@@ -263,7 +263,8 @@ App.track = function() {
  * Tracks a property to mixpanel
  */
 App.trackProperty = function(prop, value) {
-	if (!App.config || App.config.env != 'live') {
+	//  || App.config.env != 'live'
+	if (!App.config) {
 		return;
 	}
 	
@@ -279,13 +280,18 @@ App.trackProperty = function(prop, value) {
  */
 App.identify = function() {
 	if (App.config.env != 'live') {
-		return;
+		//return;
 	}
-	if (!App._identified && App.config.user.uuid) {
+	if (App.config.user.uuid) {
 		mixpanel.identify(App.config.user.uuid);
-		App._identified = true;
+		mixpanel.people.set({
+			$name: App.config.user.name,
+			$ip: App.config.user.ip,
+			$email: App.config.user.email
+		});
 	}
 };
+
 
 /**
  * generate ab formulas
@@ -415,7 +421,10 @@ App.cart = {
 
 		App.cart.updateTotal();
 
-		App.track('Dish added');
+		App.track('Dish added', {
+			id_dish: App.cache('Dish',item).id_dish,
+			name: App.cache('Dish',item).name
+		});
 	},
 
 	clone: function(item) {
@@ -1173,9 +1182,14 @@ App.test = {
 	}
 };
 
-App.processConfig = function(json) {
-	App.config = json;
+App.processConfig = function(json, user) {
+	if (user && !json) {
+		App.config.user = user;
+	} else {
+		App.config = json;
+	}
 	App.AB.init();
+
 	if (App.config.user) {
 		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];
