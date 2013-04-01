@@ -71,7 +71,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 								break;
 
 							case 'twilio':
-								if ( $notification->order()->accepted() || $notification->order()->confirmed ) {									
+								if ( $notification->order()->confirmed ) {									
 									if ($_REQUEST['CallSid'] == $notification->remote) {
 										if ($_REQUEST['Duration']) {
 											$notification->status = 'success';
