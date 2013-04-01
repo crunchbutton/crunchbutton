@@ -421,7 +421,10 @@ App.cart = {
 
 		App.cart.updateTotal();
 
-		App.track('Dish added');
+		App.track('Dish added', {
+			id_dish: App.cache('Dish',item).id_dish,
+			name: App.cache('Dish',item).name
+		});
 	},
 
 	clone: function(item) {
