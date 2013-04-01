@@ -5,7 +5,7 @@ class Controller_Admin_Giftcards extends Crunchbutton_Controller_Account {
 		c::view()->page = 'admin/giftcards';
 		c::view()->layout('layout/admin');
 		if( c::getPagePiece(2) == 'new' ){ 
-			c::view()->users = Crunchbutton_User::q('SELECT u.id_user, u.name, u.phone, u.email FROM user u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = 1 ORDER BY u.name ASC');;
+			c::view()->users = Crunchbutton_User::q('SELECT DISTINCT( u.id_user ), u.name, u.phone, u.email FROM user u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = 1 ORDER BY u.name ASC');;
 			c::view()->display('admin/giftcards/new');
 		} else if( c::getPagePiece(2) == 'sms' ){ 
 			c::view()->display('admin/giftcards/sms');	
