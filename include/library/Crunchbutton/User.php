@@ -101,7 +101,7 @@ class Crunchbutton_User extends Cana_Table {
 			$out['presets'][$preset->id_restaurant] = $preset->exports();
 		}
 		$out['ip'] = $_SERVER['REMOTE_ADDR'];
-		$out['email'] = $this->email();
+		$out['email'] = $this->email ? $this->email : $this->email();
 		return $out;
 	}
 
