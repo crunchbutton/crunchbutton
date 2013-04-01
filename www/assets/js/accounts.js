@@ -178,7 +178,7 @@ App.signin.facebook.processStatus = function( session ){
 										alert( 'Sorry, It seems the facebook user is already related with other user.' );
 									}
 								} else {
-									App.config.user = json;
+									App.processConfig(null, json);
 									App.signin.checkUser();
 									if( App.giftcard.callback ){
 										App.giftcard.callback();	
@@ -554,7 +554,7 @@ App.signup.sendForm = function(){
 				}
 				$('.signup-error').fadeIn();
 			} else{
-				App.config.user = json;
+				App.processConfig(null, json);
 				$( '.success-phone' ).html( login );
 				$( '.signup-call-to-action' ).hide();
 				$( '.signup-form-options' ).hide();
