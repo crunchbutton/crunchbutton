@@ -25,7 +25,7 @@
 				<td class="content-sub" colspan="2">
 					<select name="restaurant">
 						<option value="" selected>[ All ]</option>
-						<? foreach (Restaurant::q('SELECT * FROM restaurant INNER JOIN promo ON promo.id_restaurant = restaurant.id_restaurant ORDER BY name ') as $restaurant) : ?>
+						<? foreach (Restaurant::q('SELECT DISTINCT(restaurant.id_restaurant), restaurant.name FROM restaurant INNER JOIN promo ON promo.id_restaurant = restaurant.id_restaurant ORDER BY name ') as $restaurant) : ?>
 							<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
 						<? endforeach ; ?>
 					</select>
