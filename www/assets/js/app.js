@@ -281,11 +281,16 @@ App.identify = function() {
 	if (App.config.env != 'live') {
 		return;
 	}
-	if (!App._identified && App.config.user.uuid) {
+	if (App.config.user.uuid) {
 		mixpanel.identify(App.config.user.uuid);
-		App._identified = true;
+		mixpanel.people.set({
+			$name: App.config.user.name,
+			$ip: App.config.user.ip,
+			$email: App.config.user.email
+		});
 	}
 };
+
 
 /**
  * generate ab formulas
@@ -1173,9 +1178,14 @@ App.test = {
 	}
 };
 
-App.processConfig = function(json) {
-	App.config = json;
+App.processConfig = function(json, user) {
+	if (user && !json) {
+		App.config.user = user;
+	} else {
+		App.config = json;
+	}
 	App.AB.init();
+
 	if (App.config.user) {
 		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];

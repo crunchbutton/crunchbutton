@@ -51,6 +51,26 @@ class Crunchbutton_User extends Cana_Table {
 			');
 	}
 	
+	public function auths() {
+		if (!isset($this->_auths)) {
+			$this->_auths = User_Auth::q('select * from user_auth where id_user="'.$this->id_user.'" and active=1');
+		}
+		return $this->_auths;
+	}
+	
+	public function email() {
+		if (!isset($this->_email)) {
+			$this->_email = null;
+
+			foreach ($this->auths() as $auth) {
+				if ($auth->type == 'local' && strpos($auth->email,'@') !== false) {
+					$this->_email = $auth->email;
+				}
+			}
+		}
+		return $this->_email;
+	}
+	
 	public function presets() {
 		if (!isset($this->_presets)) {
 			$this->_presets = Preset::q('
@@ -80,6 +100,8 @@ class Crunchbutton_User extends Cana_Table {
 		foreach ($this->presets() as $preset) {
 			$out['presets'][$preset->id_restaurant] = $preset->exports();
 		}
+		$out['ip'] = $_SERVER['REMOTE_ADDR'];
+		$out['email'] = $this->email();
 		return $out;
 	}
 
