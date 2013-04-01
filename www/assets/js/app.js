@@ -457,7 +457,7 @@ App.cart = {
 	 */
 	updateTotal: function() {
 		var
-			totalText  = '$' + this.total(),
+			totalText  = '$' + this.charged(),
 			tipText	= '',
 			feesText   = '',
 			totalItems = 0,
@@ -486,6 +486,7 @@ App.cart = {
 		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
 				App.order.tip = ( App.config.user.last_tip ) ? App.config.user.last_tip : 18; // Default value is 18
+				App.order.tip = App.lastTipNormalize( App.order.tip );
 				wasTipChanged = true;
 			}
 		}
@@ -493,7 +494,7 @@ App.cart = {
 		if( wasTipChanged ){
 			$('[name="pay-tip"]').val( App.order.tip );
 			// Forces the recalculation of total because the tip was changed.
-			totalText  = '$' + this.total();
+			totalText  = '$' + this.charged();
 		}
 
 		if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
@@ -1049,7 +1050,7 @@ Issue 13: Removed the password for while
 				finalAmount = 0;
 			}
 		}
-		return finalAmount;
+		return App.ceil(finalAmount).toFixed(2);
 	},
 
 	/**
@@ -1179,9 +1180,20 @@ App.processConfig = function(json) {
 		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];
 		App.order['delivery_type'] = App.config.user['delivery_type'];
-		App.order['tip'] = App.config.user['last_tip'] || 18;
+		var lastTip = App.config.user['last_tip'] || 18;
+		lastTip = App.lastTipNormalize( lastTip );
+		App.order['tip'] = lastTip;
 	}
 };
+
+App.lastTipNormalize = function( lastTip ){
+	if( App.tips.indexOf( lastTip ) > 0 ){
+		lastTip = lastTip;
+	} else {
+		lastTip = 18;
+	}
+	return lastTip;
+}
 
 App.detectCardType = function(){
 	var cardvalue = $( '[name="pay-card-number"]' ).val();
