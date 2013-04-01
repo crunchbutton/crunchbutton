@@ -2757,7 +2757,8 @@ strong {
 	text-shadow: 1px 1px 0px rgba(0,0,0,.5);
 	text-align: center;
 	display: none;
-	top:150px;
+	top:180px;
+	z-index: 100;
 }
 
 .payment-card{
