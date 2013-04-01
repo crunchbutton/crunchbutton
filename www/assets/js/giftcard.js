@@ -63,9 +63,16 @@ App.giftcard.process = function( path ){
 			} else {
 				if( json.success ){
 					title = 'Gift card added!';
-					var restaurant = '<a href="/food-delivery/' + json.success['permalink'] + '">' + json.success['restaurant'] + '</a>';
+					var id_restaurant = json.success['id_restaurant'];
+					var restaurant_name = json.success['restaurant'];
 					var value = '$' + json.success['value'];
-					text = 'You\'ve got a  <span class="giftcard-value">' + value + '</span> gift card to <span class="giftcard-restaurant">' + restaurant + '</span>.'
+					text = 'You\'ve got a  <span class="giftcard-value">' + value + '</span> gift card to <span id_restaurant="' + id_restaurant + '" class="giftcard-restaurant">' + restaurant_name + '</span>.'
+
+					$(document).on('click', '.giftcard-restaurant', function() {
+						var id_restaurant = $( this ).attr( 'id_restaurant' );
+						$( '.giftcard-container' ).dialog( 'close' );
+						App.loadRestaurant( id_restaurant );
+					});
 				}
 			}
 			$( '.giftcard-message-title' ).html( title );

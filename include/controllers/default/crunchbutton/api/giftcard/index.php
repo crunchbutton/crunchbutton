@@ -127,7 +127,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							// Add credit to user
 							$credit = $giftcard->addCredit();
 							if( $credit->id_credit ){
-								echo json_encode( [ 'success' => [ 'value' => $credit->value, 'restaurant' => $credit->restaurant()->name, 'permalink' => $credit->restaurant()->permalink ] ] );
+								echo json_encode( [ 'success' => [ 'value' => $credit->value, 'restaurant' => $credit->restaurant()->name, 'id_restaurant' => $credit->restaurant()->id_restaurant ] ] );
 							} else {
 								echo json_encode(['error' => 'gift card not added']);
 							}
