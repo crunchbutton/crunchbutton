@@ -352,7 +352,6 @@ App.AB = {
 			App.AB.create(true);
 			App.AB.load(true);
 		}
-
 	},
 	save: function() {
 		$.ajax({

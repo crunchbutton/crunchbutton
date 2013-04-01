@@ -33,6 +33,7 @@ var Restaurant = function(id) {
 		if (!dateStr) {
 			return null;
 		}
+
 		dateStr = dateStr.split(',');
 		dateStr = (dateStr.length == 2 ? dateStr[1] : dateStr[0]).trim();
 		return Date.parse(dateStr);
@@ -64,6 +65,7 @@ var Restaurant = function(id) {
 		if (this._hours == undefined ||  this._hours[today] == undefined) {
 			return false;
 		}
+
 		todayHours  = this._hours[today];
 		for (i in todayHours) {
 			var openTime  = Date.parse(todayHours[i][0]);
@@ -89,6 +91,7 @@ var Restaurant = function(id) {
 				return minutes;
 			}
 		}
+
 		return false;
 	}
 
@@ -150,7 +153,6 @@ var Restaurant = function(id) {
 	 *       offset = -(today.getTimezoneOffset()); // @todo: ensure this works on positive tz
 	 */
 	self.open = function() {
-
 		// If it doesn't have hours it means it is always opened
 		if( !this._hours ){
 			this._open = true;
@@ -177,11 +179,11 @@ var Restaurant = function(id) {
 			}
 
 			// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
-			if( openTime ){
+			if (openTime) {
 				var openTime_utc = this._parseDate(openTime.add( - this._tzoffset ).hours().toUTCString());
 			}
 			// Convert the close hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
-			if( closeTime ){
+			if (closeTime) {
 				var closeTime_utc = this._parseDate(closeTime.add( - this._tzoffset ).hours().toUTCString());
 			}
 			// Convert current user date to UTC.
@@ -194,6 +196,7 @@ var Restaurant = function(id) {
 					closeTime_utc.addDays(1);
 				}
 			}
+
 			if( openTime_utc &&  closeTime_utc ){
 				if (now_utc.between(openTime_utc, closeTime_utc)) {
 					isOpen = true;
@@ -201,6 +204,7 @@ var Restaurant = function(id) {
 				}
 			}
 		}
+
 		this._open = isOpen;
 		return isOpen;
 	}
