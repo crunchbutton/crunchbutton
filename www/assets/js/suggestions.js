@@ -68,7 +68,7 @@ App.suggestion.send = function(){
 				console.log('saveds', new Date);
 				App.suggestion.message(
 					'<h1>Awesome, thanks!!</h1>' +
-					'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at ' + App.callPhone( '800-242-1444' ) +  '</div>'
+					'<div class="suggestion-thanks-text">If you really really wanna make order it RIGHT NOW, call us at ' + App.callPhone( '646-783-1444' ) +  '</div>'
 				);
 			}
 		});
