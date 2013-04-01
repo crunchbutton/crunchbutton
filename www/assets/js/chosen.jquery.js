@@ -864,7 +864,6 @@ Copyright (c) 2011 by Harvest
               results += 1;
             } else if (this.enable_split_word_search && (option.html.indexOf(" ") >= 0 || option.html.indexOf("[") === 0)) {
               parts = option.html.replace(/\[|\]/g, "").split(" ");
-              console.log('option',$( option ));
               if (parts.length) {
                 for (_j = 0, _len1 = parts.length; _j < _len1; _j++) {
                   part = parts[_j];
