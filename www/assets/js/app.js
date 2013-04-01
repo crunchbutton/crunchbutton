@@ -1201,11 +1201,18 @@ App.processConfig = function(json, user) {
 };
 
 App.lastTipNormalize = function( lastTip ){
+	lastTip = parseInt( lastTip );
+	// it means the last tipped order was using dollar value
+	if( App.config.user && App.config.user.last_tip_type && App.config.user.last_tip_type == 'number' ){
+		return 18;
+	}
+	// it means the last tipped value is not at the permitted value, return 18 as default.
 	if( App.tips.indexOf( lastTip ) > 0 ){
 		lastTip = lastTip;
 	} else {
 		lastTip = 18;
 	}
+	
 	return lastTip;
 }
 
