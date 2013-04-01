@@ -244,7 +244,7 @@ App.refreshLayout = function() {
  */
 App.track = function() {
 	if (App.config.env != 'live') {
-		return;
+		// return;
 	}
 	if (arguments[0] == 'Ordered') {
 		$('img.conversion').remove();
@@ -263,7 +263,8 @@ App.track = function() {
  * Tracks a property to mixpanel
  */
 App.trackProperty = function(prop, value) {
-	if (!App.config || App.config.env != 'live') {
+	//  || App.config.env != 'live'
+	if (!App.config) {
 		return;
 	}
 	
@@ -279,7 +280,7 @@ App.trackProperty = function(prop, value) {
  */
 App.identify = function() {
 	if (App.config.env != 'live') {
-		return;
+		//return;
 	}
 	if (App.config.user.uuid) {
 		mixpanel.identify(App.config.user.uuid);
