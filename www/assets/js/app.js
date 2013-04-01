@@ -886,7 +886,7 @@ Issue 13: Removed the password for while
 					var lon = results[0].geometry.location.lng();
 				}
 				if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
-					alert( 'Sorry, that address seems invalid to us. \nTry again, or order takeout' );
+					alert( 'Sorry, that address seems invalid to us. \nPlease make sure you enter a zip code.' );
 					App.busy.unBusy();
 				} else {
 					App.busy.unBusy();
