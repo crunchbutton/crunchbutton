@@ -20,11 +20,19 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								$giftcard->code = $giftcard->promoCodeGenerator();
 								$giftcard->value = $value;
 								if( $id_user ){
-									$giftcard->id_user = $id_user;	
+									$giftcard->id_user = $id_user;
+									$user = Crunchbutton_User::o( $id_user );
+									$giftcard->phone =  $user->phone;
+									$giftcard->email =  $user->email;
 								}
 								$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
 								$giftcard->date = date('Y-m-d H:i:s');
 								$giftcard->save();
+								if( $giftcard->email ){
+									$giftcard->queNotifyEMAIL();
+								} else if( $giftcard->phone ){
+									$giftcard->queNotifySMS();
+								}
 							}
 							echo json_encode(['success' => 'success']);
 							break;
