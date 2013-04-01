@@ -82,13 +82,13 @@
 	<?php if( $order->id_credit ) { ?>
 	<tr style="font-weight:bold;">
 		<td></td>
-		<td style="text-align:right">Gift Card</td>
+		<td style="text-align:right"><?php if( $order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>
 		<td>$<?=number_format($order->credit()->value,2)?></td>
 	</tr>
 
 	<tr style="font-weight:bold;">
 		<td></td>
-		<td style="text-align:right">Total Charged</td>
+		<td style="text-align:right"><?php if( $order->pay_type == 'card' ) { ?>Total Charged <?php } else { ?> Total Owed <?php } ?></td>
 		<td>$<?=number_format($order->charged(),2)?></td>
 	</tr>
 	<?php } ?>
