@@ -17,14 +17,19 @@
 									<tr>
 										<td class="label-sub">User ID:</td>
 										<td class="content-sub">
-											<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:365px;" >
-											<option></option>
-											<?php foreach( $this->users as $user ) { ?>
-												<option value="<?php echo $user->id_user; ?>"><?php echo $user->name; ?> <?php if( $user->phone != '' ) { echo ' - ' . $user->phone ; } ?> <?php if( $user->email != '' ) { echo ' - ' . $user->email; } ?></option>
+											<?php if( $this->user ) { ?>
+												<input type="text" readonly="readonly" id="user_name" name="user_name" value="<?php echo $this->user->name;?>">
+												<input type="hidden" id="id_user" name="id_user" value="<?php echo $this->user->id_user;?>">
+											<?php } else { ?>
+												<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:365px;" >
+												<option></option>
+												<?php foreach( $this->users as $user ) { ?>
+													<option value="<?php echo $user->id_user; ?>"><?php echo $user->name; ?> <?php if( $user->phone != '' ) { echo ' - ' . $user->phone ; } ?> <?php if( $user->email != '' ) { echo ' - ' . $user->email; } ?></option>
+												<?php } ?>
+												</select>
+												</div>
 											<?php } ?>
-											</select>
-											<!-- <input type="text" id="id_user" name="id_user"> -->
-											</div></td>
+											</td>
 									</tr>
 									<tr>
 										<td class="label-sub">Note:</td>
@@ -40,7 +45,7 @@
 											<select id="id_restaurant" class="chosen-select" name="id_restaurant" data-placeholder="Choose a restaurant" style="width:350px;">
 												<option value="" selected></option>
 												<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
-													<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+													<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
 												<? endforeach ; ?>
 											</select>
 										</td>

@@ -116,6 +116,11 @@
 							<td style="white-space: normal;"><?=$order->address?></td>
 						</tr>
 						<?php } ?>
+						<tr>
+							<td>
+								<a href="/admin/credits/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $order->restaurant()->id_restaurant; ?>">[Add credit to this user]</a>
+							</td>
+						</tr>
 					</table>
 				</td>
 			</tr>
