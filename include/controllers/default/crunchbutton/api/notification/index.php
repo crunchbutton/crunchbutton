@@ -65,6 +65,10 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 									$notification->date = date('Y-m-d H:i:s');
 									$notification->save();
 									if ($notification->order()->restaurant()->confirmation) {
+					Log::debug([
+							'fax' => 'confirm_callback',
+							'type' => 'notification'
+						]);
 										$notification->order()->queConfirm();
 									}
 								}

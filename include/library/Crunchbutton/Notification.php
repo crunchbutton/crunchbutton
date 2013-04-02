@@ -52,6 +52,10 @@ class Crunchbutton_Notification extends Cana_Table
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
+					Log::debug([
+							'fax' => 'confirm_notification',
+							'type' => 'notification'
+						]);
 					$order->queConfirm();
 				}
 
