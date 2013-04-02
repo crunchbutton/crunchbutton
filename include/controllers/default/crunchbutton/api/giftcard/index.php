@@ -13,6 +13,10 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$id_restaurant = $this->request()['id_restaurant'];
 							$value = $this->request()['value'];
 							$total = $this->request()['total'];
+							$note = $this->request()['note'];
+							$id_order_reference = $this->request()['id_order_reference'];
+							$paid_by = $this->request()['paid_by'];
+							$id_restaurant_paid_by = $this->request()['id_restaurant_paid_by'];
 							$id_user = $this->request()['id_user'];
 							for( $i = 1; $i<= $total; $i++){
 								$giftcard = new Crunchbutton_Promo;
@@ -25,6 +29,12 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 									$giftcard->phone =  $user->phone;
 								}
 								$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
+								$giftcard->note = $note;
+								$giftcard->id_order_reference = $id_order_reference;
+								$giftcard->paid_by = $paid_by;
+								if( $paid_by == 'other_restaurant' ){
+									$giftcard->id_restaurant_paid_by = $id_restaurant_paid_by;
+								}
 								$giftcard->date = date('Y-m-d H:i:s');
 								$giftcard->save();
 								if( $giftcard->phone ){
@@ -37,6 +47,10 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$id_restaurant = $this->request()['id_restaurant'];
 							$value = $this->request()['value'];
 							$phones = $this->request()['phones'];
+							$note = $this->request()['note'];
+							$id_order_reference = $this->request()['id_order_reference'];
+							$paid_by = $this->request()['paid_by'];
+							$id_restaurant_paid_by = $this->request()['id_restaurant_paid_by'];
 							$phones = explode("\n", $phones);
 							foreach ( $phones as $phone ) {
 								if( trim( $phone ) != '' ){
@@ -47,6 +61,12 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 									$giftcard->phone = $phone;
 									$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
 									$giftcard->date = date('Y-m-d H:i:s');
+									$giftcard->note = $note;
+									$giftcard->id_order_reference = $id_order_reference;
+									$giftcard->paid_by = $paid_by;
+									if( $paid_by == 'other_restaurant' ){
+										$giftcard->id_restaurant_paid_by = $id_restaurant_paid_by;
+									}
 									$giftcard->save();
 									$giftcard->queNotifySMS();
 								}
@@ -59,6 +79,10 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$emails = $this->request()['emails'];
 							$subject = $this->request()['subject'];
 							$content = $this->request()['content'];
+							$note = $this->request()['note'];
+							$id_order_reference = $this->request()['id_order_reference'];
+							$paid_by = $this->request()['paid_by'];
+							$id_restaurant_paid_by = $this->request()['id_restaurant_paid_by'];
 							$emails = explode("\n", $emails);
 							foreach ( $emails as $email ) {
 								if( trim( $email ) != '' ){
@@ -71,6 +95,12 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 									$giftcard->email_content = $content;
 									$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
 									$giftcard->date = date('Y-m-d H:i:s');
+									$giftcard->note = $note;
+									$giftcard->id_order_reference = $id_order_reference;
+									$giftcard->paid_by = $paid_by;
+									if( $paid_by == 'other_restaurant' ){
+										$giftcard->id_restaurant_paid_by = $id_restaurant_paid_by;
+									}
 									$giftcard->save();
 									$giftcard->queNotifyEMAIL();
 								}

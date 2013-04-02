@@ -26,6 +26,14 @@
 										</div></td>
 									</tr>
 									<?php } ?>
+								<?php if( $this->credit->id_order_reference ) { ?>
+									<tr>
+										<td class="label-sub">Order reference:</td>
+										<td class="content-sub"><div class="input-faker">
+											<a href="/vieworder/<?php echo $this->credit->order_reference()->uuid; ?>">#<?=$this->credit->id_order_reference;?></a>
+										</div></td>
+									</tr>
+									<?php } ?>
 								</tbody>
 							</table>
 						</div>
@@ -51,6 +59,7 @@
 				</td>
 			</tr>
 			<?php } ?>
+
 			<tr>
 				<td class="label-primary">More information:</td>
 				<td class="content-primary">
@@ -78,12 +87,48 @@
 										<td class="content-sub"><div class="input-faker"><?=nl2br( $this->credit->note );?></div></td>
 									</tr>
 									<?php } ?>
+									<?php if( $this->credit->paid_by ) { ?>
+									<tr>
+										<td class="label-sub">Paid by:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->credit->paid_by;?></div></td>
+									</tr>
+									
+									<?php } ?>
+									<?php if( $this->credit->restaurant_paid_by()->id_restaurant ) { ?>
+									<tr>
+										<td class="label-sub">Paid by restaurant:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->credit->restaurant_paid_by()->name;?></div></td>
+									</tr>
+									<?php } ?>
 								</tbody>
 							</table>
 						</div>
 					</div>
 				</td>
 			</tr>
+			<?php if( $this->credit->promo()->id_promo ) { ?>
+			<tr>
+				<td class="label-primary">Gift Card:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<tr>
+										<td class="label-sub">Code:</td>
+										<td class="content-sub"><div class="input-faker"><a href="/admin/giftcards/<?=$this->credit->promo()->id_promo;?>"><?=$this->credit->promo()->code;?></a></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Created at:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->credit->date()->format('M jS Y')?> - <?=$this->credit->date()->format('g:i:s A')?></div></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<?php } ?>
 		</table>
 	</div>
 </div>
