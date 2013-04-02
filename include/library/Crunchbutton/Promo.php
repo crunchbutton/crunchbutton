@@ -51,6 +51,9 @@ class Crunchbutton_Promo extends Cana_Table
 		$credit->id_promo = $this->id_promo;
 		$credit->date = date('Y-m-d H:i:s');
 		$credit->value = $this->value;
+		$credit->id_order_reference = $this->id_order_reference;
+		$credit->id_restaurant_paid_by = $this->id_restaurant_paid_by;
+		$credit->paid_by = $this->paid_by;
 		$credit->save();
 
 		$this->id_user = c::user()->id_user;
@@ -105,7 +108,7 @@ class Crunchbutton_Promo extends Cana_Table
 		
 		$mail->send();
 
-		$this->note = $this->note . 'EMAIL sent to ' . $email . ' at ' . date( 'M jS Y g:i:s A') . "\n";
+		$this->note =  'EMAIL sent to ' . $email . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $this->note;
 		$this->save();
 	}
 
@@ -129,7 +132,7 @@ class Crunchbutton_Promo extends Cana_Table
 			$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Enjoy: {$url}";
 		}
 		
-		$this->note = $this->note . 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n";
+		$this->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $this->note;
 		$this->save();
 
 		$message = str_split($message, 160);
@@ -177,6 +180,13 @@ class Crunchbutton_Promo extends Cana_Table
 
 		$gifts = self::q($query);
 		return $gifts;
+	}
+	public function order_reference(){
+		return Order::o($this->id_order_reference);	
+	}
+
+	public function restaurant_paid_by() {
+		return Restaurant::o($this->id_restaurant_paid_by);
 	}
 
 	public function date() {

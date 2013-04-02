@@ -16,6 +16,11 @@ class Controller_api_Credit extends Crunchbutton_Controller_Rest {
 						$credit->date = date('Y-m-d H:i:s');
 						$credit->value = $this->request()['value'];
 						$credit->note = $this->request()['note'];
+						$credit->id_order_reference = $this->request()['id_order_reference'];
+						$credit->paid_by = $this->request()['paid_by'];
+						if( $this->request()['paid_by'] == 'other_restaurant' ){
+							$credit->id_restaurant_paid_by = $this->request()['id_restaurant_paid_by'];
+						}
 						$credit->save();
 						if( $credit->id_credit ){
 							echo $credit->json();

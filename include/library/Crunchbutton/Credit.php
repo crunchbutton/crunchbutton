@@ -96,6 +96,10 @@ class Crunchbutton_Credit extends Cana_Table
 		return Order::o($this->id_order);
 	}
 
+	public function order_reference(){
+		return Order::o($this->id_order_reference);	
+	}
+
 	public function promo() {
 		return Promo::o($this->id_promo);
 	}
@@ -103,4 +107,11 @@ class Crunchbutton_Credit extends Cana_Table
 	public function restaurant() {
 		return Restaurant::o($this->id_restaurant);
 	}
+
+	public function restaurant_paid_by() {
+		return Restaurant::o($this->id_restaurant_paid_by);
+	}
+
+	
+
 }

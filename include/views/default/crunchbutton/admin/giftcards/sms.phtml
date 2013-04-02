@@ -38,6 +38,32 @@
 										</td>
 									</tr>
 									<tr>
+										<td class="label-sub" nowrap="nowrap">Paid by:</td>
+										<td class="content-sub">
+											<select name="paid_by" id="paid_by">
+												<option value="crunchbutton">crunchbutton</option>
+												<option value="restaurant">restaurant</option>
+												<option value="promotional">promotional</option>
+												<option value="other_restaurant">other_restaurant</option>
+											</select>
+										</td>
+									</tr>
+									<tr id="row_id_restaurant_paid_by" style="display:none;">
+										<td class="label-sub">Restaurant that paid the credit:</td>
+										<td class="content-sub">
+											<select id="id_restaurant_paid_by" class="chosen-select" name="id_restaurant_paid_by" data-placeholder="Choose a restaurant" style="width:350px;">
+												<option value="" selected></option>
+												<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
+													<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
+												<? endforeach ; ?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class="label-sub">Note:</td>
+										<td class="content-sub"><textarea name="note" id="note"></textarea></td>
+									</tr>
+									<tr>
 										<td></td>
 										<td>
 											<div class="action-button action-button-small green admin-giftcard-save">
@@ -56,6 +82,13 @@
 </div>
 <script>
 $(function() {
+	$( '#paid_by' ).change( function(){
+		var self = $( this );
+		$( '#row_id_restaurant_paid_by' ).hide();
+		if( self.val() == 'other_restaurant' ){
+			$( '#row_id_restaurant_paid_by' ).show();
+		}
+	} );
 	App.giftcards.prepareFormBunchSMS();
 	$(".chosen-select").chosen();
 });

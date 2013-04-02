@@ -21,7 +21,11 @@
 									<tr>
 										<td class="label-sub">User ID:</td>
 										<td class="content-sub">
-											<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:365px;" >
+											<?php if( $this->user ) { ?>
+												<input type="text" readonly="readonly" id="user_name" name="user_name" value="<?php echo $this->user->name;?>">
+												<input type="hidden" id="id_user" name="id_user" value="<?php echo $this->user->id_user;?>">
+											<?php } else { ?>
+												<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:350px;" >
 											<option></option>
 											<?php foreach( $this->users as $user ) { ?>
 												<option value="<?php echo $user->id_user; ?>">
@@ -33,9 +37,21 @@
 											<?php } ?>
 											</select>
 											<span style="font-size:11px;">
+												<br/>
 												If you chose an user just the chosen user will be able to use this gift card.
 											</span>
+											<?php } ?>
 											</div></td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+									</tr>
+									<tr>
+										<td class="label-sub" nowrap="nowrap">Order reference:</td>
+										<td class="content-sub">
+											<input type="text" id="id_order_reference" name="id_order_reference" value="<?php echo $this->id_order_reference;?>">
+										</td>
 									</tr>
 									<tr>
 										<td class="label-sub">Type:</td>
@@ -47,10 +63,40 @@
 											<select id="id_restaurant" class="chosen-select" name="id_restaurant" data-placeholder="Choose a restaurant" style="width:350px;">
 												<option value="" selected></option>
 												<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
-													<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+													<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
 												<? endforeach ; ?>
 											</select>
 										</td>
+									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+									</tr>
+									<tr>
+										<td class="label-sub" nowrap="nowrap">Paid by:</td>
+										<td class="content-sub">
+											<select name="paid_by" id="paid_by">
+												<option value="crunchbutton">crunchbutton</option>
+												<option value="restaurant">restaurant</option>
+												<option value="promotional">promotional</option>
+												<option value="other_restaurant">other_restaurant</option>
+											</select>
+										</td>
+									</tr>
+									<tr id="row_id_restaurant_paid_by" style="display:none;">
+										<td class="label-sub">Restaurant that paid the credit:</td>
+										<td class="content-sub">
+											<select id="id_restaurant_paid_by" class="chosen-select" name="id_restaurant_paid_by" data-placeholder="Choose a restaurant" style="width:350px;">
+												<option value="" selected></option>
+												<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
+													<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
+												<? endforeach ; ?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class="label-sub">Note:</td>
+										<td class="content-sub"><textarea name="note" id="note"></textarea></td>
 									</tr>
 									<tr>
 										<td></td>
@@ -71,6 +117,13 @@
 </div>
 <script>
 $(function() {
+	$( '#paid_by' ).change( function(){
+		var self = $( this );
+		$( '#row_id_restaurant_paid_by' ).hide();
+		if( self.val() == 'other_restaurant' ){
+			$( '#row_id_restaurant_paid_by' ).show();
+		}
+	} );
 	App.giftcards.prepareForm();
 	$(".chosen-select").chosen();
 });

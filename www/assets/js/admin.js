@@ -946,6 +946,9 @@ App.credits = {
 			var id_restaurant = $( '#id_restaurant' ).val();
 			var id_user = $( '#id_user' ).val();
 			var note = $( '#note' ).val();
+			var id_order_reference = $( '#id_order_reference' ).val();
+			var paid_by = $( '#paid_by' ).val();
+			var id_restaurant_paid_by = $( '#id_restaurant_paid_by' ).val();
 
 			if( value == '' ){
 				alert( 'Please type a value!' );
@@ -964,7 +967,8 @@ App.credits = {
 				$( '#id_restaurant' ).focus();
 				return;
 			}
-			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'note' : note };
+			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'note' : note, 'paid_by' : paid_by, 'id_order_reference' : id_order_reference, 'id_restaurant_paid_by' : id_restaurant_paid_by };
+			
 			var url = App.service + 'credit/new';
 			$.ajax({
 				type: "POST",
@@ -1406,6 +1410,11 @@ App.giftcards = {
 			var id_user = $( '#id_user' ).val();
 			var total = $( '#total' ).val();
 
+			var id_order_reference = $( '#id_order_reference' ).val();
+			var paid_by = $( '#paid_by' ).val();
+			var id_restaurant_paid_by = $( '#id_restaurant_paid_by' ).val();
+			var note = $( '#note' ).val();
+
 			if( value == '' ){
 				alert( 'Please type a value!' );
 				$( '#value' ).focus();
@@ -1423,7 +1432,7 @@ App.giftcards = {
 				$( '#id_restaurant' ).focus();
 				return;
 			}
-			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total };
+			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note };
 			var url = App.service + 'giftcard/generate';
 			$.ajax({
 				type: "POST",
@@ -1451,6 +1460,10 @@ App.giftcards = {
 			var id_restaurant = $( '#id_restaurant' ).val();
 			var phones = $( '#phones' ).val();
 			
+			var paid_by = $( '#paid_by' ).val();
+			var id_restaurant_paid_by = $( '#id_restaurant_paid_by' ).val();
+			var note = $( '#note' ).val();
+
 			if( phones == '' ){
 				alert( 'Please enter the phone(s) number!' );
 				$( '#phones' ).focus();
@@ -1469,7 +1482,7 @@ App.giftcards = {
 				return;
 			}
 
-			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'phones' : phones };
+			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'phones' : phones, 'paid_by' : paid_by, 'id_restaurant_paid_by' : id_restaurant_paid_by, 'note' : note };
 			var url = App.service + 'giftcard/bunchsms';
 			$.ajax({
 				type: "POST",
@@ -1499,6 +1512,10 @@ App.giftcards = {
 			var subject = $( '#subject' ).val();
 			var content = $( '#content' ).val();
 			
+			var paid_by = $( '#paid_by' ).val();
+			var id_restaurant_paid_by = $( '#id_restaurant_paid_by' ).val();
+			var note = $( '#note' ).val();
+
 			if( emails == '' ){
 				alert( 'Please enter the email(s) number!' );
 				$( '#emails' ).focus();
@@ -1529,7 +1546,7 @@ App.giftcards = {
 				return;
 			}
 
-			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'emails' : emails, 'subject':subject, 'content': content };
+			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'emails' : emails, 'subject':subject, 'content': content, 'paid_by' : paid_by, 'id_restaurant_paid_by' : id_restaurant_paid_by, 'note' : note };
 			var url = App.service + 'giftcard/bunchemail';
 			$.ajax({
 				type: "POST",

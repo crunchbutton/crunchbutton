@@ -30,6 +30,14 @@
 										</div></td>
 									</tr>
 									<?php } ?>
+								<?php if( $this->giftcard->id_order_reference ) { ?>
+									<tr>
+										<td class="label-sub">Order reference:</td>
+										<td class="content-sub"><div class="input-faker">
+											<a href="/vieworder/<?php echo $this->giftcard->order_reference()->uuid; ?>">#<?=$this->giftcard->id_order_reference;?></a>
+										</div></td>
+									</tr>
+									<?php } ?>
 								</tbody>
 							</table>
 						</div>
@@ -120,6 +128,19 @@
 										<td class="label-sub">Date:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->date()->format('M jS Y')?> - <?=$this->giftcard->date()->format('g:i:s A')?></div></td>
 									</tr>
+									<?php if( $this->giftcard->paid_by ) { ?>
+									<tr>
+										<td class="label-sub">Paid by:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->paid_by;?></div></td>
+									</tr>
+									
+									<?php } ?>
+									<?php if( $this->giftcard->restaurant_paid_by()->id_restaurant ) { ?>
+									<tr>
+										<td class="label-sub">Paid by restaurant:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->restaurant_paid_by()->name;?></div></td>
+									</tr>
+									<?php } ?>
 								</tbody>
 							</table>
 
@@ -149,6 +170,7 @@
 									</td>
 									<?php } ?>
 							</tr>
+
 						</table>
 				</td>
 			</tr>
