@@ -29,7 +29,11 @@ $headers = [
 	'Community',
 	'Restaurant Fax',
 	'Restaurant Email',
-	'Gift Card',
+	'Gift Card Total',
+	'Gift Card Crunchbutton',
+	'Gift Card Restaurant',
+	'Gift Card Promotional',
+	'Gift Card Other restaurant',
 	'Total Charged',
 	'Notes',
 ];
@@ -39,10 +43,18 @@ echo implode(',', $headers)."\n";
 <? foreach ($this->orders as $order) :
 	/* @var $order Crunchbutton_Order */
 	$date = $order->date();
-	if( $order->credit()->value ){
-		$credit = number_format($order->credit()->value,2);
+	if( $order->chargedByCredit() > 0 ){
+		$credit = number_format($order->chargedByCredit(),2);
+		$credit_crunchbutton = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_CRUNCHBUTTON );
+		$credit_restaurant = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_RESTAURANT );
+		$credit_promotional = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_PROMOTIONAL );
+		$credit_other_restaurant = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_OTHER_RESTAURANT );
 	} else {
 		$credit = '';
+		$credit_crunchbutton = '';
+		$credit_restaurant = '';
+		$credit_promotional = '';
+		$credit_other_restaurant = '';
 	}
 	$charged = number_format($order->charged(),2);
 	
@@ -70,7 +82,11 @@ echo implode(',', $headers)."\n";
 		<?=$order->community()->name?>,
 		"<?=$order->restaurant()->fax()         // Restaurant fax?>",
 		"<?=$order->restaurant()->email()       // Restaurant email?>",
-		"<?=$credit															// Credit value?>",
+		"<?=$credit															// Credit total value?>",
+		"<?=$credit_crunchbutton								// Credit paid by Crunchbutton?>",
+		"<?=$credit_restaurant									// Credit paid by the restaurant?>",
+		"<?=$credit_promotional									// Credit paid by promotional?>",
+		"<?=$credit_other_restaurant						// Credit paid by other restaurant?>",
 		"<?=$charged														// Total charged?>",
 		"<?=$order->notes?>"
 <?

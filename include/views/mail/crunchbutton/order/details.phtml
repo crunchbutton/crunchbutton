@@ -79,11 +79,11 @@
 		<td>$<?=number_format($order->final_price,2)?></td>
 	</tr>
 	
-	<?php if( $order->id_credit ) { ?>
+	<?php if( $order->chargedByCredit() > 0 ) { ?>
 	<tr style="font-weight:bold;">
 		<td></td>
 		<td style="text-align:right"><?php if( $order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>
-		<td>$<?=number_format($order->credit()->value,2)?></td>
+		<td>$<?=number_format($order->chargedByCredit(),2)?></td>
 	</tr>
 
 	<tr style="font-weight:bold;">
