@@ -54,6 +54,7 @@ class Crunchbutton_Promo extends Cana_Table
 		$credit->id_order_reference = $this->id_order_reference;
 		$credit->id_restaurant_paid_by = $this->id_restaurant_paid_by;
 		$credit->paid_by = $this->paid_by;
+		$credit->note = 'Giftcard: ' . $this->id_promo;
 		$credit->save();
 
 		$this->id_user = c::user()->id_user;
