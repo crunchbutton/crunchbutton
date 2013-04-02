@@ -29,6 +29,8 @@ $headers = [
 	'Community',
 	'Restaurant Fax',
 	'Restaurant Email',
+	'Gift Card',
+	'Total Charged',
 	'Notes',
 ];
 
@@ -37,6 +39,13 @@ echo implode(',', $headers)."\n";
 <? foreach ($this->orders as $order) :
 	/* @var $order Crunchbutton_Order */
 	$date = $order->date();
+	if( $order->credit()->value ){
+		$credit = number_format($order->credit()->value,2);
+	} else {
+		$credit = '';
+	}
+	$charged = number_format($order->charged(),2);
+	
 	ob_start();
 ?>
 		"<?=$order->restaurant()->name          // Restaurant Name?>",
@@ -61,6 +70,8 @@ echo implode(',', $headers)."\n";
 		<?=$order->community()->name?>,
 		"<?=$order->restaurant()->fax()         // Restaurant fax?>",
 		"<?=$order->restaurant()->email()       // Restaurant email?>",
+		"<?=$credit															// Credit value?>",
+		"<?=$charged														// Total charged?>",
 		"<?=$order->notes?>"
 <?
 	$output = ob_get_clean();
