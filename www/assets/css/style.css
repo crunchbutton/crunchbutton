@@ -2799,3 +2799,9 @@ strong {
 	text-decoration: underline;
 }
 
+
+
+.print-icon {
+	margin-bottom: 20px;
+	float: right;
+}

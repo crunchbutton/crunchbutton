@@ -1,5 +1,6 @@
 <div class="content-padder-before"></div>
 <div class="order-info content-padder main-content-readable">
+
 	<span class="order-thanks-message">Crunched! We've saved your order for easy 1 click ordering next time.</span><br /><br />
 
 	<% if (user) { %>
@@ -56,3 +57,7 @@
 
 	</div>
 </div>
+
+<br />
+<a href="/vieworder/<%= order.uuid %>" class="print-icon" target="_blank"><div class="icon-print"></div> Print Receipt</a>
+<div class="divider"></div>
