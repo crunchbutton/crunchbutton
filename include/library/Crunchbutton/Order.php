@@ -640,6 +640,10 @@ class Crunchbutton_Order extends Cana_Table {
 			'type' => 'notification'
 		]);
 
+		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and status="callback" and `type`="confirm"');
+
+		Log::debug([ 'nl_count' => $nl->count(), 'type' => 'notification' ]);
+
 		// If restaurant has fax notification we should wait 5 min before send the confirmation #784
 		if( $this->restaurant()->hasFaxNotification() ){
 			$confirmationTime = c::config()->twilio->confirmFaxTime;
@@ -649,6 +653,11 @@ class Crunchbutton_Order extends Cana_Table {
 				Log::debug([ 'order' => $this->id_order, 'action' => 'confirmationTime :' . $confirmationTime, 'type' => 'notification' ]);
 		}
 
+		// Issue #974 - if it is the 2nd, 3rd, 4th... call the confirmation time should be 2 min even to hasFaxNotification
+		if( $nl->count() > 0 ){
+			$confirmationTime = c::config()->twilio->confirmTime;
+			Log::debug([ 'order' => $this->id_order, 'action' => 'confirmationTime :' . $confirmationTime, 'type' => 'notification' ]);
+		}
 		c::timeout(function() use($order) {
 			$order->confirm();
 		}, $confirmationTime, false);
