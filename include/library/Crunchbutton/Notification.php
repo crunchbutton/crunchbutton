@@ -56,7 +56,7 @@ class Crunchbutton_Notification extends Cana_Table
 							'fax' => 'confirm_notification',
 							'type' => 'notification'
 						]);
-					$order->queConfirm();
+					// $order->queConfirm();
 				}
 
 				break;

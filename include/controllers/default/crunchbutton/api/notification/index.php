@@ -66,7 +66,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 									$notification->save();
 									if ($notification->order()->restaurant()->confirmation) {
 					Log::debug([
-							'fax' => 'confirm_callback',
+							'fax' => 'confirm_callbak',
 							'type' => 'notification'
 						]);
 										$notification->order()->queConfirm();
