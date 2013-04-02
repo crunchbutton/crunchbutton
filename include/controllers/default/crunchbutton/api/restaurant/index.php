@@ -113,6 +113,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 		if ($restaurant->id_restaurant) {
 			$where = [];
 			if (preg_match('/admin/i',$_SERVER['HTTP_REFERER'])) { // if API is being called by the admin
+				// @todo: refered can be spoofed!!! who put this here?! wtf?!
 				$where['Dish']['active'] = NULL;
 			}
 			$json = json_encode($restaurant->exports($ignore = [], $where));
