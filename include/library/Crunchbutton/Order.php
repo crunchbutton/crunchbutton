@@ -273,63 +273,36 @@ class Crunchbutton_Order extends Cana_Table {
 		return true;
 	}
 
-
 	public function calcFinalPriceMinusUsersCredit(){
 		if( c::user()->id_user ){
-			$credit = Crunchbutton_Credit::creditByUserRestaurant( c::user()->id_user, $this->id_restaurant );
+			$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $this->final_price, c::user()->id_user, $this->id_restaurant, $this->id_order, true );
+			$final = $this->final_price - $chargedByCredit;
+			if( $final < 0 ){
+				$final = 0;
+			}
+			return Util::ceil($final, 2);
 		} else {
-			$credit = 0;
+			return $this->final_price;
 		}
-		$final = $this->final_price - $credit;
-		if( $final < 0 ){
-			$final = 0;
+	}
+
+	public function chargedByCredit(){
+		$credits = Crunchbutton_Credit::creditByOrder( $this->id_order );
+		$totalCredit = 0;
+		if( $credits->count() > 0 ){
+			foreach( $credits as $credit ){
+				$totalCredit = $totalCredit + $credit->value;
+			}
 		}
-		return Util::ceil($final, 2);
+		return $totalCredit;
 	}
 
 	public function charged(){
-		if( $this->id_credit ){
-			$credit = Crunchbutton_Credit::o( $this->id_credit );
-			if( $credit->id_credit ){
-				$charged = $this->final_price - $credit->value;
-				return $charged;
-			}
-		}
-		return $this->final_price;
+		return $this->final_price - $this->chargedByCredit();
 	}
 
 	public function debitFromUserCredit(){
-		if( c::user()->id_user ){
-			$credit = Crunchbutton_Credit::creditByUserRestaurant( c::user()->id_user, $this->id_restaurant );
-		} else {
-			$credit = 0;
-		}
-		// Debit from the user's credit
-		if( $credit > 0 ){
-
-			if( $this->final_price < $credit ){
-				$amount = $this->final_price;
-				$creditLeft = $credit - $this->final_price;
-			} else {
-				$amount = $credit;
-				$creditLeft = 0;
-			}
-			$amount = Util::ceil( $amount, 2);
-
-			$debit = new Crunchbutton_Credit();
-			$debit->id_user = $this->_user->id_user;
-			$debit->type = Crunchbutton_Credit::TYPE_DEBIT;
-			$debit->id_order = $this->id_order;
-			$debit->id_restaurant = $this->id_restaurant;
-			$debit->date = date('Y-m-d H:i:s');
-			$debit->value = $amount;
-			$debit->save();
-			if( $debit->id_credit ){
-				$order = Crunchbutton_Order::o( $this->id_order );
-				$order->id_credit = $debit->id_credit;
-				$order->save();
-			}
-		}
+		Crunchbutton_Credit::debitFromUserCredit( $this->final_price, c::user()->id_user, $this->id_restaurant, $this->id_order );
 	}
 
 	public static function uuid($uuid) {
@@ -842,9 +815,9 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 
 				if ( $this->pay_type == 'card') {
-					if ($this->id_credit) {
+					if ( $this->chargedByCredit() > 0 ) {
 						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer has already paid for this order by credit card and gift card.';
-						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The gift card value was ' . $this->phoeneticNumber( $this->credit()->value ) . '.';
+						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The gift card value was ' . $this->phoeneticNumber( $this->chargedByCredit() ) . '.';
 						if( $this->charged() > 0 ){
 							$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The total charged was ' . $this->phoeneticNumber( $this->charged() ) . '.';	
 						} else {
@@ -856,9 +829,9 @@ class Crunchbutton_Order extends Cana_Table {
 					}
 					
 				} else {
-					if ($this->id_credit) {
+					if ( $this->chargedByCredit() > 0 ) {
 						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will pay for this order with cash and gift card.';	
-						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer used a gift card value ' . $this->phoeneticNumber( $this->credit()->value ) . '.';
+						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer used a gift card value ' . $this->phoeneticNumber( $this->chargedByCredit() ) . '.';
 						if( $this->charged() > 0 ){
 								$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">TThe total charged value should be ' . $this->phoeneticNumber( $this->charged() ) . '.';	
 							} else {
@@ -890,9 +863,9 @@ class Crunchbutton_Order extends Cana_Table {
 		$out['user'] = $this->user()->uuid;
 		$out['_message'] = nl2br($this->orderMessage('web'));
 		$out['charged'] = $this->charged();
-		if( $this->id_credit ){
-			$credit = Crunchbutton_Credit::o( $this->id_credit );
-			$out['credit'] = $credit->value;
+		$credit = $this->chargedByCredit();
+		if( $credit > 0 ){
+			$out['credit'] = $credit;
 		} else {
 			$out['credit'] = 0;
 		}
@@ -909,16 +882,16 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function refundGiftFromOrder(){
-		if( $this->id_credit ){
-			$value = $this->credit()->value;
-			$gift = new Crunchbutton_Credit();
-			$gift->id_user = $this->id_user;
-			$gift->type = Crunchbutton_Credit::TYPE_CREDIT;
-			$gift->id_restaurant = $this->id_restaurant;
-			$gift->date = date('Y-m-d H:i:s');
-			$gift->value = $value;
-			$gift->note = 'Refunded from order: ' . $this->id_order . '.';
-			$gift->save();
+		if( $this->chargedByCredit() ){
+			$credits = Crunchbutton_Credit::creditByOrder( $this->id_order );
+			if( $credits->count() > 0 ){
+				foreach( $credits as $credit ){
+					$old_value = $credit->value;
+					$credit->value = 0;
+					$credit->note = 'Value ' . $old_value . ' refunded from order: ' . $this->id_order . ' - ' . date('Y-m-d H:i:s');
+					$credit->save();
+				}
+			}
 		}
 	}
 
@@ -993,10 +966,6 @@ class Crunchbutton_Order extends Cana_Table {
 				return strtolower( $last_order->tip_type );
 			}
 			return null;
-	}
-
-	public function credit() {
-		return Crunchbutton_Credit::o( $this->id_credit );
 	}
 
 	public function community() {

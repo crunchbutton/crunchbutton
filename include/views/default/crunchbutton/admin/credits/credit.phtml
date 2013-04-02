@@ -15,6 +15,10 @@
 										<td class="content-sub"><div class="input-faker">$<?=$this->credit->value;?></div></td>
 									</tr>
 									<tr>
+										<td class="label-sub">Credit left:</td>
+										<td class="content-sub"><div class="input-faker">$<?=$this->credit->creditLeft();?></div></td>
+									</tr>
+									<tr>
 										<td class="label-sub">Type:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->credit->type;?></div></td>
 									</tr>
@@ -106,6 +110,44 @@
 					</div>
 				</td>
 			</tr>
+			<?php  
+				$debits = $this->credit->debitHistory(); 
+				if( $debits->count() > 0 ){
+			?>
+			<tr>
+				<td class="label-primary">History:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<?php foreach( $debits as $debit ){ ?>
+										<tr>
+											<td class="label-sub">Order:</td>
+											<td class="content-sub"><div class="input-faker"><a href="/vieworder/<?php echo $debit->order()->uuid; ?>"><?=$debit->order()->id_order;?></a></div></td>
+										</tr>
+										<tr>
+											<td class="label-sub">Charged:</td>
+											<td class="content-sub"><div class="input-faker">$<?php if( $debit->value ){ echo $debit->value; } else { echo 0;};?></div></td>
+										</tr>
+										<?php if( $debit->note ) { ?>
+										<tr>
+											<td class="label-sub">Note:</td>
+											<td class="content-sub"><div class="input-faker"><?php echo $debit->note;?></div></td>
+										</tr>
+										<?php } ?>
+										<tr>
+											<td>&nbsp;</td>
+											<td align="right">--------------------------------------------------------------------</td>
+										</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<?php } ?>
 			<?php if( $this->credit->promo()->id_promo ) { ?>
 			<tr>
 				<td class="label-primary">Gift Card:</td>
