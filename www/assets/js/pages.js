@@ -415,6 +415,10 @@ App.page.foodDelivery = function(refresh) {
 				name: '_open',
 				reverse: true
 			},
+      {
+        name: 'delivery',
+        reverse: true
+      },
 			{
 				name: '_weight',
 				primer: parseInt,
