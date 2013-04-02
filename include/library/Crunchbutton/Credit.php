@@ -27,6 +27,9 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function creditByUserRestaurant( $id_user, $id_restaurant ) {
+		if (!$id_user) {
+			return 0;
+		}
 		$query = 'SELECT SUM(`value`) as credit FROM ( SELECT SUM(`value`) as `value` FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user = '.$id_user.' AND id_restaurant = ' . $id_restaurant . ' UNION SELECT SUM(`value`) * -1 as `value` FROM credit WHERE type = "' . self::TYPE_DEBIT . '" AND id_user = '.$id_user.' AND id_restaurant = ' . $id_restaurant . ' ) credit';
 		$row = Cana::db()->get( $query );
 		if( $row->_items && $row->_items[0] ){
