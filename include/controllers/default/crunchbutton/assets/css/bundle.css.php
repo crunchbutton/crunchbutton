@@ -11,6 +11,9 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 	
 			$file = c::config()->dirs->www.'assets/css/style.css';
 			$css = file_get_contents($file);
+
+			$css .= file_get_contents(c::config()->dirs->www.'assets/css/font-awesome.css');
+
 			
 			if (strpos($_SERVER['HTTP_USER_AGENT'],'Windows') !== false) {
 				$file = c::config()->dirs->www.'assets/css/windows.css';
