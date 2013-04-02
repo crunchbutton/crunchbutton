@@ -504,6 +504,18 @@ class Crunchbutton_Order extends Cana_Table {
 			return;
 		}
 
+		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type = "confirm" and ( status = "queued" or status = "queued" ) ');
+		if( $nl->count() > 0 ){
+			Log::debug([
+			'order' => $this->id_order,
+			'action' => 'confirmation call already in process',
+			'host' => $_SERVER['__HTTP_HOST'],
+			'type' => 'notification'
+			]);
+
+			return;
+		}
+
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
 
