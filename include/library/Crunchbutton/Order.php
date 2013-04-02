@@ -624,7 +624,7 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 	}
 
-	public function queConfirm() {
+	public function queConfirm( $isCallback = false ) {
 		$order = $this;
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
@@ -634,11 +634,6 @@ class Crunchbutton_Order extends Cana_Table {
 		if( $nl->count() > 0 ){
 			return;
 		}
-		Log::debug([
-			'order' => $this->id_order,
-			'action' => 'confirm qued',
-			'type' => 'notification'
-		]);
 
 		// If restaurant has fax notification we should wait 5 min before send the confirmation #784
 		if( $this->restaurant()->hasFaxNotification() ){
@@ -648,6 +643,19 @@ class Crunchbutton_Order extends Cana_Table {
 			$confirmationTime = c::config()->twilio->confirmTime;
 				Log::debug([ 'order' => $this->id_order, 'action' => 'confirmationTime :' . $confirmationTime, 'type' => 'notification' ]);
 		}
+
+		if( $isCallback ){
+			$confirmationTime = c::config()->twilio->confirmTimeCallback;
+		}
+
+		Log::debug([
+			'order' => $this->id_order,
+			'action' => 'confirm qued',
+			'isCallback' => $isCallback,
+			'confirmationTime' => $confirmationTime,
+			'type' => 'notification'
+		]);
+
 
 		c::timeout(function() use($order) {
 			$order->confirm();
