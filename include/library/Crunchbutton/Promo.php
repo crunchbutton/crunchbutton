@@ -76,18 +76,19 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function queNotifySMS() {
-		//$promo = $this;
-		//Cana::timeout(function() use($promo) {
+		$promo = $this;
+		Cana::timeout(function() use($promo) {
 			$this->notifySMS();
-		//});
+		},1000);
 	}
 
 	public function queNotifyEMAIL() {
-		//$promo = $this;
-		//Cana::timeout(function() use($promo) {
+		$promo = $this;
+		Cana::timeout(function() use($promo) {
 			$this->notifyEMAIL();
-		//});
+		},1000);
 	}
+
 	public function notifyEMAIL() {
 
 		$url = 'http://' . $_SERVER['SERVER_NAME'] . '/giftcard/'. $this->code;
