@@ -59,7 +59,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		if ($nl->count() >= c::config()->twilio->maxconfirmback) {
 			$this->status = 'maxconfirmbackexceeded';
 			$this->save();
-
+			
 			if (c::env() != 'live') {
 				return;
 			}
@@ -79,7 +79,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			]);
 		} else {
 
-			$this->order()->queConfirm( true );
+			$this->order()->queConfirm();
 		}
 	}
 
