@@ -16,7 +16,10 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 		$this->view()->email		= $params['email'];
 		$this->view()->message		= $params['message'];
 		
-		$params['messageHtml']		= $this->view()->render('order/index',['display' => true, 'set' => ['order' => $params['order']]]);
+		$params['messageHtml']		= $this->view()->render('order/index',['display' => true, 'set' => [
+			'order' => $params['order'],
+			'user' => $params['user']
+		]]);
 
 		parent::__construct($params);				
 	}

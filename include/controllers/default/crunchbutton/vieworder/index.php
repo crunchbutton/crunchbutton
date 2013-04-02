@@ -10,7 +10,8 @@ class Controller_vieworder extends Cana_Controller {
 		$order = $order->get(0);
 
 		$mail = new Email_Order([
-			'order' => $order
+			'order' => $order,
+			'user' => true
 		]);
 		echo $mail->message();
 		exit;
