@@ -10,17 +10,15 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 	
 	public function queNotify() {
-		$support = $this;
-		Cana::timeout(function() use($support) {
+		// $support = $this;
+		//Cana::timeout(function() use($support) {
 			$support->notify();
-		});
+		//});
 	}
 	
 	public function notify() {
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
-
-		$phones = c::config()->suggestion->{$env}->phone;
 
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
@@ -40,7 +38,7 @@ class Crunchbutton_Support extends Cana_Table {
 
 		$message = str_split($message, 160);
 
-		$phone = c::config()->support->{$env}->phone;
+		$phone = 2037728167; //c::config()->support->{$env}->phone;
 
 		foreach ($message as $msg) {
 			$twilio->account->sms_messages->create(
