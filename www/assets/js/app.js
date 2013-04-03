@@ -23,7 +23,7 @@ var App = {
 		cardChanged: false,
 		pay_type: 'card',
 		delivery_type: 'delivery',
-		tip: '18'
+		tip: 'autotip'
 	},
 	signin : {},
 	suggestion : {},
@@ -31,6 +31,7 @@ var App = {
 		permalink : 'food-delivery',
 		list: false
 	},
+	defaultTip: 'autotip',
 	defaultRange : 2,
 	modal: {},
 	hasBack: false,
@@ -480,11 +481,12 @@ App.cart = {
 		for (var x in App.cart.items) {
 			totalItems++;
 		}
+		App.updateAutotipValue();
 
 		/* If the user changed the delivery method to takeout and the payment is card
-		 * the default tip will be 0%. If the delivery method is delivery and the payment is card
-		 * the default tip will be 15% (variable App.order.tip).
-		 * If the user had changed the tip value the default value will be chosed one.
+		 * the default tip will be 0%. If the delivery method is delivery and the payment is 
+		 * card the default tip will be autotip.
+		 * If the user had changed the tip value the default value will be the chosen one.
 		 */
 		var wasTipChanged = false;
 		if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
@@ -494,7 +496,7 @@ App.cart = {
 			}
 		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
 			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = ( App.config.user.last_tip ) ? App.config.user.last_tip : 18; // Default value is 18
+				App.order.tip = ( App.config.user.last_tip ) ? App.config.user.last_tip : 'autotip';
 				App.order.tip = App.lastTipNormalize( App.order.tip );
 				wasTipChanged = true;
 			}
@@ -818,6 +820,7 @@ App.cart = {
 
 		if (order.pay_type == 'card') {
 			order.tip = App.order.tip || '3';
+			order.autotip_value = $('[name=pay-autotip-value]').val();
 		}
 
 		if (read) {
@@ -1023,6 +1026,9 @@ Issue 13: Removed the password for while
 	_breakdownTip: function(total) {
 		var tip = 0;
 		if (App.order['pay_type'] == 'card') {
+			if (App.order.tip === 'autotip') {
+				return parseFloat($('[name=pay-autotip-value]').val());
+			}
 			tip = (total * (App.order.tip/100));
 		}
 		tip = App.ceil(tip);
@@ -1194,23 +1200,42 @@ App.processConfig = function(json, user) {
 		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];
 		App.order['delivery_type'] = App.config.user['delivery_type'];
-		var lastTip = App.config.user['last_tip'] || 18;
+		var lastTip = App.config.user['last_tip'] || 'autotip';
 		lastTip = App.lastTipNormalize( lastTip );
 		App.order['tip'] = lastTip;
 	}
 };
 
-App.lastTipNormalize = function( lastTip ){
-	lastTip = parseInt( lastTip );
-	// it means the last tipped order was using dollar value
-	if( App.config.user && App.config.user.last_tip_type && App.config.user.last_tip_type == 'number' ){
-		return 18;
+App.updateAutotipValue = function() {
+	var subtotal = App.cart.totalbreakdown().subtotal;
+	var autotipValue
+	if(subtotal === 0) {
+		autotipValue = 0;
 	}
-	// it means the last tipped value is not at the permitted value, return 18 as default.
+	else {
+		// the holy formula - see github/#940
+		autotipValue = Math.ceil(4*(subtotal * 0.107 + 0.85)) / 4;
+	}
+	$('[name="pay-autotip-value"]').val(autotipValue);
+	var autotipText = autotipValue ? ' ($' + autotipValue + ')' : '';
+	$('[name=pay-tip] [value=autotip]').html('Autotip' + autotipText);
+};
+
+App.lastTipNormalize = function( lastTip ){
+
+	if( lastTip === 'autotip' ) {
+		return lastTip;
+	}
+
+	lastTip = parseInt( lastTip );
+	if( App.config.user && App.config.user.last_tip_type && App.config.user.last_tip_type == 'number' ){
+		return App.defaultTip;
+	}
+	// it means the last tipped value is not at the permitted value, return default.
 	if( App.tips.indexOf( lastTip ) > 0 ){
 		lastTip = lastTip;
 	} else {
-		lastTip = 18;
+		lastTip = App.defaultTip;
 	}
 	return lastTip;
 }
