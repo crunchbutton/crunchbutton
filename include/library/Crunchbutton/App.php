@@ -41,8 +41,6 @@ class Crunchbutton_App extends Cana_App {
 				break;
 		}
 
-		$_SERVER['__HTTP_HOST_CALLBACK'] = $_SERVER['__HTTP_HOST'];
-
 		switch ($_SERVER['__HTTP_HOST']) {
 			case 'crunchbutton.localhost':
 			case 'wenzel.localhost':
