@@ -82,7 +82,7 @@ class Crunchbutton_Notification extends Cana_Table
 					'order' => $order->id_order,
 					'action' => 'send order call',
 					'num' => $num,
-					'host' => $_SERVER['__HTTP_HOST'],
+					'host' => $_SERVER['HTTP_HOST'],
 					'callback' => $callback,
 					'type' => 'notification'
 				]);
@@ -98,9 +98,9 @@ class Crunchbutton_Notification extends Cana_Table
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoingRestaurant,
 					'+1'.$num,
-					'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$order->id_order.'/say?id_notification='.$this->id_notification,
+					'http://'.$_SERVER['HTTP_HOST'].'/api/order/'.$order->id_order.'/say?id_notification='.$this->id_notification,
 					[
-						'StatusCallback' => 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/callback'
+						'StatusCallback' => 'http://'.$_SERVER['HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/callback'
 //						'IfMachine' => 'Hangup'
 					]
 				);
