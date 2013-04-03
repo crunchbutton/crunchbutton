@@ -44,7 +44,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					Log::debug([
 							'order' => $order->id_order,
 							'action' => '/sayorder (accepted)',
-							'host' => $_SERVER['HTTP_HOST'],
+							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
 						]);
 
@@ -95,7 +95,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						Log::debug([
 							'order' => $order->id_order,
 							'action' => '/sayorderonly: 2: CONFIRMED',
-							'host' => $_SERVER['HTTP_HOST'],
+							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
 						]);
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
@@ -139,7 +139,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						Log::debug([
 							'order' => $order->id_order,
 							'action' => '/doconfirm: 1: CONFIRMED',
-							'host' => $_SERVER['HTTP_HOST'],
+							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
 						]);
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
@@ -158,7 +158,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						Log::debug([
 							'order' => $order->id_order,
 							'action' => 'RESEND',
-							'host' => $_SERVER['HTTP_HOST'],
+							'host' => $_SERVER['__HTTP_HOST'],
 							'type' => 'notification'
 						]);
 
