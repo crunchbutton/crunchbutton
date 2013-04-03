@@ -222,10 +222,10 @@ input.notification {width: 400px;}
 									<td class="label-sub">Delivery Fee?</td>
 									<td class="content-sub">
 										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="delivery_fee_check" value="0" class="bind-a-check"><label>No</label></div>
+											<div class="check"><input type="checkbox" name="delivery_fee_check" value="0" class="bind-a-check-values"><label>No</label></div>
 										</div>
 										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="delivery_fee_check" value="1" class="bind-a-check"><label>Yes</label></div>
+											<div class="check"><input type="checkbox" name="delivery_fee_check" value="1" class="bind-a-check-values"><label>Yes</label></div>
 											<div class="check-content">
 												$ <input name="delivery_fee" step="any" min="0" class="form-number dataset-restaurant">
 											</div>
@@ -236,10 +236,10 @@ input.notification {width: 400px;}
 									<td class="label-sub">Minimum order for delivery?</td>
 									<td class="content-sub">
 										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="delivery_min_check" value="0" class="bind-a-check"><label>No</label></div>
+											<div class="check"><input type="checkbox" name="delivery_min_check" value="0" class="bind-a-check-values"><label>No</label></div>
 										</div>
 										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="delivery_min_check" value="1" class="bind-a-check"><label>Yes</label></div>
+											<div class="check"><input type="checkbox" name="delivery_min_check" value="1" class="bind-a-check-values"><label>Yes</label></div>
 											<div class="check-content">
 												$ <input name="delivery_min" step="any" min="0" class="form-number dataset-restaurant">
 											</div>
@@ -282,12 +282,13 @@ input.notification {width: 400px;}
 									<td class="label-sub">Include in a community?</td>
 									<td class="content-sub">
 										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="id_community_check" value="0" class="bind-a-check"><label>No</label></div>
+											<div class="check"><input type="checkbox" name="id_community_check" value="0" class="bind-a-check-values"><label>No</label></div>
 										</div>
 										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="id_community_check" value="1" class="bind-a-check"><label>Yes</label></div>
+											<div class="check"><input type="checkbox" name="id_community_check" value="1" class="bind-a-check-values"><label>Yes</label></div>
 											<div class="check-content">
 												<select name="id_community" class="dataset-restaurant">
+													<option value="0">[remove communites]</option>
 													<? foreach ($this->communities as $community) : ?>
 														<? /* @var $community Crunchbutton_Community */ ?>
 														<option value="<?=$community->id_community?>"
@@ -379,10 +380,10 @@ input.notification {width: 400px;}
 									<td class="label-sub">Restaurant Fee?</td>
 									<td class="content-sub">
 										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="fee_restaurant_check" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
+											<div class="check"><input type="checkbox" name="fee_restaurant_check" value="0" class="dataset-restaurant bind-a-check-values"><label>No</label></div>
 										</div>
 										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="fee_restaurant_check" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
+											<div class="check"><input type="checkbox" name="fee_restaurant_check" value="1" class="dataset-restaurant bind-a-check-values"><label>Yes</label></div>
 											<div class="check-content">
 												<input name="fee_restaurant" step="any" min="0" class="form-number dataset-restaurant change-a-check"> %
 											</div>
@@ -393,10 +394,10 @@ input.notification {width: 400px;}
 									<td class="label-sub">Customer Fee?</td>
 									<td class="content-sub">
 										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="fee_customer_check" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
+											<div class="check"><input type="checkbox" name="fee_customer_check" value="0" class="dataset-restaurant bind-a-check-values"><label>No</label></div>
 										</div>
 										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="fee_customer_check" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
+											<div class="check"><input type="checkbox" name="fee_customer_check" value="1" class="dataset-restaurant bind-a-check-values"><label>Yes</label></div>
 											<div class="check-content">
 												<input name="fee_customer" step="any" min="0" class="form-number dataset-restaurant change-a-check"> %
 											</div>
