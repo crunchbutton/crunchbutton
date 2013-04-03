@@ -504,10 +504,19 @@ class Crunchbutton_Order extends Cana_Table {
 			return;
 		}
 
+		Log::debug([
+			'order' => $this->id_order,
+			'confirmed' =>$this->confirmed,
+			'action' => 'check confirmed',
+			'host' => $_SERVER['__HTTP_HOST'],
+			'type' => 'notification'
+		]);
+
 		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type = "confirm" and ( status = "created" or status = "queued" ) ');
 		if( $nl->count() > 0 ){
 			Log::debug([
 			'order' => $this->id_order,
+			'count' => $nl->count(),
 			'action' => 'confirmation call already in process',
 			'host' => $_SERVER['__HTTP_HOST'],
 			'type' => 'notification'
@@ -516,6 +525,7 @@ class Crunchbutton_Order extends Cana_Table {
 		} else {
 			Log::debug([
 			'order' => $this->id_order,
+			'count' => $nl->count(),
 			'action' => 'starting new confirmation call',
 			'host' => $_SERVER['__HTTP_HOST'],
 			'type' => 'notification'
