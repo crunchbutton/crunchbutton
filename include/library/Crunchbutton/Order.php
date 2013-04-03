@@ -521,7 +521,7 @@ class Crunchbutton_Order extends Cana_Table {
 			'type' => 'notification'
 		]);
 
-		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type = "confirm" and ( status = "created" or status = "queued" ) ');
+		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type = "confirm" and ( status = "created" or status = "queued" or status ="success" ) ');
 		if( $nl->count() > 0 ){
 			Log::debug([
 			'order' => $this->id_order,
