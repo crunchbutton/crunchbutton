@@ -513,20 +513,30 @@ class Crunchbutton_Order extends Cana_Table {
 			return;
 		}
 
+		Log::debug([
+			'order' => $this->id_order,
+			'confirmed' =>$this->confirmed,
+			'action' => 'check confirmed',
+			'host' => $_SERVER['HTTP_HOST_CALLBACK'],
+			'type' => 'notification'
+		]);
+
 		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type = "confirm" and ( status = "created" or status = "queued" ) ');
 		if( $nl->count() > 0 ){
 			Log::debug([
 			'order' => $this->id_order,
+			'count' => $nl->count(),
 			'action' => 'confirmation call already in process',
-			'host' => $_SERVER['__HTTP_HOST'],
+			'host' => $_SERVER['HTTP_HOST_CALLBACK'],
 			'type' => 'notification'
 			]);
 			return;
 		} else {
 			Log::debug([
 			'order' => $this->id_order,
+			'count' => $nl->count(),
 			'action' => 'starting new confirmation call',
-			'host' => $_SERVER['__HTTP_HOST'],
+			'host' => $_SERVER['HTTP_HOST_CALLBACK'],
 			'type' => 'notification'
 			]);
 		}
@@ -543,16 +553,16 @@ class Crunchbutton_Order extends Cana_Table {
 
 		/*
 		$num = '_PHONE_';
-		$_SERVER['__HTTP_HOST'] = 'dev.crunchr.co';
+		$_SERVER['HTTP_HOST_CALLBACK'] = 'dev.crunchr.co';
 		*/
 
-		$callback = 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/confirm';
+		$callback = 'http://'.$_SERVER['HTTP_HOST_CALLBACK'].'/api/notification/'.$log->id_notification_log.'/confirm';
 
 		Log::debug([
 			'order' => $this->id_order,
 			'action' => 'dial confirm call',
 			'num' => $num,
-			'host' => $_SERVER['__HTTP_HOST'],
+			'host' => $_SERVER['HTTP_HOST_CALLBACK'],
 			'callback' => $callback,
 			'type' => 'notification'
 		]);
@@ -561,7 +571,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingRestaurant,
 			'+1'.$num,
-			'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$this->id_order.'/doconfirm',
+			'http://'.$_SERVER['HTTP_HOST_CALLBACK'].'/api/order/'.$this->id_order.'/doconfirm',
 			[
 				'StatusCallback' => $callback
 //                'IfMachine' => 'Hangup'
