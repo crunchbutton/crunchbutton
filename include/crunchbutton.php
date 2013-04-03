@@ -38,7 +38,6 @@ if (!isset($_SERVER['HTTP_HOST'])) {
 
 $_SERVER['__HTTP_HOST'] = $_SERVER['HTTP_HOST'];
 
-
 spl_autoload_register(function ($className) {
 
 	foreach ($GLOBALS['config']['alias'] as $k => $v) {

@@ -18,6 +18,8 @@ class Crunchbutton_App extends Cana_App {
 			$cli = true;
 		}
 
+		$_SERVER['HTTP_HOST_CALLBACK'] = $_SERVER['SERVER_NAME'];
+
 		$params['postInitSkip'] = true;
 		switch ($_SERVER['__HTTP_HOST']) {
 			case 'staging.crunchr.co':

@@ -1080,6 +1080,26 @@ $(function() {
 		}
 	});
 
+	$(document).on('click', '.bind-a-check-values', function(e) {
+		var name   = $(this).attr('name');
+		var value  = $(this).attr('value');
+		var parent = $(this).closest('.content-sub').length ? $(this).closest('.content-sub') : $(this).closest('.content-primary');
+
+		$(this).prop('checked', true);
+		parent.find('input[name="' + name + '"][value="' + (value == '1' ? '0' : '1') + '"]').prop('checked', false);
+
+		var input_name = name.replace( '_check', '' );
+		var input = parent.find('[name='+input_name+']');
+		if (value == '1') {
+			parent.find('.check-content').fadeIn();
+			input.val( input.attr( 'old-value' ) || 0 );
+		} else {
+			parent.find('.check-content').fadeOut();
+			input.attr( 'old-value', input.val() );
+			input.val(0)
+		}
+	});
+
 	if ($('.date-picker').length) {
 		var d = $('.date-picker').val();
 		d = d.split(',');

@@ -11,16 +11,14 @@ class Crunchbutton_Support extends Cana_Table {
 	
 	public function queNotify() {
 		$support = $this;
-		Cana::timeout(function() use($support) {
+		//Cana::timeout(function() use($support) {
 			$support->notify();
-		});
+		//});
 	}
 	
 	public function notify() {
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
-
-		$phones = c::config()->suggestion->{$env}->phone;
 
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 

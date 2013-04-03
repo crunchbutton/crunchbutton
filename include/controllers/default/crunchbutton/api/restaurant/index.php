@@ -65,6 +65,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 				$request[$key] = null;
 			}
 		}
+		// echo var_dump($request);exit;
 		$restaurant->serialize($request);
 		$restaurant->save();
 
@@ -84,6 +85,13 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 				$rc->save();
 			}
 		}
+
+		// Removes restaurant from community
+		if( $this->request()['id_community'] == 0 ){
+			$rc = Crunchbutton_Restaurant_Community::q('select * from restaurant_community where id_restaurant="'.$restaurant->id_restaurant.'"');
+			$rc->delete();
+		}
+
 		Crunchbutton_Session::flashMessage('Your data has been saved.');
 		echo $restaurant->json();
 	}
