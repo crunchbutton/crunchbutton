@@ -82,11 +82,17 @@ class Crunchbutton_App extends Cana_App {
 							case '/home/dev.crunchbutton/include/library/Crunchbutton':
 								$params['env'] = 'beta';
 								$_SERVER['__HTTP_HOST'] = 'beta.crunchr.co';
+								$host_callback = 'beta.crunchr.co';
 								break;
 							case '/home/crunchbutton/include/library/Crunchbutton':
+								$params['env'] = 'live';
+								$_SERVER['__HTTP_HOST'] = '_DOMAIN_';
+								$host_callback = '_DOMAIN_';
+								break;
 							case '/home/staging.crunchbutton/include/library/Crunchbutton':
 								$params['env'] = 'live';
 								$_SERVER['__HTTP_HOST'] = '_DOMAIN_';
+								$host_callback = 'staging.crunchr.co';
 								break;
 							default:
 								$params['env'] = 'local';
@@ -132,7 +138,7 @@ class Crunchbutton_App extends Cana_App {
 		
 		$config = $this->config();
 
-		$config->host_callback = $host;
+		$config->host_callback = $host_callback;
 
 		$config->facebook->app = $config->facebook->{$env}->app;
 		$config->facebook->secret = $config->facebook->{$env}->secret;
