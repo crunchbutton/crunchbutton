@@ -508,7 +508,7 @@ class Crunchbutton_Order extends Cana_Table {
 			'order' => $this->id_order,
 			'confirmed' =>$this->confirmed,
 			'action' => 'check confirmed',
-			'host' => $_SERVER['HTTP_HOST'],
+			'host' => $_SERVER['__HTTP_HOST'],
 			'type' => 'notification'
 		]);
 
@@ -518,7 +518,7 @@ class Crunchbutton_Order extends Cana_Table {
 			'order' => $this->id_order,
 			'count' => $nl->count(),
 			'action' => 'confirmation call already in process',
-			'host' => $_SERVER['HTTP_HOST'],
+			'host' => $_SERVER['__HTTP_HOST'],
 			'type' => 'notification'
 			]);
 			return;
@@ -527,7 +527,7 @@ class Crunchbutton_Order extends Cana_Table {
 			'order' => $this->id_order,
 			'count' => $nl->count(),
 			'action' => 'starting new confirmation call',
-			'host' => $_SERVER['HTTP_HOST'],
+			'host' => $_SERVER['__HTTP_HOST'],
 			'type' => 'notification'
 			]);
 		}
@@ -544,16 +544,16 @@ class Crunchbutton_Order extends Cana_Table {
 
 		/*
 		$num = '_PHONE_';
-		$_SERVER['__HTTP_HOST'] = 'dev.crunchr.co';
+		$_SERVER['____HTTP_HOST'] = 'dev.crunchr.co';
 		*/
 
-		$callback = 'http://'.$_SERVER['HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/confirm';
+		$callback = 'http://'.$_SERVER['__HTTP_HOST'].'/api/notification/'.$log->id_notification_log.'/confirm';
 
 		Log::debug([
 			'order' => $this->id_order,
 			'action' => 'dial confirm call',
 			'num' => $num,
-			'host' => $_SERVER['HTTP_HOST'],
+			'host' => $_SERVER['__HTTP_HOST'],
 			'callback' => $callback,
 			'type' => 'notification'
 		]);
@@ -562,7 +562,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingRestaurant,
 			'+1'.$num,
-			'http://'.$_SERVER['HTTP_HOST'].'/api/order/'.$this->id_order.'/doconfirm',
+			'http://'.$_SERVER['__HTTP_HOST'].'/api/order/'.$this->id_order.'/doconfirm',
 			[
 				'StatusCallback' => $callback
 //                'IfMachine' => 'Hangup'

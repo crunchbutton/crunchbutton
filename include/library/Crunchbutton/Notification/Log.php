@@ -34,7 +34,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				'customer_phone' => $this->order()->phone,
 				'customer_name' => $this->order()->name,
 				'action' => '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone()."\n C# ".$this->order()->phone(),
-				'host' => $_SERVER['HTTP_HOST'],
+				'host' => $_SERVER['__HTTP_HOST'],
 				'type' => 'notification'
 			]);
 
@@ -74,7 +74,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				'customer_phone' => $this->order()->phone,
 				'customer_name' => $this->order()->name,
 				'action' => '#'.$this->id_order.' MAX CONFIRM CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone()."\nC# ".$this->order()->phone(),
-				'host' => $_SERVER['HTTP_HOST'],
+				'host' => $_SERVER['__HTTP_HOST'],
 				'type' => 'notification'
 			]);
 		} else {
