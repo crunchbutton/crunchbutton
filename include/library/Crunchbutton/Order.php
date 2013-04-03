@@ -613,10 +613,10 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function que() {
 		$order = $this;
-		//Cana::timeout(function() use($order) {
+		Cana::timeout(function() use($order) {
 			/* @var $order Crunchbutton_Order */
 			$order->notify();
-	//	});
+		});
 
 		if (!$this->restaurant()->confirmation) {
 			c::timeout(function() use($order) {
