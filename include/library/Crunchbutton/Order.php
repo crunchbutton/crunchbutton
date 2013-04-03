@@ -90,9 +90,18 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// tip
 		$this->tip = $params['tip'];
-		$tip = ($this->price * ($this->tip/100));
-		$tip = Util::ceil($tip, 2);
-		$this->tip_type = static::TIP_PERCENT;
+
+		if(!strcmp($this->tip, 'autotip')) {
+			$this->tip = floatval($params['autotip_value']);
+			$tip = $this->tip;
+			$tip = Util::ceil($tip, 2);
+			$this->tip_type = static::TIP_NUMBER;
+		}
+		else {
+			$tip = ($this->price * ($this->tip/100));
+			$tip = Util::ceil($tip, 2);
+			$this->tip_type = static::TIP_PERCENT;
+		}
 
 		// tax
 		$this->tax = $this->restaurant()->tax;

@@ -152,11 +152,14 @@
 
 			<div class="divider"></div><label class="card-only">Tip</label>
 			<div class="input-item card-only">
+
+        <input type="hidden" name="pay-autotip-value" value="0"/>
 				<select name="pay-tip" class="tip" tabindex="9">
+            <option value="autotip" selected>Autotip</option>
 					<% _.each(App.tips, function(tip) { 
-							text = ( tip == 0 ) ? 'tip with cash' : tip + '%';
+							text = ( tip == 0 ) ? 'Tip with cash' : tip + '%';
 						%>
-						<option value="<%= tip %>"<%= form.tip == x ? ' selected' : '' %>><%= text %></option>
+						<option value="<%= tip %>"><%= text %></option>
 					<% }); %>
 				</select>
 				<div class="divider"></div>
