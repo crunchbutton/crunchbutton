@@ -25,8 +25,5 @@ if (preg_match('/^www\..*$/',$_SERVER['HTTP_HOST'])) {
 	exit;
 }
 
-// variable used at callbacks twilio/phaxio.
-$_SERVER['__HTTP_HOST_CALLBACK'] = $_SERVER['HTTP_HOST'];
-
 require_once '../include/crunchbutton.php';
 Cana::app()->displayPage();
