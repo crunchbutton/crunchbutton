@@ -513,6 +513,13 @@ class Crunchbutton_Order extends Cana_Table {
 			'type' => 'notification'
 			]);
 			return;
+		} else {
+			Log::debug([
+			'order' => $this->id_order,
+			'action' => 'starting new confirmation call',
+			'host' => $_SERVER['__HTTP_HOST'],
+			'type' => 'notification'
+			]);
 		}
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
@@ -614,13 +621,13 @@ class Crunchbutton_Order extends Cana_Table {
 			return;
 		}
 		// Check if there are another confirm que, if it does it will not send two confirms. Just one is enough.
-		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type = "confirm" and ( status = "queued" or status = "queued" ) ');
+		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type = "confirm" and ( status = "created" or status = "queued" ) ');
 		if( $nl->count() > 0 ){
-	
 			return;
 		}
 		Log::debug([
 			'order' => $this->id_order,
+			'confirmed' => $this->confirmed,
 			'action' => 'confirm qued',
 			'type' => 'notification'
 		]);
