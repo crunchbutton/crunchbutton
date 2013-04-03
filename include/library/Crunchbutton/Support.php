@@ -38,7 +38,7 @@ class Crunchbutton_Support extends Cana_Table {
 
 		$message = str_split($message, 160);
 
-		$phone = 2037728167; //c::config()->support->{$env}->phone;
+		$phone = c::config()->support->{$env}->phone;
 
 		foreach ($message as $msg) {
 			$twilio->account->sms_messages->create(
