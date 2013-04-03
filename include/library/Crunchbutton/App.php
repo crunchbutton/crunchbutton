@@ -18,7 +18,7 @@ class Crunchbutton_App extends Cana_App {
 			$cli = true;
 		}
 
-		$_SERVER['HTTP_HOST_CALLBACK'] = $_SERVER['SERVER_NAME'];
+		$host = $_SERVER['__HTTP_HOST'];
 
 		$params['postInitSkip'] = true;
 		switch ($_SERVER['__HTTP_HOST']) {
@@ -112,6 +112,7 @@ class Crunchbutton_App extends Cana_App {
 			}
 		}
 
+
 		parent::init($params);
 
 		$domain = new Cana_Model;
@@ -130,6 +131,8 @@ class Crunchbutton_App extends Cana_App {
 		}
 		
 		$config = $this->config();
+
+		$config->host_callback = $host;
 
 		$config->facebook->app = $config->facebook->{$env}->app;
 		$config->facebook->secret = $config->facebook->{$env}->secret;
