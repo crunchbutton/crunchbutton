@@ -11,14 +11,20 @@ class Crunchbutton_Auth {
 		// here we need to check for a token
 		// if we dont have a valid token, we need to check for a facebook cookie
 		// then if none of thats good just return a blank user object
-
 		if ($_COOKIE['token'] && !$this->session()->id_user) {
 			$sess = Session::token($_COOKIE['token']);
-// echo '<pre>';
-			// var_dump($sess);exit;
 			if ($sess->id_user) {
-				$this->session()->id_user = $sess->id_user;
-				$this->session()->token   = $_COOKIE['token'];
+				$token = $_COOKIE['token'];
+				$data = $sess->data;
+				$id_user = $sess->id_user;
+				// Issue #973 - if the new id_session is different of the new one it means it is another session
+				// the old session must to be deleted
+				if( $this->session()->id_session != $sess->id_session ){
+					$this->session()->data = $data;
+					Session::deleteToken( $token );
+				}
+				$this->session()->id_user = $id_user;
+				$this->session()->token   = $token;
 			} else { // if no id_user in session, delete cookie and session in DB as it's not used, see #624
 				Session::deleteToken($_COOKIE['token']);
 				setcookie('token','',0,'/');
