@@ -175,19 +175,10 @@ App.loc = {
 		};
 		
 		var error = function() {
-			// Last try
-			if( App.loc.aproxLoc ){
-				console.log( 'try reverse code of the aproxLoc' );
-				App.loc.reverseGeocode( App.loc.aproxLoc.lat, App.loc.aproxLoc.lat, function() {
-					success();
-				}, function(){ /* do nothing */ });	
-			}
-			
 			// browser detection error
 		};
 
 		var complete = function(lat, lon, city, region) {
-			
 			if (lat) {
 				// we have a location! but its just a guess
 				App.loc.aproxLoc = {
@@ -198,7 +189,7 @@ App.loc = {
 				};
 			} else {
 				// if we dont have a location, then lets ask for an address
-				 App.loc.aproxLoc = null;
+				App.loc.aproxLoc = null;
 			}
 
 			App.loc.loaded = true;
