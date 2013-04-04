@@ -175,7 +175,14 @@ App.loc = {
 		};
 		
 		var error = function() {
-			console.log('178: App.loc.aproxLoc',App.loc.aproxLoc);
+			// Last try
+			if( App.loc.aproxLoc ){
+				console.log( 'try reverse code of the aproxLoc' );
+				App.loc.reverseGeocode( App.loc.aproxLoc.lat, App.loc.aproxLoc.lat, function() {
+					success();
+				}, function(){ /* do nothing */ });	
+			}
+			
 			// browser detection error
 		};
 
@@ -193,7 +200,7 @@ App.loc = {
 				// if we dont have a location, then lets ask for an address
 				 App.loc.aproxLoc = null;
 			}
-console.log('App.loc.aproxLoc',App.loc.aproxLoc);
+
 			App.loc.loaded = true;
 			$(document).trigger('location-loaded');
 			
