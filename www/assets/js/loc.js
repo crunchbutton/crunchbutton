@@ -175,10 +175,12 @@ App.loc = {
 		};
 		
 		var error = function() {
+			console.log('178: App.loc.aproxLoc',App.loc.aproxLoc);
 			// browser detection error
 		};
 
 		var complete = function(lat, lon, city, region) {
+			
 			if (lat) {
 				// we have a location! but its just a guess
 				App.loc.aproxLoc = {
@@ -189,9 +191,9 @@ App.loc = {
 				};
 			} else {
 				// if we dont have a location, then lets ask for an address
-				App.loc.aproxLoc = null;
+				 App.loc.aproxLoc = null;
 			}
-
+console.log('App.loc.aproxLoc',App.loc.aproxLoc);
 			App.loc.loaded = true;
 			$(document).trigger('location-loaded');
 			
