@@ -59,6 +59,7 @@ App.loc = {
 
 	// get the location from the browsers geolocation
 	getLocationByBrowser: function(success, error) {
+
 		if (navigator.geolocation) {
 			App.loc.timerId = setTimeout(function() {
 				error();
@@ -175,10 +176,18 @@ App.loc = {
 		};
 		
 		var error = function() {
-			// browser detection error
+			// Last try, reverseGeocode with aproxLoc
+			if( App.loc.aproxLoc ){
+				console.log( '' );
+				App.loc.realLoc = App.loc.aproxLoc;
+				App.loc.reverseGeocode( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon, function() {
+					success();
+				}, function(){ /* do nothing - detection error */ });	
+			}
 		};
 
 		var complete = function(lat, lon, city, region) {
+			
 			if (lat) {
 				// we have a location! but its just a guess
 				App.loc.aproxLoc = {
@@ -189,7 +198,7 @@ App.loc = {
 				};
 			} else {
 				// if we dont have a location, then lets ask for an address
-				App.loc.aproxLoc = null;
+				 App.loc.aproxLoc = null;
 			}
 
 			App.loc.loaded = true;
@@ -291,6 +300,7 @@ App.loc = {
 		var latlng = new google.maps.LatLng(lat, lon);
 
 		geocoder.geocode({'latLng': latlng}, function(results, status) {
+
 			if (status == google.maps.GeocoderStatus.OK) {
 				if (results[1]) {
 					App.loc.setFormattedLocFromResult(results);
