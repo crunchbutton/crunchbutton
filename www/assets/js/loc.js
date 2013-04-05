@@ -178,7 +178,6 @@ App.loc = {
 		var error = function() {
 			// Last try, reverseGeocode with aproxLoc
 			if( App.loc.aproxLoc ){
-				console.log( 'reverseGeocode with aproxLoc' );
 				App.loc.realLoc = App.loc.aproxLoc;
 				App.loc.reverseGeocode( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon, function() {
 					success();
@@ -187,7 +186,6 @@ App.loc = {
 		};
 
 		var complete = function(lat, lon, city, region) {
-			console.log('complete',lat, lon, city, region);
 			if (lat) {
 				// we have a location! but its just a guess
 				App.loc.aproxLoc = {
@@ -212,7 +210,6 @@ App.loc = {
 
 		if (google.loader.ClientLocation) {
 			// we got a location back from google. use it
-			console.log( 'complete(google)' );
 			complete(
 				google.loader.ClientLocation.latitude,
 				google.loader.ClientLocation.longitude,
@@ -226,7 +223,6 @@ App.loc = {
 		} else {
 			// we have no location
 			complete();
-			console.log( 'complete()' );
 		}
 	},
 	
