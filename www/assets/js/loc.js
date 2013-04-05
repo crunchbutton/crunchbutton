@@ -187,7 +187,7 @@ App.loc = {
 		};
 
 		var complete = function(lat, lon, city, region) {
-			
+			console.log('complete',lat, lon, city, region);
 			if (lat) {
 				// we have a location! but its just a guess
 				App.loc.aproxLoc = {
@@ -212,6 +212,7 @@ App.loc = {
 
 		if (google.loader.ClientLocation) {
 			// we got a location back from google. use it
+			console.log( 'complete(google)' );
 			complete(
 				google.loader.ClientLocation.latitude,
 				google.loader.ClientLocation.longitude,
@@ -225,6 +226,7 @@ App.loc = {
 		} else {
 			// we have no location
 			complete();
+			console.log( 'complete()' );
 		}
 	},
 	
