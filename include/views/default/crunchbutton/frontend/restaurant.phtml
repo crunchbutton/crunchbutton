@@ -76,9 +76,9 @@
 		<% if (restaurant.delivery == '1' && restaurant.takeout == '1') { %>
 			<label class="pay-title-label">Delivery Info</label>
 			<div class="input-item toggle-wrapper clearfix">
-				<a href="javascript:;" class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</a>
+				<button class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</button>
 				<span class="toggle-spacer delivery-only-text">or</span>
-				<a href="javascript:;" class="delivery-toggle-takeout toggle-item">takeout</a>
+				<button class="delivery-toggle-takeout toggle-item">takeout</button>
 			</div>
 		<% } else if (restaurant.delivery == '1') { %>
 			<label class="pay-title-label">Delivery Info</label>
@@ -116,7 +116,7 @@
 
 			<label class="pay-title-label">Payment Method</label>
 			<div class="input-item toggle-wrapper">
-				<a href="javascript:;" class="pay-toggle-credit toggle-item"><span>card</span></a> <span class="toggle-spacer">or</span>  <a href="javascript:;" class="pay-toggle-cash toggle-item"><span>cash</span></a>
+				<button class="pay-toggle-credit toggle-item">card</button> <span class="toggle-spacer">or</span>  <button class="pay-toggle-cash toggle-item">cash</button>
 			</div><div class="divider"></div>
 
 			<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>

@@ -24,7 +24,7 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
-body {
+body, button {
 	line-height: 1;
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 }
@@ -618,16 +618,15 @@ html[xmlns] .clearfix {
 .toggle-item {
 	display: block;
 	float: left;
-}
-
-.toggle-item:not(.toggle-active) {
-	margin-top: 1px;
-}
-.personal-info .toggle-item {
-	width: 54px;
-}
-.payment-info .toggle-item {
-	width: 33px;
+	font-size: 14px;
+	background: #fff;
+	color: #d74924;
+	margin-left: 0;
+	border-radius: 4px;
+	border: 1px solid #cb5921;
+	padding: 6px 12px 6px 12px;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 .button-bottom-disabled:after {
@@ -1099,12 +1098,6 @@ html[xmlns] .clearfix {
 	margin-top: 2px;
 }
 
-.toggle-item {
-	border-radius: 4px;
-	border: 1px solid #cb5921;
-	padding: 6px 10px 6px 12px;
-	text-decoration: none;
-}
 
 .button-letseat-table {
 	width: 100%;
