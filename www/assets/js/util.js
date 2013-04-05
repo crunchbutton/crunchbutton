@@ -97,3 +97,29 @@ var sort_by;
         }
     }
 }());
+
+
+var touchclick = App.isMobile() ? 'touchend' : 'click';
+var touchup = App.isMobile() ? 'touchend' : 'mouseup';
+jQuery.event.special.touchclick = {
+	bindType: touchclick,
+	delegateType: touchclick
+};
+jQuery.event.special.touchup = {
+	bindType: touchup,
+	delegateType: touchup
+};
+
+
+// jquery plugin
+if (window.jQuery) {
+	(function($){
+		$.fn.checkToggle = function(params) {
+			var checks = $(this).filter('input[type="checkbox"]');
+			$(this).filter('input[type="checkbox"]').each(function() {		
+				$(this).prop('checked', !$(this).is(':checked'));
+			});
+			return this;
+		};
+	})(jQuery);
+}

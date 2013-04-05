@@ -5,23 +5,23 @@ App.signin.init = function() {
 
 	$('.wrapper').append(App.render('signin'));
 
-	$(document).on('click', '.signin-facebook-button', function() {
+	$(document).on('touchclick', '.signin-facebook-button', function() {
 		App.signin.facebook.login();
 	});
 
-	$(document).on('click', '.signin-form-button', function() {
+	$(document).on('touchclick', '.signin-form-button', function() {
 		App.signin.sendForm();
 	});
 
-	$(document).on('click', '.signin-password-help', function() {
+	$(document).on('touchclick', '.signin-password-help', function() {
 		App.signin.passwordHelp.show();
 	});
 
-	$(document).on('click', '.signin-password-help-back', function() {
+	$(document).on('touchclick', '.signin-password-help-back', function() {
 		App.signin.passwordHelp.hide();
 	});
 
-	$(document).on('click', '.signin-password-help-button', function() {
+	$(document).on('touchclick', '.signin-password-help-button', function() {
 		App.signin.passwordHelp.sendForm();
 	});
 
@@ -36,16 +36,16 @@ App.signin.init = function() {
 		return false;
 	});
 
-	$(document).on('click', '.signin-icon', function() {
+	$(document).on('touchclick', '.signin-icon', function() {
 		App.signin.show();
 	});
 
-	$(document).on('click', '.signup-link', function() {
+	$(document).on('touchclick', '.signup-link', function() {
 		App.signup.show( false );
 		$('.signin-container').dialog('close');
 	});
 
-	$(document).on('click', '.sign-in-icon', function() {
+	$(document).on('touchclick', '.sign-in-icon', function() {
 		if (App.config.user.id_user) {
 			History.pushState({}, 'Crunchbutton - Orders', '/orders');
 		} else {
@@ -53,11 +53,11 @@ App.signin.init = function() {
 		}
 	});
 
-	$(document).on('click', '.signout-icon', function() {
+	$(document).on('touchclick', '.signout-icon', function() {
 		App.signin.signOut();
 	});
 
-	$(document).on('click', '.signin-user', function() {
+	$(document).on('touchclick', '.signin-user', function() {
 		History.pushState({}, 'Your Account', '/orders');;
 	});
 
@@ -329,10 +329,10 @@ App.signin.passwordHelp.reset.init = function(){
 			close: function( event, ui ) { App.signin.passwordHelp.reset.close(); },
 			open: function( event, ui ) { $( 'input[name=password-reset-code]' ).focus(); }
 		} );
-	$( '.password-reset-code-button' ).on( 'click', function(){
+	$( '.password-reset-code-button' ).on( 'touchclick', function(){
 		App.signin.passwordHelp.reset.sendForm();
 	} );
-	$( '.password-change-button' ).on( 'click', function(){
+	$( '.password-change-button' ).on( 'touchclick', function(){
 		App.signin.passwordHelp.reset.change();
 	} );
 	$( '.password-reset-form' ).submit(function() {
@@ -441,23 +441,23 @@ App.signup.init = function() {
 
 	$('.wrapper').append(App.render('signup'));
 
-	$(document).on('click','.signup-add-password-button', function() {
+	$(document).on('touchclick','.signup-add-password-button', function() {
 		App.signup.show(false);
 	});
 
-	$(document).on('click','.signup-icon', function() {
+	$(document).on('touchclick','.signup-icon', function() {
 		App.signup.show( false );
 	});
 
-	$(document).on('click','.signup-form-button', function() {
+	$(document).on('touchclick','.signup-form-button', function() {
 		App.signup.sendForm();
 	});
 
-	$(document).on('click','.signup-facebook-button', function() {
+	$(document).on('touchclick','.signup-facebook-button', function() {
 		App.signin.facebook.login();
 	});
 
-	$(document).on('click','.signin-link', function() {
+	$(document).on('touchclick','.signin-link', function() {
 		App.signin.show();
 		$('.signup-container').dialog('close');
 	});

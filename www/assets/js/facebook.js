@@ -155,7 +155,7 @@ App.facebook.processStatus = function( response, callback ){
 }
 
 $(function() {
-	$(document).on( 'click', '.share-order-facebook-button', function() {
+	$(document).on( 'touchclick', '.share-order-facebook-button', function() {
 		App.facebook.postOrder();
 	});
 });

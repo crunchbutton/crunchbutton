@@ -2,12 +2,12 @@ App.suggestion.init = function() {
 
 	$('.wrapper').append(App.render('suggestion'));
 
-	$(document).on('click', '.suggestion-link', function() {
+	$(document).on('touchclick', '.suggestion-link', function() {
 		App.suggestion.show();
 		App.suggestion.itIsSending = false;
 	});
 
-	$(document).on('click', '.suggestion-form-button', function() {
+	$(document).on('touchclick', '.suggestion-form-button', function() {
 		App.suggestion.send();
 	});
 
@@ -16,7 +16,7 @@ App.suggestion.init = function() {
 	});
 
 	// ToolTip
-	$(document).on('click', '.tooltip-help-mobile-touchable', function() {
+	$(document).on('touchclick', '.tooltip-help-mobile-touchable', function() {
 		if ($('.tooltip-help-content-mobile' ).is(':visible')) {
 			return;
 		}
@@ -25,7 +25,7 @@ App.suggestion.init = function() {
 		}, 100);
 	});
 
-	$(document).on('click', '.tooltip-help-desktop', function() {
+	$(document).on('touchclick', '.tooltip-help-desktop', function() {
 		if ($('.tooltip-help-content-desktop').is(':visible')) {
 			return;
 		}
@@ -34,11 +34,11 @@ App.suggestion.init = function() {
 		}, 100);
 	});
 	
-	$(document).on('click', '.tooltip-help-content', function(e) {
+	$(document).on('touchclick', '.tooltip-help-content', function(e) {
 		e.stopPropagation();
 	});
 
-	$(document).on('click', 'body', function() {
+	$(document).on('touchclick', 'body', function() {
 		$('.tooltip-help-content-mobile:visible').hide();
 		$('.tooltip-help-content-desktop:visible').hide();
 	});
