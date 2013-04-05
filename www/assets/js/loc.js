@@ -178,7 +178,7 @@ App.loc = {
 		var error = function() {
 			// Last try, reverseGeocode with aproxLoc
 			if( App.loc.aproxLoc ){
-				console.log( '' );
+				console.log( 'reverseGeocode with aproxLoc' );
 				App.loc.realLoc = App.loc.aproxLoc;
 				App.loc.reverseGeocode( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon, function() {
 					success();
