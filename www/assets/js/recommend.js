@@ -8,7 +8,7 @@ App.recommend = {
 }
 
 App.recommend.init = function(){
-	$( document ).on( 'click', '.home-recommend-button', function() {
+	$( document ).on( 'touchclick', '.home-recommend-button', function() {
 		App.recommend.send();
 	} );	
 
@@ -18,7 +18,7 @@ App.recommend.init = function(){
 		}
 	} );
 
-	$( document ).on( 'click', '.home-recommend-message-create-account', function(){
+	$( document ).on( 'touchclick', '.home-recommend-message-create-account', function(){
 		App.signup.show( false );
 	} );
 }

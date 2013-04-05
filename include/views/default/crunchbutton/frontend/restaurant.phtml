@@ -53,7 +53,7 @@
 			<div class="restaurant-item-title"><%= category.name %><%= (category.loc == '1' && community && community.name) ? (' at ' + community_name) : '' %></div>
 			<ul class="resturant-dishes resturant-dish-container" date-id_category="<%= category.id_category %>">
 				<% _.each(category.dishes(), function(dish) { %>
-					<li><a href="javascript:;" data-id_dish="<%= dish.id_dish %>"><span class="dish-name"><%= dish.name %></span><span class="dish-price">($<%= dish.price %>)</span></a></li>
+					<li data-id_dish="<%= dish.id_dish %>" class="dish-item"><span class="dish-name"><%= dish.name %></span><span class="dish-price">($<%= dish.price %>)</span></li>
 				<% }); %>
 			</ul>
 		<% }); %>

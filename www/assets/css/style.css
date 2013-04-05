@@ -80,7 +80,7 @@ html {
 	margin: 0 auto;
 }
 
-.button-bottom, .meal-item, .meal-item-content, .toggle-item, .nav-back, .config-icon {
+.button-bottom, .meal-item, .meal-item-content, .toggle-item, .nav-back, .config-icon, .resturant-dish-container li, *:not(input) {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-user-select: none;
 }
@@ -1072,6 +1072,10 @@ html[xmlns] .clearfix {
 	width: 60%;
 }
 
+.dish-name {
+	color: #d74924;
+}
+
 .toggle-spacer {
 	margin-top: 10px;
 }
@@ -1213,7 +1217,7 @@ html[xmlns] .clearfix {
 		width: 100%;
 		float: none;
 	}
-	.resturant-dish-container a, .cart-item {
+	.dish-item, .cart-item {
 		display: block;
 		padding: 6px;
 		border-radius: 2px;
@@ -1222,10 +1226,11 @@ html[xmlns] .clearfix {
 		white-space: nowrap;
 	}
 
-	.resturant-dish-container a {
+	.dish-item {
 		background: #f4e9e3;
 		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff6f4), to(#fff0ec));
 		border: 1px solid #ffd1bd;
+		text-decoration: none;
 	}
 
 	.cart-item {
@@ -1240,9 +1245,6 @@ html[xmlns] .clearfix {
 		text-decoration: underline;
 	}
 
-	.resturant-dish-container a {
-		text-decoration: none;
-	}
 	.resturant-dish-container .dish-price {
 		float: right;
 	}
@@ -1839,7 +1841,7 @@ html[xmlns] .clearfix {
 	.dish-price {
 		margin-left: 10px;
 	}
-	.resturant-dish-container a {
+	.dish-item {
 		text-decoration: none;
 	}
 	.dish-name {

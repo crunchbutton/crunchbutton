@@ -39,7 +39,10 @@ var App = {
 	_pageInit: false,
 	_identified: false,
 	isDeliveryAddressOk : false,
-	tips: [0,10,15,18,20,25,30]
+	tips: [0,10,15,18,20,25,30],
+	touchX: null,
+	touchY: null,
+	touchOffset: null
 };
 
 App.loadRestaurant = function(id) {
@@ -1185,6 +1188,20 @@ App.test = {
 		$.cookie('location_lat', '', { expires: new Date(3000,01,01), path: '/'});
 		$.cookie('location_lon', '', { expires: new Date(3000,01,01), path: '/'});
 		location.href = '/';
+	},
+	init: function() {
+		$$('.test-card').tap(function() {
+			App.test.card();
+		});
+		$$('.test-logout').tap(function() {
+			App.test.logout();
+		});
+		$$('.test-cart').tap(function() {
+			App.test.cart();
+		});
+		$$('.test-clearloc').tap(function() {
+			App.test.clearloc();
+		});
 	}
 };
 
@@ -1301,24 +1318,26 @@ App.trigger = {
  */
 $(function() {
 
-	$(document).on('click', '.signout-button', function() {
+	App.test.init();
+
+	$(document).on('touchclick', '.signout-button', function() {
 		App.signin.signOut();
 	});
 
-	$(document).on('click', '.signup-add-facebook-button', function() {
+	$(document).on('touchclick', '.signup-add-facebook-button', function() {
 		App.signin.facebook.login();
 	});
 
-	$(document).on('click', '.change-location-inline', function() {
+	$(document).on('touchclick', '.change-location-inline', function() {
 		App.loadHome(true);
 	});
 
 	$(document).on('submit', '.button-letseat-formform', function() {
-		$('.button-letseat-form').click();
+		$('.button-letseat-form').trigger('touchclick');
 		return false;
 	});
 
-	$(document).on('click', '.button-letseat-form', function() {
+	$(document).on('touchclick', '.button-letseat-form', function() {
 
 		var success = function() {
 			App.page.foodDelivery(true);
@@ -1346,27 +1365,27 @@ $(function() {
 		}
 	});
 
-	$(document).on('click', '.delivery-toggle-delivery', function() {
+	$(document).on('touchclick', '.delivery-toggle-delivery', function() {
 		App.trigger.delivery();
 		App.track('Switch to delivery');
 	});
 
-	$(document).on('click', '.delivery-toggle-takeout', function() {
+	$(document).on('touchclick', '.delivery-toggle-takeout', function() {
 		App.trigger.takeout();
 		App.track('Switch to takeout');
 	});
 
-	$(document).on('click', '.pay-toggle-credit', function() {
+	$(document).on('touchclick', '.pay-toggle-credit', function() {
 		App.trigger.credit();
 		App.track('Switch to card');
 	});
 
-	$(document).on('click', '.pay-toggle-cash', function() {
+	$(document).on('touchclick', '.pay-toggle-cash', function() {
 		App.trigger.cash();
 		App.track('Switch to cash');
 	});
 
-	$(document).on('click', '.location-detect', function() {
+	$(document).on('touchclick', '.location-detect', function() {
 		// detect location from the browser
 		$('.location-detect-loader').show();
 		$('.location-detect-icon').hide();
@@ -1401,107 +1420,221 @@ $(function() {
 			$(this).removeClass('location-detect-click');
 		}
 	}, '.location-detect');
-	$(document).on({
-		mousedown: function() {
-			if (App.busy.isBusy()) {
-				return;
-			}
+	
 
-			if (navigator.userAgent.toLowerCase().indexOf('ios') > -1) {
-				return;
-			}
-			$(this).addClass('meal-item-down');
-			var self = $(this);
-			var r = self.closest('.meal-item').attr('data-permalink');
-			var c = self.closest('.meal-item').attr('data-permalink-community');
+	$$('.link-help').tap(function(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		History.pushState({}, 'Crunchbutton - About', '/help');
+	});
 
-			setTimeout(function() {
-				if (r) {
-					App.loadRestaurant(r);
-				} else if (c) {
-					App.routeAlias(c);
+	$$('.link-legal').tap(function(e) {
+	console.log('LEGAL', e)
+		e.stopPropagation();
+		e.preventDefault();
+		History.pushState({}, 'Crunchbutton - Legal', '/legal');
+	});
+
+	$$('.link-orders').tap(function(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		History.pushState({}, 'Crunchbutton - Orders', '/orders');
+	});
+
+
+	
+	if (App.isMobile()) {
+		$(document).on({
+			touchstart: function(e) {
+				if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
+					//return;
 				}
-			},100);
-		},
-		mouseup: function() {
-			$(this).removeClass('meal-item-down');
-		},
-		touchstart: function(e) {
-			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-				//return;
-			}
-			App.startX = event.touches[0].pageX;
-			App.startY = event.touches[0].pageY;
+				App.startX = event.touches[0].pageX;
+				App.startY = event.touches[0].pageY;
+				App.startOffset = document.all? iebody.scrollLeft : pageYOffset;
+	
+				$(this).addClass('meal-item-down');
+			},
+			touchmove: function(e) {
+				App.touchX = event.touches[0].pageX;
+				App.touchY = event.touches[0].pageY;
+				App.touchOffset = document.all? iebody.scrollLeft : pageYOffset;
+				
+				var maxDistance = 25;
+				if (Math.abs(App.startX-App.touchX) > maxDistance || Math.abs(App.startY-App.touchY) > maxDistance || Math.abs(App.startOffset-App.touchOffset) > maxDistance) {
+					$(this).removeClass('meal-item-down');
+				}
+			},
+			touchend: function(e) {
 
-			$(this).addClass('meal-item-down');
-		},
-		touchmove: function(e) {
-			App.touchX = event.touches[0].pageX;
-			App.touchY = event.touches[0].pageY;
-		},
-		touchend: function(e) {
-			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-				//return;
-			}
-			if (App.busy.isBusy()) {
-				return;
-			}
+				if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
+					//return;
+				}
+				if (App.busy.isBusy()) {
+					return;
+				}
 
-			var maxDistance = 10;
-			var r = $(this).closest('.meal-item').attr('data-permalink');
-			var c = $(this).closest('.meal-item').attr('data-permalink-community');
+				var maxDistance = 25;
+				var r = $(this).closest('.meal-item').attr('data-permalink');
+				var c = $(this).closest('.meal-item').attr('data-permalink-community');
 
-			if (Math.abs(App.startX-App.touchX) < maxDistance && Math.abs(App.startY-App.touchY) < maxDistance) {
-				if (r) {
-					App.loadRestaurant(r);
-				} else if (c) {
-					History.pushState({},c,c);
-					App.routeAlias(c);
+				if ((App.touchX == null && App.touchY == null) || (Math.abs(App.startX-App.touchX) < maxDistance && Math.abs(App.startY-App.touchY) < maxDistance && Math.abs(App.startOffset-App.touchOffset) < maxDistance)) {
+					if (r) {
+						App.loadRestaurant(r);
+					} else if (c) {
+						History.pushState({},c,c);
+						App.routeAlias(c);
+					}
+				}
+				App.touchX = null;
+				App.touchY = null;
+				App.touchOffset = null;
+				$(this).removeClass('meal-item-down');
+			}
+		}, '.meal-item-content');
+	} else {
+		$(document).on({
+			mousedown: function() {
+				if (App.busy.isBusy()) {
+					return;
+				}
+	
+				if (navigator.userAgent.toLowerCase().indexOf('ios') > -1) {
+					return;
+				}
+				$(this).addClass('meal-item-down');
+				var self = $(this);
+				var r = self.closest('.meal-item').attr('data-permalink');
+				var c = self.closest('.meal-item').attr('data-permalink-community');
+	
+				setTimeout(function() {
+					if (r) {
+						App.loadRestaurant(r);
+					} else if (c) {
+						App.routeAlias(c);
+					}
+				},100);
+			},
+			mouseup: function() {
+				$(this).removeClass('meal-item-down');
+			}
+		}, '.meal-item-content');
+	}
+
+
+	if (App.isMobile()) {
+
+		// prevent double trigger
+		$(document).on('touchclick','input[type="checkbox"]', function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+		});
+
+		// manually rebind checkbox events
+		$$('input[type="checkbox"]').tap(function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			$(this).checkToggle();
+		});
+		
+		// manually rebind labels
+		$$('label[for]').tap(function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			var target = document.getElementById($(this).attr('for'));
+			if (target && target.tagName == 'INPUT') {
+				switch ($(target).attr('type')) {
+					case 'text':
+					case 'password':
+					case 'number':
+					case 'phone':
+					case 'tel':
+						$(target).focus();
+						break;
+					case 'checkbox':
+						$(target).checkToggle();
+						break;
 				}
 			}
-			$(this).removeClass('meal-item-down');
-		}
-	}, '.meal-item-content');
+			$(this).checkToggle();
+		});
+
+		// manually bind links
+		$$('a[href]').tap(function(e) {
+			var el = $(this);
+			var href = el.attr('href');
+
+			if (!href || e.defaultPrevented) {
+				return;
+			}
+			
+			if ($(this).attr('target')) {
+				window.open($(this).attr('href'), $(this).attr('target'));
+			} else {
+				location.href = $(this).attr('href');
+			}
+		});
 
 
-	$(document).on('click', '.resturant-dish-container a', function() {
+		// ignore all click events from acidently triggering on mobile. only use touchclick
+		$(document).on('click', function(e, force) {
+			if (!force) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+		});
+	}
+
+	// add a dish when clicked
+	/*
+	$(document).on('touchclick','.dish-item', function(e) {
 		if ($(this).attr('data-id_dish')) {
 			App.cart.add($(this).attr('data-id_dish'));
-
+		} else if ($(this).hasClass('restaurant-menu')) {
+			return;
+		}
+	});
+	*/
+	
+	$$('.dish-item').tap(function(e) {
+		if ($(this).attr('data-id_dish')) {
+			App.cart.add($(this).attr('data-id_dish'));
 		} else if ($(this).hasClass('restaurant-menu')) {
 			return;
 		}
 	});
 
-	$(document).on('click', '.your-orders a', function() {
+	$$('.your-orders a').tap(function() {
 		if ($(this).attr('data-id_order')) {
 			History.pushState({},'Crunchbutton - Your Order', '/order/' + $(this).attr('data-id_order'));
 		}
 	});
 
-	$(document).on('click', '.cart-button-remove', function() {
+	$$('.cart-button-remove').tap(function() {
 		App.cart.remove($(this).closest('.cart-item'));
 	});
 
-	$(document).on('click', '.cart-button-add', function() {
+	$$('.cart-button-add').tap(function() {
 		App.cart.clone($(this).closest('.cart-item'));
 	});
 
-	$(document).on('click', '.cart-item-config a', function() {
+	$$('.cart-item-config a').tap(function() {
 		App.cart.customize($(this).closest('.cart-item'));
 	});
 
-	$(document).on('click', '.button-submitorder', function() {
+	$$('.button-submitorder').tap(function() {
 		App.isDeliveryAddressOk = false;
 		App.cart.submit($(this));
 	});
 	
-	$(document).on('click', '.button-submitorder-form', function() {
+	$(document).on('touchclick', '.button-submitorder-form', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
 		App.isDeliveryAddressOk = false;
 		App.cart.submit($(this),true);
 	});
 
-	$(document).on('click', '.button-deliver-payment, .dp-display-item a', function() {
+	$(document).on('touchclick', '.button-deliver-payment, .dp-display-item a', function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();
 	});
@@ -1521,7 +1654,7 @@ $(function() {
 		}
 	}, '.button-bottom');
 
-	$(document).on('click', '.cart-customize-check', function() {
+	$$('.cart-customize-check').tap(function() {
 		App.cart.customizeItem($(this));
 	});
 
@@ -1529,8 +1662,8 @@ $(function() {
 		App.cart.customizeItem($(this));
 	});
 
-	$(document).on('click', '.cart-item-customize-item label', function() {
-		$(this).prev('input').click();
+	$$('.cart-item-customize-item label').tap(function() {
+		$(this).prev('input').checkToggle();
 	});
 
 	$(document).on('change', '[name="pay-tip"]', function() {
@@ -1540,11 +1673,11 @@ $(function() {
 		App.cart.updateTotal();
 	});
 
-	$(document).on('click', '.nav-back', function() {
+	$$('.nav-back').tap(function() {
 		History.back();
 	});
 
-	$(document).on('click', '.link-home', function() {
+	$$('.link-home').tap(function() {
 		if( App.restaurants.list && App.restaurants.list.length > 0 ){
 			App.page.foodDelivery();
 		} else {
@@ -1570,18 +1703,6 @@ $(function() {
 		App.detectCardType();
 	} );
 
-	$(document).on('click', '.link-help', function() {
-		History.pushState({}, 'Crunchbutton - About', '/help');
-	});
-
-	$(document).on('click', '.link-legal', function() {
-		History.pushState({}, 'Crunchbutton - Legal', '/legal');
-	});
-
-	$(document).on('click', '.link-orders', function() {
-		History.pushState({}, 'Crunchbutton - Orders', '/orders');
-	});
-
 	$(document).on('keyup', '[name="pay-phone"]', function() {
 		$(this).val( App.phone.format($(this).val()) );
 	});
@@ -1600,8 +1721,17 @@ $(function() {
 		$.getJSON('/api/config', haveConfig);
 	}
 
-	$(document).on('click', '.cart-summary', function() {
-		$('body').scrollTop($('.cart-items').position().top-80);
+	$$('.cart-summary').tap(function(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		$('html, body').animate({
+			scrollTop: $('.cart-items').position().top-80
+		}, {
+			duration: 500,
+			specialEasing: {
+				scrollTop: 'easeInOutQuart'
+			}
+		});
 	});
 
 	var unHideBars = function() {
@@ -1639,7 +1769,7 @@ $(function() {
 		App.checkForDistance = setTimeout(checkForDistance, 1000);
 	});
 	
-	$(document).on('click', '.config-icon', function() {
+	$(document).on('touchclick', '.config-icon', function() {
 		App.loadHome(true);
 	});
 
@@ -1654,7 +1784,7 @@ $(function() {
 	});
 
 
-	$(document).on('click', '.content-item-locations-city', function() {
+	$(document).on('touchclick', '.content-item-locations-city', function() {
 		$( '.main-content' ).html( '' );
 		var permalink = $( this ).attr( 'permalink' );
 		App.routeAlias( permalink, function( result ){

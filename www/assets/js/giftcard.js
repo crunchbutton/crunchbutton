@@ -26,7 +26,7 @@ App.giftcard.show = function( path ){
 		} else {
 			$( '.giftcard-message-title' ).html( 'Welcome' );
 			$( '.giftcard-message-text' ).html( 'Please <span class="giftcard-sign-in">sign in</span> to claim your gift card.' );
-			$(document).on('click', '.giftcard-sign-in', function() {
+			$(document).on('touchclick', '.giftcard-sign-in', function() {
 				App.giftcard.callback = function(){
 					App.giftcard.callback = false;
 					$( '.giftcard-message-title' ).html( 'Gift card.' );
@@ -68,7 +68,7 @@ App.giftcard.process = function( path ){
 					var value = '$' + json.success['value'];
 					text = 'You\'ve got a  <span class="giftcard-value">' + value + '</span> gift card to <span id_restaurant="' + id_restaurant + '" class="giftcard-restaurant">' + restaurant_name + '</span>.'
 
-					$(document).on('click', '.giftcard-restaurant', function() {
+					$(document).on('touchclick', '.giftcard-restaurant', function() {
 						var id_restaurant = $( this ).attr( 'id_restaurant' );
 						$( '.giftcard-container' ).dialog( 'close' );
 						App.loadRestaurant( id_restaurant );
