@@ -129,7 +129,7 @@ App.page.restaurant = function(id) {
 					tip: App.order.tip,
 					name: App.config.user.name,
 					phone: App.phone.format(App.config.user.phone),
-					address: App.config.user.address || App.loc.address(),
+					address: App.config.user.address, /* removed the guessed address (App.loc.address()) #989 */
 					notes: (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) ? App.config.user.presets[App.restaurant.id_restaurant].notes : '',
 					card: {
 						number: App.config.user.card,
