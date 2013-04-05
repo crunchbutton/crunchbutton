@@ -10,9 +10,7 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 	
 	public function queNotify() {
-
 		$support = $this;
-
 		c::timeout(function() use($support) {
 			$support->notify();
 		}, 1000); // 1 second

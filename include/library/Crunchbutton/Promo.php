@@ -88,7 +88,7 @@ class Crunchbutton_Promo extends Cana_Table
 			]);
 
 		c::timeout(function() use($promo) {
-			$this->notifySMS();
+			$promo->notifySMS();
 		}, 1000); // 1 second
 
 		Log::debug([
@@ -113,7 +113,7 @@ class Crunchbutton_Promo extends Cana_Table
 			]);
 
 		c::timeout(function() use($promo) {
-			$this->notifyEMAIL();
+			$promo->notifyEMAIL();
 		}, 1000); // 1 second
 
 		Log::debug([
