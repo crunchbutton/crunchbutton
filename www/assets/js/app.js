@@ -1365,22 +1365,30 @@ $(function() {
 		}
 	});
 
-	$(document).on('touchclick', '.delivery-toggle-delivery', function() {
+	$(document).on('touchclick', '.delivery-toggle-delivery', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
 		App.trigger.delivery();
 		App.track('Switch to delivery');
 	});
 
-	$(document).on('touchclick', '.delivery-toggle-takeout', function() {
+	$(document).on('touchclick', '.delivery-toggle-takeout', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
 		App.trigger.takeout();
 		App.track('Switch to takeout');
 	});
 
-	$(document).on('touchclick', '.pay-toggle-credit', function() {
+	$(document).on('touchclick', '.pay-toggle-credit', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
 		App.trigger.credit();
 		App.track('Switch to card');
 	});
 
-	$(document).on('touchclick', '.pay-toggle-cash', function() {
+	$(document).on('touchclick', '.pay-toggle-cash', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
 		App.trigger.cash();
 		App.track('Switch to cash');
 	});
@@ -1444,6 +1452,68 @@ $(function() {
 
 	
 	if (App.isMobile()) {
+	
+
+		// prevent double trigger
+		$(document).on('touchclick','input[type="checkbox"]', function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+		});
+
+		// manually rebind checkbox events
+		$$('input[type="checkbox"]').tap(function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			$(this).checkToggle();
+		});
+		
+		// manually rebind labels
+		$$('label[for]').tap(function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			var target = document.getElementById($(this).attr('for'));
+			if (target && target.tagName == 'INPUT') {
+				switch ($(target).attr('type')) {
+					case 'text':
+					case 'password':
+					case 'number':
+					case 'phone':
+					case 'tel':
+						$(target).focus();
+						break;
+					case 'checkbox':
+						$(target).checkToggle();
+						break;
+				}
+			}
+			$(this).checkToggle();
+		});
+
+		// manually bind links
+		// @todo: intercept for native app
+		$$('a[href]').tap(function(e) {
+			var el = $(this);
+			var href = el.attr('href');
+
+			if (!href || e.defaultPrevented) {
+				return;
+			}
+			
+			if ($(this).attr('target')) {
+				window.open($(this).attr('href'), $(this).attr('target'));
+			} else {
+				location.href = $(this).attr('href');
+			}
+		});
+
+
+		// ignore all click events from acidently triggering on mobile. only use touchclick
+		$(document).on('click', function(e, force) {
+			e.stopPropagation();
+			e.preventDefault();
+		});
+	
+		// touch events for restaurant list
 		$(document).on({
 			touchstart: function(e) {
 				if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
@@ -1520,81 +1590,6 @@ $(function() {
 			}
 		}, '.meal-item-content');
 	}
-
-
-	if (App.isMobile()) {
-
-		// prevent double trigger
-		$(document).on('touchclick','input[type="checkbox"]', function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-		});
-
-		// manually rebind checkbox events
-		$$('input[type="checkbox"]').tap(function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-			$(this).checkToggle();
-		});
-		
-		// manually rebind labels
-		$$('label[for]').tap(function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-			var target = document.getElementById($(this).attr('for'));
-			if (target && target.tagName == 'INPUT') {
-				switch ($(target).attr('type')) {
-					case 'text':
-					case 'password':
-					case 'number':
-					case 'phone':
-					case 'tel':
-						$(target).focus();
-						break;
-					case 'checkbox':
-						$(target).checkToggle();
-						break;
-				}
-			}
-			$(this).checkToggle();
-		});
-
-		// manually bind links
-		$$('a[href]').tap(function(e) {
-			var el = $(this);
-			var href = el.attr('href');
-
-			if (!href || e.defaultPrevented) {
-				return;
-			}
-			
-			if ($(this).attr('target')) {
-				window.open($(this).attr('href'), $(this).attr('target'));
-			} else {
-				location.href = $(this).attr('href');
-			}
-		});
-
-
-		// ignore all click events from acidently triggering on mobile. only use touchclick
-		$(document).on('click', function(e, force) {
-			if (!force) {
-				e.stopPropagation();
-				e.preventDefault();
-			}
-		});
-	}
-
-	// add a dish when clicked
-	/*
-	$(document).on('touchclick','.dish-item', function(e) {
-		if ($(this).attr('data-id_dish')) {
-			App.cart.add($(this).attr('data-id_dish'));
-		} else if ($(this).hasClass('restaurant-menu')) {
-			return;
-		}
-	});
-	*/
 	
 	$$('.dish-item').tap(function(e) {
 		if ($(this).attr('data-id_dish')) {
@@ -1622,17 +1617,13 @@ $(function() {
 		App.cart.customize($(this).closest('.cart-item'));
 	});
 
-	$$('.button-submitorder').tap(function() {
-		App.isDeliveryAddressOk = false;
-		App.cart.submit($(this));
-	});
-	
-	$(document).on('touchclick', '.button-submitorder-form', function(e) {
+	$$('.button-submitorder-form').tap(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		App.isDeliveryAddressOk = false;
 		App.cart.submit($(this),true);
 	});
+
 
 	$(document).on('touchclick', '.button-deliver-payment, .dp-display-item a', function() {
 		$('.payment-form').show();
@@ -1733,18 +1724,36 @@ $(function() {
 			}
 		});
 	});
+	
+	if (App.isMobile()) {
+		setInterval(function() {
+			var focused = $(':focus');
+			if (!focused.length) {
+				$('[data-position="fixed"]').show();
+				return;
+			}
 
+			focused = focused.get(0);
+
+			if (focused.tagName == 'SELECT' || focused.tagName == 'INPUT' || focused.tagName == 'TEXTAREA') {
+				$('[data-position="fixed"]').hide();
+			} else {
+				$('[data-position="fixed"]').show();
+			}
+		}, 100);
+	}
+/*
 	var unHideBars = function() {
 		$('[data-position="fixed"]').show();
 	}
 	$(document).on('focus', 'select, input, textarea', function() {
-
 		if ($(window).width() >= 768 || navigator.userAgent.toLowerCase().indexOf('android') > -1 || $(this).hasClass('location-address')) {
 			return;
 		}
 		clearTimeout(App.unHideBars);
 		$('[data-position="fixed"]').hide();
 	});
+
 	$(document).on('blur', 'select, input, textarea', function() {
 		if ($(window).width() >= 768) {
 			return;
@@ -1752,6 +1761,7 @@ $(function() {
 		clearTimeout(App.unHideBars);
 		setTimeout(unHideBars, 100);
 	});
+	*/
 
 	var checkForDistance = function() {
 		if (App.order['delivery_type'] == 'takeout') {
