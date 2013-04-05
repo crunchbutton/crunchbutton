@@ -10,13 +10,44 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 	
 	public function queNotify() {
+
 		$support = $this;
-		//Cana::timeout(function() use($support) {
+
+		Log::debug([
+				'action' => 'BEFORE cana::timeout',
+				'support_id' => $support->id_support,
+				'support_name' => $support->name,
+				'support_phone' => $support->phone,
+				'support_message' => $support->message,
+				'method' => '$support->notify()',
+				'type' => 'support'
+			]);
+
+		c::timeout(function() use($support) {
 			$support->notify();
-		//});
+		}, 1000); // 1 second
+
+		Log::debug([
+				'action' => 'AFTER cana::timeout',
+				'support_id' => $support->id_support,
+				'support_name' => $support->name,
+				'support_phone' => $support->phone,
+				'support_message' => $support->message,
+				'type' => 'support'
+			]);
 	}
 	
 	public function notify() {
+
+		Log::debug([
+			'action' => 'INSIDE notify cana::timeout',
+			'support_id' => $this->id_support,
+			'support_name' => $this->name,
+			'support_phone' => $this->phone,
+			'support_message' => $this->message,
+			'method' => '$support->notify()',
+			'type' => 'support'
+		]);
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 

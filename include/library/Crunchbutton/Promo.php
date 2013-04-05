@@ -76,19 +76,61 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function queNotifySMS() {
-		//$promo = $this;
-		//Cana::timeout(function() use($promo) {
+		Log::debug([
+				'action' => 'BEFORE cana::timeout',
+				'promo_id' => $promo->id_promo,
+				'promo_code' => $promo->code,
+				'method' => '$promo->notifySMS()',
+				'type' => 'promo_sms'
+			]);
+
+		$promo = $this;
+		c::timeout(function() use($promo) {
 			$this->notifySMS();
-		//});
+		}, 1000); // 1 second
+
+		Log::debug([
+				'action' => 'AFTER cana::timeout',
+				'promo_id' => $promo->id_promo,
+				'promo_code' => $promo->code,
+				'method' => '$promo->notifySMS()',
+				'type' => 'promo_sms'
+			]);
 	}
 
 	public function queNotifyEMAIL() {
-		//$promo = $this;
-		//Cana::timeout(function() use($promo) {
+
+		$promo = $this;
+
+		Log::debug([
+				'action' => 'BEFORE cana::timeout',
+				'promo_id' => $promo->id_promo,
+				'promo_code' => $promo->code,
+				'method' => '$promo->notifyEMAIL()',
+				'type' => 'promo_email'
+			]);
+
+		c::timeout(function() use($promo) {
 			$this->notifyEMAIL();
-		//});
+		}, 1000); // 1 second
+
+		Log::debug([
+				'action' => 'AFTER cana::timeout',
+				'promo_id' => $promo->id_promo,
+				'promo_code' => $promo->code,
+				'method' => '$promo->notifyEMAIL()',
+				'type' => 'promo_email'
+			]);
 	}
 	public function notifyEMAIL() {
+
+		Log::debug([
+			'action' => 'INSIDE notifyEMAIL cana::timeout',
+			'promo_id' => $this->id_promo,
+			'promo_code' => $this->code,
+			'method' => '$promo->notifyEMAIL()',
+			'type' => 'promo_email'
+		]);
 
 		$url = 'http://' . $_SERVER['SERVER_NAME'] . '/giftcard/'. $this->code;
 
@@ -114,7 +156,15 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function notifySMS() {
-		
+
+		Log::debug([
+				'action' => 'INSIDE notifySMS cana::timeout',
+				'promo_id' => $this->id_promo,
+				'promo_code' => $this->code,
+				'method' => '$promo->notifySMS()',
+				'type' => 'promo_sms'
+			]);
+
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
