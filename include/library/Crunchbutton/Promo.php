@@ -76,6 +76,9 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function queNotifySMS() {
+		
+		$promo = $this;
+
 		Log::debug([
 				'action' => 'BEFORE cana::timeout',
 				'promo_id' => $promo->id_promo,
@@ -84,7 +87,6 @@ class Crunchbutton_Promo extends Cana_Table
 				'type' => 'promo_sms'
 			]);
 
-		$promo = $this;
 		c::timeout(function() use($promo) {
 			$this->notifySMS();
 		}, 1000); // 1 second
