@@ -34,7 +34,7 @@ class Crunchbutton_Category extends Cana_Table {
 				'active'        => 1,
 			];
 			$whereSql      = $this->_mergeWhere($defaultFilters, $where);
-			$sql           = "SELECT * FROM dish WHERE $whereSql ORDER BY sort ASC";
+			$sql           = "SELECT * FROM dish WHERE $whereSql ORDER BY sort, id_dish ASC";
 			$this->_dishes = Dish::q($sql);
 		}
 		return $this->_dishes;
