@@ -758,7 +758,7 @@ App.showDish = function(dishItem) {
 
 	console.log(dishItem);
 	if (!dishItem.id_dish) {
-		dish.fadeIn(200, function() { $(dish).find('.dish-name').focus(); });
+		dish.fadeIn(150, function() { $(dish).find('.dish-name').focus(); });
 	}
 };
 
@@ -1110,9 +1110,9 @@ $(function() {
 		parent.find('input[name="' + name + '"][value="' + (value == '1' ? '0' : '1') + '"]').prop('checked', false);
 
 		if (value == '1') {
-			parent.find('.check-content').fadeIn();
+			parent.find('.check-content').fadeIn(150);
 		} else {
-			parent.find('.check-content').fadeOut(100);
+			parent.find('.check-content').fadeOut(150);
 		}
 	});
 
@@ -1127,10 +1127,10 @@ $(function() {
 		var input_name = name.replace( '_check', '' );
 		var input = parent.find('[name='+input_name+']');
 		if (value == '1') {
-			parent.find('.check-content').fadeIn();
+			parent.find('.check-content').fadeIn(150);
 			input.val( input.attr( 'old-value' ) || 0 );
 		} else {
-			parent.find('.check-content').fadeOut();
+			parent.find('.check-content').fadeOut(150);
 			input.attr( 'old-value', input.val() );
 			input.val(0)
 		}
@@ -1284,7 +1284,7 @@ $(function() {
 		var name = parent.find('.dish-name').val();
 
 		var remove = function() {
-			parent.fadeOut(100,function() {
+			parent.fadeOut(150,function() {
 				$(this).remove();
 			});
 		};
@@ -1305,7 +1305,7 @@ $(function() {
 		var name = parent.find('input[name="dish-options-name"]').val();
 
 		var remove = function() {
-			parent.fadeOut(100,function() {
+			parent.fadeOut(150,function() {
 				$(this).remove();
 			});
 		};
