@@ -686,6 +686,7 @@ html[xmlns] .clearfix {
 	width: 100%;
 	color: #888;
 	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	font-weight: 100px;
 	border-top-left-radius: 2px;
 	border-bottom-left-radius: 2px;
@@ -878,6 +879,7 @@ html[xmlns] .clearfix {
 		border-radius: 2px;
 		box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 6px 0px inset;
 		box-sizing: border-box;
+		-moz-box-sizing: border-box;
 		color: #888888;
 		cursor: auto;
 		display: inline-block;
@@ -899,6 +901,7 @@ html[xmlns] .clearfix {
 		background-attachment: scroll;
 		background-clip: border-box;
 		background-color: rgba(0, 0, 0, 0);
+		background-image: -moz-linear-gradient(top, rgb(251, 66, 46), rgb(251, 36, 24));
 		background-image: -webkit-linear-gradient(top, rgb(251, 66, 46), rgb(251, 36, 24));
 		background-origin: padding-box;
 		background-size: auto;
@@ -906,6 +909,7 @@ html[xmlns] .clearfix {
 		border-radius: 4px;
 		box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 18px 0px inset, rgba(255, 254, 196, 0.901961) 0px 0px 2px 0px inset, rgba(0, 0, 0, 0.14902) 0px 2px 5px 0px;
 		box-sizing: border-box;
+		-moz-box-sizing: border-box;
 		cursor: pointer;
 		display: block;
 		font-size: 25px;
