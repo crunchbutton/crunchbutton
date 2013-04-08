@@ -14,7 +14,7 @@
 	<h1>You have $<span class="restaurant-gift-value"></span> gift card!</h1>
 </div>
 <% if (restaurant.message) { %>
-	<div class="restaurant-message<%= (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? '' : ' restaurant-with-image' %>">
+	<div class="restaurant-message">
 		<%= restaurant.message %>
 	</div>
 <% } %>
