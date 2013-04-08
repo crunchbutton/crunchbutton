@@ -721,10 +721,28 @@ input[name="dish-options-price"] {
 table.list{
 	width: 100%;
 }
-	table.list th, table.list td{
-		padding: 5px;
-	}
-		table.list tr:nth-of-type(even){
-			background: #F5F5F5;
-		}
+
+table.list th, table.list td {
+	padding: 5px;
+}
+
+table.list tr:nth-of-type(even) {
+	background: #F5F5F5;
+}
+
+.hovering-container {
+	position: fixed;
+	right: 50px;
+	bottom: 50px;
+	padding: 10px;
+	border-radius: 5px;
+	background-color: rgba(128,128,128,0.2);
+}
+
+.ui-widget-overlay {
+	position: fixed !important;
+}
+
+
+
 
