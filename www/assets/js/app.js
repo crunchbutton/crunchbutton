@@ -553,7 +553,7 @@ App.cart = {
 		}
 
 		if( App.order.pay_type == 'cash' && credit > 0 ){
-			totalText += '<span class="giftcard-message">Hey! Pay with a card to make use of your $' + credit + ' gift card!</span>';
+			totalText += '<span class="giftcard-message">Hey! Pay with a card to make use of your $' + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>';
 		}
 
 		$('.cart-total').html( totalText );
