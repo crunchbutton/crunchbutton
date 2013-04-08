@@ -110,6 +110,8 @@ App.signin.sendForm = function(){
 				if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
 					App.page.restaurant( App.restaurant.permalink );
 				}
+				App.signin.manageLocation();
+
 				if( App.giftcard.callback ){
 					App.giftcard.callback();
 				}
@@ -118,6 +120,30 @@ App.signin.sendForm = function(){
 	} );
 }
 
+App.signin.manageLocation = function(){
+	// If the user signed in and we do not have his location yet, lets use his stored location.
+	if( App.loc.address() == '' ){
+		if( App.config.user.address ){ // First check if we have the user's address. If we do, lets use it.
+			App.loc.geocode( App.config.user.address, function(){ App.page.foodDelivery(true); }, function(){});
+		} else if( App.config.user.location_lat && App.config.user.location_lon ){ // Else lets try to find the user's address by his position.
+			App.loc.reverseGeocode( 
+				App.config.user.location_lat, 
+				App.config.user.location_lon, 
+				function(){
+					if( App.loc.realLoc.addressReverse ){
+						var address = App.loc.realLoc.addressReverse;
+						App.loc.geocode( address, 
+							function(){ 
+								App.page.foodDelivery(true); 
+							}, 
+							function(){ /* error, just ignore it */ });
+					}
+				}, 
+				function(){ /* error, just ignore it */ } 
+			);
+		}
+	}
+}
 
 /**
  * sign out and go to the home page
@@ -183,7 +209,7 @@ App.signin.facebook.processStatus = function( session ){
 									if( App.giftcard.callback ){
 										App.giftcard.callback();	
 									}
-
+									App.signin.manageLocation();
 								}
 								$( '.signin-container' ).dialog( 'close' );
 								$( '.signup-container' ).dialog( 'close' );

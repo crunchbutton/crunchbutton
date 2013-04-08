@@ -822,8 +822,8 @@ App.cart = {
 			restaurant:	App.restaurant.id,
 			make_default:  $('#default-order-check').is(':checked'),
 			notes: 		$('[name="notes"]').val(),
-			lat: 		   App.loc.lat,
-			lon: 		   App.loc.lon
+			lat: 		   App.loc.pos().lat,
+			lon: 		   App.loc.pos().lon
 		};
 
 		if (order.pay_type == 'card') {
@@ -1217,7 +1217,6 @@ App.processConfig = function(json, user) {
 		App.config = json;
 	}
 	App.AB.init();
-
 	if (App.config.user) {
 		App.identify();
 		App.order['pay_type'] = App.config.user['pay_type'];
