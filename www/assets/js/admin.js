@@ -44,6 +44,15 @@ function _deleteCategoryDialog(){
 			height:    200,
 			width:     400,
 			modal:     true,
+			open: function() {
+				var $this=$(this);
+				$this.keypress(function(e){
+					if(e.keyCode==13) {
+						$this.parent().find('.ui-dialog-buttonpane button:first').click();
+						return false;
+					}
+				});
+			},
 			buttons: {
 				Delete: function() {
 					var to_id = $('select', this).val();
@@ -103,12 +112,14 @@ function _loadNotification(notification) {
 		$wrapper.append(html);
 }
 
+
 /**
  * Load the restaurant
  *
  * @return void
  */
 function _loadRestaurant() {
+	
 	var restaurant = this;
 	var checkswap = {
 		'delivery_fee_check' : 'delivery_fee',
@@ -191,7 +202,6 @@ function _loadRestaurant() {
 	}
 	$('.accordion').accordion({
 		collapsible: true,
-		active:      false,
 		heightStyle: "content",
 		activate:    function( event, ui ){
 			var speed = 100;
@@ -295,6 +305,19 @@ function _newNotificationFields() {
 }
 
 /**
+ * Reverts restaurant data
+ *
+ */
+function loadSavedData() {
+  /* special logic for the order notification methods cuz they were weird when i found them */
+	var types = ['sms', 'email', 'phone', 'url', 'fax'];
+	for(var i in types) { $('div.check-content.'+types[i]).html(''); }
+
+  delete App.cached.Restaurant[App.restaurant];
+	App.loadRestaurant();
+}
+
+/**
  * Method to be called to save the Dish Categories
  *
  * @param function complete What to trigger after the categories are stored
@@ -313,7 +336,28 @@ function _saveCategories(complete) {
 		data       = getValues(inputs, data);
 		elements[elements.length] = data;
 	});
-	$.post('/api/restaurant/' + App.restaurant + '/categories', {elements: elements}, function() {
+	$.post('/api/restaurant/' + App.restaurant + '/categories', {elements: elements}, function(rsp) {
+		/* update html */
+		for(category_id in rsp._categories) {
+			category = rsp._categories[category_id];
+			c_name = category.name;
+			c_id   = category.id;
+			h3 = $('h3[data-id_category=' + c_id + ']');
+			if(h3.length > 0)
+			{
+				// existing category
+				$('h3[data-id_category=' + c_id + ']').text(c_name);
+				$('select[name=dish-id_category] > option[value=' + c_id + ']').text(c_name);
+			}
+			else
+			{
+				// new category
+				h3 = $('h3[data-id_category=]').filter(function(){ return $(this).text()==c_name; })
+				h3.attr('data-id_category', c_id);
+				App.restaurantObject.__categories.push(App.cache('Category', c_id));
+			}
+		}
+		
 		if (complete) {
 			complete();
 		}
@@ -398,7 +442,7 @@ function saveDishes (complete) {
 			});
 		});
 	} else {
-		complete();
+		complete?complete():0;
 	}
 }
 
@@ -448,9 +492,8 @@ function _saveNotifications(complete) {
 
 /**
  *
- * @param all
  */
-function saveRestaurant (all) {
+function saveRestaurant () {
 	var html = '<div id="dialog-add-dish" title="Please wait while saving..."> ' +
 		'<div style="text-align:center; margin-top: 2em;">' +
 			'<p>Please wait while saving...</p>' +
@@ -473,17 +516,15 @@ function saveRestaurant (all) {
 		App.cache('Restaurant', id, function() {
 			var restaurant = getValues(selector, this);
 			restaurant.save(function() {
-				if (all) {
-					saveHours(function() {
-						_saveCategories(function() {
-							saveDishes(function() {
-								_saveNotifications(function() {
-									location.href = '/admin/restaurants/' + App.restaurant;
-								});
+				saveHours(function() {
+					_saveCategories(function() {
+						saveDishes(function() {
+							_saveNotifications(function() {
+								$('.ui-dialog-titlebar-close').trigger('click');
 							});
 						});
 					});
-				}
+				});
 			});
 		});
 	} else {
@@ -493,23 +534,21 @@ function saveRestaurant (all) {
 
 			App.cache('Restaurant', r.id_restaurant, function() {
 				App.restaurant = this.id_restaurant;
-				if (all) {
-					saveHours(function() {
-						_saveCategories(function(){
-							saveDishes(function() {
-								_saveNotifications(function() {
-									location.href = '/admin/restaurants/' + App.restaurant;
-								});
+				saveHours(function() {
+					_saveCategories(function(){
+						saveDishes(function() {
+							_saveNotifications(function() {
+								$('.ui-dialog-titlebar-close').trigger('click');
 							});
 						});
 					});
-				} else {
-					locatifion.href = '/admin/restaurants/' + App.restaurant;
-				}
+				});
 			});
 		});
 	}
+
 };
+
 
 function saveHours (complete) {
 	var selector = '.hours-date-hour input';
@@ -586,7 +625,6 @@ function getValues(selector, restaurant) {
 }
 
 App.loadRestaurant = function(id_restaurant) {
-
 	App.cache('Restaurant', id_restaurant , _loadRestaurant);
 };
 
@@ -718,9 +756,9 @@ App.showDish = function(dishItem) {
 
 	$('[data-id_category="'+ dishItem.id_category +'"] + div').append(dish);
 
+	console.log(dishItem);
 	if (!dishItem.id_dish) {
-		dish.find('.dish-name').focus();
-		dish.fadeIn(200);
+		dish.fadeIn(150, function() { $(dish).find('.dish-name').focus(); });
 	}
 };
 
@@ -1016,12 +1054,10 @@ $(function() {
 		}
 	});
 
-	$(document).on('click', '.admin-restaurant-save', function() {
-		saveRestaurant(true);
-	});
+	$(document).on('click', '.admin-restaurant-revert', loadSavedData);
 
-	$(document).on('click', '.admin-restaurant-save-details', function() {
-		saveRestaurant(false);
+	$(document).on('click', '.admin-restaurant-save', function() {
+		saveRestaurant();
 	});
 
 	$(document).on('click', '.admin-restaurant-save-hours', function() {
@@ -1074,9 +1110,9 @@ $(function() {
 		parent.find('input[name="' + name + '"][value="' + (value == '1' ? '0' : '1') + '"]').prop('checked', false);
 
 		if (value == '1') {
-			parent.find('.check-content').fadeIn();
+			parent.find('.check-content').fadeIn(150);
 		} else {
-			parent.find('.check-content').fadeOut(100);
+			parent.find('.check-content').fadeOut(150);
 		}
 	});
 
@@ -1091,10 +1127,10 @@ $(function() {
 		var input_name = name.replace( '_check', '' );
 		var input = parent.find('[name='+input_name+']');
 		if (value == '1') {
-			parent.find('.check-content').fadeIn();
+			parent.find('.check-content').fadeIn(150);
 			input.val( input.attr( 'old-value' ) || 0 );
 		} else {
-			parent.find('.check-content').fadeOut();
+			parent.find('.check-content').fadeOut(150);
 			input.attr( 'old-value', input.val() );
 			input.val(0)
 		}
@@ -1213,6 +1249,15 @@ $(function() {
 			height:    160,
 			width:     315,
 			modal:     true,
+			open: function() {
+				var $this=$(this);
+				$this.keypress(function(e){
+					if(e.keyCode==13) {
+						$this.parent().find('.ui-dialog-buttonpane button:first').click();
+						return false;
+					}
+				});
+			},
 			buttons: {
 				'Create': function() {
 					var category = $('[name="dish-id_category"]', this).val();
@@ -1239,7 +1284,7 @@ $(function() {
 		var name = parent.find('.dish-name').val();
 
 		var remove = function() {
-			parent.fadeOut(100,function() {
+			parent.fadeOut(150,function() {
 				$(this).remove();
 			});
 		};
@@ -1260,7 +1305,7 @@ $(function() {
 		var name = parent.find('input[name="dish-options-name"]').val();
 
 		var remove = function() {
-			parent.fadeOut(100,function() {
+			parent.fadeOut(150,function() {
 				$(this).remove();
 			});
 		};
@@ -1302,6 +1347,15 @@ $(function() {
 			height: 250,
 			width: 400,
 			modal: true,
+			open: function() {
+				var $this=$(this);
+				$this.keypress(function(e){
+					if(e.keyCode==13) {
+						$this.parent().find('.ui-dialog-buttonpane button:first').click();
+						return false;
+					}
+				});
+			},
 			buttons: {
 				'Create': function() {
 					if ($(this).find('[name="admin-option-name"]').val()) {
@@ -1333,6 +1387,15 @@ $(function() {
 			height: 160,
 			width: 315,
 			modal: true,
+			open: function() {
+				var $this=$(this);
+				$this.keypress(function(e){
+					if(e.keyCode==13) {
+						$this.parent().find('.ui-dialog-buttonpane button:first').click();
+						return false;
+					}
+				});
+			},
 			buttons: {
 				'Create': function() {
 					if ($(this).find('[name="admin-category-name"]').val()) {
