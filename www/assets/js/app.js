@@ -7,7 +7,6 @@
  *
  */
 
-
 var App = {
 	cartHighlightEnabled: false,
 	currentPage: null,
@@ -142,9 +141,11 @@ App.loadPage = function() {
 	// Force it!
 	setTimeout( function(){App.signin.checkUser()}, 500 );
 
-	var
-		url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/'),
-		path = url.split('/');
+	var url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/');
+	// check if there are any query string vars and ignore it. See #939
+	url = url.split( '?' )[0];
+
+	var path = url.split('/');
 
 	if (!path[path.length-1]) {
 		delete path[path.length-1];
