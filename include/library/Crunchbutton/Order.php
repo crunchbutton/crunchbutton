@@ -298,9 +298,9 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function chargedByCredit(){
+		$totalCredit = 0;
 		if( $this->pay_type == 'card' ){
 			$credits = Crunchbutton_Credit::creditByOrder( $this->id_order );
-			$totalCredit = 0;
 			if( $credits->count() > 0 ){
 				foreach( $credits as $credit ){
 					$totalCredit = $totalCredit + $credit->value;
@@ -379,6 +379,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 				$amount = $this->calcFinalPriceMinusUsersCredit();
 				// If the amount is 0 it means that the user used his credit.
+
 				if( $amount > 0 ){
 						$r = $charge->charge([
 						'amount' => $amount,
