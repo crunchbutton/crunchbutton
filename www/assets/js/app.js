@@ -541,17 +541,21 @@ App.cart = {
 			$('.cart-breakdownDescription').html('$' + this.subtotal().toFixed(2));
 		}
 
-		if( credit > 0 ){
+		if( App.order.pay_type == 'card' && credit > 0 ){
 			var creditLeft = '';
 			if( this.total() < credit ){
 				var creditLeft = '<span class="gift-left"> - You\'ll still have $' + App.ceil( ( credit - this.total() ) ).toFixed( 2 ) + ' gift card left </span>';
 				credit = this.total();
 			} 
-			$('.cart-gift').html( '&nbsp;(- $' + credit + ' credit ' + creditLeft + ')' );
+			$('.cart-gift').html( '&nbsp;(- $' + credit + ' credit ' + creditLeft + ') ' );
 		} else {
-			$('.cart-gift').html();
+			$('.cart-gift').html( '' );
 		}
-		// totalText = '$' + App.ceil( ( totalText ) ).toFixed( 2 );
+
+		if( App.order.pay_type == 'cash' && credit > 0 ){
+			totalText += '<span class="giftcard-message">Hey! Pay with a card to make use of your $' + credit + ' gift card!</span>';
+		}
+
 		$('.cart-total').html( totalText );
 
 		/**
@@ -1063,7 +1067,7 @@ Issue 13: Removed the password for while
 
 		var finalAmount = this.total();
 
-		if( App.credit.restaurant[ App.restaurant.id ] ){
+		if( App.order.pay_type == 'card' && App.credit.restaurant[ App.restaurant.id ] ){
 			finalAmount = finalAmount - App.ceil( App.credit.restaurant[ App.restaurant.id ] ).toFixed(2);
 			if( finalAmount < 0 ){
 				finalAmount = 0;
