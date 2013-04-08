@@ -2797,7 +2797,12 @@ strong {
 	cursor: pointer;
 	text-decoration: underline;
 }
-
+ 	.giftcard-message{
+		color:#d74924 !important;
+		display: block;
+		text-align: center;
+		margin-top: 3px;
+	}
 
 
 .print-icon {

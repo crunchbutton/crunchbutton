@@ -283,24 +283,28 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function calcFinalPriceMinusUsersCredit(){
-		if( c::user()->id_user ){
-			$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $this->final_price, c::user()->id_user, $this->id_restaurant, $this->id_order, true );
-			$final = $this->final_price - $chargedByCredit;
-			if( $final < 0 ){
-				$final = 0;
-			}
-			return Util::ceil($final, 2);
-		} else {
-			return $this->final_price;
+
+		if( $this->pay_type == 'card' ){
+			if( c::user()->id_user ){
+				$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $this->final_price, c::user()->id_user, $this->id_restaurant, $this->id_order, true );
+				$final = $this->final_price - $chargedByCredit;
+				if( $final < 0 ){
+					$final = 0;
+				}
+				return Util::ceil($final, 2);
+			} 
 		}
+		return $this->final_price;
 	}
 
 	public function chargedByCredit(){
-		$credits = Crunchbutton_Credit::creditByOrder( $this->id_order );
-		$totalCredit = 0;
-		if( $credits->count() > 0 ){
-			foreach( $credits as $credit ){
-				$totalCredit = $totalCredit + $credit->value;
+		if( $this->pay_type == 'card' ){
+			$credits = Crunchbutton_Credit::creditByOrder( $this->id_order );
+			$totalCredit = 0;
+			if( $credits->count() > 0 ){
+				foreach( $credits as $credit ){
+					$totalCredit = $totalCredit + $credit->value;
+				}
 			}
 		}
 		return $totalCredit;
@@ -311,7 +315,9 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function debitFromUserCredit(){
-		Crunchbutton_Credit::debitFromUserCredit( $this->final_price, c::user()->id_user, $this->id_restaurant, $this->id_order );
+		if( $this->pay_type == 'card' ){
+			Crunchbutton_Credit::debitFromUserCredit( $this->final_price, c::user()->id_user, $this->id_restaurant, $this->id_order );
+		}
 	}
 
 	public static function uuid($uuid) {
