@@ -99,6 +99,10 @@ var sort_by;
 }());
 
 
+App.nl2br = function( string ){
+    return string.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');
+}
+
 var touchclick = App.isMobile() ? 'touchend' : 'click';
 var touchup = App.isMobile() ? 'touchend' : 'mouseup';
 jQuery.event.special.touchclick = {

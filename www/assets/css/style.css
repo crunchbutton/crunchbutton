@@ -268,6 +268,22 @@ b {
 	font-weight: bold;
 }
 
+.restaurant-closed{
+	color: #666;
+	font-size:13px;
+	line-height: 20px;
+	padding: 10px;
+	width: 100%;
+	text-shadow: 1px 1px 0 rgba(255,255,255,.72);
+	margin: 0 auto 35px auto;
+}
+	.restaurant-closed-title{
+		color: #d74924;
+		display: block;
+		font-size: 14px;
+		font-weight: bold;
+	}
+
 .restaurant-item-title {
 	text-transform: uppercase;
 	color: rgb(2, 2, 2) ;
@@ -2803,8 +2819,6 @@ strong {
 		text-align: center;
 		margin-top: 3px;
 	}
-
-
 .print-icon {
 	margin-bottom: 20px;
 	float: right;
