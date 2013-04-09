@@ -79,7 +79,8 @@
 		<td>$<?=number_format($order->final_price,2)?></td>
 	</tr>
 	
-	<?php if( $order->chargedByCredit() > 0 ) { ?>
+	<?php /* Just the user and CB will see this info about gift card. See #1006. */ ?>
+	<?php if( $user && $order->chargedByCredit() > 0 ) { ?>
 	<tr style="font-weight:bold;">
 		<td></td>
 		<td style="text-align:right"><?php if( $order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>

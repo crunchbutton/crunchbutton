@@ -860,32 +860,11 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 
 				if ( $this->pay_type == 'card') {
-					if ( $this->chargedByCredit() > 0 ) {
-						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer has already paid for this order by credit card and gift card.';
-						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The gift card value was ' . $this->phoeneticNumber( $this->chargedByCredit() ) . '.';
-						if( $this->charged() > 0 ){
-							$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The total charged was ' . $this->phoeneticNumber( $this->charged() ) . '.';	
-						} else {
-							$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">No value was charged from user\'s credit card.';
-						}
-						
-					} else {
-						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer has already paid for this order by credit card.';	
-					}
-					
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer has already paid for this order by credit card.';
 				} else {
-					if ( $this->chargedByCredit() > 0 ) {
-						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will pay for this order with cash and gift card.';	
-						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer used a gift card value ' . $this->phoeneticNumber( $this->chargedByCredit() ) . '.';
-						if( $this->charged() > 0 ){
-								$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">TThe total charged value should be ' . $this->phoeneticNumber( $this->charged() ) . '.';	
-							} else {
-								$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">No value should be charged from user.';
-							}
-					} else {
-						$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will pay for this order with cash.';	
-					}
+					$msg .= '</Say><Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">The customer will pay for this order with cash.';
 				}
+
 				break;
 		}
 
