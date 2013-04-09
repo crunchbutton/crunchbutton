@@ -1,5 +1,3 @@
-
-
 <div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
 	<div class="cart-summary-icon"></div>
 	<div class="cart-summary-item-count"><span></span></div>
@@ -67,6 +65,18 @@
 
 <? /* payment and user info */ ?>
 <form class="payment-form main-content-readable">
+
+	<% if( !App.restaurant.open() ) { %>
+	<div class="restaurant-closed">
+		<span class="restaurant-closed-title">
+			This restaurant is currently closed!
+		</span>
+		<span class="restaurant-closed-content">
+			It will be open during the following hours (EDT):	<br/> 
+			<%= App.nl2br( restaurant.closedMessage() ) %>	
+		</span>
+	</div>
+	<% } %>
 
 	<div class="content-item-name"><h1>Your Info</h1></div>
 	<div class="your-info-label">(enter this once, and we'll save it for next time)</div>
