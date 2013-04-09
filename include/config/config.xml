@@ -159,7 +159,7 @@
 			<outgoingCustomer>+18003514161</outgoingCustomer>
 			<outgoingRestaurant>+18003514161</outgoingRestaurant>
 		</olddev>
-		<testnumber>***REMOVED***</testnumber>
+		<testnumber>2037728167</testnumber>
 		<voice>male</voice>
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>
