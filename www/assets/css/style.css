@@ -274,6 +274,7 @@ b {
 	line-height: 20px;
 	padding: 10px;
 	width: 100%;
+	text-align: left !important;
 	text-shadow: 1px 1px 0 rgba(255,255,255,.72);
 	margin: 0 auto 35px auto;
 }

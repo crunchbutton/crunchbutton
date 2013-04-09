@@ -195,6 +195,18 @@
 
 	<div class="delivery-payment-info main-content-readable">
 	
+		<% if( !App.restaurant.open() ) { %>
+		<div class="restaurant-closed">
+			<span class="restaurant-closed-title">
+				This restaurant is currently closed!
+			</span>
+			<span class="restaurant-closed-content">
+				It will be open during the following hours (EDT):	<br/> 
+				<%= App.nl2br( restaurant.closedMessage() ) %>	
+			</span>
+		</div>
+		<% } %>
+	
 		<div class="dp-display-phone dp-display-item">
 
 			<label>Your phone number:</label> <%= (user.phone ? App.phone.format(user.phone) : '<i>no phone # provided</i>') %></div>
