@@ -59,11 +59,7 @@
 <? endif ; ?>
 
 <br />
-<?=$this->render('order/details',['set' => ['order' => $order]])?>
-
-
-
-
+<?=$this->render('order/details',['set' => ['order' => $order, 'user' => $user]]);?>
 
 <? if (!$user) : ?>
 	<br /><br /><br />
