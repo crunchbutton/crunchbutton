@@ -9,7 +9,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		$tsess->data = json_encode($_REQUEST);
 		$tsess->save();
 
-	    header('Content-type: text/xml');
+		header('Content-type: text/xml');
 		echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 			.'<Response>';
 			
@@ -22,14 +22,20 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		
 		switch ($type) {
 			case 'rep':
+				foreach (c::config()->text as $supportName => $supportPhone) {
+					if ($supportName == $rep) continue;
+					$nums[] = $supportPhone;
+				}
+
 				if ($body{0} == '@') {
 					$id = str_replace('@','',$body);
 
 					$rsess = new Session_Twilio($id);
 					if (!$rsess->id_session_twilio) {
 						$msg = 'Invalid ID. Enter a session id to reply to. ex: "@123"';
+						$nums = [];
 					} else {
-						$msg = 'Now replying to @'.$rsess->id_session_twilio.'. Type a message to respond.';
+						$msg = "$rep is now replying to @".$rsess->id_session_twilio.'. Type a message to respond.';
 						$_SESSION['support-respond-sess'] = $rsess->id_session_twilio;
 					}
 
@@ -37,13 +43,8 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$rsess = new Session_Twilio($_SESSION['support-respond-sess']);
 					$message = $rep.': '.$body;
 					
-					$nums = [$rsess->phone];
+					$nums[] = $rsess->phone;
 					
-					foreach (c::config()->text as $supportName => $supportPhone) {
-						if ($supportName == $rep) continue;
-						$nums[] = $supportPhone;
-					}
-
 					$b = $message;
 					$id = $rsess->id_session_twilio;
 					c::timeout(function() use ($nums, $b, $twilio, $env, $id) {
@@ -74,7 +75,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				break;
 
 			default:
-		
+				$_SESSION['sms-action'] = 'support-ask';
 				if (!$_SESSION['support-order-num']) {
 					$order = Order::q('select * from `order` where phone="'.$phone.'" order by date desc limit 1');
 				} elseif ($_SESSION['support-order-num'] != 'none') {
@@ -82,58 +83,21 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				} else {
 					$order = null;
 				}
-
+				if($order) {
+					$restaurant = new Restaurant($order->id_restaurant);
+					// hard-coding eastern daylight time because that's where
+					// all our support is right now. we should think of a solution
+					// to this and change it eventually. also right now our db times
+					// are all pst. we should change that too.
+					$edt_datetime = strtotime($order->date);
+					date_default_timezone_set('America/New_York');
+					$edt_datetime = date('D, M d, g:i a', $edt_datetime) . ' EDT';
+					$last_cb = "Last CB: #$order->id_order, from $restaurant->name, on $edt_datetime.";
+				} else {
+					$last_cb = 'Last CB: None.';
+				}
 			
 				switch ($_SESSION['sms-action']) {
-					case 'support-orderquestion':
-						$message = strtolower($body);
-						switch ($message) {
-							case 'yes':
-							case 'y':
-							case 'ya':
-							case 'yeah':
-								$_SESSION['support-order-num'] = $order->id_order;
-								$_SESSION['sms-action'] = 'support-ask';
-								$msg = 'Great. What can we help you with?';
-								break;
-		
-							case 'no':
-							case 'nay':
-							case 'n':
-							case 'nop':
-							case 'nope':
-								$_SESSION['sms-action'] = 'support-orderspecific';
-								$msg = 'OK. What is your order number? Or enter "none" if you don\'t know.';
-								break;
-		
-							default:
-								$msg = 'I didn\'t understand that. Is this about order #'.$order->id_order.'?';
-								break;
-								
-						}
-						echo '<Sms>'.$msg.'</Sms>';
-						break;
-		
-					case 'support-orderspecific':
-						$body = strtolower($body);
-						if ($body == 'none') {
-							$_SESSION['support-order-num'] = 'none';
-							$_SESSION['sms-action'] = 'support-ask';
-							$msg = 'OK. What can we help you with?';
-						}
-						$orderNum = preg_replace('/[^0-9]+/','',$body);
-						$order = new Order($orderNum);
-		
-						if ($order->id_order) {
-							$_SESSION['support-order-num'] = $order->id_order;
-							$_SESSION['sms-action'] = 'support-ask';
-							$msg = 'Great. What can we help you with?';
-						} else {
-							$msg = 'I couldn\'t find that order. What was it again?';				
-						}
-						echo '<Sms>'.$msg.'</Sms>';
-						break;
-		
 					case 'support-ask':
 						$tsess->id_order = $order ? $order->id_order : null;
 						$tsess->phone = $phone;
@@ -147,6 +111,11 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						}
 						$message .= htmlspecialchars($body);
 						$message = str_split($message,160);
+
+						if(!$_SESSION['last_cb']) {
+							$_SESSION['last_cb'] = $last_cb;
+							$message[] = $last_cb;
+						}
 
 						$b = $message;
 						c::timeout(function() use ($b, $env, $twilio) {
@@ -167,29 +136,12 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						break;
 		
 					default:
-						if (strtolower($body) == 'support') {
-							if ($order->id_order) {
-								$_SESSION['sms-action'] = 'support-orderquestion';
-								$msg = 'Is this about order #'.$order->id_order.'?';
-							} else {
-								$_SESSION['sms-action'] = 'support-orderspecific';
-								$msg = 'OK. What is your order number? Or enter "none" if you don\'t know.';
-							}
-		
-				
-						} else {
-							if ($order->id_order) {
-								$msg = 'To contact '.$order->restaurant()->shortName().", call ".$order->restaurant()->phone().".\n";
-							}
 							$msg .= "To contact Crunchbutton, call ".c::config()->phone->support.".\n";
 							$msg .= 'Or, send us a text by replying with "support" '."\n";
 		
-						}
 						echo '<Sms>'.$msg.'</Sms>';
-					break;
+						break;
 				}
-				break;
-
 		}
 
 		echo '</Response>';
