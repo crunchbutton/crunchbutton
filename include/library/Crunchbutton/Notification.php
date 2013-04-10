@@ -30,8 +30,17 @@ class Crunchbutton_Notification extends Cana_Table
 				$log->id_notification = $this->id_notification;
 				$log->status = 'pending';
 				$log->type = 'phaxio';
+				$log->date = date('Y-m-d H:i:s');
 				$log->id_order = $order->id_order;
 				$log->save();
+
+				Log::debug([
+					'order' => $order->id_order,
+					'action' => 'send fax',
+					'fax' => $fax,
+					'host' => c::config()->host_callback,
+					'type' => 'notification'
+				]);
 
 				$fax = new Phaxio([
 					'to' => $fax,
