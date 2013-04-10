@@ -996,6 +996,24 @@ class Crunchbutton_Order extends Cana_Table {
 		return Community::o($this->id_community);
 	}
 
+	public function hasGiftCard(){
+		$query = 'SELECT SUM( value ) as total FROM promo WHERE id_order_reference = ' . $this->id_order;
+		$row = Cana::db()->get( $query )->get(0);
+		if( $row->total ){
+			return $row->total;
+		}
+		return 0;
+	}
+
+	public function hasCredit(){
+		$query = 'SELECT SUM( value ) as total FROM credit WHERE id_order_reference = ' . $this->id_order . '  AND id_promo IS NULL';
+		$row = Cana::db()->get( $query )->get(0);
+		if( $row->total ){
+			return $row->total;
+		}
+		return 0;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this

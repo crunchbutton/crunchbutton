@@ -36,8 +36,21 @@
 							<? if ($order->refunded) : ?>
 								REFUNDED
 							<? else : ?>
-								<a href="javascript:;" class="refund" data-charged="<?php echo $order->charged(); ?>" data-gift="<?php if( $order->chargedByCredit() > 0 ){ echo $order->chargedByCredit(); } else { echo '0'; } ?>" data-uuid="<?=$order->uuid?>">REFUND</a></td></tr>
+								<a href="javascript:;" class="refund" data-charged="<?php echo $order->charged(); ?>" data-gift="<?php if( $order->chargedByCredit() > 0 ){ echo $order->chargedByCredit(); } else { echo '0'; } ?>" data-uuid="<?=$order->uuid?>">REFUND</a>
 							<? endif ; ?>
+							<?php 
+							$credit = $order->hasCredit();
+							if( $credit > 0 ){
+								echo '<div style="color:red;margin-top:8px;">Received <strong style="font-weight:bold;">$' . number_format( $credit, 2 ) . '</strong> credit.</div>';
+							}
+							?>
+							<?php 
+							$giftcard = $order->hasGiftCard();
+							if( $giftcard > 0 ){
+								echo '<div style="color:red;margin-top:8px;">Received <strong style="font-weight:bold;">$' . number_format( $giftcard, 2 ) . '</strong> gift card.</div>';
+							}
+							?>
+							</td></tr>
 					</table>
 				</td>
 				<td>
