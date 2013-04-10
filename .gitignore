@@ -4,6 +4,7 @@
 .settings
 
 # filetypes
+*.bin
 *.bz2
 *.mov
 *.mp4
