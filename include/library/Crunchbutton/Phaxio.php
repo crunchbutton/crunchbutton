@@ -13,6 +13,12 @@ class Crunchbutton_Phaxio {
 		$cmd .= '-F "api_key='.c::config()->phaxio->{$env}->key.'" '
 			.'-F "api_secret='.c::config()->phaxio->{$env}->secret.'"';
 
+		Log::debug([
+			'phaxio cmd' => $cmd,
+			'action' => 'send fax',
+			'type' => 'notification'
+		]);
+
 		exec($cmd, $return);
 
 		$return = json_decode(trim(join('',$return)));
