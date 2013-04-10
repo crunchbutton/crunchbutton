@@ -86,11 +86,10 @@
     	<restaurant>800-351-4161</restaurant>
     </phone>
     <text>
-    	<!-- <Devin>_PHONE_</Devin>
+    	<Devin>_PHONE_</Devin>
     	<Judd>_PHONE_</Judd>
     	<David>_PHONE_</David>
-    	<Nick>_PHONE_</Nick> -->
-    	<DanielTest>***REMOVED***</DanielTest>
+    	<Nick>_PHONE_</Nick>
     </text>
     <stripe>
     	<dev>
@@ -166,7 +165,7 @@
 		<maxcallback>5</maxcallback>
 		<maxconfirmback>3</maxconfirmback>
 		<confirmTime>120000</confirmTime>
-		<confirmFaxTime>10000</confirmFaxTime>
+		<confirmFaxTime>300000</confirmFaxTime>
 		<callbackTime>120000</callbackTime>
 	</twilio>
 	<phaxio>
