@@ -83,7 +83,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				} else {
 					$order = null;
 				}
-				if($order) {
+				if($order->id_order) {
 					$restaurant = new Restaurant($order->id_restaurant);
 					// hard-coding eastern daylight time because that's where
 					// all our support is right now. we should think of a solution
@@ -104,7 +104,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						$tsess->save();
 
 						$message = '@'.$tsess->id_session_twilio.' ';
-						if ($order) {
+						if ($order->id_order) {
 							$message .= ' #'.$order->id_order.' '.$order->name.': ';
 						} else {
 							$message .= ': ';
