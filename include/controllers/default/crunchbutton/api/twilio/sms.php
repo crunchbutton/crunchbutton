@@ -136,10 +136,18 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						break;
 		
 					default:
+
+							$outgoingTextCustomer = c::config()->twilio->{$env}->outgoingTextCustomer;
+
+							// to avoid the loop #1028
+							if( $outgoingTextCustomer != $phone ){
+
 							$msg .= "To contact Crunchbutton, call ".c::config()->phone->support.".\n";
 							$msg .= 'Or, send us a text by replying with "support" '."\n";
-		
-						echo '<Sms>'.$msg.'</Sms>';
+			
+								echo '<Sms>'.$msg.'</Sms>';		
+							}
+						
 						break;
 				}
 		}
