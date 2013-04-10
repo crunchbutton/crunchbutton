@@ -165,7 +165,7 @@
 		<maxcallback>5</maxcallback>
 		<maxconfirmback>3</maxconfirmback>
 		<confirmTime>120000</confirmTime>
-		<confirmFaxTime>30000</confirmFaxTime>
+		<confirmFaxTime>10000</confirmFaxTime>
 		<callbackTime>120000</callbackTime>
 	</twilio>
 	<phaxio>
