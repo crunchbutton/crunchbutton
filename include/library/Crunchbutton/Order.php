@@ -688,7 +688,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 			$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
-			$date = $order->date();
+			$date = $this->date();
 			$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
 			$message = 'The order #' . $this->id_order . ' (' . $date . ') was not confirmed. It was sent ' . $confirmationCallsSent . ' confirmation calls';
