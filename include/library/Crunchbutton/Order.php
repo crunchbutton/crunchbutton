@@ -609,6 +609,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// Start the timer to check if the order was confirmed. #1049
 		if ($this->restaurant()->confirmation) {
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed started', 'time' => c::config()->twilio->warningOrderNotConfirmedTime, 'type' => 'notification' ]);
 			c::timeout(function() use($order) {
 				$order->warningOrderNotConfirmed();
 			}, c::config()->twilio->warningOrderNotConfirmedTime );
@@ -676,7 +677,7 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		// Make sure the order was not confirmed yet
 		if ( $this->restaurant()->confirmation && !$this->confirmed ) {
-				
+
 			$nl = Notification_Log::q( 'SELECT * FROM notification_log WHERE id_order = ' . $this->id_order . ' AND status="callback" AND `type`="confirm"' );
 			$confirmationCallsSent = $nl->count();
 
@@ -689,6 +690,8 @@ class Crunchbutton_Order extends Cana_Table {
 
 			$message = 'The order #' . $this->id_order . ' (' . $date . ') was not confirmed. It was sent ' . $confirmationCallsSent . ' confirmation calls';
 			$message = str_split( $message,160 );
+
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmationCallsSent' => $confirmationCallsSent, 'type' => 'notification' ]);
 
 			c::timeout( function() use ($message, $env, $twilio ) {
 							foreach ( c::config()->text as $supportName => $supportPhone ) {
@@ -703,6 +706,8 @@ class Crunchbutton_Order extends Cana_Table {
 								}
 							}
 						} );
+		} else {
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed ignored', 'confirmed' => $this->confirmed, 'type' => 'notification' ]);
 		}
 			
 	}
