@@ -23,7 +23,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			if (c::env() != 'live') {
 				return;
 			}
-			
+
 			Log::critical([
 				'id_order' => $this->id_order, 
 				'id_notification_log' => $this->id_notification_log,
