@@ -164,8 +164,10 @@
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>
 		<maxconfirmback>3</maxconfirmback>
-		<confirmTime>120000</confirmTime>
-		<confirmFaxTime>300000</confirmFaxTime>
+		<confirmTime>20000</confirmTime>
+		<confirmFaxTime>30000</confirmFaxTime>
+		<confirmTimeFaxReceived>300000</confirmTimeFaxReceived>
+		<confirmTimeCallback>120000</confirmTimeCallback>
 		<callbackTime>120000</callbackTime>
 	</twilio>
 	<phaxio>

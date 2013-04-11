@@ -13,7 +13,10 @@ class Crunchbutton_Notification extends Cana_Table
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
 		$mail = ($env == 'live' ? $this->value : '_EMAIL');
-		$fax = ($env == 'live' ? $this->value : '_PHONE_');
+		$fax = ($env == 'live' ? $this->value : '8777701208');
+
+		// $mail = ($env == 'live' ? $this->value : '_EMAIL');
+		// $fax = ($env == 'live' ? $this->value : '_PHONE_');
 
 		switch ($this->type) {
 			case 'fax':
@@ -34,13 +37,8 @@ class Crunchbutton_Notification extends Cana_Table
 				$log->id_order = $order->id_order;
 				$log->save();
 
-				Log::debug([
-					'order' => $order->id_order,
-					'action' => 'send fax',
-					'fax' => $fax,
-					'host' => c::config()->host_callback,
-					'type' => 'notification'
-				]);
+				// Log
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'send fax', 'fax' => $fax, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
 
 				$fax = new Phaxio([
 					'to' => $fax,
@@ -61,7 +59,7 @@ class Crunchbutton_Notification extends Cana_Table
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
-					$order->queConfirm();
+					$order->queConfirmFaxWasReceived();
 				}
 
 				break;
