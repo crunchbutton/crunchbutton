@@ -532,12 +532,12 @@ class Crunchbutton_Restaurant extends Cana_Table
 	 * @param array $elements
 	 */
 	public function saveNotifications($elements) {
-		// c::db()->query('DELETE FROM notification WHERE id_restaurant="'.$this->id_restaurant.'"');
+		c::db()->query('DELETE FROM notification WHERE id_restaurant="'.$this->id_restaurant.'"');
 		foreach ($elements as $data) {
 			if (!$data['value']) continue;
 			$element                = new Crunchbutton_Notification($data['id_notification']);
 			$element->id_restaurant = $this->id_restaurant;
-			$element->active        = ($data['active'] == 'true') ? "1" : "0";
+			$element->active        = ($data['active'] == 'true' || $data['active'] == '1') ? "1" : "0";
 			$element->type          = $data['type'];
 			$element->value         = $data['value'];
 			$element->save();
@@ -879,6 +879,28 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 		$out['id_community'] = $this->community()->id_community;
 		return $out;
+	}
+
+	/**
+	 * Imports an array with all the information for a Restaurant.
+	 *
+	 * Should be an exact inverse of exports()
+	 * for starters, it's an approximation
+	 *
+	 * @return null
+	 */
+	public function imports($restaurant) {
+		// TODO implement this
+		// for now, start with basic stuff
+
+		foreach($this->properties() as $key=>$val) {
+			if(in_array($key, array_keys($restaurant))) {
+				$this->$key = $restaurant[$key];
+			}
+		}
+		$this->saveHours($restaurant['_hours']);
+		$this->saveNotifications($restaurant['_notifications']);
+		return null;
 	}
 
 	public function priceRange() {
