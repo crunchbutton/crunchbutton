@@ -30,7 +30,10 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account
 
 		$view->communities         = $communities;
 		$view->restaurantCommunity = $community;
-		$view->display('admin/restaurants/restaurant');
+		$view_name = c::getPagePiece(2) == 'legacy' ?
+				'admin/restaurants/legacy/restaurant'		:
+				'admin/restaurants/restaurant'					;
+		$view->display($view_name);
 	}
 
 	/**
@@ -52,15 +55,24 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account
 		c::view()->layout('layout/admin');
 		c::view()->page = 'admin/restaurants';
 
-		$restaurant       = Restaurant::o(c::getPagePiece(2));
+		if(c::getPagePiece(2) == 'legacy') {
+			c::view()->page = 'admin/restaurants';
+			$page_piece_index = 3;
+		}
+		else {
+			$page_piece_index = 2;
+		}
+
+		$restaurant = Restaurant::o(c::getPagePiece($page_piece_index));
+
 		/* @var $restaurant Crunchbutton_Restaurant */
 		$this->restaurant = $restaurant;
 
-		if (c::getPagePiece(2) == 'new') {
+		if (c::getPagePiece($page_piece_index) == 'new') {
 			$this->_restaurantForm();
 		} elseif ($restaurant->id_restaurant) {
 			c::view()->restaurant = $restaurant;
-			switch (c::getPagePiece(3)) {
+			switch (c::getPagePiece($page_piece_index+1)) {
 				case 'pay':
 					c::view()->display('admin/restaurants/pay');
 					break;
