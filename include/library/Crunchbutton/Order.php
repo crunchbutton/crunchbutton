@@ -514,7 +514,6 @@ class Crunchbutton_Order extends Cana_Table {
 			Log::debug([ 'order' => $this->id_order, 'action' => 'starting notification', 'notification_type' => $n->type, 'type' => 'notification']);
 			$n->send($this);
 		}
-		exit;
 	}
 
 	public function confirm() {

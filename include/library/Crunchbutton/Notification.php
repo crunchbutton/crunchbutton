@@ -12,6 +12,7 @@ class Crunchbutton_Notification extends Cana_Table
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
+		$sms = ($env == 'live' ? $this->value : '***REMOVED***');
 		$mail = ($env == 'live' ? $this->value : '_EMAIL');
 		$fax = ($env == 'live' ? $this->value : '8777701208');
 
@@ -69,12 +70,12 @@ class Crunchbutton_Notification extends Cana_Table
 				$message = str_split($order->message('sms'),160);
 				
 				// Log
-				Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms', 'num' => $num, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms', 'num' => $sms, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
 
 				foreach ($message as $msg) {
 					$twilio->account->sms_messages->create(
 						c::config()->twilio->{$env}->outgoingTextRestaurant,
-						'+1'.$num,
+						'+1'.$sms,
 						$msg
 					);
 					continue;
