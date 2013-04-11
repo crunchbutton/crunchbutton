@@ -612,7 +612,7 @@ class Crunchbutton_Order extends Cana_Table {
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed started', 'time' => c::config()->twilio->warningOrderNotConfirmedTime, 'type' => 'notification' ]);
 			c::timeout(function() use($order) {
 				$order->warningOrderNotConfirmed();
-			}, c::config()->twilio->warningOrderNotConfirmedTime );
+			}, c::config()->twilio->warningOrderNotConfirmedTime, false );
 		}
 	}
 
