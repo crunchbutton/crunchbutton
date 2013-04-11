@@ -678,25 +678,21 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function warningOrderNotConfirmed(){
 
+		$order = $this;
+
 		// Make sure the order was not confirmed yet
-		if ( $this->restaurant()->confirmation && !$this->confirmed ) {
+		if ( $order->restaurant()->confirmation && $order->confirmed != '1' ) {
 
-			$order = $this;
-
-			$nl = Notification_Log::q( 'SELECT * FROM notification_log WHERE id_order = ' . $this->id_order . ' AND status="callback" AND `type`="confirm"' );
-			$confirmationCallsSent = $nl->count();
-
-			$env = c::env() == 'live' ? 'live' : 'dev';
-
-			$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-
-			$date = $this->date();
+			$date = $order->date();
 			$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
-			$message = 'The order #' . $this->id_order . ' (' . $date . ') was not confirmed. It was sent ' . $confirmationCallsSent . ' confirmation calls';
+			$message = 'Order #' . $order->id_order . ' (' . $date . ') was not confirmed';
 			$message = str_split( $message,160 );
 
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmationCallsSent' => $confirmationCallsSent, 'type' => 'notification' ]);
+
+			$env = c::env() == 'live' ? 'live' : 'dev';
+			$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 			
 			foreach ( c::config()->text as $supportName => $supportPhone ) {
 				foreach ( $message as $msg ) {
@@ -711,7 +707,7 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 			}
 		} else {
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed ignored', 'confirmed' => $this->confirmed, 'type' => 'notification' ]);
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed ignored', 'confirmed' => $order->confirmed, 'type' => 'notification' ]);
 		}
 			
 	}
