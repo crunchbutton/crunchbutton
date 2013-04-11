@@ -680,7 +680,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$order = $this;
 
-		if ( $this->confirmed || !$this->restaurant()->confirmation ) {
+		if ( $order->confirmed || !$order->restaurant()->confirmation ) {
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed ignored', 'confirmed' => $order->confirmed, 'type' => 'notification' ]);
 			return;
 		}
