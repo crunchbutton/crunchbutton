@@ -520,33 +520,12 @@ class Crunchbutton_Order extends Cana_Table {
 			return;
 		}
 
-		Log::debug([
-			'order' => $this->id_order,
-			'confirmed' =>$this->confirmed,
-			'action' => 'check confirmed',
-			'host' => c::config()->host_callback,
-			'type' => 'notification'
-		]);
-
-		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type = "confirm" and ( status = "created" or status = "queued" or status ="success" ) ');
+		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$this->id_order.'" AND type = "confirm" AND ( status = "created" OR status = "queued" OR status ="success" ) ');
 		if( $nl->count() > 0 ){
-			Log::debug([
-			'order' => $this->id_order,
-			'count' => $nl->count(),
-			'action' => 'confirmation call already in process',
-			'host' => c::config()->host_callback,
-			'type' => 'notification'
-			]);
+			// Log
+			Log::debug([ 'order' => $this->id_order, 'count' => $nl->count(), 'action' => 'confirmation call already in process', 'host' => c::config()->host_callback, 'type' => 'notification']);
 			return;
-		} else {
-			Log::debug([
-			'order' => $this->id_order,
-			'count' => $nl->count(),
-			'action' => 'starting new confirmation call',
-			'host' => c::config()->host_callback,
-			'type' => 'notification'
-			]);
-		}
+		} 
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
@@ -558,21 +537,10 @@ class Crunchbutton_Order extends Cana_Table {
 		$log->status = 'created';
 		$log->save();
 
-		/*
-		$num = '_PHONE_';
-		c::config()->host_callback = 'dev.crunchr.co';
-		*/
-
 		$callback = 'http://'.c::config()->host_callback.'/api/notification/'.$log->id_notification_log.'/confirm';
 
-		Log::debug([
-			'order' => $this->id_order,
-			'action' => 'dial confirm call',
-			'num' => $num,
-			'host' => c::config()->host_callback,
-			'callback' => $callback,
-			'type' => 'notification'
-		]);
+		// Log
+		Log::debug([ 'order' => $this->id_order, 'action' => 'dial confirm call', 'count' => $nl->count(), 'num' => $num, 'host' => c::config()->host_callback, 'callback' => $callback, 'type' => 'notification']);
 
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$call = $twilio->account->calls->create(
@@ -581,7 +549,6 @@ class Crunchbutton_Order extends Cana_Table {
 			'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirm',
 			[
 				'StatusCallback' => $callback
-//                'IfMachine' => 'Hangup'
 			]
 		);
 
@@ -641,44 +608,61 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 	}
 
-	public function queConfirm() {
+	// After 5 minutes the fax was sent we have to send this confirmation to make sure that the fax as delivered.
+	public function queConfirmFaxWasReceived(){
 		$order = $this;
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
 		}
-		// Check if there are another confirm que, if it does it will not send two confirms. Just one is enough.
-		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type = "confirm" and ( status = "created" or status = "queued" ) ');
-		if( $nl->count() > 0 ){
-			return;
-		}
-		Log::debug([
-			'order' => $this->id_order,
-			'confirmed' => $this->confirmed,
-			'action' => 'confirm qued',
-			'type' => 'notification'
-		]);
 
-		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and status="callback" and `type`="confirm"');
+		$confirmationTime = c::config()->twilio->confirmTimeFaxReceived;
 
-		Log::debug([ 'nl_count' => $nl->count(), 'type' => 'notification' ]);
+		// Log
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
 
-		// If restaurant has fax notification we should wait 5 min before send the confirmation #784
-		if( $this->restaurant()->hasFaxNotification() ){
-			$confirmationTime = c::config()->twilio->confirmFaxTime;
-			Log::debug([ 'order' => $this->id_order, 'action' => 'hasFaxNotification - confirmationTime :' . $confirmationTime, 'type' => 'notification' ]);
-		} else {
-			$confirmationTime = c::config()->twilio->confirmTime;
-				Log::debug([ 'order' => $this->id_order, 'action' => 'confirmationTime :' . $confirmationTime, 'type' => 'notification' ]);
-		}
-
-		// Issue #974 - if it is the 2nd, 3rd, 4th... call the confirmation time should be 2 min even to hasFaxNotification
-		if( $nl->count() > 0 ){
-			$confirmationTime = c::config()->twilio->confirmTime;
-			Log::debug([ 'order' => $this->id_order, 'action' => 'confirmationTime :' . $confirmationTime, 'type' => 'notification' ]);
-		}
 		c::timeout(function() use($order) {
 			$order->confirm();
 		}, $confirmationTime, false);
+
+	}
+
+	public function queConfirm() {
+		
+		$order = $this;
+
+		if ($this->confirmed || !$this->restaurant()->confirmation) {
+			return;
+		}
+		// Check if there are another confirm que, if it does it will not send two confirms. Just one is enough.
+		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$this->id_order.'" AND type = "confirm" AND ( status = "created" OR status = "queued" ) ');
+		if( $nl->count() > 0 ){
+			return;
+		}
+
+		// Query to count the number of confirmations sent
+		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$this->id_order.'" AND status="callback" AND `type`="confirm"');
+
+		if( $nl->count() > 0 ){ // if it is the 2nd, 3rd, 4th... call the confirmation time should be 2 min even to hasFaxNotification - #974
+			$confirmationTime = c::config()->twilio->confirmTimeCallback;
+			
+		} else { // if it is the first confirmation call
+			
+			if( $this->restaurant()->hasFaxNotification() ){ // If restaurant has fax notification
+				$confirmationTime = c::config()->twilio->confirmFaxTime;
+			
+			} else {
+				$confirmationTime = c::config()->twilio->confirmTime;
+			
+			}
+		}			
+
+		// Log
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirm', 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
+
+		c::timeout(function() use($order) {
+			$order->confirm();
+		}, $confirmationTime, false);
+	
 	}
 
 	public function orderMessage($type) {
