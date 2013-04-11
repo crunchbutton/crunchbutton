@@ -166,8 +166,8 @@
 		<maxcallback>5</maxcallback>
 		<maxconfirmback>3</maxconfirmback>
 		<warningOrderNotConfirmedTime>60000</warningOrderNotConfirmedTime><!-- 600000 -->
-		<confirmTime>20000</confirmTime>
-		<confirmFaxTime>30000</confirmFaxTime>
+		<confirmTime>30000</confirmTime>
+		<confirmFaxTime>20000</confirmFaxTime>
 		<confirmTimeFaxReceived>300000</confirmTimeFaxReceived>
 		<confirmTimeCallback>120000</confirmTimeCallback>
 		<callbackTime>120000</callbackTime>
