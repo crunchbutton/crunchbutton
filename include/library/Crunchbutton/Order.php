@@ -677,9 +677,11 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function warningOrderNotConfirmed(){
-		
+
 		// Make sure the order was not confirmed yet
 		if ( $this->restaurant()->confirmation && !$this->confirmed ) {
+
+			$order = $this;
 
 			$nl = Notification_Log::q( 'SELECT * FROM notification_log WHERE id_order = ' . $this->id_order . ' AND status="callback" AND `type`="confirm"' );
 			$confirmationCallsSent = $nl->count();
@@ -695,21 +697,19 @@ class Crunchbutton_Order extends Cana_Table {
 			$message = str_split( $message,160 );
 
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmationCallsSent' => $confirmationCallsSent, 'type' => 'notification' ]);
-
-			c::timeout( function() use ($message, $env, $twilio ) {
-							foreach ( c::config()->text as $supportName => $supportPhone ) {
-								foreach ( $message as $msg ) {
-									Log::debug( [ 'order' => $order->id_order, 'action' => 'warningOrderNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
-									try {
-										$twilio->account->sms_messages->create(
-											c::config()->twilio->{$env}->outgoingTextCustomer,
-											'+1'.$supportPhone,
-											$msg
-										);
-									} catch (Exception $e) {}
-								}
-							}
-						} );
+			
+			foreach ( c::config()->text as $supportName => $supportPhone ) {
+				foreach ( $message as $msg ) {
+					Log::debug( [ 'order' => $order->id_order, 'action' => 'warningOrderNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
+					try {
+						$twilio->account->sms_messages->create(
+							c::config()->twilio->{$env}->outgoingTextCustomer,
+							'+1'.$supportPhone,
+							$msg
+						);
+					} catch (Exception $e) {}
+				}
+			}
 		} else {
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed ignored', 'confirmed' => $this->confirmed, 'type' => 'notification' ]);
 		}
