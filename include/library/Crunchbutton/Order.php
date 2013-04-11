@@ -509,10 +509,11 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function notify() {
-		foreach ($this->restaurant()->notifications() as $n) {
+		$order = $this;
+		foreach ($order->restaurant()->notifications() as $n) {
 			/* @var $n Crunchbutton_Notification */
-			Log::debug([ 'order' => $this->id_order, 'action' => 'starting notification', 'notification_type' => $n->type, 'type' => 'notification']);
-			$n->send($this);
+			Log::debug([ 'order' => $order->id_order, 'action' => 'starting notification', 'notification_type' => $n->type, 'type' => 'notification']);
+			$n->send($order);
 		}
 	}
 
