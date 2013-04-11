@@ -699,6 +699,7 @@ class Crunchbutton_Order extends Cana_Table {
 			c::timeout( function() use ($message, $env, $twilio ) {
 							foreach ( c::config()->text as $supportName => $supportPhone ) {
 								foreach ( $message as $msg ) {
+									Log::debug( [ 'order' => $order->id_order, 'action' => 'warningOrderNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
 									try {
 										$twilio->account->sms_messages->create(
 											c::config()->twilio->{$env}->outgoingTextCustomer,
