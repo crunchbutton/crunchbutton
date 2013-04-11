@@ -702,7 +702,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$date = $order->date();
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
-		$message = 'O#' . $order->id_order . ' for ' . $order()->restaurant()->name . ' (' . $date . ') not confirmed.';
+		$message = 'O#' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ') not confirmed.';
 		$message .= "\n";
 		$message .= 'R# ' . $order->restaurant()->phone();
 		$message .= "\n";
