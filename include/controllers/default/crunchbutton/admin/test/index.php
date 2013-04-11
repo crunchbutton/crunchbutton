@@ -7,6 +7,7 @@ class Controller_admin_test extends Crunchbutton_Controller_Account {
 
 		echo '<pre>';
 		foreach ( $order->restaurant()->notifications() as $n ) {
+			Log::debug([ 'order' => $order->id_order, 'action' => 'admin/test -> starting notification', 'notification_type' => $n->type, 'type' => 'notification']);
 			echo $n->type;
 			$n->send( $order );
 			echo '<br/>';
