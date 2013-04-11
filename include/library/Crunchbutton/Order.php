@@ -680,36 +680,34 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$order = $this;
 
-		// Make sure the order was not confirmed yet
-		if ( $order->restaurant()->confirmation && $order->confirmed != '1' ) {
-
-			$date = $order->date();
-			$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
-
-			$message = 'Order #' . $order->id_order . ' (' . $date . ') was not confirmed';
-			$message = str_split( $message,160 );
-
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmationCallsSent' => $confirmationCallsSent, 'type' => 'notification' ]);
-
-			$env = c::env() == 'live' ? 'live' : 'dev';
-			$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-			
-			foreach ( c::config()->text as $supportName => $supportPhone ) {
-				foreach ( $message as $msg ) {
-					Log::debug( [ 'order' => $order->id_order, 'action' => 'warningOrderNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
-					try {
-						$twilio->account->sms_messages->create(
-							c::config()->twilio->{$env}->outgoingTextCustomer,
-							'+1'.$supportPhone,
-							$msg
-						);
-					} catch (Exception $e) {}
-				}
-			}
-		} else {
+		if ( $this->confirmed || !$this->restaurant()->confirmation ) {
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed ignored', 'confirmed' => $order->confirmed, 'type' => 'notification' ]);
+			return;
 		}
-			
+
+		$date = $order->date();
+		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
+
+		$message = 'Order #' . $order->id_order . ' (' . $date . ') was not confirmed';
+		$message = str_split( $message,160 );
+
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmationCallsSent' => $confirmationCallsSent, 'confirmed' => $order->confirmed, 'type' => 'notification' ]);
+
+		$env = c::env() == 'live' ? 'live' : 'dev';
+		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		
+		foreach ( c::config()->text as $supportName => $supportPhone ) {
+			foreach ( $message as $msg ) {
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'warningOrderNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
+				try {
+					$twilio->account->sms_messages->create(
+						c::config()->twilio->{$env}->outgoingTextCustomer,
+						'+1'.$supportPhone,
+						$msg
+					);
+				} catch (Exception $e) {}
+			}
+		}
 	}
 
 
