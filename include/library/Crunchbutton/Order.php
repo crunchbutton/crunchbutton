@@ -676,12 +676,24 @@ class Crunchbutton_Order extends Cana_Table {
 	
 	}
 
+	public function isConfirmed( $id_order ){
+		$order = Order::o( $id_order );
+		if( $order->id_order ){
+			if( $order->confirmed ){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public function warningOrderNotConfirmed(){
 
 		$order = $this;
 
-		if ( $order->confirmed || !$order->restaurant()->confirmation ) {
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed ignored', 'confirmed' => $order->confirmed, 'type' => 'notification' ]);
+		$isConfirmed = $this->isConfirmed( $this->id_order );
+
+		if ( $isConfirmed || !$this->restaurant()->confirmation ) {
+			Log::debug( [ 'order' => $this->id_order, 'action' => 'que warningOrderNotConfirmed ignored', 'confirmed' => $this->confirmed, 'type' => 'notification' ]);
 			return;
 		}
 
@@ -691,8 +703,9 @@ class Crunchbutton_Order extends Cana_Table {
 		$message = 'Order #' . $order->id_order . ' (' . $date . ') was not confirmed';
 		$message = str_split( $message,160 );
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmationCallsSent' => $confirmationCallsSent, 'confirmed' => $order->confirmed, 'type' => 'notification' ]);
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmationCallsSent' => $confirmationCallsSent, 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 
+		/*
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 		
@@ -708,6 +721,7 @@ class Crunchbutton_Order extends Cana_Table {
 				} catch (Exception $e) {}
 			}
 		}
+		*/
 	}
 
 
