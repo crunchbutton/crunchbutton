@@ -254,6 +254,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->date = date('Y-m-d H:i:s');
 		$this->id_community = $this->restaurant()->community()->id_community;
 		$this->save();
+
 		$this->que();
 
 		$this->debitFromUserCredit();
@@ -609,10 +610,12 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// Start the timer to check if the order was confirmed. #1049
 		if ($this->restaurant()->confirmation) {
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed started', 'time' => c::config()->twilio->warningOrderNotConfirmedTime, 'type' => 'notification' ]);
+			$timer = c::config()->twilio->warningOrderNotConfirmedTime;
+			// Log
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed started', 'time' => $timer, 'type' => 'notification' ]);
 			c::timeout(function() use($order) {
 				$order->warningOrderNotConfirmed();
-			}, c::config()->twilio->warningOrderNotConfirmedTime, false );
+			}, $timer );
 		}
 	}
 
