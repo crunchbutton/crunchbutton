@@ -606,9 +606,16 @@ class Crunchbutton_Order extends Cana_Table {
 				$order->receipt();
 			}, 30 * 1000); // 30 seconds
 		}
+
+		// Start the timer to check if the order was confirmed. #1049
+		if ($this->restaurant()->confirmation) {
+			c::timeout(function() use($order) {
+				$order->warningOrderNotConfirmed();
+			}, c::config()->twilio->warningOrderNotConfirmedTime );
+		}
 	}
 
-	// After 5 minutes the fax was sent we have to send this confirmation to make sure that the fax as delivered.
+	// After 5 minutes the fax was sent we have to send this confirmation to make sure that the fax as delivered. If the order was already confirmed this confirmation will be ignored.
 	public function queConfirmFaxWasReceived(){
 		$order = $this;
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
@@ -664,6 +671,42 @@ class Crunchbutton_Order extends Cana_Table {
 		}, $confirmationTime, false);
 	
 	}
+
+	public function warningOrderNotConfirmed(){
+		
+		// Make sure the order was not confirmed yet
+		if ( $this->restaurant()->confirmation && !$this->confirmed ) {
+				
+			$nl = Notification_Log::q( 'SELECT * FROM notification_log WHERE id_order = ' . $this->id_order . ' AND status="callback" AND `type`="confirm"' );
+			$confirmationCallsSent = $nl->count();
+
+			$env = c::env() == 'live' ? 'live' : 'dev';
+
+			$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+
+			$date = $order->date();
+			$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
+
+			$message = 'The order #' . $this->id_order . ' (' . $date . ') was not confirmed. It was sent ' . $confirmationCallsSent . ' confirmation calls';
+			$message = str_split( $message,160 );
+
+			c::timeout( function() use ($message, $env, $twilio ) {
+							foreach ( c::config()->text as $supportName => $supportPhone ) {
+								foreach ( $message as $msg ) {
+									try {
+										$twilio->account->sms_messages->create(
+											c::config()->twilio->{$env}->outgoingTextCustomer,
+											'+1'.$supportPhone,
+											$msg
+										);
+									} catch (Exception $e) {}
+								}
+							}
+						} );
+		}
+			
+	}
+
 
 	public function orderMessage($type) {
 

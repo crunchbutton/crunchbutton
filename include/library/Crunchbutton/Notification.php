@@ -67,6 +67,9 @@ class Crunchbutton_Notification extends Cana_Table
 			case 'sms':
 				$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				$message = str_split($order->message('sms'),160);
+				
+				// Log
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms', 'num' => $num, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
 
 				foreach ($message as $msg) {
 					$twilio->account->sms_messages->create(
@@ -85,14 +88,8 @@ class Crunchbutton_Notification extends Cana_Table
 
 			case 'phone':
 
-				Log::debug([
-					'order' => $order->id_order,
-					'action' => 'send order call',
-					'num' => $num,
-					'host' => c::config()->host_callback,
-					'callback' => $callback,
-					'type' => 'notification'
-				]);
+				// Log
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'send call', 'num' => $num, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
 
 				$log = new Notification_Log;
 				$log->id_notification = $this->id_notification;
@@ -119,6 +116,10 @@ class Crunchbutton_Notification extends Cana_Table
 				break;
 
 			case 'email':
+
+				// Log
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'send mail', 'mail' => $mail, 'type' => 'notification' ]);
+
 				$mail = new Email_Order([
 					'order' => $order,
 					'email' => $mail
