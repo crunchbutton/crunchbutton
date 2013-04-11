@@ -13,16 +13,6 @@
 var DEBUG = {}
 
 var UTIL = {
-	geolocate : function(address, callback) {
-		g = new google.maps.Geocoder();
-		g.geocode({address:address},function(r,s) {
-			if(s !== 'OK') {
-				UTIL.show_msg('Geocoding error.');
-				return;
-			}
-			callback(r);
-		});
-	},
 	pad_number : function(num, pad) {
 		str = '' + num;
 		while(str.length < pad) str = '0' + str;
@@ -107,7 +97,6 @@ var WIDGET = {
 		$('#add-notification').click(function(){self.add_notification();});
 
 		self.add_notification = function() {
-			console.log('here');
 			w = new WIDGET.notification();
 			$(self.dom).append(w.dom);
 			self.notification_widgets.push(w);
@@ -119,7 +108,7 @@ var WIDGET = {
 			for(i in self.notification_widgets) {
 				self.notification_widgets[i].remove();
 			}
-			notifications = restaurant._notifications;
+			notifications = restaurant._notifications || {};
 			notifications['confirmation'] = {
 					active: restaurant.confirmation,
 					id: null,
@@ -244,11 +233,8 @@ var ADMIN = {
 		w = UTIL.create_widget('toggle', $('#restaurant-active-container'));
 		w = UTIL.create_widget('notifications', $('#notifications-container'));
 		$('#restaurant-address').focusout(function() {
-			UTIL.geolocate($('#restaurant-address').val(), function(data) {
-				if(!data || !data.length) {
-					UTIL.show_msg('Geocoding error.');
-					return;
-				}
+			ASYNC.geocode($('#restaurant-address').val(), function(data) {
+				if(!data || !data.length) { return; }
 				$('#restaurant-address').val(data[0].formatted_address);
 				$('#restaurant-lat').val(data[0].geometry.location.lat());
 				$('#restaurant-lng').val(data[0].geometry.location.lng());
@@ -557,6 +543,19 @@ var ASYNC = {
 			else {
 				callback(rsp);
 			}
+		});
+	},
+	geocode : function(address, callback) {
+		g = new google.maps.Geocoder();
+		g.geocode({address:address},function(r,s) {
+			if(s === 'ZERO_RESULTS') return;
+			if(s !== 'OK') {
+				UTIL.show_msg('Geocoding error.');
+				console.log(s);
+				console.log(r);
+				return;
+			}
+			callback(r);
 		});
 	},
 };

@@ -533,6 +533,8 @@ class Crunchbutton_Restaurant extends Cana_Table
 	 */
 	public function saveNotifications($elements) {
 		c::db()->query('DELETE FROM notification WHERE id_restaurant="'.$this->id_restaurant.'"');
+		if(!$elements)
+			return;
 		foreach ($elements as $data) {
 			if (!$data['value']) continue;
 			$element                = new Crunchbutton_Notification($data['id_notification']);
