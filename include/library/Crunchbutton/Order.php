@@ -514,6 +514,7 @@ class Crunchbutton_Order extends Cana_Table {
 			Log::debug([ 'order' => $this->id_order, 'action' => 'starting notification', 'notification_type' => $n->type, 'type' => 'notification']);
 			$n->send($this);
 		}
+		exit;
 	}
 
 	public function confirm() {
@@ -658,8 +659,8 @@ class Crunchbutton_Order extends Cana_Table {
 			$confirmationTime = c::config()->twilio->confirmTimeCallback;
 			
 		} else { // if it is the first confirmation call
-			
-			if( $this->restaurant()->hasFaxNotification() ){ // If restaurant has fax notification
+		
+			if( $order->restaurant()->hasFaxNotification() ){ // If restaurant has fax notification
 				$confirmationTime = c::config()->twilio->confirmFaxTime;
 			
 			} else {
@@ -677,6 +678,8 @@ class Crunchbutton_Order extends Cana_Table {
 	
 	}
 
+	// At the method warningOrderNotConfirmed() i've tried to use $this->confirmed
+	// but it always returns an empty string, so I had to create this method.
 	public function isConfirmed( $id_order ){
 		$order = Order::o( $id_order );
 		if( $order->id_order ){
@@ -696,7 +699,7 @@ class Crunchbutton_Order extends Cana_Table {
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'warningOrderNotConfirmed', 'object' => $order->json(), 'type' => 'notification' ]);
 
 		if ( $isConfirmed || !$this->restaurant()->confirmation ) {
-			Log::debug( [ 'order' => $this->id_order, 'action' => 'que warningOrderNotConfirmed ignored', 'confirmed' => $this->confirmed, 'type' => 'notification' ]);
+			Log::debug( [ 'order' => $this->id_order, 'action' => 'que warningOrderNotConfirmed ignored', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 			return;
 		}
 

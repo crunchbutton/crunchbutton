@@ -946,13 +946,16 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $restaurants;
 	}
 
+
 	public function hasFaxNotification(){
-		foreach ( $this->notifications() as $notification ){
-			if( $notification->type == 'fax' ){
-				return true;
-			}
-		}	
-		return false;	
+		
+		$fax = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = 1 and type = "' . Crunchbutton_Notification::TYPE_FAX . '"' );
+		if( $fax->id_notification ){
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
 	public function save() {
