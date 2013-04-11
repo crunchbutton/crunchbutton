@@ -15,7 +15,7 @@ class Crunchbutton_Phaxio {
 
 		Log::debug([
 			'phaxio cmd' => $cmd,
-			'action' => 'send fax',
+			'action' => 'sending fax',
 			'type' => 'notification'
 		]);
 
