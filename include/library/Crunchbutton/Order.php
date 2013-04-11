@@ -702,12 +702,16 @@ class Crunchbutton_Order extends Cana_Table {
 		$date = $order->date();
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
-		$message = 'Order #' . $order->id_order . ' (' . $date . ') was not confirmed';
+		$message = 'O#' . $order->id_order . ' for ' . $order()->restaurant()->name . ' (' . $date . ') not confirmed.';
+		$message .= "\n";
+		$message .= 'R# ' . $order->restaurant()->phone();
+		$message .= "\n";
+		$message .= 'C# ' . $order->user()->name . ' - ' . $order->phone();
+
 		$message = str_split( $message,160 );
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmationCallsSent' => $confirmationCallsSent, 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 
-		/*
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 		
@@ -723,7 +727,7 @@ class Crunchbutton_Order extends Cana_Table {
 				} catch (Exception $e) {}
 			}
 		}
-		*/
+
 	}
 
 
