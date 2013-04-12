@@ -9,6 +9,11 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		$tsess->data = json_encode($_REQUEST);
 		$tsess->save();
 
+		$to = str_replace('+1','',$_REQUEST['To']);
+
+		// Log
+		Log::debug( [ 'action' => 'sms received', 'from' => $phone, 'to' => $to, 'body' => $body, 'type' => 'sms' ] );
+
 		header('Content-type: text/xml');
 		echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 			.'<Response>';
@@ -17,6 +22,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			if ($supportPhone == $phone) {
 				$type = 'rep';
 				$rep = $supportName;
+				Log::debug( [ 'action' => 'rep valid', 'rep' => $supportName, 'rep phone' => $supportPhone, 'type' => 'sms' ] );
 			}
 		}
 		
@@ -34,10 +40,16 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					if (!$rsess->id_session_twilio) {
 						$msg = 'Invalid ID. Enter a session id to reply to. ex: "@123"';
 						$nums = [];
+						// Log
+						Log::debug( [ 'action' => 'invalid session', 'type' => 'sms' ] );
 					} else {
 						$msg = "$rep is now replying to @".$rsess->id_session_twilio.'. Type a message to respond.';
 						$_SESSION['support-respond-sess'] = $rsess->id_session_twilio;
+						// Log
+						Log::debug( [ 'action' => 'session valid', 'session id' => $rsess->id_session_twilio, 'session' => $rsess, 'type' => 'sms' ] );
 					}
+
+
 
 				} elseif ($_SESSION['support-respond-sess']) {
 					$rsess = new Session_Twilio($_SESSION['support-respond-sess']);
@@ -47,6 +59,10 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					
 					$b = $message;
 					$id = $rsess->id_session_twilio;
+
+					// Log
+					Log::debug( [ 'action' => 'new session created', 'session id' => $rsess->id_session_twilio, 'session' => $rsess, 'type' => 'sms' ] );
+
 					c::timeout(function() use ($nums, $b, $twilio, $env, $id) {
 
 						$opMessage = str_split('@'.$id.'  '.$b,160);
@@ -55,13 +71,15 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						foreach ($nums as $i => $num) {
 							foreach (($i == 0 ? $message : $opMessage ) as $msg) {
 								try {
+									// Log
+									Log::debug( [ 'action' => 'sending sms', 'session id' => $rsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
 									$twilio->account->sms_messages->create(
 										c::config()->twilio->{$env}->outgoingTextCustomer,
 										'+1'.$num,
 										$msg
 									);
 								} catch (Exception $e) {
-
+									Log::debug( [ 'action' => 'ERROR sending sms', 'session id' => $rsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
 								}
 							}
 						}
@@ -70,12 +88,18 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				} else {
 					$msg = 'Invalid ID. Enter a session id to reply to. ex: "@123"';
 				}
-
+				
+				// Log
+				Log::debug( [ 'action' => 'returning sms', 'msg' => $msg, 'type' => 'sms' ] );
+				
 				echo '<Sms>'.$msg.'</Sms>';
 				break;
 
 			default:
 				$_SESSION['sms-action'] = 'support-ask';
+
+				Log::debug( [ 'action' => 'returning sms', 'msg' => $msg, 'type' => 'sms' ] );
+
 				if (!$_SESSION['support-order-num']) {
 					$order = Order::q('select * from `order` where phone="'.$phone.'" order by date desc limit 1');
 				} elseif ($_SESSION['support-order-num'] != 'none') {
@@ -97,8 +121,11 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$last_cb = 'Last CB: None.';
 				}
 			
+
 				switch ($_SESSION['sms-action']) {
+			
 					case 'support-ask':
+
 						$tsess->id_order = $order ? $order->id_order : null;
 						$tsess->phone = $phone;
 						$tsess->save();
@@ -117,18 +144,25 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							$message[] = $last_cb;
 						}
 
+						// Log
+						Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
+
 						$b = $message;
+
 						c::timeout(function() use ($b, $env, $twilio) {
 							foreach (c::config()->text as $supportName => $supportPhone) {
 								foreach ($b as $msg) {
 									try {
+										// Log
+										Log::debug( [ 'action' => 'sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
 										$twilio->account->sms_messages->create(
 											c::config()->twilio->{$env}->outgoingTextCustomer,
-											'+1'.$supportPhone,
+											'+1'.$num,
 											$msg
 										);
 									} catch (Exception $e) {
-									
+										// Log
+										Log::debug( [ 'action' => 'ERROR sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
 									}
 								}
 							}
@@ -142,10 +176,16 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							// to avoid the loop #1028
 							if( $outgoingTextCustomer != $phone ){
 
-							$msg .= "To contact Crunchbutton, call ".c::config()->phone->support.".\n";
-							$msg .= 'Or, send us a text by replying with "support" '."\n";
+								$msg .= "To contact Crunchbutton, call ".c::config()->phone->support.".\n";
+								$msg .= 'Or, send us a text by replying with "support" '."\n";
 			
+								// Log
+								Log::debug( [ 'action' => 'message to phone', 'phone' => $phone, 'msg' => $msg, 'type' => 'sms' ] );
+
 								echo '<Sms>'.$msg.'</Sms>';		
+							} else {
+								// Log
+								Log::debug( [ 'action' => 'message to outgoingTextCustomer - ignored', 'outgoingTextCustomer' => $outgoingTextCustomer, 'type' => 'sms' ] );
 							}
 						
 						break;
