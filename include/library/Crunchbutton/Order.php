@@ -726,17 +726,21 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 		
-		foreach ( c::config()->text as $supportName => $supportPhone ) {
-			foreach ( $message as $msg ) {
-				Log::debug( [ 'order' => $order->id_order, 'action' => 'warningOrderNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
-				try {
-					$twilio->account->sms_messages->create(
-						c::config()->twilio->{$env}->outgoingTextCustomer,
-						'+1'.$supportPhone,
-						$msg
-					);
-				} catch (Exception $e) {}
+		if( $env == 'live' ){
+			foreach ( c::config()->text as $supportName => $supportPhone ) {
+				foreach ( $message as $msg ) {
+					Log::debug( [ 'order' => $order->id_order, 'action' => 'warningOrderNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
+					try {
+						$twilio->account->sms_messages->create(
+							c::config()->twilio->{$env}->outgoingTextCustomer,
+							'+1'.$supportPhone,
+							$msg
+						);
+					} catch (Exception $e) {}
+				}
 			}
+		} else {
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed DEV dont send sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 		}
 	}
 
