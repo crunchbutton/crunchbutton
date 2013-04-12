@@ -86,11 +86,11 @@
     	<restaurant>800-351-4161</restaurant>
     </phone>
     <text>
-    	<Daniel>***REMOVED***</Daniel>
-    	<!-- <Devin>_PHONE_</Devin>
+    	<DanielText>***REMOVED***</DanielText>
+    	<!--<Devin>_PHONE_</Devin>
     	<Judd>_PHONE_</Judd>
     	<David>_PHONE_</David>
-    	<Nick>_PHONE_</Nick> -->
+    	<Nick>_PHONE_</Nick>-->
     </text>
     <stripe>
     	<dev>
@@ -160,12 +160,12 @@
 			<outgoingCustomer>+18003514161</outgoingCustomer>
 			<outgoingRestaurant>+18003514161</outgoingRestaurant>
 		</olddev>
-		<testnumber>***REMOVED***</testnumber><!-- _PHONE_ -->
+		<testnumber>***REMOVED***</testnumber> <!-- <testnumber>_PHONE_</testnumber> -->
 		<voice>male</voice>
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>
 		<maxconfirmback>3</maxconfirmback>
-		<warningOrderNotConfirmedTime>60000</warningOrderNotConfirmedTime><!-- 600000 -->
+		<warningOrderNotConfirmedTime>720000</warningOrderNotConfirmedTime>
 		<confirmTime>30000</confirmTime>
 		<confirmFaxTime>20000</confirmFaxTime>
 		<confirmTimeFaxReceived>300000</confirmTimeFaxReceived>

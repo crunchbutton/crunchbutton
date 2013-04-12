@@ -59,6 +59,10 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 						switch ($notification->type) {
 							case 'phaxio':
 								$data = json_decode($_REQUEST['fax']);
+
+								// Log
+								Log::debug( [ 'id_notification_log' => $notification->id_notification_log, 'action' => 'fax call back', 'data' => $data, 'type' => 'notification' ] );
+
 								if ($data->id == $notification->remote) {
 									$notification->status = 'success';
 									$notification->data = $_REQUEST['fax'];

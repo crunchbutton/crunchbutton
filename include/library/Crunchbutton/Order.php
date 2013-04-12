@@ -712,13 +712,13 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		
-		$message = 'O#' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ') not confirmed.';
+		$message = 'O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ') not confirmed.';
 		$message .= "\n";
 		$message .= 'R# ' . $order->restaurant()->phone();
 		$message .= "\n";
 		$message .= 'C# ' . $order->user()->name . ' : ' . $order->phone();
 		$message .= "\n";
-		$message .= 'E#' . $env;
+		$message .= 'E# ' . $env;
 
 		$message = str_split( $message,160 );
 
@@ -738,7 +738,6 @@ class Crunchbutton_Order extends Cana_Table {
 				} catch (Exception $e) {}
 			}
 		}
-
 	}
 
 
