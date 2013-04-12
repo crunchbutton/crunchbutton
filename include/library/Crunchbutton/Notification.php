@@ -12,12 +12,9 @@ class Crunchbutton_Notification extends Cana_Table
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
-		$sms = ($env == 'live' ? $this->value : '***REMOVED***');
+		$sms = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
 		$mail = ($env == 'live' ? $this->value : '_EMAIL');
-		$fax = ($env == 'live' ? $this->value : '8777701208');
-
-		// $mail = ($env == 'live' ? $this->value : '_EMAIL');
-		// $fax = ($env == 'live' ? $this->value : '_PHONE_');
+		$fax = ($env == 'live' ? $this->value : '_PHONE_');
 
 		switch ($this->type) {
 			case 'fax':
@@ -49,8 +46,6 @@ class Crunchbutton_Notification extends Cana_Table
 
 				unlink($temp.'.html');
 
-				$this->smsFaxError( $order );
-
 				if ($fax->success) {
 					$log->remote = $fax->faxId;
 					$log->status = 'queued';
@@ -58,6 +53,8 @@ class Crunchbutton_Notification extends Cana_Table
 				} else {
 					$log->status = 'error';
 					$log->save();
+					// Send a sms informing the error
+					$this->smsFaxError( $order );
 				}
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
@@ -139,7 +136,7 @@ class Crunchbutton_Notification extends Cana_Table
 
 	public function smsFaxError( $order ){
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'smsFaxError init', 'object' => $order->json(), 'type' => 'notification' ]);
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'smsFaxError init', 'object' => $order->json(), 'type' => 'notification' ] );
 
 		$date = $order->date();
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
