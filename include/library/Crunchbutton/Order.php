@@ -635,7 +635,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$confirmTimeFaxReceived = c::config()->twilio->confirmTimeFaxReceived;
 
 		// Log
-		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmationTime,  'confirmed' => $isConfirmed, 'type' => 'notification' ] );
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmTimeFaxReceived,  'confirmed' => $isConfirmed, 'type' => 'notification' ] );
 
 		c::timeout(function() use($order) {
 			$order->confirm();
