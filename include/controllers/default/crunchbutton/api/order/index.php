@@ -106,7 +106,8 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						$order->confirmed = 1;
 						$order->save();
 						if ($order->restaurant()->confirmation) {
-							$order->receipt();
+							// The confirmation was already sent #1049
+							// $order->receipt();
 						}
 						break;
 
@@ -150,7 +151,8 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						$order->confirmed = 1;
 						$order->save();
 						if ($order->restaurant()->confirmation) {
-							$order->receipt();
+							// The confirmation was already sent #1049
+							// $order->receipt();
 						}
 						break;
 

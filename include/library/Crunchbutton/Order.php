@@ -604,11 +604,11 @@ class Crunchbutton_Order extends Cana_Table {
 			$order->notify();
 		});
 
-		if (!$this->restaurant()->confirmation) {
-			c::timeout(function() use($order) {
-				$order->receipt();
-			}, 30 * 1000); // 30 seconds
-		}
+		// if (!$this->restaurant()->confirmation) {
+		c::timeout(function() use($order) {
+			$order->receipt();
+		}, 30 * 1000); // 30 seconds
+		// }
 
 		// Start the timer to check if the order was confirmed. #1049
 		if ($this->restaurant()->confirmation) {
