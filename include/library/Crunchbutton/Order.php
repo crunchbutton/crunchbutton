@@ -623,19 +623,23 @@ class Crunchbutton_Order extends Cana_Table {
 
 	// After 5 minutes the fax was sent we have to send this confirmation to make sure that the fax as delivered. If the order was already confirmed this confirmation will be ignored.
 	public function queConfirmFaxWasReceived(){
+		
 		$order = $this;
-		if ($this->confirmed || !$this->restaurant()->confirmation) {
+
+		$isConfirmed = Order::isConfirmed( $order->id_order );
+
+		if ( $isConfirmed || !$order->restaurant()->confirmation) {
 			return;
 		}
 
-		$confirmationTime = c::config()->twilio->confirmTimeFaxReceived;
+		$confirmTimeFaxReceived = c::config()->twilio->confirmTimeFaxReceived;
 
 		// Log
-		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmationTime,  'confirmed' => $isConfirmed, 'type' => 'notification' ] );
 
 		c::timeout(function() use($order) {
 			$order->confirm();
-		}, $confirmationTime, false);
+		}, $confirmTimeFaxReceived );
 
 	}
 
@@ -659,7 +663,7 @@ class Crunchbutton_Order extends Cana_Table {
 			$confirmationTime = c::config()->twilio->confirmTimeCallback;
 			
 		} else { // if it is the first confirmation call
-/*		
+
 			if( $order->restaurant()->hasFaxNotification() ){ // If restaurant has fax notification
 				$confirmationTime = c::config()->twilio->confirmFaxTime;
 			
@@ -667,7 +671,6 @@ class Crunchbutton_Order extends Cana_Table {
 				$confirmationTime = c::config()->twilio->confirmTime;
 			
 			}
-*/
 		}			
 
 		// Log
@@ -675,7 +678,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		c::timeout(function() use($order) {
 			$order->confirm();
-		}, $confirmationTime, false);
+		}, $confirmationTime );
 	
 	}
 
