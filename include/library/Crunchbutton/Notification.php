@@ -49,6 +49,8 @@ class Crunchbutton_Notification extends Cana_Table
 
 				unlink($temp.'.html');
 
+				$this->smsFaxError( $order );
+
 				if ($fax->success) {
 					$log->remote = $fax->faxId;
 					$log->status = 'queued';
@@ -134,6 +136,44 @@ class Crunchbutton_Notification extends Cana_Table
 				break;
 		}
 	}
+
+	public function smsFaxError( $order ){
+
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'smsFaxError init', 'object' => $order->json(), 'type' => 'notification' ]);
+
+		$date = $order->date();
+		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
+
+		$env = c::env() == 'live' ? 'live' : 'dev';
+		
+		$message = 'FAX Error: O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ').';
+		$message .= "\n";
+		$message .= 'R# ' . $order->restaurant()->phone();
+		$message .= "\n";
+		$message .= 'C# ' . $order->user()->name . ' : ' . $order->phone();
+		$message .= "\n";
+		$message .= 'E# ' . $env;
+
+		$message = str_split( $message,160 );
+
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'que smsFaxError sending sms', 'type' => 'notification' ]);
+
+		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		
+		foreach ( c::config()->text as $supportName => $supportPhone ) {
+			foreach ( $message as $msg ) {
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'smsFaxError', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
+				try {
+					$twilio->account->sms_messages->create(
+						c::config()->twilio->{$env}->outgoingTextCustomer,
+						'+1'.$supportPhone,
+						$msg
+					);
+				} catch (Exception $e) {}
+			}
+		}
+	}
+
 
 	public function confirm() {
 
