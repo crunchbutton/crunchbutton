@@ -643,23 +643,23 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		$order = $this;
 
-		if ($this->confirmed || !$this->restaurant()->confirmation) {
+		if ($order->confirmed || !$order->restaurant()->confirmation) {
 			return;
 		}
 		// Check if there are another confirm que, if it does it will not send two confirms. Just one is enough.
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$this->id_order.'" AND type = "confirm" AND ( status = "created" OR status = "queued" ) ');
+		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$order->id_order.'" AND type = "confirm" AND ( status = "created" OR status = "queued" ) ');
 		if( $nl->count() > 0 ){
 			return;
 		}
 
 		// Query to count the number of confirmations sent
-		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$this->id_order.'" AND status="callback" AND `type`="confirm"');
+		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$order->id_order.'" AND status="callback" AND `type`="confirm"');
 
 		if( $nl->count() > 0 ){ // if it is the 2nd, 3rd, 4th... call the confirmation time should be 2 min even to hasFaxNotification - #974
 			$confirmationTime = c::config()->twilio->confirmTimeCallback;
 			
 		} else { // if it is the first confirmation call
-		
+/*		
 			if( $order->restaurant()->hasFaxNotification() ){ // If restaurant has fax notification
 				$confirmationTime = c::config()->twilio->confirmFaxTime;
 			
@@ -667,6 +667,7 @@ class Crunchbutton_Order extends Cana_Table {
 				$confirmationTime = c::config()->twilio->confirmTime;
 			
 			}
+*/
 		}			
 
 		// Log
