@@ -61,7 +61,14 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 								$data = json_decode($_REQUEST['fax']);
 
 								// Log
-								Log::debug( [ 'id_notification_log' => $notification->id_notification_log, 'action' => 'fax call back', 'data' => $data, 'type' => 'notification' ] );
+								Log::debug( [ 'id_notification_log' => $notification->id_notification_log, 'status' => $data->status, 'action' => 'fax call back', 'data' => $data, 'type' => 'notification' ] );
+
+
+								// Send a sms to inform about the error.
+								// if( $data->status != 'success' ){
+									$order = $notification->order()
+									Crunchbutton_Notification::smsFaxError( $order );
+								// }
 
 								if ($data->id == $notification->remote) {
 									$notification->status = 'success';
