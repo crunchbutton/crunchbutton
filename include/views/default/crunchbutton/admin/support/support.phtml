@@ -28,6 +28,12 @@
 										<td class="label-sub">Type:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->support->type;?></div></td>
 									</tr>
+									<?php if( $this->support->id_session_twilio ){ ?>
+									<tr>
+										<td class="label-sub">Session:</td>
+										<td class="content-sub"><div class="input-faker">@<?=$this->support->id_session_twilio;?></div></td>
+									</tr>
+									<?php } ?>
 								</tbody>
 							</table>
 						</div>
@@ -61,6 +67,44 @@
 					</div>
 				</td>
 			</tr>
+			<?php $answers = $this->support->answers(); ?>
+			<?php if( $answers->count() > 0 ) { ?>
+			<tr>
+				<td class="label-primary">Answers:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<?php foreach( $answers as $answer ) { ?>
+							<table style="width:90%;">
+								<tbody>
+									<tr>
+										<td class="label-sub">From:</td>
+										<td class="content-sub"><div class="input-faker"><?=$answer->name;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Phone:</td>
+										<td class="content-sub"><div class="input-faker"><?=$answer->phone;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Answer:</td>
+										<td class="content-sub"><div class="input-faker"><?=$answer->message;?></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Date:</td>
+										<td class="content-sub"><div class="input-faker"><?=$answer->date()->format('M jS Y')?> - <?=$answer->date()->format('g:i:s A')?></div></td>
+									</tr>
+									<tr>
+										<td></td>
+										<td style="text-align:right;">-------------------------------------------------------------------</td>
+									</tr>
+								</tbody>
+							</table>
+							<?php } ?>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<?php } ?>
 		</table>
 	</div>
 </div>
