@@ -55,14 +55,12 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						$atId = '@' . $rsess->id_session_twilio;
 						$body = trim( str_replace( $atId , '',  $body ) );
 
-						$this->reply( $rsess->id_session_twilio, $rep, $body, $twilio );
-
-						
+						$this->reply( $rsess->id_session_twilio, $rep, $phone, $body, $twilio );
 					}
 
 				} elseif ($_SESSION['support-respond-sess']) {
 				
-					$this->reply( $_SESSION['support-respond-sess'], $rep, $body, $twilio );
+					$this->reply( $_SESSION['support-respond-sess'], $rep, $phone, $body, $twilio );
 
 				} else {
 				
@@ -179,7 +177,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		exit;
 	}
 
-	public function reply( $id_session, $rep, $body, $twilio ){
+	public function reply( $id_session, $rep, $phone, $body, $twilio ){
 
 		$rsess = new Session_Twilio( $id_session );
 		$message = $rep . ': ' . $body;
@@ -190,6 +188,18 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 		// Log
 		Log::debug( [ 'action' => 'replying message', 'session id' => $rsess->id_session_twilio, 'num' => $nums, 'message' => $message, 'type' => 'sms' ] );
+		
+		$support = Crunchbutton_Support::getByTwilioSessionId( $id_session );
+
+		if( $support->id_support ){
+			$answer = new Crunchbutton_Support_Answer();
+			$answer->id_support = $support->id_support;
+			$answer->name = $rep;
+			$answer->phone = $phone;
+			$answer->message = $message;
+			$answer->date = date('Y-m-d H:i:s');
+			$answer->save();
+		}
 
 		// c::timeout(function() use ($nums, $b, $twilio, $env, $id) {
 
@@ -216,7 +226,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 			$msg_support = $rep . ' replied @' . $id_session . ' : ' . $body; 
 			$msg_support = str_split( $msg_support, 160 );
-	
+
 			foreach ( c::config()->text as $supportName => $supportPhone ) {
 				$num = $supportPhone;
 				foreach ( $msg_support as $msg ) {

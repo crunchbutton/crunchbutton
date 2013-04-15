@@ -15,7 +15,11 @@ class Crunchbutton_Support extends Cana_Table {
 			$support->notify();
 		}, 100); 
 	}
-	
+
+	public function getByTwilioSessionId( $id_session_twilio ){
+		return Crunchbutton_Support::q( 'SELECT * FROM support WHERE id_session_twilio = ' . $id_session_twilio );
+	}
+
 	public function notify() {
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
@@ -34,12 +38,16 @@ class Crunchbutton_Support extends Cana_Table {
 		// Log
 		Log::debug( [ 'action' => 'support', 'message' => $message, 'type' => 'support' ] );
 
+		$data = [ 'request' => $_REQUEST, 'support' => json_decode( $this->json() ) ];
 
 		// Create a twilio session
-		$tsess = Session_Twilio::get();
+		$tsess = new Session_Twilio;
 		$tsess->phone = $this->phone;
-		$tsess->data = json_encode( $_REQUEST );
+		$tsess->data = json_encode( $data );
 		$tsess->save();
+
+		$this->id_session_twilio = $tsess->id_session_twilio;
+		$this->save();
 
 		$message = '@'.$tsess->id_session_twilio.' : ' . $message;
 		$message = str_split( $message, 160 );
@@ -117,6 +125,10 @@ class Crunchbutton_Support extends Cana_Table {
 
 	public function user() {
 		return User::o($this->id_user);
+	}
+
+	public function answers(){
+		return Crunchbutton_Support_Answer::q('SELECT * FROM `support_answer` WHERE id_support=' . $this->id_support . ' ORDER BY date DESC');
 	}
 
 	public function date() {
