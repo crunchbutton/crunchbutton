@@ -17,7 +17,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		header('Content-type: text/xml');
 		echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 			.'<Response>';
-			
+
 		foreach (c::config()->text as $supportName => $supportPhone) {
 			if ($supportPhone == $phone) {
 				$type = 'rep';
@@ -25,9 +25,11 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				Log::debug( [ 'action' => 'rep valid', 'rep' => $supportName, 'rep phone' => $supportPhone, 'type' => 'sms' ] );
 			}
 		}
-		
+
 		switch ($type) {
+			
 			case 'rep':
+			
 				foreach (c::config()->text as $supportName => $supportPhone) {
 					if ($supportName == $rep) continue;
 					$nums[] = $supportPhone;
@@ -35,26 +37,27 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 				if ($body{0} == '@') {
 					$id = str_replace('@','',$body);
-
 					$rsess = new Session_Twilio($id);
+
 					if (!$rsess->id_session_twilio) {
 						$msg = 'Invalid ID. Enter a session id to reply to. ex: "@123"';
 						$nums = [];
+					
 						// Log
 						Log::debug( [ 'action' => 'invalid session', 'type' => 'sms' ] );
+					
 					} else {
 						$msg = "$rep is now replying to @".$rsess->id_session_twilio.'. Type a message to respond.';
 						$_SESSION['support-respond-sess'] = $rsess->id_session_twilio;
+
 						// Log
 						Log::debug( [ 'action' => 'session valid', 'session id' => $rsess->id_session_twilio, 'session' => $rsess, 'type' => 'sms' ] );
 					}
 
-
-
 				} elseif ($_SESSION['support-respond-sess']) {
 					$rsess = new Session_Twilio($_SESSION['support-respond-sess']);
 					$message = $rep.': '.$body;
-					
+
 					$nums[] = $rsess->phone;
 					
 					$b = $message;
@@ -63,7 +66,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					// Log
 					Log::debug( [ 'action' => 'new session created', 'session id' => $rsess->id_session_twilio, 'session' => $rsess, 'type' => 'sms' ] );
 
-					c::timeout(function() use ($nums, $b, $twilio, $env, $id) {
+					// c::timeout(function() use ($nums, $b, $twilio, $env, $id) {
 
 						$opMessage = str_split('@'.$id.'  '.$b,160);
 						$message = str_split($b,160);
@@ -83,7 +86,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 								}
 							}
 						}
-					});
+					// });
 
 				} else {
 					$msg = 'Invalid ID. Enter a session id to reply to. ex: "@123"';
