@@ -833,6 +833,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 	 * @return array
 	 */
 	public function exports($ignore = [], $where = []) {
+
 		$out              = $this->properties();
 		$out['_open']     = $this->open();
 		$out['_weight']    = $this->weight();
@@ -856,9 +857,21 @@ class Crunchbutton_Restaurant extends Cana_Table
 			}
 		}
 
+		$isAdmin = ( isset( $_SESSION['admin'] ) && $_SESSION[ 'admin' ] );
+
+		// Issue #1051 - potentially urgent security issue
+		if( !$isAdmin ){
+			$ignore['notifications'] = true;
+			$out[ 'notes_owner' ] = NULL;
+			$out[ 'balanced_id' ] = NULL;
+			$out[ 'balanced_bank' ] = NULL;
+			$out[ 'notes' ] = NULL;
+			$out[ 'email' ] = NULL;
+		}
+
 		if (!$ignore['notifications']) {
 			$where = [];
-			if (isset($_SESSION['admin'])) {
+			if ( $isAdmin ) {
 				$where['active'] = NULL;
 			}
 			foreach ($this->notifications($where) as $notification) {
