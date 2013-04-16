@@ -269,6 +269,10 @@ b {
 }
 
 .restaurant-closed{
+/*	background: #fdf6f1;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border:2px solid #f34b24;*/
 	color: #666;
 	font-size:13px;
 	line-height: 22px;
@@ -1145,7 +1149,10 @@ html[xmlns] .clearfix {
 		margin-top: -1px;
 		margin-right: 8px;
 	}
-
+	.take-out-only{
+		left: 130px;
+		padding-top: 115px;
+	}
 	.button-bottom.button-letseat-form {
 		margin-top: 25px;
 	}
@@ -2822,4 +2829,11 @@ strong {
 .print-icon {
 	margin-bottom: 20px;
 	float: right;
+}
+.take-out-only{
+	color:red;
+	font-size: 11px;
+	font-weight: bold;
+	margin-top: 7px;
+	position: absolute;
 }
