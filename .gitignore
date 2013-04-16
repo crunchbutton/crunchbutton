@@ -5,6 +5,8 @@
 
 # filetypes
 *.bz2
+*.swo
+*.swp
 *.mov
 *.mp4
 *.m4v

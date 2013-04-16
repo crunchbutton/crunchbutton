@@ -655,6 +655,7 @@ var ADMIN = {
 				{
 					type : 'api',
 					obj	: 'restaurant',
+          data: { restaurant:ADMIN.restaurant, obj:'restaurant' },
 					id	 : this.id_restaurant,
 				},
 				function(rsp) {
@@ -682,7 +683,11 @@ var ADMIN = {
 		ASYNC.req(
 				{ 
 					type : 'sav',
-					data: { restaurant:ADMIN.restaurant, obj:'restaurant' },
+          data : { 
+            serialized_data : $.param(ADMIN.restaurant),
+            obj : 'restaurant'
+          },
+
 				},
 				function(rsp) {
 					ADMIN.restaurant = rsp.data;
