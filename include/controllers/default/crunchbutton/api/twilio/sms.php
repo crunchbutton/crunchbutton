@@ -49,13 +49,18 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						Log::debug( [ 'action' => 'invalid session', 'type' => 'sms' ] );
 					
 					} else {
-						// $msg = "$rep is now replying to @".$rsess->id_session_twilio.'. Type a message to respond.';
+						
 						$_SESSION['support-respond-sess'] = $rsess->id_session_twilio;
 
 						$atId = '@' . $rsess->id_session_twilio;
 						$body = trim( str_replace( $atId , '',  $body ) );
 
-						$this->reply( $rsess->id_session_twilio, $rep, $phone, $body, $twilio );
+						if( $body != '' ){
+							$this->reply( $rsess->id_session_twilio, $rep, $phone, $body, $twilio );
+						} else {
+							$msg = "$rep is now replying to @".$rsess->id_session_twilio.'. Type a message to respond.';
+						}
+						
 					}
 
 				} elseif ($_SESSION['support-respond-sess']) {
