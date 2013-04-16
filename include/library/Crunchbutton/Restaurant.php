@@ -902,8 +902,6 @@ class Crunchbutton_Restaurant extends Cana_Table
 		$this->saveNotifications($restaurant['_notifications']);
 		$this->saveCategories($restaurant['_categories']);
 
-		// TODO - for objects with temporary client-side ids, match up the new category ids
-
 		// dishes with options are the awful part
 		$all_dishes = [];
 		foreach($restaurant['_categories'] as $category) {
