@@ -36,7 +36,9 @@ class Controller_admin_save extends Crunchbutton_Controller_Rest {
 			$r = Restaurant::o($restaurant['id_restaurant']);
 			$r->imports($restaurant);
 			$r->save();
-			return $r->exports();
+			$where = [];
+			$where['Dish']['active'] = NULL;
+			return $r->exports($ignore=[], $where);
 		}
 		return 'no id.';
 	}

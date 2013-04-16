@@ -1,18 +1,35 @@
 // admin_restaurant.js
 
 // TODO
-// allow for check functions for each input field that get called on change
-//   e.g. permalink has only allowed characters
+// 
+// features
+//	 menu
+//	 change hours so you can do multiples
+//	 allow for validation functions for each input field that get called on change
+//		 possibly use intro.js
+//
+// nice to have
+//	 include link to img editing
+//	 improvements from github issue
+//
+// known issues
+//	 pulling menu from db when saving omits inactive items
+//	
 
-// weird field TODOs
-//   order notification methods
-//   food items
-//   delivery options
-//   more information
-//   admin shit
+
 var DEBUG = {}
 
 var UTIL = {
+	toggle_visibility : function(item) {
+		$(item).slideToggle(150);
+	},
+	focus_input : function(dom) {
+		$(dom).find('input[type=input]').first().focus();
+	},
+	create_unique_id : (function() {
+		var uniq = 0;
+		return function() { return 'uniq_' + uniq++; };
+	})(),
 	pad_number : function(num, pad) {
 		str = '' + num;
 		while(str.length < pad) str = '0' + str;
@@ -42,7 +59,7 @@ var UTIL = {
 	},
 	deep_copy : function(obj) {
 		// Handle the 3 simple types, and null or undefined
-		if (null == obj || "object" != typeof obj) return obj;
+		if (null == obj || 'object' != typeof obj) return obj;
 
 		// Handle Date
 		if (obj instanceof Date) {
@@ -69,13 +86,13 @@ var UTIL = {
 				return copy;
 		}
 
-		throw new Error("Unable to copy obj! Its type isn't supported.");
+		throw new Error('Unable to copy obj! Its type is not supported.');
 	},
 	copy_field : function(from,to) {
 		return function() { $(to).val($(from).val()); };
 	},
-	create_widget : function(widget_type, dom_parent) {
-		w = new WIDGET[widget_type]();
+	create_widget : function(widget_type, dom_parent, args) {
+		w = new WIDGET[widget_type](null, args);
 		dom_parent.append(w.dom);
 		DOM_MAP.map.data.widget.push(w);
 		return w;
@@ -84,6 +101,370 @@ var UTIL = {
 
 
 var WIDGET = {
+	menu : function(dom_id) {
+		var template = '#menu-template';
+		var type = 'menu';
+		var self = this;
+		self.dom_id = dom_id;
+		self.dom = $(template).clone(true);
+		if(dom_id) $(self.dom).attr('id', dom_id);
+		else $(self.dom).removeAttr('id');
+
+		self.widgets = {}; // to keep track of any js objects
+		// TODO
+		//	 basic write functionality
+		//   save expanded status
+		//	 change sort order of items
+		//	 copy items between parent items
+		//	 unlink linked items
+
+		$('#add-menu-category').click(function() { self.add_category(); });
+		self.add_category = function() {
+				category_id = UTIL.create_unique_id();
+				category = {
+					_dishes : [],
+					id : category_id,
+					id_category : category_id,
+					loc : '0',
+					name : '',
+					sort : null
+				};
+				category_dom = $('#menu-category-template').clone(true);
+				$(category_dom).removeAttr('id');
+				$(category_dom).addClass('menu-category-' + category.id_category);
+				$(self.dom).find('.admin-menu-categories').first().append(category_dom);
+				this.apply_category(category_dom, category);
+				UTIL.focus_input(category_dom);
+		};
+
+		this.add_option = function(option_group_dom, option) {
+			option_dom = $('#menu-option-template').clone(true);
+			$(option_dom).removeAttr('id');
+			$(option_dom).addClass('menu-option-' + option.id_option);
+			$(option_group_dom)
+					.find('.admin-menu-options-container').first()
+					.append(option_dom);
+			this.apply_option(option_dom, option);
+		};
+		this.apply_option = function(option_dom, option) {
+			fields = ['description', 'id', 'id_dish_option', 'id_option', 'name', 'price', 'sort', 'default'];
+			for(i in fields) {
+				field = fields[i];
+				$(option_dom).find('.admin-menu-option-' + field).val(option[field]);
+			}
+
+			siblings = option_dom
+					.closest('.admin-menu-option-group')
+					.find('.admin-menu-option input.admin-menu-option-default');
+			if(siblings.length === 1) {
+				// this is the first one
+				option_group_type = $(option_dom).closest('.admin-menu-option-group').find('.admin-menu-option-group-type').val();
+				if(option_group_type === 'select') option_type = 'radio';
+				if(option_group_type === 'check') option_type = 'checkbox';
+				$(option_dom).find('input.admin-menu-option-default')
+						.attr('name', UTIL.create_unique_id())
+						.attr('type', option_type);
+			}
+			else {
+				// copy first sibling
+				$(option_dom).find('input.admin-menu-option-default')
+						.attr('name', siblings.first().attr('name'))
+						.attr('type', siblings.first().attr('type'));
+			}
+
+			if(!option.name) UTIL.focus_input(option_dom);
+			$(option_dom).find('.admin-menu-option-default')
+					.prop('checked', parseInt(option['default']));
+			$(option_dom).find('.delete-option').click(function() {
+				$(option_dom).remove();
+			});
+		};
+
+		this.add_option_group = function(dish_dom, option_group) {
+			option_group_dom = $('#menu-option-group-template').clone(true);
+			$(option_group_dom).removeAttr('id');
+			$(option_group_dom).addClass('menu-option-group-' + option_group.id_option);
+			$(dish_dom).find('.dish-option-groups-container').first().append(option_group_dom);
+			this.apply_option_group(option_group_dom, option_group);
+		};
+		this.apply_option_group = function(option_group_dom, option_group) {
+			fields = ['description', 'id', 'id_dish_option', 'id_option', 'name', 'price', 'sort', 'default', 'type'];
+			for(i in fields) {
+				field = fields[i];
+				$(option_group_dom).find('.admin-menu-option-group-' + field).val(option_group[field]);
+			}
+			if(/^basic options$/i.exec(option_group.name)) {
+				$(option_group_dom).find('.admin-menu-option-group-name').prop('disabled', true);
+				$(option_group_dom).find('.admin-menu-option-group-price').hide();
+				$(option_group_dom).find('.admin-menu-option-group-description').hide();
+				$(option_group_dom).find('.admin-menu-option-group-type').prop('disabled', true);
+				$(option_group_dom).find('.admin-menu-option-group-type').val('check');
+				$(option_group_dom).find('.delete-option-group').hide();
+			}
+			if(!option_group.name) UTIL.focus_input(option_group_dom);
+			$(option_group_dom).find('.delete-option-group').click(function() {
+				option_group_dom.remove();
+			});
+			$(option_group_dom).find('.admin-menu-option-group-type').change(function() {
+				option_group_type = $(option_group_dom).find('.admin-menu-option-group-type').val();
+				if(option_group_type === 'select') option_type = 'radio';
+        if(option_group_type === 'check') option_type = 'checkbox';
+				$(option_group_dom)
+						.find('.admin-menu-option input.admin-menu-option-default')
+						.attr('type', option_type);
+			});
+			$(option_group_dom).find('.add-option').click(function() {
+				id_option = UTIL.create_unique_id();
+				id_dish_option = UTIL.create_unique_id();
+				self.add_option(option_group_dom, {
+					default : '0',
+					description : null,
+					id : id_option,
+					id_option : id_option,
+					id_dish_option : id_dish_option,
+					id_option_parent : $(option_group_dom).find('.admin-menu-option-group-id').val(),
+					name : '',
+					price : '0.00',
+					prices : [],
+					sort : null,
+					type : 'check',
+				});
+			});
+		};
+
+		this.apply_dish = function(dish_dom, dish) {
+			// 'view' button
+			$(dish_dom).find('.details-button').first().click(function() {
+				UTIL.toggle_visibility(dish_dom.find('.admin-menu-dish-details'));
+			});
+			$(dish_dom).find('.delete-menu-dish').first().click(function() {
+				dish_dom.remove();
+			});
+			$(dish_dom).find('.add-option-group').first().click(function() {
+				id_option_group = UTIL.create_unique_id();
+				id_dish_option = UTIL.create_unique_id();
+				self.add_option_group(dish_dom, {
+					default : '0',
+					description : null,
+					id : id_option_group,
+					id_option : id_option_group,
+					id_dish_option : id_dish_option,
+					id_option_parent : null,
+					name : '',
+					price : '0',
+					prices : [],
+					sort : null,
+					type : 'select',
+				});
+			});
+
+			// active toggle
+			w_active = new WIDGET.toggle();
+			w_id = UTIL.create_unique_id();
+			self.widgets[w_id] = w_active;
+			w_active.set_id(w_id);
+			$(dish_dom).find('.admin-menu-dish-active-button').replaceWith(w_active.dom);
+			$(dish_dom).find('.admin-menu-dish-active-id').val(w_id);
+			w_active.val(dish.active);
+
+			// basic fields
+			fields = ['name','id_dish','id','description','price','sort','top','top_name','image'];
+			for(i in fields) {
+				field = fields[i];
+				$(dish_dom).find('.admin-menu-dish-' + field).val(dish[field]);
+			}
+
+			if(!dish.name) UTIL.focus_input(dish_dom);
+
+			// if has a parent, it's an option in an option group
+			// if has a child, it's an option group
+			// if neither, it's a basic option
+			// have to loop through twice because we don't know what order they might come in
+
+			basic_option_group_id = 'dish_' + dish.id_dish + '_basic_options';
+			option_groups = [];
+			options = [];
+			parent_ids = [];
+			for(i in dish._options) {
+				o = dish._options[i];
+				if(o.id_option_parent) {
+					options.push(o);
+					parent_ids.push(o.id_option_parent);
+					continue;
+				}
+			}
+			for(i in dish._options) {
+				o = dish._options[i];
+				if(o.id_option_parent) continue;
+				if(parent_ids.indexOf(o.id) === -1) {
+					o.id_option_parent = basic_option_group_id;
+					options.push(o);
+					continue;
+				}
+				else {
+					option_groups.push(o);
+					continue;
+				}
+			}
+
+			option_groups.unshift({
+				basic_group : 1,
+				id : basic_option_group_id,
+				id_dish_option : basic_option_group_id,
+				id_option : basic_option_group_id,
+				id_option_parent : null,
+				name : 'Basic Options',
+				price : '0.00',
+				price_linked : '0',
+				prices : [],
+				sort : '0',
+				type : 'check',
+			});
+			while(option_groups.length) {
+				option_group = option_groups.splice(0, 1)[0];
+				this.add_option_group(dish_dom, option_group);
+			}
+			while(options.length) {
+				option = options.splice(0, 1)[0];
+				option_group_dom = $(dish_dom).find('.menu-option-group-' + option.id_option_parent).first();
+				this.add_option(option_group_dom, option);
+			}
+		};
+		this.add_dish = function(category_dom, dish) {
+			dish_dom = $('#menu-dish-template').clone(true);
+			$(dish_dom).removeAttr('id');
+			$(dish_dom).addClass('menu-dish-' + dish.id_dish);
+			$(category_dom).find('.restaurant-dishes-container').first().append(dish_dom);
+			this.apply_dish(dish_dom, dish);
+		};
+		this.apply_category = function(category_dom, category) {
+			fields = ['name','id','loc','sort'];
+			for(i in fields) {
+				field = fields[i];
+				$(category_dom).find('.admin-menu-category-' + field).val(category[field]);
+			}
+			for(i in category._dishes) {
+				dish = category._dishes[i];
+				this.add_dish(category_dom, dish);
+			}
+			$(category_dom).find('.delete-menu-category').first().click(function() {
+				category_dom.remove();
+			});
+			$(category_dom).find('.add-menu-dish').first().click(function() {
+				dish_id = UTIL.create_unique_id();
+				self.add_dish(
+						category_dom,
+						{
+							active : '1',
+							description : null,
+							id : dish_id,
+							id_dish : dish_id,
+							name : '',
+							price : '10.00',
+							sort : null,
+							top : '0',
+							top_name : null,
+							type : 'dish',
+						});
+			});
+		};
+		this.apply = function(restaurant) {
+			this.reset_dom();
+			for(i in restaurant._categories) {
+				category = restaurant._categories[i];
+				category_dom = $('#menu-category-template').clone(true);
+				$(category_dom).removeAttr('id');
+				$(category_dom).addClass('menu-category-' + category.id_category);
+				$(self.dom).find('.admin-menu-categories').first().append(category_dom);
+				this.apply_category(category_dom, category);
+			}
+			// TODO figure out and indicate linked items
+		};
+		this.flush_option = function(dish, option_group, option_dom) {
+			option = {};
+			fields = ['id', 'id_dish_option', 'id_option', 'description', 'sort', 'name', 'price'];
+			for(i in fields) {
+				field = fields[i];
+				option[field] = $(option_dom).find('.admin-menu-option-' + field).val();
+			}
+			option['type'] = 'check';
+			option['prices'] = [];
+			option['price_linked'] = '0';
+			option['id_option_parent'] = option_group.id_option;
+			if(/basic/i.exec(option['id_option_parent']))
+				option['id_option_parent'] = 'BASIC';
+			option['id_restaurant'] = ADMIN.id_restaurant;
+			option['default'] = $(option_dom).find('.admin-menu-option-default').is(':checked') ? '1' : '0';
+			dish._options.push(option);
+		};
+		this.flush_option_group = function(dish, option_group_dom) {
+			option_group = {};
+			fields = ['description', 'id', 'id_dish_option', 'id_option', 'name', 'price', 'sort', 'type'];
+			for(i in fields) {
+				field = fields[i];
+				option_group[field] = $(option_group_dom).find('.admin-menu-option-group-' + field).val();
+			}
+			option_group['default'] = '0';
+			option_group['id_option_parent'] = null;
+			option_group['id_restaurant'] = ADMIN.id_restaurant;
+			option_group['price_linked'] = '0';
+			option_group['prices'] = [];
+
+			$(option_group_dom).find('.admin-menu-option').each(function(index, option_dom) {
+				self.flush_option(dish, option_group, option_dom);
+			});
+      if(/^basic options$/i.exec(option_group.name)) { return; }
+			if($(option_group_dom).find('.admin-menu-option').length === 0) { return; }
+			dish._options.push(option_group);
+		};
+		this.flush_dish = function(category, dish_dom) {
+			dish = {};
+			fields = ['id', 'id_dish', 'sort', 'top', 'top_name', 'image', 'name', 'price', 'description'];
+			for(i in fields) {
+				field = fields[i];
+				dish[field] = $(dish_dom).find('.admin-menu-dish-' + field).val();
+			}
+			w_active = self.widgets[$(dish_dom).find('.admin-menu-dish-active-id').val()];
+			dish['active'] = w_active.val();
+			dish['id_category'] = category.id_category;
+			dish['id_restaurant'] = ADMIN.id_restaurant;
+			dish['type'] = 'dish';
+			dish['_options'] = [];
+			$(dish_dom).find('.admin-menu-option-group').each(function(index, option_group_dom) {
+				self.flush_option_group(dish, option_group_dom);
+			});
+			category._dishes.push(dish);
+		};
+		this.flush_category = function(categories, category_dom) {
+			category = {};
+			fields = ['name', 'id', 'loc', 'sort'];
+			for(i in fields) {
+				field = fields[i];
+				category[field] = $(category_dom).find('.admin-menu-category-' + field).val();
+			}
+			category['id_category'] = category.id;
+			category['id_restaurant'] = ADMIN.id_restaurant;
+			category._dishes = [];
+			$(category_dom).find('.admin-menu-dish').each(function(index, dish_dom) {
+				self.flush_dish(category, dish_dom);
+			});
+			categories.push(category);
+		};
+		this.flush = function(restaurant) {
+			categories = [];
+			$(self.dom).find('.admin-menu-category').each(function(index, category_dom) {
+				self.flush_category(categories, category_dom);
+			});
+			restaurant._categories = categories;
+		};
+		this.validate = function(invalid_list) { 
+			// TODO
+		};
+		this.remove = function() { self.dom.remove(); }
+		this.reset_dom = function() {
+			$(self.dom).find('.admin-menu-categories').empty();
+		};
+	},
 	notifications : function(dom_id) {
 		var template = '#notifications-template';
 		var type = 'notifications';
@@ -114,8 +495,8 @@ var WIDGET = {
 					id: null,
 					id_notification: null,
 					id_restaurant: restaurant.id, 
-					type: "confirmation",
-					value: "main phone only", // TODO update this when backend supports it
+					type: 'confirmation',
+					value: 'main phone only', // TODO update this when backend supports it
 			};
 			self.notification_widgets = [];
 			for(i in notifications) {
@@ -149,15 +530,15 @@ var WIDGET = {
 		var self = this;
 		self.dom_id = dom_id;
 		self.dom = $(template).clone(true);
-    if(dom_id) $(self.dom).attr('id',dom_id);
-    else $(self.dom).removeAttr('id');
+		if(dom_id) $(self.dom).attr('id',dom_id);
+		else $(self.dom).removeAttr('id');
 
 		self.w_active = new WIDGET.toggle();
 		self.id_notification = null;
 
 		$(self.dom).find('.admin-toggle-active').replaceWith(self.w_active.dom);
 
-    this.val = function(arg) {
+		this.val = function(arg) {
 			return null;
 		}
 		this.apply = function(data) {
@@ -165,8 +546,8 @@ var WIDGET = {
 			self.id_notification = data.id_notification;
 			$(self.dom).find('select').val(data.type);
 			$(self.dom).find('input[name=val]').val(data.value);
-    },
-    this.flush = function() {
+		},
+		this.flush = function() {
 			data = {
 				active : self.w_active.val(),
 				id : self.id_notification,
@@ -175,19 +556,25 @@ var WIDGET = {
 				value : $(self.dom).find('input[name=val]').val(),
 			};
 			return data;
-    },
-    this.remove = function() {
-      self.dom.remove();
-    };
+		},
+		this.remove = function() {
+			self.dom.remove();
+		};
 	},
-	toggle : function(dom_id) {
+	toggle : function(dom_id, args) {
+		args = args || {};
 		var template = '#toggle-template';
 		var type = 'toggle';
 		var self = this;
+		self.field_name = args.field_name || 'active';
 		self.dom_id = dom_id;
 		self.dom = $(template).clone(true);
-		if(dom_id) $(self.dom).attr('id',dom_id);
+		if(dom_id) $(self.dom).attr('id', dom_id);
 		else $(self.dom).removeAttr('id');
+		this.set_id = function(dom_id) {
+			self.dom_id = dom_id;
+			$(self.dom).attr('id', dom_id);
+		};
 		this.set_active = function() {
 			$(self.dom).addClass('admin-toggle-active');
 			$(self.dom).removeClass('admin-toggle-inactive');
@@ -208,11 +595,11 @@ var WIDGET = {
 				parseInt(arg) ? this.set_active() : this.set_inactive();
 			}
 			else {
-				return $(self.dom).hasClass('admin-toggle-active') ? "1":"0";
+				return $(self.dom).hasClass('admin-toggle-active') ? '1':'0';
 			}
 		};
-		this.apply = function(obj) { this.val(obj.active); };
-		this.flush = function(obj) { obj.active = this.val(); };
+		this.apply = function(obj) { this.val(obj[self.field_name]); };
+		this.flush = function(obj) { obj[self.field_name] = this.val(); };
 		this.remove = function() { self.dom.remove(); };
 		this.dom.click(self.toggle_active);
 	},
@@ -231,7 +618,12 @@ var ADMIN = {
 			w = DOM_MAP.map.data.widget.pop().remove();
 		}
 		w = UTIL.create_widget('toggle', $('#restaurant-active-container'));
+		w = UTIL.create_widget('toggle', $('#restaurant-cash-container'), {field_name:'cash'});
+		w = UTIL.create_widget('toggle', $('#restaurant-credit-container'), {field_name:'credit'});
+		w = UTIL.create_widget('toggle', $('#restaurant-delivery-container'), {field_name:'delivery'});
+		w = UTIL.create_widget('toggle', $('#restaurant-takeout-container'), {field_name:'takeout'});
 		w = UTIL.create_widget('notifications', $('#notifications-container'));
+		w = UTIL.create_widget('menu', $('#restaurant-menu-container'));
 		$('#restaurant-address').focusout(function() {
 			ASYNC.geocode($('#restaurant-address').val(), function(data) {
 				if(!data || !data.length) { return; }
@@ -257,8 +649,8 @@ var ADMIN = {
 		ASYNC.req(
 				{
 					type : 'api',
-					obj  : 'restaurant',
-					id   : this.id_restaurant,
+					obj	: 'restaurant',
+					id	 : this.id_restaurant,
 				},
 				function(rsp) {
 					if(!ADMIN.restaurant_original) {
@@ -359,27 +751,33 @@ var DOM_MAP = {
 			'#copy-fri-from-thu' : UTIL.copy_field('#restaurant-hours-thu','#restaurant-hours-fri'),
 			'#copy-sat-from-fri' : UTIL.copy_field('#restaurant-hours-fri','#restaurant-hours-sat'),
 			'#copy-sun-from-sat' : UTIL.copy_field('#restaurant-hours-sat','#restaurant-hours-sun'),
-			'#view-map' : function() {
-				lat = $('#restaurant-lat').val();
-				lng = $('#restaurant-lng').val();
-				url = 'https://maps.google.com/maps?q=' + lat + ',' + lng + '&z=14';
-				console.log(url); // TODO
-
-
-			},
 		},
 		validate_data : {
 			'input#restaurant-permalink' : ADMIN.restaurant_validate(ADMIN.restaurant_validate_functions.permalink),
 		},
-		data : { // map html elements to js data parts
+		data : { // map html elements to js restaurant object data parts
 			text : {
 				'input#restaurant-name' : ['name'],
 				'input#restaurant-permalink' : ['permalink'],
+				'input#restaurant-short-description' : ['short_description'],
 				'input#restaurant-phone' : ['phone'],
+				'input#restaurant-email' : ['email'],
 				'textarea#restaurant-address' : ['address'],
+				'textarea#restaurant-notes' : ['notes'],
+				'textarea#restaurant-notes-todo' : ['notes_todo'],
+				'textarea#restaurant-notes-owner' : ['notes_owner'],
 				'select#restaurant-timezone' : ['timezone'],
+				'select#restaurant-delivery-min-amt' : ['delivery_min_amt'],
 				'input#restaurant-lat' : ['loc_lat'],
 				'input#restaurant-lng' : ['loc_long'],
+				'input#restaurant-delivery-min' : ['delivery_min'],
+				'input#restaurant-delivery-fee' : ['delivery_fee'],
+				'input#restaurant-delivery-radius' : ['delivery_radius'],
+				'input#restaurant-delivery-estimated-time' : ['delivery_estimated_time'],
+				'input#restaurant-pickup-estimated-time' : ['pickup_estimated_time'],
+				'input#restaurant-fee-restaurant' : ['fee_restaurant'],
+				'input#restaurant-fee-customer' : ['fee_customer'],
+				'input#restaurant-tax' : ['tax'],
 			},
 			widget : [], // a list of widgets supporting 'apply' and 'flush' funcs etc
 			func : {
@@ -409,15 +807,15 @@ var DOM_MAP = {
 								segment = _hours[days[day]][i];
 								segment_day = days[day];
 								segment_begin = segment[0];
-								segment_end   = segment[1];
-								if(/^0?0:00$/.exec(segment_end)) segment_end = "24:00";
+								segment_end	 = segment[1];
+								if(/^0?0:00$/.exec(segment_end)) segment_end = '24:00';
 								if(/^0?0:00$/.exec(segment_begin) &&
-								   !/^24:00$/.exec(segment_end)    ) {
+									 !/^24:00$/.exec(segment_end)		) {
 									segment_day = days[(days.indexOf(days[day])+6)%(days.length)];
-									segment_begin = "24:00";
+									segment_begin = '24:00';
 									segment_end = segment_end.replace(
 											/(\d+):/,
-											parseInt(segment_end)+24+":");
+											parseInt(segment_end)+24+':');
 								}
 								m = /(\d+):(\d+)/.exec(segment_begin);
 								this_segment_begin_h = parseInt(m[1]);
@@ -441,7 +839,7 @@ var DOM_MAP = {
 						}
 						for(day in days) {
 							if(!(segments_uni[days[day]].valid)) {
-								$('input#restaurant-hours-' + days[day]).val("Closed");
+								$('input#restaurant-hours-' + days[day]).val('Closed');
 								continue;
 							}
 							begin = segments_uni[days[day]].begin;
@@ -482,11 +880,11 @@ var DOM_MAP = {
 							end_h = parseInt(m[4]);
 							end_m = parseInt(m[5]) || 0;
 							end_ampm = m[6].toLowerCase();
-							if(begin_ampm === "am" && begin_h === 12) { begin_h = begin_h - 12; }
-							if(begin_ampm === "pm" && begin_h < 12) { begin_h = begin_h + 12; }
-							if(end_ampm === "am" && end_h === 12) { end_h = end_h + 12; }
-							if(end_ampm === "pm" && end_h < 12) { end_h = end_h + 12; }
-							if(end_ampm === "am" && end_h < begin_h) { end_h = end_h + 24; }
+							if(begin_ampm === 'am' && begin_h === 12) { begin_h = begin_h - 12; }
+							if(begin_ampm === 'pm' && begin_h < 12) { begin_h = begin_h + 12; }
+							if(end_ampm === 'am' && end_h === 12) { end_h = end_h + 12; }
+							if(end_ampm === 'pm' && end_h < 12) { end_h = end_h + 12; }
+							if(end_ampm === 'am' && end_h < begin_h) { end_h = end_h + 24; }
 
 							if(!(days[day] in _hours)) { _hours[days[day]] = [] }
 							if(end_h*100 + end_m > 2400) {

@@ -828,6 +828,7 @@ table.list tr:nth-of-type(even) {
 }
 
 .admin-item-left {
+	padding-right: 20px;
 	display: inline-block;
 	width: 300px;
 }
@@ -848,19 +849,23 @@ table.list tr:nth-of-type(even) {
 	font-size: 12px;
 }
 
-.admin-item-right input {
+.admin-item-right input, .admin-item-left input {
 	width: 100%;
 	font-size: 20px;
 	font-family: serif;
 }
 
 .admin-item-right textarea {
-	width: 100%;
+	width: 98%;
 	font-size: 16px;
 	font-family: serif;
 	color: black;
 	background: #ffffff;
 	height: 100px;
+}
+
+.admin-item-right textarea.small {
+	height: 40px;
 }
 
 .admin-item-right select {
@@ -907,17 +912,46 @@ table.list tr:nth-of-type(even) {
 	padding-right: 15px;
 }
 
-.admin-button-workflow {
+.admin-item-col-tab {
+	width: 30px;
+	display: inline-block;
+	padding-right: 15px;
+}
+
+.admin-item-col-fit {
+	display: inline-block;
+	padding-right: 15px;
+}
+
+.position-relative {
+	position: relative;
+}
+
+.fill-height {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	background-color: blue;
+}
+
+.admin-button-workflow, .admin-button-workflow-fit {
 	text-align: center;
 	display: inline-block;
-	width: 120px;
 	border: 1px solid #888888;
 	-webkit-border-radius: 3px;
 	padding: 2px;
 	cursor: pointer;
 }
 
-.admin-button-workflow:hover {
+.admin-button-workflow {
+	width: 120px;
+}
+
+.admin-button-workflow-fit {
+	width: 100%;
+}
+
+.admin-button-workflow:hover, .admin-button-workflow-fit:hover {
 	background: #ffffdd;
 }
 
@@ -944,13 +978,40 @@ table.list tr:nth-of-type(even) {
 	background: #ffffdd;
 }
 
-.template-container {
-	visibility: hidden;
+.template-container, .hidden {
+	display: none;
 }
 
 .admin-map {
 	height: 200px;
 }
+
+.admin-menu-category-indent {
+	display: inline-block;
+}
+
+.admin-menu-category-indent {
+	height: 100%;
+	width: 0px;
+}
+
+.admin-menu-dish-details {
+	border: 1px solid #888888;
+	padding: 10px;
+	-webkit-border-radius: 3px;
+}
+
+.admin-option-group-hr {
+	border-bottom: 1px solid #888888;
+	margin: 10px 0px 10px 0px;
+}
+
+.admin-menu-option input {
+  font-size: 12px;
+  font-family: serif;
+}
+
+
 
 
 
