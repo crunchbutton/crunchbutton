@@ -654,13 +654,13 @@ input[name="dish-options-price"] {
 .list-suggestions, .list-credits, .list-support, .list-giftcards{
 	width: 100%;
 }
-	.list-giftcards span.used, .list-giftcards span.not-used{
+	.list-giftcards span.used, .list-giftcards span.not-used, span.yes, span.no{
 		background: red;
 		color: #FFF;
 		padding: 5px;
 		display: inline-block;
 	}
-	.list-giftcards span.not-used{
+	.list-giftcards span.not-used, span.yes{
 		background: green;
 	}
 	.list-suggestions th, 
