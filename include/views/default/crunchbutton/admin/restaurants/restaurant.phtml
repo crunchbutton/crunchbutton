@@ -9,16 +9,18 @@
 ?>
 
 
-<div id="admin-body-content">
+<div id=admin-body-content>
 
-	<div id="admin-top-content-bar">
-		<div class="admin-jump-list">
+	<div id=admin-top-content-bar>
+		<div class=admin-jump-list>
 			Jump to: 
-			<a href="#menu">menu</a>
+			<a href=#vitals>vitals</a> 
+			<a href=#menu>menu</a> 
+			<a href=#notes>notes</a> 
 		</div>
-		<div id="admin-top-button-group">
-			<div id="legacy-button" class="admin-button">Legacy View</div>
-			<div id="revert-button" class="admin-button">Revert</div>
+		<div id=admin-top-button-group>
+			<div id=legacy-button class=admin-button>Legacy View</div>
+			<div id=revert-button class=admin-button>Revert</div>
 		</div>
 	</div>
 
@@ -31,7 +33,7 @@
 			<div class=admin-item-desc>for display</div>
 		</div>
 		<div class=admin-item-right>
-			<input type="input" id="restaurant-name" />
+			<input type=input id=restaurant-name />
 		</div>
 	</div>
 
@@ -41,7 +43,17 @@
 			<div class=admin-item-desc>crunchbutton.com/food-delivery/&lt;permalink></div>
 		</div>
 		<div class=admin-item-right>
-			<input type="input" id="restaurant-permalink" />
+			<input type=input id=restaurant-permalink />
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Short Description</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<input type=input id=restaurant-short-description />
 		</div>
 	</div>
 
@@ -51,7 +63,17 @@
 			<div class=admin-item-desc>publicly listed</div>
 		</div>
 		<div class=admin-item-right>
-			<input type="input" id="restaurant-phone" />
+			<input type=input id=restaurant-phone />
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Email</div>
+			<div class=admin-item-desc>used internally</div>
+		</div>
+		<div class=admin-item-right>
+			<input type=input id=restaurant-email />
 		</div>
 	</div>
 
@@ -61,14 +83,14 @@
 			<div class=admin-item-desc>for delivery radius and pickup</div>
 		</div>
 		<div class=admin-item-right>
-			<textarea id="restaurant-address"></textarea>
+			<textarea id=restaurant-address></textarea>
 			<div class=admin-item-col-med>
 				Latitude
-				<input type="input" id="restaurant-lat" />
+				<input type=input id=restaurant-lat />
 			</div>
 			<div class=admin-item-col-med>
 				Longitude
-				<input type="input" id="restaurant-lng" />
+				<input type=input id=restaurant-lng />
 			</div>
 			<div class=admin-item-col-large>
 				<div class=admin-map id=restaurant-map></div>
@@ -90,6 +112,7 @@
 
 
 
+	<a name=vitals></a>
 	<div class=admin-h3>Vitals</div>
 
 	<div class=admin-item>
@@ -111,11 +134,11 @@
 			<div class=admin-item-desc>where the restaurant is</div>
 		</div>
 		<div class=admin-item-right>
-			<select id="restaurant-timezone">
-				<option value="America/New_York">Eastern</option>
-				<option value="America/Chicago">Central</option>
-				<option value="America/Denver">Mountain</option>
-				<option value="America/Los_Angeles">Pacific</option>
+			<select id=restaurant-timezone>
+				<option value=America/New_York>Eastern</option>
+				<option value=America/Chicago>Central</option>
+				<option value=America/Denver>Mountain</option>
+				<option value=America/Los_Angeles>Pacific</option>
 			</select>
 		</div>
 	</div>
@@ -126,17 +149,17 @@
 			<div class=admin-item-desc>restaurant's actual open hours</div>
 			<div class=admin-item-desc>e.g. 12PM - 2:30AM</div>
 		</div>
-		<div class=admin-item-right id="restaurant-hours">
+		<div class=admin-item-right id=restaurant-hours>
 			<div class=admin-item-right-row>
 				<div class=admin-item-col-wide>
-					<input type="input" id="restaurant-hours-mon" />
+					<input type=input id=restaurant-hours-mon />
 				</div>
 				<div class=admin-item-col-small> Monday </div>
 				<div class=admin-item-col-med> </div>
 			</div>
 			<div class=admin-item-right-row>
 				<div class=admin-item-col-wide>
-					<input type="input" id="restaurant-hours-tue" />
+					<input type=input id=restaurant-hours-tue />
 				</div>
 				<div class=admin-item-col-small> Tuesday</div>
 				<div class=admin-item-col-med>
@@ -147,7 +170,7 @@
 			</div>
 			<div class=admin-item-right-row>
 				<div class=admin-item-col-wide>
-					<input type="input" id="restaurant-hours-wed" />
+					<input type=input id=restaurant-hours-wed />
 				</div>
 				<div class=admin-item-col-small> Wednesday</div>
 				<div class=admin-item-col-med>
@@ -158,7 +181,7 @@
 			</div>
 			<div class=admin-item-right-row>
 				<div class=admin-item-col-wide>
-					<input type="input" id="restaurant-hours-thu" />
+					<input type=input id=restaurant-hours-thu />
 				</div>
 				<div class=admin-item-col-small> Thursday</div>
 				<div class=admin-item-col-med>
@@ -169,7 +192,7 @@
 			</div>
 			<div class=admin-item-right-row>
 				<div class=admin-item-col-wide>
-					<input type="input" id="restaurant-hours-fri" />
+					<input type=input id=restaurant-hours-fri />
 				</div>
 				<div class=admin-item-col-small> Friday</div>
 				<div class=admin-item-col-med>
@@ -180,7 +203,7 @@
 			</div>
 			<div class=admin-item-right-row>
 				<div class=admin-item-col-wide>
-					<input type="input" id="restaurant-hours-sat" />
+					<input type=input id=restaurant-hours-sat />
 				</div>
 				<div class=admin-item-col-small> Saturday</div>
 				<div class=admin-item-col-med>
@@ -191,7 +214,7 @@
 			</div>
 			<div class=admin-item-right-row>
 				<div class=admin-item-col-wide>
-					<input type="input" id="restaurant-hours-sun" />
+					<input type=input id=restaurant-hours-sun />
 				</div>
 				<div class=admin-item-col-small> Sunday</div>
 				<div class=admin-item-col-med>
@@ -203,16 +226,186 @@
 		</div>
 	</div>
 
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Transactions</div>
+			<div class=admin-item-desc>allowed methods</div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small>
+				Cash
+				<div id=restaurant-cash-container></div>
+			</div>
+			<div class=admin-item-col-small>
+				Credit
+				<div id=restaurant-credit-container></div>
+			</div>
+			<div class=admin-item-col-small>
+				Delivery
+				<div id=restaurant-delivery-container></div>
+			</div>
+			<div class=admin-item-col-small>
+				Takeout
+				<div id=restaurant-takeout-container></div>
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Delivery Options</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small>
+				Delivery minimum ($)
+				<input type=input id=restaurant-delivery-min />
+			</div>
+			<div class=admin-item-col-small>
+				Based on
+				<select id=restaurant-delivery-min-amt>
+					<option value=subtotal>Subtotal</option>
+					<option value=total>Total</option>
+				</select>
+			</div>
+			<div class=admin-item-col-small>
+				Delivery fee ($)
+				<input type=input id=restaurant-delivery-fee />
+			</div>
+			<div class=admin-item-col-small>
+				Radius (miles)
+				<input type=input id=restaurant-delivery-radius />
+			</div>
+			<div class=admin-item-col-small>
+				Est. time (minutes)
+				<input type=input id=restaurant-delivery-estimated-time />
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Takeout Options</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small>
+				Est. time (minutes)
+				<input type=input id=restaurant-pickup-estimated-time />
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Taxes and Fees</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small>
+				Restaurant fee (%)
+				<input type=input id=restaurant-fee-restaurant />
+			</div>
+			<div class=admin-item-col-small>
+				Customer fee (%)
+				<input type=input id=restaurant-fee-customer />
+			</div>
+			<div class=admin-item-col-small>
+				Tax charged (%)
+				<input type=input id=restaurant-tax />
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Sorting</div>
+			<div class=admin-item-desc>
+				see <a href='https://github.com/crunchbutton/crunchbutton/issues/787#issuecomment-15988987' target='_blank'>here</a> for explanation
+			</div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small>
+				Sort weight adjustment
+				<input type=input id=restaurant-weight-adj />
+			</div>
+		</div>
+	</div>
+
 	<div class=admin-item></div><!-- for the border line -->
 
-	<div id="float-bottom-right-container">
-		<div id="save-button" class="admin-button">Save</div>
+
+	<a name=menu></a>
+	<div class=admin-h3>Menu</div>
+
+	<div id=restaurant-menu-container>
 	</div>
-	<div id="float-bottom-left-container">
-		<div id="admin-msg"></div>
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-button-workflow id=add-menu-category>add another category</div>
+		</div>
+	</div>
+	<!--
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Full Menu</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right id=restaurant-menu-container>
+		</div>
+	</div>
+	-->
+
+	<div class=admin-item></div><!-- for the border line -->
+
+
+	<a name=notes></a>
+	<div class=admin-h3>Notes</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>General Notes</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<textarea id=restaurant-notes></textarea>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>TODO</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<textarea id=restaurant-notes-todo></textarea>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>About the Owner</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<textarea id=restaurant-notes-owner></textarea>
+		</div>
+	</div>
+
+	<div class=admin-item></div><!-- for the border line -->
+
+
+<!-- floating things -->
+
+	<div id=float-bottom-right-container>
+		<div id=save-button class=admin-button>Save</div>
+	</div>
+	<div id=float-bottom-left-container>
+		<div id=admin-msg></div>
 	</div>
 
 </div>
+
 
 <!-- templates -->
 
@@ -228,16 +421,112 @@
 		</div>
 		<div class="admin-item-col-med-2 restaurant-notification">
 			<select>
-				<option value="fax">Fax</option>
-				<option value="sms">Text Message</option>
-				<option value="email">Email</option>
-				<option value="phone">Phone Call</option>
-				<option value="url">URL Request</option>
-				<option value="confirmation">Confirmation Phone Call</option>
+				<option value=fax>Fax</option>
+				<option value=sms>Text Message</option>
+				<option value=email>Email</option>
+				<option value=phone>Phone Call</option>
+				<option value=url>URL Request</option>
+				<option value=confirmation>Confirmation Phone Call</option>
 			</select>
 		</div>
 		<div class=admin-item-col-med-2>
-			<input type="input" name="val" />
+			<input type=input name=val />
+		</div>
+	</div>
+
+	<div class=admin-menu id=menu-template>
+		<div class=admin-menu-categories></div>
+	</div>
+	<div class="admin-menu-category admin-item" id=menu-category-template>
+		<div class=admin-item-left>
+			<input type=hidden class=admin-menu-category-id />
+			<input type=hidden class=admin-menu-category-loc />
+			<input type=hidden class=admin-menu-category-sort />
+			<input type=input class=admin-menu-category-name placeholder="Category name" />
+			<div class="admin-button-workflow add-menu-dish">add dish</div> &nbsp;
+			<div class="admin-button-workflow delete-menu-category">delete category</div> &nbsp;
+		</div>
+		<div class="admin-item-right restaurant-dishes-container"></div>
+	</div>
+	<div class=admin-menu-dish id=menu-dish-template>
+		<input type=hidden class=admin-menu-dish-active-id />
+		<input type=hidden class=admin-menu-dish-id />
+		<input type=hidden class=admin-menu-dish-id_dish />
+		<input type=hidden class=admin-menu-dish-sort />       <!-- TODO expose this field -->
+		<input type=hidden class=admin-menu-dish-top />        <!-- TODO expose this field -->
+		<input type=hidden class=admin-menu-dish-top_name />   <!-- TODO expose this field -->
+		<input type=hidden class=admin-menu-dish-image />      <!-- TODO expose this field -->
+		<div class=admin-item-col-small>
+			<div class=admin-menu-dish-active-button></div>
+		</div>
+		<div class=admin-item-col-med-2>
+			<input type=input class=admin-menu-dish-name placeholder="Dish name" />
+		</div>
+		<div class=admin-item-col-small>
+			<input type=input class=admin-menu-dish-price placeholder=$ />
+		</div>
+		<div class=admin-item-col-small>
+			<div class="admin-button-workflow-fit delete-menu-dish">delete dish</div>
+		</div>
+		<div class=admin-item-col-small>
+			<div class="admin-button-workflow-fit details-button">details</div>
+		</div>
+		<div class="admin-item-right hidden admin-menu-dish-details">
+			Description
+			<textarea class="small admin-menu-dish-description"></textarea>
+			<div class=admin-option-group-hr></div>
+			<div class=dish-option-groups-container></div>
+			<div class="admin-button-workflow add-option-group">add option group</div>
+		</div>
+	</div>
+	<div class=admin-menu-option-group id=menu-option-group-template>
+		<input type=hidden class=admin-menu-option-group-id />
+		<input type=hidden class=admin-menu-option-group-id_dish_option />
+		<input type=hidden class=admin-menu-option-group-id_option />
+		<input type=hidden class=admin-menu-option-group-id_option_parent />
+		<input type=hidden class=admin-menu-option-group-id_restaurant />
+		<input type=hidden class=admin-menu-option-group-sort /> <!-- TODO expose this field -->
+		<input type=hidden class=admin-menu-option-group-price placeholder=$ />
+		<div class=admin-item-col-med-2>
+			<input type=input class=admin-menu-option-group-name placeholder="Option Group Name" />
+		</div>
+		<div class=admin-item-col-fit>
+			<select class=admin-menu-option-group-type>
+				<option value=select selected>Choose one</option>
+				<option value=check>Choose many</option>
+			</select>
+		</div>
+		<div class=admin-item-col-fit>
+			<div class="admin-button-workflow-fit delete-option-group">delete option group</div>
+		</div>
+		<input type=hidden class=admin-menu-option-group-description placeholder=Description />
+		<br>
+		<div class=admin-menu-options-container></div>
+		<div class=admin-item-col-wide>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<div class="admin-button-workflow add-option">add option</div>
+		</div>
+		<div class=admin-option-group-hr></div>
+	</div>
+	<div class=admin-menu-option id=menu-option-template>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type=hidden class=admin-menu-option-id />
+    <input type=hidden class=admin-menu-option-id_dish_option />
+    <input type=hidden class=admin-menu-option-id_option />
+    <input type=hidden class=admin-menu-option-id_restaurant />
+    <input type=hidden class=admin-menu-option-description />
+    <input type=hidden class=admin-menu-option-sort /> <!-- TODO expose this field -->
+		<div class=admin-item-col-fit>
+			<input type=checkbox class=admin-menu-option-default title="Option is selected by default" />
+		</div>
+		<div class=admin-item-col-med>
+			<input type=input class=admin-menu-option-name placeholder="Option name" />
+		</div>
+		<div class=admin-item-col-small>
+			<input type=input class=admin-menu-option-price placeholder=$ />
+		</div>
+		<div class=admin-item-col-small>
+			<div class="admin-button-workflow delete-option">delete option</div>
 		</div>
 	</div>
 
@@ -245,11 +534,8 @@
 
 
 
-
-
-
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript" src="/assets/js/admin_restaurant.js"></script>
+<script type=text/javascript src=https://maps.googleapis.com/maps/api/js?sensor=false></script>
+<script type=text/javascript src=/assets/js/admin_restaurant.js></script>
 <script>
 ADMIN.restaurant_init(<?=$this->restaurant->id_restaurant?>);
 </script>

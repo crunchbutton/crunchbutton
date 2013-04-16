@@ -892,8 +892,6 @@ class Crunchbutton_Restaurant extends Cana_Table
 	 * @return null
 	 */
 	public function imports($restaurant) {
-		// TODO implement this
-		// for now, start with basic stuff
 
 		foreach($this->properties() as $key=>$val) {
 			if(in_array($key, array_keys($restaurant))) {
@@ -902,6 +900,63 @@ class Crunchbutton_Restaurant extends Cana_Table
 		}
 		$this->saveHours($restaurant['_hours']);
 		$this->saveNotifications($restaurant['_notifications']);
+		$this->saveCategories($restaurant['_categories']);
+
+		// TODO - for objects with temporary client-side ids, match up the new category ids
+
+		// dishes with options are the awful part
+		$all_dishes = [];
+		foreach($restaurant['_categories'] as $category) {
+			if(!array_key_exists('_dishes', $category)) {
+				$category['_dishes'] = [];
+			}
+			foreach($category['_dishes'] as &$dish) {
+				$dish['optionGroups'] = [];
+				if(!intval($dish['id_category'])) {
+					$sql = 'SELECT * FROM category WHERE name like \''.$category['name'].'\' ORDER BY sort ASC LIMIT 1';
+					$category = Crunchbutton_Category::q($sql);
+					$dish['id_category'] = $category->id_category;
+				}
+				if(!array_key_exists('_options', $dish)) {
+					$dish['_options'] = [];
+				}
+				$basicOptionsIds    = [];
+				$optionGroupsIds    = [];
+				$optionsInGroupsIds = [];
+				$optionGroups = [];
+				foreach($dish['_options'] as $option) {
+					if($option['id_option_parent']) {
+						$optionGroupsIds[] = $option['id_option_parent'];
+						$optionsInGroupsIds[] = $option['id_option'];
+					}
+				}
+				foreach($dish['_options'] as $option) {
+					if(in_array($option['id_option'], $optionGroupsIds)) continue;
+					if(in_array($option['id_option'], $optionsInGroupsIds)) continue;
+					$option['id_option_parent'] = 'BASIC';
+					$basicOptionsIds[] = $option['id_option'];
+				}
+				$optionGroupsIds[] = 'BASIC';
+				$optionGroups['BASIC'] = array('id_option'=>'BASIC');
+
+				// option groups
+				foreach($dish['_options'] as $option) {
+					if(in_array($option['id_option'], $optionGroupsIds)) {
+						$optionGroups[$option['id_option']] = $option;
+						$optionGroups[$option['id_option']]['options'] = [];
+					}
+				}
+				// regular options
+				foreach($dish['_options'] as $option) {
+					if(!in_array($option['id_option'], $optionGroupsIds)) {
+						$optionGroups[$option['id_option_parent']]['options'][] = $option;
+					}
+				}
+				$dish['optionGroups'] = $optionGroups;
+				$all_dishes[] = $dish;
+			}
+		}
+		$this->saveDishes($all_dishes);
 		return null;
 	}
 
