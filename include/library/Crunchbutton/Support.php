@@ -52,12 +52,10 @@ class Crunchbutton_Support extends Cana_Table {
 		$message = '@'.$tsess->id_session_twilio.' : ' . $message;
 		$message = str_split( $message, 160 );
 
-		$b = $message;
-
 		// Send this message to the customer service
 		foreach (c::config()->text as $supportName => $supportPhone) {
 			$num = $supportPhone;
-			foreach ($b as $msg) {
+			foreach ($message as $msg) {
 				try {
 					// Log
 					Log::debug( [ 'action' => 'sending sms - support', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
