@@ -26,6 +26,10 @@
 							continue;
 						}
 						$cartPrice += $option->option()->price;
+						if($option->option()->id_option_parent) {
+							$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
+							$food .= "$optionGroup->name: ";
+						}
 						$food .= $option->option()->name.', ';
 					}
 					$food = substr($food, 0, -2);
