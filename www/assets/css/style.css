@@ -271,17 +271,16 @@ b {
 .restaurant-closed{
 	color: #666;
 	font-size:13px;
-	line-height: 20px;
+	line-height: 22px;
 	padding: 10px;
-	width: 100%;
 	text-align: left !important;
-	text-shadow: 1px 1px 0 rgba(255,255,255,.72);
+	text-shadow: 1px 1px 0 rgba(0,0,0,.10);
 	margin: 0 auto 35px auto;
 }
 	.restaurant-closed-title{
 		color: #d74924;
 		display: block;
-		font-size: 14px;
+		font-size: 15px;
 		font-weight: bold;
 	}
 
