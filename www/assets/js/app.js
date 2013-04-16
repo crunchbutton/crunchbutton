@@ -420,7 +420,13 @@ App.cart = {
 
 		el.hide();
 
-		$('.cart-items-content').prepend(el);
+		// If it is a mobile add the items at the top #1035
+		if( $( window ).width() > 769 ){
+			$('.cart-items-content').append(el);	
+		} else {
+			$('.cart-items-content').prepend(el);	
+		}
+		
 		//el.fadeIn();
 		el.show();
 
@@ -606,11 +612,12 @@ App.cart = {
 		}
 
 		for (x in totalItems) {
-			text += x;
+			text = ',&nbsp;&nbsp;' + text;
 			if (totalItems[x] > 1) {
-				text += '&nbsp;(' + totalItems[x] + ')';
+				text = x + '&nbsp;(' + totalItems[x] + ')' + text;
+			} else {
+				text = x + text;
 			}
-			text += ',&nbsp;&nbsp;';
 		}
 
 		$('.cart-summary-items').html(text.substr(0,text.length-13));
