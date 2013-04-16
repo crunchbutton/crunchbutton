@@ -201,6 +201,11 @@ var WIDGET = {
 				$(option_group_dom).find('.admin-menu-option-group-type').val('check');
 				$(option_group_dom).find('.delete-option-group').hide();
 			}
+			else {
+				// evidently only 'select' boxes render properly on front end for now
+				$(option_group_dom).find('.admin-menu-option-group-type').prop('disabled', true);
+				$(option_group_dom).find('.admin-menu-option-group-type').val('select');
+			}
 			if(!option_group.name) UTIL.focus_input(option_group_dom);
 			$(option_group_dom).find('.delete-option-group').click(function() {
 				option_group_dom.remove();
