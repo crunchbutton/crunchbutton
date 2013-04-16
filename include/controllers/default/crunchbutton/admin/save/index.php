@@ -14,7 +14,9 @@ class Controller_admin_save extends Crunchbutton_Controller_Rest {
 				$rsp['req'] = $req; // TODO this is not necessary
 				switch($req['obj']) {
 					case 'restaurant':
-						$rsp['data'] = $this->save_restaurant($req[$req['obj']]);
+            $data = array();
+            parse_str($req['serialized_data'], $data);
+            $rsp['data'] = $this->save_restaurant($data);
 						$rsp['msg'] = 'Saved.';
 						break;
 					default:
