@@ -38,18 +38,7 @@ class Crunchbutton_Support extends Cana_Table {
 		// Log
 		Log::debug( [ 'action' => 'support', 'message' => $message, 'type' => 'support' ] );
 
-		$data = [ 'request' => $_REQUEST, 'support' => json_decode( $this->json() ) ];
-
-		// Create a twilio session
-		$tsess = new Session_Twilio;
-		$tsess->phone = $this->phone;
-		$tsess->data = json_encode( $data );
-		$tsess->save();
-
-		$this->id_session_twilio = $tsess->id_session_twilio;
-		$this->save();
-
-		$message = '@'.$tsess->id_session_twilio.' : ' . $message;
+		$message = '@'.$this->id_session_twilio.' : ' . $message;
 		$message = str_split( $message, 160 );
 
 		// Send this message to the customer service
@@ -58,7 +47,7 @@ class Crunchbutton_Support extends Cana_Table {
 			foreach ($message as $msg) {
 				try {
 					// Log
-					Log::debug( [ 'action' => 'sending sms - support', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+					Log::debug( [ 'action' => 'sending sms - support', 'session id' => $this->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
 					$twilio->account->sms_messages->create(
 						c::config()->twilio->{$env}->outgoingTextCustomer,
 						'+1'.$num,
@@ -66,7 +55,7 @@ class Crunchbutton_Support extends Cana_Table {
 					);
 				} catch (Exception $e) {
 					// Log
-					Log::debug( [ 'action' => 'ERROR sending sms - support', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
+					Log::debug( [ 'action' => 'ERROR sending sms - support', 'session id' => $this->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
 				}
 			}
 		}
