@@ -904,6 +904,9 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 		// dishes with options are the awful part
 		$all_dishes = [];
+		if(!array_key_exists('_categories', $restaurant)) {
+			$restaurant['_categories'] = [];
+		}
 		foreach($restaurant['_categories'] as $category) {
 			if(!array_key_exists('_dishes', $category)) {
 				$category['_dishes'] = [];
