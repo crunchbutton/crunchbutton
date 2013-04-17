@@ -372,6 +372,12 @@ var WIDGET = {
 							type : 'dish',
 						});
 			});
+			$(category_dom).find('.move_category_down').first().click(function() {
+				console.log('asdf');
+			});
+			$(category_dom).find('.move_category_up').first().click(function() {
+				console.log('asdf');
+			});
 		};
 		this.apply = function(restaurant) {
 			this.reset_dom();
@@ -400,6 +406,12 @@ var WIDGET = {
 				option['id_option_parent'] = 'BASIC';
 			option['id_restaurant'] = ADMIN.id_restaurant;
 			option['default'] = $(option_dom).find('.admin-menu-option-default').is(':checked') ? '1' : '0';
+			if(dish._options.length === 0) {
+				option['sort'] = 1;
+			}
+			else {
+				option['sort'] = dish._options[dish._options.length - 1]['sort'] + 1;
+			}
 			dish._options.push(option);
 		};
 		this.flush_option_group = function(dish, option_group_dom) {
@@ -420,6 +432,13 @@ var WIDGET = {
 			});
       if(/^basic options$/i.exec(option_group.name)) { return; }
 			if($(option_group_dom).find('.admin-menu-option').length === 0) { return; }
+
+			if(dish._options.length === 0) {
+				option_group['sort'] = 1;
+			}
+			else {
+				option_group['sort'] = dish._options[dish._options.length - 1]['sort'] + 1;
+			}
 			dish._options.push(option_group);
 		};
 		this.flush_dish = function(category, dish_dom) {
@@ -438,6 +457,12 @@ var WIDGET = {
 			$(dish_dom).find('.admin-menu-option-group').each(function(index, option_group_dom) {
 				self.flush_option_group(dish, option_group_dom);
 			});
+			if(category._dishes.length === 0) {
+				dish['sort'] = 1;
+			}
+			else {
+				dish['sort'] = category._dishes[category._dishes.length - 1]['sort'] + 1;
+			}
 			category._dishes.push(dish);
 		};
 		this.flush_category = function(categories, category_dom) {
@@ -453,6 +478,12 @@ var WIDGET = {
 			$(category_dom).find('.admin-menu-dish').each(function(index, dish_dom) {
 				self.flush_dish(category, dish_dom);
 			});
+			if(categories.length === 0) {
+				category['sort'] = 1;
+			}
+			else {
+				category['sort'] = categories[categories.length - 1]['sort'] + 1;
+			}
 			categories.push(category);
 		};
 		this.flush = function(restaurant) {
@@ -684,7 +715,9 @@ var ADMIN = {
 				{ 
 					type : 'sav',
           data : { 
-            serialized_data : $.param(ADMIN.restaurant),
+						// uncomment here and in controller to use serialization
+            // serialized_data : $.param(ADMIN.restaurant),
+						data : ADMIN.restaurant,
             obj : 'restaurant'
           },
 
