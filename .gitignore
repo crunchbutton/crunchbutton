@@ -14,6 +14,7 @@
 *.psd
 *.sql
 *.zip
+*.DS_Store
 *~
 
 # config and specific files
