@@ -43,7 +43,7 @@
 				<td style="width: 100%"></td>
 				<td class="label-sub">RESTAURANT</td>
 				<td class="content-sub" colspan="2">
-					<select name="restaurant">
+					<select name="restaurant" class="chosen-select" style="width:280px;">
 						<option value="" selected>[ All ]</option>
 						<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
 							<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
@@ -61,7 +61,7 @@
 				<td style="width: 100%"></td>
 				<td class="label-sub">COMMUNITY</td>
 				<td class="content-sub" colspan="2">
-					<select name="community">
+					<select name="community" class="chosen-select" style="width:280px;">
 						<option value="" selected>[ All ]</option>
 						<? foreach (Community::q('select * from community order by name') as $community) : ?>
 							<option value="<?=$community->id_community?>"><?=$community->name?></option>
@@ -121,7 +121,7 @@
 				App.orders.load();
 			}
 		});
-		
+		$(".chosen-select").chosen();		
 		App.orders.load();
 	});
 </script>
