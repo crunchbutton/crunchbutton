@@ -308,10 +308,13 @@ class Crunchbutton_Restaurant extends Cana_Table
 								$do = new Dish_Option;
 								$do->id_dish = $dishO->id_dish;
 								$do->id_option = $group->id_option;
+								$do->sort = $optionGroup['sort'];
 								$do->save();
 							} else {
 								$do = new Dish_Option($doid);
 								$do->default = $opt->default;
+								$do->sort = $optionGroup['sort'];
+								$do->save();
 							}
 						}
 
@@ -331,7 +334,8 @@ class Crunchbutton_Restaurant extends Cana_Table
 								$option->type             = 'check';
 								$option->save();
 								$newOptions[$option->id_option] = $option->id_option;
-								$opt['default'] = $opt['default'] == 'true' ? 1 : 0;
+								$opt['default'] = 
+										(in_array($opt['default'], ['true','1',1]) ? 1 : 0);
 
 								if (!$doid = $this->_hasOption($option, $options)) {
 									$do            = new Dish_Option;
@@ -532,12 +536,14 @@ class Crunchbutton_Restaurant extends Cana_Table
 	 * @param array $elements
 	 */
 	public function saveNotifications($elements) {
-		// c::db()->query('DELETE FROM notification WHERE id_restaurant="'.$this->id_restaurant.'"');
+		c::db()->query('DELETE FROM notification WHERE id_restaurant="'.$this->id_restaurant.'"');
+		if(!$elements)
+			return;
 		foreach ($elements as $data) {
 			if (!$data['value']) continue;
 			$element                = new Crunchbutton_Notification($data['id_notification']);
 			$element->id_restaurant = $this->id_restaurant;
-			$element->active        = ($data['active'] == 'true') ? "1" : "0";
+			$element->active        = ($data['active'] == 'true' || $data['active'] == '1') ? "1" : "0";
 			$element->type          = $data['type'];
 			$element->value         = $data['value'];
 			$element->save();
@@ -892,6 +898,84 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 		$out['id_community'] = $this->community()->id_community;
 		return $out;
+	}
+
+	/**
+	 * Imports an array with all the information for a Restaurant.
+	 *
+	 * Should be an exact inverse of exports()
+	 * for starters, it's an approximation
+	 *
+	 * @return null
+	 */
+	public function imports($restaurant) {
+
+		foreach($this->properties() as $key=>$val) {
+			if(in_array($key, array_keys($restaurant))) {
+				$this->$key = $restaurant[$key];
+			}
+		}
+		$this->saveHours($restaurant['_hours']);
+		$this->saveNotifications($restaurant['_notifications']);
+		$this->saveCategories($restaurant['_categories']);
+
+		// dishes with options are the awful part
+		$all_dishes = [];
+		if(!array_key_exists('_categories', $restaurant)) {
+			$restaurant['_categories'] = [];
+		}
+		foreach($restaurant['_categories'] as $category) {
+			if(!array_key_exists('_dishes', $category)) {
+				$category['_dishes'] = [];
+			}
+			foreach($category['_dishes'] as &$dish) {
+				$dish['optionGroups'] = [];
+				if(!intval($dish['id_category'])) {
+					$sql = 'SELECT * FROM category WHERE name like \''.$category['name'].'\' ORDER BY sort ASC LIMIT 1';
+					$c = Crunchbutton_Category::q($sql);
+					$dish['id_category'] = $c->id_category;
+				}
+				if(!array_key_exists('_options', $dish)) {
+					$dish['_options'] = [];
+				}
+				$basicOptionsIds    = [];
+				$optionGroupsIds    = [];
+				$optionsInGroupsIds = [];
+				$optionGroups = [];
+				foreach($dish['_options'] as $option) {
+					if($option['id_option_parent']) {
+						$optionGroupsIds[] = $option['id_option_parent'];
+						$optionsInGroupsIds[] = $option['id_option'];
+					}
+				}
+				foreach($dish['_options'] as $option) {
+					if(in_array($option['id_option'], $optionGroupsIds)) continue;
+					if(in_array($option['id_option'], $optionsInGroupsIds)) continue;
+					$option['id_option_parent'] = 'BASIC';
+					$basicOptionsIds[] = $option['id_option'];
+				}
+				$optionGroupsIds[] = 'BASIC';
+				$optionGroups['BASIC'] = array('id_option'=>'BASIC');
+
+				// option groups
+				foreach($dish['_options'] as $option) {
+					if(in_array($option['id_option'], $optionGroupsIds)) {
+						$optionGroups[$option['id_option']] = $option;
+						$optionGroups[$option['id_option']]['options'] = [];
+					}
+				}
+				// regular options
+				foreach($dish['_options'] as $option) {
+					if(!in_array($option['id_option'], $optionGroupsIds)) {
+						$optionGroups[$option['id_option_parent']]['options'][] = $option;
+					}
+				}
+				$dish['optionGroups'] = $optionGroups;
+				$all_dishes[] = $dish;
+			}
+		}
+		$this->saveDishes($all_dishes);
+		return null;
 	}
 
 	public function priceRange() {
