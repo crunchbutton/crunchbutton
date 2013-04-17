@@ -184,6 +184,27 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		return false;
 	}
 
+	public function createPhoneAuthFromFacebook( $user_id, $phone ){
+		$id_user_auth = User_Auth::userHasFacebookAuth( $user_id );
+		if( $id_user_auth ){
+			$phoneExists = User_Auth::checkPhoneExists( $phone );
+			if( !$phoneExists ){
+				$user_auth = User_Auth::o( $id_user_auth );
+				$user_auth_phone = new User_Auth;
+				$user_auth_phone->id_user = $user_auth->id_user;
+				$user_auth_phone->type = 'local';
+				$user_auth_phone->active = $user_auth->active;
+				$user_auth_phone->hash = '';
+				$user_auth_phone->email = $phone;
+				$user_auth_phone->save();
+				if( $user_auth_phone->id_user_auth ){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public function validateResetCode( $code ){
 		$query = sprintf(" SELECT * 
 												FROM user_auth
