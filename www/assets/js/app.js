@@ -38,6 +38,7 @@ var App = {
 	_pageInit: false,
 	_identified: false,
 	isDeliveryAddressOk : false,
+	isUserAddressOk : false,
 	tips: [0,10,15,18,20,25,30],
 	touchX: null,
 	touchY: null,
@@ -893,38 +894,70 @@ Issue 13: Removed the password for while
 			return;
 		}
 
-		// verify the distance between the user and the restaurant
-		if (order.delivery_type == 'delivery' && !App.isDeliveryAddressOk) {
-			var success = function( results ) {
-				if( results.alias ){
-					var lat = results.alias.lat;
-					var lon = results.alias.lon;
-				} else {
-					var lat = results[0].geometry.location.lat();
-					var lon = results[0].geometry.location.lng();
-				}
-				if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
-					alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout' );
+
+
+		// if it is a delivery order we need to check the address
+		if( order.delivery_type == 'delivery' ){
+			
+			// verify if the user typed his complete address (street name and number)	
+			if (!App.isUserAddressOk	) {
+				var success = function( results ) {
+					if( results[0] && results[0].geometry && results[0].geometry.location_type && 
+						( results[0].geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || results[0].geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
+						App.busy.unBusy();
+						App.isUserAddressOk = true;
+						App.cart.submit();
+					} else {
+						alert( 'Ops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
+						App.busy.unBusy();
+						// Make sure that the form will be visible
+						$('.payment-form').show();
+ 						$('.delivery-payment-info, .content-padder-before').hide();
+						$( '[name="pay-address"]' ).focus();
+					}
+				};
+				var error = function() {
 					App.busy.unBusy();
-				} else {
+					alert('Oops! We couldn\'t find that address!');
+				};
+				App.loc.doGeocode( order.address, success, error);
+				return;
+			}
+
+			// verify the distance between the user and the restaurant
+			if (!App.isDeliveryAddressOk) {
+				var success = function( results ) {
+					if( results.alias ){
+						var lat = results.alias.lat;
+						var lon = results.alias.lon;
+					} else {
+						var lat = results[0].geometry.location.lat();
+						var lon = results[0].geometry.location.lng();
+					}
+					if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
+						alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout.' );
+						App.busy.unBusy();
+					} else {
+						App.busy.unBusy();
+						App.isDeliveryAddressOk = true;
+						App.cart.submit();
+					}
+				};
+				var error = function() {
 					App.busy.unBusy();
-					App.isDeliveryAddressOk = true;
-					App.cart.submit();
-				}
-			};
-			var error = function() {
-				App.busy.unBusy();
-				alert('Oops! We couldn\'t find that address!');
-			};
-			App.loc.doGeocode( order.address, success, error);
-			return;
-		} 
+					alert('Oops! We couldn\'t find that address!');
+				};
+				App.loc.doGeocode( order.address, success, error);
+				return;
+			} 
+		}
 
 		if( order.delivery_type == 'takeout' ){
 			App.isDeliveryAddressOk = true;
+			App.isUserAddressOk = true;
 		}
 
-		if( !App.isDeliveryAddressOk ){
+		if( !App.isDeliveryAddressOk || !App.isUserAddressOk ){
 			return;
 		}
 
@@ -1631,6 +1664,7 @@ $(function() {
 	$$('.button-submitorder-form').tap(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
+		App.isUserAddressOk = false;
 		App.isDeliveryAddressOk = false;
 		App.cart.submit($(this),true);
 	});
