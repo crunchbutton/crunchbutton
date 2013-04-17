@@ -308,10 +308,13 @@ class Crunchbutton_Restaurant extends Cana_Table
 								$do = new Dish_Option;
 								$do->id_dish = $dishO->id_dish;
 								$do->id_option = $group->id_option;
+								$do->sort = $optionGroup['sort'];
 								$do->save();
 							} else {
 								$do = new Dish_Option($doid);
 								$do->default = $opt->default;
+								$do->sort = $optionGroup['sort'];
+								$do->save();
 							}
 						}
 
@@ -331,7 +334,8 @@ class Crunchbutton_Restaurant extends Cana_Table
 								$option->type             = 'check';
 								$option->save();
 								$newOptions[$option->id_option] = $option->id_option;
-								$opt['default'] = $opt['default'] == 'true' ? 1 : 0;
+								$opt['default'] = 
+										(in_array($opt['default'], ['true','1',1]) ? 1 : 0);
 
 								if (!$doid = $this->_hasOption($option, $options)) {
 									$do            = new Dish_Option;
@@ -915,8 +919,8 @@ class Crunchbutton_Restaurant extends Cana_Table
 				$dish['optionGroups'] = [];
 				if(!intval($dish['id_category'])) {
 					$sql = 'SELECT * FROM category WHERE name like \''.$category['name'].'\' ORDER BY sort ASC LIMIT 1';
-					$category = Crunchbutton_Category::q($sql);
-					$dish['id_category'] = $category->id_category;
+					$c = Crunchbutton_Category::q($sql);
+					$dish['id_category'] = $c->id_category;
 				}
 				if(!array_key_exists('_options', $dish)) {
 					$dish['_options'] = [];

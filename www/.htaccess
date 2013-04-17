@@ -11,6 +11,7 @@ RewriteCond %{REQUEST_FILENAME}        !-d
 RewriteRule ^(.+)$                    index.php?__url=$1 [L,QSA]
 
 
+
 <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css)$">
 Header set Cache-Control "max-age=290304000, public"
 </FilesMatch>
@@ -20,6 +21,8 @@ AddType font/eot .eot
 AddType font/otf .otf
 AddType font/woff .woff
 AddType image/svg+xml .svg .svgz
+
+php_value max_input_vars 100000
 
 
 AddOutputFilterByType DEFLATE text/plain
