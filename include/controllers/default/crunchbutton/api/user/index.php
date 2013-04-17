@@ -254,6 +254,12 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 									$userAuth->type = 'facebook';
 									$userAuth->auth = $fb->user()->id;
 									$userAuth->save();
+
+									// This line will create a phone user auth just if the user already has an facebook auth
+									if( $user->phone ){
+										User_Auth::createPhoneAuthFromFacebook( $user->id_user, $user->phone );	
+									}
+									
 								} 
 							} else {
 								// we dont have a facebook user
