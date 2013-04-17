@@ -1,0 +1,1078 @@
+.sprite-aperture { 
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 0; width: 16px; height: 16px; 
+}
+.sprite-aperture:hover { 
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 0; width: 16px; height: 16px; 
+}
+.sprite-aperture_alt { 
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -66px; width: 16px; height: 16px; 
+} 
+.sprite-aperture_alt:hover { 
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -66px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_down{ 
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -132px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_down:hover { 
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -132px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_down_alt1 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -198px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_down_alt1:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -198px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_down_alt2 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -264px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_down_alt2:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -264px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_left {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -330px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_left:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -330px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_left_alt1 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -396px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_left_alt1:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -396px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_left_alt2 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -462px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_left_alt2:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -462px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_right {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -528px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_right:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -528px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_right_alt1 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -594px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_right_alt1:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -594px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_right_alt2 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -660px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_right_alt2:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -660px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_up {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -726px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_up:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -726px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_up_alt1 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -792px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_up_alt1:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -792px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_up_alt2 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -858px; width: 16px; height: 16px; 
+} 
+.sprite-arrow_up_alt2:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -858px; width: 16px; height: 16px; 
+} 
+.sprite-article {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -924px; width: 16px; height: 16px; 
+} 
+.sprite-article:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -924px; width: 16px; height: 16px; 
+} 
+.sprite-at {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -990px; width: 16px; height: 16px; 
+} 
+.sprite-at:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -990px; width: 16px; height: 16px; 
+} 
+.sprite-bars {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1056px; width: 16px; height: 16px; 
+} 
+.sprite-bars:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1056px; width: 16px; height: 16px; 
+} 
+.sprite-bolt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1122px; width: 16px; height: 16px; 
+} 
+.sprite-bolt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1122px; width: 16px; height: 16px; 
+} 
+.sprite-book_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1188px; width: 16px; height: 16px; 
+} 
+.sprite-book_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1188px; width: 16px; height: 16px; 
+} 
+.sprite-box {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1254px; width: 16px; height: 16px; 
+} 
+.sprite-box:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1254px; width: 16px; height: 16px; 
+} 
+.sprite-brush {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1320px; width: 16px; height: 16px; 
+} 
+.sprite-brush:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1320px; width: 16px; height: 16px; 
+} 
+.sprite-brush_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1386px; width: 16px; height: 16px; 
+} 
+.sprite-brush_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1386px; width: 16px; height: 16px; 
+} 
+.sprite-calendar {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1452px; width: 16px; height: 16px; 
+} 
+.sprite-calendar:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1452px; width: 16px; height: 16px; 
+} 
+.sprite-calendar_alt_fill {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1518px; width: 16px; height: 16px; 
+} 
+.sprite-calendar_alt_fill:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1518px; width: 16px; height: 16px; 
+} 
+.sprite-calendar_alt_stroke {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1584px; width: 16px; height: 16px; 
+} 
+.sprite-calendar_alt_stroke:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1584px; width: 16px; height: 16px; 
+} 
+.sprite-camera {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1650px; width: 16px; height: 16px; 
+} 
+.sprite-camera:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1650px; width: 16px; height: 16px; 
+} 
+.sprite-cd {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1716px; width: 16px; height: 16px; 
+} 
+.sprite-cd:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1716px; width: 16px; height: 16px; 
+} 
+.sprite-chart {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1782px; width: 16px; height: 16px; 
+} 
+.sprite-chart:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1782px; width: 16px; height: 16px; 
+} 
+.sprite-chat {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1848px; width: 16px; height: 16px; 
+} 
+.sprite-chat:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1848px; width: 16px; height: 16px; 
+} 
+.sprite-chat_alt_fill {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: 0 -1914px; width: 16px; height: 16px; 
+} 
+.sprite-chat_alt_fill:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: 0 -1914px; width: 16px; height: 16px; 
+} 
+.sprite-chat_alt_stroke {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px 0; width: 16px; height: 16px; 
+} 
+.sprite-chat_alt_stroke:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px 0; width: 16px; height: 16px; 
+} 
+.sprite-check_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -66px; width: 16px; height: 16px; 
+} 
+.sprite-check_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -66px; width: 16px; height: 16px; 
+} 
+.sprite-clock {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -132px; width: 16px; height: 16px; 
+} 
+.sprite-clock:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -132px; width: 16px; height: 16px; 
+} 
+.sprite-cloud_download {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -198px; width: 16px; height: 16px; 
+} 
+.sprite-cloud_download:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -198px; width: 16px; height: 16px; 
+} 
+.sprite-cloud_upload {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -264px; width: 16px; height: 16px; 
+} 
+.sprite-cloud_upload:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -264px; width: 16px; height: 16px; 
+} 
+.sprite-cog {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -330px; width: 16px; height: 16px; 
+} 
+.sprite-cog:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -330px; width: 16px; height: 16px; 
+} 
+.sprite-compass {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -396px; width: 16px; height: 16px; 
+} 
+.sprite-compass:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -396px; width: 16px; height: 16px; 
+} 
+.sprite-cursor {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -462px; width: 16px; height: 16px; 
+} 
+.sprite-cursor:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -462px; width: 16px; height: 16px; 
+} 
+.sprite-denied {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -528px; width: 16px; height: 16px; 
+} 
+.sprite-denied:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -528px; width: 16px; height: 16px; 
+} 
+.sprite-dial {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -594px; width: 16px; height: 16px; 
+} 
+.sprite-dial:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -594px; width: 16px; height: 16px; 
+} 
+.sprite-document_fill {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -660px; width: 16px; height: 16px; 
+} 
+.sprite-document_fill:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -660px; width: 16px; height: 16px; 
+} 
+.sprite-document_stroke {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -726px; width: 16px; height: 16px; 
+} 
+.sprite-document_stroke:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -726px; width: 16px; height: 16px; 
+} 
+.sprite-eject {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -792px; width: 16px; height: 16px; 
+} 
+.sprite-eject:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -792px; width: 16px; height: 16px; 
+} 
+.sprite-equalizer {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -858px; width: 16px; height: 16px; 
+} 
+.sprite-equalizer:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -858px; width: 16px; height: 16px; 
+} 
+.sprite-eyedropper {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -924px; width: 16px; height: 16px; 
+} 
+.sprite-eyedropper:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -924px; width: 16px; height: 16px; 
+} 
+.sprite-first {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -990px; width: 16px; height: 16px; 
+} 
+.sprite-first:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -990px; width: 16px; height: 16px; 
+} 
+.sprite-folder_fill {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1056px; width: 16px; height: 16px; 
+} 
+.sprite-folder_fill:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1056px; width: 16px; height: 16px; 
+} 
+.sprite-folder_stroke {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1122px; width: 16px; height: 16px; 
+} 
+.sprite-folder_stroke:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1122px; width: 16px; height: 16px; 
+} 
+.sprite-fullscreen {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1188px; width: 16px; height: 16px; 
+} 
+.sprite-fullscreen:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1188px; width: 16px; height: 16px; 
+} 
+.sprite-fullscreen_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1254px; width: 16px; height: 16px; 
+} 
+.sprite-fullscreen_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1254px; width: 16px; height: 16px; 
+} 
+.sprite-fullscreen_exit {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1320px; width: 16px; height: 16px; 
+} 
+.sprite-fullscreen_exit:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1320px; width: 16px; height: 16px; 
+} 
+.sprite-fullscreen_exit_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1386px; width: 16px; height: 16px; 
+} 
+.sprite-fullscreen_exit_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1386px; width: 16px; height: 16px; 
+} 
+.sprite-home {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1452px; width: 16px; height: 16px; 
+} 
+.sprite-home:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1452px; width: 16px; height: 16px; 
+} 
+.sprite-image {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1518px; width: 16px; height: 16px; 
+} 
+.sprite-image:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1518px; width: 16px; height: 16px; 
+} 
+.sprite-key_fill {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1584px; width: 16px; height: 16px; 
+} 
+.sprite-key_fill:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1584px; width: 16px; height: 16px; 
+} 
+.sprite-key_stroke {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1650px; width: 16px; height: 16px; 
+} 
+.sprite-key_stroke:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1650px; width: 16px; height: 16px; 
+} 
+.sprite-last {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1716px; width: 16px; height: 16px; 
+} 
+.sprite-last:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1716px; width: 16px; height: 16px; 
+} 
+.sprite-layers_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1782px; width: 16px; height: 16px; 
+} 
+.sprite-layers_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1782px; width: 16px; height: 16px; 
+} 
+.sprite-link {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1848px; width: 16px; height: 16px; 
+} 
+.sprite-link:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1848px; width: 16px; height: 16px; 
+} 
+.sprite-loop {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -66px -1914px; width: 16px; height: 16px; 
+} 
+.sprite-loop:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -66px -1914px; width: 16px; height: 16px; 
+} 
+.sprite-magnifying_glass {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px 0; width: 16px; height: 16px; 
+} 
+.sprite-magnifying_glass:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px 0; width: 16px; height: 16px; 
+} 
+.sprite-minus_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -66px; width: 16px; height: 16px; 
+} 
+.sprite-minus_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -66px; width: 16px; height: 16px; 
+} 
+.sprite-moon_fill {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -132px; width: 16px; height: 16px; 
+} 
+.sprite-moon_fill:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -132px; width: 16px; height: 16px; 
+} 
+.sprite-moon_stroke {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -198px; width: 16px; height: 16px; 
+} 
+.sprite-moon_stroke:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -198px; width: 16px; height: 16px; 
+} 
+.sprite-move {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -264px; width: 16px; height: 16px; 
+} 
+.sprite-move:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -264px; width: 16px; height: 16px; 
+} 
+.sprite-move_alt1 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -330px; width: 16px; height: 16px; 
+} 
+.sprite-move_alt1:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -330px; width: 16px; height: 16px; 
+} 
+.sprite-move_alt2 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -396px; width: 16px; height: 16px; 
+} 
+.sprite-move_alt2:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -396px; width: 16px; height: 16px; 
+} 
+.sprite-move_horizontal_alt2 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -462px; width: 16px; height: 16px; 
+} 
+.sprite-move_horizontal_alt2:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -462px; width: 16px; height: 16px; 
+} 
+.sprite-move_vertical_alt2 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -528px; width: 16px; height: 16px; 
+} 
+.sprite-move_vertical_alt2:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -528px; width: 16px; height: 16px; 
+} 
+.sprite-movie {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -594px; width: 16px; height: 16px; 
+} 
+.sprite-movie:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -594px; width: 16px; height: 16px; 
+} 
+.sprite-new_window {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -660px; width: 16px; height: 16px; 
+} 
+.sprite-new_window:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -660px; width: 16px; height: 16px; 
+} 
+.sprite-pen {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -726px; width: 16px; height: 16px; 
+} 
+.sprite-pen:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -726px; width: 16px; height: 16px; 
+} 
+.sprite-pen_alt2 {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -792px; width: 16px; height: 16px; 
+} 
+.sprite-pen_alt2:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -792px; width: 16px; height: 16px; 
+} 
+.sprite-pen_alt_fill {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -858px; width: 16px; height: 16px; 
+} 
+.sprite-pen_alt_fill:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -858px; width: 16px; height: 16px; 
+} 
+.sprite-pen_alt_stroke {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -924px; width: 16px; height: 16px; 
+} 
+.sprite-pen_alt_stroke:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -924px; width: 16px; height: 16px; 
+} 
+.sprite-pin {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -990px; width: 16px; height: 16px; 
+} 
+.sprite-pin:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -990px; width: 16px; height: 16px; 
+} 
+.sprite-play_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1056px; width: 16px; height: 16px; 
+} 
+.sprite-play_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1056px; width: 16px; height: 16px; 
+} 
+.sprite-plus {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1122px; width: 16px; height: 16px; 
+} 
+.sprite-plus:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1122px; width: 16px; height: 16px; 
+} 
+.sprite-plus_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1188px; width: 16px; height: 16px; 
+} 
+.sprite-plus_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1188px; width: 16px; height: 16px; 
+} 
+.sprite-read_more {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1254px; width: 16px; height: 16px; 
+} 
+.sprite-read_more:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1254px; width: 16px; height: 16px; 
+} 
+.sprite-rss {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1320px; width: 16px; height: 16px; 
+} 
+.sprite-rss:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1320px; width: 16px; height: 16px; 
+} 
+.sprite-rss_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1386px; width: 16px; height: 16px; 
+} 
+.sprite-rss_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1386px; width: 16px; height: 16px; 
+} 
+.sprite-share {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1452px; width: 16px; height: 16px; 
+} 
+.sprite-share:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1452px; width: 16px; height: 16px; 
+} 
+.sprite-spin_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1518px; width: 16px; height: 16px; 
+} 
+.sprite-spin_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1518px; width: 16px; height: 16px; 
+} 
+.sprite-star {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1584px; width: 16px; height: 16px; 
+} 
+.sprite-star:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1584px; width: 16px; height: 16px; 
+} 
+.sprite-steering_wheel {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1650px; width: 16px; height: 16px; 
+} 
+.sprite-steering_wheel:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1650px; width: 16px; height: 16px; 
+} 
+.sprite-stop {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1716px; width: 16px; height: 16px; 
+} 
+.sprite-stop:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1716px; width: 16px; height: 16px; 
+} 
+.sprite-sun_fill {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1782px; width: 16px; height: 16px; 
+} 
+.sprite-sun_fill:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1782px; width: 16px; height: 16px; 
+} 
+.sprite-sun_stroke {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1848px; width: 16px; height: 16px; 
+} 
+.sprite-sun_stroke:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1848px; width: 16px; height: 16px; 
+} 
+.sprite-tag_fill {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -132px -1914px; width: 16px; height: 16px; 
+} 
+.sprite-tag_fill:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -132px -1914px; width: 16px; height: 16px; 
+} 
+.sprite-tag_stroke {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -198px 0; width: 16px; height: 16px; 
+} 
+.sprite-tag_stroke:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -198px 0; width: 16px; height: 16px; 
+} 
+.sprite-target {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -198px -66px; width: 16px; height: 16px; 
+} 
+.sprite-target:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -198px -66px; width: 16px; height: 16px; 
+} 
+.sprite-trash_fill {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -198px -132px; width: 16px; height: 16px; 
+} 
+.sprite-trash_fill:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -198px -132px; width: 16px; height: 16px; 
+} 
+.sprite-trash_stroke {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -198px -198px; width: 16px; height: 16px; 
+} 
+.sprite-trash_stroke:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -198px -198px; width: 16px; height: 16px; 
+} 
+.sprite-umbrella {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -198px -264px; width: 16px; height: 16px; 
+} 
+.sprite-umbrella:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -198px -264px; width: 16px; height: 16px; 
+} 
+.sprite-undo {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -198px -330px; width: 16px; height: 16px; 
+} 
+.sprite-undo:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -198px -330px; width: 16px; height: 16px; 
+} 
+.sprite-wrench {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -198px -396px; width: 16px; height: 16px; 
+} 
+.sprite-wrench:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -198px -396px; width: 16px; height: 16px; 
+} 
+.sprite-x_alt {
+  display: inline-block;
+  margin: 5px;
+  background: url(/assets/images/sprite-gray.png) no-repeat top left;
+  background-position: -198px -462px; width: 16px; height: 16px; 
+} 
+.sprite-x_alt:hover  {
+  cursor: pointer;
+  background: url(/assets/images/sprite-black.png) no-repeat top left;
+  background-position: -198px -462px; width: 16px; height: 16px; 
+} 

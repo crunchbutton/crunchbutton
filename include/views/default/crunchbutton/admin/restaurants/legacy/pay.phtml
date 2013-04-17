@@ -1,0 +1,230 @@
+<div class="admin-content-wrapper" style="width: 700px;">
+	<div class="admin-content">
+
+		<? if ($this->restaurant->balanced_id == c::config()->balanced->sharedMerchant) : ?>
+			<b><?=$this->restaurant->name?> is using a fake merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
+		<? elseif ($this->restaurant->balanced_id) : ?>
+			<b><?=$this->restaurant->name?> already has a merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>		
+		<? else : ?>
+			<h1 class="restaurant-item-title">Create a Merchant Account</h1>
+			<br /><br />
+	
+			<form id="restaurant-merchant" onsubmit="return false;">
+				<table class="admin-restaurant-pay-form">
+					<? /*
+					<tr>
+						<td class="label-sub">Merchant Type</td>
+						<td class="content-sub">
+							<select name="type">
+								<option value="person">Person</option>
+								<option value="business">Business</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>taxid (business)</td>
+						<td>
+							<input type="text" name="taxid">
+						</td>
+					</tr>
+					<tr>
+						<td>person name (business)</td>
+						<td>
+							<input type="text" name="person">
+						</td>
+					</tr>
+					*/ ?>
+					<tr>
+						<td>Name</td>
+						<td>
+							<input type="text" name="name">
+						</td>
+					</tr>
+					<tr>
+						<td>Date of Birth (YYYY-MM)</td>
+						<td>
+							<input type="text" name="dob">
+						</td>
+					</tr>
+					<tr>
+						<td>Address</td>
+						<td>
+							<input type="text" name="address">
+						</td>
+					</tr>
+					<tr>
+						<td>ZIP code</td>
+						<td>
+							<input type="text" name="zip">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<br />
+							<div class="action-button action-button-small green restaurant-merchant-button" style="float: left;"><span>Save</span></div>
+							<div class="action-button action-button-small red restaurant-merchant-button-fake" style="float: left; margin-left: 15px"><span>Use fake merchant</span></div>
+						</td>
+					</tr>
+				</table>
+			</form>
+
+		<? endif ; ?>
+		
+		<br /><br />
+		<div class="divider dots"></div>
+		<br />
+		
+		<? if ($this->restaurant->balanced_bank) : ?>
+			<b>This restaurant already has a bank account. <a href="javascript:;" class="restaurant-merchant-button-accountremove">Remove</a></b>
+		<? else : ?>
+			<br />
+			<h1 class="restaurant-item-title">Add <?=$this->restaurant->balanced_bank ? 'New ' : ''?>Bank Info</h1>
+			<br /><br />
+			<form id="restaurant-bank-info" onsubmit="return false;">
+				<table class="admin-restaurant-pay-form">
+					<tr>
+						<td>Routing #</td>
+						<td>
+							<input type="text" name="routing">
+						</td>
+					</tr>
+					<tr>
+						<td>Account #</td>
+						<td>
+							<input type="text" name="account">
+						</td>
+					</tr>
+					<tr>
+						<td>Name on Account</td>
+						<td>
+							<input type="text" name="name">
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">
+							<br />
+							<div class="action-button action-button-small green restaurant-bank-info-button" style="float: left;"><span>Save</span></div>
+						</td>
+					</tr>
+				</table>
+			</form>
+		<? endif ; ?>
+		
+		<br /><br />
+		<div class="divider dots"></div>
+		<br /><br />
+
+
+		<h1 class="restaurant-item-title">Send Payment</h1>
+		<br /><br />
+		
+		
+		
+		
+		<form id="restaurant-pay" onsubmit="return false;">
+			<table class="admin-restaurant-pay-form">
+				<tr>
+					<td>Amount</td>
+					<td>
+						<input type="text" name="amount">
+					</td>
+				</tr>
+				<tr>
+					<td>Note</td>
+					<td>
+						<input type="text" name="note">
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2">
+						<br />
+						<div class="action-button action-button-small green restaurant-pay-button" style="float: left;"><span>Save</span></div>
+					</td>
+				</tr>
+			</table>
+		</form>
+
+		<br /><br />
+		<div class="divider dots"></div>
+		<br /><br />
+
+
+		<h1 class="restaurant-item-title">Recent Payments</h1>
+		<br /><br />
+		<table width="100%" cellpadding="4" cellspacing="4">
+			<tr>
+				<th>Date</th>
+				<th>Amount</th>
+				<th>Note</th>
+			</tr>
+		<? foreach ($this->restaurant->payments() as $payment) : ?>
+			<tr>
+				<td><?=$payment->date?></td>
+				<td>$<?=$payment->amount?></td>
+				<td><?=$payment->note?></td>
+			</tr>
+		<? endforeach; ?>
+		</table>
+	</div>
+</div>
+
+<script>
+	$(function() {
+		$('.restaurant-merchant-button').click(function() {
+			var form = $(this).closest('form');
+			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/merchant', {
+				type: 'person', /* form.find('[name="type"]').val() */
+				name: form.find('[name="name"]').val(),
+				address: form.find('[name="address"]').val(),
+				zip: form.find('[name="zip"]').val(),
+/*				person: form.find('[name="person"]').val(),
+				taxid: form.find('[name="taxid"]').val(), */
+				dob: form.find('[name="dob"]').val()
+			}, function() {
+				location.href = location.href;
+			});
+		});
+		
+		$('.restaurant-merchant-button-fake').click(function() {
+			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/fake-merchant', function() {
+				location.href = location.href;
+			});
+		});
+		
+		$('.restaurant-merchant-button-fakeremove').click(function() {
+			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/fakeremove-merchant', function() {
+				location.href = location.href;
+			});
+		});
+		
+		$('.restaurant-merchant-button-accountremove').click(function() {
+			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/remove-bankinfo', function() {
+				location.href = location.href;
+			});
+		});		
+
+		$('.restaurant-bank-info-button').click(function() {
+			var form = $(this).closest('form');
+			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/bankinfo', {
+				routing: form.find('[name="routing"]').val(),
+				account: form.find('[name="account"]').val(),
+				name: form.find('[name="name"]').val()
+			}, function() {
+				location.href = location.href;
+			});
+		});
+
+		$('.restaurant-pay-button').click(function() {
+			var form = $(this).closest('form');
+			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/credit', {
+				amount: form.find('[name="amount"]').val(),
+				note: form.find('[name="note"]').val()
+			}, function() {
+				location.href = location.href;
+			});
+		});
+	});
+</script>
+
