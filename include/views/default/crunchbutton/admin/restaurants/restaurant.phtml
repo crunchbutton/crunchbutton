@@ -49,7 +49,7 @@
 
 	<div class=admin-item>
 		<div class=admin-item-left>
-			<div class=admin-item-name>Short Description</div>
+			<div class=admin-item-name>Tagline</div>
 			<div class=admin-item-desc></div>
 		</div>
 		<div class=admin-item-right>
@@ -64,16 +64,6 @@
 		</div>
 		<div class=admin-item-right>
 			<input type=input id=restaurant-phone />
-		</div>
-	</div>
-
-	<div class=admin-item>
-		<div class=admin-item-left>
-			<div class=admin-item-name>Email</div>
-			<div class=admin-item-desc>used internally</div>
-		</div>
-		<div class=admin-item-right>
-			<input type=input id=restaurant-email />
 		</div>
 	</div>
 
@@ -364,6 +354,16 @@
 
 	<div class=admin-item>
 		<div class=admin-item-left>
+			<div class=admin-item-name>Email</div>
+			<div class=admin-item-desc>used internally</div>
+		</div>
+		<div class=admin-item-right>
+			<input type=input id=restaurant-email />
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
 			<div class=admin-item-name>General Notes</div>
 			<div class=admin-item-desc></div>
 		</div>
@@ -447,8 +447,8 @@
 			<div class="admin-button-workflow add-menu-dish">add dish</div> &nbsp;
 			<div class="admin-button-workflow delete-menu-category">delete category</div> &nbsp;
 			<div class=hr></div>
-			<div class="move_category_up sprite-arrow_up" title="Move category up"></div>
-			<div class="move_category_down sprite-arrow_down"></div>
+			<div class="move_category_up sprite-arrow_up" title="Move this category up"></div>
+			<div class="move_category_down sprite-arrow_down" title="Move this category down"></div>
 		</div>
 		<div class="admin-item-right restaurant-dishes-container"></div>
 	</div>
@@ -470,10 +470,12 @@
 			<input type=input class=admin-menu-dish-price placeholder=$ />
 		</div>
 		<div class=admin-item-col-small>
-			<div class="admin-button-workflow-fit delete-menu-dish">delete dish</div>
-		</div>
-		<div class=admin-item-col-small>
 			<div class="admin-button-workflow-fit details-button">details</div>
+		</div>
+		<div class="admin-item-col-fit vertical-middle">
+			<div class="move_dish_up sprite-arrow_up" title="Move this dish up"></div>
+			<div class="move_dish_down sprite-arrow_down" title="Move this dish down"></div>
+			<div class="delete-menu-dish sprite-x_alt" title="Delete this dish"></div>
 		</div>
 		<div class="admin-item-right hidden admin-menu-dish-details">
 			Description
@@ -494,7 +496,7 @@
 		<div class=admin-item-col-med-2>
 			<input type=input class=admin-menu-option-group-name placeholder="Option Group Name" />
 		</div>
-		<div class=admin-item-col-fit>
+		<div class=hidden>
 			<select class=admin-menu-option-group-type>
 				<option value=select selected>Choose one</option>
 				<option value=check>Choose many</option>
@@ -529,8 +531,10 @@
 		<div class=admin-item-col-small>
 			<input type=input class=admin-menu-option-price placeholder=$ />
 		</div>
-		<div class=admin-item-col-small>
-			<div class="admin-button-workflow delete-option">delete option</div>
+		<div class="admin-item-col-fit vertical-middle">
+			<div class="move_option_up sprite-arrow_up" title="Move this option up"></div>
+			<div class="move_option_down sprite-arrow_down" title="Move this option down"></div>
+			<div class="delete-option sprite-x_alt" title="Delete this option"></div>
 		</div>
 	</div>
 

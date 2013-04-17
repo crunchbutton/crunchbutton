@@ -11,7 +11,6 @@ class Controller_admin_save extends Crunchbutton_Controller_Rest {
 		}
 		if($this->method() == 'post') {
 			try {
-				$rsp['req'] = $req; // TODO this is not necessary
 				switch($req['obj']) {
 					case 'restaurant':
 						// uncomment here and in client-side requests to use serialization

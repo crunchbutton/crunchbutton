@@ -20,8 +20,47 @@
 var DEBUG = {}
 
 var UTIL = {
+	cssprop : function($e, id) {
+		return parseInt($e.css(id), 10);
+	},
+	slide_swap : function($set1, $set2, duration) {
+    var $set3 = $set2.last().nextAll();
+    
+    var mb_prev = UTIL.cssprop($set1.first().prev(), "margin-bottom");
+    if (isNaN(mb_prev)) mb_prev = 0;
+    var mt_next = UTIL.cssprop($set2.last().next(), "margin-top");
+    if (isNaN(mt_next)) mt_next = 0;
+
+    var mt_1 = UTIL.cssprop($set1.first(), "margin-top");
+    var mb_1 = UTIL.cssprop($set1.last(), "margin-bottom");
+    var mt_2 = UTIL.cssprop($set2.first(), "margin-top");
+    var mb_2 = UTIL.cssprop($set2.last(), "margin-bottom");
+
+    var h1 = $set1.last().offset().top + $set1.last().outerHeight() - $set1.first().offset().top;
+    var h2 = $set2.last().offset().top + $set2.last().outerHeight() - $set2.first().offset().top;
+
+    move1 = h2 + Math.max(mb_2, mt_1) + Math.max(mb_prev, mt_2) - Math.max(mb_prev, mt_1);
+    move2 = -h1 - Math.max(mb_1, mt_2) - Math.max(mb_prev, mt_1) + Math.max(mb_prev, mt_2);
+    move3 = move1 + $set1.first().offset().top + h1 - $set2.first().offset().top - h2 + 
+        Math.max(mb_1,mt_next) - Math.max(mb_2,mt_next);
+        
+    // let's move stuff
+    $set1.css('position', 'relative');
+    $set2.css('position', 'relative');
+    $set3.css('position', 'relative');    
+    $set1.animate({'top': move1}, {duration: duration});
+    $set3.animate({'top': move3}, {duration: duration/2});
+    $set2.animate({'top': move2}, {duration: duration, complete: function() {
+            // rearrange the DOM and restore positioning when we're done moving          
+            $set1.insertAfter($set2.last())
+            $set1.css({'position': 'static', 'top': 0});
+            $set2.css({'position': 'static', 'top': 0});
+            $set3.css({'position': 'static', 'top': 0});
+        }
+    });
+	},
 	toggle_visibility : function(item) {
-		$(item).slideToggle(150);
+		$(item).slideToggle(100);
 	},
 	focus_input : function(dom) {
 		$(dom).find('input[type=input]').first().focus();
@@ -118,8 +157,8 @@ var WIDGET = {
 		//	 copy items between parent items
 		//	 unlink linked items
 
-		$('#add-menu-category').click(function() { self.add_category(); });
-		self.add_category = function() {
+		$('#add-menu-category').click(function() { self.add_category({duration:100}); });
+		self.add_category = function(args) {
 				category_id = UTIL.create_unique_id();
 				category = {
 					_dishes : [],
@@ -133,17 +172,22 @@ var WIDGET = {
 				$(category_dom).removeAttr('id');
 				$(category_dom).addClass('menu-category-' + category.id_category);
 				$(self.dom).find('.admin-menu-categories').first().append(category_dom);
+				duration = args.duration || 0;
+				$(category_dom).hide().show(duration);
 				this.apply_category(category_dom, category);
 				UTIL.focus_input(category_dom);
 		};
 
-		this.add_option = function(option_group_dom, option) {
+		this.add_option = function(option_group_dom, option, args) {
+			args = args || {};
 			option_dom = $('#menu-option-template').clone(true);
 			$(option_dom).removeAttr('id');
 			$(option_dom).addClass('menu-option-' + option.id_option);
 			$(option_group_dom)
 					.find('.admin-menu-options-container').first()
 					.append(option_dom);
+			duration = args.duration || 0;
+			$(option_dom).hide().show(duration);
 			this.apply_option(option_dom, option);
 		};
 		this.apply_option = function(option_dom, option) {
@@ -176,15 +220,29 @@ var WIDGET = {
 			$(option_dom).find('.admin-menu-option-default')
 					.prop('checked', parseInt(option['default']));
 			$(option_dom).find('.delete-option').click(function() {
-				$(option_dom).remove();
+				$(option_dom).slideUp(100, function(){$(option_dom).remove();});
+			});
+
+			$(option_dom).find('.move_option_down').first().click(function() {
+				next_option_dom = $(option_dom).next('.admin-menu-option');
+				if(!next_option_dom.length) return;
+        UTIL.slide_swap($(option_dom), $(next_option_dom), 100);
+			});
+			$(option_dom).find('.move_option_up').first().click(function() {
+				prev_option_dom = $(option_dom).prev('.admin-menu-option');
+				if(!prev_option_dom.length) return;
+        UTIL.slide_swap($(prev_option_dom), $(option_dom), 100);
 			});
 		};
 
-		this.add_option_group = function(dish_dom, option_group) {
+		this.add_option_group = function(dish_dom, option_group, args) {
+			args = args || {};
 			option_group_dom = $('#menu-option-group-template').clone(true);
 			$(option_group_dom).removeAttr('id');
 			$(option_group_dom).addClass('menu-option-group-' + option_group.id_option);
 			$(dish_dom).find('.dish-option-groups-container').first().append(option_group_dom);
+			duration = args.duration || 0;
+			$(option_group_dom).hide().show(duration);
 			this.apply_option_group(option_group_dom, option_group);
 		};
 		this.apply_option_group = function(option_group_dom, option_group) {
@@ -208,7 +266,7 @@ var WIDGET = {
 			}
 			if(!option_group.name) UTIL.focus_input(option_group_dom);
 			$(option_group_dom).find('.delete-option-group').click(function() {
-				option_group_dom.remove();
+				$(option_group_dom).slideUp(100, function(){$(option_group_dom).remove();});
 			});
 			$(option_group_dom).find('.admin-menu-option-group-type').change(function() {
 				option_group_type = $(option_group_dom).find('.admin-menu-option-group-type').val();
@@ -233,7 +291,8 @@ var WIDGET = {
 					prices : [],
 					sort : null,
 					type : 'check',
-				});
+				},
+				{duration:100});
 			});
 		};
 
@@ -243,7 +302,7 @@ var WIDGET = {
 				UTIL.toggle_visibility(dish_dom.find('.admin-menu-dish-details'));
 			});
 			$(dish_dom).find('.delete-menu-dish').first().click(function() {
-				dish_dom.remove();
+				$(dish_dom).slideUp(100, function(){$(dish_dom).remove();});
 			});
 			$(dish_dom).find('.add-option-group').first().click(function() {
 				id_option_group = UTIL.create_unique_id();
@@ -260,7 +319,18 @@ var WIDGET = {
 					prices : [],
 					sort : null,
 					type : 'select',
-				});
+				},
+				{duration:100});
+			});
+			$(dish_dom).find('.move_dish_down').first().click(function() {
+				next_dish_dom = $(dish_dom).next('.admin-menu-dish');
+				if(!next_dish_dom.length) return;
+        UTIL.slide_swap($(dish_dom), $(next_dish_dom), 100);
+			});
+			$(dish_dom).find('.move_dish_up').first().click(function() {
+				prev_dish_dom = $(dish_dom).prev('.admin-menu-dish');
+				if(!prev_dish_dom.length) return;
+        UTIL.slide_swap($(prev_dish_dom), $(dish_dom), 100);
 			});
 
 			// active toggle
@@ -335,11 +405,14 @@ var WIDGET = {
 				this.add_option(option_group_dom, option);
 			}
 		};
-		this.add_dish = function(category_dom, dish) {
+		this.add_dish = function(category_dom, dish, args) {
+			args = args || {};
 			dish_dom = $('#menu-dish-template').clone(true);
 			$(dish_dom).removeAttr('id');
 			$(dish_dom).addClass('menu-dish-' + dish.id_dish);
+			duration = args.duration || 0;
 			$(category_dom).find('.restaurant-dishes-container').first().append(dish_dom);
+			$(dish_dom).hide().show(duration);
 			this.apply_dish(dish_dom, dish);
 		};
 		this.apply_category = function(category_dom, category) {
@@ -353,7 +426,7 @@ var WIDGET = {
 				this.add_dish(category_dom, dish);
 			}
 			$(category_dom).find('.delete-menu-category').first().click(function() {
-				category_dom.remove();
+				$(category_dom).slideUp(100, function(){$(category_dom).remove();});
 			});
 			$(category_dom).find('.add-menu-dish').first().click(function() {
 				dish_id = UTIL.create_unique_id();
@@ -370,13 +443,18 @@ var WIDGET = {
 							top : '0',
 							top_name : null,
 							type : 'dish',
-						});
+						},
+						{duration:100});
 			});
 			$(category_dom).find('.move_category_down').first().click(function() {
-				console.log('asdf');
+				next_category_dom = $(category_dom).next('.admin-menu-category');
+				if(!next_category_dom.length) return;
+				UTIL.slide_swap($(category_dom), $(next_category_dom), 100);
 			});
 			$(category_dom).find('.move_category_up').first().click(function() {
-				console.log('asdf');
+				prev_category_dom = $(category_dom).prev('.admin-menu-category');
+				if(!prev_category_dom.length) return;
+				UTIL.slide_swap($(prev_category_dom), $(category_dom), 100);
 			});
 		};
 		this.apply = function(restaurant) {
@@ -511,11 +589,13 @@ var WIDGET = {
 		else $(self.dom).removeAttr('id');
 		self.notification_widgets = [];
 
-		$('#add-notification').click(function(){self.add_notification();});
+		$('#add-notification').click(function(){self.add_notification({duration:100});});
 
-		self.add_notification = function() {
+		self.add_notification = function(args) {
 			w = new WIDGET.notification();
 			$(self.dom).append(w.dom);
+			duration = args.duration || 0;
+			$(w.dom).hide().show(duration);
 			self.notification_widgets.push(w);
 		},
 		this.val = function(arg) {
@@ -532,7 +612,7 @@ var WIDGET = {
 					id_notification: null,
 					id_restaurant: restaurant.id, 
 					type: 'confirmation',
-					value: 'main phone only', // TODO update this when backend supports it
+					value: 'main phone', // TODO update this when backend supports it
 			};
 			self.notification_widgets = [];
 			for(i in notifications) {
@@ -582,6 +662,9 @@ var WIDGET = {
 			self.id_notification = data.id_notification;
 			$(self.dom).find('select').val(data.type);
 			$(self.dom).find('input[name=val]').val(data.value);
+			if(data.type === 'confirmation') {
+				$(self.dom).find('input[name=val]').prop('disabled', true);
+			}
 		},
 		this.flush = function() {
 			data = {
