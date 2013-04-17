@@ -269,18 +269,31 @@ b {
 }
 
 .restaurant-closed{
-/*	background: #fdf6f1;
+	background: #fdf6f0;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
-	border:2px solid #f34b24;*/
+	border:2px solid #f34b24;
 	color: #666;
 	font-size:13px;
 	line-height: 22px;
-	padding: 10px;
 	text-align: left !important;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.10);
-	margin: 0 auto 35px auto;
+	width: 350px;
 }
+	.restaurant-closed-content{
+		display: block;
+		float: left;
+		margin: 7px 10px 7px 0;
+	}
+	.restaurant-closed-icon{
+		background: url(../images/icon-closed.png);
+		display: block;
+		float: left;
+		height: 31px;
+		margin: 10px;
+		width: 27px;
+	}
+	
 	.restaurant-closed-title{
 		color: #d74924;
 		display: block;
@@ -1148,6 +1161,11 @@ html[xmlns] .clearfix {
 	.config-icon {
 		margin-top: -1px;
 		margin-right: 8px;
+	}
+	.restaurant-closed{
+		background: none;
+		border: none;
+		width: 100%;
 	}
 	.take-out-only{
 		left: 130px;

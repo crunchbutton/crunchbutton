@@ -68,13 +68,17 @@
 
 	<% if( !App.restaurant.open() ) { %>
 	<div class="restaurant-closed">
-		<span class="restaurant-closed-title">
-			<%= restaurant.name %> is currently closed!
-		</span>
-		<span class="restaurant-closed-content">
-			It will be open during the following hours (EDT):	<br/> 
-			<%= App.nl2br( restaurant.closedMessage() ) %>	
-		</span>
+		<div class="restaurant-closed-icon"></div>
+		<div class="restaurant-closed-content">
+			<span class="restaurant-closed-title">
+				<%= restaurant.name %> is currently closed!
+			</span>
+			<span class="restaurant-closed-content">
+				It will be open during the following hours (EDT):	<br/> 
+				<%= App.nl2br( restaurant.closedMessage() ) %>	
+			</span>
+		</div>
+		<div class="divider"></div>
 	</div>
 	<% } %>
 	
@@ -205,13 +209,17 @@
 	
 		<% if( !App.restaurant.open() ) { %>
 		<div class="restaurant-closed">
-			<span class="restaurant-closed-title">
-				<%= restaurant.name %> is currently closed!
-			</span>
-			<span class="restaurant-closed-content">
-				It will be open during the following hours (EDT):	<br/> 
-				<%= App.nl2br( restaurant.closedMessage() ) %>	
-			</span>
+			<div class="restaurant-closed-icon"></div>
+			<div class="restaurant-closed-content">
+				<span class="restaurant-closed-title">
+					<%= restaurant.name %> is currently closed!
+				</span>
+				<span class="restaurant-closed-content">
+					It will be open during the following hours (EDT):	<br/> 
+					<%= App.nl2br( restaurant.closedMessage() ) %>	
+				</span>
+			</div>
+			<div class="divider"></div>
 		</div>
 		<% } %>
 	
