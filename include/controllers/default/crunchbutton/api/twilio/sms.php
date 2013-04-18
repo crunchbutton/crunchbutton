@@ -82,7 +82,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			default:
 				$_SESSION['sms-action'] = 'support-ask';
 
-				Log::debug( [ 'action' => 'returning sms', 'msg' => $msg, 'type' => 'sms' ] );
+				Log::debug( [ 'action' => 'returning sms', 'msg' => $body, 'type' => 'sms' ] );
 
 				if (!$_SESSION['support-order-num']) {
 					$order = Order::q('select * from `order` where phone="'.$phone.'" order by date desc limit 1');
@@ -105,7 +105,6 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$last_cb = 'Last CB: None.';
 				}
 			
-
 				switch ($_SESSION['sms-action']) {
 			
 					case 'support-ask':
@@ -127,6 +126,21 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							$_SESSION['last_cb'] = $last_cb;
 							$message[] = $last_cb;
 						}
+
+						$support = new Crunchbutton_Support;
+						$support->type = Crunchbutton_Support::TYPE_SMS;
+						$support->phone = $phone;
+						$support->message = $body;
+						$support->ip = $_SERVER['REMOTE_ADDR'];
+						$support->id_session_twilio = $tsess->id_session_twilio;
+						$support->date = date('Y-m-d H:i:s');
+						if( $order->id_order ) {
+							$support->id_user = $order->id_user;
+							$support->name = $order->name;
+						} else {
+							$support->name = $phone;
+						}
+						$support->save();
 
 						// Log
 						Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
@@ -206,7 +220,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			$answer->save();
 
 			// Log
-			Log::debug( [ 'action' => 'savind the answer', 'id_support' => $answer->id_support, 'phone' => $phone, 'message' => $message, 'type' => 'sms' ] );
+			Log::debug( [ 'action' => 'saving the answer', 'id_support' => $answer->id_support, 'phone' => $phone, 'message' => $message, 'type' => 'sms' ] );
 
 		}
 
