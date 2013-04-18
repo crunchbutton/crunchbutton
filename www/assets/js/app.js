@@ -817,6 +817,7 @@ App.cart = {
 		if (App.busy.isBusy()) {
 			return;
 		}
+		// App.playAudio( 'get-food-audio' );
 
 		App.busy.makeBusy();
 
@@ -838,8 +839,8 @@ App.cart = {
 			restaurant:	App.restaurant.id,
 			make_default:  $('#default-order-check').is(':checked'),
 			notes: 		$('[name="notes"]').val(),
-			lat: 		   App.loc.pos().lat,
-			lon: 		   App.loc.pos().lon
+			lat: ( App.loc.pos() ) ? App.loc.pos().lat : null,
+			lon: ( App.loc.pos() ) ? App.loc.pos().lon : null
 		};
 
 		if (order.pay_type == 'card') {
@@ -901,8 +902,6 @@ Issue 13: Removed the password for while
 			App.track('OrderError', errors);
 			return;
 		}
-
-
 
 		// if it is a delivery order we need to check the address
 		if( order.delivery_type == 'delivery' ){
@@ -969,61 +968,69 @@ Issue 13: Removed the password for while
 			return;
 		}
 
-		$.ajax({
-			url: App.service + 'order',
-			data: order,
-			dataType: 'json',
-			type: 'POST',
-			complete: function(json) {
+		// Play the crunch audio
+		App.playAudio( 'get-food-audio' );
 
-				json = $.parseJSON(json.responseText);
+		// Timeout to sound ends
+		setTimeout( function(){
 
-				if (json.status == 'false') {
-					var error = '';
-					for (x in json.errors) {
-						error += json.errors[x] + "\n";
-					}
-					App.track('OrderError', json.errors);
-					alert(error);
+			$.ajax({
+				url: App.service + 'order',
+				data: order,
+				dataType: 'json',
+				type: 'POST',
+				complete: function(json) {
 
-				} else {
-					if (json.token) {
-						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
-					}
+					json = $.parseJSON(json.responseText);
 
-					$('.link-orders').show();
+					if (json.status == 'false') {
+						var error = '';
+						for (x in json.errors) {
+							error += json.errors[x] + "\n";
+						}
+						App.track('OrderError', json.errors);
+						alert(error);
 
-					order.cardChanged = false;
-					App.justCompleted = true;
+					} else {
+						if (json.token) {
+							$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
+						}
 
-					var totalItems = 0;
+						$('.link-orders').show();
 
-					for (var x in App.cart.items) {
-						totalItems++;
-					}
+						order.cardChanged = false;
+						App.justCompleted = true;
 
-					$.getJSON('/api/config', App.processConfig);
-					App.cache('Order',json.uuid,function() {
-						App.track('Ordered', {
-							'total':this.final_price,
-							'subtotal':this.price,
-							'tip':this.tip,
-							'restaurant': App.restaurant.name,
-							'paytype': this.pay_type,
-							'ordertype': this.order_type,
-							'user': this.user,
-							'items': totalItems
+						var totalItems = 0;
+
+						for (var x in App.cart.items) {
+							totalItems++;
+						}
+
+						$.getJSON('/api/config', App.processConfig);
+						App.cache('Order',json.uuid,function() {
+							App.track('Ordered', {
+								'total':this.final_price,
+								'subtotal':this.price,
+								'tip':this.tip,
+								'restaurant': App.restaurant.name,
+								'paytype': this.pay_type,
+								'ordertype': this.order_type,
+								'user': this.user,
+								'items': totalItems
+							});
+							
+							App.order.cardChanged = false;
+							delete App.order.tipHasChanged;
+							var loc = '/order/' + this.uuid;
+							History.pushState({},loc,loc);
 						});
-						
-						App.order.cardChanged = false;
-						delete App.order.tipHasChanged;
-						var loc = '/order/' + this.uuid;
-						History.pushState({},loc,loc);
-					});
+					}
+					App.busy.unBusy();
 				}
-				App.busy.unBusy();
-			}
-		});
+			});
+		}, 1500 );
+
 	}, // end App.cart.submit()
 
 	subtotal: function() {
@@ -1330,15 +1337,13 @@ App.detectCardType = function(){
 		$( '.payment-card' ).removeClass( 'to-color' );
 		$( '.card-' + type ).removeClass( 'to-grey' );
 		$( '.card-' + type ).addClass( 'to-color' );
+		$('.to-color').animate( { 'background-position-x': '0'}, 100 );
+		$('.to-grey').animate( { 'background-position-x': '-40px'}, 100 );
 	} else {
-		$( '.payment-card' ).addClass( 'to-color' );
+		$( '.payment-card' ).animate( { 'background-position-x': '0'}, 100 );
 	}
-	$('.to-grey').animate( { 'background-position-x': '-40px'}, 100 );
-	$('.to-color').animate( { 'background-position-x': '0'}, 100 );
 }
-/*
 
-*/
 App.trigger = {
 	delivery: function() {
 		$('.delivery-toggle-takeout').removeClass('toggle-active');
@@ -1916,6 +1921,10 @@ App.message.show = function( title, message ) {
 			close: function( event, ui ) { App.modal.shield.close(); },
 		});
 
+}
+
+App.playAudio = function( audio ){
+	$( '#' + audio ).get(0).play();
 }
 
 App.registerLocationsCookies = function() {
