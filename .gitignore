@@ -6,6 +6,8 @@
 # filetypes
 *.bin
 *.bz2
+*.swo
+*.swp
 *.mov
 *.mp4
 *.m4v
@@ -13,6 +15,7 @@
 *.psd
 *.sql
 *.zip
+*.DS_Store
 *~
 
 # config and specific files
