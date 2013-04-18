@@ -1322,17 +1322,23 @@ App.detectCardType = function(){
 	else if ( /^3[47]/.test( cardvalue ) ){
 		type = "amex";
 	}
-	else if ( /^6/.test( cardvalue ) ){
+	else if ( /^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)/.test( cardvalue ) ){
 		type = "discover";
 	}
 	if( type ){
-		$( '.payment-card' ).css( 'backgroundPosition', '-40px 0' );
-		$( '.card-' + type ).css( 'backgroundPosition', '0 0' );
+		$( '.payment-card' ).addClass( 'to-grey' );
+		$( '.payment-card' ).removeClass( 'to-color' );
+		$( '.card-' + type ).removeClass( 'to-grey' );
+		$( '.card-' + type ).addClass( 'to-color' );
 	} else {
-		$( '.payment-card' ).css( 'backgroundPosition', '0 0' );
+		$( '.payment-card' ).addClass( 'to-color' );
 	}
+	$('.to-grey').animate( { 'background-position-x': '-40px'}, 100 );
+	$('.to-color').animate( { 'background-position-x': '0'}, 100 );
 }
+/*
 
+*/
 App.trigger = {
 	delivery: function() {
 		$('.delivery-toggle-takeout').removeClass('toggle-active');
