@@ -328,7 +328,15 @@ App.AB = {
 				name: 'restaurant-page-image',
 				disabled: true
 			}
-		]
+		],
+		dollarSign: [
+			{
+				name : 'show'
+			},
+			{
+				name : 'hide'
+			}
+		],
 	},
 	init: function() {
 		if (!App.config.ab) {
@@ -478,7 +486,7 @@ App.cart = {
 	 */
 	updateTotal: function() {
 		var
-			totalText  = '$' + this.charged(),
+			totalText  = ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + this.charged(),
 			tipText	= '',
 			feesText   = '',
 			totalItems = 0,
@@ -516,7 +524,7 @@ App.cart = {
 		if( wasTipChanged ){
 			$('[name="pay-tip"]').val( App.order.tip );
 			// Forces the recalculation of total because the tip was changed.
-			totalText  = '$' + this.charged();
+			totalText  = ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + this.charged();
 		}
 
 		if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
@@ -543,24 +551,24 @@ App.cart = {
 
 		var extraCharges = App.cart.extraChargesText(breakdown);
 		if (extraCharges) {
-			$('.cart-breakdownDescription').html('$' + this.subtotal().toFixed(2) + ' (+'+ extraCharges +')' );
+			$('.cart-breakdownDescription').html( ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + this.subtotal().toFixed(2) + ' (+'+ extraCharges +')' );
 		} else {
-			$('.cart-breakdownDescription').html('$' + this.subtotal().toFixed(2));
+			$('.cart-breakdownDescription').html( ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + this.subtotal().toFixed(2));
 		}
 
 		if( App.order.pay_type == 'card' && credit > 0 ){
 			var creditLeft = '';
 			if( this.total() < credit ){
-				var creditLeft = '<span class="gift-left"> - You\'ll still have $' + App.ceil( ( credit - this.total() ) ).toFixed( 2 ) + ' gift card left </span>';
+				var creditLeft = '<span class="gift-left"> - You\'ll still have ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( ( credit - this.total() ) ).toFixed( 2 ) + ' gift card left </span>';
 				credit = this.total();
 			} 
-			$('.cart-gift').html( '&nbsp;(- $' + App.ceil( credit ).toFixed( 2 ) + ' credit ' + creditLeft + ') ' );
+			$('.cart-gift').html( '&nbsp;(- ' + ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' credit ' + creditLeft + ') ' );
 		} else {
 			$('.cart-gift').html( '' );
 		}
 
 		if( App.order.pay_type == 'cash' && credit > 0 ){
-			totalText += '<span class="giftcard-message">Hey! Pay with a card to make use of your $' + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>';
+			totalText += '<span class="giftcard-message">Hey! Pay with a card to make use of your ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>';
 		}
 
 		$('.cart-total').html( totalText );
@@ -636,7 +644,7 @@ App.cart = {
 	},
 
 	customizeItemPrice: function(price) {
-		return price != '0.00' ? '&nbsp;($' + price.toFixed(2) + ')' : '';
+		return price != '0.00' ? '&nbsp;(' + ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + price.toFixed(2) + ')' : '';
 	},
 
 	customize: function(item) {
@@ -692,7 +700,7 @@ App.cart = {
 
 						if (opt[i].id_option_parent == opt[x].id_option) {
 
-							var option = $('<option value="' + opt[i].id_option + '">' + opt[i].name + (opt[i].description || '') + (opt[i].price != '0.00' || opt[x].price_linked == '1' ? (' ($' + (parseFloat(opt[i].price) + parseFloat(obj.price)).toFixed(2) + ')') : '') + '</option>');
+							var option = $('<option value="' + opt[i].id_option + '">' + opt[i].name + (opt[i].description || '') + (opt[i].price != '0.00' || opt[x].price_linked == '1' ? (' (' + ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + (parseFloat(opt[i].price) + parseFloat(obj.price)).toFixed(2) + ')') : '') + '</option>');
 							if ($.inArray(opt[i].id_option, cartitem.options) !== -1) {
 								option.attr('selected','selected');
 							}
@@ -768,17 +776,17 @@ App.cart = {
 		var elements = [];
 		var text 	= '';
 		if (breakdown.delivery) {
-			elements.push('$' + breakdown.delivery.toFixed(2) + ' delivery');
+			elements.push(( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + breakdown.delivery.toFixed(2) + ' delivery');
 		}
 
 		if (breakdown.fee) {
-			elements.push('$' + breakdown.fee.toFixed(2) + ' fee');
+			elements.push(( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + breakdown.fee.toFixed(2) + ' fee');
 		}
 		if (breakdown.taxes) {
-			elements.push('$' + breakdown.taxes.toFixed(2) + ' taxes');
+			elements.push(( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + breakdown.taxes.toFixed(2) + ' taxes');
 		}
 		if (breakdown.tip && breakdown.tip > 0) {
-			elements.push('$' + breakdown.tip + ' tip');
+			elements.push(( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + breakdown.tip + ' tip');
 		}
 
 		if (elements.length) {
@@ -1278,7 +1286,7 @@ App.updateAutotipValue = function() {
 		autotipValue = Math.ceil(4*(subtotal * 0.107 + 0.85)) / 4;
 	}
 	$('[name="pay-autotip-value"]').val(autotipValue);
-	var autotipText = autotipValue ? ' ($' + autotipValue + ')' : '';
+	var autotipText = autotipValue ? ' (' + ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + autotipValue + ')' : '';
 	$('[name=pay-tip] [value=autotip]').html('Autotip' + autotipText);
 };
 
