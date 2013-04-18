@@ -17,7 +17,7 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 					$tsess->save();
 
 					$support = new Crunchbutton_Support;
-					$support->type = 'sms';
+					$support->type = Crunchbutton_Support::TYPE_BOX_NEED_HELP;
 					$support->name = $this->request()['name'];
 					$support->phone = $this->request()['phone'];
 					$support->message = $this->request()['message'];
