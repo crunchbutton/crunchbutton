@@ -9,7 +9,7 @@
 </div>
 
 <div class="restaurant-gift">
-	<h1>You have a $<span class="restaurant-gift-value"></span> gift card!</h1>
+	<h1>You have a <%= (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '' %><span class="restaurant-gift-value"></span> gift card!</h1>
 </div>
 <% if (restaurant.message) { %>
 	<div class="restaurant-message">
@@ -37,7 +37,7 @@
 		<div class="restaurant-item-title text-your-order">Your Order <%= App.suggestion.tooltipContainer( 'mobile' ) %></div>
 		<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
 		<div class="divider"></div>
-		<div class="delivery-minimum-error">Add $<span class="delivery-min-diff"><%= parseFloat(restaurant.delivery_min -  App.cart.total()).toFixed(2) %></span> from menu to meet delivery minimum.</div>
+		<div class="delivery-minimum-error">Add <%= (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '' %><span class="delivery-min-diff"><%= parseFloat(restaurant.delivery_min -  App.cart.total()).toFixed(2) %></span> from menu to meet delivery minimum.</div>
 		<div class="cart-items-content"></div>
 		
 		<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for <%= restaurant.name %></label></div>
@@ -51,7 +51,7 @@
 			<div class="restaurant-item-title"><%= category.name %><%= (category.loc == '1' && community && community.name) ? (' at ' + community_name) : '' %></div>
 			<ul class="resturant-dishes resturant-dish-container" date-id_category="<%= category.id_category %>">
 				<% _.each(category.dishes(), function(dish) { %>
-					<li data-id_dish="<%= dish.id_dish %>" class="dish-item"><span class="dish-name"><%= dish.name %></span><span class="dish-price">($<%= dish.price %>)</span></li>
+					<li data-id_dish="<%= dish.id_dish %>" class="dish-item"><span class="dish-name"><%= dish.name %></span><span class="dish-price">(<%= (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '' %><%= dish.price %>)</span></li>
 				<% }); %>
 			</ul>
 		<% }); %>
