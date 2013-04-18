@@ -6,502 +6,547 @@
  * @category view
  */
 
-/* @var $this Cana_View */
-/* @var $this->restaurantCommunity Crunchbutton_Community */
-
-/**
- * View helper to preselect the <select> community form input
- *
- * @param Crunchbutton_Community $current Which community is the current restaurant linked to
- * @param Crunchbutton_Community $tested  Which community we are listing in the <select>
- *
- * @return string
- */
-function _selectedCommunity(Crunchbutton_Community $current, Crunchbutton_Community $tested) {
-	$selected = '';
-	if ($current->id_community == $tested->id_community) {
-		$selected = ' selected="selected" ';
-	}
-	return $selected;
-}
-
 ?>
 
-<script>
 
-$(function(){
-	$('body').on('mouseenter', '.jqui-button', function(){
-		$(this).removeClass('ui-state-default');
-		$(this).addClass   ('ui-state-hover');
-	});
-	$('body').on('mouseleave', '.jqui-button', function(){
-		$(this).addClass   ('ui-state-default');
-		$(this).removeClass('ui-state-hover');
-	});
-});
+<div id=admin-body-content>
 
-</script>
-
-<style>
-/**
- * sets the page one column only
- */
-.admin-content-wrapper { width: 970px;}
-.admin-restaurant-form { width: 100%; }
-.check-wrap            { width: 650px;}
-
-/**
- * Link buttons without underline
- */
-.action-button, #sub-tasks > a {
-	text-decoration: none;
-}
-
-/**
- * The buttons at the top
- */
-#sub-tasks > a {
-	display: inline-block;
-	width:   200px;
-}
-
-/* adds/removes spacing where needed for the dishes */
-.ui-accordion .ui-accordion-content { padding: 0.4em;}
-.ui-accordion .ui-accordion-header  { padding: 0.4em; padding-left: 2.2em; }
-
-
-.fixed { position: fixed;}
-.clear { clear: both;}
-
-input.notification {width: 400px;}
-
-
-.labeled-fields  label {
-	float:         none;
-	display:       block;
-	margin-bottom: 5px;
-}
-
-.labeled-fields  label span {
-	display: inline-block;
-	width:   115px;
-}
-.labeled-fields .clear + label { margin-top: 5px; }
-
-#categories .button-delete {
-	cursor:  pointer;
-	float:   right;
-	margin:  2px;
-	padding: 4px 0;
-}
-
-</style>
-
-<div class="admin-id_restaurant" data-id_restaurant=""></div>
-<div class="admin-content-wrapper">
-	<?=Crunchbutton_Session::flashWidget()?>
-	<div class="admin-content">
-		<h1 class="restaurant-item-title">Restaurant Information</h1>
-		<br /><br />
-		<div id="sub-tasks">
-			<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/pay">
-				<div class="admin-food-item admin-restaurant-button">
-					<span class="food-name">Payments &amp; Settings</span>
-				</div>
-			</a>
-			<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/fax">
-				<div class="admin-food-item admin-restaurant-button">
-					<span class="food-name">Send a Fax</span>
-				</div>
-			</a>
-			<a href="/admin/restaurants/<?=$this->restaurant->id_restaurant?>/image">
-				<div class="admin-food-item admin-restaurant-button">
-					<span class="food-name">Upload image</span>
-				</div>
-			</a>
+	<div id=admin-top-content-bar>
+		<div class=admin-jump-list>
+			Jump to: 
+			<a href=#vitals>vitals</a> 
+			<a href=#menu>menu</a> 
+			<a href=#notes>notes</a> 
 		</div>
-
-		<table class="admin-restaurant-form">
-			<tr>
-				<td class="label-primary">Restaurant Name:</td>
-				<td class="content-primary"><input type="text" name="name" value="" class="input-primary dataset-restaurant"></td>
-			</tr>
-			<tr>
-				<td class="label-primary">Phone Number:</td>
-				<td class="content-primary"><input type="text" name="phone" value="" class="input-primary dataset-restaurant"></td>
-			</tr>
-
-			<tr>
-				<td class="label-primary">Order Notification Methods:</td>
-				<td class="content-primary" id="notifications">
-					<div class="check-wrap">
-						<div class="check">Text Message</div>
-						<div class="check-content sms"></div>
-					</div>
-					<div class="check-wrap">
-						<div class="check">Email</div>
-						<div class="check-content email"></div>
-					</div>
-					<div class="check-wrap">
-						<div class="check">Phone Call</div>
-						<div class="check-content phone"></div>
-					</div>
-					<div class="check-wrap">
-						<div class="check">URL</div>
-						<div class="check-content url"></div>
-					</div>
-					<div class="check-wrap">
-						<div class="check">Fax</div>
-						<div class="check-content fax"></div>
-					</div>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="label-primary">Food Items:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check"><input type="checkbox" value="0" name="dish_check" class="bind-a-check"><label>No, I'll add some items later.</label></div>
-					</div>
-					<div class="check-wrap">
-						<div class="check"><input type="checkbox" value="1" name="dish_check" class="bind-a-check"><label>Our best items:</label></div>
-						<div class="check-content admin-restaurant-dishes">
-							<div class="admin-restaurant-content"></div>
-							<div class="admin-restaurant-dishes-controls">
-								<div class="control-link">
-									<a href="#" class="control-link-add-category">
-										<div class="control-icon-plus control-icon"></div>
-										<label class="control-label">Add another dish category?</label>
-									</a>
-								</div>
-								<div class="control-link">
-									<a href="#" class="control-link-add-dish">
-										<div class="control-icon-plus control-icon"></div>
-										<label class="control-label">Add another dish?</label>
-									</a>
-								</div>
-							</div>
-							<div class="divider"></div>
-						</div>
-					</div>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="label-primary">Open Hours:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check"><input type="checkbox" value="0" name="hours_check" class="bind-a-check dataset-restaurant"><label>We're always open!</label></div>
-					</div>
-					<div class="check-wrap">
-						<div class="check"><input type="checkbox" value="1" name="hours_check" class="bind-a-check dataset-restaurant"><label>We're open during these hours</label></div>
-						<div class="check-content admin-restaurant-hours admin-restaurant-content"></div>
-					</div>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="label-primary">Delivery Options:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check"><input type="checkbox" name="delivery" value="0" class="bind-a-check dataset-restaurant"><label>We do not offer delivery</label></div>
-					</div>
-					<div class="check-wrap">
-						<div class="check"><input type="checkbox" name="delivery" value="1" class="bind-a-check dataset-restaurant"><label>Yes! We deliver!</label></div>
-						<div class="check-content">
-							<table class="admin-restaurant-form-sub">
-								<tr>
-									<td class="label-sub">Average Delivery Time:</td>
-									<td class="content-sub"><input name="delivery_estimated_time" min="0" class="form-number dataset-restaurant"> minutes</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Delivery Radius:</td>
-									<td class="content-sub"><input name="delivery_radius" min="0" class="form-number dataset-restaurant" step="any"> miles</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Delivery Fee?</td>
-									<td class="content-sub">
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="delivery_fee_check" value="0" class="bind-a-check-values"><label>No</label></div>
-										</div>
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="delivery_fee_check" value="1" class="bind-a-check-values"><label>Yes</label></div>
-											<div class="check-content">
-												$ <input name="delivery_fee" step="any" min="0" class="form-number dataset-restaurant">
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Minimum order for delivery?</td>
-									<td class="content-sub">
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="delivery_min_check" value="0" class="bind-a-check-values"><label>No</label></div>
-										</div>
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="delivery_min_check" value="1" class="bind-a-check-values"><label>Yes</label></div>
-											<div class="check-content">
-												$ <input name="delivery_min" step="any" min="0" class="form-number dataset-restaurant">
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="label-primary">More Information:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table class="admin-restaurant-form-sub">
-								<tr>
-									<td class="label-sub">Message:</td>
-									<td class="content-sub"><textarea class="form-sub dataset-restaurant" name="message"></textarea><br/>Some information you want to show at the restaurant's page:</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Average Pickup Time:</td>
-									<td class="content-sub"><input name="pickup_estimated_time" min="0" class="form-number dataset-restaurant"> minutes</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Restaurant Address:</td>
-									<td class="content-sub"><textarea class="form-sub dataset-restaurant" name="address"></textarea></td>
-								</tr>
-								<tr>
-									<td class="label-sub">Contact Email:</td>
-									<td class="content-sub"><input type="text" class="form-sub dataset-restaurant" name="email"></td>
-								</tr>
-								<tr>
-									<td class="label-sub">Manager/Owner can be reached at:</td>
-									<td class="content-sub"><textarea class="form-sub dataset-restaurant" name="notes_owner"></textarea></td>
-								</tr>
-								<tr>
-									<td class="label-sub">Include in a community?</td>
-									<td class="content-sub">
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="id_community_check" value="0" class="bind-a-check-values"><label>No</label></div>
-										</div>
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="id_community_check" value="1" class="bind-a-check-values"><label>Yes</label></div>
-											<div class="check-content">
-												<select name="id_community" class="dataset-restaurant">
-													<option value="0">[remove communites]</option>
-													<? foreach ($this->communities as $community) : ?>
-														<? /* @var $community Crunchbutton_Community */ ?>
-														<option value="<?=$community->id_community?>"
-														<?=($this->restaurantCommunity) ? _selectedCommunity($this->restaurantCommunity, $community) : ''?>
-														>
-															<?=$community->name?>
-														</option>
-													<? endforeach ; ?>
-												</select>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="label-primary">Admin shit:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table class="admin-restaurant-form-sub">
-								<tr>
-									<td class="label-sub">Permalink:</td>
-									<td class="content-sub"><input type="text" name="permalink" value="" class="form-sub dataset-restaurant"></td>
-								</tr>
-								<tr>
-									<td class="label-sub">Timezone:</td>
-									<td class="content-sub"><input type="text" name="timezone" value="America/New_York" class="form-sub dataset-restaurant"></td>
-								</tr>
-								<tr>
-									<td class="label-sub">Location:</td>
-									<td class="content-sub">
-										<table class="admin-restaurant-form-sub">
-											<tr>
-												<td class="labcon-sub-sub">Lat:</td>
-												<td class="labcon-sub-sub"><input name="loc_lat" value="41.2" step="any" class="form-number dataset-restaurant"></td>
-											</tr>
-											<tr>
-												<td class="labcon-sub-sub">Long:</td>
-												<td class="labcon-sub-sub"><input name="loc_long" value="-70" step="any" class="form-number dataset-restaurant"></td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Sort Order:</td>
-									<td class="content-sub"><input name="sort" value="" step="any" min="0" class="form-number dataset-restaurant"></td>
-								</tr>
-								<tr>
-									<td class="label-sub">Tax:</td>
-									<td class="content-sub"><input name="tax" value="" step="any" min="0" class="form-number dataset-restaurant"> %</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Deliv Min Applies to:</td>
-									<td class="content-sub">
-										<select name="delivery_min_amt" class="dataset-restaurant">
-											<option value="subtotal">Subtotal</option>
-											<option value="total">Total</option>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Require confirmation?</td>
-									<td class="content-sub">
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="confirmation" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
-										</div>
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="confirmation" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Customer receipt on fax?</td>
-									<td class="content-sub">
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="customer_receipt" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
-										</div>
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="customer_receipt" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Restaurant Fee?</td>
-									<td class="content-sub">
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="fee_restaurant_check" value="0" class="dataset-restaurant bind-a-check-values"><label>No</label></div>
-										</div>
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="fee_restaurant_check" value="1" class="dataset-restaurant bind-a-check-values"><label>Yes</label></div>
-											<div class="check-content">
-												<input name="fee_restaurant" step="any" min="0" class="form-number dataset-restaurant change-a-check"> %
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Customer Fee?</td>
-									<td class="content-sub">
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="fee_customer_check" value="0" class="dataset-restaurant bind-a-check-values"><label>No</label></div>
-										</div>
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="fee_customer_check" value="1" class="dataset-restaurant bind-a-check-values"><label>Yes</label></div>
-											<div class="check-content">
-												<input name="fee_customer" step="any" min="0" class="form-number dataset-restaurant change-a-check"> %
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Accepts Credit Cards?</td>
-									<td class="content-sub">
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="credit" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
-										</div>
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="credit" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Accepts Cash?</td>
-									<td class="content-sub">
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="cash" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
-										</div>
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="cash" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Active?</td>
-									<td class="content-sub">
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="active" value="0" class="dataset-restaurant bind-a-check"><label>No</label></div>
-										</div>
-										<div class="check-wrap">
-											<div class="check"><input type="checkbox" name="active" value="1" class="dataset-restaurant bind-a-check"><label>Yes</label></div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td class="label-sub">Notes:</td>
-									<td class="content-sub"><textarea class="form-sub dataset-restaurant form-sub-big" name="notes"></textarea></td>
-								</tr>
-								<tr>
-									<td class="label-sub">Todo:</td>
-									<td class="content-sub"><textarea class="form-sub dataset-restaurant form-sub-big" name="notes_todo"></textarea></td>
-								</tr>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-		</table>
-		<div class="hovering-container">
-			<div class="action-button action-button-small red admin-restaurant-revert">
-				<span>Revert</span>
-			</div>
-			<div class="action-button action-button-small green admin-restaurant-save" style="margin-right: 10px;">
-				<span>Save Restaurant</span>
-			</div>
-			<div class="clear"></div>
+		<div id=admin-top-button-group>
+			<div id=legacy-button class=admin-button>Legacy View</div>
+			<div id=revert-button class=admin-button>Revert</div>
 		</div>
 	</div>
 
 
-</div>
+	<div class=admin-h3>Basic Information</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Name</div>
+			<div class=admin-item-desc>for display</div>
+		</div>
+		<div class=admin-item-right>
+			<input type=input id=restaurant-name />
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Permalink</div>
+			<div class=admin-item-desc>crunchbutton.com/food-delivery/&lt;permalink></div>
+		</div>
+		<div class=admin-item-right>
+			<input type=input id=restaurant-permalink />
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Tagline</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<input type=input id=restaurant-short-description />
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Phone Number</div>
+			<div class=admin-item-desc>publicly listed</div>
+		</div>
+		<div class=admin-item-right>
+			<input type=input id=restaurant-phone />
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Address</div>
+			<div class=admin-item-desc>for delivery radius and pickup</div>
+		</div>
+		<div class=admin-item-right>
+			<textarea id=restaurant-address></textarea>
+			<div class=admin-item-col-med>
+				Latitude
+				<input type=input id=restaurant-lat />
+			</div>
+			<div class=admin-item-col-med>
+				Longitude
+				<input type=input id=restaurant-lng />
+			</div>
+			<div class=admin-item-col-large>
+				<div class=admin-map id=restaurant-map></div>
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Active</div>
+			<div class=admin-item-desc>is it listed on the live site</div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small id=restaurant-active-container></div>
+		</div>
+	</div>
+
+	<div class=admin-item></div><!-- for the border line -->
 
 
 
-<div class="divider"></div>
+	<a name=vitals></a>
+	<div class=admin-h3>Vitals</div>
 
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Notifications</div>
+			<div class=admin-item-desc>what happens when an order goes through</div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-x-wide id=notifications-container></div>
+			<div class=admin-item-col-med>
+				<div class=admin-button-workflow id=add-notification>add another method</div>
+			</div>
+		</div>
+	</div>
 
-<div id="dialog-option-group" title="Create Option Group" style="display: none;">
-	<table class="admin-restaurant-form-sub">
-		<tr>
-			<td colspan="2" class="label-sub"><input type="text" name="admin-option-name" placeholder="Name" class="form-sub"></td>
-		</tr>
-		<tr>
-			<td class="label-sub">Display type:</td>
-			<td class="content-sub">
-				<select name="admin-option-type">
-					<option value="check">Checkboxes</option>
-					<option value="select">Select</option>
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Timezone</div>
+			<div class=admin-item-desc>where the restaurant is</div>
+		</div>
+		<div class=admin-item-right>
+			<select id=restaurant-timezone>
+				<option value=America/New_York>Eastern</option>
+				<option value=America/Chicago>Central</option>
+				<option value=America/Denver>Mountain</option>
+				<option value=America/Los_Angeles>Pacific</option>
+			</select>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Hours</div>
+			<div class=admin-item-desc>restaurant's actual open hours</div>
+			<div class=admin-item-desc>e.g. 12PM - 2:30AM</div>
+		</div>
+		<div class=admin-item-right id=restaurant-hours>
+			<div class=admin-item-right-row>
+				<div class=admin-item-col-wide>
+					<input type=input id=restaurant-hours-mon />
+				</div>
+				<div class=admin-item-col-small> Monday </div>
+				<div class=admin-item-col-med> </div>
+			</div>
+			<div class=admin-item-right-row>
+				<div class=admin-item-col-wide>
+					<input type=input id=restaurant-hours-tue />
+				</div>
+				<div class=admin-item-col-small> Tuesday</div>
+				<div class=admin-item-col-med>
+					<div class=admin-button-workflow id=copy-tue-from-mon>
+						copy from Monday
+					</div>
+				</div>
+			</div>
+			<div class=admin-item-right-row>
+				<div class=admin-item-col-wide>
+					<input type=input id=restaurant-hours-wed />
+				</div>
+				<div class=admin-item-col-small> Wednesday</div>
+				<div class=admin-item-col-med>
+					<div class=admin-button-workflow id=copy-wed-from-tue>
+						copy from Tuesday
+					</div>
+				</div>
+			</div>
+			<div class=admin-item-right-row>
+				<div class=admin-item-col-wide>
+					<input type=input id=restaurant-hours-thu />
+				</div>
+				<div class=admin-item-col-small> Thursday</div>
+				<div class=admin-item-col-med>
+					<div class=admin-button-workflow id=copy-thu-from-wed>
+						copy from Wednesday
+					</div>
+				</div>
+			</div>
+			<div class=admin-item-right-row>
+				<div class=admin-item-col-wide>
+					<input type=input id=restaurant-hours-fri />
+				</div>
+				<div class=admin-item-col-small> Friday</div>
+				<div class=admin-item-col-med>
+					<div class=admin-button-workflow id=copy-fri-from-thu>
+						copy from Thursday
+					</div>
+				</div>
+			</div>
+			<div class=admin-item-right-row>
+				<div class=admin-item-col-wide>
+					<input type=input id=restaurant-hours-sat />
+				</div>
+				<div class=admin-item-col-small> Saturday</div>
+				<div class=admin-item-col-med>
+					<div class=admin-button-workflow id=copy-sat-from-fri>
+						copy from Friday
+					</div>
+				</div>
+			</div>
+			<div class=admin-item-right-row>
+				<div class=admin-item-col-wide>
+					<input type=input id=restaurant-hours-sun />
+				</div>
+				<div class=admin-item-col-small> Sunday</div>
+				<div class=admin-item-col-med>
+					<div class=admin-button-workflow id=copy-sun-from-sat>
+						copy from Saturday
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Transactions</div>
+			<div class=admin-item-desc>allowed methods</div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small>
+				Cash
+				<div id=restaurant-cash-container></div>
+			</div>
+			<div class=admin-item-col-small>
+				Credit
+				<div id=restaurant-credit-container></div>
+			</div>
+			<div class=admin-item-col-small>
+				Delivery
+				<div id=restaurant-delivery-container></div>
+			</div>
+			<div class=admin-item-col-small>
+				Takeout
+				<div id=restaurant-takeout-container></div>
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Delivery Options</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small>
+				Delivery minimum ($)
+				<input type=input id=restaurant-delivery-min />
+			</div>
+			<div class=admin-item-col-small>
+				Based on
+				<select id=restaurant-delivery-min-amt>
+					<option value=subtotal>Subtotal</option>
+					<option value=total>Total</option>
 				</select>
-			</td>
-		</tr>
-		<tr>
-			<td class="label-sub">Modifies the base price?</td>
-			<td class="content-sub">
-				<input type="checkbox" name="admin-option-price">
-			</td>
-		</tr>
-	</table>
+			</div>
+			<div class=admin-item-col-small>
+				Delivery fee ($)
+				<input type=input id=restaurant-delivery-fee />
+			</div>
+			<div class=admin-item-col-small>
+				Radius (miles)
+				<input type=input id=restaurant-delivery-radius />
+			</div>
+			<div class=admin-item-col-small>
+				Est. time (minutes)
+				<input type=input id=restaurant-delivery-estimated-time />
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Takeout Options</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small>
+				Est. time (minutes)
+				<input type=input id=restaurant-pickup-estimated-time />
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Taxes and Fees</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small>
+				Restaurant fee (%)
+				<input type=input id=restaurant-fee-restaurant />
+			</div>
+			<div class=admin-item-col-small>
+				Customer fee (%)
+				<input type=input id=restaurant-fee-customer />
+			</div>
+			<div class=admin-item-col-small>
+				Tax charged (%)
+				<input type=input id=restaurant-tax />
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Sorting</div>
+			<div class=admin-item-desc>
+				see <a href='https://github.com/crunchbutton/crunchbutton/issues/787#issuecomment-15988987' target='_blank'>here</a> for explanation
+			</div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small>
+				Sort weight adjustment
+				<input type=input id=restaurant-weight-adj />
+			</div>
+		</div>
+	</div>
+
+	<div class=admin-item></div><!-- for the border line -->
+
+
+	<a name=menu></a>
+	<div class=admin-h3>Menu</div>
+
+	<div id=restaurant-menu-container>
+	</div>
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-button-workflow id=add-menu-category>add another category</div>
+		</div>
+	</div>
+	<!--
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Full Menu</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right id=restaurant-menu-container>
+		</div>
+	</div>
+	-->
+
+	<div class=admin-item></div><!-- for the border line -->
+
+
+	<a name=notes></a>
+	<div class=admin-h3>Notes</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Email</div>
+			<div class=admin-item-desc>used internally</div>
+		</div>
+		<div class=admin-item-right>
+			<input type=input id=restaurant-email />
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>General Notes</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<textarea id=restaurant-notes></textarea>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>TODO</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<textarea id=restaurant-notes-todo></textarea>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>About the Owner</div>
+			<div class=admin-item-desc></div>
+		</div>
+		<div class=admin-item-right>
+			<textarea id=restaurant-notes-owner></textarea>
+		</div>
+	</div>
+
+	<div class=admin-item></div><!-- for the border line -->
+
+
+<!-- floating things -->
+
+	<div id=float-bottom-right-container>
+		<div id=save-button class=admin-button>Save</div>
+	</div>
+	<div id=float-bottom-left-container>
+		<div id=admin-msg></div>
+	</div>
+
 </div>
 
-<div id="dialog-add-menu" title="Create Dish Category" style="display: none;">
-	<table class="admin-restaurant-form-sub">
-		<tr>
-			<td colspan="2" class="label-sub"><input type="text" name="admin-category-name" placeholder="Name" class="form-sub"></td>
-	</table>
+
+<!-- templates -->
+
+<div class=template-container>
+
+	<div class=admin-toggle-active id=toggle-template>active</div>
+
+	<div class=admin-notifications id=notifications-template></div>
+
+	<div class=admin-notification id=notification-template>
+		<div class=admin-item-col-small>
+			<div class=admin-toggle-active></div>
+		</div>
+		<div class="admin-item-col-med-2 restaurant-notification">
+			<select>
+				<option value=fax>Fax</option>
+				<option value=sms>Text Message</option>
+				<option value=email>Email</option>
+				<option value=phone>Phone Call</option>
+				<option value=url>URL Request</option>
+				<option value=confirmation>Confirmation Phone Call</option>
+			</select>
+		</div>
+		<div class=admin-item-col-med-2>
+			<input type=input name=val />
+		</div>
+	</div>
+
+	<div class=admin-menu id=menu-template>
+		<div class=admin-menu-categories></div>
+	</div>
+	<div class="admin-menu-category admin-item" id=menu-category-template>
+		<div class=admin-item-left>
+			<input type=hidden class=admin-menu-category-id />
+			<input type=hidden class=admin-menu-category-loc />
+			<input type=hidden class=admin-menu-category-sort />
+			<input type=input class=admin-menu-category-name placeholder="Category name" />
+			<div class=hr></div>
+			<div class="admin-button-workflow add-menu-dish">add dish</div> &nbsp;
+			<div class="admin-button-workflow delete-menu-category">delete category</div> &nbsp;
+			<div class=hr></div>
+			<div class="move_category_up sprite-arrow_up" title="Move this category up"></div>
+			<div class="move_category_down sprite-arrow_down" title="Move this category down"></div>
+		</div>
+		<div class="admin-item-right restaurant-dishes-container"></div>
+	</div>
+	<div class=admin-menu-dish id=menu-dish-template>
+		<input type=hidden class=admin-menu-dish-active-id />
+		<input type=hidden class=admin-menu-dish-id />
+		<input type=hidden class=admin-menu-dish-id_dish />
+		<input type=hidden class=admin-menu-dish-sort />       <!-- TODO expose this field -->
+		<input type=hidden class=admin-menu-dish-top />        <!-- TODO expose this field -->
+		<input type=hidden class=admin-menu-dish-top_name />   <!-- TODO expose this field -->
+		<input type=hidden class=admin-menu-dish-image />      <!-- TODO expose this field -->
+		<div class=admin-item-col-small>
+			<div class=admin-menu-dish-active-button></div>
+		</div>
+		<div class=admin-item-col-med-2>
+			<input type=input class=admin-menu-dish-name placeholder="Dish name" />
+		</div>
+		<div class=admin-item-col-small>
+			<input type=input class=admin-menu-dish-price placeholder=$ />
+		</div>
+		<div class=admin-item-col-small>
+			<div class="admin-button-workflow-fit details-button">details</div>
+		</div>
+		<div class="admin-item-col-fit vertical-middle">
+			<div class="move_dish_up sprite-arrow_up" title="Move this dish up"></div>
+			<div class="move_dish_down sprite-arrow_down" title="Move this dish down"></div>
+			<div class="delete-menu-dish sprite-x_alt" title="Delete this dish"></div>
+		</div>
+		<div class="admin-item-right hidden admin-menu-dish-details">
+			Description
+			<textarea class="small admin-menu-dish-description"></textarea>
+			<div class=admin-option-group-hr></div>
+			<div class=dish-option-groups-container></div>
+			<div class="admin-button-workflow add-option-group">add option group</div>
+		</div>
+	</div>
+	<div class=admin-menu-option-group id=menu-option-group-template>
+		<input type=hidden class=admin-menu-option-group-id />
+		<input type=hidden class=admin-menu-option-group-id_dish_option />
+		<input type=hidden class=admin-menu-option-group-id_option />
+		<input type=hidden class=admin-menu-option-group-id_option_parent />
+		<input type=hidden class=admin-menu-option-group-id_restaurant />
+		<input type=hidden class=admin-menu-option-group-sort /> <!-- TODO expose this field -->
+		<input type=hidden class=admin-menu-option-group-price placeholder=$ />
+		<div class=admin-item-col-med-2>
+			<input type=input class=admin-menu-option-group-name placeholder="Option Group Name" />
+		</div>
+		<div class=hidden>
+			<select class=admin-menu-option-group-type>
+				<option value=select selected>Choose one</option>
+				<option value=check>Choose many</option>
+			</select>
+		</div>
+		<div class=admin-item-col-fit>
+			<div class="admin-button-workflow-fit delete-option-group">delete option group</div>
+		</div>
+		<input type=hidden class=admin-menu-option-group-description placeholder=Description />
+		<br>
+		<div class=admin-menu-options-container></div>
+		<div class=admin-item-col-wide>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<div class="admin-button-workflow add-option">add option</div>
+		</div>
+		<div class=admin-option-group-hr></div>
+	</div>
+	<div class=admin-menu-option id=menu-option-template>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type=hidden class=admin-menu-option-id />
+    <input type=hidden class=admin-menu-option-id_dish_option />
+    <input type=hidden class=admin-menu-option-id_option />
+    <input type=hidden class=admin-menu-option-id_restaurant />
+    <input type=hidden class=admin-menu-option-description />
+    <input type=hidden class=admin-menu-option-sort /> <!-- TODO expose this field -->
+		<div class=admin-item-col-fit>
+			<input type=checkbox class=admin-menu-option-default title="Option is selected by default" />
+		</div>
+		<div class=admin-item-col-med>
+			<input type=input class=admin-menu-option-name placeholder="Option name" />
+		</div>
+		<div class=admin-item-col-small>
+			<input type=input class=admin-menu-option-price placeholder=$ />
+		</div>
+		<div class="admin-item-col-fit vertical-middle">
+			<div class="move_option_up sprite-arrow_up" title="Move this option up"></div>
+			<div class="move_option_down sprite-arrow_down" title="Move this option down"></div>
+			<div class="delete-option sprite-x_alt" title="Delete this option"></div>
+		</div>
+	</div>
+
 </div>
 
+
+
+<script type=text/javascript src=https://maps.googleapis.com/maps/api/js?sensor=false></script>
+<script type=text/javascript src=/assets/js/admin_restaurant.js></script>
 <script>
-$(function() {
-	App.loadRestaurant(<?=$this->restaurant->id_restaurant?>);
-});
+ADMIN.restaurant_init(<?=$this->restaurant->id_restaurant?>);
 </script>
+
+
+
