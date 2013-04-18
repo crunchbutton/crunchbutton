@@ -1,6 +1,10 @@
 <?php
 
 class Crunchbutton_Support extends Cana_Table {
+
+	const TYPE_SMS = 'SMS';
+	const TYPE_BOX_NEED_HELP = 'BOX_NEED_HELP';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -17,7 +21,19 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function getByTwilioSessionId( $id_session_twilio ){
-		return Crunchbutton_Support::q( 'SELECT * FROM support WHERE id_session_twilio = ' . $id_session_twilio );
+		return Crunchbutton_Support::q( 'SELECT * FROM support WHERE id_session_twilio = ' . $id_session_twilio . ' ORDER BY id_support DESC LIMIT 1' );
+	}
+
+	public function sameTwilioSession(){
+		return $this->getAllByTwilioSessionId( $this->id_session_twilio, $this->id_support );
+	}
+
+	public function getAllByTwilioSessionId( $id_session_twilio, $id_support = false ){
+		$where = '';
+		if( $id_support ){
+			$where = ' AND id_support != ' . $id_support;
+		}
+		return Crunchbutton_Support::q( 'SELECT * FROM support WHERE id_session_twilio = ' . $id_session_twilio . $where . ' ORDER BY id_support DESC' );
 	}
 
 	public function notify() {
@@ -47,7 +63,7 @@ class Crunchbutton_Support extends Cana_Table {
 			foreach ($message as $msg) {
 				try {
 					// Log
-					Log::debug( [ 'action' => 'sending sms - support', 'session id' => $this->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+					Log::debug( [ 'action' => 'sending sms - support', 'session id' => $this->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
 					$twilio->account->sms_messages->create(
 						c::config()->twilio->{$env}->outgoingTextCustomer,
 						'+1'.$num,

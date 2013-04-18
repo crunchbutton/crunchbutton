@@ -40,6 +40,42 @@
 					</div>
 				</td>
 			</tr>
+			<?php 
+			if( $this->support->id_session_twilio ){
+				$supports = $this->support->sameTwilioSession();
+				if( $supports->count() > 0 ){
+					?>
+					<tr>
+						<td class="label-primary">Others questions of @<?=$this->support->id_session_twilio;?>:</td>
+						<td class="content-primary">
+							<div class="check-wrap">
+								<div class="check-content">
+									<table style="width:90%;">
+										<tbody>
+											<?php foreach( $supports as $support ) { ?>
+											<tr>
+												<td class="label-sub">Message (#<?php echo $support->id_support; ?>):</td>
+												<td class="content-sub"><div class="input-faker"><a href="/admin/support/<?php echo $support->id_support; ?>"><?php echo $support->message;?></a></div></td>
+											</tr>
+											<tr>
+												<td class="label-sub">Date:</td>
+												<td class="content-sub"><div class="input-faker"><?=$this->support->date()->format('M jS Y')?> - <?=$this->support->date()->format('g:i:s A')?></div></td>
+											</tr>
+											<tr>
+												<td></td>
+												<td><hr/></td>
+											</tr>
+											<?php } ?>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<?php
+				}
+			}
+			?>
 			<tr>
 				<td class="label-primary">More information:</td>
 				<td class="content-primary">
