@@ -12,14 +12,22 @@
 //	 include link to img editing
 //	 improvements from github issue
 //
-// known issues
-//	 pulling menu from db when saving omits inactive items
-//	
 
 
 var DEBUG = {}
 
 var UTIL = {
+	show_validation_warnings : function(validation_warnings) {
+		// validation_warnings is an ordered array, each item is [element, 'string']
+		$('[data-step]').removeAttr('data-step');
+		$('[data-intro]').removeAttr('data-intro');
+		for(i = 0; i < validation_warnings.length; i++) {
+			$(validation_warnings[i][0])
+					.attr('data-step', i+1)
+					.attr('data-intro', validation_warnings[i][1]);
+		}
+		introJs().start();
+	},
 	cssprop : function($e, id) {
 		return parseInt($e.css(id), 10);
 	},
@@ -778,7 +786,7 @@ var ADMIN = {
 					}
 					ADMIN.restaurant = rsp;
 					DOM_MAP.apply();
-					ADMIN.save_is_safe = true;
+					ADMIN.save_is_safe = true; // TODO remove this attr and use validation instead
 					UTIL.show_msg('Restaurant loaded.');
 				});
 	},
@@ -788,6 +796,12 @@ var ADMIN = {
 		ADMIN.restaurant_save();
 	},
 	restaurant_save : function() {
+		validation_warnings = DOM_MAP.validate();
+		if(validation_warnings.length) {
+			console.log(validation_warnings);
+			UTIL.show_validation_warnings(validation_warnings);
+			return;
+		}
 		DOM_MAP.flush();
 		console.log(ADMIN.restaurant);
 		if(!ADMIN.save_is_safe) {
@@ -811,23 +825,6 @@ var ADMIN = {
 					UTIL.show_msg('Restaurant saved.');
 				});
 	},
-	restaurant_validate : function(validation_function) {
-		return function(evnt) {
-			val = $(evnt.currentTarget).val();
-			is_valid = validation_function(val);
-			if(is_valid) {
-				$(evnt.currentTarget).addClass('valid');
-				$(evnt.currentTarget).removeClass('invalid');
-			}
-			else {
-				$(evnt.currentTarget).removeClass('valid');
-				$(evnt.currentTarget).addClass('invalid');
-			}
-		}
-	},
-	restaurant_validate_functions : {
-		permalink : function(val) { return /^[\da-zA-Z_-]+$/.exec(val); },
-	},
 };
 
 var DOM_MAP = {
@@ -836,10 +833,6 @@ var DOM_MAP = {
 		for(item in this.map.onclick) {
 			$(item).unbind('click');
 			$(item).click(this.map.onclick[item]);
-		}
-		for(item in this.map.validate_data) {
-			$(item).unbind('change');
-			$(item).change(this.map.validate_data[item]);
 		}
 		for(item in this.map.data.text) {
 			$(item).val(
@@ -866,6 +859,17 @@ var DOM_MAP = {
 			this.map.data.widget[item].flush(ADMIN.restaurant);
 		}
 	},
+	validate : function() {
+		validation_warnings = [];
+		for(item in DOM_MAP.map.validate) {
+			$(item).each(function(index, element) {
+				rsp = DOM_MAP.map.validate[item]($(item));
+				if(!rsp) return;
+				validation_warnings.push([$(element), rsp]);
+			});
+		}
+		return validation_warnings;
+	},
 	map : {
 		onclick : { // map html elements to functions
 			'#save-button'		: ADMIN.restaurant_save,
@@ -878,8 +882,13 @@ var DOM_MAP = {
 			'#copy-sat-from-fri' : UTIL.copy_field('#restaurant-hours-fri','#restaurant-hours-sat'),
 			'#copy-sun-from-sat' : UTIL.copy_field('#restaurant-hours-sat','#restaurant-hours-sun'),
 		},
-		validate_data : {
-			'input#restaurant-permalink' : ADMIN.restaurant_validate(ADMIN.restaurant_validate_functions.permalink),
+		validate : {
+			'input#restaurant-permalink' : function(element) {
+				if(!/^[-a-z\d]+$/.exec(element.val())) return 'Use lowercase letters, numbers and dashes.';
+			},
+			'input[id^=restaurant-hours-]' : function(element) {
+				// TODO
+			},
 		},
 		data : { // map html elements to js restaurant object data parts
 			text : {
@@ -913,124 +922,125 @@ var DOM_MAP = {
 				},
 				'#restaurant-hours' : {
 					apply : function(restaurant, element) {
-						_hours = ADMIN.restaurant._hours;
+						hours = restaurant._hours;
+						// 1. convert everything to 'hours from Monday morning midnight'
+						hfmmm = []; // pairs of [start,finish]
 						days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-						if(!_hours) {
-							for(day in days) {
-								$('input#restaurant-hours-' + days[day]).val('Closed');
-							}
-							return;
-						}
-						segments_all = [];
-						segments_uni = {};
-						for(day in days) segments_uni[days[day]] = {
-							begin : { h : null, m : null },
-							end : { h : null, m : null },
-						};
-						for(day in days) {
-							if(!_hours[days[day]]) { continue; }
-							for(i in _hours[days[day]]) {
-								segment = _hours[days[day]][i];
-								segment_day = days[day];
-								segment_begin = segment[0];
-								segment_end	 = segment[1];
-								if(/^0?0:00$/.exec(segment_end)) segment_end = '24:00';
-								if(/^0?0:00$/.exec(segment_begin) &&
-									 !/^24:00$/.exec(segment_end)		) {
-									segment_day = days[(days.indexOf(days[day])+6)%(days.length)];
-									segment_begin = '24:00';
-									segment_end = segment_end.replace(
-											/(\d+):/,
-											parseInt(segment_end)+24+':');
-								}
-								m = /(\d+):(\d+)/.exec(segment_begin);
-								this_segment_begin_h = parseInt(m[1]);
-								this_segment_begin_m = parseInt(m[2]);
-								m = /(\d+):(\d+)/.exec(segment_end);
-								this_segment_end_h = parseInt(m[1]);
-								this_segment_end_m = parseInt(m[2]);
-								if(segments_uni[segment_day]['begin']['h'] === null ||
-									 segments_uni[segment_day]['begin']['h'] > this_segment_begin_h) {
-									segments_uni[segment_day]['begin']['h'] = this_segment_begin_h;
-									segments_uni[segment_day]['begin']['m'] = this_segment_begin_m;
-									segments_uni[segment_day]['valid'] = true;
-								}
-								if(segments_uni[segment_day]['end']['h'] === null ||
-									 segments_uni[segment_day]['end']['h'] < this_segment_end_h) {
-									segments_uni[segment_day]['end']['h'] = this_segment_end_h;
-									segments_uni[segment_day]['end']['m'] = this_segment_end_m;
-									segments_uni[segment_day]['valid'] = true;
-								}
+						for(day in hours) {
+							dayhours = days.indexOf(day)*2400;
+							for(i in hours[day]) {
+								segment = hours[day][i];
+								m0 = /(\d+):(\d+)/.exec(segment[0]);
+								m1 = /(\d+):(\d+)/.exec(segment[1]);
+								hfmmm.push({
+									b : (dayhours + parseInt(m0[1], 10) * 100 + parseInt(m0[2], 10)),
+									e : (dayhours + parseInt(m1[1], 10) * 100 + parseInt(m1[2], 10)),
+								});
 							}
 						}
-						for(day in days) {
-							if(!(segments_uni[days[day]].valid)) {
-								$('input#restaurant-hours-' + days[day]).val('Closed');
+						// 2. sort
+						hfmmm.sort(function(a,b) { return (a.b<b.b?-1:(a.b>b.b?1:0)); });
+						// 3. merge things that should be merged
+						for(i = 0; i < hfmmm.length-1; i++) {
+							if(hfmmm[i+1].b <= hfmmm[i].e) {
+								// merge these two segments
+								hfmmm[i].e = hfmmm[i+1].e;
+								hfmmm.splice(i+1,1);
+								i--;
 								continue;
 							}
-							begin = segments_uni[days[day]].begin;
-							end = segments_uni[days[day]].end;
-							for(time in [begin,end]) {
-								t = [begin,end][time];
-								if(t.h === 0) { t.shorthand = 'midnight'; t.ampm = 'AM'; }
-								if(t.h === 24) { t.h = 12; t.shorthand = 'midnight'; t.ampm = 'AM'; }
-								else if(t.h === 12) { t.shorthand = 'noon'; t.ampm = 'PM'; }
-								else if(t.h < 12) t.ampm = 'AM';
-								else if(t.h < 24) { t.ampm = 'PM'; t.h = t.h - 12; }
-								else { t.ampm = 'AM'; t.h = t.h - 24; }
-								t.fmt = t.h + ':' + UTIL.pad_number(t.m,2) + ' ' + t.ampm;
-								if(t.shorthand) t.fmt = t.fmt + ' (' + t.shorthand + ')';
+						}
+						// 4. render to display
+						$('input[id^=restaurant-hours-]').val('Closed');
+						for(i in hfmmm) {
+							segment = hfmmm[i];
+							day = days[Math.floor(segment.b/2400)];
+							element = $('input#restaurant-hours-' + day);
+							if(element.val() === 'Closed') {
+								element.val('');
 							}
-							today_fmt = begin.fmt + ' - ' + end.fmt;
-							$('input#restaurant-hours-' + days[day]).val(today_fmt);
+							else {
+								element.val(element.val() + ', ');
+							}
+							while(segment.b > 2400) {
+								segment.b -= 2400;
+								segment.e -= 2400;
+							}
+							format_time = function(t) {
+								// input: a time like 234 indicating 2:34 AM
+								h = Math.floor(t/100);
+								m = t-100*h;
+								h_fmt = '';
+								m_fmt = '';
+								ampm = '';
+								shorthand = '';
+								if(h === 0) { shorthand = 'midnight'; ampm = 'AM'; }
+								else if(h === 12) { shorthand = 'noon'; ampm = 'PM'; }
+								else if(h === 24) { shorthand = 'midnight'; ampm = 'AM'; h_fmt = '12'; }
+								else if(h < 12) { ampm = 'AM'; }
+								else if(h < 24) { h_fmt = '' + (h - 12); ampm = 'PM'; }
+								else { ampm = 'AM'; h_fmt = '' + (h - 24); }
+								if(m) { m_fmt = ':' + UTIL.pad_number(m, 2); }
+								fmt = '' + (h_fmt || h) + m_fmt + ' ' + ampm;
+								if(shorthand) fmt = fmt + ' (' + shorthand + ')';
+								return fmt;
+							};
+							segment.b_fmt = format_time(segment.b);
+							segment.e_fmt = format_time(segment.e);
+							segment.fmt = segment.b_fmt + ' - ' + segment.e_fmt;
+							element.val(element.val() + segment.fmt);
 						}
 					},
-					flush : function(restaurant, element){
+					flush : function(restaurant, element) {
 						_hours = {};
 						days = ['mon','tue','wed','thu','fri','sat','sun'];
 						for(day in days) {
 							val = $('input#restaurant-hours-' + days[day]).val();
 							if(/^(?: *|closed)$/i.exec(val)) continue;
-							val = val.replace(/\(.*?\)/g, '');
-							val = val.replace(/midnight/i, '0:00 AM');
-							val = val.replace(/noon/i, '12:00 PM');
-							m = /^(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i.exec(val)
-							if(!m) {
-								UTIL.show_msg('Unrecognized time format.');
-								ADMIN.save_is_safe = false;
-								return;
-							}
-							begin_h = parseInt(m[1]);
-							begin_m = parseInt(m[2]) || 0;
-							begin_ampm = m[3].toLowerCase();
-							end_h = parseInt(m[4]);
-							end_m = parseInt(m[5]) || 0;
-							end_ampm = m[6].toLowerCase();
-							if(begin_ampm === 'am' && begin_h === 12) { begin_h = begin_h - 12; }
-							if(begin_ampm === 'pm' && begin_h < 12) { begin_h = begin_h + 12; }
-							if(end_ampm === 'am' && end_h === 12) { end_h = end_h + 12; }
-							if(end_ampm === 'pm' && end_h < 12) { end_h = end_h + 12; }
-							if(end_ampm === 'am' && end_h < begin_h) { end_h = end_h + 24; }
+							save_one_time_segment = function(val) {
+								val = val.replace(/\(.*?\)/g, '');
+								val = val.replace(/midnight/i, '0:00 AM');
+								val = val.replace(/noon/i, '12:00 PM');
+								m = /^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i.exec(val)
+								if(!m) {
+									UTIL.show_msg('Unrecognized time format.');
+									ADMIN.save_is_safe = false;
+									return;
+								}
+								begin_h = parseInt(m[1]);
+								begin_m = parseInt(m[2]) || 0;
+								begin_ampm = m[3].toLowerCase();
+								end_h = parseInt(m[4]);
+								end_m = parseInt(m[5]) || 0;
+								end_ampm = m[6].toLowerCase();
+								if(begin_ampm === 'am' && begin_h === 12) { begin_h = begin_h - 12; }
+								if(begin_ampm === 'pm' && begin_h < 12) { begin_h = begin_h + 12; }
+								if(end_ampm === 'am' && end_h === 12) { end_h = end_h + 12; }
+								if(end_ampm === 'pm' && end_h < 12) { end_h = end_h + 12; }
+								if(end_ampm === 'am' && end_h < begin_h) { end_h = end_h + 24; }
 
-							if(!(days[day] in _hours)) { _hours[days[day]] = [] }
-							if(end_h*100 + end_m > 2400) {
-								// split into two times
-								today = days[day];
-								tomorrow = days[(days.indexOf(today)+1)%(days.length)];
-								if(!(tomorrow in _hours)) { _hours[tomorrow] = [] }
-								_hours[today].push([
-										'' + begin_h + ':' + UTIL.pad_number(begin_m,2),
-										'24:00']);
-								_hours[tomorrow].push([
-										'0:00',
-										'' + (end_h-24) + ':' + UTIL.pad_number(end_m,2)]);
-							}
-							else {
-								// just the one
-								_hours[days[day]].push([
-										'' + begin_h + ':' + UTIL.pad_number(begin_m,2),
-										'' + end_h + ':' + UTIL.pad_number(end_m,2)]);
-							}
+								if(!(days[day] in _hours)) { _hours[days[day]] = [] }
+								if(end_h*100 + end_m > 2400) {
+									// split into two times
+									today = days[day];
+									tomorrow = days[(days.indexOf(today)+1)%(days.length)];
+									if(!(tomorrow in _hours)) { _hours[tomorrow] = [] }
+									_hours[today].push([
+											'' + begin_h + ':' + UTIL.pad_number(begin_m,2),
+											'24:00']);
+									_hours[tomorrow].push([
+											'0:00',
+											'' + (end_h-24) + ':' + UTIL.pad_number(end_m,2)]);
+								}
+								else {
+									// just the one
+									_hours[days[day]].push([
+											'' + begin_h + ':' + UTIL.pad_number(begin_m,2),
+											'' + end_h + ':' + UTIL.pad_number(end_m,2)]);
+								}
+							};
+							segments = val.split(/(?:and|,)/);
+							for(i in segments) save_one_time_segment(segments[i]);
 						}
 						restaurant._hours = _hours;
 					},
