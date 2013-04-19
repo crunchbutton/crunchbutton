@@ -159,9 +159,6 @@ var WIDGET = {
 
 		self.widgets = {}; // to keep track of any js objects
 		// TODO
-		//	 basic write functionality
-		//   save expanded status
-		//	 change sort order of items
 		//	 copy items between parent items
 		//	 unlink linked items
 
@@ -259,18 +256,52 @@ var WIDGET = {
 				field = fields[i];
 				$(option_group_dom).find('.admin-menu-option-group-' + field).val(option_group[field]);
 			}
-			if(/^basic options$/i.exec(option_group.name)) {
+			if(/^(?:basic options|checkbox options)$/i.exec(option_group.name)) {
 				$(option_group_dom).find('.admin-menu-option-group-name').prop('disabled', true);
+				$(option_group_dom).find('.admin-menu-option-group-type').prop('disabled', true);
 				$(option_group_dom).find('.admin-menu-option-group-price').hide();
 				$(option_group_dom).find('.admin-menu-option-group-description').hide();
-				$(option_group_dom).find('.admin-menu-option-group-type').prop('disabled', true);
 				$(option_group_dom).find('.admin-menu-option-group-type').val('check');
 				$(option_group_dom).find('.delete-option-group').hide();
+				$(option_group_dom).find('.move_option_group_down').hide();
+				$(option_group_dom).find('.move_option_group_up').hide();
+				$(option_group_dom).find('.not-visible-for-basic-option-group').hide();
+				$(option_group_dom).find('.add-option').hide();
+				$(dish_dom).find('.add-checkbox-option').first().click(function() {
+					id_option = UTIL.create_unique_id();
+					id_dish_option = UTIL.create_unique_id();
+					self.add_option(option_group_dom, {
+						default : '0',
+						description : null,
+						id : id_option,
+						id_option : id_option,
+						id_dish_option : id_dish_option,
+						id_option_parent : $(option_group_dom).find('.admin-menu-option-group-id').val(),
+						name : '',
+						price : '0.00',
+						prices : [],
+						sort : null,
+						type : 'check',
+					},
+					{duration:100});
+				});
 			}
 			else {
 				// evidently only 'select' boxes render properly on front end for now
 				$(option_group_dom).find('.admin-menu-option-group-type').prop('disabled', true);
 				$(option_group_dom).find('.admin-menu-option-group-type').val('select');
+
+				// move up/down, don't forget not to swap with basic options
+				$(option_group_dom).find('.move_option_group_down').first().click(function() {
+					next_option_group_dom = $(option_group_dom).next('.admin-menu-option-group');
+					if(!next_option_group_dom.length) return;
+					UTIL.slide_swap($(option_group_dom), $(next_option_group_dom), 100);
+				});
+				$(option_group_dom).find('.move_option_group_up').first().click(function() {
+					prev_option_group_dom = $(option_group_dom).prev('.admin-menu-option-group:has(.admin-menu-option-group-name:enabled)');
+					if(!prev_option_group_dom.length) return;
+					UTIL.slide_swap($(prev_option_group_dom), $(option_group_dom), 100);
+				});
 			}
 			if(!option_group.name) UTIL.focus_input(option_group_dom);
 			$(option_group_dom).find('.delete-option-group').click(function() {
@@ -396,7 +427,7 @@ var WIDGET = {
 				id_dish_option : basic_option_group_id,
 				id_option : basic_option_group_id,
 				id_option_parent : null,
-				name : 'Basic Options',
+				name : 'Checkbox Options',
 				price : '0.00',
 				price_linked : '0',
 				prices : [],
@@ -484,11 +515,12 @@ var WIDGET = {
 				field = fields[i];
 				option[field] = $(option_dom).find('.admin-menu-option-' + field).val();
 			}
+			if(!option['name']) return;
 			option['type'] = 'check';
 			option['prices'] = [];
 			option['price_linked'] = '0';
 			option['id_option_parent'] = option_group.id_option;
-			if(/basic/i.exec(option['id_option_parent']))
+			if(/(?:basic|checkbox)/i.exec(option['id_option_parent']))
 				option['id_option_parent'] = 'BASIC';
 			option['id_restaurant'] = ADMIN.id_restaurant;
 			option['default'] = $(option_dom).find('.admin-menu-option-default').is(':checked') ? '1' : '0';
@@ -507,6 +539,7 @@ var WIDGET = {
 				field = fields[i];
 				option_group[field] = $(option_group_dom).find('.admin-menu-option-group-' + field).val();
 			}
+			if(!option_group['name']) return;
 			option_group['default'] = '0';
 			option_group['id_option_parent'] = null;
 			option_group['id_restaurant'] = ADMIN.id_restaurant;
@@ -516,7 +549,7 @@ var WIDGET = {
 			$(option_group_dom).find('.admin-menu-option').each(function(index, option_dom) {
 				self.flush_option(dish, option_group, option_dom);
 			});
-      if(/^basic options$/i.exec(option_group.name)) { return; }
+      if(/^(?:basic options|checkbox options)$/i.exec(option_group.name)) { return; }
 			if($(option_group_dom).find('.admin-menu-option').length === 0) { return; }
 
 			if(dish._options.length === 0) {
@@ -694,6 +727,7 @@ var WIDGET = {
 		var type = 'toggle';
 		var self = this;
 		self.field_name = args.field_name || 'active';
+		self.text = args.text || ['active', 'inactive'];
 		self.dom_id = dom_id;
 		self.dom = $(template).clone(true);
 		if(dom_id) $(self.dom).attr('id', dom_id);
@@ -705,12 +739,12 @@ var WIDGET = {
 		this.set_active = function() {
 			$(self.dom).addClass('admin-toggle-active');
 			$(self.dom).removeClass('admin-toggle-inactive');
-			$(self.dom).text('active');
+			$(self.dom).text(self.text[0]);
 		};
 		this.set_inactive = function() {
 			$(self.dom).removeClass('admin-toggle-active');
 			$(self.dom).addClass('admin-toggle-inactive');
-			$(self.dom).text('inactive');
+			$(self.dom).text(self.text[1]);
 		};
 		this.toggle_active = function() {
 			self.dom.hasClass('admin-toggle-active')?
@@ -745,6 +779,11 @@ var ADMIN = {
 			w = DOM_MAP.map.data.widget.pop().remove();
 		}
 		w = UTIL.create_widget('toggle', $('#restaurant-active-container'));
+		w = UTIL.create_widget('toggle', $('#restaurant-open-for-business-container'), {
+				text : ['open', 'closed'],
+				field_name : 'open_for_business',
+		});
+		DEBUG['a'] = w;
 		w = UTIL.create_widget('toggle', $('#restaurant-cash-container'), {field_name:'cash'});
 		w = UTIL.create_widget('toggle', $('#restaurant-credit-container'), {field_name:'credit'});
 		w = UTIL.create_widget('toggle', $('#restaurant-delivery-container'), {field_name:'delivery'});
@@ -786,7 +825,7 @@ var ADMIN = {
 					}
 					ADMIN.restaurant = rsp;
 					DOM_MAP.apply();
-					ADMIN.save_is_safe = true; // TODO remove this attr and use validation instead
+					ADMIN.save_is_safe = true;
 					UTIL.show_msg('Restaurant loaded.');
 				});
 	},
@@ -863,9 +902,9 @@ var DOM_MAP = {
 		validation_warnings = [];
 		for(item in DOM_MAP.map.validate) {
 			$(item).each(function(index, element) {
-				rsp = DOM_MAP.map.validate[item]($(item));
+				rsp = DOM_MAP.map.validate[item](element);
 				if(!rsp) return;
-				validation_warnings.push([$(element), rsp]);
+				validation_warnings.push([element, rsp]);
 			});
 		}
 		return validation_warnings;
@@ -884,10 +923,19 @@ var DOM_MAP = {
 		},
 		validate : {
 			'input#restaurant-permalink' : function(element) {
-				if(!/^[-a-z\d]+$/.exec(element.val())) return 'Use lowercase letters, numbers and dashes.';
+				if(!/^[-a-z\d]+$/.exec($(element).val()))
+					return 'Use lowercase letters, numbers and dashes.';
 			},
 			'input[id^=restaurant-hours-]' : function(element) {
-				// TODO
+				val = $(element).val();
+				if(/^(?: *|Closed)$/i.exec(val)) return;
+				val = val.replace(/\(.*?\)/g, '');
+				segments = val.split(/(?:and|,)/);
+				for(i in segments) {
+					if(!/^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i.exec(segments[i])) {
+						return 'Unable to figure out what this time means.';
+					}
+				}
 			},
 		},
 		data : { // map html elements to js restaurant object data parts

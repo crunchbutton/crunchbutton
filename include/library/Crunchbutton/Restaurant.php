@@ -645,7 +645,8 @@ class Crunchbutton_Restaurant extends Cana_Table
 		}
 
 		if( !$hasHours ){
-			return true;
+			// a restaurant with no hours is never open
+			return false;
 		}
 
 		return false;

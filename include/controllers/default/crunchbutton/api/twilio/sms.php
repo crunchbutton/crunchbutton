@@ -221,7 +221,6 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 			// Log
 			Log::debug( [ 'action' => 'saving the answer', 'id_support' => $answer->id_support, 'phone' => $phone, 'message' => $message, 'type' => 'sms' ] );
-
 		}
 
 		// c::timeout(function() use ($nums, $b, $twilio, $env, $id) {
