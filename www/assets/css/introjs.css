@@ -33,6 +33,7 @@
 }
 
 .introjs-helperNumberLayer {
+	display: none;
   position: absolute;
   top: -16px;
   left: -16px;
@@ -187,4 +188,9 @@
   -webkit-border-radius: 0 0.2em 0.2em 0;
   -moz-border-radius: 0 0.2em 0.2em 0;
   border-radius: 0 0.2em 0.2em 0;
+}
+
+.introjs-tooltiptext-title {
+	color: #ff5522;
+	font-weight: bold;
 }

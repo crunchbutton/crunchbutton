@@ -32,7 +32,7 @@
     this._options = {
       nextLabel: 'Next &rarr;',
       prevLabel: '&larr; Back',
-      skipLabel: 'Skip',
+      skipLabel: 'OK',
       tooltipPosition: 'bottom'
     };
   }
@@ -173,7 +173,7 @@
       if (overlayLayer.parentNode) {
         overlayLayer.parentNode.removeChild(overlayLayer);
       }
-    }, 500);
+    }, 100);
     //remove all helper layers
     var helperLayer = targetElement.querySelector('.introjs-helperLayer');
     if (helperLayer) {
@@ -290,7 +290,7 @@
         _placeTooltip.call(self, targetElement, oldtooltipContainer, oldArrowLayer);
         //show the tooltip
         oldtooltipContainer.style.opacity = 1;
-      }, 350);
+      }, 100);
 
     } else {
       var helperLayer = document.createElement('div'),
@@ -313,6 +313,9 @@
 
       helperNumberLayer.innerHTML = targetElement.getAttribute('data-step');
       tooltipLayer.innerHTML = '<div class="introjs-tooltiptext">' +
+                               '<div class="introjs-tooltiptext-title">' +
+                               "Can't Save - Validation Error" +
+                               '</div>' +
                                targetElement.getAttribute('data-intro') +
                                '</div><div class="introjs-tooltipbuttons"></div>';
       helperLayer.appendChild(helperNumberLayer);

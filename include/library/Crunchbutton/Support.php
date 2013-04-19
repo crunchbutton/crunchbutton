@@ -144,5 +144,6 @@ class Crunchbutton_Support extends Cana_Table {
 
 	public function save() {
 		parent::save();
+		Crunchbutton_Hipchat_Notification::NewSupport($this);
 	}
 }

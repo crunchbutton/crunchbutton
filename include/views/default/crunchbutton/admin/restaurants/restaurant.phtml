@@ -98,6 +98,16 @@
 		</div>
 	</div>
 
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Open for Business</div>
+			<div class=admin-item-desc>is this restaurant accepting orders during open hours</div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-small id=restaurant-open-for-business-container></div>
+		</div>
+	</div>
+
 	<div class=admin-item></div><!-- for the border line -->
 
 
@@ -456,10 +466,10 @@
 		<input type=hidden class=admin-menu-dish-active-id />
 		<input type=hidden class=admin-menu-dish-id />
 		<input type=hidden class=admin-menu-dish-id_dish />
-		<input type=hidden class=admin-menu-dish-sort />       <!-- TODO expose this field -->
-		<input type=hidden class=admin-menu-dish-top />        <!-- TODO expose this field -->
-		<input type=hidden class=admin-menu-dish-top_name />   <!-- TODO expose this field -->
-		<input type=hidden class=admin-menu-dish-image />      <!-- TODO expose this field -->
+		<input type=hidden class=admin-menu-dish-sort />
+		<input type=hidden class=admin-menu-dish-top />
+		<input type=hidden class=admin-menu-dish-top_name />
+		<input type=hidden class=admin-menu-dish-image />      <!-- expose this field? -->
 		<div class=admin-item-col-small>
 			<div class=admin-menu-dish-active-button></div>
 		</div>
@@ -481,8 +491,14 @@
 			Description
 			<textarea class="small admin-menu-dish-description"></textarea>
 			<div class=admin-option-group-hr></div>
+			<div class=admin-item-col-med>
+				<div class="admin-button-workflow-fit add-checkbox-option">add checkbox option</div>
+			</div>
+			<div class=admin-item-col-med>
+				<div class="admin-button-workflow-fit add-option-group">add multi-valued option</div>
+			</div>
+			<div class=admin-option-group-hr></div>
 			<div class=dish-option-groups-container></div>
-			<div class="admin-button-workflow add-option-group">add option group</div>
 		</div>
 	</div>
 	<div class=admin-menu-option-group id=menu-option-group-template>
@@ -491,10 +507,10 @@
 		<input type=hidden class=admin-menu-option-group-id_option />
 		<input type=hidden class=admin-menu-option-group-id_option_parent />
 		<input type=hidden class=admin-menu-option-group-id_restaurant />
-		<input type=hidden class=admin-menu-option-group-sort /> <!-- TODO expose this field -->
+		<input type=hidden class=admin-menu-option-group-sort />
 		<input type=hidden class=admin-menu-option-group-price placeholder=$ />
 		<div class=admin-item-col-med-2>
-			<input type=input class=admin-menu-option-group-name placeholder="Option Group Name" />
+			<input type=input class=admin-menu-option-group-name placeholder="Option name" />
 		</div>
 		<div class=hidden>
 			<select class=admin-menu-option-group-type>
@@ -502,15 +518,17 @@
 				<option value=check>Choose many</option>
 			</select>
 		</div>
-		<div class=admin-item-col-fit>
-			<div class="admin-button-workflow-fit delete-option-group">delete option group</div>
+		<div class="admin-item-col-fit vertical-middle">
+			<div class="move_option_group_up sprite-arrow_up" title="Move this option up"></div>
+			<div class="move_option_group_down sprite-arrow_down" title="Move this option down"></div>
+			<div class="delete-option-group sprite-x_alt" title="Delete this option"></div>
 		</div>
 		<input type=hidden class=admin-menu-option-group-description placeholder=Description />
 		<br>
 		<div class=admin-menu-options-container></div>
-		<div class=admin-item-col-wide>
+		<div class="admin-item-col-wide not-visible-for-basic-option-group">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<div class="admin-button-workflow add-option">add option</div>
+			<div class="admin-button-workflow add-option">add another value</div>
 		</div>
 		<div class=admin-option-group-hr></div>
 	</div>
@@ -521,7 +539,7 @@
     <input type=hidden class=admin-menu-option-id_option />
     <input type=hidden class=admin-menu-option-id_restaurant />
     <input type=hidden class=admin-menu-option-description />
-    <input type=hidden class=admin-menu-option-sort /> <!-- TODO expose this field -->
+    <input type=hidden class=admin-menu-option-sort />
 		<div class=admin-item-col-fit>
 			<input type=checkbox class=admin-menu-option-default title="Option is selected by default" />
 		</div>
