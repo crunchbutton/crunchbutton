@@ -1235,6 +1235,7 @@ App.test = {
 		$('[name="pay-address"]').val( App.restaurant.address || "123 main\nsanta monica ca" );
 
 		App.order.cardChanged = true;
+		App.creditCard.changeIcons( $( '[name="pay-card-number"]' ).val() );
 	},
 	logout: function() {
 		$.getJSON('/api/logout',function(){ location.reload()});
@@ -1313,34 +1314,6 @@ App.lastTipNormalize = function( lastTip ){
 		lastTip = App.defaultTip;
 	}
 	return lastTip;
-}
-
-
-App.detectCardType = function(){
-	var cardvalue = $( '[name="pay-card-number"]' ).val();
-	var type = false;
-	if ( /^5[1-5]/.test( cardvalue ) ) {
-		type = "master-card";
-	}
-	else if ( /^4/.test( cardvalue ) ){
-		type = "visa";
-	} 
-	else if ( /^3[47]/.test( cardvalue ) ){
-		type = "amex";
-	}
-	else if ( /^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)/.test( cardvalue ) ){
-		type = "discover";
-	}
-	if( type ){
-		$( '.payment-card' ).addClass( 'to-grey' );
-		$( '.payment-card' ).removeClass( 'to-color' );
-		$( '.card-' + type ).removeClass( 'to-grey' );
-		$( '.card-' + type ).addClass( 'to-color' );
-		$('.to-color').animate( { 'background-position-x': '0'}, 100 );
-		$('.to-grey').animate( { 'background-position-x': '-40px'}, 100 );
-	} else {
-		$( '.payment-card' ).animate( { 'background-position-x': '0'}, 100 );
-	}
 }
 
 App.trigger = {
@@ -1755,7 +1728,7 @@ $(function() {
 	});
 
 	$(document).on('change, keyup', '[name="pay-card-number"]', function() {
-		App.detectCardType();
+		App.creditCard.changeIcons( $(this).val() );
 	} );
 
 	$(document).on('keyup', '[name="pay-phone"]', function() {
