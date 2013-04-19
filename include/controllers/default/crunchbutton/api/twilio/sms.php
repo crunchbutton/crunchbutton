@@ -147,7 +147,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 						$b = $message;
 
-						c::timeout(function() use ($b, $env, $twilio) {
+						// c::timeout(function() use ($b, $env, $twilio) {
 							foreach (c::config()->text as $supportName => $supportPhone) {
 								$num = $supportPhone;
 								foreach ($b as $msg) {
@@ -165,7 +165,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 									}
 								}
 							}
-						});
+						// });
 						break;
 		
 					default:
@@ -199,14 +199,14 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 	public function reply( $id_session, $rep, $phone, $body, $twilio ){
 
 		$rsess = new Session_Twilio( $id_session );
-		$message = $rep . ': ' . $body;
+		$message = $body;
 
 		$nums[] = $rsess->phone;
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 
 		// Log
-		Log::debug( [ 'action' => 'replying message', 'session id' => $rsess->id_session_twilio, 'num' => $nums, 'message' => $message, 'type' => 'sms' ] );
+		Log::debug( [ 'action' => 'replying message', 'rep' => $rep, 'session id' => $rsess->id_session_twilio, 'num' => $nums, 'message' => $message, 'type' => 'sms' ] );
 		
 		$support = Crunchbutton_Support::getByTwilioSessionId( $id_session );
 
