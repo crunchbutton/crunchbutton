@@ -928,8 +928,8 @@ var DOM_MAP = {
 			},
 			'input[id^=restaurant-hours-]' : function(element) {
 				val = $(element).val();
-				console.log(val);
 				if(/^(?: *|Closed)$/i.exec(val)) return;
+				val = val.replace(/\(.*?\)/g, '');
 				segments = val.split(/(?:and|,)/);
 				for(i in segments) {
 					if(!/^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i.exec(segments[i])) {
