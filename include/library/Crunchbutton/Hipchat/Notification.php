@@ -25,7 +25,8 @@ class Crunchbutton_Hipchat_Notification extends Cana_Model {
 
 	public static function NewSupportAnswer($answer) {
 		$msg = "$answer->name has responded to ".
-			"customer service issue #$answer->id_support.";
+			"customer service issue #$answer->id_support: ".
+			"$answer->message";
 		self::sendNotification($msg);
 	}
 
