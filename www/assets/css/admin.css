@@ -767,7 +767,7 @@ table.list tr:nth-of-type(even) {
 	margin: 5px;
 	text-align: center;
 	cursor: pointer;
-	background: #339900 -webkit-linear-gradient(top, #339900 0%, #228800 90%);
+	background: #339900 -webkit-linear-gradient(top, #44AA00 0%, #339900 90%);
 	border: 1px solid #888888;
 	-webkit-border-radius: 4px;
 }
@@ -934,7 +934,7 @@ table.list tr:nth-of-type(even) {
 	background-color: blue;
 }
 
-.admin-button-workflow, .admin-button-workflow-fit {
+.admin-button-workflow, .admin-button-workflow-fit, .admin-button-workflow-shrink {
 	text-align: center;
 	display: inline-block;
 	border: 1px solid #888888;
@@ -945,6 +945,9 @@ table.list tr:nth-of-type(even) {
 
 .admin-button-workflow {
 	width: 120px;
+}
+
+.admin-button-workflow-shrink {
 }
 
 .admin-button-workflow-fit {
@@ -993,6 +996,11 @@ table.list tr:nth-of-type(even) {
 .admin-menu-category-indent {
 	height: 100%;
 	width: 0px;
+}
+
+input:disabled {
+	background: transparent;
+	border: none;
 }
 
 .admin-menu-dish-details {
