@@ -1167,6 +1167,9 @@ html[xmlns] .clearfix {
 		border: none;
 		width: 100%;
 	}
+		.restaurant-closed-content{
+			width: 230px;
+		}
 	.take-out-only{
 		left: 130px;
 		padding-top: 115px;
