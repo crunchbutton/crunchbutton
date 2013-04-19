@@ -109,64 +109,67 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			
 					case 'support-ask':
 
-						$tsess->id_order = $order ? $order->id_order : null;
-						$tsess->phone = $phone;
-						$tsess->save();
+						if( trim( $phone ) != '' ){
 
-						$message = '@'.$tsess->id_session_twilio.' ';
-						if ($order->id_order) {
-							$message .= ' #'.$order->id_order.' '.$order->name.': ';
-						} else {
-							$message .= ': ';
-						}
-						$message .= htmlspecialchars($body);
-						$message = str_split($message,160);
+							$tsess->id_order = $order ? $order->id_order : null;
+							$tsess->phone = $phone;
+							$tsess->save();
 
-						if(!$_SESSION['last_cb']) {
-							$_SESSION['last_cb'] = $last_cb;
-							$message[] = $last_cb;
-						}
+							$message = '@'.$tsess->id_session_twilio.' ';
+							if ($order->id_order) {
+								$message .= ' #'.$order->id_order.' '.$order->name.': ';
+							} else {
+								$message .= ': ';
+							}
+							$message .= htmlspecialchars($body);
+							$message = str_split($message,160);
 
-						$support = new Crunchbutton_Support;
-						$support->type = Crunchbutton_Support::TYPE_SMS;
-						$support->phone = $phone;
-						$support->message = $body;
-						$support->ip = $_SERVER['REMOTE_ADDR'];
-						$support->id_session_twilio = $tsess->id_session_twilio;
-						$support->date = date('Y-m-d H:i:s');
-						if( $order->id_order ) {
-							$support->id_user = $order->id_user;
-							$support->name = $order->name;
-						} else {
-							$support->name = $phone;
-						}
-						$support->save();
+							if(!$_SESSION['last_cb']) {
+								$_SESSION['last_cb'] = $last_cb;
+								$message[] = $last_cb;
+							}
 
-						// Log
-						Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
+							$support = new Crunchbutton_Support;
+							$support->type = Crunchbutton_Support::TYPE_SMS;
+							$support->phone = $phone;
+							$support->message = $body;
+							$support->ip = $_SERVER['REMOTE_ADDR'];
+							$support->id_session_twilio = $tsess->id_session_twilio;
+							$support->date = date('Y-m-d H:i:s');
+							if( $order->id_order ) {
+								$support->id_user = $order->id_user;
+								$support->name = $order->name;
+							} else {
+								$support->name = $phone;
+							}
+							$support->save();
 
-						$b = $message;
+							// Log
+							Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
 
-						// c::timeout(function() use ($b, $env, $twilio) {
-							foreach (c::config()->text as $supportName => $supportPhone) {
-								$num = $supportPhone;
-								foreach ($b as $msg) {
-									try {
-										// Log
-										Log::debug( [ 'action' => 'sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-										$twilio->account->sms_messages->create(
-											c::config()->twilio->{$env}->outgoingTextCustomer,
-											'+1'.$num,
-											$msg
-										);
-									} catch (Exception $e) {
-										// Log
-										Log::debug( [ 'action' => 'ERROR: sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
+							$b = $message;
+
+							// c::timeout(function() use ($b, $env, $twilio) {
+								foreach (c::config()->text as $supportName => $supportPhone) {
+									$num = $supportPhone;
+									foreach ($b as $msg) {
+										try {
+											// Log
+											Log::debug( [ 'action' => 'sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
+											$twilio->account->sms_messages->create(
+												c::config()->twilio->{$env}->outgoingTextCustomer,
+												'+1'.$num,
+												$msg
+											);
+										} catch (Exception $e) {
+											// Log
+											Log::debug( [ 'action' => 'ERROR: sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
+										}
 									}
 								}
-							}
-						// });
-						break;
+							// });
+						} 
+					break;
 		
 					default:
 
