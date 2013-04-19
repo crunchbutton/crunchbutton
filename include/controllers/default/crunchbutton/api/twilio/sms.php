@@ -252,17 +252,19 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			foreach ( c::config()->text as $supportName => $supportPhone ) {
 				$num = $supportPhone;
 				foreach ( $msg_support as $msg ) {
-					try {
-						// Log
-						Log::debug( [ 'action' => 'replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
-						$twilio->account->sms_messages->create(
-							c::config()->twilio->{$env}->outgoingTextCustomer,
-							'+1'.$num,
-							$msg
-						);
-					} catch (Exception $e) {
-						// Log
-						Log::debug( [ 'action' => 'ERROR: replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+					if( $supportName != $rep ){
+						try {
+							// Log
+							Log::debug( [ 'action' => 'replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+							$twilio->account->sms_messages->create(
+								c::config()->twilio->{$env}->outgoingTextCustomer,
+								'+1'.$num,
+								$msg
+							);
+						} catch (Exception $e) {
+							// Log
+							Log::debug( [ 'action' => 'ERROR: replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+						}
 					}
 				}
 			}
