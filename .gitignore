@@ -29,3 +29,6 @@ www/cache/*
 # huh?
 workflow*
 
+# include db migrations
+!db/migrate/*.sql
+
