@@ -42,7 +42,8 @@ var App = {
 	tips: [0,10,15,18,20,25,30],
 	touchX: null,
 	touchY: null,
-	touchOffset: null
+	touchOffset: null,
+	crunchSoundAlreadyPlayed : false
 };
 
 App.loadRestaurant = function(id) {
@@ -814,12 +815,18 @@ App.cart = {
 	 * @returns void
 	 */
 	submit: function() {
+
 		if (App.busy.isBusy()) {
 			return;
 		}
-		// App.playAudio( 'get-food-audio' );
-
+		
 		App.busy.makeBusy();
+
+		// Play the crunch audio just once, when the user clicks at the Get Food button
+		if( !App.crunchSoundAlreadyPlayed ){
+			App.playAudio( 'get-food-audio' );
+			App.crunchSoundAlreadyPlayed = true;
+		}
 
 		var read = $('.payment-form').length ? true : false;
 
@@ -852,10 +859,6 @@ App.cart = {
 			order.address  = App.config.user.address;
 			order.phone	= App.config.user.phone;
 			order.name 	= App.config.user.name;
-/*
-Issue 13: Removed the password for while
-			order.password = $( 'input[name=pay-password]' ).val( );
-*/
 			if (App.order.cardChanged) {
 				order.card = {
 					number: $('[name="pay-card-number"]').val(),
@@ -968,12 +971,8 @@ Issue 13: Removed the password for while
 			return;
 		}
 
-		// Play the crunch audio
-		App.playAudio( 'get-food-audio' );
-
 		// Timeout to sound ends
 		setTimeout( function(){
-
 			$.ajax({
 				url: App.service + 'order',
 				data: order,
@@ -1683,6 +1682,7 @@ $(function() {
 	$$('.button-submitorder-form').tap(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
+		App.crunchSoundAlreadyPlayed = false;
 		App.isUserAddressOk = false;
 		App.isDeliveryAddressOk = false;
 		App.cart.submit($(this),true);
@@ -1923,8 +1923,14 @@ App.message.show = function( title, message ) {
 
 }
 
-App.playAudio = function( audio ){
-	$( '#' + audio ).get(0).play();
+App.playAudio = function( audio, callback ){
+	var audio = $( '#' + audio ).get(0);
+	audio.addEventListener( 'ended', function() {
+		if( callback ){
+			callback();
+		}
+	});
+	audio.play();
 }
 
 App.registerLocationsCookies = function() {
