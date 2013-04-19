@@ -1925,12 +1925,14 @@ App.message.show = function( title, message ) {
 
 App.playAudio = function( audio, callback ){
 	var audio = $( '#' + audio ).get(0);
-	audio.addEventListener( 'ended', function() {
+	try{
+		audio.addEventListener( 'ended', function() {
 		if( callback ){
 			callback();
-		}
-	});
-	audio.play();
+			}
+		});
+		audio.play();	
+	} catch( e ){}
 }
 
 App.registerLocationsCookies = function() {
