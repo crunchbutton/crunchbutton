@@ -918,7 +918,7 @@ App.cart = {
 						App.isUserAddressOk = true;
 						App.cart.submit();
 					} else {
-						alert( 'Ops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
+						alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 						App.busy.unBusy();
 						// Make sure that the form will be visible
 						$('.payment-form').show();
