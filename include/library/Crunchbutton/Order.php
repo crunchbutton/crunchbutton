@@ -280,6 +280,8 @@ class Crunchbutton_Order extends Cana_Table {
 			Preset::cloneFromOrder($this);
 		}
 
+		Crunchbutton_Hipchat_Notification::OrderPlaced($this);
+
 		return true;
 	}
 
@@ -515,6 +517,7 @@ class Crunchbutton_Order extends Cana_Table {
 			Log::debug([ 'order' => $order->id_order, 'action' => 'starting notification', 'notification_type' => $n->type, 'type' => 'notification']);
 			$n->send($order);
 		}
+		Crunchbutton_Hipchat_Notification::notifyOrder($order);
 	}
 
 	public function confirm() {
