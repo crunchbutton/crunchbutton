@@ -31,11 +31,9 @@ class Crunchbutton_Hipchat_Notification extends Cana_Model {
 	}
 
 	public static function sendNotification($msg) {
-		error_log($msg);
 		$msg = urlencode(str_replace('\n', ' ', $msg));
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		$msg = "[env:$env]+" . $msg;
-		error_log($msg);
 		$url = self::$api_url.
 			'?auth_token='.self::$auth_token.
 			'&room_id='.self::$room_id.
@@ -44,11 +42,9 @@ class Crunchbutton_Hipchat_Notification extends Cana_Model {
 			'&notify=0'. // don't blink the chat window
 			'&format=json'.
 			'&message='.$msg;
-		error_log($url);
 		$req = \Httpful\Request::get($url);
 		$req->expects('json');
 		$rsp = $req->sendIt();
-		error_log($rsp);
 	}
 
 	public static function sendUrgentNotification($msg) {
@@ -65,7 +61,6 @@ class Crunchbutton_Hipchat_Notification extends Cana_Model {
 		$req = \Httpful\Request::get($url);
 		$req->expects('json');
 		$rsp = $req->sendIt();
-		error_log($rsp);
 	}
 }
 
