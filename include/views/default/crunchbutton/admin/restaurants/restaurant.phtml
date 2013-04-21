@@ -19,7 +19,8 @@
 			<a href=#notes>notes</a> 
 		</div>
 		<div id=admin-top-button-group>
-			<div id=legacy-button class=admin-button>Legacy View</div>
+			<a target='_blank' id=view-on-site-button><div class=admin-button>View on Site</div></a>
+			<div id=legacy-button class=admin-button>Old Admin</div>
 			<div id=revert-button class=admin-button>Revert</div>
 		</div>
 	</div>
@@ -105,6 +106,15 @@
 		</div>
 		<div class=admin-item-right>
 			<div class=admin-item-col-small id=restaurant-open-for-business-container></div>
+		</div>
+	</div>
+
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Image</div>
+		</div>
+		<div class=admin-item-right id=restaurant-image>
+			<a target='_blank'><img></img></a>
 		</div>
 	</div>
 
@@ -332,6 +342,20 @@
 		</div>
 	</div>
 
+	<div class=admin-item>
+		<div class=admin-item-left>
+			<div class=admin-item-name>Actions</div>
+		</div>
+		<div class=admin-item-right>
+			<div class=admin-item-col-med>
+				<a id=button-pay target='_blank'><div class=admin-button-workflow>send payment</div></a>
+			</div>
+			<div class=admin-item-col-med>
+				<a id=button-fax target='_blank'><div class=admin-button-workflow>send a fax</div></a>
+			</div>
+		</div>
+	</div>
+
 	<div class=admin-item></div><!-- for the border line -->
 
 
@@ -482,14 +506,22 @@
 		<div class=admin-item-col-small>
 			<div class="admin-button-workflow-fit details-button">details</div>
 		</div>
-		<div class="admin-item-col-fit vertical-middle">
+		<div class="admin-item-col-no-pad vertical-middle">
 			<div class="move_dish_up sprite-arrow_up" title="Move this dish up"></div>
 			<div class="move_dish_down sprite-arrow_down" title="Move this dish down"></div>
+			<div class="dish_lightning sprite-bolt" title="Copy this dish or its options"></div>
 			<div class="delete-menu-dish sprite-x_alt" title="Delete this dish"></div>
 		</div>
 		<div class="admin-item-right hidden admin-menu-dish-details">
 			Description
 			<textarea class="small admin-menu-dish-description"></textarea>
+			<div class=admin-option-group-hr></div>
+			<div class=admin-item-col-fit>
+				<label>
+					<input type=checkbox class=admin-menu-dish-expand-view>
+					Expanded view when added to cart
+				</label>
+			</div>
 			<div class=admin-option-group-hr></div>
 			<div class=admin-item-col-med>
 				<div class="admin-button-workflow-fit add-checkbox-option">add checkbox option</div>
@@ -540,9 +572,11 @@
     <input type=hidden class=admin-menu-option-id_restaurant />
     <input type=hidden class=admin-menu-option-description />
     <input type=hidden class=admin-menu-option-sort />
-		<div class=admin-item-col-fit>
-			<input type=checkbox class=admin-menu-option-default title="Option is selected by default" />
-		</div>
+		<label>
+			<div class=admin-item-col-no-pad>
+				<input type=checkbox class=admin-menu-option-default title="Option is selected by default" />
+			</div>
+		</label>
 		<div class=admin-item-col-med>
 			<input type=input class=admin-menu-option-name placeholder="Option name" />
 		</div>
@@ -553,6 +587,50 @@
 			<div class="move_option_up sprite-arrow_up" title="Move this option up"></div>
 			<div class="move_option_down sprite-arrow_down" title="Move this option down"></div>
 			<div class="delete-option sprite-x_alt" title="Delete this option"></div>
+		</div>
+	</div>
+
+	<div id=admin-dish-lightning-modal>
+		<div class=admin-modal-title>
+			Dish
+		</div>
+		<div class=admin-modal-item>
+			<div class=admin-modal-explanation>
+				Move this dish to a different category
+			</div>
+			&nbsp;&nbsp;
+			<div class=admin-modal-right>
+				<select class=move-dish-to-category-select></select>
+				&nbsp;&nbsp;
+				<div class="move-dish-to-category-button admin-button-workflow">move</div>
+			</div>
+		</div>
+		<div class=admin-modal-item>
+			<div class=admin-modal-explanation>
+				Create a new copy of this dish in the same or another category.
+			</div>
+			&nbsp;&nbsp;
+			<div class=admin-modal-right>
+				<select class=copy-dish-to-category-select></select>
+				&nbsp;&nbsp;
+				<div class="copy-dish-to-category-button admin-button-workflow">copy</div>
+			</div>
+		</div>
+		<div class=admin-modal-item>
+			<div class=admin-modal-explanation>
+				Copy the options for this dish to another dish.
+			</div>
+			&nbsp;&nbsp;
+			<div class=admin-modal-right>
+				<select class=copy-options-to-dish-select></select>
+				&nbsp;&nbsp;
+				<div class="copy-options-to-dish-button admin-button-workflow">copy</div>
+			</div>
+		</div>
+		<div class=admin-modal-item>
+			<div class=admin-modal-right>
+				<div class="lightning-cancel admin-button-workflow">do nothing</div>
+			</div>
 		</div>
 	</div>
 

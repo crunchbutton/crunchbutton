@@ -67,11 +67,12 @@ class Controller_admin_restaurants extends Crunchbutton_Controller_Account
 
 		/* @var $restaurant Crunchbutton_Restaurant */
 		$this->restaurant = $restaurant;
+		c::view()->restaurant = $restaurant;
 
 		if (c::getPagePiece($page_piece_index) == 'new') {
-			$this->_restaurantForm();
+			$restaurant->save();
+			$this->_form();
 		} elseif ($restaurant->id_restaurant) {
-			c::view()->restaurant = $restaurant;
 			switch (c::getPagePiece($page_piece_index+1)) {
 				case 'pay':
 					c::view()->display('admin/restaurants/pay');

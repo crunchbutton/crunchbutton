@@ -1,18 +1,5 @@
 // admin_restaurant.js
 
-// TODO
-// 
-// features
-//	 menu
-//	 change hours so you can do multiples
-//	 allow for validation functions for each input field that get called on change
-//		 possibly use intro.js
-//
-// nice to have
-//	 include link to img editing
-//	 improvements from github issue
-//
-
 
 var DEBUG = {}
 
@@ -158,9 +145,39 @@ var WIDGET = {
 		else $(self.dom).removeAttr('id');
 
 		self.widgets = {}; // to keep track of any js objects
-		// TODO
-		//	 copy items between parent items
-		//	 unlink linked items
+
+		// broadcasting functionality
+		$(self.dom).on('change', '.broadcast', function(event) {
+			element = event.target;
+			class_names = element.className.split(/\s+/);
+			$.each(class_names, function(i, class_name) {
+				if(!/^broadcast-/.exec(class_name)) return;
+				if(element.type === 'text')
+					$(self.dom).find('.' + class_name).val($(element).val());
+				else if(['radio','checkbox'].indexOf(element.type) !== -1) {
+					$(self.dom).find('.' + class_name).prop('checked',
+						$(element).is(':checked'));
+				}
+			});
+		});
+		self.get_broadcast_class_name = function(sub_dom, selector, field_name, item_id) {
+			return 'broadcast-' + field_name + '-' + item_id;
+		};
+		self.clear_broadcast = function(sub_dom, selector) {
+			element = $(sub_dom).find(selector);
+			if(!element.className) return;
+			class_names = element.className.split(/\s+/);
+			$.each(class_names, function(i, class_name) {
+				if(/^broadcast/.exec(class_name)) $(element).removeClass(class_name);
+			});
+		};
+		self.add_broadcasting_field = function(sub_dom, selector, field_name, item_id) {
+			self.clear_broadcast(sub_dom, selector);
+			$(sub_dom).find(selector)
+				.addClass('broadcast')
+				.addClass(
+						self.get_broadcast_class_name(sub_dom, selector, field_name, item_id));
+		};
 
 		$('#add-menu-category').click(function() { self.add_category({duration:100}); });
 		self.add_category = function(args) {
@@ -220,6 +237,23 @@ var WIDGET = {
 						.attr('name', siblings.first().attr('name'))
 						.attr('type', siblings.first().attr('type'));
 			}
+
+			// set up broadcasting
+			self.add_broadcasting_field(
+					option_dom,
+					'input.admin-menu-option-name',
+					'option-name',
+					option.id_option);
+			self.add_broadcasting_field(
+					option_dom,
+					'input.admin-menu-option-price',
+					'option-price',
+					option.id_option);
+			self.add_broadcasting_field(
+					option_dom,
+					'input.admin-menu-option-default',
+					'option-default',
+					option.id_option);
 
 			if(!option.name) UTIL.focus_input(option_dom);
 			$(option_dom).find('.admin-menu-option-default')
@@ -287,6 +321,14 @@ var WIDGET = {
 				});
 			}
 			else {
+
+				// set up broadcasting
+				self.add_broadcasting_field(
+						option_group_dom,
+						'input.admin-menu-option-group-name',
+						'option-group-name',
+						option_group.id_option);
+
 				// evidently only 'select' boxes render properly on front end for now
 				$(option_group_dom).find('.admin-menu-option-group-type').prop('disabled', true);
 				$(option_group_dom).find('.admin-menu-option-group-type').val('select');
@@ -335,6 +377,206 @@ var WIDGET = {
 			});
 		};
 
+		this.add_options_to_dish = function(dish_dom, options_to_add) {
+
+			// if has a parent, it's an option in an option group
+			// if has a child, it's an option group
+			// if neither, it's a basic option
+			// have to loop through twice because we don't know what order they might come in
+
+			existing_options_in_dish = [];
+			$(dish_dom).find('.admin-menu-option-group').each(function(i, e) {
+				existing_options_in_dish.push($(e).find('.admin-menu-option-group-id').val());
+			});
+			$(dish_dom).find('.admin-menu-option').each(function(i, e) {
+				existing_options_in_dish.push($(e).find('.admin-menu-option-id').val());
+			});
+			option_groups = [];
+			options = [];
+			parent_ids = [];
+			for(i in options_to_add) {
+				o = options_to_add[i];
+				if(o.id_option_parent && !/basic/i.exec(o.id_option_parent)) {
+					options.push(o);
+					parent_ids.push(o.id_option_parent);
+					continue;
+				}
+				if(/basic/i.exec(o.id)) {
+					parent_ids.push(o.id);
+				}
+			}
+			for(i in options_to_add) {
+				o = options_to_add[i];
+				if(o.id_option_parent && !/basic/i.exec(o.id_option_parent)) continue;
+				if(parent_ids.indexOf(o.id) === -1) {
+					o.id_option_parent = 'BASIC';
+					options.push(o);
+					continue;
+				}
+				else {
+					option_groups.push(o);
+					continue;
+				}
+			}
+
+			while(option_groups.length) {
+				option_group = option_groups.splice(0, 1)[0];
+				if(existing_options_in_dish.indexOf(option_group.id) !== -1) continue;
+				self.add_option_group(dish_dom, option_group);
+			}
+			while(options.length) {
+				option = options.splice(0, 1)[0];
+				if(existing_options_in_dish.indexOf(option.id) !== -1) continue;
+				option_group_dom = $(dish_dom).find('.menu-option-group-' + option.id_option_parent).first();
+				self.add_option(option_group_dom, option);
+			}
+		};
+		this.add_dish = function(category_dom, dish, args) {
+			args = args || {};
+			dish_dom = $('#menu-dish-template').clone(true);
+			$(dish_dom).removeAttr('id');
+			$(dish_dom).addClass('menu-dish-' + dish.id_dish);
+			duration = args.duration || 0;
+			$(category_dom).find('.restaurant-dishes-container').first().append(dish_dom);
+			$(dish_dom).hide().show(duration);
+			this.apply_dish(dish_dom, dish);
+		};
+
+		this.copy_options_to_dish = function(dish_dom_from, dish_to_id) {
+			dish_dom_to = $('.admin-menu-dish-id[value=' + dish_to_id + ']')
+				.closest('.admin-menu-dish');
+			dummy_category_obj = { _dishes : [] };
+			this.flush_dish(dummy_category_obj, dish_dom_from);
+			dish_from = dummy_category_obj._dishes[0];
+			options = dish_from._options;
+			if(!options) return;
+			self.add_options_to_dish(dish_dom_to, options);
+		};
+
+		this.move_dish_to_category = function(dish_dom, category_id) {
+			category_dom = $('.admin-menu-category-id[value=' + category_id + ']')
+					.closest('.admin-menu-category');
+			$(dish_dom).appendTo($(category_dom).find('.restaurant-dishes-container'));
+			$(dish_dom).hide().show(100);
+		};
+
+		this.copy_dish_to_category = function(dish_dom, category_id) {
+			category_dom = $('.admin-menu-category-id[value=' + category_id + ']')
+					.closest('.admin-menu-category');
+			dummy_category_obj = { _dishes : [] };
+			this.flush_dish(dummy_category_obj, dish_dom);
+			dish = dummy_category_obj._dishes[0];
+			dish.id = dish.id_dish = UTIL.create_unique_id();
+			this.add_dish(category_dom, dish, {duration:100});
+		};
+
+		this.dish_lightning = function(dish_dom) {
+
+			dish_id = $(dish_dom).find('input.admin-menu-dish-id').val();
+			dish_name = $(dish_dom).find('input.admin-menu-dish-name').val();
+			category_id = $(dish_dom)
+					.closest('.admin-menu-category')
+					.find('input.admin-menu-category-id').val();
+
+			modal_dom = $('#admin-dish-lightning-modal');
+			$(modal_dom).dialog({
+				modal : true,
+				show : { effect : 'drop', duration : 100, direction : 'up', },
+				hide : { effect : 'drop', duration : 100, direction : 'up', },
+				resizable : false,
+				width : '400px',
+			});
+
+			// override some of the stupid jqueryui crap
+			$('.ui-widget-overlay').click(function() {
+				$('#admin-dish-lightning-modal').dialog('close');
+			});
+			$('.ui-dialog-titlebar').addClass('hidden');
+			$('#admin-dish-lightning-modal').find('.lightning-cancel').click(function() {
+				$('#admin-dish-lightning-modal').dialog('close');
+			});
+
+			$(modal_dom).find('.admin-modal-title').text(dish_name);
+			
+			select_element_1 = $(modal_dom)
+					.find('select.move-dish-to-category-select')
+					.html('');
+			select_element_2 = $(modal_dom)
+					.find('select.copy-dish-to-category-select')
+					.html('');
+			select_element_3 = $(modal_dom)
+					.find('select.copy-options-to-dish-select')
+					.html('<option value=>Choose...</option>');
+
+			$('.admin-menu-category').each(function(i, category_dom) {
+				c_id = $(category_dom).find('input.admin-menu-category-id').val();
+				c_name = $(category_dom).find('input.admin-menu-category-name').val();
+				if(!c_id || !c_name) return;
+				$(select_element_1)
+						.append('<option></option>').find('option').last()
+						.val(c_id).text(c_name);
+				$(select_element_2)
+						.append('<option></option>').find('option').last()
+						.val(c_id).text(c_name);
+				category_optgroup_3 = $(select_element_3)
+						.append('<optgroup></optgroup>')
+						.find('optgroup').last()
+						.attr('label', c_name);
+				$(category_dom)
+						.find('.admin-menu-dish').each(function(j, dish_dom) {
+								d_id = $(dish_dom).find('input.admin-menu-dish-id').val();
+								d_name = $(dish_dom).find('input.admin-menu-dish-name').val();
+								if(!d_id || !d_name) return;
+								$(category_optgroup_3).append('<option></option>')
+										.find('option').last()
+										.val(d_id).text(d_name);
+						});
+			});
+			select_element_1.find('option[value=' + category_id + ']')
+					.attr('disabled', 'disabled');
+			select_element_2.val(category_id);
+			select_element_3.find('option[value=' + dish_id + ']')
+					.attr('disabled', 'disabled');
+
+			$(modal_dom).find('.move-dish-to-category-button').first()
+				.off('click.move-dish-to-category-button')
+				.on(
+					'click.move-dish-to-category-button',
+					(function() {
+						return function() {
+							self.move_dish_to_category(
+									dish_dom,
+									$(modal_dom).find('select.move-dish-to-category-select').val());
+							$(modal_dom).dialog('close');
+						};
+					})());
+			$(modal_dom).find('.copy-dish-to-category-button').first()
+				.off('click.copy-dish-to-category-button')
+				.on(
+					'click.copy-dish-to-category-button',
+					(function() {
+						return function() { 
+							self.copy_dish_to_category(
+									dish_dom, 
+									$(modal_dom).find('select.copy-dish-to-category-select').val());
+							$(modal_dom).dialog('close');
+						};
+					})());
+			$(modal_dom).find('.copy-options-to-dish-button').first()
+				.off('click.copy-options-to-dish-button')
+				.on(
+					'click.copy-options-to-dish-button',
+					(function() {
+						return function() {
+							dish_to_id = $(modal_dom).find('select.copy-options-to-dish-select').val();
+							if(!dish_to_id) return;
+							self.copy_options_to_dish(
+									dish_dom, dish_to_id);
+							$(modal_dom).dialog('close');
+						};
+					})());
+		};
+
 		this.apply_dish = function(dish_dom, dish) {
 			// 'view' button
 			$(dish_dom).find('.details-button').first().click(function() {
@@ -361,6 +603,11 @@ var WIDGET = {
 				},
 				{duration:100});
 			});
+
+			$(dish_dom).find('.dish_lightning').first().click(function() {
+				self.dish_lightning(dish_dom);
+			});
+
 			$(dish_dom).find('.move_dish_down').first().click(function() {
 				next_dish_dom = $(dish_dom).next('.admin-menu-dish');
 				if(!next_dish_dom.length) return;
@@ -387,45 +634,18 @@ var WIDGET = {
 				field = fields[i];
 				$(dish_dom).find('.admin-menu-dish-' + field).val(dish[field]);
 			}
+			$(dish_dom).find('.admin-menu-dish-expand-view')
+          .prop('checked', parseInt(dish['expand_view']));
 
 			if(!dish.name) UTIL.focus_input(dish_dom);
 
-			// if has a parent, it's an option in an option group
-			// if has a child, it's an option group
-			// if neither, it's a basic option
-			// have to loop through twice because we don't know what order they might come in
-
-			basic_option_group_id = 'dish_' + dish.id_dish + '_basic_options';
-			option_groups = [];
-			options = [];
-			parent_ids = [];
-			for(i in dish._options) {
-				o = dish._options[i];
-				if(o.id_option_parent) {
-					options.push(o);
-					parent_ids.push(o.id_option_parent);
-					continue;
-				}
-			}
-			for(i in dish._options) {
-				o = dish._options[i];
-				if(o.id_option_parent) continue;
-				if(parent_ids.indexOf(o.id) === -1) {
-					o.id_option_parent = basic_option_group_id;
-					options.push(o);
-					continue;
-				}
-				else {
-					option_groups.push(o);
-					continue;
-				}
-			}
-
-			option_groups.unshift({
+			options = dish._options;
+			if(!options) options = [];
+			options.unshift({
 				basic_group : 1,
-				id : basic_option_group_id,
-				id_dish_option : basic_option_group_id,
-				id_option : basic_option_group_id,
+				id : 'BASIC',
+				id_dish_option : null,
+				id_option : 'BASIC',
 				id_option_parent : null,
 				name : 'Checkbox Options',
 				price : '0.00',
@@ -434,25 +654,8 @@ var WIDGET = {
 				sort : '0',
 				type : 'check',
 			});
-			while(option_groups.length) {
-				option_group = option_groups.splice(0, 1)[0];
-				this.add_option_group(dish_dom, option_group);
-			}
-			while(options.length) {
-				option = options.splice(0, 1)[0];
-				option_group_dom = $(dish_dom).find('.menu-option-group-' + option.id_option_parent).first();
-				this.add_option(option_group_dom, option);
-			}
-		};
-		this.add_dish = function(category_dom, dish, args) {
-			args = args || {};
-			dish_dom = $('#menu-dish-template').clone(true);
-			$(dish_dom).removeAttr('id');
-			$(dish_dom).addClass('menu-dish-' + dish.id_dish);
-			duration = args.duration || 0;
-			$(category_dom).find('.restaurant-dishes-container').first().append(dish_dom);
-			$(dish_dom).hide().show(duration);
-			this.apply_dish(dish_dom, dish);
+			self.add_options_to_dish(dish_dom, options);
+
 		};
 		this.apply_category = function(category_dom, category) {
 			fields = ['name','id','loc','sort'];
@@ -506,7 +709,6 @@ var WIDGET = {
 				$(self.dom).find('.admin-menu-categories').first().append(category_dom);
 				this.apply_category(category_dom, category);
 			}
-			// TODO figure out and indicate linked items
 		};
 		this.flush_option = function(dish, option_group, option_dom) {
 			option = {};
@@ -546,6 +748,17 @@ var WIDGET = {
 			option_group['price_linked'] = '0';
 			option_group['prices'] = [];
 
+			if(option_group['type'] === 'select') {
+				if($(option_group_dom)
+						.find('input.admin-menu-option-default')
+						.filter(':checked')
+						.length < 1) {
+					$(option_group_dom)
+							.find('input.admin-menu-option-default')
+							.first()
+							.prop('checked', 1);
+				}
+			}
 			$(option_group_dom).find('.admin-menu-option').each(function(index, option_dom) {
 				self.flush_option(dish, option_group, option_dom);
 			});
@@ -573,6 +786,9 @@ var WIDGET = {
 			dish['id_restaurant'] = ADMIN.id_restaurant;
 			dish['type'] = 'dish';
 			dish['_options'] = [];
+			dish['expand_view'] = $(dish_dom).find('.admin-menu-dish-expand-view')
+					.is(':checked') ? '1' : '0';
+
 			$(dish_dom).find('.admin-menu-option-group').each(function(index, option_group_dom) {
 				self.flush_option_group(dish, option_group_dom);
 			});
@@ -613,7 +829,6 @@ var WIDGET = {
 			restaurant._categories = categories;
 		};
 		this.validate = function(invalid_list) { 
-			// TODO
 		};
 		this.remove = function() { self.dom.remove(); }
 		this.reset_dom = function() {
@@ -783,7 +998,6 @@ var ADMIN = {
 				text : ['open', 'closed'],
 				field_name : 'open_for_business',
 		});
-		DEBUG['a'] = w;
 		w = UTIL.create_widget('toggle', $('#restaurant-cash-container'), {field_name:'cash'});
 		w = UTIL.create_widget('toggle', $('#restaurant-credit-container'), {field_name:'credit'});
 		w = UTIL.create_widget('toggle', $('#restaurant-delivery-container'), {field_name:'delivery'});
@@ -824,6 +1038,7 @@ var ADMIN = {
 						ADMIN.restaurant_original = UTIL.deep_copy(rsp);
 					}
 					ADMIN.restaurant = rsp;
+					window.history.pushState(null, null, ADMIN.restaurant.id_restaurant);
 					DOM_MAP.apply();
 					ADMIN.save_is_safe = true;
 					UTIL.show_msg('Restaurant loaded.');
@@ -914,6 +1129,7 @@ var DOM_MAP = {
 			'#save-button'		: ADMIN.restaurant_save,
 			'#revert-button'	: ADMIN.restaurant_revert,
 			'#legacy-button'	: UTIL.go_to_legacy_view,
+			'#view-on-site-button' : UTIL.go_to_site_view,
 			'#copy-tue-from-mon' : UTIL.copy_field('#restaurant-hours-mon','#restaurant-hours-tue'),
 			'#copy-wed-from-tue' : UTIL.copy_field('#restaurant-hours-tue','#restaurant-hours-wed'),
 			'#copy-thu-from-wed' : UTIL.copy_field('#restaurant-hours-wed','#restaurant-hours-thu'),
@@ -964,7 +1180,40 @@ var DOM_MAP = {
 			},
 			widget : [], // a list of widgets supporting 'apply' and 'flush' funcs etc
 			func : {
-				'#restaurant-address': {
+				'#button-fax' : {
+					apply : function(restaurant, element) { 
+						$(element).attr('href', '/admin/restaurants/' + restaurant.id_restaurant + '/fax');
+					},
+					flush : function(restaurant, element) { },
+				},
+				'#button-pay' : {
+					apply : function(restaurant, element) { 
+						$(element).attr('href', '/admin/restaurants/' + restaurant.id_restaurant + '/pay');
+					},
+					flush : function(restaurant, element) { },
+				},
+				'#view-on-site-button' : {
+					apply : function(restaurant, element) { 
+						$(element).attr('href', '/food-delivery/' + restaurant.id_restaurant);
+					},
+					flush : function(restaurant, element) { },
+				},
+				'#view-on-site-button' : {
+					apply : function(restaurant, element) { 
+						$(element).attr('href', '/food-delivery/' + restaurant.id_restaurant);
+					},
+					flush : function(restaurant, element) { },
+				},
+				'#restaurant-image' : {
+					apply : function(restaurant, element) {
+						$(element).find('a').attr(
+								'href', 
+								'/admin/restaurants/' + restaurant.id_restaurant + '/image');
+						$(element).find('img').attr('src', restaurant.img);
+					},
+					flush : function(restaurant, element) { },
+				},
+				'#restaurant-address' : {
 					apply : function(restaurant, element) { element.focusout(); },
 					flush : function(restaurant, element) { },
 				},
