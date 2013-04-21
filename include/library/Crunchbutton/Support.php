@@ -15,9 +15,9 @@ class Crunchbutton_Support extends Cana_Table {
 	
 	public function queNotify() {
 		$support = $this;
-		c::timeout(function() use($support) {
+		// c::timeout(function() use($support) {
 			$support->notify();
-		}, 100); 
+		// }, 100); 
 	}
 
 	public function getByTwilioSessionId( $id_session_twilio ){

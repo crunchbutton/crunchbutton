@@ -1155,6 +1155,10 @@ html[xmlns] .clearfix {
 		position: absolute;
 		left: 50%;
 	}
+	.credit-card-ok{
+		background: #FFF url( ../images/creditcard-ok.png ) no-repeat !important;
+		background-position: 145px 3px !important;
+	}
 	.fb-like-desktop {
 		display: none !important;
 	}
@@ -1972,6 +1976,10 @@ html[xmlns] .clearfix {
 	}
 	input[name="pay-card-number"] {
 		width : 200px;
+	}
+	.credit-card-ok{
+		background: #FFF url( ../images/creditcard-ok.png ) no-repeat !important;
+		background-position: 185px 5px !important;
 	}
 	.payment-card-info {
 		margin-left: 395px;
@@ -2823,6 +2831,7 @@ strong {
 	.card-discover{
 		background: url( ../images/payment/Discover-40.png );
 	}
+
 .gift-left{
 	font-size: 11px;
 	font-weight: normal;
