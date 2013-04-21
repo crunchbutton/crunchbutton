@@ -1047,7 +1047,8 @@ var ADMIN = {
 	restaurant_revert : function() {
 		ADMIN.restaurant = ADMIN.restaurant_original;
 		DOM_MAP.apply();
-		ADMIN.restaurant_save();
+		UTIL.show_msg('Click "save" to save the reverted version.');
+		// ADMIN.restaurant_save();
 	},
 	restaurant_save : function() {
 		validation_warnings = DOM_MAP.validate();
