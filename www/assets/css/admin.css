@@ -855,6 +855,11 @@ table.list tr:nth-of-type(even) {
 	font-family: serif;
 }
 
+.admin-item-right input[type=checkbox],
+.admin-item-right input[type=radio] {
+	width: 15px;
+}
+
 .admin-item-right textarea {
 	width: 98%;
 	font-size: 16px;
@@ -923,6 +928,10 @@ table.list tr:nth-of-type(even) {
 	padding-right: 15px;
 }
 
+.admin-item-col-no-pad {
+	display: inline-block;
+}
+
 .position-relative {
 	position: relative;
 }
@@ -935,6 +944,7 @@ table.list tr:nth-of-type(even) {
 }
 
 .admin-button-workflow, .admin-button-workflow-fit, .admin-button-workflow-shrink {
+	color: #555555;
 	text-align: center;
 	display: inline-block;
 	border: 1px solid #888888;
@@ -1021,6 +1031,39 @@ input:disabled {
 
 .vertical-middle {
 	vertical-align: middle;
+}
+
+#restaurant-image img {
+	width: 100%;
+}
+
+.admin-modal-item {
+	display: block;
+	width: 100%;
+	min-height: 20px;
+	margin: 10px 0px 5px 0px;
+	border-top: 1px solid #888888;
+	padding-top: 5px;
+}
+
+.admin-modal-title {
+  font-family: sans-serif;
+  font-size: 16px;
+	padding: 5px 0px 5px 0px;
+}
+
+.admin-modal-explanation {
+	margin-bottom: 5px;
+	font-style: oblique;
+}
+
+.admin-modal-right {
+	float: right;
+}
+
+.hr-visible {
+	border-bottom: 1px solid #888888;
+	margin: 7px 0px 7px 0px;
 }
 
 

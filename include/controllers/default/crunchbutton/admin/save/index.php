@@ -1,6 +1,7 @@
 <?php
 
 class Controller_admin_save extends Crunchbutton_Controller_Rest {
+
 	public function init() {
 		$req = $this->request();
 		$rsp = [];

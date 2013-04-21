@@ -266,6 +266,10 @@ class Crunchbutton_Restaurant extends Cana_Table
 				'type' => 'dishes'
 			]);
 	
+		// maintain a mapping of client-side-generated ids so that we can faithfully
+		// generate server-side-ids. if they were the same client-side object, they
+		// should be the same server-side
+		$cs_id_map = [];
 
 		if ($newDishes) {
 			foreach ($newDishes as $dish) {
@@ -275,6 +279,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 				$dishO->name          = $dish['name'];
 				$dishO->description   = $dish['description'];
 				$dishO->price         = $dish['price'];
+				$dishO->expand_view   = $dish['expand_view'];
 				$dishO->sort          = isset($dish['sort']) ? $dish['sort'] : 0;
 				if (isset($dish['id_category']) && $dish['id_category']) {
 					$dishO->id_category = $dish['id_category'];
@@ -295,12 +300,25 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 						} else {
 
+							$cs_id = '';
+							if(preg_match('/^[^\d]/', $optionGroup['id_option'])) {
+								$cs_id = $optionGroup['id_option'];
+								if(isset($cs_id_map[$cs_id])) {
+									$optionGroup['id_option'] = $cs_id_map[$cs_id];
+								}
+							}
+
 							$group = new Option($optionGroup['id_option']);
 							$group->name = $optionGroup['name'];
 							$group->price_linked = $optionGroup['price'];
 							$group->type = $optionGroup['type'];
 							$group->id_restaurant = $this->id_restaurant;
 							$group->save();
+
+							if($cs_id) {
+								$cs_id_map[$cs_id] = $group->id_option;
+							}
+
 							$parent = $group->id_option;
 							$newOptions[$group->id_option] = $group->id_option;
 
@@ -325,6 +343,14 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 								$_debug_opts[] = $opt;
 
+								$cs_id = '';
+								if(preg_match('/^[^\d]/', $opt['id_option'])) {
+									$cs_id = $opt['id_option'];
+									if(isset($cs_id_map[$cs_id])) {
+										$opt['id_option'] = $cs_id_map[$cs_id];
+									}
+								}
+
 								$option                   = new Option($opt['id_option']);
 								$option->id_restaurant    = $this->id_restaurant;
 								$option->id_option_parent = $parent;
@@ -333,6 +359,11 @@ class Crunchbutton_Restaurant extends Cana_Table
 								$option->active           = 1;
 								$option->type             = 'check';
 								$option->save();
+
+								if($cs_id) {
+									$cs_id_map[$cs_id] = $option->id_option;
+								}
+
 								$newOptions[$option->id_option] = $option->id_option;
 								$opt['default'] = 
 										(in_array($opt['default'], ['true','1',1]) ? 1 : 0);
