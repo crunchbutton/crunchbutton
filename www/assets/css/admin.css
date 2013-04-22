@@ -915,6 +915,7 @@ table.list tr:nth-of-type(even) {
 	width: 12%;
 	display: inline-block;
 	padding-right: 15px;
+	vertical-align: top;
 }
 
 .admin-item-col-tab {
@@ -1066,6 +1067,9 @@ input:disabled {
 	margin: 7px 0px 7px 0px;
 }
 
+.admin-item-label {
+	min-height: 30px;
+}
 
 
 

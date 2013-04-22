@@ -17,6 +17,8 @@
 			<a href=#vitals>vitals</a> 
 			<a href=#menu>menu</a> 
 			<a href=#notes>notes</a> 
+			<a href=# class=button-fax>fax</a> 
+			<a href=# class=button-pay>pay</a> 
 		</div>
 		<div id=admin-top-button-group>
 			<a target='_blank' id=view-on-site-button><div class=admin-button>View on Site</div></a>
@@ -158,6 +160,7 @@
 			<div class=admin-item-name>Hours</div>
 			<div class=admin-item-desc>restaurant's actual open hours</div>
 			<div class=admin-item-desc>e.g. 12PM - 2:30AM</div>
+			<div class=admin-item-desc>use a comma for multiple time segments</div>
 		</div>
 		<div class=admin-item-right id=restaurant-hours>
 			<div class=admin-item-right-row>
@@ -239,7 +242,7 @@
 	<div class=admin-item>
 		<div class=admin-item-left>
 			<div class=admin-item-name>Transactions</div>
-			<div class=admin-item-desc>allowed methods</div>
+			<div class=admin-item-desc>allowed payment methods</div>
 		</div>
 		<div class=admin-item-right>
 			<div class=admin-item-col-small>
@@ -249,14 +252,6 @@
 			<div class=admin-item-col-small>
 				Credit
 				<div id=restaurant-credit-container></div>
-			</div>
-			<div class=admin-item-col-small>
-				Delivery
-				<div id=restaurant-delivery-container></div>
-			</div>
-			<div class=admin-item-col-small>
-				Takeout
-				<div id=restaurant-takeout-container></div>
 			</div>
 		</div>
 	</div>
@@ -268,26 +263,30 @@
 		</div>
 		<div class=admin-item-right>
 			<div class=admin-item-col-small>
-				Delivery minimum ($)
+				<div class=admin-item-label>Delivery</div>
+				<div id=restaurant-delivery-container></div>
+			</div>
+			<div class=admin-item-col-small>
+				<div class=admin-item-label>Delivery minimum ($)</div>
 				<input type=input id=restaurant-delivery-min />
 			</div>
 			<div class=admin-item-col-small>
-				Based on
+				<div class=admin-item-label>Based on</div>
 				<select id=restaurant-delivery-min-amt>
 					<option value=subtotal>Subtotal</option>
 					<option value=total>Total</option>
 				</select>
 			</div>
 			<div class=admin-item-col-small>
-				Delivery fee ($)
+				<div class=admin-item-label>Delivery fee ($)</div>
 				<input type=input id=restaurant-delivery-fee />
 			</div>
 			<div class=admin-item-col-small>
-				Radius (miles)
+				<div class=admin-item-label>Radius (miles)</div>
 				<input type=input id=restaurant-delivery-radius />
 			</div>
 			<div class=admin-item-col-small>
-				Est. time (minutes)
+				<div class=admin-item-label>Est. time (minutes)</div>
 				<input type=input id=restaurant-delivery-estimated-time />
 			</div>
 		</div>
@@ -300,7 +299,11 @@
 		</div>
 		<div class=admin-item-right>
 			<div class=admin-item-col-small>
-				Est. time (minutes)
+				<div class=admin-item-label>Takeout</div>
+				<div id=restaurant-takeout-container></div>
+			</div>
+			<div class=admin-item-col-small>
+				<div class=admin-item-label>Est. time (minutes)</div>
 				<input type=input id=restaurant-pickup-estimated-time />
 			</div>
 		</div>
@@ -348,10 +351,10 @@
 		</div>
 		<div class=admin-item-right>
 			<div class=admin-item-col-med>
-				<a id=button-pay target='_blank'><div class=admin-button-workflow>send payment</div></a>
+				<a class=button-pay target='_blank'><div class=admin-button-workflow>send payment</div></a>
 			</div>
 			<div class=admin-item-col-med>
-				<a id=button-fax target='_blank'><div class=admin-button-workflow>send a fax</div></a>
+				<a class=button-fax target='_blank'><div class=admin-button-workflow>send a fax</div></a>
 			</div>
 		</div>
 	</div>
