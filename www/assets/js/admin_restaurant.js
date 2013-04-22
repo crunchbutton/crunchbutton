@@ -1181,13 +1181,13 @@ var DOM_MAP = {
 			},
 			widget : [], // a list of widgets supporting 'apply' and 'flush' funcs etc
 			func : {
-				'#button-fax' : {
+				'.button-fax' : {
 					apply : function(restaurant, element) { 
 						$(element).attr('href', '/admin/restaurants/' + restaurant.id_restaurant + '/fax');
 					},
 					flush : function(restaurant, element) { },
 				},
-				'#button-pay' : {
+				'.button-pay' : {
 					apply : function(restaurant, element) { 
 						$(element).attr('href', '/admin/restaurants/' + restaurant.id_restaurant + '/pay');
 					},
