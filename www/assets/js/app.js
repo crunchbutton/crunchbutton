@@ -440,6 +440,10 @@ App.cart = {
 		//el.fadeIn();
 		el.show();
 
+		if( parseInt( App.cache( 'Dish', item ).expand_view ) > 0 ){
+			App.cart.customize( el );
+		}
+
 		App.cart.updateTotal();
 
 		App.track('Dish added', {
