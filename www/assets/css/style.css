@@ -299,6 +299,7 @@ b {
 		display: block;
 		font-size: 15px;
 		font-weight: bold;
+		width: 290px;
 	}
 
 .restaurant-item-title {
@@ -2866,4 +2867,24 @@ strong {
 	font-weight: bold;
 	margin-top: 7px;
 	position: absolute;
+}
+.address-problem-message{
+	color: red;
+	display: none;
+	font-size: 12px;
+	font-weight: bold;
+	margin: 0 0 10px 115px;
+	width: 300px;
+}
+.address-processing{
+	background: #FFF url( ../images/address-processing.gif ) no-repeat !important;
+	background-position: 385px 5px !important;
+}
+.address-ok{
+	background: #FFF url( ../images/address-ok.png ) no-repeat !important;
+	background-position: 382px 5px !important;
+}
+.address-problem{
+	background: #FFF url( ../images/address-problem.png ) no-repeat !important;
+	background-position: 382px 5px !important;
 }
