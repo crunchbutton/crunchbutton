@@ -62,19 +62,64 @@ var Restaurant = function(id) {
 		 */
 		var minimumTime = 15;
 		var today       = Date.today().toString('ddd').toLowerCase();
+		var tomorrow = Date.today().add(1).days().toString('ddd').toLowerCase();
+
 		if (this._hours == undefined ||  this._hours[today] == undefined) {
 			return false;
 		}
 
 		todayHours  = this._hours[today];
+
+		// Check the time it will open and close tomorrow
+		if( this._hours[ tomorrow ] ){
+			var tomorrowHours = this._hours[tomorrow];
+			var tomorrowItOpensAt = tomorrowHours[0][0];
+			var tomorrowItClosesAt = tomorrowHours[0][1];
+		} else {
+			var tomorrowItOpensAt = false;
+			var tomorrowItClosesAt = false;
+		}
+
 		for (i in todayHours) {
 			var openTime  = Date.parse(todayHours[i][0]);
 			var closeTime = Date.parse(todayHours[i][1]);
+			
+			var nextHour = parseInt( i ) + 1;
+			if( todayHours[ nextHour ] ){
+				var nextHourOpenTime = todayHours[ nextHour ][0];
+				var nextHourCloseTime = todayHours[ nextHour ][1];
+			} else {
+				var nextHourOpenTime = false;
+				var nextHourCloseTime = false;
+			}
+
+			var previousHour = parseInt( i ) - 1;
+			if( todayHours[ previousHour ] ){
+				var previousHourOpenTime = todayHours[ previousHour ][0];
+				var previousHourCloseTime = todayHours[ previousHour ][1];
+			} else {
+				var previousHourOpenTime = false;
+				var previousHourCloseTime = false;
+			}
+
 			// there is no real 24:00 hours, it's 00:00 for tomorrow
-			if (todayHours[i][1] == '24:00') {
+			if (todayHours[i][1] == '24:00' || todayHours[i][1] == '00:00') {
 				closeTime = Date.parse('00:00');
+				// if it opens tomorrow at 00:00 it means it will no close today at 00:00
+				if( tomorrowItOpensAt == '00:00' || tomorrowItOpensAt == '0:00' ){
+					closeTime = Date.parse( tomorrowItClosesAt );
+				} 
+				// else if the next hour starts at 00:00 it means it will no close today at 00:00
+				else if( nextHourOpenTime == '00:00' || nextHourOpenTime == '0:00' ){
+					closeTime = Date.parse( nextHourCloseTime );
+				}
+				// else if the previous hour starts at 00:00 it means it will no close today at 00:00
+				else if( previousHourOpenTime == '00:00' || previousHourOpenTime == '0:00' ){
+					closeTime = Date.parse( previousHourCloseTime );
+				} 
 				closeTime.addDays(1);
 			}
+
 			// if closeTime before openTime, then closeTime should be for tomorrow
 			if (closeTime.compareTo(openTime) == -1) {
 				closeTime.addDays(1);
