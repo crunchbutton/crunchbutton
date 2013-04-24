@@ -10,13 +10,15 @@
 <div class="admin-content-wrapper">
 	<div class="admin-content">
 
-		<select name="restaurant" class="chosen-select" style="width:280px;">
+		<select id="restaurant-id" class="chosen-select" style="width:280px;">
 			<option value="" selected>Choose...</option>
 			<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
 				<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
 			<? endforeach ; ?>
 		</select>
 		<div class="divider"></div>
+		<br>
+		<br>
 
 		<div class="new-restaurant admin-button-workflow">Create New</div>
 		<!-- <a href="/admin/restaurants/new"> -->
