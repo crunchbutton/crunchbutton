@@ -36,6 +36,23 @@
 
 					$food .= '</i>';
 				}
+
+				$withoutDefaultOptions = '';
+
+				$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+				$commas = ' ';
+				if( $optionsNotChoosen->count() ){
+					foreach( $optionsNotChoosen as $dish_option ){
+						$withoutDefaultOptions .= $commas . '<i> No ' . $dish_option->option()->name . '</i>';
+						$commas = ', ';
+					}
+				}
+
+				if ( $options->count() && $withoutDefaultOptions != '' ) {
+					$food .= '. ';
+				}
+				$food .= $withoutDefaultOptions;
+
 				?>
 				<?=$food?>
 			</td>
