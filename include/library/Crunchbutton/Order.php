@@ -804,11 +804,26 @@ class Crunchbutton_Order extends Cana_Table {
 					}
 					$foodItem .= preg_replace($pFind, $pReplace, $option->option()->name).$space.' ';
 				}
-				$foodItem = substr($foodItem, 0, -2).'. ';
+				$foodItem = substr($foodItem, 0, -2);
+			} 
 
-			} else {
-				$foodItem .= '. ';
+			$withoutDefaultOptions = '';
+
+			$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+			$commas = ' ';
+			if( $optionsNotChoosen->count() ){
+				foreach( $optionsNotChoosen as $dish_option ){
+					$withoutDefaultOptions .= $commas . 'No ' . $dish_option->option()->name;
+					$commas = $space . ' ';
+				}
 			}
+
+			if ( $options->count() && $withoutDefaultOptions != '' ) {
+				$foodItem .= $space;
+			}
+
+			$withoutDefaultOptions .= '.';
+			$foodItem .= $withoutDefaultOptions;
 
 			if ($type == 'phone') {
 				$foodItem .= ']]></Say><Pause length="2" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[';

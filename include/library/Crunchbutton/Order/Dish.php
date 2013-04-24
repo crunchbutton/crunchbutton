@@ -8,6 +8,23 @@ class Crunchbutton_Order_Dish extends Cana_Table {
 		return $this->_options;
 	}
 	
+	public function optionsDefaultNotChoosen() {
+		$query = 'SELECT d.* 
+								FROM 
+									dish_option d INNER JOIN `option` o ON o.id_option = d.id_option 
+								WHERE 
+									d.id_dish = ' . $this->id_dish . '
+									AND 
+										o.type = "check" 
+									AND 
+										d.default = 1 
+									AND 
+										o.id_option_parent IS NULL
+									AND 
+										d.id_option NOT IN ( SELECT id_option FROM order_dish_option WHERE id_order_dish = ' . $this->id_order_dish . ' )';
+		return Dish_Option::q($query);
+	}
+
 	public function dish() {
 		return Dish::q('select * from dish where id_dish="'.$this->id_dish.'"');
 	}
