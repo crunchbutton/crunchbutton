@@ -11,6 +11,7 @@ class Crunchbutton_Suggestion extends Cana_Table {
 	
 	public function queNotify() {
 		$suggestion = $this;
+		Log::debug( [ 'suggestion' => $suggestion->id_suggestion, 'action' => 'queNotify', 'type' => 'suggestion' ]);
 		Cana::timeout(function() use($suggestion) {
 			$suggestion->notify();
 		});
@@ -23,11 +24,15 @@ class Crunchbutton_Suggestion extends Cana_Table {
 
 		$message =
 			($this->user()->name ? $this->user()->name : 'A guest').
+			($this->user()->phone ? ' (' . $this->user()->phone . ')': '').
 			" suggested:\n\n".
 			$this->name."\n\n".
 			"at ".
 			$this->restaurant()->name.
-			"\n\n";
+			"\n\n (". $env . ")";
+
+		// Log
+		Log::debug( [ 'suggestion' => $this->id_suggestion, 'action' => 'starting send sms', 'type' => 'suggestion' ]);
 
 		$message = str_split($message, 160);
 		
@@ -38,6 +43,8 @@ class Crunchbutton_Suggestion extends Cana_Table {
 					'+1'.$phone,
 					$msg
 				);
+				// Log
+				Log::debug( [ 'suggestion' => $this->id_suggestion, 'message' => $message, 'phone' => $phone, 'type' => 'suggestion' ]);
 				continue;	
 			}
 		}
