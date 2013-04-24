@@ -67,6 +67,9 @@
 								<? foreach ($dish->options() as $option) : ?>
 									<li><?=$option->option()->name?></li>
 								<? endforeach ; ?>
+								<? foreach ( $dish->optionsDefaultNotChoosen() as $option ) {
+									?><li><i style="font-style:italic;">No <?=$option->option()->name?></i></li><?
+								} ?>
 								</ul>
 							<? endif ; ?>
 						</li>

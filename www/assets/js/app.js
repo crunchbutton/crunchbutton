@@ -1688,7 +1688,12 @@ $(function() {
 	});
 
 	$$('.cart-customize-check').tap( function() {
-		App.cart.customizeItem( $(this) );
+		// For some reason this tap event have to wait a little time before runs the customizeItem method
+		// if we ignore this time it will not read attr checked of the checkbox correctly
+		var checkbox = $(this);
+		setTimeout( function(){
+			App.cart.customizeItem( checkbox );
+		}, 1 );
 	});
 
 	$$('.cart-item-customize-item label').tap(function() {
