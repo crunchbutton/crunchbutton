@@ -754,7 +754,6 @@ App.cart = {
 				cartitem.options[cartitem.options.length] = item.val();
 
 			} else if(item.hasClass('cart-customize-check')) {
-
 				if (item.is(':checked')) {
 					cartitem.options[cartitem.options.length] = opt;
 				} else {
@@ -767,9 +766,7 @@ App.cart = {
 				}
 			}
 		}
-
 		App.cart.updateTotal();
-
 	},
 
 	/**
@@ -1686,16 +1683,17 @@ $(function() {
 		}
 	}, '.button-bottom');
 
-	$$('.cart-customize-check').tap(function() {
-		App.cart.customizeItem($(this));
-	});
-
 	$(document).on('change', '.cart-customize-select', function() {
 		App.cart.customizeItem($(this));
 	});
 
+	$$('.cart-customize-check').tap( function() {
+		App.cart.customizeItem( $(this) );
+	});
+
 	$$('.cart-item-customize-item label').tap(function() {
 		$(this).prev('input').checkToggle();
+		App.cart.customizeItem( $(this).prev('input') );
 	});
 
 	$(document).on('change', '[name="pay-tip"]', function() {
