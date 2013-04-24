@@ -38,10 +38,12 @@
 						<div class="check-content">
 							<table style="width:90%;">
 								<tbody>
+									<?php if( $this->suggestion->community()->name) { ?>
 									<tr>
 										<td class="label-sub">Community:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->community()->name;?></div></td>
 									</tr>
+									<?php } ?>
 									<tr>
 										<td class="label-sub">Restaurant:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->restaurant()->name;?></div></td>
@@ -64,6 +66,12 @@
 									<tr>
 										<td class="label-sub">User:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->user()->name;?></div></td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->suggestion->user()->phone ) { ?>
+									<tr>
+										<td class="label-sub">Phone:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->user()->phone;?></div></td>
 									</tr>
 									<?php } ?>
 									<tr>
