@@ -181,7 +181,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					case '9':
 					case '#':
 					case '*':
-						echo '<Gather action="/api/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="12" method="get">'
+						echo '<Gather action="/api/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 							.'<Say voice="'.c::config()->twilio->voice.'" loop="3">Please press 1 to confirm that you just received order number '.$order->id_order.'. Or press 2 and we will resend the order. . . .</Say>'
 							.'</Gather>';
 						break;
