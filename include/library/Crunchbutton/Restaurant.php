@@ -646,6 +646,10 @@ class Crunchbutton_Restaurant extends Cana_Table
 			// return true;
 		}
 
+		if(!$this->open_for_business) {
+			return false;
+		}
+
 		$hours = $this->hours();
 		$DeLorean = new TimeMachine($this->timezone);
 		$today    = $DeLorean->now();
