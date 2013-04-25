@@ -299,7 +299,7 @@ class Crunchbutton_App extends Cana_App {
 			$params['layout'] =  $this->config()->defaults->layout;
 		}
 		
-		print_r($params);
+
 
 		parent::buildView($params);
 		
