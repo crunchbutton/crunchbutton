@@ -201,6 +201,10 @@ body {
 	line-height: 1.4em;
 }
 
+.dish-item {
+	cursor: pointer;
+}
+
 /**
  * This rule shouldn't be required, doesn't make sense to me
  *
