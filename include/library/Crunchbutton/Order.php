@@ -133,7 +133,7 @@ class Crunchbutton_Order extends Cana_Table {
 				$this->name = c::user()->name;
 			}
 		}
-/*
+
 		if (!$this->restaurant()->open()) {
 			$errors['closed'] = 'This restaurant is closed.';
 
@@ -151,7 +151,7 @@ class Crunchbutton_Order extends Cana_Table {
 				$errors['debug']  = $debug;
 			}
 		}
-*/
+
 		if (!$this->restaurant()->meetDeliveryMin($this) && $this->delivery_type == 'delivery') {
 			$errors['minimum'] = 'Please meet the delivery minimum of '.$this->restaurant()->delivery_min.'.';
 		}
