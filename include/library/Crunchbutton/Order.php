@@ -964,6 +964,8 @@ class Crunchbutton_Order extends Cana_Table {
 		unset($out['id_user']);
 		unset($out['id']);
 		unset($out['id_order']);
+		
+		$out['id'] = $this->uuid;
 
 		$out['_restaurant_name'] = $this->restaurant()->name;
 		$out['user'] = $this->user()->uuid;

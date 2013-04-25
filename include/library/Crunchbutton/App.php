@@ -27,6 +27,8 @@ class Crunchbutton_App extends Cana_App {
 				break;
 			case 'crunchr.co':
 			case '_DOMAIN_':
+			case 'cockpit.crunchr.co':
+			case 'cockpit._DOMAIN_':
 				$env = 'live';
 				break;
 			case 'beta.crunchr.co':
@@ -35,6 +37,7 @@ class Crunchbutton_App extends Cana_App {
 			case 'dev.crunchr.co':
 				$env = 'dev';
 				break;
+			case 'cockpit.localhost':
 			case 'crunchbutton.localhost':
 				$env = 'local';
 				break;
@@ -131,10 +134,17 @@ class Crunchbutton_App extends Cana_App {
 			case 'wenzel.localhost':
 				$domain->theme = 'onebuttonwenzel';
 				break;
+			case 'cockpit.localhost':
+			case 'cockpit.crunchr.co':
+			case 'cockpit._DOMAIN_':
+				$domain->version = 'cockpit';
+				$domain->theme = 'default';
+				break;
 			default:
 				$domain->theme = 'crunchbutton';
 				break;
 		}
+
 		
 		$config = $this->config();
 
@@ -288,6 +298,8 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$params['layout'] =  $this->config()->defaults->layout;
 		}
+		
+		print_r($params);
 
 		parent::buildView($params);
 		
