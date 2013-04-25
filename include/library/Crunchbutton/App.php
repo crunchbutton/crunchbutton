@@ -99,6 +99,8 @@ class Crunchbutton_App extends Cana_App {
 								break;
 							default:
 								$params['env'] = 'local';
+								$_SERVER['__HTTP_HOST'] = $_SERVER['HTTP_HOST'];
+								$host_callback = $_SERVER['HTTP_HOST'];
 								break;
 						}
 						
