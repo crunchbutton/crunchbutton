@@ -58,12 +58,6 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				$log->date = date('Y-m-d H:i:s');
 				$log->save();
 
-				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
-					Log::debug([ 'order' => $order->id_order, 'action' => 'creating a confirmation call (phone)', 'host' => c::config()->host_callback, 'type' => 'notification' ]);
-					$order->_confirm_trigger = true;
-					$order->queConfirm();
-				}
-
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
 					.'<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">'
