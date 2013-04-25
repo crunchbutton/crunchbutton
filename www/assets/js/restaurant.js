@@ -198,8 +198,15 @@ var Restaurant = function(id) {
 	 *       offset = -(today.getTimezoneOffset()); // @todo: ensure this works on positive tz
 	 */
 	self.open = function() {
+
+		// this overrides everything
+		if(this.open_for_business === "0") {
+			this._open = false;
+			return false;
+		}
+
 		// If it doesn't have hours it is never open
-		if( !this._hours ){
+		if(!this._hours) {
 			this._open = false;
 			return false;
 		}
