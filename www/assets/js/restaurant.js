@@ -200,7 +200,7 @@ var Restaurant = function(id) {
 	self.open = function() {
 
 		// this overrides everything
-		if(!parseInt(this.open_for_business)) {
+		if(this.open_for_business === "0") {
 			this._open = false;
 			return false;
 		}
