@@ -907,11 +907,14 @@ App.cart = {
 			return;
 		}
 
+		// Removed temporally the feature to validate the user address. #946
+		App.isUserAddressOk = true;
+
 		// if it is a delivery order we need to check the address
 		if( order.delivery_type == 'delivery' ){
 			
 			// verify if the user typed his complete address (street name and number)	
-			if (!App.isUserAddressOk	) {
+			if ( !App.isUserAddressOk	) {
 				var success = function( results ) {
 					if( results[0] && results[0].geometry && results[0].geometry.location_type && 
 						( results[0].geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || results[0].geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
