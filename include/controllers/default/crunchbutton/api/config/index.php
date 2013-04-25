@@ -5,8 +5,8 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 		switch ($this->method()) {
 			case 'post':
 				if ($this->request()['ab']) {
-					echo 'saving';
-					print_r($this->request()['ab']);
+					// echo 'saving';
+					// print_r($this->request()['ab']);
 					c::auth()->set('ab', json_encode($this->request()['ab']));
 				}
 				break;
