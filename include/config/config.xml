@@ -159,7 +159,8 @@
 			<outgoingCustomer>+1_PHONE_</outgoingCustomer>
 			<outgoingRestaurant>+1_PHONE_</outgoingRestaurant>
 		</olddev>
-		<testnumber>_PHONE_</testnumber>
+		<testnumber>***REMOVED***</testnumber>
+		<!-- <testnumber>_PHONE_</testnumber> -->
 		<voice>male</voice>
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>
