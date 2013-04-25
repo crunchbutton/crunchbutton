@@ -14,6 +14,9 @@ var PAGE = {
 		$('#restaurant-id').change(function(event) {
 			document.location.href = '/admin/restaurants/' + event.target.value;
 		});
+		$('.new-restaurant').click(function() {
+			document.href.location = '/admin/restaurants/new';
+		});
 	},
 };
 

@@ -809,12 +809,14 @@ class Crunchbutton_Order extends Cana_Table {
 
 			$withoutDefaultOptions = '';
 
-			$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
-			$commas = ' ';
-			if( $optionsNotChoosen->count() ){
-				foreach( $optionsNotChoosen as $dish_option ){
-					$withoutDefaultOptions .= $commas . 'No ' . $dish_option->option()->name;
-					$commas = $space . ' ';
+			if( $dish->id_order_dish && $dish->id_dish ){
+				$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+				$commas = ' ';
+				if( $optionsNotChoosen->count() ){
+					foreach( $optionsNotChoosen as $dish_option ){
+						$withoutDefaultOptions .= $commas . 'No ' . $dish_option->option()->name;
+						$commas = $space . ' ';
+					}
 				}
 			}
 
