@@ -67,9 +67,11 @@
 								<? foreach ($dish->options() as $option) : ?>
 									<li><?=$option->option()->name?></li>
 								<? endforeach ; ?>
-								<? foreach ( $dish->optionsDefaultNotChoosen() as $option ) {
-									?><li><i style="font-style:italic;">No <?=$option->option()->name?></i></li><?
-								} ?>
+								<? if( $dish->id_order_dish && $dish->id_dish ){ 
+										foreach ( $dish->optionsDefaultNotChoosen() as $option ) {
+										?><li><i style="font-style:italic;">No <?=$option->option()->name?></i></li><?
+									} 
+								}?>
 								</ul>
 							<? endif ; ?>
 						</li>

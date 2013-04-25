@@ -17,6 +17,10 @@ class Crunchbutton_Hipchat_Notification extends Cana_Model {
 		self::sendNotification($msg);
 	}
 
+	public static function notifyOrder($order){
+		static::OrderPlaced($order);
+	}
+
 	public static function NewSupport($support) {
 		$msg = "A new customer service issue (#$support->id_support): ".
 			"$support->name, $support->phone, $support->message";
