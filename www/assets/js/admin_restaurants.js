@@ -11,17 +11,10 @@ $(document).ready(function() {
 var PAGE = {
 	init : function() {
 		$('.chosen-select').chosen();
-		$('.chosen-select').focus();
+		$('#restaurant-id').change(function(event) {
+			document.location.href = '/admin/restaurants/' + event.target.value;
+		});
 	},
 };
 
-
-/*
-    $(document).on('keyup', '.[name="order-search"]', function(e) {
-			      if (e.which == 13) {
-							        App.orders.load();
-											      } 
-						    }); 
-		*/
-		    
 

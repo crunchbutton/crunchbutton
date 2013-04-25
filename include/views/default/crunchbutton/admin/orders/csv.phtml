@@ -7,6 +7,8 @@
  */
 
 $headers = [
+	'Order ID',
+	'Restaurant ID',
 	'Restaurant Name',
 	'Customer name',
 	'Order Date',
@@ -60,6 +62,8 @@ echo implode(',', $headers)."\n";
 	
 	ob_start();
 ?>
+		"<?=$order->id_order			              // Order ID?>",
+		"<?=$order->restaurant()->id_restaurant // Restaurant ID?>",
 		"<?=$order->restaurant()->name          // Restaurant Name?>",
 		"<?=$order->name                        // Customer name?>",
 		"<?=$date->format('M jS Y')             // Order Date?>",
