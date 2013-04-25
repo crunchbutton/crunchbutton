@@ -344,7 +344,7 @@ function (e) {
         return u.async ? l : s(l, u)
     }, e.jsonp = function (t) {
         var r, i, s, o;
-        return t.async ? (i = "jsonp" + ++n, s = document.createElement("script"), o = {
+        return t.async ? (i = (("jsonp") + (++n)), s = document.createElement("script"), o = {
             abort: function () {
                 e(s).remove();
                 if (i in window) return window[i] = {}
