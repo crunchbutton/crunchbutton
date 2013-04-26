@@ -28,8 +28,8 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 						$support->id_user = c::user()->id_user;	
 					}
 					$support->save();
-					$support->queNotify();
 					echo $support->json();
+					$support->queNotify();
 				}
 
 			break;
