@@ -311,8 +311,10 @@ App.page.orders = function() {
 			}
 		});
 		$(document).on('touchclick', '.order-restaurant', function() {
-			var id_restaurant = $( this ).attr( 'id_restaurant' );
-			App.loadRestaurant( id_restaurant );
+			var permalink = $( this ).attr( 'permalink' );
+			var name = $( this ).attr( 'name' );
+			var loc = '/' + App.restaurants.permalink + '/' + permalink;
+			History.pushState({}, 'Crunchbutton - ' + name, loc);
 		});
 	});
 
