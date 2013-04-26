@@ -975,64 +975,61 @@ App.cart = {
 			return;
 		}
 
-		// Timeout to sound ends
-		setTimeout( function(){
-			$.ajax({
-				url: App.service + 'order',
-				data: order,
-				dataType: 'json',
-				type: 'POST',
-				complete: function(json) {
+		$.ajax({
+			url: App.service + 'order',
+			data: order,
+			dataType: 'json',
+			type: 'POST',
+			complete: function(json) {
 
-					json = $.parseJSON(json.responseText);
+				json = $.parseJSON(json.responseText);
 
-					if (json.status == 'false') {
-						var error = '';
-						for (x in json.errors) {
-							error += json.errors[x] + "\n";
-						}
-						App.track('OrderError', json.errors);
-						alert(error);
-
-					} else {
-						if (json.token) {
-							$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
-						}
-
-						$('.link-orders').show();
-
-						order.cardChanged = false;
-						App.justCompleted = true;
-
-						var totalItems = 0;
-
-						for (var x in App.cart.items) {
-							totalItems++;
-						}
-
-						$.getJSON('/api/config', App.processConfig);
-						App.cache('Order',json.uuid,function() {
-							App.track('Ordered', {
-								'total':this.final_price,
-								'subtotal':this.price,
-								'tip':this.tip,
-								'restaurant': App.restaurant.name,
-								'paytype': this.pay_type,
-								'ordertype': this.order_type,
-								'user': this.user,
-								'items': totalItems
-							});
-							
-							App.order.cardChanged = false;
-							delete App.order.tipHasChanged;
-							var loc = '/order/' + this.uuid;
-							History.pushState({},loc,loc);
-						});
+				if (json.status == 'false') {
+					var error = '';
+					for (x in json.errors) {
+						error += json.errors[x] + "\n";
 					}
-					App.busy.unBusy();
+					App.track('OrderError', json.errors);
+					alert(error);
+
+				} else {
+					if (json.token) {
+						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
+					}
+
+					$('.link-orders').show();
+
+					order.cardChanged = false;
+					App.justCompleted = true;
+
+					var totalItems = 0;
+
+					for (var x in App.cart.items) {
+						totalItems++;
+					}
+
+					$.getJSON('/api/config', App.processConfig);
+					App.cache('Order',json.uuid,function() {
+						App.track('Ordered', {
+							'total':this.final_price,
+							'subtotal':this.price,
+							'tip':this.tip,
+							'restaurant': App.restaurant.name,
+							'paytype': this.pay_type,
+							'ordertype': this.order_type,
+							'user': this.user,
+							'items': totalItems
+						});
+						
+						App.order.cardChanged = false;
+						delete App.order.tipHasChanged;
+						var loc = '/order/' + this.uuid;
+						History.pushState({},loc,loc);
+					});
 				}
-			});
-		}, 1500 );
+				App.busy.unBusy();
+			}
+		});
 
 	}, // end App.cart.submit()
 
