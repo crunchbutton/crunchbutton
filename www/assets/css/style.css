@@ -1111,7 +1111,6 @@ html[xmlns] .clearfix {
 
 .your-orders .dish-name {
 	width: 60%;
-	text-decoration: none !important;
 }
 
 .dish-name {
@@ -2913,4 +2912,7 @@ strong {
 .order-link{
 	display: inline-block;
 	margin-left: 8px;
+}
+.order-restaurant{
+	cursor: pointer;
 }

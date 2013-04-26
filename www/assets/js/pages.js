@@ -310,6 +310,10 @@ App.page.orders = function() {
 				user: App.user
 			}
 		});
+		$(document).on('touchclick', '.order-restaurant', function() {
+			var id_restaurant = $( this ).attr( 'id_restaurant' );
+			App.loadRestaurant( id_restaurant );
+		});
 	});
 
 	App.refreshLayout();
