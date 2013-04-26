@@ -823,12 +823,6 @@ App.cart = {
 		
 		App.busy.makeBusy();
 
-		// Play the crunch audio just once, when the user clicks at the Get Food button
-		if( !App.crunchSoundAlreadyPlayed ){
-			App.playAudio( 'get-food-audio' );
-			App.crunchSoundAlreadyPlayed = true;
-		}
-
 		var read = $('.payment-form').length ? true : false;
 
 		if (read) {
@@ -905,6 +899,12 @@ App.cart = {
 			App.busy.unBusy();
 			App.track('OrderError', errors);
 			return;
+		}
+
+		// Play the crunch audio just once, when the user clicks at the Get Food button
+		if( App.iOS() && !App.crunchSoundAlreadyPlayed ){
+			App.playAudio( 'get-food-audio' );
+			App.crunchSoundAlreadyPlayed = true;
 		}
 
 		// Removed temporally the feature to validate the user address. #946
@@ -993,6 +993,13 @@ App.cart = {
 					alert(error);
 
 				} else {
+
+					// Play the crunch audio just once, when the user clicks at the Get Food button
+					if( !App.crunchSoundAlreadyPlayed ){
+						App.playAudio( 'get-food-audio' );
+						App.crunchSoundAlreadyPlayed = true;
+					}
+
 					if (json.token) {
 						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
 					}
@@ -1009,7 +1016,8 @@ App.cart = {
 					}
 
 					$.getJSON('/api/config', App.processConfig);
-					App.cache('Order',json.uuid,function() {
+					
+					App.cache('Order',json.uuid, function() {
 						App.track('Ordered', {
 							'total':this.final_price,
 							'subtotal':this.price,
@@ -1025,6 +1033,7 @@ App.cart = {
 						delete App.order.tipHasChanged;
 						var loc = '/order/' + this.uuid;
 						History.pushState({},loc,loc);
+
 					});
 				}
 				App.busy.unBusy();

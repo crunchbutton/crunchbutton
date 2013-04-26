@@ -26,7 +26,6 @@ App.creditCard = {
 App.creditCard.validate = function( cardValue ){
 	var card = App.creditCard.detectType( cardValue );
 	var isValid = false;
-	console.log( card.size, cardValue.toString().length, card.length == cardValue.toString().length )
 	if( card.size == cardValue.toString().length ){
 		isValid = App.creditCard.luhn( cardValue );
 	}
