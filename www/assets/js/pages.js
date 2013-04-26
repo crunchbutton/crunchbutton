@@ -223,9 +223,6 @@ App.page.order = function(id) {
 		App.justCompleted = false;
 	}
 
-	$('.content').addClass('smaller-width');
-	$('.main-content').css('width','auto');
-	
 	// Just to make sure the user button will be shown
 	App.signin.checkUser();
 
@@ -243,6 +240,9 @@ App.page.order = function(id) {
 
 		App.cache('Restaurant',order.id_restaurant, function() {
 			var restaurant = this;
+		
+			$('.content').addClass('smaller-width');
+			$('.main-content').css('width','auto');
 
 			App.showPage({
 				title: 'Crunchbutton - Your Order',
