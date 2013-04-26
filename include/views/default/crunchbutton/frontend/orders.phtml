@@ -3,7 +3,7 @@
 	<ul class="resturant-dishes resturant-dish-container your-orders">
 		<% _.each(orders, function(order) { %>
 			<li>
-				<span class="dish-name order-restaurant" id_restaurant="<%= order.id_restaurant %>"><%= order._restaurant_name %></span>
+				<span class="dish-name order-restaurant" name="<%= order._restaurant_name%>" permalink="<%= order._restaurant_permalink %>" id_restaurant="<%= order.id_restaurant %>"><%= order._restaurant_name %></span>
 				<span class="dish-price"><%= order._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i,'$1/$2 $3') %> (<%= order._tz %>)</span>
 				<a class="order-link" href="javascript:;" data-id_order="<%= order.uuid %>">View confirmation</a>
 				<div class="divider"></div>		
