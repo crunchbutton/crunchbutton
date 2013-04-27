@@ -870,7 +870,7 @@ App.orders = {
 		$('.orders-loader').show();
 		$('.orders-content').html('');
 		$.ajax({
-			url: '/admin/orders/content',
+			url: '/orders/content',
 			data: App.orders.params(),
 			complete: function(content) {
 				$('.orders-content').html(content.responseText);
@@ -881,7 +881,7 @@ App.orders = {
 	export: function() {
 		var params = App.orders.params();
 		params.export = 'csv';
-		location.href = '/admin/orders/content?' + jQuery.param(params);
+		location.href = '/orders/content?' + jQuery.param(params);
 	}
 };
 
@@ -901,7 +901,7 @@ App.suggestions = {
 		$('.suggestions-loader').show();
 		$('.suggestions-content').html('');
 		$.ajax({
-			url: '/admin/suggestions/content',
+			url: '/suggestions/content',
 			data: App.suggestions.params(),
 			complete: function(content) {
 				$('.suggestions-content').html(content.responseText);
@@ -944,7 +944,7 @@ App.supportAdmin = {
 		$('.support-loader').show();
 		$('.support-content').html('');
 		$.ajax({
-			url: '/admin/support/content',
+			url: '/support/content',
 			data: App.supportAdmin.params(),
 			complete: function(content) {
 				$('.support-content').html(content.responseText);
@@ -969,7 +969,7 @@ App.credits = {
 		$('.credits-loader').show();
 		$('.credits-content').html('');
 		$.ajax({
-			url: '/admin/credits/content',
+			url: '/credits/content',
 			data: App.credits.params(),
 			complete: function(content) {
 				$('.credits-content').html(content.responseText);
@@ -1018,7 +1018,7 @@ App.credits = {
 						alert( 'Error at adding a new credit!' );
 					} else {
 						alert( 'Credit added!' );
-						location.href = '/admin/credits';
+						location.href = '/credits';
 					}
 				},
 				error: function( ){
@@ -1477,7 +1477,7 @@ App.giftcards = {
 		$('.giftcards-loader').show();
 		$('.giftcards-content').html('');
 		$.ajax({
-			url: '/admin/giftcards/content',
+			url: '/giftcards/content',
 			data: App.giftcards.params(),
 			complete: function(content) {
 				$('.giftcards-content').html(content.responseText);
@@ -1527,7 +1527,7 @@ App.giftcards = {
 						alert( 'Error at adding a new giftcard!' );
 					} else {
 						alert( 'Gift card(s) created!' );
-						location.href = '/admin/giftcards';
+						location.href = '/giftcards';
 					}
 				},
 				error: function( ){
@@ -1577,7 +1577,7 @@ App.giftcards = {
 						alert( 'Oops, error!' );
 					} else {
 						alert( 'Gift card(s) created and sent!' );
-						location.href = '/admin/giftcards';
+						location.href = '/giftcards';
 					}
 				},
 				error: function( ){
@@ -1641,7 +1641,7 @@ App.giftcards = {
 						alert( 'Oops, error!' );
 					} else {
 						alert( 'Gift card(s) created and sent!' );
-						location.href = '/admin/giftcards';
+						location.href = '/giftcards';
 					}
 				},
 				error: function( ){

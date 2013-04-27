@@ -1,0 +1,27 @@
+<? if (!$this->suggestions->count()) : ?>
+	No results found
+<? else : ?>
+	<table class="list-suggestions">
+		<tr>
+			<th>Date</th>
+			<th>Suggestion</th>
+			<th>User</th>
+			<th>Phone</th>
+			<th>Restaurant</th>
+			<th>Status</th>
+			<th>Type</th>
+		</tr>
+		<? foreach ($this->suggestions as $suggestion) : ?>
+			<? $date = $suggestion->date(); ?>
+			<tr class="list-suggestion-item <?=$suggestion->status; ?>">
+				<td> <?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?> </td>
+				<td> <a href="/suggestions/<?=$suggestion->id_suggestion;?>"><?=$suggestion->name; ?></a> </td>
+				<td> <?php if( $suggestion->user()->id_user ) { echo $suggestion->user()->name; } else { echo '-'; } ?> </td>
+				<td> <?php if( $suggestion->user()->id_user ) { echo $suggestion->user()->phone; } else { echo '-'; } ?> </td>
+				<td> <?=$suggestion->restaurant()->name; ?> </td>
+				<td><span class="status"><?=$suggestion->status; ?></div></td>
+				<td> <?=$suggestion->type; ?> </td>
+			</tr>
+		<? endforeach ; ?>
+	</table>
+<? endif ; ?>
