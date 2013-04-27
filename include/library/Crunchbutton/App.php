@@ -32,6 +32,8 @@ class Crunchbutton_App extends Cana_App {
 				$env = 'live';
 				break;
 			case 'beta.crunchr.co':
+			case 'beta.cockpit.crunchr.co':
+			case 'beta.cockpit._DOMAIN_':
 				$env = 'beta';
 				break;
 			case 'dev.crunchr.co':
