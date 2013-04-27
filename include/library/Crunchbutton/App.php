@@ -123,7 +123,6 @@ class Crunchbutton_App extends Cana_App {
 			}
 		}
 
-
 		parent::init($params);
 
 		$domain = new Cana_Model;
@@ -139,14 +138,12 @@ class Crunchbutton_App extends Cana_App {
 			case 'cockpit.localhost':
 			case 'cockpit.crunchr.co':
 			case 'cockpit._DOMAIN_':
-				$domain->version = 'cockpit';
-				$domain->theme = 'default';
+				$domain->theme = 'cockpit';
 				break;
 			default:
 				$domain->theme = 'crunchbutton';
 				break;
 		}
-
 		
 		$config = $this->config();
 
@@ -288,10 +285,10 @@ class Crunchbutton_App extends Cana_App {
 		} elseif (isset($this->config()->domain->version)) {
 			$params['theme'][] = $this->config()->domain->version.'/'.$this->config()->domain->theme.'/';
 		}
-		
+		$stack = array_reverse($params['theme']);
 		$params['layout'] =  $this->config()->defaults->layout;
 
-		foreach ($params['theme'] as $theme) {
+		foreach ($stack as $theme) {
 			$this->controllerStack($theme);
 		}
 		
@@ -300,8 +297,6 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$params['layout'] =  $this->config()->defaults->layout;
 		}
-		
-
 
 		parent::buildView($params);
 		
