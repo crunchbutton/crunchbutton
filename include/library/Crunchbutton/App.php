@@ -140,6 +140,8 @@ class Crunchbutton_App extends Cana_App {
 			case 'cockpit.localhost':
 			case 'cockpit.crunchr.co':
 			case 'cockpit._DOMAIN_':
+			case 'beta.cockpit._DOMAIN_':
+			case 'beta.cockpit.crunchr.co':
 				$domain->theme = 'cockpit';
 				break;
 			default:
