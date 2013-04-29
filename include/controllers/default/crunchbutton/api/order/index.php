@@ -15,10 +15,22 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		$repeat = 3;
 
 		switch (c::getPagePiece(3)) {
+			
 			case 'refund':
 				if (!$order->get(0)->refund()) {
 					echo json_encode(['status' => 'false', 'errors' => 'failed to refund']);
 					exit;
+				}
+				break;
+
+			case 'resend_notification':
+				if( $_SESSION['admin'] ){
+					if ( $order->resend_notify() ) {
+						echo json_encode(['status' => 'success']);
+						exit;
+					} else {
+						echo json_encode(['status' => 'error']);
+					}
 				}
 				break;
 

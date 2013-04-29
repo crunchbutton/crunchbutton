@@ -55,6 +55,15 @@
 				</td>
 				<td>
 					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
+					<br/>
+					<br/>
+					<a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend notification</a>
+					<br/><br/>
+					<?php if( $order->confirmed ) { ?>
+						Confirmed!
+					<?php } else { ?>
+						NOT confirmed.
+					<?php } ?>
 				</td>
 				<td><?=$order->restaurant()->name?></td>
 				<td style="width: 300px; white-space: normal;">

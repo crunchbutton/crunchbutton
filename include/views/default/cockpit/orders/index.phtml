@@ -108,6 +108,26 @@
 			});				
 		});
 
+		$(document).on('click', '.resend_notification', function() {
+			var el = $(this);
+			var question = 'Are you sure you want to resend the notification?';
+			if( parseFloat( el.attr( 'data-confirmed' ) ) > 0 ){
+				question += "\n";
+				question += 'This order was already confirmed!' ;
+			}
+			if (!confirm( question )) {
+				return;
+			}
+			$.getJSON('/api/order/' + el.attr('data-uuid') + '/resend_notification',function( json ) {
+				if( json.status == 'success' ){
+					alert('Notification resended!');
+				} else {
+					alert('Oops, error! Please try it again.');
+				}
+			});				
+		});
+		
+
 		$(document).on('click', '.admin-order-search', function() {
 			App.orders.load();
 		});

@@ -520,6 +520,18 @@ class Crunchbutton_Order extends Cana_Table {
 		Crunchbutton_Hipchat_Notification::notifyOrder($order);
 	}
 
+	public function resend_notify(){
+		$order = $this;
+		Log::debug([ 'order' => $order->id_order, 'action' => 'restarting starting notification', 'notification_type' => $n->type, 'type' => 'notification']);
+		$order->confirmed = 0;
+		$order->save();
+		// Delete all the notification log in order to start a new one
+		Notification_Log::DeleteFromOrder( $order->id_order );
+		Cana::timeout(function() use($order) {
+			$order->notify();
+		});
+	}
+
 	public function confirm() {
 
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
