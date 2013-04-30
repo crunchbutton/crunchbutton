@@ -112,6 +112,23 @@ class Crunchbutton_App extends Cana_App {
 				}
 		}
 
+		// Force the host_callback - sometimes it is empty
+		switch (dirname(__FILE__)) {
+			case '/home/beta.crunchbutton/include/library/Crunchbutton':
+			case '/home/dev.crunchbutton/include/library/Crunchbutton':
+				$host_callback = 'beta.crunchr.co';
+				break;
+			case '/home/crunchbutton/include/library/Crunchbutton':
+				$host_callback = '_DOMAIN_';
+				break;
+			case '/home/staging.crunchbutton/include/library/Crunchbutton':
+				$host_callback = 'staging.crunchr.co';
+				break;
+			default:
+				$host_callback = $_SERVER['HTTP_HOST'];
+				break;
+		}
+
 		if ($_SERVER['__HTTP_HOST'] == 'crunchr.co') {
 			header ('HTTP/1.1 301 Moved Permanently');
 			header('Location: http://_DOMAIN_/');
