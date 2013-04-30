@@ -13,8 +13,7 @@
 			<th class="list-order-header">Restaurant</th>
 			<th class="list-order-header">Order</th>
 			<th class="list-order-header">Price</th>
-			<th class="list-order-header">Pay Type</th>
-			<th class="list-order-header">Order Type</th>
+			<th class="list-order-header">Pay / Type</th>
 			<th class="list-order-header">Customer</th>
 		</tr>
 		<? foreach ($this->orders as $order) :  /* @var $order Crunchbutton_Order */?>
@@ -22,17 +21,22 @@
 			<tr class="list-order-item">
 				<td>
 					<table>
-						<tr><td><b>ID</b></td><td>
-							<a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a>
-						</td></tr>
-						<tr><td><b>Env</b></td><td><?=$order->env?></td></tr>
+						<tr>
+							<td>
+								<a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a>
+							</td>
+						</tr>
+						<tr>
+							<td><?=$order->env?></td>
+						</tr>
+						
 						<? if ($order->notes) :?>
 						<tr class="comments">
-							<td><b>Comment</b></td>
 							<td><a href="#" title="<?=$order->notes?>" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-comment"></span></a></td>
 						</tr>
 						<? endif ?>
-						<tr><td><br />
+						<tr>
+							<td><br />
 							<? if ($order->refunded) : ?>
 								REFUNDED
 							<? else : ?>
@@ -50,22 +54,27 @@
 								echo '<div style="color:red;margin-top:8px;">Received <strong style="font-weight:bold;">$' . number_format( $giftcard, 2 ) . '</strong> gift card.</div>';
 							}
 							?>
-							</td></tr>
+							</td>
+							</tr>
 					</table>
 				</td>
 				<td>
 					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
+				</td>
+				<td>
+					<?=$order->restaurant()->name?>
 					<br/>
 					<br/>
-					<a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend notification</a>
-					<br/><br/>
+					<hr/>
 					<?php if( $order->confirmed ) { ?>
 						Confirmed!
 					<?php } else { ?>
 						NOT confirmed.
 					<?php } ?>
+					<br/>
+					<br/>
+					<a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend notification</a>
 				</td>
-				<td><?=$order->restaurant()->name?></td>
 				<td style="width: 300px; white-space: normal;">
 					<ul>
 					<? foreach ($order->dishes() as $dish) : ?>
@@ -125,8 +134,12 @@
 						<?php } ?>
 					</table>
 				</td>
-				<td><?=$order->pay_type?></td>
-				<td><?=$order->delivery_type?></td>
+				<td>
+					<?=$order->pay_type?>
+					<br />
+					<br />
+					<?=$order->delivery_type?>
+				</td>
 				<td>
 					<table>
 						<tr>
