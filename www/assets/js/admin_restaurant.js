@@ -272,6 +272,27 @@ var WIDGET = {
 				if(!prev_option_dom.length) return;
         UTIL.slide_swap($(prev_option_dom), $(option_dom), 100);
 			});
+			$(option_dom).find('input').keyup(function(e) {
+				if(e.keyCode === 13) {
+					option_group_dom = $(option_dom).closest('.admin-menu-option-group');
+          id_option = UTIL.create_unique_id();
+          id_dish_option = UTIL.create_unique_id();
+          self.add_option(option_group_dom, {
+            default : '0',
+            description : null,
+            id : id_option,
+            id_option : id_option,
+            id_dish_option : id_dish_option,
+            id_option_parent : $(option_group_dom).find('.admin-menu-option-group-id').val(),
+            name : '',
+            price : '0.00',
+            prices : [],
+            sort : null,
+            type : 'check',
+          },
+          {duration:100});
+				}
+			});
 		};
 
 		this.add_option_group = function(dish_dom, option_group, args) {
@@ -377,7 +398,9 @@ var WIDGET = {
 			});
 		};
 
-		this.add_options_to_dish = function(dish_dom, options_to_add) {
+		this.add_options_to_dish = function(dish_dom, options_to_add, args) {
+
+			args = args || {};
 
 			// if has a parent, it's an option in an option group
 			// if has a child, it's an option group
@@ -394,6 +417,25 @@ var WIDGET = {
 			option_groups = [];
 			options = [];
 			parent_ids = [];
+
+			if(args.new_ids) {
+				new_ids_map = {};
+				for(i in options_to_add) {
+					o = options_to_add[i];
+					o.id_dish_option = UTIL.create_unique_id();
+					id_option = UTIL.create_unique_id();
+					new_ids_map[o.id] = id_option;
+					o.id = id_option;
+					o.id_option = id_option;
+				}
+				for(i in options_to_add) {
+					o = options_to_add[i];
+					if(o.id_option_parent && !/basic/i.exec(o.id_option_parent)) {
+						o.id_option_parent = new_ids_map[o.id_option_parent];
+					}
+				}
+			}
+
 			for(i in options_to_add) {
 				o = options_to_add[i];
 				if(o.id_option_parent && !/basic/i.exec(o.id_option_parent)) {
@@ -442,7 +484,18 @@ var WIDGET = {
 			this.apply_dish(dish_dom, dish);
 		};
 
-		this.copy_options_to_dish = function(dish_dom_from, dish_to_id) {
+		this.copy_options_to_dish_unlinked = function(dish_dom_from, dish_to_id) {
+			dish_dom_to = $('.admin-menu-dish-id[value=' + dish_to_id + ']')
+				.closest('.admin-menu-dish');
+			dummy_category_obj = { _dishes : [] };
+			this.flush_dish(dummy_category_obj, dish_dom_from);
+			dish_from = dummy_category_obj._dishes[0];
+			options = dish_from._options;
+			if(!options) return;
+			self.add_options_to_dish(dish_dom_to, options, {new_ids:true});
+		};
+
+		this.copy_options_to_dish_linked = function(dish_dom_from, dish_to_id) {
 			dish_dom_to = $('.admin-menu-dish-id[value=' + dish_to_id + ']')
 				.closest('.admin-menu-dish');
 			dummy_category_obj = { _dishes : [] };
@@ -505,7 +558,10 @@ var WIDGET = {
 					.find('select.copy-dish-to-category-select')
 					.html('');
 			select_element_3 = $(modal_dom)
-					.find('select.copy-options-to-dish-select')
+					.find('select.copy-options-to-dish-linked-select')
+					.html('<option value=>Choose...</option>');
+			select_element_4 = $(modal_dom)
+					.find('select.copy-options-to-dish-unlinked-select')
 					.html('<option value=>Choose...</option>');
 
 			$('.admin-menu-category').each(function(i, category_dom) {
@@ -522,6 +578,10 @@ var WIDGET = {
 						.append('<optgroup></optgroup>')
 						.find('optgroup').last()
 						.attr('label', c_name);
+				category_optgroup_4 = $(select_element_4)
+						.append('<optgroup></optgroup>')
+						.find('optgroup').last()
+						.attr('label', c_name);
 				$(category_dom)
 						.find('.admin-menu-dish').each(function(j, dish_dom) {
 								d_id = $(dish_dom).find('input.admin-menu-dish-id').val();
@@ -530,12 +590,17 @@ var WIDGET = {
 								$(category_optgroup_3).append('<option></option>')
 										.find('option').last()
 										.val(d_id).text(d_name);
+								$(category_optgroup_4).append('<option></option>')
+										.find('option').last()
+										.val(d_id).text(d_name);
 						});
 			});
 			select_element_1.find('option[value=' + category_id + ']')
 					.attr('disabled', 'disabled');
 			select_element_2.val(category_id);
 			select_element_3.find('option[value=' + dish_id + ']')
+					.attr('disabled', 'disabled');
+			select_element_4.find('option[value=' + dish_id + ']')
 					.attr('disabled', 'disabled');
 
 			$(modal_dom).find('.move-dish-to-category-button').first()
@@ -562,15 +627,28 @@ var WIDGET = {
 							$(modal_dom).dialog('close');
 						};
 					})());
-			$(modal_dom).find('.copy-options-to-dish-button').first()
-				.off('click.copy-options-to-dish-button')
+			$(modal_dom).find('.copy-options-to-dish-linked-button').first()
+				.off('click.copy-options-to-dish-linked-button')
 				.on(
-					'click.copy-options-to-dish-button',
+					'click.copy-options-to-dish-linked-button',
 					(function() {
 						return function() {
-							dish_to_id = $(modal_dom).find('select.copy-options-to-dish-select').val();
+							dish_to_id = $(modal_dom).find('select.copy-options-to-dish-linked-select').val();
 							if(!dish_to_id) return;
-							self.copy_options_to_dish(
+							self.copy_options_to_dish_linked(
+									dish_dom, dish_to_id);
+							$(modal_dom).dialog('close');
+						};
+					})());
+			$(modal_dom).find('.copy-options-to-dish-unlinked-button').first()
+				.off('click.copy-options-to-dish-unlinked-button')
+				.on(
+					'click.copy-options-to-dish-unlinked-button',
+					(function() {
+						return function() {
+							dish_to_id = $(modal_dom).find('select.copy-options-to-dish-unlinked-select').val();
+							if(!dish_to_id) return;
+							self.copy_options_to_dish_unlinked(
 									dish_dom, dish_to_id);
 							$(modal_dom).dialog('close');
 						};
@@ -638,6 +716,28 @@ var WIDGET = {
           .prop('checked', parseInt(dish['expand_view']));
 
 			if(!dish.name) UTIL.focus_input(dish_dom);
+
+      $(dish_dom).find('.admin-menu-dish-name, .admin-menu-dish-price').keyup(function(e) {
+        if(e.keyCode === 13) {
+					category_dom = $(dish_dom).closest('.admin-menu-category');
+					dish_id = UTIL.create_unique_id();
+					self.add_dish(
+							category_dom,
+							{
+								active : '1',
+								description : null,
+								id : dish_id,
+								id_dish : dish_id,
+								name : '',
+								price : '10.00',
+								sort : null,
+								top : '0',
+								top_name : null,
+								type : 'dish',
+							},
+							{duration:100});
+        }     
+      });     
 
 			options = dish._options;
 			if(!options) options = [];
@@ -1063,6 +1163,7 @@ var ADMIN = {
 			UTIL.show_msg('There are errors somewhere.');
 			return;
 		}
+		$('#save-button').text('Saving...');
 		ASYNC.req(
 				{ 
 					type : 'sav',
@@ -1078,6 +1179,7 @@ var ADMIN = {
 					ADMIN.restaurant = rsp.data;
 					DOM_MAP.apply();
 					UTIL.show_msg('Restaurant saved.');
+					$('#save-button').text('Save');
 				});
 	},
 };
@@ -1241,7 +1343,8 @@ var DOM_MAP = {
 						hfmmm.sort(function(a,b) { return (a.b<b.b?-1:(a.b>b.b?1:0)); });
 						// 3. merge things that should be merged
 						for(i = 0; i < hfmmm.length-1; i++) {
-							if(hfmmm[i+1].b <= hfmmm[i].e) {
+							if(hfmmm[i+1].b <= hfmmm[i].e     &&
+								 hfmmm[i+1].e - hfmmm[i].b < 36  ) {
 								// merge these two segments
 								hfmmm[i].e = hfmmm[i+1].e;
 								hfmmm.splice(i+1,1);
@@ -1261,7 +1364,7 @@ var DOM_MAP = {
 							else {
 								element.val(element.val() + ', ');
 							}
-							while(segment.b > 2400) {
+							while(segment.b >= 2400) {
 								segment.b -= 2400;
 								segment.e -= 2400;
 							}
@@ -1273,7 +1376,7 @@ var DOM_MAP = {
 								m_fmt = '';
 								ampm = '';
 								shorthand = '';
-								if(h === 0) { shorthand = 'midnight'; ampm = 'AM'; }
+								if(h === 0) { h_fmt = '' + (h + 12); shorthand = 'midnight'; ampm = 'AM'; }
 								else if(h === 12) { shorthand = 'noon'; ampm = 'PM'; }
 								else if(h === 24) { shorthand = 'midnight'; ampm = 'AM'; h_fmt = '12'; }
 								else if(h < 12) { ampm = 'AM'; }
