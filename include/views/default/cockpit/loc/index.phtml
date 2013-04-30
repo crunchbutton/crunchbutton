@@ -1,0 +1,52 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content">
+		<h1 class="restaurant-item-title">Places</h1>
+		<br /><br />
+		<a href="/loc/export" target="_blank">Export all <?php echo $this->total; ?> places</a>
+		<br /><br />
+		<table width="100%" cellpadding="4" class="list" cellspacing="4">
+			<tr>
+				<th>Top 10 Cities</th>
+				<th>Searches</th>
+				<th>Lat</th>
+				<th>Long</th>
+			</tr>
+			<?php foreach ( $this->cities as $city) {
+				?>
+				<tr>
+					<td><?php echo $city['place']; ?></td>
+					<td><?php echo $city['total']; ?></td>
+					<td><?php echo $city['lat']; ?></td>
+					<td><?php echo $city['long']; ?></td>
+					<td><?php echo $city['date']; ?></td>
+				</tr>
+				<?php
+			} ?>
+		</table>
+		<br /><br />
+		<h2>Last 10 Searched places</h2>
+		<br />
+		<table width="100%" cellpadding="4" class="list" cellspacing="4">
+			<tr>
+				<th>City</th>
+				<th>Typed Address</th>
+				<th>Reverse Address</th>
+				<th>Lat</th>
+				<th>Long</th>
+				<th>Date</th>
+			</tr>
+			<?php foreach ( $this->last as $loc) {
+				?>
+				<tr>
+					<td><?php echo $loc->city; ?></td>
+					<td><?php echo $loc->address_entered; ?></td>
+					<td><?php echo $loc->address_reverse; ?></td>
+					<td><?php echo $loc->lat; ?></td>
+					<td><?php echo $loc->long; ?></td>
+					<td><?php echo $loc->date; ?></td>
+				</tr>
+				<?php
+			} ?>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<title><?=$this->title ? $this->title : 'Crunchbutton'?></title>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale = 1.0,maximum-scale = 1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon-precomposed" href="/assets/images/appicon.png">
+
+<link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/sprites.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/introjs.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/datepicker.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/chosen.css">
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/flick/jquery-ui.css">
+<link rel="shortcut icon" href="/favicon-admin.ico">
+<script type="text/javascript">
+<?php 
+// Get server's date time converted to GMD
+$utc_str = gmdate( 'Y/n/d/H/i/s', time() );
+$utc = strtotime( $utc_str );
+?>
+var _gmtServer = '<?php echo $utc_str;?>';
+</script>
+
+
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+
+
+<? if (1==2 && c::config()->bundle) : ?>
+	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=admin"></script>
+<? else : ?>
+	<?=$this->display('bundle/js', ['set' => ['scripts' => ['datepicker/eye','datepicker/layout','datepicker/utils','datepicker/datepicker','admin','chosen.jquery']]])?>
+<? endif ; ?>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="nav" data-role="header" data-position="fixed">
+			<div class="content">
+				<div class="logo"><a href="/" class="link-home"><div class="logo-img"></div></a></div>
+				<div style="float: right; color: #fff; margin-top: -20px;">Hey <?=ucfirst($this->username)?>!</div>
+
+			</div>
+		</div>
+		<div class="body">
+			<div class="content">
+				<div class="tabs">
+					<a class="admin-tab<?=$this->page == '' ? ' admin-tab-active' : ''?>" href="/">Dashboard</a>
+					<a class="admin-tab<?=$this->page == 'orders' ? ' admin-tab-active' : ''?>" href="/orders">Orders</a>
+					<a class="admin-tab<?=$this->page == 'restaurants' ? ' admin-tab-active' : ''?>" href="/restaurants">Restaurants</a>
+					<a class="admin-tab<?=$this->page == 'customers' ? ' admin-tab-active' : ''?>" href="/customers">Customers</a>
+					<a class="admin-tab<?=$this->page == 'suggestions' ? ' admin-tab-active' : ''?>" href="/suggestions">Suggestions</a>
+					<a class="admin-tab<?=$this->page == 'credits' ? ' admin-tab-active' : ''?>" href="/credits">Credits</a>
+					<a class="admin-tab<?=$this->page == 'giftcards' ? ' admin-tab-active' : ''?>" href="/giftcards">Gift cards</a>
+					<a class="admin-tab<?=$this->page == 'support' ? ' admin-tab-active' : ''?>" href="/support">Support</a>
+					<a class="admin-tab<?=$this->page == 'issues' ? ' admin-tab-active' : ''?>" href="/issues">Issues</a>
+					<a class="admin-tab<?=$this->page == 'loc' ? ' admin-tab-active' : ''?>" href="/loc">Address</a>
+					<div class="divider"></div>
+				</div>
+				<?=$this->content?>
+			</div>
+		</div>
+		<div class="divider"></div>
+	</div>
+
+<script src="/assets/js/intro.js"></script>
+
+</body>
+</html>

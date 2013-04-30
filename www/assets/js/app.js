@@ -823,12 +823,6 @@ App.cart = {
 		
 		App.busy.makeBusy();
 
-		// Play the crunch audio just once, when the user clicks at the Get Food button
-		if( !App.crunchSoundAlreadyPlayed ){
-			App.playAudio( 'get-food-audio' );
-			App.crunchSoundAlreadyPlayed = true;
-		}
-
 		var read = $('.payment-form').length ? true : false;
 
 		if (read) {
@@ -907,11 +901,20 @@ App.cart = {
 			return;
 		}
 
+		// Play the crunch audio just once, when the user clicks at the Get Food button
+		if( App.iOS() && !App.crunchSoundAlreadyPlayed ){
+			App.playAudio( 'get-food-audio' );
+			App.crunchSoundAlreadyPlayed = true;
+		}
+
+		// Removed temporally the feature to validate the user address. #946
+		App.isUserAddressOk = true;
+
 		// if it is a delivery order we need to check the address
 		if( order.delivery_type == 'delivery' ){
 			
 			// verify if the user typed his complete address (street name and number)	
-			if (!App.isUserAddressOk	) {
+			if ( !App.isUserAddressOk	) {
 				var success = function( results ) {
 					if( results[0] && results[0].geometry && results[0].geometry.location_type && 
 						( results[0].geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || results[0].geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
@@ -972,64 +975,70 @@ App.cart = {
 			return;
 		}
 
-		// Timeout to sound ends
-		setTimeout( function(){
-			$.ajax({
-				url: App.service + 'order',
-				data: order,
-				dataType: 'json',
-				type: 'POST',
-				complete: function(json) {
+		$.ajax({
+			url: App.service + 'order',
+			data: order,
+			dataType: 'json',
+			type: 'POST',
+			complete: function(json) {
 
-					json = $.parseJSON(json.responseText);
+				json = $.parseJSON(json.responseText);
 
-					if (json.status == 'false') {
-						var error = '';
-						for (x in json.errors) {
-							error += json.errors[x] + "\n";
-						}
-						App.track('OrderError', json.errors);
-						alert(error);
-
-					} else {
-						if (json.token) {
-							$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
-						}
-
-						$('.link-orders').show();
-
-						order.cardChanged = false;
-						App.justCompleted = true;
-
-						var totalItems = 0;
-
-						for (var x in App.cart.items) {
-							totalItems++;
-						}
-
-						$.getJSON('/api/config', App.processConfig);
-						App.cache('Order',json.uuid,function() {
-							App.track('Ordered', {
-								'total':this.final_price,
-								'subtotal':this.price,
-								'tip':this.tip,
-								'restaurant': App.restaurant.name,
-								'paytype': this.pay_type,
-								'ordertype': this.order_type,
-								'user': this.user,
-								'items': totalItems
-							});
-							
-							App.order.cardChanged = false;
-							delete App.order.tipHasChanged;
-							var loc = '/order/' + this.uuid;
-							History.pushState({},loc,loc);
-						});
+				if (json.status == 'false') {
+					var error = '';
+					for (x in json.errors) {
+						error += json.errors[x] + "\n";
 					}
-					App.busy.unBusy();
+					App.track('OrderError', json.errors);
+					alert(error);
+
+				} else {
+
+					// Play the crunch audio just once, when the user clicks at the Get Food button
+					if( !App.crunchSoundAlreadyPlayed ){
+						App.playAudio( 'get-food-audio' );
+						App.crunchSoundAlreadyPlayed = true;
+					}
+
+					if (json.token) {
+						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
+					}
+
+					$('.link-orders').show();
+
+					order.cardChanged = false;
+					App.justCompleted = true;
+
+					var totalItems = 0;
+
+					for (var x in App.cart.items) {
+						totalItems++;
+					}
+
+					$.getJSON('/api/config', App.processConfig);
+					
+					App.cache('Order',json.uuid, function() {
+						App.track('Ordered', {
+							'total':this.final_price,
+							'subtotal':this.price,
+							'tip':this.tip,
+							'restaurant': App.restaurant.name,
+							'paytype': this.pay_type,
+							'ordertype': this.order_type,
+							'user': this.user,
+							'items': totalItems
+						});
+						
+						App.order.cardChanged = false;
+						delete App.order.tipHasChanged;
+						var loc = '/order/' + this.uuid;
+						History.pushState({},loc,loc);
+
+					});
 				}
-			});
-		}, 1500 );
+				App.busy.unBusy();
+			}
+		});
 
 	}, // end App.cart.submit()
 

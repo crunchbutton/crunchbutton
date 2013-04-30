@@ -15,6 +15,15 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 			case 'post':
 			case 'get':
 				switch (c::getPagePiece(3)) {
+					case 'order':
+						echo json_encode(['order' => $notification->id_order]);
+						exit;
+						break;
+					case '':
+						echo $notification->json();
+						exit;
+						break;
+
 					case 'confirm':
 						Log::debug([
 							'id_notification_log' => $notification->id_notification_log,

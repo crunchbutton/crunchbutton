@@ -1,0 +1,147 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content admin-content-orders">
+		<table class="admin-orders-filter">
+			<tr>
+				<td class="label-sub">SEARCH</td>
+				<td class="content-sub"><input name="order-search" type="text" style="width: 200px;" value="<?=strip_tags($_REQUEST['search'])?>"></td>
+				<td style="width: 100%"></td>
+				<td class="label-sub">DATE&nbsp;RANGE</td>
+				<?
+					$date = new DateTime('now');
+					$start = $date->format('m/d/Y');
+					$date->modify('14 days ago');
+					$end = $date->format('m/d/Y');
+				?>
+				<td class="content-sub"><input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>"></td>
+				<td class="order-range-all">&nbsp;&nbsp;<input type="checkbox" name="order-range-all"><label>&nbsp;All Dates</label></td>
+			</tr>
+			<tr>
+				<td class="label-sub">ENVIRONMENT</td>
+				<td class="content-sub">
+					<? $envs = ['live','beta','dev','local']; ?>
+					<select name="env">
+						<? foreach ($envs as $env) : ?>
+							<option value="<?=$env?>"<?=c::env() == $env ? ' selected' : ''?>><?=$env?></option>
+						<? endforeach ; ?>
+					</select>
+				</td>
+				<td style="width: 100%"></td>
+				<td class="label-sub">PROCESSOR</td>
+				<td class="content-sub" colspan="2">
+					<select name="processor">
+						<option value="" selected>[ All ]</option>
+						<option value="balanced" selected>balanced</option>
+						<option value="stripe">stripe</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="label-sub">LIMIT</td>
+				<td class="content-sub">
+					<input type="number" name="limit" value="25" min="0">
+				</td>
+				<td style="width: 100%"></td>
+				<td class="label-sub">RESTAURANT</td>
+				<td class="content-sub" colspan="2">
+					<select name="restaurant" class="chosen-select" style="width:280px;">
+						<option value="" selected>[ All ]</option>
+						<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
+							<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+						<? endforeach ; ?>
+					</select>
+				</td>
+				
+			</tr>
+			
+			<tr>
+				<td class="label-sub"></td>
+				<td class="content-sub">
+					
+				</td>
+				<td style="width: 100%"></td>
+				<td class="label-sub">COMMUNITY</td>
+				<td class="content-sub" colspan="2">
+					<select name="community" class="chosen-select" style="width:280px;">
+						<option value="" selected>[ All ]</option>
+						<? foreach (Community::q('select * from community order by name') as $community) : ?>
+							<option value="<?=$community->id_community?>"><?=$community->name?></option>
+						<? endforeach ; ?>
+					</select>
+				</td>
+				
+			</tr>
+			
+			
+			<tr>
+				<td colspan="6">
+					<table cellpadding="3" cellspacing="3" style="width: auto; margin: 0 auto;">
+						<tr>
+							<td><div class="action-button green action-button-small admin-order-search"><span>Search</span></div></td>
+							<td><a href="javascript:;" class="control-label admin-order-export">Export</a></td>
+						</tr>
+					</table>
+				</td>
+				
+			</tr>
+		</table>
+		<br /><br />
+		<div class="divider dots"></div>
+		<br />
+		<div class="orders-loader"><img src="/assets/images/admin/loader.gif"></div>
+		<div class="orders-content"></div>
+	</div>
+</div>		
+<script>
+	$(function() {
+		$(document).on('click', '.refund', function() {
+			var el = $(this);
+			var question = 'Are you sure you want to refund this?';
+			if( parseFloat( el.attr( 'data-gift' ) ) > 0 ){
+				question += "\n";
+				question += 'A gift card was used at this order the refund value will be $' + el.attr( 'data-charged' ) + ' + $' + el.attr( 'data-gift' ) + ' as gift card.' ;
+			}
+			if (!confirm( question )) {
+				return;
+			}
+			$.getJSON('/api/order/' + el.attr('data-uuid') + '/refund',function(json) {
+				el.replaceWith('REFUNDED');
+			});				
+		});
+
+		$(document).on('click', '.resend_notification', function() {
+			var el = $(this);
+			var question = 'Are you sure you want to resend the notification?';
+			if( parseFloat( el.attr( 'data-confirmed' ) ) > 0 ){
+				question += "\n";
+				question += 'This order was already confirmed!' ;
+			}
+			if (!confirm( question )) {
+				return;
+			}
+			$.getJSON('/api/order/' + el.attr('data-uuid') + '/resend_notification',function( json ) {
+				if( json.status == 'success' ){
+					alert('Notification resended!');
+				} else {
+					alert('Oops, error! Please try it again.');
+				}
+			});				
+		});
+		
+
+		$(document).on('click', '.admin-order-search', function() {
+			App.orders.load();
+		});
+
+		$(document).on('click', '.admin-order-export', function() {
+			App.orders.export();
+		});
+		
+		$(document).on('keyup', '.[name="order-search"]', function(e) {
+			if (e.which == 13) {
+				App.orders.load();
+			}
+		});
+		$(".chosen-select").chosen();		
+		App.orders.load();
+	});
+</script>

@@ -67,18 +67,19 @@ App.support.sendSMS = function(){
 	};
 
 	if (!App.support.itIsSending){
+		
 		App.support.itIsSending = true;
+		
+		// Thanks and minimize
+		alert( 'Thank you!' );
+		App.support.mini();
+		
 		$.ajax({
 			type: 'POST',
 			dataType: 'json',
 			data: data,
 			url:  App.service + App.support.api.sms,
 			success: function( json ) {
-				console.log(json)
-				if( json.id_support ){
-					alert( 'Thank you!' );
-					App.support.mini();
-				}
 				App.support.itIsSending = false;
 			}
 		});

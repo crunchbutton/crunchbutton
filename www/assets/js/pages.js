@@ -3,7 +3,6 @@ App.page.home = function(force) {
 
 	if (!force && !App.loc.loaded) {
 		// if we arent forcing and theres no pos, then this was a home request. we need to wait a second
-		console.log('QUE HOME PAGE')
 		App.loc.bind('location-loaded', function() {
 			App.page.home(force);
 		});
@@ -13,7 +12,6 @@ App.page.home = function(force) {
 
 		return;
 	}
-	console.log('HOME PAGE')
 
 	var homeSuccess = function() {
 		$('.nav-back').removeClass('nav-back-show');
@@ -48,7 +46,6 @@ App.page.home = function(force) {
 
 	if (!force && App.loc.address() && App.restaurants.list === false) {
 		// we have an address, but no restaurants
-console.log('LOCATION NO REST')
 		App.page.foodDelivery();
 
 		return;
@@ -64,7 +61,6 @@ console.log('LOCATION NO REST')
 
 		$('.home-greeting, .enter-location, .button-letseat-form').hide();
 		$('.error-location').show();
-console.log('LOCATION ERROR')
 		App.track('Location Error', {
 			lat: App.loc.pos().lat,
 			lon: App.loc.pos().lon,
@@ -72,7 +68,6 @@ console.log('LOCATION ERROR')
 		});
 
 	} else {
-console.log('JUST HOME')
 		$('.location-address').val('');
 		$('.error-location').hide();
 		$('.home-greeting, .enter-location, .button-letseat-form').show();
@@ -228,9 +223,6 @@ App.page.order = function(id) {
 		App.justCompleted = false;
 	}
 
-	$('.content').addClass('smaller-width');
-	$('.main-content').css('width','auto');
-	
 	// Just to make sure the user button will be shown
 	App.signin.checkUser();
 
@@ -248,6 +240,9 @@ App.page.order = function(id) {
 
 		App.cache('Restaurant',order.id_restaurant, function() {
 			var restaurant = this;
+		
+			$('.content').addClass('smaller-width');
+			$('.main-content').css('width','auto');
 
 			App.showPage({
 				title: 'Crunchbutton - Your Order',
@@ -309,6 +304,12 @@ App.page.orders = function() {
 				orders: json,
 				user: App.user
 			}
+		});
+		$(document).on('touchclick', '.order-restaurant', function() {
+			var permalink = $( this ).attr( 'permalink' );
+			var name = $( this ).attr( 'name' );
+			var loc = '/' + App.restaurants.permalink + '/' + permalink;
+			History.pushState({}, 'Crunchbutton - ' + name, loc);
 		});
 	});
 
@@ -385,8 +386,6 @@ App.page.foodDelivery = function(refresh) {
 	}
 	
 	//App.loc.reverseGeocode(App.loc.pos().lat, App.loc.pos().lon, success, error);
-
-	console.log('FOOD DELIVERY')
 	var success = function() {
 		// if we have a success and
 		var loc = '/' + App.restaurants.permalink;

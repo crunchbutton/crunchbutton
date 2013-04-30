@@ -1286,13 +1286,13 @@ var DOM_MAP = {
 			func : {
 				'.button-fax' : {
 					apply : function(restaurant, element) { 
-						$(element).attr('href', '/admin/restaurants/' + restaurant.id_restaurant + '/fax');
+						$(element).attr('href', '/restaurants/' + restaurant.id_restaurant + '/fax');
 					},
 					flush : function(restaurant, element) { },
 				},
 				'.button-pay' : {
 					apply : function(restaurant, element) { 
-						$(element).attr('href', '/admin/restaurants/' + restaurant.id_restaurant + '/pay');
+						$(element).attr('href', '/restaurants/' + restaurant.id_restaurant + '/pay');
 					},
 					flush : function(restaurant, element) { },
 				},
@@ -1312,7 +1312,7 @@ var DOM_MAP = {
 					apply : function(restaurant, element) {
 						$(element).find('a').attr(
 								'href', 
-								'/admin/restaurants/' + restaurant.id_restaurant + '/image');
+								'/restaurants/' + restaurant.id_restaurant + '/image');
 						$(element).find('img').attr('src', restaurant.img);
 					},
 					flush : function(restaurant, element) { },
@@ -1460,7 +1460,7 @@ var ASYNC = {
 			method : 'get',
 		},
 		sav : {
-			url : function() { return '/admin/save'; },
+			url : function() { return '/save'; },
 			method : 'post',
 		},
 	},
