@@ -144,6 +144,8 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							}
 							$support->save();
 
+							$this->makeACall( $support->id_support );
+
 							// Log
 							Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
 
@@ -274,4 +276,37 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 		// });
 	}
+
+	function makeACall( $id_support ){
+
+		$dateTime = new DateTime( 'now', new DateTimeZone('America/New_York'));
+		$hour = $dateTime->format( 'H' );
+
+		// Issue #1100 - Call David if CB receives a support after 1AM
+		// if( $hour >= 1 && $hour <= 7 ){
+		if( true ){
+		
+			$env = c::env() == 'live' ? 'live' : 'dev';
+			
+			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+
+			$url = 'http://' . c::config()->host_callback . '/api/support/say/' . $id_support;
+
+			foreach ( c::config()->supportcall as $supportName => $supportPhone ) {
+					$num = $supportPhone;
+					$name = $supportName;
+					$urlWithName = $url . '/' . $name;
+					$call = $twilio->account->calls->create(
+							c::config()->twilio->{$env}->outgoingRestaurant,
+							'+1'.$num,
+							$urlWithName
+					);
+					Log::debug( [ 'action' => 'Calling', 'num' => $num, 'url' => $urlWithName, 'type' => 'sms' ] );
+			}
+		}
+
+		Log::debug( [ 'action' => 'Not need to call', 'id_support' => $id_support, 'hour' => $hour, 'type' => 'sms' ] );
+
+	}
+
 }
