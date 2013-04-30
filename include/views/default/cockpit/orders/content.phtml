@@ -143,21 +143,20 @@
 				<td>
 					<table>
 						<tr>
-							<th>Name</th>
-							<td style="white-space: normal;"><?=$order->name?></td>
+							<td><strong style="font-weight:bold;">Name</strong> <br/> <?=$order->name?> </td>
 						</tr>
 						<tr>
-							<th>Phone</th>
-							<td><?=$order->phone?></td>
+							<td><strong style="font-weight:bold;">Phone</strong> <br/> <?=$order->phone?> </td>
 						</tr>
 						<?php if ($order->delivery_type == 'delivery') { ?>
 						<tr>
-							<th>Address</th>
-							<td style="white-space: normal;"><?=$order->address?></td>
+							<td><strong style="font-weight:bold;">Address</strong> <br/> <?=$order->address?> </td>
+							
 						</tr>
 						<?php } ?>
 						<tr>
 							<td>
+								<hr/>
 								<a href="/credits/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $order->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $order->id_order; ?>">[Add credit]</a>
 								<br/>
 								<br/>
