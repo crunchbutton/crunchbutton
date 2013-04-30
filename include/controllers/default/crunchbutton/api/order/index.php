@@ -15,10 +15,22 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		$repeat = 3;
 
 		switch (c::getPagePiece(3)) {
+			
 			case 'refund':
 				if (!$order->get(0)->refund()) {
 					echo json_encode(['status' => 'false', 'errors' => 'failed to refund']);
 					exit;
+				}
+				break;
+
+			case 'resend_notification':
+				if( $_SESSION['admin'] ){
+					if ( $order->resend_notify() ) {
+						echo json_encode(['status' => 'success']);
+						exit;
+					} else {
+						echo json_encode(['status' => 'error']);
+					}
 				}
 				break;
 
@@ -181,7 +193,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					case '9':
 					case '#':
 					case '*':
-						echo '<Gather action="/api/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="12" method="get">'
+						echo '<Gather action="/api/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 							.'<Say voice="'.c::config()->twilio->voice.'" loop="3">Please press 1 to confirm that you just received order number '.$order->id_order.'. Or press 2 and we will resend the order. . . .</Say>'
 							.'</Gather>';
 						break;

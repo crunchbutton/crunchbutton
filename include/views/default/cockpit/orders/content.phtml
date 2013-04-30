@@ -1,0 +1,159 @@
+<style>
+.comments .ui-state-default {border: 0;}
+</style>
+
+<? if (!$this->orders->count()) : ?>
+	No results found
+<? else : ?>
+
+	<table class="list-orders">
+		<tr>
+			<th class="list-order-header">Info</th>
+			<th class="list-order-header">Date</th>
+			<th class="list-order-header">Restaurant</th>
+			<th class="list-order-header">Order</th>
+			<th class="list-order-header">Price</th>
+			<th class="list-order-header">Pay Type</th>
+			<th class="list-order-header">Order Type</th>
+			<th class="list-order-header">Customer</th>
+		</tr>
+		<? foreach ($this->orders as $order) :  /* @var $order Crunchbutton_Order */?>
+			<? $date = $order->date(); ?>
+			<tr class="list-order-item">
+				<td>
+					<table>
+						<tr><td><b>ID</b></td><td>
+							<a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a>
+						</td></tr>
+						<tr><td><b>Env</b></td><td><?=$order->env?></td></tr>
+						<? if ($order->notes) :?>
+						<tr class="comments">
+							<td><b>Comment</b></td>
+							<td><a href="#" title="<?=$order->notes?>" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-comment"></span></a></td>
+						</tr>
+						<? endif ?>
+						<tr><td><br />
+							<? if ($order->refunded) : ?>
+								REFUNDED
+							<? else : ?>
+								<a href="javascript:;" class="refund" data-charged="<?php echo $order->charged(); ?>" data-gift="<?php if( $order->chargedByCredit() > 0 ){ echo $order->chargedByCredit(); } else { echo '0'; } ?>" data-uuid="<?=$order->uuid?>">REFUND</a>
+							<? endif ; ?>
+							<?php 
+							$credit = $order->hasCredit();
+							if( $credit > 0 ){
+								echo '<div style="color:red;margin-top:8px;">Received <strong style="font-weight:bold;">$' . number_format( $credit, 2 ) . '</strong> credit.</div>';
+							}
+							?>
+							<?php 
+							$giftcard = $order->hasGiftCard();
+							if( $giftcard > 0 ){
+								echo '<div style="color:red;margin-top:8px;">Received <strong style="font-weight:bold;">$' . number_format( $giftcard, 2 ) . '</strong> gift card.</div>';
+							}
+							?>
+							</td></tr>
+					</table>
+				</td>
+				<td>
+					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
+					<br/>
+					<br/>
+					<a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend notification</a>
+					<br/><br/>
+					<?php if( $order->confirmed ) { ?>
+						Confirmed!
+					<?php } else { ?>
+						NOT confirmed.
+					<?php } ?>
+				</td>
+				<td><?=$order->restaurant()->name?></td>
+				<td style="width: 300px; white-space: normal;">
+					<ul>
+					<? foreach ($order->dishes() as $dish) : ?>
+						<li>
+							<?=$dish->dish()->name?>
+							<? if ($dish->options()->count()) : ?>
+								<ul>
+								<? foreach ($dish->options() as $option) : ?>
+									<li><?=$option->option()->name?></li>
+								<? endforeach ; ?>
+								<? if( $dish->id_order_dish && $dish->id_dish ){ 
+										foreach ( $dish->optionsDefaultNotChoosen() as $option ) {
+										?><li><i style="font-style:italic;">No <?=$option->option()->name?></i></li><?
+									} 
+								}?>
+								</ul>
+							<? endif ; ?>
+						</li>
+					<? endforeach ; ?>
+					</ul>
+				</td>
+				<td>
+					<table>
+						<tr>
+							<th>Subtotal</th>
+							<td>$<?=number_format($order->price,2)?></td>
+						</tr>
+						<tr>
+							<th>Service Fee</th>
+							<td>$<?=$order->serviceFee()?> ($<?=$order->service_fee ? $order->service_fee : '0'?>) </td>
+						</tr>
+						<tr>
+							<th>Delivery Fee</th>
+							<td>$<?=$order->deliveryFee()?></td>
+						</tr>
+						<tr>
+							<th>Tax</th>
+							<td>$<?=$order->tax()?> (<?=$order->tax ? $order->tax : '0'?>%)</td>
+						</tr>
+						<tr>
+							<th>Tip</th>
+							<td>$<?=$order->tip()?> <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo '(' . $order->tip . '%)'; } ?></td>
+						</tr>
+						<tr>
+							<th>Total</th>
+							<td>$<?=number_format($order->final_price,2)?></td>
+						</tr>
+						<?php if( $order->chargedByCredit() > 0 ) { ?>
+						<tr style="background:#CCC;">
+							<th>Gift card</th>
+							<td>$<?=$order->chargedByCredit();?></td>
+						</tr>
+						<tr style="background:#CCC;">
+							<th>Charged</th>
+							<td>$<?=$order->charged();?></td>
+						</tr>
+						<?php } ?>
+					</table>
+				</td>
+				<td><?=$order->pay_type?></td>
+				<td><?=$order->delivery_type?></td>
+				<td>
+					<table>
+						<tr>
+							<th>Name</th>
+							<td style="white-space: normal;"><?=$order->name?></td>
+						</tr>
+						<tr>
+							<th>Phone</th>
+							<td><?=$order->phone?></td>
+						</tr>
+						<?php if ($order->delivery_type == 'delivery') { ?>
+						<tr>
+							<th>Address</th>
+							<td style="white-space: normal;"><?=$order->address?></td>
+						</tr>
+						<?php } ?>
+						<tr>
+							<td>
+								<a href="/credits/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $order->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $order->id_order; ?>">[Add credit]</a>
+								<br/>
+								<br/>
+								<a href="/giftcards/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $order->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $order->id_order; ?>">[Add gift card]</a>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		<? endforeach ; ?>
+	</table>
+<? endif ; ?>

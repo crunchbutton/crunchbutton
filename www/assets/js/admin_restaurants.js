@@ -12,10 +12,10 @@ var PAGE = {
 	init : function() {
 		$('.chosen-select').chosen();
 		$('#restaurant-id').change(function(event) {
-			document.location.href = '/admin/restaurants/' + event.target.value;
+			document.location.href = '/restaurants/' + event.target.value;
 		});
 		$('.new-restaurant').click(function() {
-			document.location.href = '/admin/restaurants/new';
+			document.location.href = '/restaurants/new';
 		});
 	},
 };

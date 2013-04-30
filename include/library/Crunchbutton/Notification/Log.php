@@ -9,6 +9,11 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		return self::q('select * from notification_log where id_order="'.$this->id_order.'"')->count();
 	}
 	
+	public function deleteFromOrder( $id_order ){
+		$query = 'DELETE FROM notification_log WHERE id_order = ' . $id_order;
+		Cana::db()->query( $query );
+	}
+
 	public function notification() {
 		return Notification::o($this->id_notification);
 	}

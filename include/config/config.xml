@@ -85,6 +85,14 @@
     	<support>_PHONE_</support>
     	<restaurant>_PHONE_</restaurant>
     </phone>
+    <testphone>
+    	<devin>_PHONE_</devin>
+    	<judd>_PHONE_</judd>
+    	<david>_PHONE_</david>
+    	<nick>_PHONE_</nick>
+    	<adam></adam>
+    	<daniel>***REMOVED***</daniel>
+    </testphone>
     <text>
     	<Devin>_PHONE_</Devin>
     	<Judd>_PHONE_</Judd>

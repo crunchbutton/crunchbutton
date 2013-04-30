@@ -1,0 +1,19 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content admin-content-orders">
+		<? foreach ($this->users as $user) : ?>
+			<div class="issue-user">
+				<h1><?=$user['name'] ? $user['name'] : $user['login']?></h1>
+				<? foreach ($this->issues[$user['login']] as $issue) : ?>
+					<div class="issue-issue">
+						<?=$issue['number']?> <b><a href="<?=$issue['html_url']?>"><?=$issue['title']?></a></b>
+						<? foreach ($issue['labels'] as $label) : ?>
+							<span class="issue-label" style="background-color: #<?=$label['color']?>"><?=$label['name']?></span>
+						<? endforeach ; ?>
+					</div>
+				<? endforeach ; ?>
+			</div>
+		<? endforeach ; ?>
+		<br /><br /><br /><br /><br />
+		<a href="/issues/logout">logout of github auth</a>
+	</div>
+</div>

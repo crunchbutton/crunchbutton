@@ -1298,6 +1298,17 @@ html[xmlns] .clearfix {
 	.resturant-dish-container .dish-price {
 		float: right;
 	}
+	.your-orders .dish-price {
+		float: right;
+	}
+	.your-orders .order-link{
+		float: right;
+		margin: 0;
+	}
+
+	.your-orders li{
+		margin-bottom: 12px;
+	}
 
 	.meal-item-content {
 		width: 298px;
@@ -1781,6 +1792,10 @@ html[xmlns] .clearfix {
 	.meal-item:nth-child(2n+1) {
 		margin-right: 12px;
 	}
+	.your-orders .dish-price {
+		float: none;
+	}
+
 }
 
 
@@ -1790,6 +1805,7 @@ html[xmlns] .clearfix {
 	.location-address {
 		width: 100%;
 	}
+		
 	.fb-like-mobile {
 		margin-bottom: 50px;
 	}
@@ -2892,4 +2908,11 @@ strong {
 .address-problem{
 	background: #FFF url( ../images/address-problem.png ) no-repeat !important;
 	background-position: 382px 5px !important;
+}
+.order-link{
+	display: inline-block;
+	margin-left: 8px;
+}
+.order-restaurant{
+	cursor: pointer;
 }
