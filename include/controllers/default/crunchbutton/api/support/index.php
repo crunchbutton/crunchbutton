@@ -29,6 +29,7 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 						$support->save();
 						echo $support->json();
 						$support->queNotify();
+
 					break;
 					case 'say':
 
