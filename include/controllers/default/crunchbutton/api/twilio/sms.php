@@ -292,6 +292,8 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 			$url = 'http://' . c::config()->host_callback . '/api/support/say/' . $id_support;
 
+			Log::debug( [ 'action' => 'Need to call', 'id_support' => $id_support, 'url' => $url, 'hour' => $hour, 'type' => 'sms' ] );
+
 			foreach ( c::config()->supportcall as $supportName => $supportPhone ) {
 					$num = $supportPhone;
 					$name = $supportName;
