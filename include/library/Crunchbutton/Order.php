@@ -314,7 +314,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function charged(){
-		return $this->final_price - $this->chargedByCredit();
+		return number_format( abs( ( $this->final_price ) - ( $this->chargedByCredit() ) ), 2 );
 	}
 
 	public function debitFromUserCredit(){
