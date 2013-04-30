@@ -93,16 +93,14 @@
     	<adam></adam>
     	<daniel>2037728167</daniel>
     </testphone>
-    <supportcall>
-    	<!-- <David>_PHONE_</David> -->
-    	<daniel>***REMOVED***</daniel>
-    </supportcall>
+		<supportcall>
+			<David>_PHONE_</David>
+		</supportcall>
     <text>
-    	<daniel>2037728167</daniel>
-    	<!--<Devin>_PHONE_</Devin>
+    	<Devin>_PHONE_</Devin>
     	<Judd>_PHONE_</Judd>
     	<David>_PHONE_</David>
-    	<Nick>_PHONE_</Nick>-->
+    	<Nick>_PHONE_</Nick>
     </text>
     <stripe>
     	<dev>

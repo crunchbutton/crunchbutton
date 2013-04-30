@@ -158,8 +158,7 @@ class Crunchbutton_Support extends Cana_Table {
 		$hour = $dateTime->format( 'H' );
 
 		// Issue #1100 - Call David if CB receives a support after 1AM
-		// if( $hour >= 1 && $hour <= 7 ){
-		if( true ){
+		if( $hour >= 1 && $hour <= 7 ){
 		
 			$env = c::env() == 'live' ? 'live' : 'dev';
 			
