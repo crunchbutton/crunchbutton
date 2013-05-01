@@ -1,23 +1,26 @@
 <div class="admin-content-wrapper">
 	<div class="admin-content">
 
-		<h1 class="restaurant-item-title">Recent Payments</h1>
-		<br /><br />
-		<table width="100%" cellpadding="4" cellspacing="4">
-			<tr>
-				<th>restaurant</th>
-				<th>date</th>
-				<th>amount</th>
-				<th>note</th>
-			</tr>
-		<? foreach (Payment::q('select * from payment where env="'.c::env().'" order by date desc') as $payment) : ?>
-			<tr>
-				<td><?=$payment->restaurant()->name?></td>
-				<td><?=$payment->date?></td>
-				<td>$<?=$payment->amount?></td>
-				<td><?=$payment->note?></td>
-			</tr>
-		<? endforeach; ?>
-		</table>
+		<h2>Orders</h2>
+		<h1><?=$this->data['all']['orders']?></h1>
+		
+
+		<b>Last 24 hours</b>
+
+		<h2>Orders</h2>
+		<h1><?=$this->data['day']['orders']?></h1>
+		
+		<h2>Support tickets</h2>
+		<h1><?=$this->orders?></h1>
+		
+		<hr>
+		<? foreach ($this->graphs as $id => $graph) : ?>
+			<? $this->display('charts/area', ['set' => [
+				'chartId' => $id,
+				'data' => $graph['data'],
+				'title' => $graph['title']
+			]]); ?>
+		<? endforeach ; ?>
+
 	</div>
 </div>

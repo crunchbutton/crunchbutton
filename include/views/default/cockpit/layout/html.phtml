@@ -36,7 +36,7 @@ var _gmtServer = '<?php echo $utc_str;?>';
 <? if (1==2 && c::config()->bundle) : ?>
 	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=admin"></script>
 <? else : ?>
-	<?=$this->display('bundle/js', ['set' => ['scripts' => ['datepicker/eye','datepicker/layout','datepicker/utils','datepicker/datepicker','admin','chosen.jquery']]])?>
+	<?=$this->display('bundle/js', ['set' => ['scripts' => ['datepicker/eye','datepicker/layout','datepicker/utils','datepicker/datepicker','admin','chosen.jquery','highcharts.src']]])?>
 <? endif ; ?>
 </head>
 
