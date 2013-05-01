@@ -1,18 +1,23 @@
 <div class="admin-content-wrapper">
 	<div class="admin-content">
-
+		<h1>All time</h1>
 		<h2>Orders</h2>
 		<h1><?=$this->data['all']['orders']?></h1>
-		
-
+		<br />
+		<h2>Support tickets</h2>
+		<h1><?=$this->data['all']['tickets']?></h1>
+		<hr>
 		<b>Last 24 hours</b>
 
 		<h2>Orders</h2>
 		<h1><?=$this->data['day']['orders']?></h1>
-		
-		<h2>Support tickets</h2>
-		<h1><?=$this->orders?></h1>
-		
+
+		<hr>
+		<b>Last 7 days</b>
+
+		<h2>Orders</h2>
+		<h1><?=$this->data['week']['orders']?></h1>
+
 		<hr>
 		<? foreach ($this->graphs as $id => $graph) : ?>
 			<? $this->display('charts/area', ['set' => [

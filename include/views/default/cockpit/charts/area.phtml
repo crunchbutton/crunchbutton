@@ -113,8 +113,14 @@ $(function () {
 				lineColor: '#666666',
 				lineWidth: 1,
 				marker: {
-					lineWidth: 1,
-					lineColor: '#666666'
+					enabled: false,
+					symbol: 'circle',
+					radius: 2,
+					states: {
+						hover: {
+							enabled: true
+						}
+					}
 				}
 			}
 		},
