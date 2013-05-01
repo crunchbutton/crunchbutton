@@ -913,11 +913,12 @@ App.cart = {
 			if ( !App.isDeliveryAddressOk	) {
 
 				// Try to use the aproxLoc, if it is not available it'll use the restaurant's position
-				if( App.loc.aproxLoc ){
+				/*if( App.loc.aproxLoc ){
 					var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );
 				} else {
 					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
-				}
+				}*/
+				var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
 console.log('latLong',latLong);
 				var success = function( results ) {
 
