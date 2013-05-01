@@ -919,12 +919,15 @@ App.cart = {
 				} else {
 					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
 				}
+console.log('App.loc',App.loc.aproxLoc.lat, App.loc.aproxLoc.lon);
+console.log('App.restaurant.loc',App.restaurant.loc_lat, App.restaurant.loc_long);
+console.log('latLong',latLong.toString());
 
 				var success = function( results ) {
 
 					// Get the closest address from that lat/lng
 					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
-
+console.log('theClosestAddress',theClosestAddress);
 					var isTheAddressOk = false;
 
 					// Check if the address is rooftop or range_interpolated
@@ -933,7 +936,7 @@ App.cart = {
 							theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
 						isTheAddressOk = true;
 					}
-
+console.log('isTheAddressOk #1',isTheAddressOk);
 					// If the address is not rooftop neither range_interpolated it could be approximate
 					if( !isTheAddressOk && theClosestAddress && theClosestAddress.geometry && theClosestAddress.geometry.location_type && 
 						( theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.APPROXIMATE ) ){
@@ -943,9 +946,10 @@ App.cart = {
 							if( addressType == 'premise' || addressType == 'subpremise' || addressType == 'intersection' ){
 								isTheAddressOk = true;
 							}
+console.log('addressType',addressType);
 						}
 					}
-
+console.log('isTheAddressOk #2',isTheAddressOk);
 					if( isTheAddressOk ){
 						// Now lets check if the restaurant deliveries at the given address
 						var lat = theClosestAddress.geometry.location.lat();
@@ -967,6 +971,7 @@ App.cart = {
 
 					} else {
 						// Address was found but it is not valid (for example it could be a city name)
+console.log('address error #1');
 						alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 						App.busy.unBusy();						
 						// Make sure that the form will be visible
@@ -978,6 +983,7 @@ App.cart = {
 
 				// Address not found!
 				var error = function() {
+console.log('address error #2');
 					alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 					App.busy.unBusy();
 				};
