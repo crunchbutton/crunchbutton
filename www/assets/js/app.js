@@ -957,7 +957,10 @@ App.cart = {
 						} else {
 
 							if( App.useCompleteAddress ){
-								$( '[name=pay-address]' ).val( theClosestAddress.formatted_address );
+								var completeAddress = theClosestAddress.formatted_address;
+								// Remove the country name, it is useless here
+								completeAddress = completeAddress.replace( ', USA', '' );
+								$( '[name=pay-address]' ).val( completeAddress  );
 							}
 
 							App.busy.unBusy();
