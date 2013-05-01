@@ -10,10 +10,10 @@
 <div class="admin-content-wrapper">
 	<div class="admin-content">
 
-		<select id="restaurant-id" class="chosen-select" style="width:280px;">
+		<select id="restaurant-id" class="chosen-select" style="width:480px;">
 			<option value="" selected>Choose...</option>
 			<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
-				<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+			<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> (permalink: <?=$restaurant->permalink?>)</option>
 			<? endforeach ; ?>
 		</select>
 		<div class="divider"></div>
