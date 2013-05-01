@@ -259,7 +259,7 @@ App.loc = {
 		// set the bounds of the address to our guessed location
 //		var bounds = new google.maps.LatLngBounds(App.config.loc.lat, App.config.loc.lon);
 	},
-	
+
 	// perform a geocode and store the results
 	geocode: function(address, success, error) {
 		App.loc.doGeocode(address, function(results) {
@@ -310,6 +310,53 @@ App.loc = {
 				error();
 			}
 		});
+	},
+
+	// send out a geocode request
+	doGeocodeWithBound: function(address, latLong, success, error) {
+
+		address = $.trim(address);
+
+		// track the entered address to mixpanel
+		App.track('Location Entered', {
+			address: address
+		});
+
+		var bounds = new google.maps.LatLngBounds(); 
+		bounds.extend( latLong );
+
+		// send the request out to google
+		var geocoder = new google.maps.Geocoder();
+		geocoder.geocode({address: address, bounds : bounds }, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				success(results, status);
+			} else {
+				error(results, status);
+			}
+		});
+	},
+
+	theClosestAddress : function( results, latLong ) {
+		var lat = latLong.lat();
+		var lng = latLong.lng();
+		var R = 6371;
+		var distances = [];
+		var closest = -1;
+		for( i=0;i<results.length; i++ ) {
+				var alat = results[i].geometry.location.lat;
+				var alng = results[i].geometry.location.lng;
+				var dLat  = _toRad( alat - lat );
+				var dLong = _toRad( alng - lng );
+				var a = Math.sin( dLat / 2 ) * Math.sin( dLat / 2 ) +
+						Math.cos( _toRad( lat ) ) * Math.cos( _toRad( lat ) ) * Math.sin( dLong/2 ) * Math.sin( dLong/2 );
+				var c = 2 * Math.atan2( Math.sqrt( a ), Math.sqrt( 1 - a ) );
+				var d = R * c;
+				distances[ i ] = d;
+				if ( closest == -1 || d < distances[ closest ] ) {
+						closest = i;
+				}
+		}
+		return results[ closest ];
 	},
 
 	km2Miles : function( km ){

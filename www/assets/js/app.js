@@ -38,7 +38,6 @@ var App = {
 	_pageInit: false,
 	_identified: false,
 	isDeliveryAddressOk : false,
-	isUserAddressOk : false,
 	tips: [0,10,15,18,20,25,30],
 	touchX: null,
 	touchY: null,
@@ -907,71 +906,69 @@ App.cart = {
 			App.crunchSoundAlreadyPlayed = true;
 		}
 
-		// Removed temporally the feature to validate the user address. #946
-		App.isUserAddressOk = true;
-
 		// if it is a delivery order we need to check the address
 		if( order.delivery_type == 'delivery' ){
-			
-			// verify if the user typed his complete address (street name and number)	
-			if ( !App.isUserAddressOk	) {
+
+			// Check if the user address was already validated
+			if ( !App.isDeliveryAddressOk	) {
+
+				// Try to use the aproxLoc, if it is not available it'll use the restaurant's position
+				if( App.loc.aproxLoc ){
+					var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );
+				} else {
+					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
+				}
+console.log('latLong',latLong);
 				var success = function( results ) {
-					if( results[0] && results[0].geometry && results[0].geometry.location_type && 
-						( results[0].geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || results[0].geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
-						App.busy.unBusy();
-						App.isUserAddressOk = true;
-						App.cart.submit();
+
+					// Get the closest address from that lat/lng
+					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
+console.log('theClosestAddress',theClosestAddress);					
+					// Make sure that this closest address is rooftop or range_interpolated
+					if( theClosestAddress && theClosestAddress.geometry && theClosestAddress.geometry.location_type && 
+						( theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || 
+							theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
+
+						// Now lets check if the restaurant deliveries at the given address
+						var lat = theClosestAddress.geometry.location.lat();
+						var lon = theClosestAddress.geometry.location.lng();
+
+						if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
+							alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout.' );
+							App.busy.unBusy();
+						} else {
+							App.busy.unBusy();
+							App.isDeliveryAddressOk = true;
+							App.cart.submit();
+						}
+
 					} else {
+
 						alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
-						App.busy.unBusy();
+						App.busy.unBusy();						
 						// Make sure that the form will be visible
 						$('.payment-form').show();
  						$('.delivery-payment-info, .content-padder-before').hide();
 						$( '[name="pay-address"]' ).focus();
 					}
 				};
-				var error = function() {
-					App.busy.unBusy();
-					alert('Oops! We couldn\'t find that address!');
-				};
-				App.loc.doGeocode( order.address, success, error);
-				return;
-			}
 
-			// verify the distance between the user and the restaurant
-			if (!App.isDeliveryAddressOk) {
-				var success = function( results ) {
-					if( results.alias ){
-						var lat = results.alias.lat;
-						var lon = results.alias.lon;
-					} else {
-						var lat = results[0].geometry.location.lat();
-						var lon = results[0].geometry.location.lng();
-					}
-					if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
-						alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout.' );
-						App.busy.unBusy();
-					} else {
-						App.busy.unBusy();
-						App.isDeliveryAddressOk = true;
-						App.cart.submit();
-					}
-				};
 				var error = function() {
 					App.busy.unBusy();
 					alert('Oops! We couldn\'t find that address!');
 				};
-				App.loc.doGeocode( order.address, success, error);
+
+				// Call the geo method
+				App.loc.doGeocodeWithBound( order.address, latLong, success, error);
 				return;
 			} 
 		}
 
 		if( order.delivery_type == 'takeout' ){
 			App.isDeliveryAddressOk = true;
-			App.isUserAddressOk = true;
 		}
 
-		if( !App.isDeliveryAddressOk || !App.isUserAddressOk ){
+		if( !App.isDeliveryAddressOk ){
 			return;
 		}
 
@@ -1666,7 +1663,6 @@ $(function() {
 		e.preventDefault();
 		e.stopPropagation();
 		App.crunchSoundAlreadyPlayed = false;
-		App.isUserAddressOk = false;
 		App.isDeliveryAddressOk = false;
 		App.cart.submit($(this),true);
 	});
@@ -1940,5 +1936,26 @@ App.message.chrome = function( ){
 		'</p>';
 	App.message.show(title, message);
 }
+
+
+
+function addr( address ){
+	var success = function( results ) {
+					if( results[0] && results[0].geometry && results[0].geometry.location_type && 
+						( results[0].geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || results[0].geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
+					
+						console.log('it is ok');
+						console.log( results );
+					} else {
+						console.log('it is not ok');
+					}
+				};
+				var error = function() {
+					
+					alert('Oops! We couldn\'t find that address!');
+				};
+				App.loc.doGeocode( address, success, error);
+}
+
 
 
