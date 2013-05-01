@@ -1,0 +1,130 @@
+<?
+	// group up the data by order of data items recieved
+	// 0: X
+	// 1: Y
+	// 2: Group
+
+	$categories = [];
+	$ys = [];
+	$group = [];
+	
+	// set up x labels and empty objects
+	foreach ($data as $item) {
+		$vars = get_object_vars($item);
+		// X
+		$xName = key($vars);
+		$x = array_shift($vars);
+		$xs[$x] = true;
+
+
+		$yName = key($vars);
+		$y = array_shift($vars);
+
+		$group = array_shift($vars);
+		
+		$ys[$group] = [];
+
+	}
+
+	foreach ($xs as $k => $v) {
+		$xx .= "'".str_replace("'","\\'",$k)."', ";
+	}
+	$xx = substr($xx,0,-2);
+	
+	// fill empty columns
+	foreach ($xs as $k => $v) {
+		foreach ($ys as $kk => $vv) {
+			$ys[$kk][$k] = 0;
+		}
+	}
+
+
+	// gather data
+	foreach ($data as $item) {
+		$vars = get_object_vars($item);
+		
+		// X
+		$x = array_shift($vars);
+		$xs[$x] = true;
+
+		// Y & group
+		$y = array_shift($vars);
+		
+		$groupName = key($vars);
+		$group = array_shift($vars);
+		
+		$ys[$group][$x] = $y;
+
+	}
+	
+	// remove assoc vals and add proper keys
+	foreach ($ys as $k => $v) {
+		$ys[$k] = array_values($ys[$k]);
+		$ys[$k] = [
+			'name' => $k,
+			'data' => $ys[$k]
+		];
+	}
+
+	
+	$jsData = [
+		'xs' => array_keys($xs),
+		'ys' => array_values($ys)
+	];
+
+?>
+
+<div id="<?=$chartId?>" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+<script type="text/javascript">
+$(function () {
+	var data = <?=json_encode($jsData, JSON_NUMERIC_CHECK)?>;
+	console.log(data);
+	$('#<?=$chartId?>').highcharts({
+		chart: {
+			type: 'area'
+		},
+		title: {
+			text: '<?=str_replace("'","\\'",$title)?>'
+		},
+		xAxis: {
+			categories: data.xs,
+			tickmarkPlacement: 'on',
+			title: {
+				enabled: false
+			}
+		},
+		yAxis: {
+			title: {
+				text: '<?=$yName?>'
+			},
+			labels: {
+				formatter: function() {
+					return this.value;
+				}
+			}
+		},
+		tooltip: {
+			shared: true,
+			valueSuffix: ' orders'
+		},
+		plotOptions: {
+			area: {
+				stacking: 'normal',
+				lineColor: '#666666',
+				lineWidth: 1,
+				marker: {
+					enabled: false,
+					symbol: 'circle',
+					radius: 2,
+					states: {
+						hover: {
+							enabled: true
+						}
+					}
+				}
+			}
+		},
+		series: data.ys
+	});
+});
+</script>
