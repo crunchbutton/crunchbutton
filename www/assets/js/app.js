@@ -912,15 +912,12 @@ App.cart = {
 			// Check if the user address was already validated
 			if ( !App.isDeliveryAddressOk	) {
 
-				// Removed from while
 				// Try to use the aproxLoc, if it is not available it'll use the restaurant's position
-				/*
 				if( App.loc.aproxLoc ){
 					var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );
 				} else {
 					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
 				}
-				*/
 
 				var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
 
@@ -928,7 +925,6 @@ App.cart = {
 
 					// Get the closest address from that lat/lng
 					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
-
 					// Make sure that this closest address is rooftop or range_interpolated
 					if( theClosestAddress && theClosestAddress.geometry && theClosestAddress.geometry.location_type && 
 						( theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || 
@@ -959,8 +955,8 @@ App.cart = {
 				};
 
 				var error = function() {
+					alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 					App.busy.unBusy();
-					alert('Oops! We couldn\'t find that address!');
 				};
 
 				// Call the geo method
