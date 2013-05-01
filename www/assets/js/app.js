@@ -919,16 +919,12 @@ App.cart = {
 				} else {
 					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
 				}
-var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
-console.log('App.loc',App.loc.aproxLoc.lat, App.loc.aproxLoc.lon);
-console.log('App.restaurant.loc',App.restaurant.loc_lat, App.restaurant.loc_long);
-console.log('latLong',latLong.toString());
 
 				var success = function( results ) {
 
 					// Get the closest address from that lat/lng
 					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
-console.log('theClosestAddress',theClosestAddress);
+
 					var isTheAddressOk = false;
 
 					// Check if the address is rooftop or range_interpolated
@@ -937,7 +933,7 @@ console.log('theClosestAddress',theClosestAddress);
 							theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
 						isTheAddressOk = true;
 					}
-console.log('isTheAddressOk #1',isTheAddressOk);
+
 					// If the address is not rooftop neither range_interpolated it could be approximate
 					if( !isTheAddressOk && theClosestAddress && theClosestAddress.geometry && theClosestAddress.geometry.location_type && 
 						( theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.APPROXIMATE ) ){
@@ -947,10 +943,9 @@ console.log('isTheAddressOk #1',isTheAddressOk);
 							if( addressType == 'premise' || addressType == 'subpremise' || addressType == 'intersection' ){
 								isTheAddressOk = true;
 							}
-console.log('addressType',addressType);
 						}
 					}
-console.log('isTheAddressOk #2',isTheAddressOk);
+
 					if( isTheAddressOk ){
 						// Now lets check if the restaurant deliveries at the given address
 						var lat = theClosestAddress.geometry.location.lat();
@@ -972,7 +967,6 @@ console.log('isTheAddressOk #2',isTheAddressOk);
 
 					} else {
 						// Address was found but it is not valid (for example it could be a city name)
-console.log('address error #1');
 						alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 						App.busy.unBusy();						
 						// Make sure that the form will be visible
@@ -984,7 +978,6 @@ console.log('address error #1');
 
 				// Address not found!
 				var error = function() {
-console.log('address error #2');
 					alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 					App.busy.unBusy();
 				};
@@ -1967,26 +1960,4 @@ App.message.chrome = function( ){
 		'</p>';
 	App.message.show(title, message);
 }
-
-
-
-function addr( address ){
-	var success = function( results ) {
-					if( results[0] && results[0].geometry && results[0].geometry.location_type && 
-						( results[0].geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || results[0].geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
-					
-						console.log('it is ok');
-						console.log( results );
-					} else {
-						console.log('it is not ok');
-					}
-				};
-				var error = function() {
-					
-					alert('Oops! We couldn\'t find that address!');
-				};
-				App.loc.doGeocode( address, success, error);
-}
-
-
 
