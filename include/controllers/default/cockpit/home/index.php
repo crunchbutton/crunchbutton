@@ -5,6 +5,9 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		$data = [
 			'all' => [
 				'orders' => Order::q('select count(*) as c from `order` where env="live"')->c,
+				'tickets' => Session_Twilio::q('
+					select count(*) as c from session_twilio
+				')->c
 			],
 			'day' => [
 				'orders' => Order::q('
@@ -12,8 +15,15 @@ class Controller_home extends Crunchbutton_Controller_Account {
 					where
 						env="live"
 						and date > date_sub(now(), interval 24 hour)
-				')->c,
-				'tickets' => null
+				')->c
+			],
+			'week' => [
+				'orders' => Order::q('
+					select count(*) as c from `order`
+					where
+						env="live"
+						and date > date_sub(now(), interval 1 week)
+				')->c			
 			]
 		];
 
