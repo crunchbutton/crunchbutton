@@ -14,14 +14,14 @@ class Crunchbutton_App extends Cana_App {
 	public function init($params = null) {
 		set_exception_handler([$this, 'exception']);
 	
-		if (!$_SERVER['__HTTP_HOST']) {
+		if (!$_SERVER['SERVER_NAME']) {
 			$cli = true;
 		}
 
-		$host = $_SERVER['__HTTP_HOST'];
+		$host = $_SERVER['SERVER_NAME'];
 
 		$params['postInitSkip'] = true;
-		switch ($_SERVER['__HTTP_HOST']) {
+		switch ($_SERVER['SERVER_NAME']) {
 			case 'staging.crunchr.co':
 				$env = 'staging';
 				break;
@@ -48,7 +48,7 @@ class Crunchbutton_App extends Cana_App {
 				break;
 		}
 
-		switch ($_SERVER['__HTTP_HOST']) {
+		switch ($_SERVER['SERVER_NAME']) {
 			case 'crunchbutton.localhost':
 			case 'wenzel.localhost':
 				$params['env'] = 'local';
@@ -88,22 +88,22 @@ class Crunchbutton_App extends Cana_App {
 							case '/home/beta.crunchbutton/include/library/Crunchbutton':
 							case '/home/dev.crunchbutton/include/library/Crunchbutton':
 								$params['env'] = 'beta';
-								$_SERVER['__HTTP_HOST'] = 'beta.crunchr.co';
+								$_SERVER['SERVER_NAME'] = 'beta.crunchr.co';
 								$host_callback = 'beta.crunchr.co';
 								break;
 							case '/home/crunchbutton/include/library/Crunchbutton':
 								$params['env'] = 'live';
-								$_SERVER['__HTTP_HOST'] = '_DOMAIN_';
+								$_SERVER['SERVER_NAME'] = '_DOMAIN_';
 								$host_callback = '_DOMAIN_';
 								break;
 							case '/home/staging.crunchbutton/include/library/Crunchbutton':
 								$params['env'] = 'live';
-								$_SERVER['__HTTP_HOST'] = '_DOMAIN_';
+								$_SERVER['SERVER_NAME'] = '_DOMAIN_';
 								$host_callback = 'staging.crunchr.co';
 								break;
 							default:
 								$params['env'] = 'local';
-								$_SERVER['__HTTP_HOST'] = $_SERVER['HTTP_HOST'];
+								$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
 								$host_callback = $_SERVER['HTTP_HOST'];
 								break;
 						}
@@ -129,13 +129,13 @@ class Crunchbutton_App extends Cana_App {
 				break;
 		}
 
-		if ($_SERVER['__HTTP_HOST'] == 'crunchr.co') {
+		if ($_SERVER['SERVER_NAME'] == 'crunchr.co') {
 			header ('HTTP/1.1 301 Moved Permanently');
 			header('Location: http://_DOMAIN_/');
 			exit;
 		}
 
-		if ($params['env'] == 'live' && !$cli && ($_SERVER['__HTTP_HOST'] == '_DOMAIN_' || $_SERVER['__HTTP_HOST'] == 'spicywithdelivery.com')) {
+		if ($params['env'] == 'live' && !$cli && ($_SERVER['SERVER_NAME'] == '_DOMAIN_' || $_SERVER['SERVER_NAME'] == 'spicywithdelivery.com')) {
 			error_reporting(E_ERROR | E_PARSE);
 
 			if ($_SERVER['HTTPS'] != 'on') {
@@ -152,7 +152,7 @@ class Crunchbutton_App extends Cana_App {
 		} else {
 			$domain->version = 'default';
 		}
-		switch ($_SERVER['__HTTP_HOST']) {
+		switch ($_SERVER['SERVER_NAME']) {
 			case 'wenzel.localhost':
 				$domain->theme = 'onebuttonwenzel';
 				break;
@@ -161,6 +161,7 @@ class Crunchbutton_App extends Cana_App {
 			case 'cockpit._DOMAIN_':
 			case 'beta.cockpit._DOMAIN_':
 			case 'beta.cockpit.crunchr.co':
+			case 'cockpit.localhost:8888':
 				$domain->theme = 'cockpit';
 				break;
 			default:
@@ -183,7 +184,7 @@ class Crunchbutton_App extends Cana_App {
 		$this->buildAuth($this->db());
 		$config->domain = $domain;
 		
-		if ($params['env'] != 'local' && $_SERVER['__HTTP_HOST'] != 'dev.crunchr.co') {
+		if ($params['env'] != 'local' && $_SERVER['SERVER_NAME'] != 'dev.crunchr.co') {
 			$config->bundle = true;
 		}
 
@@ -194,7 +195,7 @@ class Crunchbutton_App extends Cana_App {
 		require_once c::config()->dirs->library . '/Cana/Stripe.php';			
 		Stripe::setApiKey(c::config()->stripe->dev->secret);
 
-		switch ($_SERVER['__HTTP_HOST']) {
+		switch ($_SERVER['SERVER_NAME']) {
 			case 'spicywithdelivery.com':
 			case 'beta.spicywithdelivery.com':
 			case 'dev.spicywithdelivery.com':
