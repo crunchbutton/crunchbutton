@@ -913,12 +913,8 @@ App.cart = {
 			// Check if the user address was already validated
 			if ( !App.isDeliveryAddressOk	) {
 
-				// Try to use the aproxLoc, if it is not available it'll use the restaurant's position
-				if( App.loc.aproxLoc ){
-					var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );
-				} else {
-					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
-				}
+				// Use the aproxLoc to create the bounding box
+				var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );
 
 				var success = function( results ) {
 
