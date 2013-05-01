@@ -919,6 +919,7 @@ App.cart = {
 				} else {
 					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
 				}
+var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
 console.log('App.loc',App.loc.aproxLoc.lat, App.loc.aproxLoc.lon);
 console.log('App.restaurant.loc',App.restaurant.loc_lat, App.restaurant.loc_long);
 console.log('latLong',latLong.toString());
