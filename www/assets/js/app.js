@@ -42,7 +42,8 @@ var App = {
 	touchX: null,
 	touchY: null,
 	touchOffset: null,
-	crunchSoundAlreadyPlayed : false
+	crunchSoundAlreadyPlayed : false,
+	useCompleteAddress : true /* if true it means the address field will be fill with the address found by google api */
 };
 
 App.loadRestaurant = function(id) {
@@ -919,17 +920,33 @@ App.cart = {
 					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
 				}
 
-				var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
-
 				var success = function( results ) {
 
 					// Get the closest address from that lat/lng
 					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
-					// Make sure that this closest address is rooftop or range_interpolated
+
+					var isTheAddressOk = false;
+
+					// Check if the address is rooftop or range_interpolated
 					if( theClosestAddress && theClosestAddress.geometry && theClosestAddress.geometry.location_type && 
 						( theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || 
 							theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
+						isTheAddressOk = true;
+					}
 
+					// If the address is not rooftop neither range_interpolated it could be approximate
+					if( !isTheAddressOk && theClosestAddress && theClosestAddress.geometry && theClosestAddress.geometry.location_type && 
+						( theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.APPROXIMATE ) ){
+						// The address type could be premise, subpremise or intersection
+						for ( var x in theClosestAddress.types ) {
+							var addressType = theClosestAddress.types[ x ];
+							if( addressType == 'premise' || addressType == 'subpremise' || addressType == 'intersection' ){
+								isTheAddressOk = true;
+							}
+						}
+					}
+
+					if( isTheAddressOk ){
 						// Now lets check if the restaurant deliveries at the given address
 						var lat = theClosestAddress.geometry.location.lat();
 						var lon = theClosestAddress.geometry.location.lng();
@@ -938,13 +955,18 @@ App.cart = {
 							alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout.' );
 							App.busy.unBusy();
 						} else {
+
+							if( App.useCompleteAddress ){
+								$( '[name=pay-address]' ).val( theClosestAddress.formatted_address );
+							}
+
 							App.busy.unBusy();
 							App.isDeliveryAddressOk = true;
 							App.cart.submit();
 						}
 
 					} else {
-
+						// Address was found but it is not valid (for example it could be a city name)
 						alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 						App.busy.unBusy();						
 						// Make sure that the form will be visible
@@ -952,8 +974,9 @@ App.cart = {
  						$('.delivery-payment-info, .content-padder-before').hide();
 						$( '[name="pay-address"]' ).focus();
 					}
-				};
+				}
 
+				// Address not found!
 				var error = function() {
 					alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 					App.busy.unBusy();
