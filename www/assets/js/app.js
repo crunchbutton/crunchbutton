@@ -43,7 +43,8 @@ var App = {
 	touchY: null,
 	touchOffset: null,
 	crunchSoundAlreadyPlayed : false,
-	useCompleteAddress : true /* if true it means the address field will be fill with the address found by google api */
+	useCompleteAddress : true, /* if true it means the address field will be fill with the address found by google api */
+	useRestaurantBoundingBox : false
 };
 
 App.loadRestaurant = function(id) {
@@ -914,7 +915,20 @@ App.cart = {
 			if ( !App.isDeliveryAddressOk	) {
 
 				// Use the aproxLoc to create the bounding box
-				var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );
+				if( App.loc.aproxLoc ){
+					var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );	
+				}
+
+				// Use the restautant's position to create the bounding box - just for tests
+				if( App.useRestaurantBoundingBox ){
+					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
+				}
+
+				if( !latLong ){
+					alert( 'An error occurred' );
+					App.busy.unBusy();
+					return;
+				}
 
 				var success = function( results ) {
 
@@ -933,10 +947,10 @@ App.cart = {
 					// If the address is not rooftop neither range_interpolated it could be approximate
 					if( !isTheAddressOk && theClosestAddress && theClosestAddress.geometry && theClosestAddress.geometry.location_type && 
 						( theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.APPROXIMATE ) ){
-						// The address type could be premise, subpremise or intersection
+						// The address type could be premise, subpremise, intersection or establishment
 						for ( var x in theClosestAddress.types ) {
 							var addressType = theClosestAddress.types[ x ];
-							if( addressType == 'premise' || addressType == 'subpremise' || addressType == 'intersection' ){
+							if( addressType == 'premise' || addressType == 'subpremise' || addressType == 'intersection' || addressType == 'establishment' ){
 								isTheAddressOk = true;
 							}
 						}
@@ -965,6 +979,7 @@ App.cart = {
 						}
 
 					} else {
+						console.log('error #1');
 						// Address was found but it is not valid (for example it could be a city name)
 						alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 						App.busy.unBusy();						
@@ -977,6 +992,7 @@ App.cart = {
 
 				// Address not found!
 				var error = function() {
+					console.log('error #2');
 					alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 					App.busy.unBusy();
 				};

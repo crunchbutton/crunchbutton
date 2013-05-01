@@ -40,9 +40,9 @@
 				<a href="javascript:App.page.legal();" class="link-legal">Legal</a>
 				<a href="javascript:App.page.orders();" class="link-orders"<?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
 				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
+					<a href="javascript:App.useRestaurantBoundingBox=true;alert('Ok!');">TEST: restaurant bounding</a>
 					<a href="javascript:App.test.card();" class="test-card">TEST: card</a>
 					<a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a>
-					<a href="javascript:App.test.cart();" class="test-card">TEST: cart</a>
 					<a href="javascript:App.test.clearloc();" class="test-clearloc">TEST: clear loc</a>
 				<? endif ; ?>
 				<br />
