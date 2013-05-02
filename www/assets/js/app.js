@@ -44,6 +44,7 @@ var App = {
 	touchOffset: null,
 	crunchSoundAlreadyPlayed : false,
 	useCompleteAddress : true, /* if true it means the address field will be fill with the address found by google api */
+	boundingBoxMeters : 8000,
 	useRestaurantBoundingBox : false
 };
 

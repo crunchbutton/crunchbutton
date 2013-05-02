@@ -257,7 +257,6 @@ App.loc = {
 		App.routeAlias(address, rsuccess, rerror);
 
 		// set the bounds of the address to our guessed location
-//		var bounds = new google.maps.LatLngBounds(App.config.loc.lat, App.config.loc.lon);
 	},
 
 	// perform a geocode and store the results
@@ -312,7 +311,6 @@ App.loc = {
 		});
 	},
 
-	// send out a geocode request
 	doGeocodeWithBound: function(address, latLong, success, error) {
 
 		address = $.trim(address);
@@ -322,10 +320,11 @@ App.loc = {
 			address: address
 		});
 
-		var bounds = new google.maps.LatLngBounds(); 
-		bounds.extend( latLong );
+		// Create a cicle bounding box
+		var circle = new google.maps.Circle( { center: latLong, radius: App.boundingBoxMeters } ); 
+		var bounds = circle.getBounds();
 
-		// send the request out to google
+		// Send the request out to google
 		var geocoder = new google.maps.Geocoder();
 		geocoder.geocode({address: address, bounds : bounds }, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
