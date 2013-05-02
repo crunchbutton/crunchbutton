@@ -935,26 +935,7 @@ App.cart = {
 					// Get the closest address from that lat/lng
 					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
 
-					var isTheAddressOk = false;
-
-					// Check if the address is rooftop or range_interpolated
-					if( theClosestAddress && theClosestAddress.geometry && theClosestAddress.geometry.location_type && 
-						( theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || 
-							theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
-						isTheAddressOk = true;
-					}
-
-					// If the address is not rooftop neither range_interpolated it could be approximate
-					if( !isTheAddressOk && theClosestAddress && theClosestAddress.geometry && theClosestAddress.geometry.location_type && 
-						( theClosestAddress.geometry.location_type == google.maps.GeocoderLocationType.APPROXIMATE ) ){
-						// The address type could be premise, subpremise, intersection or establishment
-						for ( var x in theClosestAddress.types ) {
-							var addressType = theClosestAddress.types[ x ];
-							if( addressType == 'premise' || addressType == 'subpremise' || addressType == 'intersection' || addressType == 'establishment' ){
-								isTheAddressOk = true;
-							}
-						}
-					}
+					var isTheAddressOk = App.loc.validateAddressType( theClosestAddress );
 
 					if( isTheAddressOk ){
 						// Now lets check if the restaurant deliveries at the given address
@@ -967,10 +948,7 @@ App.cart = {
 						} else {
 
 							if( App.useCompleteAddress ){
-								var completeAddress = theClosestAddress.formatted_address;
-								// Remove the country name, it is useless here
-								completeAddress = completeAddress.replace( ', USA', '' );
-								$( '[name=pay-address]' ).val( completeAddress  );
+								$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
 							}
 
 							App.busy.unBusy();
