@@ -2913,6 +2913,13 @@ strong {
 	display: inline-block;
 	margin-left: 8px;
 }
+
+.login-facebook{
+	color:#4168b8 !important;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
 .order-restaurant{
 	cursor: pointer;
 }

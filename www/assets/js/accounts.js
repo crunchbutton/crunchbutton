@@ -337,7 +337,21 @@ App.signin.passwordHelp.sendForm = function(){
 					$( '.signin-password-help-message' ).show();
 					$( '.signin-password-help-button' ).hide();
 					$( '.signin-password-help-back' ).hide();
-					$( '.signin-password-help-message' ).html( 'You will receive a code to reset your password! It will expire in 24 hours.' );
+					
+					var message = 'You will receive a code to reset your password! It will expire in 24 hours.';
+					
+					if( json.userHasFacebookAuth ){
+						message += '<br/>';
+						message += '<br/>';
+						message += 'You can also try logging in with <span class="login-facebook">Facebook</span>.';
+					}
+					
+					$( '.signin-password-help-message' ).html( message );
+
+					$( '.login-facebook' ).on( 'touchclick', function(){
+						App.signin.show();
+					} );
+
 				}
 			}
 		}

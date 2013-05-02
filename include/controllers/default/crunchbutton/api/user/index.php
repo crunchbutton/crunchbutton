@@ -155,6 +155,8 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 							$message = "Your crunchbutton password reset code is '".$code."'.\n\n";
 							$message .= "Access ".$url." to reset your password.\n\n";
 
+							$id_user = $user_auth->user()->id_user;
+
 							$message = str_split( $message, 160 );
 							foreach ( $message as $msg ) {
 								$twilio->account->sms_messages->create(
@@ -165,7 +167,10 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 								continue;
 							}
 						}
-						echo json_encode(['success' => 'code generated']);
+
+						$userHasFacebookAuth = User_Auth::userHasFacebookAuth( $id_user );
+
+						echo json_encode( [ 'success' => 'code generated', 'userHasFacebookAuth' => $userHasFacebookAuth ] );
 						exit;
 						break;
 				}

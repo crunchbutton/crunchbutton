@@ -233,6 +233,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// This line will create a phone user auth just if the user already has an email auth
 		User_Auth::createPhoneAuth( $user->id_user, $user->phone );
+		User_Auth::createPhoneAuthFromFacebook( $user->id_user, $user->phone );
 
 		if ($this->_customer->id) {
 			switch (c::config()->processor) {
