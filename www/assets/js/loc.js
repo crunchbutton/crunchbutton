@@ -375,7 +375,7 @@ App.loc = {
 		}
 
 		// If the address is not rooftop neither range_interpolated it could be approximate
-		if( !isTheAddressOk && address && addressLocation.geometry && addressLocation.geometry.location_type && 
+		if( addressLocation && addressLocation.geometry && addressLocation.geometry.location_type && 
 			( addressLocation.geometry.location_type == google.maps.GeocoderLocationType.APPROXIMATE ) ){
 			// The address type could be premise, subpremise, intersection or establishment
 			for ( var x in addressLocation.types ) {
