@@ -979,7 +979,6 @@ App.cart = {
 						}
 
 					} else {
-						console.log('error #1');
 						// Address was found but it is not valid (for example it could be a city name)
 						alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 						App.busy.unBusy();						
@@ -992,7 +991,6 @@ App.cart = {
 
 				// Address not found!
 				var error = function() {
-					console.log('error #2');
 					alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 					App.busy.unBusy();
 				};
