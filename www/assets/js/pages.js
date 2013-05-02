@@ -103,8 +103,8 @@ App.page.restaurant = function(id) {
 			lastPayCash = App.config.user.presets[App.restaurant.id_restaurant].pay_type;
 			App.order['delivery_type'] = lastOrderDelivery;
 			App.order['pay_type'] = lastPayCash;
-		}
-		
+		}	
+
 		App.showPage({
 			tracking: {
 				title: 'Restaurant page loaded',
@@ -124,7 +124,7 @@ App.page.restaurant = function(id) {
 					tip: App.order.tip,
 					name: App.config.user.name,
 					phone: App.phone.format(App.config.user.phone),
-					address: ( App.config.user.address || App.loc.address() ),
+					address: App.config.user.address, 
 					notes: (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) ? App.config.user.presets[App.restaurant.id_restaurant].notes : '',
 					card: {
 						number: App.config.user.card,
@@ -134,7 +134,40 @@ App.page.restaurant = function(id) {
 				}
 			}
 		});
-		
+
+		// If the typed address is different of the user address the typed one will be used #1152
+		if( App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != App.config.user.address ){
+			// Give some time to google.maps.Geocoder() load
+			var validatedAddress = function(){
+				if( google && google.maps && google.maps.Geocoder ){
+					var addressToVerify = App.loc.pos().addressEntered;
+					// Success the address was found
+					var success = function( results ){
+						var address = results[ 0 ];
+						if( address ){
+							// Valid if the address is acceptable
+							if( App.loc.validateAddressType( address ) ){
+								// If the flag useCompleteAddress is true
+								if( App.useCompleteAddress ){
+									$( '[name=pay-address]' ).val( App.loc.formatedAddress( address ) );
+								} else {
+									$( '[name=pay-address]' ).val( addressToVerify );
+								}
+							}
+						}
+					};
+					// Error, do nothing
+					var error = function(){  };
+					App.loc.doGeocode( addressToVerify, success, error );
+				} else {
+					setTimeout( function(){
+						validatedAddress();
+					}, 10 );
+				}
+			}
+			validatedAddress();
+		}
+
 		if (App.config.user.presets) {
 			$('.payment-form').hide();
 		}

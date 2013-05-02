@@ -359,6 +359,36 @@ App.loc = {
 		return results[ closest ];
 	},
 
+	formatedAddress : function( location ){
+		// Remove the country name, it is useless here
+		return location.formatted_address.replace( ', USA', '' );
+	},
+
+	// This method validate the acceptables types of address/location
+	validateAddressType : function( addressLocation ){
+
+		// Check if the address is rooftop or range_interpolated
+		if( addressLocation && addressLocation.geometry && addressLocation.geometry.location_type && 
+			( addressLocation.geometry.location_type == google.maps.GeocoderLocationType.ROOFTOP || 
+				addressLocation.geometry.location_type == google.maps.GeocoderLocationType.RANGE_INTERPOLATED ) ){
+			return true;
+		}
+
+		// If the address is not rooftop neither range_interpolated it could be approximate
+		if( !isTheAddressOk && address && addressLocation.geometry && addressLocation.geometry.location_type && 
+			( addressLocation.geometry.location_type == google.maps.GeocoderLocationType.APPROXIMATE ) ){
+			// The address type could be premise, subpremise, intersection or establishment
+			for ( var x in addressLocation.types ) {
+				var addressType = addressLocation.types[ x ];
+				if( addressType == 'premise' || addressType == 'subpremise' || addressType == 'intersection' || addressType == 'establishment' ){
+					return true;
+				}
+			}
+		}
+		// It is not valid
+		return false;
+	},
+
 	km2Miles : function( km ){
 		return km * 0.621371;
 	},
