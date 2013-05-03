@@ -1755,6 +1755,12 @@ $(function() {
 		App.order.cardChanged = true;
 	});
 
+	// Listener to verify if the user typed a gift card at the notes field
+	$(document).on('blur', '[name=notes]', function(){
+		App.giftcard.notesField.listener();
+	} );
+	
+
 	$(document).on('change, keyup', '[name="pay-card-number"]', function() {
 		App.creditCard.changeIcons( $(this).val() );
 	} );
