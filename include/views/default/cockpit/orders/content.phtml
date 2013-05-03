@@ -20,23 +20,20 @@
 			<? $date = $order->date(); ?>
 			<tr class="list-order-item">
 				<td>
-					<table>
-						<tr>
-							<td>
-								<a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a>
-							</td>
-						</tr>
-						<tr>
-							<td><?=$order->env?></td>
-						</tr>
-						
-						<? if ($order->notes) :?>
-						<tr class="comments">
-							<td><a href="#" title="<?=$order->notes?>" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-comment"></span></a></td>
-						</tr>
+
+					<a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a>
+					<br/>
+					<br/>
+					<?=$order->env?>
+					<br/>
+					<br/>
+					<? if ($order->notes) :?>
+						<div class="comments">
+							<a href="#" title="<?=$order->notes?>" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-comment"></span></a>
+						</div>
+						<br/>
+						<br/>
 						<? endif ?>
-						<tr>
-							<td><br />
 							<? if ($order->refunded) : ?>
 								REFUNDED
 							<? else : ?>
@@ -54,9 +51,9 @@
 								echo '<div style="color:red;margin-top:8px;">Received <strong style="font-weight:bold;">$' . number_format( $giftcard, 2 ) . '</strong> gift card.</div>';
 							}
 							?>
-							</td>
-							</tr>
-					</table>
+					<br/>
+
+
 				</td>
 				<td>
 					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>

@@ -393,16 +393,13 @@ textarea {
 }
 
 .list-orders td, .list-orders th {
-	white-space: nowrap;
-	padding: 3px;
+	padding: 5px;
 }
-
+.list-orders th{
+	white-space: nowrap;
+}
 .list-order-item:nth-child(2n+3) {
 	background: rgba(0,0,0,.1);
-}
-
-.list-orders table {
-	width: 120px;
 }
 
 .list-orders ul {
