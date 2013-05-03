@@ -4,7 +4,7 @@ class Controller_giftcards extends Crunchbutton_Controller_Account {
 	public function init() {
 		c::view()->page = 'giftcards';
 
-		if( c::getPagePiece(2) == 'new' ){ 
+		if( c::getPagePiece(1) == 'new' ){ 
 			$id_user = $_GET[ 'id_user' ];
 			if( $id_user != '' ){
 				$user = Crunchbutton_User::o( $id_user );
@@ -31,15 +31,15 @@ class Controller_giftcards extends Crunchbutton_Controller_Account {
 			c::view()->users = Crunchbutton_User::q('SELECT DISTINCT( u.id_user ), u.name, u.phone, u.email FROM user u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = 1 ORDER BY u.name ASC');;
 			c::view()->display('giftcards/new');
 
-		} else if( c::getPagePiece(2) == 'sms' ){ 
+		} else if( c::getPagePiece(1) == 'sms' ){ 
 			c::view()->display('giftcards/sms');
 	
-		} else if( c::getPagePiece(2) == 'email' ){ 
+		} else if( c::getPagePiece(1) == 'email' ){ 
 			c::view()->display('giftcards/email');
 
 		} else {
 
-			$giftcard = Crunchbutton_Promo::o(c::getPagePiece(2));
+			$giftcard = Crunchbutton_Promo::o(c::getPagePiece(1));
 			if ($giftcard->id_promo) {
 				c::view()->users = Crunchbutton_User::q('SELECT u.id_user, u.name, u.phone, u.email FROM user u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = 1 ORDER BY u.name ASC');;
 				c::view()->giftcard = $giftcard;
