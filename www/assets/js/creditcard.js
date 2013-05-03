@@ -58,7 +58,6 @@ App.creditCard.luhn = function( cardValue ){
 
 App.creditCard.changeIcons = function( cardValue ){
 	var card = App.creditCard.detectType( cardValue );
-	console.log('card',card);
 	if( card ){		
 		$( '.payment-card' ).addClass( 'to-grey' );
 		$( '.payment-card' ).removeClass( 'to-color' );

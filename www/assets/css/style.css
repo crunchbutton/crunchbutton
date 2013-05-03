@@ -2889,6 +2889,9 @@ strong {
 	margin-top: 7px;
 	position: absolute;
 }
+.giftcard-info{
+		margin-left: 115px;
+	}
 .address-problem-message{
 	color: red;
 	display: none;
@@ -2919,6 +2922,15 @@ strong {
 	cursor: pointer;
 	text-decoration: underline;
 }
+.giftcard-info{
+	font-size: 11px;
+	line-height: 15px;
+} 
+	.giftcard-info .warning{
+		color: red;
+		display: block;
+		max-width: 400px;
+	}
 
 .order-restaurant{
 	cursor: pointer;

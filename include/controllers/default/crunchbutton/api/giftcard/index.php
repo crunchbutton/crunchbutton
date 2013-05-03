@@ -167,6 +167,29 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 					}
 				}
  				
+				if ( c::getPagePiece(2) == 'validate' ) {
+
+					$code = $this->request()['code'];
+					// Get the giftcard (promo) by code
+					$giftcard = Crunchbutton_Promo::byCode( $code);
+					// Check if the giftcard is valid
+					if( $giftcard->id_promo ){
+						// Check if the giftcard was already used
+						if( Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
+							echo json_encode(['error' => 'gift card already used', 'giftcard' => $code ]);
+						} else {
+							// It the gift has a user_id just this user will be able to use it
+							if( $giftcard->id_user && $giftcard->id_user != c::user()->id_user ){
+								echo json_encode(['error' => 'invalid gift card', 'giftcard' => $code ]);
+								exit;		
+							}
+							echo json_encode( [ 'success' => [ 'value' => $giftcard->value, 'id_restaurant' => $giftcard->id_restaurant, 'giftcard' => $code ] ] );
+						}
+					} else {
+						echo json_encode(['error' => 'invalid gift card', 'giftcard' => $code ] );
+					}
+				}
+
 			break;
 			default:
 				echo json_encode(['error' => 'invalid object']);
