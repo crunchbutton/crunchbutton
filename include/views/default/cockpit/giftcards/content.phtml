@@ -23,7 +23,7 @@
 				<td> <?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?> </td>
 				<td> <a href="/giftcards/<?=$giftcard->id_promo;?>"><?=$giftcard->code; ?></a> </td>
 				<td> $<?= Util::ceil($giftcard->value, 2); ?></td>
-				<td> <?=$giftcard->restaurant()->name; ?> </td>
+				<td> <? if( $giftcard->id_restaurant ){ echo $giftcard->restaurant()->name; } else { echo 'Any Restaurant'; } ?> </td>
 				<td> <? if( $giftcard->user()->name != '' ){ echo $giftcard->user()->name; } else { echo '-'; } ?> </td>
 				<td> <? if( $giftcard->phone ){ echo $giftcard->phone; } else { echo '-'; } ?> </td>
 				<td> <? if( $giftcard->email ){ echo $giftcard->email; } else { echo '-'; } ?> </td>

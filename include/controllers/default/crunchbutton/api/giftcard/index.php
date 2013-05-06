@@ -20,7 +20,13 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$id_user = $this->request()['id_user'];
 							for( $i = 1; $i<= $total; $i++){
 								$giftcard = new Crunchbutton_Promo;
-								$giftcard->id_restaurant = $id_restaurant;
+								// id_restaurant == * means any restaurant
+								if( $id_restaurant == '*' ){
+									$giftcard->note = 'This gift is valid to any restaurant!' . "\n" . $note;
+								} else {
+									$giftcard->id_restaurant = $id_restaurant;
+									$giftcard->note = $note;
+								}
 								$giftcard->code = $giftcard->promoCodeGenerator();
 								$giftcard->value = $value;
 								if( $id_user ){
@@ -55,7 +61,13 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							foreach ( $phones as $phone ) {
 								if( trim( $phone ) != '' ){
 									$giftcard = new Crunchbutton_Promo;
-									$giftcard->id_restaurant = $id_restaurant;
+									// id_restaurant == * means any restaurant
+									if( $id_restaurant == '*' ){
+										$giftcard->note = 'This gift is valid to any restaurant!' . "\n" . $note;
+									} else {
+										$giftcard->id_restaurant = $id_restaurant;
+										$giftcard->note = $note;
+									}
 									$giftcard->code = $giftcard->promoCodeGenerator();
 									$giftcard->value = $value;
 									$giftcard->phone = $phone;
@@ -87,7 +99,13 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							foreach ( $emails as $email ) {
 								if( trim( $email ) != '' ){
 									$giftcard = new Crunchbutton_Promo;
-									$giftcard->id_restaurant = $id_restaurant;
+									// id_restaurant == * means any restaurant
+									if( $id_restaurant == '*' ){
+										$giftcard->note = 'This gift is valid to any restaurant!' . "\n" . $note;
+									} else {
+										$giftcard->id_restaurant = $id_restaurant;
+										$giftcard->note = $note;
+									}
 									$giftcard->code = $giftcard->promoCodeGenerator();
 									$giftcard->value = $value;
 									$giftcard->email = $email;
@@ -157,7 +175,11 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							// Add credit to user
 							$credit = $giftcard->addCredit( c::user()->id_user );
 							if( $credit->id_credit ){
-								echo json_encode( [ 'success' => [ 'value' => $credit->value, 'restaurant' => $credit->restaurant()->name, 'id_restaurant' => $credit->restaurant()->id_restaurant ] ] );
+								if( $credit->id_restaurant ){
+									echo json_encode( [ 'success' => [ 'value' => $credit->value, 'restaurant' => $credit->restaurant()->name, 'id_restaurant' => $credit->restaurant()->id_restaurant ] ] );	
+								} else {
+									echo json_encode( [ 'success' => [ 'value' => $credit->value ] ] );
+								}
 							} else {
 								echo json_encode(['error' => 'gift card not added']);
 							}
