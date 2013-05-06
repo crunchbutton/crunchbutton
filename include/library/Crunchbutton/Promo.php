@@ -43,9 +43,37 @@ class Crunchbutton_Promo extends Cana_Table
 		}
 	}
 
-	public function addCredit(){
+	public function validateNotesField( $notes, $id_restaurant = false ){
+		$return = array();
+		$giftcards = array();
+		$words = explode( ' ',  $notes);
+		foreach( $words as $word ){
+			$code = preg_replace( '/[^a-zA-Z 0-9]+/', '', $word );
+			$giftcard = Crunchbutton_Promo::byCode( $code );
+			if( $giftcard->id_promo ){
+				if( !$giftcard->id_user || ( $giftcard->id_user && $giftcard->id_user == c::user()->id_user ) ){
+					if( !Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
+						if( $id_restaurant ){
+							if( $id_restaurant == $giftcard->id_restaurant ){
+								$giftcards[ $giftcard->id_promo ] = $giftcard;	
+							}
+						} else {
+							$giftcards[ $giftcard->id_promo ] = $giftcard;
+						}
+						// Remove the gift card code from the notes
+						$notes = str_replace( $code, '', $notes );
+					}
+				}
+			}
+		}
+		$return[ 'notes' ] = $notes;
+		$return[ 'giftcards' ] = $giftcards;
+		return $return;
+	}
+
+	public function addCredit( $id_user ){
 		$credit = new Crunchbutton_Credit();
-		$credit->id_user = c::user()->id_user;
+		$credit->id_user = $id_user;
 		$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
 		$credit->id_restaurant = $this->id_restaurant;
 		$credit->id_promo = $this->id_promo;
@@ -57,7 +85,7 @@ class Crunchbutton_Promo extends Cana_Table
 		$credit->note = 'Giftcard: ' . $this->id_promo;
 		$credit->save();
 
-		$this->id_user = c::user()->id_user;
+		$this->id_user = $id_user;
 		$this->save();
 
 		if( $credit->id_credit ){
