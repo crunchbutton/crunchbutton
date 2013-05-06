@@ -1299,13 +1299,13 @@ var DOM_MAP = {
 				},
 				'#view-on-site-button' : {
 					apply : function(restaurant, element) { 
-						$(element).attr('href', '/food-delivery/' + restaurant.id_restaurant);
+						$(element).attr('href', 'https://crunchbutton.com/food-delivery/' + restaurant.id_restaurant);
 					},
 					flush : function(restaurant, element) { },
 				},
 				'#view-on-site-button' : {
 					apply : function(restaurant, element) { 
-						$(element).attr('href', '/food-delivery/' + restaurant.id_restaurant);
+						$(element).attr('href', 'https://crunchbutton.com/food-delivery/' + restaurant.id_restaurant);
 					},
 					flush : function(restaurant, element) { },
 				},
