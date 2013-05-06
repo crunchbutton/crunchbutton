@@ -1024,10 +1024,17 @@ class Crunchbutton_Order extends Cana_Table {
 			$credits = Crunchbutton_Credit::creditByOrder( $this->id_order );
 			if( $credits->count() > 0 ){
 				foreach( $credits as $credit ){
-					$old_value = $credit->value;
-					$credit->value = 0;
-					$credit->note = 'Value ' . $old_value . ' refunded from order: ' . $this->id_order . ' - ' . date('Y-m-d H:i:s');
-					$credit->save();
+					$creditRefounded = new Crunchbutton_Credit();
+					$creditRefounded->id_user = $credit->id_user;
+					$creditRefounded->type = Crunchbutton_Credit::TYPE_CREDIT;
+					$creditRefounded->id_restaurant = $this->id_restaurant;
+					$creditRefounded->date = date('Y-m-d H:i:s');
+					$creditRefounded->value = $credit->value;
+					$creditRefounded->id_order_reference = $this->id_order_reference;
+					$creditRefounded->id_restaurant_paid_by = $this->id_restaurant_paid_by;
+					$creditRefounded->paid_by = $this->paid_by;
+					$creditRefounded->note = 'Value ' . $credit->value . ' refunded from order: ' . $this->id_order . ' - ' . date('Y-m-d H:i:s');
+					$creditRefounded->save();
 				}
 			}
 		}
