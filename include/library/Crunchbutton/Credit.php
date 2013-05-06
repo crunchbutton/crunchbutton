@@ -30,16 +30,43 @@ class Crunchbutton_Credit extends Cana_Table
 		if (!$id_user) {
 			return 0;
 		}
+		$credits = 0;
 		$query = 'SELECT SUM(`value`) as credit FROM ( SELECT SUM(`value`) as `value` FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user = '.$id_user.' AND id_restaurant = ' . $id_restaurant . ' UNION SELECT SUM(`value`) * -1 as `value` FROM credit WHERE type = "' . self::TYPE_DEBIT . '" AND id_user = '.$id_user.' AND id_restaurant = ' . $id_restaurant . ' ) credit';
 		$row = Cana::db()->get( $query );
 		if( $row->_items && $row->_items[0] ){
 			if( $row->_items[0]->credit ){
-				return $row->_items[0]->credit;
+				$credits = floatval( $row->_items[0]->credit );
+			}
+		}
+		$anyRestaurantCredits = Crunchbutton_Credit::creditByUserValidToAnyRestaurant( $id_user );
+		return floatval( $credits + $anyRestaurantCredits );
+	}
+	
+	public function creditByUserValidToAnyRestaurant( $id_user ){
+		if (!$id_user) {
+			return 0;
+		}
+		$query = 'SELECT SUM(`value`) as debit FROM ( SELECT SUM(`value`) as `value` FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user = '.$id_user.'  AND id_restaurant IS NULL UNION SELECT SUM( value ) * -1  FROM credit WHERE id_credit_debited_from IN ( SELECT id_credit FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user = '.$id_user.'  AND id_restaurant IS NULL ) ) debit';
+		$row = Cana::db()->get( $query );
+		if( $row->_items && $row->_items[0] ){
+			if( $row->_items[0]->debit ){
+				return floatval( $row->_items[0]->debit );
 			}
 		}
 		return 0;
 	}
-	
+
+	public function totalDebitedFromCredit(){
+		$query = 'SELECT SUM(`value`) as `debited` FROM credit WHERE type = "' . self::TYPE_DEBIT . '" AND id_credit_debited_from = ' . $this->id_credit;
+		$row = Cana::db()->get( $query );
+		if( $row->_items && $row->_items[0] ){
+			if( $row->_items[0]->debited ){
+				return floatval( $row->_items[0]->debited );
+			}
+		}
+		return 0;
+	}
+
 	public static function find($search = []) {
 
 		$query = 'SELECT `credit`.* FROM `credit` LEFT JOIN restaurant USING(id_restaurant) WHERE id_credit IS NOT NULL ';

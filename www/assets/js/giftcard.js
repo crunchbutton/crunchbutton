@@ -68,13 +68,20 @@ App.giftcard.process = function( path ){
 					var id_restaurant = json.success['id_restaurant'];
 					var restaurant_name = json.success['restaurant'];
 					var value = '$' + json.success['value'];
-					text = 'You\'ve got a  <span class="giftcard-value">' + value + '</span> gift card to <span id_restaurant="' + id_restaurant + '" class="giftcard-restaurant">' + restaurant_name + '</span>.'
-
-					$(document).on('touchclick', '.giftcard-restaurant', function() {
-						var id_restaurant = $( this ).attr( 'id_restaurant' );
-						$( '.giftcard-container' ).dialog( 'close' );
-						App.loadRestaurant( id_restaurant );
-					});
+					
+					if( id_restaurant ){
+						var text = 'You\'ve got a  <span class="giftcard-value">' + value + '</span> gift card to <span id_restaurant="' + id_restaurant + '" class="giftcard-restaurant">' + restaurant_name + '</span>.'
+					} else {
+							var text = 'You\'ve got a  <span class="giftcard-value">' + value + '</span> gift card.'
+					}
+					// If the gift card is valid to any restaurant does not show the restaurant's link
+					if( id_restaurant ){
+						$(document).on('touchclick', '.giftcard-restaurant', function() {
+							var id_restaurant = $( this ).attr( 'id_restaurant' );
+							$( '.giftcard-container' ).dialog( 'close' );
+							App.loadRestaurant( id_restaurant );
+						});
+					}
 				}
 			}
 			$( '.giftcard-message-title' ).html( title );
