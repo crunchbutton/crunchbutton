@@ -174,7 +174,7 @@ App.giftcard.notesField.message = function( giftinfo ){
 		}
 	} else {
 		// Error! the gift card was already used
-		if( giftinfo.error = 'gift card already used' ){
+		if( giftinfo.error == 'gift card already used' ){
 			$( '.giftcard-info' ).html( message + 'The gift card (' + giftinfo.giftcard + ') you are trying to use was already redeemed.' );
 		}
 	}
@@ -187,9 +187,9 @@ App.giftcard.notesField.force = function( value ){
 	// Backup the actual credit value
 	if( !App.giftcard.notesField.backup.backuped ){
 		App.giftcard.notesField.backup.backuped = true;
-		App.giftcard.notesField.backup.value = App.credit.restaurant[ App.restaurant.id ];
+		App.giftcard.notesField.backup.value = parseFloat( App.credit.restaurant[ App.restaurant.id ] );
 	}
-	App.credit.restaurant[ App.restaurant.id ] = App.giftcard.notesField.backup.value + value;
+	App.credit.restaurant[ App.restaurant.id ] = parseFloat( App.giftcard.notesField.backup.value ) + parseFloat( value );
 	App.credit.show();
 	App.cart.updateTotal();
 }

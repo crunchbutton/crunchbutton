@@ -160,20 +160,34 @@ class Crunchbutton_Order extends Cana_Table {
 			return $errors;
 		}
 
-		$res = $this->verifyPayment();
-
-		if ($res !== true) {
-			return $res['errors'];
-
-		} else {
-			$this->txn = $this->transaction();
-		}
-
 		$user = c::user()->id_user ? c::user() : new User;
 
 		if (!c::user()->id_user) {
 			$user->active = 1;
 		}
+
+		// Save the user just to add to him the gift cards
+		$user->save();
+		$this->id_user = $user->id_user;
+
+		if ( trim( $this->notes ) != '' ){
+			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
+				if( $giftcard->id_promo ){
+					$giftcard->addCredit( $user->id_user );
+				}
+			}
+			$this->notes = $giftcards[ 'notes' ];	
+		}
+
+		$res = $this->verifyPayment();
+
+		if ( $res !== true ) {
+			return $res['errors'];
+		} else {
+			$this->txn = $this->transaction();
+		}
+
 		if ($this->_customer->id) {
 			switch (c::config()->processor) {
 				case 'stripe':
@@ -211,6 +225,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->processor = c::config()->processor;
 
 		$user->save();
+
 		$user = new User($user->id_user);
 		$this->_user = $user;
 
@@ -258,7 +273,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->que();
 
-		$this->debitFromUserCredit();
+		$this->debitFromUserCredit( $user->id_user );
 
 		if ($params['make_default']) {
 			$preset = $user->preset($this->restaurant()->id_restaurant);
@@ -287,10 +302,9 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function calcFinalPriceMinusUsersCredit(){
-
 		if( $this->pay_type == 'card' ){
 			if( c::user()->id_user ){
-				$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $this->final_price, c::user()->id_user, $this->id_restaurant, $this->id_order, true );
+				$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $this->final_price, $this->id_user, $this->id_restaurant, $this->id_order, true );
 				$final = $this->final_price - $chargedByCredit;
 				if( $final < 0 ){
 					$final = 0;
@@ -318,9 +332,9 @@ class Crunchbutton_Order extends Cana_Table {
 		return number_format( abs( ( $this->final_price ) - ( $this->chargedByCredit() ) ), 2 );
 	}
 
-	public function debitFromUserCredit(){
+	public function debitFromUserCredit( $id_user ){
 		if( $this->pay_type == 'card' ){
-			Crunchbutton_Credit::debitFromUserCredit( $this->final_price, c::user()->id_user, $this->id_restaurant, $this->id_order );
+			Crunchbutton_Credit::debitFromUserCredit( $this->final_price, $id_user, $this->id_restaurant, $this->id_order );
 		}
 	}
 

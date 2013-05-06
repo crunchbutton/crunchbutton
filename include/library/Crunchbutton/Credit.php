@@ -179,7 +179,7 @@ class Crunchbutton_Credit extends Cana_Table
 					$charge = $credits_charge[ $key ][ 'charge' ];
 					// At the first time I need just the calc, so do not charge for while
 					if( !$justCalc ){
-						$credit->charge( $charge, $id_order );	
+						$credit->charge( $charge, $id_order, $id_user );	
 					}
 					$totalCharged = $totalCharged + $charge;
 				}
@@ -203,9 +203,9 @@ class Crunchbutton_Credit extends Cana_Table
 		return $this->value - $spent;
 	}
 
-	public function charge( $value, $id_order ){
+	public function charge( $value, $id_order, $id_user ){
 		$credit = new Crunchbutton_Credit();
-		$credit->id_user = c::user()->id_user;
+		$credit->id_user = $id_user;
 		$credit->type = Crunchbutton_Credit::TYPE_DEBIT;
 		$credit->id_restaurant = $this->id_restaurant;
 		$credit->date = date('Y-m-d H:i:s');
