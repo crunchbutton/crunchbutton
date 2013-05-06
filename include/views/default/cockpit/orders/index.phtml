@@ -120,7 +120,7 @@
 			}
 			$.getJSON('/api/order/' + el.attr('data-uuid') + '/resend_notification',function( json ) {
 				if( json.status == 'success' ){
-					alert('Notification resended!');
+					alert('Notification resent!');
 				} else {
 					alert('Oops, error! Please try it again.');
 				}
