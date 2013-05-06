@@ -1281,6 +1281,7 @@ var DOM_MAP = {
 				'input#restaurant-fee-restaurant' : ['fee_restaurant'],
 				'input#restaurant-fee-customer' : ['fee_customer'],
 				'input#restaurant-tax' : ['tax'],
+				'input#restaurant-weight-adj' : ['weight_adj'],
 			},
 			widget : [], // a list of widgets supporting 'apply' and 'flush' funcs etc
 			func : {
@@ -1298,13 +1299,13 @@ var DOM_MAP = {
 				},
 				'#view-on-site-button' : {
 					apply : function(restaurant, element) { 
-						$(element).attr('href', '/food-delivery/' + restaurant.id_restaurant);
+						$(element).attr('href', 'https://crunchbutton.com/food-delivery/' + restaurant.id_restaurant);
 					},
 					flush : function(restaurant, element) { },
 				},
 				'#view-on-site-button' : {
 					apply : function(restaurant, element) { 
-						$(element).attr('href', '/food-delivery/' + restaurant.id_restaurant);
+						$(element).attr('href', 'https://crunchbutton.com/food-delivery/' + restaurant.id_restaurant);
 					},
 					flush : function(restaurant, element) { },
 				},
