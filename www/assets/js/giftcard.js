@@ -196,7 +196,6 @@ App.giftcard.notesField.force = function( value ){
 
 // Validates a gift card code
 App.giftcard.validate = function( code, callback ){
-	console.log('code',code);
 	var url = App.service + App.giftcard.api.validate;
 	$.ajax( {
 		type: 'POST',
