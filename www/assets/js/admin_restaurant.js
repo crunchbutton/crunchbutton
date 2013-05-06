@@ -1281,6 +1281,7 @@ var DOM_MAP = {
 				'input#restaurant-fee-restaurant' : ['fee_restaurant'],
 				'input#restaurant-fee-customer' : ['fee_customer'],
 				'input#restaurant-tax' : ['tax'],
+				'input#restaurant-weight-adj' : ['weight_adj'],
 			},
 			widget : [], // a list of widgets supporting 'apply' and 'flush' funcs etc
 			func : {
