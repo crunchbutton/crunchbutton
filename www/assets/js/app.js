@@ -1888,6 +1888,7 @@ $(function() {
 	App.suggestion.init();
 	App.recommend.init();
 	App.loc.init();
+	App.credit.tooltip.init();
 });
 
 
