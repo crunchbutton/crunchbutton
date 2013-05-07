@@ -162,6 +162,7 @@ App.giftcard.notesField.updateValue = function(){
 
 // Write the message about the gift card
 App.giftcard.notesField.message = function( giftinfo ){
+
 	// Get the message to concatenate
 	var message = $( '.giftcard-info' ).html();
 	if( $.trim( message ) != '' ){
@@ -174,16 +175,20 @@ App.giftcard.notesField.message = function( giftinfo ){
 			$( '.giftcard-info' ).html( message + 'The gift card (' + giftinfo.success.giftcard + ') you are trying to use belongs to another restaurant.' );
 		} else {
 			// If the restaurant is empty it means it is a 'global' gift card
-			if( giftinfo.success.id_restaurant || ( giftinfo.success.id_restaurant && giftinfo.success.id_restaurant == App.restaurant.id_restaurant ) ){
-				$( '.giftcard-info' ).html( message + 'Congrats! This gift card (' + giftinfo.success.giftcard + ') gives you $' + giftinfo.success.value + '.' );
-				App.giftcard.notesField.value = parseFloat( App.giftcard.notesField.value ) + parseFloat( giftinfo.success.value );
+			if( !giftinfo.success.id_restaurant ){
+				if( parseInt( App.restaurant.giftcard ) != 1 ){
+					$( '.giftcard-info' ).html( message + 'This restaurant does not accept gift card.' );
+				} else {
+					$( '.giftcard-info' ).html( message + 'Congrats! This gift card (' + giftinfo.success.giftcard + ') gives you $' + giftinfo.success.value + '.' );
+					App.giftcard.notesField.value = parseFloat( App.giftcard.notesField.value ) + parseFloat( giftinfo.success.value );	
+				}
 			}
 		}
 	} else {
 		// Error! the gift card was already used
 		if( giftinfo.error == 'gift card already used' ){
 			$( '.giftcard-info' ).html( message + 'The gift card (' + giftinfo.giftcard + ') you are trying to use was already redeemed.' );
-		}
+		} 
 	}
 	// Update the value
 	App.giftcard.notesField.updateValue();

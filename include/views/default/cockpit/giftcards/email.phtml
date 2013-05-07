@@ -33,7 +33,7 @@
 											<select id="id_restaurant" class="chosen-select" name="id_restaurant" data-placeholder="Choose a restaurant" style="width:350px;">
 												<option value="" selected></option>
 												<option value="*" selected>** ANY RESTAURANT **</option>
-												<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
+												<? foreach (Restaurant::q('SELECT * FROM restaurant WHERE giftcard = 1 ORDER BY name') as $restaurant) : ?>
 													<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
 												<? endforeach ; ?>
 											</select>

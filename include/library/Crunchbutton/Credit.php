@@ -159,7 +159,6 @@ class Crunchbutton_Credit extends Cana_Table
 					$first_charge = $charge_divided - ( $total - $charge );
 				}
 				foreach ($credits_available as $credit) {
-
 					if( $first_charge ){
 						$chargeOfThisCredit = $first_charge;
 						$first_charge = false;
@@ -206,7 +205,7 @@ class Crunchbutton_Credit extends Cana_Table
 					$charge = $credits_charge[ $key ][ 'charge' ];
 					// At the first time I need just the calc, so do not charge for while
 					if( !$justCalc ){
-						$credit->charge( $charge, $id_order, $id_user );	
+						$credit->charge( $charge, $id_order );	
 					}
 					$totalCharged = $totalCharged + $charge;
 				}
@@ -216,7 +215,7 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function creditSpent(){
-		$query = 'SELECT SUM( value ) as spent FROM credit c WHERE id_user = ' . $this->id_user . ' AND type = "DEBIT" AND id_credit_debited_from = ' . $this->id_credit;
+		$query = 'SELECT SUM( value ) as spent FROM credit c WHERE type = "DEBIT" AND id_credit_debited_from = ' . $this->id_credit;
 		$row = Cana::db()->get( $query );
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
@@ -230,9 +229,9 @@ class Crunchbutton_Credit extends Cana_Table
 		return $this->value - $spent;
 	}
 
-	public function charge( $value, $id_order, $id_user ){
+	public function charge( $value, $id_order ){
 		$credit = new Crunchbutton_Credit();
-		$credit->id_user = $id_user;
+		$credit->id_user = $this->id_user;
 		$credit->type = Crunchbutton_Credit::TYPE_DEBIT;
 		$credit->id_restaurant = $this->id_restaurant;
 		$credit->date = date('Y-m-d H:i:s');
@@ -246,7 +245,7 @@ class Crunchbutton_Credit extends Cana_Table
 
 	public function creditsAvailableByUserRestaurant( $id_user, $id_restaurant ){
 		$credit_available = array();
-		$credits = Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_restaurant = '.$id_restaurant.' OR id_restaurant IS NULL AND id_user="'.$id_user.'"');
+		$credits = Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_user="'.$id_user.'" AND ( id_restaurant = '.$id_restaurant.' OR id_restaurant IS NULL )' );
 		if( $credits->count() > 0 ){
 			foreach( $credits as $credit ){
 				$left = $credit->creditLeft();
@@ -285,8 +284,5 @@ class Crunchbutton_Credit extends Cana_Table
 
 	public function restaurant_paid_by() {
 		return Restaurant::o($this->id_restaurant_paid_by);
-	}
-
-	
-
+	}	
 }
