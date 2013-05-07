@@ -54,7 +54,7 @@ class Crunchbutton_Promo extends Cana_Table
 				if( !$giftcard->id_user || ( $giftcard->id_user && $giftcard->id_user == c::user()->id_user ) ){
 					if( !Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
 						if( $id_restaurant ){
-							if( $id_restaurant == $giftcard->id_restaurant ){
+							if( $id_restaurant == $giftcard->id_restaurant || !$giftcard->id_restaurant ){
 								$giftcards[ $giftcard->id_promo ] = $giftcard;	
 							}
 						} else {
