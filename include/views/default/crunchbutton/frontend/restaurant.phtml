@@ -8,9 +8,6 @@
 	<h1><%= restaurant.name %></h1>
 </div>
 
-<div class="restaurant-gift">
-	<h1>You have a <%= (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '' %><span class="restaurant-gift-value"></span> gift card!</h1>
-</div>
 <% if (restaurant.message) { %>
 	<div class="restaurant-message">
 		<%= restaurant.message %>

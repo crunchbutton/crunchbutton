@@ -21,13 +21,21 @@ App.credit.getCredit = function( complete ){
 	}
 }
 
+App.credit.hide = function(){
+	$( '.gift-card-message' ).hide();
+}
+
 App.credit.show = function(){
 	var gift = App.credit.restaurant[App.restaurant.id];
+
 	if( parseFloat( gift ) ){
-		$( '.restaurant-gift-value' ).html( gift );
-		$( '.restaurant-gift' ).show();
+		var text = 'You have a '+ ( ( App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '' ) + App.ceil( gift ).toFixed( 2 ) + ' gift card!';
+		$( '.gift-card-message' ).html( text );
+		$( '.gift-card-message' ).css( 'opacity', 0 );
+		$( '.gift-card-message' ).show();
+		$( '.gift-card-message' ).animate( { 'opacity' : 1 }, 100 );
 	} else {
-		$( '.restaurant-gift' ).hide();
+		$( '.gift-card-message' ).hide();
 	}
 	
 }

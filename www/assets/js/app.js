@@ -116,8 +116,11 @@ App.render = function(template, data) {
 };
 
 App.showPage = function(params) {
-	// switch here for AB testing
 
+	// Hides the gift card message
+	App.credit.hide();
+
+	// switch here for AB testing
 	App.currentPage = params.page;
 	if (params.title) {
 		document.title = params.title;
