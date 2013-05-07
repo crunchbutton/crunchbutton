@@ -826,7 +826,7 @@ html[xmlns] .clearfix {
 	width: 45px;
 	height: 30px;
 	margin: 12px 0 0 10px;
-	background: url(/assets/images/config.png) no-repeat;
+	background: url(/assets/images/location.png) no-repeat;
 	background-size: contain;
 	cursor: pointer;
 }
@@ -1810,10 +1810,10 @@ html[xmlns] .clearfix {
 		margin-bottom: 50px;
 	}
 	.config-icon {
-		width: 175px;
+		width: 45px;
 		height: 30px;
 		margin: 12px 0 0 10px;
-		background: url(/assets/images/change-location.png) no-repeat;
+		background: url(/assets/images/location.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
 	}
