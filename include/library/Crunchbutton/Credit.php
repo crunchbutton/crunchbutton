@@ -246,11 +246,12 @@ class Crunchbutton_Credit extends Cana_Table
 
 	public function creditsAvailableByUserRestaurant( $id_user, $id_restaurant ){
 		$credit_available = array();
-		$credits = Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_restaurant = '.$id_restaurant.' AND id_user="'.$id_user.'"');
+		$credits = Crunchbutton_Credit::q('SELECT * FROM credit WHERE type = "' . self::TYPE_CREDIT . '" AND id_restaurant = '.$id_restaurant.' OR id_restaurant IS NULL AND id_user="'.$id_user.'"');
 		if( $credits->count() > 0 ){
 			foreach( $credits as $credit ){
 				$left = $credit->creditLeft();
 				if( $left > 0 ){
+					// $credit_available[] = array( 'credit' => floatval( $credit->value ), 'left' => floatval( $left ), 'id_restaurant' => $credit->id_restaurant );
 					$credit_available[] = $credit;
 				}
 			}
