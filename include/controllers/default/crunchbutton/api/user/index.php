@@ -279,8 +279,8 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 				if( c::getPagePiece(3) != '' ){
 					$user = c::user();
 					if ( $user->id_user ){
-							$idRestaurant = c::getPagePiece(3);
-							$credit = Crunchbutton_Credit::creditByUserRestaurant( $user->id_user, $idRestaurant );
+							$id_restaurant = c::getPagePiece(3);
+							$credit = Crunchbutton_Credit::creditByUserRestaurant( $user->id_user, $id_restaurant );
 							echo json_encode( [ 'credit' => $credit ] );
 					} else {
 						echo json_encode(['error' => 'invalid request']);
