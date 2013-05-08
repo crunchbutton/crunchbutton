@@ -104,8 +104,12 @@ class Crunchbutton_Promo extends Cana_Table
 		return Restaurant::o($this->id_restaurant);
 	}
 
+	public function multiple( $ids ){
+		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo IN ( ' . $ids . ' )');
+	}
+
 	public function credit(){
-		return Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND id_promo = ' . $this->id_promo  );
+		return Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND id_promo = ' . $this->id_promo );
 	}
 
 	public function queTrack(){

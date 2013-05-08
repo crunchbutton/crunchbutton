@@ -12,7 +12,16 @@
 								<tbody>
 									<tr>
 										<td class="label-sub">Code:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->code;?></div></td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->code;?></div> 
+											<?php 
+												if( !CrunchButton_Promo::giftWasAlreadyUsed( $this->giftcard->id_promo ) ){
+													?>
+													<br/>
+													<a target="_blank" href="/giftcards/print/<?=$this->giftcard->id_promo;?>"><img src="/assets/images/icon_print.png"/></a>
+													<?php
+												}
+											?>
+										 </td>
 									</tr>
 									<tr>
 										<td class="label-sub">Value:</td>

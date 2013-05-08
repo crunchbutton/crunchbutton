@@ -1497,7 +1497,17 @@ App.giftcards = {
 		});
 
 		$(document).on('click', '.admin-giftcard-save', function() {
-			
+			App.giftcards.print = false;
+			App.giftcards.sendSimpleForm();
+		} );
+
+		$(document).on('click', '.admin-giftcard-print', function() {
+			App.giftcards.print = true;
+			App.giftcards.sendSimpleForm();
+		} );
+	},
+
+	sendSimpleForm : function(){
 			var value = $.trim( $( '#value' ).val() );
 			var id_restaurant = $( '#id_restaurant' ).val();
 			var id_user = $( '#id_user' ).val();
@@ -1552,15 +1562,21 @@ App.giftcards = {
 						alert( 'Error at adding a new giftcard!' );
 					} else {
 						alert( 'Gift card(s) created!' );
-						location.href = '/giftcards';
+						if( App.giftcards.print ){
+							location.href = '/giftcards/print/' + json.success;	
+						} else {
+							location.href = '/giftcards';	
+						}
 					}
 				},
 				error: function( ){
 					alert( 'Error at adding a new gift card!' );
 				}
 			});
-		} );
+
+
 	},
+
 	prepareFormBunchSMS : function(){
 
 		$(document).on('click', '[name=track]', function() {

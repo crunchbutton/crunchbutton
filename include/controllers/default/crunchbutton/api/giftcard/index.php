@@ -25,6 +25,9 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$how_delivery = $this->request()['how_delivery'];
 							$contact = $this->request()['contact'];
 
+							// Store the ids
+							$ids = [];
+
 							for( $i = 1; $i<= $total; $i++){
 								$giftcard = new Crunchbutton_Promo;
 								// id_restaurant == * means any restaurant
@@ -59,11 +62,14 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								}
 								$giftcard->date = date('Y-m-d H:i:s');
 								$giftcard->save();
+
+								$ids[] = $giftcard->id_promo;
+
 								if( $giftcard->phone ){
 									$giftcard->queNotifySMS();
 								}
 							}
-							echo json_encode(['success' => 'success']);
+							echo json_encode(['success' => join( ',', $ids ) ]);
 							break;
 					case 'bunchsms':
 							$id_restaurant = $this->request()['id_restaurant'];

@@ -27,6 +27,7 @@ class Controller_giftcards extends Crunchbutton_Controller_Account {
 			} else {
 				$id_order_reference = false;
 			}
+
 			c::view()->id_order_reference = $id_order_reference;
 			c::view()->id_restaurant = $id_restaurant;
 			c::view()->users = Crunchbutton_User::q('SELECT DISTINCT( u.id_user ), u.name, u.phone, u.email FROM user u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = 1 ORDER BY u.name ASC');;
@@ -37,9 +38,13 @@ class Controller_giftcards extends Crunchbutton_Controller_Account {
 	
 		} else if( c::getPagePiece(1) == 'email' ){ 
 			c::view()->display('giftcards/email');
-
+	
+		} else if( c::getPagePiece(1) == 'print' ){ 
+			$giftcards = Crunchbutton_Promo::multiple( c::getPagePiece(2) );
+			c::view()->layout('layout/blank');
+			c::view()->giftcards = $giftcards;
+			c::view()->display('giftcards/print');
 		} else {
-
 			$giftcard = Crunchbutton_Promo::o(c::getPagePiece(1));
 			if ($giftcard->id_promo) {
 				c::view()->users = Crunchbutton_User::q('SELECT u.id_user, u.name, u.phone, u.email FROM user u INNER JOIN user_auth ua ON ua.id_user = u.id_user WHERE u.active = 1 ORDER BY u.name ASC');;

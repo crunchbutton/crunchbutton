@@ -21,7 +21,14 @@
 			?>
 			<tr class="<?=strtolower($giftcard->type); ?>">
 				<td> <?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?> </td>
-				<td> <a href="/giftcards/<?=$giftcard->id_promo;?>"><?=$giftcard->code; ?></a> </td>
+				<td> 
+					<a href="/giftcards/<?=$giftcard->id_promo;?>"><?=$giftcard->code; ?></a>
+					<?php if( !$wasUsed ) { ?>
+					<br/>
+					<br/>
+					<a target="_blank" href="/giftcards/print/<?=$giftcard->id_promo;?>"><img src="/assets/images/icon_print.png"/></a>
+					<?php } ?>
+				</td>
 				<td> $<?= Util::ceil($giftcard->value, 2); ?></td>
 				<td> <? if( $giftcard->id_restaurant ){ echo $giftcard->restaurant()->name; } else { echo 'Any Restaurant'; } ?> </td>
 				<td> <? if( $giftcard->user()->name != '' ){ echo $giftcard->user()->name; } else { echo '-'; } ?> </td>
@@ -29,7 +36,7 @@
 				<td> <? if( $giftcard->email ){ echo $giftcard->email; } else { echo '-'; } ?> </td>
 				<td> <?=nl2br( $giftcard->note ); ?> </td>
 				<td> <?=$giftcard->type; ?> </td>
-				<td> <span class="<? if( $wasUsed  ){ echo ' used '; } else { echo 'not-used'; } ?>"> <? if( $wasUsed  ){ echo ' Was used '; } else { echo 'Not used yet'; } ?> </span> </td>
+				<td> <span class="<? if( $wasUsed  ){ echo ' used '; } else { echo 'not-used'; } ?>"> <? if( $wasUsed ){ echo ' Was used '; } else { echo 'Not used yet'; } ?> </span> </td>
 			</tr>
 		<? endforeach ; ?>
 	</table>

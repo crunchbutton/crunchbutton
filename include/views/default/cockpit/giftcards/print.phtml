@@ -1,0 +1,94 @@
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
+<style type="text/css">
+	.dotted{
+		border: 1px dotted #CCC;
+		padding: 5px;
+		width: 776px;
+		margin: 20px auto;
+	}
+	.giftcard{
+		font-family: 'Open Sans', 'Droid Sans', Helvetica, Arial, sans-serif;
+		border: 2px solid #800000;
+		height: 390px;
+		margin: 0 auto;
+		text-align: center;
+		width: 770px;
+	}
+	.title{
+		background: #800000;
+		color:#FFF;
+		font-size: 35px;
+		padding: 15px;
+	}
+	.headline, .headline-link{
+		font-weight: bold;
+		margin: 15px;
+	}
+		.restaurant{
+			font-style: italic;
+			text-decoration: underline;
+		}
+		.headline-link{
+			font-weight: normal;
+		}
+			.link{
+				color:blue;
+				text-decoration: underline;
+			}
+		.crunchbutton{
+			margin-top: 35px;
+			font-size: 14px;
+		}
+			.subtitle{
+				font-size: 16px;
+				margin: 5px;
+			}
+				.icon img{
+					border: 1px solid #ae1500;
+					border-radius: 10px;
+					box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.72);
+					width: 80px;
+					margin: 15px;
+				}
+			.slogan{
+				font-style: italic;
+			}
+			.page-break{
+				page-break-after:always;
+			}
+</style>
+<?php 
+$count = 0;
+$giftcards = $this->giftcards;
+if( $giftcards->count() > 0 ) {
+	foreach( $giftcards as $giftcard ){
+		$count++;
+		$restaurant_name = ( $giftcard->id_restaurant ) ? $giftcard->restaurant()->name : 'Crunchbutton';
+	?>
+	<div class="dotted">
+		<div class="giftcard">
+			<div class="title">Order Food, Get $<?php echo $giftcard->value;?></div>
+			<div class="headline">Place any delivery or takeout order at <span class="restaurant"> <?php echo $restaurant_name; ?> </span> and receive $<?php echo $giftcard->value;?> off</div>
+			<div class="headline-link">Go to <span class="link">http://crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span> to redeem</div>
+			<div class="crunchbutton">
+				<div class="icon">
+					<img src="/assets/images/facebook-like.png" />
+				</div>
+				<div class="subtitle">PUSH A BUTTON. GET FOOD.</div>
+				<div class="slogan">
+					Order the top food in Providence. For free.
+					<br/>
+					After you order, everything is saved for future 1 click ordering.
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php 
+		if( $count % 2 == 0 ){
+			?>
+			<div class="page-break"></div>
+			<?php
+		}
+	?>
+	<?php } 
+} ?>
