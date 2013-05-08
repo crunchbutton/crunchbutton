@@ -1485,7 +1485,17 @@ App.giftcards = {
 			}
 		});
 	},
-	prepareForm: function( ){
+	prepareForm: function(){
+
+		$(document).on('click', '[name=track]', function() {
+			var checkbox = $( this );
+			if( checkbox.is( ':checked' ) ){
+				$( '.track-fields' ).show();
+			} else {
+				$( '.track-fields' ).hide();
+			}
+		});
+
 		$(document).on('click', '.admin-giftcard-save', function() {
 			
 			var value = $.trim( $( '#value' ).val() );
@@ -1496,7 +1506,13 @@ App.giftcards = {
 			var id_order_reference = $( '#id_order_reference' ).val();
 			var paid_by = $( '#paid_by' ).val();
 			var id_restaurant_paid_by = $( '#id_restaurant_paid_by' ).val();
-			var note = $( '#note' ).val();
+			var created_by = $.trim( $( '#created_by' ).val() );
+			var track = ( $('#track').is(':checked') ? 1 : 0 );
+			var notify_phone = $.trim( $( '#notify_phone' ).val() );
+			var name = $.trim( $( '#name' ).val() );
+			var how_delivery = $.trim( $( '#how_delivery' ).val() );
+			var contact = $.trim( $( '#contact' ).val() );
+			var note = $.trim( $( '#note' ).val() );
 
 			if( value == '' ){
 				alert( 'Please type a value!' );
@@ -1515,7 +1531,16 @@ App.giftcards = {
 				$( '#id_restaurant' ).focus();
 				return;
 			}
-			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note };
+
+			if( track > 0 ){
+				if( notify_phone == '' ){
+					alert( 'Please type the phone number that will receive a sms!' );
+					$( '#notify_phone' ).focus();
+					return;		
+				}
+			}
+
+			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact };
 			var url = App.service + 'giftcard/generate';
 			$.ajax({
 				type: "POST",
@@ -1537,6 +1562,16 @@ App.giftcards = {
 		} );
 	},
 	prepareFormBunchSMS : function(){
+
+		$(document).on('click', '[name=track]', function() {
+			var checkbox = $( this );
+			if( checkbox.is( ':checked' ) ){
+				$( '.track-fields' ).show();
+			} else {
+				$( '.track-fields' ).hide();
+			}
+		});
+
 		$(document).on('click', '.admin-giftcard-save', function() {
 
 			var value = $.trim( $( '#value' ).val() );
@@ -1546,6 +1581,13 @@ App.giftcards = {
 			var paid_by = $( '#paid_by' ).val();
 			var id_restaurant_paid_by = $( '#id_restaurant_paid_by' ).val();
 			var note = $( '#note' ).val();
+
+			var created_by = $.trim( $( '#created_by' ).val() );
+			var track = ( $('#track').is(':checked') ? 1 : 0 );
+			var notify_phone = $.trim( $( '#notify_phone' ).val() );
+			var name = $.trim( $( '#name' ).val() );
+			var how_delivery = $.trim( $( '#how_delivery' ).val() );
+			var contact = $.trim( $( '#contact' ).val() );
 
 			if( phones == '' ){
 				alert( 'Please enter the phone(s) number!' );
@@ -1565,7 +1607,15 @@ App.giftcards = {
 				return;
 			}
 
-			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'phones' : phones, 'paid_by' : paid_by, 'id_restaurant_paid_by' : id_restaurant_paid_by, 'note' : note };
+			if( track > 0 ){
+				if( notify_phone == '' ){
+					alert( 'Please type the phone number that will receive a sms!' );
+					$( '#notify_phone' ).focus();
+					return;		
+				}
+			}
+
+			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'phones' : phones, 'paid_by' : paid_by, 'id_restaurant_paid_by' : id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact };
 			var url = App.service + 'giftcard/bunchsms';
 			$.ajax({
 				type: "POST",
@@ -1587,6 +1637,16 @@ App.giftcards = {
 		} );
 	},
 	prepareFormBunchEMAIL: function(){
+
+		$(document).on('click', '[name=track]', function() {
+			var checkbox = $( this );
+			if( checkbox.is( ':checked' ) ){
+				$( '.track-fields' ).show();
+			} else {
+				$( '.track-fields' ).hide();
+			}
+		});
+
 		$(document).on('click', '.admin-giftcard-save', function() {
 
 			var value = $.trim( $( '#value' ).val() );
@@ -1595,6 +1655,13 @@ App.giftcards = {
 			var subject = $( '#subject' ).val();
 			var content = $( '#content' ).val();
 			
+			var created_by = $.trim( $( '#created_by' ).val() );
+			var track = ( $('#track').is(':checked') ? 1 : 0 );
+			var notify_phone = $.trim( $( '#notify_phone' ).val() );
+			var name = $.trim( $( '#name' ).val() );
+			var how_delivery = $.trim( $( '#how_delivery' ).val() );
+			var contact = $.trim( $( '#contact' ).val() );
+
 			var paid_by = $( '#paid_by' ).val();
 			var id_restaurant_paid_by = $( '#id_restaurant_paid_by' ).val();
 			var note = $( '#note' ).val();
@@ -1629,7 +1696,15 @@ App.giftcards = {
 				return;
 			}
 
-			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'emails' : emails, 'subject':subject, 'content': content, 'paid_by' : paid_by, 'id_restaurant_paid_by' : id_restaurant_paid_by, 'note' : note };
+			if( track > 0 ){
+				if( notify_phone == '' ){
+					alert( 'Please type the phone number that will receive a sms!' );
+					$( '#notify_phone' ).focus();
+					return;		
+				}
+			}
+
+			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'emails' : emails, 'subject':subject, 'content': content, 'paid_by' : paid_by, 'id_restaurant_paid_by' : id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact };
 			var url = App.service + 'giftcard/bunchemail';
 			$.ajax({
 				type: "POST",

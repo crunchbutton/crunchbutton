@@ -12,11 +12,11 @@
 								<tbody>
 									<tr>
 										<td class="label-sub">Value:</td>
-										<td class="content-sub"><input type="text" id="value" name="value"></div></td>
+										<td class="content-sub"><input type="text" id="value" name="value"></td>
 									</tr>
 									<tr>
 										<td class="label-sub">Number of giftcards:</td>
-										<td class="content-sub"><input type="text" id="total" value="1" name="total"></div></td>
+										<td class="content-sub"><input type="text" id="total" value="1" name="total"></td>
 									</tr>
 									<tr>
 										<td class="label-sub">User ID:</td>
@@ -36,12 +36,12 @@
 												</option>
 											<?php } ?>
 											</select>
+											<br/>
 											<span style="font-size:11px;">
-												<br/>
 												If you chose an user just the chosen user will be able to use this gift card.
 											</span>
 											<?php } ?>
-											</div></td>
+											</td>
 									</tr>
 									<tr>
 										<td>&nbsp;</td>
@@ -95,25 +95,74 @@
 											</select>
 										</td>
 									</tr>
+								</tbody>
+							</table>
+							
+						</div>	
+					</div>
+				</td>
+			</tr>
+		</table>
+
+		<table class="admin-giftcard-form">
+			<tr>
+				<td class="label-primary">More info:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:100%;">
+								<tbody>
 									<tr>
-										<td class="label-sub">Note:</td>
-										<td class="content-sub"><textarea name="note" id="note"></textarea></td>
+										<td class="label-sub">Created by:</td>
+										<td class="content-sub"><input type="text" id="created_by" name="created_by" value="<?php echo $_SESSION['username']; ?>"></td>
 									</tr>
 									<tr>
-										<td></td>
-										<td>
-											<div class="action-button action-button-small green admin-giftcard-save">
-												<span>Save</span>
-											</div>
+										<td class="label-sub"></td>
+										<td class="content-sub"><input type="checkbox" id="track" value="1" name="track"> Track this gift card</td>
+									</tr>
+									<tr class="track-fields">
+										<td class="label-sub">Notify phone:</td>
+										<td class="content-sub">
+											<?php
+											if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
+												$phone = c::config()->testphone->{ $_SESSION[ 'username' ] };
+											}
+											?>
+											<input type="text" id="notify_phone" value="<?php echo $phone; ?>" name="notify_phone">
+											<br />
+											<span style="font-size:11px;">
+												*Phone number that will receive a sms <br/>notification when this gift card is redeemed.
+											</span>
 										</td>
+									</tr>
+									<tr class="track-fields">
+										<td class="label-sub">Name:</td>
+										<td class="content-sub"><input type="text" id="name" value="" name="name"></td>
+									</tr>
+									<tr class="track-fields">
+										<td class="label-sub">How delivery:</td>
+										<td class="content-sub"><input type="text" id="how_delivery" value="" name="how_delivery"></td>
+									</tr>
+									<tr class="track-fields">
+										<td class="label-sub">Contact:</td>
+										<td class="content-sub"><input type="text" id="contact" value="" name="contact"></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Notes:</td>
+										<td class="content-sub"><textarea name="note" id="note"></textarea></td>
 									</tr>
 								</tbody>
 							</table>
+							<div class="divisor"></div>
+							<div style="margin-top:50px;" class="action-button action-button-small green admin-giftcard-save">
+								<span>Save</span>
+							</div>					
 						</div>
 					</div>
 				</td>
 			</tr>
 		</table>
+		
 	</div>
 </div>
 <script>

@@ -18,6 +18,19 @@
 										<td class="label-sub">Value:</td>
 										<td class="content-sub"><div class="input-faker">$<?=$this->giftcard->value;?></div></td>
 									</tr>
+									<?php $credit = $this->giftcard->credit(); ?>
+									<?php if ( $credit->id_credit ) { 
+										$credit = Crunchbutton_Credit::o( $credit->id_credit );
+										?>
+									<tr>
+										<td class="label-sub">Total spent:</td>
+										<td class="content-sub"><div class="input-faker"><a href="/credits/<?php echo $credit->id_credit; ?>">$<?php echo $credit->creditSpent();?></a></div></td>
+									</tr>
+									<tr>
+										<td class="label-sub">Credit left:</td>
+										<td class="content-sub"><div class="input-faker">$<?php echo $credit->creditLeft();?></div></td>
+									</tr>
+									<?php } ?>
 									<tr>
 										<td class="label-sub">Type:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->type;?></div></td>
@@ -118,10 +131,10 @@
 										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->email_content;?></div></td>
 									</tr>
 									<?php } ?>
-									<?php if( $this->giftcard->note ) { ?>
+									<?php if( $this->giftcard->created_by ) { ?>
 									<tr>
-										<td class="label-sub">Note:</td>
-										<td class="content-sub"><div class="input-faker"><?=nl2br( $this->giftcard->note );?></div></td>
+										<td class="label-sub" style="white-space: nowrap;">Created by:</td>
+										<td class="content-sub"><div class="input-faker"><?=nl2br( $this->giftcard->created_by );?></div></td>
 									</tr>
 									<?php } ?>
 									<tr>
@@ -130,15 +143,26 @@
 									</tr>
 									<?php if( $this->giftcard->paid_by ) { ?>
 									<tr>
-										<td class="label-sub">Paid by:</td>
+										<td class="label-sub" style="white-space: nowrap;">Paid by:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->paid_by;?></div></td>
 									</tr>
-									
 									<?php } ?>
 									<?php if( $this->giftcard->restaurant_paid_by()->id_restaurant ) { ?>
 									<tr>
 										<td class="label-sub">Paid by restaurant:</td>
 										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->restaurant_paid_by()->name;?></div></td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->giftcard->track == 0 ) { ?>
+									<tr>
+										<td class="label-sub" style="white-space: nowrap;"></td>
+										<td class="content-sub">This gift card is not being tracked.</td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->giftcard->note ) { ?>
+									<tr>
+										<td class="label-sub">Note:</td>
+										<td class="content-sub"><div class="input-faker"><?=nl2br( $this->giftcard->note );?></div></td>
 									</tr>
 									<?php } ?>
 								</tbody>
@@ -174,6 +198,89 @@
 						</table>
 				</td>
 			</tr>
+			<?php if( $this->giftcard->track ) { ?>
+			<tr>
+				<td class="label-primary">Track info:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<?php if( $this->giftcard->name ) { ?>
+									<tr>
+										<td class="label-sub">Name:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->name;?></div></td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->giftcard->contact ) { ?>
+									<tr>
+										<td class="label-sub">Contact:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->contact;?></div></td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->giftcard->how_delivery ) { ?>
+									<tr>
+										<td class="label-sub">How delivery:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->how_delivery;?></div></td>
+									</tr>
+									<?php } ?>
+									<?php if( $this->giftcard->notify_phone ) { ?>
+									<tr>
+										<td class="label-sub">Notify phone:</td>
+										<td class="content-sub"><div class="input-faker"><?=$this->giftcard->notify_phone;?></div></td>
+									</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+				</td>
+			</tr>
+			<?php } ?>
+
+		<?php  
+		if ( $credit->id_credit ) {
+				$debits = $credit->debitHistory(); 
+				if( $debits->count() > 0 ){
+			?>
+			<tr>
+				<td class="label-primary">History:</td>
+				<td class="content-primary">
+					<div class="check-wrap">
+						<div class="check-content">
+							<table style="width:90%;">
+								<tbody>
+									<?php foreach( $debits as $debit ){ ?>
+										<tr>
+											<td class="label-sub">Order:</td>
+											<td class="content-sub"><div class="input-faker"><a href="/vieworder/<?php echo $debit->order()->uuid; ?>"><?=$debit->order()->id_order;?></a></div></td>
+										</tr>
+										<tr>
+											<td class="label-sub">Charged:</td>
+											<td class="content-sub"><div class="input-faker">$<?php if( $debit->value ){ echo $debit->value; } else { echo 0;};?></div></td>
+										</tr>
+										<?php if( $debit->note ) { ?>
+										<tr>
+											<td class="label-sub">Note:</td>
+											<td class="content-sub"><div class="input-faker"><?php echo $debit->note;?></div></td>
+										</tr>
+										<?php } ?>
+										<tr>
+											<td>&nbsp;</td>
+											<td align="right">--------------------------------------------------------------------</td>
+										</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<?php } 
+				}
+			?>
+
 		</table>
 	</div>
 </div>
