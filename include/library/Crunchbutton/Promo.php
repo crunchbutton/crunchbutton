@@ -117,9 +117,9 @@ class Crunchbutton_Promo extends Cana_Table
 		$promo = $this;
 
 		if( $promo->track ){
-			c::timeout(function() use($promo) {
+			// c::timeout(function() use($promo) {
 				$promo->trackItSMS();
-			}, 1000); // 1 second
+			// }, 1000); // 1 second
 
 		}
 	}

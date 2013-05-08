@@ -33,7 +33,7 @@
 										?>
 									<tr>
 										<td class="label-sub">Total spent:</td>
-										<td class="content-sub"><div class="input-faker"><a href="/credits/<?php echo $credit->id_credit; ?>">$<?php echo $credit->creditSpent();?></a></div></td>
+										<td class="content-sub"><div class="input-faker"><a href="/credits/<?php echo $credit->id_credit; ?>">$<?php if( $credit->creditSpent() ){ echo $credit->creditSpent(); } else { echo '0'; } ;?></a></div></td>
 									</tr>
 									<tr>
 										<td class="label-sub">Credit left:</td>
