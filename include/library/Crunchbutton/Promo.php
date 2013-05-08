@@ -89,6 +89,7 @@ class Crunchbutton_Promo extends Cana_Table
 		$this->save();
 
 		if( $credit->id_credit ){
+			$this->queTrack();
 			return $credit;
 		} else {
 			return false;
@@ -101,6 +102,64 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public function restaurant() {
 		return Restaurant::o($this->id_restaurant);
+	}
+
+	public function credit(){
+		return Crunchbutton_Credit::q( 'SELECT * FROM credit WHERE type = "' . Crunchbutton_Credit::TYPE_CREDIT . '" AND id_promo = ' . $this->id_promo  );
+	}
+
+	public function queTrack(){
+
+		$promo = $this;
+
+		if( $promo->track ){
+			c::timeout(function() use($promo) {
+				$promo->trackItSMS();
+			}, 1000); // 1 second
+
+		}
+	}
+
+	public function trackItSMS(){
+
+		if( $this->track ){
+
+			if( $this->notify_phone ){
+		
+				$env = c::env() == 'live' ? 'live' : 'dev';
+				
+				$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+				
+				$phone = $this->notify_phone;
+
+				$message = 'The gift card you\'ve created was redeemed (' . $this->id_promo . ').';
+
+				if( $this->name ){
+					$message .= "\n";
+					$message .= "\n";
+					$message .= 'Name: ' . $this->name;
+				}
+
+				$message .= "\n";
+				$message .= "Code: " . $this->code;
+
+				$message .= "\n";
+				$message .= "Value: $" . $this->value;
+
+				$this->note = 'Sent a track notification to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n\n" . $this->note;
+				$this->save();
+
+				$message = str_split($message, 160);
+
+				foreach ($message as $msg) {
+					$twilio->account->sms_messages->create(
+						c::config()->twilio->{$env}->outgoingTextCustomer,
+						'+1'.$phone,
+						$msg
+					);
+				}
+			}
+		}
 	}
 
 	public function queNotifySMS() {

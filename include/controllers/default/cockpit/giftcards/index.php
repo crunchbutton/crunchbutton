@@ -2,6 +2,7 @@
 
 class Controller_giftcards extends Crunchbutton_Controller_Account {
 	public function init() {
+
 		c::view()->page = 'giftcards';
 
 		if( c::getPagePiece(1) == 'new' ){ 
