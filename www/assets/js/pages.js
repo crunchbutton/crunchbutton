@@ -150,9 +150,13 @@ App.page.restaurant = function(id) {
 								// If the flag useCompleteAddress is true
 								if( App.useCompleteAddress ){
 									$( '[name=pay-address]' ).val( App.loc.formatedAddress( address ) );
+									$( '.user-address' ).html( App.loc.formatedAddress( address ) );
 								} else {
 									$( '[name=pay-address]' ).val( addressToVerify );
+									$( '.user-address' ).html( addressToVerify );
 								}
+							} else {
+								console.log('Invalid address: ' + addressToVerify);
 							}
 						}
 					};
