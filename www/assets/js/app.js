@@ -1022,43 +1022,49 @@ App.cart = {
 						App.crunchSoundAlreadyPlayed = true;
 					}
 
-					if (json.token) {
-						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
-					}
+					setTimeout( function(){
 
-					$('.link-orders').show();
+						if (json.token) {
+							$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
+						}
 
-					order.cardChanged = false;
-					App.justCompleted = true;
+						$('.link-orders').show();
 
-					var totalItems = 0;
+						order.cardChanged = false;
+						App.justCompleted = true;
 
-					for (var x in App.cart.items) {
-						totalItems++;
-					}
+						var totalItems = 0;
 
-					$.getJSON('/api/config', App.processConfig);
-					
-					App.cache('Order',json.uuid, function() {
-						App.track('Ordered', {
-							'total':this.final_price,
-							'subtotal':this.price,
-							'tip':this.tip,
-							'restaurant': App.restaurant.name,
-							'paytype': this.pay_type,
-							'ordertype': this.order_type,
-							'user': this.user,
-							'items': totalItems
-						});
+						for (var x in App.cart.items) {
+							totalItems++;
+						}
+
+						$.getJSON('/api/config', App.processConfig);
 						
-						App.order.cardChanged = false;
-						delete App.order.tipHasChanged;
-						var loc = '/order/' + this.uuid;
-						History.pushState({},loc,loc);
+						App.cache('Order',json.uuid, function() {
+							App.track('Ordered', {
+								'total':this.final_price,
+								'subtotal':this.price,
+								'tip':this.tip,
+								'restaurant': App.restaurant.name,
+								'paytype': this.pay_type,
+								'ordertype': this.order_type,
+								'user': this.user,
+								'items': totalItems
+							});
+							
+							App.order.cardChanged = false;
+							delete App.order.tipHasChanged;
+							var loc = '/order/' + this.uuid;
+							History.pushState({},loc,loc);
 
-					});
+						});
+
+					}, 1000 );
 				}
-				App.busy.unBusy();
+				setTimeout( function(){
+					App.busy.unBusy();
+				}, 1000 );
 			}
 		});
 
