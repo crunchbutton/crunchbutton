@@ -659,6 +659,9 @@ class Crunchbutton_Order extends Cana_Table {
 	// After 5 minutes the fax was sent we have to send this confirmation to make sure that the fax as delivered. If the order was already confirmed this confirmation will be ignored.
 	public function queConfirmFaxWasReceived(){
 		
+		// Issue #1239
+		return false;
+
 		$order = $this;
 
 		$isConfirmed = Order::isConfirmed( $order->id_order );
