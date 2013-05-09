@@ -116,12 +116,10 @@ App.loc = {
 		}
 
 		// @todo: do we need this?
-		for (var x = 0; x < results.length; x++) {
-			for (var i = 0; i < results[x].address_components.length; i++) {
-				for (var j = 0; j < results[x].address_components[i].types.length; j++) {
-					if (results[x].address_components[i].types[j] == 'locality') {
-						App.loc.realLoc.city = results[x].address_components[i].long_name;
-					}
+		for (var i = 0; i < results[0].address_components.length; i++) {
+			for (var j = 0; j < results[0].address_components[i].types.length; j++) {
+				if (results[0].address_components[i].types[j] == 'locality') {
+					App.loc.realLoc.city = results[0].address_components[i].long_name;
 				}
 			}
 		}
@@ -259,6 +257,44 @@ App.loc = {
 		// set the bounds of the address to our guessed location
 	},
 
+
+	doGeocodeLocationPage: function(address, success, error) {
+		address = $.trim(address);
+
+		App.track('Location Entered', {
+			address: address
+		});
+
+		var rsuccess = function(results) {
+			success(results);
+		};
+		
+		// there was no alias, do a real geocode
+		var rerror = function() {
+
+			var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );	
+
+			// Create a cicle bounding box
+			var circle = new google.maps.Circle( { center: latLong, radius: App.boundingBoxMeters } ); 
+			var bounds = circle.getBounds();
+
+			// Send the request out to google
+			var geocoder = new google.maps.Geocoder();
+			geocoder.geocode({address: address, bounds : bounds }, function(results, status) {
+				if (status == google.maps.GeocoderStatus.OK) {
+					success(results, status);
+				} else {
+					error(results, status);
+				}
+			});
+		};
+
+		// Check if the typed address has an alias
+		App.routeAlias(address, rsuccess, rerror);
+
+		// set the bounds of the address to our guessed location
+	},
+
 	// perform a geocode and store the results
 	geocode: function(address, success, error) {
 		App.loc.doGeocode(address, function(results) {
@@ -278,6 +314,44 @@ App.loc = {
 					lon: results[0].geometry.location.lng()
 				};
 				App.loc.setFormattedLocFromResult(results);
+			}
+			success();
+
+		}, function() {
+			App.loc.realLoc = null;
+			error();
+		});
+	},
+
+	geocodeLocationPage: function(address, success, error) {
+		App.loc.doGeocodeLocationPage(address, function(results) {
+			if (results.alias) {
+				App.loc.realLoc = {
+					addressAlias: results.alias.address,
+					lat: results.alias.lat,
+					lon: results.alias.lon,
+					prep: results.alias.prep,
+					city: results.alias.city
+				};
+				App.loc.setFormattedLocFromResult();
+			} else {
+
+				if( App.loc.aproxLoc ){
+					var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );	
+					// Get the closest address from that lat/lng
+					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
+					results[0] = theClosestAddress;
+				} else {
+					var theClosestAddress = results[0];
+				}
+				
+				App.loc.realLoc = {
+					addressEntered: App.loc.formatedAddress( theClosestAddress ),
+					lat: theClosestAddress.geometry.location.lat(),
+					lon: theClosestAddress.geometry.location.lng()
+				};
+
+				App.loc.setFormattedLocFromResult( results );
 			}
 			success();
 
