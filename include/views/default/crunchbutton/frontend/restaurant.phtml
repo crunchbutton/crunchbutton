@@ -137,67 +137,68 @@
 	<? /* payment info */ ?>
 	<div class="payment-info-container">
 
+
 		<div class="payment-info field-container">
 
 			<label class="pay-title-label">Payment Method</label>
 			<div class="input-item toggle-wrapper">
-
-				<button class="pay-toggle-credit toggle-item">card</button> 
-
+				<% if( restaurant.credit == '1' ) { %>
+					<button class="pay-toggle-credit toggle-item">card</button> 
+				<% } %>
+				<% if( restaurant.credit == '1' && restaurant.cash == '1' ) { %>
+					<span class="toggle-spacer">or</span> 
+				<% } %>
 				<% if( restaurant.cash == '1' ) { %>
-				<span class="toggle-spacer">or</span> 
 					<button class="pay-toggle-cash toggle-item">cash</button>
 				<% } %>
 			</div><div class="divider"></div>
 
+				<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>
+					<div class="card-icons">
+						<div class="payment-card card-visa payment-card-grey" title="visa"></div>
+						<div class="payment-card card-master-card" title="master card"></div>
+						<div class="payment-card card-amex" title="american express"></div>
+						<div class="payment-card card-discover" title="discover card"></div>
+					</div>
+				</div>
 
-			<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>
-				<div class="card-icons">
-					<div class="payment-card card-visa payment-card-grey" title="visa"></div>
-					<div class="payment-card card-master-card" title="master card"></div>
-					<div class="payment-card card-amex" title="american express"></div>
-					<div class="payment-card card-discover" title="discover card"></div>
+				<label class="card-only">Credit card #</label>
+				<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6" value="<%= form.card.number %>"></div><div class="divider"></div>
+
+				<label class="card-only">Expiration</label>
+				<div class="input-item card-only">
+					<select name="pay-card-month" tabindex="7">
+						<option>Month</option>
+						<% for (var x=1; x<=12; x++) { %>
+							<option value="<%= x %>"<%= form.card.month == x ? ' selected' : '' %>><%= x %></option>
+						<% } %>
+					</select>
+					<select name="pay-card-year" tabindex="8">
+						<option>Year</option>
+						<% var date = new Date().getFullYear(); %>
+						<% for (var x=date; x<=date+20; x++) { %>
+							<option value="<%= x %>"<%= form.card.year == x ? ' selected' : '' %>><%= x %></option>
+						<% } %>
+
+					</select>
+					<div class="divider"></div>
+				</div>
+
+				<div class="divider"></div><label class="card-only">Tip</label>
+				<div class="input-item card-only">
+
+	        <input type="hidden" name="pay-autotip-value" value="0"/>
+					<select name="pay-tip" class="tip" tabindex="9">
+	            <option value="autotip" selected>Autotip</option>
+						<% _.each(App.tips, function(tip) { 
+								text = ( tip == 0 ) ? 'Tip with cash' : tip + '%';
+							%>
+							<option value="<%= tip %>"><%= text %></option>
+						<% }); %>
+					</select>
+					<div class="divider"></div>
 				</div>
 			</div>
-
-			<label class="card-only">Credit card #</label>
-			<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6" value="<%= form.card.number %>"></div><div class="divider"></div>
-
-			<label class="card-only">Expiration</label>
-			<div class="input-item card-only">
-				<select name="pay-card-month" tabindex="7">
-					<option>Month</option>
-					<% for (var x=1; x<=12; x++) { %>
-						<option value="<%= x %>"<%= form.card.month == x ? ' selected' : '' %>><%= x %></option>
-					<% } %>
-				</select>
-				<select name="pay-card-year" tabindex="8">
-					<option>Year</option>
-					<% var date = new Date().getFullYear(); %>
-					<% for (var x=date; x<=date+20; x++) { %>
-						<option value="<%= x %>"<%= form.card.year == x ? ' selected' : '' %>><%= x %></option>
-					<% } %>
-
-				</select>
-				<div class="divider"></div>
-			</div>
-
-			<div class="divider"></div><label class="card-only">Tip</label>
-			<div class="input-item card-only">
-
-        <input type="hidden" name="pay-autotip-value" value="0"/>
-				<select name="pay-tip" class="tip" tabindex="9">
-            <option value="autotip" selected>Autotip</option>
-					<% _.each(App.tips, function(tip) { 
-							text = ( tip == 0 ) ? 'Tip with cash' : tip + '%';
-						%>
-						<option value="<%= tip %>"><%= text %></option>
-					<% }); %>
-				</select>
-				<div class="divider"></div>
-			</div>
-		</div>
-
 
 	</div>
 	
