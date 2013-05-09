@@ -70,7 +70,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 								$data = json_decode($_REQUEST['fax']);
 
 								// Log
-								Log::debug( [ 'id_notification_log' => $notification->id_notification_log, 'status' => $data->status, 'action' => 'fax call back', 'data' => $data, 'type' => 'notification' ] );
+								Log::debug( [ 'id_notification_log' => $notification->id_notification_log, 'status' => $data->status, 'action' => 'fax confirmed', 'data' => $data, 'type' => 'notification' ] );
 
 								// Send a sms to inform about the error.
 								if( $data->status != 'success' ){
@@ -86,7 +86,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 									if ($notification->order()->restaurant()->confirmation) {
 										$notification->order()->queConfirm();
 									}
-								}
+								} 
 								break;
 
 							case 'twilio':

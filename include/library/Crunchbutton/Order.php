@@ -360,6 +360,11 @@ class Crunchbutton_Order extends Cana_Table {
 		return $nl->count() ? true : false;
 	}
 
+	public function fax_succeeds() {
+		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and type="phaxio" and status="success"');
+		return $nl->count() ? true : false;
+	}
+
 	public function transaction() {
 		return $this->_txn;
 	}
@@ -664,6 +669,13 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$confirmTimeFaxReceived = c::config()->twilio->confirmTimeFaxReceived;
 
+		// #1239 - after the fax is sent waits 30 sec and send the confirmation call
+		if( $order->fax_succeeds() ){
+			$confirmTimeFaxReceived = 30000;
+		}
+
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmTimeFaxReceived,  'confirmed' => $isConfirmed, 'fax_succeeds' => $order->fax_succeeds(), 'type' => 'notification' ] );
+		
 		// Log
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmTimeFaxReceived,  'confirmed' => $isConfirmed, 'type' => 'notification' ] );
 
@@ -704,7 +716,7 @@ class Crunchbutton_Order extends Cana_Table {
 		}			
 
 		// Log
-		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirm', 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
 
 		c::timeout(function() use($order) {
 			$order->confirm();
