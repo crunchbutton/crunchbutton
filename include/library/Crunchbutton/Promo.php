@@ -178,9 +178,9 @@ class Crunchbutton_Promo extends Cana_Table
 				'type' => 'promo_sms'
 			]);
 
-		c::timeout(function() use($promo) {
+		// c::timeout(function() use($promo) {
 			$promo->notifySMS();
-		}, 1000); // 1 second
+		// }, 1000); // 1 second
 
 		Log::debug([
 				'action' => 'AFTER cana::timeout',
