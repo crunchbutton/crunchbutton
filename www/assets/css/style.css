@@ -2937,8 +2937,9 @@ strong {
 	position: absolute;
 }
 .giftcard-info{
-		margin-left: 115px;
-	}
+	color: red;
+	margin-left: 115px;
+}
 .address-problem-message{
 	color: red;
 	display: none;
@@ -2970,6 +2971,7 @@ strong {
 	text-decoration: underline;
 }
 .giftcard-info{
+	color: red;
 	font-size: 11px;
 	line-height: 15px;
 } 
