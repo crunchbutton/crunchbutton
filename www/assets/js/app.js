@@ -48,12 +48,18 @@ var App = {
 	useRestaurantBoundingBox : false
 };
 
+App.alert = function(txt) {
+	setTimeout(function() {
+		alert(txt);
+	});
+};
+
 App.loadRestaurant = function(id) {
 
 	App.cache('Restaurant', id,function() {
 
 		if (!this.open()) {
-			alert("This restaurant is currently closed. It will be open during the following hours (" + this._tzabbr + "):\n\n" + this.closedMessage());
+			App.alert("This restaurant is currently closed. It will be open during the following hours (" + this._tzabbr + "):\n\n" + this.closedMessage());
 			App.busy.unBusy();
 
 		} else {
@@ -900,7 +906,7 @@ App.cart = {
 				error += errors[x] + "\n";
 			}
 			$('body').scrollTop($('.payment-form').position().top-80);
-			alert(error);
+			App.alert(error);
 			App.busy.unBusy();
 			App.track('OrderError', errors);
 			return;
@@ -929,7 +935,7 @@ App.cart = {
 				}
 
 				if( !latLong ){
-					alert( 'An error occurred!' );
+					App.alert( 'An error occurred!' );
 					App.busy.unBusy();
 					return;
 				}
@@ -947,7 +953,7 @@ console.log('theClosestAddress',theClosestAddress);
 						var lon = theClosestAddress.geometry.location.lng();
 
 						if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
-							alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout.' );
+							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout.' );
 							App.busy.unBusy();
 						} else {
 
@@ -962,7 +968,7 @@ console.log('theClosestAddress',theClosestAddress);
 
 					} else {
 						// Address was found but it is not valid (for example it could be a city name)
-						alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
+						App.alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 						App.busy.unBusy();						
 						// Make sure that the form will be visible
 						$('.payment-form').show();
@@ -973,7 +979,7 @@ console.log('theClosestAddress',theClosestAddress);
 
 				// Address not found!
 				var error = function() {
-					alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
+					App.alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 					App.busy.unBusy();
 				};
 
@@ -1006,7 +1012,7 @@ console.log('theClosestAddress',theClosestAddress);
 						error += json.errors[x] + "\n";
 					}
 					App.track('OrderError', json.errors);
-					alert(error);
+					App.alert(error);
 
 				} else {
 
@@ -1267,7 +1273,7 @@ App.test = {
 		$.getJSON('/api/logout',function(){ location.reload()});
 	},
 	cart: function() {
-		alert(JSON.stringify(App.cart.items));
+		App.alert(JSON.stringify(App.cart.items));
 	},
 	clearloc: function() {
 		$.cookie('community', '', { expires: new Date(3000,01,01), path: '/'});
