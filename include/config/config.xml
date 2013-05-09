@@ -91,7 +91,6 @@
     	<david>_PHONE_</david>
     	<nick>_PHONE_</nick>
     	<adam></adam>
-    	<!-- <daniel>***REMOVED***</daniel> -->
     	<daniel>***REMOVED***</daniel>
     </testphone>
 		<supportcall>
@@ -172,13 +171,14 @@
 			<outgoingRestaurant>+1_PHONE_</outgoingRestaurant>
 		</olddev>
 		<testnumber>***REMOVED***</testnumber>
+		<!-- <testnumber>_PHONE_</testnumber> -->
 		<voice>male</voice>
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>
 		<maxconfirmback>3</maxconfirmback>
 		<warningOrderNotConfirmedTime>720000</warningOrderNotConfirmedTime>
 		<confirmTime>30000</confirmTime>
-		<confirmFaxTime>20000</confirmFaxTime>
+		<confirmFaxTime>30000</confirmFaxTime>
 		<confirmTimeFaxReceived>300000</confirmTimeFaxReceived>
 		<confirmTimeCallback>120000</confirmTimeCallback>
 		<callbackTime>120000</callbackTime>
