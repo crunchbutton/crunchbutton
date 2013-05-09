@@ -425,6 +425,7 @@ App.loc = {
 				var c = 2 * Math.atan2( Math.sqrt( a ), Math.sqrt( 1 - a ) );
 				var d = R * c;
 				distances[ i ] = d;
+				console.log('Address', App.loc.formatedAddress( results[i] ), 'distance from restaurant:' + App.loc.km2Miles( d )  );
 				if ( closest == -1 || d < distances[ closest ] ) {
 						closest = i;
 				}
