@@ -141,8 +141,15 @@
 
 			<label class="pay-title-label">Payment Method</label>
 			<div class="input-item toggle-wrapper">
-				<button class="pay-toggle-credit toggle-item">card</button> <span class="toggle-spacer">or</span>  <button class="pay-toggle-cash toggle-item">cash</button>
+
+				<button class="pay-toggle-credit toggle-item">card</button> 
+
+				<% if( restaurant.cash == '1' ) { %>
+				<span class="toggle-spacer">or</span> 
+					<button class="pay-toggle-cash toggle-item">cash</button>
+				<% } %>
 			</div><div class="divider"></div>
+
 
 			<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>
 				<div class="card-icons">
@@ -190,6 +197,7 @@
 				<div class="divider"></div>
 			</div>
 		</div>
+
 
 	</div>
 	
