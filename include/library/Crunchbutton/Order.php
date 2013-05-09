@@ -669,13 +669,6 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$confirmTimeFaxReceived = c::config()->twilio->confirmTimeFaxReceived;
 
-		// #1239 - after the fax is sent waits 30 sec and send the confirmation call
-		if( $order->fax_succeeds() ){
-			$confirmTimeFaxReceived = 30000;
-		}
-
-		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmTimeFaxReceived,  'confirmed' => $isConfirmed, 'fax_succeeds' => $order->fax_succeeds(), 'type' => 'notification' ] );
-		
 		// Log
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirmFaxWasReceived', 'confirmationTime' => $confirmTimeFaxReceived,  'confirmed' => $isConfirmed, 'type' => 'notification' ] );
 
