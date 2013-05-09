@@ -211,6 +211,14 @@ App.page.restaurant = function(id) {
 			App.trigger.credit();	
 		}
 
+		if( App.restaurant.credit != '1' ){
+			App.trigger.cash();
+		}
+
+		if( App.restaurant.cash != '1' && App.restaurant.credit == '1' ){
+			App.trigger.credit();	
+		}
+
 		// Rules at #669
 		if( ( lastOrderDelivery == 'delivery' && App.restaurant.delivery == '1' ) || 
 				( App.order['delivery_type'] == 'delivery' && App.restaurant.delivery == '1' ) ||
