@@ -139,25 +139,20 @@ App.page.restaurant = function(id) {
 		if( App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != App.config.user.address ){
 			// Give some time to google.maps.Geocoder() load
 			var validatedAddress = function(){
-				console.log( 'validatedAddress - started' );
 				if( google && google.maps && google.maps.Geocoder ){
 					var addressToVerify = App.loc.pos().addressEntered;
 					// Success the address was found
 					var success = function( results ){
 						var address = results[ 0 ];
-						console.log( 'validatedAddress - started - address', address );
 						if( address ){
 							// Valid if the address is acceptable
 							if( App.loc.validateAddressType( address ) ){
-								console.log(' address ok ');
 								// If the flag useCompleteAddress is true
 								if( App.useCompleteAddress ){
 									$( '[name=pay-address]' ).val( App.loc.formatedAddress( address ) );
 								} else {
 									$( '[name=pay-address]' ).val( addressToVerify );
 								}
-							} else {
-								console.log(' address not ok ');
 							}
 						}
 					};
