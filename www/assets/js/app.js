@@ -946,20 +946,20 @@ App.cart = {
 					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
 
 					var isTheAddressOk = App.loc.validateAddressType( theClosestAddress );
-console.log('theClosestAddress',theClosestAddress);
+
 					if( isTheAddressOk ){
 						// Now lets check if the restaurant deliveries at the given address
 						var lat = theClosestAddress.geometry.location.lat();
 						var lon = theClosestAddress.geometry.location.lng();
 
+						if( App.useCompleteAddress ){
+							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
+						}
+
 						if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
 							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout.' );
 							App.busy.unBusy();
 						} else {
-
-							if( App.useCompleteAddress ){
-								$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
-							}
 
 							App.busy.unBusy();
 							App.isDeliveryAddressOk = true;
