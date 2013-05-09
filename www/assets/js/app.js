@@ -940,7 +940,7 @@ App.cart = {
 					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
 
 					var isTheAddressOk = App.loc.validateAddressType( theClosestAddress );
-
+console.log('theClosestAddress',theClosestAddress);
 					if( isTheAddressOk ){
 						// Now lets check if the restaurant deliveries at the given address
 						var lat = theClosestAddress.geometry.location.lat();

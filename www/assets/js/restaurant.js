@@ -264,6 +264,7 @@ var Restaurant = function(id) {
 	self.deliveryHere = function( param ){
 		var km = App.loc.distance( { from : { lat : param.lat, lon : param.lon }, to : { lat : this.loc_lat, lon : this.loc_long } } );
 		var miles = App.loc.km2Miles( km );
+		console.log('miles',miles);
 		return ( miles <= this.delivery_radius )
 	}
 
