@@ -929,7 +929,7 @@ App.cart = {
 				}
 
 				if( !latLong ){
-					alert( 'An error occurred' );
+					alert( 'An error occurred!' );
 					App.busy.unBusy();
 					return;
 				}
@@ -1416,13 +1416,16 @@ $(function() {
 
 		} else if (address && address == App.loc.address()) {
 			// we already have a geocode result of that address. dont do it again
-			console.log('SAME')
 			success();
 
 		} else {
 			// we need a new geocode result set
-			console.log('DIFF')
-			App.loc.geocode(address, success, error);
+			if(App.loc.aproxLoc && App.loc.aproxLoc.lat && App.loc.aproxLoc.lon ){
+				App.loc.geocodeLocationPage(address, success, error);
+			} else {
+				App.loc.geocode(address, success, error);
+			}
+			
 		}
 	});
 
