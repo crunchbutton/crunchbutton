@@ -247,7 +247,9 @@
 		<% if ( ( lastOrderDelivery == 'delivery' || App.restaurant.delivery == '1' || App.restaurant.takeout == '0' ) && lastOrderDelivery != 'takeout' ) { %>
 			<div class="dp-display-address dp-display-item">
 				<label>Your food will be delivered to:</label><br />
-				<%= (user.address ? user.address.replace("\n",'<br />') : '<i>no address provided</i>') %>
+				<span class="user-address">
+					<%= (user.address ? user.address.replace("\n",'<br />') : '<i>no address provided</i>') %>
+				</span>
 			</div>
 		<% } else { %>
 			<div class="dp-display-address dp-display-item"><label>Address:</label> <i>takeout</i></div>
