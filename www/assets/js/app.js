@@ -960,7 +960,6 @@ App.cart = {
 							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout.' );
 							App.busy.unBusy();
 						} else {
-
 							App.busy.unBusy();
 							App.isDeliveryAddressOk = true;
 							App.cart.submit();
