@@ -959,6 +959,10 @@ App.cart = {
 						if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
 							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.' );
 							App.busy.unBusy();
+							// Make sure that the form will be visible
+							$('.payment-form').show();
+	 						$('.delivery-payment-info, .content-padder-before').hide();
+							$( '[name="pay-address"]' ).focus();
 						} else {
 							App.busy.unBusy();
 							App.isDeliveryAddressOk = true;
