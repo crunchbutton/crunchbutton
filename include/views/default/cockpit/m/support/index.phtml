@@ -1,0 +1,73 @@
+<div class="admin-content-wrapper">
+	<div class="admin-content admin-content-support">
+		<table class="admin-support-filter">
+			<tr>
+				<td class="label-sub">SEARCH</td>
+				<td class="content-sub"><input name="support-search" type="text" style="width: 200px;" value="<?=strip_tags($_REQUEST['search'])?>"></td>
+				<td style="width: 100%"></td>
+				<td class="label-sub">DATE&nbsp;STRANGE</td>
+				<?
+					$date = new DateTime('now');
+					$start = $date->format('m/d/Y');
+					$date->modify('14 days ago');
+					$end = $date->format('m/d/Y');
+				?>
+				<td class="content-sub"><input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>"></td>
+				<td class="support-range-all" nowrap>&nbsp;&nbsp;<input type="checkbox" name="support-range-all"><label>&nbsp;All Dates</label></td>
+			</tr>
+			<tr>
+				<td class="label-sub">TYPE</td>
+				<td class="content-sub">
+					<? $types = ['sms']; ?>
+					<select name="type">
+						<option value="" selected>[ All ]</option>
+						<? foreach ($types as $type) : ?>
+							<option value="<?=$type?>"><?=$type?></option>
+						<? endforeach ; ?>
+					</select>
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="6">
+					<table cellpadding="3" cellspacing="3" style="width: auto; margin: 0 auto;">
+						<tr>
+							<td><div class="action-button green action-button-small admin-support-search"><span>Splurch BDC TODO</span></div></td>
+						</tr>
+					</table>
+				</td>
+				
+			</tr>
+		</table>
+		<br /><br />
+		<div class="divider dots"></div>
+		<br />
+		<div class="support-loader"><img src="/assets/images/admin/loader.gif"></div>
+		<div class="support-content"></div>
+	</div>
+</div>		
+<script>
+	$(function() {
+
+		$(document).on('click', '.admin-support-search', function() {
+			App.supportAdmin.load();
+		} );
+
+		$(document).on('keyup', '[name="support-search"]', function( e ) {
+			if (e.which == 13) {
+				App.supportAdmin.load();
+			}
+		} );
+
+		$(document).on('change', 'input[name="support-range-all"]', function( e ) {
+			if ($(this).prop('checked')) {
+				$('.date-picker').attr('disabled', 'disabled');
+				$('.date-picker').val('');
+			} else {
+				$('.date-picker').removeAttr('disabled');
+			}
+		});
+
+		App.supportAdmin.load();
+	});
+</script>
