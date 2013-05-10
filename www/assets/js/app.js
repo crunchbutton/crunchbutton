@@ -957,7 +957,7 @@ App.cart = {
 						}
 
 						if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
-							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout.' );
+							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.' );
 							App.busy.unBusy();
 						} else {
 							App.busy.unBusy();
