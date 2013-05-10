@@ -203,9 +203,9 @@ class Crunchbutton_Promo extends Cana_Table
 				'type' => 'promo_email'
 			]);
 
-		c::timeout(function() use($promo) {
+		// c::timeout(function() use($promo) {
 			$promo->notifyEMAIL();
-		}, 1000); // 1 second
+		// }, 1000); // 1 second
 
 		Log::debug([
 				'action' => 'AFTER cana::timeout',
