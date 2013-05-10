@@ -96,7 +96,7 @@ class Crunchbutton_Notification extends Cana_Table
 					if( !$order->restaurant()->hasFaxNotification() ){
 						$order->queConfirm();	
 					} else {
-						Log::debug( [ 'order' => $this->id_order, 'action' => 'restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
+						Log::debug( [ 'order' => $this->id_order, 'action' => 'sms - restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
 					}
 				}
 				break;
@@ -147,7 +147,7 @@ class Crunchbutton_Notification extends Cana_Table
 					if( !$order->restaurant()->hasFaxNotification() ){
 						$order->queConfirm();	
 					} else {
-						Log::debug( [ 'order' => $this->id_order, 'action' => 'restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
+						Log::debug( [ 'order' => $this->id_order, 'action' => 'email - restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
 					}
 				}
 				break;
