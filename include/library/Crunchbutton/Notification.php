@@ -85,7 +85,10 @@ class Crunchbutton_Notification extends Cana_Table
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
-					$order->queConfirm();
+					// If the restaurant has fax notification don't send the confimation now, CB should wait the fax finished #1239
+					if( !$order->restaurant()->hasFaxNotification() ){
+						$order->queConfirm();	
+					}
 				}
 				break;
 
@@ -131,7 +134,10 @@ class Crunchbutton_Notification extends Cana_Table
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
-					$order->queConfirm();
+					// If the restaurant has fax notification don't send the confimation now, CB should wait the fax finished #1239
+					if( !$order->restaurant()->hasFaxNotification() ){
+						$order->queConfirm();	
+					}
 				}
 				break;
 		}
