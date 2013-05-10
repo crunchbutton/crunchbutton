@@ -147,9 +147,11 @@ class Crunchbutton_Order extends Cana_Table {
 			];
 			Crunchbutton_Log::error($debug);
 
+			/*
 			if (Cana::env() != 'live') {
 				$errors['debug']  = $debug;
 			}
+			*/
 		}
 
 		if (!$this->restaurant()->meetDeliveryMin($this) && $this->delivery_type == 'delivery') {
