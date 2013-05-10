@@ -70,9 +70,9 @@ App.giftcard.process = function( path ){
 					var value = '$' + json.success['value'];
 					
 					if( id_restaurant ){
-						var text = 'You\'ve got a  <span class="giftcard-value">' + value + '</span> gift card to <span id_restaurant="' + id_restaurant + '" class="giftcard-restaurant">' + restaurant_name + '</span>.'
+						var text = 'You\'ve got a  <span class="giftcard-value">' + value + '</span> gift card to <span id_restaurant="' + id_restaurant + '" class="giftcard-restaurant">' + restaurant_name + '</span>.';
 					} else {
-							var text = 'You\'ve got a  <span class="giftcard-value">' + value + '</span> gift card.'
+							var text = 'You\'ve got a <span class="giftcard-value">' + value + '</span> gift card to Crunchbutton!';
 					}
 					// If the gift card is valid to any restaurant does not show the restaurant's link
 					if( id_restaurant ){
