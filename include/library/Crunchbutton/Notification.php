@@ -95,6 +95,8 @@ class Crunchbutton_Notification extends Cana_Table
 					// If the restaurant has fax notification don't send the confimation now, CB should wait the fax finished #1239
 					if( !$order->restaurant()->hasFaxNotification() ){
 						$order->queConfirm();	
+					} else {
+						Log::debug( [ 'order' => $this->id_order, 'action' => 'restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
 					}
 				}
 				break;
@@ -144,6 +146,8 @@ class Crunchbutton_Notification extends Cana_Table
 					// If the restaurant has fax notification don't send the confimation now, CB should wait the fax finished #1239
 					if( !$order->restaurant()->hasFaxNotification() ){
 						$order->queConfirm();	
+					} else {
+						Log::debug( [ 'order' => $this->id_order, 'action' => 'restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
 					}
 				}
 				break;
