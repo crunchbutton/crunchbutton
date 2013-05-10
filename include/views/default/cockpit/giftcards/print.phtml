@@ -77,7 +77,7 @@ if( $giftcards->count() > 0 ) {
 
 			$community = $restaurant->communities();
 			if( $community->count() > 0 ){
-				$community_name = $community->name;
+				$community_name = $community->name_alt;
 				$community_prep = $community->prep;
 				if( $community_name && $community_prep ){
 					$local_description = 'Order the top food ' . $community_prep . ' ' . $community_name . '.';	
