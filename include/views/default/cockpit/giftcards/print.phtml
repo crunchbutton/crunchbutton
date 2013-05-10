@@ -60,6 +60,14 @@
 <?php 
 $count = 0;
 $giftcards = $this->giftcards;
+
+$env = c::env() == 'live' ? 'live' : 'dev';
+
+if( $env == 'live' ){
+	$serverUrl = 'crunchbutton.com';
+} else {
+	$serverUrl = 'beta.crunchbutton.com';
+}
 if( $giftcards->count() > 0 ) {
 	foreach( $giftcards as $giftcard ){
 		$count++;
@@ -69,7 +77,7 @@ if( $giftcards->count() > 0 ) {
 		<div class="giftcard">
 			<div class="title">Order Food, Get $<?php echo $giftcard->value;?></div>
 			<div class="headline">Place any delivery or takeout order at <span class="restaurant"> <?php echo $restaurant_name; ?> </span> and receive $<?php echo $giftcard->value;?> off</div>
-			<div class="headline-link">Go to <span class="link">http://crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span> to redeem</div>
+			<div class="headline-link">Go to <span class="link">http://<?php echo $serverUrl; ?>/giftcard/<?php echo $giftcard->code;?></span> to redeem</div>
 			<div class="crunchbutton">
 				<div class="icon">
 					<img src="/assets/images/facebook-like.png" />
