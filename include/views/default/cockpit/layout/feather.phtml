@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<title><?='CBC ' . $this->title?></title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale = 1.0,maximum-scale = 1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" type="text/css" href="/assets/css/admin_feather.css">
+	<link rel="shortcut icon" href="/favicon-admin.ico">
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="nav" data-role="header" data-position="fixed">
+			<div class="content">
+				<a href="/" class="link-home">
+					<div class="link-home">
+						CB Cockpit Home
+					</div>
+				</a>
+				<div class="logo"><a href="/" class="link-home"><div class="logo-img"></div></a></div>
+				<div style="float: right; color: #fff; margin-top: -20px;">BDC TODO Sup <?=ucfirst($this->username)?>!</div> <!-- BDC TODO -->
+
+			</div>
+		</div>
+		<div class="body">
+			<div class="content">
+				content start
+				<?=$this->content?>
+				content end
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
