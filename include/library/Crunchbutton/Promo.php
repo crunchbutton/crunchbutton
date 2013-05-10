@@ -225,7 +225,15 @@ class Crunchbutton_Promo extends Cana_Table
 			'type' => 'promo_email'
 		]);
 
-		$url = 'http://' . $_SERVER['SERVER_NAME'] . '/giftcard/'. $this->code;
+		$env = c::env() == 'live' ? 'live' : 'dev';
+
+		if( $env == 'live' ){
+			$serverUrl = '_DOMAIN_';
+		} else {
+			$serverUrl = 'beta._DOMAIN_';
+		}
+
+		$url = 'http://' . $serverUrl . '/giftcard/'. $this->code;
 
 		$content = $this->email_content;
 		$content = str_replace( static::TAG_GIFT_VALUE , $this->value, $content );
@@ -267,7 +275,15 @@ class Crunchbutton_Promo extends Cana_Table
 			return false;
 		}
 
-		$url = 'http://' . $_SERVER['SERVER_NAME'] . '/giftcard/'. $this->code;
+		$env = c::env() == 'live' ? 'live' : 'dev';
+
+		if( $env == 'live' ){
+			$serverUrl = '_DOMAIN_';
+		} else {
+			$serverUrl = 'beta._DOMAIN_';
+		}
+
+		$url = 'http://' . $serverUrl . '/giftcard/'. $this->code;
 
 		// Alpha Delta has a special message
 		if( $this->id_restaurant == 1 ){
