@@ -1,151 +1,133 @@
-<div class="admin-content-wrapper">
-	<div class="admin-content admin-content-supports">
-		<h1 class="support-item-title">Support</h1>
-		<br /><br />
-		<table class="admin-support-form">
-			<tr>
-				<td class="label-primary">Support:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:90%;">
-								<tbody>
-									<tr>
-										<td class="label-sub">Name:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->name;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Phone:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->phone;?></div></td>
-									</tr>
-									<?php if( trim( $this->support->message ) != '' ) { ?>
-									<tr>
-										<td class="label-sub">Message:</td>
-										<td class="content-sub"><div class="input-faker"><?=nl2br($this->support->message);?></div></td>
-									</tr>
-									<?php } ?>
-									<tr>
-										<td class="label-sub">Type:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->type;?></div></td>
-									</tr>
-									<?php if( $this->support->id_session_twilio ){ ?>
-									<tr>
-										<td class="label-sub">Session:</td>
-										<td class="content-sub"><div class="input-faker">@<?=$this->support->id_session_twilio;?></div></td>
-									</tr>
-									<?php } ?>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<?php 
-			if( $this->support->id_session_twilio ){
-				$supports = $this->support->sameTwilioSession();
-				if( $supports->count() > 0 ){
-					?>
-					<tr>
-						<td class="label-primary">Others questions of @<?=$this->support->id_session_twilio;?>:</td>
-						<td class="content-primary">
-							<div class="check-wrap">
-								<div class="check-content">
-									<table style="width:90%;">
-										<tbody>
-											<?php foreach( $supports as $support ) { ?>
-											<tr>
-												<td class="label-sub">Message (#<?php echo $support->id_support; ?>):</td>
-												<td class="content-sub"><div class="input-faker"><a href="/support/<?php echo $support->id_support; ?>"><?php echo $support->message;?></a></div></td>
-											</tr>
-											<tr>
-												<td class="label-sub">Date:</td>
-												<td class="content-sub"><div class="input-faker"><?=$this->support->date()->format('M jS Y')?> - <?=$this->support->date()->format('g:i:s A')?></div></td>
-											</tr>
-											<tr>
-												<td></td>
-												<td><hr/></td>
-											</tr>
-											<?php } ?>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</td>
-					</tr>
-					<?php
-				}
-			}
+<?
+	$support = $this->support;
+?>
+<div class=content-item>
+	<div class=content-item-header>
+		Support #SUP<?= $support->id_support ?>
+		 - 
+		<?= date('M j, g:i a', strtotime($support->timestamp)); ?>
+		 - 
+		<?= strtoupper($support->status) ?>
+	</div>
+	<div class=content-sub-item> <!-- user -->
+		<div class=content-sub-item-left>user</div>
+		<div class=content-sub-item-right>
+			<?= $support->name ?>
+
+			<?
+				$user = $support->user();
+				$phone = $support->phone;
+				if(!$phone && $user->id_user && $user->phone)
+					$phone = $user->phone;
 			?>
-			<tr>
-				<td class="label-primary">More information:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:90%;">
-								<tbody>
-									<?php if( $this->support->user()->id_user ) { ?>
-									<tr>
-										<td class="label-sub">User:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->user()->name;?></div></td>
-									</tr>
-									<?php } ?>
-									<tr>
-										<td class="label-sub">IP:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->ip;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Date:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->date()->format('M jS Y')?> - <?=$this->support->date()->format('g:i:s A')?></div></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<?php $answers = $this->support->answers(); ?>
-			<?php if( $answers->count() > 0 ) { ?>
-			<tr>
-				<td class="label-primary">Answer(s):</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<?php foreach( $answers as $answer ) { ?>
-							<table style="width:90%;">
-								<tbody>
-									<tr>
-										<td class="label-sub">From:</td>
-										<td class="content-sub"><div class="input-faker"><?=$answer->name;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Phone:</td>
-										<td class="content-sub"><div class="input-faker"><?=$answer->phone;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Answer:</td>
-										<td class="content-sub"><div class="input-faker"><?=$answer->message;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Date:</td>
-										<td class="content-sub"><div class="input-faker"><?=$answer->date()->format('M jS Y')?> - <?=$answer->date()->format('g:i:s A')?></div></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td style="text-align:right;"> <hr /> </td>
-									</tr>
-								</tbody>
-							</table>
-							<?php } ?>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<?php } ?>
-		</table>
+			<? if($user->id):
+					echo " (#USER$user->id)";
+			 endif ; ?>
+			<br>
+			<a href='tel:+1<?= $phone ?>'>
+			<?
+				if(preg_match('/^(\d{3})(\d{3})(\d{4})$/', $phone, $m)) {
+					echo "($m[1]) $m[2]-$m[3]";
+				}
+				else {
+					echo $phone;
+				}
+			?>
+			</a>
+		</div>
+	</div>
+	<div class=content-sub-item> <!-- rep -->
+		<div class=content-sub-item-left>rep</div>
+		<div class=content-sub-item-right>
+			<?
+				$rep = $support->rep();
+				if(!$rep->id) {
+					echo '(no rep has handled this ticket)';
+				}
+				else {
+					echo "$rep->name ($rep->phone)";
+				}
+			?>
+		</div>
+	</div>
+	<div class=content-sub-item> <!-- order -->
+		<div class=content-sub-item-left>order</div>
+		<div class=content-sub-item-right>
+			<?
+				if($support->id_order) {
+					$order = $support->order();
+					echo "<a href='/vieworder/$order->uuid'>#ORD$order->id</a>";
+					echo "<br>";
+					echo $order->message('support');
+					echo "<br>";
+
+
+					echo '
+	id_restaurant
+		restaurant_name
+		restaurant_phone
+		';
+				}
+				else {
+					echo '(no linked order)';
+				}
+			?>
+
+
+
+		</div>
 	</div>
 </div>
-<script>
-$(function() {
-	App.supports.prepareForm(<?=$this->support->id_support?>);
-});
-</script>
+
+<div class=content-item>
+	<div class=content-item-header>
+		Conversation
+	</div>
+	<div class=content-sub-item>
+		(details...)
+	</div>
+	<div class=content-sub-item>
+		(details...)
+	</div>
+	<div class=content-sub-item>
+		(details...)
+	</div>
+</div>
+
+<div class=content-item>
+	<div class=content-item-header>
+		Resolution
+	</div>
+	<div class=content-sub-item>
+		(details...)
+	</div>
+	<div class=content-sub-item>
+		(details...)
+	</div>
+	<div class=content-sub-item>
+		(details...)
+	</div>
+</div>
+
+
+
+
+messages
+
+id_github
+description_client
+description_cb
+fault_of enum('restaurant', 'customer', 'crunchbutton', 'other')
+refunded / refund button ?
+customer_happy
+
+ALSO TODO
+# of orders for this user
+if no order, allow to link an order
+allow to refund an order from this page
+link to gift cards
+
+
+
+
+
