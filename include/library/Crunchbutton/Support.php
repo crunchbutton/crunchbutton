@@ -147,6 +147,14 @@ class Crunchbutton_Support extends Cana_Table {
 		return $this->_date;
 	}
 
+	public function rep() {
+		return Support_Rep::o($this->id_support_rep);
+	}
+
+	public function order() {
+		return Order::o($this->id_order);
+	}
+
 	public function save() {
 		parent::save();
 		Crunchbutton_Hipchat_Notification::NewSupport($this);
