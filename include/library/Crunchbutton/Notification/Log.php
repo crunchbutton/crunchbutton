@@ -62,7 +62,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcall';
 
-		c::timeout(function() use( $support, $twilio, $url ) {
+		// c::timeout(function() use( $support, $twilio, $url ) {
 			foreach ( $support as $supportName => $supportPhone ) {
 
 				$call = $twilio->account->calls->create(
@@ -71,7 +71,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 					$url
 				);
 			}
-		});
+		// });
 	}
 
 	public function queCallback() {
