@@ -549,7 +549,7 @@ class Crunchbutton_Order extends Cana_Table {
 		Notification_Log::DeleteFromOrder( $order->id_order );
 		Log::debug([ 'order' => $order->id_order, 'action' => 'deleted previous notifications', 'type' => 'notification']);
 
-		$order->notify();
+		$order->que();
 	}
 
 	public function confirm() {
@@ -680,7 +680,6 @@ class Crunchbutton_Order extends Cana_Table {
 		c::timeout(function() use($order) {
 			$order->confirm();
 		}, $confirmTimeFaxReceived );
-
 	}
 
 	public function queConfirm() {
