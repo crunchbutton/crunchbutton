@@ -541,15 +541,17 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function resend_notify(){
-		$order = $this;
-		Log::debug([ 'order' => $order->id_order, 'action' => 'restarting starting notification', 'type' => 'notification']);
-		$order->confirmed = 0;
-		$order->save();
+
+		Log::debug([ 'order' => $this->id_order, 'action' => 'restarting starting notification', 'type' => 'notification']);
+		$this->confirmed = 0;
+		$this->save();
+		
 		// Delete all the notification log in order to start a new one
-		Notification_Log::DeleteFromOrder( $order->id_order );
+		Notification_Log::DeleteFromOrder( $this->id_order );
+
 		Log::debug([ 'order' => $order->id_order, 'action' => 'deleted previous notifications', 'type' => 'notification']);
 
-		$order->que();
+		$this->que();
 	}
 
 	public function confirm() {
