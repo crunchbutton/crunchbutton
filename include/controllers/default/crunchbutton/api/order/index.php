@@ -24,13 +24,14 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'resend_notification':
+				// $order->confirmed = 1;
+				// $order->save();
 				if ( $order->que() ) {
 					echo json_encode(['status' => 'success']);
-					exit;
 				} else {
 					echo json_encode(['status' => 'error']);
 				}
-			
+				exit;
 				break;
 
 			case 'say':
