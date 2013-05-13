@@ -31,6 +31,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						exit;
 					} else {
 						echo json_encode(['status' => 'error']);
+						exit;
 					}
 				}
 				break;
