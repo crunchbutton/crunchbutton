@@ -541,16 +541,19 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function resend_notify(){
-		$order = $this;
-		Log::debug([ 'order' => $order->id_order, 'action' => 'restarting starting notification', 'type' => 'notification']);
-		$order->confirmed = 0;
-		$order->save();
+		// Log
+		Log::debug([ 'order' => $this->id_order, 'action' => 'restarting starting notification', 'type' => 'notification']);
+		
+		$this->confirmed = 0;
+		$this->save();
+		
 		// Delete all the notification log in order to start a new one
-		Notification_Log::DeleteFromOrder( $order->id_order );
+		Notification_Log::DeleteFromOrder( $this->id_order );
+
+		// Log
 		Log::debug([ 'order' => $order->id_order, 'action' => 'deleted previous notifications', 'type' => 'notification']);
-		// Cana::timeout(function() use($order) {
-			$order->notify();
-		// });
+		
+		$this->notify();
 	}
 
 	public function confirm() {
@@ -715,11 +718,16 @@ class Crunchbutton_Order extends Cana_Table {
 		// Log
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm - confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
 
-		c::timeout(function() use($order) {
-			$order->confirm();
+		$order = $this;
+
+		Cana::timeout(function() use($order) {
+		
+			/* @var $order Crunchbutton_Order */
+			$order->notify();
 			Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm in progress - confirm', 'type' => 'notification' ] );
+
 		}, $confirmationTime );
-	
+
 	}
 
 	// At the method warningOrderNotConfirmed() i've tried to use $this->confirmed
