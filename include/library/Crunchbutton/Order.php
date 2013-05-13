@@ -552,6 +552,8 @@ class Crunchbutton_Order extends Cana_Table {
 		Log::debug([ 'order' => $order->id_order, 'action' => 'deleted previous notifications', 'type' => 'notification']);
 
 		$this->que();
+
+		return true;
 	}
 
 	public function confirm() {
