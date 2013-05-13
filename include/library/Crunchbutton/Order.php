@@ -548,7 +548,10 @@ class Crunchbutton_Order extends Cana_Table {
 		// Delete all the notification log in order to start a new one
 		Notification_Log::DeleteFromOrder( $order->id_order );
 		Log::debug([ 'order' => $order->id_order, 'action' => 'deleted previous notifications', 'type' => 'notification']);
-		$order->que();
+		Cana::timeout(function() use($order) {
+			/* @var $order Crunchbutton_Order */
+			$order->notify();
+		});
 	}
 
 	public function confirm() {
