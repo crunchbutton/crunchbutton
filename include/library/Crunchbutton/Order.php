@@ -554,6 +554,8 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function confirm() {
 
+		Log::debug([ 'order' => $this->id_order, 'action' => 'confirm() - dial confirm call', '$this->confirmed' => $this->confirmed, '$this->restaurant()->confirmation' =>$this->restaurant()->confirmation, 'type' => 'notification']);
+
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
 		}
@@ -712,13 +714,11 @@ class Crunchbutton_Order extends Cana_Table {
 		// Log
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm - confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
 
-		$_order = Order::o( $this->id_order );
+		$order = $this;
 
-		Cana::timeout(function() use($_order) {
+		Cana::timeout(function() use($order) {
 			/* @var $order Crunchbutton_Order */
-			Log::debug( [ 'order' => $_order->id_order, 'action' => 'queConfirm in progress - confirm', 'type' => 'notification' ] );
-			$_order->confirm();
-			Log::debug( [ 'order' => $_order->id_order, 'action' => 'queConfirm in done - confirm', 'type' => 'notification' ] );
+			$order->confirm();
 		}, $confirmationTime );
 	
 	}
