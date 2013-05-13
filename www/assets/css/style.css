@@ -1806,9 +1806,9 @@ html[xmlns] .clearfix {
 			user-select: none;
 		}
 			.giftcard-badge-value{
-				color: #ec6c4e;
+				color: #ff591f;
 				display: table-cell;
-				font-size: 15px;
+				font-size: 13px;
 				text-shadow: 1px 1px 0px rgba(0,0,0,.2);
 				font-weight: bold;
 				vertical-align: middle;
