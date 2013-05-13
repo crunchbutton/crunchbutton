@@ -24,16 +24,13 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'resend_notification':
-				if( $_SESSION['admin'] ){
-					$order = Order::o( $order->id_order );
-					if ( $order->resend_notify() ) {
-						echo json_encode(['status' => 'success']);
-						exit;
-					} else {
-						echo json_encode(['status' => 'error']);
-						exit;
-					}
+				if ( $order->que() ) {
+					echo json_encode(['status' => 'success']);
+					exit;
+				} else {
+					echo json_encode(['status' => 'error']);
 				}
+			
 				break;
 
 			case 'say':
