@@ -437,6 +437,18 @@ App.loc = {
 		return location.formatted_address.replace( ', USA', '' );
 	},
 
+	// Return the zip code of a location
+	zipCode : function( location ){
+		var address_components = location.address_components;
+		var zipCode = null;
+		$.each( address_components, function(){
+			if( this.types[0] == 'postal_code' ){
+				zipCode = this.short_name;
+			}
+		} );
+		return zipCode;
+	},
+
 	// This method validate the acceptables types of address/location
 	validateAddressType : function( addressLocation ){
 

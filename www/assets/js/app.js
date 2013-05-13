@@ -43,7 +43,8 @@ var App = {
 	touchY: null,
 	touchOffset: null,
 	crunchSoundAlreadyPlayed : false,
-	useCompleteAddress : true, /* if true it means the address field will be fill with the address found by google api */
+	useCompleteAddress : false, /* if true it means the address field will be fill with the address found by google api */
+	completeAddressWithZipCode : true, 
 	boundingBoxMeters : 8000,
 	useRestaurantBoundingBox : false
 };
@@ -952,6 +953,7 @@ App.cart = {
 						var lat = theClosestAddress.geometry.location.lat();
 						var lon = theClosestAddress.geometry.location.lng();
 
+						
 						if( App.useCompleteAddress ){
 							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
 						}
@@ -959,11 +961,30 @@ App.cart = {
 						if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
 							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.' );
 							App.busy.unBusy();
+
+							// Write the found address at the address field, so the user can check it.
+							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
+
 							// Make sure that the form will be visible
 							$('.payment-form').show();
 	 						$('.delivery-payment-info, .content-padder-before').hide();
 							$( '[name="pay-address"]' ).focus();
+
 						} else {
+
+							if( App.completeAddressWithZipCode ){
+
+								// Get the address zip code
+								var zipCode = App.loc.zipCode( theClosestAddress );
+								var typed_address = $( '[name=pay-address]' ).val();
+
+								// Check if the typed address already has the zip code
+								if( typed_address.indexOf( zipCode ) < 0 ){
+									var addressWithZip = typed_address + ' - ' + zipCode;
+									$( '[name=pay-address]' ).val( addressWithZip );
+								}
+							}
+
 							App.busy.unBusy();
 							App.isDeliveryAddressOk = true;
 							App.cart.submit();
