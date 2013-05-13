@@ -713,11 +713,12 @@ class Crunchbutton_Order extends Cana_Table {
 		}			
 
 		// Log
-		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm - confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
 
-		// c::timeout(function() use($order) {
+		c::timeout(function() use($order) {
 			$order->confirm();
-		// }, $confirmationTime );
+			Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm in progress - confirm', 'type' => 'notification' ] );
+		}, $confirmationTime );
 	
 	}
 
