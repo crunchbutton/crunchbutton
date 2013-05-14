@@ -542,17 +542,18 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function resend_notify(){
 		$order = $this;
-		Log::debug([ 'order' => $order->id_order, 'action' => 'restarting starting notification', 'notification_type' => $n->type, 'type' => 'notification']);
-		$order->confirmed = 0;
-		$order->save();
+		Log::debug([ 'order' => $order->id_order, 'action' => 'restarting starting notification', 'type' => 'notification']);
+		// $order->confirmed = 0;
+		// $order->save();
 		// Delete all the notification log in order to start a new one
-		Notification_Log::DeleteFromOrder( $order->id_order );
-		Cana::timeout(function() use($order) {
-			$order->notify();
-		});
+		// Notification_Log::DeleteFromOrder( $order->id_order );
+		Log::debug([ 'order' => $order->id_order, 'action' => 'deleted previous notifications', 'type' => 'notification']);
+		$order->notify();
 	}
 
 	public function confirm() {
+
+		Log::debug([ 'order' => $this->id_order, 'action' => 'confirm() - dial confirm call', '$this->confirmed' => $this->confirmed, '$this->restaurant()->confirmation' =>$this->restaurant()->confirmation, 'type' => 'notification']);
 
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
@@ -659,6 +660,9 @@ class Crunchbutton_Order extends Cana_Table {
 	// After 5 minutes the fax was sent we have to send this confirmation to make sure that the fax as delivered. If the order was already confirmed this confirmation will be ignored.
 	public function queConfirmFaxWasReceived(){
 		
+		// Issue #1239
+		return false;
+
 		$order = $this;
 
 		$isConfirmed = Order::isConfirmed( $order->id_order );
@@ -675,7 +679,6 @@ class Crunchbutton_Order extends Cana_Table {
 		c::timeout(function() use($order) {
 			$order->confirm();
 		}, $confirmTimeFaxReceived );
-
 	}
 
 	public function queConfirm() {
@@ -701,17 +704,18 @@ class Crunchbutton_Order extends Cana_Table {
 
 			if( $order->restaurant()->hasFaxNotification() ){ // If restaurant has fax notification
 				$confirmationTime = c::config()->twilio->confirmFaxTime;
-			
 			} else {
-				$confirmationTime = c::config()->twilio->confirmTime;
-			
+				$confirmationTime = c::config()->twilio->confirmTime;			
 			}
 		}			
 
 		// Log
-		Log::debug( [ 'order' => $this->id_order, 'action' => 'confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm - confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
 
-		c::timeout(function() use($order) {
+		$order = $this;
+
+		Cana::timeout(function() use($order) {
+			/* @var $order Crunchbutton_Order */
 			$order->confirm();
 		}, $confirmationTime );
 	
