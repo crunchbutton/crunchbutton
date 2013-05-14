@@ -53,6 +53,17 @@
 							?>
 					<br/>
 
+					<br/>
+					<?
+						$support = Support::getSupportForOrder($order->id);
+						if($support) {
+							echo "<a href='/support/$support->id'>view support ticket</a>";
+						}
+						else {
+							echo "<a href='javascript:create_support_from_order($order->id);'>create support ticket</a>";
+						}
+					?>
+
 
 				</td>
 				<td>

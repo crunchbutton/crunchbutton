@@ -942,16 +942,13 @@ class Crunchbutton_Order extends Cana_Table {
 				$date->setTimeZone($timezone);
 				$when = $date->format('M j, g:i a');
 
-				$confirmed = $this->confirmed? 'yes' :
-				$this->restaurant()->confirmation? 'no' :
-				'n/a';
-
+				$confirmed = $this->confirmed? 'yes' : 'no';
 				$refunded = $this->refunded? 'yes':'no';
 
 				$msg = "
 					$this->delivery_type / $this->pay_type, $when
 					<br>name: $this->name
-					<br>phone: $this->phone
+					<br>phone: ".Crunchbutton_Util::format_phone($this->phone)."
 					<br>confirmed: $confirmed
 					<br>refunded: $refunded
 					<br><br>food: $food

@@ -1,3 +1,9 @@
+<?
+	$url = c::app()->pages();
+	if(end($url) == '') array_pop($url);
+	$this_url = '/' . implode('/', $url);
+?>
+
 <div class=content-item>
 	<div class=content-item-header>
 		Overview
@@ -10,13 +16,26 @@
 
 <div class=content-item>
 	<div class=content-item-header>
+		Actions
+	</div>
+	<div class='content-sub-item'>
+		<form method=post action='<?= $this_url ?>/new'>
+			<input type=hidden name=action value=new />
+			<input type=submit class=button value='New Support Ticket' />
+		</form>
+	</div>
+</div>
+
+<div class=content-item>
+	<div class=content-item-header>
 		Last Five Support Issues
 	</div>
 	<? foreach ($this->supports as $support): ?>
 		<a href='/support/<?= $support->id_support ?>'>
 			<div class='content-sub-item <?='support-'.$support->status?>'>
 					#SUP<?= $support->id_support ?> - 
-					<?= date('M j, g:i a', strtotime($support->timestamp)); ?> - 
+					<?= Crunchbutton_Util::datetime_date_str($support->datetime, $this->rep_timezone) ?>, 
+					<?= Crunchbutton_Util::datetime_time_str($support->datetime, $this->rep_timezone) ?> 
 					<?= $support->name ?> - 
 					<?= $support->message ?>
 			</div>
