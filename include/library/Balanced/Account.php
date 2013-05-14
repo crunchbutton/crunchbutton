@@ -2,8 +2,8 @@
 
 namespace Balanced;
 
-use Balanced\Core\Resource;
-use Balanced\Core\URISpec;
+use Balanced\Resource;
+use \RESTful\URISpec;
 
 /**
  * Represent a buyer or merchant account on a marketplace.
@@ -94,25 +94,43 @@ class Account extends Resource
         $appears_on_statement_as = null,
         $description = null,
         $meta = null,
-        $source = null)
+        $source = null,
+        $on_behalf_of = null)
     {
-        if ($source == null)
+        if ($source == null) {
             $source_uri = null;
-        else
-            $source_uri = is_string($source) ? $source : $source->uri;
+        } else if (is_string($source)) {
+            $source_uri = $source;
+        } else {
+            $source_uri = $source->uri;
+        }
+
+        if ($on_behalf_of == null) {
+            $on_behalf_of_uri = null;
+        } else if (is_string($on_behalf_of)) {
+            $on_behalf_of_uri = $on_behalf_of;
+        } else {
+            $on_behalf_of_uri = $on_behalf_of->uri;
+        }
+
+        if (isset($this->uri) && $on_behalf_of_uri == $this->uri)
+            throw new \InvalidArgumentException(
+                'The on_behalf_of parameter MAY NOT be the same account as the account you are debiting!'
+            );
+
         return $this->debits->create(array(
             'amount' => $amount,
-            'appears_on_statement_as' => $appears_on_statement_as,
             'description' => $description,
             'meta' => $meta,
             'source_uri' => $source_uri,
+            'on_behalf_of_uri' => $on_behalf_of_uri,
             'appears_on_statement_as' => $appears_on_statement_as
             ));
     }
     
     /**
      * Create a hold (i.e. a guaranteed pending debit) for account funds. You
-     * can later capture or void. A hold is assocaited with a account funding
+     * can later capture or void. A hold is associated with a account funding
      * source (i.e. \Balanced\Card). If you don't specify the source then the
      * current primary funding source for the account is used. 
      * 
@@ -145,7 +163,7 @@ class Account extends Resource
      * 
      * @param mixed card \Balanced\Card or URI referencing a card to associate with the account. Alternatively it can be an associative array describing a card to create and associate with the account.
      * 
-     * @return Balanced\Account
+     * @return \Balanced\Account
      */
     public function addCard($card)
     {
@@ -164,9 +182,9 @@ class Account extends Resource
      * 
      * @see \Balanced\Marketplace->createBankAccount
      * 
-     * @param mixed bank_account \Balanced\BankAccount or URI for a bank account to assocaite with the account. Alternatively it can be an associative array describing a bank account to create and associate with the account.
-     
-     * @return Balanced\Account
+     * @param mixed bank_account \Balanced\BankAccount or URI for a bank account to associate with the account. Alternatively it can be an associative array describing a bank account to create and associate with the account.
+     * 
+     * @return \Balanced\Account
      */
     public function addBankAccount($bank_account)
     {
@@ -186,11 +204,14 @@ class Account extends Resource
      *
      * @param mixed merchant Associative array describing the merchants identity or a URI referencing a created merchant.
      *       
-     * @return Balanced\Account
+     * @return \Balanced\Account
      */
     public function promoteToMerchant($merchant)
     {
-        $this->merchant = $merchant;
+        if (is_string($merchant))
+            $this->merchant_uri = $merchant;
+        else
+            $this->merchant = $merchant;
         return $this->save();
     }
 }
