@@ -2,8 +2,8 @@
 
 namespace Balanced;
 
-use Balanced\Core\Resource;
-use Balanced\Core\URISpec;
+use Balanced\Resource;
+use \RESTful\URISpec;
 
 /**
  * Represents an account debit transaction.
@@ -12,13 +12,13 @@ use Balanced\Core\URISpec;
  * 
  * <code>
  * $marketplace = \Balanced\Marketplace::mine();
- *     
+ * 
  * $account = $marketplace
  *     ->accounts
  *     ->query()
  *     ->filter(Account::f->email_address->eq('buyer@example.com'))
  *     ->one();
- *     
+ * 
  * $debit = $account->debit(
  *     100,
  *     'how it appears on the statement',

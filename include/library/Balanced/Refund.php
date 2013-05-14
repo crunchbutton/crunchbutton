@@ -2,8 +2,8 @@
 
 namespace Balanced;
 
-use Balanced\Core\Resource;
-use Balanced\Core\URISpec;
+use Balanced\Resource;
+use \RESTful\URISpec;
 
 /**
  * Represents a refund of an account debit transaction.

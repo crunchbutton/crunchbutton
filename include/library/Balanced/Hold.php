@@ -2,15 +2,15 @@
 
 namespace Balanced;
 
-use Balanced\Core\Resource;
-use Balanced\Core\URISpec;
+use Balanced\Resource;
+use \RESTful\URISpec;
 
 /**
  * Represents pending debit of funds for an account. The funds for that debit
  * are held by the processor. You can later capture the hold, which results in
  * debit, or void it, which releases the held funds.
  * 
- * Note that a hold can expire so you shold always check
+ * Note that a hold can expire so you should always check
  * Balanced\Hold::expires_at.
  * 
  * You create these using \Balanced\Account::hold.
@@ -50,7 +50,7 @@ class Hold extends Resource
      ** Voids a pending hold. This releases the held funds. Once voided a hold
      * is not longer pending can cannot be re-captured or re-voided.
      * 
-     * @return Balanced\Hold
+     * @return \Balanced\Hold
      */
     public function void()
     {
@@ -64,7 +64,7 @@ class Hold extends Resource
      * 
      * @param int amount Optional Portion of the pending hold to capture. If not specified the full amount associated with the hold is captured.
      * 
-     * @return Balanced\Debit
+     * @return \Balanced\Debit
      */
     public function capture($amount = null)
     {

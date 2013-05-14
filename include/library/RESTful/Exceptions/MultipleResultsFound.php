@@ -1,6 +1,6 @@
 <?php
 
-namespace Balanced\Exceptions;
+namespace RESTful\Exceptions;
 
 /**
  * Indicates that a query unexpectedly returned multiple results when at most
