@@ -2,8 +2,8 @@
 
 namespace Balanced;
 
-use Balanced\Core\Resource;
-use Balanced\Core\URISpec;
+use Balanced\Resource;
+use \RESTful\URISpec;
 
 /**
  * Represents a merchant identity.
@@ -14,7 +14,7 @@ use Balanced\Core\URISpec;
  * 
  * In some cases a merchant may need to be redirected to create a identity (e.g. the
  * information provided cannot be verified, more information is needed, etc). That
- * redirected signup results in a mechant_uri which is then asociated with an
+ * redirected signup results in a merchant_uri which is then associated with an
  * account on the marketplace via \Balanced\Marketplace::createMerchant.
  * 
  * @see \Balanced\Marketplace
@@ -41,7 +41,7 @@ class Merchant extends Resource
      * assert($merchant->id == $owner_account->merchant->id);
      * </code>
      *
-     * @throws \Balanced\Exceptions\NoResult
+     * @throws \RESTful\Exceptions\NoResultFound
      * @return \Balanced\Merchant
      */
     public static function me()
