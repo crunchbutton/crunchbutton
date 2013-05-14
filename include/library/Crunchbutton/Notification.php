@@ -107,13 +107,15 @@ class Crunchbutton_Notification extends Cana_Table
 				$log->id_order = $order->id_order;
 				$log->save();
 
+
 				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoingRestaurant,
 					'+1'.$num,
 					'http://'.c::config()->host_callback.'/api/order/'.$order->id_order.'/say?id_notification='.$this->id_notification,
 					[
-						'StatusCallback' => 'http://'.c::config()->host_callback.'/api/notification/'.$log->id_notification_log.'/callback'
+						'StatusCallback' => 'http://'.c::config()->host_callback.'/api/notification/'.$log->id_notification_log.'/callback',
+						'FallbackUrl' => c::config()->twilio->fallbackUrl
 //						'IfMachine' => 'Hangup'
 					]
 				);
