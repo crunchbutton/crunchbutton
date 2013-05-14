@@ -1783,7 +1783,7 @@ html[xmlns] .clearfix {
 		top: 224px !important;
 		z-index: 10 !important;
 	}
-	.gift-card-message-container{
+	.giftcard-desktop-container{
 		display: none;
 	}
 	.giftcard-badge-container{
@@ -1795,8 +1795,8 @@ html[xmlns] .clearfix {
 		.giftcard-badge{
 			background: url(/assets/images/giftcard-badge.png) no-repeat;
 			background-size: contain;
-			width: 40px;
-			height: 40px;
+			width: 50px;
+			height: 50px;
 			display: none;
 			cursor: pointer;
 			-webkit-user-select: none;
@@ -1806,10 +1806,11 @@ html[xmlns] .clearfix {
 			user-select: none;
 		}
 			.giftcard-badge-value{
-				color: #e83108;
+				color: #ff591f;
 				display: table-cell;
-				font-size: 11px;
+				font-size: 13px;
 				text-shadow: 1px 1px 0px rgba(0,0,0,.2);
+				font-weight: bold;
 				vertical-align: middle;
 				text-align: center;
 			}
@@ -2937,8 +2938,9 @@ strong {
 	position: absolute;
 }
 .giftcard-info{
-		margin-left: 115px;
-	}
+	color: red;
+	margin-left: 115px;
+}
 .address-problem-message{
 	color: red;
 	display: none;
@@ -2970,6 +2972,7 @@ strong {
 	text-decoration: underline;
 }
 .giftcard-info{
+	color: red;
 	font-size: 11px;
 	line-height: 15px;
 } 
@@ -2978,29 +2981,38 @@ strong {
 		display: block;
 		max-width: 400px;
 	}
-.gift-card-message{
+.giftcard-desktop-message{
+	background: url( ../images/giftcard_flag.png ) no-repeat;
 	color: #FFF;
-	display: none;
-	font-size: 13px;
-	text-shadow: 1px 1px 0px rgba(0,0,0,.72);
-	float: right;
-	margin-top: 12px;
-	margin-right: 0px;
-	box-shadow: -1px 1px 5px rgba(0,0,0,.2);
-	border-radius: 3px;
-	border: 1px solid #ac2903;
-	color: #FFF;
-	padding:7px 8px;
+	font-size: 11px;
+	height: 80px;
+	line-height: 16px;
+	margin-left: 500px;
+	margin-top: -36px;
+	padding: 5px;
+	position: absolute;
 	text-align: center;
-	background-color: #f24812;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(255, 89, 31)), to(rgb(230, 55, 6)));
-	background-image: -webkit-linear-gradient(top, rgb(255, 89, 31), rgb(230, 55, 6));
-	background-image: -moz-linear-gradient(top, rgb(255, 89, 31), rgb(230, 55, 6));
-	background-image: -o-linear-gradient(top, rgb(255, 89, 31), rgb(230, 55, 6));
-	background-image: -ms-linear-gradient(top, rgb(255, 89, 31), rgb(230, 55, 6));
-	background-image: linear-gradient(top, rgb(255, 89, 31), rgb(230, 55, 6));
-	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ff591f', EndColorStr='#e63706');
+	text-shadow:none;
+	display: none;
+	width: 74px;
 }
+.giftcard-payment-message{
+	color: #d74924;
+	display: block;
+	font-size: 15px;
+	font-style: italic;
+	font-weight: bold;
+	margin: 15px 0 0 0;
+	padding: 3px;
+	text-align: center;
+	text-shadow: 1px 1px 0px rgba(0,0,0,.2);
+}
+	.giftcard-desktop-message .giftcard-value{
+		display: block;
+		font-size: 14px;
+		font-weight: normal;
+		margin: 3px;
+	}
 .order-restaurant{
 	cursor: pointer;
 }

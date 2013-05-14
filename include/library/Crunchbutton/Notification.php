@@ -14,6 +14,7 @@ class Crunchbutton_Notification extends Cana_Table
 		if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
 			c::config()->twilio->testnumber = c::config()->testphone->{ $_SESSION[ 'username' ] };
 		}
+
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
 		$sms = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
 		$mail = ($env == 'live' ? $this->value : '_EMAIL');
@@ -85,7 +86,12 @@ class Crunchbutton_Notification extends Cana_Table
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
-					$order->queConfirm();
+					// If the restaurant has fax notification don't send the confimation now, CB should wait the fax finished #1239
+					if( !$order->restaurant()->hasFaxNotification() ){
+						$order->queConfirm();	
+					} else {
+						Log::debug( [ 'order' => $order->id_order, 'action' => 'sms - restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
+					}
 				}
 				break;
 
@@ -101,13 +107,15 @@ class Crunchbutton_Notification extends Cana_Table
 				$log->id_order = $order->id_order;
 				$log->save();
 
+
 				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoingRestaurant,
 					'+1'.$num,
 					'http://'.c::config()->host_callback.'/api/order/'.$order->id_order.'/say?id_notification='.$this->id_notification,
 					[
-						'StatusCallback' => 'http://'.c::config()->host_callback.'/api/notification/'.$log->id_notification_log.'/callback'
+						'StatusCallback' => 'http://'.c::config()->host_callback.'/api/notification/'.$log->id_notification_log.'/callback',
+						'FallbackUrl' => c::config()->twilio->fallbackUrl
 //						'IfMachine' => 'Hangup'
 					]
 				);
@@ -131,7 +139,12 @@ class Crunchbutton_Notification extends Cana_Table
 
 				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
 					$order->_confirm_trigger = true;
-					$order->queConfirm();
+					// If the restaurant has fax notification don't send the confimation now, CB should wait the fax finished #1239
+					if( !$order->restaurant()->hasFaxNotification() ){
+						$order->queConfirm();	
+					} else {
+						Log::debug( [ 'order' => $order->id_order, 'action' => 'email - restaurant has fax notification - wait the fax confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'type' => 'notification' ] );
+					}
 				}
 				break;
 		}

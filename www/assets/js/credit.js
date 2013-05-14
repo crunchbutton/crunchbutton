@@ -53,7 +53,8 @@ App.credit.tooltip.hide = function(){
 }
 
 App.credit.hide = function(){
-	$( '.gift-card-message' ).hide();
+	$( '.giftcard-desktop-message' ).hide();
+	$( '.giftcard-badge' ).hide();
 }
 
 App.credit.show = function(){
@@ -61,12 +62,12 @@ App.credit.show = function(){
 
 	if( parseFloat( gift ) ){
 		var giftValue = App.ceil( gift ).toFixed( 2 );
-		var text = 'You have a '+ ( ( App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '' ) + giftValue + ' gift card!';
+		var text = 'You have a <span class="giftcard-value">'+ ( ( App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '' ) + giftValue + '</span> gift card!';
 		App.credit.tooltip.message( text );		
-		$( '.gift-card-message' ).html( text );
-		$( '.gift-card-message' ).css( 'opacity', 0 );
-		$( '.gift-card-message' ).show();
-		$( '.gift-card-message' ).animate( { 'opacity' : 1 }, 100 );
+		$( '.giftcard-desktop-message' ).html( text );
+		$( '.giftcard-desktop-message' ).css( 'opacity', 0 );
+		$( '.giftcard-desktop-message' ).show();
+		$( '.giftcard-desktop-message' ).animate( { 'opacity' : 1 }, 100 );
 
 		var integerGiftValue = parseInt( giftValue );
 		if( integerGiftValue < giftValue ){
@@ -77,7 +78,7 @@ App.credit.show = function(){
 		$( '.giftcard-badge-value' ).html( '$' + giftValue );
 		$( '.giftcard-badge' ).css( 'display', 'table' );
 	} else {
-		$( '.gift-card-message' ).hide();
+		$( '.gift-card-payment-message' ).hide();
 		$( '.giftcard-badge' ).css( 'display', 'none' );
 	}
 	

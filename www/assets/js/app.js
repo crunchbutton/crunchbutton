@@ -43,7 +43,8 @@ var App = {
 	touchY: null,
 	touchOffset: null,
 	crunchSoundAlreadyPlayed : false,
-	useCompleteAddress : true, /* if true it means the address field will be fill with the address found by google api */
+	useCompleteAddress : false, /* if true it means the address field will be fill with the address found by google api */
+	completeAddressWithZipCode : true, 
 	boundingBoxMeters : 8000,
 	useRestaurantBoundingBox : false
 };
@@ -584,7 +585,7 @@ App.cart = {
 		}
 
 		if( App.order.pay_type == 'cash' && credit > 0 ){
-			totalText += '<span class="giftcard-message">Hey! Pay with a card to make use of your ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>';
+			totalText += '<span class="giftcard-payment-message">Hey! Pay with a card to make use of your ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>';
 		}
 
 		$('.cart-total').html( totalText );
@@ -952,13 +953,36 @@ App.cart = {
 						var lat = theClosestAddress.geometry.location.lat();
 						var lon = theClosestAddress.geometry.location.lng();
 
+						
+						if( App.useCompleteAddress ){
+							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
+						}
+
 						if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
-							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nTry again, or order takeout.' );
+							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.' );
 							App.busy.unBusy();
+
+							// Write the found address at the address field, so the user can check it.
+							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
+
+							// Make sure that the form will be visible
+							$('.payment-form').show();
+	 						$('.delivery-payment-info, .content-padder-before').hide();
+							$( '[name="pay-address"]' ).focus();
+
 						} else {
 
-							if( App.useCompleteAddress ){
-								$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
+							if( App.completeAddressWithZipCode ){
+
+								// Get the address zip code
+								var zipCode = App.loc.zipCode( theClosestAddress );
+								var typed_address = $( '[name=pay-address]' ).val();
+
+								// Check if the typed address already has the zip code
+								if( typed_address.indexOf( zipCode ) < 0 ){
+									var addressWithZip = typed_address + ' - ' + zipCode;
+									$( '[name=pay-address]' ).val( addressWithZip );
+								}
 							}
 
 							App.busy.unBusy();
@@ -1028,43 +1052,49 @@ App.cart = {
 						App.crunchSoundAlreadyPlayed = true;
 					}
 
-					if (json.token) {
-						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
-					}
+					setTimeout( function(){
 
-					$('.link-orders').show();
+						if (json.token) {
+							$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
+						}
 
-					order.cardChanged = false;
-					App.justCompleted = true;
+						$('.link-orders').show();
 
-					var totalItems = 0;
+						order.cardChanged = false;
+						App.justCompleted = true;
 
-					for (var x in App.cart.items) {
-						totalItems++;
-					}
+						var totalItems = 0;
 
-					$.getJSON('/api/config', App.processConfig);
-					
-					App.cache('Order',json.uuid, function() {
-						App.track('Ordered', {
-							'total':this.final_price,
-							'subtotal':this.price,
-							'tip':this.tip,
-							'restaurant': App.restaurant.name,
-							'paytype': this.pay_type,
-							'ordertype': this.order_type,
-							'user': this.user,
-							'items': totalItems
-						});
+						for (var x in App.cart.items) {
+							totalItems++;
+						}
+
+						$.getJSON('/api/config', App.processConfig);
 						
-						App.order.cardChanged = false;
-						delete App.order.tipHasChanged;
-						var loc = '/order/' + this.uuid;
-						History.pushState({},loc,loc);
+						App.cache('Order',json.uuid, function() {
+							App.track('Ordered', {
+								'total':this.final_price,
+								'subtotal':this.price,
+								'tip':this.tip,
+								'restaurant': App.restaurant.name,
+								'paytype': this.pay_type,
+								'ordertype': this.order_type,
+								'user': this.user,
+								'items': totalItems
+							});
+							
+							App.order.cardChanged = false;
+							delete App.order.tipHasChanged;
+							var loc = '/order/' + this.uuid;
+							History.pushState({},loc,loc);
 
-					});
+						});
+
+					}, 1000 );
 				}
-				App.busy.unBusy();
+				setTimeout( function(){
+					App.busy.unBusy();
+				}, 1000 );
 			}
 		});
 

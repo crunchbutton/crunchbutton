@@ -29,6 +29,9 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				return;
 			}
 
+			// Issue #1250
+			$this->maxCBCallToSupport();
+
 			Log::critical([
 				'id_order' => $this->id_order, 
 				'id_notification_log' => $this->id_notification_log,
@@ -48,6 +51,29 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		}
 	}
 	
+	// Issue #1250 - make Max CB a phone call in addition to a text
+	public function maxCBCallToSupport(){
+
+		$env = c::env() == 'live' ? 'live' : 'dev';
+
+		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+
+		$support = c::config()->text;
+
+		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcall';
+
+		// c::timeout(function() use( $support, $twilio, $url ) {
+			foreach ( $support as $supportName => $supportPhone ) {
+
+				$call = $twilio->account->calls->create(
+					c::config()->twilio->{$env}->outgoingRestaurant,
+					'+1'.$supportPhone,
+					$url
+				);
+			}
+		// });
+	}
+
 	public function queCallback() {
 		$log = $this;
 
@@ -68,6 +94,9 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			if (c::env() != 'live') {
 				return;
 			}
+
+			# 1250
+			$this->maxCBCallToSupport();
 
 			Log::critical([
 				'id_order' => $this->id_order, 

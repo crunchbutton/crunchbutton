@@ -24,13 +24,11 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'resend_notification':
-				if( $_SESSION['admin'] ){
-					if ( $order->resend_notify() ) {
-						echo json_encode(['status' => 'success']);
-						exit;
-					} else {
-						echo json_encode(['status' => 'error']);
-					}
+				if ( $order->resend_notify() ) {
+					echo json_encode(['status' => 'success']);
+					exit;
+				} else {
+					echo json_encode(['status' => 'error']);
 				}
 				break;
 
@@ -142,10 +140,22 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				exit;
 				break;
 
+			// Issue #1250 - make Max CB a phone call in addition to a text
+			case 'maxcall' : 
+				header('Content-type: text/xml');
+				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<Response>';
+					echo '<Say voice="'.c::config()->twilio->voice.'">';
+					echo 'Order number ' . $order->id_order . ' has timed out to ' . $order->restaurant()->name . ' from ' . $order->name;
+					echo '</Say>';
+					echo '</Response>';
+				exit;
+				break;
+
 			case 'doconfirm':
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 					.'<Response>';
+					echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. We will resend the order confirmation.</Say>';
 
 				switch ($this->request()['Digits']) {
 					case '1':
