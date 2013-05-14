@@ -35,7 +35,7 @@
 			<div class='content-sub-item <?='support-'.$support->status?>'>
 					#SUP<?= $support->id_support ?> - 
 					<?= Crunchbutton_Util::datetime_date_str($support->datetime, $this->rep_timezone) ?>, 
-					<?= Crunchbutton_Util::datetime_time_str($support->datetime, $this->rep_timezone) ?> 
+					<?= Crunchbutton_Util::datetime_time_str($support->datetime, $this->rep_timezone) ?> - 
 					<?= $support->name ?> - 
 					<?= $support->message ?>
 			</div>
