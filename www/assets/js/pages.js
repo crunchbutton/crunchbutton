@@ -312,6 +312,10 @@ App.page.legal = function() {
 	$.getJSON('/api/legal',function(json) {
 		$('.main-content').html(json.data);
 		App.refreshLayout();
+		setTimeout( function(){
+			// I put this way to avoid spammers robots #1219
+			$( '.crunchbutton-join-mail' ).html( 'moc.nottubhcnurc@nioj'.split('').reverse().join('') );
+		}, 100 );
 	});
 };
 
