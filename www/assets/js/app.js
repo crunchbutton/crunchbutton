@@ -927,7 +927,7 @@ App.cart = {
 
 				// Use the aproxLoc to create the bounding box
 				if( App.loc.aproxLoc ){
-					var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );	
+					var latLong = new google.maps.LatLng( App.loc.aproxLoc ? App.loc.aproxLoc.lat : App.loc.pos().lat, App.loc.aproxLoc ? App.loc.aproxLoc.lon : App.loc.pos().lon);	
 				}
 
 				// Use the restautant's position to create the bounding box - just for tests
@@ -936,7 +936,7 @@ App.cart = {
 				}
 
 				if( !latLong ){
-					App.alert( 'An error occurred!' );
+					App.alert( 'Could not locate you!' );
 					App.busy.unBusy();
 					return;
 				}
@@ -1024,11 +1024,17 @@ App.cart = {
 		$.ajax({
 			url: App.service + 'order',
 			data: order,
-			dataType: 'json',
+			dataType: 'html',
 			type: 'POST',
 			complete: function(json) {
-
-				json = $.parseJSON(json.responseText);
+				try {
+					json = $.parseJSON(json.responseText);
+				} catch (e) {
+					json = {
+						status: 'false',
+						errors: ['Sorry! Something went horribly wrong trying to place your order!']
+					};
+				}
 
 				if (json.status == 'false') {
 					var error = '';
