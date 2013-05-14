@@ -37,6 +37,24 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->name     = $params['name'];
 		$this->notes    = $params['notes'];
 
+		// Log the order - process started
+		Log::debug([
+							'action' 				=> 'process started',
+							'address' 			=> $params['address'],
+							'phone' 				=> $params['phone'],
+							'pay_type' 			=> $params['pay_type'],
+							'tip' 					=> $params['tip'],
+							'autotip'				=> $params['autotip'],
+							'autotip_value'	=> $params['autotip_value'],
+							'name' 					=> $params['name'],
+							'user_id' 			=> c::user()->id_user,
+							'delivery_type' => $params['delivery_type'],
+							'restaurant' 		=> $params['restaurant'],
+							'notes' 				=> $params['notes'],
+							'cart' 					=> $params['cart'],
+							'type' 					=> 'order-log'
+						]);
+
 		// set delivery as default,
 		$this->delivery_type = self::SHIPPING_DELIVERY;
 		if ($params['delivery_type'] == self::SHIPPING_TAKEOUT)  {
@@ -157,6 +175,24 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		if ($errors) {
+		// Log the order - validation error
+		Log::debug([
+							'action' 				=> 'validation error',
+							'address' 			=> $params['address'],
+							'phone' 				=> $params['phone'],
+							'pay_type' 			=> $params['pay_type'],
+							'tip' 					=> $params['tip'],
+							'autotip'				=> $params['autotip'],
+							'autotip_value'	=> $params['autotip_value'],
+							'name' 					=> $params['name'],
+							'user_id' 			=> c::user()->id_user,
+							'delivery_type' => $params['delivery_type'],
+							'restaurant' 		=> $params['restaurant'],
+							'notes' 				=> $params['notes'],
+							'errors' 				=> $params['errors'],
+							'cart' 					=> $params['cart'],
+							'type' 					=> 'order-log'
+						]);
 			return $errors;
 		}
 
@@ -183,6 +219,24 @@ class Crunchbutton_Order extends Cana_Table {
 		$res = $this->verifyPayment();
 
 		if ( $res !== true ) {
+		// Log the order - credit card error
+		Log::debug([
+							'action' 				=> 'credit card error',
+							'address' 			=> $params['address'],
+							'phone' 				=> $params['phone'],
+							'pay_type' 			=> $params['pay_type'],
+							'tip' 					=> $params['tip'],
+							'autotip'				=> $params['autotip'],
+							'autotip_value'	=> $params['autotip_value'],
+							'name' 					=> $params['name'],
+							'user_id' 			=> c::user()->id_user,
+							'delivery_type' => $params['delivery_type'],
+							'restaurant' 		=> $params['restaurant'],
+							'notes' 				=> $params['notes'],
+							'errors' 				=> $res['errors'],
+							'cart' 					=> $params['cart'],
+							'type' 					=> 'order-log'
+						]);
 			return $res['errors'];
 		} else {
 			$this->txn = $this->transaction();
