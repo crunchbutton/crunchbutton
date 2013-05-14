@@ -328,6 +328,10 @@ App.page.help = function() {
 	$.getJSON('/api/help',function(json) {
 		$('.main-content').html(json.data);
 		App.refreshLayout();
+		setTimeout( function(){
+			// I put this way to avoid spammers robots
+			$( '.crunchbutton-join-mail' ).html( 'moc.nottubhcnurc@nioj'.split('').reverse().join('') );
+		}, 100 );
 	});
 };
 
