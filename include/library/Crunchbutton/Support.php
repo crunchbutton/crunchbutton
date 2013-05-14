@@ -11,6 +11,8 @@ class Crunchbutton_Support extends Cana_Table {
 			->table('support')
 			->idVar('id_support')
 			->load($id);
+    date_default_timezone_set('UTC'); // always save in utc
+    $this->datetime = date('Y-m-d H:i:s e');
 	}
 	
 	public function queNotify() {
@@ -131,6 +133,24 @@ class Crunchbutton_Support extends Cana_Table {
 		return $supports;
 	}
 
+	public function notes($internalexternal='') {
+		if($internalexternal == '') {
+			return Crunchbutton_Support_Note::q(
+				"SELECT * ".
+				"FROM support_note ".
+				"WHERE id_support=$this->id_support ".
+				"ORDER BY datetime ASC");
+		}
+		else {
+			return Crunchbutton_Support_Note::q(
+				"SELECT * ".
+				"FROM support_note ".
+				"WHERE id_support=$this->id_support ".
+				"AND visibility='$internalexternal' ".
+				"ORDER BY datetime ASC");
+		}
+	}
+
 	public function user() {
 		return User::o($this->id_user);
 	}
@@ -194,6 +214,26 @@ class Crunchbutton_Support extends Cana_Table {
 		Log::debug( [ 'action' => 'Not need to call', 'id_support' => $id_support, 'hour' => $hour, 'type' => 'sms' ] );
 
 	}
+
+	public function addNote($text, $from, $visibility) {
+		$sn = new Support_Note();
+		$sn->id_support = $this->id;
+		$sn->text = $text;
+		$sn->from = $from;
+		$sn->visibility = $visibility;
+		$sn->save();
+		return $sn;
+	}
+
+	public function systemNote($text) {
+		self::addNote($text, 'system', 'internal');
+	}
+
+	public static function getSupportForOrder($id_order) {
+		$s = self::q("SELECT * FROM `support` WHERE `id_order`='$id_order' ORDER BY `id_support` DESC LIMIT 1");
+		return $s->id ? $s : false;
+	}
+
 
 
 }

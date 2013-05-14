@@ -91,5 +91,28 @@ class Crunchbutton_Util extends Cana_Model {
 		return $string;
 		
 	}
+
+	public static function datetime_time_str($datetime_str, $rep_timezone) {
+		$d = new DateTime($datetime_str, new DateTimeZone('utc'));
+		$d->setTimezone($rep_timezone);
+		return $d->format('g:i a');
+	}
+
+	public static function datetime_date_str($datetime_str, $rep_timezone) {
+		$d = new DateTime($datetime_str, new DateTimeZone('utc'));
+		$d->setTimezone($rep_timezone);
+		return $d->format('M j');
+	}
+
+	public static function format_phone($phone) {
+		$phone = preg_replace('/[^\dx]/i', '', $phone);
+		if(preg_match('/^(\d{3})(\d{3})(\d{4})$/', $phone, $m)) {
+			return "($m[1]) $m[2]-$m[3]";
+		}
+		else {
+			return $phone;
+		}
+	}
+
 	
 }
