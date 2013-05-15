@@ -8,6 +8,7 @@ class Crunchbutton_Promo extends Cana_Table
 
 	const TAG_GIFT_VALUE = '[gift_value]';
 	const TAG_RESTAURANT_NAME = '[restaurant_name]';
+	const TAG_GIFT_CODE = '[gift_code]';
 	const TAG_GIFT_URL = '[gift_url]';
 
 	public function __construct($id = null) {
@@ -39,7 +40,7 @@ class Crunchbutton_Promo extends Cana_Table
 		if( $promo->count() > 0 ){
 			return $this->promoCodeGenerator();
 		} else {
-			return strtolower( $rnd_id );	
+			return strtoupper( $rnd_id );	
 		}
 	}
 
@@ -238,6 +239,7 @@ class Crunchbutton_Promo extends Cana_Table
 		$content = $this->email_content;
 		$content = str_replace( static::TAG_GIFT_VALUE , $this->value, $content );
 		$content = str_replace( static::TAG_GIFT_URL , $url, $content );
+		$content = str_replace( static::TAG_GIFT_CODE , $this->code, $content );
 		if( $this->restaurant()->id_restaurant ){
 			$content = str_replace( static::TAG_RESTAURANT_NAME , $this->restaurant()->name, $content );	
 		} else {
@@ -290,18 +292,12 @@ class Crunchbutton_Promo extends Cana_Table
 
 		$url = 'http://' . $serverUrl . '/giftcard/'. $this->code;
 
-		// Alpha Delta has a special message
-		if( $this->id_restaurant == 1 ){
-			$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Wenzel away at {$url}";
+		if( $this->restaurant()->id_restaurant ){
+			$message = "Congrats, you got a gift card to {$this->restaurant()->name}! To receive it, enter code: {$this->code} in your order notes or click here: {$url}"; 
 		} else {
-			if( $this->restaurant()->id_restaurant ){
-				$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Enjoy: {$url}";
-			} else {
-				$message = "Congrats, you just got a ${$this->value} gift card to Crunchbutton. Enjoy: {$url}";
-			}
-			
+			$message = "Congrats, you got a gift card to Crunchbutton! To receive it, enter code: {$this->code} in your order notes or click here: {$url}"; 
 		}
-		
+
 		$this->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $this->note;
 		$this->save();
 
