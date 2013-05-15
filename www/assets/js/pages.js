@@ -136,7 +136,7 @@ App.page.restaurant = function(id) {
 		});
 
 		// If the typed address is different of the user address the typed one will be used #1152
-		if( App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != App.config.user.address ){
+		if( App.loc.changeLocationAddressHasChanged && App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != App.config.user.address ){
 			// Give some time to google.maps.Geocoder() load
 			var validatedAddress = function(){
 				if( google && google.maps && google.maps.Geocoder ){
