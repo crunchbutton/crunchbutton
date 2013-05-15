@@ -2910,10 +2910,11 @@ strong {
 	display: none !important;
 }
 
-.giftcard-sign-in{
+.giftcard-sign-in, .giftcard-later{
 	color: #4168b8;	
 	cursor: pointer;
 	text-decoration: underline;	
+	margin:0 15px;
 }
 .giftcard-restaurant{
 	color:#D74924;

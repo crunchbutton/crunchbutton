@@ -585,7 +585,7 @@ App.cart = {
 		}
 
 		if( App.order.pay_type == 'cash' && credit > 0 ){
-			totalText += '<span class="giftcard-payment-message">Hey! Pay with a card to make use of your ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>';
+			totalText += '<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>';
 		}
 
 		$('.cart-total').html( totalText );
@@ -1064,6 +1064,7 @@ App.cart = {
 
 						order.cardChanged = false;
 						App.justCompleted = true;
+						App.giftcard.notesCode = false;
 
 						var totalItems = 0;
 
@@ -1084,7 +1085,7 @@ App.cart = {
 								'user': this.user,
 								'items': totalItems
 							});
-							
+
 							App.order.cardChanged = false;
 							delete App.order.tipHasChanged;
 							var loc = '/order/' + this.uuid;

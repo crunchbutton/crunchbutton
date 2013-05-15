@@ -251,6 +251,12 @@ App.page.restaurant = function(id) {
 			App.loc.enteredLoc = '';
 		}
 		
+		if( App.giftcard.notesCode ){
+			setTimeout( function(){
+				$( '[name=notes]' ).val( App.giftcard.notesCode + ' ' + $( '[name=notes]' ).val() );
+				App.giftcard.notesField.listener();
+			}, 300 );
+		}
 	});
 
 };
