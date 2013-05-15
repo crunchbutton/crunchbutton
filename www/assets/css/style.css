@@ -1712,17 +1712,21 @@ html[xmlns] .clearfix {
 	}
 
 	.config-icon {
+		position: absolute;
+		top: 9px;
+		left: -2px;
+		background: url(/assets/images/back.png) no-repeat;
+		width: 51px;
+		height: 31px;
 		float: left;
-	}
-
-	.config-icon.switch{
-		float: right;
+		background-size: contain;
+		cursor: pointer;
+		margin: none;
 	}
 
 	.signin-box-header{
 		display: none;
 	}
-
 	.sign-in-icon {
 		background: url(/assets/images/sign-in-icon.png) no-repeat;
 		background-size: contain;
@@ -1733,12 +1737,6 @@ html[xmlns] .clearfix {
 		margin: 0 10px;
 		width: 45px;
 	}
-	.sign-in-icon.switch{
-		float: left;
-	}
-		.sign-in-icon.hide{
-			display: none;
-		}
 
 	.home-recommend{
 		margin: 15px 0 5px 0;

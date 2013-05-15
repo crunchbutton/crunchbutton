@@ -2035,18 +2035,13 @@ App.message.chrome = function( ){
 
 // Issue #1227
 App.controlMobileIcons = function( page ){
-	console.log('page',page);
-	$( '.config-icon' ).removeClass( 'switch' );	
-	$( '.sign-in-icon' ).removeClass( 'hide' );	
-	$( '.sign-in-icon' ).removeClass( 'switch' );	
+	$( '.config-icon' ).hide();
+	$( '.sign-in-icon' ).show();
 	switch( page ){
-		case 'restaurants':
-		case 'home':
-			$( '.config-icon' ).addClass( 'switch' );
-			$( '.sign-in-icon' ).addClass( 'switch' );
-		break;
 		case 'orders':
-			$( '.sign-in-icon' ).addClass( 'hide' );
+			$( '.sign-in-icon' ).hide();
+		case 'restaurants':
+		$( '.config-icon' ).show();
 		break;
 	}
 }
