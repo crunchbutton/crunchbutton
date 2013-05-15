@@ -97,6 +97,16 @@ class Crunchbutton_User extends Cana_Table {
 		$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
 		$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
 		$out[ 'has_auth' ] = User_Auth::userHasAuth( $this->id_user );
+		$lastOrder = Order::lastDeliveredOrder( $this->id_user );
+		if( $lastOrder->id_restaurant ){
+			$communities = [];
+			foreach ( $lastOrder->restaurant()->community() as $community ) {
+				$communities[] = $community->id_community;
+			}
+			$out[ 'last_order' ] = array( 'address' => $lastOrder->address, 'communities' => $communities );
+		} else {
+			$out[ 'last_order' ] = false;
+		}
 		foreach ($this->presets() as $preset) {
 			$out['presets'][$preset->id_restaurant] = $preset->exports();
 		}
