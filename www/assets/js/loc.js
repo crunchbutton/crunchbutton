@@ -4,6 +4,7 @@ App.loc = {
 	realLoc: null,
 	range: App.defaultRange,
 	loaded: false,
+	changeLocationAddressHasChanged: false,
 
 	// calculate the distance between two points
 	distance: function(params) {
@@ -350,7 +351,7 @@ App.loc = {
 					lat: theClosestAddress.geometry.location.lat(),
 					lon: theClosestAddress.geometry.location.lng()
 				};
-
+				App.loc.changeLocationAddressHasChanged = true;
 				App.loc.setFormattedLocFromResult( results );
 			}
 			success();
