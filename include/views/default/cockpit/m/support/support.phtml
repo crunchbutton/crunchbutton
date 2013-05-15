@@ -166,8 +166,8 @@
 			<? if($support->id_restaurant) : ?>
 				<input type=submit class=button name=link_type value='Unlink Restaurant' />
 			<? else : ?>
-				id or permalink: 
-				<input type=text name=id_restaurant />&nbsp;&nbsp;
+				<em>id or permalink</em> 
+				<input type=text name=id_restaurant /><br>
 				<input type=submit class=button name=link_type value='Link Restaurant' />
 			<? endif; ?>
 		</div>
@@ -178,8 +178,8 @@
 			<? if($support->id_user) : ?>
 				<input type=submit class=button name=link_type value='Unlink User' />
 			<? else : ?>
-				id or phone number: 
-				<input type=text name=id_user />&nbsp;&nbsp;
+				<em>id or phone number</em> 
+				<input type=text name=id_user /><br>
 				<input type=submit class=button name=link_type value='Link User' />
 			<? endif; ?>
 		</div>
@@ -190,8 +190,8 @@
 			<? if($support->id_order) : ?>
 				<input type=submit class=button name=link_type value='Unlink Order' />
 			<? else : ?>
-				order id: 
-				<input type=text name=id_order />&nbsp;&nbsp;
+				<em>order id</em> 
+				<input type=text name=id_order /><br>
 				<input type=submit class=button name=link_type value='Link Order' />
 			<? endif; ?>
 		</div>
