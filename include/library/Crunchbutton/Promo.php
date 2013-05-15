@@ -290,7 +290,7 @@ class Crunchbutton_Promo extends Cana_Table
 			$serverUrl = 'beta._DOMAIN_';
 		}
 
-		$url = 'http://' . $serverUrl . '/giftcard/'. $this->code;
+		$url = $serverUrl . '/giftcard/'. $this->code;
 
 		if( $this->restaurant()->id_restaurant ){
 			$message = "Congrats, you got a gift card to {$this->restaurant()->name}! To receive it, enter code: {$this->code} in your order notes or click here: {$url}"; 
