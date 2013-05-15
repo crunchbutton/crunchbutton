@@ -2651,8 +2651,11 @@ th {
 .order-thanks-message {
 	font-size: 18px;
 	font-weight: bold;
-	text-transform: uppercase;
 }
+	.order-thanks-message-small{
+		font-size: 14px;
+		display: block;
+	}
 
 .cart-summary-item-count {
 	position: absolute;
