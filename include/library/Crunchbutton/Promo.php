@@ -241,7 +241,7 @@ class Crunchbutton_Promo extends Cana_Table
 		if( $this->restaurant()->id_restaurant ){
 			$content = str_replace( static::TAG_RESTAURANT_NAME , $this->restaurant()->name, $content );	
 		} else {
-			$content = str_replace( static::TAG_RESTAURANT_NAME , 'Crunchbutton' );
+			$content = str_replace( static::TAG_RESTAURANT_NAME , 'Crunchbutton', $content );	
 		}
 		
 		$content = nl2br( $content );
