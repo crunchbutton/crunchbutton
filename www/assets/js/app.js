@@ -133,6 +133,17 @@ App.showPage = function(params) {
 		document.title = params.title;
 	}
 
+	// #1227 - on mobile view switch change location and profile buttons
+	switch( params.page ){
+		case 'restaurants':
+		case 'home':
+			App.switchMobileIcons( true );
+		break;
+		default:
+			App.switchMobileIcons( false );
+		break;
+	}
+
 	// track different AB pages
 	if (params.tracking) {
 		App.track(params.tracking.title, params.tracking.data);
@@ -2028,3 +2039,13 @@ App.message.chrome = function( ){
 	App.message.show(title, message);
 }
 
+// Issue #1227
+App.switchMobileIcons = function( shouldSwitch ){
+	if( shouldSwitch ){
+		$( '.config-icon' ).addClass( 'switch' );	
+		$( '.sign-in-icon' ).addClass( 'switch' );	
+	} else {
+		$( '.config-icon' ).removeClass( 'switch' );	
+		$( '.sign-in-icon' ).removeClass( 'switch' );	
+	}	
+}
