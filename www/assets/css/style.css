@@ -2651,6 +2651,7 @@ th {
 .order-thanks-message {
 	font-size: 18px;
 	font-weight: bold;
+	text-transform: uppercase;
 }
 
 .cart-summary-item-count {
