@@ -95,19 +95,22 @@ if( $giftcards->count() > 0 ) {
 	?>
 	<div class="dotted">
 		<div class="giftcard">
-			<div class="title">Order Food, Get $<?php echo $giftcard->value;?></div>
-			<div class="headline">Place any delivery or takeout order at <span class="restaurant"> <?php echo $restaurant_name; ?> </span> and receive $<?php echo $giftcard->value;?> off</div>
-			<div class="headline-link">Go to <a href="http://<?php echo $serverUrl; ?>/giftcard/<?php echo $giftcard->code;?>"><span class="link">http://<?php echo $serverUrl; ?>/giftcard/<?php echo $giftcard->code;?></span></a> to redeem</div>
+			<div class="title">Push a Button, Get Food ($<?php echo $giftcard->value;?> gift card)</div>
+			<div class="headline">
+			Congrats! This is a $<?php echo $giftcard->value;?> gift card to <span class="restaurant"> <?php echo $restaurant_name; ?>
+			</div>
+			<div class="headline-link">
+			Just enter <?php echo $giftcard->code;?> in your order Notes section to use your gift card!
+			</div>
 			<div class="crunchbutton">
 				<div class="icon">
 					<img src="/assets/images/facebook-like.png" />
 				</div>
-				<div class="subtitle">PUSH A BUTTON. GET FOOD.</div>
+				<div class="subtitle"><?php echo $local_description; ?> For free.</div>
 				<div class="slogan">
-					<?php echo $local_description; ?> For free.
-					<br/>
-					After you order, everything is saved for future 1 click ordering.
+					Reorder with just one click
 				</div>
+				<div class="subtitle">crunchbutton.com</div>
 			</div>
 		</div>
 	</div>
