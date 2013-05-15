@@ -1096,7 +1096,7 @@ App.cart = {
 				}
 				setTimeout( function(){
 					App.busy.unBusy();
-				}, 10 );
+				}, 400 );
 			}
 		});
 
