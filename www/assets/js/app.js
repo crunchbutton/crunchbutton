@@ -928,19 +928,23 @@ App.cart = {
 		if( order.delivery_type == 'delivery' ){
 
 			// Correct Legacy Addresses in Database to Avoid Screwing Users #1284
-			// If the user has already ordered food at this restaurant
-			if( App.config && App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant] ){
-				// Make sure that the last order at it was the delivery type
-				if( App.config.user.presets[App.restaurant.id_restaurant].delivery_type == 'delivery' && App.config.user.presets[App.restaurant.id_restaurant].address ){
-					// Get the last address the user used at this restaurant
-					var lastAddress = App.config.user.presets[App.restaurant.id_restaurant].address;
+			// If the user has already ordered food 
+			if( App.config && App.config.user && App.config.user.last_order ){
+
+				// Check if the order was made at this community
+				if( App.config.user.last_order.communities.indexOf( App.restaurant.id_community ) > -1 ){
+
+					// Get the last address the user used at this community
+					var lastAddress = App.config.user.last_order.address;
 					var currentAdress = $( '[name=pay-address]' ).val();
+
 					// Make sure the the user address is the same of his last order
 					if( $.trim( lastAddress ) != '' && $.trim( lastAddress ) == $.trim( currentAdress ) ){
 						App.isDeliveryAddressOk = true;
-					}
+					}	
 				}
 			}
+
 			// Check if the user address was already validated
 			if ( !App.isDeliveryAddressOk	) {
 
