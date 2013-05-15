@@ -193,11 +193,16 @@ App.giftcard.notesField.message = function( giftinfo ){
 		} else {
 			// If the restaurant is empty it means it is a 'global' gift card
 			if( !giftinfo.success.id_restaurant ){
-				if( parseInt( App.restaurant.giftcard ) != 1 ){
+				if( !App.restaurant.giftcard ){
 					$( '.giftcard-info' ).html( message + 'This restaurant does not accept gift card.' );
 				} else {
 					$( '.giftcard-info' ).html( message + 'Congrats! This gift card (' + giftinfo.success.giftcard + ') gives you $' + giftinfo.success.value + '.' );
 					App.giftcard.notesField.value = parseFloat( App.giftcard.notesField.value ) + parseFloat( giftinfo.success.value );	
+				}
+			} else {
+				if( giftinfo.success.id_restaurant == giftinfo.success.id_restaurant ){
+					$( '.giftcard-info' ).html( message + 'Congrats! This gift card (' + giftinfo.success.giftcard + ') gives you $' + giftinfo.success.value + '.' );
+					App.giftcard.notesField.value = parseFloat( App.giftcard.notesField.value ) + parseFloat( giftinfo.success.value );		
 				}
 			}
 		}
