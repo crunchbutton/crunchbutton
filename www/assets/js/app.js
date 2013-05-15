@@ -1021,6 +1021,12 @@ App.cart = {
 			return;
 		}
 
+		// Play the crunch audio just once, when the user clicks at the Get Food button
+		if( !App.crunchSoundAlreadyPlayed ){
+			App.playAudio( 'get-food-audio' );
+			App.crunchSoundAlreadyPlayed = true;
+		}
+
 		$.ajax({
 			url: App.service + 'order',
 			data: order,
@@ -1046,13 +1052,9 @@ App.cart = {
 
 				} else {
 
-					// Play the crunch audio just once, when the user clicks at the Get Food button
-					if( !App.crunchSoundAlreadyPlayed ){
-						App.playAudio( 'get-food-audio' );
-						App.crunchSoundAlreadyPlayed = true;
-					}
 
-					setTimeout( function(){
+
+					// setTimeout( function(){
 
 						if (json.token) {
 							$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
@@ -1090,11 +1092,11 @@ App.cart = {
 
 						});
 
-					}, 1000 );
+					// }, 1000 );
 				}
 				setTimeout( function(){
 					App.busy.unBusy();
-				}, 1000 );
+				}, 10 );
 			}
 		});
 
