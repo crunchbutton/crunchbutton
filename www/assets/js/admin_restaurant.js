@@ -1339,14 +1339,15 @@ var DOM_MAP = {
 									b : (dayhours + parseInt(m0[1], 10) * 100 + parseInt(m0[2], 10)),
 									e : (dayhours + parseInt(m1[1], 10) * 100 + parseInt(m1[2], 10)),
 								});
+								// TODO check for sunday midnight start
 							}
 						}
 						// 2. sort
 						hfmmm.sort(function(a,b) { return (a.b<b.b?-1:(a.b>b.b?1:0)); });
 						// 3. merge things that should be merged
 						for(i = 0; i < hfmmm.length-1; i++) {
-							if(hfmmm[i+1].b <= hfmmm[i].e     &&
-								 hfmmm[i+1].e - hfmmm[i].b < 36  ) {
+							if(hfmmm[i+1].b <= hfmmm[i].e       &&
+								 hfmmm[i+1].e - hfmmm[i].b < 3600  ) {
 								// merge these two segments
 								hfmmm[i].e = hfmmm[i+1].e;
 								hfmmm.splice(i+1,1);
@@ -1446,6 +1447,7 @@ var DOM_MAP = {
 							segments = val.split(/(?:and|,)/);
 							for(i in segments) save_one_time_segment(segments[i]);
 						}
+						console.log(_hours);
 						restaurant._hours = _hours;
 					},
 				},
