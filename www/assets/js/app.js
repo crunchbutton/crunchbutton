@@ -585,7 +585,9 @@ App.cart = {
 		}
 
 		if( App.order.pay_type == 'cash' && credit > 0 ){
-			totalText += '<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>';
+			$( '.cart-giftcard-message' ).html( '<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>' );
+		} else {
+		  $( '.cart-giftcard-message' ).html( '' );
 		}
 
 		$('.cart-total').html( totalText );
