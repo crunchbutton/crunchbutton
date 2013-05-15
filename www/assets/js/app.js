@@ -941,6 +941,7 @@ App.cart = {
 					// Make sure the the user address is the same of his last order
 					if( $.trim( lastAddress ) != '' && $.trim( lastAddress ) == $.trim( currentAdress ) ){
 						App.isDeliveryAddressOk = true;
+						console.log('address verification skipped');
 					}	
 				}
 			}
