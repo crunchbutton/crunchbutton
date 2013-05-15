@@ -1335,11 +1335,9 @@ var DOM_MAP = {
 								segment = hours[day][i];
 								m0 = /(\d+):(\d+)/.exec(segment[0]);
 								m1 = /(\d+):(\d+)/.exec(segment[1]);
-								hfmmm.push({
-									b : (dayhours + parseInt(m0[1], 10) * 100 + parseInt(m0[2], 10)),
-									e : (dayhours + parseInt(m1[1], 10) * 100 + parseInt(m1[2], 10)),
-								});
-								// TODO check for sunday midnight start
+								b = (dayhours + parseInt(m0[1], 10) * 100 + parseInt(m0[2], 10));
+								e = (dayhours + parseInt(m1[1], 10) * 100 + parseInt(m1[2], 10));
+								hfmmm.push({b : b, e : e});
 							}
 						}
 						// 2. sort
@@ -1418,7 +1416,12 @@ var DOM_MAP = {
 								end_h = parseInt(m[4]);
 								end_m = parseInt(m[5]) || 0;
 								end_ampm = m[6].toLowerCase();
-								if(begin_ampm === 'am' && begin_h === 12) { begin_h = begin_h - 12; }
+								if(begin_ampm === 'am' && begin_h === 12) {
+									begin_h = begin_h - 12; 
+									if(end_h === 12 && end_ampm === 'am' && end_m > begin_m) {
+										end_h = end_h - 12;
+									}
+								}
 								if(begin_ampm === 'pm' && begin_h < 12) { begin_h = begin_h + 12; }
 								if(end_ampm === 'am' && end_h === 12) { end_h = end_h + 12; }
 								if(end_ampm === 'pm' && end_h < 12) { end_h = end_h + 12; }
@@ -1447,7 +1450,6 @@ var DOM_MAP = {
 							segments = val.split(/(?:and|,)/);
 							for(i in segments) save_one_time_segment(segments[i]);
 						}
-						console.log(_hours);
 						restaurant._hours = _hours;
 					},
 				},
