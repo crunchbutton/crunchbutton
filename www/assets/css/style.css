@@ -1722,6 +1722,7 @@ html[xmlns] .clearfix {
 	.signin-box-header{
 		display: none;
 	}
+
 	.sign-in-icon {
 		background: url(/assets/images/sign-in-icon.png) no-repeat;
 		background-size: contain;
@@ -1735,6 +1736,9 @@ html[xmlns] .clearfix {
 	.sign-in-icon.switch{
 		float: left;
 	}
+		.sign-in-icon.hide{
+			display: none;
+		}
 
 	.home-recommend{
 		margin: 15px 0 5px 0;
