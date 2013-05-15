@@ -1063,6 +1063,8 @@ App.cart = {
 				try {
 					json = $.parseJSON(json.responseText);
 				} catch (e) {
+					// Log the error
+					App.log.doLog( { 'type' : 'order-error-js', 'returned data' : json.responseText } );
 					json = {
 						status: 'false',
 						errors: ['Sorry! Something went horribly wrong trying to place your order!']
