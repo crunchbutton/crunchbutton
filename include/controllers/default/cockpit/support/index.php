@@ -100,6 +100,7 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			else { // permalink
 				$restaurant = Restaurant::permalink($args['id_restaurant']);
 			}
+			if(!$restaurant->id_restaurant) return;
 			$support->id_restaurant = $restaurant->id_restaurant;
 			$support->save();
 			$support->systemNote("Linked restaurant #RST$support->id_restaurant.");
@@ -117,6 +118,7 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			else { // phone number
 				$user = User::byPhone($id);
 			}
+			if(!$user->id_user) return;
 			$support->id_user = $user->id_user;
 			$support->save();
 			$support->systemNote("Linked user #USER$support->id_user.");
