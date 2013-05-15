@@ -3,6 +3,7 @@ App.giftcard = {
 		code : 'giftcard/code',
 		validate : 'giftcard/validate'
 	},
+	notesCode : false,
 	size : 6,
 	callback : false,
 	hasStarted : false
@@ -21,23 +22,39 @@ App.giftcard.show = function( path ){
 			close: function( event, ui ) {},
 			open: function( event, ui ) { $( 'input[name=giftcard-code]' ).focus(); }
 	} );
+
 	setTimeout( function(){
 		// Check if the user is logged in
 		if( App.config.user.id_user && $.trim( App.config.user.id_user ) != '' ){
 			App.giftcard.process( path );
 		} else {
-			$( '.giftcard-message-title' ).html( 'Welcome' );
-			$( '.giftcard-message-text' ).html( 'Please <span class="giftcard-sign-in">sign in</span> to claim your gift card.' );
-			$(document).on('touchclick', '.giftcard-sign-in', function() {
-				App.giftcard.callback = function(){
-					App.giftcard.callback = false;
-					$( '.giftcard-message-title' ).html( 'Gift card.' );
-					$( '.giftcard-message-text' ).html( 'Just a sec.' );
-					App.giftcard.show( path );
-				};
-				$('.giftcard-container').dialog('close');
-				App.signin.show();
-			});	
+			var code = ( path.length > 1 ) ? ( path[ 1 ] ? path[ 1 ] : '' ) : '';
+			App.giftcard.validate( code, function( giftinfo ){ 
+				if( giftinfo.success ){
+					$( '.giftcard-message-title' ).html( 'Welcome' );
+					$( '.giftcard-message-text' ).html( 'You have a $' + giftinfo.success.value + ' gift card! <br/><br/> <span class="giftcard-sign-in">Sign In</span> <span class="giftcard-later">Later</span>' );
+					$(document).on('touchclick', '.giftcard-later', function() {
+						var code = ( path.length > 1 ) ? ( path[ 1 ] ? path[ 1 ] : '' ) : '';
+						App.giftcard.notesCode = code;
+						$('.giftcard-container').dialog('close');
+					});	
+					$(document).on('touchclick', '.giftcard-sign-in', function() {
+						App.giftcard.callback = function(){
+							App.giftcard.callback = false;
+							$( '.giftcard-message-title' ).html( 'Gift card.' );
+							$( '.giftcard-message-text' ).html( 'Just a sec.' );
+							App.giftcard.show( path );
+						};
+						$('.giftcard-container').dialog('close');
+						App.signin.show();
+					});	
+
+				} else {
+					alert( 'Sorry, this is an invalid gift card.' );
+					$('.giftcard-container').dialog('close');
+				}
+
+			} );
 		}
 	}, 300 );	
 }
