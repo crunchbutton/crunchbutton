@@ -238,7 +238,12 @@ class Crunchbutton_Promo extends Cana_Table
 		$content = $this->email_content;
 		$content = str_replace( static::TAG_GIFT_VALUE , $this->value, $content );
 		$content = str_replace( static::TAG_GIFT_URL , $url, $content );
-		$content = str_replace( static::TAG_RESTAURANT_NAME , $this->restaurant()->name, $content );
+		if( $this->id_restaurant ){
+			$content = str_replace( static::TAG_RESTAURANT_NAME , $this->restaurant()->name, $content );	
+		} else {
+			$content = str_replace( static::TAG_RESTAURANT_NAME , 'Crunchbutton' );
+		}
+		
 		$content = nl2br( $content );
 
 		$email = $this->email;
@@ -289,7 +294,12 @@ class Crunchbutton_Promo extends Cana_Table
 		if( $this->id_restaurant == 1 ){
 			$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Wenzel away at {$url}";
 		} else {
-			$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Enjoy: {$url}";
+			if( $this->id_restaurant ){
+				$message = "Congrats, you just got a ${$this->value} gift card to {$this->restaurant()->name}. Enjoy: {$url}";
+			} else {
+				$message = "Congrats, you just got a ${$this->value} gift card to Crunchbutton. Enjoy: {$url}";
+			}
+			
 		}
 		
 		$this->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $this->note;
