@@ -1714,6 +1714,11 @@ html[xmlns] .clearfix {
 	.config-icon {
 		float: left;
 	}
+
+	.config-icon.switch{
+		float: right;
+	}
+
 	.signin-box-header{
 		display: none;
 	}
@@ -1724,8 +1729,11 @@ html[xmlns] .clearfix {
 		display: block;
 		float: right;
 		height: 30px;
-		margin: 0 10px 0 0;
+		margin: 0 10px;
 		width: 45px;
+	}
+	.sign-in-icon.switch{
+		float: left;
 	}
 
 	.home-recommend{
