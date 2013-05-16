@@ -97,7 +97,7 @@
 			<David>_PHONE_</David>
 		</supportcall>
     <text>
-    	<Daniel>2037728167</Daniel>
+    	<daniel>***REMOVED***</daniel>
      	<!-- <Devin>_PHONE_</Devin>
     	<Judd>_PHONE_</Judd>
     	<David>_PHONE_</David>
@@ -173,7 +173,6 @@
 		</olddev>
 		<fallbackUrl>_URL_</fallbackUrl>
 		<testnumber>***REMOVED***</testnumber>
-		<!-- <testnumber>_PHONE_</testnumber> -->
 		<voice>male</voice>
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>

@@ -25,7 +25,7 @@ class Crunchbutton_Notification extends Cana_Table
 		$sms = ($env == 'live' ? $this->value : '2037728167');
 		$mail = ($env == 'live' ? $this->value : '_EMAIL');
 		$fax = ($env == 'live' ? $this->value : '***REMOVED***');
-		
+
 		switch ($this->type) {
 			case 'fax':
 				$mail = new Email_Order([
