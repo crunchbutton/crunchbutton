@@ -17,8 +17,8 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			if($_POST['action'] == 'new') {
 				self::new_support($support, $_POST);
 			}
-			if($_POST['action'] == 'link') {
-				self::link_or_unlink($support, $_POST);
+			if($_POST['action'] == 'support_actions') {
+				self::support_action($support, $_POST);
 			}
 		}
 
@@ -87,13 +87,13 @@ class Controller_support extends Crunchbutton_Controller_Account {
 		$support->save();
 	}
 
-	public static function link_or_unlink(&$support, $args=[]) {
-		if($args['link_type'] == 'Unlink Restaurant') {
+	public static function support_action(&$support, $args=[]) {
+		if($args['action_type'] == 'Unlink Restaurant') {
 			$support->systemNote("Unlinked restaurant #RST$support->id_restaurant.");
 			$support->id_restaurant = null;
 			$support->save();
 		}
-		if($args['link_type'] == 'Link Restaurant') {
+		if($args['action_type'] == 'Link Restaurant') {
 			if(is_numeric($args['id_restaurant'])) {
 				$restaurant = Restaurant::o($args['id_restaurant']);
 			}
@@ -105,12 +105,12 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			$support->save();
 			$support->systemNote("Linked restaurant #RST$support->id_restaurant.");
 		}
-		if($args['link_type'] == 'Unlink User') {
+		if($args['action_type'] == 'Unlink User') {
 			$support->systemNote("Unlinked user #USER$support->id_user.");
 			$support->id_user = null;
 			$support->save();
 		}
-		if($args['link_type'] == 'Link User') {
+		if($args['action_type'] == 'Link User') {
 			$id = preg_replace('/[^\dx]/i', '', $args['id_user']);
 			if(is_numeric($id) && $id < 100000000) {
 				$user = User::o($id);
@@ -123,12 +123,12 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			$support->save();
 			$support->systemNote("Linked user #USER$support->id_user.");
 		}
-		if($args['link_type'] == 'Unlink Order') {
+		if($args['action_type'] == 'Unlink Order') {
 			$support->systemNote("Unlinked order #ORD$support->id_order.");
 			$support->id_order = null;
 			$support->save();
 		}
-		if($args['link_type'] == 'Link Order') {
+		if($args['action_type'] == 'Link Order') {
 			$order = Order::o($args['id_order']);
 			if(!$order->id_order) return;
 			$support->id_order = $order->id;
@@ -137,6 +137,11 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			$support->name = User::o($order->id_user)->name;
 			$support->save();
 			$support->systemNote("Linked order #ORD$support->id_order.");
+		}
+		if($args['action_type'] == 'Refund Order') {
+			$order = $support->order();
+			if(!$order->id_order) return;
+			$order->refund();
 		}
 	}
 

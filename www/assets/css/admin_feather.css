@@ -63,8 +63,7 @@ div.content-sub-item-left {
 }
 
 div.content-sub-item-right {
-  min-width: 200px;
-  max-width: 70%;
+  max-width: 60%;
   display: inline-block;
   vertical-align: top;
 }

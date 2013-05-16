@@ -1160,11 +1160,22 @@ class Crunchbutton_Order extends Cana_Table {
 						}
 						break;
 				}
-			} 
+			}
+
+			$support = $this->getSupport();
+			if($support) {
+				$support->addNote('Order refunded.', 'system', 'internal');
+			}
+
 			$this->refunded = 1;
 			$this->save();
 			return true;
 		}
+	}
+
+	public function getSupport() {
+		$support = Support::getSupportForOrder($this->id_order);
+		return $support;
 	}
 
 	public function phone() {
