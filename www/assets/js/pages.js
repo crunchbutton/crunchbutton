@@ -464,7 +464,7 @@ App.page.foodDelivery = function(refresh) {
 
 		$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
 		$( '.nav-back' ).removeClass( 'nav-back-show' );
-	
+
 		if (App.restaurants.list.length == 4) {
 			$('.content').addClass('short-meal-list');
 		} else {
