@@ -8,14 +8,18 @@ class Controller_support extends Crunchbutton_Controller_Account {
 		// handle any actions
 
 		if(isset($_POST['action'])) {
+			if($_POST['action'] == 'new') {
+				self::new_support($support, $_POST);
+			}
+
+			// update rep taking this action
+			self::set_rep($support);
+
 			if($_POST['action'] == 'conversation') {
 				self::respond_to_client($support, $_POST);
 			}
 			if($_POST['action'] == 'update') {
 				self::update_support($support, $_POST);
-			}
-			if($_POST['action'] == 'new') {
-				self::new_support($support, $_POST);
 			}
 			if($_POST['action'] == 'support_actions') {
 				self::support_action($support, $_POST);
@@ -70,11 +74,6 @@ class Controller_support extends Crunchbutton_Controller_Account {
 
 	public static function new_support(&$support, $args=[]) {
 		$support = new Support();
-		$rep = Support_Rep::q(
-				'SELECT * FROM `support_rep` '.
-				'WHERE `name` like \'' . $_SESSION['username'] . '\' '.
-				'LIMIT 1');
-		$support->id_support_rep = $rep->id_support_rep;
 		$support->status = 'open';
 		$support->message = 'Ticket created from admin panel.';
 		if($args['id_order']) {
@@ -84,6 +83,12 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			$support->id_user = $order->id_user;
 			$support->name = User::o($order->id_user)->name;
 		}
+		$support->save();
+	}
+
+	public static function set_rep(&$support) {
+		$rep = Support_Rep::getLoggedInRep();
+		$support->id_support_rep = $rep->id_support_rep;
 		$support->save();
 	}
 
@@ -120,6 +125,7 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			}
 			if(!$user->id_user) return;
 			$support->id_user = $user->id_user;
+			$support->phone = $user->phone;
 			$support->save();
 			$support->systemNote("Linked user #USER$support->id_user.");
 		}
@@ -134,7 +140,9 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			$support->id_order = $order->id;
 			$support->id_restaurant = $order->id_restaurant;
 			$support->id_user = $order->id_user;
-			$support->name = User::o($order->id_user)->name;
+			$user = User::o($order->id_user);
+			$support->name = $user->name;
+			$support->phone = $user->phone;
 			$support->save();
 			$support->systemNote("Linked order #ORD$support->id_order.");
 		}
