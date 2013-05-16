@@ -67,6 +67,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 						]);
 						switch ($notification->type) {
 							case 'phaxio':
+
 								$data = json_decode($_REQUEST['fax']);
 
 								// Log
@@ -78,7 +79,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 									Crunchbutton_Notification::smsFaxError( $order );
 								}
 
-								if ($data->id == $notification->remote) {
+								if ( $data->id == $notification->remote &&  $data->status == 'success' ) {
 									$notification->status = 'success';
 									$notification->data = $_REQUEST['fax'];
 									$notification->date = date('Y-m-d H:i:s');
