@@ -5,7 +5,7 @@ App.loc = {
 	range: App.defaultRange,
 	loaded: false,
 	changeLocationAddressHasChanged: false,
-
+	locationNotServed: false,
 	// calculate the distance between two points
 	distance: function(params) {
 		try {
