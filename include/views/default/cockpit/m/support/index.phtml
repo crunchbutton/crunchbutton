@@ -1,73 +1,45 @@
-<div class="admin-content-wrapper">
-	<div class="admin-content admin-content-support">
-		<table class="admin-support-filter">
-			<tr>
-				<td class="label-sub">SEARCH</td>
-				<td class="content-sub"><input name="support-search" type="text" style="width: 200px;" value="<?=strip_tags($_REQUEST['search'])?>"></td>
-				<td style="width: 100%"></td>
-				<td class="label-sub">DATE&nbsp;STRANGE</td>
-				<?
-					$date = new DateTime('now');
-					$start = $date->format('m/d/Y');
-					$date->modify('14 days ago');
-					$end = $date->format('m/d/Y');
-				?>
-				<td class="content-sub"><input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>"></td>
-				<td class="support-range-all" nowrap>&nbsp;&nbsp;<input type="checkbox" name="support-range-all"><label>&nbsp;All Dates</label></td>
-			</tr>
-			<tr>
-				<td class="label-sub">TYPE</td>
-				<td class="content-sub">
-					<? $types = ['sms']; ?>
-					<select name="type">
-						<option value="" selected>[ All ]</option>
-						<? foreach ($types as $type) : ?>
-							<option value="<?=$type?>"><?=$type?></option>
-						<? endforeach ; ?>
-					</select>
-				</td>
-			</tr>
+<?
+	$url = c::app()->pages();
+	if(end($url) == '') array_pop($url);
+	$this_url = '/' . implode('/', $url);
+?>
 
-			<tr>
-				<td colspan="6">
-					<table cellpadding="3" cellspacing="3" style="width: auto; margin: 0 auto;">
-						<tr>
-							<td><div class="action-button green action-button-small admin-support-search"><span>Splurch BDC TODO</span></div></td>
-						</tr>
-					</table>
-				</td>
-				
-			</tr>
-		</table>
-		<br /><br />
-		<div class="divider dots"></div>
-		<br />
-		<div class="support-loader"><img src="/assets/images/admin/loader.gif"></div>
-		<div class="support-content"></div>
+<div class=content-item>
+	<div class=content-item-header>
+		Overview
 	</div>
-</div>		
-<script>
-	$(function() {
+	<div class=content-sub-item>
+		<?= Support::q("select count(*) as count from support where status='open'")->count ?>
+		&nbsp;open support issues
+	</div>
+</div>
 
-		$(document).on('click', '.admin-support-search', function() {
-			App.supportAdmin.load();
-		} );
+<div class=content-item>
+	<div class=content-item-header>
+		Actions
+	</div>
+	<div class='content-sub-item'>
+		<form method=post action='<?= $this_url ?>/new'>
+			<input type=hidden name=action value=new />
+			<input type=submit class=button value='New Support Ticket' />
+		</form>
+	</div>
+</div>
 
-		$(document).on('keyup', '[name="support-search"]', function( e ) {
-			if (e.which == 13) {
-				App.supportAdmin.load();
-			}
-		} );
+<div class=content-item>
+	<div class=content-item-header>
+		Last Five Support Issues
+	</div>
+	<? foreach ($this->supports as $support): ?>
+		<a href='/support/<?= $support->id_support ?>'>
+			<div class='content-sub-item <?='support-'.$support->status?>'>
+					#SUP<?= $support->id_support ?> - 
+					<?= Crunchbutton_Util::datetime_date_str($support->datetime, $this->rep_timezone) ?>, 
+					<?= Crunchbutton_Util::datetime_time_str($support->datetime, $this->rep_timezone) ?> - 
+					<?= $support->name ?> - 
+					<?= $support->message ?>
+			</div>
+		</a>
+	<? endforeach; ?>
+</div>
 
-		$(document).on('change', 'input[name="support-range-all"]', function( e ) {
-			if ($(this).prop('checked')) {
-				$('.date-picker').attr('disabled', 'disabled');
-				$('.date-picker').val('');
-			} else {
-				$('.date-picker').removeAttr('disabled');
-			}
-		});
-
-		App.supportAdmin.load();
-	});
-</script>

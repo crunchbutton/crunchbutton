@@ -1821,4 +1821,35 @@ App.giftcards = {
 	}
 };
 
+function create_support_from_order(id_order) {
+	full_post(
+		'/support/new',
+		{
+			'action' : 'new',
+			'id_order' : id_order,
+		});
+}
+
+function full_post(url, data){
+
+    $('body').append($('<form/>', {
+      id: 'jQueryPostItForm',
+      method: 'POST',
+      action: url
+    }));
+
+    for(var i in data){
+      $('#jQueryPostItForm').append($('<input/>', {
+        type: 'hidden',
+        name: i,
+        value: data[i]
+      }));
+    }
+
+    $('#jQueryPostItForm').submit();
+}
+
+
+
+
 
