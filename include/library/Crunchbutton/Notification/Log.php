@@ -65,6 +65,9 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		// c::timeout(function() use( $support, $twilio, $url ) {
 			foreach ( $support as $supportName => $supportPhone ) {
 
+				// Log
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB Calling', 'supportPhone' => $supportPhone, 'supportName' => $supportName, 'url' => $url, 'type' => 'notification' ]);
+
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoingRestaurant,
 					'+1'.$supportPhone,
