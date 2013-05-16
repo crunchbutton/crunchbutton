@@ -79,6 +79,7 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 									Crunchbutton_Notification::smsFaxError( $order );
 								}
 
+								// Send the confirmation just if the fax succeed
 								if ( $data->id == $notification->remote &&  $data->status == 'success' ) {
 									$notification->status = 'success';
 									$notification->data = $_REQUEST['fax'];
