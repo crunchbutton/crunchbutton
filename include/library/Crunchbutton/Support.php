@@ -12,8 +12,8 @@ class Crunchbutton_Support extends Cana_Table {
 			->idVar('id_support')
 			->load($id);
 		if(!$id) {
-	    date_default_timezone_set('UTC'); // always save in utc
-	    $this->datetime = date('Y-m-d H:i:s e');
+			date_default_timezone_set('UTC'); // always save in utc
+			$this->datetime = date('Y-m-d H:i:s e');
 	  }
 	}
 	
@@ -178,8 +178,14 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function save() {
+		$initial_save = false;
+		if(!Support::o($this->id_support)->id_support) {
+			$initial_save = true;
+		}
 		parent::save();
-		Crunchbutton_Hipchat_Notification::NewSupport($this);
+		if($initial_save) {
+			Crunchbutton_Hipchat_Notification::NewSupport($this);
+		}
 	}
 
 	public function makeACall(){

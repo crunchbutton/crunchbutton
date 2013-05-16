@@ -17,13 +17,11 @@ class Crunchbutton_Hipchat_Notification extends Cana_Model {
 		self::sendNotification($msg);
 	}
 
-	public static function notifyOrder($order){
-		static::OrderPlaced($order);
-	}
-
 	public static function NewSupport($support) {
-		$msg = "A new customer service issue (#$support->id_support): ".
-			"$support->name, $support->phone, $support->message";
+		$msg = "A new customer service issue has opened, <a href='http://cockpit.crunchr.co/support/$support->id_support'>#SUP$support->id_support</a>.";
+		if($support->message) {
+			$msg .= " \"$support->message\"";
+		}
 		self::sendNotification($msg);
 	}
 
