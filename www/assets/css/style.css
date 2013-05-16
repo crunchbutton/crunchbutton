@@ -1712,10 +1712,6 @@ html[xmlns] .clearfix {
 	}
 
 	.config-icon{
-		float: right;
-	}
-
-	.config-icon.left {
 		float: left;
 	}
 
@@ -1740,14 +1736,10 @@ html[xmlns] .clearfix {
 		background-size: contain;
 		cursor: pointer;
 		display: block;
-		float: left;
+		float: right;
 		height: 30px;
 		margin: 0 10px;
 		width: 45px;
-	}
-
-	.sign-in-icon.right{
-		float: right;
 	}
 
 	.home-recommend{
