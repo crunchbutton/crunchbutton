@@ -293,9 +293,9 @@ class Crunchbutton_Promo extends Cana_Table
 		$url = $serverUrl . '/giftcard/'. $this->code;
 
 		if( $this->restaurant()->id_restaurant ){
-			$message = "Congrats, you got a gift card to {$this->restaurant()->name}! To receive it, enter code: {$this->code} in your order notes or click here: {$url}"; 
+			$message = "Congrats, you got a gift card to {$this->restaurant()->name}! Enter code: {$this->code} in your order notes or click here: {$url}"; 
 		} else {
-			$message = "Congrats, you got a gift card to Crunchbutton! To receive it, enter code: {$this->code} in your order notes or click here: {$url}"; 
+			$message = "Congrats, you got a gift card to Crunchbutton! Enter code: {$this->code} in your order notes or click here: {$url}"; 
 		}
 
 		$this->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $this->note;
