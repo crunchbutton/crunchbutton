@@ -155,7 +155,6 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 					.'<Response>';
-					echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. We will resend the order confirmation.</Say>';
 
 				switch ($this->request()['Digits']) {
 					case '1':
