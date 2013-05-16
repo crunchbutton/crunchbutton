@@ -1705,7 +1705,7 @@ html[xmlns] .clearfix {
 		font-size: 20px;
 	}
 	.config-icon-mobile-hide{
-		display: none;
+		display: none !important;
 	}
 	.config-icon-desktop-hide{
 		display: block;

@@ -2047,21 +2047,22 @@ App.controlMobileIcons = function( page ){
 	if( !App.isNarrowScreen() ){
 		return false;
 	}
+
 	App.loc.locationNotServed = false;
 	$( '.config-icon' ).removeClass( 'left' );
 	$( '.sign-in-icon' ).removeClass( 'right' );
-	$( '.sign-in-icon' ).show();
-	$( '.config-icon' ).show();
+	$( '.sign-in-icon' ).removeClass( 'config-icon-mobile-hide' );
+	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
 	switch( page ){
 		case 'home':
 		case 'restaurant':
 		case 'order':
-			$( '.config-icon' ).hide();
+			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 			$( '.sign-in-icon' ).addClass( 'right' );
 			break;
 		case 'orders':
-			$( '.sign-in-icon' ).hide();
-			$( '.config-icon' ).hide();
+			$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
+			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 			break;
 	}
 }

@@ -361,6 +361,7 @@ App.page.orders = function() {
 	}
 
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+	$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
 	$( '.nav-back' ).addClass( 'nav-back-show' );
 
 	$.getJSON('/api/user/orders',function(json) {
