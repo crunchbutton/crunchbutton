@@ -1711,7 +1711,15 @@ html[xmlns] .clearfix {
 		display: block;
 	}
 
-	.config-icon {
+	.config-icon{
+		float: right;
+	}
+
+	.config-icon.left {
+		float: left;
+	}
+
+	.config-icon.fake-back {
 		position: absolute;
 		top: 9px;
 		left: -2px;
@@ -1732,10 +1740,14 @@ html[xmlns] .clearfix {
 		background-size: contain;
 		cursor: pointer;
 		display: block;
-		float: right;
+		float: left;
 		height: 30px;
 		margin: 0 10px;
 		width: 45px;
+	}
+
+	.sign-in-icon.right{
+		float: right;
 	}
 
 	.home-recommend{

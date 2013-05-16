@@ -1807,7 +1807,12 @@ $(function() {
 	});
 
 	$$('.nav-back').tap(function() {
-		History.back();
+		if( App.loc.locationNotServed ){
+			App.loc.locationNotServed = false;
+			App.loadHome(true);
+		} else {
+			History.back();	
+		}
 	});
 
 	$$('.link-home').tap(function() {
@@ -2039,13 +2044,24 @@ App.message.chrome = function( ){
 
 // Issue #1227
 App.controlMobileIcons = function( page ){
-	$( '.config-icon' ).hide();
+	if( !App.isNarrowScreen() ){
+		return false;
+	}
+	App.loc.locationNotServed = false;
+	$( '.config-icon' ).removeClass( 'left' );
+	$( '.sign-in-icon' ).removeClass( 'right' );
 	$( '.sign-in-icon' ).show();
+	$( '.config-icon' ).show();
 	switch( page ){
+		case 'home':
+		case 'restaurant':
+		case 'order':
+			$( '.config-icon' ).hide();
+			$( '.sign-in-icon' ).addClass( 'right' );
+			break;
 		case 'orders':
 			$( '.sign-in-icon' ).hide();
-		case 'restaurants':
-		$( '.config-icon' ).show();
-		break;
+			$( '.config-icon' ).hide();
+			break;
 	}
 }

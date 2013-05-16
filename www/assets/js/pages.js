@@ -57,7 +57,9 @@ App.page.home = function(force) {
 	if (!force && App.loc.address() && App.restaurants.list && App.restaurants.list.length == 0) {
 		App.loc.log();
 
-		
+		$( '.nav-back' ).addClass( 'nav-back-show' );
+
+		App.loc.locationNotServed = true;
 
 		$('.home-greeting, .enter-location, .button-letseat-form').hide();
 		$('.error-location').show();
