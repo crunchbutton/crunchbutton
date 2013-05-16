@@ -14,6 +14,7 @@ class Crunchbutton_Support extends Cana_Table {
 		if(!$id) {
 			date_default_timezone_set('UTC'); // always save in utc
 			$this->datetime = date('Y-m-d H:i:s e');
+			$this->status = 'open';
 	  }
 	}
 	
@@ -221,6 +222,14 @@ class Crunchbutton_Support extends Cana_Table {
 
 		Log::debug( [ 'action' => 'Not need to call', 'id_support' => $id_support, 'hour' => $hour, 'type' => 'sms' ] );
 
+	}
+
+	public function setOrderId($id_order) {
+		$order = Order::o($id_order);
+		$this->id_order = $order->id_order;
+		$this->id_restaurant = $order->id_restaurant;
+		$this->id_user = $order->id_user;
+		$this->name = $order->name;
 	}
 
 	public function addNote($text, $from, $visibility) {
