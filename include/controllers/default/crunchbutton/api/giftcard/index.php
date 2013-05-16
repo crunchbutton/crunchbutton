@@ -28,7 +28,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							// Store the ids
 							$ids = [];
 
-							for( $i = 1; $i<= $total; $i++){
+							for( $i = 1; $i<= $total; $i++) {
 								$giftcard = new Crunchbutton_Promo;
 								// id_restaurant == * means any restaurant
 								if( $id_restaurant == '*' ){
@@ -67,6 +67,16 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 
 								if( $giftcard->phone ){
 									$giftcard->queNotifySMS();
+								}
+	
+								if($id_order_reference) {
+									$order = Order::o($id_order_reference);
+									if($order->id_order) {
+										$support = $order->getSupport();
+										if($support->id_support) {
+											$support->addNote("Gift card issued #GIFT$giftcard->id_promo.", 'system', 'internal');
+										}
+									}
 								}
 							}
 							echo json_encode(['success' => join( ',', $ids ) ]);

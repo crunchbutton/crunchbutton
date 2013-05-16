@@ -591,7 +591,6 @@ class Crunchbutton_Order extends Cana_Table {
 			Log::debug([ 'order' => $order->id_order, 'action' => 'starting notification', 'notification_type' => $n->type, 'type' => 'notification']);
 			$n->send($order);
 		}
-		Crunchbutton_Hipchat_Notification::notifyOrder($order);
 	}
 
 	public function resend_notify(){
@@ -1160,11 +1159,22 @@ class Crunchbutton_Order extends Cana_Table {
 						}
 						break;
 				}
-			} 
+			}
+
+			$support = $this->getSupport();
+			if($support) {
+				$support->addNote('Order refunded.', 'system', 'internal');
+			}
+
 			$this->refunded = 1;
 			$this->save();
 			return true;
 		}
+	}
+
+	public function getSupport() {
+		$support = Support::getSupportForOrder($this->id_order);
+		return $support;
 	}
 
 	public function phone() {

@@ -8,17 +8,21 @@ class Controller_support extends Crunchbutton_Controller_Account {
 		// handle any actions
 
 		if(isset($_POST['action'])) {
+			if($_POST['action'] == 'new') {
+				self::new_support($support, $_POST);
+			}
+
+			// update rep taking this action
+			self::set_rep($support);
+
 			if($_POST['action'] == 'conversation') {
 				self::respond_to_client($support, $_POST);
 			}
 			if($_POST['action'] == 'update') {
 				self::update_support($support, $_POST);
 			}
-			if($_POST['action'] == 'new') {
-				self::new_support($support, $_POST);
-			}
-			if($_POST['action'] == 'link') {
-				self::link_or_unlink($support, $_POST);
+			if($_POST['action'] == 'support_actions') {
+				self::support_action($support, $_POST);
 			}
 		}
 
@@ -70,11 +74,6 @@ class Controller_support extends Crunchbutton_Controller_Account {
 
 	public static function new_support(&$support, $args=[]) {
 		$support = new Support();
-		$rep = Support_Rep::q(
-				'SELECT * FROM `support_rep` '.
-				'WHERE `name` like \'' . $_SESSION['username'] . '\' '.
-				'LIMIT 1');
-		$support->id_support_rep = $rep->id_support_rep;
 		$support->status = 'open';
 		$support->message = 'Ticket created from admin panel.';
 		if($args['id_order']) {
@@ -87,13 +86,19 @@ class Controller_support extends Crunchbutton_Controller_Account {
 		$support->save();
 	}
 
-	public static function link_or_unlink(&$support, $args=[]) {
-		if($args['link_type'] == 'Unlink Restaurant') {
+	public static function set_rep(&$support) {
+		$rep = Support_Rep::getLoggedInRep();
+		$support->id_support_rep = $rep->id_support_rep;
+		$support->save();
+	}
+
+	public static function support_action(&$support, $args=[]) {
+		if($args['action_type'] == 'Unlink Restaurant') {
 			$support->systemNote("Unlinked restaurant #RST$support->id_restaurant.");
 			$support->id_restaurant = null;
 			$support->save();
 		}
-		if($args['link_type'] == 'Link Restaurant') {
+		if($args['action_type'] == 'Link Restaurant') {
 			if(is_numeric($args['id_restaurant'])) {
 				$restaurant = Restaurant::o($args['id_restaurant']);
 			}
@@ -105,12 +110,12 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			$support->save();
 			$support->systemNote("Linked restaurant #RST$support->id_restaurant.");
 		}
-		if($args['link_type'] == 'Unlink User') {
+		if($args['action_type'] == 'Unlink User') {
 			$support->systemNote("Unlinked user #USER$support->id_user.");
 			$support->id_user = null;
 			$support->save();
 		}
-		if($args['link_type'] == 'Link User') {
+		if($args['action_type'] == 'Link User') {
 			$id = preg_replace('/[^\dx]/i', '', $args['id_user']);
 			if(is_numeric($id) && $id < 100000000) {
 				$user = User::o($id);
@@ -120,23 +125,31 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			}
 			if(!$user->id_user) return;
 			$support->id_user = $user->id_user;
+			$support->phone = $user->phone;
 			$support->save();
 			$support->systemNote("Linked user #USER$support->id_user.");
 		}
-		if($args['link_type'] == 'Unlink Order') {
+		if($args['action_type'] == 'Unlink Order') {
 			$support->systemNote("Unlinked order #ORD$support->id_order.");
 			$support->id_order = null;
 			$support->save();
 		}
-		if($args['link_type'] == 'Link Order') {
+		if($args['action_type'] == 'Link Order') {
 			$order = Order::o($args['id_order']);
 			if(!$order->id_order) return;
 			$support->id_order = $order->id;
 			$support->id_restaurant = $order->id_restaurant;
 			$support->id_user = $order->id_user;
-			$support->name = User::o($order->id_user)->name;
+			$user = User::o($order->id_user);
+			$support->name = $user->name;
+			$support->phone = $user->phone;
 			$support->save();
 			$support->systemNote("Linked order #ORD$support->id_order.");
+		}
+		if($args['action_type'] == 'Refund Order') {
+			$order = $support->order();
+			if(!$order->id_order) return;
+			$order->refund();
 		}
 	}
 

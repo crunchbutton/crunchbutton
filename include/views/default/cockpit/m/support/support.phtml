@@ -1,5 +1,6 @@
 <?
 	$support = $this->support;
+	$order = $support->order();
 
 	/*
 	$url = c::app()->pages();
@@ -58,7 +59,6 @@
 		<div class=content-sub-item-right>
 			<?
 				if($support->id_order) {
-					$order = $support->order();
 					echo "<a target='_blank' href='/vieworder/$order->uuid'>#ORD$order->id</a>";
 					echo "<br>";
 					echo $order->message('support');
@@ -143,32 +143,43 @@
 	<div class=content-item-header>
 		Actions
 	</div>
-	<div class=content-sub-item>
-		<a target='_blank' href='/orders'>
-			<div class=content-full-width>
-				Go to List Orders to Issue Refund
-			</div>
-		</a>
-	</div>
-	<div class=content-sub-item>
-		<a target='_blank' href='/giftcards'>
-			<div class=content-full-width>
-				Go to Gift Cards
-			</div>
-		</a>
-	</div>
 
 	<form method=post action='<?=$this_url?>'>
-		<input type=hidden name=action value=link />
+		<input type=hidden name=action value=support_actions />
+
+	<div class=content-sub-item>
+		<div class=content-full-width>
+			<? if(!$order->id) : ?>
+				No Order Linked
+			<? elseif($order->id && $order->refunded) : ?>
+				Order was Refunded
+			<? else : ?>
+				<input type=submit class=button name=action_type value='Refund Order' />
+			<? endif; ?>
+		</div>
+	</div>
+	<div class=content-sub-item>
+		<?
+			$giftcard_url = '/giftcards/new?'
+				."&id_user=$support->id_user"
+				."&id_restaurant=$support->id_restaurant"
+				."&id_order_reference=$support->id_order";
+		?>
+		<a target='_blank' href='<?= $giftcard_url ?>'>
+			<div class=content-full-width>
+				Issue Gift Card
+			</div>
+		</a>
+	</div>
 
 	<div class=content-sub-item>
 		<div class=content-full-width>
 			<? if($support->id_restaurant) : ?>
-				<input type=submit class=button name=link_type value='Unlink Restaurant' />
+				<input type=submit class=button name=action_type value='Unlink Restaurant' />
 			<? else : ?>
 				<em>id or permalink</em> 
 				<input type=text name=id_restaurant /><br>
-				<input type=submit class=button name=link_type value='Link Restaurant' />
+				<input type=submit class=button name=action_type value='Link Restaurant' />
 			<? endif; ?>
 		</div>
 	</div>
@@ -176,11 +187,11 @@
 	<div class=content-sub-item>
 		<div class=content-full-width>
 			<? if($support->id_user) : ?>
-				<input type=submit class=button name=link_type value='Unlink User' />
+				<input type=submit class=button name=action_type value='Unlink User' />
 			<? else : ?>
 				<em>id or phone number</em> 
 				<input type=text name=id_user /><br>
-				<input type=submit class=button name=link_type value='Link User' />
+				<input type=submit class=button name=action_type value='Link User' />
 			<? endif; ?>
 		</div>
 	</div>
@@ -188,11 +199,11 @@
 	<div class=content-sub-item>
 		<div class=content-full-width>
 			<? if($support->id_order) : ?>
-				<input type=submit class=button name=link_type value='Unlink Order' />
+				<input type=submit class=button name=action_type value='Unlink Order' />
 			<? else : ?>
 				<em>order id</em> 
 				<input type=text name=id_order /><br>
-				<input type=submit class=button name=link_type value='Link Order' />
+				<input type=submit class=button name=action_type value='Link Order' />
 			<? endif; ?>
 		</div>
 	</div>
