@@ -1,151 +1,354 @@
-<div class="admin-content-wrapper">
-	<div class="admin-content admin-content-supports">
-		<h1 class="support-item-title">Support</h1>
-		<br /><br />
-		<table class="admin-support-form">
-			<tr>
-				<td class="label-primary">Support:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:90%;">
-								<tbody>
-									<tr>
-										<td class="label-sub">Name:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->name;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Phone:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->phone;?></div></td>
-									</tr>
-									<?php if( trim( $this->support->message ) != '' ) { ?>
-									<tr>
-										<td class="label-sub">Message:</td>
-										<td class="content-sub"><div class="input-faker"><?=nl2br($this->support->message);?></div></td>
-									</tr>
-									<?php } ?>
-									<tr>
-										<td class="label-sub">Type:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->type;?></div></td>
-									</tr>
-									<?php if( $this->support->id_session_twilio ){ ?>
-									<tr>
-										<td class="label-sub">Session:</td>
-										<td class="content-sub"><div class="input-faker">@<?=$this->support->id_session_twilio;?></div></td>
-									</tr>
-									<?php } ?>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<?php 
-			if( $this->support->id_session_twilio ){
-				$supports = $this->support->sameTwilioSession();
-				if( $supports->count() > 0 ){
-					?>
-					<tr>
-						<td class="label-primary">Others questions of @<?=$this->support->id_session_twilio;?>:</td>
-						<td class="content-primary">
-							<div class="check-wrap">
-								<div class="check-content">
-									<table style="width:90%;">
-										<tbody>
-											<?php foreach( $supports as $support ) { ?>
-											<tr>
-												<td class="label-sub">Message (#<?php echo $support->id_support; ?>):</td>
-												<td class="content-sub"><div class="input-faker"><a href="/support/<?php echo $support->id_support; ?>"><?php echo $support->message;?></a></div></td>
-											</tr>
-											<tr>
-												<td class="label-sub">Date:</td>
-												<td class="content-sub"><div class="input-faker"><?=$this->support->date()->format('M jS Y')?> - <?=$this->support->date()->format('g:i:s A')?></div></td>
-											</tr>
-											<tr>
-												<td></td>
-												<td><hr/></td>
-											</tr>
-											<?php } ?>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</td>
-					</tr>
-					<?php
-				}
-			}
+<?
+	$support = $this->support;
+
+	/*
+	$url = c::app()->pages();
+	if(end($url) == '') array_pop($url);
+	$this_url = '/' . implode('/', $url);
+	*/
+	$this_url = "/support/$support->id_support";
+
+?>
+<div class=content-item> <!-- details --> 
+	<div class=content-item-header>
+		Support #SUP<?= $support->id_support ?>
+		 - 
+		<?= Crunchbutton_Util::datetime_date_str($support->datetime, $this->rep_timezone); ?>, 
+		<?= Crunchbutton_Util::datetime_time_str($support->datetime, $this->rep_timezone); ?>
+		 - 
+		<?= strtoupper($support->status) ?>
+	</div>
+	<div class=content-sub-item> <!-- user -->
+		<div class=content-sub-item-left>user</div>
+		<div class=content-sub-item-right>
+			<?= $support->name ?>
+
+			<?
+				$user = $support->user();
+				$phone = $support->phone;
+				if(!$phone && $user->id_user && $user->phone)
+					$phone = $user->phone;
 			?>
-			<tr>
-				<td class="label-primary">More information:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:90%;">
-								<tbody>
-									<?php if( $this->support->user()->id_user ) { ?>
-									<tr>
-										<td class="label-sub">User:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->user()->name;?></div></td>
-									</tr>
-									<?php } ?>
-									<tr>
-										<td class="label-sub">IP:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->ip;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Date:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->support->date()->format('M jS Y')?> - <?=$this->support->date()->format('g:i:s A')?></div></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<?php $answers = $this->support->answers(); ?>
-			<?php if( $answers->count() > 0 ) { ?>
-			<tr>
-				<td class="label-primary">Answer(s):</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<?php foreach( $answers as $answer ) { ?>
-							<table style="width:90%;">
-								<tbody>
-									<tr>
-										<td class="label-sub">From:</td>
-										<td class="content-sub"><div class="input-faker"><?=$answer->name;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Phone:</td>
-										<td class="content-sub"><div class="input-faker"><?=$answer->phone;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Answer:</td>
-										<td class="content-sub"><div class="input-faker"><?=$answer->message;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Date:</td>
-										<td class="content-sub"><div class="input-faker"><?=$answer->date()->format('M jS Y')?> - <?=$answer->date()->format('g:i:s A')?></div></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td style="text-align:right;"> <hr /> </td>
-									</tr>
-								</tbody>
-							</table>
-							<?php } ?>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<?php } ?>
-		</table>
+			<? if($user->id):
+					echo " (#USER$user->id)";
+			 endif ; ?>
+			<br>
+			<a href='tel:+1<?= $phone ?>'>
+			<?= Crunchbutton_Util::format_phone($phone) ?>
+			</a>
+		</div>
+	</div>
+	<div class=content-sub-item> <!-- rep -->
+		<div class=content-sub-item-left>rep</div>
+		<div class=content-sub-item-right>
+			<?
+				$rep = $support->rep();
+				if(!$rep->id) {
+					echo '(no rep has handled this ticket)';
+				}
+				else {
+					echo "$rep->name ";
+					echo "<br>".Crunchbutton_Util::format_phone($rep->phone);
+				}
+			?>
+		</div>
+	</div>
+	<div class=content-sub-item> <!-- order -->
+		<div class=content-sub-item-left>order</div>
+		<div class=content-sub-item-right>
+			<?
+				if($support->id_order) {
+					$order = $support->order();
+					echo "<a target='_blank' href='/vieworder/$order->uuid'>#ORD$order->id</a>";
+					echo "<br>";
+					echo $order->message('support');
+				}
+				else {
+					echo '(no linked order)';
+				}
+			?>
+		</div>
+	</div>
+	<div class=content-sub-item> <!-- restaurant -->
+		<div class=content-sub-item-left>restaurant</div>
+		<div class=content-sub-item-right>
+			<?
+				if($support->id_restaurant) {
+					$restaurant = Restaurant::o($support->id_restaurant);
+					echo "$restaurant->name ";
+					echo "(#RST$restaurant->id_restaurant)";
+					echo "<br><a href='tel:+1-$restaurant->phone'>";
+					echo Crunchbutton_Util::format_phone($restaurant->phone);
+					echo "</a>";
+					echo "<br><a target='_blank' href='https://crunchbutton.com/food-delivery/$restaurant->permalink'>view on site</a> / ";
+					echo "<a target='_blank' href='http://cockpit.crunchr.co/restaurants/$restaurant->id'>view in cockpit</a>";
+				}
+				else {
+					echo '(no linked restaurant)';
+				}
+			?>
+		</div>
 	</div>
 </div>
-<script>
-$(function() {
-	App.supports.prepareForm(<?=$this->support->id_support?>);
-});
-</script>
+
+<div class=content-item> <!-- conversation -->
+	<div class=content-item-header>
+		Conversation
+	</div>
+	<div class=content-sub-item>
+		<div class=content-sub-item-left>
+			initial issue
+			<br>
+			<?= Crunchbutton_Util::datetime_time_str($support->datetime, $this->rep_timezone); ?>
+		</div>
+		<div class=content-sub-item-right>
+			<?= $support->message ?>
+		</div>
+	</div>
+
+	<? foreach ($support->notes('external') as $note): ?>
+		<div class=content-sub-item>
+			<div class=content-sub-item-left>
+				<?= $note->from ?>
+				<? if(Crunchbutton_Util::datetime_date_str($note->datetime,    $this->rep_timezone) !== 
+					    Crunchbutton_Util::datetime_date_str($support->datetime, $this->rep_timezone)   ) {
+					echo '<br>' . Crunchbutton_Util::datetime_date_str($note->datetime, $this->rep_timezone);
+				}?>
+				<br>
+				<? echo Crunchbutton_Util::datetime_time_str($note->datetime, $this->rep_timezone); ?>
+			</div>
+			<div class=content-sub-item-right>
+				<?= $note->text ?>
+			</div>
+		</div>
+	<? endforeach; ?>
+
+	<div class=content-sub-item>
+		<form method=post action='<?= $this_url ?>'>
+			<input type=hidden name=action value=conversation />
+			<input type=hidden name=rep_name value='<?=$this->username?>' />
+			<input type=hidden name=id_support value='<?=$support->id?>' />
+			<div class=content-full-width>
+				<textarea name=text>
+				</textarea>
+			</div>
+			<div class=content-full-width>
+				<input class=button type=submit value='Respond to Client' />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class=content-item>
+	<div class=content-item-header>
+		Actions
+	</div>
+	<div class=content-sub-item>
+		<a target='_blank' href='/orders'>
+			<div class=content-full-width>
+				Go to List Orders to Issue Refund
+			</div>
+		</a>
+	</div>
+	<div class=content-sub-item>
+		<a target='_blank' href='/giftcards'>
+			<div class=content-full-width>
+				Go to Gift Cards
+			</div>
+		</a>
+	</div>
+
+	<form method=post action='<?=$this_url?>'>
+		<input type=hidden name=action value=link />
+
+	<div class=content-sub-item>
+		<div class=content-full-width>
+			<? if($support->id_restaurant) : ?>
+				<input type=submit class=button name=link_type value='Unlink Restaurant' />
+			<? else : ?>
+				<em>id or permalink</em> 
+				<input type=text name=id_restaurant /><br>
+				<input type=submit class=button name=link_type value='Link Restaurant' />
+			<? endif; ?>
+		</div>
+	</div>
+
+	<div class=content-sub-item>
+		<div class=content-full-width>
+			<? if($support->id_user) : ?>
+				<input type=submit class=button name=link_type value='Unlink User' />
+			<? else : ?>
+				<em>id or phone number</em> 
+				<input type=text name=id_user /><br>
+				<input type=submit class=button name=link_type value='Link User' />
+			<? endif; ?>
+		</div>
+	</div>
+
+	<div class=content-sub-item>
+		<div class=content-full-width>
+			<? if($support->id_order) : ?>
+				<input type=submit class=button name=link_type value='Unlink Order' />
+			<? else : ?>
+				<em>order id</em> 
+				<input type=text name=id_order /><br>
+				<input type=submit class=button name=link_type value='Link Order' />
+			<? endif; ?>
+		</div>
+	</div>
+
+	</form>
+
+</div>
+
+
+<form method=post action='<?= $this_url ?>'>
+	<input type=hidden name=action value=update />
+	<input type=hidden name=rep_name value='<?=$this->username?>' />
+	<input type=hidden name=id_support value='<?=$support->id?>' />
+
+<div class=content-item>
+	<div class=content-item-header>
+		Internal Notes
+	</div>
+	<div class=content-sub-item>
+		<div class=content-sub-item-left>
+			description (client)
+		</div>
+		<div class=content-sub-item-right>
+			<textarea name=description_client>
+				<?= $support->description_client ?>
+			</textarea>
+		</div>
+	</div>
+	<div class=content-sub-item>
+		<div class=content-sub-item-left>
+			description (crunchbutton)
+		</div>
+		<div class=content-sub-item-right>
+			<textarea name=description_cb>
+				<?= $support->description_cb ?>
+			</textarea>
+		</div>
+	</div>
+	<? foreach ($support->notes('internal') as $note): ?>
+		<div class=content-sub-item>
+			<div class=content-sub-item-left>
+				<?= $note->from ?>
+
+
+				<? if(Crunchbutton_Util::datetime_date_str($note->datetime,    $this->rep_timezone) !== 
+					    Crunchbutton_Util::datetime_date_str($support->datetime, $this->rep_timezone)   ) {
+					echo '<br>' . Crunchbutton_Util::datetime_date_str($note->datetime, $this->rep_timezone);
+				}?>
+				<br>
+				<? echo Crunchbutton_Util::datetime_time_str($note->datetime, $this->rep_timezone); ?>
+			</div>
+			<div class=content-sub-item-right>
+				<?= $note->text ?>
+			</div>
+		</div>
+	<? endforeach; ?>
+	<div class=content-sub-item>
+		<div class=content-sub-item-left>
+			add a new note
+		</div>
+		<div class=content-sub-item-right>
+			<textarea name=new_note>
+			</textarea>
+		</div>
+	</div>
+	<div class=content-sub-item>
+		<div class=content-full-width>
+			<input class=button type=submit value='Update' />
+		</div>
+	</div>
+</div>
+
+<div class=content-item>
+	<div class=content-item-header>
+		Resolution
+	</div>
+	<div class=content-sub-item>
+		<div class=content-sub-item-left>
+			fault of
+		</div>
+		<div class=content-sub-item-right>
+			<select name=fault_of>
+				<option value=crunchbutton<?= $support->fault_of=='crunchbutton'?' selected':'' ?>>
+					crunchbutton
+				</option>
+				<option value=customer<?= $support->fault_of=='customer'?' selected':'' ?>>
+					customer
+				</option>
+				<option value=restaurant<?= $support->fault_of=='restaurant'?' selected':'' ?>>
+					restaurant
+				</option>
+				<option value=other<?= $support->fault_of=='other'?' selected':'' ?>>
+					other
+				</option>
+			</select>
+		</div>
+	</div>
+	<div class=content-sub-item>
+		<div class=content-sub-item-left>
+			user happy?
+		</div>
+		<div class=content-sub-item-right>
+			<select name=customer_happy>
+				<option value=no<?= $support->customer_happy=='no'?' selected':'' ?>>
+					no
+				</option>
+				<option value=yes<?= $support->customer_happy=='yes'?' selected':'' ?>>
+					yes
+				</option>
+			</select>
+		</div>
+	</div>
+	<div class=content-sub-item>
+		<div class=content-sub-item-left>
+			ticket status
+		</div>
+		<div class=content-sub-item-right>
+			<select name=status>
+				<option value=open<?= $support->status=='open'?' selected':'' ?>>
+					open
+				</option>
+				<option value=closed<?= $support->status=='closed'?' selected':'' ?>>
+					closed
+				</option>
+			</select>
+		</div>
+	</div>
+	<div class=content-sub-item>
+		<div class=content-sub-item-left>
+			github ticket id?
+		</div>
+		<div class=content-sub-item-right>
+			<input type=text name=id_github value='<?= $support->id_github ?>' />
+		</div>
+	</div>
+	<div class=content-sub-item>
+		<div class=content-sub-item-left>
+			how to prevent this in the future
+		</div>
+		<div class=content-sub-item-right>
+			<textarea name=how_to_prevent>
+				<?= $support->how_to_prevent ?>
+			</textarea>
+		</div>
+	</div>
+	<div class=content-sub-item>
+		<div class=content-full-width>
+			<input class=button type=submit value='Update' />
+		</div>
+	</div>
+</div>
+
+</form>
+
+
+
+
+
+
