@@ -55,14 +55,20 @@ App.page.home = function(force) {
 	}
 		
 	if (!force && App.loc.address() && App.restaurants.list && App.restaurants.list.length == 0) {
+		
+		// Log the location
 		App.loc.log();
 
-		$( '.nav-back' ).addClass( 'nav-back-show' );
+		// Move the scroll to the top
+		setTimeout(scrollTo, 0, 0, 1);
 
+		// Shows the back button
+		$( '.nav-back' ).addClass( 'nav-back-show' );
 		App.loc.locationNotServed = true;
 
 		$('.home-greeting, .enter-location, .button-letseat-form').hide();
 		$('.error-location').show();
+		
 		App.track('Location Error', {
 			lat: App.loc.pos().lat,
 			lon: App.loc.pos().lon,
