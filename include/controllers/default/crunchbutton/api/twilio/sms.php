@@ -133,12 +133,12 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							$support->type = Crunchbutton_Support::TYPE_SMS;
 							$support->phone = $phone;
 							$support->message = $body;
+							$support->status = 'open';
 							$support->ip = $_SERVER['REMOTE_ADDR'];
 							$support->id_session_twilio = $tsess->id_session_twilio;
 							$support->date = date('Y-m-d H:i:s');
 							if( $order->id_order ) {
-								$support->id_user = $order->id_user;
-								$support->name = $order->name;
+								$support->setOrderId($order->id_order);
 							} else {
 								$support->name = $phone;
 							}
