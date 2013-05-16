@@ -990,9 +990,38 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 				break;
 
+			case 'support':
+				
+				$date = new DateTime($this->date);
+				$timezone = new DateTimeZone($this->restaurant()->timezone);
+				$date->setTimeZone($timezone);
+				$when = $date->format('M j, g:i a');
+
+				$confirmed = $this->confirmed? 'yes' : 'no';
+				$refunded = $this->refunded? 'yes':'no';
+
+				$msg = "
+					$this->delivery_type / $this->pay_type, $when
+					<br>name: $this->name
+					<br>phone: ".Crunchbutton_Util::format_phone($this->phone)."
+					<br>confirmed: $confirmed
+					<br>refunded: $refunded
+					<br><br>food: $food
+				";
+				if ($this->delivery_type == 'delivery') {
+					$msg .= "<br>address: ".$this->address;
+				}
+				if ($this->notes) {
+					$msg .= "<br>notes: ".$this->notes;
+				}
+				if ($this->pay_type == 'card' && $this->tip) {
+					$msg .= "<br>tip: $".$this->tip();
+				}
+				break;
+
 			case 'sms':
-				$msg = "Crunchbutton #".$this->id_order."\n\n";
-				$msg .= $this->name.' ordered '.$this->delivery_type.' paying by '.$this->pay_type.". \n".$food."\n\nphone: ".preg_replace('/[^\d.]/','',$this->phone).'.';
+				$msg = "Crunchbutton #".$this->id_order." \n\n";
+				$msg .= $this->name.' ordered '.$this->delivery_type.' paying by '.$this->pay_type.". \n".$food." \n\nphone: ".preg_replace('/[^\d.]/','',$this->phone).'.';
 				if ($this->delivery_type == 'delivery') {
 					$msg .= " \naddress: ".$this->address;
 				}

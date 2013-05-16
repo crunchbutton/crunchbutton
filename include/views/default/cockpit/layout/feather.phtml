@@ -13,23 +13,32 @@
 	<div class="wrapper">
 		<div class="nav" data-role="header" data-position="fixed">
 			<div class="content">
-				<a href="/" class="link-home">
-					<div class="link-home">
-						CB Cockpit Home
-					</div>
-				</a>
-				<div class="logo"><a href="/" class="link-home"><div class="logo-img"></div></a></div>
-				<div style="float: right; color: #fff; margin-top: -20px;">BDC TODO Sup <?=ucfirst($this->username)?>!</div> <!-- BDC TODO -->
-
+				<a href="/"><div class="nav-link">
+					CB Cockpit Home
+				</div></a>
+				<? if(c::getPagePiece(1)): ?>
+					<?
+						$url = c::app()->pages();
+						if(end($url) == '') array_pop($url);
+						array_pop($url);
+						$up_dir = '/' . implode('/', $url);
+						echo "<a href='$up_dir'>";
+					?>
+						<div class="nav-link">
+							Up One Level
+						</div>
+					</a>
+				<? endif ?>
 			</div>
 		</div>
 		<div class="body">
 			<div class="content">
-				content start
 				<?=$this->content?>
-				content end
 			</div>
 		</div>
+		<a href="#"><div class='foot'>
+			Top
+		</div></a>
 	</div>
 
 </body>

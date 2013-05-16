@@ -1,0 +1,95 @@
+/* admin_feather.css */
+
+body {
+  margin: 0px;
+  background: #FF9900;
+}
+
+div.nav-link, div.foot {
+  height: 30px;
+  line-height: 30px;
+  background: #FF9900;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+}
+
+div.nav-link {
+  border-bottom: 2px solid black;
+}
+
+div.foot {
+  border-top: 2px solid black;
+}
+
+div.content {
+  background-color: #FFFFDD;
+}
+
+div.content-item-header {
+  font-weight: bold;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  background-color: #FFFF88;
+  padding: 5px;
+}
+
+div.content-item {
+  padding-bottom: 10px;
+}
+
+div.content-sub-item {
+  padding: 5px 5px 5px 5px;
+}
+
+div.support-closed {
+  background-color: #aaaaaa;
+}
+
+div.support-open {
+  background-color: #ffffff;
+  font-weight: bold;
+}
+
+a {
+  color: blue;
+}
+
+div.content-sub-item-left {
+  display: inline-block;
+  width: 100px;
+  font-style: italic;
+  vertical-align: top;
+}
+
+div.content-sub-item-right {
+  min-width: 200px;
+  max-width: 70%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+div.content-full-width {
+  margin-left: 5px;
+  margin-right: 5px;
+  text-align: center;
+}
+
+textarea {
+  width: 100%;
+  height: 40px;
+}
+
+div.content-full-width input.button {
+  width: 200px;
+}
+
+
+
+
+
+
+
+
+
+
