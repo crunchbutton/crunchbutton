@@ -7,14 +7,14 @@ ALTER TABLE  `support`
 	ADD  `fault_of` ENUM(  'restaurant',  'customer',  'crunchbutton',  'other' ) NULL DEFAULT NULL ,
 	ADD  `refunded` TINYINT( 1 ) NOT NULL DEFAULT  '0',
 	ADD  `customer_happy` TINYINT( 1 ) NULL DEFAULT NULL ,
-	ADD  `how_to_prevent` VARCHAR( 2000 } NULL DEFAULT NULL ,
-	ADD INDEX (  `id_order` ,  `id_github` ,  `rep_name` )
+	ADD  `how_to_prevent` VARCHAR( 2000 ) NULL DEFAULT NULL ,
+	ADD INDEX (  `id_order` ,  `id_github` ,  `rep_name` );
 
 
 ALTER TABLE `support`
 	ADD CONSTRAINT fk_id_order 
 	FOREIGN KEY (id_order) 
-	REFERENCES `order`(id_order)
+	REFERENCES `order`(id_order);
 
 CREATE TABLE `support_note` (
 	 `id_support_note` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -24,12 +24,12 @@ CREATE TABLE `support_note` (
 	 `datetime` DATETIME NOT NULL,
 	 PRIMARY KEY (`id_support_note`),
 	 KEY `id_support` (`id_support`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `support_note`
 	ADD CONSTRAINT fk_id_support
 	FOREIGN KEY (id_support)
-	REFERENCES `support`(id_support)
+	REFERENCES `support`(id_support);
 
 
 
