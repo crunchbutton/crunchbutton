@@ -62,6 +62,8 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcall';
 
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB Calling - starting', 'url' => $url, 'type' => 'notification' ]);
+
 		// c::timeout(function() use( $support, $twilio, $url ) {
 			foreach ( $support as $supportName => $supportPhone ) {
 
