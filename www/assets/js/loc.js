@@ -67,9 +67,6 @@ App.loc = {
 			}, 5000);
 
 			navigator.geolocation.getCurrentPosition(function(position){
-				
-				// console.log('position',position);
-
 				clearTimeout(App.loc.timerId);
 
 				App.loc.realLoc = {
