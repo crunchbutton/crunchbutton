@@ -124,6 +124,9 @@ App.render = function(template, data) {
 
 App.showPage = function(params) {
 
+	// Hides the pacman
+	App.controlMobileIcons.hidePacman();
+
 	// Hides the gift card message
 	App.credit.hide();
 
@@ -134,7 +137,7 @@ App.showPage = function(params) {
 	}
 
 	// #1227 - on mobile view switch change location and profile buttons
-	App.controlMobileIcons( params.page );
+	App.controlMobileIcons.process( params.page );
 
 	// track different AB pages
 	if (params.tracking) {
@@ -1807,6 +1810,7 @@ $(function() {
 	});
 
 	$$('.nav-back').tap(function() {
+		App.controlMobileIcons.showPacman( 'left', function(){ $('.nav-back').removeClass('nav-back-show'); } );		
 		if( App.loc.locationNotServed ){
 			App.loc.locationNotServed = false;
 			App.loadHome(true);
@@ -1933,6 +1937,7 @@ $(function() {
 	});
 	
 	$(document).on('touchclick', '.config-icon', function() {
+		App.controlMobileIcons.showPacman( 'left', function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
 		App.loadHome(true);
 	});
 
@@ -2043,7 +2048,8 @@ App.message.chrome = function( ){
 }
 
 // Issue #1227
-App.controlMobileIcons = function( page ){
+App.controlMobileIcons = {};
+App.controlMobileIcons.process = function( page ){
 	if( !App.isNarrowScreen() ){
 		return false;
 	}
@@ -2062,4 +2068,13 @@ App.controlMobileIcons = function( page ){
 			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 			break;
 	}
+}
+
+App.controlMobileIcons.showPacman = function( side, call ){
+	$( '.pacman-' + side ).addClass( 'pacman-show' );
+	if( call ){ call(); }
+}
+
+App.controlMobileIcons.hidePacman = function(){
+	$( '.pacman-loading' ).removeClass( 'pacman-show' );
 }

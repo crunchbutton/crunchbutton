@@ -47,6 +47,7 @@ App.signin.init = function() {
 
 	$(document).on('touchclick', '.sign-in-icon', function() {
 		if (App.config.user.id_user) {
+			App.controlMobileIcons.showPacman( 'right', function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
 			History.pushState({}, 'Crunchbutton - Orders', '/orders');
 		} else {
 			App.signin.show();
