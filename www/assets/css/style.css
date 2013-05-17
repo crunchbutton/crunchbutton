@@ -2684,12 +2684,13 @@ th {
 }
 
 .order-thanks-message {
-	font-size: 18px;
+	font-size: 30px;
 	font-weight: bold;
 }
 	.order-thanks-message-small{
 		font-size: 14px;
 		display: block;
+		margin-top: 5px;
 	}
 
 .cart-summary-item-count {
