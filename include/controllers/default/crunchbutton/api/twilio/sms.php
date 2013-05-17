@@ -224,6 +224,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		$support = Crunchbutton_Support::getByTwilioSessionId( $id_session );
 
 		if( $support->id_support ){
+			$support->addNote($body, 'client', 'external');
 			$answer = new Crunchbutton_Support_Answer();
 			$answer->id_support = $support->id_support;
 			$answer->name = $rep;
