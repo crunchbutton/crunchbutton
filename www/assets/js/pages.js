@@ -331,6 +331,12 @@ App.page.order = function(id) {
 App.page.legal = function() {
 	App.currentPage = 'legal';
 	$.getJSON('/api/legal',function(json) {
+	
+	App.controlMobileIcons.normalize();
+	
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+	$( '.nav-back' ).addClass( 'nav-back-show' );
+
 		$('.main-content').html(json.data);
 		App.refreshLayout();
 		setTimeout( function(){
@@ -347,6 +353,12 @@ App.page.legal = function() {
 App.page.help = function() {
 	App.currentPage = 'help';
 	$.getJSON('/api/help',function(json) {
+
+		App.controlMobileIcons.normalize();
+
+		$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+		$( '.nav-back' ).addClass( 'nav-back-show' );
+
 		$('.main-content').html(json.data);
 		App.refreshLayout();
 		setTimeout( function(){
@@ -508,11 +520,8 @@ App.page.foodDelivery = function(refresh) {
 				restaurants: App.restaurants.list
 			}
 		});
-
-		setTimeout( function(){
-			$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
-			$( '.nav-back' ).removeClass( 'nav-back-show' );
-		}, 1000 );
+		
+		$( '.nav-back' ).removeClass( 'nav-back-show' );
 
 	};
 	
