@@ -918,6 +918,8 @@ App.cart = {
 			App.alert(error);
 			App.busy.unBusy();
 			App.track('OrderError', errors);
+			// Log the error
+			App.log.order( { 'errors' : errors } , 'validation error' );
 			return;
 		}
 
@@ -944,6 +946,9 @@ App.cart = {
 					// Make sure the the user address is the same of his last order
 					if( $.trim( lastAddress ) != '' && $.trim( lastAddress ) == $.trim( currentAdress ) ){
 						App.isDeliveryAddressOk = true;
+						
+						// Log the legacy address
+						App.log.order( { 'address' : lastAddress, 'restaurant' : App.restaurant.name } , 'legacy address' );
 					}	
 				}
 			}
@@ -996,6 +1001,9 @@ App.cart = {
 	 						$('.delivery-payment-info, .content-padder-before').hide();
 							$( '[name="pay-address"]' ).focus();
 
+							// Log the error
+							App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address out of delivery range' );
+
 						} else {
 
 							if( App.completeAddressWithZipCode ){
@@ -1024,6 +1032,8 @@ App.cart = {
 						$('.payment-form').show();
  						$('.delivery-payment-info, .content-padder-before').hide();
 						$( '[name="pay-address"]' ).focus();
+						// Log the error
+						App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address not found or invalid' );
 					}
 				}
 
@@ -1031,6 +1041,8 @@ App.cart = {
 				var error = function() {
 					App.alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 					App.busy.unBusy();
+					// Log the error
+					App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address not found' );
 				};
 
 				// Call the geo method
@@ -1063,7 +1075,7 @@ App.cart = {
 					json = $.parseJSON(json.responseText);
 				} catch (e) {
 					// Log the error
-					App.log.doLog( { 'type' : 'order-error-js', 'returned data' : json.responseText } );
+					App.log.order( json.responseText, 'processing error' );
 					json = {
 						status: 'false',
 						errors: ['Sorry! Something went horribly wrong trying to place your order!']
@@ -1077,52 +1089,47 @@ App.cart = {
 					}
 					App.track('OrderError', json.errors);
 					App.alert(error);
-
+					// Log the error
+					App.log.order( { 'errors' : json.errors } , 'validation error - php' );
 				} else {
 
+					if (json.token) {
+						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
+					}
 
+					$('.link-orders').show();
 
-					// setTimeout( function(){
+					order.cardChanged = false;
+					App.justCompleted = true;
+					App.giftcard.notesCode = false;
 
-						if (json.token) {
-							$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
-						}
+					var totalItems = 0;
 
-						$('.link-orders').show();
+					for (var x in App.cart.items) {
+						totalItems++;
+					}
 
-						order.cardChanged = false;
-						App.justCompleted = true;
-						App.giftcard.notesCode = false;
-
-						var totalItems = 0;
-
-						for (var x in App.cart.items) {
-							totalItems++;
-						}
-
-						$.getJSON('/api/config', App.processConfig);
-						
-						App.cache('Order',json.uuid, function() {
-							App.track('Ordered', {
-								'total':this.final_price,
-								'subtotal':this.price,
-								'tip':this.tip,
-								'restaurant': App.restaurant.name,
-								'paytype': this.pay_type,
-								'ordertype': this.order_type,
-								'user': this.user,
-								'items': totalItems
-							});
-
-							App.order.cardChanged = false;
-							App.loc.changeLocationAddressHasChanged = false;
-							delete App.order.tipHasChanged;
-							var loc = '/order/' + this.uuid;
-							History.pushState({},loc,loc);
-
+					$.getJSON('/api/config', App.processConfig);
+					
+					App.cache('Order',json.uuid, function() {
+						App.track('Ordered', {
+							'total':this.final_price,
+							'subtotal':this.price,
+							'tip':this.tip,
+							'restaurant': App.restaurant.name,
+							'paytype': this.pay_type,
+							'ordertype': this.order_type,
+							'user': this.user,
+							'items': totalItems
 						});
 
-					// }, 1000 );
+						App.order.cardChanged = false;
+						App.loc.changeLocationAddressHasChanged = false;
+						delete App.order.tipHasChanged;
+						var loc = '/order/' + this.uuid;
+						History.pushState({},loc,loc);
+
+					});
 				}
 				setTimeout( function(){
 					App.busy.unBusy();
@@ -1480,6 +1487,8 @@ $(function() {
 
 		var error = function() {
 			$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
+			// Log the error
+			App.log.location( { 'address' : address } , 'address not found' );
 		};
 
 		var address = $.trim($('.location-address').val());
