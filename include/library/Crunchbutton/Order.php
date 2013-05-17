@@ -842,6 +842,7 @@ class Crunchbutton_Order extends Cana_Table {
 		switch ($type) {
 			case 'sms':
 			case 'web':
+			case 'support':
 				$with = 'w/';
 				$space = ',';
 				break;

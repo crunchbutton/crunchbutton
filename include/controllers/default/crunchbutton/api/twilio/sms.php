@@ -130,7 +130,9 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							}
 
 							$support = Support::getByTwilioSessionId($tsess->id_session_twilio);
+							$_SESSION['a'] = 1;
 							if(!$support->id_support) {
+								$_SESSION['b'] = 1;
 								$support = new Crunchbutton_Support;
 								$support->type = Crunchbutton_Support::TYPE_SMS;
 								$support->phone = $phone;
@@ -147,10 +149,12 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 								$support->save();
 							}
 							else {
+								$_SESSION['c'] = 1;
 								$support->status = 'open';
 								$support->addNote($body, 'client', 'external');
 								$support->save();
 							}
+							$_SESSION['d'] = 1;
 
 							$support->makeACall();
 
