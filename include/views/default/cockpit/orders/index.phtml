@@ -136,7 +136,7 @@
 			App.orders.export();
 		});
 		
-		$(document).on('keyup', '.[name="order-search"]', function(e) {
+		$(document).on('keyup', 'input[name="order-search"]', function(e) {
 			if (e.which == 13) {
 				App.orders.load();
 			}
