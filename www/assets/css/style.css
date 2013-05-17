@@ -95,7 +95,9 @@ body {
 	color: #666;
 	font-size: 14px;
 }
-
+.pacman-loading{
+	display: none;
+}
 .giftcard-badge-container{
 	display: none;
 }
@@ -1714,6 +1716,24 @@ html[xmlns] .clearfix {
 	.config-icon{
 		float: left;
 	}
+
+	.pacman-loading{
+		background: url(/assets/images/pacman.gif) no-repeat;
+		height: 24px;
+		position: absolute;
+		width: 24px;
+	}	
+		.pacman-right{
+			float: right;	
+			top: 10px;
+			right: 19px;
+		}
+		.pacman-left{
+			left: 19px;
+		}
+		.pacman-show{
+			display: block;
+		}
 
 	.config-icon.fake-back {
 		position: absolute;

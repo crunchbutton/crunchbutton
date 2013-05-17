@@ -14,9 +14,6 @@ App.page.home = function(force) {
 	}
 
 	var homeSuccess = function() {
-		$('.nav-back').removeClass('nav-back-show');
-		$('.config-icon').addClass('config-icon-mobile-hide, config-icon-desktop-hide');
-		$('.content').addClass('short-meal-list');
 		
 		App.showPage({
 			page: 'home',
@@ -28,6 +25,10 @@ App.page.home = function(force) {
 			}
 		});
 	
+		$('.nav-back').removeClass('nav-back-show');
+		$('.config-icon').addClass('config-icon-mobile-hide, config-icon-desktop-hide');
+		$('.content').addClass('short-meal-list');
+
 		// @todo: put these in the css. @hacks
 		if (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('mobile') == -1 && navigator.userAgent.toLowerCase().indexOf('chrome') == -1) {
 			// safari desktop
@@ -81,6 +82,9 @@ App.page.home = function(force) {
 		$('.home-greeting, .enter-location, .button-letseat-form').show();
 
 	}
+
+
+
 };
 
 App.page.restaurant = function(id) {
@@ -355,6 +359,7 @@ App.page.help = function() {
  * @todo: change to account page
  */
 App.page.orders = function() {
+
 	if (!App.config.user.id_user) {
 		History.pushState({}, 'Crunchbutton', '/');
 		return;
@@ -362,7 +367,6 @@ App.page.orders = function() {
 
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 	$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
-	$( '.nav-back' ).addClass( 'nav-back-show' );
 
 	$.getJSON('/api/user/orders',function(json) {
 		App.showPage({
@@ -373,6 +377,9 @@ App.page.orders = function() {
 				user: App.user
 			}
 		});
+
+		$( '.nav-back' ).addClass( 'nav-back-show' );
+
 		$(document).on('touchclick', '.order-restaurant', function() {
 			var permalink = $( this ).attr( 'permalink' );
 			var name = $( this ).attr( 'name' );
