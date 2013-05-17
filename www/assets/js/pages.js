@@ -67,6 +67,9 @@ App.page.home = function(force) {
 		$( '.nav-back' ).addClass( 'nav-back-show' );
 		App.loc.locationNotServed = true;
 
+		// Log the error
+		App.log.location( { 'address' : App.loc.address(), 'lat' : App.loc.pos().lat, 'lon' : App.loc.pos().lat  } , 'address not served' );
+
 		$('.home-greeting, .enter-location, .button-letseat-form').hide();
 		$('.error-location').show();
 		

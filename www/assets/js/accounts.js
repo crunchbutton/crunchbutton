@@ -102,6 +102,10 @@ App.signin.sendForm = function(){
 		dataType: 'json',
 		success: function( json ){
 			if( json.error ){
+				
+				// Log the error
+				App.log.account( { 'error' : json.error } , 'sign in error' );
+
 				$('.signin-error').fadeIn();
 			} else{
 				App.config.user = json;
@@ -202,6 +206,10 @@ App.signin.facebook.processStatus = function( session ){
 								App.signin.facebook.running = true;
 								if( json.error ){
 									if( json.error == 'facebook id already in use' ){
+
+										// Log the error
+										App.log.account( { 'error' : json.error } , 'facebook error' );
+
 										alert( 'Sorry, It seems the facebook user is already related with other user.' );
 									}
 								} else {
@@ -333,6 +341,8 @@ App.signin.passwordHelp.sendForm = function(){
 					$( '.password-help-error' ).fadeIn();
 					$( 'input[name=password-help-email]' ).focus()
 				}
+				// Log the error
+				App.log.account( { 'error' : json.error } , 'password help error' );
 			} else {
 				if( json.success = 'success' ){
 					$( '.signin-password-help-message' ).show();
@@ -593,6 +603,8 @@ App.signup.sendForm = function(){
 				if( json.error == 'user exists' ){
 					$('.signup-error').html( 'It seems that the email is already registered!' );
 				}
+				// Log the error
+				App.log.account( { 'error' : json.error, 'login' : login } , 'sign up error' );
 				$('.signup-error').fadeIn();
 			} else{
 				App.processConfig(null, json);

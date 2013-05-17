@@ -6,7 +6,6 @@ class Controller_api_log extends Crunchbutton_Controller_Rest {
 		switch ( $this->method() ) {
 			case 'post':
 				Log::debug([
-							'action' => 'javascript - log',
 							'data' 	 => $this->request()['data'],
 							'type' 	 => $this->request()['type']
 						]);
