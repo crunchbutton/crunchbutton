@@ -590,11 +590,13 @@ App.cart = {
 			$('.cart-gift').html( '' );
 		}
 
-		if( App.order.pay_type == 'cash' && credit > 0 ){
-			$( '.cart-giftcard-message' ).html( '<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>' );
-		} else {
-		  $( '.cart-giftcard-message' ).html( '' );
-		}
+		setTimeout( function(){
+			if( App.order.pay_type == 'cash' && credit > 0 && App.giftcard.showGiftCardCashMessage ){
+				$( '.cart-giftcard-message' ).html( '<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>' );
+			} else {
+			  $( '.cart-giftcard-message' ).html( '' );
+			}
+		}, 1000 );
 
 		$('.cart-total').html( totalText );
 
@@ -1531,6 +1533,7 @@ $(function() {
 		e.stopPropagation();
 		App.trigger.credit();
 		App.track('Switch to card');
+		App.giftcard.notesField.listener();
 	});
 
 	$(document).on('touchclick', '.pay-toggle-cash', function(e) {
@@ -1538,6 +1541,7 @@ $(function() {
 		e.stopPropagation();
 		App.trigger.cash();
 		App.track('Switch to cash');
+		App.giftcard.notesField.listener();
 	});
 
 	$(document).on('touchclick', '.location-detect', function() {
@@ -2063,6 +2067,9 @@ App.controlMobileIcons.process = function( page ){
 		return false;
 	}
 
+	$( '.sign-in-icon' ).removeClass( 'left' );
+	$( '.config-icon' ).removeClass( 'right' );
+
 	App.loc.locationNotServed = false;
 	$( '.sign-in-icon' ).removeClass( 'config-icon-mobile-hide' );
 	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
@@ -2075,6 +2082,10 @@ App.controlMobileIcons.process = function( page ){
 		case 'orders':
 			$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
 			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+			break;
+		case 'restaurants':
+			$( '.sign-in-icon' ).addClass( 'left' );
+			$( '.config-icon' ).addClass( 'right' );
 			break;
 	}
 }

@@ -6,7 +6,8 @@ App.giftcard = {
 	notesCode : false,
 	size : 6,
 	callback : false,
-	hasStarted : false
+	hasStarted : false,
+	showGiftCardCashMessage: true
 }
 
 App.giftcard.show = function( path ){
@@ -155,6 +156,7 @@ App.giftcard.notesField.compareValues = function(){
 		$( '.giftcard-info' ).html( '<span class="warning">' + 
 																	'You just removed a gift card. If you still want to use that gift card, you must put it back in the notes field.' + 
 																'</span>' );
+		App.giftcard.showGiftCardCashMessage = true;
 	}
 	App.giftcard.notesField.lastValue = App.giftcard.notesField.value;
 	App.giftcard.notesField.force( App.giftcard.notesField.value );
@@ -196,13 +198,11 @@ App.giftcard.notesField.message = function( giftinfo ){
 				if( !App.restaurant.giftcard ){
 					$( '.giftcard-info' ).html( message + 'This restaurant does not accept gift card.' );
 				} else {
-					$( '.giftcard-info' ).html( message + 'Congrats! This gift card (' + giftinfo.success.giftcard + ') gives you $' + giftinfo.success.value + '.' );
-					App.giftcard.notesField.value = parseFloat( App.giftcard.notesField.value ) + parseFloat( giftinfo.success.value );	
+					App.giftcard.redem( giftinfo, message );
 				}
 			} else {
 				if( giftinfo.success.id_restaurant == giftinfo.success.id_restaurant ){
-					$( '.giftcard-info' ).html( message + 'Congrats! This gift card (' + giftinfo.success.giftcard + ') gives you $' + giftinfo.success.value + '.' );
-					App.giftcard.notesField.value = parseFloat( App.giftcard.notesField.value ) + parseFloat( giftinfo.success.value );		
+					App.giftcard.redem( giftinfo, message );
 				}
 			}
 		}
@@ -214,6 +214,18 @@ App.giftcard.notesField.message = function( giftinfo ){
 	}
 	// Update the value
 	App.giftcard.notesField.updateValue();
+}
+
+App.giftcard.redem = function( giftinfo, message ){
+	if( App.order.pay_type == 'cash' ){
+		App.giftcard.showGiftCardCashMessage = false;
+		$( '.giftcard-info' ).html( message + 'Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil(  giftinfo.success.value  ).toFixed( 2 ) + ' gift card!</span>' );	
+		$( '.cart-giftcard-message' ).html( '' );
+	} else {
+		App.giftcard.showGiftCardCashMessage = true;
+		$( '.giftcard-info' ).html( message + 'Congrats! This gift card (' + giftinfo.success.giftcard + ') gives you $' + giftinfo.success.value + '.' );
+	}
+	App.giftcard.notesField.value = parseFloat( App.giftcard.notesField.value ) + parseFloat( giftinfo.success.value );	
 }
 
 // This is funtion will create a fake and 'cosmetic' credit the real one wil be created when the user post his order
@@ -243,5 +255,3 @@ App.giftcard.validate = function( code, callback ){
 		}
 	} );
 }
-
-

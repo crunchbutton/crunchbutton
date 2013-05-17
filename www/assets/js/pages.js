@@ -472,9 +472,6 @@ App.page.foodDelivery = function(refresh) {
 			return;
 		}
 
-		$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
-		$( '.nav-back' ).removeClass( 'nav-back-show' );
-
 		if (App.restaurants.list.length == 4) {
 			$('.content').addClass('short-meal-list');
 		} else {
@@ -511,6 +508,12 @@ App.page.foodDelivery = function(refresh) {
 				restaurants: App.restaurants.list
 			}
 		});
+
+		setTimeout( function(){
+			$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
+			$( '.nav-back' ).removeClass( 'nav-back-show' );
+		}, 1000 );
+
 	};
 	
 	// we dont have any restaurants
