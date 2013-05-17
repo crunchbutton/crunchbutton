@@ -1950,7 +1950,8 @@ $(function() {
 	});
 	
 	$(document).on('touchclick', '.config-icon', function() {
-		App.controlMobileIcons.showPacman( 'left', function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
+		var pacmanSide = ( App.currentPage == 'restaurants' ) ? 'right' : 'left';
+		App.controlMobileIcons.showPacman( pacmanSide, function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
 		App.loadHome(true);
 	});
 
@@ -2067,8 +2068,7 @@ App.controlMobileIcons.process = function( page ){
 		return false;
 	}
 
-	$( '.sign-in-icon' ).removeClass( 'left' );
-	$( '.config-icon' ).removeClass( 'right' );
+	App.controlMobileIcons.normalize();
 
 	App.loc.locationNotServed = false;
 	$( '.sign-in-icon' ).removeClass( 'config-icon-mobile-hide' );
@@ -2088,6 +2088,11 @@ App.controlMobileIcons.process = function( page ){
 			$( '.config-icon' ).addClass( 'right' );
 			break;
 	}
+}
+
+App.controlMobileIcons.normalize = function(){
+	$( '.sign-in-icon' ).removeClass( 'left' );
+	$( '.config-icon' ).removeClass( 'right' );
 }
 
 App.controlMobileIcons.showPacman = function( side, call ){
