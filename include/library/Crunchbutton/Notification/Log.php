@@ -26,7 +26,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$this->save();
 			
 			if (c::env() != 'live') {
-				// return;
+				return;
 			}
 
 			// Issue #1250
@@ -97,7 +97,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$this->save();
 			
 			if (c::env() != 'live') {
-				// return;
+				return;
 			}
 
 			# 1250
