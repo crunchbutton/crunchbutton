@@ -129,20 +129,28 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 								$message[] = $last_cb;
 							}
 
-							$support = new Crunchbutton_Support;
-							$support->type = Crunchbutton_Support::TYPE_SMS;
-							$support->phone = $phone;
-							$support->message = $body;
-							$support->status = 'open';
-							$support->ip = $_SERVER['REMOTE_ADDR'];
-							$support->id_session_twilio = $tsess->id_session_twilio;
-							$support->date = date('Y-m-d H:i:s');
-							if( $order->id_order ) {
-								$support->setOrderId($order->id_order);
-							} else {
-								$support->name = $phone;
+							$support = Support::getByTwilioSessionId($tsess->id_session_twilio);
+							if(!$support->id_support) {
+								$support = new Crunchbutton_Support;
+								$support->type = Crunchbutton_Support::TYPE_SMS;
+								$support->phone = $phone;
+								$support->message = $body;
+								$support->status = 'open';
+								$support->ip = $_SERVER['REMOTE_ADDR'];
+								$support->id_session_twilio = $tsess->id_session_twilio;
+								$support->date = date('Y-m-d H:i:s');
+								if( $order->id_order ) {
+									$support->setOrderId($order->id_order);
+								} else {
+									$support->name = $phone;
+								}
+								$support->save();
 							}
-							$support->save();
+							else {
+								$support->status = 'open';
+								$support->addNote($body, 'client', 'external');
+								$support->save();
+							}
 
 							$support->makeACall();
 
@@ -216,6 +224,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		$support = Crunchbutton_Support::getByTwilioSessionId( $id_session );
 
 		if( $support->id_support ){
+			$support->addNote($body, 'client', 'external');
 			$answer = new Crunchbutton_Support_Answer();
 			$answer->id_support = $support->id_support;
 			$answer->name = $rep;
