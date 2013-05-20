@@ -97,11 +97,10 @@
 			<David>_PHONE_</David>
 		</supportcall>
     <text>
-<!--      	<Devin>_PHONE_</Devin>
+     	<Devin>_PHONE_</Devin>
     	<Judd>_PHONE_</Judd>
     	<David>_PHONE_</David>
-    	<Nick>_PHONE_</Nick> -->
-    	<Daniel>***REMOVED***</Daniel>
+    	<Nick>_PHONE_</Nick>
     </text>
     <stripe>
     	<dev>
