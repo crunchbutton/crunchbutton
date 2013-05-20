@@ -64,7 +64,7 @@ App.page.home = function(force) {
 		setTimeout(scrollTo, 0, 0, 1);
 
 		// Shows the back button
-		$( '.nav-back' ).addClass( 'nav-back-show' );
+		// $( '.nav-back' ).addClass( 'nav-back-show' );
 		App.loc.locationNotServed = true;
 
 		// Log the error
@@ -89,6 +89,18 @@ App.page.home = function(force) {
 
 
 };
+
+App.page.bycity = function(){
+	
+		App.currentPage = 'bycity';
+			App.showPage({
+			page: 'bycity',
+			title: 'Crunchbutton',
+			data: {
+				topCommunities: App.topCommunities
+			}
+		});
+}
 
 App.page.restaurant = function(id) {
 
