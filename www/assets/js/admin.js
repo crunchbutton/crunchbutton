@@ -1501,6 +1501,11 @@ App.giftcards = {
 			App.giftcards.sendSimpleForm();
 		} );
 
+		$(document).on('change', '#total', function() {
+			$( '.giftcard-number' ).html( $( '#total' ).val() );
+		} );
+		
+
 		$(document).on('click', '.admin-giftcard-print', function() {
 			App.giftcards.print = true;
 			App.giftcards.sendSimpleForm();

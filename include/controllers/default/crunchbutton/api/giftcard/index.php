@@ -10,7 +10,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 				if ($_SESSION['admin']) {
 					switch ( c::getPagePiece( 2 ) ) {
 						case 'generate':
-							$id_restaurant = $this->request()['id_restaurant'];
+							$ids_restaurant = $this->request()['id_restaurant'];
 							$value = $this->request()['value'];
 							$total = $this->request()['total'];
 							$note = $this->request()['note'];
@@ -28,53 +28,57 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							// Store the ids
 							$ids = [];
 
-							for( $i = 1; $i<= $total; $i++) {
-								$giftcard = new Crunchbutton_Promo;
-								// id_restaurant == * means any restaurant
-								if( $id_restaurant == '*' ){
-									$giftcard->note = 'This gift is valid to any restaurant!' . "\n" . $note;
-								} else {
-									$giftcard->id_restaurant = $id_restaurant;
-									$giftcard->note = $note;
-								}
-								$giftcard->code = $giftcard->promoCodeGenerator();
-								$giftcard->value = $value;
-								if( $id_user ){
-									$giftcard->id_user = $id_user;
-									$user = Crunchbutton_User::o( $id_user );
-									$giftcard->phone =  $user->phone;
-								}
-								$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
-								$giftcard->note = $note;
+							foreach( $ids_restaurant as $id_restaurant ){
+								if( trim( $id_restaurant ) != '' ){
+									for( $i = 1; $i<= $total; $i++) {
+										$giftcard = new Crunchbutton_Promo;
+										// id_restaurant == * means any restaurant
+										if( $id_restaurant == '*' ){
+											$giftcard->note = 'This gift is valid to any restaurant!' . "\n" . $note;
+										} else {
+											$giftcard->id_restaurant = $id_restaurant;
+											$giftcard->note = $note;
+										}
+										$giftcard->code = $giftcard->promoCodeGenerator();
+										$giftcard->value = $value;
+										if( $id_user ){
+											$giftcard->id_user = $id_user;
+											$user = Crunchbutton_User::o( $id_user );
+											$giftcard->phone =  $user->phone;
+										}
+										$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
+										$giftcard->note = $note;
 
-								$giftcard->track = $track;
-								$giftcard->created_by = $created_by;
-								if( $track > 0 ){
-									$giftcard->notify_phone = $notify_phone;
-									$giftcard->name = $name;
-									$giftcard->how_delivery = $how_delivery;
-									$giftcard->contact = $contact;
-								}
-								$giftcard->id_order_reference = $id_order_reference;
-								$giftcard->paid_by = $paid_by;
-								if( $paid_by == 'other_restaurant' ){
-									$giftcard->id_restaurant_paid_by = $id_restaurant_paid_by;
-								}
-								$giftcard->date = date('Y-m-d H:i:s');
-								$giftcard->save();
+										$giftcard->track = $track;
+										$giftcard->created_by = $created_by;
+										if( $track > 0 ){
+											$giftcard->notify_phone = $notify_phone;
+											$giftcard->name = $name;
+											$giftcard->how_delivery = $how_delivery;
+											$giftcard->contact = $contact;
+										}
+										$giftcard->id_order_reference = $id_order_reference;
+										$giftcard->paid_by = $paid_by;
+										if( $paid_by == 'other_restaurant' ){
+											$giftcard->id_restaurant_paid_by = $id_restaurant_paid_by;
+										}
+										$giftcard->date = date('Y-m-d H:i:s');
+										$giftcard->save();
 
-								$ids[] = $giftcard->id_promo;
+										$ids[] = $giftcard->id_promo;
 
-								if( $giftcard->phone ){
-									$giftcard->queNotifySMS();
-								}
-	
-								if($id_order_reference) {
-									$order = Order::o($id_order_reference);
-									if($order->id_order) {
-										$support = $order->getSupport();
-										if($support->id_support) {
-											$support->addNote("Gift card issued #GIFT$giftcard->id_promo.", 'system', 'internal');
+										if( $giftcard->phone ){
+											$giftcard->queNotifySMS();
+										}
+
+										if($id_order_reference) {
+											$order = Order::o($id_order_reference);
+											if($order->id_order) {
+												$support = $order->getSupport();
+												if($support->id_support) {
+													$support->addNote("Gift card issued #GIFT$giftcard->id_promo.", 'system', 'internal');
+												}
+											}
 										}
 									}
 								}
