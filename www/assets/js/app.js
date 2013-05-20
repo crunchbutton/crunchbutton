@@ -213,6 +213,9 @@ App.loadPage = function() {
 		case /^order/i.test(url):
 			App.page.order(path[1]);
 			break;
+		case /^bycity/i.test(url):
+			App.page.bycity();
+			break;
 		case /^reset/i.test(url):
 			App.page.resetPassword( path );
 			break;
@@ -1950,9 +1953,13 @@ $(function() {
 	});
 	
 	$(document).on('touchclick', '.config-icon', function() {
-		var pacmanSide = ( App.currentPage == 'restaurants' ) ? 'right' : 'left';
-		App.controlMobileIcons.showPacman( pacmanSide, function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
-		App.loadHome(true);
+		if( App.isNarrowScreen() && $( this ).hasClass( 'config-icon-back-home' ) ){
+			App.controlMobileIcons.backHome();
+		} else {
+			var pacmanSide = ( App.currentPage == 'restaurants' ) ? 'right' : 'left';
+			App.controlMobileIcons.showPacman( pacmanSide, function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
+			App.loadHome(true);	
+		}
 	});
 
 	$(document).on('change', '[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]', function() {
@@ -2064,6 +2071,7 @@ App.message.chrome = function( ){
 // Issue #1227
 App.controlMobileIcons = {};
 App.controlMobileIcons.process = function( page ){
+
 	if( !App.isNarrowScreen() ){
 		return false;
 	}
@@ -2074,10 +2082,12 @@ App.controlMobileIcons.process = function( page ){
 	$( '.sign-in-icon' ).removeClass( 'config-icon-mobile-hide' );
 	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
 	switch( page ){
-		case 'home':
 		case 'restaurant':
 		case 'order':
 			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+			break;
+		case 'home':
+			$( '.config-icon' ).addClass( 'config-icon-back-home' );
 			break;
 		case 'orders':
 			$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
@@ -2090,9 +2100,22 @@ App.controlMobileIcons.process = function( page ){
 	}
 }
 
+App.controlMobileIcons.backHome = function(){
+	if( App.loc.locationNotServed ){
+		App.page.home( true );
+	} else {
+		if( App.restaurants.list && App.restaurants.list.length > 0 ){
+			App.page.foodDelivery();
+		} else {
+			History.pushState( {}, 'Crunchbutton', '/bycity' );
+		}	
+	}
+}
+
 App.controlMobileIcons.normalize = function(){
 	$( '.sign-in-icon' ).removeClass( 'left' );
 	$( '.config-icon' ).removeClass( 'right' );
+	$( '.config-icon' ).removeClass( 'config-icon-back-home' );
 }
 
 App.controlMobileIcons.showPacman = function( side, call ){
