@@ -24,6 +24,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$name = $this->request()['name'];
 							$how_delivery = $this->request()['how_delivery'];
 							$contact = $this->request()['contact'];
+							$add_as_credit = $this->request()['add_as_credit'];
 
 							// Store the ids
 							$ids = [];
@@ -67,8 +68,14 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 
 										$ids[] = $giftcard->id_promo;
 
-										if( $giftcard->phone ){
-											$giftcard->queNotifySMS();
+										if( $add_as_credit == '1' ){
+											if( $id_user ){
+												$giftcard->addCredit( $id_user );
+											}
+										} else {
+											if( $giftcard->phone ){
+												$giftcard->queNotifySMS();
+											}
 										}
 
 										if($id_order_reference) {

@@ -1528,6 +1528,7 @@ App.giftcards = {
 			var how_delivery = $.trim( $( '#how_delivery' ).val() );
 			var contact = $.trim( $( '#contact' ).val() );
 			var note = $.trim( $( '#note' ).val() );
+			var add_as_credit = $.trim( $( '#add_as_credit' ).val() );
 
 			if( value == '' ){
 				alert( 'Please type a value!' );
@@ -1555,7 +1556,7 @@ App.giftcards = {
 				}
 			}
 
-			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact };
+			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit };
 			var url = App.service + 'giftcard/generate';
 			$.ajax({
 				type: "POST",
