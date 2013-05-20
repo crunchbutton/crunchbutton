@@ -30,7 +30,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			}
 
 			// Issue #1250
-			$this->maxCBCallToSupport();
+			$this->maxCBCallbackToSupport();
 
 			Log::critical([
 				'id_order' => $this->id_order, 
@@ -52,7 +52,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 	}
 	
 	// Issue #1250 - make Max CB a phone call in addition to a text
-	public function maxCBCallToSupport(){
+	public function maxCBCallbackToSupport(){
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 
@@ -60,15 +60,14 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 		$support = c::config()->text;
 
-		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcall';
+		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling';
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB Calling - starting', 'url' => $url, 'type' => 'notification' ]);
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'type' => 'notification' ]);
 
 		// c::timeout(function() use( $support, $twilio, $url ) {
 			foreach ( $support as $supportName => $supportPhone ) {
-
 				// Log
-				Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB Calling', 'supportPhone' => $supportPhone, 'supportName' => $supportName, 'url' => $url, 'type' => 'notification' ]);
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB', 'supportPhone' => $supportPhone, 'supportName' => $supportName, 'url' => $url, 'type' => 'notification' ]);
 
 				$call = $twilio->account->calls->create(
 					c::config()->twilio->{$env}->outgoingRestaurant,
@@ -101,7 +100,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			}
 
 			# 1250
-			$this->maxCBCallToSupport();
+			$this->maxCBConfirmationToSupport();
 
 			Log::critical([
 				'id_order' => $this->id_order, 
@@ -120,6 +119,34 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 			$this->order()->queConfirm();
 		}
+	}
+
+	// Issue #1250 - make Max CB a phone call in addition to a text
+	public function maxCBConfirmationToSupport(){
+
+		$env = c::env() == 'live' ? 'live' : 'dev';
+
+		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+
+		$support = c::config()->text;
+
+		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxconfirmation';
+
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB Calling - starting', 'url' => $url, 'type' => 'notification' ]);
+
+		// c::timeout(function() use( $support, $twilio, $url ) {
+			foreach ( $support as $supportName => $supportPhone ) {
+
+				// Log
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CONFIRM CB', 'supportPhone' => $supportPhone, 'supportName' => $supportName, 'url' => $url, 'type' => 'notification' ]);
+
+				$call = $twilio->account->calls->create(
+					c::config()->twilio->{$env}->outgoingRestaurant,
+					'+1'.$supportPhone,
+					$url
+				);
+			}
+		// });
 	}
 
 	public function __construct($id = null) {
