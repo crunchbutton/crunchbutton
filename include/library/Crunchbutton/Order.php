@@ -325,8 +325,6 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->id_community = $this->restaurant()->community()->id_community;
 		$this->save();
 
-		$this->que();
-
 		$this->debitFromUserCredit( $user->id_user );
 
 		if ($params['make_default']) {
@@ -345,6 +343,8 @@ class Crunchbutton_Order extends Cana_Table {
 				$option->save();
 			}
 		}
+
+		$this->que();
 
 		if ($params['make_default']) {
 			Preset::cloneFromOrder($this);
