@@ -2137,7 +2137,6 @@ App.controlMobileIcons.normalize = function(){
 }
 
 App.controlMobileIcons.showPacman = function( side, call ){
-	console.log( 'pacman' );
 	$( '.pacman-' + side ).addClass( 'pacman-show' );
 	if( call ){ call(); }
 }
