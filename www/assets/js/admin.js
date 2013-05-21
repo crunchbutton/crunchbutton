@@ -854,6 +854,7 @@ App.returnOption = function(o, type, parent) {
 };
 
 App.orders = {
+	searchParam: '',
 	params: function() {
 		return {
 			search: $('input[name="order-search"]').val(),
@@ -877,6 +878,7 @@ App.orders = {
 				$('.orders-loader').hide();
 			}
 		});
+		App.orders.searchParam = '';
 	},
 	export: function() {
 		var params = App.orders.params();
