@@ -1,29 +1,41 @@
-<div class="admin-content-wrapper" style="width: 700px;">
-	<div class="admin-content">
+<?
+	$this->title = $this->restaurant->name;
+	$this->titleicon = 'food';
+	$this->titleLink = '/restaurants/'.$this->restaurant->id_restaurant;
 
-		
-		
-		<form id="restaurant-image" action="" method="post" enctype="multipart/form-data">
-			<table class="admin-restaurant-pay-form">
-				<tr>
-					<td>
-						<img src="http://i.crunchr.co/600x600/<?=$this->restaurant->image?>" style="max-width: 600px;">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<input type="file" name="image">
-					</td>
-				</tr>
-				
-				<tr>
-					<td>
-						<br />
-						<div class="action-button action-button-small green restaurant-image-button" style="float: left;"><span>Upload</span></div>
-					</td>
-				</tr>
-			</table>
-		</form>
+	$this->title2 = 'Image';
+	$this->title2icon = 'picture';
+?>
+
+<!-- restaurants page -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			
+			<form id="restaurant-image" action="" method="post" enctype="multipart/form-data">
+				<table class="admin-restaurant-pay-form">
+					<tr>
+						<td>
+							<img src="http://i.crunchr.co/600x600/<?=$this->restaurant->image?>" style="max-width: 600px;">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="file" name="image">
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<br />
+							<button type="submit" class="btn btn-blue admin-order-search restaurant-image-button"><i class="icon-upload-alt"></i>&nbsp;&nbsp;&nbsp; Upload </button>	
+						</td>
+					</tr>
+				</table>
+			</form>
+			</div>
+		</div>
+
 	</div>
 </div>
 
