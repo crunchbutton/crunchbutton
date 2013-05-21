@@ -59,6 +59,21 @@
 													<?php } ?>
 													</td>
 											</tr>
+											<?php if( $this->user ) { ?>
+											<tr>
+												<td>Notify by</td>
+												<td>
+													<?php if( $this->user->email != '' ) { ?>
+														<input type="checkbox" value="1" name="notify_by_email" id="notify_by_email"> Notify by email (<?php  echo $this->user->email; ?>).
+													<?php } ?>
+													<br/>
+													<?php if( $this->user->phone != '' ) { ?>
+														<input type="checkbox" value="1" name="notify_by_sms" id="notify_by_sms"> Notify by phone (<?php  echo $this->user->phone; ?>).
+													<?php } ?>
+
+												</td>
+											</tr>
+											<?php } ?>
 											<tr>
 												<td>&nbsp;</td>
 												<td>&nbsp;</td>
