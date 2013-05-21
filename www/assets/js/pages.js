@@ -64,7 +64,7 @@ App.page.home = function(force) {
 		setTimeout(scrollTo, 0, 0, 1);
 
 		// Shows the back button
-		$( '.nav-back' ).addClass( 'nav-back-show' );
+		// $( '.nav-back' ).addClass( 'nav-back-show' );
 		App.loc.locationNotServed = true;
 
 		// Log the error
@@ -89,6 +89,18 @@ App.page.home = function(force) {
 
 
 };
+
+App.page.bycity = function(){
+	
+		App.currentPage = 'bycity';
+			App.showPage({
+			page: 'bycity',
+			title: 'Crunchbutton',
+			data: {
+				topCommunities: App.topCommunities
+			}
+		});
+}
 
 App.page.restaurant = function(id) {
 
@@ -331,6 +343,12 @@ App.page.order = function(id) {
 App.page.legal = function() {
 	App.currentPage = 'legal';
 	$.getJSON('/api/legal',function(json) {
+	
+	App.controlMobileIcons.normalize();
+	
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+	$( '.nav-back' ).addClass( 'nav-back-show' );
+
 		$('.main-content').html(json.data);
 		App.refreshLayout();
 		setTimeout( function(){
@@ -347,6 +365,12 @@ App.page.legal = function() {
 App.page.help = function() {
 	App.currentPage = 'help';
 	$.getJSON('/api/help',function(json) {
+
+		App.controlMobileIcons.normalize();
+
+		$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+		$( '.nav-back' ).addClass( 'nav-back-show' );
+
 		$('.main-content').html(json.data);
 		App.refreshLayout();
 		setTimeout( function(){
@@ -472,9 +496,6 @@ App.page.foodDelivery = function(refresh) {
 			return;
 		}
 
-		$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
-		$( '.nav-back' ).removeClass( 'nav-back-show' );
-
 		if (App.restaurants.list.length == 4) {
 			$('.content').addClass('short-meal-list');
 		} else {
@@ -511,6 +532,9 @@ App.page.foodDelivery = function(refresh) {
 				restaurants: App.restaurants.list
 			}
 		});
+		
+		$( '.nav-back' ).removeClass( 'nav-back-show' );
+
 	};
 	
 	// we dont have any restaurants
