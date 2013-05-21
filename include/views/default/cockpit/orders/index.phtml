@@ -1,96 +1,129 @@
-<div class="admin-content-wrapper">
-	<div class="admin-content admin-content-orders">
-		<table class="admin-orders-filter">
-			<tr>
-				<td class="label-sub">SEARCH</td>
-				<td class="content-sub"><input name="order-search" type="text" style="width: 200px;" value="<?=strip_tags($_REQUEST['search'])?>"></td>
-				<td style="width: 100%"></td>
-				<td class="label-sub">DATE&nbsp;RANGE</td>
-				<?
-					$date = new DateTime('now');
-					$start = $date->format('m/d/Y');
-					$date->modify('14 days ago');
-					$end = $date->format('m/d/Y');
-				?>
-				<td class="content-sub"><input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>"></td>
-				<td class="order-range-all">&nbsp;&nbsp;<input type="checkbox" name="order-range-all"><label>&nbsp;All Dates</label></td>
-			</tr>
-			<tr>
-				<td class="label-sub">ENVIRONMENT</td>
-				<td class="content-sub">
-					<? $envs = ['live','beta','dev','local']; ?>
-					<select name="env">
-						<? foreach ($envs as $env) : ?>
-							<option value="<?=$env?>"<?=c::env() == $env ? ' selected' : ''?>><?=$env?></option>
-						<? endforeach ; ?>
-					</select>
-				</td>
-				<td style="width: 100%"></td>
-				<td class="label-sub">PROCESSOR</td>
-				<td class="content-sub" colspan="2">
-					<select name="processor">
-						<option value="" selected>[ All ]</option>
-						<option value="balanced" selected>balanced</option>
-						<option value="stripe">stripe</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td class="label-sub">LIMIT</td>
-				<td class="content-sub">
-					<input type="number" name="limit" value="25" min="0">
-				</td>
-				<td style="width: 100%"></td>
-				<td class="label-sub">RESTAURANT</td>
-				<td class="content-sub" colspan="2">
-					<select name="restaurant" class="chosen-select" style="width:280px;">
-						<option value="" selected>[ All ]</option>
-						<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
-							<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
-						<? endforeach ; ?>
-					</select>
-				</td>
-				
-			</tr>
+<?
+	$this->title = 'Orders';
+	$this->subtitle = 'people order shit! then eat it!';
+	$this->titleicon = 'truck';
+?>
+
+
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+
+			<div class="box-content">
+				<div class="row-fluid">
+					<form class="fill-up">
+						<div class="span6 separate-sections">
+							<ul class="padded separate-sections">
+								<li class="input">
+									<input name="search" type="text" placeholder="Search" value="<?=strip_tags($_REQUEST['search'])?>">
+								</li>
+								<li>
+									<label class="span3">Environment</label>
+									<span class="span8 pull-right">
+										<? $envs = ['live','beta','dev','local']; ?>
+										<select name="env" class="uniform">
+											<? foreach ($envs as $env) : ?>
+												<option value="<?=$env?>"<?=c::env() == $env ? ' selected' : ''?>><?=$env?></option>
+											<? endforeach ; ?>
+										</select>
+									</span>
+									<div class="clearfix"></div>
+								</li>
+								<li>
+									<label class="span3">Limit</label>
+									<span class="span8 pull-right">
+										<? $envs = ['live','beta','dev','local']; ?>
+										<input type="number" name="limit" value="25" min="0">
+									</span>
+								</li>
+							</ul>	
+						</div>
+						
+						<div class="span6 separate-sections">
+							<ul class="padded separate-sections">
+								<li class="input">
+									<?
+										$date = new DateTime('now');
+										$start = $date->format('m/d/Y');
+										$date->modify('14 days ago');
+										$end = $date->format('m/d/Y');
+									?>
+									<label class="span3">Date range</label>
+									<span class="span8 pull-right">
+										<input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>">
+										<input type="checkbox" name="order-range-all"><label>&nbsp;All Dates</label>
+									</span>
+									<div class="clearfix"></div>
 			
-			<tr>
-				<td class="label-sub"></td>
-				<td class="content-sub">
-					
-				</td>
-				<td style="width: 100%"></td>
-				<td class="label-sub">COMMUNITY</td>
-				<td class="content-sub" colspan="2">
-					<select name="community" class="chosen-select" style="width:280px;">
-						<option value="" selected>[ All ]</option>
-						<? foreach (Community::q('select * from community order by name') as $community) : ?>
-							<option value="<?=$community->id_community?>"><?=$community->name?></option>
-						<? endforeach ; ?>
-					</select>
-				</td>
+								</li>
+								<li>
+									<label class="span3">Processor</label>
+									<span class="span8 pull-right">
+										<select name="processor" class="uniform">
+											<option value="" selected>[ All ]</option>
+											<option value="balanced" selected>balanced</option>
+											<option value="stripe">stripe</option>
+										</select>
+									</span>
+									<div class="clearfix"></div>
+								</li>
+								<li>
+									<label class="span3">Restaurant</label>
+									<span class="span8 pull-right">
+										<select name="restaurant" class="chzn-select">
+											<option value="" selected>[ All ]</option>
+											<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
+												<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+											<? endforeach ; ?>
+										</select>
+									</span>
+									<div class="clearfix"></div>
+								</li>
+								<li>
+									<label class="span3">Community</label>
+									<span class="span8 pull-right">
+										<select name="community" class="chzn-select">
+											<option value="" selected>[ All ]</option>
+											<? foreach (Community::q('select * from community order by name') as $community) : ?>
+												<option value="<?=$community->id_community?>"><?=$community->name?></option>
+											<? endforeach ; ?>
+										</select>
+									</span>
+									<div class="clearfix"></div>
+								</li>
+							</ul>	
+						</div>
+					</form>
+
+				</div>
 				
-			</tr>
+			</div>
+			<center>
+				<button type="submit" class="btn btn-blue admin-order-search"> Search </button>	
+			</center>
+			<br />
+		</div>
+
+		<div class="box">
+			<div class="box-header"><span class="title">Results</span>
+				<ul class="box-toolbar">
+					<li class="toolbar-link">
+						<a href="javascript:;" class="admin-order-export" title="Export"><i class="icon-download-alt"></i></a>
+					</li>
+				</ul>
 			
-			
-			<tr>
-				<td colspan="6">
-					<table cellpadding="3" cellspacing="3" style="width: auto; margin: 0 auto;">
-						<tr>
-							<td><div class="action-button green action-button-small admin-order-search"><span>Search</span></div></td>
-							<td><a href="javascript:;" class="control-label admin-order-export">Export</a></td>
-						</tr>
-					</table>
-				</td>
-				
-			</tr>
-		</table>
-		<br /><br />
-		<div class="divider dots"></div>
-		<br />
-		<div class="orders-loader"><img src="/assets/images/admin/loader.gif"></div>
-		<div class="orders-content"></div>
+			</div>
+			<div class="box-content">
+				<div class="orders-loader"><center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center></div>
+				<div class="orders-content"></div>
+			</div>
+		</div>
 	</div>
-</div>		
+</div>
+
+
+
 <script>
 	$(function() {
 		$(document).on('click', '.refund', function() {
@@ -141,7 +174,7 @@
 				App.orders.load();
 			}
 		});
-		$(".chosen-select").chosen();		
+		$('.chzn').select2();
 		App.orders.load();
 	});
 </script>

@@ -1,31 +1,29 @@
 <?
-/**
- * List all restaurants and the add-new-restaurant button
- *
- * @package  Crunchbutton.Restaurant
- * @category view
- */
+	$this->title = 'Restaurants';
+	$this->subtitle = 'Create / Edit restaurants';
+	$this->titleicon = 'food';
 ?>
 
-<div class="admin-content-wrapper">
-	<div class="admin-content">
-
-		<select id="restaurant-id" class="chosen-select" style="width:480px;">
-			<option value="" selected>Choose...</option>
-			<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
-			<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> (permalink: <?=$restaurant->permalink?>)</option>
-			<? endforeach ; ?>
-		</select>
-		<div class="divider"></div>
-		<br>
-		<br>
-
-		<div class="new-restaurant admin-button-workflow">Create New</div>
-		<!-- <a href="/restaurants/new"> -->
-
+<!-- restaurants page -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-header"><span class="title">Select a Restaurant</span></div>
+			<div class="box-content padded">
+	
+				<select id="restaurant-id" class="chosen-select" style="width:480px;">
+					<option value="" selected>Choose...</option>
+					<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
+					<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> (permalink: <?=$restaurant->permalink?>)</option>
+					<? endforeach ; ?>
+				</select>
+				<div class="divider"></div>
+				<br><br>
+				<button type="submit" class="btn btn-blue new-restaurant">Create New</button>
+			</div>
+		</div>
 	</div>
 </div>
-<div class="divider"></div>
+<!-- // end restaurants page -->
 
 <script type="text/javascript" src="/assets/js/admin_restaurants.js"></script>
-

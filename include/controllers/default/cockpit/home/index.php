@@ -2,6 +2,9 @@
 
 class Controller_home extends Crunchbutton_Controller_Account {
 	public function init() {
+	
+		// select count(*) as users from `session` where date_activity>DATE_SUB(NOW(),INTERVAL 10 MINUTE);
+
 		$data = [
 			'all' => [
 				'orders' => Order::q('select count(*) as c from `order` where env="live"')->c,

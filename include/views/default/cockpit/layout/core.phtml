@@ -1,0 +1,301 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+	<meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,800">
+
+	<title><?=$this->title ? $this->title : 'Cockpit'?></title>
+	<link href="/assets/css/core/core.css" media="screen" rel="stylesheet" type="text/css" />
+	
+	<link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
+
+	<link rel="stylesheet" type="text/css" href="/assets/css/sprites.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/introjs.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/datepicker.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/chosen.css">
+
+	<script src="/assets/js/core/core.js" type="text/javascript"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+	<script src="/assets/js/admin.js" type="text/javascript"></script>
+	<link rel="shortcut icon" href="/favicon-admin.ico">
+</head>
+
+<body>
+
+<!-- top nav -->
+<div class="navbar navbar-top navbar-inverse">
+	<div class="navbar-inner">
+		<div class="container-fluid">
+			<a class="brand" href="/"><img src="/assets/images/admin/logo-top.png">Cockpit</a>
+
+			<ul class="nav pull-right">
+				<li class="toggle-primary-sidebar hidden-desktop" data-toggle="collapse" data-target=".nav-collapse-primary"><button type="button" class="btn btn-navbar"><i class="icon-th-list"></i></button></li>
+				<li class="hidden-desktop" data-toggle="collapse" data-target=".nav-collapse-top"><button type="button" class="btn btn-navbar"><i class="icon-align-justify"></i></button></li>
+			</ul>
+
+			<div class="nav-collapse nav-collapse-top collapse">
+
+				<ul class="nav full pull-right">
+					<li class="dropdown user-avatar">
+
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<span>
+								<img class="menu-avatar" src="/assets/images/admin/user.jpg" /> <span><?=ucfirst($this->username)?> <i class="icon-caret-down"></i></span>
+								<span class="badge badge-dark-red" style="display: none;">5</span>
+							</span>
+						</a>
+
+						<ul class="dropdown-menu">
+
+							<li class="with-image">
+								<div class="avatar">
+									<img src="/assets/images/admin/user.jpg" />
+								</div>
+								<span><?=ucfirst($this->username)?></span>
+							</li>
+
+							<li class="divider"></li>
+							<li><a href="#"><i class="icon-off"></i> <span>Logout</span></a></li>
+						</ul>
+					</li>
+				</ul>
+
+				<form class="navbar-search pull-right">
+					<input type="text" class="search-query animated" placeholder="Search Orders">
+					<i class="icon-search"></i>
+				</form>
+
+				<ul class="nav pull-right">
+					<li class="active"><a href="http://beta.crunchr.co" target="_blank"><i class="icon-home"></i> Beta</a></li>
+					<li class="active"><a href="http://staging.crunchr.co" target="_blank"><i class="icon-home"></i> Staging</a></li>
+					<li class="active"><a href="http://crunchr.co" target="_blank"><i class="icon-home"></i> Live</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- // top nav -->
+
+<div class="sidebar-background">
+	<div class="primary-sidebar-background"></div>
+</div>
+
+<!-- side nav -->
+<div class="primary-sidebar">
+	<ul class="nav nav-collapse collapse nav-collapse-primary">
+
+		<li class="<?=$this->page == 'home' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="dashboard">
+				<i class="icon-dashboard icon-2x"></i>
+				<span>Dashboard</span>
+			</a>
+		</li>
+
+		<li class="dark-nav <?=$this->page == 'orders' ? 'active' : ''?>">
+			<span class="glow"></span>
+
+			<a class="accordion-toggle collapsed " href="/orders">
+				<i class="icon-truck icon-2x"></i>
+				<span>Orders<? /* <i class="icon-caret-down"></i> */ ?></span>
+			</a>
+
+			<? /*
+			data-toggle="collapse" 
+			<ul id="zwz2Ux5SfP" class="collapse ">
+				<li class="">
+					<a href="../ui_lab/buttons.html">
+						<i class="icon-hand-up"></i> Buttons
+					</a>
+				</li>
+		
+				<li class="">
+					<a href="../ui_lab/general.html">
+						<i class="icon-beaker"></i> General elements
+					</a>
+				</li>
+		
+				<li class="">
+					<a href="../ui_lab/icons.html">
+						<i class="icon-info-sign"></i> Icons
+					</a>
+				</li>
+		
+				<li class="">
+					<a href="../ui_lab/grid.html">
+						<i class="icon-th-large"></i> Grid
+					</a>
+				</li>
+		
+				<li class="">
+					<a href="../ui_lab/tables.html">
+						<i class="icon-table"></i> Tables
+					</a>
+				</li>
+		
+				<li class="">
+					<a href="../ui_lab/widgets.html">
+						<i class="icon-plus-sign-alt"></i> Widgets
+					</a>
+				</li>
+			</ul>
+			*/ ?>
+		</li>
+
+		<li class="<?=$this->page == 'restaurants' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/restaurants">
+				<i class="icon-food icon-2x"></i>
+				<span>Restaurants</span>
+			</a>
+		</li>
+
+		<li class="<?=$this->page == 'customers' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/customers">
+				<i class="icon-group icon-2x"></i>
+				<span>Customers</span>
+			</a>
+		</li>
+		
+		<li class="<?=$this->page == 'suggestions' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/suggestions">
+				<i class="icon-envelope-alt icon-2x"></i>
+				<span>Suggesions</span>
+			</a>
+		</li>
+		
+		<li class="<?=$this->page == 'giftcards' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/giftcards">
+				<i class="icon-gift icon-2x"></i>
+				<span>Gift cards</span>
+			</a>
+		</li>
+		
+		<li class="<?=$this->page == 'support' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/support">
+				<i class="icon-comments icon-2x"></i>
+				<span>Support</span>
+			</a>
+		</li>
+		
+		<li class="<?=$this->page == 'issues' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/issues">
+				<i class="icon-github-alt icon-2x"></i>
+				<span>Github Issues</span>
+			</a>
+		</li>
+		
+		<li class="<?=$this->page == 'loc' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/loc">
+				<i class="icon-map-marker icon-2x"></i>
+				<span>Locations</span>
+			</a>
+		</li>
+	</ul>
+
+	<? /*
+	<div class="hidden-tablet hidden-phone">
+
+
+		<hr class="divider" style="margin-top: 60px">
+
+		<div class="sparkline-box side">
+
+			<div class="sparkline-row">
+				<h4 class="gray"><span>Orders</span> 847</h4>
+				<div class="sparkline big" data-color="gray"><!--28,11,24,24,8,20,26,22,16,6,12,15--></div>
+			</div>
+
+			<hr class="divider">
+			<div class="sparkline-row">
+				<h4 class="dark-green"><span>Income</span> $43.330</h4>
+				<div class="sparkline big" data-color="darkGreen"><!--16,20,6,19,25,22,9,13,7,10,15,4--></div>
+			</div>
+
+			<hr class="divider">
+			<div class="sparkline-row">
+				<h4 class="blue"><span>Reviews</span> 223</h4>
+				<div class="sparkline big" data-color="blue"><!--20,18,21,17,5,7,29,9,8,14,23,8--></div>
+			</div>
+
+			<hr class="divider">
+		</div>
+	</div>
+	*/ ?>
+</div>
+<!-- // end side nav -->
+
+
+<div class="main-content">
+	<? /*
+	<div class="container-fluid">
+		<div class="row-fluid">
+
+			<div class="area-top clearfix">
+				<div class="pull-left header">
+					<h3 class="title">
+						<i class="icon-<?=$this->titleicon?>"></i>
+						<?=$this->title?>
+					</h3>
+					<h5><?=$this->subtitle?></h5>
+				</div>
+
+				<ul class="inline pull-right sparkline-box">
+
+					<li class="sparkline-row">
+						<h4 class="blue"><span>Orders</span> 847</h4>
+						<div class="sparkline big" data-color="blue"><!--10,14,20,21,18,13,24,14,6,7,28,24--></div>
+					</li>
+
+					<li class="sparkline-row">
+						<h4 class="green"><span>Reviews</span> 223</h4>
+						<div class="sparkline big" data-color="green"><!--8,11,26,14,27,28,8,13,10,22,6,15--></div>
+					</li>
+
+					<li class="sparkline-row">
+						<h4 class="red"><span>New visits</span> 7930</h4>
+						<div class="sparkline big"><!--7,3,24,18,24,3,4,9,16,24,16,29--></div>
+					</li>
+
+				</ul>
+			</div>
+		</div>
+	</div>
+	*/ ?>
+
+	<!-- breadcrumbs -->
+	<div class="container-fluid padded">
+		<div class="row-fluid">
+			<div id="breadcrumbs">
+				<div class="breadcrumb-button blue">
+					<span class="breadcrumb-label"><i class="icon-home"></i> Home</span>
+					<span class="breadcrumb-arrow"><span></span></span>
+				</div>  
+
+        		<div class="breadcrumb-button">
+					<span class="breadcrumb-label">
+						<i class="icon-<?=$this->titleicon?>"></i> <?=$this->title?>
+					</span>
+					<span class="breadcrumb-arrow"><span></span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- // breadcrumbs -->
+
+		
+	<?=$this->content?>
+
+	</div>
+</div>
+
+</body>
+</html>

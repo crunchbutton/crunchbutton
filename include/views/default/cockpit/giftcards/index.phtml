@@ -1,59 +1,111 @@
-<div class="admin-content-wrapper">
-	<div class="admin-content admin-content-giftcards">
-		<table class="admin-giftcards-filter">
-			<tr>
-				<td class="label-sub" nowrap="nowrap">Code</td>
-				<td class="content-sub"><input name="id_order" type="text" style="width: 200px;" value="<?=strip_tags($_REQUEST['code'])?>"></td>
-				<td style="width: 100%"></td>
-				<td class="label-sub">DATE&nbsp;RANGE</td>
-				<?
-					$date = new DateTime('now');
-					$start = $date->format('m/d/Y');
-					$date->modify('14 days ago');
-					$end = $date->format('m/d/Y');
-				?> 
-				<td class="content-sub"><input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>"></td>
-				<td class="giftcard-range-all" nowrap>&nbsp;&nbsp;<input type="checkbox" name="giftcard-range-all"><label>&nbsp;All Dates</label></td>
-			</tr>
-			<tr>
-				<td class="label-sub">LIMIT</td>
-				<td class="content-sub">
-					<input type="number" name="limit" value="25" min="0">
-				</td>
-				<td style="width: 100%"></td>
-				<td class="label-sub">RESTAURANT</td>
-				<td class="content-sub" colspan="2">
-					<select name="restaurant">
-						<option value="" selected>[ All ]</option>
-						<? foreach (Restaurant::q('SELECT DISTINCT(restaurant.id_restaurant), restaurant.name FROM restaurant INNER JOIN promo ON promo.id_restaurant = restaurant.id_restaurant ORDER BY name ') as $restaurant) : ?>
-							<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
-						<? endforeach ; ?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="6">
-					<table cellpadding="3" cellspacing="3" style="width: 100%; margin: 0 auto;">
-						<tr>
-							<td><div class="action-button green action-button-small admin-giftcard-search"><span>Search</span></div></td>
-							<td>
-							<div class="action-button green action-button-small admin-giftcard-email"><span>Promo code by EMAIL</span></div>
-							<div class="action-button green action-button-small admin-giftcard-sms" style="margin:0 5px;"><span>Promo code by SMS</span></div>
-							<div class="action-button green action-button-small admin-giftcard-new"><span>Create promo codes</span></div>
-							</td>
-						</tr>
-					</table>
-				</td>
+<?
+	$this->title = 'Gift cards';
+	$this->subtitle = 'people order shit! then eat it!';
+	$this->titleicon = 'gift';
+?>
+
+
+
+
+
+
+
+
+
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+
+			<div class="box-content">
+				<div class="row-fluid">
+					<form class="fill-up">
+						<div class="span6 separate-sections">
+							<ul class="padded separate-sections">
+								<li class="input">
+									<input name="id_order" type="text" value="<?=strip_tags($_REQUEST['code'])?>" placeholder="Code">
+								</li>
+								<li>
+									<label class="span3">Limit</label>
+									<span class="span8 pull-right">
+										<? $envs = ['live','beta','dev','local']; ?>
+										<input type="number" name="limit" value="25" min="0">
+									</span>
+								</li>
+							</ul>	
+						</div>
+						
+						<div class="span6 separate-sections">
+							<ul class="padded separate-sections">
+								<li class="input">
+									<?
+										$date = new DateTime('now');
+										$start = $date->format('m/d/Y');
+										$date->modify('14 days ago');
+										$end = $date->format('m/d/Y');
+									?>
+									<label class="span3">Date range</label>
+									<span class="span8 pull-right">
+										<input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>">
+										<input type="checkbox" name="order-range-all"><label>&nbsp;All Dates</label>
+									</span>
+									<div class="clearfix"></div>
+			
+								</li>
+								<li>
+									<label class="span3">Restaurant</label>
+									<span class="span8 pull-right">
+										<select name="restaurant" class="chzn-select">
+											<option value="" selected>[ All ]</option>
+											<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
+												<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+											<? endforeach ; ?>
+										</select>
+									</span>
+									<div class="clearfix"></div>
+								</li>
+							</ul>	
+						</div>
+					</form>
+
+				</div>
 				
-			</tr>
-		</table>
-		<br /><br />
-		<div class="divider dots"></div>
-		<br />
-		<div class="giftcards-loader"><img src="/assets/images/admin/loader.gif"></div>
-		<div class="giftcards-content"></div>
+			</div>
+			<div style="text-align: center;">
+				<button type="submit" class="btn btn-blue admin-giftcard-search"><i class="icon-search"></i>&nbsp;&nbsp;&nbsp; Search </button> 
+				<div class="btn-group">
+					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						 Create / Send &nbsp;&nbsp;&nbsp;<span class="caret"></span>
+					</button>
+
+
+					<ul class="dropdown-menu">
+						<li><a href="/giftcards/new">Create a new code</a></li>
+						<li class="divider"></li>
+						<li><a href="/giftcards/email">Send by email</a></li>
+						<li><a href="/giftcards/sms">Send by sms</a></li>
+					</ul>
+				</div>
+
+			</div>
+			<br />
+		</div>
+
+		<div class="box">
+			<div class="box-header"><span class="title">Results</span></div>
+			<div class="box-content">
+				<div class="giftcards-loader"><center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center></div>
+				<div class="giftcards-content"></div>
+			</div>
+		</div>
 	</div>
-</div>		
+</div>
+
+
+
+
+
+	
 <script>
 
 

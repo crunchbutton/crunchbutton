@@ -1,21 +1,32 @@
 <style>
-.comments .ui-state-default {border: 0;}
+.comments .ui-state-default {
+	border: 0;
+}
+.list-orders.table-normal tbody td {
+	vertical-align: top;
+}
+.list-orders a {
+	text-decoration: underline;
+}
 </style>
 
 <? if (!$this->orders->count()) : ?>
 	No results found
 <? else : ?>
 
-	<table class="list-orders">
-		<tr>
-			<th class="list-order-header">Info</th>
-			<th class="list-order-header">Date</th>
-			<th class="list-order-header">Restaurant</th>
-			<th class="list-order-header">Order</th>
-			<th class="list-order-header">Price</th>
-			<th class="list-order-header">Pay / Type</th>
-			<th class="list-order-header">Customer</th>
-		</tr>
+	<table class="list-orders table table-normal">
+		<thead>
+			<tr>
+				<td>Info</td>
+				<td>Date</td>
+				<td>Restaurant</td>
+				<td>Order</td>
+				<td>Price</td>
+				<td>Pay&nbsp;/&nbsp;Type</td>
+				<td></td>
+			</tr>
+		</thead>
+
 		<? foreach ($this->orders as $order) :  /* @var $order Crunchbutton_Order */?>
 			<? $date = $order->date(); ?>
 			<tr class="list-order-item">
