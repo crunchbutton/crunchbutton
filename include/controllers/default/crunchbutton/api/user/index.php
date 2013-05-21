@@ -289,6 +289,9 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 					echo json_encode(['error' => 'invalid request']);
 				}
 				break;
+			case 'phpinfo':
+				phpinfo();
+				break;
 			default:
 				switch ($this->method()) {
 					case 'get':
