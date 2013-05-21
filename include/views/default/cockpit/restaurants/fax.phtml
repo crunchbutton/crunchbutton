@@ -1,34 +1,49 @@
-<div class="admin-content-wrapper" style="width: 700px;">
-	<div class="admin-content">
+<?
+	$this->title = $this->restaurant->name;
+	$this->titleicon = 'food';
+	$this->titleLink = '/restaurants/'.$this->restaurant->id_restaurant;
 
-		<? if (!$this->notification) : ?>
-			<b>This restaurant does not currently have a fax # set up</b>
-		<? else : ?>
-			<h1 class="restaurant-item-title">Send a fax to <?=$this->notification?></h1>
-			<br /><br />
+	$this->title2 = 'Fax';
+	$this->title2icon = 'print';
+?>
+
+<!-- restaurants page -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<? if (!$this->notification) : ?>
+				<div class="box-content padded">
+					<b>This restaurant does not currently have a fax # set up</b>
+				</div>
+			<? else : ?>
 			
-			<form enctype="multipart/form-data" id="restaurant-fax" method="post" action="/fax">
-				<input type="hidden" name="id_restaurant" value="<?=$this->restaurant->id_restaurant?>">
-				<table class="admin-restaurant-pay-form">
-					<tr>
-						<td>File</td>
-						<td>
-							<input type="file" name="fax">
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2">
-							<br />
-							<div class="action-button action-button-small green restaurant-fax-button" style="float: left;"><span>Send</span></div>
-						</td>
-					</tr>
-				</table>
-			</form>
+				<div class="box-header"><span class="title">Send a fax to <?=$this->notification?></span></div>
+				<div class="box-content padded">
 
-		<? endif ; ?>
-
+					<form enctype="multipart/form-data" id="restaurant-fax" method="post" action="/fax">
+						<input type="hidden" name="id_restaurant" value="<?=$this->restaurant->id_restaurant?>">
+						<table class="admin-restaurant-pay-form">
+							<tr>
+								<td>File</td>
+								<td>
+									<input type="file" name="fax">
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<br />
+									<button type="submit" class="btn btn-blue admin-order-search restaurant-fax-button"><i class="icon-cloud-upload"></i>&nbsp;&nbsp;&nbsp; Send </button>	
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+			
+			<? endif ; ?>
+		</div>
 	</div>
 </div>
+<!-- // end restaurants page -->
 
 <script>
 	$(function() {

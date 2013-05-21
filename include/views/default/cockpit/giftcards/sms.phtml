@@ -1,125 +1,140 @@
-<div class="admin-content-wrapper">
-	<div class="admin-content admin-content-giftcards">
-		<h1 class="giftcard-item-title">Gift card</h1>
-		<br /><br />
-		<table class="admin-giftcard-form">
-			<tr>
-				<td class="label-primary">Promo code:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:100%;">
-								<tbody>
-									<tr>
-										<td class="label-sub">Value:</td>
-										<td class="content-sub"><input type="text" id="value" name="value"></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Phones:</td>
-										<td class="content-sub">
-											<textarea style="height:100px;" name="phones" id="phones"></textarea>
-											<br/>
-											*One phone per line.
-										</td>
-									</tr>
-									<tr>
-										<td class="label-sub">Type:</td>
-										<td class="content-sub">gift_card</td>
-									</tr>
-									<tr>
-										<td class="label-sub">Restaurant:</td>
-										<td class="content-sub">
-											<select id="id_restaurant" class="chosen-select" name="id_restaurant" data-placeholder="Choose a restaurant" style="width:350px;">
-												<option value="" selected></option>
-												<option value="*" selected>** ANY RESTAURANT **</option>
-												<? foreach (Restaurant::q('SELECT * FROM restaurant WHERE giftcard = 1 ORDER BY name') as $restaurant) : ?>
-													<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
-												<? endforeach ; ?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td class="label-sub" nowrap="nowrap">Paid by:</td>
-										<td class="content-sub">
-											<select name="paid_by" id="paid_by">
-												<option value="crunchbutton">crunchbutton</option>
-												<option value="restaurant">restaurant</option>
-												<option value="promotional">promotional</option>
-												<option value="other_restaurant">other_restaurant</option>
-											</select>
-										</td>
-									</tr>
-									<tr id="row_id_restaurant_paid_by" style="display:none;">
-										<td class="label-sub">Restaurant that paid the credit:</td>
-										<td class="content-sub">
-											<select id="id_restaurant_paid_by" class="chosen-select" name="id_restaurant_paid_by" data-placeholder="Choose a restaurant" style="width:350px;">
-												<option value="" selected></option>
-												<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
-													<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
-												<? endforeach ; ?>
-											</select>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-		</table>
-			<table class="admin-giftcard-form">
-			<tr>
-				<td class="label-primary">More info:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:100%;">
-								<tbody>
-									<tr>
-										<td class="label-sub">Created by:</td>
-										<td class="content-sub"><input type="text" id="created_by" name="created_by" value="<?php echo $_SESSION['username']; ?>"></td>
-									</tr>
-									<tr>
-										<td class="label-sub"></td>
-										<td class="content-sub"><input type="checkbox" id="track" value="1" name="track"> Track this gift card</td>
-									</tr>
-									<tr class="track-fields">
-										<td class="label-sub">Notify phone:</td>
-										<td class="content-sub">
-											<?php
-											if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
-												$phone = c::config()->testphone->{ $_SESSION[ 'username' ] };
-											}
-											?>
-											<input type="text" id="notify_phone" value="<?php echo $phone; ?>" name="notify_phone">
-											<br />
-											<span style="font-size:11px;">
-												*Phone number that will receive a sms <br/>notification when this gift card is redeemed.
-											</span>
-										</td>
-									</tr>
-									<tr class="track-fields">
-										<td class="label-sub">Customer Name:</td>
-										<td class="content-sub"><input type="text" id="name" value="" name="name"></td>
-									</tr>
-									<tr class="track-fields">
-										<td class="label-sub">Contact Info:</td>
-										<td class="content-sub"><textarea name="contact" id="contact"></textarea></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Notes + Follow-up?</td>
-										<td class="content-sub"><textarea name="note" id="note"></textarea></td>
-									</tr>								</tbody>
-							</table>
-							<div class="divisor"></div>
-							<div style="margin-top:50px;" class="action-button action-button-small green admin-giftcard-save">
-								<span>Save</span>
-							</div>					
-						</div>
-					</div>
-				</td>
-			</tr>
-		</table>
+<?
+	$this->title = 'Gift cards';
+	$this->titleicon = 'gift';
+	$this->titleLink = '/giftcards';
+	
+	$this->title2 = 'SMS';
+	$this->title2icon = 'comment';
+
+?>
+
+
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-content padded">
+			
+		
+				<table class="admin-giftcard-form">
+					<tr>
+						<td class="label-primary">Promo code:</td>
+						<td class="content-primary">
+							<div class="check-wrap">
+								<div class="check-content">
+									<table style="width:100%;">
+										<tbody>
+											<tr>
+												<td class="label-sub">Value:</td>
+												<td class="content-sub"><input type="text" id="value" name="value"></div></td>
+											</tr>
+											<tr>
+												<td class="label-sub">Phones:</td>
+												<td class="content-sub">
+													<textarea style="height:100px;" name="phones" id="phones"></textarea>
+													<br/>
+													*One phone per line.
+												</td>
+											</tr>
+											<tr>
+												<td class="label-sub">Type:</td>
+												<td class="content-sub">gift_card</td>
+											</tr>
+											<tr>
+												<td class="label-sub">Restaurant:</td>
+												<td class="content-sub">
+													<select id="id_restaurant" class="chosen-select" name="id_restaurant" data-placeholder="Choose a restaurant" style="width:350px;">
+														<option value="" selected></option>
+														<option value="*" selected>** ANY RESTAURANT **</option>
+														<? foreach (Restaurant::q('SELECT * FROM restaurant WHERE giftcard = 1 ORDER BY name') as $restaurant) : ?>
+															<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+														<? endforeach ; ?>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td class="label-sub" nowrap="nowrap">Paid by:</td>
+												<td class="content-sub">
+													<select name="paid_by" id="paid_by">
+														<option value="crunchbutton">crunchbutton</option>
+														<option value="restaurant">restaurant</option>
+														<option value="promotional">promotional</option>
+														<option value="other_restaurant">other_restaurant</option>
+													</select>
+												</td>
+											</tr>
+											<tr id="row_id_restaurant_paid_by" style="display:none;">
+												<td class="label-sub">Restaurant that paid the credit:</td>
+												<td class="content-sub">
+													<select id="id_restaurant_paid_by" class="chosen-select" name="id_restaurant_paid_by" data-placeholder="Choose a restaurant" style="width:350px;">
+														<option value="" selected></option>
+														<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
+															<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
+														<? endforeach ; ?>
+													</select>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+					<table class="admin-giftcard-form">
+					<tr>
+						<td class="label-primary">More info:</td>
+						<td class="content-primary">
+							<div class="check-wrap">
+								<div class="check-content">
+									<table style="width:100%;">
+										<tbody>
+											<tr>
+												<td class="label-sub">Created by:</td>
+												<td class="content-sub"><input type="text" id="created_by" name="created_by" value="<?php echo $_SESSION['username']; ?>"></td>
+											</tr>
+											<tr>
+												<td class="label-sub"></td>
+												<td class="content-sub"><input type="checkbox" id="track" value="1" name="track"> Track this gift card</td>
+											</tr>
+											<tr class="track-fields">
+												<td class="label-sub">Notify phone:</td>
+												<td class="content-sub">
+													<?php
+													if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
+														$phone = c::config()->testphone->{ $_SESSION[ 'username' ] };
+													}
+													?>
+													<input type="text" id="notify_phone" value="<?php echo $phone; ?>" name="notify_phone">
+													<br />
+													<span style="font-size:11px;">
+														*Phone number that will receive a sms <br/>notification when this gift card is redeemed.
+													</span>
+												</td>
+											</tr>
+											<tr class="track-fields">
+												<td class="label-sub">Customer Name:</td>
+												<td class="content-sub"><input type="text" id="name" value="" name="name"></td>
+											</tr>
+											<tr class="track-fields">
+												<td class="label-sub">Contact Info:</td>
+												<td class="content-sub"><textarea name="contact" id="contact"></textarea></td>
+											</tr>
+											<tr>
+												<td class="label-sub">Notes + Follow-up?</td>
+												<td class="content-sub"><textarea name="note" id="note"></textarea></td>
+											</tr>								</tbody>
+									</table>
+									<div class="divisor"></div>
+
+					
+								</div>
+							</div>
+									<button type="submit" class="btn btn-blue admin-giftcard-save"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+						</td>
+					</tr>
+				</table>
+	</div>
+</div>
 	</div>
 </div>
 <script>

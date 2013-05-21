@@ -1,181 +1,196 @@
-<div class="admin-content-wrapper">
-	<div class="admin-content admin-content-giftcards">
-		<h1 class="giftcard-item-title">Gift card</h1>
-		<br /><br />
-		<table class="admin-giftcard-form">
-			<tr>
-				<td class="label-primary">Promo code:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:100%;">
-								<tbody>
-									<tr>
-										<td class="label-sub">Value:</td>
-										<td class="content-sub"><input type="text" id="value" name="value"></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Number of giftcards:</td>
-										<td class="content-sub"><input type="text" id="total" value="1" name="total"></td>
-									</tr>
-									<tr>
-										<td class="label-sub">User ID:</td>
-										<td class="content-sub">
-											<?php if( $this->user ) { ?>
-												<input type="text" readonly="readonly" id="user_name" name="user_name" value="<?php echo $this->user->name;?>">
-												<input type="hidden" id="id_user" name="id_user" value="<?php echo $this->user->id_user;?>">
-											<?php } else { ?>
-												<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:350px;" >
-											<option></option>
-											<?php foreach( $this->users as $user ) { ?>
-												<option value="<?php echo $user->id_user; ?>">
-													<?php echo $user->id_user; ?> - 
-													<?php echo $user->name; ?> 
-													<?php if( $user->phone != '' ) { echo $user->phone ; } ?> 
-													<?php if( $user->email != '' ) { echo $user->email; } ?>
-												</option>
-											<?php } ?>
-											</select>
-											<br/>
-											<span style="font-size:11px;">
-												If you chose an user just the chosen user will be able to use this gift card.
-											</span>
-											<?php } ?>
-											</td>
-									</tr>
-									<tr>
-										<td>&nbsp;</td>
-										<td>&nbsp;</td>
-									</tr>
-									<tr>
-										<td class="label-sub" nowrap="nowrap">Order reference:</td>
-										<td class="content-sub">
-											<input type="text" id="id_order_reference" name="id_order_reference" value="<?php echo $this->id_order_reference;?>">
-										</td>
-									</tr>
-									<tr>
-										<td class="label-sub">Type:</td>
-										<td class="content-sub">gift_card</td>
-									</tr>
-									<tr>
-										<td class="label-sub">Restaurant:</td>
-										<td class="content-sub">
-											<select id="id_restaurant" class="chosen-select" multiple name="id_restaurant" data-placeholder="Choose a restaurant" style="width:350px;">
-												<option value="" selected></option>
-												<option value="*" <?php if( !$this->id_restaurant){ echo 'selected'; } ?>>** ANY RESTAURANT **</option>
-												<? foreach (Restaurant::q('SELECT * FROM restaurant WHERE giftcard = 1 ORDER BY name') as $restaurant) : ?>
-													<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
-												<? endforeach ; ?>
-											</select>
-											<span style="font-size:11px;">
-												This form will create <span class="giftcard-number">1</span> gift card(s) for each restaurant.
-											</span>
-										</td>
-									</tr>
-									<tr>
-										<td>&nbsp;</td>
-										<td>&nbsp;</td>
-									</tr>
-									<tr>
-										<td class="label-sub" nowrap="nowrap">Paid by:</td>
-										<td class="content-sub">
-											<select name="paid_by" id="paid_by">
-												<option value="crunchbutton">crunchbutton</option>
-												<option value="restaurant">restaurant</option>
-												<option value="promotional">promotional</option>
-												<option value="other_restaurant">other_restaurant</option>
-											</select>
-										</td>
-									</tr>
-									<tr id="row_id_restaurant_paid_by" style="display:none;">
-										<td class="label-sub">Restaurant that paid the credit:</td>
-										<td class="content-sub">
-											<select id="id_restaurant_paid_by" class="chosen-select" name="id_restaurant_paid_by" data-placeholder="Choose a restaurant" style="width:350px;">
-												<option value="" selected></option>
-												<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
-													<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
-												<? endforeach ; ?>
-											</select>
-										</td>
-									</tr>
-									<?php if( $this->user ) { ?>
-									<tr>
-										<td class="label-sub"></td>
-										<td class="content-sub">
-											<input type="checkbox" value="1" name="add_as_credit" id="add_as_credit">Add as credit.
-											<span style="font-size:11px;display:block;">
-												If you check this option the user will receive the credit without the need to redeem it.
-											</span>
-										</td>
-									</tr>
-									<?php } ?>
-								</tbody>
-							</table>
-							
-						</div>	
-					</div>
-				</td>
-			</tr>
-		</table>
+<?
+	$this->title = 'Gift cards';
+	$this->titleicon = 'gift';
+	$this->titleLink = '/giftcards';
+	
+	$this->title2 = 'Create';
+	$this->title2icon = 'file';
+	
 
-		<table class="admin-giftcard-form">
-			<tr>
-				<td class="label-primary">More info:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:100%;">
-								<tbody>
-									<tr>
-										<td class="label-sub">Created by:</td>
-										<td class="content-sub"><input type="text" id="created_by" name="created_by" value="<?php echo $_SESSION['username']; ?>"></td>
-									</tr>
-									<tr>
-										<td class="label-sub"></td>
-										<td class="content-sub"><input type="checkbox" id="track" value="1" name="track"> Track this gift card</td>
-									</tr>
-									<tr class="track-fields">
-										<td class="label-sub">Notify phone:</td>
-										<td class="content-sub">
-											<?php
-											if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
-												$phone = c::config()->testphone->{ $_SESSION[ 'username' ] };
-											}
-											?>
-											<input type="text" id="notify_phone" value="<?php echo $phone; ?>" name="notify_phone">
-											<br />
-											<span style="font-size:11px;">
-												*Phone number that will receive a sms <br/>notification when this gift card is redeemed.
-											</span>
-										</td>
-									</tr>
-									<tr class="track-fields">
-										<td class="label-sub">Customer Name:</td>
-										<td class="content-sub"><input type="text" id="name" value="" name="name"></td>
-									</tr>
-									<tr class="track-fields">
-										<td class="label-sub">Contact Info:</td>
-										<td class="content-sub"><textarea name="contact" id="contact"></textarea></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Notes + Follow-up?</td>
-										<td class="content-sub"><textarea name="note" id="note"></textarea></td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="divisor"></div>
-							<div style="margin-top:50px;" class="action-button action-button-small green admin-giftcard-save">
-								<span>Save</span>
-							</div>
-							<div style="margin-top:50px; margin-right:10px;" class="action-button action-button-small green admin-giftcard-print">
-								<span>Save and print</span>
-							</div>
-						</div>
-					</div>
-				</td>
-			</tr>
-		</table>
+?>
+
+
+
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-content padded">
+
+
 		
+				<table class="admin-giftcard-form">
+					<tr>
+						<td class="label-primary">Promo code:</td>
+						<td class="content-primary">
+							<div class="check-wrap">
+								<div class="check-content">
+									<table style="width:100%;">
+										<tbody>
+											<tr>
+												<td class="label-sub">Value:</td>
+												<td class="content-sub"><input type="text" id="value" name="value"></td>
+											</tr>
+											<tr>
+												<td class="label-sub">Number of giftcards:</td>
+												<td class="content-sub"><input type="text" id="total" value="1" name="total"></td>
+											</tr>
+											<tr>
+												<td class="label-sub">User ID:</td>
+												<td class="content-sub">
+													<?php if( $this->user ) { ?>
+														<input type="text" readonly="readonly" id="user_name" name="user_name" value="<?php echo $this->user->name;?>">
+														<input type="hidden" id="id_user" name="id_user" value="<?php echo $this->user->id_user;?>">
+													<?php } else { ?>
+														<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:350px;" >
+													<option></option>
+													<?php foreach( $this->users as $user ) { ?>
+														<option value="<?php echo $user->id_user; ?>">
+															<?php echo $user->id_user; ?> - 
+															<?php echo $user->name; ?> 
+															<?php if( $user->phone != '' ) { echo $user->phone ; } ?> 
+															<?php if( $user->email != '' ) { echo $user->email; } ?>
+														</option>
+													<?php } ?>
+													</select>
+													<br/>
+													<span style="font-size:11px;">
+														If you chose an user just the chosen user will be able to use this gift card.
+													</span>
+													<?php } ?>
+													</td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr>
+												<td class="label-sub" nowrap="nowrap">Order reference:</td>
+												<td class="content-sub">
+													<input type="text" id="id_order_reference" name="id_order_reference" value="<?php echo $this->id_order_reference;?>">
+												</td>
+											</tr>
+											<tr>
+												<td class="label-sub">Type:</td>
+												<td class="content-sub">gift_card</td>
+											</tr>
+											<tr>
+												<td class="label-sub">Restaurant:</td>
+												<td class="content-sub">
+													<select id="id_restaurant" class="chosen-select" multiple name="id_restaurant" data-placeholder="Choose a restaurant" style="width:350px;">
+														<option value="" selected></option>
+														<option value="*" <?php if( !$this->id_restaurant){ echo 'selected'; } ?>>** ANY RESTAURANT **</option>
+														<? foreach (Restaurant::q('SELECT * FROM restaurant WHERE giftcard = 1 ORDER BY name') as $restaurant) : ?>
+															<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
+														<? endforeach ; ?>
+													</select>
+													<span style="font-size:11px;">
+														This form will create <span class="giftcard-number">1</span> gift card(s) for each restaurant.
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr>
+												<td class="label-sub" nowrap="nowrap">Paid by:</td>
+												<td class="content-sub">
+													<select name="paid_by" id="paid_by">
+														<option value="crunchbutton">crunchbutton</option>
+														<option value="restaurant">restaurant</option>
+														<option value="promotional">promotional</option>
+														<option value="other_restaurant">other_restaurant</option>
+													</select>
+												</td>
+											</tr>
+											<tr id="row_id_restaurant_paid_by" style="display:none;">
+												<td class="label-sub">Restaurant that paid the credit:</td>
+												<td class="content-sub">
+													<select id="id_restaurant_paid_by" class="chosen-select" name="id_restaurant_paid_by" data-placeholder="Choose a restaurant" style="width:350px;">
+														<option value="" selected></option>
+														<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
+															<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
+														<? endforeach ; ?>
+													</select>
+												</td>
+											</tr>
+											<?php if( $this->user ) { ?>
+											<tr>
+												<td class="label-sub"></td>
+												<td class="content-sub">
+													<input type="checkbox" value="1" name="add_as_credit" id="add_as_credit">Add as credit.
+													<span style="font-size:11px;display:block;">
+														If you check this option the user will receive the credit without the need to redeem it.
+													</span>
+												</td>
+											</tr>
+											<?php } ?>
+										</tbody>
+									</table>
+									
+								</div>	
+							</div>
+						</td>
+					</tr>
+				</table>
+		
+				<table class="admin-giftcard-form">
+					<tr>
+						<td class="label-primary">More info:</td>
+						<td class="content-primary">
+							<div class="check-wrap">
+								<div class="check-content">
+									<table style="width:100%;">
+										<tbody>
+											<tr>
+												<td class="label-sub">Created by:</td>
+												<td class="content-sub"><input type="text" id="created_by" name="created_by" value="<?php echo $_SESSION['username']; ?>"></td>
+											</tr>
+											<tr>
+												<td class="label-sub"></td>
+												<td class="content-sub"><input type="checkbox" id="track" value="1" name="track"> Track this gift card</td>
+											</tr>
+											<tr class="track-fields">
+												<td class="label-sub">Notify phone:</td>
+												<td class="content-sub">
+													<?php
+													if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
+														$phone = c::config()->testphone->{ $_SESSION[ 'username' ] };
+													}
+													?>
+													<input type="text" id="notify_phone" value="<?php echo $phone; ?>" name="notify_phone">
+													<br />
+													<span style="font-size:11px;">
+														*Phone number that will receive a sms <br/>notification when this gift card is redeemed.
+													</span>
+												</td>
+											</tr>
+											<tr class="track-fields">
+												<td class="label-sub">Customer Name:</td>
+												<td class="content-sub"><input type="text" id="name" value="" name="name"></td>
+											</tr>
+											<tr class="track-fields">
+												<td class="label-sub">Contact Info:</td>
+												<td class="content-sub"><textarea name="contact" id="contact"></textarea></td>
+											</tr>
+											<tr>
+												<td class="label-sub">Notes + Follow-up?</td>
+												<td class="content-sub"><textarea name="note" id="note"></textarea></td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="divisor"></div>
+
+								</div>
+							</div>
+									<button type="submit" class="btn btn-blue admin-giftcard-save"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+									<button type="submit" class="btn btn-blue admin-giftcard-print"><i class="icon-print"></i>&nbsp;&nbsp;&nbsp; Save &amp; Print </button> 
+
+						</td>
+					</tr>
+				</table>
+	</div>
+</div>		
 	</div>
 </div>
 
