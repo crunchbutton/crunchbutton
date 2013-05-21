@@ -280,12 +280,25 @@
 					<span class="breadcrumb-arrow"><span></span></span>
 				</div>  
 
-        		<div class="breadcrumb-button">
-					<span class="breadcrumb-label">
-						<i class="icon-<?=$this->titleicon?>"></i> <?=$this->title?>
-					</span>
-					<span class="breadcrumb-arrow"><span></span></span>
-				</div>
+				<? if ($this->title) : ?>
+	        		<div class="breadcrumb-button">
+	        			<? if ($this->titleLink) : ?><a href="<?=$this->titleLink?>"><? endif ; ?>
+							<span class="breadcrumb-label">
+								<i class="icon-<?=$this->titleicon?>"></i> <?=$this->title?>
+							</span>
+						<? if ($this->titleLink) : ?></a><? endif ; ?>
+						<span class="breadcrumb-arrow"><span></span></span>
+					</div>
+				<? endif ; ?>
+				
+				<? if ($this->title2) : ?>
+	        		<div class="breadcrumb-button">
+						<span class="breadcrumb-label">
+							<i class="icon-<?=$this->title2icon?>"></i> <?=$this->title2?>
+						</span>
+						<span class="breadcrumb-arrow"><span></span></span>
+					</div>
+				<? endif ; ?>
 			</div>
 		</div>
 	</div>
