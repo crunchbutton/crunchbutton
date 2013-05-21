@@ -16,7 +16,7 @@
 						<div class="span6 separate-sections">
 							<ul class="padded separate-sections">
 								<li class="input">
-									<input name="search" type="text" placeholder="Search" value="<?=strip_tags($_REQUEST['search'])?>">
+									<input name="order-search" type="text" placeholder="Search" value="<?=strip_tags($_REQUEST['s'])?>">
 								</li>
 								<li>
 									<label class="span3">Environment</label>
@@ -126,6 +126,7 @@
 
 <script>
 	$(function() {
+
 		$(document).on('click', '.refund', function() {
 			var el = $(this);
 			var question = 'Are you sure you want to refund this?';
