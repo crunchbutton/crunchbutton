@@ -1834,7 +1834,8 @@ $(function() {
 	});
 
 	$$('.nav-back').tap(function() {
-		App.controlMobileIcons.showPacman( 'left', function(){ $('.nav-back').removeClass('nav-back-show'); } );		
+		$('.nav-back').removeClass('nav-back-show');
+		// App.controlMobileIcons.showPacman( 'left', function(){ $('.nav-back').removeClass('nav-back-show'); } );		
 		if( App.loc.locationNotServed ){
 			App.loc.locationNotServed = false;
 			App.loadHome(true);
@@ -2127,6 +2128,7 @@ App.controlMobileIcons.normalize = function(){
 }
 
 App.controlMobileIcons.showPacman = function( side, call ){
+	console.log( 'pacman' );
 	$( '.pacman-' + side ).addClass( 'pacman-show' );
 	if( call ){ call(); }
 }
