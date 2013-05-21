@@ -1838,7 +1838,6 @@ html[xmlns] .clearfix {
 			width: 50px;
 			height: 50px;
 			display: none;
-			cursor: pointer;
 			-webkit-user-select: none;
 			-khtml-user-select: none;
 			-moz-user-select: none;
@@ -1859,7 +1858,6 @@ html[xmlns] .clearfix {
 				border: 1px solid #999;
 				border-radius: 3px;
 				color:#666;
-				display: none;
 				font-size: 12px;
 				font-weight: 400;
 				line-height: 18px;
