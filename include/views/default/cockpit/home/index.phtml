@@ -14,7 +14,7 @@
 
 				<div class="row-fluid">
 					<div class="span6 action-nav-button">
-						<a href="#" title="New Project">
+						<a href="/restaurants/new" title="New Restaurant">
 							<i class="icon-file-alt"></i>
 							<span>New Restaurant</span>
 						</a>
@@ -22,45 +22,28 @@
 					</div>
 			
 					<div class="span6 action-nav-button">
-						<a href="#" title="Messages">
+						<a href="/support" title="Support">
 							<i class="icon-comments-alt"></i>
-							<span>Messages</span>
+							<span>Support</span>
 						</a>
-						<span class="label label-black">14</span>
+						<span class="label label-black"><?=$this->data['all']['tickets']?></span>
 					</div>
 				</div>
+
 			
 				<div class="row-fluid">
 					<div class="span6 action-nav-button">
-						<a href="#" title="Files">
-							<i class="icon-folder-open-alt"></i>
-							<span>Files</span>
+						<a href="https://github.com/crunchbutton/crunchbutton" title="Github" target="_blank">
+							<i class="icon-github"></i>
+							<span>Github</span>
 						</a>
 					</div>
 			
 					<div class="span6 action-nav-button">
-						<a href="#" title="Users">
-							<i class="icon-user"></i>
-							<span>Users</span>
-						</a>
-						<span class="triangle-button green"><span class="inner">+3</span></span>
-					</div>
-				</div>
-			
-				<div class="row-fluid">
-					<div class="span6 action-nav-button">
-						<a href="#" title="Friends">
+						<a href="https://www.facebook.com/crunchbutton" title="Facebook" target="_blank">
 							<i class="icon-facebook-sign"></i>
-							<span>Friends</span>
+							<span>Facebook</span>
 						</a>
-					</div>
-			
-					<div class="span6 action-nav-button">
-						<a href="#" title="Followers">
-							<i class="icon-twitter"></i>
-							<span>Followers</span>
-						</a>
-						<span class="triangle-button blue"><span class="inner">+8</span></span>
 					</div>
 				</div>
 			
@@ -96,10 +79,10 @@
 									<div class="dashboard-stats">
 										<ul class="inline">
 											<li class="glyph"><i class="icon-bolt icon-2x"></i></li>
-											<li class="count">973,119</li>
+											<li class="count"><?=$this->data['all']['orders']?></li>
 										</ul>
-										<div class="progress progress-blue"><div class="bar tip" title="80%" data-percent="80"></div></div>
-										<div class="stats-label">Total Visits</div>
+										
+										<div class="stats-label">Total Orders</div>
 									</div>
 								</div>
 							</div>
@@ -109,10 +92,10 @@
 									<div class="dashboard-stats small">
 										<ul class="inline">
 											<li class="glyph"><i class="icon-user"></i></li>
-											<li class="count">8800</li>
+											<li class="count"><?=$this->data['week']['orders']?></li>
 										</ul>
-										<div class="progress progress-blue"><div class="bar tip" title="65%" data-percent="65"></div></div>
-										<div class="stats-label">New Visitors</div>
+										
+										<div class="stats-label">This Week</div>
 									</div>
 								</div>
 			
@@ -120,10 +103,10 @@
 									<div class="dashboard-stats small">
 										<ul class="inline">
 											<li class="glyph"><i class="icon-eye-open"></i></li>
-											<li class="count">25668</li>
+											<li class="count"><?=$this->data['day']['orders']?></li>
 										</ul>
-										<div class="progress progress-blue"><div class="bar tip" title="80%" data-percent="80"></div></div>
-										<div class="stats-label">Page Views</div>
+										<? /* <div class="progress progress-blue"><div class="bar tip" title="80%" data-percent="80"></div></div> */ ?>
+										<div class="stats-label">Today</div>
 									</div>
 								</div>
 							</div>
@@ -142,31 +125,13 @@
 
 
 
-<div class="row-fluid">
+
 	<div class="box">
-		<div class="box-header"><span class="title">xCharts</span></div>
+		<div class="box-header"><span class="title">Dash shit</span></div>
 		<div class="box-content padded">
 
 
-		<h1>All time</h1>
-		<h2>Orders</h2>
-		<h1><?=$this->data['all']['orders']?></h1>
-		<br />
-		<h2>Support tickets</h2>
-		<h1><?=$this->data['all']['tickets']?></h1>
-		<hr>
-		<b>Last 24 hours</b>
-
-		<h2>Orders</h2>
-		<h1><?=$this->data['day']['orders']?></h1>
-
-		<hr>
-		<b>Last 7 days</b>
-
-		<h2>Orders</h2>
-		<h1><?=$this->data['week']['orders']?></h1>
-
-		<hr>
+		<? /*
 		<? foreach ($this->graphs as $id => $graph) : ?>
 			<? $this->display('charts/area', ['set' => [
 				'chartId' => $id,
@@ -174,6 +139,7 @@
 				'title' => $graph['title']
 			]]); ?>
 		<? endforeach ; ?>
+		*/ ?>
 
 
 
