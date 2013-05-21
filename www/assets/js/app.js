@@ -681,8 +681,16 @@ App.cart = {
 
 	},
 
-	customizeItemPrice: function(price) {
-		return price != '0.00' ? '&nbsp;(' + ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + price.toFixed(2) + ')' : '';
+	customizeItemPrice: function(price, force) {
+		var priceText = '';
+		if( price != '0.00' || force ){
+			priceText = '&nbsp;(';
+			priceText += ( price < 0 ) ? 'minus ' : '+ ';
+			priceText += ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' );
+			priceText += parseFloat( Math.abs( price ) ).toFixed(2);
+			priceText += ')';
+		} 
+		return priceText;
 	},
 
 	customize: function(item) {
@@ -713,12 +721,13 @@ App.cart = {
 					if ($.inArray(opt[x].id_option, cartitem.options) !== -1) {
 						check.attr('checked','checked');
 					}
+
 					var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
 						.append(check)
 						.append('<label class="cart-item-customize-name">' +
 							opt[x].name + (opt[x].description || '') +
 							'</label><label class="cart-item-customize-price">' +
-							App.cart.customizeItemPrice(price) + '</label>'
+							App.cart.customizeItemPrice( price ) + '</label>'
 						);
 					el.append(option);
 
@@ -737,8 +746,8 @@ App.cart = {
 					for (var i in opt) {
 
 						if (opt[i].id_option_parent == opt[x].id_option) {
-
-							var option = $('<option value="' + opt[i].id_option + '">' + opt[i].name + (opt[i].description || '') + (opt[i].price != '0.00' || opt[x].price_linked == '1' ? (' (' + ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + (parseFloat(opt[i].price) + parseFloat(obj.price)).toFixed(2) + ')') : '') + '</option>');
+							var price = opt[i].price;
+							var option = $('<option value="' + opt[i].id_option + '">' + opt[i].name + (opt[i].description || '') + App.cart.customizeItemPrice( price, ( opt[x].price_linked == '1' ) ) + '</option>');
 							if ($.inArray(opt[i].id_option, cartitem.options) !== -1) {
 								option.attr('selected','selected');
 							}
