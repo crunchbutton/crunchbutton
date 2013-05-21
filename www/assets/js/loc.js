@@ -171,10 +171,12 @@ App.loc = {
 	
 		var success = function() {
 			// browser detection success
+			console.log( 'location-detected' );
 			$(document).trigger('location-detected');
 		};
 		
 		var error = function() {
+			console.log( 'error' );
 			// Last try, reverseGeocode with aproxLoc
 			if( App.loc.aproxLoc ){
 				App.loc.realLoc = App.loc.aproxLoc;
@@ -185,6 +187,7 @@ App.loc = {
 		};
 
 		var complete = function(lat, lon, city, region) {
+			console.log('complete');
 			if (lat) {
 				// we have a location! but its just a guess
 				App.loc.aproxLoc = {
