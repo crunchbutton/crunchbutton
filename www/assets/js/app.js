@@ -213,6 +213,9 @@ App.loadPage = function() {
 		case /^order/i.test(url):
 			App.page.order(path[1]);
 			break;
+		case /^bycity/i.test(url):
+			App.page.bycity();
+			break;
 		case /^reset/i.test(url):
 			App.page.resetPassword( path );
 			break;
@@ -590,11 +593,13 @@ App.cart = {
 			$('.cart-gift').html( '' );
 		}
 
-		if( App.order.pay_type == 'cash' && credit > 0 ){
-			$( '.cart-giftcard-message' ).html( '<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>' );
-		} else {
-		  $( '.cart-giftcard-message' ).html( '' );
-		}
+		setTimeout( function(){
+			if( App.order.pay_type == 'cash' && credit > 0 && App.giftcard.showGiftCardCashMessage ){
+				$( '.cart-giftcard-message' ).html( '<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>' );
+			} else {
+			  $( '.cart-giftcard-message' ).html( '' );
+			}
+		}, 1000 );
 
 		$('.cart-total').html( totalText );
 
@@ -1531,6 +1536,7 @@ $(function() {
 		e.stopPropagation();
 		App.trigger.credit();
 		App.track('Switch to card');
+		App.giftcard.notesField.listener();
 	});
 
 	$(document).on('touchclick', '.pay-toggle-cash', function(e) {
@@ -1538,6 +1544,7 @@ $(function() {
 		e.stopPropagation();
 		App.trigger.cash();
 		App.track('Switch to cash');
+		App.giftcard.notesField.listener();
 	});
 
 	$(document).on('touchclick', '.location-detect', function() {
@@ -1946,8 +1953,13 @@ $(function() {
 	});
 	
 	$(document).on('touchclick', '.config-icon', function() {
-		App.controlMobileIcons.showPacman( 'left', function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
-		App.loadHome(true);
+		if( App.isNarrowScreen() && $( this ).hasClass( 'config-icon-back-home' ) ){
+			App.controlMobileIcons.backHome();
+		} else {
+			var pacmanSide = ( App.currentPage == 'restaurants' ) ? 'right' : 'left';
+			App.controlMobileIcons.showPacman( pacmanSide, function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
+			App.loadHome(true);	
+		}
 	});
 
 	$(document).on('change', '[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]', function() {
@@ -2059,24 +2071,51 @@ App.message.chrome = function( ){
 // Issue #1227
 App.controlMobileIcons = {};
 App.controlMobileIcons.process = function( page ){
+
 	if( !App.isNarrowScreen() ){
 		return false;
 	}
+
+	App.controlMobileIcons.normalize();
 
 	App.loc.locationNotServed = false;
 	$( '.sign-in-icon' ).removeClass( 'config-icon-mobile-hide' );
 	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
 	switch( page ){
-		case 'home':
 		case 'restaurant':
 		case 'order':
 			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+			break;
+		case 'home':
+			$( '.config-icon' ).addClass( 'config-icon-back-home' );
 			break;
 		case 'orders':
 			$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
 			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 			break;
+		case 'restaurants':
+			$( '.sign-in-icon' ).addClass( 'left' );
+			$( '.config-icon' ).addClass( 'right' );
+			break;
 	}
+}
+
+App.controlMobileIcons.backHome = function(){
+	if( App.loc.locationNotServed ){
+		App.page.home( true );
+	} else {
+		if( App.restaurants.list && App.restaurants.list.length > 0 ){
+			App.page.foodDelivery();
+		} else {
+			History.pushState( {}, 'Crunchbutton', '/bycity' );
+		}	
+	}
+}
+
+App.controlMobileIcons.normalize = function(){
+	$( '.sign-in-icon' ).removeClass( 'left' );
+	$( '.config-icon' ).removeClass( 'right' );
+	$( '.config-icon' ).removeClass( 'config-icon-back-home' );
 }
 
 App.controlMobileIcons.showPacman = function( side, call ){

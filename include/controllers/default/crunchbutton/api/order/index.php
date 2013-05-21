@@ -141,15 +141,26 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			// Issue #1250 - make Max CB a phone call in addition to a text
-			case 'maxcall' : 
+			case 'maxconfirmation' : 
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<Response>';
 					echo '<Say voice="'.c::config()->twilio->voice.'">';
-					echo 'Order number ' . $order->id_order . ' has timed out to ' . $order->restaurant()->name . ' from ' . $order->name;
+					echo 'Max confirmation call for order number ' . $order->id_order . ' has timed out to ' . $order->restaurant()->name . ' from ' . $order->name;
 					echo '</Say>';
 					echo '</Response>';
 				exit;
 				break;
+
+			case 'maxcalling' : 
+				header('Content-type: text/xml');
+				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<Response>';
+					echo '<Say voice="'.c::config()->twilio->voice.'">';
+					echo 'Max call back for order number ' . $order->id_order . ' has timed out to ' . $order->restaurant()->name . ' from ' . $order->name;
+					echo '</Say>';
+					echo '</Response>';
+				exit;
+				break;
+
 
 			case 'doconfirm':
 				header('Content-type: text/xml');

@@ -1,0 +1,8 @@
+<div class="content-item-locations crunchbutton-by-city">
+	<h1>Crunchbutton by city:</h1> 
+	<div class="content-item-locations-cities">
+		<% _.each(topCommunities, function(alias) { %>
+			<span class="content-item-locations-city" permalink="<%= alias.alias %>"><%= alias.name %></span>&nbsp;&nbsp;&nbsp;&nbsp;
+		<% }); %>
+	</div>
+</div>
