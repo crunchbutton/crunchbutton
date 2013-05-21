@@ -343,7 +343,7 @@ b {
 	background: url(/assets/images/plus.png) no-repeat;
 }
 .cart-button-remove {
-	background: url(/assets/images/minus.png) no-repeat;
+	background: url(/assets/images/xsign.png) no-repeat;
 	margin-right: 4px;
 }
 
@@ -1654,12 +1654,12 @@ html[xmlns] .clearfix {
 	}
 	.cart-button-remove span {
 		display: block;
-		background: url(/assets/images/minus2.png) no-repeat;
-		width: 14px;
-		height: 8px;
+		background: url(/assets/images/xsign2.png) no-repeat;
+		width: 23px;
+		height: 23px;
 		background-size: contain;
 		margin: 0 auto;
-		margin-top: 10px;
+		margin-top: 2px;
 	}
 
 	.cart-button {
