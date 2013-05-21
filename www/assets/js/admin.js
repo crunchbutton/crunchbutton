@@ -1574,9 +1574,9 @@ App.giftcards = {
 					} else {
 						alert( 'Gift card(s) created!' );
 						if( App.giftcards.print ){
-							// location.href = '/giftcards/print/' + json.success;	
+							location.href = '/giftcards/print/' + json.success;	
 						} else {
-							// location.href = '/giftcards';	
+							location.href = '/giftcards';	
 						}
 					}
 				},

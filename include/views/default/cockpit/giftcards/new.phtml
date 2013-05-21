@@ -34,32 +34,15 @@
 												<td class="label-sub">Number of giftcards:</td>
 												<td class="content-sub"><input type="text" id="total" value="1" name="total"></td>
 											</tr>
+											<?php if( $this->user ) { ?>
 											<tr>
-												<td class="label-sub">User ID:</td>
+												<td class="label-sub">User:</td>
 												<td class="content-sub">
-													<?php if( $this->user ) { ?>
 														<input type="text" readonly="readonly" id="user_name" name="user_name" value="<?php echo $this->user->name;?>">
 														<input type="hidden" id="id_user" name="id_user" value="<?php echo $this->user->id_user;?>">
-													<?php } else { ?>
-														<select id="id_user" class="chosen-select" name="id_user" data-placeholder="Choose an user" style="width:350px;" >
-													<option></option>
-													<?php foreach( $this->users as $user ) { ?>
-														<option value="<?php echo $user->id_user; ?>">
-															<?php echo $user->id_user; ?> - 
-															<?php echo $user->name; ?> 
-															<?php if( $user->phone != '' ) { echo $user->phone ; } ?> 
-															<?php if( $user->email != '' ) { echo $user->email; } ?>
-														</option>
-													<?php } ?>
-													</select>
-													<br/>
-													<span style="font-size:11px;">
-														If you chose an user just the chosen user will be able to use this gift card.
-													</span>
-													<?php } ?>
 													</td>
 											</tr>
-											<?php if( $this->user ) { ?>
+											
 											<tr>
 												<td>Notify by</td>
 												<td>
@@ -73,7 +56,7 @@
 
 												</td>
 											</tr>
-											<?php } ?>
+											
 											<tr>
 												<td>&nbsp;</td>
 												<td>&nbsp;</td>
@@ -84,10 +67,7 @@
 													<input type="text" id="id_order_reference" name="id_order_reference" value="<?php echo $this->id_order_reference;?>">
 												</td>
 											</tr>
-											<tr>
-												<td class="label-sub">Type:</td>
-												<td class="content-sub">gift_card</td>
-											</tr>
+											<?php } ?>
 											<tr>
 												<td class="label-sub">Restaurant:</td>
 												<td class="content-sub">
@@ -135,7 +115,7 @@
 												<td class="content-sub">
 													<input type="checkbox" value="1" name="add_as_credit" id="add_as_credit">Add as credit.
 													<span style="font-size:11px;display:block;">
-														If you check this option the user will receive the credit without the need to redeem it.
+														If you check this option the user will receive the credit without the need to redeem it. The user will not be notified.
 													</span>
 												</td>
 											</tr>
