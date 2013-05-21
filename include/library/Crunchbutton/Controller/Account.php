@@ -27,6 +27,7 @@ class Crunchbutton_Controller_Account extends Cana_Controller {
 		
 		$_SESSION['admin'] = true;
 		$_SESSION['username'] = c::view()->username;
+		c::view()->layout('layout/core');
 
 
     }

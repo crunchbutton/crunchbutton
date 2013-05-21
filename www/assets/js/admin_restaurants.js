@@ -10,7 +10,7 @@ $(document).ready(function() {
 
 var PAGE = {
 	init : function() {
-		$('.chosen-select').chosen();
+		$('.chosen-select').select2();
 		$('#restaurant-id').change(function(event) {
 			document.location.href = '/restaurants/' + event.target.value;
 		});

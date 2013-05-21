@@ -1140,7 +1140,7 @@ $(function() {
 		var d = $('.date-picker').val();
 		d = d.split(',');
 
-
+/*
 		$('.date-picker').DatePicker({
 			format: 'm/d/Y',
 			date: d,
@@ -1159,6 +1159,7 @@ $(function() {
 				}
 			}
 		});
+		*/
 	}
 
 	$(document).on('change', 'input[name="order-range-all"]', function() {
