@@ -1834,8 +1834,7 @@ $(function() {
 	});
 
 	$$('.nav-back').tap(function() {
-		$('.nav-back').removeClass('nav-back-show');
-		// App.controlMobileIcons.showPacman( 'left', function(){ $('.nav-back').removeClass('nav-back-show'); } );		
+		App.controlMobileIcons.showPacman( 'left', function(){ $('.nav-back').removeClass('nav-back-show'); } );		
 		if( App.loc.locationNotServed ){
 			App.loc.locationNotServed = false;
 			App.loadHome(true);
