@@ -1,3 +1,13 @@
+<script type="text/javascript">
+if( App ){
+	App.config = <?=json_encode(c::appConfig())?>;
+} else {
+	$(function() {
+		App.config = <?=json_encode(c::appConfig())?>;
+	});
+}
+</script>
+
 <? if ((Cana::env() != 'live' ) && (isset($this->restaurant)) && (!$this->restaurant->open()) ) :?>
 	<style> .wrapper { background: lightgray;} </style>
 <? endif?>
@@ -59,9 +69,6 @@
 	</audio>
 </body>
 <script type="text/javascript">
-$(function() {
-	App.config = <?=json_encode(c::appConfig())?>;
-});
 $(function() {
 window.fbAsyncInit = function() {
 	FB.init({

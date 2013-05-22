@@ -154,7 +154,7 @@ App.loc = {
 		if (lcookie) {
 			App.loc.realLoc = lcookie;
 			
-		} else if (App.config.user.location_lat) {
+		} else if (App.config && App.config.user && App.config.user.location_lat) {
 			// set the realloc to the users position
 			App.loc.realLoc = {
 				lat: App.config.user.location_lat,
