@@ -35,7 +35,7 @@ class Controller_issues extends Crunchbutton_Controller_Account {
 			return strcmp(getWeight($a), getWeight($b));
 		};
 
-		switch (c::getPagePiece(2)) {
+		switch (c::getPagePiece(1)) {
 
 			case 'view':
 				if (!$_COOKIE['github-token']) {
