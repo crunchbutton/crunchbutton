@@ -1,5 +1,7 @@
 <div class="admin-content-wrapper">
 	<div class="admin-content admin-content-orders">
+		<a href="/issues/search">Search issues</a>
+		<br/><br/><br/>
 		<? foreach ($this->users as $user) : ?>
 			<div class="issue-user">
 				<h1><?=$user['name'] ? $user['name'] : $user['login']?></h1>
