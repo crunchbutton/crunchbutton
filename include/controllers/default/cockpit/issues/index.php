@@ -68,7 +68,6 @@ class Controller_issues extends Crunchbutton_Controller_Account {
 
 				if( $_REQUEST['date'] ){
 					$dateLimit = strtotime( $_REQUEST['date'] );
-
 					$res = $client->authenticate($_COOKIE['github-token'], null, Github\Client::AUTH_HTTP_TOKEN);
 
 					$limitOfPages = 3;
@@ -83,8 +82,8 @@ class Controller_issues extends Crunchbutton_Controller_Account {
 					$issuesFilteredByDate = array();
 
 					foreach ( $issues as $issue ) {
-						$updated_at = strtotime( $issue['updated_at'] );
-						if( $updated_at > $dateLimit ){
+						$closed_at = strtotime( $issue['closed_at'] );
+						if( $closed_at >= $dateLimit ){
 							$issuesFilteredByDate[] = $issue;
 						}
 					}
