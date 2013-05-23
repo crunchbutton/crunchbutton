@@ -60,6 +60,42 @@ class Controller_issues extends Crunchbutton_Controller_Account {
 
 				break;
 				
+			case 'search':
+				if (!$_COOKIE['github-token']) {
+					header('Location: /issues');
+					exit;
+				}
+
+				if( $_REQUEST['date'] ){
+					$dateLimit = strtotime( $_REQUEST['date'] );
+
+					$res = $client->authenticate($_COOKIE['github-token'], null, Github\Client::AUTH_HTTP_TOKEN);
+
+					$limitOfPages = 3;
+					$issuesPerPage = 100;
+
+					$issues = array();
+					for( $page = 1; $page <= $limitOfPages; $page++ ){
+						$res = $client->getHttpClient()->get( 'repos/crunchbutton/crunchbutton/issues?filter=all&state=closed&sort=updated&updated=>2013-05-13&per_page=' . $issuesPerPage . '&page=' . $page );
+						$issues = array_merge( $issues, $res->getContent() );	
+					}
+
+					$issuesFilteredByDate = array();
+
+					foreach ( $issues as $issue ) {
+						$updated_at = strtotime( $issue['updated_at'] );
+						if( $updated_at > $dateLimit ){
+							$issuesFilteredByDate[] = $issue;
+						}
+					}
+
+					c::view()->issues = $issuesFilteredByDate;
+				}
+
+				c::view()->display('issues/search');
+
+
+				break;
 			case 'auth':
 				$redir = 'http://'.$_SERVER['HTTP_HOST'].'admin/issues/authcallback';
 				header('Location: https://github.com/login/oauth/authorize?client_id='.c::config()->github->id.'&scope=user,repo');

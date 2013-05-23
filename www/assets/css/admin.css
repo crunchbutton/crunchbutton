@@ -954,3 +954,16 @@ input:disabled {
 .admin-menu-dish-details.hidden {
 	visibility: visible;
 }
+.issues-search{
+	margin:10px;
+	width: 500px;
+}
+	.issues-search th{
+		text-align: center;
+		padding:5px !important;
+	}
+	.issues-search td{
+		border:1px solid #CCC;
+		margin:3px;
+		padding:5px !important;
+	}
