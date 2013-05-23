@@ -97,10 +97,11 @@
 			<David>_PHONE_</David>
 		</supportcall>
     <text>
-     	<Devin>_PHONE_</Devin>
+    	<Daniel>***REMOVED***</Daniel>
+     <!-- 	<Devin>_PHONE_</Devin>
     	<Judd>_PHONE_</Judd>
     	<David>_PHONE_</David>
-    	<Nick>_PHONE_</Nick>
+    	<Nick>_PHONE_</Nick> -->
     </text>
     <stripe>
     	<dev>
@@ -174,14 +175,18 @@
 		<testnumber>_PHONE_</testnumber>
 		<voice>male</voice>
 		<greeting>Hello. This is crunchbutton, </greeting>
-		<maxcallback>5</maxcallback>
-		<maxconfirmback>4</maxconfirmback>
+		<!-- <maxcallback>5</maxcallback>
+		<maxconfirmback>4</maxconfirmback> -->
+		<maxcallback>2</maxcallback>
+		<maxconfirmback>2</maxconfirmback>
 		<warningOrderNotConfirmedTime>720000</warningOrderNotConfirmedTime>
 		<confirmTime>30000</confirmTime>
 		<confirmFaxTime>30000</confirmFaxTime>
 		<confirmTimeFaxReceived>300000</confirmTimeFaxReceived>
-		<confirmTimeCallback>120000</confirmTimeCallback>
-		<callbackTime>120000</callbackTime>
+		<confirmTimeCallback>30000</confirmTimeCallback>
+		<callbackTime>30000</callbackTime>
+		<!-- <confirmTimeCallback>120000</confirmTimeCallback>
+		<callbackTime>120000</callbackTime> -->
 	</twilio>
 	<phaxio>
 		<old>

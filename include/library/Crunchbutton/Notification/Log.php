@@ -38,7 +38,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 			$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling';
 
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'type' => 'notification' ]);
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'callto'=> $support, 'type' => 'notification' ]);
 
 			// c::timeout(function() use( $support, $twilio, $url ) {
 				foreach ( $support as $supportName => $supportPhone ) {
@@ -54,7 +54,6 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			// });
 
 			Log::critical([
-				'id_order' => $this->id_order, 
 				'id_notification_log' => $this->id_notification_log,
 				'id_notification' => $this->id_notification,
 				'id_restaurant' => $this->order()->restaurant()->id_restaurant,
@@ -81,7 +80,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$not->send($order);
 		}, c::config()->twilio->callbackTime);		
 	}
-	
+
 	public function confirm() {
 		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and status="callback" and `type`="confirm"');
 
@@ -102,7 +101,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 			$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxconfirmation';
 
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB Calling - starting', 'url' => $url, 'type' => 'notification' ]);
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB Calling - starting', 'url' => $url, 'callto'=> $support, 'type' => 'notification' ]);
 
 			// c::timeout(function() use( $support, $twilio, $url ) {
 			foreach ( $support as $supportName => $supportPhone ) {
