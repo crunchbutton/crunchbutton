@@ -124,6 +124,18 @@ class Crunchbutton_App extends Cana_App {
 			case '/home/staging.crunchbutton/include/library/Crunchbutton':
 				$host_callback = 'staging.crunchr.co';
 				break;
+			case '/home/cockpit.crunchbutton/include/library/Crunchbutton':
+				switch ( $_SERVER['SERVER_NAME'] ) {
+					case 'cockpit.crunchr.co':
+					case 'cockpit._DOMAIN_':
+						$host_callback = '_DOMAIN_';
+						break;
+					case 'beta.cockpit.crunchr.co':
+					case 'beta.cockpit._DOMAIN_':
+						$host_callback = 'beta.crunchr.co';
+						break;
+				}
+				break;
 			default:
 				$host_callback = $_SERVER['HTTP_HOST'];
 				break;
