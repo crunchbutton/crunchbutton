@@ -765,9 +765,10 @@ class Crunchbutton_Order extends Cana_Table {
 		// Log
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm - confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
 
-		$order = $this;
+		// $order = $this;
 
 		Cana::timeout(function() use($order) {
+			Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm - timeout', 'type' => 'notification' ] );
 			/* @var $order Crunchbutton_Order */
 			$order->confirm();
 		}, $confirmationTime );
