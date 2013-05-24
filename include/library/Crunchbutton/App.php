@@ -262,7 +262,7 @@ class Crunchbutton_App extends Cana_App {
 	}
 	
 	public function isCompat() {
-		if (preg_match('/(Firefox\/1\.)|(MSIE (1|2|3|4|5|6|7|8|9|10)\b)/i',$_SERVER['HTTP_USER_AGENT'])) {
+		if (preg_match('/(Firefox\/1\.)|(MSIE (1|2|3|4|5|6|7|8|9)\b)/i',$_SERVER['HTTP_USER_AGENT'])) {
 			return false;
 		} else {
 			return true;
