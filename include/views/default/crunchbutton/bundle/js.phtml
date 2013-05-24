@@ -105,7 +105,11 @@ $(function() {
 	<script src="/assets/js/suggestions.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <? endif ; ?>
 
-<script src="/assets/js/quo.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<?php 
+/* Issue #1221 - QuoJs does not support IE - if is IE not use QuoJs (workaround html.phtml:8) */
+if( c::Browser()->browser != 'MSIE' ) { ?>
+	<script src="/assets/js/quo.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<?php } ?>
 <script src="/assets/js/orm.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/community.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/restaurant.js?v=<?=Cana_Util::gitVersion()?>"></script>
