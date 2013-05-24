@@ -685,8 +685,7 @@ App.cart = {
 		var priceText = '';
 		if( price != '0.00' || force ){
 			priceText = '&nbsp;(';
-			priceText += ( price < 0 ) ? 'minus ' : '+ ';
-			priceText += ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' );
+			priceText += ( price < 0 ) ? 'minus $' : '+ $';
 			priceText += parseFloat( Math.abs( price ) ).toFixed(2);
 			priceText += ')';
 		} 
