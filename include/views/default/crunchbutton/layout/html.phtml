@@ -1,10 +1,19 @@
 <?=$this->display('layout/html.top')?>
 
-
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 
+<?php 
+/* Issue #1221 - QuoJs does not support IE - this is a workaround */
+if( c::Browser()->browser == 'MSIE' ) { ?>
+	<script type="text/javascript">
+	var $$ = $;
+	$$.fn.tap = function( func ){
+		$(document).on( 'click', $( this ).selector , func );
+	}
+	</script>
+<?php } ?>
 <? if (c::config()->bundle) : ?>
 	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=app"></script>
 <? else : ?>
