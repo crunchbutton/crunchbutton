@@ -136,22 +136,13 @@ class Crunchbutton_Support extends Cana_Table {
 		return $supports;
 	}
 
-	public function notes($internalexternal='') {
-		if($internalexternal == '') {
-			return Crunchbutton_Support_Note::q(
-				"SELECT * ".
-				"FROM support_note ".
-				"WHERE id_support=$this->id_support ".
-				"ORDER BY datetime ASC");
+	public function notes($internalexternal = null) {
+		$q = 'select * from support_note where id_support="'.$this->id_support.'"';
+		if ($internalexternal == '') {
+			$q .= ' and visibility="'.$internalexternal.'"';
 		}
-		else {
-			return Crunchbutton_Support_Note::q(
-				"SELECT * ".
-				"FROM support_note ".
-				"WHERE id_support=$this->id_support ".
-				"AND visibility='$internalexternal' ".
-				"ORDER BY datetime ASC");
-		}
+		$q .= ' order by datetime asc';
+		return Crunchbutton_Support_Note::q($q);
 	}
 
 	public function user() {
@@ -247,8 +238,12 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public static function getSupportForOrder($id_order) {
-		$s = self::q("SELECT * FROM `support` WHERE `id_order`='$id_order' ORDER BY `id_support` DESC LIMIT 1");
+		$s = self::q('SELECT * FROM `support` WHERE `id_order`="'.$id_order.'" ORDER BY `id_support` DESC LIMIT 1');
 		return $s->id ? $s : false;
+	}
+	
+	public function time() {
+		Crunchbutton_Util::dateTimeRep($this->datetime, c::rep()->timezone);
 	}
 
 

@@ -1,0 +1,46 @@
+
+<div class="box">
+	<div class="box-header">
+		<div class="title">Conversation</div>
+	</div>
+
+	<div class="box-content chat-box-wrapper">
+
+		<ul class="chat-box">
+			<?
+				$note = new Support_Note;
+				$note->datetime = $this->support->datetime;
+				$note->name = $this->support->name;
+				$note->text = $this->support->message;
+				$note->from = 'client';
+			?>
+			<? $this->display('support/conversation.note.client', ['set' => ['note' => $note]]); ?>
+
+			<? foreach ($this->support->notes('external') as $note): ?>
+				<? $this->display('support/conversation.note', ['set' => ['note' => $note]]); ?>
+			<? endforeach; ?>
+
+		</ul>
+	</div>
+
+	<? /* <p class="note text-center">Last message received at 14:55</p> */ ?>
+
+	<hr class="divider">
+
+	<div class="box-footer flat padded">
+
+		<form method="post" class="support-conversation-reply">
+			<input type="hidden" name="rep_name" value="<?=$this->username?>">
+			<input type="hidden" name="id_support" value="<?=$this->support->id?>">
+
+			<div class="input-append">
+				<input type="text" name="text" placeholder="Reply to customer">
+				<ul class="add-on">
+					<li>
+						<button class="btn btn-blue">Send</button>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

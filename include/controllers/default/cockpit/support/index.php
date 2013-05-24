@@ -2,63 +2,68 @@
 
 class Controller_support extends Crunchbutton_Controller_Account {
 	public function init() {
+	
+		$action = c::getPagePiece(1);
 
-		$support = Support::o(c::getPagePiece(1));
+		switch ($action) {
+			case 'new':
+				self::create($support, $_REQUEST);
+				header('Location: /support/'.$support->id_support);
+				exit;
+				break;
 
-		// handle any actions
+			default:
+				$support = Support::o(c::getPagePiece(1));
+				$action = c::getPagePiece(2);
 
-		if(isset($_POST['action'])) {
-			if($_POST['action'] == 'new') {
-				self::new_support($support, $_POST);
-			}
+				switch ($action) {
+		
+					case 'conversation' :
+						self::setRep($support);
+						$sn = self::respond($support, $_POST);
+						c::view()->display('support/conversation.note', ['set' => ['note' => $sn]]);
+						exit;
+						break;
 
-			// update rep taking this action
-			self::set_rep($support);
+					case 'update':
+						self::setRep($support);
+						self::update($support, $_POST);
+						break;
 
-			if($_POST['action'] == 'conversation') {
-				self::respond_to_client($support, $_POST);
-			}
-			if($_POST['action'] == 'update') {
-				self::update_support($support, $_POST);
-			}
-			if($_POST['action'] == 'support_actions') {
-				self::support_action($support, $_POST);
-			}
+					case 'actions':
+						self::setRep($support);
+						self::action($support, $_POST);
+						break;
+				}
+
+				break;
+			
 		}
 
-		// set any vars
-
-		// render in rep's local timezone
-		// for now, reps don't have timezones
-		c::view()->rep_timezone = timezone_open('America/New_York');
-
-		c::view()->layout('layout/feather');
 		c::view()->page = 'support';
 
-		// route to view
-
-		if( $support->id_support ){
+		if ($support->id_support) {
 			// show the support's form
 			c::view()->support = $support;
-			c::view()->title = '#SUP' . $support->id_support;
-			c::view()->display('m/support/support');	
+			c::view()->display('support/support');	
 		} else {
 			// show the supports list
-			c::view()->supports = Support::q('select * from support order by id_support desc limit 5');
-			c::view()->title = 'Support';
-			c::view()->display('m/support/index');
+			c::view()->recent = Support::q('select * from support order by id_support desc limit 50');
+			c::view()->total = Support::q('select count(*) as count from support where status="open"')->count;
+			c::view()->display('support/index');
 		}
 	}
 
 	// ---------------------------------------
 
-	public static function respond_to_client($support, $args=[]) {
-		if($args['text'] == '') return;
+	public static function respond($support, $args=[]) {
+		if ($args['text'] == '') return;
 		$sn = $support->addNote($args['text'], 'rep', 'external');
 		$sn->notify();
+		return $sn;
 	}
 
-	public static function update_support($support, $args=[]) {
+	public static function update($support, $args=[]) {
 		if($args['new_note'] != '') {
 			$support->addNote($args['new_note'], 'rep', 'internal');
 		}
@@ -72,11 +77,13 @@ class Controller_support extends Crunchbutton_Controller_Account {
 		$support->save();
 	}
 
-	public static function new_support(&$support, $args=[]) {
-		$support = new Support();
+	public static function create(&$support, $args = []) {
+		$support = new Support;
 		$support->status = 'open';
 		$support->message = 'Ticket created from admin panel.';
-		if($args['id_order']) {
+		$support->id_support_rep = self::getRep()->id_support_rep;
+
+		if ($args['id_order']) {
 			$order = Order::o($args['id_order']);
 			$support->id_order = $order->id;
 			$support->id_restaurant = $order->id_restaurant;
@@ -85,14 +92,17 @@ class Controller_support extends Crunchbutton_Controller_Account {
 		}
 		$support->save();
 	}
+	
+	public static function getRep() {
+		return Support_Rep::getLoggedInRep();
+	}
 
-	public static function set_rep(&$support) {
-		$rep = Support_Rep::getLoggedInRep();
-		$support->id_support_rep = $rep->id_support_rep;
+	public static function setRep(&$support) {
+		$support->id_support_rep = self::getRep()->id_support_rep;
 		$support->save();
 	}
 
-	public static function support_action(&$support, $args=[]) {
+	public static function action(&$support, $args=[]) {
 		if($args['action_type'] == 'Unlink Restaurant') {
 			$support->systemNote("Unlinked restaurant #RST$support->id_restaurant.");
 			$support->id_restaurant = null;

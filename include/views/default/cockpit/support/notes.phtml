@@ -1,0 +1,60 @@
+<div class="box">
+	<div class="box-header">
+		<span class="title">Internal Notes</span>
+	</div>
+	<div class="box-content padded">
+	
+		
+		<form method=post action='<?= $this_url ?>'>
+			<input type=hidden name=action value=update />
+			<input type=hidden name=rep_name value='<?=$this->username?>' />
+			<input type=hidden name=id_support value='<?=$this->support->id?>' />
+		
+			<div class=content-sub-item>
+				<div class=content-sub-item-left>
+					description (client)
+				</div>
+				<div class=content-sub-item-right>
+					<textarea name=description_client>
+						<?= $this->support->description_client ?>
+					</textarea>
+				</div>
+			</div>
+			<div class=content-sub-item>
+				<div class=content-sub-item-left>
+					description (crunchbutton)
+				</div>
+				<div class=content-sub-item-right>
+					<textarea name=description_cb>
+						<?= $this->support->description_cb ?>
+					</textarea>
+				</div>
+			</div>
+			<? foreach ($this->support->notes('internal') as $note): ?>
+				<div class=content-sub-item>
+					<div class=content-sub-item-left>
+						<?= $note->from ?>
+						<?=$note->time()?>
+					</div>
+					<div class=content-sub-item-right>
+						<?= $note->text ?>
+					</div>
+				</div>
+			<? endforeach; ?>
+			<div class=content-sub-item>
+				<div class=content-sub-item-left>
+					add a new note
+				</div>
+				<div class=content-sub-item-right>
+					<textarea name=new_note>
+					</textarea>
+				</div>
+			</div>
+			<div class=content-sub-item>
+				<div class=content-full-width>
+					<input class=button type=submit value='Update' />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
