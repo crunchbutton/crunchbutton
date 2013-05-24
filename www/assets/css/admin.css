@@ -17,11 +17,6 @@
 }
 
 
-.header {
-	background: #fff;
-}
-
-
 .admin-content-wrapper {
 	border: 1px solid #2b323b;
 	padding: 12px;
@@ -29,59 +24,6 @@
 	background: #49525f;
 	float: left;
 	width: 997px;
-}
-
-.admin-tab {
-	border: 1px solid #2b323b;
-	box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 -4px 1px rgba(0,0,0,.50);
-	border-bottom: none;
-	width: auto;
-	padding: 10px 15px 13px 15px;
-	color: #b2b5b9;
-	float: left;
-	margin-right: 3px;
-	font-size: 12px;
-	text-shadow: 1px 1px rgba(0,0,0,.3);
-	font-weight: bold;
-	border-top-right-radius: 5px;
-	border-top-left-radius: 5px;
-	background: #3c4450;
-	cursor: pointer;
-	margin-bottom: -3px;
-	text-decoration: none;
-	width: 65px;
-	text-align: center;
-}
-
-.admin-tab-active {
-	color: #444;
-	z-index: 900;
-	box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
-	background: #bbbbbb -webkit-linear-gradient(top, #bbbbbb 0%, #eeeeee 90%);
-}
-
-/**
- * Disable active tab down border as it's not working
- *
- * @todo make it work
- *
-.admin-tab-active:after {
-	content:    "";
-	background:  #49525f;
-	width:       130px;
-	position:    absolute;
-	z-index:     9000;
-	height:      4px;
-	margin-left: -15px;
-	margin-top:  23px;
-}
-*/
-
-.admin-content {
-	background: #fff;
-	box-shadow: 0 0 8px 0px rgba(0, 0, 0, 0.25);
-	border-radius: 3px;
-	padding: 10px;
 }
 
 h1 {
@@ -611,7 +553,6 @@ table.list tr:nth-of-type(even) {
 	padding: 20px;
 	border: 1px solid #888888;
 	background-color: #ffffdd;
-	font-family: serif;
 	font-size: 24px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -684,7 +625,6 @@ table.list tr:nth-of-type(even) {
 }
 
 .admin-h3 {
-	font-family: sans-serif;
 	font-weight: bold;
 	font-size: 24px;
 	margin: 15px 0px 15px 0px;
@@ -708,19 +648,16 @@ table.list tr:nth-of-type(even) {
 }
 
 .admin-item-name {
-	font-family: sans-serif;
 	font-size: 16px;
 }
 
 .admin-item-desc {
-	font-family: serif;
 	font-size: 12px;
 }
 
 .admin-item-right input, .admin-item-left input {
 	width: 100%;
 	font-size: 20px;
-	font-family: serif;
 }
 
 .admin-item-right input[type=checkbox],
@@ -731,7 +668,6 @@ table.list tr:nth-of-type(even) {
 .admin-item-right textarea {
 	width: 98%;
 	font-size: 16px;
-	font-family: serif;
 	color: black;
 	background: #ffffff;
 	height: 100px;
@@ -744,7 +680,6 @@ table.list tr:nth-of-type(even) {
 .admin-item-right select {
 	width: 100%;
 	font-size: 16px;
-	font-family: serif;
 }
 
 .invalid {
@@ -896,7 +831,6 @@ input:disabled {
 
 .admin-menu-option input {
   font-size: 12px;
-  font-family: serif;
 }
 
 .vertical-middle {
@@ -917,7 +851,6 @@ input:disabled {
 }
 
 .admin-modal-title {
-  font-family: sans-serif;
   font-size: 16px;
 	padding: 5px 0px 5px 0px;
 }
@@ -951,6 +884,19 @@ input:disabled {
 	margin: -1px 14px 0 12px;
 }
 
+
+/**
+  core admin modifications
+ */
 .admin-menu-dish-details.hidden {
 	visibility: visible;
+}
+
+.dTable th div {
+	text-align: center;
+}
+
+.chat-box-wrapper {
+	height: 200px;
+	overflow: scroll;
 }

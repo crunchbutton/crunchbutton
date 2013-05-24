@@ -412,4 +412,11 @@ class Crunchbutton_App extends Cana_App {
 		return $this->_detect->isMobile();
 	}
 	
+	public function rep($rep = null) {
+		if (!isset($this->_rep)) {
+			$this->_rep = $rep;
+		}
+		return $this->_rep;
+	}
+	
 } 

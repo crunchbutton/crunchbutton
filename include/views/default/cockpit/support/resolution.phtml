@@ -1,0 +1,84 @@
+<div class="box">
+	<div class="box-header">
+		<span class="title">Resolution</span>
+	</div>
+	<div class="box-content padded">
+	
+		<div class=content-sub-item>
+			<div class=content-sub-item-left>
+				fault of
+			</div>
+			<div class=content-sub-item-right>
+				<select name=fault_of>
+					<option value=crunchbutton<?= $support->fault_of=='crunchbutton'?' selected':'' ?>>
+						crunchbutton
+					</option>
+					<option value=customer<?= $support->fault_of=='customer'?' selected':'' ?>>
+						customer
+					</option>
+					<option value=restaurant<?= $support->fault_of=='restaurant'?' selected':'' ?>>
+						restaurant
+					</option>
+					<option value=other<?= $support->fault_of=='other'?' selected':'' ?>>
+						other
+					</option>
+				</select>
+			</div>
+		</div>
+		<div class=content-sub-item>
+			<div class=content-sub-item-left>
+				user happy?
+			</div>
+			<div class=content-sub-item-right>
+				<select name=customer_happy>
+					<option value=no<?= $support->customer_happy=='no'?' selected':'' ?>>
+						no
+					</option>
+					<option value=yes<?= $support->customer_happy=='yes'?' selected':'' ?>>
+						yes
+					</option>
+				</select>
+			</div>
+		</div>
+		<div class=content-sub-item>
+			<div class=content-sub-item-left>
+				ticket status
+			</div>
+			<div class=content-sub-item-right>
+				<select name=status>
+					<option value=open<?= $support->status=='open'?' selected':'' ?>>
+						open
+					</option>
+					<option value=closed<?= $support->status=='closed'?' selected':'' ?>>
+						closed
+					</option>
+				</select>
+			</div>
+		</div>
+		<div class=content-sub-item>
+			<div class=content-sub-item-left>
+				github ticket id?
+			</div>
+			<div class=content-sub-item-right>
+				<input type=text name=id_github value='<?= $support->id_github ?>' />
+			</div>
+		</div>
+		<div class=content-sub-item>
+			<div class=content-sub-item-left>
+				how to prevent this in the future
+			</div>
+			<div class=content-sub-item-right>
+				<textarea name=how_to_prevent>
+					<?= $support->how_to_prevent ?>
+				</textarea>
+			</div>
+		</div>
+		<div class=content-sub-item>
+			<div class=content-full-width>
+				<input class=button type=submit value='Update' />
+			</div>
+		</div>
+	</div>
+	
+	</form>
+</div>

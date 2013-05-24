@@ -1,0 +1,77 @@
+<div class="box">
+	<div class="box-header">
+		<span class="title">Info</span>
+		<ul class="box-toolbar">
+			<li><span class="label label-<?=$this->support->status == 'closed' ? 'red' : 'green'?>"><?=strtoupper($this->support->status) ?></span></li>
+		</ul>
+	</div>
+	<div class="box-content padded">
+
+		<?= $this->support->time() ?>
+USER
+<br>
+
+		<?= $this->support->name ?>
+		<?
+			$user = $this->support->user();
+			$phone = $this->support->phone;
+			if(!$phone && $user->id_user && $user->phone)
+				$phone = $user->phone;
+		?>
+		 - 
+		<?=$user->id ? ' #'.$user->id : '' ?>
+		<br>
+		<a href='tel:+1<?= $phone ?>'>
+		<?= Crunchbutton_Util::format_phone($phone) ?>
+		</a>
+
+<br><br>
+REP
+<br>
+		<?
+			$rep = $this->support->rep();
+			if(!$rep->id) {
+				echo '(no rep has handled this ticket)';
+			}
+			else {
+				echo "$rep->name ";
+				echo "<br>".Crunchbutton_Util::format_phone($rep->phone);
+			}
+		?>
+		
+<br><br>
+ORDER
+<br>
+		<?
+			if($this->support->id_order) {
+				echo "<a target='_blank' href='/vieworder/$order->uuid'>#ORD$order->id</a>";
+				echo "<br>";
+				echo $order->message('support');
+			}
+			else {
+				echo '(no linked order)';
+			}
+		?>
+
+<br><br>
+RESTAURANT
+<br>				
+		<?
+			if($this->support->id_restaurant) {
+				$restaurant = Restaurant::o($this->support->id_restaurant);
+				echo "$restaurant->name ";
+				echo "(#RST$restaurant->id_restaurant)";
+				echo "<br><a href='tel:+1-$restaurant->phone'>";
+				echo Crunchbutton_Util::format_phone($restaurant->phone);
+				echo "</a>";
+				echo "<br><a target='_blank' href='https://crunchbutton.com/food-delivery/$restaurant->permalink'>view on site</a> / ";
+				echo "<a target='_blank' href='http://cockpit.crunchr.co/restaurants/$restaurant->id'>view in cockpit</a>";
+			}
+			else {
+				echo '(no linked restaurant)';
+			}
+		?>
+
+		
+	</div>
+</div>

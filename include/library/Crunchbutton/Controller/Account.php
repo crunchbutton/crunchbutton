@@ -25,6 +25,11 @@ class Crunchbutton_Controller_Account extends Cana_Controller {
 		
 		c::view()->username = $_SERVER['PHP_AUTH_USER'];
 		
+		c::rep((object)[
+			'name' => $_SERVER['PHP_AUTH_USER'],
+			'timezone' => new DateTimeZone('America/New_York')
+		]);
+		
 		$_SESSION['admin'] = true;
 		$_SESSION['username'] = c::view()->username;
 		c::view()->layout('layout/core');

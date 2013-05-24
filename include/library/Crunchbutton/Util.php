@@ -91,17 +91,15 @@ class Crunchbutton_Util extends Cana_Model {
 		return $string;
 		
 	}
-
-	public static function datetime_time_str($datetime_str, $rep_timezone) {
-		$d = new DateTime($datetime_str, new DateTimeZone('utc'));
-		$d->setTimezone($rep_timezone);
-		return $d->format('g:i a');
+	
+	public function relativeTimeTz($ts, $tz) {
+		
 	}
-
-	public static function datetime_date_str($datetime_str, $rep_timezone) {
+	
+	public function dateTimeRep($datetime, $timezome, $format = 'M j, g:i a') {
 		$d = new DateTime($datetime_str, new DateTimeZone('utc'));
 		$d->setTimezone($rep_timezone);
-		return $d->format('M j');
+		return $d->format($format);
 	}
 
 	public static function format_phone($phone) {
