@@ -14,10 +14,17 @@ if( c::Browser()->browser == 'MSIE' ) { ?>
 	}
 	</script>
 <?php } ?>
+
 <? if (c::config()->bundle) : ?>
 	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=app"></script>
 <? else : ?>
 	<?=$this->display('bundle/js', ['set' => ['scripts' => ['app']]])?>
+<? endif ; ?>
+
+<?php 
+/* Issue #1221 - QuoJs does not support IE - if is IE not use QuoJs (workaround html.phtml:8) */
+if( c::Browser()->browser != 'MSIE' ) : ?>
+	<script src="/assets/js/quo.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <? endif ; ?>
 
 <?=$this->display('layout/html.bottom')?>
