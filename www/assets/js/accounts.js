@@ -221,8 +221,12 @@ App.signin.facebook.processStatus = function( session ){
 									}
 									App.signin.manageLocation();
 								}
-								$( '.signin-container' ).dialog( 'close' );
-								$( '.signup-container' ).dialog( 'close' );
+								try{
+									$( '.signin-container' ).dialog( 'close' );
+								} catch(e){}
+								try{
+									$( '.signup-container' ).dialog( 'close' );
+								} catch(e){}
 								// If the user is at the restaurant's page - reload it
 								if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
 									App.page.restaurant( App.restaurant.permalink );
