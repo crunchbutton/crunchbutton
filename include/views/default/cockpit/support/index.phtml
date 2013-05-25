@@ -50,7 +50,7 @@
 										<a href="/support/<?= $support->id_support ?>"><button class="btn btn-mini btn-blue">View</button></a>
 									</div>
 								</td>
-								<td nowrap><?= Util::datetime_date_str($support->datetime, $this->rep_timezone) ?>, <?= Util::datetime_time_str($support->datetime, $this->rep_timezone) ?></td>
+								<td nowrap><?= $support->repTime()->format('Y-m-d h:i:s')?></td>
 								<td nowrap><?=$support->name?></td>
 								<td><?=$support->message?></td>
 								<td><?=$support->status?></td>

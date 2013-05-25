@@ -17,6 +17,16 @@ class Controller_support extends Crunchbutton_Controller_Account {
 				$action = c::getPagePiece(2);
 
 				switch ($action) {
+				
+					case 'checkconvo' :
+						$notes = $support->notes('external', $_REQUEST['date']);
+						if ($notes) {
+							foreach ($notes as $note) {
+								c::view()->display('support/conversation.note', ['set' => ['note' => $note]]);
+							}
+						}
+						exit;
+						break;
 		
 					case 'conversation' :
 						self::setRep($support);

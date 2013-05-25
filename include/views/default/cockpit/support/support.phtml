@@ -34,12 +34,7 @@
 			<?=$this->display('support/notes')?>
 		</div>
 	</div>
-	<div class="row-fluid">
-		<div class="span6">
-			<?=$this->display('support/resolution')?>
-		</div>
 
-	</div>
 </div>
 <!-- // end support page -->
 
@@ -68,6 +63,20 @@ $(function() {
 			w.stop().animate({ scrollTop: w[0].scrollHeight }, 800);
 		});
 		return;
+	});
+
+	
+	var restaurants = [];
+	<? foreach (Restaurant::q('select * from restaurant where active=1 order by name') as $restaurant) : ?>
+		restaurants.push({
+			id: '<?=$restaurant->id_restaurant?>',
+			text: '<?=str_replace("'","\'",$restaurant->name)?>'
+		});
+	<? endforeach ; ?>
+
+	$('.editable-restaurants').editable({
+		inputclass: "input-large",
+		source: restaurants
 	});
 });
 </script>
