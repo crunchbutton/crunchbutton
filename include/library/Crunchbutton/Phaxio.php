@@ -8,7 +8,8 @@ class Crunchbutton_Phaxio {
 			.'-F "to='.$params['to'].'" '
 			.'-F "filename=@'.$params['file'].'" ';
 		if ($params['id_notification_log']) {
-			$cmd .= '-F "callback_url=http://'.c::config()->host_callback.'/api/notification/'.$params['id_notification_log'].'/callback" ';
+			$protocol = ( $env == 'live' ) ? 'https' : 'http';
+			$cmd .= '-F "callback_url=' . $protocol . '://'.c::config()->host_callback.'/api/notification/'.$params['id_notification_log'].'/callback" ';
 		}
 		$cmd .= '-F "api_key='.c::config()->phaxio->{$env}->key.'" '
 			.'-F "api_secret='.c::config()->phaxio->{$env}->secret.'"';
