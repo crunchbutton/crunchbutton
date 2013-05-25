@@ -1012,7 +1012,7 @@ App.cart = {
 
 						if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
 							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.' );
-							App.busy.unBusy();
+							
 
 							// Write the found address at the address field, so the user can check it.
 							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
@@ -1021,10 +1021,13 @@ App.cart = {
 							$('.payment-form').show();
 	 						$('.delivery-payment-info, .content-padder-before').hide();
 							$( '[name="pay-address"]' ).focus();
-							return;
+
 							// Log the error
 							App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address out of delivery range' );
-
+						
+							App.busy.unBusy();
+							return;
+						
 						} else {
 
 							if( App.completeAddressWithZipCode ){
