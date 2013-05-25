@@ -136,10 +136,13 @@ class Crunchbutton_Support extends Cana_Table {
 		return $supports;
 	}
 
-	public function notes($internalexternal = null) {
+	public function notes($internalexternal = null, $date = null) {
 		$q = 'select * from support_note where id_support="'.$this->id_support.'"';
-		if ($internalexternal == '') {
+		if ($internalexternal) {
 			$q .= ' and visibility="'.$internalexternal.'"';
+		}
+		if ($date) {
+			$q .= ' and `datetime`>="'.$date.'"';
 		}
 		$q .= ' order by datetime asc';
 		return Crunchbutton_Support_Note::q($q);
@@ -149,24 +152,23 @@ class Crunchbutton_Support extends Cana_Table {
 		return User::o($this->id_user);
 	}
 
-	public function answers(){
+	public function answers() {
 		return Crunchbutton_Support_Answer::q('SELECT * FROM `support_answer` WHERE id_support=' . $this->id_support . ' ORDER BY date DESC');
 	}
 
 	public function date() {
 		if (!isset($this->_date)) {
 			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
-			$this->_date->setTimezone(new DateTimeZone( c::config()->timezone ));
 		}
 		return $this->_date;
+	}
+	
+	public function relativeTime() {
+		return Crunchbutton_Util::relativeTime($this->date);
 	}
 
 	public function rep() {
 		return Support_Rep::o($this->id_support_rep);
-	}
-
-	public function order() {
-		return Order::o($this->id_order);
 	}
 
 	public function save() {
@@ -242,8 +244,24 @@ class Crunchbutton_Support extends Cana_Table {
 		return $s->id ? $s : false;
 	}
 	
-	public function time() {
-		Crunchbutton_Util::dateTimeRep($this->datetime, c::rep()->timezone);
+	public function repTime() {
+		$date = $this->date();
+		$date->setTimezone(c::rep()->timezone);
+		return $date;
+	}
+
+	public function restaurant() {
+		if (!isset($this->_restaurant)) {
+			$this->_restaurant = $this->id_restaurant ? Restaurant::o($this->id_restaurant) : $this->order()->restaurant();
+		}
+		return $this->_restaurant;
+	}
+
+	public function order() {
+		if (!isset($this->_order)) {
+			$this->_order = Order::o($this->id_order);
+		}
+		return $this->_order;
 	}
 
 

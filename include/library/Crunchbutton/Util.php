@@ -43,10 +43,33 @@ class Crunchbutton_Util extends Cana_Model {
 		return trim($file[1]);
     }
 	
-	public static function relativeTime($timestamp){ 
-		$difference = time() - strtotime($timestamp);
-		$periods = array('sec', 'min', 'hour', 'day', 'week', 'month', 'year', 'decade');
-		$lengths = array('60','60','24','7','4.35','12','10');
+	public static function relativeTime($timestamp, $timezoneTO = null, $timezoneFROM = null) {
+		if (!$timezoneFROM) {
+//			$timezoneFROM = new DateTimeZone('utc');
+			$timezoneFROM = c::config()->timezone;
+		}
+
+		if ($timezone) {
+			$d = new DateTime($timestamp, $timezoneFROM);
+			$d->setTimezone($timezoneTO);
+			$t = new DateTime('now', $timezoneFROM);
+			$t->setTimezone($timezoneTO);
+
+		} else {
+			$d = new DateTime($timestamp);
+			$t = new DateTime();
+		}
+
+		/*
+		$interval = $d->diff($t);
+		$difference = $interval->format('%y %m %d %h %i %s');
+		return $difference;
+		*/
+		
+		$difference = $t->getTimestamp() - $d->getTimestamp();
+	
+		$periods = ['sec', 'min', 'hour', 'day', 'week', 'month', 'year', 'decade'];
+		$lengths = ['60','60','24','7','4.35','12','10'];
 
 		if ($difference > 0) { // this was in the past
 			$ending = 'ago';
@@ -56,11 +79,13 @@ class Crunchbutton_Util extends Cana_Model {
 		}		
 		for($j = 0; $difference >= $lengths[$j]; $j++) {
 			$difference /= $lengths[$j];
-		}$difference = round($difference);
+		}
+		$difference = round($difference);
 		if ($difference != 1) {
 			$periods[$j].= 's';
 		}
 		$text = $difference.' '.$periods[$j].' '.$ending;
+
 		return $text;
 	}
 
@@ -91,7 +116,7 @@ class Crunchbutton_Util extends Cana_Model {
 		return $string;
 		
 	}
-	
+
 	public function relativeTimeTz($ts, $tz) {
 		
 	}

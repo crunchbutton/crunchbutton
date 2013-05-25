@@ -12,6 +12,7 @@
 				$note->datetime = $this->support->datetime;
 				$note->name = $this->support->name;
 				$note->text = $this->support->message;
+				$note->id_support_note = 'SUPPORTITEM';
 				$note->from = 'client';
 			?>
 			<? $this->display('support/conversation.note.client', ['set' => ['note' => $note]]); ?>

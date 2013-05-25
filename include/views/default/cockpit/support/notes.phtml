@@ -1,60 +1,42 @@
 <div class="box">
 	<div class="box-header">
-		<span class="title">Internal Notes</span>
+		<span class="title">Notes &amp; Log</span>
 	</div>
-	<div class="box-content padded">
-	
-		
-		<form method=post action='<?= $this_url ?>'>
-			<input type=hidden name=action value=update />
-			<input type=hidden name=rep_name value='<?=$this->username?>' />
-			<input type=hidden name=id_support value='<?=$this->support->id?>' />
-		
-			<div class=content-sub-item>
-				<div class=content-sub-item-left>
-					description (client)
-				</div>
-				<div class=content-sub-item-right>
-					<textarea name=description_client>
-						<?= $this->support->description_client ?>
-					</textarea>
-				</div>
-			</div>
-			<div class=content-sub-item>
-				<div class=content-sub-item-left>
-					description (crunchbutton)
-				</div>
-				<div class=content-sub-item-right>
-					<textarea name=description_cb>
-						<?= $this->support->description_cb ?>
-					</textarea>
-				</div>
-			</div>
+
+	<div class="box-content chat-box-wrapper">
+		<ul class="chat-box">
+
 			<? foreach ($this->support->notes('internal') as $note): ?>
-				<div class=content-sub-item>
-					<div class=content-sub-item-left>
-						<?= $note->from ?>
-						<?=$note->time()?>
+			
+				<li class="arrow-box-right gray" id="chat-note-<?=$note->id_support_note?>">
+					<div class="avatar"><img class="avatar-small" src="/assets/images/admin/user.jpg" /></div>
+					<div class="info">
+						<span class="name"><strong><?=$note->from == 'system' ? 'System Note' : $note->from.' '?></strong><span class="badge badge-gray"><?=$note->from?></span></span>
+						<span class="time"><?=$note->relativeTime()?></span>
 					</div>
-					<div class=content-sub-item-right>
-						<?= $note->text ?>
-					</div>
-				</div>
-			<? endforeach; ?>
-			<div class=content-sub-item>
-				<div class=content-sub-item-left>
-					add a new note
-				</div>
-				<div class=content-sub-item-right>
-					<textarea name=new_note>
-					</textarea>
-				</div>
-			</div>
-			<div class=content-sub-item>
-				<div class=content-full-width>
-					<input class=button type=submit value='Update' />
-				</div>
-			</div>
-		</div>
+					<?=$note->text ?>
+				</li>
+			<? endforeach ; ?>
+		</ul>
 	</div>
+
+	<hr class="divider">
+
+	<div class="box-footer flat padded">
+
+		<form method="post" class="support-conversation-reply">
+			<input type="hidden" name="rep_name" value="<?=$this->username?>">
+			<input type="hidden" name="id_support" value="<?=$this->support->id?>">
+
+			<div class="input-append">
+				<input type="text" name="text" placeholder="Enter notes...">
+				<ul class="add-on">
+					<li>
+						<button class="btn btn-blue">Add Note</button>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+
 </div>

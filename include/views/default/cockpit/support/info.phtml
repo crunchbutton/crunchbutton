@@ -5,73 +5,100 @@
 			<li><span class="label label-<?=$this->support->status == 'closed' ? 'red' : 'green'?>"><?=strtoupper($this->support->status) ?></span></li>
 		</ul>
 	</div>
-	<div class="box-content padded">
+	<div class="box-content ">
+	
+		<table class="table table-striped ">
+			<tr>
+				<td>User</td>
+				<td>
+					<?=$this->support->user()->name?><br />
+					<?=Crunchbutton_Util::format_phone($this->support->user()->phone)?><br />
+				</td>
+				<td>
+					<div class="btn-group">
+						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
+						<ul class="dropdown-menu">
+							<li><a href="#">Unlink User</a></li>
+							<li><a href="#">Link another user</a></li>
+							<li><a href="/giftcards/new?&id_user=<?=$this->support->id_user?>&id_restaurant=<?=$this->support->restaurant()->id_restaurant?>&id_order_reference=<?=$this->support->id_order?>">Issue a gift card</a></li>							
+						</ul>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>Rep</td>
+				<td>
 
-		<?= $this->support->time() ?>
-USER
-<br>
+					<? if ($this->support->rep()->id_support_rep) : ?>
+						<?=$this->support->rep()->name?><br />
+						<?=Crunchbutton_Util::format_phone($this->support->rep()->phone)?>
 
-		<?= $this->support->name ?>
-		<?
-			$user = $this->support->user();
-			$phone = $this->support->phone;
-			if(!$phone && $user->id_user && $user->phone)
-				$phone = $user->phone;
-		?>
-		 - 
-		<?=$user->id ? ' #'.$user->id : '' ?>
-		<br>
-		<a href='tel:+1<?= $phone ?>'>
-		<?= Crunchbutton_Util::format_phone($phone) ?>
-		</a>
+					<? else : ?>
+						(no rep has handled this ticket)
+					<? endif ; ?>
+				</td>
+				<td>
+					<div class="btn-group">
+						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
+						<ul class="dropdown-menu">
+							<li><a href="#">Unlink Rep</a></li>
+							<li><a href="#">Link another rep</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Order
+					<? if ($this->support->id_order) : ?>
+						<br><a target="_blank" href="/vieworder/<?=$order->uuid?>">#<?=$this->support->order()->id_order?></a><br>
+					<? endif ; ?>
+				</td>
+				<td>
+					<? if ($this->support->id_order) : ?>
+						
+						<?=$this->support->order()->message('support')?>
 
-<br><br>
-REP
-<br>
-		<?
-			$rep = $this->support->rep();
-			if(!$rep->id) {
-				echo '(no rep has handled this ticket)';
-			}
-			else {
-				echo "$rep->name ";
-				echo "<br>".Crunchbutton_Util::format_phone($rep->phone);
-			}
-		?>
-		
-<br><br>
-ORDER
-<br>
-		<?
-			if($this->support->id_order) {
-				echo "<a target='_blank' href='/vieworder/$order->uuid'>#ORD$order->id</a>";
-				echo "<br>";
-				echo $order->message('support');
-			}
-			else {
-				echo '(no linked order)';
-			}
-		?>
+					<? else : ?>
+						(no linked order)
+					<? endif ; ?>
+				</td>
+				<td>
+					<div class="btn-group">
+						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
+						<ul class="dropdown-menu">
+							<li><a href="#">Unlink Order</a></li>
+							<li><a href="#">Link another order</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>Restaurant</td>
+				<td>
 
-<br><br>
-RESTAURANT
-<br>				
-		<?
-			if($this->support->id_restaurant) {
-				$restaurant = Restaurant::o($this->support->id_restaurant);
-				echo "$restaurant->name ";
-				echo "(#RST$restaurant->id_restaurant)";
-				echo "<br><a href='tel:+1-$restaurant->phone'>";
-				echo Crunchbutton_Util::format_phone($restaurant->phone);
-				echo "</a>";
-				echo "<br><a target='_blank' href='https://crunchbutton.com/food-delivery/$restaurant->permalink'>view on site</a> / ";
-				echo "<a target='_blank' href='http://cockpit.crunchr.co/restaurants/$restaurant->id'>view in cockpit</a>";
-			}
-			else {
-				echo '(no linked restaurant)';
-			}
-		?>
+					<? if ($this->support->restaurant()->id_restaurant) : ?>
+						<a href="#" class="editable editable-click editable-restaurants" data-type="select2" data-pk="1" data-value="BS" data-original-title="Select restaurant"><?=$this->support->restaurant()->name?></a><br />
+						<a href="tel:+1-<?=$this->support->restaurant()->phone?>">
 
+					<? else : ?>
+						<a href="#" class="editable editable-click editable-restaurants" data-type="select2" data-pk="1" data-value="<?=$this->support->restaurant()->id_restaurant?>" data-original-title="Select restaurant"><i>no linked restaurant</i></a>
+					<? endif ; ?>
+
+				</td>
+				<td>
+					<div class="btn-group">
+						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
+						<ul class="dropdown-menu">
+							<li><a href="#">Unlink Restaurant</a></li>
+							<li><a href="#">Link another restaurant</a></li>
+							<li><a target="_blank" href="https://crunchbutton.com/food-delivery/<?=$this->support->restaurant()->permalink?>">View on site</a></li>
+							<li><a target="_blank" href="/restaurants/<?=$this->support->restaurant()->id_restaurant?>">Edit Restaurant</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</table>
 		
 	</div>
 </div>
