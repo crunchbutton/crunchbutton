@@ -4,7 +4,11 @@ class Crunchbutton_Dish extends Cana_Table {
 	public function exports() {
 		$out = $this->properties();
 		$out['price'] = number_format($out['price'],2);
+		$out['changeable_price'] = false;
 		foreach ($this->options() as $option) {
+			if( floatval( $option->price ) > 0 ){
+				$out['changeable_price'] = true;
+			}
 			$out['_options'][] = $option->exports();
 		}
 		return $out;

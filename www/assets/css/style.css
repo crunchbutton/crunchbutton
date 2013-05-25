@@ -343,7 +343,7 @@ b {
 	background: url(/assets/images/plus.png) no-repeat;
 }
 .cart-button-remove {
-	background: url(/assets/images/minus.png) no-repeat;
+	background: url(/assets/images/xsign.png) no-repeat;
 	margin-right: 4px;
 }
 
@@ -1654,12 +1654,12 @@ html[xmlns] .clearfix {
 	}
 	.cart-button-remove span {
 		display: block;
-		background: url(/assets/images/minus2.png) no-repeat;
-		width: 14px;
-		height: 8px;
+		background: url(/assets/images/xsign2.png) no-repeat;
+		width: 23px;
+		height: 23px;
 		background-size: contain;
 		margin: 0 auto;
-		margin-top: 10px;
+		margin-top: 2px;
 	}
 
 	.cart-button {
@@ -1838,7 +1838,6 @@ html[xmlns] .clearfix {
 			width: 50px;
 			height: 50px;
 			display: none;
-			cursor: pointer;
 			-webkit-user-select: none;
 			-khtml-user-select: none;
 			-moz-user-select: none;
@@ -1859,7 +1858,6 @@ html[xmlns] .clearfix {
 				border: 1px solid #999;
 				border-radius: 3px;
 				color:#666;
-				display: none;
 				font-size: 12px;
 				font-weight: 400;
 				line-height: 18px;

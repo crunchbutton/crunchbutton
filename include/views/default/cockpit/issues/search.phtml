@@ -1,0 +1,76 @@
+<?
+	$this->title = 'Issues';
+	$this->subtitle = 'search issues';
+	$this->titleicon = 'truck';
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-content">
+				<div class="row-fluid">
+					<form class="fill-up">
+						<div class="span6 separate-sections">
+							<ul class="padded separate-sections">
+								Search by issues that were closed after:
+								<li class="input">
+									<input name="date" type="text" placeholder="yyyy-mm-dd" value="<?=strip_tags($_REQUEST['date'])?>">
+								</li>
+							</ul>	
+						</div>
+						<div class="clearfix"></div>
+						<div class="span6 separate-sections">
+							<center>
+								<button type="submit" class="btn btn-blue admin-order-search"> Search </button>	
+							</center>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+
+<?php if( $this->issues  ) { ?> 
+		<div class="box">
+			<div class="box-header"><span class="title">Results (<? echo sizeof( $this->issues ); ?> issues)</span>
+			</div>
+			<div class="box-content">
+				<div class="orders-content">
+					<table class="issues-search">
+						<tr>
+							<th>#</th>
+							<th>Title</th>
+							<th>URL</th>
+							<th>Updated at</th>
+							<th>Labels</th>
+						</tr>
+						<? foreach ($this->issues as $issue) : ?>
+							<tr>
+								<td><?=$issue['number']?></td>
+								<td><a href="<?=$issue['html_url']?>"><?=$issue['title']?></a></td>
+								<td><?=$issue['html_url']?></td>
+								<td nowrap="nowrap"><?=date( 'M jS Y g:i:s A', strtotime( $issue['updated_at'] ) );?></td>
+								<td>
+									<? 
+									$commas = '';
+									foreach ($issue['labels'] as $label) : ?>
+										<?php 
+											echo $commas . $label['name']; 
+											$commas = ', ';
+										?>
+									<? endforeach ; ?>
+								</td>
+							</tr>
+						<? endforeach ; ?>
+					</table>	
+				</div>
+			</div>
+		</div>
+	</div>
+<?php } ?>
+	<br/><br/><br/><br/><br/>
+	<a href="/issues/logout">logout of github auth</a>
+
+	</div>
+	</div>
+</div>

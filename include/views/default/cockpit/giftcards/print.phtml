@@ -1,4 +1,4 @@
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Atomic+Age|Carrois+Gothic+SC' rel='stylesheet' type='text/css'>
 <style type="text/css">
 	.dotted{
 		border: 1px dotted #CCC;
@@ -7,55 +7,58 @@
 		margin: 20px auto;
 	}
 	.giftcard{
-		font-family: 'Open Sans', 'Droid Sans', Helvetica, Arial, sans-serif;
-		border: 2px solid #800000;
-		height: 330px;
+		font-family: 'Atomic Age', cursive;
+		height: 340px;
 		margin: 0 auto;
 		text-align: center;
 		width: 770px;
-	}
-	.title{
-		background: #800000;
-		color:#FFF;
-		font-size: 35px;
-		padding: 15px;
-	}
-	.headline, .headline-link{
-		font-weight: bold;
-		margin: 15px;
-	}
-		.restaurant{
-			font-style: italic;
-			text-decoration: underline;
+	}	
+		.giftcard img{
+			height: 340px;
+			width: 770px;
 		}
-		.headline-link{
-			font-weight: normal;
+		.value{
+			color:#da0009;
+			font-size: 150px;
+			position: absolute;
+			z-index: 10;
+			letter-spacing: -10px;
+			margin-left: 310px;
+			margin-top: 60px;
+			text-align: center;
+			width: 220px;
 		}
-			.link{
-				color:blue;
-				text-decoration: underline;
-			}
-		.crunchbutton{
-			margin-top: 15px;
-			font-size: 14px;
+		.dollar{
+			color:#da0009;
+			font-size: 50px;
+			font-weight: bold;
+			position: absolute;
+			z-index: 11;
+			margin-left: 300px;
+			margin-top: 135px;
+			text-align: left;
+			width: 220px;
 		}
-			.subtitle{
-				font-size: 16px;
-				margin: 5px;
-			}
-				.subtitle-link{
-					
-				}
-				.icon img{
-					border: 1px solid #ae1500;
-					border-radius: 2px;
-					box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.72);
-					width: 60px;
-					margin: 10px;
-				}
-			.slogan{
-				font-style: italic;
-			}
+		.code{
+			margin-left: 560px;
+			margin-top: 105px;
+			color:#d50000;
+			font-family: 'Carrois Gothic SC', sans-serif;
+			font-size: 45px;
+			position: absolute;
+			width: 200px;
+		}
+		.place{
+			color:#3f4c51;
+			font-family: 'Carrois Gothic SC', sans-serif;
+			font-size: 28px;
+			position: absolute;
+			z-index: 10;
+			margin-left: 310px;
+			margin-top: 250px;
+			text-align: center;
+			width: 220px;
+		}
 			.page-break{
 				page-break-after:always;
 			}
@@ -98,23 +101,11 @@ if( $giftcards->count() > 0 ) {
 	?>
 	<div class="dotted">
 		<div class="giftcard">
-			<div class="title">Push a Button, Get Food ($<?php echo $giftcard->value;?> gift card)</div>
-			<div class="headline">
-			Congrats! This is a $<?php echo $giftcard->value;?> gift card to <span class="restaurant"> <?php echo $restaurant_name; ?>
-			</div>
-			<div class="headline-link">
-			Just enter <?php echo $giftcard->code;?> in your order Notes section to use your gift card!
-			</div>
-			<div class="crunchbutton">
-				<div class="icon">
-					<img src="/assets/images/facebook-like.png" />
-				</div>
-				<div class="subtitle"><?php echo $local_description; ?> For free.</div>
-				<div class="slogan">
-					Reorder with just one click
-				</div>
-				<div class="subtitle-link"><a href="http://www.crunchbutton.com">Crunchbutton.com</a></div>
-			</div>
+			<div class="dollar">$</div>
+			<div class="value"><?php echo $giftcard->value;?></div>
+			<div class="code"><?php echo $giftcard->code;?></div>
+			<div class="place"><?php echo $restaurant_name; ?></div>
+			<img src="/assets/images/giftcard_print.png"/>
 		</div>
 	</div>
 	<?php 

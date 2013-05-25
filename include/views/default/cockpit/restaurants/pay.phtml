@@ -230,13 +230,17 @@
 
 		$('.restaurant-pay-button').click(function() {
 			var form = $(this).closest('form');
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/credit', {
-				amount: form.find('[name="amount"]').val(),
-				note: form.find('[name="note"]').val()
-			}, function() {
-				location.href = location.href;
-			});
+			$.ajax({
+				type: 'POST',
+				url: '/api/restaurant/<?=$this->restaurant->id_restaurant?>/credit',
+				data: { amount: form.find('[name="amount"]').val(), note: form.find('[name="note"]').val() },
+				complete: function(){
+					alert( 'done' );
+					location.href = location.href;
+				}
+			})
 		});
+
 	});
 </script>
 

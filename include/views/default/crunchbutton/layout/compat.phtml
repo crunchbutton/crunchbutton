@@ -49,10 +49,11 @@
 							<? endif ; ?>
 							<td><a href="http://www.mozilla.com/en-US/firefox/RC/" target="_blank"><img src="/assets/images/compat/firefox.jpg"></a></td>
 							<td><a href="http://www.opera.com/download/" target="_blank"><img src="/assets/images/compat/opera.jpg"></a></td>
-
+							<?php /* Removed the IE for while #1272
 							<? if (preg_match('/windows/i',$_SERVER['HTTP_USER_AGENT'])) : ?>
 								<td><a href="http://ie.microsoft.com/testdrive/" target="_blank"><img src="/assets/images/compat/msie.jpg"></a></td>
 							<? endif ; ?>
+							*/ ?>
 						</tr>
 						<tr>
 							<td><a href="http://www.google.com/chrome/" target="_blank">Chrome</a></td>
@@ -61,9 +62,11 @@
 							<? endif ; ?>
 							<td><a href="http://www.mozilla.com/en-US/firefox/RC/" target="_blank">Firefox</a></td>
 							<td><a href="http://www.opera.com/download/" target="_blank">Opera</a></td>
-							<? if (preg_match('/windows/i',$_SERVER['HTTP_USER_AGENT'])) : ?>
+							<?php /* Removed the IE for while #1272
+								<? if (preg_match('/windows/i',$_SERVER['HTTP_USER_AGENT'])) : ?>
 								<td><a href="http://ie.microsoft.com/testdrive/" target="_blank">MSIE 10</a></td>
 							<? endif; ?>
+							*/ ?>
 						</tr>
 					</table>
 				</div>
