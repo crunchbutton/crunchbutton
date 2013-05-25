@@ -1021,7 +1021,7 @@ App.cart = {
 							$('.payment-form').show();
 	 						$('.delivery-payment-info, .content-padder-before').hide();
 							$( '[name="pay-address"]' ).focus();
-
+							return;
 							// Log the error
 							App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address out of delivery range' );
 
