@@ -1016,12 +1016,12 @@ App.cart = {
 
 							// Write the found address at the address field, so the user can check it.
 							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
-
+/*
 							// Make sure that the form will be visible
 							$('.payment-form').show();
 	 						$('.delivery-payment-info, .content-padder-before').hide();
 							$( '[name="pay-address"]' ).focus();
-
+*/
 							// Log the error
 							App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address out of delivery range' );
 						
