@@ -25,6 +25,8 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$how_delivery = $this->request()['how_delivery'];
 							$contact = $this->request()['contact'];
 							$add_as_credit = $this->request()['add_as_credit'];
+							$notify_by_email = $this->request()['notify_by_email'];
+							$notify_by_sms = $this->request()['notify_by_sms'];
 
 							// Store the ids
 							$ids = [];
@@ -46,6 +48,11 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 											$giftcard->id_user = $id_user;
 											$user = Crunchbutton_User::o( $id_user );
 											$giftcard->phone =  $user->phone;
+											if( $notify_by_email > 0 ){
+												$giftcard->email = $user->email; 
+												$giftcard->email_subject = 'Congrats, you got a gift card'; 
+												$giftcard->email_content = 'Congrats, you got a gift card to ' . Crunchbutton_Promo::TAG_RESTAURANT_NAME . '! To receive it, enter code: ' . Crunchbutton_Promo::TAG_GIFT_CODE . ' in your order notes or click here: ' . Crunchbutton_Promo::TAG_GIFT_URL . '.'; 
+											}
 										}
 										$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
 										$giftcard->note = $note;
@@ -73,9 +80,14 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 												$giftcard->addCredit( $id_user );
 											}
 										} else {
-											if( $giftcard->phone ){
-												$giftcard->queNotifySMS();
-											}
+											if( $id_user ){
+												if( $notify_by_email > 0 && $giftcard->email ){
+													$giftcard->queNotifyEMAIL();
+												}	
+												if( $notify_by_sms > 0 && $giftcard->phone ){
+													$giftcard->queNotifySMS();
+												}	
+											} 
 										}
 
 										if($id_order_reference) {

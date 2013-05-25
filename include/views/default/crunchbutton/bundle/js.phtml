@@ -94,10 +94,6 @@ $(function() {
 	<script src="/assets/js/<?=$script?>.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <? endforeach ; ?>
 
-<script type="text/javascript">
-	App.config = <?=json_encode(c::appConfig())?>;
-</script>
-
 <script src="/assets/js/datetime.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/base.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/loc.js?v=<?=Cana_Util::gitVersion()?>"></script>
@@ -109,7 +105,6 @@ $(function() {
 	<script src="/assets/js/suggestions.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <? endif ; ?>
 
-<script src="/assets/js/quo.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/orm.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/community.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/restaurant.js?v=<?=Cana_Util::gitVersion()?>"></script>

@@ -56,9 +56,6 @@ App.page.home = function(force) {
 	}
 		
 	if (!force && App.loc.address() && App.restaurants.list && App.restaurants.list.length == 0) {
-		
-		// Log the location
-		App.loc.log();
 
 		// Move the scroll to the top
 		setTimeout(scrollTo, 0, 0, 1);
