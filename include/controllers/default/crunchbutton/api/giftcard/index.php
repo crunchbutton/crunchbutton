@@ -301,6 +301,9 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 
 			break;
 			default:
+			$promo = Promo::o(411);
+			$promo->queNotifySMS();
+exit;
 				echo json_encode(['error' => 'invalid object']);
 			break;
 		}
