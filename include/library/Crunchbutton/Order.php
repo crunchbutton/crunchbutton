@@ -345,12 +345,18 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		$this->que();
+		
+		$order = $this;
 
 		if ($params['make_default']) {
-			Preset::cloneFromOrder($this);
+			Cana::timeout(function() use($order) {
+				Preset::cloneFromOrder($order);
+			});
 		}
-
-		Crunchbutton_Hipchat_Notification::OrderPlaced($this);
+		
+		Cana::timeout(function() use($order) {
+			Crunchbutton_Hipchat_Notification::OrderPlaced($order);
+		});
 
 		return true;
 	}
@@ -685,7 +691,9 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function que() {
+
 		$order = $this;
+
 		Cana::timeout(function() use($order) {
 			/* @var $order Crunchbutton_Order */
 			$order->notify();
@@ -700,9 +708,11 @@ class Crunchbutton_Order extends Cana_Table {
 		// Start the timer to check if the order was confirmed. #1049
 		if ($this->restaurant()->confirmation) {
 			$timer = c::config()->twilio->warningOrderNotConfirmedTime;
+
 			// Log
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed started', 'time' => $timer, 'type' => 'notification' ]);
-			c::timeout(function() use($order) {
+
+			c::timeout(function() use($order, $timer) {
 				$order->warningOrderNotConfirmed();
 			}, $timer );
 		}
