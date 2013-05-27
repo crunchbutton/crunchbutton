@@ -1759,7 +1759,7 @@ $(function() {
 		}, '.meal-item-content');
 	}
 	
-	$$('.dish-item').tap(function(e) {
+	$$('.dish-item').hold(function(e) {
 		if ($(this).attr('data-id_dish')) {
 			App.cart.add($(this).attr('data-id_dish'));
 		} else if ($(this).hasClass('restaurant-menu')) {
