@@ -519,7 +519,7 @@ function (e) {
 }(Quo),
 function ($$) {
     var CURRENT_TOUCH, FIRST_TOUCH, GESTURE, GESTURES, HOLD_DELAY, TAPS, TOUCH_TIMEOUT, _angle, _capturePinch, _captureRotation, _cleanGesture, _distance, _fingersPosition, _getTouches, _hold, _isSwipe, _listenTouches, _onTouchEnd, _onTouchMove, _onTouchStart, _parentIfText, _swipeDirection, _trigger;
-    return TAPS = null, GESTURE = {}, FIRST_TOUCH = [], CURRENT_TOUCH = [], TOUCH_TIMEOUT = void 0, HOLD_DELAY = 650, GESTURES = ["tap", "singleTap", "doubleTap", "hold", "swipe", "swiping", "swipeLeft", "swipeRight", "swipeUp", "swipeDown", "rotate", "rotating", "rotateLeft", "rotateRight", "pinch", "pinching", "pinchIn", "pinchOut", "drag", "dragLeft", "dragRight", "dragUp", "dragDown"], GESTURES.forEach(function (e) {
+    return TAPS = null, GESTURE = {}, FIRST_TOUCH = [], CURRENT_TOUCH = [], TOUCH_TIMEOUT = void 0, HOLD_DELAY = 150, GESTURES = ["tap", "singleTap", "doubleTap", "hold", "swipe", "swiping", "swipeLeft", "swipeRight", "swipeUp", "swipeDown", "rotate", "rotating", "rotateLeft", "rotateRight", "pinch", "pinching", "pinchIn", "pinchOut", "drag", "dragLeft", "dragRight", "dragUp", "dragDown"], GESTURES.forEach(function (e) {
         return $$.fn[e] = function (t) {
             return $$(document.body).delegate(this.selector, e, t)
         }, this
