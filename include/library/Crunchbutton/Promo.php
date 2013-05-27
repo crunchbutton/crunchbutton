@@ -18,6 +18,7 @@ class Crunchbutton_Promo extends Cana_Table
 			->idVar('id_promo')
 			->load($id);
 	}
+
 	public static function byCode( $code ){
 		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE code = "' . $code . '"' );
 	}
@@ -115,13 +116,12 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public function queTrack(){
 
-		$promo = $this;
+		$giftcard = $this;
 
-		if( $promo->track ){
-			// c::timeout(function() use($promo) {
-				$promo->trackItSMS();
-			// }, 1000); // 1 second
-
+		if( $giftcard->track ){
+			c::timeout(function() use($giftcard) {
+				$giftcard->trackItSMS();
+			}, 1000);
 		}
 	}
 
@@ -168,53 +168,20 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function queNotifySMS() {
-		
-		$promo = $this;
-
-		Log::debug([
-				'action' => 'BEFORE cana::timeout',
-				'promo_id' => $promo->id_promo,
-				'promo_code' => $promo->code,
-				'method' => '$promo->notifySMS()',
-				'type' => 'promo_sms'
-			]);
-
-		// c::timeout(function() use($promo) {
-			$promo->notifySMS();
-		// }, 1000); // 1 second
-
-		Log::debug([
-				'action' => 'AFTER cana::timeout',
-				'promo_id' => $promo->id_promo,
-				'promo_code' => $promo->code,
-				'method' => '$promo->notifySMS()',
-				'type' => 'promo_sms'
-			]);
+		$giftcard = $this;
+		Cana::timeout(function() use($giftcard) {
+			$giftcard->notifySMS();
+		}, 1000); // 1 second
 	}
 
 	public function queNotifyEMAIL() {
 
-		$promo = $this;
+		$giftcard = $this;
 
-		Log::debug([
-				'action' => 'BEFORE cana::timeout',
-				'promo_id' => $promo->id_promo,
-				'promo_code' => $promo->code,
-				'method' => '$promo->notifyEMAIL()',
-				'type' => 'promo_email'
-			]);
+		c::timeout(function() use($giftcard) {
+			$giftcard->notifyEMAIL();
+		}, 1000); // 1 second
 
-		// c::timeout(function() use($promo) {
-			$promo->notifyEMAIL();
-		// }, 1000); // 1 second
-
-		Log::debug([
-				'action' => 'AFTER cana::timeout',
-				'promo_id' => $promo->id_promo,
-				'promo_code' => $promo->code,
-				'method' => '$promo->notifyEMAIL()',
-				'type' => 'promo_email'
-			]);
 	}
 	public function notifyEMAIL() {
 
