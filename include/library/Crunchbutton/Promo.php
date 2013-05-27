@@ -119,9 +119,9 @@ class Crunchbutton_Promo extends Cana_Table
 		$giftcard = $this;
 
 		if( $giftcard->track ){
-			// c::timeout(function() use($giftcard) {
+			c::timeout(function() use($giftcard) {
 				$giftcard->trackItSMS();
-			// }, 1000);
+			}, 1000);
 		}
 	}
 
