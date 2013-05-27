@@ -1760,10 +1760,9 @@ $(function() {
 	}
 	
 	/* 
-		Issue 1362 - Replaced the tap by click evend
-		$$('.dish-item').tap(function(e) {
+		Issue 1362 - Replaced the tap by singleTap event
 	*/
-	$(document).on( 'click', '.dish-item', function(e) {
+	$$('.dish-item').singleTap(function(e) {
 		if ($(this).attr('data-id_dish')) {
 			App.cart.add($(this).attr('data-id_dish'));
 		} else if ($(this).hasClass('restaurant-menu')) {
