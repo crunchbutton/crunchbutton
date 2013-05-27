@@ -11,10 +11,7 @@ if( c::Browser()->browser == 'MSIE' ) { ?>
 	var $$ = $;
 	$$.fn.tap = function( func ){
 		$(document).on( 'click', $( this ).selector , func );
-	};
-	$$.fn.hold = function( func ){
-		$(document).on( 'click', $( this ).selector , func );
-	};
+	}
 	</script>
 <?php } ?>
 

@@ -1759,7 +1759,11 @@ $(function() {
 		}, '.meal-item-content');
 	}
 	
-	$$('.dish-item').hold(function(e) {
+	/* 
+		Issue 1362 - Replaced the tap by click evend
+		$$('.dish-item').tap(function(e) {
+	*/
+	$(document).on( 'click', '.dish-item', function(e) {
 		if ($(this).attr('data-id_dish')) {
 			App.cart.add($(this).attr('data-id_dish'));
 		} else if ($(this).hasClass('restaurant-menu')) {
