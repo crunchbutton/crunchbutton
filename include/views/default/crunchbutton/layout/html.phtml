@@ -11,7 +11,10 @@ if( c::Browser()->browser == 'MSIE' ) { ?>
 	var $$ = $;
 	$$.fn.tap = function( func ){
 		$(document).on( 'click', $( this ).selector , func );
-	}
+	};
+	$$.fn.singleTap = function( func ){
+		$(document).on( 'click', $( this ).selector , func );
+	};
 	</script>
 <?php } ?>
 
