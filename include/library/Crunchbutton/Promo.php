@@ -178,9 +178,9 @@ class Crunchbutton_Promo extends Cana_Table
 
 		$giftcard = $this;
 
-		// c::timeout(function() use($giftcard) {
+		c::timeout(function() use($giftcard) {
 			$giftcard->notifyEMAIL();
-		// }, 1000); // 1 second
+		}, 1000); // 1 second
 
 	}
 	public function notifyEMAIL() {
