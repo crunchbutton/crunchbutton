@@ -168,9 +168,9 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function queNotifySMS() {
-		$_giftcard = $this;
-		Cana::timeout(function() use($_giftcard) {
-			$_giftcard->notifySMS();
+		$gift = $this;
+		Cana::timeout(function() use($gift) {
+			$gift->notifySMS();
 		}, 1000); // 1 second
 	}
 
