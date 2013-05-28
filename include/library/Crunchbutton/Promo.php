@@ -241,9 +241,9 @@ class Crunchbutton_Promo extends Cana_Table
 				'method' => '$promo->notifySMS()',
 				'type' => 'promo_sms'
 			]);
-
+		/*
 		$env = c::env() == 'live' ? 'live' : 'dev';
-		
+
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$phone = $gift->phone;
 
@@ -279,6 +279,7 @@ class Crunchbutton_Promo extends Cana_Table
 				$msg
 			);
 		}
+		//*/
 	}
 
 	public static function find($search = []) {
