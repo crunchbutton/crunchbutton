@@ -169,9 +169,9 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public function queNotifySMS() {
 		$gift = Promo::o( $this->id_promo );
-		c::timeout(function() use( $gift ) {
+		// c::timeout(function() use( $gift ) {
 			$gift->notifySMS();
-		});
+		// });
 	}
 
 	public function queNotifyEMAIL() {
