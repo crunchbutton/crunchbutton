@@ -169,19 +169,29 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public function queNotifySMS() {
 		$gift = $this;
-		c::timeout(function() use( $gift ) {
+		// c::timeout(function() use( $gift ) {
 			$gift->notifySMS();
-		});
+		// });
 	}
 
 	public function queNotifyEMAIL() {
 		$gift = $this;
-		c::timeout(function() use($gift) {
+		// c::timeout(function() use($gift) {
 			$gift->notifyEMAIL();
-		});
+		// });
 	}
 
 	public function notifyEMAIL() {
+
+		$gift = $this;
+		
+		Log::debug([
+			'action' => 'INSIDE notifyEMAIL cana::timeout',
+			'promo_id' => $gift->id_promo,
+			'promo_code' => $gift->code,
+			'method' => '$promo->notifyEMAIL()',
+			'type' => 'promo_email'
+		]);
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 
@@ -191,22 +201,22 @@ class Crunchbutton_Promo extends Cana_Table
 			$serverUrl = 'beta._DOMAIN_';
 		}
 
-		$url = 'http://' . $serverUrl . '/giftcard/'. $this->code;
+		$url = 'http://' . $serverUrl . '/giftcard/'. $gift->code;
 
-		$content = $this->email_content;
-		$content = str_replace( static::TAG_GIFT_VALUE , $this->value, $content );
+		$content = $gift->email_content;
+		$content = str_replace( static::TAG_GIFT_VALUE , $gift->value, $content );
 		$content = str_replace( static::TAG_GIFT_URL , $url, $content );
-		$content = str_replace( static::TAG_GIFT_CODE , $this->code, $content );
-		if( $this->restaurant()->id_restaurant ){
-			$content = str_replace( static::TAG_RESTAURANT_NAME , $this->restaurant()->name, $content );	
+		$content = str_replace( static::TAG_GIFT_CODE , $gift->code, $content );
+		if( $gift->restaurant()->id_restaurant ){
+			$content = str_replace( static::TAG_RESTAURANT_NAME , $gift->restaurant()->name, $content );	
 		} else {
 			$content = str_replace( static::TAG_RESTAURANT_NAME , 'Crunchbutton', $content );	
 		}
 		
 		$content = nl2br( $content );
 
-		$email = $this->email;
-		$subject = $this->email_subject;
+		$email = $gift->email;
+		$subject = $gift->email_subject;
 
 		$mail = new Crunchbutton_Email_Promo([
 			'message' => $content,
@@ -216,16 +226,26 @@ class Crunchbutton_Promo extends Cana_Table
 		
 		$mail->send();
 
-		$this->note =  'EMAIL sent to ' . $email . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $this->note;
-		$this->save();
+		$gift->note =  'EMAIL sent to ' . $email . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $gift->note;
+		$gift->save();
 	}
 
 	public function notifySMS() {
 
+		$gift = $this;
+
+		Log::debug([
+				'action' => 'INSIDE notifySMS cana::timeout',
+				'promo_id' => $gift->id_promo,
+				'promo_code' => $gift->code,
+				'method' => '$promo->notifySMS()',
+				'type' => 'promo_sms'
+			]);
+
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-		$phone = $this->phone;
+		$phone = $gift->phone;
 
 		if( !$phone ){
 			return false;
@@ -239,16 +259,16 @@ class Crunchbutton_Promo extends Cana_Table
 			$serverUrl = 'beta._DOMAIN_';
 		}
 
-		$url = $serverUrl . '/giftcard/'. $this->code;
+		$url = $serverUrl . '/giftcard/'. $gift->code;
 
-		if( $this->restaurant()->id_restaurant ){
-			$message = "Congrats, you got a gift card to {$this->restaurant()->name}! Enter code: {$this->code} in your order notes or click here: {$url}"; 
+		if( $gift->restaurant()->id_restaurant ){
+			$message = "Congrats, you got a gift card to {$gift->restaurant()->name}! Enter code: {$gift->code} in your order notes or click here: {$url}"; 
 		} else {
-			$message = "Congrats, you got a gift card to Crunchbutton! Enter code: {$this->code} in your order notes or click here: {$url}"; 
+			$message = "Congrats, you got a gift card to Crunchbutton! Enter code: {$gift->code} in your order notes or click here: {$url}"; 
 		}
 
-		$this->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $this->note;
-		$this->save();
+		$gift->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $gift->note;
+		$gift->save();
 
 		$message = str_split($message, 160);
 		
