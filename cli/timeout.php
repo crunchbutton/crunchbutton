@@ -3,7 +3,7 @@
 error_reporting(E_ERROR | E_PARSE);
 ini_set('display_errors',true);
 
-$a = (object)getopt('s::c::r::f::');
+$a = (object)getopt('s::c::r::f::e::');
 
 if ($a->s) {
 	sleep($a->s / 1000); // ms
