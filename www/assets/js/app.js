@@ -1796,8 +1796,7 @@ $(function() {
 		App.cart.submit($(this),true);
 	});
 
-
-	$(document).on('touchclick', '.button-deliver-payment, .dp-display-item a', function() {
+	$(document).on('touchclick', '.button-deliver-payment, .dp-display-item a, .dp-display-item .clickable', function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();
 	});
