@@ -2,6 +2,7 @@
 <?php
 error_reporting(E_ERROR | E_PARSE);
 ini_set('display_errors',true);
+ini_set('error_log','/home/cockpit.crunchbutton/logs/php-scripts.log');
 set_time_limit(10);
 
 $a = (object)getopt('s::c::r::f::');
