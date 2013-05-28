@@ -169,7 +169,14 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public function queNotifySMS() {
 		$gift = $this;
-		Cana::timeout(function() use($gift) {
+
+
+		$closure = new SuperClosure(function() use( $gift ) {
+			$gift->notifySMS();
+		});
+		$encoded = base64_encode(serialize($closure));
+		echo $encoded;exit;
+		Cana::timeout(function() use( $gift ) {
 			$gift->notifySMS();
 		}, 1000); // 1 second
 	}
