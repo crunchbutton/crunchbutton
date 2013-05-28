@@ -535,6 +535,14 @@ html[xmlns] .clearfix {
 .dp-display-item:first-child {
 }
 
+.dp-display-item .clickable{
+	color:#d74924;
+	cursor: pointer;
+	font-style: italic;
+	padding:8px 8px 8px 0;
+	text-decoration: underline;
+}
+
 .dp-display-item:last-child {
 }
 
