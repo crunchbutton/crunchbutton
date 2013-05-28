@@ -169,25 +169,18 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public function queNotifySMS() {
 		$gift = $this;
-
-
-		$closure = new SuperClosure(function() use( $gift ) {
-			$gift->notifySMS();
-		});
-		$encoded = base64_encode(serialize($closure));
-		echo $encoded;exit;
 		Cana::timeout(function() use( $gift ) {
 			$gift->notifySMS();
-		}, 1000); // 1 second
+		});
 	}
 
 	public function queNotifyEMAIL() {
-		$_giftcard = $this;
-		c::timeout(function() use($_giftcard) {
-			$_giftcard->notifyEMAIL();
-		}, 1000); // 1 second
-
+		$gift = $this;
+		c::timeout(function() use($gift) {
+			$gift->notifyEMAIL();
+		});
 	}
+
 	public function notifyEMAIL() {
 
 		Log::debug([
