@@ -168,28 +168,20 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function queNotifySMS() {
-		$gift = Promo::o( $this->id_promo );
-		// c::timeout(function() use( $gift ) {
+		$gift = $this;
+		c::timeout(function() use( $gift ) {
 			$gift->notifySMS();
-		// });
+		});
 	}
 
 	public function queNotifyEMAIL() {
-		$gift = Promo::o( $this->id_promo );
+		$gift = $this;
 		c::timeout(function() use($gift) {
 			$gift->notifyEMAIL();
 		});
 	}
 
 	public function notifyEMAIL() {
-
-		Log::debug([
-			'action' => 'INSIDE notifyEMAIL cana::timeout',
-			'promo_id' => $this->id_promo,
-			'promo_code' => $this->code,
-			'method' => '$promo->notifyEMAIL()',
-			'type' => 'promo_email'
-		]);
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 
@@ -229,14 +221,6 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function notifySMS() {
-
-		Log::debug([
-				'action' => 'INSIDE notifySMS cana::timeout',
-				'promo_id' => $this->id_promo,
-				'promo_code' => $this->code,
-				'method' => '$promo->notifySMS()',
-				'type' => 'promo_sms'
-			]);
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
 		
