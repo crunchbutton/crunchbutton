@@ -1300,6 +1300,7 @@ html[xmlns] .clearfix {
 	.order-thanks-message{
 		padding-top: 10px !important;
 		display: block;
+		font-size: 25px;
 	}
 	.order-thanks-message-block{
 		display: block;
