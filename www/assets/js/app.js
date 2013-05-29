@@ -1477,6 +1477,8 @@ App.trigger = {
 /**
  * global event binding and init
  */
+
+
 $(function() {
 
 	App.test.init();
@@ -1919,7 +1921,7 @@ $(function() {
 		});
 	});
 	
-	if (App.isMobile()) {
+	if (App.isMobile() && !App.isAndroid() ) {
 		setInterval(function() {
 			var focused = $(':focus');
 			if (!focused.length) {
