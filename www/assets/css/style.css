@@ -1298,10 +1298,12 @@ html[xmlns] .clearfix {
 		background: #fed0be;
 	}
 	.order-thanks-message{
-		line-height: 35px;
-	}
-	.mobile-block{
+		padding-top: 10px !important;
 		display: block;
+	}
+	.order-thanks-message-block{
+		display: block;
+		margin-top: 15px;
 	}
 	.cart-item {
 		background: #ecf1fb;
