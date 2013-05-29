@@ -1,15 +1,10 @@
 <link href='http://fonts.googleapis.com/css?family=Atomic+Age|Carrois+Gothic+SC' rel='stylesheet' type='text/css'>
 <style type="text/css">
-	.dotted{
-		border: 1px dotted #CCC;
-		padding: 5px;
-		width: 776px;
-		margin: 20px auto;
-	}
 	.giftcard{
 		font-family: 'Atomic Age', cursive;
 		height: 340px;
 		margin: 0 auto;
+		margin-bottom:1px;
 		text-align: center;
 		width: 770px;
 	}	
@@ -99,14 +94,12 @@ if( $giftcards->count() > 0 ) {
 			$local_description = 'Order the top local food.';
 		}
 	?>
-	<div class="dotted">
-		<div class="giftcard">
-			<div class="dollar">$</div>
-			<div class="value"><?php echo $giftcard->value;?></div>
-			<div class="code"><?php echo $giftcard->code;?></div>
-			<div class="place"><?php echo $restaurant_name; ?></div>
-			<img src="/assets/images/giftcard_print.png"/>
-		</div>
+	<div class="giftcard">
+		<div class="dollar">$</div>
+		<div class="value"><?php echo $giftcard->value;?></div>
+		<div class="code"><?php echo $giftcard->code;?></div>
+		<div class="place"><?php echo $restaurant_name; ?></div>
+		<img src="/assets/images/giftcard_print.png"/>
 	</div>
 	<?php 
 		if( $count % 3 == 0 ){
