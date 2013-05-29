@@ -156,6 +156,10 @@ App.signin.manageLocation = function(){
  */
 App.signin.signOut = function(){
 	if (confirm( 'Confirm sign out?')){
+		// Force to remove the cookies
+		$.each( [ 'token', 'location', 'PHPSESSID' ], function( index, value ){
+			$.cookie( value, null );
+		} );
 		if( App.signin.facebook.isLogged ){
 			FB.logout( function(){
 				$.getJSON('/api/logout',function(){
@@ -171,7 +175,6 @@ App.signin.signOut = function(){
 		}
 	}
 }
-
 
 App.signin.facebook = {
 	running: false,
