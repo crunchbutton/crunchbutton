@@ -1762,7 +1762,7 @@ $(function() {
 	/* Issue 1362 - Replaced the tap by singleTap even */
 	$$('.dish-item').singleTap(function(e) {
 		if ($(this).attr('data-id_dish')) {
-			/* Issue 1368 - Simulate the blink effect at mobile screen, at iOS it already happens by default */
+			/* Issue 1368 - Simulate the blink effect at mobile screen, -webkit-tap-highlight-color isn't working at android devices */
 			if( App.isNarrowScreen() && !App.iOS() ){
 				var item = $( this );
 				item.addClass( 'blink' );
