@@ -1759,11 +1759,15 @@ $(function() {
 		}, '.meal-item-content');
 	}
 	
-	/* 
-		Issue 1362 - Replaced the tap by singleTap event
-	*/
+	/* Issue 1362 - Replaced the tap by singleTap even */
 	$$('.dish-item').singleTap(function(e) {
 		if ($(this).attr('data-id_dish')) {
+			/* Issue 1368 - Simulate the blink effect at mobile screen, at iOS it already happens by default */
+			if( App.isNarrowScreen() && !App.iOS() ){
+				var item = $( this );
+				item.addClass( 'blink' );
+				setTimeout( function(){ item.removeClass( 'blink' ); }, 60 );
+			}
 			App.cart.add($(this).attr('data-id_dish'));
 		} else if ($(this).hasClass('restaurant-menu')) {
 			return;

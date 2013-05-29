@@ -1294,6 +1294,9 @@ html[xmlns] .clearfix {
 		border: 1px solid #ffd1bd;
 		text-decoration: none;
 	}
+	.dish-item.blink{
+		background: #fed0be;
+	}
 
 	.cart-item {
 		background: #ecf1fb;
