@@ -1297,7 +1297,9 @@ html[xmlns] .clearfix {
 	.dish-item.blink{
 		background: #fed0be;
 	}
-
+	.mobile-block{
+		display: block;
+	}
 	.cart-item {
 		background: #ecf1fb;
 		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f4f7fd), to(#ecf1fb));
