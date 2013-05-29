@@ -1297,6 +1297,9 @@ html[xmlns] .clearfix {
 	.dish-item.blink{
 		background: #fed0be;
 	}
+	.order-thanks-message{
+		line-height: 35px;
+	}
 	.mobile-block{
 		display: block;
 	}
