@@ -1,0 +1,1 @@
+ALTER TABLE  `restaurant` ADD  `fee_on_subtotal` TINYINT( 1 ) NOT NULL DEFAULT  '0';
