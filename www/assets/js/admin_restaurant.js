@@ -1101,6 +1101,7 @@ var ADMIN = {
 		w = UTIL.create_widget('toggle', $('#restaurant-cash-container'), {field_name:'cash'});
 		w = UTIL.create_widget('toggle', $('#restaurant-credit-container'), {field_name:'credit'});
 		w = UTIL.create_widget('toggle', $('#restaurant-any-gift-card-container'), {field_name:'giftcard'});
+		w = UTIL.create_widget('toggle', $('#restaurant-fee_on_subtotal-container'), {field_name:'fee_on_subtotal'});
 		w = UTIL.create_widget('toggle', $('#restaurant-delivery-container'), {field_name:'delivery'});
 		w = UTIL.create_widget('toggle', $('#restaurant-takeout-container'), {field_name:'takeout'});
 		w = UTIL.create_widget('notifications', $('#notifications-container'));

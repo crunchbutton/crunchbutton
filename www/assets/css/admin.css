@@ -715,7 +715,7 @@ table.list tr:nth-of-type(even) {
 }
 
 .admin-item-col-small {
-	width: 12%;
+	width: 15%;
 	display: inline-block;
 	padding-right: 15px;
 }
