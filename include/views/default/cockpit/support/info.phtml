@@ -62,6 +62,13 @@
 					<? else : ?>
 						(no linked order)
 					<? endif ; ?>
+
+					<? $giftcard = $this->support->order()->hasGiftCard();
+					if( $giftcard > 0 ){
+						echo '<br/><br/><i class="icon-gift"></i> Received <b>$' . number_format( $giftcard, 2 ) . '</b> gift card.';
+					}
+					?>
+
 				</td>
 				<td>
 					<div class="btn-group">
