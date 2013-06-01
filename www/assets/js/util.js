@@ -163,6 +163,6 @@ if (window.jQuery) {
 	});
 	
 	$.fn.tap = function(func) {
-		$(document).on('touchup', $(this).selector, func );
+		$(document).on('touchclick', $(this).selector, func );
 	};
 }

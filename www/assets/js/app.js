@@ -1618,8 +1618,6 @@ $(function() {
 		e.preventDefault();
 		History.pushState({}, 'Crunchbutton - Orders', '/orders');
 	});
-
-
 	
 	if (App.isMobile()) {
 
