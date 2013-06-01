@@ -2009,6 +2009,13 @@ $(function() {
 	App.recommend.init();
 	App.loc.init();
 	App.credit.tooltip.init();
+
+	$( '.ui-dialog-titlebar-close' ).tap( function(){
+		try{
+			$( '.ui-dialog-content' ).dialog( 'close' );
+		} catch(e){}
+	} );
+
 });
 
 
