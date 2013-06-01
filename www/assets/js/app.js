@@ -1813,11 +1813,16 @@ $(function() {
 		App.cart.customizeItem($(this));
 	});
 
+	$( '.default-order-check' ).tap( function(){
+		setTimeout( function(){
+			$( '#default-order-check' ).checkToggle();
+		}, 1 );
+	} );
+
 	$('.cart-customize-check').tap( function() {
-		// For some reason this tap event have to wait a little time before runs the customizeItem method
-		// if we ignore this time it will not read attr checked of the checkbox correctly
 		var checkbox = $(this);
 		setTimeout( function(){
+			checkbox.checkToggle();
 			App.cart.customizeItem( checkbox );
 		}, 1 );
 	});
