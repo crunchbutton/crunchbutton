@@ -109,17 +109,33 @@ App.nl2br = function( string ){
 
 var touchclick = App.isMobile() ? 'touchend' : 'click';
 var touchup = App.isMobile() ? 'touchend' : 'mouseup';
+var touchHandle = function (event) {
+	var handleObj = event.handleObj,
+		targetData = jQuery.data(event.target),
+		ret;
+
+	if (!App.isMobile() || (Math.abs(endCoords.pageX-startCoords.pageX) <= cordsThresh && Math.abs(endCoords.pageY-startCoords.pageY) <= cordsThresh)) {
+		event.type = handleObj.origType;
+		ret = handleObj.handler.apply(this, arguments);
+		event.type = handleObj.type;
+		event.preventDefault();
+		return ret;
+	}
+};
+
 jQuery.event.special.touchclick = {
 	bindType: touchclick,
-	delegateType: touchclick
+	delegateType: touchclick,
+	handle: touchHandle
 };
 jQuery.event.special.touchup = {
 	bindType: touchup,
-	delegateType: touchup
+	delegateType: touchup,
+	handle: touchHandle
 };
 
+var startCoords = {}, endCoords = {}, cordsThresh = 3;
 
-// jquery plugin
 if (window.jQuery) {
 	(function($){
 		$.fn.checkToggle = function(params) {
@@ -130,4 +146,23 @@ if (window.jQuery) {
 			return this;
 		};
 	})(jQuery);
+
+	$(document).on('touchstart', function(event) {
+		endCoords = event.originalEvent.targetTouches[0];
+		startCoords.pageX = event.originalEvent.targetTouches[0].pageX;
+		startCoords.pageY = event.originalEvent.targetTouches[0].pageY;
+	});
+	
+	$(document).on('touchmove', function(event) {
+		endCoords = event.originalEvent.targetTouches[0];
+	});
+	
+	$(document).on('touchend', function(event) {
+		endCoords.pageX = startCoords.pageX = 0;
+		endCoords.pageY = startCoords.pageY = 0;
+	});
+	
+	$.fn.tap = function(func) {
+		$(document).on('touchup', $(this).selector, func );
+	};
 }
