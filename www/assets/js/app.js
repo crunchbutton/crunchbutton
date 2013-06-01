@@ -1822,7 +1822,9 @@ $(function() {
 	$('.cart-customize-check').tap( function() {
 		var checkbox = $(this);
 		setTimeout( function(){
-			checkbox.checkToggle();
+			if( !App.isMobile() ){
+				checkbox.checkToggle();	
+			}
 			App.cart.customizeItem( checkbox );
 		}, 1 );
 	});
