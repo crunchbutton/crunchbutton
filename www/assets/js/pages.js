@@ -24,7 +24,7 @@ App.page.home = function(force) {
 				autofocus: $(window).width() >= 768 ? ' autofocus="autofocus"' : ''
 			}
 		});
-	
+
 		$('.nav-back').removeClass('nav-back-show');
 		$('.config-icon').addClass('config-icon-mobile-hide, config-icon-desktop-hide');
 		$('.content').addClass('short-meal-list');
