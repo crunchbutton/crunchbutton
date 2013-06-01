@@ -404,7 +404,7 @@ App.page.orders = function() {
 
 		$( '.nav-back' ).addClass( 'nav-back-show' );
 
-		$$('.order-restaurant').singleTap(function(e) {
+		$('.order-restaurant').tap(function(e) {
 			var permalink = $( this ).attr( 'permalink' );
 			var name = $( this ).attr( 'name' );
 			var loc = '/' + App.restaurants.permalink + '/' + permalink;

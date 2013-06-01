@@ -1376,16 +1376,16 @@ App.test = {
 		location.href = '/';
 	},
 	init: function() {
-		$$('.test-card').tap(function() {
+		$('.test-card').tap(function() {
 			App.test.card();
 		});
-		$$('.test-logout').tap(function() {
+		$('.test-logout').tap(function() {
 			App.test.logout();
 		});
-		$$('.test-cart').tap(function() {
+		$('.test-cart').tap(function() {
 			App.test.cart();
 		});
-		$$('.test-clearloc').tap(function() {
+		$('.test-clearloc').tap(function() {
 			App.test.clearloc();
 		});
 	}
@@ -1600,20 +1600,20 @@ $(function() {
 	}, '.location-detect');
 	
 
-	$$('.link-help').tap(function(e) {
+	$('.link-help').tap(function(e) {
 		e.stopPropagation();
 		e.preventDefault();
 		History.pushState({}, 'Crunchbutton - About', '/help');
 	});
 
-	$$('.link-legal').tap(function(e) {
+	$('.link-legal').tap(function(e) {
 	console.log('LEGAL', e)
 		e.stopPropagation();
 		e.preventDefault();
 		History.pushState({}, 'Crunchbutton - Legal', '/legal');
 	});
 
-	$$('.link-orders').tap(function(e) {
+	$('.link-orders').tap(function(e) {
 		e.stopPropagation();
 		e.preventDefault();
 		History.pushState({}, 'Crunchbutton - Orders', '/orders');
@@ -1622,7 +1622,6 @@ $(function() {
 
 	
 	if (App.isMobile()) {
-	
 
 		// prevent double trigger
 		$(document).on('touchclick','input[type="checkbox"]', function(e) {
@@ -1631,14 +1630,14 @@ $(function() {
 		});
 
 		// manually rebind checkbox events
-		$$('input[type="checkbox"]').tap(function(e) {
+		$('input[type="checkbox"]').tap(function(e) {
 			e.stopPropagation();
 			e.preventDefault();
 			$(this).checkToggle();
 		});
 		
 		// manually rebind labels
-		$$('label[for]').tap(function(e) {
+		$('label[for]').tap(function(e) {
 			e.stopPropagation();
 			e.preventDefault();
 			var target = document.getElementById($(this).attr('for'));
@@ -1661,7 +1660,7 @@ $(function() {
 
 		// manually bind links
 		// @todo: intercept for native app
-		$$('a[href]').tap(function(e) {
+		$('a[href]').tap(function(e) {
 			var el = $(this);
 			var href = el.attr('href');
 
@@ -1760,41 +1759,31 @@ $(function() {
 			}
 		}, '.meal-item-content');
 	}
-	
-	/* Issue 1362 - Replaced the tap by singleTap even */
-	$$('.dish-item').singleTap(function(e) {
-		if ($(this).attr('data-id_dish')) {
-			/* Issue 1368 - Simulate the blink effect at mobile screen, -webkit-tap-highlight-color isn't working at android devices */
-			if( App.isNarrowScreen() && !App.iOS() ){
-				var item = $( this );
-				item.addClass( 'blink' );
-				setTimeout( function(){ item.removeClass( 'blink' ); }, 60 );
-			}
-			App.cart.add($(this).attr('data-id_dish'));
-		} else if ($(this).hasClass('restaurant-menu')) {
-			return;
-		}
+
+
+	$('.dish-item').tap(function() {
+		App.cart.add($(this).attr('data-id_dish'));
 	});
 
-	$$('.your-orders a').tap(function() {
+	$('.your-orders a').tap(function() {
 		if ($(this).attr('data-id_order')) {
 			History.pushState({},'Crunchbutton - Your Order', '/order/' + $(this).attr('data-id_order'));
 		}
 	});
 
-	$$('.cart-button-remove').tap(function() {
+	$('.cart-button-remove').tap(function() {
 		App.cart.remove($(this).closest('.cart-item'));
 	});
 
-	$$('.cart-button-add').tap(function() {
+	$('.cart-button-add').tap(function() {
 		App.cart.clone($(this).closest('.cart-item'));
 	});
 
-	$$('.cart-item-config a').tap(function() {
+	$('.cart-item-config a').tap(function() {
 		App.cart.customize($(this).closest('.cart-item'));
 	});
 
-	$$('.button-submitorder-form').tap(function(e) {
+	$('.button-submitorder-form').tap(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		App.crunchSoundAlreadyPlayed = false;
@@ -1826,7 +1815,7 @@ $(function() {
 		App.cart.customizeItem($(this));
 	});
 
-	$$('.cart-customize-check').tap( function() {
+	$('.cart-customize-check').tap( function() {
 		// For some reason this tap event have to wait a little time before runs the customizeItem method
 		// if we ignore this time it will not read attr checked of the checkbox correctly
 		var checkbox = $(this);
@@ -1835,7 +1824,7 @@ $(function() {
 		}, 1 );
 	});
 
-	$$('.cart-item-customize-item label').tap(function() {
+	$('.cart-item-customize-item label').tap(function() {
 		$(this).prev('input').checkToggle();
 		App.cart.customizeItem( $(this).prev('input') );
 	});
@@ -1847,7 +1836,7 @@ $(function() {
 		App.cart.updateTotal();
 	});
 
-	$$('.nav-back').tap(function() {
+	$('.nav-back').tap(function() {
 		// App.controlMobileIcons.showPacman( 'left', function(){ $('.nav-back').removeClass('nav-back-show'); } );
 		$('.nav-back').removeClass('nav-back-show');
 		if( App.loc.locationNotServed ){
@@ -1858,7 +1847,7 @@ $(function() {
 		}
 	});
 
-	$$('.link-home').tap(function() {
+	$('.link-home').tap(function() {
 		if( App.restaurants.list && App.restaurants.list.length > 0 ){
 			App.page.foodDelivery();
 		} else {
@@ -1908,7 +1897,7 @@ $(function() {
 		$.getJSON('/api/config', haveConfig);
 	}
 
-	$$('.cart-summary').tap(function(e) {
+	$('.cart-summary').tap(function(e) {
 		e.stopPropagation();
 		e.preventDefault();
 		$('html, body').animate({
