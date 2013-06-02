@@ -45,6 +45,24 @@
 					<input type="text" placeholder="Github Ticket ID" name="id_github" value="<?=$support->id_github?>">
 				</span>
 			</li>
+			<? if ( $this->support->id_order ) : ?>
+			<li>
+				<span>Refund</span>
+				<span class="pull-right">
+					<? if ( $this->support->order()->refunded ): ?>
+						<b>Order refunded.</b>
+					<? else: ?>
+					<a title="Refund" href="javascript://" data-charged="<?php echo $this->support->order()->charged(); ?>" data-gift="<?php if( $this->support->order()->chargedByCredit() > 0 ){ echo $this->support->order()->chargedByCredit(); } else { echo '0'; } ?>" data-uuid="<?=$this->support->order()->uuid?>" class="btn btn-green refund"><i class="icon-reply"></i></a>
+					<? endif ?>
+				</span>
+			</li>
+			<li>
+				<span>Gift card</span>
+				<span class="pull-right">
+					<a title="Issue a gift card" href="/giftcards/new?id_user=<?php echo $this->support->order()->user()->id_user; ?>&id_restaurant=<?php echo $this->support->order()->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $this->support->order()->id_order; ?>" class="btn btn-green"><i class="icon-gift"></i></a>
+				</span>
+			</li>
+		<? endif ?>
 		</ul>
 		</form>
 

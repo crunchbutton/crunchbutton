@@ -66,6 +66,21 @@ $(function() {
 	});
 
 	
+	$(document).on('click', '.refund', function() {
+		var el = $(this);
+		var question = 'Are you sure you want to refund this?';
+		if( parseFloat( el.attr( 'data-gift' ) ) > 0 ){
+			question += "\n";
+			question += 'A gift card was used at this order the refund value will be $' + el.attr( 'data-charged' ) + ' + $' + el.attr( 'data-gift' ) + ' as gift card.' ;
+		}
+		if (!confirm( question )) {
+			return;
+		}
+		$.getJSON('/api/order/' + el.attr('data-uuid') + '/refund',function(json) {
+			el.parent().html('<b>Order refunded.</b>');
+		});
+	});
+
 	var restaurants = [];
 	<? foreach (Restaurant::q('select * from restaurant where active=1 order by name') as $restaurant) : ?>
 		restaurants.push({

@@ -3075,3 +3075,7 @@ strong {
 .order-restaurant{
 	cursor: pointer;
 }
+
+.ui-dialog-titlebar-close{
+	padding: 5px !important;
+}
