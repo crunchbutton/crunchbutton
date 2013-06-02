@@ -255,7 +255,7 @@ body {
 	text-shadow: 1px 1px 0 rgba(255,255,255,1);
 	margin-bottom: 90px;
 }
-.error-location, .enter-location, .button-letseat-form{
+.error-location {
 	display: none;
 }
 .copyright {
@@ -1201,15 +1201,12 @@ html[xmlns] .clearfix {
 	.content-item-locations{
 		margin-top: 70px !important;
 	}
-		.content-item-locations h1 {
-			font-size: 15px;
-			text-align: center;
-			margin-bototm: 5px;
-		}
-
-	.home-welcome-click {
-		display: none;
+	.content-item-locations h1 {
+		font-size: 15px;
+		text-align: center;
+		margin-bototm: 5px;
 	}
+
 	.home-welcome h1 {
 		font-size: 20px;
 	}
@@ -1922,9 +1919,6 @@ html[xmlns] .clearfix {
 		background: url(/assets/images/location.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
-	}
-	.home-welcome-touch {
-		display: none;
 	}
 	.ui-footer-fixed {
 		left: auto;

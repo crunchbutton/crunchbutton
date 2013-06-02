@@ -1,3 +1,134 @@
+/**
+ * legal page
+ */
+NGApp.controller('legal', function ($scope, $http) {
+	$http.get(App.service + 'legal').success(function(data) {
+		console.log(data.data);
+		$scope.content = data.data;
+	});
+});
+
+
+/**
+ * Default controller
+ */
+NGApp.controller('default', function ($scope, $http) {
+	if (App.loc.address() && App.restaurants.list) {
+		History.pushState({}, 'Crunchbutton', '/food-delivery');
+	} else {
+		// we dont have a location. let the user enter it
+		History.pushState({}, 'Crunchbutton', '/location');
+	}
+/*
+	$http.get(App.server + 'user/devin').success(function(data) {
+		$scope.penis = data;
+	});
+*/
+});
+
+
+/**
+ * Show the restaurants
+ */
+NGApp.controller('restaurants', function ($scope, $http) {
+	if (App.loc.address()) {
+	
+		// sort the restaurants
+		var sortRestaurants = function() {
+			App.restaurants.list.sort(sort_by(
+				{
+					name: '_open',
+					reverse: true
+				},
+				{
+					name: 'delivery',
+					reverse: true
+				},
+				{
+					name: '_weight',
+					primer: parseInt,
+					reverse: true
+				}
+			));
+		};
+		
+		var displayRestaurants = function($scope) {
+		
+			sortRestaurants();
+			
+			var titles = App.foodDelivery.localizedContent();
+
+			$scope.restaurants = App.restaurants.list;
+			$scope.slogan = titles.slogan;
+			$scope.tagline = titles.tagline;
+
+			if (App.restaurants.list.length == 4) {
+				$('.content').addClass('short-meal-list');
+			} else {
+				$('.content').removeClass('short-meal-list');
+			}
+			$('.content').removeClass('smaller-width');
+			
+			$('.nav-back').removeClass('nav-back-show');
+		};
+
+	
+		// get the list of restaurants
+		if (App.restaurants.list === false) {
+			var url = App.service + 'restaurants?lat=' + App.loc.pos().lat + '&lon=' + App.loc.pos().lon + '&range=' + ( App.loc.range || App.defaultRange );
+			App.restaurants.list = false;
+			
+			$http.get(url).success(function(data) {
+				App.restaurants.list = [];
+			
+				// There is no restaurant near to the user. Go home and show the error.
+				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
+					error();
+		
+				} else {
+					for (var x in data.restaurants) {
+						var res = new Restaurant(data.restaurants[x]);
+						res.open();
+						App.restaurants.list[App.restaurants.list.length] = res;
+					};
+					success();
+				}
+			
+				displayRestaurants($scope);
+			});
+
+		} else {
+			displayRestaurants($scope);
+		}
+
+
+	} else {
+		// we dont have a location. let the user enter it
+		History.pushState({}, 'Crunchbutton', '/location');
+	}
+});
+
+
+/**
+ * show cities
+ */
+NGApp.controller('cities', function ($scope, $http) {
+ 	$scope.topCommunities = App.topCommunities;
+});
+
+
+/**
+ * Change location
+ */
+NGApp.controller('location', function ($scope, $http) {
+return;
+	$scope.isUser = App.config.user.has_auth;
+	$scope.notUser = !App.config.user.has_auth;
+	$scope.topCommunities = App.topCommunities;
+	$scope.yourArea = App.loc.city() || 'your area';
+	$scope.autofocus = $(window).width() >= 768 ? ' autofocus="autofocus"' : '';
+});
+
 
 App.page.home = function(force) {
 
@@ -14,17 +145,18 @@ App.page.home = function(force) {
 	}
 
 	var homeSuccess = function() {
-		
 		App.showPage({
 			page: 'home',
 			title: 'Crunchbutton',
 			data: {
+				isUser: App.config.user.has_auth,
+				notUser: !App.config.user.has_auth,
 				topCommunities: App.topCommunities,
 				yourArea: App.loc.city() || 'your area',
 				autofocus: $(window).width() >= 768 ? ' autofocus="autofocus"' : ''
 			}
 		});
-	
+
 		$('.nav-back').removeClass('nav-back-show');
 		$('.config-icon').addClass('config-icon-mobile-hide, config-icon-desktop-hide');
 		$('.content').addClass('short-meal-list');
@@ -83,21 +215,7 @@ App.page.home = function(force) {
 
 	}
 
-
-
 };
-
-App.page.bycity = function(){
-	
-		App.currentPage = 'bycity';
-			App.showPage({
-			page: 'bycity',
-			title: 'Crunchbutton',
-			data: {
-				topCommunities: App.topCommunities
-			}
-		});
-}
 
 App.page.restaurant = function(id) {
 
