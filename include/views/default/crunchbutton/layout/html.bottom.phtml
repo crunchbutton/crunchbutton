@@ -1,5 +1,5 @@
 <script type="text/javascript">
-if( App ){
+if (App){
 	App.config = <?=json_encode(c::appConfig())?>;
 } else {
 	$(function() {
@@ -8,7 +8,7 @@ if( App ){
 }
 </script>
 
-<? if ((Cana::env() != 'live' ) && (isset($this->restaurant)) && (!$this->restaurant->open()) ) :?>
+<? if ((Cana::env() != 'live' ) && (isset($this->restaurant)) && (!$this->restaurant->open()) ) : ?>
 	<style> .wrapper { background: lightgray;} </style>
 <? endif?>
 </head>
@@ -39,7 +39,7 @@ if( App ){
 		<div class="body">
 			<div class="content<?=$e?>">
 				<div class="main-content pages">
-					<?=$this->content?>
+					<div ng-view><?=$this->content?></div>
 				</div>
 			</div>
 		</div>
@@ -62,54 +62,58 @@ if( App ){
 			</div>
 		</div>
 	</div>
+
 	<div id="fb-root"></div>
+
 	<audio id="get-food-audio">
 		<source src="/assets/audio/crunch.mp3"></source>
 		<source src="/assets/audio/crunch.ogg"></source>
-	</audio>
+	</audio>	
 </body>
+
 <script type="text/javascript">
-$(function() {
-window.fbAsyncInit = function() {
-	FB.init({
-		appId: '<?php echo Cana::config()->facebook->app; ?>',
-		cookie: true,
-		xfbml: true,
-		oauth: true
+	$(function() {
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId: '<?=Cana::config()->facebook->app?>',
+				cookie: true,
+				xfbml: true,
+				oauth: true
+			});
+			FB.getLoginStatus(App.signin.facebook.processStatus);
+			FB.Event.subscribe('auth.statusChange', App.signin.facebook.processStatus);
+		};
 	});
-	FB.getLoginStatus( App.signin.facebook.processStatus );
-	FB.Event.subscribe('auth.statusChange', App.signin.facebook.processStatus );
-	};
-});
-(function(d, s, id) {
-var js, fjs = d.getElementsByTagName(s)[0];
-if (d.getElementById(id)) return;
-js = d.createElement(s); js.id = id;
-js.src = "//connect.facebook.net/en_US/all.js";
-fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
+	(function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) return;
+	js = d.createElement(s); js.id = id;
+	js.src = "//connect.facebook.net/en_US/all.js";
+	fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
 </script>
+
 <? if ($_SERVER['__HTTP_HOST'] == 'crunchbutton.com') : ?>
-<script type="text/javascript">
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-36135548-1']);
-_gaq.push(['_setDomainName', 'crunchbutton.com']);
-_gaq.push(['_setAllowLinker', true]);
-_gaq.push(['_trackPageview']);
-(function() {
-	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
-</script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-36135548-1']);
+		_gaq.push(['_setDomainName', 'crunchbutton.com']);
+		_gaq.push(['_setAllowLinker', true]);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
 <? endif ; ?>
 
 <? if (!c::isMobile()) : ?>
-<script type="text/javascript">
-$(function() {
-	App.support.init();
-});
-</script>
+	<script type="text/javascript">
+		$(function() {
+			App.support.init();
+		});
+	</script>
 <? endif; ?>
 
 </html>
