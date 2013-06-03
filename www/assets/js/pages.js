@@ -31,6 +31,8 @@ NGApp.controller('default', function ($scope, $http) {
  * Show the restaurants
  */
 NGApp.controller('restaurants', function ($scope, $http) {
+	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
+
 	if (App.loc.address()) {
 	
 		// sort the restaurants
