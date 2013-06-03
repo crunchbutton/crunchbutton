@@ -155,6 +155,10 @@ App.NGinit = function() {
 
 var NGApp = angular.module('NGApp', []);
 
+NGApp.config(function($compileProvider){
+	$compileProvider.urlSanitizationWhitelist(/.*/);
+});
+
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 	$routeProvider
 
