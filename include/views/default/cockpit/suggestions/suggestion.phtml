@@ -13,6 +13,12 @@ if( $this->suggestion->status == 'deleted' ){
 } else if ( $this->suggestion->status == 'applied' ){
 	$status = 'blue';
 }
+
+if( $this->suggestion->type == 'dish' ){
+	$type = 'food';
+} else if( $this->suggestion->type == 'restaurant' ){
+	$type = 'building';
+}
 ?>
 <div class="container-fluid padded">
 	<div class="row-fluid">
@@ -41,7 +47,7 @@ if( $this->suggestion->status == 'deleted' ){
 						<tr>
 							<td>Type</td>
 							<td>
-								<?=$this->suggestion->type;?>
+								<i class="icon-<?php echo $type; ?>"></i> <?=$this->suggestion->type;?>
 							</td>
 						</tr>
 						<tr>
@@ -75,12 +81,6 @@ if( $this->suggestion->status == 'deleted' ){
 							</td>
 						</tr>
 						<?php } ?>
-						<tr>
-							<td>Type</td>
-							<td>
-								<?=$this->suggestion->type;?>
-							</td>
-						</tr>
 						<tr>
 							<td>IP</td>
 							<td><?=$this->suggestion->ip;?></td>
