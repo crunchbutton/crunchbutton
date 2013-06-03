@@ -30,6 +30,12 @@ table a {
 			} else if ( $suggestion->status == 'applied' ){
 				$status = 'blue';
 			}
+
+			if( $suggestion->type == 'dish' ){
+				$type = 'food';
+			} else if( $suggestion->type == 'restaurant' ){
+				$type = 'building';
+			}
 			?>
 			<? $date = $suggestion->date(); ?>
 			<tr class="<?=$suggestion->status; ?>">
@@ -40,7 +46,7 @@ table a {
 				<td> <?=$suggestion->restaurant()->name; ?> </td>
 				<td> <?=nl2br( $suggestion->content ); ?> </td>
 				<td><label class="label label-<?php echo $status; ?>"><?=$suggestion->status; ?></label></td>
-				<td> <?=$suggestion->type; ?> </td>
+				<td> <i class="icon-<?php echo $type; ?>"></i> <?=$suggestion->type; ?> </td>
 			</tr>
 		<? endforeach ; ?>
 	</table>
