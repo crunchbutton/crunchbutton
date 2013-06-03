@@ -910,26 +910,6 @@ App.suggestions = {
 				$('.suggestions-loader').hide();
 			}
 		});
-	},
-	prepareForm: function( id_suggetion ){
-		$(document).on('click', '.admin-suggestion-save', function() {
-			$( '#suggestion-status' ).html( '' );
-			var status = $( '#status' ).val();
-			var data = { 'status' : status };
-			var url = App.service + 'suggestion/' + id_suggetion;
-			$.ajax({
-				type: "POST",
-				dataType: 'json',
-				data: data,
-				url: url,
-				success: function(content) {
-					$( '#suggestion-status' ).html( 'Status saved!' );
-				},
-				error: function( ){
-					$( '#suggestion-status' ).html( 'Error, please try it again.' );
-				}
-			});
-		} );
 	}
 };
 

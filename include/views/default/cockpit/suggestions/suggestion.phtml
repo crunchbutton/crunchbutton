@@ -1,131 +1,146 @@
-<div class="admin-content-wrapper">
-	<div class="admin-content admin-content-suggestions">
-		<h1 class="suggestion-item-title">Suggestion</h1>
-		<br /><br />
-		<table class="admin-suggestion-form">
-			<tr>
-				<td class="label-primary">Suggestion:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:90%;">
-								<tbody>
-									<tr>
-										<td class="label-sub">Name:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->name;?></div></td>
-									</tr>
-									<?php if( trim( $this->suggestion->content ) != '' ) { ?>
-									<tr>
-										<td class="label-sub">Content:</td>
-										<td class="content-sub"><div class="input-faker"><?=nl2br($this->suggestion->content);?></div></td>
-									</tr>
-									<?php } ?>
-									<tr>
-										<td class="label-sub">Type:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->type;?></div></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<?php if( $this->suggestion->community()->name || $this->suggestion->restaurant()->name ) { ?>
-			<tr>
-				<td class="label-primary">Place:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:90%;">
-								<tbody>
-									<?php if( $this->suggestion->community()->name) { ?>
-									<tr>
-										<td class="label-sub">Community:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->community()->name;?></div></td>
-									</tr>
-									<?php } ?>
-									<tr>
-										<td class="label-sub">Restaurant:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->restaurant()->name;?></div></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<?php } ?>
-			<tr>
-				<td class="label-primary">More information:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:90%;">
-								<tbody>
-									<?php if( $this->suggestion->user()->id_user ) { ?>
-									<tr>
-										<td class="label-sub">User:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->user()->name;?></div></td>
-									</tr>
-									<?php } ?>
-									<?php if( $this->suggestion->user()->phone ) { ?>
-									<tr>
-										<td class="label-sub">Phone:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->user()->phone;?></div></td>
-									</tr>
-									<?php } ?>
-									<tr>
-										<td class="label-sub">IP:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->ip;?></div></td>
-									</tr>
-									<tr>
-										<td class="label-sub">Date:</td>
-										<td class="content-sub"><div class="input-faker"><?=$this->suggestion->date()->format('M jS Y')?> - <?=$this->suggestion->date()->format('g:i:s A')?></div></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td class="label-primary">Status:</td>
-				<td class="content-primary">
-					<div class="check-wrap">
-						<div class="check-content">
-							<table style="width:90%;">
-								<tbody>
-									<tr>
-										<td class="label-sub">Status:</td>
-										<td class="content-sub">
-											<? $states = ['new','deleted','applied']; ?>
-											<select name="status" id="status">
-												<? 
-												foreach ($states as $status) { 
-													$selected = ( $status == $this->suggestion->status ) ? 'selected="selected"' : '';
-												?>
-													<option <?=$selected?> value="<?=$status?>"><?=$status?></option>
-												<? } ?>
-											</select>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>
-					<div id="suggestion-status"></div>
-					<div class="action-button action-button-small green admin-suggestion-save"><span>Save</span></div></td>
-			</tr>
-		</table>
+<?
+	$this->title = 'Suggestions';
+	$this->titleicon = 'envelope-alt';
+	$this->titleLink = '/suggestions';
+	
+	$this->title2 = 'Suggestion #' . $this->suggestion->id_suggestion;
+	$this->title2icon = 'envelope';
+
+if( $this->suggestion->status == 'deleted' ){
+	$status = 'black';
+} else if ( $this->suggestion->status == 'new' ){
+	$status = 'green';
+} else if ( $this->suggestion->status == 'applied' ){
+	$status = 'blue';
+}
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Info</span>
+					<ul class="box-toolbar">
+						<li><span class="label label-<?=$status;?>"><?=strtoupper($this->suggestion->status) ?></span></li>
+					</ul>
+				</div>
+				<div class="box-content ">
+					<table class="table table-striped ">
+						<tr>
+							<td>Name</td>
+							<td>
+								<?=$this->suggestion->name;?>
+							</td>
+						</tr>
+						<tr>
+							<td>Content</td>
+							<td>
+								<?=nl2br($this->suggestion->content);?>
+							</td>
+						</tr>
+						<tr>
+							<td>Type</td>
+							<td>
+								<?=$this->suggestion->type;?>
+							</td>
+						</tr>
+						<tr>
+							<td>Date</td>
+							<td><?=$this->suggestion->date()->format('M jS Y')?> - <?=$this->suggestion->date()->format('g:i:s A')?></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">User</span>
+				</div>
+				<div class="box-content ">
+					<table class="table table-striped ">
+						<?php if( $this->suggestion->user()->id_user ) { ?>
+						<tr>
+							<td>User</td>
+							<td>
+								<?=$this->suggestion->user()->name;?>
+							</td>
+						</tr>
+						<?php } ?>
+						<?php if( $this->suggestion->user()->phone ) { ?>
+						<tr>
+							<td>Phone</td>
+							<td>
+								<?=$this->suggestion->user()->phone;?>
+							</td>
+						</tr>
+						<?php } ?>
+						<tr>
+							<td>Type</td>
+							<td>
+								<?=$this->suggestion->type;?>
+							</td>
+						</tr>
+						<tr>
+							<td>IP</td>
+							<td><?=$this->suggestion->ip;?></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div>
+
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Update</span>
+				</div>
+				<div class="box-content ">
+					<form class="fill-up">
+						<ul class="padded separate-sections">
+							<li>
+								<label>Status</label>
+								<? $states = ['new','deleted','applied']; ?>
+								<select class="chzn-select" name="status" id="status">
+								<? 
+								foreach ($states as $status) { 
+									$selected = ( $status == $this->suggestion->status ) ? 'selected="selected"' : '';
+								?>
+									<option <?=$selected?> value="<?=$status?>"><?=$status?></option>
+								<? } ?>
+								</select>
+							</li>
+						</ul>
+						<div class="form-actions">
+							<button type="button" class="btn btn-blue suggestion-save">Save changes</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			</div>
+		</div>
 </div>
 <script>
 $(function() {
-	App.suggestions.prepareForm(<?=$this->suggestion->id_suggestion?>);
+	$(document).on('click', '.suggestion-save', function() {
+		var status = $( '#status' ).val();
+		var data = { 'status' : status };
+		var url = App.service + 'suggestion/<?php echo $this->suggestion->id_suggestion; ?>';
+		$.ajax({
+			type: "POST",
+			dataType: 'json',
+			data: data,
+			url: url,
+			success: function(content) {
+				alert( 'Suggestion saved!' );
+				document.location.reload();
+			},
+			error: function( ){
+				alert( 'Error, please try it again.' );
+			}
+		});
+	} );
 });
 </script>
