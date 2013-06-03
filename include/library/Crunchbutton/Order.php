@@ -1242,6 +1242,9 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function hasGiftCard(){
+		if( !$this->id_order ){
+			 return 0;
+		}
 		$query = 'SELECT SUM( value ) as total FROM promo WHERE id_order_reference = ' . $this->id_order;
 		$row = Cana::db()->get( $query )->get(0);
 		if( $row->total ){
