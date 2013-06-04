@@ -119,7 +119,7 @@ class Controller_support extends Crunchbutton_Controller_Account {
 		}
 
 		if( $support->description_cb != $args['description_cb'] ){
-			$changes[] = 'Behind the scenes: ' . $args['description_cb'];
+			$changes[] = 'Behind the scenes changed to' . $args['description_cb'];
 		}
 
 		if( $support->how_to_prevent != $args['how_to_prevent'] ){
