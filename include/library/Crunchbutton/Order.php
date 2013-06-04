@@ -1146,27 +1146,31 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->refundGiftFromOrder();
 
 			if( $this->charged() > 0 ){
+				
 				$env = c::env() == 'live' ? 'live' : 'dev';
-				switch ($this->processor) {
-					case 'stripe':
-					default:
-						Stripe::setApiKey(c::config()->stripe->{$env}->secret);
-						$ch = Stripe_Charge::retrieve($this->txn);
-						try {
-							$ch->refund();
-						} catch (Exception $e) {
-							return false;
-						}
-					break;
 
-					case 'balanced':
-						$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
-						try {
-							$ch->refund();
-						} catch (Exception $e) {
-							return false;
-						}
+				if( $order->pay_type == 'card' ){
+					switch ($this->processor) {
+						case 'stripe':
+						default:
+							Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+							$ch = Stripe_Charge::retrieve($this->txn);
+							try {
+								$ch->refund();
+							} catch (Exception $e) {
+								return false;
+							}
 						break;
+
+						case 'balanced':
+							$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
+							try {
+								$ch->refund();
+							} catch (Exception $e) {
+								return false;
+							}
+							break;
+					}
 				}
 			}
 
