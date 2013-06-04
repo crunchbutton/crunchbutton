@@ -904,7 +904,9 @@ input:disabled {
 		margin:3px;
 		padding:5px !important;
 	}
-	
+.pointer{
+	cursor: pointer;
+}
 .chat-box-wrapper {
 	height: 450px;
 	overflow: scroll;
