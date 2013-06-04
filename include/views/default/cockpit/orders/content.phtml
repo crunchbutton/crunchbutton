@@ -59,7 +59,7 @@
 							<?php 
 							$giftcard = $order->hasGiftCard();
 							if( $giftcard > 0 ){
-								echo '<div style="color:red;margin-top:8px;">Received <strong style="font-weight:bold;">$' . number_format( $giftcard, 2 ) . '</strong> gift card.</div>';
+								echo '<br/><br/><i class="icon-gift"></i> Received <b>$' . number_format( $giftcard, 2 ) . '</b> gift card.';
 							}
 							?>
 					<br/>
