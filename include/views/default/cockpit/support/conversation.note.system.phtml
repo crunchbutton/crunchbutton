@@ -1,8 +1,9 @@
+<? $date = $note->date(); ?>
 <li class="arrow-box-right gray" id="chat-note-<?=$note->id_support_note?>">
 	<div class="avatar"><img class="avatar-small" src="/assets/images/admin/system.png" /></div>
 	<div class="info">
 		<span class="name"><strong>Staff</strong> <span class="badge badge-green"><?=$note->from?></span></span>
-		<span class="time"><?=$note->relativeTime()?></span>
+		<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?=$note->relativeTime()?></span>
 	</div>
-	<?=$note->text ?>
+	<?=nl2br($note->text); ?>
 </li>
