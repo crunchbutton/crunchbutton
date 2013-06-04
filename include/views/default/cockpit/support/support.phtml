@@ -28,6 +28,7 @@
 <!-- // end support page -->
 
 <script>
+/* Shows the feedbacks */
 function showAlert( box, css, message ){
 	var alert = $( box );
 	alert.removeClass( 'alert-error' );
@@ -40,6 +41,7 @@ function showAlert( box, css, message ){
 	}, 3000 );
 }
 
+/* Update the Log history */
 function updateConversationHistory(){
 	var url = '/support/<?php echo $support->id_support; ?>/history';
 	$.ajax( {
@@ -113,6 +115,7 @@ $(function() {
 		return;
 	} );
 
+	/* Show the hidden field */
 	$( document ).on( 'change', '#user_perspective', function(){
 		if( $( this ).val() == 'Other' ){
 			$( ".user_perspective_other" ).show();		
@@ -147,6 +150,7 @@ $(function() {
 								'user_perspective_other' : user_perspective_other,
 								'how_to_prevent' : how_to_prevent
 							};
+
 		var url = '/support/<?php echo $support->id_support; ?>/update';
 		$.ajax({
 			type: 'POST',
@@ -221,13 +225,8 @@ $(function() {
 		parent.html( '<i class="icon-cogs"></i> Processing' );
 		
 		$.getJSON('/api/order/' + el.attr('data-uuid') + '/refund', function( json ) {
-			if( json.status == true ){
-				showAlert( '.alert-refund', 'success', '<strong>Ok!</strong> Order refunded!' );
-				parent.html( '<b>Order refunded.</b>' );
-			} else {
-				showAlert( '.alert-refund', 'error', '<strong>Oops!</strong> Failed to refund, please try it again!' );
-				parent.html( button );
-			}
+			showAlert( '.alert-refund', 'success', '<strong>Ok!</strong> Order refunded!' );
+			parent.html( '<b>Order refunded.</b>' );
 			updateConversationHistory();
 		});
 	});
