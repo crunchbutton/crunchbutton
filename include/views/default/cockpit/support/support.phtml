@@ -105,7 +105,7 @@ $(function() {
 		text.val( 'Sending...' );
 		text.prop( 'enabled', false );
 		
-		$.post(' /support/<?php echo $support->id_support; ?>/conversation', {
+		$.post('/support/<?php echo $support->id_support; ?>/conversation', {
 			text: val
 		}, function( ) {
 			text.prop( 'enabled',true );

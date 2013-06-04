@@ -1,0 +1,16 @@
+ALTER TABLE `restaurant` ADD `charge_credit_fee` TINYINT( 1 ) NOT NULL DEFAULT  '1';
+ALTER TABLE `restaurant` ADD `waive_fee_first_month` TINYINT( 1 ) NOT NULL DEFAULT  '0';
+ALTER TABLE `restaurant` ADD `pay_promotions` TINYINT( 1 ) NOT NULL DEFAULT  '1';
+ALTER TABLE `restaurant` ADD `pay_apology_credits` TINYINT( 1 ) NOT NULL DEFAULT  '1';
+ALTER TABLE `restaurant` ADD `check_address` VARCHAR( 255 ) NULL DEFAULT NULL;
+ALTER TABLE `restaurant` ADD `contact_name` VARCHAR( 255 ) NULL DEFAULT NULL;
+ALTER TABLE `restaurant` ADD `summary_fax` VARCHAR( 255 ) NULL DEFAULT NULL;
+ALTER TABLE `restaurant` ADD `summary_email` VARCHAR( 255 ) NULL DEFAULT NULL;
+ALTER TABLE `restaurant` ADD `summary_frequency` INT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `restaurant` ADD `legal_name_payment` VARCHAR( 255 ) NULL DEFAULT NULL;
+ALTER TABLE `restaurant` ADD `tax_id` VARCHAR( 255 ) NULL DEFAULT NULL;
+ALTER TABLE `restaurant` ADD `last_paid_date` DATE NULL DEFAULT NULL;
+ALTER TABLE `restaurant` ADD `payment_method` ENUM(  'check',  'deposit' ) NOT NULL DEFAULT 'check';
+ALTER TABLE `restaurant` ADD `id_restaurant_pay_another_restaurant` INT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `restaurant` ADD INDEX ( `id_restaurant_pay_another_restaurant` );
+ALTER TABLE `restaurant` ADD CONSTRAINT fk_id_restaurant_pay_another_restaurant FOREIGN KEY (id_restaurant_pay_another_restaurant) REFERENCES `restaurant`(id_restaurant);

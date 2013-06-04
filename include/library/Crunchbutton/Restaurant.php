@@ -1091,6 +1091,12 @@ class Crunchbutton_Restaurant extends Cana_Table
 
 	}
 
+	public function lastPaidDate() {
+		if( $this->last_paid_date  ){
+			return date('m/d/Y', strtotime( $this->last_paid_date ) );	
+		}
+	}
+
 	public function save() {
 		if (!$this->timezone) {
 			$this->timezone = 'America/New_York';
