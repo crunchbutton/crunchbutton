@@ -30,18 +30,18 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public static function promoCodeGenerator(){
 		$random_id_length = 6; 
-		$rnd_id = crypt( uniqid( rand(), 1 ) ); 
-		$rnd_id = strip_tags( stripslashes( $rnd_id ) ); 
-		$rnd_id = str_replace( '.', '', $rnd_id ); 
-		$rnd_id = strrev( str_replace( '/', '', $rnd_id ) ); 
-		$rnd_id = substr( $rnd_id, 0, $random_id_length ); 
+		$characters = '0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
+		$rnd_id = '';
+		for ($i = 0; $i < $random_id_length; $i++) {
+			$rnd_id .= $characters[rand(0, strlen($characters) - 1)];
+		}
 
 		// make sure the code do not exist
 		$promo = Crunchbutton_Promo::byCode( $rnd_id );
 		if( $promo->count() > 0 ){
 			return $this->promoCodeGenerator();
 		} else {
-			return strtoupper( $rnd_id );	
+			return $rnd_id;	
 		}
 	}
 
