@@ -177,11 +177,6 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								$r->summary_email = $this->request()['summary_email'];
 								$r->summary_frequency = $this->request()['summary_frequency'];
 								$r->legal_name_payment = $this->request()['legal_name_payment'];
-								if( trim( $this->request()['last_paid_date'] ) == '' ){
-									$r->last_paid_date = NULL;
-								} else {
-									$r->last_paid_date = date('Y-m-d', strtotime( $this->request()['last_paid_date'] ) );	
-								}
 								$r->tax_id = $this->request()['tax_id'];
 								$r->charge_credit_fee = $this->request()['charge_credit_fee'];
 								$r->waive_fee_first_month = $this->request()['waive_fee_first_month'];

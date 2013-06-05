@@ -30,13 +30,6 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				exit;
 				break;
 
-			case 'dont_charge_fee':
-				$order->dont_charge_fee = c::getPagePiece(4);
-				$order->save();
-				echo json_encode(['status' => 'success']);
-				exit;
-				break;
-
 			case 'resend_notification':
 				if ( $order->resend_notify() ) {
 					echo json_encode(['status' => 'success']);

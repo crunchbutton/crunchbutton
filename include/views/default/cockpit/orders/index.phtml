@@ -141,21 +141,6 @@
 				el.replaceWith('REFUNDED');
 			});				
 		});
-		
-		$(document).on( 'click', '.dont_charge_fee', function() {
-			var el = $( this );
-			var uuid = el.attr( 'data-uuid' );
-			var value = ( el.attr( 'data-value' ) == 1 ? 0 : 1 );
-			el.attr( 'data-value', value );
-			var url = '/api/order/' + el.attr('data-uuid') + '/dont_charge_fee/' + value;
-			$.getJSON( url ,function( json ) {
-				if( value ){
-					el.find( 'span' ).html( '<i class="icon-check"></i>' );
-				} else {
-					el.find( 'span' ).html( '<i class="icon-check-empty"></i>' );
-				}
-			});				
-		});
 
 		$(document).on( 'click', '.pay_if_refunded', function() {
 			var el = $( this );

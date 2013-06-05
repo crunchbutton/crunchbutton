@@ -222,12 +222,6 @@
 											<input type="text" name="tax_id" maxlength="255" id="tax_id" value="<?php echo $this->restaurant->tax_id;?>" />
 										</span>
 									</li>
-									<li class="input">
-										<span>Last Date Paid </span>
-										<span class="pull-right span9">
-											<input type="text" name="last_paid_date" maxlength="255" id="last_paid_date" class="datepicker fill-up" value="<?php echo $this->restaurant->lastPaidDate();?>" />
-										</span>
-									</li>
 									<div style="clear: both;"></div>
 									<li class="input">
 										<span>Payment Method</span>
@@ -328,7 +322,6 @@
 				summary_email : ( $( '#summary_email' ).val() ),
 				summary_frequency : ( $( '#summary_frequency' ).val() ),
 				legal_name_payment : ( $( '#legal_name_payment' ).val() ),
-				last_paid_date : ( $( '#last_paid_date' ).val() ),
 				tax_id : ( $( '#tax_id' ).val() ),
 				charge_credit_fee : ( $( '#charge_credit_fee' ).is( ':checked' ) ? '1' : 0 ),
 				waive_fee_first_month : ( $( '#waive_fee_first_month' ).is( ':checked' ) ? '1' : 0 ),
