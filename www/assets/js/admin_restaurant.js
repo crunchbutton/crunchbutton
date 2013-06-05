@@ -1083,6 +1083,7 @@ var WIDGET = {
 
 
 var ADMIN = {
+	isRestaurantLoaded : false,
 	restaurant_init : function(id_restaurant) {
 		// once per pageload
 		this.id_restaurant = id_restaurant;
@@ -1144,6 +1145,8 @@ var ADMIN = {
 					DOM_MAP.apply();
 					ADMIN.save_is_safe = true;
 					UTIL.show_msg('Restaurant loaded.');
+					$( '#save-button' ).html( 'Save' );
+					ADMIN.isRestaurantLoaded = true;
 				});
 	},
 	restaurant_revert : function() {
@@ -1153,6 +1156,10 @@ var ADMIN = {
 		// ADMIN.restaurant_save();
 	},
 	restaurant_save : function() {
+		if( !ADMIN.isRestaurantLoaded ){
+			UTIL.show_msg('Please wait the restaurant load!');
+			return;
+		}
 		validation_warnings = DOM_MAP.validate();
 		if(validation_warnings.length) {
 			console.log(validation_warnings);
