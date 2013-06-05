@@ -24,13 +24,13 @@ NGApp.controller('help', function ($scope, $http) {
 /**
  * Home controller
  */
-NGApp.controller('home', function ($scope, $http) {
+NGApp.controller('home', function ($scope, $http, $location) {
 	if (App.loc.pos() && App.loc.pos().address() && App.restaurants.list) {
 		// we have a location, show the restaurants
-		History.replaceState({}, 'Crunchbutton', '/food-delivery');
+		$location.path('/food-delivery');
 	} else {
 		// we dont have a location. let the user enter it
-		History.replaceState({}, 'Crunchbutton', '/location');
+		$location.path('/location');
 	}
 });
 
@@ -61,7 +61,7 @@ NGApp.controller('default', function ($scope, $http) {
 /**
  * Show the restaurants
  */
-NGApp.controller('restaurants', function ($scope, $http) {
+NGApp.controller('restaurants', function ($scope, $http, $location) {
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
 
 	if (App.loc.pos().address()) {
@@ -154,7 +154,7 @@ NGApp.controller('restaurants', function ($scope, $http) {
 
 	} else {
 		// we dont have a location. let the user enter it
-		History.pushState({}, 'Crunchbutton', '/location');
+		$location.path('/location');
 	}
 });
 
@@ -170,11 +170,26 @@ NGApp.controller('cities', function ($scope, $http) {
 /**
  * Change location
  */
-NGApp.controller('location', function ($scope, $http) {
+NGApp.controller('location', function ($scope, $http, $location) {
 	$scope.isUser = App.config.user.has_auth;
 	$scope.notUser = !App.config.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
 	$scope.yourArea = App.loc.pos().city() || 'your area';
+	
+	$scope.letsEat = function() {
+		var address = $.trim($('.location-address').val());
+		
+		if (!address) {
+			$('.location-address').val('').attr('placeholder','Please enter your address here');
+		} else {
+			App.loc.addVerify(address, function() {
+				$location.path('/' + App.restaurants.permalink);
+			}, function() {
+				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
+			});
+		}
+		
+	}
 });
 
 

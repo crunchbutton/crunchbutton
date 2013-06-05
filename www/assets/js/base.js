@@ -18,10 +18,6 @@ function _toRad(Value) {
 
 var History = window.History;
 
-History.Adapter.bind(window,'statechange',function() {
-	var State = History.getState();
-	History.log(State.data, State.title, State.url);
-});
 
 if (!typeof(App) == 'undefined') {
 	App = {};
