@@ -30,7 +30,7 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public static function promoCodeGenerator(){
 		$random_id_length = 6; 
-		$characters = '0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
+		$characters = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
 		$rnd_id = '';
 		for ($i = 0; $i < $random_id_length; $i++) {
 			$rnd_id .= $characters[rand(0, strlen($characters) - 1)];
