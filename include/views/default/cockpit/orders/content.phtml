@@ -8,14 +8,6 @@
 .list-orders a {
 	text-decoration: underline;
 }
-.notes{
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
 </style>
 
 <? if (!$this->orders->count()) : ?>
@@ -170,7 +162,7 @@
 							<td><i class="icon-user"></i> <?=$order->name?> </td>
 						</tr>
 						<tr title="Phone">
-							<td><i class="icon-phone"> </i><?=$order->phone?> </td>
+							<td><i class="icon-phone"> </i><?=$order->phone();?> </td>
 						</tr>
 						<?php if ($order->delivery_type == 'delivery') { ?>
 						<tr title="Address">
@@ -179,17 +171,9 @@
 						<?php } ?>
 						<? if ($order->notes) :?>
 							<tr>
-								<td data-toggle="popover" data-placement="top" data-content="<?=$order->notes?>" class="notes pointer" title="Notes #<?=$order->id?>">
+								<td>
 									<span>
-										<i class="icon-file-alt"></i> 
-										<?php 
-											$maxchars = 15;
-											if( strlen( $order->notes ) > $maxchars ){
-												echo substr( $order->notes, 0, $maxchars ) . '...';
-											} else {
-												echo $order->notes;
-											}
-										?>
+										<i class="icon-file-alt"></i> <?php echo $order->notes;	?>
 									</span>
 								</td>
 							</tr>
@@ -206,6 +190,3 @@
 		<? endforeach ; ?>
 	</table>
 <? endif ; ?>
-<script type="text/javascript">
-	$( '.notes' ).popover();
-</script>
