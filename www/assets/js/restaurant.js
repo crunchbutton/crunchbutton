@@ -383,6 +383,23 @@ var Restaurant = function(id) {
 	}
 
 	self.load(id);
+	
+	self.display = function() {
+
+		if (!this.open()) {
+			App.alert("This restaurant is currently closed. It will be open during the following hours (" + this._tzabbr + "):\n\n" + this.closedMessage());
+			App.busy.unBusy();
+
+		} else {
+
+			if (this.redirect) {
+				location.href = this.redirect;
+				return;
+			}
+			History.pushState({}, this.name, '/' + App.restaurants.permalink + '/' + this.permalink);
+		}
+
+	}
 }
 
 App.cached.Restaurant = {};

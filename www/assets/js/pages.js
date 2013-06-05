@@ -2,29 +2,60 @@
  * legal page
  */
 NGApp.controller('legal', function ($scope, $http) {
+	App.controlMobileIcons.normalize();
 	$http.get(App.service + 'legal').success(function(data) {
-		console.log(data.data);
-		$scope.content = data.data;
+		$scope.legal = data.data;
 	});
 });
 
 
 /**
- * Default controller
+ * help page
  */
-NGApp.controller('default', function ($scope, $http) {
-	if (App.loc.address() && App.restaurants.list) {
-		History.pushState({}, 'Crunchbutton', '/food-delivery');
+NGApp.controller('help', function ($scope, $http) {
+	App.controlMobileIcons.normalize();
+	$http.get(App.service + 'help').success(function(data) {
+		$scope.help = data.data;
+		$('.crunchbutton-join-mail').html('moc.nottubhcnurc@nioj'.split('').reverse().join(''));
+	});
+});
+
+
+/**
+ * Home controller
+ */
+NGApp.controller('home', function ($scope, $http) {
+	if (App.loc.pos() && App.loc.pos().address() && App.restaurants.list) {
+		// we have a location, show the restaurants
+		History.replaceState({}, 'Crunchbutton', '/food-delivery');
 	} else {
 		// we dont have a location. let the user enter it
-		History.pushState({}, 'Crunchbutton', '/location');
+		History.replaceState({}, 'Crunchbutton', '/location');
 	}
-/*
-	$http.get(App.server + 'user/devin').success(function(data) {
-		$scope.penis = data;
-	});
-*/
 });
+
+
+/**
+ * Alias / unknown controller
+ */
+NGApp.controller('default', function ($scope, $http) {
+
+	// TODO THIS
+	App.routeAlias( path[ 0 ],
+		function( result ){
+			App.loc.realLoc = {
+				addressAlias: result.alias.address,
+				lat: result.alias.lat,
+				lon: result.alias.lon,
+				prep: result.alias.prep,
+				city: result.alias.city
+			};
+			App.loc.setFormattedLocFromResult();
+			App.page.foodDelivery( true );
+	});
+
+});
+
 
 
 /**
@@ -33,10 +64,30 @@ NGApp.controller('default', function ($scope, $http) {
 NGApp.controller('restaurants', function ($scope, $http) {
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
 
-	if (App.loc.address()) {
-	
+	if (App.loc.pos().address()) {
+
 		// sort the restaurants
 		var sortRestaurants = function() {
+
+			for (var x in App.restaurants.list) {
+				// recalculate restaurant open status on relist
+				App.restaurants.list[x].open();
+
+				// determine which tags to display
+				if (!App.restaurants.list[x]._open) {
+					App.restaurants.list[x]._tag = 'closed';
+				} else {
+					if (App.restaurants.list[x].delivery != '1') {
+						App.restaurants.list[x]._tag = 'takeout';
+					} else if (App.restaurants.list[x].isAboutToClose()) {
+						App.restaurants.list[x]._tag = 'closing';
+					}
+				}
+
+				// show short description
+				App.restaurants.list[x]._short_description = (App.restaurants.list[x].short_description || ('Top Order: ' + (App.restaurants.list[x].top_name ? (App.restaurants.list[x].top_name || App.restaurants.list[x].top_name) : '')));
+			};
+
 			App.restaurants.list.sort(sort_by(
 				{
 					name: '_open',
@@ -53,11 +104,11 @@ NGApp.controller('restaurants', function ($scope, $http) {
 				}
 			));
 		};
-		
+
 		var displayRestaurants = function($scope) {
-		
+
 			sortRestaurants();
-			
+
 			var titles = App.foodDelivery.localizedContent();
 
 			$scope.restaurants = App.restaurants.list;
@@ -70,39 +121,36 @@ NGApp.controller('restaurants', function ($scope, $http) {
 				$('.content').removeClass('short-meal-list');
 			}
 			$('.content').removeClass('smaller-width');
-			
+
 			$('.nav-back').removeClass('nav-back-show');
 		};
 
-	
+
 		// get the list of restaurants
 		if (App.restaurants.list === false) {
 			var url = App.service + 'restaurants?lat=' + App.loc.pos().lat + '&lon=' + App.loc.pos().lon + '&range=' + ( App.loc.range || App.defaultRange );
 			App.restaurants.list = false;
-			
+
 			$http.get(url).success(function(data) {
 				App.restaurants.list = [];
-			
+
 				// There is no restaurant near to the user. Go home and show the error.
 				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
 					error();
-		
+
 				} else {
 					for (var x in data.restaurants) {
-						var res = new Restaurant(data.restaurants[x]);
-						res.open();
-						App.restaurants.list[App.restaurants.list.length] = res;
+						App.restaurants.list[App.restaurants.list.length] = new Restaurant(data.restaurants[x]);
 					};
 					success();
 				}
-			
+
 				displayRestaurants($scope);
 			});
 
 		} else {
 			displayRestaurants($scope);
 		}
-
 
 	} else {
 		// we dont have a location. let the user enter it
@@ -123,101 +171,12 @@ NGApp.controller('cities', function ($scope, $http) {
  * Change location
  */
 NGApp.controller('location', function ($scope, $http) {
-return;
 	$scope.isUser = App.config.user.has_auth;
 	$scope.notUser = !App.config.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
-	$scope.yourArea = App.loc.city() || 'your area';
-	$scope.autofocus = $(window).width() >= 768 ? ' autofocus="autofocus"' : '';
+	$scope.yourArea = App.loc.pos().city() || 'your area';
 });
 
-
-App.page.home = function(force) {
-
-	if (!force && !App.loc.loaded) {
-		// if we arent forcing and theres no pos, then this was a home request. we need to wait a second
-		App.loc.bind('location-loaded', function() {
-			App.page.home(force);
-		});
-		App.loc.bind('location-detected', function() {
-			App.page.home(force);
-		});
-
-		return;
-	}
-
-	var homeSuccess = function() {
-		App.showPage({
-			page: 'home',
-			title: 'Crunchbutton',
-			data: {
-				isUser: App.config.user.has_auth,
-				notUser: !App.config.user.has_auth,
-				topCommunities: App.topCommunities,
-				yourArea: App.loc.city() || 'your area',
-				autofocus: $(window).width() >= 768 ? ' autofocus="autofocus"' : ''
-			}
-		});
-
-		$('.nav-back').removeClass('nav-back-show');
-		$('.config-icon').addClass('config-icon-mobile-hide, config-icon-desktop-hide');
-		$('.content').addClass('short-meal-list');
-
-		// @todo: put these in the css. @hacks
-		if (navigator.userAgent.toLowerCase().indexOf('safari') > -1 && navigator.userAgent.toLowerCase().indexOf('mobile') == -1 && navigator.userAgent.toLowerCase().indexOf('chrome') == -1) {
-			// safari desktop
-			$('.location-detect').css({
-				'margin-top': '2px',
-				'height': '50px'
-			});
-		} else if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-			// firefox desktop
-			$('.location-detect').css({
-				'margin-top': '0px',
-				'height': '52px'
-			});
-		}
-	};
-
-	if (!force && App.loc.address() && App.restaurants.list === false) {
-		// we have an address, but no restaurants
-		App.page.foodDelivery();
-
-		return;
-
-	} else {
-		homeSuccess();
-	}
-		
-	if (!force && App.loc.address() && App.restaurants.list && App.restaurants.list.length == 0) {
-
-		// Move the scroll to the top
-		setTimeout(scrollTo, 0, 0, 1);
-
-		// Shows the back button
-		// $( '.nav-back' ).addClass( 'nav-back-show' );
-		App.loc.locationNotServed = true;
-
-		// Log the error
-		App.log.location( { 'address' : App.loc.address(), 'lat' : App.loc.pos().lat, 'lon' : App.loc.pos().lon  } , 'address not served' );
-
-		$('.home-greeting, .enter-location, .button-letseat-form').hide();
-		$('.error-location').show();
-		
-		App.track('Location Error', {
-			lat: App.loc.pos().lat,
-			lon: App.loc.pos().lon,
-			address: App.loc.address()
-		});
-
-	} else {
-		$('.location-address').val('');
-		$('.error-location').hide();
-		$('.home-greeting, .enter-location, .button-letseat-form').show();
-
-	}
-
-};
 
 App.page.restaurant = function(id) {
 
@@ -239,15 +198,15 @@ App.page.restaurant = function(id) {
 
 		var lastOrderDelivery = false;
 		var lastPayCash = false;
-		
+
 		if( App.config && App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant] ){
 			// Check if the last user's order at this restaurant was a delivery type
 			lastOrderDelivery = App.config.user.presets[App.restaurant.id_restaurant].delivery_type;
-			// Check if the last user's order at this restaurant was cash type	
+			// Check if the last user's order at this restaurant was cash type
 			lastPayCash = App.config.user.presets[App.restaurant.id_restaurant].pay_type;
 			App.order['delivery_type'] = lastOrderDelivery;
 			App.order['pay_type'] = lastPayCash;
-		}	
+		}
 
 		App.showPage({
 			tracking: {
@@ -268,7 +227,7 @@ App.page.restaurant = function(id) {
 					tip: App.order.tip,
 					name: App.config.user.name,
 					phone: App.phone.format(App.config.user.phone),
-					address: App.config.user.address, 
+					address: App.config.user.address,
 					notes: (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) ? App.config.user.presets[App.restaurant.id_restaurant].notes : '',
 					card: {
 						number: App.config.user.card,
@@ -352,7 +311,7 @@ App.page.restaurant = function(id) {
 		if( lastPayCash == 'cash' ){
 			App.trigger.cash();
 		} else if ( lastPayCash == 'card' ){
-			App.trigger.credit();	
+			App.trigger.credit();
 		}
 
 		if( App.restaurant.credit != '1' ){
@@ -360,21 +319,21 @@ App.page.restaurant = function(id) {
 		}
 
 		if( App.restaurant.cash != '1' && App.restaurant.credit == '1' ){
-			App.trigger.credit();	
+			App.trigger.credit();
 		}
 
 		// Rules at #669
-		if( ( lastOrderDelivery == 'delivery' && App.restaurant.delivery == '1' ) || 
+		if( ( lastOrderDelivery == 'delivery' && App.restaurant.delivery == '1' ) ||
 				( App.order['delivery_type'] == 'delivery' && App.restaurant.delivery == '1' ) ||
 				( App.restaurant.takeout == '0' ) ||
 				( lastOrderDelivery != 'takeout' && App.restaurant.delivery == '1' ) ){
 				App.trigger.delivery();
-		} 
+		}
 
 		// If the restaurant doesn't delivery
 		if( App.order['delivery_type'] == 'takeout' || App.restaurant.delivery != '1') {
 			App.trigger.takeout();
-		} 
+		}
 
 		// If the user has presets at other's restaurants but he did not typed his address yet
 		// and the actual restaurant is a delivery only #875
@@ -394,7 +353,7 @@ App.page.restaurant = function(id) {
 			App.config.user.address = App.loc.enteredLoc;
 			App.loc.enteredLoc = '';
 		}
-		
+
 		if( App.giftcard.notesCode ){
 			setTimeout( function(){
 				$( '[name=notes]' ).val( App.giftcard.notesCode + ' ' + $( '[name=notes]' ).val() );
@@ -423,19 +382,19 @@ App.page.order = function(id) {
 
 	App.cache('Order', id, function() {
 		var order = this;
-		
+
 		if (!order.uuid) {
 			History.replaceState({},'Crunchbutton','/orders');
 			return;
 		}
-		
+
 		App._order_uuid = id;
 
 		App.facebook.preLoadOrderStatus();
 
 		App.cache('Restaurant',order.id_restaurant, function() {
 			var restaurant = this;
-		
+
 			$('.content').addClass('smaller-width');
 			$('.main-content').css('width','auto');
 
@@ -448,54 +407,11 @@ App.page.order = function(id) {
 					user: App.config.user.has_auth
 				}
 			});
-			
+
 		});
 	});
 };
 
-
-/**
- * Legal page. loaded from xhr.
- */
-App.page.legal = function() {
-	App.currentPage = 'legal';
-	$.getJSON('/api/legal',function(json) {
-	
-	App.controlMobileIcons.normalize();
-	
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-	$( '.nav-back' ).addClass( 'nav-back-show' );
-
-		$('.main-content').html(json.data);
-		App.refreshLayout();
-		setTimeout( function(){
-			// I put this way to avoid spammers robots #1219
-			$( '.crunchbutton-join-mail' ).html( 'moc.nottubhcnurc@nioj'.split('').reverse().join('') );
-		}, 100 );
-	});
-};
-
-
-/**
- * Help page. loaded from xhr.
- */
-App.page.help = function() {
-	App.currentPage = 'help';
-	$.getJSON('/api/help',function(json) {
-
-		App.controlMobileIcons.normalize();
-
-		$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-		$( '.nav-back' ).addClass( 'nav-back-show' );
-
-		$('.main-content').html(json.data);
-		App.refreshLayout();
-		setTimeout( function(){
-			// I put this way to avoid spammers robots
-			$( '.crunchbutton-join-mail' ).html( 'moc.nottubhcnurc@nioj'.split('').reverse().join('') );
-		}, 100 );
-	});
-};
 
 
 /**
@@ -541,35 +457,6 @@ App.page.orders = function() {
  */
 App.foodDelivery = {};
 
-// before we change the url we need to make sure that there are restaurants at the typed place.
-App.foodDelivery.getRestaurants = function(success, error) { 
-	if (!App.loc.pos()) {
-		error();
-		return;
-	}
-
-	var url = App.service + 'restaurants?lat=' + App.loc.pos().lat + '&lon=' + App.loc.pos().lon + '&range=' + ( App.loc.range || App.defaultRange );
-	App.restaurants.list = false;
-
-	$.getJSON(url, function(json) {
-		App.restaurants.list = [];
-
-		// There is no restaurant near to the user. Go home and show the error.
-		if (typeof json['restaurants'] == 'undefined' || json['restaurants'].length == 0) {
-			error();
-
-		} else {
-
-			for (var x in json.restaurants) {
-				var res = new Restaurant(json.restaurants[x]);
-				res.open();
-				App.restaurants.list[App.restaurants.list.length] = res;
-			};
-			success();
-		}
-	});
-}
-
 App.foodDelivery.localizedContent = function(){
 	// set the slogan and tagline
 	try {
@@ -583,95 +470,20 @@ App.foodDelivery.localizedContent = function(){
 	} catch (e) {
 		console.log('Failed to load dynamic text', App.slogan, App.tagline);
 		var slogan = '';
-		var tagline = ''; 
+		var tagline = '';
 	}
-	
+
 	// set title
 	var title = App.loc.city() + ' Food Delivery | Order Food from ' + (App.loc.city() || 'Local') + ' Restaurants | Crunchbutton';
 	document.title = title;
-	
+
 	return {
 		slogan: slogan,
 		tagline: tagline,
 		title: title
 	};
 }
-/**
- * food delivery page
- */
-App.page.foodDelivery = function(refresh) {
-	if (refresh) {
-		App.restaurants.list = false;
-	}
-	
-	//App.loc.reverseGeocode(App.loc.pos().lat, App.loc.pos().lon, success, error);
-	var success = function() {
-		// if we have a success and
-		var loc = '/' + App.restaurants.permalink;
-		if (loc != location.pathname) {
-			History.pushState({}, 'Crunchbutton', '/' + App.restaurants.permalink);
-			return;
-		}
 
-		if (App.restaurants.list.length == 4) {
-			$('.content').addClass('short-meal-list');
-		} else {
-			$('.content').removeClass('short-meal-list');
-		}
-		$('.content').removeClass('smaller-width');
-	
-		App.currentPage = 'food-delivery';
-	
-		var titles = App.foodDelivery.localizedContent();
-		
-		// sort the list by open or not
-		App.restaurants.list.sort(sort_by(
-			{
-				name: '_open',
-				reverse: true
-			},
-			{
-				name: 'delivery',
-				reverse: true
-			},
-			{
-				name: '_weight',
-				primer: parseInt,
-				reverse: true
-			}
-		));
-		
-		App.showPage({
-			page: 'restaurants',
-			data: {
-				slogan: titles.slogan,
-				tagline: titles.tagline,
-				restaurants: App.restaurants.list
-			}
-		});
-		
-		$( '.nav-back' ).removeClass( 'nav-back-show' );
-
-	};
-	
-	// we dont have any restaurants
-	var error = function() {
-		App.loadHome();
-	};
-
-	if (App.restaurants.list === false) {
-		// we have not checked for restaurants. do that now.
-		App.foodDelivery.getRestaurants(success, error);
-
-	} else if (App.restaurants.list === []) {
-		// there are no restaurants for this area. go back home
-		error();
-
-	} else {
-		// we already have a restaurant list. display the restaurant page
-		success();
-	}
-}
 /**
  * Gift card page
  */

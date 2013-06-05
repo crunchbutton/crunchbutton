@@ -6,6 +6,7 @@ App.loc = {
 	loaded: false,
 	changeLocationAddressHasChanged: false,
 	locationNotServed: false,
+
 	// calculate the distance between two points
 	distance: function(params) {
 		try {
@@ -23,18 +24,13 @@ App.loc = {
 			App.track('Location Error', {
 				lat: App.loc.lat,
 				lon: App.loc.lon,
-				address: App.loc.address()
+				address: App.loc.pos().address()
 			});
 		}
 	},
-
-	// get the best posible location
+	
 	pos: function() {
-		if (!App.loc.realLoc) {
-			return App.loc.aproxLoc;
-		} else {
-			return App.loc.realLoc;		
-		}
+		return App.locs[0] || new Location;
 	},
 	
 	// bind for a single event only triggered once
@@ -43,20 +39,6 @@ App.loc = {
 		$(document).one(event, fn);
 	},
 
-	// get the best posible address
-	address: function() {
-		return App.loc.pos() ? (App.loc.pos().addressEntered || App.loc.pos().addressReverse || App.loc.pos().addressAlias) : '';
-	},
-
-	// get the location city
-	city: function() {
-		return (App.loc.pos() && App.loc.pos().city) ? App.loc.pos().city : '';
-	},
-
-	// get the preposition for the location
-	prep: function() {
-		return (App.loc.pos() && App.loc.pos().prep) ? App.loc.pos().prep : 'in';
-	},
 
 	// get the location from the browsers geolocation
 	getLocationByBrowser: function(success, error) {
@@ -90,62 +72,7 @@ App.loc = {
 			error();
 		}
 	},
-	
-	// parse the city name from the result set
-	getCityFromResult: function(results) {
-		if (!results) {
-			return;
-		}
-		switch (results[0].types[0]) {
-			default:
-			case 'administrative_area_level_1':
-				App.loc.realLoc.city = results[0].address_components[0].long_name;
-				break;
-			case 'locality':
-				App.loc.realLoc.city = results[0].address_components[0].long_name;
-				App.loc.realLoc.region = results[0].address_components[2].short_name;
-				break;
-			case 'street_address':
-				App.loc.realLoc.city = results[0].address_components[2].long_name;
-				App.loc.realLoc.region = results[0].address_components[4].short_name;
-				break;
-			case 'postal_code':
-			case 'route':
-				App.loc.realLoc.city = results[0].address_components[1].long_name;
-				App.loc.realLoc.region = results[0].address_components[3].short_name;
-				break;
-		}
 
-		// @todo: do we need this?
-		for (var i = 0; i < results[0].address_components.length; i++) {
-			for (var j = 0; j < results[0].address_components[i].types.length; j++) {
-				if (results[0].address_components[i].types[j] == 'locality') {
-					App.loc.realLoc.city = results[0].address_components[i].long_name;
-				}
-			}
-		}
-	},
-	
-	// get the guessed address
-	getAddressFromResult: function(results) {
-		if (!results) {
-			return;
-		}
-		App.loc.realLoc.addressReverse = results[0].formatted_address;
-	},
-	
-	// set the location from the result set
-	setFormattedLocFromResult: function(result) {
-		App.loc.getCityFromResult(result);
-		App.loc.getAddressFromResult(result);
-		$.cookie('location', JSON.stringify(App.loc.realLoc), { expires: App.cookieExpire, path: '/'});
-		$('.loc-your-area').html(App.loc.city() || 'your area');
-	},
-	
-	// set the location by name
-	setFormattedLoc: function(loc) {
-		$('.loc-your-area').html(loc);
-	},
 
 	// run in the begining
 	init: function() {
@@ -257,6 +184,48 @@ App.loc = {
 
 		// set the bounds of the address to our guessed location
 	},
+	
+	geocodeLocationPage: function(address, success, error) {
+		App.loc.doGeocodeLocationPage(address, function(results) {
+			if (results.alias) {
+				alert('alias')
+				App.loc.realLoc = {
+					addressAlias: results.alias.address,
+					lat: results.alias.lat,
+					lon: results.alias.lon,
+					prep: results.alias.prep,
+					city: results.alias.city
+				};
+				App.loc.setFormattedLocFromResult();
+			} else {
+
+				if( App.loc.aproxLoc ){
+					var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );	
+					// Get the closest address from that lat/lng
+					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
+					results[0] = theClosestAddress;
+				} else {
+					var theClosestAddress = results[0];
+				}
+				
+				App.loc.realLoc = {
+					addressEntered: App.loc.formatedAddress( theClosestAddress ),
+					lat: theClosestAddress.geometry.location.lat(),
+					lon: theClosestAddress.geometry.location.lng()
+				};
+				App.loc.changeLocationAddressHasChanged = true;
+
+			}
+			success(new Location({
+				results: results
+			}));
+
+		}, function() {
+			App.loc.realLoc = null;
+			error();
+		});
+	},
+
 
 
 	doGeocodeLocationPage: function(address, success, error) {
@@ -324,43 +293,6 @@ App.loc = {
 		});
 	},
 
-	geocodeLocationPage: function(address, success, error) {
-		App.loc.doGeocodeLocationPage(address, function(results) {
-			if (results.alias) {
-				App.loc.realLoc = {
-					addressAlias: results.alias.address,
-					lat: results.alias.lat,
-					lon: results.alias.lon,
-					prep: results.alias.prep,
-					city: results.alias.city
-				};
-				App.loc.setFormattedLocFromResult();
-			} else {
-
-				if( App.loc.aproxLoc ){
-					var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );	
-					// Get the closest address from that lat/lng
-					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
-					results[0] = theClosestAddress;
-				} else {
-					var theClosestAddress = results[0];
-				}
-				
-				App.loc.realLoc = {
-					addressEntered: App.loc.formatedAddress( theClosestAddress ),
-					lat: theClosestAddress.geometry.location.lat(),
-					lon: theClosestAddress.geometry.location.lng()
-				};
-				App.loc.changeLocationAddressHasChanged = true;
-				App.loc.setFormattedLocFromResult( results );
-			}
-			success();
-
-		}, function() {
-			App.loc.realLoc = null;
-			error();
-		});
-	},
 
 	reverseGeocode: function(lat, lon, success, error) {
 		App.track('Location Reverse Geocode', {
@@ -375,10 +307,11 @@ App.loc = {
 
 			if (status == google.maps.GeocoderStatus.OK) {
 				if (results[1]) {
-					App.loc.setFormattedLocFromResult(results);
-					success();
+					success(new Location({
+						results: results
+					}));
 				} else {
-					$('.location-address').val('Where are you?!');
+					error();
 				}
 			} else {
 				error();
@@ -489,5 +422,39 @@ App.loc = {
 		url:  App.service + 'loc_log/new',
 		success: function( json ) {}
 		});	
+	},
+	
+	// a location to the loc stack, and verify it
+	addVerify: function() {
+		if (arguments[0] && typeof arguments[1] != 'function') {
+			// its lat/lon
+			var success = arguments[2];
+			var error = arguments[3];
+		} else {
+			// its text based
+			var address = arguments[0];
+			var success = arguments[1];
+			var error = arguments[2];
+
+			for (var x in App.locs) {
+				if (App.locs[x].entered == address && App.locs[x].verified) {
+					success(App.locs[x]);
+				}
+			}
+
+			App.loc.geocodeLocationPage(address, success, error);
+		}
+		//App.loc.geocode(address, success, error);
+
+		/*
+		App.log.location( { 'address' : App.loc.address(), 'lat' : App.loc.pos().lat, 'lon' : App.loc.pos().lon  } , 'address not served' );
+
+		App.track('Location Error', {
+			lat: App.loc.pos().lat,
+			lon: App.loc.pos().lon,
+			address: App.loc.address()
+		});
+		*/
+
 	}
 }
