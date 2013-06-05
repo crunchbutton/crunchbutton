@@ -39,20 +39,12 @@
 			<? $date = $order->date(); ?>
 			<tr class="list-order-item">
 				<td>
-
 					<a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a>
 					<br/>
 					<br/>
 					<?=$order->env?>
 					<br/>
 					<br/>
-					<? if ($order->notes) :?>
-						<span data-toggle="popover" data-placement="top" data-content="<?=$order->notes?>" class="notes pointer" title="Notes #<?=$order->id?>">
-							<i class="icon-file-alt"></i> Notes
-						</span>
-						<br/>
-						<br/>
-						<? endif ?>
 							<? if ($order->refunded) : ?>
 								REFUNDED
 							<? else : ?>
@@ -177,23 +169,38 @@
 				</td>
 				<td>
 					<table>
-						<tr>
-							<td><strong style="font-weight:bold;">Name</strong> <br/> <?=$order->name?> </td>
+						<tr title="Name">
+							<td><i class="icon-user"></i> <?=$order->name?> </td>
 						</tr>
-						<tr>
-							<td><strong style="font-weight:bold;">Phone</strong> <br/> <?=$order->phone?> </td>
+						<tr title="Phone">
+							<td><i class="icon-phone"> </i><?=$order->phone?> </td>
 						</tr>
 						<?php if ($order->delivery_type == 'delivery') { ?>
-						<tr>
-							<td><strong style="font-weight:bold;">Address</strong> <br/> <?=$order->address?> </td>
-							
+						<tr title="Address">
+							<td><i class="icon-home"></i> <?=$order->address?> </td>
 						</tr>
 						<?php } ?>
+						<? if ($order->notes) :?>
+							<tr>
+								<td data-toggle="popover" data-placement="top" data-content="<?=$order->notes?>" class="notes pointer" title="Notes #<?=$order->id?>">
+									<span>
+										<i class="icon-file-alt"></i> 
+										<?php 
+											$maxchars = 15;
+											if( strlen( $order->notes ) > $maxchars ){
+												echo substr( $order->notes, 0, $maxchars ) . '...';
+											} else {
+												echo $order->notes;
+											}
+										?>
+									</span>
+								</td>
+							</tr>
+						<? endif ?>
 						<tr>
 							<td>
-								<hr/>
 								<br/>
-								<a href="/giftcards/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $order->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $order->id_order; ?>">[Add gift card]</a>
+								<a href="/giftcards/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $order->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $order->id_order; ?>"><i class="icon-gift"></i> Add gift card</a>
 							</td>
 						</tr>
 					</table>
