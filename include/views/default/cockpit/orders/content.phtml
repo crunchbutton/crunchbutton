@@ -39,9 +39,9 @@
 					<br/>
 					<br/>
 					<? if ($order->notes) :?>
-						<div class="comments">
-							<a href="#" title="<?=$order->notes?>" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-comment"></span></a>
-						</div>
+						<span data-toggle="popover" data-placement="top" data-content="<?=$order->notes?>" class="notes pointer" title="Notes #<?=$order->id?>">
+							<i class="icon-file-alt"></i> Notes
+						</span>
 						<br/>
 						<br/>
 						<? endif ?>
@@ -73,14 +73,13 @@
 							</div>
 					<br/>
 
-					<br/>
 					<?
 						$support = Support::getSupportForOrder($order->id);
 						if($support) {
-							echo "<a href='/support/$support->id'>view support ticket</a>";
+							echo '<i class="icon-comments"></i> <a href="/support/$support->id">View support ticket</a>';
 						}
 						else {
-							echo "<a href='javascript:create_support_from_order($order->id);'>create support ticket</a>";
+							echo '<i class="icon-comments"></i> <a href="javascript:create_support_from_order(' . $order->id . ');">Create support ticket</a>';
 						}
 					?>
 
@@ -195,3 +194,6 @@
 		<? endforeach ; ?>
 	</table>
 <? endif ; ?>
+<script type="text/javascript">
+	$( '.notes' ).popover();
+</script>
