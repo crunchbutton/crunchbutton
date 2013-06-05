@@ -1,4 +1,4 @@
-<link href='http://fonts.googleapis.com/css?family=Atomic+Age|Carrois+Gothic+SC' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
 <style type="text/css">
 	.giftcard{
 		font-family: 'Atomic Age', cursive;
@@ -37,14 +37,14 @@
 			margin-left: 560px;
 			margin-top: 105px;
 			color:#d50000;
-			font-family: 'Carrois Gothic SC', sans-serif;
+			font-family: 'InconsolataMedium', 'Courier New', Courier, monospace;
 			font-size: 45px;
 			position: absolute;
 			width: 200px;
 		}
 		.place{
 			color:#3f4c51;
-			font-family: 'Carrois Gothic SC', sans-serif;
+			font-family: 'ArmataRegular', sans-serif;
 			font-size: 28px;
 			position: absolute;
 			z-index: 10;
@@ -56,38 +56,37 @@
 			.page-break{
 				page-break-after:always;
 			}
+@font-face {
+		font-family: 'InconsolataMedium';
+		src: url('/assets/fonts/Inconsolata-webfont.eot');
+		src: url('/assets/fonts/Inconsolata-webfont.eot?#iefix') format('embedded-opentype'),
+				 url('/assets/fonts/Inconsolata-webfont.woff') format('woff'),
+				 url('/assets/fonts/Inconsolata-webfont.ttf') format('truetype'),
+				 url('/assets/fonts/Inconsolata-webfont.svg#InconsolataMedium') format('svg');
+		font-weight: normal;
+		font-style: normal;
+}
+@font-face {
+		font-family: 'ArmataRegular';
+		src: url('/assets/fonts/Armata-Regular-webfont.eot');
+		src: url('/assets/fonts/Armata-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+				 url('/assets/fonts/Armata-Regular-webfont.woff') format('woff'),
+				 url('/assets/fonts/Armata-Regular-webfont.ttf') format('truetype'),
+				 url('/assets/fonts/Armata-Regular-webfont.svg#ArmataRegular') format('svg');
+		font-weight: normal;
+		font-style: normal;
+
+}
 </style>
 <?php 
 $count = 0;
 $giftcards = $this->giftcards;
-
-$env = c::env() == 'live' ? 'live' : 'dev';
-
-if( $env == 'live' ){
-	$serverUrl = 'crunchbutton.com';
-} else {
-	$serverUrl = 'beta.crunchbutton.com';
-}
 if( $giftcards->count() > 0 ) {
 	foreach( $giftcards as $giftcard ){
 		$count++;
 		if( $giftcard->id_restaurant ){
 			$restaurant = $giftcard->restaurant();
-			$restaurant_name = $restaurant->name;
-
-			$community = $restaurant->communities();
-			if( $community->count() > 0 ){
-				$community_name = $community->name_alt;
-				$community_prep = $community->prep;
-				if( $community_name && $community_prep ){
-					$local_description = 'Order the top food ' . $community_prep . ' ' . $community_name . '.';	
-				} else {
-					$local_description = 'Order the top local food.';	
-				}
-			} else {
-				$local_description = 'Order the top local food.';	
-			}
-			
+			$restaurant_name = $restaurant->name;			
 		} else {
 			$restaurant_name = 'Crunchbutton';
 			$local_description = 'Order the top local food.';
