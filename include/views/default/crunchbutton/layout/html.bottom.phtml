@@ -48,8 +48,8 @@ if (App){
 			<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
 
 			<div class="footer-content">
-				<a href="javascript:App.page.help();" class="link-help">Help</a>
-				<a href="javascript:App.page.legal();" class="link-legal">Legal</a>
+				<a href="/help" class="link-help">Help</a>
+				<a href="/legal" class="link-legal">Legal</a>
 				<a href="javascript:App.page.orders();" class="link-orders"<?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
 				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
 					<a href="javascript:App.useRestaurantBoundingBox=true;alert('Ok!');">TEST: restaurant bounding</a>

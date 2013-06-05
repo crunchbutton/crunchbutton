@@ -166,3 +166,48 @@ if (window.jQuery) {
 		$(document).on('touchclick', $(this).selector, func );
 	};
 }
+
+
+
+
+
+NGApp.filter('iif', function () {
+	return function(input, trueValue, falseValue) {
+		return input ? trueValue : falseValue;
+	};
+});
+
+if (App.isMobile()) {
+	NGApp.directive('ngTap', function () {
+		return function(scope, element, attrs) {
+			var tapping;
+			tapping = false;
+			element.bind('touchstart', function(e) {
+				element.addClass('active');
+				tapping = true;
+			});
+			element.bind('touchmove', function(e) {
+				element.removeClass('active');
+				tapping = false;
+			});
+			element.bind('touchend', function(e) {
+				element.removeClass('active');
+				if (tapping) {
+					scope.$apply(attrs['ngTap'], element);
+				}
+			});
+		};
+	});
+} else {
+	NGApp.directive('ngTap', function () {
+		return function(scope, element, attrs) {
+			element.bind('mousedown', function(e) {
+				element.addClass('active');
+			});
+			element.bind('mouseup', function(e) {
+				element.removeClass('active');
+				scope.$apply(attrs['ngTap'], element);
+			});
+		};
+	});
+}

@@ -193,7 +193,7 @@ body {
 	padding-top: 9px;
 }
 
-.meal-item-down {
+.meal-item.active {
 	margin-top: 2px;
 	box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.15);
 }
@@ -1440,7 +1440,7 @@ html[xmlns] .clearfix {
 		line-height: 18px;
 		display: block !important;
 	}	
-	.meal-item-down {
+	.meal-item.active {
 		border: 1px solid rgba(255,40,31,.8);
 	}
 	.restaurant-pic-wrapper:before {

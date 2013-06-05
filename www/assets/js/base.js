@@ -21,10 +21,6 @@ var History = window.History;
 History.Adapter.bind(window,'statechange',function() {
 	var State = History.getState();
 	History.log(State.data, State.title, State.url);
-	if (!App.config) return;
-	if (App._init) {
-		App.loadPage();
-	}
 });
 
 if (!typeof(App) == 'undefined') {

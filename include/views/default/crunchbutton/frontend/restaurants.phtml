@@ -6,26 +6,20 @@
 <div class="content-padder-before"></div>
 <div class="content-padder">
 	<div class="meal-items {{mealItemClass}}">
-		<% _.each(restaurants, function(restaurant) { %>
-			<div class="meal-item<%= !restaurant.open() ? ' meal-item-closed' : '' %>" data-id_restaurant="<%= restaurant.id_restaurant %>" data-permalink="<%= restaurant.permalink %>">
-				<div class="meal-item-content">
-					<div class="meal-pic" style="background: url(<%= restaurant.img64 %>);"></div>
-					<h2 class="meal-restaurant"><%= restaurant.name %></h2>
-					<h3 class="meal-food"><%= (restaurant.short_description || ('Top Order: ' + (restaurant.top_name ? (restaurant.top_name || restaurant.top_name) : ''))) %></h3>
-					<% if (restaurant.open()) { %>
-						<% if (restaurant.delivery != '1') { %>
-							<div class="meal-item-tag">Take out only</div>
-						<% } else if (restaurant.isAboutToClose()) { %>
-							<div class="meal-item-tag about-to-close">Hurry, closes in <%= restaurant.isAboutToClose() %> min!</div>
-						<% } else if (false && !restaurant.delivery_fee) { %>
-							<div class="meal-item-tag">Free Delivery</div>
-						<% } %>
-					<% } else { %>
-						<div class="meal-item-tag-closed">Opens in a few hours</div>
-					<% } %>
+
+		<div ng-tap="restaurant.display()" ng-class="{'meal-item-closed': restaurant._open==false}" class="meal-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants">
+			<div class="meal-item-content">
+				<div class="meal-pic" style="background: url({{restaurant.img64}});"></div>
+				<h2 class="meal-restaurant">{{restaurant.name}}</h2>
+				<h3 class="meal-food">{{restaurant._short_description}}</h3>
+				<div ng-switch on="restaurant._tag">
+					<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
+					<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant.isAboutToClose()}} min!</div>
+					<div class="meal-item-tag-closed" ng-switch-when="closed">Opens in a few hours</div>
 				</div>
-				<div class="meal-item-spacer"></div>
 			</div>
-		<% }); %>
+			<div class="meal-item-spacer"></div>
+		</div>
+
 	</div>
 </div>

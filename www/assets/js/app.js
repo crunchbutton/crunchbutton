@@ -15,6 +15,7 @@ var App = {
 	cached: {},
 	community: null,
 	page: {},
+	locs: [],
 	config: null,
 	forceHome: false,
 	cookieExpire: new Date(3000,01,01),
@@ -57,22 +58,6 @@ App.alert = function(txt) {
 
 App.loadRestaurant = function(id) {
 
-	App.cache('Restaurant', id,function() {
-
-		if (!this.open()) {
-			App.alert("This restaurant is currently closed. It will be open during the following hours (" + this._tzabbr + "):\n\n" + this.closedMessage());
-			App.busy.unBusy();
-
-		} else {
-
-			if (this.redirect) {
-				location.href = this.redirect;
-				return;
-			}
-			var loc = '/' + App.restaurants.permalink + '/' + this.permalink;
-			History.pushState({}, 'Crunchbutton - ' + this.name, loc);
-		}
-	});
 };
 
 
@@ -90,14 +75,16 @@ App.routeAlias = function(id, success, error) {
 		var loc = App.locations[alias.id_community];
 
 		if (loc.loc_lat && loc.loc_lon) {
-			var res = {
+			
+			var res = new Location({
 				lat: loc.loc_lat,
 				lon: loc.loc_lon,
+				type: 'alias',
+				verified: true,
 				prep: alias.prep,
 				city: alias.name_alt,
 				address: alias.name_alt
-			};
-			App.loc.range = loc.range || App.defaultRange;
+			});
 
 			success({alias: res});
 			return;
@@ -150,6 +137,12 @@ App.NGinit = function() {
 	$('body').attr('ng-controller', 'AppController');
 	angular.bootstrap(document,['NGApp']);
 	App.loc.init();
+	
+	if (App.config.env == 'live') {
+		$('.footer').addClass('footer-hide');
+	}
+	
+	setTimeout( function(){ App.signin.checkUser(); }, 300 );
 };
 
 
@@ -207,6 +200,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'reset',
 			templateUrl: 'view/reset.html'
 		})
+		.when('/', {
+			action: 'home',
+			controller: 'home',
+			templateUrl: 'view/home.html'
+		})
 		.otherwise({
 			action: 'home.default',
 			controller: 'default',
@@ -238,75 +236,16 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams) {
 			console.log('route change' , $currentRoute)
 			// Update the rendering.
 			render();
-			
-			/*
+
 			if (App.isChromeForIOS()){
 				App.message.chrome();
 			}
-			*/
 
 		}
 	);
 
 });
 
-
-/**
- * Router init
- * @todo replace with router
- */
-App.loadPage = function() {
-	return;
-	// If the user is using Chrome for iOS show the message:	
-
-	App.signin.checkUser();
-	// Force it!
-	setTimeout( function(){App.signin.checkUser()}, 500 );
-
-	if (!App.config) {
-		return;
-	}
-
-	// hide whatever we have
-	if (App._pageInit) {
-		$('.main-content').css('visibility','0');
-	} else {
-		App._pageInit = true;
-	}
-
-	switch (true) {
-		case new RegExp( App.restaurants.permalink + '$', 'i' ).test( cleaned_url ):
-			App.page.foodDelivery();
-			break;
-		case restaurantRegex.test(url):
-			App.page.restaurant(path[1]);
-			break;
-		default:
-			App.routeAlias( path[ 0 ],
-				function( result ){
-					App.loc.realLoc = {
-						addressAlias: result.alias.address,
-						lat: result.alias.lat,
-						lon: result.alias.lon,
-						prep: result.alias.prep,
-						city: result.alias.city
-					};
-					App.loc.setFormattedLocFromResult();
-					App.page.foodDelivery( true );
-			});
-			$('.footer').removeClass('footer-hide');
-			setTimeout(scrollTo, 80, 0, 1);
-			setTimeout( function(){ App.signin.checkUser(); }, 100 );
-			break;
-	}
-
-	if (App.config.env == 'live') {
-		$('.footer').addClass('footer-hide');
-	}
-	App.refreshLayout();
-	$('.main-content').css('visibility','1');
-	setTimeout( function(){ App.signin.checkUser(); }, 300 );
-};
 
 
 /**
@@ -637,36 +576,18 @@ $(function() {
 		return false;
 	});
 
+	// confirm, test location on location page
 	$(document).on('touchclick', '.button-letseat-form', function() {
-
-		var success = function() {
-			App.page.foodDelivery(true);
-		};
-
-		var error = function() {
-			$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
-			// Log the error
-			App.log.location( { 'address' : address } , 'address not found' );
-		};
-
 		var address = $.trim($('.location-address').val());
-
+		
 		if (!address) {
-			// the user didnt enter any address
 			$('.location-address').val('').attr('placeholder','Please enter your address here');
-
-		} else if (address && address == App.loc.address()) {
-			// we already have a geocode result of that address. dont do it again
-			success();
-
 		} else {
-			// we need a new geocode result set
-			if(App.loc.aproxLoc && App.loc.aproxLoc.lat && App.loc.aproxLoc.lon ){
-				App.loc.geocodeLocationPage(address, success, error);
-			} else {
-				App.loc.geocode(address, success, error);
-			}
-			
+			App.loc.addVerify(address, function() {
+				History.pushState({}, 'Crunchbutton', '/' + App.restaurants.permalink);
+			}, function() {
+				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
+			});
 		}
 	});
 
@@ -744,7 +665,6 @@ $(function() {
 	});
 
 	$('.link-legal').tap(function(e) {
-	console.log('LEGAL', e)
 		e.stopPropagation();
 		e.preventDefault();
 		History.pushState({}, 'Crunchbutton - Legal', '/legal');
@@ -817,84 +737,8 @@ $(function() {
 			e.preventDefault();
 		});
 	
-		// touch events for restaurant list
-		$(document).on({
-			touchstart: function(e) {
-				if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-					//return;
-				}
-				App.startX = event.touches[0].pageX;
-				App.startY = event.touches[0].pageY;
-				App.startOffset = document.all? iebody.scrollLeft : pageYOffset;
-	
-				$(this).addClass('meal-item-down');
-			},
-			touchmove: function(e) {
-				App.touchX = event.touches[0].pageX;
-				App.touchY = event.touches[0].pageY;
-				App.touchOffset = document.all? iebody.scrollLeft : pageYOffset;
-				
-				var maxDistance = 25;
-				if (Math.abs(App.startX-App.touchX) > maxDistance || Math.abs(App.startY-App.touchY) > maxDistance || Math.abs(App.startOffset-App.touchOffset) > maxDistance) {
-					$(this).removeClass('meal-item-down');
-				}
-			},
-			touchend: function(e) {
 
-				if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-					//return;
-				}
-				if (App.busy.isBusy()) {
-					return;
-				}
-
-				var maxDistance = 25;
-				var r = $(this).closest('.meal-item').attr('data-permalink');
-				var c = $(this).closest('.meal-item').attr('data-permalink-community');
-
-				if ((App.touchX == null && App.touchY == null) || (Math.abs(App.startX-App.touchX) < maxDistance && Math.abs(App.startY-App.touchY) < maxDistance && Math.abs(App.startOffset-App.touchOffset) < maxDistance)) {
-					if (r) {
-						App.loadRestaurant(r);
-					} else if (c) {
-						History.pushState({},c,c);
-						App.routeAlias(c);
-					}
-				}
-				App.touchX = null;
-				App.touchY = null;
-				App.touchOffset = null;
-				$(this).removeClass('meal-item-down');
-			}
-		}, '.meal-item-content');
-	} else {
-		$(document).on({
-			mousedown: function() {
-				if (App.busy.isBusy()) {
-					return;
-				}
-	
-				if (navigator.userAgent.toLowerCase().indexOf('ios') > -1) {
-					return;
-				}
-				$(this).addClass('meal-item-down');
-				var self = $(this);
-				var r = self.closest('.meal-item').attr('data-permalink');
-				var c = self.closest('.meal-item').attr('data-permalink-community');
-	
-				setTimeout(function() {
-					if (r) {
-						App.loadRestaurant(r);
-					} else if (c) {
-						App.routeAlias(c);
-					}
-				},100);
-			},
-			mouseup: function() {
-				$(this).removeClass('meal-item-down');
-			}
-		}, '.meal-item-content');
 	}
-
 
 	$('.dish-item').tap(function() {
 		App.cart.add($(this).attr('data-id_dish'));
@@ -1031,7 +875,6 @@ $(function() {
 		App.processConfig(json);
 		App._init = true;
 		App.NGinit();
-//		App.loadPage();
 	};
 
 	if (App.config) {
@@ -1053,7 +896,8 @@ $(function() {
 		});
 	});
 	
-	if (App.isMobile() && !App.isAndroid() ) {
+	// hide the top bar when any input is focused
+	if (App.isMobile() && !App.isAndroid()) {
 		setInterval(function() {
 			var focused = $(':focus');
 			if (!focused.length) {
@@ -1070,26 +914,7 @@ $(function() {
 			}
 		}, 100);
 	}
-/*
-	var unHideBars = function() {
-		$('[data-position="fixed"]').show();
-	}
-	$(document).on('focus', 'select, input, textarea', function() {
-		if ($(window).width() >= 768 || navigator.userAgent.toLowerCase().indexOf('android') > -1 || $(this).hasClass('location-address')) {
-			return;
-		}
-		clearTimeout(App.unHideBars);
-		$('[data-position="fixed"]').hide();
-	});
 
-	$(document).on('blur', 'select, input, textarea', function() {
-		if ($(window).width() >= 768) {
-			return;
-		}
-		clearTimeout(App.unHideBars);
-		setTimeout(unHideBars, 100);
-	});
-	*/
 
 	var checkForDistance = function() {
 		if (App.order['delivery_type'] == 'takeout') {
@@ -1290,31 +1115,3 @@ App.controlMobileIcons.hidePacman = function(){
 }
 
 
-
-
-NGApp.filter('iif', function () {
-	return function(input, trueValue, falseValue) {
-		return input ? trueValue : falseValue;
-	};
-});
-
-NGApp.directive('ngTap', function () {
-	return function(scope, element, attrs) {
-		var tapping;
-		tapping = false;
-		element.bind('touchstart', function(e) {
-			element.addClass('active');
-			tapping = true;
-		});
-		element.bind('touchmove', function(e) {
-			element.removeClass('active');
-			tapping = false;
-		});
-		element.bind('touchend', function(e) {
-			element.removeClass('active');
-			if (tapping) {
-				scope.$apply(attrs['ngTap'], element);
-			}
-		});
-	};
-});	
