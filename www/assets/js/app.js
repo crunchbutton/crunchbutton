@@ -134,6 +134,8 @@ App.showPage = function(params) {
 
 
 App.NGinit = function() {
+
+
 	$('body').attr('ng-controller', 'AppController');
 	angular.bootstrap(document,['NGApp']);
 	App.loc.init();
@@ -141,6 +143,7 @@ App.NGinit = function() {
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
+
 	
 	setTimeout( function(){ App.signin.checkUser(); }, 300 );
 };
@@ -154,7 +157,6 @@ NGApp.config(function($compileProvider){
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 	$routeProvider
-
 		.when('/location', {
 			action: 'location',
 			controller: 'location',
@@ -574,21 +576,6 @@ $(function() {
 	$(document).on('submit', '.button-letseat-formform', function() {
 		$('.button-letseat-form').trigger('touchclick');
 		return false;
-	});
-
-	// confirm, test location on location page
-	$(document).on('touchclick', '.button-letseat-form', function() {
-		var address = $.trim($('.location-address').val());
-		
-		if (!address) {
-			$('.location-address').val('').attr('placeholder','Please enter your address here');
-		} else {
-			App.loc.addVerify(address, function() {
-				History.pushState({}, 'Crunchbutton', '/' + App.restaurants.permalink);
-			}, function() {
-				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
-			});
-		}
 	});
 
 	$(document).on('touchclick', '.delivery-toggle-delivery', function(e) {
