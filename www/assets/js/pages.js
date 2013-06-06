@@ -2,7 +2,6 @@
  * legal page
  */
 NGApp.controller('legal', function ($scope, $http) {
-	App.controlMobileIcons.normalize();
 	$http.get(App.service + 'legal').success(function(data) {
 		$scope.legal = data.data;
 	});
@@ -13,7 +12,6 @@ NGApp.controller('legal', function ($scope, $http) {
  * help page
  */
 NGApp.controller('help', function ($scope, $http) {
-	App.controlMobileIcons.normalize();
 	$http.get(App.service + 'help').success(function(data) {
 		$scope.help = data.data;
 		$('.crunchbutton-join-mail').html('moc.nottubhcnurc@nioj'.split('').reverse().join(''));
@@ -496,8 +494,6 @@ App.page.orders = function() {
 			History.pushState({}, 'Crunchbutton - ' + name, loc);
 		});
 	});
-
-	App.refreshLayout();
 };
 
 
