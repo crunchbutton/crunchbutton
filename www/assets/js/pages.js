@@ -25,9 +25,9 @@ NGApp.controller('help', function ($scope, $http) {
  * Home controller
  */
 NGApp.controller('home', function ($scope, $http, $location) {
-	if (App.loc.pos() && App.loc.pos().address() && App.restaurants.list) {
+	if (App.loc.pos().valid('restaurants') && App.restaurants.list) {
 		// we have a location, show the restaurants
-		$location.path('/food-delivery');
+		$location.path('/' + App.restaurants.permalink);
 	} else {
 		// we dont have a location. let the user enter it
 		$location.path('/location');
@@ -40,7 +40,7 @@ NGApp.controller('home', function ($scope, $http, $location) {
  */
 NGApp.controller('default', function ($scope, $http) {
 
-	// TODO THIS
+	// @TODO THIS
 	App.routeAlias( path[ 0 ],
 		function( result ){
 			App.loc.realLoc = {
@@ -64,7 +64,7 @@ NGApp.controller('default', function ($scope, $http) {
 NGApp.controller('restaurants', function ($scope, $http, $location) {
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
 
-	if (App.loc.pos().address()) {
+	if (App.loc.pos().valid('restaurants')) {
 
 		// sort the restaurants
 		var sortRestaurants = function() {
@@ -175,10 +175,11 @@ NGApp.controller('location', function ($scope, $http, $location) {
 	$scope.notUser = !App.config.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
 	$scope.yourArea = App.loc.pos().city() || 'your area';
-	
+
+	// lets eat button
 	$scope.letsEat = function() {
 		var address = $.trim($('.location-address').val());
-		
+
 		if (!address) {
 			$('.location-address').val('').attr('placeholder','Please enter your address here');
 		} else {
@@ -188,7 +189,6 @@ NGApp.controller('location', function ($scope, $http, $location) {
 				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
 			});
 		}
-		
 	}
 });
 

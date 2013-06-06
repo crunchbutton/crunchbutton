@@ -8,17 +8,12 @@ if (App){
 }
 </script>
 
-<? if ((Cana::env() != 'live' ) && (isset($this->restaurant)) && (!$this->restaurant->open()) ) : ?>
-	<style> .wrapper { background: lightgray;} </style>
-<? endif?>
 </head>
 <?
-
 	$basicPages = ['legal','help','faq','hello'];
 	if (!c::getPagePiece(0) || (c::getPagePiece(0) && !in_array(c::getPagePiece(0), $basicPages) && !$this->community)) {
 		$e = ' short-meal-list';
 	}
-
 ?>
 <body>
 	<div class="wrapper">
@@ -61,6 +56,12 @@ if (App){
 				<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
 			</div>
 		</div>
+		
+		<ng-include src="view/signin.html"></ng-include>
+		<ng-include src="view/suggestion.html"></ng-include>
+		<ng-include src="view/support.html"></ng-include>
+		
+
 	</div>
 
 	<div id="fb-root"></div>
@@ -84,6 +85,7 @@ if (App){
 			FB.Event.subscribe('auth.statusChange', App.signin.facebook.processStatus);
 		};
 	});
+
 	(function(d, s, id) {
 	var js, fjs = d.getElementsByTagName(s)[0];
 	if (d.getElementById(id)) return;
@@ -91,6 +93,7 @@ if (App){
 	js.src = "//connect.facebook.net/en_US/all.js";
 	fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));
+
 </script>
 
 <? if ($_SERVER['__HTTP_HOST'] == 'crunchbutton.com') : ?>
@@ -108,12 +111,5 @@ if (App){
 	</script>
 <? endif ; ?>
 
-<? if (!c::isMobile()) : ?>
-	<script type="text/javascript">
-		$(function() {
-			App.support.init();
-		});
-	</script>
-<? endif; ?>
 
 </html>

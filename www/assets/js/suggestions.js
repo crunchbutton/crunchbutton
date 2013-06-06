@@ -1,7 +1,5 @@
 App.suggestion.init = function() {
 
-	$('.wrapper').append(App.render('suggestion'));
-
 	$(document).on('touchclick', '.suggestion-link', function() {
 		App.suggestion.show();
 		App.suggestion.itIsSending = false;
