@@ -241,7 +241,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
 
 //			title: App.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton',
 
-		$scope.$apply(function() {
+		var complete = function() {
 		
 			var date = new Date().getFullYear();
 			var years = [];
@@ -281,7 +281,12 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
 			$scope.cart = {
 				totalFixed: parseFloat(App.restaurant.delivery_min - App.cart.total()).toFixed(2)
 			}
-		});
+		};
+		if (!$scope.$$phase) {
+			$scope.$apply(complete);
+		} else {
+			complete();
+		}
 
 		// If the typed address is different of the user address the typed one will be used #1152
 		if( App.loc.changeLocationAddressHasChanged && App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != App.config.user.address ){

@@ -21,11 +21,11 @@ if (App){
 		<div class="nav" data-role="header" data-position="fixed">
 			<div class="content<?=$e?>">
 				<div class="pacman-loading pacman-left"></div>
-				<div class="nav-back"></div>
-				<div class="logo"><a href="javascript:;" class="link-home"><div class="logo-img"></div></a></div>
+				<div class="nav-back" ng-tap="back()"></div>
+				<div class="logo"><a href="javascript:;" ng-tap="link('/')"><div class="logo-img"></div></a></div>
 				<div class="sign-in-icon"></div>
 				<div class="pacman-loading pacman-right"></div>
-				<div title="Change location" class="config-icon"></div>
+				<div title="Change location" class="config-icon" ng-tap="link('/location')"></div>
 				<div class="signin-box-header">
 					<div class="signin-user" title="My Account + Past Orders"></div>
 					<div class="signin-icon"></div>
@@ -44,11 +44,10 @@ if (App){
 			<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
 
 			<div class="footer-content">
-				<a href="javascript:;" ng-click="alert()">Help</a>
-				<a href="/legal" class="link-legal">Legal</a>
-				<a href="javascript:App.page.orders();" class="link-orders"<?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
+				<a href="javascript:;" ng-tap="link('/help')">Help</a>
+				<a href="javascript:;" ng-tap="link('/legal')">Legal</a>
+				<a href="javascript:;" ng-tap="link('/orders')" <?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
 				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
-					<a href="javascript:App.useRestaurantBoundingBox=true;alert('Ok!');">TEST: restaurant bounding</a>
 					<a href="javascript:App.test.card();" class="test-card">TEST: card</a>
 					<a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a>
 					<a href="javascript:App.test.clearloc();" class="test-clearloc">TEST: clear loc</a>

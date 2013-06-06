@@ -71,6 +71,8 @@ App.loc = {
 	 * get location from the browsers geolocation
 	 */
 	getLocationByBrowser: function(success, error) {
+		var success = success || function(){};
+		var error = error || function(){};
 
 		if (navigator.geolocation) {
 			App.loc.timerId = setTimeout(function() {
@@ -91,7 +93,7 @@ App.loc = {
 					lon: position.coords.longitude
 				});
 				// get the city from shared location
-				App.loc.reverseGeocode(position.coords.latitude, position.coords.longitude, succcess, error);
+				App.loc.reverseGeocode(position.coords.latitude, position.coords.longitude, success, error);
 
 			}, function() {
 				clearTimeout(App.loc.timerId);
