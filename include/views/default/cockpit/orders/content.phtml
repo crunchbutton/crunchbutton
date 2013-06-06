@@ -82,7 +82,7 @@
 					<br/>
 					<br/>
 					<hr/>
-					<?php if( $order->restaurant()->confirmation || $order->restaurant->hasPhoneNotification() ){
+					<?php if( $order->restaurant()->confirmation || $order->restaurant()->hasPhoneNotification() ){
 						if( $order->confirmed ) { 
 							echo '<i class="icon-thumbs-up"></i> Confirmed!';
 						} else {
