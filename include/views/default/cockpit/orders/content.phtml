@@ -79,8 +79,6 @@
 				</td>
 				<td>
 					<?=$order->restaurant()->name?>
-					<br/>
-					<br/>
 					<hr/>
 					<?php if( $order->restaurant()->confirmation || $order->restaurant()->hasPhoneNotification() ){
 						if( $order->confirmed ) { 
@@ -88,9 +86,8 @@
 						} else {
 							echo '<i class="icon-thumbs-down"></i> NOT confirmed.';
 						}
+						echo '<br/><br/>';
 					} ?>
-					<br/>
-					<br/>
 					<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend notification</a>
 				</td>
 				<td style="width: 300px; white-space: normal;">
