@@ -57,12 +57,21 @@ NGApp.controller('default', function ($scope, $http) {
 });
 
 
-
 /**
  * Show the restaurants
  */
 NGApp.controller('restaurants', function ($scope, $http, $location) {
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
+	
+	$scope.display = function() {
+		if (!this.restaurant.open()) {
+			App.alert("This restaurant is currently closed. It will be open during the following hours (" + this.restaurant._tzabbr + "):\n\n" + this.restaurant.closedMessage());
+			App.busy.unBusy();
+
+		} else {
+			$location.path('/' + App.restaurants.permalink + '/' + this.restaurant.permalink);
+		}
+	};
 
 	if (App.loc.pos().valid('restaurants')) {
 
@@ -105,7 +114,7 @@ NGApp.controller('restaurants', function ($scope, $http, $location) {
 			));
 		};
 
-		var displayRestaurants = function($scope) {
+		var displayRestaurants = function() {
 
 			sortRestaurants();
 
@@ -141,15 +150,15 @@ NGApp.controller('restaurants', function ($scope, $http, $location) {
 				} else {
 					for (var x in data.restaurants) {
 						App.restaurants.list[App.restaurants.list.length] = new Restaurant(data.restaurants[x]);
-					};
+					}
 					console.debug('THERE WAS A LOC SUCCESS!!');
 				}
 
-				displayRestaurants($scope);
+				displayRestaurants();
 			});
 
 		} else {
-			displayRestaurants($scope);
+			displayRestaurants();
 		}
 
 	} else {
@@ -478,20 +487,20 @@ App.foodDelivery.localizedContent = function(){
 	// set the slogan and tagline
 	try {
 		var slogan = App.slogan.slogan;
-		var sloganReplace = App.loc.prep() + ' ' + App.loc.city();
+		var sloganReplace = App.loc.pos().prep() + ' ' + App.loc.pos().city();
 
 		sloganReplace = $.trim(sloganReplace);
 		var tagline = App.tagline.tagline.replace('%s', sloganReplace);
 		slogan = slogan.replace('%s', sloganReplace);
 
 	} catch (e) {
-		console.log('Failed to load dynamic text', App.slogan, App.tagline);
+		console.log('Failed to load dynamic text', App.slogan, App.tagline, e);
 		var slogan = '';
 		var tagline = '';
 	}
 
 	// set title
-	var title = App.loc.city() + ' Food Delivery | Order Food from ' + (App.loc.city() || 'Local') + ' Restaurants | Crunchbutton';
+	var title = App.loc.pos().city() + ' Food Delivery | Order Food from ' + (App.loc.pos().city() || 'Local') + ' Restaurants | Crunchbutton';
 	document.title = title;
 
 	return {

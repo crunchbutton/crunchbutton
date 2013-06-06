@@ -224,7 +224,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams) {
 	$scope.$on(
 		'$routeChangeSuccess',
 		function ($currentRoute, $previousRoute) {
-			console.debug('THIS IS ROUTE',$route.current.action)
+			console.debug('ROUTE >',$route.current.action)
 			// Update the rendering.
 			render();
 
