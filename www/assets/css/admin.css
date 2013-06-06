@@ -198,10 +198,6 @@ h1 {
 .list-orders th{
 	white-space: nowrap;
 }
-.list-order-item:nth-child(2n+3) {
-	background: rgba(0,0,0,.1);
-}
-
 .list-orders ul {
 	list-style-type:circle;
 	margin-left: 20px;
