@@ -161,9 +161,9 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'view/restaurants.html'
 		})
 		.when('/' + App.restaurants.permalink + '/:id', {
-			action: 'user.view',
-			controller: 'user',
-			templateUrl: 'view/user.html'
+			action: 'restaurant',
+			controller: 'restaurant',
+			templateUrl: 'view/restaurant.html'
 		})
 		.when('/legal', {
 			action: 'legal',
@@ -211,7 +211,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams) {
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope) {
 
 	render = function() {
 		var renderAction = $route.current.action;
@@ -224,7 +224,10 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams) {
 	$scope.$on(
 		'$routeChangeSuccess',
 		function ($currentRoute, $previousRoute) {
-			console.debug('ROUTE >',$route.current.action)
+			console.debug('ROUTE >',$route.current.action, $rootScope)
+			$rootScope.blah = function() {
+				alert('asd');
+			};
 			// Update the rendering.
 			render();
 
@@ -744,19 +747,10 @@ $(function() {
 		$(this).val( App.phone.format($(this).val()) );
 	});
 
-	// make sure we have our config loaded
-	var haveConfig = function(json) {
-		$(document).trigger('have-config');
-		App.processConfig(json);
-		App._init = true;
-		App.NGinit();
-	};
-
-	if (App.config) {
-		haveConfig(App.config)
-	} else {
-		$.getJSON('/api/config', haveConfig);
-	}
+	$(document).trigger('have-config');
+	App.processConfig(App.config);
+	App._init = true;
+	App.NGinit();
 
 	$('.cart-summary').tap(function(e) {
 		e.stopPropagation();

@@ -68,15 +68,8 @@ App.loc = {
 
 
 	/**
-	 * bind for a single event only triggered once
+	 * get location from the browsers geolocation
 	 */
-	bind: function(event, fn) {
-		$(document).unbind(event)
-		$(document).one(event, fn);
-	},
-
-
-	// get the location from the browsers geolocation
 	getLocationByBrowser: function(success, error) {
 
 		if (navigator.geolocation) {
@@ -87,17 +80,18 @@ App.loc = {
 			navigator.geolocation.getCurrentPosition(function(position){
 				clearTimeout(App.loc.timerId);
 
-				App.loc.realLoc = {
+				App.locs.push(new Location({
 					lat: position.coords.latitude,
-					lon: position.coords.longitude
-				};
+					lon: position.coords.longitude,
+					type: 'geolocation'
+				}));
+
 				App.track('Locations Shared', {
 					lat: position.coords.latitude,
 					lon: position.coords.longitude
 				});
-				App.loc.reverseGeocode(position.coords.latitude, position.coords.longitude, function() {
-					success();
-				}, error);
+				// get the city from shared location
+				App.loc.reverseGeocode(position.coords.latitude, position.coords.longitude, succcess, error);
 
 			}, function() {
 				clearTimeout(App.loc.timerId);
@@ -114,83 +108,72 @@ App.loc = {
 	 * initilize location functions
 	 */
 	init: function() {
-		// retrieve the real loc from cookie. ignore googles location
-//		var lcookie = $.cookie('location') ? JSON.parse($.cookie('location')) : null;
-		var lcookie;
-		if (lcookie) {
-			App.loc.realLoc = lcookie;
+		// 1) set bounding to maxmind results if we have them
+		if (App.config.loc.lat && App.config.loc.lat) {
+			App.loc.bounding = App.config.loc;
+			App.loc.bounding.type = 'geoip';
+		}
 
-		} else if (App.config && App.config.user && App.config.user.location_lat) {
-			// set the realloc to the users position
-			App.loc.realLoc = {
+		// 2) retrieve and set location date from cookies
+		var cookieLocs = $.cookie('locsv2') ? JSON.parse($.cookie('locsv2')) : null;
+		var cookieBounding = $.cookie('boundingv2') ? JSON.parse($.cookie('boundingv2')) : null;
+		if (cookieLocs) {
+			App.loc.locs = cookieLocs;
+		}
+		if (cookieBounding) {
+			App.loc.bounding = cookieBounding;
+			App.loc.bounding.type = 'cookie';
+		}
+		
+		// 3) set location info by stored user
+		if (App.config && App.config.user && App.config.user.location_lat) {
+			App.loc.bounding = {
 				lat: App.config.user.location_lat,
 				lon: App.config.user.location_lon,
-				addressEntered: App.config.user.address
+				type: 'user'
 			};
 		}
 
+		// 4) get a more specific bounding location result from google
 		if (google && google.load) {
-			google.load('maps', '3', {callback: App.loc.preProcess, other_params: 'sensor=false'});
+			google.load('maps', '3', {callback: App.loc.googleCallback, other_params: 'sensor=false'});
 		}
 	},
 	
 	// callback for google location api
-	preProcess: function() {
-		console.debug('PREPROCESSING LOCATION DATA FROM GOOGLE API');
-	
-		var success = function() {
-			// browser detection success
-			$(document).trigger('location-detected');
-		};
+	googleCallback: function() {
+		console.debug('PROCESSING LOCATION DATA FROM GOOGLE API');
 		
+		// if we dont have the proper location data, just populate from bounding
 		var error = function() {
-			// Last try, reverseGeocode with bounding
-			if( App.loc.bounding ){
-				App.loc.realLoc = App.loc.bounding;
-				App.loc.reverseGeocode( App.loc.bounding.lat, App.loc.bounding.lon, function() {
-					success();
-				}, function(){ /* do nothing - detection error */ });	
+			if (App.loc.bounding.lat && App.loc.bounding.lon && !App.loc.bounding.city) {
+				App.loc.reverseGeocode(App.loc.bounding.lat, App.loc.bounding.lon, function(loc) {
+					App.loc.bounding.city = loc.city();
+					App.loc.bounding.region = '';
+				}, function(){});
 			}
 		};
 
-		var complete = function(lat, lon, city, region) {
-			if (lat) {
-				// we have a location! but its just a guess
-				App.loc.bounding = {
-					lat: lat,
-					lon: lon,
-					city: city,
-					region: region
-				};
-			} else {
-				// if we dont have a location, then lets ask for an address
-				 App.loc.bounding = null;
-			}
-
-			App.loc.loaded = true;
-			$(document).trigger('location-loaded');
-			
-			// if we dont have any real location, then wait for secondary location detection
-			if (!App.loc.realLoc) {
-				App.loc.getLocationByBrowser(success, error);
-			}
-		}
+		App.loc.loaded = true;
 
 		if (google.loader.ClientLocation) {
 			// we got a location back from google. use it
-			complete(
-				google.loader.ClientLocation.latitude,
-				google.loader.ClientLocation.longitude,
-				google.loader.ClientLocation.address.city,
-				google.loader.ClientLocation.address.country_code == 'US' && google.loader.ClientLocation.address.region ? google.loader.ClientLocation.address.region.toUpperCase() : google.loader.ClientLocation.address.country_code
-			);
-
-		} else if (App.config.loc.lat) {
-			// we didnt get a location from google. use maxmind instead
-			complete(App.config.loc.lat, App.config.loc.lon, App.config.loc.city, App.config.loc.region);
+			if (google.loader.ClientLocation.latitude && google.loader.ClientLocation.longitude) {
+				App.loc.bounding = {
+					lat: google.loader.ClientLocation.latitude,
+					lon: google.loader.ClientLocation.longitude,
+					city: google.loader.ClientLocation.address.city,
+					region: google.loader.ClientLocation.address.country_code == 'US' && google.loader.ClientLocation.address.region ? google.loader.ClientLocation.address.region.toUpperCase() : google.loader.ClientLocation.address.country_code,
+					type: 'googleip'
+				};
+			}
+		}
+		
+		// 5) if there is no previously used locations of any kind
+		if (!App.locs.length) {
+			App.loc.getLocationByBrowser(function(){}, error);
 		} else {
-			// we have no location
-			complete();
+			error();
 		}
 	},
 	

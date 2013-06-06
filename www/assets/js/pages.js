@@ -204,7 +204,11 @@ NGApp.controller('location', function ($scope, $http, $location) {
 });
 
 
-App.page.restaurant = function(id) {
+
+/**
+ * restaurant page
+ */
+NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
 
 	$('.config-icon').addClass('config-icon-mobile-hide');
 	$('.nav-back').addClass('nav-back-show');
@@ -214,8 +218,8 @@ App.page.restaurant = function(id) {
 	$('.content').removeClass('smaller-width');
 	$('.content').removeClass('short-meal-list');
 
-	App.cache('Restaurant', id, function() {
-		if (App.restaurant && App.restaurant.permalink != id) {
+	App.cache('Restaurant', $routeParams.id, function() {
+		if (App.restaurant && App.restaurant.permalink != $routeParams.id) {
 			App.cart.resetOrder();
 		}
 
@@ -234,33 +238,48 @@ App.page.restaurant = function(id) {
 			App.order['pay_type'] = lastPayCash;
 		}
 
-		App.showPage({
-			tracking: {
-				title: 'Restaurant page loaded',
-				data: {
-					restaurant: App.restaurant.name
-				}
-			},
-			page: 'restaurant',
-			title: App.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton',
-			data: {
-				restaurant: App.restaurant,
-				presets: App.config.user.presets,
-				lastOrderDelivery: lastOrderDelivery,
-				user: App.config.user,
-				community: community,
-				form: {
-					tip: App.order.tip,
-					name: App.config.user.name,
-					phone: App.phone.format(App.config.user.phone),
-					address: App.config.user.address,
-					notes: (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) ? App.config.user.presets[App.restaurant.id_restaurant].notes : '',
-					card: {
-						number: App.config.user.card,
-						month: App.config.user.card_exp_month,
-						year: App.config.user.card_exp_year
-					}
-				}
+
+//			title: App.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton',
+
+		$scope.$apply(function() {
+		
+			var date = new Date().getFullYear();
+			var years = [];
+			for (var x=date; x<=date+20; x++) {
+				years[years.length] = x;
+			}
+		
+			$scope.restaurant = App.restaurant;
+			$scope.presets = App.config.user.presets;
+			$scope.lastOrderDelivery = lastOrderDelivery;
+			$scope.user = App.config.user;
+			$scope.community = community;
+			$scope.AB = {
+				dollar: (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '',
+				changeablePrice: function(dish) {
+					return (App.config.ab && App.config.ab.changeablePrice == 'show' && dish.changeable_price) ? '+' : ''
+				},
+				restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
+			};
+
+			$scope.form = {
+				tip: App.order.tip,
+				name: App.config.user.name,
+				phone: App.phone.format(App.config.user.phone),
+				address: (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>'),
+				notes: (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) ? App.config.user.presets[App.restaurant.id_restaurant].notes : '',
+				card: {
+					number: App.config.user.card,
+					month: App.config.user.card_exp_month,
+					year: App.config.user.card_exp_year
+				},
+				months: [1,2,3,4,5,6,7,8,9,10,11,12],
+				years: years
+			};
+
+
+			$scope.cart = {
+				totalFixed: parseFloat(App.restaurant.delivery_min - App.cart.total()).toFixed(2)
 			}
 		});
 
@@ -387,8 +406,7 @@ App.page.restaurant = function(id) {
 			}, 300 );
 		}
 	});
-
-};
+});
 
 
 /**
