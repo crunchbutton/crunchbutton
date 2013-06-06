@@ -82,11 +82,13 @@
 					<br/>
 					<br/>
 					<hr/>
-					<?php if( $order->confirmed ) { ?>
-						<i class="icon-thumbs-up"></i> Confirmed!
-					<?php } else { ?>
-						<i class="icon-thumbs-down"></i> NOT confirmed.
-					<?php } ?>
+					<?php if( $order->restaurant()->confirmation || $order->restaurant->hasPhoneNotification() ){
+						if( $order->confirmed ) { 
+							echo '<i class="icon-thumbs-up"></i> Confirmed!';
+						} else {
+							echo '<i class="icon-thumbs-down"></i> NOT confirmed.';
+						}
+					} ?>
 					<br/>
 					<br/>
 					<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend notification</a>
