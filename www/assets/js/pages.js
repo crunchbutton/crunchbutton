@@ -128,7 +128,7 @@ NGApp.controller('restaurants', function ($scope, $http, $location) {
 
 		// get the list of restaurants
 		if (App.restaurants.list === false) {
-			var url = App.service + 'restaurants?lat=' + App.loc.pos().lat + '&lon=' + App.loc.pos().lon + '&range=' + ( App.loc.range || App.defaultRange );
+			var url = App.service + 'restaurants?lat=' + App.loc.pos().lat() + '&lon=' + App.loc.pos().lon() + '&range=' + ( App.loc.range || App.defaultRange );
 			App.restaurants.list = false;
 
 			$http.get(url).success(function(data) {
@@ -136,13 +136,13 @@ NGApp.controller('restaurants', function ($scope, $http, $location) {
 
 				// There is no restaurant near to the user. Go home and show the error.
 				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
-					error();
+					console.debug('THERE WAS A LOC ERROR?');
 
 				} else {
 					for (var x in data.restaurants) {
 						App.restaurants.list[App.restaurants.list.length] = new Restaurant(data.restaurants[x]);
 					};
-					success();
+					console.debug('THERE WAS A LOC SUCCESS!!');
 				}
 
 				displayRestaurants($scope);
@@ -184,7 +184,9 @@ NGApp.controller('location', function ($scope, $http, $location) {
 			$('.location-address').val('').attr('placeholder','Please enter your address here');
 		} else {
 			App.loc.addVerify(address, function() {
-				$location.path('/' + App.restaurants.permalink);
+				$scope.$apply(function() {
+					$location.path('/' + App.restaurants.permalink);
+				});
 			}, function() {
 				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
 			});
