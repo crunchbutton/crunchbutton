@@ -266,7 +266,7 @@ note-5
 				&nbsp;
 				<button type="submit" class="btn btn-blue admin-order-search" onclick="javascript:(function(){start_payment_popup(<?=$restaurant->id?>);})()"> Start Payment </button>
 				&nbsp;
-				<button type="submit" class="btn btn-blue admin-order-search" onclick="javascript:(function(){start_fax_popup(<?=$restaurant->id?>);})()"> Start Fax </button>
+				<button type="submit" class="btn btn-blue admin-order-search" onclick="javascript:(function(){start_fax_popup(<?=$restaurant->id?>, '<?=$restaurant->payment_method?>');})()"> Start Fax </button>
 			</div>
 		</div>
 	<? endforeach; ?>
