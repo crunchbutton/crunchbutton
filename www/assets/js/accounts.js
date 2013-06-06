@@ -3,8 +3,6 @@
  */
 App.signin.init = function() {
 
-	$('.wrapper').append(App.render('signin'));
-
 	$(document).on('touchclick', '.signin-facebook-button', function() {
 		App.signin.facebook.login();
 	});
@@ -60,12 +58,13 @@ App.signin.init = function() {
 	});
 
 	$(document).on('touchclick', '.signin-user', function() {
-		History.pushState({}, 'Your Account', '/orders');;
+		//History.pushState({}, 'Your Account', '/orders');;
 	});
-
+/*
 	History.Adapter.bind(window,'statechange',function() {
 		App.signin.checkUser();
 	});
+*/
 
 	App.signin.facebook.init();
 }
@@ -500,8 +499,6 @@ App.signup = {};
  * event binding
  */
 App.signup.init = function() {
-
-	$('.wrapper').append(App.render('signup'));
 
 	$(document).on('touchclick','.signup-add-password-button', function() {
 		App.signup.show(false);

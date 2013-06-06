@@ -1,13 +1,14 @@
 
 App.loc = {
-	aproxLoc: null,
-	realLoc: null,
+	bounding: null,
 	range: App.defaultRange,
 	loaded: false,
-	changeLocationAddressHasChanged: false,
 	locationNotServed: false,
 
-	// calculate the distance between two points
+
+	/**
+	 * calculate the distance between two points
+	 */
 	distance: function(params) {
 		try {
 			var R = 6371; // Radius of the earth in km
@@ -28,12 +29,47 @@ App.loc = {
 			});
 		}
 	},
-	
+
+
+	/**
+	 * get the closest
+	 */
+	getClosest: function(results, latLong) {
+
+		var from = {
+			lat: latLong.lat(),
+			lon: latLong.lng()
+		};
+
+		var distances = [];
+		var closest = -1;
+
+		for (i = 0; i < results.length; i++) {
+			var d = App.loc.distance({
+				to: {lat: results[i].geometry.location.lat(), lon: results[i].geometry.location.lng()},
+				from: from
+			});
+
+			distances[i] = d;
+			if (closest == -1 || d < distances[closest]) {
+				closest = i;
+			}
+		}
+		return results[closest];
+	},
+
+
+	/**
+	 * get the most recent position
+	 */
 	pos: function() {
 		return App.locs[0] || new Location;
 	},
-	
-	// bind for a single event only triggered once
+
+
+	/**
+	 * bind for a single event only triggered once
+	 */
 	bind: function(event, fn) {
 		$(document).unbind(event)
 		$(document).one(event, fn);
@@ -74,13 +110,16 @@ App.loc = {
 	},
 
 
-	// run in the begining
+	/**
+	 * initilize location functions
+	 */
 	init: function() {
 		// retrieve the real loc from cookie. ignore googles location
-		var lcookie = $.cookie('location') ? JSON.parse($.cookie('location')) : null;
+//		var lcookie = $.cookie('location') ? JSON.parse($.cookie('location')) : null;
+		var lcookie;
 		if (lcookie) {
 			App.loc.realLoc = lcookie;
-			
+
 		} else if (App.config && App.config.user && App.config.user.location_lat) {
 			// set the realloc to the users position
 			App.loc.realLoc = {
@@ -89,12 +128,15 @@ App.loc = {
 				addressEntered: App.config.user.address
 			};
 		}
-		google.load('maps', '3',  {callback: App.loc.preProcess, other_params: 'sensor=false'});
+
+		if (google && google.load) {
+			google.load('maps', '3', {callback: App.loc.preProcess, other_params: 'sensor=false'});
+		}
 	},
 	
 	// callback for google location api
 	preProcess: function() {
-		console.log('preprocessing')
+		console.debug('PREPROCESSING LOCATION DATA FROM GOOGLE API');
 	
 		var success = function() {
 			// browser detection success
@@ -102,10 +144,10 @@ App.loc = {
 		};
 		
 		var error = function() {
-			// Last try, reverseGeocode with aproxLoc
-			if( App.loc.aproxLoc ){
-				App.loc.realLoc = App.loc.aproxLoc;
-				App.loc.reverseGeocode( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon, function() {
+			// Last try, reverseGeocode with bounding
+			if( App.loc.bounding ){
+				App.loc.realLoc = App.loc.bounding;
+				App.loc.reverseGeocode( App.loc.bounding.lat, App.loc.bounding.lon, function() {
 					success();
 				}, function(){ /* do nothing - detection error */ });	
 			}
@@ -114,7 +156,7 @@ App.loc = {
 		var complete = function(lat, lon, city, region) {
 			if (lat) {
 				// we have a location! but its just a guess
-				App.loc.aproxLoc = {
+				App.loc.bounding = {
 					lat: lat,
 					lon: lon,
 					city: city,
@@ -122,7 +164,7 @@ App.loc = {
 				};
 			} else {
 				// if we dont have a location, then lets ask for an address
-				 App.loc.aproxLoc = null;
+				 App.loc.bounding = null;
 			}
 
 			App.loc.loaded = true;
@@ -152,105 +194,85 @@ App.loc = {
 		}
 	},
 	
-	// send out a geocode request
+
+	/**
+	 * geocode an address and perform callbacks
+	 */
+	geocode: function(address, success, error) {
+		App.loc.doGeocode(address, function(results) {
+
+			if (results.alias) {
+				var loc = new Location({
+					address: results.alias.address,
+					entered: address,
+					type: 'alias',
+					lat: results.alias.lat,
+					lon: results.alias.lon,
+					city: results.alias.city,
+					prep: results.alias.prep
+				});
+				
+			} else {
+
+				// if we have a bounding result, bind to it
+				if (App.loc.bounding) {
+					var latLong = new google.maps.LatLng(App.loc.bounding.lat, App.loc.bounding.lon);
+					var closest = App.loc.getClosest(results, latLong);
+
+				} else {
+					var closest = results[0];
+				}
+				
+				var loc = new Location({
+					results: results,
+					entered: address,
+					type: 'user',
+					lat: closest.geometry.location.lat(),
+					lon: closest.geometry.location.lng()
+				});
+			}
+
+			success(loc);
+
+		}, function() {
+			error();
+		});
+	},
+	
+
+	/**
+	 * process the geocode result
+	 */
 	doGeocode: function(address, success, error) {
 		address = $.trim(address);
 
-		// track the entered address to mixpanel
 		App.track('Location Entered', {
 			address: address
 		});
 
-		// there was an alias. just set it to that
 		var rsuccess = function(results) {
 			success(results);
 		};
 		
 		// there was no alias, do a real geocode
 		var rerror = function() {
-			// send the request out to google
-			var geocoder = new google.maps.Geocoder();
-			geocoder.geocode({address: address}, function(results, status) {
-				if (status == google.maps.GeocoderStatus.OK) {
-					success(results, status);
-				} else {
-					error(results, status);
-				}
-			});
-		};
-
-		// Check if the typed address has an alias
-		App.routeAlias(address, rsuccess, rerror);
-
-		// set the bounds of the address to our guessed location
-	},
-	
-	geocodeLocationPage: function(address, success, error) {
-		App.loc.doGeocodeLocationPage(address, function(results) {
-			if (results.alias) {
-				alert('alias')
-				App.loc.realLoc = {
-					addressAlias: results.alias.address,
-					lat: results.alias.lat,
-					lon: results.alias.lon,
-					prep: results.alias.prep,
-					city: results.alias.city
-				};
-				App.loc.setFormattedLocFromResult();
-			} else {
-
-				if( App.loc.aproxLoc ){
-					var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );	
-					// Get the closest address from that lat/lng
-					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
-					results[0] = theClosestAddress;
-				} else {
-					var theClosestAddress = results[0];
-				}
+			var params = {
+				address: address
+			};
+			// if we have a bounding result, process based on that
+			if (App.loc.bounding) {
+				var latLong = new google.maps.LatLng(App.loc.bounding.lat, App.loc.bounding.lon);
 				
-				App.loc.realLoc = {
-					addressEntered: App.loc.formatedAddress( theClosestAddress ),
-					lat: theClosestAddress.geometry.location.lat(),
-					lon: theClosestAddress.geometry.location.lng()
-				};
-				App.loc.changeLocationAddressHasChanged = true;
-
+				// Create a cicle bounding box
+				var circle = new google.maps.Circle({center: latLong, radius: App.boundingBoxMeters});
+				var bounds = circle.getBounds();
+				
+				params.bounds = bounds;
 			}
-			success(new Location({
-				results: results
-			}));
-
-		}, function() {
-			App.loc.realLoc = null;
-			error();
-		});
-	},
-
-
-
-	doGeocodeLocationPage: function(address, success, error) {
-		address = $.trim(address);
-
-		App.track('Location Entered', {
-			address: address
-		});
-
-		var rsuccess = function(results) {
-			success(results);
-		};
-		
-		// there was no alias, do a real geocode
-		var rerror = function() {
-
-			var latLong = new google.maps.LatLng( App.loc.aproxLoc.lat, App.loc.aproxLoc.lon );	
-
-			// Create a cicle bounding box
-			var circle = new google.maps.Circle( { center: latLong, radius: App.boundingBoxMeters } ); 
-			var bounds = circle.getBounds();
 
 			// Send the request out to google
 			var geocoder = new google.maps.Geocoder();
-			geocoder.geocode({address: address, bounds : bounds }, function(results, status) {
+			geocoder.geocode(params, function(results, status) {
 				if (status == google.maps.GeocoderStatus.OK) {
 					success(results, status);
 				} else {
@@ -261,39 +283,12 @@ App.loc = {
 
 		// Check if the typed address has an alias
 		App.routeAlias(address, rsuccess, rerror);
-
-		// set the bounds of the address to our guessed location
-	},
-
-	// perform a geocode and store the results
-	geocode: function(address, success, error) {
-		App.loc.doGeocode(address, function(results) {
-			if (results.alias) {
-				App.loc.realLoc = {
-					addressAlias: results.alias.address,
-					lat: results.alias.lat,
-					lon: results.alias.lon,
-					prep: results.alias.prep,
-					city: results.alias.city
-				};
-				App.loc.setFormattedLocFromResult();
-			} else {
-				App.loc.realLoc = {
-					addressEntered: address,
-					lat: results[0].geometry.location.lat(),
-					lon: results[0].geometry.location.lng()
-				};
-				App.loc.setFormattedLocFromResult(results);
-			}
-			success();
-
-		}, function() {
-			App.loc.realLoc = null;
-			error();
-		});
 	},
 
 
+	/**
+	 * perform a reverse geocode from lat/lon
+	 */
 	reverseGeocode: function(lat, lon, success, error) {
 		App.track('Location Reverse Geocode', {
 			lat: lat,
@@ -304,7 +299,6 @@ App.loc = {
 		var latlng = new google.maps.LatLng(lat, lon);
 
 		geocoder.geocode({'latLng': latlng}, function(results, status) {
-
 			if (status == google.maps.GeocoderStatus.OK) {
 				if (results[1]) {
 					success(new Location({
@@ -319,69 +313,6 @@ App.loc = {
 		});
 	},
 
-	doGeocodeWithBound: function(address, latLong, success, error) {
-
-		address = $.trim(address);
-
-		// track the entered address to mixpanel
-		App.track('Location Entered', {
-			address: address
-		});
-
-		// Create a cicle bounding box
-		var circle = new google.maps.Circle( { center: latLong, radius: App.boundingBoxMeters } ); 
-		var bounds = circle.getBounds();
-
-		// Send the request out to google
-		var geocoder = new google.maps.Geocoder();
-		geocoder.geocode({address: address, bounds : bounds }, function(results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				success(results, status);
-			} else {
-				error(results, status);
-			}
-		});
-	},
-
-	theClosestAddress : function( results, latLong ) {
-		var lat = latLong.lat();
-		var lng = latLong.lng();
-		var R = 6371;
-		var distances = [];
-		var closest = -1;
-		for( i=0;i<results.length; i++ ) {
-				var alat = results[i].geometry.location.lat();
-				var alng = results[i].geometry.location.lng();
-				var dLat  = _toRad( alat - lat );
-				var dLong = _toRad( alng - lng );
-				var a = Math.sin( dLat / 2 ) * Math.sin( dLat / 2 ) +
-						Math.cos( _toRad( lat ) ) * Math.cos( _toRad( lat ) ) * Math.sin( dLong/2 ) * Math.sin( dLong/2 );
-				var c = 2 * Math.atan2( Math.sqrt( a ), Math.sqrt( 1 - a ) );
-				var d = R * c;
-				distances[ i ] = d;
-				if ( closest == -1 || d < distances[ closest ] ) {
-						closest = i;
-				}
-		}
-		return results[ closest ];
-	},
-
-	formatedAddress : function( location ){
-		// Remove the country name, it is useless here
-		return location.formatted_address.replace( ', USA', '' );
-	},
-
-	// Return the zip code of a location
-	zipCode : function( location ){
-		var address_components = location.address_components;
-		var zipCode = null;
-		$.each( address_components, function(){
-			if( this.types[0] == 'postal_code' ){
-				zipCode = this.short_name;
-			}
-		} );
-		return zipCode;
-	},
 
 	// This method validate the acceptables types of address/location
 	validateAddressType : function( addressLocation ){
@@ -408,23 +339,26 @@ App.loc = {
 		return false;
 	},
 
-	km2Miles : function( km ){
+
+	/**
+	 * convert killometers to miles
+	 */
+	km2Miles : function(km) {
 		return km * 0.621371;
 	},
-	Miles2Km : function( miles ){
+
+
+	/**
+	 * convert miles to killometers
+	 */
+	Miles2Km : function(miles){
 		return miles * 1.60934;
 	},
-	log: function(){
-		$.ajax({
-		type: 'POST',
-		dataType: 'json',
-		data: App.loc.pos(),
-		url:  App.service + 'loc_log/new',
-		success: function( json ) {}
-		});	
-	},
-	
-	// a location to the loc stack, and verify it
+
+
+	/**
+	 * verify a location, and add to the location stack if nessicary
+	 */
 	addVerify: function() {
 		if (arguments[0] && typeof arguments[1] != 'function') {
 			// its lat/lon
@@ -439,10 +373,14 @@ App.loc = {
 			for (var x in App.locs) {
 				if (App.locs[x].entered == address && App.locs[x].verified) {
 					success(App.locs[x]);
+					return;
 				}
 			}
 
-			App.loc.geocodeLocationPage(address, success, error);
+			App.loc.geocode(address, function(loc) {
+				App.locs.push(loc);
+				success();
+			}, error);
 		}
 		//App.loc.geocode(address, success, error);
 

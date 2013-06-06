@@ -1,6 +1,7 @@
 if (typeof(console) == 'undefined') {
 	console = {
-		log: function() { return null; }
+		log: function() { return null; },
+		debug: function() { return null; }
 	};
 }
 
@@ -10,22 +11,18 @@ if (typeof(Number.prototype.toRad) === 'undefined') {
 	}
 }
 
-// Sometimes jQuery doesn't understand the Number.toRad()
-function _toRad(Value) {
-    /** Converts numeric degrees to radians */
-    return Value * Math.PI / 180;
-}
-
-var History = window.History;
-
+var _toRad = function() {
+	var Value = arguments.shift();
+    return Number.prototype.toRad.call(Value, args);
+};
 
 if (!typeof(App) == 'undefined') {
 	App = {};
 }
 
-App.capitalize = function( word ){
+App.capitalize = function(word) {
 	return word.charAt(0).toUpperCase() + word.slice(1);
-}
+};
 
 App.request = function(url, complete) {
 	$.getJSON(url,function(json) {
@@ -33,6 +30,7 @@ App.request = function(url, complete) {
 	});
 };
 
+// @todo replace with lazyorm.js
 App.cache = function(type, id) {
 	var finalid, args = arguments, complete, partComplete;
 
@@ -70,8 +68,6 @@ App.cache = function(type, id) {
 
 /**
  * Rounds a float number rounded up with 2 digits.
- *
- * @return float
  */
 App.ceil = function(num) {
 	num = num*100;

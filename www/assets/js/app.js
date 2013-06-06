@@ -94,20 +94,6 @@ App.routeAlias = function(id, success, error) {
 	error();
 };
 
-App.loadHome = function(force) {
-	$('input').blur();
-
-	App.currentPage = 'home';
-	History.pushState({}, 'Crunchbutton', '/');
-	
-	App.page.home(force);
-
-};
-
-App.render = function(template, data) {
-	var compiled = _.template($('.template-' + template).html());
-	return compiled(data);
-};
 
 App.showPage = function(params) {
 
@@ -134,16 +120,23 @@ App.showPage = function(params) {
 
 
 App.NGinit = function() {
-
-
 	$('body').attr('ng-controller', 'AppController');
 	angular.bootstrap(document,['NGApp']);
 	App.loc.init();
+
+	App.signin.init();
+	App.signup.init();
+	App.suggestion.init();
+	App.recommend.init();
+	App.credit.tooltip.init();
+
+	if (!App.isMobile()) {
+		App.support.init();
+	}
 	
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
-
 	
 	setTimeout( function(){ App.signin.checkUser(); }, 300 );
 };
@@ -162,12 +155,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'location',
 			templateUrl: 'view/location.html'
 		})
-		.when('/food-delivery', {
+		.when('/' + App.restaurants.permalink, {
 			action: 'restaurants',
 			controller: 'restaurants',
 			templateUrl: 'view/restaurants.html'
 		})
-		.when('/food-delivery/:id', {
+		.when('/' + App.restaurants.permalink + '/:id', {
 			action: 'user.view',
 			controller: 'user',
 			templateUrl: 'view/user.html'
@@ -235,19 +228,16 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams) {
 	$scope.$on(
 		'$routeChangeSuccess',
 		function ($currentRoute, $previousRoute) {
-			console.log('route change' , $currentRoute)
+			console.debug($currentRoute)
 			// Update the rendering.
 			render();
 
 			if (App.isChromeForIOS()){
 				App.message.chrome();
 			}
-
 		}
 	);
-
 });
-
 
 
 /**
@@ -315,119 +305,24 @@ App.identify = function() {
 
 
 /**
- * generate ab formulas
+ * controls the busy state of the app
  */
-App.AB = {
-	options: {
-		tagline: [
-			{
-				name: 'tagline-for-free',
-				tagline: 'Order the top food %s. For free. <br /> After you order, everything is saved for future 1 click ordering. <br /><strong>Choose a restaurant:</strong>'
-			},
-			{
-				name: 'tagline-no-free',
-				tagline: 'Order the top food %s. <br /> After you order, everything is saved for future 1 click ordering. <br /><strong>Choose a restaurant:</strong>'		
-			}
-		],
-		slogan: [
-			{
-				name: 'slogan-push-food',
-				slogan: 'Push a button. Get Food.'
-			}
-		],
-		restaurantPage: [
-			{
-				name: 'restaurant-page-noimage'
-			},
-			{
-				name: 'restaurant-page-image',
-				disabled: true
-			}
-		],
-		dollarSign: [
-			{
-				name : 'show'
-			},
-			{
-				name : 'hide'
-			}
-		],
-		changeablePrice: [
-			{
-				name : 'show'
-			},
-			{
-				name : 'hide'
-			}
-		]
-	},
-	init: function() {
-		if (!App.config.ab) {
-			// we dont have ab variables. generate them
-			App.AB.create(true);
-		}
-		App.AB.load();
-	},
-	create: function(clear) {
-		if (clear) {
-			App.config.ab = {};
-		}
-		
-		_.each(App.AB.options, function(option, key) {
-			if (App.config.ab[key]) {
-				return;
-			}
-			var opts = _.filter(App.AB.options[key], function(o) { return o.disabled ? false : true; });
-			var opt = opts[Math.floor(Math.random()*opts.length)];
-			App.config.ab[key] = opt.name
-			App.trackProperty('AB-' + key, opt.name);
-		});
-		
-		App.AB.save();
-		console.log(App.config.ab);
-		
-	},
-	load: function() {
-		App.slogan = _.findWhere(App.AB.options.slogan, {name: App.config.ab.slogan});
-		App.tagline = _.findWhere(App.AB.options.tagline, {name: App.config.ab.tagline});
-
-		if (!App.slogan || !App.tagline) {
-			App.AB.create(true);
-			App.AB.load(true);
-		}
-	},
-	save: function() {
-		$.ajax({
-			url: App.service + 'config',
-			data: {ab: App.config.ab},
-			dataType: 'json',
-			type: 'POST',
-			complete: function(json) {
-
-			}
-		});
-	}
-};
-
 App.busy = {
 	isBusy: function() {
 		return $('.app-busy').length ? true : false;
 	},
 	makeBusy: function() {
-		//el.addClass('button-bottom-disabled');
-		var busy = $('<div class="app-busy"></div>')
-				.append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>'))
-
-
-		$('body').append(busy);
+		$('body').append($('<div class="app-busy"></div>').append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>')));
 	},
 	unBusy: function() {
 		$('.app-busy').remove();
-		//el.removeClass('button-bottom-disabled');
 	}
 };
 
 
+/**
+ * stuff for testing
+ */
 App.test = {
 	card: function() {
 		$('[name="pay-card-number"]').val('4242424242424242');
@@ -555,8 +450,6 @@ App.trigger = {
 /**
  * global event binding and init
  */
-
-
 $(function() {
 
 	App.test.init();
@@ -574,7 +467,7 @@ $(function() {
 	});
 
 	$(document).on('submit', '.button-letseat-formform', function() {
-		$('.button-letseat-form').trigger('touchclick');
+		$('.button-letseat-form').trigger('touchup');
 		return false;
 	});
 
@@ -843,14 +736,13 @@ $(function() {
 	});
 
 	// Listener to verify if the user typed a gift card at the notes field
-	$(document).on('blur', '[name=notes]', function(){
+	$(document).on('blur', '[name=notes]', function() {
 		App.giftcard.notesField.listener();
-	} );
-	
+	});
 
 	$(document).on('change, keyup', '[name="pay-card-number"]', function() {
 		App.creditCard.changeIcons( $(this).val() );
-	} );
+	});
 
 	$(document).on('keyup', '[name="pay-phone"]', function() {
 		$(this).val( App.phone.format($(this).val()) );
@@ -955,12 +847,8 @@ $(function() {
 			App.page.foodDelivery( true );
 		});
 	});
-	App.signin.init();
-	App.signup.init();
-	App.suggestion.init();
-	App.recommend.init();
-	App.loc.init();
-	App.credit.tooltip.init();
+
+
 
 	$( '.ui-dialog-titlebar-close' ).tap( function(){
 		try{
