@@ -77,15 +77,13 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					break;
 				case 'image':
 					if ($_FILES['image']) {
-						$ext = explode('.',$_FILES['image']['name']);
-						$file = '/home/i.crunchbutton/www/image/'.$restaurant->permalink.'.'.$ext[1];
-
-						if (copy($_FILES['image']['tmp_name'],$file)) {
-							$restaurant->image = $restaurant->permalink.'.'.$ext[1];
+						$ext = pathinfo( $_FILES['image']['name'], PATHINFO_EXTENSION );
+						$file = '/home/i.crunchbutton/www/image/'.$restaurant->permalink.'.'.$ext;
+						if ( copy( $_FILES['image']['tmp_name'],$file ) ) {
+							$restaurant->image = $restaurant->permalink.'.'.$ext;
 							$restaurant->save();
 							chmod($file,0777);
 						}
-
 					}
 					c::view()->display('restaurants/image');
 					break;
