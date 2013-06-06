@@ -11,15 +11,6 @@ if (typeof(Number.prototype.toRad) === 'undefined') {
 	}
 }
 
-
-var History = window.History;
-
-History.Adapter.bind(window,'statechange',function() {
-	var State = History.getState();
-	History.log(State.data, State.title, State.url);
-});
-
-
 var _toRad = function() {
 	var Value = arguments.shift();
     return Number.prototype.toRad.call(Value, args);

@@ -7,7 +7,7 @@
 <div class="content-padder">
 	<div class="meal-items {{mealItemClass}}">
 
-		<div ng-tap="restaurant.display()" ng-class="{'meal-item-closed': restaurant._open==false}" class="meal-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants">
+		<div ng-click="display()" ng-class="{'meal-item-closed': restaurant._open==false}" class="meal-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants">
 			<div class="meal-item-content">
 				<div class="meal-pic" style="background: url({{restaurant.img64}});"></div>
 				<h2 class="meal-restaurant">{{restaurant.name}}</h2>
