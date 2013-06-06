@@ -46,8 +46,7 @@ var App = {
 	crunchSoundAlreadyPlayed : false,
 	useCompleteAddress : false, /* if true it means the address field will be fill with the address found by google api */
 	completeAddressWithZipCode : true, 
-	boundingBoxMeters : 8000,
-	useRestaurantBoundingBox : false
+	boundingBoxMeters : 8000
 };
 
 App.alert = function(txt) {
@@ -211,7 +210,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope) {
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location) {
 
 	render = function() {
 		var renderAction = $route.current.action;
@@ -220,14 +219,20 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		$scope.renderAction = renderAction;
 		$scope.renderPath = renderPath;
 	};
+	
+	$rootScope.link = function(link) {
+		$location.path(link || '/');
+	};
+	
+	$rootScope.back = function() {
+		history.back();
+	};
 
 	$scope.$on(
 		'$routeChangeSuccess',
 		function ($currentRoute, $previousRoute) {
 			console.debug('ROUTE >',$route.current.action, $rootScope)
-			$rootScope.blah = function() {
-				alert('asd');
-			};
+
 			// Update the rendering.
 			render();
 
@@ -461,10 +466,6 @@ $(function() {
 		App.signin.facebook.login();
 	});
 
-	$(document).on('touchclick', '.change-location-inline', function() {
-		App.loadHome(true);
-	});
-
 	$(document).on('submit', '.button-letseat-formform', function() {
 		$('.button-letseat-form').trigger('touchup');
 		return false;
@@ -537,23 +538,6 @@ $(function() {
 	}, '.location-detect');
 	
 
-	$('.link-help').tap(function(e) {
-		e.stopPropagation();
-		e.preventDefault();
-		History.pushState({}, 'Crunchbutton - About', '/help');
-	});
-
-	$('.link-legal').tap(function(e) {
-		e.stopPropagation();
-		e.preventDefault();
-		history.pushState({}, 'Crunchbutton - Legal', '/legal');
-	});
-
-	$('.link-orders').tap(function(e) {
-		e.stopPropagation();
-		e.preventDefault();
-		history.pushState({}, 'Crunchbutton - Orders', '/orders');
-	});
 
 	if (App.isMobile()) {
 
@@ -701,25 +685,6 @@ $(function() {
 		App.cart.updateTotal();
 	});
 
-	$('.nav-back').tap(function() {
-		// App.controlMobileIcons.showPacman( 'left', function(){ $('.nav-back').removeClass('nav-back-show'); } );
-		$('.nav-back').removeClass('nav-back-show');
-		if( App.loc.locationNotServed ){
-			App.loc.locationNotServed = false;
-			App.loadHome(true);
-		} else {
-			History.back();	
-		}
-	});
-
-	$('.link-home').tap(function() {
-		if( App.restaurants.list && App.restaurants.list.length > 0 ){
-			App.page.foodDelivery();
-		} else {
-			App.loadHome(true);
-		}
-	});
-
 	$(document).on('change', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
 		if( !App.order.cardChanged ){
 			var self = $( this );
@@ -799,16 +764,6 @@ $(function() {
 	$(document).on('change', '[name="pay-address"]', function() {
 		clearTimeout(App.checkForDistance);
 		App.checkForDistance = setTimeout(checkForDistance, 1000);
-	});
-	
-	$(document).on('touchclick', '.config-icon', function() {
-		if (App.isNarrowScreen() && $(this).hasClass('config-icon-back-home')) {
-			App.controlMobileIcons.backHome();
-		} else {
-			var pacmanSide = (App.currentPage == 'restaurants') ? 'right' : 'left';
-			App.controlMobileIcons.showPacman( pacmanSide, function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
-			App.loadHome(true);
-		}
 	});
 
 	$(document).on('change', '[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]', function() {

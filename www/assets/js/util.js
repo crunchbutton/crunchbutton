@@ -205,6 +205,9 @@ if (App.isMobile()) {
 				element.addClass('active');
 			});
 			element.bind('mouseup', function(e) {
+				console.log(e)
+				e.preventDefault();
+				e.stopPropagation();
 				element.removeClass('active');
 				scope.$apply(attrs['ngTap'], element);
 			});
