@@ -89,8 +89,8 @@
 			<input type=text class='fax_number' style='width: 400px;' />
 			<br>
 			<select name=payment_via style="width:400px;">
-				<option selected>Payment is en route via check.</option>
-				<option>Payment has been deposited into your bank account.</option>
+				<option value=check>Payment is en route via check.</option>
+				<option value=deposit>Payment has been deposited into your bank account.</option>
 				<option>No payment at this time.</option>
 			</select>
 			<br>
@@ -352,7 +352,7 @@ function send_summary_email(id_restaurant, email_address) {
 	window.open('mailto:'+email_address+'?subject=Crunchbutton Orders Summary');
 }
 
-function start_fax_popup(id_restaurant) {
+function start_fax_popup(id_restaurant, payment_method) {
 	$('#fax_popup').dialog({
 		modal: true,
 		show : { effect : 'drop', duration : 100, direction : 'up', },
@@ -370,13 +370,17 @@ function start_fax_popup(id_restaurant) {
 	$('#fax_popup .content .fax_number').val(restaurant_container.attr('data_fax_number'));
 	$('#fax_popup .content .fax_note').val('Crunchbutton Orders');
 
+	$('#fax_popup select[name=payment_via]').val(payment_method);
+
 	fax_body = restaurant_container.clone();
 	fax_body.find('.box-toolbar, .last_payment, .remove_row, .button_row, .summary_email').remove();
 	$('#fax_popup .fax_body').html('').append(fax_body);
 
 	update_footer = function() {
-		$('#fax_popup .fax_foot_payment_note').html($('#fax_popup select[name=payment_via]').val());
-		$('#fax_popup .fax_foot_generic_note').html($('#fax_popup .fax_note').val());
+		$('#fax_popup .fax_foot_payment_note').html($('#fax_popup select[name=payment_via] option:selected').text());
+		$('#fax_popup .fax_foot_generic_note').html(
+				$('#fax_popup .fax_note').val().replace(/\n/g,'<br/>')
+		);
 	};
 	update_footer();
 	$('#fax_popup .fax_note, select[name=payment_via]').off('change').on('change', update_footer);
