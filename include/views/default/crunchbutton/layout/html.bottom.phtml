@@ -15,8 +15,9 @@ if (App){
 		$e = ' short-meal-list';
 	}
 ?>
-<body>
+<body><? /* data-ng-controller="AppController" */?>
 	<div class="wrapper">
+	
 		<div class="nav" data-role="header" data-position="fixed">
 			<div class="content<?=$e?>">
 				<div class="pacman-loading pacman-left"></div>
@@ -43,7 +44,7 @@ if (App){
 			<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
 
 			<div class="footer-content">
-				<a href="/help" class="link-help">Help</a>
+				<a href="javascript:;" ng-click="alert()">Help</a>
 				<a href="/legal" class="link-legal">Legal</a>
 				<a href="javascript:App.page.orders();" class="link-orders"<?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
 				<? if (c::env() == 'beta' || c::env() == 'local') : ?>

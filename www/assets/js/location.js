@@ -20,23 +20,33 @@ var Location = function(params) {
 		if (!results) {
 			return;
 		}
+
+
 		switch (results[0].types[0]) {
 			default:
 			case 'administrative_area_level_1':
 				self._properties.city = results[0].address_components[0].long_name;
+				self._properties.detail = 1;
 				break;
 			case 'locality':
 				self._properties.city = results[0].address_components[0].long_name;
 				self._properties.region = results[0].address_components[2].short_name;
+				self._properties.detail = 2;
 				break;
 			case 'street_address':
 				self._properties.city = results[0].address_components[2].long_name;
 				self._properties.region = results[0].address_components[4].short_name;
+				self._properties.detail = 5;
 				break;
 			case 'postal_code':
+				self._properties.city = results[0].address_components[1].long_name;
+				self._properties.region = results[0].address_components[3].short_name;
+				self._properties.detail = 3;
+				break;
 			case 'route':
 				self._properties.city = results[0].address_components[1].long_name;
 				self._properties.region = results[0].address_components[3].short_name;
+				self._properties.detail = 4;
 				break;
 		}
 
@@ -125,7 +135,7 @@ var Location = function(params) {
 				break;
 
 			case 'order':
-				return (self.lat() || self.lon()) && self.verified() ? true : false;
+				return (self.lat() || self.lon()) && self.verified() && self.detail() >= 5 ? true : false;
 				break;
 
 			default:
@@ -142,6 +152,11 @@ var Location = function(params) {
 	// return the type of location
 	self.type = function() {
 		return self._properties.type;
+	};
+	
+	// return the level of detail
+	self.detail = function() {
+		return self._properties.detail;
 	};
 	
 

@@ -73,13 +73,6 @@ App.suggestion.send = function(){
 	}
 }
 
-App.suggestion.link = function(){
-	return '<div class="suggestion-link-container">' +
-						'<div class="suggestion-link-title">Really want something else?</div>' +
-						'<a href="javascript:;" class="suggestion-link">Suggest other food</a>' +
-					'</div>';
-}
-
 App.suggestion.message = function( msg ){
 	/* Hides the form and shows the message box */
 	$( '.suggestion-form' ).hide();
@@ -108,15 +101,3 @@ App.suggestion.show = function(){
 	});
 }
 
-App.suggestion.tooltipContainer = function( device ){
-	var help = 'Crunchbutton curates menus. We\'ve curated just the top food here. ' +
-											'If you really want something else, suggest it below.'
-
-	return '<span class="tooltip-help-' + device + '-container">' + 
-											( device == 'mobile' ? '<span class="tooltip-help-mobile-touchable">' : '' ) + 
-												'<span class="tooltip-help tooltip-help-' + device + '"><span>?</span>' + 
-											( device == 'mobile' ? '</span>' : '' ) + '</span>' +
-											'<div class="tooltip-help-content tooltip-help-content-' + device + '">' +
-												help +
-											'</div></span>';
-}
