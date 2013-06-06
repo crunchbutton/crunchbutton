@@ -94,30 +94,6 @@ App.routeAlias = function(id, success, error) {
 };
 
 
-App.showPage = function(params) {
-
-	// Hides the pacman
-	App.controlMobileIcons.hidePacman();
-
-	// Hides the gift card message
-	App.credit.hide();
-
-	// switch here for AB testing
-	App.currentPage = params.page;
-	if (params.title) {
-		document.title = params.title;
-	}
-
-	// #1227 - on mobile view switch change location and profile buttons
-	App.controlMobileIcons.process( params.page );
-
-	// track different AB pages
-	if (params.tracking) {
-		App.track(params.tracking.title, params.tracking.data);
-	}
-};
-
-
 App.NGinit = function() {
 	$('body').attr('ng-controller', 'AppController');
 	angular.bootstrap(document,['NGApp']);
@@ -212,14 +188,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location) {
 
-	render = function() {
-		var renderAction = $route.current.action;
-		var renderPath = renderAction.split('.');
-
-		$scope.renderAction = renderAction;
-		$scope.renderPath = renderPath;
-	};
-	
 	$rootScope.link = function(link) {
 		$location.path(link || '/');
 	};
@@ -231,27 +199,55 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	$scope.$on(
 		'$routeChangeSuccess',
 		function ($currentRoute, $previousRoute) {
-			console.debug('ROUTE >',$route.current.action, $rootScope)
+		
+			var renderAction = $route.current.action;
+			var renderPath = renderAction.split('.');
+	
+			$scope.renderAction = renderAction;
+			$scope.renderPath = renderPath;
 
-			// Update the rendering.
-			render();
+			console.debug('ROUTE >',$route.current.action, renderAction);
 
 			if (App.isChromeForIOS()){
 				App.message.chrome();
 			}
+			
+			setTimeout(function() {
+				scrollTo(0, 1);
+			}, 80);
+
+			/*
+			if (!App.isNarrowScreen()) {
+				return false;
+			}
+
+			$( '.sign-in-icon' ).removeClass( 'config-icon-mobile-hide' );
+			$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
+			switch (renderAction) {
+				case 'restaurant':
+				case 'order':
+					$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+					break;
+
+				case 'home':
+					$( '.config-icon' ).addClass( 'config-icon-back-home' );
+					break;
+
+				case 'orders':
+					$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
+					$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+					break;
+
+				case 'restaurants':
+					$( '.sign-in-icon' ).addClass( 'left' );
+					$( '.config-icon' ).addClass( 'right' );
+					break;
+			}
+			*/
+
 		}
 	);
 });
-
-
-/**
- * Refresh the pages layout for a blank page
- */
-App.refreshLayout = function() {
-	setTimeout(function() {
-		scrollTo(0, 1);
-	}, 80);
-};
 
 
 /**
@@ -874,64 +870,4 @@ App.message.chrome = function( ){
 		'</p>';
 	App.message.show(title, message);
 }
-
-// Issue #1227
-App.controlMobileIcons = {};
-App.controlMobileIcons.process = function( page ){
-
-	if( !App.isNarrowScreen() ){
-		return false;
-	}
-
-	App.controlMobileIcons.normalize();
-
-	App.loc.locationNotServed = false;
-	$( '.sign-in-icon' ).removeClass( 'config-icon-mobile-hide' );
-	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
-	switch( page ){
-		case 'restaurant':
-		case 'order':
-			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-			break;
-		case 'home':
-			$( '.config-icon' ).addClass( 'config-icon-back-home' );
-			break;
-		case 'orders':
-			$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
-			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-			break;
-		case 'restaurants':
-			$( '.sign-in-icon' ).addClass( 'left' );
-			$( '.config-icon' ).addClass( 'right' );
-			break;
-	}
-}
-
-App.controlMobileIcons.backHome = function(){
-	if( App.loc.locationNotServed ){
-		App.page.home( true );
-	} else {
-		if( App.restaurants.list && App.restaurants.list.length > 0 ){
-			App.page.foodDelivery();
-		} else {
-			History.pushState( {}, 'Crunchbutton', '/bycity' );
-		}	
-	}
-}
-
-App.controlMobileIcons.normalize = function(){
-	$( '.sign-in-icon' ).removeClass( 'left' );
-	$( '.config-icon' ).removeClass( 'right' );
-	$( '.config-icon' ).removeClass( 'config-icon-back-home' );
-}
-
-App.controlMobileIcons.showPacman = function( side, call ){
-	$( '.pacman-' + side ).addClass( 'pacman-show' );
-	if( call ){ call(); }
-}
-
-App.controlMobileIcons.hidePacman = function(){
-	$( '.pacman-loading' ).removeClass( 'pacman-show' );
-}
-
 
