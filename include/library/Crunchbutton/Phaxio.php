@@ -38,5 +38,36 @@ class Crunchbutton_Phaxio {
 
 		$this->response = $return;
 	}
+
+	public function fax_html($fax_number, $html_string) {
+		$env = c::env() == 'live' ? 'live' : 'dev';
+		$html_string = str_replace('"','\"',$html_string);
+		$html_string = str_replace('$','\$',$html_string);
+		$cmd = 'curl '
+			.'https://api.phaxio.com/v1/send '
+			.'-F "to='.$fax_number.'" '
+			.'-F "string_data= '.$html_string.'" '
+			.'-F "string_data_type=html" '
+			.'-F "api_key='.c::config()->phaxio->{$env}->key.'" '
+			.'-F "api_secret='.c::config()->phaxio->{$env}->secret.'"';
+
+		Log::debug([
+			'phaxio cmd' => $cmd,
+			'action' => 'sending fax',
+			'type' => 'notification'
+		]);
+
+		exec($cmd, $return);
+
+		$return = json_decode(trim(join('',$return)));
+	
+		if ($return) {
+			foreach ($return as $key => $value) {
+				$this->{$key} = $value;
+			}
+		}
+
+		return $return;
+	}
 }
 

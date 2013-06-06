@@ -1,0 +1,417 @@
+<?
+	$this->title = 'Payments';
+?>
+
+<div class="admin-content container-fluid padded">
+	<div class="">
+		<span class="x" style='display:inline-block; width:100px;'>Date Range</span>
+		<?
+			$date = new DateTime('now');
+			$start = $date->format('m/d/Y');
+			$date->modify('7 days ago');
+			$end = $date->format('m/d/Y');
+		?>
+		<span class="content-sub">
+			<input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>" autofocus>
+		</span>
+
+		<br>
+
+		<span class="x" style='display:inline-block; width:100px;'>Pay Type</span>
+		<span class="content-sub">
+			<select name="payment_method">
+				<option value=''>All</option>
+				<option value='check'>Check</option>
+				<option value='deposit'>Deposit</option>
+			</select>
+		</span>
+
+		<br>
+
+		<span class="x" style='display:inline-block; width:100px;'>Sort by</span>
+		<span class="content-sub">
+			<select name="order_by">
+				<option value='last_payment'>Last Payment</option>
+				<option value='alphabetical'>Alphabetical</option>
+			</select>
+		</span>
+
+
+
+	</div>
+	<button id="payments_begin" type="submit" class="btn btn-blue admin-order-search"> Begin </button>
+
+	<hr>
+
+	<div id='restaurants_container'>
+	</div>
+
+	<div id='hungry_modal' style='border:1px solid gray; padding:15px; background:white; display:none;'>
+		<h5></h5>
+		<hr>
+		<div class='content'></div>
+		<hr>
+		<button id="hungry_hell_yeah" type="submit" class="btn btn-blue admin-order-search" > Hell yeah!! </button>
+		&nbsp;
+		<button id="hungry_not_now" type="submit" class="btn btn-blue admin-order-search" > Not now, but getting there </button>
+	</div>
+
+	<div id='add_adjustment_popup' class='' style='border:1px solid gray; padding:15px; background:white; display:none; width:500px;'>
+		<h5>Add Adjustment</h5>
+		<hr>
+		<input class='adjustment_description' placeholder='Description' type='text' style='' />
+		&nbsp;
+		<input class='adjustment_amount' placeholder='Value ($)' pattern='-[\d\.]+' type='number' step='0.01' style='width:80px;' />
+		<hr>
+		<button id="adjustment_add" type="submit" class="btn btn-blue admin-order-search" > Add </button>
+		&nbsp;
+		<button id="adjustment_do_not_add" type="submit" class="btn btn-blue admin-order-search" onclick='$("#add_adjustment_popup").dialog("close");'> Do Not Add </button>
+	</div>
+
+	<div id='start_payment_popup' class='' style='border:1px solid gray; padding:15px; background:white; display:none; width:500px;'>
+		<h5>Make Payment</h5>
+		<hr>
+		<div class='content'></div>
+		<hr>
+		<button id="go_to_payment_page" type="submit" class="btn btn-blue admin-order-search" > Go To Payment Page </button>
+		&nbsp;
+		<button id="close_payment_popup" type="submit" class="btn btn-blue admin-order-search" > Close </button>
+		&nbsp;
+	</div>
+
+	<div id='fax_popup' style='border:1px solid gray; padding:15px; background:white; display:none;'>
+		<h5>Send Fax</h5>
+		<hr>
+		<div class='content'>
+			<span>You are about to send a fax to <span class='restaurant_name' style='font-weight:bold;'>abc</span>.</span>
+			<br>
+			<br>
+			<input type=text class='fax_number' style='width: 400px;' />
+			<br>
+			<select name=payment_via style="width:400px;">
+				<option selected>Payment is en route via check.</option>
+				<option>Payment has been deposited into your bank account.</option>
+				<option>No payment at this time.</option>
+			</select>
+			<br>
+			<textarea class='fax_note' style='width: 400px;' ></textarea>
+		</div>
+		<hr>
+		<div class='fax_container' style='height:250px;overflow:auto;border:4px solid gray;'>
+			<div class='fax' style='' >
+				<div class='logo-img' style='background:orangered;background-image:url(https://crunchbutton.com/assets/images/nav-web.png); padding:10px;'>
+					<img src='https://crunchbutton.com/assets/images/logo-web.png'/>
+				</div>
+				<div class='fax_body'>(fax body)</div>
+				<div class='fax_foot'>
+					<div class='fax_foot_payment_note' style='margin-bottom:20px;font-style:italic;'></div>
+					<div class='fax_foot_generic_note' style='margin-bottom:20px;'></div>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<button id="send_fax" type="submit" class="btn btn-blue admin-order-search" > Send Ye Fax </button>
+		&nbsp;
+		<button id="close_fax_popup" type="submit" class="btn btn-blue admin-order-search" > Close </button>
+		&nbsp;
+	</div>
+
+
+<script>
+
+$(function() {
+	$(document).on('click', '#payments_begin', function() {
+		$.ajax({
+			url : '/payments/begin',
+			data : {
+				dates : $('input[name="date-range"]').val(),
+				payment_method : $('select[name="payment_method"]').val(),
+				order_by : $('select[name="order_by"]').val(),
+			},
+			method : 'post',
+		}).done(function(rsp) {
+			$('#restaurants_container').html(rsp);
+			$('.RST_container').each(function(i,e){update_totals(e);});
+		});
+		$('#restaurants_container').html('<em>loading...</em>');
+	});
+
+	$('input[name="date-range"]').bind('keypress', function(e) {
+		if(e.keyCode === 13) {
+			$('#payments_begin').click();
+		}
+	});
+});
+
+setTimeout(obnoxious_food_prompt, 500000);
+
+function obnoxious_food_prompt() {
+	vers = [
+		['some wings from Wings Over Providence', 'wings-over-providence'],
+		['some sushi from Yoo Sushi', 'yoo-sushi'],
+		['a delicious deep dish pizza from Sicilia\'s Pizzeria', 'sicilias'],
+		['a prosciutto and mozzarella sandwich from Wise Guys Deli', 'wise-guys-deli'],
+	];
+	titles = [
+		'It\'s Been a Long Time Since Food',
+		'You Look Emaciated',
+		'Why Would Food Wait for You?',
+	];
+	title = titles[Math.floor(Math.random()*titles.length)];
+	ver = vers[Math.floor(Math.random()*vers.length)];
+	text = 'You look pretty hungry, how bout ' + ver[0] + '?';
+	link = 'https://crunchbutton.com/food-delivery/' + ver[1];
+	$('#hungry_modal').dialog({
+		modal: true,
+			show : { effect : 'drop', duration : 100, direction : 'up', },
+			hide : { effect : 'drop', duration : 100, direction : 'up', },
+			resizable : false,
+	});
+	$('#hungry_modal .content').html(text);
+	$('#hungry_modal h5').html(title);
+	$('.ui-dialog-titlebar').hide();
+	$('.ui-dialog').css('background','orangered');
+	$('.ui-dialog').css('padding','6px');
+	$('#hungry_hell_yeah').off('click').on('click', function() {
+		window.open(link);
+		$('#hungry_modal').dialog('close');
+	});
+	$('#hungry_not_now').off('click').on('click', function() {
+		setTimeout(obnoxious_food_prompt, Math.random()*500000);
+		$('#hungry_modal').dialog('close');
+	});
+};
+
+function update_totals(restaurant_container) {
+	cash_subtotal_cents = 0;
+	card_subtotal_cents = 0;
+	cc_fees_cents = 0;
+	cb_fees_cents = 0;
+	total_payment_cents = 0;
+	adjustments_cents = 0;
+	with($(restaurant_container)) {
+		find('.ord_row').each(function(i,order) {
+			cb_fees_cents += parseInt($(order).attr('data_cb_fee_cents'), 10);
+			if($(order).attr('data_pay_type') === 'card') {
+				card_subtotal_cents += parseInt($(order).attr('data_final_price_cents'), 10);
+				cc_fees_cents += parseInt($(order).attr('data_cc_fee_cents'), 10);
+			}
+			else {
+				cash_subtotal_cents += parseInt($(order).attr('data_final_price_cents'), 10);
+			}
+		});
+		find('.adj_row').each(function(i,adjust) {
+			adjustments_cents += parseInt($(adjust).attr('data_amount_cents'), 10);
+		});
+		with(find('.show_if_adjustments'))
+			adjustments_cents ? show() : hide();
+		find('.total_adjs').css('color', adjustments_cents >= 0 ? 'green' : 'red');
+		total_payment_cents = 0
+			+ card_subtotal_cents
+			- cc_fees_cents
+			- cb_fees_cents
+			+ adjustments_cents;
+		total_payment_cents < 0 ? total_payment_cents = 0:0;
+		output_money(find('.cash_subtotal'), cash_subtotal_cents);
+		output_money(find('.card_subtotal'), card_subtotal_cents);
+		output_money(find('.cc_fees'      ), cc_fees_cents);
+		output_money(find('.cb_fees'      ), cb_fees_cents);
+		output_money(find('.total_adjs'   ), adjustments_cents);
+		output_money(find('.total_payment'), total_payment_cents);
+	}
+}
+
+function output_money(element, cents) {
+	str = '';
+	positive = 1;
+	if(cents < 0) {
+		positive = 0;
+		cents = -cents;
+	}
+	full_dollars = Math.floor(cents/100);
+	remaining_cents = Math.round(cents%100);
+	if(!positive) str += '(-';
+	str += '$';
+	str += full_dollars;
+	str += '.';
+	if(remaining_cents < 10) str += '0';
+	str += remaining_cents;
+	if(!positive) str += ')';
+	element.html(str);
+	element.attr('data_cents', cents);
+}
+
+function delete_row(element) {
+	restaurant_container = $(element).closest('.RST_container');
+	$(element).closest('tr').hide(100,function() {
+		console.log('callback');
+		$(element).closest('tr').remove();
+		update_totals(restaurant_container);
+	});
+	update_totals(restaurant_container);
+}
+
+function add_adjustment_popup(id_restaurant) {
+	$('#add_adjustment_popup').dialog({
+		modal: true,
+		show : { effect : 'drop', duration : 100, direction : 'up', },
+		hide : { effect : 'drop', duration : 100, direction : 'up', },
+		width: '360px',
+		resizable : false,
+	});
+	/* set contents of modal */
+	$('.ui-dialog-titlebar').hide();
+	$('.ui-dialog').css('background','orangered');
+	$('.ui-dialog').css('padding','6px');
+	aa = function() {
+		add_adjustment(
+				id_restaurant,
+				$('#add_adjustment_popup').find('.adjustment_amount').val()*100,
+				$('#add_adjustment_popup').find('.adjustment_description').val());
+		$('#add_adjustment_popup').dialog('close');
+	};
+	$('#adjustment_add').off('click').on('click', aa);
+	$('#add_adjustment_popup').find('.adjustment_amount, .adjustment_description')
+		.off('keypress')
+		.on('keypress', function(e) {
+		if(e.keyCode === 13) {
+			aa();
+		}
+	});
+	$('#add_adjustment_popup').find('.adjustment_description').select();
+}
+
+function add_adjustment(id_restaurant, cents, desc) {
+	html = $(''
+		+'<tr>'
+		+'	<td>'
+		+'		<div '
+		+'				style="display:none;" '
+		+'				class="adj_row" '
+		+'				data_amount_cents="'+cents+'" '
+		+'		/>'
+		+'		<a href="#" onclick="javascript:delete_row(this);return false;">'
+		+'			<span class="remove_row icon-remove-sign" />'
+		+'		</a>&nbsp;&nbsp;'
+		+'  </td>'
+		+'	<td>'+desc+'</td>'
+		+'	<td class="cents" style="min-width:80px; text-align:right; padding-right:10px;"></td>'
+		+'	<td></td>'
+		+'	<td></td>'
+		+'</tr>');
+	output_money($(html).find('.cents').first(), cents);
+	$('.RST' + id_restaurant + '_adjustments')
+			.show()
+			.before(html);
+	update_totals($('.RST' + id_restaurant + '_container').first());
+}
+
+function start_payment_popup(id_restaurant) {
+	$('#start_payment_popup').dialog({
+		modal: true,
+		show : { effect : 'drop', duration : 100, direction : 'up', },
+		hide : { effect : 'drop', duration : 100, direction : 'up', },
+		width: '360px',
+		resizable : false,
+	});
+	/* set contents of modal */
+	$('.ui-dialog-titlebar').hide();
+	$('.ui-dialog').css('background','orangered');
+	$('.ui-dialog').css('padding','6px');
+
+	$('#start_payment_popup .content').html(
+		'You are about to pay '
+		+'<span style="font-weight:bold;color:green">' + $('.RST'+id_restaurant+'_container .total_payment').html() + '</span>'
+		+' to '
+		+'<span style="font-weight:bold;">' + $('.RST'+id_restaurant+'_container .title').html() + '</span>'
+		+'.'
+		);
+	go_to_payment_page = (function() {
+		pay_cents = $('.RST'+id_restaurant+'_container .title').html();
+		return function() {
+			window.open('/restaurants/' + id_restaurant + '/pay?pay_cents=' + $('.RST'+id_restaurant+'_container .total_payment').attr('data_cents'));
+		}
+	})();
+	$('#go_to_payment_page').off('click').on('click', go_to_payment_page);
+	$('#close_payment_popup').off('click').on('click', function(){$('#start_payment_popup').dialog('close');});
+}
+
+function refresh_last_payment(id_restaurant) {
+	$('.RST' + id_restaurant + '_last_payment').html('<em>checking...</em>');
+	$.ajax({
+		url : '/payments/lastpayment',
+		method : 'get',
+		data : { id_restaurant : id_restaurant }
+	}).done(function(rsp) {
+		$('.RST' + id_restaurant + '_last_payment').html(rsp);
+	});
+}
+
+function send_summary_email(id_restaurant, email_address) {
+	/* for now, something quick and dirty */
+	window.open('mailto:'+email_address+'?subject=Crunchbutton Orders Summary');
+}
+
+function start_fax_popup(id_restaurant) {
+	$('#fax_popup').dialog({
+		modal: true,
+		show : { effect : 'drop', duration : 100, direction : 'up', },
+		hide : { effect : 'drop', duration : 100, direction : 'up', },
+		width: '800px',
+		resizable : false,
+	});
+	/* set contents of modal */
+	$('.ui-dialog-titlebar').hide();
+	$('.ui-dialog').css('background','orangered');
+	$('.ui-dialog').css('padding','6px');
+
+	restaurant_container = $('.RST'+id_restaurant+'_container').first();
+	$('#fax_popup .restaurant_name').html(restaurant_container.attr('data_name'));
+	$('#fax_popup .content .fax_number').val(restaurant_container.attr('data_fax_number'));
+	$('#fax_popup .content .fax_note').val('Crunchbutton Orders');
+
+	fax_body = restaurant_container.clone();
+	fax_body.find('.box-toolbar, .last_payment, .remove_row, .button_row, .summary_email').remove();
+	$('#fax_popup .fax_body').html('').append(fax_body);
+
+	update_footer = function() {
+		$('#fax_popup .fax_foot_payment_note').html($('#fax_popup select[name=payment_via]').val());
+		$('#fax_popup .fax_foot_generic_note').html($('#fax_popup .fax_note').val());
+	};
+	update_footer();
+	$('#fax_popup .fax_note, select[name=payment_via]').off('change').on('change', update_footer);
+
+	$('#send_fax').html('Send Ye Fax');
+	$('#send_fax').off('click').on('click', function() {
+		html = '<html><head>'
+				+'<link href="https://crunchbutton.com/assets/css/core/core.css" media="screen" rel="stylesheet" type="text/css" />'
+				+'</head><body>'
+				+$('<div>').append($('#fax_popup .fax').clone()).html()
+				+'</body></html>';
+		$.ajax({
+			method : 'post',
+			url : '/payments/sendfax',
+			data : {
+				fax_number : $('#fax_popup .fax_number').val(),
+				html : html,
+			},
+			dataType: 'html',
+		}).done(function(rsp) {
+			rsp = $('<x>'+rsp+'</x>');
+			alert($(rsp).find('.message').html());
+			fax_url = $(rsp).find('.fax_url').html();
+			if(fax_url) {
+				$('#send_fax').html('View Sent Fax');
+				$('#send_fax').off('click').on('click', function() {
+					window.open(fax_url.replace(/&amp;/g,'&'));
+				});
+			}
+		});
+		alert('Sending to Phaxio...');
+	});
+
+	$('#close_fax_popup').off('click').on('click', function(){$('#fax_popup').dialog('close');});
+}
+
+
+</script>
