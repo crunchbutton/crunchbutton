@@ -214,10 +214,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 NGApp.controller('AppController', function ($scope, $route, $routeParams) {
 
 	render = function() {
-		$('.splash').fadeOut(200, function() {
-			$('.content').fadeIn(300);
-		});
-
 		var renderAction = $route.current.action;
 		var renderPath = renderAction.split('.');
 
@@ -228,7 +224,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams) {
 	$scope.$on(
 		'$routeChangeSuccess',
 		function ($currentRoute, $previousRoute) {
-			console.debug($currentRoute)
+			console.debug('THIS IS ROUTE',$route.current.action)
 			// Update the rendering.
 			render();
 
@@ -547,15 +543,15 @@ $(function() {
 	$('.link-legal').tap(function(e) {
 		e.stopPropagation();
 		e.preventDefault();
-		History.pushState({}, 'Crunchbutton - Legal', '/legal');
+		history.pushState({}, 'Crunchbutton - Legal', '/legal');
 	});
 
 	$('.link-orders').tap(function(e) {
 		e.stopPropagation();
 		e.preventDefault();
-		History.pushState({}, 'Crunchbutton - Orders', '/orders');
+		history.pushState({}, 'Crunchbutton - Orders', '/orders');
 	});
-	
+
 	if (App.isMobile()) {
 
 		// prevent double trigger

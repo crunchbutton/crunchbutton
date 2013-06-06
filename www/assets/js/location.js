@@ -10,6 +10,7 @@ var Location = function(params) {
 		lat: null,
 		lon: null,
 		type: null,
+		subtype: null,
 		address: null,
 		prep: null
 	};
@@ -136,6 +137,11 @@ var Location = function(params) {
 	// determine if verified
 	self.verified = function() {
 		return self._properties.verified;
+	};
+	
+	// return the type of location
+	self.type = function() {
+		return self._properties.type;
 	};
 	
 
