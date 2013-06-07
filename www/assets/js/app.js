@@ -591,10 +591,12 @@ $(function() {
 
 
 		// ignore all click events from acidently triggering on mobile. only use touchclick
+		/*
 		$(document).on('click', function(e, force) {
 			e.stopPropagation();
 			e.preventDefault();
 		});
+		*/
 	
 
 	}
