@@ -18,31 +18,31 @@
 		</div>
 		<div ng-show="!user">
 			<span class="signup-call-to-action">
-				If you add a password, your favorite food can be 1 click ordered anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+				Add a password to reorder your favorite food anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 				<a href="javascript:;" class="signup-add-password-button">Add a password now</a>
 			</span>			
 		</div>
 	
 		<div class="order-details">
-	
+
 			<div ng-show="(order.delivery_type == 'delivery')">
-				<b>Your delivery address:</b><br />{{order.address}}<br /><br />
+				<b>Your delivery address:</b><br /><span ng-bind-html-unsafe="nl2br(order.address)"></span><br /><br />
 			</div>
 	
 			<div ng-hide="(order.delivery_type == 'delivery')">
 				<b>Takeout order</b><br /><br />
 			</div>
 	
-			<b>Your phone #:</b><br />{{App.phone.format(order.phone)}}<br /><br />
+			<b>Your phone #:</b><br />{{formatPhone(order.phone)}}<br /><br />
 	
-			<b>Your order:</b>{{order._message}}<br /><br />
+			<b>Your order:</b><span ng-bind-html-unsafe="order._message"></span><br /><br />
 	
-			<i ng-show="order.notes">{{order.notes}}<br /><br /></i>
+			<i ng-show="order.notes" ng-bind-html-unsafe="nl2br(order.notes)"><br /><br /></i>
 	
 			<b ng-show="(order.pay_type == 'card')">Your total:<br /></b>
 			<b ng-hide="(order.pay_type == 'card')">Your approximate total:<br /></b>
 			
-			${{parseFloat(order.charged).toFixed(2)}}
+			${{formatPrice(order.charged)}}
 	
 			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{parseFloat(order.final_price).toFixed(2)}} - ${{parseFloat(order.credit).toFixed(2)}} credit )</div>
 	
@@ -53,13 +53,9 @@
 			You can reach Crunchbutton by texting or calling <b>{{App.callPhone('(646) 783-1444' )}}</b> <br /><br />
 	
 			We've saved your order for easy 1 click ordering next time
-	
-			<div class="share-order-facebook">
-				<a href="javascript:;" class="share-order-facebook-button">
-					<span class="share-facebook-icon"></span>
-					<span class="share-facebook-text">Share what YOU ordered</span>
-					<div class="divider"></div>
-				</a>
+
+			<div class="facebook-button facebook-button-share clearfix">
+				<i class="icon-facebook"></i><span class="facebook-button-text">Share what you ordered</span>
 			</div>
 	
 		</div>

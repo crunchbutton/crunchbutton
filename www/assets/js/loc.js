@@ -4,6 +4,7 @@ App.loc = {
 	range: App.defaultRange,
 	loaded: false,
 	locationNotServed: false,
+	locs: [],
 
 
 	/**
@@ -63,7 +64,7 @@ App.loc = {
 	 * get the most recent position
 	 */
 	pos: function() {
-		return App.locs[0] || new Location;
+		return App.loc.locs[0] || new Location;
 	},
 
 
@@ -82,7 +83,7 @@ App.loc = {
 			navigator.geolocation.getCurrentPosition(function(position){
 				clearTimeout(App.loc.timerId);
 
-				App.locs.push(new Location({
+				App.loc.locs.push(new Location({
 					lat: position.coords.latitude,
 					lon: position.coords.longitude,
 					type: 'geolocation'
@@ -120,7 +121,13 @@ App.loc = {
 		var cookieLocs = $.cookie('locsv2') ? JSON.parse($.cookie('locsv2')) : null;
 		var cookieBounding = $.cookie('boundingv2') ? JSON.parse($.cookie('boundingv2')) : null;
 		if (cookieLocs) {
-			App.loc.locs = cookieLocs;
+			console.log(cookieLocs)
+			var locs = [];
+			for (var x in cookieLocs) {
+				locs.push(new Location(cookieLocs[x]._properties));
+			}
+			App.loc.locs = locs;
+			console.log(locs)
 		}
 		if (cookieBounding) {
 			App.loc.bounding = cookieBounding;
@@ -172,7 +179,7 @@ App.loc = {
 		}
 		
 		// 5) if there is no previously used locations of any kind
-		if (!App.locs.length) {
+		if (!App.loc.locs.length) {
 			App.loc.getLocationByBrowser(function(){}, error);
 		} else {
 			error();
@@ -355,16 +362,18 @@ App.loc = {
 			var success = arguments[1];
 			var error = arguments[2];
 
-			for (var x in App.locs) {
-				if (App.locs[x].entered == address && App.locs[x].verified) {
-					success(App.locs[x]);
+			for (var x in App.loc.locs) {
+				if (App.loc.locs[x].entered == address && App.loc.locs[x].verified) {
+					success(App.loc.locs[x]);
 					return;
 				}
 			}
 
 			App.loc.geocode(address, function(loc) {
-				App.locs.push(loc);
+				App.loc.locs.push(loc);
 				success();
+				$.cookie('locsv2', JSON.stringify(App.loc.locs), { expires: new Date(3000,01,01), path: '/'});
+				$.cookie('boundingv2', JSON.stringify(App.loc.bounding), { expires: new Date(3000,01,01), path: '/'});
 			}, error);
 		}
 		//App.loc.geocode(address, success, error);
