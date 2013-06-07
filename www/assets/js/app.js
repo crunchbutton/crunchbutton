@@ -15,7 +15,6 @@ var App = {
 	cached: {},
 	community: null,
 	page: {},
-	locs: [],
 	config: null,
 	forceHome: false,
 	cookieExpire: new Date(3000,01,01),
@@ -200,6 +199,15 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	$rootScope.nl2br = function(t) {
 		return App.nl2br(t);
 	};
+	
+	$rootScope.formatPhone = function(t) {
+		return App.phone.format(t);
+	};
+	
+	$rootScope.formatPrice = function(t) {
+		return parseFloat(t).toFixed(2);
+	};
+
 
 	$scope.$on(
 		'$routeChangeSuccess',
@@ -451,6 +459,11 @@ App.trigger = {
  * global event binding and init
  */
 $(function() {
+
+	App.processConfig(App.config);
+	App._init = true;
+	App.NGinit();
+
 
 	App.test.init();
 
@@ -704,10 +717,6 @@ $(function() {
 		$(this).val( App.phone.format($(this).val()) );
 	});
 
-	$(document).trigger('have-config');
-	App.processConfig(App.config);
-	App._init = true;
-	App.NGinit();
 
 	$('.cart-summary').tap(function(e) {
 		e.stopPropagation();
@@ -740,23 +749,18 @@ $(function() {
 			}
 		}, 100);
 	}
-
-
-	var checkForDistance = function() {
-		if (App.order['delivery_type'] == 'takeout') {
-			return;
+	
+	$(document).on({
+		blur: function() {
+			clearTimeout(App.checkForDistance);
+			App.checkForDistance = setTimeout(checkForDistance, 100);
+		},
+		change: function() {
+			clearTimeout(App.checkForDistance);
+			App.checkForDistance = setTimeout(checkForDistance, 1000);
 		}
-	};
+	}, '[name="pay-address"]');
 
-	$(document).on('blur', '[name="pay-address"]', function() {
-		clearTimeout(App.checkForDistance);
-		App.checkForDistance = setTimeout(checkForDistance, 100);
-	});
-
-	$(document).on('change', '[name="pay-address"]', function() {
-		clearTimeout(App.checkForDistance);
-		App.checkForDistance = setTimeout(checkForDistance, 1000);
-	});
 
 	$(document).on('change', '[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]', function() {
 		App.config.user.name = $('[name="pay-name"]').val();
@@ -768,22 +772,6 @@ $(function() {
 		App.config.user.card_exp_year = $('[name="pay-card-year"]').val();
 	});
 
-
-	$(document).on('touchclick', '.content-item-locations-city', function() {
-		$( '.main-content' ).html( '' );
-		var permalink = $( this ).attr( 'permalink' );
-		App.routeAlias( permalink, function( result ){
-			App.loc.realLoc = {
-				addressAlias: result.alias.address,
-				lat: result.alias.lat,
-				lon: result.alias.lon,
-				prep: result.alias.prep,
-				city: result.alias.city
-			};
-			App.loc.setFormattedLocFromResult();
-			App.page.foodDelivery( true );
-		});
-	});
 
 	$( '.ui-dialog-titlebar-close' ).tap( function(){
 		try{
@@ -836,16 +824,19 @@ App.message.show = function( title, message ) {
 
 }
 
+/**
+ * play crunch audio sound
+ */
 App.playAudio = function( audio, callback ){
-	var audio = $( '#' + audio ).get(0);
-	try{
-		audio.addEventListener( 'ended', function() {
-		if( callback ){
-			callback();
+	var audio = $('#' + audio).get(0);
+	try {
+		audio.addEventListener('ended', function() {
+			if (callback) {
+				callback();
 			}
 		});
 		audio.play();	
-	} catch( e ){}
+	} catch(e){}
 }
 
 App.registerLocationsCookies = function() {
