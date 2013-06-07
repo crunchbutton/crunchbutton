@@ -275,6 +275,8 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
 			$scope.lastOrderDelivery = lastOrderDelivery;
 			$scope.user = App.config.user;
 			$scope.community = community;
+			$scope.showRestaurantDeliv = (( lastOrderDelivery == 'delivery' || App.restaurant.delivery == '1' || App.restaurant.takeout == '0' ) && lastOrderDelivery != 'takeout');
+			
 			$scope.AB = {
 				dollar: (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '',
 				changeablePrice: function(dish) {
@@ -287,7 +289,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
 				tip: App.order.tip,
 				name: App.config.user.name,
 				phone: App.phone.format(App.config.user.phone),
-				address: (App.config.user.address ? App.config.user.address.replace("\n",'<br />') : '<i>no address provided</i>'),
+				address: App.config.user.address,
 				notes: (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) ? App.config.user.presets[App.restaurant.id_restaurant].notes : '',
 				card: {
 					number: App.config.user.card,

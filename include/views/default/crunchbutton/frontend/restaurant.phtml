@@ -214,33 +214,34 @@
 	<? /* stored user info */ ?>
 	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open">
 		<div class="dp-display-phone dp-display-item">
-
-			<label>Your phone number:</label> <%= (user.phone ? App.phone.format(user.phone) : '<i>no phone # provided</i>') %></div>
-
-			<div class="dp-display-payment dp-display-item">
-				<label>You are paying&nbsp;<span class="cash-order-aprox"></span>: &nbsp;</label>
-				<span class="cart-breakdownDescription"></span>
-				<strong class="cart-gift"></strong>
-				&nbsp;for a total of <span class="cart-total">$0.00</span>
-				&nbsp;<span class="cart-giftcard-message"></span>
-				&nbsp;<span class="cart-paymentType"></span>
-			</div>
-			<% if ( ( lastOrderDelivery == 'delivery' || App.restaurant.delivery == '1' || App.restaurant.takeout == '0' ) && lastOrderDelivery != 'takeout' ) { %>
-				<div class="dp-display-address dp-display-item">
-					<label>Your food will be delivered to:</label><br />
-					<span class="user-address">{{form.address}}</span>
-				</div>
-			<% } else { %>
-				<div class="dp-display-address dp-display-item"><label>Address:</label> <i>takeout</i></div>
-			<% } %>
-
-			<div class="dp-display-address dp-display-item">
-				<span class="clickable">Change delivery or payment details</span>
-			</div>
-	
-			<div class="divider"></div>
-	
+			<label>Your phone number:&nbsp;</label>
+			<i ng-show="user.phone">{{formatPhone(user.phone)}}</i>
+			<i ng-show="!user.phone">no phone # provided</i>
 		</div>
+
+		<div class="dp-display-payment dp-display-item">
+			<label>You are paying&nbsp;<span class="cash-order-aprox"></span>: &nbsp;</label>
+			<span class="cart-breakdownDescription"></span>
+			<strong class="cart-gift"></strong>
+			&nbsp;for a total of <span class="cart-total">$0.00</span>
+			&nbsp;<span class="cart-giftcard-message"></span>
+			&nbsp;<span class="cart-paymentType"></span>
+		</div>
+
+		<div class="dp-display-address dp-display-item" ng-show="showRestaurantDeliv">
+			<label>Your food will be delivered to:</label><br />
+			<span class="user-address" ng-bind-html-unsafe="nl2br(form.address)"></span>
+			<i ng-hide="form.address">no address provided</i>
+		</div>
+		<div class="dp-display-address dp-display-item" ng-hide="showRestaurantDeliv">
+			<label>Address:</label> <i>takeout</i>
+		</div>
+
+		<div class="dp-display-address dp-display-item">
+			<span class="clickable">Change delivery or payment details</span>
+		</div>
+
+		<div class="divider"></div>
 	</div>
 
 	<audio id="get-food-audio">

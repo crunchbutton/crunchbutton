@@ -2466,6 +2466,7 @@ html[xmlns] .clearfix {
 	background-image: -ms-linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
 	background-image: linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
 	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#40619f', EndColorStr='#36528d');
+	box-shadow: 0 2px 3px rgba(182, 182, 182, 0.75);
 }
 
 .facebook-button-share {
