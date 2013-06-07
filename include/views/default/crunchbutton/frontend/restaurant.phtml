@@ -37,17 +37,19 @@
 	<div class="main-content-readable">
 		<? /* cart */ ?>
 		<div class="cart-items {{AB.restaurantPage}}">
-			<div class="restaurant-item-title text-your-order">
-				Your Order 
-				<div ng-show="App.isMobile()" ng-include="view/restaurant.suggestion.tooltip.html"></div>
+			<div ng-show="restaurant._open">
+				<div class="restaurant-item-title text-your-order">
+					Your Order 
+					<div ng-show="App.isMobile()" ng-include="view/restaurant.suggestion.tooltip.html"></div>
+				</div>
+				<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
+				<div class="divider"></div>
+				<div class="delivery-minimum-error">Add{{AB.dollar}}<span class="delivery-min-diff">{{cart.totalFixed}}</span> from menu to meet delivery minimum.</div>
+				<div class="cart-items-content"></div>
+				<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for {{restaurant.name}}</label></div>
 			</div>
-			<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
-			<div class="divider"></div>
-			<div class="delivery-minimum-error">Add{{AB.dollar}}<span class="delivery-min-diff">{{cart.totalFixed}}</span> from menu to meet delivery minimum.</div>
-			<div class="cart-items-content"></div>
-			<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for {{restaurant.name}}</label></div>
 		</div>
-		
+
 		<? /* menu */ ?>
 		<div class="restaurant-items">
 			<div class="content-item-name content-item-main-name">
@@ -86,15 +88,15 @@
 					{{restaurant.name}} is currently closed!
 				</span>
 				<span class="restaurant-closed-content">
-					It will be open during the following hours (EDT):	<br/> 
-					{App.nl2br(restaurant.closedMessage()}
+					It will be open during the following hours (EDT):	<br> 
+					<span ng-bind-html-unsafe="nl2br(restaurant.closedMessage())"></span>
 				</span>
 			</div>
 			<div class="divider"></div>
 		</div>
 	
 		
-		<div ng-open="restaurant._open">
+		<div ng-show="restaurant._open">
 		
 			<div class="content-item-name"><h1>Your Info</h1></div>
 			<div class="your-info-label">(enter this once, and we'll save it for next time)</div>
@@ -203,33 +205,15 @@
 				&nbsp;<span class="cart-giftcard-message"></span>
 				&nbsp;<span class="cart-paymentType"></span>
 			</div>
-	
 		</div>
 	
 	</form>
 	
 	<div ng-show="restaurant._open" class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>
-
 	
 	<? /* stored user info */ ?>
-	
-	<div class="delivery-payment-info main-content-readable">
-
-		<div class="restaurant-closed" ng-show="!restaurant._open">
-			<div class="restaurant-closed-icon"></div>
-			<div class="restaurant-closed-content">
-				<span class="restaurant-closed-title">
-					{{restaurant.name}} is currently closed!
-				</span>
-				<span class="restaurant-closed-content">
-					It will be open during the following hours (EDT):<br>
-					{App.nl2br(restaurant.closedMessage())}
-				</span>
-			</div>
-			<div class="divider"></div>
-		</div>
-
-		<div class="dp-display-phone dp-display-item" ng-show="restaurant._open">
+	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open">
+		<div class="dp-display-phone dp-display-item">
 
 			<label>Your phone number:</label> <%= (user.phone ? App.phone.format(user.phone) : '<i>no phone # provided</i>') %></div>
 
