@@ -117,7 +117,7 @@ App.cart = {
 		for (var x in App.cart.items) {
 			totalItems++;
 		}
-		App.updateAutotipValue();
+		App.cart.autotip();
 
 		/* If the user changed the delivery method to takeout and the payment is card
 		 * the default tip will be 0%. If the delivery method is delivery and the payment is 
@@ -556,7 +556,7 @@ App.cart = {
 					}	
 				}
 			}
-
+/*
 			// Check if the user address was already validated
 			if ( !App.isDeliveryAddressOk	) {
 
@@ -571,9 +571,9 @@ App.cart = {
 				}
 
 				if( !latLong ){
-					App.alert( 'Could not locate you!' );
-					App.busy.unBusy();
-					return;
+					//App.alert( 'Could not locate you!' );
+					//App.busy.unBusy();
+					//return;
 				}
 
 				var success = function( results ) {
@@ -648,15 +648,16 @@ App.cart = {
 				};
 
 				// Call the geo method
-				App.loc.doGeocodeWithBound( order.address, latLong, success, error);
+				App.loc.doGeocodeWithBound(order.address, latLong, success, error);
 				return;
 			} 
+			*/
 		}
 
 		if( order.delivery_type == 'takeout' ){
 			App.isDeliveryAddressOk = true;
 		}
-
+App.isDeliveryAddressOk = true;
 		if( !App.isDeliveryAddressOk ){
 			return;
 		}
@@ -910,6 +911,20 @@ App.cart = {
 			return true;
 		}
 		return false;
+	},
+	
+	autotip: function() {
+		var subtotal = App.cart.totalbreakdown().subtotal;
+		var autotipValue
+		if (subtotal === 0) {
+			autotipValue = 0;
+		} else {
+			// autotip formula - see github/#940
+			autotipValue = Math.ceil(4*(subtotal * 0.107 + 0.85)) / 4;
+		}
+		$('[name="pay-autotip-value"]').val(autotipValue);
+		var autotipText = autotipValue ? ' (' + ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + autotipValue + ')' : '';
+		$('[name=pay-tip] [value=autotip]').html('Autotip' + autotipText);
 	}
 };
 

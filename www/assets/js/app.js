@@ -150,6 +150,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'help',
 			templateUrl: 'view/help.html'
 		})
+		.when('/orders', {
+			action: 'orders',
+			controller: 'orders',
+			templateUrl: 'view/orders.html'
+		})
 		.when('/order/:id', {
 			action: 'order',
 			controller: 'order',
@@ -243,6 +248,15 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 					$( '.config-icon' ).addClass( 'right' );
 					break;
 			}
+			
+
+			$('.content').addClass('smaller-width');
+			$('.main-content').css('width','auto');
+			
+
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+	$( '.nav-back' ).addClass( 'nav-back-show' );
+
 			*/
 
 		}
@@ -381,20 +395,6 @@ App.processConfig = function(json, user) {
 	}
 };
 
-App.updateAutotipValue = function() {
-	var subtotal = App.cart.totalbreakdown().subtotal;
-	var autotipValue
-	if(subtotal === 0) {
-		autotipValue = 0;
-	}
-	else {
-		// the holy formula - see github/#940
-		autotipValue = Math.ceil(4*(subtotal * 0.107 + 0.85)) / 4;
-	}
-	$('[name="pay-autotip-value"]').val(autotipValue);
-	var autotipText = autotipValue ? ' (' + ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + autotipValue + ')' : '';
-	$('[name=pay-tip] [value=autotip]').html('Autotip' + autotipText);
-};
 
 App.lastTipNormalize = function( lastTip ){
 
@@ -601,12 +601,6 @@ $(function() {
 
 	$('.dish-item').tap(function() {
 		App.cart.add($(this).attr('data-id_dish'));
-	});
-
-	$('.your-orders a').tap(function() {
-		if ($(this).attr('data-id_order')) {
-			History.pushState({},'Crunchbutton - Your Order', '/order/' + $(this).attr('data-id_order'));
-		}
 	});
 
 	$('.cart-button-remove').tap(function() {
