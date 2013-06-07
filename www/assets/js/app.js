@@ -55,10 +55,6 @@ App.alert = function(txt) {
 	});
 };
 
-App.loadRestaurant = function(id) {
-
-};
-
 
 /**
  * Loads up "community" keyword pages
@@ -199,6 +195,10 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	
 	$rootScope.back = function() {
 		history.back();
+	};
+	
+	$rootScope.nl2br = function(t) {
+		return App.nl2br(t);
 	};
 
 	$scope.$on(
@@ -782,8 +782,6 @@ $(function() {
 			App.page.foodDelivery( true );
 		});
 	});
-
-
 
 	$( '.ui-dialog-titlebar-close' ).tap( function(){
 		try{
