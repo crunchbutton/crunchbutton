@@ -138,7 +138,7 @@ NGApp.controller('restaurants', function ($scope, $http, $location) {
 			var url = App.service + 'restaurants?lat=' + App.loc.pos().lat() + '&lon=' + App.loc.pos().lon() + '&range=' + ( App.loc.range || App.defaultRange );
 			App.restaurants.list = false;
 
-			$http.get(url).success(function(data) {
+			$http.get(url, {cache: true}).success(function(data) {
 				App.restaurants.list = [];
 
 				// There is no restaurant near to the user. Go home and show the error.
@@ -280,6 +280,8 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
 				totalFixed: parseFloat(App.restaurant.delivery_min - App.cart.total()).toFixed(2)
 			}
 		};
+
+		// double check what phase we are in
 		if (!$scope.$$phase) {
 			$scope.$apply(complete);
 		} else {
@@ -415,86 +417,73 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
 /**
  * Order page. displayed after order, or at order history
  */
-App.page.order = function(id) {
+NGApp.controller('order', function ($scope, $http, $location, $routeParams) {
 
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-	$( '.nav-back' ).addClass( 'nav-back-show' );
-
-	if (App.justCompleted) {
-		App.justCompleted = false;
-	}
-
-	// Just to make sure the user button will be shown
-	App.signin.checkUser();
-
-	App.cache('Order', id, function() {
+	App.cache('Order', $routeParams.id, function() {
 		var order = this;
 
+		var complete = function() {
+			$location.path('/');
+		};
+
 		if (!order.uuid) {
-			History.replaceState({},'Crunchbutton','/orders');
+			if (!$scope.$$phase) {
+				$scope.$apply(complete);
+			} else {
+				complete();
+			}
 			return;
 		}
 
-		App._order_uuid = id;
-
-		App.facebook.preLoadOrderStatus();
-
 		App.cache('Restaurant',order.id_restaurant, function() {
-			var restaurant = this;
+			var complete = function() {
 
-			$('.content').addClass('smaller-width');
-			$('.main-content').css('width','auto');
-
-			App.showPage({
-				title: 'Crunchbutton - Your Order',
-				page: 'order',
-				data: {
-					order: order,
-					restaurant: restaurant,
-					user: App.config.user.has_auth
+				$scope.order = order;
+				$scope.restaurant = this;
+				
+				if (order['new']) {
+					setTimeout(function() {
+						order['new'] = false;
+					},500);
 				}
-			});
-
+			};
+			if (!$scope.$$phase) {
+				$scope.$apply(complete);
+			} else {
+				complete();
+			}
 		});
 	});
-};
+});
 
 
 
 /**
- * Order page. only avaiable after a user has placed an order or signed up.
+ * Orders page. only avaiable after a user has placed an order or signed up.
  * @todo: change to account page
  */
-App.page.orders = function() {
-
+NGApp.controller('orders', function ($scope, $http, $location) {
 	if (!App.config.user.id_user) {
-		History.pushState({}, 'Crunchbutton', '/');
+		$location.path('/' + App.restaurants.permalink);
 		return;
 	}
 
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-	$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
+	$scope.displayRestaurant = function() {
+		$location.path('/' + App.restaurants.permalink + '/' + this.order._restaurant_permalink);
+	};
 
-	$.getJSON('/api/user/orders',function(json) {
-		App.showPage({
-			title: 'Your Account',
-			page: 'orders',
-			data: {
-				orders: json,
-				user: App.user
-			}
-		});
+	$scope.displayOrder = function() {
+		$location.path('/order/' + this.order.id);
+	};
 
-		$( '.nav-back' ).addClass( 'nav-back-show' );
-
-		$('.order-restaurant').tap(function(e) {
-			var permalink = $( this ).attr( 'permalink' );
-			var name = $( this ).attr( 'name' );
-			var loc = '/' + App.restaurants.permalink + '/' + permalink;
-			History.pushState({}, 'Crunchbutton - ' + name, loc);
-		});
+	$http.get(App.service + 'user/orders', {cache: true}).success(function(json) {
+		for (var x in json) {
+			json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i,'$1/$2 $3');
+		}
+		$scope.orders = json;
+		$scope.user = App.user;
 	});
-};
+});
 
 
 /**
