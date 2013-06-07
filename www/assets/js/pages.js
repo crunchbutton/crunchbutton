@@ -38,6 +38,29 @@ NGApp.controller('home', function ($scope, $http, $location) {
  */
 NGApp.controller('default', function ($scope, $http) {
 
+
+
+/*
+
+
+	$(document).on('touchclick', '.content-item-locations-city', function() {
+		$( '.main-content' ).html( '' );
+		var permalink = $( this ).attr( 'permalink' );
+		App.routeAlias( permalink, function( result ){
+			App.loc.realLoc = {
+				addressAlias: result.alias.address,
+				lat: result.alias.lat,
+				lon: result.alias.lon,
+				prep: result.alias.prep,
+				city: result.alias.city
+			};
+			App.loc.setFormattedLocFromResult();
+			App.page.foodDelivery( true );
+		});
+	});
+	*/
+
+
 	// @TODO THIS
 	App.routeAlias( path[ 0 ],
 		function( result ){
