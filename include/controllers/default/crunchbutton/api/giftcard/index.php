@@ -9,6 +9,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 				
 				if ($_SESSION['admin']) {
 					switch ( c::getPagePiece( 2 ) ) {
+
 						case 'generate':
 							$ids_restaurant = $this->request()['id_restaurant'];
 							$value = $this->request()['value'];
@@ -26,7 +27,10 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$contact = $this->request()['contact'];
 							$add_as_credit = $this->request()['add_as_credit'];
 							$notify_by_email = $this->request()['notify_by_email'];
+							$include_gift_card_id = $this->request()['include_gift_card_id'];
 							$notify_by_sms = $this->request()['notify_by_sms'];
+							$chars_to_use = $this->request()['chars_to_use'];
+							$length = $this->request()['length'];
 
 							// Store the ids
 							$ids = [];
@@ -42,7 +46,6 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 											$giftcard->id_restaurant = $id_restaurant;
 											$giftcard->note = $note;
 										}
-										$giftcard->code = $giftcard->promoCodeGenerator();
 										$giftcard->value = $value;
 										if( $id_user ){
 											$giftcard->id_user = $id_user;
@@ -71,6 +74,14 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 											$giftcard->id_restaurant_paid_by = $id_restaurant_paid_by;
 										}
 										$giftcard->date = date('Y-m-d H:i:s');
+										$giftcard->save();
+
+										if( $include_gift_card_id > 0 ){
+											$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, $giftcard->id_promo );
+										} else {
+											$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, '' );
+										}
+										
 										$giftcard->save();
 
 										$ids[] = $giftcard->id_promo;

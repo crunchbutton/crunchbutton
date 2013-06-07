@@ -1510,11 +1510,13 @@ App.giftcards = {
 			var name = $.trim( $( '#name' ).val() );
 			var how_delivery = $.trim( $( '#how_delivery' ).val() );
 			var contact = $.trim( $( '#contact' ).val() );
-			var note = $.trim( $( '#note' ).val() );
+			var note = $.trim( $( '#notes' ).val() );
 			var add_as_credit = ( $( '#add_as_credit' ).is( ':checked' ) ) ? 1 : 0;
 			var notify_by_email = ( $( '#notify_by_email' ).is( ':checked' ) ) ? 1 : 0;
+			var include_gift_card_id = ( $( '#include_gift_card_id' ).is( ':checked' ) ) ? 1 : 0;
 			var notify_by_sms = ( $( '#notify_by_sms' ).is( ':checked' ) ) ? 1 : 0;
-
+			var chars_to_use = $.trim( $( '#chars_to_use' ).val() );
+			var length = $.trim( $( '#length' ).val() );
 			if( value == '' ){
 				alert( 'Please type a value!' );
 				$( '#value' ).focus();
@@ -1541,7 +1543,7 @@ App.giftcards = {
 				}
 			}
 
-			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit, 'notify_by_sms' : notify_by_sms, 'notify_by_email' : notify_by_email };
+			var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit, 'notify_by_sms' : notify_by_sms, 'notify_by_email' : notify_by_email, 'chars_to_use' : chars_to_use, 'include_gift_card_id' : include_gift_card_id, 'length' : length };
 			var url = App.service + 'giftcard/generate';
 			$.ajax({
 				type: "POST",

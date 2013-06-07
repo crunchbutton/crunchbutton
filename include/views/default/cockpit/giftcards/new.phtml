@@ -5,197 +5,282 @@
 	
 	$this->title2 = 'Create';
 	$this->title2icon = 'file';
-	
-
 ?>
-
-
-
 <div class="container-fluid padded">
 	<div class="row-fluid">
-		<div class="box">
-			<div class="box-content padded">
-
-
-		
-				<table class="admin-giftcard-form">
-					<tr>
-						<td class="label-primary">Promo code:</td>
-						<td class="content-primary">
-							<div class="check-wrap">
-								<div class="check-content">
-									<table style="width:100%;">
-										<tbody>
-											<tr>
-												<td class="label-sub">Value:</td>
-												<td class="content-sub"><input type="text" id="value" name="value"></td>
-											</tr>
-											<tr>
-												<td class="label-sub">Number of giftcards:</td>
-												<td class="content-sub"><input type="text" id="total" value="1" name="total"></td>
-											</tr>
-											<?php if( $this->user ) { ?>
-											<tr>
-												<td class="label-sub">User:</td>
-												<td class="content-sub">
-														<input type="text" readonly="readonly" id="user_name" name="user_name" value="<?php echo $this->user->name;?>">
-														<input type="hidden" id="id_user" name="id_user" value="<?php echo $this->user->id_user;?>">
-													</td>
-											</tr>
-											
-											<tr>
-												<td>Notify by</td>
-												<td>
-													<?php if( $this->user->email != '' ) { ?>
-														<input type="checkbox" value="1" name="notify_by_email" id="notify_by_email"> Notify by email (<?php  echo $this->user->email; ?>).
-													<?php } ?>
-													<br/>
-													<?php if( $this->user->phone != '' ) { ?>
-														<input type="checkbox" value="1" name="notify_by_sms" id="notify_by_sms"> Notify by phone (<?php  echo $this->user->phone; ?>).
-													<?php } ?>
-
-												</td>
-											</tr>
-											
-											<tr>
-												<td>&nbsp;</td>
-												<td>&nbsp;</td>
-											</tr>
-											<tr>
-												<td class="label-sub" nowrap="nowrap">Order reference:</td>
-												<td class="content-sub">
-													<input type="text" id="id_order_reference" name="id_order_reference" value="<?php echo $this->id_order_reference;?>">
-												</td>
-											</tr>
-											<?php } ?>
-											<tr>
-												<td class="label-sub">Restaurant:</td>
-												<td class="content-sub">
-													<select id="id_restaurant" class="chosen-select" multiple name="id_restaurant" data-placeholder="Choose a restaurant" style="width:350px;">
-														<option value="" selected></option>
-														<option value="*" <?php if( !$this->id_restaurant){ echo 'selected'; } ?>>** ANY RESTAURANT **</option>
-														<? foreach (Restaurant::q('SELECT * FROM restaurant WHERE giftcard = 1 ORDER BY name') as $restaurant) : ?>
-															<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
-														<? endforeach ; ?>
-													</select>
-												</td>
-											</tr>
-											<tr>
-												<td>&nbsp;</td>
-												<td>&nbsp;</td>
-											</tr>
-											<tr>
-												<td class="label-sub" nowrap="nowrap">Paid by:</td>
-												<td class="content-sub">
-													<select name="paid_by" id="paid_by">
-														<option value="crunchbutton">crunchbutton</option>
-														<option value="restaurant">restaurant</option>
-														<option value="promotional">promotional</option>
-														<option value="other_restaurant">other_restaurant</option>
-													</select>
-												</td>
-											</tr>
-											<tr id="row_id_restaurant_paid_by" style="display:none;">
-												<td class="label-sub">Restaurant that paid the credit:</td>
-												<td class="content-sub">
-													<select id="id_restaurant_paid_by" class="chosen-select" name="id_restaurant_paid_by" data-placeholder="Choose a restaurant" style="width:350px;">
-														<option value="" selected></option>
-														<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
-															<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
-														<? endforeach ; ?>
-													</select>
-												</td>
-											</tr>
-											<?php if( $this->user ) { ?>
-											<tr>
-												<td class="label-sub"></td>
-												<td class="content-sub">
-													<input type="checkbox" value="1" name="add_as_credit" id="add_as_credit">Add as credit.
-													<span style="font-size:11px;display:block;">
-														If you check this option the user will receive the credit without the need to redeem it. The user will not be notified.
-													</span>
-												</td>
-											</tr>
-											<?php } ?>
-										</tbody>
-									</table>
-									
-								</div>	
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Promo code</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<li>
+							<span>Value</span>
+							<span class="pull-right">
+								<input type="number" name="value" maxlength="5" id="value" value="" />
+							</span>
+						</li>
+						<li>
+							<span>Number of giftcards</span>
+							<span class="pull-right">
+								<input type="number" name="total" maxlength="5" id="total" value="1" />
+							</span>
+						</li>
+						<?php if( $this->user ) { ?>
+						<li>
+							<span>User</span>
+							<span class="pull-right">
+								<input type="text" readonly="readonly" id="user_name" name="user_name" value="<?php echo $this->user->name;?>">
+								<input type="hidden" id="id_user" name="id_user" value="<?php echo $this->user->id_user;?>">
+							</span>
+						</li>
+						<li>
+							<span>Notify by email (<?php  echo $this->user->email; ?>)</span>
+							<span class="pull-right">
+								<input type="checkbox" name="notify_by_email" id="notify_by_email" class="iButton-icons">
+							</span>
+						</li>
+						<li>
+							<span>Notify by phone (<?php  echo $this->user->phone; ?>)</span>
+							<span class="pull-right">
+								<input type="checkbox" name="notify_by_sms" id="notify_by_sms" class="iButton-icons">
+							</span>
+						</li>
+						<li>
+							<span>Order reference</span>
+							<span class="pull-right">
+								<input type="text" id="id_order_reference" name="id_order_reference" value="<?php echo $this->id_order_reference;?>">		
+							</span>
+						</li>
+						<?php } ?>
+						<li>
+							<label>Restaurant</label>
+							<span>
+								<select id="id_restaurant" class="chzn-select" multiple name="id_restaurant" data-placeholder="Choose a restaurant" style="width:100%;">
+									<option value="*" <?php if( !$this->id_restaurant){ echo 'selected'; } ?>>** ANY RESTAURANT **</option>
+									<? foreach (Restaurant::q('SELECT * FROM restaurant WHERE giftcard = 1 ORDER BY name') as $restaurant) : ?>
+										<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
+									<? endforeach ; ?>
+								</select>
+							</span>
+						</li>
+						<li>
+							<span>Paid by</span>
+							<span class="pull-right">
+								<select name="paid_by" id="paid_by" class="uniform">
+									<option value="crunchbutton">crunchbutton</option>
+									<option value="restaurant">restaurant</option>
+									<option value="promotional">promotional</option>
+									<option value="other_restaurant">other_restaurant</option>
+								</select>
+							</span>
+						</li>
+						<li id="list_id_restaurant_paid_by" style="display:none;">
+							<label>Restaurant that paid the credit</label>
+							<span>
+								<select id="id_restaurant_paid_by" class="chzn-select" name="id_restaurant_paid_by" data-placeholder="Choose a restaurant" style="width:100%;">
+									<option value="" selected></option>
+									<? foreach (Restaurant::q('SELECT * FROM restaurant ORDER BY name') as $restaurant) : ?>
+										<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
+									<? endforeach ; ?>
+								</select>
+							</span>
+						</li>
+						<?php if( $this->user ) { ?>
+						<li>
+							<span>Add as credit</span>
+							<span class="pull-right">
+								<input type="checkbox" name="add_as_credit" id="add_as_credit">
+							</span>
+							<hr />
+							<div class="note large">
+								If you check this option the user will receive the credit without the need to redeem it. The user will not be notified.
 							</div>
-						</td>
-					</tr>
-				</table>
-		
-				<table class="admin-giftcard-form">
-					<tr>
-						<td class="label-primary">More info:</td>
-						<td class="content-primary">
-							<div class="check-wrap">
-								<div class="check-content">
-									<table style="width:100%;">
-										<tbody>
-											<tr>
-												<td class="label-sub">Created by:</td>
-												<td class="content-sub"><input type="text" id="created_by" name="created_by" value="<?php echo $_SESSION['username']; ?>"></td>
-											</tr>
-											<tr>
-												<td class="label-sub"></td>
-												<td class="content-sub"><input type="checkbox" id="track" value="1" name="track"> Track this gift card</td>
-											</tr>
-											<tr class="track-fields">
-												<td class="label-sub">Notify phone:</td>
-												<td class="content-sub">
-													<?php
-													if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
-														$phone = c::config()->testphone->{ $_SESSION[ 'username' ] };
-													}
-													?>
-													<input type="text" id="notify_phone" value="<?php echo $phone; ?>" name="notify_phone">
-													<br />
-													<span style="font-size:11px;">
-														*Phone number that will receive a sms <br/>notification when this gift card is redeemed.
-													</span>
-												</td>
-											</tr>
-											<tr class="track-fields">
-												<td class="label-sub">Customer Name:</td>
-												<td class="content-sub"><input type="text" id="name" value="" name="name"></td>
-											</tr>
-											<tr class="track-fields">
-												<td class="label-sub">Contact Info:</td>
-												<td class="content-sub"><textarea name="contact" id="contact"></textarea></td>
-											</tr>
-											<tr>
-												<td class="label-sub">Notes + Follow-up?</td>
-												<td class="content-sub"><textarea name="note" id="note"></textarea></td>
-											</tr>
-										</tbody>
-									</table>
-									<div class="divisor"></div>
-
+						</li>
+						<?php } ?>
+					</ul>
+				</div>
+			</div>
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Track and Notes</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<li>
+							<span>Created by</span>
+							<span class="pull-right">
+								<input type="text" id="created_by" name="created_by" value="<?php echo $_SESSION['username']; ?>">
+							</span>
+						</li>
+						<li>
+							<span>Track this gift card</span>
+							<span class="pull-right">
+								<input type="checkbox" name="track" id="track" class="">
+							</span>
+						</li>
+						<li class="track-fields">
+							<span>Notify phone</span>
+							<span class="pull-right">
+								<?php if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
+									$phone = c::config()->testphone->{ $_SESSION[ 'username' ] };
+								} ?>
+								<input type="text" id="notify_phone" value="<?php echo $phone; ?>" name="notify_phone">
+							</span>
+							<hr/>
+							<div class="note large">
+								Phone number that will receive a sms notification when this gift card is redeemed.
+							</div>
+						</li>
+						<li class="track-fields">
+							<span>Customer Name</span>
+							<span class="pull-right">
+								<input type="text" id="name" name="name" value="">
+							</span>
+						</li>
+						<li class="track-fields">
+							<span>Contact Info:</span>
+							<span class="pull-right">
+								<textarea name="contact" id="contact"></textarea>
+							</span>
+						</li>
+						<li>
+							<span>Notes + Follow-up?</span>
+							<span class="pull-right">
+								<textarea name="notes" id="notes"></textarea>
+							</span>
+						</li>
+						<li class="input">
+							<button type="submit" class="btn btn-blue admin-giftcard-save"><i class="icon-save"></i> Save </button> 
+							<button type="submit" class="btn btn-green admin-giftcard-print"><i class="icon-print"></i> Save &amp; Print </button> 
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="span6">
+			
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Advanced options</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<li>
+							<span>Gift card lenght</span>
+							<span class="pull-right">
+								<input type="number" name="length" maxlength="2" id="length" readonly="readonly" value="6" />
+							</span>
+						</li>
+						<li>
+							<span>Include the Gift Card ID at the code</span>
+							<span class="pull-right">
+								<input type="checkbox" name="include_gift_card_id" id="include_gift_card_id" class="iButton-icons">
+							</span>
+						</li>
+						<li>
+							<span>Use numbers</span>
+							<span class="pull-right">
+								<input type="checkbox" name="use_numbers" id="use_numbers" checked="checked">
+							</span>
+						</li>
+						<li>
+							<span>Use letters</span>
+							<span class="pull-right">
+								<input type="checkbox" name="use_letters" id="use_letters" checked="checked">
+							</span>
+						</li>
+						<li>
+							<span>Exclude chars</span>
+							<span class="pull-right">
+								<input type="text" id="exclude_chars" name="exclude_chars" value="0O">
+							</span>
+						</li>
+						<li>
+							<label>Chars will be used</label>
+							<input type="text" id="chars_to_use" name="chars_to_use" value="" style="width:99%;" readonly="readonly" />
+							<span class="chars-alert" style="display:none;">
+								<hr />
+								<div class="note large">
+									<i class="icon-warning-sign"></i> 
+									Oops! Something wrong! Please review the options!
 								</div>
-							</div>
-									<button type="submit" class="btn btn-blue admin-giftcard-save"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
-									<button type="submit" class="btn btn-blue admin-giftcard-print"><i class="icon-print"></i>&nbsp;&nbsp;&nbsp; Save &amp; Print </button> 
-
-						</td>
-					</tr>
-				</table>
-	</div>
-</div>		
+							</span>
+						</li>
+						<li>
+							<span>Possible combinations</span>
+							<span class="pull-right" id="possible-combinations">
+							</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
-
 <script>
+function updateUsedChars(){
+	var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	var numbers = '0123456789';
+	var exclude_chars = $( '#exclude_chars' ).val();
+	var chars_to_use = '';
+	if( $( '#use_numbers' ).is( ':checked' ) ){
+		chars_to_use += numbers;
+	}
+	if( $( '#use_letters' ).is( ':checked' ) ){
+		chars_to_use += letters;
+	}
+	var exclude_chars = $( '#exclude_chars' ).val();
+	exclude_chars = exclude_chars.split('');
+	$( exclude_chars ).each( function( k, v ){
+		chars_to_use = chars_to_use.replace( v.toUpperCase(), '' );
+	} );
+	$( '#chars_to_use' ).val( chars_to_use );
+	var possible_combinations = Math.pow( chars_to_use.length , $( '#length' ).val() );
+	if( possible_combinations >= 1 && possible_combinations > $( '#total' ).val() ){
+		$( '.chars-alert' ).hide();
+		$( '.input' ).show();
+	} else {
+		$( '.chars-alert' ).show();
+		$( '.input' ).hide();
+	}
+	if( possible_combinations < 1 ){
+		possible_combinations = 0; 
+	}
+	$( '#possible-combinations' ).html( possible_combinations );
+}
 $(function() {
+	updateUsedChars();
+	$( '#track' ).iButton( { 	labelOn :"<i class='icon-ok'></i>",
+														labelOff :"<i class='icon-remove'></i>",
+														handleWidth :30,
+														change : function( self ){ 
+																				if(self.is( ':checked' )){ 
+																					$( '.track-fields' ).show(); 
+																				} else { 
+																					$( '.track-fields' ).hide(); 
+																				} 
+																			} 
+												} );
+	
+	$( '#use_numbers, #use_letters' ).iButton( { 	labelOn :"<i class='icon-ok'></i>",
+																								labelOff :"<i class='icon-remove'></i>",
+																								handleWidth :30,
+																								change : function( self ){ 
+																														updateUsedChars();
+																												} 
+																						} );
+	$( document ).on( 'keyup, change', '#exclude_chars, #length, #total', function() {
+		updateUsedChars();
+	} );
 	$( '#paid_by' ).change( function(){
 		var self = $( this );
-		$( '#row_id_restaurant_paid_by' ).hide();
+		$( '#list_id_restaurant_paid_by' ).hide();
 		if( self.val() == 'other_restaurant' ){
-			$( '#row_id_restaurant_paid_by' ).show();
+			$( '#list_id_restaurant_paid_by' ).show();
 		}
 	} );
 	App.giftcards.prepareForm();
-	$(".chosen-select").chosen();
 });
 </script>
