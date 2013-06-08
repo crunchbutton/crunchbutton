@@ -81,8 +81,9 @@
 <?php 
 $count = 0;
 $giftcards = $this->giftcards;
-if( $giftcards->count() > 0 ) {
+if( sizeof( $giftcards ) > 0 ) {
 	foreach( $giftcards as $giftcard ){
+		if( !$giftcard ){ continue; }
 		$count++;
 		if( $giftcard->id_restaurant ){
 			$restaurant = $giftcard->restaurant();
@@ -102,7 +103,7 @@ if( $giftcards->count() > 0 ) {
 	<?php 
 		if( $count % 3 == 0 ){
 			?>
-			<div class="page-break"></div>
+			<div class="page-break">---</div>
 			<?php
 		}
 	?>
