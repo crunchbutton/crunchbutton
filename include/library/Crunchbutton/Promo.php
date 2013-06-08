@@ -124,7 +124,75 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function multiple( $ids ){
-		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo IN ( ' . $ids . ' )');
+		
+		$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo IN ( ' . $ids . ' )');
+		
+		// Change the way it is sorted - Issue #1419
+		$idsArray = explode( ',', $ids );
+		$giftcardPerPage = 3;
+		$totalGifts = sizeof( $idsArray );
+		$giftsPerPosition = ceil( $totalGifts / $giftcardPerPage );
+		$left = $totalGifts % $giftcardPerPage;
+		$perPosition = array();
+		$idsOrdered = array();
+		if( $left != 0 ){
+			for( $i = 0; $i < $giftcardPerPage; $i++ ){
+				if( $left > 0 ){
+					$perPosition[ $i ] = $giftsPerPosition;
+					$left--;
+				} else {
+					$perPosition[ $i ] = $giftsPerPosition - 1;
+				}
+			}
+		} else {
+			for( $i = 0; $i <= $giftcardPerPage; $i++ ){
+				$perPosition[ $i ] = $giftsPerPosition ;
+			}
+		}
+		$startsAt = array();
+		$sum = 0;
+		for( $i = 0; $i < sizeof( $perPosition ); $i ++ ){
+			$startsAt[ $i ] = $sum;
+			$sum = $sum + $perPosition[ $i ];
+		}
+		for( $i = 0; $i < $giftsPerPosition; $i++ ){
+			for( $j = 1; $j <= $giftcardPerPage; $j++ ){
+				if( sizeof( $idsOrdered ) < sizeof( $idsArray ) ){
+					$index = $startsAt[ $j - 1 ] + $i;
+					$idsOrdered[] = $idsArray[ $index ];
+				}
+			}
+		}
+		
+		// Remove duplicated - It should not to have duplicated, it is just to make sure!
+		array_unique( $idsOrdered );
+
+		// Make sure that all the ids where included
+		foreach ( $idsArray as $idArray ) {
+			$has = false;
+			foreach ( $idsOrdered as $idOrdered ) {
+				if( $idArray == $idOrdered ){
+					$has = true;
+				}
+			}
+			if( !$has ){
+				$idsOrdered[] = $idArray;
+			}
+		}
+		
+		$giftcardsArray = array();
+		$giftcardsOrdered = array();
+
+		// Convert the interactor to array
+		foreach ( $giftcards as $giftcard ) {
+			$giftcardsArray[ $giftcard->id_promo ] = $giftcard;
+		}
+
+		// Sort
+		for( $i = 0; $i < sizeof( $idsOrdered ); $i ++ ){
+			$giftcardsOrdered[] = $giftcardsArray[ $idsOrdered[ $i ] ];
+		}
+		return $giftcardsOrdered;
 	}
 
 	public function credit(){
