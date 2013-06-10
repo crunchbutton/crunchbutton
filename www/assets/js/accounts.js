@@ -3,8 +3,6 @@
  */
 App.signin.init = function() {
 
-	$('.wrapper').append(App.render('signin'));
-
 	$(document).on('touchclick', '.signin-facebook-button', function() {
 		App.signin.facebook.login();
 	});
@@ -60,12 +58,13 @@ App.signin.init = function() {
 	});
 
 	$(document).on('touchclick', '.signin-user', function() {
-		History.pushState({}, 'Your Account', '/orders');;
+		//History.pushState({}, 'Your Account', '/orders');;
 	});
-
+/*
 	History.Adapter.bind(window,'statechange',function() {
 		App.signin.checkUser();
 	});
+*/
 
 	App.signin.facebook.init();
 }
@@ -156,6 +155,10 @@ App.signin.manageLocation = function(){
  */
 App.signin.signOut = function(){
 	if (confirm( 'Confirm sign out?')){
+		// Force to remove the cookies
+		$.each( [ 'token', 'location', 'PHPSESSID' ], function( index, value ){
+			$.cookie( value, null );
+		} );
 		if( App.signin.facebook.isLogged ){
 			FB.logout( function(){
 				$.getJSON('/api/logout',function(){
@@ -172,7 +175,6 @@ App.signin.signOut = function(){
 	}
 }
 
-
 App.signin.facebook = {
 	running: false,
 	init: function() {}
@@ -184,11 +186,15 @@ App.signin.facebook.processStatus = function( session ){
 			App.facebook.registerToken( session.authResponse.accessToken );	
 		}
 		App.signin.facebook.isLogged = true;
+		
+		App.log.account( { 'userID' : session.authResponse.userID} , 'facebook login' );
 		if( App.signin.facebook.shouldAuth ){
 			FB.api( '/me', { fields: 'name' }, function( response ) {
 				if ( response.error ) {
+					App.log.account( { 'userID' : session.authResponse.userID, 'error' : response.error } , 'facebook name error' );
 					return;
 				}
+				App.log.account( { 'userID' : session.authResponse.userID, 'response' : response, 'shouldAuth' : App.signin.facebook.shouldAuth, 'running' : App.signin.facebook.running } , 'facebook response' );
 				if( response.id ){
 					App.signin.facebook.shouldAuth = false;
 					$( '.signin-facebook-message' ).show();
@@ -199,18 +205,18 @@ App.signin.facebook.processStatus = function( session ){
 					var url = App.service + 'user/facebook';
 					if( !App.signin.facebook.running ){
 						App.signin.facebook.running = true;
+						App.log.account( { 'userID' : session.authResponse.userID, 'running' : App.signin.facebook.running } , 'facebook running' );
 						$.ajax( {
 							type: 'GET',
 							url: url,
 							dataType: 'json',
 							success: function( json ){
+								App.log.account( { 'userID' : session.authResponse.userID, 'running' : App.signin.facebook.running, 'json' : json } , 'facebook ajax' );
 								App.signin.facebook.running = true;
 								if( json.error ){
 									if( json.error == 'facebook id already in use' ){
-
 										// Log the error
 										App.log.account( { 'error' : json.error } , 'facebook error' );
-
 										alert( 'Sorry, It seems the facebook user is already related with other user.' );
 									}
 								} else {
@@ -221,12 +227,11 @@ App.signin.facebook.processStatus = function( session ){
 									}
 									App.signin.manageLocation();
 								}
-								try{
-									$( '.signin-container' ).dialog( 'close' );
-								} catch(e){}
-								try{
-									$( '.signup-container' ).dialog( 'close' );
-								} catch(e){}
+								// Closes the dialog
+								try{ $( '.ui-dialog-content' ).dialog( 'close' );} catch(e){};
+								
+								App.log.account( { 'userID' : session.authResponse.userID, 'currentPage' : App.currentPage } , 'facebook currentPage' );
+
 								// If the user is at the restaurant's page - reload it
 								if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
 									App.page.restaurant( App.restaurant.permalink );
@@ -494,8 +499,6 @@ App.signup = {};
  * event binding
  */
 App.signup.init = function() {
-
-	$('.wrapper').append(App.render('signup'));
 
 	$(document).on('touchclick','.signup-add-password-button', function() {
 		App.signup.show(false);

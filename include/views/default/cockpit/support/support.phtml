@@ -2,8 +2,6 @@
 	$support = $this->support;
 	$order = $support->order();
 
-
-
 	$this->title = 'Support';
 	$this->titleicon = 'comments';
 	$this->titleLink = '/support';
@@ -13,59 +11,226 @@
 
 ?>
 
-
-
 <!-- support page -->
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="span6">
 			<?=$this->display('support/info')?>
-		</div>
-		<div class="span6">
-			<?=$this->display('support/conversation')?>
-		</div>
-	</div>
-	
-	<div class="row-fluid">
-		<div class="span6">
+			<?=$this->display('support/update')?>
 			<?=$this->display('support/actions')?>
 		</div>
 		<div class="span6">
-			<?=$this->display('support/notes')?>
+			<?=$this->display('support/conversation')?>
+			<?=$this->display('support/addnote')?>
 		</div>
 	</div>
-
 </div>
 <!-- // end support page -->
 
-
-
 <script>
+/* Shows the feedbacks */
+function showAlert( box, css, message ){
+	var alert = $( box );
+	alert.removeClass( 'alert-error' );
+	alert.removeClass( 'alert-success' );
+	alert.addClass( 'alert-' + css );
+	alert.find( '.alert-message' ).html( message );
+	alert.show();
+	setTimeout( function(){
+		$( '.alert' ).hide();
+	}, 3000 );
+}
+
+/* Update the Log history */
+function updateConversationHistory(){
+	var url = '/support/<?php echo $support->id_support; ?>/history';
+	$.ajax( {
+		url: url
+	} ).done( function( content ) {
+		$( '#history' ).html( content );
+		setTimeout( function(){
+			var box = $( '.chat-box-wrapper' );
+			box.animate( { scrollTop: box[0].scrollHeight + 300 }, 100 );
+		}, 10 );
+	} );
+}
 
 $(function() {
-	var w = $('.chat-box-wrapper');
-	w.stop().animate({ scrollTop: w[0].scrollHeight }, 800);
-	
-	$('.support-conversation-reply').submit(function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		var i = $(this).find('[name="text"]');
-		var val = i.val();
-		i.val('Sending...');
-		i.prop('enabled',false);
+
+	/* Control the conversation's filter */
+	$( '.show-conversation' ).on( 'ifChanged', function( event ){
+		var allChecked = true;
+		var checkbox = $( this );
+		/* If the user choose show-all check all */
+		if( checkbox.attr( 'id' ) == 'show-all' && checkbox.is( ':checked' ) ){
+			allChecked = true;
+			$( '.show-conversation' ).iCheck( 'check' );
+		} else {
+			$( '#show-system, #show-client, #show-rep' ).each( function(){
+				var checkbox = $( this );
+				if( !checkbox.is( ':checked' ) ){
+					allChecked = false;
+				}
+			} );
+			if( allChecked ){
+				$( '.show-conversation' ).iCheck( 'check' );
+			} else {
+				$( '#show-all' ).iCheck( 'uncheck' );
+			}
+		}
+		/* Apply the filter */
+		$( '.show-conversation' ).each( function(){
+			var checkbox = $( this );
+			var css = '.conversation-' + checkbox.val();
+			if( checkbox.is( ':checked' ) ){
+				$( css ).show();
+			} else {
+				$( css ).hide();
+			}
+		} ); 
+	} );
+
+	/* Form reply conversation */
+	$( document ).on( 'click', '.btn-conversation-reply', function(){
+
+		var text = $( '#text-conversation-reply' );
+		var val = text.val();
+
+		if( $.trim( val ) == '' ){
+			alert( 'Please type the text!' );
+			text.focus();
+			return;
+		}
+
+		text.val( 'Sending...' );
+		text.prop( 'enabled', false );
 		
-		$.post('/support/' + $(this).find('[name="id_support"]').val() + '/conversation', {
+		$.post('/support/<?php echo $support->id_support; ?>/conversation', {
 			text: val
-		}, function(res) {
-			i.prop('enabled',true);
-			i.val('');
-			w.find('.chat-box').append(res);
-			w.stop().animate({ scrollTop: w[0].scrollHeight }, 800);
-		});
+		}, function( ) {
+			text.prop( 'enabled',true );
+			text.val( '' );
+			updateConversationHistory();
+		} );
 		return;
+	} );
+
+	/* Show the hidden field */
+	$( document ).on( 'change', '#user_perspective', function(){
+		if( $( this ).val() == 'Other' ){
+			$( ".user_perspective_other" ).show();		
+		} else {
+			$( ".user_perspective_other" ).hide();
+		}
+	} );
+
+	/* Form update */
+	$(document).on('click', '.button-update', function() {
+		
+		$( '.alert' ).hide();
+
+		var fault_of = $( '#fault_of' ).val();
+		var customer_happy = ( $('#customer_happy').is(':checked') ? 1 : 0 );
+		var status = ( $('#status').is(':checked') ? 'open' : 'closed' );
+		var id_github = $( '#id_github' ).val();
+		var description_client = $( '#description_client' ).val();
+		var description_cb = $( '#description_cb' ).val();
+		var user_perspective = $( '#user_perspective' ).val();
+		var user_perspective_other = $( '#user_perspective_other' ).val();
+		var how_to_prevent = $( '#how_to_prevent' ).val();
+
+		var data = { 
+								'status' : status,
+								'fault_of' : fault_of,
+								'customer_happy' : customer_happy,
+								'id_github' : id_github,
+								'description_client' : description_client,
+								'description_cb' : description_cb,
+								'user_perspective' : user_perspective,
+								'user_perspective_other' : user_perspective_other,
+								'how_to_prevent' : how_to_prevent
+							};
+
+		var url = '/support/<?php echo $support->id_support; ?>/update';
+		$.ajax({
+			type: 'POST',
+			dataType: 'json',
+			data: data,
+			url: url,
+			success: function(content) {
+				showAlert( '.alert-update', 'success', '<strong>Ok!</strong> Support saved!' );
+				updateConversationHistory();
+			},
+			error: function( ){
+				showAlert( '.alert-update', 'error', '<strong>Oops!</strong> Failed to save, please try it again' );
+				updateConversationHistory();
+			}
+		});
+	} );
+
+	/* Form add note */
+	$(document).on('click', '.button-add-note', function() {
+		
+		$( '.alert' ).hide();
+
+		if( $( '.add-note-field' ).css('display') != 'none' ){
+			var text = $( '#add-note-text' );
+			var val = text.val();
+			if( $.trim( val ) == '' ){
+				alert( 'Please type the text!' );
+				text.focus();
+				return;
+			}
+			text.val( 'Sending...' );
+			text.prop( 'enabled', false );
+
+			$.post(' /support/<?php echo $support->id_support; ?>/note', {
+				text: val
+			}, function( ) {
+				text.prop( 'enabled',true );
+				text.val( '' );
+				updateConversationHistory();
+				$( '.add-note-field' ).hide();
+				$( '.button-add-note' ).html( $( '.button-add-note' ).attr( 'text-backup' ) );
+				showAlert( '.alert-note', 'success', '<strong>Ok!</strong> Note saved!' );
+			} );
+
+		} else {
+			$( '.add-note-field' ).show();
+			$( '.button-add-note' ).attr( 'text-backup', $( '.button-add-note' ).html() );
+			$( '.button-add-note' ).html( 'Save note' );
+		}
+
+	} );
+
+	/* Button refund */
+	$(document).on('click', '.button-refund', function() {
+		
+		$( '.alert' ).hide();
+
+		var el = $( this );
+		var parent = el.parent();
+
+		var question = 'Are you sure you want to refund this?';
+		if( parseFloat( el.attr( 'data-gift' ) ) > 0 ){
+			question += "\n";
+			question += 'A gift card was used at this order the refund value will be $' + el.attr( 'data-charged' ) + ' + $' + el.attr( 'data-gift' ) + ' as gift card.' ;
+		}
+		if (!confirm( question )) {
+			return;
+		}
+		
+		var button = parent.html();
+		
+		parent.html( '<i class="icon-cogs"></i> Processing' );
+		
+		$.getJSON('/api/order/' + el.attr('data-uuid') + '/refund', function( json ) {
+			showAlert( '.alert-refund', 'success', '<strong>Ok!</strong> Order refunded!' );
+			parent.html( '<b>Order refunded.</b>' );
+			updateConversationHistory();
+		});
 	});
 
-	
 	var restaurants = [];
 	<? foreach (Restaurant::q('select * from restaurant where active=1 order by name') as $restaurant) : ?>
 		restaurants.push({
@@ -78,5 +243,8 @@ $(function() {
 		inputclass: "input-large",
 		source: restaurants
 	});
+
+	updateConversationHistory();
+
 });
 </script>

@@ -1,0 +1,96 @@
+<?php
+$support = $this->support;
+?>
+
+<div class="alert alert-update" style="display:none;">
+	<span class="alert-message"></span>
+</div>
+
+<div class="box">
+	<div class="box-header">
+		<span class="title">Update</span>
+	</div>
+	<div class="box-content">
+		<form class="fill-up">
+			<ul class="box-list">
+				<li>
+					<span>Fault of</span>
+					<span class="pull-right">
+						<?php 
+						$options = array( 'crunchbutton', 
+															'customer',
+															'restaurant',
+															'other'
+														);
+						?>
+						<select name="fault_of" id="fault_of" class="uniform">
+							<? 
+							foreach ($options as $option) { 
+							$selected = ( $option == $support->fault_of ) ? 'selected="selected"' : ''; ?>
+								<option <?=$selected?> value="<?=$option?>"><?=$option?></option>
+							<? } ?>
+						</select>
+					</span>
+					<div style="clear: both;"></div>
+				</li>
+				<li>
+					<span>User Happy</span>
+					<span class="pull-right">
+						<input type="checkbox" name="customer_happy" id="customer_happy" class="iButton-icons" <?=$support->customer_happy ? 'checked' : ''?>>
+					</span>
+					<div style="clear: both;"></div>
+				</li>
+				<li>
+					<span>Ticket Open</span>
+					<span class="pull-right">
+						<input type="checkbox" id="status" name="status" class="iButton-icons" <?=$support->status == 'open' ? 'checked' : ''?>>
+					</span>
+				</li>
+				<li class="input">
+					<span>Ticket #<? if ($support->id_github) : ?><a href="https://github.com/crunchbutton/crunchbutton/issues/<?=$support->id_github?>"><?php echo $support->id_github; ?></a><? endif ; ?></span>
+					<span class="pull-right">
+						<input type="text" placeholder="Github Ticket ID" name="id_github" id="id_github" value="<?=$support->id_github?>">
+					</span>
+				</li>
+				<li>
+					<label>What Happened from User's Perspective?</label>
+					<?php 
+					$options = array( '',
+														'Food never came', 
+														'Wrong options',
+														'Wrong or missing food items',
+														'Realized they made a mistake using website',
+														'Got a call from us or restaurant cancelling the order',
+														'Had a question / confused by something',
+														'Gift Card or Account issue',
+														'Was overcharged (or undercharged)',
+														'Missed phone call from restaurant',
+														'Other'
+													);
+					?>
+					<select class="chzn-select" name="user_perspective" id="user_perspective">
+						<? 
+						foreach ($options as $option) { 
+						$selected = ( $option == $support->user_perspective ) ? 'selected="selected"' : ''; ?>
+							<option <?=$selected?> value="<?=$option?>"><?=$option?></option>
+						<? } ?>
+					</select>
+				</li>
+				<li class="user_perspective_other" <?php if( $support->user_perspective != 'Other' ) { ?>style="display:none"<?php } ?>>
+					<input type="text" name="user_perspective_other" id="user_perspective_other" value="<?php echo $support->user_perspective_other; ?>" placeholder="Describe the user's perspective">
+				</li>
+				<li class="input">
+					<label>What Went Wrong Behind the Scenes?</label>
+					<textarea name="description_cb" id="description_cb"><?php echo $support->description_cb;?></textarea>
+				</li>
+				<li class="input">
+					<label>How to Prevent This in the Future?</label>
+					<textarea name="how_to_prevent" id="how_to_prevent"><?php echo $support->how_to_prevent;?></textarea>
+				</li>
+				<li class="input">
+					<button type="button" class="btn btn-blue button-update">Save changes</button>
+				</li>
+			</ul>
+		</form>
+	</div>
+</div>

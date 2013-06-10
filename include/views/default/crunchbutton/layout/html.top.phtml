@@ -1,8 +1,9 @@
 <!doctype html>
-<html>
+<html><?/*  data-ng-app="NGApp" */?>
 <head>
 <title><?=$this->title ? $this->title : 'Crunchbutton'?></title>
 <? /* <meta name="viewport" content="user-scalable=no, initial-scale = 1.0,maximum-scale = 1.0"> */ ?>
+<meta name="fragment" content="!" />
 <meta name="viewport" content="initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -42,7 +43,7 @@ var _gmtServer = '<?php echo $utc_str;?>';
 
 <? foreach (new DirectoryIterator(c::config()->dirs->view.'default/crunchbutton/frontend') as $fileInfo) : ?>
 	<? if (!$fileInfo->isDot()) : ?>
-		<script type="text/template" class="template-<?=$fileInfo->getBasename('.phtml')?>">
+		<script type="text/ng-template" id="view/<?=$fileInfo->getBasename('.phtml')?>.html">
 			<?=file_get_contents($fileInfo->getPathname())?>
 		</script>
 	<? endif ; ?>

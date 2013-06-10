@@ -1,286 +1,251 @@
-<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
-	<div class="cart-summary-icon"></div>
-	<div class="cart-summary-item-count"><span></span></div>
-	<div class="cart-summary-items"></div>
+<div ng-show="!restaurant.id">
+	Restaurant Loading Message
 </div>
 
-<div class="giftcard-badge-container">
-	<div class="giftcard-badge">
-		<div class="giftcard-badge-value"></div>
+<div ng-show="restaurant.id">
+	<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
+		<div class="cart-summary-icon"></div>
+		<div class="cart-summary-item-count"><span></span></div>
+		<div class="cart-summary-items"></div>
 	</div>
-	<div class="giftcard-badge-tooltip"></div>
-</div>
 
-
-<div class="restaurant-name">
-	<h1><%= restaurant.name %></h1>
-	<div class="giftcard-desktop-container">
-		<div class="giftcard-desktop-message"></div>
+	<div class="giftcard-badge-container">
+		<div class="giftcard-badge">
+			<div class="giftcard-badge-value"></div>
+		</div>
+		<div class="giftcard-badge-tooltip"></div>
 	</div>
-</div>
 
-<% if (restaurant.message) { %>
-	<div class="restaurant-message">
-		<%= restaurant.message %>
+	<div class="restaurant-name">
+		<h1>{{restaurant.name}}</h1>
+		<div class="giftcard-desktop-container">
+			<div class="giftcard-desktop-message"></div>
+		</div>
 	</div>
-<% } %>
-
-<% if (restaurant.image) { %>
-	<div class="restaurant-pic-wrapper<%= (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : '' %>">
-		<div class="restaurant-pic" style="background: url(<%= restaurant.img %>);"></div>
+	
+	<div class="restaurant-message" ng-bind-html-unsafe="restaurant.message" ng-show="restaurant.message"></div>
+	
+	<div ng-show="restaurant.image" class="restaurant-pic-wrapper {{AB.restaurantPage}}">
+		<div class="restaurant-pic" style="background: url({{restaurant.img}});"></div>
 	</div>
-<% } %>
-
-<% if (restaurant.message) { %>
+	
+	<div ng-show="restaurant.message" class="main-content-readable">
+		<div class="restaurant-message-mobile" ng-bind-html-unsafe="restaurant.message"></div>
+	</div>
+	
+	<? /* main-content-readable-margin */ ?>
 	<div class="main-content-readable">
-		<div class="restaurant-message-mobile">
-			<%= restaurant.message %>
-		</div>
-	</div>
-<% } %>
-
-<div class="main-content-readable <% if (restaurant.message) { %>main-content-readable-margin<% } %>">
-	<? /* cart */ ?>
-	<div class="cart-items <%= (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? '' : ' restaurant-with-image' %>">
-		<div class="restaurant-item-title text-your-order">Your Order <%= App.suggestion.tooltipContainer( 'mobile' ) %></div>
-		<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
-		<div class="divider"></div>
-		<div class="delivery-minimum-error">Add <%= (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '' %><span class="delivery-min-diff"><%= parseFloat(restaurant.delivery_min -  App.cart.total()).toFixed(2) %></span> from menu to meet delivery minimum.</div>
-		<div class="cart-items-content"></div>
-		
-		<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for <%= restaurant.name %></label></div>
-	</div>
-	
-	<? /* menu */ ?>
-	<div class="restaurant-items">
-		<div class="content-item-name content-item-main-name"><h1>Add to your order<%= App.suggestion.tooltipContainer( 'desktop' ) %></h1></div>
-	
-		<% _.each(restaurant.categories(), function(category) { %>
-			<div class="restaurant-item-title"><%= category.name %><%= (category.loc == '1' && community && community.name) ? (' at ' + community_name) : '' %></div>
-			<ul class="resturant-dishes resturant-dish-container" date-id_category="<%= category.id_category %>">
-				<% _.each(category.dishes(), function(dish) { %>
-					<li data-id_dish="<%= dish.id_dish %>" class="dish-item"><span class="dish-name"><%= dish.name %></span><span class="dish-price">(<%= (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '' %><%= dish.price %><% if( App.config.ab && App.config.ab.changeablePrice == 'show' && dish.changeable_price ) { %>+<% } %>)</span></li>
-				<% }); %>
-			</ul>
-		<% }); %>
-	
-		<%= App.suggestion.link() %>
-		
-	</div>
-	<div class="divider"></div>
-</div>
-<div class="restaurant-payment-div"></div>
-
-<? /* payment and user info */ ?>
-<form class="payment-form main-content-readable">
-
-	<% if( !App.restaurant.open() ) { %>
-	<div class="restaurant-closed">
-		<div class="restaurant-closed-icon"></div>
-		<div class="restaurant-closed-content">
-			<span class="restaurant-closed-title">
-				<%= restaurant.name %> is currently closed!
-			</span>
-			<span class="restaurant-closed-content">
-				It will be open during the following hours (EDT):	<br/> 
-				<%= App.nl2br( restaurant.closedMessage() ) %>	
-			</span>
-		</div>
-		<div class="divider"></div>
-	</div>
-	<% } %>
-	
-	<% if( App.restaurant.open() ) { %>
-	
-	<div class="content-item-name"><h1>Your Info</h1></div>
-	<div class="your-info-label">(enter this once, and we'll save it for next time)</div>
-	
-	<? /* user info */ ?>
-	<div class="delivery-info-container">
-		<% if (restaurant.delivery == '1' && restaurant.takeout == '1') { %>
-			<label class="pay-title-label">Delivery Info</label>
-			<div class="input-item toggle-wrapper clearfix">
-				<button class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</button>
-				<span class="toggle-spacer delivery-only-text">or</span>
-				<button class="delivery-toggle-takeout toggle-item">takeout</button>
-			</div>
-		<% } else if (restaurant.delivery == '1') { %>
-			<label class="pay-title-label">Delivery Info</label>
-		<% } else { %>
-			<label class="pay-title-label">Takeout Info </label>
-			<span class="take-out-only">Take out only!</span>
-		<% } %>
-
-
-		<div class="personal-info field-container">
-			<div class="divider"></div>
-			<label>Name</label>
-			<div class="input-item"><input type="text" name="pay-name" tabindex="2" value="<%= form.name %>"></div><div class="divider"></div>
-
-			<label>Phone #</label>
-			<div class="input-item"><input type="tel" name="pay-phone" tabindex="3" value="<%= form.phone %>"></div><div class="divider"></div>
-
-			<label class="delivery-only">Address</label>
-			<div class="input-item delivery-only"><textarea name="pay-address" tabindex="5"><%= form.address %></textarea></div>
-			<div class="divider"></div>
-
-			<% if( restaurant.id != 74 ) { %>
-				<label>Notes</label>
-				<div class="input-item"><textarea name="notes" tabindex="6"><%= form.notes %></textarea></div><div class="divider"></div>
+		<? /* cart */ ?>
+		<div class="cart-items {{AB.restaurantPage}}">
+			<div ng-show="restaurant._open">
+				<div class="restaurant-item-title text-your-order">
+					Your Order 
+					<div ng-show="App.isMobile()" ng-include="view/restaurant.suggestion.tooltip.html"></div>
+				</div>
+				<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
 				<div class="divider"></div>
-				<div class="giftcard-info"></div>
-			<% } %>
-
-
-		</div>
-	</div>
-
-	<div class="divider"></div>
-	
-	<? /* payment info */ ?>
-	<div class="payment-info-container">
-
-
-		<div class="payment-info field-container">
-
-			<label class="pay-title-label">Payment Method</label>
-			<div class="input-item toggle-wrapper">
-				<% if( restaurant.credit == '1' ) { %>
-					<button class="pay-toggle-credit toggle-item">card</button> 
-				<% } %>
-				<% if( restaurant.credit == '1' && restaurant.cash == '1' ) { %>
-					<span class="toggle-spacer">or</span> 
-				<% } %>
-				<% if( restaurant.cash == '1' ) { %>
-					<button class="pay-toggle-cash toggle-item">cash</button>
-				<% } %>
-			</div><div class="divider"></div>
-
-				<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>
-					<div class="card-icons">
-						<div class="payment-card card-visa payment-card-grey" title="visa"></div>
-						<div class="payment-card card-master-card" title="master card"></div>
-						<div class="payment-card card-amex" title="american express"></div>
-						<div class="payment-card card-discover" title="discover card"></div>
-					</div>
-				</div>
-
-				<label class="card-only">Credit card #</label>
-				<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6" value="<%= form.card.number %>"></div><div class="divider"></div>
-
-				<label class="card-only">Expiration</label>
-				<div class="input-item card-only">
-					<select name="pay-card-month" tabindex="7">
-						<option>Month</option>
-						<% for (var x=1; x<=12; x++) { %>
-							<option value="<%= x %>"<%= form.card.month == x ? ' selected' : '' %>><%= x %></option>
-						<% } %>
-					</select>
-					<select name="pay-card-year" tabindex="8">
-						<option>Year</option>
-						<% var date = new Date().getFullYear(); %>
-						<% for (var x=date; x<=date+20; x++) { %>
-							<option value="<%= x %>"<%= form.card.year == x ? ' selected' : '' %>><%= x %></option>
-						<% } %>
-
-					</select>
-					<div class="divider"></div>
-				</div>
-
-				<div class="divider"></div><label class="card-only">Tip</label>
-				<div class="input-item card-only">
-
-	        <input type="hidden" name="pay-autotip-value" value="0"/>
-					<select name="pay-tip" class="tip" tabindex="9">
-	            <option value="autotip" selected>Autotip</option>
-						<% _.each(App.tips, function(tip) { 
-								text = ( tip == 0 ) ? 'Tip with cash' : tip + '%';
-							%>
-							<option value="<%= tip %>"><%= text %></option>
-						<% }); %>
-					</select>
-					<div class="divider"></div>
-				</div>
+				<div class="delivery-minimum-error">Add{{AB.dollar}}<span class="delivery-min-diff">{{cart.totalFixed}}</span> from menu to meet delivery minimum.</div>
+				<div class="cart-items-content"></div>
+				<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for {{restaurant.name}}</label></div>
 			</div>
+		</div>
 
+		<? /* menu */ ?>
+		<div class="restaurant-items">
+			<div class="content-item-name content-item-main-name">
+				<h1>
+					Add to your order
+					<div ng-show="!App.isMobile()" ng-include="view/restaurant.suggestion.tooltip.html"></div>
+				</h1>
+			</div>
+		
+			<div ng-repeat="category in restaurant.categories()">
+				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
+				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
+					<li ng-repeat="dish in category.dishes()" data-id_dish="{{dish.id_dish}}" class="dish-item">
+						<span class="dish-name">{{dish.name}}</span><span class="dish-price">({{AB.dollar}}{{dish.price}}{{AB.changeablePrice(dish)}})</span>
+					</li>
+				</ul>
+			</div>
+		
+			<div class="suggestion-link-container">
+				<div class="suggestion-link-title">Really want something else?</div>
+				<a href="javascript:;" class="suggestion-link">Suggest other food</a>
+			</div>
+			
+		</div>
+		<div class="divider"></div>
 	</div>
+	<div class="restaurant-payment-div"></div>
 	
-	<div class="divider"></div>
-	<div class="payment-total">
-		You're paying:&nbsp;<span class="cash-order-aprox"></span>
-		&nbsp;<span class="cart-breakdownDescription"></span>&nbsp;
-		<strong class="cart-gift"></strong>
-		for a total of <span class="cart-total"></span>
-		&nbsp;<span class="cart-giftcard-message"></span>
-		&nbsp;<span class="cart-paymentType"></span>
-	</div>
-
-	<% } %>
-
-</form>
-
-<% if( App.restaurant.open() ) { %>
-	<div class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>
-<% } %>
-
-<? /* stored user info */ ?>
-<% if (presets) { %>
-
-	<div class="delivery-payment-info main-content-readable">
+	<? /* payment and user info */ ?>
+	<form class="payment-form main-content-readable">
 	
-		<% if( !App.restaurant.open() ) { %>
-		<div class="restaurant-closed">
+		<div class="restaurant-closed" ng-show="!restaurant.open()">
 			<div class="restaurant-closed-icon"></div>
 			<div class="restaurant-closed-content">
 				<span class="restaurant-closed-title">
-					<%= restaurant.name %> is currently closed!
+					{{restaurant.name}} is currently closed!
 				</span>
 				<span class="restaurant-closed-content">
-					It will be open during the following hours (EDT):	<br/> 
-					<%= App.nl2br( restaurant.closedMessage() ) %>	
+					It will be open during the following hours (EDT):<br> 
+					<span ng-bind-html-unsafe="nl2br(restaurant.closedMessage())"></span>
 				</span>
 			</div>
 			<div class="divider"></div>
 		</div>
-		<% } %>
 	
-		<% if( App.restaurant.open() ) { %>
+		
+		<div ng-show="restaurant._open">
+		
+			<div class="content-item-name"><h1>Your Info</h1></div>
+			<div class="your-info-label">(enter this once, and we'll save it for next time)</div>
+			
+			<? /* user info */ ?>
+			<div class="delivery-info-container">
+				<div ng-show="(restaurant.delivery == '1' && restaurant.takeout == '1')">
+					<label class="pay-title-label">Delivery Info</label>
+					<div class="input-item toggle-wrapper clearfix">
+						<button class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</button>
+						<span class="toggle-spacer delivery-only-text">or</span>
+						<button class="delivery-toggle-takeout toggle-item">takeout</button>
+					</div>
+				</div>
+				<div ng-show="(restaurant.delivery == '1' && restaurant.takeout != '1')">
+					<label class="pay-title-label">Delivery Info</label>
+				</div>
+				<div ng-show="(restaurant.delivery != '1' && restaurant.takeout == '1')">
+					<label class="pay-title-label">Takeout Info </label>
+					<span class="take-out-only">Take out only!</span>
+				</div>
 
-		<div class="dp-display-phone dp-display-item">
-
-			<label>Your phone number:</label> <%= (user.phone ? App.phone.format(user.phone) : '<i>no phone # provided</i>') %></div>
-
-			<div class="dp-display-payment dp-display-item ">
-				<label>You are paying&nbsp;<span class="cash-order-aprox"></span>: &nbsp;</label>
-				<span class="cart-breakdownDescription"></span>
+				<div class="personal-info field-container">
+					<div class="divider"></div>
+					<label>Name</label>
+					<div class="input-item"><input type="text" name="pay-name" tabindex="2" value="{{form.name}}"></div><div class="divider"></div>
+		
+					<label>Phone #</label>
+					<div class="input-item"><input type="tel" name="pay-phone" tabindex="3" value="{{form.phone}}"></div><div class="divider"></div>
+		
+					<label class="delivery-only">Address</label>
+					<div class="input-item delivery-only"><textarea name="pay-address" tabindex="5">{{form.address}}</textarea></div>
+					<div class="divider"></div>
+	
+					<div ng-show="(restaurant.id != 74)">
+						<label>Notes</label>
+						<div class="input-item"><textarea name="notes" tabindex="6">{{form.notes}}</textarea></div><div class="divider"></div>
+						<div class="divider"></div>
+						<div class="giftcard-info"></div>
+					</div>
+	
+				</div>
+			</div>
+		
+			<div class="divider"></div>
+			
+			<? /* payment info */ ?>
+			<div class="payment-info-container">
+		
+				<div class="payment-info field-container">
+		
+					<label class="pay-title-label">Payment Method</label>
+					<div class="input-item toggle-wrapper">
+						<button ng-show="(restaurant.credit == '1')" class="pay-toggle-credit toggle-item">card</button> 
+						<span ng-show="(restaurant.credit == '1' && restaurant.cash == '1')" class="toggle-spacer">or</span> 
+						<button ng-show="(restaurant.cash == '1')" class="pay-toggle-cash toggle-item">cash</button>
+					</div>
+	
+					<div class="divider"></div>
+		
+						<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>
+							<div class="card-icons">
+								<div class="payment-card card-visa payment-card-grey" title="visa"></div>
+								<div class="payment-card card-master-card" title="master card"></div>
+								<div class="payment-card card-amex" title="american express"></div>
+								<div class="payment-card card-discover" title="discover card"></div>
+							</div>
+						</div>
+		
+						<label class="card-only">Credit card #</label>
+						<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6" value="{{form.card.number}}"></div><div class="divider"></div>
+		
+						<label class="card-only">Expiration</label>
+						<div class="input-item card-only">
+							<select name="pay-card-month" tabindex="7">
+								<option>Month</option>
+								<option ng-repeat="x in form.months" value="{{x}}">{{x}}</option>
+							</select>
+							<select name="pay-card-year" tabindex="8">
+								<option>Year</option>
+								<option ng-repeat="x in form.years" value="{{x}}">{{x}}</option>
+							</select>
+							<div class="divider"></div>
+						</div>
+		
+						<div class="divider"></div><label class="card-only">Tip</label>
+						<div class="input-item card-only">
+		
+						<input type="hidden" name="pay-autotip-value" value="0">
+						<select name="pay-tip" class="tip" tabindex="9">
+				            <option value="autotip" selected>Autotip</option>
+							<option ng-repeat="tip in App.tips" value="{{tip}}">{( tip == 0 ) ? 'Tip with cash' : tip + '%'}</option>
+						</select>
+						<div class="divider"></div>
+					</div>
+				</div>
+		
+			</div>
+			
+			<div class="divider"></div>
+			<div class="payment-total">
+				You're paying:&nbsp;<span class="cash-order-aprox"></span>
+				&nbsp;<span class="cart-breakdownDescription"></span>&nbsp;
 				<strong class="cart-gift"></strong>
-				&nbsp;for a total of <span class="cart-total">$0.00</span>
+				for a total of <span class="cart-total"></span>
 				&nbsp;<span class="cart-giftcard-message"></span>
 				&nbsp;<span class="cart-paymentType"></span>
 			</div>
-		<% if ( ( lastOrderDelivery == 'delivery' || App.restaurant.delivery == '1' || App.restaurant.takeout == '0' ) && lastOrderDelivery != 'takeout' ) { %>
-			<div class="dp-display-address dp-display-item">
-				<label>Your food will be delivered to:</label><br />
-				<span class="user-address">
-					<%= (user.address ? user.address.replace("\n",'<br />') : '<i>no address provided</i>') %>
-				</span>
-			</div>
-		<% } else { %>
-			<div class="dp-display-address dp-display-item"><label>Address:</label> <i>takeout</i></div>
-		<% } %>
+		</div>
+	
+	</form>
+	
+	<div ng-show="restaurant._open" class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>
+	
+	<? /* stored user info */ ?>
+	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open">
+		<div class="dp-display-phone dp-display-item">
+			<label>Your phone number:&nbsp;</label>
+			<i ng-show="user.phone">{{formatPhone(user.phone)}}</i>
+			<i ng-show="!user.phone">no phone # provided</i>
+		</div>
+
+		<div class="dp-display-payment dp-display-item">
+			<label>You are paying&nbsp;<span class="cash-order-aprox"></span>: &nbsp;</label>
+			<span class="cart-breakdownDescription"></span>
+			<strong class="cart-gift"></strong>
+			&nbsp;for a total of <span class="cart-total">$0.00</span>
+			&nbsp;<span class="cart-giftcard-message"></span>
+			&nbsp;<span class="cart-paymentType"></span>
+		</div>
+
+		<div class="dp-display-address dp-display-item" ng-show="showRestaurantDeliv">
+			<label>Your food will be delivered to:</label><br />
+			<span class="user-address" ng-bind-html-unsafe="nl2br(form.address)"></span>
+			<i ng-hide="form.address">no address provided</i>
+		</div>
+		<div class="dp-display-address dp-display-item" ng-hide="showRestaurantDeliv">
+			<label>Address:</label> <i>takeout</i>
+		</div>
 
 		<div class="dp-display-address dp-display-item">
-			<a href="javascript:;"><i>Change delivery or payment details</i></a>
+			<span class="clickable">Change delivery or payment details</span>
 		</div>
 
 		<div class="divider"></div>
-
 	</div>
-	
-	<% } %>
 
-<% } %>
-<audio id="get-food-audio">
-	<source src="/assets/audio/crunch.mp3"></source>
-	<source src="/assets/audio/crunch.ogg"></source>
-</audio>
+	<audio id="get-food-audio">
+		<source src="/assets/audio/crunch.mp3"></source>
+		<source src="/assets/audio/crunch.ogg"></source>
+	</audio>
+</div>

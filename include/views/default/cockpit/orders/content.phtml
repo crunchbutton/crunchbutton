@@ -17,9 +17,9 @@
 	<table class="list-orders table table-normal">
 		<thead>
 			<tr>
-				<td>Info</td>
-				<td>Date</td>
-				<td>Restaurant</td>
+				<td style="width:120px;">Info</td>
+				<td style="width:95px;">Date</td>
+				<td style="width:120px;">Restaurant</td>
 				<td>Order</td>
 				<td>Price</td>
 				<td>Pay&nbsp;/&nbsp;Type</td>
@@ -31,20 +31,12 @@
 			<? $date = $order->date(); ?>
 			<tr class="list-order-item">
 				<td>
-
 					<a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a>
 					<br/>
 					<br/>
 					<?=$order->env?>
 					<br/>
 					<br/>
-					<? if ($order->notes) :?>
-						<div class="comments">
-							<a href="#" title="<?=$order->notes?>" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-comment"></span></a>
-						</div>
-						<br/>
-						<br/>
-						<? endif ?>
 							<? if ($order->refunded) : ?>
 								REFUNDED
 							<? else : ?>
@@ -59,19 +51,24 @@
 							<?php 
 							$giftcard = $order->hasGiftCard();
 							if( $giftcard > 0 ){
-								echo '<div style="color:red;margin-top:8px;">Received <strong style="font-weight:bold;">$' . number_format( $giftcard, 2 ) . '</strong> gift card.</div>';
+								echo '<br/><br/><i class="icon-gift"></i> Received <b>$' . number_format( $giftcard, 2 ) . '</b> gift card.';
 							}
 							?>
+							<br />
+							<br /> 
+
+							<div class="pointer pay_if_refunded" data-value="<?php if( $order->pay_if_refunded ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
+								<span><?php if( $order->pay_if_refunded ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span> Pay if Refunded?
+							</div>
 					<br/>
 
-					<br/>
 					<?
 						$support = Support::getSupportForOrder($order->id);
 						if($support) {
-							echo "<a href='/support/$support->id'>view support ticket</a>";
+							echo '<i class="icon-comments"></i> <a href="/support/$support->id">View support ticket</a>';
 						}
 						else {
-							echo "<a href='javascript:create_support_from_order($order->id);'>create support ticket</a>";
+							echo '<i class="icon-comments"></i> <a href="javascript:create_support_from_order(' . $order->id . ');">Create support ticket</a>';
 						}
 					?>
 
@@ -82,17 +79,16 @@
 				</td>
 				<td>
 					<?=$order->restaurant()->name?>
-					<br/>
-					<br/>
 					<hr/>
-					<?php if( $order->confirmed ) { ?>
-						Confirmed!
-					<?php } else { ?>
-						NOT confirmed.
-					<?php } ?>
-					<br/>
-					<br/>
-					<a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend notification</a>
+					<?php if( $order->restaurant()->confirmation || $order->restaurant()->hasPhoneNotification() ){
+						if( $order->confirmed ) { 
+							echo '<i class="icon-thumbs-up"></i> Confirmed!';
+						} else {
+							echo '<i class="icon-thumbs-down"></i> NOT confirmed.';
+						}
+						echo '<br/><br/>';
+					} ?>
+					<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend notification</a>
 				</td>
 				<td style="width: 300px; white-space: normal;">
 					<ul>
@@ -115,39 +111,39 @@
 					<? endforeach ; ?>
 					</ul>
 				</td>
-				<td>
-					<table>
+				<td style="padding:0;">
+					<table style="margin:0;">
 						<tr>
-							<th>Subtotal</th>
-							<td>$<?=number_format($order->price,2)?></td>
+							<td style="border-top:0;">Subtotal</td>
+							<td style="border-top:0;">$<?=number_format($order->price,2)?></td>
 						</tr>
 						<tr>
-							<th>Service Fee</th>
+							<td>Service Fee</td>
 							<td>$<?=$order->serviceFee()?> ($<?=$order->service_fee ? $order->service_fee : '0'?>) </td>
 						</tr>
 						<tr>
-							<th>Delivery Fee</th>
+							<td nowrap="">Delivery Fee</td>
 							<td>$<?=$order->deliveryFee()?></td>
 						</tr>
 						<tr>
-							<th>Tax</th>
+							<td>Tax</td>
 							<td>$<?=$order->tax()?> (<?=$order->tax ? $order->tax : '0'?>%)</td>
 						</tr>
 						<tr>
-							<th>Tip</th>
+							<td>Tip</td>
 							<td>$<?=$order->tip()?> <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo '(' . $order->tip . '%)'; } ?></td>
 						</tr>
 						<tr>
-							<th>Total</th>
+							<td>Total</td>
 							<td>$<?=number_format($order->final_price,2)?></td>
 						</tr>
 						<?php if( $order->chargedByCredit() > 0 ) { ?>
-						<tr style="background:#CCC;">
-							<th>Gift card</th>
+						<tr style="background:#F5F5F5;">
+							<td>Gift card</td>
 							<td>$<?=$order->chargedByCredit();?></td>
 						</tr>
-						<tr style="background:#CCC;">
-							<th>Charged</th>
+						<tr style="background:#F5F5F5;">
+							<td>Charged</td>
 							<td>$<?=$order->charged();?></td>
 						</tr>
 						<?php } ?>
@@ -159,25 +155,32 @@
 					<br />
 					<?=$order->delivery_type?>
 				</td>
-				<td>
-					<table>
-						<tr>
-							<td><strong style="font-weight:bold;">Name</strong> <br/> <?=$order->name?> </td>
+				<td style="padding:0;">
+					<table style="margin:0;border-top:0;width:100%;">
+						<tr title="Name">
+							<td style="border-top:0;"><i class="icon-user"></i> <?=$order->name?> </td>
 						</tr>
-						<tr>
-							<td><strong style="font-weight:bold;">Phone</strong> <br/> <?=$order->phone?> </td>
+						<tr title="Phone">
+							<td><i class="icon-phone"> </i><?=$order->phone();?> </td>
 						</tr>
 						<?php if ($order->delivery_type == 'delivery') { ?>
-						<tr>
-							<td><strong style="font-weight:bold;">Address</strong> <br/> <?=$order->address?> </td>
-							
+						<tr title="Address">
+							<td><i class="icon-home"></i> <?=$order->address?> </td>
 						</tr>
 						<?php } ?>
+						<? if ($order->notes) :?>
+							<tr>
+								<td>
+									<span>
+										<i class="icon-file-alt"></i> <?php echo $order->notes;	?>
+									</span>
+								</td>
+							</tr>
+						<? endif ?>
 						<tr>
 							<td>
-								<hr/>
 								<br/>
-								<a href="/giftcards/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $order->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $order->id_order; ?>">[Add gift card]</a>
+								<a href="/giftcards/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $order->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $order->id_order; ?>"><i class="icon-gift"></i> Add gift card</a>
 							</td>
 						</tr>
 					</table>

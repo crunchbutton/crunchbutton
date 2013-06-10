@@ -16,6 +16,11 @@ class Crunchbutton_App extends Cana_App {
 	
 		if (!$_SERVER['SERVER_NAME']) {
 			$cli = true;
+			// get the env send by parameter
+			$a = (object)getopt('s::c::r::f::e::');
+			if( $a->e ){
+				$_env = $a->e;
+			}
 		}
 
 		$host = $_SERVER['SERVER_NAME'];
@@ -110,6 +115,11 @@ class Crunchbutton_App extends Cana_App {
 						
 						break;
 				}
+		}
+
+		if( $cli && $_env ){
+			$params[ 'env' ] = $_env;
+			$env = $_env;
 		}
 
 		// Force the host_callback - sometimes it is empty

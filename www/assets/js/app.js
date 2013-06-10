@@ -45,33 +45,12 @@ var App = {
 	crunchSoundAlreadyPlayed : false,
 	useCompleteAddress : false, /* if true it means the address field will be fill with the address found by google api */
 	completeAddressWithZipCode : true, 
-	boundingBoxMeters : 8000,
-	useRestaurantBoundingBox : false
+	boundingBoxMeters : 8000
 };
 
 App.alert = function(txt) {
 	setTimeout(function() {
 		alert(txt);
-	});
-};
-
-App.loadRestaurant = function(id) {
-
-	App.cache('Restaurant', id,function() {
-
-		if (!this.open()) {
-			App.alert("This restaurant is currently closed. It will be open during the following hours (" + this._tzabbr + "):\n\n" + this.closedMessage());
-			App.busy.unBusy();
-
-		} else {
-
-			if (this.redirect) {
-				location.href = this.redirect;
-				return;
-			}
-			var loc = '/' + App.restaurants.permalink + '/' + this.permalink;
-			History.pushState({}, 'Crunchbutton - ' + this.name, loc);
-		}
 	});
 };
 
@@ -90,14 +69,16 @@ App.routeAlias = function(id, success, error) {
 		var loc = App.locations[alias.id_community];
 
 		if (loc.loc_lat && loc.loc_lon) {
-			var res = {
+			
+			var res = new Location({
 				lat: loc.loc_lat,
 				lon: loc.loc_lon,
+				type: 'alias',
+				verified: true,
 				prep: alias.prep,
 				city: alias.name_alt,
 				address: alias.name_alt
-			};
-			App.loc.range = loc.range || App.defaultRange;
+			});
 
 			success({alias: res});
 			return;
@@ -107,164 +88,188 @@ App.routeAlias = function(id, success, error) {
 	error();
 };
 
-App.loadHome = function(force) {
-	$('input').blur();
 
-	App.currentPage = 'home';
-	History.pushState({}, 'Crunchbutton', '/');
+App.NGinit = function() {
+	$('body').attr('ng-controller', 'AppController');
+	angular.bootstrap(document,['NGApp']);
+	App.loc.init();
+
+	App.signin.init();
+	App.signup.init();
+	App.suggestion.init();
+	App.recommend.init();
+	App.credit.tooltip.init();
+
+	if (!App.isMobile()) {
+		App.support.init();
+	}
 	
-	App.page.home(force);
-
-};
-
-App.render = function(template, data) {
-	var compiled = _.template($('.template-' + template).html());
-	return compiled(data);
-};
-
-App.showPage = function(params) {
-
-	// Hides the pacman
-	App.controlMobileIcons.hidePacman();
-
-	// Hides the gift card message
-	App.credit.hide();
-
-	// switch here for AB testing
-	App.currentPage = params.page;
-	if (params.title) {
-		document.title = params.title;
-	}
-
-	// #1227 - on mobile view switch change location and profile buttons
-	App.controlMobileIcons.process( params.page );
-
-	// track different AB pages
-	if (params.tracking) {
-		App.track(params.tracking.title, params.tracking.data);
-	}
-	$('.main-content').html(App.render(params.page, params.data));
-};
-
-/**
- * Router init
- * @todo replace with router
- */
-App.loadPage = function() {
-
-	// If the user is using Chrome for iOS show the message:	
-	if (App.isChromeForIOS() ){
-		App.message.chrome();
-	}
-
-	App.signin.checkUser();
-	// Force it!
-	setTimeout( function(){App.signin.checkUser()}, 500 );
-
-	var url = History.getState().url.replace(/http(s)?:\/\/.*?\/(.*)/,'$2').replace('//','/');
-	// check if there are any query string vars and ignore it. See #939
-	url = url.split( '?' )[0];
-
-	var path = url.split('/');
-
-	if (!path[path.length-1]) {
-		delete path[path.length-1];
-	}
-
-	if (!App.config) {
-		return;
-	}
-
-	// hide whatever we have
-	if (App._pageInit) {
-		$('.main-content').css('visibility','0');
-	} else {
-		App._pageInit = true;
-	}
-
-	// check if the user clicked at the back button
-	if( !url && App.hasBack ){
-		App.forceHome = false;
-		App.page.home();
-		return;
-	}
-
-	// force to a specific community
-	if (!url) {
-		App.loadHome();
-		return;
-	}
-
-	var restaurantRegex = new RegExp('^\/(restaurant)|(' + App.restaurants.permalink + ')/', 'i');
-	var cleaned_url = $.trim( url.replace( '/', '' ) );
-
-	App.hasBack = true;
-
-	switch (true) {
-		case /^legal/i.test(url):
-			App.page.legal();
-			break;
-		case /^help/i.test(url):
-			App.page.help();
-			break;
-		case /^orders/i.test(url):
-			App.page.orders();
-			break;
-		case /^order/i.test(url):
-			App.page.order(path[1]);
-			break;
-		case /^bycity/i.test(url):
-			App.page.bycity();
-			break;
-		case /^reset/i.test(url):
-			App.page.resetPassword( path );
-			break;
-		case /^giftcard/i.test(url):
-			App.page.giftCard( path );
-			break;
-		case new RegExp( App.restaurants.permalink + '$', 'i' ).test( cleaned_url ):
-			App.page.foodDelivery();
-			break;
-		case restaurantRegex.test(url):
-			App.page.restaurant(path[1]);
-			break;
-		default:
-			App.routeAlias( path[ 0 ],
-				function( result ){
-					App.loc.realLoc = {
-						addressAlias: result.alias.address,
-						lat: result.alias.lat,
-						lon: result.alias.lon,
-						prep: result.alias.prep,
-						city: result.alias.city
-					};
-					App.loc.setFormattedLocFromResult();
-					App.page.foodDelivery( true );
-			});
-			$('.footer').removeClass('footer-hide');
-			setTimeout(scrollTo, 80, 0, 1);
-			setTimeout( function(){ App.signin.checkUser(); }, 100 );
-			break;
-	}
-
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
-	App.refreshLayout();
-	$('.main-content').css('visibility','1');
-	setTimeout(scrollTo, 80, 0, 1);
+	
 	setTimeout( function(){ App.signin.checkUser(); }, 300 );
 };
 
 
-/**
- * Refresh the pages layout for a blank page
- */
-App.refreshLayout = function() {
-	setTimeout(function() {
-		scrollTo(0, 1);
-	}, 80);
-};
+var NGApp = angular.module('NGApp', []);
+
+NGApp.config(function($compileProvider){
+	$compileProvider.urlSanitizationWhitelist(/.*/);
+});
+
+NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+	$routeProvider
+		.when('/location', {
+			action: 'location',
+			controller: 'location',
+			templateUrl: 'view/location.html'
+		})
+		.when('/' + App.restaurants.permalink, {
+			action: 'restaurants',
+			controller: 'restaurants',
+			templateUrl: 'view/restaurants.html'
+		})
+		.when('/' + App.restaurants.permalink + '/:id', {
+			action: 'restaurant',
+			controller: 'restaurant',
+			templateUrl: 'view/restaurant.html'
+		})
+		.when('/legal', {
+			action: 'legal',
+			controller: 'legal',
+			templateUrl: 'view/legal.html'
+		})
+		.when('/help', {
+			action: 'help',
+			controller: 'help',
+			templateUrl: 'view/help.html'
+		})
+		.when('/orders', {
+			action: 'orders',
+			controller: 'orders',
+			templateUrl: 'view/orders.html'
+		})
+		.when('/order/:id', {
+			action: 'order',
+			controller: 'order',
+			templateUrl: 'view/order.html'
+		})
+		.when('/cities', {
+			action: 'cities',
+			controller: 'cities',
+			templateUrl: 'view/cities.html'
+		})
+		.when('/giftcard/:id', {
+			action: 'giftcard',
+			controller: 'giftcard',
+			templateUrl: 'view/giftcard.html'
+		})
+		.when('/reset', {
+			action: 'reset',
+			controller: 'reset',
+			templateUrl: 'view/reset.html'
+		})
+		.when('/', {
+			action: 'home',
+			controller: 'home',
+			templateUrl: 'view/home.html'
+		})
+		.otherwise({
+			action: 'home.default',
+			controller: 'default',
+			templateUrl: 'view/home.html'
+		})
+	;
+	$locationProvider.html5Mode(true);
+}]);
+
+
+// global route change items
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location) {
+
+	$rootScope.link = function(link) {
+		$location.path(link || '/');
+	};
+	
+	$rootScope.back = function() {
+		history.back();
+	};
+	
+	$rootScope.nl2br = function(t) {
+		return App.nl2br(t);
+	};
+	
+	$rootScope.formatPhone = function(t) {
+		return App.phone.format(t);
+	};
+	
+	$rootScope.formatPrice = function(t) {
+		return parseFloat(t).toFixed(2);
+	};
+
+
+	$scope.$on(
+		'$routeChangeSuccess',
+		function ($currentRoute, $previousRoute) {
+		
+			var renderAction = $route.current.action;
+			var renderPath = renderAction.split('.');
+	
+			$scope.renderAction = renderAction;
+			$scope.renderPath = renderPath;
+
+			console.debug('ROUTE >',$route.current.action, renderAction);
+
+			if (App.isChromeForIOS()){
+				App.message.chrome();
+			}
+			
+			setTimeout(function() {
+				scrollTo(0, 1);
+			}, 80);
+
+			/*
+			if (!App.isNarrowScreen()) {
+				return false;
+			}
+
+			$( '.sign-in-icon' ).removeClass( 'config-icon-mobile-hide' );
+			$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
+			switch (renderAction) {
+				case 'restaurant':
+				case 'order':
+					$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+					break;
+
+				case 'home':
+					$( '.config-icon' ).addClass( 'config-icon-back-home' );
+					break;
+
+				case 'orders':
+					$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
+					$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+					break;
+
+				case 'restaurants':
+					$( '.sign-in-icon' ).addClass( 'left' );
+					$( '.config-icon' ).addClass( 'right' );
+					break;
+			}
+			
+
+			$('.content').addClass('smaller-width');
+			$('.main-content').css('width','auto');
+			
+
+	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+	$( '.nav-back' ).addClass( 'nav-back-show' );
+
+			*/
+
+		}
+	);
+});
 
 
 /**
@@ -322,1034 +327,24 @@ App.identify = function() {
 
 
 /**
- * generate ab formulas
+ * controls the busy state of the app
  */
-App.AB = {
-	options: {
-		tagline: [
-			{
-				name: 'tagline-for-free',
-				tagline: 'Order the top food %s. For free. <br /> After you order, everything is saved for future 1 click ordering. <br /><strong>Choose a restaurant:</strong>'
-			},
-			{
-				name: 'tagline-no-free',
-				tagline: 'Order the top food %s. <br /> After you order, everything is saved for future 1 click ordering. <br /><strong>Choose a restaurant:</strong>'		
-			}
-		],
-		slogan: [
-			{
-				name: 'slogan-push-food',
-				slogan: 'Push a button. Get Food.'
-			}
-		],
-		restaurantPage: [
-			{
-				name: 'restaurant-page-noimage'
-			},
-			{
-				name: 'restaurant-page-image',
-				disabled: true
-			}
-		],
-		dollarSign: [
-			{
-				name : 'show'
-			},
-			{
-				name : 'hide'
-			}
-		],
-		changeablePrice: [
-			{
-				name : 'show'
-			},
-			{
-				name : 'hide'
-			}
-		]
-	},
-	init: function() {
-		if (!App.config.ab) {
-			// we dont have ab variables. generate them
-			App.AB.create(true);
-		}
-		App.AB.load();
-	},
-	create: function(clear) {
-		if (clear) {
-			App.config.ab = {};
-		}
-		
-		_.each(App.AB.options, function(option, key) {
-			if (App.config.ab[key]) {
-				return;
-			}
-			var opts = _.filter(App.AB.options[key], function(o) { return o.disabled ? false : true; });
-			var opt = opts[Math.floor(Math.random()*opts.length)];
-			App.config.ab[key] = opt.name
-			App.trackProperty('AB-' + key, opt.name);
-		});
-		
-		App.AB.save();
-		console.log(App.config.ab);
-		
-	},
-	load: function() {
-		App.slogan = _.findWhere(App.AB.options.slogan, {name: App.config.ab.slogan});
-		App.tagline = _.findWhere(App.AB.options.tagline, {name: App.config.ab.tagline});
-
-		if (!App.slogan || !App.tagline) {
-			App.AB.create(true);
-			App.AB.load(true);
-		}
-	},
-	save: function() {
-		$.ajax({
-			url: App.service + 'config',
-			data: {ab: App.config.ab},
-			dataType: 'json',
-			type: 'POST',
-			complete: function(json) {
-
-			}
-		});
-	}
-};
-
-App.cart = {
-	uuidInc: 0,
-
-	items:   {},
-
-	uuid: function() {
-		var id = 'c-' + App.cart.uuidInc;
-		App.cart.uuidInc++;
-		return id;
-	},
-
-	add: function(item) {
-		var
-			id = App.cart.uuid(),
-			opt = App.cached['Dish'][item].options(),
-			options = [];
-
-		if (arguments[1]) {
-			options = arguments[1].options;
-		} else {
-			for (var x in opt) {
-				if (opt[x]['default'] == 1) {
-					options[options.length] = opt[x].id_option;
-				}
-			}
-		}
-
-		App.cart.items[id] = {
-			id: item,
-			options: options
-		};
-
-		var el = $('<div class="cart-item cart-item-dish" data-cart_id="' + id + '"></div>');
-		el.append('<div class="cart-button cart-button-remove"><span></span></div>');
-
-		el.append('<div class="cart-item-name">' + App.cache('Dish',item).name + ' <span class="cart-item-description">' + (App.cache('Dish',item).description != null ? App.cache('Dish',item).description : '') + '</span></div>');
-
-		if (App.cached['Dish'][item].options().length) {
-			el.append('<div class="cart-item-config"><a href="javascript:;">Customize</a></div>');
-		}
-
-		el.hide();
-
-		// If it is a mobile add the items at the top #1035
-		if( $( window ).width() > 769 ){
-			$('.cart-items-content').append(el);	
-		} else {
-			$('.cart-items-content').prepend(el);	
-		}
-		
-		//el.fadeIn();
-		el.show();
-
-		if( parseInt( App.cache( 'Dish', item ).expand_view ) > 0 ){
-			App.cart.customize( el );
-		}
-
-		App.cart.updateTotal();
-
-		App.track('Dish added', {
-			id_dish: App.cache('Dish',item).id_dish,
-			name: App.cache('Dish',item).name
-		});
-	},
-
-	clone: function(item) {
-		var
-			cartid = item.attr('data-cart_id'),
-			cart = App.cart.items[cartid],
-			newoptions = [];
-
-		for (var x in cart.options) {
-			newoptions[newoptions.length] = cart.options[x];
-		}
-		App.cart.add(cart.id, {
-			options: newoptions
-		});
-
-		App.track('Dish cloned');
-	},
-
-	remove: function(item) {
-		var
-			cart = item.attr('data-cart_id');
-
-		App.track('Dish removed');
-
-		delete App.cart.items[cart];
-
-		item.remove();
-		$('.cart-item-customize[data-id_cart_item="' + cart + '"]').remove();
-
-		App.cart.updateTotal();
-	},
-
-	/**
-	 * Gets called after the cart is updarted to refresh the total
-	 *
-	 * @todo Gets called many times before the cart is updated, on load, and shouldn't
-	 *
-	 * @return void
-	 */
-	updateTotal: function() {
-		var
-			totalText  = ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + this.charged(),
-			tipText	= '',
-			feesText   = '',
-			totalItems = 0,
-			credit = 0,
-			hasFees	= ((App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') || App.restaurant.fee_customer) ? true : false;
-
-		if( App.credit.restaurant[ App.restaurant.id ] ){
-			credit = parseFloat( App.credit.restaurant[ App.restaurant.id ] );
-		}
-
-		for (var x in App.cart.items) {
-			totalItems++;
-		}
-		App.updateAutotipValue();
-
-		/* If the user changed the delivery method to takeout and the payment is card
-		 * the default tip will be 0%. If the delivery method is delivery and the payment is 
-		 * card the default tip will be autotip.
-		 * If the user had changed the tip value the default value will be the chosen one.
-		 */
-		var wasTipChanged = false;
-		if( App.order.delivery_type == 'takeout' && App.order['pay_type'] == 'card' ){
-			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = 0;
-				wasTipChanged = true;
-			}
-		} else if( App.order.delivery_type == 'delivery' && App.order['pay_type'] == 'card' ){
-			if( typeof App.order.tipHasChanged == 'undefined' ){
-				App.order.tip = ( App.config.user.last_tip ) ? App.config.user.last_tip : 'autotip';
-				App.order.tip = App.lastTipNormalize( App.order.tip );
-				wasTipChanged = true;
-			}
-		}
-
-		if( wasTipChanged ){
-			$('[name="pay-tip"]').val( App.order.tip );
-			// Forces the recalculation of total because the tip was changed.
-			totalText  = ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + this.charged();
-		}
-
-		if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
-			$('.delivery-minimum-error').show();
-			$('.delivery-min-diff').html(App.restaurant.deliveryDiff());
-
-		} else {
-			$('.delivery-minimum-error').hide();
-		}
-
-		$('.cart-summary-item-count span').html(totalItems);
-
-		/* If no items, hide payment line
-		 * .payment-total  	line for new customers
-		 * .dp-display-payment is for stored customers
-		 */
-		if (!this.subtotal()) {
-			$('.payment-total, .dp-display-payment').hide();
-		} else {
-			$('.payment-total, .dp-display-payment').show();
-		}
-
-		var breakdown	= App.cart.totalbreakdown();
-
-		var extraCharges = App.cart.extraChargesText(breakdown);
-		if (extraCharges) {
-			$('.cart-breakdownDescription').html( ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + this.subtotal().toFixed(2) + ' (+'+ extraCharges +')' );
-		} else {
-			$('.cart-breakdownDescription').html( ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + this.subtotal().toFixed(2));
-		}
-
-		if( App.order.pay_type == 'card' && credit > 0 ){
-			var creditLeft = '';
-			if( this.total() < credit ){
-				var creditLeft = '<span class="gift-left"> - You\'ll still have ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( ( credit - this.total() ) ).toFixed( 2 ) + ' gift card left </span>';
-				credit = this.total();
-			} 
-			$('.cart-gift').html( '&nbsp;(- ' + ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' credit ' + creditLeft + ') ' );
-		} else {
-			$('.cart-gift').html( '' );
-		}
-
-		setTimeout( function(){
-			if( App.order.pay_type == 'cash' && credit > 0 && App.giftcard.showGiftCardCashMessage ){
-				$( '.cart-giftcard-message' ).html( '<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>' );
-			} else {
-			  $( '.cart-giftcard-message' ).html( '' );
-			}
-		}, 1000 );
-
-		$('.cart-total').html( totalText );
-
-		/**
-		 * Crunchbutton doesnt collect the cash, the restaurant will ring up
-		 * the order in their register, which may have different prices. The
-		 * restaurant collects the cash, so its posible things may be
-		 * different. This differs from when its card, crunchbutton collects
-		 * the money directly so the price cant vary
-		 */
-		if (App.order['pay_type'] == 'card') {
-			$('.cash-order-aprox').html('');
-			$('.cart-paymentType').html('by card');
-		} else {
-			$('.cash-order-aprox').html('approximately');
-			$('.cart-paymentType').html('');
-		}
-
-		if (App.cartHighlightEnabled && $('.cart-summary').css('display') != 'none') {
-			$('.cart-summary').removeClass('cart-summary-detail');
-			$('.cart-summary').effect('highlight', {}, 500, function() {
-				$('.cart-summary').addClass('cart-summary-detail');
-			});
-		}
-
-		if ($('.cart-total').html() == totalText) {
-			//return;
-		}
-
-		if (!totalItems) {
-			$('.default-order-check').hide();
-		} else {
-			$('.default-order-check').show();
-		}
-
-		var
-			totalItems = {},
-			name,
-			text = '';
-		$('.cart-summary-items').html('');
-
-		for (var x in App.cart.items) {
-			name = App.cached['Dish'][App.cart.items[x].id].name;
-			if (totalItems[name]) {
-				totalItems[name]++;
-			} else {
-				totalItems[name] = 1;
-			}
-		}
-
-		for (x in totalItems) {
-			text = ',&nbsp;&nbsp;' + text;
-			if (totalItems[x] > 1) {
-				text = x + '&nbsp;(' + totalItems[x] + ')' + text;
-			} else {
-				text = x + text;
-			}
-		}
-
-		$('.cart-summary-items').html(text.substr(0,text.length-13));
-
-		$('.cart-item-customize-price').each(function() {
-			var dish = $(this).closest('.cart-item-customize').attr('data-id_cart_item'),
-				option = $(this).closest('.cart-item-customize-item').attr('data-id_option'),
-				cartitem = App.cart.items[dish],
-				opt = App.cached['Option'][option],
-				price = opt.optionPrice(cartitem.options);
-
-			$(this).html(App.cart.customizeItemPrice(price));
-		});
-
-	},
-
-	customizeItemPrice: function(price, force) {
-		var priceText = '';
-		if( price != '0.00' || force ){
-			priceText = '&nbsp;(';
-			priceText += ( price < 0 ) ? 'minus $' : '+ $';
-			priceText += parseFloat( Math.abs( price ) ).toFixed(2);
-			priceText += ')';
-		} 
-		return priceText;
-	},
-
-	customize: function(item) {
-		var
-			cart = item.attr('data-cart_id'),
-			old = $('.cart-item-customize[data-id_cart_item="' + cart + '"]');
-
-		if (old.length) {
-			old.remove();
-		} else {
-			var
-				el = $('<div class="cart-item-customize" data-id_cart_item="' + cart + '"></div>').insertAfter(item),
-				cartitem = App.cart.items[cart],
-				obj = App.cached['Dish'][cartitem.id],
-				opt = obj.options();
-
-			// First the basic options
-			for (var x in opt) {
-				if (opt[x].id_option_parent) {
-					continue;
-				}
-
-				if (opt[x].type == 'check') {
-
-					var price = opt[x].optionPrice(cartitem.options);
-					var check = $('<input type="checkbox" class="cart-customize-check">');
-
-					if ($.inArray(opt[x].id_option, cartitem.options) !== -1) {
-						check.attr('checked','checked');
-					}
-
-					var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
-						.append(check)
-						.append('<label class="cart-item-customize-name">' +
-							opt[x].name + (opt[x].description || '') +
-							'</label><label class="cart-item-customize-price">' +
-							App.cart.customizeItemPrice( price ) + '</label>'
-						);
-					el.append(option);
-
-				}
-			}
-
-			// Second the customizable options 
-			for (var x in opt) {
-				if (opt[x].id_option_parent) {
-					continue;
-				}
-
-				if (opt[x].type == 'select') {
-
-					var select = $('<select class="cart-customize-select">');
-					for (var i in opt) {
-
-						if (opt[i].id_option_parent == opt[x].id_option) {
-							var price = opt[i].price;
-							var option = $('<option value="' + opt[i].id_option + '">' + opt[i].name + (opt[i].description || '') + App.cart.customizeItemPrice( price, ( opt[x].price_linked == '1' ) ) + '</option>');
-							if ($.inArray(opt[i].id_option, cartitem.options) !== -1) {
-								option.attr('selected','selected');
-							}
-							select.append(option);
-						}
-					}
-					var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
-						.append('<label class="cart-item-customize-select-name">' + opt[x].name + (opt[x].description || '') + '</label>')
-						.append(select);
-
-					el.append(option);
-
-				}
-			}
-		}
-
-		App.track('Dish customized');
-	},
-
-	customizeItem: function(item) {
-
-		var
-			cart = item.closest('.cart-item-customize').attr('data-id_cart_item'),
-			cartitem = App.cart.items[cart],
-			customitem = item.closest('.cart-item-customize-item'),
-			opt = customitem.attr('data-id_option');
-
-		if (opt) {
-			if (item.hasClass('cart-customize-select')) {
-
-				var obj = App.cached['Dish'][cartitem.id],
-					opts = obj.options();
-
-				for (var i in opts) {
-					if (opts[i].id_option_parent != opt) {
-						continue;
-					}
-					for (var x in cartitem.options) {
-						if (cartitem.options[x] == opts[i].id) {
-							cartitem.options.splice(x, 1);
-							break;
-						}
-					}
-				}
-
-				cartitem.options[cartitem.options.length] = item.val();
-
-			} else if(item.hasClass('cart-customize-check')) {
-				if (item.is(':checked')) {
-					cartitem.options[cartitem.options.length] = opt;
-				} else {
-					for (var x in cartitem.options) {
-						if (cartitem.options[x] == opt) {
-							cartitem.options.splice(x, 1);
-							break;
-						}
-					}
-				}
-			}
-		}
-		App.cart.updateTotal();
-	},
-
-	/**
-	 * subtotal, delivery, fee, taxes and tip
-	 *
-	 * @category view
-	 */
-	extraChargesText: function(breakdown) {
-		var elements = [];
-		var text 	= '';
-		if (breakdown.delivery) {
-			elements.push(( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + breakdown.delivery.toFixed(2) + ' delivery');
-		}
-
-		if (breakdown.fee) {
-			elements.push(( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + breakdown.fee.toFixed(2) + ' fee');
-		}
-		if (breakdown.taxes) {
-			elements.push(( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + breakdown.taxes.toFixed(2) + ' taxes');
-		}
-		if (breakdown.tip && breakdown.tip > 0) {
-			elements.push(( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + breakdown.tip + ' tip');
-		}
-
-		if (elements.length) {
-			if (elements.length > 2) {
-				var lastOne  = elements.pop();
-				var elements = [elements.join(', ')];
-				elements.push(lastOne);
-			}
-			var text 	=  elements.join(' & ');
-		}
-		return text;
-	},
-
-	getCart: function() {
-		var cart = [];
-		for (x in App.cart.items) {
-			cart[cart.length] = App.cart.items[x];
-		}
-		return cart;
-	},
-
-	/**
-	 * Submits the cart order
-	 *
-	 * @returns void
-	 */
-	submit: function() {
-
-		if (App.busy.isBusy()) {
-			return;
-		}
-		
-		App.busy.makeBusy();
-
-		var read = $('.payment-form').length ? true : false;
-
-		if (read) {
-			App.config.user.name  = $('[name="pay-name"]').val();
-			App.config.user.phone = $('[name="pay-phone"]').val().replace(/[^\d]*/gi,'');
-			if (App.order['delivery_type'] == 'delivery') {
-				App.config.user.address = $('[name="pay-address"]').val();
-			}
-			App.order.tip = $('[name="pay-tip"]').val();
-		}
-
-		var order = {
-			cart:  		App.cart.getCart(),
-			pay_type:  	App.order['pay_type'],
-			delivery_type: App.order['delivery_type'],
-			restaurant:	App.restaurant.id,
-			make_default:  $('#default-order-check').is(':checked'),
-			notes: 		$('[name="notes"]').val(),
-			lat: ( App.loc.pos() ) ? App.loc.pos().lat : null,
-			lon: ( App.loc.pos() ) ? App.loc.pos().lon : null
-		};
-
-		if (order.pay_type == 'card') {
-			order.tip = App.order.tip || '3';
-			order.autotip_value = $('[name=pay-autotip-value]').val();
-		}
-
-		if (read) {
-			order.address  = App.config.user.address;
-			order.phone	= App.config.user.phone;
-			order.name 	= App.config.user.name;
-			if (App.order.cardChanged) {
-				order.card = {
-					number: $('[name="pay-card-number"]').val(),
-					month: $('[name="pay-card-month"]').val(),
-					year: $('[name="pay-card-year"]').val()
-				};
-			} else {
-				order.card = {};
-			}
-		}
-
-		console.log('ORDER:',order);
-
-		var errors = {};
-
-		if (!order.name) {
-			errors['name'] = 'Please enter your name.';
-		}
-
-		if (!App.phone.validate(order.phone)) {
-			errors['phone'] = 'Please enter a valid phone #.';
-		}
-
-		if (order.delivery_type == 'delivery' && !order.address) {
-			errors['address'] = 'Please enter an address.';
-		}
-
-		if (order.pay_type == 'card' && ((App.order.cardChanged && !order.card.number) || (!App.config.user.id_user && !order.card.number))) {
-			errors['card'] = 'Please enter a valid card #.';
-		}
-
-		if (!App.cart.hasItems()) {
-			errors['noorder'] = 'Please add something to your order.';
-		}
-
-		if (!$.isEmptyObject(errors)) {
-			var error = '';
-			for (var x in errors) {
-				error += errors[x] + "\n";
-			}
-			$('body').scrollTop($('.payment-form').position().top-80);
-			App.alert(error);
-			App.busy.unBusy();
-			App.track('OrderError', errors);
-			// Log the error
-			App.log.order( { 'errors' : errors } , 'validation error' );
-			return;
-		}
-
-		// Play the crunch audio just once, when the user clicks at the Get Food button
-		if( App.iOS() && !App.crunchSoundAlreadyPlayed ){
-			App.playAudio( 'get-food-audio' );
-			App.crunchSoundAlreadyPlayed = true;
-		}
-
-		// if it is a delivery order we need to check the address
-		if( order.delivery_type == 'delivery' ){
-
-			// Correct Legacy Addresses in Database to Avoid Screwing Users #1284
-			// If the user has already ordered food 
-			if( App.config && App.config.user && App.config.user.last_order ){
-
-				// Check if the order was made at this community
-				if( App.config.user.last_order.communities.indexOf( App.restaurant.id_community ) > -1 ){
-
-					// Get the last address the user used at this community
-					var lastAddress = App.config.user.last_order.address;
-					var currentAdress = $( '[name=pay-address]' ).val();
-
-					// Make sure the the user address is the same of his last order
-					if( $.trim( lastAddress ) != '' && $.trim( lastAddress ) == $.trim( currentAdress ) ){
-						App.isDeliveryAddressOk = true;
-						
-						// Log the legacy address
-						App.log.order( { 'address' : lastAddress, 'restaurant' : App.restaurant.name } , 'legacy address' );
-					}	
-				}
-			}
-
-			// Check if the user address was already validated
-			if ( !App.isDeliveryAddressOk	) {
-
-				// Use the aproxLoc to create the bounding box
-				if( App.loc.aproxLoc ){
-					var latLong = new google.maps.LatLng( App.loc.aproxLoc ? App.loc.aproxLoc.lat : App.loc.pos().lat, App.loc.aproxLoc ? App.loc.aproxLoc.lon : App.loc.pos().lon);	
-				}
-
-				// Use the restautant's position to create the bounding box - just for tests
-				if( App.useRestaurantBoundingBox ){
-					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
-				}
-
-				if( !latLong ){
-					App.alert( 'Could not locate you!' );
-					App.busy.unBusy();
-					return;
-				}
-
-				var success = function( results ) {
-
-					// Get the closest address from that lat/lng
-					var theClosestAddress = App.loc.theClosestAddress( results, latLong );
-
-					var isTheAddressOk = App.loc.validateAddressType( theClosestAddress );
-
-					if( isTheAddressOk ){
-						// Now lets check if the restaurant deliveries at the given address
-						var lat = theClosestAddress.geometry.location.lat();
-						var lon = theClosestAddress.geometry.location.lng();
-
-						
-						if( App.useCompleteAddress ){
-							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
-						}
-
-						if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
-							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.' );
-							
-
-							// Write the found address at the address field, so the user can check it.
-							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
-
-							// Log the error
-							App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address out of delivery range' );
-						
-							App.busy.unBusy();
-							return;
-						
-						} else {
-
-							if( App.completeAddressWithZipCode ){
-
-								// Get the address zip code
-								var zipCode = App.loc.zipCode( theClosestAddress );
-								var typed_address = $( '[name=pay-address]' ).val();
-
-								// Check if the typed address already has the zip code
-								if( typed_address.indexOf( zipCode ) < 0 ){
-									var addressWithZip = typed_address + ' - ' + zipCode;
-									$( '[name=pay-address]' ).val( addressWithZip );
-								}
-							}
-
-							App.busy.unBusy();
-							App.isDeliveryAddressOk = true;
-							App.cart.submit();
-						}
-
-					} else {
-						// Address was found but it is not valid (for example it could be a city name)
-						App.alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
-						App.busy.unBusy();						
-						// Make sure that the form will be visible
-						$('.payment-form').show();
- 						$('.delivery-payment-info, .content-padder-before').hide();
-						$( '[name="pay-address"]' ).focus();
-						// Log the error
-						App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address not found or invalid' );
-					}
-				}
-
-				// Address not found!
-				var error = function() {
-					App.alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
-					App.busy.unBusy();
-					// Log the error
-					App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address not found' );
-				};
-
-				// Call the geo method
-				App.loc.doGeocodeWithBound( order.address, latLong, success, error);
-				return;
-			} 
-		}
-
-		if( order.delivery_type == 'takeout' ){
-			App.isDeliveryAddressOk = true;
-		}
-
-		if( !App.isDeliveryAddressOk ){
-			return;
-		}
-
-		// Play the crunch audio just once, when the user clicks at the Get Food button
-		if( !App.crunchSoundAlreadyPlayed ){
-			App.playAudio( 'get-food-audio' );
-			App.crunchSoundAlreadyPlayed = true;
-		}
-
-		$.ajax({
-			url: App.service + 'order',
-			data: order,
-			dataType: 'html',
-			type: 'POST',
-			complete: function(json) {
-				try {
-					json = $.parseJSON(json.responseText);
-				} catch (e) {
-					// Log the error
-					App.log.order( json.responseText, 'processing error' );
-					json = {
-						status: 'false',
-						errors: ['Sorry! Something went horribly wrong trying to place your order!']
-					};
-				}
-
-				if (json.status == 'false') {
-					var error = '';
-					for (x in json.errors) {
-						error += json.errors[x] + "\n";
-					}
-					App.track('OrderError', json.errors);
-					App.alert(error);
-					// Log the error
-					App.log.order( { 'errors' : json.errors } , 'validation error - php' );
-				} else {
-
-					if (json.token) {
-						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
-					}
-
-					$('.link-orders').show();
-
-					order.cardChanged = false;
-					App.justCompleted = true;
-					App.giftcard.notesCode = false;
-
-					var totalItems = 0;
-
-					for (var x in App.cart.items) {
-						totalItems++;
-					}
-
-					$.getJSON('/api/config', App.processConfig);
-					
-					App.cache('Order',json.uuid, function() {
-						App.track('Ordered', {
-							'total':this.final_price,
-							'subtotal':this.price,
-							'tip':this.tip,
-							'restaurant': App.restaurant.name,
-							'paytype': this.pay_type,
-							'ordertype': this.order_type,
-							'user': this.user,
-							'items': totalItems
-						});
-
-						App.order.cardChanged = false;
-						App.loc.changeLocationAddressHasChanged = false;
-						delete App.order.tipHasChanged;
-						var loc = '/order/' + this.uuid;
-						History.pushState({},loc,loc);
-
-					});
-				}
-				setTimeout( function(){
-					App.busy.unBusy();
-				}, 400 );
-			}
-		});
-
-	}, // end App.cart.submit()
-
-	subtotal: function() {
-		var
-			total = 0,
-			options;
-
-		for (var x in App.cart.items) {
-			total += parseFloat(App.cached['Dish'][App.cart.items[x].id].price);
-			options = App.cart.items[x].options;
-
-			for (var xx in options) {
-				var option = App.cached['Option'][options[xx]];
-				if (option === undefined) continue; // option does not exist anymore
-				total += parseFloat(option.optionPrice(options));
-			}
-		}
-		total = App.ceil(total);
-		return total;
-	},
-
-	/**
-	 * delivery cost
-	 *
-	 * @return float
-	 */
-	_breackDownDelivery: function() {
-		var delivery = 0;
-		if (App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') {
-			delivery = parseFloat(App.restaurant.delivery_fee);
-		}
-		delivery = App.ceil(delivery);
-		return delivery;
-	},
-
-	/**
-	 * Crunchbutton service
-	 *
-	 * @return float
-	 */
-	_breackDownFee: function(feeTotal) {
-		var fee = 0;
-		if (App.restaurant.fee_customer) {
-			fee = (feeTotal * (parseFloat(App.restaurant.fee_customer)/100));
-		}
-		fee = App.ceil(fee);
-		return fee;
-	},
-
-	_breackDownTaxes: function(feeTotal) {
-		var taxes = (feeTotal * (App.restaurant.tax/100));
-		taxes = App.ceil(taxes);
-		return taxes;
-	},
-
-	_breakdownTip: function(total) {
-		var tip = 0;
-		if (App.order['pay_type'] == 'card') {
-			if (App.order.tip === 'autotip') {
-				return parseFloat($('[name=pay-autotip-value]').val());
-			}
-			tip = (total * (App.order.tip/100));
-		}
-		tip = App.ceil(tip);
-		return tip;
-	},
-
-	total: function() {
-		var
-			total = 0,
-			dish,
-			options,
-			feeTotal	= 0,
-			totalItems  = 0,
-			finalAmount = 0
-		;
-
-		var breakdown = this.totalbreakdown();
-		total		= breakdown.subtotal;
-		feeTotal 	= total;
-		feeTotal	+= breakdown.delivery;
-		feeTotal	+= breakdown.fee;
-		finalAmount  = feeTotal + breakdown.taxes;
-		finalAmount += this._breakdownTip(total);
-		return App.ceil(finalAmount).toFixed(2);
-	},
-
-	charged : function(){
-
-		var finalAmount = this.total();
-
-		if( App.order.pay_type == 'card' && App.credit.restaurant[ App.restaurant.id ] ){
-			finalAmount = finalAmount - App.ceil( App.credit.restaurant[ App.restaurant.id ] ).toFixed(2);
-			if( finalAmount < 0 ){
-				finalAmount = 0;
-			}
-		}
-		return App.ceil(finalAmount).toFixed(2);
-	},
-
-	/**
-	 * Returns the elements that calculates the total
-	 *
-	 * breakdown elements are: subtotal, delivery, fee, taxes and tip
-	 *
-	 * @return array
-	 */
-	totalbreakdown: function() {
-		var elements = {};
-		var total	= this.subtotal();
-		var feeTotal = total;
-
-		elements['subtotal'] = this.subtotal();
-		elements['delivery'] = this._breackDownDelivery();
-		feeTotal			+= elements['delivery'];
-		elements['fee']  	= this._breackDownFee(feeTotal);
-		feeTotal			+= elements['fee'];
-		elements['taxes']	= this._breackDownTaxes(feeTotal);
-		elements['tip']  	= this._breakdownTip( total );
-		return elements;
-	},
-
-	resetOrder: function() {
-		App.cart.items = {};
-		$('.cart-items-content, .cart-total').html('');
-	},
-
-	reloadOrder: function() {
-		var cart = App.cart.items;
-		App.cart.resetOrder();
-		App.cart.loadFlatOrder(cart);
-	},
-
-	loadFlatOrder: function(cart) {
-		for (var x in cart) {
-			App.cart.add(cart[x].id,{
-				options: cart[x].options ? cart[x].options : []
-			});
-		}
-	},
-
-	loadOrder: function(order) {
-		// @todo: convert this to preset object
-		try {
-			if (order) {
-				var dishes = order['_dishes'];
-				for (var x in dishes) {
-					var options = [];
-					for (var xx in dishes[x]['_options']) {
-						options[options.length] = dishes[x]['_options'][xx].id_option;
-					}
-					if (App.cached.Dish[dishes[x].id_dish] != undefined) {
-						App.cart.add(dishes[x].id_dish,{
-							options: options
-						});
-					}
-
-				}
-			}
-		} catch (e) {
-			console.log(e.stack);
-			// throw e;
-		}
-		App.cart.updateTotal();
-	},
-
-	hasItems: function() {
-		if (!$.isEmptyObject(App.cart.items)) {
-			return true;
-		}
-		return false;
-	}
-};
-
-
 App.busy = {
 	isBusy: function() {
 		return $('.app-busy').length ? true : false;
 	},
 	makeBusy: function() {
-		//el.addClass('button-bottom-disabled');
-		var busy = $('<div class="app-busy"></div>')
-				.append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>'))
-
-
-		$('body').append(busy);
+		$('body').append($('<div class="app-busy"></div>').append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>')));
 	},
 	unBusy: function() {
 		$('.app-busy').remove();
-		//el.removeClass('button-bottom-disabled');
 	}
 };
 
 
+/**
+ * stuff for testing
+ */
 App.test = {
 	card: function() {
 		$('[name="pay-card-number"]').val('4242424242424242');
@@ -1376,16 +371,16 @@ App.test = {
 		location.href = '/';
 	},
 	init: function() {
-		$$('.test-card').tap(function() {
+		$('.test-card').tap(function() {
 			App.test.card();
 		});
-		$$('.test-logout').tap(function() {
+		$('.test-logout').tap(function() {
 			App.test.logout();
 		});
-		$$('.test-cart').tap(function() {
+		$('.test-cart').tap(function() {
 			App.test.cart();
 		});
-		$$('.test-clearloc').tap(function() {
+		$('.test-clearloc').tap(function() {
 			App.test.clearloc();
 		});
 	}
@@ -1408,20 +403,6 @@ App.processConfig = function(json, user) {
 	}
 };
 
-App.updateAutotipValue = function() {
-	var subtotal = App.cart.totalbreakdown().subtotal;
-	var autotipValue
-	if(subtotal === 0) {
-		autotipValue = 0;
-	}
-	else {
-		// the holy formula - see github/#940
-		autotipValue = Math.ceil(4*(subtotal * 0.107 + 0.85)) / 4;
-	}
-	$('[name="pay-autotip-value"]').val(autotipValue);
-	var autotipText = autotipValue ? ' (' + ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + autotipValue + ')' : '';
-	$('[name=pay-tip] [value=autotip]').html('Autotip' + autotipText);
-};
 
 App.lastTipNormalize = function( lastTip ){
 
@@ -1479,6 +460,11 @@ App.trigger = {
  */
 $(function() {
 
+	App.processConfig(App.config);
+	App._init = true;
+	App.NGinit();
+
+
 	App.test.init();
 
 	$(document).on('touchclick', '.signout-button', function() {
@@ -1489,46 +475,9 @@ $(function() {
 		App.signin.facebook.login();
 	});
 
-	$(document).on('touchclick', '.change-location-inline', function() {
-		App.loadHome(true);
-	});
-
 	$(document).on('submit', '.button-letseat-formform', function() {
-		$('.button-letseat-form').trigger('touchclick');
+		$('.button-letseat-form').trigger('touchup');
 		return false;
-	});
-
-	$(document).on('touchclick', '.button-letseat-form', function() {
-
-		var success = function() {
-			App.page.foodDelivery(true);
-		};
-
-		var error = function() {
-			$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
-			// Log the error
-			App.log.location( { 'address' : address } , 'address not found' );
-		};
-
-		var address = $.trim($('.location-address').val());
-
-		if (!address) {
-			// the user didnt enter any address
-			$('.location-address').val('').attr('placeholder','Please enter your address here');
-
-		} else if (address && address == App.loc.address()) {
-			// we already have a geocode result of that address. dont do it again
-			success();
-
-		} else {
-			// we need a new geocode result set
-			if(App.loc.aproxLoc && App.loc.aproxLoc.lat && App.loc.aproxLoc.lon ){
-				App.loc.geocodeLocationPage(address, success, error);
-			} else {
-				App.loc.geocode(address, success, error);
-			}
-			
-		}
 	});
 
 	$(document).on('touchclick', '.delivery-toggle-delivery', function(e) {
@@ -1598,29 +547,8 @@ $(function() {
 	}, '.location-detect');
 	
 
-	$$('.link-help').tap(function(e) {
-		e.stopPropagation();
-		e.preventDefault();
-		History.pushState({}, 'Crunchbutton - About', '/help');
-	});
 
-	$$('.link-legal').tap(function(e) {
-	console.log('LEGAL', e)
-		e.stopPropagation();
-		e.preventDefault();
-		History.pushState({}, 'Crunchbutton - Legal', '/legal');
-	});
-
-	$$('.link-orders').tap(function(e) {
-		e.stopPropagation();
-		e.preventDefault();
-		History.pushState({}, 'Crunchbutton - Orders', '/orders');
-	});
-
-
-	
 	if (App.isMobile()) {
-	
 
 		// prevent double trigger
 		$(document).on('touchclick','input[type="checkbox"]', function(e) {
@@ -1629,14 +557,14 @@ $(function() {
 		});
 
 		// manually rebind checkbox events
-		$$('input[type="checkbox"]').tap(function(e) {
+		$('input[type="checkbox"]').tap(function(e) {
 			e.stopPropagation();
 			e.preventDefault();
 			$(this).checkToggle();
 		});
 		
 		// manually rebind labels
-		$$('label[for]').tap(function(e) {
+		$('label[for]').tap(function(e) {
 			e.stopPropagation();
 			e.preventDefault();
 			var target = document.getElementById($(this).attr('for'));
@@ -1659,7 +587,7 @@ $(function() {
 
 		// manually bind links
 		// @todo: intercept for native app
-		$$('a[href]').tap(function(e) {
+		$('a[href]').tap(function(e) {
 			var el = $(this);
 			var href = el.attr('href');
 
@@ -1676,119 +604,33 @@ $(function() {
 
 
 		// ignore all click events from acidently triggering on mobile. only use touchclick
+		/*
 		$(document).on('click', function(e, force) {
 			e.stopPropagation();
 			e.preventDefault();
 		});
+		*/
 	
-		// touch events for restaurant list
-		$(document).on({
-			touchstart: function(e) {
-				if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-					//return;
-				}
-				App.startX = event.touches[0].pageX;
-				App.startY = event.touches[0].pageY;
-				App.startOffset = document.all? iebody.scrollLeft : pageYOffset;
-	
-				$(this).addClass('meal-item-down');
-			},
-			touchmove: function(e) {
-				App.touchX = event.touches[0].pageX;
-				App.touchY = event.touches[0].pageY;
-				App.touchOffset = document.all? iebody.scrollLeft : pageYOffset;
-				
-				var maxDistance = 25;
-				if (Math.abs(App.startX-App.touchX) > maxDistance || Math.abs(App.startY-App.touchY) > maxDistance || Math.abs(App.startOffset-App.touchOffset) > maxDistance) {
-					$(this).removeClass('meal-item-down');
-				}
-			},
-			touchend: function(e) {
 
-				if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-					//return;
-				}
-				if (App.busy.isBusy()) {
-					return;
-				}
-
-				var maxDistance = 25;
-				var r = $(this).closest('.meal-item').attr('data-permalink');
-				var c = $(this).closest('.meal-item').attr('data-permalink-community');
-
-				if ((App.touchX == null && App.touchY == null) || (Math.abs(App.startX-App.touchX) < maxDistance && Math.abs(App.startY-App.touchY) < maxDistance && Math.abs(App.startOffset-App.touchOffset) < maxDistance)) {
-					if (r) {
-						App.loadRestaurant(r);
-					} else if (c) {
-						History.pushState({},c,c);
-						App.routeAlias(c);
-					}
-				}
-				App.touchX = null;
-				App.touchY = null;
-				App.touchOffset = null;
-				$(this).removeClass('meal-item-down');
-			}
-		}, '.meal-item-content');
-	} else {
-		$(document).on({
-			mousedown: function() {
-				if (App.busy.isBusy()) {
-					return;
-				}
-	
-				if (navigator.userAgent.toLowerCase().indexOf('ios') > -1) {
-					return;
-				}
-				$(this).addClass('meal-item-down');
-				var self = $(this);
-				var r = self.closest('.meal-item').attr('data-permalink');
-				var c = self.closest('.meal-item').attr('data-permalink-community');
-	
-				setTimeout(function() {
-					if (r) {
-						App.loadRestaurant(r);
-					} else if (c) {
-						App.routeAlias(c);
-					}
-				},100);
-			},
-			mouseup: function() {
-				$(this).removeClass('meal-item-down');
-			}
-		}, '.meal-item-content');
 	}
-	
-	/* 
-		Issue 1362 - Replaced the tap by singleTap event
-	*/
-	$$('.dish-item').singleTap(function(e) {
-		if ($(this).attr('data-id_dish')) {
-			App.cart.add($(this).attr('data-id_dish'));
-		} else if ($(this).hasClass('restaurant-menu')) {
-			return;
-		}
+
+	$('.dish-item').tap(function() {
+		App.cart.add($(this).attr('data-id_dish'));
 	});
 
-	$$('.your-orders a').tap(function() {
-		if ($(this).attr('data-id_order')) {
-			History.pushState({},'Crunchbutton - Your Order', '/order/' + $(this).attr('data-id_order'));
-		}
-	});
-
-	$$('.cart-button-remove').tap(function() {
+	$('.cart-button-remove').tap(function() {
 		App.cart.remove($(this).closest('.cart-item'));
 	});
 
-	$$('.cart-button-add').tap(function() {
+	$('.cart-button-add').tap(function() {
 		App.cart.clone($(this).closest('.cart-item'));
 	});
 
-	$$('.cart-item-config a').tap(function() {
+	$('.cart-item-config a').tap(function() {
 		App.cart.customize($(this).closest('.cart-item'));
 	});
 
-	$$('.button-submitorder-form').tap(function(e) {
+	$('.button-submitorder-form').tap(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		App.crunchSoundAlreadyPlayed = false;
@@ -1796,8 +638,7 @@ $(function() {
 		App.cart.submit($(this),true);
 	});
 
-
-	$(document).on('touchclick', '.button-deliver-payment, .dp-display-item a', function() {
+	$(document).on('touchclick', '.button-deliver-payment, .dp-display-item a, .dp-display-item .clickable', function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();
 	});
@@ -1821,16 +662,23 @@ $(function() {
 		App.cart.customizeItem($(this));
 	});
 
-	$$('.cart-customize-check').tap( function() {
-		// For some reason this tap event have to wait a little time before runs the customizeItem method
-		// if we ignore this time it will not read attr checked of the checkbox correctly
+	$( '.default-order-check' ).tap( function(){
+		setTimeout( function(){
+			$( '#default-order-check' ).checkToggle();
+		}, 1 );
+	} );
+
+	$('.cart-customize-check').tap( function() {
 		var checkbox = $(this);
 		setTimeout( function(){
+			if( !App.isMobile() ){
+				checkbox.checkToggle();	
+			}
 			App.cart.customizeItem( checkbox );
 		}, 1 );
 	});
 
-	$$('.cart-item-customize-item label').tap(function() {
+	$('.cart-item-customize-item label').tap(function() {
 		$(this).prev('input').checkToggle();
 		App.cart.customizeItem( $(this).prev('input') );
 	});
@@ -1840,25 +688,6 @@ $(function() {
 		App.order.tipHasChanged = true;
 		var total = App.cart.total();
 		App.cart.updateTotal();
-	});
-
-	$$('.nav-back').tap(function() {
-		// App.controlMobileIcons.showPacman( 'left', function(){ $('.nav-back').removeClass('nav-back-show'); } );
-		$('.nav-back').removeClass('nav-back-show');
-		if( App.loc.locationNotServed ){
-			App.loc.locationNotServed = false;
-			App.loadHome(true);
-		} else {
-			History.back();	
-		}
-	});
-
-	$$('.link-home').tap(function() {
-		if( App.restaurants.list && App.restaurants.list.length > 0 ){
-			App.page.foodDelivery();
-		} else {
-			App.loadHome(true);
-		}
 	});
 
 	$(document).on('change', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
@@ -1876,34 +705,20 @@ $(function() {
 	});
 
 	// Listener to verify if the user typed a gift card at the notes field
-	$(document).on('blur', '[name=notes]', function(){
+	$(document).on('blur', '[name=notes]', function() {
 		App.giftcard.notesField.listener();
-	} );
-	
+	});
 
 	$(document).on('change, keyup', '[name="pay-card-number"]', function() {
 		App.creditCard.changeIcons( $(this).val() );
-	} );
+	});
 
 	$(document).on('keyup', '[name="pay-phone"]', function() {
 		$(this).val( App.phone.format($(this).val()) );
 	});
 
-	// make sure we have our config loaded
-	var haveConfig = function(json) {
-		$(document).trigger('have-config');
-		App.processConfig(json);
-		App._init = true;
-		App.loadPage();
-	};
 
-	if (App.config) {
-		haveConfig(App.config)
-	} else {
-		$.getJSON('/api/config', haveConfig);
-	}
-
-	$$('.cart-summary').tap(function(e) {
+	$('.cart-summary').tap(function(e) {
 		e.stopPropagation();
 		e.preventDefault();
 		$('html, body').animate({
@@ -1916,7 +731,8 @@ $(function() {
 		});
 	});
 	
-	if (App.isMobile()) {
+	// hide the top bar when any input is focused
+	if (App.isMobile() && !App.isAndroid()) {
 		setInterval(function() {
 			var focused = $(':focus');
 			if (!focused.length) {
@@ -1933,52 +749,18 @@ $(function() {
 			}
 		}, 100);
 	}
-/*
-	var unHideBars = function() {
-		$('[data-position="fixed"]').show();
-	}
-	$(document).on('focus', 'select, input, textarea', function() {
-		if ($(window).width() >= 768 || navigator.userAgent.toLowerCase().indexOf('android') > -1 || $(this).hasClass('location-address')) {
-			return;
-		}
-		clearTimeout(App.unHideBars);
-		$('[data-position="fixed"]').hide();
-	});
-
-	$(document).on('blur', 'select, input, textarea', function() {
-		if ($(window).width() >= 768) {
-			return;
-		}
-		clearTimeout(App.unHideBars);
-		setTimeout(unHideBars, 100);
-	});
-	*/
-
-	var checkForDistance = function() {
-		if (App.order['delivery_type'] == 'takeout') {
-			return;
-		}
-	};
-
-	$(document).on('blur', '[name="pay-address"]', function() {
-		clearTimeout(App.checkForDistance);
-		App.checkForDistance = setTimeout(checkForDistance, 100);
-	});
-
-	$(document).on('change', '[name="pay-address"]', function() {
-		clearTimeout(App.checkForDistance);
-		App.checkForDistance = setTimeout(checkForDistance, 1000);
-	});
 	
-	$(document).on('touchclick', '.config-icon', function() {
-		if( App.isNarrowScreen() && $( this ).hasClass( 'config-icon-back-home' ) ){
-			App.controlMobileIcons.backHome();
-		} else {
-			var pacmanSide = ( App.currentPage == 'restaurants' ) ? 'right' : 'left';
-			App.controlMobileIcons.showPacman( pacmanSide, function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
-			App.loadHome(true);	
+	$(document).on({
+		blur: function() {
+			clearTimeout(App.checkForDistance);
+			App.checkForDistance = setTimeout(checkForDistance, 100);
+		},
+		change: function() {
+			clearTimeout(App.checkForDistance);
+			App.checkForDistance = setTimeout(checkForDistance, 1000);
 		}
-	});
+	}, '[name="pay-address"]');
+
 
 	$(document).on('change', '[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]', function() {
 		App.config.user.name = $('[name="pay-name"]').val();
@@ -1991,27 +773,12 @@ $(function() {
 	});
 
 
-	$(document).on('touchclick', '.content-item-locations-city', function() {
-		$( '.main-content' ).html( '' );
-		var permalink = $( this ).attr( 'permalink' );
-		App.routeAlias( permalink, function( result ){
-			App.loc.realLoc = {
-				addressAlias: result.alias.address,
-				lat: result.alias.lat,
-				lon: result.alias.lon,
-				prep: result.alias.prep,
-				city: result.alias.city
-			};
-			App.loc.setFormattedLocFromResult();
-			App.page.foodDelivery( true );
-		});
-	});
-	App.signin.init();
-	App.signup.init();
-	App.suggestion.init();
-	App.recommend.init();
-	App.loc.init();
-	App.credit.tooltip.init();
+	$( '.ui-dialog-titlebar-close' ).tap( function(){
+		try{
+			$( '.ui-dialog-content' ).dialog( 'close' );
+		} catch(e){}
+	} );
+
 });
 
 
@@ -2057,16 +824,19 @@ App.message.show = function( title, message ) {
 
 }
 
+/**
+ * play crunch audio sound
+ */
 App.playAudio = function( audio, callback ){
-	var audio = $( '#' + audio ).get(0);
-	try{
-		audio.addEventListener( 'ended', function() {
-		if( callback ){
-			callback();
+	var audio = $('#' + audio).get(0);
+	try {
+		audio.addEventListener('ended', function() {
+			if (callback) {
+				callback();
 			}
 		});
 		audio.play();	
-	} catch( e ){}
+	} catch(e){}
 }
 
 App.registerLocationsCookies = function() {
@@ -2086,61 +856,3 @@ App.message.chrome = function( ){
 	App.message.show(title, message);
 }
 
-// Issue #1227
-App.controlMobileIcons = {};
-App.controlMobileIcons.process = function( page ){
-
-	if( !App.isNarrowScreen() ){
-		return false;
-	}
-
-	App.controlMobileIcons.normalize();
-
-	App.loc.locationNotServed = false;
-	$( '.sign-in-icon' ).removeClass( 'config-icon-mobile-hide' );
-	$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
-	switch( page ){
-		case 'restaurant':
-		case 'order':
-			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-			break;
-		case 'home':
-			$( '.config-icon' ).addClass( 'config-icon-back-home' );
-			break;
-		case 'orders':
-			$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
-			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-			break;
-		case 'restaurants':
-			$( '.sign-in-icon' ).addClass( 'left' );
-			$( '.config-icon' ).addClass( 'right' );
-			break;
-	}
-}
-
-App.controlMobileIcons.backHome = function(){
-	if( App.loc.locationNotServed ){
-		App.page.home( true );
-	} else {
-		if( App.restaurants.list && App.restaurants.list.length > 0 ){
-			App.page.foodDelivery();
-		} else {
-			History.pushState( {}, 'Crunchbutton', '/bycity' );
-		}	
-	}
-}
-
-App.controlMobileIcons.normalize = function(){
-	$( '.sign-in-icon' ).removeClass( 'left' );
-	$( '.config-icon' ).removeClass( 'right' );
-	$( '.config-icon' ).removeClass( 'config-icon-back-home' );
-}
-
-App.controlMobileIcons.showPacman = function( side, call ){
-	$( '.pacman-' + side ).addClass( 'pacman-show' );
-	if( call ){ call(); }
-}
-
-App.controlMobileIcons.hidePacman = function(){
-	$( '.pacman-loading' ).removeClass( 'pacman-show' );
-}
