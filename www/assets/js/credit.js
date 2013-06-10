@@ -60,7 +60,6 @@ App.credit.hide = function(){
 
 App.credit.show = function(){
 	var gift = App.credit.restaurant[App.restaurant.id];
-
 	if( parseFloat( gift ) ){
 		var giftValue = App.ceil( gift ).toFixed( 2 );
 		var text = 'You have a <span class="giftcard-value">'+ ( ( App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '' ) + giftValue + '</span> gift card!';
@@ -79,6 +78,8 @@ App.credit.show = function(){
 		$( '.giftcard-badge-value' ).html( '$' + giftValue );
 		$( '.giftcard-badge' ).css( 'display', 'table' );
 	} else {
+		$( '.giftcard-desktop-message' ).html( '' );
+		$( '.giftcard-desktop-message' ).hide();
 		$( '.gift-card-payment-message' ).hide();
 		$( '.giftcard-badge' ).css( 'display', 'none' );
 	}
