@@ -2,7 +2,7 @@
 
 class Controller_loc extends Crunchbutton_Controller_Account {
 	public function init() {
-		if( c::getPagePiece(2) == 'export' ){
+		if( c::getPagePiece(1) == 'export' ){
 			c::view()->layout('layout/blank');
 			c::view()->places = Crunchbutton_Loc_Log::all();
 			c::view()->display('loc/table');
