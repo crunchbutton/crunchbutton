@@ -298,6 +298,7 @@ function sendForm(){
 	var id_restaurant = $( '#id_restaurant' ).val();
 	var id_user = $( '#id_user' ).val();
 	var total = $( '#total' ).val();
+	var print = ( App.giftcards.print ) ? 1 : 0;
 
 	var id_order_reference = $( '#id_order_reference' ).val();
 	var paid_by = $( '#paid_by' ).val();
@@ -341,7 +342,7 @@ function sendForm(){
 		}
 	}
 
-	var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit, 'notify_by_sms' : notify_by_sms, 'notify_by_email' : notify_by_email, 'chars_to_use' : chars_to_use, 'include_gift_card_id' : include_gift_card_id, 'length' : length };
+	var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit, 'notify_by_sms' : notify_by_sms, 'notify_by_email' : notify_by_email, 'chars_to_use' : chars_to_use, 'include_gift_card_id' : include_gift_card_id, 'length' : length, 'print' : print };
 	var url = App.service + 'giftcard/generate';
 	$.ajax({
 		type: "POST",

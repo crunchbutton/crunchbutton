@@ -1,33 +1,31 @@
 <? if (!$this->giftcards->count()) : ?>
 	No results found
 <? else : ?>
-	<table class="list-giftcards">
-		<tr>
-			<th>Date</th>
-			<th>Code</th>
-			<th>Value</th>
-			<th>Restaurant</th>
-			<th>User</th>
-			<th>Phone</th>
-			<th>Email</th>
-			<th>Note</th>
-			<th>Type</th>
-			<th>Used</th>
-		</tr>
+	<table class="table table-normal">
+		<thead>
+			<td>Date</td>
+			<td>Code</td>
+			<td>Value</td>
+			<td>Restaurant</td>
+			<td>User</td>
+			<td>Phone</td>
+			<td>Email</td>
+			<td>Note</td>
+			<td>Issued as</td>
+			<td>Status</td>
+		</thead>
 		<? foreach ($this->giftcards as $giftcard) : ?>
 			<? 
 				$date = $giftcard->date(); 
 				$wasUsed = CrunchButton_Promo::giftWasAlreadyUsed( $giftcard->id_promo );
 			?>
 			<tr class="<?=strtolower($giftcard->type); ?>">
-				<td> <?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?> </td>
+				<td> <?=$date->format('M jS Y')?><br /><?=$date->format('g:i:s A')?> </td>
 				<td> 
-					<a href="/giftcards/<?=$giftcard->id_promo;?>"><?=$giftcard->code; ?></a>
 					<?php if( !$wasUsed ) { ?>
-					<br/>
-					<br/>
-					<a target="_blank" href="/giftcards/print/<?=$giftcard->id_promo;?>"><img src="/assets/images/icon_print.png"/></a>
-					<?php } ?>
+						<a title="Print" target="_blank" href="/giftcards/print/<?=$giftcard->id_promo;?>"><i style="color:black;" class="icon-print"></i></a>
+					<?php } ?>&nbsp;&nbsp;
+					<a href="/giftcards/<?=$giftcard->id_promo;?>"><?=$giftcard->code; ?></a>
 				</td>
 				<td> $<?= Util::ceil($giftcard->value, 2); ?></td>
 				<td> <? if( $giftcard->id_restaurant ){ echo $giftcard->restaurant()->name; } else { echo 'Any Restaurant'; } ?> </td>
@@ -35,8 +33,23 @@
 				<td> <? if( $giftcard->phone ){ echo $giftcard->phone; } else { echo '-'; } ?> </td>
 				<td> <? if( $giftcard->email ){ echo $giftcard->email; } else { echo '-'; } ?> </td>
 				<td> <?=nl2br( $giftcard->note ); ?> </td>
-				<td> <?=$giftcard->type; ?> </td>
-				<td> <span class="<? if( $wasUsed  ){ echo ' used '; } else { echo 'not-used'; } ?>"> <? if( $wasUsed ){ echo ' Was used '; } else { echo 'Not used yet'; } ?> </span> </td>
+				<td> 
+					<? if ( $giftcard->issued == Promo::ISSUED_CREDIT ){ ?>
+						<i class="icon-money"></i> Credit
+					<?php } elseif ( $giftcard->issued == Promo::ISSUED_TEXT ){ ?>
+						<i class="icon-mobile-phone"></i> Text
+					<?php } elseif ( $giftcard->issued == Promo::ISSUED_EMAIL ){ ?>
+						<i class="icon-envelope"></i> Email
+					<?php } elseif ( $giftcard->issued == Promo::ISSUED_PRINT ){ ?>
+						<i class="icon-print"></i> Paper (print)
+					<?php } else { ?> - <?php } ?>
+				</td>
+				<td> 
+					<?php if( $wasUsed ) { ?>
+						<span class="badge badge-green">Redeemed</span>
+					<?php } else { ?>
+						<span class="badge badge-black">Not redeemed</span>
+					<?php } ?>
 			</tr>
 		<? endforeach ; ?>
 	</table>
