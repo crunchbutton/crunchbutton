@@ -1,0 +1,1 @@
+ALTER TABLE `promo` ADD `issued` ENUM(  'credit',  'text', 'email', 'print' ) NULL;

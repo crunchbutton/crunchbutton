@@ -6,6 +6,11 @@ class Crunchbutton_Promo extends Cana_Table
 	const TYPE_SHARE = 'user_share';
 	const TYPE_GIFTCARD = 'gift_card';
 
+	const ISSUED_CREDIT = 'credit';
+	const ISSUED_TEXT = 'text';
+	const ISSUED_EMAIL = 'email';
+	const ISSUED_PRINT = 'print';
+
 	const TAG_GIFT_VALUE = '[gift_value]';
 	const TAG_RESTAURANT_NAME = '[restaurant_name]';
 	const TAG_GIFT_CODE = '[gift_code]';
@@ -312,6 +317,7 @@ class Crunchbutton_Promo extends Cana_Table
 		$mail->send();
 
 		$gift->note =  'EMAIL sent to ' . $email . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $gift->note;
+		$gift->issued = static::ISSUED_EMAIL;
 		$gift->save();
 	}
 
@@ -353,6 +359,7 @@ class Crunchbutton_Promo extends Cana_Table
 		}
 
 		$gift->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $gift->note;
+		$gift->issued = static::ISSUED_TEXT;
 		$gift->save();
 
 		$message = str_split($message, 160);
