@@ -243,17 +243,6 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->txn = $this->transaction();
 		}
 
-		// If the payment succeds - redeem the gift card
-		if ( trim( $this->notes ) != '' ){
-			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
-			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
-				if( $giftcard->id_promo ){
-					$giftcard->addCredit( $user->id_user );
-				}
-			}
-			$this->notes = $giftcards[ 'notes' ];	
-		}
-
 		if ($this->_customer->id) {
 			switch (c::config()->processor) {
 				case 'stripe':
@@ -336,6 +325,17 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->date = date('Y-m-d H:i:s');
 		$this->id_community = $this->restaurant()->community()->id_community;
 		$this->save();
+
+		// If the payment succeds then redeem the gift card
+		if ( trim( $this->notes ) != '' ){
+			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
+				if( $giftcard->id_promo ){
+					$giftcard->addCredit( $user->id_user );
+				}
+			}
+			$this->notes = $giftcards[ 'notes' ];	
+		}
 
 		$this->debitFromUserCredit( $user->id_user );
 
