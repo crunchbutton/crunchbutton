@@ -34,12 +34,13 @@
 			width: 220px;
 		}
 		.code{
-			margin-left: 555px;
-			margin-top: 103px;
+			margin-left: 540px;
+			margin-top: 125px;
 			color:#d50000;
 			font-family: 'InconsolataMedium', 'Courier New', Courier, monospace;
-			font-size: 53px;
+			font-size: 20px;
 			position: absolute;
+			text-align: left;
 			width: 200px;
 		}
 		.place{
@@ -90,20 +91,19 @@ if( sizeof( $giftcards ) > 0 ) {
 			$restaurant_name = $restaurant->name;			
 		} else {
 			$restaurant_name = 'Crunchbutton';
-			$local_description = 'Order the top local food.';
 		}
 	?>
 	<div class="giftcard">
 		<div class="dollar">$</div>
 		<div class="value"><?php echo $giftcard->value;?></div>
-		<div class="code"><?php echo $giftcard->code;?></div>
+		<div class="code">Put <?php echo $giftcard->code;?> <br/> in Notes Section <br/> on crunchbutton.com</div>
 		<div class="place"><?php echo $restaurant_name; ?></div>
 		<img src="/assets/images/giftcard_print.png"/>
 	</div>
 	<?php 
 		if( $count % 3 == 0 ){
 			?>
-			<div class="page-break">---</div>
+			<div class="page-break"></div>
 			<?php
 		}
 	?>
