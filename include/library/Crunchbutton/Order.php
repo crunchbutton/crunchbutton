@@ -206,14 +206,15 @@ class Crunchbutton_Order extends Cana_Table {
 		$user->save();
 		$this->id_user = $user->id_user;
 
+		// Find out if the user posted a gift card code at the notes field and get its value
+		$this->giftcardValue = 0;
 		if ( trim( $this->notes ) != '' ){
 			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
 			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
 				if( $giftcard->id_promo ){
-					$giftcard->addCredit( $user->id_user );
+					$this->giftcardValue += $giftcard->value;
 				}
 			}
-			$this->notes = $giftcards[ 'notes' ];	
 		}
 
 		$res = $this->verifyPayment();
@@ -240,6 +241,17 @@ class Crunchbutton_Order extends Cana_Table {
 			return $res['errors'];
 		} else {
 			$this->txn = $this->transaction();
+		}
+
+		// If the payment succeds - redeem the gift card
+		if ( trim( $this->notes ) != '' ){
+			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
+				if( $giftcard->id_promo ){
+					$giftcard->addCredit( $user->id_user );
+				}
+			}
+			$this->notes = $giftcards[ 'notes' ];	
 		}
 
 		if ($this->_customer->id) {
@@ -362,17 +374,17 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function calcFinalPriceMinusUsersCredit(){
+		$final_price = $this->final_price;
 		if( $this->pay_type == 'card' ){
-			if( c::user()->id_user ){
-				$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $this->final_price, $this->id_user, $this->id_restaurant, $this->id_order, true );
-				$final = $this->final_price - $chargedByCredit;
-				if( $final < 0 ){
-					$final = 0;
-				}
-				return Util::ceil($final, 2);
-			} 
+			$final_price = $final_price - $this->giftcardValue;
+			if( $this->id_user ){
+				$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $final_price, $this->id_user, $this->id_restaurant, $this->id_order, true );
+				$final_price = $final_price - $chargedByCredit;
+			}
+			if( $final_price < 0 ){ $final_price = 0; }
+			return Util::ceil( $final_price, 2 );
 		}
-		return $this->final_price;
+		return $final_price;
 	}
 
 	public function chargedByCredit(){
