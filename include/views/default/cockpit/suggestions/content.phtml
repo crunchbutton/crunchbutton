@@ -1,26 +1,52 @@
+<style>
+table a {
+	text-decoration: underline;
+}
+</style>
 <? if (!$this->suggestions->count()) : ?>
-	No results found
+	<div>
+		No results found
+	</div>
 <? else : ?>
-	<table class="list-suggestions">
-		<tr>
-			<th>Date</th>
-			<th>Suggestion</th>
-			<th>User</th>
-			<th>Phone</th>
-			<th>Restaurant</th>
-			<th>Status</th>
-			<th>Type</th>
-		</tr>
+	<table class="table table-normal">
+		<thead>
+			<tr>
+				<td>Date</td>
+				<td>Suggestion</td>
+				<td>User</td>
+				<td>Phone</td>
+				<td>Restaurant</td>
+				<td>Content</td>
+				<td>Status</td>
+				<td>Type</td>
+			</tr>
+		</thead>
 		<? foreach ($this->suggestions as $suggestion) : ?>
+			<?php
+			if( $suggestion->status == 'deleted' ){
+				$status = 'black';
+			} else if ( $suggestion->status == 'new' ){
+				$status = 'green';
+			} else if ( $suggestion->status == 'applied' ){
+				$status = 'blue';
+			}
+
+			if( $suggestion->type == 'dish' ){
+				$type = 'food';
+			} else if( $suggestion->type == 'restaurant' ){
+				$type = 'building';
+			}
+			?>
 			<? $date = $suggestion->date(); ?>
-			<tr class="list-suggestion-item <?=$suggestion->status; ?>">
+			<tr class="<?=$suggestion->status; ?>">
 				<td> <?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?> </td>
 				<td> <a href="/suggestions/<?=$suggestion->id_suggestion;?>"><?=$suggestion->name; ?></a> </td>
 				<td> <?php if( $suggestion->user()->id_user ) { echo $suggestion->user()->name; } else { echo '-'; } ?> </td>
 				<td> <?php if( $suggestion->user()->id_user ) { echo $suggestion->user()->phone; } else { echo '-'; } ?> </td>
 				<td> <?=$suggestion->restaurant()->name; ?> </td>
-				<td><span class="status"><?=$suggestion->status; ?></div></td>
-				<td> <?=$suggestion->type; ?> </td>
+				<td> <?=nl2br( $suggestion->content ); ?> </td>
+				<td><label class="label label-<?php echo $status; ?>"><?=$suggestion->status; ?></label></td>
+				<td> <i class="icon-<?php echo $type; ?>"></i> <?=$suggestion->type; ?> </td>
 			</tr>
 		<? endforeach ; ?>
 	</table>

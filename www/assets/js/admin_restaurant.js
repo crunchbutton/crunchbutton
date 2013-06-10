@@ -1083,6 +1083,7 @@ var WIDGET = {
 
 
 var ADMIN = {
+	isRestaurantLoaded : false,
 	restaurant_init : function(id_restaurant) {
 		// once per pageload
 		this.id_restaurant = id_restaurant;
@@ -1101,6 +1102,7 @@ var ADMIN = {
 		w = UTIL.create_widget('toggle', $('#restaurant-cash-container'), {field_name:'cash'});
 		w = UTIL.create_widget('toggle', $('#restaurant-credit-container'), {field_name:'credit'});
 		w = UTIL.create_widget('toggle', $('#restaurant-any-gift-card-container'), {field_name:'giftcard'});
+		w = UTIL.create_widget('toggle', $('#restaurant-fee_on_subtotal-container'), {field_name:'fee_on_subtotal'});
 		w = UTIL.create_widget('toggle', $('#restaurant-delivery-container'), {field_name:'delivery'});
 		w = UTIL.create_widget('toggle', $('#restaurant-takeout-container'), {field_name:'takeout'});
 		w = UTIL.create_widget('notifications', $('#notifications-container'));
@@ -1143,6 +1145,8 @@ var ADMIN = {
 					DOM_MAP.apply();
 					ADMIN.save_is_safe = true;
 					UTIL.show_msg('Restaurant loaded.');
+					$( '#save-button' ).html( 'Save' );
+					ADMIN.isRestaurantLoaded = true;
 				});
 	},
 	restaurant_revert : function() {
@@ -1152,6 +1156,10 @@ var ADMIN = {
 		// ADMIN.restaurant_save();
 	},
 	restaurant_save : function() {
+		if( !ADMIN.isRestaurantLoaded ){
+			UTIL.show_msg('Please wait the restaurant load!');
+			return;
+		}
 		validation_warnings = DOM_MAP.validate();
 		if(validation_warnings.length) {
 			console.log(validation_warnings);

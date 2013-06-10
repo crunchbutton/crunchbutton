@@ -7,6 +7,10 @@ var Category = function(id) {
 	self.dishes = function() {
 		return self.loadType('Dish','dishes');
 	}
+	
+	self.locName = function(community) {
+		return (self.loc == '1' && community && community.name) ? (' at ' + community.name) : '';
+	}
 
 	self.loadType = function(cls, data) {
 		if (!self['__' + data]) {

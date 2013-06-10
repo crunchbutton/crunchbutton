@@ -23,6 +23,13 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				}
 				break;
 
+			case 'pay_if_refunded':
+				$order->pay_if_refunded = c::getPagePiece(4);
+				$order->save();
+				echo json_encode(['status' => 'success']);
+				exit;
+				break;
+
 			case 'resend_notification':
 				if ( $order->resend_notify() ) {
 					echo json_encode(['status' => 'success']);

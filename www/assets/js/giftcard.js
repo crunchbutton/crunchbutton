@@ -4,7 +4,6 @@ App.giftcard = {
 		validate : 'giftcard/validate'
 	},
 	notesCode : false,
-	size : 6,
 	callback : false,
 	hasStarted : false,
 	showGiftCardCashMessage: true
@@ -132,11 +131,8 @@ App.giftcard.notesField.listener = function(){
 		if( word != '' ){
 			// Clean the word - remove special chars
 			word = word.replace( /[^a-zA-Z 0-9]+/g, '' );
-			// Check if the word has the same size of the gift card (App.giftcard.size)
-			if( word.length == App.giftcard.size ){
-				// Store this 'giftcards wanna be' in a array
-				giftcards[ word ] = word;
-			}
+			// Store this 'giftcards wanna be' in a array
+			giftcards[ word ] = word;
 		}
 	}
 	var hasGiftsToValidate = false;

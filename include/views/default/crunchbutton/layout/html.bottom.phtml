@@ -1,5 +1,5 @@
 <script type="text/javascript">
-if( App ){
+if (App){
 	App.config = <?=json_encode(c::appConfig())?>;
 } else {
 	$(function() {
@@ -8,28 +8,23 @@ if( App ){
 }
 </script>
 
-<? if ((Cana::env() != 'live' ) && (isset($this->restaurant)) && (!$this->restaurant->open()) ) :?>
-	<style> .wrapper { background: lightgray;} </style>
-<? endif?>
 </head>
 <?
-
 	$basicPages = ['legal','help','faq','hello'];
 	if (!c::getPagePiece(0) || (c::getPagePiece(0) && !in_array(c::getPagePiece(0), $basicPages) && !$this->community)) {
 		$e = ' short-meal-list';
 	}
-
 ?>
-<body>
+<body><? /* data-ng-controller="AppController" */?>
 	<div class="wrapper">
+	
 		<div class="nav" data-role="header" data-position="fixed">
 			<div class="content<?=$e?>">
 				<div class="pacman-loading pacman-left"></div>
-				<div class="nav-back"></div>
-				<div class="logo"><a href="javascript:;" class="link-home"><div class="logo-img"></div></a></div>
+				<div class="nav-back" ng-tap="back()"></div>
+				<div class="logo"><a href="javascript:;" ng-tap="link('/')"><div class="logo-img"></div></a></div>
 				<div class="sign-in-icon"></div>
-				<div class="pacman-loading pacman-right"></div>
-				<div title="Change location" class="config-icon"></div>
+				<div title="Change location" class="config-icon" ng-tap="link('/location')"></div>
 				<div class="signin-box-header">
 					<div class="signin-user" title="My Account + Past Orders"></div>
 					<div class="signin-icon"></div>
@@ -39,7 +34,7 @@ if( App ){
 		<div class="body">
 			<div class="content<?=$e?>">
 				<div class="main-content pages">
-					<?=$this->content?>
+					<div ng-view><?=$this->content?></div>
 				</div>
 			</div>
 		</div>
@@ -48,11 +43,10 @@ if( App ){
 			<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
 
 			<div class="footer-content">
-				<a href="javascript:App.page.help();" class="link-help">Help</a>
-				<a href="javascript:App.page.legal();" class="link-legal">Legal</a>
-				<a href="javascript:App.page.orders();" class="link-orders"<?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
+				<a href="javascript:;" ng-tap="link('/help')">Help</a>
+				<a href="javascript:;" ng-tap="link('/legal')">Legal</a>
+				<a href="javascript:;" ng-tap="link('/orders')" <?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
 				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
-					<a href="javascript:App.useRestaurantBoundingBox=true;alert('Ok!');">TEST: restaurant bounding</a>
 					<a href="javascript:App.test.card();" class="test-card">TEST: card</a>
 					<a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a>
 					<a href="javascript:App.test.clearloc();" class="test-clearloc">TEST: clear loc</a>
@@ -61,55 +55,60 @@ if( App ){
 				<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
 			</div>
 		</div>
+		
+		<ng-include src="view/signin.html"></ng-include>
+		<ng-include src="view/suggestion.html"></ng-include>
+		<ng-include src="view/support.html"></ng-include>
+		
+
 	</div>
+
 	<div id="fb-root"></div>
+
 	<audio id="get-food-audio">
 		<source src="/assets/audio/crunch.mp3"></source>
 		<source src="/assets/audio/crunch.ogg"></source>
-	</audio>
+	</audio>	
 </body>
+
 <script type="text/javascript">
-$(function() {
-window.fbAsyncInit = function() {
-	FB.init({
-		appId: '<?php echo Cana::config()->facebook->app; ?>',
-		cookie: true,
-		xfbml: true,
-		oauth: true
+	$(function() {
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId: '<?=Cana::config()->facebook->app?>',
+				cookie: true,
+				xfbml: true,
+				oauth: true
+			});
+			FB.getLoginStatus(App.signin.facebook.processStatus);
+			FB.Event.subscribe('auth.statusChange', App.signin.facebook.processStatus);
+		};
 	});
-	FB.getLoginStatus( App.signin.facebook.processStatus );
-	FB.Event.subscribe('auth.statusChange', App.signin.facebook.processStatus );
-	};
-});
-(function(d, s, id) {
-var js, fjs = d.getElementsByTagName(s)[0];
-if (d.getElementById(id)) return;
-js = d.createElement(s); js.id = id;
-js.src = "//connect.facebook.net/en_US/all.js";
-fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
+
+	(function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) return;
+	js = d.createElement(s); js.id = id;
+	js.src = "//connect.facebook.net/en_US/all.js";
+	fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+
 </script>
+
 <? if ($_SERVER['__HTTP_HOST'] == 'crunchbutton.com') : ?>
-<script type="text/javascript">
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-36135548-1']);
-_gaq.push(['_setDomainName', 'crunchbutton.com']);
-_gaq.push(['_setAllowLinker', true]);
-_gaq.push(['_trackPageview']);
-(function() {
-	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
-</script>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-36135548-1']);
+		_gaq.push(['_setDomainName', 'crunchbutton.com']);
+		_gaq.push(['_setAllowLinker', true]);
+		_gaq.push(['_trackPageview']);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
 <? endif ; ?>
 
-<? if (!c::isMobile()) : ?>
-<script type="text/javascript">
-$(function() {
-	App.support.init();
-});
-</script>
-<? endif; ?>
 
 </html>

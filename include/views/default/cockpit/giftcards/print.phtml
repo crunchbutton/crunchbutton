@@ -1,11 +1,5 @@
-<link href='http://fonts.googleapis.com/css?family=Atomic+Age|Carrois+Gothic+SC' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
 <style type="text/css">
-	.dotted{
-		border: 1px dotted #CCC;
-		padding: 5px;
-		width: 776px;
-		margin: 20px auto;
-	}
 	.giftcard{
 		font-family: 'Atomic Age', cursive;
 		height: 340px;
@@ -19,94 +13,92 @@
 		}
 		.value{
 			color:#da0009;
-			font-size: 150px;
+			font-size: 135px;
 			position: absolute;
 			z-index: 10;
 			letter-spacing: -10px;
-			margin-left: 310px;
-			margin-top: 60px;
+			margin-left: 140px;
+			margin-top: 62px;
 			text-align: center;
-			width: 220px;
+			width: 140px;
 		}
 		.dollar{
 			color:#da0009;
-			font-size: 50px;
+			font-size: 35px;
 			font-weight: bold;
 			position: absolute;
 			z-index: 11;
-			margin-left: 300px;
-			margin-top: 135px;
+			margin-left: 122px;
+			margin-top: 130px;
 			text-align: left;
 			width: 220px;
 		}
-		.code{
-			margin-left: 560px;
-			margin-top: 105px;
+		.instruction{
+			margin-left: 315px;
+			margin-top: 115px;
 			color:#d50000;
-			font-family: 'Carrois Gothic SC', sans-serif;
-			font-size: 45px;
+			font-family: 'InconsolataMedium', 'Courier New', Courier, monospace;
+			font-size: 33px;
+			font-weight: bold;
 			position: absolute;
-			width: 200px;
+			text-align: left;
 		}
 		.place{
 			color:#3f4c51;
-			font-family: 'Carrois Gothic SC', sans-serif;
-			font-size: 28px;
+			font-family: 'ArmataRegular', sans-serif;
+			font-size: 16px;
 			position: absolute;
 			z-index: 10;
-			margin-left: 310px;
+			margin-left: 105px;
 			margin-top: 250px;
 			text-align: center;
-			width: 220px;
+			width: 200px;
 		}
 			.page-break{
 				page-break-after:always;
 			}
+@font-face {
+		font-family: 'InconsolataMedium';
+		src: url('/assets/fonts/Inconsolata-webfont.eot');
+		src: url('/assets/fonts/Inconsolata-webfont.eot?#iefix') format('embedded-opentype'),
+				 url('/assets/fonts/Inconsolata-webfont.woff') format('woff'),
+				 url('/assets/fonts/Inconsolata-webfont.ttf') format('truetype'),
+				 url('/assets/fonts/Inconsolata-webfont.svg#InconsolataMedium') format('svg');
+		font-weight: normal;
+		font-style: normal;
+}
+@font-face {
+		font-family: 'ArmataRegular';
+		src: url('/assets/fonts/Armata-Regular-webfont.eot');
+		src: url('/assets/fonts/Armata-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+				 url('/assets/fonts/Armata-Regular-webfont.woff') format('woff'),
+				 url('/assets/fonts/Armata-Regular-webfont.ttf') format('truetype'),
+				 url('/assets/fonts/Armata-Regular-webfont.svg#ArmataRegular') format('svg');
+		font-weight: normal;
+		font-style: normal;
+
+}
 </style>
 <?php 
 $count = 0;
 $giftcards = $this->giftcards;
-
-$env = c::env() == 'live' ? 'live' : 'dev';
-
-if( $env == 'live' ){
-	$serverUrl = 'crunchbutton.com';
-} else {
-	$serverUrl = 'beta.crunchbutton.com';
-}
-if( $giftcards->count() > 0 ) {
+if( sizeof( $giftcards ) > 0 ) {
 	foreach( $giftcards as $giftcard ){
+		if( !$giftcard ){ continue; }
 		$count++;
 		if( $giftcard->id_restaurant ){
 			$restaurant = $giftcard->restaurant();
-			$restaurant_name = $restaurant->name;
-
-			$community = $restaurant->communities();
-			if( $community->count() > 0 ){
-				$community_name = $community->name_alt;
-				$community_prep = $community->prep;
-				if( $community_name && $community_prep ){
-					$local_description = 'Order the top food ' . $community_prep . ' ' . $community_name . '.';	
-				} else {
-					$local_description = 'Order the top local food.';	
-				}
-			} else {
-				$local_description = 'Order the top local food.';	
-			}
-			
+			$restaurant_name = $restaurant->name;			
 		} else {
 			$restaurant_name = 'Crunchbutton';
-			$local_description = 'Order the top local food.';
 		}
 	?>
-	<div class="dotted">
-		<div class="giftcard">
-			<div class="dollar">$</div>
-			<div class="value"><?php echo $giftcard->value;?></div>
-			<div class="code"><?php echo $giftcard->code;?></div>
-			<div class="place"><?php echo $restaurant_name; ?></div>
-			<img src="/assets/images/giftcard_print.png"/>
-		</div>
+	<div class="giftcard">
+		<div class="dollar">$</div>
+		<div class="value"><?php echo $giftcard->value;?></div>
+		<div class="instruction">To redeem, go to <br/>crunchbutton.com/<?php echo $giftcard->code;?></div>
+		<div class="place">Free Food from <br/><?php echo $restaurant_name; ?></div>
+		<img src="/assets/images/giftcard_print.png"/>
 	</div>
 	<?php 
 		if( $count % 3 == 0 ){

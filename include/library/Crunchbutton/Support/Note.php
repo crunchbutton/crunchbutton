@@ -1,8 +1,5 @@
 <?php
 
-
-
-
 class Crunchbutton_Support_Note extends Cana_Table {
 
 	public function __construct($id = null) {

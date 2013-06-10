@@ -193,7 +193,7 @@ body {
 	padding-top: 9px;
 }
 
-.meal-item-down {
+.meal-item.active {
 	margin-top: 2px;
 	box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.15);
 }
@@ -255,7 +255,7 @@ body {
 	text-shadow: 1px 1px 0 rgba(255,255,255,1);
 	margin-bottom: 90px;
 }
-.error-location, .enter-location, .button-letseat-form{
+.error-location {
 	display: none;
 }
 .copyright {
@@ -533,6 +533,14 @@ html[xmlns] .clearfix {
 }
 
 .dp-display-item:first-child {
+}
+
+.dp-display-item .clickable{
+	color:#d74924;
+	cursor: pointer;
+	font-style: italic;
+	padding:8px 8px 8px 0;
+	text-decoration: underline;
 }
 
 .dp-display-item:last-child {
@@ -1193,15 +1201,12 @@ html[xmlns] .clearfix {
 	.content-item-locations{
 		margin-top: 70px !important;
 	}
-		.content-item-locations h1 {
-			font-size: 15px;
-			text-align: center;
-			margin-bototm: 5px;
-		}
-
-	.home-welcome-click {
-		display: none;
+	.content-item-locations h1 {
+		font-size: 15px;
+		text-align: center;
+		margin-bototm: 5px;
 	}
+
 	.home-welcome h1 {
 		font-size: 20px;
 	}
@@ -1286,7 +1291,19 @@ html[xmlns] .clearfix {
 		border: 1px solid #ffd1bd;
 		text-decoration: none;
 	}
-
+	.dish-item.blink{
+		background: #fed0be;
+	}
+	.order-thanks-message{
+		padding-top: 10px !important;
+		display: block;
+		font-size: 25px !important;
+	}
+	.order-thanks-message-block{
+		display: block;
+		line-height: 30px;
+		margin-top: 15px;
+	}
 	.cart-item {
 		background: #ecf1fb;
 		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f4f7fd), to(#ecf1fb));
@@ -1423,7 +1440,7 @@ html[xmlns] .clearfix {
 		line-height: 18px;
 		display: block !important;
 	}	
-	.meal-item-down {
+	.meal-item.active {
 		border: 1px solid rgba(255,40,31,.8);
 	}
 	.restaurant-pic-wrapper:before {
@@ -1902,9 +1919,6 @@ html[xmlns] .clearfix {
 		background: url(/assets/images/location.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
-	}
-	.home-welcome-touch {
-		display: none;
 	}
 	.ui-footer-fixed {
 		left: auto;
@@ -2429,53 +2443,58 @@ html[xmlns] .clearfix {
 			margin-top: 10px;
 			padding-top: 17px;
 		}
-			.signin-facebook, .signup-facebook, .share-order-facebook{
-				border-radius: 4px;
-				border: 1px solid #0b3c6e;
-				padding: 0;
-				display: block;
-				margin: 3px auto 0 auto;
-				text-align: center;
-				text-shadow: 1px 1px 0px rgba(0,0,0,.22);
-				background-color: #215387;
-				background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(33, 83, 135)),to(rgb(25, 68, 113)));
-				background-image: -webkit-linear-gradient(top, rgb(33, 83, 135), rgb(25, 68, 113));
-				background-image: -moz-linear-gradient(top, rgb(33, 83, 135), rgb(25, 68, 113));
-				background-image: -o-linear-gradient(top, rgb(33, 83, 135), rgb(25, 68, 113));
-				background-image: -ms-linear-gradient(top, rgb(33, 83, 135), rgb(25, 68, 113));
-				background-image: linear-gradient(top, rgb(33, 83, 135), rgb(25, 68, 113));
-				filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#215387', EndColorStr='#194471');
-			}
-				.share-order-facebook{
-					margin-bottom: 15px;
-					margin-top: 25px;
-					width: 185px;
-				}
-				.signin-facebook a, .signup-facebook a, .share-order-facebook a{
-					text-decoration: none;
-				}
-				.signin-facebook-icon, .signup-facebook-icon, .share-facebook-icon{
-					background: url(/assets/images/signin-facebook.png);
-					display: block;
-					float: left;
-					height: 40px;
-					width: 40px;
-				}
-					.share-facebook-icon{
-						background: url(/assets/images/share-facebook-icon.png);
-						margin: 6px;
-						height: 13px;
-						width: 13px;
-					}
-				.signin-facebook-text, .signup-facebook-text, .share-facebook-text{
-					color: #fff;
-					float: left;
-					padding-top:12px;
-					text-align: center;
-				}	
-					.share-facebook-text{
-						padding-top:3px;
-					}
+		
+/**
+ * facebook button styling
+ */
+.facebook-button {
+	text-align: center;
+	border-radius: 3px;
+	border: 1px solid #2b4171;
+	display: block;
+	margin: 0 auto;
+	padding: 0;
+	text-shadow: 1px 1px 0px rgba(0,0,0,.75);
+	background-color: #3c5a97;
+	color: #fff;
+	cursor: pointer;
+	padding: 0 5px 0 5px;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(64, 97, 159)),to(rgb(54, 82, 141)));
+	background-image: -webkit-linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
+	background-image: -moz-linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
+	background-image: -o-linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
+	background-image: -ms-linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
+	background-image: linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#40619f', EndColorStr='#36528d');
+	box-shadow: 0 2px 3px rgba(182, 182, 182, 0.75);
+}
+
+.facebook-button-share {
+	margin-bottom: 15px;
+	margin-top: 25px;
+	width: 200px;
+}
+.facebook-button .facebook-button-text, .facebook-button .icon-facebook {
+	padding: 6px;
+	float: left;
+}
+
+.facebook-button .icon-facebook {
+	margin-right: 7px;
+	font-size: 20px;
+
+}
+.facebook-button .facebook-button-text {
+	padding-left: 13px;
+	border-left: 1px solid #2c4272;
+	box-shadow: inset 1px 0 0 rgba(255,255,255,.1);
+	padding-top: 7px;
+}
+
+
+
+
+
 				.password-change-block{
 					display: none;
 				}
@@ -3060,4 +3079,8 @@ strong {
 	}
 .order-restaurant{
 	cursor: pointer;
+}
+
+.ui-dialog-titlebar-close{
+	padding: 5px !important;
 }

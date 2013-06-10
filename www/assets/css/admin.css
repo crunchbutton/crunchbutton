@@ -198,10 +198,6 @@ h1 {
 .list-orders th{
 	white-space: nowrap;
 }
-.list-order-item:nth-child(2n+3) {
-	background: rgba(0,0,0,.1);
-}
-
 .list-orders ul {
 	list-style-type:circle;
 	margin-left: 20px;
@@ -715,7 +711,7 @@ table.list tr:nth-of-type(even) {
 }
 
 .admin-item-col-small {
-	width: 12%;
+	width: 15%;
 	display: inline-block;
 	padding-right: 15px;
 }
@@ -844,10 +840,11 @@ input:disabled {
 .admin-modal-item {
 	display: block;
 	width: 100%;
-	min-height: 20px;
+	min-height: 30px;
 	margin: 10px 0px 5px 0px;
 	border-top: 1px solid #888888;
-	padding-top: 5px;
+	padding: 5px;
+	clear: both;
 }
 
 .admin-modal-title {
@@ -904,8 +901,16 @@ input:disabled {
 		margin:3px;
 		padding:5px !important;
 	}
-	
+.pointer{
+	cursor: pointer;
+}
 .chat-box-wrapper {
-	height: 250px;
+	height: 450px;
 	overflow: scroll;
+}
+
+#admin-dish-lightning-modal{
+	background: #FFF;
+	border: 1px solid #CCC;
+	padding: 15px;
 }

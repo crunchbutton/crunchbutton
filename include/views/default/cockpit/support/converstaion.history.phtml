@@ -1,0 +1,7 @@
+<ul class="chat-box">
+	<? foreach ($this->notes as $note): ?>
+		<span class="conversation-<?php echo $note->from;?>">
+			<? $this->display('support/conversation.note.'.$note->from, ['set' => ['note' => $note]]); ?>
+		</span>
+	<? endforeach; ?>
+</ul>

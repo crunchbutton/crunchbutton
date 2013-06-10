@@ -1,0 +1,1 @@
+ALTER TABLE `order` DROP `dont_charge_fee`;

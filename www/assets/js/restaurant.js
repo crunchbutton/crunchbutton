@@ -383,6 +383,7 @@ var Restaurant = function(id) {
 	}
 
 	self.load(id);
+
 }
 
 App.cached.Restaurant = {};

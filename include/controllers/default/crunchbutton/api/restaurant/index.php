@@ -166,6 +166,27 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							}
 							break;
 
+						case 'paymentinfo':
+
+							if ( $r->id_restaurant ) {
+								$r->payment_method = $this->request()['payment_method'];
+								$r->id_restaurant_pay_another_restaurant = $this->request()['id_restaurant_pay_another_restaurant'];
+								$r->check_address = $this->request()['check_address'];
+								$r->contact_name = $this->request()['contact_name'];
+								$r->summary_fax = $this->request()['summary_fax'];
+								$r->summary_email = $this->request()['summary_email'];
+								$r->summary_frequency = $this->request()['summary_frequency'];
+								$r->legal_name_payment = $this->request()['legal_name_payment'];
+								$r->tax_id = $this->request()['tax_id'];
+								$r->charge_credit_fee = $this->request()['charge_credit_fee'];
+								$r->waive_fee_first_month = $this->request()['waive_fee_first_month'];
+								$r->pay_promotions = $this->request()['pay_promotions'];
+								$r->pay_apology_credits = $this->request()['pay_apology_credits'];
+								$r->save();
+								echo json_encode( [ 'success' => 'restaurant saved' ] );
+							}
+						break;
+
 						case 'merchant':
 							if ($r->id_restaurant) {
 								$r->createMerchant([

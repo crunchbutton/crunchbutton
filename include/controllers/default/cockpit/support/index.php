@@ -28,6 +28,13 @@ class Controller_support extends Crunchbutton_Controller_Account {
 						exit;
 						break;
 		
+					case 'history':
+						c::view()->layout('layout/ajax');
+						c::view()->notes = $support->notes();
+						c::view()->display( 'support/converstaion.history' );
+						exit;
+						break;
+
 					case 'conversation' :
 						self::setRep($support);
 						$sn = self::respond($support, $_POST);
@@ -35,9 +42,15 @@ class Controller_support extends Crunchbutton_Controller_Account {
 						exit;
 						break;
 
+					case 'note' :
+						$support->addNote($_POST['text'], 'rep', 'internal');
+						exit;
+						break;
+
 					case 'update':
-						self::setRep($support);
-						self::update($support, $_POST);
+						self::update( $support, $_POST );
+						echo $support->json();
+						exit;
 						break;
 
 					case 'actions':
@@ -73,17 +86,60 @@ class Controller_support extends Crunchbutton_Controller_Account {
 		return $sn;
 	}
 
-	public static function update($support, $args=[]) {
+	public static function update( $support, $args = [] ) {
+
 		if($args['new_note'] != '') {
 			$support->addNote($args['new_note'], 'rep', 'internal');
 		}
-		$support->description_client = $args['description_client'];
-		$support->description_cb     = $args['description_cb'    ];
-		$support->fault_of           = $args['fault_of'          ];
-		$support->customer_happy     = $args['customer_happy'    ];
-		$support->status             = $args['status'            ];
-		$support->id_github          = $args['id_github'         ];
-		$support->how_to_prevent     = $args['how_to_prevent'    ];
+
+		$changes = array();
+
+		if( $support->status != $args['status'] ){
+			$changes[] = 'Status changed to: ' . $args['status'];
+		}
+
+		if( $support->id_github != $args['id_github'] ){
+			$changes[] = 'GitHub Issue changed to: ' . $args['id_github'];
+		}
+
+		if( $support->fault_of != $args['fault_of'] ){
+			$changes[] = 'Fault of changed to: ' . $args['fault_of'];
+		}
+
+		if( $support->customer_happy != $args['customer_happy'] ){
+			$changes[] = 'Customer happy changed to: ' . ( ( $args['customer_happy'] == 1 ) ? 'Yes' : 'No' ) ;
+		}
+
+		if( $support->user_perspective != $args['user_perspective'] ){
+			$changes[] = 'User perspective changed to: ' . $args['user_perspective'];
+		}
+
+		if( $support->user_perspective_other != $args['user_perspective_other'] ){
+			$changes[] = 'User perspective (other) changed to: ' . $args['user_perspective_other'];
+		}
+
+		if( $support->description_cb != $args['description_cb'] ){
+			$changes[] = 'Behind the scenes changed to' . $args['description_cb'];
+		}
+
+		if( $support->how_to_prevent != $args['how_to_prevent'] ){
+			$changes[] = 'Hot to prevent changed to: ' . $args['how_to_prevent'];
+		}
+
+		$changes = join( "\n", $changes );
+		if( trim( $changes ) != '' ){
+			$support->systemNote( $changes );	
+		}
+		
+		$support->user_perspective 				= $args['user_perspective'			];
+		$support->user_perspective_other 	= $args['user_perspective_other'];
+		$support->description_client 			= $args['description_client'		];
+		$support->how_to_prevent 					= $args['how_to_prevent'				];
+		$support->description_cb     			= $args['description_cb'    		];
+		$support->fault_of           			= $args['fault_of'          		];
+		$support->customer_happy     			= $args['customer_happy'    		];
+		$support->status             			= $args['status'            		];
+		$support->id_github          			= $args['id_github'         		];
 		$support->save();
 	}
 

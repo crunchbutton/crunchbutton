@@ -30,18 +30,35 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public static function promoCodeGenerator(){
 		$random_id_length = 6; 
-		$rnd_id = crypt( uniqid( rand(), 1 ) ); 
-		$rnd_id = strip_tags( stripslashes( $rnd_id ) ); 
-		$rnd_id = str_replace( '.', '', $rnd_id ); 
-		$rnd_id = strrev( str_replace( '/', '', $rnd_id ) ); 
-		$rnd_id = substr( $rnd_id, 0, $random_id_length ); 
+		$characters = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ';
+		$rnd_id = '';
+		for ($i = 0; $i < $random_id_length; $i++) {
+			$rnd_id .= $characters[rand(0, strlen($characters) - 1)];
+		}
 
 		// make sure the code do not exist
 		$promo = Crunchbutton_Promo::byCode( $rnd_id );
 		if( $promo->count() > 0 ){
-			return $this->promoCodeGenerator();
+			return static::promoCodeGenerator();
 		} else {
-			return strtoupper( $rnd_id );	
+			return $rnd_id;	
+		}
+	}
+
+	public static function promoCodeGeneratorUseChars( $chars, $length, $id_promo ){
+		$random_id_length = $length - strlen( $id_promo ); 
+		$characters = $chars;
+		$rnd_id = $id_promo;
+		for ($i = 0; $i < $random_id_length; $i++) {
+			$rnd_id .= $characters[rand(0, strlen($characters) - 1)];
+		}
+
+		// make sure the code do not exist
+		$promo = Crunchbutton_Promo::byCode( $rnd_id );
+		if( $promo->count() > 0 ){
+			return static::promoCodeGeneratorUseChars( $chars, $length, $id_promo );
+		} else {
+			return $rnd_id;	
 		}
 	}
 
@@ -107,7 +124,75 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function multiple( $ids ){
-		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo IN ( ' . $ids . ' )');
+		
+		$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo IN ( ' . $ids . ' )');
+		
+		// Change the way it is sorted - Issue #1419
+		$idsArray = explode( ',', $ids );
+		$giftcardPerPage = 3;
+		$totalGifts = sizeof( $idsArray );
+		$giftsPerPosition = ceil( $totalGifts / $giftcardPerPage );
+		$left = $totalGifts % $giftcardPerPage;
+		$perPosition = array();
+		$idsOrdered = array();
+		if( $left != 0 ){
+			for( $i = 0; $i < $giftcardPerPage; $i++ ){
+				if( $left > 0 ){
+					$perPosition[ $i ] = $giftsPerPosition;
+					$left--;
+				} else {
+					$perPosition[ $i ] = $giftsPerPosition - 1;
+				}
+			}
+		} else {
+			for( $i = 0; $i <= $giftcardPerPage; $i++ ){
+				$perPosition[ $i ] = $giftsPerPosition ;
+			}
+		}
+		$startsAt = array();
+		$sum = 0;
+		for( $i = 0; $i < sizeof( $perPosition ); $i ++ ){
+			$startsAt[ $i ] = $sum;
+			$sum = $sum + $perPosition[ $i ];
+		}
+		for( $i = 0; $i < $giftsPerPosition; $i++ ){
+			for( $j = 1; $j <= $giftcardPerPage; $j++ ){
+				if( sizeof( $idsOrdered ) < sizeof( $idsArray ) ){
+					$index = $startsAt[ $j - 1 ] + $i;
+					$idsOrdered[] = $idsArray[ $index ];
+				}
+			}
+		}
+		
+		// Remove duplicated - It should not to have duplicated, it is just to make sure!
+		array_unique( $idsOrdered );
+
+		// Make sure that all the ids where included
+		foreach ( $idsArray as $idArray ) {
+			$has = false;
+			foreach ( $idsOrdered as $idOrdered ) {
+				if( $idArray == $idOrdered ){
+					$has = true;
+				}
+			}
+			if( !$has ){
+				$idsOrdered[] = $idArray;
+			}
+		}
+		
+		$giftcardsArray = array();
+		$giftcardsOrdered = array();
+
+		// Convert the interactor to array
+		foreach ( $giftcards as $giftcard ) {
+			$giftcardsArray[ $giftcard->id_promo ] = $giftcard;
+		}
+
+		// Sort
+		for( $i = 0; $i < sizeof( $idsOrdered ); $i ++ ){
+			$giftcardsOrdered[] = $giftcardsArray[ $idsOrdered[ $i ] ];
+		}
+		return $giftcardsOrdered;
 	}
 
 	public function credit(){
@@ -168,27 +253,27 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function queNotifySMS() {
-		$giftcard = $this;
-		// Cana::timeout(function() use($giftcard) {
-			$giftcard->notifySMS();
-		// }, 1000); // 1 second
+		$gift = $this;
+		c::timeout(function() use( $gift ) {
+			$gift->notifySMS();
+		});
 	}
 
 	public function queNotifyEMAIL() {
-
-		$giftcard = $this;
-
-		// c::timeout(function() use($giftcard) {
-			$giftcard->notifyEMAIL();
-		// }, 1000); // 1 second
-
+		$gift = $this;
+		// c::timeout(function() use($gift) {
+			$gift->notifyEMAIL();
+		// });
 	}
+
 	public function notifyEMAIL() {
 
+		$gift = $this;
+		
 		Log::debug([
 			'action' => 'INSIDE notifyEMAIL cana::timeout',
-			'promo_id' => $this->id_promo,
-			'promo_code' => $this->code,
+			'promo_id' => $gift->id_promo,
+			'promo_code' => $gift->code,
 			'method' => '$promo->notifyEMAIL()',
 			'type' => 'promo_email'
 		]);
@@ -201,22 +286,22 @@ class Crunchbutton_Promo extends Cana_Table
 			$serverUrl = 'beta._DOMAIN_';
 		}
 
-		$url = 'http://' . $serverUrl . '/giftcard/'. $this->code;
+		$url = 'http://' . $serverUrl . '/giftcard/'. $gift->code;
 
-		$content = $this->email_content;
-		$content = str_replace( static::TAG_GIFT_VALUE , $this->value, $content );
+		$content = $gift->email_content;
+		$content = str_replace( static::TAG_GIFT_VALUE , $gift->value, $content );
 		$content = str_replace( static::TAG_GIFT_URL , $url, $content );
-		$content = str_replace( static::TAG_GIFT_CODE , $this->code, $content );
-		if( $this->restaurant()->id_restaurant ){
-			$content = str_replace( static::TAG_RESTAURANT_NAME , $this->restaurant()->name, $content );	
+		$content = str_replace( static::TAG_GIFT_CODE , $gift->code, $content );
+		if( $gift->restaurant()->id_restaurant ){
+			$content = str_replace( static::TAG_RESTAURANT_NAME , $gift->restaurant()->name, $content );	
 		} else {
 			$content = str_replace( static::TAG_RESTAURANT_NAME , 'Crunchbutton', $content );	
 		}
 		
 		$content = nl2br( $content );
 
-		$email = $this->email;
-		$subject = $this->email_subject;
+		$email = $gift->email;
+		$subject = $gift->email_subject;
 
 		$mail = new Crunchbutton_Email_Promo([
 			'message' => $content,
@@ -226,24 +311,26 @@ class Crunchbutton_Promo extends Cana_Table
 		
 		$mail->send();
 
-		$this->note =  'EMAIL sent to ' . $email . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $this->note;
-		$this->save();
+		$gift->note =  'EMAIL sent to ' . $email . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $gift->note;
+		$gift->save();
 	}
 
 	public function notifySMS() {
 
+		$gift = $this;
+
 		Log::debug([
 				'action' => 'INSIDE notifySMS cana::timeout',
-				'promo_id' => $this->id_promo,
-				'promo_code' => $this->code,
+				'promo_id' => $gift->id_promo,
+				'promo_code' => $gift->code,
 				'method' => '$promo->notifySMS()',
 				'type' => 'promo_sms'
 			]);
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
-		
+
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-		$phone = $this->phone;
+		$phone = $gift->phone;
 
 		if( !$phone ){
 			return false;
@@ -257,16 +344,16 @@ class Crunchbutton_Promo extends Cana_Table
 			$serverUrl = 'beta._DOMAIN_';
 		}
 
-		$url = $serverUrl . '/giftcard/'. $this->code;
+		$url = $serverUrl . '/giftcard/'. $gift->code;
 
-		if( $this->restaurant()->id_restaurant ){
-			$message = "Congrats, you got a gift card to {$this->restaurant()->name}! Enter code: {$this->code} in your order notes or click here: {$url}"; 
+		if( $gift->restaurant()->id_restaurant ){
+			$message = "Congrats, you got a gift card to {$gift->restaurant()->name}! Enter code: {$gift->code} in your order notes or click here: {$url}"; 
 		} else {
-			$message = "Congrats, you got a gift card to Crunchbutton! Enter code: {$this->code} in your order notes or click here: {$url}"; 
+			$message = "Congrats, you got a gift card to Crunchbutton! Enter code: {$gift->code} in your order notes or click here: {$url}"; 
 		}
 
-		$this->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $this->note;
-		$this->save();
+		$gift->note = 'SMS sent to ' . $phone . ' at ' . date( 'M jS Y g:i:s A') . "\n" . $gift->note;
+		$gift->save();
 
 		$message = str_split($message, 160);
 		

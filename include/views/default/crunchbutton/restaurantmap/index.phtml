@@ -80,7 +80,8 @@
 
 					var contentString<?=$restaurant->id_restaurant?> = '<div style="width: 200px;">'
 						+ "<h2><b><?=$restaurant->name?></b></h2>"
-						+ "<p style='margin-top: 7px;'><?=str_replace("\n",'<br>',$restaurant->address)?></p>"
+						+ "<p style='margin-top: 7px;'><?=str_replace("\n",'<br>',$restaurant->address)?>"
+						+ "<br><?=$restaurant->delivery ? 'Delivery Radius: '.$restaurant->delivery_radius.' miles' : '<b>TAKEOUT ONLY</b>'?></p>"
 						+ '</div>';
 					var infowindow<?=$restaurant->id_restaurant?> = new google.maps.InfoWindow({
 						content: contentString<?=$restaurant->id_restaurant?>
