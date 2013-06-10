@@ -7,175 +7,279 @@
 	$this->title2icon = 'money';
 ?>
 
-
 <div class="container-fluid padded">
 	<div class="row-fluid">
-		<div class="box">
-			<div class="box-header"><span class="title">Merchant Configuration</span></div>
-			<div class="box-content padded">
-		
-				<? if ($this->restaurant->balanced_id == c::config()->balanced->sharedMerchant) : ?>
-					<b><?=$this->restaurant->name?> is using a fake merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
-				<? elseif ($this->restaurant->balanced_id) : ?>
-					<b><?=$this->restaurant->name?> already has a merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>		
-				<? else : ?>
-					<h1 class="restaurant-item-title">Create a Merchant Account</h1>
-					<br /><br />
-			
-					<form id="restaurant-merchant" onsubmit="return false;">
-						<table class="admin-restaurant-pay-form">
-							<? /*
-							<tr>
-								<td class="label-sub">Merchant Type</td>
-								<td class="content-sub">
-									<select name="type">
-										<option value="person">Person</option>
-										<option value="business">Business</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td>taxid (business)</td>
-								<td>
-									<input type="text" name="taxid">
-								</td>
-							</tr>
-							<tr>
-								<td>person name (business)</td>
-								<td>
-									<input type="text" name="person">
-								</td>
-							</tr>
-							*/ ?>
-							<tr>
-								<td>Name</td>
-								<td>
-									<input type="text" name="name">
-								</td>
-							</tr>
-							<tr>
-								<td>Date of Birth (YYYY-MM)</td>
-								<td>
-									<input type="text" name="dob">
-								</td>
-							</tr>
-							<tr>
-								<td>Address</td>
-								<td>
-									<input type="text" name="address">
-								</td>
-							</tr>
-							<tr>
-								<td>ZIP code</td>
-								<td>
-									<input type="text" name="zip">
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2">
-									<br />
-									<button type="submit" class="btn btn-blue restaurant-merchant-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
-									<button type="submit" class="btn btn-blue restaurant-merchant-button-fake"><i class="icon-globe"></i>&nbsp;&nbsp;&nbsp; Use global merchant </button>
-								</td>
-							</tr>
-						</table>
-					</form>
-	
-				<? endif ; ?>
+		<div class="container-fluid padded">
+			<div class="row-fluid">
+				<div class="span6">
+					<div class="box">
+						<div class="box-header"><span class="title">Bank Info</span></div>
+						<div class="box-content padded">
+							<? if ($this->restaurant->balanced_bank) : ?>
+							<b>This restaurant already has a bank account. <a href="javascript:;" class="restaurant-merchant-button-accountremove">Remove</a></b>
+							<? else : ?>
+							<h4 class="restaurant-item-title">Add <?=$this->restaurant->balanced_bank ? 'New ' : ''?>Bank Info</h4>
+							<form id="restaurant-bank-info" onsubmit="return false;">
+								<table class="admin-restaurant-pay-form">
+									<tr>
+										<td>Routing #</td>
+										<td>
+											<input type="text" name="routing">
+										</td>
+									</tr>
+									<tr>
+										<td>Account #</td>
+										<td>
+											<input type="text" name="account">
+										</td>
+									</tr>
+									<tr>
+										<td>Name on Account</td>
+										<td>
+											<input type="text" name="name">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<br />
+											<button type="submit" class="btn btn-blue restaurant-bank-info-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+										</td>
+									</tr>
+								</table>
+							</form>
+							<? endif ; ?>
+						</div>
+					</div>
+					<div class="box">
+						<div class="box-header"><span class="title">Merchant Configuration</span></div>
+						<div class="box-content padded">
+							<? if ($this->restaurant->balanced_id == c::config()->balanced->sharedMerchant) : ?>
+							<b><?=$this->restaurant->name?> is using a fake merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
+							<? elseif ($this->restaurant->balanced_id) : ?>
+							<b><?=$this->restaurant->name?> already has a merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>		
+							<? else : ?>
+							<h4 class="restaurant-item-title">Create a Merchant Account</h4>
+							<form id="restaurant-merchant" onsubmit="return false;">
+								<table class="admin-restaurant-pay-form">
+									<? /*
+										<tr>
+											<td class="label-sub">Merchant Type</td>
+											<td class="content-sub">
+												<select name="type">
+													<option value="person">Person</option>
+													<option value="business">Business</option>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<td>taxid (business)</td>
+											<td>
+												<input type="text" name="taxid">
+											</td>
+										</tr>
+										<tr>
+											<td>person name (business)</td>
+											<td>
+												<input type="text" name="person">
+											</td>
+										</tr>
+										*/ ?>
+									<tr>
+										<td>Name</td>
+										<td>
+											<input type="text" name="name">
+										</td>
+									</tr>
+									<tr>
+										<td>Date of Birth (YYYY-MM)</td>
+										<td>
+											<input type="text" name="dob">
+										</td>
+									</tr>
+									<tr>
+										<td>Address</td>
+										<td>
+											<input type="text" name="address">
+										</td>
+									</tr>
+									<tr>
+										<td>ZIP code</td>
+										<td>
+											<input type="text" name="zip">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<br />
+											<button type="submit" class="btn btn-blue restaurant-merchant-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+											<button type="submit" class="btn btn-blue restaurant-merchant-button-fake"><i class="icon-globe"></i>&nbsp;&nbsp;&nbsp; Use global merchant </button>
+										</td>
+									</tr>
+								</table>
+							</form>
+							<? endif ; ?>
+						</div>
+					</div>
+					<div class="box">
+						<div class="box-header"><span class="title">Send Payment</span></div>
+						<div class="box-content padded">
+							<form id="restaurant-pay" onsubmit="return false;">
+								<table class="admin-restaurant-pay-form">
+									<tr>
+										<td>Amount</td>
+										<td>
+											<input type="text" name="amount">
+										</td>
+									</tr>
+									<tr>
+										<td>Note</td>
+										<td>
+											<input type="text" name="note">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<br />
+											<button type="submit" class="btn btn-blue restaurant-pay-button"><i class="icon-cloud-upload"></i>&nbsp;&nbsp;&nbsp; Send </button>
+										</td>
+									</tr>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="span6">
+					<div class="box">
+						<div class="box-header">
+							<span class="title">Payment info</span>
+						</div>
+						<div class="box-content">
+							<form id="restaurant-payment-info" class="fill-up" onsubmit="return false;">
+								<ul class="box-list">
+									<li>
+										<span>Charge Credit Fees?</span>
+										<span class="pull-right">
+										<input type="checkbox" name="charge_credit_fee" id="charge_credit_fee" class="iButton-icons" <?=$this->restaurant->charge_credit_fee ? 'checked' : ''?>>
+										</span>
+									</li>
+									<li>
+										<span>Waive Fee 1st Month?</span>
+										<span class="pull-right">
+										<input type="checkbox" name="waive_fee_first_month" id="waive_fee_first_month" class="iButton-icons" <?=$this->restaurant->waive_fee_first_month ? 'checked' : ''?>>
+										</span>
+									</li>
+									<li>
+										<span>Pay For Apology Credits?</span>
+										<span class="pull-right">
+											<input type="checkbox" name="pay_promotions" id="pay_promotions" class="iButton-icons" <?=$this->restaurant->pay_promotions ? 'checked' : ''?>>
+										</span>
+									</li>
+									<li>
+										<span>Pay For Promotions?</span>
+										<span class="pull-right">
+											<input type="checkbox" name="pay_apology_credits" id="pay_apology_credits" class="iButton-icons" <?=$this->restaurant->pay_apology_credits ? 'checked' : ''?>>
+										</span>
+									</li>
+									<li class="input">
+										<span>Check Address</span>
+										<span class="pull-right span9">
+											<input type="text" class="fill-up" name="check_address" maxlength="255" id="check_address" value="<?php echo $this->restaurant->check_address;?>" />
+										</span>
+									</li>
+									<li class="input">
+										<span>Contact Name</span>
+										<span class="pull-right span9">
+											<input type="text" name="contact_name" maxlength="255" id="contact_name" value="<?php echo $this->restaurant->contact_name;?>" />
+										</span>
+									</li>
+									<li class="input">
+										<span>Summary Fax</span>
+										<span class="pull-right span9">
+											<input type="text" name="summary_fax" maxlength="255" id="summary_fax" value="<?php echo $this->restaurant->summary_fax;?>" />
+										</span>
+									</li>
+									<li class="input">
+										<span>Summary Email</span>
+										<span class="pull-right span9">
+											<input type="text" name="summary_email" maxlength="255" id="summary_email" value="<?php echo $this->restaurant->summary_email;?>" />
+										</span>
+									</li>
+									<li class="input">
+										<span>Summary Frequency</span>
+										<span class="pull-right span9">
+											<input type="number" name="summary_frequency" maxlength="5" id="summary_frequency" value="<?php echo $this->restaurant->summary_frequency;?>" />
+										</span>
+									</li>
+									<li class="input">
+										<span>Legal Name for Payment</span>
+										<span class="pull-right span9">
+											<input type="text" name="legal_name_payment" maxlength="255" id="legal_name_payment" value="<?php echo $this->restaurant->legal_name_payment;?>" />
+										</span>
+									</li>
+									<li class="input">
+										<span>Tax ID # </span>
+										<span class="pull-right span9">
+											<input type="text" name="tax_id" maxlength="255" id="tax_id" value="<?php echo $this->restaurant->tax_id;?>" />
+										</span>
+									</li>
+									<div style="clear: both;"></div>
+									<li class="input">
+										<span>Payment Method</span>
+										<span class="pull-right">
+											<?php 
+												$options = array( 'check', 'deposit' );
+												?>
+											<select name="payment_method" id="payment_method" class="uniform">
+												<? foreach ($options as $option) { 
+													$selected = ( $option == $this->restaurant->payment_method ) ? 'selected="selected"' : ''; ?>
+												<option <?=$selected?> value="<?=$option?>"><?=$option?></option>
+												<? } ?>
+											</select>
+										</span>
+									</li>
+									<li class="input">
+										<span>Pay Another Restaurant</span>
+										<span class="pull-right span9">
+											<select class="chzn-select" name="id_restaurant_pay_another_restaurant" id="id_restaurant_pay_another_restaurant">
+												<option value="" selected>Choose...</option>
+												<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) :
+													$selected = ( $restaurant->id_restaurant == $this->restaurant->id_restaurant_pay_another_restaurant ) ? 'selected="selected"' : ''; ?>
+												<option <?=$selected?> value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
+												<? endforeach ; ?>
+											</select>
+										</span>
+									</li>
+									<li class="input">
+										<button type="button" class="btn btn-blue payment-info-button"><i class="icon-money"></i>  Save Payment changes</button>
+										<span class="pull-right">
+											<div class="alert-payment-info" style="display:none">
+												<span class="alert-message"><strong>Ok!</strong> Payment info saved!</span>
+											</div>
+										</span>
+									</li>
+								</ul>
+							</form>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-
-		<div class="box">
-			<div class="box-header"><span class="title">Bank Info</span></div>
-			<div class="box-content padded">
-		
-				<? if ($this->restaurant->balanced_bank) : ?>
-					<b>This restaurant already has a bank account. <a href="javascript:;" class="restaurant-merchant-button-accountremove">Remove</a></b>
-				<? else : ?>
-					<br />
-					<h1 class="restaurant-item-title">Add <?=$this->restaurant->balanced_bank ? 'New ' : ''?>Bank Info</h1>
-					<br /><br />
-					<form id="restaurant-bank-info" onsubmit="return false;">
-						<table class="admin-restaurant-pay-form">
-							<tr>
-								<td>Routing #</td>
-								<td>
-									<input type="text" name="routing">
-								</td>
-							</tr>
-							<tr>
-								<td>Account #</td>
-								<td>
-									<input type="text" name="account">
-								</td>
-							</tr>
-							<tr>
-								<td>Name on Account</td>
-								<td>
-									<input type="text" name="name">
-								</td>
-							</tr>
-							
-							<tr>
-								<td colspan="2">
-									<br />
-									<button type="submit" class="btn btn-blue restaurant-bank-info-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
-								</td>
-							</tr>
-						</table>
-					</form>
-				<? endif ; ?>
-			</div>
-		</div>
-
-		<div class="box">
-			<div class="box-header"><span class="title">Send Payment</span></div>
-			<div class="box-content padded">
-
-				<form id="restaurant-pay" onsubmit="return false;">
-					<table class="admin-restaurant-pay-form">
-						<tr>
-							<td>Amount</td>
-							<td>
-								<input type="text" name="amount" value="<?= $_GET['pay_cents']/100 ?>">
-							</td>
-						</tr>
-						<tr>
-							<td>Note</td>
-							<td>
-								<input type="text" name="note" value="Crunchbutton Orders">
-							</td>
-						</tr>
-						
-						<tr>
-							<td colspan="2">
-								<br />
-								<button type="submit" class="btn btn-blue restaurant-pay-button"><i class="icon-cloud-upload"></i>&nbsp;&nbsp;&nbsp; Send </button>
-							</td>
-						</tr>
-					</table>
-				</form>
-			</div>
-		</div>
-
 		<div class="box">
 			<div class="box-header"><span class="title">Recent Payments</span></div>
 			<div class="box-content padded">
-
-
 				<table width="100%" cellpadding="4" cellspacing="4">
 					<tr>
 						<th>Date</th>
 						<th>Amount</th>
 						<th>Note</th>
 					</tr>
-				<? foreach ($this->restaurant->payments() as $payment) : ?>
+					<? foreach ($this->restaurant->payments() as $payment) : ?>
 					<tr>
 						<td><?=$payment->date?></td>
 						<td>$<?=$payment->amount?></td>
 						<td><?=$payment->note?></td>
 					</tr>
-				<? endforeach; ?>
+					<? endforeach; ?>
 				</table>
 			</div>
 		</div>
@@ -184,6 +288,7 @@
 
 <script>
 	$(function() {
+		
 		$('.restaurant-merchant-button').click(function() {
 			var form = $(this).closest('form');
 			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/merchant', {
@@ -198,7 +303,43 @@
 				location.href = location.href;
 			});
 		});
+
+
+		/* Form payment info */
+		$( document ).on( 'click', '.payment-info-button', function(){ 
+
+			var parent = $( this ).parent();
+			var button = parent.html();
 		
+			parent.html( '<i class="icon-cogs"></i> Processing' );
+
+			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/paymentinfo', {
+				payment_method : ( $( '#payment_method' ).val() ),
+				id_restaurant_pay_another_restaurant : ( $( '#id_restaurant_pay_another_restaurant' ).val() ),
+				check_address : ( $( '#check_address' ).val() ),
+				contact_name : ( $( '#contact_name' ).val() ),
+				summary_fax : ( $( '#summary_fax' ).val() ),
+				summary_email : ( $( '#summary_email' ).val() ),
+				summary_frequency : ( $( '#summary_frequency' ).val() ),
+				legal_name_payment : ( $( '#legal_name_payment' ).val() ),
+				tax_id : ( $( '#tax_id' ).val() ),
+				charge_credit_fee : ( $( '#charge_credit_fee' ).is( ':checked' ) ? '1' : 0 ),
+				waive_fee_first_month : ( $( '#waive_fee_first_month' ).is( ':checked' ) ? '1' : 0 ),
+				pay_promotions : ( $( '#pay_promotions' ).is( ':checked' ) ? '1' : 0 ),
+				pay_apology_credits : ( $( '#pay_apology_credits' ).is( ':checked' ) ? '1' : 0 )
+			}, function( ) {
+				$( '.alert-payment-info' ).show();
+				setTimeout( function(){
+					parent.html( button );
+					$( '.alert-payment-info' ).show();
+					setTimeout( function(){
+						$( '.alert-payment-info' ).hide();
+					}, 2500 );
+				}, 500 );
+			} );
+
+		} );
+
 		$('.restaurant-merchant-button-fake').click(function() {
 			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/fake-merchant', function() {
 				location.href = location.href;
