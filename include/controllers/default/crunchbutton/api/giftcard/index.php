@@ -29,6 +29,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$notify_by_email = $this->request()['notify_by_email'];
 							$include_gift_card_id = $this->request()['include_gift_card_id'];
 							$notify_by_sms = $this->request()['notify_by_sms'];
+							$print = $this->request()['print'];
 							$chars_to_use = $this->request()['chars_to_use'];
 							$length = $this->request()['length'];
 
@@ -82,12 +83,17 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 											$giftcard->code = $giftcard->promoCodeGeneratorUseChars( $chars_to_use, $length, '' );
 										}
 										
+										if( $print ){
+											$giftcard->issued = Crunchbutton_Promo::ISSUED_PRINT;
+										}
+
 										$giftcard->save();
 
 										$ids[] = $giftcard->id_promo;
 
 										if( $add_as_credit == '1' ){
 											if( $id_user ){
+												$giftcard->issued = Crunchbutton_Promo::ISSUED_CREDIT;
 												$giftcard->addCredit( $id_user );
 											}
 										} else {
