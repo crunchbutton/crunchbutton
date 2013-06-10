@@ -1,3 +1,11 @@
+<?
+	$this->title = 'Gift cards';
+	$this->titleicon = 'gift';
+	$this->titleLink = '/giftcards';
+	
+	$this->title2 = 'Gift card #' . $this->giftcard->id_promo;
+	$this->title2icon = 'file';
+?>
 <?php 
 $credit = $this->giftcard->credit();
 if ( $credit->id_credit ) { 
