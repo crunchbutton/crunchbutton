@@ -130,24 +130,24 @@ class Crunchbutton_Promo extends Cana_Table
 
 	public function multiple( $ids ){
 
-		// Parse the ids
 		// Check if the sting has a dash
 		if( strpos( $ids, '-' ) ){
 			$ids = explode( '-', $ids );
 			$id_ini = $ids[ 0 ];
 			$id_end = $ids[ 1 ];
-			$commas = '';
-			$ids = '';
-			for( $i = $id_ini; $i <= $id_end; $i++ ){
-				$ids .= $commas . $i;
-				$commas = ',';
-			}
+		} else {
+			$id_ini = $ids;
+			$id_end = $ids;
 		}
-		
-		$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo IN ( ' . $ids . ' )');
-		
+
+		$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo BETWEEN ' . $id_ini . ' AND ' . $id_end . ' AND id_promo NOT IN ( SELECT DISTINCT( id_promo ) id_promo FROM credit WHERE id_promo IS NOT NULL )  ORDER BY id_promo');
+
+		$idsArray = array();
+		foreach ( $giftcards as $giftcard ) {
+			$idsArray[] = $giftcard->id_promo;
+		}
+
 		// Change the way it is sorted - Issue #1419
-		$idsArray = explode( ',', $ids );
 		$giftcardPerPage = 3;
 		$totalGifts = sizeof( $idsArray );
 		$giftsPerPosition = ceil( $totalGifts / $giftcardPerPage );
