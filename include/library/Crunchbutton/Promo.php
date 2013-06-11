@@ -129,6 +129,20 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public function multiple( $ids ){
+
+		// Parse the ids
+		// Check if the sting has a dash
+		if( strpos( $ids, '-' ) ){
+			$ids = explode( '-', $ids );
+			$id_ini = $ids[ 0 ];
+			$id_end = $ids[ 1 ];
+			$commas = '';
+			$ids = '';
+			for( $i = $id_ini; $i <= $id_end; $i++ ){
+				$ids .= $commas . $i;
+				$commas = ',';
+			}
+		}
 		
 		$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo IN ( ' . $ids . ' )');
 		
