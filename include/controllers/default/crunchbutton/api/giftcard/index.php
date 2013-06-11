@@ -34,7 +34,8 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$length = $this->request()['length'];
 
 							// Store the ids
-							$ids = [];
+							$idIni = false;
+							$idEnd = false;
 
 							foreach( $ids_restaurant as $id_restaurant ){
 								if( trim( $id_restaurant ) != '' ){
@@ -89,7 +90,10 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 
 										$giftcard->save();
 
-										$ids[] = $giftcard->id_promo;
+										if( !$idIni ){
+											$idIni = $giftcard->id_promo;
+										}
+										$idEnd = $giftcard->id_promo;
 
 										if( $add_as_credit == '1' ){
 											if( $id_user ){
@@ -119,7 +123,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 									}
 								}
 							}
-							echo json_encode(['success' => join( ',', $ids ) ]);
+							echo json_encode(['success' => $idIni . '-' . $idEnd ]);
 							break;
 					case 'bunchsms':
 							$id_restaurant = $this->request()['id_restaurant'];
