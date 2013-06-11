@@ -28,6 +28,10 @@ class Crunchbutton_Promo extends Cana_Table
 		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE code = "' . $code . '"' );
 	}
 
+	public static function lastID(){
+		return Crunchbutton_Promo::q( 'SELECT * FROM promo ORDER BY id_promo DESC LIMIT 1' );
+	}
+
 	public static function giftWasAlreadyUsed( $id_promo ){
 		$gift = Crunchbutton_Promo::q( 'SELECT * FROM promo p INNER JOIN credit c ON p.id_promo = c.id_promo AND p.id_promo = ' . $id_promo );
 		return ( $gift->count() > 0 );
@@ -50,10 +54,11 @@ class Crunchbutton_Promo extends Cana_Table
 		}
 	}
 
-	public static function promoCodeGeneratorUseChars( $chars, $length, $id_promo ){
-		$random_id_length = $length - strlen( $id_promo ); 
+	public static function promoCodeGeneratorUseChars( $chars, $length, $id_promo, $prefix ){
+
+		$random_id_length = $length - ( strlen( $id_promo ) + strlen( $prefix ) ); 
 		$characters = $chars;
-		$rnd_id = $id_promo;
+		$rnd_id = $prefix . $id_promo;
 		for ($i = 0; $i < $random_id_length; $i++) {
 			$rnd_id .= $characters[rand(0, strlen($characters) - 1)];
 		}
@@ -61,7 +66,7 @@ class Crunchbutton_Promo extends Cana_Table
 		// make sure the code do not exist
 		$promo = Crunchbutton_Promo::byCode( $rnd_id );
 		if( $promo->count() > 0 ){
-			return static::promoCodeGeneratorUseChars( $chars, $length, $id_promo );
+			return static::promoCodeGeneratorUseChars( $chars, $length, $id_promo, $prefix );
 		} else {
 			return $rnd_id;	
 		}
