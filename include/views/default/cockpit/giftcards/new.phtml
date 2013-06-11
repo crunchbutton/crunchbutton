@@ -174,9 +174,15 @@
 							</span>
 						</li>
 						<li>
+							<span>Gift card prefix</span>
+							<span class="pull-right">
+								<input type="text" name="prefix" id="prefix" value="" />
+							</span>
+						</li>
+						<li>
 							<span>Include the Gift Card ID at the code</span>
 							<span class="pull-right">
-								<input type="checkbox" name="include_gift_card_id" id="include_gift_card_id" class="iButton-icons">
+								<input type="checkbox" name="include_gift_card_id" id="include_gift_card_id">
 							</span>
 						</li>
 						<li>
@@ -213,6 +219,11 @@
 							<span class="pull-right" id="possible-combinations">
 							</span>
 						</li>
+						<li>
+							<span>Sample of codes</span>
+							<span class="pull-right" id="sample">
+							</span>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -220,11 +231,13 @@
 	</div>
 </div>
 <script>
+var lastID = '<?php echo $this->lastone->id_promo; ?>';
 function updateUsedChars(){
 	var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	var numbers = '0123456789';
 	var exclude_chars = $( '#exclude_chars' ).val();
 	var chars_to_use = '';
+	var prefix = $( '#prefix' ).val();
 	if( $( '#use_numbers' ).is( ':checked' ) ){
 		chars_to_use += numbers;
 	}
@@ -237,7 +250,14 @@ function updateUsedChars(){
 		chars_to_use = chars_to_use.replace( v.toUpperCase(), '' );
 	} );
 	$( '#chars_to_use' ).val( chars_to_use );
-	var possible_combinations = Math.pow( chars_to_use.length , $( '#length' ).val() );
+	var length = $( '#length' ).val() - prefix.length;
+	if( $( '#include_gift_card_id' ).is( ':checked' ) ){
+		length -= lastID.toString().length;
+	}
+	var possible_combinations = Math.pow( chars_to_use.length , length );
+	if( $( '#include_gift_card_id' ).is( ':checked' ) ){
+		possible_combinations = parseInt( possible_combinations ) + parseInt( $( '#total' ).val() );
+	}
 	if( possible_combinations >= 1 && possible_combinations > $( '#total' ).val() ){
 		$( '.chars-alert' ).hide();
 		$( '.input' ).show();
@@ -246,9 +266,38 @@ function updateUsedChars(){
 		$( '.input' ).hide();
 	}
 	if( possible_combinations < 1 ){
-		possible_combinations = 0; 
+		possible_combinations = 0;
+		$( '#sample' ).html( '' );
+	} else {
+		sample();
 	}
 	$( '#possible-combinations' ).html( possible_combinations );
+}
+function sample(){
+	var possible = $( '#chars_to_use' ).val();
+	var prefix = $( '#prefix' ).val();
+	var length = $( '#length' ).val() - prefix.length;
+	var include_gift_card_id = $( '#include_gift_card_id' ).is( ':checked' );
+	if( include_gift_card_id ){
+		var gift_card_id = lastID;
+		length -= gift_card_id.toString().length;
+	}
+	var text = '';
+	var out = '';
+	var commas = '';
+	for( j = 0; j < 10; j++  ){
+		var text = prefix;
+		if( include_gift_card_id ){
+			text += gift_card_id.toString();
+			gift_card_id++;
+		}
+		for( i=0; i < length; i++ ){
+			text += possible.charAt( Math.floor( Math.random() * possible.length ) );
+		}
+		out += commas + text;
+		commas = ', ';
+	}
+	$( '#sample' ).html( out );
 }
 $(function() {
 	updateUsedChars();
@@ -264,14 +313,14 @@ $(function() {
 																			} 
 												} );
 	
-	$( '#use_numbers, #use_letters' ).iButton( { 	labelOn :"<i class='icon-ok'></i>",
+	$( '#use_numbers, #use_letters, #include_gift_card_id' ).iButton( { 	labelOn :"<i class='icon-ok'></i>",
 																								labelOff :"<i class='icon-remove'></i>",
 																								handleWidth :30,
 																								change : function( self ){ 
 																														updateUsedChars();
 																												} 
 																						} );
-	$( document ).on( 'keyup, change', '#exclude_chars, #length, #total', function() {
+	$( document ).on( 'keyup, change', '#exclude_chars, #length, #total, #prefix', function() {
 		updateUsedChars();
 	} );
 	$( '#paid_by' ).change( function(){
@@ -301,6 +350,7 @@ function sendForm(){
 	var print = ( App.giftcards.print ) ? 1 : 0;
 
 	var id_order_reference = $( '#id_order_reference' ).val();
+	var prefix = $( '#prefix' ).val();
 	var paid_by = $( '#paid_by' ).val();
 	var id_restaurant_paid_by = $( '#id_restaurant_paid_by' ).val();
 	var created_by = $.trim( $( '#created_by' ).val() );
@@ -342,7 +392,7 @@ function sendForm(){
 		}
 	}
 
-	var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit, 'notify_by_sms' : notify_by_sms, 'notify_by_email' : notify_by_email, 'chars_to_use' : chars_to_use, 'include_gift_card_id' : include_gift_card_id, 'length' : length, 'print' : print };
+	var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit, 'notify_by_sms' : notify_by_sms, 'notify_by_email' : notify_by_email, 'chars_to_use' : chars_to_use, 'include_gift_card_id' : include_gift_card_id, 'length' : length, 'print' : print, 'prefix' : prefix };
 	var url = App.service + 'giftcard/generate';
 	$.ajax({
 		type: "POST",
@@ -366,5 +416,4 @@ function sendForm(){
 		}
 	});
 }
-
 </script>
