@@ -914,3 +914,9 @@ input:disabled {
 	border: 1px solid #CCC;
 	padding: 15px;
 }
+div.datepicker{
+	height: 180px !important;
+}
+td.day{
+	text-align: center !important;
+}

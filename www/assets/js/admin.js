@@ -856,12 +856,13 @@ App.returnOption = function(o, type, parent) {
 App.orders = {
 	searchParam: '',
 	params: function() {
+		var dates = $('input[name="date-range-end"]').val() + ',' + $('input[name="date-range-start"]').val();
 		return {
 			search: $('input[name="order-search"]').val(),
 			env: $('select[name="env"]').val(),
 			processor: $('select[name="processor"]').val(),
 			limit: $('input[name="limit"]').val(),
-			dates: $('input[name="date-range"]').val(),
+			dates: dates,
 			restaurant: $('select[name="restaurant"]').val(),
 			community: $('select[name="community"]').val()
 		};
@@ -1148,8 +1149,10 @@ $(function() {
 		if ($(this).prop('checked')) {
 			$('.date-picker').attr('disabled', 'disabled');
 			$('.date-picker').val('');
+			$('.dates').hide();
 		} else {
 			$('.date-picker').removeAttr('disabled');
+			$('.dates').show();
 		}
 	});
 
