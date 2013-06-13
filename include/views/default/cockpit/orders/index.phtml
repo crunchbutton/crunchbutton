@@ -51,7 +51,10 @@
 									?>
 									<label class="span3">Date range</label>
 									<span class="span8 pull-right">
-										<input name="date-range" class="date-picker" type="text" style="width: 200px;" value="<?=$end?>,<?=$start?>">
+										<span class="dates">
+											from &nbsp; <input name="date-range-end" class="date-picker" type="text" style="width: 90px;" value="<?=$end?>">
+											&nbsp; to &nbsp; <input name="date-range-start" class="date-picker" type="text" style="width: 90px;" value="<?=$start?>">
+										</span>
 										<input type="checkbox" name="order-range-all"><label>&nbsp;All Dates</label>
 									</span>
 									<div class="clearfix"></div>
@@ -193,5 +196,22 @@
 		});
 		$('.chzn').select2();
 		App.orders.load();
+
+		$( 'input[name="date-range-end"]' ).datepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			numberOfMonths: 3,
+			onClose: function( selectedDate ) {
+				$( 'input[name="date-range-start"]' ).datepicker( "option", "minDate", selectedDate );
+			}
+		});
+		$( 'input[name="date-range-start"]' ).datepicker({
+			defaultDate: "+1w",
+			changeMonth: true,
+			numberOfMonths: 3,
+			onClose: function( selectedDate ) {
+				$( 'input[name="date-range-end"]').datepicker( "option", "maxDate", selectedDate );
+			}
+		});
 	});
 </script>
