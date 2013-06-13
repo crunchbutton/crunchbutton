@@ -1,16 +1,15 @@
 <link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
 <style type="text/css">
+.giftcards{
+	background: #d02632;
+	margin: 0 auto;
+	max-height: 1020px;
+	width: 770px;
+}
 	.giftcard{
 		font-family: 'Atomic Age', cursive;
-		height: 340px;
-		margin: 0 auto;
 		text-align: center;
-		width: 770px;
 	}	
-		.giftcard img{
-			height: 340px;
-			width: 770px;
-		}
 		.value{
 			color:#da0009;
 			font-size: 135px;
@@ -87,8 +86,14 @@
 $count = 0;
 $giftcards = $this->giftcards;
 if( sizeof( $giftcards ) > 0 ) {
+	?>
+	<div class="giftcards">
+	<?php
 	foreach( $giftcards as $giftcard ){
 		if( !$giftcard ){ continue; }
+		if( $count % 3 == 0 ){
+			?><div class="giftcards"><?php
+		}
 		$count++;
 		if( $giftcard->id_restaurant ){
 			$restaurant = $giftcard->restaurant();
@@ -97,17 +102,18 @@ if( sizeof( $giftcards ) > 0 ) {
 			$restaurant_name = 'Crunchbutton';
 		}
 	?>
-	<div class="giftcard">
-		<div class="dollar">$</div>
-		<div class="value"><?php echo $giftcard->value;?></div>
-		<div class="instruction">To redeem, go to <br/><span class="url">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span></div>
-		<div class="place">Free Food from <br/><?php echo $restaurant_name; ?></div>
-		<img src="/assets/images/giftcard_print.png"/>
-	</div>
+		<div class="giftcard">
+			<div class="dollar">$</div>
+			<div class="value"><?php echo $giftcard->value;?></div>
+			<div class="instruction">To redeem, go to <br/><span class="url">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span></div>
+			<div class="place">Free Food from <br/><?php echo $restaurant_name; ?></div>
+			<img src="/assets/images/giftcard_print.svg"/>
+		</div>
 	<?php 
 		if( $count % 3 == 0 ){
 			?>
 			<div class="page-break"></div>
+			</div>
 			<?php
 		}
 	?>
