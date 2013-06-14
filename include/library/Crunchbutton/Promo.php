@@ -25,7 +25,7 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public static function byCode( $code ){
-		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE code = "' . $code . '"' );
+		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE code = "' . $code . '" AND active = 1' );
 	}
 
 	public static function lastID(){
@@ -418,7 +418,7 @@ class Crunchbutton_Promo extends Cana_Table
 			$query .= ' and `promo`.id_user="'.$search['id_user'].'" ';
 		}
 
-		$query .= 'ORDER BY `date` DESC';
+		$query .= 'ORDER BY `id_promo` DESC';
 
 		if ($search['limit']) {
 			$query .= ' limit '.$search['limit'].' ';

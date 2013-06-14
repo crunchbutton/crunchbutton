@@ -12,7 +12,7 @@
 			<td>Email</td>
 			<td>Note</td>
 			<td>Issued as</td>
-			<td>Status</td>
+			<td>Redeemed</td>
 		</thead>
 		<? foreach ($this->giftcards as $giftcard) : ?>
 			<? 
@@ -21,19 +21,18 @@
 			?>
 			<tr class="<?=strtolower($giftcard->type); ?>">
 				<td> <?=$date->format('M jS Y')?><br /><?=$date->format('g:i:s A')?> </td>
-				<td> 
+				<td style="width:70px;"> 
 					<?php if( !$wasUsed ) { ?>
 						<a title="Print" target="_blank" href="/giftcards/print/<?=$giftcard->id_promo;?>"><i style="color:black;" class="icon-print"></i></a>
-					<?php } ?>&nbsp;&nbsp;
-					<a href="/giftcards/<?=$giftcard->id_promo;?>"><?=$giftcard->code; ?></a>
+					<?php } ?> <a href="/giftcards/<?=$giftcard->id_promo;?>"><?=$giftcard->code; ?></a>
 				</td>
-				<td> $<?= Util::ceil($giftcard->value, 2); ?></td>
-				<td> <? if( $giftcard->id_restaurant ){ echo $giftcard->restaurant()->name; } else { echo 'Any Restaurant'; } ?> </td>
+				<td class="center"> $<?= Util::ceil($giftcard->value, 2); ?></td>
+				<td class="center"> <? if( $giftcard->id_restaurant ){ echo $giftcard->restaurant()->name; } else { echo 'Any Restaurant'; } ?> </td>
 				<td> <? if( $giftcard->user()->name != '' ){ echo $giftcard->user()->name; } else { echo '-'; } ?> </td>
 				<td> <? if( $giftcard->phone ){ echo $giftcard->phone; } else { echo '-'; } ?> </td>
 				<td> <? if( $giftcard->email ){ echo $giftcard->email; } else { echo '-'; } ?> </td>
 				<td> <?=nl2br( $giftcard->note ); ?> </td>
-				<td> 
+				<td class="center"> 
 					<? if ( $giftcard->issued == Promo::ISSUED_CREDIT ){ ?>
 						<i class="icon-money"></i> Credit
 					<?php } elseif ( $giftcard->issued == Promo::ISSUED_TEXT ){ ?>
@@ -44,12 +43,13 @@
 						<i class="icon-print"></i> Paper (print)
 					<?php } else { ?> - <?php } ?>
 				</td>
-				<td> 
+				<td class="center"> 
 					<?php if( $wasUsed ) { ?>
 						<span class="badge badge-green">Redeemed</span>
 					<?php } else { ?>
 						<span class="badge badge-black">Not redeemed</span>
 					<?php } ?>
+				</td>
 			</tr>
 		<? endforeach ; ?>
 	</table>
