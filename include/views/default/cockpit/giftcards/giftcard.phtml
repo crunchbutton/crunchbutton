@@ -7,6 +7,7 @@
 	$this->title2icon = 'file';
 ?>
 <?php 
+$wasUsed = Crunchbutton_Promo::giftWasAlreadyUsed( $this->giftcard->id_promo );
 $credit = $this->giftcard->credit();
 if ( $credit->id_credit ) { 
 	$credit = Crunchbutton_Credit::o( $credit->id_credit );
@@ -21,7 +22,7 @@ if ( $credit->id_credit ) {
 					<span class="title">Gift Card</span>
 					<ul class="box-toolbar">
 						<li>
-							<?php if( CrunchButton_Promo::giftWasAlreadyUsed( $this->giftcard->id_promo ) ) { ?>
+							<?php if( $wasUsed ) { ?>
 								<span class="badge badge-green">Redeemed</span>
 							<?php } else { ?>
 								<span class="badge badge-black">Not redeemed</span>
@@ -161,7 +162,7 @@ if ( $credit->id_credit ) {
 									<div class="btn btn-blue admin-giftcard-email"><i class="icon-envelope"></i> Send by email</div>&nbsp;
 								<?php } ?>
 								<?php if( !$this->giftcard->user()->id_user && !$this->giftcard->note ) { ?>
-									<div class="btn btn-green admin-giftcard-save"><i class="icon-save"></i> Save</div>&nbsp;
+									<div class="btn btn-green admin-giftcard-save"><i class="icon-user"></i> Relate user</div>&nbsp;
 								<?php } ?>
 							</td>
 						</tr>
@@ -182,9 +183,15 @@ if ( $credit->id_credit ) {
 				<div class="box-content ">
 					<table class="table table-striped ">
 						<?php foreach( $debits as $debit ){ ?>
+							<?php if( $debit->order()->id_order ) { ?>
+								<tr>
+									<td>Order:</td>
+									<td><a href="/vieworder/<?php echo $debit->order()->uuid; ?>"><?=$debit->order()->id_order;?></a></td>
+								</tr>
+							<?php } ?>
 							<tr>
-								<td>Order:</td>
-								<td><a href="/vieworder/<?php echo $debit->order()->uuid; ?>"><?=$debit->order()->id_order;?></a></td>
+								<td>Date:</td>
+								<td><?=$debit->date()->format('M jS Y')?> - <?=$debit->date()->format('g:i:s A')?></td>
 							</tr>
 							<tr>
 								<td>Charged:</td>
@@ -216,25 +223,25 @@ if ( $credit->id_credit ) {
 							<?php if( $this->giftcard->name ) { ?>
 							<tr>
 								<td>Name:</td>
-								<td><div class="input-faker"><?=$this->giftcard->name;?></td>
+								<td><?=$this->giftcard->name;?></td>
 							</tr>
 							<?php } ?>
 							<?php if( $this->giftcard->contact ) { ?>
 							<tr>
 								<td>Contact:</td>
-								<td><div class="input-faker"><?=$this->giftcard->contact;?></td>
+								<td><?=$this->giftcard->contact;?></td>
 							</tr>
 							<?php } ?>
 							<?php if( $this->giftcard->how_delivery ) { ?>
 							<tr>
 								<td>How delivery:</td>
-								<td><div class="input-faker"><?=$this->giftcard->how_delivery;?></td>
+								<td><?=$this->giftcard->how_delivery;?></td>
 							</tr>
 							<?php } ?>
 							<?php if( $this->giftcard->notify_phone ) { ?>
 							<tr>
 								<td>Notify phone:</td>
-								<td><div class="input-faker"><?=$this->giftcard->notify_phone;?></td>
+								<td><?=$this->giftcard->notify_phone;?></td>
 							</tr>
 							<?php } ?>
 						<?php } else { ?>
@@ -246,6 +253,30 @@ if ( $credit->id_credit ) {
 				</div>
 			</div>
 			<!-- box track info end -->
+			<!-- box danger zone start -->
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Danger Zone</span>
+				</div>
+				<div class="box-content padded">
+					<?php if( $wasUsed ){ ?>
+						<?php if( $credit->creditLeft() > 0 ) { ?>
+							<div class="btn btn-red admin-giftcard-remove-credit">Remove the credit left</div>&nbsp;
+							<hr />
+							<div class="note large">
+								<i class="icon-warning-sign"></i> As this gift card was already redemeed it do could not be deleted! But you can remove the $<?php echo $credit->creditLeft();?> credit left.
+							</div>
+						<?php } else { ?>
+							<div class="note large">
+								<i class="icon-warning-sign"></i> This gift card was already redemeed and all its credit was already spend. You could not do nothing anymore.
+							</div>
+						<?php } ?>
+					<?php } else { ?>
+						<div class="btn btn-red admin-giftcard-delete">Delete this gift card</div>&nbsp;
+					<?php } ?>
+				</div>
+			</div>
+			<!-- box danger zone end -->
 		</div>
 	</div>
 </div>
@@ -254,6 +285,56 @@ $(function() {
 	App.giftcards.prepareFormAddUser();
 	App.giftcards.prepareFormSendSMS();
 	App.giftcards.prepareFormSendEMAIL();
+	/* Delete gift card methods */
+	$(document).on('click', '.admin-giftcard-delete', function() {
+		if( !confirm( 'Are you sure you want to delete this gift card?' ) ){
+			return;
+		}
+		var url = App.service + 'giftcard/delete';
+		$.ajax({
+			type: "POST",
+			dataType: 'json',
+			data: { 'id_promo' : '<?=$this->giftcard->id_promo;?>' },
+			url: url,
+			success: function( json ) {
+				if( json.error ){
+					if( json.error == 'already used' ){
+						alert( 'Oops, this gift card was already redeemed and could not be deleted!' );
+					}
+				} else {
+					alert( 'Gift card removed!' );
+					window.location.href = '/giftcards/';
+				}
+			},
+			error: function( ){
+				alert( 'Oops, error!' );
+			}
+		});
+	} );
+	/* Delete gift card methods */
+	$(document).on('click', '.admin-giftcard-remove-credit', function() {
+		if( !confirm( 'Are you sure you want to remove the credit of <?php echo $credit->creditLeft(); ?>?' ) ){
+			return;
+		}
+		var url = App.service + 'giftcard/removecredit';
+		$.ajax({
+			type: "POST",
+			dataType: 'json',
+			data: { 'id_promo' : '<?=$this->giftcard->id_promo;?>' },
+			url: url,
+			success: function( json ) {
+				if( json.error ){
+					alert( 'Oops, something bad happened!' );
+				} else {
+					alert( 'Credit removed!' );
+					location.reload();
+				}
+			},
+			error: function( ){
+				alert( 'Oops, error!' );
+			}
+		});
+	} );
 	$(".chosen-select").chosen();
 });
 </script>
