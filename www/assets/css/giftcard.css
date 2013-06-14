@@ -1,0 +1,83 @@
+	.giftcard{
+		font-family: 'Atomic Age', cursive;
+		text-align: center;
+		width: 770px;
+		background: #d02632;
+		margin: 0 auto;
+	}	
+		.giftcard.negativemargin{
+			border-top: 1px solid #d02632;
+			margin-top: -2px;
+		}
+		.value{
+			color:#da0009;
+			font-size: 135px;
+			position: absolute;
+			z-index: 10;
+			letter-spacing: -10px;
+			margin-left: 140px;
+			margin-top: 62px;
+			text-align: center;
+			width: 140px;
+		}
+		.dollar{
+			color:#da0009;
+			font-size: 35px;
+			font-weight: bold;
+			position: absolute;
+			z-index: 11;
+			margin-left: 122px;
+			margin-top: 130px;
+			text-align: left;
+			width: 220px;
+		}
+		.info{
+			margin-left: 315px;
+			margin-top: 115px;
+			color:#d50000;
+			font-family: 'InconsolataMedium', 'Courier New', Courier, monospace;
+			font-size: 33px;
+			font-weight: bold;
+			line-height: 40px;
+			position: absolute;
+			text-align: left;
+		}
+			.url{
+				display: block;
+				font-size: 24px;
+			}
+		.call{
+			color:#3f4c51;
+			font-family: 'ArmataRegular', sans-serif;
+			font-size: 16px;
+			position: absolute;
+			z-index: 10;
+			margin-left: 105px;
+			margin-top: 250px;
+			text-align: center;
+			width: 200px;
+		}
+			.page{
+				page-break-after:always;
+			}
+@font-face {
+		font-family: 'InconsolataMedium';
+		src: url('/assets/fonts/Inconsolata-webfont.eot');
+		src: url('/assets/fonts/Inconsolata-webfont.eot?#iefix') format('embedded-opentype'),
+				 url('/assets/fonts/Inconsolata-webfont.woff') format('woff'),
+				 url('/assets/fonts/Inconsolata-webfont.ttf') format('truetype'),
+				 url('/assets/fonts/Inconsolata-webfont.svg#InconsolataMedium') format('svg');
+		font-weight: normal;
+		font-style: normal;
+}
+@font-face {
+		font-family: 'ArmataRegular';
+		src: url('/assets/fonts/Armata-Regular-webfont.eot');
+		src: url('/assets/fonts/Armata-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+				 url('/assets/fonts/Armata-Regular-webfont.woff') format('woff'),
+				 url('/assets/fonts/Armata-Regular-webfont.ttf') format('truetype'),
+				 url('/assets/fonts/Armata-Regular-webfont.svg#ArmataRegular') format('svg');
+		font-weight: normal;
+		font-style: normal;
+
+}

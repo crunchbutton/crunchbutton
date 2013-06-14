@@ -1,101 +1,13 @@
 <link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
-<style type="text/css">
-.giftcards{
-	background: #d02632;
-	margin: 0 auto;
-	max-height: 1020px;
-	width: 770px;
-}
-	.giftcard{
-		font-family: 'Atomic Age', cursive;
-		text-align: center;
-	}	
-		.value{
-			color:#da0009;
-			font-size: 135px;
-			position: absolute;
-			z-index: 10;
-			letter-spacing: -10px;
-			margin-left: 140px;
-			margin-top: 62px;
-			text-align: center;
-			width: 140px;
-		}
-		.dollar{
-			color:#da0009;
-			font-size: 35px;
-			font-weight: bold;
-			position: absolute;
-			z-index: 11;
-			margin-left: 122px;
-			margin-top: 130px;
-			text-align: left;
-			width: 220px;
-		}
-		.instruction{
-			margin-left: 315px;
-			margin-top: 115px;
-			color:#d50000;
-			font-family: 'InconsolataMedium', 'Courier New', Courier, monospace;
-			font-size: 33px;
-			font-weight: bold;
-			line-height: 40px;
-			position: absolute;
-			text-align: left;
-		}
-			.url{
-				font-size: 24px;
-			}
-		.place{
-			color:#3f4c51;
-			font-family: 'ArmataRegular', sans-serif;
-			font-size: 16px;
-			position: absolute;
-			z-index: 10;
-			margin-left: 105px;
-			margin-top: 250px;
-			text-align: center;
-			width: 200px;
-		}
-			.page-break{
-				page-break-after:always;
-			}
-@font-face {
-		font-family: 'InconsolataMedium';
-		src: url('/assets/fonts/Inconsolata-webfont.eot');
-		src: url('/assets/fonts/Inconsolata-webfont.eot?#iefix') format('embedded-opentype'),
-				 url('/assets/fonts/Inconsolata-webfont.woff') format('woff'),
-				 url('/assets/fonts/Inconsolata-webfont.ttf') format('truetype'),
-				 url('/assets/fonts/Inconsolata-webfont.svg#InconsolataMedium') format('svg');
-		font-weight: normal;
-		font-style: normal;
-}
-@font-face {
-		font-family: 'ArmataRegular';
-		src: url('/assets/fonts/Armata-Regular-webfont.eot');
-		src: url('/assets/fonts/Armata-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-				 url('/assets/fonts/Armata-Regular-webfont.woff') format('woff'),
-				 url('/assets/fonts/Armata-Regular-webfont.ttf') format('truetype'),
-				 url('/assets/fonts/Armata-Regular-webfont.svg#ArmataRegular') format('svg');
-		font-weight: normal;
-		font-style: normal;
-
-}
-</style>
+<link rel="stylesheet" type="text/css" href="/assets/css/giftcard.css">
 <?php 
 // Workaround to avoid image be cached
-$imageCached = date( 'YmdHis' );
+$imageCached = date( 'dHis' );
 $count = 0;
 $giftcards = $this->giftcards;
 if( sizeof( $giftcards ) > 0 ) {
-	?>
-	<div class="giftcards">
-	<?php
 	foreach( $giftcards as $giftcard ){
 		if( !$giftcard ){ continue; }
-		if( $count % 3 == 0 ){
-			?><div class="giftcards"><?php
-		}
 		$count++;
 		if( $giftcard->id_restaurant ){
 			$restaurant = $giftcard->restaurant();
@@ -103,21 +15,12 @@ if( sizeof( $giftcards ) > 0 ) {
 		} else {
 			$restaurant_name = 'Crunchbutton';
 		}
-	?>
-		<div class="giftcard">
-			<div class="dollar">$</div>
-			<div class="value"><?php echo $giftcard->value;?></div>
-			<div class="instruction">To redeem, go to <br/><span class="url">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span></div>
-			<div class="place">Free Food from <br/><?php echo $restaurant_name; ?></div>
-			<img src="/assets/images/giftcard_print.svg?<?php echo $imageCached; ?>"/>
-		</div>
+	?><div class="giftcard <?php if( $count % 3 != 1 ){ ?>negativemargin<?php } ?>">
+<div class="dollar">$</div><div class="value"><?php echo $giftcard->value;?></div><div class="info">To redeem, go to<span class="url">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span></div><div class="call">Free Food from <br/><?php echo $restaurant_name; ?></div><img src="/assets/images/giftcard_print.svg?<?php echo $imageCached; ?>"/></div>
 	<?php 
 		if( $count % 3 == 0 ){
-			?>
-			<div class="page-break"></div>
-			</div>
-			<?php
+			echo '<div class="page"></div>';
 		}
-	?>
-	<?php } 
-} ?>
+	} 
+} 
+?>
