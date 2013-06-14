@@ -64,6 +64,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 										$giftcard->note = $note;
 
 										$giftcard->track = $track;
+										$giftcard->active = 1;
 										$giftcard->created_by = $created_by;
 										if( $track > 0 ){
 											$giftcard->notify_phone = $notify_phone;
@@ -160,6 +161,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 									$giftcard->date = date('Y-m-d H:i:s');
 									$giftcard->note = $note;
 									$giftcard->track = $track;
+									$giftcard->active = 1;
 									$giftcard->created_by = $created_by;
 									if( $track > 0 ){
 										$giftcard->notify_phone = $notify_phone;
@@ -216,6 +218,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 									$giftcard->date = date('Y-m-d H:i:s');
 									$giftcard->note = $note;
 									$giftcard->track = $track;
+									$giftcard->active = 1;
 									$giftcard->created_by = $created_by;
 									if( $track > 0 ){
 										$giftcard->notify_phone = $notify_phone;
@@ -264,6 +267,38 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								echo json_encode(['error' => 'error']);
 							}
 							break;
+					case 'active':
+							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
+							$giftcard->active = $this->request()['active'];
+							if( $giftcard->save() ){
+								echo $giftcard->json();
+							} else {
+								echo json_encode(['error' => 'error']);
+							}
+							break;
+					case 'delete':
+							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
+							if( !Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
+								$giftcard->delete();
+								echo json_encode(['success' => 'success']);
+							} else {
+								echo json_encode(['error' => 'already used']);
+							}
+							break;
+					case 'removecredit':
+							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
+							if( Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
+								$credit = $giftcard->credit();
+								if( $credit->removeCreditLeft() ){
+									echo json_encode(['success' => 'success']);	
+								} else {
+									echo json_encode(['error' => 'error']);
+								}
+							} else {
+								echo json_encode(['error' => 'error']);
+							}
+							break;
+
 					}
 				}
 

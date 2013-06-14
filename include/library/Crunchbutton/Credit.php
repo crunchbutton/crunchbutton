@@ -229,6 +229,24 @@ class Crunchbutton_Credit extends Cana_Table
 		return $this->value - $spent;
 	}
 
+	public function removeCreditLeft(){
+		$spent = $this->creditSpent();
+		$valueToRemove = $this->value - $spent;
+		// Create a new debit to remove this credit
+		$credit = new Crunchbutton_Credit();
+		$credit->id_user = $this->id_user;
+		$credit->type = Crunchbutton_Credit::TYPE_DEBIT;
+		$credit->id_restaurant = $this->id_restaurant;
+		$credit->date = date('Y-m-d H:i:s');
+		$credit->value = $valueToRemove;
+		$credit->id_order = $id_order;
+		$credit->paid_by = $this->paid_by;
+		$credit->id_restaurant_paid_by = $this->id_restaurant_paid_by;
+		$credit->id_credit_debited_from = $this->id_credit;
+		$credit->note = 'Removed the credit #' . $this->id_credit . ' ($' . $valueToRemove . ') - by: ' . $_SESSION['username'] ;
+		$credit->save();
+	}
+
 	public function charge( $value, $id_order ){
 		$credit = new Crunchbutton_Credit();
 		$credit->id_user = $this->id_user;
