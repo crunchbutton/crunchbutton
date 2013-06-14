@@ -219,7 +219,7 @@ class Crunchbutton_Credit extends Cana_Table
 		$row = Cana::db()->get( $query );
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
-				return $row->spent;
+				return ( $row->spent < 0 ) ? 0 : $row->spent;
 		}
 		return 0;
 	}
