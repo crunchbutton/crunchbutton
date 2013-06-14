@@ -32,45 +32,7 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 
 					break;
 					case 'say':
-
-						$id_support = c::getPagePiece( 3 );
-
-						Log::debug( [ 'action' => 'Calling', 'id_support' => $id_support, 'type' => 'support' ] );
-
-						$support = Crunchbutton_Support::o( $id_support );
-
-						$message = ' . You received a new support sms . ';
-
-						if( $support->id_support ){
-
-							if( is_numeric( $support->name ) ){
-								$name = implode( ' . ', str_split( $support->name ) );
-							} else {
-								$name = $support->name;
-							}
-
-							$phone = implode( ' . ', str_split( $support->phone ) );
-
-							$message .= ' . Name . ' . $name . ' . ';
-							$message .= ' . Phone . ' . $phone . ' . ';
-							$message .= ' . Message . ' . $support->message . ' . ';
-						} 
-
-						$supportName = c::getPagePiece( 4 );
-
-						$message .= ' . ';
-
-						Log::debug( [ 'action' => 'Calling', 'said' => $message, 'supportName' => $supportName, 'type' => 'support' ] );
-
-						header('Content-type: text/xml');
-						echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
-									.'<Response>' . "\n"
-										.'<Say voice="' . c::config()->twilio->voice . '">' . "\n"
-											. 'Hello ' . $supportName . ' . , ' . "\n"
-											. $message . "\n"
-										.'</Say>' . "\n"
-									.'</Response>';
-						
+						$this->say();
 						break;
 				}
 
@@ -78,11 +40,56 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 
 			case 'get':
 
-				switch ( c::getPagePiece( 2 ) ) {					
+				switch ( c::getPagePiece( 2 ) ) {		
+					case 'say':
+						$this->say();
+						break;
 					default:
 						echo json_encode(['error' => 'invalid object']);
 						break;
 				}
 		}
 	}
+
+	function say(){
+
+		$id_support = c::getPagePiece( 3 );
+
+		Log::debug( [ 'action' => 'Calling', 'id_support' => $id_support, 'type' => 'support' ] );
+
+		$support = Crunchbutton_Support::o( $id_support );
+
+		$message = ' . You received a new support sms . ';
+
+		if( $support->id_support ){
+
+			if( is_numeric( $support->name ) ){
+				$name = implode( ' . ', str_split( $support->name ) );
+			} else {
+				$name = $support->name;
+			}
+
+			$phone = implode( ' . ', str_split( $support->phone ) );
+
+			$message .= ' . Name . ' . $name . ' . ';
+			$message .= ' . Phone . ' . $phone . ' . ';
+			$message .= ' . Message . ' . $support->message . ' . ';
+		} 
+
+		$supportName = c::getPagePiece( 4 );
+
+		$message .= ' . ';
+
+		Log::debug( [ 'action' => 'Calling', 'said' => $message, 'supportName' => $supportName, 'type' => 'support' ] );
+
+		header('Content-type: text/xml');
+		echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n"
+					.'<Response>' . "\n"
+						.'<Say voice="' . c::config()->twilio->voice . '">' . "\n"
+							. 'Hello ' . $supportName . ' . , ' . "\n"
+							. $message . "\n"
+						.'</Say>' . "\n"
+					.'</Response>';
+	}
+
 }
