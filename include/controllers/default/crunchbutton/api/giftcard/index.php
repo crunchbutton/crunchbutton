@@ -267,15 +267,6 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								echo json_encode(['error' => 'error']);
 							}
 							break;
-					case 'active':
-							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
-							$giftcard->active = $this->request()['active'];
-							if( $giftcard->save() ){
-								echo $giftcard->json();
-							} else {
-								echo json_encode(['error' => 'error']);
-							}
-							break;
 					case 'delete':
 							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
 							if( !Crunchbutton_Promo::giftWasAlreadyUsed( $giftcard->id_promo ) ){
