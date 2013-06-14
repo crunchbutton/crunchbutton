@@ -195,6 +195,7 @@
 			}
 		});
 		$('.chzn').select2();
+
 		App.orders.load();
 
 		$( 'input[name="date-range-end"]' ).datepicker({
@@ -205,6 +206,7 @@
 				$( 'input[name="date-range-start"]' ).datepicker( "option", "minDate", selectedDate );
 			}
 		});
+		
 		$( 'input[name="date-range-start"]' ).datepicker({
 			defaultDate: "+1w",
 			changeMonth: true,

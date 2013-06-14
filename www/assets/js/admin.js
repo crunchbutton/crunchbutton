@@ -1450,12 +1450,13 @@ $(function() {
 
 App.giftcards = {
 	params: function() {
+		var dates = $('input[name="date-range-end"]').val() + ',' + $('input[name="date-range-start"]').val();
 		return {
 			id_order: $('input[name="id_order"]').val(),
 			id_user: $('input[name="id_user"]').val(),
 			type: $('select[name="type"]').val(),
 			limit: $('input[name="limit"]').val(),
-			dates: $('input[name="date-range"]').val(),
+			dates: dates,
 			restaurant: $('select[name="restaurant"]').val()
 		};
 	},

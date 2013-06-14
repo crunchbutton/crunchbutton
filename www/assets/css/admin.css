@@ -920,3 +920,6 @@ div.datepicker{
 td.day{
 	text-align: center !important;
 }
+.center{
+	text-align:center;
+}
