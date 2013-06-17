@@ -31,10 +31,11 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		];
 
 		c::view()->data = $data;
-		
+/*
 		$graphs['orders-by-date-by-community'] = [
 			'title' => 'Orders by day by community',
 			'type' => 'area',
+			'unit' => 'orders',
 			'data' => c::db()->get('
 				SELECT
 				    date_format(CONVERT_TZ(`date`, "-8:00","-5:00"), "%W") AS `Day`,
@@ -50,7 +51,33 @@ class Controller_home extends Crunchbutton_Controller_Account {
 				ORDER BY date_format(CONVERT_TZ(`date`, "-8:00","-5:00"), "%Y%m%d"), id_community
 			')
 		];
-		
+*/
+
+		// Get the last users (diferent phones) by date
+		$days = [7,14,30,60,90, 365];
+		$preQuery = 'SELECT 
+										"{days} days" AS day, COUNT(*) AS total, IF( result.total > 1, "returned", "new" ) type 
+									FROM (
+													SELECT filter.phone, filter.filter, total.total
+														FROM ( SELECT u.phone, COUNT(*) AS filter FROM user u INNER JOIN `order` o ON u.id_user = o.id_user and o.date BETWEEN CURDATE() - INTERVAL {days} DAY AND CURDATE() GROUP BY u.phone ) filter
+													INNER JOIN ( SELECT u.phone, COUNT(*) AS total FROM user u INNER JOIN `order` o ON u.id_user = o.id_user GROUP BY u.phone ) total ON filter.phone = total.phone ) result
+									GROUP BY type';
+
+		$query = '';
+		$union = '';
+		foreach ( $days as $day ) {
+			$query .= $union . str_replace( '{days}', $day, $preQuery );
+			$union = ' UNION ';
+		}
+
+		$graphs['active-users-by-date'] = [
+			'title' => 'Active users by date',
+			'type' => 'area',
+			'unit' => 'users',
+			'data' => c::db()->get( $query  )
+		];
+
+
 
 		c::view()->graphs = $graphs;
 		c::view()->display('home/index');
