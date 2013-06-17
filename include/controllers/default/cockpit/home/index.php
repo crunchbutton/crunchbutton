@@ -54,9 +54,9 @@ class Controller_home extends Crunchbutton_Controller_Account {
 */
 
 		// Get the last users (diferent phones) by date
-		$days = [7,14,30,60,90, 365];
+		$days = [1, 7,14,30,60,90, 365];
 		$preQuery = 'SELECT 
-										"{days} days" AS day, COUNT(*) AS total, IF( result.total > 1, "returned", "new" ) type 
+										"{days} day(s)" AS day, COUNT(*) AS total, IF( result.total > 1, "Returned", "New" ) type 
 									FROM (
 													SELECT filter.phone, filter.filter, total.total
 														FROM ( SELECT u.phone, COUNT(*) AS filter FROM user u INNER JOIN `order` o ON u.id_user = o.id_user and o.date BETWEEN CURDATE() - INTERVAL {days} DAY AND CURDATE() GROUP BY u.phone ) filter
@@ -69,7 +69,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 			$query .= $union . str_replace( '{days}', $day, $preQuery );
 			$union = ' UNION ';
 		}
-
+echo $query;exit;
 		$graphs['active-users-by-date'] = [
 			'title' => 'Active users by date',
 			'type' => 'area',
