@@ -131,15 +131,17 @@
 		<div class="box-content padded">
 
 
-		<? /*
-		<? foreach ($this->graphs as $id => $graph) : ?>
-			<? $this->display('charts/area', ['set' => [
+		<? foreach ($this->graphs as $id => $graph ){ 
+
+			$this->display('charts/area', ['set' => [
 				'chartId' => $id,
 				'data' => $graph['data'],
-				'title' => $graph['title']
-			]]); ?>
-		<? endforeach ; ?>
-		*/ ?>
+				'title' => $graph['title'],
+				'unit' => $graph['unit']
+			]]); 
+		}
+		?>
+	
 
 
 

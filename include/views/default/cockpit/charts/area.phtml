@@ -11,6 +11,7 @@
 	// set up x labels and empty objects
 	foreach ($data as $item) {
 		$vars = get_object_vars($item);
+
 		// X
 		$xName = key($vars);
 		$x = array_shift($vars);
@@ -25,7 +26,7 @@
 		$ys[$group] = [];
 
 	}
-
+	
 	foreach ($xs as $k => $v) {
 		$xx .= "'".str_replace("'","\\'",$k)."', ";
 	}
@@ -105,7 +106,7 @@ $(function () {
 		},
 		tooltip: {
 			shared: true,
-			valueSuffix: ' orders'
+			valueSuffix: ' <?=$unit?>'
 		},
 		plotOptions: {
 			area: {
