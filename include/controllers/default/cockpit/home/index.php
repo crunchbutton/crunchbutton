@@ -69,7 +69,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 			$query .= $union . str_replace( '{days}', $day, $preQuery );
 			$union = ' UNION ';
 		}
-echo $query;exit;
+// echo $query;exit;
 		$graphs['active-users-by-date'] = [
 			'title' => 'Active users by date',
 			'type' => 'area',
