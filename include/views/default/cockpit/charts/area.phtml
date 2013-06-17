@@ -107,6 +107,10 @@ $(function () {
 		tooltip: {
 			shared: true,
 			valueSuffix: ' <?=$unit?>'
+			<?php if( $tooltip ){ ?>
+				,formatter: <?php echo $tooltip; ?>;
+			<?php } ?>
+			}
 		},
 		plotOptions: {
 			area: {
