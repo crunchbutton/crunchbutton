@@ -56,7 +56,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		// Get the last users (diferent phones) by date
 		$days = [1, 7,14,30,60,90, 365];
 		$preQuery = 'SELECT 
-										"{days} day(s)" AS day, COUNT(*) AS total, IF( result.total > 1, "Returned", "New" ) type 
+										"{days} day(s)" AS day, COUNT(*) AS Users, IF( result.total > 1, "Returned", "New" ) type 
 									FROM (
 													SELECT filter.phone, filter.filter, total.total
 														FROM ( SELECT u.phone, COUNT(*) AS filter FROM user u INNER JOIN `order` o ON u.id_user = o.id_user and o.date BETWEEN CURDATE() - INTERVAL {days} DAY AND CURDATE() GROUP BY u.phone ) filter
@@ -74,6 +74,15 @@ class Controller_home extends Crunchbutton_Controller_Account {
 			'title' => 'Active users by date',
 			'type' => 'area',
 			'unit' => 'users',
+			'tooltip' => "function() {
+				var total = 0;
+				var body = '';
+				$.each( this.points, function( i, point ) {
+					body += '<br/><span style=\"color:' + point.series.color + '\">' +  point.series.name + '</span>: ' + point.y + ' <?=$yName?>';
+					total += point.y;
+				});
+				var html = '<b>Total: ' + total + ' <?=$yName?></b>' + body;
+				return html",
 			'data' => c::db()->get( $query  )
 		];
 
