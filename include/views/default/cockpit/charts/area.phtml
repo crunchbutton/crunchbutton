@@ -82,7 +82,8 @@ $(function () {
 	console.log(data);
 	$('#<?=$chartId?>').highcharts({
 		chart: {
-			type: 'area'
+			type: 'area',
+			backgroundColor:'rgba(255, 255, 255, 0.1)'
 		},
 		title: {
 			text: '<?=str_replace("'","\\'",$title)?>'
