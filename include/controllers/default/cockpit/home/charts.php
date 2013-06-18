@@ -39,7 +39,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 								body += '<br/><span style=\"color:' + point.series.color + '\">' +  point.series.name + '</span>: ' + point.y + ' users (' + point.percentage.toFixed(2) + '%)';
 								total += point.y;
 							});
-							var html = '<b>Total: ' + total + ' users</b>' + body;
+							var html = '<b>Total: ' + total + ' users - ' + this.x + '</b>' + body;
 							return html;}",
 					]]); 
 				break;
