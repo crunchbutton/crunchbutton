@@ -31,8 +31,16 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'unit' => 'users',
 						'maxWeeks' => $maxWeeks,
 						'weeks' => $weeks,
-						'tooltip' => false,
-						'tooltipShared' => true
+						'tooltipShared' => true,
+						'tooltip' => "function() {
+							var total = 0;
+							var body = '';
+							$.each( this.points, function( i, point ) {
+								body += '<br/><span style=\"color:' + point.series.color + '\">' +  point.series.name + '</span>: ' + point.y + ' users (' + point.percentage.toFixed(2) + '%)';
+								total += point.y;
+							});
+							var html = '<b>Total: ' + total + ' users</b>' + body;
+							return html;}",
 					]]); 
 				break;
 
