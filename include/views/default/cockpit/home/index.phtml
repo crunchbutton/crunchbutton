@@ -122,39 +122,24 @@
 		</div>
 	</div>
 
-
-
-
-
 	<div class="box">
 		<div class="box-header"><span class="title">Metrics</span></div>
 		<div class="box-content padded">
-				<? 
-				$count = 0;
-				foreach ($this->graphs as $id => $graph ){ 
-					if( $count == 0 ){
-						echo '<div class="row-fluid">';
-					}
-					echo '<div class="span6">';
-					$this->display('charts/' . $graph[ 'type' ], ['set' => [
-						'chartId' => $id,
-						'data' => $graph['data'],
-						'title' => $graph['title'],
-						'unit' => $graph['unit'],
-						'tooltip' => $graph['tooltip']
-					]]); 
-					echo '</div>';
-					$count++;
-					if( $count == 2 ){
-						$count = 0;
-						echo '</div><br/><br/>';
-					}
-				}
-				if( $count != 2 ){
-					echo '</div>';
-				}
-				?>
+			<? 
+			foreach ($this->graphs as $id => $graph ){ 
+				echo '<div id="' . $graph . '" class="chart"></div>';
+			} ?>
 			</div>
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$( document ).ready( function(){
+		$( '.chart' ).each( function(){
+			var self = $( this );
+			var id = self.attr( 'id' );
+			var url = '/home/charts/' + id;
+			$.ajax( { url: url, }).done(function( data ) { self.html( data ); } );
+		} )
+	} );
+</script>

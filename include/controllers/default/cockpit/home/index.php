@@ -31,28 +31,31 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		];
 
 		c::view()->data = $data;
-/*
-		$graphs['orders-by-date-by-community'] = [
-			'title' => 'Orders by day by community',
-			'type' => 'area',
-			'unit' => 'orders',
-			'data' => c::db()->get('
-				SELECT
-				    date_format(CONVERT_TZ(`date`, "-8:00","-5:00"), "%W") AS `Day`,
-				    COUNT(*) AS `Orders`,
-				    community.name AS `Community`
-				FROM `order`
-				LEFT JOIN community using(id_community)
-				WHERE
-					env="live"
-					and community.name IS NOT NULL
-					and community.name != "Testing"
-				GROUP BY date_format(CONVERT_TZ(`date`, "-8:00","-5:00"), "%W"), id_community
-				ORDER BY date_format(CONVERT_TZ(`date`, "-8:00","-5:00"), "%Y%m%d"), id_community
-			')
-		];
-*/
+		$graphs = array();
+		$graphs[] = 'orders-per-week';
+		$graphs[] = 'gross-revenue';
+		$graphs[] = 'orders-by-date-by-community';
 
+/*
+	// Orders per Active User (NOT counting 1st-time orders)
+		$query = 'SELECT DATE_FORMAT( CONVERT_TZ( `date`, "-8:00","-5:00" ), "Week %v/%Y" ) `week`, COUNT(*) AS Orders, "Orders" AS label FROM `order` GROUP BY YEARWEEK(date) ORDER BY YEARWEEK(date) DESC';
+		$graphs['orders-per-week'] = [
+			'title' => 'Orders per week',
+			'type' => 'column',
+			'unit' => 'orders',
+			'data' => c::db()->get( $query  )
+		];
+
+	$query = 'SELECT DATE_FORMAT( CONVERT_TZ( `date`, "-8:00","-5:00" ), "week %v/%Y" ) `week`, CAST( SUM( final_price ) AS DECIMAL( 14, 2 ) ) AS "US$", "US$" AS label FROM `order` GROUP BY YEARWEEK(date) ORDER BY YEARWEEK(date) DESC
+';
+		$graphs['gross-revenue'] = [
+			'title' => 'Gross revenue',
+			'type' => 'column',
+			'unit' => ' ',
+			'data' => c::db()->get( $query  )
+		];
+
+/*
 		// Get the last users (different phones) by date
 		$days = [ 1, 7, 30 ];
 		$preQuery = 'SELECT 
@@ -165,7 +168,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 			'tooltip' => "false",
 			'data' => c::db()->get( $query  )
 		];
-
+*/
 		c::view()->graphs = $graphs;
 		c::view()->display('home/index');
 	}
