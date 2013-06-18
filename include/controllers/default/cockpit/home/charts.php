@@ -27,7 +27,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					c::view()->display('charts/column', ['set' => [
 						'chartId' => $chart,
 						'data' => c::db()->get( $query  ),
-						'title' => 'Unique users per week',
+						'title' => 'Unique users per week by Community',
 						'unit' => 'users',
 						'maxWeeks' => $maxWeeks,
 						'weeks' => $weeks,
