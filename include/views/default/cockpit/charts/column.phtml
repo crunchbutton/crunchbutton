@@ -74,15 +74,14 @@
 	];
 
 ?>
-
-<div id="<?=$chartId?>" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+<div id="<?=$chartId?>" style="min-width: 100%; margin: 0 auto"></div>
 <script type="text/javascript">
 $(function () {
 	var data = <?=json_encode($jsData, JSON_NUMERIC_CHECK)?>;
 	console.log(data);
 	$('#<?=$chartId?>').highcharts({
 		chart: {
-			type: 'area'
+			type: 'column'
 		},
 		title: {
 			text: '<?=str_replace("'","\\'",$title)?>'
@@ -110,19 +109,11 @@ $(function () {
 			<?php if( $tooltip ){ echo ',formatter:' . $tooltip; } ?>
 		},
 		plotOptions: {
-			area: {
+			column: {
 				stacking: 'normal',
-				lineColor: '#666666',
-				lineWidth: 1,
-				marker: {
-					enabled: false,
-					symbol: 'circle',
-					radius: 2,
-					states: {
-						hover: {
-							enabled: true
-						}
-					}
+				dataLabels: {
+					enabled: true,
+					color: ( Highcharts.theme && Highcharts.theme.dataLabelsColor ) || 'white'
 				}
 			}
 		},
