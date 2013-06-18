@@ -34,7 +34,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 
 		$graphs = array( 
 										'users-per-week-by-community',
-										'users-per-week',
+										// 'users-per-week',
 										'orders-per-week',
 										'gross-revenue',
 										'orders-by-date-by-community'
