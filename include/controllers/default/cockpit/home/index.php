@@ -149,7 +149,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		];
 
 		// Gross Revenue
-		$preQuery = 'SELECT "Last {days} day(s)" AS day, CAST( SUM( o.final_price ) AS DECIMAL( 14, 2 ) ) as dolar, "US$" as serie FROM `order` o WHERE env="live" AND o.date BETWEEN CURDATE() - INTERVAL {days} DAY AND CURDATE()';
+		$preQuery = 'SELECT "Last {days} day(s)" AS day, CAST( SUM( o.final_price ) AS DECIMAL( 14, 2 ) ) as Dollar, "US$" as serie FROM `order` o WHERE env="live" AND o.date BETWEEN CURDATE() - INTERVAL {days} DAY AND CURDATE()';
 
 		$query = '';
 		$union = '';
