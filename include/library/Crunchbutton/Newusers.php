@@ -30,7 +30,7 @@ class Crunchbutton_Newusers extends Cana_Table {
 		foreach( $orders as $order ){
 			$user = $order->user();
 			$email = $config->email_to;
-			$subject = $user_name . ' placed their first CB order';
+			$subject = $user->name . ' placed their first CB order';
 			$mail = new Crunchbutton_Email_Newusers([
 				'subject' => $subject,
 				'email' => $email,
