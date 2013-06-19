@@ -123,11 +123,24 @@
 	</div>
 
 	<div class="box">
-		<div class="box-header"><span class="title">Metrics</span></div>
+		<div class="box-header">
+			<span class="title">Metrics</span>
+			<ul class="box-toolbar">
+				<li class="toolbar-link">
+					<a href="#" class="dropdown" data-toggle="dropdown"><i class="icon-cog"></i></a>
+					<ul class="dropdown-menu padded">
+						<? 
+						foreach ($this->graphs as $id => $graph ){ 
+							echo '<li><label for="checkbox-' . $id . '"><input name="checkbox-' . $id . '" id="checkbox-' . $id . '" class="check" data-id="' . $id . '" type="checkbox" checked="checked" /> ' . $graph .  '</label></li>';
+						} ?>
+					</ul>
+				</li>
+			</ul>
+		</div>
 		<div class="box-content padded">
 			<? 
 			foreach ($this->graphs as $id => $graph ){ 
-				echo '<div id="' . $graph . '" class="chart"></div>';
+				echo '<div id="' . $id . '" class="chart"><i class="icon-spinner icon-spin"></i> Loading.</div>';
 			} ?>
 			</div>
 		</div>
@@ -135,6 +148,15 @@
 </div>
 <script type="text/javascript">
 	$( document ).ready( function(){
+		$( '.check' ).change(function () {
+			var self = $(this);
+			var chart = $( '#' + self.attr( 'data-id' ) );
+			if( self.is( ':checked' ) ){
+				chart.show();
+			} else {
+				chart.hide();
+			}
+   	});
 		$( '.chart' ).each( function(){
 			var self = $( this );
 			var id = self.attr( 'id' );
