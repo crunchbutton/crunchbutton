@@ -83,7 +83,9 @@
 	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
 	<br/>
 	<div class="row-fluid">
-		<div class="span3">Weeks</div>
+		<div class="span3">
+			Week <?php echo ( $weeks + 1 > $maxWeeks ) ? $maxWeeks : ( $weeks + 1 ); ?> of <?php echo $maxWeeks; ?>:
+		</div>
 		<div class="span8">
 			<div id="slider-<?=$chartId?>"></div>
 	</div>
