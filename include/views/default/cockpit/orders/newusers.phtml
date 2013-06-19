@@ -1,0 +1,104 @@
+<?
+	$this->title = 'Orders';
+	$this->subtitle = 'people order shit! then eat it!';
+	$this->titleicon = 'truck';
+	$orders = $this->orders;
+	$config = $this->config;
+?>
+
+
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+
+			<div class="box-content">
+				<div class="row-fluid">
+					<div class="span6 separate-sections">
+						<ul class="padded separate-sections">
+							<li>
+								<span class="span3">Last send: </span>
+								<span class="span8 pull-right">
+									<?php $date = $config->date(); ?>
+									<?=$date->format('M jS Y')?> <?=$date->format('g:i:s A')?>
+								</span>
+							</li>
+							<li>
+								<span class="span3">Email will be send to: </span>
+								<span class="span8 pull-right">
+									<?php echo $config->email_to; ?>
+								</span>
+							</li>
+							<?php if( $orders && $orders->count() > 0 ) { ?>
+							<li>
+								<span class="span3"></span>
+								<span class="span8 pull-right">
+									<a class="btn btn-small btn-blue">Send email</a>
+								</span>
+							</li>
+							<?php } ?>
+						</ul>	
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="box">
+			<div class="box-header">
+				<span class="title">Results</span>
+				<ul class="box-toolbar">
+					<li><span class="label label-blue"><?php echo $orders->count(); ?></span></li>
+				</ul>
+			</div>
+			<div class="box-content">
+				<?php if( $orders && $orders->count() > 0 ) { ?>
+					<table class="list-orders table table-normal">
+						<thead>
+							<tr>
+								<td>Order info</td>
+								<td>User info</td>
+								<td>Payment info</td>
+							</tr>
+						</thead>
+					<?php
+					foreach ( $orders as $order ) {
+						$user = $order->user();
+						$restaurant = $order->restaurant();
+						?>
+							<tr>
+								<td>
+									<?php $date = $order->date();?>
+									<?=$date->format('M jS Y')?> <?=$date->format('g:i:s A')?> 
+									<br/>
+									Restaurant: <?php echo $restaurant->name; ?>
+									<br/>
+									Delivery:  <?php echo $order->delivery_type; ?>
+								</td>
+								<td>
+									Name: <?php echo $user->name; ?> 
+									<br/>
+									Phone: <?php echo $user->phone; ?> 
+									<br/>
+									<?php if( $user->email ){ ?>
+										Email: <?php echo $user->email; ?> 
+										<br/>
+									<?php } ?>
+									Address: <?php echo $order->address; ?>
+								</td>
+								<td>
+									Type: <?php echo $order->pay_type; ?>
+									<br />
+									Tip: $<?=$order->tip()?> <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo '(' . $order->tip . '%)'; } ?>
+									<br />
+									Total: $<?=number_format($order->final_price,2)?>
+								</td>
+							</tr>
+						<?
+					}
+				?>
+				</table>
+				<?php } ?>
+			</div>
+		</div>
+	</div>
+</div>
