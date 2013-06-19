@@ -84,7 +84,9 @@
 	<br/>
 	<div class="row-fluid">
 		<div class="span3">
+			<? if( $ignoreWeekSum ){ $weeks--; } ?>
 			Week <?php echo ( $weeks + 1 > $maxWeeks ) ? $maxWeeks : ( $weeks + 1 ); ?> of <?php echo $maxWeeks; ?>:
+			<? if( $ignoreWeekSum ){ $weeks++; } ?>
 		</div>
 		<div class="span8">
 			<div id="slider-<?=$chartId?>"></div>
