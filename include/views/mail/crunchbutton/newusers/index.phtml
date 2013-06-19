@@ -1,0 +1,84 @@
+
+<b>User</b><br/>
+Name: <?php echo $user->name; ?> <br />
+Phone: <?php echo $user->phone; ?> <br />
+Address: <?php echo $user->address; ?> <br />
+Email: <?php if( $user->email ){ echo $user->email; } else { echo '-'; }  ?> <br />
+<br/>
+
+<?
+$support = Support::getSupportForOrder( $order->id );
+if($support) {
+	?>
+	<b>Support: <a href="http://cockpit.crunchbutton.com/support/<?php echo $support->id; ?>">#<?php echo $support->id; ?></a><br /><br /></b>
+	<?php
+}
+?>
+
+<b>Order</b><br/>
+Date: <?php echo $order->date()->format('D, M jS Y, H:i:s (T)'); ?> <br />
+Restaurant: <?php echo $order->restaurant()->name; ?> <br />
+Payment: <?php echo $order->pay_type; ?> <br />
+Delivery: <?php echo $order->delivery_type; ?> <br />
+Tip: $<?php $order->tip(); ?><?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $order->tip . '%'; } ?> <br />
+Gift card: $<?=number_format($order->chargedByCredit(),2)?> <br />
+Total: $<?php echo number_format( $order->final_price, 2 ); ?> <br />
+Notes: <?php if( $order->notes ){ echo $order->notes; } else { echo ''; }  ?> <br />
+<br/>
+<b>Dishes</b><br/>
+<?php
+foreach ($order->dishes() as $dish) : ?>
+<table border="1">
+	<tr>
+		<td><?
+			$food = $dish->dish()->name;
+			$cartPrice = $dish->dish()->price;
+			$options = $dish->options();
+
+			if (gettype($options) == 'array') {
+				$options = i::o($options);
+			}
+
+			if ($options->count()) {
+				$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
+
+				foreach ($dish->options() as $option) {
+					if ($option->option()->type == 'select') {
+						continue;
+					}
+					$cartPrice += $option->option()->price;
+					if($option->option()->id_option_parent) {
+						$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
+						$food .= "$optionGroup->name: ";
+					}
+					$food .= $option->option()->name.', ';
+				}
+				$food = substr($food, 0, -2);
+
+				$food .= '</i>';
+			}
+
+			$withoutDefaultOptions = '';
+			if( $dish->id_order_dish && $dish->id_dish ){ 
+				$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+				$commas = ' ';
+				if( $optionsNotChoosen->count() ){
+					foreach( $optionsNotChoosen as $dish_option ){
+						$withoutDefaultOptions .= $commas . '<i> No ' . $dish_option->option()->name . '</i>';
+						$commas = ', ';
+					}
+				}
+			}
+
+			if ( $options->count() && $withoutDefaultOptions != '' ) {
+				$food .= '. ';
+			}
+			$food .= $withoutDefaultOptions;
+
+			?>
+			<?=$food?>
+		</td>
+		<td>$<?=number_format($cartPrice,2)?></td>
+	</tr>
+</table>
+<? endforeach ; ?>
