@@ -67,66 +67,56 @@
 		];
 	}
 
-	
+	$data = array();
+	foreach ($ys as $y) {
+		$data[] = [ $y[ 'name' ], $y[ 'data' ][0] ];	
+	}
 	$jsData = [
 		'xs' => array_keys($xs),
-		'ys' => array_values($ys)
+		'ys' => $data
 	];
-
 ?>
-
-<div id="<?=$chartId?>" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+<div class="row-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<h4 style="text-align:center;"><?php echo $title; ?></h4>	
+		</div>
+	</div>
+	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
+</div>
+<hr />
 <script type="text/javascript">
 $(function () {
 	var data = <?=json_encode($jsData, JSON_NUMERIC_CHECK)?>;
-	console.log(data);
-	$('#<?=$chartId?>').highcharts({
-		chart: {
-			type: 'pie'
-		},
-		title: {
-			text: '<?=str_replace("'","\\'",$title)?>'
-		},
-		xAxis: {
-			categories: data.xs,
-			tickmarkPlacement: 'on',
-			title: {
-				enabled: false
-			}
-		},
-		yAxis: {
-			title: {
-				text: '<?=$yName?>'
-			},
-			labels: {
-				formatter: function() {
-					return this.value;
-				}
-			}
-		},
-		tooltip: {
-			shared: true,
-			valueSuffix: ' <?=$unit?>'
-			<?php if( $tooltip ){ echo ',formatter:' . $tooltip; } ?>
-		},
-		plotOptions: {
-			area: {
-				stacking: 'normal',
-				lineColor: '#666666',
-				lineWidth: 1,
-				marker: {
-					enabled: false,
-					symbol: 'circle',
-					radius: 2,
-					states: {
-						hover: {
-							enabled: true
+	$('#chart-<?=$chartId?>').highcharts({
+				chart: {
+						plotBackgroundColor: null,
+						plotBorderWidth: null,
+						plotShadow: false
+				},
+				title: {
+						text: ''
+				},
+				tooltip: {
+					pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
+				},
+				plotOptions: {
+						pie: {
+								allowPointSelect: true,
+								cursor: 'pointer',
+								dataLabels: {
+										enabled: true,
+										color: '#000000',
+										connectorColor: '#000000',
+										format: '{series.name}: <b>{point.percentage:.1f}%</b>'
+								}
 						}
-					}
-				}
-			}
-		},
-		series: data.ys
-	});
+				},
+				series: [{
+						type: 'pie',
+						name: 'Active users',
+						data: data.ys
+				}]
+		});
 });
 </script>
