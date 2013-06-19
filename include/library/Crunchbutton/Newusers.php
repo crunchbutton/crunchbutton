@@ -68,9 +68,10 @@ class Crunchbutton_Newusers extends Cana_Table {
 	}
 
 	public function date() {
-		if (!isset($this->_date)) {
-			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
+		if (!isset($this->_last_update)) {
+			$this->_last_update = new DateTime($this->last_update, new DateTimeZone(c::config()->timezone));
+			$this->_last_update->setTimezone(new DateTimeZone( c::config()->timezone ));
 		}
-		return $this->_date;
+		return $this->_last_update;
 	}
 }
