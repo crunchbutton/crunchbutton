@@ -33,12 +33,17 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		c::view()->data = $data;
 
 		$graphs = array( 
-										'users-per-week-by-community',
-										'active-users',
-										// 'users-per-week',
-										'orders-per-week',
-										'gross-revenue',
-										'orders-by-date-by-community'
+										'new-users-per-week' => 'New users per week',
+										'new-users-per-week-community' => 'New users per week by community',
+										'active-users-per-week' => 'Active users per week',
+										'active-users-per-week-by-community' => 'Active users per week by community',
+										'users-per-week-by-community' => 'Users per week by community',
+										'active-users-by-community' => 'Active users by community',
+										'orders-by-user-week' => 'Orders by user per week',
+										'users-per-week' => 'Users per week',
+										'orders-per-week' => 'Orders per week',
+										'gross-revenue' => 'Gross revenue',
+										'orders-by-date-by-community' => 'Orders by week day by community'
 									);
 
 		c::view()->graphs = $graphs;
