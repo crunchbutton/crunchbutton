@@ -12,7 +12,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$union = '';
 
 				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks ) - 1;
+				$maxWeeks = sizeof( $maxMinWeeks );
 				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
 				$actual = $maxMinWeeks[ $weeks ];
 
@@ -51,7 +51,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$union = '';
 
 				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks ) - 1;
+				$maxWeeks = sizeof( $maxMinWeeks );
 				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
 				$actual = $maxMinWeeks[ $weeks ];
 
@@ -73,6 +73,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						$union = ' UNION ';
 						$count++;
 				}
+
 				c::view()->display('charts/column', ['set' => [
 					'chartId' => $chart,
 					'data' => c::db()->get( $query  ),
@@ -91,7 +92,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$union = '';
 
 				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks ) - 1;
+				$maxWeeks = sizeof( $maxMinWeeks );
 				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
 				$actual = $maxMinWeeks[ $weeks ];
 
@@ -131,7 +132,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$union = '';
 
 				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks ) - 1;
+				$maxWeeks = sizeof( $maxMinWeeks );
 				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
 				$actual = $maxMinWeeks[ $weeks ];
 
@@ -189,9 +190,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 			case 'users-per-week-by-community':
 					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks ) - 1;
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ $weeks ];
+					$maxWeeks = sizeof( $maxMinWeeks );
+					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks);
+					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = 'SELECT 
 											CONCAT( "Week ", YEARWEEK( date ) ) AS `week`, 
 											COUNT( DISTINCT( ( u.phone ) ) ) AS Users, 
@@ -209,6 +210,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'title' => 'Unique users per week by Community',
 						'unit' => 'users',
 						'maxWeeks' => $maxWeeks,
+						'ignoreWeekSum' => true,
 						'weeks' => $weeks,
 						'tooltipShared' => true,
 						'tooltip' => $this->tooltipWeekJS(),
@@ -217,9 +219,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 			case 'users-per-week':
 					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks ) - 1;
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ $weeks ];
+					$maxWeeks = sizeof( $maxMinWeeks );
+					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks);
+					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = 'SELECT 
 											CONCAT( "Week ", YEARWEEK( date ) ) AS `week`, 
 											COUNT( DISTINCT( ( u.phone ) ) ) AS Users, 
@@ -237,15 +239,16 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'unit' => 'users',
 						'maxWeeks' => $maxWeeks,
 						'weeks' => $weeks,
+						'ignoreWeekSum' => true,
 						'tooltip' => false
 					]]); 
 				break;
 
 			case 'orders-by-user-week':
 					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks ) - 1;
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ $weeks ];
+					$maxWeeks = sizeof( $maxMinWeeks );
+					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks);
+					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = 'SELECT 
 												CONCAT( "Week ", YEARWEEK( date ) ) AS `week`, 
 												CAST(COUNT(*) / COUNT( DISTINCT( ( u.phone ) ) ) AS DECIMAL( 14, 2 ) ) "Orders By User",
@@ -260,8 +263,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					c::view()->display('charts/column', ['set' => [
 						'chartId' => $chart,
 						'data' => c::db()->get( $query  ),
-						'title' => 'Orders by User',
+						'title' => 'Orders by User per week',
 						'unit' => 'orders',
+						'ignoreWeekSum' => true,
 						'maxWeeks' => $maxWeeks,
 						'weeks' => $weeks,
 						'tooltip' => false
@@ -270,9 +274,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 			case 'orders-per-week':
 					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks ) - 1;
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ $weeks ];
+					$maxWeeks = sizeof( $maxMinWeeks );
+					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks);
+					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = 'SELECT 
 												CONCAT( "Week ", YEARWEEK( date ) ) AS `week`, 
 												COUNT(*) AS Orders, 
@@ -290,6 +294,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'title' => 'Orders per week',
 						'unit' => 'orders',
 						'maxWeeks' => $maxWeeks,
+						'ignoreWeekSum' => true,
 						'weeks' => $weeks,
 						'tooltip' => false
 					]]); 
@@ -297,9 +302,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 			case 'gross-revenue':
 					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks ) - 1;
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ $weeks ];
+					$maxWeeks = sizeof( $maxMinWeeks );
+					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks);
+					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = 'SELECT 
 											CONCAT( "Week ", YEARWEEK( date ) ) AS `week`, 
 											CAST( SUM( final_price ) AS DECIMAL( 14, 2 ) ) AS "US$", 
@@ -315,6 +320,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'title' => 'Gross revenue',
 						'unit' => '',
 						'maxWeeks' => $maxWeeks,
+						'ignoreWeekSum' => true,
 						'weeks' => $weeks,
 						'tooltip' => false
 					]]); 
