@@ -7,6 +7,27 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 		switch ( $chart ) {
 			
+			case 'active-users':
+					$query = 'SELECT 
+											"Users" AS label,
+											COUNT( DISTINCT( ( u.phone ) ) ) AS Users, 
+											c.name AS `Community`
+										FROM `order` o 
+										INNER JOIN user u ON u.id_user = o.id_user 
+										LEFT JOIN community c ON o.id_community = c.id_community
+										WHERE c.name IS NOT NULL AND c.name != "Testing" 
+											AND  o.date BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE()
+										GROUP BY o.id_community ';
+					c::view()->display('charts/pie', ['set' => [
+						'chartId' => $chart,
+						'data' => c::db()->get( $query  ),
+						'title' => 'Active users per community',
+						'unit' => 'users',
+						'maxWeeks' => $maxWeeks,
+						'weeks' => $weeks,
+						'tooltip' => false
+					]]);  
+				break;
 			case 'users-per-week-by-community':
 					$maxMinWeeks = $this->maxMinWeeks();
 					$maxWeeks = sizeof( $maxMinWeeks ) - 1;
