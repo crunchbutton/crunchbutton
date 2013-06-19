@@ -40,6 +40,7 @@ class Crunchbutton_Newusers extends Cana_Table {
 			$mail->send();
 		}
 		static::updateConfig();
+		echo '<script>alert("Sent ' . $orders->count() . ' emails!");location.href="/orders/newusers/";</script>';
 	}
 
 	public static function updateConfig(){
