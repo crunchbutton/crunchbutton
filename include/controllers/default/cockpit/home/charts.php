@@ -1,6 +1,10 @@
 <?php
 
 class Controller_home_charts extends Crunchbutton_Controller_Account {
+
+	public $activeUsersInterval = 30; // Days
+	public $weeksToShowDefault = 20;
+
 	public function init() {
 
 		$chart = c::getPagePiece(2);
@@ -13,7 +17,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 				$maxMinWeeks = $this->maxMinWeeks();
 				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
+				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $this->weeksToShowDefault );
 				$actual = $maxMinWeeks[ $weeks ];
 
 				$count = 0;
@@ -21,18 +25,27 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					if( $count > $weeks ){
 						continue;
 					}
-					$query .= $union . "SELECT label, SUM( Users ) Users, 'New users' FROM ( SELECT {$week} AS label,
-											COUNT( DISTINCT( ( u.phone ) ) ) AS Users, 
-											c.name AS `Community`
-										FROM `order` o 
-										INNER JOIN user u ON u.id_user = o.id_user 
-										INNER JOIN ( SELECT COUNT(*) orders, o.id_user FROM `order` o WHERE o.date <= STR_TO_DATE('201320 Sunday', '%X%V %W') GROUP BY o.id_user HAVING orders = 1 ) orders ON orders.id_user = u.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE c.name IS NOT NULL AND c.name != 'Testing' 
-											AND  o.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') - INTERVAL 30 DAY AND STR_TO_DATE('{$week} Sunday', '%X%V %W')
-										GROUP BY o.id_community ) newUsers ";
+					$query .= $union . "SELECT 'Week {$week}' AS Label, COUNT(*) AS Users, 'Active users' FROM (
+																SELECT 
+																	COUNT(*) orders, u.phone, o.date, u.id_user
+																FROM 
+																	`order` o 
+																INNER JOIN user u ON u.id_user = o.id_user
+																LEFT JOIN community c ON o.id_community = c.id_community
+																WHERE 
+																		o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W') 
+																	AND  
+																		c.name IS NOT NULL
+																	AND 
+																		c.name != 'Testing' 
+																	GROUP BY u.phone 
+																	HAVING orders = 1	
+																) Orders
+															WHERE 
+																Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')";
 						$union = ' UNION ';
 						$count++;
+						
 				}
 				c::view()->display('charts/column', ['set' => [
 					'chartId' => $chart,
@@ -41,8 +54,6 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					'unit' => 'users',
 					'maxWeeks' => $maxWeeks,
 					'weeks' => $weeks,
-					'tooltipShared' => true,
-					'tooltip' => $this->tooltipWeekJS(),
 				]]); 
 			break;
 			case 'new-users-per-week-community':
@@ -52,7 +63,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 				$maxMinWeeks = $this->maxMinWeeks();
 				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
+				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $this->weeksToShowDefault );
 				$actual = $maxMinWeeks[ $weeks ];
 
 				$count = 0;
@@ -60,20 +71,29 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					if( $count > $weeks ){
 						continue;
 					}
-					$query .= $union . "SELECT {$week} AS label,
-											COUNT( DISTINCT( ( u.phone ) ) ) AS Users, 
-											c.name AS `Community`
-										FROM `order` o 
-										INNER JOIN user u ON u.id_user = o.id_user 
-										INNER JOIN ( SELECT COUNT(*) orders, o.id_user FROM `order` o WHERE o.date <= STR_TO_DATE('201320 Sunday', '%X%V %W') GROUP BY o.id_user HAVING orders = 1 ) orders ON orders.id_user = u.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE c.name IS NOT NULL AND c.name != 'Testing' 
-											AND  o.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') - INTERVAL 30 DAY AND STR_TO_DATE('{$week} Sunday', '%X%V %W')
-										GROUP BY o.id_community  ";
+					$query .= $union . "SELECT 'Week {$week}' AS Label, COUNT(*) AS Users, Orders.name AS `Community` FROM (
+																SELECT 
+																	COUNT(*) orders, u.phone, o.date, u.id_user, c.name
+																FROM 
+																	`order` o 
+																INNER JOIN user u ON u.id_user = o.id_user
+																LEFT JOIN community c ON o.id_community = c.id_community
+																WHERE 
+																		o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W') 
+																	AND  
+																		c.name IS NOT NULL 
+																	AND 
+																		c.name != 'Testing' 
+																	AND c.id_community IN ( 1, 4 )
+																	GROUP BY u.phone 
+																	HAVING orders = 1
+																) Orders
+															WHERE 
+																Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W') 
+															GROUP BY Orders.name";
 						$union = ' UNION ';
 						$count++;
 				}
-
 				c::view()->display('charts/column', ['set' => [
 					'chartId' => $chart,
 					'data' => c::db()->get( $query  ),
@@ -81,8 +101,6 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					'unit' => 'users',
 					'maxWeeks' => $maxWeeks,
 					'weeks' => $weeks,
-					'tooltipShared' => true,
-					'tooltip' => $this->tooltipWeekJS(),
 				]]); 
 			break;
 
@@ -93,7 +111,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 				$maxMinWeeks = $this->maxMinWeeks();
 				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
+				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $this->weeksToShowDefault );
 				$actual = $maxMinWeeks[ $weeks ];
 
 				$count = 0;
@@ -101,17 +119,24 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					if( $count > $weeks ){
 						continue;
 					}
-					$query .= $union . "SELECT label, SUM( Users ) Users, 'Active users' FROM ( SELECT {$week} AS label,
-																COUNT( DISTINCT( ( u.phone ) ) ) AS Users, 
-																c.name AS `Community`
-															FROM `order` o 
-															INNER JOIN user u ON u.id_user = o.id_user 
-															LEFT JOIN community c ON o.id_community = c.id_community
-															WHERE c.name IS NOT NULL AND c.name != 'Testing' 
-																AND  o.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') - INTERVAL 30 DAY AND STR_TO_DATE('{$week} Sunday', '%X%V %W')
-															GROUP BY o.id_community ) users ";
-						$union = ' UNION ';
-						$count++;
+					$query .= $union . "SELECT 'Week {$week}' AS Label, COUNT(*) AS Users, 'ActiveUsers' FROM (
+																SELECT 
+																	u.phone, o.date, u.id_user, c.name
+																FROM 
+																	`order` o 
+																INNER JOIN user u ON u.id_user = o.id_user
+																LEFT JOIN community c ON o.id_community = c.id_community
+																WHERE 
+																		o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W') 
+																	AND 
+																		o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W')  - INTERVAL {$this->activeUsersInterval} DAY 
+																	AND 
+																		c.name IS NOT NULL 
+																	AND 
+																		c.name != 'Testing' 
+																GROUP BY u.phone ) ActiveUsers";
+					$union = ' UNION ';
+					$count++;	
 				}
 
 				c::view()->display('charts/column', ['set' => [
@@ -121,8 +146,6 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					'unit' => 'users',
 					'maxWeeks' => $maxWeeks,
 					'weeks' => $weeks,
-					'tooltipShared' => true,
-					'tooltip' => $this->tooltipWeekJS(),
 				]]); 
 			break;
 
@@ -133,7 +156,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 				$maxMinWeeks = $this->maxMinWeeks();
 				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
+				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $this->weeksToShowDefault );
 				$actual = $maxMinWeeks[ $weeks ];
 
 				$count = 0;
@@ -141,16 +164,25 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					if( $count > $weeks ){
 						continue;
 					}
-					$query .= $union . "SELECT {$week} AS label,
-																COUNT( DISTINCT( ( u.phone ) ) ) AS Users, 
-																c.name AS `Community`
-															FROM `order` o 
-															INNER JOIN user u ON u.id_user = o.id_user 
-															LEFT JOIN community c ON o.id_community = c.id_community
-															WHERE c.name IS NOT NULL AND c.name != 'Testing' 
-																AND  o.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') - INTERVAL 30 DAY AND STR_TO_DATE('{$week} Sunday', '%X%V %W')
-															GROUP BY o.id_community";
-						$union = ' UNION ';
+					$query .= $union . "SELECT 'Week {$week}' AS Label, COUNT(*) AS Users, ActiveUsers.name AS 'Community' FROM (
+																SELECT 
+																	u.phone, o.date, u.id_user, c.name
+																FROM 
+																	`order` o 
+																INNER JOIN user u ON u.id_user = o.id_user
+																LEFT JOIN community c ON o.id_community = c.id_community
+																WHERE 
+																		o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W') 
+																	AND 
+																		o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W')  - INTERVAL {$this->activeUsersInterval} DAY 
+																	AND 
+																		c.name IS NOT NULL 
+																	AND 
+																		c.name != 'Testing' 
+																	AND c.id_community IN ( 1, 4 )
+																GROUP BY u.phone ) ActiveUsers
+														 GROUP BY ActiveUsers.name";
+					$union = ' UNION ';
 						$count++;
 				}
 
@@ -161,20 +193,19 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					'unit' => 'users',
 					'maxWeeks' => $maxWeeks,
 					'weeks' => $weeks,
-					'tooltipShared' => true,
-					'tooltip' => $this->tooltipWeekJS(),
 				]]); 
 			break;
 
 			case 'active-users-by-community':
 					$query = 'SELECT 
-											"Users" AS label,
+											"Users" AS Label,
 											COUNT( DISTINCT( ( u.phone ) ) ) AS Users, 
 											c.name AS `Community`
 										FROM `order` o 
 										INNER JOIN user u ON u.id_user = o.id_user 
 										LEFT JOIN community c ON o.id_community = c.id_community
 										WHERE c.name IS NOT NULL AND c.name != "Testing" 
+											AND c.id_community IN ( 1, 4 )
 											AND  o.date BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE()
 										GROUP BY o.id_community ';
 					c::view()->display('charts/pie', ['set' => [
@@ -184,14 +215,13 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'unit' => 'users',
 						'maxWeeks' => $maxWeeks,
 						'weeks' => $weeks,
-						'tooltip' => false
 					]]);  
 				break;
 
 			case 'users-per-week-by-community':
 					$maxMinWeeks = $this->maxMinWeeks();
 					$maxWeeks = sizeof( $maxMinWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks);
+					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $this->weeksToShowDefault );
 					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = 'SELECT 
 											CONCAT( "Week ", YEARWEEK( date ) ) AS `week`, 
@@ -200,7 +230,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 										FROM `order` o 
 										INNER JOIN user u ON u.id_user = o.id_user 
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE c.name IS NOT NULL  AND c.name != "Testing" AND YEARWEEK(o.date) >= ' . $actual . '
+										WHERE c.name IS NOT NULL  AND c.name != "Testing" 
+											AND c.id_community IN ( 1, 4 )
+										AND YEARWEEK(o.date) >= ' . $actual . '
 										GROUP BY YEARWEEK(o.date), o.id_community 
 										ORDER BY YEARWEEK(o.date) DESC';
 
@@ -212,15 +244,13 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'maxWeeks' => $maxWeeks,
 						'ignoreWeekSum' => true,
 						'weeks' => $weeks,
-						'tooltipShared' => true,
-						'tooltip' => $this->tooltipWeekJS(),
 					]]); 
 				break;
 
 			case 'users-per-week':
 					$maxMinWeeks = $this->maxMinWeeks();
 					$maxWeeks = sizeof( $maxMinWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks);
+					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $this->weeksToShowDefault );
 					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = 'SELECT 
 											CONCAT( "Week ", YEARWEEK( date ) ) AS `week`, 
@@ -240,14 +270,13 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'maxWeeks' => $maxWeeks,
 						'weeks' => $weeks,
 						'ignoreWeekSum' => true,
-						'tooltip' => false
 					]]); 
 				break;
 
 			case 'orders-by-user-week':
 					$maxMinWeeks = $this->maxMinWeeks();
 					$maxWeeks = sizeof( $maxMinWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks);
+					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $this->weeksToShowDefault );
 					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = 'SELECT 
 												CONCAT( "Week ", YEARWEEK( date ) ) AS `week`, 
@@ -268,14 +297,13 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'ignoreWeekSum' => true,
 						'maxWeeks' => $maxWeeks,
 						'weeks' => $weeks,
-						'tooltip' => false
 					]]); 
 				break;
 
 			case 'orders-per-week':
 					$maxMinWeeks = $this->maxMinWeeks();
 					$maxWeeks = sizeof( $maxMinWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks);
+					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $this->weeksToShowDefault );
 					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = 'SELECT 
 												CONCAT( "Week ", YEARWEEK( date ) ) AS `week`, 
@@ -296,14 +324,13 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'maxWeeks' => $maxWeeks,
 						'ignoreWeekSum' => true,
 						'weeks' => $weeks,
-						'tooltip' => false
 					]]); 
 				break;
 
 			case 'gross-revenue':
 					$maxMinWeeks = $this->maxMinWeeks();
 					$maxWeeks = sizeof( $maxMinWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks);
+					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $this->weeksToShowDefault );
 					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = 'SELECT 
 											CONCAT( "Week ", YEARWEEK( date ) ) AS `week`, 
@@ -322,7 +349,6 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'maxWeeks' => $maxWeeks,
 						'ignoreWeekSum' => true,
 						'weeks' => $weeks,
-						'tooltip' => false
 					]]); 
 				break;
 
@@ -337,6 +363,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 											env = "live"
 											AND community.name IS NOT NULL
 											AND community.name != "Testing"
+											AND community.id_community IN ( 1, 4 )
 										GROUP BY DATE_FORMAT( CONVERT_TZ( `date`, "-8:00", "-5:00" ), "%W" ), id_community
 										ORDER BY DATE_FORMAT( CONVERT_TZ( `date`, "-8:00", "-5:00" ), "%Y%m%d" ), id_community';
 					c::view()->display('charts/area', ['set' => [
@@ -344,7 +371,6 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'data' => c::db()->get( $query  ),
 						'title' => 'Orders by day by community',
 						'unit' => 'orders',
-						'tooltip' => false
 					]]); 
 				break;
 
