@@ -33,17 +33,21 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		c::view()->data = $data;
 
 		$graphs = array( 
-										'new-users-per-week' => 'New users per week',
-										'new-users-per-week-community' => 'New users per week by community',
-										'active-users-per-week' => 'Active users per week',
-										'active-users-per-week-by-community' => 'Active users per week by community',
-										'users-per-week-by-community' => 'Users per week by community',
+
+										'active-users-per-week' => 'Active Users per Week',
+										'active-users-per-week-by-community' => 'Active Users per Week by Community',
+										'churn-rate' => 'Churn Rate - Active Users Lost',
+										'new-users-per-week' => 'New Users per Week',
+										'new-users-per-active-users' => 'New Users per Active Users',
+										'new-users-per-active-users-by-community' => 'New Users per Active Users By Community',
+										'new-users-per-week-community' => 'New Users per Week by Community',
+										'unique-users-per-week' => 'Unique Users per Week',
+										'unique-users-per-week-by-community' => 'Unique Users per Week by Community',
+										'orders-by-user-week' => 'Orders by Users per Week',
+										'orders-per-week' => 'Orders per Week',
+										'gross-revenue' => 'Gross Revenue',
+										'orders-by-date-by-community' => 'Orders by Weekday by Community'
 										// 'active-users-by-community' => 'Active users by community',
-										'orders-by-user-week' => 'Orders by user per week',
-										'users-per-week' => 'Users per week',
-										'orders-per-week' => 'Orders per week',
-										'gross-revenue' => 'Gross revenue',
-										'orders-by-date-by-community' => 'Orders by week day by community'
 									);
 
 		c::view()->graphs = $graphs;
