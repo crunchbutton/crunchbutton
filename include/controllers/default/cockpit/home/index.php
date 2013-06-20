@@ -34,13 +34,14 @@ class Controller_home extends Crunchbutton_Controller_Account {
 
 		$graphs = array( 
 
+								'Stuff for Investors' => array( 
 										'active-users-per-week' => 'Active Users per Week',
 										'active-users-per-week-by-community' => 'Active Users per Week by Community',
 										'churn-rate' => 'Churn Rate - Active Users Lost',
 										'new-users-per-week' => 'New Users per Week',
 										'new-users-per-active-users' => 'New Users per Active Users',
 										'new-users-per-active-users-by-community' => 'New Users per Active Users By Community',
-										'new-users-per-week-community' => 'New Users per Week by Community',
+										'new-users-per-week-by-community' => 'New Users per Week by Community',
 										'unique-users-per-week' => 'Unique Users per Week',
 										'unique-users-per-week-by-community' => 'Unique Users per Week by Community',
 										'orders-by-user-week' => 'Orders by Users per Week',
@@ -48,7 +49,8 @@ class Controller_home extends Crunchbutton_Controller_Account {
 										'gross-revenue' => 'Gross Revenue',
 										'orders-by-date-by-community' => 'Orders by Weekday by Community'
 										// 'active-users-by-community' => 'Active users by community',
-									);
+									),
+							);
 
 		c::view()->graphs = $graphs;
 		c::view()->display('home/index');
