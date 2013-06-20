@@ -173,10 +173,12 @@
 			var title = check.attr( 'data-title' );
 			if( check.is( ':checked' ) ){
 				chart.show();
-				var url = '/home/charts/' + id + '/' + title;
-				$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
+				if( !chart.attr( 'loaded' ) ){
+					chart.attr( 'loaded', true );
+					var url = '/home/charts/' + id + '/' + title;
+					$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
+				}
 			} else {
-				chart.html( '<i class="icon-spinner icon-spin"></i> Loading: ' + title );
 				chart.hide();
 			}
 		});
