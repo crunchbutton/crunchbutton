@@ -133,7 +133,6 @@ $(function () {
 		},
 		plotOptions: {
 			column: {
-				
 				pointPadding: 0,
 				dataLabels: {
 					enabled: false,
@@ -149,10 +148,10 @@ $(function () {
 		max: <?php echo $maxWeeks; ?>,
 		value: <?php echo $weeks; ?>,
 		change: function( event, ui ) {
-			$( '#week-<?=$chartId?>' ).html( '<i class="icon-spinner icon-spin"></i> Loading...' );
+			$( '#week-<?=$chartId?>' ).html( '<i class="icon-spinner icon-spin"></i> Loading: <?php echo $title; ?>' );
 			var self = $( '#<?=$chartId?>' );
 			var id = self.attr( 'id' );
-			var url = '/home/charts/' + id + '?weeks=' + ui.value;
+			var url = '/home/charts/' + id + '/<?php echo $title; ?>?weeks=' + ui.value;
 			$.ajax( { url: url, }).done(function( data ) { self.html( data ); } );
 		}
 	});
