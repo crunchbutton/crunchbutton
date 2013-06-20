@@ -125,43 +125,60 @@
 	<div class="box">
 		<div class="box-header">
 			<span class="title">Metrics</span>
-			<ul class="box-toolbar">
-				<li class="toolbar-link">
-					<a href="#" class="dropdown" data-toggle="dropdown"><i class="icon-cog"></i></a>
-					<ul class="dropdown-menu padded">
-						<? 
-						foreach ($this->graphs as $id => $graph ){ 
-							echo '<li><label for="checkbox-' . $id . '"><input name="checkbox-' . $id . '" id="checkbox-' . $id . '" class="check" data-id="' . $id . '" type="checkbox" checked="checked" /> ' . $graph .  '</label></li>';
-						} ?>
-					</ul>
-				</li>
-			</ul>
 		</div>
-		<div class="box-content padded">
+			<div class="box-content padded">					
+				<? 
+				$count = 1;
+				foreach ($this->graphs as $id => $graph ){ 
+					if( $count == 1 ){
+						?><div class="row-fluid"><?php
+					}
+					?>
+						<div class="span4">
+							<div>
+								<input type="checkbox" class="icheck" id="checkbox-<?php echo $id;?>" data-id="<?php echo $id;?>" data-title="<?php echo $graph;?>" name="checkbox-<?php echo $id;?>">
+								<label for="checkbox-<?php echo $id;?>"><?php echo $graph; ?></label>
+							</div>
+						</div>
+					
+					<?
+					if( $count % 3 == 0 ){
+						?></div><?php
+						$count = 0;
+					}
+					$count++;
+				} 
+				if( $count != 0 ){
+					?></div><?php
+				}
+				?>
+				<hr/>
+			</div>
+			<div class="box-content padded">
 			<? 
 			foreach ($this->graphs as $id => $graph ){ 
-				echo '<div id="' . $id . '" class="chart"><i class="icon-spinner icon-spin"></i> Loading.</div>';
+				echo '<div id="' . $id . '" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $graph . '</div>';
 			} ?>
+			</div>
 			</div>
 		</div>
 	</div>
 </div>
 <script type="text/javascript">
 	$( document ).ready( function(){
-		$( '.check' ).change(function () {
-			var self = $(this);
-			var chart = $( '#' + self.attr( 'data-id' ) );
-			if( self.is( ':checked' ) ){
+		$( '.icheck' ).on( 'ifChanged', function( event ){
+			var check = $(this);
+			var id = check.attr( 'data-id' );
+			var chart = $( '#' + id );
+			var title = check.attr( 'data-title' );
+			if( check.is( ':checked' ) ){
 				chart.show();
+				var url = '/home/charts/' + id + '/' + title;
+				$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
 			} else {
+				chart.html( '<i class="icon-spinner icon-spin"></i> Loading: ' + title );
 				chart.hide();
 			}
-   	});
-		$( '.chart' ).each( function(){
-			var self = $( this );
-			var id = self.attr( 'id' );
-			var url = '/home/charts/' + id;
-			$.ajax( { url: url, }).done(function( data ) { self.html( data ); } );
-		} )
+		});
 	} );
 </script>
