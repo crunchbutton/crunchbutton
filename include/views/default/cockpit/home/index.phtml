@@ -126,12 +126,16 @@
 		<div class="box-header">
 			<span class="title">Metrics</span>
 		</div>
-			<div class="box-content padded">					
-				<? 
+			<div class="box-content padded">
+			<?php
+			foreach ($this->graphs as $category => $graphs ){ 
+				?>
+				
+				<h5><?php echo $category; ?></h5><?php
 				$count = 1;
-				foreach ($this->graphs as $id => $graph ){ 
+				foreach ($graphs as $id => $graph ){ 
 					if( $count == 1 ){
-						?><div class="row-fluid"><?php
+						echo '<div class="row-fluid">';
 					}
 					?>
 						<div class="span4">
@@ -140,28 +144,27 @@
 								<label for="checkbox-<?php echo $id;?>"><?php echo $graph; ?></label>
 							</div>
 						</div>
-					
-					<?
-					if( $count % 3 == 0 ){
-						?></div><?php
-						$count = 0;
+					<? 
+					if( $count % 3 == 0 ){ 
+						echo '</div>';
+						$count = 0; 
 					}
 					$count++;
 				} 
-				if( $count != 0 ){
-					?></div><?php
+				if( $count != 1){
+					echo '</div>';
 				}
 				?>
 				<hr/>
-			</div>
-			<div class="box-content padded">
-			<? 
-			foreach ($this->graphs as $id => $graph ){ 
-				echo '<div id="' . $id . '" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $graph . '</div>';
-			} ?>
-			</div>
-			</div>
-		</div>
+					<? 
+					foreach ($graphs as $id => $graph ){ 
+						echo '<div id="' . $id . '" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $graph . '</div>';
+					} ?>
+					
+				<?php
+			}
+				?>
+				</div>
 	</div>
 </div>
 <script type="text/javascript">
