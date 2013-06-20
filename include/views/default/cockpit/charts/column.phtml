@@ -83,7 +83,7 @@
 	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
 	<br/>
 	<div class="row-fluid">
-		<div class="span3">
+		<div class="span3" id="week-<?=$chartId?>">
 			<? if( $ignoreWeekSum ){ $weeks--; } ?>
 			Week <?php echo ( $weeks + 1 > $maxWeeks ) ? $maxWeeks : ( $weeks + 1 ); ?> of <?php echo $maxWeeks; ?>:
 			<? if( $ignoreWeekSum ){ $weeks++; } ?>
@@ -133,7 +133,8 @@ $(function () {
 		},
 		plotOptions: {
 			column: {
-				stacking: 'normal',
+				
+				pointPadding: 0,
 				dataLabels: {
 					enabled: false,
 					color: ( Highcharts.theme && Highcharts.theme.dataLabelsColor ) || 'white'
@@ -148,7 +149,7 @@ $(function () {
 		max: <?php echo $maxWeeks; ?>,
 		value: <?php echo $weeks; ?>,
 		change: function( event, ui ) {
-			console.log(ui.value);
+			$( '#week-<?=$chartId?>' ).html( '<i class="icon-spinner icon-spin"></i> Loading...' );
 			var self = $( '#<?=$chartId?>' );
 			var id = self.attr( 'id' );
 			var url = '/home/charts/' + id + '?weeks=' + ui.value;

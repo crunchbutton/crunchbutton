@@ -38,7 +38,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 										'active-users-per-week' => 'Active users per week',
 										'active-users-per-week-by-community' => 'Active users per week by community',
 										'users-per-week-by-community' => 'Users per week by community',
-										'active-users-by-community' => 'Active users by community',
+										// 'active-users-by-community' => 'Active users by community',
 										'orders-by-user-week' => 'Orders by user per week',
 										'users-per-week' => 'Users per week',
 										'orders-per-week' => 'Orders per week',
