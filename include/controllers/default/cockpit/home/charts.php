@@ -56,7 +56,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				]]); 
 			break;
 
-			case 'new-users-per-week-community':
+			case 'new-users-per-week-by-community':
 				$weeks = $this->maxMinWeeks();
 				$query = '';
 				$union = '';
