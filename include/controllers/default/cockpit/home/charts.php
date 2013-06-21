@@ -364,7 +364,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 													 o.id_community
 									ORDER BY YEARWEEK(o.date) DESC";
 
-					$data = $this->parseDataWeeksGroup( $query, 'Orders' );
+					$data = $this->parseDataWeeksGroup( $query );
 
 					$this->render( array( 'data' => $data, 'unit' => 'users' ) );
 
@@ -428,9 +428,10 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				break;
 
 			case 'orders-per-week-by-community':
-					$query = "SELECT CONCAT('Week ', YEARWEEK(date)) AS `week`,
-													 COUNT(*) AS Orders,
-													 c.name AS 'Community'
+
+					$query = "SELECT YEARWEEK(date) AS Week,
+													 COUNT(*) AS Total,
+													 c.name AS 'Group'
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
 										LEFT JOIN community c ON o.id_community = c.id_community
@@ -441,7 +442,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 										GROUP BY YEARWEEK(date), c.name
 										ORDER BY YEARWEEK(date) DESC";
 
-					$data = $this->parseDataWeeksSimple( $query, 'Orders' );
+					$data = $this->parseDataWeeksGroup( $query );
 
 					$this->render( array( 'data' => $data, 'unit' => 'orders' ) );
 
