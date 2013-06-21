@@ -127,12 +127,34 @@
 			<span class="title">Metrics</span>
 		</div>
 			<div class="box-content padded">
+				<div class="row-fluid">
+					<div class="span5">
+						<ul class="padded separate-sections">
+							<li>
+								<span class="span4">
+									<label for="active-user">
+										<b>Active user (days)</b>
+									</label>
+								</span>
+								<span class="span2">
+									<input name="active-user-days" class="span12" id="active-user-days" type="number" placeholder="days" value="45">
+								</span>
+								<span class="span5">
+									<button class="btn btn-blue" id="button-reload" title="Reload all charts"><i class="icon-refresh"></i></button>
+									&nbsp;
+									<button class="btn btn-green" id="button-open-all" title="Open all">Open all</button>
+								</span>
+								<div class="clearfix"></div>
+							</li>
+						</ul>
+					</div>
+					<div class="clearfix"></div>
+					<hr/>
+				</div>
 			<?php
 			$chart_count_checkbox = 0;
 			$chart_count_div = 0;
-			foreach ($this->graphs as $category => $graphs ){ 
-				?>
-				
+			foreach ($this->graphs as $category => $graphs ){ ?>
 				<h5><?php echo $category; ?></h5><?php
 				$count = 1;
 				foreach ($graphs as $id => $graph ){ 
@@ -143,7 +165,7 @@
 					?>
 						<div class="span4">
 							<div>
-								<input type="checkbox" class="icheck" id="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>" data-id="<?php echo $id;?>" data-count="<?php echo $chart_count_checkbox; ?>" data-title="<?php echo $graph;?>" name="checkbox-<?php echo $id;?>">
+								<input type="checkbox" class="icheck" id="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>" data-id="<?php echo $id;?>" data-count="<?php echo $chart_count_checkbox; ?>" name="checkbox-<?php echo $id;?>">
 								<label for="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>"><?php echo $graph; ?></label>
 							</div>
 						</div>
@@ -162,9 +184,9 @@
 					<? 
 					foreach ($graphs as $id => $graph ){ 
 						$chart_count_div++;
-						echo '<div id="' . $id . '-' . $chart_count_div .'" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $graph . '</div>';
+						echo '<div id="' . $id . '-' . $chart_count_div .'" data-title="'. $graph . '" data-id="'.  $id . '" data-count="' . $chart_count_div .'" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $graph . '</div>';
 					} ?>
-					
+					<hr/>
 				<?php
 			}
 				?>
@@ -173,22 +195,57 @@
 </div>
 <script type="text/javascript">
 	$( document ).ready( function(){
+
 		$( '.icheck' ).on( 'ifChanged', function( event ){
 			var check = $(this);
 			var id = check.attr( 'data-id' );
 			var count = check.attr( 'data-count' );
-			var chart = $( '#' + id + '-' + count );
+			var chartId = id + '-' + count;
+			var chart = $( '#' + chartId );
 			var title = check.attr( 'data-title' );
 			if( check.is( ':checked' ) ){
 				chart.show();
-				 if( !chart.attr( 'loaded' ) ){
-					/*chart.attr( 'loaded', true ); */
-					var url = '/home/charts/' + id + '/' + title + '/' + count;
-					$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
-				 } 
+				if( !chart.attr( 'opened' ) ){
+					loadChart( chartId );
+				} 
 			} else {
+				chart.attr( 'opened', false );
 				chart.hide();
 			}
 		});
+
+		$( '#button-open-all' ).click( function(){
+			$( '.chart' ).each( function(){
+				var chart = $( this );
+				loadChart( chart.attr( 'id' ) );
+			} );
+		} );
+
+		$( '#button-reload' ).click( function(){
+			$( '.chart' ).each( function(){
+				var chart = $( this );
+				if( chart.attr( 'opened' ) ){
+					loadChart( chart.attr( 'id' ) );
+				}
+			} );
+		} );
+
 	} );
+
+	function loadChart( chartId ){
+		var chart = $( '#' + chartId );
+		chart.show();
+		var title = chart.attr( 'data-title' );
+		var id = chart.attr( 'data-id' );
+		var count = chart.attr( 'data-count' );
+		if( chart.attr( 'opened' ) ){
+			$( '#week-' + chartId ).html( '<i class="icon-spinner icon-spin"></i>' );
+			$( '#slider-' + chartId ).slider( 'disable' );
+			$( '#slider-' + chartId ).css( 'opacity', 0.4 );
+		}
+		chart.attr( 'opened', true );
+		var activeUserDays = $( '#active-user-days' ).val();
+		var url = '/home/charts/' + id + '/' + title + '/' + count + '?activeUserDays=' + activeUserDays;
+		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
+	}
 </script>

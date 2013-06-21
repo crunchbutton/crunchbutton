@@ -10,30 +10,36 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 	public function init() {
 
 		$chart = c::getPagePiece(2);
+
 		$title = c::getPagePiece(3);
+
 		$number = c::getPagePiece(4);
+
+		// Weeks to be shown
+		$allWeeks = $this->allWeeks();
+		$totalWeeks = sizeof( $allWeeks );
+
+		$this->activeUsersInterval = ( $_REQUEST[ 'activeUserDays' ] ? $_REQUEST[ 'activeUserDays' ] : $this->activeUsersInterval ); 
+
+		$from = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
+		$from = ( ( $from < 1 ) ? 1 : $from );
+		
+		$to = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : $totalWeeks ); 
+		
+		$weekFrom = $allWeeks[ $from - 1 ];
+		$weekTo = $allWeeks[ $to - 1 ];
+
+		$query = '';
+		$union = '';
 
 		switch ( $chart ) {
 
 			case 'new-users-per-week':
-				$weeks = $this->maxMinWeeks();
-				$query = '';
-				$union = '';
 
-				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-				$actual = $maxMinWeeks[ $weeks ];
-
-				$count = 0;
-				foreach( $maxMinWeeks as $week ){
-					if( $count >= $weeks ){
-						continue;
-					}
-					
-					$query .= $union . "SELECT 'Week {$week}' AS Label,
-																		 COUNT(*) AS Total,
-																		 'Users'
+				for( $i = $from -1 ; $i < $to; $i++ ){
+					$week = $allWeeks[ $i ];
+					$query .= $union . "SELECT '{$week}' AS Week,
+																		 COUNT(*) AS Total
 															FROM
 																(SELECT COUNT(*) orders,
 																				u.phone,
@@ -47,39 +53,22 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																	 {$this->queryExcludeUsers}
 																 GROUP BY u.phone HAVING orders = 1) Orders
 															WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')";
-						$union = ' UNION ';
-						$count++;
+						$union = ' UNION ';				
 				}
 
-				c::view()->display('charts/column', ['set' => [
-					'chartId' => $chart,
-					'data' => c::db()->get( $query ),
-					'title' => $title,
-					'number' => $number,
-					'unit' => 'users',
-					'maxWeeks' => $maxWeeks,
-					'weeks' => $weeks,
-				]]); 
+				$data = $this->parseDataWeeksSimple( $query, 'Users' );
+
+				$this->render( array( 'data' => $data, 'unit' => 'users' ) );
+
 			break;
 
 			case 'new-users-per-week-by-community':
-				$weeks = $this->maxMinWeeks();
-				$query = '';
-				$union = '';
 
-				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-				$actual = $maxMinWeeks[ $weeks ];
-
-				$count = 0;
-				foreach( $maxMinWeeks as $week ){
-					if( $count >= $weeks ){
-						continue;
-					}
-					$query .= $union . "SELECT 'Week {$week}' AS Label,
+				for( $i = $from -1 ; $i < $to; $i++ ){
+					$week = $allWeeks[ $i ];
+					$query .= $union . "SELECT '{$week}' AS Week,
 																		 COUNT(*) AS Total,
-																		 Orders.name AS `Community`
+																		 Orders.name AS `Group`
 															FROM
 																(SELECT COUNT(*) orders,
 																				u.phone,
@@ -99,84 +88,48 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						$union = ' UNION ';
 						$count++;
 				}
-				c::view()->display('charts/column', ['set' => [
-					'chartId' => $chart,
-					'data' => c::db()->get( $query ),
-					'title' => $title,
-					'number' => $number,
-					'unit' => 'users',
-					'maxWeeks' => $maxWeeks,
-					'weeks' => $weeks,
-				]]); 
+
+				$data = $this->parseDataWeeksGroup( $query );
+				$this->render( array( 'data' => $data, 'unit' => 'users' ) );
+
 			break;
 
 			case 'active-users-per-week':
-				$weeks = $this->maxMinWeeks();
-				$query = '';
-				$union = '';
 
-				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-				$actual = $maxMinWeeks[ $weeks ];
-
-				$count = 0;
-				foreach( $maxMinWeeks as $week ){
-					if( $count >= $weeks ){
-						continue;
-					}
-					$query .= $union . "SELECT 'Week {$week}' AS Label,
-																	 COUNT(*) AS Total,
-																	 'Users'
-														FROM
-															( SELECT u.phone,
-																			 o.date,
-																			 u.id_user,
-																			 c.name
-															 FROM `order` o
-															 INNER JOIN user u ON u.id_user = o.id_user
-															 LEFT JOIN community c ON o.id_community = c.id_community
-															 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-																 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
-																 {$this->queryExcludeCommunties}
-																 {$this->queryExcludeUsers}
-															 GROUP BY u.phone) ActiveUsers";
-					$union = ' UNION ';
-					$count++;	
+				for( $i = $from -1 ; $i < $to; $i++ ){
+					$week = $allWeeks[ $i ];
+					$query .= $union . "SELECT '{$week}' AS Week,
+																	 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
+																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																 GROUP BY u.phone) ActiveUsers";
+					$union = ' UNION ';					
 				}
-				c::view()->display('charts/column', ['set' => [
-					'chartId' => $chart,
-					'data' => c::db()->get( $query ),
-					'title' => $title,
-					'number' => $number,
-					'unit' => 'users',
-					'maxWeeks' => $maxWeeks,
-					'weeks' => $weeks,
-				]]); 
+
+				$data = $this->parseDataWeeksSimple( $query, 'Users' );
+
+				$this->render( array( 'data' => $data, 'unit' => 'users' ) );
+
 			break;
 
 			case 'new-users-per-active-users':
-				$weeks = $this->maxMinWeeks();
-				$query = '';
-				$union = '';
 
-				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-				$actual = $maxMinWeeks[ $weeks ];
-
-				$count = 0;
-				foreach( $maxMinWeeks as $week ){
-					if( $count >= $weeks ){
-						continue;
-					}
-					$query .= $union . "SELECT ActiveUsers.Label,
-																		 CAST(NewUsers.NewUsers / ActiveUsers.ActiveUsers AS DECIMAL(14, 2)) AS 'New Users per Active Users',
-																		 'Users',
-																		 ActiveUsers.ActiveUsers,
-																		 NewUsers.NewUsers
+				for( $i = $from -1 ; $i < $to; $i++ ){
+					$week = $allWeeks[ $i ];
+					$query .= $union . "SELECT ActiveUsers.Label as 'Week',
+																		 CAST(NewUsers.NewUsers / ActiveUsers.ActiveUsers AS DECIMAL(14, 2)) AS 'Total'
 															FROM
-																( SELECT 'Week {$week}' AS Label,
+																( SELECT '{$week}' AS Label,
 																				 COUNT(*) AS ActiveUsers
 																 FROM
 																	 ( SELECT u.phone,
@@ -192,7 +145,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																			{$this->queryExcludeUsers}
 																		GROUP BY u.phone) ActiveUsers) ActiveUsers
 															INNER JOIN
-																(SELECT 'Week {$week}' AS Label,
+																(SELECT '{$week}' AS Label,
 																				COUNT(*) AS NewUsers,
 																				'Users'
 																 FROM
@@ -208,45 +161,27 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																			{$this->queryExcludeUsers}
 																		GROUP BY u.phone HAVING orders = 1) Orders
 																 WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')) NewUsers ON NewUsers.Label = ActiveUsers.Label";
-					$union = ' UNION ';
-					$count++;	
+					$union = ' UNION ';			
 				}
-				
-				c::view()->display('charts/column', ['set' => [
-					'chartId' => $chart,
-					'data' => c::db()->get( $query ),
-					'title' => $title,
-					'number' => $number,
-					'unit' => 'users',
-					'maxWeeks' => $maxWeeks,
-					'weeks' => $weeks,
-				]]); 
+
+				$data = $this->parseDataWeeksSimple( $query, 'Users' );
+
+				$this->render( array( 'data' => $data, 'unit' => 'users' ) );
+
 			break;
 
 		case 'new-users-per-active-users-by-community':
-				$weeks = $this->maxMinWeeks();
-				$query = '';
-				$union = '';
 
-				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-				$actual = $maxMinWeeks[ $weeks ];
-
-				$count = 0;
-				foreach( $maxMinWeeks as $week ){
-					if( $count >= $weeks ){
-						continue;
-					}
-
-					$query .= $union . "SELECT ActiveUsers.Label,
-																		 CAST(NewUsers.NewUsers / ActiveUsers.ActiveUsers AS DECIMAL(14, 2)) AS 'New Users per Active Users',
-																		 ActiveUsers.Community,
+				for( $i = $from -1 ; $i < $to; $i++ ){
+					$week = $allWeeks[ $i ];
+					$query .= $union . "SELECT ActiveUsers.Label AS Week,
+																		 CAST( NewUsers.NewUsers / ActiveUsers.ActiveUsers AS DECIMAL(14, 2) ) AS 'Total',
+																		 ActiveUsers.Community AS 'Group',
 																		 'Users',
 																		 ActiveUsers.ActiveUsers,
 																		 NewUsers.NewUsers
 															FROM
-																(SELECT 'Week {$week}' AS Label,
+																(SELECT '{$week}' AS Label,
 																				COUNT(*) AS ActiveUsers,
 																				name AS Community
 																 FROM
@@ -265,7 +200,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																		GROUP BY u.phone) ActiveUsers
 																 GROUP BY Community) ActiveUsers
 															LEFT JOIN
-																( SELECT 'Week {$week}' AS Label,
+																( SELECT '{$week}' AS Label,
 																				 COUNT(*) AS NewUsers,
 																				 Orders.name AS `Community`
 																 FROM
@@ -290,35 +225,19 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					$count++;	
 				}
 
-				c::view()->display('charts/column', ['set' => [
-					'chartId' => $chart,
-					'data' => c::db()->get( $query ),
-					'title' => $title,
-					'number' => $number,
-					'unit' => 'users',
-					'maxWeeks' => $maxWeeks,
-					'weeks' => $weeks,
-				]]); 
+				$data = $this->parseDataWeeksGroup( $query );
+
+				$this->render( array( 'data' => $data, 'unit' => 'users' ) ); 
+
 			break;
 
 			case 'active-users-per-week-by-community':
-				$weeks = $this->maxMinWeeks();
-				$query = '';
-				$union = '';
 
-				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-				$actual = $maxMinWeeks[ $weeks ];
-
-				$count = 0;
-				foreach( $maxMinWeeks as $week ){
-					if( $count >= $weeks ){
-						continue;
-					}
-					$query .= $union . "SELECT 'Week {$week}' AS Label,
-																		 COUNT(*) AS Users,
-																		 ActiveUsers.name AS 'Community'
+				for( $i = $from -1 ; $i < $to; $i++ ){
+					$week = $allWeeks[ $i ];
+					$query .= $union . "SELECT '{$week}' AS Week,
+																		 COUNT(*) AS Total,
+																		 ActiveUsers.name AS 'Group'
 															FROM
 																( SELECT u.phone,
 																				 o.date,
@@ -334,38 +253,25 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																	 {$this->queryOnlyCommunties}
 																 GROUP BY u.phone) ActiveUsers
 															GROUP BY ActiveUsers.name";
-					$union = ' UNION ';
-					$count++;	
+					$union = ' UNION ';			
 				}
-				c::view()->display('charts/column', ['set' => [
-					'chartId' => $chart,
-					'data' => c::db()->get( $query ),
-					'title' => $title,
-					'number' => $number,
-					'unit' => 'users',
-					'maxWeeks' => $maxWeeks,
-					'weeks' => $weeks,
-				]]); 
+
+				$data = $this->parseDataWeeksGroup( $query );
+
+				$this->render( array( 'data' => $data, 'unit' => 'users' ) );
+
 			break;
 
 		case 'churn-rate':
-				$weeks = $this->maxMinWeeks();
-				$query = '';
-				$union = '';
 
-				$maxMinWeeks = $this->maxMinWeeks();
-				$maxWeeks = sizeof( $maxMinWeeks );
-				$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-				$actual = $maxMinWeeks[ $weeks ];
+				$queryActiveUsers = '';
+				$queryNewUsers = '';
 
-				$count = 0;
-				foreach( $maxMinWeeks as $week ){
-					if( $count > $weeks ){
-						continue;
-					}
-					$query .= $union . "SELECT 'Week {$week}' AS Label,
-																		 COUNT(*) AS Total,
-																		 'Users'
+				for( $i = $from -1 ; $i < $to; $i++ ){
+					$week = $allWeeks[ $i ];
+
+					$queryActiveUsers .= $union . "SELECT '{$week}' AS Week,
+																		 COUNT(*) AS Total
 															FROM
 																( SELECT u.phone,
 																				 o.date,
@@ -380,44 +286,42 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																	 {$this->queryExcludeUsers}
 																	 {$this->queryOnlyCommunties}
 																 GROUP BY u.phone) ActiveUsers";
-					$union = ' UNION ';
-					$count++;
-				}
 
-				$data = c::db()->get( $query );
-				$_weeks = [];
-				foreach ( $data as $item ) {
-					$_weeks[] = array( 
-													'Label' => $item->Label, 
-													'Total' => $item->Total
-												);
+					$queryNewUsers .= $union . "SELECT '{$week}' AS Week,
+																		 COUNT(*) AS Total
+															FROM
+																(SELECT COUNT(*) orders,
+																				u.phone,
+																				o.date,
+																				u.id_user
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																 GROUP BY u.phone HAVING orders = 1) Orders
+															WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')";
+						$union = ' UNION ';	
+
 				}
+				$uniqueUsers = $this->parseDataWeeksSimple( $queryActiveUsers );
+				$newUsers = $this->parseDataWeeksSimple( $queryNewUsers );
 				$data = [];
-				for( $i = 0; $i < sizeof( $_weeks ); $i++ ){
-					$prev = $_weeks[ $i + 1];
-					$actual = $_weeks[ $i ];
-					if( $prev && $prev[ 'Total' ] > 0 ){
-						$percent = number_format( ( $actual[ 'Total' ] * 100 ) / $prev[ 'Total' ], 2 );
+				for( $i = 0; $i < sizeof( $uniqueUsers ); $i++ ){
+					$unique = $uniqueUsers[ $i ]->Total;
+					$new = $newUsers[ $i ]->Total;
+					if( $i - 1 >= 0 ){
+						$uniquePrev = $uniqueUsers[ $i - 1 ]->Total;
 					} else {
-						$percent = 0;
+						$uniquePrev = 0;
 					}
-					if( $percent > 100 ){
-						$percent = 0;
-					}
-					$churn = ( $actual[ 'Total' ] - $prev[ 'Total' ] ) * -1;
+					$churn = ( $unique - $uniquePrev - $new ) * -1;
+					// Do not show the negatives
 					$churn = ( $churn < 0 )	? 0 : $churn;
-					$data[] = ( object ) array( 'Label' => $actual[ 'Label' ], 'Total' => $churn, 'Users' => 'Users' );
+					$data[] = ( object ) array( 'Label' => $uniqueUsers[ $i ]->Label, 'Total' => $churn, 'Users' => 'Users' );
 				}
-
-				c::view()->display('charts/column', ['set' => [
-					'chartId' => $chart,
-					'data' => $data,
-					'title' => $title,
-					'number' => $number,
-					'unit' => 'active users lost',
-					'maxWeeks' => $maxWeeks,
-					'weeks' => $weeks,
-				]]); 
+				$this->render( array( 'data' => $data, 'unit' => 'users' ) );
 			break;
 
 			case 'active-users-by-community':
@@ -445,126 +349,89 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				break;
 
 			case 'unique-users-per-week-by-community':
-					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
-					$query = "SELECT CONCAT('Week ', YEARWEEK(date)) AS `week`,
-												 COUNT(DISTINCT((u.phone))) AS Users,
-												 c.name AS `Community`
+
+					$query = "SELECT YEARWEEK(date) AS `Week`,
+												 COUNT(DISTINCT((u.phone))) AS Total,
+												 c.name AS `Group`
 									FROM `order` o
 									LEFT JOIN user u ON u.id_user = o.id_user
 									LEFT JOIN community c ON o.id_community = c.id_community
-									WHERE YEARWEEK(o.date) >= {$actual}
+									WHERE YEARWEEK(o.date) >= {$weekFrom} AND YEARWEEK(o.date) <= {$weekTo} 
 										{$this->queryExcludeCommunties}
 										{$this->queryExcludeUsers}
 										{$this->queryOnlyCommunties}
 									GROUP BY YEARWEEK(o.date),
 													 o.id_community
 									ORDER BY YEARWEEK(o.date) DESC";
-					c::view()->display('charts/column', ['set' => [
-						'chartId' => $chart,
-						'data' => c::db()->get( $query ),
-						'title' => $title,
-						'number' => $number,
-						'unit' => 'users',
-						'maxWeeks' => $maxWeeks,
-						'ignoreWeekSum' => true,
-						'weeks' => $weeks,
-					]]); 
+
+					$data = $this->parseDataWeeksGroup( $query, 'Orders' );
+
+					$this->render( array( 'data' => $data, 'unit' => 'users' ) );
+
 				break;
 
 			case 'unique-users-per-week':
-					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
-					$query = "SELECT CONCAT('Week ', YEARWEEK(date)) AS `week`,
-													 COUNT(DISTINCT((u.phone))) AS Users,
-													 'Users' AS label
+
+					$query = "SELECT YEARWEEK(date) AS `Week`,
+													 COUNT( DISTINCT( ( u.phone ) ) ) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE YEARWEEK(o.date) >= {$actual}
+										WHERE YEARWEEK(o.date) >= {$weekFrom} AND YEARWEEK(o.date) <= {$weekTo} 
 											{$this->queryExcludeCommunties}
 											{$this->queryExcludeUsers}
 										GROUP BY YEARWEEK(o.date)
 										ORDER BY YEARWEEK(o.date) DESC";
-					c::view()->display('charts/column', ['set' => [
-						'chartId' => $chart,
-						'data' => c::db()->get( $query ),
-						'title' => $title,
-						'number' => $number,
-						'unit' => 'users',
-						'maxWeeks' => $maxWeeks,
-						'weeks' => $weeks,
-						'ignoreWeekSum' => true,
-					]]); 
+
+					$data = $this->parseDataWeeksSimple( $query, 'Users' );
+
+					$this->render( array( 'data' => $data, 'unit' => 'users' ) );
 				break;
 
 			case 'orders-by-user-week':
-					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
-					$query = "SELECT CONCAT('Week ', YEARWEEK(date)) AS `week`,
-													 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) 'Orders By User',
-													 'Orders by User' AS label
+
+					$query = "SELECT YEARWEEK(date) AS Week,
+													 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE YEARWEEK(o.date) >= {$actual}
+										WHERE YEARWEEK(o.date) >= {$weekFrom} AND YEARWEEK(o.date) <= {$weekTo} 
 											{$this->queryExcludeCommunties}
 											{$this->queryExcludeUsers}
 										GROUP BY YEARWEEK(date)
 										ORDER BY YEARWEEK(date) DESC";
 
-					c::view()->display('charts/column', ['set' => [
-						'chartId' => $chart,
-						'data' => c::db()->get( $query ),
-						'title' => $title,
-						'number' => $number,
-						'unit' => 'orders',
-						'ignoreWeekSum' => true,
-						'maxWeeks' => $maxWeeks,
-						'weeks' => $weeks,
-					]]); 
+					$data = $this->parseDataWeeksSimple( $query, 'Orders' );
+
+					$this->render( array( 'data' => $data, 'unit' => 'orders' ) );
+
 				break;
 
 			case 'orders-per-week':
-					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
-					$query = "SELECT CONCAT('Week ', YEARWEEK(date)) AS `week`,
-													 COUNT(*) AS Orders,
-													 'Orders' AS label
+
+					$query = "SELECT YEARWEEK(date) AS Week,
+													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE YEARWEEK(o.date) >= {$actual}
+										WHERE 
+											YEARWEEK(o.date) >= {$weekFrom} AND YEARWEEK(o.date) <= {$weekTo} 
 											{$this->queryExcludeCommunties}
 											{$this->queryExcludeUsers}
 										GROUP BY YEARWEEK(date)
-										ORDER BY YEARWEEK(date) DESC";
+										ORDER BY YEARWEEK(date) ASC";
 
-					c::view()->display('charts/column', ['set' => [
-						'chartId' => $chart,
-						'data' => c::db()->get( $query ),
-						'title' => $title,
-						'number' => $number,
-						'unit' => 'orders',
-						'maxWeeks' => $maxWeeks,
-						'ignoreWeekSum' => true,
-						'weeks' => $weeks,
-					]]); 
+					$data = $this->parseDataWeeksSimple( $query, 'Orders' );
+
+					$this->render( array( 'data' => $data, 'unit' => 'orders' ) );
+
 				break;
 
 			case 'orders-per-week-by-community':
-					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks );
+					$allWeeks = $this->allWeeks();
+					$maxWeeks = sizeof( $allWeeks );
 					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
+					$actual = $allWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = "SELECT CONCAT('Week ', YEARWEEK(date)) AS `week`,
 													 COUNT(*) AS Orders,
 													 c.name AS 'Community'
@@ -591,10 +458,10 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				break;
 
 			case 'orders-using-giftcard-per-week':
-					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks );
+					$allWeeks = $this->allWeeks();
+					$maxWeeks = sizeof( $allWeeks );
 					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
+					$actual = $allWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = "SELECT CONCAT('Week ', YEARWEEK(date)) AS `week`,
 													 COUNT(*) AS Orders,
 													 'Orders' AS label
@@ -620,30 +487,21 @@ echo $query ;exit;
 				break;
 
 			case 'gross-revenue':
-					$maxMinWeeks = $this->maxMinWeeks();
-					$maxWeeks = sizeof( $maxMinWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $maxMinWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
-					$query = "SELECT CONCAT('Week ', YEARWEEK(date)) AS `week`,
-														CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'US$',
-													 'US$' AS label
+
+					$query = "SELECT YEARWEEK(date) AS `Week`,
+														CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total'
 										FROM `order` o
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE YEARWEEK(o.date) >= {$actual}
+										WHERE YEARWEEK(o.date) >= {$weekFrom} AND YEARWEEK(o.date) <= {$weekTo} 
 											{$this->queryExcludeCommunties}
 											{$this->queryExcludeUsers}
 										GROUP BY YEARWEEK(date)
 										ORDER BY YEARWEEK(date) DESC";
-					c::view()->display('charts/column', ['set' => [
-						'chartId' => $chart,
-						'data' => c::db()->get( $query ),
-						'title' => $title,
-						'number' => $number,
-						'unit' => '',
-						'maxWeeks' => $maxWeeks,
-						'ignoreWeekSum' => true,
-						'weeks' => $weeks,
-					]]); 
+
+				$data = $this->parseDataWeeksSimple( $query, 'US$' );
+
+				$this->render( array( 'data' => $data, 'unit' => 'US$' ) );
+
 				break;
 
 			case 'orders-by-weekday-by-community':
@@ -674,13 +532,114 @@ echo $query ;exit;
 		}
 	}
 
+	private function render( $params ){
+
+		$chart = c::getPagePiece(2);
+
+		$title = c::getPagePiece(3);
+
+		$number = c::getPagePiece(4);
+
+		// Weeks to be shown
+		$allWeeks = $this->allWeeks();
+		$totalWeeks = sizeof( $allWeeks );
+
+		$from = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
+		$from = ( ( $from < 1 ) ? 1 : $from );
+		
+		$to = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : $totalWeeks ); 
+		
+		$weekFrom = $allWeeks[ $from - 1 ];
+		$weekTo = $allWeeks[ $to - 1 ];
+
+		return c::view()->display('charts/column', ['set' => [
+						'chartId' => $chart,
+						'data' => $params[ 'data' ] ,
+						'title' => $title,
+						'to' => $to,
+						'from' => $from,
+						'number' => $number,
+						'unit' => $params[ 'unit' ] ,
+						'totalWeeks' => $totalWeeks
+					]]); 
+	}
+
+	private function parseWeek( $week ){
+		return substr( $week, 4, 2) . '/' . substr( $week, 0, 4);
+	}
+
+	private function parseDataWeeksGroup( $query ){
+
+		$allWeeks = $this->allWeeks();
+		$totalWeeks = sizeof( $allWeeks );
+
+		$from = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
+		$from = ( ( $from < 1 ) ? 1 : $from );
+		
+		$to = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : $totalWeeks ); 
+		
+		$weekFrom = $allWeeks[ $from - 1 ];
+		$weekTo = $allWeeks[ $to - 1 ];
+
+		$data = c::db()->get( $query );
+
+		$_weeks = [];
+		$groups = [];
+		foreach ( $data as $item ) {
+			$groups[ $item->Group ] = $item->Group;
+			$_weeks[ $item->Week ][ $item->Group ] = $item->Total;
+		}
+
+		$data = [];
+
+		for( $i = $from -1 ; $i < $to; $i++ ){
+			$week = $allWeeks[ $i ];
+			foreach( $groups as $group ){
+				$total = ( $_weeks[ $week ][ $group ] ) ? $_weeks[ $week ][ $group ] : 0;
+				$data[] = ( object ) array( 'Label' => $this->parseWeek( $week ), 'Total' => $total, 'Type' => $group  ); 
+			}
+		}
+
+		return $data;
+	}
+
+	private function parseDataWeeksSimple( $query, $type = 'Total' ){
+
+		$allWeeks = $this->allWeeks();
+		$totalWeeks = sizeof( $allWeeks );
+
+		$from = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
+		$from = ( ( $from < 1 ) ? 1 : $from );
+		
+		$to = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : $totalWeeks ); 
+		
+		$weekFrom = $allWeeks[ $from - 1 ];
+		$weekTo = $allWeeks[ $to - 1 ];
+
+		$data = c::db()->get( $query );
+
+		$_weeks = [];
+		foreach ( $data as $item ) {
+			$_weeks[ $item->Week ] = $item->Total;
+		}
+		$data = [];
+		for( $i = $from -1 ; $i < $to; $i++ ){
+			$week = $allWeeks[ $i ];
+			$total = ( $_weeks[ $week ] ) ? $_weeks[ $week ] : 0;
+			$data[] = ( object ) array( 'Label' => $this->parseWeek( $week ), 'Total' => $total, 'Type' => $type  ); 
+		}
+
+		return $data;
+	}
+
 	private function weeks(){
 		$query = "SELECT COUNT( DISTINCT( YEARWEEK( date) ) ) AS weeks FROM `order`";
 		$result = c::db()->get( $query );
 		return $result->_items[0]->weeks; 
 	}
-	private function maxMinWeeks(){
-		$query = "SELECT DISTINCT( YEARWEEK( o.date ) ) week FROM `order` o ORDER BY week DESC";
+
+	private function allWeeks(){
+		$query = "SELECT DISTINCT( YEARWEEK( o.date ) ) week FROM `order` o WHERE YEARWEEK( o.date ) IS NOT NULL ORDER BY week ASC";
 		$results = c::db()->get( $query );
 		$weeks = array();
 		foreach ( $results as $result ) {

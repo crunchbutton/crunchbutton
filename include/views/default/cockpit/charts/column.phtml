@@ -84,7 +84,7 @@
 	<br/>
 	<div class="row-fluid">
 		<div class="span3" id="week-<?=$chartId?>-<?php echo $number; ?>">
-			<!-- Week <?php echo $weeks; ?> of <?php echo $maxWeeks; ?>: -->
+			Weeks from <?php echo $from; ?> to <?php echo $to; ?> (of <?php echo $totalWeeks; ?>):
 		</div>
 		<div class="span8">
 			<div id="slider-<?=$chartId?>-<?php echo $number; ?>"></div>
@@ -109,9 +109,8 @@ $(function () {
 				enabled: false
 			},
 			labels : {
-				formatter : function(){
-					return data.xs.indexOf( this.value ) + 1;
-				}
+				rotation: -45,
+				align: 'right'
 			}
 		},
 		yAxis: {
@@ -125,9 +124,7 @@ $(function () {
 			}
 		},
 		tooltip: {
-			shared: <?php if( $tooltipShared ){ echo 'true'; } else { echo 'false'; } ?>,
 			valueSuffix: ' <?=$unit?>'
-			<?php if( $tooltip ){ echo ',formatter:' . $tooltip; } ?>
 		},
 		plotOptions: {
 			column: {
@@ -140,17 +137,20 @@ $(function () {
 		},
 		series: data.ys
 	});
-	$("#slider-<?=$chartId?>-<?php echo $number; ?>").slider({
-		range: "min",
+	$( '#slider-<?=$chartId?>-<?php echo $number; ?>' ).slider( {
+		range: true,
 		min: 1,
-		max: <?php echo $maxWeeks; ?>,
-		value: <?php echo $weeks; ?>,
+		values: [ <?php echo $from; ?>, <?php echo $to; ?> ],
+		max: <?php echo $totalWeeks; ?>,
 		change: function( event, ui ) {
-			$( '#week-<?=$chartId?>-<?php echo $number; ?>' ).html( '<i class="icon-spinner icon-spin"></i> Loading: <?php echo $title; ?>' );
+			var activeUserDays = $( '#active-user-days' ).val();
+			$( '#week-<?=$chartId?>-<?php echo $number; ?>' ).html( '<i class="icon-spinner icon-spin"></i>' );
+			$( '#slider-<?=$chartId?>-<?php echo $number; ?>' ).slider( 'disable' );
+			$( '#slider-<?=$chartId?>-<?php echo $number; ?>' ).css( 'opacity', 0.4 );
 			var self = $( '#<?=$chartId?>-<?php echo $number; ?>' );
-			var url = '/home/charts/<?=$chartId?>/<?php echo $title; ?>/<?php echo $number; ?>/?weeks=' + ui.value;
+			var url = '/home/charts/<?=$chartId?>/<?php echo $title; ?>/<?php echo $number; ?>/?from=' + ui.values[ 0 ] + '&to=' + ui.values[ 1 ] + '&activeUserDays=' + activeUserDays;
 			$.ajax( { url: url, }).done(function( data ) { self.html( data ); } );
 		}
-	});
+	} );
 });
 </script>
