@@ -26,7 +26,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 				$count = 0;
 				foreach( $maxMinWeeks as $week ){
-					if( $count > $weeks ){
+					if( $count >= $weeks ){
 						continue;
 					}
 					
@@ -72,7 +72,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 				$count = 0;
 				foreach( $maxMinWeeks as $week ){
-					if( $count > $weeks ){
+					if( $count >= $weeks ){
 						continue;
 					}
 					$query .= $union . "SELECT 'Week {$week}' AS Label,
@@ -119,7 +119,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 				$count = 0;
 				foreach( $maxMinWeeks as $week ){
-					if( $count > $weeks ){
+					if( $count >= $weeks ){
 						continue;
 					}
 					$query .= $union . "SELECT 'Week {$week}' AS Label,
@@ -163,7 +163,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 				$count = 0;
 				foreach( $maxMinWeeks as $week ){
-					if( $count > $weeks ){
+					if( $count >= $weeks ){
 						continue;
 					}
 					$query .= $union . "SELECT ActiveUsers.Label,
@@ -230,7 +230,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 				$count = 0;
 				foreach( $maxMinWeeks as $week ){
-					if( $count > $weeks ){
+					if( $count >= $weeks ){
 						continue;
 					}
 
@@ -307,7 +307,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 				$count = 0;
 				foreach( $maxMinWeeks as $week ){
-					if( $count > $weeks ){
+					if( $count >= $weeks ){
 						continue;
 					}
 					$query .= $union . "SELECT 'Week {$week}' AS Label,
@@ -374,7 +374,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																	 {$this->queryIncludeCommunties}
 																 GROUP BY u.phone) ActiveUsers";
 					$union = ' UNION ';
-						$count++;
+					$count++;
 				}
 
 				$data = c::db()->get( $query );
@@ -444,7 +444,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 												 COUNT(DISTINCT((u.phone))) AS Users,
 												 c.name AS `Community`
 									FROM `order` o
-									INNER JOIN user u ON u.id_user = o.id_user
+									LEFT JOIN user u ON u.id_user = o.id_user
 									LEFT JOIN community c ON o.id_community = c.id_community
 									WHERE YEARWEEK(o.date) >= {$actual}
 										{$this->queryExcludeCommunties}
@@ -573,7 +573,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					]]); 
 				break;
 
-			case 'orders-by-date-by-community':
+			case 'orders-by-weekday-by-community':
 					$query = "SELECT DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%W') AS `Day`,
 													 COUNT(*) AS `Orders`,
 													 c.name AS `Community`

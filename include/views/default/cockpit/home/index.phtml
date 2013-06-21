@@ -176,11 +176,11 @@
 			var title = check.attr( 'data-title' );
 			if( check.is( ':checked' ) ){
 				chart.show();
-				if( !chart.attr( 'loaded' ) ){
-					chart.attr( 'loaded', true );
+				 if( !chart.attr( 'loaded' ) ){
+					chart.attr( 'loaded', true ); 
 					var url = '/home/charts/' + id + '/' + title;
 					$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
-				}
+				 } 
 			} else {
 				chart.hide();
 			}
