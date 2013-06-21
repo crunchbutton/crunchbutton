@@ -54,7 +54,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 										// 'active-users-by-community' => 'Active users by community',
 										'orders-by-weekday-by-community' => 'Orders by Weekday by Community',
 										'orders-per-week' => 'Orders per Week',
-										'orders-per-week-by-community' => 'Orders per Week by Community',
+										// 'orders-per-week-by-community' => 'Orders per Week by Community',
 										// 'orders-using-giftcard-per-week' => 'Orders using Gift Card per Week',*/
 									),
 							);
