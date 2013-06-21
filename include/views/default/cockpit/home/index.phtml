@@ -229,7 +229,6 @@
 				}
 			} );
 		} );
-
 	} );
 
 	function loadChart( chartId ){
@@ -238,14 +237,17 @@
 		var title = chart.attr( 'data-title' );
 		var id = chart.attr( 'data-id' );
 		var count = chart.attr( 'data-count' );
+		var sliderValues = '';
 		if( chart.attr( 'opened' ) ){
 			$( '#week-' + chartId ).html( '<i class="icon-spinner icon-spin"></i>' );
-			$( '#slider-' + chartId ).slider( 'disable' );
-			$( '#slider-' + chartId ).css( 'opacity', 0.4 );
+			var slider = $( '#slider-' + chartId );
+			slider.slider( 'disable' );
+			slider.css( 'opacity', 0.4 );
+			sliderValues = '&to=' + slider.attr( 'data-to' ) + '&from=' + slider.attr( 'data-from' );
 		}
 		chart.attr( 'opened', true );
 		var activeUserDays = $( '#active-user-days' ).val();
-		var url = '/home/charts/' + id + '/' + title + '/' + count + '?activeUserDays=' + activeUserDays;
+		var url = '/home/charts/' + id + '/' + title + '/' + count + '?activeUserDays=' + activeUserDays + sliderValues;
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
 	}
 </script>
