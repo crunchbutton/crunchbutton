@@ -215,10 +215,7 @@
 		});
 
 		$( '#button-open-all' ).click( function(){
-			$( '.chart' ).each( function(){
-				var chart = $( this );
-				loadChart( chart.attr( 'id' ) );
-			} );
+			$( '.icheck' ).iCheck( 'check' ); 
 		} );
 
 		$( '#button-reload' ).click( function(){
