@@ -39,15 +39,15 @@ class Controller_home extends Crunchbutton_Controller_Account {
 										'active-users-per-week-by-community' => 'Active Users per Week by Community',
 										'churn-rate' => 'Churn Rate - Active Users Lost',
 										'new-users-per-week' => 'New Users per Week',
+										'new-users-per-week-by-community' => 'New Users per Week by Community',
 										'new-users-per-active-users' => 'New Users per Active Users',
 										'new-users-per-active-users-by-community' => 'New Users per Active Users By Community',
-										'new-users-per-week-by-community' => 'New Users per Week by Community',
 										'unique-users-per-week' => 'Unique Users per Week',
 										'unique-users-per-week-by-community' => 'Unique Users per Week by Community',
 										'orders-by-user-week' => 'Orders by Users per Week',
 										'orders-per-week' => 'Orders per Week',
 										'gross-revenue' => 'Gross Revenue',
-										'active-users-by-community' => 'Active users by community',
+										'active-users-by-community' => 'Active Users by Community',
 									),
 								'Tracking Marketing Efforts' => array(
 										'active-users-per-week' => 'Active Users per Week',
@@ -55,7 +55,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 										'orders-by-weekday-by-community' => 'Orders by Weekday by Community',
 										'orders-per-week' => 'Orders per Week',
 										'orders-per-week-by-community' => 'Orders per Week by Community',
-										// 'orders-using-giftcard-per-week' => 'Orders using Gift Card per Week',
+										// 'orders-using-giftcard-per-week' => 'Orders using Gift Card per Week',*/
 									),
 							);
 
