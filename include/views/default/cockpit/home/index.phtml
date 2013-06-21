@@ -128,20 +128,23 @@
 		</div>
 			<div class="box-content padded">
 			<?php
+			$chart_count_checkbox = 0;
+			$chart_count_div = 0;
 			foreach ($this->graphs as $category => $graphs ){ 
 				?>
 				
 				<h5><?php echo $category; ?></h5><?php
 				$count = 1;
 				foreach ($graphs as $id => $graph ){ 
+					$chart_count_checkbox++;
 					if( $count == 1 ){
 						echo '<div class="row-fluid">';
 					}
 					?>
 						<div class="span4">
 							<div>
-								<input type="checkbox" class="icheck" id="checkbox-<?php echo $id;?>" data-id="<?php echo $id;?>" data-title="<?php echo $graph;?>" name="checkbox-<?php echo $id;?>">
-								<label for="checkbox-<?php echo $id;?>"><?php echo $graph; ?></label>
+								<input type="checkbox" class="icheck" id="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>" data-id="<?php echo $id;?>" data-count="<?php echo $chart_count_checkbox; ?>" data-title="<?php echo $graph;?>" name="checkbox-<?php echo $id;?>">
+								<label for="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>"><?php echo $graph; ?></label>
 							</div>
 						</div>
 					<? 
@@ -158,7 +161,8 @@
 				<hr/>
 					<? 
 					foreach ($graphs as $id => $graph ){ 
-						echo '<div id="' . $id . '" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $graph . '</div>';
+						$chart_count_div++;
+						echo '<div id="' . $id . '-' . $chart_count_div .'" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $graph . '</div>';
 					} ?>
 					
 				<?php
@@ -172,13 +176,14 @@
 		$( '.icheck' ).on( 'ifChanged', function( event ){
 			var check = $(this);
 			var id = check.attr( 'data-id' );
-			var chart = $( '#' + id );
+			var count = check.attr( 'data-count' );
+			var chart = $( '#' + id + '-' + count );
 			var title = check.attr( 'data-title' );
 			if( check.is( ':checked' ) ){
 				chart.show();
 				 if( !chart.attr( 'loaded' ) ){
-					chart.attr( 'loaded', true ); 
-					var url = '/home/charts/' + id + '/' + title;
+					/*chart.attr( 'loaded', true ); */
+					var url = '/home/charts/' + id + '/' + title + '/' + count;
 					$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
 				 } 
 			} else {

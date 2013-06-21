@@ -80,21 +80,21 @@
 			<h4 style="text-align:center;"><?php echo $title; ?></h4>	
 		</div>
 	</div>
-	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
+	<div id="chart-<?=$chartId?>-<?php echo $number; ?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
 	<br/>
 	<div class="row-fluid">
-		<div class="span3" id="week-<?=$chartId?>">
+		<div class="span3" id="week-<?=$chartId?>-<?php echo $number; ?>">
 			<!-- Week <?php echo $weeks; ?> of <?php echo $maxWeeks; ?>: -->
 		</div>
 		<div class="span8">
-			<div id="slider-<?=$chartId?>"></div>
+			<div id="slider-<?=$chartId?>-<?php echo $number; ?>"></div>
 	</div>
 </div>
 <hr />
 <script type="text/javascript">
 $(function () {
 	var data = <?=json_encode($jsData, JSON_NUMERIC_CHECK)?>;
-	$('#chart-<?=$chartId?>').highcharts({
+	$('#chart-<?=$chartId?>-<?php echo $number; ?>').highcharts({
 		chart: {
 			type: 'column',
 			backgroundColor:'rgba(255, 255, 255, 0.1)'
@@ -140,16 +140,15 @@ $(function () {
 		},
 		series: data.ys
 	});
-	$("#slider-<?=$chartId?>").slider({
+	$("#slider-<?=$chartId?>-<?php echo $number; ?>").slider({
 		range: "min",
 		min: 1,
 		max: <?php echo $maxWeeks; ?>,
 		value: <?php echo $weeks; ?>,
 		change: function( event, ui ) {
-			$( '#week-<?=$chartId?>' ).html( '<i class="icon-spinner icon-spin"></i> Loading: <?php echo $title; ?>' );
-			var self = $( '#<?=$chartId?>' );
-			var id = self.attr( 'id' );
-			var url = '/home/charts/' + id + '/<?php echo $title; ?>?weeks=' + ui.value;
+			$( '#week-<?=$chartId?>-<?php echo $number; ?>' ).html( '<i class="icon-spinner icon-spin"></i> Loading: <?php echo $title; ?>' );
+			var self = $( '#<?=$chartId?>-<?php echo $number; ?>' );
+			var url = '/home/charts/<?=$chartId?>/<?php echo $title; ?>/<?php echo $number; ?>/?weeks=' + ui.value;
 			$.ajax( { url: url, }).done(function( data ) { self.html( data ); } );
 		}
 	});
