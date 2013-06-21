@@ -428,33 +428,23 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				break;
 
 			case 'orders-per-week-by-community':
-					$allWeeks = $this->allWeeks();
-					$maxWeeks = sizeof( $allWeeks );
-					$weeks = ( $_REQUEST[ 'weeks' ] ? $_REQUEST[ 'weeks' ] : $maxWeeks );
-					$actual = $allWeeks[ ( $weeks >= $maxWeek ? ( $weeks - 1 ) : $weeks ) ];
 					$query = "SELECT CONCAT('Week ', YEARWEEK(date)) AS `week`,
 													 COUNT(*) AS Orders,
 													 c.name AS 'Community'
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE YEARWEEK(o.date) >= {$actual}
+										WHERE YEARWEEK(o.date) >= {$weekFrom} AND YEARWEEK(o.date) <= {$weekTo} 
 											{$this->queryExcludeCommunties}
 											{$this->queryOnlyCommunties}
 											{$this->queryExcludeUsers}
 										GROUP BY YEARWEEK(date), c.name
 										ORDER BY YEARWEEK(date) DESC";
 
-					c::view()->display('charts/column', ['set' => [
-						'chartId' => $chart,
-						'data' => c::db()->get( $query ),
-						'title' => $title,
-						'number' => $number,
-						'unit' => 'orders',
-						'maxWeeks' => $maxWeeks,
-						'ignoreWeekSum' => true,
-						'weeks' => $weeks,
-					]]); 
+					$data = $this->parseDataWeeksSimple( $query, 'Orders' );
+
+					$this->render( array( 'data' => $data, 'unit' => 'orders' ) );
+
 				break;
 
 			case 'orders-using-giftcard-per-week':
