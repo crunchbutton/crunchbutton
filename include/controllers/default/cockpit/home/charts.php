@@ -3,6 +3,9 @@
 class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 	public $activeUsersInterval = 45; // Days
+	public $queryIncludeCommunties = 'AND c.id_community IN (1, 4)';
+	public $queryExcludeCommunties = "AND c.name != 'Testing' AND c.name IS NOT NULL";
+	public $queryExcludeUsers = "AND o.name NOT LIKE '%test%' and o.name != 'Judd' and o.name != 'dave' and o.name != 'Nick' and o.name != 'Devin'";
 
 	public function init() {
 
@@ -39,13 +42,14 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																 INNER JOIN user u ON u.id_user = o.id_user
 																 LEFT JOIN community c ON o.id_community = c.id_community
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-																	 AND c.name IS NOT NULL
-																	 AND c.name != 'Testing'
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
 																 GROUP BY u.phone HAVING orders = 1) Orders
 															WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')";
 						$union = ' UNION ';
 						$count++;
 				}
+
 				c::view()->display('charts/column', ['set' => [
 					'chartId' => $chart,
 					'data' => c::db()->get( $query ),
@@ -84,10 +88,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																 INNER JOIN user u ON u.id_user = o.id_user
 																 LEFT JOIN community c ON o.id_community = c.id_community
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-																	 AND c.name IS NOT NULL
-																	 AND c.name != 'Testing'
-																	 AND c.id_community IN (1,
-																													4)
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$this->queryIncludeCommunties}
 																 GROUP BY u.phone HAVING orders = 1) Orders
 															WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')
 															GROUP BY Orders.name";
@@ -132,8 +135,8 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 															 LEFT JOIN community c ON o.id_community = c.id_community
 															 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
-																 AND c.name IS NOT NULL
-																 AND c.name != 'Testing'
+																 {$this->queryExcludeCommunties}
+																 {$this->queryExcludeUsers}
 															 GROUP BY u.phone) ActiveUsers";
 					$union = ' UNION ';
 					$count++;	
@@ -181,8 +184,8 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																		LEFT JOIN community c ON o.id_community = c.id_community
 																		WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																			AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
-																			AND c.name IS NOT NULL
-																			AND c.name != 'Testing'
+																			{$this->queryExcludeCommunties}
+																			{$this->queryExcludeUsers}
 																		GROUP BY u.phone) ActiveUsers) ActiveUsers
 															INNER JOIN
 																(SELECT 'Week {$week}' AS Label,
@@ -197,8 +200,8 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																		INNER JOIN user u ON u.id_user = o.id_user
 																		LEFT JOIN community c ON o.id_community = c.id_community
 																		WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-																			AND c.name IS NOT NULL
-																			AND c.name != 'Testing'
+																			{$this->queryExcludeCommunties}
+																			{$this->queryExcludeUsers}
 																		GROUP BY u.phone HAVING orders = 1) Orders
 																 WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')) NewUsers ON NewUsers.Label = ActiveUsers.Label";
 					$union = ' UNION ';
@@ -251,10 +254,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																		LEFT JOIN community c ON o.id_community = c.id_community
 																		WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																			AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
-																			AND c.name IS NOT NULL
-																			AND c.name != 'Testing'
-																			AND c.id_community IN (1,
-																														 4)
+																			{$this->queryExcludeCommunties}
+																			{$this->queryExcludeUsers}
+																			{$this->queryIncludeCommunties}
 																		GROUP BY u.phone) ActiveUsers
 																 GROUP BY Community) ActiveUsers
 															LEFT JOIN
@@ -271,10 +273,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																		INNER JOIN user u ON u.id_user = o.id_user
 																		LEFT JOIN community c ON o.id_community = c.id_community
 																		WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-																			AND c.name IS NOT NULL
-																			AND c.name != 'Testing'
-																			AND c.id_community IN (1,
-																														 4)
+																			{$this->queryExcludeCommunties}
+																			{$this->queryExcludeUsers}
+																			{$this->queryIncludeCommunties}
 																		GROUP BY u.phone HAVING orders = 1) Orders
 																 WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																 GROUP BY Orders.name ) NewUsers ON NewUsers.Label = ActiveUsers.Label
@@ -322,10 +323,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																 LEFT JOIN community c ON o.id_community = c.id_community
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
-																	 AND c.name IS NOT NULL
-																	 AND c.name != 'Testing'
-																	 AND c.id_community IN (1,
-																													4)
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$this->queryIncludeCommunties}
 																 GROUP BY u.phone) ActiveUsers
 															GROUP BY ActiveUsers.name";
 					$union = ' UNION ';
@@ -369,10 +369,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																 LEFT JOIN community c ON o.id_community = c.id_community
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
-																	 AND c.name IS NOT NULL
-																	 AND c.name != 'Testing'
-																	 AND c.id_community IN (1,
-																													4)
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$this->queryIncludeCommunties}
 																 GROUP BY u.phone) ActiveUsers";
 					$union = ' UNION ';
 						$count++;
@@ -420,11 +419,10 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE c.name IS NOT NULL
-											AND c.name != 'Testing'
-											AND c.id_community IN (1,
-																						 4)
-											AND o.date BETWEEN CURDATE() - INTERVAL {$this->activeUsersInterval} DAY AND CURDATE()
+										WHERE o.date BETWEEN CURDATE() - INTERVAL {$this->activeUsersInterval} DAY AND CURDATE()
+											{$this->queryExcludeCommunties}
+											{$this->queryExcludeUsers}
+											{$this->queryIncludeCommunties}
 										GROUP BY o.id_community";
 
 					c::view()->display('charts/pie', ['set' => [
@@ -448,11 +446,10 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 									FROM `order` o
 									INNER JOIN user u ON u.id_user = o.id_user
 									LEFT JOIN community c ON o.id_community = c.id_community
-									WHERE c.name IS NOT NULL
-										AND c.name != 'Testing'
-										AND c.id_community IN (1,
-																					 4)
-										AND YEARWEEK(o.date) >= {$actual}
+									WHERE YEARWEEK(o.date) >= {$actual}
+										{$this->queryExcludeCommunties}
+										{$this->queryExcludeUsers}
+										{$this->queryIncludeCommunties}
 									GROUP BY YEARWEEK(o.date),
 													 o.id_community
 									ORDER BY YEARWEEK(o.date) DESC";
@@ -478,9 +475,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE c.name IS NOT NULL
-											AND c.name != 'Testing'
-											AND YEARWEEK(o.date) >= {$actual}
+										WHERE YEARWEEK(o.date) >= {$actual}
+											{$this->queryExcludeCommunties}
+											{$this->queryExcludeUsers}
 										GROUP BY YEARWEEK(o.date)
 										ORDER BY YEARWEEK(o.date) DESC";
 					c::view()->display('charts/column', ['set' => [
@@ -505,9 +502,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE c.name IS NOT NULL
-											AND c.name != 'Testing'
-											AND YEARWEEK(o.date) >= {$actual}
+										WHERE YEARWEEK(o.date) >= {$actual}
+											{$this->queryExcludeCommunties}
+											{$this->queryExcludeUsers}
 										GROUP BY YEARWEEK(date)
 										ORDER BY YEARWEEK(date) DESC";
 
@@ -533,9 +530,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE c.name IS NOT NULL
-											AND c.name != 'Testing'
-											AND YEARWEEK(o.date) >= {$actual}
+										WHERE YEARWEEK(o.date) >= {$actual}
+											{$this->queryExcludeCommunties}
+											{$this->queryExcludeUsers}
 										GROUP BY YEARWEEK(date)
 										ORDER BY YEARWEEK(date) DESC";
 
@@ -560,9 +557,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 													 'US$' AS label
 										FROM `order` o
 										LEFT JOIN community c ON o.id_community = c.id_community
-										WHERE c.name IS NOT NULL
-											AND c.name != 'Testing'
-											AND YEARWEEK(o.date) >= {$actual}
+										WHERE YEARWEEK(o.date) >= {$actual}
+											{$this->queryExcludeCommunties}
+											{$this->queryExcludeUsers}
 										GROUP BY YEARWEEK(date)
 										ORDER BY YEARWEEK(date) DESC";
 					c::view()->display('charts/column', ['set' => [
@@ -579,18 +576,17 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 			case 'orders-by-date-by-community':
 					$query = "SELECT DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%W') AS `Day`,
 													 COUNT(*) AS `Orders`,
-													 community.name AS `Community`
-										FROM `order`
-										LEFT JOIN community USING(id_community)
+													 c.name AS `Community`
+										FROM `order` o
+										LEFT JOIN community c ON o.id_community = c.id_community
 										WHERE env = 'live'
-											AND community.name IS NOT NULL
-											AND community.name != 'Testing'
-											AND community.id_community IN (1,
-																										 4)
+											{$this->queryExcludeCommunties}
+											{$this->queryExcludeUsers}
+											AND c.id_community IN (1, 4)
 										GROUP BY DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%W'),
-														 id_community
+														 c.id_community
 										ORDER BY DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%Y%m%d'),
-														 id_community";
+														 c.id_community";
 					c::view()->display('charts/area', ['set' => [
 						'chartId' => $chart,
 						'data' => c::db()->get( $query ),
