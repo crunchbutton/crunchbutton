@@ -234,6 +234,10 @@
 				var chart = $( this );
 				if( chart.attr( 'opened' ) ){
 					loadChart( chart.attr( 'id' ) );
+					$( '#button-reload' ).find( 'i' ).addClass( 'icon-spin ' );
+					setTimeout( function(){
+						$( '#button-reload' ).find( 'i' ).removeClass( 'icon-spin ' );
+					}, 2000 );
 				}
 			} );
 		} );
@@ -250,7 +254,7 @@
 						min: 1,
 						values: [ 1, total ],
 						max: total,
-						change: function( event, ui ) {
+						slide: function( event, ui ) {
 							$( '#slider-label' ).html( 'Show from <b>' + weeks[ ui.values[ 0 ] - 1 ] + '</b> to <b>' + weeks[ ui.values[ 1 ] - 1 ] + '</b>' );
 							weekFrom = ui.values[ 0 ];
 							weekTo = ui.values[ 1 ];
@@ -281,7 +285,6 @@
 		if( weekTo !== false ){
 			weeksStr += '&to=' + weekTo;
 		}
-		console.log(weeksStr);
 		var activeUserDays = $( '#active-user-days' ).val();
 		var url = '/home/charts/' + id + '/' + title + '/' + count + '?activeUserDays=' + activeUserDays + sliderValues + weeksStr;
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
