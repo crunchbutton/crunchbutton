@@ -279,10 +279,10 @@
 		}
 		chart.attr( 'opened', true );
 		var weeksStr = '';
-		if( weekFrom !== false ){
+		if( weekFrom ){
 			weeksStr += '&from=' + weekFrom;
 		}
-		if( weekTo !== false ){
+		if( weekTo ){
 			weeksStr += '&to=' + weekTo;
 		}
 		var activeUserDays = $( '#active-user-days' ).val();
