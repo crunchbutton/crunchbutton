@@ -518,6 +518,14 @@ echo $query ;exit;
 					]]); 
 				break;
 
+			case 'weeks':
+				$allWeeks = $this->allWeeks();
+				$weeks = [];
+				foreach( $allWeeks as $week ){
+					$weeks[] = $this->parseWeek( $week, true );
+				}
+				echo json_encode( $weeks );
+				break;
 			default:
 				break;
 		}
@@ -555,8 +563,9 @@ echo $query ;exit;
 					]]); 
 	}
 
-	private function parseWeek( $week ){
-		return substr( $week, 4, 2) . '/' . substr( $week, 0, 4);
+	private function parseWeek( $week, $showYear = false ){
+		$dateStr = ( $showYear ) ? 'M d Y' : 'M d';
+		return date( $dateStr, strtotime( substr( $week, 0, 4 ) . 'W' . substr( $week, 4, 2 ) . '-7' ) );
 	}
 
 	private function parseDataWeeksGroup( $query ){
@@ -624,7 +633,7 @@ echo $query ;exit;
 	}
 
 	private function weeks(){
-		$query = "SELECT COUNT( DISTINCT( YEARWEEK( date) ) ) AS weeks FROM `order`";
+		$query = "SELECT COUNT( DISTINCT( YEARWEEK( date ) ) ) AS weeks FROM `order`";
 		$result = c::db()->get( $query );
 		return $result->_items[0]->weeks; 
 	}
