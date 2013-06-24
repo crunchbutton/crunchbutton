@@ -262,6 +262,75 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 			break;
 
+		case 'churn-rate-per-active-user':
+				$queryActiveUsers = '';
+				$queryNewUsers = '';
+
+				for( $i = $from -1 ; $i < $to; $i++ ){
+					$week = $allWeeks[ $i ];
+
+					$queryActiveUsers .= $union . "SELECT '{$week}' AS Week,
+																		 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
+																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$this->queryOnlyCommunties}
+																 GROUP BY u.phone) ActiveUsers";
+
+					$queryNewUsers .= $union . "SELECT '{$week}' AS Week,
+																		 COUNT(*) AS Total
+															FROM
+																(SELECT COUNT(*) orders,
+																				u.phone,
+																				o.date,
+																				u.id_user
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																 GROUP BY u.phone HAVING orders = 1) Orders
+															WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')";
+						$union = ' UNION ';	
+
+				}
+				$uniqueUsers = $this->parseDataWeeksSimple( $queryActiveUsers );
+				$newUsers = $this->parseDataWeeksSimple( $queryNewUsers );
+				$data = [];
+				for( $i = 0; $i < sizeof( $uniqueUsers ); $i++ ){
+					$unique = $uniqueUsers[ $i ]->Total;
+					$new = $newUsers[ $i ]->Total;
+					if( $i - 1 >= 0 ){
+						$uniquePrev = $uniqueUsers[ $i - 1 ]->Total;
+					} else {
+						$uniquePrev = 0;
+					}
+					
+					$lost = ( ( $uniquePrev + $new ) - $unique );
+					$lost = ( $lost < 0 )	? 0 : $lost;
+
+					// Formula: so, divide the number lost by the previous week's total
+					if( $uniquePrev != 0 && $lost != 0 ){
+						$result = $lost / $uniquePrev;	
+					} else {
+						$result = 0;
+					}
+					$data[] = ( object ) array( 'Label' => $uniqueUsers[ $i ]->Label, 'Total' => number_format( $result, 4 ), 'Type' => 'Result' );
+				}
+
+				$this->render( array( 'data' => $data, 'unit' => '' ) );
+			break;
+
 		case 'churn-rate':
 
 				$queryActiveUsers = '';
@@ -316,10 +385,10 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					} else {
 						$uniquePrev = 0;
 					}
-					$churn = ( $unique - $uniquePrev - $new ) * -1;
+					$churn = ( ( $uniquePrev + $new ) - $unique );
 					// Do not show the negatives
 					$churn = ( $churn < 0 )	? 0 : $churn;
-					$data[] = ( object ) array( 'Label' => $uniqueUsers[ $i ]->Label, 'Total' => $churn, 'Users' => 'Users' );
+					$data[] = ( object ) array( 'Label' => $uniqueUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
 				}
 				$this->render( array( 'data' => $data, 'unit' => 'users' ) );
 			break;
