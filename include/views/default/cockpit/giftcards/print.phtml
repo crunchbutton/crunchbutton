@@ -1,5 +1,12 @@
-<link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" type="text/css" href="/assets/css/giftcard.css">
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Gift card</title>
+		<link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard.css">
+	</head>
+	<body>
 <?php 
 // Workaround to avoid image be cached
 $imageCached = date( 'dHis' );
@@ -26,3 +33,5 @@ if( sizeof( $giftcards ) > 0 ) {
 	echo 'Oops, is seems you are trying to print a gift card that was already redemmed!';
 }
 ?>
+	</body>
+</html>
