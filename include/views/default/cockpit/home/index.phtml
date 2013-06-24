@@ -72,6 +72,7 @@
 			
 				<div class="box-content padded">
 					<div class="row-fluid">
+
 						<div class="span4 separate-sections" style="margin-top: 5px;">
 			
 							<div class="row-fluid">
@@ -128,26 +129,32 @@
 		</div>
 			<div class="box-content padded">
 				<div class="row-fluid">
-					<div class="span5">
+					<div class="span3">
 						<ul class="padded separate-sections">
 							<li>
-								<span class="span4">
+								<span class="span7">
 									<label for="active-user">
 										<b>Active user (days)</b>
 									</label>
 								</span>
-								<span class="span2">
+								<span class="span4">
 									<input name="active-user-days" class="span12" id="active-user-days" type="number" placeholder="days" value="45">
-								</span>
-								<span class="span5">
-									<button class="btn btn-blue" id="button-reload" title="Reload all charts"><i class="icon-refresh"></i></button>
-									&nbsp;
-									<button class="btn btn-green" id="button-open-all" title="Open all">Open all</button>
 								</span>
 								<div class="clearfix"></div>
 							</li>
 						</ul>
 					</div>
+					<div class="span7">
+						<div id="slider-master"></div>
+						<br />
+						<div id="slider-label"></div>
+					</div>
+					<div class="span2">
+						<button class="btn btn-blue" id="button-reload" title="Reload all charts"><i class="icon-refresh"></i></button>
+						&nbsp;
+						<button class="btn btn-green" id="button-open-all" title="Open all">Open all</button>
+					</div>
+
 					<div class="clearfix"></div>
 					<hr/>
 				</div>
@@ -194,6 +201,10 @@
 	</div>
 </div>
 <script type="text/javascript">
+
+	var weekFrom = false;
+	var weekTo = false;
+
 	$( document ).ready( function(){
 
 		$( '.icheck' ).on( 'ifChanged', function( event ){
@@ -226,6 +237,26 @@
 				}
 			} );
 		} );
+
+		/* Load the weeks */
+		var url = '/home/charts/weeks';
+		$.ajax( { dataType: 'json', url: url, } ).done( 
+			function( weeks ) { 
+				console.log( weeks );
+				var total = weeks.length;
+				$( '#slider-label' ).html( 'Show from <b>' + weeks[ 0 ] + '</b> to <b>' + weeks[ total - 1 ] + '</b>' );
+				$( '#slider-master' ).slider( {
+						range: true,
+						min: 1,
+						values: [ 1, total ],
+						max: total,
+						change: function( event, ui ) {
+							$( '#slider-label' ).html( 'Show from <b>' + weeks[ ui.values[ 0 ] - 1 ] + '</b> to <b>' + weeks[ ui.values[ 1 ] - 1 ] + '</b>' );
+							weekFrom = ui.values[ 0 ];
+							weekTo = ui.values[ 1 ];
+						}
+					} );
+		} );
 	} );
 
 	function loadChart( chartId ){
@@ -243,8 +274,16 @@
 			sliderValues = '&to=' + slider.attr( 'data-to' ) + '&from=' + slider.attr( 'data-from' );
 		}
 		chart.attr( 'opened', true );
+		var weeksStr = '';
+		if( weekFrom !== false ){
+			weeksStr += '&from=' + weekFrom;
+		}
+		if( weekTo !== false ){
+			weeksStr += '&to=' + weekTo;
+		}
+		console.log(weeksStr);
 		var activeUserDays = $( '#active-user-days' ).val();
-		var url = '/home/charts/' + id + '/' + title + '/' + count + '?activeUserDays=' + activeUserDays + sliderValues;
+		var url = '/home/charts/' + id + '/' + title + '/' + count + '?activeUserDays=' + activeUserDays + sliderValues + weeksStr;
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
 	}
 </script>
