@@ -450,6 +450,62 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					]]); 
 				break;
 
+			case 'reclaimed-users':
+					$query = "SELECT yearweek AS Week,
+													 COUNT(*) AS Total
+										FROM
+											(SELECT last.total AS total,
+															lastbutone.id_order AS id_order_last_but_one,
+															lastbutone.date AS date_last_but_one,
+															last.id_order AS id_order_last,
+															last.date AS date_last,
+															lastbutone.phone AS phone,
+															YEARWEEK(last.date) AS yearweek,
+															DATEDIFF(last.date, lastbutone.date) AS days
+											 FROM
+												 (SELECT *
+													FROM
+														(SELECT count(*) AS total,
+																		max(orders.id_order) AS id_order,
+																		max(orders.date) AS date,
+																		orders.phone
+														 FROM
+															 (SELECT o.id_order,
+																			 o.date, o.phone
+																FROM `order` o) orders
+														 GROUP BY phone HAVING total > 1) orders) last
+											 INNER JOIN
+												 (SELECT o.id_order,
+																 o.phone,
+																 o.date
+													FROM `order` o
+													INNER JOIN
+														(SELECT MAX(o.id_order) AS id_order ,
+																		o.phone,
+																		o.date
+														 FROM `order` o
+														 INNER JOIN
+															 (SELECT id_order,
+																			 phone
+																FROM
+																	(SELECT count(*) AS total,
+																					max(id_order) AS id_order,
+																					phone
+																	 FROM `order`
+																	 GROUP BY phone HAVING total > 1) orders) last ON last.phone = o.phone
+														 AND last.id_order > o.id_order
+														 GROUP BY phone) lastbutone ON lastbutone.id_order = o.id_order) lastbutone ON last.phone = lastbutone.phone) orders
+										WHERE days >= {$this->activeUsersInterval}
+											AND yearweek >= {$this->weekFrom}
+											AND yearweek <= {$this->weekTo}
+										GROUP BY yearweek";
+
+					$data = $this->parseDataWeeksSimple( $query, 'Users' );
+
+					$this->render( array( 'data' => $data, 'unit' => 'users' ) );
+
+				break;
+
 			case 'gross-revenue':
 
 					$query = "SELECT YEARWEEK(date) AS `Week`,

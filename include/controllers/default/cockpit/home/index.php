@@ -35,7 +35,6 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		$graphs = array( 
 
 								'Stuff for Investors' => array( 
-
 										'active-users-per-week' => 'Active Users per Week',
 										'active-users-per-week-by-community' => 'Active Users per Week by Community',
 										'churn-rate' => 'Churn Rate - Active Users Lost',
@@ -51,6 +50,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 										'repeat-orders-per-active-user' => 'Repeat Orders per Active User',
 										'gross-revenue' => 'Gross Revenue',
 										'active-users-by-community' => 'Active Users by Community',
+										'reclaimed-users' => 'Reclaimed Users',
 									),
 								'Tracking Marketing Efforts' => array(
 										'active-users-per-week' => 'Active Users per Week',
