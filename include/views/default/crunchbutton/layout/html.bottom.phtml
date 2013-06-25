@@ -34,6 +34,7 @@ if (App){
 		<div class="body">
 			<div class="content<?=$e?>">
 				<div class="main-content pages">
+					<div ng-include="view/signin.html"></div>
 					<div ng-view><?=$this->content?></div>
 				</div>
 			</div>
@@ -55,11 +56,10 @@ if (App){
 				<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
 			</div>
 		</div>
-		
-		<ng-include src="view/signin.html"></ng-include>
-		<ng-include src="view/suggestion.html"></ng-include>
-		<ng-include src="view/support.html"></ng-include>
-		
+
+		<div ng-include="'view/signin.html'"></div>
+		<div ng-include="'view/suggestion.html'"></div>
+		<div ng-include="'view/support.html'"></div>
 
 	</div>
 
