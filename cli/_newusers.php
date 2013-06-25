@@ -6,4 +6,4 @@ set_time_limit(10);
 
 require_once('../include/crunchbutton.php');
 
-Crunchbutton_Newusers::queSendEmailCLI();
+Crunchbutton_Newusers::sendEmailCLI();
