@@ -42,6 +42,29 @@ class Crunchbutton_Newusers extends Cana_Table {
 		echo 'Sent ' . $orders->count() . ' emails!';
 	}
 
+	public function isFirstOrderOfPhone( $phone ){
+		$orders = Crunchbutton_Order::q( "SELECT * FROM `order` o WHERE phone = '{$phone}'" );;
+		return ( $orders->count() == 1 );
+	}
+
+	public static function newUserInfo( $order ){
+		
+		$config = static::getConfig();
+
+		$user = $order->user();
+		$email = $config->email_to;
+		$subject = $user->name . ' placed their first CB order';
+		
+		$mail = new Crunchbutton_Email_Newusers([
+			'subject' => $subject,
+			'email' => $email,
+			'order' => $order,
+			'user' => $user
+		]);
+		
+		$mail->send();
+	}
+
 	public static function queSendEmail(){
 
 		$config = static::getConfig();
