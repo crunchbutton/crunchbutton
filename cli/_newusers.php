@@ -1,4 +1,4 @@
-#!/Applications/MAMP/bin/php/php5.4.4/bin/php
+#!/usr/local/bin/php
 <?php
 error_reporting(E_ERROR | E_PARSE);
 ini_set('display_errors',true);
