@@ -54,6 +54,7 @@
 						<thead>
 							<tr>
 								<td>Order info</td>
+								<td>Dishes</td>
 								<td>User info</td>
 								<td>Payment info</td>
 							</tr>
@@ -71,6 +72,24 @@
 									Restaurant: <?php echo $restaurant->name; ?>
 									<br/>
 									Delivery:  <?php echo $order->delivery_type; ?>
+									<br/>
+									Estimated delivery: <?php if( $order->restaurant()->delivery_estimated_time ){ echo $order->restaurant()->delivery_estimated_time . ' min.'; } else { echo '-'; } ?>
+									<br/>
+									# <?php echo $order->id_order; ?>
+								</td>
+								<td>
+									<ul>
+										<?php foreach ($order->dishes() as $dish) : ?>
+										<li>
+											<?
+												$food = $dish->dish()->name;
+												$cartPrice = $dish->dish()->price;
+												$options = $dish->options();?>
+												<?=$food?>
+
+										</li>
+										<? endforeach ; ?>
+									</ul>
 								</td>
 								<td>
 									Name: <?php echo $user->name; ?> 
