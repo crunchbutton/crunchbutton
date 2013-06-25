@@ -1,4 +1,4 @@
-#!/usr/local/bin/php
+#!/Applications/MAMP/bin/php/php5.4.4/bin/php
 <?php
 error_reporting(E_ERROR | E_PARSE);
 ini_set('display_errors',true);
@@ -6,4 +6,4 @@ set_time_limit(10);
 
 require_once('../include/crunchbutton.php');
 
-Crunchbutton_Newusers::queSendEmailCLI();
+Crunchbutton_Newusers::sendEmailCLI();

@@ -22,14 +22,13 @@ class Crunchbutton_Newusers extends Cana_Table {
 		return Crunchbutton_Newusers::o(1);
 	}
 
-	public static function queSendEmailCLI(){
-
+	public static function sendEmailCLI(){
 		$config = static::getConfig();
 		$orders = static::getNewOnes();	
 
 		foreach( $orders as $order ){
 			$user = $order->user();
-			$email = '_EMAIL';
+			$email = $config->email_to;
 			$subject = $user->name . ' placed their first CB order';
 			$mail = new Crunchbutton_Email_Newusers([
 				'subject' => $subject,
@@ -37,10 +36,10 @@ class Crunchbutton_Newusers extends Cana_Table {
 				'order' => $order,
 				'user' => $user
 			]);
-			echo $mail->message();
 			$mail->send();
 		}
 		static::updateConfig();
+		echo 'Sent ' . $orders->count() . ' emails!';
 	}
 
 	public static function queSendEmail(){
