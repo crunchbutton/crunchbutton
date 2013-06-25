@@ -702,9 +702,21 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 	}
 
+	public function isFirstOrderOfPhone(){
+		$order = $this;
+		if( Crunchbutton_Newusers::isFirstOrderOfPhone( $order->phone ) ){
+			Crunchbutton_Newusers::newUserInfo( $order );
+		}
+	}
+
 	public function que() {
 
 		$order = $this;
+
+		#Issue 1452
+		Cana::timeout(function() use($order) {
+			$order->isFirstOrderOfPhone();
+		});
 
 		Cana::timeout(function() use($order) {
 			/* @var $order Crunchbutton_Order */
