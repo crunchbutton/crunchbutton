@@ -19,40 +19,40 @@ var UTIL = {
 		return parseInt($e.css(id), 10);
 	},
 	slide_swap : function($set1, $set2, duration) {
-    var $set3 = $set2.last().nextAll();
-    
-    var mb_prev = UTIL.cssprop($set1.first().prev(), "margin-bottom");
-    if (isNaN(mb_prev)) mb_prev = 0;
-    var mt_next = UTIL.cssprop($set2.last().next(), "margin-top");
-    if (isNaN(mt_next)) mt_next = 0;
+		var $set3 = $set2.last().nextAll();
+		
+		var mb_prev = UTIL.cssprop($set1.first().prev(), "margin-bottom");
+		if (isNaN(mb_prev)) mb_prev = 0;
+		var mt_next = UTIL.cssprop($set2.last().next(), "margin-top");
+		if (isNaN(mt_next)) mt_next = 0;
 
-    var mt_1 = UTIL.cssprop($set1.first(), "margin-top");
-    var mb_1 = UTIL.cssprop($set1.last(), "margin-bottom");
-    var mt_2 = UTIL.cssprop($set2.first(), "margin-top");
-    var mb_2 = UTIL.cssprop($set2.last(), "margin-bottom");
+		var mt_1 = UTIL.cssprop($set1.first(), "margin-top");
+		var mb_1 = UTIL.cssprop($set1.last(), "margin-bottom");
+		var mt_2 = UTIL.cssprop($set2.first(), "margin-top");
+		var mb_2 = UTIL.cssprop($set2.last(), "margin-bottom");
 
-    var h1 = $set1.last().offset().top + $set1.last().outerHeight() - $set1.first().offset().top;
-    var h2 = $set2.last().offset().top + $set2.last().outerHeight() - $set2.first().offset().top;
+		var h1 = $set1.last().offset().top + $set1.last().outerHeight() - $set1.first().offset().top;
+		var h2 = $set2.last().offset().top + $set2.last().outerHeight() - $set2.first().offset().top;
 
-    move1 = h2 + Math.max(mb_2, mt_1) + Math.max(mb_prev, mt_2) - Math.max(mb_prev, mt_1);
-    move2 = -h1 - Math.max(mb_1, mt_2) - Math.max(mb_prev, mt_1) + Math.max(mb_prev, mt_2);
-    move3 = move1 + $set1.first().offset().top + h1 - $set2.first().offset().top - h2 + 
-        Math.max(mb_1,mt_next) - Math.max(mb_2,mt_next);
-        
-    // let's move stuff
-    $set1.css('position', 'relative');
-    $set2.css('position', 'relative');
-    $set3.css('position', 'relative');    
-    $set1.animate({'top': move1}, {duration: duration});
-    $set3.animate({'top': move3}, {duration: duration/2});
-    $set2.animate({'top': move2}, {duration: duration, complete: function() {
-            // rearrange the DOM and restore positioning when we're done moving          
-            $set1.insertAfter($set2.last())
-            $set1.css({'position': 'static', 'top': 0});
-            $set2.css({'position': 'static', 'top': 0});
-            $set3.css({'position': 'static', 'top': 0});
-        }
-    });
+		move1 = h2 + Math.max(mb_2, mt_1) + Math.max(mb_prev, mt_2) - Math.max(mb_prev, mt_1);
+		move2 = -h1 - Math.max(mb_1, mt_2) - Math.max(mb_prev, mt_1) + Math.max(mb_prev, mt_2);
+		move3 = move1 + $set1.first().offset().top + h1 - $set2.first().offset().top - h2 + 
+				Math.max(mb_1,mt_next) - Math.max(mb_2,mt_next);
+				
+		// let's move stuff
+		$set1.css('position', 'relative');
+		$set2.css('position', 'relative');
+		$set3.css('position', 'relative');    
+		$set1.animate({'top': move1}, {duration: duration});
+		$set3.animate({'top': move3}, {duration: duration/2});
+		$set2.animate({'top': move2}, {duration: duration, complete: function() {
+						// rearrange the DOM and restore positioning when we're done moving          
+						$set1.insertAfter($set2.last())
+						$set1.css({'position': 'static', 'top': 0});
+						$set2.css({'position': 'static', 'top': 0});
+						$set3.css({'position': 'static', 'top': 0});
+				}
+		});
 	},
 	toggle_visibility : function(item) {
 		$(item).slideToggle(100);
@@ -265,32 +265,32 @@ var WIDGET = {
 			$(option_dom).find('.move_option_down').first().click(function() {
 				next_option_dom = $(option_dom).next('.admin-menu-option');
 				if(!next_option_dom.length) return;
-        UTIL.slide_swap($(option_dom), $(next_option_dom), 100);
+				UTIL.slide_swap($(option_dom), $(next_option_dom), 100);
 			});
 			$(option_dom).find('.move_option_up').first().click(function() {
 				prev_option_dom = $(option_dom).prev('.admin-menu-option');
 				if(!prev_option_dom.length) return;
-        UTIL.slide_swap($(prev_option_dom), $(option_dom), 100);
+				UTIL.slide_swap($(prev_option_dom), $(option_dom), 100);
 			});
 			$(option_dom).find('input').keyup(function(e) {
 				if(e.keyCode === 13) {
 					option_group_dom = $(option_dom).closest('.admin-menu-option-group');
-          id_option = UTIL.create_unique_id();
-          id_dish_option = UTIL.create_unique_id();
-          self.add_option(option_group_dom, {
-            default : '0',
-            description : null,
-            id : id_option,
-            id_option : id_option,
-            id_dish_option : id_dish_option,
-            id_option_parent : $(option_group_dom).find('.admin-menu-option-group-id').val(),
-            name : '',
-            price : '0.00',
-            prices : [],
-            sort : null,
-            type : 'check',
-          },
-          {duration:100});
+					id_option = UTIL.create_unique_id();
+					id_dish_option = UTIL.create_unique_id();
+					self.add_option(option_group_dom, {
+						default : '0',
+						description : null,
+						id : id_option,
+						id_option : id_option,
+						id_dish_option : id_dish_option,
+						id_option_parent : $(option_group_dom).find('.admin-menu-option-group-id').val(),
+						name : '',
+						price : '0.00',
+						prices : [],
+						sort : null,
+						type : 'check',
+					},
+					{duration:100});
 				}
 			});
 		};
@@ -373,7 +373,7 @@ var WIDGET = {
 			$(option_group_dom).find('.admin-menu-option-group-type').change(function() {
 				option_group_type = $(option_group_dom).find('.admin-menu-option-group-type').val();
 				if(option_group_type === 'select') option_type = 'radio';
-        if(option_group_type === 'check') option_type = 'checkbox';
+				if(option_group_type === 'check') option_type = 'checkbox';
 				$(option_group_dom)
 						.find('.admin-menu-option input.admin-menu-option-default')
 						.attr('type', option_type);
@@ -689,12 +689,12 @@ var WIDGET = {
 			$(dish_dom).find('.move_dish_down').first().click(function() {
 				next_dish_dom = $(dish_dom).next('.admin-menu-dish');
 				if(!next_dish_dom.length) return;
-        UTIL.slide_swap($(dish_dom), $(next_dish_dom), 100);
+				UTIL.slide_swap($(dish_dom), $(next_dish_dom), 100);
 			});
 			$(dish_dom).find('.move_dish_up').first().click(function() {
 				prev_dish_dom = $(dish_dom).prev('.admin-menu-dish');
 				if(!prev_dish_dom.length) return;
-        UTIL.slide_swap($(prev_dish_dom), $(dish_dom), 100);
+				UTIL.slide_swap($(prev_dish_dom), $(dish_dom), 100);
 			});
 
 			// active toggle
@@ -713,12 +713,15 @@ var WIDGET = {
 				$(dish_dom).find('.admin-menu-dish-' + field).val(dish[field]);
 			}
 			$(dish_dom).find('.admin-menu-dish-expand-view')
-          .prop('checked', parseInt(dish['expand_view']));
+					.prop('checked', parseInt(dish['expand_view']));
+
+			$(dish_dom).find('.admin-menu-dish-top-item')
+					.prop('checked', parseInt(dish['top']));
 
 			if(!dish.name) UTIL.focus_input(dish_dom);
 
-      $(dish_dom).find('.admin-menu-dish-name, .admin-menu-dish-price').keyup(function(e) {
-        if(e.keyCode === 13) {
+			$(dish_dom).find('.admin-menu-dish-name, .admin-menu-dish-price').keyup(function(e) {
+				if(e.keyCode === 13) {
 					category_dom = $(dish_dom).closest('.admin-menu-category');
 					dish_id = UTIL.create_unique_id();
 					self.add_dish(
@@ -736,8 +739,8 @@ var WIDGET = {
 								type : 'dish',
 							},
 							{duration:100});
-        }     
-      });     
+				}     
+			});     
 
 			options = dish._options;
 			if(!options) options = [];
@@ -862,7 +865,7 @@ var WIDGET = {
 			$(option_group_dom).find('.admin-menu-option').each(function(index, option_dom) {
 				self.flush_option(dish, option_group, option_dom);
 			});
-      if(/^(?:basic options|checkbox options)$/i.exec(option_group.name)) { return; }
+			if(/^(?:basic options|checkbox options)$/i.exec(option_group.name)) { return; }
 			if($(option_group_dom).find('.admin-menu-option').length === 0) { return; }
 
 			if(dish._options.length === 0) {
@@ -887,6 +890,8 @@ var WIDGET = {
 			dish['type'] = 'dish';
 			dish['_options'] = [];
 			dish['expand_view'] = $(dish_dom).find('.admin-menu-dish-expand-view')
+					.is(':checked') ? '1' : '0';
+			dish['top'] = $(dish_dom).find('.admin-menu-dish-top-item')
 					.is(':checked') ? '1' : '0';
 
 			$(dish_dom).find('.admin-menu-option-group').each(function(index, option_group_dom) {
@@ -1133,7 +1138,7 @@ var ADMIN = {
 				{
 					type : 'api',
 					obj	: 'restaurant',
-          data: { restaurant:ADMIN.restaurant, obj:'restaurant' },
+					data: { restaurant:ADMIN.restaurant, obj:'restaurant' },
 					id	 : this.id_restaurant,
 				},
 				function(rsp) {
@@ -1176,12 +1181,12 @@ var ADMIN = {
 		ASYNC.req(
 				{ 
 					type : 'sav',
-          data : { 
+					data : { 
 						// uncomment here and in controller to use serialization
-            // serialized_data : $.param(ADMIN.restaurant),
+						// serialized_data : $.param(ADMIN.restaurant),
 						data : ADMIN.restaurant,
-            obj : 'restaurant'
-          },
+						obj : 'restaurant'
+					},
 
 				},
 				function(rsp) {
