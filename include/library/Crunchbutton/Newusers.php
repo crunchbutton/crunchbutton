@@ -37,6 +37,7 @@ class Crunchbutton_Newusers extends Cana_Table {
 				'order' => $order,
 				'user' => $user
 			]);
+			echo $mail->message();
 			$mail->send();
 		}
 		static::updateConfig();
@@ -70,7 +71,6 @@ class Crunchbutton_Newusers extends Cana_Table {
 	}
 
 	public static function getNewOnes(){
-
 		$query = 'SELECT *
 							FROM `order` o
 							WHERE id_order IN
@@ -83,21 +83,6 @@ class Crunchbutton_Newusers extends Cana_Table {
 											 (SELECT last_update
 												FROM newusers
 												WHERE id_newusers = 1)) ORDER BY id_order DESC';
-/*
-		$config = static::getConfig();
-		$query = 'SELECT * FROM `order` WHERE id_order IN( 
-								SELECT id_order FROM (
-									SELECT 
-										COUNT(*) orders, 
-										u.phone,
-										u.id_user,
-										o.id_order
-									FROM `order` o 
-									INNER JOIN user u ON u.id_user = o.id_user
-									WHERE o.date > "' . $config->last_update . '"
-									GROUP BY u.phone HAVING orders = 1 ) orders ) ORDER BY id_order DESC';
-echo 	$query;exit;
-*/
 		return Crunchbutton_Order::q($query);
 	}
 
