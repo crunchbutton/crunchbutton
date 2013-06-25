@@ -2165,6 +2165,11 @@ html[xmlns] .clearfix {
 	margin-bottom:22px;
 }
 
+/**
+ * suggestion specific classes
+ */
+
+
 
 	.suggestion-container h1 {
 		color:#D74924;
@@ -3079,4 +3084,35 @@ strong {
 
 .ui-dialog-titlebar-close{
 	padding: 5px !important;
+}
+
+
+
+.dialog-open-effect-a {
+	-webkit-filter: blur(1px);
+	-moz-filter: blur(1px);
+	-ms-filter: blur(1px);
+	-o-filter: blur(1px);
+	filter: blur(1px);
+}
+.dialog-open-effect-b {
+	-webkit-filter: blur(2px);
+	-moz-filter: blur(2px);
+	-ms-filter: blur(2px);
+	-o-filter: blur(2px);
+	filter: blur(2px);
+}
+.dialog-open-effect-c {
+	-webkit-filter: blur(3px);
+	-moz-filter: blur(3px);
+	-ms-filter: blur(3px);
+	-o-filter: blur(3px);
+	filter: blur(3px);
+}
+.dialog-open-effect-d {
+	-webkit-filter: blur(4px);
+	-moz-filter: blur(4px);
+	-ms-filter: blur(4px);
+	-o-filter: blur(4px);
+	filter: blur(4px);
 }

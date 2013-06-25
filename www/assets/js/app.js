@@ -790,18 +790,31 @@ App.getCommunityById = function( id ){
 	return false;
 }
 
-App.message = {
-	show: function(title, message) {
+/**
+ * dialog functions
+ */
+App.dialog = {
+	show: function() {
+		
+		if (arguments[1]) {
+			// its a title and message
+			var src = '<div class="zoom-anim-dialog small-container">' +
+				'<h1>' + arguments[0] + '</h1>' +
+				'<div class="small-container-content">' + arguments[1] + '</div>' +
+				'</div>';
 
-		var html = '<div class="zoom-anim-dialog small-container">' +
-			'<h1>' + title + '</h1>' +
-			'<div class="small-container-content">' + message + '</div>' +
-			'</div>';
-	
-	
+		} else if ($(arguments[0]).length) {
+			// its a dom element
+			var src = $(arguments[0]);
+			
+		} else {
+			console.log('ERROR WITH DIALOG');
+			return;
+		}
+
 		$.magnificPopup.open({
 			items: {
-				src: html,
+				src: src,
 				type: 'inline'
 			},
 			fixedContentPos: true,
@@ -812,15 +825,32 @@ App.message = {
 			removalDelay: 300,
 			overflowY: 'auto',
 			mainClass: 'my-mfp-slide-bottom',
+			callbacks: {
+				open: function() {
+					setTimeout(function() {
+						$('.wrapper').addClass('dialog-open-effect-a');
+					},1);
+					setTimeout(function() {
+						$('.wrapper').addClass('dialog-open-effect-b');
+					},20);
+					setTimeout(function() {
+						$('.wrapper').addClass('dialog-open-effect-c');
+					},33);
+					setTimeout(function() {
+						$('.wrapper').addClass('dialog-open-effect-d');
+					},40);
+				},
+				close: function() {
+					$('.wrapper').removeClass('dialog-open-effect-a dialog-open-effect-b dialog-open-effect-c dialog-open-effect-d');
+				}
+			}
 			//my-mfp-zoom-in
 		});
-		
-		// @todo: remove all of this stuff
-		//modal-fixed-dialog
-		//App.modal.shield
-	
-	},
+	}
+};
 
+
+App.message = {
 	chrome: function() {
 		var title = 'How to use Chrome',
 			message = '<p>' +
@@ -829,7 +859,7 @@ App.message = {
 			'<p align="center">' +
 			'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' + 
 			'</p>';
-		App.message.show(title, message);
+		App.dialog.show(title, message);
 	}
 };
 	

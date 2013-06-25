@@ -262,6 +262,7 @@ App.signin.facebook.login = function() {
  * show the signin modal
  */
 App.signin.show = function(){
+
 	App.signin.passwordHelp.hide();
 	$('.signin-facebook-message').hide();
 	$('.signin-facebook').show();
@@ -269,14 +270,10 @@ App.signin.show = function(){
 	$( 'input[name=signin-email]' ).val( '' );
 	$( 'input[name=signin-password]' ).val( '' );
 	$('.signin-error').hide();
-	$( '.signin-container' )
-		.dialog( {
-			dialogClass: 'modal-fixed-dialog',
-			modal: true,
-			width: App.modal.contentWidth(),
-			open: function( event, ui ) { $( '.signin-email' ).focus(); }
-		} );
 
+	App.dialog.show('.signin-container');
+
+	// $( '.signin-email' ).focus();
 }
 
 App.signin.checkUser = function(){
