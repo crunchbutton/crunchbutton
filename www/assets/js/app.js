@@ -829,13 +829,13 @@ App.dialog = {
 				open: function() {
 					setTimeout(function() {
 						$('.wrapper').addClass('dialog-open-effect-a');
-					},1);
+					},5);
 					setTimeout(function() {
 						$('.wrapper').addClass('dialog-open-effect-b');
 					},20);
 					setTimeout(function() {
 						$('.wrapper').addClass('dialog-open-effect-c');
-					},33);
+					},30);
 					setTimeout(function() {
 						$('.wrapper').addClass('dialog-open-effect-d');
 					},40);
