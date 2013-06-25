@@ -217,7 +217,7 @@
 			if( check.is( ':checked' ) ){
 				chart.show();
 				if( !chart.attr( 'opened' ) ){
-					loadChart( chartId );
+					loadChart( chartId, true );
 				} 
 			} else {
 				chart.attr( 'opened', false );
@@ -233,7 +233,7 @@
 			$( '.chart' ).each( function(){
 				var chart = $( this );
 				if( chart.attr( 'opened' ) ){
-					loadChart( chart.attr( 'id' ) );
+					loadChart( chart.attr( 'id' ), true );
 					$( '#button-reload' ).find( 'i' ).addClass( 'icon-spin ' );
 					setTimeout( function(){
 						$( '#button-reload' ).find( 'i' ).removeClass( 'icon-spin ' );
@@ -246,7 +246,6 @@
 		var url = '/home/charts/weeks';
 		$.ajax( { dataType: 'json', url: url, } ).done( 
 			function( weeks ) { 
-				console.log( weeks );
 				var total = weeks.length;
 				$( '#slider-label' ).html( 'Show from <b>' + weeks[ 0 ] + '</b> to <b>' + weeks[ total - 1 ] + '</b>' );
 				$( '#slider-master' ).slider( {
@@ -263,7 +262,7 @@
 		} );
 	} );
 
-	function loadChart( chartId ){
+	function loadChart( chartId, force ){
 		var chart = $( '#' + chartId );
 		chart.show();
 		var title = chart.attr( 'data-title' );
@@ -277,14 +276,16 @@
 			slider.css( 'opacity', 0.4 );
 			sliderValues = '&to=' + slider.attr( 'data-to' ) + '&from=' + slider.attr( 'data-from' );
 		}
-		chart.attr( 'opened', true );
 		var weeksStr = '';
-		if( weekFrom ){
-			weeksStr += '&from=' + weekFrom;
+		if( force ){
+			if( weekFrom && weekFrom != '' ){
+				weeksStr += '&from=' + weekFrom;
+			}
+			if( weekTo && weekTo != '' ){
+				weeksStr += '&to=' + weekTo;
+			}
 		}
-		if( weekTo ){
-			weeksStr += '&to=' + weekTo;
-		}
+		chart.attr( 'opened', true );
 		var activeUserDays = $( '#active-user-days' ).val();
 		var url = '/home/charts/' + id + '/' + title + '/' + count + '?activeUserDays=' + activeUserDays + sliderValues + weeksStr;
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
