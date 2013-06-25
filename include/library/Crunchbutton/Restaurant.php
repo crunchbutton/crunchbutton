@@ -280,6 +280,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 				$dishO->description   = $dish['description'];
 				$dishO->price         = $dish['price'];
 				$dishO->expand_view   = $dish['expand_view'];
+				$dishO->top   				= $dish['top'];
 				$dishO->sort          = isset($dish['sort']) ? $dish['sort'] : 0;
 				if (isset($dish['id_category']) && $dish['id_category']) {
 					$dishO->id_category = $dish['id_category'];
