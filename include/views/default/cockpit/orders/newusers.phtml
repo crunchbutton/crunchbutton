@@ -65,7 +65,7 @@
 						$restaurant = $order->restaurant();
 						?>
 							<tr>
-								<td>
+								<td valign="top">
 									<?php $date = $order->date();?>
 									<?=$date->format('M jS Y')?> <?=$date->format('g:i:s A')?> 
 									<br/>
@@ -77,7 +77,7 @@
 									<br/>
 									# <?php echo $order->id_order; ?>
 								</td>
-								<td>
+								<td valign="top">
 									<ul>
 										<?php foreach ($order->dishes() as $dish) : ?>
 										<li>
@@ -91,7 +91,7 @@
 										<? endforeach ; ?>
 									</ul>
 								</td>
-								<td>
+								<td valign="top">
 									Name: <?php echo $user->name; ?> 
 									<br/>
 									Phone: <?php echo $user->phone; ?> 
@@ -102,7 +102,7 @@
 									<?php } ?>
 									Address: <?php echo $order->address; ?>
 								</td>
-								<td>
+								<td valign="top">
 									Type: <?php echo $order->pay_type; ?>
 									<br />
 									Tip: $<?=$order->tip()?> <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo '(' . $order->tip . '%)'; } ?>
