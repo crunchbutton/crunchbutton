@@ -781,16 +781,6 @@ $(function() {
 
 });
 
-
-App.modal.contentWidth = function(){
-	if( $( window ).width() > 700 ){
-		return 280;
-	}
-	if( $( window ).width() <= 700 ){
-		return $( window ).width() - 50;
-	}
-}
-
 App.getCommunityById = function( id ){
 	for (x in App.communities) {	
 		if( App.communities[x].id_community == id ){
@@ -800,59 +790,58 @@ App.getCommunityById = function( id ){
 	return false;
 }
 
-App.message = {};
-App.message.show = function( title, message ) {
-	if( $( '.message-container' ).length > 0 ){
-		$( '.message-container' ).html( '<h1>' + title + '</h1><div class="message-container-content">' +   message + '</div>' );
-	} else {
-		var html = '<div class="message-container">' +
+App.message = {
+	show: function(title, message) {
+
+		var html = '<div class="zoom-anim-dialog small-container">' +
 			'<h1>' + title + '</h1>' +
-			'<div class="message-container-content">' + 
-			message +
-			'</div>' +
+			'<div class="small-container-content">' + message + '</div>' +
 			'</div>';
-		$('.wrapper').append(html);
-	}
-
-	$('.message-container')
-		.dialog({
-			modal: true,
-			dialogClass: 'modal-fixed-dialog',
-			width: App.modal.contentWidth(),
-			close: function( event, ui ) { App.modal.shield.close(); },
+	
+	
+		$.magnificPopup.open({
+			items: {
+				src: html,
+				type: 'inline'
+			},
+			fixedContentPos: true,
+			fixedBgPos: true,
+			closeBtnInside: true,
+			preloader: false,
+			midClick: true,
+			removalDelay: 300,
+			overflowY: 'auto',
+			mainClass: 'my-mfp-slide-bottom',
+			//my-mfp-zoom-in
 		});
+		
+		// @todo: remove all of this stuff
+		//modal-fixed-dialog
+		//App.modal.shield
+	
+	},
 
-}
+	chrome: function() {
+		var title = 'How to use Chrome',
+			message = '<p>' +
+			'Just tap "Request Desktop Site.' +
+			'</p>' +
+			'<p align="center">' +
+			'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' + 
+			'</p>';
+		App.message.show(title, message);
+	}
+};
+	
 
 /**
  * play crunch audio sound
  */
-App.playAudio = function( audio, callback ){
+App.playAudio = function(audio){
 	var audio = $('#' + audio).get(0);
+	if (!audio) { return };
 	try {
-		audio.addEventListener('ended', function() {
-			if (callback) {
-				callback();
-			}
-		});
 		audio.play();	
 	} catch(e){}
-}
-
-App.registerLocationsCookies = function() {
-	$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
-	$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
-	$.cookie('location_range', ( App.loc.range || App.defaultRange ), { expires: new Date(3000,01,01), path: '/'});
-}
-
-App.message.chrome = function( ){
-	var title = 'How to use Chrome',
-		message = '<p>' +
-		'Just tap "Request Desktop Site.' +
-		'</p>' +
-		'<p align="center">' +
-		'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' + 
-		'</p>';
-	App.message.show(title, message);
 }
 
