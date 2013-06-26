@@ -58,28 +58,46 @@ App.AB = {
 			App.config.ab = {};
 		}
 		
-		_.each(App.AB.options, function(option, key) {
+		// loop through each option type
+		for (var key in App.AB.options) {
 			if (App.config.ab[key]) {
 				return;
 			}
-			var opts = _.filter(App.AB.options[key], function(o) { return o.disabled ? false : true; });
+			var optionType = App.AB.options[key];
+			var opts = [];
+
+			// loop through all of the options for the specific ab option type
+			for (var x in optionType) {
+				// remove disabled ones
+				if (!optionType[x].disabled || optionType[x].disabled == false) {
+					opts[opts.length] = optionType[x];
+				}
+			}
 			var opt = opts[Math.floor(Math.random()*opts.length)];
 			App.config.ab[key] = opt.name
 			App.trackProperty('AB-' + key, opt.name);
-		});
-		
+		}
+
 		App.AB.save();
 		console.log(App.config.ab);
 		
 	},
 	load: function() {
-		App.slogan = _.findWhere(App.AB.options.slogan, {name: App.config.ab.slogan});
-		App.tagline = _.findWhere(App.AB.options.tagline, {name: App.config.ab.tagline});
+		App.slogan = App.AB.pluck('slogan', App.config.ab.slogan);
+		App.tagline = App.AB.pluck('tagline', App.config.ab.tagline);
 
 		if (!App.slogan || !App.tagline) {
 			App.AB.create(true);
 			App.AB.load(true);
 		}
+	},
+	pluck: function(option, name) {
+		for (var x in App.AB.options[option]) {
+			if (App.AB.options[option][x].name == name) {
+				return App.AB.options[option][x];
+			}
+		}
+		return null;
 	},
 	save: function() {
 		$.ajax({
