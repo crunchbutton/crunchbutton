@@ -2129,16 +2129,49 @@ html[xmlns] .clearfix {
 }
 
 
-.suggestion-container{
-	background: #f5f5f5 url(/assets/images/groovepaper.png);
-	border: 1px solid #F5F5F5;
+/**
+ * dialog classes
+ */
+.small-container {
+	background: #fff;
+	width: 250px;
+	margin: 40px auto;
+	position: relative;
 	border-radius: 4px;
-	display: none;
 	padding: 20px;
-	width: 280px;
+}
+.small-container {
+	line-height: 20px;
+}
+.small-container p {
+	margin-bottom: 10px;
+}
+.small-container h3 {
+	border-top: 1px solid #CCC;
+	font-weight: bold;
+	margin-top: 10px;
+	padding-top: 10px;
+}
+/*
+.small-container-content {
+	height: 250px;
+	overflow: auto;
+}
+*/
+.small-container h1 {
+	color:#D74924;
+	font-size: 1.4em;
+	font-weight: 400;
+	margin-bottom:22px;
 }
 
-	.suggestion-container h1{
+/**
+ * suggestion specific classes
+ */
+
+
+
+	.suggestion-container h1 {
 		color:#D74924;
 		font-size: 1.4em;
 		font-weight: 400;
@@ -2228,10 +2261,6 @@ html[xmlns] .clearfix {
 		font-weight: bold;
 	}
 
-.modal-fixed-dialog{
-	position: fixed;
-}
-
 .suggestion-thanks-text{
 	font-size: 12px;
 	line-height: 17px;
@@ -2293,36 +2322,8 @@ html[xmlns] .clearfix {
 		text-align: left;
 		line-height: 16px;
 	}
-.signin-container, .signup-container, .password-reset-container, .message-container, .giftcard-container{
-	background: #f5f5f5 url(/assets/images/groovepaper.png);
-	border: 1px solid #F5F5F5;
-	border-radius: 4px;
-	display: none;
-	padding: 20px;
-	width: 250px;
-}
-	.message-container{
-		line-height: 20px;
-	}
-		.message-container p{
-			margin-bottom: 10px;
-		}
-		.message-container h3{
-			border-top: 1px solid #CCC;
-			font-weight: bold;
-			margin-top: 10px;
-			padding-top: 10px;
-		}
-			.message-container-content{
-				height: 250px;
-				overflow: auto;
-			}
-	.signin-container h1, .signup-container h1, .password-reset-container h1, .message-container h1, .giftcard-container h1{
-		color:#D74924;
-		font-size: 1.4em;
-		font-weight: 400;
-		margin-bottom:22px;
-	}
+
+
 		.sign-form-links h1{
 			float: left;
 			width: 86px;
@@ -3083,4 +3084,35 @@ strong {
 
 .ui-dialog-titlebar-close{
 	padding: 5px !important;
+}
+
+
+
+.dialog-open-effect-a {
+	-webkit-filter: blur(1px);
+	-moz-filter: blur(1px);
+	-ms-filter: blur(1px);
+	-o-filter: blur(1px);
+	filter: blur(1px);
+}
+.dialog-open-effect-b {
+	-webkit-filter: blur(2px);
+	-moz-filter: blur(2px);
+	-ms-filter: blur(2px);
+	-o-filter: blur(2px);
+	filter: blur(2px);
+}
+.dialog-open-effect-c {
+	-webkit-filter: blur(3px);
+	-moz-filter: blur(3px);
+	-ms-filter: blur(3px);
+	-o-filter: blur(3px);
+	filter: blur(3px);
+}
+.dialog-open-effect-d {
+	-webkit-filter: blur(4px);
+	-moz-filter: blur(4px);
+	-ms-filter: blur(4px);
+	-o-filter: blur(4px);
+	filter: blur(4px);
 }

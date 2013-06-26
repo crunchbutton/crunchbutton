@@ -187,6 +187,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location) {
+	App.rootScope = $rootScope;
 
 	$rootScope.link = function(link) {
 		$location.path(link || '/');
@@ -206,6 +207,12 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	
 	$rootScope.formatPrice = function(t) {
 		return parseFloat(t).toFixed(2);
+	};
+	
+	$rootScope.account = {
+		setHelp: function(t) {
+			$rootScope.account.help = t;
+		}
 	};
 
 
@@ -781,16 +788,6 @@ $(function() {
 
 });
 
-
-App.modal.contentWidth = function(){
-	if( $( window ).width() > 700 ){
-		return 280;
-	}
-	if( $( window ).width() <= 700 ){
-		return $( window ).width() - 50;
-	}
-}
-
 App.getCommunityById = function( id ){
 	for (x in App.communities) {	
 		if( App.communities[x].id_community == id ){
@@ -800,59 +797,79 @@ App.getCommunityById = function( id ){
 	return false;
 }
 
-App.message = {};
-App.message.show = function( title, message ) {
-	if( $( '.message-container' ).length > 0 ){
-		$( '.message-container' ).html( '<h1>' + title + '</h1><div class="message-container-content">' +   message + '</div>' );
-	} else {
-		var html = '<div class="message-container">' +
-			'<h1>' + title + '</h1>' +
-			'<div class="message-container-content">' + 
-			message +
-			'</div>' +
-			'</div>';
-		$('.wrapper').append(html);
-	}
+/**
+ * dialog functions
+ */
+App.dialog = {
+	show: function() {
+		
+		if (arguments[1]) {
+			// its a title and message
+			var src = '<div class="zoom-anim-dialog small-container">' +
+				'<h1>' + arguments[0] + '</h1>' +
+				'<div class="small-container-content">' + arguments[1] + '</div>' +
+				'</div>';
 
-	$('.message-container')
-		.dialog({
-			modal: true,
-			dialogClass: 'modal-fixed-dialog',
-			width: App.modal.contentWidth(),
-			close: function( event, ui ) { App.modal.shield.close(); },
+		} else if ($(arguments[0]).length) {
+			// its a dom element
+			var src = $(arguments[0]);
+			
+		} else {
+			console.log('ERROR WITH DIALOG');
+			return;
+		}
+
+		$.magnificPopup.open({
+			items: {
+				src: src,
+				type: 'inline'
+			},
+			fixedContentPos: true,
+			fixedBgPos: true,
+			closeBtnInside: true,
+			preloader: false,
+			midClick: true,
+			removalDelay: 300,
+			overflowY: 'auto',
+			mainClass: 'my-mfp-slide-bottom',
+			callbacks: {
+				open: function() {
+					setTimeout(function() {
+						//$('.wrapper').addClass('dialog-open-effect-b');
+					},1);
+				},
+				close: function() {
+					$('.wrapper').removeClass('dialog-open-effect-a dialog-open-effect-b dialog-open-effect-c dialog-open-effect-d');
+				}
+			}
+			//my-mfp-zoom-in
 		});
+	}
+};
 
-}
+
+App.message = {
+	chrome: function() {
+		var title = 'How to use Chrome',
+			message = '<p>' +
+			'Just tap "Request Desktop Site.' +
+			'</p>' +
+			'<p align="center">' +
+			'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' + 
+			'</p>';
+		App.dialog.show(title, message);
+	}
+};
+	
 
 /**
  * play crunch audio sound
  */
-App.playAudio = function( audio, callback ){
+App.playAudio = function(audio){
 	var audio = $('#' + audio).get(0);
+	if (!audio) { return };
 	try {
-		audio.addEventListener('ended', function() {
-			if (callback) {
-				callback();
-			}
-		});
 		audio.play();	
 	} catch(e){}
-}
-
-App.registerLocationsCookies = function() {
-	$.cookie('location_lat', App.loc.lat, { expires: new Date(3000,01,01), path: '/'});
-	$.cookie('location_lon', App.loc.lon, { expires: new Date(3000,01,01), path: '/'});
-	$.cookie('location_range', ( App.loc.range || App.defaultRange ), { expires: new Date(3000,01,01), path: '/'});
-}
-
-App.message.chrome = function( ){
-	var title = 'How to use Chrome',
-		message = '<p>' +
-		'Just tap "Request Desktop Site.' +
-		'</p>' +
-		'<p align="center">' +
-		'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' + 
-		'</p>';
-	App.message.show(title, message);
 }
 

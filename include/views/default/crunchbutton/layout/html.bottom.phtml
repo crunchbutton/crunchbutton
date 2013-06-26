@@ -34,6 +34,7 @@ if (App){
 		<div class="body">
 			<div class="content<?=$e?>">
 				<div class="main-content pages">
+					<div ng-include="view/signin.html"></div>
 					<div ng-view><?=$this->content?></div>
 				</div>
 			</div>
@@ -55,11 +56,11 @@ if (App){
 				<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
 			</div>
 		</div>
-		
-		<ng-include src="view/signin.html"></ng-include>
-		<ng-include src="view/suggestion.html"></ng-include>
-		<ng-include src="view/support.html"></ng-include>
-		
+
+		<div ng-include="'view/signin.html'"></div>
+		<div ng-include="'view/signup.html'"></div>
+		<div ng-include="'view/suggestion.html'"></div>
+		<div ng-include="'view/support.html'"></div>
 
 	</div>
 
@@ -110,5 +111,8 @@ if (App){
 	</script>
 <? endif ; ?>
 
-
+<div id="small-dialog" class="zoom-anim-dialog mfp-hide">
+        <h1>Dialog example</h1>
+        <p>This is dummy copy. It is not meant to be read. It has been placed here solely to demonstrate the look and feel of finished, typeset text. Only for show. He who searches for meaning here will be sorely disappointed.</p>
+      </div>
 </html>

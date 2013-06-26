@@ -11,14 +11,6 @@ App.signin.init = function() {
 		App.signin.sendForm();
 	});
 
-	$(document).on('touchclick', '.signin-password-help', function() {
-		App.signin.passwordHelp.show();
-	});
-
-	$(document).on('touchclick', '.signin-password-help-back', function() {
-		App.signin.passwordHelp.hide();
-	});
-
 	$(document).on('touchclick', '.signin-password-help-button', function() {
 		App.signin.passwordHelp.sendForm();
 	});
@@ -40,7 +32,7 @@ App.signin.init = function() {
 
 	$(document).on('touchclick', '.signup-link', function() {
 		App.signup.show( false );
-		$('.signin-container').dialog('close');
+		$.magnificPopup.close();
 	});
 
 	$(document).on('touchclick', '.sign-in-icon', function() {
@@ -110,7 +102,8 @@ App.signin.sendForm = function(){
 			} else{
 				App.config.user = json;
 				App.signin.checkUser();
-				$( '.signin-container' ).dialog( 'close' );
+				$.magnificPopup.close();
+
 				// If the user is at the restaurant's page - reload it
 				if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
 					App.page.restaurant( App.restaurant.permalink );
@@ -228,7 +221,7 @@ App.signin.facebook.processStatus = function( session ){
 									App.signin.manageLocation();
 								}
 								// Closes the dialog
-								try{ $( '.ui-dialog-content' ).dialog( 'close' );} catch(e){};
+								$.magnificPopup.close();
 								
 								App.log.account( { 'userID' : session.authResponse.userID, 'currentPage' : App.currentPage } , 'facebook currentPage' );
 
@@ -262,21 +255,22 @@ App.signin.facebook.login = function() {
  * show the signin modal
  */
 App.signin.show = function(){
-	App.signin.passwordHelp.hide();
+
 	$('.signin-facebook-message').hide();
 	$('.signin-facebook').show();
 
-	$( 'input[name=signin-email]' ).val( '' );
-	$( 'input[name=signin-password]' ).val( '' );
 	$('.signin-error').hide();
-	$( '.signin-container' )
-		.dialog( {
-			dialogClass: 'modal-fixed-dialog',
-			modal: true,
-			width: App.modal.contentWidth(),
-			open: function( event, ui ) { $( '.signin-email' ).focus(); }
-		} );
 
+	App.rootScope.$apply(function($scope) {
+		$scope.account.email = '';
+		$scope.account.password = '';
+		$scope.account.message = '';
+		$scope.account.help = false;
+	});
+
+	App.dialog.show('.signin-container');
+
+	// $( '.signin-email' ).focus();
 }
 
 App.signin.checkUser = function(){
@@ -302,23 +296,6 @@ App.signin.checkUser = function(){
 
 App.signin.passwordHelp = {};
 
-App.signin.passwordHelp.show = function(){
-	if( $.trim( $( 'input[name=signin-email]' ).val() ) != '' ){
-		$( 'input[name=password-help-email]' ).val( $.trim( $( 'input[name=signin-email]' ).val() ) );
-	}
-	$( '.signin-password-help-button' ).show();
-	$( '.signin-password-help-back' ).show();
-	$( '.signin-help-container' ).show();
-	$( '.signin-form-options' ).hide();
-	$( '.signin-password-help-message' ).hide();
-	$( '.signin-password-help-message' ).html( '' );
-	$( 'input[name=password-help-email]' ).focus();
-}
-
-App.signin.passwordHelp.hide = function(){
-	$( '.signin-help-container' ).hide();
-	$( '.signin-form-options' ).show();
-}
 
 App.signin.passwordHelp.sendForm = function(){
 	// Checks it fhe login is a phone
@@ -357,7 +334,6 @@ App.signin.passwordHelp.sendForm = function(){
 				if( json.success = 'success' ){
 					$( '.signin-password-help-message' ).show();
 					$( '.signin-password-help-button' ).hide();
-					$( '.signin-password-help-back' ).hide();
 					
 					var message = 'You will receive a code to reset your password! It will expire in 24 hours.';
 					
@@ -367,7 +343,9 @@ App.signin.passwordHelp.sendForm = function(){
 						message += 'You can also try logging in with <span class="login-facebook">Facebook</span>.';
 					}
 					
-					$( '.signin-password-help-message' ).html( message );
+					App.rootScope.$apply(function($scope) {
+						$scope.account.message = message;
+					});
 
 					$( '.login-facebook' ).on( 'touchclick', function(){
 						App.signin.show();
@@ -550,13 +528,12 @@ App.signup.show = function( justFacebook ){
 		$( '.signup-form' ).show();
 	}
 	$( '.signin-error' ).hide();
-	$( '.signup-container' )
-		.dialog( {
-			modal: true,
-			dialogClass: 'modal-fixed-dialog',
-			width: App.modal.contentWidth(),
-			open: function( event, ui ) { $( '.signup-phone' ).focus(); }
-		} );
+	
+	App.rootScope.account.help = false;
+	
+	App.dialog.show('.signup-container');
+
+	// open: function( event, ui ) { $( '.signup-phone' ).focus(); }
 
 }
 
