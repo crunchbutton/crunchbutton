@@ -187,6 +187,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location) {
+	App.rootScope = $rootScope;
 
 	$rootScope.link = function(link) {
 		$location.path(link || '/');
@@ -206,6 +207,12 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	
 	$rootScope.formatPrice = function(t) {
 		return parseFloat(t).toFixed(2);
+	};
+	
+	$rootScope.account = {
+		setHelp: function(t) {
+			$rootScope.account.help = t;
+		}
 	};
 
 
@@ -828,17 +835,8 @@ App.dialog = {
 			callbacks: {
 				open: function() {
 					setTimeout(function() {
-						$('.wrapper').addClass('dialog-open-effect-a');
-					},5);
-					setTimeout(function() {
-						$('.wrapper').addClass('dialog-open-effect-b');
-					},20);
-					setTimeout(function() {
-						$('.wrapper').addClass('dialog-open-effect-c');
-					},30);
-					setTimeout(function() {
-						$('.wrapper').addClass('dialog-open-effect-d');
-					},40);
+						//$('.wrapper').addClass('dialog-open-effect-b');
+					},1);
 				},
 				close: function() {
 					$('.wrapper').removeClass('dialog-open-effect-a dialog-open-effect-b dialog-open-effect-c dialog-open-effect-d');

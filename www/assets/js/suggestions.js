@@ -91,13 +91,7 @@ App.suggestion.show = function(){
 	$( '.suggestion-message' ).hide();
 
 	/* Shows the modal */
-	$('.suggestion-container').dialog({
-		modal: true,
-		dialogClass: 'modal-fixed-dialog',
-		width: App.modal.contentWidth(),
-		open: function(event, ui) {
-			$('.suggestion-name').focus();
-		}
-	});
+	App.dialog.show('.suggestion-container');
+	// $('.suggestion-name').focus();
 }
 
