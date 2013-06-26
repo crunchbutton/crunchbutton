@@ -35,6 +35,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		$to = $this->to;
 		$from = $this->from;
 		$allWeeks = $this->allWeeks;
+		
+		$allDays = $this->allDays();
+		$allMonths = $this->allMonths();
 
 		switch ( $this->chart ) {
 
@@ -83,6 +86,12 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 			break;
 
+			case 'active-users-per-month':
+				$data = $this->activeUsersByMonth();
+				$this->render( array( 'data' => $data, 'unit' => 'users' ) );
+
+			break;
+
 			case 'new-users-per-active-users':
 
 				for( $i = $this->from -1 ; $i < $this->to; $i++ ){
@@ -101,7 +110,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																		INNER JOIN user u ON u.id_user = o.id_user
 																		LEFT JOIN community c ON o.id_community = c.id_community
 																		WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-																			AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
+																			AND o.date >= STR_TO_DATE('{$week} Sunday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
 																			{$this->queryExcludeCommunties}
 																			{$this->queryExcludeUsers}
 																		GROUP BY u.phone) ActiveUsers) ActiveUsers
@@ -154,7 +163,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																		INNER JOIN user u ON u.id_user = o.id_user
 																		LEFT JOIN community c ON o.id_community = c.id_community
 																		WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-																			AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
+																			AND o.date >= STR_TO_DATE('{$week} Sunday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
 																			{$this->queryExcludeCommunties}
 																			{$this->queryExcludeUsers}
 																			{$this->queryOnlyCommunties}
@@ -208,7 +217,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 																 INNER JOIN user u ON u.id_user = o.id_user
 																 LEFT JOIN community c ON o.id_community = c.id_community
 																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
+																	 AND o.date >= STR_TO_DATE('{$week} Sunday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
 																	 {$this->queryExcludeCommunties}
 																	 {$this->queryExcludeUsers}
 																	 {$this->queryOnlyCommunties}
@@ -574,11 +583,6 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					]]); 
 	}
 
-	private function parseWeek( $week, $showYear = false ){
-		$dateStr = ( $showYear ) ? 'M d Y' : 'M d';
-		return date( $dateStr, strtotime( substr( $week, 0, 4 ) . 'W' . substr( $week, 4, 2 ) . '-7' ) );
-	}
-
 	private function parseDataWeeksGroup( $query ){
 
 		$data = c::db()->get( $query );
@@ -639,6 +643,36 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		return $this->parseDataWeeksSimple( $query, 'Orders' );
 	}
 
+	private function activeUsersByMonth(){
+		$query = '';
+		$union = '';
+$this->activeUsersByWeek();
+exit;
+		$months = $this->getMonthsFromWeeks();
+
+		foreach ( $months as $month ) {
+			$query .= $union . "SELECT '{$week}' AS Week,
+																 COUNT(*) AS Total
+													FROM
+														( SELECT u.phone,
+																		 o.date,
+																		 u.id_user,
+																		 c.name
+														 FROM `order` o
+														 INNER JOIN user u ON u.id_user = o.id_user
+														 LEFT JOIN community c ON o.id_community = c.id_community
+														 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
+															 AND o.date >= STR_TO_DATE('{$week} Sunday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
+															 {$this->queryExcludeCommunties}
+															 {$this->queryExcludeUsers}
+															 {$this->queryOnlyCommunties}
+														 GROUP BY u.phone) ActiveUsers";
+				$union = ' UNION ';	
+		}
+		echo $query;exit;
+		return $this->parseDataWeeksSimple( $query, 'Users' );
+	}
+
 	private function activeUsersByWeek(){
 		$query = '';
 		$union = '';
@@ -662,7 +696,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 															 {$this->queryOnlyCommunties}
 														 GROUP BY u.phone) ActiveUsers";
 				$union = ' UNION ';	
+
 		}
+
 		return $this->parseDataWeeksSimple( $query, 'Users' );
 	}
 
@@ -697,6 +733,32 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		return $result->_items[0]->weeks; 
 	}
 
+	private function allMonths(){
+		$query = "SELECT DISTINCT( DATE_FORMAT( o.date ,'%Y-%m') ) month FROM `order` o WHERE o.date IS NOT NULL ORDER BY month ASC";
+		$results = c::db()->get( $query );
+		$months = array();
+		foreach ( $results as $result ) {
+			if( !$result->month ){
+				continue;
+			}
+			$months[] = $result->month;
+		}
+		return $months;
+	}
+
+	private function allDays(){
+		$query = "SELECT DISTINCT( DATE_FORMAT( o.date ,'%Y-%m-%d') ) day FROM `order` o WHERE o.date IS NOT NULL ORDER BY day ASC";
+		$results = c::db()->get( $query );
+		$days = array();
+		foreach ( $results as $result ) {
+			if( !$result->day ){
+				continue;
+			}
+			$days[] = $result->day;
+		}
+		return $days;
+	}
+
 	private function allWeeks(){
 		$query = "SELECT DISTINCT( YEARWEEK( o.date ) ) week FROM `order` o WHERE YEARWEEK( o.date ) IS NOT NULL ORDER BY week ASC";
 		$results = c::db()->get( $query );
@@ -708,5 +770,20 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 			$weeks[] = $result->week;
 		}
 		return $weeks; 
+	}
+
+	private function getMonthsFromWeeks(){
+		$months = [];
+		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
+			$week = $this->allWeeks[ $i ];
+			$month = date( 'Y-m', strtotime( substr( $week, 0, 4 ) . 'W' . substr( $week, 4, 2 ) ) );
+			$months[ $month ] = $month;
+		}
+		return $months;
+	}
+
+	private function parseWeek( $week, $showYear = false ){
+		$dateStr = ( $showYear ) ? 'M d Y' : 'M d';
+		return date( $dateStr, strtotime( substr( $week, 0, 4 ) . 'W' . substr( $week, 4, 2 ) . '-7' ) );
 	}
 }
