@@ -22,15 +22,34 @@ class Crunchbutton_Chart extends Cana_Model {
 
 		$this->activeUsersInterval = ( $_REQUEST[ 'activeUserDays' ] ? $_REQUEST[ 'activeUserDays' ] : $this->activeUsersInterval ); 
 
+		$this->allDays = $this->allDays();
+		$this->allWeeks = $this->allWeeks();
+		$this->allMonths = $this->allMonths();
+
 		switch ( $interval ) {
 
+			case 'day':
+
+				$this->from_day = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
+				$this->from_day = ( ( $this->from_day  < 1 ) ? 1 : $this->from_day  );
+				$this->to_day = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : 1 ); 
+
+				$this->dayFrom = $this->allDays[ $this->from_day  - 1 ];
+				$this->dayTo = $this->allDays[ $this->to_day - 1 ];
+
+				$this->from = array_search( $this->dayToWeek( $this->monthFrom ),  $this->allWeeks() );
+				$this->to = array_search( $this->dayToWeek( $this->monthTo ),  $this->allWeeks() );
+
+				break;
+
 			case 'month':
+
 				$this->from_month = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
 				$this->from_month = ( ( $this->from_month  < 1 ) ? 1 : $this->from_month  );
 				$this->to_month = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : 1 ); 
 
-				$this->monthFrom = $this->allMonths()[ $this->from_month  - 1 ];
-				$this->monthTo = $this->allMonths()[ $this->to_month - 1 ];
+				$this->monthFrom = $this->allMonths[ $this->from_month  - 1 ];
+				$this->monthTo = $this->allMonths[ $this->to_month - 1 ];
 
 				$this->from = array_search( $this->monthToWeek( $this->monthFrom ),  $this->allWeeks() );
 				$this->to = array_search( $this->monthToWeek( $this->monthTo ),  $this->allWeeks() );
@@ -39,20 +58,41 @@ class Crunchbutton_Chart extends Cana_Model {
 			
 			case 'week':
 			default:
+
 				$this->from = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
 				$this->from = ( ( $this->from  < 1 ) ? 1 : $this->from  );
 				$this->to = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : $this->totalWeeks() );
 
-				$this->weekFrom = $this->allWeeks()[ $this->from  - 1 ];
-				$this->weekTo = $this->allWeeks()[ $this->to - 1 ];
+				$this->weekFrom = $this->allWeeks[ $this->from  - 1 ];
+				$this->weekTo = $this->allWeeks[ $this->to - 1 ];
 
 				$this->from_month = array_search( $this->weekToMonth( $this->weekFrom ), $this->allMonths() );
 				$this->to_month = array_search( $this->weekToMonth( $this->weekTo ),  $this->allMonths() );
 
 				$this->monthFrom = $this->allMonths()[ $this->from_month ];
-				$this->monthTo = $this->allMonths()[ $this->to_month ];
+				$this->monthTo = $this->allMonths[ $this->to_month ];
+
 				$this->from_month++;
 				$this->to_month++;
+
+				$this->from_day = array_search( $this->weekToDay( $this->weekFrom ), $this->allDays() );
+				$this->to_day = array_search( $this->weekToDay( $this->weekTo ),  $this->allDays() );
+
+				if( $this->from_day ){
+					$this->dayFrom = $this->allDays[ $this->from_day ];
+					$this->from_day++;
+				} else {
+					$this->dayFrom = $this->allDays()[ 0 ];
+					$this->from_day = 1;
+				}
+
+				if( $this->to_day ){
+					$this->dayTo = $this->allDays[ $this->to_day ];
+					$this->to_day++;
+				} else {
+					$this->dayTo = $this->allDays[ $this->totalDays() - 1 ];
+					$this->to_day = $this->totalDays() + 1;
+				}
 
 				break;
 		}
@@ -98,6 +138,11 @@ class Crunchbutton_Chart extends Cana_Model {
 		return $days;
 	}
 
+	public function totalDays(){
+		$days = $this->allDays();
+		return sizeof( $days );
+	}
+
 	public function allWeeks(){
 		if( !$this->_weeks ){
 			$query = "SELECT DISTINCT( YEARWEEK( o.date ) ) week FROM `order` o WHERE YEARWEEK( o.date ) IS NOT NULL ORDER BY week ASC";
@@ -114,6 +159,11 @@ class Crunchbutton_Chart extends Cana_Model {
 		return $this->_weeks; 
 	}
 
+	public function totalWeeks(){
+		$weeks = $this->allWeeks();
+		return sizeof( $weeks );
+	}
+
 	public function weeksToJson(){
 		$allWeeks = $this->allWeeks();
 		$weeks = [];
@@ -123,17 +173,21 @@ class Crunchbutton_Chart extends Cana_Model {
 		return json_encode( $weeks );
 	}
 
-	public function totalWeeks(){
-		$weeks = $this->allWeeks();
-		return sizeof( $weeks );
+	public function weekToMonth( $week ){
+		return date( 'Y-m', strtotime( 'sunday ' . substr( $week, 0, 4 ) . 'W' . substr( $week, 4, 2 ) ) );
 	}
 
-	public function weekToMonth( $week ){
-		return date( 'Y-m', strtotime( substr( $week, 0, 4 ) . 'W' . substr( $week, 4, 2 ) . ' Sunday' ) );
+	public function weekToDay( $week, $day = 'first' ){
+		$day = ( $day == 'first' ) ? '-0' : '-6';
+		return date( 'Y-m-d', strtotime( substr( $week, 0, 4 ) . 'W' . substr( $week, 4, 2 ) . $day ) );
 	}
 
 	public function monthToWeek( $month ){
 		return date( 'YW', strtotime( $month . '-01' ) );
+	}
+
+	public function dayToWeek( $day ){
+		return date( 'YW', strtotime( $day ) );
 	}
 
 	public function getMonthsFromWeeks(){
@@ -155,9 +209,32 @@ class Crunchbutton_Chart extends Cana_Model {
 
 	public function parseWeek( $week, $showYear = false ){
 		$dateStr = ( $showYear ) ? 'M d Y' : 'M d';
-		return date( $dateStr, strtotime( substr( $week, 0, 4 ) . 'W' . substr( $week, 4, 2 ) . '-7' ) );
+		return date( $dateStr, strtotime( substr( $week, 0, 4 ) . 'W' . substr( $week, 4, 2 ) . '-0' ) );
 	}
 
+	public function parseDay( $day, $showYear = false ){
+		$dateStr = ( $showYear ) ? 'M d Y' : 'M d';
+		return date( $dateStr, strtotime( $day ) );
+	}
+
+	public function parseDataDaysSimple( $query, $type = 'Total' ){
+
+		$data = c::db()->get( $query );
+
+		$_days = [];
+		foreach ( $data as $item ) {
+			$_days[ $item->Day ] = $item->Total;
+		}
+
+		$allDays = $this->allDays();
+		$data = [];
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$day = $allDays[ $i ];
+			$total = ( $_days[ $day ] ) ? $_days[ $day ] : 0;
+			$data[] = ( object ) array( 'Label' => $this->parseDay( $day ), 'Total' => $total, 'Type' => $type  ); 
+		}
+		return $data;
+	}
 
 	public function parseDataWeeksSimple( $query, $type = 'Total' ){
 

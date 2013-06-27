@@ -44,31 +44,21 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	}
 
 	public function newByMonth( $render = false ){
-		$query = '';
-		$union = '';
 
-		$allMonths = $this->allMonths();
-
-		for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
-			$month = $allMonths[ $i ];
-			$query .= $union . "SELECT '{$month}' AS Month,
-																		 COUNT(*) AS Total
-															FROM
-																(SELECT COUNT(*) orders,
-																				u.phone,
-																				o.date,
-																				u.id_user
-																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN community c ON o.id_community = c.id_community
-																 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
-																	 {$this->queryExcludeCommunties}
-																	 {$this->queryExcludeUsers}
-																 GROUP BY u.phone HAVING orders = 1) Orders
-															WHERE Orders.date BETWEEN '{$month}-01' AND LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )";		
-				$union = ' UNION ';
-		}
-
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m') AS Month
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone
+								 FROM `order` o
+								 INNER JOIN USER u ON u.id_user = o.id_user
+								 LEFT JOIN community c ON o.id_community = c.id_community
+								 {$this->queryExcludeCommunties}
+								 {$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+	
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
@@ -167,39 +157,45 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
+	public function newByDay( $render = false ){
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone
+								 FROM `order` o
+								 INNER JOIN USER u ON u.id_user = o.id_user
+								 LEFT JOIN community c ON o.id_community = c.id_community
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+
+		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
 	public function newByWeek( $render = false ){
 
-		$query = '';
-		$union = '';
-
-		$allWeeks = $this->allWeeks();
-
-		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
-			$week = $allWeeks[ $i ];
-			$query .= $union . "SELECT '{$week}' AS Week,
-																		 COUNT(*) AS Total
-															FROM
-																(SELECT COUNT(*) orders,
-																				u.phone,
-																				o.date,
-																				u.id_user
-																 FROM `order` o
-																 INNER JOIN user u ON u.id_user = o.id_user
-																 LEFT JOIN community c ON o.id_community = c.id_community
-																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-																	 {$this->queryExcludeCommunties}
-																	 {$this->queryExcludeUsers}
-																 GROUP BY u.phone HAVING orders = 1) Orders
-															WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')";		
-				$union = ' UNION ';	
-		}
-
+		$query = "SELECT SUM(1) AS Total,
+										 YEARWEEK(o.date) AS Week
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone
+								 FROM `order` o
+								 INNER JOIN USER u ON u.id_user = o.id_user
+								 LEFT JOIN community c ON o.id_community = c.id_community
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
+	
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unity );
 		}
 		return $parsedData;
-
 	}
 
 	public function newPerActiveByWeekByCommunity( $render = false ){
