@@ -145,7 +145,6 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 															 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
 															 {$this->queryExcludeCommunties}
 															 {$this->queryExcludeUsers}
-															 {$this->queryOnlyCommunties}
 														 GROUP BY u.phone) ActiveUsers";
 				$union = ' UNION ';	
 		}
@@ -167,6 +166,9 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN community c ON o.id_community = c.id_community
+								 WHERE 1=1 
+										{$this->queryExcludeCommunties}
+										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
 
@@ -188,6 +190,9 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN community c ON o.id_community = c.id_community
+								 WHERE 1=1 
+										{$this->queryExcludeCommunties}
+										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
 	
@@ -266,34 +271,21 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 	public function newByWeekByCommunity( $render = false ){
 
-		$query = '';
-		$union = '';
-
-		$allWeeks = $this->allWeeks();
-
-		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
-			$week = $allWeeks[ $i ];
-			$query .= $union . "SELECT '{$week}' AS Week,
-																 COUNT(*) AS Total,
-																 Orders.community AS `Group`
-													FROM
-														(SELECT COUNT(*) orders,
-																		u.phone,
-																		o.date,
-																		u.id_user,
-																		r.community
-														 FROM `order` o
-														 INNER JOIN user u ON u.id_user = o.id_user
-														 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-														 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-															 AND r.community IS NOT NULL
-															 {$this->queryExcludeUsers}
-														 GROUP BY u.phone HAVING orders = 1) Orders
-													WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')
-													GROUP BY Orders.community";
-				$union = ' UNION ';
-				$count++;
-		}
+		$query = "SELECT SUM(1) AS Total,
+										 YEARWEEK(o.date) AS Week,
+										 community AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.community
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.community IS NOT NULL
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone, r.community) orders ON o.id_order = orders.id_order
+							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
 		if( $render ){
