@@ -11,18 +11,16 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 	public function byWeekdayByCommunity( $render = false ){
 		$query = "SELECT DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%W') AS `Day`,
 										 COUNT(*) AS `Orders`,
-										 c.name AS `Community`
+										 r.community AS `Community`
 							FROM `order` o
-							LEFT JOIN community c ON o.id_community = c.id_community
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
 							WHERE env = 'live'
-								{$this->queryExcludeCommunties}
 								{$this->queryExcludeUsers}
-								AND c.id_community IN (1, 4)
+								AND r.community IS NOT NULL
 							GROUP BY DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%W'),
-											 c.id_community
+								r.community
 							ORDER BY DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%Y%m%d'),
-											 c.id_community";
-
+								r.community";
 		$data = c::db()->get( $query );
 		if( $render ){
 			return array( 'data' => $data, 'unit' => $this->unity );
@@ -75,15 +73,14 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		$query = "SELECT YEARWEEK(date) AS Week,
 										 COUNT(*) AS Total,
-										 c.name AS 'Group'
+										 r.community AS 'Group'
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN community c ON o.id_community = c.id_community
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
 							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
-								{$this->queryExcludeCommunties}
-								{$this->queryOnlyCommunties}
+								AND r.community IS NOT NULL
 								{$this->queryExcludeUsers}
-							GROUP BY YEARWEEK(date), c.name
+							GROUP BY YEARWEEK(date), r.community
 							ORDER BY YEARWEEK(date) DESC";
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
