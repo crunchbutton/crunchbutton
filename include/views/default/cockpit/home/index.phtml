@@ -305,7 +305,7 @@
 		$( '#button-reload' ).click( function(){
 			$( '.chart' ).each( function(){
 				var chart = $( this );
-				if( chart.attr( 'opened' ) ){
+				if( chart.attr( 'opened' ) == 'true'  ){
 					loadChart( chart.attr( 'id' ), true );
 					$( '#button-reload' ).find( 'i' ).addClass( 'icon-spin ' );
 					setTimeout( function(){
