@@ -1098,6 +1098,19 @@ class Crunchbutton_Restaurant extends Cana_Table
 		}
 	}
 
+	public static function getCommunities(){
+		$data = c::db()->get( 'SELECT DISTINCT( community ) community FROM restaurant WHERE community IS NOT NULL' );
+		$communities = [];
+		foreach ( $data as $item ) {
+			$communities[] = $item->community;
+		}
+		return $communities;
+	}
+
+	public static function getRestaurantsByCommunity( $community ){
+		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}'" );
+	}
+
 	public function save() {
 		if (!$this->timezone) {
 			$this->timezone = 'America/New_York';
