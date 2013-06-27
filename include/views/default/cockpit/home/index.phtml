@@ -165,18 +165,44 @@
 				<h5><?php echo $category; ?></h5><?php
 				$count = 1;
 				foreach ($graphs as $id => $graph ){ 
-					$chart_count_checkbox++;
 					if( $count == 1 ){
-						echo '<div class="row-fluid">';
-					}
-					?>
+							echo '<div class="row-fluid">';
+						}
+					if( is_array( $graph ) ){
+						$title = $graph[ '_title' ];
+						?>
 						<div class="span4">
-							<div>
-								<input type="checkbox" class="icheck" id="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>" data-id="<?php echo $id;?>" data-count="<?php echo $chart_count_checkbox; ?>" name="checkbox-<?php echo $id;?>">
-								<label for="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>"><?php echo $graph; ?></label>
+								<div><div style="margin-top:2px;float:left;"><?php echo $title; ?>:</div>
+								<?php
+						foreach ( $graph as $sub_id => $sub_graph ) {
+							$chart_count_checkbox++;
+							if( $sub_id == '_title' ){
+								continue;
+							}
+							$subtitle = $title . ' ' . $sub_graph;
+							$sub_id = $id . $sub_id;
+							?>
+								<span style="margin:0 5px 0 5px;">
+									<input type="checkbox" class="icheck" id="checkbox-<?php echo $sub_id;?>-<?php echo $chart_count_checkbox; ?>" data-id="<?php echo $sub_id;?>" data-count="<?php echo $chart_count_checkbox; ?>" name="checkbox-<?php echo $sub_id;?>">
+									<label for="checkbox-<?php echo $sub_id;?>-<?php echo $chart_count_checkbox; ?>"><?php echo $sub_graph; ?></label>
+								</span>
+							<?
+						}
+						?>
 							</div>
 						</div>
-					<? 
+						<?php
+					} else {
+						$chart_count_checkbox++;
+						?>
+							<div class="span4">
+								<div>
+									<input type="checkbox" class="icheck" id="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>" data-id="<?php echo $id;?>" data-count="<?php echo $chart_count_checkbox; ?>" name="checkbox-<?php echo $id;?>">
+									<label for="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>"><?php echo $graph; ?></label>
+								</div>
+							</div>
+						<?
+					}
 					if( $count % 3 == 0 ){ 
 						echo '</div>';
 						$count = 0; 
@@ -190,8 +216,21 @@
 				<hr/>
 					<? 
 					foreach ($graphs as $id => $graph ){ 
+						if( is_array( $graph ) ){
+							$title = $graph[ '_title' ];
+							foreach ( $graph as $sub_id => $sub_graph ) {
+								$chart_count_div++;
+								if( $sub_id == '_title' ){
+									continue;
+								}
+								$subtitle = $title . ' ' . $sub_graph;
+								$sub_id = $id . $sub_id;
+								echo '<div id="' . $sub_id . '-' . $chart_count_div .'" data-title="'. $subtitle . '" data-id="'.  $sub_id . '" data-count="' . $chart_count_div .'" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $subtitle . '</div>';		
+							}
+						} else {
 						$chart_count_div++;
 						echo '<div id="' . $id . '-' . $chart_count_div .'" data-title="'. $graph . '" data-id="'.  $id . '" data-count="' . $chart_count_div .'" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $graph . '</div>';
+						}
 					} ?>
 					<hr/>
 				<?php
@@ -213,7 +252,7 @@
 			var count = check.attr( 'data-count' );
 			var chartId = id + '-' + count;
 			var chart = $( '#' + chartId );
-			var title = check.attr( 'data-title' );
+			var title = chart.attr( 'data-title' );
 			if( check.is( ':checked' ) ){
 				chart.show();
 				if( !chart.attr( 'opened' ) ){

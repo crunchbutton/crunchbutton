@@ -35,21 +35,66 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		$graphs = array( 
 
 								'Stuff for Investors' => array( 
-										// 'active-users-per-month' => 'Active Users per Month',
-										'active-users-per-week' => 'Active Users per Week',
+										/* OK */
+										'orders-per-' => array(
+																							'_title' => 'Orders per',
+																							'week' => 'Week', 
+																							'month' => 'Month', 
+																						),
+										/* OK */
+										'new-users-per-' => array( 
+																						'_title' => 'New Users per',
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																						),
+										/* OK */
+										'gross-revenue-per-' => array( 
+																						'_title' => 'Gross Revenue per',
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																						),
+										/* OK */
+										'active-users-per-' => array( 
+																						'_title' => 'Active users per',
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																						),
+										/* OK */
+										'unique-users-per-' => array( 
+																						'_title' => 'Unique Users per',
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																						),
+										/* OK */
+										'orders-by-user-per-' => array( 
+																						'_title' => 'Orders by Users per',
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																						),
+										/* OK */
+										'new-users-per-active-users-per-' => array( 
+																						'_title' => 'New Users per Active Users per',
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																					),
+										/* OK */
+										'churn-rate-per-' => array( 
+																						'_title' => 'Churn Rate per',
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																						),
+										/* OK */
+										'churn-rate-per-active-user-per-' => array( 
+																						'_title' => 'Churn Rate per Active User per',
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																						),
+																						
 										'active-users-per-week-by-community' => 'Active Users per Week by Community',
-										'churn-rate' => 'Churn Rate - Active Users Lost',
-										'churn-rate-per-active-user' => 'Churn Rate - per Active User',
-										'new-users-per-week' => 'New Users per Week',
 										'new-users-per-week-by-community' => 'New Users per Week by Community',
-										'new-users-per-active-users' => 'New Users per Active Users',
 										'new-users-per-active-users-by-community' => 'New Users per Active Users By Community',
-										'unique-users-per-week' => 'Unique Users per Week',
 										'unique-users-per-week-by-community' => 'Unique Users per Week by Community',
-										'orders-by-user-week' => 'Orders by Users per Week',
-										'orders-per-week' => 'Orders per Week',
 										'repeat-orders-per-active-user' => 'Repeat Orders per Active User',
-										'gross-revenue' => 'Gross Revenue',
 										'active-users-by-community' => 'Active Users by Community',
 										'reclaimed-users' => 'Reclaimed Users',
 									),
