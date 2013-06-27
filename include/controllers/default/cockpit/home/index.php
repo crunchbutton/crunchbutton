@@ -95,8 +95,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 										'new-users-per-active-users-by-community' => 'New Users per Active Users By Community',
 										'unique-users-per-week-by-community' => 'Unique Users per Week by Community',
 										'repeat-orders-per-active-user' => 'Repeat Orders per Active User',
-										'active-users-by-community' => 'Active Users by Community',
-										'reclaimed-users' => 'Reclaimed Users',
+										'reclaimed-users-per-week' => 'Reclaimed Users per Week',
 									),
 								'Tracking Marketing Efforts' => array(
 										'active-users-per-week' => 'Active Users per Week',
