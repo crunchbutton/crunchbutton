@@ -42,8 +42,9 @@ class Controller_home extends Crunchbutton_Controller_Account {
 																							'month' => 'Month', 
 																						),
 										/* OK */
-										'new-users-per-' => array( 
+										'users-new-per-' => array( 
 																						'_title' => 'New Users per',
+																						'day' => 'Day', 
 																						'week' => 'Week', 
 																						'month' => 'Month', 
 																						),
@@ -54,13 +55,13 @@ class Controller_home extends Crunchbutton_Controller_Account {
 																						'month' => 'Month', 
 																						),
 										/* OK */
-										'active-users-per-' => array( 
+										'users-active-per-' => array( 
 																						'_title' => 'Active users per',
 																						'week' => 'Week', 
 																						'month' => 'Month', 
 																						),
 										/* OK */
-										'unique-users-per-' => array( 
+										'users-unique-per-' => array( 
 																						'_title' => 'Unique Users per',
 																						'week' => 'Week', 
 																						'month' => 'Month', 
@@ -72,7 +73,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 																						'month' => 'Month', 
 																						),
 										/* OK */
-										'new-users-per-active-users-per-' => array( 
+										'users-new-per-active-users-per-' => array( 
 																						'_title' => 'New Users per Active Users per',
 																						'week' => 'Week', 
 																						'month' => 'Month', 
@@ -90,12 +91,12 @@ class Controller_home extends Crunchbutton_Controller_Account {
 																						'month' => 'Month', 
 																						),
 																						
-										'active-users-per-week-by-community' => 'Active Users per Week by Community',
-										'new-users-per-week-by-community' => 'New Users per Week by Community',
-										'new-users-per-active-users-by-community' => 'New Users per Active Users By Community',
-										'unique-users-per-week-by-community' => 'Unique Users per Week by Community',
-										'repeat-orders-per-active-user' => 'Repeat Orders per Active User',
-										'reclaimed-users-per-week' => 'Reclaimed Users per Week',
+										'users-active-per-week-by-community' => 'Active Users per Week by Community',
+										'users-new-per-week-by-community' => 'New Users per Week by Community',
+										'users-new-per-active-users-by-community' => 'New Users per Active Users By Community',
+										'users-unique-per-week-by-community' => 'Unique Users per Week by Community',
+										'orders-repeat-per-active-user' => 'Repeat Orders per Active User',
+										'users-reclaimed-per-week' => 'Reclaimed Users per Week',
 									),
 								'Tracking Marketing Efforts' => array(
 										'active-users-per-week' => 'Active Users per Week',

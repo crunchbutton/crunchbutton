@@ -93,6 +93,10 @@
 			?>
 				Months from <?php echo $from_month; ?> to <?php echo $to_month; ?> (of <?php echo $totalMonths; ?>):
 			<?php 
+			} else if( $interval == 'day' ){
+			?>
+				Months from <?php echo $from_day; ?> to <?php echo $to_day; ?> (of <?php echo $totalDays; ?>):
+			<?php 
 			} ?>
 		</div>
 		<div class="span8">
@@ -120,6 +124,7 @@ $(function () {
 			labels : {
 				rotation: -45,
 				align: 'right'
+				<?php if( $interval == 'day' ){ ?>,step:10<?php } ?>
 			}
 		},
 		yAxis: {
@@ -161,6 +166,11 @@ $(function () {
 		?>
 			values: [ <?php echo $from_month; ?>, <?php echo $to_month; ?> ],
 			max: <?php echo $totalMonths; ?>,
+		<?php 
+		} else if( $interval == 'day' ){
+		?>
+			values: [ <?php echo $from_day; ?>, <?php echo $to_day; ?> ],
+			max: <?php echo $totalDays; ?>,
 		<?php 
 		} ?>
 		change: function( event, ui ) {
