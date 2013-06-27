@@ -84,7 +84,16 @@
 	<br/>
 	<div class="row-fluid">
 		<div class="span3" id="week-<?=$chartId?>-<?php echo $number; ?>">
-			Weeks from <?php echo $from; ?> to <?php echo $to; ?> (of <?php echo $totalWeeks; ?>):
+			<?php
+			if( $interval == 'week' ){
+				?>
+					Weeks from <?php echo $from; ?> to <?php echo $to; ?> (of <?php echo $totalWeeks; ?>):
+				<?php
+			} else if( $interval == 'month' ){
+			?>
+				Months from <?php echo $from_month; ?> to <?php echo $to_month; ?> (of <?php echo $totalMonths; ?>):
+			<?php 
+			} ?>
 		</div>
 		<div class="span8">
 			<div id="slider-<?=$chartId?>-<?php echo $number; ?>" data-from="<?php echo $from; ?>" data-to="<?php echo $to; ?>"></div>
@@ -124,6 +133,8 @@ $(function () {
 			}
 		},
 		tooltip: {
+			shared:true,
+			crosshairs:true,
 			valueSuffix: ' <?=$unit?>'
 		},
 		plotOptions: {
@@ -140,15 +151,25 @@ $(function () {
 	$( '#slider-<?=$chartId?>-<?php echo $number; ?>' ).slider( {
 		range: true,
 		min: 1,
-		values: [ <?php echo $from; ?>, <?php echo $to; ?> ],
-		max: <?php echo $totalWeeks; ?>,
+		<?php
+		if( $interval == 'week' ){
+			?>
+			values: [ <?php echo $from; ?>, <?php echo $to; ?> ],
+			max: <?php echo $totalWeeks; ?>,
+			<?php
+		} else if( $interval == 'month' ){
+		?>
+			values: [ <?php echo $from_month; ?>, <?php echo $to_month; ?> ],
+			max: <?php echo $totalMonths; ?>,
+		<?php 
+		} ?>
 		change: function( event, ui ) {
 			var activeUserDays = $( '#active-user-days' ).val();
 			$( '#week-<?=$chartId?>-<?php echo $number; ?>' ).html( '<i class="icon-spinner icon-spin"></i>' );
 			$( '#slider-<?=$chartId?>-<?php echo $number; ?>' ).slider( 'disable' );
 			$( '#slider-<?=$chartId?>-<?php echo $number; ?>' ).css( 'opacity', 0.4 );
 			var self = $( '#<?=$chartId?>-<?php echo $number; ?>' );
-			var url = '/home/charts/<?=$chartId?>/<?php echo $title; ?>/<?php echo $number; ?>/?from=' + ui.values[ 0 ] + '&to=' + ui.values[ 1 ] + '&activeUserDays=' + activeUserDays;
+			var url = '/home/charts/<?=$chartId?>/<?php echo $title; ?>/<?php echo $number; ?>/?interval=<?php echo $interval;?>&from=' + ui.values[ 0 ] + '&to=' + ui.values[ 1 ] + '&activeUserDays=' + activeUserDays;
 			$.ajax( { url: url, }).done(function( data ) { self.html( data ); } );
 		}
 	} );
