@@ -20,7 +20,7 @@ $groups = $this->giftcards_groups;
 				<td><?php echo $group->name;?> </td>
 				<td><?php echo $date->format('M jS Y')?> - <?php echo $date->format('g:i:s A')?> </td>
 				<td><?php echo $group->range(); ?></td>
-				<td><?php echo $group->giftcards_redeemed_total(); ?></td>
+				<td><?php echo $group->giftcards_total(); ?></td>
 				<td><?php echo $group->giftcards_redeemed_total(); ?></td>
 				<td style="width:150px;">
 					<a href="/giftcards/groups/<?php echo $group->id_promo_group; ?>" class="btn btn-green admin-giftcard-group-new"><i class="icon-edit"></i> Edit</a>
