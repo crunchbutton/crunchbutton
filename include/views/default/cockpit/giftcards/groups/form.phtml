@@ -1,0 +1,95 @@
+<?
+	$this->title = 'Gift cards - Groups';
+	$this->titleicon = 'gift';
+	$this->titleLink = '/giftcards/groups';
+	
+	$this->title2 = 'Create new group';
+	$this->title2icon = 'group';
+
+	$group = $this->group;
+	if( $group->id_promo_group ){
+		$range = $group->range();	
+	} 
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Group</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<li>
+							<span>Name</span>
+							<span class="pull-right">
+								<input type="text" name="name" maxlength="250" id="name" value="<?php echo $group->name; ?>" />
+							</span>
+						</li>
+						<?php 
+						if( $group->id_promo_group ){?>
+						<li>
+							<span>Number of giftcards</span>
+							<span class="pull-right">
+								<?php echo $group->giftcards_total(); ?>
+							</span>
+						</li>
+						<?php } ?>
+						<li>
+							<span>Range of giftcards</span>
+							<span class="pull-right">
+								<input type="text" name="range" maxlength="250" id="range" value="<?php echo $range; ?>" />
+								<div class="note large">
+									Sample: 1 - 3, 10 - 12, 15
+								</div>
+							</span>
+						</li>
+						<li class="input">
+							<button type="submit" class="btn btn-blue admin-giftcard-group-save"><i class="icon-save"></i> Save </button> 
+						</li>
+					</ul>
+				</div>
+			</div>
+	</div>
+</div>
+<script>
+
+$(function() {
+	$(document).on('click', '.admin-giftcard-group-save', function() {
+	App.giftcards.print = true;
+	sendForm();
+	} );
+});
+
+function sendForm(){
+
+	var name = $.trim( $( '#name' ).val() );
+	var range = $.trim( $( '#range' ).val() );
+	if( name == '' ){
+		alert( 'Please type a name!' );
+		$( '#name' ).focus();
+		return;
+	}
+
+	var data = { 'name' : name, 'range' : range };
+
+	var url = App.service + 'giftcard/group/<?php echo $group->id_promo_group; ?>';
+	$.ajax({
+		type: "POST",
+		dataType: 'json',
+		data: data,
+		url: url,
+		success: function( json ) {
+			if( json.error ){
+				alert( 'Error at saving the group!' );
+			} else {
+				alert( 'Group saved!' );
+				location.href = '/giftcards/groups/';
+			}
+		},
+		error: function( ){
+			alert( 'Error at saving the group!' );
+		}
+	});
+}
+</script>
