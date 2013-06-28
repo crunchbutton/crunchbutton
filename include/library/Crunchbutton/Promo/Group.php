@@ -37,9 +37,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 	}
 
 	public function giftcards_redeemed_total(){
-		$query = "SELECT COUNT(*) AS total FROM promo p 
-									INNER JOIN promo_group_promo pgp ON p.id_promo = pgp.id_promo AND pgp.id_promo_group = {$this->id_promo_group}
-									INNER JOIN credit c ON p.id_promo = c.id_promo AND p.id_promo = c.id_promo";
+		$query = "SELECT COUNT(*) AS total FROM promo_group_promo pgp INNER JOIN credit c ON pgp.id_promo = c.id_promo WHERE pgp.id_promo_group = {$this->id_promo_group}";
 		$total = c::db()->get( $query );
 		return $total->_items[0]->total;
 	}
