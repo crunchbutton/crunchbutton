@@ -278,8 +278,33 @@ class Crunchbutton_Chart extends Cana_Model {
 		return $data;
 	}
 
-	public function parseDataWeeksGroup( $query ){
+	public function parseDataDaysGroup( $query ){
 
+		$data = c::db()->get( $query );
+
+		$_days = [];
+		$groups = [];
+
+		foreach ( $data as $item ) {
+			$groups[ $item->Group ] = $item->Group;
+			$_days[ $item->Day ][ $item->Group ] = $item->Total;
+		}
+
+		$data = [];
+
+		$allDays = $this->allDays();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$days = $allDays[ $i ];
+			foreach( $groups as $group ){
+				$total = ( $_days[ $days ][ $group ] ) ? $_days[ $days ][ $group ] : 0;
+				$data[] = ( object ) array( 'Label' => $this->parseDay( $days ), 'Total' => $total, 'Type' => $group  ); 
+			}
+		}
+		return $data;
+	}
+
+	public function parseDataWeeksGroup( $query ){
 		$data = c::db()->get( $query );
 
 		$_weeks = [];
@@ -300,7 +325,32 @@ class Crunchbutton_Chart extends Cana_Model {
 				$data[] = ( object ) array( 'Label' => $this->parseWeek( $week ), 'Total' => $total, 'Type' => $group  ); 
 			}
 		}
-
 		return $data;
 	}
+
+	public function parseDataMonthGroup( $query ){
+
+		$data = c::db()->get( $query );
+
+		$_months = [];
+		$groups = [];
+		foreach ( $data as $item ) {
+			$groups[ $item->Group ] = $item->Group;
+			$_months[ $item->Month ][ $item->Group ] = $item->Total;
+		}
+
+		$data = [];
+
+		$allMonths = $this->allMonths();
+
+		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
+			$month = $allMonths[ $i ];
+			foreach( $groups as $group ){
+				$total = ( $_months[ $month ][ $group ] ) ? $_months[ $month ][ $group ] : 0;
+				$data[] = ( object ) array( 'Label' => $this->parseMonth( $month, true ), 'Total' => $total, 'Type' => $group  ); 
+			}
+		}
+		return $data;
+	}
+
 }
