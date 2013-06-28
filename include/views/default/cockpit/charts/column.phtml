@@ -27,6 +27,11 @@
 
 	}
 	
+	if( count( $xs ) == 0 ){
+		echo "No results for <b>{$title}</b>";
+		exit;
+	}
+
 	foreach ($xs as $k => $v) {
 		$xx .= "'".str_replace("'","\\'",$k)."', ";
 	}
