@@ -156,7 +156,55 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$this->renderColumn( $chart->byMonth( true ) );
 				break;
 			
+			/* Gift card */
+
+			case 'gift-cards-created-per-day':
+				$chart = new Crunchbutton_Chart_Giftcard();
+				$this->renderColumn( $chart->createdByDay( true ) );
+				break;
+
+			case 'gift-cards-created-per-week':
+				$chart = new Crunchbutton_Chart_Giftcard();
+				$this->renderColumn( $chart->createdByWeek( true ) );
+				break;
+
+			case 'gift-cards-created-per-month':
+				$chart = new Crunchbutton_Chart_Giftcard();
+				$this->renderColumn( $chart->createdByMonth( true ) );
+				break;
+
+			case 'gift-cards-redeemed-per-day':
+				$chart = new Crunchbutton_Chart_Giftcard();
+				$this->renderColumn( $chart->redeemedByDay( true ) );
+				break;
+
+			case 'gift-cards-redeemed-per-week':
+				$chart = new Crunchbutton_Chart_Giftcard();
+				$this->renderColumn( $chart->redeemedByWeek( true ) );
+				break;
+
+			case 'gift-cards-redeemed-per-month':
+				$chart = new Crunchbutton_Chart_Giftcard();
+				$this->renderColumn( $chart->redeemedByMonth( true ) );
+				break;
+
+			case 'gift-cards-redeemed-per-group-per-day':
+				$chart = new Crunchbutton_Chart_Giftcard();
+				$this->renderColumn( $chart->redeemedPerGroupByDay( true ) );
+				break;
+
+			case 'gift-cards-redeemed-per-group-per-week':
+				$chart = new Crunchbutton_Chart_Giftcard();
+				$this->renderColumn( $chart->redeemedPerGroupByWeek( true ) );
+				break;
+
+			case 'gift-cards-redeemed-per-group-per-month':
+				$chart = new Crunchbutton_Chart_Giftcard();
+				$this->renderColumn( $chart->redeemedPerGroupByMonth( true ) );
+				break;
+
 			/* Others */
+
 			case 'weeks':
 				echo $this->chart->weeksToJson();
 				break;

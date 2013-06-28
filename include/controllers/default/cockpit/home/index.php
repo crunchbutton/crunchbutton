@@ -99,6 +99,25 @@ class Controller_home extends Crunchbutton_Controller_Account {
 										'users-reclaimed-per-week' => 'Reclaimed Users per Week',
 									),
 								'Tracking Marketing Efforts' => array(
+										'gift-cards-created-per-' => array( 
+																						'_title' => 'Gift Cards Created per',
+																						'day' => 'Day', 
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																						),
+										'gift-cards-redeemed-per-' => array( 
+																						'_title' => 'Gift Cards Redeemed per',
+																						'day' => 'Day', 
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																						),
+
+										'gift-cards-redeemed-per-group-per-' => array( 
+																						'_title' => 'Gift Cards Redeemed per Group per',
+																						'day' => 'Day', 
+																						'week' => 'Week', 
+																						'month' => 'Month', 
+																						),
 										'active-users-per-week' => 'Active Users per Week',
 										'active-users-per-week-by-community' => 'Active Users per Week by Community',
 										'orders-by-weekday-by-community' => 'Orders by Weekday by Community',

@@ -1,4 +1,5 @@
 <?php 
+
 class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 	
 	public $unit = 'users';
