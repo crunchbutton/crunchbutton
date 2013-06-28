@@ -20,10 +20,28 @@ class Crunchbutton_Promo_Group extends Cana_Table
 
 	public function giftcards(){
 		if ( !isset( $this->_giftcards ) ) {
-			$sql   = "SELECT * FROM promo p INNER JOIN promo_group_promo pgp ON p.id_promo = pgp.id_promo AND pgp.id_promo_group = {$this->id_promo_group}";
-			$this->_giftcards = Promo::q($sql, $this->db());
+			$query = "SELECT p.* FROM promo p INNER JOIN promo_group_promo pgp ON p.id_promo = pgp.id_promo AND pgp.id_promo_group = {$this->id_promo_group}";
+			$this->_giftcards = Promo::q( $query, $this->db() );
 		}
 		return $this->_giftcards;
+	}
+
+	public function giftcards_redeemed(){
+		if ( !isset( $this->_giftcards_redeemed ) ) {
+			$query = "SELECT p.* FROM promo p 
+									INNER JOIN promo_group_promo pgp ON p.id_promo = pgp.id_promo AND pgp.id_promo_group = {$this->id_promo_group}
+									INNER JOIN credit c ON p.id_promo = c.id_promo AND p.id_promo = c.id_promo";
+			$this->_giftcards_redeemed = Promo::q( $query, $this->db() );
+		}
+		return $this->_giftcards_redeemed;
+	}
+
+	public function giftcards_redeemed_total(){
+		$query = "SELECT COUNT(*) AS total FROM promo p 
+									INNER JOIN promo_group_promo pgp ON p.id_promo = pgp.id_promo AND pgp.id_promo_group = {$this->id_promo_group}
+									INNER JOIN credit c ON p.id_promo = c.id_promo AND p.id_promo = c.id_promo";
+		$total = c::db()->get( $query );
+		return $total->_items[0]->total;
 	}
 
 	public function remove_giftcards(){
@@ -32,7 +50,9 @@ class Crunchbutton_Promo_Group extends Cana_Table
 	}
 
 	public function giftcards_total(){
-		return $this->giftcards()->count();
+		$query = "SELECT COUNT(*) AS total FROM promo p INNER JOIN promo_group_promo pgp ON p.id_promo = pgp.id_promo AND pgp.id_promo_group = {$this->id_promo_group}";
+		$total = c::db()->get( $query );
+		return $total->_items[0]->total;
 	}
 
 	public function save_giftcards( $range ){
@@ -80,32 +100,36 @@ class Crunchbutton_Promo_Group extends Cana_Table
 
 	public function range(){
 		if( $this->giftcards_total() > 0 ){
-			$giftcards = $this->giftcards();
+			$query = "SELECT p.id_promo FROM promo p INNER JOIN promo_group_promo pgp ON p.id_promo = pgp.id_promo AND pgp.id_promo_group = {$this->id_promo_group}";
+			$giftcards = c::db()->get( $query );
 			$ids = [];
 			foreach ( $giftcards as $giftcard ) {
 				$ids[] = intval( $giftcard->id_promo );
 			}
 
 			sort( $ids );
+			
 			$groups = array();
-
-			for( $i = 0; $i < count( $ids ); $i++ ){
-				if( $i > 0 && ( $ids[$i - 1] == $ids[ $i ] - 1 ) ){
-					array_push( $groups[ count( $groups ) - 1 ], $ids[ $i ] );
+			$total = sizeof( $ids );
+			for( $i = 0; $i < $total; $i++ ){
+				if( $i > 0 && ( $ids[ $i - 1 ] == $ids[ $i ] - 1 ) ){
+					$groups[ count( $groups ) - 1 ][ 1 ] =  $ids[ $i ];
 				} else {
-					array_push( $groups, array( $ids[ $i ] ) ); 
+					$groups[] = array( $ids[ $i ] ); 
 				}
 			}
+
 			$str_group = '';
 			$commas = '';
 			foreach($groups as $group){
 				if( count( $group ) == 1 ){
 					$str_group .= $commas . $group[ 0 ];
 				} else {
-					$str_group .= $commas . $group[0] . ' - ' . $group[count($group) - 1];
+					$str_group .= $commas . $group[0] . ' - ' . $group[ count( $group ) - 1];
 				}
 				$commas = ', ';
 			}
+
 			return $str_group;
 		} else {
 			return '';

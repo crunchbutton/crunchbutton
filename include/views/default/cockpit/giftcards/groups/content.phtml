@@ -8,7 +8,9 @@ $groups = $this->giftcards_groups;
 		<thead>
 			<td>Name</td>
 			<td>Date</td>
-			<td>Number of Gift cards</td>
+			<td>Range</td>
+			<td>Gift cards</td>
+			<td>Gift cards Redeemed</td>
 			<td></td>
 		</thead>
 		<?php foreach ( $groups as $group ) { 
@@ -17,7 +19,9 @@ $groups = $this->giftcards_groups;
 			<tr>
 				<td><?php echo $group->name;?> </td>
 				<td><?php echo $date->format('M jS Y')?> - <?php echo $date->format('g:i:s A')?> </td>
-				<td><?php echo $group->giftcards_total(); ?></td>
+				<td><?php echo $group->range(); ?></td>
+				<td><?php echo $group->giftcards_redeemed_total(); ?></td>
+				<td><?php echo $group->giftcards_redeemed_total(); ?></td>
 				<td style="width:150px;">
 					<a href="/giftcards/groups/<?php echo $group->id_promo_group; ?>" class="btn btn-green admin-giftcard-group-new"><i class="icon-edit"></i> Edit</a>
 					&nbsp;
