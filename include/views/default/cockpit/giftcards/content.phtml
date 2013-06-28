@@ -12,6 +12,7 @@
 			<td>Email</td>
 			<td>Note</td>
 			<td>Issued as</td>
+			<td>Group</td>
 			<td>Redeemed</td>
 		</thead>
 		<? foreach ($this->giftcards as $giftcard) : ?>
@@ -42,6 +43,20 @@
 					<?php } elseif ( $giftcard->issued == Promo::ISSUED_PRINT ){ ?>
 						<i class="icon-print"></i> Paper (print)
 					<?php } else { ?> - <?php } ?>
+				</td>
+				<td>
+					<?php 
+						$groups = $giftcard->groups(); 
+						if( $groups->count() > 0 ){
+							$commas = '';
+							foreach ( $groups as $group ) {
+								echo $commas . $group->name ;
+								$commas = ', ';
+							}
+						} else {
+							echo '-';
+						}
+					?>
 				</td>
 				<td class="center"> 
 					<?php if( $wasUsed ) { ?>
