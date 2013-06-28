@@ -427,6 +427,11 @@ class Crunchbutton_Promo extends Cana_Table
 		$gifts = self::q($query);
 		return $gifts;
 	}
+
+	public function groups(){
+		return Crunchbutton_Promo_Group::q( "SELECT g.* FROM promo_group g INNER JOIN promo_group_promo pgp ON pgp.id_promo_group = g.id_promo_group AND pgp.id_promo = {$this->id_promo}" );		
+	}
+
 	public function order_reference(){
 		return Order::o($this->id_order_reference);	
 	}
