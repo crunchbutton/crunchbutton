@@ -1,0 +1,29 @@
+<?php 
+$groups = $this->giftcards_groups;
+?>
+<?php if (!$groups->count()) { ?>
+	No results found
+<?php } else { ?>
+	<table class="table table-normal">
+		<thead>
+			<td>Name</td>
+			<td>Date</td>
+			<td>Number of Gift cards</td>
+			<td></td>
+		</thead>
+		<?php foreach ( $groups as $group ) { 
+				$date = $group->date(); 
+			?>
+			<tr>
+				<td><?php echo $group->name;?> </td>
+				<td><?php echo $date->format('M jS Y')?> - <?php echo $date->format('g:i:s A')?> </td>
+				<td><?php echo $group->giftcards_total(); ?></td>
+				<td style="width:150px;">
+					<a href="/giftcards/groups/<?php echo $group->id_promo_group; ?>" class="btn btn-green admin-giftcard-group-new"><i class="icon-edit"></i> Edit</a>
+					&nbsp;
+					<button data-id="<?php echo $group->id_promo_group; ?>" class="btn admin-giftcard-group-remove btn-red admin-giftcard-group-new"><i class="icon-trash"></i> Remove</button>
+				</td>
+			</tr>
+		<?php } ?>
+	</table>
+<?php } ?>
