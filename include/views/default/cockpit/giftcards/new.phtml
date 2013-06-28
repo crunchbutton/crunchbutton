@@ -66,6 +66,16 @@
 							</span>
 						</li>
 						<li>
+							<label>Group</label>
+							<span>
+								<select id="id_group" class="chzn-select" multiple name="id_group" data-placeholder="Choose a group" style="width:100%;">
+									<? foreach (Crunchbutton_Promo_Group::q('SELECT * FROM promo_group ORDER BY name') as $group) : ?>
+										<option value="<?=$group->id_promo_group?>"><?=$group->name?></option>
+									<? endforeach ; ?>
+								</select>
+							</span>
+						</li>
+						<li>
 							<span>Paid by</span>
 							<span class="pull-right">
 								<select name="paid_by" id="paid_by" class="uniform">
@@ -345,6 +355,7 @@ $(function() {
 function sendForm(){
 	var value = $.trim( $( '#value' ).val() );
 	var id_restaurant = $( '#id_restaurant' ).val();
+	var id_group = $( '#id_group' ).val();
 	var id_user = $( '#id_user' ).val();
 	var total = $( '#total' ).val();
 	var print = ( App.giftcards.print ) ? 1 : 0;
@@ -392,7 +403,7 @@ function sendForm(){
 		}
 	}
 
-	var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit, 'notify_by_sms' : notify_by_sms, 'notify_by_email' : notify_by_email, 'chars_to_use' : chars_to_use, 'include_gift_card_id' : include_gift_card_id, 'length' : length, 'print' : print, 'prefix' : prefix };
+	var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit, 'notify_by_sms' : notify_by_sms, 'notify_by_email' : notify_by_email, 'chars_to_use' : chars_to_use, 'include_gift_card_id' : include_gift_card_id, 'length' : length, 'print' : print, 'prefix' : prefix, 'id_group' : id_group };
 	var url = App.service + 'giftcard/generate';
 	$.ajax({
 		type: "POST",
@@ -405,9 +416,9 @@ function sendForm(){
 			} else {
 				alert( 'Gift card(s) created!' );
 				if( App.giftcards.print ){
-					location.href = '/giftcards/print/' + json.success;	
+					location.href = '/giftcards/print/' + json.success;
 				} else {
-					location.href = '/giftcards';	
+					location.href = '/giftcards';
 				}
 			}
 		},

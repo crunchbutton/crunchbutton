@@ -13,7 +13,7 @@
 						<div class="span6 separate-sections">
 							<ul class="padded separate-sections">
 								<li class="input">
-									<input name="id_order" type="text" value="<?=strip_tags($_REQUEST['code'])?>" placeholder="Code">
+									<input name="code" type="text" value="<?=strip_tags($_REQUEST['code'])?>" placeholder="Code">
 								</li>
 								<li>
 									<label class="span3">Limit</label>
@@ -66,12 +66,13 @@
 			</div>
 			<div style="text-align: center;">
 				<button type="submit" class="btn btn-blue admin-giftcard-search"><i class="icon-search"></i>&nbsp;&nbsp;&nbsp; Search </button> 
+				&nbsp;&nbsp;&nbsp;
+				<a href="/giftcards/groups/" class="btn btn-green admin-giftcard-group-new"><i class="icon-group"></i>&nbsp;&nbsp;&nbsp; Groups </a> 
+				&nbsp;&nbsp;&nbsp;
 				<div class="btn-group">
 					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 						 Create / Send &nbsp;&nbsp;&nbsp;<span class="caret"></span>
 					</button>
-
-
 					<ul class="dropdown-menu">
 						<li><a href="/giftcards/new">Create a new code</a></li>
 						<li class="divider"></li>
@@ -79,7 +80,8 @@
 						<li><a href="/giftcards/sms">Send by sms</a></li>
 					</ul>
 				</div>
-
+				&nbsp;&nbsp;&nbsp;
+				
 			</div>
 			<br />
 		</div>
@@ -100,7 +102,7 @@
 			App.giftcards.load();
 		} );
 
-		$(document).on('keyup', '[name="id_order"]', function( e ) {
+		$(document).on('keyup', '[name="code"]', function( e ) {
 			if (e.which == 13) {
 				App.giftcards.load();
 			}

@@ -1745,7 +1745,34 @@ function full_post(url, data){
     $('#jQueryPostItForm').submit();
 }
 
-
-
+App.giftcardsGroup = {
+	params: function() {
+		return {
+			name: $('input[name="name"]').val()
+		};
+	},
+	load: function() {
+		$('.giftcards-group-loader').show();
+		$('.giftcards-group-content').html('');
+		$.ajax({
+			url: '/giftcards/groups/content',
+			data: App.giftcardsGroup.params(),
+			complete: function(content) {
+				$('.giftcards-group-content').html(content.responseText);
+				$('.giftcards-group-loader').hide();
+			}
+		});
+	},
+	remove: function( id_promo_group ){
+		$.ajax({
+			url: '/giftcards/groups/remove',
+			type: "POST",
+			data: { 'id_promo_group': id_promo_group } ,
+			complete: function() {
+				App.giftcardsGroup.load();
+			}
+		});
+	},
+}
 
 

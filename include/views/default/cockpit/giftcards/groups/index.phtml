@@ -1,0 +1,67 @@
+<?
+	$this->title = 'Gift cards';
+	$this->titleicon = 'gift';
+	$this->titleLink = '/giftcards';
+	
+	$this->title2 = 'Groups';
+	$this->title2icon = 'group';
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	 <div class="row-fluid">
+			<div class="box">
+				 <div class="box-content">
+						<div class="row-fluid">
+							<div class="span6 separate-sections">
+								 <ul class="padded separate-sections">
+										<li class="input">
+											 <input class="span12" name="name" type="text" value="<?=strip_tags($_REQUEST['name'])?>" placeholder="Name">
+										</li>
+								 </ul>
+							</div>
+							<div class="span6 separate-sections">
+								 <ul class="padded separate-sections">
+										<li><button class="btn btn-blue admin-giftcard-group-search"><i class="icon-search"></i>&nbsp;&nbsp;&nbsp; Search </button> 
+											 <a href="/giftcards/groups/new" class="btn btn-green admin-giftcard-group-new"><i class="icon-group"></i>&nbsp;&nbsp;&nbsp; New Group </a> 
+										</li>
+								 </ul>
+							</div>
+						</div>
+				 </div>
+			</div>
+			<div class="box">
+				 <div class="box-header"><span class="title">Results</span></div>
+				 <div class="box-content">
+						<div class="giftcards-group-loader">
+							 <center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center>
+						</div>
+						<div class="giftcards-group-content"></div>
+				 </div>
+			</div>
+	 </div>
+</div>
+<script>
+	$(function() {		
+
+		$(document).on('click', '.admin-giftcard-group-search', function() {
+			App.giftcardsGroup.load();
+		} );
+
+		$(document).on('keyup', '[name="name"]', function( e ) {
+			if (e.which == 13) {
+				App.giftcardsGroup.load();
+			}
+		} );
+
+		App.giftcardsGroup.load();
+
+		$(document).on('click', '.admin-giftcard-group-remove', function() {
+			var button = $( this );
+			if( confirm( 'Confirm? This action will not remove the gift cards!' ) ){
+				var id_promo_group = button.attr( 'data-id' );
+				App.giftcardsGroup.remove( id_promo_group );
+			} 
+		} );
+
+	});
+</script>

@@ -12,6 +12,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 
 						case 'generate':
 							$ids_restaurant = $this->request()['id_restaurant'];
+							$ids_group = $this->request()['id_group'];
 							$value = $this->request()['value'];
 							$total = $this->request()['total'];
 							$note = $this->request()['note'];
@@ -91,6 +92,15 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 										}
 
 										$giftcard->save();
+
+										if( $ids_group ){
+											foreach ( $ids_group as $id_group ) {
+												$new = new Crunchbutton_Promo_Group_Promo();
+												$new->id_promo = $giftcard->id_promo;
+												$new->id_promo_group = intval( $id_group );
+												$new->save();
+											}
+										}
 
 										if( !$idIni ){
 											$idIni = $giftcard->id_promo;
