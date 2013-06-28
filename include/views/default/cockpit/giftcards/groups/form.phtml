@@ -7,6 +7,7 @@
 	$this->title2icon = 'group';
 
 	$group = $this->group;
+	
 	if( $group->id_promo_group ){
 		$range = $group->range();	
 	} 
@@ -34,9 +35,16 @@
 								<?php echo $group->giftcards_total(); ?>
 							</span>
 						</li>
+						<li>
+							<span>Number of giftcards redeemed</span>
+							<span class="pull-right">
+								<?php echo $group->giftcards_redeemed_total(); ?>
+							</span>
+						</li>
+						
 						<?php } ?>
 						<li>
-							<span>Range of giftcards</span>
+							<span>Range of giftcards ids</span>
 							<span class="pull-right">
 								<input type="text" name="range" maxlength="250" id="range" value="<?php echo $range; ?>" />
 								<div class="note large">
@@ -61,7 +69,13 @@ $(function() {
 	} );
 });
 
+var processing = false;
+
 function sendForm(){
+
+	if( processing ){
+		return;
+	}
 
 	var name = $.trim( $( '#name' ).val() );
 	var range = $.trim( $( '#range' ).val() );
@@ -72,6 +86,11 @@ function sendForm(){
 	}
 
 	var data = { 'name' : name, 'range' : range };
+	
+	processing = true;
+	
+	$( '.admin-giftcard-group-save' ).html( '<i class="icon-spinner icon-spin"></i> Please wait' );
+	
 
 	var url = App.service + 'giftcard/group/<?php echo $group->id_promo_group; ?>';
 	$.ajax({
@@ -80,6 +99,7 @@ function sendForm(){
 		data: data,
 		url: url,
 		success: function( json ) {
+			processing = false;
 			if( json.error ){
 				alert( 'Error at saving the group!' );
 			} else {
@@ -88,6 +108,7 @@ function sendForm(){
 			}
 		},
 		error: function( ){
+			processing = false;
 			alert( 'Error at saving the group!' );
 		}
 	});
