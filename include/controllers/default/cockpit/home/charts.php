@@ -131,6 +131,11 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$chart = new Crunchbutton_Chart_Order();
 				$this->renderColumn( $chart->repeatByActiveuserByWeek( true ), $chart->getGroupedCharts() );
 				break;
+			
+			case 'orders-per-restaurant-by-community':
+				$chart = new Crunchbutton_Chart_Order();
+				$this->renderPieCommunities( $chart->perRestaurantPerCommunity( true ), $chart->getGroupedCharts() );
+				break;
 
 			/* Churn */
 
@@ -209,6 +214,18 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 			default:
 			break;
 		}
+	}
+
+	private function renderPieCommunities( $params, $groups ){
+			c::view()->display('charts/pie_communities', ['set' => [
+				'chartId' => $this->chartId,
+				'data' => $params[ 'data' ],
+				'title' => $this->title,
+				'number' => $this->number,
+				'unit' => $params[ 'unity' ],
+				'groups' => $groups,
+				'divId' => $this->divId
+			]]); 
 	}
 
 	private function renderArea( $params, $groups ){

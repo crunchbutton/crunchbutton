@@ -15,6 +15,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 																						'orders-per-week-by-community' => 'Orders per Week by Community',
 																						'orders-repeat-per-active-user' => 'Repeat Orders per Active User',
 																						'orders-by-weekday-by-community' => 'Orders by Weekday by Community',
+																						'orders-per-restaurant-by-community' => 'Orders per Restaurant by Community',
 																			) 
 										);
 
@@ -98,12 +99,37 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 								{$this->queryExcludeUsers}
 							GROUP BY YEARWEEK(date), r.community
 							ORDER BY YEARWEEK(date) DESC";
-
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unity );
 		}
 		return $parsedData;
+	}
+
+	public function perRestaurantPerCommunity( $render = false ){
+
+		$query = "SELECT 
+						     r.name AS Restaurant,
+						     orders.orders AS Total,
+							   r.community AS 'Group'
+						FROM
+						  (SELECT count(*) AS orders,
+						          o.id_restaurant
+						   FROM `order` o
+						   -- WHERE o.date BETWEEN CURDATE() - INTERVAL 60 DAY AND CURDATE()
+						   GROUP BY o.id_restaurant) orders
+						INNER JOIN restaurant r ON r.id_restaurant = orders.id_restaurant";
+
+		$data = c::db()->get( $query );
+		$groups = [];
+		foreach( $data as $item ){
+			$groups[ $item->Group ][] = array( 'Restaurant' => $item->Restaurant, 'Orders' => $item->Total );
+		}
+
+		if( $render ){
+			return array( 'data' => $groups, 'unit' => $this->unity );
+		}
+		return $data;
 	}
 
 	public function byUsersPerMonth( $render = false ){
