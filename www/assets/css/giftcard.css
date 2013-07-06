@@ -59,6 +59,14 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 			text-align: center;
 			width: 200px;
 		}
+			.help{
+				font-family: 'InconsolataMedium', 'Courier New', Courier, monospace;
+				font-size: 11px;
+				text-align: right;
+				margin-left: 530px;
+				margin-top: -30px;
+				position: absolute;
+			}
 			.page{
 				page-break-after:always;
 			}
