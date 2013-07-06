@@ -163,78 +163,42 @@
 					<hr/>
 				</div>
 			<?php
-			$chart_count_checkbox = 0;
-			$chart_count_div = 0;
-			foreach ($this->graphs as $category => $graphs ){ ?>
+			foreach ($this->graphs as $category => $graphs ){ 
+				?>
 				<h5><?php echo $category; ?></h5><?php
 				$count = 1;
 				foreach ($graphs as $id => $graph ){ 
 					if( $count == 1 ){
 							echo '<div class="row-fluid">';
 						}
-					if( is_array( $graph ) ){
-						$title = $graph[ '_title' ];
-						?>
-						<div class="span4">
-								<div><div style="margin-top:2px;float:left;"><?php echo $title; ?>:</div>
-								<?php
-						foreach ( $graph as $sub_id => $sub_graph ) {
-							$chart_count_checkbox++;
-							if( $sub_id == '_title' ){
-								continue;
-							}
-							$subtitle = $title . ' ' . $sub_graph;
-							$sub_id = $id . $sub_id;
-							?>
-								<span style="margin:0 5px 0 5px;">
-									<input type="checkbox" class="icheck" id="checkbox-<?php echo $sub_id;?>-<?php echo $chart_count_checkbox; ?>" data-id="<?php echo $sub_id;?>" data-count="<?php echo $chart_count_checkbox; ?>" name="checkbox-<?php echo $sub_id;?>">
-									<label for="checkbox-<?php echo $sub_id;?>-<?php echo $chart_count_checkbox; ?>"><?php echo $sub_graph; ?></label>
-								</span>
-							<?
-						}
-						?>
-							</div>
-						</div>
-						<?php
-					} else {
-						$chart_count_checkbox++;
+						$title = $graph[ 'title-group' ];
+						$divId = $graph[ 'divId' ];
 						?>
 							<div class="span4">
 								<div>
-									<input type="checkbox" class="icheck" id="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>" data-id="<?php echo $id;?>" data-count="<?php echo $chart_count_checkbox; ?>" name="checkbox-<?php echo $id;?>">
-									<label for="checkbox-<?php echo $id;?>-<?php echo $chart_count_checkbox; ?>"><?php echo $graph; ?></label>
+									<input type="checkbox" 
+									class="icheck" 
+									id="checkbox-<?php echo $divId;?>" 
+									data-divId="<?php echo $divId;?>" 
+									name="checkbox-<?php echo $divId;?>">
+									<label for="checkbox-<?php echo $divId;?>"><?php echo $title; ?></label>
 								</div>
 							</div>
 						<?
-					}
 					if( $count % 3 == 0 ){ 
 						echo '</div>';
 						$count = 0; 
 					}
 					$count++;
 				} 
-				if( $count != 1){
-					echo '</div>';
-				}
+				if( $count != 1){ echo '</div>'; }
 				?>
 				<hr/>
 					<? 
-					foreach ($graphs as $id => $graph ){ 
-						if( is_array( $graph ) ){
-							$title = $graph[ '_title' ];
-							foreach ( $graph as $sub_id => $sub_graph ) {
-								$chart_count_div++;
-								if( $sub_id == '_title' ){
-									continue;
-								}
-								$subtitle = $title . ' ' . $sub_graph;
-								$sub_id = $id . $sub_id;
-								echo '<div id="' . $sub_id . '-' . $chart_count_div .'" data-title="'. $subtitle . '" data-id="'.  $sub_id . '" data-count="' . $chart_count_div .'" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $subtitle . '</div>';		
-							}
-						} else {
-						$chart_count_div++;
-						echo '<div id="' . $id . '-' . $chart_count_div .'" data-title="'. $graph . '" data-id="'.  $id . '" data-count="' . $chart_count_div .'" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading: ' . $graph . '</div>';
-						}
+					foreach ( $graphs as $id => $graph ){ 
+						$chart = $graph[ 'chart-url' ];
+						$divId = $graph[ 'divId' ];
+						echo '<div id="' . $divId . '" data-permalink="' . $chart . '" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading </div>';
 					} ?>
 					<hr/>
 				<?php
@@ -273,6 +237,7 @@
 		<button class="btn btn-default" data-dismiss="modal">Close</button>
 	</div>
 </div>
+
 <script type="text/javascript">
 
 	var weekFrom = false;
@@ -281,16 +246,14 @@
 	$( document ).ready( function(){
 
 		$( '.icheck' ).on( 'ifChanged', function( event ){
-			var check = $(this);
-			var id = check.attr( 'data-id' );
-			var count = check.attr( 'data-count' );
-			var chartId = id + '-' + count;
-			var chart = $( '#' + chartId );
+			var check = $( this );
+			var divId = check.attr( 'data-divId' );
+			var chart = $( '#' + divId );
 			var title = chart.attr( 'data-title' );
 			if( check.is( ':checked' ) ){
 				chart.show();
 				if( !chart.attr( 'opened' ) ){
-					loadChart( chartId, true );
+					loadChart( { 'divId' : divId  } );
 				} 
 			} else {
 				chart.attr( 'opened', false );
@@ -306,7 +269,9 @@
 			$( '.chart' ).each( function(){
 				var chart = $( this );
 				if( chart.attr( 'opened' ) == 'true'  ){
-					loadChart( chart.attr( 'id' ), true );
+					var permalink = chart.attr( 'data-permalink' );
+					var params = { 'divId' : chart.attr( 'id' ), 'permalink' : permalink, 'force' : true };
+					loadChart( params );
 					$( '#button-reload' ).find( 'i' ).addClass( 'icon-spin ' );
 					setTimeout( function(){
 						$( '#button-reload' ).find( 'i' ).removeClass( 'icon-spin ' );
@@ -335,32 +300,42 @@
 		} );
 	} );
 
-	function loadChart( chartId, force ){
-		var chart = $( '#' + chartId );
-		chart.show();
-		var title = chart.attr( 'data-title' );
-		var id = chart.attr( 'data-id' );
-		var count = chart.attr( 'data-count' );
-		var sliderValues = '';
-		if( chart.attr( 'opened' ) ){
-			$( '#week-' + chartId ).html( '<i class="icon-spinner icon-spin"></i>' );
-			var slider = $( '#slider-' + chartId );
-			slider.slider( 'disable' );
-			slider.css( 'opacity', 0.4 );
-			sliderValues = '&to=' + slider.attr( 'data-to' ) + '&from=' + slider.attr( 'data-from' );
+	function loadChart( info ){
+
+		var divId = info[ 'divId' ];
+		var chart = $( '#' + divId );	
+
+		if( info[ 'permalink' ] ){
+			var permalink = info[ 'permalink' ];
+		} else {
+			var permalink = chart.attr( 'data-permalink' );
 		}
+
+		chart.attr( 'data-permalink', permalink );
+
 		var weeksStr = '';
-		if( force ){
-			if( weekFrom && weekFrom != '' ){
+
+		if( info[ 'force' ] ){
+			if( weekFrom && weekFrom != '' && typeof weekFrom != 'undefined' ){
 				weeksStr += '&from=' + weekFrom;
 			}
-			if( weekTo && weekTo != '' ){
+			if( weekTo && weekTo != '' && typeof weekTo != 'undefined' ){
 				weeksStr += '&to=' + weekTo;
 			}
 		}
-		chart.attr( 'opened', true );
-		var activeUserDays = $( '#active-user-days' ).val();
-		var url = '/home/charts/' + id + '/' + title + '/' + count + '?activeUserDays=' + activeUserDays + sliderValues + weeksStr;
+		var url = '/home/charts/' + permalink + '/' + divId + '/?1' + weeksStr;
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
+		chart.attr( 'opened', true );
 	}
+
+	function loadSubChart( id ){
+		var select = $( id );
+		var permalink = $( '#' + id + ' option:selected' ).val();
+		var divId = $( '#' + id ).attr( 'data-divId' );
+		$( '#' + divId ).html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
+		loadChart( { 'divId' : divId, 'permalink' : permalink } );
+	}
+
+
+
 </script>

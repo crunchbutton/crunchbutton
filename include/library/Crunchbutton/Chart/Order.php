@@ -4,11 +4,26 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 	public $unit = 'orders';
 	public $description = 'Orders';
 
+	public $group = 'group1';
+
+	public $groups = array( 
+													'group1' => array( 
+																						'orders-per-week' => 'Orders per Week',
+																						'orders-per-month' => 'Orders per Month',
+																						'orders-by-user-per-week' => 'Orders by User per Week',
+																						'orders-by-user-per-month' => 'Orders by User per Month',
+																						'orders-per-week-by-community' => 'Orders per Week by Community',
+																						'orders-repeat-per-active-user' => 'Repeat Orders per Active User',
+																						'orders-by-weekday-by-community' => 'Orders by Weekday by Community',
+																			) 
+										);
+
 	public function __construct() {
 		parent::__construct();
 	}
 
 	public function byWeekdayByCommunity( $render = false ){
+
 		$query = "SELECT DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%W') AS `Day`,
 										 COUNT(*) AS `Orders`,
 										 r.community AS `Community`
@@ -29,6 +44,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 	}
 
 	public function byMonth( $render = false ){
+
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
 											COUNT(*) AS Total
 								FROM `order` o
@@ -112,16 +128,16 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 	public function byUsersPerWeek( $render = false ){
 
-			$query = "SELECT YEARWEEK(date) AS Week,
-									 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total
-						FROM `order` o
-						INNER JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN community c ON o.id_community = c.id_community
-						WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
-							{$this->queryExcludeCommunties}
-							{$this->queryExcludeUsers}
-						GROUP BY YEARWEEK(date)
-						ORDER BY YEARWEEK(date) DESC";
+		$query = "SELECT YEARWEEK(date) AS Week,
+								 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total
+					FROM `order` o
+					INNER JOIN user u ON u.id_user = o.id_user
+					LEFT JOIN community c ON o.id_community = c.id_community
+					WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+						{$this->queryExcludeCommunties}
+						{$this->queryExcludeUsers}
+					GROUP BY YEARWEEK(date)
+					ORDER BY YEARWEEK(date) DESC";
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){

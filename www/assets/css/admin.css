@@ -923,3 +923,8 @@ td.day{
 .center{
 	text-align:center;
 }
+
+.charts-select{
+	font-size: 11px;
+	width: 250px;
+}

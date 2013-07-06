@@ -16,8 +16,15 @@ class Crunchbutton_Chart extends Cana_Model {
 	public $monthFrom;
 	public $monthTo;
 
+	public $chartId;
+
+	public $groups = array();
+	public $group = '';
+
 	public function __construct() {
 		
+		$this->chartId = c::getPagePiece(2);
+
 		$interval = ( $_REQUEST[ 'interval' ] ) ? $_REQUEST[ 'interval' ] : 'week';
 
 		$this->activeUsersInterval = ( $_REQUEST[ 'activeUserDays' ] ? $_REQUEST[ 'activeUserDays' ] : $this->activeUsersInterval ); 
@@ -353,4 +360,7 @@ class Crunchbutton_Chart extends Cana_Model {
 		return $data;
 	}
 
+	public function getGroupedCharts(){
+		return $this->groups[ $this->group ];
+	}
 }
