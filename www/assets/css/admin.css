@@ -908,7 +908,6 @@ input:disabled {
 	height: 450px;
 	overflow: scroll;
 }
-
 #admin-dish-lightning-modal{
 	background: #FFF;
 	border: 1px solid #CCC;
@@ -922,4 +921,9 @@ td.day{
 }
 .center{
 	text-align:center;
+}
+
+.charts-select{
+	font-size: 11px;
+	width: 250px;
 }

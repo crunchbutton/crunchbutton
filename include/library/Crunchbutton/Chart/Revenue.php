@@ -3,6 +3,15 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 	
 	public $unit = 'US$';
 	public $description = 'US$';
+	
+	public $group = 'group1';
+
+	public $groups = array( 
+													'group1' => array( 
+																						'gross-revenue-per-week' => 'Gross Revenue per Week',
+																						'gross-revenue-per-month' => 'Gross Revenue per Month',
+																			)
+										);
 
 	public function __construct() {
 		parent::__construct();

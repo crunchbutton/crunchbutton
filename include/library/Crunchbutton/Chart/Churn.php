@@ -5,10 +5,21 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 	public $unit = 'users';
 	public $description = 'Users';
 
+	public $group = 'group1';
+
+	public $groups = array( 
+													'group1' => array( 
+																						'churn-rate-per-week' => 'Churn Rate per Week',
+																						'churn-rate-per-month' => 'Churn Rate per Month',
+																						'churn-rate-per-active-user-per-week' => 'Churn Rate per Active User per Week',
+																						'churn-rate-per-active-user-per-month' => 'Churn Rate per Active User per Month'
+																						
+																			) 
+										);
+
 	public function __construct() {
 		parent::__construct();
 	}
-
 
 	public function activeByMonth( $render = false ){
 		
