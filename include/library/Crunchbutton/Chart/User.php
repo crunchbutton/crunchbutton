@@ -22,7 +22,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 																						'users-new-per-week-by-community' => 'New Users per Week by Community',
 																						'users-new-per-active-users-by-community' => 'New Users per Active Users By Community',
 																						'users-unique-per-week-by-community' => 'Unique Users per Week by Community',
-																						'users-reclaimed-per-week' => 'Reclaimed Users per Week',
+																						'users-reclaimed-per-week' => 'Reclaimed Users per Week'
 																			) 
 										);
 

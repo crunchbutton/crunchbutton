@@ -132,6 +132,19 @@ class Crunchbutton_Chart extends Cana_Model {
 		return sizeof( $months );
 	}
 
+	public function allCommunities(){
+		$query = "SELECT DISTINCT( r.community ) AS community FROM restaurant r WHERE r.community IS NOT NULL ORDER BY r.community ASC";
+		$results = c::db()->get( $query );
+		$communities = array();
+		foreach ( $results as $result ) {
+			if( !$result->community ){
+				continue;
+			}
+			$communities[] = $result->community;
+		}
+		return $communities;
+	}
+
 	public function allDays(){
 		$query = "SELECT DISTINCT( DATE_FORMAT( o.date ,'%Y-%m-%d') ) day FROM `order` o WHERE o.date IS NOT NULL ORDER BY day ASC";
 		$results = c::db()->get( $query );
