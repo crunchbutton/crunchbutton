@@ -63,9 +63,10 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 				font-family: 'InconsolataMedium', 'Courier New', Courier, monospace;
 				font-size: 11px;
 				text-align: right;
-				margin-left: 530px;
-				margin-top: -30px;
+				margin-left: 480px;
+				margin-top: 308px;
 				position: absolute;
+				z-index: 100;
 			}
 			.page{
 				page-break-after:always;
