@@ -27,68 +27,84 @@
 
 	}
 	
+	$hasResults = true;
+
 	if( count( $xs ) == 0 ){
-		echo "No results for <b>{$title}</b>";
-		exit;
+		$hasResults = false;
 	}
 
-	foreach ($xs as $k => $v) {
-		$xx .= "'".str_replace("'","\\'",$k)."', ";
-	}
-	$xx = substr($xx,0,-2);
-	
-	// fill empty columns
-	foreach ($xs as $k => $v) {
-		foreach ($ys as $kk => $vv) {
-			$ys[$kk][$k] = 0;
+	if( $hasResults ){
+
+		foreach ($xs as $k => $v) {
+			$xx .= "'".str_replace("'","\\'",$k)."', ";
 		}
-	}
-
-
-	// gather data
-	foreach ($data as $item) {
-		$vars = get_object_vars($item);
+		$xx = substr($xx,0,-2);
 		
-		// X
-		$x = array_shift($vars);
-		$xs[$x] = true;
+		// fill empty columns
+		foreach ($xs as $k => $v) {
+			foreach ($ys as $kk => $vv) {
+				$ys[$kk][$k] = 0;
+			}
+		}
 
-		// Y & group
-		$y = array_shift($vars);
-		
-		$groupName = key($vars);
-		$group = array_shift($vars);
-		
-		$ys[$group][$x] = $y;
 
-	}
-	
-	// remove assoc vals and add proper keys
-	foreach ($ys as $k => $v) {
-		$ys[$k] = array_values($ys[$k]);
-		$ys[$k] = [
-			'name' => $k,
-			'data' => $ys[$k]
+		// gather data
+		foreach ($data as $item) {
+			$vars = get_object_vars($item);
+			
+			// X
+			$x = array_shift($vars);
+			$xs[$x] = true;
+
+			// Y & group
+			$y = array_shift($vars);
+			
+			$groupName = key($vars);
+			$group = array_shift($vars);
+			
+			$ys[$group][$x] = $y;
+
+		}
+		
+		// remove assoc vals and add proper keys
+		foreach ($ys as $k => $v) {
+			$ys[$k] = array_values($ys[$k]);
+			$ys[$k] = [
+				'name' => $k,
+				'data' => $ys[$k]
+			];
+		}
+
+		
+		$jsData = [
+			'xs' => array_keys($xs),
+			'ys' => array_values($ys)
 		];
 	}
-
-	
-	$jsData = [
-		'xs' => array_keys($xs),
-		'ys' => array_values($ys)
-	];
 
 ?>
 <div class="row-fluid">
 	<div class="row-fluid">
 		<div class="span12">
-			<h4 style="text-align:center;"><?php echo $title; ?></h4>	
+			<h4 style="text-align:center;"><?php echo $groups[ $chartId ]; ?></h4>	
 		</div>
 	</div>
-	<div id="chart-<?=$chartId?>-<?php echo $number; ?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
+	<?php if( $groups ){ ?>
+		<span class="pull-right">
+			<select class="charts-select" id="select-<?=$chartId?>" data-divId="<?php echo $divId; ?>" onchange="loadSubChart( this.id )">
+				<?php foreach ( $groups as $key => $value ) { 
+					$selected = ( $key == $chartId ) ? 'selected="selected"' : '';
+					?>
+					<option <?php echo $selected; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option>
+				<?php } ?>
+			</select>
+		</span>
+	<?php } ?>
+	<?php if( $hasResults ){ ?>
+	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
 	<br/>
 	<div class="row-fluid">
-		<div class="span3" id="week-<?=$chartId?>-<?php echo $number; ?>">
+		<div class="span3" id="week-<?=$chartId?>">
 			<?php
 			if( $interval == 'week' ){
 				?>
@@ -105,14 +121,18 @@
 			} ?>
 		</div>
 		<div class="span8">
-			<div id="slider-<?=$chartId?>-<?php echo $number; ?>" data-from="<?php echo $from; ?>" data-to="<?php echo $to; ?>"></div>
+			<div id="slider-<?=$divId?>" data-from="<?php echo $from; ?>" data-to="<?php echo $to; ?>"></div>
 	</div>
+	<?php } else {
+		echo 'No results for <b>' . $groups[ $chartId ] . '</b>';
+	} ?>
 </div>
+<?php if( $hasResults ){ ?>
 <hr />
 <script type="text/javascript">
 $(function () {
 	var data = <?=json_encode($jsData, JSON_NUMERIC_CHECK)?>;
-	$('#chart-<?=$chartId?>-<?php echo $number; ?>').highcharts({
+	$('#chart-<?=$chartId?>').highcharts({
 		chart: {
 			type: 'column',
 			backgroundColor:'rgba(255, 255, 255, 0.1)'
@@ -158,7 +178,7 @@ $(function () {
 		},
 		series: data.ys
 	});
-	$( '#slider-<?=$chartId?>-<?php echo $number; ?>' ).slider( {
+	$( '#slider-<?=$divId?>' ).slider( {
 		range: true,
 		min: 1,
 		<?php
@@ -180,13 +200,14 @@ $(function () {
 		} ?>
 		change: function( event, ui ) {
 			var activeUserDays = $( '#active-user-days' ).val();
-			$( '#week-<?=$chartId?>-<?php echo $number; ?>' ).html( '<i class="icon-spinner icon-spin"></i>' );
-			$( '#slider-<?=$chartId?>-<?php echo $number; ?>' ).slider( 'disable' );
-			$( '#slider-<?=$chartId?>-<?php echo $number; ?>' ).css( 'opacity', 0.4 );
-			var self = $( '#<?=$chartId?>-<?php echo $number; ?>' );
-			var url = '/home/charts/<?=$chartId?>/<?php echo $title; ?>/<?php echo $number; ?>/?interval=<?php echo $interval;?>&from=' + ui.values[ 0 ] + '&to=' + ui.values[ 1 ] + '&activeUserDays=' + activeUserDays;
+			$( '#week-<?=$chartId?>' ).html( '<i class="icon-spinner icon-spin"></i>' );
+			$( '#slider-<?=$chartId?>' ).slider( 'disable' );
+			$( '#slider-<?=$chartId?>' ).css( 'opacity', 0.4 );
+			var self = $( '#<?=$divId?>' );
+			var url = '/home/charts/<?=$chartId?>/<?php echo $divId; ?>/?interval=<?php echo $interval;?>&from=' + ui.values[ 0 ] + '&to=' + ui.values[ 1 ] + '&activeUserDays=' + activeUserDays;
 			$.ajax( { url: url, }).done(function( data ) { self.html( data ); } );
 		}
 	} );
 });
 </script>
+<?php } ?>
