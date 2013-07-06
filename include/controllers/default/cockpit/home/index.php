@@ -33,98 +33,14 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		c::view()->data = $data;
 
 		$graphs = array( 
-
-								'Stuff for Investors' => array( 
-										/* OK */
-										'orders-per-' => array(
-																							'_title' => 'Orders per',
-																							'week' => 'Week', 
-																							'month' => 'Month', 
-																						),
-										/* OK */
-										'users-new-per-' => array( 
-																						'_title' => 'New Users per',
-																						'day' => 'Day', 
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																						),
-										/* OK */
-										'gross-revenue-per-' => array( 
-																						'_title' => 'Gross Revenue per',
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																						),
-										/* OK */
-										'users-active-per-' => array( 
-																						'_title' => 'Active users per',
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																						),
-										/* OK */
-										'users-unique-per-' => array( 
-																						'_title' => 'Unique Users per',
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																						),
-										/* OK */
-										'orders-by-user-per-' => array( 
-																						'_title' => 'Orders by Users per',
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																						),
-										/* OK */
-										'users-new-per-active-users-per-' => array( 
-																						'_title' => 'New Users per Active Users per',
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																					),
-										/* OK */
-										'churn-rate-per-' => array( 
-																						'_title' => 'Churn Rate per',
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																						),
-										/* OK */
-										'churn-rate-per-active-user-per-' => array( 
-																						'_title' => 'Churn Rate per Active User per',
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																						),
-																						
-										'users-active-per-week-by-community' => 'Active Users per Week by Community',
-										'users-new-per-week-by-community' => 'New Users per Week by Community',
-										'users-new-per-active-users-by-community' => 'New Users per Active Users By Community',
-										'users-unique-per-week-by-community' => 'Unique Users per Week by Community',
-										'orders-repeat-per-active-user' => 'Repeat Orders per Active User',
-										'users-reclaimed-per-week' => 'Reclaimed Users per Week',
-									),
-								'Tracking Marketing Efforts' => array(
-										'gift-cards-created-per-' => array( 
-																						'_title' => 'Gift Cards Created per',
-																						'day' => 'Day', 
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																						),
-										'gift-cards-redeemed-per-' => array( 
-																						'_title' => 'Gift Cards Redeemed per',
-																						'day' => 'Day', 
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																						),
-
-										'gift-cards-redeemed-per-group-per-' => array( 
-																						'_title' => 'Gift Cards Redeemed per Group per',
-																						'day' => 'Day', 
-																						'week' => 'Week', 
-																						'month' => 'Month', 
-																						),
-										'active-users-per-week' => 'Active Users per Week',
-										'active-users-per-week-by-community' => 'Active Users per Week by Community',
-										'orders-by-weekday-by-community' => 'Orders by Weekday by Community',
-										'orders-per-week' => 'Orders per Week',
-										'orders-per-week-by-community' => 'Orders per Week by Community',
-										// 'orders-using-giftcard-per-week' => 'Orders using Gift Card per Week',*/
-									),
+								'' => array( 
+									// Groups
+									array( 'divId' => 'chart-orders', 'title-group' => 'Orders', 'chart-url' => 'orders-per-week' ),
+									array( 'divId' => 'chart-users', 'title-group' => 'Users', 'chart-url' => 'users-new-per-day' ),
+									array( 'divId' => 'chart-gross', 'title-group' => 'Gross Revenue', 'chart-url' => 'gross-revenue-per-week' ),
+									array( 'divId' => 'chart-churn', 'title-group' => 'Churn Rate', 'chart-url' => 'churn-rate-per-week' ),
+									array( 'divId' => 'chart-gift-cards', 'title-group' => 'Gift Cards', 'chart-url' => 'gift-cards-created-per-day' ),
+									)
 							);
 
 		c::view()->graphs = $graphs;

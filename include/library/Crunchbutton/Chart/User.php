@@ -4,11 +4,34 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	public $unit = 'users';
 	public $description = 'Users';
 
+	public $group = 'group1';
+
+	public $groups = array( 
+													'group1' => array( 
+																						'users-new-per-day' => 'New Users per Day',
+																						'users-new-per-week' => 'New Users per Week',
+																						'users-new-per-month' => 'New Users per Month',
+																						'users-active-per-week' => 'Active Users per Week',
+																						'users-active-per-month' => 'Active Users per Month',
+																						'users-unique-per-week' => 'Unique Users per Week',
+																						'users-unique-per-month' => 'Unique Users per Month',
+																						'users-new-per-active-users-per-week' => 'New Users per Active Users per Week',
+																						'users-new-per-active-users-per-month' => 'New Users per Active Users per Month',
+																						
+																						'users-active-per-week-by-community' => 'Active Users per Week by Community',
+																						'users-new-per-week-by-community' => 'New Users per Week by Community',
+																						'users-new-per-active-users-by-community' => 'New Users per Active Users By Community',
+																						'users-unique-per-week-by-community' => 'Unique Users per Week by Community',
+																						'users-reclaimed-per-week' => 'Reclaimed Users per Week'
+																			) 
+										);
+
 	public function __construct() {
 		parent::__construct();
 	}
 
 	public function activeByMonth( $render = false ){
+
 		$query = '';
 		$union = '';
 
@@ -67,6 +90,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	}
 
 	public function reclaimedByWeek( $render = false ){
+
 		$query = "SELECT yearweek AS Week,
 										 COUNT(*) AS Total
 							FROM
@@ -123,7 +147,8 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	}
 
 	public function activeByWeek( $render = false ){
-	
+
+
 		$allWeeks = $this->allWeeks();
 
 		$query = '';
@@ -157,6 +182,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	}
 
 	public function newByDay( $render = false ){
+
 		$query = "SELECT SUM(1) AS Total,
 										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day
 							FROM `order` o

@@ -5,6 +5,22 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 	public $unit = 'gift cards';
 	public $description = 'Gift cards';
 
+	public $group = 'group1';
+
+	public $groups = array( 
+													'group1' => array( 
+																						'gift-cards-created-per-day' => 'Gift Cards Created per Day',
+																						'gift-cards-created-per-week' => 'Gift Cards Created per Week',
+																						'gift-cards-created-per-month' => 'Gift Cards Created per Month',
+																						'gift-cards-redeemed-per-day' => 'Gift Cards Redeemed per Day',
+																						'gift-cards-redeemed-per-week' => 'Gift Cards Redeemed per Week',
+																						'gift-cards-redeemed-per-month' => 'Gift Cards Redeemed per Month',
+																						'gift-cards-redeemed-per-group-per-day' => 'Gift Cards Redeemed per Group per Day',
+																						'gift-cards-redeemed-per-group-per-week' => 'Gift Cards Redeemed per Group per Week',
+																						'gift-cards-redeemed-per-group-per-month' => 'Gift Cards Redeemed per Group per Month',
+																			) 
+										);
+
 	public function __construct() {
 		parent::__construct();
 	}

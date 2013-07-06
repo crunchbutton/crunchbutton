@@ -27,62 +27,84 @@
 
 	}
 	
-	foreach ($xs as $k => $v) {
-		$xx .= "'".str_replace("'","\\'",$k)."', ";
-	}
-	$xx = substr($xx,0,-2);
-	
-	// fill empty columns
-	foreach ($xs as $k => $v) {
-		foreach ($ys as $kk => $vv) {
-			$ys[$kk][$k] = 0;
-		}
+	if( count( $xs ) == 0 ){
+		$hasResults = false;
 	}
 
+	if( $hasResults ){
 
-	// gather data
-	foreach ($data as $item) {
-		$vars = get_object_vars($item);
-		
-		// X
-		$x = array_shift($vars);
-		$xs[$x] = true;
+		foreach ($xs as $k => $v) {
+				$xx .= "'".str_replace("'","\\'",$k)."', ";
+			}
+			$xx = substr($xx,0,-2);
+			
+			// fill empty columns
+			foreach ($xs as $k => $v) {
+				foreach ($ys as $kk => $vv) {
+					$ys[$kk][$k] = 0;
+				}
+			}
 
-		// Y & group
-		$y = array_shift($vars);
-		
-		$groupName = key($vars);
-		$group = array_shift($vars);
-		
-		$ys[$group][$x] = $y;
 
+			// gather data
+			foreach ($data as $item) {
+				$vars = get_object_vars($item);
+				
+				// X
+				$x = array_shift($vars);
+				$xs[$x] = true;
+
+				// Y & group
+				$y = array_shift($vars);
+				
+				$groupName = key($vars);
+				$group = array_shift($vars);
+				
+				$ys[$group][$x] = $y;
+
+			}
+			
+			// remove assoc vals and add proper keys
+			foreach ($ys as $k => $v) {
+				$ys[$k] = array_values($ys[$k]);
+				$ys[$k] = [
+					'name' => $k,
+					'data' => $ys[$k]
+				];
+			}
+
+			
+			$jsData = [
+				'xs' => array_keys($xs),
+				'ys' => array_values($ys)
+			];
 	}
-	
-	// remove assoc vals and add proper keys
-	foreach ($ys as $k => $v) {
-		$ys[$k] = array_values($ys[$k]);
-		$ys[$k] = [
-			'name' => $k,
-			'data' => $ys[$k]
-		];
-	}
-
-	
-	$jsData = [
-		'xs' => array_keys($xs),
-		'ys' => array_values($ys)
-	];
-
 ?>
 <div class="row-fluid">
 	<div class="row-fluid">
 		<div class="span12">
-			<h4 style="text-align:center;"><?php echo $title; ?></h4>
+			<h4 style="text-align:center;"><?php echo $groups[ $chartId ]; ?></h4>
 		</div>
 	</div>
+	<?php if( $groups ){ ?>
+		<span class="pull-right">
+			<select class="charts-select" id="select-<?=$chartId?>" data-divId="<?php echo $divId; ?>" onchange="loadSubChart( this.id )">
+				<?php foreach ( $groups as $key => $value ) { 
+					$selected = ( $key == $chartId ) ? 'selected="selected"' : '';
+					?>
+					<option <?php echo $selected; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option>
+				<?php } ?>
+			</select>
+		</span>
+	<?php } ?>
+	<?php if( $hasResults ){ ?>
 	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
+	<?php } else {
+		echo 'No results for <b>' . $groups[ $chartId ] . '</b>';
+	} ?>
 </div>
 <hr />
+<?php if( $hasResults ){ ?>
 <script type="text/javascript">
 $(function () {
 	var data = <?=json_encode($jsData, JSON_NUMERIC_CHECK)?>;
@@ -138,3 +160,4 @@ $(function () {
 	});
 });
 </script>
+<?php } ?>
