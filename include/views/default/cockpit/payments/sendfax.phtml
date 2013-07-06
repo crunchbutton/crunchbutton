@@ -1,0 +1,14 @@
+<?
+echo '<div class="message">';
+echo $this->rsp->message;
+echo '</div>';
+echo '<div class="fax_url">';
+echo 'https://api.phaxio.com/v1/faxFile'
+    .'?id='.$this->rsp->faxId
+     /* something not working with the config method */
+    .'&api_key=8c43e0dc3adc4679a40d68ae8d607c02ce8631b6'
+    .'&api_secret=99744b3a7358d6ddfacbe407b3744058b125235e';
+echo '</div>';
+?>
+
+
