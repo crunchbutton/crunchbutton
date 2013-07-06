@@ -1,0 +1,345 @@
+<?
+
+
+/*
+notes
+
+note-5
+  handling gift cards
+    as per conversation with David 5/31/2013:
+    if any paid-by-crunchbutton credit - no action
+    if any paid-by-restaurant credit - hide order
+    if any paid-by-promo credit - lower order total by 15%
+    as per conversation with David 6/4/2013:
+    if any paid-by-restaurant credit - treat like refunded
+*/
+
+
+foreach($this->restaurants as $i=>$restaurant) {
+  if(!count($this->orders['#RST'.$restaurant->id])) {
+    unset($this->restaurants[$i]);
+  }
+}
+
+?>
+
+
+<? if (!count($this->restaurants)) : ?>
+  No restaurants with orders found
+<? else : ?>
+
+
+  <div class='box'>
+    <div class='box-header'>
+      <span class='title'>Summary</span>
+    </div>
+    <div style='padding:5px; border-bottom:1px solid #ccc;' >
+      <span style='display:inline-block;min-width:100px;'>Num Restaurants</span>&nbsp;&nbsp;
+      <span id='num_restaurants'>
+      <strong><?= count($this->restaurants) ?></strong>
+      </span>
+    </div>
+    <div style='padding:5px; border-bottom:1px solid #ccc;' >
+      <span style='display:inline-block;min-width:100px;'>Total Payments</span>&nbsp;&nbsp;
+      <span id='total_payments'><strong>$0</strong></span>
+    </div>
+  </div>
+
+  <?
+    foreach($this->restaurants as $restaurant) :
+    // more preprocessing logic here
+    if(!count($this->orders['#RST'.$restaurant->id])) {
+      continue;
+    }
+  ?>
+    <div class='box RST_container RST<?=$restaurant->id?>_container'
+        data_restaurant_id=<?=$restaurant->id?> 
+        data_fax_number="<?=$restaurant->fax()?>" 
+        data_name="<?=$restaurant->name?>" 
+    >
+      <div class='box-header'>
+        <span class="title"><?= $restaurant->name ?></span>
+        <ul class="box-toolbar">
+          <li class="toolbar-link" style="margin:0px;">
+            <a href="https://crunchbutton.com/food-delivery/<?=$restaurant->permalink?>" target="_blank" title="View on Site"><i class="icon-share"></i></a>
+          </li>
+          <li class="toolbar-link" style="margin:0px;">
+<!--            <a href="javascript:(function(){$('.RST<?=$restaurant->id?>_container').hide(100).wait(100).remove();})()" title="Remove this restaurant from this list"><i class="icon-remove"></i></a> -->
+            <a href="javascript:delete_restaurant(<?=$restaurant->id?>)" title="Remove this restaurant from this list"><i class="icon-remove"></i></a>
+          </li>
+        </ul>
+      </div>
+      
+      <div style='padding:5px; border-bottom:1px solid #ccc;' class='last_payment'>
+        <div>
+          <a href='#' onclick='javascript: refresh_last_payment(<?=$restaurant->id?>); return false;'>
+            <span class="remove_row icon-refresh"></span>
+          </a>&nbsp;&nbsp;
+          <span>Last Payment: </span>
+          <span class='RST<?=$restaurant->id?>_last_payment'>
+            <?
+              $payment = $restaurant->getLastPayment();
+              if($payment) {
+                echo "(#PAY$payment->id_payment) ";
+                echo '<strong>'.Util::format_price($payment->amount).'</strong> ';
+                echo 'on <strong>'.$payment->date.'</strong> ';
+                echo ' - "'.$payment->note.'" ';
+              }
+              else {
+                echo '<strong>Never</strong>';
+              }
+            ?>
+          </span>
+        </div>
+      </div>
+
+      <div style='padding:5px; border-bottom:1px solid #ccc;'>
+        <table class=''><tbody>
+          <?
+            foreach($this->orders['#RST'.$restaurant->id] as $order) :
+          ?>
+            <tr>
+              <?
+                // per-order calculations
+
+                /* see note-5 */
+                $order_display_price = $order->price;
+                $order_display_final_price = $order->final_price;
+                if(Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_PROMOTIONAL )) {
+                  $order_display_price *= 0.85;
+                  $order_display_final_price *= 0.85;
+                }
+                $order_cc_fee = 
+                  $order->pay_type == 'card'  ?
+                  .3+.029*$order_display_final_price:
+                  0;
+                if($restaurant->charge_credit_fee=="0") {
+                  $order_cc_fee = 0;
+                }
+                $order_cb_fee = $order->cbFee();
+
+                // gift card amount?
+                //$order_cash_giftcard = $order->hasGiftCard();
+
+/*
+                // per-restaurant calculations
+                $restaurant_cc_fee += $order_cc_fee;
+                $restaurant_cb_fee += $order_cb_fee;
+                $order->pay_type == 'card' ?
+                  $restaurant_card_subtotal += $order->final_price:
+                  $restaurant_cash_subtotal += $order->final_price;
+*/
+              ?>
+              <td style='min-width:100px;padding-right:10px;'>
+                <? /* 
+                 */ ?>
+                <div 
+                  id='ORD<?=$order->id_order?>' 
+                  style='display:none;'
+                  class='ord_row' 
+                  data_pay_type='<?=$order->pay_type?>' 
+                  data_cc_fee_cents='<?=round($order_cc_fee*100)?>' 
+                  data_cb_fee_cents='<?=round($order_cb_fee*100)?>' 
+                  data_final_price_cents='<?=$order_display_final_price*100?>' 
+                  data_subtotal_cents='<?=$order_display_price*100?>' 
+                  data_id_order='<?=$order->id_order?>' 
+                />
+                <a href='#' onclick="javascript:delete_row(this);return false;">
+                  <span class='remove_row icon-remove-sign' />
+                </a>
+                &nbsp;&nbsp;
+                <a href='https://crunchbutton.com/order/<?=$order->uuid?>' target='_blank'>
+                  #ORD<?=$order->id_order?>
+                </a>
+              </td>
+              <td style='min-width:200px;'>
+                <?
+                  if($order->refunded) {
+                ?>
+                  <span class='name' style='display:none;'><?=$order->name?></span>
+                  <span class='choice' style='color:red;'>
+                    Refunded! Choose: 
+                    <a href='#' onclick='javascript:$(this).closest("td").find(".name").show();$(this).closest(".choice").hide();return false;' <?= ($order->pay_if_refunded ? 'style="font-weight:bold;"' : '') ?> >Keep</a> or 
+                    <a href='#' onclick="javascript:delete_row(this);return false;" <?= (!$order->pay_if_refunded ? 'style="font-weight:bold;"' : '') ?> >
+                      Remove
+                    </a>
+                  </span>
+                <?
+                  }
+                  elseif(Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_RESTAURANT )) {
+                ?>
+                  <span class='name' style='display:none;'><?=$order->name?></span>
+                  <span class='choice' style='color:red;'>
+                    Restaurant Credit! Choose: 
+                    <a href='#' onclick='javascript:$(this).closest("td").find(".name").show();$(this).closest(".choice").hide();return false;' <?= ($order->pay_if_refunded ? 'style="font-weight:bold;"' : '') ?> >Keep</a> or 
+                    <a href='#' onclick="javascript:delete_row(this);return false;" <?= (!$order->pay_if_refunded ? 'style="font-weight:bold;"' : '') ?> >
+                      Remove
+                    </a>
+                  </span>
+                <?
+                  }
+                  else {
+                ?>
+                  <?=$order->name?>
+                <?
+                  }
+                ?>
+              </td>
+              <td style='min-width:80px; text-align:right; padding-right:10px;'>
+                <?=Util::format_price($order_display_final_price)?>
+              </td>
+              <td style='min-width:80px;'>
+                <?=$order->pay_type?>
+              </td>
+              <td style='min-width:80px;'>
+                <?=date_format($order->date(),'M d, Y')?>
+              </td>
+            </tr>
+          <?
+            endforeach;
+          ?>
+          <tr style="height:10px;">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr style="height:10px;display:none;" class="show_if_adjustments RST<?=$restaurant->id?>_adjustments">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Cash Subtotal</td>
+            <td 
+              style='text-align:right; padding-right:10px; font-weight:bold; color:gray;' 
+              class='cash_subtotal' 
+            />
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Card Subtotal</td>
+            <td style='text-align:right; padding-right:10px; font-weight:bold; color:green;' 
+              class='card_subtotal' 
+            />
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Visa/Mastercard/Amex Charges</td>
+            <td style='text-align:right; padding-right:10px; font-weight:bold; color:red;'
+              class='cc_fees'
+            />
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Crunchbutton Fees (<?=$restaurant->fee_restaurant?>%)</td>
+            <td style='text-align:right; padding-right:10px; font-weight:bold; color:red;'
+              class='cb_fees'
+            />
+            <td></td>
+          </tr>
+          <tr class='show_if_adjustments'>
+            <td></td>
+            <td>Adjustments</td>
+            <td style='text-align:right; padding-right:10px; font-weight:bold;'
+              class='total_adjs' 
+            />
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Total Payment</td>
+            <td style='text-align:right; padding-right:10px; font-weight:bold; color:green;'
+              class='total_payment' 
+            />
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody></table>
+      </div>
+
+      <div style='padding:5px; border-bottom:1px solid #ccc;' class='summary_row'>
+        <div>
+          <a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->summary_email?>"); return false;'>
+            <span class="remove_row icon-user"></span>
+          </a>&nbsp;&nbsp;
+          <span>Email: </span>
+          <span class='RST<?=$restaurant->id?>_summary_email'>
+            <?
+              if($restaurant->summary_email) {
+                echo "<strong>$restaurant->summary_email</strong> ";
+              }
+              else {
+                echo '<strong>None</strong>';
+              }
+            ?>
+          </span>
+        </div>
+      </div>
+      
+      <div style='padding:5px; border-bottom:1px solid #ccc;' class='summary_row'>
+        <div>
+          <!--
+          <a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->summary_fax?>"); return false;'>
+            <span class="remove_row icon-user"></span>
+          </a> -->
+          &nbsp;
+          <span>Summary Fax: </span>
+          <span class='RST<?=$restaurant->id?>_summary_fax'>
+            <?
+              if($restaurant->summary_fax) {
+                echo "<strong>$restaurant->summary_fax</strong> ";
+              }
+              else {
+                echo '<strong>None</strong>';
+              }
+            ?>
+          </span>
+        </div>
+      </div>
+      
+      <div style='padding:5px; border-bottom:1px solid #ccc;' class='summary_row'>
+        <div>
+          <!--
+          <a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->summary_email?>"); return false;'>
+            <span class="remove_row icon-user"></span>
+          </a> -->
+          &nbsp;
+          <span>Payment Method: </span>
+          <span class='RST<?=$restaurant->id?>_payment_method'>
+            <strong><?= $restaurant->payment_method ?></strong>
+          </span>
+        </div>
+      </div>
+      
+      <div style='padding:5px' class='button_row'>
+        <button type="submit" class="btn btn-blue admin-order-search" onclick="javascript:(function(){add_adjustment_popup(<?=$restaurant->id?>);})()"> Add Adjustment </button>
+        &nbsp;
+        <button type="submit" class="btn btn-blue admin-order-search" onclick="javascript:(function(){start_payment_popup(<?=$restaurant->id?>);})()"> Start Payment </button>
+        &nbsp;
+        <button type="submit" class="btn btn-blue admin-order-search" onclick="javascript:(function(){start_fax_popup(<?=$restaurant->id?>, '<?=$restaurant->payment_method?>');})()"> Start Fax </button>
+      </div>
+
+
+
+
+    </div>
+  <? endforeach; ?>
+<? endif ; ?>
+
+
+
+
+
+

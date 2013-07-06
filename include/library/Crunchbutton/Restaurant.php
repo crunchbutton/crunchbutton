@@ -122,6 +122,11 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return Payment::q('select * from payment where env="'.c::env().'" and id_restaurant="'.$this->id_restaurant.'" order by date desc');
 	}
 
+	public function getLastPayment() {
+		$payment = Payment::q("select * from payment where id_restaurant=$this->id_restaurant order by date desc limit 1");
+		return $payment->get(0);
+	}
+
 	public function createMerchant($params = []) {
 
 		$type = $params['type'] == 'business' ? 'business' : 'person';
@@ -1013,6 +1018,19 @@ class Crunchbutton_Restaurant extends Cana_Table
 		}
 		$this->saveDishes($all_dishes);
 		return null;
+	}
+
+	public function getPayableOrders($search) {
+		$date0 = new DateTime($search['start']);
+		$date1 = new DateTime($search['end']);
+		$q = 'select * from `order` '
+				."where id_restaurant=$this->id "
+				.' and DATE(`date`) >= "' . $date0->format('Y-m-d') . '" '
+				.' and DATE(`date`) <= "' . $date1->format('Y-m-d') . '" '
+				.' and name not like "%test%" '
+				.'order by `pay_type` asc, `date` asc';
+		$orders = Order::q($q);
+		return $orders;
 	}
 
 	public function priceRange() {

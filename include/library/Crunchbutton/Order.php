@@ -602,6 +602,10 @@ class Crunchbutton_Order extends Cana_Table {
 		return number_format(($this->price + $this->delivery_fee) * ($this->service_fee/100),2);
 	}
 
+	public function cbFee() {
+		return ($this->restaurant()->fee_restaurant) * ($this->price) / 100;
+	}
+
 	public function notify() {
 		$order = $this;
 		foreach ($order->restaurant()->notifications() as $n) {

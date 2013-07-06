@@ -1,0 +1,16 @@
+<?
+  $id_restaurant = $_GET['id_restaurant'];
+
+  $restaurant = Restaurant::o($id_restaurant);
+  if(!$restaurant->id_restaurant) die('<strong>No Such Restaurant</strong>');
+
+  $payment = $restaurant->getLastPayment();
+  if(!$payment) die('<strong>Never</strong>');
+
+  echo "(#PAY$payment->id_payment) ";
+  echo '<strong>'.Util::format_price($payment->amount).'</strong> ';
+  echo 'on <strong>'.$payment->date.'</strong> ';
+  echo ' - "'.$payment->note.'" ';
+
+?>
+

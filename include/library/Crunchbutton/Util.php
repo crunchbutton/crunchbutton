@@ -136,5 +136,11 @@ class Crunchbutton_Util extends Cana_Model {
 			return $phone;
 		}
 	}
-	
+
+	public static function format_price($price) {
+		// $price is a number, dollars
+		// returns a string prefixed with '$' suitable for display
+		return money_format('$%i', $price);
+	}
+
 }
