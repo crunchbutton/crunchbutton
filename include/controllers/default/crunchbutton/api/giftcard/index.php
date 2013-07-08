@@ -32,6 +32,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$notify_by_sms = $this->request()['notify_by_sms'];
 							$print = $this->request()['print'];
 							$chars_to_use = $this->request()['chars_to_use'];
+							$message = $this->request()['message'];
 							$length = $this->request()['length'];
 							$prefix = $this->request()['prefix'];
 
@@ -63,6 +64,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 										}
 										$giftcard->type = Crunchbutton_Promo::TYPE_GIFTCARD;
 										$giftcard->note = $note;
+										$giftcard->message = $message;
 
 										$giftcard->track = $track;
 										$giftcard->active = 1;
