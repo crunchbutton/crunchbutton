@@ -1,19 +1,18 @@
 <div class="signin-container zoom-anim-dialog small-container mfp-hide">
 	<div class="signin-form-container">	
 
-
-
 		<div class="signin-form-options" ng-hide="account.help">
 			<form class="signin-form">
 				<div class="sign-form-links">
-					<h1 class="signin active">Sign in</h1>
+					<h1 ng-class="account.tab == 'signin' ? 'tab-active' : 'link'" ng-tap="account.setTab('signin')">Sign in</h1>
 					<div class="divisor">|</div>
-					<h1 class="signup-link link signup">Sign up</h1>
+					<h1 ng-class="{account.tab == 'signup' ? 'tab-active' : 'link'}" ng-tap="account.setTab('signup')">Sign up</h1>
 					<div class="divider"></div>
 				</div>
-				<input type="text" maxlength="250" name="signin-email" placeholder="email or phone" tabindex="10" ng-model="account.email" />
+
+				<input type="text" maxlength="250" name="signin-email" placeholder="email or phone" tabindex="10" ng-model="account.email" autofocus>
 				<div class="divider"></div>
-				<input type="password" maxlength="250" name="signin-password" placeholder="password" tabindex="10" ng-model="account.password" />
+				<input type="password" maxlength="250" name="signin-password" placeholder="password" tabindex="10" ng-model="account.password">
 				<div class="divider"></div>
 				<div class="signin-error">
 					Your email or password were incorrect.
@@ -39,7 +38,7 @@
 		<div ng-show="account.help">
 			<form class="signin-help-form">
 				<h1>Password help?</h1>
-				<input type="text" maxlength="250" name="password-help-email" placeholder="email or phone" tabindex="10" ng-model="account.email" />
+				<input type="text" maxlength="250" name="password-help-email" placeholder="email or phone" tabindex="10" ng-model="account.email" autofocus>
 				<div class="divider"></div>
 				<div class="password-help-error"></div>
 				<a class="signin-password-help-back" ng-tap="account.setHelp(false)">Never mind</a>

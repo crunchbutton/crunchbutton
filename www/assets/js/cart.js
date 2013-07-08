@@ -729,8 +729,7 @@ App.isDeliveryAddressOk = true;
 						App.order.cardChanged = false;
 						App.loc.changeLocationAddressHasChanged = false;
 						delete App.order.tipHasChanged;
-						var loc = '/order/' + this.uuid;
-						History.pushState({},loc,loc);
+						App.go('/order/' + this.uuid);
 
 					});
 				}
