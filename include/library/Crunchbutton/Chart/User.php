@@ -77,11 +77,12 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN community c ON o.id_community = c.id_community
+								 WHERE 1 = 1
 								 {$this->queryExcludeCommunties}
 								 {$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
-	
+
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
