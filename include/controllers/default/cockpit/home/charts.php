@@ -137,6 +137,11 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$this->renderPieCommunities( $chart->perRestaurantPerCommunity( true ), $chart->getGroupedCharts() );
 				break;
 
+			case 'orders-repeat-vs-news':
+				$chart = new Crunchbutton_Chart_Order();
+				$this->renderColumn( $chart->repeatVsNew( true ), $chart->getGroupedCharts() );
+				break;
+
 			/* Churn */
 
 			case 'churn-rate-per-active-user-per-month':
