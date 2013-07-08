@@ -181,6 +181,31 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
+	public function newByDayByCommunity( $render = false ){
+
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
+										 community AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.community
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.community IS NOT NULL
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+
+		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
 	public function newByDay( $render = false ){
 
 		$query = "SELECT SUM(1) AS Total,
@@ -221,7 +246,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
-	echo $query;exit;
+
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unity );

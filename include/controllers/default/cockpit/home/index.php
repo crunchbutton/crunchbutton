@@ -35,7 +35,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		$graphs = array( 
 								'' => array( 
 									// Groups
-									array( 'divId' => 'chart-orders', 'title-group' => 'Orders', 'chart-url' => 'orders-per-week' ),
+									array( 'divId' => 'chart-orders', 'title-group' => 'Orders', 'chart-url' => 'orders-per-day' ),
 									array( 'divId' => 'chart-users', 'title-group' => 'Users', 'chart-url' => 'users-new-per-day' ),
 									array( 'divId' => 'chart-gross', 'title-group' => 'Gross Revenue', 'chart-url' => 'gross-revenue-per-week' ),
 									array( 'divId' => 'chart-churn', 'title-group' => 'Churn Rate', 'chart-url' => 'churn-rate-per-week' ),
