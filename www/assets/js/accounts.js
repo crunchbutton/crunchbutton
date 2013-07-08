@@ -248,17 +248,18 @@ App.signin.facebook.processStatus = function( session ){
  */
 App.signin.facebook.login = function() {
 	App.signin.facebook.shouldAuth = true;
-	FB.login( App.signin.facebook.processStatus,{ scope: App.facebookScope } );
+	FB.login( App.signin.facebook.processStatus,{
+		scope: App.facebookScope
+	});
 };
 
 /**
  * show the signin modal
  */
-App.signin.show = function(){
-
+App.signin.show = function() {
+	// @todo: bind hide and show dom manipulation to scope variables
 	$('.signin-facebook-message').hide();
 	$('.signin-facebook').show();
-
 	$('.signin-error').hide();
 
 	App.rootScope.$apply(function($scope) {
@@ -266,12 +267,16 @@ App.signin.show = function(){
 		$scope.account.password = '';
 		$scope.account.message = '';
 		$scope.account.help = false;
+		$scope.account.tab = 'signin';
 	});
 
 	App.dialog.show('.signin-container');
 
+	
+
+
 	// $( '.signin-email' ).focus();
-}
+};
 
 App.signin.checkUser = function(){
 	// If the user is logged
