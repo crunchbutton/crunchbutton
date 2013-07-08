@@ -56,6 +56,8 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 		if(c::getPagePiece(1) == 'legacy') {
 			c::view()->page = 'restaurants';
 			$page_piece_index = 2;
+		} else if(c::getPagePiece(1) == 'analytics') {
+			echo 1;
 		}
 		else {
 			$page_piece_index = 1;
