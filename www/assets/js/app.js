@@ -44,13 +44,19 @@ var App = {
 	touchOffset: null,
 	crunchSoundAlreadyPlayed : false,
 	useCompleteAddress : false, /* if true it means the address field will be fill with the address found by google api */
-	completeAddressWithZipCode : true, 
+	completeAddressWithZipCode : true,
 	boundingBoxMeters : 8000
 };
 
 App.alert = function(txt) {
 	setTimeout(function() {
 		alert(txt);
+	});
+};
+
+App.go = function(url) {
+	App.rootScope.$apply(function($location) {
+		$location.path(url);
 	});
 };
 
@@ -69,7 +75,7 @@ App.routeAlias = function(id, success, error) {
 		var loc = App.locations[alias.id_community];
 
 		if (loc.loc_lat && loc.loc_lon) {
-			
+
 			var res = new Location({
 				lat: loc.loc_lat,
 				lon: loc.loc_lon,
@@ -84,7 +90,7 @@ App.routeAlias = function(id, success, error) {
 			return;
 		}
 	}
-	
+
 	error();
 };
 
@@ -103,11 +109,11 @@ App.NGinit = function() {
 	if (!App.isMobile()) {
 		App.support.init();
 	}
-	
+
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
-	
+
 	setTimeout( function(){ App.signin.checkUser(); }, 300 );
 };
 
@@ -188,41 +194,51 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location) {
 	App.rootScope = $rootScope;
+	App.location = $location;
 
 	$rootScope.link = function(link) {
 		$location.path(link || '/');
 	};
-	
+
 	$rootScope.back = function() {
 		history.back();
 	};
-	
+
 	$rootScope.nl2br = function(t) {
 		return App.nl2br(t);
 	};
-	
+
 	$rootScope.formatPhone = function(t) {
 		return App.phone.format(t);
 	};
-	
+
 	$rootScope.formatPrice = function(t) {
 		return parseFloat(t).toFixed(2);
 	};
-	
+
 	$rootScope.account = {
 		setHelp: function(t) {
 			$rootScope.account.help = t;
+		},
+		setTab: function(t) {
+			$rootScope.account.tab = t;
 		}
 	};
+
+	App.rootScope.$watch('account.help', function(val) {
+		setTimeout(function() {
+			$('input[name="' + (val ? 'password-help-email' : 'signin-email') + '"]').focus();
+		},100);
+	});
 
 
 	$scope.$on(
 		'$routeChangeSuccess',
 		function ($currentRoute, $previousRoute) {
-		
+
 			var renderAction = $route.current.action;
 			var renderPath = renderAction.split('.');
-	
+
 			$scope.renderAction = renderAction;
 			$scope.renderPath = renderPath;
 
@@ -231,7 +247,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			if (App.isChromeForIOS()){
 				App.message.chrome();
 			}
-			
+
 			setTimeout(function() {
 				scrollTo(0, 1);
 			}, 80);
@@ -263,11 +279,11 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 					$( '.config-icon' ).addClass( 'right' );
 					break;
 			}
-			
+
 
 			$('.content').addClass('smaller-width');
 			$('.main-content').css('width','auto');
-			
+
 
 	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 	$( '.nav-back' ).addClass( 'nav-back-show' );
@@ -284,12 +300,12 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
  */
 App.track = function() {
 	if (App.config.env != 'live') {
-		// return;
+		return;
 	}
 	if (arguments[0] == 'Ordered') {
 		$('img.conversion').remove();
 		mixpanel.people.track_charge(arguments[1].total);
-		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + History.getState().url + '">').appendTo($('body'));
+		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + location.href + '">').appendTo($('body'));
 	}
 	if (arguments[1]) {
 		mixpanel.track(arguments[0],arguments[1]);
@@ -307,10 +323,10 @@ App.trackProperty = function(prop, value) {
 	if (!App.config) {
 		return;
 	}
-	
+
 	var params = {};
 	params[prop] = value;
-	
+
 	mixpanel.register_once(params);
 };
 
@@ -521,7 +537,7 @@ $(function() {
 		// detect location from the browser
 		$('.location-detect-loader').show();
 		$('.location-detect-icon').hide();
-		
+
 		var error = function() {
 			$('.location-address').val('Oh no! We couldn\'t locate you');
 			$('.location-detect-loader').hide();
@@ -534,10 +550,10 @@ $(function() {
 //			$('.location-detect-icon').show();
 //			$('.button-letseat-form').click();
 		};
-		
+
 		App.loc.getLocationByBrowser(success, error);
 	});
-	
+
 	$(document).on({
 		mousedown: function() {
 			$(this).addClass('location-detect-click');
@@ -552,7 +568,7 @@ $(function() {
 			$(this).removeClass('location-detect-click');
 		}
 	}, '.location-detect');
-	
+
 
 
 	if (App.isMobile()) {
@@ -569,7 +585,7 @@ $(function() {
 			e.preventDefault();
 			$(this).checkToggle();
 		});
-		
+
 		// manually rebind labels
 		$('label[for]').tap(function(e) {
 			e.stopPropagation();
@@ -601,7 +617,7 @@ $(function() {
 			if (!href || e.defaultPrevented) {
 				return;
 			}
-			
+
 			if ($(this).attr('target')) {
 				window.open($(this).attr('href'), $(this).attr('target'));
 			} else {
@@ -617,7 +633,7 @@ $(function() {
 			e.preventDefault();
 		});
 		*/
-	
+
 
 	}
 
@@ -679,7 +695,7 @@ $(function() {
 		var checkbox = $(this);
 		setTimeout( function(){
 			if( !App.isMobile() ){
-				checkbox.checkToggle();	
+				checkbox.checkToggle();
 			}
 			App.cart.customizeItem( checkbox );
 		}, 1 );
@@ -737,7 +753,7 @@ $(function() {
 			}
 		});
 	});
-	
+
 	// hide the top bar when any input is focused
 	if (App.isMobile() && !App.isAndroid()) {
 		setInterval(function() {
@@ -756,7 +772,7 @@ $(function() {
 			}
 		}, 100);
 	}
-	
+
 	$(document).on({
 		blur: function() {
 			clearTimeout(App.checkForDistance);
@@ -789,7 +805,7 @@ $(function() {
 });
 
 App.getCommunityById = function( id ){
-	for (x in App.communities) {	
+	for (x in App.communities) {
 		if( App.communities[x].id_community == id ){
 			return App.communities[x];
 		}
@@ -802,7 +818,7 @@ App.getCommunityById = function( id ){
  */
 App.dialog = {
 	show: function() {
-		
+
 		if (arguments[1]) {
 			// its a title and message
 			var src = '<div class="zoom-anim-dialog small-container">' +
@@ -813,7 +829,7 @@ App.dialog = {
 		} else if ($(arguments[0]).length) {
 			// its a dom element
 			var src = $(arguments[0]);
-			
+
 		} else {
 			console.log('ERROR WITH DIALOG');
 			return;
@@ -855,12 +871,12 @@ App.message = {
 			'Just tap "Request Desktop Site.' +
 			'</p>' +
 			'<p align="center">' +
-			'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' + 
+			'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' +
 			'</p>';
 		App.dialog.show(title, message);
 	}
 };
-	
+
 
 /**
  * play crunch audio sound
@@ -869,7 +885,7 @@ App.playAudio = function(audio){
 	var audio = $('#' + audio).get(0);
 	if (!audio) { return };
 	try {
-		audio.play();	
+		audio.play();
 	} catch(e){}
 }
 
