@@ -107,6 +107,11 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$this->renderColumn( $chart->byUsersPerMonth( true ), $chart->getGroupedCharts() );
 				break;
 
+			case 'orders-per-day':
+				$chart = new Crunchbutton_Chart_Order();
+				$this->renderColumn( $chart->byDay( true ), $chart->getGroupedCharts() );
+				break;
+
 			case 'orders-per-week':
 				$chart = new Crunchbutton_Chart_Order();
 				$this->renderColumn( $chart->byWeek( true ), $chart->getGroupedCharts() );
@@ -137,9 +142,24 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$this->renderPieCommunities( $chart->perRestaurantPerCommunity( true ), $chart->getGroupedCharts() );
 				break;
 
-			case 'orders-repeat-vs-news':
+			case 'orders-repeat-vs-news-per-week':
 				$chart = new Crunchbutton_Chart_Order();
-				$this->renderColumn( $chart->repeatVsNew( true ), $chart->getGroupedCharts() );
+				$this->renderColumn( $chart->repeatVsNewPerWeek( true ), $chart->getGroupedCharts() );
+				break;
+
+			case 'orders-repeat-vs-news-per-month':
+				$chart = new Crunchbutton_Chart_Order();
+				$this->renderColumn( $chart->repeatVsNewPerMonth( true ), $chart->getGroupedCharts() );
+				break;
+
+			case 'orders-repeat-vs-news-per-day':
+				$chart = new Crunchbutton_Chart_Order();
+				$this->renderColumn( $chart->repeatVsNewPerDay( true ), $chart->getGroupedCharts() );
+				break;
+
+			case 'orders-repeat-vs-news-per-week-per-community':
+				$chart = new Crunchbutton_Chart_Order();
+				$this->renderColumn( $chart->repeatVsNewPerWeekPerCommunity( true ), $chart->getGroupedCharts() );
 				break;
 
 			/* Churn */
