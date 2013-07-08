@@ -1,0 +1,1 @@
+ALTER TABLE `promo` ADD `message` VARCHAR( 255 ) NULL DEFAULT NULL;

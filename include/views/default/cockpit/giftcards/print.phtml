@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<title>Gift card</title>
 		<link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard-reset.css">
 		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard.css">
 	</head>
 	<body>
@@ -14,6 +15,10 @@ $count = 0;
 $giftcards = $this->giftcards;
 if( sizeof( $giftcards ) > 0 ) {
 	foreach( $giftcards as $giftcard ){
+		$message = $giftcard->message;
+		if( !$message || $message == '' ){
+			$message = 'crunchbutton.com';
+		}
 		if( !$giftcard ){ continue; }
 		$count++;
 		if( $giftcard->id_restaurant ){
@@ -22,7 +27,7 @@ if( sizeof( $giftcards ) > 0 ) {
 		} else {
 			$restaurant_name = 'Crunchbutton';
 		}
-	?><div class="giftcard <?php if( $count % 3 != 1 ){ ?>negativemargin<?php } ?>">
+	?><div class="giftcard <?php if( $count % 3 != 1 ){ ?>negativemargin<?php } ?>"><div class="giftcard-message"><?php echo $message; ?></div>
 	<div class="help">Questions: Call or text us anytime at (646) 783-1444</div>
 <div class="dollar">$</div><div class="value"><?php echo $giftcard->value;?></div><div class="info">To redeem, go to<span class="url">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span></div><div class="call">Free Food from 
 <br/><?php echo $restaurant_name; ?></div><img src="/assets/images/giftcard_print.svg?<?php echo $imageCached; ?>"/>
