@@ -254,51 +254,6 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		return $data;
 	}
 
-	public function repeatVsNewPerDayPerCommunity( $render = false ){
-		
-		$user = new Crunchbutton_Chart_User();
-		$newUsers = $user->newByDayByCommunity();
-		$orders = $this->byDayPerCommunity();
-
-		$data = [];
-
-		$days = [];
-		$groups = [];
-
-		foreach ( $orders as $order ) {
-			if( !$days[ $order->Label ] ){
-				$days[ $order->Label ] = [];	
-			}
-			$days[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
-			$groups[ $order->Type ] = true;
-		}
-
-		foreach ( $newUsers as $new ) {
-			if( !$days[ $new->Label ] ){
-				$days[ $new->Label ] = [];	
-			}
-			$days[ $new->Label ][ 'New' ][ $new->Type ] = $new->Total;
-			$groups[ $new->Type ] = true;
-		}
-
-		$data = [];
-
-		foreach ( $days as $label => $values ) {
-			foreach( $groups as $group => $val ){
-				$new = ( $values[ 'New' ][ $group ] ) ? $values[ 'New' ][ $group ] : 0;
-				$orders = ( $values[ 'Order' ][ $group ] ) ? $values[ 'Order' ][ $group ] : 0;
-				$repeat = $orders - $new;
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $new, 'Type' => "$group New"  ); 	
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => "$group Repeated"  ); 	
-			}
-		}
-	
-		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity, 'interval' => 'day' );
-		}
-		return $data;
-	}
-
 	public function repeatVsNewPerWeekPerCommunity( $render = false ){
 
 		$user = new Crunchbutton_Chart_User();
@@ -315,7 +270,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 				$weeks[ $order->Label ] = [];	
 			}
 			$weeks[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
-			$groups[ $order->Type ] = true;
+			$groups[ $order->Type ] = $order->Type;
 		}
 
 		foreach ( $newUsers as $new ) {
@@ -323,24 +278,25 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 				$weeks[ $new->Label ] = [];	
 			}
 			$weeks[ $new->Label ][ 'New' ][ $new->Type ] = $new->Total;
-			$groups[ $new->Type ] = true;
+			$groups[ $new->Type ] = $new->Type;
 		}
 
 		$data = [];
 
 		foreach ( $weeks as $label => $values ) {
-			foreach( $groups as $group => $val ){
+			foreach( $groups as $group ){
 				$new = ( $values[ 'New' ][ $group ] ) ? $values[ 'New' ][ $group ] : 0;
 				$orders = ( $values[ 'Order' ][ $group ] ) ? $values[ 'Order' ][ $group ] : 0;
 				$repeat = $orders - $new;
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $new, 'Type' => "$group New"  ); 	
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => "$group Repeated"  ); 	
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $new, 'Type' => "$group New" );
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => "$group Repeated" );
 			}
 		}
-		
+
 		if( $render ){
 			return array( 'data' => $data, 'unit' => $this->unity );
 		}
+
 		return $data;
 	}
 
