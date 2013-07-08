@@ -1,0 +1,62 @@
+<?
+	$this->title = 'Dashboard';
+	$this->titleicon = 'dashboard';
+	$this->titleLink = '/';
+	
+	$this->title2 = 'Curation';
+	$this->title2icon = 'file';
+
+	$data = $this->data;
+
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Curation</span>
+				</div>
+				<div class="box-content padded">
+				<table>
+					<tr>
+						<td class="span3">Name</td>
+						<td class="span3">Times</td>
+						<td class="span3">Category</td>
+					</tr>
+				<?php 
+				foreach ( $data as $restaurant ) {
+
+				?>
+					<tr>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<th>
+							<?php echo $restaurant[ 'Name' ]; ?>
+						</th>
+						<td></td>
+						<td></td>
+					</tr>
+					<?php 
+						$foods = $restaurant[ 'Food' ];
+						foreach( $foods as $food ){
+							?>
+							<tr>
+								<td><?php echo $food[ 'name' ]; ?></td>
+								<td><?php echo $food[ 'times' ]; ?></td>
+								<td><?php echo $food[ 'category' ]; ?></td>
+							</tr>
+							<?php
+						}
+					?>
+				<?php
+				}
+				?>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
