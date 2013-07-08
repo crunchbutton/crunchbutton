@@ -6,6 +6,9 @@
 	$this->title2 = 'Create';
 	$this->title2icon = 'file';
 ?>
+<!-- Preview stuff -->
+<link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" type="text/css" href="/assets/css/giftcard.css">
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="span6">
@@ -57,7 +60,7 @@
 						<li>
 							<label>Restaurant</label>
 							<span>
-								<select id="id_restaurant" class="chzn-select" multiple name="id_restaurant" data-placeholder="Choose a restaurant" style="width:100%;">
+								<select id="id_restaurant" multiple class="chzn-select" name="id_restaurant" data-placeholder="Choose a restaurant" style="width:100%;">
 									<option value="*" <?php if( !$this->id_restaurant){ echo 'selected'; } ?>>** ANY RESTAURANT **</option>
 									<? foreach (Restaurant::q('SELECT * FROM restaurant WHERE giftcard = 1 ORDER BY name') as $restaurant) : ?>
 										<option value="<?=$restaurant->id_restaurant?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option>
@@ -170,13 +173,18 @@
 			</div>
 		</div>
 		<div class="span6">
-			
 			<div class="box">
 				<div class="box-header">
 					<span class="title">Advanced options</span>
 				</div>
 				<div class="box-content ">
 					<ul class="box-list">
+						<li>
+							<span>Message</span>
+							<span class="pull-right">
+								<input type="text" name="giftcard-message" maxlength="50" id="giftcard-message" value="crunchbutton.com" />
+							</span>
+						</li>
 						<li>
 							<span>Gift card lenght</span>
 							<span class="pull-right">
@@ -239,9 +247,36 @@
 			</div>
 		</div>
 	</div>
+	<div class=" giftcard-preview">
+		<div class="box">
+			<div class="box-header">
+				<span class="title">Preview</span>
+			</div>
+			<div class="box-content ">
+				<br />
+				<div class="giftcard">
+					<div class="giftcard-message"></div>
+					<div class="help">Questions: Call or text us anytime at (646) 783-1444</div>
+					<div class="dollar">$</div><div class="value"><span class="preview-value"></span></div><div class="info">To redeem, go to<span class="url">crunchbutton.com/giftcard/<span class="preview-code"></span></span></div><div class="call">Free Food from 
+					<br/>Crunchbutton</div><img src="/assets/images/giftcard_print.svg?<?php echo date( 'dHis' ); ?>"/>
+				</div>
+				<br />
+			</div>
+		</div>
+	</div>
 </div>
 <script>
 var lastID = '<?php echo $this->lastone->id_promo; ?>';
+function updateValue(){
+	var value = $( '#value' ).val();
+	if( value == '' ){
+		value = 0;
+	}
+	$( '.preview-value' ).html( value );
+}
+function updateMessage(){
+	$( '.giftcard-message' ).html( $( '#giftcard-message' ).val() );
+}
 function updateUsedChars(){
 	var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	var numbers = '0123456789';
@@ -264,17 +299,21 @@ function updateUsedChars(){
 	if( $( '#include_gift_card_id' ).is( ':checked' ) ){
 		length -= lastID.toString().length;
 	}
-	var possible_combinations = Math.pow( chars_to_use.length , length );
+	var possible_combinations = Math.pow( chars_to_use.length, length );
+
 	if( $( '#include_gift_card_id' ).is( ':checked' ) ){
 		possible_combinations = parseInt( possible_combinations ) + parseInt( $( '#total' ).val() );
 	}
 	if( possible_combinations >= 1 && possible_combinations > $( '#total' ).val() ){
 		$( '.chars-alert' ).hide();
 		$( '.input' ).show();
+		$( '.giftcard-preview' ).show();
 	} else {
 		$( '.chars-alert' ).show();
 		$( '.input' ).hide();
+		$( '.giftcard-preview' ).hide();
 	}
+
 	if( possible_combinations < 1 ){
 		possible_combinations = 0;
 		$( '#sample' ).html( '' );
@@ -304,6 +343,7 @@ function sample(){
 		for( i=0; i < length; i++ ){
 			text += possible.charAt( Math.floor( Math.random() * possible.length ) );
 		}
+		$( '.preview-code' ).html( text );
 		out += commas + text;
 		commas = ', ';
 	}
@@ -311,6 +351,8 @@ function sample(){
 }
 $(function() {
 	updateUsedChars();
+	updateMessage();
+	updateValue();
 	$( '#track' ).iButton( { 	labelOn :"<i class='icon-ok'></i>",
 														labelOff :"<i class='icon-remove'></i>",
 														handleWidth :30,
@@ -333,6 +375,15 @@ $(function() {
 	$( document ).on( 'keyup, change', '#exclude_chars, #length, #total, #prefix', function() {
 		updateUsedChars();
 	} );
+
+	$( document ).on( 'keyup, change', '#giftcard-message', function() {
+		updateMessage();
+	} );
+
+	$( document ).on( 'keyup, change', '#value', function() {
+		updateValue();
+	} );
+
 	$( '#paid_by' ).change( function(){
 		var self = $( this );
 		$( '#list_id_restaurant_paid_by' ).hide();
@@ -358,6 +409,7 @@ function sendForm(){
 	var id_group = $( '#id_group' ).val();
 	var id_user = $( '#id_user' ).val();
 	var total = $( '#total' ).val();
+	var message = $( '#giftcard-message' ).val();
 	var print = ( App.giftcards.print ) ? 1 : 0;
 
 	var id_order_reference = $( '#id_order_reference' ).val();
@@ -403,7 +455,7 @@ function sendForm(){
 		}
 	}
 
-	var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit, 'notify_by_sms' : notify_by_sms, 'notify_by_email' : notify_by_email, 'chars_to_use' : chars_to_use, 'include_gift_card_id' : include_gift_card_id, 'length' : length, 'print' : print, 'prefix' : prefix, 'id_group' : id_group };
+	var data = { 'value' : value, 'id_user' : id_user, 'id_restaurant' : id_restaurant, 'total' : total,'id_order_reference':id_order_reference, 'paid_by':paid_by, 'id_restaurant_paid_by':id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact, 'add_as_credit' : add_as_credit, 'notify_by_sms' : notify_by_sms, 'notify_by_email' : notify_by_email, 'chars_to_use' : chars_to_use, 'include_gift_card_id' : include_gift_card_id, 'length' : length, 'print' : print, 'prefix' : prefix, 'id_group' : id_group, 'message' : message };
 	var url = App.service + 'giftcard/generate';
 	$.ajax({
 		type: "POST",
