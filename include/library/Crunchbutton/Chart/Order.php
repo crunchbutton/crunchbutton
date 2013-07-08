@@ -172,6 +172,18 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
+	public function repeatVsNew( $render = false ){
+
+		$user = new Crunchbutton_Chart_User();
+		$newUsers = $user->newByWeek();
+
+		echo '<pre>';
+		var_dump($newUsers);
+
+		exit;
+
+	}
+
 	public function repeatByActiveuserByWeek( $render = false ){
 
 		$user = new Crunchbutton_Chart_User();

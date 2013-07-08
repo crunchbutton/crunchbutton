@@ -221,7 +221,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
-	
+	echo $query;exit;
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unity );
