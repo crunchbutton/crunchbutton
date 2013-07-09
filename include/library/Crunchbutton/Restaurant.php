@@ -43,17 +43,19 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $this->_top;
 	}
 
-	public function foodReport(){
-		$query = "SELECT
-								count(*) AS times,
-								d.name AS dish,
-								c.name AS category
-							FROM dish d 
-							INNER JOIN order_dish o ON o.id_dish = d.id_dish
-							INNER JOIN category c ON c.id_category = d.id_category
-							WHERE d.id_restaurant = {$this->id_restaurant}
-							GROUP BY d.name
-							ORDER BY times DESC";
+	public function foodReport( $orderByCategory = false ){
+
+		if( $orderByCategory ){
+			$orderBy = 'ORDER BY category ASC, total DESC';
+		} else {
+			$orderBy = 'ORDER BY total DESC';
+		}
+		$query = "SELECT d.name as dish, c.name AS category, ordered.total as times FROM dish d
+								INNER JOIN category c ON c.id_category = d.id_category
+								LEFT JOIN ( SELECT COUNT(*) total, id_dish FROM order_dish GROUP BY id_dish ) ordered ON ordered.id_dish = d.id_dish
+								WHERE d.id_restaurant = {$this->id_restaurant} 
+								{$orderBy}";
+
 		return c::db()->get( $query );
 	}
 
