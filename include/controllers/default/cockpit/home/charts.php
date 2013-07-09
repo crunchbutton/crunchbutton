@@ -83,6 +83,11 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$this->renderColumn( $chart->uniqueByWeekByCommunity( true ), $chart->getGroupedCharts() );
 				break;
 
+			case 'users-track-frequece':
+				$chart = new Crunchbutton_Chart_User();
+				$this->renderArea( $chart->trackFrequence( true ), $chart->getGroupedCharts() );
+				break;
+
 			/* Revenue */
 
 			case 'gross-revenue-per-week':
@@ -254,15 +259,28 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 	}
 
 	private function renderArea( $params, $groups ){
-			c::view()->display('charts/area', ['set' => [
-				'chartId' => $this->chartId,
-				'data' => $params[ 'data' ],
-				'title' => $this->title,
-				'number' => $this->number,
-				'unit' => $params[ 'unity' ],
-				'groups' => $groups,
-				'divId' => $this->divId
-			]]); 
+
+		$interval = ( $params[ 'interval' ] ) ? $params[ 'interval' ] : 'week';
+		
+		c::view()->display('charts/area', ['set' => [
+					'chartId' => $this->chartId,
+					'data' => $params[ 'data' ] ,
+					'interval' => $interval,
+					'to' => $this->chart->to,
+					'from' => $this->chart->from,
+					'to_month' => $this->chart->to_month,
+					'from_month' => $this->chart->from_month,
+					'to_day' => $this->chart->to_day,
+					'from_day' => $this->chart->from_day,
+					'months' => $months,
+					'number' => $this->number,
+					'unit' => $params[ 'unit' ] ,
+					'totalWeeks' => $this->chart->totalWeeks(),
+					'totalMonths' => $this->chart->totalMonths(),
+					'totalDays' => $this->chart->totalDays(),
+					'groups' => $groups,
+					'divId' => $this->divId
+		]]); 
 	}
 
 	private function renderColumn( $params, $groups ){
