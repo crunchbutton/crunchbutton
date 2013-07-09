@@ -46,7 +46,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 	public function foodReport( $orderByCategory = false ){
 
 		if( $orderByCategory ){
-			$orderBy = 'ORDER BY category ASC, total DESC';
+			$orderBy = 'ORDER BY c.sort ASC, total DESC';
 		} else {
 			$orderBy = 'ORDER BY total DESC';
 		}
