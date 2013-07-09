@@ -17,6 +17,16 @@
 					<span class="title">Curation</span>
 				</div>
 				<div class="box-content padded">
+
+				<?php 
+				if( c::getPagePiece(2) == 'category' ) { ?>
+					<a href="/home/curation/"><i class="icon-reorder"></i> Order by times ordered</a>
+				<?php } else { ?>
+					<a href="/home/curation/category"><i class="icon-reorder"></i> Order by category</a>
+				<?php } ?>
+				<br/>
+				<br/>
+
 				<table>
 					<tr>
 						<td class="span3">Name</td>
@@ -45,7 +55,7 @@
 							?>
 							<tr>
 								<td><?php echo $food[ 'name' ]; ?></td>
-								<td><?php echo $food[ 'times' ]; ?></td>
+								<td><?php if( $food[ 'times' ] ){ echo $food[ 'times' ]; } else { echo 0; } ; ?></td>
 								<td><?php echo $food[ 'category' ]; ?></td>
 							</tr>
 							<?php
