@@ -34,7 +34,7 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 							GROUP BY DATE_FORMAT( p.date ,'%Y-%m-%d' ) HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'day' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
 		return $parsedData;
 	}
@@ -48,7 +48,7 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 						GROUP BY DATE_FORMAT(c.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'day' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
 		return $parsedData;
 	}
@@ -63,7 +63,7 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 							GROUP BY promos.Name, DATE_FORMAT(c.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
 		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'day' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
 		return $parsedData;
 	}
@@ -78,7 +78,7 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -93,7 +93,7 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -109,7 +109,7 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -124,7 +124,7 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
 	}
@@ -139,7 +139,7 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 		
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
 	}
@@ -155,7 +155,7 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
 	}

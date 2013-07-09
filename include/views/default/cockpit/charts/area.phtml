@@ -10,6 +10,7 @@
 	
 	// set up x labels and empty objects
 	foreach ($data as $item) {
+
 		$vars = get_object_vars($item);
 
 		// X
@@ -26,7 +27,9 @@
 		$ys[$group] = [];
 
 	}
-	
+
+	$hasResults = true;
+
 	if( count( $xs ) == 0 ){
 		$hasResults = false;
 	}
@@ -99,6 +102,29 @@
 	<?php } ?>
 	<?php if( $hasResults ){ ?>
 	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
+	<br/>
+	<br/>
+	<br/>
+	<div class="row-fluid">
+		<div class="span3" id="week-<?=$chartId?>">
+			<?php
+			if( $interval == 'week' ){
+				?>
+					Weeks from <?php echo $from; ?> to <?php echo $to; ?> (of <?php echo $totalWeeks; ?>):
+				<?php
+			} else if( $interval == 'month' ){
+			?>
+				Months from <?php echo $from_month; ?> to <?php echo $to_month; ?> (of <?php echo $totalMonths; ?>):
+			<?php 
+			} else if( $interval == 'day' ){
+			?>
+				Months from <?php echo $from_day; ?> to <?php echo $to_day; ?> (of <?php echo $totalDays; ?>):
+			<?php 
+			} ?>
+		</div>
+		<div class="span8">
+			<div id="slider-<?=$divId?>" data-from="<?php echo $from; ?>" data-to="<?php echo $to; ?>"></div>
+		</div>
 	<?php } else {
 		echo 'No results for <b>' . $groups[ $chartId ] . '</b>';
 	} ?>
@@ -122,6 +148,11 @@ $(function () {
 			tickmarkPlacement: 'on',
 			title: {
 				enabled: false
+			},
+			labels : {
+				rotation: -45,
+				align: 'right'
+				<?php if( $interval == 'day' ){ ?>,step:10<?php } ?>
 			}
 		},
 		yAxis: {
@@ -135,13 +166,12 @@ $(function () {
 			}
 		},
 		tooltip: {
-			shared: true,
-			valueSuffix: ' <?=$unit?>'
-			<?php if( $tooltip ){ echo ',formatter:' . $tooltip; } ?>
+			pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ({point.y:,.0f} <?php echo $unit; ?>)<br/>',
+			shared: true
 		},
 		plotOptions: {
 			area: {
-				stacking: 'normal',
+				stacking: 'percent',
 				lineColor: '#666666',
 				lineWidth: 1,
 				marker: {
@@ -158,6 +188,38 @@ $(function () {
 		},
 		series: data.ys
 	});
+
+	$( '#slider-<?=$divId?>' ).slider( {
+		range: true,
+		min: 1,
+		<?php
+		if( $interval == 'week' ){
+			?>
+			values: [ <?php echo $from; ?>, <?php echo $to; ?> ],
+			max: <?php echo $totalWeeks; ?>,
+			<?php
+		} else if( $interval == 'month' ){
+		?>
+			values: [ <?php echo $from_month; ?>, <?php echo $to_month; ?> ],
+			max: <?php echo $totalMonths; ?>,
+		<?php 
+		} else if( $interval == 'day' ){
+		?>
+			values: [ <?php echo $from_day; ?>, <?php echo $to_day; ?> ],
+			max: <?php echo $totalDays; ?>,
+		<?php 
+		} ?>
+		change: function( event, ui ) {
+			var activeUserDays = $( '#active-user-days' ).val();
+			$( '#week-<?=$chartId?>' ).html( '<i class="icon-spinner icon-spin"></i>' );
+			$( '#slider-<?=$chartId?>' ).slider( 'disable' );
+			$( '#slider-<?=$chartId?>' ).css( 'opacity', 0.4 );
+			var self = $( '#<?=$divId?>' );
+			var url = '/home/charts/<?=$chartId?>/<?php echo $divId; ?>/?interval=<?php echo $interval;?>&from=' + ui.values[ 0 ] + '&to=' + ui.values[ 1 ] + '&activeUserDays=' + activeUserDays;
+			$.ajax( { url: url, }).done(function( data ) { self.html( data ); } );
+		}
+	} );
+
 });
 </script>
 <?php } ?>

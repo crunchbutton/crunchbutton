@@ -49,7 +49,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => number_format( $result, 4 ), 'Type' => 'Total' );
 		}
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $data;
 	}
@@ -82,7 +82,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => number_format( $result, 4 ), 'Type' => 'Total' );
 		}
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity );
+			return array( 'data' => $data, 'unit' => $this->unit );
 		}
 		return $data;
 	}
@@ -109,7 +109,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
 		}
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity );
+			return array( 'data' => $data, 'unit' => $this->unit );
 		}
 		return $data;
 	}
@@ -137,7 +137,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
 		}
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $data;
 	}

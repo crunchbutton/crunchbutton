@@ -31,7 +31,7 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
 	}
@@ -50,7 +50,7 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}

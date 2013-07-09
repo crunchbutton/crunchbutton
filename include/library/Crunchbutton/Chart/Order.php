@@ -44,7 +44,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 								r.community";
 		$data = c::db()->get( $query );
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity );
+			return array( 'data' => $data, 'unit' => $this->unit );
 		}
 		return $data;
 	}
@@ -64,7 +64,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
 	}
@@ -85,7 +85,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -105,7 +105,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'day' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
 		return $parsedData;
 	}
@@ -125,7 +125,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 							ORDER BY YEARWEEK(date) DESC";
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -145,7 +145,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -171,7 +171,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		}
 
 		if( $render ){
-			return array( 'data' => $groups, 'unit' => $this->unity );
+			return array( 'data' => $groups, 'unit' => $this->unit );
 		}
 		return $data;
 	}
@@ -191,7 +191,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
 	}
@@ -211,7 +211,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -248,7 +248,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		}
 
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity, 'interval' => 'day' );
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
 		}
 		return $data;
 	}
@@ -293,7 +293,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		}
 
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity );
+			return array( 'data' => $data, 'unit' => $this->unit );
 		}
 
 		return $data;
@@ -331,7 +331,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		}
 
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity );
+			return array( 'data' => $data, 'unit' => $this->unit );
 		}
 		return $data;
 	}
@@ -368,7 +368,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		}
 
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $data;
 	}
@@ -407,7 +407,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		}
 
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity );
+			return array( 'data' => $data, 'unit' => $this->unit );
 		}
 		return $data;
 	}

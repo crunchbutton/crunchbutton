@@ -22,7 +22,9 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 																						'users-new-per-week-by-community' => 'New Users per Week by Community',
 																						'users-new-per-active-users-by-community' => 'New Users per Active Users By Community',
 																						'users-unique-per-week-by-community' => 'Unique Users per Week by Community',
-																						'users-reclaimed-per-week' => 'Reclaimed Users per Week'
+																						'users-reclaimed-per-week' => 'Reclaimed Users per Week',
+
+																						'users-track-frequece' => 'Track User Frequency'
 																			) 
 										);
 
@@ -61,7 +63,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
 	}
@@ -85,7 +87,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
 	}
@@ -142,7 +144,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 							GROUP BY yearweek";
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
 	}
@@ -177,7 +179,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -202,7 +204,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'day' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
 		return $parsedData;
 	}
@@ -226,7 +228,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'day' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
 		return $parsedData;
 	}
@@ -250,7 +252,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -315,7 +317,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 
@@ -341,7 +343,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -377,7 +379,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -399,7 +401,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -423,7 +425,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		}
 
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity );
+			return array( 'data' => $data, 'unit' => $this->unit );
 		}
 		return $data;
 	}
@@ -447,7 +449,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		}
 
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $data;
 	}
@@ -467,7 +469,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -488,9 +490,77 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unity, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
+	}
+
+	public function trackFrequence( $render = false ){
+		
+		$allWeeks = $this->allWeeks();
+
+		$query = '';
+		$union = '';
+
+		$_data = [];
+
+		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
+			$week = $allWeeks[ $i ];
+			$_data[ $week ] = array( 
+											'Power' => 0,
+											'Weekly' => 0,
+											'Bi-Weekly' => 0,
+											'Tri-Weekly' => 0,
+											'Monthly' => 0
+											);
+			$query .= $union . 
+								"SELECT YEARWEEK(date) AS `Week`,
+										 u.phone AS 'Phone'
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN community c ON o.id_community = c.id_community
+								WHERE YEARWEEK(o.date) = {$week} 
+									{$this->queryExcludeCommunties}
+									{$this->queryExcludeUsers}";
+			$union = ' UNION ';
+		}
+
+		$users = c::db()->get( $query );
+		
+		foreach( $users as $user ){
+
+			$week = $user->Week;
+
+			$query = "SELECT * FROM 
+								( SELECT o.date AS day1 FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) <= {$user->Week} ORDER BY id_order DESC LIMIT 3, 1 ) day1, 
+								( SELECT o.date AS day2 FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) <= {$user->Week} ORDER BY id_order DESC LIMIT 1 ) day2";
+			$days = c::db()->get( $query );
+			$days = $days->_items[0];
+			
+			if( $days ){
+
+				$interval = date_diff( date_create( $days->day1 ), date_create( $days->day2 ) );
+				$days = intval( $interval->format('%d') );
+
+				if( $days <= 4 ){ $_data[ $week ][ 'Power' ]++; }
+				if( $days > 4 && $days < 11 ){ $_data[ $week ][ 'Weekly' ]++; }
+				if( $days > 11 && $days < 18 ){ $_data[ $week ][ 'Bi-Weekly' ]++; }
+				if( $days > 18 && $days < 25 ){ $_data[ $week ][ 'Tri-Weekly' ]++; }
+				if( $days > 25 ){ $_data[ $week ][ 'Monthly' ]++; }
+			}
+		}
+		
+		$data = [];
+		foreach( $_data as $week => $info ){
+			foreach( $info as $type => $value ){
+				$data[] = ( object ) array( 'Label' => $week, 'Total' => $value, 'Type' => $type );
+			}
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit );
+		}
+		return $data;
 	}
 
 }
