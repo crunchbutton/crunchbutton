@@ -43,17 +43,22 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return $this->_top;
 	}
 
-	public function foodReport( $orderByCategory = false ){
+	public function foodReport( $orderByCategory = false, $showInactive = false ){
 
 		if( $orderByCategory ){
 			$orderBy = 'ORDER BY c.sort ASC, total DESC';
 		} else {
 			$orderBy = 'ORDER BY total DESC';
 		}
-		$query = "SELECT d.name as dish, c.name AS category, ordered.total as times FROM dish d
+
+		if( !$showInactive ){
+			$active = ' AND d.active = 1 ';
+		}
+
+		$query = "SELECT d.name as dish, c.name AS category, ordered.total AS times, d.active AS active FROM dish d
 								INNER JOIN category c ON c.id_category = d.id_category
 								LEFT JOIN ( SELECT COUNT(*) total, id_dish FROM order_dish GROUP BY id_dish ) ordered ON ordered.id_dish = d.id_dish
-								WHERE d.id_restaurant = {$this->id_restaurant} 
+								WHERE d.id_restaurant = {$this->id_restaurant} {$active}
 								{$orderBy}";
 
 		return c::db()->get( $query );
