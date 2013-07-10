@@ -21,9 +21,49 @@ class Crunchbutton_Chart extends Cana_Model {
 	public $groups = array();
 	public $group = '';
 
+	public function getChartInfo( $url ){
+		$info = [];
+		foreach( $this->groups as $id_group => $group ){
+			$info[ 'id_group' ] = $id_group;
+			$info[ 'title' ] = $group[ 'title' ];
+			$charts = $group[ 'charts' ];
+			if( count( $charts ) > 0 ){
+				foreach ( $charts as $id_chart => $chart ) {
+					if( $url ==  $id_chart ){
+						$info[ 'chart' ] = $chart;
+						return $info;
+					}
+				}	
+			}
+		}
+		return false;
+	}
+
+	public function getGroups(){
+		$groups = [];
+		foreach( $this->groups as $id_group => $group ){
+			$groups[ $id_group ] = array();
+			$firstChart = false;
+			$groups[ $id_group ][ 'title' ] = $group[ 'title' ];
+			$charts = $group[ 'charts' ];
+			if( count( $charts ) > 0 ){
+				foreach ( $charts as $id_chart => $chart ) {
+					if( !$firstChart ){
+						$groups[ $id_group ][ 'url' ] = $id_chart;
+						$firstChart = true;
+					}
+				}	
+			}
+			if( !$groups[ $id_group ][ 'url' ] ){
+				unset( $groups[ $id_group ] );
+			}
+		}
+		return $groups;
+	}
+
 	public function __construct() {
 		
-		$this->chartId = c::getPagePiece(2);
+		$this->chartId = c::getPagePiece( 2 );
 
 		$interval = ( $_REQUEST[ 'interval' ] ) ? $_REQUEST[ 'interval' ] : 'week';
 
@@ -33,13 +73,20 @@ class Crunchbutton_Chart extends Cana_Model {
 		$this->allWeeks = $this->allWeeks();
 		$this->allMonths = $this->allMonths();
 
+		$this->processInterval( $interval );
+
+	}
+	
+
+	public function processInterval( $interval ){
+		
 		switch ( $interval ) {
 
 			case 'day':
 
 				$this->from_day = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
 				$this->from_day = ( ( $this->from_day  < 1 ) ? 1 : $this->from_day  );
-				$this->to_day = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : 1 ); 
+				$this->to_day = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : count( $this->allDays ) ); 
 
 				$this->dayFrom = $this->allDays[ $this->from_day  - 1 ];
 				$this->dayTo = $this->allDays[ $this->to_day - 1 ];
@@ -53,7 +100,7 @@ class Crunchbutton_Chart extends Cana_Model {
 
 				$this->from_month = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
 				$this->from_month = ( ( $this->from_month  < 1 ) ? 1 : $this->from_month  );
-				$this->to_month = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : 1 ); 
+				$this->to_month = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : count( $this->allMonths ) ); 
 
 				$this->monthFrom = $this->allMonths[ $this->from_month  - 1 ];
 				$this->monthTo = $this->allMonths[ $this->to_month - 1 ];
@@ -104,7 +151,7 @@ class Crunchbutton_Chart extends Cana_Model {
 				break;
 		}
 	}
-	
+
 	public function weeks(){
 		$query = "SELECT COUNT( DISTINCT( YEARWEEK( date ) ) ) AS weeks FROM `order`";
 		$result = c::db()->get( $query );
@@ -373,7 +420,15 @@ class Crunchbutton_Chart extends Cana_Model {
 		return $data;
 	}
 
-	public function getGroupedCharts(){
-		return $this->groups[ $this->group ];
+	public function getGroupedCharts( $info ){
+		$this->group = $info[ 'id_group' ];
+		$groups = [];
+		$_groups = $this->groups[ $this->group ][ 'charts' ];
+		if( count( $_groups ) > 0 ){
+			foreach( $_groups as $id => $chart ){
+				$groups[ $id ] = array( 'title' => $chart[ 'title' ], 'interval' => $chart[ 'interval' ] );
+			}
+		}
+		return $groups;
 	}
 }

@@ -5,20 +5,23 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 	public $unit = 'gift cards';
 	public $description = 'Gift cards';
 
-	public $group = 'group1';
-
 	public $groups = array( 
-													'group1' => array( 
-																						'gift-cards-created-per-day' => 'Gift Cards Created per Day',
-																						'gift-cards-created-per-week' => 'Gift Cards Created per Week',
-																						'gift-cards-created-per-month' => 'Gift Cards Created per Month',
-																						'gift-cards-redeemed-per-day' => 'Gift Cards Redeemed per Day',
-																						'gift-cards-redeemed-per-week' => 'Gift Cards Redeemed per Week',
-																						'gift-cards-redeemed-per-month' => 'Gift Cards Redeemed per Month',
-																						'gift-cards-redeemed-per-group-per-day' => 'Gift Cards Redeemed per Group per Day',
-																						'gift-cards-redeemed-per-group-per-week' => 'Gift Cards Redeemed per Group per Week',
-																						'gift-cards-redeemed-per-group-per-month' => 'Gift Cards Redeemed per Group per Month',
-																			) 
+												'group-giftcards-created' => array(
+														'title' => 'Gift card Created',
+														'charts' => array(  
+																'gift-cards-created-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'createdByDay' ),
+																'gift-cards-created-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'createdByWeek' ),
+																'gift-cards-created-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'createdByMonth' )
+															)
+												),
+												'group-giftcards-redeemed' => array(
+														'title' => 'Gift card Redeemed',
+														'charts' => array(  
+																'gift-cards-redeemed-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'redeemedByDay', 'filters' => array( array( 'title' => 'By Group', 'type' => 'group', 'method' => 'redeemedPerGroupByDay' ) ) ),
+																'gift-cards-redeemed-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'redeemedByWeek', 'filters' => array( array( 'title' => 'By Group', 'type' => 'group', 'method' => 'redeemedPerGroupByWeek' ) ) ),
+																'gift-cards-redeemed-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'redeemedByMonth', 'filters' => array( array( 'title' => 'By Group', 'type' => 'group', 'method' => 'redeemedPerGroupByMonth' ) ) ),
+															)
+												),
 										);
 
 	public function __construct() {

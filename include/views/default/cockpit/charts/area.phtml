@@ -86,10 +86,11 @@
 <div class="row-fluid">
 	<div class="row-fluid">
 		<div class="span12">
-			<h4 style="text-align:center;"><?php echo $groups[ $chartId ]; ?></h4>
+			<h4 style="text-align:center;"><?php echo $title; ?></h4>
 		</div>
 	</div>
-	<?php if( $groups ){ ?>
+
+	<?php if( $groups && !$hideGroups ){ ?>
 		<span class="pull-right">
 			<select class="charts-select" id="select-<?=$chartId?>" data-divId="<?php echo $divId; ?>" onchange="loadSubChart( this.id )">
 				<?php foreach ( $groups as $key => $value ) { 
@@ -189,6 +190,8 @@ $(function () {
 		series: data.ys
 	});
 
+	<?php if( !$hideSlider ) { ?>
+
 	$( '#slider-<?=$divId?>' ).slider( {
 		range: true,
 		min: 1,
@@ -219,7 +222,7 @@ $(function () {
 			$.ajax( { url: url, }).done(function( data ) { self.html( data ); } );
 		}
 	} );
-
+	<?php } ?>
 });
 </script>
 <?php } ?>

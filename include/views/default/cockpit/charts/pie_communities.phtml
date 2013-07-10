@@ -2,21 +2,9 @@
 
 	<div class="row-fluid">
 		<div class="span12">
-			<h4 style="text-align:center;">Orders by Restaurant</h4>	
+			<h4 style="text-align:center;">Orders per Restaurant by Community (last 14 days)</h4>	
 		</div>
 	</div>
-
-	<?php if( $groups ){ ?>
-		<span class="pull-right">
-			<select class="charts-select" id="select-<?=$chartId?>" data-divId="<?php echo $divId; ?>" onchange="loadSubChart( this.id )">
-				<?php foreach ( $groups as $key => $value ) { 
-					$selected = ( $key == $chartId ) ? 'selected="selected"' : '';
-					?>
-					<option <?php echo $selected; ?> value="<?php echo $key; ?>"><?php echo $value; ?></option>
-				<?php } ?>
-			</select>
-		</span>
-	<?php } ?>
 
 	<?
 	$count = 1;
@@ -31,6 +19,11 @@
 		<h5 style="text-align:center;"><?php echo $group; ?></h5>	
 	</div>
 	<div id="chart-<?=$chartId?><?php echo $count; ?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
 	<script type="text/javascript">
 	$(function () {
 		var data = <?=json_encode($jsData, JSON_NUMERIC_CHECK)?>;
