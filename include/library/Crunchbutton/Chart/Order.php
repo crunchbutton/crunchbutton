@@ -207,7 +207,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 								(SELECT count(*) AS orders,
 												o.id_restaurant
 								 FROM `order` o
-								 WHERE o.date BETWEEN CURDATE() - INTERVAL 140 DAY AND CURDATE()
+								 WHERE o.date BETWEEN CURDATE() - INTERVAL 14 DAY AND CURDATE()
 								 GROUP BY o.id_restaurant) orders
 							INNER JOIN restaurant r ON r.id_restaurant = orders.id_restaurant
 							WHERE r.community IS NOT NULL";
