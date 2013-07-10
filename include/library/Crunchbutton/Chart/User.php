@@ -18,7 +18,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-users-track-frequece' => array(
 														'title' => 'Track User Frequency',
 														'charts' => array(  
-																'users-track-frequece' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'trackFrequence' ),
+																'users-track-frequece' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
 															)
 												),
 
@@ -872,7 +872,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		}
 
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unit );
+			return array( 'data' => $data, 'unit' => $this->unit, 'hideGroups' => true );
 		}
 		return $data;
 	}
