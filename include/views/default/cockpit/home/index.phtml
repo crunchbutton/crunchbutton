@@ -177,11 +177,12 @@
 				<h5><?php echo $category; ?></h5><?php
 				$count = 1;
 				foreach ($graphs as $id => $graph ){ 
+
 					if( $count == 1 ){
 							echo '<div class="row-fluid">';
 						}
-						$title = $graph[ 'title-group' ];
-						$divId = $graph[ 'divId' ];
+						$title = $graph[ 'title' ];
+						$divId = $id;
 						?>
 							<div class="span4">
 								<div>
@@ -205,8 +206,8 @@
 				<hr/>
 					<? 
 					foreach ( $graphs as $id => $graph ){ 
-						$chart = $graph[ 'chart-url' ];
-						$divId = $graph[ 'divId' ];
+						$chart = $graph[ 'url' ];
+						$divId = $id;
 						echo '<div id="' . $divId . '" data-permalink="' . $chart . '" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading </div>';
 					} ?>
 					<hr/>
@@ -248,9 +249,6 @@
 </div>
 
 <script type="text/javascript">
-
-	var weekFrom = false;
-	var weekTo = false;
 
 	$( document ).ready( function(){
 
@@ -295,6 +293,8 @@
 			function( weeks ) { 
 				var total = weeks.length;
 				$( '#slider-label' ).html( 'Show from <b>' + weeks[ 0 ] + '</b> to <b>' + weeks[ total - 1 ] + '</b>' );
+				$( '#slider-master' ).attr( 'data-from', 1 );
+				$( '#slider-master' ).attr( 'data-to', total );
 				$( '#slider-master' ).slider( {
 						range: true,
 						min: 1,
@@ -302,8 +302,8 @@
 						max: total,
 						slide: function( event, ui ) {
 							$( '#slider-label' ).html( 'Show from <b>' + weeks[ ui.values[ 0 ] - 1 ] + '</b> to <b>' + weeks[ ui.values[ 1 ] - 1 ] + '</b>' );
-							weekFrom = ui.values[ 0 ];
-							weekTo = ui.values[ 1 ];
+							$( '#slider-master' ).attr( 'data-from', ui.values[ 0 ] );
+							$( '#slider-master' ).attr( 'data-to', ui.values[ 1 ] );
 						}
 					} );
 		} );
@@ -314,6 +314,20 @@
 		var divId = info[ 'divId' ];
 		var chart = $( '#' + divId );	
 
+		var activeUserDays = $( '#active-user-days' ).val();
+
+		var params = { 'activeUserDays' : activeUserDays };
+
+		if( info[ 'filter' ] ){
+			params[ 'filter' ] = info[ 'filter' ];
+		} else {
+			params[ 'filter' ] = '';
+		}
+
+		if( info[ 'interval' ] ){
+			params[ 'interval' ] = info[ 'interval' ];
+		} 
+
 		if( info[ 'permalink' ] ){
 			var permalink = info[ 'permalink' ];
 		} else {
@@ -322,29 +336,55 @@
 
 		chart.attr( 'data-permalink', permalink );
 
-		var weeksStr = '';
+		var slider = $( '#slider-' + divId );
 
-		if( info[ 'force' ] ){
-			if( weekFrom && weekFrom != '' && typeof weekFrom != 'undefined' ){
-				weeksStr += '&from=' + weekFrom;
+		if( slider.length > 0 ){
+			if( slider.attr( 'data-from' ) ){
+				params[ 'from' ] = slider.attr( 'data-from' );	
 			}
-			if( weekTo && weekTo != '' && typeof weekTo != 'undefined' ){
-				weeksStr += '&to=' + weekTo;
+			if( slider.attr( 'data-to' ) ){
+				params[ 'to' ] = slider.attr( 'data-to' );	
 			}
 		}
-		var url = '/home/charts/' + permalink + '/' + divId + '/?1' + weeksStr;
+
+		if( info[ 'force' ] ){
+
+			var weekFrom = $( '#slider-master' ).attr( 'data-from' );
+			var weekTo = $( '#slider-master' ).attr( 'data-to' );
+
+			if( weekFrom && weekFrom != '' && typeof weekFrom != 'undefined' ){
+				params[ 'from' ] = weekFrom;
+			}
+			if( weekTo && weekTo != '' && typeof weekTo != 'undefined' ){
+				params[ 'to' ] = weekTo;
+			}
+		}
+
+		var strParams = "?";
+		for ( var key in params ) {
+			if ( strParams != "?" ) {
+				strParams += "&";
+			}
+			strParams += key + "=" + params[key];
+		}
+
+		var url = '/home/charts/' + permalink + '/' + divId + '/' + strParams;
+
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
 		chart.attr( 'opened', true );
 	}
 
 	function loadSubChart( id ){
 		var select = $( id );
-		var permalink = $( '#' + id + ' option:selected' ).val();
+		var slider = $( '#slider-' + divId );
+		slider.attr( 'data-from', false );
+		slider.attr( 'data-to', false );
+		var values = $( '#' + id + ' option:selected' ).val().split( '|' );
+		var permalink = values[ 0 ];
+		var interval = values[ 1 ];
 		var divId = $( '#' + id ).attr( 'data-divId' );
 		$( '#' + divId ).html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
-		loadChart( { 'divId' : divId, 'permalink' : permalink } );
+		loadChart( { 'divId' : divId, 'permalink' : permalink, 'interval' : interval } );
 	}
-
-
 
 </script>

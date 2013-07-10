@@ -4,32 +4,97 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	public $unit = 'users';
 	public $description = 'Users';
 
-	public $group = 'group1';
-
 	public $groups = array( 
-													'group1' => array( 
-																						'users-new-per-day' => 'New Users per Day',
-																						'users-new-per-week' => 'New Users per Week',
-																						'users-new-per-month' => 'New Users per Month',
-																						'users-active-per-week' => 'Active Users per Week',
-																						'users-active-per-month' => 'Active Users per Month',
-																						'users-unique-per-week' => 'Unique Users per Week',
-																						'users-unique-per-month' => 'Unique Users per Month',
-																						'users-new-per-active-users-per-week' => 'New Users per Active Users per Week',
-																						'users-new-per-active-users-per-month' => 'New Users per Active Users per Month',
-																						
-																						'users-active-per-week-by-community' => 'Active Users per Week by Community',
-																						'users-new-per-week-by-community' => 'New Users per Week by Community',
-																						'users-new-per-active-users-by-community' => 'New Users per Active Users By Community',
-																						'users-unique-per-week-by-community' => 'Unique Users per Week by Community',
-																						'users-reclaimed-per-week' => 'Reclaimed Users per Week',
+												
+												'group-users-reclaimed' => array(
+														'title' => 'Reclaimed Users',
+														'charts' => array(  
+																'users-reclaimed-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'reclaimedByDay' ),
+																'users-reclaimed-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'reclaimedByWeek' ),
+																'users-reclaimed-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'reclaimedByMonth' ),
+															)
+												),
 
-																						'users-track-frequece' => 'Track User Frequency'
-																			) 
+												'group-users-track-frequece' => array(
+														'title' => 'Track User Frequency',
+														'charts' => array(  
+																'users-track-frequece' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'trackFrequence' ),
+															)
+												),
+
+												'group-new-users-per-active-user' => array(
+														'title' => 'New Users per Active Users',
+														'charts' => array(  
+																'users-new-per-active-users-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newPerActiveByDay' ),
+																'users-new-per-active-users-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newPerActiveByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newPerActiveByWeekByCommunity' ) ) ),
+																'users-new-per-active-users-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newPerActiveByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newPerActiveByMonthByCommunity' ) ) )
+															)
+												),
+												'group-unique-users' => array(
+														'title' => 'Unique Users',
+														'charts' => array(  
+																'users-unique-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'uniqueByDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'uniqueByDayByCommunity' ) ) ),
+																'users-unique-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'uniqueByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'uniqueByWeekByCommunity' ) ) ),
+																'users-unique-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'uniqueByMonth',  'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'uniqueByMonthByCommunity' ) ) ),
+															)
+												),
+
+												'group-new-users' => array(
+														'title' => 'New Users',
+														'charts' => array(  
+																'users-new-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newByDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByDayByCommunity' ) ) ),
+																'users-new-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByWeekByCommunity' ) ) ),
+																'users-new-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByMonthByCommunity' ) ) ),
+															)
+												),
+
+												'group-active-users' => array(
+														'title' => 'Active Users',
+														'charts' => array(  
+																'users-active-per-day' => array( 'title' => 'Day', 'type' => 'column', 'interval' => 'day', 'method' => 'activeByDay' ),
+																'users-active-per-week' => array( 'title' => 'Week', 'type' => 'column', 'interval' => 'week', 'method' => 'activeByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByWeekByCommunity' ) ) ),
+																'users-active-per-month' => array( 'title' => 'Month', 'type' => 'column', 'interval' => 'month', 'method' => 'activeByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByMonthByCommunity' ) ) ),
+															)
+												),
 										);
 
 	public function __construct() {
 		parent::__construct();
+	}
+
+	public function activeByDay( $render = false ){
+
+		$query = '';
+		$union = '';
+
+		$allMonths = $this->allDays();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$day = $allMonths[ $i ];
+			$query .= $union . "SELECT '{$day}' AS Day,
+																 COUNT(*) AS Total
+													FROM
+														( SELECT u.phone,
+																		 o.date,
+																		 u.id_user,
+																		 c.name
+														 FROM `order` o
+														 INNER JOIN user u ON u.id_user = o.id_user
+														 LEFT JOIN community c ON o.id_community = c.id_community
+														 WHERE o.date <= '{$day}'
+														 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
+															 {$this->queryExcludeCommunties}
+															 {$this->queryExcludeUsers}
+															 {$this->queryOnlyCommunties}
+														 GROUP BY u.phone ) ActiveUsers";
+				$union = ' UNION ';	
+		}	
+
+		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
 	}
 
 	public function activeByMonth( $render = false ){
@@ -68,22 +133,112 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
-	public function newByMonth( $render = false ){
+	public function reclaimedByDay( $render = false ){
 
-		$query = "SELECT SUM(1) AS Total,
-										 DATE_FORMAT(o.date ,'%Y-%m') AS Month
-							FROM `order` o
-							INNER JOIN
-								(SELECT min(id_order) id_order,
-												u.phone
-								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN community c ON o.id_community = c.id_community
-								 WHERE 1 = 1
-								 {$this->queryExcludeCommunties}
-								 {$this->queryExcludeUsers}
-								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
-							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+		$query = "SELECT day AS Day,
+										 COUNT(*) AS Total
+							FROM
+								(SELECT last.total AS total,
+												lastbutone.id_order AS id_order_last_but_one,
+												lastbutone.date AS date_last_but_one,
+												last.id_order AS id_order_last,
+												last.date AS date_last,
+												lastbutone.phone AS phone,
+												DATE_FORMAT(last.date ,'%Y-%m-%d') AS day,
+												DATEDIFF(last.date, lastbutone.date) AS days
+								 FROM
+									 (SELECT *
+										FROM
+											(SELECT count(*) AS total,
+															max(orders.id_order) AS id_order,
+															max(orders.date) AS date,
+															orders.phone
+											 FROM
+												 (SELECT o.id_order,
+																 o.date, o.phone
+													FROM `order` o) orders
+											 GROUP BY phone HAVING total > 1) orders) last
+								 INNER JOIN
+									 (SELECT o.id_order,
+													 o.phone,
+													 o.date
+										FROM `order` o
+										INNER JOIN
+											(SELECT MAX(o.id_order) AS id_order ,
+															o.phone,
+															o.date
+											 FROM `order` o
+											 INNER JOIN
+												 (SELECT id_order,
+																 phone
+													FROM
+														(SELECT count(*) AS total,
+																		max(id_order) AS id_order,
+																		phone
+														 FROM `order`
+														 GROUP BY phone HAVING total > 1) orders) last ON last.phone = o.phone
+											 AND last.id_order > o.id_order
+											 GROUP BY phone) lastbutone ON lastbutone.id_order = o.id_order) lastbutone ON last.phone = lastbutone.phone) orders
+							WHERE days >= {$this->activeUsersInterval}
+								AND day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'
+							GROUP BY day";
+
+		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
+	public function reclaimedByMonth( $render = false ){
+
+		$query = "SELECT month AS Month,
+										 COUNT(*) AS Total
+							FROM
+								(SELECT last.total AS total,
+												lastbutone.id_order AS id_order_last_but_one,
+												lastbutone.date AS date_last_but_one,
+												last.id_order AS id_order_last,
+												last.date AS date_last,
+												lastbutone.phone AS phone,
+												DATE_FORMAT( last.date ,'%Y-%m') AS month,
+												DATEDIFF(last.date, lastbutone.date) AS days
+								 FROM
+									 (SELECT *
+										FROM
+											(SELECT count(*) AS total,
+															max(orders.id_order) AS id_order,
+															max(orders.date) AS date,
+															orders.phone
+											 FROM
+												 (SELECT o.id_order,
+																 o.date, o.phone
+													FROM `order` o) orders
+											 GROUP BY phone HAVING total > 1) orders) last
+								 INNER JOIN
+									 (SELECT o.id_order,
+													 o.phone,
+													 o.date
+										FROM `order` o
+										INNER JOIN
+											(SELECT MAX(o.id_order) AS id_order ,
+															o.phone,
+															o.date
+											 FROM `order` o
+											 INNER JOIN
+												 (SELECT id_order,
+																 phone
+													FROM
+														(SELECT count(*) AS total,
+																		max(id_order) AS id_order,
+																		phone
+														 FROM `order`
+														 GROUP BY phone HAVING total > 1) orders) last ON last.phone = o.phone
+											 AND last.id_order > o.id_order
+											 GROUP BY phone) lastbutone ON lastbutone.id_order = o.id_order) lastbutone ON last.phone = lastbutone.phone) orders
+							WHERE days >= {$this->activeUsersInterval}
+								AND month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'
+							GROUP BY month";
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
@@ -142,15 +297,15 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 								AND yearweek >= {$this->weekFrom}
 								AND yearweek <= {$this->weekTo}
 							GROUP BY yearweek";
+
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
 
 	public function activeByWeek( $render = false ){
-
 
 		$allWeeks = $this->allWeeks();
 
@@ -176,79 +331,6 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 														 GROUP BY u.phone) ActiveUsers";
 				$union = ' UNION ';	
 		}
-
-		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
-		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unit );
-		}
-		return $parsedData;
-	}
-
-	public function newByDayByCommunity( $render = false ){
-
-		$query = "SELECT SUM(1) AS Total,
-										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
-										 community AS `Group`
-							FROM `order` o
-							INNER JOIN
-								(SELECT min(id_order) id_order,
-												u.phone,
-												r.community
-								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE r.community IS NOT NULL
-										{$this->queryExcludeUsers}
-								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
-							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
-
-		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
-		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
-		}
-		return $parsedData;
-	}
-
-	public function newByDay( $render = false ){
-
-		$query = "SELECT SUM(1) AS Total,
-										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day
-							FROM `order` o
-							INNER JOIN
-								(SELECT min(id_order) id_order,
-												u.phone
-								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN community c ON o.id_community = c.id_community
-								 WHERE 1=1 
-										{$this->queryExcludeCommunties}
-										{$this->queryExcludeUsers}
-								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
-							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
-
-		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
-		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
-		}
-		return $parsedData;
-	}
-
-	public function newByWeek( $render = false ){
-
-		$query = "SELECT SUM(1) AS Total,
-										 YEARWEEK(o.date) AS Week
-							FROM `order` o
-							INNER JOIN
-								(SELECT min(id_order) id_order,
-												u.phone
-								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN community c ON o.id_community = c.id_community
-								 WHERE 1=1 
-										{$this->queryExcludeCommunties}
-										{$this->queryExcludeUsers}
-								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
-							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
@@ -323,29 +405,136 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 	}
 
-	public function newByWeekByCommunity( $render = false ){
+	public function newPerActiveByMonthByCommunity( $render = false ){
 
-		$query = "SELECT SUM(1) AS Total,
-										 YEARWEEK(o.date) AS Week,
-										 community AS `Group`
-							FROM `order` o
-							INNER JOIN
-								(SELECT min(id_order) id_order,
-												u.phone,
-												r.community
-								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE r.community IS NOT NULL
-										{$this->queryExcludeUsers}
-								 GROUP BY u.phone, r.community) orders ON o.id_order = orders.id_order
-							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
+		$query = '';
+		$union = '';
 
-		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
+		$allMonths = $this->allMonths();
+
+		for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
+			$month = $allMonths[ $i ];
+			$query .= $union . "SELECT ActiveUsers.Label AS Month,
+																 CAST( NewUsers.NewUsers / ActiveUsers.ActiveUsers AS DECIMAL(14, 2) ) AS 'Total',
+																 ActiveUsers.Community AS 'Group',
+																 'Users',
+																 ActiveUsers.ActiveUsers,
+																 NewUsers.NewUsers
+													FROM
+														(SELECT '{$month}' AS Label,
+																		COUNT(*) AS ActiveUsers,
+																		community AS Community
+														 FROM
+															 (SELECT u.phone,
+																			 o.date,
+																			 u.id_user,
+																			 r.community
+																FROM `order` o
+																INNER JOIN user u ON u.id_user = o.id_user
+																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
+																	AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
+																	AND r.community IS NOT NULL
+																	{$this->queryExcludeUsers}
+																GROUP BY u.phone) ActiveUsers
+														 GROUP BY Community) ActiveUsers
+													LEFT JOIN
+														( SELECT '{$month}' AS Label,
+																		 COUNT(*) AS NewUsers,
+																		 community AS Community
+														 FROM
+															 (SELECT COUNT(*) orders,
+																			 u.phone,
+																			 o.date,
+																			 u.id_user,
+																			 r.community
+																FROM `order` o
+																INNER JOIN user u ON u.id_user = o.id_user
+																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
+																	{$this->queryExcludeUsers}
+																	AND r.community IS NOT NULL
+																GROUP BY u.phone HAVING orders = 1) Orders
+														 WHERE Orders.date BETWEEN '{$month}-01' AND LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
+														 GROUP BY Orders.community ) NewUsers ON NewUsers.Label = ActiveUsers.Label
+													AND NewUsers.Community = ActiveUsers.Community
+													GROUP BY ActiveUsers.Community";
+			$union = ' UNION ';
+			$count++;	
+		}
+
+		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
 		if( $render ){
-			return array( 'data' => $parsedData, 'unit' => $this->unit );
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $parsedData;
+
+	}
+
+	public function newPerActiveByDayByCommunity( $render = false ){
+
+		$query = '';
+		$union = '';
+
+		$allDays = $this->allDays();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$day = $allDays[ $i ];
+			$query .= $union . "SELECT ActiveUsers.Label AS Day,
+																 CAST( NewUsers.NewUsers / ActiveUsers.ActiveUsers AS DECIMAL(14, 2) ) AS 'Total',
+																 ActiveUsers.Community AS 'Group',
+																 'Users',
+																 ActiveUsers.ActiveUsers,
+																 NewUsers.NewUsers
+													FROM
+														(SELECT '{$day}' AS Label,
+																		COUNT(*) AS ActiveUsers,
+																		community AS Community
+														 FROM
+															 (SELECT u.phone,
+																			 o.date,
+																			 u.id_user,
+																			 r.community
+																FROM `order` o
+																INNER JOIN user u ON u.id_user = o.id_user
+																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																WHERE o.date <= '{$day}'
+																	AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
+																	AND r.community IS NOT NULL
+																	{$this->queryExcludeUsers}
+																GROUP BY u.phone) ActiveUsers
+														 GROUP BY Community) ActiveUsers
+													LEFT JOIN
+														( SELECT '{$day}' AS Label,
+																		 COUNT(*) AS NewUsers,
+																		 community AS Community
+														 FROM
+															 (SELECT COUNT(*) orders,
+																			 u.phone,
+																			 o.date,
+																			 u.id_user,
+																			 r.community
+																FROM `order` o
+																INNER JOIN user u ON u.id_user = o.id_user
+																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																WHERE o.date <= '{$day}'
+																	{$this->queryExcludeUsers}
+																	AND r.community IS NOT NULL
+																GROUP BY u.phone HAVING orders = 1) Orders
+														 WHERE Orders.date = '{$day}'
+														 GROUP BY Orders.community ) NewUsers ON NewUsers.Label = ActiveUsers.Label
+													AND NewUsers.Community = ActiveUsers.Community
+													GROUP BY ActiveUsers.Community";
+			$union = ' UNION ';
+			$count++;	
+		}
+
+		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
+
 	}
 
 	public function activeByWeekByCommunity( $render = false ){
@@ -384,6 +573,42 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
+	public function activeByMonthByCommunity( $render = false ){
+
+		$query = '';
+		$union = '';
+
+		$allMonths = $this->allMonths();
+
+		for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
+			$month = $allMonths[ $i ];
+			$query .= $union . "SELECT DATE_FORMAT( date ,'%Y-%m') AS Month,
+																 COUNT(*) AS Total,
+																 community AS 'Group'
+													FROM
+														( SELECT u.phone,
+																		 o.date,
+																		 u.id_user,
+																		 r.community
+														 FROM `order` o
+														 INNER JOIN user u ON u.id_user = o.id_user
+														 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+														 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
+															 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
+														 	 AND r.community IS NOT NULL
+															 {$this->queryExcludeUsers}
+														 GROUP BY u.phone ) ActiveUsers
+													GROUP BY ActiveUsers.community";
+			$union = ' UNION ';		
+		}
+
+		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
+		}
+		return $parsedData;
+	}
+
 	public function uniqueByWeekByCommunity( $render = false ){
 
 		$query = "SELECT YEARWEEK(date) AS `Week`,
@@ -404,6 +629,50 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
+	}
+
+	public function uniqueByDayByCommunity( $render = false ){
+
+		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
+									 COUNT(DISTINCT((u.phone))) AS Total,
+									 r.community AS `Group`
+						FROM `order` o
+						LEFT JOIN user u ON u.id_user = o.id_user
+						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
+							AND r.community IS NOT NULL
+							{$this->queryExcludeUsers}
+						GROUP BY DATE_FORMAT( o.date ,'%Y-%m-%d'),
+										 r.community
+						ORDER BY DATE_FORMAT( o.date ,'%Y-%m-%d') DESC";
+
+		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;	
+	}
+
+	public function uniqueByMonthByCommunity( $render = false ){
+
+		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
+									 COUNT(DISTINCT((u.phone))) AS Total,
+									 r.community AS `Group`
+						FROM `order` o
+						LEFT JOIN user u ON u.id_user = o.id_user
+						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
+							AND r.community IS NOT NULL
+							{$this->queryExcludeUsers}
+						GROUP BY DATE_FORMAT( o.date ,'%Y-%m'),
+										 r.community
+						ORDER BY DATE_FORMAT( o.date ,'%Y-%m') DESC";
+
+		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
+		}
+		return $parsedData;	
 	}
 
 	public function newPerActiveByWeek( $render = false ){
@@ -430,6 +699,30 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $data;
 	}
 
+		public function newPerActiveByDay( $render = false ){
+
+		$activeUsers = $this->activeByDay();
+		$newUsers = $this->newByDay();
+
+		$data = [];
+		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
+			$active = $activeUsers[ $i ]->Total;
+			$new = $newUsers[ $i ]->Total;
+
+			if( $active != 0 && $new != 0 ){
+				$result = $new / $active;	
+			} else {
+				$result = 0;
+			}
+			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => number_format( $result, 2 ), 'Type' => 'Total' );
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $data;
+	}
+
 	public function newPerActiveByMonth( $render = false ){
 
 		$activeUsers = $this->activeByMonth();
@@ -452,6 +745,27 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $data;
+	}
+
+	public function uniqueByDay( $render = false ){
+
+		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
+										 COUNT( DISTINCT( ( u.phone ) ) ) AS Total
+							FROM `order` o
+							INNER JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN community c ON o.id_community = c.id_community
+							WHERE 
+								o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
+								{$this->queryExcludeCommunties}
+								{$this->queryExcludeUsers}
+							GROUP BY Day
+							ORDER BY Day ASC";
+
+		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
 	}
 
 	public function uniqueByWeek( $render = false ){
@@ -562,5 +876,154 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		}
 		return $data;
 	}
+
+	public function newByMonth( $render = false ){
+
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m') AS Month
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN community c ON o.id_community = c.id_community
+								 WHERE 1 = 1
+								 {$this->queryExcludeCommunties}
+								 {$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+
+		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
+		}
+		return $parsedData;
+	}
+
+	public function newByMonthByCommunity( $render = false ){
+
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m') AS Month,
+										 community AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.community
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.community IS NOT NULL
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+
+		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
+		}
+		return $parsedData;
+	}
+
+	public function newByDayByCommunity( $render = false ){
+
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
+										 community AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.community
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.community IS NOT NULL
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+
+		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
+
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
+	public function newByDay( $render = false ){
+
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN community c ON o.id_community = c.id_community
+								 WHERE 1=1 
+										{$this->queryExcludeCommunties}
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+
+		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
+	public function newByWeek( $render = false ){
+
+		$query = "SELECT SUM(1) AS Total,
+										 YEARWEEK(o.date) AS Week
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN community c ON o.id_community = c.id_community
+								 WHERE 1=1 
+										{$this->queryExcludeCommunties}
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
+
+		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
+		}
+		return $parsedData;
+	}
+
+	public function newByWeekByCommunity( $render = false ){
+
+		$query = "SELECT SUM(1) AS Total,
+										 YEARWEEK(o.date) AS Week,
+										 community AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.community
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.community IS NOT NULL
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone, r.community) orders ON o.id_order = orders.id_order
+							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
+
+		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
+		}
+		return $parsedData;
+	}
+
 
 }
