@@ -1,0 +1,119 @@
+<?
+	$this->title = 'Chart Cohort';
+	$this->titleicon = 'group';
+	$cohorts = $this->cohorts;
+
+	$this->title2 = 'Create new';
+	$this->title2icon = 'group';
+
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Cohort</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<li>
+							<span>Name</span>
+							<span class="pull-right span8">
+								<input type="text" class="span12" name="name" maxlength="40" id="name" value="" />
+							</span>
+						</li>
+						<li>
+							<span>Address has</span>
+							<span class="pull-right span8">
+								<input type="text" class="span12" name="address_has" maxlength="100" id="address_has" value="" />
+							</span>
+						</li>
+						<li>
+							<span>Name has</span>
+							<span class="pull-right span8">
+								<input type="text" class="span12" name="name_has" maxlength="100" id="name_has" value="" />
+							</span>
+						</li>
+						<li>
+							<span>Pay type is</span>
+							<span class="pull-right span8">
+								<select name="pay_type_is" id="pay_type_is">
+									<option></option>
+									<option value="card">card</option>
+									<option value="cash">cash</option>
+								</select>
+							</span>
+						</li>
+						<li>
+							<span>Delivery type is</span>
+							<span class="pull-right span8">
+								<select name="delivery_type_is" id="delivery_type_is">
+									<option></option>
+									<option value="delivery">delivery</option>
+									<option value="takeout">takeout</option>
+								</select>
+							</span>
+						</li>
+						<li class="input">
+							<button type="submit" class="btn btn-blue admin-cohort-save"><i class="icon-save"></i> Save </button> 
+						</li>
+					</ul>
+				</div>
+			</div>
+	</div>
+</div>
+<script>
+
+$(function() {
+	$(document).on('click', '.admin-cohort-save', function() {
+	sendForm();
+	} );
+});
+
+var processing = false;
+
+function sendForm(){
+
+	if( processing ){
+		return;
+	}
+
+	var name = $.trim( $( '#name' ).val() );
+	var name_has = $.trim( $( '#name_has' ).val() );
+	var address_has = $.trim( $( '#address_has' ).val() );
+	var pay_type_is = $.trim( $('#pay_type_is option:selected').val() );
+	var delivery_type_is = $.trim( $('#delivery_type_is option:selected').val() );
+	if( name == '' ){
+		alert( 'Please type a name!' );
+		$( '#name' ).focus();
+		return;
+	}
+
+	var data = { 'name' : name, 'address_has' : address_has, 'pay_type_is' : pay_type_is, 'name_has' : name_has, 'delivery_type_is' : delivery_type_is };
+
+	processing = true;
+	
+	$( '.admin-cohort-save' ).html( '<i class="icon-spinner icon-spin"></i> Please wait' );
+	
+	var url = App.service + 'chart/cohort/';
+	$.ajax({
+		type: "POST",
+		dataType: 'json',
+		data: data,
+		url: url,
+		success: function( json ) {
+			processing = false;
+			if( json.error ){
+				alert( 'Error at saving the cohort!' );
+			} else {
+				alert( 'Cohort saved!' );
+				location.href = '/charts/cohort/';
+			}
+		},
+		error: function( ){
+			processing = false;
+			alert( 'Error at saving the cohort!' );
+		}
+	});
+}
+</script>

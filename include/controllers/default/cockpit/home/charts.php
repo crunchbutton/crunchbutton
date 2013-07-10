@@ -40,11 +40,21 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
+		$this->chart = new Crunchbutton_Chart;
+
+		if( c::getPagePiece(2) == 'weeks' ){
+			echo $this->chart->weeksToJson();
+			exit;
+		}
+
+		if( c::getPagePiece(2) == 'cohort' ){
+			$this->cohort();
+			exit;
+		}
+
 		$this->chartId = c::getPagePiece(2);
 
 		$this->divId = c::getPagePiece(3);
-
-		$this->chart = new Crunchbutton_Chart;
 
 		// Check if it is an User chart
 		$chart = new Crunchbutton_Chart_User();
@@ -71,9 +81,7 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		$info = $chart->getChartInfo( $this->chartId );
 		if( $info ){ $this->process( $info, $chart ); exit; }
 
-		if( $this->chartId == 'weeks' ){
-			echo $this->chart->weeksToJson();
-		}
+
 
 	}
 
