@@ -8,9 +8,9 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												'group-orders' => array(
 														'title' => 'Orders',
 														'charts' => array(  
-																'orders-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byDayPerCommunity' ) ) ),
-																'orders-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byWeekPerCommunity' ) ) ),
-																'orders-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byMonthPerCommunity' ) ) ),
+																'orders-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byDayPerCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'byDayCohort' ) ) ),
+																'orders-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byWeekPerCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'byWeekCohort' ) ) ),
+																'orders-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byMonthPerCommunity') , array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'byMonthCohort' ) ) ),
 															)
 												),
 												'group-orders-by-user' => array(
@@ -151,6 +151,82 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 							GROUP BY YEARWEEK(date), r.community
 							ORDER BY YEARWEEK(date) DESC";
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
+		}
+		return $parsedData;
+	}
+
+	public function byDayCohort( $render = false ){
+
+		$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+
+		$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort );
+
+		$query = "SELECT DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
+											 COUNT(*) AS Total
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN community c ON o.id_community = c.id_community
+								WHERE 
+									1 = 1
+									{$cohort->toQuery()}
+									{$this->queryExcludeCommunties}
+									{$this->queryExcludeUsers}
+								GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+
+		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
+	public function byMonthCohort( $render = false ){
+
+		$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+
+		$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort );
+
+		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
+											COUNT(*) AS Total
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN community c ON o.id_community = c.id_community
+								WHERE 
+									o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
+									{$this->queryExcludeCommunties}
+									{$this->queryExcludeUsers}
+									{$cohort->toQuery()}
+								GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+
+		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
+		}
+		return $parsedData;
+	}
+
+	public function byWeekCohort( $render = false ){
+
+		$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+
+		$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort );
+
+		$query = "SELECT YEARWEEK(date) AS Week,
+											 COUNT(*) AS Total
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN community c ON o.id_community = c.id_community
+								WHERE 
+									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+									{$this->queryExcludeCommunties}
+									{$this->queryExcludeUsers}
+									{$cohort->toQuery()}
+								GROUP BY YEARWEEK(date)
+								ORDER BY YEARWEEK(date) ASC";
+
+		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}

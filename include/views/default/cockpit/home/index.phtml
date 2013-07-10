@@ -3,8 +3,6 @@
 	$this->subtitle = 'Crunchbutton overview';
 	$this->titleicon = 'dashboard';
 ?>
-
-
 <!-- content -->
 <div class="container-fluid padded">
 	<div class="row-fluid">
@@ -242,6 +240,8 @@
 				<?php
 			}
 		?>
+		<h4>Cohorts</h4>
+		<a href="/charts/cohort/" class="btn btn-green"><i class="icon-group"></i> Manage cohorts </a> 
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-default" data-dismiss="modal">Close</button>
@@ -371,6 +371,7 @@
 		var url = '/home/charts/' + permalink + '/' + divId + '/' + strParams;
 
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
+		
 		chart.attr( 'opened', true );
 	}
 

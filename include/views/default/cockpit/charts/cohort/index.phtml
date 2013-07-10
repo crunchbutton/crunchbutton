@@ -1,0 +1,57 @@
+<?
+	$this->title = 'Chart Cohort';
+	$this->titleicon = 'group';
+	$cohorts = $this->cohorts;
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	 <div class="row-fluid">
+			<div class="box">
+				 <div class="box-content padded">
+						<a href="/charts/cohort/new" class="btn btn-green admin-giftcard-group-new"><i class="icon-group"></i>&nbsp;&nbsp;&nbsp; Create new </a> 
+				 </div>
+			</div>
+			<div class="box">
+				 <div class="box-header"><span class="title">Cohorts</span></div>
+				 <div class="box-content">
+					<?php if ( !$cohorts->count() ) { ?>
+						No results found
+					<?php } else { ?>
+						<table class="table table-normal">
+							<thead>
+								<td>Name</td>
+								<td>Data</td>
+								<td></td>
+							</thead>
+							<? foreach ( $cohorts as $cohort ) { ?>
+							<tr>
+								<td><?php echo $cohort->name; ?></td>
+								<td><?php echo $cohort->toString(); ?></td>
+								<td><button data-id="<?php echo $cohort->id_chart_cohort; ?>" class="btn admin-cohort-remove btn-red"><i class="icon-trash"></i> Remove</button></td>
+							</tr>
+							<?php } ?>
+							</table>
+					<?php } ?>
+				 </div>
+			</div>
+	 </div>
+</div>
+<script type="text/javascript">
+$(function() {
+	$(document).on('click', '.admin-cohort-remove', function() {
+	var button = $( this );
+	if( confirm( 'Confirm remove cohort?' ) ){
+			var id_chart_cohort = button.attr( 'data-id' );
+			$.ajax({
+				url: '/charts/cohort/remove',
+				type: "POST",
+				data: { 'id_chart_cohort': id_chart_cohort } ,
+				complete: function() {
+					alert( 'Cohort removed!' );
+					location.href = '/charts/cohort/';
+				}
+			});
+		} 
+	} );
+});
+</script>

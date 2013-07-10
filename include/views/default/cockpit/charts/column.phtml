@@ -92,7 +92,7 @@
 			<h4 style="text-align:center;"><?php echo $title; ?></h4>	
 		</div>
 	</div>
-	
+	<div id="options-<?=$divId?>">
 		<table>
 			<tr>
 			<?php 
@@ -108,22 +108,53 @@
 				</td>
 			<?php } 
 			if( $info['chart'][ 'filters' ] ){
+				
 				$filters = $info['chart'][ 'filters' ];
+
+				$hasFilter = false;
+
 				foreach( $filters as $filter ){
-					$checked = ( $filter[ 'type' ] == $info[ 'filter' ] ) ? 'checked="checked"' : '';
-					?>
-					<td class="padded">
-						<div>
-							<input type="checkbox" class="icheck-<?=$chartId?>" <?php echo $checked; ?> value="<?php echo $filter[ 'type' ]; ?>" id="<?php echo $filter[ 'type' ]; ?>">
-							<label for="<?php echo $filter[ 'type' ]; ?>"><?php echo $filter[ 'title' ]; ?></label>
-						</div>
-					</td>
-					<?php
+
+					if( $filter[ 'type' ] == 'cohort' ){
+						$cohorts = Crunchbutton_Chart_Cohort::getAll();
+						foreach( $cohorts as $cohort ){
+							$checked = ( $_GET[ 'id_chart_cohort' ] == $cohort->id_chart_cohort ) ? 'checked="checked"' : '';
+							if( $checked != '' ){ $hasFilter = true; }
+							?>
+							<td class="padded" id="filter-cohort-<?php echo $cohort->id_chart_cohort; ?>">
+								<div>
+									<input type="radio" name="filter" class="icheck-<?=$chartId?>" <?php echo $checked; ?> value="cohort&id_chart_cohort=<?php echo $cohort->id_chart_cohort; ?>" id="cohort-<?php echo $cohort->id_chart_cohort; ?>">
+									<label for="cohort-<?php echo $cohort->id_chart_cohort; ?>"><?php echo $cohort->name; ?></label>
+								</div>
+							</td>
+							<?php
+						}
+					} else {
+						$checked = ( $filter[ 'type' ] == $info[ 'filter' ] ) ? 'checked="checked"' : '';
+						if( $checked != '' ){ $hasFilter = true; }
+						?>
+						<td class="padded" id="filter-<?php echo $filter[ 'type' ]; ?>">
+							<div>
+								<input type="radio" name="filter" class="icheck-<?=$chartId?>" <?php echo $checked; ?> value="<?php echo $filter[ 'type' ]; ?>" id="<?php echo $filter[ 'type' ]; ?>">
+								<label for="<?php echo $filter[ 'type' ]; ?>"><?php echo $filter[ 'title' ]; ?></label>
+							</div>
+						</td>
+						<?php
+					}
 				}
+				?>
+				<td class="padded" id="filter-no-filter">
+					<div>
+						<input type="radio" <?php if( !$hasFilter ){ echo 'checked="checked"'; } ?> name="filter" class="icheck-<?=$chartId?>" value="" id="no-filter">
+						<label for="no-filter">No filter</label>
+					</div>
+				</td>
+				<?php
 			}
 			?>
 			</tr>
 		</table>
+	</div>
 	<?php if( $hasResults ){ ?>
 	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
 	<br/>
@@ -249,12 +280,17 @@ $(function () {
 
 		$( '.icheck-<?=$chartId?>' ).on( 'ifChanged', function( event ){
 			var check = $( this );
+
+			var id = check.attr( 'id' );
+
+			$( '#filter-' + id ).html( '<i class="icon-spinner icon-spin"></i>' );
+
 			if( check.is( ':checked' ) ){
 				var filter = check.val();
 			} else {
 				var filter = '';
 			}
-			loadChart(  { 'divId' : '<?php echo $divId; ?>', 'permalink' : '<?php echo $chartId; ?>', 'filter' : filter } );
+			loadChart( { 'divId' : '<?php echo $divId; ?>', 'permalink' : '<?php echo $chartId; ?>', 'filter' : filter } );
 		});
 	});
 </script>
