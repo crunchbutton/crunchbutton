@@ -23,7 +23,14 @@
 					<a href="/home/curation/"><i class="icon-reorder"></i> Order by times ordered</a>
 				<?php } else { ?>
 					<a href="/home/curation/category"><i class="icon-reorder"></i> Order by category</a>
+				<?php }
+
+				if( $_GET[ 'showInactive' ] == '1' ) { ?>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="?showInactive=0"><i class="icon-eye-close"></i> Show just active dishes</a>
+				<?php } else { ?>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="?showInactive=1"><i class="icon-eye-close"></i> Show all dishes</a>
 				<?php } ?>
+
 				<br/>
 				<br/>
 
@@ -35,7 +42,6 @@
 					</tr>
 				<?php 
 				foreach ( $data as $restaurant ) {
-
 				?>
 					<tr>
 						<td>&nbsp;</td>
@@ -52,9 +58,10 @@
 					<?php 
 						$foods = $restaurant[ 'Food' ];
 						foreach( $foods as $food ){
+							$active = ( $food[ 'active' ] == '0' ) ? 'style="color:#CCC;"' : '';
 							?>
-							<tr>
-								<td><?php echo $food[ 'name' ]; ?></td>
+							<tr <?php echo $active; ?>>
+								<td><?php echo $food[ 'name' ]; ?> </td>
 								<td><?php if( $food[ 'times' ] ){ echo $food[ 'times' ]; } else { echo 0; } ; ?></td>
 								<td><?php echo $food[ 'category' ]; ?></td>
 							</tr>
