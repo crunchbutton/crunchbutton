@@ -116,19 +116,68 @@
 				foreach( $filters as $filter ){
 
 					if( $filter[ 'type' ] == 'cohort' ){
+
 						$cohorts = Crunchbutton_Chart_Cohort::getAll();
-						foreach( $cohorts as $cohort ){
-							$checked = ( $_GET[ 'id_chart_cohort' ] == $cohort->id_chart_cohort ) ? 'checked="checked"' : '';
-							if( $checked != '' ){ $hasFilter = true; }
+
+						if( count( $cohorts[ 'cohorts' ] ) > 0 ){
+
+							foreach( $cohorts[ 'cohorts' ] as $cohort ){
+								
+								$checked = ( $_GET[ 'id_chart_cohort' ] == $cohort->id_chart_cohort && $_GET[ 'cohort_type' ] == 'cohort' ) ? 'checked="checked"' : '';
+								
+								if( $checked != '' ){ $hasFilter = true; }
+								
+								?>
+								
+								<td class="padded" id="filter-cohort-<?php echo $cohort->id_chart_cohort; ?>">
+									<div>
+										<input type="radio" name="filter" class="icheck-<?=$chartId?>" <?php echo $checked; ?> value="cohort&cohort_type=cohort&id_chart_cohort=<?php echo $cohort->id_chart_cohort; ?>" id="cohort-<?php echo $cohort->id_chart_cohort; ?>">
+										<label for="cohort-<?php echo $cohort->id_chart_cohort; ?>"><?php echo $cohort->name; ?></label>
+									</div>
+								</td>
+								
+								<?php
+							}
+						}
+
+						if( count( $cohorts[ 'giftcards' ] ) > 0 ){
 							?>
-							<td class="padded" id="filter-cohort-<?php echo $cohort->id_chart_cohort; ?>">
+							<td class="padded" id="filter-cohort-giftcards">
 								<div>
-									<input type="radio" name="filter" class="icheck-<?=$chartId?>" <?php echo $checked; ?> value="cohort&id_chart_cohort=<?php echo $cohort->id_chart_cohort; ?>" id="cohort-<?php echo $cohort->id_chart_cohort; ?>">
-									<label for="cohort-<?php echo $cohort->id_chart_cohort; ?>"><?php echo $cohort->name; ?></label>
+									<select id="cohort-giftcards" class="select-cohort-<?=$chartId?>">
+									<option>Gift card group</option>
+									<?php foreach( $cohorts[ 'giftcards' ] as $cohort ){ 
+											$selected = ( $_GET[ 'id_chart_cohort' ] == $cohort->id_chart_cohort && $_GET[ 'cohort_type' ] == 'giftcard' ) ? 'selected="selected"' : '';
+											if( $selected != '' ){ $hasFilter = true; }
+										?>
+										<option <?php echo $selected; ?> value="cohort&cohort_type=giftcard&id_chart_cohort=<?php echo $cohort->id_chart_cohort ?>"><?php echo $cohort->name ?></option>
+									<?php } ?>
+									</select>
 								</div>
 							</td>
+							
 							<?php
 						}
+
+						if( count( $cohorts[ 'months' ] ) > 0 ){
+							?>
+							<td class="padded" id="filter-cohort-months">
+								<div>
+									<select id="cohort-months" class="select-cohort-<?=$chartId?>">
+									<option>First order at</option>
+									<?php foreach( $cohorts[ 'months' ] as $cohort ){ 
+											$selected = ( $_GET[ 'id_chart_cohort' ] == $cohort->id_chart_cohort && $_GET[ 'cohort_type' ] == 'months' ) ? 'selected="selected"' : '';
+											if( $selected != '' ){ $hasFilter = true; }
+										?>
+										<option <?php echo $selected; ?> value="cohort&cohort_type=months&id_chart_cohort=<?php echo $cohort->id_chart_cohort ?>"><?php echo $cohort->name ?></option>
+									<?php } ?>
+									</select>
+								</div>
+							</td>
+							
+							<?php
+						}
+
 					} else {
 						$checked = ( $filter[ 'type' ] == $info[ 'filter' ] ) ? 'checked="checked"' : '';
 						if( $checked != '' ){ $hasFilter = true; }
@@ -292,5 +341,17 @@ $(function () {
 			}
 			loadChart( { 'divId' : '<?php echo $divId; ?>', 'permalink' : '<?php echo $chartId; ?>', 'filter' : filter } );
 		});
+
+		$( '.select-cohort-<?=$chartId?>' ).change( function(){
+			
+			var select = $( this );
+
+			var id = select.attr( 'id' );
+
+			$( '#filter-' + id ).html( '<i class="icon-spinner icon-spin"></i>' );
+
+			loadChart( { 'divId' : '<?php echo $divId; ?>', 'permalink' : '<?php echo $chartId; ?>', 'filter' : select.val() } );
+		});
+
 	});
 </script>
