@@ -49,6 +49,12 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 																'orders-per-restaurant-by-community' => array( 'title' => '', 'type' => 'pie_communities', 'method' => 'perRestaurantPerCommunity' )
 															)
 												),
+												'group-orders-track-frequece' => array(
+														'title' => 'Track Orders Frequency',
+														'charts' => array(  
+																'orders-track-frequece' => array( 'title' => 'Orders', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
+															)
+												),
 										);
 
 	public function __construct() {
@@ -915,5 +921,79 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		}
 		return $data;
 	}
+
+	public function trackFrequence( $render = false ){
+		
+		$allWeeks = $this->allWeeks();
+
+		$query = '';
+		$union = '';
+
+		$_data = [];
+
+		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
+			$week = $allWeeks[ $i ];
+			$_data[ $week ] = array( 
+											'Power' => 0,
+											'Weekly' => 0,
+											'Bi-Weekly' => 0,
+											'Tri-Weekly' => 0,
+											'Monthly' => 0
+											);
+			$query .= $union . 
+								"SELECT YEARWEEK(date) AS `Week`,
+										 u.phone AS 'Phone'
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN community c ON o.id_community = c.id_community
+								WHERE YEARWEEK(o.date) = {$week} 
+									{$this->queryExcludeCommunties}
+									{$this->queryExcludeUsers}";
+			$union = ' UNION ';
+		}
+
+		$users = c::db()->get( $query );
+		
+		foreach( $users as $user ){
+
+			$week = $user->Week;
+
+			$query = "SELECT * FROM 
+								( SELECT o.date AS day1 FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) <= {$user->Week} ORDER BY id_order DESC LIMIT 3, 1 ) day1, 
+								( SELECT o.date AS day2 FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) <= {$user->Week} ORDER BY id_order DESC LIMIT 1 ) day2";
+
+			$days = c::db()->get( $query );
+			$days = $days->_items[0];
+			
+			$query = "SELECT COUNT(*) AS orders FROM `order` o WHERE o.phone = '{$user->Phone}' AND YEARWEEK(o.date) = '{$user->Week}'";
+			$orders = c::db()->get( $query );
+			$orders = $orders->_items[0]->orders;
+
+			if( $days ){
+
+				$interval = date_diff( date_create( $days->day1 ), date_create( $days->day2 ) );
+				$days = intval( $interval->format('%d') );
+
+				if( $days <= 4 ){ $_data[ $week ][ 'Power' ] += $orders; }
+				if( $days > 4 && $days < 11 ){ $_data[ $week ][ 'Weekly' ] += $orders; }
+				if( $days > 11 && $days < 18 ){ $_data[ $week ][ 'Bi-Weekly' ] += $orders; }
+				if( $days > 18 && $days < 25 ){ $_data[ $week ][ 'Tri-Weekly' ] += $orders; }
+				if( $days > 25 ){ $_data[ $week ][ 'Monthly' ] += $orders; }
+			}
+		}
+		
+		$data = [];
+		foreach( $_data as $week => $info ){
+			foreach( $info as $type => $value ){
+				$data[] = ( object ) array( 'Label' => $week, 'Total' => $value, 'Type' => $type );
+			}
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit, 'hideGroups' => true );
+		}
+		return $data;
+	}
+
 
 }

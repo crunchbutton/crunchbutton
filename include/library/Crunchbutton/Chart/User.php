@@ -18,7 +18,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 												'group-users-track-frequece' => array(
 														'title' => 'Track User Frequency',
 														'charts' => array(  
-																'users-track-frequece' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
+																'users-track-frequece' => array( 'title' => 'Users', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
 															)
 												),
 
