@@ -1,6 +1,5 @@
 <!--
 <!doctype html><html><head><meta charset="utf-8"><meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"><meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,800"><title>Dashboard</title><link href="/assets/css/core/core.css" media="screen" rel="stylesheet" type="text/css" /><link rel="stylesheet" type="text/css" href="/assets/css/admin.css"><link rel="stylesheet" type="text/css" href="/assets/css/sprites.css"><link rel="stylesheet" type="text/css" href="/assets/css/introjs.css"><link rel="stylesheet" type="text/css" href="/assets/css/datepicker.css"><link rel="stylesheet" type="text/css" href="/assets/css/chosen.css"><link rel="stylesheet" type="text/css" href="/assets/css/font-awesome.css"><script src="/assets/js/core/core.js" type="text/javascript"></script><script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script><script src="/assets/js/admin.js" type="text/javascript"></script><script src="/assets/js/chosen.jquery.js" type="text/javascript"></script><script src="/assets/js/highcharts.src.js" type="text/javascript"></script>
-
 <!-- -->
 <?
 	// group up the data by order of data items recieved
@@ -98,7 +97,7 @@
 			<?php 
 				if( $groups ){ ?>
 				<td class="padded" nowrap="">
-					<select class="uniform charts-select" id="select-<?=$chartId?>" data-divId="<?php echo $divId; ?>" onchange="loadSubChart( this.id )">
+					<select style="width:100px;font-size:10px;" class=" charts-select" id="select-<?=$chartId?>" data-divId="<?php echo $divId; ?>" onchange="loadSubChart( this.id )">
 						<?php foreach ( $groups as $key => $value ) { 
 							$selected = ( $key == $chartId ) ? 'selected="selected"' : '';
 							?>
@@ -129,10 +128,10 @@
 								
 								?>
 								
-								<td class="padded" id="filter-cohort-<?php echo $cohort->id_chart_cohort; ?>">
+								<td class="padded" id="filter-<?php echo $divId; ?>-cohort-<?php echo $cohort->id_chart_cohort; ?>">
 									<div>
 										<input type="radio" name="filter" class="icheck-<?=$chartId?>" <?php echo $checked; ?> value="cohort&cohort_type=cohort&id_chart_cohort=<?php echo $cohort->id_chart_cohort; ?>" id="cohort-<?php echo $cohort->id_chart_cohort; ?>">
-										<label for="cohort-<?php echo $cohort->id_chart_cohort; ?>"><?php echo $cohort->name; ?></label>
+										<label for="cohort-<?php echo $cohort->id_chart_cohort; ?>" style="font-size:10px;"><?php echo $cohort->name; ?></label>
 									</div>
 								</td>
 								
@@ -144,7 +143,7 @@
 							?>
 							<td class="padded" id="filter-cohort-giftcards">
 								<div>
-									<select id="cohort-giftcards" class="select-cohort-<?=$chartId?>">
+									<select id="cohort-giftcards" style="width:100px;font-size:10px;" class=" select-cohort-<?=$chartId?>">
 									<option>Gift card group</option>
 									<?php foreach( $cohorts[ 'giftcards' ] as $cohort ){ 
 											$selected = ( $_GET[ 'id_chart_cohort' ] == $cohort->id_chart_cohort && $_GET[ 'cohort_type' ] == 'giftcard' ) ? 'selected="selected"' : '';
@@ -161,9 +160,9 @@
 
 						if( count( $cohorts[ 'months' ] ) > 0 ){
 							?>
-							<td class="padded" id="filter-cohort-months">
+							<td class="padded" id="filter-<?php echo $divId; ?>-cohort-months">
 								<div>
-									<select id="cohort-months" class="select-cohort-<?=$chartId?>">
+									<select id="cohort-months" style="width:100px;font-size:10px;" class=" select-cohort-<?=$chartId?>">
 									<option>First order at</option>
 									<?php foreach( $cohorts[ 'months' ] as $cohort ){ 
 											$selected = ( $_GET[ 'id_chart_cohort' ] == $cohort->id_chart_cohort && $_GET[ 'cohort_type' ] == 'months' ) ? 'selected="selected"' : '';
@@ -182,10 +181,10 @@
 						$checked = ( $filter[ 'type' ] == $info[ 'filter' ] ) ? 'checked="checked"' : '';
 						if( $checked != '' ){ $hasFilter = true; }
 						?>
-						<td class="padded" id="filter-<?php echo $filter[ 'type' ]; ?>">
+						<td class="padded" id="filter-<?php echo $divId; ?>-<?php echo $filter[ 'type' ]; ?>">
 							<div>
 								<input type="radio" name="filter" class="icheck-<?=$chartId?>" <?php echo $checked; ?> value="<?php echo $filter[ 'type' ]; ?>" id="<?php echo $filter[ 'type' ]; ?>">
-								<label for="<?php echo $filter[ 'type' ]; ?>"><?php echo $filter[ 'title' ]; ?></label>
+								<label for="<?php echo $filter[ 'type' ]; ?>" style="font-size:10px;"><?php echo $filter[ 'title' ]; ?></label>
 							</div>
 						</td>
 						<?php
@@ -195,7 +194,7 @@
 				<td class="padded" id="filter-no-filter">
 					<div>
 						<input type="radio" <?php if( !$hasFilter ){ echo 'checked="checked"'; } ?> name="filter" class="icheck-<?=$chartId?>" value="" id="no-filter">
-						<label for="no-filter">No filter</label>
+						<label for="no-filter" style="font-size:10px;">No filter</label>
 					</div>
 				</td>
 				<?php
@@ -332,7 +331,7 @@ $(function () {
 
 			var id = check.attr( 'id' );
 
-			$( '#filter-' + id ).html( '<i class="icon-spinner icon-spin"></i>' );
+			$( '#filter-<?php echo $divId; ?>-' + id ).html( '<i class="icon-spinner icon-spin"></i>' );
 
 			if( check.is( ':checked' ) ){
 				var filter = check.val();
@@ -348,7 +347,7 @@ $(function () {
 
 			var id = select.attr( 'id' );
 
-			$( '#filter-' + id ).html( '<i class="icon-spinner icon-spin"></i>' );
+			$( '#filter-<?php echo $divId; ?>-' + id ).html( '<i class="icon-spinner icon-spin"></i>' );
 
 			loadChart( { 'divId' : '<?php echo $divId; ?>', 'permalink' : '<?php echo $chartId; ?>', 'filter' : select.val() } );
 		});

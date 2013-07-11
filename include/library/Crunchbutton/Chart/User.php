@@ -180,6 +180,41 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 						$union = ' UNION ';	
 				}	
 				break;
+
+			case 'giftcard':
+
+				$giftcard_group = $id_chart_cohort;
+
+				$query = '';
+				$union = '';
+
+				$allDays = $this->allDays();
+
+				for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+					$day = $allDays[ $i ];
+
+					$query .= $union . "SELECT '{$day}' AS Day,
+																		 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= '{$day}'
+																 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$this->queryOnlyCommunties}
+																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+																	INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
+																	INNER JOIN user u ON u.id_user = c.id_user )
+																 GROUP BY u.phone ) ActiveUsers";
+						$union = ' UNION ';	
+				}	
+				break;
 		}
 
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
@@ -303,6 +338,41 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 						$union = ' UNION ';	
 				}	
 				break;
+
+			case 'giftcard':
+
+				$giftcard_group = $id_chart_cohort;
+
+				$query = '';
+				$union = '';
+
+				$allMonths = $this->allMonths();
+
+				for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
+					$month = $allMonths[ $i ];
+					$query .= $union . "SELECT '{$month}' AS Month,
+																		 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
+																	 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$this->queryOnlyCommunties}
+																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+																	INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
+																	INNER JOIN user u ON u.id_user = c.id_user )
+																 GROUP BY u.phone ) ActiveUsers";
+						$union = ' UNION ';	
+				}	
+				break;
+
 		}
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
@@ -599,6 +669,41 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 						$union = ' UNION ';	
 				}
 				break;
+
+			case 'giftcard':
+
+				$giftcard_group = $id_chart_cohort;
+
+				$query = '';
+				$union = '';
+
+				$allWeeks = $this->allWeeks();
+
+				for( $i = $this->from -1 ; $i < $this->to; $i++ ){
+					$week = $allWeeks[ $i ];
+
+					$query .= $union . "SELECT '{$week}' AS Week,
+																		 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
+																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+																	INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
+																	INNER JOIN user u ON u.id_user = c.id_user )
+																 GROUP BY u.phone) ActiveUsers";
+						$union = ' UNION ';	
+				}
+
+					break;
 		}
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
@@ -1271,7 +1376,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 									GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
 				break;
-			
+
 			case 'months':
 				$month = $id_chart_cohort;
 				$query = "SELECT SUM(1) AS Total,
@@ -1285,6 +1390,27 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 										 LEFT JOIN community c ON o.id_community = c.id_community
 										 WHERE 1 = 1
 										 AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month}'
+										 {$this->queryExcludeCommunties}
+										 {$this->queryExcludeUsers}
+										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+									GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+				break;
+
+			case 'giftcard':
+				$giftcard_group = $id_chart_cohort;
+				$query = "SELECT SUM(1) AS Total,
+												 DATE_FORMAT(o.date ,'%Y-%m') AS Month
+									FROM `order` o
+									INNER JOIN
+										(SELECT min(id_order) id_order,
+														u.phone
+										 FROM `order` o
+										 INNER JOIN user u ON u.id_user = o.id_user
+										 LEFT JOIN community c ON o.id_community = c.id_community
+										 WHERE 1 = 1
+										 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+																			INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
+																			INNER JOIN user u ON u.id_user = c.id_user )
 										 {$this->queryExcludeCommunties}
 										 {$this->queryExcludeUsers}
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
@@ -1345,6 +1471,27 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 									GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
 				break;
+			case 'giftcard':
+				$giftcard_group = $id_chart_cohort;
+				$query = "SELECT SUM(1) AS Total,
+												 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day
+									FROM `order` o
+									INNER JOIN
+										(SELECT min(id_order) id_order,
+														u.phone
+										 FROM `order` o
+										 INNER JOIN user u ON u.id_user = o.id_user
+										 LEFT JOIN community c ON o.id_community = c.id_community
+										 WHERE 1=1 
+												 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+																		INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
+																		INNER JOIN user u ON u.id_user = c.id_user )
+												{$this->queryExcludeCommunties}
+												{$this->queryExcludeUsers}
+										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+									GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+
+				break;
 		}
 
 
@@ -1399,6 +1546,27 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 									GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
 				break;
+			case 'giftcard':
+				$giftcard_group = $id_chart_cohort;
+				$query = "SELECT SUM(1) AS Total,
+												 YEARWEEK(o.date) AS Week
+									FROM `order` o
+									INNER JOIN
+										(SELECT min(id_order) id_order,
+														u.phone
+										 FROM `order` o
+										 INNER JOIN user u ON u.id_user = o.id_user
+										 LEFT JOIN community c ON o.id_community = c.id_community
+										 WHERE 1=1 
+										 AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+																			INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
+																			INNER JOIN user u ON u.id_user = c.id_user )
+												{$this->queryExcludeCommunties}
+												{$this->queryExcludeUsers}
+										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+									GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
+				break;
+
 		}
 
 
