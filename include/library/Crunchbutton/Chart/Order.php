@@ -200,6 +200,26 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											AND DATE_FORMAT(o.date ,'%Y-%m') >= '{$month}'
 										GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
 				break;
+
+			case 'giftcard':
+				$giftcard_group = $id_chart_cohort;
+				$query = "SELECT DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
+													 COUNT(*) AS Total
+										FROM `order` o
+										INNER JOIN user u ON u.id_user = o.id_user
+										LEFT JOIN community c ON o.id_community = c.id_community
+										WHERE 
+											1 = 1
+											{$this->queryExcludeCommunties}
+											{$this->queryExcludeUsers}
+											AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+											INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
+											INNER JOIN user u ON u.id_user = c.id_user )
+										GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+				break;
+
+
+
 		}
 
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
@@ -250,6 +270,22 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 														GROUP BY o.phone) orders ON o.id_order = orders.id_order
 												 AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month}' )
 											AND DATE_FORMAT(o.date ,'%Y-%m') >= '{$month}'
+										GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+				break;
+			case 'giftcard':
+				$giftcard_group = $id_chart_cohort;
+				$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
+													COUNT(*) AS Total
+										FROM `order` o
+										INNER JOIN user u ON u.id_user = o.id_user
+										LEFT JOIN community c ON o.id_community = c.id_community
+										WHERE 
+											o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
+											{$this->queryExcludeCommunties}
+											{$this->queryExcludeUsers}
+										AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+											INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
+											INNER JOIN user u ON u.id_user = c.id_user )
 										GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
 				break;
 		}
@@ -305,6 +341,24 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											AND DATE_FORMAT(o.date ,'%Y-%m') >= '{$month}'
 										GROUP BY YEARWEEK(date)
 										ORDER BY YEARWEEK(date) ASC";
+				break;
+			case 'giftcard':
+				$giftcard_group = $id_chart_cohort;
+				$query = "SELECT YEARWEEK(date) AS Week,
+													 COUNT(*) AS Total
+										FROM `order` o
+										INNER JOIN user u ON u.id_user = o.id_user
+										LEFT JOIN community c ON o.id_community = c.id_community
+										WHERE 
+											YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+											{$this->queryExcludeCommunties}
+											{$this->queryExcludeUsers}
+											AND o.phone IN ( SELECT DISTINCT( u.phone ) FROM credit c 
+											INNER JOIN promo_group_promo pg ON pg.id_promo_group = {$giftcard_group} AND pg.id_promo = c.id_promo
+											INNER JOIN user u ON u.id_user = c.id_user )
+										GROUP BY YEARWEEK(date)
+										ORDER BY YEARWEEK(date) ASC";
+											
 				break;
 		}
 
