@@ -98,39 +98,89 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	}
 
 	public function activeByDayCohort( $render = false ){
-
-		$query = '';
-		$union = '';
-
 		$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+		$cohort_type = $_GET[ 'cohort_type' ];
 
-		$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort );
+		switch ( $cohort_type ) {
+			case 'cohort':
+				$allWeeks = $this->allWeeks();
 
-		$cohortQuery = $cohort->toQuery();
+				$query = '';
+				$union = '';
 
-		$allMonths = $this->allDays();
+				$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+				$cohort_type = $_GET[ 'cohort_type' ];
 
-		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
-			$day = $allMonths[ $i ];
-			$query .= $union . "SELECT '{$day}' AS Day,
-																 COUNT(*) AS Total
-													FROM
-														( SELECT u.phone,
-																		 o.date,
-																		 u.id_user,
-																		 c.name
-														 FROM `order` o
-														 INNER JOIN user u ON u.id_user = o.id_user
-														 LEFT JOIN community c ON o.id_community = c.id_community
-														 WHERE o.date <= '{$day}'
-														 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
-															 {$this->queryExcludeCommunties}
-															 {$this->queryExcludeUsers}
-															 {$this->queryOnlyCommunties}
-															 {$cohortQuery}
-														 GROUP BY u.phone ) ActiveUsers";
-				$union = ' UNION ';	
-		}	
+				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+
+				$cohortQuery = $cohort->toQuery();
+
+				$allDays = $this->allDays();
+
+				for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+					$day = $allDays[ $i ];
+					$query .= $union . "SELECT '{$day}' AS Day,
+																		 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= '{$day}'
+																 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$this->queryOnlyCommunties}
+																	 {$cohortQuery}
+																 GROUP BY u.phone ) ActiveUsers";
+						$union = ' UNION ';	
+				}	
+				break;
+			
+			case 'months':
+
+				$month_cohort = $id_chart_cohort;
+
+				$query = '';
+				$union = '';
+
+				$allDays = $this->allDays();
+
+				for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+					$day = $allDays[ $i ];
+
+					$query .= $union . "SELECT '{$day}' AS Day,
+																		 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= '{$day}'
+																 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$this->queryOnlyCommunties}
+																	AND o.date >= '{$month_cohort}-01'
+																	AND o.phone IN( SELECT o.phone
+																	 FROM `order` o
+																	 INNER JOIN
+																		 (SELECT min(id_order) id_order,
+																						 o.phone
+																			FROM `order` o
+																			GROUP BY o.phone) orders ON o.id_order = orders.id_order
+																	 AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month_cohort}' )
+																 GROUP BY u.phone ) ActiveUsers";
+						$union = ' UNION ';	
+				}	
+				break;
+		}
 
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
 		if( $render ){
@@ -177,39 +227,83 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 	public function activeByMonthCohort( $render = false ){
 
-		$query = '';
-		$union = '';
-
 		$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+		$cohort_type = $_GET[ 'cohort_type' ];
 
-		$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort );
+		switch ( $cohort_type ) {
+			case 'cohort':
+				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$query = '';
+				$union = '';
 
-		$cohortQuery = $cohort->toQuery();
+				$cohortQuery = $cohort->toQuery();
 
-		$allMonths = $this->allMonths();
+				$allMonths = $this->allMonths();
 
-		for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
-			$month = $allMonths[ $i ];
-			$query .= $union . "SELECT '{$month}' AS Month,
-																 COUNT(*) AS Total
-													FROM
-														( SELECT u.phone,
-																		 o.date,
-																		 u.id_user,
-																		 c.name
-														 FROM `order` o
-														 INNER JOIN user u ON u.id_user = o.id_user
-														 LEFT JOIN community c ON o.id_community = c.id_community
-														 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
-															 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
-															 {$this->queryExcludeCommunties}
-															 {$this->queryExcludeUsers}
-															 {$this->queryOnlyCommunties}
-															 {$cohortQuery}
-														 GROUP BY u.phone ) ActiveUsers";
+				for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
+					$month = $allMonths[ $i ];
+					$query .= $union . "SELECT '{$month}' AS Month,
+																		 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
+																	 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$this->queryOnlyCommunties}
+																	 {$cohortQuery}
+																 GROUP BY u.phone ) ActiveUsers";
 
-				$union = ' UNION ';	
-		}	
+						$union = ' UNION ';	
+				}	
+				break;
+			
+			case 'months':
+
+				$month_cohort = $id_chart_cohort;
+
+				$query = '';
+				$union = '';
+
+				$allMonths = $this->allMonths();
+
+				for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
+					$month = $allMonths[ $i ];
+					$query .= $union . "SELECT '{$month}' AS Month,
+																		 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
+																	 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$this->queryOnlyCommunties}
+																	AND o.date >= '{$month_cohort}-01'
+																	AND o.phone IN( SELECT o.phone
+																	 FROM `order` o
+																	 INNER JOIN
+																		 (SELECT min(id_order) id_order,
+																						 o.phone
+																			FROM `order` o
+																			GROUP BY o.phone) orders ON o.id_order = orders.id_order
+																	 AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month_cohort}' )
+																 GROUP BY u.phone ) ActiveUsers";
+						$union = ' UNION ';	
+				}	
+				break;
+		}
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
@@ -426,37 +520,85 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 	public function activeByWeekCohort( $render = false ){
 
-		$allWeeks = $this->allWeeks();
-
-		$query = '';
-		$union = '';
-
 		$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+		$cohort_type = $_GET[ 'cohort_type' ];
 
-		$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort );
+		switch ( $cohort_type ) {
+			case 'cohort':
+				$allWeeks = $this->allWeeks();
 
-		$cohortQuery = $cohort->toQuery();
-		
-		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
-			$week = $allWeeks[ $i ];
+				$query = '';
+				$union = '';
 
-			$query .= $union . "SELECT '{$week}' AS Week,
-																 COUNT(*) AS Total
-													FROM
-														( SELECT u.phone,
-																		 o.date,
-																		 u.id_user,
-																		 c.name
-														 FROM `order` o
-														 INNER JOIN user u ON u.id_user = o.id_user
-														 LEFT JOIN community c ON o.id_community = c.id_community
-														 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
-															 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
-															 {$this->queryExcludeCommunties}
-															 {$this->queryExcludeUsers}
-															 {$cohortQuery}
-														 GROUP BY u.phone) ActiveUsers";
-				$union = ' UNION ';	
+				$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+				$cohort_type = $_GET[ 'cohort_type' ];
+
+				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+
+				$cohortQuery = $cohort->toQuery();
+
+				for( $i = $this->from -1 ; $i < $this->to; $i++ ){
+					$week = $allWeeks[ $i ];
+
+					$query .= $union . "SELECT '{$week}' AS Week,
+																		 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
+																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	 {$cohortQuery}
+																 GROUP BY u.phone) ActiveUsers";
+						$union = ' UNION ';	
+				}
+				break;
+			
+			case 'months':
+
+				$month_cohort = $id_chart_cohort;
+
+				$query = '';
+				$union = '';
+
+				$allWeeks = $this->allWeeks();
+
+				for( $i = $this->from -1 ; $i < $this->to; $i++ ){
+					$week = $allWeeks[ $i ];
+
+					$query .= $union . "SELECT '{$week}' AS Week,
+																		 COUNT(*) AS Total
+															FROM
+																( SELECT u.phone,
+																				 o.date,
+																				 u.id_user,
+																				 c.name
+																 FROM `order` o
+																 INNER JOIN user u ON u.id_user = o.id_user
+																 LEFT JOIN community c ON o.id_community = c.id_community
+																 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
+																	 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
+																	 {$this->queryExcludeCommunties}
+																	 {$this->queryExcludeUsers}
+																	AND o.date >= '{$month_cohort}-01'
+																	AND o.phone IN( SELECT o.phone
+																	 FROM `order` o
+																	 INNER JOIN
+																		 (SELECT min(id_order) id_order,
+																						 o.phone
+																			FROM `order` o
+																			GROUP BY o.phone) orders ON o.id_order = orders.id_order
+																	 AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month_cohort}' )
+																 GROUP BY u.phone) ActiveUsers";
+						$union = ' UNION ';	
+				}
+				break;
 		}
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
@@ -1106,24 +1248,51 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	public function newByMonthCohort( $render = false ){
 
 		$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+		$cohort_type = $_GET[ 'cohort_type' ];
 
-		$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort );
+		switch ( $cohort_type ) {
+			case 'cohort':
 
-		$query = "SELECT SUM(1) AS Total,
-										 DATE_FORMAT(o.date ,'%Y-%m') AS Month
-							FROM `order` o
-							INNER JOIN
-								(SELECT min(id_order) id_order,
-												u.phone
-								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN community c ON o.id_community = c.id_community
-								 WHERE 1 = 1
-								 {$this->queryExcludeCommunties}
-								 {$this->queryExcludeUsers}
-								 {$cohort->toQuery()}
-								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
-							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type )	;
+
+				$query = "SELECT SUM(1) AS Total,
+												 DATE_FORMAT(o.date ,'%Y-%m') AS Month
+									FROM `order` o
+									INNER JOIN
+										(SELECT min(id_order) id_order,
+														u.phone
+										 FROM `order` o
+										 INNER JOIN user u ON u.id_user = o.id_user
+										 LEFT JOIN community c ON o.id_community = c.id_community
+										 WHERE 1 = 1
+										 {$this->queryExcludeCommunties}
+										 {$this->queryExcludeUsers}
+										 {$cohort->toQuery()}
+										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+									GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+				break;
+			
+			case 'months':
+				$month = $id_chart_cohort;
+				$query = "SELECT SUM(1) AS Total,
+												 DATE_FORMAT(o.date ,'%Y-%m') AS Month
+									FROM `order` o
+									INNER JOIN
+										(SELECT min(id_order) id_order,
+														u.phone
+										 FROM `order` o
+										 INNER JOIN user u ON u.id_user = o.id_user
+										 LEFT JOIN community c ON o.id_community = c.id_community
+										 WHERE 1 = 1
+										 AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month}'
+										 {$this->queryExcludeCommunties}
+										 {$this->queryExcludeUsers}
+										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+									GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+				break;
+		}
+
+
 
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
@@ -1135,24 +1304,50 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	public function newByDayCohort( $render = false ){
 
 		$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+		$cohort_type = $_GET[ 'cohort_type' ];
 
-		$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort );
+		switch ( $cohort_type ) {
+			case 'cohort':
+				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$cohortQuery = $cohort->toQuery();
+				$query = "SELECT SUM(1) AS Total,
+												 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day
+									FROM `order` o
+									INNER JOIN
+										(SELECT min(id_order) id_order,
+														u.phone
+										 FROM `order` o
+										 INNER JOIN user u ON u.id_user = o.id_user
+										 LEFT JOIN community c ON o.id_community = c.id_community
+										 WHERE 1=1 
+												{$this->queryExcludeCommunties}
+												{$this->queryExcludeUsers}
+												{$cohort->toQuery()}
+										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+									GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+				break;
+			
+			case 'months':
+				$month = $id_chart_cohort;
+				$query = "SELECT SUM(1) AS Total,
+												 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day
+									FROM `order` o
+									INNER JOIN
+										(SELECT min(id_order) id_order,
+														u.phone
+										 FROM `order` o
+										 INNER JOIN user u ON u.id_user = o.id_user
+										 LEFT JOIN community c ON o.id_community = c.id_community
+										 WHERE 1=1 
+										 		AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month}'
+												{$this->queryExcludeCommunties}
+												{$this->queryExcludeUsers}
+										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+									GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+				break;
+		}
 
-		$query = "SELECT SUM(1) AS Total,
-										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day
-							FROM `order` o
-							INNER JOIN
-								(SELECT min(id_order) id_order,
-												u.phone
-								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN community c ON o.id_community = c.id_community
-								 WHERE 1=1 
-										{$this->queryExcludeCommunties}
-										{$this->queryExcludeUsers}
-										{$cohort->toQuery()}
-								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
-							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+
 
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
 		if( $render ){
@@ -1164,24 +1359,49 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	public function newByWeekCohort( $render = false ){
 
 		$id_chart_cohort = $_GET[ 'id_chart_cohort' ];
+		$cohort_type = $_GET[ 'cohort_type' ];
 
-		$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort );
+		switch ( $cohort_type ) {
+			case 'cohort':
+				$cohort = Crunchbutton_Chart_Cohort::get( $id_chart_cohort, $cohort_type );
+				$query = "SELECT SUM(1) AS Total,
+												 YEARWEEK(o.date) AS Week
+									FROM `order` o
+									INNER JOIN
+										(SELECT min(id_order) id_order,
+														u.phone
+										 FROM `order` o
+										 INNER JOIN user u ON u.id_user = o.id_user
+										 LEFT JOIN community c ON o.id_community = c.id_community
+										 WHERE 1=1 
+												{$this->queryExcludeCommunties}
+												{$this->queryExcludeUsers}
+												{$cohort->toQuery()}
+										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+									GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
+				break;
+			
+			case 'months':
+				$month = $id_chart_cohort;
+				$query = "SELECT SUM(1) AS Total,
+												 YEARWEEK(o.date) AS Week
+									FROM `order` o
+									INNER JOIN
+										(SELECT min(id_order) id_order,
+														u.phone
+										 FROM `order` o
+										 INNER JOIN user u ON u.id_user = o.id_user
+										 LEFT JOIN community c ON o.id_community = c.id_community
+										 WHERE 1=1 
+										 		AND DATE_FORMAT(o.date ,'%Y-%m') = '{$month}'
+												{$this->queryExcludeCommunties}
+												{$this->queryExcludeUsers}
+										 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+									GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
+				break;
+		}
 
-		$query = "SELECT SUM(1) AS Total,
-										 YEARWEEK(o.date) AS Week
-							FROM `order` o
-							INNER JOIN
-								(SELECT min(id_order) id_order,
-												u.phone
-								 FROM `order` o
-								 INNER JOIN user u ON u.id_user = o.id_user
-								 LEFT JOIN community c ON o.id_community = c.id_community
-								 WHERE 1=1 
-										{$this->queryExcludeCommunties}
-										{$this->queryExcludeUsers}
-										{$cohort->toQuery()}
-								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
-							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
+
 
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
