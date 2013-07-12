@@ -37,6 +37,18 @@ class Crunchbutton_Order_Dish extends Cana_Table {
 		return $out;
 	}
 
+	public static function totalDishesOrdered(){
+		$query = "SELECT COUNT(*) AS total FROM `order` o INNER JOIN order_dish od ON od.id_order = o.id_order WHERE o.name NOT LIKE '%test%' ";
+		$totalFood = c::db()->get( $query );
+		return intval( $totalFood->_items[0]->total );
+	}
+
+	public static function totalDishesSince( $date ){
+		$query = "SELECT COUNT(*) AS total FROM `order` o INNER JOIN order_dish od ON od.id_order = o.id_order WHERE o.date  >= '{$date}' AND o.name NOT LIKE '%test%' ";
+		$totalFood = c::db()->get( $query );
+		return intval( $totalFood->_items[0]->total );
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
