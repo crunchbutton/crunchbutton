@@ -243,7 +243,7 @@ class Crunchbutton_Credit extends Cana_Table
 		$credit->paid_by = $this->paid_by;
 		$credit->id_restaurant_paid_by = $this->id_restaurant_paid_by;
 		$credit->id_credit_debited_from = $this->id_credit;
-		$credit->note = 'Removed the credit #' . $this->id_credit . ' ($' . $valueToRemove . ') - by: ' . $_SESSION['username'] ;
+		$credit->note = 'Removed the credit #' . $this->id_credit . ' ($' . $valueToRemove . ') - by: ' . c::admin()->name;
 		$credit->save();
 	}
 

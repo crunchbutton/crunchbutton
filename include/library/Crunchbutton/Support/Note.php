@@ -62,7 +62,7 @@ class Crunchbutton_Support_Note extends Cana_Table {
 	
 	public function repTime() {
 		$date = $this->date();
-		$date->setTimezone(c::rep()->timezone);
+		$date->setTimezone(c::admin()->timezone());
 		return $date;
 	}
 

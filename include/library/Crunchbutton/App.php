@@ -283,6 +283,13 @@ class Crunchbutton_App extends Cana_App {
 		return $this->auth()->user();
 	}
 	
+	public function admin($admin = null) {
+		if ($admin !== null) {
+			$this->_admin = $admin;
+		}
+		return $this->_admin;
+	}
+	
 	public function displayPage($page = null) {
 
 		if (is_null($page)) {
