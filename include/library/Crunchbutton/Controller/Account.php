@@ -6,16 +6,9 @@ class Crunchbutton_Controller_Account extends Cana_Controller {
 			list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
 		}
 		
-		$users = [
-			'judd',
-			'devin',
-			'david',
-			'daniel',
-			'adam',
-			'nick'
-		];
+		$admin = Admin::login($_SERVER['PHP_AUTH_USER']);
 
-		if (!$_SERVER['PHP_AUTH_USER'] || !in_array($_SERVER['PHP_AUTH_USER'], $users) || $_SERVER['PHP_AUTH_PW'] != '***REMOVED***!') {
+		if (!$_SERVER['PHP_AUTH_USER'] || !$admin->id_admin || sha1(c::crypt()->encrypt($_SERVER['PHP_AUTH_PW'])) != $admin->pass) {
 		    header('WWW-Authenticate: Basic realm="Crunchbutton - '.$_SERVER['PHP_AUTH_USER'].'"');
 		    header('HTTP/1.0 401 Unauthorized');
 
@@ -23,10 +16,10 @@ class Crunchbutton_Controller_Account extends Cana_Controller {
 		    exit;
 		}
 		
-		c::view()->username = $_SERVER['PHP_AUTH_USER'];
+		c::view()->username = $admin->name;
 		
 		c::rep((object)[
-			'name' => $_SERVER['PHP_AUTH_USER'],
+			'name' => $admin->login,
 			'timezone' => new DateTimeZone('America/New_York')
 		]);
 		
