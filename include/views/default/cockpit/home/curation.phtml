@@ -7,6 +7,7 @@
 	$this->title2icon = 'file';
 
 	$data = $this->data;
+	$totalFoodOrdered = $this->totalFoodOrdered;
 
 ?>
 <div class="container-fluid padded">
@@ -17,53 +18,156 @@
 					<span class="title">Curation</span>
 				</div>
 				<div class="box-content padded">
-
-				<?php 
-				if( c::getPagePiece(2) == 'category' ) { ?>
-					<a href="/home/curation/"><i class="icon-reorder"></i> Order by times ordered</a>
-				<?php } else { ?>
-					<a href="/home/curation/category"><i class="icon-reorder"></i> Order by category</a>
-				<?php }
-
-				if( $_GET[ 'showInactive' ] == '1' ) { ?>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="?showInactive=0"><i class="icon-eye-close"></i> Show just active dishes</a>
-				<?php } else { ?>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="?showInactive=1"><i class="icon-eye-close"></i> Show all dishes</a>
-				<?php } ?>
-
-				<br/>
-				<br/>
-
 				<table>
 					<tr>
-						<td class="span3">Name</td>
-						<td class="span3">Times</td>
-						<td class="span3">Category</td>
+						<td class="padded" valign="top">
+							<?php 
+							if( c::getPagePiece(2) == 'category' ) { ?>
+								<a href="/home/curation/"><i class="icon-reorder"></i> Order by times ordered</a>
+							<?php } else { ?>
+								<a href="/home/curation/category"><i class="icon-reorder"></i> Order by category</a>
+							<?php } ?>
+						</td>
+						<td class="padded" valign="top">
+						<?php
+						if( $_GET[ 'showInactive' ] == '1' ) { ?>
+							<a href="?showInactive=0"><i class="icon-eye-close"></i> Show just active dishes</a>
+						<?php } else { ?>
+							<a href="?showInactive=1"><i class="icon-eye-close"></i> Show all dishes</a>
+						<?php } ?>
+						</td>
 					</tr>
+				</table>
+				<table>
+					<tr>
+						<td class="padded" valign="top">
+							<div>
+								<input type="checkbox" name="filter" class="curationCheck" value="first-order" id="check-first-order">
+								<label for="check-first-order">Fist Order</label>
+							</div>
+						</td>
+						<td class="padded" valign="top">
+							<div>
+								<input type="checkbox" name="filter" class="curationCheck" value="percent-since-first-order" id="check-percent-since-first-order">
+								<label for="check-percent-since-first-order">% Since First Order (restaurant)</label>
+							</div>
+						</td>
+						<td class="padded" valign="top">
+							<div>
+								<input type="checkbox" name="filter" class="curationCheck" value="percent-all-restaurant" id="check-percent-all-restaurant">
+								<label for="check-percent-all-restaurant">% All dishes (restaurant)</label>
+							</div>
+						</td>
+						<td class="padded" valign="top">
+							<div>
+								<input type="checkbox" name="filter" class="curationCheck" value="percent-since-first-order-all" id="check-percent-since-first-order-all">
+								<label for="check-percent-since-first-order-all">% Since First Order (all)</label>
+							</div>
+						</td>
+						<td class="padded" valign="top">
+							<div>
+								<input type="checkbox" name="filter" class="curationCheck" value="percent-all-dishes" id="check-percent-all-dishes">
+								<label for="check-percent-all-dishes">% All dishes</label>
+							</div>
+						</td>
+						<td class="padded" valign="top">
+							<div>
+								<input type="checkbox" name="filter" class="curationCheck" value="unique-users" id="check-unique-users">
+								<label for="check-unique-users">Unique users</label>
+							</div>
+						</td>
+						<td class="padded" valign="top">
+							<div>
+								<input type="checkbox" name="filter" class="curationCheck" value="avg-unique-users" id="checkavg-unique-users">
+								<label for="check-avg-unique-users">Avg Orders/User</label>
+							</div>
+						</td>
+					</tr>
+				</table>
+
+
+
+
+				<br/>
+				<br/>
+				<table cellpadding="0" cellspacing="0" border="0" class="table table-normal">
 				<?php 
 				foreach ( $data as $restaurant ) {
 				?>
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<th>
+					<tr style="background:#ededf2;border-top:1px solid #333;border-bottom:1px solid #666;">
+						<td style="font-weight:bold;">
 							<?php echo $restaurant[ 'Name' ]; ?>
-						</th>
-						<td></td>
-						<td></td>
+						</td>
+						<td class="padded"><div>Times</div></td>
+						<td class="first-order force-hide"><div>First order</div></td>
+						<td class="percent-since-first-order force-hide"><div>% Since First Order <br/>(restaurant)</div></td>
+						<td class="percent-all-restaurant force-hide"><div>% All dishes (restaurant)</div></td>
+						<td class="percent-since-first-order-all force-hide"><div>% since First Order <br/>(all restaurants)</div></td>
+						<td class="percent-all-dishes force-hide"><div>% All dishes</div></td>
+						<td class="unique-users force-hide"><div>Unique users</div></td>
+						<td class="avg-unique-users force-hide"><div>Avg Orders Per Unique User</div></td>
+						<td class="padded">Category</td>
 					</tr>
 					<?php 
 						$foods = $restaurant[ 'Food' ];
 						foreach( $foods as $food ){
-							$active = ( $food[ 'active' ] == '0' ) ? 'style="color:#CCC;"' : '';
+
+							if( $food[ 'date_formated' ] ){
+								$first_order = $food[ 'date_formated' ];
+							} else {
+								$first_order = '-';
+							}
+
+							if( $food[ 'times' ] ){
+
+								// times ordered
+								$times = $food[ 'times' ];	
+								$allDishesSince = $food[ 'allDishesSince' ];
+								
+								// % restaurant since first order
+								$restaurant_orderedSince = $food[ 'restaurant_orderedSince' ];
+								$restaurant_orderedSince = number_format( $times * 100 / $restaurant_orderedSince, 2 );
+								
+								// % all since first order
+								$all_orderedSince = $food[ 'all_orderedSince' ];
+								$all_orderedSince = number_format( $times * 100 / $all_orderedSince, 2 );
+
+								// % restaurant ordered
+								$restaurant_ordered = $food[ 'restaurant_ordered' ];
+								$restaurant_ordered = number_format( $times * 100 / $restaurant_ordered, 2 );
+								
+								$all_ordered = $totalFoodOrdered;
+								$all_ordered = number_format( $times * 100 / $all_ordered, 2 );
+
+								// unique users
+								$unique_users = $food[ 'unique_users' ];
+
+								// avg orders per user
+								$avg_orders_users = number_format( $times / $unique_users , 2);
+
+							} else {
+								$times = 0;
+								$percentOfTotal = 0;
+								$restaurant_orderedSince = 0;
+								$all_orderedSince = 0;
+								$restaurant_ordered = 0;
+								$all_ordered = 0;
+								$unique_users = 0;
+								$avg_orders_users = 0;
+							}
+							$active = ( $food[ 'active' ] == '0' ) ? 'color:#CCC;' : '';
 							?>
-							<tr <?php echo $active; ?>>
-								<td><?php echo $food[ 'name' ]; ?> </td>
-								<td><?php if( $food[ 'times' ] ){ echo $food[ 'times' ]; } else { echo 0; } ; ?></td>
-								<td><?php echo $food[ 'category' ]; ?></td>
+							<tr style="<?php echo $active; ?>">
+								<td style="padding:2px 5px;"><?php echo $food[ 'name' ]; ?> </td>
+								<td style="padding:2px 5px;"><?php echo $times; ?></td>
+								<td style="padding:2px 5px;" class="first-order force-hide"><?php echo $first_order; ?></td>
+								<td style="padding:2px 5px;" class="percent-since-first-order force-hide"><?php echo $restaurant_orderedSince; ?>%</td>
+								<td style="padding:2px 5px;" class="percent-all-restaurant force-hide"><?php echo $restaurant_ordered; ?>%</td>
+								<td style="padding:2px 5px;" class="percent-since-first-order-all force-hide"><?php echo $all_orderedSince; ?>%</td>
+								<td style="padding:2px 5px;" class="percent-all-dishes force-hide"><?php echo $all_ordered; ?>%</td>
+								<td style="padding:2px 5px;" class="unique-users force-hide"><?php echo $unique_users; ?></td>
+								<td style="padding:2px 5px;" class="avg-unique-users force-hide"><?php echo $avg_orders_users; ?></td>
+								<td style="padding:2px 8px;"><?php echo $food[ 'category' ]; ?></td>
 							</tr>
 							<?php
 						}
@@ -77,3 +181,26 @@
 		</div>
 	</div>
 </div>
+<style type="text/css">
+	 .unique-users{}
+	 .force-hide{
+	 		display: none !important;
+	 }
+</style>
+<script type="text/javascript">
+	$(function () {
+
+		$( '.curationCheck' ).iCheck( { checkboxClass: "icheckbox_flat-aero", radioClass: "iradio_flat-aero" } );
+
+		$( '.curationCheck' ).on( 'ifChanged', function( event ){
+			var check = $( this );
+			var css = check.val();
+			if( check.is( ':checked' ) ){
+				$( '.' + css ).removeClass( 'force-hide' );
+			} else {
+				$( '.' + css ).addClass( 'force-hide' );
+			}
+		});
+
+	});
+</script>
