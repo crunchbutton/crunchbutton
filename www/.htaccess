@@ -23,6 +23,8 @@ AddType font/woff .woff
 AddType image/svg+xml .svg .svgz
 
 php_value max_input_vars 100000
+php_value upload_max_filesize 32M
+php_value post_max_size 32M
 
 
 AddOutputFilterByType DEFLATE text/plain
