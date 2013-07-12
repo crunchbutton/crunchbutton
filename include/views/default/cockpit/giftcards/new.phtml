@@ -136,10 +136,7 @@
 						<li class="track-fields">
 							<span>Notify phone</span>
 							<span class="pull-right">
-								<?php if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
-									$phone = c::config()->testphone->{ $_SESSION[ 'username' ] };
-								} ?>
-								<input type="text" id="notify_phone" value="<?php echo $phone; ?>" name="notify_phone">
+								<input type="text" id="notify_phone" value="<?=c::admin()->testphone?>" name="notify_phone">
 							</span>
 							<hr/>
 							<div class="note large">

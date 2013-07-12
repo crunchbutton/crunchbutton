@@ -1,0 +1,1 @@
+ALTER TABLE `admin` ADD `testphone` VARCHAR( 12 )  NULL DEFAULT NULL;
