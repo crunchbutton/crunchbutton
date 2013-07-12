@@ -162,8 +162,8 @@
 					</div>
 					<div class="span2">
 						<button class="btn btn-blue" id="button-reload" title="Reload all charts"><i class="icon-refresh"></i></button>
-						&nbsp;
-						<button class="btn btn-green" id="button-open-all" title="Open all">Open all</button>
+						<!-- &nbsp;
+						<button class="btn btn-green" id="button-open-all" title="Open all">Open all</button> -->
 					</div>
 
 					<div class="clearfix"></div>
@@ -277,7 +277,7 @@
 				var chart = $( this );
 				if( chart.attr( 'opened' ) == 'true'  ){
 					var permalink = chart.attr( 'data-permalink' );
-					var params = { 'divId' : chart.attr( 'id' ), 'permalink' : permalink, 'force' : true };
+					var params = { 'divId' : chart.attr( 'id' ), 'permalink' : permalink, 'force' : true, 'interval' : 'week' };
 					loadChart( params );
 					$( '#button-reload' ).find( 'i' ).addClass( 'icon-spin ' );
 					setTimeout( function(){

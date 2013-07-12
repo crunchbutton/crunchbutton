@@ -76,6 +76,11 @@ class Crunchbutton_Chart extends Cana_Model {
 
 	public function processInterval( $interval ){
 		
+		$param_interval = $_REQUEST[ 'interval' ];
+		if( $interval != $param_interval ){
+			$interval = $param_interval;
+		}
+
 		switch ( $interval ) {
 
 			case 'day':
