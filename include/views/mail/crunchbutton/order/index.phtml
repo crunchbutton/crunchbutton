@@ -21,12 +21,13 @@
 		<td>
 			<? if ($order->delivery_type == 'delivery') : ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="/assets/images/mprinter/delivery.png" class="icon-big"></td>
+					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'assets/images/mprinter/delivery.png')?>" class="icon-big"></td>
 					<td class="text-size-mid">Order for Delivery</td>
 				</tr></table>
 			<? else : ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="/assets/images/mprinter/takeout.png" class="icon-big"></td>
+
+					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'assets/images/mprinter/takeout.png')?>" class="icon-big"></td>
 					<td class="text-size-mid">Order for Takeout</td>
 				</tr></table>
 			<? endif ; ?>
@@ -34,19 +35,19 @@
 		<td>
 			<? if ($order->pay_type == 'card') : ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="/assets/images/mprinter/card.png" class="icon-big"></td>
+					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/card.png')?>" class="icon-big"></td>
 					<td class="text-size-mid">Prepaid by card</td>
 				</tr></table>
 			<? else : ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="/assets/images/mprinter/cash.png" class="icon-big"></td>
+					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/cash.png')?>" class="icon-big"></td>
 					<td class="text-size-mid">Cash order</td>
 				</tr></table>
 			<? endif ; ?>
 		</td>
 		<td>
 			<table cellpadding="0" cellspacing="0"><tr>
-				<td><img src="/assets/images/mprinter/timer.png" class="icon-big"></td>
+				<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/timer.png')?>" class="icon-big"></td>
 				<td class="text-size-mid">Expected by <?=$order->expectedBy()->format('h:i')?></td>
 			</tr></table>
 		</td>
@@ -61,7 +62,7 @@
 
 	<table class="notes" cellpadding="0" cellspacing="0">
 		<tr>
-			<td valign="top"><img src="/assets/images/mprinter/note.png" class="icon-note"></td>
+			<td valign="top"><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/note.png')?>" class="icon-note"></td>
 			<td style="margin: 0; padding: 22px 0 0 0;" valign="top"><div class="arrow-left"></div></td>
 			<td style="width: 100%; padding-right: 0; "><table style="width: 100%"><tr><td class="notes-content"><?=nl2br($order->notes)?></td></tr></table></td>
 		</tr>
@@ -75,13 +76,13 @@
 	<tr>
 		<td style="width: 50%">
 			<table cellpadding="0" cellspacing="0"><tr>
-				<td><img src="/assets/images/mprinter/customer.png" class="icon-big"></td>
+				<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/customer.png')?>" class="icon-big"></td>
 				<td class="text-size-mid"><?=$order->name?><br /><?=$order->phone()?></td>
 			</tr></table>
 		</td>
 		<td>
 			<table cellpadding="0" cellspacing="0"><tr>
-				<td><img src="/assets/images/mprinter/restaurant.png" class="icon-big"></td>
+				<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/restaurant.png')?>" class="icon-big"></td>
 				<td class="text-size-mid"><?=$order->restaurant()->name?><br /><?=$order->restaurant()->phone?></td>
 			</tr></table>
 		</td>
@@ -90,7 +91,7 @@
 		<td style="width: 50%">
 			<? if ($order->delivery_type == 'delivery') : ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="/assets/images/mprinter/map.png" class="icon-big"></td>
+					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/map.png')?>" class="icon-big"></td>
 					<td class="text-size-mid"><?=nl2br(strip_tags($order->address))?></td>
 				</tr></table>
 			<? endif ; ?>
@@ -98,7 +99,7 @@
 		<td style="width: 50%">
 			<? if ($order->_print && $order->delivery_type == 'takeout') : ?>
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="/assets/images/mprinter/map.png" class="icon-big"></td>
+					<td><img src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/map.png')?>" class="icon-big"></td>
 					<td class="text-size-mid"><?=nl2br(strip_tags($order->restaurant()->address))?></td>
 				</tr></table>
 			<? endif ; ?>
