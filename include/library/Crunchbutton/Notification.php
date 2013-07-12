@@ -11,8 +11,8 @@ class Crunchbutton_Notification extends Cana_Table
 	public function send(Crunchbutton_Order $order) {
 
 		$env = c::env() == 'live' ? 'live' : 'dev';
-		if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
-			c::config()->twilio->testnumber = c::config()->testphone->{ $_SESSION[ 'username' ] };
+		if ($_SESSION['admin'] && c::admin()->testphone) {
+			c::config()->twilio->testnumber = c::admin()->testphone;
 		}
 
 		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);

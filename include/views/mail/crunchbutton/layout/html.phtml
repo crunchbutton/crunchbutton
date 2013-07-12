@@ -1,10 +1,30 @@
 <html>
 <style>
+	body {
+		margin: 0;
+		padding: 0;
+	}
 	body, td {
 		font-size: 14px;
+		font-family: Museo Slab;
 	}
 	h1 {
-		font-size: 19px;
+		font-size: 40px;
+		color: #000;
+		margin: 0;
+		font-family: Museo Slab;
+		text-shadow: #FFF 1px 2px 0;
+		z-index: 1;
+	}
+	h1::before {
+		z-index: -1;
+		content: attr(title);
+		position: absolute;
+		padding-left: 5px;
+		padding-top: 5px;
+		white-space: nowrap;
+		text-shadow: none;
+		margin: 0;
 	}
 	h2 {
 		font-size: 14px;
@@ -16,13 +36,14 @@
 	}
 	td {
 		border: 0;
-		border-right: 1px solid #bbb;
-		border-bottom: 1px solid #bbb;
 		padding: 5px;
 	}
+	.wrap {
+		width: 740px;
+		margin: 0 auto;
+	}
 	table {
-		border-top: 1px solid #bbb;
-		border-left: 1px solid #bbb;
+
 	}
 	.noborder, .noborder td, .noborder tr {
 		border: 0;
@@ -31,11 +52,79 @@
 	td.imporant {
 		font-size: 18px;
 	}
+	
+	h1, h2 {
+		background-image: url(data:image/gif;base64,R0lGODlhAwADAIABAP///////yH5BAEAAAEALAAAAAADAAMAAAIEBHIJBQA7);
+	}
+	
+	.xhatch {
+		background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAI0lEQVQIW2NkwAT/GdHE/gP5jMiCYAGQIpggXAAmiCIAEgQAAE4FBbECyZcAAAAASUVORK5CYII=);
+		color: #000;
+		font-weight: bold;
+		text-align: center;
+		font-size: 14px;
+	}
+	
+	
+	
+	.separator-big {
+		height: 20px;
+	}
+	
+	.separator-small {
+		height: 14px;
+		margin: 5px 0 5px 0;
+	}
+	
+	.icon-big {
+		height: 45px;
+	}
+	
+	.text-size-mid {
+		font-size: 15px;
+	}
+	.text-size-small {
+		font-size: 12px;
+	}
+	
+	.notes-content {
+		background-color: #373737;
+		color: #fff;
+		font-weight: bold;
+		border-radius: 7px;
+		padding: 10px;
+		width: 100%;
+	}
+	.order-num {
+		font-size: 19px;
+		line-height: 1.6em;
+		font-weight: bold;
+	}
+	
+	.arrow-left {
+		width: 0; 
+		height: 0; 
+		border-top: 10px solid transparent;
+		border-bottom: 10px solid transparent; 
+		border-right:10px solid #373737;
+		margin-right: -7px;
+	}
+	
+	.fooditem {
+		border-bottom: 1px dotted #666;
+	}
+	
+	.topitem {
+		border-bottom: 2px dotted #666;
+	}
+
+
 
 </style>
 <body style="font-family:Helvetica,Arial">
 
+<div class="wrap">
 <?=$this->content?>
-
+</div>
 </body>
 </html>

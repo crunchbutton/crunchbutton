@@ -1284,6 +1284,16 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return 0;
 	}
+	
+	public function expectedBy() {
+		$date = clone $this->date();
+		if ($this->restaurant()->pickup_estimated_time && $this->delivery_type == 'takeout') {
+			$date->modify('+ '.$this->restaurant()->pickup_estimated_time. ' minute');
+		} else {
+			$date->modify('+ '.$this->restaurant()->delivery_estimated_time. ' minute');
+		}
+		return $date;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
