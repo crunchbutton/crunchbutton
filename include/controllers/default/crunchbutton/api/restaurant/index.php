@@ -92,7 +92,6 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 			$rc->delete();
 		}
 
-		Crunchbutton_Session::flashMessage('Your data has been saved.');
 		echo $restaurant->json();
 	}
 
