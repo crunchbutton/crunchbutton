@@ -117,7 +117,8 @@
     		<secret>***REMOVED***</secret>
     	</live>
     	<dev>
-    		<secret>9d5c3d58fc5e11e1aa05026ba7c1aba6</secret>
+    		<secret>***REMOVED***</secret>
+    		<uri>/v1/marketplaces/***REMOVED***</uri>
     	</dev>
     	<sharedMerchant>_KEY_</sharedMerchant>
     </balanced>

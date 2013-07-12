@@ -1,0 +1,61 @@
+<html>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+
+<body>
+<button class="stripe-test-start">Start</button>
+<div class="stripe-status"></div>
+
+<script type="text/javascript">
+	Stripe.setPublishableKey('<?=c::config()->stripe->{'dev'}->{'public'}?>');
+	var start, end;
+
+	function responseCallbackHandler(status, response) {
+		if (response.error) {
+			console.log(response.error);
+		} else {
+			var cardTokenURI = response.id;
+
+			$.ajax({
+				type: 'GET',
+				url: '/tests/svb/stripe/charge',
+				data: { card: cardTokenURI },
+				success: function(res) {
+					var j;
+					try {
+						j = JSON.parse(res);
+					} catch (e) {
+					
+					}
+					
+					if (j && j.id) {
+						end = new Date;
+						console.log('success',j.id);
+						var seconds = (end.getTime() - start.getTime())/1000;
+						start = end = null;
+						console.log('stripe took ' + seconds + ' seconds');
+						$('.stripe-status').html('completed in ' + seconds + ' seconds');
+						$('.stripe-test-start').removeAttr('disabled');
+					}
+				}
+			});
+		}
+ 	}
+
+	var tokenizeInstrument = function(e) {
+		$('.stripe-status').html('running...');
+		$('.stripe-test-start').attr('disabled','disabled');
+		start = new Date;
+
+ 		var creditCardData = {
+			number: '4242424242424242',
+			exp_month: '12',
+			exp_year: '2014'
+  		};
+ 
+  		Stripe.card.createToken(creditCardData, responseCallbackHandler);
+ 	};
+	$('.stripe-test-start').click(tokenizeInstrument);
+ 	
+</script>
+</html>
