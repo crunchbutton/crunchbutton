@@ -1,0 +1,69 @@
+<html>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://js.balancedpayments.com/v1/balanced.js"></script>
+
+<body>
+<button class="balanced-test-start">Start</button>
+<div class="balanced-status"></div>
+
+<script type="text/javascript">
+	balanced.init('<?=c::config()->balanced->{'dev'}->uri?>');
+	var start, end;
+
+	function responseCallbackHandler(response) {
+		switch (response.status) {
+  			case 400:
+				console.log(response.error);
+				break;
+
+  			case 404:
+				console.log(response.error);
+				break;
+
+  			case 201:
+				console.log(response.data);
+				var cardTokenURI = response.data['uri'];
+
+				$.ajax({
+					type: 'GET',
+					url: '/tests/svb/balanced/charge',
+					data: { card: cardTokenURI },
+					success: function(res) {
+						var j;
+						try {
+							j = JSON.parse(res);
+						} catch (e) {
+						
+						}
+						
+						if (j && j.id) {
+							end = new Date;
+							console.log('success',j.id);
+							var seconds = (end.getTime() - start.getTime())/1000;
+							start = end = null;
+							console.log('Balanced took ' + seconds + ' seconds');
+							$('.balanced-status').html('completed in ' + seconds + ' seconds');
+							$('.balanced-test-start').removeAttr('disabled');
+						}
+					}
+				});
+  		}
+ 	}
+
+	var tokenizeInstrument = function(e) {
+		$('.balanced-status').html('running...');
+		$('.balanced-test-start').attr('disabled','disabled');
+		start = new Date;
+
+ 		var creditCardData = {
+			card_number: '4242424242424242',
+			expiration_month: '12',
+			expiration_year: '2014'
+  		};
+ 
+  		balanced.card.create(creditCardData, responseCallbackHandler);
+ 	};
+	$('.balanced-test-start').click(tokenizeInstrument);
+ 	
+</script>
+</html>
