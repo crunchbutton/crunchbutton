@@ -124,7 +124,7 @@
 										<tbody>
 											<tr>
 												<td class="label-sub">Created by:</td>
-												<td class="content-sub"><input type="text" id="created_by" name="created_by" value="<?php echo $_SESSION['username']; ?>"></td>
+												<td class="content-sub"><input type="text" id="created_by" name="created_by" value="<?=c::admin()->login?>"></td>
 											</tr>
 											<tr>
 												<td class="label-sub"></td>
@@ -133,12 +133,7 @@
 											<tr class="track-fields">
 												<td class="label-sub">Notify phone:</td>
 												<td class="content-sub">
-													<?php
-													if ($_SESSION['admin'] && c::config()->testphone->{ $_SESSION[ 'username' ] } ) {
-														$phone = c::config()->testphone->{ $_SESSION[ 'username' ] };
-													}
-													?>
-													<input type="text" id="notify_phone" value="<?php echo $phone; ?>" name="notify_phone">
+													<input type="text" id="notify_phone" value="<?=c::admin()->phone?>" name="notify_phone">
 													<br />
 													<span style="font-size:11px;">
 														*Phone number that will receive a sms <br/>notification when this gift card is redeemed.
