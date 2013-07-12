@@ -54,8 +54,6 @@
 </table>
 
 
-
-
 <? if ($order->notes) : ?>
 	<div class="xhatch separator-small"></div>
 
@@ -73,56 +71,46 @@
 
 <table width="100%" celpadding="0" cellspacing="0">
 	<tr>
-		<td style="width: 50%">
-			<table cellpadding="0" cellspacing="0"><tr>
-				<td><img src="/assets/images/mprinter/customer.png" class="icon-big"></td>
-				<td class="text-size-mid"><?=$order->name?><br /><?=$order->phone()?></td>
-			</tr></table>
-		</td>
 		<td>
-			<table cellpadding="0" cellspacing="0"><tr>
-				<td><img src="/assets/images/mprinter/restaurant.png" class="icon-big"></td>
-				<td class="text-size-mid"><?=$order->restaurant()->name?><br /><?=$order->restaurant()->phone?></td>
-			</tr></table>
-		</td>
-	</tr>
-	<tr>
-		<td style="width: 50%">
-			<? if ($order->delivery_type == 'delivery') : ?>
+
 				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="/assets/images/mprinter/map.png" class="icon-big"></td>
-					<td class="text-size-mid"><?=nl2br(strip_tags($order->address))?></td>
+					<td><img src="/assets/images/mprinter/user.png" class="icon-big"></td>
+					<td class="text-size-mid"><?=$order->name?><br /><?=$order->phone()?></td>
 				</tr></table>
-			<? endif ; ?>
-		</td>
-		<td style="width: 50%">
-			<? if ($order->_print && $order->delivery_type == 'takeout') : ?>
-				<table cellpadding="0" cellspacing="0"><tr>
-					<td><img src="/assets/images/mprinter/map.png" class="icon-big"></td>
-					<td class="text-size-mid"><?=nl2br(strip_tags($order->restaurant()->address))?></td>
-				</tr></table>
-			<? endif ; ?>
+
 		</td>
 	</tr>
 
+	<tr>
+		<td width="50%" valign="top">
+
+			<h3>
+				<? if ($order->delivery_type == 'delivery') : ?>
+					<?=nl2br(strip_tags($order->address))?><br />
+				<? endif ; ?>
+			</h3>
+		</td>
+		<td width="50%" valign="top">
+			<h2><?=$order->restaurant()->name?></h2>
+			<h3><?=$order->date()->format('D, M jS Y, H:i:s (T)')?></h3>
+		</td>
+	</tr>
 </table>
 
-<div class="xhatch separator-small"></div>
+
+<br />
 
 
 
-
+<br />
 <?=$this->render('order/details',['set' => ['order' => $order, 'user' => $user]]);?>
-<br /><br />
-<? if (!$order->_print) : ?>
-	<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
-		<tr>
-			<td style="text-align: left;" class="text-size-small">Card on file. Signature not required.</td>
-			<td style="text-align: right;" class="text-size-small">Crunchbutton support: <?=c::config()->phone->restaurant?></td>
-		</tr>
-	</table>
-<? endif ; ?>
 
+<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
+	<tr>
+		<td style="text-align: left;" class="text-size-small">Card on file. Signature not required.</td>
+		<td style="text-align: right;" class="text-size-small">Crunchbutton support: <?=c::config()->phone->restaurant?></td>
+	</tr>
+</table>
 <div class="xhatch separator-big"></div>
 
 
@@ -142,6 +130,6 @@
 
 
 
-<? if ($order->_print) : ?>
-<script>window.print();</script>
+<? if ($user) : ?>
+<script>//window.print();</script>
 <? endif ; ?>

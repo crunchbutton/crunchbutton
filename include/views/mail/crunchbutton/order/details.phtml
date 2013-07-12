@@ -1,15 +1,15 @@
 
-<table width="100%" celpadding="0" cellspacing="0">
+<table width="100%" celpadding="0" cellspacing="0" class="detail">
 	<thead style="font-weight:bold">
-		<td>Qty</td>
-		<td>Item</td>
-		<td>Price</td>
+		<td class="topitem">Qty</td>
+		<td class="topitem">Item</td>
+		<td class="topitem">Price</td>
 	</thead>
 
 	<? foreach ($order->dishes() as $dish) : ?>
 		<tr>
-			<td>1</td>
-			<td><?
+			<td class="fooditem">1</td>
+			<td class="fooditem"><?
 				$food = $dish->dish()->name;
 				$cartPrice = $dish->dish()->price;
 				$options = $dish->options();
@@ -57,7 +57,7 @@
 				?>
 				<?=$food?>
 			</td>
-			<td>$<?=number_format($cartPrice,2)?></td>
+			<td style="width: 1%;" class="fooditem">$<?=number_format($cartPrice,2)?></td>
 		</tr>
 	<? endforeach ; ?>
 
