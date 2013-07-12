@@ -118,7 +118,7 @@
 <? if (!$order->_print) : ?>
 	<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
 		<tr>
-			<td style="text-align: left;" class="text-size-small">Card on file. Signature not required.</td>
+			<td style="text-align: left;" class="text-size-small"><? if ($order->pay_type == 'card') : ?>Card on file. Signature not required.<? endif ; ?></td>
 			<td style="text-align: right;" class="text-size-small">Crunchbutton support: <?=c::config()->phone->restaurant?></td>
 		</tr>
 	</table>
