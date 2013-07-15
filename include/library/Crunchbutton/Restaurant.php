@@ -1198,10 +1198,23 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}'" );
 	}
 
+
 	public function save() {
 		if (!$this->timezone) {
 			$this->timezone = 'America/New_York';
 		}
+
+		$this->_changeSet = new Restaurant_Changeset(Cana_Changeset::save($this));
+
 		parent::save();
+	}
+	
+	
+	public function changeSet() {
+		if (!isset($this->_changeSet)) {
+			$sets = $this->changeSets();
+			$this->_changeSet = array_pop($sets);
+		}
+		return $this->_changeSet;
 	}
 }

@@ -2,8 +2,8 @@
 
 class Controller_test extends Crunchbutton_Controller_Account {
 	public function init() {
-		echo ini_get('upload_max_filesize');
-		echo ini_get('post_max_size');
+		$r = new Restaurant(60);
+		echo $r->loc_lat;
 		exit;
 
 		c::config()->domain->theme = 'test';
