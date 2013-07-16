@@ -3,10 +3,18 @@
 
 		<div class="signin-form-options" ng-hide="account.help">
 			<form class="signin-form">
+				<!--
 				<div class="sign-form-links">
 					<h1 ng-class="account.tab == 'signin' ? 'tab-active' : 'link'" ng-tap="account.setTab('signin')">Sign in</h1>
 					<div class="divisor">|</div>
 					<h1 ng-class="{account.tab == 'signup' ? 'tab-active' : 'link'}" ng-tap="account.setTab('signup')">Sign up</h1>
+					<div class="divider"></div>
+				</div>
+				-->
+				<div class="sign-form-links">
+					<h1 ng-class="{{account.tab == 'signin' && 'tab-active' || 'link' }}" ng-tap="account.setTab('signin')">Sign in</h1>
+					<div class="divisor">|</div>
+					<h1 ng-class="{{account.tab == 'signup' && 'tab-active' || 'link' }}" ng-tap="account.setTab('signup')">Sign up</h1>
 					<div class="divider"></div>
 				</div>
 

@@ -42,6 +42,7 @@ App.isChromeForIOS = function(){
 
 
 var sort_by;
+
 (function() {
 	// utility functions
 	var default_cmp = function(a, b) {
@@ -102,9 +103,10 @@ var sort_by;
 	}
 }());
 
-
 App.nl2br = function( string ){
-	return string.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');
+	if( string ){
+		return string.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');	
+	}
 }
 
 var touchclick = App.isMobile() ? 'touchend' : 'click';
@@ -166,10 +168,6 @@ if (window.jQuery) {
 		$(document).on('touchclick', $(this).selector, func );
 	};
 }
-
-
-
-
 
 NGApp.filter('iif', function () {
 	return function(input, trueValue, falseValue) {

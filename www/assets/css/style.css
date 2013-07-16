@@ -255,9 +255,6 @@ body {
 	text-shadow: 1px 1px 0 rgba(255,255,255,1);
 	margin-bottom: 90px;
 }
-.error-location {
-	display: none;
-}
 .copyright {
 	color: #fff;
 	font-size: 11px;
@@ -896,9 +893,6 @@ html[xmlns] .clearfix {
 	width: 687px;
 	font-weight: 100;
 }
-	.home-recommend-thank-you{
-		display: none;
-	}
 	.home-recommend-message, .home-recommend-message-thank-you{
 		color: #888;
 		display: block;
@@ -1029,6 +1023,9 @@ html[xmlns] .clearfix {
 .content-item-locations-city, .loc-your-area{
 	color: #4168b8 !important;
 }
+	.content-item-locations-city{
+		margin-right: 15px;
+	}
 
 .content-item-locations-city {
 	color: #666;	
@@ -1832,10 +1829,12 @@ html[xmlns] .clearfix {
 			display: inline-block;
 			padding: 2px;
 			margin-bottom: 3px;
+			margin-right: 5px;
 			-webkit-user-select: none;
 			-o-user-select: none;
 			user-select: none;
 		}
+
 	.restaurant-gift{
 		top: 224px !important;
 		z-index: 10 !important;

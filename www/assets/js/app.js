@@ -28,7 +28,7 @@ var App = {
 	suggestion : {},
 	restaurants: {
 		permalink : 'food-delivery',
-		list: false
+		forceLoad: false
 	},
 	defaultTip: 'autotip',
 	defaultRange : 2,
@@ -64,8 +64,11 @@ App.go = function(url) {
 /**
  * Loads up "community" keyword pages
  */
-App.routeAlias = function(id, success, error) {
-	id = id.toLowerCase();
+ /*
+	TODO: replace this method by the CommunityAliasService
+ */
+App.routeAlias = function( id, success, error ) {
+	id = id.replace('/','').toLowerCase();
 	alias = App.aliases[id] || false;
 	success = success || function(){};
 	error = error || function(){};
@@ -85,7 +88,6 @@ App.routeAlias = function(id, success, error) {
 				city: alias.name_alt,
 				address: alias.name_alt
 			});
-
 			success({alias: res});
 			return;
 		}
@@ -103,7 +105,7 @@ App.NGinit = function() {
 	App.signin.init();
 	App.signup.init();
 	App.suggestion.init();
-	App.recommend.init();
+	// App.recommend.init();
 	App.credit.tooltip.init();
 
 	if (!App.isMobile()) {
@@ -113,12 +115,142 @@ App.NGinit = function() {
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
-
 	setTimeout( function(){ App.signin.checkUser(); }, 300 );
 };
 
 
 var NGApp = angular.module('NGApp', []);
+
+// Press enter directive
+NGApp.directive( 'ngEnter', function() {
+		return function( scope, element, attrs ) {
+				element.bind( 'keydown keypress', function( event ) {
+					if( event.which === 13 ) {
+						scope.$apply( function() {
+							scope.$eval( attrs.ngEnter );
+						} );
+						event.preventDefault();
+					}
+				} );
+		};
+} );
+
+// CommunityAlias service
+NGApp.factory( 'CommunityAliasService', function(){
+
+	var service = {};
+
+	service.route = function( id, success, error ){
+
+		id = id.replace('/','').toLowerCase();
+		alias = App.aliases[id] || false;
+		success = success || function(){};
+		error = error || function(){};
+
+		if (alias) {
+			// Get the location of the alias
+			var loc = App.locations[ alias.id_community ];
+
+			if ( loc.loc_lat && loc.loc_lon ) {
+				var res = new Location({
+					lat: loc.loc_lat,
+					lon: loc.loc_lon,
+					type: 'alias',
+					verified: true,
+					prep: alias.prep,
+					city: alias.name_alt,
+					address: alias.name_alt
+				});
+				success( { alias: res } );
+				return;
+			}
+		}
+		error();
+	};
+
+	return service;
+} );
+
+
+// Restaurant list service
+NGApp.factory( 'RestaurantsService', function( $http ){
+	
+	var service = {};
+	var restaurants = false;
+	var isSorted = false;
+
+	service.reset = function(){
+		restaurants = false;
+		isSorted = false;
+	}
+	
+	service.sort = function(){
+
+		if( isSorted ){ return restaurants; }
+
+		var list = restaurants; 
+
+		for ( var x in list ) {
+
+				// recalculate restaurant open status on relist
+				list[x].open();
+
+				// determine which tags to display
+				if (!list[x]._open) {
+					list[x]._tag = 'closed';
+				} else {
+					if (list[x].delivery != '1') {
+						list[x]._tag = 'takeout';
+					} else if ( list[x].isAboutToClose() ) {
+						list[x]._tag = 'closing';
+					}
+				}
+				// show short description
+				list[x]._short_description = ( list[x].short_description || ( 'Top Order: ' + (list[x].top_name ? (list[x].top_name || list[x].top_name) : '' ) ) );
+			};
+			list.sort(sort_by( { name: '_open', reverse: true }, { name: 'delivery', reverse: true }, { name: '_weight', primer: parseInt, reverse: true } ) );
+			isSorted = true;
+			restaurants = list;
+			return restaurants;
+	}
+
+	service.list = function( success, error ){
+
+		if( !App.loc.pos().valid( 'restaurants' ) ){
+			if( error ){
+				error();
+			}
+			return false;
+		}
+
+		if ( restaurants === false || App.restaurants.forceLoad ) {
+
+			var url = App.service + 'restaurants?lat=' + App.loc.pos().lat() + '&lon=' + App.loc.pos().lon() + '&range=' + ( App.loc.range || App.defaultRange );
+			
+			$http.get( url, { cache: true } ).success( function( data ) {
+				
+				var list = [];
+				if ( typeof data.restaurants == 'undefined' || data.restaurants.length == 0 ) {
+					if( error ){ error(); return false; }
+				} else {
+					for ( var x in data.restaurants ) {
+						list[ list.length ] = new Restaurant( data.restaurants[ x ] );
+					}
+					restaurants = list;
+					if( success ){ success( list ); }
+					return list;
+				}
+			} );
+			isSorted = false;
+			App.restaurants.forceLoad = false;
+		} else {
+			if( success ){ success( restaurants ); }
+			return restaurants;
+		}
+	}
+
+	return service;
+} );
 
 NGApp.config(function($compileProvider){
 	$compileProvider.urlSanitizationWhitelist(/.*/);
@@ -496,11 +628,6 @@ $(function() {
 
 	$(document).on('touchclick', '.signup-add-facebook-button', function() {
 		App.signin.facebook.login();
-	});
-
-	$(document).on('submit', '.button-letseat-formform', function() {
-		$('.button-letseat-form').trigger('touchup');
-		return false;
 	});
 
 	$(document).on('touchclick', '.delivery-toggle-delivery', function(e) {

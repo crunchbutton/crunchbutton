@@ -31,6 +31,15 @@ App.loc = {
 		}
 	},
 
+	/**
+	 * Method adds new location to the locs array
+	 */
+	addLocation: function( loc ){
+		// Resets the restaurant's list
+		App.restaurants.forceLoad = true;
+		App.loc.locs.push( loc )
+		$.cookie('locsv2', JSON.stringify(App.loc.locs), { expires: new Date(3000,01,01), path: '/'});
+	},
 
 	/**
 	 * get the closest
@@ -63,8 +72,8 @@ App.loc = {
 	/**
 	 * get the most recent position
 	 */
-	pos: function() {
-		return App.loc.locs[0] || new Location;
+	pos: function() {	
+		return ( ( App.loc.locs.length ) ? App.loc.locs[ App.loc.locs.length - 1 ] : new Location );
 	},
 
 
@@ -83,7 +92,7 @@ App.loc = {
 			navigator.geolocation.getCurrentPosition(function(position){
 				clearTimeout(App.loc.timerId);
 
-				App.loc.locs.push(new Location({
+				App.loc.addLocation(new Location({
 					lat: position.coords.latitude,
 					lon: position.coords.longitude,
 					type: 'geolocation'
@@ -120,15 +129,13 @@ App.loc = {
 		// 2) retrieve and set location date from cookies
 		var cookieLocs = $.cookie('locsv2') ? JSON.parse($.cookie('locsv2')) : null;
 		var cookieBounding = $.cookie('boundingv2') ? JSON.parse($.cookie('boundingv2')) : null;
+
 		if (cookieLocs) {
-			console.log(cookieLocs)
-			var locs = [];
-			for (var x in cookieLocs) {
-				locs.push(new Location(cookieLocs[x]._properties));
+			for( var x in cookieLocs ) {
+				App.loc.addLocation(new Location(cookieLocs[x]._properties));
 			}
-			App.loc.locs = locs;
-			console.log(locs)
 		}
+
 		if (cookieBounding) {
 			App.loc.bounding = cookieBounding;
 			App.loc.bounding.type = 'cookie';
@@ -191,19 +198,19 @@ App.loc = {
 	 * geocode an address and perform callbacks
 	 */
 	geocode: function(address, success, error) {
+		
 		App.loc.doGeocode(address, function(results) {
 
 			if (results.alias) {
 				var loc = new Location({
-					address: results.alias.address,
+					address: results.alias.address(),
 					entered: address,
 					type: 'alias',
-					lat: results.alias.lat,
-					lon: results.alias.lon,
-					city: results.alias.city,
-					prep: results.alias.prep
+					lat: results.alias.lat(),
+					lon: results.alias.lon(),
+					city: results.alias.city(),
+					prep: results.alias.prep()
 				});
-				
 			} else {
 
 				// if we have a bounding result, bind to it
@@ -272,8 +279,7 @@ App.loc = {
 				}
 			});
 		};
-
-		// Check if the typed address has an alias
+		// TODO: use the service
 		App.routeAlias(address, rsuccess, rerror);
 	},
 
@@ -370,9 +376,8 @@ App.loc = {
 			}
 
 			App.loc.geocode(address, function(loc) {
-				App.loc.locs.push(loc);
+				App.loc.addLocation(loc);
 				success();
-				$.cookie('locsv2', JSON.stringify(App.loc.locs), { expires: new Date(3000,01,01), path: '/'});
 				$.cookie('boundingv2', JSON.stringify(App.loc.bounding), { expires: new Date(3000,01,01), path: '/'});
 			}, error);
 		}
