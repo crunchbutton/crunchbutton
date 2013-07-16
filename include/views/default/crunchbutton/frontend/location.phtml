@@ -1,4 +1,4 @@
-<div class="main-content-readable home-greeting">
+<div class="main-content-readable home-greeting" ng-show="!locationError">
 	<div class="home-welcome">
 		<h1>Push a button. Get Food.</h1>
 		<h2>
@@ -10,12 +10,12 @@
 		</h2>
 	</div>
 </div>
-<div class="enter-location">
+<div class="enter-location" ng-show="!locationError">
 	<form class="button-letseat-formform" onsubmit="return false;">
 		<table class="button-letseat-table" cellpadding="0" cellspacing="0">
 			<tr>
 				<td style="width: 100%;">
-					<input type="text" class="location-address" placeholder="Enter your zip code or full address" autofocus>
+					<input type="text" class="location-address" ng-enter="letsEat()" ng-model="address" placeholder="Enter your zip code or full address" autofocus>
 				</td>
 				<td>
 					<div class="location-detect">
@@ -28,13 +28,13 @@
 	</form>
 </div>
 <div class="divider"></div>
-<button class="button-letseat-form button-bottom" ng-tap="letsEat()"><div>Let's Eat!</div></button>
-<div class="error-location" style="display: none;">
+<button ng-show="!locationError" class="button-letseat-form button-bottom" ng-tap="letsEat()"><div>Let's Eat!</div></button>
+<div class="error-location" ng-show="locationError">
 	<div class="content-item-locations">
 		<h1>Crunchbutton by city:</h1> 
 		<div class="content-item-locations-cities">
-			<span class="content-item-locations-city" ng-repeat="alias in topCommunities">
-				<span permalink="{{alias.alias}}">{{alias.name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			<span ng-repeat="alias in topCommunities">
+				<span class="content-item-locations-city" ng-tap="openCity(alias.name)" permalink="{{alias.alias}}">{{alias.name}}</span>
 			</span>
 		</div>
 	</div>
@@ -42,24 +42,25 @@
 		<div class="home-welcome home-welcom-error">
 			<h1>Sorry!</h1>
 			<h2>
-				We don't serve <span class="loc-your-area change-location-inline">{{yourArea}}</span> yet. Please click  <span class="change-location-inline">here</span> to enter a different address, or recommend your favorite restaurant and we'll add it to the site!
+				We don't serve <span ng-tap="resetFormLocation()" class="loc-your-area change-location-inline">{{yourArea}}</span> yet. Please click <span ng-tap="resetFormLocation()" class="change-location-inline">here</span> to enter a different address, or recommend your favorite restaurant and we'll add it to the site!
 			</h2>
 		</div>
 		<div class="divider"></div>
-		<div class="home-recommend">
-			<div class="home-recommend-form">
+		<div class="home-recommend" ng-controller="RecommendCtrl">
+		
+			<div class="home-recommend-form" ng-show="!formSent">
 				<div class="home-recommend-title">
 					<h1><strong>Recommend a restaurant:</strong></h1>
 				</div>
 				<input type="text" class="home-recommend-text">
-				<button class="home-recommend-button"><div>Recommend!</div></button>
+				<button ng-tap="send()" class="home-recommend-button"><div>Recommend!</div></button>
 				<div class="divider"></div>
 				<div class="home-recommend-message">
 					What's your absolute favorite? What should be on Crunchbutton? Tell us, and we'll actually add it and get back to you.
 				</div>
 				<div class="divider"></div>
 			</div>
-			<div class="home-recommend-thank-you">
+			<div class="home-recommend-thank-you" ng-show="formSent">
 				<div class="home-recommend-title">
 					<h1>Awesome, thanks!</h1>
 				</div>

@@ -1,96 +1,89 @@
-App.recommend = {
-	api : {
-		add : 'suggestion/restaurant',
-		relateuser : 'suggestion/relateuser'
-	},
-	itIsSending : false,
-	recommendations : false
-}
+function RecommendCtrl( $scope, $http, RecommendRestaurantService ) {
 
-App.recommend.init = function(){
-	$( document ).on( 'touchclick', '.home-recommend-button', function() {
-		App.recommend.send();
-	} );	
+	$scope.service = RecommendRestaurantService;
 
-	$( document ).on( 'keyup', '.home-recommend-text', function( e ) {
-		if (e.which == 13) {
-			App.recommend.send();
+	$scope.formSent = $scope.service.getFormStatus();
+
+	// Watch the variable status change
+	$scope.$watch( 'service.getFormStatus()', function( newValue, oldValue, scope ) {
+		$scope.formSent = newValue;
+	});
+
+	$scope.send = function(){
+
+		if ( $.trim( $( '.home-recommend-text' ).val() ) == '' ){
+			alert( "Please enter the restaurant\'s name." );
+			$( '.home-recommend-text' ).focus();
+			return;
 		}
-	} );
 
-	$( document ).on( 'touchclick', '.home-recommend-message-create-account', function(){
-		App.signup.show( false );
-	} );
+		var pos = App.loc.pos();
+
+		var content = 'Address entered: ' + pos.addressEntered + '\n' + 
+									'Address reverse: ' + pos.addressReverse + '\n' + 
+									'City: ' + pos.city + '\n' + 
+									'Region: ' + pos.region + '\n' + 
+									'Lat: ' + pos.lat + '\n' + 
+									'Lon: ' + pos.lon;
+		var data = {
+			name: $( '.home-recommend-text' ).val(),
+			content : content
+		};
+
+		var url = App.service + $scope.service.api.add;
+
+		$http.post( url , data )
+			.success( function( data ) {
+					RecommendRestaurantService.changeFormStatus( true );
+					$scope.service.addRecommendation( data.id_suggestion );
+					$( '.home-recommend-text' ).val( '' );
+			}	);
+	}
 }
 
-App.recommend.send = function(){
-	if ( $.trim( $( '.home-recommend-text' ).val() ) == '' ){
-		alert( "Please enter the restaurant\'s name." );
-		$( '.home-recommend-text' ).focus();
-		return;
-	}
+// RecommendRestaurantService service
+NGApp.factory( 'RecommendRestaurantService', function( $http ){
 
-	var pos = App.loc.pos();
-
-	var content = 'Address entered: ' + pos.addressEntered + 
-								'\n' + 
-								'Address reverse: ' + pos.addressReverse +
-								'\n' + 
-								'City: ' + pos.city +
-								'\n' + 
-								'Region: ' + pos.region + 
-								'\n' + 
-								'Lat: ' + pos.lat + 
-								'\n' + 
-								'Lon: ' + pos.lon;
-	var data = {
-		name: $( '.home-recommend-text' ).val(),
-		content : content
+	var service = {
+		api : {
+			add : 'suggestion/restaurant',
+			relateuser : 'suggestion/relateuser'
+		}
 	};
 
-	if (!App.recommend.itIsSending){
-		App.recommend.showThankYou();	
-		App.recommend.itIsSending = true;
-		$.ajax({
-			type: 'POST',
-			dataType: 'json',
-			data: data,
-			url:  App.service + App.recommend.api.add,
-			success: function( json ) {
-				App.recommend.itIsSending = false;
-				if( !App.recommend.recommendations ){
-					App.recommend.recommendations = [];
-				}
-				App.recommend.recommendations.push( json.id_suggestion );
-			}
-		});
-	}
-}
+	var formSent = false;
+	var recommendations = [];
 
-App.recommend.relateUser = function(){
-	if( App.recommend.recommendations ){
-		var url = App.service + App.recommend.api.relateuser;
-		$.each( App.recommend.recommendations, function(index, value) {
-			var id_suggestion = value;
-			var data = { id_suggestion : id_suggestion, id_user : App.config.user.id_user };
-			$.ajax({
-				type: 'POST',
-				dataType: 'json',
-				data: data,
-				url:  url,
-				success: function( json ) {}
-			});
-		} );
-		App.recommend.recommendations = false;
+	service.changeFormStatus = function( status ){
+		formSent = status;
 	}
-}
-
-App.recommend.showThankYou = function(){
-	$( '.home-recommend-form' ).animate( { 'opacity' : 0 }, function(){
-		$( '.home-recommend-form' ).hide();
-		$( '.home-recommend-thank-you' ).css( 'opacity', 0 );
-		$( '.home-recommend-thank-you' ).show();
-		$( '.home-recommend-thank-you' ).animate( { 'opacity' : 1 } );	
-	} );
 	
-}
+	service.getFormStatus = function(){
+		return formSent;
+	}
+
+	service.addRecommendation = function( id ){
+		recommendations.push( id );
+	}
+
+	service.getRecommendations = function(){
+		if( recommendations.length > 0 ){
+			return recommendations;
+		}
+		return false;
+	}
+
+	service.relateUser = function(){
+		if( service.getRecommendations() ){
+			var url = App.service + service.api.relateuser;
+			$.each( recommendations, function(index, value) {
+				var id_suggestion = value;
+				var data = { id_suggestion : id_suggestion, id_user : App.config.user.id_user };
+				$http.post( url , data );
+			} );
+			recommendations = false;
+		}
+	}
+
+	return service;
+} );

@@ -22,170 +22,93 @@ NGApp.controller('help', function ($scope, $http) {
 /**
  * Home controller
  */
-NGApp.controller('home', function ($scope, $http, $location) {
-	if (App.loc.pos().valid('restaurants') && App.restaurants.list) {
-		// we have a location, show the restaurants
-		$location.path('/' + App.restaurants.permalink);
-	} else {
-		// we dont have a location. let the user enter it
-		$location.path('/location');
-	}
+NGApp.controller('home', function ($scope, $http, $location, RestaurantsService) {
+
+	$scope.restaurantsService = RestaurantsService;
+
+	$scope.restaurantsService.list( 
+		// Success
+		function(){
+			$location.path( '/' + App.restaurants.permalink );
+		},
+		// Error
+		function(){
+			$location.path( '/location' );
+		} 
+	);
 });
 
 
 /**
  * Alias / unknown controller
  */
-NGApp.controller('default', function ($scope, $http) {
+NGApp.controller('default', function ($scope, $http, $location, CommunityAliasService) {
 
+	var routeCommunity = CommunityAliasService;
 
+	routeCommunity.route( $location.path(),
 
-/*
-
-
-	$(document).on('touchclick', '.content-item-locations-city', function() {
-		$( '.main-content' ).html( '' );
-		var permalink = $( this ).attr( 'permalink' );
-		App.routeAlias( permalink, function( result ){
-			App.loc.realLoc = {
-				addressAlias: result.alias.address,
-				lat: result.alias.lat,
-				lon: result.alias.lon,
-				prep: result.alias.prep,
-				city: result.alias.city
-			};
-			App.loc.setFormattedLocFromResult();
-			App.page.foodDelivery( true );
-		});
-	});
-	*/
-
-
-	// @TODO THIS
-	App.routeAlias( path[ 0 ],
-		function( result ){
-			App.loc.realLoc = {
-				addressAlias: result.alias.address,
-				lat: result.alias.lat,
-				lon: result.alias.lon,
-				prep: result.alias.prep,
-				city: result.alias.city
-			};
-			App.loc.setFormattedLocFromResult();
-			App.page.foodDelivery( true );
-	});
-
+		// If route is ok
+		function( results ){
+			if (results.alias) {
+				App.loc.addLocation( new Location( {
+					address: results.alias.address(),
+					entered: results.address,
+					type: 'alias',
+					lat: results.alias.lat(),
+					lon: results.alias.lon(),
+					city: results.alias.city(),
+					prep: results.alias.prep()
+				} ) );
+				$location.path( '/' + App.restaurants.permalink );
+			}
+		},
+		// If route is not ok
+		function(){
+			$location.path( '/location' );
+		}
+	);
 });
 
 
 /**
  * Show the restaurants
  */
-NGApp.controller('restaurants', function ($scope, $http, $location) {
+NGApp.controller( 'restaurants', function ( $scope, $http, $location, RestaurantsService ) {
+
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
-	
+
+	$scope.restaurantsService = RestaurantsService;
+
 	$scope.display = function() {
-		if (!this.restaurant.open()) {
+		if ( !this.restaurant.open() ) {
 			App.alert("This restaurant is currently closed. It will be open during the following hours (" + this.restaurant._tzabbr + "):\n\n" + this.restaurant.closedMessage());
 			App.busy.unBusy();
-
 		} else {
 			$location.path('/' + App.restaurants.permalink + '/' + this.restaurant.permalink);
 		}
 	};
 
-	if (App.loc.pos().valid('restaurants')) {
+	$scope.restaurantsService.list( function(){
+		
+		var titles = App.foodDelivery.localizedContent();
 
-		// sort the restaurants
-		var sortRestaurants = function() {
+		$scope.restaurants = $scope.restaurantsService.sort();
+		$scope.slogan = titles.slogan;
+		$scope.tagline = titles.tagline;
 
-			for (var x in App.restaurants.list) {
-				// recalculate restaurant open status on relist
-				App.restaurants.list[x].open();
-
-				// determine which tags to display
-				if (!App.restaurants.list[x]._open) {
-					App.restaurants.list[x]._tag = 'closed';
-				} else {
-					if (App.restaurants.list[x].delivery != '1') {
-						App.restaurants.list[x]._tag = 'takeout';
-					} else if (App.restaurants.list[x].isAboutToClose()) {
-						App.restaurants.list[x]._tag = 'closing';
-					}
-				}
-
-				// show short description
-				App.restaurants.list[x]._short_description = (App.restaurants.list[x].short_description || ('Top Order: ' + (App.restaurants.list[x].top_name ? (App.restaurants.list[x].top_name || App.restaurants.list[x].top_name) : '')));
-			};
-
-			App.restaurants.list.sort(sort_by(
-				{
-					name: '_open',
-					reverse: true
-				},
-				{
-					name: 'delivery',
-					reverse: true
-				},
-				{
-					name: '_weight',
-					primer: parseInt,
-					reverse: true
-				}
-			));
-		};
-
-		var displayRestaurants = function() {
-
-			sortRestaurants();
-
-			var titles = App.foodDelivery.localizedContent();
-
-			$scope.restaurants = App.restaurants.list;
-			$scope.slogan = titles.slogan;
-			$scope.tagline = titles.tagline;
-
-			if (App.restaurants.list.length == 4) {
-				$('.content').addClass('short-meal-list');
-			} else {
-				$('.content').removeClass('short-meal-list');
-			}
-			$('.content').removeClass('smaller-width');
-
-			$('.nav-back').removeClass('nav-back-show');
-		};
-
-
-		// get the list of restaurants
-		if (App.restaurants.list === false) {
-			var url = App.service + 'restaurants?lat=' + App.loc.pos().lat() + '&lon=' + App.loc.pos().lon() + '&range=' + ( App.loc.range || App.defaultRange );
-			App.restaurants.list = false;
-
-			$http.get(url, {cache: true}).success(function(data) {
-				App.restaurants.list = [];
-
-				// There is no restaurant near to the user. Go home and show the error.
-				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
-					console.debug('THERE WAS A LOC ERROR?');
-
-				} else {
-					for (var x in data.restaurants) {
-						App.restaurants.list[App.restaurants.list.length] = new Restaurant(data.restaurants[x]);
-					}
-					console.debug('THERE WAS A LOC SUCCESS!!');
-				}
-
-				displayRestaurants();
-			});
-
+		if ($scope.restaurants.length == 4) {
+			$('.content').addClass('short-meal-list');
 		} else {
-			displayRestaurants();
+			$('.content').removeClass('short-meal-list');
 		}
+		$('.content').removeClass('smaller-width');
 
-	} else {
-		// we dont have a location. let the user enter it
-		$location.path('/location');
-	}
+		$('.nav-back').removeClass('nav-back-show');
+
+	}, function(){
+		$location.path( '/location' );
+	} );
 });
 
 
@@ -200,31 +123,60 @@ NGApp.controller('cities', function ($scope, $http) {
 /**
  * Change location
  */
-NGApp.controller('location', function ($scope, $http, $location) {
+NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsService, RecommendRestaurantService ) {
+	
 	$scope.isUser = App.config.user.has_auth;
 	$scope.notUser = !App.config.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
 	$scope.yourArea = App.loc.pos().city() || 'your area';
 
+	$scope.restaurantsService = RestaurantsService;
+
+	$scope.locationError = false;
+
+	$scope.openCity = function( city ){
+		$location.path( '/' + city );
+	}
+
+	$scope.resetFormLocation = function(){
+		$('.location-address').val( '' );
+		$scope.locationError = false;
+	}
+
 	// lets eat button
 	$scope.letsEat = function() {
+
 		var address = $.trim($('.location-address').val());
 
 		if (!address) {
+
 			$('.location-address').val('').attr('placeholder','Please enter your address here');
+
 		} else {
-			App.loc.addVerify(address, function() {
-				$scope.$apply(function() {
-					$location.path('/' + App.restaurants.permalink);
-				});
-			}, function() {
-				$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
-			});
+
+			App.loc.addVerify(address, 
+				// Address ok
+				function() {
+					// Verify if the address has restaurant
+					$scope.restaurantsService.list( 
+						// Success
+						function(){
+							$location.path( '/' + App.restaurants.permalink );	
+						},
+						// Error
+						function(){
+							RecommendRestaurantService.changeFormStatus( false );
+							$scope.locationError = true;
+						} );
+				}, 
+				// Address not ok
+				function() {
+					$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
+				}
+			);
 		}
 	}
 });
-
-
 
 /**
  * restaurant page

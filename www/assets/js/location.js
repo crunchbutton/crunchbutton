@@ -21,7 +21,6 @@ var Location = function(params) {
 			return;
 		}
 
-
 		switch (results[0].types[0]) {
 			default:
 			case 'administrative_area_level_1':
