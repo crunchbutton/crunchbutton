@@ -176,7 +176,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 		switch ($_SERVER['SERVER_NAME']) {
 			case 'wenzel.localhost':
-				$domain->theme = 'onebuttonwenzel';
+				$domain->theme = 'microsite';
 				break;
 			case 'cockpit.localhost':
 			case 'cockpit.crunchr.co':
