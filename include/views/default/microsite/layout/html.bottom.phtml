@@ -1,0 +1,30 @@
+</head>
+<body>
+	<div class="wrapper">
+		<div class="content">
+			<?=$this->content?>
+		</div>
+		<div class="footer">
+			<div class="footer-content">
+				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
+					<a href="javascript:App.test.card();">TEST: card</a>
+					<a href="javascript:App.test.logout();">TEST: logout</a>
+				<? endif ; ?>
+			</div>
+		</div>
+	</div>
+	<div id="fb-root"></div>
+</body>
+<script type="text/javascript">
+$(function() {
+	App.config = <?=json_encode(c::appConfig())?>;
+})
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=***REMOVED***";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
+</html>
