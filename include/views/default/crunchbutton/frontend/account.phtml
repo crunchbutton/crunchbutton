@@ -1,0 +1,128 @@
+<div class="account-container zoom-anim-dialog small-container mfp-hide">
+	
+	<div ng-controller="AccountModalHeaderCtrl" class="account-modal-header" ng-show="modal.header.visible">
+
+		<h1 class="signin {{ signinActive && 'active' || 'link' }}" ng-tap="modal.toggleSignForm( 'signin' )">Sign in</h1>
+		<div class="divisor">|</div>
+		<h1 class="signup {{ signupActive && 'active' || 'link' }}" ng-tap="modal.toggleSignForm( 'signup' )">Sign up</h1>
+		<div class="divider"></div>
+
+	</div>
+
+	<div ng-controller="AccountSignInCtrl" ng-show="visible">
+
+		<div class="signin-form-container">	
+
+			<div class="signin-form-options" ng-show="!help.visible">
+
+				<form class="signin-form" name="formSignin">
+
+					<input type="text" maxlength="250" name="email" id="email" valid-login required placeholder="email or phone" tabindex="10" ng-model="account.email" />
+
+					<div class="divider"></div>
+					<input type="password" maxlength="250" name="password" placeholder="password" required tabindex="10" ng-model="account.password" />
+					
+					<div class="divider"></div>
+					
+					<div class="signin-error">
+						Your email or password were incorrect.
+					</div>
+					
+					<a class="signin-password-help" ng-tap="help.show(true)">Password help?</a>
+
+					<a href="javascript:;" class="signin-form-button">Log in</a>
+					<div class="divider"></div>
+					<pre style="font-size:10px;">
+					account: {{account}} <br>
+					$dirty: {{formSignin.$dirty}} <br>
+					valid: {{formSignin.$valid}} <br>
+					error: {{formSignin.$error}} <br>
+
+					formSignin.email: {{formSignin.email}} <br>
+					formSignin.email.$error: {{formSignin.email.$error}} <br>
+					required: {{formSignin.email.$error.required}} <br>
+					validateLogin: {{formSignin.email.$error.validateLogin}} <br>
+					</pre>
+					<!-- $dirty -->
+					<!-- <div ng-show="formSignin.email.$error.validLogin">The phrase  is blacklisted</div>
+          <div ng-show="formSignin.email.$error.required">required</div>
+					<div ng-show="formSignin.$invalid">form Invalid</div>
+					 -->
+
+					
+					<div class="divider"></div>
+
+				</form>
+
+				<div class="signin-facebook-container">
+					<div class="signin-facebook">
+						<a href="javascript:;" class="signin-facebook-button">
+							<span class="signin-facebook-icon"></span>
+							<span class="signin-facebook-text">Login with Facebook</span>
+							<div class="divider"></div>
+						</a>
+					</div>
+					<div class="signin-facebook-message">
+						Just a sec...
+					</div>
+				</div>
+			</div>
+
+			<div ng-show="help.visible">
+				<form class="signin-help-form">
+					<h1>Password help?</h1>
+					<input type="text" maxlength="250" name="password-help-email" placeholder="email or phone" tabindex="10" ng-model="account.email" autofocus>
+					<div class="divider"></div>
+					<div ng-show="help.error.visible" class="password-help-error">
+						Sorry, that email/phone is not registered with us.
+					</div>
+					<a class="signin-password-help-back" ng-tap="help.show(false)">Never mind</a>
+					<a href="javascript:;" ng-tap="help.sendForm()" class="signin-password-help-button">Reset</a>
+					<div class="divider"></div>
+				</form>
+				<div ng-show="help.success.visible" class="signin-password-help-message">
+					You will receive a code to reset your password! It will expire in 24 hours.
+					<div ng-show="help.success.facebook.visible">
+						You can also try logging in with <span class="login-facebook">Facebook</span>.
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div ng-controller="AccountSignUpCtrl" ng-show="visible">
+	<div class="signup-form-container">
+		<div class="signup-form-options">
+			<form class="signup-form">
+				<input type="text" maxlength="250" name="signup-email" placeholder="email address" tabindex="10" />
+				<div class="divider"></div>
+				<input type="password" maxlength="250" name="signup-password" placeholder="password" tabindex="10" />
+				<div class="divider"></div>
+				<a href="javascript:;" class="signup-form-button">Sign up</a>
+				<div class="divider"></div>
+				<div class="signup-error"></div>
+			</form>
+			<div class="signup-facebook-container">
+				<div class="signup-facebook">
+					<a href="javascript:;" class="signup-facebook-button">
+						<span class="signup-facebook-icon"></span>
+						<span class="signup-facebook-text">Signup with Facebook</span>
+						<div class="divider"></div>
+					</a>
+				</div>
+				<div class="signup-facebook-message">
+					Just a sec...
+				</div>
+			</div>
+		</div>
+		<div class="signup-success-container">
+			<h1>Congratulations!</h1>
+			<div class="signup-success">
+				You can now sign in using <strong class="success-phone"></strong>!
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>
