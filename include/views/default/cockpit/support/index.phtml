@@ -6,18 +6,51 @@
 <!-- support page -->
 <div class="container-fluid padded">
 	<div class="row-fluid">
-		<div class="box">
-			<div class="box-header"><span class="title">Overview</span></div>
-			<div class="box-content padded">
-				<a href="/support/new"><button type="submit" class="btn btn-blue new-restaurant">New Support Ticket</button></a>
+		<div class="span6">
+			<div class="box">
+				<div class="box-header"><span class="title">Settings</span></div>
+
+				<div class="box-content">
+					<form class="fill-up">
+						<ul class="box-list">
+							<li class="input">
+								<span>Num to call after 1AM</span>
+								<span class="pull-right">
+									<input type="text" placeholder="" name="support-phone-afterhours" id="support-phone-afterhours" value='<?=c::config()->site->config('support-phone-afterhours')->value?>'>
+								</span>
+							</li>
+							<li class="input">
+								<button type="button" class="btn btn-blue button-save-settings">Save changes</button>
+							</li>
+						</ul>
+					</form>
+				</div>
+
 			</div>
 		</div>
+		<div class="span6">
+			<div class="box">
+				<div class="box-header"><span class="title">Stuff</span></div>
+				<div class="box-content padded">
+					<a href="/support/new"><button type="submit" class="btn btn-blue new-restaurant">New Support Ticket</button></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid padded">
+	<div class="row-fluid">
 
 		<div class="box">
 			<div class="box-header">
 				<span class="title">Recent Issues</span>
 				<ul class="box-toolbar">
 					<li><span class="label label-green"><?=$this->total?> open</span></li>
+
+					<li class="toolbar-link">
+						<a href="/support/new" title="Create new"><i class="icon-edit"></i></a>
+					</li>
 				</ul>
 			</div>
 			<div class="box-content">
@@ -45,7 +78,7 @@
 						<? foreach ($this->recent as $support): ?>
 							<tr>
 								<td style="white-space: nowrap;">
-									<div style="float: left">#<?=$support->id_support?>&nbsp;&nbsp;&nbsp;</div>
+									<div style="float: left">#<?=str_pad($support->id_support, 4, '0000', STR_PAD_LEFT)?>&nbsp;&nbsp;&nbsp;</div>
 									<div style="float: left"class="btn-group visible-phone hidden-tablet hidden-desktop">
 										<a href="/support/<?= $support->id_support ?>"><button class="btn btn-mini btn-blue">View</button></a>
 									</div>
@@ -78,5 +111,25 @@
 <!-- // end support page -->
 
 
+<script>
+	$(function() {
+		$('.button-save-settings').click(function() {
+			var self = $(this);
+			$(this).attr('disabled','disabled');
 
+			$.ajax({
+				type: 'POST',
+				url: '/api/siteconfig',
+				data: {
+					key: 'support-phone-afterhours',
+					value: $('[name="support-phone-afterhours"]').val()
+				},
+				complete: function(data) {
+					self.removeAttr('disabled');
+				}
+			});
+
+		});
+	});
+</script>
 	

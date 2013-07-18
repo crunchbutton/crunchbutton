@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Controller_Account extends Cana_Controller {
+class Crunchbutton_Controller_RestAccount extends Crunchbutton_Controller_Rest {
     public function __construct() {
 		if (!c::admin()->id_admin) {
 		    header('WWW-Authenticate: Basic realm="Crunchbutton - '.$_SERVER['PHP_AUTH_USER'].'"');
@@ -8,6 +8,6 @@ class Crunchbutton_Controller_Account extends Cana_Controller {
 		    die('unauth.');
 		    exit;
 		}
-		c::view()->layout('layout/core');
+		parent::__construct();
     }
 }

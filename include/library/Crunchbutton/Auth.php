@@ -7,6 +7,23 @@ class Crunchbutton_Auth {
 	public function __construct() {
 		$this->_session = new Crunchbutton_Session;
 		session_start();
+		
+		//check for admin
+		if ($_SERVER['HTTP_AUTHORIZATION']) {
+			list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+		}
+		
+		if ($_SERVER['PHP_AUTH_USER']) {
+		
+			$admin = Admin::login($_SERVER['PHP_AUTH_USER']);
+
+			if ($admin->id_admin && sha1(c::crypt()->encrypt($_SERVER['PHP_AUTH_PW'])) == $admin->pass) {
+				// we have a valid login
+				c::admin($admin);
+				$_SESSION['admin'] = true;
+			}
+		}
+
 
 		// here we need to check for a token
 		// if we dont have a valid token, we need to check for a facebook cookie

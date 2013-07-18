@@ -8,8 +8,7 @@
  *
  * @property int id_restaurant
  */
-class Crunchbutton_Restaurant extends Cana_Table
-{
+class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -1198,10 +1197,13 @@ class Crunchbutton_Restaurant extends Cana_Table
 		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}'" );
 	}
 
+
 	public function save() {
 		if (!$this->timezone) {
 			$this->timezone = 'America/New_York';
 		}
+
 		parent::save();
 	}
+
 }

@@ -1,0 +1,240 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+a {
+	color: #d74924;
+	text-decoration: underline;
+}
+
+::selection {
+	background: rgba(47,154,211,.5);
+	color: #fff;
+	text-shadow: none;
+}
+::-moz-selection {
+	background: rgba(47,154,211,.5);
+	color: #fff;
+	text-shadow: none;
+}
+
+
+input[type="submit"]:focus, input[type="button"]:focus, input[type="text"]:focus, button, :focus {
+	outline : none;
+}
+input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, button::-moz-focus-inner {
+	border : 0;
+}
+
+html {
+	-webkit-text-size-adjust: none;
+}
+
+* {
+	-webkit-tap-highlight-color: rgba(205,69,29,.5);
+}
+
+
+
+.home-top {
+	background: url(/assets/images/micro/bg-sandwich.jpg);
+}
+
+.content {
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+
+.logo {
+	background: url(/assets/images/micro/crunchbutton-logo.png) no-repeat;
+	background-position: center center;
+	width: 254px;
+	height: 50px;
+	background-size: 100%;
+	margin: 0 auto;
+	padding-top: 40px;
+}
+
+.logo-finger {
+	background: url(/assets/images/micro/logo-finger.png) no-repeat;
+	background-position: center center;
+	width: 78px;
+	height: 88px;
+	background-size: 100%;
+	margin: 0 auto;
+	padding-top: 100px;
+}
+
+.pushabutton {
+	background: url(/assets/images/micro/pushabutton.png) no-repeat;
+	background-position: center center;
+	width: 163px;
+	height: 163px;
+	background-size: 100%;
+	margin: 0 auto;
+	padding-top: 50px;
+}
+
+.divider-white-food {
+	background: url(/assets/images/micro/div-dot-white-food.png) center center no-repeat;
+}
+
+.divider-orange-food {
+	background: url(/assets/images/micro/div-dot-orange-food.png) center center no-repeat;
+}
+
+.divider-circle {
+	width: 86px;
+	height: 86px;
+	background-size: 100%;
+	margin-top: -41px;
+	margin-left:-43px;
+    left: 50%;
+    position: absolute;
+}
+
+.home-top {
+	padding-bottom: 60px;
+}
+
+.detail-form table {
+
+}
+
+.detail-form td {
+	vertical-align: top;
+	padding-bottom: 8px;
+}
+
+.detail-form .input-wrap {
+	border: 2px solid #32a2a4;
+	border-radius: 2px;
+	color: #404040;
+	box-shadow: inset 0 0 5px rgba(15, 81, 82, .57);
+	padding: 0;
+}
+
+.detail-form input, .detail-form textarea {
+	font: 17px Museo Slab;
+	padding: 8px 10px 8px 10px;
+	border: 0;
+	border-width:0;
+	width: 90%;
+	resize: none;
+	background: none;
+}
+
+
+.content-padding {
+	padding: 10px;
+}
+
+.icon-user {
+	background: url(/assets/images/micro/icon-user.png) no-repeat;
+}
+.icon-cell {
+	background: url(/assets/images/micro/icon-cell.png) no-repeat;
+}
+.icon-map {
+	background: url(/assets/images/micro/icon-map.png) no-repeat;
+}
+.icon-note {
+	background: url(/assets/images/micro/icon-note.png) no-repeat;
+}
+
+.icon {
+	height: 34px;
+	width: 28px;
+	background-position: center center;
+	background-size: 100%;
+	display: block;
+}
+
+.form-icon {
+	width: 28px;
+	padding-right: 16px;
+	padding-top: 4px;
+}
+
+.animated {
+	-webkit-transition: height 0.2s;
+	-moz-transition: height 0.2s;
+	transition: height 0.2s;
+}
+
+.home-orange {
+	background: #f5844d;
+	margin-top: 5px;
+}
+
+.icon-delete {
+	background: url(/assets/images/micro/x.png) no-repeat;
+	background-position: center center;
+	width: 18px;
+	height: 18px;
+	background-size: 100%;
+	display: inline-block;
+	margin-right: 10px;
+	vertical-align: top;
+}
+
+.cart-items {
+	font: 14px Museo Slab;
+	color: #fff;
+}
+
+.cart-text {
+	display: inline-block;
+	margin-top: 1px;
+	vertical-align: top;
+}
+
+.cart-count, .cart-name, .cart-label {
+	margin-right: .5em;
+}
+
+.cart-label {
+	color: #f9c8b0;
+}

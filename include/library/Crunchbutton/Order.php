@@ -1140,6 +1140,13 @@ class Crunchbutton_Order extends Cana_Table {
 			$credits = Crunchbutton_Credit::creditByOrder( $this->id_order );
 			if( $credits->count() > 0 ){
 				foreach( $credits as $credit ){
+
+					// We want just the debits
+					if( $credit->type != Crunchbutton_Credit::TYPE_DEBIT ){
+						continue;
+					}
+
+					// Creates a new credit to the user
 					$creditRefounded = new Crunchbutton_Credit();
 					$creditRefounded->id_user = $credit->id_user;
 					$creditRefounded->type = Crunchbutton_Credit::TYPE_CREDIT;
