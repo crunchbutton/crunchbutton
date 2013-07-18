@@ -78,7 +78,7 @@
 						<? foreach ($this->recent as $support): ?>
 							<tr>
 								<td style="white-space: nowrap;">
-									<div style="float: left">#<?=$support->id_support?>&nbsp;&nbsp;&nbsp;</div>
+									<div style="float: left">#<?=str_pad($support->id_support, 4, '0000', STR_PAD_LEFT)?>&nbsp;&nbsp;&nbsp;</div>
 									<div style="float: left"class="btn-group visible-phone hidden-tablet hidden-desktop">
 										<a href="/support/<?= $support->id_support ?>"><button class="btn btn-mini btn-blue">View</button></a>
 									</div>
