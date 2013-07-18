@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
 <data version="1">
-    <viewfilter>true</viewfilter>
-    <bundle>false</bundle>
-    <timezone>America/Los_Angeles</timezone>
-    <cache>
-    	<mysql>false</mysql>
-    </cache>
-    <imgCache>http://i._DOMAIN_/cache/</imgCache>
-    <db>
-        <live>
-            <user>crunch</user>
-            <pass>***REMOVED***</pass>
-            <db>crunchbutton</db>
-            <host>localhost</host>
-            <prefix></prefix>
-        </live>
-        <beta>
-            <user>crunch</user>
-            <pass>***REMOVED***</pass>
-            <db>crunchbutton_dev</db>
-            <host>localhost</host>
-            <prefix></prefix>
-        </beta>
+	<viewfilter>true</viewfilter>
+	<bundle>false</bundle>
+	<timezone>America/Los_Angeles</timezone>
+	<cache>
+		<mysql>false</mysql>
+	</cache>
+	<imgCache>http://i._DOMAIN_/cache/</imgCache>
+	<db>
+		<live>
+			<user>crunch</user>
+			<pass>***REMOVED***</pass>
+			<db>crunchbutton</db>
+			<host>localhost</host>
+			<prefix></prefix>
+		</live>
+		<beta>
+			<user>crunch</user>
+			<pass>***REMOVED***</pass>
+			<db>crunchbutton_dev</db>
+			<host>localhost</host>
+			<prefix></prefix>
+		</beta>
 		<local>
 			<user>root</user>
 			<pass>root</pass>
@@ -29,15 +29,15 @@
 			<host>localhost</host>
 			<prefix></prefix>	
 		</local>
-    </db>
+	</db>
 	<defaults>
-        <page>home</page>
-        <layout>layout/html</layout>
-        <version>default</version>
-        <theme>crunchbutton</theme>
-    </defaults>
-    <github>
-    	<local>
+		<page>home</page>
+		<layout>layout/html</layout>
+		<version>default</version>
+		<theme>crunchbutton</theme>
+	</defaults>
+	<github>
+		<local>
 			<id>_KEY_</id>
 			<secret>_KEY_</secret>
 		</local>
@@ -49,8 +49,8 @@
 			<id>_KEY_</id>
 			<secret>_KEY_</secret>
 		</beta>
-    </github>
-    <facebook>
+	</github>
+	<facebook>
 		<local>
 			<app>***REMOVED***</app>
 			<secret>***REMOVED***</secret>
@@ -80,40 +80,37 @@
 				<site_url>http://_DOMAIN_/</site_url>
 			</poststatus>
 		</default>	
-    </facebook>
-    <phone>
-    	<support>_PHONE_</support>
-    	<restaurant>_PHONE_</restaurant>
-    </phone>
-		<supportcall>
-			<David>_PHONE_</David>
-		</supportcall>
-    <text>
-     	<Devin>_PHONE_</Devin>
-    	<Judd>_PHONE_</Judd>
-    	<David>_PHONE_</David>
-    	<Nick>_PHONE_</Nick>
-    </text>
-    <stripe>
-    	<dev>
-    		<secret>***REMOVED***</secret>
-    		<public>***REMOVED***</public>
-    	</dev>
-    	<live>
-    		<secret>***REMOVED***</secret>
-    		<public>***REMOVED***</public>
-    	</live>
-    </stripe>
-    <balanced>
-    	<live>
-    		<secret>***REMOVED***</secret>
-    	</live>
-    	<dev>
-    		<secret>***REMOVED***</secret>
-    		<uri>/v1/marketplaces/***REMOVED***</uri>
-    	</dev>
-    	<sharedMerchant>_KEY_</sharedMerchant>
-    </balanced>
+	</facebook>
+	<phone>
+		<support>_PHONE_</support>
+		<restaurant>_PHONE_</restaurant>
+	</phone>
+	<text>
+ 		<Devin>_PHONE_</Devin>
+		<Judd>_PHONE_</Judd>
+		<David>_PHONE_</David>
+		<Nick>_PHONE_</Nick>
+	</text>
+	<stripe>
+		<dev>
+			<secret>***REMOVED***</secret>
+			<public>***REMOVED***</public>
+		</dev>
+		<live>
+			<secret>***REMOVED***</secret>
+			<public>***REMOVED***</public>
+		</live>
+	</stripe>
+	<balanced>
+		<live>
+			<secret>***REMOVED***</secret>
+		</live>
+		<dev>
+			<secret>***REMOVED***</secret>
+			<uri>/v1/marketplaces/***REMOVED***</uri>
+		</dev>
+		<sharedMerchant>_KEY_</sharedMerchant>
+	</balanced>
 	<suggestion>
 		<dev>
 			<phone>_PHONE_</phone>
@@ -178,7 +175,7 @@
 	</twilio>
 	<phaxio>
 		<old>
-	    	<key>_KEY_</key>
+			<key>_KEY_</key>
 			<secret>_KEY_</secret>
 		</old>
 		<live>
