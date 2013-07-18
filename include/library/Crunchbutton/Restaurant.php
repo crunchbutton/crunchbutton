@@ -8,8 +8,7 @@
  *
  * @property int id_restaurant
  */
-class Crunchbutton_Restaurant extends Cana_Table
-{
+class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -1204,17 +1203,7 @@ class Crunchbutton_Restaurant extends Cana_Table
 			$this->timezone = 'America/New_York';
 		}
 
-		$this->_changeSet = new Restaurant_Changeset(Cana_Changeset::save($this));
-
 		parent::save();
 	}
-	
-	
-	public function changeSet() {
-		if (!isset($this->_changeSet)) {
-			$sets = $this->changeSets();
-			$this->_changeSet = array_pop($sets);
-		}
-		return $this->_changeSet;
-	}
+
 }
