@@ -927,3 +927,12 @@ td.day{
 	font-size: 11px;
 	width: 250px;
 }
+
+.action-nav-normal.rounded .action-nav-button a {
+	height: 70px;
+	width: 70px;
+}
+
+.action-nav-normal .action-nav-button a > i {
+	font-size: 25px;
+}

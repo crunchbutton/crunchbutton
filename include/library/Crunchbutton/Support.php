@@ -199,17 +199,22 @@ class Crunchbutton_Support extends Cana_Table {
 			$url = 'http://' . c::config()->host_callback . '/api/support/say/' . $id_support;
 
 			Log::debug( [ 'action' => 'Need to call', 'id_support' => $id_support, 'url' => $url, 'hour' => $hour, 'type' => 'sms' ] );
+			
+			$nums = c::config()->site->config('support-phone-afterhours')->val();
+			if (!is_array($nums)) {
+				$nums = [$nums];
+			}
 
-			foreach ( c::config()->supportcall as $supportName => $supportPhone ) {
-					$num = $supportPhone;
-					$name = $supportName;
-					$urlWithName = $url . '/' . $name;
-					$call = $twilio->account->calls->create(
-							c::config()->twilio->{$env}->outgoingRestaurant,
-							'+1'.$num,
-							$urlWithName
-					);
-					Log::debug( [ 'action' => 'Calling', 'num' => $num, 'url' => $urlWithName, 'type' => 'sms' ] );
+			foreach ($nums as $supportName => $supportPhone ) {
+				$num = $supportPhone;
+				$name = $supportName;
+				$urlWithName = $url . '/' . $name;
+				$call = $twilio->account->calls->create(
+						c::config()->twilio->{$env}->outgoingRestaurant,
+						'+1'.$num,
+						$urlWithName
+				);
+				Log::debug( [ 'action' => 'Calling', 'num' => $num, 'url' => $urlWithName, 'type' => 'sms' ] );
 			}
 		}
 

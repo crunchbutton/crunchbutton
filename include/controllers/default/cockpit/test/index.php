@@ -2,8 +2,18 @@
 
 class Controller_test extends Crunchbutton_Controller_Account {
 	public function init() {
-		echo ini_get('upload_max_filesize');
-		echo ini_get('post_max_size');
+		
+		$r = new Restaurant;
+		$r->name = 'asd';
+		$r->save();
+		exit;
+		c::config()->site->config('support-phone-afterhours')->set('123');
+		c::config()->site->config('xxx')->set('123');
+		Crunchbutton_Config::store('xxx','444');
+
+
+		print_r(c::config()->site->config('support-phone-afterhours')->val());
+
 		exit;
 
 		c::config()->domain->theme = 'test';

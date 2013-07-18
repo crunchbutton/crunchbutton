@@ -167,31 +167,9 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		parent::init($params);
-
-		$domain = new Cana_Model;
-		if (preg_match('/(iphone|android)/',$_SERVER['HTTP_USER_AGENT'])) {
-			$domain->version = 'mobile';
-		} else {
-			$domain->version = 'default';
-		}
-		switch ($_SERVER['SERVER_NAME']) {
-			case 'wenzel.localhost':
-				$domain->theme = 'onebuttonwenzel';
-				break;
-			case 'cockpit.localhost':
-			case 'cockpit.crunchr.co':
-			case 'cockpit._DOMAIN_':
-			case 'beta.cockpit._DOMAIN_':
-			case 'beta.cockpit.crunchr.co':
-			case 'cockpit.localhost:8888':
-				$domain->theme = 'cockpit';
-				break;
-			default:
-				$domain->theme = 'crunchbutton';
-				break;
-		}
 		
 		$config = $this->config();
+		$config->site = Crunchbutton_Site::byDomain();
 
 		$config->host_callback = $host_callback;
 
@@ -204,7 +182,6 @@ class Crunchbutton_App extends Cana_App {
 		$this->config($config);
 
 		$this->buildAuth($this->db());
-		$config->domain = $domain;
 		
 		if ($params['env'] != 'local' && $_SERVER['SERVER_NAME'] != 'dev.crunchr.co') {
 			$config->bundle = true;
@@ -318,25 +295,25 @@ class Crunchbutton_App extends Cana_App {
 
 		// domain level setup
 		$params['theme'][] = $this->config()->defaults->version.'/'.$this->config()->defaults->theme.'/';
-		if (is_array($themes = json_decode($this->config()->domain->theme,'array'))) {
+		if (is_array($themes = json_decode($this->config()->site->theme,'array'))) {
 			$themes = array_reverse($themes);
 			foreach ($themes as $theme) {
 				$params['theme'][] = $this->config()->defaults->version.'/'.$theme.'/';
 			}
 		} else {
-			$params['theme'][] = $this->config()->defaults->version.'/'.$this->config()->domain->theme.'/';
+			$params['theme'][] = $this->config()->defaults->version.'/'.$this->config()->site->theme.'/';
 		}
 		
-		if (isset($this->config()->domain->version)) {
-			$params['theme'][] = $this->config()->domain->version.'/'.$this->config()->defaults->theme.'/';
+		if (isset($this->config()->site->version)) {
+			$params['theme'][] = $this->config()->site->version.'/'.$this->config()->defaults->theme.'/';
 		}
-		if (is_array($themes = json_decode($this->config()->domain->theme,'array'))) {
+		if (is_array($themes = json_decode($this->config()->site->theme,'array'))) {
 			$themes = array_reverse($themes);
 			foreach ($themes as $theme) {
-				$params['theme'][] = $this->config()->domain->version.'/'.$theme.'/';
+				$params['theme'][] = $this->config()->site->version.'/'.$theme.'/';
 			}
-		} elseif (isset($this->config()->domain->version)) {
-			$params['theme'][] = $this->config()->domain->version.'/'.$this->config()->domain->theme.'/';
+		} elseif (isset($this->config()->site->version)) {
+			$params['theme'][] = $this->config()->site->version.'/'.$this->config()->site->theme.'/';
 		}
 		$stack = array_reverse($params['theme']);
 		$params['layout'] =  $this->config()->defaults->layout;
@@ -359,10 +336,10 @@ class Crunchbutton_App extends Cana_App {
 	public function getTheme($config = null) {
 		$config = $config ? $config : $this->config();
 		
-		if (is_array($themes = json_decode($config->domain->brand,'array'))) {
+		if (is_array($themes = json_decode($config->site->brand,'array'))) {
 			return $themes;
 		} else {
-			return $config->domain->brand;
+			return $config->site->brand;
 		}
 	}
 	
