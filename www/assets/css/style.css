@@ -2303,7 +2303,6 @@ html[xmlns] .clearfix {
 }
 .signin-error, .signup-error, .password-help-error, .password-reset-code-error, .password-change-error, .giftcard-code-error{
 	color: #ff0000;
-	display: none;
 	font-size: 12px;
 	text-align: center;
 	margin: 12px 0;
@@ -2317,32 +2316,32 @@ html[xmlns] .clearfix {
 	}
 
 
-		.sign-form-links h1{
+		.account-modal-header h1{
 			float: left;
 			width: 86px;
 		}
-			.sign-form-links .divisor{
+			.account-modal-header .divisor{
 				color:#d9d9d9;
 				float: left;
 				width: 10px;
 			}
-			.sign-form-links h1.active{
+			.account-modal-header h1.active{
 				font-weight: 600;
 				text-shadow: none !important;
 			}	
-			.sign-form-links h1.link{
+			.account-modal-header h1.link{
 				color:#4168b8 !important;
 				cursor: pointer;
 				text-decoration: underline;
 			}	
-				.sign-form-links h1.signup{
+				.account-modal-header h1.signup{
 					text-align: right !important;
 				}
 				.sign-form-links h1.signup{
 					text-align: left;	
 				}
 
-		.signin-container input, .signup-container input, .password-reset-container input, .giftcard-container input  {
+		.account-container input, .giftcard-container input  {
 			display: block;
 			width: 98%;
 			margin-bottom: 7px;

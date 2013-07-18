@@ -1,7 +1,188 @@
+function AccountModalHeaderCtrl( $scope, $http, AccountModalService, AccountService ) {
+	
+	$scope.modal = AccountModalService;
+	
+	$scope.account = AccountService;
+
+	$scope.signinActive = $scope.modal.signInIsVisible();
+	$scope.signupActive = $scope.modal.signUpIsVisible();
+
+	$scope.$watch( 'modal.signInIsVisible()', function( newValue, oldValue, scope ) {
+		$scope.signinActive = newValue;
+	});
+
+	$scope.$watch( 'modal.signUpIsVisible()', function( newValue, oldValue, scope ) {
+		$scope.signupActive = newValue;
+	});
+
+}
+
+function AccountSignInCtrl( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {
+
+	$scope.modal = AccountModalService;
+
+	$scope.account = AccountService;
+
+	$scope.help = AccountHelpService;
+
+	$scope.visible = $scope.modal.signInIsVisible();
+
+	// Watch the variable status change
+	$scope.$watch( 'modal.signInIsVisible()', function( newValue, oldValue, scope ) {
+		$scope.visible = newValue;
+	});
+}
+
+function AccountSignUpCtrl( $scope, $http, AccountModalService ) {
+
+	$scope.modal = AccountModalService;
+
+	$scope.visible = $scope.modal.signUpIsVisible();
+
+	// Watch the variable status change
+	$scope.$watch( 'modal.signUpIsVisible()', function( newValue, oldValue, scope ) {
+		$scope.visible = newValue;
+	});
+
+}
+
+// AccountHelpService service
+NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountModalService ){ 
+	
+	// It starts invisible
+	var service = { 
+			visible : false, 
+			error : { 
+				visible : false 
+			},
+			success : { 
+				visible : false, 
+				facebook : { 
+					visible : false 
+				} 
+			}
+		};
+
+	var account = AccountService;
+	var modal = AccountModalService;
+
+	service.show = function( show ){
+		service.visible = show;
+		modal.header.visible = !show;
+		if( show ){
+			
+			service.reset();
+		}
+	}
+
+	service.reset = function(){
+		service.error.visible = false;
+		service.success.visible = false;
+		service.success.facebook.visible = false;
+	}
+
+	service.sendForm = function(){
+		
+		if( !account.isValidEmailPhone() ){
+			alert( 'Please enter a valid email or phone.' );
+			$( 'input[name=password-help-email]' ).focus();
+			return;
+		}
+
+		var url = App.service + 'user/reset';
+
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { 'email' : account.email } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
+					if( data.error ){
+						if( data.error == 'user is not registred' ){
+							service.error.visible = true;
+							$( 'input[name=password-help-email]' ).focus()
+						}
+					} else {
+						if( data.success = 'success' ){
+							service.success.visible = true;
+							service.error.visible = false;
+							if( data.userHasFacebookAuth ){
+								help.success.facebook.visible = true;
+							}
+							$( '.login-facebook' ).on( 'touchclick', function(){
+								App.signin.show();
+							} );
+
+						}
+					}
+					
+			}	);
+	}
+	return service;
+} );
+
+// AccountModalService service
+NGApp.factory( 'AccountModalService', function( $http ){
+	
+	var service = {
+		header : { visible : true },
+		signin : { visible : true },
+		signup : { visible : false }
+	};
+
+	service.toggleSignForm = function( form ){
+		if( form == 'signin' ){
+			service.signin.visible = true;	
+			service.signup.visible = false;	
+		} else {
+			service.signin.visible = false;	
+			service.signup.visible = true;	
+		}
+	}
+
+	service.headerIsVisible = function(){
+		return service.header.visible;
+	}
+
+	service.signInIsVisible = function(){
+		return service.signin.visible;
+	}
+
+	service.signUpIsVisible = function(){
+		return service.signup.visible;
+	}
+
+	return service;
+} );
+
+// AccountService service
+NGApp.factory( 'AccountService', function( $http ){
+	
+	var service = { email : '', password : '' };
+
+	service.isValidEmailPhone = function(){
+		// check if it is a phone number
+		if( !App.phone.validate( service.email ) ){
+			if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( service.email ) ){
+				return false
+			}
+		}
+		return true;
+	}
+
+	return service;
+} );
+
 /**
  * event binding
  */
 App.signin.init = function() {
+
+		$(document).on('touchclick', '.signin-icon', function() {
+		App.signin.show();
+	});
+
+		return;
 
 	$(document).on('touchclick', '.signin-facebook-button', function() {
 		App.signin.facebook.login();
@@ -270,7 +451,7 @@ App.signin.show = function() {
 		$scope.account.tab = 'signin';
 	});
 
-	App.dialog.show('.signin-container');
+	App.dialog.show('.account-container');
 
 	
 

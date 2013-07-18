@@ -103,7 +103,7 @@ App.NGinit = function() {
 	App.loc.init();
 
 	App.signin.init();
-	App.signup.init();
+	// App.signup.init();
 	App.suggestion.init();
 	// App.recommend.init();
 	App.credit.tooltip.init();
@@ -945,7 +945,7 @@ App.getCommunityById = function( id ){
  */
 App.dialog = {
 	show: function() {
-
+console.log('arguments',arguments);
 		if (arguments[1]) {
 			// its a title and message
 			var src = '<div class="zoom-anim-dialog small-container">' +
