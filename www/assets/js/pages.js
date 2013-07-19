@@ -40,16 +40,18 @@ NGApp.controller('home', function ($scope, $http, $location, RestaurantsService)
 /**
  * Alias / unknown controller
  */
-NGApp.controller('default', function ($scope, $http, $location, CommunityAliasService) {
+NGApp.controller('default', function ($scope, $http, $location, CommunityAliasService ) {
 
-	var routeCommunity = CommunityAliasService;
+	var community = CommunityAliasService;
 
-	routeCommunity.route( $location.path(),
+	// position = PositionService;
+
+	community.route( $location.path(),
 
 		// If route is ok
 		function( results ){
 			if (results.alias) {
-				App.loc.addLocation( new Location( {
+				community.position.addLocation( new Location( {
 					address: results.alias.address(),
 					entered: results.address,
 					type: 'alias',
@@ -76,7 +78,7 @@ NGApp.controller( 'restaurants', function ( $scope, $http, $location, Restaurant
 
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
 
-	$scope.restaurantsService = RestaurantsService;
+	$scope.restaurants = RestaurantsService;
 
 	$scope.display = function() {
 		if ( !this.restaurant.open() ) {
@@ -87,13 +89,27 @@ NGApp.controller( 'restaurants', function ( $scope, $http, $location, Restaurant
 		}
 	};
 
-	$scope.restaurantsService.list( function(){
-		
-		var titles = App.foodDelivery.localizedContent();
+	$scope.restaurants.list( function(){
 
-		$scope.restaurants = $scope.restaurantsService.sort();
-		$scope.slogan = titles.slogan;
-		$scope.tagline = titles.tagline;
+		try {
+				var slogan = App.slogan.slogan;
+				var sloganReplace = $scope.restaurants.position.pos().prep() + ' ' +  $scope.restaurants.position.pos().city();
+
+				sloganReplace = $.trim(sloganReplace);
+				var tagline = App.tagline.tagline.replace('%s', sloganReplace);
+				slogan = slogan.replace('%s', sloganReplace);
+
+			} catch (e) {
+				console.log('Failed to load dynamic text', App.slogan, App.tagline, e);
+				var slogan = '';
+				var tagline = '';
+			}
+
+		document.title = $scope.restaurants.position.pos().city() + ' Food Delivery | Order Food from ' + ($scope.restaurants.position.pos().city() || 'Local') + ' Restaurants | Crunchbutton';
+
+		$scope.restaurants = $scope.restaurants.sort();
+		$scope.slogan = slogan;
+		$scope.tagline = tagline;
 
 		if ($scope.restaurants.length == 4) {
 			$('.content').addClass('short-meal-list');
@@ -121,12 +137,14 @@ NGApp.controller('cities', function ($scope, $http) {
 /**
  * Change location
  */
-NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsService, RecommendRestaurantService ) {
+NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsService, RecommendRestaurantService, LocationService ) {
 	
 	$scope.isUser = App.config.user.has_auth;
 	$scope.notUser = !App.config.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
-	$scope.yourArea = App.loc.pos().city() || 'your area';
+	$scope.location = LocationService;
+
+	$scope.yourArea = $scope.location.position.pos().city() || 'your area';
 
 	$scope.restaurantsService = RestaurantsService;
 
@@ -154,7 +172,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 
 		} else {
 
-			App.loc.addVerify(address, 
+			$scope.location.addVerify(address, 
 				// Address ok
 				function() {
 					// Verify if the address has restaurant
@@ -471,33 +489,6 @@ NGApp.controller('orders', function ($scope, $http, $location, AccountService, A
  * FoodDelivery's methods
  */
 App.foodDelivery = {};
-
-App.foodDelivery.localizedContent = function(){
-	// set the slogan and tagline
-	try {
-		var slogan = App.slogan.slogan;
-		var sloganReplace = App.loc.pos().prep() + ' ' + App.loc.pos().city();
-
-		sloganReplace = $.trim(sloganReplace);
-		var tagline = App.tagline.tagline.replace('%s', sloganReplace);
-		slogan = slogan.replace('%s', sloganReplace);
-
-	} catch (e) {
-		console.log('Failed to load dynamic text', App.slogan, App.tagline, e);
-		var slogan = '';
-		var tagline = '';
-	}
-
-	// set title
-	var title = App.loc.pos().city() + ' Food Delivery | Order Food from ' + (App.loc.pos().city() || 'Local') + ' Restaurants | Crunchbutton';
-	document.title = title;
-
-	return {
-		slogan: slogan,
-		tagline: tagline,
-		title: title
-	};
-}
 
 /**
  * Gift card page

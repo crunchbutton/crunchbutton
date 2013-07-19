@@ -47,13 +47,16 @@ if (App){
 			</div>
 		</div>
 		<div class="divider"></div>
+		
 		<div class="footer">
+
 			<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
 
-			<div class="footer-content">
-				<a href="javascript:;" ng-tap="link('/help')">Help</a>
-				<a href="javascript:;" ng-tap="link('/legal')">Legal</a>
-				<a href="javascript:;" ng-tap="link('/orders')" <?=!c::user()->id_user ? ' style="display: none;"' : ''?>>Order History</a>
+			<div class="footer-content" ng-controller="MainHeaderCtrl">
+
+				<a href="javascript:;" ng-tap="navigation.link('/help')">Help</a>
+				<a href="javascript:;" ng-tap="navigation.link('/legal')">Legal</a>
+				<a ng-show="navigation.account.user" href="javascript:;" ng-tap="navigation.link('/orders')">Order History</a>
 				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
 					<a href="javascript:App.test.card();" class="test-card">TEST: card</a>
 					<a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a>
@@ -62,6 +65,7 @@ if (App){
 				<br />
 				<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
 			</div>
+
 		</div>
 
 		<div ng-include="'view/account.html'"></div>
