@@ -936,3 +936,7 @@ td.day{
 .action-nav-normal .action-nav-button a > i {
 	font-size: 25px;
 }
+
+.separate-sections > li, .separate-sections > div {
+	margin-bottom: 2px !important;
+}
