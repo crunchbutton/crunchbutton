@@ -1,103 +1,3 @@
-// Account services
-
-// AccountHelpService service
-NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountModalService ){ 
-	
-	// It starts invisible
-	var service = { 
-			visible : false, 
-			error : false,
-			success : { 
-				visible : false, 
-				facebook : { 
-					visible : false 
-				} 
-			}
-		};
-
-	var account = AccountService;
-	var modal = AccountModalService;
-
-	service.show = function( show ){
-		service.visible = show;
-		modal.header = !show;
-		if( show ){
-			service.reset();
-		}
-	}
-
-	service.reset = function(){
-		service.error = false;
-		service.success.visible = false;
-		service.success.facebook.visible = false;
-	}
-
-	service.sendForm = function(){
-		if( !account.isValidEmailPhone() ){
-			alert( 'Please enter a valid email or phone.' );
-			$( '.help-email' ).focus();
-			return;
-		}
-
-		var url = App.service + 'user/reset';
-
-		$http( {
-			method: 'POST',
-			url: url,
-			data: $.param( { 'email' : account.email } ),
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-			} ).success( function( data ) {
-					if( data.error ){
-						if( data.error == 'user is not registred' ){
-							service.error = true;
-							$( 'input[name=password-help-email]' ).focus()
-						}
-					} else {
-						if( data.success = 'success' ){
-							service.success.visible = true;
-							service.error = false;
-							if( data.userHasFacebookAuth ){
-								help.success.facebook.visible = true;
-							}
-							$( '.login-facebook' ).on( 'touchclick', function(){
-								App.signin.show();
-							} );
-
-						}
-					}
-					
-			}	);
-	}
-	return service;
-} );
-
-// AccountModalService service
-NGApp.factory( 'AccountModalService', function( $http ){
-	
-	var service = {
-		header : true,
-		signin : true,
-		signup : false
-	};
-
-	service.toggleSignForm = function( form ){
-		if( form == 'signin' ){
-			service.signin = true;	
-			service.signup = false;	
-		} else {
-			service.signin = false;	
-			service.signup = true;	
-		}
-	}
-
-	service.headerIsVisible = function(){
-		return service.header.visible;
-	}
-
-	return service;
-} );
-
-
 // AccountService service
 NGApp.factory( 'AccountService', function( $http ){
 	
@@ -233,6 +133,115 @@ NGApp.factory( 'AccountService', function( $http ){
 } );
 
 
+// AccountHelpService service
+NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountModalService ){ 
+	
+	// It starts invisible
+	var service = { 
+			visible : false, 
+			error : false,
+			success : { 
+				visible : false, 
+				facebook : { 
+					visible : false 
+				} 
+			}
+		};
+
+	var account = AccountService;
+	var modal = AccountModalService;
+
+	service.show = function( show ){
+		service.visible = show;
+		modal.header = !show;
+		if( show ){
+			service.reset();
+		}
+	}
+
+	service.reset = function(){
+		service.error = false;
+		service.success.visible = false;
+		service.success.facebook.visible = false;
+	}
+
+	service.sendForm = function(){
+		if( !account.isValidEmailPhone() ){
+			alert( 'Please enter a valid email or phone.' );
+			$( '.help-email' ).focus();
+			return;
+		}
+
+		var url = App.service + 'user/reset';
+
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { 'email' : account.email } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
+					if( data.error ){
+						if( data.error == 'user is not registred' ){
+							service.error = true;
+							$( 'input[name=password-help-email]' ).focus()
+						}
+					} else {
+						if( data.success = 'success' ){
+							service.success.visible = true;
+							service.error = false;
+							if( data.userHasFacebookAuth ){
+								help.success.facebook.visible = true;
+							}
+							$( '.login-facebook' ).on( 'touchclick', function(){
+								App.signin.show();
+							} );
+
+						}
+					}
+					
+			}	);
+	}
+	return service;
+} );
+
+// AccountModalService service
+NGApp.factory( 'AccountModalService', function( $http ){
+	
+	var service = {
+		header : true,
+		signin : true,
+		signup : false,
+		teste : 'ahahahha'
+	};
+
+	service.signinOpen = function(){
+		App.dialog.show( '.account-container' );
+		service.toggleSignForm( 'signin' );
+	}
+
+	service.signupOpen = function(){
+		App.dialog.show( '.account-container' );
+		service.toggleSignForm( 'signup' );
+	}
+
+	service.toggleSignForm = function( form ){
+		if( form == 'signin' ){
+			service.signin = true;	
+			service.signup = false;	
+		} else {
+			service.signin = false;	
+			service.signup = true;	
+		}
+	}
+
+	service.headerIsVisible = function(){
+		return service.header.visible;
+	}
+
+	return service;
+} );
+
+
 // AccountFacebookService service
 NGApp.factory( 'AccountFacebookService', function( $http, AccountService ){
 	
@@ -344,6 +353,7 @@ NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 	service.do = function(){
 
 		if (confirm( 'Confirm sign out?')){
+			
 			// Force to remove the cookies
 			$.each( [ 'token', 'location', 'PHPSESSID' ], function( index, value ){
 				$.cookie( value, null );
@@ -354,7 +364,7 @@ NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 				$http( { method: 'GET', url: url } ).success( function( data ) { location.href = '/'; } );
 			};
 		
-			if( service.facebook.logged ){
+			if( service.facebook.logged || service.facebook.account.user.facebook ){
 				service.facebook.signout( function(){ signout() } );
 			} else {
 				signout();
@@ -364,52 +374,4 @@ NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 
 	return service;
 
-} );
-
-// TODO: this service is outdated as its controller
-// RecommendRestaurantService service
-NGApp.factory( 'RecommendRestaurantService', function( $http ){
-
-	var service = {
-		api : {
-			add : 'suggestion/restaurant',
-			relateuser : 'suggestion/relateuser'
-		}
-	};
-
-	var formSent = false;
-	var recommendations = [];
-
-	service.changeFormStatus = function( status ){
-		formSent = status;
-	}
-	
-	service.getFormStatus = function(){
-		return formSent;
-	}
-
-	service.addRecommendation = function( id ){
-		recommendations.push( id );
-	}
-
-	service.getRecommendations = function(){
-		if( recommendations.length > 0 ){
-			return recommendations;
-		}
-		return false;
-	}
-
-	service.relateUser = function(){
-		if( service.getRecommendations() ){
-			var url = App.service + service.api.relateuser;
-			$.each( recommendations, function(index, value) {
-				var id_suggestion = value;
-				var data = { id_suggestion : id_suggestion, id_user : App.config.user.id_user };
-				$http.post( url , data );
-			} );
-			recommendations = false;
-		}
-	}
-
-	return service;
 } );

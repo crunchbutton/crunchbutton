@@ -8,7 +8,6 @@ NGApp.directive( 'facebookSigninButton', function ( AccountFacebookService ) {
 		},
 		controller: function ( $scope ) {
 			$scope.facebook = AccountFacebookService;
-			console.log('$scope.facebook',$scope.facebook);
 		}
 	};;
 });

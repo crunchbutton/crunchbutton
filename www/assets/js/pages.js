@@ -132,6 +132,8 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 
 	$scope.locationError = false;
 
+	$scope.recommend = RecommendRestaurantService;
+
 	$scope.openCity = function( city ){
 		$location.path( '/' + city );
 	}
@@ -163,7 +165,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 						},
 						// Error
 						function(){
-							RecommendRestaurantService.changeFormStatus( false );
+							$scope.recommend.greetings = false;
 							$scope.locationError = true;
 						} );
 				}, 

@@ -1,80 +1,3 @@
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-	}
-
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-body, button {
-	line-height: 1;
-	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
-}
-ol, ul {
-	list-style: none;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-
-a {
-	color: #d74924;
-	text-decoration: underline;
-}
-
-::selection {
-	background: rgba(47,154,211,.5);
-	color: #fff;
-	text-shadow: none;
-}
-::-moz-selection {
-	background: rgba(47,154,211,.5);
-	color: #fff;
-	text-shadow: none;
-}
-
-input[type="submit"]:focus, input[type="button"]:focus, input[type="text"]:focus, button, :focus {
-	outline : none;
-}
-input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, button::-moz-focus-inner {
-	border : 0;
-}
-
-html {
-	-webkit-text-size-adjust: none;
-}
-
-* {
-	-webkit-tap-highlight-color: rgba(205,69,29,.5);
-}
-
 .content {
 	width: auto;
 	margin: 0 auto;
@@ -2292,41 +2215,32 @@ html[xmlns] .clearfix {
 		width: 45px;
 	}
 
-.account-container .error{
-	color: #ff0000;
-	font-size: 12px;
-	margin: 12px 0;
-}
-.account-container button[disabled]{
-	opacity: 0.5;
-}
 
-		.account-container .header h1{
-			float: left;
-			width: 86px;
-		}
-			.account-container .header .divisor{
-				color:#d9d9d9;
-				float: left;
-				width: 10px;
+.facebook-button-share {
+	margin-bottom: 15px;
+	margin-top: 25px;
+	width: 200px;
+}
+.facebook-button .facebook-button-text, .facebook-button .icon-facebook {
+	padding: 6px;
+	float: left;
+}
+			.signup-add-password-button{
+				float: none;
+				margin: 10px auto;
+				width: 150px;
 			}
 
-			.account-container .header h1.active{
-				font-weight: 600;
-				text-shadow: none !important;
-			}	
-
-			.account-container .header h1.link{
-				color:#4168b8 !important;
-				cursor: pointer;
-				text-decoration: underline;
-			}	
-				.account-container .header h1.signup{
-					text-align: right !important;
+			.giftcard-message{;
+				color: #666;
+				font-size: 13px;
+				font-weight: 400;
+				line-height: 18px;
+			}
+				.giftcard-value{
+					font-weight: bold;
 				}
-
-
-		.account-container input, .giftcard-container input  {
+.giftcard-container input  {
 			display: block;
 			width: 98%;
 			margin-bottom: 7px;
@@ -2348,7 +2262,7 @@ html[xmlns] .clearfix {
 			-o-transition: border linear 0.2s, box-shadow linear 0.2s;
 			transition: border linear 0.2s, box-shadow linear 0.2s;
 		}
-		.account-container input:focus, .giftcard-container input:focus {
+.giftcard-container input:focus {
 			border-color:rgba(82, 168, 236, 0.8);
 			-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
 			-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(82, 168, 236, 0.6);
@@ -2356,16 +2270,7 @@ html[xmlns] .clearfix {
 			outline:0;
 			outline:thin dotted \9;
 		}
-
-		.account-container .help-link{
-			color: #666;
-			display: block;
-			float: left;
-			font-size: 12px;
-			margin-top: 12px;
-			text-decoration: none;
-		}
-		.account-container button, .giftcard-code-button {
+.giftcard-code-button {
 			border-radius: 4px;
 			border: 1px solid #cb5921;
 			padding: 6px 10px 6px 12px;
@@ -2387,86 +2292,6 @@ html[xmlns] .clearfix {
 			-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f57333', endColorstr='#f26926')";
 			background: linear-gradient(#f57333, #f26926);
 		}
-			.signup-add-password-button{
-				float: none;
-				margin: 10px auto;
-				width: 150px;
-			}
-
-			.giftcard-message{;
-				color: #666;
-				font-size: 13px;
-				font-weight: 400;
-				line-height: 18px;
-			}
-				.giftcard-value{
-					font-weight: bold;
-				}
-		.facebook{ display: none; } /* hack to dont show it at first page */
-		.account-container .facebook{
-			display: block !important;
-			border-top: 1px solid #F5F5F5;
-			margin-top: 10px;
-			padding-top: 17px;
-		}
-		.account-container .wait{
-			color: #666;
-			font-size: 13px;
-			font-weight: 400;
-			line-height: 18px;
-			margin-top: 15px;
-		}
-		
-/**
- * facebook button styling
- */
-.facebook-button {
-	text-align: center;
-	border-radius: 3px;
-	border: 1px solid #2b4171;
-	display: block;
-	margin: 0 auto;
-	padding: 0;
-	text-shadow: 1px 1px 0px rgba(0,0,0,.75);
-	background-color: #3c5a97;
-	color: #fff;
-	cursor: pointer;
-	padding: 0 5px 0 5px;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(64, 97, 159)),to(rgb(54, 82, 141)));
-	background-image: -webkit-linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
-	background-image: -moz-linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
-	background-image: -o-linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
-	background-image: -ms-linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
-	background-image: linear-gradient(top, rgb(64, 97, 159), rgb(54, 82, 141));
-	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#40619f', EndColorStr='#36528d');
-	box-shadow: 0 2px 3px rgba(182, 182, 182, 0.75);
-}
-
-.facebook-button-share {
-	margin-bottom: 15px;
-	margin-top: 25px;
-	width: 200px;
-}
-.facebook-button .facebook-button-text, .facebook-button .icon-facebook {
-	padding: 6px;
-	float: left;
-}
-
-.facebook-button .icon-facebook {
-	margin-right: 7px;
-	font-size: 20px;
-
-}
-.facebook-button .facebook-button-text {
-	padding-left: 13px;
-	border-left: 1px solid #2c4272;
-	box-shadow: inset 1px 0 0 rgba(255,255,255,.1);
-	padding-top: 7px;
-}
-
-
-
-
 
 				.password-change-block{
 					display: none;
