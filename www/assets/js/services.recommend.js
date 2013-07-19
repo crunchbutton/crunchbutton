@@ -1,10 +1,12 @@
 // RecommendRestaurantService service
-NGApp.factory( 'RecommendRestaurantService', function( $http ){
+NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService ){
 
 	var service = {
 		restaurant : '',
 		greetings : false
 	};
+
+	service.position = PositionsService;
 
 	var recommendations = [];
 
@@ -20,7 +22,7 @@ NGApp.factory( 'RecommendRestaurantService', function( $http ){
 			return;
 		}
 
-		var pos = App.loc.pos();
+		var pos = service.position.pos();
 
 		var content = 'Address entered: ' + pos.addressEntered + '\n' + 
 									'Address reverse: ' + pos.addressReverse + '\n' + 

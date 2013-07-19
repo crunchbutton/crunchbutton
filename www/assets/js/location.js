@@ -1,5 +1,5 @@
 
-var Location = function(params) {
+var Location = function( params ) {
 
 	var self = this;
 	
@@ -48,6 +48,8 @@ var Location = function(params) {
 				self._properties.detail = 4;
 				break;
 		}
+
+
 
 		// @todo: do we need this?
 		for (var i = 0; i < results[0].address_components.length; i++) {
