@@ -249,40 +249,6 @@ NGApp.factory( 'RestaurantsService', function( $http ){
 	return service;
 } );
 
-function MainHeaderCtrl( $scope, MainNavigationService ) {
-	
-	$scope.navigation = MainNavigationService;
-
-}
-
-// MainHeaderService service
-NGApp.factory( 'MainNavigationService', function( $http, $location, AccountService ){ 
-	
-	var service = { };
-
-	service.link = function( path ){
-		$location.path( path || '/' );
-	}
-
-	service.signin = function(){
-		App.dialog.show('.account-container');
-	}
-
-	service.account = AccountService;
-
-/*
-TODO apply this behavior
-
-	if( App.currentPage == 'home' ){
-		$( '.config-icon' ).addClass( 'config-icon-desktop-hide' );
-	} else {
-		$( '.config-icon' ).removeClass( 'config-icon-desktop-hide' );
-	}
-
-*/
-
-	return service;
-} );
 
 NGApp.config(function($compileProvider){
 	$compileProvider.urlSanitizationWhitelist(/.*/);
@@ -356,7 +322,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService) {
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService) {
 
 	App.rootScope = $rootScope;
 	App.location = $location;
@@ -383,25 +349,13 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		return parseFloat(t).toFixed(2);
 	};
 
-	$rootScope.account = {
-		setHelp: function(t) {
-			$rootScope.account.help = t;
-		},
-		setTab: function(t) {
-			$rootScope.account.tab = t;
-		}
-	};
-
-	App.rootScope.$watch('account.help', function(val) {
-		setTimeout(function() {
-			$('input[name="' + (val ? 'password-help-email' : 'signin-email') + '"]').focus();
-		},100);
-	});
-
-
 	$scope.$on(
+
 		'$routeChangeSuccess',
 		function ($currentRoute, $previousRoute) {
+
+			// Store the actual page
+			MainNavigationService.page = $route.current.action;
 
 			var renderAction = $route.current.action;
 			var renderPath = renderAction.split('.');

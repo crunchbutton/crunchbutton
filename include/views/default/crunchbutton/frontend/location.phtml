@@ -52,25 +52,26 @@
 				<div class="home-recommend-title">
 					<h1><strong>Recommend a restaurant:</strong></h1>
 				</div>
-				<input type="text" class="home-recommend-text">
-				<button ng-tap="send()" class="home-recommend-button"><div>Recommend!</div></button>
+
+				<input type="text" ng-model="recommend.restaurant" class="home-recommend-text">
+				<button ng-tap="recommend.send()" class="home-recommend-button"><div>Recommend!</div></button>
 				<div class="divider"></div>
 				<div class="home-recommend-message">
 					What's your absolute favorite? What should be on Crunchbutton? Tell us, and we'll actually add it and get back to you.
 				</div>
 				<div class="divider"></div>
 			</div>
-			<div class="home-recommend-thank-you" ng-show="formSent">
+			<div class="home-recommend-thank-you" ng-show="recommend.greetings">
 				<div class="home-recommend-title">
 					<h1>Awesome, thanks!</h1>
 				</div>
 				<div class="divider"></div>
 				<div class="home-recommend-message-thank-you">
-					<div ng-if="{{isUser}}">
+					<div ng-show="account.user">
 						We'll let you know if they make it to Crunchbutton.
 					</div>
-					<div ng-if="{{notUser}}">
-						<a href="#" class="home-recommend-message-create-account"><span>Create an account</span></a> and when we'll let you know when we launch in your area!
+					<div ng-show="!account.user">
+						<a href="#" ng-tap="modal.signupOpen()" class="home-recommend-message-create-account"><span>Create an account</span></a> and when we'll let you know when we launch in your area!
 					</div>
 				</div>
 			</div>

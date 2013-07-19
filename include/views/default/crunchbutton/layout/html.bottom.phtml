@@ -27,8 +27,8 @@ if (App){
 				<div class="nav-back" ng-tap="back()"></div>
 
 				<div class="logo"><a href="javascript:;" ng-tap="navigation.link('/')"><div class="logo-img"></div></a></div>
-				
-				<div title="Change location" class="config-icon" ng-tap="navigation.link('/location')"></div>
+
+				<div title="Change location" class="config-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-tap="navigation.link('/location')"></div>
 
 				<div class="signin-box-header">
 					<div ng-show="navigation.account.user" ng-tap="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
