@@ -1,0 +1,150 @@
+<?
+	$this->title = 'Logs';
+	$this->subtitle = 'shit';
+	$this->titleicon = 'warning-sign';
+?>
+
+
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-content">
+				<div class="row-fluid">
+					<form class="fill-up">
+						<div class="span6 separate-sections">
+							<ul class="padded separate-sections">
+								<li class="input">
+									<input name="logs-search" type="text" placeholder="Search" value="<?=strip_tags($_REQUEST['s'])?>">
+								</li>
+								<li>
+									<label class="span3">Type</label>
+									<?
+										$types = Crunchbutton_Log::q('select * from log group by `type`');
+									?>
+									<span class="span8 pull-right">
+										<select name="logs-type" class="uniform">
+											<option value="" selected>[ All ]</option>
+											<? foreach ($types as $type) : ?>
+												<option value="<?=$type->type?>"><?=$type->type?></option>
+											<? endforeach ; ?>
+										</select>
+									</span>
+									<div class="clearfix"></div>
+								</li>
+								<li>
+									<label class="span3">Level</label>
+									<?
+										$types = Crunchbutton_Log::q('select * from log group by `level`');
+									?>
+									<span class="span8 pull-right">
+										<select name="logs-level" class="uniform">
+											<option value="" selected>[ All ]</option>
+											<? foreach ($types as $type) : ?>
+												<option value="<?=$type->level?>"><?=$type->level?></option>
+											<? endforeach ; ?>
+										</select>
+									</span>
+									<div class="clearfix"></div>
+								</li>
+
+							</ul>	
+						</div>
+
+						<div class="span6 separate-sections">
+							<ul class="padded separate-sections">
+								<li class="input">
+									<?
+										$date = new DateTime('now');
+										$start = $date->format('m/d/Y');
+										$date->modify('14 days ago');
+										$end = $date->format('m/d/Y');
+									?>
+									<label class="span3">Date range</label>
+									<span class="span8 pull-right">
+										<span class="dates">
+											from &nbsp; <input name="date-range-end" class="date-picker" type="text" style="width: 90px;" value="<?=$end?>">
+											&nbsp; to &nbsp; <input name="date-range-start" class="date-picker" type="text" style="width: 90px;" value="<?=$start?>">
+										</span>
+										<label><input type="checkbox" name="date-range-all">&nbsp;All Dates</label>
+									</span>
+									<div class="clearfix"></div>
+								</li>
+								<li>
+									<label class="span3">Limit</label>
+									<span class="span8 pull-right">
+										<? $envs = ['live','beta','dev','local']; ?>
+										<input type="number" name="limit" value="25" min="0">
+									</span>
+								</li>
+							</ul>	
+						</div>
+					</form>
+
+				</div>
+				
+			</div>
+			<center>
+				<button type="submit" class="btn btn-blue admin-logs-search"> Search </button>	
+			</center>
+			<br />
+		</div>
+
+		<div class="box">
+			<div class="box-header"><span class="title">Results</span>
+				<ul class="box-toolbar">
+					<li class="toolbar-link">
+						<a href="javascript:;" class="admin-logs-export" title="Export"><i class="icon-download-alt"></i></a>
+					</li>
+				</ul>
+			
+			</div>
+			<div class="box-content">
+				<div class="logs-loader"><center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center></div>
+				<div class="logs-content"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<script>
+	$(function() {
+
+		$(document).on('click', '.admin-logs-search', function() {
+			App.logs.load();
+		});
+
+		$(document).on('click', '.admin-logs-export', function() {
+			App.logs.export();
+		});
+		
+		$(document).on('keyup', 'input[name="logs-search"]', function(e) {
+			if (e.which == 13) {
+				App.logs.load();
+			}
+		});
+		$('.chzn').select2();
+
+		App.logs.load();
+
+		$( 'input[name="date-range-end"]' ).datepicker({
+			defaultDate: '+1w',
+			changeMonth: true,
+			numberOfMonths: 3,
+			onClose: function( selectedDate ) {
+				$( 'input[name="date-range-start"]' ).datepicker( "option", "minDate", selectedDate );
+			}
+		});
+		
+		$( 'input[name="date-range-start"]' ).datepicker({
+			defaultDate: '+1w',
+			changeMonth: true,
+			numberOfMonths: 3,
+			onClose: function( selectedDate ) {
+				$( 'input[name="date-range-end"]').datepicker( "option", "maxDate", selectedDate );
+			}
+		});
+	});
+</script>
