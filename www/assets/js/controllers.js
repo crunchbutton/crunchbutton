@@ -1,3 +1,30 @@
+// Account controllers
+
+function AccountModalHeaderCtrl( $scope, $http, AccountModalService ) {
+	$scope.modal = AccountModalService;
+}
+
+function AccountSignInCtrl( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {
+
+	$scope.modal = AccountModalService;
+	$scope.account = AccountService;
+	$scope.help = AccountHelpService;
+
+}
+
+function AccountSignUpCtrl( $scope, $http, AccountModalService, AccountService ) {
+	$scope.modal = AccountModalService;
+	$scope.account = AccountService;
+
+	// Watch the variable user
+	$scope.$watch( 'account.user', function( newValue, oldValue, scope ) {
+		$scope.account.user = newValue;
+		if( newValue ){
+			$scope.modal.header = false;
+		}
+	});
+}
+
 function RecommendCtrl( $scope, $http, RecommendRestaurantService ) {
 
 	$scope.service = RecommendRestaurantService;
@@ -40,50 +67,3 @@ function RecommendCtrl( $scope, $http, RecommendRestaurantService ) {
 			}	);
 	}
 }
-
-// RecommendRestaurantService service
-NGApp.factory( 'RecommendRestaurantService', function( $http ){
-
-	var service = {
-		api : {
-			add : 'suggestion/restaurant',
-			relateuser : 'suggestion/relateuser'
-		}
-	};
-
-	var formSent = false;
-	var recommendations = [];
-
-	service.changeFormStatus = function( status ){
-		formSent = status;
-	}
-	
-	service.getFormStatus = function(){
-		return formSent;
-	}
-
-	service.addRecommendation = function( id ){
-		recommendations.push( id );
-	}
-
-	service.getRecommendations = function(){
-		if( recommendations.length > 0 ){
-			return recommendations;
-		}
-		return false;
-	}
-
-	service.relateUser = function(){
-		if( service.getRecommendations() ){
-			var url = App.service + service.api.relateuser;
-			$.each( recommendations, function(index, value) {
-				var id_suggestion = value;
-				var data = { id_suggestion : id_suggestion, id_user : App.config.user.id_user };
-				$http.post( url , data );
-			} );
-			recommendations = false;
-		}
-	}
-
-	return service;
-} );
