@@ -102,8 +102,6 @@ App.NGinit = function() {
 	angular.bootstrap(document,['NGApp']);
 	App.loc.init();
 
-	App.signin.init();
-	// App.signup.init();
 	App.suggestion.init();
 	// App.recommend.init();
 	App.credit.tooltip.init();
@@ -115,7 +113,6 @@ App.NGinit = function() {
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
-	setTimeout( function(){ App.signin.checkUser(); }, 300 );
 };
 
 
@@ -252,6 +249,41 @@ NGApp.factory( 'RestaurantsService', function( $http ){
 	return service;
 } );
 
+function MainHeaderCtrl( $scope, MainNavigationService ) {
+	
+	$scope.navigation = MainNavigationService;
+
+}
+
+// MainHeaderService service
+NGApp.factory( 'MainNavigationService', function( $http, $location, AccountService ){ 
+	
+	var service = { };
+
+	service.link = function( path ){
+		$location.path( path || '/' );
+	}
+
+	service.signin = function(){
+		App.dialog.show('.account-container');
+	}
+
+	service.account = AccountService;
+
+/*
+TODO apply this behavior
+
+	if( App.currentPage == 'home' ){
+		$( '.config-icon' ).addClass( 'config-icon-desktop-hide' );
+	} else {
+		$( '.config-icon' ).removeClass( 'config-icon-desktop-hide' );
+	}
+
+*/
+
+	return service;
+} );
+
 NGApp.config(function($compileProvider){
 	$compileProvider.urlSanitizationWhitelist(/.*/);
 });
@@ -324,9 +356,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location) {
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService) {
+
 	App.rootScope = $rootScope;
 	App.location = $location;
+
+	AccountService.checkUser(); 
 
 	$rootScope.link = function(link) {
 		$location.path(link || '/');
@@ -621,10 +656,6 @@ $(function() {
 
 
 	App.test.init();
-
-	$(document).on('touchclick', '.signout-button', function() {
-		App.signin.signOut();
-	});
 
 	$(document).on('touchclick', '.signup-add-facebook-button', function() {
 		App.signin.facebook.login();

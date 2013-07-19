@@ -14,8 +14,8 @@
 	</ul>
 
 	<div class="order-options">
-		<a ng-show="(!App.signin.facebook.isLogged && !App.config.user.facebook)" href="javascript:;" class="signup-add-facebook-button">Connect with Facebook</a>
-		<a href="javascript:;" class="signout-button">Sign out</a>
+		<a ng-show="(!account.facebook.logged && !account.user.facebook)" href="javascript:;" class="signup-add-facebook-button" >Connect with Facebook</a>
+		<a href="javascript:;" ng-tap="signout.do()" class="signout-button">Sign out</a>
 		<div class="divider"></div>
 	</div>
 </div>
