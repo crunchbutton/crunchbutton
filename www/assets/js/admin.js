@@ -888,6 +888,40 @@ App.orders = {
 	}
 };
 
+
+App.logs = {
+	searchParam: '',
+	params: function() {
+		var dates = $('input[name="date-range-end"]').val() + ',' + $('input[name="date-range-start"]').val();
+		return {
+			search: $('input[name="logs-search"]').val(),
+			level: $('select[name="logs-level"]').val(),
+			type: $('select[name="logs-type"]').val(),
+			limit: $('input[name="limit"]').val(),
+			dates: dates
+		};
+	},
+	load: function() {
+		//admin-orders-filter
+		$('.logs-loader').show();
+		$('.logs-content').html('');
+		$.ajax({
+			url: '/logs/content',
+			data: App.logs.params(),
+			complete: function(content) {
+				$('.logs-content').html(content.responseText);
+				$('.logs-loader').hide();
+			}
+		});
+		App.orders.searchParam = '';
+	},
+	export: function() {
+		var params = App.orders.params();
+		params.export = 'csv';
+		location.href = '/logs/content?' + jQuery.param(params);
+	}
+};
+
 App.suggestions = {
 	params: function() {
 		return {
@@ -1061,7 +1095,7 @@ $(function() {
 		$(this).closest('.check').find('input').click();
 	});
 
-	$(document).on('click', '.order-range-all label', function() {
+	$(document).on('click', '.date-range-all label', function() {
 		$(this).parent().find('input').click();
 	});
 
@@ -1145,7 +1179,7 @@ $(function() {
 		*/
 	}
 
-	$(document).on('change', 'input[name="order-range-all"]', function() {
+	$(document).on('change', 'input[name="date-range-all"]', function() {
 		if ($(this).prop('checked')) {
 			$('.date-picker').attr('disabled', 'disabled');
 			$('.date-picker').val('');
