@@ -1,50 +1,30 @@
-function AccountModalHeaderCtrl( $scope, $http, AccountModalService, AccountService ) {
-	
+/* CONTROLLERS */
+function AccountModalHeaderCtrl( $scope, $http, AccountModalService ) {
 	$scope.modal = AccountModalService;
-	
-	$scope.account = AccountService;
-
-	$scope.signinActive = $scope.modal.signInIsVisible();
-	$scope.signupActive = $scope.modal.signUpIsVisible();
-
-	$scope.$watch( 'modal.signInIsVisible()', function( newValue, oldValue, scope ) {
-		$scope.signinActive = newValue;
-	});
-
-	$scope.$watch( 'modal.signUpIsVisible()', function( newValue, oldValue, scope ) {
-		$scope.signupActive = newValue;
-	});
-
 }
 
 function AccountSignInCtrl( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {
 
 	$scope.modal = AccountModalService;
-
 	$scope.account = AccountService;
-
 	$scope.help = AccountHelpService;
 
-	$scope.visible = $scope.modal.signInIsVisible();
-
-	// Watch the variable status change
-	$scope.$watch( 'modal.signInIsVisible()', function( newValue, oldValue, scope ) {
-		$scope.visible = newValue;
-	});
 }
 
-function AccountSignUpCtrl( $scope, $http, AccountModalService ) {
-
+function AccountSignUpCtrl( $scope, $http, AccountModalService, AccountService ) {
 	$scope.modal = AccountModalService;
+	$scope.account = AccountService;
 
-	$scope.visible = $scope.modal.signUpIsVisible();
-
-	// Watch the variable status change
-	$scope.$watch( 'modal.signUpIsVisible()', function( newValue, oldValue, scope ) {
-		$scope.visible = newValue;
+	// Watch the variable user
+	$scope.$watch( 'account.user', function( newValue, oldValue, scope ) {
+		$scope.account.user = newValue;
+		if( newValue ){
+			$scope.modal.header = false;
+		}
 	});
-
 }
+
+/* SERVICES */
 
 // AccountHelpService service
 NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountModalService ){ 
@@ -52,9 +32,7 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 	// It starts invisible
 	var service = { 
 			visible : false, 
-			error : { 
-				visible : false 
-			},
+			error : false,
 			success : { 
 				visible : false, 
 				facebook : { 
@@ -68,24 +46,22 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 
 	service.show = function( show ){
 		service.visible = show;
-		modal.header.visible = !show;
+		modal.header = !show;
 		if( show ){
-			
 			service.reset();
 		}
 	}
 
 	service.reset = function(){
-		service.error.visible = false;
+		service.error = false;
 		service.success.visible = false;
 		service.success.facebook.visible = false;
 	}
 
 	service.sendForm = function(){
-		
 		if( !account.isValidEmailPhone() ){
 			alert( 'Please enter a valid email or phone.' );
-			$( 'input[name=password-help-email]' ).focus();
+			$( '.help-email' ).focus();
 			return;
 		}
 
@@ -99,13 +75,13 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 			} ).success( function( data ) {
 					if( data.error ){
 						if( data.error == 'user is not registred' ){
-							service.error.visible = true;
+							service.error = true;
 							$( 'input[name=password-help-email]' ).focus()
 						}
 					} else {
 						if( data.success = 'success' ){
 							service.success.visible = true;
-							service.error.visible = false;
+							service.error = false;
 							if( data.userHasFacebookAuth ){
 								help.success.facebook.visible = true;
 							}
@@ -125,18 +101,18 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 NGApp.factory( 'AccountModalService', function( $http ){
 	
 	var service = {
-		header : { visible : true },
-		signin : { visible : true },
-		signup : { visible : false }
+		header : true,
+		signin : true,
+		signup : false
 	};
 
 	service.toggleSignForm = function( form ){
 		if( form == 'signin' ){
-			service.signin.visible = true;	
-			service.signup.visible = false;	
+			service.signin = true;	
+			service.signup = false;	
 		} else {
-			service.signin.visible = false;	
-			service.signup.visible = true;	
+			service.signin = false;	
+			service.signup = true;	
 		}
 	}
 
@@ -144,21 +120,126 @@ NGApp.factory( 'AccountModalService', function( $http ){
 		return service.header.visible;
 	}
 
-	service.signInIsVisible = function(){
-		return service.signin.visible;
-	}
-
-	service.signUpIsVisible = function(){
-		return service.signup.visible;
-	}
-
 	return service;
 } );
+
 
 // AccountService service
 NGApp.factory( 'AccountService', function( $http ){
 	
-	var service = { email : '', password : '' };
+	var service = { 
+				user : false, 
+				email : '', 
+				password : '', 
+				error : { 
+						signin : false, 
+						signup : false 
+					} 
+			};
+
+	service.checkUser = function(){
+		if( App.config.user.id_user && $.trim( App.config.user.id_user ) != '' ){
+			service.user = App.config.user;
+		}
+	}
+
+	service.signin = function(){
+		if( !service.isValidEmailPhone() ){
+			alert( 'Please enter a valid email or phone.' );
+			$( '.signin-email' ).focus();
+			return;
+		}
+
+		if( !service.isValidPassword() ){
+			alert( 'Please enter your password.' );
+			$( '.signin-password' ).focus();
+			return;
+		}
+		service.purify();
+
+		service.error.signin = false;
+
+		var url = App.service + 'user/auth';
+
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { 'email' : service.email, 'password' : service.password } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
+					if( data.error ){
+						App.log.account( { 'error' : data.error } , 'sign in error' );
+						service.error.signin = true;
+					} else {
+						// TODO : replace this
+						App.config.user = data;
+						service.user = data;
+						$.magnificPopup.close();
+						// If the user is at the restaurant's page - reload it
+						if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
+							App.page.restaurant( App.restaurant.permalink );
+						}
+						App.signin.manageLocation();
+
+						if( App.giftcard.callback ){
+							App.giftcard.callback();
+						}
+					}
+					
+			}	);
+	}
+
+	service.signup = function(){
+		if( !service.isValidEmailPhone() ){
+			alert( 'Please enter a valid email or phone.' );
+			$( '.signup-email' ).focus();
+			return;
+		}
+
+		if( !service.isValidPassword() ){
+			alert( 'Please enter a password.' );
+			$( '.signup-password' ).focus();
+			return;
+		}
+		service.purify();
+
+		service.error.signin = false;
+
+		var url = App.service + 'user/create/local';
+
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { 'email' : service.email, 'password' : service.password } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
+					if( data.error ){
+						if( data.error == 'user exists' ){
+							service.error.signup = true;
+						}
+						App.log.account( { 'error' : data.error, 'login' : service.email } , 'sign up error' );
+					} else {
+						// TODO : replace this
+						App.processConfig(null, data);
+						service.user = data;
+						// If the user is at the restaurant's page - reload it
+						if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
+							App.page.restaurant( App.restaurant.permalink );
+						}
+						App.signin.manageLocation();
+
+						if( App.giftcard.callback ){
+							App.giftcard.callback();
+						}
+					}
+					
+			}	);
+	}
+
+	service.purify = function(){
+		service.email = $.trim( service.email );
+		service.password = $.trim( service.password );
+	}
 
 	service.isValidEmailPhone = function(){
 		// check if it is a phone number
@@ -170,136 +251,215 @@ NGApp.factory( 'AccountService', function( $http ){
 		return true;
 	}
 
+	service.isValidPassword = function(){
+		return service.password != '';
+	}
+
 	return service;
 } );
 
+
+// AccountFacebookService service
+NGApp.factory( 'AccountFacebookService', function( $http, AccountService ){
+	
+	var service = {
+			wait : false,
+			running : false,
+			logged : false,
+			doAuth : true,
+			error : { unknown : false, userExists : false }
+		};
+
+	service.account = AccountService;
+
+	service.auth = function(){
+		FB.login( service.process, { scope: App.facebookScope } );
+		service.wait = true;
+	}
+
+	service.signout = function( call ){
+		FB.logout( call() );
+	}
+
+	service.process = function( session ){
+		if ( session.status === 'connected' && session.authResponse ) {
+
+			if( session.authResponse.accessToken ){
+				App.facebook.registerToken( session.authResponse.accessToken );	
+			}
+
+			service.logged = true;
+			App.log.account( { 'userID' : session.authResponse.userID} , 'facebook login' );
+
+			if( service.doAuth ){
+				FB.api( '/me', { fields: 'name' }, function( response ) {
+					if ( response.error ) {
+						App.log.account( { 'userID' : session.authResponse.userID, 'error' : response.error } , 'facebook name error' );
+						service.error.unknown = true;
+						return;
+					}
+
+					App.log.account( { 'userID' : session.authResponse.userID, 'response' : response, 'shouldAuth' : service.doAuth, 'running' : service.running } , 'facebook response' );
+					if( response.id ){
+						service.doAuth = false;
+
+						if( !service.running ){
+							service.running = true;
+							App.log.account( { 'userID' : session.authResponse.userID, 'running' : service.running } , 'facebook running' );
+
+							// Just call the user api, this will create a facebook user
+							var url = App.service + 'user/facebook';
+
+							$http( {
+								method: 'GET',
+								url: url,
+								} ).success( function( data ) {
+
+									App.log.account( { 'userID' : session.authResponse.userID, 'running' : App.signin.facebook.running, 'data' : data } , 'facebook ajax' );
+									App.signin.facebook.running = true;
+									if( data.error ){
+										if( data.error == 'facebook id already in use' ){
+											// Log the error
+											App.log.account( { 'error' : data.error } , 'facebook error' );
+											service.error.unknown = true;
+										}
+									} else {
+
+										App.processConfig( null, data );
+										service.account.user = data;
+
+										if( App.giftcard.callback ){
+											App.giftcard.callback();	
+										}
+										App.signin.manageLocation();
+									}
+									// Closes the dialog
+									$.magnificPopup.close();
+
+									App.log.account( { 'userID' : session.authResponse.userID, 'currentPage' : App.currentPage } , 'facebook currentPage' );
+
+									// If the user is at the restaurant's page - reload it
+									if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
+										App.page.restaurant( App.restaurant.permalink );
+									}
+									if( App.currentPage == 'orders' ){
+										App.page.orders()								
+									}
+								}	);
+						}
+					} else {
+						service.error.unknown = true;
+					}
+				});
+			}
+		}
+
+	}
+
+	return service;
+
+} );
+
+// TODO: fix ugly thing!
+NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
+
+	var service = {};
+
+	service.facebook = AccountFacebookService;
+
+	service.do = function(){
+
+		if (confirm( 'Confirm sign out?')){
+			// Force to remove the cookies
+			$.each( [ 'token', 'location', 'PHPSESSID' ], function( index, value ){
+				$.cookie( value, null );
+			} );
+		
+			var signout = function(){
+				var url = App.service + 'logout';
+				$http( { method: 'GET', url: url } ).success( function( data ) { location.href = '/'; } );
+			};
+		
+			if( service.facebook.logged ){
+				service.facebook.signout( function(){ signout() } );
+			} else {
+				signout();
+			}
+		}
+	}
+
+	return service;
+
+} );
+
+// Facebook button compoment
+NGApp.directive( 'facebookSigninButton', function ( AccountFacebookService ) {
+	return {
+		restrict: 'A',
+		templateUrl: 'view/account.facebook.html',
+		scope: {
+			title: '@'
+		},
+		controller: function ( $scope ) {
+			$scope.facebook = AccountFacebookService;
+			console.log('$scope.facebook',$scope.facebook);
+		}
+	};;
+});
+
+/*
+// Validate login
+NGApp.directive( 'validateLogin', function () {
+		return {
+			restrict: 'A',
+			require: 'ngModel',
+				link: function(scope, elm, attrs, ctrl){
+					console.log('ctrl',ctrl);
+					ctrl.$parsers.unshift( function( value ){
+						valid = true;
+						if( value == '' ){
+							valid = false;
+						} else {
+							valid = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( value );
+						}
+
+						// var valid = App.phone.validate( value );
+						// if( !valid ){
+							// Valid email
+							
+						// }
+						ctrl.$setValidity( 'validateLogin', valid );
+						return valid ? undefined : value;
+					} );
+				}
+		};
+} );
+
+
+// Validate login
+NGApp.directive( 'validateEmpty', function () {
+		return {
+			restrict: 'A',
+			require: 'ngModel',
+				link: function(scope, elm, attrs, ctrl){
+					ctrl.$parsers.unshift( function( value ){
+						valid = ( value != '' );
+						ctrl.$setValidity( 'validateEmpty', valid );
+						return valid ? undefined : value;
+					} );
+				}
+		};
+} );
+*/
 /**
  * event binding
  */
-App.signin.init = function() {
 
-		$(document).on('touchclick', '.signin-icon', function() {
-		App.signin.show();
-	});
 
-		return;
-
-	$(document).on('touchclick', '.signin-facebook-button', function() {
-		App.signin.facebook.login();
-	});
-
-	$(document).on('touchclick', '.signin-form-button', function() {
-		App.signin.sendForm();
-	});
-
-	$(document).on('touchclick', '.signin-password-help-button', function() {
-		App.signin.passwordHelp.sendForm();
-	});
-
-	$(document).on('submit', '.signin-help-form', function() {
-		App.signin.passwordHelp.sendForm();
-		return false;
-	});
-	
-	$(document).on('submit', '.signin-form', function(e) {
-		App.signin.sendForm();
-		e.stopPropagation();
-		return false;
-	});
-
-	$(document).on('touchclick', '.signin-icon', function() {
-		App.signin.show();
-	});
-
-	$(document).on('touchclick', '.signup-link', function() {
-		App.signup.show( false );
-		$.magnificPopup.close();
-	});
-
-	$(document).on('touchclick', '.sign-in-icon', function() {
-		if (App.config.user.id_user) {
-			var pacmanSide = ( App.currentPage == 'restaurants' ) ? 'left' : 'right';
-			App.controlMobileIcons.showPacman( pacmanSide, function(){ $( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' ); } );
-			History.pushState({}, 'Crunchbutton - Orders', '/orders');
-		} else {
-			App.signin.show();
-		}
-	});
-
-	$(document).on('touchclick', '.signout-icon', function() {
-		App.signin.signOut();
-	});
-
-	$(document).on('touchclick', '.signin-user', function() {
-		//History.pushState({}, 'Your Account', '/orders');;
-	});
-/*
-	History.Adapter.bind(window,'statechange',function() {
-		App.signin.checkUser();
-	});
-*/
-
-	App.signin.facebook.init();
-}
-
-App.signin.sendForm = function(){
-	// Checks it fhe login is a phone
-	var login = $( 'input[name=signin-email]' ).val();
-	login = login.replace(/[^\d]*/gi,'')
-	if( !App.phone.validate( login ) ){
-		// It seems not to be a phone number, lets check if it is a email
-		login = $.trim( $( 'input[name=signin-email]' ).val() );
-		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
-			login = false;
-		}
-	}
-	if( !login ){
-		alert( 'Please enter a valid email or phone.' );
-		$( 'input[name=signin-email]' ).focus();
-		return;
-	}
-
-	if( $.trim( $( 'input[name=signin-password]' ).val() ) == '' ){
-		alert( 'Please enter your password.' );
-		$( 'input[name=signin-password]' ).focus();
-		return;
-	}
-	var email = login,
-			password = $.trim( $( 'input[name=signin-password]' ).val() ),
-			url = App.service + 'user/auth';
-	$('.signin-error').hide();
-	$.ajax( {
-		type: 'POST',
-		url: url,
-		data: { 'email' : email, 'password' : password },
-		dataType: 'json',
-		success: function( json ){
-			if( json.error ){
-				
-				// Log the error
-				App.log.account( { 'error' : json.error } , 'sign in error' );
-
-				$('.signin-error').fadeIn();
-			} else{
-				App.config.user = json;
-				App.signin.checkUser();
-				$.magnificPopup.close();
-
-				// If the user is at the restaurant's page - reload it
-				if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-					App.page.restaurant( App.restaurant.permalink );
-				}
-				App.signin.manageLocation();
-
-				if( App.giftcard.callback ){
-					App.giftcard.callback();
-				}
-			}
-		}
-	} );
-}
 
 App.signin.manageLocation = function(){
+	// TODO: fix it
+	return;
 	// If the user signed in and we do not have his location yet, lets use his stored location.
 	if( App.loc.address() == '' ){
 		if( App.config.user.address ){ // First check if we have the user's address. If we do, lets use it.
@@ -324,104 +484,10 @@ App.signin.manageLocation = function(){
 	}
 }
 
-/**
- * sign out and go to the home page
- */
-App.signin.signOut = function(){
-	if (confirm( 'Confirm sign out?')){
-		// Force to remove the cookies
-		$.each( [ 'token', 'location', 'PHPSESSID' ], function( index, value ){
-			$.cookie( value, null );
-		} );
-		if( App.signin.facebook.isLogged ){
-			FB.logout( function(){
-				$.getJSON('/api/logout',function(){
-					$( '.signout-icon' ).hide();
-					location.href = '/';
-				} );
-			} );
-		} else {
-			$.getJSON('/api/logout',function(){
-				$( '.signout-icon' ).hide();
-				location.href = '/';
-			} );
-		}
-	}
-}
-
 App.signin.facebook = {
 	running: false,
 	init: function() {}
 };
-
-App.signin.facebook.processStatus = function( session ){
-	if ( session.status === 'connected' && session.authResponse ) {
-		if( session.authResponse.accessToken ){
-			App.facebook.registerToken( session.authResponse.accessToken );	
-		}
-		App.signin.facebook.isLogged = true;
-		
-		App.log.account( { 'userID' : session.authResponse.userID} , 'facebook login' );
-		if( App.signin.facebook.shouldAuth ){
-			FB.api( '/me', { fields: 'name' }, function( response ) {
-				if ( response.error ) {
-					App.log.account( { 'userID' : session.authResponse.userID, 'error' : response.error } , 'facebook name error' );
-					return;
-				}
-				App.log.account( { 'userID' : session.authResponse.userID, 'response' : response, 'shouldAuth' : App.signin.facebook.shouldAuth, 'running' : App.signin.facebook.running } , 'facebook response' );
-				if( response.id ){
-					App.signin.facebook.shouldAuth = false;
-					$( '.signin-facebook-message' ).show();
-					$( '.signup-facebook-message' ).show();
-					$( '.signin-facebook' ).hide();
-					$( '.signup-facebook' ).hide();
-					// Just call the user api, this will create a facebook user
-					var url = App.service + 'user/facebook';
-					if( !App.signin.facebook.running ){
-						App.signin.facebook.running = true;
-						App.log.account( { 'userID' : session.authResponse.userID, 'running' : App.signin.facebook.running } , 'facebook running' );
-						$.ajax( {
-							type: 'GET',
-							url: url,
-							dataType: 'json',
-							success: function( json ){
-								App.log.account( { 'userID' : session.authResponse.userID, 'running' : App.signin.facebook.running, 'json' : json } , 'facebook ajax' );
-								App.signin.facebook.running = true;
-								if( json.error ){
-									if( json.error == 'facebook id already in use' ){
-										// Log the error
-										App.log.account( { 'error' : json.error } , 'facebook error' );
-										alert( 'Sorry, It seems the facebook user is already related with other user.' );
-									}
-								} else {
-									App.processConfig(null, json);
-									App.signin.checkUser();
-									if( App.giftcard.callback ){
-										App.giftcard.callback();	
-									}
-									App.signin.manageLocation();
-								}
-								// Closes the dialog
-								$.magnificPopup.close();
-								
-								App.log.account( { 'userID' : session.authResponse.userID, 'currentPage' : App.currentPage } , 'facebook currentPage' );
-
-								// If the user is at the restaurant's page - reload it
-								if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-									App.page.restaurant( App.restaurant.permalink );
-								}
-								if( App.currentPage == 'orders' ){
-									App.page.orders()								
-								}
-								App.recommend.relateUser();
-							}
-						} );
-					}
-				}
-			});
-		}
-	}
-}
 
 
 /**
@@ -434,177 +500,10 @@ App.signin.facebook.login = function() {
 	});
 };
 
-/**
- * show the signin modal
- */
-App.signin.show = function() {
-	// @todo: bind hide and show dom manipulation to scope variables
-	$('.signin-facebook-message').hide();
-	$('.signin-facebook').show();
-	$('.signin-error').hide();
-
-	App.rootScope.$apply(function($scope) {
-		$scope.account.email = '';
-		$scope.account.password = '';
-		$scope.account.message = '';
-		$scope.account.help = false;
-		$scope.account.tab = 'signin';
-	});
-
-	App.dialog.show('.account-container');
-
-	
 
 
-	// $( '.signin-email' ).focus();
-};
-
-App.signin.checkUser = function(){
-	// If the user is logged
-	if( App.config.user.id_user && $.trim( App.config.user.id_user ) != '' ){
-		$( '.signin-user' ).show();
-		$( '.signin-icon' ).hide();
-		$( '.signout-icon' ).hide();
-		$( '.signin-box-header' ).addClass( 'signin-box-header-min' );
-	} else {
-		$( '.signin-user' ).hide();
-		$( '.signin-icon' ).show();
-		$( '.signup-icon' ).show();
-		$( '.signout-icon' ).hide();
-		$( '.signin-box-header' ).removeClass( 'signin-box-header-min' );
-	}
-	if( App.currentPage == 'home' ){
-		$( '.config-icon' ).addClass( 'config-icon-desktop-hide' );
-	} else {
-		$( '.config-icon' ).removeClass( 'config-icon-desktop-hide' );
-	}
-}
-
-App.signin.passwordHelp = {};
-
-
-App.signin.passwordHelp.sendForm = function(){
-	// Checks it fhe login is a phone
-	var login = $( 'input[name=password-help-email]' ).val();
-	login = login.replace(/[^\d]*/gi,'')
-	if( !App.phone.validate( login ) ){
-		// It seems not to be a phone number, lets check if it is a email
-		login = $.trim( $( 'input[name=password-help-email]' ).val() );
-		if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
-			login = false;
-		}
-	}
-	if( !login ){
-		alert( 'Please enter a valid email or phone.' );
-		$( 'input[name=password-help-email]' ).focus();
-		return;
-	}
-	$( '.password-help-error' ).html( '' );
-	$( '.password-help-error' ).hide();
-	var url = App.service + 'user/reset';
-	$.ajax( {
-		type: 'POST',
-		url: url,
-		data: { 'email' : login },
-		dataType: 'json',
-		success: function( json ){
-			if( json.error ){
-				if( json.error == 'user is not registred' ){
-					$( '.password-help-error' ).html( 'Sorry, that email/phone is not registered with us.' );
-					$( '.password-help-error' ).fadeIn();
-					$( 'input[name=password-help-email]' ).focus()
-				}
-				// Log the error
-				App.log.account( { 'error' : json.error } , 'password help error' );
-			} else {
-				if( json.success = 'success' ){
-					$( '.signin-password-help-message' ).show();
-					$( '.signin-password-help-button' ).hide();
-					
-					var message = 'You will receive a code to reset your password! It will expire in 24 hours.';
-					
-					if( json.userHasFacebookAuth ){
-						message += '<br/>';
-						message += '<br/>';
-						message += 'You can also try logging in with <span class="login-facebook">Facebook</span>.';
-					}
-					
-					App.rootScope.$apply(function($scope) {
-						$scope.account.message = message;
-					});
-
-					$( '.login-facebook' ).on( 'touchclick', function(){
-						App.signin.show();
-					} );
-
-				}
-			}
-		}
-	} );
-}
-
-App.signin.passwordHelp.reset = {};
-
-App.signin.passwordHelp.reset.init = function(){
-	$( '.password-reset-container' )
-		.dialog( {
-			modal: true,
-			dialogClass: 'modal-fixed-dialog',
-			width: App.modal.contentWidth(),
-			close: function( event, ui ) { App.signin.passwordHelp.reset.close(); },
-			open: function( event, ui ) { $( 'input[name=password-reset-code]' ).focus(); }
-		} );
-	$( '.password-reset-code-button' ).on( 'touchclick', function(){
-		App.signin.passwordHelp.reset.sendForm();
-	} );
-	$( '.password-change-button' ).on( 'touchclick', function(){
-		App.signin.passwordHelp.reset.change();
-	} );
-	$( '.password-reset-form' ).submit(function() {
-		return false;
-	} );
-	$( '.password-change-form' ).submit(function() {
-		return false;
-	} );
-}
-
-App.signin.passwordHelp.reset.sendForm = function(){
-	$( '.password-reset-code-error' ).html( '' );
-	$( '.password-reset-code-error' ).hide();
-	var code = $.trim( $( 'input[name=password-reset-code]' ).val() );
-	if( code == '' ){
-		alert( 'Please enter the reset code.' );
-		$( 'input[name=password-reset-code]' ).focus();
-		return;
-	}
-	var url = App.service + 'user/code-validate';
-	$.ajax( {
-		type: 'POST',
-		url: url,
-		data: { 'code' : code },
-		dataType: 'json',
-		success: function( json ){
-			if( json.error ){
-				if( json.error == 'invalid code' ){
-					$( '.password-reset-code-error' ).html( 'Sorry, this code is invalid.' );
-				}
-				if( json.error == 'expired code' ){
-					$( '.password-reset-code-error' ).html( 'Sorry, this code is expired.' );
-				}
-				$( '.password-reset-code-error' ).fadeIn();
-				$( 'input[name=password-reset-code]' ).focus()
-			} else {
-				if( json.success = 'valid code' ){
-					$( '.password-reset-block' ).hide();
-					$( '.password-change-block' ).show();
-					$( 'input[name=password-new]' ).focus();
-				}
-			}
-		}
-	} );
-}
-
-App.signin.passwordHelp.reset.change = function(){
+/*
+App.signin.passwordHelp.change = function(){
 	var code = $.trim( $( 'input[name=password-reset-code]' ).val() );
 	var password = $.trim( $( 'input[name=password-new]' ).val() );
 	if( password == '' ){
@@ -654,147 +553,5 @@ App.signin.passwordHelp.reset.html = function( path ){
 	});
 }
 
-
-
-App.signup = {};
-
-
-/**
- * event binding
- */
-App.signup.init = function() {
-
-	$(document).on('touchclick','.signup-add-password-button', function() {
-		App.signup.show(false);
-	});
-
-	$(document).on('touchclick','.signup-icon', function() {
-		App.signup.show( false );
-	});
-
-	$(document).on('touchclick','.signup-form-button', function() {
-		App.signup.sendForm();
-	});
-
-	$(document).on('touchclick','.signup-facebook-button', function() {
-		App.signin.facebook.login();
-	});
-
-	$(document).on('touchclick','.signin-link', function() {
-		App.signin.show();
-		$('.signup-container').dialog('close');
-	});
-
-	$(document).on('submit','.signup-form', function() {
-		App.signup.sendForm();
-		return false;
-	});
-}
-
-
-/**
- * show the signup modal
- */
-App.signup.show = function( justFacebook ){
-	$( '.signup-facebook' ).show();
-	$( '.signup-facebook-message' ).hide();
-	if( App.config.user.facebook ){
-		$( '.signup-facebook-container' ).hide();
-	} else {
-		$( '.signup-facebook-container' ).show();
-	}
-
-
-	$( 'input[name=signup-password]' ).val( '' );
-	$( '.signup-form-options' ).show();
-	$( '.signup-success-container' ).hide();
-	if( justFacebook ){
-		$( '.signup-form' ).hide();
-	} else {
-		$( '.signup-form' ).show();
-	}
-	$( '.signin-error' ).hide();
-	
-	App.rootScope.account.help = false;
-	
-	App.dialog.show('.signup-container');
-
-	// open: function( event, ui ) { $( '.signup-phone' ).focus(); }
-
-}
-
-App.signup.checkLogin = function(){
-	var login = $( 'input[name=pay-phone]' ).val().replace(/[^\d]*/gi,'');
-	if( App.phone.validate( login ) ){
-		var url = App.service + 'user/verify/' + login	
-		$.getJSON( url, function( json ) {
-			if( json.error ){
-				if( json.error == 'user exists' ){
-					$( 'input[name=pay-password]' ).val( '' );
-					$( '.password-field' ).hide();
-				}
-			} else {
-				$( '.password-field' ).fadeIn();
-				$( 'input[name=pay-password]' ).val( '' );
-				$( 'input[name=pay-password]' ).focus();
-			}
-		} );
-	} else {
-		$( 'input[name=pay-password]' ).val( '' );
-		$( '.password-field' ).hide();
-	}
-}
-
-App.signup.sendForm = function(){
-	login = $.trim( $( 'input[name=signup-email]' ).val() );
-	if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( login ) ){
-		login = false;
-	}
-	if( !login ){
-		alert( 'Please enter a valid email email address.' );
-		$( 'input[name=signup-email]' ).focus();
-		return;
-	}
-
-	if( $.trim( $( 'input[name=signup-password]' ).val() ) == '' ){
-		alert( 'Please enter your password.' );
-		$( 'input[name=signup-password]' ).focus();
-		return;
-	}
-	var password = $.trim( $( 'input[name=signup-password]' ).val() ),
-			url = App.service + 'user/create/local';
-	$( '.signup-error' ).hide();
-	$.ajax( {
-		type: 'POST',
-		url: url,
-		data: { 'email' : login, 'password' : password },
-		dataType: 'json',
-		success: function( json ){
-			if( json.error ){
-				if( json.error == 'user exists' ){
-					$('.signup-error').html( 'It seems that the email is already registered!' );
-				}
-				// Log the error
-				App.log.account( { 'error' : json.error, 'login' : login } , 'sign up error' );
-				$('.signup-error').fadeIn();
-			} else{
-				App.processConfig(null, json);
-				$( '.success-phone' ).html( login );
-				$( '.signup-call-to-action' ).hide();
-				$( '.signup-form-options' ).hide();
-				$( '.signup-success-container' ).show();
-				App.signin.checkUser();
-				// If the user is at the restaurant's page - reload it
-				if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-					App.page.restaurant( App.restaurant.permalink );
-				}
-				if( App.giftcard.callback ){
-					$( '.signup-container' ).dialog( 'close' );
-					App.giftcard.callback();
-				}
-				App.recommend.relateUser();
-			}
-		}
-	} );
-}
+*/
 

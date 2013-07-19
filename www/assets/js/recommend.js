@@ -87,29 +87,3 @@ NGApp.factory( 'RecommendRestaurantService', function( $http ){
 
 	return service;
 } );
-
-
-
-// Validate login
-NGApp.directive( 'validLogin', function () {
-		return {
-				restrict: 'A',
-				require: 'ngModel',
-					link: function(scope, elm, attrs, ctrl){
-             var validator = function( value ){
-								// Valid phone number
-								var valid = App.phone.validate( value );
-								if( !valid ){
-									// Valid email
-									valid = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( value );
-								}
-								console.log('validateLogin: valid',valid);
-								ctrl.$setValidity( 'validateLogin', valid );
-								return valid ? value : value;
-						};
-						
-						ctrl.$parsers.unshift(validator);
-           ctrl.$formatters.unshift(validator);
-					}
-		};
-} );

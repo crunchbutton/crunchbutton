@@ -18,19 +18,27 @@ if (App){
 <body><? /* data-ng-controller="AppController" */?>
 	<div class="wrapper">
 	
-		<div class="nav" data-role="header" data-position="fixed">
+		<div class="nav" data-role="header" data-position="fixed" ng-controller="MainHeaderCtrl">
+			
 			<div class="content<?=$e?>">
+				
 				<div class="pacman-loading pacman-left"></div>
+				
 				<div class="nav-back" ng-tap="back()"></div>
-				<div class="logo"><a href="javascript:;" ng-tap="link('/')"><div class="logo-img"></div></a></div>
-				<div class="sign-in-icon"></div>
-				<div title="Change location" class="config-icon" ng-tap="link('/location')"></div>
+
+				<div class="logo"><a href="javascript:;" ng-tap="navigation.link('/')"><div class="logo-img"></div></a></div>
+				
+				<div title="Change location" class="config-icon" ng-tap="navigation.link('/location')"></div>
+
 				<div class="signin-box-header">
-					<div class="signin-user" title="My Account + Past Orders"></div>
-					<div class="signin-icon"></div>
+					<div ng-show="navigation.account.user" ng-tap="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
+					<div ng-show="!navigation.account.user" ng-tap="navigation.signin()" class="signin-icon"></div>
 				</div>
+
 			</div>
+
 		</div>
+
 		<div class="body">
 			<div class="content<?=$e?>">
 				<div class="main-content pages">
@@ -57,6 +65,7 @@ if (App){
 		</div>
 
 		<div ng-include="'view/account.html'"></div>
+		<div ng-include="'view/account.facebook.html'"></div>
 		<div ng-include="'view/suggestion.html'"></div>
 		<div ng-include="'view/support.html'"></div>
 

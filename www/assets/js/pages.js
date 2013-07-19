@@ -23,9 +23,7 @@ NGApp.controller('help', function ($scope, $http) {
  * Home controller
  */
 NGApp.controller('home', function ($scope, $http, $location, RestaurantsService) {
-
 	$scope.restaurantsService = RestaurantsService;
-
 	$scope.restaurantsService.list( 
 		// Success
 		function(){
@@ -439,8 +437,12 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams) {
  * Orders page. only avaiable after a user has placed an order or signed up.
  * @todo: change to account page
  */
-NGApp.controller('orders', function ($scope, $http, $location) {
-	if (!App.config.user.id_user) {
+NGApp.controller('orders', function ($scope, $http, $location, AccountService, AccountSignOut) {
+	
+	$scope.account = AccountService;
+	$scope.signout = AccountSignOut;
+
+	if( !$scope.account.user ){
 		$location.path('/' + App.restaurants.permalink);
 		return;
 	}

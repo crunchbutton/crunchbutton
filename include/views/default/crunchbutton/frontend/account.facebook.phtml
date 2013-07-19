@@ -1,0 +1,16 @@
+<div class="facebook">
+	<div class="facebook-button" ng-tap="facebook.auth()">
+		<span class="icon-facebook"></span>
+		<span class="facebook-button-text">{{title}}</span>
+		<div class="divider"></div>
+	</div>
+	<div class="wait" ng-show="facebook.wait && !facebook.error.userExists && !facebook.error.unknown">
+		Just a sec...
+	</div>
+	<div class="error" ng-show="facebook.error.userExists">
+		Sorry, It seems the facebook user is already related with other user.
+	</div>
+	<div class="error" ng-show="facebook.error.unknown">
+		Sorry, something bad happened.
+	</div>
+</div>
