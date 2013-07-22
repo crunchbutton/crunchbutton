@@ -2,7 +2,10 @@
 NGApp.factory( 'MainNavigationService', function( $http, $location, AccountService, AccountModalService ){ 
 	
 	var service = {
-		page : ''
+		page : '',
+		buttons : {
+			location : true
+		}
 	};
 
 	service.account = AccountService;
@@ -15,7 +18,18 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, AccountServi
 	service.signin = function(){
 		service.modal.signinOpen();
 	}
-	
+
+	service.control = function(){
+		switch( service.page ){
+			case 'location':
+				service.buttons.location = false;
+				break;
+			default:
+				service.buttons.location = true;
+				break;
+		}
+	}
+
 	return service;
 
 } );

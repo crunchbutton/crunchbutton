@@ -23,6 +23,9 @@ function AccountSignUpCtrl( $scope, $http, AccountModalService, AccountService )
 
 function MainHeaderCtrl( $scope, MainNavigationService ) {
 	$scope.navigation = MainNavigationService;
+	$scope.$watch('navigation.page', function( newValue, oldValue, scope ) {
+		$scope.navigation.control();
+	} );
 }
 
 function RecommendCtrl( $scope, $http, RecommendRestaurantService, AccountService, AccountModalService ) {
