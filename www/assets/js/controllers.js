@@ -30,3 +30,7 @@ function RecommendCtrl( $scope, $http, RecommendRestaurantService, AccountServic
 	$scope.account = AccountService;
 	$scope.modal = AccountModalService;
 }
+
+function SupportCtrl( $scope, $http, SupportService ) {
+	$scope.support = SupportService;
+}
