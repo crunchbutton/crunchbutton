@@ -1688,15 +1688,15 @@ html[xmlns] .clearfix {
 		margin: none;
 	}
 
-	.sign-in-icon {
-		background: url(/assets/images/sign-in-icon.png) no-repeat;
-		background-size: contain;
-		cursor: pointer;
-		display: block;
-		float: right;
-		height: 30px;
-		margin: 0 10px;
-		width: 45px;
+	.signin-icon {
+		background: url(/assets/images/sign-in-icon.png) no-repeat !important;
+		background-size: contain !important;
+		cursor: pointer !important;
+		float: right !important;
+		height: 30px !important;
+		width: 45px !important;
+		margin-top: -12px !important;
+		margin-right: 10px !important;
 	}
 		.sign-in-icon.left{
 			float: left !important;

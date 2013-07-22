@@ -333,3 +333,41 @@ html {
 		margin-top: 10px;
 		margin-right: 3px;
 	}
+
+
+/********
+* Media queries
+******/
+@media only screen and (max-width : 1023px) {
+
+}
+
+@media only screen and (max-width : 769px) {
+
+}
+
+@media only screen and (min-width : 633px) and (max-width : 769px) {
+
+}
+
+@media only screen and (min-width : 770px) {
+
+}
+
+@media only screen and (min-width : 1024px) {
+
+}
+
+@media only screen and (min-width : 770px) and (max-width : 1023px) {
+	
+}
+
+
+
+
+
+
+
+
+
+
