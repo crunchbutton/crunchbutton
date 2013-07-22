@@ -144,6 +144,8 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 	$scope.topCommunities = App.topCommunities;
 	$scope.location = LocationService;
 
+	$scope.location.init();
+
 	$scope.yourArea = $scope.location.position.pos().city() || 'your area';
 
 	$scope.restaurantsService = RestaurantsService;

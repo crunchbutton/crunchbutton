@@ -43,7 +43,6 @@ NGApp.factory( 'RestaurantsService', function( $http, PositionsService ){
 	}
 
 	service.list = function( success, error ){
-console.log('service.position.pos()',service.position.pos());
 		if( !service.position.pos().valid( 'restaurants' ) ){
 			if( error ){
 				error();

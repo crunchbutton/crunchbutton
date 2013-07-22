@@ -1,30 +1,43 @@
-<div class="support-minimized mfp-hide">
-	<div class="support-icon"></div>
-	<div class="support-minimized-title">Need help?</div>
-	<div class="divider"></div>
-</div>
+<div ng-controller="SupportCtrl" class="support-container" ng-show="!App.isMobile()">
 
-<div class="support-maximized">
-	<div class="support-maximized-header">
+	<div class="support-minimized" ng-show="support.minimized" ng-tap="support.toggle();">
 		<div class="support-icon"></div>
-		<div class="support-maximized-title">Question? Comment?</div>
+		<div class="support-title">Need help?</div>
 		<div class="divider"></div>
 	</div>
-	<div class="support-maximized-content">
-		Call us at (646) 783-1444 <br/>or send a message:
-		<div class="divisor"></div>
-		<form>
-			<label>Name</label>
-			<input type="text" maxlength="50" name="support-name"/>
+
+	<div class="support-maximized" ng-show="support.maximized">
+
+		<div class="support-maximized-header" ng-tap="support.toggle();">
+			<div class="support-icon"></div>
+			<div class="support-title">Question? Comment?</div>
 			<div class="divider"></div>
-			<label>Phone</label>
-			<input type="text" maxlength="30" name="support-phone" />
-			<div class="divider"></div>
-			<label>Message</label>
-			<textarea name="support-message"></textarea>
-			<div class="divider"></div>
-			<a href="javascript://" class="support-maximized-button">Send by sms</a>
-			<div class="divider"></div>
-		</form>
+		</div>
+
+		<div class="support-maximized-content">
+			Call us at (646) 783-1444 <br/>or send a message:
+			<div class="divisor"></div>
+			<div ng-show="support.thanks">
+				Thank you!
+			</div>
+			<div ng-show="!support.thanks">
+				<form name="formSupport">
+					<label>Name</label>
+					<input type="text" maxlength="50" ng-model="support.name" name="support-name"/>
+					<div class="divider"></div>
+					<label>Phone</label>
+					<input type="text" maxlength="30" ng-model="support.phone" name="support-phone" />
+					<div class="divider"></div>
+					<label>Message</label>
+					<textarea name="support-message" ng-model="support.message"></textarea>
+					<div class="divider"></div>
+					<button ng-show="!support.isSending" class="support-button" ng-tap="support.send();">Send by sms</button>
+					<div class="divider"></div>
+				</form>				
+			</div>
+
+		</div>
+
 	</div>
+
 </div>

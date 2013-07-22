@@ -104,10 +104,6 @@ App.NGinit = function() {
 	App.suggestion.init();
 	App.credit.tooltip.init();
 
-	if (!App.isMobile()) {
-		App.support.init();
-	}
-
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
@@ -209,8 +205,6 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	App.location = $location;
 
 	AccountService.checkUser(); 
-
-	LocationService.init();
 
 	$rootScope.link = function(link) {
 		$location.path(link || '/');
