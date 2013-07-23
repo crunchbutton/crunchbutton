@@ -18,6 +18,43 @@ class Crunchbutton_Promo_Group extends Cana_Table
 		return $this->_date;
 	}
 
+	public function mktReport(){
+		$data = [];
+		$data[ 'giftcards' ] = [];
+		$data[ 'giftcards' ][ 'total' ] = $this->giftcards_total();
+		$data[ 'giftcards' ][ 'redeemed' ] = $this->giftcards_redeemed_total();
+
+		if( $data[ 'giftcards' ][ 'total' ] > 0 && $data[ 'giftcards' ][ 'redeemed' ] > 0 ){
+			$data[ 'giftcards' ][ 'redeemed_percent' ] = ( $data[ 'giftcards' ][ 'redeemed' ] * 100 ) / $data[ 'giftcards' ][ 'total' ];	
+		} else {
+			$data[ 'giftcards' ][ 'redeemed_percent' ] = 0;
+		}
+		
+		$data[ 'range' ] = $this->range;
+		$data[ 'users' ] = [];
+		$data[ 'users' ][ 'unique' ] = $this->unique_users();
+		$data[ 'users' ][ 'new' ] = $this->new_users();
+		$data[ 'users' ][ 'active' ] = [];
+		$data[ 'users' ][ 'active' ]['15'] = $this->active( 15 );
+		$data[ 'users' ][ 'active' ]['30'] = $this->active( 30 );
+		$data[ 'users' ][ 'active' ]['45'] = $this->active( 45 );
+		$data[ 'users' ][ 'active' ]['60'] = $this->active( 60 );
+		if( $data[ 'users' ][ 'new' ] > 0 && $data[ 'giftcards' ][ 'total' ] > 0 ){
+			$data[ 'users' ][ 'new_per_giftcard' ] = $data[ 'users' ][ 'new' ] / $data[ 'giftcards' ][ 'total' ];
+		} else {
+			$data[ 'users' ][ 'new_per_giftcard' ] = 0;
+		}
+		if( $data[ 'users' ][ 'new' ] > 0 && $data[ 'giftcards' ][ 'redeemed' ] > 0 ){
+			$data[ 'users' ][ 'new_per_giftcard_redeemed' ] = $data[ 'users' ][ 'new' ] / $data[ 'giftcards' ][ 'redeemed' ];
+		} else {
+			$data[ 'users' ][ 'new_per_giftcard_redeemed' ] = 0;
+		}
+		
+
+		// $data[ 'giftcards' ] = $this->giftcards()->count();
+		return $data;
+	}
+
 	public function giftcards(){
 		if ( !isset( $this->_giftcards ) ) {
 			$query = "SELECT p.* FROM promo p INNER JOIN promo_group_promo pgp ON p.id_promo = pgp.id_promo AND pgp.id_promo_group = {$this->id_promo_group}";
@@ -45,6 +82,45 @@ class Crunchbutton_Promo_Group extends Cana_Table
 	public function remove_giftcards(){
 		$query = "DELETE FROM promo_group_promo WHERE id_promo_group = {$this->id_promo_group}";
 		Cana::db()->query( $query );
+	}
+
+	public function unique_users(){
+		$query = "SELECT COUNT( DISTINCT( o.phone ) ) AS total FROM promo_group_promo pgp INNER JOIN credit c ON c.id_promo = pgp.id_promo INNER JOIN user u ON u.id_user = c.id_user INNER JOIN `order` o ON o.id_user = u.id_user WHERE pgp.id_promo_group = {$this->id_promo_group}";
+		$total = c::db()->get( $query );
+		return $total->_items[0]->total;
+	}
+
+	public function active( $days = 45 ){
+		$query = "SELECT COUNT(*) AS total FROM
+								(SELECT o.phone, MAX(o.date) as last
+								 FROM promo_group_promo pgp
+								 INNER JOIN credit c ON c.id_promo = pgp.id_promo
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 INNER JOIN `order` o ON o.id_user = u.id_user
+								 WHERE pgp.id_promo_group = {$this->id_promo_group}
+								 GROUP BY o.phone) orders
+							WHERE last BETWEEN CURDATE() - INTERVAL {$days} DAY AND CURDATE()";
+		$total = c::db()->get( $query );
+		return $total->_items[0]->total;
+	}
+
+	public function new_users(){
+		$query = "SELECT COUNT(*) AS total
+							FROM
+								(SELECT o.phone,
+												MIN(o.date) as first
+								 FROM promo_group_promo pgp
+								 INNER JOIN credit c ON c.id_promo = pgp.id_promo
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 INNER JOIN `order` o ON o.id_user = u.id_user
+								 WHERE pgp.id_promo_group = {$this->id_promo_group}
+								 GROUP BY o.phone) orders
+							WHERE first >=
+									(SELECT date_mkt
+									 FROM promo_group pg
+									 WHERE pg.id_promo_group = {$this->id_promo_group})";
+		$total = c::db()->get( $query );
+		return $total->_items[0]->total;
 	}
 
 	public function giftcards_total(){
@@ -132,6 +208,12 @@ class Crunchbutton_Promo_Group extends Cana_Table
 		} else {
 			return '';
 		}
+	}
+
+	public function date_mkt(){
+		$date_mkt = explode( '-', $this->date_mkt );
+		$date_mkt = $date_mkt[1].'/'.$date_mkt[2].'/'.$date_mkt[0];
+		return $date_mkt;
 	}
 
 	public static function find($search = []) {
