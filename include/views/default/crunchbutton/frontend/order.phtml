@@ -1,63 +1,63 @@
-<div ng-show="!order.id">
-	order loader
+<div ng-show="!order.order.id">
+	Orders loader
 </div>
 
-<div ng-show="order.id">
+<div ng-show="order.order.id">
 	<div class="content-padder-before"></div>
 	<div class="order-info content-padder main-content-readable">
 	
-		<span class="order-thanks-message" ng-show="order.new">
+		<span class="order-thanks-message" ng-show="order.order.new">
 			Crunched!
 			<span class="order-thanks-message-block">Your order is placed</span>
 			<span class="order-thanks-message-small">(and saved for easy 1 click ordering next time)</span>
 			<br /><br />
 		</span>
 	
-		<div ng-show="user">
-			You can one click order anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+		<div ng-show="account.user">
+			You can one click order anywhere, including <a href="javascript://" ng-tap="crunchbutton();">crunchbutton.com</a> on your phone.
 		</div>
 
-		<div ng-show="!user">
+		<div ng-show="!account.user">
 			<span class="signup-call-to-action">
 				Add a password to reorder your favorite food anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
-				<a href="javascript:;" class="signup-add-password-button">Add a password now</a>
+				<a href="javascript:;" ng-tap="modal.signinOpen();" class="add-password-button">Add a password now</a>
 			</span>			
 		</div>
 	
 		<div class="order-details">
 
-			<div ng-show="(order.delivery_type == 'delivery')">
-				<b>Your delivery address:</b><br /><span ng-bind-html-unsafe="nl2br(order.address)"></span><br /><br />
+			<div ng-show="(order.order.delivery_type == 'delivery')">
+				<b>Your delivery address:</b><br /><span ng-bind-html-unsafe="nl2br(order.order.address)"></span><br /><br />
 			</div>
 	
-			<div ng-hide="(order.delivery_type == 'delivery')">
+			<div ng-hide="(order.order.delivery_type == 'delivery')">
 				<b>Takeout order</b><br /><br />
 			</div>
 	
-			<b>Your phone #:</b><br />{{formatPhone(order.phone)}}<br /><br />
+			<b>Your phone #:</b><br />{{formatPhone(order.order.phone)}}<br /><br />
 	
-			<b>Your order:</b><span ng-bind-html-unsafe="order._message"></span><br /><br />
+			<b>Your order:</b><span ng-bind-html-unsafe="order.order._message"></span><br /><br />
 	
-			<i ng-show="order.notes" ng-bind-html-unsafe="nl2br(order.notes)"><br /><br /></i>
+			<i ng-show="order.order.notes" ng-bind-html-unsafe="nl2br(order.order.notes)"><br /><br /></i>
 	
-			<b ng-show="(order.pay_type == 'card')">Your total:<br /></b>
-			<b ng-hide="(order.pay_type == 'card')">Your approximate total:<br /></b>
+			<b ng-show="(order.order.pay_type == 'card')">Your total:<br /></b>
+			<b ng-hide="(order.order.pay_type == 'card')">Your approximate total:<br /></b>
 			
-			${{formatPrice(order.charged)}}
+			${{formatPrice(order.order.charged)}}
 	
-			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{parseFloat(order.final_price).toFixed(2)}} - ${{parseFloat(order.credit).toFixed(2)}} credit )</div>
+			<div class="credit" ng-show="(order.order.credit && order.order.credit > 0)">( ${{parseFloat(order.order.final_price).toFixed(2)}} - ${{parseFloat(order.order.credit).toFixed(2)}} credit )</div>
 	
 			<br /><br />
 	
-			For updates on your order, please call<br />{{restaurant.name}}: <b>{{App.callPhone(restaurant.phone)}}</b><br /><br />
+			For updates on your order, please call<br />{{order.restaurant.name}}: <b>{{callPhone( order.restaurant.phone )}}</b><br /><br />
 	
-			You can reach Crunchbutton by texting or calling <b>{{App.callPhone('(646) 783-1444' )}}</b> <br /><br />
+			You can reach Crunchbutton by texting or calling <b> {{callPhone( '(646) 783-1444' )}} </b> <br /><br />
 	
 			We've saved your order for easy 1 click ordering next time
 
 			<br /><br />
 
-			<div class="facebook-button facebook-button-share clearfix">
+			<div class="facebook-button facebook-button-share clearfix" ng-tap="facebook();">
 				<i class="icon-facebook"></i><span class="facebook-button-text">Share what you ordered</span>
 			</div>
 	
@@ -65,6 +65,6 @@
 	</div>
 	
 	<br />
-	<a href="/printorder/{{order.uuid}}" class="print-icon" target="_blank"><div class="icon-print"></div> Print Receipt</a>
+	<a href="javascript://" ng-tap="print();" class="print-icon"><i class="icon-print"></i> Print Receipt</a>
 	<div class="divider"></div>
 </div>

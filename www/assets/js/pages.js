@@ -41,14 +41,9 @@ NGApp.controller('home', function ($scope, $http, $location, RestaurantsService)
  * Alias / unknown controller
  */
 NGApp.controller('default', function ($scope, $http, $location, CommunityAliasService ) {
-
 	var community = CommunityAliasService;
-
-	// position = PositionService;
-
 	community.route( $location.path(),
-
-		// If route is ok
+		// success
 		function( results ){
 			if (results.alias) {
 				community.position.addLocation( new Location( {
@@ -63,7 +58,7 @@ NGApp.controller('default', function ($scope, $http, $location, CommunityAliasSe
 				$location.path( '/' + App.restaurants.permalink );
 			}
 		},
-		// If route is not ok
+		// error
 		function(){
 			$location.path( '/location' );
 		}
@@ -414,76 +409,43 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('order', function ($scope, $http, $location, $routeParams) {
-
-	App.cache('Order', $routeParams.id, function() {
-		var order = this;
-
-		var complete = function() {
-			$location.path('/');
-		};
-
-		if (!order.uuid) {
-			if (!$scope.$$phase) {
-				$scope.$apply(complete);
-			} else {
-				complete();
-			}
-			return;
-		}
-
-		App.cache('Restaurant',order.id_restaurant, function() {
-			var complete = function() {
-
-				$scope.order = order;
-				$scope.restaurant = this;
-				
-				if (order['new']) {
-					setTimeout(function() {
-						order['new'] = false;
-					},500);
-				}
-			};
-			if (!$scope.$$phase) {
-				$scope.$apply(complete);
-			} else {
-				complete();
-			}
-		});
-	});
+NGApp.controller('order', function ($scope, $http, $location, $routeParams, AccountService, AccountModalService, OrderService) {
+	$scope.account = AccountService;
+	if( !$scope.account.isLogged() ){
+		$location.path( '/' + App.restaurants.permalink );
+		return;
+	}
+	$scope.modal = AccountModalService;
+	$scope.order = OrderService;
+	$scope.callPhone = function( phone ){
+		return App.callPhone( phone );
+	}
+	$scope.facebook = function(){
+		App.facebook.postOrder();
+	}
+	$scope.print = function(){
+		window.open( '/printorder/' + $scope.order.order.uuid );
+	}
+	$scope.crunchbutton = function(){
+		window.open( 'http://crunchbutton.com' );	
+	}
 });
-
 
 
 /**
  * Orders page. only avaiable after a user has placed an order or signed up.
  * @todo: change to account page
  */
-NGApp.controller('orders', function ($scope, $http, $location, AccountService, AccountSignOut) {
-	
+NGApp.controller('orders', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService) {
 	$scope.account = AccountService;
-	$scope.signout = AccountSignOut;
-
-	if( !$scope.account.user ){
-		$location.path('/' + App.restaurants.permalink);
+	if( !$scope.account.isLogged() ){
+		$location.path( '/' + App.restaurants.permalink );
 		return;
 	}
-
-	$scope.displayRestaurant = function() {
-		$location.path('/' + App.restaurants.permalink + '/' + this.order._restaurant_permalink);
-	};
-
-	$scope.displayOrder = function() {
-		$location.path('/order/' + this.order.id);
-	};
-
-	$http.get(App.service + 'user/orders', {cache: true}).success(function(json) {
-		for (var x in json) {
-			json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i,'$1/$2 $3');
-		}
-		$scope.orders = json;
-		$scope.user = App.user;
-	});
+	$scope.account = AccountService;
+	$scope.signout = AccountSignOut;
+	$scope.orders = OrdersService;
+	$scope.orders.all();
 });
 
 
