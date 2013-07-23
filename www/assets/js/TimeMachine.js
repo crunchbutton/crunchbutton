@@ -23,8 +23,8 @@ function TimeMachine() {
 	 */
 	this.__construct = function()
 	{
-		if ($.cookie('TimeMachine')) {
-			_fixedTime = $.cookie('TimeMachine');
+		if ($.totalStorage('TimeMachine')) {
+			_fixedTime = $.totalStorage('TimeMachine');
 		}
 	}
 
@@ -52,7 +52,7 @@ function TimeMachine() {
 
 	this.toBeContinued = function()
 	{
-		$.cookie('TimeMachine', _fixedTime);
+		$.totalStorage('TimeMachine', _fixedTime);
 	}
 
 	/**

@@ -12,7 +12,7 @@ NGApp.factory( 'PositionsService', function(){
 		// Resets the restaurant's list
 		App.restaurants.forceLoad = true;
 		service.locs.push( loc );
-		$.cookie('locsv2', JSON.stringify(service.locs), { expires: new Date(3000,01,01), path: '/'});
+		$.totalStorage('locsv2', service.locs);
 	}
 
 	/**
@@ -143,8 +143,8 @@ NGApp.factory( 'LocationService', function( $location, RestaurantsService, Posit
 			}
 
 			// 2) retrieve and set location date from cookies
-			var cookieLocs = $.cookie('locsv2') ? JSON.parse($.cookie('locsv2')) : null;
-			var cookieBounding = $.cookie('boundingv2') ? JSON.parse($.cookie('boundingv2')) : null;
+			var cookieLocs = $.totalStorage('locsv2');
+			var cookieBounding = $.totalStorage('boundingv2');
 
 			if ( cookieLocs ) {
 				for( var x in cookieLocs ) {
@@ -418,7 +418,7 @@ NGApp.factory( 'LocationService', function( $location, RestaurantsService, Posit
 				service.geocode(address, function(loc) {
 					service.position.addLocation(loc);
 					success();
-					$.cookie('boundingv2', JSON.stringify(service.bounding), { expires: new Date(3000,01,01), path: '/'});
+					$.totalStorage('boundingv2', service.bounding);
 				}, error);
 			}
 			//service.geocode(address, success, error);
