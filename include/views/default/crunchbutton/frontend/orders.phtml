@@ -1,14 +1,20 @@
-<div ng-show="!orders.length">
+<div ng-show="!orders.list.length">
 	Orders loader
 </div>
 
-<div ng-show="orders.length" class="main-content-readable">
+<div ng-show="orders.list.length" class="main-content-readable">
+
 	<div class="restaurant-item-title">order history</div>
+
 	<ul class="resturant-dishes resturant-dish-container your-orders">
-		<li ng-repeat="order in orders">
-			<span ng-tap="displayRestaurant()" class="dish-name order-restaurant" name="{{order._restaurant_name}}" permalink="{{order._restaurant_permalink}}" id_restaurant="{{order.id_restaurant}}">{{order._restaurant_name}}</span>
-			<span class="dish-price">{{order.timeFormat}} ({{order._tz}})</span>
-			<a  ng-tap="displayOrder()" class="order-link" href="javascript:;" data-id_order="{{order.uuid}}">View Receipt</a>
+		<li ng-repeat="order in orders.list">
+			<span ng-tap="orders.restaurant(order._restaurant_permalink)" class="dish-name order-restaurant">
+				{{order._restaurant_name}}
+			</span>
+			<span class="dish-price">
+				{{order.timeFormat}} ({{order._tz}})
+			</span>
+			<a ng-tap="orders.receipt(order.id)" class="order-link" href="javascript:;">View Receipt</a>
 			<div class="divider"></div>		
 		</li>
 	</ul>

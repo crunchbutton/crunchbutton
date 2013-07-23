@@ -12,9 +12,13 @@ NGApp.factory( 'AccountService', function( $http ){
 			};
 
 	service.checkUser = function(){
-		if( App.config.user.id_user && $.trim( App.config.user.id_user ) != '' ){
+		if( service.isLogged() ){
 			service.user = App.config.user;
 		}
+	}
+
+	service.isLogged = function(){
+		return ( App.config.user.id_user && $.trim( App.config.user.id_user ) != '' );
 	}
 
 	service.signin = function(){
@@ -210,8 +214,7 @@ NGApp.factory( 'AccountModalService', function( $http ){
 	var service = {
 		header : true,
 		signin : true,
-		signup : false,
-		teste : 'ahahahha'
+		signup : false
 	};
 
 	service.signinOpen = function(){

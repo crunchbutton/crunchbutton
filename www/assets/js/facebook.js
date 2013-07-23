@@ -17,7 +17,7 @@ App.facebook = {
 }
 
 // This method pre load the order info that could be posted
-App.facebook.preLoadOrderStatus = function(){
+App.facebook.preLoadOrderStatus = function( uuid ){
 	var url = App.service + App.facebook.api.status.order + App._order_uuid;
 	$.getJSON( url, function( json ) {
 		if( json.success ){
