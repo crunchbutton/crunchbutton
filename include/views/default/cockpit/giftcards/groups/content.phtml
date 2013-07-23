@@ -7,19 +7,17 @@ $groups = $this->giftcards_groups;
 	<table class="table table-normal">
 		<thead>
 			<td>Name</td>
-			<td>Date</td>
+			<td>Marketing event</td>
 			<td>Range</td>
 			<td>Gift cards</td>
 			<td>Gift cards Redeemed</td>
 			<td></td>
 		</thead>
-		<?php foreach ( $groups as $group ) { 
-				$date = $group->date(); 
-			?>
+		<?php foreach ( $groups as $group ) { ?>
 			<tr>
 				<td><?php echo $group->name;?> </td>
-				<td><?php echo $date->format('M jS Y')?> - <?php echo $date->format('g:i:s A')?> </td>
-				<td><?php echo $group->range(); ?></td>
+				<td><?php echo $group->date_mkt();?> </td>
+				<td><?php echo $group->range; ?></td>
 				<td><?php echo $group->giftcards_total(); ?></td>
 				<td><?php echo $group->giftcards_redeemed_total(); ?></td>
 				<td style="width:150px;">

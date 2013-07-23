@@ -1,0 +1,108 @@
+<?
+	$this->title = 'Dashboard';
+	$this->titleicon = 'dashboard';
+	$this->titleLink = '/';
+	
+	$this->title2 = 'Marketing events';
+	$this->title2icon = 'bullhorn';
+
+	$data = $this->data;
+
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Marketing events</span>
+				</div>
+				<div class="box-content padded">
+				
+				<table cellpadding="0" cellspacing="0" border="0" class="table table-normal">
+					<tr>
+						<th rowspan="2" style="text-align:center !important;vertical-align:middle !important;">Group</th>
+						<th rowspan="2" style="text-align:center !important;vertical-align:middle !important;">Date</th>
+						<th rowspan="2" style="text-align:center !important;vertical-align:middle !important;">Range</th>
+						<th rowspan="2" style="text-align:center !important;vertical-align:middle !important;">Community</th>
+						<th rowspan="2" style="text-align:center !important;vertical-align:middle !important;">Promotion Type</th>
+						<th colspan="3" style="text-align:center !important;vertical-align:middle !important;border-right:1px solid #CCC;border-left:1px solid #CCC;">Gift cards</th>
+						<th colspan="4" style="text-align:center !important;vertical-align:middle !important;border-right:1px solid #CCC;">Users</th>
+						<th colspan="4" style="text-align:center !important;vertical-align:middle !important;border-right:1px solid #CCC;">Active users</th>
+						<th colspan="4" style="text-align:center !important;vertical-align:middle !important;">Man/Hour</th>
+					</tr>
+					<tr>
+						<th>Total</th>
+						<th>Redeemed</th>
+						<th style="border-right:1px solid #CCC;">Redeemed %</th>
+						<th>Total</th>
+						<th>New</th>
+						<th>New / Gift card</th>
+						<th style="border-right:1px solid #CCC;">New / Gift card redeemed</th>
+						<th>Last 15 days</th>
+						<th>Last 30 days</th>
+						<th>Last 45 days</th>
+						<th style="border-right:1px solid #CCC;">Last 60 days</th>
+						<th>Total</th>
+						<th>New users</th>
+						<th>Users</th>
+						<th>Gift card redeemed</th>
+					</tr>
+				<?php 
+				foreach ( $data as $group ) {
+?>
+					<tr>
+						<td nowrap="nowrap"><?php echo $group[ 'name' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'date' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'report' ][ 'range' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'community' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'promotion_type' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'report' ][ 'giftcards' ][ 'total' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'report' ][ 'giftcards' ][ 'redeemed' ]; ?></td>
+						<td nowrap="nowrap"><?php echo number_format( $group[ 'report' ][ 'giftcards' ][ 'redeemed_percent' ], 2 ); ?>%</td>
+						<td nowrap="nowrap"><?php echo $group[ 'report' ][ 'users' ][ 'unique' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'report' ][ 'users' ][ 'new' ]; ?></td>
+						<td nowrap="nowrap"><?php echo number_format( $group[ 'report' ][ 'users' ][ 'new_per_giftcard' ], 3 ); ?></td>
+						<td nowrap="nowrap"><?php echo number_format( $group[ 'report' ][ 'users' ][ 'new_per_giftcard_redeemed' ], 3 ); ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'report' ][ 'users' ][ 'active' ][ '15' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'report' ][ 'users' ][ 'active' ][ '30' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'report' ][ 'users' ][ 'active' ][ '45' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'report' ][ 'users' ][ 'active' ][ '60' ]; ?></td>
+						<td nowrap="nowrap"><?php echo $group[ 'man_hours' ]; ?></td>
+						<td nowrap="nowrap">
+							<?php 
+							if( $group[ 'man_hours' ] > 0 && $group[ 'report' ][ 'users' ][ 'new' ] > 0 ) { 
+								echo number_format( ( $group[ 'man_hours' ] / $group[ 'report' ][ 'users' ][ 'new' ] ) , 3);
+							} else {
+								echo '0';
+							}
+							?>
+						</td>
+						<td nowrap="nowrap">
+							<?php 
+							if( $group[ 'man_hours' ] > 0 && $group[ 'report' ][ 'users' ][ 'unique' ] > 0 ) { 
+								echo number_format( ( $group[ 'man_hours' ] / $group[ 'report' ][ 'users' ][ 'unique' ] ) , 3);
+							} else {
+								echo '0';
+							}
+							?>
+						</td>
+						<td nowrap="nowrap">
+							<?php 
+							if( $group[ 'man_hours' ] > 0 && $group[ 'report' ][ 'giftcards' ][ 'redeemed' ] > 0 ) { 
+								echo number_format( ( $group[ 'man_hours' ] / $group[ 'report' ][ 'giftcards' ][ 'redeemed' ] ) , 3);
+							} else {
+								echo '0';
+							}
+							?>
+						</td>
+					</tr>
+<?php
+				}
+				?>
+					
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
