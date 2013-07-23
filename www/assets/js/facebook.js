@@ -129,7 +129,7 @@ App.facebook.registerToken = function( token ){
 	if( !App.facebook.token ){
 		App.facebook.token = token;
 		var url = App.service + App.facebook.api.token;
-		$.cookie( 'fbtoken', token, { expires: new Date(3000,01,01), path: '/'});
+		$.totalStorage( 'fbtoken', token);
 	}
 }
 

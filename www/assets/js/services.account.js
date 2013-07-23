@@ -359,7 +359,7 @@ NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 			
 			// Force to remove the cookies
 			$.each( [ 'token', 'location', 'PHPSESSID' ], function( index, value ){
-				$.cookie( value, null );
+				$.totalStorage(value, null);
 			} );
 		
 			var signout = function(){

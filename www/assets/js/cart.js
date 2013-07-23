@@ -697,7 +697,7 @@ App.isDeliveryAddressOk = true;
 				} else {
 
 					if (json.token) {
-						$.cookie('token', json.token, { expires: new Date(3000,01,01), path: '/'});
+						$.totalStorage('token', json.token);
 					}
 
 					$('.link-orders').show();

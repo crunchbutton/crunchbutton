@@ -44,8 +44,10 @@ var App = {
 	crunchSoundAlreadyPlayed : false,
 	useCompleteAddress : false, /* if true it means the address field will be fill with the address found by google api */
 	completeAddressWithZipCode : true,
-	boundingBoxMeters : 8000
+	boundingBoxMeters : 8000,
+	localStorage: false
 };
+
 
 App.alert = function(txt) {
 	setTimeout(function() {
@@ -386,9 +388,9 @@ App.test = {
 		App.alert(JSON.stringify(App.cart.items));
 	},
 	clearloc: function() {
-		$.cookie('community', '', { expires: new Date(3000,01,01), path: '/'});
-		$.cookie('location_lat', '', { expires: new Date(3000,01,01), path: '/'});
-		$.cookie('location_lon', '', { expires: new Date(3000,01,01), path: '/'});
+		$.totalstorage('community',null);
+		$.totalstorage('location_lat',null);
+		$.totalstorage('location_lon',null);
 		location.href = '/';
 	},
 	init: function() {
@@ -480,6 +482,8 @@ App.trigger = {
  * global event binding and init
  */
 $(function() {
+
+	$.totalStorage.ls(App.localStorage);
 
 	App.processConfig(App.config);
 	App._init = true;
@@ -807,7 +811,6 @@ App.getCommunityById = function( id ){
  */
 App.dialog = {
 	show: function() {
-console.log('arguments',arguments);
 		if (arguments[1]) {
 			// its a title and message
 			var src = '<div class="zoom-anim-dialog small-container">' +
