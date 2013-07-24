@@ -34,6 +34,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 		$data[ 'users' ] = [];
 		$data[ 'users' ][ 'unique' ] = $this->unique_users();
 		$data[ 'users' ][ 'new' ] = $this->new_users();
+		$data[ 'users' ][ 'returned' ] = $this->returned_users();
 		$data[ 'users' ][ 'active' ] = [];
 		$data[ 'users' ][ 'active' ]['15'] = $this->active( 15 );
 		$data[ 'users' ][ 'active' ]['30'] = $this->active( 30 );
@@ -122,6 +123,28 @@ class Crunchbutton_Promo_Group extends Cana_Table
 		$total = c::db()->get( $query );
 		return $total->_items[0]->total;
 	}
+
+
+	public function returned_users(){
+		$query = "SELECT COUNT(*) AS total
+							FROM
+								(SELECT o.phone,
+												MIN(o.date) as first,
+												COUNT(*) total
+								 FROM promo_group_promo pgp
+								 INNER JOIN credit c ON c.id_promo = pgp.id_promo
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 INNER JOIN `order` o ON o.id_user = u.id_user
+								 WHERE pgp.id_promo_group = {$this->id_promo_group}
+								 GROUP BY o.phone HAVING total > 1) orders
+							WHERE first >=
+									(SELECT date_mkt
+									 FROM promo_group pg
+									 WHERE pg.id_promo_group = {$this->id_promo_group})";
+		$total = c::db()->get( $query );
+		return $total->_items[0]->total;
+	}
+
 
 	public function giftcards_total(){
 		$query = "SELECT COUNT(*) AS total FROM promo p INNER JOIN promo_group_promo pgp ON p.id_promo = pgp.id_promo AND pgp.id_promo_group = {$this->id_promo_group}";
