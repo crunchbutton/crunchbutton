@@ -96,6 +96,7 @@ if (App){
 
 
 		<div ng-include="'view/account.html'"></div>
+		<div ng-include="'view/account.reset.html'"></div>
 		<div ng-include="'view/account.facebook.html'"></div>
 		<div ng-include="'view/suggestion.html'"></div>
 		<div ng-include="'view/support.html'"></div>
@@ -119,8 +120,9 @@ if (App){
 				xfbml: true,
 				oauth: true
 			});
-			FB.getLoginStatus(App.signin.facebook.processStatus);
-			FB.Event.subscribe('auth.statusChange', App.signin.facebook.processStatus);
+			var facebookService = angular.element( 'html' ).injector().get( 'FacebookService' );
+			FB.getLoginStatus( facebookService.processStatus );
+			FB.Event.subscribe( 'auth.statusChange', facebookService.processStatus );
 		};
 	});
 

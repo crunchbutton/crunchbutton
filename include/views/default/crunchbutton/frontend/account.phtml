@@ -1,4 +1,4 @@
-<div class="account-container zoom-anim-dialog small-container mfp-hide">
+<div class="account-container modal zoom-anim-dialog small-container mfp-hide">
 	
 	<div ng-controller="AccountModalHeaderCtrl" class="header" ng-show="modal.header">
 
@@ -78,7 +78,7 @@
 
 			</form>
 
-			<div ng-show="help.success.visible" class="signin-password-help-message">
+			<div ng-show="help.success.visible" class="success">
 				You will receive a code to reset your password! It will expire in 24 hours.
 				<div ng-show="help.success.facebook.visible">
 					You can also try logging in with <span class="login-facebook">Facebook</span>.
@@ -130,7 +130,7 @@
 
 		<h1>Congratulations!</h1>
 
-		<div class="signup-success">
+		<div class="success">
 			You can now sign in using <strong>{{account.email}}</strong>!
 		</div>
 

@@ -183,7 +183,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/reset', {
 			action: 'reset',
 			controller: 'reset',
-			templateUrl: 'view/reset.html'
+			templateUrl: 'view/home.html'
+		})
+		.when('/reset/:id', {
+			action: 'reset',
+			controller: 'reset',
+			templateUrl: 'view/home.html'
 		})
 		.when('/', {
 			action: 'home',
@@ -504,10 +509,6 @@ $(function() {
 
 
 	App.test.init();
-
-	$(document).on('touchclick', '.signup-add-facebook-button', function() {
-		App.signin.facebook.login();
-	});
 
 	$(document).on('touchclick', '.delivery-toggle-delivery', function(e) {
 		e.preventDefault();

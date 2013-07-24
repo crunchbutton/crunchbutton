@@ -209,13 +209,15 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 } );
 
 // AccountModalService service
-NGApp.factory( 'AccountModalService', function( $http ){
+NGApp.factory( 'AccountModalService', function( $http, FacebookService ){
 	
 	var service = {
 		header : true,
 		signin : true,
 		signup : false
 	};
+
+	service.facebook = FacebookService;
 
 	service.signinOpen = function(){
 		App.dialog.show( '.account-container' );
@@ -227,7 +229,12 @@ NGApp.factory( 'AccountModalService', function( $http ){
 		service.toggleSignForm( 'signup' );
 	}
 
+	service.resetOpen = function(){
+		App.dialog.show( '.account-reset-container' );
+	}
+
 	service.toggleSignForm = function( form ){
+		service.facebook.wait = false;
 		if( form == 'signin' ){
 			service.signin = true;	
 			service.signup = false;	
@@ -246,107 +253,26 @@ NGApp.factory( 'AccountModalService', function( $http ){
 
 
 // AccountFacebookService service
-NGApp.factory( 'AccountFacebookService', function( $http, AccountService ){
+NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 	
-	var service = {
-			wait : false,
-			running : false,
-			logged : false,
-			doAuth : true,
-			error : { unknown : false, userExists : false }
-		};
+	var service = {};
 
-	service.account = AccountService;
+	service.facebook = FacebookService;
+	service.account = service.facebook.account;
 
 	service.auth = function(){
-		FB.login( service.process, { scope: App.facebookScope } );
-		service.wait = true;
+		service.facebook.wait = true;
+		FB.login( service.facebook.startAuth, { scope: App.facebookScope } );
 	}
 
-	service.signout = function( call ){
-		FB.logout( call() );
-	}
-
-	service.process = function( session ){
-		if ( session.status === 'connected' && session.authResponse ) {
-
-			if( session.authResponse.accessToken ){
-				App.facebook.registerToken( session.authResponse.accessToken );	
-			}
-
-			service.logged = true;
-			App.log.account( { 'userID' : session.authResponse.userID} , 'facebook login' );
-
-			if( service.doAuth ){
-				FB.api( '/me', { fields: 'name' }, function( response ) {
-					if ( response.error ) {
-						App.log.account( { 'userID' : session.authResponse.userID, 'error' : response.error } , 'facebook name error' );
-						service.error.unknown = true;
-						return;
-					}
-
-					App.log.account( { 'userID' : session.authResponse.userID, 'response' : response, 'shouldAuth' : service.doAuth, 'running' : service.running } , 'facebook response' );
-					if( response.id ){
-						service.doAuth = false;
-
-						if( !service.running ){
-							service.running = true;
-							App.log.account( { 'userID' : session.authResponse.userID, 'running' : service.running } , 'facebook running' );
-
-							// Just call the user api, this will create a facebook user
-							var url = App.service + 'user/facebook';
-
-							$http( {
-								method: 'GET',
-								url: url,
-								} ).success( function( data ) {
-
-									App.log.account( { 'userID' : session.authResponse.userID, 'running' : App.signin.facebook.running, 'data' : data } , 'facebook ajax' );
-									App.signin.facebook.running = true;
-									if( data.error ){
-										if( data.error == 'facebook id already in use' ){
-											// Log the error
-											App.log.account( { 'error' : data.error } , 'facebook error' );
-											service.error.unknown = true;
-										}
-									} else {
-
-										App.processConfig( null, data );
-										service.account.user = data;
-
-										if( App.giftcard.callback ){
-											App.giftcard.callback();	
-										}
-										App.signin.manageLocation();
-									}
-									// Closes the dialog
-									$.magnificPopup.close();
-
-									App.log.account( { 'userID' : session.authResponse.userID, 'currentPage' : App.currentPage } , 'facebook currentPage' );
-
-									// If the user is at the restaurant's page - reload it
-									if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-										App.page.restaurant( App.restaurant.permalink );
-									}
-									if( App.currentPage == 'orders' ){
-										App.page.orders()								
-									}
-								}	);
-						}
-					} else {
-						service.error.unknown = true;
-					}
-				});
-			}
-		}
-
+	service.signout = function( callback ){
+		service.facebook.signout( callback );
 	}
 
 	return service;
 
 } );
 
-// TODO: fix ugly thing!
 NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 
 	var service = {};
@@ -367,14 +293,95 @@ NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 				$http( { method: 'GET', url: url } ).success( function( data ) { location.href = '/'; } );
 			};
 		
-			if( service.facebook.logged || service.facebook.account.user.facebook ){
+			if( service.facebook.facebook.logged || service.facebook.facebook.account.user.facebook ){
 				service.facebook.signout( function(){ signout() } );
 			} else {
 				signout();
 			}
 		}
 	}
+	return service;
+} );
+
+
+NGApp.factory( 'AccountResetService', function( $http, $location ){
+
+	var service = {
+		step : 1,
+		code : '',
+		password : '',
+		success : false,
+		error : false
+	};
+
+	service.code = $location.path().replace( '/reset', '' );
+	service.code = service.code.replace( '/', '' );
+
+	service.validateCode = function(){
+		service.code = $.trim( service.code );
+		if( service.code == '' ){
+			service.error = 'empty';
+			$( '#account-reset-code' ).focus();
+			return;	
+		}
+		var url = App.service + 'user/code-validate';
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { 'code' : service.code } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
+					if( data.error ){
+						if( data.error == 'invalid code' ){
+							service.error = 'invalid';
+						}
+						if( data.error == 'expired code' ){
+							service.error = 'expired';
+						}
+						$( '#account-reset-code' ).focus();
+						return;
+					} else {
+						if( data.success = 'valid code' ){
+							service.step = 2;
+							service.error = false;
+						}
+					}
+					
+			}	);
+	}
+
+	service.changePassword = function(){
+
+		service.password = $.trim( service.password );
+		if( service.password == '' ){
+			service.error = 'empty';
+			$( '#account-reset-password' ).focus();
+			return;	
+		}
+
+		var url = App.service + 'user/change-password';
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { 'code' : service.code, 'password' : service.password } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
+					if( data.error ){
+						service.error = 'invalid';
+						service.step = 1;
+						return;
+					} else {
+						if( data.success = 'password changed' ){
+							service.success = true;
+						}
+					}
+					
+			}	);
+	}
 
 	return service;
 
 } );
+
+
+

@@ -410,25 +410,33 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
  * Order page. displayed after order, or at order history
  */
 NGApp.controller('order', function ($scope, $http, $location, $routeParams, AccountService, AccountModalService, OrderService) {
+	
 	$scope.account = AccountService;
+	
 	if( !$scope.account.isLogged() ){
 		$location.path( '/' + App.restaurants.permalink );
 		return;
 	}
+	
 	$scope.modal = AccountModalService;
 	$scope.order = OrderService;
+
 	$scope.callPhone = function( phone ){
 		return App.callPhone( phone );
 	}
+
 	$scope.facebook = function(){
-		App.facebook.postOrder();
+		$scope.order.facebook.postOrder();
 	}
+
 	$scope.print = function(){
 		window.open( '/printorder/' + $scope.order.order.uuid );
 	}
+
 	$scope.crunchbutton = function(){
 		window.open( 'http://crunchbutton.com' );	
 	}
+
 });
 
 
@@ -448,6 +456,12 @@ NGApp.controller('orders', function ($scope, $http, $location, AccountService, A
 	$scope.orders.all();
 });
 
+
+NGApp.controller('reset', function ($scope, $http, $location, AccountModalService) {
+	$scope.modal = AccountModalService;
+	$scope.modal.resetOpen();
+	$location.path( '/location' );
+});
 
 /**
  * FoodDelivery's methods
