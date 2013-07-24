@@ -4,13 +4,16 @@
 		<span class="facebook-button-text">{{title}}</span>
 		<div class="divider"></div>
 	</div>
-	<div class="wait" ng-show="facebook.wait && !facebook.error.userExists && !facebook.error.unknown">
+	<div class="wait" ng-show="facebook.facebook.wait && !facebook.facebook.error.userExists && !facebook.facebook.error.unknown && !facebook.facebook.error.login">
 		Just a sec...
 	</div>
-	<div class="error" ng-show="facebook.error.userExists">
-		Sorry, It seems the facebook user is already related with other user.
+	<div class="error" ng-show="facebook.facebook.error.userExists">
+		Sorry, it seems the facebook user is already related with other user.
 	</div>
-	<div class="error" ng-show="facebook.error.unknown">
+	<div class="error" ng-show="facebook.facebook.error.unknown">
 		Sorry, something bad happened.
+	</div>
+	<div class="error" ng-show="facebook.facebook.error.login">
+		Sorry, it seems you cancelled login or did not fully authorize.
 	</div>
 </div>

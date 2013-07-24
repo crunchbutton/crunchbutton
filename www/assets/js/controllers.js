@@ -37,3 +37,7 @@ function RecommendCtrl( $scope, $http, RecommendRestaurantService, AccountServic
 function SupportCtrl( $scope, $http, SupportService ) {
 	$scope.support = SupportService;
 }
+
+function AccountResetCtrl( $scope, $http, AccountResetService ) {
+	$scope.reset = AccountResetService;
+}

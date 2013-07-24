@@ -3,7 +3,9 @@
 </div>
 
 <div ng-show="order.order.id">
+
 	<div class="content-padder-before"></div>
+
 	<div class="order-info content-padder main-content-readable">
 	
 		<span class="order-thanks-message" ng-show="order.order.new">
@@ -17,11 +19,9 @@
 			You can one click order anywhere, including <a href="javascript://" ng-tap="crunchbutton();">crunchbutton.com</a> on your phone.
 		</div>
 
-		<div ng-show="!account.user">
-			<span class="signup-call-to-action">
+		<div ng-show="!account.user.has_auth">
 				Add a password to reorder your favorite food anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 				<a href="javascript:;" ng-tap="modal.signinOpen();" class="add-password-button">Add a password now</a>
-			</span>			
 		</div>
 	
 		<div class="order-details">

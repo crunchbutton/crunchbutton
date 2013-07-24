@@ -27,9 +27,11 @@ NGApp.factory( 'OrdersService', function( $http, $location ){
 } );
 
 // OrdersService service
-NGApp.factory( 'OrderService', function( $routeParams, $location, $rootScope ){
+NGApp.factory( 'OrderService', function( $routeParams, $location, $rootScope, FacebookService ){
 	
 	var service = {};
+
+	service.facebook = FacebookService;
 
 	App.cache('Order', $routeParams.id, function() {
 		service.order = this;
@@ -47,9 +49,8 @@ NGApp.factory( 'OrderService', function( $routeParams, $location, $rootScope ){
 			return;
 		}
 
-		// TODO: put this facebook in a service
-		App._order_uuid = service.order.uuid;
-		App.facebook.preLoadOrderStatus();
+		service.facebook._order_uuid = service.order.uuid;
+		service.facebook.preLoadOrderStatus();
 
 		App.cache('Restaurant', service.order.id_restaurant, function() {
 			
