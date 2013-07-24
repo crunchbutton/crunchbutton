@@ -3,7 +3,7 @@
 	margin: 0 auto;
 }
 
-.button-bottom, .meal-item, .meal-item-content, .toggle-item, .nav-back, .config-icon, .resturant-dish-container li, *:not(input,textarea) {
+.button-bottom, .meal-item, .meal-item-content, .toggle-item, .nav-back, .config-icon, .menu-icon, .location-icon, .resturant-dish-container li, *:not(input,textarea) {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-user-select: none;
 }
@@ -13,10 +13,11 @@ i {
 }
 
 body {
-	/* background: #f5f5f5 url(/assets/images/crisp_paper_ruffles.png); */
-	background: #f5f5f5 url(/assets/images/groovepaper.png);
 	color: #666;
 	font-size: 14px;
+}
+.bg {
+	background: #f5f5f5 url(/assets/images/groovepaper.png);
 }
 .pacman-loading{
 	display: none;
@@ -33,6 +34,13 @@ body {
 	height: 68px;
 	background-size: 68px;
 	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
+
+	width: auto;
+	z-index: 100;
+	top: 0;
+	left: 0;
+	right: 0;
+	position: fixed;
 }
 
 .meal-items {
@@ -753,12 +761,22 @@ html[xmlns] .clearfix {
 	display: none;
 }
 
-.config-icon {
+.location-icon {
 	float: right;
 	width: 45px;
 	height: 30px;
 	margin: 12px 0 0 10px;
 	background: url(/assets/images/location.png) no-repeat;
+	background-size: contain;
+	cursor: pointer;
+}
+
+.menu-icon {
+	float: right;
+	width: 45px;
+	height: 30px;
+	margin: 12px 0 0 10px;
+	background: url(/assets/images/menu.png) no-repeat;
 	background-size: contain;
 	cursor: pointer;
 }
@@ -1099,7 +1117,7 @@ html[xmlns] .clearfix {
 	.fb-like-desktop {
 		display: none !important;
 	}
-	.config-icon {
+	.config-icon, .menu-icon, .location-icon {
 		margin-top: -1px;
 		margin-right: 8px;
 	}
@@ -1293,16 +1311,12 @@ html[xmlns] .clearfix {
 		min-height: 240px;
 	}
 	.nav {
-		position: fixed;
-		top:0;
 		box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.35);
 		background: url(/assets/images/nav.png);
 		height: 44px;
 		background-size: 44px;
-		z-index: 100;
-		width: 100%;
 	}
-	body {
+	.bg {
 		background: #f5f5f5 url(/assets/images/crisp_paper_ruffles-mobile.png);
 	}
 	.logo-img {
@@ -1650,10 +1664,10 @@ html[xmlns] .clearfix {
 		display: block;
 	}
 
-	.config-icon{
+	.config-icon, .menu-icon, .location-icon{
 		float: left;
 	}
-		.config-icon.right{
+		.config-icon.right, .menu-icon.right, .location-icon.right{
 			float: right;
 		}
 
@@ -1831,11 +1845,19 @@ html[xmlns] .clearfix {
 	.fb-like-mobile {
 		margin-bottom: 50px;
 	}
-	.config-icon {
+	.location-icon {
 		width: 45px;
 		height: 30px;
 		margin: 12px 0 0 10px;
 		background: url(/assets/images/location.png) no-repeat;
+		background-size: contain;
+		cursor: pointer;
+	}
+	.menu-icon {
+		width: 45px;
+		height: 30px;
+		margin: 12px 0 0 10px;
+		background: url(/assets/images/menu.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
 	}
