@@ -4,7 +4,8 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, AccountServi
 	var service = {
 		page : '',
 		buttons : {
-			location : true
+			location: false,
+			menu: true
 		}
 	};
 
@@ -20,16 +21,19 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, AccountServi
 	}
 
 	service.control = function(){
-		switch( service.page ){
+		switch (service.page) {
 			case 'location':
 				service.buttons.location = false;
+				service.buttons.menu = true;
 				break;
+
 			default:
 				service.buttons.location = true;
+				service.buttons.menu = false;
 				break;
 		}
 	}
 
 	return service;
 
-} );
+});

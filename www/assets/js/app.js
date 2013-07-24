@@ -483,6 +483,19 @@ App.trigger = {
  */
 $(function() {
 
+	var snapper = new Snap({
+		element: document.getElementById('snap-content'),
+		disable: 'right'
+	});
+	
+	$('.menu-icon').on('touchclick', function() {
+		if (snapper.state().state == 'left') {
+			snapper.close();
+		} else {
+			snapper.open('left');
+		}
+	});
+
 	$.totalStorage.ls(App.localStorage);
 
 	App.processConfig(App.config);
