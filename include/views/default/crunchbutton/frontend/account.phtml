@@ -8,9 +8,9 @@
 	<div ng-controller="AccountSignInCtrl" ng-show="modal.signin">
 		<div ng-show="!help.visible">
 			<form name="formSignin" novalidate>
-				<input type="text" maxlength="250" name="email" class="signin-email" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.email" />
+				<input type="text" maxlength="250" name="email" class="signin-email" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.form.email" />
 				<div class="divider"></div>
-				<input type="password" maxlength="250" name="password" class="signin-password" required placeholder="password" tabindex="10" ng-model="account.password" />
+				<input type="password" maxlength="250" name="password" class="signin-password" required placeholder="password" tabindex="10" ng-model="account.form.password" />
 				<div class="divider"></div>
 				<div ng-show="formSignin.$dirty && formSignin.$invalid" class="error">
 					<div ng-show="formSignin.email.$error">
@@ -33,7 +33,7 @@
 		<div ng-show="help.visible">
 			<form class="signin-help-form" name="formLoginHelp" novalidate>
 				<h1>Password help?</h1>
-				<input type="text" maxlength="250" name="email" required  class="help-email" validate-login placeholder="email or phone" tabindex="10" ng-model="account.email" autofocus>
+				<input type="text" maxlength="250" name="email" required  class="help-email" validate-login placeholder="email or phone" tabindex="10" ng-model="account.form.email" autofocus>
 				<div class="divider"></div>
 				<div ng-show="help.error" class="error">
 					Sorry, that email/phone is not registered with us.
@@ -56,9 +56,9 @@
 	<div ng-controller="AccountSignUpCtrl" ng-show="modal.signup">
 		<div class="signup-form-options" ng-show="!account.user">
 			<form class="signin-form" name="formSignup" novalidate>
-				<input type="text" maxlength="250" name="email" class="signup-email" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.email" />
+				<input type="text" maxlength="250" name="email" class="signup-email" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.form.email" />
 				<div class="divider"></div>
-				<input type="password" maxlength="250" name="password" class="signup-password" required placeholder="password" tabindex="10" ng-model="account.password" />
+				<input type="password" maxlength="250" name="password" class="signup-password" required placeholder="password" tabindex="10" ng-model="account.form.password" />
 				<div class="divider"></div>
 				<div ng-show="formSignup.$dirty && formSignup.$invalid" class="error">
 					<div ng-show="formSignup.email.$error">
