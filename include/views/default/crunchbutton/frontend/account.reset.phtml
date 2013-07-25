@@ -2,7 +2,7 @@
 	<div ng-show="reset.step == 1">
 		<form class="password-reset-form">
 			<h1>Password reset</h1>
-			<input type="text" maxlength="250" id="account-reset-code" value="" ng-model="reset.form.code" placeholder="enter the reset code" tabindex="10" />
+			<input type="text" maxlength="250" id="account-reset-code" value="" ng-enter="reset.validateCode()" ng-model="reset.form.code" placeholder="enter the reset code" tabindex="10" />
 			<div class="divider"></div>
 			<div ng-show="reset.error == 'empty'" class="error">
 				Please enter the reset code.
@@ -20,7 +20,7 @@
 	<div ng-show="reset.step == 2">
 		<form class="password-change-form" ng-show="!reset.success">
 			<h1>Type your new password</h1>
-			<input type="password" maxlength="250" ng-model="reset.form.password" id="account-reset-password" value="" placeholder="password" tabindex="10" />
+			<input type="password" maxlength="250" ng-model="reset.form.password" ng-enter="reset.changePassword()" id="account-reset-password" value="" placeholder="password" tabindex="10" />
 			<div class="divider"></div>
 			<div ng-show="reset.error == 'empty'" class="error">
 				Please enter your new password.

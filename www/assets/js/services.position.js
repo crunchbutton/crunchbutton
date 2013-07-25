@@ -31,6 +31,7 @@ NGApp.factory( 'PositionsService', function(){
 NGApp.factory( 'LocationService', function( $location, RestaurantsService, PositionsService ){
 
 	var service = {
+		form : { address : '' },
 		range: App.defaultRange,
 		loaded: false,
 		locationNotServed: false,
