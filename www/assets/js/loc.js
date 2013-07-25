@@ -47,7 +47,6 @@ NGApp.factory( 'LocationService', function( $location, RestaurantsService, Posit
 		 * calculate the distance between two points
 		 */
 	service.distance = function(params) {
-
 			try {
 				var R = 6371; // Radius of the earth in km
 				var dLat = _toRad(params.to.lat - params.from.lat);

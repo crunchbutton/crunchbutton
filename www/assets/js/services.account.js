@@ -2,6 +2,7 @@
 NGApp.factory( 'AccountService', function( $http ){
 	
 	var service = { 
+				callback : false, 
 				user : false, 
 				email : '', 
 				password : '', 
@@ -18,7 +19,12 @@ NGApp.factory( 'AccountService', function( $http ){
 	}
 
 	service.isLogged = function(){
-		return ( App.config.user.id_user && $.trim( App.config.user.id_user ) != '' );
+		if( App.config.user.id_user ){
+			if( App.config.user.id_user != '' ){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	service.signin = function(){
@@ -52,18 +58,17 @@ NGApp.factory( 'AccountService', function( $http ){
 						// TODO : replace this
 						App.config.user = data;
 						service.user = data;
-						$.magnificPopup.close();
-						// If the user is at the restaurant's page - reload it
-						if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-							App.page.restaurant( App.restaurant.permalink );
-						}
-						App.signin.manageLocation();
-
-						if( App.giftcard.callback ){
-							App.giftcard.callback();
+						if( service.callback ){
+							service.callback();
+							service.callback = false;
+						} else {
+							$.magnificPopup.close();
+							if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
+								App.page.restaurant( App.restaurant.permalink );
+							}
+							App.signin.manageLocation();
 						}
 					}
-					
 			}	);
 	}
 
@@ -79,6 +84,7 @@ NGApp.factory( 'AccountService', function( $http ){
 			$( '.signup-password' ).focus();
 			return;
 		}
+
 		service.purify();
 
 		service.error.signin = false;
@@ -100,14 +106,15 @@ NGApp.factory( 'AccountService', function( $http ){
 						// TODO : replace this
 						App.processConfig(null, data);
 						service.user = data;
-						// If the user is at the restaurant's page - reload it
-						if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-							App.page.restaurant( App.restaurant.permalink );
-						}
-						App.signin.manageLocation();
-
-						if( App.giftcard.callback ){
-							App.giftcard.callback();
+						if( service.callback ){
+							service.callback();
+							service.callback = false;
+						} else {
+							$.magnificPopup.close();
+							if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
+								App.page.restaurant( App.restaurant.permalink );
+							}
+							App.signin.manageLocation();
 						}
 					}
 					
@@ -196,10 +203,6 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 							if( data.userHasFacebookAuth ){
 								help.success.facebook.visible = true;
 							}
-							$( '.login-facebook' ).on( 'touchclick', function(){
-								App.signin.show();
-							} );
-
 						}
 					}
 					
@@ -274,26 +277,20 @@ NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 } );
 
 NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
-
 	var service = {};
-
 	service.facebook = AccountFacebookService;
-
-	service.do = function(){
-
+	service.do = function(){0
 		if (confirm( 'Confirm sign out?')){
-			
 			// Force to remove the cookies
 			$.each( [ 'token', 'location', 'PHPSESSID' ], function( index, value ){
 				$.totalStorage(value, null);
 			} );
-		
 			var signout = function(){
 				var url = App.service + 'logout';
 				$http( { method: 'GET', url: url } ).success( function( data ) { location.href = '/'; } );
 			};
-		
 			if( service.facebook.facebook.logged || service.facebook.facebook.account.user.facebook ){
+				console.log('Log out: facebook!');
 				service.facebook.signout( function(){ signout() } );
 			} else {
 				signout();
@@ -305,7 +302,6 @@ NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 
 
 NGApp.factory( 'AccountResetService', function( $http, $location ){
-
 	var service = {
 		step : 1,
 		code : '',
@@ -313,10 +309,8 @@ NGApp.factory( 'AccountResetService', function( $http, $location ){
 		success : false,
 		error : false
 	};
-
 	service.code = $location.path().replace( '/reset', '' );
 	service.code = service.code.replace( '/', '' );
-
 	service.validateCode = function(){
 		service.code = $.trim( service.code );
 		if( service.code == '' ){
@@ -351,14 +345,12 @@ NGApp.factory( 'AccountResetService', function( $http, $location ){
 	}
 
 	service.changePassword = function(){
-
 		service.password = $.trim( service.password );
 		if( service.password == '' ){
 			service.error = 'empty';
 			$( '#account-reset-password' ).focus();
 			return;	
 		}
-
 		var url = App.service + 'user/change-password';
 		$http( {
 			method: 'POST',
@@ -375,12 +367,9 @@ NGApp.factory( 'AccountResetService', function( $http, $location ){
 							service.success = true;
 						}
 					}
-					
 			}	);
 	}
-
 	return service;
-
 } );
 
 

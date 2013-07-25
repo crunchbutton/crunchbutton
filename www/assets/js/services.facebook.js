@@ -83,7 +83,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 	service.auth = function( session ){
 
 		service.logged = true;
-		
+
 		App.log.account( { 'userID' : session.authResponse.userID} , 'facebook login' );
 
 		if( service.doAuth ){
@@ -124,18 +124,18 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 								} else {
 
 									App.processConfig( null, data );
-
 									service.account.user = data;
-
-									if( App.giftcard.callback ){
-										App.giftcard.callback();	
+									if( service.account.callback ){
+										service.account.callback();
+										service.account.callback = false;
+									} else {
+										App.signin.manageLocation();
+										$.magnificPopup.close();
 									}
-									App.signin.manageLocation();
+									
 								}
-								// Closes the dialog
-								$.magnificPopup.close();
-
 								App.log.account( { 'userID' : session.authResponse.userID, 'currentPage' : App.currentPage } , 'facebook currentPage' );
+								/* TODO: solve it
 
 								// If the user is at the restaurant's page - reload it
 								if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
@@ -144,6 +144,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 								if( App.currentPage == 'orders' ){
 									App.page.orders()								
 								}
+								*/
 							}	);
 					}
 				} else {
@@ -164,6 +165,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 	service.processStatus = function( response, callback ){
 		if ( response.status === 'connected' && response.authResponse ) {
 			if( response.authResponse.accessToken ){
+				service.logged = true;
 				service.registerToken( response.authResponse.accessToken );	
 			}
 			if( callback ){

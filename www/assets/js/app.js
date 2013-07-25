@@ -175,10 +175,15 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'cities',
 			templateUrl: 'view/cities.html'
 		})
+		.when('/giftcard', {
+			action: 'giftcard',
+			controller: 'giftcard',
+			templateUrl: 'view/home.html'
+		})
 		.when('/giftcard/:id', {
 			action: 'giftcard',
 			controller: 'giftcard',
-			templateUrl: 'view/giftcard.html'
+			templateUrl: 'view/home.html'
 		})
 		.when('/reset', {
 			action: 'reset',
