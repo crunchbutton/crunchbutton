@@ -68,9 +68,9 @@
 				</ul>
 			</div>
 		
-			<div class="suggestion-link-container">
+			<div class="suggestion-link-container" ng-controller="RecommendFoodCtrl">
 				<div class="suggestion-link-title">Really want something else?</div>
-				<a href="javascript:;" class="suggestion-link">Suggest other food</a>
+					<a href="javascript:;" ng-tap="recommend.modal.open();"><b><i>Suggest other food</i></b></a>
 			</div>
 			
 		</div>

@@ -10,17 +10,18 @@ NGApp.factory( 'GiftCardModalService', function(){
 // GiftCardService service
 NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalService, GiftCardModalService ){
 
-	service = {
+	var service = {
+		redeemed : false,
+		code : false,
+		value : '',
 		modal : {
 			intro : true,
 			error : false,
 			success : false,
 			restaurant : false,
-		},
+		}
+	};
 
-		redeemed : false,
-		code : '',
-		value : ''
 		/*
 		api : {
 			code : ,
@@ -30,7 +31,6 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 		callback : false,
 		hasStarted : false,
 		showGiftCardCashMessage: true*/
-	}
 
 	service.accountModal = AccountModalService;
 	service.giftCardModal = GiftCardModalService;
@@ -41,24 +41,13 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 		service.modal.close();
 	}
 
-	service.modal.signIn = function(){
-		service.account.callback = function(){
-			service.giftCardModal.open();
-			service.processModal();
-		}
-		service.accountModal.signinOpen();
-	}
-
-	service.modal.close = function(){
-		$.magnificPopup.close();
-	}
-
-	service.parseURLCode = function( ){
+	service.parseURLCode = function(){
 		service.code = $location.path().replace( '/giftcard', '' );
 		service.code = service.code.replace( '/', '' );
 	}
 
 	service.processModal = function(){
+		if( service.code && service.code == '' ){ return; }
 		service.modal.reset();
 		setTimeout( function(){
 			// Check if the user is logged in
@@ -99,6 +88,17 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 		service.modal.restaurant = false;
 	}
 
+	service.modal.signIn = function(){
+		service.account.callback = function(){
+			service.giftCardModal.open();
+			service.processModal();
+		}
+		service.accountModal.signinOpen();
+	}
+
+	service.modal.close = function(){
+		$.magnificPopup.close();
+	}
 
 	// Validates a gift card code
 	service.validate = function( callback ){
@@ -123,7 +123,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 				callback( { error : true } ); 
 			} );
 	}
-
+/*
 
 // Methods to redem a gift card at the Notes field
 service.notesField = { value : 0, isProcessing : false, callback : false, lastValue : 0, backup : { value : 0, backuped : false } };
@@ -254,7 +254,7 @@ service.notesField.force = function( value ){
 	App.cart.updateTotal();
 }
 
-
+*/
 	return service;
 
 } );

@@ -65,6 +65,48 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService )
 			recommendations = false;
 		}
 	}
+	return service;
+} );
+
+//RecommendFoodService Service
+NGApp.factory( 'RecommendFoodService', function( $http ){
+
+	var service = { 
+			thanks : false,
+			isSending : false,
+			modal : {},
+			form : { name : '' }
+		};
+	
+	service.reset = function(){
+		service.thanks = false;
+		service.isSending = false;
+		service.form.name = '';
+	}
+
+	service.modal.open = function(){
+		service.reset();
+		App.dialog.show( '.suggest-food-container' );
+	};
+
+	service.send = function(){
+		service.form.name = $.trim( service.form.name );
+		if ( service.form.name == '' ){
+			alert( 'Please enter a suggestion.' );
+			$('#suggestion-name').focus();
+			return;
+		}
+
+		service.isSending = true;
+		var url = App.service + 'suggestion/new';
+
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { restaurant: App.restaurant.permalink, name: service.form.name } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) { service.thanks = true; service.isSending = false; }	);
+	}
 
 	return service;
 } );

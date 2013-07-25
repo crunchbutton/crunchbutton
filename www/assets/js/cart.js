@@ -185,7 +185,7 @@ App.cart = {
 		}
 
 		setTimeout( function(){
-			if( App.order.pay_type == 'cash' && credit > 0 && App.giftcard.showGiftCardCashMessage ){
+			if( App.order.pay_type == 'cash' && credit > 0 /* && App.giftcard.showGiftCardCashMessage */ ){
 				$( '.cart-giftcard-message' ).html( '<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil( credit ).toFixed( 2 ) + ' gift card!</span>' );
 			} else {
 			  $( '.cart-giftcard-message' ).html( '' );

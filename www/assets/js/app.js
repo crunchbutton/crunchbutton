@@ -100,10 +100,7 @@ App.routeAlias = function( id, success, error ) {
 
 App.NGinit = function() {
 	$('body').attr('ng-controller', 'AppController');
-	
 	angular.bootstrap(document,['NGApp']);
-	
-	App.suggestion.init();
 	App.credit.tooltip.init();
 
 	if (App.config.env == 'live') {
