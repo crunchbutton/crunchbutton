@@ -514,13 +514,13 @@ $(function() {
 	$(window).resize(function() {
 		snapperCheck();
 	});
+	App.snap = snapper;
 
 	$.totalStorage.ls(App.localStorage);
 
 	App.processConfig(App.config);
 	App._init = true;
 	App.NGinit();
-
 
 	App.test.init();
 
@@ -654,8 +654,6 @@ $(function() {
 			e.preventDefault();
 		});
 		*/
-
-
 	}
 
 	$('.dish-item').tap(function() {
@@ -787,7 +785,8 @@ $(function() {
 			focused = focused.get(0);
 
 			if (focused.tagName == 'SELECT' || focused.tagName == 'INPUT' || focused.tagName == 'TEXTAREA') {
-				$('[data-position="fixed"]').hide();
+				// @todo: fix this so it hides
+				//$('[data-position="fixed"]').hide();
 			} else {
 				$('[data-position="fixed"]').show();
 			}

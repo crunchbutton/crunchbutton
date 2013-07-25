@@ -14,22 +14,25 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, AccountServi
 
 	service.link = function( path ){
 		$location.path( path || '/' );
+		App.snap.close();
 	}
 
 	service.signin = function(){
 		service.modal.signinOpen();
 	}
 
-	service.control = function(){
+	service.control = function() {
 		switch (service.page) {
-			case 'location':
+			case 'restaurant':
 				service.buttons.location = false;
-				service.buttons.menu = true;
+				service.buttons.back = true;
+				service.buttons.menu = false;
 				break;
 
 			default:
-				service.buttons.location = true;
-				service.buttons.menu = false;
+				service.buttons.back = false;
+				service.buttons.location = false;
+				service.buttons.menu = true;
 				break;
 		}
 	}

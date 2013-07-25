@@ -21,6 +21,7 @@ if (App){
 		<div class="snap-drawer snap-drawer-left">
 			<div>
 				<ul>
+					<li><a href="javascript:;" ng-tap="navigation.link('/food-delivery')">Restaurants</a></li>
 					<li><a href="javascript:;" ng-tap="navigation.link('/location')">Change Location</a></li>
 					<li><a ng-show="navigation.account.user" href="javascript:;" ng-tap="navigation.link('/orders')">Order History</a></li>
 					<li><a href="javascript:;" ng-tap="navigation.link('/help')">Help</a></li>
@@ -47,11 +48,10 @@ if (App){
 				<div class="content<?=$e?>">
 					
 					<div class="pacman-loading pacman-left"></div>
-					
-					<div class="nav-back" ng-tap="back()"></div>
 	
 					<div class="logo"><a href="javascript:;" ng-tap="navigation.link('/')"><div class="logo-img"></div></a></div>
 	
+					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-tap="back()"></div>
 					<div title="Change location" ng-show="navigation.buttons.location" class="location-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-tap="navigation.link('/location')"></div>
 					<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-tap="navigation.link('/location')"></div>
 	
