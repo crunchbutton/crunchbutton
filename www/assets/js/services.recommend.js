@@ -2,7 +2,7 @@
 NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService ){
 
 	var service = {
-		restaurant : '',
+		form : { restaurant : '' },
 		greetings : false
 	};
 
@@ -15,8 +15,7 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService )
 	}
 
 	service.send = function(){
-
-		if ( service.restaurant == '' ){
+		if ( service.form.restaurant == '' ){
 			alert( "Please enter the restaurant\'s name." );
 			$( '.recommend-restaurant' ).focus();
 			return;
@@ -24,24 +23,23 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService )
 
 		var pos = service.position.pos();
 
-		var content = 'Address entered: ' + pos.addressEntered + '\n' + 
-									'Address reverse: ' + pos.addressReverse + '\n' + 
-									'City: ' + pos.city + '\n' + 
-									'Region: ' + pos.region + '\n' + 
-									'Lat: ' + pos.lat + '\n' + 
-									'Lon: ' + pos.lon;
-		var data = {
-			name: $( '.home-recommend-text' ).val(),
-			content : content
-		};
+		var content = 'Address entered: ' + pos.entered() + '\n' + 
+									'Address reverse: ' + pos.address() + '\n' + 
+									'City: ' + pos.city() + '\n' + 
+									'Region: ' + pos.region() + '\n' + 
+									'Lat: ' + pos.lat() + '\n' + 
+									'Lon: ' + pos.lon();
 
 		var url = App.service + 'suggestion/restaurant';
-
-		$http.post( url , data )
-			.success( function( data ) {
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { name: service.form.restaurant, content : content } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
 					service.greetings = true;
 					service.addRecommendation( data.id_suggestion );
-					service.restaurant = '';
+					service.form.restaurant = '';
 			}	);
 	}
 
@@ -57,8 +55,12 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService )
 			var url = App.service + 'suggestion/relateuser';
 			$.each( recommendations, function(index, value) {
 				var id_suggestion = value;
-				var data = { id_suggestion : id_suggestion, id_user : App.config.user.id_user };
-				$http.post( url , data );
+				$http( {
+					method: 'POST',
+					url: url,
+					data: $.param( { id_suggestion : id_suggestion, id_user : App.config.user.id_user } ),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+					} );
 			} );
 			recommendations = false;
 		}

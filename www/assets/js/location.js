@@ -160,6 +160,13 @@ var Location = function( params ) {
 		return self._properties.detail;
 	};
 	
+	self.region = function(){
+		return self._properties.region;
+	}
+
+	self.entered = function(){
+		return self._properties.entered;
+	}
 
 	for (var x in params) {
 		this._properties[x] = params[x];
