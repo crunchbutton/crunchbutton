@@ -281,7 +281,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
 		}
 
 		// If the typed address is different of the user address the typed one will be used #1152
-		if( App.loc.changeLocationAddressHasChanged && App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != App.config.user.address ){
+		if( false && App.loc.changeLocationAddressHasChanged && App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != App.config.user.address ){
 			// Give some time to google.maps.Geocoder() load
 			var validatedAddress = function(){
 				if( google && google.maps && google.maps.Geocoder ){
@@ -395,13 +395,14 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
 			App.config.user.address = App.loc.enteredLoc;
 			App.loc.enteredLoc = '';
 		}
-
+/*
 		if( App.giftcard.notesCode ){
 			setTimeout( function(){
 				$( '[name=notes]' ).val( App.giftcard.notesCode + ' ' + $( '[name=notes]' ).val() );
 				App.giftcard.notesField.listener();
 			}, 300 );
 		}
+*/
 	});
 });
 
@@ -456,12 +457,11 @@ NGApp.controller('orders', function ($scope, $http, $location, AccountService, A
 	$scope.orders.all();
 });
 
-NGApp.controller( 'giftcard', function ($scope, $location, GiftCardService, GiftCardModalService ) {
+NGApp.controller( 'giftcard', function ($scope, $location, GiftCardService ) {
 	$scope.giftcard = GiftCardService;
 	$scope.giftcard.parseURLCode();
-	$scope.modal = GiftCardModalService;
 	$location.path( '/location' );
-	setTimeout( function(){ $scope.modal.open(); }, 300 );
+	setTimeout( function(){ $scope.giftcard.giftCardModal.open(); }, 300 );
 });
 
 NGApp.controller('reset', function ($scope, $location, AccountModalService) {

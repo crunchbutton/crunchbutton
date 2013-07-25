@@ -1,18 +1,28 @@
-<div class="suggestion-container zoom-anim-dialog small-container mfp-hide">
-	<div class="suggestion-form-container">
-		<form class="suggestion-form">
+<div class="suggest-food-container modal zoom-anim-dialog small-container mfp-hide" ng-controller="RecommendFoodCtrl">
+
+	<div ng-show="!recommend.thanks">
+		<form name="formSuggest">
 			<h1>What do you suggest?</h1>
-			<input type="text" maxlength="250" name="suggestion-name" tabindex="10" />
-			<div class="divider"></div>
-			<a href="javascript:;" class="suggestion-form-button">Suggest</a>
+			<input type="text" maxlength="250" ng-model="recommend.form.name" ng-enter="recommend.send()" id="suggestion-name" tabindex="10" />
 			<div class="divider"></div>
 		</form>
-		<div class="suggestion-message">
+		<button ng-show="!recommend.isSending" ng-tap="recommend.send();">Suggest</button>
+		<div class="divider"></div>
+		<i ng-show="recommend.isSending" class="icon-spinner icon-spin"></i>
+		<br/>
+		<div class="divider dots"></div>
+		<div class="message">
+			Crunchbutton curates menus. <br/>
+			We've curated just the top food here. <br/>
+			You can suggest food, and, if it's really good, you'll see it on the menu soon.
 		</div>
 	</div>
-	<div class="suggestion-form-tip">
-		Crunchbutton curates menus. <br/>
-		We've curated just the top food here. <br/>
-		You can suggest food, and, if it's really good, you'll see it on the menu soon.
+
+	<div ng-show="recommend.thanks">
+		<div class="success">
+			<h1>Awesome, thanks!!</h1>
+			If you really really wanna order it RIGHT NOW, call us at <b>646-783-1444</b>
+		</div>
 	</div>
+
 </div>

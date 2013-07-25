@@ -37,10 +37,14 @@ function MainHeaderCtrl( $scope, MainNavigationService ) {
 	} );
 }
 
-function RecommendCtrl( $scope, $http, RecommendRestaurantService, AccountService, AccountModalService ) {
+function RecommendRestaurantCtrl( $scope, $http, RecommendRestaurantService, AccountService, AccountModalService ) {
 	$scope.recommend = RecommendRestaurantService;
 	$scope.account = AccountService;
 	$scope.modal = AccountModalService;
+}
+
+function RecommendFoodCtrl( $scope, $http, RecommendFoodService ) {
+	$scope.recommend = RecommendFoodService;
 }
 
 function SupportCtrl( $scope, $http, SupportService ) {
