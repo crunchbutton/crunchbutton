@@ -4,12 +4,14 @@ NGApp.factory( 'AccountService', function( $http ){
 	var service = { 
 				callback : false, 
 				user : false, 
-				email : '', 
-				password : '', 
 				error : { 
 						signin : false, 
 						signup : false 
-					} 
+					},
+				form : {
+					email : '', 
+					password : ''	
+				}
 			};
 
 	service.checkUser = function(){
@@ -48,7 +50,7 @@ NGApp.factory( 'AccountService', function( $http ){
 		$http( {
 			method: 'POST',
 			url: url,
-			data: $.param( { 'email' : service.email, 'password' : service.password } ),
+			data: $.param( { 'email' : service.form.email, 'password' : service.form.password } ),
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 					if( data.error ){
@@ -94,14 +96,14 @@ NGApp.factory( 'AccountService', function( $http ){
 		$http( {
 			method: 'POST',
 			url: url,
-			data: $.param( { 'email' : service.email, 'password' : service.password } ),
+			data: $.param( { 'email' : service.form.email, 'password' : service.form.password } ),
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 					if( data.error ){
 						if( data.error == 'user exists' ){
 							service.error.signup = true;
 						}
-						App.log.account( { 'error' : data.error, 'login' : service.email } , 'sign up error' );
+						App.log.account( { 'error' : data.error, 'login' : service.form.email } , 'sign up error' );
 					} else {
 						// TODO : replace this
 						App.processConfig(null, data);
@@ -122,14 +124,14 @@ NGApp.factory( 'AccountService', function( $http ){
 	}
 
 	service.purify = function(){
-		service.email = $.trim( service.email );
-		service.password = $.trim( service.password );
+		service.form.email = $.trim( service.form.email );
+		service.form.password = $.trim( service.form.password );
 	}
 
 	service.isValidEmailPhone = function(){
 		// check if it is a phone number
-		if( !App.phone.validate( service.email ) ){
-			if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( service.email ) ){
+		if( !App.phone.validate( service.form.email ) ){
+			if( !/^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test( service.form.email ) ){
 				return false
 			}
 		}
@@ -188,7 +190,7 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 		$http( {
 			method: 'POST',
 			url: url,
-			data: $.param( { 'email' : account.email } ),
+			data: $.param( { 'email' : account.form.email } ),
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 					if( data.error ){
@@ -304,16 +306,15 @@ NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 NGApp.factory( 'AccountResetService', function( $http, $location ){
 	var service = {
 		step : 1,
-		code : '',
-		password : '',
+		form : { code : '', password : '' },
 		success : false,
 		error : false
 	};
-	service.code = $location.path().replace( '/reset', '' );
-	service.code = service.code.replace( '/', '' );
+	service.form.code = $location.path().replace( '/reset', '' );
+	service.form.code = service.form.code.replace( '/', '' );
 	service.validateCode = function(){
-		service.code = $.trim( service.code );
-		if( service.code == '' ){
+		service.form.code = $.trim( service.form.code );
+		if( service.form.code == '' ){
 			service.error = 'empty';
 			$( '#account-reset-code' ).focus();
 			return;	
@@ -322,7 +323,7 @@ NGApp.factory( 'AccountResetService', function( $http, $location ){
 		$http( {
 			method: 'POST',
 			url: url,
-			data: $.param( { 'code' : service.code } ),
+			data: $.param( { 'code' : service.form.code } ),
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 					if( data.error ){
@@ -345,8 +346,8 @@ NGApp.factory( 'AccountResetService', function( $http, $location ){
 	}
 
 	service.changePassword = function(){
-		service.password = $.trim( service.password );
-		if( service.password == '' ){
+		service.form.password = $.trim( service.form.password );
+		if( service.form.password == '' ){
 			service.error = 'empty';
 			$( '#account-reset-password' ).focus();
 			return;	
@@ -355,7 +356,7 @@ NGApp.factory( 'AccountResetService', function( $http, $location ){
 		$http( {
 			method: 'POST',
 			url: url,
-			data: $.param( { 'code' : service.code, 'password' : service.password } ),
+			data: $.param( { 'code' : service.form.code, 'password' : service.form.password } ),
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 					if( data.error ){
