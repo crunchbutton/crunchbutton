@@ -235,6 +235,7 @@ html {
 
 .support-container{
 	z-index: 150;
+	position: fixed;
 }
 .support-minimized{
 	border-top-left-radius: 5px;
@@ -374,9 +375,22 @@ html {
 
 
 
-
-
-
+@media (max-width: 768px) {
+	.visible-phone {
+		display: block;
+	}
+	.hidden-phone {
+		display: none;
+	}
+}
+@media (min-width: 769px) {
+	.visible-desktop {
+		display: block;
+	}
+	.hidden-desktop {
+		display: none;
+	}
+}
 
 
 
@@ -387,9 +401,7 @@ html {
 	box-shadow: 0 0 10px 3px rgba(0,0,0,.2);
 }
 
-.snap-content {
-	background: #f5f5f5 url(/assets/images/groovepaper.png);
-}
+
 
 .snap-drawers {
 	background: #3d3731;
@@ -418,45 +430,6 @@ html {
 	opacity: 0.5;
 	padding: 15px;
 	font-size: 12px;
-}
-
-@media only screen and (max-width : 768px) {
-	.snap-content-inner {
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		width: auto;
-		height: auto;
-		z-index: 2;
-		overflow: auto;
-		-webkit-overflow-scrolling: touch;
-		-webkit-transform: translate3d(0, 0, 0);
-		   -moz-transform: translate3d(0, 0, 0);
-		    -ms-transform: translate3d(0, 0, 0);
-		     -o-transform: translate3d(0, 0, 0);
-		        transform: translate3d(0, 0, 0);
-	}
-	.menu-icon {
-		background: url(/assets/images/menu.png) no-repeat;
-		background-size: contain;
-		cursor: pointer;
-		float: left;
-		height: 30px;
-		width: 45px;
-		margin-top: -12px;
-		margin-right: 10px;
-	}
-}
-
-@media only screen and (min-width : 769px) {
-	.main-content {
-		margin-top: 70px;
-	}
-	.menu-icon {
-		display: none;
-	}
 }
 
 .snap-content {
@@ -523,3 +496,52 @@ html {
 .snapjs-expand-right .snap-drawer-right {
 	width: 100%;
 }
+
+
+
+@media only screen and (max-width : 768px) {
+	.snap-content-inner {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		width: auto;
+		height: auto;
+		z-index: 2;
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+		-webkit-transform: translate3d(0, 0, 0);
+		   -moz-transform: translate3d(0, 0, 0);
+		    -ms-transform: translate3d(0, 0, 0);
+		     -o-transform: translate3d(0, 0, 0);
+		        transform: translate3d(0, 0, 0);
+	}
+	.menu-icon {
+		background: url(/assets/images/menu.png) no-repeat;
+		background-size: contain;
+		cursor: pointer;
+		float: left;
+		height: 30px;
+		width: 45px;
+		margin-top: -12px;
+		margin-right: 10px;
+	}
+}
+
+@media only screen and (min-width : 769px) {
+	.main-content {
+		margin-top: 70px;
+	}
+	.menu-icon {
+		display: none;
+	}
+	.snap-content {
+		position: relative;
+	}
+	.snap-drawers {
+		display: none;
+	}
+}
+
+

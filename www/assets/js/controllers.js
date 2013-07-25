@@ -41,3 +41,7 @@ function SupportCtrl( $scope, $http, SupportService ) {
 function AccountResetCtrl( $scope, $http, AccountResetService ) {
 	$scope.reset = AccountResetService;
 }
+
+function SideMenuCtrl( $scope, MainNavigationService ) {
+	$scope.navigation = MainNavigationService;
+}
