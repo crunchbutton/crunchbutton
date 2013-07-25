@@ -46,3 +46,7 @@ function RecommendCtrl( $scope, $http, RecommendRestaurantService, AccountServic
 function SupportCtrl( $scope, $http, SupportService ) {
 	$scope.support = SupportService;
 }
+
+function SideMenuCtrl( $scope, MainNavigationService ) {
+	$scope.navigation = MainNavigationService;
+}
