@@ -21,6 +21,15 @@ function AccountSignUpCtrl( $scope, $http, AccountModalService, AccountService )
 	});
 }
 
+function AccountResetCtrl( $scope, $http, AccountResetService ) {
+	$scope.reset = AccountResetService;
+}
+
+function GiftCardCtrl( $scope, $http, GiftCardService ) {
+	$scope.giftcard = GiftCardService;
+	$scope.giftcard.processModal();
+}
+
 function MainHeaderCtrl( $scope, MainNavigationService ) {
 	$scope.navigation = MainNavigationService;
 	$scope.$watch('navigation.page', function( newValue, oldValue, scope ) {
@@ -36,8 +45,4 @@ function RecommendCtrl( $scope, $http, RecommendRestaurantService, AccountServic
 
 function SupportCtrl( $scope, $http, SupportService ) {
 	$scope.support = SupportService;
-}
-
-function AccountResetCtrl( $scope, $http, AccountResetService ) {
-	$scope.reset = AccountResetService;
 }

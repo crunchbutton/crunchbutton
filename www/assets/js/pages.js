@@ -456,35 +456,21 @@ NGApp.controller('orders', function ($scope, $http, $location, AccountService, A
 	$scope.orders.all();
 });
 
+NGApp.controller( 'giftcard', function ($scope, $location, GiftCardService, GiftCardModalService ) {
+	$scope.giftcard = GiftCardService;
+	$scope.giftcard.parseURLCode();
+	$scope.modal = GiftCardModalService;
+	$location.path( '/location' );
+	setTimeout( function(){ $scope.modal.open(); }, 300 );
+});
 
-NGApp.controller('reset', function ($scope, $http, $location, AccountModalService) {
+NGApp.controller('reset', function ($scope, $location, AccountModalService) {
 	$scope.modal = AccountModalService;
 	$scope.modal.resetOpen();
-	$location.path( '/location' );
+	$location.path( '/' );
 });
 
 /**
  * FoodDelivery's methods
  */
 App.foodDelivery = {};
-
-/**
- * Gift card page
- */
-App.page.giftCard = function( path ){
-	App.page.home();
-	App.giftcard.show( path );
-}
-
-/**
- * Reset password page
- */
-App.page.resetPassword = function( path ){
-	if( !App.signin.passwordHelp.reset.hasStarted ){
-		App.signin.passwordHelp.reset.hasStarted = true;
-		$( '.wrapper' ).append( App.signin.passwordHelp.reset.html( path ) );
-		App.showReset = true;
-		App.page.home( true );
-		App.signin.passwordHelp.reset.init();
-	}
-}

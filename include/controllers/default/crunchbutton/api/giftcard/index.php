@@ -323,7 +323,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 							$credit = $giftcard->addCredit( c::user()->id_user );
 							if( $credit->id_credit ){
 								if( $credit->id_restaurant ){
-									echo json_encode( [ 'success' => [ 'value' => $credit->value, 'restaurant' => $credit->restaurant()->name, 'id_restaurant' => $credit->restaurant()->id_restaurant ] ] );	
+									echo json_encode( [ 'success' => [ 'value' => $credit->value, 'restaurant' => $credit->restaurant()->name, 'id_restaurant' => $credit->restaurant()->id_restaurant, 'permalink' => $credit->restaurant()->permalink ] ] );
 								} else {
 									echo json_encode( [ 'success' => [ 'value' => $credit->value ] ] );
 								}
@@ -352,7 +352,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 								echo json_encode(['error' => 'invalid gift card', 'giftcard' => $code ]);
 								exit;		
 							}
-							echo json_encode( [ 'success' => [ 'value' => $giftcard->value, 'id_restaurant' => $giftcard->id_restaurant, 'giftcard' => $code ] ] );
+							echo json_encode( [ 'success' => [ 'value' => $giftcard->value, 'id_restaurant' => $giftcard->id_restaurant, 'giftcard' => $code, 'restaurant' => $giftcard->restaurant()->name, 'permalink' => $giftcard->restaurant()->permalink ] ] );
 						}
 					} else {
 						echo json_encode(['error' => 'invalid gift card', 'giftcard' => $code ] );

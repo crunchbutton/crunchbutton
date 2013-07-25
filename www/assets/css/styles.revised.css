@@ -74,22 +74,26 @@ html {
 * {
 	-webkit-tap-highlight-color: rgba(205,69,29,.5);
 }
-
+.pointer{
+	cursor: pointer;
+}
 /**
  * account modal
  */
-.modal .error, .modal .success{
+.modal .error, .modal .success, .modal .message{
 	color: #ff0000;
 	font-size: 12px;
 	margin: 12px 0;
 }
 .modal .success{
-	color: #385e38;
+	color: #333;
+}
+.modal .message{
+	color: #333;
 }
 .modal button[disabled]{
 	opacity: 0.5;
 }
-
 		.modal .header h1{
 			float: left;
 			width: 86px;
@@ -181,7 +185,12 @@ html {
 				margin: 10px auto;
 				width: 150px;
 			}
-
+		.modal .bottom-links span{
+			color: #4168b8;	
+			cursor: pointer;
+			text-decoration: underline;	
+			margin:0 30px 0 0;
+		}
 		.modal .facebook{
 			display: block !important;
 			border-top: 1px solid #F5F5F5;
