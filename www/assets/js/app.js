@@ -501,6 +501,20 @@ $(function() {
 		}
 	});
 
+	var snapperCheck = function() {
+		if ($(window).width() <= 768) {
+			snapper.enable();
+		} else {
+			snapper.close();
+			snapper.disable();
+		}
+	};
+	snapperCheck();
+
+	$(window).resize(function() {
+		snapperCheck();
+	});
+
 	$.totalStorage.ls(App.localStorage);
 
 	App.processConfig(App.config);
