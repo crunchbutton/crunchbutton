@@ -137,6 +137,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 	$scope.isUser = App.config.user.has_auth;
 	$scope.notUser = !App.config.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
+
 	$scope.location = LocationService;
 
 	$scope.location.init();
@@ -154,22 +155,21 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 	}
 
 	$scope.resetFormLocation = function(){
-		$('.location-address').val( '' );
+		$scope.location.form.address = '';
 		$scope.locationError = false;
 	}
 
+	$scope.$watch( 'location.position.pos().city()', function( newValue, oldValue, scope ) {
+		$scope.yourArea = $scope.location.position.pos().city() || 'your area';
+	});
+
 	// lets eat button
 	$scope.letsEat = function() {
-
-		var address = $.trim($('.location-address').val());
-
-		if (!address) {
-
+		 $scope.location.form.address = $.trim( $scope.location.form.address );
+		if ( $scope.location.form.address == '' ) {
 			$('.location-address').val('').attr('placeholder','Please enter your address here');
-
 		} else {
-
-			$scope.location.addVerify(address, 
+			$scope.location.addVerify( $scope.location.form.address, 
 				// Address ok
 				function() {
 					// Verify if the address has restaurant
