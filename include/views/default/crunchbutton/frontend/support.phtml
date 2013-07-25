@@ -23,16 +23,17 @@
 			<div ng-show="!support.thanks">
 				<form name="formSupport">
 					<label>Name</label>
-					<input type="text" maxlength="50" ng-model="support.name" name="support-name"/>
+					<input type="text" maxlength="50" ng-model="support.form.name" name="support-name"/>
 					<div class="divider"></div>
 					<label>Phone</label>
-					<input type="text" maxlength="30" ng-model="support.phone" name="support-phone" />
+					<input type="text" maxlength="30" ng-model="support.form.phone" name="support-phone" />
 					<div class="divider"></div>
 					<label>Message</label>
-					<textarea name="support-message" ng-model="support.message"></textarea>
+					<textarea name="support-message" ng-model="support.form.message"></textarea>
 					<div class="divider"></div>
 					<button ng-show="!support.isSending" class="support-button" ng-tap="support.send();">Send by sms</button>
 					<div class="divider"></div>
+					<i ng-show="support.isSending" class="icon-spinner icon-spin"></i>
 				</form>				
 			</div>
 
