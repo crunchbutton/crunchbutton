@@ -12,12 +12,7 @@ NGApp.factory( 'PositionsService', function(){
 		// Resets the restaurant's list
 		App.restaurants.forceLoad = true;
 		service.locs.push(loc);
-		
-		var locs = [];
-		for (var x in service.locs) {
-			locs.push(service.locs[x]['_properties']);
-		}
-		
+
 		$.totalStorage('locsv2', service.locs);
 	}
 

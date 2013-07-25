@@ -17,13 +17,20 @@ if (App){
 ?>
 <body class="bg">
 
-	<div class="snap-drawers">
+	<div class="snap-drawers" ng-controller="SideMenuCtrl">
 		<div class="snap-drawer snap-drawer-left">
 			<div>
 				<ul>
+					<li><a href="javascript:;" ng-tap="navigation.link('/food-delivery')">Restaurants</a></li>
+					<li><a href="javascript:;" ng-tap="navigation.link('/location')">Change Location</a></li>
+					<li><a ng-show="navigation.account.user" href="javascript:;" ng-tap="navigation.link('/orders')">Order History</a></li>
 					<li><a href="javascript:;" ng-tap="navigation.link('/help')">Help</a></li>
 					<li><a href="javascript:;" ng-tap="navigation.link('/legal')">Legal</a></li>
-					<li><a ng-show="navigation.account.user" href="javascript:;" ng-tap="navigation.link('/orders')">Order History</a></li>
+					<? if (c::env() == 'beta' || c::env() == 'local') : ?>
+						<li><a href="javascript:App.test.card();" class="test-card">TEST: card</a></li>
+						<li><a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a></li>
+						<li><a href="javascript:App.test.clearloc();" class="test-clearloc">TEST: clear loc</a></li>
+					<? endif ; ?>
 				</ul>
 				<div>
 					<p>&copy; <?=date('Y')?> YouBeo. All rights reserved.</p>
@@ -41,11 +48,10 @@ if (App){
 				<div class="content<?=$e?>">
 					
 					<div class="pacman-loading pacman-left"></div>
-					
-					<div class="nav-back" ng-tap="back()"></div>
 	
 					<div class="logo"><a href="javascript:;" ng-tap="navigation.link('/')"><div class="logo-img"></div></a></div>
 	
+					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-tap="back()"></div>
 					<div title="Change location" ng-show="navigation.buttons.location" class="location-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-tap="navigation.link('/location')"></div>
 					<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-tap="navigation.link('/location')"></div>
 	
@@ -71,7 +77,7 @@ if (App){
 		
 					<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
 		
-					<div class="footer-content" ng-controller="MainHeaderCtrl">
+					<div class="footer-content hidden-phone" ng-controller="MainHeaderCtrl">
 		
 						<a href="javascript:;" ng-tap="navigation.link('/help')">Help</a>
 						<a href="javascript:;" ng-tap="navigation.link('/legal')">Legal</a>
@@ -95,14 +101,16 @@ if (App){
 		
 
 
+
+
+	</div>
+	
 		<div ng-include="'view/account.html'"></div>
 		<div ng-include="'view/account.reset.html'"></div>
 		<div ng-include="'view/account.facebook.html'"></div>
 		<div ng-include="'view/giftcard.html'"></div>
 		<div ng-include="'view/suggestion.html'"></div>
 		<div ng-include="'view/support.html'"></div>
-
-	</div>
 
 	<div id="fb-root"></div>
 
