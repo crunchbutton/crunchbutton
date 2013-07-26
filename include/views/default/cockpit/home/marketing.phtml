@@ -80,9 +80,9 @@
 							?>
 						</td>
 						<td><?php echo $group[ 'report' ][ 'orders' ][ 'total' ]; ?></td>
-						<td><?php echo number_format( $group[ 'report' ][ 'orders' ][ 'per_gift_card' ] , 4 ); ?></td>
-						<td><?php echo number_format( $group[ 'report' ][ 'orders' ][ 'per_gift_card_redeemed' ] , 4 ); ?></td>
-						<td><?php echo number_format( $group[ 'report' ][ 'orders' ][ 'per_new_users' ] , 4 ); ?></td>
+						<td><?php echo number_format( $group[ 'report' ][ 'orders' ][ 'per_gift_card' ] , 3 ); ?></td>
+						<td><?php echo number_format( $group[ 'report' ][ 'orders' ][ 'per_gift_card_redeemed' ] , 3 ); ?></td>
+						<td><?php echo number_format( $group[ 'report' ][ 'orders' ][ 'per_new_users' ] , 3 ); ?></td>
 						<td class="hightlight">
 							<?php 
 							if( $group[ 'man_hours' ] > 0 && $group[ 'report' ][ 'users' ][ 'new' ] > 0 ) { 
