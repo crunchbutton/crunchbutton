@@ -1,0 +1,68 @@
+	.giftcard{
+		text-align: center;
+		width: 816px;
+		margin: 0 auto;
+	}
+	.flyer{
+		width: 816px;
+	}
+		.parachutes{
+			width: 600px;
+			position: absolute;
+			margin-top: 250px;
+			margin-left: 110px;
+		}
+		.value{
+			font-family: 'Atomic Age', cursive;
+			color:#FFF;
+			font-size: 145px;
+			position: absolute;
+			z-index: 10;
+			letter-spacing: -10px;
+			margin-left: 60px;
+			margin-top: 870px;
+			text-align: center;
+			width: 140px;
+		}
+		.dollar{
+			color:#FFF;
+			font-family: 'Atomic Age', cursive;
+			font-size: 25px;
+			font-weight: bold;
+			position: absolute;
+			z-index: 11;
+			margin-left: 70px;
+			margin-top: 920px;
+			text-align: left;
+			width: 220px;
+		}
+		.info{
+			margin-left: 225px;
+			margin-top: 905px;
+			color:#FFF;
+			font-family: 'Helvetica';
+			font-size: 35px;
+			font-weight: bold;
+			position: absolute;
+			text-align: left;
+		}
+			.info .link{
+				display: block;
+				color:#7b201a;
+				font-size: 25px;
+				margin-top: 10px;
+			}
+		.freefood{
+			width: 500px;
+			margin-left: 275px;
+			margin-top: 990px;
+			color:#FFF;
+			font-family: 'Helvetica';
+			font-size: 18px;
+			font-weight: bold;
+			position: absolute;
+			text-align: right;
+		}
+			.page{
+				page-break-after:always;
+			}

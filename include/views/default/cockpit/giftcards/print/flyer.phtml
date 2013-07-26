@@ -4,8 +4,8 @@
 		<meta charset="utf-8">
 		<title>Gift card</title>
 		<link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard-reset.css">
-		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard.css">
+		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard/reset.css">
+		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard/flyer.css">
 	</head>
 	<body>
 <?php 
@@ -27,15 +27,19 @@ if( sizeof( $giftcards ) > 0 ) {
 		} else {
 			$restaurant_name = 'Crunchbutton';
 		}
-	?><div class="giftcard <?php if( $count % 3 != 1 ){ ?>negativemargin<?php } ?>"><div class="giftcard-message"><?php echo $message; ?></div>
-	<div class="help">Questions: Call or text us anytime at (646) 783-1444</div>
-<div class="dollar">$</div><div class="value"><?php echo $giftcard->value;?></div><div class="info">To redeem, go to<span class="url">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span></div><div class="call">Free Food from 
-<br/><?php echo $restaurant_name; ?></div><img src="/assets/images/giftcard_print.svg?<?php echo $imageCached; ?>"/>
-</div>
+	?>
+	<div class="giftcard">
+		<div class="dollar">$</div>
+		<div class="value"><?php echo $giftcard->value;?></div>
+		<div class="info">To redeem, go to<span class="link">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span></div>
+		<div class="freefood">Free Food from <?php echo $restaurant_name; ?></div>
+		<div class="images">
+			<img class="parachutes" src="/assets/images/giftcard/flyer_parachutes.png?<?php echo $imageCached; ?>"/>
+			<img class="flyer" src="/assets/images/giftcard/print-flyer.svg?<?php echo $imageCached; ?>"/>	
+		</div>
+	</div>
+	<div class="page"></div>
 	<?php 
-		if( $count % 3 == 0 ){
-			echo '<div class="page"></div>';
-		}
 	} 
 } else {
 	echo 'Oops, is seems you are trying to print a gift card that was already redemmed!';
