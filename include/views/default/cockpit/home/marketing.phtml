@@ -25,19 +25,19 @@
 						<th rowspan="2" style="text-align:center !important;vertical-align:middle !important;">Community</th>
 						<th rowspan="2" style="text-align:center !important;vertical-align:middle !important;">Promotion Type</th>
 						<th rowspan="2" style="text-align:center !important;vertical-align:middle !important;">Range</th>
-						<th colspan="3" style="text-align:center !important;vertical-align:middle !important;border-right:1px solid #eaebef;border-left:1px solid #eaebef;">Gift cards</th>
-						<th colspan="3" style="text-align:center !important;vertical-align:middle !important;border-right:1px solid #eaebef;">Users</th>
+						<th colspan="4" style="text-align:center !important;vertical-align:middle !important;border-right:1px solid #eaebef;border-left:1px solid #eaebef;">Gift cards</th>
+						<th colspan="2" style="text-align:center !important;vertical-align:middle !important;border-right:1px solid #eaebef;">Users</th>
 						<th colspan="3" style="text-align:center !important;vertical-align:middle !important;border-right:1px solid #eaebef;">Active users</th>
 						<th colspan="2" style="text-align:center !important;vertical-align:middle !important;">Man/Hour</th>
-						<th colspan="4" style="text-align:center !important;vertical-align:middle !important;border-right:1px solid #eaebef;border-left:1px solid #eaebef;">Orders</th>
+						<th colspan="3" style="text-align:center !important;vertical-align:middle !important;border-right:1px solid #eaebef;border-left:1px solid #eaebef;">Orders</th>
 						<th rowspan="2" style="text-align:center !important;vertical-align:middle !important;border-left:1px solid #eaebef;" class="hightlight">CAC</th>
 					</tr>
 					<tr>
 						<th>Total</th>
-						<th>Redeemed</th>
-						<th nowrap="nowrap" style="border-right:1px solid #eaebef;" class="hightlight">Redeemed %</th>
+						<th>Used</th>
+						<th class="hightlight">Used %</th>
+						<th style="border-right:1px solid #eaebef;">Redeemed</th>
 						<th>New Users</th>
-						<th>Returned Users</th>
 						<th style="border-right:1px solid #eaebef;">New Users / Gift card</th>
 						<th>15 days</th>
 						<th>30 days</th>
@@ -46,24 +46,23 @@
 						<th>Hr/New <br/>users</th>
 						<th style="border-left:1px solid #eaebef;">Total Orders</th>
 						<th>Orders per Gift Card</th>
-						<th>Orders per Gift Card Redeemed</th>
 						<th>Orders per New User</th>
 					</tr>
 				<?php 
 				foreach ( $data as $group ) {
 ?>
 					<tr>
-						<td nowrap="nowrap"><?php echo $group[ 'name' ]; ?></td>
+						<td><?php echo $group[ 'name' ]; ?></td>
 						<td><?php echo $group[ 'date' ]; ?></td>
-						<td nowrap="nowrap"><?php echo $group[ 'community' ]; ?></td>
-						<td nowrap="nowrap"><?php echo $group[ 'promotion_type' ]; ?></td>
-						<td nowrap="nowrap"><?php echo $group[ 'report' ][ 'range' ]; ?></td>
+						<td><?php echo $group[ 'community' ]; ?></td>
+						<td><?php echo $group[ 'promotion_type' ]; ?></td>
+						<td><?php echo $group[ 'report' ][ 'range' ]; ?></td>
 						<td><?php echo $group[ 'report' ][ 'giftcards' ][ 'total' ]; ?></td>
+						<td><?php echo $group[ 'report' ][ 'giftcards' ][ 'used' ]; ?></td>
+						<td class="hightlight"><?php echo number_format( $group[ 'report' ][ 'giftcards' ][ 'used_percent' ], 2 ); ?>%</td>
 						<td><?php echo $group[ 'report' ][ 'giftcards' ][ 'redeemed' ]; ?></td>
-						<td class="hightlight"><?php echo number_format( $group[ 'report' ][ 'giftcards' ][ 'redeemed_percent' ], 2 ); ?>%</td>
-						
+
 						<td><?php echo $group[ 'report' ][ 'users' ][ 'new' ]; ?></td>
-						<td><?php echo $group[ 'report' ][ 'users' ][ 'returned' ]; ?></td>
 						<td><?php echo number_format( $group[ 'report' ][ 'users' ][ 'new_per_giftcard' ], 2 ); ?></td>
 
 						<td><?php echo $group[ 'report' ][ 'users' ][ 'active' ][ '15' ]; ?></td>
@@ -81,7 +80,6 @@
 						</td>
 						<td><?php echo $group[ 'report' ][ 'orders' ][ 'total' ]; ?></td>
 						<td><?php echo number_format( $group[ 'report' ][ 'orders' ][ 'per_gift_card' ] , 3 ); ?></td>
-						<td><?php echo number_format( $group[ 'report' ][ 'orders' ][ 'per_gift_card_redeemed' ] , 3 ); ?></td>
 						<td><?php echo number_format( $group[ 'report' ][ 'orders' ][ 'per_new_users' ] , 3 ); ?></td>
 						<td class="hightlight">
 							<?php 

@@ -23,6 +23,14 @@ class Crunchbutton_Promo_Group extends Cana_Table
 		$data[ 'giftcards' ] = [];
 		$data[ 'giftcards' ][ 'total' ] = $this->giftcards_total();
 		$data[ 'giftcards' ][ 'redeemed' ] = $this->giftcards_redeemed_total();
+		$data[ 'giftcards' ][ 'used' ] = $this->giftcards_used_total();
+
+		if( $data[ 'giftcards' ][ 'total' ] > 0 && $data[ 'giftcards' ][ 'used' ] > 0 ){
+			$data[ 'giftcards' ][ 'used_percent' ] = ( $data[ 'giftcards' ][ 'used' ] * 100 ) / $data[ 'giftcards' ][ 'total' ];	
+		} else {
+			$data[ 'giftcards' ][ 'used_percent' ] = 0;
+		}
+
 
 		if( $data[ 'giftcards' ][ 'total' ] > 0 && $data[ 'giftcards' ][ 'redeemed' ] > 0 ){
 			$data[ 'giftcards' ][ 'redeemed_percent' ] = ( $data[ 'giftcards' ][ 'redeemed' ] * 100 ) / $data[ 'giftcards' ][ 'total' ];	
@@ -96,6 +104,21 @@ class Crunchbutton_Promo_Group extends Cana_Table
 		$query = "SELECT COUNT(*) AS total FROM promo_group_promo pgp INNER JOIN credit c ON pgp.id_promo = c.id_promo WHERE pgp.id_promo_group = {$this->id_promo_group}";
 		$total = c::db()->get( $query );
 		return $total->_items[0]->total;
+	}
+
+	public function giftcards_used_total(){
+		$query = "SELECT COUNT( DISTINCT(c.id_credit_debited_from) ) AS total
+							FROM credit c
+							INNER JOIN
+								(SELECT c.*
+								 FROM credit c
+								 INNER JOIN promo p ON p.id_promo = c.id_promo
+								 INNER JOIN promo_group_promo pgp ON pgp.id_promo = p.id_promo
+								 WHERE c.type = 'CREDIT'
+									 AND pgp.id_promo_group = {$this->id_promo_group} ) redemmed ON c.id_credit_debited_from = redemmed.id_credit";
+		$total = c::db()->get( $query );
+		return $total->_items[0]->total;
+
 	}
 
 	public function remove_giftcards(){
