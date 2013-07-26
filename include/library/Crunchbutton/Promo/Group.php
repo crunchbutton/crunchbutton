@@ -29,7 +29,7 @@ class Crunchbutton_Promo_Group extends Cana_Table
 		} else {
 			$data[ 'giftcards' ][ 'redeemed_percent' ] = 0;
 		}
-		
+
 		$data[ 'range' ] = $this->range;
 		$data[ 'users' ] = [];
 		$data[ 'users' ][ 'unique' ] = $this->unique_users();
@@ -51,6 +51,24 @@ class Crunchbutton_Promo_Group extends Cana_Table
 			$data[ 'users' ][ 'new_per_giftcard_redeemed' ] = 0;
 		}
 		
+		$data[ 'orders' ][ 'total' ] = $this->orders_total();
+		if( $data[ 'orders' ][ 'total' ] > 0 && $data[ 'giftcards' ][ 'total' ] > 0 ){
+			$data[ 'orders' ][ 'per_gift_card' ] = ( $data[ 'orders' ][ 'total' ] / $data[ 'giftcards' ][ 'total' ] );	
+		} else {
+			$data[ 'orders' ][ 'per_gift_card' ] = 0;	
+		}
+
+		if( $data[ 'orders' ][ 'total' ] > 0 && $data[ 'giftcards' ][ 'redeemed' ] > 0 ){
+			$data[ 'orders' ][ 'per_gift_card_redeemed' ] = ( $data[ 'orders' ][ 'total' ] / $data[ 'giftcards' ][ 'redeemed' ] );	
+		} else {
+			$data[ 'orders' ][ 'per_gift_card_redeemed' ] = 0;	
+		}
+
+		if( $data[ 'orders' ][ 'total' ] > 0 && $data[ 'users' ][ 'new' ] ){
+			$data[ 'orders' ][ 'per_new_users' ] = ( $data[ 'orders' ][ 'total' ] / $data[ 'users' ][ 'new' ] );	
+		} else {
+			$data[ 'orders' ][ 'per_new_users' ] = 0;	
+		}
 
 		// $data[ 'giftcards' ] = $this->giftcards()->count();
 		return $data;
@@ -87,6 +105,26 @@ class Crunchbutton_Promo_Group extends Cana_Table
 
 	public function unique_users(){
 		$query = "SELECT COUNT( DISTINCT( o.phone ) ) AS total FROM promo_group_promo pgp INNER JOIN credit c ON c.id_promo = pgp.id_promo INNER JOIN user u ON u.id_user = c.id_user INNER JOIN `order` o ON o.id_user = u.id_user WHERE pgp.id_promo_group = {$this->id_promo_group}";
+		$total = c::db()->get( $query );
+		return $total->_items[0]->total;
+	}
+
+	public function orders_total(){
+		$query = "SELECT COUNT(*) AS total
+							FROM
+								(SELECT o.*
+								 FROM `order` o
+								 INNER JOIN
+									 (SELECT c.*
+										FROM credit c
+										INNER JOIN
+											(SELECT c.*
+											 FROM credit c
+											 INNER JOIN promo p ON p.id_promo = c.id_promo
+											 INNER JOIN promo_group_promo pgp ON pgp.id_promo = p.id_promo
+											 WHERE c.type = 'CREDIT'
+												 AND pgp.id_promo_group = {$this->id_promo_group}) redeemed ON redeemed.id_credit = c.id_credit_debited_from
+										WHERE c.type = 'DEBIT') debits ON o.id_order = debits.id_order) orders";
 		$total = c::db()->get( $query );
 		return $total->_items[0]->total;
 	}
