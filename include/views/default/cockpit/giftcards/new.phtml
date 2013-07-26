@@ -8,7 +8,7 @@
 ?>
 <!-- Preview stuff -->
 <link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" type="text/css" href="/assets/css/giftcard.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/giftcard/default.css">
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="span6">
@@ -164,6 +164,7 @@
 						<li class="input">
 							<button type="submit" class="btn btn-blue admin-giftcard-save"><i class="icon-save"></i> Save </button> 
 							<button type="submit" class="btn btn-green admin-giftcard-print"><i class="icon-print"></i> Save &amp; Print </button> 
+							<button type="submit" class="btn btn-blue admin-giftcard-print-flyer"><i class="icon-picture"></i> Save &amp; Print Flyer </button> 
 						</li>
 					</ul>
 				</div>
@@ -255,7 +256,7 @@
 					<div class="giftcard-message"></div>
 					<div class="help">Questions: Call or text us anytime at (646) 783-1444</div>
 					<div class="dollar">$</div><div class="value"><span class="preview-value"></span></div><div class="info">To redeem, go to<span class="url">crunchbutton.com/giftcard/<span class="preview-code"></span></span></div><div class="call">Free Food from 
-					<br/>Crunchbutton</div><img src="/assets/images/giftcard_print.svg?<?php echo date( 'dHis' ); ?>"/>
+					<br/>Crunchbutton</div><img src="/assets/images/giftcard/print-default.svg?<?php echo date( 'dHis' ); ?>"/>
 				</div>
 				<br />
 			</div>
@@ -395,7 +396,11 @@ $(function() {
 	} );
 
 	$(document).on('click', '.admin-giftcard-print', function() {
-	App.giftcards.print = true;
+	App.giftcards.print = 'default';
+	sendForm();
+	} );
+	$(document).on('click', '.admin-giftcard-print-flyer', function() {
+	App.giftcards.print = 'flyer';
 	sendForm();
 	} );
 });
@@ -407,7 +412,7 @@ function sendForm(){
 	var id_user = $( '#id_user' ).val();
 	var total = $( '#total' ).val();
 	var message = $( '#giftcard-message' ).val();
-	var print = ( App.giftcards.print ) ? 1 : 0;
+	var print = ( App.giftcards.print ) ? App.giftcards.print : 0;
 
 	var id_order_reference = $( '#id_order_reference' ).val();
 	var prefix = $( '#prefix' ).val();
@@ -465,7 +470,11 @@ function sendForm(){
 			} else {
 				alert( 'Gift card(s) created!' );
 				if( App.giftcards.print ){
-					location.href = '/giftcards/print/' + json.success;
+					if( App.giftcards.print == 'flyer' ){
+						location.href = '/giftcards/print-flyer/' + json.success;
+					} else {
+						location.href = '/giftcards/print/' + json.success;	
+					}
 				} else {
 					location.href = '/giftcards';
 				}
