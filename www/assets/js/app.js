@@ -545,7 +545,6 @@ $(function() {
 		e.stopPropagation();
 		App.trigger.credit();
 		App.track('Switch to card');
-		App.giftcard.notesField.listener();
 	});
 
 	$(document).on('touchclick', '.pay-toggle-cash', function(e) {
@@ -553,7 +552,6 @@ $(function() {
 		e.stopPropagation();
 		App.trigger.cash();
 		App.track('Switch to cash');
-		App.giftcard.notesField.listener();
 	});
 
 	$(document).on('touchclick', '.location-detect', function() {
@@ -657,7 +655,7 @@ $(function() {
 		});
 		*/
 	}
-
+/*
 	$('.dish-item').tap(function() {
 		App.cart.add($(this).attr('data-id_dish'));
 	});
@@ -673,7 +671,7 @@ $(function() {
 	$('.cart-item-config a').tap(function() {
 		App.cart.customize($(this).closest('.cart-item'));
 	});
-
+*/
 	$('.button-submitorder-form').tap(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -746,11 +744,6 @@ $(function() {
 			} )
 		}
 		App.order.cardChanged = true;
-	});
-
-	// Listener to verify if the user typed a gift card at the notes field
-	$(document).on('blur', '[name=notes]', function() {
-		App.giftcard.notesField.listener();
 	});
 
 	$(document).on('change, keyup', '[name="pay-card-number"]', function() {

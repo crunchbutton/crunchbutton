@@ -1,44 +1,48 @@
 // OrdersService service
-NGApp.factory( 'OrdersService', function( $http, $location ){
-	
-	var service = { list : false };
+NGApp.factory('OrdersService', function ($http, $location) {
 
-	service.all = function(){
+	var service = {
+		list: false
+	};
 
-		$http.get( App.service + 'user/orders', {cache: true}).success(function(json) {
+	service.all = function () {
+
+		$http.get(App.service + 'user/orders', {
+			cache: true
+		}).success(function (json) {
 			for (var x in json) {
-				json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i,'$1/$2 $3');
+				json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');
 			}
 			service.list = json;
 		});
 
 	}
 
-	service.restaurant = function( permalink ) {
-		$location.path( '/' + App.restaurants.permalink + '/' + permalink );
+	service.restaurant = function (permalink) {
+		$location.path('/' + App.restaurants.permalink + '/' + permalink);
 	};
 
-	service.receipt = function( id_order ) {
-		$location.path( '/order/' + id_order );
+	service.receipt = function (id_order) {
+		$location.path('/order/' + id_order);
 	};
 
 	return service;
 
-} );
+});
 
 // OrdersService service
-NGApp.factory( 'OrderService', function( $routeParams, $location, $rootScope, FacebookService ){
-	
+NGApp.factory('OrderService', function ( $routeParams, $location, $rootScope, FacebookService) {
+
 	var service = {};
 
 	service.facebook = FacebookService;
 
-	App.cache('Order', $routeParams.id, function() {
+	App.cache( 'Order', $routeParams.id, function () {
 		service.order = this;
 
-		var complete = function() {
-			$location.path('/');
-		};
+		var complete = function () {
+				$location.path('/');
+			};
 
 		if (!service.order.uuid) {
 			if (!$rootScope.$$phase) {
@@ -52,18 +56,18 @@ NGApp.factory( 'OrderService', function( $routeParams, $location, $rootScope, Fa
 		service.facebook._order_uuid = service.order.uuid;
 		service.facebook.preLoadOrderStatus();
 
-		App.cache('Restaurant', service.order.id_restaurant, function() {
-			
+		App.cache('Restaurant', service.order.id_restaurant, function () {
+
 			service.restaurant = this;
 
-			var complete = function() {
+			var complete = function () {
 
-				if (service.order['new']) {
-					setTimeout(function() {
-						service.order['new'] = false;
-					},500);
-				}
-			};
+					if (service.order['new']) {
+						setTimeout(function () {
+							service.order['new'] = false;
+						}, 500);
+					}
+				};
 
 			if (!$rootScope.$$phase) {
 				$rootScope.$apply(complete);
@@ -74,4 +78,4 @@ NGApp.factory( 'OrderService', function( $routeParams, $location, $rootScope, Fa
 	});
 	return service;
 
-} );
+});
