@@ -45,7 +45,57 @@
 				<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
 				<div class="divider"></div>
 				<div class="delivery-minimum-error">Add $<span class="delivery-min-diff">{{cart.totalFixed}}</span> from menu to meet delivery minimum.</div>
-				<div class="cart-items-content"></div>
+				
+				<!-- <div class="cart-items-content"> -->
+
+				<!-- Cart's basket -->
+				<div>
+
+					<div ng-repeat="item in cart.items">
+
+						<div class="cart-item cart-item-dish" data-cart_id="{{item.id}}">
+
+							<div class="cart-button cart-button-remove" ng-tap="cart.remove(item.details.id);"><span></span></div>
+
+							<div class="cart-item-name">{{item.details.name}}
+								<span class="cart-item-description">{{item.details.description}}</span>
+							</div>
+
+							<div ng-show="item.details.customizable" ng-tap="item.details.customizing=!item.details.customizing" class="cart-item-config"><a href="javascript:;">Customize</a></div>
+
+						</div>
+
+						<!-- Customizable options -->
+						<div ng-show="item.details.customizable && item.details.customizing">
+							<div ng-repeat="option in item.details.options">
+
+								<div class="cart-item-customize-item" data-id_option="{{option.id_option}}">
+									<div ng-switch on="option.type">
+										<!-- Customizable - checkbox -->
+										<div ng-switch-when="check">
+												<input type="checkbox" ng-checked="option.checked" class="cart-customize-check">
+												<label class="cart-item-customize-name">{{option.name}}</label>
+												<label class="cart-item-customize-price">{{option.priceFormated}}</label>
+										</div>
+										<!-- Customizable - select -->
+										<div ng-switch-when="select">
+												<label class="cart-item-customize-select-name">{{option.name}}</label>
+												<select class="cart-customize-select">
+													<option ng-repeat="opt in option.options" ng-selected="opt.selected" value="{{opt.id_option}}">
+														{{opt.name}}
+													</option>
+												</select>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
 				<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for {{restaurant.name}}</label></div>
 			</div>
 		</div>
@@ -62,7 +112,7 @@
 			<div ng-repeat="category in restaurant.categories()">
 				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
 				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-					<li ng-repeat="dish in category.dishes()" data-id_dish="{{dish.id_dish}}" class="dish-item">
+					<li ng-repeat="dish in category.dishes()" ng-tap="cart.add( dish.id_dish )" class="dish-item">
 						<span class="dish-name"><i class="icon-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-price">({{AB.dollar}}{{dish.price}}{{AB.changeablePrice(dish)}})</span>
 					</li>
 				</ul>
@@ -133,7 +183,7 @@
 	
 					<div ng-show="(restaurant.id != 74)">
 						<label>Notes</label>
-						<div class="input-item"><textarea name="notes" tabindex="6">{{form.notes}}</textarea></div><div class="divider"></div>
+						<div class="input-item"><textarea name="notes" ng-model="form.notes" tabindex="6">{{form.notes}}</textarea></div><div class="divider"></div>
 						<div class="divider"></div>
 						<div class="giftcard-info"></div>
 					</div>

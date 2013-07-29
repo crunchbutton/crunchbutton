@@ -14,6 +14,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 		redeemed : false,
 		code : false,
 		value : '',
+		text : { content : '', giftcards : { success : [], error : [] } }, /* Notes field */
 		modal : {
 			intro : true,
 			error : false,
@@ -123,6 +124,73 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 				callback( { error : true } ); 
 			} );
 	}
+
+	service.text.start = function(){
+		// console.log('service.text.running',service.text.running);
+		if( !service.text.running ){
+			service.text.running = true;
+			// Split its words
+			var words = service.text.content.split( ' ' );
+			service.text.total = 0;
+			var giftcards = {};
+			service.text.giftcards.success = [];
+			service.text.giftcards.error = [];
+			for ( var x in words ) {
+				var word = $.trim( words[ x ] );
+				if( word != '' ){
+					word = word.replace( /[^a-zA-Z 0-9]+/g, '' );
+					if( !giftcards[ word ] ){
+						service.text.total++;
+					}
+					giftcards[ word ] = word;
+				}
+			}
+			var hasGiftsToValidate = false;
+			$.each( giftcards, function( key, value ) {
+				hasGiftsToValidate = true;
+				var url = App.service + 'giftcard/validate';
+				$http( {
+					method: 'POST',
+					url: url,
+					data: $.param( { 'code' : value } ),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+					} ).success( function( data ) {
+						if( data.success ){
+							service.text.giftcards.success.push( data.success );
+						} else if( data.error && data.error == 'gift card already used' ){
+							service.text.giftcards.error.push( data.success );
+						}
+						service.text.total--;
+						service.text.checkAllValidated();
+					}	).error(function( data, status ) { service.text.total--; service.text.checkAllValidated(); } );
+			} );
+			if( !hasGiftsToValidate ){
+				service.text.checkAllValidated();
+			}
+		}
+	}
+
+	service.text.checkAllValidated = function(){
+		if( service.text.total <= 0 ){
+			service.text.running = false;
+		}
+		if( !service.text.running ){
+			service.compareValues();
+		}
+	}
+
+	service.compareValues = function(){
+		var values = 0;
+		if( service.text.giftcards.success.length > 0 ){
+			$.each( service.text.giftcards.success, function( key, giftcard ) {
+				if( giftcard ){
+					values += parseFloat( giftcard.value ); 
+				}
+			} );
+		}
+		console.log('values',values);
+	}
+
 /*
 
 // Methods to redem a gift card at the Notes field

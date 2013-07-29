@@ -196,214 +196,39 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 /**
  * restaurant page
  */
-NGApp.controller('restaurant', function ($scope, $http, $routeParams) {
+NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, CartService ) {
+
+	$scope.service = RestaurantService;
+
+	$scope.service.init();
+	$scope.cart = CartService;
+
+	$scope.$watch( 'service.loaded', function( newValue, oldValue, scope ) {
+		if( newValue ){
+			$scope.restaurant	 = $scope.service.restaurant;
+			$scope.user	= $scope.service.account.user;
+
+			$scope.lastOrderDelivery = $scope.service.lastOrderDelivery;
+			$scope.community = $scope.service.community;
+			$scope.showRestaurantDeliv = $scope.service.showRestaurantDeliv;
+			$scope.AB = $scope.service.AB;
+			$scope.form = $scope.service.form;
+			// $scope.cart = $scope.service.cart;
+		}
+	});
+
 
 	$('.config-icon').addClass('config-icon-mobile-hide');
 	$('.nav-back').addClass('nav-back-show');
 
 	App.cartHighlightEnabled = false;
 
+	
+
 	$('.content').removeClass('smaller-width');
 	$('.content').removeClass('short-meal-list');
 
-	App.cache('Restaurant', $routeParams.id, function() {
-		if (App.restaurant && App.restaurant.permalink != $routeParams.id) {
-			App.cart.resetOrder();
-		}
-
-		App.restaurant = this;
-		var community = App.getCommunityById(App.restaurant.id_community);
-
-		var lastOrderDelivery = false;
-		var lastPayCash = false;
-
-		if( App.config && App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant] ){
-			// Check if the last user's order at this restaurant was a delivery type
-			lastOrderDelivery = App.config.user.presets[App.restaurant.id_restaurant].delivery_type;
-			// Check if the last user's order at this restaurant was cash type
-			lastPayCash = App.config.user.presets[App.restaurant.id_restaurant].pay_type;
-			App.order['delivery_type'] = lastOrderDelivery;
-			App.order['pay_type'] = lastPayCash;
-		}
-
-
-//			title: App.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton',
-
-		var complete = function() {
-		
-			var date = new Date().getFullYear();
-			var years = [];
-			for (var x=date; x<=date+20; x++) {
-				years[years.length] = x;
-			}
-		
-			$scope.restaurant = App.restaurant;
-			$scope.presets = App.config.user.presets;
-			$scope.lastOrderDelivery = lastOrderDelivery;
-			$scope.user = App.config.user;
-			$scope.community = community;
-			$scope.showRestaurantDeliv = (( lastOrderDelivery == 'delivery' || App.restaurant.delivery == '1' || App.restaurant.takeout == '0' ) && lastOrderDelivery != 'takeout');
-			
-			$scope.AB = {
-				dollar: (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '',
-				changeablePrice: function(dish) {
-					return (App.config.ab && App.config.ab.changeablePrice == 'show' && dish.changeable_price) ? '+' : ''
-				},
-				restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
-			};
-
-			$scope.form = {
-				tip: App.order.tip,
-				name: App.config.user.name,
-				phone: App.phone.format(App.config.user.phone),
-				address: App.config.user.address,
-				notes: (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) ? App.config.user.presets[App.restaurant.id_restaurant].notes : '',
-				card: {
-					number: App.config.user.card,
-					month: App.config.user.card_exp_month,
-					year: App.config.user.card_exp_year
-				},
-				months: [1,2,3,4,5,6,7,8,9,10,11,12],
-				years: years
-			};
-
-
-			$scope.cart = {
-				totalFixed: parseFloat(App.restaurant.delivery_min - App.cart.total()).toFixed(2)
-			}
-		};
-
-		// double check what phase we are in
-		if (!$scope.$$phase) {
-			$scope.$apply(complete);
-		} else {
-			complete();
-		}
-
-		// If the typed address is different of the user address the typed one will be used #1152
-		if( false && App.loc.changeLocationAddressHasChanged && App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != App.config.user.address ){
-			// Give some time to google.maps.Geocoder() load
-			var validatedAddress = function(){
-				if( google && google.maps && google.maps.Geocoder ){
-					var addressToVerify = App.loc.pos().addressEntered;
-					// Success the address was found
-					var success = function( results ){
-						var address = results[ 0 ];
-						if( address ){
-							// Valid if the address is acceptable
-							if( App.loc.validateAddressType( address ) ){
-								// If the flag useCompleteAddress is true
-								if( App.useCompleteAddress ){
-									$( '[name=pay-address]' ).val( App.loc.formatedAddress( address ) );
-									$( '.user-address' ).html( App.loc.formatedAddress( address ) );
-								} else {
-									$( '[name=pay-address]' ).val( addressToVerify );
-									$( '.user-address' ).html( addressToVerify );
-								}
-							} else {
-								console.log('Invalid address: ' + addressToVerify);
-							}
-						}
-					};
-					// Error, do nothing
-					var error = function(){  };
-					App.loc.doGeocode( addressToVerify, success, error );
-				} else {
-					setTimeout( function(){
-						validatedAddress();
-					}, 10 );
-				}
-			}
-			validatedAddress();
-		}
-
-		if (App.config.user.presets) {
-			$('.payment-form').hide();
-		}
-
-		if (App.cart.hasItems()) {
-			App.cart.reloadOrder();
-		} else if (App.config.user && App.config.user.presets && App.config.user.presets[App.restaurant.id_restaurant]) {
-			try {
-				App.cart.loadOrder(App.config.user.presets[App.restaurant.id_restaurant]);
-			} catch (e) {
-				App.cart.loadOrder(App.restaurant.preset());
-			}
-		} else {
-			App.cart.loadOrder(App.restaurant.preset());
-		}
-
-		// As the div restaurant-items has position:absolute this line will make sure the footer will not go up.
-		$('.body').css({
-			'min-height': $('.restaurant-items').height()
-		});
-
-		setTimeout(function() {
-			var total = App.cart.updateTotal();
-		},200);
-
-		App.cartHighlightEnabled = false;
-
-		if ( App.order['pay_type'] == 'cash' || lastPayCash == 'cash' ) {
-			App.trigger.cash();
-		} else {
-			App.trigger.credit();
-		}
-
-		if( lastPayCash == 'cash' ){
-			App.trigger.cash();
-		} else if ( lastPayCash == 'card' ){
-			App.trigger.credit();
-		}
-
-		if( App.restaurant.credit != '1' ){
-			App.trigger.cash();
-		}
-
-		if( App.restaurant.cash != '1' && App.restaurant.credit == '1' ){
-			App.trigger.credit();
-		}
-
-		// Rules at #669
-		if( ( lastOrderDelivery == 'delivery' && App.restaurant.delivery == '1' ) ||
-				( App.order['delivery_type'] == 'delivery' && App.restaurant.delivery == '1' ) ||
-				( App.restaurant.takeout == '0' ) ||
-				( lastOrderDelivery != 'takeout' && App.restaurant.delivery == '1' ) ){
-				App.trigger.delivery();
-		}
-
-		// If the restaurant doesn't delivery
-		if( App.order['delivery_type'] == 'takeout' || App.restaurant.delivery != '1') {
-			App.trigger.takeout();
-		}
-
-		// If the user has presets at other's restaurants but he did not typed his address yet
-		// and the actual restaurant is a delivery only #875
-		if( ( App.restaurant.takeout == '0' || App.order['delivery_type'] == 'delivery' ) && !App.config.user.address ){
-			$('.payment-form').show();
-			$('.delivery-payment-info, .content-padder-before').hide();
-		}
-
-		$( '.restaurant-gift' ).hide();
-
-		App.credit.getCredit( function(){
-			App.credit.show();
-			App.cart.updateTotal();
-		} );
-
-		if (!App.config.user.id_user) {
-			App.config.user.address = App.loc.enteredLoc;
-			App.loc.enteredLoc = '';
-		}
-/*
-		if( App.giftcard.notesCode ){
-			setTimeout( function(){
-				$( '[name=notes]' ).val( App.giftcard.notesCode + ' ' + $( '[name=notes]' ).val() );
-				App.giftcard.notesField.listener();
-			}, 300 );
-		}
-*/
-	});
+	
 });
 
 

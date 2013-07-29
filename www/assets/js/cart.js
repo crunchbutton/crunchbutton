@@ -1,5 +1,5 @@
 
-App.cart = {
+App.__cart = {
 	uuidInc: 0,
 
 	items:   {},
