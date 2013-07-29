@@ -46,7 +46,7 @@ class Controller_giftcards extends Crunchbutton_Controller_Account {
 			c::view()->giftcards = $giftcards;
 			c::view()->display('giftcards/print/default');
 		} else if( c::getPagePiece(1) == 'print-flyer' ){ 
-			$giftcards = Crunchbutton_Promo::multiple( c::getPagePiece(2) );
+			$giftcards = Crunchbutton_Promo::multiple( c::getPagePiece(2), false );
 			c::view()->layout('layout/blank');
 			c::view()->giftcards = $giftcards;
 			c::view()->display('giftcards/print/flyer');
