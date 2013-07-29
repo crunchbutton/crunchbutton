@@ -145,11 +145,13 @@ class Crunchbutton_Promo extends Cana_Table
 			$id_end = $ids;
 		}
 
-		$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo BETWEEN ' . $id_ini . ' AND ' . $id_end . ' AND id_promo NOT IN ( SELECT DISTINCT( id_promo ) id_promo FROM credit WHERE id_promo IS NOT NULL )  ORDER BY id_promo');
 
 		if( !$sort ){
+			$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo BETWEEN ' . $id_ini . ' AND ' . $id_end . ' AND id_promo NOT IN ( SELECT DISTINCT( id_promo ) id_promo FROM credit WHERE id_promo IS NOT NULL ) ORDER BY id_promo ASC');
 			return $giftcards;
 		}
+
+		$giftcards = Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE id_promo BETWEEN ' . $id_ini . ' AND ' . $id_end . ' AND id_promo NOT IN ( SELECT DISTINCT( id_promo ) id_promo FROM credit WHERE id_promo IS NOT NULL ) ORDER BY id_promo');
 
 		$idsArray = array();
 		foreach ( $giftcards as $giftcard ) {
