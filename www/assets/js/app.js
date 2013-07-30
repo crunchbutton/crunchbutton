@@ -213,7 +213,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	App.rootScope = $rootScope;
 	App.location = $location;
 
-	AccountService.checkUser(); 
+	AccountService.checkUser();
 
 	$rootScope.link = function(link) {
 		$location.path(link || '/');
@@ -494,7 +494,7 @@ $(function() {
 		element: document.getElementById('snap-content'),
 		disable: 'right'
 	});
-	
+
 	$('.menu-icon').on('touchclick', function() {
 		if (snapper.state().state == 'left') {
 			snapper.close();
@@ -882,7 +882,7 @@ App.message = {
 	chrome: function() {
 		var title = 'How to use Chrome',
 			message = '<p>' +
-			'Just tap "Request Desktop Site.' +
+			'Just tap "Request Desktop Site."' +
 			'</p>' +
 			'<p align="center">' +
 			'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' +
