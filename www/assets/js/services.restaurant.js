@@ -125,7 +125,7 @@ service.load = function(){
 		}
 
 		service.restaurant = this;
-		console.log('service.restaurant',service.restaurant);
+
 		service.community = App.getCommunityById( service.restaurant.id_community );
 		
 		var lastOrderDelivery = false;

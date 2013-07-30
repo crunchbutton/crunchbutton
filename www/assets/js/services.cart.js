@@ -2,6 +2,7 @@
 NGApp.factory('CartService', function () {
 
 	var service = {
+
 		uuidInc: 0,
 
 		items: {},
@@ -13,17 +14,17 @@ NGApp.factory('CartService', function () {
 		},
 
 		add: function (item) {
-			var
-			id = service.uuid(),
-				opt = App.cached['Dish'][item].options(),
-				options = [];
+			var id = service.uuid(),
+					dish = App.cache('Dish', item);
+					dish_options = dish.options(),
+					options = [];
 
 			if (arguments[1]) {
 				options = arguments[1].options;
 			} else {
-				for (var x in opt) {
-					if (opt[x]['default'] == 1) {
-						options[options.length] = opt[x].id_option;
+				for (var x in dish_options) {
+					if (dish_options[x]['default'] == 1) {
+						options[options.length] = dish_options[x].id_option;
 					}
 				}
 			}
@@ -31,59 +32,24 @@ NGApp.factory('CartService', function () {
 			service.items[id] = {};
 			service.items[id].id = item;
 			service.items[id].options = options;
+
+			/* Template viewer stuff */
 			service.items[id].details = {};
 			service.items[id].details.id = id;
-			service.items[id].details.name = App.cache('Dish', item).name;
-			service.items[id].details.description = App.cache('Dish', item).description != null ? App.cache('Dish', item).description : '';
-			service.items[id].details.customizable = ( App.cached['Dish'][item].options().length > 0 );
-			service.items[id].details.customizing = false;
+			service.items[id].details.name = dish.name;
+			service.items[id].details.description = dish.description != null ? dish.description : '';
 
-			service.items[id].details.options = [];
+			/* Customization stuff */
+			service.items[id].details.customization = {};
+			service.items[id].details.customization.customizable = ( dish.options().length > 0 );
+			service.items[id].details.customization.expanded = ( parseInt(dish.expand_view ) > 0 );
+			service.items[id].details.customization.options = service.parseOptions( dish_options, options );
+			service.items[id].details.customization.rawOptions = dish_options;
 			
-			var options = App.cached['Dish'][item].options();
-			for( var x in options ){
-				var _option = {};
-				var opt = options[x];
-				if ( opt.id_option_parent ) {
-					continue;
-				}
-				_option.type = opt.type;
-				_option.name = opt.name + ( opt.description || '' );
-				if( opt.type == 'check' ){
-					_option.id_option = opt.id_option;
-					_option.price = opt.optionPrice(options);
-					_option.priceFormated = service.customizeItemPrice(_option.price);
-					_option.checked = ( $.inArray(opt.id_option, options) !== -1);
-				}
-				if( opt.type == 'select' ){
-					_option.options = [];
-					_option.options = [];
-					for( var i in options ){
-						if (options[i].id_option_parent == opt.id_option) {
-								var _opt = {};
-								_opt.price = options[i].price;
-								_opt.price = options[i].price;
-								_opt.priceFormated = service.customizeItemPrice(_opt.price);
-								_opt.selected = ($.inArray( options[i].id_option, options) !== -1);
-								_opt.name = options[i].name + (options[i].description || '') + service.customizeItemPrice(_opt.price, (opt.price_linked == '1'));
-								_option.options.push( _opt );
-							}
-					}
-				}
-				service.items[id].details.options.push( _option );
-			}
 			//TODO:: If it is a mobile add the items at the top #1035
-
-			if (parseInt(App.cache('Dish', item).expand_view) > 0) {
-				service.customize(el);
-			}
-
 			service.updateTotal();
 
-			App.track('Dish added', {
-				id_dish: App.cache('Dish', item).id_dish,
-				name: App.cache('Dish', item).name
-			});
+			App.track('Dish added', { id_dish: dish.id_dish, name: dish.name });
 		},
 
 		clone: function (item) {
@@ -94,9 +60,7 @@ NGApp.factory('CartService', function () {
 			for (var x in cart.options) {
 				newoptions[newoptions.length] = cart.options[x];
 			}
-			service.add(cart.id, {
-				options: newoptions
-			});
+			service.add(cart.id, { options: newoptions });
 
 			App.track('Dish cloned');
 		},
@@ -104,6 +68,40 @@ NGApp.factory('CartService', function () {
 		remove: function (item) {
 			App.track('Dish removed');
 			delete service.items[item];
+			service.updateTotal();
+		},
+
+		customizeItem: function (option, item) {
+			var cartitem = service.items[item.details.id];
+			if (option) {
+				if ( option.type == 'select' ) {
+					var options = item.details.customization.rawOptions;
+					for (var i in options) {
+						if (options[i].id_option_parent != option.id_option) {
+							continue;
+						}
+						for (var x in cartitem.options) {
+							if ( cartitem.options[x] == options[i].id_option && options[i].id_option_parent == option.id_option ) {
+								cartitem.options.splice(x, 1);
+								break;
+							}
+						}
+					}
+					cartitem.options[cartitem.options.length] = option.selected;
+				} else if ( option.type == 'check' ) {
+					if (option.checked) {
+						cartitem.options[cartitem.options.length] = option.id_option;
+					} else {
+						for (var x in cartitem.options) {
+							if (cartitem.options[x] == option.id_option) {
+								cartitem.options.splice(x, 1);
+								break;
+							}
+						}
+					}
+				}
+			}
+			service.items[item.details.id] = cartitem;
 			service.updateTotal();
 		},
 
@@ -367,49 +365,7 @@ NGApp.factory('CartService', function () {
 			App.track('Dish customized');
 		},
 
-		customizeItem: function (item) {
 
-			var
-			cart = item.closest('.cart-item-customize').attr('data-id_cart_item'),
-				cartitem = service.items[cart],
-				customitem = item.closest('.cart-item-customize-item'),
-				opt = customitem.attr('data-id_option');
-
-			if (opt) {
-				if (item.hasClass('cart-customize-select')) {
-
-					var obj = App.cached['Dish'][cartitem.id],
-						opts = obj.options();
-
-					for (var i in opts) {
-						if (opts[i].id_option_parent != opt) {
-							continue;
-						}
-						for (var x in cartitem.options) {
-							if (cartitem.options[x] == opts[i].id) {
-								cartitem.options.splice(x, 1);
-								break;
-							}
-						}
-					}
-
-					cartitem.options[cartitem.options.length] = item.val();
-
-				} else if (item.hasClass('cart-customize-check')) {
-					if (item.is(':checked')) {
-						cartitem.options[cartitem.options.length] = opt;
-					} else {
-						for (var x in cartitem.options) {
-							if (cartitem.options[x] == opt) {
-								cartitem.options.splice(x, 1);
-								break;
-							}
-						}
-					}
-				}
-			}
-			service.updateTotal();
-		},
 
 		/**
 		 * subtotal, delivery, fee, taxes and tip
@@ -948,7 +904,51 @@ NGApp.factory('CartService', function () {
 			$('[name="pay-autotip-value"]').val(autotipValue);
 			var autotipText = autotipValue ? ' (' + (App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '') + autotipValue + ')' : '';
 			$('[name=pay-tip] [value=autotip]').html('Autotip' + autotipText);
+		},
+
+		parseOptions: function( options, selectedOptions ){
+			
+			var parsedOptions = [];
+
+			for( var x in options ){
+				var newOption = {};
+				var rawOption = options[x];
+				if ( rawOption.id_option_parent ) {
+					continue;
+				}
+				newOption.type = rawOption.type;
+				newOption.id_option = rawOption.id_option;
+				newOption.name = rawOption.name + ( rawOption.description || '' );
+				if( rawOption.type == 'check' ){
+					newOption.id_option = rawOption.id_option;
+					newOption.price = rawOption.optionPrice(options);
+					newOption.priceFormated = service.customizeItemPrice(newOption.price);
+					newOption.checked = ( $.inArray(rawOption.id_option, selectedOptions) !== -1);
+				}
+				if( rawOption.type == 'select' ){
+					newOption.options = [];
+					newOption.selected = false;
+					for( var i in options ){
+						if (options[i].id_option_parent == rawOption.id_option) {
+							var newSubOption = {};
+							newSubOption.id_option = options[i].id_option;
+							newSubOption.id_option_parent = options[i].id_option_parent;
+							newSubOption.price = options[i].price;
+							newSubOption.priceFormated = service.customizeItemPrice(newSubOption.price);
+							newSubOption.selected = ($.inArray( options[i].id_option, selectedOptions) !== -1);
+							newSubOption.name = options[i].name + (options[i].description || '') + service.customizeItemPrice(newSubOption.price, (rawOption.price_linked == '1'));
+							newOption.options.push( newSubOption );
+							if( newSubOption.selected ){
+								newOption.selected = options[i].id_option;
+							}
+						}
+					}
+				}
+				parsedOptions.push( newOption );
+			}
+			return parsedOptions;
 		}
+
 	};
 
 	return service;

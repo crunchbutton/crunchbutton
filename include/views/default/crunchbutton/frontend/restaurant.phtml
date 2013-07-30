@@ -61,40 +61,42 @@
 								<span class="cart-item-description">{{item.details.description}}</span>
 							</div>
 
-							<div ng-show="item.details.customizable" ng-tap="item.details.customizing=!item.details.customizing" class="cart-item-config"><a href="javascript:;">Customize</a></div>
+							<div ng-show="item.details.customization.customizable" ng-tap="item.details.customization.expanded=!item.details.customization.expanded" class="cart-item-config"><a href="javascript:;">Customize</a></div>
 
 						</div>
 
 						<!-- Customizable options -->
-						<div ng-show="item.details.customizable && item.details.customizing">
-							<div ng-repeat="option in item.details.options">
+						<div ng-show="item.details.customization.customizable && item.details.customization.expanded">
+							
+							<div ng-repeat="option in item.details.customization.options">
 
-								<div class="cart-item-customize-item" data-id_option="{{option.id_option}}">
+								<div class="cart-item-customize-item">
+								
 									<div ng-switch on="option.type">
+
 										<!-- Customizable - checkbox -->
 										<div ng-switch-when="check">
-												<input type="checkbox" ng-checked="option.checked" class="cart-customize-check">
-												<label class="cart-item-customize-name">{{option.name}}</label>
-												<label class="cart-item-customize-price">{{option.priceFormated}}</label>
+												<input type="checkbox" ng-change="cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
+												<label ng-tap="option.checked = !option.checked; cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</label>
+												<label ng-tap="option.checked = !option.checked; cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</label>
 										</div>
+
 										<!-- Customizable - select -->
 										<div ng-switch-when="select">
-												<label class="cart-item-customize-select-name">{{option.name}}</label>
-												<select class="cart-customize-select">
-													<option ng-repeat="opt in option.options" ng-selected="opt.selected" value="{{opt.id_option}}">
-														{{opt.name}}
-													</option>
-												</select>
-											</div>
+											<label class="cart-item-customize-select-name">{{option.name}}</label>
+
+											<select ng-change="cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
 										</div>
+
 									</div>
-
 								</div>
-							</div>
 
+							</div>
 						</div>
+
 					</div>
 				</div>
+			</div>
 
 				<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for {{restaurant.name}}</label></div>
 			</div>
