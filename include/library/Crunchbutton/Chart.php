@@ -39,16 +39,16 @@ class Crunchbutton_Chart extends Cana_Model {
 		return false;
 	}
 
-	public function getGroups( $_group = false ){
+	public function getGroups( $tags = false ){
 		$groups = [];		
 		foreach( $this->groups as $id_group => $group ){
 			$add = false;
-			if( $_group ){
-				if( $group[ 'groups' ] && in_array( $_group, $group[ 'groups' ] ) ){
+			if( $tags ){
+				if( $group[ 'tags' ] && in_array( $tags, $group[ 'tags' ] ) ){
 					$add = true;
 				} 
 			} else {
-				if( !$group[ 'groups' ] ){
+				if( !$group[ 'tags' ] ){
 					$add = true;
 				}
 			}

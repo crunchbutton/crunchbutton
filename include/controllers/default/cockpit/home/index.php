@@ -40,12 +40,12 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		
 		$graphs = [];
 
-		$graphs[ 'Detailed Analytics' ] = array_merge( 
-																								$chartUsers->getGroups( 'detailed-analytics' ), 
-																								$chartRevenue->getGroups( 'detailed-analytics' ),
-																								$chartChurn->getGroups( 'detailed-analytics' ),
-																								$chartGift->getGroups( 'detailed-analytics' ),
-																								$chartOrder->getGroups( 'detailed-analytics' )
+		$graphs[ 'For Investors' ] = array_merge( 
+																								$chartUsers->getGroups( 'investors' ), 
+																								$chartRevenue->getGroups( 'investors' ),
+																								$chartChurn->getGroups( 'investors' ),
+																								$chartGift->getGroups( 'investors' ),
+																								$chartOrder->getGroups( 'investors' )
 																							);
 
 		$graphs[ 'Detailed Analytics' ] = array_merge( 

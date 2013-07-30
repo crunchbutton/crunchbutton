@@ -7,6 +7,7 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 	public $groups = array( 
 												'group-revenue' => array(
 														'title' => 'Gross Revenue',
+														'tags' => array( 'investors' ),
 														'charts' => array(  
 																'gross-revenue-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byDayByCommunity' ) ) ),
 																'gross-revenue-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byWeekByCommunity' ) ) ),
