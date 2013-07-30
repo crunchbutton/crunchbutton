@@ -25,9 +25,10 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 												'group-new-users-per-active-user' => array(
 														'title' => 'New Users per Active Users',
+														'tags' => array( 'main' ),
 														'charts' => array(  
 																'users-new-per-active-users-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newPerActiveByDay' ),
-																'users-new-per-active-users-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newPerActiveByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newPerActiveByWeekByCommunity' ) ) ),
+																'users-new-per-active-users-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newPerActiveByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newPerActiveByWeekByCommunity' ) ), 'default' => true ),
 																'users-new-per-active-users-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newPerActiveByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newPerActiveByMonthByCommunity' ) ) )
 															)
 												),
@@ -42,9 +43,10 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 												'group-new-users' => array(
 														'title' => 'New Users',
+														'tags' => array( 'main' ),
 														'charts' => array(  
 																'users-new-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newByDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByDayByCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByDayCohort' ) ) ),
-																'users-new-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByWeekByCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByWeekCohort' ) ) ),
+																'users-new-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByWeekByCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByWeekCohort' ) ), 'default' => true ),
 																'users-new-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByMonthByCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByMonthCohort' ) ) ),
 															)
 												),

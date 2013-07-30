@@ -19,6 +19,16 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 			}
 		}
 
+		if( $_GET[ 'cohort_type' ] ){
+			$info[ 'cohort_type' ] = $_GET[ 'cohort_type' ];
+		} 
+
+		if( $_GET[ 'id_chart_cohort' ] ){
+			$info[ 'id_chart_cohort' ] = $_GET[ 'id_chart_cohort' ];
+		}
+
+		$info[ '_filter' ] = "&filter={$info[ 'filter' ]}&cohort_type={$info[ 'cohort_type' ]}&id_chart_cohort={$info[ 'id_chart_cohort' ]}";
+
 		$this->chart->processInterval( $info[ 'chart' ][ 'interval' ] );
 		$chart->processInterval( $info[ 'chart' ][ 'interval' ] );
 

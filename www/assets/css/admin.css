@@ -924,6 +924,7 @@ td.day{
 }
 
 .charts-select{
+	height: 18px !important;
 	font-size: 11px;
 	width: 250px;
 }

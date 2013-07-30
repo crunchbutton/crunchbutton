@@ -16,6 +16,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 												),
 												'group-churn-rate-per-active-user' => array(
 														'title' => 'Churn Rate per Active User',
+														'tags' => array( 'main' ),
 														'charts' => array(  
 																'churn-rate-per-active-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'activeByDay' ),
 																'churn-rate-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'activeByWeek' ),
