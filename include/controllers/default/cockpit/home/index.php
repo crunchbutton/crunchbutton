@@ -40,29 +40,29 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		
 		$graphs = [];
 
-		$graphs[ 'Investors Stuff' ] = array_merge( 
+		$graphs[ 'Detailed Analytics' ] = array_merge( 
+																								$chartUsers->getGroups( 'detailed-analytics' ), 
+																								$chartRevenue->getGroups( 'detailed-analytics' ),
+																								$chartChurn->getGroups( 'detailed-analytics' ),
+																								$chartGift->getGroups( 'detailed-analytics' ),
+																								$chartOrder->getGroups( 'detailed-analytics' )
+																							);
+
+		$graphs[ 'Detailed Analytics' ] = array_merge( 
+																								$chartUsers->getGroups( 'detailed-analytics' ), 
+																								$chartRevenue->getGroups( 'detailed-analytics' ),
+																								$chartChurn->getGroups( 'detailed-analytics' ),
+																								$chartGift->getGroups( 'detailed-analytics' ),
+																								$chartOrder->getGroups( 'detailed-analytics' )
+																							);
+		
+		$graphs[ 'Old Graphs' ] = array_merge( 
 																								$chartUsers->getGroups(), 
 																								$chartRevenue->getGroups(),
 																								$chartChurn->getGroups(),
 																								$chartGift->getGroups(),
 																								$chartOrder->getGroups()
 																							);
-		
-		
-		/*
-		$graphs = array( 
-								'' => array( 
-									// Groups
-									array( 'divId' => 'chart-orders', 'title-group' => 'Orders', 'chart-url' => 'orders-per-day' ),
-									array( 'divId' => 'chart-users-others', 'title-group' => 'Users - Others', 'chart-url' => 'users-unique-per-month' ),
-									array( 'divId' => 'chart-users-active', 'title-group' => 'Active Users', 'chart-url' => 'users-active-per-week' ),
-									array( 'divId' => 'chart-users-new', 'title-group' => 'New Users', 'chart-url' => 'users-new-per-day' ),
-									array( 'divId' => 'chart-gross', 'title-group' => 'Gross Revenue', 'chart-url' => 'gross-revenue-per-week' ),
-									array( 'divId' => 'chart-churn', 'title-group' => 'Churn Rate', 'chart-url' => 'churn-rate-per-week' ),
-									array( 'divId' => 'chart-gift-cards', 'title-group' => 'Gift Cards', 'chart-url' => 'gift-cards-created-per-day' ),
-									)
-							);
-		*/
 
 		c::view()->graphs = $graphs;
 		c::view()->display('home/index');
