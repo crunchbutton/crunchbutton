@@ -91,13 +91,16 @@
 			<h4 style="text-align:center;"><?php echo $title; ?></h4>	
 		</div>
 	</div>
-	<div id="options-<?=$divId?>">
+	<?php if( $hasResults ){ ?>
+	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:250px; margin: 0 auto"></div>
+
+	<div id="options-<?=$divId?>" style="height:95px;background:#F5F5F5;width:98%;overflow-x:auto;overflow-y:hidden;">
 		<table>
 			<tr>
 			<?php 
 				if( $groups ){ ?>
 				<td class="padded" nowrap="">
-					<select style="width:100px;font-size:10px;" class=" charts-select" id="select-<?=$chartId?>" data-divId="<?php echo $divId; ?>" onchange="loadSubChart( this.id )">
+					<select style="width:100px;font-size:10px;" class="charts-select" id="select-<?=$chartId?>" data-divId="<?php echo $divId; ?>" onchange="loadSubChart( this.id )">
 						<?php foreach ( $groups as $key => $value ) { 
 							$selected = ( $key == $chartId ) ? 'selected="selected"' : '';
 							?>
@@ -106,6 +109,7 @@
 					</select>
 				</td>
 			<?php } 
+
 			if( $info['chart'][ 'filters' ] ){
 				
 				$filters = $info['chart'][ 'filters' ];
@@ -128,7 +132,7 @@
 								
 								?>
 								
-								<td class="padded" id="filter-<?php echo $divId; ?>-cohort-<?php echo $cohort->id_chart_cohort; ?>">
+								<td nowrap="" class="padded" id="filter-<?php echo $divId; ?>-cohort-<?php echo $cohort->id_chart_cohort; ?>">
 									<div>
 										<input type="radio" name="filter" class="icheck-<?=$chartId?>" <?php echo $checked; ?> value="cohort&cohort_type=cohort&id_chart_cohort=<?php echo $cohort->id_chart_cohort; ?>" id="cohort-<?php echo $cohort->id_chart_cohort; ?>">
 										<label for="cohort-<?php echo $cohort->id_chart_cohort; ?>" style="font-size:10px;"><?php echo $cohort->name; ?></label>
@@ -141,9 +145,9 @@
 
 						if( count( $cohorts[ 'giftcards' ] ) > 0 ){
 							?>
-							<td class="padded" id="filter-cohort-giftcards">
+							<td nowrap="" class="padded" id="filter-cohort-giftcards">
 								<div>
-									<select id="cohort-giftcards" style="width:100px;font-size:10px;" class=" select-cohort-<?=$chartId?>">
+									<select id="cohort-giftcards" style="width:100px;font-size:10px;" class="charts-select select-cohort-<?=$chartId?>">
 									<option>Gift card group</option>
 									<?php foreach( $cohorts[ 'giftcards' ] as $cohort ){ 
 											$selected = ( $_GET[ 'id_chart_cohort' ] == $cohort->id_chart_cohort && $_GET[ 'cohort_type' ] == 'giftcard' ) ? 'selected="selected"' : '';
@@ -160,9 +164,9 @@
 
 						if( count( $cohorts[ 'months' ] ) > 0 ){
 							?>
-							<td class="padded" id="filter-<?php echo $divId; ?>-cohort-months">
+							<td class="padded" nowrap="" id="filter-<?php echo $divId; ?>-cohort-months">
 								<div>
-									<select id="cohort-months" style="width:100px;font-size:10px;" class=" select-cohort-<?=$chartId?>">
+									<select id="cohort-months" style="width:100px;font-size:10px;" class="charts-select select-cohort-<?=$chartId?>">
 									<option>First order at</option>
 									<?php foreach( $cohorts[ 'months' ] as $cohort ){ 
 											$selected = ( $_GET[ 'id_chart_cohort' ] == $cohort->id_chart_cohort && $_GET[ 'cohort_type' ] == 'months' ) ? 'selected="selected"' : '';
@@ -181,7 +185,7 @@
 						$checked = ( $filter[ 'type' ] == $info[ 'filter' ] ) ? 'checked="checked"' : '';
 						if( $checked != '' ){ $hasFilter = true; }
 						?>
-						<td class="padded" id="filter-<?php echo $divId; ?>-<?php echo $filter[ 'type' ]; ?>">
+						<td class="padded" nowrap="" id="filter-<?php echo $divId; ?>-<?php echo $filter[ 'type' ]; ?>">
 							<div>
 								<input type="radio" name="filter" class="icheck-<?=$chartId?>" <?php echo $checked; ?> value="<?php echo $filter[ 'type' ]; ?>" id="<?php echo $filter[ 'type' ]; ?>">
 								<label for="<?php echo $filter[ 'type' ]; ?>" style="font-size:10px;"><?php echo $filter[ 'title' ]; ?></label>
@@ -191,7 +195,7 @@
 					}
 				}
 				?>
-				<td class="padded" id="filter-no-filter">
+				<td nowrap="" class="padded" id="filter-no-filter">
 					<div>
 						<input type="radio" <?php if( !$hasFilter ){ echo 'checked="checked"'; } ?> name="filter" class="icheck-<?=$chartId?>" value="" id="no-filter">
 						<label for="no-filter" style="font-size:10px;">No filter</label>
@@ -202,41 +206,37 @@
 			?>
 			</tr>
 		</table>
-	</div>
-	<?php if( $hasResults ){ ?>
-	<div id="chart-<?=$chartId?>" style="min-width: 100%; height:300px; margin: 0 auto"></div>
-	<br/>
-	<br/>
-	<br/>
-	<div class="row-fluid">
+	
+	<div class="row-fluid" style="padding:0 20px; font-size:11px;">
 		<div class="span3" id="week-<?=$chartId?>">
 			<?php
 			if( $interval == 'week' ){
 				$_slider_to = $to;
 				$_slider_from = $from;
 				?>
-					Weeks from <?php echo $from; ?> to <?php echo $to; ?> (of <?php echo $totalWeeks; ?>):
+					Weeks <?php echo $from; ?> to <?php echo $to; ?> (of <?php echo $totalWeeks; ?>):
 				<?php
 			} else if( $interval == 'month' ){
 					$_slider_to = $to_month;
 					$_slider_from = $from_month;
 			?>
-				Months from <?php echo $from_month; ?> to <?php echo $to_month; ?> (of <?php echo $totalMonths; ?>):
+				Months <?php echo $from_month; ?> to <?php echo $to_month; ?> (of <?php echo $totalMonths; ?>):
 			<?php 
 			} else if( $interval == 'day' ){
 					$_slider_to = $to_day;
 					$_slider_from = $from_day;
 			?>
-				Days from <?php echo $from_day; ?> to <?php echo $to_day; ?> (of <?php echo $totalDays; ?>):
+				Days <?php echo $from_day; ?> to <?php echo $to_day; ?> (of <?php echo $totalDays; ?>):
 			<?php 
 			} ?>
 		</div>
-		<div class="span8">
+		<div class="span7">
 			<div id="slider-<?=$divId?>" data-from="<?php echo $_slider_from; ?>" data-to="<?php echo $_slider_to; ?>"></div>
 	</div>
 	<?php } else {
 		echo 'No results for <b>' . $title . '</b>';
 	} ?>
+</div>
 </div>
 <?php if( $hasResults ){ ?>
 <hr />
@@ -261,6 +261,7 @@ $(function () {
 				rotation: -45,
 				align: 'right'
 				<?php if( $interval == 'day' ){ ?>,step:10<?php } ?>
+				<?php if( $interval == 'week' ){ ?>,step:2<?php } ?>
 			}
 		},
 		yAxis: {
@@ -316,7 +317,7 @@ $(function () {
 			var self = $( '#<?=$divId?>' );
 			$( '#slider-<?=$divId?>' ).attr( 'data-from', ui.values[ 0 ] );
 			$( '#slider-<?=$divId?>' ).attr( 'data-to', ui.values[ 1 ] );
-			loadChart(  { 'divId' : '<?php echo $divId; ?>', 'permalink' : '<?php echo $chartId; ?>', 'interval' : '<?php echo $interval; ?>', 'filter' : '<?php echo $info[ 'filter' ]; ?>' } );
+			loadChart(  { 'divId' : '<?php echo $divId; ?>', 'permalink' : '<?php echo $chartId; ?>', 'interval' : '<?php echo $interval; ?>', 'filter' : '<?php echo $info[ '_filter' ]; ?>'} );
 		}
 	} );
 });

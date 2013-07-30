@@ -52,9 +52,7 @@ class Crunchbutton_Chart extends Cana_Model {
 					$add = true;
 				}
 			}
-			if( !$add ){
-				continue;
-			}
+			if( !$add ){ continue; }
 
 			$groups[ $id_group ] = array();
 			$groups[ $id_group ][ 'title' ] = $group[ 'title' ];
@@ -62,7 +60,12 @@ class Crunchbutton_Chart extends Cana_Model {
 			if( count( $charts ) > 0 ){
 				foreach ( $charts as $id_chart => $chart ) {
 					$groups[ $id_group ][ 'url' ] = $id_chart;	
-				}	
+				}
+				foreach ( $charts as $id_chart => $chart ) {
+					if( $chart[ 'default' ] ){
+						$groups[ $id_group ][ 'url' ] = $id_chart;		
+					}
+				}
 			}
 			if( !$groups[ $id_group ][ 'url' ] ){
 				unset( $groups[ $id_group ] );

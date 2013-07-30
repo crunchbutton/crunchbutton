@@ -1,264 +1,185 @@
 <?
-	$this->title = 'Dashboard';
-	$this->subtitle = 'Crunchbutton overview';
-	$this->titleicon = 'dashboard';
-?>
+	 $this->title = 'Dashboard';
+	 $this->subtitle = 'Crunchbutton overview';
+	 $this->titleicon = 'dashboard';
+	 ?>
 <!-- content -->
 <div class="container-fluid padded">
-	<div class="row-fluid">
-		<div class="span3">
-			<!--big normal buttons-->
-			<div class="action-nav-normal">
-
-				<div class="row-fluid">
-					<div class="span6 action-nav-button">
-						<a href="/restaurants/new" title="New Restaurant">
-							<i class="icon-file-alt"></i>
-							<span>New Restaurant</span>
-						</a>
-						<span class="triangle-button red"><i class="icon-plus"></i></span>
-					</div>
-			
-					<div class="span6 action-nav-button">
-						<a href="/support" title="Support">
-							<i class="icon-comments-alt"></i>
-							<span>Support</span>
-						</a>
-						<span class="label label-black"><?=$this->data['all']['tickets']?></span>
-					</div>
-				</div>
-
-			
-				<div class="row-fluid">
-					<div class="span6 action-nav-button">
-						<a href="https://github.com/crunchbutton/crunchbutton" title="Github" target="_blank">
-							<i class="icon-github"></i>
-							<span>Github</span>
-						</a>
-					</div>
-			
-					<div class="span6 action-nav-button">
-						<a href="https://www.facebook.com/crunchbutton" title="Facebook" target="_blank">
-							<i class="icon-facebook-sign"></i>
-							<span>Facebook</span>
-						</a>
-					</div>
-				</div>
-			
-				<div class="row-fluid">
-					<div class="span6 action-nav-button">
-						<a href="/home/curation" title="Curation">
-							<i class="icon-food"></i>
-							<span>Curation</span>
-						</a>
-					</div>
-
-					<div class="span6 action-nav-button">
-						<a href="/home/marketing" title="Curation">
-							<i class="icon-bullhorn"></i>
-							<span>Marketing</span>
-						</a>
-					</div>
-				</div>
-
+	<div class="row-fluid action-nav-normal">
+		<div class="span2">
+			<div class="span12 action-nav-button">
+				<a href="/restaurants/new" title="New Restaurant">
+				<i class="icon-file-alt"></i>
+				<span>New Restaurant</span>
+				</a>
+				<span class="triangle-button red"><i class="icon-plus"></i></span>
 			</div>
 		</div>
-
-		
-		<div class="span9">
-			
-			<div class="box">
-				<div class="box-header">
-					<div class="title">Recent Orders</div>
-					<? /*
-					<ul class="box-toolbar">
-						<li class="toolbar-link">
-							<a href="#" data-toggle="dropdown"><i class="icon-cog"></i></a>
-							<ul class="dropdown-menu">
-								<li><a href="#"><i class="icon-plus-sign"></i> Add</a></li>
-								<li><a href="#"><i class="icon-remove-sign"></i> Remove</a></li>
-								<li><a href="#"><i class="icon-pencil"></i> Edit</a></li>
-							</ul>
-						</li>
-					</ul>
-					*/ ?>
-				</div>
-			
-				<div class="box-content padded">
-					<div class="row-fluid">
-
-						<div class="span4 separate-sections" style="margin-top: 5px;">
-			
-							<div class="row-fluid">
-								<div class="span12">
-									<div class="dashboard-stats">
-										<ul class="inline">
-											<li class="glyph"><i class="icon-bolt icon-2x"></i></li>
-											<li class="count"><?=$this->data['all']['orders']?></li>
-										</ul>
-										
-										<div class="stats-label">Total Orders</div>
-									</div>
-								</div>
-							</div>
-			
-							<div class="row-fluid" style="margin-top:30px;">
-								<div class="span6">
-									<div class="dashboard-stats small">
-										<ul class="inline">
-											<li class="glyph"><i class="icon-user"></i></li>
-											<li class="count"><?=$this->data['week']['orders']?></li>
-										</ul>
-										
-										<div class="stats-label">This Week</div>
-									</div>
-								</div>
-			
-								<div class="span6">
-									<div class="dashboard-stats small">
-										<ul class="inline">
-											<li class="glyph"><i class="icon-eye-open"></i></li>
-											<li class="count"><?=$this->data['day']['orders']?></li>
-										</ul>
-										<? /* <div class="progress progress-blue"><div class="bar tip" title="80%" data-percent="80"></div></div> */ ?>
-										<div class="stats-label">Today</div>
-									</div>
-								</div>
-							</div>
-			
-						</div>
-						<div class="span8">
-							<div class="sine-chart" id="xchart-sine"></div>
-						</div>
-					</div>
-				</div>
-				
+		<div class="span2">
+			<div class="span12 action-nav-button">
+				<a href="/support" title="Support">
+				<i class="icon-comments-alt"></i>
+				<span>Support</span>
+				</a>
+				<span class="label label-black"><?=$this->data['all']['tickets']?></span>
+			</div>
+		</div>
+		<div class="span2">
+			<div class="span12 action-nav-button">
+				<a href="https://github.com/crunchbutton/crunchbutton" title="Github" target="_blank">
+				<i class="icon-github"></i>
+				<span>Github</span>
+				</a>
+			</div>
+		</div>
+		<div class="span2">
+			<div class="span12 action-nav-button">
+				<a href="https://www.facebook.com/crunchbutton" title="Facebook" target="_blank">
+				<i class="icon-facebook-sign"></i>
+				<span>Facebook</span>
+				</a>
+			</div>
+		</div>
+		<div class="span2">
+			<div class="span12 action-nav-button">
+				<a href="/home/curation" title="Curation">
+				<i class="icon-food"></i>
+				<span>Curation</span>
+				</a>
+			</div>
+		</div>
+		<div class="span2">
+			<div class="span12 action-nav-button">
+				<a href="/home/marketing" title="Curation">
+				<i class="icon-bullhorn"></i>
+				<span>Marketing</span>
+				</a>
 			</div>
 		</div>
 	</div>
-	<div class="box">
-		<div class="box-header">
-			<span class="title">Metrics</span>
-			<ul class="box-toolbar">
-			<li class="toolbar-link">
-				<a data-toggle="modal" href="#modal-simple"><i class="icon-info-sign"></i></a>
-			</li>
-		</ul>
-		</div>
+	 <div class="box">
+			<div class="box-header">
+				 <span class="title">Metrics</span>
+				 <ul class="box-toolbar">
+						<li class="toolbar-link">
+							 <a data-toggle="modal" href="#modal-simple"><i class="icon-info-sign"></i></a>
+						</li>
+				 </ul>
+			</div>
 			<div class="box-content padded">
-				<div class="row-fluid">
-					<div class="span3">
-						<ul class="padded separate-sections">
-							<li>
-								<span class="span7">
-									<label for="active-user">
-										<b>Active user (days)</b>
-									</label>
-								</span>
-								<span class="span4">
-									<input name="active-user-days" class="span12" id="active-user-days" type="number" placeholder="days" value="45">
-								</span>
-								<div class="clearfix"></div>
-							</li>
-						</ul>
-					</div>
-					<div class="span7">
-						<div id="slider-master"></div>
-						<br />
-						<div id="slider-label"></div>
-					</div>
-					<div class="span2">
-						<button class="btn btn-blue" id="button-reload" title="Reload all charts"><i class="icon-refresh"></i></button>
-						&nbsp;
-						<button class="btn btn-green" id="button-open-all" title="Open all">Open all</button>
-					</div>
-
-					<div class="clearfix"></div>
-					<hr/>
-				</div>
-			<?php
-			foreach ($this->graphs as $category => $graphs ){ 
-				?>
-				<h5><?php echo $category; ?></h5><?php
-				$count = 1;
-				foreach ($graphs as $id => $graph ){ 
-
-					if( $count == 1 ){
-							echo '<div class="row-fluid">';
-						}
-						$title = $graph[ 'title' ];
-						$divId = $id;
-						?>
-							<div class="span4">
-								<div>
-									<input type="checkbox" 
-									class="icheck" 
+				 <?php
+						foreach ($this->graphs as $category => $graphs ){ 
+							?>
+				 <h5><?php echo $category; ?></h5>
+				 <?php
+						$count = 1;
+						foreach ($graphs as $id => $graph ){ 
+						
+							if( $count == 1 ){
+									echo '<div class="row-fluid">';
+								}
+								$title = $graph[ 'title' ];
+								$divId = $id;
+								?>
+				 <div class="span4">
+						<div>
+							 <input type="checkbox" 
+									class="icheck cat-<?php echo strtolower( str_replace( ' ', '-', $category ) ); ?>" 
 									id="checkbox-<?php echo $divId;?>" 
 									data-divId="<?php echo $divId;?>" 
 									name="checkbox-<?php echo $divId;?>">
-									<label for="checkbox-<?php echo $divId;?>"><?php echo $title; ?></label>
-								</div>
-							</div>
-						<?
-					if( $count % 3 == 0 ){ 
-						echo '</div>';
-						$count = 0; 
-					}
-					$count++;
-				} 
-				if( $count != 1){ echo '</div>'; }
-				?>
-				<hr/>
-					<? 
-					foreach ( $graphs as $id => $graph ){ 
-						$chart = $graph[ 'url' ];
-						$divId = $id;
-						echo '<div id="' . $divId . '" data-permalink="' . $chart . '" class="chart" style="display:none;"><i class="icon-spinner icon-spin"></i> Loading </div>';
-					} ?>
-					<hr/>
-				<?php
-			}
-				?>
-				</div>
-	</div>
+							 <label for="checkbox-<?php echo $divId;?>"><?php echo $title; ?></label>
+						</div>
+				 </div>
+				 <?
+						if( $count % 3 == 0 ){ 
+							echo '</div>';
+							$count = 0; 
+						}
+						$count++;
+						} 
+						if( $count != 1){ echo '</div>'; }
+						?>
+				 <hr/>
+				 <? 
+						foreach ( $graphs as $id => $graph ){ 
+							$chart = $graph[ 'url' ];
+							$divId = $id;
+							echo '<div id="' . $divId . '" data-permalink="' . $chart . '" class="chart" style="display:none;width:49%;height:500px;float:left;"><i class="icon-spinner icon-spin"></i> Loading </div>';
+						} ?>
+						<div style="clear:both;"></div>
+				
+				 <?php
+						}
+					?>
+			<!-- Settings -->
+			 <div class="row-fluid">
+						<div class="span3">
+							 <ul class="padded separate-sections">
+									<li>
+										 <span class="span7">
+										 <label for="active-user">
+										 <b>Active user (days)</b>
+										 </label>
+										 </span>
+										 <span class="span4">
+										 <input name="active-user-days" class="span12" id="active-user-days" type="number" placeholder="days" value="45">
+										 </span>
+										 <div class="clearfix"></div>
+									</li>
+							 </ul>
+						</div>
+						<div class="span7">
+							 <div id="slider-master"></div>
+							 <br />
+							 <div id="slider-label"></div>
+						</div>
+						<div class="span2">
+							 <button class="btn btn-blue" id="button-reload" title="Reload all charts"><i class="icon-refresh"></i></button>
+							 &nbsp;
+							 <button class="btn btn-green" id="button-open-all" title="Open all">Open all</button>
+						</div>
+						<div class="clearfix"></div>
+						<hr/>
+				 </div>
+			</div>
+	 </div>
 </div>
 <div id="modal-simple" class="modal hide fade" style="display: none;" aria-hidden="true">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h6 id="modal-tablesLabel">Metrics info</h6>
-	</div>
-	<div class="modal-body">
-		<h4>Communities</h4>
-		<?php 
-			$communities = Crunchbutton_Restaurant::getCommunities();
-			foreach( $communities as $community ){
-				?>
-				<b><?php echo $community; ?></b> <br/>
-				<ul>
-				<?php
-					$restaurants = Crunchbutton_Restaurant::getRestaurantsByCommunity( $community );
-					foreach( $restaurants as $restaurant ){
+	 <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h6 id="modal-tablesLabel">Metrics info</h6>
+	 </div>
+	 <div class="modal-body">
+			<h4>Communities</h4>
+			<?php 
+				 $communities = Crunchbutton_Restaurant::getCommunities();
+				 foreach( $communities as $community ){
+					?>
+			<b><?php echo $community; ?></b> <br/>
+			<ul>
+				 <?php
+						$restaurants = Crunchbutton_Restaurant::getRestaurantsByCommunity( $community );
+						foreach( $restaurants as $restaurant ){
+							?>
+				 <li><?php echo  $restaurant->name; ?></li>
+				 <?php 
+						}
 						?>
-						<li><?php echo  $restaurant->name; ?></li>
-						<?php 
-					}
-				?>
-				</ul>
-				<?php
-			}
-		?>
-		<h4>Cohorts</h4>
-		<a href="/charts/cohort/" class="btn btn-green"><i class="icon-group"></i> Manage cohorts </a> 
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-default" data-dismiss="modal">Close</button>
-	</div>
+			</ul>
+			<?php
+				 }
+				 ?>
+			<h4>Cohorts</h4>
+			<a href="/charts/cohort/" class="btn btn-green"><i class="icon-group"></i> Manage cohorts </a> 
+	 </div>
+	 <div class="modal-footer">
+			<button class="btn btn-default" data-dismiss="modal">Close</button>
+	 </div>
 </div>
-
 <script type="text/javascript">
-
-	$( document ).ready( function(){
-
+	 $( document ).ready( function(){
+	 
 		$( '.icheck' ).on( 'ifChanged', function( event ){
 			var check = $( this );
 			var divId = check.attr( 'data-divId' );
@@ -274,11 +195,11 @@
 				chart.hide();
 			}
 		});
-
+	 
 		$( '#button-open-all' ).click( function(){
 			$( '.icheck' ).iCheck( 'check' ); 
 		} );
-
+	 
 		$( '#button-reload' ).click( function(){
 			$( '.chart' ).each( function(){
 				var chart = $( this );
@@ -293,7 +214,7 @@
 				}
 			} );
 		} );
-
+	 
 		/* Load the weeks */
 		var url = '/home/charts/weeks';
 		$.ajax( { dataType: 'json', url: url, } ).done( 
@@ -314,37 +235,37 @@
 						}
 					} );
 		} );
-	} );
 
-	function loadChart( info ){
+		/* the main charts start opened */
+		$( '.cat-main' ).iCheck( 'check' ); 
 
+	 } );
+	 
+	 function loadChart( info ){
+	 
 		var divId = info[ 'divId' ];
 		var chart = $( '#' + divId );	
-
+	 
 		var activeUserDays = $( '#active-user-days' ).val();
-
+	 
 		var params = { 'activeUserDays' : activeUserDays };
-
+	 
 		if( info[ 'filter' ] ){
 			params[ 'filter' ] = info[ 'filter' ];
 		} else {
 			params[ 'filter' ] = '';
 		}
-
-		if( info[ 'interval' ] ){
-			params[ 'interval' ] = info[ 'interval' ];
-		} 
-
+	 
 		if( info[ 'permalink' ] ){
 			var permalink = info[ 'permalink' ];
 		} else {
 			var permalink = chart.attr( 'data-permalink' );
 		}
-
+	 
 		chart.attr( 'data-permalink', permalink );
-
+	 
 		var slider = $( '#slider-' + divId );
-
+	 
 		if( slider.length > 0 ){
 			if( slider.attr( 'data-from' ) ){
 				params[ 'from' ] = slider.attr( 'data-from' );	
@@ -353,12 +274,12 @@
 				params[ 'to' ] = slider.attr( 'data-to' );	
 			}
 		}
-
+	 
 		if( info[ 'force' ] ){
-
+	 
 			var weekFrom = $( '#slider-master' ).attr( 'data-from' );
 			var weekTo = $( '#slider-master' ).attr( 'data-to' );
-
+	 
 			if( weekFrom && weekFrom != '' && typeof weekFrom != 'undefined' ){
 				params[ 'from' ] = weekFrom;
 			}
@@ -366,7 +287,7 @@
 				params[ 'to' ] = weekTo;
 			}
 		}
-
+	 
 		var strParams = "?";
 		for ( var key in params ) {
 			if ( strParams != "?" ) {
@@ -374,15 +295,15 @@
 			}
 			strParams += key + "=" + params[key];
 		}
-
+	 
 		var url = '/home/charts/' + permalink + '/' + divId + '/' + strParams;
-
+	 
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
 		
 		chart.attr( 'opened', true );
-	}
-
-	function loadSubChart( id ){
+	 }
+	 
+	 function loadSubChart( id ){
 		var select = $( id );
 		var slider = $( '#slider-' + divId );
 		slider.attr( 'data-from', false );
@@ -393,6 +314,6 @@
 		var divId = $( '#' + id ).attr( 'data-divId' );
 		$( '#' + divId ).html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
 		loadChart( { 'divId' : divId, 'permalink' : permalink, 'interval' : interval } );
-	}
-
+	 }
+	 
 </script>
