@@ -699,17 +699,17 @@ $(function() {
 			$(this).removeClass('button-bottom-click');
 		}
 	}, '.button-bottom');
-
+/*
 	$(document).on('change', '.cart-customize-select', function() {
 		App.cart.customizeItem($(this));
 	});
-
+*/
 	$( '.default-order-check' ).tap( function(){
 		setTimeout( function(){
 			$( '#default-order-check' ).checkToggle();
 		}, 1 );
 	} );
-
+/*
 	$('.cart-customize-check').tap( function() {
 		var checkbox = $(this);
 		setTimeout( function(){
@@ -724,7 +724,7 @@ $(function() {
 		$(this).prev('input').checkToggle();
 		App.cart.customizeItem( $(this).prev('input') );
 	});
-
+*/
 	$(document).on('change', '[name="pay-tip"]', function() {
 		App.order.tip = $(this).val();
 		App.order.tipHasChanged = true;
