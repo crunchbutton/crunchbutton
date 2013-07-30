@@ -7,18 +7,20 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 	public $groups = array( 
 												'group-orders' => array(
 														'title' => 'Orders',
+														'tags' => array( 'investors' ),
 														'charts' => array(  
 																'orders-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byDayPerCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'byDayCohort' ) ) ),
 																'orders-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byWeekPerCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'byWeekCohort' ) ) ),
 																'orders-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byMonthPerCommunity') , array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'byMonthCohort' ) ) ),
 															)
 												),
-												'group-orders-by-user' => array(
-														'title' => 'Orders by User',
+												'group-orders-per-user' => array(
+														'title' => 'Orders per User',
+														'tags' => array( 'investors' ),
 														'charts' => array(  
-																'orders-by-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byUsersPerDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byUsersPerDayByCommunity' ) ) ),
-																'orders-by-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byUsersPerWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byUsersPerWeekByCommunity' ) ) ),
-																'orders-by-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byUsersPerMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byUsersPerMonthByCommunity' ) ) ),
+																'orders-per-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byUsersPerDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byUsersPerDayByCommunity' ) ) ),
+																'orders-per-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byUsersPerWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byUsersPerWeekByCommunity' ) ) ),
+																'orders-per-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byUsersPerMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byUsersPerMonthByCommunity' ) ) ),
 															)
 												),
 												'group-orders-per-active-user' => array(
@@ -39,21 +41,21 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												),
 												'group-orders-by-weekday-by-community' => array(
 														'title' => 'Orders by Weekday by Community',
-														'groups' => array( 'detailed-analytics' ),
+														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'orders-by-weekday-by-community' => array( 'title' => '', 'type' => 'area', 'method' => 'byWeekdayByCommunity' )
 															)
 												),
 												'group-orders-per-restaurant-by-community' => array(
 														'title' => 'Orders per Restaurant by Community',
-														'groups' => array( 'detailed-analytics' ),
+														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'orders-per-restaurant-by-community' => array( 'title' => '', 'type' => 'pie_communities', 'method' => 'perRestaurantPerCommunity' )
 															)
 												),
 												'group-orders-track-frequece' => array(
 														'title' => 'Track Orders Frequency',
-														'groups' => array( 'detailed-analytics' ),
+														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'orders-track-frequece' => array( 'title' => 'Orders', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
 															)

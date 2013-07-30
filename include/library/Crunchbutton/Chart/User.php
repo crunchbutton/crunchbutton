@@ -6,7 +6,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 	public $groups = array( 
 												'group-users-reclaimed' => array(
-														'groups' => array( 'detailed-analytics' ),
+														'tags' => array( 'detailed-analytics' ),
 														'title' => 'Reclaimed Users',
 														'charts' => array(  
 																'users-reclaimed-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'reclaimedByDay' ),
@@ -17,7 +17,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 												'group-users-track-frequece' => array(
 														'title' => 'Track User Frequency',
-														'groups' => array( 'detailed-analytics' ),
+														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'users-track-frequece' => array( 'title' => 'Users', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
 															)
@@ -51,6 +51,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 												'group-active-users' => array(
 														'title' => 'Active Users',
+														'tags' => array( 'investors' ),
 														'charts' => array(  
 																'users-active-per-day' => array( 'title' => 'Day', 'type' => 'column', 'interval' => 'day', 'method' => 'activeByDay', 'filters' => array( array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'activeByDayCohort' ) ) ),
 																'users-active-per-week' => array( 'title' => 'Week', 'type' => 'column', 'interval' => 'week', 'method' => 'activeByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByWeekByCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'activeByWeekCohort' ) ) ),
