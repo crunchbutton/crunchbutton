@@ -56,18 +56,18 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 																'orders-by-weekday-by-community' => array( 'title' => '', 'type' => 'area', 'method' => 'byWeekdayByCommunity' )
 															)
 												),
+											'group-orders-track-frequece' => array(
+														'title' => 'Track Orders Frequency',
+														'tags' => array( 'detailed-analytics' ),
+														'charts' => array(  
+																'orders-track-frequece' => array( 'title' => 'Orders', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
+															)
+												),
 												'group-orders-per-restaurant-by-community' => array(
 														'title' => 'Orders per Restaurant by Community',
 														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'orders-per-restaurant-by-community' => array( 'title' => '', 'type' => 'pie_communities', 'method' => 'perRestaurantPerCommunity' )
-															)
-												),
-												'group-orders-track-frequece' => array(
-														'title' => 'Track Orders Frequency',
-														'tags' => array( 'detailed-analytics' ),
-														'charts' => array(  
-																'orders-track-frequece' => array( 'title' => 'Orders', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
 															)
 												),
 										);
@@ -440,7 +440,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 								(SELECT count(*) AS orders,
 												o.id_restaurant
 								 FROM `order` o
-								 WHERE o.date BETWEEN CURDATE() - INTERVAL 14 DAY AND CURDATE()
+								 WHERE o.date BETWEEN CURDATE() - INTERVAL 1400 DAY AND CURDATE()
 								 GROUP BY o.id_restaurant) orders
 							INNER JOIN restaurant r ON r.id_restaurant = orders.id_restaurant
 							WHERE r.community IS NOT NULL";
