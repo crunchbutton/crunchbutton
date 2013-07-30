@@ -39,18 +39,21 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												),
 												'group-orders-by-weekday-by-community' => array(
 														'title' => 'Orders by Weekday by Community',
+														'groups' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'orders-by-weekday-by-community' => array( 'title' => '', 'type' => 'area', 'method' => 'byWeekdayByCommunity' )
 															)
 												),
 												'group-orders-per-restaurant-by-community' => array(
 														'title' => 'Orders per Restaurant by Community',
+														'groups' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'orders-per-restaurant-by-community' => array( 'title' => '', 'type' => 'pie_communities', 'method' => 'perRestaurantPerCommunity' )
 															)
 												),
 												'group-orders-track-frequece' => array(
 														'title' => 'Track Orders Frequency',
+														'groups' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'orders-track-frequece' => array( 'title' => 'Orders', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
 															)

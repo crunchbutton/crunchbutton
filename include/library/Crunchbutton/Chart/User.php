@@ -5,8 +5,8 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	public $description = 'Users';
 
 	public $groups = array( 
-												
 												'group-users-reclaimed' => array(
+														'groups' => array( 'detailed-analytics' ),
 														'title' => 'Reclaimed Users',
 														'charts' => array(  
 																'users-reclaimed-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'reclaimedByDay' ),
@@ -17,6 +17,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 												'group-users-track-frequece' => array(
 														'title' => 'Track User Frequency',
+														'groups' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'users-track-frequece' => array( 'title' => 'Users', 'interval' => 'week', 'type' => 'area', 'method' => 'trackFrequence' ),
 															)
