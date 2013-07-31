@@ -21,8 +21,8 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 														'tags' => array( 'main' ),
 														'charts' => array(  
 																'churn-rate-per-active-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'activeByDay'),
-																'churn-rate-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'activeByWeek'),
-																'churn-rate-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'activeByMonth'),
+																'churn-rate-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'activeByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByWeekByCommunity' ) ) ),
+																'churn-rate-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'activeByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByMonthByCommunity' ) ) ),
 															)
 												),
 										);
@@ -60,6 +60,61 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 		}
 		if( $render ){
 			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $data;
+	}
+
+	public function activeByMonthByCommunity( $render = false ){
+
+		$user = new Crunchbutton_Chart_User();
+
+		$activeUsers = $user->activeByMonthByCommunity();
+		$newUsers = $user->newByMonthByCommunity();
+
+		$communities = $this->allCommunities();
+
+		$_data = [];
+		$_prev = [];
+
+		foreach ( $activeUsers as $active ) {
+			if( !$_data[ $active->Label ] ){
+				$_data[ $active->Label ] = [];	
+			}
+			$_data[ $active->Label ][ 'ActiveUser' ][ $active->Type ] = $active->Total;
+			$_data[ $active->Label ][ 'ActiveUserPrev' ][ $active->Type ] = ( $_prev[ $active->Type ] ? $_prev[ $active->Type ] : 0 );
+			$_prev[ $active->Type ] = $active->Total;
+		}
+
+		foreach ( $newUsers as $newUser ) {
+			if( !$_data[ $newUser->Label ] ){
+				$_data[ $newUser->Label ] = [];	
+			}
+			$_data[ $newUser->Label ][ 'NewUser' ][ $newUser->Type ] = $newUser->Total;
+		}
+		
+		$data = [];
+
+		foreach ( $_data as $label => $values ) {
+			foreach( $communities as $community ){
+				$active = $values[ 'ActiveUser' ][ $community ];
+				$newUser = $values[ 'NewUser' ][ $community ];
+				$prev = $values[ 'ActiveUserPrev' ][ $community ];
+
+				$lost = ( ( $prev + $newUser ) - $active );
+				$lost = ( $lost < 0 )	? 0 : $lost;
+
+				// Formula: so, divide the number lost by the previous week's total
+				if( $prev != 0 && $lost != 0 ){
+					$result = $lost / $prev;	
+				} else {
+					$result = 0;
+				}
+
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $result, 'Type' => $community ); 
+			}
+		}
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $data;
 	}
@@ -123,6 +178,61 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 				$result = 0;
 			}
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => number_format( $result, 4 ), 'Type' => 'Total' );
+		}
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit );
+		}
+		return $data;
+	}
+
+	public function activeByWeekByCommunity( $render = false ){
+
+		$user = new Crunchbutton_Chart_User();
+
+		$activeUsers = $user->activeByWeekByCommunity();
+		$newUsers = $user->newByWeekByCommunity();
+
+		$communities = $this->allCommunities();
+
+		$_data = [];
+		$_prev = [];
+
+		foreach ( $activeUsers as $active ) {
+			if( !$_data[ $active->Label ] ){
+				$_data[ $active->Label ] = [];	
+			}
+			$_data[ $active->Label ][ 'ActiveUser' ][ $active->Type ] = $active->Total;
+			$_data[ $active->Label ][ 'ActiveUserPrev' ][ $active->Type ] = ( $_prev[ $active->Type ] ? $_prev[ $active->Type ] : 0 );
+			$_prev[ $active->Type ] = $active->Total;
+		}
+
+		foreach ( $newUsers as $newUser ) {
+			if( !$_data[ $newUser->Label ] ){
+				$_data[ $newUser->Label ] = [];	
+			}
+			$_data[ $newUser->Label ][ 'NewUser' ][ $newUser->Type ] = $newUser->Total;
+		}
+		
+		$data = [];
+
+		foreach ( $_data as $label => $values ) {
+			foreach( $communities as $community ){
+				$active = $values[ 'ActiveUser' ][ $community ];
+				$newUser = $values[ 'NewUser' ][ $community ];
+				$prev = $values[ 'ActiveUserPrev' ][ $community ];
+
+				$lost = ( ( $prev + $newUser ) - $active );
+				$lost = ( $lost < 0 )	? 0 : $lost;
+
+				// Formula: so, divide the number lost by the previous week's total
+				if( $prev != 0 && $lost != 0 ){
+					$result = $lost / $prev;	
+				} else {
+					$result = 0;
+				}
+
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $result, 'Type' => $community ); 
+			}
 		}
 		if( $render ){
 			return array( 'data' => $data, 'unit' => $this->unit );
