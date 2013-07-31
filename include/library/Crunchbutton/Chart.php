@@ -56,6 +56,7 @@ class Crunchbutton_Chart extends Cana_Model {
 
 			$groups[ $id_group ] = array();
 			$groups[ $id_group ][ 'title' ] = $group[ 'title' ];
+			$groups[ $id_group ][ 'activeDays' ] = $group[ 'activeDays' ];
 			$charts = $group[ 'charts' ];
 			if( count( $charts ) > 0 ){
 				foreach ( $charts as $id_chart => $chart ) {

@@ -104,8 +104,9 @@
 				 <? 
 						foreach ( $graphs as $id => $graph ){ 
 							$chart = $graph[ 'url' ];
+							$activeDays = ( $graph[ 'activeDays' ] ) ? $graph[ 'activeDays' ] : 45;
 							$divId = $id;
-							echo '<div id="' . $divId . '" data-permalink="' . $chart . '" class="chart" style="display:none;width:49%;min-height:420px;;float:left;border-bottom:1px solid #CCC;"><i class="icon-spinner icon-spin"></i> Loading </div>';
+							echo '<div id="' . $divId . '" data-active-days="' . $activeDays . '" data-permalink="' . $chart . '" class="chart" style="display:none;width:49%;min-height:420px;;float:left;border-bottom:1px solid #CCC;"><i class="icon-spinner icon-spin"></i> Loading </div>';
 						} ?>
 						<div style="clear:both;"></div>
 				
@@ -178,8 +179,15 @@
 	 </div>
 </div>
 <script type="text/javascript">
+
+	var activeDaysChanged = false;
+
 	 $( document ).ready( function(){
 	 
+	 	$( '#active-user-days' ).change( function(){
+	 		activeDaysChanged = true;
+	 	} );
+
 		$( '.icheck' ).on( 'ifChanged', function( event ){
 			var check = $( this );
 			var divId = check.attr( 'data-divId' );
@@ -237,7 +245,7 @@
 		} );
 
 		/* the main charts start opened */
-		$( '.cat-main' ).iCheck( 'check' ); 
+		/* $( '.cat-main' ).iCheck( 'check' ); */
 
 	 } );
 	 
@@ -245,9 +253,13 @@
 	 
 		var divId = info[ 'divId' ];
 		var chart = $( '#' + divId );	
-	 
-		var activeUserDays = $( '#active-user-days' ).val();
-	 
+
+		if( activeDaysChanged ){
+			var activeUserDays = $( '#active-user-days' ).val();
+		} else {
+			var activeUserDays = chart.attr( 'data-active-days' );
+		}
+
 		var params = { 'activeUserDays' : activeUserDays };
 	 
 		if( info[ 'filter' ] ){
@@ -256,6 +268,10 @@
 			params[ 'filter' ] = '';
 		}
 	 
+		if( info[ 'interval' ] ){
+			params[ 'interval' ] = info[ 'interval' ];
+		}
+
 		if( info[ 'permalink' ] ){
 			var permalink = info[ 'permalink' ];
 		} else {
@@ -295,7 +311,7 @@
 			}
 			strParams += key + "=" + params[key];
 		}
-	 
+	 console.log('strParams',strParams);
 		var url = '/home/charts/' + permalink + '/' + divId + '/' + strParams;
 	 
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
