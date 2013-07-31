@@ -214,19 +214,19 @@
 				$_slider_to = $to;
 				$_slider_from = $from;
 				?>
-					Weeks <?php echo $from; ?> to <?php echo $to; ?> (of <?php echo $totalWeeks; ?>):
+					Weeks <?php echo $from; ?> to <?php echo $to; ?> <br/>(total <?php echo $totalWeeks; ?>)
 				<?php
 			} else if( $interval == 'month' ){
 					$_slider_to = $to_month;
 					$_slider_from = $from_month;
 			?>
-				Months <?php echo $from_month; ?> to <?php echo $to_month; ?> (of <?php echo $totalMonths; ?>):
+				Months <?php echo $from_month; ?> to <?php echo $to_month; ?> <br/>(total <?php echo $totalMonths; ?>)
 			<?php 
 			} else if( $interval == 'day' ){
 					$_slider_to = $to_day;
 					$_slider_from = $from_day;
 			?>
-				Days <?php echo $from_day; ?> to <?php echo $to_day; ?> (of <?php echo $totalDays; ?>):
+				Days <?php echo $from_day; ?> to <?php echo $to_day; ?> <br/>(total <?php echo $totalDays; ?>)
 			<?php 
 			} ?>
 		</div>
