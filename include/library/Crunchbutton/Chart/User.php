@@ -16,7 +16,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 															)
 												),
 												'group-users-repeat' => array(
-														'title' => 'Repeat Users',
+														'title' => 'Repeat Orders',
 														'tags' => array( 'main' ),
 														'charts' => array(  
 																'orders-repeat-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'repeatPerDay'  ),
@@ -1642,110 +1642,18 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	}
 	
 	public function repeatPerDay( $render = false ){
-
-		$newUsers = $this->newByDay();
 		$order = new Crunchbutton_Chart_Order();
-		$orders = $order->byDay();
-
-		$data = [];
-
-		$days = [];
-
-		foreach ( $orders as $order ) {
-			$days[ $order->Label ] = [];
-			$days[ $order->Label ][ 'Order' ] = $order->Total;
-		}
-
-		foreach ( $newUsers as $new ) {
-			if( !$days[ $new->Label ] ){
-				$days[ $new->Label ] = [];	
-			}
-			$days[ $new->Label ][ 'New' ] = $new->Total;
-		}
-
-		$data = [];
-
-		foreach ( $days as $label => $values ) {
-			$new = $values[ 'New' ];
-			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  ); 
-		}
-
-		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
-		}
-		return $data;
+		return array( 'data' => $order->repeatPerDay( false ), 'unit' =>$order->unit, 'interval' => 'day' );
 	}
+
 	public function repeatPerWeek( $render = false ){
-
-		$newUsers = $this->newByWeek();
 		$order = new Crunchbutton_Chart_Order();
-		$orders = $order->byWeek();
-
-		$data = [];
-
-		$weeks = [];
-
-		foreach ( $orders as $order ) {
-			$weeks[ $order->Label ] = [];
-			$weeks[ $order->Label ][ 'Order' ] = $order->Total;
-		}
-
-		foreach ( $newUsers as $new ) {
-			if( !$weeks[ $new->Label ] ){
-				$weeks[ $new->Label ] = [];	
-			}
-			$weeks[ $new->Label ][ 'New' ] = $new->Total;
-		}
-
-		$data = [];
-
-		foreach ( $weeks as $label => $values ) {
-			$new = $values[ 'New' ];
-			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  ); 
-		}
-
-		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unit );
-		}
-		return $data;
+		return array( 'data' => $order->repeatPerWeek( false ), 'unit' =>$order->unit, 'interval' => 'week' );
 	}
 
 	public function repeatPerMonth( $render = false ){
-
-		$newUsers = $this->newByMonth();
 		$order = new Crunchbutton_Chart_Order();
-		$orders = $order->byMonth();
-
-		$data = [];
-
-		$months = [];
-
-		foreach ( $orders as $order ) {
-			$months[ $order->Label ] = [];
-			$months[ $order->Label ][ 'Order' ] = $order->Total;
-		}
-
-		foreach ( $newUsers as $new ) {
-			if( !$months[ $new->Label ] ){
-				$months[ $new->Label ] = [];	
-			}
-			$months[ $new->Label ][ 'New' ] = $new->Total;
-		}
-
-		$data = [];
-
-		foreach ( $months as $label => $values ) {
-			$new = $values[ 'New' ];
-			$repeat = $values[ 'Order' ] - $new;
-			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Repeated'  ); 
-		}
-
-		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
-		}
-		return $data;
+		return array( 'data' => $order->repeatPerMonth( false ), 'unit' =>$order->unit, 'interval' => 'month' );
 	}
 
 }
