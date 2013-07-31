@@ -295,8 +295,24 @@ class Crunchbutton_Chart extends Cana_Model {
 	}
 
 	public function parseWeek( $week, $showYear = false ){
-		$dateStr = ( $showYear ) ? 'M d Y' : 'M d';
-		return date( $dateStr, strtotime( substr( $week, 0, 4 ) . 'W' . substr( $week, 4, 2 ) . '-0' ) );
+
+		if( !$this->_weeksParsed ){	
+			$query = "SELECT DISTINCT( YEARWEEK( o.date ) ) week, DATE_FORMAT( STR_TO_DATE( CONCAT( YEARWEEK( o.date ), ' Sunday' ), '%X%V %W')  ,'%b %d') dateWithoutYear, DATE_FORMAT( STR_TO_DATE( CONCAT( YEARWEEK( o.date ), ' Sunday' ), '%X%V %W')  ,'%b %d %Y') dateWithYear FROM `order` o WHERE YEARWEEK( o.date ) IS NOT NULL ORDER BY week ASC";
+			$results = c::db()->get( $query );
+			$this->_weeksParsed = array();
+			foreach ( $results as $result ) {
+				if( !$result->week ){
+					continue;
+				}
+				$this->_weeksParsed[ $result->week ] = array( 'dateWithYear' => $result->dateWithYear, 'dateWithoutYear' => $result->dateWithoutYear );
+			}
+		}
+		
+		if( $showYear ){
+			return $this->_weeksParsed[ $week ][ 'dateWithYear' ];
+		} else {
+			return $this->_weeksParsed[ $week ][ 'dateWithoutYear' ];
+		}
 	}
 
 	public function parseDay( $day, $showYear = false ){
