@@ -252,6 +252,7 @@
 	 function loadChart( info ){
 	 
 		var divId = info[ 'divId' ];
+
 		var chart = $( '#' + divId );	
 
 		if( activeDaysChanged ){
@@ -311,9 +312,13 @@
 			}
 			strParams += key + "=" + params[key];
 		}
-	 console.log('strParams',strParams);
+	 
 		var url = '/home/charts/' + permalink + '/' + divId + '/' + strParams;
 	 
+	 if( info[ 'force' ] ){
+			chart.html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
+		}
+
 		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
 		
 		chart.attr( 'opened', true );
