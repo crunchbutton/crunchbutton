@@ -1,5 +1,5 @@
 // CartService service
-NGApp.factory('CartService', function () {
+NGApp.factory( 'CartService', function ( RestaurantService ) {
 
 	var service = {
 
@@ -43,7 +43,7 @@ NGApp.factory('CartService', function () {
 			service.items[id].details.customization = {};
 			service.items[id].details.customization.customizable = ( dish.options().length > 0 );
 			service.items[id].details.customization.expanded = ( parseInt(dish.expand_view ) > 0 );
-			service.items[id].details.customization.options = service.parseOptions( dish_options, options );
+			service.items[id].details.customization.options = service._parseCustomOptions( dish_options, options );
 			service.items[id].details.customization.rawOptions = dish_options;
 			
 			//TODO:: If it is a mobile add the items at the top #1035
@@ -279,93 +279,11 @@ NGApp.factory('CartService', function () {
 		},
 
 		customizeItemPrice: function (price, force) {
-			var priceText = '';
 			if (price != '0.00' || force) {
-				priceText = ' (';
-				priceText += (price < 0) ? 'minus $' : '+ $';
-				priceText += parseFloat(Math.abs(price)).toFixed(2);
-				priceText += ')';
+				return ' (' + ( (price < 0) ? 'minus $' : '+ $' ) + parseFloat(Math.abs(price)).toFixed(2) + ')';
 			}
-			return priceText;
+			return '';
 		},
-
-		customize: function (item) {
-			return;
-			console.log('item',item);
-			var
-			cart = item,
-				old = $('.cart-item-customize[data-id_cart_item="' + cart + '"]');
-
-			if (old.length) {
-				old.remove();
-			} else {
-				var
-				el = $('<div class="cart-item-customize" data-id_cart_item="' + cart + '"></div>').insertAfter( ),
-					cartitem = service.items[cart],
-					obj = App.cached['Dish'][cartitem.id],
-					opt = obj.options();
-
-				// First the basic options
-				for (var x in opt) {
-					if (opt[x].id_option_parent) {
-						continue;
-					}
-
-					if (opt[x].type == 'check') {
-
-						var price = opt[x].optionPrice(cartitem.options);
-						var check = $('<input type="checkbox" class="cart-customize-check">');
-
-						if ($.inArray(opt[x].id_option, cartitem.options) !== -1) {
-							check.attr('checked', 'checked');
-						}
-
-						var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
-							.append(check)
-							.append('<label class="cart-item-customize-name">' +
-								opt[x].name + (opt[x].description || '') +
-								'</label><label class="cart-item-customize-price">' +
-								service.customizeItemPrice(price) + '</label>'
-						);
-						el.append(option);
-
-					}
-				}
-
-				// Second the customizable options 
-				for (var x in opt) {
-					if (opt[x].id_option_parent) {
-						continue;
-					}
-
-					if (opt[x].type == 'select') {
-
-						var select = $('<select class="cart-customize-select">');
-						for (var i in opt) {
-
-							if (opt[i].id_option_parent == opt[x].id_option) {
-								var price = opt[i].price;
-								var option = $('<option value="' + opt[i].id_option + '">' + opt[i].name + (opt[i].description || '') + service.customizeItemPrice(price, (opt[x].price_linked == '1')) + '</option>');
-								if ($.inArray(opt[i].id_option, cartitem.options) !== -1) {
-									option.attr('selected', 'selected');
-								}
-								select.append(option);
-							}
-						}
-						var option = $('<div class="cart-item-customize-item" data-id_option="' + opt[x].id_option + '"></div>')
-							.append('<label class="cart-item-customize-select-name">' + opt[x].name + (opt[x].description || '') + '</label>')
-							.append(select);
-
-						el.append(option);
-
-					}
-				}
-			}
-
-			App.track('Dish customized');
-		},
-
-
 
 		/**
 		 * subtotal, delivery, fee, taxes and tip
@@ -906,7 +824,7 @@ NGApp.factory('CartService', function () {
 			$('[name=pay-tip] [value=autotip]').html('Autotip' + autotipText);
 		},
 
-		parseOptions: function( options, selectedOptions ){
+		_parseCustomOptions: function( options, selectedOptions ){
 			
 			var parsedOptions = [];
 
