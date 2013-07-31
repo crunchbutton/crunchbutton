@@ -6,6 +6,7 @@ class Crunchbutton_Chart extends Cana_Model {
 	public $queryOnlyCommunties = 'AND c.id_community IN (1, 4)';
 	public $queryExcludeCommunties = "AND c.name != 'Testing' AND c.name IS NOT NULL";
 	public $queryExcludeUsers = "AND o.name NOT LIKE '%test%' and o.name != 'Judd' and o.name != 'dave' and o.name != 'Nick' and o.name != 'Devin'";
+	public $minDate = '2012-09-02'; #Issue 1523 - Fist week of September/12
 
 	public $from_month;
 	public $to_month;
@@ -179,7 +180,7 @@ class Crunchbutton_Chart extends Cana_Model {
 
 	public function allMonths(){
 		if( !$this->_months ){
-			$query = "SELECT DISTINCT( DATE_FORMAT( o.date ,'%Y-%m') ) month FROM `order` o WHERE o.date IS NOT NULL ORDER BY month ASC";
+			$query = "SELECT DISTINCT( DATE_FORMAT( o.date ,'%Y-%m') ) month FROM `order` o WHERE o.date IS NOT NULL AND o.date > '$this->minDate'  ORDER BY month ASC";
 			$results = c::db()->get( $query );
 			$months = array();
 			foreach ( $results as $result ) {
@@ -212,7 +213,7 @@ class Crunchbutton_Chart extends Cana_Model {
 	}
 
 	public function allDays(){
-		$query = "SELECT DISTINCT( DATE_FORMAT( o.date ,'%Y-%m-%d') ) day FROM `order` o WHERE o.date IS NOT NULL ORDER BY day ASC";
+		$query = "SELECT DISTINCT( DATE_FORMAT( o.date ,'%Y-%m-%d') ) day FROM `order` o WHERE o.date IS NOT NULL AND o.date > '$this->minDate' ORDER BY day ASC";
 		$results = c::db()->get( $query );
 		$days = array();
 		foreach ( $results as $result ) {
@@ -231,7 +232,7 @@ class Crunchbutton_Chart extends Cana_Model {
 
 	public function allWeeks(){
 		if( !$this->_weeks ){
-			$query = "SELECT DISTINCT( YEARWEEK( o.date ) ) week FROM `order` o WHERE YEARWEEK( o.date ) IS NOT NULL ORDER BY week ASC";
+			$query = "SELECT DISTINCT( YEARWEEK( o.date ) ) week FROM `order` o WHERE YEARWEEK( o.date ) IS NOT NULL AND o.date > '$this->minDate' ORDER BY week ASC";
 			$results = c::db()->get( $query );
 			$weeks = array();
 			foreach ( $results as $result ) {

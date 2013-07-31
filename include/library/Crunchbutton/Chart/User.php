@@ -244,7 +244,6 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		$union = '';
 
 		$allMonths = $this->allMonths();
-
 		for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
 			$month = $allMonths[ $i ];
 			$query .= $union . "SELECT '{$month}' AS Month,
