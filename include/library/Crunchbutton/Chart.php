@@ -448,7 +448,7 @@ class Crunchbutton_Chart extends Cana_Model {
 
 		$allMonths = $this->allMonths();
 
-		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
+		for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
 			$month = $allMonths[ $i ];
 			foreach( $groups as $group ){
 				$total = ( $_months[ $month ][ $group ] ) ? $_months[ $month ][ $group ] : 0;

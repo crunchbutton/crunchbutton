@@ -19,9 +19,9 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 														'title' => 'Repeat Orders',
 														'tags' => array( 'main' ),
 														'charts' => array(  
-																'orders-repeat-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'repeatPerDay'  ),
-																'orders-repeat-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'repeatPerWeek', 'default' => true ),
-																'orders-repeat-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatPerMonth' ),
+																'orders-repeat-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'repeatPerDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerDayByCommunity' ) ) ),
+																'orders-repeat-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'repeatPerWeek', 'default' => true, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerWeekByCommunity' ) ) ),
+																'orders-repeat-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatPerMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerMonthByCommunity' ) ) ),
 															)
 												),
 												'group-users-reclaimed' => array(
@@ -1307,6 +1307,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
 
 		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
+
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
@@ -1645,14 +1646,29 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return array( 'data' => $order->repeatPerDay( false ), 'unit' =>$order->unit, 'interval' => 'day' );
 	}
 
+	public function repeatPerDayByCommunity( $render = false ){
+		$order = new Crunchbutton_Chart_Order();
+		return array( 'data' => $order->repeatPerDayByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'day' );
+	}
+
 	public function repeatPerWeek( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerWeek( false ), 'unit' =>$order->unit, 'interval' => 'week' );
 	}
 
+	public function repeatPerWeekByCommunity( $render = false ){
+		$order = new Crunchbutton_Chart_Order();
+		return array( 'data' => $order->repeatPerWeekByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'week' );
+	}
+
 	public function repeatPerMonth( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerMonth( false ), 'unit' =>$order->unit, 'interval' => 'month' );
+	}
+
+	public function repeatPerMonthByCommunity( $render = false ){
+		$order = new Crunchbutton_Chart_Order();
+		return array( 'data' => $order->repeatPerMonthByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'week' );
 	}
 
 }
