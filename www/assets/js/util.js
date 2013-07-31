@@ -111,6 +111,7 @@ App.nl2br = function( string ){
 
 var touchclick = App.isMobile() ? 'touchend' : 'click';
 var touchup = App.isMobile() ? 'touchend' : 'mouseup';
+
 var touchHandle = function (event) {
 	var handleObj = event.handleObj,
 		targetData = jQuery.data(event.target),
@@ -124,6 +125,11 @@ var touchHandle = function (event) {
 		return ret;
 	}
 };
+
+touchclick = 'click';
+touchup = 'mouseup';
+touchHandle = jQuery.event.special.click;
+
 
 jQuery.event.special.touchclick = {
 	bindType: touchclick,
