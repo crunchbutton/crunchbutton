@@ -1106,6 +1106,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		$_data = [];
 
 		$_prev = [];
+
 		foreach ( $activeUsers as $active ) {
 			if( !$_data[ $active->Label ] ){
 				$_data[ $active->Label ] = [];	
@@ -1139,7 +1140,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 				$order = $values[ 'Order' ][ $community ];
 
 				// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )				
-				if( $active && $prev ){
+				if( $active || $prev ){
 					$activeUsersAvg = ( $active + $prev ) / 2;	
 				} else {
 					$activeUsersAvg = 0;
@@ -1152,13 +1153,12 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 				} else {
 					$result = 0;
 				}
-
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => $community ); 
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $result, 'Type' => $community ); 
 			}
 		}
 
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unit );
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
 		}
 		return $data;
 	}
@@ -1176,6 +1176,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		$_data = [];
 
 		$_prev = [];
+
 		foreach ( $activeUsers as $active ) {
 			if( !$_data[ $active->Label ] ){
 				$_data[ $active->Label ] = [];	
@@ -1209,7 +1210,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 				$order = $values[ 'Order' ][ $community ];
 
 				// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )				
-				if( $active && $prev ){
+				if( $active || $prev ){
 					$activeUsersAvg = ( $active + $prev ) / 2;	
 				} else {
 					$activeUsersAvg = 0;
@@ -1223,7 +1224,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 					$result = 0;
 				}
 
-				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => $community ); 
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $result, 'Type' => $community ); 
 			}
 		}
 
