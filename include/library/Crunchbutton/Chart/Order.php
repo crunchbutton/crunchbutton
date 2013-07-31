@@ -28,8 +28,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 														'tags' => array( 'main' ),
 														'charts' => array(  
 																'orders-repeat-per-active-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'repeatByActiveuserByDay'),
-																'orders-repeat-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'repeatByActiveuserByWeek', 'default' => true /*, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatByActiveuserByWeekByCommunity' ) ) */ ),
-																'orders-repeat-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatByActiveuserByMonth' /*, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatByActiveuserByMonthByCommunity' ) ) */ )
+																'orders-repeat-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'repeatByActiveuserByWeek', 'default' => true, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatByActiveuserByWeekByCommunity' ) ) ),
+																'orders-repeat-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatByActiveuserByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatByActiveuserByMonthByCommunity' ) ) )
 															)
 												),
 												/*
@@ -1093,37 +1093,138 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		return $data;
 	}
 
+	public function repeatByActiveuserByMonthByCommunity( $render = false ){
+
+		$user = new Crunchbutton_Chart_User();
+
+		$activeUsers = $user->activeByMonthByCommunity();
+		$newUsers = $user->newByMonthByCommunity();
+		$orders = $this->byMonthPerCommunity();
+
+		$communities = $this->allCommunities();
+
+		$_data = [];
+
+		$_prev = [];
+		foreach ( $activeUsers as $active ) {
+			if( !$_data[ $active->Label ] ){
+				$_data[ $active->Label ] = [];	
+			}
+			$_data[ $active->Label ][ 'ActiveUser' ][ $active->Type ] = $active->Total;
+			$_data[ $active->Label ][ 'ActiveUserPrev' ][ $active->Type ] = ( $_prev[ $active->Type ] ? $_prev[ $active->Type ] : 0 );
+			$_prev[ $active->Type ] = $active->Total;
+		}
+
+		foreach ( $newUsers as $newUser ) {
+			if( !$_data[ $newUser->Label ] ){
+				$_data[ $newUser->Label ] = [];	
+			}
+			$_data[ $newUser->Label ][ 'NewUser' ][ $newUser->Type ] = $newUser->Total;
+		}
+
+		foreach ( $orders as $order ) {
+			if( !$_data[ $order->Label ] ){
+				$_data[ $order->Label ] = [];	
+			}
+			$_data[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
+		}
+
+		$data = [];
+
+		foreach ( $_data as $label => $values ) {
+			foreach( $communities as $community ){
+				$new = $values[ 'NewUser' ][ $community ];
+				$active = $values[ 'ActiveUser' ][ $community ];
+				$prev = $values[ 'ActiveUserPrev' ][ $community ];
+				$order = $values[ 'Order' ][ $community ];
+
+				// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )				
+				if( $active && $prev ){
+					$activeUsersAvg = ( $active + $prev ) / 2;	
+				} else {
+					$activeUsersAvg = 0;
+				}
+
+				$ordersMinusNewUsers = $order - $new;
+
+				if( $ordersMinusNewUsers != 0 && $activeUsersAvg != 0 ){
+					$result = ( $order - $new ) / ( $activeUsersAvg );	
+				} else {
+					$result = 0;
+				}
+
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => $community ); 
+			}
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit );
+		}
+		return $data;
+	}
+
 	public function repeatByActiveuserByWeekByCommunity( $render = false ){
 
 		$user = new Crunchbutton_Chart_User();
 
 		$activeUsers = $user->activeByWeekByCommunity();
 		$newUsers = $user->newByWeekByCommunity();
-		$orders = $this->byWeekdayByCommunity();
+		$orders = $this->byWeekPerCommunity();
+
+		$communities = $this->allCommunities();
+
+		$_data = [];
+
+		$_prev = [];
+		foreach ( $activeUsers as $active ) {
+			if( !$_data[ $active->Label ] ){
+				$_data[ $active->Label ] = [];	
+			}
+			$_data[ $active->Label ][ 'ActiveUser' ][ $active->Type ] = $active->Total;
+			$_data[ $active->Label ][ 'ActiveUserPrev' ][ $active->Type ] = ( $_prev[ $active->Type ] ? $_prev[ $active->Type ] : 0 );
+			$_prev[ $active->Type ] = $active->Total;
+		}
+
+		foreach ( $newUsers as $newUser ) {
+			if( !$_data[ $newUser->Label ] ){
+				$_data[ $newUser->Label ] = [];	
+			}
+			$_data[ $newUser->Label ][ 'NewUser' ][ $newUser->Type ] = $newUser->Total;
+		}
+
+		foreach ( $orders as $order ) {
+			if( !$_data[ $order->Label ] ){
+				$_data[ $order->Label ] = [];	
+			}
+			$_data[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
+		}
 
 		$data = [];
-		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
-			$active = $activeUsers[ $i ]->Total;
-			$order = $orders[ $i ]->Total;
-			$new = $newUsers[ $i ]->Total;
-			if( $i - 1 >= 0 ){
-				$activePrev = $activeUsers[ $i - 1 ]->Total;
-			} else {
-				$activePrev = 0;
+
+		foreach ( $_data as $label => $values ) {
+			foreach( $communities as $community ){
+				$new = $values[ 'NewUser' ][ $community ];
+				$active = $values[ 'ActiveUser' ][ $community ];
+				$prev = $values[ 'ActiveUserPrev' ][ $community ];
+				$order = $values[ 'Order' ][ $community ];
+
+				// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )				
+				if( $active && $prev ){
+					$activeUsersAvg = ( $active + $prev ) / 2;	
+				} else {
+					$activeUsersAvg = 0;
+				}
+
+				$ordersMinusNewUsers = $order - $new;
+
+				if( $ordersMinusNewUsers != 0 && $activeUsersAvg != 0 ){
+					$result = ( $order - $new ) / ( $activeUsersAvg );	
+				} else {
+					$result = 0;
+				}
+
+				$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => $community ); 
 			}
-			
-			// Formula (Orders minus New Users) / (Active Users) | Active Users = ( average of the current week and previous week's Active Users )
-			$activeUsersAvg = ( $active + $activePrev ) / 2;
-
-			$ordersMinusNewUsers = $order - $new;
-
-			if( $ordersMinusNewUsers != 0 && $activeUsersAvg != 0 ){
-				$result = ( $order - $new ) / ( $activeUsersAvg );	
-			} else {
-				$result = 0;
-			}
-
-			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => number_format( $result, 4 ), 'Type' => 'Total' );
 		}
 
 		if( $render ){

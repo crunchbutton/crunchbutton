@@ -388,14 +388,14 @@ class Crunchbutton_Chart extends Cana_Model {
 		$data = c::db()->get( $query );
 
 		$_days = [];
-		$groups = [];
 
 		foreach ( $data as $item ) {
-			$groups[ $item->Group ] = $item->Group;
 			$_days[ $item->Day ][ $item->Group ] = $item->Total;
 		}
 
 		$data = [];
+
+		$groups = $this->allCommunities();
 
 		$allDays = $this->allDays();
 
@@ -413,11 +413,11 @@ class Crunchbutton_Chart extends Cana_Model {
 		$data = c::db()->get( $query );
 
 		$_weeks = [];
-		$groups = [];
 		foreach ( $data as $item ) {
-			$groups[ $item->Group ] = $item->Group;
 			$_weeks[ $item->Week ][ $item->Group ] = $item->Total;
 		}
+
+		$groups = $this->allCommunities();
 
 		$data = [];
 
@@ -438,11 +438,12 @@ class Crunchbutton_Chart extends Cana_Model {
 		$data = c::db()->get( $query );
 
 		$_months = [];
-		$groups = [];
 		foreach ( $data as $item ) {
 			$groups[ $item->Group ] = $item->Group;
 			$_months[ $item->Month ][ $item->Group ] = $item->Total;
 		}
+
+		$groups = $this->allCommunities();
 
 		$data = [];
 
