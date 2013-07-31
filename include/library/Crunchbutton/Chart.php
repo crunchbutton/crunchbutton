@@ -100,11 +100,13 @@ class Crunchbutton_Chart extends Cana_Model {
 			$interval = $param_interval;
 		}
 
+		$defaultToWeeks = 16; # Issue #1525
+
 		switch ( $interval ) {
 
 			case 'day':
 
-				$this->from_day = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
+				$this->from_day = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : ( count( $this->allDays ) - ( $defaultToWeeks * 7 ) ) ); 
 				$this->from_day = ( ( $this->from_day  < 1 ) ? 1 : $this->from_day  );
 				$this->to_day = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : count( $this->allDays ) ); 
 
@@ -118,7 +120,7 @@ class Crunchbutton_Chart extends Cana_Model {
 
 			case 'month':
 
-				$this->from_month = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
+				$this->from_month = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : ( count( $this->allMonths ) - ( $defaultToWeeks / 4 ) ) ); 
 				$this->from_month = ( ( $this->from_month  < 1 ) ? 1 : $this->from_month  );
 				$this->to_month = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : count( $this->allMonths ) ); 
 
@@ -133,7 +135,7 @@ class Crunchbutton_Chart extends Cana_Model {
 			case 'week':
 			default:
 
-				$this->from = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : 1 ); 
+				$this->from = ( $_REQUEST[ 'from' ] ? $_REQUEST[ 'from' ] : ( count( $this->allWeeks ) - $defaultToWeeks ) ); 
 				$this->from = ( ( $this->from  < 1 ) ? 1 : $this->from  );
 				$this->to = ( $_REQUEST[ 'to' ] ? $_REQUEST[ 'to' ] : $this->totalWeeks() );
 
