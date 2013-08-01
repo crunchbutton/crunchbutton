@@ -45,8 +45,12 @@ var App = {
 	useCompleteAddress : false, /* if true it means the address field will be fill with the address found by google api */
 	completeAddressWithZipCode : true,
 	boundingBoxMeters : 8000,
-	localStorage: false
+	localStorage: false,
+	isPhoneGap: document.location.protocol == 'file:'
 };
+
+// enable localstorage on phonegap
+App.localStorage = App.isPhoneGap;
 
 
 App.alert = function(txt) {
@@ -500,6 +504,11 @@ App.trigger = {
  */
 $(function() {
 	FastClick.attach(document.body);
+	
+	if (App.isPhoneGap && App.iOS7()) {
+		$('body').addClass('ios7');
+	}
+	
 	App.snap = new Snap({
 		element: document.getElementById('snap-content'),
 		disable: 'right'

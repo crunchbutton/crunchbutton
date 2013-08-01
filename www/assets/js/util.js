@@ -27,6 +27,10 @@ App.iOS = function(){
 	return /ipad|iphone|ipod/i.test( navigator.userAgent.toLowerCase() );
 }
 
+App.iOS7 = function(){
+	return /iphone os 7_/i.test( navigator.userAgent.toLowerCase() );
+}
+
 App.isAndroid = function(){
 	return /android/i.test( navigator.userAgent.toLowerCase() );
 }
