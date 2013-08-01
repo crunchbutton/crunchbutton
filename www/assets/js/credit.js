@@ -26,11 +26,11 @@ App.credit.tooltip = {};
 App.credit.tooltip.init = function(){
 
 	/*
-	$(document).on('touchclick', '.giftcard-badge', function() {
+	$(document).on('click', '.giftcard-badge', function() {
 		App.credit.tooltip.show();
 	});
 
-	$(document).on('touchclick', 'body', function() {
+	$(document).on('click', 'body', function() {
 		App.credit.tooltip.hide()
 	});
 	*/

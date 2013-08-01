@@ -527,35 +527,35 @@ $(function() {
 
 	App.test.init();
 
-	$(document).on('touchclick', '.delivery-toggle-delivery', function(e) {
+	$(document).on('click', '.delivery-toggle-delivery', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		App.trigger.delivery();
 		App.track('Switch to delivery');
 	});
 
-	$(document).on('touchclick', '.delivery-toggle-takeout', function(e) {
+	$(document).on('click', '.delivery-toggle-takeout', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		App.trigger.takeout();
 		App.track('Switch to takeout');
 	});
 
-	$(document).on('touchclick', '.pay-toggle-credit', function(e) {
+	$(document).on('click', '.pay-toggle-credit', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		App.trigger.credit();
 		App.track('Switch to card');
 	});
 
-	$(document).on('touchclick', '.pay-toggle-cash', function(e) {
+	$(document).on('click', '.pay-toggle-cash', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		App.trigger.cash();
 		App.track('Switch to cash');
 	});
 
-	$(document).on('touchclick', '.location-detect', function() {
+	$(document).on('click', '.location-detect', function() {
 		// detect location from the browser
 		$('.location-detect-loader').show();
 		$('.location-detect-icon').hide();
@@ -596,7 +596,7 @@ $(function() {
 	if (App.isMobile()) {
 
 		// prevent double trigger
-		$(document).on('touchclick','input[type="checkbox"]', function(e) {
+		$(document).on('click','input[type="checkbox"]', function(e) {
 			e.stopPropagation();
 			e.preventDefault();
 		});
@@ -648,7 +648,7 @@ $(function() {
 		});
 
 
-		// ignore all click events from acidently triggering on mobile. only use touchclick
+		// ignore all click events from acidently triggering on mobile. only use click
 		/*
 		$(document).on('click', function(e, force) {
 			e.stopPropagation();
@@ -681,7 +681,7 @@ $(function() {
 		App.cart.submit($(this),true);
 	});
 
-	$(document).on('touchclick', '.button-deliver-payment, .dp-display-item a, .dp-display-item .clickable', function() {
+	$(document).on('click', '.button-deliver-payment, .dp-display-item a, .dp-display-item .clickable', function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();
 	});
