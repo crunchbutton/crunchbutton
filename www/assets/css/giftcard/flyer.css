@@ -16,51 +16,57 @@
 		.value{
 			font-family: 'Atomic Age', cursive;
 			color:#FFF;
-			font-size: 145px;
+			font-size: 210px;
 			position: absolute;
 			z-index: 10;
 			letter-spacing: -10px;
-			margin-left: 60px;
-			margin-top: 870px;
+			margin-left: 50px;
+			margin-top: 810px;
 			text-align: center;
 			width: 140px;
 		}
 		.dollar{
 			color:#FFF;
 			font-family: 'Atomic Age', cursive;
-			font-size: 25px;
+			font-size: 49px;
 			font-weight: bold;
 			position: absolute;
 			z-index: 11;
-			margin-left: 70px;
-			margin-top: 920px;
+			margin-left: 42px;
+			margin-top: 897px;
 			text-align: left;
 			width: 220px;
+		}
+		.title{
+			margin-left: 225px;
+			margin-top: 858px;
+			color: #eaeae9;
+			font-family: 'Helvetica Neue', 'Helvetica';
+			font-size: 35px;
+			position: absolute;
+			text-align: left;
 		}
 		.info{
 			margin-left: 225px;
 			margin-top: 905px;
 			color:#FFF;
-			font-family: 'Helvetica';
-			font-size: 35px;
-			font-weight: bold;
+			font-family: 'Helvetica Neue', 'Helvetica';
+			font-size: 28px;
 			position: absolute;
 			text-align: left;
 		}
 			.info .link{
 				display: block;
-				color:#7b201a;
-				font-size: 25px;
-				margin-top: 10px;
+				font-size: 26px;
+				margin-top: 5px;
 			}
-		.freefood{
+		.call{
 			width: 500px;
 			margin-left: 275px;
 			margin-top: 990px;
 			color:#FFF;
-			font-family: 'Helvetica';
-			font-size: 18px;
-			font-weight: bold;
+			font-family: 'Helvetica Neue', 'Helvetica';
+			font-size: 11px;
 			position: absolute;
 			text-align: right;
 		}

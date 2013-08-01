@@ -31,8 +31,9 @@ if( sizeof( $giftcards ) > 0 ) {
 	<div class="giftcard">
 		<div class="dollar">$</div>
 		<div class="value"><?php echo $giftcard->value;?></div>
-		<div class="info">To redeem, go to<span class="link">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span></div>
-		<div class="freefood">Free Food from <?php echo $restaurant_name; ?></div>
+		<div class="title">Gift Card</div>
+		<div class="info">To redeem, go to<span class="link">www.crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span></div>
+		<div class="call">Questions: Call or text us anytime at (646) 783-1444</div>
 		<div class="images">
 			<img class="parachutes" src="/assets/images/giftcard/flyer_parachutes.png?<?php echo $imageCached; ?>"/>
 			<img class="flyer" src="/assets/images/giftcard/print-flyer.svg?<?php echo $imageCached; ?>"/>	
