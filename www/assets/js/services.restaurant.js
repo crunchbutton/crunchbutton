@@ -62,7 +62,7 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 			return false;
 		}
 
-		if (restaurants === false || service.restaurants.forceLoad) {
+		if (restaurants === false || App.restaurants.forceLoad) {
 
 			var url = App.service + 'restaurants?lat=' + service.position.pos().lat() + '&lon=' + service.position.pos().lon() + '&range=' + (service.position.range || App.defaultRange);
 
@@ -88,7 +88,7 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 				}
 			});
 			isSorted = false;
-			service.restaurants.forceLoad = false;
+			App.restaurants.forceLoad = false;
 		} else {
 			if (success) {
 				success(restaurants);
