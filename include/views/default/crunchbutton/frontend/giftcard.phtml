@@ -24,7 +24,7 @@
 		<div ng-show="giftcard.modal.success && !giftcard.modal.error">
 			<h1>Gift card added!</h1>
 			<div class="success" ng-show="giftcard.modal.restaurant">
-				You've got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-tap="giftcard.openRestaurant();">{{giftcard.modal.restaurant.name}}</b>
+				You've got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{giftcard.modal.restaurant.name}}</b>
 			</div>
 			<div class="success" ng-show="!giftcard.modal.restaurant">
 				You've got a <b>${{giftcard.value}}</b> gift card to Crunchbutton!
@@ -51,14 +51,14 @@
 		<div ng-show="giftcard.modal.success && !giftcard.modal.error">
 			<h1>Welcome!</h1>
 			<div class="success" ng-show="giftcard.modal.restaurant">
-				You have a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-tap="giftcard.openRestaurant();">{{giftcard.modal.restaurant.name}}</b>
+				You have a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{giftcard.modal.restaurant.name}}</b>
 			</div>
 			<div class="success" ng-show="!giftcard.modal.restaurant">
 				You have a <b>${{giftcard.value}}</b> gift card!
 			</div>
 			<div class="bottom-links">
-				<span ng-tap="giftcard.modal.signIn();">Sign In</span>
-				<span ng-tap="giftcard.modal.close();">Later</span>
+				<span ng-click="giftcard.modal.signIn();">Sign In</span>
+				<span ng-click="giftcard.modal.close();">Later</span>
 			</div>
 		</div>
 	</div>

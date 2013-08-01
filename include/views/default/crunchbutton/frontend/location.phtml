@@ -28,13 +28,13 @@
 	</form>
 </div>
 <div class="divider"></div>
-<button ng-show="!locationError" class="button-letseat-form button-bottom" ng-tap="letsEat()"><div>Let's Eat!</div></button>
+<button ng-show="!locationError" class="button-letseat-form button-bottom" ng-click="letsEat()"><div>Let's Eat!</div></button>
 <div class="error-location" ng-show="locationError">
 	<div class="content-item-locations">
 		<h1>Crunchbutton by city:</h1> 
 		<div class="content-item-locations-cities">
 			<span ng-repeat="alias in topCommunities">
-				<span class="content-item-locations-city" ng-tap="openCity(alias.name)" permalink="{{alias.alias}}">{{alias.name}}</span>
+				<span class="content-item-locations-city" ng-click="openCity(alias.name)" permalink="{{alias.alias}}">{{alias.name}}</span>
 			</span>
 		</div>
 	</div>
@@ -42,7 +42,7 @@
 		<div class="home-welcome home-welcom-error">
 			<h1>Sorry!</h1>
 			<h2>
-				We don't serve <span ng-tap="resetFormLocation()" class="loc-your-area change-location-inline">{{yourArea}}</span> yet. Please click <span ng-tap="resetFormLocation()" class="change-location-inline">here</span> to enter a different address.
+				We don't serve <span ng-click="resetFormLocation()" class="loc-your-area change-location-inline">{{yourArea}}</span> yet. Please click <span ng-click="resetFormLocation()" class="change-location-inline">here</span> to enter a different address.
 			</h2>
 		</div>
 		<div class="divider"></div>
@@ -54,7 +54,7 @@
 				</div>
 
 				<input type="text" ng-enter="recommend.send()" ng-model="recommend.form.restaurant" class="home-recommend-text">
-				<button ng-tap="recommend.send()" class="home-recommend-button"><div>Recommend!</div></button>
+				<button ng-click="recommend.send()" class="home-recommend-button"><div>Recommend!</div></button>
 				<div class="divider"></div>
 				<div class="home-recommend-message">
 					What's your absolute favorite? What should be on Crunchbutton? Tell us, and we'll actually add it and get back to you.
@@ -71,7 +71,7 @@
 						We'll let you know if they make it to Crunchbutton.
 					</div>
 					<div ng-show="!account.user">
-						<a href="#" ng-tap="modal.signupOpen()" class="home-recommend-message-create-account"><span>Create an account</span></a> and when we'll let you know when we launch in your area!
+						<a href="#" ng-click="modal.signupOpen()" class="home-recommend-message-create-account"><span>Create an account</span></a> and when we'll let you know when we launch in your area!
 					</div>
 				</div>
 			</div>

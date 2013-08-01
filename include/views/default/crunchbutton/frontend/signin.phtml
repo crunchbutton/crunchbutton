@@ -5,16 +5,16 @@
 			<form class="signin-form">
 				<!--
 				<div class="sign-form-links">
-					<h1 ng-class="account.tab == 'signin' ? 'tab-active' : 'link'" ng-tap="account.setTab('signin')">Sign in</h1>
+					<h1 ng-class="account.tab == 'signin' ? 'tab-active' : 'link'" ng-click="account.setTab('signin')">Sign in</h1>
 					<div class="divisor">|</div>
-					<h1 ng-class="{account.tab == 'signup' ? 'tab-active' : 'link'}" ng-tap="account.setTab('signup')">Sign up</h1>
+					<h1 ng-class="{account.tab == 'signup' ? 'tab-active' : 'link'}" ng-click="account.setTab('signup')">Sign up</h1>
 					<div class="divider"></div>
 				</div>
 				-->
 				<div class="sign-form-links">
-					<h1 ng-class="{{account.tab == 'signin' && 'tab-active' || 'link' }}" ng-tap="account.setTab('signin')">Sign in</h1>
+					<h1 ng-class="{{account.tab == 'signin' && 'tab-active' || 'link' }}" ng-click="account.setTab('signin')">Sign in</h1>
 					<div class="divisor">|</div>
-					<h1 ng-class="{{account.tab == 'signup' && 'tab-active' || 'link' }}" ng-tap="account.setTab('signup')">Sign up</h1>
+					<h1 ng-class="{{account.tab == 'signup' && 'tab-active' || 'link' }}" ng-click="account.setTab('signup')">Sign up</h1>
 					<div class="divider"></div>
 				</div>
 
@@ -25,7 +25,7 @@
 				<div class="signin-error">
 					Your email or password were incorrect.
 				</div>
-				<a class="signin-password-help" ng-tap="account.setHelp(true)">Password help?</a>
+				<a class="signin-password-help" ng-click="account.setHelp(true)">Password help?</a>
 				<a href="javascript:;" class="signin-form-button">Log in</a>
 				<input type="submit" style="visibility: hidden">
 				<div class="divider"></div>
@@ -49,7 +49,7 @@
 				<input type="text" maxlength="250" name="password-help-email" placeholder="email or phone" tabindex="10" ng-model="account.email" autofocus>
 				<div class="divider"></div>
 				<div class="password-help-error"></div>
-				<a class="signin-password-help-back" ng-tap="account.setHelp(false)">Never mind</a>
+				<a class="signin-password-help-back" ng-click="account.setHelp(false)">Never mind</a>
 				<a href="javascript:;" class="signin-password-help-button">Reset</a>
 				<div class="divider"></div>
 			</form>
