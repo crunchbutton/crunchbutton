@@ -1,5 +1,5 @@
 <script type="text/javascript">
-if (App){
+if (App) {
 	App.config = <?=json_encode(c::appConfig())?>;
 } else {
 	$(function() {
@@ -21,11 +21,11 @@ if (App){
 		<div class="snap-drawer snap-drawer-left">
 			<div>
 				<ul>
-					<li><a href="javascript:;" ng-tap="navigation.link('/food-delivery')">Restaurants</a></li>
-					<li><a href="javascript:;" ng-tap="navigation.link('/location')">Change Location</a></li>
-					<li><a ng-show="navigation.account.user" href="javascript:;" ng-tap="navigation.link('/orders')">Order History</a></li>
-					<li><a href="javascript:;" ng-tap="navigation.link('/help')">Help</a></li>
-					<li><a href="javascript:;" ng-tap="navigation.link('/legal')">Legal</a></li>
+					<li><a href="javascript:;" ng-instant="navigation.link('/food-delivery')">Restaurants</a></li>
+					<li><a href="javascript:;" ng-instant="navigation.link('/location')">Change Location</a></li>
+					<li><a ng-show="navigation.account.user" href="javascript:;" ng-instant="navigation.link('/orders')">Order History</a></li>
+					<li><a href="javascript:;" ng-instant="navigation.link('/help')">Help</a></li>
+					<li><a href="javascript:;" ng-instant="navigation.link('/legal')">Legal</a></li>
 					<? if (c::env() == 'beta' || c::env() == 'local') : ?>
 						<li><a href="javascript:App.test.card();" class="test-card">TEST: card</a></li>
 						<li><a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a></li>
@@ -49,15 +49,15 @@ if (App){
 					
 					<div class="pacman-loading pacman-left"></div>
 	
-					<div class="logo"><a href="javascript:;" ng-tap="navigation.link('/')"><div class="logo-img"></div></a></div>
+					<div class="logo"><a href="javascript:;" ng-instant="navigation.link('/')"><div class="logo-img"></div></a></div>
 	
-					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-tap="back()"></div>
-					<div title="Change location" ng-show="navigation.buttons.location" class="location-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-tap="navigation.link('/location')"></div>
-					<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-tap="navigation.link('/location')"></div>
+					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()"></div>
+					<div title="Change location" ng-show="navigation.buttons.location" class="location-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.link('/location')"></div>
+					<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instantt="navigation.link('/location')"></div>
 	
 					<div class="signin-box-header">
-						<div ng-show="navigation.account.user" ng-tap="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
-						<div ng-show="!navigation.account.user" ng-tap="navigation.signin()" class="signin-icon"></div>
+						<div ng-show="navigation.account.user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
+						<div ng-show="!navigation.account.user" ng-instant="navigation.signin()" class="signin-icon"></div>
 					</div>
 	
 				</div>
@@ -98,19 +98,14 @@ if (App){
 		</div>
 
 		<div class="divider"></div>
-		
-
-
-
-
 	</div>
 	
-		<div ng-include="'view/account.html'"></div>
-		<div ng-include="'view/account.reset.html'"></div>
-		<div ng-include="'view/account.facebook.html'"></div>
-		<div ng-include="'view/giftcard.html'"></div>
-		<div ng-include="'view/suggestion.html'"></div>
-		<div ng-include="'view/support.html'"></div>
+	<div ng-include="'view/account.html'"></div>
+	<div ng-include="'view/account.reset.html'"></div>
+	<div ng-include="'view/account.facebook.html'"></div>
+	<div ng-include="'view/giftcard.html'"></div>
+	<div ng-include="'view/suggestion.html'"></div>
+	<div ng-include="'view/support.html'"></div>
 
 	<div id="fb-root"></div>
 
@@ -174,8 +169,3 @@ if (App){
     mixpanel.init("6eb260b54eecfd293d50b5f1423c6e98");
 </script>
 
-<div id="small-dialog" class="zoom-anim-dialog mfp-hide">
-        <h1>Dialog example</h1>
-        <p>This is dummy copy. It is not meant to be read. It has been placed here solely to demonstrate the look and feel of finished, typeset text. Only for show. He who searches for meaning here will be sorely disappointed.</p>
-      </div>
-</html>

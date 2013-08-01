@@ -173,6 +173,7 @@ if (window.jQuery) {
 	$.fn.tap = function(func) {
 		$(document).on('touchclick', $(this).selector, func );
 	};
+	$.fn.tap = $.fn.fastClick;
 }
 
 NGApp.filter('iif', function () {
@@ -182,6 +183,16 @@ NGApp.filter('iif', function () {
 });
 
 if (App.isMobile()) {
+	NGApp.directive('ngInstant', function () {
+		return function(scope, element, attrs) {
+			element.bind('touchstart', function(e) {
+				scope.$apply(attrs['ngInstant'], element);
+				e.preventDefault();
+				e.stopPropagation();
+			});
+		};
+	});
+
 	NGApp.directive('ngTap', function () {
 		return function(scope, element, attrs) {
 			var tapping;
@@ -202,6 +213,16 @@ if (App.isMobile()) {
 		};
 	});
 } else {
+	NGApp.directive('ngInstant', function () {
+		return function(scope, element, attrs) {
+			element.bind('click', function(e) {
+				scope.$apply(attrs['ngInstant'], element);
+				e.preventDefault();
+				e.stopPropagation();
+			});
+		};
+	});
+
 	NGApp.directive('ngTap', function () {
 		return function(scope, element, attrs) {
 			element.bind('mousedown', function(e) {
