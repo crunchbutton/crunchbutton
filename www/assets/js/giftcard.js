@@ -33,12 +33,12 @@ App.giftcard.show = function( path ){
 				if( giftinfo.success ){
 					$( '.giftcard-message-title' ).html( 'Welcome' );
 					$( '.giftcard-message-text' ).html( 'You have a $' + giftinfo.success.value + ' gift card! <br/><br/> <span class="giftcard-sign-in">Sign In</span> <span class="giftcard-later">Later</span>' );
-					$(document).on('touchclick', '.giftcard-later', function() {
+					$(document).on('click', '.giftcard-later', function() {
 						var code = ( path.length > 1 ) ? ( path[ 1 ] ? path[ 1 ] : '' ) : '';
 						App.giftcard.notesCode = code;
 						$('.giftcard-container').dialog('close');
 					});	
-					$(document).on('touchclick', '.giftcard-sign-in', function() {
+					$(document).on('click', '.giftcard-sign-in', function() {
 						App.giftcard.callback = function(){
 							App.giftcard.callback = false;
 							$( '.giftcard-message-title' ).html( 'Gift card.' );
@@ -93,7 +93,7 @@ App.giftcard.process = function( path ){
 					}
 					// If the gift card is valid to any restaurant does not show the restaurant's link
 					if( id_restaurant ){
-						$(document).on('touchclick', '.giftcard-restaurant', function() {
+						$(document).on('click', '.giftcard-restaurant', function() {
 							var id_restaurant = $( this ).attr( 'id_restaurant' );
 							$( '.giftcard-container' ).dialog( 'close' );
 							App.loadRestaurant( id_restaurant );

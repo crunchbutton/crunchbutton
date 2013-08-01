@@ -108,32 +108,6 @@ App.nl2br = function( string ){
 		return string.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');	
 	}
 }
-
-var touchclick = App.isMobile() ? 'touchend' : 'click';
-
-var touchHandle = function (event) {
-	var handleObj = event.handleObj,
-		targetData = jQuery.data(event.target),
-		ret;
-
-	if (!App.isMobile() || (Math.abs(endCoords.pageX-startCoords.pageX) <= cordsThresh && Math.abs(endCoords.pageY-startCoords.pageY) <= cordsThresh)) {
-		event.type = handleObj.origType;
-		ret = handleObj.handler.apply(this, arguments);
-		event.type = handleObj.type;
-		event.preventDefault();
-		return ret;
-	}
-};
-
-touchclick = 'click';
-touchHandle = jQuery.event.special.click;
-
-jQuery.event.special.touchclick = {
-	bindType: touchclick,
-	delegateType: touchclick,
-	handle: touchHandle
-};
-
 var startCoords = {}, endCoords = {}, cordsThresh = 3;
 
 if (window.jQuery) {
