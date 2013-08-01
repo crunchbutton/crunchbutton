@@ -8,20 +8,20 @@
 
 	<ul class="resturant-dishes resturant-dish-container your-orders">
 		<li ng-repeat="order in orders.list">
-			<span ng-tap="orders.restaurant(order._restaurant_permalink)" class="dish-name order-restaurant">
+			<span ng-click="orders.restaurant(order._restaurant_permalink)" class="dish-name order-restaurant">
 				{{order._restaurant_name}}
 			</span>
 			<span class="dish-price">
 				{{order.timeFormat}} ({{order._tz}})
 			</span>
-			<a ng-tap="orders.receipt(order.id)" class="order-link" href="javascript:;">View Receipt</a>
+			<a ng-click="orders.receipt(order.id)" class="order-link" href="javascript:;">View Receipt</a>
 			<div class="divider"></div>		
 		</li>
 	</ul>
 
 	<div class="order-options">
 		<a ng-show="(!account.facebook.logged && !account.user.facebook)" href="javascript:;" class="signup-add-facebook-button" >Connect with Facebook</a>
-		<a href="javascript:;" ng-tap="signout.do()" class="signout-button">Sign out</a>
+		<a href="javascript:;" ng-click="signout.do()" class="signout-button">Sign out</a>
 		<div class="divider"></div>
 	</div>
 </div>

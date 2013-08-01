@@ -110,7 +110,6 @@ App.nl2br = function( string ){
 }
 
 var touchclick = App.isMobile() ? 'touchend' : 'click';
-var touchup = App.isMobile() ? 'touchend' : 'mouseup';
 
 var touchHandle = function (event) {
 	var handleObj = event.handleObj,
@@ -127,18 +126,11 @@ var touchHandle = function (event) {
 };
 
 touchclick = 'click';
-touchup = 'mouseup';
 touchHandle = jQuery.event.special.click;
-
 
 jQuery.event.special.touchclick = {
 	bindType: touchclick,
 	delegateType: touchclick,
-	handle: touchHandle
-};
-jQuery.event.special.touchup = {
-	bindType: touchup,
-	delegateType: touchup,
 	handle: touchHandle
 };
 
@@ -154,26 +146,6 @@ if (window.jQuery) {
 			return this;
 		};
 	})(jQuery);
-
-	$(document).on('touchstart', function(event) {
-		endCoords = event.originalEvent.targetTouches[0];
-		startCoords.pageX = event.originalEvent.targetTouches[0].pageX;
-		startCoords.pageY = event.originalEvent.targetTouches[0].pageY;
-	});
-	
-	$(document).on('touchmove', function(event) {
-		endCoords = event.originalEvent.targetTouches[0];
-	});
-	
-	$(document).on('touchend', function(event) {
-		endCoords.pageX = startCoords.pageX = 0;
-		endCoords.pageY = startCoords.pageY = 0;
-	});
-	
-	$.fn.tap = function(func) {
-		$(document).on('touchclick', $(this).selector, func );
-	};
-	$.fn.tap = $.fn.fastClick;
 }
 
 NGApp.filter('iif', function () {
@@ -182,58 +154,12 @@ NGApp.filter('iif', function () {
 	};
 });
 
-if (App.isMobile()) {
-	NGApp.directive('ngInstant', function () {
-		return function(scope, element, attrs) {
-			element.bind('touchstart', function(e) {
-				scope.$apply(attrs['ngInstant'], element);
-				e.preventDefault();
-				e.stopPropagation();
-			});
-		};
-	});
-
-	NGApp.directive('ngTap', function () {
-		return function(scope, element, attrs) {
-			var tapping;
-			moving = false;
-			element.bind('touchstart', function(e) {
-				element.addClass('active');
-			});
-			element.bind('touchmove', function(e) {
-				element.removeClass('active');
-				moving = true;
-			});
-			element.bind('touchend', function(e) {
-				element.removeClass('active');
-				if (!moving) {
-					scope.$apply(attrs['ngTap'], element);
-				}
-			});
-		};
-	});
-} else {
-	NGApp.directive('ngInstant', function () {
-		return function(scope, element, attrs) {
-			element.bind('click', function(e) {
-				scope.$apply(attrs['ngInstant'], element);
-				e.preventDefault();
-				e.stopPropagation();
-			});
-		};
-	});
-
-	NGApp.directive('ngTap', function () {
-		return function(scope, element, attrs) {
-			element.bind('mousedown', function(e) {
-				element.addClass('active');
-			});
-			element.bind('mouseup', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				element.removeClass('active');
-				scope.$apply(attrs['ngTap'], element);
-			});
-		};
-	});
-}
+NGApp.directive('ngInstant', function () {
+	return function(scope, element, attrs) {
+		element.bind(App.isMobile() ? 'touchstart' : 'click', function(e) {
+			scope.$apply(attrs['ngInstant'], element);
+			e.preventDefault();
+			e.stopPropagation();
+		});
+	};
+});

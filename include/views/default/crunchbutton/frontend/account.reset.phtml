@@ -13,7 +13,7 @@
 			<div ng-show="reset.error == 'expired'" class="error">
 				Sorry, this code is expired.
 			</div>
-			<button ng-tap="reset.validateCode();">Reset</button>
+			<button ng-click="reset.validateCode();">Reset</button>
 			<div class="divider"></div>
 		</form>
 	</div>
@@ -28,7 +28,7 @@
 			<div ng-show="reset.error == 'invalid'" class="error">
 				Sorry, this code is invalid.
 			</div>
-			<button ng-tap="reset.changePassword();">Change</button>
+			<button ng-click="reset.changePassword();">Change</button>
 			<div class="divider"></div>
 		</form>
 		<div ng-show="reset.success">

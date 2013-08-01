@@ -24,8 +24,8 @@ if (App) {
 					<li><a href="javascript:;" ng-instant="navigation.link('/food-delivery')">Restaurants</a></li>
 					<li><a href="javascript:;" ng-instant="navigation.link('/location')">Change Location</a></li>
 					<li><a ng-show="navigation.account.user" href="javascript:;" ng-instant="navigation.link('/orders')">Order History</a></li>
-					<li><a href="javascript:;" ng-instant="navigation.link('/help')">Help</a></li>
-					<li><a href="javascript:;" ng-instant="navigation.link('/legal')">Legal</a></li>
+					<li><a href="javascript:;" ng-click="navigation.link('/help')">Help</a></li>
+					<li><a href="javascript:;" ng-click="navigation.link('/legal')">Legal</a></li>
 					<? if (c::env() == 'beta' || c::env() == 'local') : ?>
 						<li><a href="javascript:App.test.card();" class="test-card">TEST: card</a></li>
 						<li><a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a></li>
@@ -53,7 +53,7 @@ if (App) {
 	
 					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()"></div>
 					<div title="Change location" ng-show="navigation.buttons.location" class="location-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.link('/location')"></div>
-					<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instantt="navigation.link('/location')"></div>
+					<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.menu()"></div>
 	
 					<div class="signin-box-header">
 						<div ng-show="navigation.account.user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
@@ -79,9 +79,9 @@ if (App) {
 		
 					<div class="footer-content hidden-phone" ng-controller="MainHeaderCtrl">
 		
-						<a href="javascript:;" ng-tap="navigation.link('/help')">Help</a>
-						<a href="javascript:;" ng-tap="navigation.link('/legal')">Legal</a>
-						<a ng-show="navigation.account.user" href="javascript:;" ng-tap="navigation.link('/orders')">Order History</a>
+						<a href="javascript:;" ng-click="navigation.link('/help')">Help</a>
+						<a href="javascript:;" ng-click="navigation.link('/legal')">Legal</a>
+						<a ng-show="navigation.account.user" href="javascript:;" ng-click="navigation.link('/orders')">Order History</a>
 						<? if (c::env() == 'beta' || c::env() == 'local') : ?>
 							<a href="javascript:App.test.card();" class="test-card">TEST: card</a>
 							<a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a>

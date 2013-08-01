@@ -62,6 +62,16 @@ App.go = function(url) {
 };
 
 
+App.toggleMenu = function() {
+	if (App.snap.state().state == 'left') {
+		App.snap.close();
+	} else {
+		App.snap.open('left');
+	}
+};
+
+
+
 /**
  * Loads up "community" keyword pages
  */
@@ -401,16 +411,16 @@ App.test = {
 		location.href = '/';
 	},
 	init: function() {
-		$('.test-card').tap(function() {
+		$('.test-card').click(function() {
 			App.test.card();
 		});
-		$('.test-logout').tap(function() {
+		$('.test-logout').click(function() {
 			App.test.logout();
 		});
-		$('.test-cart').tap(function() {
+		$('.test-cart').click(function() {
 			App.test.cart();
 		});
-		$('.test-clearloc').tap(function() {
+		$('.test-clearloc').click(function() {
 			App.test.clearloc();
 		});
 	}
@@ -489,26 +499,18 @@ App.trigger = {
  * global event binding and init
  */
 $(function() {
-
-	var snapper = new Snap({
+	FastClick.attach(document.body);
+	App.snap = new Snap({
 		element: document.getElementById('snap-content'),
 		disable: 'right'
 	});
 
-	$('.menu-icon').on('touchclick', function() {
-		if (snapper.state().state == 'left') {
-			snapper.close();
-		} else {
-			snapper.open('left');
-		}
-	});
-
 	var snapperCheck = function() {
 		if ($(window).width() <= 768) {
-			snapper.enable();
+			App.snap.enable();
 		} else {
-			snapper.close();
-			snapper.disable();
+			App.snap.close();
+			App.snap.disable();
 		}
 	};
 	snapperCheck();
@@ -516,7 +518,6 @@ $(function() {
 	$(window).resize(function() {
 		snapperCheck();
 	});
-	App.snap = snapper;
 
 	$.totalStorage.ls(App.localStorage);
 
@@ -601,14 +602,14 @@ $(function() {
 		});
 
 		// manually rebind checkbox events
-		$('input[type="checkbox"]').tap(function(e) {
+		$('input[type="checkbox"]').click(function(e) {
 			e.stopPropagation();
 			e.preventDefault();
 			$(this).checkToggle();
 		});
 
 		// manually rebind labels
-		$('label[for]').tap(function(e) {
+		$('label[for]').click(function(e) {
 			e.stopPropagation();
 			e.preventDefault();
 			var target = document.getElementById($(this).attr('for'));
@@ -631,7 +632,7 @@ $(function() {
 
 		// manually bind links
 		// @todo: intercept for native app
-		$('a[href]').tap(function(e) {
+		$('a[href]').click(function(e) {
 			var el = $(this);
 			var href = el.attr('href');
 
@@ -656,23 +657,23 @@ $(function() {
 		*/
 	}
 /*
-	$('.dish-item').tap(function() {
+	$('.dish-item').click(function() {
 		App.cart.add($(this).attr('data-id_dish'));
 	});
 
-	$('.cart-button-remove').tap(function() {
+	$('.cart-button-remove').click(function() {
 		App.cart.remove($(this).closest('.cart-item'));
 	});
 
-	$('.cart-button-add').tap(function() {
+	$('.cart-button-add').click(function() {
 		App.cart.clone($(this).closest('.cart-item'));
 	});
 
-	$('.cart-item-config a').tap(function() {
+	$('.cart-item-config a').click(function() {
 		App.cart.customize($(this).closest('.cart-item'));
 	});
 */
-	$('.button-submitorder-form').tap(function(e) {
+	$('.button-submitorder-form').click(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		App.crunchSoundAlreadyPlayed = false;
@@ -704,13 +705,13 @@ $(function() {
 		App.cart.customizeItem($(this));
 	});
 */
-	$( '.default-order-check' ).tap( function(){
+	$( '.default-order-check' ).click( function(){
 		setTimeout( function(){
 			$( '#default-order-check' ).checkToggle();
 		}, 1 );
 	} );
 /*
-	$('.cart-customize-check').tap( function() {
+	$('.cart-customize-check').click( function() {
 		var checkbox = $(this);
 		setTimeout( function(){
 			if( !App.isMobile() ){
@@ -720,7 +721,7 @@ $(function() {
 		}, 1 );
 	});
 
-	$('.cart-item-customize-item label').tap(function() {
+	$('.cart-item-customize-item label').click(function() {
 		$(this).prev('input').checkToggle();
 		App.cart.customizeItem( $(this).prev('input') );
 	});
@@ -755,7 +756,7 @@ $(function() {
 	});
 
 
-	$('.cart-summary').tap(function(e) {
+	$('.cart-summary').click(function(e) {
 		e.stopPropagation();
 		e.preventDefault();
 		$('html, body').animate({
@@ -811,7 +812,7 @@ $(function() {
 	});
 
 
-	$( '.ui-dialog-titlebar-close' ).tap( function(){
+	$( '.ui-dialog-titlebar-close' ).click( function(){
 		try{
 			$( '.ui-dialog-content' ).dialog( 'close' );
 		} catch(e){}

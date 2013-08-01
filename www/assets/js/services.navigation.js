@@ -8,6 +8,8 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, AccountServi
 			menu: true
 		}
 	};
+	
+	service.menu = App.toggleMenu;
 
 	service.account = AccountService;
 	service.modal = AccountModalService;

@@ -16,12 +16,12 @@
 		</span>
 	
 		<div ng-show="account.user">
-			You can one click order anywhere, including <a href="javascript://" ng-tap="crunchbutton();">crunchbutton.com</a> on your phone.
+			You can one click order anywhere, including <a href="javascript://" ng-click="crunchbutton();">crunchbutton.com</a> on your phone.
 		</div>
 
 		<div ng-show="!account.user.has_auth">
 				Add a password to reorder your favorite food anywhere, including <a href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
-				<a href="javascript:;" ng-tap="modal.signinOpen();" class="add-password-button">Add a password now</a>
+				<a href="javascript:;" ng-click="modal.signinOpen();" class="add-password-button">Add a password now</a>
 		</div>
 	
 		<div class="order-details">
@@ -57,7 +57,7 @@
 
 			<br /><br />
 
-			<div class="facebook-button facebook-button-share clearfix" ng-tap="facebook();">
+			<div class="facebook-button facebook-button-share clearfix" ng-click="facebook();">
 				<i class="icon-facebook"></i><span class="facebook-button-text">Share what you ordered</span>
 			</div>
 	
@@ -65,6 +65,6 @@
 	</div>
 	
 	<br />
-	<a href="javascript://" ng-tap="print();" class="print-icon"><i class="icon-print"></i> Print Receipt</a>
+	<a href="javascript://" ng-click="print();" class="print-icon"><i class="icon-print"></i> Print Receipt</a>
 	<div class="divider"></div>
 </div>

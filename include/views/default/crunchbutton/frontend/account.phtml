@@ -1,8 +1,8 @@
 <div class="account-container modal zoom-anim-dialog small-container mfp-hide">
 	<div ng-controller="AccountModalHeaderCtrl" class="header" ng-show="modal.header">
-		<h1 class="signin {{ modal.signin && 'active' || 'link' }}" ng-tap="modal.toggleSignForm( 'signin' )">Sign in</h1>
+		<h1 class="signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Sign in</h1>
 		<div class="divisor">|</div>
-		<h1 class="signup {{ modal.signup && 'active' || 'link' }}" ng-tap="modal.toggleSignForm( 'signup' )">Sign up</h1>
+		<h1 class="signup {{ modal.signup && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signup' )">Sign up</h1>
 		<div class="divider"></div>
 	</div>
 	<div ng-controller="AccountSignInCtrl" ng-show="modal.signin">
@@ -24,8 +24,8 @@
 					Your email or password were incorrect.
 				</div>
 				<div class="divider"></div>
-				<a class="help-link" ng-tap="help.show(true)">Password help?</a>
-				<button ng-disabled="formSignin.$pristine || formSignin.$invalid" ng-tap="account.signin();">Log in</button>
+				<a class="help-link" ng-click="help.show(true)">Password help?</a>
+				<button ng-disabled="formSignin.$pristine || formSignin.$invalid" ng-click="account.signin();">Log in</button>
 				<div class="divider"></div>
 			</form>
 			<div facebook-signin-button title="Login with Facebook"></div>
@@ -38,8 +38,8 @@
 				<div ng-show="help.error" class="error">
 					Sorry, that email/phone is not registered with us.
 				</div>
-				<a class="help-link" ng-tap="help.show(false)">Never mind</a>
-				<button ng-disabled="formLoginHelp.$pristine || formLoginHelp.$invalid" ng-tap="help.sendForm()">Reset</button>
+				<a class="help-link" ng-click="help.show(false)">Never mind</a>
+				<button ng-disabled="formLoginHelp.$pristine || formLoginHelp.$invalid" ng-click="help.sendForm()">Reset</button>
 				<div class="divider"></div>
 				<div ng-show="formLoginHelp.$dirty && formLoginHelp.$invalid" class="error">
 					Please enter a valid email or phone.
@@ -72,7 +72,7 @@
 					It seems that the email is already registered!
 				</div>
 				<div class="divider"></div>
-				<button ng-disabled="formSignup.$pristine || formSignup.$invalid" ng-tap="account.signup();">Sign up</button>
+				<button ng-disabled="formSignup.$pristine || formSignup.$invalid" ng-click="account.signup();">Sign up</button>
 				<div class="divider"></div>
 			</form>
 			<div facebook-signin-button title="Signup with Facebook"></div>

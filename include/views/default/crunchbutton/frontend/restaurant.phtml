@@ -55,13 +55,13 @@
 
 						<div class="cart-item cart-item-dish" data-cart_id="{{item.id}}">
 
-							<div class="cart-button cart-button-remove" ng-tap="cart.remove(item.details.id);"><span></span></div>
+							<div class="cart-button cart-button-remove" ng-click="cart.remove(item.details.id);"><span></span></div>
 
 							<div class="cart-item-name">{{item.details.name}}
 								<span class="cart-item-description">{{item.details.description}}</span>
 							</div>
 
-							<div ng-show="item.details.customization.customizable" ng-tap="item.details.customization.expanded=!item.details.customization.expanded" class="cart-item-config"><a href="javascript:;">Customize</a></div>
+							<div ng-show="item.details.customization.customizable" ng-click="item.details.customization.expanded=!item.details.customization.expanded" class="cart-item-config"><a href="javascript:;">Customize</a></div>
 
 						</div>
 
@@ -77,8 +77,8 @@
 										<!-- Customizable - checkbox -->
 										<div ng-switch-when="check">
 												<input type="checkbox" ng-change="cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
-												<label ng-tap="option.checked = !option.checked; cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</label>
-												<label ng-tap="option.checked = !option.checked; cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</label>
+												<label ng-click="option.checked = !option.checked; cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</label>
+												<label ng-click="option.checked = !option.checked; cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</label>
 										</div>
 
 										<!-- Customizable - select -->
@@ -114,7 +114,7 @@
 			<div ng-repeat="category in restaurant.categories()">
 				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
 				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-					<li ng-repeat="dish in category.dishes()" ng-tap="cart.add( dish.id_dish )" class="dish-item">
+					<li ng-repeat="dish in category.dishes()" ng-click="cart.add( dish.id_dish )" class="dish-item">
 						<span class="dish-name"><i class="icon-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-price">({{AB.dollar}}{{dish.price}}{{AB.changeablePrice(dish)}})</span>
 					</li>
 				</ul>
@@ -122,7 +122,7 @@
 		
 			<div class="suggestion-link-container" ng-controller="RecommendFoodCtrl">
 				<div class="suggestion-link-title">Really want something else?</div>
-					<a href="javascript:;" ng-tap="recommend.modal.open();"><b><i>Suggest other food</i></b></a>
+					<a href="javascript:;" ng-click="recommend.modal.open();"><b><i>Suggest other food</i></b></a>
 			</div>
 			
 		</div>

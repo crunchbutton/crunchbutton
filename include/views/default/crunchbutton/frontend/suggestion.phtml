@@ -6,7 +6,7 @@
 			<input type="text" maxlength="250" ng-model="recommend.form.name" ng-enter="recommend.send()" id="suggestion-name" tabindex="10" />
 			<div class="divider"></div>
 		</form>
-		<button ng-show="!recommend.isSending" ng-tap="recommend.send();">Suggest</button>
+		<button ng-show="!recommend.isSending" ng-click="recommend.send();">Suggest</button>
 		<div class="divider"></div>
 		<i ng-show="recommend.isSending" class="icon-spinner icon-spin"></i>
 		<br/>
