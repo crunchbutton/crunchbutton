@@ -112,6 +112,11 @@ class Crunchbutton_User extends Cana_Table {
 		}
 		$out['ip'] = $_SERVER['REMOTE_ADDR'];
 		$out['email'] = $this->email ? $this->email : $this->email();
+		
+		
+		unset($out['balanced_id']);
+		unset($out['stripe_id']);
+		
 		return $out;
 	}
 
