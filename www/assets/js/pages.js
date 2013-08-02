@@ -200,22 +200,66 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 
 	$scope.service = RestaurantService;
 
+
+	// Alias to ServiceAccount.user
+	$scope.user = $scope.service.account.user;
+
 	$scope.service.init();
 	$scope.cart = CartService;
 
+	// Credit card years
+	var date = new Date().getFullYear();
+	var years = [];
+	for (var x = date; x <= date + 20; x++) {
+		years[years.length] = x;
+	}
+
+	$scope.form = {
+		tip: App.order.tip,
+		name: $scope.user.name,
+		phone: App.phone.format( $scope.user.phone ),
+		address: $scope.user.address,
+		notes: ( $scope.user && $scope.user.presets && $scope.user.presets[$routeParams.id]) ? $scope.user.presets[$routeParams.id].notes : '',
+		card: {
+			number: $scope.user.card,
+			month: $scope.user.card_exp_month,
+			year: $scope.user.card_exp_year
+		},
+		months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+		years: years
+	};
+
+	$scope.AB = {
+				dollar: (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '',
+				changeablePrice: function (dish) {
+					return (App.config.ab && App.config.ab.changeablePrice == 'show' && dish.changeable_price) ? '+' : ''
+				},
+				restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
+			};
+
 	$scope.$watch( 'service.loaded', function( newValue, oldValue, scope ) {
 		if( newValue ){
+			
 			$scope.restaurant	 = $scope.service.restaurant;
-			$scope.user	= $scope.service.account.user;
+			$scope.cart.restaurant = $scope.restaurant;
+			$scope.cart.updateTotal();
 
 			$scope.lastOrderDelivery = $scope.service.lastOrderDelivery;
 			$scope.community = $scope.service.community;
 			$scope.showRestaurantDeliv = $scope.service.showRestaurantDeliv;
-			$scope.AB = $scope.service.AB;
-			$scope.form = $scope.service.form;
-			// $scope.cart = $scope.service.cart;
 		}
 	});
+
+			/*
+			// Validate gift card at the notes field
+			service.$watch( 'form.notes', function( newValue, oldValue, scope ) {
+				service.giftcard.text.content = service.form.notes;
+				service.giftcard.text.start();
+			});
+*/
+			// service.cart = {
+				// totalFixed: parseFloat(service.restaurant.delivery_min - service.cartService.total()).toFixed(2)
+			// }
 
 
 	$('.config-icon').addClass('config-icon-mobile-hide');
