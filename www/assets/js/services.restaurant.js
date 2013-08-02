@@ -114,9 +114,9 @@ NGApp.factory('RestaurantService', function ($http, $routeParams, $rootScope, Ac
 		service.load();
 	}
 
-service.load = function(){
+service.account = AccountService;
 
-	service.account = AccountService;
+service.load = function(){
 
 	App.cache('Restaurant', $routeParams.id, function () {
 		 
@@ -144,50 +144,12 @@ service.load = function(){
 
 		var complete = function () {
 
-			var date = new Date().getFullYear();
-			var years = [];
-			for (var x = date; x <= date + 20; x++) {
-				years[years.length] = x;
-			}
-
 			service.loaded = true;
 
 			service.lastOrderDelivery = lastOrderDelivery;
 			
 			service.showRestaurantDeliv = ((lastOrderDelivery == 'delivery' || service.restaurant.delivery == '1' || service.restaurant.takeout == '0') && lastOrderDelivery != 'takeout');
 
-			service.AB = {
-				dollar: (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '',
-				changeablePrice: function (dish) {
-					return (App.config.ab && App.config.ab.changeablePrice == 'show' && dish.changeable_price) ? '+' : ''
-				},
-				restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
-			};
-
-			service.form = {
-				tip: App.order.tip,
-				name: service.account.user.name,
-				phone: App.phone.format(service.account.user.phone),
-				address: service.account.user.address,
-				notes: ( service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].notes : '',
-				card: {
-					number: service.account.user.card,
-					month: service.account.user.card_exp_month,
-					year: service.account.user.card_exp_year
-				},
-				months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-				years: years
-			};
-			/*
-			// Validate gift card at the notes field
-			service.$watch( 'form.notes', function( newValue, oldValue, scope ) {
-				service.giftcard.text.content = service.form.notes;
-				service.giftcard.text.start();
-			});
-*/
-			// service.cart = {
-				// totalFixed: parseFloat(service.restaurant.delivery_min - service.cartService.total()).toFixed(2)
-			// }
 		};
 
 		// double check what phase we are in

@@ -113,19 +113,16 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 		 * @return void
 		 */
 		updateTotal: function () {
-			///TODO: REMOVE THIS RETURN
-
-			return;
 			var
 			totalText = (App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '') + this.charged(),
 				tipText = '',
 				feesText = '',
 				totalItems = 0,
 				credit = 0,
-				hasFees = ((App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') || App.restaurant.fee_customer) ? true : false;
+				hasFees = ((service.restaurant.delivery_fee && App.order.delivery_type == 'delivery') || service.restaurant.fee_customer) ? true : false;
 
-			if (App.credit.restaurant[App.restaurant.id]) {
-				credit = parseFloat(App.credit.restaurant[App.restaurant.id]);
+			if (App.credit.restaurant[service.restaurant.id]) {
+				credit = parseFloat(App.credit.restaurant[service.restaurant.id]);
 			}
 
 			for (var x in service.items) {
@@ -158,9 +155,10 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 				totalText = (App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '') + this.charged();
 			}
 
-			if (App.restaurant.meetDeliveryMin() && App.order.delivery_type == 'delivery') {
+			var _total = service.restaurant.delivery_min_amt == 'subtotal' ? service.subtotal() : service.total();
+			if (service.restaurant.meetDeliveryMin(_total) && App.order.delivery_type == 'delivery') {
 				$('.delivery-minimum-error').show();
-				$('.delivery-min-diff').html(App.restaurant.deliveryDiff());
+				$('.delivery-min-diff').html(service.restaurant.deliveryDiff(_total));
 
 			} else {
 				$('.delivery-minimum-error').hide();
@@ -223,7 +221,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 				$('.cart-paymentType').html('');
 			}
 
-			if (serviceHighlightEnabled && $('.cart-summary').css('display') != 'none') {
+			if (App.cartHighlightEnabled && $('.cart-summary').css('display') != 'none') {
 				$('.cart-summary').removeClass('cart-summary-detail');
 				$('.cart-summary').effect('highlight', {}, 500, function () {
 					$('.cart-summary').addClass('cart-summary-detail');
@@ -354,7 +352,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 				cart: service.getCart(),
 				pay_type: App.order['pay_type'],
 				delivery_type: App.order['delivery_type'],
-				restaurant: App.restaurant.id,
+				restaurant: service.restaurant.id,
 				make_default: $('#default-order-check').is(':checked'),
 				notes: $('[name="notes"]').val(),
 				lat: (App.loc.pos()) ? App.loc.pos().lat : null,
@@ -435,7 +433,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 				if (App.config && App.config.user && App.config.user.last_order) {
 
 					// Check if the order was made at this community
-					if (App.config.user.last_order.communities.indexOf(App.restaurant.id_community) > -1) {
+					if (App.config.user.last_order.communities.indexOf(service.restaurant.id_community) > -1) {
 
 						// Get the last address the user used at this community
 						var lastAddress = App.config.user.last_order.address;
@@ -448,7 +446,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 							// Log the legacy address
 							App.log.order({
 								'address': lastAddress,
-								'restaurant': App.restaurant.name
+								'restaurant': service.restaurant.name
 							}, 'legacy address');
 						}
 					}
@@ -464,7 +462,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 
 				// Use the restautant's position to create the bounding box - just for tests
 				if( App.useRestaurantBoundingBox ){
-					var latLong = new google.maps.LatLng( App.restaurant.loc_lat, App.restaurant.loc_long );
+					var latLong = new google.maps.LatLng( service.restaurant.loc_lat, service.restaurant.loc_long );
 				}
 
 				if( !latLong ){
@@ -490,7 +488,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
 						}
 
-						if (!App.restaurant.deliveryHere({ lat: lat, lon: lon})) {
+						if (!service.restaurant.deliveryHere({ lat: lat, lon: lon})) {
 							App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.' );
 							
 
@@ -498,7 +496,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 							$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
 
 							// Log the error
-							App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address out of delivery range' );
+							App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : service.restaurant.name } , 'address out of delivery range' );
 						
 							App.busy.unBusy();
 							return;
@@ -532,7 +530,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
  						$('.delivery-payment-info, .content-padder-before').hide();
 						$( '[name="pay-address"]' ).focus();
 						// Log the error
-						App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address not found or invalid' );
+						App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : service.restaurant.name } , 'address not found or invalid' );
 					}
 				}
 
@@ -541,7 +539,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 					App.alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
 					App.busy.unBusy();
 					// Log the error
-					App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : App.restaurant.name } , 'address not found' );
+					App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : service.restaurant.name } , 'address not found' );
 				};
 
 				// Call the geo method
@@ -618,7 +616,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 								'total': this.final_price,
 								'subtotal': this.price,
 								'tip': this.tip,
-								'restaurant': App.restaurant.name,
+								'restaurant': service.restaurant.name,
 								'paytype': this.pay_type,
 								'ordertype': this.order_type,
 								'user': this.user,
@@ -666,8 +664,8 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 		 */
 		_breackDownDelivery: function () {
 			var delivery = 0;
-			if (App.restaurant.delivery_fee && App.order.delivery_type == 'delivery') {
-				delivery = parseFloat(App.restaurant.delivery_fee);
+			if (service.restaurant.delivery_fee && App.order.delivery_type == 'delivery') {
+				delivery = parseFloat(service.restaurant.delivery_fee);
 			}
 			delivery = App.ceil(delivery);
 			return delivery;
@@ -680,15 +678,15 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 		 */
 		_breackDownFee: function (feeTotal) {
 			var fee = 0;
-			if (App.restaurant.fee_customer) {
-				fee = (feeTotal * (parseFloat(App.restaurant.fee_customer) / 100));
+			if (service.restaurant.fee_customer) {
+				fee = (feeTotal * (parseFloat(service.restaurant.fee_customer) / 100));
 			}
 			fee = App.ceil(fee);
 			return fee;
 		},
 
 		_breackDownTaxes: function (feeTotal) {
-			var taxes = (feeTotal * (App.restaurant.tax / 100));
+			var taxes = (feeTotal * (service.restaurant.tax / 100));
 			taxes = App.ceil(taxes);
 			return taxes;
 		},
@@ -728,8 +726,8 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 
 			var finalAmount = this.total();
 
-			if (App.order.pay_type == 'card' && App.credit.restaurant[App.restaurant.id]) {
-				finalAmount = finalAmount - App.ceil(App.credit.restaurant[App.restaurant.id]).toFixed(2);
+			if (App.order.pay_type == 'card' && App.credit.restaurant[service.restaurant.id]) {
+				finalAmount = finalAmount - App.ceil(App.credit.restaurant[service.restaurant.id]).toFixed(2);
 				if (finalAmount < 0) {
 					finalAmount = 0;
 				}
