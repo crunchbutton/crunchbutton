@@ -209,13 +209,6 @@ App.__cart = {
 			$('.cart-paymentType').html('');
 		}
 
-		if (App.cartHighlightEnabled && $('.cart-summary').css('display') != 'none') {
-			$('.cart-summary').removeClass('cart-summary-detail');
-			$('.cart-summary').effect('highlight', {}, 500, function() {
-				$('.cart-summary').addClass('cart-summary-detail');
-			});
-		}
-
 		if ($('.cart-total').html() == totalText) {
 			//return;
 		}

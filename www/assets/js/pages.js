@@ -253,10 +253,6 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$('.config-icon').addClass('config-icon-mobile-hide');
 	$('.nav-back').addClass('nav-back-show');
 
-	App.cartHighlightEnabled = false;
-
-	
-
 	$('.content').removeClass('smaller-width');
 	$('.content').removeClass('short-meal-list');
 

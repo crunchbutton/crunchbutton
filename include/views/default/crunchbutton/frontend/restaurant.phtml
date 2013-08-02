@@ -3,10 +3,11 @@
 </div>
 
 <div ng-show="restaurant.id">
+
 	<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
 		<div class="cart-summary-icon"></div>
-		<div class="cart-summary-item-count"><span></span></div>
-		<div class="cart-summary-items"></div>
+		<div class="cart-summary-item-count"><span>{{order.info.totalItems}}</span></div>
+		<div class="cart-summary-items">{{order.info.cartSummary}}</div>
 	</div>
 
 	<div class="giftcard-badge-container">
@@ -44,7 +45,10 @@
 				</div>
 				<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
 				<div class="divider"></div>
-				<div class="delivery-minimum-error">Add $<span class="delivery-min-diff">{{order.cart.totalFixed}}</span> from menu to meet delivery minimum.</div>
+
+				<div ng-show="order.info.deliveryMinDiff" class="delivery-minimum-error">
+					Add $<span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> from menu to meet delivery minimum.
+				</div>
 				
 				<!-- <div class="cart-items-content"> -->
 
@@ -98,7 +102,11 @@
 				</div>
 			</div>
 
-				<div class="default-order-check"><input type="checkbox" id="default-order-check" checked><label for="default-order-check">Make this your default order for {{restaurant.name}}</label></div>
+				<div class="default-order-check" ng-show="order.info.totalItems">
+					<input type="checkbox" id="default-order-check" checked>
+					<label for="default-order-check">Make this your default order for {{restaurant.name}}</label>
+				</div>
+
 			</div>
 		</div>
 
@@ -229,11 +237,11 @@
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
 							<select name="pay-card-month" tabindex="7">
 								<option>Month</option>
-								<option ng-repeat="x in order.form.months" value="{{x}}">{{x}}</option>
+								<option ng-repeat="x in order._months()" value="{{x}}">{{x}}</option>
 							</select>
 							<select name="pay-card-year" tabindex="8">
 								<option>Year</option>
-								<option ng-repeat="x in order.form.years" value="{{x}}">{{x}}</option>
+								<option ng-repeat="x in order._years()" value="{{x}}">{{x}}</option>
 							</select>
 							<div class="divider"></div>
 						</div>
@@ -244,9 +252,11 @@
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
 		
 						<input type="hidden" name="pay-autotip-value" value="0">
-						<select name="pay-tip" class="tip" tabindex="9">
-				            <option value="autotip" selected>Autotip</option>
-							<option ng-repeat="tip in App.tips" value="{{tip}}">{( tip == 0 ) ? 'Tip with cash' : tip + '%'}</option>
+						<select ng-model="order.form.tip" name="pay-tip" class="tip" tabindex="9">
+							<option value="autotip">Autotip</option>
+							<option ng-repeat="tip in order._tips()" value="{{tip}}">
+								{{ ( tip == 0 ) && 'Tip with cash' || tip + '%' }}
+							</option>
 						</select>
 						<div class="divider"></div>
 					</div>
@@ -258,10 +268,10 @@
 			<div class="payment-total" ng-show="order.subtotal()">
 				You're paying:&nbsp;
 				<span ng-show="order.form.pay_type=='cash'">approximately</span>
-				&nbsp;{{order.info.dollarSign}}{{order.info.breakdownDescription}}&nbsp;
+				&nbsp;{{order.info.breakdownDescription}}&nbsp;
 				<span ng-show="order.info.extraCharges">( + {{order.info.extraCharges}} )</span>
 				<strong class="cart-gift"></strong>
-				for a total of <span class="cart-total"></span>
+				for a total of {{order.info.totalText}}
 				&nbsp;<span class="cart-giftcard-message"></span>
 				&nbsp;
 				<span ng-show="order.form.pay_type=='card'">by cart</span>
@@ -284,7 +294,7 @@
 			<label>You are paying&nbsp;<span class="cash-order-aprox"></span>: &nbsp;</label>
 			<span class="cart-breakdownDescription"></span>
 			<strong class="cart-gift"></strong>
-			&nbsp;for a total of <span class="cart-total">$0.00</span>
+			&nbsp;for a total of {{order.info.totalText}}
 			&nbsp;<span class="cart-giftcard-message"></span>
 			&nbsp;<span class="cart-paymentType"></span>
 		</div>

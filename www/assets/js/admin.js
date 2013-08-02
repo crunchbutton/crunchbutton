@@ -1,5 +1,4 @@
 var App = {
-	cartHighlightEnabled: false,
 	currentPage: null,
 	slogans: ['order food in 5 seconds'],
 	service: '/api/',

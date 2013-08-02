@@ -7,7 +7,6 @@
  *
  */
 var App = {
-	cartHighlightEnabled: false,
 	currentPage: null,
 	tagline: '',
 	service: '/api/',
@@ -37,7 +36,6 @@ var App = {
 	_pageInit: false,
 	_identified: false,
 	isDeliveryAddressOk : false,
-	tips: [0,10,15,18,20,25,30],
 	touchX: null,
 	touchY: null,
 	touchOffset: null,
