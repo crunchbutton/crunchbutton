@@ -196,38 +196,16 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 /**
  * restaurant page
  */
-NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, CartService ) {
+NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService ) {
 
-	$scope.service = RestaurantService;
-
+	$scope.restaurantService = RestaurantService;
+	$scope.order = OrderService;
 
 	// Alias to ServiceAccount.user
-	$scope.user = $scope.service.account.user;
+	$scope.user = $scope.order.account.user;
 
-	$scope.service.init();
-	$scope.cart = CartService;
-
-	// Credit card years
-	var date = new Date().getFullYear();
-	var years = [];
-	for (var x = date; x <= date + 20; x++) {
-		years[years.length] = x;
-	}
-
-	$scope.form = {
-		tip: App.order.tip,
-		name: $scope.user.name,
-		phone: App.phone.format( $scope.user.phone ),
-		address: $scope.user.address,
-		notes: ( $scope.user && $scope.user.presets && $scope.user.presets[$routeParams.id]) ? $scope.user.presets[$routeParams.id].notes : '',
-		card: {
-			number: $scope.user.card,
-			month: $scope.user.card_exp_month,
-			year: $scope.user.card_exp_year
-		},
-		months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-		years: years
-	};
+	$scope.restaurantService.init();
+	// $scope.cart = CartService;
 
 	$scope.AB = {
 				dollar: (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '',
@@ -237,19 +215,29 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 				restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
 			};
 
-	$scope.$watch( 'service.loaded', function( newValue, oldValue, scope ) {
+	$scope.$watch( 'restaurantService.loaded', function( newValue, oldValue, scope ) {
 		if( newValue ){
 			
-			$scope.restaurant	 = $scope.service.restaurant;
-			$scope.cart.restaurant = $scope.restaurant;
+			$scope.restaurant	 = $scope.restaurantService.restaurant;
+			$scope.order.restaurant = $scope.restaurant;
+			$scope.order.init();
+			/*$scope.cart.restaurant = $scope.restaurant;
 			$scope.cart.updateTotal();
 
 			$scope.lastOrderDelivery = $scope.service.lastOrderDelivery;
 			$scope.community = $scope.service.community;
-			$scope.showRestaurantDeliv = $scope.service.showRestaurantDeliv;
+			$scope.showRestaurantDeliv = $scope.service.showRestaurantDeliv;*/
 		}
 	});
 
+	$scope.$watch( 'order.cart.items', function( newValue, oldValue, scope ) {
+		$scope.order.updateTotal();
+	}, true);
+
+		// service.$watch( 'form.notes', function( newValue, oldValue, scope ) {
+		// 	service.giftcard.text.content = service.form.notes;
+		// 	service.giftcard.text.start();
+		// });
 			/*
 			// Validate gift card at the notes field
 			service.$watch( 'form.notes', function( newValue, oldValue, scope ) {
@@ -279,7 +267,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('order', function ($scope, $http, $location, $routeParams, AccountService, AccountModalService, OrderService) {
+NGApp.controller('order', function ($scope, $http, $location, $routeParams, AccountService, AccountModalService, OrderViewService) {
 	
 	$scope.account = AccountService;
 	
@@ -289,7 +277,7 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams, Acco
 	}
 	
 	$scope.modal = AccountModalService;
-	$scope.order = OrderService;
+	$scope.order = OrderViewService;
 
 	$scope.callPhone = function( phone ){
 		return App.callPhone( phone );
