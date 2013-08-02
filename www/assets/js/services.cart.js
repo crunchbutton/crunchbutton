@@ -124,6 +124,27 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 		return false;
 	}
 
+	service.summary = function(){
+		var items = {};
+		for (var x in service.items) {
+			if( items[ service.items[x].details.name ] ){
+				items[ service.items[x].details.name ]++;
+			} else {
+				items[ service.items[x].details.name ] = 1;
+			}
+		}
+		var text = '';
+		for (x in items) {
+			text = ',&nbsp;&nbsp;' + text;
+			if (items[x] > 1) {
+				text = x + '&nbsp;(' + items[x] + ')' + text;
+			} else {
+				text = x + text;
+			}
+		}
+		return text.substr(0, text.length - 13);
+	}
+
 	service.subtotal = function () {
 		var
 		total = 0,
@@ -141,6 +162,16 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 		}
 		total = App.ceil(total);
 		return total;
+	}
+
+	service.totalItems = function(){
+		var size = 0;
+		for (var x in service.items) {
+			if (service.items.hasOwnProperty(x)){
+				 size++;
+			}
+		}
+		return size;
 	}
 
 	service._parseCustomOptions = function( options, selectedOptions ){

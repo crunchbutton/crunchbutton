@@ -17,7 +17,10 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 	service.info = {
 		dollarSign : '',
 		breakdownDescription : '',
-		extraCharges : ''
+		extraCharges : '',
+		deliveryMinDiff : '',
+		cartSummary : '',
+		totalText : ''
 	}
 
 	service.toogleDelivery = function( type ){
@@ -40,7 +43,7 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			service.info.dollarSign = '$';
 		}
 
-		service.form.tip = App.order.tip;
+		service.form.tip = 'autotip';
 		service.form.name = service.account.user.name;
 		service.form.phone = App.phone.format( service.account.user.phone );
 		service.form.address = service.account.user.address;
@@ -50,8 +53,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			month: service.account.user.card_exp_month,
 			year: service.account.user.card_exp_year
 		};
-		service.form.months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-		service.form.years = service._years();
 		service.updateTotal();
 	}	
 
@@ -182,10 +183,10 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 	service._breakdownTip = function (total) {
 		var tip = 0;
 		if (service.form.pay_type == 'card') {
-			if (App.order.tip === 'autotip') {
+			if (service.form.tip === 'autotip') {
 				return parseFloat($('[name=pay-autotip-value]').val());
 			}
-			tip = (total * (App.order.tip / 100));
+			tip = (total * (service.form.tip / 100));
 		}
 		tip = App.ceil(tip);
 		return tip;
@@ -271,7 +272,7 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			if (App.order['delivery_type'] == 'delivery') {
 				App.config.user.address = $('[name="pay-address"]').val();
 			}
-			App.order.tip = $('[name="pay-tip"]').val();
+			service.form.tip = $('[name="pay-tip"]').val();
 		}
 
 		var order = {
@@ -286,7 +287,7 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		};
 
 		if (order.pay_type == 'card') {
-			order.tip = App.order.tip || '3';
+			order.tip = service.form.tip || '3';
 			order.autotip_value = $('[name=pay-autotip-value]').val();
 		}
 
@@ -551,7 +552,7 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 
 						App.order.cardChanged = false;
 						App.loc.changeLocationAddressHasChanged = false;
-						delete App.order.tipHasChanged;
+						delete tipHasChanged;
 						App.go('/order/' + this.uuid);
 
 					});
@@ -578,9 +579,9 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			return;
 		}
 
-		var
-			totalText = service.info.dollarSign + service.charged(),
-				tipText = '',
+		service.info.totalText = service.info.dollarSign + service.charged();
+
+		var tipText = '',
 				feesText = '',
 				totalItems = 0,
 				credit = 0,
@@ -602,38 +603,34 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			 */
 			var wasTipChanged = false;
 			if (service.form.delivery_type == 'takeout' && service.form.pay_type == 'card') {
-				if (typeof App.order.tipHasChanged == 'undefined') {
-					App.order.tip = 0;
+				if (typeof tipHasChanged == 'undefined') {
+					service.form.tip = 0;
 					wasTipChanged = true;
 				}
 			} else if (service.form.delivery_type == 'delivery' && service.form.pay_type == 'card') {
-				if (typeof App.order.tipHasChanged == 'undefined') {
-					App.order.tip = (App.config.user.last_tip) ? App.config.user.last_tip : 'autotip';
-					App.order.tip = App.lastTipNormalize(App.order.tip);
+				if (typeof tipHasChanged == 'undefined') {
+					service.form.tip = (App.config.user.last_tip) ? App.config.user.last_tip : 'autotip';
+					service.form.tip = App.lastTipNormalize(service.form.tip);
 					wasTipChanged = true;
 				}
 			}
 
 			if (wasTipChanged) {
-				$('[name="pay-tip"]').val(App.order.tip);
+				$('[name="pay-tip"]').val(service.form.tip);
 				// Forces the recalculation of total because the tip was changed.
-				totalText = service.info.dollarSign + this.charged();
+				service.info.totalText = service.info.dollarSign + this.charged();
 			}
 
 			var _total = service.restaurant.delivery_min_amt == 'subtotal' ? service.subtotal() : service.total();
 			if (service.restaurant.meetDeliveryMin(_total) && service.form.delivery_type == 'delivery') {
-				$('.delivery-minimum-error').show();
-				$('.delivery-min-diff').html(service.restaurant.deliveryDiff(_total));
-
+				service.info.deliveryMinDiff = service.restaurant.deliveryDiff(_total);
 			} else {
-				$('.delivery-minimum-error').hide();
+				service.info.deliveryMinDiff = '';
 			}
-
-			$('.cart-summary-item-count span').html(totalItems);
-
+			service.info.totalItems = service.cart.totalItems();
 			service.info.extraCharges = service.extraChargesText( service.totalbreakdown() );
-			service.info.breakdownDescription = this.subtotal().toFixed(2);
-			
+			service.info.breakdownDescription = service.info.dollarSign + this.subtotal().toFixed(2);
+			service.info.cartSummary = service.cart.summary();
 
 			if (App.order.pay_type == 'card' && credit > 0) {
 				var creditLeft = '';
@@ -652,53 +649,7 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 				} else {
 					$('.cart-giftcard-message').html('');
 				}
-			}, 1000);
-
-			$('.cart-total').html(totalText);
-
-
-			if (App.cartHighlightEnabled && $('.cart-summary').css('display') != 'none') {
-				$('.cart-summary').removeClass('cart-summary-detail');
-				$('.cart-summary').effect('highlight', {}, 500, function () {
-					$('.cart-summary').addClass('cart-summary-detail');
-				});
-			}
-
-			if ($('.cart-total').html() == totalText) {
-				//return;
-			}
-
-			if (!totalItems) {
-				$('.default-order-check').hide();
-			} else {
-				$('.default-order-check').show();
-			}
-
-			var
-			totalItems = {},
-				name,
-				text = '';
-			$('.cart-summary-items').html('');
-
-			for (var x in service.items) {
-				name = App.cached['Dish'][service.items[x].id].name;
-				if (totalItems[name]) {
-					totalItems[name]++;
-				} else {
-					totalItems[name] = 1;
-				}
-			}
-
-			for (x in totalItems) {
-				text = ',&nbsp;&nbsp;' + text;
-				if (totalItems[x] > 1) {
-					text = x + '&nbsp;(' + totalItems[x] + ')' + text;
-				} else {
-					text = x + text;
-				}
-			}
-
-			$('.cart-summary-items').html(text.substr(0, text.length - 13));
+			}, 1000);	
 
 			/* TODO: find out what this piece of code does
 			$('.cart-item-customize-price').each(function () {
@@ -721,6 +672,16 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			years[years.length] = x;
 		}
 		return years;
+	}
+
+	// Credit card months
+	service._months = function(){
+		return [1,2,3,4,5,6,7,8,9,10,11,12];
+	}
+
+	// Tips %
+	service._tips = function(){
+		return  [0,10,15,18,20,25,30];
 	}
 
 	return service;
