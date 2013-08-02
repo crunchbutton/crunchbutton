@@ -390,6 +390,8 @@ class Crunchbutton_App extends Cana_App {
 		$config['loc']['lon'] = $this->auth()->get('loc_lon');
 		$config['loc']['city'] = $this->auth()->get('city');
 		$config['loc']['region'] = $this->auth()->get('region');
+		
+		$config['version'] = Cana_Util::gitVersion();
 
 		return $config;
 	}
