@@ -467,38 +467,6 @@ App.lastTipNormalize = function( lastTip ){
 	return lastTip;
 }
 
-App.trigger = {
-	delivery: function() {
-		$('.delivery-toggle-takeout').removeClass('toggle-active');
-		$('.delivery-toggle-delivery').addClass('toggle-active');
-		$('.delivery-only').show();
-		App.order['delivery_type'] = 'delivery';
-		App.cart.updateTotal();
-	},
-	takeout: function() {
-		$('.delivery-toggle-delivery').removeClass('toggle-active');
-		$('.delivery-toggle-takeout').addClass('toggle-active');
-		$('.delivery-only, .field-error-zip').hide();
-		App.order['delivery_type'] = 'takeout';
-		App.cart.updateTotal();
-	},
-	credit: function() {
-		$('.pay-toggle-cash').removeClass('toggle-active');
-		$('.pay-toggle-credit').addClass('toggle-active');
-		$('.card-only').show();
-		App.order['pay_type'] = 'card';
-		App.cart.updateTotal();
-	},
-	cash: function() {
-		$('.pay-toggle-credit').removeClass('toggle-active');
-		$('.pay-toggle-cash').addClass('toggle-active');
-		$('.card-only').hide();
-		App.order['pay_type'] = 'cash';
-		App.cart.updateTotal();
-	}
-}
-
-
 /**
  * global event binding and init
  */
@@ -536,33 +504,6 @@ $(function() {
 
 	App.test.init();
 
-	$(document).on('click', '.delivery-toggle-delivery', function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		App.trigger.delivery();
-		App.track('Switch to delivery');
-	});
-
-	$(document).on('click', '.delivery-toggle-takeout', function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		App.trigger.takeout();
-		App.track('Switch to takeout');
-	});
-
-	$(document).on('click', '.pay-toggle-credit', function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		App.trigger.credit();
-		App.track('Switch to card');
-	});
-
-	$(document).on('click', '.pay-toggle-cash', function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		App.trigger.cash();
-		App.track('Switch to cash');
-	});
 
 	$(document).on('click', '.location-detect', function() {
 		// detect location from the browser

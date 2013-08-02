@@ -44,18 +44,18 @@
 				</div>
 				<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
 				<div class="divider"></div>
-				<div class="delivery-minimum-error">Add $<span class="delivery-min-diff">{{cart.totalFixed}}</span> from menu to meet delivery minimum.</div>
+				<div class="delivery-minimum-error">Add $<span class="delivery-min-diff">{{order.cart.totalFixed}}</span> from menu to meet delivery minimum.</div>
 				
 				<!-- <div class="cart-items-content"> -->
 
 				<!-- Cart's basket -->
 				<div>
 
-					<div ng-repeat="item in cart.items">
+					<div ng-repeat="item in order.cart.items">
 
 						<div class="cart-item cart-item-dish" data-cart_id="{{item.id}}">
 
-							<div class="cart-button cart-button-remove" ng-click="cart.remove(item.details.id);"><span></span></div>
+							<div class="cart-button cart-button-remove" ng-click="order.cart.remove(item.details.id);"><span></span></div>
 
 							<div class="cart-item-name">{{item.details.name}}
 								<span class="cart-item-description">{{item.details.description}}</span>
@@ -76,16 +76,16 @@
 
 										<!-- Customizable - checkbox -->
 										<div ng-switch-when="check">
-												<input type="checkbox" ng-change="cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
-												<label ng-click="option.checked = !option.checked; cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</label>
-												<label ng-click="option.checked = !option.checked; cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</label>
+												<input type="checkbox" ng-change="order.cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
+												<label ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</label>
+												<label ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</label>
 										</div>
 
 										<!-- Customizable - select -->
 										<div ng-switch-when="select">
 											<label class="cart-item-customize-select-name">{{option.name}}</label>
 
-											<select ng-change="cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
+											<select ng-change="order.cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
 										</div>
 
 									</div>
@@ -114,7 +114,7 @@
 			<div ng-repeat="category in restaurant.categories()">
 				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
 				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-					<li ng-repeat="dish in category.dishes()" ng-click="cart.add( dish.id_dish )" class="dish-item">
+					<li ng-repeat="dish in category.dishes()" ng-click="order.cart.add( dish.id_dish )" class="dish-item">
 						<span class="dish-name"><i class="icon-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-price">({{AB.dollar}}{{dish.price}}{{AB.changeablePrice(dish)}})</span>
 					</li>
 				</ul>
@@ -157,15 +157,19 @@
 			<div class="delivery-info-container">
 				<div ng-show="(restaurant.delivery == '1' && restaurant.takeout == '1')">
 					<label class="pay-title-label">Delivery Info</label>
-					<div class="input-item toggle-wrapper clearfix">
-						<button class="delivery-toggle-delivery toggle-item delivery-only-text">delivery</button>
-						<span class="toggle-spacer delivery-only-text">or</span>
-						<button class="delivery-toggle-takeout toggle-item">takeout</button>
+
+					<div class="input-item clearfix">
+						<button ng-click="order.toogleDelivery( 'delivery' )" ng-class="{'toggle-active': order.form.delivery_type=='delivery' }" class="toggle-item">delivery</button>
+						<span class="toggle-spacer">or</span>
+						<button ng-click="order.toogleDelivery( 'takeout' )" ng-class="{'toggle-active': order.form.delivery_type=='takeout' }" class="toggle-item">takeout</button>
 					</div>
+
 				</div>
+
 				<div ng-show="(restaurant.delivery == '1' && restaurant.takeout != '1')">
 					<label class="pay-title-label">Delivery Info</label>
 				</div>
+
 				<div ng-show="(restaurant.delivery != '1' && restaurant.takeout == '1')">
 					<label class="pay-title-label">Takeout Info </label>
 					<span class="take-out-only">Take out only!</span>
@@ -174,18 +178,18 @@
 				<div class="personal-info field-container">
 					<div class="divider"></div>
 					<label>Name</label>
-					<div class="input-item"><input type="text" name="pay-name" tabindex="2" value="{{form.name}}"></div><div class="divider"></div>
+					<div class="input-item"><input type="text" name="pay-name" tabindex="2" value="{{order.form.name}}"></div><div class="divider"></div>
 		
 					<label>Phone #</label>
-					<div class="input-item"><input type="tel" name="pay-phone" tabindex="3" value="{{form.phone}}"></div><div class="divider"></div>
+					<div class="input-item"><input type="tel" name="pay-phone" tabindex="3" value="{{order.form.phone}}"></div><div class="divider"></div>
 		
-					<label class="delivery-only">Delivery Address</label>
-					<div class="input-item delivery-only"><textarea name="pay-address" tabindex="5">{{form.address}}</textarea></div>
+					<label ng-show="order.form.delivery_type=='delivery'">Delivery Address</label>
+					<div ng-show="order.form.delivery_type=='delivery'" class="input-item"><textarea name="pay-address" tabindex="5">{{order.form.address}}</textarea></div>
 					<div class="divider"></div>
 	
 					<div ng-show="(restaurant.id != 74)">
 						<label>Notes</label>
-						<div class="input-item"><textarea name="notes" ng-model="form.notes" tabindex="6">{{form.notes}}</textarea></div><div class="divider"></div>
+						<div class="input-item"><textarea name="notes" ng-model="order.form.notes" tabindex="6">{{order.form.notes}}</textarea></div><div class="divider"></div>
 						<div class="divider"></div>
 						<div class="giftcard-info"></div>
 					</div>
@@ -202,14 +206,14 @@
 		
 					<label class="pay-title-label">Payment Method</label>
 					<div class="input-item toggle-wrapper">
-						<button ng-show="(restaurant.credit == '1')" class="pay-toggle-credit toggle-item">card</button> 
+						<button ng-click="order.tooglePayment( 'card' )" ng-show="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="toggle-item">card</button> 
 						<span ng-show="(restaurant.credit == '1' && restaurant.cash == '1')" class="toggle-spacer">or</span> 
-						<button ng-show="(restaurant.cash == '1')" class="pay-toggle-cash toggle-item">cash</button>
+						<button ng-click="order.tooglePayment( 'cash' )" ng-show="(restaurant.cash == '1')"  ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="toggle-item">cash</button>
 					</div>
 	
 					<div class="divider"></div>
 		
-						<div class="payment-card-info card-only"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>
+						<div ng-show="order.form.pay_type=='card'" class="payment-card-info"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>
 							<div class="card-icons">
 								<div class="payment-card card-visa payment-card-grey" title="visa"></div>
 								<div class="payment-card card-master-card" title="master card"></div>
@@ -217,25 +221,27 @@
 								<div class="payment-card card-discover" title="discover card"></div>
 							</div>
 						</div>
+
+						<label ng-show="order.form.pay_type=='card'">Credit card #</label>
+						<div ng-show="order.form.pay_type=='card'" class="input-item"><input type="tel" name="pay-card-number" tabindex="6" value="{{order.form.card.number}}"></div><div class="divider"></div>
 		
-						<label class="card-only">Credit card #</label>
-						<div class="input-item card-only"><input type="tel" name="pay-card-number" tabindex="6" value="{{form.card.number}}"></div><div class="divider"></div>
-		
-						<label class="card-only">Expiration</label>
-						<div class="input-item card-only">
+						<label ng-show="order.form.pay_type=='card'">Expiration</label>
+						<div ng-show="order.form.pay_type=='card'" class="input-item">
 							<select name="pay-card-month" tabindex="7">
 								<option>Month</option>
-								<option ng-repeat="x in form.months" value="{{x}}">{{x}}</option>
+								<option ng-repeat="x in order.form.months" value="{{x}}">{{x}}</option>
 							</select>
 							<select name="pay-card-year" tabindex="8">
 								<option>Year</option>
-								<option ng-repeat="x in form.years" value="{{x}}">{{x}}</option>
+								<option ng-repeat="x in order.form.years" value="{{x}}">{{x}}</option>
 							</select>
 							<div class="divider"></div>
 						</div>
 		
-						<div class="divider"></div><label class="card-only">Tip</label>
-						<div class="input-item card-only">
+						<div class="divider"></div>
+
+						<label ng-show="order.form.pay_type=='card'">Tip</label>
+						<div ng-show="order.form.pay_type=='card'" class="input-item">
 		
 						<input type="hidden" name="pay-autotip-value" value="0">
 						<select name="pay-tip" class="tip" tabindex="9">
@@ -249,13 +255,16 @@
 			</div>
 			
 			<div class="divider"></div>
-			<div class="payment-total">
-				You're paying:&nbsp;<span class="cash-order-aprox"></span>
-				&nbsp;<span class="cart-breakdownDescription"></span>&nbsp;
+			<div class="payment-total" ng-show="order.subtotal()">
+				You're paying:&nbsp;
+				<span ng-show="order.form.pay_type=='cash'">approximately</span>
+				&nbsp;{{order.info.dollarSign}}{{order.info.breakdownDescription}}&nbsp;
+				<span ng-show="order.info.extraCharges">( + {{order.info.extraCharges}} )</span>
 				<strong class="cart-gift"></strong>
 				for a total of <span class="cart-total"></span>
 				&nbsp;<span class="cart-giftcard-message"></span>
-				&nbsp;<span class="cart-paymentType"></span>
+				&nbsp;
+				<span ng-show="order.form.pay_type=='card'">by cart</span>
 			</div>
 		</div>
 	
@@ -271,7 +280,7 @@
 			<i ng-show="!user.phone">no phone # provided</i>
 		</div>
 
-		<div class="dp-display-payment dp-display-item">
+		<div class="dp-display-payment dp-display-item" ng-show="order.subtotal()">
 			<label>You are paying&nbsp;<span class="cash-order-aprox"></span>: &nbsp;</label>
 			<span class="cart-breakdownDescription"></span>
 			<strong class="cart-gift"></strong>
@@ -282,8 +291,8 @@
 
 		<div class="dp-display-address dp-display-item" ng-show="showRestaurantDeliv">
 			<label>Your food will be delivered to:</label><br />
-			<span class="user-address" ng-bind-html-unsafe="nl2br(form.address)"></span>
-			<i ng-hide="form.address">no address provided</i>
+			<span class="user-address" ng-bind-html-unsafe="nl2br(order.form.address)"></span>
+			<i ng-hide="order.form.address">no address provided</i>
 		</div>
 		<div class="dp-display-address dp-display-item" ng-hide="showRestaurantDeliv">
 			<label>Delivery Address:</label> <i>takeout</i>
