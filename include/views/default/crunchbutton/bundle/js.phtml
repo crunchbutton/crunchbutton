@@ -1,17 +1,4 @@
 <?
-/**
- * Still not sure what this does
- *
- * View variables you can't overwrite (see Controller_admin_restaurants::_form())
- * - $this->category
- *
- * @package  Cruncbutton.Bundle
- * @category view
- *
- */
-
-/* @var $this Cana_View */
-
 
 /* Exports current community as JSON
  *
@@ -27,15 +14,6 @@ if ($this->community) {
 	$communityJson = json_encode($community);
 	$communityJson = str_replace("'","\\'", $communityJson);
 }
-
-
-/*
-<script src="/assets/js/json2.js"></script>
-<script src="/assets/js/jquery.min.js"></script>
-<script src="/assets/js/jquery-ui.min.js"></script>
-<script src="/assets/js/underscore-min.js"></script>
-*/
-
 
 ?>
 
