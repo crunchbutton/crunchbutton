@@ -1,73 +1,77 @@
 //OrderService Service
-NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
+NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 	var service = {};
-
 	service.account = AccountService;
 	service.cart = CartService;
-	
 	service.restaurant = {};
-
 	// Default values
 	service.form = {
-		delivery_type : 'delivery',
-		pay_type : 'card'
+		delivery_type: 'delivery',
+		pay_type: 'card'
 	};
-
 	// Info that will be shown to the user
 	service.info = {
-		dollarSign : '',
-		breakdownDescription : '',
-		extraCharges : '',
-		deliveryMinDiff : '',
-		cartSummary : '',
-		totalText : ''
+		dollarSign: '',
+		breakdownDescription: '',
+		extraCharges: '',
+		deliveryMinDiff: '',
+		cartSummary: '',
+		totalText: ''
 	}
-
-	service.toogleDelivery = function( type ){
-		if( type != service.form.delivery_type ){
+	service.toogleDelivery = function (type) {
+		if (type != service.form.delivery_type) {
 			service.form.delivery_type = type;
 			service.updateTotal();
 		}
 	}
-
-	service.tooglePayment = function( type ){
-		if( type != service.form.pay_type ){
+	service.tooglePayment = function (type) {
+		if (type != service.form.pay_type) {
 			service.form.pay_type = type;
 			service.updateTotal();
 		}
 	}
-
-	service.init = function(){
-		if( App.config.ab && App.config.ab.dollarSign == 'show' ){
+	service.init = function () {
+		if (App.config.ab && App.config.ab.dollarSign == 'show') {
 			service.info.dollarSign = '$';
 		}
 		// Tip stuff
-		if( service.account.user && service.account.user.last_tip ){
+		if (service.account.user && service.account.user.last_tip) {
 			var tip = service.account.user.last_tip;
-		} else{
+		} else {
 			var tip = 'autotip';
 		}
 		service._tipHasChanged = false;
 		service.form.autotip = 0;
-		service.form.tip = service._lastTipNormalize( tip );
+		service.form.tip = service._lastTipNormalize(tip);
 		service.form.name = service.account.user.name;
-		service.form.phone = App.phone.format( service.account.user.phone );
+		service.form.phone = App.phone.format(service.account.user.phone);
 		service.form.address = service.account.user.address;
-		service.form.notes = ( service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].notes : '';
-		service.form.card = {
-			number: service.account.user.card,
-			month: service.account.user.card_exp_month,
-			year: service.account.user.card_exp_year
-		};
+		service.form.notes = (service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].notes : '';
+		// Credit card stuff
+		service.form.cardNumber = service.account.user.card;
+		service.form.cardMonth = service.account.user.card_exp_month;
+		service.form.cardYear = service.account.user.card_exp_year;
 		service.updateTotal();
-	}	
 
+		// Load the order
+		if( service.cart.hasItems() ){
+			service.reloadOrder();
+		// Load user presets
+		} else if ( service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant] ) {
+			try {
+				service.loadOrder(service.account.user.presets[service.restaurant.id_restaurant]);
+			} catch (e) {
+				service.loadOrder(service.restaurant.preset());
+			}
+		} else {
+			service.loadOrder(service.restaurant.preset());
+		}
+	}
 	service.reloadOrder = function () {
 		var cart = service.items;
 		service.resetOrder();
 		service.loadFlatOrder(cart);
 	}
-
 	service.loadFlatOrder = function (cart) {
 		for (var x in cart) {
 			service.add(cart[x].id, {
@@ -75,7 +79,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			});
 		}
 	}
-
 	service.loadOrder = function (order) {
 		// @todo: convert this to preset object
 		try {
@@ -87,11 +90,10 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 						options[options.length] = dishes[x]['_options'][xx].id_option;
 					}
 					if (App.cached.Dish[dishes[x].id_dish] != undefined) {
-						service.add(dishes[x].id_dish, {
+						service.cart.add(dishes[x].id_dish, {
 							options: options
 						});
 					}
-
 				}
 			}
 		} catch (e) {
@@ -99,7 +101,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			// throw e;
 		}
 	}
-
 	/**
 	 * subtotal, delivery, fee, taxes and tip
 	 *
@@ -108,11 +109,9 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 	service.extraChargesText = function (breakdown) {
 		var elements = [];
 		var text = '';
-
 		if (breakdown.delivery) {
 			elements.push(service.info.dollarSign + breakdown.delivery.toFixed(2) + ' delivery');
 		}
-
 		if (breakdown.fee) {
 			elements.push(service.info.dollarSign + breakdown.fee.toFixed(2) + ' fee');
 		}
@@ -122,7 +121,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		if (breakdown.tip && breakdown.tip > 0) {
 			elements.push(service.info.dollarSign + breakdown.tip + ' tip');
 		}
-
 		if (elements.length) {
 			if (elements.length > 2) {
 				var lastOne = elements.pop();
@@ -133,11 +131,9 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		}
 		return text;
 	}
-
 	service.subtotal = function () {
 		return service.cart.subtotal();
 	}
-
 	/**
 	 * delivery cost
 	 *
@@ -151,7 +147,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		delivery = App.ceil(delivery);
 		return delivery;
 	}
-
 	/**
 	 * Crunchbutton service
 	 *
@@ -165,13 +160,11 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		fee = App.ceil(fee);
 		return fee;
 	}
-
 	service._breackDownTaxes = function (feeTotal) {
 		var taxes = (feeTotal * (service.restaurant.tax / 100));
 		taxes = App.ceil(taxes);
 		return taxes;
 	}
-
 	service._breakdownTip = function (total) {
 		var tip = 0;
 		if (service.form.pay_type == 'card') {
@@ -183,7 +176,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		tip = App.ceil(tip);
 		return tip;
 	}
-
 	service.total = function () {
 		var
 		total = 0,
@@ -192,7 +184,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			feeTotal = 0,
 			totalItems = 0,
 			finalAmount = 0;
-
 		var breakdown = this.totalbreakdown();
 		total = breakdown.subtotal;
 		feeTotal = total;
@@ -202,11 +193,8 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		finalAmount += this._breakdownTip(total);
 		return App.ceil(finalAmount).toFixed(2);
 	}
-
 	service.charged = function () {
-
 		var finalAmount = this.total();
-
 		if (App.order.pay_type == 'card' && App.credit.restaurant[service.restaurant.id]) {
 			finalAmount = finalAmount - App.ceil(App.credit.restaurant[service.restaurant.id]).toFixed(2);
 			if (finalAmount < 0) {
@@ -215,7 +203,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		}
 		return App.ceil(finalAmount).toFixed(2);
 	}
-
 	/**
 	 * Returns the elements that calculates the total
 	 *
@@ -224,11 +211,9 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 	 * @return array
 	 */
 	service.totalbreakdown = function () {
-		
 		var elements = {};
 		var total = this.subtotal();
 		var feeTotal = total;
-
 		elements['subtotal'] = this.subtotal();
 		elements['delivery'] = this._breackDownDelivery();
 		feeTotal += elements['delivery'];
@@ -238,26 +223,21 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		elements['tip'] = this._breakdownTip(total);
 		return elements;
 	}
-
 	service.resetOrder = function () {
 		service.cart.items = {};
 	}
-
 	/**
 	 * Submits the cart order
 	 *
 	 * @returns void
 	 */
 	service.submit = function () {
-
 		if (App.busy.isBusy()) {
 			return;
 		}
-
-		App.busy.makeBusy();
-
+		// TODO: put it in a service
+		// App.busy.makeBusy();
 		var read = $('.payment-form').length ? true : false;
-
 		if (read) {
 			App.config.user.name = $('[name="pay-name"]').val();
 			App.config.user.phone = $('[name="pay-phone"]').val().replace(/[^\d]*/gi, '');
@@ -266,7 +246,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			}
 			service.form.tip = $('[name="pay-tip"]').val();
 		}
-
 		var order = {
 			cart: service.getCart(),
 			pay_type: service.form.pay_type,
@@ -277,12 +256,10 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			lat: (App.loc.pos()) ? App.loc.pos().lat : null,
 			lon: (App.loc.pos()) ? App.loc.pos().lon : null
 		};
-
 		if (order.pay_type == 'card') {
 			order.tip = service.form.tip || '3';
 			order.autotip_value = $('[name=pay-autotip-value]').val();
 		}
-
 		if (read) {
 			order.address = App.config.user.address;
 			order.phone = App.config.user.phone;
@@ -297,31 +274,23 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 				order.card = {};
 			}
 		}
-
 		console.log('ORDER:', order);
-
 		var errors = {};
-
 		if (!order.name) {
 			errors['name'] = 'Please enter your name.';
 		}
-
 		if (!App.phone.validate(order.phone)) {
 			errors['phone'] = 'Please enter a valid phone #.';
 		}
-
 		if (order.delivery_type == 'delivery' && !order.address) {
 			errors['address'] = 'Please enter an address.';
 		}
-
 		if (order.pay_type == 'card' && ((App.order.cardChanged && !order.card.number) || (!App.config.user.id_user && !order.card.number))) {
 			errors['card'] = 'Please enter a valid card #.';
 		}
-
 		if (!service.hasItems()) {
 			errors['noorder'] = 'Please add something to your order.';
 		}
-
 		if (!$.isEmptyObject(errors)) {
 			var error = '';
 			for (var x in errors) {
@@ -337,31 +306,24 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			}, 'validation error');
 			return;
 		}
-
 		// Play the crunch audio just once, when the user clicks at the Get Food button
 		if (App.iOS() && !App.crunchSoundAlreadyPlayed) {
 			App.playAudio('get-food-audio');
 			App.crunchSoundAlreadyPlayed = true;
 		}
-
 		// if it is a delivery order we need to check the address
 		if (order.delivery_type == 'delivery') {
-
 			// Correct Legacy Addresses in Database to Avoid Screwing Users #1284
 			// If the user has already ordered food 
 			if (App.config && App.config.user && App.config.user.last_order) {
-
 				// Check if the order was made at this community
 				if (App.config.user.last_order.communities.indexOf(service.restaurant.id_community) > -1) {
-
 					// Get the last address the user used at this community
 					var lastAddress = App.config.user.last_order.address;
 					var currentAdress = $('[name=pay-address]').val();
-
 					// Make sure the the user address is the same of his last order
 					if ($.trim(lastAddress) != '' && $.trim(lastAddress) == $.trim(currentAdress)) {
 						App.isDeliveryAddressOk = true;
-
 						// Log the legacy address
 						App.log.order({
 							'address': lastAddress,
@@ -467,7 +429,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		} 
 		*/
 		}
-
 		if (order.delivery_type == 'takeout') {
 			App.isDeliveryAddressOk = true;
 		}
@@ -475,13 +436,11 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		if (!App.isDeliveryAddressOk) {
 			return;
 		}
-
 		// Play the crunch audio just once, when the user clicks at the Get Food button
 		if (!App.crunchSoundAlreadyPlayed) {
 			App.playAudio('get-food-audio');
 			App.crunchSoundAlreadyPlayed = true;
 		}
-
 		$.ajax({
 			url: App.service + 'order',
 			data: order,
@@ -498,7 +457,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 						errors: ['Sorry! Something went horribly wrong trying to place your order!']
 					};
 				}
-
 				if (json.status == 'false') {
 					var error = '';
 					for (x in json.errors) {
@@ -511,25 +469,18 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 						'errors': json.errors
 					}, 'validation error - php');
 				} else {
-
 					if (json.token) {
 						$.totalStorage('token', json.token);
 					}
-
 					$('.link-orders').show();
-
 					order.cardChanged = false;
 					App.justCompleted = true;
 					App.giftcard.notesCode = false;
-
 					var totalItems = 0;
-
 					for (var x in service.items) {
 						totalItems++;
 					}
-
 					$.getJSON('/api/config', App.processConfig);
-
 					App.cache('Order', json.uuid, function () {
 						App.track('Ordered', {
 							'total': this.final_price,
@@ -541,12 +492,10 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 							'user': this.user,
 							'items': totalItems
 						});
-
 						App.order.cardChanged = false;
 						App.loc.changeLocationAddressHasChanged = false;
 						delete tipHasChanged;
 						App.go('/order/' + this.uuid);
-
 					});
 				}
 				setTimeout(function () {
@@ -554,14 +503,11 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 				}, 400);
 			}
 		});
-
 	} // end service.submit()
-
-	service.tipChanged = function(){
+	service.tipChanged = function () {
 		service._tipHasChanged = true;
 		service.updateTotal();
 	}
-
 	/**
 	 * Gets called after the cart is updarted to refresh the total
 	 *
@@ -569,86 +515,74 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 	 *
 	 * @return void
 	 */
-	service.updateTotal = function(){
-
+	service.updateTotal = function () {
 		// Stop runing the method if the restaurant wasn't loaded yet 
-		if( !service.restaurant.id_restaurant ){
+		if (!service.restaurant.id_restaurant) {
 			return;
 		}
-
 		service.info.totalText = service.info.dollarSign + service.charged();
-
 		var tipText = '',
-				feesText = '',
-				totalItems = 0,
-				credit = 0,
-				hasFees = ((service.restaurant.delivery_fee && service.form.delivery_type == 'delivery') || service.restaurant.fee_customer) ? true : false;
-
-			if (App.credit.restaurant[service.restaurant.id]) {
-				credit = parseFloat(App.credit.restaurant[service.restaurant.id]);
+			feesText = '',
+			totalItems = 0,
+			credit = 0,
+			hasFees = ((service.restaurant.delivery_fee && service.form.delivery_type == 'delivery') || service.restaurant.fee_customer) ? true : false;
+		if (App.credit.restaurant[service.restaurant.id]) {
+			credit = parseFloat(App.credit.restaurant[service.restaurant.id]);
+		}
+		for (var x in service.items) {
+			totalItems++;
+		}
+		service._autotip();
+		/* If the user changed the delivery method to takeout and the payment is card
+		 * the default tip will be 0%. If the delivery method is delivery and the payment is
+		 * card the default tip will be autotip.
+		 * If the user had changed the tip value the default value will be the chosen one.
+		 */
+		var wasTipChanged = false;
+		if (service.form.delivery_type == 'takeout' && service.form.pay_type == 'card') {
+			if (!service._tipHasChanged) {
+				service.form.tip = 0;
+				wasTipChanged = true;
 			}
-
-			for (var x in service.items) {
-				totalItems++;
+		} else if (service.form.delivery_type == 'delivery' && service.form.pay_type == 'card') {
+			if (!service._tipHasChanged) {
+				service.form.tip = (App.config.user.last_tip) ? App.config.user.last_tip : 'autotip';
+				service.form.tip = service._lastTipNormalize(service.form.tip);
+				wasTipChanged = true;
 			}
-
-			service._autotip();
-
-			/* If the user changed the delivery method to takeout and the payment is card
-			 * the default tip will be 0%. If the delivery method is delivery and the payment is
-			 * card the default tip will be autotip.
-			 * If the user had changed the tip value the default value will be the chosen one.
-			 */
-			var wasTipChanged = false;
-			if (service.form.delivery_type == 'takeout' && service.form.pay_type == 'card') {
-				if ( !service._tipHasChanged ) {
-					service.form.tip = 0;
-					wasTipChanged = true;
-				}
-			} else if (service.form.delivery_type == 'delivery' && service.form.pay_type == 'card') {
-				if ( !service._tipHasChanged ) {
-					service.form.tip = (App.config.user.last_tip) ? App.config.user.last_tip : 'autotip';
-					service.form.tip = service._lastTipNormalize( service.form.tip );
-					wasTipChanged = true;
-				}
+		}
+		if (wasTipChanged) {
+			// Forces the recalculation of total because the tip was changed.
+			service.info.totalText = service.info.dollarSign + this.charged();
+		}
+		var _total = service.restaurant.delivery_min_amt == 'subtotal' ? service.subtotal() : service.total();
+		if (service.restaurant.meetDeliveryMin(_total) && service.form.delivery_type == 'delivery') {
+			service.info.deliveryMinDiff = service.restaurant.deliveryDiff(_total);
+		} else {
+			service.info.deliveryMinDiff = '';
+		}
+		service.info.totalItems = service.cart.totalItems();
+		service.info.extraCharges = service.extraChargesText(service.totalbreakdown());
+		service.info.breakdownDescription = service.info.dollarSign + this.subtotal().toFixed(2);
+		service.info.cartSummary = service.cart.summary();
+		if (App.order.pay_type == 'card' && credit > 0) {
+			var creditLeft = '';
+			if (this.total() < credit) {
+				var creditLeft = '<span class="gift-left"> - You\'ll still have ' + service.info.dollarSign + App.ceil((credit - this.total())).toFixed(2) + ' gift card left </span>';
+				credit = this.total();
 			}
-
-			if (wasTipChanged) {
-				// Forces the recalculation of total because the tip was changed.
-				service.info.totalText = service.info.dollarSign + this.charged();
-			}
-
-			var _total = service.restaurant.delivery_min_amt == 'subtotal' ? service.subtotal() : service.total();
-			if (service.restaurant.meetDeliveryMin(_total) && service.form.delivery_type == 'delivery') {
-				service.info.deliveryMinDiff = service.restaurant.deliveryDiff(_total);
+			$('.cart-gift').html('&nbsp;(- ' + service.info.dollarSign + App.ceil(credit).toFixed(2) + ' credit ' + creditLeft + ') ');
+		} else {
+			$('.cart-gift').html('');
+		}
+		setTimeout(function () {
+			if (App.order.pay_type == 'cash' && credit > 0 /* && App.giftcard.showGiftCardCashMessage */ ) {
+				$('.cart-giftcard-message').html('<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' + service.info.dollarSign + App.ceil(credit).toFixed(2) + ' gift card!</span>');
 			} else {
-				service.info.deliveryMinDiff = '';
+				$('.cart-giftcard-message').html('');
 			}
-			service.info.totalItems = service.cart.totalItems();
-			service.info.extraCharges = service.extraChargesText( service.totalbreakdown() );
-			service.info.breakdownDescription = service.info.dollarSign + this.subtotal().toFixed(2);
-			service.info.cartSummary = service.cart.summary();
-
-			if (App.order.pay_type == 'card' && credit > 0) {
-				var creditLeft = '';
-				if (this.total() < credit) {
-					var creditLeft = '<span class="gift-left"> - You\'ll still have ' + service.info.dollarSign + App.ceil((credit - this.total())).toFixed(2) + ' gift card left </span>';
-					credit = this.total();
-				}
-				$('.cart-gift').html('&nbsp;(- ' + service.info.dollarSign + App.ceil(credit).toFixed(2) + ' credit ' + creditLeft + ') ');
-			} else {
-				$('.cart-gift').html('');
-			}
-
-			setTimeout(function () {
-				if (App.order.pay_type == 'cash' && credit > 0 /* && App.giftcard.showGiftCardCashMessage */ ) {
-					$('.cart-giftcard-message').html('<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' + service.info.dollarSign + App.ceil(credit).toFixed(2) + ' gift card!</span>');
-				} else {
-					$('.cart-giftcard-message').html('');
-				}
-			}, 1000);	
-
-			/* TODO: find out what this piece of code does
+		}, 1000);
+		/* TODO: find out what this piece of code does
 			$('.cart-item-customize-price').each(function () {
 				var dish = $(this).closest('.cart-item-customize').attr('data-id_cart_item'),
 					option = $(this).closest('.cart-item-customize-item').attr('data-id_option'),
@@ -660,7 +594,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			});
 			*/
 	}
-
 	service._autotip = function () {
 		var subtotal = service.totalbreakdown().subtotal;
 		var autotipValue
@@ -672,72 +605,87 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		}
 		service.form.autotip = autotipValue;
 	}
-
-	service._autotipText = function(){
+	service._autotipText = function () {
 		var autotipText = service.form.autotip ? ' (' + service.info.dollarSign + service.form.autotip + ')' : '';
 		return 'Autotip' + autotipText;
 	}
-
 	// Credit card years
-	service._years = function(){
-		var date = new Date().getFullYear();
+	service._years = function () {
 		var years = [];
+		years.push({
+			value: '',
+			label: 'Year'
+		});
+		var date = new Date().getFullYear();
 		for (var x = date; x <= date + 20; x++) {
-			years[years.length] = x;
+			years.push({
+				value: x.toString(),
+				label: x.toString()
+			});
 		}
 		return years;
 	}
-
 	// Credit card months
-	service._months = function(){
-		return [1,2,3,4,5,6,7,8,9,10,11,12];
+	service._months = function () {
+		var months = [];
+		months.push({
+			value: '',
+			label: 'Month'
+		});
+		for (var x = 1; x <= 12; x++) {
+			months.push({
+				value: x.toString(),
+				label: x.toString()
+			});
+		}
+		return months;
 	}
-
 	// Tips
-	service._tips = function(){
-		return  [ { value : 'autotip', label : service._autotipText() },
-							{ value : 0, label : 'Tip with cash' },
-							{ value : 10, label : 'tip 10 %' },
-							{ value : 15, label : 'tip 15 %' },
-							{ value : 18, label : 'tip 18 %' },
-							{ value : 20, label : 'tip 20 %' },
-							{ value : 25, label : 'tip 25 %' },
-							{ value : 30, label : 'tip 30 %' }];
+	service._tips = function () {
+		var tips = [];
+		tips.push({
+			value: 'autotip',
+			label: service._autotipText()
+		});
+		tips.push({
+			value: 0,
+			label: 'Tip with cash'
+		});
+		var _tips = [0, 10, 15, 18, 20, 25, 30];
+		for (var x in _tips) {
+			tips.push({
+				value: _tips[x],
+				label: 'tip ' + _tips[x] + ' %'
+			});
+		}
+		return tips;
 	}
-
-	service._lastTipNormalize = function( lastTip ){
+	service._lastTipNormalize = function (lastTip) {
 		/* The default tip is autotip */
-		if( lastTip === 'autotip' ) {
+		if (lastTip === 'autotip') {
 			return lastTip;
 		}
-		if( service.account.user && service.account.user.last_tip_type && service.account.user.last_tip_type == 'number' ){
+		if (service.account.user && service.account.user.last_tip_type && service.account.user.last_tip_type == 'number') {
 			return 'autotip';
 		}
 		// it means the last tipped value is not at the permitted value, return default.
-		lastTip = parseInt( lastTip );
+		lastTip = parseInt(lastTip);
 		var tips = service._tips();
-		for( x in tips ){
-			if( lastTip == parseInt( tips[ x ].value ) ){
+		for (x in tips) {
+			if (lastTip == parseInt(tips[x].value)) {
 				return lastTip;
 			}
 		}
 		return 'autotip';
 	}
-
 	return service;
-} );
-
-
-
+});
 // OrdersService service
 NGApp.factory('OrdersService', function ($http, $location) {
-
 	var service = {
 		list: false
 	};
-
 	service.all = function () {
-
 		$http.get(App.service + 'user/orders', {
 			cache: true
 		}).success(function (json) {
@@ -746,35 +694,24 @@ NGApp.factory('OrdersService', function ($http, $location) {
 			}
 			service.list = json;
 		});
-
 	}
-
 	service.restaurant = function (permalink) {
 		$location.path('/' + App.restaurants.permalink + '/' + permalink);
 	};
-
 	service.receipt = function (id_order) {
 		$location.path('/order/' + id_order);
 	};
-
 	return service;
-
 });
-
 // OrdersService service
-NGApp.factory('OrderViewService', function ( $routeParams, $location, $rootScope, FacebookService) {
-
+NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope, FacebookService) {
 	var service = {};
-
 	service.facebook = FacebookService;
-
-	App.cache( 'Order', $routeParams.id, function () {
+	App.cache('Order', $routeParams.id, function () {
 		service.order = this;
-
 		var complete = function () {
-				$location.path('/');
-			};
-
+			$location.path('/');
+		};
 		if (!service.order.uuid) {
 			if (!$rootScope.$$phase) {
 				$rootScope.$apply(complete);
@@ -783,23 +720,17 @@ NGApp.factory('OrderViewService', function ( $routeParams, $location, $rootScope
 			}
 			return;
 		}
-
 		service.facebook._order_uuid = service.order.uuid;
 		service.facebook.preLoadOrderStatus();
-
 		App.cache('Restaurant', service.order.id_restaurant, function () {
-
 			service.restaurant = this;
-
 			var complete = function () {
-
-					if (service.order['new']) {
-						setTimeout(function () {
-							service.order['new'] = false;
-						}, 500);
-					}
-				};
-
+				if (service.order['new']) {
+					setTimeout(function () {
+						service.order['new'] = false;
+					}, 500);
+				}
+			};
 			if (!$rootScope.$$phase) {
 				$rootScope.$apply(complete);
 			} else {
@@ -808,5 +739,4 @@ NGApp.factory('OrderViewService', function ( $routeParams, $location, $rootScope
 		});
 	});
 	return service;
-
 });

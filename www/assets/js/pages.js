@@ -220,15 +220,19 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 			
 			$scope.restaurant	 = $scope.restaurantService.restaurant;
 			$scope.order.restaurant = $scope.restaurant;
-			$scope.order.init();
-			/*$scope.cart.restaurant = $scope.restaurant;
-			$scope.cart.updateTotal();
+			
+			$scope.order.init();			
+/*
 
 			$scope.lastOrderDelivery = $scope.service.lastOrderDelivery;
 			$scope.community = $scope.service.community;
 			$scope.showRestaurantDeliv = $scope.service.showRestaurantDeliv;*/
 		}
 	});
+
+	$scope.$watch( 'order.cart.items', function( newValue, oldValue, scope ) {
+		$scope.order.updateTotal();
+	}, true);
 
 	$scope.$watch( 'order.cart.items', function( newValue, oldValue, scope ) {
 		$scope.order.updateTotal();
