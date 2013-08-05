@@ -250,14 +250,9 @@
 
 						<label ng-show="order.form.pay_type=='card'">Tip</label>
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
-		
-						<input type="hidden" name="pay-autotip-value" value="0">
-						<select ng-model="order.form.tip" name="pay-tip" class="tip" tabindex="9">
-							<option value="autotip">Autotip</option>
-							<option ng-repeat="tip in order._tips()" value="{{tip}}">
-								{{ ( tip == 0 ) && 'Tip with cash' || tip + '%' }}
-							</option>
-						</select>
+	
+						<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
+						<select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips()" ng-change="order.tipChanged();" class="tip" tabindex="9"></select> 
 						<div class="divider"></div>
 					</div>
 				</div>
@@ -270,7 +265,7 @@
 				<span ng-show="order.form.pay_type=='cash'">approximately</span>
 				&nbsp;{{order.info.breakdownDescription}}&nbsp;
 				<span ng-show="order.info.extraCharges">( + {{order.info.extraCharges}} )</span>
-				<strong class="cart-gift"></strong>
+				<strong class="cart-gift"></strong>&nbsp;
 				for a total of {{order.info.totalText}}
 				&nbsp;<span class="cart-giftcard-message"></span>
 				&nbsp;

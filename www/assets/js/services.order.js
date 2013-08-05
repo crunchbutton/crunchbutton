@@ -38,12 +38,18 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 	}
 
 	service.init = function(){
-
 		if( App.config.ab && App.config.ab.dollarSign == 'show' ){
 			service.info.dollarSign = '$';
 		}
-
-		service.form.tip = 'autotip';
+		// Tip stuff
+		if( service.account.user && service.account.user.last_tip ){
+			var tip = service.account.user.last_tip;
+		} else{
+			var tip = 'autotip';
+		}
+		service._tipHasChanged = false;
+		service.form.autotip = 0;
+		service.form.tip = service._lastTipNormalize( tip );
 		service.form.name = service.account.user.name;
 		service.form.phone = App.phone.format( service.account.user.phone );
 		service.form.address = service.account.user.address;
@@ -92,20 +98,6 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			console.log(e.stack);
 			// throw e;
 		}
-	}
-
-	service.autotip = function () {
-		var subtotal = service.totalbreakdown().subtotal;
-		var autotipValue
-		if (subtotal === 0) {
-			autotipValue = 0;
-		} else {
-			// autotip formula - see github/#940
-			autotipValue = Math.ceil(4 * (subtotal * 0.107 + 0.85)) / 4;
-		}
-		$('[name="pay-autotip-value"]').val(autotipValue);
-		var autotipText = autotipValue ? ' (' + service.info.dollarSign + autotipValue + ')' : '';
-		$('[name=pay-tip] [value=autotip]').html('Autotip' + autotipText);
 	}
 
 	/**
@@ -565,6 +557,11 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 
 	} // end service.submit()
 
+	service.tipChanged = function(){
+		service._tipHasChanged = true;
+		service.updateTotal();
+	}
+
 	/**
 	 * Gets called after the cart is updarted to refresh the total
 	 *
@@ -594,7 +591,8 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			for (var x in service.items) {
 				totalItems++;
 			}
-			service.autotip();
+
+			service._autotip();
 
 			/* If the user changed the delivery method to takeout and the payment is card
 			 * the default tip will be 0%. If the delivery method is delivery and the payment is
@@ -603,20 +601,19 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			 */
 			var wasTipChanged = false;
 			if (service.form.delivery_type == 'takeout' && service.form.pay_type == 'card') {
-				if (typeof tipHasChanged == 'undefined') {
+				if ( !service._tipHasChanged ) {
 					service.form.tip = 0;
 					wasTipChanged = true;
 				}
 			} else if (service.form.delivery_type == 'delivery' && service.form.pay_type == 'card') {
-				if (typeof tipHasChanged == 'undefined') {
+				if ( !service._tipHasChanged ) {
 					service.form.tip = (App.config.user.last_tip) ? App.config.user.last_tip : 'autotip';
-					service.form.tip = App.lastTipNormalize(service.form.tip);
+					service.form.tip = service._lastTipNormalize( service.form.tip );
 					wasTipChanged = true;
 				}
 			}
 
 			if (wasTipChanged) {
-				$('[name="pay-tip"]').val(service.form.tip);
 				// Forces the recalculation of total because the tip was changed.
 				service.info.totalText = service.info.dollarSign + this.charged();
 			}
@@ -664,6 +661,23 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 			*/
 	}
 
+	service._autotip = function () {
+		var subtotal = service.totalbreakdown().subtotal;
+		var autotipValue
+		if (subtotal === 0) {
+			autotipValue = 0;
+		} else {
+			// autotip formula - see github/#940
+			autotipValue = Math.ceil(4 * (subtotal * 0.107 + 0.85)) / 4;
+		}
+		service.form.autotip = autotipValue;
+	}
+
+	service._autotipText = function(){
+		var autotipText = service.form.autotip ? ' (' + service.info.dollarSign + service.form.autotip + ')' : '';
+		return 'Autotip' + autotipText;
+	}
+
 	// Credit card years
 	service._years = function(){
 		var date = new Date().getFullYear();
@@ -679,9 +693,35 @@ NGApp.factory( 'OrderService', function( $http, AccountService, CartService ){
 		return [1,2,3,4,5,6,7,8,9,10,11,12];
 	}
 
-	// Tips %
+	// Tips
 	service._tips = function(){
-		return  [0,10,15,18,20,25,30];
+		return  [ { value : 'autotip', label : service._autotipText() },
+							{ value : 0, label : 'Tip with cash' },
+							{ value : 10, label : 'tip 10 %' },
+							{ value : 15, label : 'tip 15 %' },
+							{ value : 18, label : 'tip 18 %' },
+							{ value : 20, label : 'tip 20 %' },
+							{ value : 25, label : 'tip 25 %' },
+							{ value : 30, label : 'tip 30 %' }];
+	}
+
+	service._lastTipNormalize = function( lastTip ){
+		/* The default tip is autotip */
+		if( lastTip === 'autotip' ) {
+			return lastTip;
+		}
+		if( service.account.user && service.account.user.last_tip_type && service.account.user.last_tip_type == 'number' ){
+			return 'autotip';
+		}
+		// it means the last tipped value is not at the permitted value, return default.
+		lastTip = parseInt( lastTip );
+		var tips = service._tips();
+		for( x in tips ){
+			if( lastTip == parseInt( tips[ x ].value ) ){
+				return lastTip;
+			}
+		}
+		return 'autotip';
 	}
 
 	return service;
