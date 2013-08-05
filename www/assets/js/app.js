@@ -468,7 +468,7 @@ App.lastTipNormalize = function( lastTip ){
 /**
  * global event binding and init
  */
-$(function() {
+App.init = function() {
 	FastClick.attach(document.body);
 	
 	if (App.isPhoneGap && App.iOS7()) {
@@ -495,6 +495,12 @@ $(function() {
 	});
 
 	$.totalStorage.ls(App.localStorage);
+	
+	// phonegap
+	if (typeof CB !== 'undefined' && CB.config) {
+		App.config = CB.config;
+		CB.config = null;
+	}
 
 	App.processConfig(App.config);
 	App._init = true;
@@ -766,7 +772,7 @@ $(function() {
 		} catch(e){}
 	} );
 
-});
+};
 
 App.getCommunityById = function( id ){
 	for (x in App.communities) {
