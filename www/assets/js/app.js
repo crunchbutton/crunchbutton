@@ -604,7 +604,7 @@ App.init = function() {
 	$('.cart-item-config a').click(function() {
 		App.cart.customize($(this).closest('.cart-item'));
 	});
-*/
+
 	$('.button-submitorder-form').click(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -612,7 +612,7 @@ App.init = function() {
 		App.isDeliveryAddressOk = false;
 		App.cart.submit($(this),true);
 	});
-
+*/
 	$(document).on('click', '.button-deliver-payment, .dp-display-item a, .dp-display-item .clickable', function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();

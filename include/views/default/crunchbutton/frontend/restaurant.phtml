@@ -88,7 +88,6 @@
 										<!-- Customizable - select -->
 										<div ng-switch-when="select">
 											<label class="cart-item-customize-select-name">{{option.name}}</label>
-
 											<select ng-change="order.cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
 										</div>
 
@@ -231,18 +230,15 @@
 						</div>
 
 						<label ng-show="order.form.pay_type=='card'">Credit card #</label>
-						<div ng-show="order.form.pay_type=='card'" class="input-item"><input type="tel" name="pay-card-number" tabindex="6" value="{{order.form.card.number}}"></div><div class="divider"></div>
+						<div ng-show="order.form.pay_type=='card'" class="input-item"><input type="tel" name="pay-card-number" tabindex="6" value="{{order.form.cardNumber}}"></div><div class="divider"></div>
 		
 						<label ng-show="order.form.pay_type=='card'">Expiration</label>
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
-							<select name="pay-card-month" tabindex="7">
-								<option>Month</option>
-								<option ng-repeat="x in order._months()" value="{{x}}">{{x}}</option>
-							</select>
-							<select name="pay-card-year" tabindex="8">
-								<option>Year</option>
-								<option ng-repeat="x in order._years()" value="{{x}}">{{x}}</option>
-							</select>
+
+							<select ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7">{{order.form.card.month}}</select> 
+
+							<select ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8"></select> 
+
 							<div class="divider"></div>
 						</div>
 		
@@ -275,7 +271,7 @@
 	
 	</form>
 	
-	<div ng-show="restaurant._open" class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-submitorder-form button-bottom"><div>Get Food</div></button></div>
+	<div ng-show="restaurant._open" class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-bottom" ng-click="order.submit();"><div>Get Food</div></button></div>
 	
 	<? /* stored user info */ ?>
 	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open">
