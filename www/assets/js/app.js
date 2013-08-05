@@ -28,7 +28,6 @@ var App = {
 		permalink : 'food-delivery',
 		forceLoad: false
 	},
-	defaultTip: 'autotip',
 	defaultRange : 2,
 	modal: {},
 	hasBack: false,
@@ -440,30 +439,9 @@ App.processConfig = function(json, user) {
 		App.order['pay_type'] = App.config.user['pay_type'];
 		App.order['delivery_type'] = App.config.user['delivery_type'];
 		var lastTip = App.config.user['last_tip'] || 'autotip';
-		lastTip = App.lastTipNormalize( lastTip );
 		App.order['tip'] = lastTip;
 	}
 };
-
-
-App.lastTipNormalize = function( lastTip ){
-
-	if( lastTip === 'autotip' ) {
-		return lastTip;
-	}
-
-	lastTip = parseInt( lastTip );
-	if( App.config.user && App.config.user.last_tip_type && App.config.user.last_tip_type == 'number' ){
-		return App.defaultTip;
-	}
-	// it means the last tipped value is not at the permitted value, return default.
-	if( App.tips.indexOf( lastTip ) > 0 ){
-		lastTip = lastTip;
-	} else {
-		lastTip = App.defaultTip;
-	}
-	return lastTip;
-}
 
 /**
  * global event binding and init
@@ -679,14 +657,14 @@ App.init = function() {
 		$(this).prev('input').checkToggle();
 		App.cart.customizeItem( $(this).prev('input') );
 	});
-*/
+
 	$(document).on('change', '[name="pay-tip"]', function() {
 		App.order.tip = $(this).val();
 		App.order.tipHasChanged = true;
 		var total = App.cart.total();
 		App.cart.updateTotal();
 	});
-
+*/
 	$(document).on('change', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
 		if( !App.order.cardChanged ){
 			var self = $( this );
