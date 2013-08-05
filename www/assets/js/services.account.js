@@ -281,7 +281,7 @@ NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 	var service = {};
 	service.facebook = AccountFacebookService;
-	service.do = function(){0
+	service.do = function(){
 		if (confirm( 'Confirm sign out?')){
 			// Force to remove the cookies
 			$.each( [ 'token', 'location', 'PHPSESSID' ], function( index, value ){

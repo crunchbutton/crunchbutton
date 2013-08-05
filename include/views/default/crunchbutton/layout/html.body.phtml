@@ -1,0 +1,103 @@
+<?
+	$basicPages = ['legal','help','faq','hello'];
+	if (!c::getPagePiece(0) || (c::getPagePiece(0) && !in_array(c::getPagePiece(0), $basicPages) && !$this->community)) {
+		$e = ' short-meal-list';
+	}
+?>
+
+<div class="snap-drawers" ng-controller="SideMenuCtrl">
+	<div class="snap-drawer snap-drawer-left">
+		<div>
+			<ul>
+				<li><a href="javascript:;" ng-instant="navigation.link('/food-delivery')">Restaurants</a></li>
+				<li><a href="javascript:;" ng-instant="navigation.link('/location')">Change Location</a></li>
+				<li><a ng-show="navigation.account.user" href="javascript:;" ng-instant="navigation.link('/orders')">Order History</a></li>
+				<li><a href="javascript:;" ng-click="navigation.link('/help')">Help</a></li>
+				<li><a href="javascript:;" ng-click="navigation.link('/legal')">Legal</a></li>
+				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
+					<li><a href="javascript:App.test.card();" class="test-card">TEST: card</a></li>
+					<li><a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a></li>
+					<li><a href="javascript:App.test.clearloc();" class="test-clearloc">TEST: clear loc</a></li>
+				<? endif ; ?>
+			</ul>
+			<div>
+				<p>&copy; <?=date('Y')?> YouBeo. All rights reserved.</p>
+			</div>
+		</div>
+	</div>
+	<div class="snap-drawer snap-drawer-right"></div>
+</div>
+
+<div class="wrapper">
+	
+	<div id="snap-content" class="snap-content">
+		<div class="nav" data-role="header" data-position="fixed" ng-controller="MainHeaderCtrl">
+			
+			<div class="content<?=$e?>">
+				
+				<div class="pacman-loading pacman-left"></div>
+
+				<div class="logo"><a href="javascript:;" ng-instant="navigation.link('/')"><div class="logo-img"></div></a></div>
+
+				<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()"></div>
+				<div title="Change location" ng-show="navigation.buttons.location" class="location-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.link('/location')"></div>
+				<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.menu()"></div>
+
+				<div class="signin-box-header">
+					<div ng-show="navigation.account.user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
+					<div ng-show="!navigation.account.user" ng-instant="navigation.signin()" class="signin-icon"></div>
+				</div>
+
+			</div>
+
+		</div>
+	
+		<div class="snap-content-inner bg">
+			<div class="body">
+				<div class="content<?=$e?>">
+					<div class="main-content pages">
+						<div ng-view><?=$this->content?></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="footer">
+	
+				<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
+	
+				<div class="footer-content hidden-phone" ng-controller="MainHeaderCtrl">
+	
+					<a href="javascript:;" ng-click="navigation.link('/help')">Help</a>
+					<a href="javascript:;" ng-click="navigation.link('/legal')">Legal</a>
+					<a ng-show="navigation.account.user" href="javascript:;" ng-click="navigation.link('/orders')">Order History</a>
+					<? if (c::env() == 'beta' || c::env() == 'local') : ?>
+						<a href="javascript:App.test.card();" class="test-card">TEST: card</a>
+						<a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a>
+						<a href="javascript:App.test.clearloc();" class="test-clearloc">TEST: clear loc</a>
+					<? endif ; ?>
+					<br />
+					<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
+				</div>
+			</div>
+
+		</div>
+
+
+	</div>
+
+	<div class="divider"></div>
+</div>
+
+<div ng-include="'view/account.html'"></div>
+<div ng-include="'view/account.reset.html'"></div>
+<div ng-include="'view/account.facebook.html'"></div>
+<div ng-include="'view/giftcard.html'"></div>
+<div ng-include="'view/suggestion.html'"></div>
+<div ng-include="'view/support.html'"></div>
+
+<div id="fb-root"></div>
+
+<audio id="get-food-audio">
+	<source src="/assets/audio/crunch.mp3"></source>
+	<source src="/assets/audio/crunch.ogg"></source>
+</audio>
