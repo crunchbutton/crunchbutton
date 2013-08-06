@@ -1,3 +1,4 @@
+
 .content {
 	width: auto;
 	margin: 0 auto;
@@ -460,10 +461,7 @@ html[xmlns] .clearfix {
 	display: none;
 }
 
-.dp-display-item:first-child {
-}
-
-.dp-display-item .clickable{
+.delivery-payment-info .clickable{
 	color:#d74924;
 	cursor: pointer;
 	font-style: italic;
@@ -471,10 +469,7 @@ html[xmlns] .clearfix {
 	text-decoration: underline;
 }
 
-.dp-display-item:last-child {
-}
-
-.dp-display-item {
+.delivery-payment-info div {
 	display: block;
 	width: auto;
 	margin: 5px 14px 8px 14px;
@@ -2787,7 +2782,9 @@ strong {
 	padding: 5px !important;
 }
 
-
+.footer{
+	clear: both;
+}
 
 /**
  * unused blurs
