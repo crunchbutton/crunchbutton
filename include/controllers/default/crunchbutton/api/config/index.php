@@ -5,13 +5,17 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 		switch ($this->method()) {
 			case 'post':
 				if ($this->request()['ab']) {
-					// echo 'saving';
-					// print_r($this->request()['ab']);
 					c::auth()->set('ab', json_encode($this->request()['ab']));
 				}
 				break;
+
 			case 'get':
-				$config = c::appConfig();
+				$p = ['base'];
+				if (c::getPagePiece(2) == 'extended') {
+					$p[] = 'extended';
+				}
+				$config = c::appConfig($p);
+
 				if ($_REQUEST['lat'] && $_REQUEST['lon']) {
 					$restaurants = Restaurant::byRange([
 						'lat' => $_REQUEST['lat'],
