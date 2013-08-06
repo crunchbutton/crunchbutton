@@ -38,9 +38,6 @@ var App = {
 	touchX: null,
 	touchY: null,
 	touchOffset: null,
-	crunchSoundAlreadyPlayed : false,
-	useCompleteAddress : false, /* if true it means the address field will be fill with the address found by google api */
-	completeAddressWithZipCode : true,
 	boundingBoxMeters : 8000,
 	localStorage: false,
 	isPhoneGap: document.location.protocol == 'file:'
@@ -50,9 +47,12 @@ var App = {
 App.localStorage = App.isPhoneGap;
 
 
-App.alert = function(txt) {
+App.alert = function(txt, callback) {
 	setTimeout(function() {
 		alert(txt);
+		if( callback ){
+			callback();
+		}
 	});
 };
 
@@ -219,7 +219,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService, LocationService) {
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService ) {
 
 	App.rootScope = $rootScope;
 	App.location = $location;
@@ -244,6 +244,16 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 	$rootScope.formatPrice = function(t) {
 		return parseFloat(t).toFixed(2);
+	};
+
+	$rootScope.$safeApply = function(fn) {
+		fn = fn || function() {};
+		if($rootScope.$$phase) {
+			fn();
+		}
+		else {
+			$rootScope.$apply(fn); 
+		}
 	};
 
 	$scope.$on(
@@ -436,10 +446,6 @@ App.processConfig = function(json, user) {
 	App.AB.init();
 	if (App.config.user) {
 		App.identify();
-		App.order['pay_type'] = App.config.user['pay_type'];
-		App.order['delivery_type'] = App.config.user['delivery_type'];
-		var lastTip = App.config.user['last_tip'] || 'autotip';
-		App.order['tip'] = lastTip;
 	}
 };
 
@@ -636,13 +642,12 @@ App.init = function() {
 	$(document).on('change', '.cart-customize-select', function() {
 		App.cart.customizeItem($(this));
 	});
-*/
+
 	$( '.default-order-check' ).click( function(){
 		setTimeout( function(){
 			$( '#default-order-check' ).checkToggle();
 		}, 1 );
 	} );
-/*
 	$('.cart-customize-check').click( function() {
 		var checkbox = $(this);
 		setTimeout( function(){
@@ -720,18 +725,6 @@ App.init = function() {
 			}
 		}, 100);
 	}
-
-	$(document).on({
-		blur: function() {
-			clearTimeout(App.checkForDistance);
-			App.checkForDistance = setTimeout(checkForDistance, 100);
-		},
-		change: function() {
-			clearTimeout(App.checkForDistance);
-			App.checkForDistance = setTimeout(checkForDistance, 1000);
-		}
-	}, '[name="pay-address"]');
-
 
 	$(document).on('change', '[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]', function() {
 		App.config.user.name = $('[name="pay-name"]').val();

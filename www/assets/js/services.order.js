@@ -1,13 +1,21 @@
 //OrderService Service
-NGApp.factory('OrderService', function ($http, AccountService, CartService) {
+NGApp.factory('OrderService', function ($http, AccountService, CartService, LocationService, $location, $rootScope) {
+
 	var service = {};
+	service.location = LocationService;
 	service.account = AccountService;
 	service.cart = CartService;
 	service.restaurant = {};
+
+	// If this variable is true the restaurant's page will be loaded after the location get started
+	service.location.loadRestaurantsPage = false;
+	service.location.init();
+
 	// Default values
 	service.form = {
 		delivery_type: 'delivery',
-		pay_type: 'card'
+		pay_type: 'card',
+		make_default: true
 	};
 	// If the user has presets this variable should be set as false
 	service.showForm = true;
@@ -42,7 +50,18 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 		} else {
 			var tip = 'autotip';
 		}
+		// Some controls
+		service._deliveryAddressOk = false;
 		service._tipHasChanged = false;
+		service._cardInfoHasChanged = false;
+		service._crunchSoundPlayded = false;
+		service._useRestaurantBoundingBox = false;
+		service._useCompleteAddress = false; /* if true it means the address field will be fill with the address found by google api */
+		service._completeAddressWithZipCode = true;
+
+		service.form.pay_type = (service.account.user && service.account.user.pay_type) ? service.account.user.pay_type : 'card';
+		service.form.delivery_type = (service.account.user && service.account.user.delivery_type) ? service.account.user.delivery_type : 'delivery';
+
 		service.form.autotip = 0;
 		service.form.tip = service._lastTipNormalize(tip);
 		service.form.name = service.account.user.name;
@@ -54,18 +73,15 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 		service.form.cardMonth = service.account.user.card_exp_month;
 		service.form.cardYear = service.account.user.card_exp_year;
 		service.updateTotal();
-
 		// Verifies if the user has presets and hides the form
-		if( service.account.user && service.account.user.presets ){
-			service.showForm = false;	
+		if (service.account.user && service.account.user.presets) {
+			service.showForm = false;
 		}
-		
-
 		// Load the order
-		if( service.cart.hasItems() ){
+		if (service.cart.hasItems()) {
 			service.reloadOrder();
-		// Load user presets
-		} else if ( service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant] ) {
+			// Load user presets
+		} else if (service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) {
 			try {
 				service.loadOrder(service.account.user.presets[service.restaurant.id_restaurant]);
 			} catch (e) {
@@ -234,55 +250,49 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 	service.resetOrder = function () {
 		service.cart.items = {};
 	}
+
+	service.submit = function(){
+		service._deliveryAddressOk = false;
+		service.processOrder();
+	}
+
 	/**
 	 * Submits the cart order
 	 *
 	 * @returns void
 	 */
-	service.submit = function () {
+	service.processOrder = function () {
 		if (App.busy.isBusy()) {
 			return;
 		}
 		// TODO: put it in a service
-		// App.busy.makeBusy();
-		var read = $('.payment-form').length ? true : false;
-		if (read) {
-			App.config.user.name = $('[name="pay-name"]').val();
-			App.config.user.phone = $('[name="pay-phone"]').val().replace(/[^\d]*/gi, '');
-			if (App.order['delivery_type'] == 'delivery') {
-				App.config.user.address = $('[name="pay-address"]').val();
-			}
-			service.form.tip = $('[name="pay-tip"]').val();
-		}
+		App.busy.makeBusy();
 		var order = {
-			cart: service.getCart(),
+			cart: service.cart.getCart(),
 			pay_type: service.form.pay_type,
-			delivery_type: App.order['delivery_type'],
+			delivery_type: service.form.delivery_type,
 			restaurant: service.restaurant.id,
-			make_default: $('#default-order-check').is(':checked'),
-			notes: $('[name="notes"]').val(),
-			lat: (App.loc.pos()) ? App.loc.pos().lat : null,
-			lon: (App.loc.pos()) ? App.loc.pos().lon : null
+			make_default: service.form.make_default,
+			notes: service.form.notes,
+			lat: service.location.position.pos().lat(),
+			lon: service.location.position.pos().lon(),
 		};
 		if (order.pay_type == 'card') {
 			order.tip = service.form.tip || '3';
-			order.autotip_value = $('[name=pay-autotip-value]').val();
+			order.autotip_value = service.form.autotip;
 		}
-		if (read) {
-			order.address = App.config.user.address;
-			order.phone = App.config.user.phone;
-			order.name = App.config.user.name;
-			if (App.order.cardChanged) {
-				order.card = {
-					number: $('[name="pay-card-number"]').val(),
-					month: $('[name="pay-card-month"]').val(),
-					year: $('[name="pay-card-year"]').val()
-				};
-			} else {
-				order.card = {};
-			}
+		order.address = App.config.user.address;
+		order.phone = App.config.user.phone;
+		order.name = App.config.user.name;
+		if (service._cardInfoHasChanged) {
+			order.card = {
+				number: $('[name="pay-card-number"]').val(),
+				month: $('[name="pay-card-month"]').val(),
+				year: $('[name="pay-card-year"]').val()
+			};
+		} else {
+			order.card = {};
 		}
-		console.log('ORDER:', order);
 		var errors = {};
 		if (!order.name) {
 			errors['name'] = 'Please enter your name.';
@@ -296,7 +306,7 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 		if (order.pay_type == 'card' && ((App.order.cardChanged && !order.card.number) || (!App.config.user.id_user && !order.card.number))) {
 			errors['card'] = 'Please enter a valid card #.';
 		}
-		if (!service.hasItems()) {
+		if (!service.cart.hasItems()) {
 			errors['noorder'] = 'Please add something to your order.';
 		}
 		if (!$.isEmptyObject(errors)) {
@@ -315,23 +325,23 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 			return;
 		}
 		// Play the crunch audio just once, when the user clicks at the Get Food button
-		if (App.iOS() && !App.crunchSoundAlreadyPlayed) {
+		if (App.iOS() && !service._crunchSoundPlayded) {
 			App.playAudio('get-food-audio');
-			App.crunchSoundAlreadyPlayed = true;
+			service._crunchSoundPlayded = true;
 		}
 		// if it is a delivery order we need to check the address
 		if (order.delivery_type == 'delivery') {
 			// Correct Legacy Addresses in Database to Avoid Screwing Users #1284
 			// If the user has already ordered food 
-			if (App.config && App.config.user && App.config.user.last_order) {
+			if (service.account && service.account.user && service.account.user.last_order) {
 				// Check if the order was made at this community
-				if (App.config.user.last_order.communities.indexOf(service.restaurant.id_community) > -1) {
+				if (service.account.user.last_order.communities.indexOf(service.restaurant.id_community) > -1) {
 					// Get the last address the user used at this community
-					var lastAddress = App.config.user.last_order.address;
-					var currentAdress = $('[name=pay-address]').val();
+					var lastAddress = service.account.user.last_order.address;
+					var currentAdress = service.form.address;
 					// Make sure the the user address is the same of his last order
 					if ($.trim(lastAddress) != '' && $.trim(lastAddress) == $.trim(currentAdress)) {
-						App.isDeliveryAddressOk = true;
+						service._deliveryAddressOk = true;
 						// Log the legacy address
 						App.log.order({
 							'address': lastAddress,
@@ -340,126 +350,130 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 					}
 				}
 			}
-			/*
-		// Check if the user address was already validated
-		if ( !App.isDeliveryAddressOk	) {
 
-			// Use the aproxLoc to create the bounding box
-			if( App.loc.aproxLoc ){
-				var latLong = new google.maps.LatLng( App.loc.aproxLoc ? App.loc.aproxLoc.lat : App.loc.pos().lat, App.loc.aproxLoc ? App.loc.aproxLoc.lon : App.loc.pos().lon);	
-			}
+			// Check if the user address was already validated
+			if (!service._deliveryAddressOk) {
+				/* TODO: make the aproxLoc work
+				// Use the aproxLoc to create the bounding box */
 
-			// Use the restautant's position to create the bounding box - just for tests
-			if( App.useRestaurantBoundingBox ){
-				var latLong = new google.maps.LatLng( service.restaurant.loc_lat, service.restaurant.loc_long );
-			}
+				if (service.location.bounding) {
+					var latLong = new google.maps.LatLng(service.location.bounding.lat,service.location.bounding.lon);
+				}
+				
+				// Use the restautant's position to create the bounding box - just for tests
+				if (service._useRestaurantBoundingBox) {
+					var latLong = new google.maps.LatLng(service.restaurant.loc_lat, service.restaurant.loc_long);
+				}
+				
+				if (!latLong) {
+					App.alert( 'Could not locate you!' );
+					App.busy.unBusy();
+					return;
+				}
 
-			if( !latLong ){
-				//App.alert( 'Could not locate you!' );
-				//App.busy.unBusy();
-				//return;
-			}
-
-			var success = function( results ) {
-
-				// Get the closest address from that lat/lng
-				var theClosestAddress = App.loc.theClosestAddress( results, latLong );
-
-				var isTheAddressOk = App.loc.validateAddressType( theClosestAddress );
-
-				if( isTheAddressOk ){
-					// Now lets check if the restaurant deliveries at the given address
-					var lat = theClosestAddress.geometry.location.lat();
-					var lon = theClosestAddress.geometry.location.lng();
-
-					
-					if( App.useCompleteAddress ){
-						$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
-					}
-
-					if (!service.restaurant.deliveryHere({ lat: lat, lon: lon})) {
-						App.alert( 'Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.' );
-						
-
-						// Write the found address at the address field, so the user can check it.
-						$( '[name=pay-address]' ).val( App.loc.formatedAddress( theClosestAddress ) );
-
-						// Log the error
-						App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : service.restaurant.name } , 'address out of delivery range' );
-					
-						App.busy.unBusy();
-						return;
-					
-					} else {
-
-						if( App.completeAddressWithZipCode ){
-
-							// Get the address zip code
-							var zipCode = App.loc.zipCode( theClosestAddress );
-							var typed_address = $( '[name=pay-address]' ).val();
-
-							// Check if the typed address already has the zip code
-							if( typed_address.indexOf( zipCode ) < 0 ){
-								var addressWithZip = typed_address + ' - ' + zipCode;
-								$( '[name=pay-address]' ).val( addressWithZip );
-							}
+				var success = function (results) {
+					// Get the closest address from that lat/lng
+					var theClosestAddress = service.location.theClosestAddress(results, latLong);
+					var isTheAddressOk = service.location.validateAddressType(theClosestAddress.result);
+					if (isTheAddressOk) {
+						theClosestAddress = theClosestAddress.location;
+						// Now lets check if the restaurant deliveries at the given address
+						var lat = theClosestAddress.lat();
+						var lon = theClosestAddress.lon();
+						if (service._useCompleteAddress) {
+							service.form.address = theClosestAddress.formatted()
 						}
 
+						var distance = service.location.distance( { from : { lat : lat, lon : lon }, to : { lat : service.restaurant.loc_lat, lon : service.restaurant.loc_long } } );
+						distance = service.location.km2Miles( distance );
+
+						if (!service.restaurant.deliveryHere(distance)) {
+							App.alert('Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.');
+							// Write the found address at the address field, so the user can check it.
+							$('[name=pay-address]').val(App.loc.formatedAddress(theClosestAddress));
+							// Log the error
+							App.log.order({
+								'address': $('[name=pay-address]').val(),
+								'restaurant': service.restaurant.name
+							}, 'address out of delivery range');
+							App.busy.unBusy();
+							return;
+						} else {
+							if (service._completeAddressWithZipCode) {
+								// Get the address zip code
+								var zipCode = theClosestAddress.zip();
+								var typed_address = service.form.address;
+								// Check if the typed address already has the zip code
+								if (typed_address.indexOf(zipCode) < 0) {
+									var addressWithZip = typed_address + ' - ' + zipCode;
+									service.form.address = addressWithZip;
+								}
+							}
+							App.busy.unBusy();
+							service._deliveryAddressOk = true;
+							service.processOrder();
+						}
+					} else {
+						// Address was found but it is not valid (for example it could be a city name)
+						App.alert('Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.');
+						
 						App.busy.unBusy();
-						App.isDeliveryAddressOk = true;
-						service.submit();
+
+						// Make sure that the form will be visible
+						service.showForm = true;
+						$('[name="pay-address"]').focus();
+
+						// Log the error
+						App.log.order({
+							'address': $('[name=pay-address]').val(),
+							'restaurant': service.restaurant.name
+						}, 'address not found or invalid');
 					}
-
-				} else {
-					// Address was found but it is not valid (for example it could be a city name)
-					App.alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
-					App.busy.unBusy();						
-					// Make sure that the form will be visible
-					$('.payment-form').show();
-						$('.delivery-payment-info, .content-padder-before').hide();
-					$( '[name="pay-address"]' ).focus();
-					// Log the error
-					App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : service.restaurant.name } , 'address not found or invalid' );
 				}
+				// Address not found!
+				var error = function () {
+					App.alert('Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.');
+					App.busy.unBusy();
+					// Log the error
+					App.log.order({
+						'address': $('[name=pay-address]').val(),
+						'restaurant': service.restaurant.name
+					}, 'address not found');
+				};
+				// Call the geo method
+				service.location.doGeocodeWithBound( order.address, latLong, success, error );
+				return;
 			}
-
-			// Address not found!
-			var error = function() {
-				App.alert( 'Oops, it looks like your address is incomplete. \nPlease enter a street name, number and zip code.' );
-				App.busy.unBusy();
-				// Log the error
-				App.log.order( { 'address' : $( '[name=pay-address]' ).val(), 'restaurant' : service.restaurant.name } , 'address not found' );
-			};
-
-			// Call the geo method
-			App.loc.doGeocodeWithBound(order.address, latLong, success, error);
-			return;
-		} 
-		*/
 		}
+
 		if (order.delivery_type == 'takeout') {
-			App.isDeliveryAddressOk = true;
+			service._deliveryAddressOk = true;
 		}
-		App.isDeliveryAddressOk = true;
-		if (!App.isDeliveryAddressOk) {
+
+		if (!service._deliveryAddressOk) {
 			return;
 		}
+
 		// Play the crunch audio just once, when the user clicks at the Get Food button
 		if (!App.crunchSoundAlreadyPlayed) {
 			App.playAudio('get-food-audio');
 			App.crunchSoundAlreadyPlayed = true;
 		}
-		$.ajax({
-			url: App.service + 'order',
-			data: order,
-			dataType: 'html',
-			type: 'POST',
-			complete: function (json) {
+
+		var url = App.service + 'order';
+
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( order),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( json ) {
+
 				try {
-					json = $.parseJSON(json.responseText);
+					var uuid = json.uuid;
 				} catch (e) {
 					// Log the error
-					App.log.order(json.responseText, 'processing error');
+					App.log.order(json, 'processing error');
 					json = {
 						status: 'false',
 						errors: ['Sorry! Something went horribly wrong trying to place your order!']
@@ -480,15 +494,14 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 					if (json.token) {
 						$.totalStorage('token', json.token);
 					}
+					//
 					$('.link-orders').show();
+					/*
 					order.cardChanged = false;
 					App.justCompleted = true;
 					App.giftcard.notesCode = false;
-					var totalItems = 0;
-					for (var x in service.items) {
-						totalItems++;
-					}
-					$.getJSON('/api/config', App.processConfig);
+					*/
+					// $.getJSON('/api/config', App.processConfig);
 					App.cache('Order', json.uuid, function () {
 						App.track('Ordered', {
 							'total': this.final_price,
@@ -498,23 +511,28 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 							'paytype': this.pay_type,
 							'ordertype': this.order_type,
 							'user': this.user,
-							'items': totalItems
+							'items': service.cart.totalItems()
 						});
-						App.order.cardChanged = false;
+						/*
 						App.loc.changeLocationAddressHasChanged = false;
-						delete tipHasChanged;
-						App.go('/order/' + this.uuid);
+						*/
+						$rootScope.$safeApply( function(){
+							console.log('apply');
+							$location.path( '/order/' + uuid );	
+						} );
 					});
 				}
 				setTimeout(function () {
 					App.busy.unBusy();
 				}, 400);
-			}
-		});
-	} // end service.submit()
+			}	);
+	} // end service.processOrder
 	service.tipChanged = function () {
 		service._tipHasChanged = true;
 		service.updateTotal();
+	}
+	service.cardInfoChanged = function () {
+		service._cardInfoHasChanged = true;
 	}
 	/**
 	 * Gets called after the cart is updarted to refresh the total

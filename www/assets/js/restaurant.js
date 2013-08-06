@@ -259,10 +259,8 @@ var Restaurant = function(id) {
 		return isOpen;
 	}
 
-	self.deliveryHere = function( param ){
-		var km = App.loc.distance( { from : { lat : param.lat, lon : param.lon }, to : { lat : this.loc_lat, lon : this.loc_long } } );
-		var miles = App.loc.km2Miles( km );
-		return ( miles <= this.delivery_radius )
+	self.deliveryHere = function( distance ){
+		return ( distance <= this.delivery_radius )
 	}
 
 	self.closedMessage = function(){

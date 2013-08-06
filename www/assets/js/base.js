@@ -13,7 +13,7 @@ if (typeof(Number.prototype.toRad) === 'undefined') {
 
 var _toRad = function() {
 	var Value = arguments.shift();
-    return Number.prototype.toRad.call(Value, args);
+	return Number.prototype.toRad.call(Value, args);
 };
 
 if (!typeof(App) == 'undefined') {
@@ -95,6 +95,8 @@ App.phone = {
 		return num;
 	},
 	validate: function(num) {
+
+		num = num.replace(new RegExp( '-', 'g'), '');
 
 		if (!num || num.length != 10) {
 			return false;

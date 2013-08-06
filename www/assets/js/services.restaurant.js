@@ -152,12 +152,8 @@ service.load = function(){
 
 		};
 
-		// double check what phase we are in
-			if (!$rootScope.$$phase) {
-				$rootScope.$apply(complete);
-			} else {
-				complete();
-			}
+		$rootScope.$safeApply( complete );
+
 /*
 		// If the typed address is different of the user address the typed one will be used #1152
 		if (false && App.loc.changeLocationAddressHasChanged && App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != service.account.user.address) {
