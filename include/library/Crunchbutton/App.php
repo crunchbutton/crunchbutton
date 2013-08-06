@@ -368,30 +368,54 @@ class Crunchbutton_App extends Cana_App {
 		return $this->_appDb;
 	}
 	
-	public function appConfig() {
+	public function appConfig($output = ['base']) {
 		$config = [];
-		$config['user'] = c::user()->exports();
-		$config['env'] = $this->env();
-		$config['ab'] = json_decode($this->auth()->get('ab'));
 		
-		if (!$this->auth()->get('loc_lat')) {
-			$geo = new Crunchbutton_Geo([
-				'adapter' => 'Geoip_Binary',
-				'file' => c::config()->dirs->root.'db/GeoLiteCity.dat'
-			]);
-			$geo->setIp($_SERVER['REMOTE_ADDR'])->populateByIp();
-			$this->auth()->set('loc_lat', $geo->getLatitude());
-			$this->auth()->set('loc_lon', $geo->getLongitude());
-			$this->auth()->set('city', $geo->getCity());
-			$this->auth()->set('region', $geo->getRegion());
+		if (in_array('base', $output)) {
+			$config['user'] = c::user()->exports();
+			$config['env'] = $this->env();
+			$config['ab'] = json_decode($this->auth()->get('ab'));
+			
+			if (!$this->auth()->get('loc_lat')) {
+				$geo = new Crunchbutton_Geo([
+					'adapter' => 'Geoip_Binary',
+					'file' => c::config()->dirs->root.'db/GeoLiteCity.dat'
+				]);
+				$geo->setIp($_SERVER['REMOTE_ADDR'])->populateByIp();
+				$this->auth()->set('loc_lat', $geo->getLatitude());
+				$this->auth()->set('loc_lon', $geo->getLongitude());
+				$this->auth()->set('city', $geo->getCity());
+				$this->auth()->set('region', $geo->getRegion());
+			}
+	
+			$config['loc']['lat'] = $this->auth()->get('loc_lat');
+			$config['loc']['lon'] = $this->auth()->get('loc_lon');
+			$config['loc']['city'] = $this->auth()->get('city');
+			$config['loc']['region'] = $this->auth()->get('region');
+			
+			$config['version'] = Cana_Util::gitVersion();
 		}
-
-		$config['loc']['lat'] = $this->auth()->get('loc_lat');
-		$config['loc']['lon'] = $this->auth()->get('loc_lon');
-		$config['loc']['city'] = $this->auth()->get('city');
-		$config['loc']['region'] = $this->auth()->get('region');
 		
-		$config['version'] = Cana_Util::gitVersion();
+		if (in_array('extended', $output)) {
+			$config['aliases'] = Community_Alias::all(['id_community', 'prep', 'name_alt']);
+			$config['locations'] = Community::all_locations();
+			$config['facebookScope'] = c::config()->facebook->default->scope;
+
+			$config['communities'] = [];
+			foreach (Community::all(c::getPagePiece(0)) as $community) {
+				$c = $community->properties();
+				$c['stored'] = true;
+				$config['communities'][$community->permalink] = $c;
+			}
+			
+			$config['topCommunities'] = [];
+			foreach (Community_Alias::q('select * from community_alias where top="1" order by `sort`') as $community_alias) {
+				$config['topCommunities'][] = [
+					'alias' => $community_alias->alias,
+					'name' => $community_alias->name_alt
+				];
+			}
+		}
 
 		return $config;
 	}
