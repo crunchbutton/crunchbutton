@@ -269,7 +269,11 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 		}
 		// TODO: put it in a service
 		App.busy.makeBusy();
+
 		var order = {
+			address: service.form.address,
+			phone: service.form.phone,
+			name: service.form.name,
 			cart: service.cart.getCart(),
 			pay_type: service.form.pay_type,
 			delivery_type: service.form.delivery_type,
@@ -277,20 +281,19 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 			make_default: service.form.make_default,
 			notes: service.form.notes,
 			lat: service.location.position.pos().lat(),
-			lon: service.location.position.pos().lon(),
+			lon: service.location.position.pos().lon()
 		};
+
 		if (order.pay_type == 'card') {
 			order.tip = service.form.tip || '3';
 			order.autotip_value = service.form.autotip;
 		}
-		order.address = App.config.user.address;
-		order.phone = App.config.user.phone;
-		order.name = App.config.user.name;
+
 		if (service._cardInfoHasChanged) {
 			order.card = {
-				number: $('[name="pay-card-number"]').val(),
-				month: $('[name="pay-card-month"]').val(),
-				year: $('[name="pay-card-year"]').val()
+				number: service.form.cardNumber,
+				month: service.form.cardMonth,
+				year: service.form.cardYear
 			};
 		} else {
 			order.card = {};
@@ -305,7 +308,7 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 		if (order.delivery_type == 'delivery' && !order.address) {
 			errors['address'] = 'Please enter an address.';
 		}
-		if (order.pay_type == 'card' && ((App.order.cardChanged && !order.card.number) || (!App.config.user.id_user && !order.card.number))) {
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !order.card.number) || (!service.account.user.id_user && !order.card.number))) {
 			errors['card'] = 'Please enter a valid card #.';
 		}
 		if (!service.cart.hasItems()) {
@@ -383,7 +386,9 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 						var lat = theClosestAddress.lat();
 						var lon = theClosestAddress.lon();
 						if (service._useCompleteAddress) {
-							service.form.address = theClosestAddress.formatted()
+							service.form.address = theClosestAddress.formatted();
+							// Update the object order
+							order.address = service.form.address;
 						}
 
 						var distance = service.location.distance( { from : { lat : lat, lon : lon }, to : { lat : service.restaurant.loc_lat, lon : service.restaurant.loc_long } } );
@@ -391,15 +396,24 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 
 						if (!service.restaurant.deliveryHere(distance)) {
 							App.alert('Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.');
-							// Write the found address at the address field, so the user can check it.
-							$('[name=pay-address]').val(App.loc.formatedAddress(theClosestAddress));
+							
+							App.busy.unBusy();
+
+							$rootScope.$safeApply( function(){
+								// Make sure that the form will be visible
+								service.showForm = true;
+								$('[name="pay-address"]').focus();
+								// Write the found address at the address field, so the user can check it.
+								service.form.address = theClosestAddress.formatted();
+							} );
+
 							// Log the error
 							App.log.order({
 								'address': $('[name=pay-address]').val(),
 								'restaurant': service.restaurant.name
 							}, 'address out of delivery range');
-							App.busy.unBusy();
 							return;
+
 						} else {
 							if (service._completeAddressWithZipCode) {
 								// Get the address zip code
@@ -422,8 +436,10 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 						App.busy.unBusy();
 
 						// Make sure that the form will be visible
-						service.showForm = true;
-						$('[name="pay-address"]').focus();
+						$rootScope.$safeApply( function(){
+							service.showForm = true;
+							$('[name="pay-address"]').focus();
+						} );
 
 						// Log the error
 						App.log.order({
@@ -457,9 +473,9 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 		}
 
 		// Play the crunch audio just once, when the user clicks at the Get Food button
-		if (!App.crunchSoundAlreadyPlayed) {
+		if (!service._crunchSoundPlayded) {
 			App.playAudio('get-food-audio');
-			App.crunchSoundAlreadyPlayed = true;
+			service._crunchSoundPlayded = true;
 		}
 
 		var url = App.service + 'order';
@@ -470,7 +486,6 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 			data: $.param( order),
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( json ) {
-
 				try {
 					var uuid = json.uuid;
 				} catch (e) {
@@ -496,14 +511,13 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 					if (json.token) {
 						$.totalStorage('token', json.token);
 					}
-					//
-					$('.link-orders').show();
 					/*
+					$('.link-orders').show();
 					order.cardChanged = false;
 					App.justCompleted = true;
 					App.giftcard.notesCode = false;
 					*/
-					// $.getJSON('/api/config', App.processConfig);
+					service.account.updateInfo();
 					App.cache('Order', json.uuid, function () {
 						App.track('Ordered', {
 							'total': this.final_price,
@@ -529,6 +543,7 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 				}, 400);
 			}	);
 	} // end service.processOrder
+
 	service.tipChanged = function () {
 		service._tipHasChanged = true;
 		service.updateTotal();
@@ -574,7 +589,7 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 			}
 		} else if (service.form.delivery_type == 'delivery' && service.form.pay_type == 'card') {
 			if (!service._tipHasChanged) {
-				service.form.tip = (App.config.user.last_tip) ? App.config.user.last_tip : 'autotip';
+				service.form.tip = (service.account.user.last_tip) ? service.account.user.last_tip : 'autotip';
 				service.form.tip = service._lastTipNormalize(service.form.tip);
 				wasTipChanged = true;
 			}

@@ -1,5 +1,5 @@
 // RecommendRestaurantService service
-NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService ){
+NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService, AccountService ){
 
 	var service = {
 		form : { restaurant : '' },
@@ -7,6 +7,7 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService )
 	};
 
 	service.position = PositionsService;
+	service.account = AccountService;
 
 	var recommendations = [];
 
@@ -58,7 +59,7 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService )
 				$http( {
 					method: 'POST',
 					url: url,
-					data: $.param( { id_suggestion : id_suggestion, id_user : App.config.user.id_user } ),
+					data: $.param( { id_suggestion : id_suggestion, id_user : service.account.user.id_user } ),
 					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 					} );
 			} );

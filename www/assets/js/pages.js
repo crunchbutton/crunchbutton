@@ -85,7 +85,11 @@ NGApp.controller( 'restaurants', function ( $scope, $http, $location, Restaurant
 	};
 
 	$scope.restaurants.list( function(){
-
+		console.log('$scope.restaurants.position.pos()',$scope.restaurants.position.pos());
+		console.log('$scope.restaurants.position.pos()',$scope.restaurants.position.pos());
+		console.log('$scope.restaurants.position',$scope.restaurants.position);
+console.log(' $scope.restaurants.position.pos().prep()', $scope.restaurants.position.pos().prep());
+console.log('$scope.restaurants.position.pos().city()',$scope.restaurants.position.pos().city());
 		try {
 				var slogan = App.slogan.slogan;
 				var sloganReplace = $scope.restaurants.position.pos().prep() + ' ' +  $scope.restaurants.position.pos().city();
@@ -132,10 +136,12 @@ NGApp.controller('cities', function ($scope, $http) {
 /**
  * Change location
  */
-NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsService, RecommendRestaurantService, LocationService ) {
+NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsService, RecommendRestaurantService, LocationService, AccountService ) {
 	
-	$scope.isUser = App.config.user.has_auth;
-	$scope.notUser = !App.config.user.has_auth;
+	var account = AccountService;
+
+	$scope.isUser = account.user.has_auth;
+	$scope.notUser = !account.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
 
 	$scope.location = LocationService;
