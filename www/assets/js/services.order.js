@@ -9,6 +9,8 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 		delivery_type: 'delivery',
 		pay_type: 'card'
 	};
+	// If the user has presets this variable should be set as false
+	service.showForm = true;
 	// Info that will be shown to the user
 	service.info = {
 		dollarSign: '',
@@ -16,7 +18,7 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 		extraCharges: '',
 		deliveryMinDiff: '',
 		cartSummary: '',
-		totalText: ''
+		totalText: '',
 	}
 	service.toogleDelivery = function (type) {
 		if (type != service.form.delivery_type) {
@@ -52,6 +54,12 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService) {
 		service.form.cardMonth = service.account.user.card_exp_month;
 		service.form.cardYear = service.account.user.card_exp_year;
 		service.updateTotal();
+
+		// Verifies if the user has presets and hides the form
+		if( service.account.user && service.account.user.presets ){
+			service.showForm = false;	
+		}
+		
 
 		// Load the order
 		if( service.cart.hasItems() ){

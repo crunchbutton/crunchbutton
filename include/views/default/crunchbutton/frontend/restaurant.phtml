@@ -34,9 +34,9 @@
 		<div class="restaurant-message-mobile" ng-bind-html-unsafe="restaurant.message"></div>
 	</div>
 	
-	<? /* main-content-readable-margin */ ?>
+	<!-- main-content-readable-margin -->
 	<div class="main-content-readable">
-		<? /* cart */ ?>
+		<!-- cart -->
 		<div class="cart-items {{AB.restaurantPage}}">
 			<div ng-show="restaurant._open">
 				<div class="restaurant-item-title text-your-order">
@@ -50,8 +50,6 @@
 					Add $<span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> from menu to meet delivery minimum.
 				</div>
 				
-				<!-- <div class="cart-items-content"> -->
-
 				<!-- Cart's basket -->
 				<div>
 
@@ -109,7 +107,7 @@
 			</div>
 		</div>
 
-		<? /* menu */ ?>
+		<!-- menu -->
 		<div class="restaurant-items">
 			<div class="content-item-name content-item-main-name">
 				<h1>
@@ -137,7 +135,7 @@
 	</div>
 	<div class="restaurant-payment-div"></div>
 	
-	<? /* payment and user info */ ?>
+	<!-- payment and user info -->
 	<form class="payment-form main-content-readable">
 	
 		<div class="restaurant-closed" ng-show="!restaurant.open()">
@@ -155,12 +153,12 @@
 		</div>
 	
 		
-		<div ng-show="restaurant._open">
+		<div ng-show="restaurant._open && order.showForm">
 		
 			<div class="content-item-name"><h1>Your Info</h1></div>
 			<div class="your-info-label">(enter this once, and we'll save it for next time)</div>
 			
-			<? /* user info */ ?>
+			<!-- user info -->
 			<div class="delivery-info-container">
 				<div ng-show="(restaurant.delivery == '1' && restaurant.takeout == '1')">
 					<label class="pay-title-label">Delivery Info</label>
@@ -206,7 +204,7 @@
 		
 			<div class="divider"></div>
 			
-			<? /* payment info */ ?>
+			<!-- payment info -->
 			<div class="payment-info-container">
 		
 				<div class="payment-info field-container">
@@ -272,38 +270,43 @@
 	</form>
 	
 	<div ng-show="restaurant._open" class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-bottom" ng-click="order.submit();"><div>Get Food</div></button></div>
-	
-	<? /* stored user info */ ?>
-	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open">
-		<div class="dp-display-phone dp-display-item">
+
+	<!-- stored user info -->
+	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open && !order.showForm">
+
+		<div>
 			<label>Your phone number:&nbsp;</label>
 			<i ng-show="user.phone">{{formatPhone(user.phone)}}</i>
 			<i ng-show="!user.phone">no phone # provided</i>
 		</div>
 
-		<div class="dp-display-payment dp-display-item" ng-show="order.subtotal()">
-			<label>You are paying&nbsp;<span class="cash-order-aprox"></span>: &nbsp;</label>
-			<span class="cart-breakdownDescription"></span>
-			<strong class="cart-gift"></strong>
-			&nbsp;for a total of {{order.info.totalText}}
+		<div ng-show="order.subtotal()">
+			<label>You're paying:&nbsp;<span ng-show="order.form.pay_type=='cash'">approximately</span> </label>
+			&nbsp;{{order.info.breakdownDescription}}&nbsp;
+			<span ng-show="order.info.extraCharges">( + {{order.info.extraCharges}} )</span>
+			<strong class="cart-gift"></strong>&nbsp;
+			for a total of {{order.info.totalText}}
 			&nbsp;<span class="cart-giftcard-message"></span>
-			&nbsp;<span class="cart-paymentType"></span>
+			&nbsp;
+			<span ng-show="order.form.pay_type=='card'">by cart</span>
 		</div>
 
-		<div class="dp-display-address dp-display-item" ng-show="showRestaurantDeliv">
+		<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
 			<label>Your food will be delivered to:</label><br />
-			<span class="user-address" ng-bind-html-unsafe="nl2br(order.form.address)"></span>
+			<span ng-bind-html-unsafe="nl2br(order.form.address)"></span>
 			<i ng-hide="order.form.address">no address provided</i>
 		</div>
-		<div class="dp-display-address dp-display-item" ng-hide="showRestaurantDeliv">
+
+		<div ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'">
 			<label>Delivery Address:</label> <i>takeout</i>
 		</div>
 
-		<div class="dp-display-address dp-display-item">
-			<span class="clickable">Change delivery or payment details</span>
+		<div>
+			<span class="clickable" ng-click="order.showForm=true">Change delivery or payment details</span>
 		</div>
 
 		<div class="divider"></div>
+
 	</div>
 
 	<audio id="get-food-audio">
