@@ -27,7 +27,7 @@ NGApp.factory('PositionsService', function () {
 });
 
 // LocationServiceservice
-NGApp.factory('LocationService', function ($location, RestaurantsService, PositionsService) {
+NGApp.factory('LocationService', function ($location, RestaurantsService, PositionsService, AccountService) {
 
 	var service = {
 		form: {
@@ -40,6 +40,7 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 		loadRestaurantsPage: true
 	}
 
+	service.account = AccountService;
 	service.position = PositionsService;
 	service.restaurantsService = RestaurantsService;
 	/**
@@ -174,10 +175,10 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 		}
 
 		// 3) set location info by stored user
-		if (App.config && App.config.user && App.config.user.location_lat) {
+		if (service.account && service.account.user && service.account.user.location_lat) {
 			service.bounding = {
-				lat: App.config.user.location_lat,
-				lon: App.config.user.location_lon,
+				lat: service.account.user.location_lat,
+				lon: service.account.user.location_lon,
 				type: 'user'
 			};
 		}

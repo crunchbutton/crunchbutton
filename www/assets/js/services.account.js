@@ -105,8 +105,7 @@ NGApp.factory( 'AccountService', function( $http ){
 						}
 						App.log.account( { 'error' : data.error, 'login' : service.form.email } , 'sign up error' );
 					} else {
-						// TODO : replace this
-						App.processConfig(null, data);
+						service.updateInfo();
 						service.user = data;
 						if( service.callback ){
 							service.callback();
@@ -120,6 +119,25 @@ NGApp.factory( 'AccountService', function( $http ){
 						}
 					}
 					
+			}	);
+	}
+
+	service.updateInfo = function(){
+		var url = App.service + 'user';
+		$http( {
+			method: 'GET',
+			url: url
+			} ).success( function( data ) {
+					service.user = data;
+					// Itendify the user to mixpanel
+					if (service.user.uuid) {
+						mixpanel.identify(service.user.uuid);
+						mixpanel.people.set({
+							$name: service.user.name,
+							$ip: service.user.ip,
+							$email: service.user.email
+						});
+					}
 			}	);
 	}
 

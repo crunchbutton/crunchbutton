@@ -123,7 +123,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 									}
 								} else {
 
-									App.processConfig( null, data );
+									service.account.updateInfo();
 									service.account.user = data;
 									if( service.account.callback ){
 										service.account.callback();

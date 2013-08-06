@@ -51,16 +51,14 @@ var Location = function( params ) {
 				break;
 		}
 
-		/*
-		// @todo: do we need this?
-		for (var i = 0; i < results[0].address_components.length; i++) {
-			for (var j = 0; j < results[0].address_components[i].types.length; j++) {
-				if (results[0].address_components[i].types[j] == 'locality') {
-					self._properties.city = results[0].address_components[i].long_name;
+		for (var i = 0; i < result.address_components.length; i++) {
+			for (var j = 0; j < result.address_components[i].types.length; j++) {
+				if (result.address_components[i].types[j] == 'locality') {
+					self._properties.city = result.address_components[i].long_name;
 				}
 			}
 		}
-		*/
+
 	};
 	
 	// get address from lat/lon

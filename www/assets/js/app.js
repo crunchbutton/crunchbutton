@@ -358,25 +358,6 @@ App.trackProperty = function(prop, value) {
 	mixpanel.register_once(params);
 };
 
-
-/**
- * Itendity the user to mixpanel
- */
-App.identify = function() {
-	if (App.config.env != 'live') {
-		//return;
-	}
-	if (App.config.user.uuid) {
-		mixpanel.identify(App.config.user.uuid);
-		mixpanel.people.set({
-			$name: App.config.user.name,
-			$ip: App.config.user.ip,
-			$email: App.config.user.email
-		});
-	}
-};
-
-
 /**
  * controls the busy state of the app
  */
@@ -437,7 +418,7 @@ App.test = {
 	}
 };
 
-App.processConfig = function(json, user) {
+App._processConfig = function(json, user) {
 	if (user && !json) {
 		App.config.user = user;
 	} else {
@@ -486,12 +467,12 @@ App.init = function() {
 		CB.config = null;
 	}
 
-	App.processConfig(App.config);
 	App._init = true;
 	App.NGinit();
 
 	App.test.init();
-
+	
+	App.AB.init();
 
 	$(document).on('click', '.location-detect', function() {
 		// detect location from the browser
@@ -725,17 +706,6 @@ App.init = function() {
 			}
 		}, 100);
 	}
-
-	$(document).on('change', '[name="pay-address"], [name="pay-name"], [name="pay-phone"], [name="pay-card-number"], [name="notes"]', function() {
-		App.config.user.name = $('[name="pay-name"]').val();
-		App.config.user.phone = App.phone.format($('[name="pay-phone"]').val());
-		App.config.user.address = $('[name="pay-address"]').val();
-		App.config.user.card = $('[name="pay-card-number"]').val();
-		App.config.user.notes = $('[name="notes"]').val();
-		App.config.user.card_exp_month = $('[name="pay-card-month"]').val();
-		App.config.user.card_exp_year = $('[name="pay-card-year"]').val();
-	});
-
 
 	$( '.ui-dialog-titlebar-close' ).click( function(){
 		try{
