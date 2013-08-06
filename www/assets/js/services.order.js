@@ -19,6 +19,7 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 	};
 	// If the user has presets this variable should be set as false
 	service.showForm = true;
+	service.loaded = false;
 	// Info that will be shown to the user
 	service.info = {
 		dollarSign: '',
@@ -90,15 +91,16 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 		} else {
 			service.loadOrder(service.restaurant.preset());
 		}
+		service.loaded = true;
 	}
 	service.reloadOrder = function () {
-		var cart = service.items;
+		var cart = service.cart.getCart();
 		service.resetOrder();
 		service.loadFlatOrder(cart);
 	}
 	service.loadFlatOrder = function (cart) {
 		for (var x in cart) {
-			service.add(cart[x].id, {
+			service.cart.add(cart[x].id, {
 				options: cart[x].options ? cart[x].options : []
 			});
 		}

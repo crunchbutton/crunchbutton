@@ -1,8 +1,8 @@
-<div ng-show="!restaurant.id">
+<div ng-show="!order.loaded">
 	Restaurant Loading Message
 </div>
 
-<div ng-show="restaurant.id">
+<div ng-show="order.loaded">
 
 	<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
 		<div class="cart-summary-icon"></div>
@@ -133,10 +133,11 @@
 		</div>
 		<div class="divider"></div>
 	</div>
+
 	<div class="restaurant-payment-div"></div>
 	
 	<!-- payment and user info -->
-	<form class="payment-form main-content-readable">
+	<form class="payment-form main-content-readable" ng-show="order.loaded">
 	
 		<div class="restaurant-closed" ng-show="!restaurant.open()">
 			<div class="restaurant-closed-icon"></div>
