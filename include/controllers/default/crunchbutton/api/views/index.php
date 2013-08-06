@@ -10,6 +10,5 @@ class Controller_api_views extends Crunchbutton_Controller_Rest {
 		}
 		
 		echo json_encode($files);
-
 	}
 }
