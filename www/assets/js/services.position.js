@@ -152,8 +152,6 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 		}
 		service.initied = true;
 
-		console.log('location.initied', service.initied);
-
 		// 1) set bounding to maxmind results if we have them
 		if (App.config.loc.lat && App.config.loc.lon) {
 			service.bounding = App.config.loc;

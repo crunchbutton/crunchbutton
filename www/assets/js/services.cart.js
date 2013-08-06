@@ -122,7 +122,8 @@ NGApp.factory('CartService', function (RestaurantService) {
 	service.getCart = function () {
 		var cart = [];
 		for (x in service.items) {
-			cart[cart.length] = service.items[x];
+			var index = cart.length;
+			cart[index] = { id: service.items[x].id, options: service.items[x].options };
 		}
 		return cart;
 	}

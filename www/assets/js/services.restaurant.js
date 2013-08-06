@@ -108,7 +108,6 @@ NGApp.factory('RestaurantService', function ($http, $routeParams, $rootScope, Ac
 	};
 
 	service.init = function(){
-		console.log( 'init' );
 		service.restaurant = false;
 		loaded = false;
 		service.load();

@@ -200,6 +200,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 
 	$scope.restaurantService = RestaurantService;
 	$scope.order = OrderService;
+	$scope.order.loaded = false;
 
 	// Alias to ServiceAccount.user
 	$scope.user = $scope.order.account.user;
