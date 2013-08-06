@@ -21,36 +21,37 @@ var Location = function( params ) {
 			return;
 		}
 
-		switch (results[0].types[0]) {
+		var result = results[0] || results;
+
+		switch ( result.types ) {
 			default:
 			case 'administrative_area_level_1':
-				self._properties.city = results[0].address_components[0].long_name;
+				self._properties.city = result.address_components[0].long_name;
 				self._properties.detail = 1;
 				break;
 			case 'locality':
-				self._properties.city = results[0].address_components[0].long_name;
-				self._properties.region = results[0].address_components[2].short_name;
+				self._properties.city = result.address_components[0].long_name;
+				self._properties.region = result.address_components[2].short_name;
 				self._properties.detail = 2;
 				break;
 			case 'street_address':
-				self._properties.city = results[0].address_components[2].long_name;
-				self._properties.region = results[0].address_components[4].short_name;
+				self._properties.city = result.address_components[2].long_name;
+				self._properties.region = result.address_components[4].short_name;
 				self._properties.detail = 5;
 				break;
 			case 'postal_code':
-				self._properties.city = results[0].address_components[1].long_name;
-				self._properties.region = results[0].address_components[3].short_name;
+				self._properties.city = result.address_components[1].long_name;
+				self._properties.region = result.address_components[3].short_name;
 				self._properties.detail = 3;
 				break;
 			case 'route':
-				self._properties.city = results[0].address_components[1].long_name;
-				self._properties.region = results[0].address_components[3].short_name;
+				self._properties.city = result.address_components[1].long_name;
+				self._properties.region = result.address_components[3].short_name;
 				self._properties.detail = 4;
 				break;
 		}
 
-
-
+		/*
 		// @todo: do we need this?
 		for (var i = 0; i < results[0].address_components.length; i++) {
 			for (var j = 0; j < results[0].address_components[i].types.length; j++) {
@@ -59,6 +60,7 @@ var Location = function( params ) {
 				}
 			}
 		}
+		*/
 	};
 	
 	// get address from lat/lon
@@ -66,7 +68,8 @@ var Location = function( params ) {
 		if (!results) {
 			return;
 		}
-		self._properties.address = results[0].formatted_address;
+		var result = results[0] || results;
+		self._properties.address = result.formatted_address;	
 	};
 	
 	// get zip form results
@@ -74,12 +77,13 @@ var Location = function( params ) {
 		if (!results) {
 			return;
 		}
-		for (var x in self._properties.results[0].address_components) {
-			if (self._properties.results[0].address_components[x].types[0] == 'postal_code'){
-				self._properties.zip = self._properties.results[0].address_components[x].short_name;
+		var result = results[0] || results;
+		for (var x in result.address_components) {
+			if ( result.address_components[x].types[0] == 'postal_code'){
+				self._properties.zip = result.address_components[x].short_name;
 				return;
 			}
-		}
+		}	
 	};
 	
 	// calculate the distance of this object to another set of cords

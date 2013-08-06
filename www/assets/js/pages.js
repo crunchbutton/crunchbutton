@@ -217,10 +217,8 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 
 	$scope.$watch( 'restaurantService.loaded', function( newValue, oldValue, scope ) {
 		if( newValue ){
-			
 			$scope.restaurant	 = $scope.restaurantService.restaurant;
 			$scope.order.restaurant = $scope.restaurant;
-			
 			$scope.order.init();			
 /*
 

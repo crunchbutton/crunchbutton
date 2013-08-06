@@ -55,7 +55,7 @@
 
 					<div ng-repeat="item in order.cart.items">
 
-						<div class="cart-item cart-item-dish" data-cart_id="{{item.id}}">
+						<div class="cart-item cart-item-dish">
 
 							<div class="cart-button cart-button-remove" ng-click="order.cart.remove(item.details.id);"><span></span></div>
 
@@ -100,7 +100,7 @@
 			</div>
 
 				<div class="default-order-check" ng-show="order.info.totalItems">
-					<input type="checkbox" id="default-order-check" checked>
+					<input type="checkbox" ng-model="order.form.make_default">
 					<label for="default-order-check">Make this your default order for {{restaurant.name}}</label>
 				</div>
 
@@ -183,18 +183,20 @@
 				<div class="personal-info field-container">
 					<div class="divider"></div>
 					<label>Name</label>
-					<div class="input-item"><input type="text" name="pay-name" tabindex="2" value="{{order.form.name}}"></div><div class="divider"></div>
+					<div class="input-item"><input type="text" name="pay-name" tabindex="2" ng-model="order.form.name"></div><div class="divider"></div>
 		
 					<label>Phone #</label>
-					<div class="input-item"><input type="tel" name="pay-phone" tabindex="3" value="{{order.form.phone}}"></div><div class="divider"></div>
+					<div class="input-item">
+					<input type="tel" name="pay-phone" tabindex="3" ng-model="order.form.phone"></div><div class="divider"></div>
 		
 					<label ng-show="order.form.delivery_type=='delivery'">Delivery Address</label>
-					<div ng-show="order.form.delivery_type=='delivery'" class="input-item"><textarea name="pay-address" tabindex="5">{{order.form.address}}</textarea></div>
+					<div ng-show="order.form.delivery_type=='delivery'" class="input-item">
+					<textarea ng-model="order.form.address" name="pay-address" tabindex="5"></textarea></div>
 					<div class="divider"></div>
 	
 					<div ng-show="(restaurant.id != 74)">
 						<label>Notes</label>
-						<div class="input-item"><textarea name="notes" ng-model="order.form.notes" tabindex="6">{{order.form.notes}}</textarea></div><div class="divider"></div>
+						<div class="input-item"><textarea name="notes" ng-model="order.form.notes" tabindex="6"></textarea></div><div class="divider"></div>
 						<div class="divider"></div>
 						<div class="giftcard-info"></div>
 					</div>
@@ -228,14 +230,15 @@
 						</div>
 
 						<label ng-show="order.form.pay_type=='card'">Credit card #</label>
-						<div ng-show="order.form.pay_type=='card'" class="input-item"><input type="tel" name="pay-card-number" tabindex="6" value="{{order.form.cardNumber}}"></div><div class="divider"></div>
+
+						<div ng-show="order.form.pay_type=='card'" class="input-item"><input type="text" name="pay-card-number" tabindex="6" ng-change="order.cardInfoChanged()" ng-model="order.form.cardNumber"></div><div class="divider"></div>
 		
 						<label ng-show="order.form.pay_type=='card'">Expiration</label>
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
 
-							<select ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7">{{order.form.card.month}}</select> 
+							<select  ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7">{{order.form.card.month}}</select> 
 
-							<select ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8"></select> 
+							<select  ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8"></select> 
 
 							<div class="divider"></div>
 						</div>
@@ -268,7 +271,7 @@
 		</div>
 	
 	</form>
-	
+
 	<div ng-show="restaurant._open" class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-bottom" ng-click="order.submit();"><div>Get Food</div></button></div>
 
 	<!-- stored user info -->
