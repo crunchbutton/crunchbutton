@@ -18,11 +18,14 @@ if ($this->community) {
 ?>
 
 <script type="text/javascript">
+	var c = <?=json_encode(c::appConfig())?>;
 if (App) {
-	App.config = <?=json_encode(c::appConfig())?>;
+	App.config = c;
+	c = null;
 } else {
 	$(function() {
-		App.config = <?=json_encode(c::appConfig())?>;
+		App.config = c;
+		c = null;
 	});
 }
 </script>
@@ -35,32 +38,8 @@ if (App) {
 
 <script type="text/javascript">
 $(function() {
-	App.aliases = <?=json_encode(Community_Alias::all(['id_community', 'prep', 'name_alt']))?>;
-	App.locations = <?=json_encode(Community::all_locations())?>;
-	App.facebookScope = '<?=c::config()->facebook->default->scope?>';
-	App.communities = {};
-	<? foreach (Community::all(c::getPagePiece(0)) as $community) : ?>
-		App.communities['<?=$community->permalink?>'] = {
-			<? foreach ($community->properties() as $key => $val) : ?>
-				'<?=$key?>': "<?=$val?>",
-			<? endforeach ; ?>
-			stored: true
-		};
-	<? endforeach ; ?>
-	<? if ($this->community && $communityJson) : ?>
-		App.cached['Community'][<?=$this->community->id_community?>] = new Community(<?=$communityJson?>);
-		App.cached['Community']['<?=$this->community->permalink?>'] = App.cached['Community'][<?=$this->community->id_community?>];
-		<? if (!c::getPagePiece(1)) : ?>
-			App.loadedPage = '<?=$this->community->permalink?>';
-		<? endif ; ?>
-	<? endif ; ?>
-
-	App.topCommunities = [];
-	<? foreach (Community_Alias::q('select * from community_alias where top="1" order by `sort`') as $community_alias) : ?>
-		App.topCommunities[App.topCommunities.length] = {
-			alias: '<?=$community_alias->alias;?>',
-			name: '<?=$community_alias->name_alt;?>'
-		};
+	<? foreach (c::appConfig(['extended']) as $key => $value) : ?>
+		App['<?=$key?>'] = <?=json_encode($value)?>;
 	<? endforeach ; ?>
 	
 	App.init();
