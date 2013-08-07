@@ -30,7 +30,7 @@ if( sizeof( $giftcards ) > 0 ) {
 	?>
 	<div class="giftcard">
 		<div class="dollar">$</div>
-		<div class="value"><?php echo $giftcard->value;?></div>
+		<div class="value" <?php if( $giftcard->value > 9 ){ echo 'style="font-size:120px;margin-left:70px;margin-top:860px;"'; } ?>><?php echo $giftcard->value;?></div>
 		<div class="title">Gift Card</div>
 		<div class="info">To redeem, go to<span class="link">www.crunchbutton.com/giftcard/<?php echo $giftcard->code;?></span></div>
 		<div class="call">Questions: Call or text us anytime at (646) 783-1444</div>

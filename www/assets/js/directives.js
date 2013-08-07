@@ -2,7 +2,7 @@
 NGApp.directive( 'facebookSigninButton', function ( AccountFacebookService ) {
 	return {
 		restrict: 'A',
-		templateUrl: 'view/account.facebook.html',
+		templateUrl: 'assets/view/account.facebook.html',
 		scope: {
 			title: '@'
 		},
@@ -11,6 +11,21 @@ NGApp.directive( 'facebookSigninButton', function ( AccountFacebookService ) {
 		}
 	};;
 });
+
+// Press enter directive
+NGApp.directive( 'ngEnter', function() {
+		return function( scope, element, attrs ) {
+				element.bind( 'keydown keypress', function( event ) {
+					if( event.which === 13 ) {
+						scope.$apply( function() {
+							scope.$eval( attrs.ngEnter );
+						} );
+						event.preventDefault();
+					}
+				} );
+		};
+} );
+
 
 /*
 TODO: This directives did not work! I need to verify why

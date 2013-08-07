@@ -3,8 +3,8 @@
 class Controller_view extends Cana_Controller {
 	public function init() {
 		$file = preg_replace('/\.html/','',c::getPagePiece(1));
-		$file = preg_replace('/[^a-z]/','',$file);
-		
+		$file = preg_replace('/[^a-z\.\-_]/','',$file);
+
 		if ($file == 'body') {
 			$file = 'layout/html.body';
 		} else {

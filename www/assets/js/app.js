@@ -10,6 +10,8 @@ var App = {
 	currentPage: null,
 	tagline: '',
 	service: '/api/',
+	server: '/',
+	imgServer: '/',
 	cached: {},
 	community: null,
 	page: {},
@@ -46,19 +48,20 @@ var App = {
 // enable localstorage on phonegap
 App.localStorage = App.isPhoneGap;
 
-
-App.alert = function(txt, callback) {
+App.alert = function(txt, title) {
 	setTimeout(function() {
-		alert(txt);
-		if( callback ){
-			callback();
+		// @todo: #1546
+		if (1==2 && App.isPhoneGap) {
+			navigator.notification.alert(txt, null, title || 'Crunchbutton');
+		} else {
+			alert(txt);
 		}
 	});
 };
 
 App.go = function(url) {
 	App.rootScope.$apply(function($location) {
-		$location.path(url);
+		$location.path(App.isPhoneGap ? url : 'index.html#' + url);
 	});
 };
 
@@ -112,28 +115,12 @@ App.routeAlias = function( id, success, error ) {
 App.NGinit = function() {
 	$('body').attr('ng-controller', 'AppController');
 	angular.bootstrap(document,['NGApp']);
-	App.credit.tooltip.init();
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
 };
 
-
 var NGApp = angular.module('NGApp', []);
-
-// Press enter directive
-NGApp.directive( 'ngEnter', function() {
-		return function( scope, element, attrs ) {
-				element.bind( 'keydown keypress', function( event ) {
-					if( event.which === 13 ) {
-						scope.$apply( function() {
-							scope.$eval( attrs.ngEnter );
-						} );
-						event.preventDefault();
-					}
-				} );
-		};
-} );
 
 
 NGApp.config(function($compileProvider){
@@ -145,75 +132,77 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/location', {
 			action: 'location',
 			controller: 'location',
-			templateUrl: 'view/location.html'
+			templateUrl: 'assets/view/location.html'
 		})
 		.when('/' + App.restaurants.permalink, {
 			action: 'restaurants',
 			controller: 'restaurants',
-			templateUrl: 'view/restaurants.html'
+			templateUrl: 'assets/view/restaurants.html'
 		})
 		.when('/' + App.restaurants.permalink + '/:id', {
 			action: 'restaurant',
 			controller: 'restaurant',
-			templateUrl: 'view/restaurant.html'
+			templateUrl: 'assets/view/restaurant.html'
 		})
 		.when('/legal', {
 			action: 'legal',
 			controller: 'legal',
-			templateUrl: 'view/legal.html'
+			templateUrl: 'assets/view/legal.html'
 		})
 		.when('/help', {
 			action: 'help',
 			controller: 'help',
-			templateUrl: 'view/help.html'
+			templateUrl: 'assets/view/help.html'
 		})
 		.when('/orders', {
 			action: 'orders',
 			controller: 'orders',
-			templateUrl: 'view/orders.html'
+			templateUrl: 'assets/view/orders.html'
 		})
 		.when('/order/:id', {
 			action: 'order',
 			controller: 'order',
-			templateUrl: 'view/order.html'
+			templateUrl: 'assets/view/order.html'
 		})
 		.when('/cities', {
 			action: 'cities',
 			controller: 'cities',
-			templateUrl: 'view/cities.html'
+			templateUrl: 'assets/view/cities.html'
 		})
 		.when('/giftcard', {
 			action: 'giftcard',
 			controller: 'giftcard',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 		.when('/giftcard/:id', {
 			action: 'giftcard',
 			controller: 'giftcard',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 		.when('/reset', {
 			action: 'reset',
 			controller: 'reset',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 		.when('/reset/:id', {
 			action: 'reset',
 			controller: 'reset',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 		.when('/', {
 			action: 'home',
 			controller: 'home',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 		.otherwise({
 			action: 'home.default',
 			controller: 'default',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 	;
-	$locationProvider.html5Mode(true);
+
+	// only use html5 enabled location stuff if its not in a phonegap container
+	$locationProvider.html5Mode(!App.isPhoneGap);
 }]);
 
 
@@ -262,6 +251,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 			// Store the actual page
 			MainNavigationService.page = $route.current.action;
+			return;
 
 			var renderAction = $route.current.action;
 			var renderPath = renderAction.split('.');
@@ -270,6 +260,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			$scope.renderPath = renderPath;
 
 			console.debug('ROUTE >',$route.current.action, renderAction);
+
 
 			if (App.isChromeForIOS()){
 				App.message.chrome();
@@ -350,7 +341,7 @@ App.track = function() {
  */
 App.trackProperty = function(prop, value) {
 	//  || App.config.env != 'live'
-	if (!App.config) {
+	if (App.config.env != 'live') {
 		return;
 	}
 
@@ -358,6 +349,23 @@ App.trackProperty = function(prop, value) {
 	params[prop] = value;
 
 	mixpanel.register_once(params);
+};
+
+/**
+ * Itendity the user to mixpanel
+ */
+App.identify = function() {
+	if (App.config.env != 'live') {
+		return;
+	}
+	if (App.config.user.uuid) {
+		mixpanel.identify(App.config.user.uuid);
+		mixpanel.people.set({
+			$name: App.config.user.name,
+			$ip: App.config.user.ip,
+			$email: App.config.user.email
+		});
+	}
 };
 
 /**
@@ -384,7 +392,7 @@ App.test = {
 		angular.element( 'html' ).injector().get( 'OrderService' )._test();
 	},
 	logout: function() {
-		$.getJSON('/api/logout',function(){ location.reload()});
+		$.getJSON(App.service + 'logout',function(){ location.reload()});
 	},
 	cart: function() {
 		App.alert(JSON.stringify(App.cart.items));
@@ -411,7 +419,7 @@ App.test = {
 	}
 };
 
-App._processConfig = function(json, user) {
+App.processConfig = function(json, user) {
 	if (user && !json) {
 		App.config.user = user;
 	} else {
@@ -426,13 +434,22 @@ App._processConfig = function(json, user) {
 /**
  * global event binding and init
  */
-App.init = function() {
+App.init = function(config) {
+	// ensure this function cant be called twice. can crash the browser if it does.
+	if (App._init) {
+		return;
+	}
+	App._init = true;
+
+	// replace normal click events for mobile browsers
 	FastClick.attach(document.body);
 	
+	// add ios7 styles for nav bar and page height
 	if (App.isPhoneGap && App.iOS7()) {
 		$('body').addClass('ios7');
 	}
 	
+	// add the side swipe menu for mobile view
 	App.snap = new Snap({
 		element: document.getElementById('snap-content'),
 		disable: 'right'
@@ -452,6 +469,7 @@ App.init = function() {
 		snapperCheck();
 	});
 
+	// init the storage type. cookie, or localstorage if phonegap
 	$.totalStorage.ls(App.localStorage);
 	
 	// phonegap
@@ -461,11 +479,6 @@ App.init = function() {
 	}
 
 	App._init = true;
-	App.NGinit();
-
-	App.test.init();
-	
-	App.AB.init();
 
 	$(document).on('click', '.location-detect', function() {
 		// detect location from the browser
@@ -643,7 +656,7 @@ App.init = function() {
 		var total = App.cart.total();
 		App.cart.updateTotal();
 	});
-*/
+
 	$(document).on('change', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
 		if( !App.order.cardChanged ){
 			var self = $( this );
@@ -681,6 +694,7 @@ App.init = function() {
 	});
 
 	// hide the top bar when any input is focused
+	/*
 	if (App.isMobile() && !App.isAndroid()) {
 		setInterval(function() {
 			var focused = $(':focus');
@@ -699,13 +713,23 @@ App.init = function() {
 			}
 		}, 100);
 	}
+	*/
+
+
+	// @depreciated: i dont think this is used anymore
+	/*
 
 	$( '.ui-dialog-titlebar-close' ).click( function(){
 		try{
 			$( '.ui-dialog-content' ).dialog( 'close' );
 		} catch(e){}
 	} );
+	*/
 
+	App.processConfig(config || App.config);
+	App.AB.init();
+	App.test.init();
+	App.NGinit();
 };
 
 App.getCommunityById = function( id ){
@@ -784,7 +808,12 @@ App.message = {
 /**
  * play crunch audio sound
  */
-App.playAudio = function(audio){
+App.playAudio = function(audio) {
+	if (App.isPhoneGap) {
+		try {
+			navigator.notification.vibrate(100);
+		} catch (e) {}
+	}
 	var audio = $('#' + audio).get(0);
 	if (!audio) { return };
 	try {
