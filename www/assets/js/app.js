@@ -11,6 +11,8 @@ var App = {
 	currentPage: null,
 	tagline: '',
 	service: '/api/',
+	server: '/',
+	imgServer: '/',
 	cached: {},
 	community: null,
 	page: {},
