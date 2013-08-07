@@ -55,9 +55,14 @@ var App = {
 App.localStorage = App.isPhoneGap;
 
 
-App.alert = function(txt) {
+App.alert = function(txt, title) {
 	setTimeout(function() {
-		alert(txt);
+		// @todo: #1546
+		if (1==2 && App.isPhoneGap) {
+			navigator.notification.alert(txt, null, title || 'Crunchbutton');
+		} else {
+			alert(txt);
+		}
 	});
 };
 
