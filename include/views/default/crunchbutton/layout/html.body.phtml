@@ -44,8 +44,8 @@
 				<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.menu()"></div>
 
 				<div class="signin-box-header">
-					<div ng-show="navigation.account.user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
-					<div ng-show="!navigation.account.user" ng-instant="navigation.signin()" class="signin-icon"></div>
+					<div ng-show="navigation.account.user.id_user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
+					<div ng-show="!navigation.account.user.id_user" ng-instant="navigation.signin()" class="signin-icon"></div>
 				</div>
 
 			</div>

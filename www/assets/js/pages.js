@@ -85,11 +85,6 @@ NGApp.controller( 'restaurants', function ( $scope, $http, $location, Restaurant
 	};
 
 	$scope.restaurants.list( function(){
-		console.log('$scope.restaurants.position.pos()',$scope.restaurants.position.pos());
-		console.log('$scope.restaurants.position.pos()',$scope.restaurants.position.pos());
-		console.log('$scope.restaurants.position',$scope.restaurants.position);
-console.log(' $scope.restaurants.position.pos().prep()', $scope.restaurants.position.pos().prep());
-console.log('$scope.restaurants.position.pos().city()',$scope.restaurants.position.pos().city());
 		try {
 				var slogan = App.slogan.slogan;
 				var sloganReplace = $scope.restaurants.position.pos().prep() + ' ' +  $scope.restaurants.position.pos().city();
@@ -280,9 +275,11 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams, Acco
 		$location.path( '/' + App.restaurants.permalink );
 		return;
 	}
-	
+
 	$scope.modal = AccountModalService;
 	$scope.order = OrderViewService;
+	
+	$scope.order.load();
 
 	$scope.callPhone = function( phone ){
 		return App.callPhone( phone );
@@ -291,15 +288,6 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams, Acco
 	$scope.facebook = function(){
 		$scope.order.facebook.postOrder();
 	}
-
-	$scope.print = function(){
-		window.open( '/printorder/' + $scope.order.order.uuid );
-	}
-
-	$scope.crunchbutton = function(){
-		window.open( 'http://crunchbutton.com' );	
-	}
-
 });
 
 
@@ -313,7 +301,6 @@ NGApp.controller('orders', function ($scope, $http, $location, AccountService, A
 		$location.path( '/' + App.restaurants.permalink );
 		return;
 	}
-	$scope.account = AccountService;
 	$scope.signout = AccountSignOut;
 	$scope.orders = OrdersService;
 	$scope.orders.all();

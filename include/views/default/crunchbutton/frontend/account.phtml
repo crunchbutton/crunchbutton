@@ -7,7 +7,7 @@
 	</div>
 	<div ng-controller="AccountSignInCtrl" ng-show="modal.signin">
 		<div ng-show="!help.visible">
-			<form name="formSignin" novalidate>
+			<form name="formSignin" ng-submit="account.signin()">
 				<input type="text" maxlength="250" name="email" class="signin-email" ng-enter="account.signin()" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.form.email" />
 				<div class="divider"></div>
 				<input type="password" maxlength="250" name="password" class="signin-password" ng-enter="account.signin()" required placeholder="password" tabindex="10" ng-model="account.form.password" />
@@ -23,12 +23,13 @@
 				<div ng-show="account.error.signin" class="error">
 					Your email or password were incorrect.
 				</div>
-				<div class="divider"></div>
-				<a class="help-link" ng-click="help.show(true)">Password help?</a>
-				<button ng-disabled="formSignin.$pristine || formSignin.$invalid" ng-click="account.signin();">Log in</button>
-				<div class="divider"></div>
 			</form>
-			<div facebook-signin-button title="Login with Facebook"></div>
+			<div class="divider"></div>
+			<a class="help-link" ng-click="help.show(true)">Password help?</a>
+			<button ng-disabled="formSignin.$pristine || formSignin.$invalid" ng-click="account.signin();">Log in</button>
+			<div class="divider"></div>
+
+		<div facebook-signin-button title="Login with Facebook"></div>
 		</div>
 		<div ng-show="help.visible">
 			<form class="signin-help-form" name="formLoginHelp" novalidate>
@@ -38,13 +39,14 @@
 				<div ng-show="help.error" class="error">
 					Sorry, that email/phone is not registered with us.
 				</div>
-				<a class="help-link" ng-click="help.show(false)">Never mind</a>
-				<button ng-disabled="formLoginHelp.$pristine || formLoginHelp.$invalid" ng-click="help.sendForm()">Reset</button>
-				<div class="divider"></div>
-				<div ng-show="formLoginHelp.$dirty && formLoginHelp.$invalid" class="error">
-					Please enter a valid email or phone.
-				</div>
 			</form>
+			<a class="help-link" ng-click="help.show(false)">Never mind</a>
+			<button ng-disabled="formLoginHelp.$pristine || formLoginHelp.$invalid" ng-click="help.sendForm()">Reset</button>
+			<div class="divider"></div>
+			<div ng-show="formLoginHelp.$dirty && formLoginHelp.$invalid" class="error">
+				Please enter a valid email or phone.
+			</div>
+			
 			<div ng-show="help.success.visible" class="success">
 				You will receive a code to reset your password! It will expire in 24 hours.
 				<div ng-show="help.success.facebook.visible">
@@ -54,7 +56,7 @@
 		</div>
 	</div>
 	<div ng-controller="AccountSignUpCtrl" ng-show="modal.signup">
-		<div class="signup-form-options" ng-show="!account.user">
+		<div class="signup-form-options" ng-show="!account.user.has_auth">
 			<form class="signin-form" name="formSignup" novalidate>
 				<input type="text" maxlength="250" name="email" class="signup-email" ng-enter="account.signup()" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.form.email" />
 				<div class="divider"></div>
@@ -71,13 +73,14 @@
 				<div ng-show="account.error.signup" class="error">
 					It seems that the email is already registered!
 				</div>
-				<div class="divider"></div>
-				<button ng-disabled="formSignup.$pristine || formSignup.$invalid" ng-click="account.signup();">Sign up</button>
-				<div class="divider"></div>
 			</form>
+			<div class="divider"></div>
+			<button ng-disabled="formSignup.$pristine || formSignup.$invalid" ng-click="account.signup();">Sign up</button>
+			<div class="divider"></div>
+			
 			<div facebook-signin-button title="Signup with Facebook"></div>
 		</div>
-		<div ng-show="account.user">
+		<div ng-show="account.user.has_auth">
 			<h1>Congratulations!</h1>
 			<div class="success">
 				You can now sign in using <strong>{{account.email}}</strong>!
