@@ -929,7 +929,12 @@ App.message = {
 /**
  * play crunch audio sound
  */
-App.playAudio = function(audio){
+App.playAudio = function(audio) {
+	if (App.isPhoneGap) {
+		try {
+			navigator.notification.vibrate(100);
+		} catch (e) {}
+	}
 	var audio = $('#' + audio).get(0);
 	if (!audio) { return };
 	try {
