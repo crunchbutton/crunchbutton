@@ -151,6 +151,7 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 		if (service.initied) {
 			return;
 		}
+
 		service.initied = true;
 
 		// 1) set bounding to maxmind results if we have them
@@ -200,6 +201,9 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 
 		// if we dont have the proper location data, just populate from bounding
 		var error = function () {
+
+			console.log('service.bounding',service.bounding);
+
 			if (service.bounding && service.bounding.lat && service.bounding.lon && !service.bounding.city) {
 
 				service.reverseGeocode(service.bounding.lat, service.bounding.lon,

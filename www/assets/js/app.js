@@ -113,7 +113,6 @@ App.NGinit = function() {
 	$('body').attr('ng-controller', 'AppController');
 	angular.bootstrap(document,['NGApp']);
 	App.credit.tooltip.init();
-
 	if (App.config.env == 'live') {
 		$('.footer').addClass('footer-hide');
 	}
@@ -224,8 +223,6 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	App.rootScope = $rootScope;
 	App.location = $location;
 
-	AccountService.checkUser();
-
 	$rootScope.link = function(link) {
 		$location.path(link || '/');
 	};
@@ -320,6 +317,9 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 		}
 	);
+
+	AccountService.checkUser();
+
 });
 
 
@@ -379,16 +379,7 @@ App.busy = {
  */
 App.test = {
 	card: function() {
-		$('[name="pay-card-number"]').val('4242424242424242');
-		$('[name="pay-card-month"]').val('1');
-		$('[name="pay-card-year"]').val('2020');
-
-		$('[name="pay-name"]').val('MR TEST');
-		$('[name="pay-phone"]').val('***REMOVED***');
-		$('[name="pay-address"]').val( App.restaurant.address || "123 main\nsanta monica ca" );
-
-		App.order.cardChanged = true;
-		App.creditCard.changeIcons( $( '[name="pay-card-number"]' ).val() );
+		angular.element( 'html' ).injector().get( 'OrderService' )._test();
 	},
 	logout: function() {
 		$.getJSON('/api/logout',function(){ location.reload()});
