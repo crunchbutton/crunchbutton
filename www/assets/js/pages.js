@@ -231,11 +231,11 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 
 			$scope.credit.getCredit( $scope.restaurant.id_restaurant );
 
-			setTimeout( function(){
+			/*setTimeout( function(){
 				$scope.giftcard.notes_field.content = 'NW9S3Q 123 nope APN7NP X7USAW 487J9Q';
 				$scope.giftcard.notes_field.start();
 			}, 500 );
-
+*/
 /*
 
 			$scope.lastOrderDelivery = $scope.service.lastOrderDelivery;
