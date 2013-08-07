@@ -197,11 +197,14 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 /**
  * restaurant page
  */
-NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService ) {
+NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService, CreditService, GiftCardService) {
 
 	$scope.restaurantService = RestaurantService;
 	$scope.order = OrderService;
 	$scope.order.loaded = false;
+
+	$scope.credit = CreditService;
+	$scope.giftcard = GiftCardService;
 
 	// Alias to ServiceAccount.user
 	$scope.user = $scope.order.account.user;
@@ -221,7 +224,18 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		if( newValue ){
 			$scope.restaurant	 = $scope.restaurantService.restaurant;
 			$scope.order.restaurant = $scope.restaurant;
-			$scope.order.init();			
+			$scope.order.init();
+
+			$scope.giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
+			$scope.giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
+
+			$scope.credit.getCredit( $scope.restaurant.id_restaurant );
+
+			setTimeout( function(){
+				$scope.giftcard.notes_field.content = 'NW9S3Q 123 nope APN7NP X7USAW 487J9Q';
+				$scope.giftcard.notes_field.start();
+			}, 500 );
+
 /*
 
 			$scope.lastOrderDelivery = $scope.service.lastOrderDelivery;
@@ -234,25 +248,13 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		$scope.order.updateTotal();
 	}, true);
 
-	$scope.$watch( 'order.cart.items', function( newValue, oldValue, scope ) {
-		$scope.order.updateTotal();
-	}, true);
-
-		// service.$watch( 'form.notes', function( newValue, oldValue, scope ) {
-		// 	service.giftcard.text.content = service.form.notes;
-		// 	service.giftcard.text.start();
-		// });
-			/*
-			// Validate gift card at the notes field
-			service.$watch( 'form.notes', function( newValue, oldValue, scope ) {
-				service.giftcard.text.content = service.form.notes;
-				service.giftcard.text.start();
-			});
-*/
-			// service.cart = {
-				// totalFixed: parseFloat(service.restaurant.delivery_min - service.cartService.total()).toFixed(2)
-			// }
-
+	// Validate gift card at the notes field
+	$scope.$watch( 'order.form.notes', function( newValue, oldValue, scope ) {
+		if( newValue ){
+			$scope.giftcard.notes_field.content = newValue;
+			$scope.giftcard.notes_field.start();
+		}
+	});
 
 	$('.config-icon').addClass('config-icon-mobile-hide');
 	$('.nav-back').addClass('nav-back-show');

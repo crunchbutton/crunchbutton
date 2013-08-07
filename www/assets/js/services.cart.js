@@ -144,14 +144,14 @@ NGApp.factory('CartService', function (RestaurantService) {
 		}
 		var text = '';
 		for (x in items) {
-			text = ',&nbsp;&nbsp;' + text;
+			text = ',\u00A0\u00A0' + text;
 			if (items[x] > 1) {
-				text = x + '&nbsp;(' + items[x] + ')' + text;
+				text = x + '\u00A0(' + items[x] + ')' + text;
 			} else {
 				text = x + text;
 			}
 		}
-		return text.substr(0, text.length - 13);
+		return text.substr(0, text.length - 3);
 	}
 	service.subtotal = function () {
 		var

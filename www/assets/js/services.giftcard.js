@@ -8,13 +8,13 @@ NGApp.factory( 'GiftCardModalService', function(){
 } );
 
 // GiftCardService service
-NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalService, GiftCardModalService ){
+NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalService, GiftCardModalService, CreditService ){
 
 	var service = {
 		redeemed : false,
 		code : false,
 		value : '',
-		text : { content : '', giftcards : { success : [], error : [] } }, /* Notes field */
+		notes_field : { content : '', giftcards : { success : [], error : [] }, value : '0.00', removed : false, id_restaurant : null, hasGiftCards : false, restaurant_accepts : false }, /* Notes field */
 		modal : {
 			intro : true,
 			error : false,
@@ -23,15 +23,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 		}
 	};
 
-		/*
-		api : {
-			code : ,
-			validate : 'giftcard/validate'
-		},
-		notesCode : false,
-		callback : false,
-		hasStarted : false,
-		showGiftCardCashMessage: true*/
+	credit = CreditService;
 
 	service.accountModal = AccountModalService;
 	service.giftCardModal = GiftCardModalService;
@@ -48,7 +40,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 	}
 
 	service.processModal = function(){
-		if( service.code && service.code == '' ){ return; }
+		if( !service.code || service.code == '' ){ return; }
 		service.modal.reset();
 		setTimeout( function(){
 			// Check if the user is logged in
@@ -125,22 +117,25 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 			} );
 	}
 
-	service.text.start = function(){
-		// console.log('service.text.running',service.text.running);
-		if( !service.text.running ){
-			service.text.running = true;
+	service.notes_field.start = function(){
+		service.notes_field.hasGiftCards = false;
+		if( service.notes_field.content && service.notes_field.content == '' ){
+			return;
+		}
+		if( !service.notes_field.running ){
+			service.notes_field.running = true;
 			// Split its words
-			var words = service.text.content.split( ' ' );
-			service.text.total = 0;
+			var words = service.notes_field.content.split( ' ' );
+			service.notes_field.total = 0;
 			var giftcards = {};
-			service.text.giftcards.success = [];
-			service.text.giftcards.error = [];
+			service.notes_field.giftcards.success = [];
+			service.notes_field.giftcards.error = [];
 			for ( var x in words ) {
 				var word = $.trim( words[ x ] );
 				if( word != '' ){
 					word = word.replace( /[^a-zA-Z 0-9]+/g, '' );
 					if( !giftcards[ word ] ){
-						service.text.total++;
+						service.notes_field.total++;
 					}
 					giftcards[ word ] = word;
 				}
@@ -156,173 +151,65 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 					} ).success( function( data ) {
 						if( data.success ){
-							service.text.giftcards.success.push( data.success );
-						} else if( data.error && data.error == 'gift card already used' ){
-							service.text.giftcards.error.push( data.success );
+							service.notes_field.hasGiftCards = true;
+							var giftcard = data.success;
+							if( giftcard.id_restaurant &&  giftcard.id_restaurant != service.notes_field.id_restaurant ){
+								giftcard.error = 'other restaurant';
+							}
+							service.notes_field.giftcards.success.push( data.success );
+						} else if( data.error ){
+							service.notes_field.giftcards.error.push( data );
 						}
-						service.text.total--;
-						service.text.checkAllValidated();
-					}	).error(function( data, status ) { service.text.total--; service.text.checkAllValidated(); } );
+						service.notes_field.total--;
+						service.notes_field.checkAllValidated();
+					}	).error(function( data, status ) { service.notes_field.total--; service.notes_field.checkAllValidated(); } );
 			} );
 			if( !hasGiftsToValidate ){
-				service.text.checkAllValidated();
+				service.notes_field.checkAllValidated();
 			}
 		}
 	}
 
-	service.text.checkAllValidated = function(){
-		if( service.text.total <= 0 ){
-			service.text.running = false;
+	service.notes_field.checkAllValidated = function(){
+		if( service.notes_field.total <= 0 ){
+			service.notes_field.running = false;
 		}
-		if( !service.text.running ){
-			service.compareValues();
+		if( !service.notes_field.running ){
+			service.notes_field.compareValues();
 		}
 	}
 
-	service.compareValues = function(){
+	service.notes_field.compareValues = function(){
+		service.notes_field.removed = false;
 		var values = 0;
-		if( service.text.giftcards.success.length > 0 ){
-			$.each( service.text.giftcards.success, function( key, giftcard ) {
-				if( giftcard ){
+		if( service.notes_field.giftcards.success.length > 0 ){
+			$.each( service.notes_field.giftcards.success, function( key, giftcard ) {
+				if( giftcard && !giftcard.error ){
 					values += parseFloat( giftcard.value ); 
 				}
 			} );
 		}
-		console.log('values',values);
-	}
-
-/*
-
-// Methods to redem a gift card at the Notes field
-service.notesField = { value : 0, isProcessing : false, callback : false, lastValue : 0, backup : { value : 0, backuped : false } };
-
-service.notesField.listener = function(){	
-	if( service.notesField.isProcessing ){
-		service.notesField.callback = service.notesField.listener;
-		return false;
-	}
-	service.notesField.isProcessing = true;
-	service.notesField.value = 0;
-	// Clean the message div
-	$( '.giftcard-info' ).html( '' );
-	// Get the nodes field's value
-	var notes = $.trim( $( '[name=notes]' ).val() );
-	// Split its words
-	var words = notes.split( ' ' );
-	var giftcards = {};
-	service.notesField.giftcards = [];
-	for ( var x in words ) {
-		var word = $.trim( words[ x ] );
-		// To prevent duplicated 
-		if( word != '' ){
-			// Clean the word - remove special chars
-			word = word.replace( /[^a-zA-Z 0-9]+/g, '' );
-			// Store this 'giftcards wanna be' in a array
-			giftcards[ word ] = word;
+		if( service.notes_field.value > values ){
+			service.notes_field.removed = true;
+		}
+		if( service.notes_field.restaurant_accepts ){
+			service.notes_field.value = App.ceil( values ).toFixed( 2 );
+			credit.value = App.ceil( credit.redeemed + values ).toFixed( 2 );
 		}
 	}
-	var hasGiftsToValidate = false;
-	$.each( giftcards, function( key, value ) {
-		hasGiftsToValidate = true;
-		service.notesField.giftcards.push( value );
-		service.validate( value, service.notesField.message );
-	} );
-	if( !hasGiftsToValidate ){
-		service.notesField.compareValues();
-	}
-}
 
-// Compare values to info the user that he as removed the gift card from the notes field
-service.notesField.compareValues = function(){
-	if( service.notesField.lastValue > service.notesField.value ){
-		$( '.giftcard-info' ).html( '<span class="warning">' + 
-																	'You just removed a gift card. If you still want to use that gift card, you must put it back in the notes field.' + 
-																'</span>' );
-		service.showGiftCardCashMessage = true;
-	}
-	service.notesField.lastValue = service.notesField.value;
-	service.notesField.force( service.notesField.value );
-	// It is not processing anymore
-	service.notesField.isProcessing = false;
-	// Check if there is a callback and call it.
-	if( service.notesField.callback ){
-		service.notesField.callback();
-		service.notesField.callback = false;
-	}
-}
-
-// Update the value
-service.notesField.updateValue = function(){
-	service.notesField.force( service.notesField.value );	
-	service.notesField.giftcards.pop();
-	// Check if it all the gift cards was validated
-	if( service.notesField.giftcards == 0 ){
-		service.notesField.compareValues();
-	}
-}
-
-// Write the message about the gift card
-service.notesField.message = function( giftinfo ){
-
-	// Get the message to concatenate
-	var message = $( '.giftcard-info' ).html();
-	if( $.trim( message ) != '' ){
-		message += '<br/>';
-	}
-	// Success! it is a valid gift card!
-	if( giftinfo.success ){
-		// Check if gift card was made to the restaurant page
-		if( giftinfo.success.id_restaurant && giftinfo.success.id_restaurant != App.restaurant.id_restaurant ){
-			$( '.giftcard-info' ).html( message + 'The gift card (' + giftinfo.success.giftcard + ') you are trying to use belongs to another restaurant.' );
-		} else {
-			// If the restaurant is empty it means it is a 'global' gift card
-			if( !giftinfo.success.id_restaurant ){
-				if( !App.restaurant.giftcard ){
-					$( '.giftcard-info' ).html( message + 'This restaurant does not accept gift card.' );
-				} else {
-					service.redem( giftinfo, message );
-				}
-			} else {
-				if( giftinfo.success.id_restaurant == giftinfo.success.id_restaurant ){
-					service.redem( giftinfo, message );
-				}
-			}
-		}
-	} else {
-		// Error! the gift card was already used
-		if( giftinfo.error == 'gift card already used' ){
-			$( '.giftcard-info' ).html( message + 'The gift card (' + giftinfo.giftcard + ') you are trying to use was already redeemed.' );
-		} 
-	}
-	// Update the value
-	service.notesField.updateValue();
-}
-
-service.redem = function( giftinfo, message ){
-	if( App.order.pay_type == 'cash' ){
-		service.showGiftCardCashMessage = false;
-		$( '.giftcard-info' ).html( message + 'Pay with a card, NOT CASH, to use your  ' +  ( App.config.ab && App.config.ab.dollarSign == 'show' ? '$' : '' ) + App.ceil(  giftinfo.success.value  ).toFixed( 2 ) + ' gift card!</span>' );	
-		$( '.cart-giftcard-message' ).html( '' );
-	} else {
-		service.showGiftCardCashMessage = true;
-		$( '.giftcard-info' ).html( message + 'Congrats! This gift card (' + giftinfo.success.giftcard + ') gives you $' + giftinfo.success.value + '.' );
-	}
-	service.notesField.value = parseFloat( service.notesField.value ) + parseFloat( giftinfo.success.value );	
-}
-
-// This is funtion will create a fake and 'cosmetic' credit the real one wil be created when the user post his order
-service.notesField.force = function( value ){
-	// Backup the actual credit value
-	if( !service.notesField.backup.backuped ){
-		service.notesField.backup.backuped = true;
-		service.notesField.backup.value = parseFloat( App.credit.restaurant[ App.restaurant.id ] );
-	}
-	App.credit.restaurant[ App.restaurant.id ] = parseFloat( service.notesField.backup.value ) + parseFloat( value );
-	App.credit.show();
-	App.cart.updateTotal();
-}
-
-*/
 	return service;
 
 } );
+
+NGApp.factory( 'CreditService', function( $http ){
+	var service = { value : '0.00', tooltip : false, redeemed : 0 };
+	service.getCredit = function( restaurant_id ){
+		var url = App.service + 'user/credit/' + restaurant_id;
+		$http( { url: url } ).success( function( data ) { service.value = App.ceil( data.credit ).toFixed( 2 ); service.redeemed = data.credit; }	).error(function() {} );
+	}
+	return service;
+} );
+
+
+

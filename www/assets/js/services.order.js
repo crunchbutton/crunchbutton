@@ -631,13 +631,6 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		} else {
 			$('.cart-gift').html('');
 		}
-		setTimeout(function () {
-			if (App.order.pay_type == 'cash' && credit > 0 /* && App.giftcard.showGiftCardCashMessage */ ) {
-				$('.cart-giftcard-message').html('<span class="giftcard-payment-message">Pay with a card, NOT CASH, to use your  ' + service.info.dollarSign + App.ceil(credit).toFixed(2) + ' gift card!</span>');
-			} else {
-				$('.cart-giftcard-message').html('');
-			}
-		}, 1000);
 		/* TODO: find out what this piece of code does
 			$('.cart-item-customize-price').each(function () {
 				var dish = $(this).closest('.cart-item-customize').attr('data-id_cart_item'),
