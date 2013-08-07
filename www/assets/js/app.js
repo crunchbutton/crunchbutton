@@ -61,7 +61,7 @@ App.alert = function(txt) {
 
 App.go = function(url) {
 	App.rootScope.$apply(function($location) {
-		$location.path(url);
+		$location.path(App.isPhoneGap ? url : 'index.html#' + url);
 	});
 };
 
@@ -258,6 +258,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 			// Store the actual page
 			MainNavigationService.page = $route.current.action;
+			return;
 
 			var renderAction = $route.current.action;
 			var renderPath = renderAction.split('.');
@@ -266,6 +267,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			$scope.renderPath = renderPath;
 
 			console.debug('ROUTE >',$route.current.action, renderAction);
+
 
 			if (App.isChromeForIOS()){
 				App.message.chrome();
@@ -405,7 +407,7 @@ App.test = {
 		App.creditCard.changeIcons( $( '[name="pay-card-number"]' ).val() );
 	},
 	logout: function() {
-		$.getJSON('/api/logout',function(){ location.reload()});
+		$.getJSON(App.service + 'logout',function(){ location.reload()});
 	},
 	cart: function() {
 		App.alert(JSON.stringify(App.cart.items));
@@ -504,13 +506,22 @@ App.trigger = {
 /**
  * global event binding and init
  */
-App.init = function() {
+App.init = function(config) {
+	// ensure this function cant be called twice. can crash the browser if it does.
+	if (App._init) {
+		return;
+	}
+	App._init = true;
+
+	// replace normal click events for mobile browsers
 	FastClick.attach(document.body);
 	
+	// add ios7 styles for nav bar and page height
 	if (App.isPhoneGap && App.iOS7()) {
 		$('body').addClass('ios7');
 	}
 	
+	// add the side swipe menu for mobile view
 	App.snap = new Snap({
 		element: document.getElementById('snap-content'),
 		disable: 'right'
@@ -530,20 +541,11 @@ App.init = function() {
 		snapperCheck();
 	});
 
+	// init the storage type. cookie, or localstorage if phonegap
 	$.totalStorage.ls(App.localStorage);
-	
-	// phonegap
-	if (typeof CB !== 'undefined' && CB.config) {
-		App.config = CB.config;
-		CB.config = null;
-	}
 
-	App.processConfig(App.config);
-	App._init = true;
-	App.NGinit();
-
-	App.test.init();
-
+	// bind global events
+	// @todo: should probably move some of these to angular event bindings
 	$(document).on('click', '.delivery-toggle-delivery', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -787,6 +789,7 @@ App.init = function() {
 	});
 
 	// hide the top bar when any input is focused
+	/*
 	if (App.isMobile() && !App.isAndroid()) {
 		setInterval(function() {
 			var focused = $(':focus');
@@ -805,6 +808,7 @@ App.init = function() {
 			}
 		}, 100);
 	}
+	*/
 
 	$(document).on({
 		blur: function() {
@@ -828,13 +832,18 @@ App.init = function() {
 		App.config.user.card_exp_year = $('[name="pay-card-year"]').val();
 	});
 
-
+	// @depreciated: i dont think this is used anymore
+	/*
 	$( '.ui-dialog-titlebar-close' ).click( function(){
 		try{
 			$( '.ui-dialog-content' ).dialog( 'close' );
 		} catch(e){}
 	} );
+	*/
 
+	App.processConfig(config || App.config);
+	App.test.init();
+	App.NGinit();
 };
 
 App.getCommunityById = function( id ){

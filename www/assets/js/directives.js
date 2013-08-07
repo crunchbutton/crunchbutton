@@ -2,7 +2,7 @@
 NGApp.directive( 'facebookSigninButton', function ( AccountFacebookService ) {
 	return {
 		restrict: 'A',
-		templateUrl: 'view/account.facebook.html',
+		templateUrl: 'assets/view/account.facebook.html',
 		scope: {
 			title: '@'
 		},

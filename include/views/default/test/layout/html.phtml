@@ -119,7 +119,7 @@ body {
 			$test.running = false;
 			$test.state.clear();
 
-			$.getJSON('/api/logout',function() {
+			$.getJSON(App.service + 'logout',function() {
 				$test.go('/', function() {
 					$test.debug('Successfully logged out and ready to begin testing.');
 					if (callback) {
