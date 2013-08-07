@@ -149,75 +149,77 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/location', {
 			action: 'location',
 			controller: 'location',
-			templateUrl: 'view/location.html'
+			templateUrl: 'assets/view/location.html'
 		})
 		.when('/' + App.restaurants.permalink, {
 			action: 'restaurants',
 			controller: 'restaurants',
-			templateUrl: 'view/restaurants.html'
+			templateUrl: 'assets/view/restaurants.html'
 		})
 		.when('/' + App.restaurants.permalink + '/:id', {
 			action: 'restaurant',
 			controller: 'restaurant',
-			templateUrl: 'view/restaurant.html'
+			templateUrl: 'assets/view/restaurant.html'
 		})
 		.when('/legal', {
 			action: 'legal',
 			controller: 'legal',
-			templateUrl: 'view/legal.html'
+			templateUrl: 'assets/view/legal.html'
 		})
 		.when('/help', {
 			action: 'help',
 			controller: 'help',
-			templateUrl: 'view/help.html'
+			templateUrl: 'assets/view/help.html'
 		})
 		.when('/orders', {
 			action: 'orders',
 			controller: 'orders',
-			templateUrl: 'view/orders.html'
+			templateUrl: 'assets/view/orders.html'
 		})
 		.when('/order/:id', {
 			action: 'order',
 			controller: 'order',
-			templateUrl: 'view/order.html'
+			templateUrl: 'assets/view/order.html'
 		})
 		.when('/cities', {
 			action: 'cities',
 			controller: 'cities',
-			templateUrl: 'view/cities.html'
+			templateUrl: 'assets/view/cities.html'
 		})
 		.when('/giftcard', {
 			action: 'giftcard',
 			controller: 'giftcard',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 		.when('/giftcard/:id', {
 			action: 'giftcard',
 			controller: 'giftcard',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 		.when('/reset', {
 			action: 'reset',
 			controller: 'reset',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 		.when('/reset/:id', {
 			action: 'reset',
 			controller: 'reset',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 		.when('/', {
 			action: 'home',
 			controller: 'home',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 		.otherwise({
 			action: 'home.default',
 			controller: 'default',
-			templateUrl: 'view/home.html'
+			templateUrl: 'assets/view/home.html'
 		})
 	;
-	$locationProvider.html5Mode(true);
+
+	// only use html5 enabled location stuff if its not in a phonegap container
+	$locationProvider.html5Mode(!App.isPhoneGap);
 }]);
 
 
@@ -341,7 +343,7 @@ App.track = function() {
  */
 App.trackProperty = function(prop, value) {
 	//  || App.config.env != 'live'
-	if (!App.config) {
+	if (App.config.env != 'live') {
 		return;
 	}
 
@@ -357,7 +359,7 @@ App.trackProperty = function(prop, value) {
  */
 App.identify = function() {
 	if (App.config.env != 'live') {
-		//return;
+		return;
 	}
 	if (App.config.user.uuid) {
 		mixpanel.identify(App.config.user.uuid);

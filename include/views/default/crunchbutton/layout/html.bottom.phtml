@@ -18,7 +18,7 @@ if ($this->community) {
 ?>
 
 <script type="text/javascript">
-	var c = <?=json_encode(c::appConfig())?>;
+var c = <?=json_encode(c::appConfig())?>;
 if (App) {
 	App.config = c;
 	c = null;
@@ -35,6 +35,11 @@ if (App) {
 <body class="bg">
 <?=$this->display('layout/html.body')?>	
 </body>
+
+<audio id="get-food-audio">
+	<source src="/assets/audio/crunch.mp3"></source>
+	<source src="/assets/audio/crunch.ogg"></source>
+</audio>
 
 <script type="text/javascript">
 $(function() {

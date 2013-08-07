@@ -17,7 +17,7 @@ body {
 	font-size: 14px;
 }
 .bg {
-	background: #f5f5f5 url(/assets/images/groovepaper.png);
+	background: #f5f5f5 url(../images/groovepaper.png);
 }
 .pacman-loading{
 	display: none;
@@ -30,7 +30,7 @@ body {
 }
 
 .nav {
-	background: url(/assets/images/nav-web.png);
+	background: url(../images/nav-web.png);
 	height: 68px;
 	background-size: 68px;
 	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
@@ -116,7 +116,7 @@ body {
 .logo-img {
 	width: 299px;
 	height: 37px;
-	background: url(/assets/images/logo-web.png) no-repeat;
+	background: url(../images/logo-web.png) no-repeat;
 	background-size: 100%;
 }
 
@@ -268,10 +268,10 @@ b {
 }
 
 .cart-button-add {
-	background: url(/assets/images/plus.png) no-repeat;
+	background: url(../images/plus.png) no-repeat;
 }
 .cart-button-remove {
-	background: url(/assets/images/xsign.png) no-repeat;
+	background: url(../images/xsign.png) no-repeat;
 	margin-right: 4px;
 }
 
@@ -298,7 +298,7 @@ b {
 
 .divider.dots {
 	height: 1px;
-	background: url(/assets/images/bg_divider.gif);
+	background: url(../images/bg_divider.gif);
 	opacity: .3;
 	-moz-opacity: .30;
 	filter: alpha(opacity=30);
@@ -612,7 +612,7 @@ html[xmlns] .clearfix {
 	content: " ";
 	height: 24px;
 	width: 24px;
-	background: url(/assets/images/submit-loader.gif) no-repeat;
+	background: url(../images/submit-loader.gif) no-repeat;
 	display: block;
 	position: absolute;
 	margin-left: 268px;
@@ -643,7 +643,7 @@ html[xmlns] .clearfix {
 
 .app-busy-loader-icon {
 	margin: 0 auto;
-	background: url(/assets/images/loader.gif) no-repeat;
+	background: url(../images/loader.gif) no-repeat;
 	width: 48px;
 	height: 48px;
 	margin-top: 25px;
@@ -746,14 +746,14 @@ html[xmlns] .clearfix {
 }
 
 .location-detect-icon {
-	background: url(/assets/images/locate.png);
+	background: url(../images/locate.png);
 	background-size: contain;
 	height: 50px;
 	width: 50px;
 }
 
 .location-detect-loader {
-	background: url(/assets/images/loader-location.gif);
+	background: url(../images/loader-location.gif);
 	background-size: contain;
 	height: 24px;
 	width: 24px;
@@ -766,7 +766,7 @@ html[xmlns] .clearfix {
 	width: 45px;
 	height: 30px;
 	margin: 12px 0 0 10px;
-	background: url(/assets/images/location.png) no-repeat;
+	background: url(../images/location.png) no-repeat;
 	background-size: contain;
 	cursor: pointer;
 }
@@ -776,7 +776,7 @@ html[xmlns] .clearfix {
 	width: 45px;
 	height: 30px;
 	margin: 12px 0 0 10px;
-	background: url(/assets/images/menu.png) no-repeat;
+	background: url(../images/menu.png) no-repeat;
 	background-size: contain;
 	cursor: pointer;
 }
@@ -979,7 +979,7 @@ html[xmlns] .clearfix {
 }
 
 .icon-pencil{
-	background: url(/assets/images/pencil.png);
+	background: url(../images/pencil.png);
 	display: inline-block;
 	margin: 0 0 0 5px;
 	height: 16px;
@@ -1312,22 +1312,22 @@ html[xmlns] .clearfix {
 	}
 	.nav {
 		box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.35);
-		background: url(/assets/images/nav.png);
+		background: url(../images/nav.png);
 		height: 44px;
 		background-size: 44px;
 	}
 	.ios7 .nav {
-		background: url(/assets/images/nav-ios7.png);
+		background: url(../images/nav-ios7.png);
 		background-size: 54px;
 		padding-top: 10px;
 	}
 	.bg {
-		background: #f5f5f5 url(/assets/images/crisp_paper_ruffles-mobile.png);
+		background: #f5f5f5 url(../images/crisp_paper_ruffles-mobile.png);
 	}
 	.logo-img {
 		width: 168px;
 		height: 23px;
-		background: url(/assets/images/logo.png) no-repeat;
+		background: url(../images/logo.png) no-repeat;
 		background-size: 100%;
 		margin-left: -84px;
 		position: absolute;
@@ -1524,7 +1524,7 @@ html[xmlns] .clearfix {
 		position: absolute;
 		top: 8px;
 		left: 8px;
-		background: url(/assets/images/back.png) no-repeat;
+		background: url(../images/back.png) no-repeat;
 		width: 51px;
 		height: 31px;
 		background-size: contain;
@@ -1535,7 +1535,7 @@ html[xmlns] .clearfix {
 		white-space: nowrap;
 	}
 	.cart-summary-icon {
-		background: url(/assets/images/cart.png) no-repeat;
+		background: url(../images/cart.png) no-repeat;
 		height: 25px;
 		width: 30px;
 		margin: 5px 18px 0 10px;
@@ -1600,7 +1600,7 @@ html[xmlns] .clearfix {
 
 	.cart-button-add span {
 		display: block;
-		background: url(/assets/images/plus2.png) no-repeat;
+		background: url(../images/plus2.png) no-repeat;
 		height: 17px;
 		width: 18px;
 		background-size: contain;
@@ -1610,7 +1610,7 @@ html[xmlns] .clearfix {
 	}
 	.cart-button-remove span {
 		display: block;
-		background: url(/assets/images/xsign2.png) no-repeat;
+		background: url(../images/xsign2.png) no-repeat;
 		width: 23px;
 		height: 23px;
 		background-size: contain;
@@ -1677,7 +1677,7 @@ html[xmlns] .clearfix {
 		}
 
 	.pacman-loading{
-		background: url(/assets/images/pacman.gif) no-repeat;
+		background: url(../images/pacman.gif) no-repeat;
 		height: 24px;
 		position: absolute;
 		width: 24px;
@@ -1698,7 +1698,7 @@ html[xmlns] .clearfix {
 		position: absolute;
 		top: 9px;
 		left: -2px;
-		background: url(/assets/images/back.png) no-repeat;
+		background: url(../images/back.png) no-repeat;
 		width: 51px;
 		height: 31px;
 		float: left;
@@ -1708,7 +1708,7 @@ html[xmlns] .clearfix {
 	}
 
 	.signin-icon {
-		background: url(/assets/images/sign-in-icon.png) no-repeat !important;
+		background: url(../images/sign-in-icon.png) no-repeat !important;
 		background-size: contain !important;
 		cursor: pointer !important;
 		float: right !important;
@@ -1788,7 +1788,7 @@ html[xmlns] .clearfix {
 		display: block;
 	}
 		.giftcard-badge{
-			background: url(/assets/images/giftcard-badge.png) no-repeat;
+			background: url(../images/giftcard-badge.png) no-repeat;
 			background-size: contain;
 			width: 50px;
 			height: 50px;
@@ -1809,7 +1809,7 @@ html[xmlns] .clearfix {
 				text-align: center;
 			}
 		.giftcard-badge-tooltip{
-				background: #f5f5f5 url(/assets/images/groovepaper.png);
+				background: #f5f5f5 url(../images/groovepaper.png);
 				border: 1px solid #999;
 				border-radius: 3px;
 				color:#666;
@@ -1854,7 +1854,7 @@ html[xmlns] .clearfix {
 		width: 45px;
 		height: 30px;
 		margin: 12px 0 0 10px;
-		background: url(/assets/images/location.png) no-repeat;
+		background: url(../images/location.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
 	}
@@ -1862,7 +1862,7 @@ html[xmlns] .clearfix {
 		width: 45px;
 		height: 30px;
 		margin: 12px 0 0 10px;
-		background: url(/assets/images/menu.png) no-repeat;
+		background: url(../images/menu.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
 	}
@@ -2218,7 +2218,7 @@ html[xmlns] .clearfix {
 		width: 60px;
 	}
 	.signin-icon {
-		background: url(/assets/images/sign-in.png) no-repeat;
+		background: url(../images/sign-in.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
 		float: right;
@@ -2226,7 +2226,7 @@ html[xmlns] .clearfix {
 		width: 98px;
 	}
 	.signout-icon {
-		background: url(/assets/images/sign-out.png) no-repeat;
+		background: url(../images/sign-out.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
 		float: right;
@@ -2234,7 +2234,7 @@ html[xmlns] .clearfix {
 		width: 110px;
 	}
 	.signin-user{
-		background: url(/assets/images/sign-in-icon.png) no-repeat;
+		background: url(../images/sign-in-icon.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
 		float: right;
@@ -2378,7 +2378,7 @@ html[xmlns] .clearfix {
 }
 
 .tooltip-help-content{
-	background: #f5f5f5 url(/assets/images/groovepaper.png);
+	background: #f5f5f5 url(../images/groovepaper.png);
 	border: 1px solid #999;
 	border-radius: 3px;
 	color:#666;
