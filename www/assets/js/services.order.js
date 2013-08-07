@@ -1,5 +1,5 @@
 //OrderService Service
-NGApp.factory('OrderService', function ($http, AccountService, CartService, LocationService, $location, $rootScope) {
+NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountService, CartService, LocationService ) {
 
 	var service = {};
 	service.location = LocationService;
@@ -29,6 +29,7 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 		cartSummary: '',
 		totalText: '',
 	}
+
 	service.toogleDelivery = function (type) {
 		if (type != service.form.delivery_type) {
 			service.form.delivery_type = type;
@@ -41,6 +42,7 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 			service.updateTotal();
 		}
 	}
+
 	service.init = function () {
 		if (App.config.ab && App.config.ab.dollarSign == 'show') {
 			service.info.dollarSign = '$';
@@ -86,12 +88,17 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 			try {
 				service.loadOrder(service.account.user.presets[service.restaurant.id_restaurant]);
 			} catch (e) {
-				service.loadOrder(service.restaurant.preset());
+				if( service.restaurant.preset ){
+					service.loadOrder(service.restaurant.preset());	
+				}
 			}
 		} else {
-			service.loadOrder(service.restaurant.preset());
+			if( service.restaurant.preset ){
+				service.loadOrder(service.restaurant.preset());	
+			}
 		}
 		service.loaded = true;
+		// service._test();
 	}
 	service.reloadOrder = function () {
 		var cart = service.cart.getCart();
@@ -314,6 +321,12 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 		if (!service.cart.hasItems()) {
 			errors['noorder'] = 'Please add something to your order.';
 		}
+
+		var _total = service.restaurant.delivery_min_amt == 'subtotal' ? service.subtotal() : service.total();
+		if (service.restaurant.meetDeliveryMin(_total) && service.form.delivery_type == 'delivery') {
+			errors['delivery_min'] = 'Please meet the delivery minimum of ' + service.info.dollarSign + service.restaurant.delivery_min + '.';
+		}
+
 		if (!$.isEmptyObject(errors)) {
 			var error = '';
 			for (var x in errors) {
@@ -359,13 +372,13 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 			// Check if the user address was already validated
 			if (!service._deliveryAddressOk) {
 				/* TODO: make the aproxLoc work
-				// Use the aproxLoc to create the bounding box */
 
+				// Use the aproxLoc to create the bounding box */
 				if (service.location.bounding) {
 					var latLong = new google.maps.LatLng(service.location.bounding.lat,service.location.bounding.lon);
 				}
 				
-				// Use the restautant's position to create the bounding box - just for tests
+				// Use the restautant's position to create the bounding box - just for tests only
 				if (service._useRestaurantBoundingBox) {
 					var latLong = new google.maps.LatLng(service.restaurant.loc_lat, service.restaurant.loc_long);
 				}
@@ -509,7 +522,7 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 					}, 'validation error - php');
 				} else {
 					if (json.token) {
-						$.totalStorage('token', json.token);
+						$.totalStorage('token', json.token );
 					}
 					/*
 					$('.link-orders').show();
@@ -532,8 +545,8 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 						/*
 						App.loc.changeLocationAddressHasChanged = false;
 						*/
+						service.resetOrder();
 						$rootScope.$safeApply( function(){
-							console.log('apply');
 							$location.path( '/order/' + uuid );	
 						} );
 					});
@@ -721,6 +734,31 @@ NGApp.factory('OrderService', function ($http, AccountService, CartService, Loca
 		}
 		return 'autotip';
 	}
+
+	service._test = function(){
+		$rootScope.$safeApply( function(){
+			service._useRestaurantBoundingBox = true;
+			service.form.name = 'MR TEST';
+			service.form.phone = '***REMOVED***';
+			service.form.address = '123 main';
+			service.form.cardNumber = '4242424242424242';
+			service.form.cardMonth = 2;
+			service.form.cardYear = 2016;
+			service.tooglePayment( 'cash' );
+			// Add one dish of each category
+			return;
+			var categories = service.restaurant.categories()
+			for( x in categories ){
+				category = categories[ x ];
+				var dishes = category.dishes();
+				for( y in dishes ){
+					var dish = dishes[ y ];
+					service.cart.add( dish.id_dish );
+				}
+			}
+		});
+	}
+
 	return service;
 });
 // OrdersService service
@@ -728,14 +766,23 @@ NGApp.factory('OrdersService', function ($http, $location) {
 	var service = {
 		list: false
 	};
+
 	service.all = function () {
+		list = false;
+		service.list = list;
 		$http.get(App.service + 'user/orders', {
-			cache: true
+			cache: false
 		}).success(function (json) {
-			for (var x in json) {
-				json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');
+			if( json ){
+				for (var x in json) {
+					json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');
+				}	
+				list = json;
+			} else {
+				// User has no orders
+				list = true;	
 			}
-			service.list = json;
+			service.list = list;
 		});
 	}
 	service.restaurant = function (permalink) {
@@ -746,40 +793,39 @@ NGApp.factory('OrdersService', function ($http, $location) {
 	};
 	return service;
 });
+
 // OrdersService service
 NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope, FacebookService) {
-	var service = {};
+	var service = { order : false };
 	service.facebook = FacebookService;
-	App.cache('Order', $routeParams.id, function () {
-		service.order = this;
-		var complete = function () {
-			$location.path('/');
-		};
-		if (!service.order.uuid) {
-			if (!$rootScope.$$phase) {
-				$rootScope.$apply(complete);
-			} else {
-				complete();
-			}
-			return;
-		}
-		service.facebook._order_uuid = service.order.uuid;
-		service.facebook.preLoadOrderStatus();
-		App.cache('Restaurant', service.order.id_restaurant, function () {
-			service.restaurant = this;
+	service.load = function(){
+		App.cache('Order', $routeParams.id, function () {
+			service.order = this;
 			var complete = function () {
-				if (service.order['new']) {
-					setTimeout(function () {
-						service.order['new'] = false;
-					}, 500);
-				}
+				$location.path('/');
 			};
-			if (!$rootScope.$$phase) {
-				$rootScope.$apply(complete);
-			} else {
-				complete();
+			if (!service.order.uuid) {
+				$rootScope.$safeApply( function(){
+					complete();
+				});
+				return;
 			}
+			service.facebook._order_uuid = service.order.uuid;
+			service.facebook.preLoadOrderStatus();
+			App.cache('Restaurant', service.order.id_restaurant, function () {
+				service.restaurant = this;
+				var complete = function () {
+					if (service.order['new']) {
+						setTimeout(function () {
+							service.order['new'] = false;
+						}, 500);
+					}
+				};
+				$rootScope.$safeApply( function(){
+					complete();
+				});
+			});
 		});
-	});
+	}
 	return service;
 });
