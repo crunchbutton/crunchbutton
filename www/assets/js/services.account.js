@@ -17,12 +17,18 @@ NGApp.factory( 'AccountService', function( $http ){
 	service.checkUser = function(){
 		if( service.isLogged() ){
 			service.user = App.config.user;
+		} else {
+			service.updateInfo();
 		}
 	}
 
 	service.isLogged = function(){
-		if( App.config.user.id_user ){
-			if( App.config.user.id_user != '' ){
+		if( App.config.user && App.config.user.id_user != '' ){
+			service.user = App.config.user;	
+		}
+		if( service.user ){
+			if( service.user.id_user != '' ){
+				console.log('isLogged',true);
 				return true;
 			}
 		}
@@ -57,9 +63,8 @@ NGApp.factory( 'AccountService', function( $http ){
 						App.log.account( { 'error' : data.error } , 'sign in error' );
 						service.error.signin = true;
 					} else {
-						// TODO : replace this
-						App.config.user = data;
 						service.user = data;
+						service.updateInfo();
 						if( service.callback ){
 							service.callback();
 							service.callback = false;
@@ -122,13 +127,15 @@ NGApp.factory( 'AccountService', function( $http ){
 			}	);
 	}
 
-	service.updateInfo = function(){
+	service.updateInfo = function( data, callback ){
 		var url = App.service + 'user';
 		$http( {
 			method: 'GET',
 			url: url
 			} ).success( function( data ) {
+				if( data.id_user != '' ){
 					service.user = data;
+					App.config.user = data;
 					// Itendify the user to mixpanel
 					if (service.user.uuid) {
 						mixpanel.identify(service.user.uuid);
@@ -138,6 +145,10 @@ NGApp.factory( 'AccountService', function( $http ){
 							$email: service.user.email
 						});
 					}
+				}
+				if( callback ){
+					callback();
+				}
 			}	);
 	}
 
@@ -166,7 +177,6 @@ NGApp.factory( 'AccountService', function( $http ){
 
 // AccountHelpService service
 NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountModalService ){ 
-	
 	// It starts invisible
 	var service = { 
 			visible : false, 
@@ -390,6 +400,3 @@ NGApp.factory( 'AccountResetService', function( $http, $location ){
 	}
 	return service;
 } );
-
-
-
