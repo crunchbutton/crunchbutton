@@ -23,9 +23,6 @@ body {
 .pacman-loading{
 	display: none;
 }
-.giftcard-badge-container{
-	display: none;
-}
 .header {
 	background: #fff;
 }
@@ -1787,7 +1784,7 @@ html[xmlns] .clearfix {
 			background-size: contain;
 			width: 50px;
 			height: 50px;
-			display: none;
+			display: table;
 			-webkit-user-select: none;
 			-khtml-user-select: none;
 			-moz-user-select: none;
@@ -2754,7 +2751,6 @@ strong {
 	position: absolute;
 	text-align: center;
 	text-shadow:none;
-	display: none;
 	width: 74px;
 }
 .giftcard-payment-message{
