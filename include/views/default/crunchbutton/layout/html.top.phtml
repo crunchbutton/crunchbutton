@@ -46,7 +46,7 @@ var _gmtServer = '<?=$utc_str?>';
 <? foreach (new DirectoryIterator(c::config()->dirs->view.'default/crunchbutton/frontend') as $fileInfo) : ?>
 	<? if (!$fileInfo->isDot()) : ?>
 		<script type="text/ng-template" id="assets/view/<?=$fileInfo->getBasename('.phtml')?>.html">
-			<?=file_get_contents($fileInfo->getPathname())?>
+			<?=$this->render('frontend/'.$fileInfo->getBasename('.phtml'))?>
 		</script>
 	<? endif ; ?>
 <? endforeach; ?>
