@@ -705,7 +705,7 @@ App.isDeliveryAddressOk = true;
 						totalItems++;
 					}
 
-					$.getJSON('/api/config', App.processConfig);
+					App.request(App.service + 'config', App.processConfig);
 					
 					App.cache('Order',json.uuid, function() {
 						App.track('Ordered', {

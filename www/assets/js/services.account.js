@@ -29,7 +29,6 @@ NGApp.factory( 'AccountService', function( $http, $rootScope ){
 		}
 		if( service.user ){
 			if( service.user.id_user != '' ){
-				console.log('isLogged',true);
 				return true;
 			}
 		}
@@ -137,15 +136,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope ){
 				if( data.id_user != '' ){
 					service.user = data;
 					App.config.user = data;
-					// Itendify the user to mixpanel
-					if (service.user.uuid) {
-						mixpanel.identify(service.user.uuid);
-						mixpanel.people.set({
-							$name: service.user.name,
-							$ip: service.user.ip,
-							$email: service.user.email
-						});
-					}
+					App.identify();
 					$rootScope.$safeApply();
 				}
 				if( callback ){
@@ -324,7 +315,6 @@ NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 				$http( { method: 'GET', url: url } ).success( function( data ) { location.href = '/'; } );
 			};
 			if( service.facebook.facebook.logged || service.facebook.facebook.account.user.facebook ){
-				console.log('Log out: facebook!');
 				service.facebook.signout( function(){ signout() } );
 			} else {
 				signout();
