@@ -80,6 +80,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		if (service.account.user && service.account.user.presets) {
 			service.showForm = false;
 		}
+		console.log('service.restaurant.preset()',service.restaurant.preset());
+		
 		// Load the order
 		if (service.cart.hasItems()) {
 			service.reloadOrder();
