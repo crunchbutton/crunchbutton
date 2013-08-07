@@ -463,6 +463,7 @@ html {
 	left: 0;
 	width: auto;
 	height: auto;
+	overflow: hidden;
 }
 
 .snap-drawer {
@@ -515,6 +516,7 @@ html {
 		height: auto;
 		z-index: 2;
 		overflow: auto;
+		overflow-x:hidden;
 		-webkit-overflow-scrolling: touch;
 		-webkit-transform: translate3d(0, 0, 0);
 		   -moz-transform: translate3d(0, 0, 0);
@@ -531,6 +533,15 @@ html {
 		width: 45px;
 		margin-top: -12px;
 		margin-right: 10px;
+	}
+	.pushabutton-getfood {
+		background: url(../images/pushabutton-getfood.png) no-repeat;
+		background-size: 163px;
+		height: 163px;
+		width: 163px;
+		margin: 0 auto;
+		margin-top: 25px;
+		margin-bottom: 25px;
 	}
 }
 
