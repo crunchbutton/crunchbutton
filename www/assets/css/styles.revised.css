@@ -391,6 +391,9 @@ html {
 	.hidden-phone {
 		display: none;
 	}
+	.snap-content {
+		box-shadow: 0 0 10px 3px rgba(0,0,0,.2);
+	}
 }
 @media (min-width: 769px) {
 	.visible-desktop {
@@ -402,13 +405,6 @@ html {
 }
 
 
-
-
-
-
-.snap-content {
-	box-shadow: 0 0 10px 3px rgba(0,0,0,.2);
-}
 
 
 
@@ -527,7 +523,7 @@ html {
 		        transform: translate3d(0, 0, 0);
 	}
 	.menu-icon {
-		background: url(/assets/images/menu.png) no-repeat;
+		background: url(../images/menu.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
 		float: left;
