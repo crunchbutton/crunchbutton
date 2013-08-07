@@ -17,8 +17,12 @@ NGApp.factory( 'SupportService', function( $http, AccountService ){
 	service.toggle = function(){
 		service.minimized = !service.minimized;
 		service.maximized = !service.maximized;
-		if( service.maximized ){
+
+		if (service.maximized){
+			$('.support-container').addClass('support-container-maximized');
 			service.reset();
+		} else {
+			$('.support-container').removeClass('support-container-maximized');
 		}
 	}
 
