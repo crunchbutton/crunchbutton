@@ -1316,11 +1316,6 @@ html[xmlns] .clearfix {
 		height: 44px;
 		background-size: 44px;
 	}
-	.ios7 .nav {
-		background: url(../images/nav-ios7.png);
-		background-size: 54px;
-		padding-top: 10px;
-	}
 	.bg {
 		background: #f5f5f5 url(../images/crisp_paper_ruffles-mobile.png);
 	}

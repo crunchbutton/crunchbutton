@@ -611,7 +611,7 @@ NGApp.factory( 'CartService', function ( RestaurantService ) {
 							totalItems++;
 						}
 
-						$.getJSON('/api/config', App.processConfig);
+						$.getJSON(App.service + 'config', App.processConfig);
 
 						App.cache('Order', json.uuid, function () {
 							App.track('Ordered', {
