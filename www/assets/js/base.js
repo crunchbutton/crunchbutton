@@ -96,6 +96,10 @@ App.phone = {
 	},
 	validate: function(num) {
 
+		if( !num ){
+			return false;
+		}
+
 		num = num.replace(new RegExp( '-', 'g'), '');
 
 		if (!num || num.length != 10) {

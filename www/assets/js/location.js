@@ -58,7 +58,6 @@ var Location = function( params ) {
 				}
 			}
 		}
-
 	};
 	
 	// get address from lat/lon
