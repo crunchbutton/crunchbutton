@@ -394,15 +394,6 @@ html {
 	.snap-content {
 		box-shadow: 0 0 10px 3px rgba(0,0,0,.2);
 	}
-	.ios7 .nav {
-		background: url(../images/nav-ios7.png);
-		background-size: 54px;
-		padding-top: 10px;
-	}
-	.ios7 .main-content {
-		margin-top: 60px;
-
-	}
 }
 @media (min-width: 769px) {
 	.visible-desktop {
