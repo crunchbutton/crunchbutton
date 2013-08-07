@@ -12,6 +12,7 @@ class Controller_view extends Cana_Controller {
 		}
 		if (file_exists(c::config()->dirs->view.'default/crunchbutton/'.$file.'.phtml')) {
 			c::view()->layout('layout/blank');
+			c::view()->export = true;
 			c::view()->display($file, ['display' => true, 'filter' => false]);
 		}
 		exit;
