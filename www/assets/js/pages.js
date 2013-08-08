@@ -231,17 +231,21 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 
 			$scope.credit.getCredit( $scope.restaurant.id_restaurant );
 
-			/*setTimeout( function(){
-				$scope.giftcard.notes_field.content = 'NW9S3Q 123 nope APN7NP X7USAW 487J9Q';
-				$scope.giftcard.notes_field.start();
+			setTimeout( function(){
+				$scope.order.form.notes = 'NW9S3Q 123 nope APN7NP X7USAW 487J9Q';
 			}, 500 );
-*/
-/*
 
+/*
 			$scope.lastOrderDelivery = $scope.service.lastOrderDelivery;
 			$scope.community = $scope.service.community;
 			$scope.showRestaurantDeliv = $scope.service.showRestaurantDeliv;*/
 		}
+	});
+
+	// listner to credit change
+
+	$scope.$watch( 'credit.value', function( newValue, oldValue, scope ) {
+		$scope.order.updateTotal();
 	});
 
 	$scope.$watch( 'order.cart.items', function( newValue, oldValue, scope ) {
