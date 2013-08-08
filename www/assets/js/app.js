@@ -207,11 +207,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService ) {
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService) {
 
 	App.rootScope = $rootScope;
 	App.location = $location;
-
+	
 	$rootScope.link = function(link) {
 		$location.path(link || '/');
 	};
@@ -258,9 +258,6 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 			$scope.renderAction = renderAction;
 			$scope.renderPath = renderPath;
-
-			console.debug('ROUTE >',$route.current.action, renderAction);
-
 
 			if (App.isChromeForIOS()){
 				App.message.chrome();
@@ -312,7 +309,6 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	);
 
 	AccountService.checkUser();
-
 });
 
 
@@ -477,8 +473,6 @@ App.init = function(config) {
 		App.config = CB.config;
 		CB.config = null;
 	}
-
-	App._init = true;
 
 	$(document).on('click', '.location-detect', function() {
 		// detect location from the browser

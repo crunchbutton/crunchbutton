@@ -141,7 +141,9 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 
 	$scope.location = LocationService;
 
-	$scope.location.init();
+	setTimeout(function() {
+		$scope.location._start();
+	}, 10 );
 
 	$scope.yourArea = $scope.location.position.pos().city() || 'your area';
 
@@ -262,6 +264,100 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 
 	$('.content').removeClass('smaller-width');
 	$('.content').removeClass('short-meal-list');
+
+	// As the div restaurant-items has position:absolute this line will make sure the footer will not go up.
+	$('.body').css({
+		'min-height': $('.restaurant-items').height()
+	});
+
+
+/*
+	// If the typed address is different of the user address the typed one will be used #1152
+	if (false && App.loc.changeLocationAddressHasChanged && App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != service.account.user.address) {
+		// Give some time to google.maps.Geocoder() load
+		var validatedAddress = function () {
+			if (google && google.maps && google.maps.Geocoder) {
+				var addressToVerify = App.loc.pos().addressEntered;
+				// Success the address was found
+				var success = function (results) {
+					var address = results[0];
+					if (address) {
+						// Valid if the address is acceptable
+						if (App.loc.validateAddressType(address)) {
+							// If the flag useCompleteAddress is true
+							if (App.useCompleteAddress) {
+								$('[name=pay-address]').val(App.loc.formatedAddress(address));
+								$('.user-address').html(App.loc.formatedAddress(address));
+							} else {
+								$('[name=pay-address]').val(addressToVerify);
+								$('.user-address').html(addressToVerify);
+							}
+						} else {
+							console.log('Invalid address: ' + addressToVerify);
+						}
+					}
+				};
+				// Error, do nothing
+				var error = function () {};
+				App.loc.doGeocode(addressToVerify, success, error);
+			} else {
+				setTimeout(function () {
+					validatedAddress();
+				}, 10);
+			}
+		}
+		validatedAddress();
+	}
+
+
+	if (App.order['pay_type'] == 'cash' || lastPayCash == 'cash') {
+		App.trigger.cash();
+	} else {
+		App.trigger.credit();
+	}
+
+	if (lastPayCash == 'cash') {
+		App.trigger.cash();
+	} else if (lastPayCash == 'card') {
+		App.trigger.credit();
+	}
+
+	if (service.restaurant.credit != '1') {
+		App.trigger.cash();
+	}
+
+	if (service.restaurant.cash != '1' && service.restaurant.credit == '1') {
+		App.trigger.credit();
+	}
+
+	// Rules at #669
+	if ((lastOrderDelivery == 'delivery' && service.restaurant.delivery == '1') ||
+		(App.order['delivery_type'] == 'delivery' && service.restaurant.delivery == '1') ||
+		(service.restaurant.takeout == '0') ||
+		(lastOrderDelivery != 'takeout' && service.restaurant.delivery == '1')) {
+		App.trigger.delivery();
+	}
+
+	// If the restaurant doesn't delivery
+	if (App.order['delivery_type'] == 'takeout' || service.restaurant.delivery != '1') {
+		App.trigger.takeout();
+	}
+
+	// If the user has presets at other's restaurants but he did not typed his address yet
+	// and the actual restaurant is a delivery only #875
+	if ((service.restaurant.takeout == '0' || App.order['delivery_type'] == 'delivery') && !service.account.user.address) {
+		$('.payment-form').show();
+		$('.delivery-payment-info, .content-padder-before').hide();
+	}
+
+
+	if (!service.account.user.id_user) {
+		service.account.user.address = App.loc.enteredLoc;
+		App.loc.enteredLoc = '';
+	}
+	//*/
+
+
 
 	
 });
