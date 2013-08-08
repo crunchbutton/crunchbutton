@@ -119,13 +119,13 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 
 	service.notes_field.start = function(){
 		service.notes_field.hasGiftCards = false;
-		if( service.notes_field.content && service.notes_field.content == '' ){
-			return;
+		if( service.notes_field.content && service.notes_field.content != '' ){
+			var words = service.notes_field.content.split( ' ' );
+		} else {
+			var words = [];
 		}
 		if( !service.notes_field.running ){
 			service.notes_field.running = true;
-			// Split its words
-			var words = service.notes_field.content.split( ' ' );
 			service.notes_field.total = 0;
 			var giftcards = {};
 			service.notes_field.giftcards.success = [];

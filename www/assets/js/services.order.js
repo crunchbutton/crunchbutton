@@ -78,8 +78,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		service.form.cardMonth = service.account.user.card_exp_month;
 		service.form.cardYear = service.account.user.card_exp_year;
 		service.updateTotal();
-		// Verifies if the user has presets and hides the form
-		if (service.account.user && service.account.user.presets) {
+		// Verifies if the user has address and hides the form
+		if (service.account.user && service.account.user.address) {
 			service.showForm = false;
 		}
 		// Load the order
@@ -731,19 +731,22 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 			service.form.phone = '***REMOVED***';
 			service.form.address = '123 main';
 			service.form.cardNumber = '4242424242424242';
-			service.form.cardMonth = 2;
-			service.form.cardYear = 2016;
-			service.tooglePayment( 'cash' );
+			service.form.cardMonth = '2';
+			service.form.cardYear = '2016';
+			service.form.tip = 'autotip';
+			service.tooglePayment( 'card' );
 			// Add one dish of each category
-			return;
-			if( confirm( 'Add food?' ) ){
-				var categories = service.restaurant.categories()
-				for( x in categories ){
-					category = categories[ x ];
-					var dishes = category.dishes();
-					for( y in dishes ){
-						var dish = dishes[ y ];
-						service.cart.add( dish.id_dish );
+			if( !service.askedAboutFood ){
+				service.askedAboutFood = true;
+				if( confirm( 'Add some food?' ) ){
+					var categories = service.restaurant.categories()
+					for( x in categories ){
+						category = categories[ x ];
+						var dishes = category.dishes();
+						for( y in dishes ){
+							var dish = dishes[ y ];
+							service.cart.add( dish.id_dish );
+						}
 					}
 				}
 			}

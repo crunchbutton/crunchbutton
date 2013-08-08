@@ -210,7 +210,11 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$scope.user = $scope.order.account.user;
 
 	$scope.restaurantService.init();
-	// $scope.cart = CartService;
+
+	$scope.checkGiftCard = function(){
+		$scope.giftcard.notes_field.content = $scope.order.form.notes;
+		$scope.giftcard.notes_field.start();
+	}
 
 	$scope.AB = {
 				dollar: (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '',
@@ -231,10 +235,6 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 
 			$scope.credit.getCredit( $scope.restaurant.id_restaurant );
 
-			setTimeout( function(){
-				$scope.order.form.notes = 'NW9S3Q 123 nope APN7NP X7USAW 487J9Q';
-			}, 500 );
-
 /*
 			$scope.lastOrderDelivery = $scope.service.lastOrderDelivery;
 			$scope.community = $scope.service.community;
@@ -242,22 +242,19 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		}
 	});
 
-	// listner to credit change
-
+	// watch credit changes
 	$scope.$watch( 'credit.value', function( newValue, oldValue, scope ) {
 		$scope.order.updateTotal();
 	});
 
+	// watch cart changes
 	$scope.$watch( 'order.cart.items', function( newValue, oldValue, scope ) {
 		$scope.order.updateTotal();
 	}, true);
 
 	// Validate gift card at the notes field
 	$scope.$watch( 'order.form.notes', function( newValue, oldValue, scope ) {
-		if( newValue ){
-			$scope.giftcard.notes_field.content = newValue;
-			$scope.giftcard.notes_field.start();
-		}
+		$scope.checkGiftCard();
 	});
 
 	$('.config-icon').addClass('config-icon-mobile-hide');

@@ -201,7 +201,7 @@
 	
 					<div ng-show="(restaurant.id != 74)">
 						<label>Notes</label>
-						<div class="input-item"><textarea name="notes" ng-model="order.form.notes" tabindex="6"></textarea></div><div class="divider"></div>
+						<div class="input-item"><textarea name="notes" ng-blur="checkGiftCard()" ng-model="order.form.notes" tabindex="6"></textarea></div><div class="divider"></div>
 						<div class="divider"></div>
 
 						<!-- Gift card messages -->
