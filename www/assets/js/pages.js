@@ -201,9 +201,8 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
  */
 NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService, CreditService, GiftCardService) {
 
-	$scope.restaurantService = RestaurantService;
+	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 
-	// Dont put all the OrderService at the $scope - it is expensive
 	var order = OrderService;
 	order.loaded = false;
 	$scope.order = {};
@@ -240,6 +239,12 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		return order._tips( );
 	}
 
+	// Event will be called when the order loaded
+	$scope.$on( 'orderLoaded', function(e, data) {
+		$scope.order.loaded = order.loaded;
+		$scope.order.showForm = order.showForm;
+	});
+
 	// Alias to CartService 'public' methods
 	$scope.order.cart = {};
 	$scope.order.cart.items = order.cart.items;
@@ -252,60 +257,74 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$scope.order.cart.customizeItem = function(option, item){
 		order.cart.customizeItem( option, item );
 	}
-
-	$scope.credit = CreditService;
-	$scope.giftcard = GiftCardService;
-
-	// Alias to ServiceAccount.user
-	$scope.user = order.account.user;
-
-	$scope.restaurantService.init();
-
-	$scope.checkGiftCard = function(){
-		$scope.giftcard.notes_field.content = $scope.order.form.notes;
-		$scope.giftcard.notes_field.start();
-	}
-
-	$scope.AB = {
-				dollar: (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '',
-				changeablePrice: function (dish) {
-					return (App.config.ab && App.config.ab.changeablePrice == 'show' && dish.changeable_price) ? '+' : ''
-				},
-				restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
-			};
-
-	$scope.$watch( 'restaurantService.loaded', function( newValue, oldValue, scope ) {
-		if( newValue ){
-			$scope.restaurant	 = $scope.restaurantService.restaurant;
-			order.restaurant = $scope.restaurant;
-			order.init();
-			$scope.order.loaded = order.loaded;
-			$scope.order.showForm = order.showForm;
-			$scope.giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
-			$scope.giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
-			$scope.credit.getCredit( $scope.restaurant.id_restaurant );
-
-/*
-			$scope.lastOrderDelivery = $scope.service.lastOrderDelivery;
-			$scope.community = $scope.service.community;
-			$scope.showRestaurantDeliv = $scope.service.showRestaurantDeliv;*/
-		}
-	});
-
-	// watch credit changes
-	$scope.$watch( 'credit.value', function( newValue, oldValue, scope ) {
-		$scope.order.updateTotal();
-	});
-
 	// watch cart changes
 	$scope.$watch( 'order.cart.items', function( newValue, oldValue, scope ) {
 		$scope.order.updateTotal();
 	}, true);
 
+	// Alias to ServiceAccount.user
+	$scope.user = order.account.user;
+
+	$scope.AB = {
+		dollar: (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '',
+		changeablePrice: function (dish) {
+			return (App.config.ab && App.config.ab.changeablePrice == 'show' && dish.changeable_price) ? '+' : ''
+		},
+		restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
+	};
+
+	var giftcard = GiftCardService;
+	$scope.giftcard = { giftcards : {} };
+	// Event will be called when the gift card changes
+	$scope.$on( 'giftCardUpdate', function(e, data) {
+		$scope.giftcard.giftcards.success = giftcard.notes_field.giftcards.success;
+		$scope.giftcard.giftcards.error = giftcard.notes_field.giftcards.error;
+		$scope.giftcard.value = giftcard.notes_field.value;
+		$scope.giftcard.removed = giftcard.notes_field.removed;
+		$scope.giftcard.hasGiftCards = giftcard.notes_field.hasGiftCards;
+	});
+
+	$scope.checkGiftCard = function(){
+		giftcard.notes_field.content = $scope.order.form.notes;
+		giftcard.notes_field.start();
+	}
 	// Validate gift card at the notes field
 	$scope.$watch( 'order.form.notes', function( newValue, oldValue, scope ) {
 		$scope.checkGiftCard();
 	});
+
+	var credit = CreditService;
+	$scope.credit = {};
+	// Event will be called when the credit changes
+	$scope.$on( 'creditChanged', function(e, data) {
+		$scope.credit.value = credit.value;
+		$scope.credit.redeemed = credit.redeemed;
+		$scope.order.updateTotal();
+	});
+
+	var restaurantService = RestaurantService;
+	// Event will be called after the restaurant load
+	$scope.$on( 'restaurantLoaded', function(e, data) {
+
+		var community = data.community;
+		$scope.restaurant = data.restaurant;
+		order.restaurant = $scope.restaurant;
+		
+		order.init();
+
+		// Update some gift cards variables
+		giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
+		giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
+		
+		// Load the credit info
+		credit.getCredit( $scope.restaurant.id_restaurant );
+		
+		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
+
+	});
+	
+	// Finally Load the restaurant
+	restaurantService.init();
 
 	$('.config-icon').addClass('config-icon-mobile-hide');
 	$('.nav-back').addClass('nav-back-show');
@@ -314,9 +333,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$('.content').removeClass('short-meal-list');
 
 	// As the div restaurant-items has position:absolute this line will make sure the footer will not go up.
-	$('.body').css({
-		'min-height': $('.restaurant-items').height()
-	});
+	$('.body').css({ 'min-height': $('.restaurant-items').height()});
 
 
 /*
@@ -357,56 +374,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		validatedAddress();
 	}
 
-
-	if (App.order['pay_type'] == 'cash' || lastPayCash == 'cash') {
-		App.trigger.cash();
-	} else {
-		App.trigger.credit();
-	}
-
-	if (lastPayCash == 'cash') {
-		App.trigger.cash();
-	} else if (lastPayCash == 'card') {
-		App.trigger.credit();
-	}
-
-	if (service.restaurant.credit != '1') {
-		App.trigger.cash();
-	}
-
-	if (service.restaurant.cash != '1' && service.restaurant.credit == '1') {
-		App.trigger.credit();
-	}
-
-	// Rules at #669
-	if ((lastOrderDelivery == 'delivery' && service.restaurant.delivery == '1') ||
-		(App.order['delivery_type'] == 'delivery' && service.restaurant.delivery == '1') ||
-		(service.restaurant.takeout == '0') ||
-		(lastOrderDelivery != 'takeout' && service.restaurant.delivery == '1')) {
-		App.trigger.delivery();
-	}
-
-	// If the restaurant doesn't delivery
-	if (App.order['delivery_type'] == 'takeout' || service.restaurant.delivery != '1') {
-		App.trigger.takeout();
-	}
-
-	// If the user has presets at other's restaurants but he did not typed his address yet
-	// and the actual restaurant is a delivery only #875
-	if ((service.restaurant.takeout == '0' || App.order['delivery_type'] == 'delivery') && !service.account.user.address) {
-		$('.payment-form').show();
-		$('.delivery-payment-info, .content-padder-before').hide();
-	}
-
-
-	if (!service.account.user.id_user) {
-		service.account.user.address = App.loc.enteredLoc;
-		App.loc.enteredLoc = '';
-	}
-	//*/
-
-
-
+*/
 	
 });
 

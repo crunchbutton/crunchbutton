@@ -208,21 +208,21 @@
 
 						<div class="giftcard-info">
 
-							<div class="warning" ng-show="giftcard.notes_field.removed">
+							<div class="warning" ng-show="giftcard.removed">
 								You just removed a gift card. If you still want to use that gift card, you must put it back in the notes field.
 							</div>
 
-							<div ng-show="restaurant.giftcard == 0 && giftcard.notes_field.hasGiftCards">
+							<div ng-show="restaurant.giftcard == 0 && giftcard.hasGiftCards">
 								This restaurant does not accept gift card.
 							</div>
 
-							<div ng-show="giftcard.notes_field.value != '0.00' && order.form.pay_type == 'cash' ">
-								Pay with a card, NOT CASH, to use your {{AB.dollar}}{{giftcard.notes_field.value}} gift card!</span>
+							<div ng-show="giftcard.value != '0.00' && order.form.pay_type == 'cash' ">
+								Pay with a card, NOT CASH, to use your {{AB.dollar}}{{giftcard.value}} gift card!</span>
 							</div>
 
 							<div ng-show="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
 								<!-- Gift card success -->
-								<div ng-repeat="success in giftcard.notes_field.giftcards.success">
+								<div ng-repeat="success in giftcard.giftcards.success">
 									<div ng-show="!success.error">
 										Congrats! This gift card ({{success.giftcard}}) gives you {{AB.dollar}}{{success.value}}.	
 									</div>
@@ -231,7 +231,7 @@
 									</div>
 								</div>
 								<!-- Gift card errors -->
-								<div ng-repeat="error in giftcard.notes_field.giftcards.error">
+								<div ng-repeat="error in giftcard.giftcards.error">
 									<div ng-switch on="error.error">
 										<div ng-switch-when="gift card already used">
 										The gift card ({{error.giftcard}}) you are trying to use was already redeemed.
