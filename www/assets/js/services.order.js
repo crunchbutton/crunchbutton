@@ -1,10 +1,11 @@
 //OrderService Service
-NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountService, CartService, LocationService ) {
+NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountService, CartService, LocationService, CreditService ) {
 
 	var service = {};
 	service.location = LocationService;
 	service.account = AccountService;
 	service.cart = CartService;
+	service.credit = CreditService;
 	service.restaurant = {};
 
 	// If this variable is true the restaurant's page will be loaded after the location get started
@@ -28,6 +29,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		deliveryMinDiff: '',
 		cartSummary: '',
 		totalText: '',
+		creditLeft: ''
 	}
 
 	service.toogleDelivery = function (type) {
@@ -80,8 +82,6 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		if (service.account.user && service.account.user.presets) {
 			service.showForm = false;
 		}
-		console.log('service.restaurant.preset()',service.restaurant.preset());
-		
 		// Load the order
 		if (service.cart.hasItems()) {
 			service.reloadOrder();
@@ -230,8 +230,9 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 	}
 	service.charged = function () {
 		var finalAmount = this.total();
-		if (App.order.pay_type == 'card' && App.credit.restaurant[service.restaurant.id]) {
-			finalAmount = finalAmount - App.ceil(App.credit.restaurant[service.restaurant.id]).toFixed(2);
+		var credit = parseFloat(service.credit.value);
+		if (service.form.pay_type == 'card' && credit) {
+			finalAmount = finalAmount - credit;
 			if (finalAmount < 0) {
 				finalAmount = 0;
 			}
@@ -544,9 +545,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 							'user': this.user,
 							'items': service.cart.totalItems()
 						});
-						/*
-						App.loc.changeLocationAddressHasChanged = false;
-						*/
+
 						service.resetOrder();
 						$rootScope.$safeApply( function(){
 							$location.path( '/order/' + uuid );	
@@ -582,11 +581,9 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		var tipText = '',
 			feesText = '',
 			totalItems = 0,
-			credit = 0,
+			credit = parseFloat(service.credit.value),
 			hasFees = ((service.restaurant.delivery_fee && service.form.delivery_type == 'delivery') || service.restaurant.fee_customer) ? true : false;
-		if (App.credit.restaurant[service.restaurant.id]) {
-			credit = parseFloat(App.credit.restaurant[service.restaurant.id]);
-		}
+
 		for (var x in service.items) {
 			totalItems++;
 		}
@@ -623,16 +620,13 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		service.info.extraCharges = service.extraChargesText(service.totalbreakdown());
 		service.info.breakdownDescription = service.info.dollarSign + this.subtotal().toFixed(2);
 		service.info.cartSummary = service.cart.summary();
-		if (App.order.pay_type == 'card' && credit > 0) {
-			var creditLeft = '';
+		if (service.form.pay_type == 'card' && credit > 0) {
+			service.info.creditLeft = '';
 			if (this.total() < credit) {
-				var creditLeft = '<span class="gift-left"> - You\'ll still have ' + service.info.dollarSign + App.ceil((credit - this.total())).toFixed(2) + ' gift card left </span>';
+				service.info.creditLeft = App.ceil((credit - this.total())).toFixed(2);
 				credit = this.total();
 			}
-			$('.cart-gift').html('&nbsp;(- ' + service.info.dollarSign + App.ceil(credit).toFixed(2) + ' credit ' + creditLeft + ') ');
-		} else {
-			$('.cart-gift').html('');
-		}
+		} 
 		/* TODO: find out what this piece of code does
 			$('.cart-item-customize-price').each(function () {
 				var dish = $(this).closest('.cart-item-customize').attr('data-id_cart_item'),
@@ -742,13 +736,15 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 			service.tooglePayment( 'cash' );
 			// Add one dish of each category
 			return;
-			var categories = service.restaurant.categories()
-			for( x in categories ){
-				category = categories[ x ];
-				var dishes = category.dishes();
-				for( y in dishes ){
-					var dish = dishes[ y ];
-					service.cart.add( dish.id_dish );
+			if( confirm( 'Add food?' ) ){
+				var categories = service.restaurant.categories()
+				for( x in categories ){
+					category = categories[ x ];
+					var dishes = category.dishes();
+					for( y in dishes ){
+						var dish = dishes[ y ];
+						service.cart.add( dish.id_dish );
+					}
 				}
 			}
 		});
