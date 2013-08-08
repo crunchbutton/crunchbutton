@@ -321,6 +321,8 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
+		$('.body').css({ 'min-height': $('.restaurant-items').height()});
+
 	});
 	
 	// Finally Load the restaurant
@@ -333,7 +335,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$('.content').removeClass('short-meal-list');
 
 	// As the div restaurant-items has position:absolute this line will make sure the footer will not go up.
-	$('.body').css({ 'min-height': $('.restaurant-items').height()});
+	
 
 
 /*
