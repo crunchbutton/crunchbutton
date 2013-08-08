@@ -186,7 +186,7 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 		}
 
 		// 4) get a more specific bounding location result from google
-		if (google && google.load && !google.maps) {
+		if (google && google.load && !google.maps ) {
 			google.load('maps', '3', {
 				callback: service.googleCallback,
 				other_params: 'sensor=false'
