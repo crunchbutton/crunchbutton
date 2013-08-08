@@ -67,7 +67,24 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		service._completeAddressWithZipCode = true;
 
 		service.form.pay_type = (service.account.user && service.account.user.pay_type) ? service.account.user.pay_type : 'card';
+		// If the restaurant does not accept card
+		if( service.restaurant.credit != 1 && service.form.pay_type == 'card' ){
+			service.form.pay_type = 'cash';
+		}
+		// If the restaurant does not accept cash
+		if( service.restaurant.cash != 1 && service.form.pay_type == 'cash' ){
+			service.form.pay_type = 'card';
+		}
+
 		service.form.delivery_type = (service.account.user && service.account.user.delivery_type) ? service.account.user.delivery_type : 'delivery';
+		// If the restaurant does not delivery
+		if( service.restaurant.delivery != 1 && service.form.delivery_type == 'delivery' ){
+			service.form.delivery_type = 'takeout';
+		}
+		// If the restaurant does not takeout
+		if( service.restaurant.takeout != 1 && service.form.delivery_type == 'takeout' ){
+			service.form.delivery_type = 'delivery';
+		}
 
 		service.form.autotip = 0;
 		service.form.tip = service._lastTipNormalize(tip);
@@ -102,6 +119,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 			}
 		}
 		service.loaded = true;
+		$rootScope.$broadcast( 'orderLoaded',  true );
 		// service._test();
 	}
 	service.reloadOrder = function () {
@@ -261,6 +279,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		elements['tip'] = this._breakdownTip(total);
 		return elements;
 	}
+
 	service.resetOrder = function () {
 		service.cart.items = {};
 	}

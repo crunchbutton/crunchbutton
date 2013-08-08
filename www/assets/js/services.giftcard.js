@@ -8,7 +8,7 @@ NGApp.factory( 'GiftCardModalService', function(){
 } );
 
 // GiftCardService service
-NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalService, GiftCardModalService, CreditService ){
+NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalService, GiftCardModalService, CreditService, $rootScope ){
 
 	var service = {
 		redeemed : false,
@@ -177,6 +177,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 		if( !service.notes_field.running ){
 			service.notes_field.compareValues();
 		}
+		$rootScope.$broadcast( 'giftCardUpdate' );
 	}
 
 	service.notes_field.compareValues = function(){
@@ -194,21 +195,29 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 		}
 		if( service.notes_field.restaurant_accepts ){
 			service.notes_field.value = App.ceil( values ).toFixed( 2 );
-			credit.value = App.ceil( credit.redeemed + values ).toFixed( 2 );
+			credit.setValue( App.ceil( credit.redeemed + values ).toFixed( 2 ) );
 		}
+		$rootScope.$broadcast( 'creditChanged',  { value : service.value } );
 	}
 
 	return service;
 
 } );
 
-NGApp.factory( 'CreditService', function( $http ){
+NGApp.factory( 'CreditService', function( $http, $rootScope ){
+
 	var service = { value : '0.00', tooltip : false, redeemed : 0 };
+	
+	service.setValue = function( value ){
+		service.value = value;
+		$rootScope.$broadcast( 'creditChanged',  { value : service.value } );
+	}
+
 	service.getCredit = function( restaurant_id ){
 		var url = App.service + 'user/credit/' + restaurant_id;
 		$http( { url: url } ).success( function( data ) { 
 			if( data.credit ){
-				service.value = App.ceil( data.credit ).toFixed( 2 ); 
+				service.setValue( App.ceil( data.credit ).toFixed( 2 ) );
 				service.redeemed = data.credit;
 			}
 		}	).error(function() {} );

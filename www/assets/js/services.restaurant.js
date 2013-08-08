@@ -101,59 +101,14 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 });
 
 //RestaurantService Service
-NGApp.factory('RestaurantService', function ($http, $routeParams, $rootScope, AccountService ) {
-	
-	var service = {
-		loaded : false
-	};
-
+NGApp.factory('RestaurantService', function ($http, $routeParams, $rootScope ) {
+	var service = {};
 	service.init = function(){
-		service.restaurant = false;
-		loaded = false;
-		service.load();
+		App.cache('Restaurant', $routeParams.id, function () {
+			var restaurant = this;
+			var community = App.getCommunityById( restaurant.id_community );
+			$rootScope.$broadcast( 'restaurantLoaded',  { restaurant : restaurant, community : community } );
+		});
 	}
-
-service.account = AccountService;
-
-service.load = function(){
-
-	App.cache('Restaurant', $routeParams.id, function () {
-		 
-		if (service.restaurant && service.restaurant.permalink != $routeParams.id) {
-			service.cartService.resetOrder();
-		}
-
-		service.restaurant = this;
-
-		service.community = App.getCommunityById( service.restaurant.id_community );
-		
-		var lastOrderDelivery = false;
-		var lastPayCash = false;
-
-		if ( service.account.user && service.account.user.presets && service.account.user.presets[ service.restaurant.id_restaurant ] ) {
-			// Check if the last user's order at this restaurant was a delivery type
-			lastOrderDelivery = service.account.user.presets[ service.restaurant.id_restaurant ].delivery_type;
-			// Check if the last user's order at this restaurant was cash type
-			lastPayCash = service.account.user.presets[ service.restaurant.id_restaurant ].pay_type;
-			App.order['delivery_type'] = lastOrderDelivery;
-			App.order['pay_type'] = lastPayCash;
-		}
-
-		//			title: service.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton',
-
-		var complete = function () {
-
-			service.loaded = true;
-
-			service.lastOrderDelivery = lastOrderDelivery;
-			
-			service.showRestaurantDeliv = ((lastOrderDelivery == 'delivery' || service.restaurant.delivery == '1' || service.restaurant.takeout == '0') && lastOrderDelivery != 'takeout');
-
-		};
-
-		$rootScope.$safeApply( complete );
-
-	});
-}
 	return service;
 });
