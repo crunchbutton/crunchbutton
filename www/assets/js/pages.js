@@ -202,14 +202,62 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService, CreditService, GiftCardService) {
 
 	$scope.restaurantService = RestaurantService;
-	$scope.order = OrderService;
-	$scope.order.loaded = false;
+
+	// Dont put all the OrderService at the $scope - it is expensive
+	var order = OrderService;
+	order.loaded = false;
+	$scope.order = {};
+	$scope.order.form = order.form;
+	$scope.order.info = order.info;
+	$scope.order.showForm = order.showForm;
+
+	// Alias to OrderService 'public' methods
+	$scope.order.updateTotal = function(){
+		return order.updateTotal();
+	}
+	$scope.order.subtotal = function(){
+		return order.subtotal();
+	}
+	$scope.order.submit = function(){
+		return order.submit();
+	}
+	$scope.order.cardInfoChanged = function(){
+		return order.cardInfoChanged();
+	}
+	$scope.order.toogleDelivery = function( type ){
+		return order.toogleDelivery( type );
+	}
+	$scope.order.tooglePayment = function( type ){
+		return order.tooglePayment( type );
+	}
+	$scope.order._years = function(){
+		return order._years( );
+	}
+	$scope.order._months = function(){
+		return order._months( );
+	}
+	$scope.order._tips = function(){
+		return order._tips( );
+	}
+
+	// Alias to CartService 'public' methods
+	$scope.order.cart = {};
+	$scope.order.cart.items = order.cart.items;
+	$scope.order.cart.add = function( item ){
+		order.cart.add( item );
+	}
+	$scope.order.cart.remove = function( item ){
+		order.cart.remove( item );
+	}
+	$scope.order.cart.customizeItem = function(option, item){
+		order.cart.customizeItem( option, item );
+	}
 
 	$scope.credit = CreditService;
 	$scope.giftcard = GiftCardService;
 
 	// Alias to ServiceAccount.user
-	$scope.user = $scope.order.account.user;
+	$scope.user = order.account.user;
 
 	$scope.restaurantService.init();
 
@@ -229,12 +277,12 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$scope.$watch( 'restaurantService.loaded', function( newValue, oldValue, scope ) {
 		if( newValue ){
 			$scope.restaurant	 = $scope.restaurantService.restaurant;
-			$scope.order.restaurant = $scope.restaurant;
-			$scope.order.init();
-
+			order.restaurant = $scope.restaurant;
+			order.init();
+			$scope.order.loaded = order.loaded;
+			$scope.order.showForm = order.showForm;
 			$scope.giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
 			$scope.giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
-
 			$scope.credit.getCredit( $scope.restaurant.id_restaurant );
 
 /*
