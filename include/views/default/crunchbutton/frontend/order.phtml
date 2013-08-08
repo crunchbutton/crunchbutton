@@ -12,7 +12,7 @@
 			Crunched!
 			<span class="order-thanks-message-block">Your order is placed</span>
 			<span class="order-thanks-message-small">(and saved for easy 1 click ordering next time)</span>
-			<br /><br />
+			<br><br>
 		</span>
 	
 		<div ng-show="account.user">
@@ -27,35 +27,35 @@
 		<div class="order-details">
 
 			<div ng-show="(order.order.delivery_type == 'delivery')">
-				<b>Your delivery address:</b><br /><span ng-bind-html-unsafe="nl2br(order.order.address)"></span><br /><br />
+				<b>Your delivery address:</b><br><span ng-bind-html-unsafe="nl2br(order.order.address)"></span><br><br>
 			</div>
 	
 			<div ng-hide="(order.order.delivery_type == 'delivery')">
-				<b>Takeout order</b><br /><br />
+				<b>Takeout order</b><br><br>
 			</div>
 	
-			<b>Your phone #:</b><br />{{formatPhone(order.order.phone)}}<br /><br />
+			<b>Your phone #:</b><br>{{formatPhone(order.order.phone)}}<br><br>
 	
-			<b>Your order:</b><span ng-bind-html-unsafe="order.order._message"></span><br /><br />
+			<b>Your order:</b><span ng-bind-html-unsafe="order.order._message"></span><br><br>
 	
-			<i ng-show="order.order.notes" ng-bind-html-unsafe="nl2br(order.order.notes)"><br /><br /></i>
+			<i ng-show="order.order.notes" ng-bind-html-unsafe="nl2br(order.order.notes)"></i><br><br>
 	
-			<b ng-show="(order.order.pay_type == 'card')">Your total:<br /></b>
-			<b ng-hide="(order.order.pay_type == 'card')">Your approximate total:<br /></b>
+			<b ng-show="(order.order.pay_type == 'card')">Your total:<br></b>
+			<b ng-hide="(order.order.pay_type == 'card')">Your approximate total:<br></b>
 			
 			${{formatPrice(order.order.charged)}}
 	
 			<div class="credit" ng-show="(order.order.credit && order.order.credit > 0)">( ${{parseFloat(order.order.final_price).toFixed(2)}} - ${{parseFloat(order.order.credit).toFixed(2)}} credit )</div>
 	
-			<br /><br />
+			<br><br>
 	
-			For updates on your order, please call<br />{{order.restaurant.name}}: <b>{{callPhone( order.restaurant.phone )}}</b><br /><br />
+			For updates on your order, please call<br>{{order.restaurant.name}}: <b>{{callPhone( order.restaurant.phone )}}</b><br><br>
 	
-			You can reach Crunchbutton by texting or calling <b> {{callPhone( '(646) 783-1444' )}} </b> <br /><br />
+			You can reach Crunchbutton by texting or calling <b> {{callPhone( '(646) 783-1444' )}} </b> <br><br>
 	
 			We've saved your order for easy 1 click ordering next time
 
-			<br /><br />
+			<br><br>
 
 			<div class="facebook-button facebook-button-share clearfix" ng-click="facebook();">
 				<i class="icon-facebook"></i><span class="facebook-button-text">Share what you ordered</span>
@@ -64,7 +64,7 @@
 		</div>
 	</div>
 	
-	<br />
+	<br>
 	
 	<a data-ng-href="/printorder/{{ order.order.uuid }}" target="_blank" class="print-icon"><i class="icon-print"></i> Print Receipt</a>
 
