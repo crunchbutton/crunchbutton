@@ -37,7 +37,8 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 		loaded: false,
 		locationNotServed: false,
 		initied: false,
-		loadRestaurantsPage: true
+		loadRestaurantsPage: true,
+		_initied : false
 	}
 
 	service.account = AccountService;
@@ -146,14 +147,14 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 	/**
 	 * initilize location functions
 	 */
-	service.init = function () {
+	service._start = function () {
 
-		if (service.initied) {
+		// this method could not be called twice
+		if (App._locationInitied) {
 			return;
 		}
-
-		service.initied = true;
-
+		App._locationInitied = true;
+		
 		// 1) set bounding to maxmind results if we have them
 		if (App.config.loc.lat && App.config.loc.lon) {
 			service.bounding = App.config.loc;
@@ -185,7 +186,7 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 		}
 
 		// 4) get a more specific bounding location result from google
-		if (google && google.load) {
+		if (google && google.load && !google.maps) {
 			google.load('maps', '3', {
 				callback: service.googleCallback,
 				other_params: 'sensor=false'
@@ -201,8 +202,6 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 
 		// if we dont have the proper location data, just populate from bounding
 		var error = function () {
-
-			console.log('service.bounding',service.bounding);
 
 			if (service.bounding && service.bounding.lat && service.bounding.lon && !service.bounding.city) {
 
