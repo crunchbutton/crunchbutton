@@ -46,6 +46,14 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		// css
 		$files[] = 'css/bundle.css';
 		
+		// fonts
+		$use = '/fontawesome/i';
+		foreach (new DirectoryIterator(c::config()->dirs->www.'assets/fonts') as $fileInfo) {
+			if (!$fileInfo->isDot() && preg_match($use, $fileInfo->getBasename())) {
+				$files[] = 'fonts/'.$fileInfo->getBasename();
+			}
+		}
+		
 		echo json_encode($files);
 	}
 }
