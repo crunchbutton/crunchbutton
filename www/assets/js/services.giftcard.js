@@ -206,7 +206,12 @@ NGApp.factory( 'CreditService', function( $http ){
 	var service = { value : '0.00', tooltip : false, redeemed : 0 };
 	service.getCredit = function( restaurant_id ){
 		var url = App.service + 'user/credit/' + restaurant_id;
-		$http( { url: url } ).success( function( data ) { service.value = App.ceil( data.credit ).toFixed( 2 ); service.redeemed = data.credit; }	).error(function() {} );
+		$http( { url: url } ).success( function( data ) { 
+			if( data.credit ){
+				service.value = App.ceil( data.credit ).toFixed( 2 ); 
+				service.redeemed = data.credit;
+			}
+		}	).error(function() {} );
 	}
 	return service;
 } );
