@@ -336,15 +336,15 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		$('.body').css({ 'min-height': $('.restaurant-items').height()});
 
 	});
-	
-	// Finally Load the restaurant
-	restaurantService.init();
 
 	$('.config-icon').addClass('config-icon-mobile-hide');
 	$('.nav-back').addClass('nav-back-show');
 
 	$('.content').removeClass('smaller-width');
 	$('.content').removeClass('short-meal-list');
+	
+	// Finally Load the restaurant
+	restaurantService.init();
 	
 });
 
