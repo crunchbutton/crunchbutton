@@ -1999,7 +1999,7 @@ html[xmlns] .clearfix {
 		clear: right;
 		margin-right: 5px;
 	}
-	.payment-form {
+	.payment-form, .is-closet{
 		width: 630px;
 		float: right;
 	}
@@ -2473,7 +2473,7 @@ html[xmlns] .clearfix {
 		text-align: center;
 	}
 
-	.restaurant-items, .restaurant-pic-wrapper, .cart-items, .payment-form {
+	.restaurant-items, .restaurant-pic-wrapper, .cart-items, .payment-form, .is-closet {
 		float: none;
 		width: 625px;
 		margin: 0 auto;
