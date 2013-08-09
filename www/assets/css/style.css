@@ -2770,9 +2770,36 @@ strong {
 }
 
 .order-begin{
-	margin: 30px 0 15px 0 !important;
+	background: #fdf6f0;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border:2px solid #f34b24;
+	color: #666;
+	font-size:13px;
+	line-height: 22px;
+	text-align: left !important;
+	text-shadow: 1px 1px 0 rgba(0,0,0,.10);
+	width: 310px;
+	color: #d74924;
+	display: block;
 	font-size: 15px;
+	font-weight: bold;
+	padding: 15px;
+	margin-top: 30px;
 }
+	.order-begin .icon, .order-begin .content{
+		float: left;
+		display: block;
+		height: 30px;
+	}
+	.order-begin .icon{
+		font-size: 25px;
+		width: 35px;
+		padding-top: 10px;
+	}
+	.order-begin .text{
+		width: 300px;
+	}
 
 /**
  * unused blurs
