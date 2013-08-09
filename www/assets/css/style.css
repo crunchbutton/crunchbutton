@@ -996,10 +996,6 @@ html[xmlns] .clearfix {
 	}
 }
 
-.nav-back {
-
-}
-
 .meal-item-tag, .meal-item-tag-closed {
 	padding: 5px 20px 5px 15px;
 	font-size: 12px;
@@ -1508,9 +1504,9 @@ html[xmlns] .clearfix {
 	}
 
 	.nav-back {
+		margin-top: -1px;
+		margin-left: 8px;
 		position: absolute;
-		top: 8px;
-		left: 8px;
 		background: url(../images/back.png) no-repeat;
 		width: 51px;
 		height: 31px;
