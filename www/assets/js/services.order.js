@@ -10,9 +10,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 
 	// If this variable is true the restaurant's page will be loaded after the location get started
 	service.location.loadRestaurantsPage = false;
-	setTimeout(function() {
-		service.location._start();
-	}, 10);
+	service.location.init();
 
 	// Default values
 	service.form = {
