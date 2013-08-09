@@ -141,18 +141,12 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 	$scope.topCommunities = App.topCommunities;
 
 	$scope.location = LocationService;
-<<<<<<< HEAD
 
 	// @todo: this function prevents angular from rendering on phonegap correctly until it gets a response back from google (about 9 seconds)
-	setTimeout(function() {
-		//$scope.location._start();
-	}, 100 );
+	if (!App.isPhoneGap) {
+		$scope.location.init();
+	}
 
-
-=======
-	$scope.location.init();
-	
->>>>>>> e392b90937395a7db9f7d1fda27c8c4e9486c83e
 	$scope.yourArea = $scope.location.position.pos().city() || 'your area';
 
 	$scope.restaurantsService = RestaurantsService;
