@@ -131,8 +131,9 @@ NGApp.controller('cities', function ($scope, $http) {
 /**
  * Change location
  */
-NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsService, RecommendRestaurantService, LocationService, AccountService ) {
+NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsService, LocationService, AccountService ) {
 	
+
 	var account = AccountService;
 
 	$scope.isUser = account.user.has_auth;
@@ -141,9 +142,11 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 
 	$scope.location = LocationService;
 
+	// @todo: this function prevents angular from rendering on phonegap correctly until it gets a response back from google (about 9 seconds)
 	setTimeout(function() {
-		$scope.location._start();
-	}, 10 );
+		//$scope.location._start();
+	}, 100 );
+
 
 	$scope.yourArea = $scope.location.position.pos().city() || 'your area';
 
@@ -151,7 +154,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 
 	$scope.locationError = false;
 
-	$scope.recommend = RecommendRestaurantService;
+//	$scope.recommend = RecommendRestaurantService;
 
 	$scope.openCity = function( city ){
 		$location.path( '/' + city );
@@ -168,7 +171,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 
 	// lets eat button
 	$scope.letsEat = function() {
-		 $scope.location.form.address = $.trim( $scope.location.form.address );
+		$scope.location.form.address = $.trim( $scope.location.form.address );
 		if ( $scope.location.form.address == '' ) {
 			$('.location-address').val('').attr('placeholder','Please enter your address here');
 		} else {
@@ -194,6 +197,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 			);
 		}
 	}
+
 });
 
 /**
