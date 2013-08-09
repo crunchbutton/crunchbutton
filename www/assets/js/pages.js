@@ -140,11 +140,8 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 	$scope.topCommunities = App.topCommunities;
 
 	$scope.location = LocationService;
-
-	setTimeout(function() {
-		$scope.location._start();
-	}, 10 );
-
+	$scope.location.init();
+	
 	$scope.yourArea = $scope.location.position.pos().city() || 'your area';
 
 	$scope.restaurantsService = RestaurantsService;
@@ -199,7 +196,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 /**
  * restaurant page
  */
-NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService, CreditService, GiftCardService) {
+NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService) {
 
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 
@@ -324,6 +321,17 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
+		var position = PositionsService;
+		var address = position.pos();
+
+		// If the typed address is different of the user address the typed one will be used #1152
+		if( address.type() == 'user' && address.valid( 'order' ) ){
+			if( order._useCompleteAddress ){
+				$scope.order.form.address = address.formatted();
+			} else {
+				$scope.order.form.address = address.entered();
+			}
+		}
 
 		$('.body').css({ 'min-height': $('.restaurant-items').height()});
 
@@ -337,49 +345,6 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 
 	$('.content').removeClass('smaller-width');
 	$('.content').removeClass('short-meal-list');
-
-	
-
-
-/*
-	// If the typed address is different of the user address the typed one will be used #1152
-	if (false && App.loc.changeLocationAddressHasChanged && App.loc.pos() && App.loc.pos().addressEntered && App.loc.pos().addressEntered != service.account.user.address) {
-		// Give some time to google.maps.Geocoder() load
-		var validatedAddress = function () {
-			if (google && google.maps && google.maps.Geocoder) {
-				var addressToVerify = App.loc.pos().addressEntered;
-				// Success the address was found
-				var success = function (results) {
-					var address = results[0];
-					if (address) {
-						// Valid if the address is acceptable
-						if (App.loc.validateAddressType(address)) {
-							// If the flag useCompleteAddress is true
-							if (App.useCompleteAddress) {
-								$('[name=pay-address]').val(App.loc.formatedAddress(address));
-								$('.user-address').html(App.loc.formatedAddress(address));
-							} else {
-								$('[name=pay-address]').val(addressToVerify);
-								$('.user-address').html(addressToVerify);
-							}
-						} else {
-							console.log('Invalid address: ' + addressToVerify);
-						}
-					}
-				};
-				// Error, do nothing
-				var error = function () {};
-				App.loc.doGeocode(addressToVerify, success, error);
-			} else {
-				setTimeout(function () {
-					validatedAddress();
-				}, 10);
-			}
-		}
-		validatedAddress();
-	}
-
-*/
 	
 });
 
