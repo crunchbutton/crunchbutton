@@ -442,16 +442,17 @@ html {
 	list-style-type: none;
 }
 
-.snap-drawer li > a {
+.snap-drawer li {
 	display: block;
 	border-bottom: 1px solid rgba(0,0,0, 0.1);
 	border-top: 1px solid rgba(255, 255, 255, 0.1);
-	padding: 15px;
+	padding: 8px 0 2px 0;
 	font-weight: bold;
 	text-shadow: 0 1px 0 #000;
 	text-decoration: none;
 	color: #fff;
 	text-indent: 20px;
+
 }
 
 .snap-drawer p {
@@ -584,4 +585,25 @@ html {
 	}
 }
 
+.snap-drawer [class^="icon-"] {
+	font-size: 25px;
+}
 
+.side-menu-icon {
+	width: 60px;
+}
+
+.side-menu-label {
+	margin-top: -10px;
+	vertical-align: top;
+	line-height: 1.6em;
+	margin-bottom: 20px;
+}
+
+.side-menu-wrap {
+	margin-left: -20px;
+}
+
+.side-menu-wrap {
+	height: 28px;
+}

@@ -10,9 +10,15 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, AccountServi
 	};
 	
 	service.menu = App.toggleMenu;
-
 	service.account = AccountService;
 	service.modal = AccountModalService;
+	service.home = function() {
+		if (App.isPhoneGap || App.isMobile()) {
+			service.menu();
+		} else {
+			service.link();
+		}
+	}
 
 	service.link = function( path ){
 		$location.path( path || '/' );
