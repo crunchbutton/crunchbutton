@@ -10,17 +10,74 @@
 		<div>
 			<div class="pushabutton-getfood"></div>
 			<ul>
-				<li><a href="javascript:;" ng-instant="navigation.link('/food-delivery')"><i class="icon-food icon-2x"></i> Restaurants</a></li>
-				<li><a href="javascript:;" ng-instant="navigation.link('/location')"><i class="icon-map-marker icon-2x"></i> Change Location</a></li>
-				<li><a ng-show="navigation.account.user" href="javascript:;" ng-instant="navigation.link('/orders')"><i class="icon-time icon-2x"></i> Order History</a></li>
-				<li><a ng-show="navigation.account.user" href="javascript:;" ng-instant="navigation.link('/orders')"><i class="icon-mail-reply icon-2x"></i> Logout</a></li>
-				<li><a href="javascript:;" ng-click="navigation.link('/help')">Help</a></li>
-				<li><a href="javascript:;" ng-click="navigation.link('/legal')">Legal</a></li>
+				<li ng-instant="navigation.link('/food-delivery')">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-food"></i></td>
+							<td class="side-menu-label">Restaurants</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-instant="navigation.link('/location')">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-map-marker"></i></td>
+							<td class="side-menu-label">Change Location</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-show="navigation.account.user" ng-instant="navigation.link('/orders')">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-time"></i></td>
+							<td class="side-menu-label">Order History</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-show="navigation.account.user" ng-instant="App.test.logout()">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-mail-reply"></i></td>
+							<td class="side-menu-label">Logout</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-instant="navigation.link('/help')">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-question-sign"></i></td>
+							<td class="side-menu-label">Help</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-instant="navigation.link('/legal')">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-file"></i></td>
+							<td class="side-menu-label">Legal</a></td>
+						</tr>
+					</table>
+				</li>
+
 				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
-					<li><a href="javascript:App.test.card();" class="test-card">TEST: card</a></li>
-					<li><a href="javascript:App.test.logout();" class="test-logout">TEST: logout</a></li>
-					<li><a href="javascript:App.test.clearloc();" class="test-clearloc">TEST: clear loc</a></li>
+				<li ng-instant="App.test.card()">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-circle-blank"></i></td>
+							<td class="side-menu-label">TEST: card</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-instant="App.test.clearloc()">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-circle-blank"></i></td>
+							<td class="side-menu-label">TEST: clear loc</a></td>
+						</tr>
+					</table>
+				</li>
 				<? endif ; ?>
+
 			</ul>
 			<div>
 				<p>&copy; <?=date('Y')?> YouBeo. All rights reserved.</p>
