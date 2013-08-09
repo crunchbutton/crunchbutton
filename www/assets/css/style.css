@@ -979,6 +979,20 @@ html[xmlns] .clearfix {
 }
 
 @media only screen and (max-width : 1023px) {
+
+	.order-begin{
+		margin-right: auto !important;
+		margin-left: auto !important;
+		margin-bottom: 30px !important;
+	}
+
+	.order-begin .desktop{
+		display: none !important;
+	}
+	.order-begin .mobile{
+		display: inline !important;
+	}
+
 	.home-tagline, .home-welcome {
 		text-align: center;
 	}
@@ -1999,7 +2013,7 @@ html[xmlns] .clearfix {
 		clear: right;
 		margin-right: 5px;
 	}
-	.payment-form {
+	.payment-form, .is-closet{
 		width: 630px;
 		float: right;
 	}
@@ -2473,7 +2487,7 @@ html[xmlns] .clearfix {
 		text-align: center;
 	}
 
-	.restaurant-items, .restaurant-pic-wrapper, .cart-items, .payment-form {
+	.restaurant-items, .restaurant-pic-wrapper, .cart-items, .payment-form, .is-closet {
 		float: none;
 		width: 625px;
 		margin: 0 auto;
@@ -2800,7 +2814,12 @@ strong {
 	.order-begin .text{
 		width: 300px;
 	}
-
+	.order-begin .desktop{
+		display: inline;
+	}
+	.order-begin .mobile{
+		display: none;
+	}
 /**
  * unused blurs
 

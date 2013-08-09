@@ -52,13 +52,13 @@
 
 				<div ng-show="!order.cart.hasItems()" class="order-begin">
 					<div class="icon">
-						<i ng-show="!App.isMobile()" class="icon-arrow-left"></i> 	
-						<i ng-show="App.isMobile()" class="icon-arrow-down"></i> 
+						<i class="icon-arrow-left desktop"></i> 	
+						<i class="icon-arrow-down mobile"></i> 
 					</div>
 					<div class="text">
 						Begin by clicking on anything from our curated menu 
-						<span ng-show="!App.isMobile()"> on the left!</span>
-						<span ng-show="App.isMobile()"> below!</span>
+						<span class="desktop"> on the left!</span>
+						<span class="mobile"> below!</span>
 					</div>
 					<div class="divider"></div>
 				</div>
@@ -66,8 +66,6 @@
 				<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="delivery-minimum-error">
 					Add $<span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> from menu to meet delivery minimum.
 				</div>
-
-
 
 				<!-- Cart's basket -->
 				<div>
@@ -155,9 +153,7 @@
 
 	<div class="restaurant-payment-div"></div>
 
-	<!-- payment and user info -->
-	<form class="payment-form main-content-readable" ng-show="order.loaded && order.cart.hasItems()">
-	
+	<div class="is-closet main-content-readable" >
 		<div class="restaurant-closed" ng-show="!restaurant.open()">
 			<div class="restaurant-closed-icon"></div>
 			<div class="restaurant-closed-content">
@@ -171,8 +167,11 @@
 			</div>
 			<div class="divider"></div>
 		</div>
+	</div>
+
+	<!-- payment and user info -->
+	<form class="payment-form main-content-readable" ng-show="order.loaded && order.cart.hasItems()">
 	
-		
 		<div ng-show="restaurant._open && order.showForm && order.cart.hasItems()">
 		
 			<div class="content-item-name"><h1>Your Info</h1></div>

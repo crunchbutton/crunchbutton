@@ -23,12 +23,15 @@ var Location = function( params ) {
 
 		var result = results[0] || results;
 
-		switch ( result.types ) {
-			default:
-			case 'administrative_area_level_1':
-				self._properties.city = result.address_components[0].long_name;
-				self._properties.detail = 1;
-				break;
+		if( typeof result.types === 'string' ) {
+			var type = result.types;
+		} else {
+			for( x in result.types ){
+				var type = result.types[x];
+			}
+		}
+
+		switch ( type ) {
 			case 'locality':
 				self._properties.city = result.address_components[0].long_name;
 				self._properties.region = result.address_components[2].short_name;
@@ -48,6 +51,11 @@ var Location = function( params ) {
 				self._properties.city = result.address_components[1].long_name;
 				self._properties.region = result.address_components[3].short_name;
 				self._properties.detail = 4;
+				break;
+			default:
+			case 'administrative_area_level_1':
+				self._properties.city = result.address_components[0].long_name;
+				self._properties.detail = 1;
 				break;
 		}
 
