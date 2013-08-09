@@ -148,7 +148,7 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 	 * initilize location functions
 	 */
 	service._start = function () {
-
+		
 		// this method could not be called twice
 		if (App._locationInitied) {
 			return;
