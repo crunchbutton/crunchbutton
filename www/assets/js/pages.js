@@ -249,13 +249,16 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$scope.order.cart = {};
 	$scope.order.cart.items = order.cart.items;
 	$scope.order.cart.add = function( item ){
-		order.cart.add( item );
+		return order.cart.add( item );
 	}
 	$scope.order.cart.remove = function( item ){
-		order.cart.remove( item );
+		return order.cart.remove( item );
 	}
 	$scope.order.cart.customizeItem = function(option, item){
-		order.cart.customizeItem( option, item );
+		return order.cart.customizeItem( option, item );
+	}
+	$scope.order.cart.hasItems = function(){
+		return order.cart.hasItems();
 	}
 	// watch cart changes
 	$scope.$watch( 'order.cart.items', function( newValue, oldValue, scope ) {
@@ -321,7 +324,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
-		
+
 		$('.body').css({ 'min-height': $('.restaurant-items').height()});
 
 	});
