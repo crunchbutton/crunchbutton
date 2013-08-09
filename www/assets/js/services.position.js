@@ -2,6 +2,7 @@ NGApp.factory('PositionsService', function () {
 
 	var service = {
 		bounding: null,
+		initied: false,
 		locs: []
 	}
 
@@ -147,13 +148,13 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 	/**
 	 * initilize location functions
 	 */
-	service._start = function () {
+	service.init = function () {
 		
 		// this method could not be called twice
-		if (App._locationInitied) {
+		if (service.initied){
 			return;
 		}
-		App._locationInitied = true;
+		service.initied = true;
 		
 		// 1) set bounding to maxmind results if we have them
 		if (App.config.loc.lat && App.config.loc.lon) {
