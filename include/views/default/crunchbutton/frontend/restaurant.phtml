@@ -338,7 +338,7 @@
 	
 	</form>
 
-	<div ng-show="restaurant._open && order.cart.hasItems()" class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-bottom" ng-click="order.submit();"><div>Get Food</div></button></div>
+	<div ng-position-fixed ng-show="restaurant._open && order.cart.hasItems()" class="button-bottom-wrapper" data-role="footer" data-position="fixed"><button class="button-bottom" ng-click="order.submit();"><div>Get Food</div></button></div>
 
 	<!-- stored user info -->
 	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open && !order.showForm && order.cart.hasItems()">
@@ -380,4 +380,5 @@
 		<div class="divider"></div>
 
 	</div>
+
 </div>

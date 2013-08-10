@@ -27,7 +27,7 @@ NGApp.directive( 'ngEnter', function() {
 } );
 
 // Blur event directive
-NGApp.directive('ng-blur', function() {
+NGApp.directive('ngBlur', function() {
 		return {
 				restrict: 'A',
 				link: function postLink(scope, element, attrs) {
@@ -35,5 +35,34 @@ NGApp.directive('ng-blur', function() {
 								scope.$apply(attrs.ngBlur);
 						});
 				}
+		};
+});
+
+NGApp.directive('ngScrollPosition', function ($window, $rootScope) {
+	return function (scope, element, attrs) {
+			var window = angular.element( $window );
+			var raw = element[0];
+			element.bind('scroll', function () {
+				changeScrollTop( raw.scrollTop );
+			});
+			window.on('resize', function () {
+				changeScrollTop( raw.scrollTop );
+			});
+			function changeScrollTop( value ){
+				$rootScope.$broadcast( 'scrollUpdated', raw.scrollTop );
+			}
+		};
+});
+
+NGApp.directive('ngPositionFixed', function ($window, $rootScope) {
+	return function (scope, element, attrs) {
+			window = angular.element($window);
+			$rootScope.$on( 'scrollUpdated', function(e, data) {
+				var scrollTop = data;
+				var window_height = window.document.height;
+				var element_height = element.height();
+				var top = window_height - element_height + scrollTop;
+				element.css( { top: top } );
+			});
 		};
 });
