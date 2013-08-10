@@ -190,10 +190,20 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 
 		// 4) get a more specific bounding location result from google
 		if (google && google.load && !google.maps ) {
-			google.load('maps', '3', {
-				callback: service.googleCallback,
-				other_params: 'sensor=false'
-			});
+
+			// @HACK / @TODO: google loader breaks phonegap
+			if (App.isPhoneGap) {
+				App.gmapsPluginLoaded = service.googleCallback;
+				var gmaps = document.createElement('script');
+	        	gmaps.src = 'http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&callback=App.gmapsPluginLoaded';
+				$('head').append(gmaps);
+			} else {
+				google.load('maps', '3', {
+					callback: service.googleCallback,
+					other_params: 'sensor=false'
+				});
+			}
+
 		}
 	}
 
