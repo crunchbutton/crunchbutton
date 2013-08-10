@@ -750,4 +750,3 @@ App.playAudio = function(audio) {
 		audio.play();
 	} catch(e){}
 }
-
