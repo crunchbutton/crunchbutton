@@ -17,9 +17,6 @@ body {
 	color: #666;
 	font-size: 14px;
 }
-.bg {
-	background: #f5f5f5 url(../images/groovepaper.png);
-}
 .pacman-loading{
 	display: none;
 }
@@ -1323,9 +1320,7 @@ html[xmlns] .clearfix {
 		height: 44px;
 		background-size: 44px;
 	}
-	.bg {
-		background: #f5f5f5 url(../images/crisp_paper_ruffles-mobile.png);
-	}
+
 	.logo-img {
 		width: 168px;
 		height: 23px;
@@ -1559,7 +1554,7 @@ html[xmlns] .clearfix {
 		display: inline-block;
 	}
 	.cart-items {
-		float: left;
+		float: none;
 		width: 100%;
 
 	}
@@ -1719,7 +1714,7 @@ html[xmlns] .clearfix {
 		float: right !important;
 		height: 30px !important;
 		width: 45px !important;
-		margin-top: -12px !important;
+		margin-top: -14px !important;
 		margin-right: 10px !important;
 	}
 		.sign-in-icon.left{
