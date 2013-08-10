@@ -28,7 +28,7 @@ NGApp.factory('PositionsService', function () {
 });
 
 // LocationServiceservice
-NGApp.factory('LocationService', function ($location, RestaurantsService, PositionsService, AccountService) {
+NGApp.factory('LocationService', function ($location, RestaurantsService, PositionsService, AccountService, CommunityAliasService) {
 
 	var service = {
 		form: {
@@ -41,6 +41,8 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 		loadRestaurantsPage: true,
 		_initied : false
 	}
+
+	var community = CommunityAliasService;
 
 	service.account = AccountService;
 	service.position = PositionsService;
@@ -350,8 +352,7 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 				}
 			});
 		};
-		// TODO: use the service
-		App.routeAlias(address, rsuccess, rerror);
+		community.route(address, rsuccess, rerror);
 	}
 
 
