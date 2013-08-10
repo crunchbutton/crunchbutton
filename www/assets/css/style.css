@@ -1551,7 +1551,7 @@ html[xmlns] .clearfix {
 		display: inline-block;
 	}
 	.cart-items {
-		float: left;
+		float: none;
 		width: 100%;
 
 	}
