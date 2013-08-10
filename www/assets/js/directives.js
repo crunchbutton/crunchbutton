@@ -40,6 +40,7 @@ NGApp.directive('ngBlur', function() {
 
 NGApp.directive('ngScrollPosition', function ($window, $rootScope) {
 	return function (scope, element, attrs) {
+			if( !App.isNarrowScreen() ){ return; }
 			var window = angular.element( $window );
 			var raw = element[0];
 			element.bind('scroll', function () {
@@ -49,13 +50,15 @@ NGApp.directive('ngScrollPosition', function ($window, $rootScope) {
 				changeScrollTop( raw.scrollTop );
 			});
 			function changeScrollTop( value ){
+				angular.element( '#button-get-food' ).css( { display: 'none' } );
 				$rootScope.$broadcast( 'scrollUpdated', raw.scrollTop );
 			}
 		};
 });
 
-NGApp.directive('ngPositionFixed', function ($window, $rootScope) {
+NGApp.directive('ngPositionFixed', function ($window, $rootScope, $timeout) {
 	return function (scope, element, attrs) {
+			if( !App.isNarrowScreen() ){ return; }
 			window = angular.element($window);
 			$rootScope.$on( 'scrollUpdated', function(e, data) {
 				var scrollTop = data;
@@ -63,6 +66,12 @@ NGApp.directive('ngPositionFixed', function ($window, $rootScope) {
 				var element_height = element.height();
 				var top = window_height - element_height + scrollTop;
 				element.css( { top: top } );
+				$timeout.cancel( scrollTimer );
+				var scrollTimer = $timeout( function(){ 
+						element.css( { display: 'block' } );
+						$timeout.cancel( scrollTimer );
+						console.log('timer') } ,
+						700 );
 			});
 		};
 });
