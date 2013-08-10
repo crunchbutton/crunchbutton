@@ -122,38 +122,39 @@
 				</div>
 
 			</div>
-		</div>
 
-		<!-- menu -->
-		<div class="restaurant-items">
-			<div class="content-item-name content-item-main-name">
-				<h1>
-					Add to your order
-					<div ng-show="!App.isMobile()" ng-include="assets/view/restaurant.suggestion.tooltip.html"></div>
-				</h1>
-			</div>
-		
-			<div ng-repeat="category in restaurant.categories()">
-				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
-				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-					<li ng-repeat="dish in category.dishes()" ng-click="order.cart.add( dish.id_dish )" class="dish-item">
-						<span class="dish-name"><i class="icon-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-price">({{AB.dollar}}{{dish.price}}{{AB.changeablePrice(dish)}})</span>
-					</li>
-				</ul>
-			</div>
-		
-			<div class="suggestion-link-container" ng-controller="RecommendFoodCtrl">
-				<div class="suggestion-link-title">Really want something else?</div>
-					<a href="javascript:;" ng-click="recommend.modal.open();"><b><i>Suggest other food</i></b></a>
-			</div>
+
+			<!-- menu -->
+			<div class="restaurant-items">
+				<div class="content-item-name content-item-main-name">
+					<h1>
+						Add to your order
+						<div ng-show="!App.isMobile()" ng-include="assets/view/restaurant.suggestion.tooltip.html"></div>
+					</h1>
+				</div>
 			
+				<div ng-repeat="category in restaurant.categories()">
+					<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
+					<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
+						<li ng-repeat="dish in category.dishes()" ng-click="order.cart.add( dish.id_dish )" class="dish-item">
+							<span class="dish-name"><i class="icon-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-price">({{AB.dollar}}{{dish.price}}{{AB.changeablePrice(dish)}})</span>
+						</li>
+					</ul>
+				</div>
+			
+				<div class="suggestion-link-container" ng-controller="RecommendFoodCtrl">
+					<div class="suggestion-link-title">Really want something else?</div>
+						<a href="javascript:;" ng-click="recommend.modal.open();"><b><i>Suggest other food</i></b></a>
+				</div>
+				
+			</div>
+			<div class="divider"></div>
 		</div>
-		<div class="divider"></div>
 	</div>
 
 	<div class="restaurant-payment-div"></div>
 
-	<div class="is-closet main-content-readable" >
+	<div class="is-closet main-content-readable" ng-show="!restaurant.open()">
 		<div class="restaurant-closed" ng-show="!restaurant.open()">
 			<div class="restaurant-closed-icon"></div>
 			<div class="restaurant-closed-content">
