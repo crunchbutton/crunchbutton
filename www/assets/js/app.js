@@ -214,7 +214,6 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 			// Store the actual page
 			MainNavigationService.page = $route.current.action;
-			return;
 
 			var renderAction = $route.current.action;
 			var renderPath = renderAction.split('.');
@@ -230,42 +229,16 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 				scrollTo(0, 1);
 			}, 80);
 
+			$('body').removeClass(function (index, css) {
+				return (css.match (/\broute-\S+/g) || []).join(' ');
+			}).addClass('route-' + renderAction);
+
 			/*
-			if (!App.isNarrowScreen()) {
-				return false;
-			}
-
-			$( '.sign-in-icon' ).removeClass( 'config-icon-mobile-hide' );
-			$( '.config-icon' ).removeClass( 'config-icon-mobile-hide' );
-			switch (renderAction) {
-				case 'restaurant':
-				case 'order':
-					$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-					break;
-
-				case 'home':
-					$( '.config-icon' ).addClass( 'config-icon-back-home' );
-					break;
-
-				case 'orders':
-					$( '.sign-in-icon' ).addClass( 'config-icon-mobile-hide' );
-					$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-					break;
-
-				case 'restaurants':
-					$( '.sign-in-icon' ).addClass( 'left' );
-					$( '.config-icon' ).addClass( 'right' );
-					break;
-			}
-
-
 			$('.content').addClass('smaller-width');
 			$('.main-content').css('width','auto');
 
-
-	$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-	$( '.nav-back' ).addClass( 'nav-back-show' );
-
+			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+			$( '.nav-back' ).addClass( 'nav-back-show' );
 			*/
 
 		}

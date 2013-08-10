@@ -6,7 +6,6 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 	service.position = PositionsService;
 
 	service.route = function( id, success, error ){
-
 		id = id.replace('/','').toLowerCase();
 		alias = App.aliases[id] || false;
 		success = success || function(){};
