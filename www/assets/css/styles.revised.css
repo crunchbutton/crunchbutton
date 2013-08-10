@@ -434,6 +434,7 @@ html {
 .snap-drawers {
 	background: #3d3731;
 	color: #eee;
+	font-family: Helvetica, Arial, sans-serif;
 }
 
 .snap-drawer ul {
@@ -567,10 +568,26 @@ html {
 		margin-top: 25px;
 		margin-bottom: 25px;
 	}
+	/*
+	.bg {
+		background: #f5f5f5 url(../images/crisp_paper_ruffles-mobile.png);
+	}
+	*/
+	.bg {
+		background: #f5f5f5 url(../images/appbg/marlas-tacos.jpg);
+		-webkit-transition: all linear 0.1s;
+		   -moz-transition: all linear 0.1s;
+		    -ms-transition: all linear 0.1s;
+		     -o-transition: all linear 0.1s;
+		        transition: all linear 0.1s;
+	}
 }
 
 
 @media only screen and (min-width : 769px) {
+	.bg {
+		background: #f5f5f5 url(../images/groovepaper.png);
+	}
 	.main-content {
 		margin-top: 70px;
 	}
