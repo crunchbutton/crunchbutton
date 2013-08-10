@@ -1009,6 +1009,9 @@ html[xmlns] .clearfix {
 	.content-item-locations-cities{
 		text-align: center;
 	}
+	.signin-icon, .signin-user{
+		margin-top: 10px;
+	}
 }
 
 .meal-item-tag, .meal-item-tag-closed {
@@ -1820,6 +1823,10 @@ html[xmlns] .clearfix {
 				margin-left: 50px;
 				position: absolute;
 				white-space: nowrap;
+		}
+
+		.signin-icon, .signin-user{
+			margin-top: 0;
 		}
 }	
 
