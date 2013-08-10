@@ -980,6 +980,10 @@ html[xmlns] .clearfix {
 
 @media only screen and (max-width : 1023px) {
 
+	.signin-box-header{
+		margin:0 10px 0 0 !important;
+	}
+
 	.order-begin{
 		margin-right: auto !important;
 		margin-left: auto !important;
@@ -1103,6 +1107,7 @@ html[xmlns] .clearfix {
 	text-transform: none;
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 	margin-top: 40px;
+
 }
 
 
@@ -1476,6 +1481,9 @@ html[xmlns] .clearfix {
 		background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #444), color-stop(1, #333) );
 		height: 52px;
 		border-top: 1px solid #000;
+	}
+	.snap-content{
+		position: absolute;
 	}
 	.button-bottom {
 		margin-top: 5px;
