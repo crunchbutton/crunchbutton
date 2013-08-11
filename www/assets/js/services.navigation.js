@@ -1,5 +1,5 @@
 // MainHeaderService service
-NGApp.factory( 'MainNavigationService', function( $http, $location, AccountService, AccountModalService ){ 
+NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route, AccountService, AccountModalService, RestaurantsService  ){ 
 	
 	var service = {
 		page : '',
@@ -18,6 +18,10 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, AccountServi
 		} else {
 			service.link();
 		}
+	}
+
+	service.goToRestaurants = function(){
+		return service.link( App.restaurants.permalink );
 	}
 
 	service.link = function( path ){
@@ -44,6 +48,12 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, AccountServi
 				break;
 		}
 	}
+
+	$rootScope.$on( 'userAuth', function(e, data) {
+		$rootScope.$safeApply( function(){
+			$route.reload();
+		} );
+	});
 
 	return service;
 

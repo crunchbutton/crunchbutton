@@ -70,10 +70,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope ){
 							service.callback = false;
 						} else {
 							$.magnificPopup.close();
-							if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-								App.page.restaurant( App.restaurant.permalink );
-							}
-							App.signin.manageLocation();
+							$rootScope.$broadcast( 'userAuth', service.user );
 						}
 					}
 			}	);
@@ -117,10 +114,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope ){
 							service.callback = false;
 						} else {
 							$.magnificPopup.close();
-							if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-								App.page.restaurant( App.restaurant.permalink );
-							}
-							App.signin.manageLocation();
+							$rootScope.$broadcast( 'userAuth', service.user );
 						}
 					}
 					

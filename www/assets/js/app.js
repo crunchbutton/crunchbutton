@@ -7,7 +7,6 @@
  *
  */
 var App = {
-	currentPage: null,
 	tagline: '',
 	service: '/api/',
 	server: '/',
@@ -84,7 +83,6 @@ App.NGinit = function() {
 };
 
 var NGApp = angular.module('NGApp', []);
-
 
 NGApp.config(function($compileProvider){
 	$compileProvider.urlSanitizationWhitelist(/.*/);
@@ -410,44 +408,6 @@ App.init = function(config) {
 		CB.config = null;
 	}
 
-	$(document).on('click', '.location-detect', function() {
-		// detect location from the browser
-		$('.location-detect-loader').show();
-		$('.location-detect-icon').hide();
-
-		var error = function() {
-			$('.location-address').val('Oh no! We couldn\'t locate you');
-			$('.location-detect-loader').hide();
-			$('.location-detect-icon').show();
-		};
-
-		var success = function() {
-			App.page.foodDelivery();
-//			$('.location-detect-loader').hide();
-//			$('.location-detect-icon').show();
-//			$('.button-letseat-form').click();
-		};
-
-		App.loc.getLocationByBrowser(success, error);
-	});
-
-	$(document).on({
-		mousedown: function() {
-			$(this).addClass('location-detect-click');
-		},
-		touchstart: function() {
-			$(this).addClass('location-detect-click');
-		},
-		mouseup: function() {
-			$(this).removeClass('location-detect-click');
-		},
-		touchend: function() {
-			$(this).removeClass('location-detect-click');
-		}
-	}, '.location-detect');
-
-
-
 	if (App.isMobile()) {
 
 		// prevent double trigger
@@ -511,35 +471,26 @@ App.init = function(config) {
 		});
 		*/
 	}
-/*
-	$('.dish-item').click(function() {
-		App.cart.add($(this).attr('data-id_dish'));
-	});
 
-	$('.cart-button-remove').click(function() {
-		App.cart.remove($(this).closest('.cart-item'));
-	});
-
-	$('.cart-button-add').click(function() {
-		App.cart.clone($(this).closest('.cart-item'));
-	});
-
-	$('.cart-item-config a').click(function() {
-		App.cart.customize($(this).closest('.cart-item'));
-	});
-
-	$('.button-submitorder-form').click(function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		App.crunchSoundAlreadyPlayed = false;
-		App.isDeliveryAddressOk = false;
-		App.cart.submit($(this),true);
-	});
-*/
 	$(document).on('click', '.button-deliver-payment, .dp-display-item a, .dp-display-item .clickable', function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();
 	});
+
+	$(document).on({
+		mousedown: function() {
+			$(this).addClass('location-detect-click');
+		},
+		touchstart: function() {
+			$(this).addClass('location-detect-click');
+		},
+		mouseup: function() {
+			$(this).removeClass('location-detect-click');
+		},
+		touchend: function() {
+			$(this).removeClass('location-detect-click');
+		}
+	}, '.location-detect');
 
 	$(document).on({
 		mousedown: function() {
@@ -555,121 +506,12 @@ App.init = function(config) {
 			$(this).removeClass('button-bottom-click');
 		}
 	}, '.button-bottom');
-/*
-	$(document).on('change', '.cart-customize-select', function() {
-		App.cart.customizeItem($(this));
-	});
-
-	$( '.default-order-check' ).click( function(){
-		setTimeout( function(){
-			$( '#default-order-check' ).checkToggle();
-		}, 1 );
-	} );
-	$('.cart-customize-check').click( function() {
-		var checkbox = $(this);
-		setTimeout( function(){
-			if( !App.isMobile() ){
-				checkbox.checkToggle();
-			}
-			App.cart.customizeItem( checkbox );
-		}, 1 );
-	});
-
-	$('.cart-item-customize-item label').click(function() {
-		$(this).prev('input').checkToggle();
-		App.cart.customizeItem( $(this).prev('input') );
-	});
-
-	$(document).on('change', '[name="pay-tip"]', function() {
-		App.order.tip = $(this).val();
-		App.order.tipHasChanged = true;
-		var total = App.cart.total();
-		App.cart.updateTotal();
-	});
-
-	$(document).on('change', '[name="pay-card-number"], [name="pay-card-month"], [name="pay-card-year"]', function() {
-		if( !App.order.cardChanged ){
-			var self = $( this );
-			var cardInfo = [ '[name="pay-card-number"]', '[name="pay-card-month"]', '[name="pay-card-year"]' ];
-			$( cardInfo ).each( function( index, value ){
-				var input = $( value );
-				if( self.attr( 'name' ) != input.attr( 'name' ) ){
-					input.val( '' );
-				}
-			} )
-		}
-		App.order.cardChanged = true;
-	});
-
-	$(document).on('change, keyup', '[name="pay-card-number"]', function() {
-		App.creditCard.changeIcons( $(this).val() );
-	});
-
-	$(document).on('keyup', '[name="pay-phone"]', function() {
-		$(this).val( App.phone.format($(this).val()) );
-	});
-
-
-	$('.cart-summary').click(function(e) {
-		e.stopPropagation();
-		e.preventDefault();
-		$('html, body').animate({
-			scrollTop: $('.cart-items').position().top-80
-		}, {
-			duration: 500,
-			specialEasing: {
-				scrollTop: 'easeInOutQuart'
-			}
-		});
-	});
-
-	// hide the top bar when any input is focused
-	/*
-	if (App.isMobile() && !App.isAndroid()) {
-		setInterval(function() {
-			var focused = $(':focus');
-			if (!focused.length) {
-				$('[data-position="fixed"]').show();
-				return;
-			}
-
-			focused = focused.get(0);
-
-			if (focused.tagName == 'SELECT' || focused.tagName == 'INPUT' || focused.tagName == 'TEXTAREA') {
-				// @todo: fix this so it hides
-				//$('[data-position="fixed"]').hide();
-			} else {
-				$('[data-position="fixed"]').show();
-			}
-		}, 100);
-	}
-	*/
-
-
-	// @depreciated: i dont think this is used anymore
-	/*
-
-	$( '.ui-dialog-titlebar-close' ).click( function(){
-		try{
-			$( '.ui-dialog-content' ).dialog( 'close' );
-		} catch(e){}
-	} );
-	*/
 
 	App.processConfig(config || App.config);
 	App.AB.init();
 	App.test.init();
 	App.NGinit();
 };
-
-App.getCommunityById = function( id ){
-	for (x in App.communities) {
-		if( App.communities[x].id_community == id ){
-			return App.communities[x];
-		}
-	}
-	return false;
-}
 
 /**
  * dialog functions
