@@ -479,7 +479,12 @@ html {
 	     -o-transform: translate3d(0, 0, 0);
 	        transform: translate3d(0, 0, 0);
 }
-
+/* Firefox doesnt need it - it crashes ff */
+@-moz-document url-prefix() { 
+	.snap-content{
+		transform: none;		
+	}
+}
 .snap-drawers {
 	position: absolute;
 	top: 0;
