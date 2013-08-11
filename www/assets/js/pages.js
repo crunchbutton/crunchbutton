@@ -139,6 +139,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 	$scope.isUser = account.user.has_auth;
 	$scope.notUser = !account.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
+	$scope.recommend = {};
 
 	$scope.location = LocationService;
 
@@ -168,6 +169,12 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 		$scope.yourArea = $scope.location.position.pos().city() || 'your area';
 	});
 
+	$scope.$on( 'locationError', function(e, data) {
+		console.debug('locationError');
+		$scope.recommend.greetings = false;
+		$scope.locationError = true;
+	});
+
 	// lets eat button
 	$scope.letsEat = function() {
 		$scope.location.form.address = $.trim( $scope.location.form.address );
@@ -185,8 +192,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 						},
 						// Error
 						function(){
-							$scope.recommend.greetings = false;
-							$scope.locationError = true;
+							$scope.$broadcast( 'locationError' );
 						} );
 				}, 
 				// Address not ok

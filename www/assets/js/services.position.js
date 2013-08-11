@@ -2,7 +2,6 @@ NGApp.factory('PositionsService', function () {
 
 	var service = {
 		bounding: null,
-		initied: false,
 		locs: []
 	}
 
@@ -28,7 +27,7 @@ NGApp.factory('PositionsService', function () {
 });
 
 // LocationServiceservice
-NGApp.factory('LocationService', function ($location, RestaurantsService, PositionsService, AccountService, CommunityAliasService) {
+NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsService, PositionsService, AccountService, CommunityAliasService) {
 
 	var service = {
 		form: {
@@ -39,7 +38,7 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 		locationNotServed: false,
 		initied: false,
 		loadRestaurantsPage: true,
-		_initied : false
+		initied : false
 	}
 
 	var community = CommunityAliasService;
@@ -190,21 +189,14 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 
 		// 4) get a more specific bounding location result from google
 		if (google && google.load && !google.maps ) {
-
-			// @HACK / @TODO: google loader breaks phonegap
-			if (App.isPhoneGap) {
-				App.gmapsPluginLoaded = service.googleCallback;
-				var gmaps = document.createElement('script');
-	        	gmaps.src = 'http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&callback=App.gmapsPluginLoaded';
-				$('head').append(gmaps);
-			} else {
-				google.load('maps', '3', {
-					callback: service.googleCallback,
-					other_params: 'sensor=false'
-				});
-			}
-
+			google.load('maps', '3', {
+				callback: service.googleCallback,
+				other_params: 'sensor=false'
+			});
 		}
+
+
+
 	}
 
 	// TODO I changed this method just to make it work, it is not ready yet		
@@ -221,16 +213,12 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 				service.reverseGeocode(service.bounding.lat, service.bounding.lon,
 
 					// Success
-
 					function (loc) {
-
 						service.bounding.city = loc.city();
 						service.bounding.region = '';
-
 						service.position.addLocation(loc);
 						service.restaurantsService.list(
 							// Success
-
 							function () {
 								if (service.loadRestaurantsPage) {
 									$location.path('/' + App.restaurants.permalink);
@@ -238,14 +226,11 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 								service.loadRestaurantsPage = true;
 							},
 							// Error
-
 							function () {
-								// alert( 'error' );
+								$rootScope.$broadcast( 'locationError',  true );
 							});
-
 					},
 					// Error
-
 					function () {});
 			}
 		}
@@ -265,9 +250,55 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 			}
 		}
 
-		// 5) if there is no previously used locations of any kind
+		// 5) if there are location
+		if( service.position.locs.length ){
+					var loc = service.position.pos();
+					service.reverseGeocode(loc.lat(), loc.lon(),
+					// Success
+					function (loc) {
+						service.bounding = {
+							lat: loc.lat(),
+							lon: loc.lat(),
+							city: loc.city()
+						};
+						service.restaurantsService.list(
+							// Success
+							function () {
+								if (service.loadRestaurantsPage) {
+									$location.path('/' + App.restaurants.permalink);
+								}
+								service.loadRestaurantsPage = true;
+							},
+							// Error
+							function () {
+								$rootScope.$broadcast( 'locationError',  true );
+							});
+					},
+					// Error
+					function () {});
+		} else 
+		// 6) if there is no previously used locations of any kind
 		if (!service.position.locs.length) {
-			service.getLocationByBrowser(function () {}, error);
+			service.getLocationByBrowser(function ( loc ) {
+						service.bounding = {
+							lat: loc.lat(),
+							lon: loc.lat(),
+							city: loc.city(),
+							type: 'geolocation'
+						};
+						service.position.addLocation(loc);
+						service.restaurantsService.list(
+							function () {
+								if (service.loadRestaurantsPage) {
+									$location.path('/' + App.restaurants.permalink);
+								}
+								service.loadRestaurantsPage = true;
+							},
+							function () {
+								$rootScope.$broadcast( 'locationError',  true );
+							});
+
+			}, error);
 		} else {
 			error();
 		}
@@ -362,6 +393,7 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 				}
 			});
 		};
+
 		community.route(address, rsuccess, rerror);
 	}
 
@@ -518,7 +550,7 @@ NGApp.factory('LocationService', function ($location, RestaurantsService, Positi
 			service.geocode(address, function (loc) {
 				service.position.addLocation(loc);
 				success();
-				$.totalStorage('boundingv2', service.bounding);
+				$.totalStorage.setItem('boundingv2', service.bounding);
 			}, error);
 		}
 		//service.geocode(address, success, error);
