@@ -10,6 +10,10 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 		isSorted = false;
 	}
 
+	service.getRestaurants = function(){
+		return restaurants;
+	}
+
 	service.position = PositionsService;
 
 	service.sort = function () {
@@ -100,13 +104,28 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 	return service;
 });
 
+
+//CommunityService Service
+NGApp.factory( 'CommunityService', function( $http ){
+	var service = {};
+	service.getById = function( id ){
+		for (x in App.communities) {
+			if( App.communities[x].id_community == id ){
+				return App.communities[x];
+			}
+		}
+		return false;
+	}
+	return service;
+} );
+
 //RestaurantService Service
-NGApp.factory('RestaurantService', function ($http, $routeParams, $rootScope ) {
+NGApp.factory('RestaurantService', function ($http, $routeParams, $rootScope, CommunityService ) {
 	var service = {};
 	service.init = function(){
 		App.cache('Restaurant', $routeParams.id, function () {
 			var restaurant = this;
-			var community = App.getCommunityById( restaurant.id_community );
+			var community = CommunityService.getById( restaurant.id_community );
 			$rootScope.$broadcast( 'restaurantLoaded',  { restaurant : restaurant, community : community } );
 		});
 	}

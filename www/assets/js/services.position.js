@@ -21,7 +21,6 @@ NGApp.factory('PositionsService', function () {
 	service.pos = function () {
 		return ((service.locs.length) ? service.locs[service.locs.length - 1] : new Location);
 	}
-
 	return service;
 
 });

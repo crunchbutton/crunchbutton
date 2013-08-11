@@ -296,7 +296,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		if (App.busy.isBusy()) {
 			return;
 		}
-		// TODO: put it in a service
+
 		App.busy.makeBusy();
 
 		var order = {
@@ -393,9 +393,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 
 			// Check if the user address was already validated
 			if (!service._deliveryAddressOk) {
-				/* TODO: make the aproxLoc work
 
-				// Use the aproxLoc to create the bounding box */
 				if (service.location.bounding) {
 					var latLong = new google.maps.LatLng(service.location.bounding.lat,service.location.bounding.lon);
 				}
@@ -546,12 +544,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 					if (json.token) {
 						$.totalStorage('token', json.token );
 					}
-					/*
-					$('.link-orders').show();
-					order.cardChanged = false;
-					App.justCompleted = true;
-					App.giftcard.notesCode = false;
-					*/
+
 					service.account.updateInfo();
 					App.cache('Order', json.uuid, function () {
 						App.track('Ordered', {
@@ -567,6 +560,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 
 						service.resetOrder();
 						$rootScope.$safeApply( function(){
+							$rootScope.$broadcast( 'newOrder' );
 							$location.path( '/order/' + uuid );	
 						} );
 					});
@@ -592,6 +586,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 	 * @return void
 	 */
 	service.updateTotal = function () {
+
 		// Stop runing the method if the restaurant wasn't loaded yet 
 		if (!service.restaurant.id_restaurant) {
 			return;
@@ -646,17 +641,6 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 				credit = this.total();
 			}
 		} 
-		/* TODO: find out what this piece of code does
-			$('.cart-item-customize-price').each(function () {
-				var dish = $(this).closest('.cart-item-customize').attr('data-id_cart_item'),
-					option = $(this).closest('.cart-item-customize-item').attr('data-id_option'),
-					cartitem = service.items[dish],
-					opt = App.cached['Option'][option],
-					price = opt.optionPrice(cartitem.options);
-
-				$(this).html(service.customizeItemPrice(price));
-			});
-			*/
 	}
 	service._autotip = function () {
 		var subtotal = service.totalbreakdown().subtotal;
@@ -755,8 +739,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 			service.form.tip = 'autotip';
 			service.tooglePayment( 'card' );
 			// Add one dish of each category
-			if( !service.askedAboutFood ){
-				service.askedAboutFood = true;
+			if( !service._askedAboutFood ){
+				service._askedAboutFood = true;
 				if( confirm( 'Add some food?' ) ){
 					var categories = service.restaurant.categories()
 					for( x in categories ){
@@ -775,17 +759,23 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 	return service;
 });
 // OrdersService service
-NGApp.factory('OrdersService', function ($http, $location) {
+NGApp.factory('OrdersService', function ($http, $location, $rootScope) {
 	var service = {
-		list: false
+		list: false,
+		reload : true
 	};
 
 	service.all = function () {
+		if( service.list && !service.reload ){
+			return service.list;
+		}
+
 		list = false;
 		service.list = list;
 		$http.get(App.service + 'user/orders', {
 			cache: false
 		}).success(function (json) {
+			service.reload = false;
 			if( json ){
 				for (var x in json) {
 					json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');
@@ -798,12 +788,20 @@ NGApp.factory('OrdersService', function ($http, $location) {
 			service.list = list;
 		});
 	}
+
 	service.restaurant = function (permalink) {
 		$location.path('/' + App.restaurants.permalink + '/' + permalink);
 	};
+
 	service.receipt = function (id_order) {
 		$location.path('/order/' + id_order);
 	};
+
+	// Reload the orders list
+	$rootScope.$on( 'newOrder', function(e, data) {
+		service.reload = true;
+	});
+
 	return service;
 });
 

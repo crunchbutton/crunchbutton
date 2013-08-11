@@ -134,17 +134,8 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 									}
 									
 								}
-								App.log.account( { 'userID' : session.authResponse.userID, 'currentPage' : App.currentPage } , 'facebook currentPage' );
-								/* TODO: solve it
-
-								// If the user is at the restaurant's page - reload it
-								if( App.currentPage == 'restaurant' && App.restaurant.permalink ){
-									App.page.restaurant( App.restaurant.permalink );
-								}
-								if( App.currentPage == 'orders' ){
-									App.page.orders()								
-								}
-								*/
+								App.log.account( { 'userID' : session.authResponse.userID } , 'facebook currentPage' );
+								$rootScope.$broadcast( 'userAuth', service.user );
 							}	);
 					}
 				} else {
