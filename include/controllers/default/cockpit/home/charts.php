@@ -33,18 +33,20 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		$this->chart->processInterval( $info[ 'chart' ][ 'interval' ] );
 		$chart->processInterval( $info[ 'chart' ][ 'interval' ] );
 
+		$description = $this->chart->getChartDescription( $this->chartId );
+
 		switch ( $type ) {
 			case 'column':
 				$params = array_merge( $chart->$method( true ), $info );
-				$this->renderColumn( $params, $chart->getGroupedCharts( $info ) );
+				$this->renderColumn( $params, $chart->getGroupedCharts( $info ), $description );
 				break;
 			case 'area':
 				$params = array_merge( $chart->$method( true ), $info );
-				$this->renderArea( $params, $chart->getGroupedCharts( $info ) );
+				$this->renderArea( $params, $chart->getGroupedCharts( $info ), $description );
 				break;
 			case 'pie_communities':
 				$params = array_merge( $chart->$method( true ), $info );
-				$this->renderPieCommunities( $params, $chart->getGroupedCharts( $info ) );
+				$this->renderPieCommunities( $params, $chart->getGroupedCharts( $info ), $description );
 				break;
 		}
 	}
@@ -92,11 +94,9 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		$info = $chart->getChartInfo( $this->chartId );
 		if( $info ){ $this->process( $info, $chart ); exit; }
 
-
-
 	}
 
-	private function renderPieCommunities( $params, $groups ){
+	private function renderPieCommunities( $params, $groups, $description ){
 			c::view()->display('charts/pie_communities', ['set' => [
 				'chartId' => $this->chartId,
 				'data' => $params[ 'data' ],
@@ -104,11 +104,12 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				'number' => $this->number,
 				'unit' => $params[ 'unity' ],
 				'groups' => $groups,
-				'divId' => $this->divId
+				'divId' => $this->divId,
+				'description' => $description
 			]]); 
 	}
 
-	private function renderArea( $params, $groups ){
+	private function renderArea( $params, $groups, $description ){
 
 		$title = $params[ 'title' ] . ' : ' . $groups[ $this->chartId ][ 'title' ];
 
@@ -135,11 +136,12 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					'info' => $params,
 					'hideGroups' => $params[ 'hideGroups' ],
 					'hideSlider' => $params[ 'hideSlider' ],
-					'divId' => $this->divId
+					'divId' => $this->divId,
+					'description' => $description
 		]]); 
 	}
 
-	private function renderColumn( $params, $groups ){
+	private function renderColumn( $params, $groups, $description ){
 
 		$title = $params[ 'title' ] . ' : ' . $groups[ $this->chartId ][ 'title' ];
 
@@ -164,7 +166,8 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 						'title' => $title,
 						'groups' => $groups,
 						'info' => $params,
-						'divId' => $this->divId
+						'divId' => $this->divId,
+						'description' => $description
 					]]); 
 	}
 }
