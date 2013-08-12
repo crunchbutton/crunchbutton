@@ -16,7 +16,6 @@ class Crunchbutton_Chart_Giftcard extends Crunchbutton_Chart {
 												),
 												'group-giftcards-redeemed' => array(
 														'title' => 'Gift card Redeemed',
-														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'gift-cards-redeemed-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'redeemedByDay', 'filters' => array( array( 'title' => 'By Group', 'type' => 'group', 'method' => 'redeemedPerGroupByDay' ) ) ),
 																'gift-cards-redeemed-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'redeemedByWeek', 'filters' => array( array( 'title' => 'By Group', 'type' => 'group', 'method' => 'redeemedPerGroupByWeek' ) ) ),
