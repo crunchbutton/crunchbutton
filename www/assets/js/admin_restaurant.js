@@ -1165,6 +1165,11 @@ var ADMIN = {
 			UTIL.show_msg('Please wait the restaurant load!');
 			return;
 		}
+		if( $('#restaurant-community').val() == '' ){
+			alert( 'Please type the community name.' );
+			$('#restaurant-community').focus();
+			return;
+		}
 		validation_warnings = DOM_MAP.validate();
 		if(validation_warnings.length) {
 			console.log(validation_warnings);

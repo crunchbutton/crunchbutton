@@ -88,8 +88,8 @@
 									<span class="span8 pull-right">
 										<select name="community" class="chzn-select">
 											<option value="" selected>[ All ]</option>
-											<? foreach (Community::q('select * from community order by name') as $community) : ?>
-												<option value="<?=$community->id_community?>"><?=$community->name?></option>
+											<? foreach (Restaurant::getCommunities() as $community) :  ?>
+												<option value="<?=$community?>"><?=$community?></option>
 											<? endforeach ; ?>
 										</select>
 									</span>
