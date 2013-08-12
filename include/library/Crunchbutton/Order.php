@@ -535,11 +535,14 @@ class Crunchbutton_Order extends Cana_Table {
 		if ($search['restaurant']) {
 			$query .= ' and `order`.id_restaurant="'.$search['restaurant'].'" ';
 		}
-
+/*
 		if ($search['community']) {
 			$query .= ' and `order`.id_community="'.$search['community'].'" ';
 		}
-
+*/
+		if ($search['community']) {
+			$query .= ' and `restaurant`.community="'.$search['community'].'" ';
+		}
 		if ($search['order']) {
 			$query .= ' and `order`.id_order="'.$search['order'].'" ';
 		}
