@@ -3,7 +3,6 @@
 class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 	public function process( $info, $chart ){
-
 		$title = $info[ 'title' ];
 		$subTitle = $info['chart'][ 'title' ];
 		$type = $info['chart'][ 'type' ];
@@ -11,10 +10,12 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		
 		if( $_GET['filter'] ){
 			$filters = $info['chart'][ 'filters' ];
-			foreach( $filters as $filter ){
-				if( $filter[ 'type' ] == $_GET['filter'] ){
-					$method = $filter[ 'method' ];
-					$info[ 'filter' ] = $filter[ 'type' ];
+			if( $filters ){
+				foreach( $filters as $filter ){
+					if( $filter[ 'type' ] == $_GET['filter'] ){
+						$method = $filter[ 'method' ];
+						$info[ 'filter' ] = $filter[ 'type' ];
+					}
 				}
 			}
 		}

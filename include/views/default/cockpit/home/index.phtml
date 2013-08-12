@@ -115,22 +115,35 @@
 					?>
 			<!-- Settings -->
 			 <div class="row-fluid">
-						<div class="span3">
-							 <ul class="padded separate-sections">
-									<li>
-										 <span class="span7">
-										 <label for="active-user">
-										 <b>Active user (days)</b>
-										 </label>
-										 </span>
-										 <span class="span4">
-										 <input name="active-user-days" class="span12" id="active-user-days" type="number" placeholder="days" value="45">
-										 </span>
-										 <div class="clearfix"></div>
-									</li>
-							 </ul>
+						<div class="span2">
+							<div>
+								<b>Active user (days)</b>
+							</div>
+							<div>
+								<input name="active-user-days" class="span12" id="active-user-days" type="number" placeholder="days" value="45">
+							</div>
 						</div>
-						<div class="span7">
+						<div class="span2">
+							<div>
+								<b>Community</b>
+							</div>
+							<div>
+								<?php 
+									$communities = Restaurant::getCommunities();
+								?>
+								<select name="filter-by-community" id="filter-by-community">
+									<option value="">Ignore filter</option>
+									<option value="all">All</option>
+									<?php 
+										foreach( $communities as $community ){
+											echo '<option value="' . $community . '">' . $community . '</option>';
+										}
+									?>
+
+								</select>
+							</div>
+						</div>
+						<div class="span6">
 							 <div id="slider-master"></div>
 							 <br />
 							 <div id="slider-label"></div>
@@ -305,6 +318,11 @@
 			}
 		}
 	 
+		if( $('#filter-by-community').val() != '' ){
+			params[ 'filter' ] = 'community';
+			params[ 'community' ] = $('#filter-by-community').val();
+		}
+
 		var strParams = "?";
 		for ( var key in params ) {
 			if ( strParams != "?" ) {
