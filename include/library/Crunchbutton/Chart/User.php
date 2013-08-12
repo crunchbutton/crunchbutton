@@ -25,7 +25,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 															)
 												),
 												'group-users-reclaimed' => array(
-														'tags' => array( 'detailed-analytics' ),
+														'tags' => array( 'investors' ),
 														'title' => 'Reclaimed Users',
 														'charts' => array(  
 																'users-reclaimed-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'reclaimedByDay' ),
