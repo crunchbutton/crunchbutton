@@ -27,6 +27,7 @@ function AccountResetCtrl( $scope, $http, AccountResetService ) {
 
 function GiftCardCtrl( $scope, $http, GiftCardService ) {
 	$scope.giftcard = GiftCardService;
+	$scope.giftcard.parseURLCode();
 	$scope.giftcard.processModal();
 }
 

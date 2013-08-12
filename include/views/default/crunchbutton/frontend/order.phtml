@@ -45,7 +45,7 @@
 			
 			${{formatPrice(order.order.charged)}}
 	
-			<div class="credit" ng-show="(order.order.credit && order.order.credit > 0)">( ${{parseFloat(order.order.final_price).toFixed(2)}} - ${{parseFloat(order.order.credit).toFixed(2)}} credit )</div>
+			<div class="credit" ng-show="(order.order.credit && order.order.credit > 0)">( ${{order.order._final_price}} - ${{order.order._credit}} credit )</div>
 	
 			<br><br>
 	
