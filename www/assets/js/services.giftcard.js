@@ -44,7 +44,8 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 		service.modal.reset();
 		setTimeout( function(){
 			// Check if the user is logged in
-			service.redeemed = service.account.isLogged();
+			service.redeemed = ( App.config.user.id_user != '' );
+			console.log('service.redeemed',service.redeemed);
 			service.validate( function( data ){
 				service.modal.intro = false;
 				if( data.error ){

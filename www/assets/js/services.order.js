@@ -1,10 +1,11 @@
 //OrderService Service
-NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountService, CartService, LocationService, CreditService ) {
+NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountService, CartService, LocationService, CreditService, GiftCardService ) {
 
 	var service = {};
 	service.location = LocationService;
 	service.account = AccountService;
 	service.cart = CartService;
+	service.giftcard = GiftCardService;
 	service.credit = CreditService;
 	service.restaurant = {};
 
@@ -90,6 +91,11 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		service.form.phone = App.phone.format(service.account.user.phone);
 		service.form.address = service.account.user.address;
 		service.form.notes = (service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].notes : '';
+		
+		if( service.giftcard.code ){
+			service.form.notes = service.form.notes + ' '	+ service.giftcard.code;
+		}
+
 		// Credit card stuff
 		service.form.cardNumber = service.account.user.card;
 		service.form.cardMonth = service.account.user.card_exp_month;
@@ -821,6 +827,11 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 				});
 				return;
 			}
+			service.order._final_price = parseFloat( service.order.final_price ).toFixed(2);
+			if( service.order.credit ){
+				service.order._credit = parseFloat( service.order.credit ).toFixed(2);
+			}
+
 			service.facebook._order_uuid = service.order.uuid;
 			service.facebook.preLoadOrderStatus();
 			App.cache('Restaurant', service.order.id_restaurant, function () {
