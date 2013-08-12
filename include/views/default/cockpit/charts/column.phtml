@@ -75,11 +75,34 @@ if( $isPopup ){
 
 		}
 		
+		$applyCommunityFilter = false;
+
+		foreach ($ys as $k => $v) {
+			if( $_GET[ 'filter' ] && $_GET[ 'filter' ] == 'community' ){
+				if( $_GET[ 'community' ] && $_GET[ 'community' ] != '' && strtolower( $_GET[ 'community' ] ) != 'all' ){
+					if( strtolower( $_GET[ 'community' ] ) == strtolower( $k ) ){
+						$applyCommunityFilter = true;
+					} 
+				} 
+			}
+		}
+
 		// remove assoc vals and add proper keys
 		foreach ($ys as $k => $v) {
 			$ys[$k] = array_values($ys[$k]);
+			$visible = true;
+			if( $applyCommunityFilter && $_GET[ 'filter' ] && $_GET[ 'filter' ] == 'community' ){
+				if( $_GET[ 'community' ] && $_GET[ 'community' ] != '' && strtolower( $_GET[ 'community' ] ) != 'all' ){
+					if( strtolower( $_GET[ 'community' ] ) == strtolower( $k ) ){
+						$visible = true;
+					} else {
+						$visible = false;
+					}
+				} 
+			}
 			$ys[$k] = [
 				'name' => $k,
+				'visible' => $visible,
 				'data' => $ys[$k]
 			];
 		}
@@ -219,26 +242,26 @@ if( $isPopup ){
 			</tr>
 		</table>
 	
-	<div class="row-fluid" style="padding:0 20px; font-size:11px;">
+	<div class="row-fluid" style="padding:0 20px; font-size:10px;">
 		<div class="span3" id="week-<?=$chartId?>">
 			<?php
 			if( $interval == 'week' ){
 				$_slider_to = $to;
 				$_slider_from = $from;
 				?>
-					Weeks <?php echo $from; ?> to <?php echo $to; ?> <br/>(total <?php echo $totalWeeks; ?>)
+					Weeks <?php echo $from; ?> to <?php echo $to; ?> (total <?php echo $totalWeeks; ?>)
 				<?php
 			} else if( $interval == 'month' ){
 					$_slider_to = $to_month;
 					$_slider_from = $from_month;
 			?>
-				Months <?php echo $from_month; ?> to <?php echo $to_month; ?> <br/>(total <?php echo $totalMonths; ?>)
+				Months <?php echo $from_month; ?> to <?php echo $to_month; ?> (total <?php echo $totalMonths; ?>)
 			<?php 
 			} else if( $interval == 'day' ){
 					$_slider_to = $to_day;
 					$_slider_from = $from_day;
 			?>
-				Days <?php echo $from_day; ?> to <?php echo $to_day; ?> <br/>(total <?php echo $totalDays; ?>)
+				Days <?php echo $from_day; ?> to <?php echo $to_day; ?> (total <?php echo $totalDays; ?>)
 			<?php 
 			} ?>
 		</div>

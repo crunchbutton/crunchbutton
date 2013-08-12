@@ -53,7 +53,6 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												),
 												'group-orders-by-weekday-by-community' => array(
 														'title' => 'Orders by Weekday by Community',
-														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'orders-by-weekday-by-community' => array( 'title' => '', 'type' => 'area', 'method' => 'byWeekdayByCommunity' )
 															)
@@ -67,7 +66,6 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 												),
 												'group-orders-per-restaurant-by-community' => array(
 														'title' => 'Orders per Restaurant by Community',
-														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'orders-per-restaurant-by-community' => array( 'title' => '', 'type' => 'pie_communities', 'method' => 'perRestaurantPerCommunity' )
 															)
