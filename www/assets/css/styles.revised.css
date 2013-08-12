@@ -427,8 +427,11 @@ html {
 	}
 }
 
-
-
+@media only screen and (min-width : 1024px) {
+	.signin-box-header {
+		margin: 12px 0 0 10px;
+	}
+}
 
 
 .snap-drawers {
