@@ -79,15 +79,27 @@ NGApp.controller('default', function ($scope, $http, $location, CommunityAliasSe
 NGApp.controller( 'restaurants', function ( $scope, $http, $location, RestaurantsService) {
 
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
-
 	$scope.restaurants = RestaurantsService;
 
+	$scope.display = function($event) {
+		var restaurant = this.restaurant;
 
-	$scope.display = function() {
-		if ( !this.restaurant.open() ) {
-			App.rootScope.$broadcast('restaurantClosedClick', this.restaurant);
+		if (!restaurant.open()) {
+			App.rootScope.$broadcast('restaurantClosedClick', restaurant);
 		} else {
-			$location.path('/' + App.restaurants.permalink + '/' + this.restaurant.permalink);
+			var el = $($event.target).closest('.meal-item').find('.meal-item-content');
+			var s = $(el).data('spinner');
+			if (!s) {
+				s = Ladda.create(el.get(0));
+				$(el).data('spinner', s);
+			}
+			s.start();
+
+			// @todo: this is kind of redundundant
+			// make sure that the restaurant is actulay loaded first
+			App.cache('Restaurant', restaurant.permalink, function () {
+				App.go('/' + App.restaurants.permalink + '/' + restaurant.permalink);
+			});
 		}
 	};
 
