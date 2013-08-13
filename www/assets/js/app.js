@@ -42,7 +42,8 @@ var App = {
 	boundingBoxMeters : 8000,
 	localStorage: false,
 	isPhoneGap: document.location.protocol == 'file:',
-	useNativePrompt: false
+	useNativePrompt: false,
+	ajaxTimeout: 5000
 };
 
 // enable localstorage on phonegap
@@ -67,13 +68,16 @@ App.confirm = function(txt, title) {
 	}
 };
 
+App.connectionError = function() {
+	App.rootScope.$broadcast('notificationAlert', 'Connection Error', 'Sorry! We could not reach the server right now. Try again when your internet is back!');
+};
+
 App.go = function(url) {
-// @todo: do some tests to figure out if we need this or not
-//	App.rootScope.$safeApply(function() {
-//		App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
-		App.location.path(url);
-		App.rootScope.$apply();
-//	});
+	// @todo: do some tests to figure out if we need this or not
+	// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
+	App.location.path(url);
+	App.rootScope.$safeApply();
+
 };
 
 
@@ -406,7 +410,10 @@ App.init = function(config) {
 	}
 	App._init = true;
 	
-
+	// set a timeout for when ajax requests timeout
+	$.ajaxSetup({
+		timeout: App.ajaxTimeout
+	});
 
 
 	// replace normal click events for mobile browsers

@@ -32,11 +32,8 @@ var Community = function(id) {
 
 	$.extend(self,Orm);
 
-	if (arguments[1]) {
-		complete = arguments[1];
-	} else {
-		complete = function() {};
-	}
+	var complete = arguments[1] || null;
+	self.loadError = arguments[2] || null;
 
 	self.restaurants = function() {
 		if (!self.__restaurants) {
@@ -77,7 +74,7 @@ var Community = function(id) {
 		}
 		self.restaurants();
 
-		if (complete) {
+		if (typeof complete == 'function') {
 			complete.call(self);
 		}
 	}

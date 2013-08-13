@@ -24,17 +24,16 @@ App.capitalize = function(word) {
 	return word.charAt(0).toUpperCase() + word.slice(1);
 };
 
-App.request = function(url, complete) {
-	$.getJSON(url,function(json) {
-		complete(json);
-	});
+App.request = function(url, complete, error) {
+	$.getJSON(url).done(complete).fail(error);
 };
 
 // @todo replace with lazyorm.js
 App.cache = function(type, id) {
-	var finalid, args = arguments, complete, partComplete;
+	var finalid, args = arguments, complete, partComplete, partError;
 
 	complete = args[2] ? args[2] : function() {};
+	error = args[3] ? args[3] : function() {};
 
 	partComplete = function() {
 		if (this.uuid) {
@@ -47,21 +46,24 @@ App.cache = function(type, id) {
 		}
 		complete.call(this);
 	}
+	
+	partError = function() {
+		App.cached[type][id] = null;
+		error.call(arguments);
+	}
 
 	if (typeof(id) == 'object') {
-		//App.cached[type][id.id] = id;
-
-		eval('App.cached[type][id.id] = new '+type+'(id,partComplete)');
+		eval('App.cached[type][id.id] = new '+type+'(id,partComplete, partError)');
 		finalid = id.id;
 
 	} else if (!App.cached[type][id]) {
-		eval('App.cached[type][id] = new '+type+'(id,partComplete)');
+		eval('App.cached[type][id] = new '+type+'(id,partComplete, partError)');
 
 	} else {
 		complete.call(App.cached[type][id]);
 	}
-
-	// only works sync (Ti)
+	
+	// @todo: remove this and things that use it
 	return App.cached[type][finalid || id];
 
 };

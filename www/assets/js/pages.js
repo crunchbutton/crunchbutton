@@ -76,7 +76,7 @@ NGApp.controller('default', function ($scope, $http, $location, CommunityAliasSe
 /**
  * Show the restaurants
  */
-NGApp.controller( 'restaurants', function ( $scope, $http, $location, RestaurantsService) {
+NGApp.controller( 'restaurants', function ( $scope, $rootScope, $http, $location, RestaurantsService) {
 
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
 	$scope.restaurants = RestaurantsService;
@@ -99,6 +99,9 @@ NGApp.controller( 'restaurants', function ( $scope, $http, $location, Restaurant
 			// make sure that the restaurant is actulay loaded first
 			App.cache('Restaurant', restaurant.permalink, function () {
 				App.go('/' + App.restaurants.permalink + '/' + restaurant.permalink);
+			}, function() {
+				App.connectionError();
+				s.stop();
 			});
 		}
 	};
