@@ -44,8 +44,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 		service.modal.reset();
 		setTimeout( function(){
 			// Check if the user is logged in
-			service.redeemed = ( App.config.user.id_user != '' );
-			console.log('service.redeemed',service.redeemed);
+			service.redeemed = ( $.trim( App.config.user.id_user ) != '' );
 			service.validate( function( data ){
 				service.modal.intro = false;
 				if( data.error ){
@@ -61,6 +60,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 							service.modal.error = 'unknow';
 							break;
 					}
+					service.code = false;
 				} else if ( data.success ){
 					service.modal.success = true;
 					service.value = data.success['value'];
@@ -68,6 +68,9 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 						service.modal.restaurant = { id_restaurant : data.success['id_restaurant'], name : data.success['restaurant'], permalink : data.success['permalink'] };
 					} else {
 						service.modal.restaurant = false;
+					}
+					if( service.redeemed ){
+						service.code = '';
 					}
 				}
 			} );
