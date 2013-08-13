@@ -451,4 +451,14 @@ class Crunchbutton_App extends Cana_App {
 		return $this->_rep;
 	}
 	
+	public function facebook() {
+		if (!$this->_facebook) {
+			$this->_facebook = new Cana_Facebook([
+				'appId'	=> Cana::config()->facebook->app,
+				'secret' => Cana::config()->facebook->secret
+			]);
+		}
+		return $this->_facebook;
+	}
+	
 } 
