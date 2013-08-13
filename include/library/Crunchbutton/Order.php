@@ -214,9 +214,10 @@ class Crunchbutton_Order extends Cana_Table {
 					$this->giftcardValue += $giftcard->value;
 				}
 			}
+			$_notes = $giftcards[ 'notes' ];	
 		}
 
-		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue ]);
+		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$_notes' => $_notes, '$this->notes' => $this->notes ]);
 
 		$res = $this->verifyPayment();
 
@@ -337,6 +338,8 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 			$this->notes = $giftcards[ 'notes' ];	
 		}
+
+		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$this->notes' => $this->notes ]);
 
 		$this->debitFromUserCredit( $user->id_user );
 
