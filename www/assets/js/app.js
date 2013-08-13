@@ -227,14 +227,13 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	};
 
 	$rootScope.$safeApply = function(fn) {
-		if (typeof fn !== 'function') {
-			return;
-		}
-
-		if ($rootScope.$$phase) {
-			fn();
+		var phase = this.$root.$$phase;
+		if (phase == '$apply' || phase == '$digest') {
+			if (fn && (typeof(fn) === 'function')) {
+				this.$eval(fn);
+			}
 		} else {
-			$rootScope.$apply(fn); 
+			this.$apply(fn);
 		}
 	};
 
