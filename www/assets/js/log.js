@@ -13,6 +13,7 @@ App.log.doLog = function( data, callback ){
 	var url = App.service + App.log.api.url;
 	var info = { data : data };
 	info.type = ( data.type ) ? data.type : 'log-js';
+	console.debug(data.type, info);
 	$.ajax( {
 		type: 'POST',
 		url: url,
