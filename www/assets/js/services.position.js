@@ -190,7 +190,6 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		if (google && google.load && !google.maps ) {
 			// @HACK / @TODO: google loader breaks phonegap
 			if (App.isPhoneGap) {
-				console.log('USING GOOGLE BETTO LOADER');
 				App.gmapsPluginLoaded = service.googleCallback;
 				var gmaps = document.createElement('script');
 	        	gmaps.src = 'http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&callback=App.gmapsPluginLoaded';
