@@ -60,6 +60,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 							service.modal.error = 'unknow';
 							break;
 					}
+					service.code = false;
 				} else if ( data.success ){
 					service.modal.success = true;
 					service.value = data.success['value'];
