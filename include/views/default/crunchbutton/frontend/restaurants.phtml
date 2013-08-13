@@ -7,16 +7,20 @@
 <div class="content-padder">
 	<div class="meal-items {{mealItemClass}}">
 
-		<div ng-click="display()" ng-class="{'meal-item-closed': restaurant._open==false}" class="meal-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants">
-			<div class="meal-item-content">
-				<div class="meal-pic" style="background: url({{restaurant.img64}});"></div>
-				<h2 class="meal-restaurant">{{restaurant.name}}</h2>
-				<h3 class="meal-food">{{restaurant._short_description}}</h3>
-				<div ng-switch on="restaurant._tag">
-					<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
-					<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant.isAboutToClose()}} min!</div>
-					<div class="meal-item-tag-closed" ng-switch-when="closed">Opens in a few hours</div>
+		<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="meal-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants">
+
+			<div class="meal-item-content ladda-button" data-style="zoom-out">
+				<div class="ladda-label">
+					<div class="meal-pic" style="background: url({{restaurant.img64}});"></div>
+					<h2 class="meal-restaurant">{{restaurant.name}}</h2>
+					<h3 class="meal-food">{{restaurant._short_description}}</h3>
+					<div ng-switch on="restaurant._tag">
+						<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
+						<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant.isAboutToClose()}} min!</div>
+						<div class="meal-item-tag-closed" ng-switch-when="closed">Opens in a few hours</div>
+					</div>
 				</div>
+				<span class="ladda-spinner"></span>
 			</div>
 			<div class="meal-item-spacer"></div>
 		</div>
