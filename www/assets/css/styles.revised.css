@@ -539,6 +539,9 @@ html {
 
 
 @media only screen and (max-width : 768px) {
+	.signin-user {
+		display: none;
+	}
 	.snap-content-inner {
 		position: absolute;
 		top: 0;
