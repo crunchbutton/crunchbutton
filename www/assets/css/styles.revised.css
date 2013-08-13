@@ -474,7 +474,6 @@ html {
 	width: auto;
 	height: auto;
 	z-index: 2;
-	overflow: auto;
 	-webkit-overflow-scrolling: touch;
 	-webkit-transform: translate3d(0, 0, 0);
 	   -moz-transform: translate3d(0, 0, 0);
@@ -613,6 +612,10 @@ html {
 	}
 	.snap-drawers {
 		display: none;
+	}
+	/* @hack: since were using absolute positioning for the menu, we cant clear the bottom */
+	.route-restaurant .footer {
+		margin-left: 250px;
 	}
 }
 
