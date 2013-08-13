@@ -9,6 +9,7 @@
 	<div class="snap-drawer snap-drawer-left">
 		<div>
 			<div class="pushabutton-getfood"></div>
+<? /* for testing			<div ng-bind="account.user.name"></div> */ ?>
 			<ul>
 				<li ng-instant="navigation.link('/food-delivery')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
@@ -26,7 +27,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-show="navigation.account.user" ng-instant="navigation.link('/orders')">
+				<li ng-show="account.user.id_user" ng-instant="navigation.link('/orders')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="icon-time"></i></td>
@@ -34,7 +35,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-show="!navigation.account.user" ng-instant="navigation.signin()">
+				<li ng-show="!account.user.id_user" ng-instant="navigation.signin()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="icon-user"></i></td>
@@ -42,7 +43,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-show="navigation.account.user" ng-instant="signout.do()">
+				<li ng-show="account.user.id_user" ng-instant="signout.do()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="icon-mail-reply"></i></td>
@@ -111,8 +112,8 @@
 				<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.menu()"></div>
 
 				<div class="signin-box-header">
-					<div ng-show="navigation.account.user.id_user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
-					<div ng-show="!navigation.account.user.id_user" ng-instant="navigation.signin()" class="signin-icon"></div>
+					<div ng-show="account.user.id_user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
+					<div ng-show="!account.user.id_user" ng-instant="navigation.signin()" class="signin-icon"></div>
 				</div>
 
 			</div>

@@ -95,30 +95,31 @@ NGApp.factory( 'AccountService', function( $http, $rootScope ){
 
 		var url = App.service + 'user/create/local';
 
-		$http( {
+		$http({
 			method: 'POST',
 			url: url,
 			data: $.param( { 'email' : service.form.email, 'password' : service.form.password } ),
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-			} ).success( function( data ) {
-					if( data.error ){
-						if( data.error == 'user exists' ){
-							service.error.signup = true;
-						}
-						App.log.account( { 'error' : data.error, 'login' : service.form.email } , 'sign up error' );
-					} else {
-						service.updateInfo();
-						service.user = data;
-						if( service.callback ){
-							service.callback();
-							service.callback = false;
-						} else {
-							$.magnificPopup.close();
-							$rootScope.$broadcast( 'userAuth', service.user );
-						}
-					}
-					
-			}	);
+		}).success(function(data){
+
+			if (data.error) {
+				if( data.error == 'user exists' ){
+					service.error.signup = true;
+				}
+				App.log.account( { 'error' : data.error, 'login' : service.form.email } , 'sign up error' );
+
+			} else {
+				service.updateInfo();
+				service.user = data;
+				if( service.callback ){
+					service.callback();
+					service.callback = false;
+				} else {
+					$.magnificPopup.close();
+					$rootScope.$broadcast('userAuth', service.user);
+				}
+			}		
+		});
 	}
 
 	service.updateInfo = function( data, callback ){
@@ -295,7 +296,7 @@ NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 
 } );
 
-NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
+NGApp.factory( 'AccountSignOut', function( $http, $rootScope, AccountFacebookService ){
 	var service = {};
 	service.facebook = AccountFacebookService;
 	
@@ -312,9 +313,9 @@ NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 					console.debug('>> loged out');
 					$http.get(App.service + 'config').success(function(data) {
 						console.debug('>> new config', data);
-						App.rootScope.$safeApply(function() {
-							App.processConfig(data);
-						});
+						$rootScope.$broadcast('userAuth', data.user);
+						App.processConfig(data);
+
 					});
 
 				});

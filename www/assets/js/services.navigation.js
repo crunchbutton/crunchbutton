@@ -1,5 +1,5 @@
 // MainHeaderService service
-NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route, AccountService, AccountModalService, RestaurantsService  ){ 
+NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route, AccountModalService, RestaurantsService){ 
 	
 	var service = {
 		page : '',
@@ -10,8 +10,8 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	};
 	
 	service.menu = App.toggleMenu;
-	service.account = AccountService;
 	service.modal = AccountModalService;
+
 	service.home = function() {
 		if (App.isPhoneGap || App.isMobile()) {
 			service.menu();
@@ -48,12 +48,6 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 				break;
 		}
 	}
-
-	$rootScope.$on( 'userAuth', function(e, data) {
-		$rootScope.$safeApply( function(){
-			$route.reload();
-		} );
-	});
 
 	return service;
 
