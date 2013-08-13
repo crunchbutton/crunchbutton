@@ -182,7 +182,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 	$locationProvider.html5Mode(!App.isPhoneGap);
 }]);
 
-
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService, AccountSignOut) {
 
@@ -241,11 +240,24 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			this.$apply(fn);
 		}
 	};
+	
+	// @todo: we might need this in the future for when we update to angular 1.2 with animations
+	/*
+	// determine if we are going backwards
+	$rootScope.$on('$locationChangeSuccess', function() {
+		$rootScope.actualLocation = $location.path();
+	});        
 
-	$scope.$on(
+	$rootScope.$watch(function() {
+		return $location.path();
+	}, function (newLocation, oldLocation) {
+		if ($rootScope.actualLocation === newLocation) {
+			// this is backwards
+		}
+	});
+	*/
 
-		'$routeChangeSuccess',
-		function ($currentRoute, $previousRoute) {
+	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 
 			// Store the actual page
 			MainNavigationService.page = $route.current.action;
@@ -256,19 +268,19 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			$scope.renderAction = renderAction;
 			$scope.renderPath = renderPath;
 			
-			console.log($scope.renderAction, $scope.renderPath);
+			console.log($scope.renderAction);
 
 			if (App.isChromeForIOS()){
 				App.message.chrome();
 			}
 
-			setTimeout(function() {
-				scrollTo(0, 1);
-			}, 80);
-
 			$('body').removeClass(function (index, css) {
 				return (css.match (/\broute-\S+/g) || []).join(' ');
 			}).addClass('route-' + renderAction);
+			
+			setTimeout(function() {
+				App.scrollTop();
+			},1);
 
 			/*
 			$('.content').addClass('smaller-width');
@@ -283,6 +295,14 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 	AccountService.checkUser();
 });
+
+
+/**
+ * scroll to the top of the page
+ */
+App.scrollTop = function() {
+	$('html, body, .snap-content-inner').scrollTop(0);
+};
 
 
 /**

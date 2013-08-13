@@ -375,8 +375,11 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 				$scope.order.form.address = address.entered();
 			}
 		}
+		
+		App.scrollTop();
 
-		$('.body').css({ 'min-height': $('.restaurant-items').height()});
+		// @todo: do we still neded this??
+		// $('.body').css({ 'min-height': $('.restaurant-items').height()});
 
 	});
 
