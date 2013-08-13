@@ -40,12 +40,6 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		$files[] = 'audio/crunch.mp3';
 		$files[] = 'audio/crunch.ogg';
 		
-		// javascript
-		$files[] = 'js/bundle.js';
-		
-		// css
-		$files[] = 'css/bundle.css';
-		
 		// fonts
 		$use = '/fontawesome|opensans/i';
 		foreach (new DirectoryIterator(c::config()->dirs->www.'assets/fonts') as $fileInfo) {
@@ -53,6 +47,12 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 				$files[] = 'fonts/'.$fileInfo->getBasename();
 			}
 		}
+		
+		// css
+		$files[] = 'css/bundle.css';
+		
+		// javascript
+		$files[] = 'js/bundle.js';
 		
 		echo json_encode($files);
 	}
