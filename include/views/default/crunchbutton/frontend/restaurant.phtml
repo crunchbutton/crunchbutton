@@ -51,18 +51,21 @@
 				<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
 				<div class="divider"></div>
 
-				<div ng-show="!order.cart.hasItems()" class="order-begin">
-					<div class="icon">
-						<i class="icon-arrow-left desktop"></i> 	
-						<i class="icon-arrow-down mobile"></i> 
-					</div>
-					<div class="text">
-						Begin by clicking on anything from our curated menu 
-						<span class="desktop"> on the left!</span>
-						<span class="mobile"> below!</span>
+				<div ng-show="!order.cart.hasItems()" class="order-begin-wrap">
+					<div class="order-begin">
+						<div class="icon">
+							<i class="icon-arrow-left desktop"></i> 	
+							<i class="icon-arrow-down mobile"></i> 
+						</div>
+						<div class="text">
+							Begin by clicking on anything from our curated menu 
+							<span class="desktop"> on the left!</span>
+							<span class="mobile"> below!</span>
+						</div>
 					</div>
 					<div class="divider"></div>
 				</div>
+					<div class="divider"></div>
 
 				<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="delivery-minimum-error">
 					Add $<span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> from menu to meet delivery minimum.
