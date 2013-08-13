@@ -68,9 +68,11 @@ App.confirm = function(txt, title) {
 };
 
 App.go = function(url) {
-	App.rootScope.$apply(function($location) {
-		$location.path(App.isPhoneGap ? url : 'index.html#' + url);
-	});
+// @todo: do some tests to figure out if we need this or not
+//	App.rootScope.$safeApply(function() {
+//		App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
+		App.location.path(url);
+//	});
 };
 
 
