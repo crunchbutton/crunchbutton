@@ -216,7 +216,7 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
-		Log::debug(['giftcardValue'=> $this->giftcardValue]);
+		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue ]);
 
 		$res = $this->verifyPayment();
 
@@ -382,11 +382,10 @@ class Crunchbutton_Order extends Cana_Table {
 				$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $final_price, $this->id_user, $this->id_restaurant, $this->id_order, true );
 				$final_price = $final_price - $chargedByCredit;
 			}
-			Log::debug([ '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'final_price' => $final_price, ]);
+			Log::debug([ 'issue' => '#1551', 'method' => 'calcFinalPriceMinusUsersCredit', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'final_price' => $final_price, ]);
 			if( $final_price < 0 ){ $final_price = 0; }
 			return Util::ceil( $final_price, 2 );
 		}
-
 		return $final_price;
 	}
 
@@ -476,6 +475,7 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 
 				$amount = $this->calcFinalPriceMinusUsersCredit();
+				Log::debug([ 'issue' => '#1551', 'method' => 'verifyPayment', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'amount' => $amount ]);
 				// If the amount is 0 it means that the user used his credit.
 
 				if( $amount > 0 ){
