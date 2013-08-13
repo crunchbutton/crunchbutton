@@ -13,11 +13,8 @@ var Restaurant = function(id) {
 
 	$.extend(self,Orm);
 
-	if (arguments[1]) {
-		complete = arguments[1];
-	} else {
-		complete = function() {};
-	}
+	var complete = arguments[1] || null;
+	self.loadError = arguments[2] || null;
 
 	/**
 	 * Turns serverside time to UTC so we don't use the server time
@@ -380,7 +377,7 @@ var Restaurant = function(id) {
 			self.img64 = App.imgServer + '596x596/' + img +  '.jpg';
 		}
 
-		if (complete) {
+		if (typeof complete == 'function') {
 			complete.call(self);
 		}
 

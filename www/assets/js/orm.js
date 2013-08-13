@@ -46,6 +46,10 @@ var Orm = {
 				} else {
 					self.finished(json);
 				}
+			}, function() {
+				if (typeof self.loadError == 'function') {
+					self.loadError.apply(self, arguments);
+				}
 			});
 		}
 	}

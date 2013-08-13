@@ -45,8 +45,6 @@ function RecommendRestaurantCtrl( $scope, $http, RecommendRestaurantService, Acc
 }
 
 function RestaurantClosedCtrl($scope, $rootScope) {
-
-
 	$rootScope.$on('restaurantClosedClick', function(e, r) {
 		if ($scope.$$phase) {
 			$scope.restaurant = r;
@@ -70,4 +68,20 @@ function SupportCtrl( $scope, $http, SupportService ) {
 
 function SideMenuCtrl() {
 
+}
+
+function NotificationAlertCtrl($scope, $rootScope) {
+	$rootScope.$on('notificationAlert', function(e, title, message) {
+		if ($scope.$$phase) {
+			$scope.title = title;
+			$scope.message = message;
+			App.dialog.show('.notification-alert-container');
+		} else {
+			$rootScope.$apply(function(scope) {
+				scope.title = title;
+				scope.message = message;
+				App.dialog.show('.notification-alert-container');
+			}); 
+		}			
+	});
 }

@@ -6,18 +6,15 @@ var Order = function(id) {
 	
 	$.extend(self,Orm);
 	
-	if (arguments[1]) {
-		complete = arguments[1];
-	} else {
-		complete = function() {};
-	}
+	var complete = arguments[1] || null;
+	self.loadError = arguments[2] || null;
 
 	self.finished = function(data) {
 		for (x in data) {
 			self[x] = data[x];
 		}
 
-		if (complete) {
+		if (typeof complete === 'function') {
 			complete.call(self);
 		}
 	}
