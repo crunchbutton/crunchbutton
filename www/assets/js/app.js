@@ -41,7 +41,8 @@ var App = {
 	touchOffset: null,
 	boundingBoxMeters : 8000,
 	localStorage: false,
-	isPhoneGap: document.location.protocol == 'file:'
+	isPhoneGap: document.location.protocol == 'file:',
+	useNativePrompt: false
 };
 
 // enable localstorage on phonegap
@@ -50,7 +51,7 @@ App.localStorage = App.isPhoneGap;
 App.alert = function(txt, title) {
 	setTimeout(function() {
 		// @todo: #1546
-		if (1==2 && App.isPhoneGap) {
+		if (App.useNativePrompt && App.isPhoneGap) {
 			navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else {
 			alert(txt);
