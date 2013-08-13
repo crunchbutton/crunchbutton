@@ -52,7 +52,6 @@ function SupportCtrl( $scope, $http, SupportService ) {
 	$scope.support = SupportService;
 }
 
-function SideMenuCtrl( $scope, MainNavigationService, AccountSignOut ) {
-	$scope.navigation = MainNavigationService;
-	$scope.signout = AccountSignOut;
+function SideMenuCtrl() {
+
 }

@@ -177,10 +177,28 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService) {
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService, AccountSignOut) {
 
+	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
+
+	// define global services
+	$rootScope.account = AccountService;
+	$rootScope.navigation = MainNavigationService;
+	$rootScope.signout = AccountSignOut;
+	
+	$rootScope.$on('userAuth', function(e, data) {
+		$rootScope.$safeApply(function($scope) {
+			App.rootScope.account.user = data;
+		});
+	});
+
+	/* @todo: remove this. this is how you watch an object rather than a property so i remeber
+	$rootScope.$watch('account.user', function() {
+		// indicates that the user object has changed
+	}, true);
+	*/
 	
 	$rootScope.link = function(link) {
 		$location.path(link || '/');
