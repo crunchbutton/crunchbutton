@@ -146,7 +146,6 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 	service.signout = function(callback) {
 		FB.logout(function() {
 			service.logged = false;
-			App.rootScope.$broadcast('userAuth', {name: null, id_user: null});
 			if (typeof callback === 'function') {
 				callback();
 			}

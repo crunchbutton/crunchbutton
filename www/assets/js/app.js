@@ -190,7 +190,11 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	
 	$rootScope.$on('userAuth', function(e, data) {
 		$rootScope.$safeApply(function($scope) {
-			App.rootScope.account.user = data;
+			// @todo: remove double data
+			if (data) {
+				App.rootScope.account.user = data;
+				App.config.user = data;
+			}
 		});
 	});
 
