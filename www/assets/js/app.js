@@ -203,13 +203,13 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	};
 
 	$rootScope.$safeApply = function(fn) {
-		fn = fn || function() {};
-		if($rootScope.$$phase) {
-			if( fn ){
-				fn();	
-			}
+		if (typeof fn !== 'function') {
+			return;
 		}
-		else {
+
+		if ($rootScope.$$phase) {
+			fn();
+		} else {
 			$rootScope.$apply(fn); 
 		}
 	};
