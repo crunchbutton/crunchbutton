@@ -40,6 +40,15 @@
 										</td>
 									</tr>
 									<tr>
+										<td>Type</td>
+										<td>
+											<select name="type" class="chzn-select" >
+													<option value="checking" default>Checking</option>
+													<option value="savings">Savings</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
 										<td colspan="2">
 											<br />
 											<button type="submit" class="btn btn-blue restaurant-bank-info-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
@@ -363,6 +372,7 @@
 			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/bankinfo', {
 				routing: form.find('[name="routing"]').val(),
 				account: form.find('[name="account"]').val(),
+				type: form.find('[name="type"]').val(),
 				name: form.find('[name="name"]').val()
 			}, function() {
 				location.href = location.href;
