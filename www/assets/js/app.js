@@ -58,6 +58,14 @@ App.alert = function(txt, title) {
 	});
 };
 
+App.confirm = function(txt, title) {
+	if (App.useNativePrompt && App.isPhoneGap) {
+		return navigator.notification.confirm(txt, null, title || 'Crunchbutton');
+	} else {
+		return confirm(txt);
+	}
+};
+
 App.go = function(url) {
 	App.rootScope.$apply(function($location) {
 		$location.path(App.isPhoneGap ? url : 'index.html#' + url);
