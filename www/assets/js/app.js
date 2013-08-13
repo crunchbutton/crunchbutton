@@ -72,6 +72,7 @@ App.go = function(url) {
 //	App.rootScope.$safeApply(function() {
 //		App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
 		App.location.path(url);
+		App.rootScope.$apply();
 //	});
 };
 
@@ -404,6 +405,9 @@ App.init = function(config) {
 		return;
 	}
 	App._init = true;
+	
+
+
 
 	// replace normal click events for mobile browsers
 	FastClick.attach(document.body);
