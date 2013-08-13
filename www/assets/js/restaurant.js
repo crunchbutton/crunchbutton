@@ -358,7 +358,7 @@ var Restaurant = function(id) {
 				}
 			}
 		}
-		return ordered.join( '\n' );
+		return ordered.join( '<br>' );
 	}
 
 	self.preset = function() {

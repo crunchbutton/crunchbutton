@@ -44,6 +44,22 @@ function RecommendRestaurantCtrl( $scope, $http, RecommendRestaurantService, Acc
 	$scope.modal = AccountModalService;
 }
 
+function RestaurantClosedCtrl($scope, $rootScope) {
+
+
+	$rootScope.$on('restaurantClosedClick', function(e, r) {
+		if ($scope.$$phase) {
+			$scope.restaurant = r;
+			App.dialog.show('.restaurant-closed-container');
+		} else {
+			$rootScope.$apply(function(scope) {
+				scope.restaurant = r;
+				App.dialog.show('.restaurant-closed-container');
+			}); 
+		}			
+	});
+}
+
 function RecommendFoodCtrl( $scope, $http, RecommendFoodService ) {
 	$scope.recommend = RecommendFoodService;
 }

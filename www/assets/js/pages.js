@@ -76,16 +76,16 @@ NGApp.controller('default', function ($scope, $http, $location, CommunityAliasSe
 /**
  * Show the restaurants
  */
-NGApp.controller( 'restaurants', function ( $scope, $http, $location, RestaurantsService ) {
+NGApp.controller( 'restaurants', function ( $scope, $http, $location, RestaurantsService) {
 
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
 
 	$scope.restaurants = RestaurantsService;
 
+
 	$scope.display = function() {
 		if ( !this.restaurant.open() ) {
-			App.alert("This restaurant is currently closed. It will be open during the following hours (" + this.restaurant._tzabbr + "):\n\n" + this.restaurant.closedMessage());
-			App.busy.unBusy();
+			App.rootScope.$broadcast('restaurantClosedClick', this.restaurant);
 		} else {
 			$location.path('/' + App.restaurants.permalink + '/' + this.restaurant.permalink);
 		}
