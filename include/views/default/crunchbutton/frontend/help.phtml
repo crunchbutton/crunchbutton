@@ -1,1 +1,5 @@
-<div ng-bind-html-unsafe="help"></div>
+<? if (!$this->export) : ?>
+	<div ng-bind-html-unsafe="help"></div>
+<? else : ?>
+	<?=$this->display('help/index')?>
+<? endif ; ?>
