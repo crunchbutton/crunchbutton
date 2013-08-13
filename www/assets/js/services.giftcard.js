@@ -87,7 +87,11 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 			service.giftCardModal.open();
 			service.processModal();
 		}
-		service.accountModal.signinOpen();
+		service.modal.close();
+		setTimeout( function(){
+			service.accountModal.signinOpen();	
+		}, 500 );
+		
 	}
 
 	service.modal.close = function(){

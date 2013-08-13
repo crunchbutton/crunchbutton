@@ -148,6 +148,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							if ($r->id_restaurant) {
 								$r->balanced_id = c::config()->balanced->sharedMerchant;
 								$r->save();
+								echo json_encode( [ 'success' => 'success' ] );
 							}
 							break;
 
@@ -155,6 +156,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							if ($r->id_restaurant) {
 								$r->balanced_id = null;
 								$r->save();
+								echo json_encode( [ 'success' => 'success' ] );
 							}
 							break;
 
@@ -162,6 +164,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							if ($r->id_restaurant) {
 								$r->balanced_bank = null;
 								$r->save();
+								echo json_encode( [ 'success' => 'success' ] );
 							}
 							break;
 
