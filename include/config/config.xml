@@ -52,8 +52,8 @@
 	</github>
 	<facebook>
 		<local>
-			<app>***REMOVED***</app>
-			<secret>***REMOVED***</secret>
+			<app>_KEY_</app>
+			<secret>_KEY_</secret>
 		</local>
 		<live>
 			<app>_KEY_</app>
