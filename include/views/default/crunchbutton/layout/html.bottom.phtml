@@ -60,9 +60,8 @@ $(function() {
 				xfbml: true,
 				oauth: true
 			});
-			var facebookService = angular.element( 'html' ).injector().get( 'FacebookService' );
-			FB.getLoginStatus( facebookService.processStatus );
-			FB.Event.subscribe( 'auth.statusChange', facebookService.processStatus );
+			var facebookService = angular.element('html').injector().get('FacebookService');
+			FB.Event.subscribe('auth.statusChange', facebookService.processStatus);
 		};
 	});
 
