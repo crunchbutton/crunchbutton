@@ -195,7 +195,7 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 
 	service.sendForm = function(){
 		if( !account.isValidEmailPhone() ){
-			alert( 'Please enter a valid email or phone.' );
+			App.alert( 'Please enter a valid email or phone.' );
 			$( '.help-email' ).focus();
 			return;
 		}
@@ -282,9 +282,9 @@ NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 	service.facebook = FacebookService;
 	service.account = service.facebook.account;
 
-	service.auth = function(){
+	service.auth = function() {
 		service.facebook.wait = true;
-		FB.login( service.facebook.startAuth, { scope: App.facebookScope } );
+		FB.login(service.facebook.processStatus, { scope: App.facebookScope });
 	}
 
 	service.signout = function( callback ){
@@ -298,18 +298,29 @@ NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 NGApp.factory( 'AccountSignOut', function( $http, AccountFacebookService ){
 	var service = {};
 	service.facebook = AccountFacebookService;
-	service.do = function(){
-		if (confirm( 'Confirm sign out?')){
+	
+	// perform a logout
+	service.do = function() {
+		if (App.confirm('Confirm sign out?')) {
 			// Force to remove the cookies
-			$.each( [ 'token', 'location', 'PHPSESSID' ], function( index, value ){
+			$.each(['token', 'location', 'PHPSESSID'], function(index, value) {
 				$.totalStorage(value, null);
-			} );
-			var signout = function(){
-				var url = App.service + 'logout';
-				$http( { method: 'GET', url: url } ).success( function( data ) { location.href = '/'; } );
+			});
+			var signout = function() {
+				// log the session out on the server
+				$http.get(App.service + 'logout').success(function(data) {
+					console.debug('>> loged out');
+					$http.get(App.service + 'config').success(function(data) {
+						console.debug('>> new config', data);
+						App.rootScope.$safeApply(function() {
+							App.processConfig(data);
+						});
+					});
+
+				});
 			};
-			if( service.facebook.facebook.logged || service.facebook.facebook.account.user.facebook ){
-				service.facebook.signout( function(){ signout() } );
+			if (service.facebook.facebook.logged || service.facebook.facebook.account.user.facebook) {
+				service.facebook.signout(signout);
 			} else {
 				signout();
 			}
