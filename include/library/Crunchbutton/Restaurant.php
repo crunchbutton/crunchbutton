@@ -265,11 +265,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $merchant;
 	}
 
-	public function saveBankInfo($name, $account, $routing) {
+	public function saveBankInfo($name, $account, $routing, $type) {
 		try {
-			$bank = c::balanced()->createBankAccount($name, $account, $routing);
+			$bank = c::balanced()->createBankAccount($name, $account, $routing,  $type);
 			$info = $this->merchant()->addBankAccount($bank);
-
 			$this->balanced_bank = $bank->id;
 			$this->save();
 		} catch (Exception $e) {
