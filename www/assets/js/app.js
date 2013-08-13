@@ -546,7 +546,7 @@ App.dialog = {
 			midClick: true,
 			removalDelay: 300,
 			overflowY: 'auto',
-			mainClass: 'my-mfp-slide-bottom',
+			mainClass: 'my-mfp-zoom-in', //my-mfp-slide-bottom
 			callbacks: {
 				open: function() {
 					setTimeout(function() {
