@@ -133,7 +133,9 @@
 
 			<div class="footer">
 
-				<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
+				<? if (!$this->export) : ?>
+					<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
+				<? endif ; ?>
 
 				<div class="footer-content hidden-phone" ng-controller="MainHeaderCtrl">
 	
