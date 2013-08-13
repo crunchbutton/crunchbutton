@@ -271,6 +271,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$info = $this->merchant()->addBankAccount($bank);
 			$this->balanced_bank = $bank->id;
 			$this->save();
+			echo json_encode( [ 'success' => 'success' ] );
 		} catch (Exception $e) {
 			print_r($e);
 			exit;

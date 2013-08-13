@@ -52,6 +52,7 @@
 										<td colspan="2">
 											<br />
 											<button type="submit" class="btn btn-blue restaurant-bank-info-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+											&nbsp;&nbsp;&nbsp;<i class="restaurant-bank-info-button-loading icon-spinner icon-spin" style="display:none;"></i>
 										</td>
 									</tr>
 								</table>
@@ -369,13 +370,28 @@
 
 		$('.restaurant-bank-info-button').click(function() {
 			var form = $(this).closest('form');
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/bankinfo', {
-				routing: form.find('[name="routing"]').val(),
-				account: form.find('[name="account"]').val(),
-				type: form.find('[name="type"]').val(),
-				name: form.find('[name="name"]').val()
-			}, function() {
-				location.href = location.href;
+			$( '.restaurant-bank-info-button-loading' ).show();
+			$.ajax({
+				type: 'POST',
+				url: '/api/restaurant/<?=$this->restaurant->id_restaurant?>/bankinfo',
+				data: {
+								routing: form.find('[name="routing"]').val(),
+								account: form.find('[name="account"]').val(),
+								type: form.find('[name="type"]').val(),
+								name: form.find('[name="name"]').val()
+							}
+			}).done(function( data ) {
+				if( data.success ){
+					location.href = location.href;
+				} else {
+					$( '.restaurant-bank-info-button-loading' ).hide();
+					alert( 'Error: see the console!'  );
+					console.log('Err:', data );	
+				}
+			}).fail(function(jqXHR, textStatus) {
+				$( '.restaurant-bank-info-button-loading' ).hide();
+				alert( 'Error: see the console!'  );
+				console.log('Err:', jqXHR.responseText);
 			});
 		});
 
