@@ -181,6 +181,10 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 		$scope.recommend.greetings = false;
 		$scope.locationError = true;
 	});
+	
+	var proceed = function() {
+		App.go('/' + App.restaurants.permalink);
+	};
 
 	// lets eat button
 	$scope.letsEat = function() {
@@ -194,9 +198,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 					// Verify if the address has restaurant
 					$scope.restaurantsService.list( 
 						// Success
-						function(){
-							$location.path( '/' + App.restaurants.permalink );	
-						},
+						proceed,
 						// Error
 						function(){
 							$scope.$broadcast( 'locationError' );
@@ -209,6 +211,13 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 			);
 		}
 	}
+	
+	$scope.locEat = function() {
+		$scope.location.getLocationByBrowser(function(loc) {
+			$scope.location.position.addLocation(loc);
+			proceed();
+		});
+	};
 
 });
 
