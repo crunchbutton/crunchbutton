@@ -128,7 +128,9 @@ if( $isPopup ){
 	</div>
 	<?php if( $hasResults ){ ?>
 	<div id="chart-<?=$chartId?>" style="min-width: 100%; <?php if( $isPopup ){ echo 'height:90%;'; }else{ echo 'height:250px;'; } ?> margin: 0 auto"></div>
-
+<center>
+	<?php echo $description; ?>
+</center>
 	<div id="options-<?=$divId?>" style="height:95px;background:#F5F5F5;width:98%;overflow-x:auto;overflow-y:hidden;<?php if( $isPopup ){ echo 'display:none'; } ?>">
 		<table>
 			<tr>
@@ -273,6 +275,7 @@ if( $isPopup ){
 	} ?>
 </div>
 </div>
+
 <?php if( $hasResults ){ ?>
 
 <script type="text/javascript">

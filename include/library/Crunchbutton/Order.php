@@ -98,7 +98,6 @@ class Crunchbutton_Order extends Cana_Table {
 		// delivery fee
 		$this->delivery_fee = ($this->restaurant()->delivery_fee && $this->delivery_type == 'delivery') ? $this->restaurant()->delivery_fee : 0;
 
-
 		// service fee for customer
 		$this->service_fee = $this->restaurant()->fee_customer;
 		$serviceFee = ($this->price + $this->delivery_fee) * Util::ceil(($this->service_fee/100),2);
@@ -216,6 +215,8 @@ class Crunchbutton_Order extends Cana_Table {
 				}
 			}
 		}
+
+		Log::debug(['giftcardValue'=> $this->giftcardValue]);
 
 		$res = $this->verifyPayment();
 
@@ -381,9 +382,11 @@ class Crunchbutton_Order extends Cana_Table {
 				$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $final_price, $this->id_user, $this->id_restaurant, $this->id_order, true );
 				$final_price = $final_price - $chargedByCredit;
 			}
+			Log::debug([ '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'final_price' => $final_price, ]);
 			if( $final_price < 0 ){ $final_price = 0; }
 			return Util::ceil( $final_price, 2 );
 		}
+
 		return $final_price;
 	}
 
@@ -532,11 +535,14 @@ class Crunchbutton_Order extends Cana_Table {
 		if ($search['restaurant']) {
 			$query .= ' and `order`.id_restaurant="'.$search['restaurant'].'" ';
 		}
-
+/*
 		if ($search['community']) {
 			$query .= ' and `order`.id_community="'.$search['community'].'" ';
 		}
-
+*/
+		if ($search['community']) {
+			$query .= ' and `restaurant`.community="'.$search['community'].'" ';
+		}
 		if ($search['order']) {
 			$query .= ' and `order`.id_order="'.$search['order'].'" ';
 		}

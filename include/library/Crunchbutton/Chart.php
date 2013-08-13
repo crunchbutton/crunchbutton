@@ -76,6 +76,17 @@ class Crunchbutton_Chart extends Cana_Model {
 		return $groups;
 	}
 
+	public function getAllCharts(){
+		$charts = [];		
+		foreach( $this->groups as $id_group => $group ){
+			$_charts = $group[ 'charts' ];
+			foreach ( $_charts as $id_chart => $chart ) {
+				$charts[] = $id_chart;
+			}
+		}
+		return $charts;
+	}
+
 	public function __construct() {
 		
 		$this->chartId = c::getPagePiece( 2 );
@@ -172,6 +183,12 @@ class Crunchbutton_Chart extends Cana_Model {
 
 				break;
 		}
+	}
+
+	public function getChartDescription( $permalink ){
+		$query = "SELECT * FROM chart WHERE permalink = '{$permalink}'";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->description; 
 	}
 
 	public function weeks(){
