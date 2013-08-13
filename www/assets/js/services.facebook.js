@@ -87,7 +87,6 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 				
 				// make sure we dont double call the authentication and user creation service
 				if (!service.running) {
-
 					service.running = true;
 					App.log.account({'userID': status.authResponse.userID, 'running': service.running}, 'facebook running');
 
@@ -98,7 +97,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 					}
 
 					// Just call the user api, this will create a facebook user
-					$http.get(App.service + 'user/facebook', data).success(function(data) {
+					$http({method: 'GET', url: App.service + 'user/facebook', data: data, cache: false}).success(function(data) {
 	
 						App.log.account({'userID': status.authResponse.userID, 'running': service.running, 'data': data }, 'facebook ajax');
 	
@@ -126,6 +125,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 
 						App.log.account({'userID': status.authResponse.userID} , 'facebook currentPage');
 						App.rootScope.$broadcast('userAuth', service.user);
+						service.running = false;
 					});
 				}
 			}
