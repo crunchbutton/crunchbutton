@@ -68,9 +68,11 @@ App.confirm = function(txt, title) {
 };
 
 App.go = function(url) {
-	App.rootScope.$apply(function($location) {
-		$location.path(App.isPhoneGap ? url : 'index.html#' + url);
-	});
+// @todo: do some tests to figure out if we need this or not
+//	App.rootScope.$safeApply(function() {
+//		App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
+		App.location.path(url);
+//	});
 };
 
 
@@ -225,14 +227,13 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	};
 
 	$rootScope.$safeApply = function(fn) {
-		if (typeof fn !== 'function') {
-			return;
-		}
-
-		if ($rootScope.$$phase) {
-			fn();
+		var phase = this.$root.$$phase;
+		if (phase == '$apply' || phase == '$digest') {
+			if (fn && (typeof(fn) === 'function')) {
+				this.$eval(fn);
+			}
 		} else {
-			$rootScope.$apply(fn); 
+			this.$apply(fn);
 		}
 	};
 
