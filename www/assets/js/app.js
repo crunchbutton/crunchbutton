@@ -227,6 +227,8 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 			$scope.renderAction = renderAction;
 			$scope.renderPath = renderPath;
+			
+			console.log($scope.renderAction, $scope.renderPath);
 
 			if (App.isChromeForIOS()){
 				App.message.chrome();
