@@ -1,0 +1,1 @@
+ALTER TABLE `promo` ADD `viewed` int(11) NULL DEFAULT 0;
