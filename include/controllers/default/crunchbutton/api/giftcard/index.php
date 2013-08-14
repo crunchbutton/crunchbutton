@@ -335,7 +335,20 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 						echo json_encode(['error' => 'invalid gift card']);
 					}
 				}
- 				
+
+				// Register url view
+				if ( c::getPagePiece(2) == 'viewed' ) {
+					$code = $this->request()['code'];
+					// Get the giftcard (promo) by code
+					$giftcard = Crunchbutton_Promo::byCode( $code);
+					// Check if the giftcard is valid
+					if( $giftcard->id_promo ){
+						$giftcard->viewed = ( $giftcard->viewed ) ? $giftcard->viewed : 0;
+						$giftcard->viewed++;
+						$giftcard->save();
+					}
+				}
+
 				if ( c::getPagePiece(2) == 'validate' ) {
 
 					$code = $this->request()['code'];
