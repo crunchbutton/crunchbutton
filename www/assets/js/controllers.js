@@ -31,11 +31,12 @@ function GiftCardCtrl( $scope, $http, GiftCardService ) {
 	$scope.giftcard.processModal();
 }
 
-function MainHeaderCtrl( $scope, MainNavigationService ) {
+function MainHeaderCtrl($scope, MainNavigationService, OrderService) {
 	$scope.navigation = MainNavigationService;
+	$scope.order = OrderService;
 	$scope.$watch('navigation.page', function( newValue, oldValue, scope ) {
 		$scope.navigation.control();
-	} );
+	});
 }
 
 function RecommendRestaurantCtrl( $scope, $http, RecommendRestaurantService, AccountService, AccountModalService ) {
