@@ -392,19 +392,8 @@ App.test = {
 		$.totalstorage('location_lon',null);
 		location.href = '/';
 	},
-	init: function() {
-		$('.test-card').click(function() {
-			App.test.card();
-		});
-		$('.test-logout').click(function() {
-			App.test.logout();
-		});
-		$('.test-cart').click(function() {
-			App.test.cart();
-		});
-		$('.test-clearloc').click(function() {
-			App.test.clearloc();
-		});
+	reload: function() {
+		location.reload();
 	}
 };
 
@@ -574,7 +563,6 @@ App.init = function(config) {
 
 	App.processConfig(config || App.config);
 	App.AB.init();
-	App.test.init();
 	App.NGinit();
 };
 
