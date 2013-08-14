@@ -580,13 +580,8 @@ html {
 	}
 	.bg {
 		background: #f5f5f5 url(../images/crisp_paper_ruffles-mobile.png);
-		-webkit-transition: all linear 0.1s;
-		   -moz-transition: all linear 0.1s;
-		    -ms-transition: all linear 0.1s;
-		     -o-transition: all linear 0.1s;
-		        transition: all linear 0.1s;
 	}
-	.route-location .bg, .bg.route.location {
+	.page-location .bg, .bg.route.location {
 		background: #f5f5f5 url(../images/appbg/marlas-tacos.jpg);
 	}
 
@@ -614,7 +609,7 @@ html {
 		display: none;
 	}
 	/* @hack: since were using absolute positioning for the menu, we cant clear the bottom */
-	.route-restaurant .footer {
+	.page-restaurant .footer {
 		margin-left: 250px;
 	}
 }
@@ -834,11 +829,11 @@ html {
 		font-weight: bold;
 	}
 	
-	.route-restaurant .nav-cart {
+	.page-restaurant .nav-cart {
 		display: block;
 	}
 	
-	.route-restaurant .main-content {
+	.page-restaurant .main-content {
 		margin-top: 83px;
 	}
 }
