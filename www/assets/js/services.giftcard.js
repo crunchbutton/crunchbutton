@@ -39,6 +39,17 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 		service.code = service.code.replace( '/', '' );
 	}
 
+	/* Register the view */
+	service.viewed = function(){
+		var url = App.service + 'giftcard/viewed';
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { 'code' : service.code } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} );
+	}
+
 	service.processModal = function(){
 		if( !service.code || service.code == '' ){ return; }
 		service.modal.reset();
@@ -46,11 +57,13 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 			// Check if the user is logged in
 			service.redeemed = ( $.trim( App.config.user.id_user ) != '' );
 			service.validate( function( data ){
+
 				service.modal.intro = false;
 				if( data.error ){
 					service.modal.error = true;
 					switch( data.error ){
 						case 'gift card already used':
+							service.viewed();
 							service.modal.error = 'used';
 							break;
 						case 'invalid gift card':
@@ -62,6 +75,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 					}
 					service.code = false;
 				} else if ( data.success ){
+					service.viewed();
 					service.modal.success = true;
 					service.value = data.success['value'];
 					if( data.success['id_restaurant'] ){
