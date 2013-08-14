@@ -259,39 +259,36 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 
-			// Store the actual page
-			MainNavigationService.page = $route.current.action;
+		// Store the actual page
+		MainNavigationService.page = $route.current.action;
 
-			var renderAction = $route.current.action;
-			var renderPath = renderAction.split('.');
+		var renderAction = $route.current.action;
+		var renderPath = renderAction.split('.');
 
-			$scope.renderAction = renderAction;
-			$scope.renderPath = renderPath;
-			
-			console.log($scope.renderAction);
+		$scope.renderAction = renderAction;
+		$scope.renderPath = renderPath;
+		
+		console.log($scope.renderAction);
 
-			if (App.isChromeForIOS()){
-				App.message.chrome();
-			}
+		$('body').removeClass(function (index, css) {
+			return (css.match (/\broute-\S+/g) || []).join(' ');
+		}).addClass('route-' + renderAction);
+		
+		setTimeout(function() {
+			App.scrollTop();
+		},1);
 
-			$('body').removeClass(function (index, css) {
-				return (css.match (/\broute-\S+/g) || []).join(' ');
-			}).addClass('route-' + renderAction);
-			
-			setTimeout(function() {
-				App.scrollTop();
-			},1);
+		/*
+		$('.content').addClass('smaller-width');
+		$('.main-content').css('width','auto');
 
-			/*
-			$('.content').addClass('smaller-width');
-			$('.main-content').css('width','auto');
+		$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
+		$( '.nav-back' ).addClass( 'nav-back-show' );
+		*/
+		
+		$('.main-content').css('margin-top', $('.navs').height() + 2);
 
-			$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-			$( '.nav-back' ).addClass( 'nav-back-show' );
-			*/
-
-		}
-	);
+	});
 
 	AccountService.checkUser();
 });
@@ -462,70 +459,6 @@ App.init = function(config) {
 		CB.config = null;
 	}
 
-	if (App.isMobile()) {
-
-		// prevent double trigger
-		$(document).on('click','input[type="checkbox"]', function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-		});
-
-		// manually rebind checkbox events
-		$('input[type="checkbox"]').click(function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-			$(this).checkToggle();
-		});
-
-		// manually rebind labels
-		$('label[for]').click(function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-			var target = document.getElementById($(this).attr('for'));
-			if (target && target.tagName == 'INPUT') {
-				switch ($(target).attr('type')) {
-					case 'text':
-					case 'password':
-					case 'number':
-					case 'phone':
-					case 'tel':
-						$(target).focus();
-						break;
-					case 'checkbox':
-						$(target).checkToggle();
-						break;
-				}
-			}
-			$(this).checkToggle();
-		});
-
-		// manually bind links
-		// @todo: intercept for native app
-		$('a[href]').click(function(e) {
-			var el = $(this);
-			var href = el.attr('href');
-
-			if (!href || e.defaultPrevented) {
-				return;
-			}
-
-			if ($(this).attr('target')) {
-				window.open($(this).attr('href'), $(this).attr('target'));
-			} else {
-				location.href = $(this).attr('href');
-			}
-		});
-
-
-		// ignore all click events from acidently triggering on mobile. only use click
-		/*
-		$(document).on('click', function(e, force) {
-			e.stopPropagation();
-			e.preventDefault();
-		});
-		*/
-	}
-
 	$(document).on('click', '.button-deliver-payment, .dp-display-item a, .dp-display-item .clickable', function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();
@@ -612,20 +545,6 @@ App.dialog = {
 			}
 			//my-mfp-zoom-in
 		});
-	}
-};
-
-
-App.message = {
-	chrome: function() {
-		var title = 'How to use Chrome',
-			message = '<p>' +
-			'Just tap "Request Desktop Site."' +
-			'</p>' +
-			'<p align="center">' +
-			'<img style="border:1px solid #000" src="/assets/images/chrome-options.png" />' +
-			'</p>';
-		App.dialog.show(title, message);
 	}
 };
 

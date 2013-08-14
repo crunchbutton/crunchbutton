@@ -40,11 +40,6 @@ App.isChrome = function(){
 	return /chrom(e|ium)/.test( navigator.userAgent.toLowerCase() ) || /crios/.test( navigator.userAgent.toLowerCase() ) || ( typeof window.chrome === 'object' );
 }
 
-App.isChromeForIOS = function(){
-	return App.isMobile() && App.iOS() && App.isChrome();
-}
-
-
 var sort_by;
 
 (function() {

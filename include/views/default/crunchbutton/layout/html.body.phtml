@@ -107,25 +107,36 @@
 <div class="wrapper">
 	
 	<div id="snap-content" class="snap-content">
-		<div class="nav" data-role="header" data-position="fixed" ng-controller="MainHeaderCtrl">
-			
-			<div class="content<?=$e?>">
-				
-				<div class="pacman-loading pacman-left"></div>
-
-				<div class="logo"><a href="javascript:;" ng-instant="navigation.home()"><div class="logo-img"></div></a></div>
-
-				<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()"></div>
-				<div title="Change location" ng-show="navigation.buttons.location" class="location-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.link('/location')"></div>
-				<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-click="navigation.menu()"></div>
-
-				<div class="signin-box-header">
-					<div ng-show="account.user.id_user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
-					<div ng-show="!account.user.id_user" ng-instant="navigation.signin()" class="signin-icon"></div>
+		<div class="navs" data-role="header" data-position="fixed" ng-controller="MainHeaderCtrl">
+			<div class="nav nav-top">
+				<div class="content<?=$e?>">
+					
+					<div class="pacman-loading pacman-left"></div>
+	
+					<div class="logo"><a href="javascript:;" ng-instant="navigation.home()"><div class="logo-img"></div></a></div>
+	
+					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()"></div>
+					<div title="Change location" ng-show="navigation.buttons.location" class="location-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.link('/location')"></div>
+					<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-click="navigation.menu()"></div>
+	
+					<div class="signin-box-header">
+						<div ng-show="account.user.id_user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
+						<div ng-show="!account.user.id_user" ng-instant="navigation.signin()" class="signin-icon"></div>
+					</div>
+	
 				</div>
+			</div>
+			<div class="nav nav-cart">
+
+
+					<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
+						<div class="cart-summary-icon"></div>
+						<div class="cart-summary-item-count"><span>{{order.info.totalItems}}</span></div>
+						<div class="cart-summary-items">{{order.info.cartSummary}}</div>
+					</div>
+
 
 			</div>
-
 		</div>
 	
 		<div class="snap-content-inner bg" ng-scroll-position>
