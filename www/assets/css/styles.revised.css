@@ -837,6 +837,10 @@ html {
 	.route-restaurant .nav-cart {
 		display: block;
 	}
+	
+	.route-restaurant .main-content {
+		margin-top: 83px;
+	}
 }
 
 @media only screen and (min-width : 769px) {
