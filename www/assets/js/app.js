@@ -285,8 +285,6 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
 		$( '.nav-back' ).addClass( 'nav-back-show' );
 		*/
-		
-		$('.main-content').css('margin-top', $('.navs').height() + 2);
 
 	});
 
