@@ -5,12 +5,6 @@
 
 <div ng-show="order.loaded">
 
-	<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
-		<div class="cart-summary-icon"></div>
-		<div class="cart-summary-item-count"><span>{{order.info.totalItems}}</span></div>
-		<div class="cart-summary-items">{{order.info.cartSummary}}</div>
-	</div>
-
 	<div class="giftcard-badge-container" ng-show="credit.value != '0.00' && App.isMobile()">
 		<div class="giftcard-badge">
 			<div ng-click="credit.tooltip=!credit.tooltip" class="giftcard-badge-value">${{credit.value}}</div>
@@ -121,7 +115,7 @@
 			</div>
 
 				<div class="default-order-check" ng-show="order.info.totalItems">
-					<input type="checkbox" ng-model="order.form.make_default">
+					<input type="checkbox" ng-model="order.form.make_default" id="default-order-check">
 					<label for="default-order-check">Make this your default order for {{restaurant.name}}</label>
 				</div>
 

@@ -19,6 +19,7 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 			$css .= file_get_contents(c::config()->dirs->www.'assets/css/font-awesome.css');
 			$css .= file_get_contents(c::config()->dirs->www.'assets/css/magnific-popup.css');
 			$css .= file_get_contents(c::config()->dirs->www.'assets/css/ladda-themeless.min.css');
+			/* $css .= file_get_contents(c::config()->dirs->www.'assets/css/icheck.red.css'); */
 			
 			if (strpos($_SERVER['HTTP_USER_AGENT'],'Windows') !== false) {
 				$file = c::config()->dirs->www.'assets/css/windows.css';

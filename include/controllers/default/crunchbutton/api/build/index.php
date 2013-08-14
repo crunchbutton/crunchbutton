@@ -23,7 +23,8 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 			'/food',
 			'/datepicker',
 			'/compat',
-			'/admin'
+			'/admin',
+			'/theme'
 		];
 		$path = c::config()->dirs->www.'assets/images';
 		$dir  = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);

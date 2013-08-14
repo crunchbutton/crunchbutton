@@ -24,20 +24,6 @@ body {
 	background: #fff;
 }
 
-.nav {
-	background: url(../images/nav-web.png);
-	height: 68px;
-	background-size: 68px;
-	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
-
-	width: auto;
-	z-index: 100;
-	top: 0;
-	left: 0;
-	right: 0;
-	position: fixed;
-}
-
 .meal-items {
 	text-align: center;
 }
@@ -113,10 +99,6 @@ body {
 	height: 37px;
 	background: url(../images/logo-web.png) no-repeat;
 	background-size: 100%;
-}
-
-.nav .content {
-	padding-top: 9px;
 }
 
 .meal-item.active {
@@ -1094,7 +1076,7 @@ html[xmlns] .clearfix {
 }
 
 
-@media only screen and (max-width : 769px) {
+@media only screen and (max-width : 768px) {
 	.logo-img {
 		margin-left: -149px;
 		position: absolute;
@@ -1300,12 +1282,6 @@ html[xmlns] .clearfix {
 		margin: 48px 8px 10px 8px;
 		min-height: 240px;
 	}
-	.nav {
-		box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.35);
-		background: url(../images/nav.png);
-		height: 44px;
-		background-size: 44px;
-	}
 
 	.logo-img {
 		width: 168px;
@@ -1341,7 +1317,7 @@ html[xmlns] .clearfix {
 		font-size: 16px;
 		font-weight: bold;
 		margin-left: -10px;
-		margin-top: 120px;
+		margin-top: 85px;
 		position: absolute;
 		z-index: 20;
 		box-shadow: 1px 1px 1px rgba(0,0,0,.3);
@@ -1364,11 +1340,6 @@ html[xmlns] .clearfix {
 	}	
 	.meal-item.active {
 		border: 1px solid rgba(255,40,31,.8);
-	}
-	.restaurant-pic-wrapper:before {
-		content: " ";
-		height: 35px;
-		display: block;
 	}
 	.restaurant-pic-wrapper {
 		margin-bottom: 0px;
@@ -1475,36 +1446,6 @@ html[xmlns] .clearfix {
 	.restaurant-item-title:first-child {
 		margin-top: 10px;
 	}
-	.cart-summary {
-		position: fixed;
-		height: 35px;
-		z-index: 99;
-		width: 100%;
-		left: 0;
-		top: 43px;
-		white-space: nowrap;
-		overflow: hidden;
-		background: #ddd;
-
-		border-bottom: 1px solid #aaa;
-		box-shadow:
-			inset 0 0 2px #fafafa,
-			0px 2px 5px 0px rgba(0, 0, 0, 0.25)
-		;
-		cursor: pointer;
-	}
-	.cart-summary-detail {
-		background: -moz-linear-gradient(#ededed, #ccc);
-		background: -ms-linear-gradient(#ededed, #ccc);
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ededed), color-stop(100%, #ccc));
-		background: -webkit-linear-gradient(#ededed, #ccc);
-		background: -o-linear-gradient(#ededed, #ccc);
-		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ccc');
-		-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#ccc')";
-		background: linear-gradient(#ededed, #ccc);
-
-
-	}
 
 	.nav-back {
 		margin-top: -1px;
@@ -1515,29 +1456,6 @@ html[xmlns] .clearfix {
 		height: 31px;
 		background-size: contain;
 		cursor: pointer;
-	}
-	.cart-summary {
-		width: 100%;
-		white-space: nowrap;
-	}
-	.cart-summary-icon {
-		background: url(../images/cart.png) no-repeat;
-		height: 25px;
-		width: 30px;
-		margin: 5px 18px 0 10px;
-		background-size: contain;
-		display: inline-block;
-	}
-	.cart-summary-items {
-		margin-top: 11px;
-		height: 18px;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		width: 80%;
-		vertical-align: top;
-
-		display: inline-block;
 	}
 	.cart-items {
 		float: none;
@@ -1818,7 +1736,7 @@ html[xmlns] .clearfix {
 	display: none;
 }
 
-@media only screen and (min-width : 633px) and (max-width : 769px) {
+@media only screen and (min-width : 633px) and (max-width : 768px) {
 	.meal-item:nth-child(2n+1) {
 		margin-right: 12px;
 	}
@@ -1831,7 +1749,7 @@ html[xmlns] .clearfix {
 
 
 
-@media only screen and (min-width : 770px) {
+@media only screen and (min-width : 769px) {
 	.location-address {
 		width: 100%;
 	}
@@ -1948,10 +1866,6 @@ html[xmlns] .clearfix {
 	}
 	.dish-name {
 		text-decoration: underline;
-	}
-
-	.cart-summary {
-		display: none;
 	}
 
 	/**
@@ -2469,7 +2383,7 @@ html[xmlns] .clearfix {
 	}
 }
 
-@media only screen and (min-width : 770px) and (max-width : 1023px) {
+@media only screen and (min-width : 769px) and (max-width : 1023px) {
 	.content {
 		width: 670px;
 	}
@@ -2529,27 +2443,7 @@ th {
 		margin-top: 5px;
 	}
 
-.cart-summary-item-count {
-	position: absolute;
-	height: 13px;
-	min-width: 13px;
-	max-width: 40px;
-	margin-top: -28px;
-	margin-left: 35px;
-	border-radius: 10px;
-	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
-	border: 1px solid #fff;
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(223, 110, 110, 1)), to(rgba(196, 0, 0, 1)));
-}
 
-.cart-summary-item-count span {
-	margin: 1px 3px 0 3px;
-	display: block;
-	text-shadow: 1px 1px 0px rgba(0,0,0,.1);
-	color: #fff;
-	font-size: 10px;
-	font-weight: bold;
-}
 
 @-moz-document url-prefix() {
 	.cart-item-config {
