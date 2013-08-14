@@ -85,6 +85,14 @@
 						</tr>
 					</table>
 				</li>
+				<li ng-instant="App.test.reload()">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-circle-blank"></i></td>
+							<td class="side-menu-label">TEST: reload page</a></td>
+						</tr>
+					</table>
+				</li>
 				<? endif ; ?>
 
 			</ul>
@@ -109,7 +117,7 @@
 
 				<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()"></div>
 				<div title="Change location" ng-show="navigation.buttons.location" class="location-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.link('/location')"></div>
-				<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-instant="navigation.menu()"></div>
+				<div title="Menu" ng-show="navigation.buttons.menu" class="menu-icon {{ navigation.page == 'home' && 'config-icon-desktop-hide' || '' }}" ng-click="navigation.menu()"></div>
 
 				<div class="signin-box-header">
 					<div ng-show="account.user.id_user" ng-instant="navigation.link('/orders')" class="signin-user" title="My Account + Past Orders"></div>
