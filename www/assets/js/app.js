@@ -43,7 +43,8 @@ var App = {
 	localStorage: false,
 	isPhoneGap: document.location.protocol == 'file:',
 	useNativePrompt: false,
-	ajaxTimeout: 5000
+	ajaxTimeout: 5000,
+	splashHidden: false
 };
 
 // enable localstorage on phonegap
@@ -258,34 +259,23 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	*/
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
-
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
 
-		var renderAction = $route.current.action;
-		var renderPath = renderAction.split('.');
-
-		$scope.renderAction = renderAction;
-		$scope.renderPath = renderPath;
-		
-		console.log($scope.renderAction);
-
 		$('body').removeClass(function (index, css) {
-			return (css.match (/\broute-\S+/g) || []).join(' ');
-		}).addClass('route-' + renderAction);
+			return (css.match (/\bpage-\S+/g) || []).join(' ');
+		}).addClass('page-' + MainNavigationService.page);
 		
 		setTimeout(function() {
 			App.scrollTop();
 		},1);
-
-		/*
-		$('.content').addClass('smaller-width');
-		$('.main-content').css('width','auto');
-
-		$( '.config-icon' ).addClass( 'config-icon-mobile-hide' );
-		$( '.nav-back' ).addClass( 'nav-back-show' );
-		*/
-
+		
+		if (App.isPhoneGap && !App.splashHidden && navigator.splashscreen) {
+			App.splashHidden = true;
+			setTimeout(function() {
+				navigator.splashscreen.hide();
+			},1);
+		}
 	});
 
 	AccountService.checkUser();
