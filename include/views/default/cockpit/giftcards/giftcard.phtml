@@ -40,6 +40,10 @@ if ( $credit->id_credit ) {
 							<td>Value</td>
 							<td>$<?=$this->giftcard->value;?></td>
 						</tr>
+						<tr>
+							<td>Number of views</td>
+							<td><?=$this->giftcard->viewed;?></td>
+						</tr>
 						<?php if( $credit->id_credit ) { ?>
 						<tr>
 							<td>Total Spent</td>
