@@ -1425,6 +1425,7 @@ html[xmlns] .clearfix {
 	.button-bottom-wrapper {
 		position: fixed;
 		left: 0;
+		right: 0;
 		z-index: 102;
 		bottom: 0;
 		width: 100%;
