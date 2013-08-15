@@ -25,7 +25,7 @@ class Crunchbutton_Promo extends Cana_Table
 	}
 
 	public static function byCode( $code ){
-		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE code = "' . $code . '"' );
+		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE UPPER( code ) = UPPER("' . $code . '")' );
 	}
 
 	public static function lastID(){
