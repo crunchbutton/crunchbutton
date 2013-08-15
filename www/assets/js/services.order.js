@@ -292,6 +292,14 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		service._deliveryAddressOk = false;
 		service.processOrder();
 	}
+	
+	service.errors = function(errors) {
+		var error = '';
+		for (var x in errors) {
+			error += '<li><i class="icon-li icon-warning-sign"></i>' + errors[x] + '</li>';
+		}
+		App.alert('<ul class="icons-ul">' + error + '</ul>');
+	}
 
 	/**
 	 * Submits the cart order
@@ -356,13 +364,10 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		}
 
 		if (!$.isEmptyObject(errors)) {
-			var error = '';
-			for (var x in errors) {
-				error += errors[x] + "\n";
-			}
 			$('body').scrollTop($('.payment-form').position().top - 80);
-			App.alert(error);
+			service.errors(errors);
 			App.busy.unBusy();
+
 			App.track('OrderError', errors);
 			// Log the error
 			App.log.order({
@@ -536,12 +541,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 					};
 				}
 				if (json.status == 'false') {
-					var error = '';
-					for (x in json.errors) {
-						error += json.errors[x] + "\n";
-					}
+					service.errors(json.errors);
 					App.track('OrderError', json.errors);
-					App.alert(error);
 					// Log the error
 					App.log.order({
 						'errors': json.errors

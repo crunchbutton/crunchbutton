@@ -884,3 +884,11 @@ html {
 .modal button.mfp-close {
 	font-size: 18px;
 }
+
+.modal .icons-ul {
+	margin-left: 1.5em;
+}
+
+.modal p {
+	text-align: left;
+}
