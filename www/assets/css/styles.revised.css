@@ -843,6 +843,17 @@ html {
 	.button-bottom-inline {
 		display: none;
 	}
+	.button-bottom-wrapper {
+		-webkit-transition: bottom 0.5s ease;
+		   -moz-transition: bottom 0.5s ease;
+		    -ms-transition: bottom 0.5s ease;
+		     -o-transition: bottom 0.5s ease;
+		        transition: bottom 0.5s ease;
+		bottom: -62px !important;
+	}
+	.button-bottom-show {
+		bottom: 0 !important;
+	}
 }
 
 @media only screen and (min-width : 769px) {
@@ -850,3 +861,6 @@ html {
 		display: none;
 	}
 }
+
+
+
