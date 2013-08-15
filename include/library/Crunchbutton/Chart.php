@@ -191,6 +191,12 @@ class Crunchbutton_Chart extends Cana_Model {
 		return $result->_items[0]->description; 
 	}
 
+	public function getChartTitle( $permalink ){
+		$query = "SELECT * FROM chart WHERE permalink = '{$permalink}'";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->title; 
+	}
+
 	public function weeks(){
 		$query = "SELECT COUNT( DISTINCT( YEARWEEK( date ) ) ) AS weeks FROM `order`";
 		$result = c::db()->get( $query );
