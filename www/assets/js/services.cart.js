@@ -1,14 +1,31 @@
 // CartService service
-NGApp.factory('CartService', function (RestaurantService) {
+NGApp.factory('CartService', function () {
+	
 	var service = {
-		uuidInc: 0,
-		items: {}
+		restaurants : {},
+		id_restaurant : null
 	}
+
 	service.uuid = function () {
-		var id = 'c-' + service.uuidInc;
-		service.uuidInc++;
+		var id = 'c-' + service.restaurants[ service.id_restaurant ].uuidInc;
+		service.restaurants[ service.id_restaurant ].uuidInc++;
+		console.log('service.id_restaurant',service.id_restaurant);
+		console.log('id',id);
 		return id;
 	}
+
+	service.setRestaurant = function( id_restaurant ){
+		service.id_restaurant = id_restaurant;
+		if( !service.restaurants[ service.id_restaurant ] ){
+			service.restaurants[ service.id_restaurant ] = {
+				uuidInc: 0,
+				items: {}
+			}
+		}
+		console.log('service.id_restaurant',service.id_restaurant);
+		console.log('service.restaurants',service.restaurants[ service.id_restaurant ] );
+	}
+
 	service.add = function (item) {
 		var id = service.uuid(),
 			dish = App.cache('Dish', item);
@@ -45,20 +62,20 @@ NGApp.factory('CartService', function (RestaurantService) {
 				}
 			}
 		}
-		service.items[id] = {};
-		service.items[id].id = item;
-		service.items[id].options = options;
+		service.restaurants[ service.id_restaurant ].items[id] = {};
+		service.restaurants[ service.id_restaurant ].items[id].id = item;
+		service.restaurants[ service.id_restaurant ].items[id].options = options;
 		/* Template viewer stuff */
-		service.items[id].details = {};
-		service.items[id].details.id = id;
-		service.items[id].details.name = dish.name;
-		service.items[id].details.description = dish.description != null ? dish.description : '';
+		service.restaurants[ service.id_restaurant ].items[id].details = {};
+		service.restaurants[ service.id_restaurant ].items[id].details.id = id;
+		service.restaurants[ service.id_restaurant ].items[id].details.name = dish.name;
+		service.restaurants[ service.id_restaurant ].items[id].details.description = dish.description != null ? dish.description : '';
 		/* Customization stuff */
-		service.items[id].details.customization = {};
-		service.items[id].details.customization.customizable = (dish.options().length > 0);
-		service.items[id].details.customization.expanded = (parseInt(dish.expand_view) > 0);
-		service.items[id].details.customization.options = service._parseCustomOptions(dish_options, options);
-		service.items[id].details.customization.rawOptions = dish_options;
+		service.restaurants[ service.id_restaurant ].items[id].details.customization = {};
+		service.restaurants[ service.id_restaurant ].items[id].details.customization.customizable = (dish.options().length > 0);
+		service.restaurants[ service.id_restaurant ].items[id].details.customization.expanded = (parseInt(dish.expand_view) > 0);
+		service.restaurants[ service.id_restaurant ].items[id].details.customization.options = service._parseCustomOptions(dish_options, options);
+		service.restaurants[ service.id_restaurant ].items[id].details.customization.rawOptions = dish_options;
 		//TODO:: If it is a mobile add the items at the top #1035
 		App.track('Dish added', {
 			id_dish: dish.id_dish,
@@ -67,7 +84,7 @@ NGApp.factory('CartService', function (RestaurantService) {
 	}
 	service.clone = function (item) {
 		var
-		cart = service.items[item],
+		cart = service.restaurants[ service.id_restaurant ].items[item],
 			newoptions = [];
 		for (var x in cart.options) {
 			newoptions[newoptions.length] = cart.options[x];
@@ -78,17 +95,24 @@ NGApp.factory('CartService', function (RestaurantService) {
 		App.track('Dish cloned');
 	}
 
+	service.getItems = function(){
+		return service.restaurants[ service.id_restaurant ].items;
+	}
+
 	service.reset = function(){
-		service.uuidInc = 0;
-		service.items =  {};
+		console.log('reset');
+		service.restaurants[ service.id_restaurant ].uuidInc = 0;
+		service.restaurants[ service.id_restaurant ].items =  {};
+		console.log('service.id_restaurant',service.id_restaurant);
+		console.log('service.restaurants[ service.id_restaurant ].items ',service.restaurants[ service.id_restaurant ].items );
 	}
 
 	service.remove = function (item) {
 		App.track('Dish removed');
-		delete service.items[item];
+		delete service.restaurants[ service.id_restaurant ].items[item];
 	}
 	service.customizeItem = function (option, item) {
-		var cartitem = service.items[item.details.id];
+		var cartitem = service.restaurants[ service.id_restaurant ].items[item.details.id];
 		if (option) {
 			if (option.type == 'select') {
 				var options = item.details.customization.rawOptions;
@@ -117,7 +141,7 @@ NGApp.factory('CartService', function (RestaurantService) {
 				}
 			}
 		}
-		service.items[item.details.id] = cartitem;
+		service.restaurants[ service.id_restaurant ].items[item.details.id] = cartitem;
 	}
 	service.customizeItemPrice = function (price, force) {
 		if (price != '0.00' || force) {
@@ -127,25 +151,25 @@ NGApp.factory('CartService', function (RestaurantService) {
 	}
 	service.getCart = function () {
 		var cart = [];
-		for (x in service.items) {
+		for (x in service.restaurants[ service.id_restaurant ].items) {
 			var index = cart.length;
-			cart[index] = { id: service.items[x].id, options: service.items[x].options };
+			cart[index] = { id: service.restaurants[ service.id_restaurant ].items[x].id, options: service.restaurants[ service.id_restaurant ].items[x].options };
 		}
 		return cart;
 	}
 	service.hasItems = function () {
-		if (!$.isEmptyObject(service.items)) {
+		if (!$.isEmptyObject(service.restaurants[ service.id_restaurant ].items)) {
 			return true;
 		}
 		return false;
 	}
 	service.summary = function () {
 		var items = {};
-		for (var x in service.items) {
-			if (items[service.items[x].details.name]) {
-				items[service.items[x].details.name]++;
+		for (var x in service.restaurants[ service.id_restaurant ].items) {
+			if (items[service.restaurants[ service.id_restaurant ].items[x].details.name]) {
+				items[service.restaurants[ service.id_restaurant ].items[x].details.name]++;
 			} else {
-				items[service.items[x].details.name] = 1;
+				items[service.restaurants[ service.id_restaurant ].items[x].details.name] = 1;
 			}
 		}
 		var text = '';
@@ -163,9 +187,9 @@ NGApp.factory('CartService', function (RestaurantService) {
 		var
 		total = 0,
 			options;
-		for (var x in service.items) {
-			total += parseFloat(App.cached['Dish'][service.items[x].id].price);
-			options = service.items[x].options;
+		for (var x in service.restaurants[ service.id_restaurant ].items) {
+			total += parseFloat(App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].price);
+			options = service.restaurants[ service.id_restaurant ].items[x].options;
 			for (var xx in options) {
 				var option = App.cached['Option'][options[xx]];
 				if (option === undefined) continue; // option does not exist anymore
@@ -177,13 +201,14 @@ NGApp.factory('CartService', function (RestaurantService) {
 	}
 	service.totalItems = function () {
 		var size = 0;
-		for (var x in service.items) {
-			if (service.items.hasOwnProperty(x)) {
+		for (var x in service.restaurants[ service.id_restaurant ].items) {
+			if (service.restaurants[ service.id_restaurant ].items.hasOwnProperty(x)) {
 				size++;
 			}
 		}
 		return size;
 	}
+
 	service._parseCustomOptions = function (options, selectedOptions) {
 		var parsedOptions = [];
 		for (var x in options) {

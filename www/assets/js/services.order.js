@@ -39,6 +39,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 			service.updateTotal();
 		}
 	}
+
 	service.tooglePayment = function (type) {
 		if (type != service.form.pay_type) {
 			service.form.pay_type = type;
@@ -128,7 +129,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 	}
 	service.reloadOrder = function () {
 		var cart = service.cart.getCart();
-		service.resetOrder();
+		service.cart.reset()
 		service.loadFlatOrder(cart);
 	}
 	service.loadFlatOrder = function (cart) {
@@ -282,10 +283,6 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		elements['taxes'] = this._breackDownTaxes(feeTotal);
 		elements['tip'] = this._breakdownTip(total);
 		return elements;
-	}
-
-	service.resetOrder = function () {
-		service.cart.items = {};
 	}
 
 	service.submit = function(){
@@ -564,7 +561,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 							'items': service.cart.totalItems()
 						});
 
-						service.resetOrder();
+						service.cart.reset();
 						$rootScope.$safeApply( function(){
 							$rootScope.$broadcast( 'newOrder' );
 							$location.path( '/order/' + uuid );	
