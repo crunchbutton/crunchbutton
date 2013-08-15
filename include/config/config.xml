@@ -165,7 +165,7 @@
 		<voice>male</voice>
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>
-		<maxconfirmback>4</maxconfirmback>
+		<maxconfirmback>2</maxconfirmback>
 		<warningOrderNotConfirmedTime>720000</warningOrderNotConfirmedTime>
 		<confirmTime>30000</confirmTime>
 		<confirmFaxTime>30000</confirmFaxTime>

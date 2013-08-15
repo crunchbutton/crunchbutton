@@ -128,10 +128,13 @@ if( $isPopup ){
 	</div>
 	<?php if( $hasResults ){ ?>
 	<div id="chart-<?=$chartId?>" style="min-width: 100%; <?php if( $isPopup ){ echo 'height:90%;'; }else{ echo 'height:250px;'; } ?> margin: 0 auto"></div>
-<center>
+<center style="height:60px;">
+	<?php if( $subtitle != '' ){ ?>
+		<div style="font-size:10px;"><?php echo $subtitle; ?></div>
+	<?php } ?>
 	<?php echo $description; ?>
 </center>
-	<div id="options-<?=$divId?>" style="height:95px;background:#F5F5F5;width:98%;overflow-x:auto;overflow-y:hidden;<?php if( $isPopup ){ echo 'display:none'; } ?>">
+	<div id="options-<?=$divId?>" style="height:110px;background:#F5F5F5;overflow-x:auto;width:99%;overflow-y:hidden;<?php if( $isPopup ){ echo 'display:none'; } ?>">
 		<table>
 			<tr>
 			<?php 
@@ -244,8 +247,8 @@ if( $isPopup ){
 			</tr>
 		</table>
 	
-	<div class="row-fluid" style="padding:0 20px; font-size:10px;">
-		<div class="span3" id="week-<?=$chartId?>">
+	<div class="row-fluid span11"  style="padding:0 20px; font-size:10px;">
+		<div class="span4" id="week-<?=$chartId?>">
 			<?php
 			if( $interval == 'week' ){
 				$_slider_to = $to;
@@ -267,7 +270,7 @@ if( $isPopup ){
 			<?php 
 			} ?>
 		</div>
-		<div class="span7">
+		<div class="span6">
 			<div id="slider-<?=$divId?>" data-from="<?php echo $_slider_from; ?>" data-to="<?php echo $_slider_to; ?>"></div>
 	</div>
 	<?php } else {

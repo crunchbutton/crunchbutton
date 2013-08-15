@@ -1,0 +1,1 @@
+ALTER TABLE `chart` ADD `title` varchar(255) DEFAULT NULL;
