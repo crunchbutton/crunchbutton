@@ -80,10 +80,24 @@ html {
 /**
  * account modal
  */
+.ok-button-pad {
+	margin-bottom: 38px;
+}
+.modal button.ok-button {
+	padding: 6px 18px 6px 18px;
+}
+.notification-alert-container .divider.dots {
+ 	margin: 10px 0 10px 0;
+}
+.notification-alert-container .mfp-close {
+	display: none;
+}
+.suggest-food-container .message {
+	margin-top: 10px;
+}
 .modal .error, .modal .success, .modal .message{
 	color: #ff0000;
 	font-size: 12px;
-	margin: 12px 0;
 }
 .modal .success{
 	color: #333;
@@ -859,7 +873,14 @@ html {
 	.button-bottom-bar {
 		display: none;
 	}
+	.modal .small-message {
+		font-size: 12px;
+		color: #333;
+	}
 }
 
 
 
+.modal button.mfp-close {
+	font-size: 18px;
+}

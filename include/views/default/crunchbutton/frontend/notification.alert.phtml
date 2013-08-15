@@ -1,6 +1,8 @@
-<div class="notification-alert-container zoom-anim-dialog small-container mfp-hide" ng-controller="NotificationAlertCtrl">
-	<div class="signin-form-container">	
-		<h1 ng-bind="title" ng-show="title"></h1>
-		<p ng-bind-html-unsafe="message"></p>
-	</div>
+<div class="notification-alert-container zoom-anim-dialog small-container mfp-hide modal" ng-controller="NotificationAlertCtrl">
+	<h1 ng-bind="title" ng-show="title"></h1>
+	<p ng-bind-html-unsafe="message" class="small-message"></p>
+
+	<div class="divider dots"></div>
+	<button ng-click="closePopup();" class="ok-button">OK</button>
+	<div class="ok-button-pad"></div>
 </div>

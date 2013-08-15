@@ -231,6 +231,12 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	$rootScope.formatPrice = function(t) {
 		return parseFloat(t).toFixed(2);
 	};
+	
+	$rootScope.closePopup = function() {
+		try {
+			$.magnificPopup.close();
+		} catch (e) {}
+	};
 
 	$rootScope.$safeApply = function(fn) {
 		var phase = this.$root.$$phase;
