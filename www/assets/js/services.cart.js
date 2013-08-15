@@ -77,6 +77,12 @@ NGApp.factory('CartService', function (RestaurantService) {
 		});
 		App.track('Dish cloned');
 	}
+
+	service.reset = function(){
+		service.uuidInc = 0;
+		service.items =  {};
+	}
+
 	service.remove = function (item) {
 		App.track('Dish removed');
 		delete service.items[item];
