@@ -51,7 +51,14 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 	}
 
 	service.processModal = function(){
-		if( !service.code || service.code == '' ){ return; }
+		if( !service.code || service.code == '' ){ 
+			return; 
+		}
+		
+		if( !(/^\w+$/.test( $.trim( service.code ) )) ){
+			service.code = '';
+			return;
+		}
 		service.modal.reset();
 		setTimeout( function(){
 			// Check if the user is logged in
