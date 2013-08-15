@@ -127,18 +127,16 @@
 				</div>
 			</div>
 			<div class="nav nav-cart">
-
-
-					<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
-						<div class="cart-summary-icon"></div>
-						<div class="cart-summary-item-count"><span>{{order.info.totalItems}}</span></div>
-						<div class="cart-summary-items">{{order.info.cartSummary}}</div>
-					</div>
-
-
+				<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
+					<div class="cart-summary-icon"></div>
+					<div class="cart-summary-item-count"><span>{{order.info.totalItems}}</span></div>
+					<div class="cart-summary-items">{{order.info.cartSummary}}</div>
+				</div>
 			</div>
 		</div>
-	
+		
+		<div ng-show="navigation.restaurant._open && navigation.order.cart.hasItems()" class="button-bottom-wrapper button-bottom-bar"><button class="button-bottom" ng-click="order.submit();"><div>Get Food</div></button></div>
+
 		<div class="snap-content-inner bg" ng-scroll-position>
 			<div class="body">
 				<div class="content<?=$e?>">

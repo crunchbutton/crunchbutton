@@ -239,7 +239,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 /**
  * restaurant page
  */
-NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService) {
+NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService) {
 
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 
@@ -249,6 +249,8 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$scope.order.form = order.form;
 	$scope.order.info = order.info;
 	$scope.order.showForm = order.showForm;
+	
+	MainNavigationService.order = $scope.order;
 
 	// Alias to OrderService 'public' methods
 	$scope.order.updateTotal = function(){
@@ -352,6 +354,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		var community = data.community;
 		$scope.restaurant = data.restaurant;
 		order.restaurant = $scope.restaurant;
+		MainNavigationService.restaurant = $scope.restaurant;
 		
 		order.init();
 

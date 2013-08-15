@@ -838,6 +838,15 @@ html {
 	}
 }
 
-@media only screen and (min-width : 769px) {
 
+@media only screen and (max-width : 768px) {
+	.button-bottom-inline {
+		display: none;
+	}
+}
+
+@media only screen and (min-width : 769px) {
+	.button-bottom-bar {
+		display: none;
+	}
 }
