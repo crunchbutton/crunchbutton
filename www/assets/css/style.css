@@ -1993,9 +1993,6 @@ html[xmlns] .clearfix {
 .small-container {
 	line-height: 20px;
 }
-.small-container p {
-	margin-bottom: 10px;
-}
 .small-container h3 {
 	border-top: 1px solid #CCC;
 	font-weight: bold;
@@ -2006,7 +2003,11 @@ html[xmlns] .clearfix {
 	color:#D74924;
 	font-size: 1.4em;
 	font-weight: 400;
-	margin-bottom:22px;
+	margin-bottom:18px;
+}
+
+.notification-alert-container .small-container h1 {
+	margin-bottom: 15px;
 }
 
 /**
