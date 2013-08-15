@@ -1016,7 +1016,9 @@ class Crunchbutton_Order extends Cana_Table {
 			case 'selfsms':
 				$msg  = "Crunchbutton.com #".$this->id_order."\n\n";
 				$msg .= "Order confirmed!\n\n";
-				$msg .= "Contact ".$this->restaurant()->shortName().": ".$this->restaurant()->phone().".\n";
+				// Changed this line above #1541
+				// $msg .= "Contact ".$this->restaurant()->shortName().": ".$this->restaurant()->phone().".\n";
+				$msg .= "Restaurant Phone: ".$this->restaurant()->phone().".\n";
 				$msg .= "To contact Crunchbutton, text us back.\n\n";
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
 					$msg .= "Remember to tip!\n\n";
