@@ -410,7 +410,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 				}
 				
 				if (!latLong) {
-					App.alert( 'Could not locate you!' );
+					App.alert('Could not locate you!');
 					App.busy.unBusy();
 					return;
 				}

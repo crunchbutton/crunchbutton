@@ -56,7 +56,7 @@ App.alert = function(txt, title) {
 		if (App.useNativePrompt && App.isPhoneGap) {
 			navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else {
-			alert(txt);
+			App.rootScope.$broadcast('notificationAlert', title || null, txt);
 		}
 	});
 };
@@ -68,6 +68,7 @@ App.confirm = function(txt, title) {
 		return confirm(txt);
 	}
 };
+
 
 App.connectionError = function() {
 	App.rootScope.$broadcast('notificationAlert', 'Connection Error', 'Sorry! We could not reach the server right now. Try again when your internet is back!');
