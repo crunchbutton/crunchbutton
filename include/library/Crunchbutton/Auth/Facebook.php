@@ -1,46 +1,50 @@
 <?php
 
 class Crunchbutton_Auth_Facebook extends Cana_Model {
-	public function __construct($data = null) {
-		if (!$data) {
+	public function __construct($token = null, $user = null) {
+		$this->_facebook = c::facebook();
+
+		if ($token) {
+			$this->facebook()->setAccessToken($token);
+		}
+
+		if (!$user) {
 			$this->check();
 		} else {
-			$this->_user = $data;
+			$this->_user = $user;
 		}
+		
 	}
 
 	public function check() {
-
-		$this->_facebook = new Cana_Facebook([
-			'appId'	=> Cana::config()->facebook->app,
-			'secret' => Cana::config()->facebook->secret
-		]);
-
-		$user = $this->_facebook->getUser();
+		$user = c::facebook()->getUser();
 
 		if ($user) {
 			try {
-				$userObject = $this->_facebook->api('/'.$user);
+				$userObject = $this->facebook()->api('/'.$user);
 			} catch (Cana_Facebook_Exception $e) {
-				// debug for now
 				$userObject = null;
 			}
 		}
 
-		$this->_user = Cana_Model::toModel($userObject);
+		$this->_fbuser = Cana_Model::toModel($userObject);
 		return $this;
 	}
 
 	public function login() {
-		header('Location: '.$this->_facebook->getLoginUrl().'&scope=email');	
+		header('Location: '.$this->facebook()->getLoginUrl().'&scope=email');	
 		exit;
 	}
 
 	public function logout() {
-		header('Location: '.$this->_facebook->getLogoutUrl());
+		header('Location: '.$this->facebook()->getLogoutUrl());
 		exit;
 	}
 
+	public function fbuser() {
+		return $this->_fbuser;
+	}
+	
 	public function user() {
 		return $this->_user;
 	}
