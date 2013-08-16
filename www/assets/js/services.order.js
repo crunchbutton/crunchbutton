@@ -561,8 +561,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 							'user': this.user,
 							'items': service.cart.totalItems()
 						});
-
-						service.cart.reset();
+						// Clean the cart
+						service.cart.clean();
 						$rootScope.$safeApply( function(){
 							$rootScope.$broadcast( 'newOrder' );
 							$location.path( '/order/' + uuid );	
