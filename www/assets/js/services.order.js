@@ -805,6 +805,11 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope) {
 	};
 
 	// Reload the orders list
+	$rootScope.$on( 'userAuth', function(e, data) {
+		service.reload = true;
+	});
+
+	// Reload the orders list
 	$rootScope.$on( 'newOrder', function(e, data) {
 		service.reload = true;
 	});
