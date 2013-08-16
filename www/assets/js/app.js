@@ -77,7 +77,7 @@ App.connectionError = function() {
 App.go = function(url) {
 	// @todo: do some tests to figure out if we need this or not
 	// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
-	App.location.path(url);
+	App.location.path(url || '/');
 	App.rootScope.$safeApply();
 
 };
