@@ -250,6 +250,16 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$scope.order.showForm = order.showForm;
 	$scope.open = false;
 	
+	
+	// update if the restaurant is closed or open
+	App.rootScope.updateOpen = setInterval(function() {
+		var open = $scope.restaurant.open();
+		if ($scope.open != open) {
+			$scope.open = open;
+		}
+		$scope.$apply();
+	},1000 * 15);
+	
 	// Set the id_restaurant 
 	order.cart.setRestaurant( $routeParams.id );
 
