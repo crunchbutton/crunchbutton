@@ -93,7 +93,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 					// if it is phonegap call a special facebook connection
 					var data = {};
 					if (App.isPhoneGap) {
-						data.fbtoken = service.token;
+						data.fbrtoken = service.token;
 					}
 
 					// Just call the user api, this will create a facebook user
