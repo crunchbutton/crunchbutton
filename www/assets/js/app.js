@@ -206,17 +206,22 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		});
 	});
 
-	/* @todo: remove this. this is how you watch an object rather than a property so i remeber
+	/* @info: this is how you watch an object rather than a property so i remeber
 	$rootScope.$watch('account.user', function() {
 		// indicates that the user object has changed
 	}, true);
 	*/
 	
+	$rootScope.reload = function() {
+		$route.reload();
+	};
+	
 	$rootScope.link = function(link) {
-		$location.path(link || '/');
+		App.go.apply(arguments);
 	};
 
 	$rootScope.back = function() {
+		App.snap.close();
 		history.back();
 	};
 
@@ -276,6 +281,8 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		setTimeout(function() {
 			App.scrollTop();
 		},1);
+		
+		clearInterval(App.rootScope.updateOpen);
 		
 		if (App.isPhoneGap && !App.splashHidden && navigator.splashscreen) {
 			App.splashHidden = true;

@@ -248,7 +248,18 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$scope.order.form = order.form;
 	$scope.order.info = order.info;
 	$scope.order.showForm = order.showForm;
+	$scope.open = false;
 	
+	
+	// update if the restaurant is closed or open
+	App.rootScope.updateOpen = setInterval(function() {
+		var open = $scope.restaurant.open();
+		if ($scope.open != open) {
+			$scope.open = open;
+		}
+		$scope.$apply();
+	},1000 * 15);
+
 	order.cart.reset();
 
 	MainNavigationService.order = $scope.order;
@@ -356,6 +367,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		$scope.restaurant = data.restaurant;
 		order.restaurant = $scope.restaurant;
 		MainNavigationService.restaurant = $scope.restaurant;
+		$scope.open = $scope.restaurant.open();
 		
 		order.init();
 

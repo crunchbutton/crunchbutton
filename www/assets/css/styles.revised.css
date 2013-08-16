@@ -849,6 +849,14 @@ html {
 	.page-restaurant .main-content {
 		margin-top: 83px;
 	}
+
+	.payment-form {
+		font-family: Helvetica, Arial, sans-serif;
+	}
+	
+	.payment-total {
+		text-align: center;
+	}
 }
 
 

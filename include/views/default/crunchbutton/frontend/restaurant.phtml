@@ -1,6 +1,5 @@
 <div ng-show="!order.loaded">
-	Restaurant Loading Message!!<br><br>
-	THIS WILL SHOW UP WHEN A RESTAURANT PAGE IS DIRECTLY LOADED FROM A BROWSER BEFORE THE PAGE SHOWS.
+	<? /* THIS WILL SHOW UP WHEN A RESTAURANT PAGE IS DIRECTLY LOADED FROM A BROWSER BEFORE THE PAGE SHOWS. */ ?>
 </div>
 
 <div ng-show="order.loaded">
@@ -114,12 +113,12 @@
 				</div>
 			</div>
 
-				<div class="default-order-check" ng-show="order.info.totalItems">
-					<input type="checkbox" ng-model="order.form.make_default" id="default-order-check">
-					<label for="default-order-check">Set as default order for this restaurant</label>
-				</div>
-
+			<div class="default-order-check" ng-show="order.info.totalItems && restaurant._open">
+				<input type="checkbox" ng-model="order.form.make_default" id="default-order-check">
+				<label for="default-order-check">Set as default order for this restaurant</label>
 			</div>
+
+		</div>
 		
 
 		<!-- menu -->
@@ -151,7 +150,7 @@
 
 	<div class="restaurant-payment-div"></div>
 
-	<div class="is-closet main-content-readable" ng-show="!restaurant._open && order.loaded">
+	<div class="is-closet main-content-readable" ng-show="!open && order.loaded">
 		<div class="restaurant-closed">
 			<div class="restaurant-closed-icon"></div>
 			<div class="restaurant-closed-content">
@@ -180,7 +179,7 @@
 				<div ng-show="(restaurant.delivery == '1' && restaurant.takeout == '1')">
 					<label class="pay-title-label">Delivery Info</label>
 
-					<div class="input-item clearfix">
+					<div class="input-item toggle-wrapper clearfix">
 						<button ng-click="order.toogleDelivery( 'delivery' )" ng-class="{'toggle-active': order.form.delivery_type=='delivery' }" class="toggle-item">delivery</button>
 						<span class="toggle-spacer">or</span>
 						<button ng-click="order.toogleDelivery( 'takeout' )" ng-class="{'toggle-active': order.form.delivery_type=='takeout' }" class="toggle-item">takeout</button>
@@ -330,7 +329,7 @@
 					<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your {{AB.dollar}}{{credit.value}} gift card!</div>
 				</div>
 				&nbsp;
-				<span ng-show="order.form.pay_type=='card'">by cart</span>
+				<span ng-show="order.form.pay_type=='card'">by card</span>
 			</div>
 		</div>
 	

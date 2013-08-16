@@ -134,8 +134,11 @@
 				</div>
 			</div>
 		</div>
-		
-		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems())}" class="button-bottom-wrapper button-bottom-bar"><button class="button-bottom" ng-click="navigation.order.submit();"><div>Get Food</div></button></div>
+
+		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems())}" class="button-bottom-wrapper button-bottom-bar">
+			<button class="button-bottom" ng-click="navigation.order.submit();"><div>Get Food</div></button>
+			<button class="button-bottom" ng-click="navigation.order.checkout();"><div>Checkout</div></button>
+		</div>
 
 		<div class="snap-content-inner bg" ng-scroll-position>
 			<div class="body">

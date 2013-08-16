@@ -3,11 +3,9 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 
 	var service = {};
 	var restaurants = false;
-	var isSorted = false;
 
 	service.reset = function () {
 		restaurants = false;
-		isSorted = false;
 	}
 
 	service.getRestaurants = function(){
@@ -17,10 +15,7 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 	service.position = PositionsService;
 
 	service.sort = function () {
-
-		if (isSorted) {
-			return restaurants;
-		}
+		// dont not sort. if a restaurant closes we want to make sure it apears so
 
 		var list = restaurants;
 
@@ -53,7 +48,7 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 			primer: parseInt,
 			reverse: true
 		}));
-		isSorted = true;
+
 		restaurants = list;
 		return restaurants;
 	}
@@ -91,7 +86,7 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 					return list;
 				}
 			});
-			isSorted = false;
+
 			App.restaurants.forceLoad = false;
 		} else {
 			if (success) {
