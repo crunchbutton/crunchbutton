@@ -9,10 +9,6 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 	service.credit = CreditService;
 	service.restaurant = {};
 
-	// If this variable is true the restaurant's page will be loaded after the location get started
-	service.location.loadRestaurantsPage = false;
-	service.location.init();
-
 	// Default values
 	service.form = {
 		delivery_type: 'delivery',
@@ -48,6 +44,11 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 	}
 
 	service.init = function () {
+
+		// If this variable is true the restaurant's page will be loaded after the location get started
+		service.location.loadRestaurantsPage = false;
+		service.location.init();
+		
 		if (App.config.ab && App.config.ab.dollarSign == 'show') {
 			service.info.dollarSign = '$';
 		}
