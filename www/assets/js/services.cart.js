@@ -23,7 +23,9 @@ NGApp.factory('CartService', function () {
 	}
 
 	service.clean = function(){
-		service.restaurants = {};
+		for( x in service.restaurants ){
+			service.restaurants[x] = { uuidInc : 0, items : {} };
+		}
 	}
 
 	service.add = function (item) {
@@ -155,10 +157,12 @@ NGApp.factory('CartService', function () {
 		return cart;
 	}
 	service.hasItems = function () {
-		if (!$.isEmptyObject(service.restaurants[ service.id_restaurant ].items)) {
-			return true;
-		}
-		return false;
+		if( service.restaurants[ service.id_restaurant ] ){
+			if (!$.isEmptyObject(service.restaurants[ service.id_restaurant ].items)) {
+					return true;
+				}
+				return false;
+			}
 	}
 	service.summary = function () {
 		var items = {};
