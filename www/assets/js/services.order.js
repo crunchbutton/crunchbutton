@@ -48,7 +48,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		// If this variable is true the restaurant's page will be loaded after the location get started
 		service.location.loadRestaurantsPage = false;
 		service.location.init();
-		
+
 		if (App.config.ab && App.config.ab.dollarSign == 'show') {
 			service.info.dollarSign = '$';
 		}
@@ -100,8 +100,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 
 		// Credit card stuff
 		service.form.cardNumber = service.account.user.card;
-		service.form.cardMonth = service.account.user.card_exp_month;
-		service.form.cardYear = service.account.user.card_exp_year;
+		service.form.cardMonth = ( service.account.user.card_exp_month ) ? service.account.user.card_exp_month : '';
+		service.form.cardYear = ( service.account.user.card_exp_year ) ? service.account.user.card_exp_year : '';
 		service.updateTotal();
 		// Verifies if the user has address and hides the form
 		if (service.account.user && service.account.user.address) {
