@@ -234,11 +234,12 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'facebook':
-				if ($_REQUEST['fbtoken']) {
+				if ($_REQUEST['fbrtoken']) {
 					// log in from the app
 					
 					$fb = c::facebook();
-					$fb->setAccessToken($_REQUEST['fbtoken']);
+
+					$fb->setAccessToken($_REQUEST['fbrtoken']);
 					$user = $fb->getUser();
 			
 					if ($user) {
