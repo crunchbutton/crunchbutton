@@ -317,11 +317,13 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, AccountFacebookSer
 						App.processConfig(data);
 
 					});
-
+				}).error(function() {
+					console.debug('couldnt log out',arguments)
 				});
 			};
 			if (service.facebook.facebook.logged || service.facebook.facebook.account.user.facebook) {
-				service.facebook.signout(signout);
+				service.facebook.signout();
+				signout();
 			} else {
 				signout();
 			}
