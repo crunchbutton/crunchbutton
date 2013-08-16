@@ -250,17 +250,8 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$scope.order.showForm = order.showForm;
 	$scope.open = false;
 	
-	
-	// update if the restaurant is closed or open
-	App.rootScope.updateOpen = setInterval(function() {
-		var open = $scope.restaurant.open();
-		if ($scope.open != open) {
-			$scope.open = open;
-		}
-		$scope.$apply();
-	},1000 * 15);
-
-	order.cart.reset();
+	// Set the id_restaurant 
+	order.cart.setRestaurant( $routeParams.id );
 
 	MainNavigationService.order = $scope.order;
 
@@ -301,7 +292,6 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 
 	// Alias to CartService 'public' methods
 	$scope.order.cart = {};
-	$scope.order.cart.items = order.cart.items;
 	$scope.order.cart.add = function( item ){
 		return order.cart.add( item );
 	}
@@ -359,6 +349,10 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		$scope.order.updateTotal();
 	});
 
+	$scope.$on( 'orderInitied', function(e, data) {
+		
+	});
+
 	var restaurantService = RestaurantService;
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
@@ -370,7 +364,6 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		$scope.open = $scope.restaurant.open();
 		
 		order.init();
-
 		// Update some gift cards variables
 		giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
 		giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
@@ -393,6 +386,8 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		}
 		
 		App.scrollTop();
+
+		$scope.order.cart.items = order.cart.getItems();
 
 		// @todo: do we still neded this??
 		// $('.body').css({ 'min-height': $('.restaurant-items').height()});
