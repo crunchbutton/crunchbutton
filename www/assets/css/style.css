@@ -532,6 +532,7 @@ html[xmlns] .clearfix {
 	font-weight: bold;
 	font-size: 12px;
 	margin-right: 25px;
+	line-height: 1.5em;
 }
 
 .input-item {
@@ -549,6 +550,7 @@ html[xmlns] .clearfix {
 	font-size: 12px;
 	text-align: center;
 	font-weight: bold;
+	line-height: 1.5em;
 }
 
 .toggle-active {
@@ -1294,12 +1296,15 @@ html[xmlns] .clearfix {
 	}
 	.meal-pic {
 		background-position: center center !important;
+		box-shadow: inset rgba(0,0,0,0.3) 0 0 40px;
 	}
 	.restaurant-pic {
 		height: 140px;
 		border-radius: 4px;
 		border: 1px solid #999;
-		box-shadow: inset 0 0 0 #fafafa, 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
+		box-shadow:
+			0px 2px 5px 0px rgba(0, 0, 0, 0.15),
+			inset rgba(0,0,0,0.3) 0 0 50px;
 		background-position: center center !important;
 	}
 	.footer {
@@ -1805,11 +1810,7 @@ html[xmlns] .clearfix {
 		border: 1px solid rgba(255,40,31,.8);
 	}
 	.restaurant-pic-wrapper {
-
 		margin-bottom: 25px;
-	}
-	.restaurant-pic {
-
 	}
 
 	.content-item-name, .text-your-order {
