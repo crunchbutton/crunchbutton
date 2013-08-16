@@ -9,8 +9,6 @@ NGApp.factory('CartService', function () {
 	service.uuid = function () {
 		var id = 'c-' + service.restaurants[ service.id_restaurant ].uuidInc;
 		service.restaurants[ service.id_restaurant ].uuidInc++;
-		console.log('service.id_restaurant',service.id_restaurant);
-		console.log('id',id);
 		return id;
 	}
 
@@ -22,8 +20,6 @@ NGApp.factory('CartService', function () {
 				items: {}
 			}
 		}
-		console.log('service.id_restaurant',service.id_restaurant);
-		console.log('service.restaurants',service.restaurants[ service.id_restaurant ] );
 	}
 
 	service.clean = function(){
@@ -104,11 +100,8 @@ NGApp.factory('CartService', function () {
 	}
 
 	service.reset = function(){
-		console.log('reset');
 		service.restaurants[ service.id_restaurant ].uuidInc = 0;
 		service.restaurants[ service.id_restaurant ].items =  {};
-		console.log('service.id_restaurant',service.id_restaurant);
-		console.log('service.restaurants[ service.id_restaurant ].items ',service.restaurants[ service.id_restaurant ].items );
 	}
 
 	service.remove = function (item) {
