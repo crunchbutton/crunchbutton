@@ -236,62 +236,29 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 			case 'facebook':
 				if ($_REQUEST['fbrtoken']) {
 					// log in from the app
-					
-					$fb = c::facebook();
-
-					$fb->setAccessToken($_REQUEST['fbrtoken']);
-					$user = $fb->getUser();
-			
-					if ($user) {
-						try {
-							$userObject = $fb->api('/'.$user);
-						} catch (Cana_Facebook_Exception $e) {
-							// debug for now
-							print_r($e);
-							$userObject = null;
-						}
-					}
-					echo json_encode($userObject);
+					c::auth()->facebook(new Crunchbutton_Auth_Facebook($_REQUEST['fbrtoken']));
+					c::auth()->facebook()->check();
+					c::auth()->fbauth();
+					echo c::user()->json();
 					break;
 				}
 
-				// Force register the facebook
-				foreach ( $_COOKIE as $key => $value ) {
-					if ( preg_match('/^fbsr_.*$/', $key ) ) {
-						$fb = new Crunchbutton_Auth_Facebook;
-						$user = c::user();
-						if ( $fb->user()->id ) {
-							// It seems the facebook user is already related with other user
-							$fb_user = User::facebook( $fb->user()->id );	
-							if ( $fb_user->id_user && $user->id_user ) {
-								if( $fb_user->id_user != $user->id_user ){
-									echo json_encode(['error' => 'facebook id already in use']);
-									exit;
-								}
+				// Force register or merge the facebook user and current user. do not merge if user has a facebook auth that is not current user auth
+				if (c::auth()->facebook()) {
+					$user = c::user();
+					$fb = c::auth()->facebook();
+
+					// @todo: changed alot of shit here. need to double check it all works
+					if ($fb->user()->id) {
+						// It seems the facebook user is already related with other user
+						$fb_user = User::facebook($fb->user()->id);
+						if ($fb_user->id_user && $user->id_user) {
+							if ($fb_user->id_user != $user->id_user) {
+								echo json_encode(['error' => 'facebook id already in use']);
+								exit;
 							}
-							if ( !$fb_user->id_user ) {
-								$user->active = 1;
-								$user->name = $fb->user()->name;
-								$user->email = $fb->user()->email;
-								$user->save();
-
-								$userAuth = new User_Auth;
-								$userAuth->active = 1;
-								$userAuth->id_user = $user->id_user;
-								$userAuth->type = 'facebook';
-								$userAuth->auth = $fb->user()->id;
-								$userAuth->save();
-
-								// This line will create a phone user auth just if the user already has an facebook auth
-								if( $user->phone ){
-									User_Auth::createPhoneAuthFromFacebook( $user->id_user, $user->phone );	
-								}
-								
-							} 
-						} else {
-							// we dont have a facebook user
 						}
-						break;
+
 					}
 				}
 				echo c::user()->json();

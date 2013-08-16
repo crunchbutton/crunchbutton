@@ -51,6 +51,44 @@ class Crunchbutton_User extends Cana_Table {
 			');
 	}
 	
+	public static function facebookCreate($id, $auth = false) {
+		$fbuser = self::facebook($id);
+		$user = $auth ? null : c::user();
+
+		if (!$fbuser->id_user) {
+			// we dont have a user, and we need to make one
+			if (!$user->id_user) {
+				$user = new User;
+				$user->active = 1;
+			}
+			$user->name = c::facebook()->user()->name;
+			$user->email = c::facebook()->user()->email;
+			$user->save();
+
+			$userAuth = new User_Auth;
+			$userAuth->active = 1;
+			$userAuth->id_user = $user->id_user;
+			$userAuth->type = 'facebook';
+			$userAuth->auth = c::facebook()->user()->id;
+			$userAuth->save();
+			
+			if ($user->phone) {
+				User_Auth::createPhoneAuthFromFacebook($user->id_user, $user->phone);
+			}
+
+		} elseif ((!$auth && $fbuser->id_user != $user->id_user)) {
+			// somehow the user is logged into a crunchbutton account that is NOT associated with the logged in facebook account!!
+			// pretend that the facebook user isnt logged in. we trust our crunchbutton account more
+			// when loggin in we will never get here since the code to chceck for token is before facebook cookie
+			$user = false;
+		} else {
+			// we have a valid facebook authed user
+			$user = $fbuser->get(0);
+		}
+
+		return $user;
+	}
+	
 	public function auths() {
 		if (!isset($this->_auths)) {
 			$this->_auths = User_Auth::q('select * from user_auth where id_user="'.$this->id_user.'" and active=1');

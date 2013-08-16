@@ -60,57 +60,48 @@ class Crunchbutton_Auth {
 		// not sure if theres any way to avoid this, but if a fb user is found, we have to make a fb request
 		// which take a little bit of time
 		if (!$this->_user) {
-
 			// check for a facebook cookie
 			foreach ($_COOKIE as $key => $value) {
 				if (preg_match('/^fbsr_.*$/', $key)) {
-				
-					// we found a cookie!
-					$fb = new Crunchbutton_Auth_Facebook;
-					
-					if ($fb->user()->id) {
-						// we have a facebook user
-						$user = User::facebook($fb->user()->id);
-	
-						if (!$user->id_user) {
-							// we dont have a user, and we need to make one
-							$user = new User;
-							$user->active = 1;
-							$user->name = $fb->user()->name;
-							$user->email = $fb->user()->email;
-							$user->save();
-							
-							$userAuth = new User_Auth;
-							$userAuth->active = 1;
-							$userAuth->id_user = $user->id_user;
-							$userAuth->type = 'facebook';
-							$userAuth->auth = $fb->user()->id;
-							$userAuth->save();
-						} else {
-							$user = $user->get(0);
-						}
-						
-						$this->_user = $user;
-						$this->session()->id_user = $user->id_user;
-						$this->session()->date_active = date('Y-m-d H:i:s');
-						$this->session()->generateAndSaveToken();
-						setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');
-	
-					} else {
-						// we dont have a facebook user
-					}
-	
+					// we found a cookie! perform a facebook authentication via the api
+					$this->_facebook = new Crunchbutton_Auth_Facebook;
+					$this->fbauth();
 					break;
 				}
 			}
-		
 		}
-		
+
 		// we still dont have a user, so just set a blan object
 		if (!$this->_user) {
 			$this->_user = new Crunchbutton_User;
 		}
 
+	}
+	
+	public function facebook($fb = null) {
+		if (isset($fb)) {
+			$this->_facebook = $fb;
+		}
+		return $this->_facebook;
+	}
+	
+	public function fbauth() {
+		// we have a facebook user
+		if ($this->facebook()->fbuser()->id) {
+			$user = User::facebookCreate($this->facebook()->fbuser()->id, true);
+			if ($user) {
+				$this->setUser($user);
+			}
+		}
+		return $this;
+	}
+	
+	public function setUser($user) {
+		$this->_user = $user;
+		$this->session()->id_user = $user->id_user;
+		$this->session()->date_active = date('Y-m-d H:i:s');
+		$this->session()->generateAndSaveToken();
+		setcookie('token', $this->session()->token, (new DateTime('3000-01-01'))->getTimestamp(), '/');
 	}
 
 	public function doAuth($type, $id) {
@@ -140,9 +131,9 @@ class Crunchbutton_Auth {
 	}
 
 	public function user($user = null) {
-		if ($user) $this->_user = $user;
-
-		if (!isset($this->_user)) {
+		if (isset($user)) {
+			$this->_user = $user;
+		} elseif (!isset($this->_user)) {
 			$this->_user = new Crunchbutton_User;
 		}
 
