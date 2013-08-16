@@ -875,6 +875,9 @@ html {
 	.button-bottom-show {
 		bottom: 0 !important;
 	}
+	.restaurant-closed-name {
+		display: none;
+	}
 }
 
 @media only screen and (min-width : 769px) {
@@ -884,6 +887,9 @@ html {
 	.modal .small-message {
 		font-size: 12px;
 		color: #333;
+	}
+	.restaurant-closed-generic {
+		display: none;
 	}
 }
 
