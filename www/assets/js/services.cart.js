@@ -26,6 +26,10 @@ NGApp.factory('CartService', function () {
 		console.log('service.restaurants',service.restaurants[ service.id_restaurant ] );
 	}
 
+	service.clean = function(){
+		service.restaurants = {};
+	}
+
 	service.add = function (item) {
 		var id = service.uuid(),
 			dish = App.cache('Dish', item);
