@@ -203,6 +203,8 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 				App.rootScope.account.user = data;
 				App.config.user = data;
 			}
+			// reload the actual controller
+			$rootScope.reload();
 		});
 	});
 
