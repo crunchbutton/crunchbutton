@@ -126,7 +126,6 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		}
 		service.loaded = true;
 		$rootScope.$broadcast( 'orderLoaded',  true );
-		// service._test();
 	}
 	service.reloadOrder = function () {
 		var cart = service.cart.getCart();
@@ -735,7 +734,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 	}
 
 	service._test = function(){
-		$rootScope.$safeApply( function(){
+		$rootScope.$safeApply( 
+			function(){
 			service._useRestaurantBoundingBox = true;
 			service.form.name = 'MR TEST';
 			service.form.phone = '***REMOVED***';
@@ -760,6 +760,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 					}
 				}
 			}
+			$rootScope.$broadcast( 'creditCardInfoChanged', true  );
 		});
 	}
 

@@ -240,7 +240,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 /**
  * restaurant page
  */
-NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService) {
+NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
 
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 	var order = OrderService;
@@ -251,6 +251,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$scope.order.showForm = order.showForm;
 	$scope.open = false;
 	
+	var creditCard = CreditCardService;
 	
 	// update if the restaurant is closed or open
 	App.rootScope.updateOpen = setInterval(function() {
@@ -293,6 +294,11 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	}
 	$scope.order._tips = function(){
 		return order._tips( );
+	}
+	$scope.order.creditCardChanged = function(){
+		 creditCard.validate( order.form.cardNumber );
+		 creditCard.changeIcons( order.form.cardNumber );
+		 return order.cardInfoChanged();
 	}
 
 	// Event will be called when the order loaded
@@ -360,8 +366,8 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		$scope.order.updateTotal();
 	});
 
-	$scope.$on( 'orderInitied', function(e, data) {
-		
+	$scope.$on( 'creditCardInfoChanged', function(e, data) {
+		$scope.order.creditCardChanged();
 	});
 
 	var restaurantService = RestaurantService;

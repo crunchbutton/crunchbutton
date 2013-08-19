@@ -283,7 +283,7 @@
 
 						<label ng-show="order.form.pay_type=='card'">Credit card #</label>
 
-						<div ng-show="order.form.pay_type=='card'" class="input-item"><input type="text" name="pay-card-number" tabindex="6" ng-change="order.cardInfoChanged()" ng-model="order.form.cardNumber"></div><div class="divider"></div>
+						<div ng-show="order.form.pay_type=='card'" class="input-item"><input type="text" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber"></div><div class="divider"></div>
 		
 						<label ng-show="order.form.pay_type=='card'">Expiration</label>
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
