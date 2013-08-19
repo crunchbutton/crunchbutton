@@ -738,7 +738,7 @@ html[xmlns] .clearfix {
 	float: right;
 	width: 45px;
 	height: 30px;
-	margin: 12px 0 0 10px;
+	margin: 12px 0 0 10px !important;
 	background: url(../images/location.png) no-repeat;
 	background-size: contain;
 	cursor: pointer;
@@ -786,10 +786,6 @@ html[xmlns] .clearfix {
 		.signup-add-facebook-button{
 			width: 155px;
 		}
-
-.config-icon-desktop-hide{
-	display: none;
-}
 
 .logo {
 	float: left;
@@ -977,7 +973,7 @@ html[xmlns] .clearfix {
 		text-align: center;
 	}
 	.signin-icon, .signin-user{
-		margin-top: 10px;
+		margin-top: 12px;
 	}
 }
 
@@ -1575,8 +1571,8 @@ html[xmlns] .clearfix {
 	.config-icon-mobile-hide{
 		display: none !important;
 	}
-	.config-icon-desktop-hide{
-		display: block;
+	.location-icon{
+		display: none;
 	}
 
 	.config-icon, .menu-icon, .location-icon{
@@ -1766,7 +1762,7 @@ html[xmlns] .clearfix {
 	.location-icon {
 		width: 45px;
 		height: 30px;
-		margin: 12px 0 0 10px;
+		margin: 9px 0 0 10px;
 		background: url(../images/location.png) no-repeat;
 		background-size: contain;
 		cursor: pointer;
