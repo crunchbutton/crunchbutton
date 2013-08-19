@@ -442,9 +442,7 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams, Acco
 	
 	$scope.order.load();
 
-	$scope.callPhone = function( phone ){
-		return App.callPhone( phone );
-	}
+	$scope.isMobile = App.isMobile();
 
 	$scope.facebook = function(){
 		$scope.order.facebook.postOrder();

@@ -49,9 +49,15 @@
 	
 			<br><br>
 	
-			For updates on your order, please call<br>{{order.restaurant.name}}: <b>{{callPhone( order.restaurant.phone )}}</b><br><br>
+			For updates on your order, please call<br>{{order.restaurant.name}}: <b>
+			<span ng-show="isMobile"><a href="tel:{{order.restaurant.phone}}">{{order.restaurant.phone}}</a></span>
+			<span ng-show="!isMobile">{{order.restaurant.phone}}</span>
+			</b><br><br>
 	
-			You can reach Crunchbutton by texting or calling <b> {{callPhone( '(646) 783-1444' )}} </b> <br><br>
+			You can reach Crunchbutton by texting or calling <b> 
+			<span ng-show="isMobile"><a href="tel:(646) 783-1444">(646) 783-1444</a></span>
+			<span ng-show="!isMobile">(646) 783-1444</span>
+			</b> <br><br>
 	
 			We've saved your order for easy 1 click ordering next time
 
