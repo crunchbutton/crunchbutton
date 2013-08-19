@@ -146,6 +146,17 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 			} );
 	}
 
+	service.notes_field.reset = function(){
+		service.notes_field.content = ''; 
+		service.notes_field.giftcards = { success : [], error : [] };
+		service.notes_field.value = '0.00';
+		service.notes_field.removed = false;
+		service.notes_field.id_restaurant = null;
+		service.notes_field.hasGiftCards = false;
+		service.notes_field.restaurant_accepts = false;
+		service.code = false;
+	}
+
 	service.notes_field.start = function(){
 		service.notes_field.hasGiftCards = false;
 		if( service.notes_field.content && service.notes_field.content != '' ){

@@ -34,7 +34,6 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	}
 
 	service.control = function() {
-		console.log('service.page',service.page);
 		switch (service.page) {
 			case 'restaurant':
 				service.buttons.location = false;

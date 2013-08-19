@@ -565,6 +565,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 						});
 						// Clean the cart
 						service.cart.clean();
+						// Resets the gift card notes field
+						service.giftcard.notes_field.reset();
 						$rootScope.$safeApply( function(){
 							$rootScope.$broadcast( 'newOrder' );
 							$location.path( '/order/' + uuid );	
