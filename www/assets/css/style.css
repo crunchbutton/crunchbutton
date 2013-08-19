@@ -35,7 +35,9 @@ body {
 	margin-left: 16px;
 	margin-bottom: 10px;
 }
-
+.giftcard-badge-container{
+	display: none;
+}
 .meal-item-content {
 	border: 1px solid #b6b6b6;
 	border-radius: 5px;
@@ -1441,6 +1443,7 @@ html[xmlns] .clearfix {
 	}
 	.button-bottom {
 		margin-top: 5px;
+		margin-bottom: 10px;
 		width: 306px;
 		font-size: 18px;
 		height: 40px;
@@ -1683,11 +1686,12 @@ html[xmlns] .clearfix {
 		top: 224px !important;
 		z-index: 10 !important;
 	}
+	
 	.giftcard-desktop-container{
 		display: none;
 	}
 	.giftcard-badge-container{
-		margin-top: 40px;
+		margin-top: 30px;
 		margin-left: 5px;
 		position: absolute;
 		display: block;
@@ -1707,7 +1711,7 @@ html[xmlns] .clearfix {
 			.giftcard-badge-value{
 				color: #ff591f;
 				display: table-cell;
-				font-size: 13px;
+				font-size: 12px;
 				text-shadow: 1px 1px 0px rgba(0,0,0,.2);
 				font-weight: bold;
 				vertical-align: middle;

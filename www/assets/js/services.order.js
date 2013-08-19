@@ -9,6 +9,12 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 	service.credit = CreditService;
 	service.restaurant = {};
 
+	// Listener to user signin/signout
+	$rootScope.$on( 'userAuth', function(e, data) {
+		service.account = AccountService;
+		service.showForm = true;
+	});
+
 	// Default values
 	service.form = {
 		delivery_type: 'delivery',

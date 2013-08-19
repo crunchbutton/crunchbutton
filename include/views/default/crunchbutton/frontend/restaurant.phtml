@@ -4,7 +4,7 @@
 
 <div ng-show="order.loaded">
 
-	<div class="giftcard-badge-container" ng-show="credit.value != '0.00' && App.isMobile()">
+	<div class="giftcard-badge-container" ng-show="credit.value != '0.00'">
 		<div class="giftcard-badge">
 			<div ng-click="credit.tooltip=!credit.tooltip" class="giftcard-badge-value">${{credit.value}}</div>
 		</div>
@@ -15,7 +15,7 @@
 
 	<div class="restaurant-name">
 		<h1>{{restaurant.name}}</h1>
-		<div class="giftcard-desktop-container" ng-show="credit.value != '0.00' && !App.isMobile()">
+		<div class="giftcard-desktop-container" ng-show="credit.value != '0.00'">
 			<div class="giftcard-desktop-message">
 				You have a <span class="giftcard-value">{{AB.dollar}}{{credit.value}}</span> gift card!
 			</div>
