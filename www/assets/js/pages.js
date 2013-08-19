@@ -248,7 +248,6 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	$scope.order = {};
 	$scope.order.form = order.form;
 	$scope.order.info = order.info;
-	$scope.order.showForm = order.showForm;
 	$scope.open = false;
 	
 	var creditCard = CreditCardService;

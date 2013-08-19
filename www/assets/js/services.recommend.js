@@ -70,7 +70,7 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService, 
 } );
 
 //RecommendFoodService Service
-NGApp.factory( 'RecommendFoodService', function( $http ){
+NGApp.factory( 'RecommendFoodService', function( $http, $routeParams ){
 
 	var service = { 
 			thanks : false,
@@ -104,7 +104,7 @@ NGApp.factory( 'RecommendFoodService', function( $http ){
 		$http( {
 			method: 'POST',
 			url: url,
-			data: $.param( { restaurant: App.restaurant.permalink, name: service.form.name } ),
+			data: $.param( { restaurant: $routeParams.id, name: service.form.name } ),
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) { service.thanks = true; service.isSending = false; }	);
 	}
