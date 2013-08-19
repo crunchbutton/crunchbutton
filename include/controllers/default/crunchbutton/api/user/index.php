@@ -136,11 +136,11 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 						// Send the code by email
 						if( filter_var( $_POST[ 'email' ], FILTER_VALIDATE_EMAIL ) ){
-							/*$mail = new User_Auth_Reset_Email( [
+							$mail = new User_Auth_Reset_Email( [
 								'code' => $code,
 								'email' => $email
 							] );
-							$mail->send();*/
+							$mail->send();
 						} 
 						// Send the code by sms
 						else {
