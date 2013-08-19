@@ -315,7 +315,6 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, AccountFacebookSer
 						console.debug('>> new config', data);
 						$rootScope.$broadcast('userAuth', data.user);
 						App.processConfig(data);
-
 					});
 				}).error(function() {
 					console.debug('couldnt log out',arguments)

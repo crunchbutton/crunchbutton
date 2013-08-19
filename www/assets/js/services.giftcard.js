@@ -259,8 +259,14 @@ NGApp.factory( 'CreditService', function( $http, $rootScope ){
 			if( data.credit ){
 				service.setValue( App.ceil( data.credit ).toFixed( 2 ) );
 				service.redeemed = data.credit;
+			} else {
+				service.setValue( App.ceil( 0 ).toFixed( 2 ) );
+				service.redeemed = 0;
 			}
-		}	).error(function() {} );
+		}	).error(function() {
+				service.setValue( App.ceil( 0 ).toFixed( 2 ) );
+				service.redeemed = 0;
+		} );
 	}
 	return service;
 } );

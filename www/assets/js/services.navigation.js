@@ -40,14 +40,9 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 				service.buttons.back = true;
 				service.buttons.menu = false;
 				break;
-			case 'location':
-				service.buttons.location = false;
-				service.buttons.back = true;
-				service.buttons.menu = false;
-				break;
 			default:
 				service.buttons.back = false;
-				service.buttons.location = true;
+				service.buttons.location = ( service.page != 'location' );
 				service.buttons.menu = true;
 				break;
 		}
