@@ -229,7 +229,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		var tip = 0;
 		if (service.form.pay_type == 'card') {
 			if (service.form.tip === 'autotip') {
-				return parseFloat($('[name=pay-autotip-value]').val());
+				return parseFloat( service.form.autotip );
 			}
 			tip = (total * (service.form.tip / 100));
 		}
