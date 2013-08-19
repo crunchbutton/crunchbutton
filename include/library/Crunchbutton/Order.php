@@ -365,9 +365,9 @@ class Crunchbutton_Order extends Cana_Table {
 		$order = $this;
 
 		if ($params['make_default']) {
-			Cana::timeout(function() use($order) {
+			// Cana::timeout(function() use($order) {
 				Preset::cloneFromOrder($order);
-			});
+			// });
 		}
 		
 		Cana::timeout(function() use($order) {

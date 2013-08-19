@@ -104,7 +104,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		service.form.cardYear = ( service.account.user.card_exp_year ) ? service.account.user.card_exp_year : '';
 		service.updateTotal();
 		// Verifies if the user has address and hides the form
-		if (service.account.user && service.account.user.address) {
+		if (service.account.user && service.form.delivery_type == 'takeout' || ( service.form.delivery_type == 'delivery' && service.account.user.address ) ) {
 			service.showForm = false;
 		}
 		// Load the order

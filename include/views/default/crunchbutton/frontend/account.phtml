@@ -26,7 +26,7 @@
 			</form>
 			<div class="divider"></div>
 			<a class="help-link" ng-click="help.show(true)">Password help?</a>
-			<button ng-disabled="formSignin.$pristine || formSignin.$invalid" ng-click="account.signin();">Log in</button>
+			<button ng-click="account.signin();">Log in</button>
 			<div class="divider"></div>
 
 		<div facebook-signin-button title="Login with Facebook"></div>
@@ -41,7 +41,7 @@
 				</div>
 			</form>
 			<a class="help-link" ng-click="help.show(false)">Never mind</a>
-			<button ng-disabled="formLoginHelp.$pristine || formLoginHelp.$invalid" ng-click="help.sendForm()">Reset</button>
+			<button ng-click="help.sendForm()">Reset</button>
 			<div class="divider"></div>
 			<div ng-show="formLoginHelp.$dirty && formLoginHelp.$invalid" class="error">
 				Please enter a valid email or phone.
@@ -75,7 +75,7 @@
 				</div>
 			</form>
 			<div class="divider"></div>
-			<button ng-disabled="formSignup.$pristine || formSignup.$invalid" ng-click="account.signup();">Sign up</button>
+			<button ng-click="account.signup();">Sign up</button>
 			<div class="divider"></div>
 			
 			<div facebook-signin-button title="Signup with Facebook"></div>

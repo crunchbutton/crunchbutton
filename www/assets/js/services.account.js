@@ -196,7 +196,7 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 
 	service.sendForm = function(){
 		if( !account.isValidEmailPhone() ){
-			App.alert( 'Please enter a valid email or phone.' );
+			alert( 'Please enter a valid email or phone.' );
 			$( '.help-email' ).focus();
 			return;
 		}
