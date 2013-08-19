@@ -56,6 +56,6 @@
 		return null;
 	};
 
-	$.cookie.defaults = {};
+	$.cookie.defaults = { path : '/' };
 
 })(jQuery, document);
