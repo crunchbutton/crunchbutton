@@ -1,0 +1,27 @@
+.page{
+	background: #382b27;
+	width: 816px;
+	margin: 0 auto;
+}
+.giftcard{
+	font-family: 'Omnes';
+	text-align: center;
+	width: 816px;
+	height:342px;
+	background: #382b27;
+	margin: 0 auto;
+}
+	.negativemargin{
+
+	}
+.info{
+	margin-left: 270px;
+	margin-top: 162px;
+	color:#FFF;
+	font-family: 'Omnes';
+	font-size: 29px;
+	font-weight: 600;
+	width: 519px;
+	text-align: center;
+	position: absolute;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Gift card</title>
+		<link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard/reset.css">
+		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard/brown.css">
+	</head>
+	<body>
+<?php 
+// Workaround to avoid image be cached
+$imageCached = date( 'dHis' );
+$count = 0;
+$newPage = true;
+$giftcards = $this->giftcards;
+if( sizeof( $giftcards ) > 0 ) {
+	foreach( $giftcards as $giftcard ){
+		$message = $giftcard->message;
+		if( !$message || $message == '' ){
+			$message = 'crunchbutton.com';
+		}
+		if( !$giftcard ){ continue; }
+		$count++;
+		if( $giftcard->id_restaurant ){
+			$restaurant = $giftcard->restaurant();
+			$restaurant_name = $restaurant->name;			
+		} else {
+			$restaurant_name = 'Crunchbutton';
+		}
+		if( $newPage ){
+			$newPage = false;
+			?>
+			<div class="page">
+			<?php
+		}
+	?><div class="giftcard <?php if( $count % 3 != 1 ){ ?>negativemargin<?php } ?>">
+		<div class="info">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></div><img  style="width:816px;"  src="/assets/images/giftcard/print-brown.svg?<?php echo $imageCached; ?>"/>
+</div>
+	<?php 
+		if( $count % 3 == 0 ){
+			$newPage = true;
+			echo '</div><div class="page"></div>';
+		}
+	} 
+} else {
+	echo 'Oops, is seems you are trying to print a gift card that was already redemmed!';
+}
+?>
+	</body>
+</html>
