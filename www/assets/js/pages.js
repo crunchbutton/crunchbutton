@@ -287,18 +287,21 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		return order.tooglePayment( type );
 	}
 	$scope.order._years = function(){
-		return order._years( );
+		return order._years();
 	}
 	$scope.order._months = function(){
-		return order._months( );
+		return order._months();
 	}
 	$scope.order._tips = function(){
-		return order._tips( );
+		return order._tips();
 	}
 	$scope.order.creditCardChanged = function(){
 		 creditCard.validate( order.form.cardNumber );
 		 creditCard.changeIcons( order.form.cardNumber );
 		 return order.cardInfoChanged();
+	}
+	$scope.order.tipChanged = function(){
+		return order.tipChanged();
 	}
 
 	// Event will be called when the order loaded
