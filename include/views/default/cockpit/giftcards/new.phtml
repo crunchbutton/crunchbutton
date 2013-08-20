@@ -82,6 +82,7 @@
 							<span>Paid by</span>
 							<span class="pull-right">
 								<select name="paid_by" id="paid_by" class="uniform">
+									<option value=""></option>
 									<option value="crunchbutton">crunchbutton</option>
 									<option value="restaurant">restaurant</option>
 									<option value="promotional">promotional</option>
@@ -180,7 +181,7 @@
 						<li>
 							<span>Message</span>
 							<span class="pull-right">
-								<input type="text" name="giftcard-message" maxlength="50" id="giftcard-message" value="crunchbutton.com" />
+								<input type="text" name="giftcard-message" maxlength="50" id="giftcard-message" value="Gift Card" />
 							</span>
 						</li>
 						<li>
@@ -198,7 +199,7 @@
 						<li>
 							<span>Include the Gift Card ID at the code</span>
 							<span class="pull-right">
-								<input type="checkbox" name="include_gift_card_id" id="include_gift_card_id">
+								<input type="checkbox" name="include_gift_card_id" id="include_gift_card_id" checked="checked"
 							</span>
 						</li>
 						<li>
@@ -210,7 +211,7 @@
 						<li>
 							<span>Use letters</span>
 							<span class="pull-right">
-								<input type="checkbox" name="use_letters" id="use_letters" checked="checked">
+								<input type="checkbox" name="use_letters" id="use_letters">
 							</span>
 						</li>
 						<li>
@@ -431,6 +432,8 @@ function sendForm(){
 	var notify_by_sms = ( $( '#notify_by_sms' ).is( ':checked' ) ) ? 1 : 0;
 	var chars_to_use = $.trim( $( '#chars_to_use' ).val() );
 	var length = $.trim( $( '#length' ).val() );
+	
+
 	if( value == '' ){
 		alert( 'Please type a value!' );
 		$( '#value' ).focus();
@@ -440,6 +443,12 @@ function sendForm(){
 	if( total == '' ){
 		alert( 'Please type the number of gift cards!' );
 		$( '#total' ).focus();
+		return;
+	}
+
+	if( paid_by == '' ){
+		alert( 'Please choose the field "paid by"!' );
+		$( '#paid_by' ).focus();
 		return;
 	}
 
