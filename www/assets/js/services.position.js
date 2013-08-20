@@ -269,7 +269,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 							},
 							// Error
 							function () {
-								$rootScope.$broadcast( 'locationError',  true );
+								$rootScope.$broadcast( 'locationNotServed',  true );
 							});
 					},
 					// Error
@@ -293,7 +293,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 								service.loadRestaurantsPage = true;
 							},
 							function () {
-								$rootScope.$broadcast( 'locationError',  true );
+								$rootScope.$broadcast( 'locationNotServed',  true );
 							});
 
 			}, error);
