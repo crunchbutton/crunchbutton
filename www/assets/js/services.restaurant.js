@@ -1,7 +1,7 @@
 // Restaurant list service
 NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 
-	var service = {};
+	var service = { permalink : 'food-delivery' };
 	var restaurants = false;
 
 	service.reset = function () {

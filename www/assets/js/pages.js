@@ -30,11 +30,11 @@ NGApp.controller('help', function ($scope, $http) {
  * Home controller
  */
 NGApp.controller('home', function ($scope, $http, $location, RestaurantsService) {
-	$scope.restaurantsService = RestaurantsService;
-	$scope.restaurantsService.list( 
+	var restaurants = RestaurantsService;
+	restaurants.list( 
 		// Success
 		function(){
-			$location.path( '/' + App.restaurants.permalink );
+			$location.path( '/' + restaurants.permalink );
 		},
 		// Error
 		function(){
@@ -50,7 +50,7 @@ NGApp.controller('home', function ($scope, $http, $location, RestaurantsService)
 NGApp.controller('default', function ($scope, $http, $location, CommunityAliasService ) {
 	var community = CommunityAliasService;
 	community.route( $location.path(),
-		// success
+		// Success
 		function( results, restaurant ){
 			if (results.alias) {
 				community.position.addLocation( new Location( {
@@ -66,7 +66,7 @@ NGApp.controller('default', function ($scope, $http, $location, CommunityAliasSe
 				$location.path( url );
 			}
 		},
-		// error
+		// Error
 		function(){
 			$location.path( '/location' );
 		}
@@ -100,7 +100,7 @@ NGApp.controller( 'restaurants', function ( $scope, $rootScope, $http, $location
 			// @todo: this is kind of redundundant
 			// make sure that the restaurant is actulay loaded first
 			App.cache('Restaurant', restaurant.permalink, function () {
-				App.go('/' + restaurants.permalink + '/' + restaurant.permalink);
+				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink);
 			}, function() {
 				App.connectionError();
 				s.stop();
@@ -108,46 +108,50 @@ NGApp.controller( 'restaurants', function ( $scope, $rootScope, $http, $location
 		}
 	};
 
-	restaurants.list( function(){
-		try {
-				var slogan = App.slogan.slogan;
-				var sloganReplace = restaurants.position.pos().prep() + ' ' +  restaurants.position.pos().city();
+	var prep = restaurants.position.pos().prep();
+	var city = restaurants.position.pos().city();
 
+	restaurants.list( 
+		// Success
+		function(){
+			try {
+				var slogan = App.slogan.slogan;
+				var sloganReplace = prep + ' ' +  city;
 				sloganReplace = $.trim(sloganReplace);
 				var tagline = App.tagline.tagline.replace('%s', sloganReplace);
 				slogan = slogan.replace('%s', sloganReplace);
-
 			} catch (e) {
 				console.log('Failed to load dynamic text', App.slogan, App.tagline, e);
 				var slogan = '';
 				var tagline = '';
 			}
 
-		document.title = restaurants.position.pos().city() + ' Food Delivery | Order Food from ' + ($scope.restaurants.position.pos().city() || 'Local') + ' Restaurants | Crunchbutton';
+			document.title = city + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
 
-		$scope.restaurants = restaurants.sort();
-		$scope.slogan = slogan;
-		$scope.tagline = tagline;
+			$scope.restaurants = restaurants.sort();
+			$scope.slogan = slogan;
+			$scope.tagline = tagline;
 
-		if ($scope.restaurants.length == 4) {
-			$('.content').addClass('short-meal-list');
-		} else {
-			$('.content').removeClass('short-meal-list');
+			if ( $scope.restaurants.length == 4 ) {
+				$('.content').addClass('short-meal-list');
+			} else {
+				$('.content').removeClass('short-meal-list');
+			}
+			$('.content').removeClass('smaller-width');
+
+		}, 
+		// Error
+		function(){
+			$location.path( '/location' );
 		}
-		$('.content').removeClass('smaller-width');
-
-		$('.nav-back').removeClass('nav-back-show');
-
-	}, function(){
-		$location.path( '/location' );
-	} );
+	);
 });
 
 
 /**
  * show cities
  */
-NGApp.controller('cities', function ($scope, $http) {
+NGApp.controller( 'cities', function ( $scope ) {
  	$scope.topCommunities = App.topCommunities;
 });
 
@@ -159,6 +163,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 	
 
 	var account = AccountService;
+	var restaurants = RestaurantsService;
 
 	$scope.isUser = account.user.has_auth;
 	$scope.notUser = !account.user.has_auth;
@@ -174,11 +179,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 
 	$scope.yourArea = $scope.location.position.pos().city() || 'your area';
 
-	$scope.restaurantsService = RestaurantsService;
-
 	$scope.locationError = false;
-
-//	$scope.recommend = RecommendRestaurantService;
 
 	$scope.openCity = function( city ){
 		$location.path( '/' + city );
@@ -203,7 +204,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 	});
 	
 	var proceed = function() {
-		App.go('/' + App.restaurants.permalink);
+		$location.path( '/' + restaurants.permalink );
 	};
 
 	// lets eat button
@@ -216,7 +217,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 				// Address ok
 				function() {
 					// Verify if the address has restaurant
-					$scope.restaurantsService.list( 
+					restaurants.list( 
 						// Success
 						proceed,
 						// Error
@@ -437,7 +438,7 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams, Acco
 	$scope.account = AccountService;
 	
 	if( !$scope.account.isLogged() ){
-		$location.path( '/' + App.restaurants.permalink );
+		$location.path( '/' );
 		return;
 	}
 
