@@ -79,12 +79,13 @@ NGApp.controller('default', function ($scope, $http, $location, CommunityAliasSe
  */
 NGApp.controller( 'restaurants', function ( $scope, $rootScope, $http, $location, RestaurantsService) {
 
+	var restaurants = RestaurantsService;
+
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
-	$scope.restaurants = RestaurantsService;
+	$scope.restaurants = {};
 
 	$scope.display = function($event) {
 		var restaurant = this.restaurant;
-
 		if (!restaurant.open()) {
 			App.rootScope.$broadcast('restaurantClosedClick', restaurant);
 		} else {
@@ -99,7 +100,7 @@ NGApp.controller( 'restaurants', function ( $scope, $rootScope, $http, $location
 			// @todo: this is kind of redundundant
 			// make sure that the restaurant is actulay loaded first
 			App.cache('Restaurant', restaurant.permalink, function () {
-				App.go('/' + App.restaurants.permalink + '/' + restaurant.permalink);
+				App.go('/' + restaurants.permalink + '/' + restaurant.permalink);
 			}, function() {
 				App.connectionError();
 				s.stop();
@@ -107,10 +108,10 @@ NGApp.controller( 'restaurants', function ( $scope, $rootScope, $http, $location
 		}
 	};
 
-	$scope.restaurants.list( function(){
+	restaurants.list( function(){
 		try {
 				var slogan = App.slogan.slogan;
-				var sloganReplace = $scope.restaurants.position.pos().prep() + ' ' +  $scope.restaurants.position.pos().city();
+				var sloganReplace = restaurants.position.pos().prep() + ' ' +  restaurants.position.pos().city();
 
 				sloganReplace = $.trim(sloganReplace);
 				var tagline = App.tagline.tagline.replace('%s', sloganReplace);
@@ -122,9 +123,9 @@ NGApp.controller( 'restaurants', function ( $scope, $rootScope, $http, $location
 				var tagline = '';
 			}
 
-		document.title = $scope.restaurants.position.pos().city() + ' Food Delivery | Order Food from ' + ($scope.restaurants.position.pos().city() || 'Local') + ' Restaurants | Crunchbutton';
+		document.title = restaurants.position.pos().city() + ' Food Delivery | Order Food from ' + ($scope.restaurants.position.pos().city() || 'Local') + ' Restaurants | Crunchbutton';
 
-		$scope.restaurants = $scope.restaurants.sort();
+		$scope.restaurants = restaurants.sort();
 		$scope.slogan = slogan;
 		$scope.tagline = tagline;
 
@@ -193,9 +194,12 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 	});
 
 	$scope.$on( 'locationError', function(e, data) {
-		console.debug('locationError');
 		$scope.recommend.greetings = false;
 		$scope.locationError = true;
+	});
+
+	$scope.$on( 'locationNotServed', function(e, data) {
+		$('.location-address').val('').attr('placeholder','Please enter a zip code or city name');
 	});
 	
 	var proceed = function() {
