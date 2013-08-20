@@ -65,7 +65,7 @@
 					<?
 						$support = Support::getSupportForOrder($order->id);
 						if($support) {
-							echo '<i class="icon-comments"></i> <a href="/support/$support->id">View support ticket</a>';
+							echo '<i class="icon-comments"></i> <a href="/support/' . $support->id . '">View support ticket</a>';
 						}
 						else {
 							echo '<i class="icon-comments"></i> <a href="javascript:create_support_from_order(' . $order->id . ');">Create support ticket</a>';
