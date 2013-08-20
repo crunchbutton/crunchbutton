@@ -552,7 +552,6 @@ App.dialog = {
 	}
 };
 
-
 /**
  * play crunch audio sound
  */

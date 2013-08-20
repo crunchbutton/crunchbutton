@@ -775,13 +775,15 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 	return service;
 });
 // OrdersService service
-NGApp.factory('OrdersService', function ($http, $location, $rootScope) {
+NGApp.factory('OrdersService', function ($http, $location, $rootScope, RestaurantsService) {
 	var service = {
 		list: false,
 		reload : true
 	};
 
-	service.all = function () {
+	var restaurants = RestaurantsService;
+
+	service.load = function () {
 		if( service.list && !service.reload ){
 			return service.list;
 		}
@@ -802,11 +804,12 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope) {
 				list = true;	
 			}
 			service.list = list;
+			$rootScope.$broadcast( 'OrdersLoaded', service.list );
 		});
 	}
 
 	service.restaurant = function (permalink) {
-		$location.path('/' + App.restaurants.permalink + '/' + permalink);
+		$location.path('/' + restaurants.permalink + '/' + permalink);
 	};
 
 	service.receipt = function (id_order) {

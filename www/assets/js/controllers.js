@@ -3,6 +3,11 @@ function AccountModalHeaderCtrl( $scope, $http, AccountModalService ) {
 	$scope.modal = AccountModalService;
 }
 
+
+function AccountFacebookCtrl( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {
+	$scope.modal = AccountModalService;
+}
+
 function AccountSignInCtrl( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {
 	$scope.modal = AccountModalService;
 	$scope.account = AccountService;
