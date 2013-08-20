@@ -57,9 +57,10 @@
 				You have a <b>${{giftcard.value}}</b> gift card!
 			</div>
 			<div class="bottom-links">
-				<span ng-click="giftcard.modal.signIn();">Sign In</span>
-				<span ng-click="giftcard.modal.close();">Later</span>
+				<span class="giftcard-later" ng-click="giftcard.modal.close();">Later</span>
+				<span class="giftcard-signin" g-click="giftcard.modal.signIn();">Sign In</span>
 			</div>
+			<div class="divider"></div>
 		</div>
 	</div>
 

@@ -2671,6 +2671,47 @@ strong {
 	clear: both;
 }
 
+.giftcard-signin{
+	margin-top: 20px !important;
+	font-size: 12px;
+	display: block;
+	width: 80px;
+}
+.giftcard-later{
+	color: #FFF !important;
+	display: block;
+	text-decoration: none !important;
+	background-clip: border-box;
+	background-color: rgba(0, 0, 0, 0);
+	background-image: -moz-linear-gradient(top, rgb(251, 66, 46), rgb(251, 36, 24));
+	background-image: -webkit-linear-gradient(top, rgb(251, 66, 46), rgb(251, 36, 24));
+	background-origin: padding-box;
+	background-size: auto;
+	border:1px solid #ae4939;
+	border-radius: 4px;
+	box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 18px 0px inset, rgba(255, 254, 196, 0.901961) 0px 0px 2px 0px inset, rgba(0, 0, 0, 0.14902) 0px 2px 5px 0px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	cursor: pointer;
+	display: block;
+	margin-bottom: 0px;
+	outline-color: rgb(255, 244, 243);
+	padding: 2px 5px 3px 5px;
+	text-align: center;
+	text-shadow: rgba(0, 0, 0, 0.2) -1px -1px 0px;
+	-webkit-background-clip: border-box;
+	-webkit-background-origin: padding-box;
+	-webkit-background-size: auto;
+	-webkit-box-align: center;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 18px 0px inset, rgba(255, 254, 196, 0.901961) 0px 0px 2px 0px inset, rgba(0, 0, 0, 0.14902) 0px 2px 5px 0px;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-user-select: none;
+	-webkit-writing-mode: horizontal-tb;
+	float: right;
+	margin-right: 60px;
+	font-size: 13px;
+	width: 80px;
+}
 
 /**
  * unused blurs
