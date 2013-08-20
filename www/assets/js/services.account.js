@@ -235,7 +235,8 @@ NGApp.factory( 'AccountModalService', function( $http, FacebookService ){
 	var service = {
 		header : true,
 		signin : true,
-		signup : false
+		signup : false,
+		facebook : false
 	};
 
 	service.facebook = FacebookService;
@@ -252,19 +253,21 @@ NGApp.factory( 'AccountModalService', function( $http, FacebookService ){
 		service.toggleSignForm( 'signup' );
 	}
 
+	service.facebookOpen = function(){
+		service.header = false;
+		App.dialog.show( '.account-container' );
+		service.toggleSignForm( 'facebook' );
+	}
+
 	service.resetOpen = function(){
 		App.dialog.show( '.account-reset-container' );
 	}
 
 	service.toggleSignForm = function( form ){
 		service.facebook.wait = false;
-		if( form == 'signin' ){
-			service.signin = true;	
-			service.signup = false;	
-		} else {
-			service.signin = false;	
-			service.signup = true;	
-		}
+		service.signin = ( form == 'signin' );
+		service.signup = ( form == 'signup' );
+		service.facebook = ( form == 'facebook' );
 	}
 
 	service.headerIsVisible = function(){

@@ -459,15 +459,33 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams, Acco
  * Orders page. only avaiable after a user has placed an order or signed up.
  * @todo: change to account page
  */
-NGApp.controller('orders', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService) {
-	$scope.account = AccountService;
-	if( !$scope.account.isLogged() ){
-		$location.path( '/' + App.restaurants.permalink );
+NGApp.controller('orders', function ($scope, $http, $location, $rootScope, AccountService, AccountSignOut, OrdersService, AccountModalService) {
+	
+	if( !AccountService.isLogged() ){
+		$location.path( '/' );
 		return;
 	}
-	$scope.signout = AccountSignOut;
-	$scope.orders = OrdersService;
-	$scope.orders.all();
+
+	$scope.account = { hasFacebook : AccountService.user.facebook };
+	// Alias to method AccountSignOut.do()
+	$scope.signout = AccountSignOut.do;
+	$scope.facebook = AccountModalService.facebookOpen;
+	$scope.orders = {};
+
+	// Alias to OrdersService methods
+	$scope.orders.restaurant = OrdersService.restaurant;
+	$scope.orders.receipt =  OrdersService.receipt;
+
+	if( OrdersService.reload ){
+		OrdersService.load();
+	} else {
+		$scope.orders.list = OrdersService.list;	
+	}
+
+	$rootScope.$on( 'OrdersLoaded', function(e, data) {
+		$scope.orders.list = OrdersService.list;	
+	});
+
 });
 
 NGApp.controller( 'giftcard', function ($scope, $location, GiftCardService ) {
