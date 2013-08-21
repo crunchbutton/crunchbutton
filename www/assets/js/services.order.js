@@ -837,42 +837,60 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 });
 
 // OrdersService service
-NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope, FacebookService) {
-	var service = { order : false };
-	service.facebook = FacebookService;
-	service.load = function(){
-		App.cache('Order', $routeParams.id, function () {
-			service.order = this;
-			var complete = function () {
-				$location.path('/');
-			};
-			if (!service.order.uuid) {
-				$rootScope.$safeApply( function(){
-					complete();
-				});
-				return;
-			}
-			service.order._final_price = parseFloat( service.order.final_price ).toFixed(2);
-			if( service.order.credit ){
-				service.order._credit = parseFloat( service.order.credit ).toFixed(2);
-			}
+NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope, $http, FacebookService) {
 
-			service.facebook._order_uuid = service.order.uuid;
-			service.facebook.preLoadOrderStatus();
-			App.cache('Restaurant', service.order.id_restaurant, function () {
-				service.restaurant = this;
-				var complete = function () {
-					if (service.order['new']) {
-						setTimeout(function () {
-							service.order['new'] = false;
-						}, 500);
+	var service = { order : false, reload : true };
+	
+	service.facebook = FacebookService;
+
+	service.load = function(){
+
+		var url = App.service + 'order/' + $routeParams.id;
+
+		var error = function(){
+			$location.path('/');
+		}
+
+		$http( {
+			method: 'GET',
+			url: url,
+			cache: true
+			} ).success( function( data ) {
+				service.order = data;
+				if ( service.order.uuid ) {
+					service.order._final_price = parseFloat( service.order.final_price ).toFixed(2);
+
+					if( service.order.credit ){
+						service.order._credit = parseFloat( service.order.credit ).toFixed(2);
 					}
-				};
-				$rootScope.$safeApply( function(){
-					complete();
-				});
+
+					service.facebook._order_uuid = service.order.uuid;
+					service.facebook.preLoadOrderStatus();
+					
+					$rootScope.$broadcast( 'OrderViewLoadedOrder', service.order );
+
+					App.cache('Restaurant', service.order.id_restaurant, function () {
+						service.restaurant = this;
+						console.log('service.restaurant', service.restaurant);
+						var complete = function () {
+							if (service.order['new']) {
+								setTimeout(function () {
+									service.order['new'] = false;
+								}, 500);
+							}
+						};
+						$rootScope.$safeApply( function(){
+							complete();
+						});
+						$rootScope.$broadcast( 'OrderViewLoadedRestaurant', service.restaurant );
+					});
+
+				} else {
+					error();
+				}
+			} ).error( function( data ) {
+				error();
 			});
-		});
 	}
 	return service;
 });
