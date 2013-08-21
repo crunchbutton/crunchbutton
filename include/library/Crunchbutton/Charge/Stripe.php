@@ -27,6 +27,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 					]
 				]);
 			} catch (Exception $e) {
+				Log::debug( [ 'card error' => 'stripe', 'Exception' => $e->description, 'type' => 'card error' ]);
 				$errors[] = 'Your card was declined. Please try again!';
 				$success = false;
 			}
@@ -89,6 +90,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 					'customer' => $params['user']->stripe_id
 				]);
 			} catch (Exception $e) {
+				Log::debug( [ 'card error' => 'stripe', 'Exception' => $e->description, 'type' => 'card error' ]);
 				$errors[] = 'Your card was declined. Please try again!';
 				$success = false;
 			}
