@@ -51,6 +51,7 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 				$c = $this->customer()->debit($params['amount'] * 100, 'Crunchbutton', $params['restaurant']->name);
 
 			} catch (Exception $e) {
+				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card error' ]);
 				$errors[] = 'Your card was declined. Please try again!';
 				// $e->description
 				$success = false;
@@ -74,6 +75,7 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 				$c = $this->customer()->debit($params['amount'] * 100, 'Crunchbutton', $params['restaurant']->name);
 
 			} catch (Exception $e) {
+				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card error' ]);
 				$errors[] = 'Your card was declined. Please try again!';
 				$success = false;
 			}
