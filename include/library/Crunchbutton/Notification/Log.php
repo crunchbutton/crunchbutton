@@ -61,7 +61,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				'restaurant_phone' => $this->order()->restaurant()->phone,
 				'customer_phone' => $this->order()->phone,
 				'customer_name' => $this->order()->name,
-				'action' => '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone()."\n C# ".$this->order()->phone(),
+				'action' => '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone()."\n C# ".$this->order()->name . ' / ' . $this->order()->phone(),
 				'host' => c::config()->host_callback,
 				'type' => 'notification'
 			]);
