@@ -100,9 +100,9 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$edt_datetime = strtotime($order->date);
 					date_default_timezone_set('America/New_York');
 					$edt_datetime = date('D, M d, g:i a', $edt_datetime) . ' EDT';
-					$last_cb = "Last CB: #$order->id_order, from $restaurant->name, on $edt_datetime.";
+					$last_cb = "Last Order: #$order->id_order, from $restaurant->name, on $edt_datetime. -  R: $restaurant->phone - C: $order->name / $order->phone";
 				} else {
-					$last_cb = 'Last CB: None.';
+					$last_cb = 'Last Order: None.';
 				}
 			
 				switch ($_SESSION['sms-action']) {
