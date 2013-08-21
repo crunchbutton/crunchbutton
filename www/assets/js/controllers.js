@@ -30,10 +30,17 @@ function AccountResetCtrl( $scope, $http, AccountResetService ) {
 	$scope.reset = AccountResetService;
 }
 
-function GiftCardCtrl( $scope, $http, GiftCardService ) {
-	$scope.giftcard = GiftCardService;
-	$scope.giftcard.parseURLCode();
-	$scope.giftcard.processModal();
+function GiftCardCtrl( $scope, $http, $rootScope, GiftCardService ) {
+	$scope.giftcard = {};
+	$scope.user = GiftCardService.account.user;
+	$scope.modal = GiftCardService.modal;
+	$scope.giftcard.value = GiftCardService.value;
+	$rootScope.$on( 'GiftCardProcessed', function(e, data) {
+		// Update the scope
+		$scope.user = GiftCardService.account.user;
+		$scope.giftcard.value = GiftCardService.value;
+		$scope.modal = GiftCardService.modal;
+	});
 }
 
 function MainHeaderCtrl($scope, MainNavigationService, OrderService) {

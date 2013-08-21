@@ -236,7 +236,7 @@ NGApp.factory( 'AccountModalService', function( $http, FacebookService ){
 		header : true,
 		signin : true,
 		signup : false,
-		facebook : false
+		facebookLogin : false
 	};
 
 	service.facebook = FacebookService;
@@ -267,7 +267,7 @@ NGApp.factory( 'AccountModalService', function( $http, FacebookService ){
 		service.facebook.wait = false;
 		service.signin = ( form == 'signin' );
 		service.signup = ( form == 'signup' );
-		service.facebook = ( form == 'facebook' );
+		service.facebookLogin = ( form == 'facebook' );
 	}
 
 	service.headerIsVisible = function(){

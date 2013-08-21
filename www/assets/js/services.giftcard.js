@@ -1,14 +1,5 @@
-// GiftCardModalService service
-NGApp.factory( 'GiftCardModalService', function(){
-	var service = {};
-	service.open = function(){
-		App.dialog.show( '.giftcard-container' );
-	}
-	return service;
-} );
-
 // GiftCardService service
-NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalService, GiftCardModalService, CreditService, $rootScope ){
+NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, AccountModalService, CreditService ){
 
 	var service = {
 		redeemed : false,
@@ -26,8 +17,18 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 	credit = CreditService;
 
 	service.accountModal = AccountModalService;
-	service.giftCardModal = GiftCardModalService;
 	service.account = service.accountModal.facebook.account;
+
+	service.open = function(){
+		App.dialog.show( '.giftcard-container' );
+		service.parseURLCode();
+		if( service.modal.intro ){
+			setTimeout( function(){
+				service.processModal();
+				$location.path( '/location' );
+			}, 100 );
+		}
+	}
 
 	service.openRestaurant = function(){
 		$location.path( '/' + App.restaurants.permalink + '/' + service.modal.restaurant.permalink );
@@ -90,6 +91,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 					} else {
 						service.modal.restaurant = false;
 					}
+					$rootScope.$broadcast( 'GiftCardProcessed', true );
 					if( service.redeemed ){
 						service.code = '';
 					}
@@ -108,14 +110,13 @@ NGApp.factory( 'GiftCardService', function( $http, $location, AccountModalServic
 
 	service.modal.signIn = function(){
 		service.account.callback = function(){
-			service.giftCardModal.open();
+			service.open();
 			service.processModal();
 		}
 		service.modal.close();
 		setTimeout( function(){
 			service.accountModal.signinOpen();	
 		}, 500 );
-		
 	}
 
 	service.modal.close = function(){

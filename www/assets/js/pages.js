@@ -434,15 +434,15 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
  * Order page. displayed after order, or at order history
  */
 NGApp.controller('order', function ($scope, $http, $location, $routeParams, AccountService, AccountModalService, OrderViewService) {
-	
-	$scope.account = AccountService;
-	
-	if( !$scope.account.isLogged() ){
+
+	if( !AccountService.isLogged() ){
 		$location.path( '/' );
 		return;
 	}
 
-	$scope.modal = AccountModalService;
+	$scope.account = { user : AccountService.user, has_auth : AccountService.user.has_auth };
+	$scope.modal = { signupOpen : AccountModalService.signupOpen };
+
 	$scope.order = OrderViewService;
 	
 	$scope.order.load();
@@ -489,10 +489,7 @@ NGApp.controller('orders', function ($scope, $http, $location, $rootScope, Accou
 });
 
 NGApp.controller( 'giftcard', function ($scope, $location, GiftCardService ) {
-	$scope.giftcard = GiftCardService;
-	$scope.giftcard.parseURLCode();
-	$location.path( '/location' );
-	setTimeout( function(){ $scope.giftcard.giftCardModal.open(); }, 300 );
+	setTimeout( function(){ GiftCardService.open(); }, 300 );
 });
 
 NGApp.controller('reset', function ($scope, $location, AccountModalService) {
@@ -500,8 +497,3 @@ NGApp.controller('reset', function ($scope, $location, AccountModalService) {
 	$scope.modal.resetOpen();
 	$location.path( '/' );
 });
-
-/**
- * FoodDelivery's methods
- */
-App.foodDelivery = {};
