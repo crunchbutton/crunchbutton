@@ -348,6 +348,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		if (!order.name) {
 			errors['name'] = 'Please enter your name.';
 		}
+
 		if (!App.phone.validate(order.phone)) {
 			errors['phone'] = 'Please enter a valid phone #.';
 		}
@@ -357,10 +358,10 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !order.card.number) || (!service.account.user.id_user && !order.card.number))) {
 			errors['card'] = 'Please enter a valid card #.';
 		}
-		if (order.pay_type == 'card' && ( order.card.month == '' || !order.card.month ) ) {
+		if (order.pay_type == 'card' && service._cardInfoHasChanged && ( order.card.month == '' || !order.card.month ) ) {
 			errors['card_month'] = 'Please enter the card expiration month.';
 		}
-		if (order.pay_type == 'card' && ( order.card.year == '' || !order.card.year ) ) {
+		if (order.pay_type == 'card' && service._cardInfoHasChanged && ( order.card.year == '' || !order.card.year ) ) {
 			errors['card_year'] = 'Please enter the card expiration year.';
 		}
 		if (!service.cart.hasItems()) {
