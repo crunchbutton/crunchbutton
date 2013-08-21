@@ -166,6 +166,7 @@
 							<button type="submit" class="btn btn-blue admin-giftcard-save"><i class="icon-save"></i> Save </button> 
 							<button type="submit" class="btn btn-green admin-giftcard-print"><i class="icon-print"></i> Save &amp; Print </button> 
 							<button type="submit" class="btn btn-blue admin-giftcard-print-flyer"><i class="icon-picture"></i> Save &amp; Print Flyer </button> 
+							<button type="submit" class="btn btn-red admin-giftcard-print-brown"><i class="icon-picture"></i> Save &amp; Print Brown </button> 
 						</li>
 					</ul>
 				</div>
@@ -404,6 +405,10 @@ $(function() {
 	App.giftcards.print = 'flyer';
 	sendForm();
 	} );
+	$(document).on('click', '.admin-giftcard-print-brown', function() {
+	App.giftcards.print = 'brown';
+	sendForm();
+	} );
 });
 
 function sendForm(){
@@ -481,6 +486,8 @@ function sendForm(){
 				if( App.giftcards.print ){
 					if( App.giftcards.print == 'flyer' ){
 						location.href = '/giftcards/print-flyer/' + json.success;
+					} else if( App.giftcards.print == 'brown' ){
+						location.href = '/giftcards/print-brown/' + json.success;
 					} else {
 						location.href = '/giftcards/print/' + json.success;	
 					}
