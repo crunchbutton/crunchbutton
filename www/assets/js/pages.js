@@ -77,7 +77,7 @@ NGApp.controller('default', function ($scope, $http, $location, CommunityAliasSe
 /**
  * Show the restaurants
  */
-NGApp.controller( 'restaurants', function ( $scope, $rootScope, $http, $location, RestaurantsService) {
+NGApp.controller( 'restaurants', function ( $scope, $http, $location, RestaurantsService) {
 
 	var restaurants = RestaurantsService;
 
@@ -443,15 +443,26 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams, Acco
 	$scope.account = { user : AccountService.user, has_auth : AccountService.user.has_auth };
 	$scope.modal = { signupOpen : AccountModalService.signupOpen };
 
-	$scope.order = OrderViewService;
+	$scope.order = {};
+	$scope.restaurant = {};
 	
-	$scope.order.load();
+	OrderViewService.load();
 
 	$scope.isMobile = App.isMobile();
 
 	$scope.facebook = function(){
-		$scope.order.facebook.postOrder();
+		OrderViewService.facebook.postOrder();
 	}
+
+	$scope.$on( 'OrderViewLoadedOrder', function(e, order) {
+		$scope.order = order;	
+		$scope.$safeApply();
+	});
+
+	$scope.$on( 'OrderViewLoadedRestaurant', function(e, restaurant) {
+		$scope.restaurant = restaurant;
+		$scope.$safeApply();
+	});
 });
 
 
@@ -459,7 +470,7 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams, Acco
  * Orders page. only avaiable after a user has placed an order or signed up.
  * @todo: change to account page
  */
-NGApp.controller('orders', function ($scope, $http, $location, $rootScope, AccountService, AccountSignOut, OrdersService, AccountModalService) {
+NGApp.controller('orders', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService) {
 	
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
@@ -482,7 +493,7 @@ NGApp.controller('orders', function ($scope, $http, $location, $rootScope, Accou
 		$scope.orders.list = OrdersService.list;	
 	}
 
-	$rootScope.$on( 'OrdersLoaded', function(e, data) {
+	$scope.$on( 'OrdersLoaded', function(e, data) {
 		$scope.orders.list = OrdersService.list;	
 	});
 

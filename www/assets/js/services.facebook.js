@@ -48,7 +48,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 		},
 		function(response) {
 			if (response && response.post_id) {
-				alert( 'Thank you for sharing!' );
+				App.alert( 'Thank you for sharing!' );
 			}
 		} );
 	}
@@ -65,7 +65,6 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 
 	// process status is called any time a status change event is triggered with facebook
 	service.processStatus = function(status) {
-		console.debug('Facebook process status >>',status);
 
 		if (status.status === 'connected' && status.authResponse) {
 
