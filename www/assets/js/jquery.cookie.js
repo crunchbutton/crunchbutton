@@ -56,6 +56,7 @@
 		return null;
 	};
 
-	$.cookie.defaults = { path : '/' };
+	// Changed the defaults to path:/  and expiration date: 3000
+	$.cookie.defaults = { path : '/', expires : ( new Date(3000,01,01) ) };
 
 })(jQuery, document);

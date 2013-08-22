@@ -78,8 +78,6 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 	
 	public static function token($token) {
 		if (!$token) return false;
-		// Remove the '"' of $totalStorage
-		$token = str_replace( '"', '', $token );
 		$res = Cana::db()->query('select * from session where token="'.c::db()->escape($token).'"');
 		$session = $res->fetch();
 

@@ -561,7 +561,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 					}, 'validation error - php');
 				} else {
 					if (json.token) {
-						$.totalStorage('token', json.token );
+						$.cookie( 'token', json.token );
 					}
 
 					service.account.updateInfo();
