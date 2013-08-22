@@ -115,7 +115,6 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 								service.account.callback();
 								service.account.callback = false;
 							} else {
-								App.signin.manageLocation();
 								try {
 									$.magnificPopup.close();
 								} catch (e) {}

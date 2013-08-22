@@ -21,7 +21,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	}
 
 	service.goToRestaurants = function(){
-		return service.link( App.restaurants.permalink );
+		return service.link( RestaurantsService.permalink );
 	}
 
 	service.link = function( path ){

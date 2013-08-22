@@ -1,4 +1,4 @@
-NGApp.factory('PositionsService', function () {
+NGApp.factory('PositionsService', function ( $rootScope ) {
 
 	var service = {
 		bounding: null,
@@ -9,10 +9,9 @@ NGApp.factory('PositionsService', function () {
 	 * Method adds new location to the locs array
 	 */
 	service.addLocation = function (loc) {
-		// Resets the restaurant's list
-		App.restaurants.forceLoad = true;
 		service.locs.push(loc);
 		$.totalStorage('locsv2', service.locs);
+		$rootScope.$broadcast( 'NewLocationAdded', true );
 	}
 
 	/**
@@ -32,7 +31,8 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		form: {
 			address: ''
 		},
-		range: App.defaultRange,
+		range: 2,
+		boundingBoxMeters : 8000,
 		loaded: false,
 		locationNotServed: false,
 		initied: false,
@@ -219,7 +219,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 							// Success
 							function () {
 								if (service.loadRestaurantsPage) {
-									$location.path('/' + App.restaurants.permalink);
+									$location.path('/' +RestaurantsService.permalink);
 								}
 								service.loadRestaurantsPage = true;
 							},
@@ -263,7 +263,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 							// Success
 							function () {
 								if (service.loadRestaurantsPage) {
-									$location.path('/' + App.restaurants.permalink);
+									$location.path('/' +RestaurantsService.permalink);
 								}
 								service.loadRestaurantsPage = true;
 							},
@@ -288,7 +288,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 						service.restaurantsService.list(
 							function () {
 								if (service.loadRestaurantsPage) {
-									$location.path('/' + App.restaurants.permalink);
+									$location.path('/' +RestaurantsService.permalink);
 								}
 								service.loadRestaurantsPage = true;
 							},
@@ -374,7 +374,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 				// Create a cicle bounding box
 				var circle = new google.maps.Circle({
 					center: latLong,
-					radius: App.boundingBoxMeters
+					radius: service.boundingBoxMeters
 				});
 				var bounds = circle.getBounds();
 
@@ -398,7 +398,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 
 	service.doGeocodeWithBound = function(address, latLong, success, error) {
 		// Create a cicle bounding box
-		var circle = new google.maps.Circle( { center: latLong, radius: App.boundingBoxMeters } ); 
+		var circle = new google.maps.Circle( { center: latLong, radius: service.boundingBoxMeters } ); 
 		var bounds = circle.getBounds();
 
 		// Send the request out to google

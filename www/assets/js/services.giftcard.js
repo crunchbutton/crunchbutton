@@ -1,5 +1,5 @@
 // GiftCardService service
-NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, AccountModalService, CreditService ){
+NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, AccountModalService, CreditService, RestaurantsService ){
 
 	var service = {
 		redeemed : false,
@@ -31,7 +31,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.openRestaurant = function(){
-		$location.path( '/' + App.restaurants.permalink + '/' + service.modal.restaurant.permalink );
+		$location.path( '/' + RestaurantsService.permalink + '/' + service.modal.restaurant.permalink );
 		service.modal.close();
 	}
 
