@@ -353,6 +353,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 		$scope.giftcard.value = giftcard.notes_field.value;
 		$scope.giftcard.removed = giftcard.notes_field.removed;
 		$scope.giftcard.hasGiftCards = giftcard.notes_field.hasGiftCards;
+		$scope.giftcard.justOneGiftCardError = giftcard.notes_field.justOneGiftCardError;
 	});
 
 	$scope.checkGiftCard = function(){

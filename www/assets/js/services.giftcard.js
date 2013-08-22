@@ -171,6 +171,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 			var giftcards = {};
 			service.notes_field.giftcards.success = [];
 			service.notes_field.giftcards.error = [];
+			service.notes_field.justOneGiftCardError = false;
 			for ( var x in words ) {
 				var word = $.trim( words[ x ] );
 				if( word != '' ){
@@ -197,7 +198,12 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 							if( giftcard.id_restaurant &&  giftcard.id_restaurant != service.notes_field.id_restaurant ){
 								giftcard.error = 'other restaurant';
 							}
-							service.notes_field.giftcards.success.push( data.success );
+							/* Issue #1615 */
+							if( service.notes_field.giftcards.success.length < 1 ){
+								service.notes_field.giftcards.success.push( data.success );	
+							} else {
+								service.notes_field.justOneGiftCardError = true;
+							}
 						} else if( data.error ){
 							service.notes_field.giftcards.error.push( data );
 						}

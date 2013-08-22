@@ -208,10 +208,14 @@ class Crunchbutton_Order extends Cana_Table {
 		// Find out if the user posted a gift card code at the notes field and get its value
 		$this->giftcardValue = 0;
 		if ( trim( $this->notes ) != '' ){
+			$giftCardAdded = false;
 			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
 			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
 				if( $giftcard->id_promo ){
-					$this->giftcardValue += $giftcard->value;
+					if( !$giftCardAdded ){
+						$this->giftcardValue += $giftcard->value;
+						$giftCardAdded = true;
+					}
 				}
 			}
 			$_notes = $giftcards[ 'notes' ];	
@@ -331,9 +335,13 @@ class Crunchbutton_Order extends Cana_Table {
 		// If the payment succeds then redeem the gift card
 		if ( trim( $this->notes ) != '' ){
 			$giftcards = Crunchbutton_Promo::validateNotesField( $this->notes, $this->id_restaurant );
+			$giftCardAdded = false;
 			foreach ( $giftcards[ 'giftcards' ] as $giftcard ) {
 				if( $giftcard->id_promo ){
-					$giftcard->addCredit( $user->id_user );
+					if( !$giftCardAdded ){
+						$giftcard->addCredit( $user->id_user );
+					}
+					$giftCardAdded = true;
 				}
 			}
 			$this->notes = $giftcards[ 'notes' ];	
