@@ -188,7 +188,11 @@
 						<li>
 							<span>Gift card lenght</span>
 							<span class="pull-right">
-								<input type="number" name="length" maxlength="2" id="length" readonly="readonly" value="6" />
+								<input type="number" name="length" maxlength="2" id="length" value="6" />
+								<div>
+									<i class="icon-exclamation-sign"></i>
+									Don't change this value at live!
+								</div>
 							</span>
 						</li>
 						<li>
@@ -295,10 +299,20 @@ function updateUsedChars(){
 		chars_to_use = chars_to_use.replace( v.toUpperCase(), '' );
 	} );
 	$( '#chars_to_use' ).val( chars_to_use );
-	var length = $( '#length' ).val() - prefix.length;
+	var length = $( '#length' ).val();
+	if( parseInt( length ) > 12 ){
+		length = 12;
+	}
+	if( parseInt( length ) < 4 ){
+		length = 4;
+	}
+	$( '#length' ).val( length );
+
+	length = length - prefix.length;
 	if( $( '#include_gift_card_id' ).is( ':checked' ) ){
 		length -= lastID.toString().length;
 	}
+
 	var possible_combinations = Math.pow( chars_to_use.length, length );
 
 	if( $( '#include_gift_card_id' ).is( ':checked' ) ){
@@ -459,6 +473,12 @@ function sendForm(){
 
 	if( id_restaurant == '' ){
 		alert( 'Please choose a restaurant!' );
+		$( '#id_restaurant' ).focus();
+		return;
+	}
+
+	if( parseInt( length ) < 4 || parseInt( length ) > 12  ){
+		alert( 'The gift card length must to be between 4 and 12!' );
 		$( '#id_restaurant' ).focus();
 		return;
 	}
