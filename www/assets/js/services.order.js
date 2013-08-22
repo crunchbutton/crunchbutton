@@ -1,5 +1,5 @@
 //OrderService Service
-NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountService, CartService, LocationService, CreditService, GiftCardService ) {
+NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, AccountService, CartService, LocationService, CreditService, GiftCardService ) {
 
 	var service = {};
 	service.location = LocationService;
@@ -96,7 +96,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, AccountSer
 		service.form.autotip = 0;
 		service.form.tip = service._lastTipNormalize(tip);
 		service.form.name = service.account.user.name;
-		service.form.phone = App.phone.format(service.account.user.phone);
+		service.form.phone = $filter( 'formatPhone' )( service.account.user.phone );
 		service.form.address = service.account.user.address;
 		service.form.notes = (service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].notes : '';
 		

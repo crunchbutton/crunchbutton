@@ -433,7 +433,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('order', function ($scope, $http, $location, $routeParams, AccountService, AccountModalService, OrderViewService) {
+NGApp.controller('order', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService ) {
 
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
@@ -460,7 +460,7 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams, Acco
 	});
 
 	$scope.$on( 'OrderViewLoadedRestaurant', function(e, restaurant) {
-		$scope.restaurant = restaurant;
+		$scope.restaurant.phone = $filter( 'formatPhone' )( restaurant.phone );
 		$scope.$safeApply();
 	});
 });
@@ -470,7 +470,7 @@ NGApp.controller('order', function ($scope, $http, $location, $routeParams, Acco
  * Orders page. only avaiable after a user has placed an order or signed up.
  * @todo: change to account page
  */
-NGApp.controller('orders', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService) {
+NGApp.controller('orders', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService ) {
 	
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );

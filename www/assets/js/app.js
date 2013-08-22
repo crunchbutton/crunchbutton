@@ -230,14 +230,6 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	$rootScope.nl2br = function(t) {
 		return App.nl2br(t);
 	};
-
-	$rootScope.formatPhone = function(t) {
-		return App.phone.format(t);
-	};
-
-	$rootScope.formatPrice = function(t) {
-		return parseFloat(t).toFixed(2);
-	};
 	
 	$rootScope.closePopup = function() {
 		try {
