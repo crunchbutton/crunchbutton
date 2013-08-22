@@ -1,5 +1,5 @@
 // AccountService service
-NGApp.factory( 'AccountService', function( $http, $rootScope ){
+NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService ){
 	
 	var service = { 
 				callback : false, 

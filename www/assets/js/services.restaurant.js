@@ -1,7 +1,7 @@
 // Restaurant list service
-NGApp.factory('RestaurantsService', function ($http, PositionsService) {
+NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsService ) {
 
-	var service = { permalink : 'food-delivery' };
+	var service = { permalink : 'food-delivery', forceLoad : true };
 	var restaurants = false;
 
 	service.reset = function () {
@@ -61,9 +61,9 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 			return false;
 		}
 
-		if (restaurants === false || App.restaurants.forceLoad) {
+		if (restaurants === false || service.forceLoad) {
 
-			var url = App.service + 'restaurants?lat=' + service.position.pos().lat() + '&lon=' + service.position.pos().lon() + '&range=' + (service.position.range || App.defaultRange);
+			var url = App.service + 'restaurants?lat=' + service.position.pos().lat() + '&lon=' + service.position.pos().lon() + '&range=' + (service.position.range || 2 );
 
 			$http.get(url, {
 				cache: true
@@ -87,7 +87,7 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 				}
 			});
 
-			App.restaurants.forceLoad = false;
+			service.forceLoad = false;
 		} else {
 			if (success) {
 				success(restaurants);
@@ -95,6 +95,10 @@ NGApp.factory('RestaurantsService', function ($http, PositionsService) {
 			return restaurants;
 		}
 	}
+
+	$rootScope.$on( 'NewLocationAdded', function(e, data) {
+		service.forceLoad = true;
+	});
 
 	return service;
 });

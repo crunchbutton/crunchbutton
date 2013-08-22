@@ -47,7 +47,7 @@ NGApp.controller('home', function ($scope, $http, $location, RestaurantsService)
 /**
  * Alias / unknown controller
  */
-NGApp.controller('default', function ($scope, $http, $location, CommunityAliasService ) {
+NGApp.controller('default', function ($scope, $http, $location, CommunityAliasService, RestaurantsService ) {
 	var community = CommunityAliasService;
 	community.route( $location.path(),
 		// Success
@@ -62,7 +62,7 @@ NGApp.controller('default', function ($scope, $http, $location, CommunityAliasSe
 					city: results.alias.city(),
 					prep: results.alias.prep()
 				} ) );
-				var url = '/' + App.restaurants.permalink + ( restaurant ? '/' + restaurant : '' )
+				var url = '/' + RestaurantsService.permalink + ( restaurant ? '/' + restaurant : '' )
 				$location.path( url );
 			}
 		},

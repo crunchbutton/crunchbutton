@@ -13,33 +13,13 @@ var App = {
 	imgServer: '/',
 	cached: {},
 	community: null,
-	page: {},
 	config: null,
-	forceHome: false,
-	cookieExpire: new Date(3000,01,01),
-	order: {
-		cardChanged: false,
-		pay_type: 'card',
-		delivery_type: 'delivery',
-		tip: 'autotip'
-	},
-	signin : {},
-	suggestion : {},
-	restaurants: {
-		permalink : 'food-delivery',
-		forceLoad: false
-	},
-	defaultRange : 2,
-	modal: {},
-	hasBack: false,
 	_init: false,
 	_pageInit: false,
 	_identified: false,
-	isDeliveryAddressOk : false,
 	touchX: null,
 	touchY: null,
 	touchOffset: null,
-	boundingBoxMeters : 8000,
 	localStorage: false,
 	isPhoneGap: document.location.protocol == 'file:',
 	useNativePrompt: false,
@@ -106,19 +86,19 @@ NGApp.config(function($compileProvider){
 	$compileProvider.urlSanitizationWhitelist(/.*/);
 });
 
-NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider, RestaurantsService) {
 	$routeProvider
 		.when('/location', {
 			action: 'location',
 			controller: 'location',
 			templateUrl: 'assets/view/location.html'
 		})
-		.when('/' + App.restaurants.permalink, {
+		.when('/food-delivery', {
 			action: 'restaurants',
 			controller: 'restaurants',
 			templateUrl: 'assets/view/restaurants.html'
 		})
-		.when('/' + App.restaurants.permalink + '/:id', {
+		.when('/food-delivery/:id', {
 			action: 'restaurant',
 			controller: 'restaurant',
 			templateUrl: 'assets/view/restaurant.html'
