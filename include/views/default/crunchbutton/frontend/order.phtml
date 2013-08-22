@@ -34,7 +34,7 @@
 				<b>Takeout order</b><br><br>
 			</div>
 	
-			<b>Your phone #:</b><br>{{formatPhone(order.phone)}}<br><br>
+			<b>Your phone #:</b><br>{{ order.phone | formatPhone }}<br><br>
 	
 			<b>Your order:</b><span ng-bind-html-unsafe="order._message"></span><br><br>
 	
@@ -43,7 +43,7 @@
 			<b ng-show="(order.pay_type == 'card')">Your total:<br></b>
 			<b ng-hide="(order.pay_type == 'card')">Your approximate total:<br></b>
 			
-			${{formatPrice(order.charged)}}
+			${{order.charged | formatPrice}}
 	
 			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 	
@@ -54,8 +54,8 @@
 				{{order._restaurant_name}}: 
 				<b>
 					<span ng-show="restaurant.phone">
-						<span ng-show="isMobile"><a href="tel:{{restaurant.phone}}">{{restaurant.phone}}</a></span>
-						<span ng-show="!isMobile">{{restaurant.phone}}</span>
+						<span ng-show="isMobile"><a href="tel:{{restaurant.phone}}">{{ restaurant.phone }}</a></span>
+						<span ng-show="!isMobile">{{ restaurant.phone }}</span>
 					</span>
 					<span ng-show="!restaurant.phone">
 						<i class="icon-spinner icon-spin"></i>
@@ -66,8 +66,8 @@
 			<br><br>
 
 			You can reach Crunchbutton by texting or calling <b> 
-			<span ng-show="isMobile"><a href="tel:(646) 783-1444">(646) 783-1444</a></span>
-			<span ng-show="!isMobile">(646) 783-1444</span>
+			<span ng-show="isMobile"><a href="tel:(646) 783-1444">{{ '6467831444' | formatPhone }}</a></span>
+			<span ng-show="!isMobile">{{ '6467831444' | formatPhone }}</span>
 			</b> <br><br>
 	
 			We've saved your order for easy 1 click ordering next time

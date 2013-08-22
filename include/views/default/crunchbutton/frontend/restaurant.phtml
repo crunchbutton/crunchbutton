@@ -342,7 +342,7 @@
 
 		<div>
 			<label>Your phone number:&nbsp;</label>
-			<i ng-show="user.phone">{{formatPhone(user.phone)}}</i>
+			<i ng-show="user.phone">{{ user.phone | formatPhone }}</i>
 			<i ng-show="!user.phone">no phone # provided</i>
 		</div>
 
