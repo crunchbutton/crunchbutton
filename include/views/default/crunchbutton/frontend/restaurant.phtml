@@ -159,7 +159,7 @@
 				</span>
 				<span class="restaurant-closed-content">
 					It will be open during the following hours (EDT):<br> 
-					<span ng-bind-html-unsafe="nl2br(restaurant.closedMessage())"></span>
+					<span ng-bind-html-unsafe="restaurant.closedMessage() | nl2br"></span>
 				</span>
 			</div>
 			<div class="divider"></div>
@@ -365,7 +365,7 @@
 
 		<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
 			<label>Your food will be delivered to:</label><br />
-			<span ng-bind-html-unsafe="nl2br(order.form.address)"></span>
+			<span ng-bind-html-unsafe="order.form.address | nl2br"></span>
 			<i ng-hide="order.form.address">no address provided</i>
 		</div>
 
