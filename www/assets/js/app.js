@@ -436,21 +436,6 @@ App.init = function(config) {
 
 	$(document).on({
 		mousedown: function() {
-			$(this).addClass('location-detect-click');
-		},
-		touchstart: function() {
-			$(this).addClass('location-detect-click');
-		},
-		mouseup: function() {
-			$(this).removeClass('location-detect-click');
-		},
-		touchend: function() {
-			$(this).removeClass('location-detect-click');
-		}
-	}, '.location-detect');
-
-	$(document).on({
-		mousedown: function() {
 			$(this).addClass('button-bottom-click');
 		},
 		touchstart: function() {
