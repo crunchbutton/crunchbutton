@@ -77,7 +77,7 @@ NGApp.controller('default', function ($scope, $http, $location, CommunityAliasSe
 /**
  * Show the restaurants
  */
-NGApp.controller( 'restaurants', function ( $scope, $http, $location, RestaurantsService) {
+NGApp.controller( 'restaurants', function ( $scope, $rootScope, $http, $location, RestaurantsService) {
 
 	var restaurants = RestaurantsService;
 
@@ -87,7 +87,7 @@ NGApp.controller( 'restaurants', function ( $scope, $http, $location, Restaurant
 	$scope.display = function($event) {
 		var restaurant = this.restaurant;
 		if (!restaurant.open()) {
-			App.rootScope.$broadcast('restaurantClosedClick', restaurant);
+			$rootScope.$broadcast('restaurantClosedClick', restaurant);
 		} else {
 			var el = $($event.target).closest('.meal-item').find('.meal-item-content');
 			var s = $(el).data('spinner');
@@ -245,7 +245,7 @@ NGApp.controller( 'location', function ($scope, $http, $location, RestaurantsSer
 /**
  * restaurant page
  */
-NGApp.controller('restaurant', function ($scope, $http, $routeParams, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
+NGApp.controller('restaurant', function ($scope, $http, $routeParams, $rootScope, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
 
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 	var order = OrderService;
@@ -258,7 +258,7 @@ NGApp.controller('restaurant', function ($scope, $http, $routeParams, Restaurant
 	var creditCard = CreditCardService;
 	
 	// update if the restaurant is closed or open
-	App.rootScope.updateOpen = setInterval(function() {
+	$rootScope.updateOpen = setInterval(function() {
 		var open = $scope.restaurant.open();
 		if ($scope.open != open) {
 			$scope.open = open;

@@ -1,5 +1,5 @@
 // FacebookService service
-NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
+NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, AccountService ){
 
 	var service = {
 		token : false,
@@ -123,7 +123,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, AccountService ){
 						}
 
 						App.log.account({'userID': status.authResponse.userID} , 'facebook currentPage');
-						App.rootScope.$broadcast('userAuth', service.user);
+						$rootScope.$broadcast('userAuth', service.user);
 						service.running = false;
 					});
 				}

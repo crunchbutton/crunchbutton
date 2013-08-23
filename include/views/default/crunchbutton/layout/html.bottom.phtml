@@ -46,7 +46,6 @@ $(function() {
 	<? foreach (c::appConfig(['extended']) as $key => $value) : ?>
 		App['<?=$key?>'] = <?=json_encode($value)?>;
 	<? endforeach ; ?>
-	
 	App.init();
 });
 </script>
