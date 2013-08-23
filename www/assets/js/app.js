@@ -117,7 +117,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/home.html'
 		})
 	;
-
 	// only use html5 enabled location stuff if its not in a phonegap container
 	$locationProvider.html5Mode(!App.isPhoneGap);
 }]);
@@ -138,7 +137,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		$rootScope.$safeApply(function($scope) {
 			// @todo: remove double data
 			if (data) {
-				App.rootScope.account.user = data;
+				$rootScope.account.user = data;
 				App.config.user = data;
 			}
 			// reload the actual controller
@@ -210,7 +209,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			App.scrollTop();
 		},1);
 		
-		clearInterval(App.rootScope.updateOpen);
+		clearInterval($rootScope.updateOpen);
 		
 		if (App.isPhoneGap && !App.splashHidden && navigator.splashscreen) {
 			App.splashHidden = true;
