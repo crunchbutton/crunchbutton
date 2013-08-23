@@ -9,9 +9,6 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 			$mtime = c::cache()->mtime($cache);
 		} else {
 	
-			/* this style file is temporarily  */
-			$file = c::config()->dirs->www.'assets/css/styles.revised.css';
-			$css = file_get_contents($file);
 			$file = c::config()->dirs->www.'assets/css/style.css';
 			$css .= file_get_contents($file);
 
