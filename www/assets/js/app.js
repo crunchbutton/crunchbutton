@@ -47,73 +47,59 @@ NGApp.config(function($compileProvider){
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider, RestaurantsService) {
 	$routeProvider
 		.when('/location', {
-			action: 'location',
-			controller: 'location',
+			controller: 'LocationCtrl',
 			templateUrl: 'assets/view/location.html'
 		})
 		.when('/food-delivery', {
-			action: 'restaurants',
-			controller: 'restaurants',
+			controller: 'RestaurantsCtrl',
 			templateUrl: 'assets/view/restaurants.html'
 		})
 		.when('/food-delivery/:id', {
-			action: 'restaurant',
-			controller: 'restaurant',
+			controller: 'RestaurantCtrl',
 			templateUrl: 'assets/view/restaurant.html'
 		})
 		.when('/legal', {
-			action: 'legal',
-			controller: 'legal',
+			controller: 'LegalCtrl',
 			templateUrl: 'assets/view/legal.html'
 		})
 		.when('/help', {
-			action: 'help',
-			controller: 'help',
+			controller: 'HelpCtrl',
 			templateUrl: 'assets/view/help.html'
 		})
 		.when('/orders', {
-			action: 'orders',
-			controller: 'orders',
+			controller: 'OrdersCtrl',
 			templateUrl: 'assets/view/orders.html'
 		})
 		.when('/order/:id', {
-			action: 'order',
-			controller: 'order',
+			controller: 'OrderCtrl',
 			templateUrl: 'assets/view/order.html'
 		})
 		.when('/cities', {
-			action: 'cities',
-			controller: 'cities',
+			controller: 'CitiesCtrl',
 			templateUrl: 'assets/view/cities.html'
 		})
 		.when('/giftcard', {
-			action: 'giftcard',
-			controller: 'giftcard',
+			controller: 'GiftcardCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
 		.when('/giftcard/:id', {
-			action: 'giftcard',
-			controller: 'giftcard',
+			controller: 'GiftcardCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
 		.when('/reset', {
-			action: 'reset',
-			controller: 'reset',
+			controller: 'ResetCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
 		.when('/reset/:id', {
-			action: 'reset',
-			controller: 'reset',
+			controller: 'ResetCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
 		.when('/', {
-			action: 'home',
-			controller: 'home',
+			controller: 'HomeCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
 		.otherwise({
-			action: 'home.default',
-			controller: 'default',
+			controller: 'DefaultCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
 	;
