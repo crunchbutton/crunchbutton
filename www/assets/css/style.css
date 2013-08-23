@@ -83,6 +83,7 @@ html[xmlns] .clearfix {
 .pacman-loading {
 	display:none;
 }
+
 /* APP BUSY */
 .app-busy {
 	top:0;
@@ -461,7 +462,6 @@ html[xmlns] .clearfix {
 		.snap-content {
 			transform:none;
 	}
-	;
 }
 .snap-drawer-left {
 	left:0;
@@ -520,7 +520,7 @@ html[xmlns] .clearfix {
 	height:28px;
 }
 
-/* HOME STUFF */
+/* HOME PAGE */
 .home-tagline,.home-welcome {
 	color:#d74924;
 	font-size:28px;
@@ -746,7 +746,6 @@ h1.about-header {
 }
 
 /* RESTAURANTS / RESTAURANT / ORDERS / ORDER PAGES */
-
 .order-begin-wrap {
 	background:#fff6f4;
 	background:-moz-linear-gradient(top,#fff6f4 0%,#fdf6f0 100%);
@@ -779,12 +778,10 @@ h1.about-header {
 	padding:0 .5em 0 0;
 	font-size:25px;
 }
-
 .button-bottom,.meal-item,.meal-item-content,.toggle-item,.nav-back,.menu-icon,.location-icon,.resturant-dish-container li,*:not(input,textarea) {
 	-webkit-tap-highlight-color:transparent;
 	-webkit-user-select:none;
 }
-
 .meal-items {
 	text-align:center;
 }
@@ -925,7 +922,6 @@ h1.about-header {
 	white-space:nowrap;
 	width:160px;
 }
-
 .restaurant-payment-div {
 	margin:10px 0 10px 0;
 }
@@ -994,7 +990,6 @@ h1.about-header {
 	clear:left;
 	float:left;
 }
-
 .cart-item-description {
 	font-size:.9em;
 	font-style:italic;
@@ -1133,11 +1128,9 @@ h1.about-header {
 	text-decoration:none;
 	cursor:pointer;
 }
-
 .resturant-dishes {
 	width:100%;
 }
-
 .content-item-locations h1 {
 	margin-top:10px;
 	font-size:28px;
@@ -1149,11 +1142,9 @@ h1.about-header {
 .content-item-locations {
 	margin-bottom:50px;
 }
-
 .button-letseat-table td {
 	vertical-align:top;
 }
-
 .menu-icon {
 	float:right;
 	width:45px;
@@ -1296,7 +1287,6 @@ h1.about-header {
 	outline:0;
 	outline:thin dotted \9;
 }
-
 .suggestion-link-container {
 	margin-bottom:30px;
 }
@@ -1307,7 +1297,6 @@ h1.about-header {
 	font-weight:600;
 	margin-bottom:10px;
 }
-
 .signout-button,.signup-add-facebook-button {
 	border-radius:4px;
 	border:1px solid #cb5921;
@@ -1383,7 +1372,6 @@ h1.about-header {
 	.cart-item-config {
 			margin-top:-18px !important;
 	}
-	;
 }
 .delivery-minimum-error {
 	color:#d40000;
@@ -1393,7 +1381,6 @@ h1.about-header {
 	.location-address {
 			width:100%;
 	}
-	;
 }
 .restaurant-gift {
 	background:#ff591f;
@@ -1473,7 +1460,6 @@ h1.about-header {
 }
 
 /* GIFT CARD STUFF */
-
 .giftcard-info {
 	color:red;
 	margin-left:115px;
