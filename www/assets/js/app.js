@@ -30,48 +30,6 @@ var App = {
 // enable localstorage on phonegap
 App.localStorage = App.isPhoneGap;
 
-App.alert = function(txt, title) {
-	setTimeout(function() {
-		// @todo: #1546
-		if (App.useNativePrompt && App.isPhoneGap) {
-			navigator.notification.alert(txt, null, title || 'Crunchbutton');
-		} else {
-			App.rootScope.$broadcast('notificationAlert', title || null, txt);
-		}
-	});
-};
-
-App.confirm = function(txt, title) {
-	if (App.useNativePrompt && App.isPhoneGap) {
-		return navigator.notification.confirm(txt, null, title || 'Crunchbutton');
-	} else {
-		return confirm(txt);
-	}
-};
-
-
-App.connectionError = function() {
-	App.rootScope.$broadcast('notificationAlert', 'Connection Error', 'Sorry! We could not reach the server right now. Try again when your internet is back!');
-};
-
-App.go = function(url) {
-	// @todo: do some tests to figure out if we need this or not
-	// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
-	App.location.path(url || '/');
-	App.rootScope.$safeApply();
-
-};
-
-
-App.toggleMenu = function() {
-	if (App.snap.state().state == 'left') {
-		App.snap.close();
-	} else {
-		App.snap.open('left');
-	}
-};
-
-
 App.NGinit = function() {
 	$('body').attr('ng-controller', 'AppController');
 	angular.bootstrap(document,['NGApp']);
@@ -207,10 +165,6 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		history.back();
 	};
 
-	$rootScope.nl2br = function(t) {
-		return App.nl2br(t);
-	};
-	
 	$rootScope.closePopup = function() {
 		try {
 			$.magnificPopup.close();
@@ -268,6 +222,46 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 	AccountService.checkUser();
 });
+
+App.alert = function(txt, title) {
+	setTimeout(function() {
+		// @todo: #1546
+		if (App.useNativePrompt && App.isPhoneGap) {
+			navigator.notification.alert(txt, null, title || 'Crunchbutton');
+		} else {
+			App.rootScope.$broadcast('notificationAlert', title || null, txt);
+		}
+	});
+};
+
+App.confirm = function(txt, title) {
+	if (App.useNativePrompt && App.isPhoneGap) {
+		return navigator.notification.confirm(txt, null, title || 'Crunchbutton');
+	} else {
+		return confirm(txt);
+	}
+};
+
+
+App.connectionError = function() {
+	App.rootScope.$broadcast('notificationAlert', 'Connection Error', 'Sorry! We could not reach the server right now. Try again when your internet is back!');
+};
+
+App.go = function(url) {
+	// @todo: do some tests to figure out if we need this or not
+	// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
+	App.location.path(url || '/');
+	App.rootScope.$safeApply();
+
+};
+
+App.toggleMenu = function() {
+	if (App.snap.state().state == 'left') {
+		App.snap.close();
+	} else {
+		App.snap.open('left');
+	}
+};
 
 
 /**

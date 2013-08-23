@@ -37,3 +37,13 @@ NGApp.directive('ngBlur', function() {
 				}
 		};
 });
+
+NGApp.directive('ngInstant', function () {
+	return function(scope, element, attrs) {
+		element.bind(App.isMobile() ? 'touchstart' : 'click', function(e) {
+			scope.$apply(attrs['ngInstant'], element);
+			e.preventDefault();
+			e.stopPropagation();
+		});
+	};
+});

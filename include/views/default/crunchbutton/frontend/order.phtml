@@ -27,7 +27,7 @@
 		<div class="order-details">
 
 			<div ng-show="(order.delivery_type == 'delivery')">
-				<b>Your delivery address:</b><br><span ng-bind-html-unsafe="nl2br(order.address)"></span><br><br>
+				<b>Your delivery address:</b><br><span ng-bind-html-unsafe="order.address | nl2br"></span><br><br>
 			</div>
 	
 			<div ng-hide="(order.delivery_type == 'delivery')">
@@ -38,7 +38,7 @@
 	
 			<b>Your order:</b><span ng-bind-html-unsafe="order._message"></span><br><br>
 	
-			<i ng-show="order.notes" ng-bind-html-unsafe="nl2br(order.notes)"></i><br><br>
+			<i ng-show="order.notes" ng-bind-html-unsafe="order.notes | nl2br"></i><br><br>
 	
 			<b ng-show="(order.pay_type == 'card')">Your total:<br></b>
 			<b ng-hide="(order.pay_type == 'card')">Your approximate total:<br></b>

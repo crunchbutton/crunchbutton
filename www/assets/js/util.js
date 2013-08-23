@@ -1,16 +1,3 @@
-
-/********************************************************************************************
-* This function will return a callble phone link in case the user is using a mobile device. *
-*********************************************************************************************/
-App.callPhone = function( phone ){
-	if( App.isMobile() ){
-		return '<a href="tel:' + App.phone.format( phone ).replace( /\-/g, '' ) + '">' + phone + '</a>'; 
-	} else {
-		return phone;
-	}
-}
-
-
 /**************************************************
 * Functions to identify the user's browser/device *
 **************************************************/
@@ -102,11 +89,6 @@ var sort_by;
 	}
 }());
 
-App.nl2br = function( string ){
-	if( string ){
-		return string.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');	
-	}
-}
 var startCoords = {}, endCoords = {}, cordsThresh = 3;
 
 if (window.jQuery) {
@@ -120,19 +102,3 @@ if (window.jQuery) {
 		};
 	})(jQuery);
 }
-
-NGApp.filter('iif', function () {
-	return function(input, trueValue, falseValue) {
-		return input ? trueValue : falseValue;
-	};
-});
-
-NGApp.directive('ngInstant', function () {
-	return function(scope, element, attrs) {
-		element.bind(App.isMobile() ? 'touchstart' : 'click', function(e) {
-			scope.$apply(attrs['ngInstant'], element);
-			e.preventDefault();
-			e.stopPropagation();
-		});
-	};
-});
