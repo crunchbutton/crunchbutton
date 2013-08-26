@@ -445,7 +445,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 						var lat = theClosestAddress.lat();
 						var lon = theClosestAddress.lon();
 						if( service._useCompleteAddress ){
-							service.form.address = theClosestAddress.formattedWithDiff();
+							service.form.address = theClosestAddress.formatted();
 							order.address = service.form.address;
 						}
 
