@@ -871,7 +871,6 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 
 					App.cache('Restaurant', service.order.id_restaurant, function () {
 						service.restaurant = this;
-						console.log('service.restaurant', service.restaurant);
 						var complete = function () {
 							if (service.order['new']) {
 								setTimeout(function () {
