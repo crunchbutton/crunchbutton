@@ -18,6 +18,15 @@ class Crunchbutton_Dish extends Cana_Table {
 		return Restaurant::o($this->id_restaurant);
 	}
 
+	public function dish_has_option( $id_option ){
+		$option = Option::q('SELECT o.* FROM dish_option do INNER JOIN `option` o ON o.id_option = do.id_option WHERE do.id_dish = '.$this->id_dish.' AND do.id_option = ' . $id_option);
+		if( $option->id_option ){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * The options for the dish
 	 *

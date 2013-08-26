@@ -361,10 +361,14 @@ class Crunchbutton_Order extends Cana_Table {
 		foreach ($this->_dishes as $dish) {
 			$dish->id_order = $this->id_order;
 			$dish->save();
-
+			$_Dish = Dish::o( $dish->id_dish );
 			foreach ($dish->options() as $option) {
-				$option->id_order_dish = $dish->id_order_dish;
-				$option->save();
+				# Issue 1437 - https://github.com/crunchbutton/crunchbutton/issues/1437#issuecomment-20561023
+				# 1 - When an option is removed, it should NEVER appear in the order or on the fax.
+				if( $_Dish->dish_has_option( $option->id_option ) ){
+					$option->id_order_dish = $dish->id_order_dish;
+					$option->save();	
+				}
 			}
 		}
 
