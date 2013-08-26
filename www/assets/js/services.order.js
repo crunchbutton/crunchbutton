@@ -316,7 +316,9 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 
 		App.busy.makeBusy();
 
-		service.form.address = service.location.ordinalReplace( service.form.address );
+		if( service.form.address && service.form.address != '' ){
+			service.form.address = service.location.ordinalReplace( service.form.address );	
+		}
 
 		var order = {
 			address: service.form.address,
