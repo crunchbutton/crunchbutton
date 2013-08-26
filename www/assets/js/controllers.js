@@ -278,7 +278,12 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		return order.subtotal();
 	}
 	$scope.order.submit = function(){
-		return order.submit();
+		console.log('$scope.ignoreGiftCardWithCashOrder',$scope.ignoreGiftCardWithCashOrder);
+		if( ( CreditService.value != '0.00' && OrderService.form.pay_type == 'cash' ) && !$scope.ignoreGiftCardWithCashOrder ){
+			App.dialog.show( '.giftcard-payment-warning' );
+		} else {
+			return order.submit();
+		}
 	}
 	$scope.order.cardInfoChanged = function(){
 		return order.cardInfoChanged();
@@ -297,6 +302,18 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	}
 	$scope.order._tips = function(){
 		return order._tips();
+	}
+	$scope.showCreditPayment = function(){
+		$scope.order.tooglePayment( 'card' );
+		$scope.order.showForm = true;
+		$rootScope.closePopup();
+	}
+	$scope.placeAnyway = function(){
+		$rootScope.closePopup();
+		$scope.ignoreGiftCardWithCashOrder = true;
+		setTimeout(function(){
+			$scope.order.submit();
+		}, 1000 );
 	}
 	$scope.order.creditCardChanged = function(){
 		 creditCard.validate( order.form.cardNumber );
@@ -416,6 +433,8 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		// @todo: do we still neded this??
 		// $('.body').css({ 'min-height': $('.restaurant-items').height()});
 
+		// Place cash order even if the user has gift card see #1485
+		$scope.ignoreGiftCardWithCashOrder = false;
 	});
 
 	$('.config-icon').addClass('config-icon-mobile-hide');
