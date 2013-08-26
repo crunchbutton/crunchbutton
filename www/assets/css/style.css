@@ -864,6 +864,7 @@ h1.about-header {
 	display:block;
 	float:left;
 	margin:7px 10px 7px 0;
+	width: 280px;
 }
 .restaurant-closed-icon {
 	background:url(../images/icon-closed.png);
