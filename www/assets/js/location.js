@@ -38,6 +38,7 @@ var Location = function( params ) {
 				self._properties.detail = 2;
 				break;
 			case 'street_address':
+			case 'premise':
 				self._properties.city = result.address_components[2].long_name;
 				self._properties.region = result.address_components[4].short_name;
 				self._properties.detail = 5;
@@ -127,7 +128,7 @@ var Location = function( params ) {
 		if( self.entered() && self.entered() != '' ){
 			var diff = self.getDiff();
 			if( diff ){
-				return address + ' - ' + diff;
+				return address + ' (' + diff + ')';
 			}
 		} 
 		return address;
