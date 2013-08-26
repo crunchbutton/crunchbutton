@@ -241,6 +241,17 @@ html[xmlns] .clearfix {
 .modal.suggest-food-container .message {
 	margin-top:10px;
 }
+.giftcard-payment-warning, .giftcard-payment-warning h1{
+	font-size: 14px !important;
+}
+	.giftcard-payment-warning ul{
+		margin-top: 10px;
+	}
+		.giftcard-payment-warning ul li{
+			cursor: pointer;
+			margin: 10px 0;
+			text-decoration: underline;
+		}
 
 /* SUPPORT */
 .support-container {
