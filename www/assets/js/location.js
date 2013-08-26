@@ -122,6 +122,17 @@ var Location = function( params ) {
 		return self.address().replace(', USA', '');
 	};
 
+	self.formattedWithDiff = function(){
+		var address = self.formatted();
+		if( self.entered() && self.entered() != '' ){
+			var diff = self.getDiff();
+			if( diff ){
+				return address + ' - ' + diff;
+			}
+		} 
+		return address;
+	}
+
 	// Return the zip code of a location
 	self.zip = function() {
 		return self._properties.zip || '';
@@ -154,6 +165,39 @@ var Location = function( params ) {
 		}
 	};
 	
+	self.getDiff = function(){
+		if( !self.entered() ){
+			return;
+		}
+		var _formatted = self.formatted();
+		var _entered = self.entered();
+		_formatted = _formatted.replace(/,/g, '');
+		_entered = _entered.replace(/,/g, '');
+		a_formatted = _formatted.split(" ");
+		a_entered = _entered.split(" ");
+		var diff = new Array();
+		if( a_formatted.length > a_entered.length ){
+				var long = a_formatted;
+				var short = a_entered;
+		} else {
+				var long = a_entered;
+				var short = a_formatted;
+		}
+
+		for( x=0; x < long.length; x++ ){
+			var has = false;
+			for( y=0; y < short.length; y++ ){
+				if( short[ y ] == long[ x ] ){
+					has = true;
+				}
+			}
+			if(!has){
+				diff.push( long[ x ] );
+			}
+		}
+		return diff.join(" ");
+	};
+
 	// determine if verified
 	self.verified = function() {
 		return self._properties.verified;
@@ -175,6 +219,10 @@ var Location = function( params ) {
 
 	self.entered = function(){
 		return self._properties.entered;
+	}
+
+	self.setEntered = function( entered ){
+		self._properties.entered = entered;
 	}
 
 	for (var x in params) {

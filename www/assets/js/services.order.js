@@ -316,6 +316,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 
 		App.busy.makeBusy();
 
+		service.form.address = service.location.ordinalReplace( service.form.address );
+
 		var order = {
 			address: service.form.address,
 			phone: service.form.phone,
@@ -436,14 +438,12 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 					var isTheAddressOk = service.location.validateAddressType(theClosestAddress.result);
 					if (isTheAddressOk) {
 						theClosestAddress = theClosestAddress.location;
+						if( service.form.address != theClosestAddress.formatted() ){
+							theClosestAddress.setEntered( service.form.address );
+						}
 						// Now lets check if the restaurant deliveries at the given address
 						var lat = theClosestAddress.lat();
 						var lon = theClosestAddress.lon();
-						if (service._useCompleteAddress) {
-							service.form.address = theClosestAddress.formatted();
-							// Update the object order
-							order.address = service.form.address;
-						}
 
 						var distance = service.location.distance( { from : { lat : lat, lon : lon }, to : { lat : service.restaurant.loc_lat, lon : service.restaurant.loc_long } } );
 						distance = service.location.km2Miles( distance );
@@ -458,7 +458,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 								service.showForm = true;
 								$('[name="pay-address"]').focus();
 								// Write the found address at the address field, so the user can check it.
-								service.form.address = theClosestAddress.formatted();
+								service.form.address = theClosestAddress.formattedWithDiff();
 							} );
 
 							// Log the error
@@ -474,7 +474,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 								var zipCode = theClosestAddress.zip();
 								var typed_address = service.form.address;
 								// Check if the typed address already has the zip code
-								if (typed_address.indexOf(zipCode) < 0) {
+								if ( typed_address.indexOf(zipCode) < 0 ) {
 									var addressWithZip = typed_address + ' - ' + zipCode;
 									service.form.address = addressWithZip;
 								}
@@ -512,7 +512,6 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 						'restaurant': service.restaurant.name
 					}, 'address not found');
 				};
-				order.address = service.location.ordinalReplace( order.address );
 				// Call the geo method
 				service.location.doGeocodeWithBound( order.address, latLong, success, error );
 				return;
