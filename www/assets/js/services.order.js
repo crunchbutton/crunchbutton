@@ -444,6 +444,10 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 						// Now lets check if the restaurant deliveries at the given address
 						var lat = theClosestAddress.lat();
 						var lon = theClosestAddress.lon();
+						if( service._useCompleteAddress ){
+							service.form.address = theClosestAddress.formattedWithDiff();
+							order.address = service.form.address;
+						}
 
 						var distance = service.location.distance( { from : { lat : lat, lon : lon }, to : { lat : service.restaurant.loc_lat, lon : service.restaurant.loc_long } } );
 						distance = service.location.km2Miles( distance );
