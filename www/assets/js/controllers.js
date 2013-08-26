@@ -278,7 +278,6 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		return order.subtotal();
 	}
 	$scope.order.submit = function(){
-		console.log('$scope.ignoreGiftCardWithCashOrder',$scope.ignoreGiftCardWithCashOrder);
 		if( ( CreditService.value != '0.00' && OrderService.form.pay_type == 'cash' ) && !$scope.ignoreGiftCardWithCashOrder ){
 			App.dialog.show( '.giftcard-payment-warning' );
 		} else {
