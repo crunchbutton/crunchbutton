@@ -512,10 +512,9 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 						'restaurant': service.restaurant.name
 					}, 'address not found');
 				};
-				// Remove extended zip code #1456
-				var addressWithoutZip = order.address.replace(/(\d{5}[-]\d{4})/,'');
+				order.address = service.location.ordinalReplace( order.address );
 				// Call the geo method
-				service.location.doGeocodeWithBound( addressWithoutZip, latLong, success, error );
+				service.location.doGeocodeWithBound( order.address, latLong, success, error );
 				return;
 			}
 		}

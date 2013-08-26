@@ -70,7 +70,6 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		}
 	}
 
-
 	/**
 	 * get the closest
 	 */
@@ -395,6 +394,34 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		community.route(address, rsuccess, rerror);
 	}
 
+	service.ordinalReplace = function( address ){
+		var ordinals = { 	'first' : '1st',
+											'second' : '2nd',
+											'third' : '3rd',
+											'fourth' : '4th',
+											'fifth' : '5th',
+											'sixth' : '6th',
+											'seventh' : '7th',
+											'eighth' : '8th',
+											'ninth' : '9th',
+											'tenth' : '10th',
+											'eleventh' : '11th',
+											'twelfth' : '12th',
+											'thirteenth' : '13th',
+											'fourteenth' : '14th',
+											'fifteenth' : '15th',
+											'sixteenth' : '16th',
+											'seventeenth' : '17th',
+											'eighteenth' : '18th',
+											'nineteenth' : '19th',
+											'twentieth' : '20th'
+										};
+			for( ordinal in ordinals ){
+				var regex = new RegExp( '(' + ordinal + ')', 'gi' );
+				address = address.replace( regex, ordinals[ordinal] );
+			}
+		return address;
+	}
 
 	service.doGeocodeWithBound = function(address, latLong, success, error) {
 		// Create a cicle bounding box
