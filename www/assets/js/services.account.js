@@ -37,13 +37,13 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 	service.signin = function(){
 		if( !service.isValidEmailPhone() ){
-			alert( 'Please enter a valid email or phone.' );
+			App.alert( 'Please enter a valid email or phone.' );
 			$( '.signin-email' ).focus();
 			return;
 		}
 
 		if( !service.isValidPassword() ){
-			alert( 'Please enter your password.' );
+			App.alert( 'Please enter your password.' );
 			$( '.signin-password' ).focus();
 			return;
 		}
@@ -78,13 +78,13 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 	service.signup = function(){
 		if( !service.isValidEmailPhone() ){
-			alert( 'Please enter a valid email or phone.' );
+			App.alert( 'Please enter a valid email or phone.' );
 			$( '.signup-email' ).focus();
 			return;
 		}
 
 		if( !service.isValidPassword() ){
-			alert( 'Please enter a password.' );
+			App.alert( 'Please enter a password.' );
 			$( '.signup-password' ).focus();
 			return;
 		}
@@ -196,7 +196,7 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 
 	service.sendForm = function(){
 		if( !account.isValidEmailPhone() ){
-			alert( 'Please enter a valid email or phone.' );
+			App.alert( 'Please enter a valid email or phone.' );
 			$( '.help-email' ).focus();
 			return;
 		}
