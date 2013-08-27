@@ -128,7 +128,7 @@
 				</div>
 			</div>
 			<div class="nav nav-cart">
-				<div class="cart-summary cart-summary-detail" data-role="header" data-position="fixed">
+				<div class="cart-summary cart-summary-detail">
 					<div class="cart-summary-icon"></div>
 					<div class="cart-summary-item-count"><span>{{order.info.totalItems}}</span></div>
 					<div class="cart-summary-items">{{order.info.cartSummary}}</div>
@@ -136,7 +136,7 @@
 			</div>
 		</div>
 
-		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems())}" class="button-bottom-wrapper button-bottom-bar">
+		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems())}" class="button-bottom-wrapper button-bottom-bar" data-position="fixed">
 			<button class="button-bottom" ng-click="navigation.order.submit();"><div>Get Food</div></button>
 			<button class="button-bottom" ng-click="navigation.order.checkout();"><div>Checkout</div></button>
 		</div>
