@@ -1,0 +1,1 @@
+ALTER TABLE `dish_option` ADD `date` DATETIME DEFAULT NULL;
