@@ -626,3 +626,53 @@ NGApp.controller( 'NotificationAlertCtrl', function ( $scope, $rootScope  ) {
 		}			
 	});
 });
+
+/*
+Invite codes
+*/
+NGApp.controller( 'ReferralCtrl', function ( $scope, $location, ReferralService, FacebookService ) {
+	
+	$scope.invite_url = false;
+	$scope.value = false;
+	$scope.url = '';
+
+	if( ReferralService.invite_url ){
+		$scope.invite_url = ReferralService.invite_url;	
+	} else {
+		ReferralService.getInviteCode();
+	}
+	if( ReferralService.value ){
+		$scope.value = ReferralService.value;	
+	} else {
+		ReferralService.getValue();
+	}
+	
+	$scope.$on( 'referralCodeLoaded', function(e, data) {
+		$scope.invite_url = ReferralService.invite_url;
+		$scope.show();
+	});
+
+	$scope.$on( 'referralValueLoaded', function(e, data) {
+		$scope.value = ReferralService.value;
+		$scope.show();
+	});
+
+	$scope.show = function(){
+		if( $scope.invite_url && $scope.value ){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	$scope.facebook = function(){
+		FacebookService.postInvite( $scope.invite_url );
+	}
+
+});
+
+NGApp.controller( 'InviteCtrl', function ( $scope, $routeParams, $location, ReferralService ) {
+	// Just store the cookie, it will be used later
+	$.cookie( 'referral', $routeParams.id );
+	$location.path( '/' );
+});

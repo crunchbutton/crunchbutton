@@ -26,11 +26,22 @@ NGApp.directive( 'ngEnter', function() {
 		};
 } );
 
+NGApp.directive('ngClickSelectAll', function() {
+		return {
+				restrict: 'A',
+				link: function(scope, element, attrs) {
+						element.bind('click', function () {
+							element.select();
+						});
+				}
+		};
+});
+
 // Blur event directive
 NGApp.directive('ngBlur', function() {
 		return {
 				restrict: 'A',
-				link: function postLink(scope, element, attrs) {
+				link: function(scope, element, attrs) {
 						element.bind('blur', function () {
 								scope.$apply(attrs.ngBlur);
 						});

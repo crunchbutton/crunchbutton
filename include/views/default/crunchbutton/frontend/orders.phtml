@@ -18,6 +18,28 @@
 		</li>
 	</ul>
 
+
+	<div ng-controller="ReferralCtrl">
+		<div class="invite-code-container field-container" ng-show="show();">
+			<div class="restaurant-item-title">Invite code</div>
+			<p>
+				For every NEW friend who orders food from CrunchButton, we'll give you ${{value}} credit...
+				<br/>
+				... some cool text here with instructions... 
+			</p>
+			<input type="text" ng-click-select-all value="{{invite_url}}" readonly="readonly" />
+
+			<p>
+				<a target="blank" href="https://twitter.com/intent/tweet?url={{invite_url}}&text={Some call to action message here!}">Twitter</a>
+			</p>
+
+			<p>
+				<a href="#" ng-click="facebook()">Facebook</a>
+			</p>
+
+		</div>
+	</div>
+
 	<div class="order-options">
 		<a ng-show="!account.hasFacebook" href="javascript:;" ng-click="facebook()" class="signup-add-facebook-button" >Connect with Facebook</a>
 		<a href="javascript:;" ng-click="signout()" class="signout-button">Sign out</a>

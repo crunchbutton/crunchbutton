@@ -106,6 +106,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'ResetCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
+		.when('/invite/:id', {
+			action: 'invite',
+			controller: 'InviteCtrl',
+			templateUrl: 'assets/view/home.html'
+		})
 		.when('/', {
 			action: 'home',
 			controller: 'HomeCtrl',

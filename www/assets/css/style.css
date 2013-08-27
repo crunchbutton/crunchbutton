@@ -1231,6 +1231,15 @@ h1.about-header {
 .your-orders .dish-name {
 	width:60%;
 }
+.invite-code-container{
+	margin-top: 10px;
+	padding-top: 10px;
+	border-top: 1px solid #F5F5F5;	
+}
+	.invite-code-container input[type=text]{
+		text-align: center;
+		width: 250px !important;
+	}
 .dish-name {
 	color:#d74924;
 }
