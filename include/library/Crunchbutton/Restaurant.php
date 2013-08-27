@@ -369,6 +369,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 				if ($dish['optionGroups']) {
 					foreach ($dish['optionGroups'] as $optionGroup) {
+
 						if ($optionGroup['id_option'] == 'BASIC') {
 							$parent = null;
 
@@ -397,12 +398,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 							$newOptions[$group->id_option] = $group->id_option;
 
 							if (!$doid = $this->_hasOption($group, $options)) {
+								// New Option Group Parent
 								$do = new Dish_Option;
 								$do->id_dish = $dishO->id_dish;
 								$do->id_option = $group->id_option;
 								$do->sort = $optionGroup['sort'];
 								$do->save();
 							} else {
+								// Existing Option Group Parent
 								$do = new Dish_Option($doid);
 								$do->default = $opt->default;
 								$do->sort = $optionGroup['sort'];
@@ -441,16 +444,22 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 								$newOptions[$option->id_option] = $option->id_option;
 								$opt['default'] = 
 										(in_array($opt['default'], ['true','1',1]) ? 1 : 0);
-
+								// I added this new column date in order to make this issue work #1437
 								if (!$doid = $this->_hasOption($option, $options)) {
+									// New Option
 									$do            = new Dish_Option;
 									$do->id_dish   = $dishO->id_dish;
 									$do->id_option = $option->id_option;
 									$do->default   = $opt['default'];
+									if( $do->default ){
+										$do->date = date('Y-m-d H:i:s');
+									}
 								} else {
+									// Existing Option
 									$do = new Dish_Option($doid);
 									if ($opt['default'] != $do->default) {
 										$do->default = $opt['default'];
+										$do->date = date('Y-m-d H:i:s');
 									}
 								}
 								$do->sort    = $opt['sort'];
