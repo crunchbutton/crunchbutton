@@ -403,6 +403,38 @@ App.init = function(config) {
 	}
 	App._init = true;
 	
+	// temporary fix for drawers overslcrolling
+	$(document).on('touchmove', '.snap-drawers', function(e) {
+		e.preventDefault()
+	});
+
+	/* @todo: need to finish this
+	var lastX, lastY, dThresh = 10;
+	$(document).on('touchmove', 'body', function(e) {
+		e = e.originalEvent;
+		return;
+
+		var currentY = e.touches[0].clientY;
+		if (currentY > lastY) {
+			console.log('DOWN');
+		} else {
+			console.log('UP');
+		}
+		lastY = currentY;
+	
+		var currentX = e.touches[0].clientX;
+		if (currentX > lastX) {
+			console.log('RIGHT');
+			e.preventDefault();
+		} else {
+			console.log('LEFT');
+			e.preventDefault();
+		}
+		lastX = currentX;		
+	});
+	*/
+
+	
 	// set a timeout for when ajax requests timeout
 	$.ajaxSetup({
 		timeout: App.ajaxTimeout
