@@ -17,7 +17,7 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService, 
 
 	service.send = function(){
 		if ( service.form.restaurant == '' ){
-			alert( "Please enter the restaurant\'s name." );
+			App.alert( "Please enter the restaurant\'s name." );
 			$( '.recommend-restaurant' ).focus();
 			return;
 		}
@@ -93,7 +93,7 @@ NGApp.factory( 'RecommendFoodService', function( $http, $routeParams ){
 	service.send = function(){
 		service.form.name = $.trim( service.form.name );
 		if ( service.form.name == '' ){
-			alert( 'Please enter a suggestion.' );
+			App.alert( 'Please enter a suggestion.' );
 			$('#suggestion-name').focus();
 			return;
 		}

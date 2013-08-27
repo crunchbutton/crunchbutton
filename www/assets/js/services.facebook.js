@@ -29,7 +29,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 	service.postOrder = function(){
 		if( !service.orderStatus ){
 			service.preLoadOrderStatus();
-			alert( 'Oops, please try again!' );
+			App.alert( 'Oops, please try again!' );
 			return;
 		}
 		var status = service.orderStatus;

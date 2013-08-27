@@ -36,25 +36,25 @@ NGApp.factory( 'SupportService', function( $http, AccountService ){
 		service.purify();
 
 		if ( service.form.name == '' ){
-			alert( 'Please enter your name.' );
+			App.alert( 'Please enter your name.' );
 			$('input[name=support-name]').focus();
 			return;
 		}
 
 		if ( service.form.phone == '' ){
-			alert( 'Please enter your phone.' );
+			App.alert( 'Please enter your phone.' );
 			$('input[name=support-phone]').focus();
 			return;
 		}
 
 		if ( !App.phone.validate( service.form.phone ) ) {
-			alert( 'Please enter a valid phone.' );
+			App.alert( 'Please enter a valid phone.' );
 			$('input[name=support-phone]').focus();
 			return;
 		}
 
 		if ( service.form.message == '' ){
-			alert( 'Please enter the message.' );
+			App.alert( 'Please enter the message.' );
 			$('textarea[name=support-message]').focus();
 			return;
 		}
