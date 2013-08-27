@@ -1,0 +1,37 @@
+// ReferralService service
+NGApp.factory( 'ReferralService', function( $http, $rootScope ){
+
+	var service = { invite_url : null, value : 0 };
+
+	service.getInviteCode = function(){
+		var url = App.service + 'referral/code';
+		$http( { 
+				url: url,
+				method : 'POST',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded' }
+			} ).success( function( data ) {
+				service.invite_url = data.invite_url;
+				$rootScope.$broadcast( 'referralCodeLoaded', true );
+			}	).error(function( data, status ) { 
+				console.log( { error : data } ); 
+			} );
+	}
+
+	service.getValue = function(){
+		var url = App.service + 'referral/value';
+		$http( { 
+				url: url,
+				method : 'POST',
+				headers: {'Content-Type': 'application/x-www-form-urlencoded' }
+			} ).success( function( data ) {
+				service.value = data.value;
+				$rootScope.$broadcast( 'referralValueLoaded', true );
+			}	).error(function( data, status ) { 
+				console.log( { error : data } ); 
+			} );
+	}
+
+
+	return service;
+
+} );

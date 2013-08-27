@@ -53,6 +53,32 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 		} );
 	}
 
+	service.postInvite = function( url ){
+		var pic = 'https://crunchbutton.com/assets/images/facebook-like.png';
+		var name = '{some title here}';
+		var caption = '{some caption here}';
+		var description = '{some description here}';
+		var message = '{some message here}';
+		FB.ui({
+			method: 'stream.publish',
+			user_message_prompt: 'CrunchButton!',
+			message: message,
+			attachment: {
+				name: name,
+				caption: caption,
+				description: description,
+				href: url,
+				media:[{'type':'image','src': pic,'href':url}],
+			},
+			action_links: [{ text: 'CrunchButton', href: 'https://crunchbutton.com' } ]
+		},
+		function(response) {
+			if (response && response.post_id) {
+				App.alert( 'Thank you for sharing!' );
+			}
+		} );
+	}
+
 	// request permission to post on a users timeline
 	service.requestPermission = function(callback) {
 		callback = typeof callback === 'function' ? callback : function(){};

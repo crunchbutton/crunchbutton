@@ -176,6 +176,35 @@ class Crunchbutton_User extends Cana_Table {
 		return $out;
 	}
 
+	public function inviteCode(){
+		if( !$this->invite_code || $this->invite_code == '' ){
+			$this->invite_code = static::inviteCodeGenerator();
+			$this->save();
+		}
+		return $this->invite_code;
+	}
+
+	public static function inviteCodeGenerator(){
+		$random_id_length = 10; 
+		$characters = '123456789qwertyuiopasdfghjklzxcvbnm';
+		$rnd_id = '';
+		for ($i = 0; $i < $random_id_length; $i++) {
+			$rnd_id .= $characters[rand(0, strlen($characters) - 1)];
+		}
+
+		// make sure the code do not exist
+		$user = static::byInviteCode( $rnd_id );
+		if( $user->count() > 0 ){
+			return static::inviteCodeGenerator();
+		} else {
+			return $rnd_id;	
+		}
+	}
+
+	public static function byInviteCode( $code ){
+		return Crunchbutton_User::q( 'SELECT * FROM user WHERE UPPER( invite_code ) = UPPER("' . $code . '")' );
+	}
+
 	public function credits(){
 		return Crunchbutton_Credit::creditByUser( $this->id_user );
 	}

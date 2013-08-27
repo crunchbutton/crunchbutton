@@ -150,7 +150,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 
 							$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
-							$url = 'http://' . $_SERVER['HTTP_HOST'] .  '/reset/';
+							$url = 'http://' . $_SERVER['HTTP_HOST'] . '/reset/';
 
 							$message = "Your crunchbutton password reset code is '".$code."'.\n\n";
 							$message .= "Access ".$url." to reset your password.\n\n";
