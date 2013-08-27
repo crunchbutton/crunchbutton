@@ -84,7 +84,9 @@
 	
 	<br>
 	
-	<a data-ng-href="/printorder/{{ order.uuid }}" target="_blank" class="print-icon"><i class="icon-print"></i> Print Receipt</a>
+	<? if (!$this->export) : ?>
+		<a data-ng-href="/printorder/{{ order.uuid }}" <?=$this->export ? '' : ' target="_blank"'?> class="print-icon"><i class="icon-print"></i> Print Receipt</a>
+	<? endif ; ?>
 
 	<div class="divider"></div>
 </div>
