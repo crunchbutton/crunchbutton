@@ -45,8 +45,9 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						.'<Pause length="5" />';
 
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n"
+					.'<Gather action="/api/order/'.$order->id_order.'/sayorder?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">'
 					.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
-					.'<Gather action="/api/order/'.$order->id_order.'/sayorder?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get"><Pause length="1" />';
+					.'<Pause length="1" />';
 
 				for ($x = 0; $x <= $repeat; $x++) {
 					echo $message;
