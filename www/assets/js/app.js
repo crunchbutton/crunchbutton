@@ -161,7 +161,25 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 	$rootScope.back = function() {
 		App.snap.close();
-		history.back();
+		var backwards = false;
+
+		switch($route.current.action) {
+			case 'order':
+				backwards = '/orders';
+				break;
+			case 'restaurant':
+				backwards = '/food-delivery';
+				break;
+			case 'restaurants':
+				backwards = '/location';
+				break;
+		}
+
+		if (backwards) {
+			App.go(backwards);
+		} else {
+			history.back();
+		}
 	};
 
 	$rootScope.closePopup = function() {
