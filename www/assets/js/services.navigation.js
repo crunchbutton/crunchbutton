@@ -36,6 +36,7 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	service.control = function() {
 		switch (service.page) {
 			case 'restaurant':
+			case 'order':
 				service.buttons.location = false;
 				service.buttons.back = true;
 				service.buttons.menu = false;
