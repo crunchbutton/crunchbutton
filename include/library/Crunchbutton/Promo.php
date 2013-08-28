@@ -28,6 +28,10 @@ class Crunchbutton_Promo extends Cana_Table
 		return Crunchbutton_Promo::q( 'SELECT * FROM promo WHERE UPPER( code ) = UPPER("' . $code . '")' );
 	}
 
+	public static function byPhone( $phone ){
+		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.phone = '{$phone}' AND c.type = 'CREDIT'" );
+	}
+
 	public static function lastID(){
 		return Crunchbutton_Promo::q( 'SELECT * FROM promo ORDER BY id_promo DESC LIMIT 1' );
 	}
