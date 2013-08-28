@@ -1,0 +1,48 @@
+<?
+	$this->title = 'Gift cards';
+	$this->titleicon = 'gift';
+	$this->titleLink = '/giftcards';
+	
+	$this->title2 = 'Credits';
+	$this->title2icon = 'money';
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	 <div class="row-fluid">
+			<div class="box">
+				 <div class="box-header"><span class="title">Results (user with more than $5 credit)</span></div>
+				 <div class="box-content">
+						<?php 
+						$credits = $this->credits;
+						?>
+						<?php if (!$credits->count()) { ?>
+							No results found
+						<?php } else { ?>
+							<table class="table table-normal">
+								<thead>
+									<td>User</td>
+									<td>Phone</td>
+									<td>Credit left</td>
+									<td>Total credit</td>
+									<td>Total debits</td>
+									<td>Gift cards redeemed</td>
+								</thead>
+								<?php foreach ( $credits as $credit ) { ?>
+									<tr>
+										<td>
+										<a href="/giftcards/credits/byphone/<?php echo $credit->phone;?>"> <?php echo $credit->user->name;?> </a> </td>
+										<td><?php echo $credit->phone;?> </td>
+										<td><?php echo $credit->credit_left; ?></td>
+										<td><?php echo $credit->credit; ?></td>
+										<td><?php echo $credit->debit; ?></td>
+										<td>
+											<a href="/giftcards/credits/byphone/<?php echo $credit->phone;?>" style="text-decoration:underline;"><?php echo $credit->giftcards; ?></a>
+										</td>
+									</tr>
+								<?php } ?>
+							</table>
+						<?php } ?>
+				 </div>
+			</div>
+	 </div>
+</div>
