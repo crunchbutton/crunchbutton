@@ -402,6 +402,59 @@ html[xmlns] .clearfix {
 	padding-top:7px;
 }
 
+.facebook-invite-button{
+	float:left;
+	margin:10px;
+	color:#FFF;
+	display:block;
+	padding:5px;
+	width:170px;
+	text-align:center;
+	border-radius:3px;
+	text-shadow:1px 1px 0px rgba(0,0,0,.5);
+	text-decoration:none;
+	border:1px solid #2b4171;
+	font-weight:bold;
+	background-image:-webkit-gradient(linear,left top,left bottom,from(rgb(64,97,159)),to(rgb(54,82,141)));
+	background-image:-webkit-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
+	background-image:-moz-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
+	background-image:-o-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
+	background-image:-ms-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
+	background-image:linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
+	filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#40619f',EndColorStr='#36528d');
+}
+	.facebook-invite-button i{
+		margin-right:7px;
+		font-size:20px;
+	}
+
+.twitter-invite-button{
+	color:#333;
+	display:block;
+	padding:5px;
+	width:150px;
+	text-align:center;
+	border-radius:3px;
+	text-shadow:1px 1px 0px rgba(255,255,255,.5);
+	text-decoration:none;
+	border:1px solid #afbcc2;
+	font-weight:bold;
+	background-color: #d6e7ed;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(211, 227, 234)), to(rgb(218, 235, 241)));
+	background-image: -webkit-linear-gradient(top, rgb(211, 227, 234), rgb(218, 235, 241));
+	background-image: -moz-linear-gradient(top, rgb(211, 227, 234), rgb(218, 235, 241));
+	background-image: -o-linear-gradient(top, rgb(211, 227, 234), rgb(218, 235, 241));
+	background-image: -ms-linear-gradient(top, rgb(211, 227, 234), rgb(218, 235, 241));
+	background-image: linear-gradient(top, rgb(211, 227, 234), rgb(218, 235, 241));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#d3e3ea', EndColorStr='#daebf1');
+	margin:10px;
+	float:left;
+}
+	.twitter-invite-button i{
+		font-size:20px;
+		color:#00aced;
+	}
+
 /* SNAPS */
 .snap-drawers {
 	background:#3d3731;

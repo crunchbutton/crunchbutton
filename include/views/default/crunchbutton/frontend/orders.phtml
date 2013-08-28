@@ -27,16 +27,14 @@
 				<br/>
 				... some cool text here with instructions... 
 			</p>
-			<input type="text" ng-click-select-all value="{{invite_url}}" readonly="readonly" />
+			<input type="text" style="margin:10px;" ng-click-select-all value="{{invite_url}}" readonly="readonly" />
 
 			<p>
-				<a target="blank" href="https://twitter.com/intent/tweet?url={{invite_url}}&text={Some call to action message here!}">Twitter</a>
+				<a target="blank"class="twitter-invite-button" href="https://twitter.com/intent/tweet?url={{invite_url}}&text=Some call to action message here!"><i class="icon-twitter"></i> Tweet on Twitter</a>
+				<a href="#" class="facebook-invite-button" ng-click="facebook()"><i class="icon-facebook" style=""></i> Share on Facebook</a>
 			</p>
-
-			<p>
-				<a href="#" ng-click="facebook()">Facebook</a>
-			</p>
-
+			
+			<div class="divider"></div>
 		</div>
 	</div>
 
