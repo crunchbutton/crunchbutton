@@ -634,31 +634,25 @@ NGApp.controller( 'ReferralCtrl', function ( $scope, $location, ReferralService,
 	
 	$scope.invite_url = false;
 	$scope.value = false;
-	$scope.url = '';
+	$scope.limit = false;
+	$scope.invites = false;
+	$scope.enabled = false;
 
-	if( ReferralService.invite_url ){
-		$scope.invite_url = ReferralService.invite_url;	
-	} else {
-		ReferralService.getInviteCode();
+	if( !ReferralService.invite_url ){
+		ReferralService.getStatus();
 	}
-	if( ReferralService.value ){
-		$scope.value = ReferralService.value;	
-	} else {
-		ReferralService.getValue();
-	}
-	
-	$scope.$on( 'referralCodeLoaded', function(e, data) {
+
+	$scope.$on( 'referralStatusLoaded', function(e, data) {
+		$scope.invites = ReferralService.invites;
+		$scope.limit = ReferralService.limit;
 		$scope.invite_url = ReferralService.invite_url;
-		$scope.show();
-	});
-
-	$scope.$on( 'referralValueLoaded', function(e, data) {
 		$scope.value = ReferralService.value;
+		$scope.enabled = ReferralService.enabled;
 		$scope.show();
 	});
 
 	$scope.show = function(){
-		if( $scope.invite_url && $scope.value ){
+		if( $scope.enabled ){
 			return true;
 		} else {
 			return false;

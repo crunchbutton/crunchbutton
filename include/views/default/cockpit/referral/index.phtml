@@ -1,0 +1,108 @@
+<?
+	$this->title = 'Invite promo';
+	$this->titleicon = 'bullhorn';
+	$this->titleLink = '/referral';
+	
+	$enabled = Crunchbutton_Referral::isReferralEnable();
+	$add_credit_invited = Crunchbutton_Referral::getAddCreditToInvited();
+	$limit = Crunchbutton_Referral::getInvitesLimit();
+	$inviter_credit = Crunchbutton_Referral::getInviterCreditValue();
+	$invited_credit = Crunchbutton_Referral::getInvitedCreditValue();
+
+?>
+<!-- Preview stuff -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Settings</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<li>
+							<span>Enable this feature</span>
+							<span class="pull-right">
+								<input type="checkbox" name="enabled" id="enabled" <?php if( $enabled ){ echo 'checked="checked"'; } ?> class="iButton-icons">
+							</span>
+						</li>
+						<li>
+							<span>Credit to inviter $</span>
+							<span class="pull-right">
+								<input type="number" name="inviter_credit" id="inviter_credit" maxlength="5" id="value" value="<?php echo $inviter_credit; ?>" />
+							</span>
+						</li>
+						<li>
+							<span>Limit of invites</span>
+							<span class="pull-right">
+								<input type="number" name="limit" id="limit" maxlength="5" id="total" value="<?php echo $limit; ?>" />
+							</span>
+						</li>
+						<li>
+							<span>Add credit to invited?</span>
+							<span class="pull-right">
+								<input type="checkbox" name="add_credit_invited" id="add_credit_invited" <?php if( $add_credit_invited ){ echo 'checked="checked"'; } ?> class="iButton-icons">
+							</span>
+						</li>
+						<li>
+							<span>Credit to invited $</span>
+							<span class="pull-right">
+								<input type="number" name="invited_credit" id="invited_credit" maxlength="5" id="total" value="<?php echo $invited_credit; ?>" />
+							</span>
+						</li>
+						<li class="input">
+							<button type="submit" class="btn btn-blue admin-save"><i class="icon-save"></i> Save </button> 
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(function() {
+		$(document).on('click', '.admin-save', function() {
+			var enabled = ( $( '#enabled' ).is( ':checked' ) ) ? 1 : 0;
+			var add_credit_invited = ( $( '#add_credit_invited' ).is( ':checked' ) ) ? 1 : 0;
+			var inviter_credit = $.trim( $( '#inviter_credit' ).val() );
+			var invited_credit = $.trim( $( '#invited_credit' ).val() );
+			var limit = $.trim( $( '#limit' ).val() );
+
+			
+			if( limit == '' ){
+				alert( 'Please type the limit!' );
+				$( '#limit' ).focus();
+				return;		
+			}
+
+			if( invited_credit == '' ){
+				alert( 'Please type the Credit to inviter $!' );
+				$( '#invited_credit' ).focus();
+				return;		
+			}
+
+			var data = { 'enabled' : enabled, 'add_credit_invited' : add_credit_invited, 'inviter_credit' : inviter_credit, 'invited_credit' : invited_credit, 'limit' : limit };
+			var url = App.service + 'referral/save';
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				data: data,
+				url: url,
+				success: function( json ) {
+					if( json.error ){
+						alert( 'Error at saving!' );
+					} else {
+						alert( 'Settings saved!' );
+						/* location.href = '/referral'; */
+					}
+				},
+				error: function( ){
+					alert( 'Error at saving!' );
+				}
+			});
+
+		} );
+	} )
+
+
+</script>
