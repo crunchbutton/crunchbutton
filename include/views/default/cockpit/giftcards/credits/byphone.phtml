@@ -1,0 +1,107 @@
+<?
+	$this->title = 'Credits';
+	$this->titleicon = 'money';
+	$this->titleLink = '/giftcards/credits';
+	
+	$this->title2 = $this->user->name;
+	$this->title2icon = '';
+
+	$user = $this->user;
+	$giftcards = $this->giftcards;
+
+	$credits = Crunchbutton_Credit::creditsByPhone( $user->phone );
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">User</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<li>
+							<span>Name</span>
+							<span class="pull-right">
+								<?php echo $user->name ?>
+							</span>
+						</li>
+						<li>
+							<span>Phone</span>
+							<span class="pull-right">
+								<?php echo $user->phone ?>
+							</span>
+						</li>
+						<li>
+							<span>Total credit</span>
+							<span class="pull-right">
+								$<?php echo $credits->credit ?>
+							</span>
+						</li>
+						<li>
+							<span>Total debit</span>
+							<span class="pull-right">
+								$<?php echo $credits->debit ?>
+							</span>
+						</li>
+						<li>
+							<span>
+								<strong>Credit Left</strong>
+							</span>
+							<span class="pull-right">
+								<strong>$<?php echo $credits->credit_left ?></strong>
+							</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Gift cards</span>
+				</div>
+				<?php if( $giftcards->count() > 0 ) { ?>
+				<div class="box-content">
+					<ul class="box-list">
+						<li>
+							<div class="row-fluid">
+								<div class="span4">
+									<strong>Code</strong>
+								</div>
+								<div class="span4">
+									<strong>Value</strong>
+								</div>
+								<div class="span4">
+									<strong>Credit left</strong>
+								</div>
+							</div>
+						</li>
+						<?php foreach( $giftcards as $giftcard ) { ?>
+						<li>
+							<div class="row-fluid">
+								<div class="span4">
+									<a style="text-decoration:underline;" href="/giftcards/<?php echo $giftcard->id_promo; ?>">
+										<?php echo $giftcard->code; ?>
+									</a>
+								</div>
+								<div class="span4">
+									<?php echo $giftcard->value; ?>
+								</div>
+								<div class="span4">
+									<?php $creditLeft = $giftcard->credit()->get(0)->creditLeft(); ?>
+									<?php if( $creditLeft > 0 ) { ?>
+										<span style="color:red"><?php echo $creditLeft; ?></span>
+									<?php } else {  ?>
+										0
+									<?php } ?>
+								</div>
+							</div>
+						</li>
+						<?php } ?>
+					</ul>
+				</div>
+				<?php } ?>
+			</div>
+
+	</div>
+</div>
