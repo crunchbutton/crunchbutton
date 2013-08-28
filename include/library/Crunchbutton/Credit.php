@@ -277,9 +277,9 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function antifraudByUser( $creditMoreThan = 10 ){
-		$query = "SELECT (credit - debit) AS credit_left,
+		$query = "SELECT (credit - COALESCE( debits.debit, 0)) AS credit_left,
 										 credits.credit,
-										 debits.debit,
+										 COALESCE( debits.debit, 0) AS debit,
 										 credits.id_user
 							FROM
 								(SELECT SUM(c.value) AS credit,
@@ -287,15 +287,15 @@ class Crunchbutton_Credit extends Cana_Table
 								 FROM credit c
 								 INNER JOIN user u ON u.id_user = c.id_user
 								 WHERE c.type = 'CREDIT'
-								 GROUP BY u.id_user) credits
-							INNER JOIN
+								 GROUP BY u.id_user HAVING credit > {$creditMoreThan}) credits
+							LEFT JOIN
 								(SELECT SUM(c.value) AS debit,
 												u.id_user
 								 FROM credit c
 								 INNER JOIN user u ON u.id_user = c.id_user
 								 WHERE c.type = 'DEBIT'
 								 GROUP BY u.id_user) debits ON credits.id_user = debits.id_user HAVING credit_left > {$creditMoreThan}
-							ORDER BY credit_left DESC";
+							ORDER BY credit_left DESC ";
 		$results = c::db()->get( $query );
 		$credits = array();
 		foreach ( $results as $result ) {
@@ -308,9 +308,9 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function antifraudByPhone( $creditMoreThan = 10 ){
-		$query = "SELECT (credit - debit) AS credit_left,
+		$query = "SELECT (credit - COALESCE( debits.debit, 0)) AS credit_left,
 										 credits.credit,
-										 debits.debit,
+										 COALESCE( debits.debit, 0) AS debit,
 										 credits.phone
 							FROM
 								(SELECT SUM(c.value) AS credit,
@@ -319,7 +319,7 @@ class Crunchbutton_Credit extends Cana_Table
 								 INNER JOIN user u ON u.id_user = c.id_user
 								 WHERE c.type = 'CREDIT'
 									 AND u.phone IS NOT NULL
-								 GROUP BY u.phone) credits
+								 GROUP BY u.phone HAVING credit > {$creditMoreThan}) credits
 							INNER JOIN
 								(SELECT SUM(c.value) AS debit,
 												u.phone
