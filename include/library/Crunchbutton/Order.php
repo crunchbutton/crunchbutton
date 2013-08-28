@@ -386,29 +386,32 @@ class Crunchbutton_Order extends Cana_Table {
 			Crunchbutton_Hipchat_Notification::OrderPlaced($order);
 		});
 
-		// If the user was invited we'll give credit to the inviter user 
-		$inviter_code = Crunchbutton_Referral::checkCookie();
-		if( $inviter_code ){
-			// If the code is valid it will return the inviter user
-			$_inviter = Crunchbutton_Referral::validCode( $inviter_code );
-			if( $_inviter ){
-				$totalOrdersByPhone = $this->totalOrdersByPhone( $this->phone );
-				$referral = new Crunchbutton_Referral();
-				$referral->id_user_inviter = $_inviter->id_user;
-				$referral->id_user_invited = $this->id_user;
-				$referral->id_order = $this->id_order;
-				$referral->invite_code = $inviter_code;
-				if( $totalOrdersByPhone <= 1 ){
-					$referral->new_user = 1;
-				} else {
-					$referral->new_user = 0;
+
+		if( Crunchbutton_Referral::isReferralEnable() ){
+			// If the user was invited we'll give credit to the inviter user 
+			$inviter_code = Crunchbutton_Referral::checkCookie();
+			if( $inviter_code ){
+				// If the code is valid it will return the inviter user
+				$_inviter = Crunchbutton_Referral::validCode( $inviter_code );
+				if( $_inviter ){
+					$totalOrdersByPhone = $this->totalOrdersByPhone( $this->phone );
+					$referral = new Crunchbutton_Referral();
+					$referral->id_user_inviter = $_inviter->id_user;
+					$referral->id_user_invited = $this->id_user;
+					$referral->id_order = $this->id_order;
+					$referral->invite_code = $inviter_code;
+					if( $totalOrdersByPhone <= 1 ){
+						$referral->new_user = 1;
+					} else {
+						$referral->new_user = 0;
+					}
+					$referral->date = date('Y-m-d H:i:s');
+					$referral->save();
+					// Finally give credit to inviter
+					$referral->addCreditToInviter();
 				}
-				$referral->date = date('Y-m-d H:i:s');
-				$referral->save();
-				// Finally give credit to inviter
-				$referral->addCreditToInviter();
+				Crunchbutton_Referral::removeCookie();
 			}
-			Crunchbutton_Referral::removeCookie();
 		}
 		return true;
 	}
