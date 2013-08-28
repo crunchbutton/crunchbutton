@@ -32,6 +32,10 @@ class Crunchbutton_Promo extends Cana_Table
 		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.phone = '{$phone}' AND c.type = 'CREDIT'" );
 	}
 
+	public static function byIdUser( $id_user ){
+		return Crunchbutton_Promo::q( "SELECT p.* FROM credit c INNER JOIN user u ON u.id_user = c.id_user INNER JOIN promo p ON c.id_promo = p.id_promo WHERE u.id_user = '{$id_user}' AND c.type = 'CREDIT'" );
+	}
+
 	public static function lastID(){
 		return Crunchbutton_Promo::q( 'SELECT * FROM promo ORDER BY id_promo DESC LIMIT 1' );
 	}
