@@ -8,12 +8,13 @@
 ?>
 <!-- content -->
 <div class="container-fluid padded">
+	<h4>Users with more than $5 credit</h4>
 	 <div class="row-fluid">
 			<div class="box">
-				 <div class="box-header"><span class="title">Results (user with more than $5 credit)</span></div>
+				 <div class="box-header"><span class="title">Results by Phone</span></div>
 				 <div class="box-content">
 						<?php 
-						$credits = $this->credits;
+						$credits = $this->credits_by_phone;
 						?>
 						<?php if (!$credits->count()) { ?>
 							No results found
@@ -37,6 +38,41 @@
 										<td><?php echo $credit->debit; ?></td>
 										<td>
 											<a href="/giftcards/credits/byphone/<?php echo $credit->phone;?>" style="text-decoration:underline;"><?php echo $credit->giftcards; ?></a>
+										</td>
+									</tr>
+								<?php } ?>
+							</table>
+						<?php } ?>
+				 </div>
+			</div>
+	 </div>
+	 <div class="row-fluid">
+			<div class="box">
+				 <div class="box-header"><span class="title">Results by User</span></div>
+				 <div class="box-content">
+						<?php 
+						$credits = $this->credits_by_user;
+						?>
+						<?php if (!$credits->count()) { ?>
+							No results found
+						<?php } else { ?>
+							<table class="table table-normal">
+								<thead>
+									<td>User</td>
+									<td>Credit left</td>
+									<td>Total credit</td>
+									<td>Total debits</td>
+									<td>Gift cards redeemed</td>
+								</thead>
+								<?php foreach ( $credits as $credit ) { ?>
+									<tr>
+										<td>
+										<a href="/giftcards/credits/byuser/<?php echo $credit->id_user;?>"> <?php echo $credit->user->name;?> </a> </td>
+										<td><?php echo $credit->credit_left; ?></td>
+										<td><?php echo $credit->credit; ?></td>
+										<td><?php echo $credit->debit; ?></td>
+										<td>
+											<a href="/giftcards/credits/byuser/<?php echo $credit->id_user;?>" style="text-decoration:underline;"><?php echo $credit->giftcards; ?></a>
 										</td>
 									</tr>
 								<?php } ?>
