@@ -31,7 +31,7 @@
 								<?php foreach ( $credits as $credit ) { ?>
 									<tr>
 										<td>
-										<a href="/giftcards/credits/byphone/<?php echo $credit->phone;?>"> <?php echo $credit->user->name;?> </a> </td>
+										<a href="/giftcards/credits/byphone/<?php echo $credit->phone;?>"> <?php echo $credit->user->name;?> <?php echo $credit->user->email;?> </a> </td>
 										<td><?php echo $credit->phone;?> </td>
 										<td><?php echo $credit->credit_left; ?></td>
 										<td><?php echo $credit->credit; ?></td>
@@ -67,7 +67,7 @@
 								<?php foreach ( $credits as $credit ) { ?>
 									<tr>
 										<td>
-										<a href="/giftcards/credits/byuser/<?php echo $credit->id_user;?>"> <?php echo $credit->user->name;?> </a> </td>
+										<a href="/giftcards/credits/byuser/<?php echo $credit->id_user;?>"> <?php echo $credit->user->name;?> <?php echo $credit->user->email;?> </a> </td>
 										<td><?php echo $credit->credit_left; ?></td>
 										<td><?php echo $credit->credit; ?></td>
 										<td><?php echo $credit->debit; ?></td>
