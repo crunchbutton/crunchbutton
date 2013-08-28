@@ -276,6 +276,59 @@ class Crunchbutton_Credit extends Cana_Table
 		return $credit_available;
 	}
 
+
+	public function antifraud( $creditMoreThan = 10 ){
+		$query = "SELECT (credit - debit) AS credit_left,
+										 credits.credit,
+										 debits.debit,
+										 credits.phone
+							FROM
+								(SELECT SUM(c.value) AS credit,
+												u.phone
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE c.type = 'CREDIT'
+									 AND u.phone IS NOT NULL
+								 GROUP BY u.phone) credits
+							INNER JOIN
+								(SELECT SUM(c.value) AS debit,
+												u.phone
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE c.type = 'DEBIT'
+									 AND u.phone IS NOT NULL
+								 GROUP BY u.phone) debits ON credits.phone = debits.phone HAVING credit_left > {$creditMoreThan}
+							ORDER BY credit_left DESC";
+		$results = c::db()->get( $query );
+		$credits = array();
+		foreach ( $results as $result ) {
+			$result->user = Crunchbutton_User::byPhone( $result->phone );
+			$giftcards = Crunchbutton_Promo::byPhone( $result->phone );
+			$result->giftcards = $giftcards->count();
+			$credits[] = $result;
+		}
+		return $results;
+	}
+
+	public function creditsByPhone( $phone ){
+		$query = "SELECT credits.credit,
+										 debits.debit,
+										 (credit - debit) AS credit_left
+							FROM
+								(SELECT SUM(value) AS credit
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE TYPE = 'CREDIT'
+									 AND u.phone = '{$phone}') credits,
+								(SELECT SUM(value) AS debit
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE TYPE = 'DEBIT'
+									 AND u.phone = '{$phone}') debits";
+		$results = c::db()->get( $query );
+		return $results->get(0);
+	}
+
 	public function user() {
 		return User::o($this->id_user);
 	}
