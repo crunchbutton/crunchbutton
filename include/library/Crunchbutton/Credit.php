@@ -276,8 +276,38 @@ class Crunchbutton_Credit extends Cana_Table
 		return $credit_available;
 	}
 
+	public function antifraudByUser( $creditMoreThan = 10 ){
+		$query = "SELECT (credit - debit) AS credit_left,
+										 credits.credit,
+										 debits.debit,
+										 credits.id_user
+							FROM
+								(SELECT SUM(c.value) AS credit,
+												u.id_user
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE c.type = 'CREDIT'
+								 GROUP BY u.id_user) credits
+							INNER JOIN
+								(SELECT SUM(c.value) AS debit,
+												u.id_user
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE c.type = 'DEBIT'
+								 GROUP BY u.id_user) debits ON credits.id_user = debits.id_user HAVING credit_left > {$creditMoreThan}
+							ORDER BY credit_left DESC";
+		$results = c::db()->get( $query );
+		$credits = array();
+		foreach ( $results as $result ) {
+			$result->user = Crunchbutton_User::o( $result->id_user );
+			$giftcards = Crunchbutton_Promo::byIdUser( $result->id_user );
+			$result->giftcards = $giftcards->count();
+			$credits[] = $result;
+		}
+		return $results;
+	}
 
-	public function antifraud( $creditMoreThan = 10 ){
+	public function antifraudByPhone( $creditMoreThan = 10 ){
 		$query = "SELECT (credit - debit) AS credit_left,
 										 credits.credit,
 										 debits.debit,
