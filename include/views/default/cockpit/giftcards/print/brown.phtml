@@ -35,6 +35,7 @@ if( sizeof( $giftcards ) > 0 ) {
 			<?php
 		}
 	?><div class="giftcard <?php if( $count % 3 != 1 ){ ?>negativemargin<?php } ?>">
+		<div class="value <?php if( $giftcard->value > 9 ){ echo 'small'; } ?>"><?php echo $giftcard->value;?></div>
 		<div class="info">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></div><img  style="width:816px;"  src="/assets/images/giftcard/print-brown.svg?<?php echo $imageCached; ?>"/>
 </div>
 	<?php 
