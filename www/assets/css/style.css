@@ -2657,7 +2657,7 @@ h1.about-header {
 	}
 }
 
-@media (max-width: 1023px) and (min-width: 769px){
+@media (min-width: 769px) and (max-width: 1023px){
 	.content {
 		width:670px;
 	}
@@ -2676,7 +2676,6 @@ h1.about-header {
 		margin-top:10px;
 	}
 	.restaurant-name{
-		/*border: 10px solid #000;*/
 		margin-left: -321px !important;
 		left: 50% !important;
 	}
