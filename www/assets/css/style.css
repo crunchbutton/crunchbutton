@@ -2349,6 +2349,7 @@ h1.about-header {
 		white-space:nowrap;
 	}
 }
+
 @media(min-width:769px) {
 	.visible-desktop {
 		display:block;
@@ -2633,7 +2634,7 @@ h1.about-header {
 		text-shadow:1px 1px 0px #b43518;
 		box-shadow:none;
 		border:none;
-		width: 90%;
+		width: 95%;
 		margin: 0 auto;
 		margin-bottom:20px;
 	}
@@ -2655,7 +2656,8 @@ h1.about-header {
 		float:none;
 	}
 }
-@media(min-width:769px)and(max-width:1023px) {
+
+@media (max-width: 1023px) and (min-width: 769px){
 	.content {
 		width:670px;
 	}
@@ -2673,9 +2675,10 @@ h1.about-header {
 	.cart-items {
 		margin-top:10px;
 	}
-	.restaurant-name {
-		margin-left:-321px;
-		left:50%;
+	.restaurant-name{
+		/*border: 10px solid #000;*/
+		margin-left: -321px !important;
+		left: 50% !important;
 	}
 	.restaurant-message {
 		color:#D74924;
