@@ -25,7 +25,8 @@
 				<td style="width:70px;"> 
 					<?php if( !$wasUsed ) { ?>
 						<a title="Print" target="_blank" href="/giftcards/print/<?=$giftcard->id_promo;?>"><i style="color:black;" class="icon-print"></i></a>&nbsp;
-						<a title="Print Flyer" target="_blank" href="/giftcards/print-flyer/<?=$giftcard->id_promo;?>"><i style="color:black;" class="icon-picture"></i></a>
+						<a title="Print Flyer" target="_blank" href="/giftcards/print-flyer/<?=$giftcard->id_promo;?>"><i style="color:black;" class="icon-picture"></i></a>&nbsp;
+						<a title="Print Brown Gift Card" target="_blank" href="/giftcards/print-brown/<?=$giftcard->id_promo;?>"><i style="color:black;" class="icon-flag"></i></a>
 					<?php } ?> <a href="/giftcards/<?=$giftcard->id_promo;?>"><?=$giftcard->code; ?></a>
 				</td>
 				<td class="center"> $<?= Util::ceil($giftcard->value, 2); ?></td>
