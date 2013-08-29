@@ -8,8 +8,7 @@
 
 	$user = $this->user;
 	$giftcards = $this->giftcards;
-
-	$credits = Crunchbutton_Credit::creditsByPhone( $user->phone );
+	$credits = $this->credits;
 ?>
 <div class="container-fluid padded">
 	<div class="row-fluid">

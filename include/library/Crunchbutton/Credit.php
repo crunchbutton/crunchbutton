@@ -340,6 +340,25 @@ class Crunchbutton_Credit extends Cana_Table
 		return $results;
 	}
 
+	public function creditsByIdUser( $id_user ){
+		$query = "SELECT credits.credit,
+										 debits.debit,
+										 (credit - debit) AS credit_left
+							FROM
+								(SELECT SUM(value) AS credit
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE TYPE = 'CREDIT'
+									 AND u.id_user = '{$id_user}') credits,
+								(SELECT SUM(value) AS debit
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE TYPE = 'DEBIT'
+									 AND u.id_user = '{$id_user}') debits";
+		$results = c::db()->get( $query );
+		return $results->get(0);
+	}
+
 	public function creditsByPhone( $phone ){
 		$query = "SELECT credits.credit,
 										 debits.debit,
