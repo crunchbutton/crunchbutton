@@ -1,3 +1,16 @@
+
+@font-face {
+		font-family: 'museo_slab700';
+		src: url('/assets/fonts/museo_slab_700-webfont.eot');
+		src: url('/assets/fonts/museo_slab_700-webfont.eot?#iefix') format('embedded-opentype'),
+				 url('/assets/fonts/museo_slab_700-webfont.woff') format('woff'),
+				 url('/assets/fonts/museo_slab_700-webfont.ttf') format('truetype'),
+				 url('/assets/fonts/museo_slab_700-webfont.svg#museo_slab700') format('svg');
+		font-weight: normal;
+		font-style: normal;
+
+}
+
 .page{
 	background: #382b27;
 	width: 816px;
@@ -11,8 +24,18 @@
 	background: #382b27;
 	margin: 0 auto;
 }
-	.negativemargin{
-
+.value{
+	color: #FFF;
+	font-family: 'museo_slab700', sans-serif;
+	font-size: 320px;
+	position: absolute;
+	margin-top: 5px;
+	margin-left: 55px;
+}
+	.value.small{
+		margin-top: 75px;
+		font-size: 190px;
+		margin-left: 60px;
 	}
 .info{
 	margin-left: 270px;
