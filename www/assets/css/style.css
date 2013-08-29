@@ -2627,18 +2627,24 @@ h1.about-header {
 		font-size:23px;
 	}
 	.order-begin-wrap {
-		margin-bottom:20px;
 		background:#f34b24;
 		color:#fff;
 		text-shadow:none;
 		text-shadow:1px 1px 0px #b43518;
 		box-shadow:none;
 		border:none;
+		width: 90%;
+		margin: 0 auto;
+		margin-bottom:20px;
 	}
 }
 @media(min-width:768px) {
 	.order-begin-wrap {
 		margin-top:20px;
+		margin-bottom: 20px;
+	}
+	.restaurant-items{
+		margin-left: 40px;
 	}
 }
 @media(min-width:633px)and(max-width:768px) {
