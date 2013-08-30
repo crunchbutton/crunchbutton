@@ -29,7 +29,11 @@ NGApp.controller('HelpCtrl', function ($scope, $http) {
 /**
  * Home controller
  */
-NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsService) {
+NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsService, LocationService) {
+	var location = LocationService;
+	if (!App.isPhoneGap) {
+		location.init();
+	}
 	var restaurants = RestaurantsService;
 	restaurants.list( 
 		// Success
