@@ -1,5 +1,5 @@
 //OrderService Service
-NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, AccountService, CartService, LocationService, CreditService, GiftCardService ) {
+NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, AccountService, CartService, LocationService, CreditService, GiftCardService, OrderViewService ) {
 
 	var service = {};
 	service.location = LocationService;
@@ -586,6 +586,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 						service.giftcard.notes_field.reset();
 						$rootScope.$safeApply( function(){
 							$rootScope.$broadcast( 'newOrder' );
+							OrderViewService.newOrder = true;
 							$location.path( '/order/' + uuid );	
 						} );
 					});
@@ -807,7 +808,7 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 			service.reload = false;
 			if( json ){
 				for (var x in json) {
-					json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');
+					json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');	
 				}	
 				list = json;
 			} else {
@@ -843,8 +844,8 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 // OrdersService service
 NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope, $http, FacebookService) {
 
-	var service = { order : false, reload : true };
-	
+	var service = { order : false, reload : true, newOrder : false };
+
 	service.facebook = FacebookService;
 
 	service.load = function(){
@@ -868,6 +869,10 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 						service.order._credit = parseFloat( service.order.credit ).toFixed(2);
 					}
 
+					if( service.newOrder ){
+						service.order.new = service.newOrder;
+					}
+
 					service.facebook._order_uuid = service.order.uuid;
 					service.facebook.preLoadOrderStatus();
 					
@@ -876,9 +881,9 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 					App.cache('Restaurant', service.order.id_restaurant, function () {
 						service.restaurant = this;
 						var complete = function () {
-							if (service.order['new']) {
+							if (service.newOrder ) {
 								setTimeout(function () {
-									service.order['new'] = false;
+									service.newOrder = false;
 								}, 500);
 							}
 						};
