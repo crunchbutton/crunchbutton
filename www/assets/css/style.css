@@ -2634,10 +2634,6 @@ h1.about-header {
 	}
 }
 @media(min-width:1024px) {
-	.tooltip-help-desktop{
-		margin-top: -22px;
-		margin-left: 262px;
-	}
 	.signin-box-header {
 		margin:12px 0 0 10px;
 	}
