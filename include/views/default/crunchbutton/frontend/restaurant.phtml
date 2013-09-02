@@ -92,9 +92,10 @@
 
 										<!-- Customizable - checkbox -->
 										<div ng-switch-when="check">
-												<input type="checkbox" ng-change="order.cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
+												<input type="checkbox" custom-checkbox ng-change="order.cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
 												<label ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</label>
 												<label ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</label>
+												<div class="divider"></div>
 										</div>
 
 										<!-- Customizable - select -->
@@ -114,8 +115,9 @@
 			</div>
 
 			<div class="default-order-check" ng-show="order.info.totalItems && restaurant._open">
-				<input type="checkbox" ng-model="order.form.make_default" id="default-order-check">
+				<input custom-checkbox type="checkbox" ng-model="order.form.make_default" id="default-order-check">
 				<label for="default-order-check">Set as default order for this restaurant</label>
+				<div class="divider"></div>
 			</div>
 
 		</div>
