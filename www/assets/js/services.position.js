@@ -255,7 +255,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					function (loc) {
 						service.bounding = {
 							lat: loc.lat(),
-							lon: loc.lat(),
+							lon: loc.lon(),
 							city: loc.city()
 						};
 						service.restaurantsService.list(
@@ -434,6 +434,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 			if (status == google.maps.GeocoderStatus.OK) {
 				success(results, status);
 			} else {
+				console.log('results',results);
 				error(results, status);
 			}
 		});
