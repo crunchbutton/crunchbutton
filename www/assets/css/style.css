@@ -84,6 +84,30 @@ html[xmlns] .clearfix {
 	display:none;
 }
 
+/* CUSTOM CHECKBOX */
+.custom-checkbox{
+	background:url(../images/checkbox-unchecked.png);
+	display: block;
+	height: 20px;
+	width: 20px;
+	float: left;
+	margin: 0 5px 0 0;
+}
+	.custom-checkbox, .custom-checkbox+label, .custom-checkbox+label+label{
+		cursor: pointer;	
+	}
+	.custom-checkbox.checked{
+		background:url(../images/checkbox-checked.png);
+	}
+	.custom-checkbox+label, .custom-checkbox+label+label{
+		padding-top: 4px;
+		display: block;
+		float: left;
+	}
+		.custom-checkbox+label+label{
+			margin-left: 3px;
+		}
+	
 /* APP BUSY */
 .app-busy {
 	top:0;

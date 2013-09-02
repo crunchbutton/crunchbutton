@@ -51,6 +51,44 @@ NGApp.directive('ngClickSelectAll', function() {
 		};
 });
 
+// Custom Checkbox - See #1577
+NGApp.directive( 'customCheckbox', function () {
+
+	// Hack to not work at desktop and don't trow any error
+	if( !App.isMobile() ){ return { restrict: 'E' };}
+
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		replace: true,
+		template: '<span class="custom-checkbox"></span>',
+
+		link: function (scope, elem, attrs, ctrl) {
+			var label = angular.element('label[for="' + attrs.id + '"]');
+			label.bind('click', function () {
+				scope.$apply(function () {
+					elem.toggleClass( 'checked' );
+					ctrl.$setViewValue( elem.hasClass( 'checked' ) );
+				});
+			});
+
+			elem.bind('click', function () {
+				scope.$apply(function () {
+					elem.toggleClass( 'checked' );
+					ctrl.$setViewValue( elem.hasClass( 'checked' ) );
+				});
+			});
+
+			ctrl.$render = function () {
+				if (!elem.hasClass('checked') && ctrl.$viewValue) {
+					elem.addClass('checked');
+				} else if (elem.hasClass('checked') && !ctrl.$viewValue) {
+					elem.removeClass('checked');
+				}
+			};			
+		}
+	}
+});
 // Blur event directive
 NGApp.directive('ngBlur', function() {
 		return {
