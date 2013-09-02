@@ -83,9 +83,11 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			service.form.pay_type = 'card';
 		}
 
-		service.form.delivery_type = (service.account.user && service.account.user.delivery_type) ? service.account.user.delivery_type : 'delivery';
+		// Rules at #669
+		service.form.delivery_type = (service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].delivery_type : 'delivery';
+
 		// If the restaurant does not delivery
-		if( service.restaurant.delivery != 1 && service.form.delivery_type == 'delivery' ){
+		if( service.restaurant.delivery != 1 ){
 			service.form.delivery_type = 'takeout';
 		}
 		// If the restaurant does not takeout
@@ -109,10 +111,15 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		service.form.cardMonth = ( service.account.user.card_exp_month ) ? service.account.user.card_exp_month : '';
 		service.form.cardYear = ( service.account.user.card_exp_year ) ? service.account.user.card_exp_year : '';
 		service.updateTotal();
-		// Verifies if the user has address and hides the form
-		if (service.account.user && service.form.delivery_type == 'takeout' || ( service.form.delivery_type == 'delivery' && service.account.user.address ) ) {
+
+		// If the user has presets at other's restaurants but he did not typed his address yet
+		// and the actual restaurant is a delivery only #875
+		if ( service.account.user && ( service.form.delivery_type == 'takeout' || ( service.form.delivery_type == 'delivery' && service.account.user.address ) ) ) {
 			service.showForm = false;
+		} else {
+			service.showForm = true;
 		}
+
 		// Load the order
 		if (service.cart.hasItems()) {
 			service.reloadOrder();
