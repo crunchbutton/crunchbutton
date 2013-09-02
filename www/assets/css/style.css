@@ -2706,6 +2706,9 @@ h1.about-header {
 	.signin-box-header {
 		display:block;
 	}
+	.tooltip-help-mobile-container{
+		display: none
+	}
 }
 @media(max-width:767px) {
 	.order-begin .icon {
