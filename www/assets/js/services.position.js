@@ -255,7 +255,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					function (loc) {
 						service.bounding = {
 							lat: loc.lat(),
-							lon: loc.lat(),
+							lon: loc.lon(),
 							city: loc.city()
 						};
 						service.restaurantsService.list(
@@ -279,7 +279,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 			service.getLocationByBrowser(function ( loc ) {
 						service.bounding = {
 							lat: loc.lat(),
-							lon: loc.lat(),
+							lon: loc.lon(),
 							city: loc.city(),
 							type: 'geolocation'
 						};
