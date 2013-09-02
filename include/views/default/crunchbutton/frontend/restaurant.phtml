@@ -39,7 +39,7 @@
 			<div ng-show="restaurant._open">
 				<div class="restaurant-item-title text-your-order">
 					Your Order 
-					<div ng-show="App.isMobile()" ng-include="assets/view/restaurant.suggestion.tooltip.html"></div>
+					<span suggestion-tool-tip type="mobile"></span>
 				</div>
 				<div class="your-order-label" style="font-weight: bold; display: none;">(we've chosen the most popular order, but you can order anything you want)</div>
 				<div class="divider"></div>
@@ -125,8 +125,8 @@
 		<div class="restaurant-items">
 			<div class="content-item-name content-item-main-name">
 				<h1>
-					Add to your order
-					<div ng-show="!App.isMobile()" ng-include="assets/view/restaurant.suggestion.tooltip.html"></div>
+					Add to your order 
+					<span suggestion-tool-tip type="desktop"></span>
 				</h1>
 			</div>
 		
