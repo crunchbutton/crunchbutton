@@ -323,6 +323,11 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		return order.tipChanged();
 	}
 
+	$rootScope.$on( 'orderProcessingError', function(e, data) {
+		order.showForm = true;
+		$scope.order.showForm = order.showForm;
+	});
+
 	// Event will be called when the order loaded
 	$scope.$on( 'orderLoaded', function(e, data) {
 		$scope.order.loaded = order.loaded;
