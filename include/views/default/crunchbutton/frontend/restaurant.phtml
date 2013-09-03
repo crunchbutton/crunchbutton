@@ -355,7 +355,15 @@
 			<label>You're paying:&nbsp;<span ng-show="order.form.pay_type=='cash'">approximately</span> </label>
 			&nbsp;{{order.info.breakdownDescription}}&nbsp;
 			<span ng-show="order.info.extraCharges">( + {{order.info.extraCharges}} )</span>
-			<strong class="cart-gift"></strong>&nbsp;
+			<strong class="cart-gift" ng-show="credit.value != '0.00' && order.form.pay_type == 'card' ">
+					<span>
+						&nbsp;(-{{AB.dollar}}{{credit.value}} credit 
+
+						<span ng-show="order.info.creditLeft != ''" class="gift-left">
+							- You'll still have {{AB.dollar}}{{order.info.creditLeft}} gift card left
+						</span> )
+					</span>
+				</strong>&nbsp;
 			for a total of {{order.info.totalText}}
 			&nbsp;
 				<div ng-show="credit.value != '0.00' && order.form.pay_type == 'cash' ">

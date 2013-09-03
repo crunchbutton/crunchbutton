@@ -559,13 +559,12 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( json ) {
 				try {
-					json = JSON.stringify( json );
 					if( json.uuid ){
 						var uuid = json.uuid;
 					} else {
 						json = {
 							status: 'false',
-							errors: ['Sorry! Something went horribly wrong trying to place your order! <br/> Please make sure your credit card info is correct!']
+							errors: ['@@Sorry! Something went horribly wrong trying to place your order! <br/> Please make sure your credit card info is correct!']
 						};
 						$rootScope.$broadcast( 'orderProcessingError', true );
 						App.log.order(json, 'processing error');	
@@ -573,7 +572,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 				} catch (e) {
 					json = {
 						status: 'false',
-						errors: ['Sorry! Something went horribly wrong trying to place your order! <br/> Please make sure your credit card info is correct!']
+						errors: ['!!!Sorry! Something went horribly wrong trying to place your order! <br/> Please make sure your credit card info is correct!']
 					};
 					$rootScope.$broadcast( 'orderProcessingError', true );
 					App.log.order(json, 'processing error');
