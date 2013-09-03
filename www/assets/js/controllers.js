@@ -14,13 +14,9 @@ NGApp.controller('LegalCtrl', function ($scope, $http) {
  * help page
  */
 NGApp.controller('HelpCtrl', function ($scope, $http) {
-	var fm = function() {
-		$('.crunchbutton-join-mail').html('moc.nottubhcnurc@nioj'.split('').reverse().join(''));	
-	}
 	if (!App.isPhoneGap) {
 		$http.get(App.service + 'help').success(function(data) {
 			$scope.help = data.data;
-			fm();
 		});
 	}
 });
