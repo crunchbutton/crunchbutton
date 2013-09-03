@@ -559,14 +559,23 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( json ) {
 				try {
-					var uuid = json.uuid;
+					json = JSON.stringify( json );
+					if( json.uuid ){
+						var uuid = json.uuid;
+					} else {
+						json = {
+							status: 'false',
+							errors: ['Sorry! Something went horribly wrong trying to place your order! Please make sure your credit card info is correct!']
+						};
+						service.showForm = true;
+					}
 				} catch (e) {
-					// Log the error
-					App.log.order(json, 'processing error');
 					json = {
 						status: 'false',
-						errors: ['Sorry! Something went horribly wrong trying to place your order!']
+						errors: ['Sorry! Something went horribly wrong trying to place your order! Please make sure your credit card info is correct!']
 					};
+					service.showForm = true;
+					App.log.order(json, 'processing error');
 				}
 				if (json.status == 'false') {
 					service.errors(json.errors);
