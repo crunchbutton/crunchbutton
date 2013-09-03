@@ -40,10 +40,10 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 	service.toogleDelivery = function (type) {
 		if (type != service.form.delivery_type) {
 			service.form.delivery_type = type;
-			if( service.form.delivery_type == 'takeout' ){
-				service.form.tip = 0;
-			}
 			service.updateTotal();
+		}
+		if( service.form.delivery_type == 'takeout' ){
+			service.form.tip = 0;
 		}
 	}
 
@@ -99,6 +99,9 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		if( service.restaurant.takeout != 1 && service.form.delivery_type == 'takeout' ){
 			service.form.delivery_type = 'delivery';
 		}
+
+		// To run the events
+		service.toogleDelivery( service.form.delivery_type );
 
 		service.form.autotip = 0;
 		service.form.tip = service._lastTipNormalize(tip);
