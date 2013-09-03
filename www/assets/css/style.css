@@ -2647,10 +2647,14 @@ h1.about-header {
 	}
 }
 @media(min-width:1024px) {
-.tooltip-help{
-	left: 260px;
-	top:10px;
-}
+	.restaurant-items{
+		max-width: 340px;
+		text-overflow:ellipsis;
+	}
+	.tooltip-help{
+		left: 260px;
+		top:10px;
+	}
 	.signin-box-header {
 		margin:12px 0 0 10px;
 	}
