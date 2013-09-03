@@ -15,6 +15,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		service.showForm = true;
 	});
 
+	service._previousTip = 0;
+
 	// Default values
 	service.form = {
 		delivery_type: 'delivery',
@@ -38,6 +40,9 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 	service.toogleDelivery = function (type) {
 		if (type != service.form.delivery_type) {
 			service.form.delivery_type = type;
+			if( service.form.delivery_type == 'takeout' ){
+				service.form.tip = 0;
+			}
 			service.updateTotal();
 		}
 	}
@@ -606,6 +611,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 
 	service.tipChanged = function () {
 		service._tipHasChanged = true;
+		service._previousTip = service.form.tip;
 		service.updateTotal();
 	}
 	service.cardInfoChanged = function () {
@@ -642,14 +648,14 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		 */
 		var wasTipChanged = false;
 		if (service.form.delivery_type == 'takeout' && service.form.pay_type == 'card') {
-			if (!service._tipHasChanged) {
-				service.form.tip = 0;
-				wasTipChanged = true;
-			}
+			wasTipChanged = true;
 		} else if (service.form.delivery_type == 'delivery' && service.form.pay_type == 'card') {
 			if (!service._tipHasChanged) {
 				service.form.tip = (service.account.user.last_tip) ? service.account.user.last_tip : 'autotip';
 				service.form.tip = service._lastTipNormalize(service.form.tip);
+				wasTipChanged = true;
+			} else {
+				service.form.tip = service._previousTip;
 				wasTipChanged = true;
 			}
 		}
