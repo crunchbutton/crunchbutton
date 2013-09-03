@@ -1569,7 +1569,7 @@ h1.about-header {
 	cursor: pointer;
 	border-radius: 10px;
 	margin-left: 17px;
-	margin-top: -18px;
+	margin-top: -23px;
 	text-align: center;
 	padding-top: 2px;
 	-moz-user-select: none;
@@ -2755,6 +2755,11 @@ h1.about-header {
 }
 
 @media (min-width: 769px) and (max-width: 1023px){
+		.tooltip-help{
+		margin-top: 10px;
+		position: absolute;
+		margin-left: 23px;
+	}
 	.content {
 		width:670px;
 	}
