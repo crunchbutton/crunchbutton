@@ -347,7 +347,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		};
 
 		if (order.pay_type == 'card') {
-			order.tip = service.form.tip || '3';
+			order.tip = service.form.tip;
 			order.autotip_value = service.form.autotip;
 		}
 
@@ -476,7 +476,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 								service.showForm = true;
 								$('[name="pay-address"]').focus();
 								// Write the found address at the address field, so the user can check it.
-								service.form.address = theClosestAddress.formattedWithDiff();
+								service.form.address = theClosestAddress.formatted();
 							} );
 
 							// Log the error
