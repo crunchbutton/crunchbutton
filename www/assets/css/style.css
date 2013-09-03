@@ -1568,8 +1568,6 @@ h1.about-header {
 	color: #CCC;
 	cursor: pointer;
 	border-radius: 10px;
-	margin-left: 17px;
-	margin-top: -23px;
 	text-align: center;
 	padding-top: 2px;
 	-moz-user-select: none;
@@ -1582,6 +1580,7 @@ h1.about-header {
 	border-radius: 10px;
 	box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.5);
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(251, 60, 42, 1)), to(rgba(251, 57, 39, 1)));
+	position: absolute;
 }
 	.tooltip-help span {
 		margin:1px 3px 0 3px;
@@ -2648,6 +2647,10 @@ h1.about-header {
 	}
 }
 @media(min-width:1024px) {
+.tooltip-help{
+	left: 260px;
+	top:10px;
+}
 	.signin-box-header {
 		margin:12px 0 0 10px;
 	}
@@ -2756,9 +2759,9 @@ h1.about-header {
 
 @media (min-width: 769px) and (max-width: 1023px){
 		.tooltip-help{
-		margin-top: 10px;
-		position: absolute;
-		margin-left: 23px;
+			margin-top: 10px;
+			position: absolute;
+			margin-left: 23px;
 	}
 	.content {
 		width:670px;
