@@ -40,10 +40,10 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 	service.toogleDelivery = function (type) {
 		if (type != service.form.delivery_type) {
 			service.form.delivery_type = type;
+			if( service.form.delivery_type == 'takeout' ){
+				service.form.tip = 0;
+			}
 			service.updateTotal();
-		}
-		if( service.form.delivery_type == 'takeout' ){
-			service.form.tip = 0;
 		}
 	}
 
@@ -100,9 +100,6 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			service.form.delivery_type = 'delivery';
 		}
 
-		// To run the events
-		service.toogleDelivery( service.form.delivery_type );
-
 		service.form.autotip = 0;
 		service.form.tip = service._lastTipNormalize(tip);
 		service.form.name = service.account.user.name;
@@ -110,6 +107,10 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		service.form.address = service.account.user.address;
 		service.form.notes = (service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].notes : '';
 		
+		if( service.form.delivery_type == 'takeout' ){
+			service.form.tip = 0;
+		}
+
 		if( service.giftcard.code ){
 			service.form.notes = service.form.notes + ' '	+ service.giftcard.code;
 		}
