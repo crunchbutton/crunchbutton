@@ -77,12 +77,20 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 /**
  * Show the restaurants
  */
-NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, RestaurantsService) {
+NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, RestaurantsService, LocationService) {
+
+	$scope.restaurants = false;
+
+	var location = LocationService;
+	if( !location.initied ){
+		location.init();
+		$location.path( '/' );
+		return;
+	}
 
 	var restaurants = RestaurantsService;
 
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
-	$scope.restaurants = {};
 
 	$scope.display = function($event) {
 		var restaurant = this.restaurant;
