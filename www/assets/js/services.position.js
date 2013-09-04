@@ -10,7 +10,7 @@ NGApp.factory('PositionsService', function ( $rootScope ) {
 	 */
 	service.addLocation = function (loc) {
 		service.locs.push(loc);
-		$.totalStorage('locsv2', service.locs);
+		$.totalStorage('locsv3', service.locs);
 		$rootScope.$broadcast( 'NewLocationAdded', true );
 	}
 
@@ -162,7 +162,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		}
 
 		// 2) retrieve and set location date from cookies
-		var cookieLocs = $.totalStorage('locsv2');
+		var cookieLocs = $.totalStorage('locsv3');
 		var cookieBounding = $.totalStorage('boundingv2');
 
 		if (cookieLocs) {
