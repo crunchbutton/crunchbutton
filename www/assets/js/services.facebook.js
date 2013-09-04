@@ -127,7 +127,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 						if (data.error) {
 							if (data.error == 'facebook id already in use') {
 								App.log.account({'error': data.error}, 'facebook error');
-								service.error.unknown = true;
+								service.error.userExists = true;
 							}
 
 						} else {
