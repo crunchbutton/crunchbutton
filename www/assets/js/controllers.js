@@ -501,7 +501,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
  * Orders page. only avaiable after a user has placed an order or signed up.
  * @todo: change to account page
  */
-NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService ) {
+NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService ) {
 	
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
@@ -509,6 +509,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	}
 
 	$scope.account = { hasFacebook : AccountService.user.facebook };
+
 	// Alias to method AccountSignOut.do()
 	$scope.signout = AccountSignOut.do;
 	$scope.facebook = AccountModalService.facebookOpen;
@@ -527,6 +528,31 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	$scope.$on( 'OrdersLoaded', function(e, data) {
 		$scope.orders.list = OrdersService.list;	
 	});
+
+	$scope.referral = {
+		invite_url : ReferralService.invite_url,
+		value : ReferralService.value,
+		limit : ReferralService.limit,
+		invites : ReferralService.invites,
+		enabled : ReferralService.enabled
+	}	
+
+	// Load the invite_url
+	if( !ReferralService.invite_url ){
+		ReferralService.getStatus();
+	}
+
+	$scope.$on( 'referralStatusLoaded', function(e, data) {
+		$scope.referral.invites = ReferralService.invites;
+		$scope.referral.limit = ReferralService.limit;
+		$scope.referral.invite_url = ReferralService.invite_url;
+		$scope.referral.value = ReferralService.value;
+		$scope.referral.enabled = ReferralService.enabled;
+	});
+
+	$scope.referral.facebook = function(){
+		FacebookService.postInvite( $scope.referral.invite_url );
+	}
 
 });
 
@@ -640,43 +666,6 @@ NGApp.controller( 'NotificationAlertCtrl', function ( $scope, $rootScope  ) {
 	});
 });
 
-/*
-Invite codes
-*/
-NGApp.controller( 'ReferralCtrl', function ( $scope, $location, ReferralService, FacebookService ) {
-	
-	$scope.invite_url = false;
-	$scope.value = false;
-	$scope.limit = false;
-	$scope.invites = false;
-	$scope.enabled = false;
-
-	if( !ReferralService.invite_url ){
-		ReferralService.getStatus();
-	}
-
-	$scope.$on( 'referralStatusLoaded', function(e, data) {
-		$scope.invites = ReferralService.invites;
-		$scope.limit = ReferralService.limit;
-		$scope.invite_url = ReferralService.invite_url;
-		$scope.value = ReferralService.value;
-		$scope.enabled = ReferralService.enabled;
-		$scope.show();
-	});
-
-	$scope.show = function(){
-		if( $scope.enabled ){
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	$scope.facebook = function(){
-		FacebookService.postInvite( $scope.invite_url );
-	}
-
-});
 
 NGApp.controller( 'InviteCtrl', function ( $scope, $routeParams, $location, ReferralService ) {
 	// Just store the cookie, it will be used later
