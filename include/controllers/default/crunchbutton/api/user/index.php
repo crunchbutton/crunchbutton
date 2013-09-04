@@ -236,30 +236,19 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 			case 'facebook':
 				if ($_REQUEST['fbrtoken']) {
 					// log in from the app
-					c::auth()->facebook(new Crunchbutton_Auth_Facebook($_REQUEST['fbrtoken']));
+					$fb = c::auth()->facebook(new Crunchbutton_Auth_Facebook($_REQUEST['fbrtoken']));
+					$user = c::user();
+					if ( $fb->fbuser()->id ) {
+						$fb_user = User::facebook( $fb->fbuser()->id );
+						if ( $fb_user->id_user && $fb_user->id_user != $user->id_user ) {
+								echo json_encode(['error' => 'facebook id already in use']);
+								exit;
+						}
+					}
 					c::auth()->facebook()->check();
 					c::auth()->fbauth();
 					echo c::user()->json();
 					break;
-				}
-
-				// Force register or merge the facebook user and current user. do not merge if user has a facebook auth that is not current user auth
-				if (c::auth()->facebook()) {
-					$user = c::user();
-					$fb = c::auth()->facebook();
-
-					// @todo: changed alot of shit here. need to double check it all works
-					if ($fb->user()->id) {
-						// It seems the facebook user is already related with other user
-						$fb_user = User::facebook($fb->user()->id);
-						if ($fb_user->id_user && $user->id_user) {
-							if ($fb_user->id_user != $user->id_user) {
-								echo json_encode(['error' => 'facebook id already in use']);
-								exit;
-							}
-						}
-
-					}
 				}
 				echo c::user()->json();
 				break;
