@@ -3,7 +3,8 @@
 **************************************************/
 
 App.isMobile = function(){
-	return $.browser.mobile;
+	// $.browser.mobile doesn't detect android tablet
+	return App.isAndroid() || $.browser.mobile;
 }
 
 App.isNarrowScreen = function(){
