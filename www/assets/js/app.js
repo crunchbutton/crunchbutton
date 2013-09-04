@@ -146,6 +146,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 				App.config.user = data;
 			}
 			// reload the actual controller
+			console.log('userAuth!');
 			$rootScope.reload();
 		});
 	});

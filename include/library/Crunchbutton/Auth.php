@@ -89,7 +89,8 @@ class Crunchbutton_Auth {
 	public function fbauth() {
 		// we have a facebook user
 		if ($this->facebook()->fbuser()->id) {
-			$user = User::facebookCreate($this->facebook()->fbuser()->id, true);
+			$createNewUser = ( $this->user()->id_user ) ? false : true;
+			$user = User::facebookCreate($this->facebook()->fbuser()->id, $createNewUser);
 			if ($user) {
 				$this->setUser($user);
 			}
