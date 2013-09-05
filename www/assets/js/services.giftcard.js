@@ -62,8 +62,10 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		}
 		service.modal.reset();
 		setTimeout( function(){
-			// Check if the user is logged in
-			service.redeemed = ( $.trim( App.config.user.id_user ) != '' );
+
+			// Do not auto redeem gift cards #1662
+			service.redeemed = false;
+			
 			service.validate( function( data ){
 
 				service.modal.intro = false;
