@@ -23,10 +23,10 @@
 		<div class="invite-code-container field-container" ng-show="referral.enabled">
 			<div class="restaurant-item-title">Invite code</div>
 			<p>
-				For every NEW friend who orders food from CrunchButton, we'll give you ${{referral.value}} credit.
+				For every NEW friend who orders food, we'll give you ${{referral.value}} credit.
+				<br/>
+				You have {{referral.invites}} of the {{referral.limit}} invites remaining.
 			</p>
-
-			<p>You have already invited {{referral.invites}} of the {{referral.limit}}! Thanks</p>
 
 			<input type="text" style="margin:10px;" ng-click-select-all value="{{referral.invite_url}}" readonly="readonly" />
 
