@@ -105,14 +105,14 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		service.form.name = service.account.user.name;
 		service.form.phone = $filter( 'formatPhone' )( service.account.user.phone );
 		service.form.address = service.account.user.address;
-		service.form.notes = (service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant]) ? service.account.user.presets[service.restaurant.id_restaurant].notes : '';
-		
+		service.form.notes = ( service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant] && service.account.user.presets[service.restaurant.id_restaurant].notes ) ? service.account.user.presets[service.restaurant.id_restaurant].notes : '';
+
 		if( service.form.delivery_type == 'takeout' ){
 			service.form.tip = 0;
 		}
 
 		if( service.giftcard.code ){
-			service.form.notes = service.form.notes + ' '	+ service.giftcard.code;
+			service.form.notes += ' '	+ service.giftcard.code;
 		}
 
 		// Credit card stuff
