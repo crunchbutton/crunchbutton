@@ -384,6 +384,20 @@ App.test = {
 	},
 	reload: function() {
 		location.reload();
+	},
+	location: function(){
+		var position = angular.element( 'html' ).injector().get( 'PositionsService' );
+		var locs = position.locs;
+		for( x in locs ){
+			var values = [];
+			$.each(locs[ x ]._properties, function( key, value ) {
+				values.push( key );
+				values.push( ': ' );
+				values.push( ( value || '-' ) );
+				values.push( ' | ' );
+			});
+			console.log('Position: ' + x, values.join( '' ) );
+		}
 	}
 };
 
