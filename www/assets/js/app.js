@@ -390,11 +390,16 @@ App.test = {
 		var locs = position.locs;
 		for( x in locs ){
 			var values = [];
-			$.each(locs[ x ]._properties, function( key, value ) {
+			$.each( locs[ x ]._properties, function( key, value ) {
 				values.push( key );
 				values.push( ': ' );
 				values.push( ( value || '-' ) );
 				values.push( ' | ' );
+				if( key == 'results' ){
+					$.each( value, function( position, result ) {
+						console.log('result: ' + position,result);
+					});
+				}
 			});
 			console.log('Position: ' + x, values.join( '' ) );
 		}
@@ -422,7 +427,7 @@ App.init = function(config) {
 		return;
 	}
 	App._init = true;
-	
+
 	// temporary fix for drawers overslcrolling
 	$(document).on('touchmove', '.snap-drawers', function(e) {
 		e.preventDefault()
@@ -521,6 +526,13 @@ App.init = function(config) {
 	App.processConfig(config || App.config);
 	App.AB.init();
 	App.NGinit();
+/*
+	if( App.config.user.id_user ){
+		var account = angular.element( 'html' ).injector().get( 'AccountService' );
+		account.user = App.config.user;
+		account.updateInfo();
+	}
+*/
 };
 
 /**
