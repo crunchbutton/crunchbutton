@@ -1579,7 +1579,14 @@ h1.about-header {
 	float: right;
 	border-radius: 10px;
 	box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.5);
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(251, 60, 42, 1)), to(rgba(251, 57, 39, 1)));
+	background-color: #fb3a28;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(251, 60, 42)), to(rgb(251, 57, 39)));
+	background-image: -webkit-linear-gradient(top, rgb(251, 60, 42), rgb(251, 57, 39));
+	background-image: -moz-linear-gradient(top, rgb(251, 60, 42), rgb(251, 57, 39));
+	background-image: -o-linear-gradient(top, rgb(251, 60, 42), rgb(251, 57, 39));
+	background-image: -ms-linear-gradient(top, rgb(251, 60, 42), rgb(251, 57, 39));
+	background-image: linear-gradient(top, rgb(251, 60, 42), rgb(251, 57, 39));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#fb3c2a', EndColorStr='#fb3927');
 	position: absolute;
 }
 	.tooltip-help span {
