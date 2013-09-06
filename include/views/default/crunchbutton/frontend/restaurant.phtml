@@ -230,14 +230,14 @@
 							</div>
 
 							<div ng-show="giftcard.value != '0.00' && order.form.pay_type == 'cash' ">
-								Pay with a card, NOT CASH, to use your {{AB.dollar}}{{giftcard.value}} gift card!</span>
+								Pay with a card, NOT CASH, to use your ${{giftcard.value}} gift card!</span>
 							</div>
 
 							<div ng-show="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
 								<!-- Gift card success -->
 								<div ng-repeat="success in giftcard.giftcards.success">
 									<div ng-show="!success.error">
-										Congrats! This gift card ({{success.giftcard}}) gives you {{AB.dollar}}{{success.value}}.	
+										Congrats! This gift card ({{success.giftcard}}) gives you ${{success.value}}.	
 									</div>
 									<div ng-show="success.error == 'other restaurant'">
 										The gift card ({{success.giftcard}}) you are trying to use belongs to another restaurant.
