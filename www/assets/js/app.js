@@ -127,7 +127,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService, AccountSignOut) {
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService, AccountSignOut, CartService) {
 
 	// define external pointers
 	App.rootScope = $rootScope;
@@ -144,6 +144,10 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			if (data) {
 				$rootScope.account.user = data;
 				App.config.user = data;
+			}
+			// If the user logged out clean the cart!
+			if( !App.config.user.id_user ){
+				CartService.clean();
 			}
 			// reload the actual controller
 			console.log('userAuth!');
