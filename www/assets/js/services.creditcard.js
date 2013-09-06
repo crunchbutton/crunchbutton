@@ -61,14 +61,10 @@ NGApp.factory( 'CreditCardService', function( $http ){
 	service.changeIcons = function( cardValue ){
 		var card = service.detectType( cardValue );
 		if( card ){		
-			$( '.payment-card' ).addClass( 'to-grey' );
-			$( '.payment-card' ).removeClass( 'to-color' );
-			$( '.card-' + card.name ).removeClass( 'to-grey' );
-			$( '.card-' + card.name ).addClass( 'to-color' );
-			$('.to-color').animate( { 'background-position-x': '0'}, 100 );
-			$('.to-grey').animate( { 'background-position-x': '-40px'}, 100 );
+			$( '.payment-card' ).addClass( 'grey' );
+			$( '.card-' + card.name ).removeClass( 'grey' );
 		} else {
-			$( '.payment-card' ).animate( { 'background-position-x': '0'}, 100 );
+			$( '.payment-card' ).removeClass( 'grey' );
 		}
 		service.validate( cardValue );
 	}
