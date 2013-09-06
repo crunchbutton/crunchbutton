@@ -33,8 +33,10 @@ NGApp.factory('CartService', function () {
 			dish = App.cache('Dish', item);
 		dish_options = dish.options(),
 		options = [];
+		var expanded = true;
 		if (arguments[1]) {
 			options = arguments[1].options;
+			expanded = false;
 			// This lines above will verify is there are any 'select' option without a selected value
 			for (var i in dish_options) {
 				if (dish_options[i].type == 'select') {
@@ -75,7 +77,7 @@ NGApp.factory('CartService', function () {
 		/* Customization stuff */
 		service.restaurants[ service.id_restaurant ].items[id].details.customization = {};
 		service.restaurants[ service.id_restaurant ].items[id].details.customization.customizable = (dish.options().length > 0);
-		service.restaurants[ service.id_restaurant ].items[id].details.customization.expanded = (parseInt(dish.expand_view) > 0);
+		service.restaurants[ service.id_restaurant ].items[id].details.customization.expanded = ( expanded && (parseInt(dish.expand_view) > 0) );
 		service.restaurants[ service.id_restaurant ].items[id].details.customization.options = service._parseCustomOptions(dish_options, options);
 		service.restaurants[ service.id_restaurant ].items[id].details.customization.rawOptions = dish_options;
 		//TODO:: If it is a mobile add the items at the top #1035
