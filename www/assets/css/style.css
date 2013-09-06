@@ -1505,24 +1505,37 @@ h1.about-header {
 	z-index:100;
 }
 .payment-card {
-	background-repeat:no-repeat;
+	background-size: contain !important;
 	display:inline-block;
-	margin-right:4px;
-	height:29px;
-	width:40px;
+	height:28px;
+	margin-right: 2px;
+	width:45px;
 }
-.card-visa {
-	background:url(../images/payment/Visa-40.png);
+.card-visa{
+	background:url(../images/payment/card-visa@2x.png);
 }
-.card-master-card {
-	background:url(../images/payment/Mastercard-40.png);
+	.card-visa.grey{
+		background:url(../images/payment/card-visa-grey@2x.png);
+	}
+.card-master-card{
+	background:url(../images/payment/card-master@2x.png);
 }
-.card-amex {
-	background:url(../images/payment/Amex-40.png);
+	.card-master-card.grey{
+		background:url(../images/payment/card-master-grey@2x.png);
+	}
+.card-amex{
+	background:url(../images/payment/card-amex@2x.png);
 }
+	.card-amex.grey{
+		background:url(../images/payment/card-amex-grey@2x.png);
+	}
 .card-discover {
-	background:url(../images/payment/Discover-40.png);
+	background:url(../images/payment/card-discover@2x.png);
 }
+	.card-discover.grey {
+		background:url(../images/payment/card-discover-grey@2x.png);
+	}
+
 .gift-left {
 	font-size:11px;
 	font-weight:normal;
@@ -2624,14 +2637,14 @@ h1.about-header {
 		margin-top:.8em;
 	}
 	input[name="pay-card-number"] {
-		width:200px;
+		width:160px;
 	}
 	.credit-card-ok {
 		background:#FFF url(../images/creditcard-ok.png)no-repeat !important;
-		background-position:185px 5px !important;
+		background-position:140px 5px !important;
 	}
 	.payment-card-info {
-		margin-left:395px;
+		margin-left:342px;
 		font-size:12px;
 		position:absolute;
 		margin-top:-4px;

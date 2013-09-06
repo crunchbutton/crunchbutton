@@ -12,6 +12,13 @@ NGApp.directive( 'facebookSigninButton', function ( AccountFacebookService ) {
 	};;
 });
 
+NGApp.directive( 'preLoadImage', function() {
+		return function( scope, element, attrs ) {
+			var image = new Image();
+			image.src = attrs.preLoad;
+		};
+} );
+
 // Suggestion tool tip
 NGApp.directive( 'suggestionToolTip', function () {
 	return {
