@@ -103,7 +103,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 			$.totalStorage('fbtoken', service.token);
 			
 			// if the app already has a user, we dont give a crap about facebook
-			if (App.isPhoneGap && App.config.user.id_user) {
+			if ( App.config.user.id_user && App.config.user.facebook ) {
 				return;
 			}
 
