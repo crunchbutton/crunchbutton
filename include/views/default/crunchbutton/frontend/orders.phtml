@@ -28,7 +28,7 @@
 				You have {{referral.invites}} of the {{referral.limit}} invites remaining.
 			</p>
 
-			<input type="text" style="margin:10px;" ng-click-select-all value="{{referral.invite_url}}" readonly="readonly" />
+			<input type="text" style="margin:10px;" ng-click-select-all value="{{referral.invite_url.replace('http://','')}}" readonly="readonly" />
 
 			<p>
 				<a target="blank"class="twitter-invite-button" href="https://twitter.com/intent/tweet?url={{referral.invite_url}}&text=Some call to action message here!"><i class="icon-twitter"></i> Tweet on Twitter</a>
