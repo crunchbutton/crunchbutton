@@ -31,7 +31,9 @@
 	<div ng-show="restaurant.message" class="main-content-readable">
 		<div class="restaurant-message-mobile" ng-bind-html-unsafe="restaurant.message"></div>
 	</div>
-	
+
+	<div class="restaurant-closed-mobile" restaurant-is-closed></div>
+
 	<!-- main-content-readable-margin -->
 	<div class="main-content-readable">
 		<!-- cart -->
@@ -122,7 +124,6 @@
 
 		</div>
 		
-
 		<!-- menu -->
 		<div class="restaurant-items">
 			<div class="content-item-name content-item-main-name">
@@ -152,19 +153,11 @@
 
 	<div class="restaurant-payment-div"></div>
 
-	<div class="is-closet main-content-readable" ng-show="!open && order.loaded">
-		<div class="restaurant-closed">
-			<div class="restaurant-closed-icon"></div>
-			<div class="restaurant-closed-content">
-				<span class="restaurant-closed-title">
-					<span class="restaurant-closed-name">{{restaurant.name}} is currently closed!</span><span class="restaurant-closed-generic">Currently closed!</span>
-				</span>
-				<span class="restaurant-closed-content">
-					It will be open during the following hours (EDT):<br> 
-					<span ng-bind-html-unsafe="restaurant.closedMessage() | nl2br"></span>
-				</span>
-			</div>
-			<div class="divider"></div>
+	
+
+	<div class="restaurant-closed-desktop">
+		<div class="is-closet main-content-readable">
+			<div restaurant-is-closed></div>	
 		</div>
 	</div>
 
