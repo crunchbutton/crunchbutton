@@ -83,7 +83,6 @@ html[xmlns] .clearfix {
 .pacman-loading {
 	display:none;
 }
-
 /* CUSTOM CHECKBOX */
 .custom-checkbox{
 	background:url(../images/checkbox-unchecked.png);
@@ -955,9 +954,10 @@ h1.about-header {
 	width: 280px;
 }
 .restaurant-closed-icon {
-	background:url(../images/icon-closed.png);
 	display:block;
 	float:left;
+	color: #d74924;
+	font-size: 30px;
 	height:31px;
 	margin:10px;
 	width:27px;
@@ -968,6 +968,7 @@ h1.about-header {
 	font-size:15px;
 	font-weight:bold;
 	width:290px;
+	margin-top: 7px;
 }
 .restaurant-item-title {
 	text-transform:uppercase;
@@ -1777,7 +1778,7 @@ h1.about-header {
 }
 @media(max-width:768px) {
 	.visible-phone { 
-		display:block; 
+		display:block !important; 
 	}
 	.signin-user, .hidden-phone, .location-icon, .giftcard-desktop-container {
 		display:none;
@@ -2746,12 +2747,18 @@ h1.about-header {
 	.tooltip-help-mobile-container{
 		display: none
 	}
+	.restaurant-closed-mobile{
+		display: none;
+	}
+	.restaurant-closed-desktop{
+		display: block;
+	}
 }
 @media(max-width:767px) {
 	.order-begin .icon {
 		font-size:23px;
 	}
-	.order-begin-wrap {
+	.order-begin-wrap, .restaurant-closed {
 		background:#f34b24;
 		color:#fff;
 		text-shadow:none;
@@ -2762,6 +2769,18 @@ h1.about-header {
 		margin: 0 auto;
 		margin-bottom:20px;
 	}
+	.restaurant-closed{
+		margin-top: 15px;
+	}
+	.restaurant-closed-content{
+		display: table-cell;
+	}
+	.restaurant-closed-content{
+		width: 80%;	
+	}
+	.restaurant-closed-icon, .restaurant-closed-title{
+		color: #FFF;
+	}
 }
 @media(min-width:768px) {
 	.order-begin-wrap {
@@ -2771,6 +2790,7 @@ h1.about-header {
 	.restaurant-items{
 		margin-left: 40px;
 	}
+
 }
 @media(min-width:633px)and(max-width:768px) {
 	.meal-item:nth-child(2n+1) {
@@ -2780,12 +2800,20 @@ h1.about-header {
 		float:none;
 	}
 }
-
+@media(max-width:1023px) {
+	.restaurant-closed-mobile{
+		display: block;
+	}
+	.restaurant-closed-desktop{
+		display: none;
+	}
+}
+	
 @media (min-width: 769px) and (max-width: 1023px){
-		.tooltip-help{
-			margin-top: 10px;
-			position: absolute;
-			margin-left: 23px;
+	.tooltip-help{
+		margin-top: 10px;
+		position: absolute;
+		margin-left: 23px;
 	}
 	.content {
 		width:670px;
@@ -2813,7 +2841,10 @@ h1.about-header {
 		margin-left:20px;
 		margin-top:295px;
 	}
-
+	.restaurant-closed{
+		margin-top: 15px;
+		margin-left: 20px;
+	}
 	.restaurant-gift {
 		top: 390px !important;
 	}

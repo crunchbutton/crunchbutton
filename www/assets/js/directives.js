@@ -12,6 +12,14 @@ NGApp.directive( 'facebookSigninButton', function ( AccountFacebookService ) {
 	};;
 });
 
+// Restaurant is closed
+NGApp.directive( 'restaurantIsClosed', function () {
+	return {
+		restrict: 'A',
+		templateUrl: 'assets/view/restaurant.closed.inline.html'
+	};;
+});
+
 NGApp.directive( 'preLoadImage', function() {
 		return function( scope, element, attrs ) {
 			var image = new Image();
@@ -69,7 +77,6 @@ NGApp.directive( 'customCheckbox', function () {
 		require: 'ngModel',
 		replace: true,
 		template: '<span class="custom-checkbox"></span>',
-
 		link: function (scope, elem, attrs, ctrl) {
 			var label = angular.element('label[for="' + attrs.id + '"]');
 			label.bind('click', function () {
@@ -96,6 +103,7 @@ NGApp.directive( 'customCheckbox', function () {
 		}
 	}
 });
+
 // Blur event directive
 NGApp.directive('ngBlur', function() {
 		return {

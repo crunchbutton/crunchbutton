@@ -1,0 +1,16 @@
+<div class="restaurant-closed" ng-show="!open && order.loaded">
+	<div class="restaurant-closed-icon">
+		<i class="icon-time"></i>
+	</div>
+	<div class="restaurant-closed-content">
+		<span class="restaurant-closed-title">
+			<span class="restaurant-closed-name">{{restaurant.name}} is currently closed!</span>
+			<span class="restaurant-closed-generic">Currently closed!</span>
+		</span>
+		<span class="restaurant-closed-content">
+			It will be open during the following hours (EDT):<br> 
+			<span ng-bind-html-unsafe="restaurant.closedMessage() | nl2br"></span>
+		</span>
+	</div>
+	<div class="divider"></div>
+</div>
