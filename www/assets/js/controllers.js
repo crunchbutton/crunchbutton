@@ -464,7 +464,7 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 /**
  * Order page. displayed after order, or at order history
  */
-NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService ) {
+NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService ) {
 
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
@@ -484,6 +484,24 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.facebook = function(){
 		OrderViewService.facebook.postOrder();
 	}
+
+	$scope.referral = {
+		invite_url : ReferralService.invite_url,
+		value : ReferralService.value,
+		enabled : ReferralService.enabled
+	}	
+
+	// Load the invite_url
+	if( !ReferralService.invite_url ){
+		ReferralService.getStatus();
+	}
+
+	$scope.$on( 'referralStatusLoaded', function(e, data) {
+		$scope.referral.invite_url = ReferralService.invite_url;
+		$scope.referral.value = ReferralService.value;
+		$scope.referral.enabled = ReferralService.enabled;
+	});
+
 
 	$scope.$on( 'OrderViewLoadedOrder', function(e, order) {
 		$scope.order = order;	

@@ -1646,7 +1646,24 @@ h1.about-header {
 		margin-top:5px;
 		text-transform:none;
 	}
-
+.order-invite-code{
+	margin-bottom:25px;
+	margin-top: 15px;
+	display:block;
+	font-size:13px;
+	padding: 10px;
+}
+	.order-invite-code .link{
+		color:#d84e2a;
+		font-size: 14px;
+		font-weight: bold;
+	}
+	.order-invite-code h4{
+		color:#d84e2a;
+		font-weight:bold;
+		font-size:15px;
+		margin-bottom: 5px;
+	}
 /* GIFT CARD STUFF */
 .giftcard-info {
 	color:red;
