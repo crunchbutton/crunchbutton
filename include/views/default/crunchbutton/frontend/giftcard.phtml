@@ -4,68 +4,39 @@
 		<h1>Gift card</h1>
 		<div class="wait">Just a sec.</div>
 	</div>
-	
-	<!-- User is logged -->
-	<div ng-show="user">
-		<!-- Error -->
-		<div ng-show="modal.error && !modal.success">
-			<h1>Oops, error!</h1>
-			<div class="error" ng-show="modal.error == 'used'">
-				Sorry, this gift card was already used.
-			</div>
-			<div class="error" ng-show="modal.error == 'invalid'">
-				Sorry, this is an invalid gift card.
-			</div>
-			<div class="error" ng-show="modal.error != 'used' && modal.error != 'invalid'">
-				Please try it again.
-			</div>
+
+	<!-- Error -->
+	<div ng-show="modal.error && !modal.success">
+		<h1>Oops, error!</h1>
+		<div class="error" ng-show="modal.error == 'used'">
+			Sorry, this gift card was already used.
 		</div>
-		<!-- Success -->
-		<div ng-show="modal.success && !modal.error">
-			<h1>Gift card added!</h1>
-			<div class="success" ng-show="modal.restaurant">
-				You've got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{modal.restaurant.name}}</b>
-			</div>
-			<div class="success" ng-show="!modal.restaurant">
-				You've got a <b>${{giftcard.value}}</b> gift card to Crunchbutton!
-			</div>
-			<br />
-			<div class="bottom-links">
-				<span class="giftcard-later" ng-click="modal.close();">Great</span>
-			</div>
-			<div class="divider"></div>
+		<div class="error" ng-show="modal.error == 'invalid'">
+			Sorry, this is an invalid gift card.
+		</div>
+		<div class="error" ng-show="modal.error != 'used' && modal.error != 'invalid'">
+			Please try it again.
 		</div>
 	</div>
 
-	<!-- User is not logged -->
-	<div ng-show="!user">
-		<!-- Error -->
-		<div ng-show="modal.error && !modal.success">
-			<h1>Oops, error!</h1>
-			<div class="error" ng-show="modal.error == 'used'">
-				Sorry, this gift card was already used.
-			</div>
-			<div class="error" ng-show="modal.error == 'invalid'">
-				Sorry, this is an invalid gift card.
-			</div>
-			<div class="error" ng-show="modal.error != 'used' && modal.error != 'invalid'">
-				Please try it again.
-			</div>
+	<!-- Success -->
+	<div ng-show="modal.success && !modal.error">
+		<h1 ng-show="!user">Welcome!</h1>
+		<h1 ng-show="user">Congrats!</h1>
+		<div class="success" ng-show="modal.restaurant">
+			Congrats, you just got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{modal.restaurant.name}}</b>.
+			<br/>
+			Go ahead and order some food!
 		</div>
-		<!-- Success -->
-		<div ng-show="modal.success && !modal.error">
-			<h1>Welcome!</h1>
-			<div class="success" ng-show="modal.restaurant">
-				You have a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{modal.restaurant.name}}</b>
-			</div>
-			<div class="success" ng-show="!modal.restaurant">
-				You have a <b>${{giftcard.value}}</b> gift card!
-			</div>
-			<div class="bottom-links">
-				<span class="giftcard-later" ng-click="modal.close();">Great</span>
-			</div>
-			<div class="divider"></div>
+		<div class="success" ng-show="!modal.restaurant">
+			Congrats, you just got a <b>${{giftcard.value}}</b> gift card.
+			<br/>
+			Go ahead and order some food!
 		</div>
+		<div class="bottom-links">
+			<span class="giftcard-later" ng-click="modal.close();">Great</span>
+		</div>
+		<div class="divider"></div>
 	</div>
 
 </div>

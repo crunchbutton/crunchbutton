@@ -1727,6 +1727,7 @@ h1.about-header {
 	cursor:pointer;
 	display:block;
 	margin-bottom:0px;
+	margin-top:15px !important;
 	outline-color:rgb(255,244,243);
 	padding:2px 5px 3px 5px;
 	text-align:center;
@@ -1739,7 +1740,6 @@ h1.about-header {
 	-webkit-tap-highlight-color:rgba(0,0,0,0);
 	-webkit-user-select:none;
 	-webkit-writing-mode:horizontal-tb;
-	float:right;
 	margin-right:60px;
 	font-size:13px;
 	width:80px;
