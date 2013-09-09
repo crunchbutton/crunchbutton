@@ -116,4 +116,9 @@
 	</tr>
 	<?php } ?>
 
+	<? if ($order->pay_type == 'card' && $order->tip == 0) : ?>
+		<tr>
+			<td colspan="3" style="text-align:left">Customer is tipping with cash</td>
+		</tr>
+	<? endif ; ?>
 </table>
