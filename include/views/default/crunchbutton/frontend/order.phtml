@@ -12,9 +12,16 @@
 			Crunched!
 			<span class="order-thanks-message-block">Your order is placed</span>
 			<span class="order-thanks-message-small">(and saved for easy 1 click ordering next time)</span>
-			<br><br>
 		</span>
-	
+
+		<div class="order-invite-code" ng-show="order.new && referral.invite_url && referral.enabled">
+			<h4>Invite Code <i class="icon-gift"></i></h4>
+			For every new friend who orders food, we'll give you <strong>${{referral.value}}</strong> credit. 
+			<br/>
+			Have them follow this link <span class="link">{{referral.invite_url.replace('http://','')}}</span> and place an order!
+
+		</div>
+
 		<div ng-show="account.user">
 			You can one click order anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 		</div>
