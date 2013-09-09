@@ -1148,7 +1148,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				((ACOS(SIN('.$params['lat'].' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$params['lat'].' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$params['lon'].' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`,
 				restaurant.*
 			FROM `restaurant`
-			LEFT JOIN `order` using(id_restaurant)
+			LEFT JOIN `order` o ON o.id_restaurant = restaurant.id_restaurant AND o.date > DATE( NOW() - INTERVAL 30 DAY)
 			WHERE
 				active = 1
 			GROUP BY restaurant.id_restaurant
