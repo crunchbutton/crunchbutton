@@ -226,6 +226,16 @@ var Location = function( params ) {
 		self._properties.entered = entered;
 	}
 
+	self.toCookie = function(){
+		var properties = {};
+		for (var x in this._properties ) {
+			if( x != 'results' ){
+				properties[x] = this._properties[x];	
+			}
+		}	
+		return new Location( properties );
+	}
+
 	for (var x in params) {
 		this._properties[x] = params[x];
 	}
