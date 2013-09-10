@@ -2,7 +2,8 @@ NGApp.factory('PositionsService', function ( $rootScope ) {
 
 	var service = {
 		bounding: null,
-		locs: []
+		locs: [],
+		storageLimit : 4
 	}
 
 	/**
@@ -10,7 +11,14 @@ NGApp.factory('PositionsService', function ( $rootScope ) {
 	 */
 	service.addLocation = function (loc) {
 		service.locs.push(loc);
-		$.totalStorage('locsv3', service.locs);
+		var locs = [];
+		for( x in service.locs ){
+			locs.push( service.locs[x].toCookie() );
+		}
+		if( locs.length > service.storageLimit ){
+			locs = locs.slice( locs.length - service.storageLimit );
+		}
+		$.totalStorage( 'locsv3', locs );
 		$rootScope.$broadcast( 'NewLocationAdded', true );
 	}
 

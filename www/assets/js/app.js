@@ -530,6 +530,11 @@ App.init = function(config) {
 	App.processConfig(config || App.config);
 	App.AB.init();
 	App.NGinit();
+
+	// Remove the old cookies #1705
+	$.cookie('loc','', { expires : ( new Date(1970,01,01) ) });
+	$.cookie('locv2','', { expires : ( new Date(1970,01,01) ) });
+
 /*
 	if( App.config.user.id_user ){
 		var account = angular.element( 'html' ).injector().get( 'AccountService' );
