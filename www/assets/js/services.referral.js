@@ -49,6 +49,14 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope ){
 			} );
 	}
 
+	
+	$rootScope.$on( 'userAuth', function(e, data) {
+		service.invite_url = null;
+		service.value = 0;
+		service.invites = 0;
+		service.limit = 0;
+	});
+
 	return service;
 
 } );
