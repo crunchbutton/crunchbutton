@@ -14,14 +14,6 @@
 			<span class="order-thanks-message-small">(and saved for easy 1 click ordering next time)</span>
 		</span>
 
-		<div class="order-invite-code" ng-show="order.new && referral.invite_url && referral.enabled">
-			<h4>Invite Code <i class="icon-gift"></i></h4>
-			For every new friend who orders food, we'll give you <strong>${{referral.value}}</strong> credit. 
-			<br/>
-			Have them follow this link <span class="link">{{referral.invite_url.replace('http://','')}}</span> and place an order!
-
-		</div>
-
 		<div ng-show="account.user">
 			You can one click order anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 		</div>
@@ -31,6 +23,12 @@
 				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
 		</div>
 	
+		<div class="order-invite-code field-container" ng-show="order.new && referral.invite_url && referral.enabled">
+			<h4>Invite Code <i class="icon-gift"></i></h4>
+			Earn Crunch Credit for every new friend who orders with this link!
+			<input type="text" style="margin:10px;" ng-click-select-all value="{{referral.invite_url.replace('http://','')}}" readonly="readonly" />
+		</div>
+
 		<div class="order-details">
 
 			<div ng-show="(order.delivery_type == 'delivery')">

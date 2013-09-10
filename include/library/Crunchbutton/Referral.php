@@ -50,8 +50,8 @@ class Crunchbutton_Referral extends Cana_Table{
 
 		$total_invites = $this->getInvitesPerCode( $this->invite_code );
 		$limit_invites = $this->getInvitesLimit();
-
-		if( intval( $limit_invites ) >= intval( $total_invites ) ){
+	
+		if( intval( $total_invites ) >= intval( $limit_invites ) ){
 			return;
 		}
 
@@ -61,9 +61,12 @@ class Crunchbutton_Referral extends Cana_Table{
 			$credit->id_referral = $this->id_referral;
 			$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
 			$credit->date = date('Y-m-d H:i:s');
-			$credit->value = 1;
+			$credit->value = $this->getInviterCreditValue();
 			$credit->paid_by = 'crunchbutton';
-			$credit->note = 'Referral: ' . $this->id_referral;
+			$credit->note = 'Referral inviter: ' . $this->id_referral;
+
+			Log::debug([ 'referral_type' => 'inviter', 'id_user' => $credit->id_user,  'id_referral' => $credit->id_referral,  'type' => $credit->type,  'date' => $credit->date,  'value' => $credit->value,  'paid_by' => $credit->paid_by,  'note' => $credit->note, 'type' => 'referral' ]);
+
 			$credit->save();
 			if( $this->getAddCreditToInvited() ){
 				$this->addCreditToInvited();	
@@ -78,9 +81,12 @@ class Crunchbutton_Referral extends Cana_Table{
 			$credit->id_referral = $this->id_referral;
 			$credit->type = Crunchbutton_Credit::TYPE_CREDIT;
 			$credit->date = date('Y-m-d H:i:s');
-			$credit->value = 1;
+			$credit->value = $this->getInvitedCreditValue();
 			$credit->paid_by = 'crunchbutton';
-			$credit->note = 'Referral: ' . $this->id_referral;
+			$credit->note = 'Referral invited: ' . $this->id_referral;
+
+			Log::debug([ 'referral_type' => 'invited', 'id_user' => $credit->id_user,  'id_referral' => $credit->id_referral,  'type' => $credit->type,  'date' => $credit->date,  'value' => $credit->value,  'paid_by' => $credit->paid_by,  'note' => $credit->note, 'type' => 'referral' ]);
+
 			$credit->save();
 		}
 	}

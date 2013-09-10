@@ -55,10 +55,10 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 	service.postInvite = function( url ){
 		var pic = 'http://crunchbutton.com/assets/images/facebook-like.png';
-		var name = '{some title here}';
-		var caption = '{some caption here}';
-		var description = '{some description here}';
-		var message = '{some message here}';
+		var name = '';
+		var caption = '';
+		var description = '';
+		var message = '';
 		FB.ui({
 			method: 'stream.publish',
 			user_message_prompt: 'CrunchButton!',

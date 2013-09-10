@@ -409,6 +409,9 @@ class Crunchbutton_Order extends Cana_Table {
 					$referral->save();
 					// Finally give credit to inviter
 					$referral->addCreditToInviter();
+
+					Log::debug([ 'inviter_code' => $inviter_code, 'totalOrdersByPhone' => $totalOrdersByPhone, 'type' => 'referral' ]);
+
 				}
 				Crunchbutton_Referral::removeCookie();
 			}
