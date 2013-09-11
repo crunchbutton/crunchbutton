@@ -205,7 +205,7 @@
 		
 					<label ng-show="order.form.delivery_type=='delivery'">Delivery Address</label>
 					<div ng-show="order.form.delivery_type=='delivery'" class="input-item">
-					<textarea ng-model="order.form.address" name="pay-address" name="pay-address" tabindex="5"></textarea></div>
+					<textarea ng-model="order.form.address" name="pay-address" id="pay-address" tabindex="5"></textarea></div>
 					<div class="divider"></div>
 	
 					<div ng-show="(restaurant.id != 74)">
@@ -390,14 +390,27 @@
 </div>
 <div class="bottom-spacer"></div>
 
-<div class="giftcard-payment-warning modal zoom-anim-dialog small-container mfp-hide">
+<div class="address-not-found-warning order-warning modal zoom-anim-dialog small-container mfp-hide">
+	<h1>Confirm the address?</h1>
+	<p><strong>{{order.form.address}}</strong></p>
+	<ul>
+		<li>
+			<div ng-click="addressPlaceAnyway();">Yes</div>
+		</li>
+		<li>
+			<div ng-click="addressLetMeChangeIt();">No, let me change it.</div>
+		</li>
+	</ul>
+</div>
+
+<div class="giftcard-payment-warning order-warning modal zoom-anim-dialog small-container mfp-hide">
 	<h1>Sorry, you must pay with a credit card to use this gift code.</h1>
 	<ul>
 		<li>
-			<div ng-click="placeAnyway();">Place Order Anyway</div>
+			<div ng-click="giftCardPlaceAnyway();">Place Order Anyway</div>
 		</li>
 		<li>
-			<div ng-click="showCreditPayment();">Pay with Credit Card</div>
+			<div ng-click="giftCardCreditPayment();">Pay with Credit Card</div>
 		</li>
 	</ul>
 </div>

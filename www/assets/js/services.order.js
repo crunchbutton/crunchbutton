@@ -307,8 +307,12 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		return elements;
 	}
 
-	service.submit = function(){
-		service._deliveryAddressOk = false;
+	service.submit = function( forceAddressOk ){
+		if( forceAddressOk ){
+			service._deliveryAddressOk = true;	
+		} else {
+			service._deliveryAddressOk = false;
+		}
 		service.processOrder();
 	}
 	
@@ -436,17 +440,17 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			if (!service._deliveryAddressOk) {
 
 				if (service.location.bounding) {
-					var latLong = new google.maps.LatLng(service.location.bounding.lat,service.location.bounding.lon);
+					var latLong = new google.maps.LatLng( service.location.bounding.lat, service.location.bounding.lon );
 				}
 				
 				// Use the restautant's position to create the bounding box - just for tests only
 				if (service._useRestaurantBoundingBox) {
-					var latLong = new google.maps.LatLng(service.restaurant.loc_lat, service.restaurant.loc_long);
+					var latLong = new google.maps.LatLng( service.restaurant.loc_lat, service.restaurant.loc_long );
 				}
 				
 				if (!latLong) {
-					App.alert('Could not locate you!');
 					App.busy.unBusy();
+					App.dialog.show( '.address-not-found-warning' );
 					return;
 				}
 
@@ -471,7 +475,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 						distance = service.location.km2Miles( distance );
 
 						if (!service.restaurant.deliveryHere(distance)) {
-							App.alert('Sorry, you are out of delivery range or have an invalid address. \nPlease check your address, or order takeout.');
+							App.alert('Sorry, you are out of delivery range or have an invalid address. <br>Please check your address, or order takeout.');
 							
 							App.busy.unBusy();
 
@@ -508,9 +512,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 					} else {
 						// Address was found but it is not valid (for example it could be a city name)
 						App.alert('Oops, it looks like your address is incomplete. <br>Please enter a street name, number and zip code.');
-						
 						App.busy.unBusy();
-
 						// Make sure that the form will be visible
 						$rootScope.$safeApply( function(){
 							service.showForm = true;
