@@ -55,7 +55,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 	service.postInvite = function( url ){
 		var pic = 'http://crunchbutton.com/assets/images/facebook-like.png';
-		var name = '';
+		var name = 'Nom';
 		var caption = '';
 		var description = '';
 		var message = '';
