@@ -10,11 +10,11 @@
 	
 		<span class="order-thanks-message" ng-show="order.new">
 			Crunched!&nbsp;
-			<span class="order-thanks-message-block">Your order is placed</span>
+			<span class="order-thanks-message-block"> Your order is placed</span>
 			<span class="order-thanks-message-small">(and saved for easy 1 click ordering next time)</span>
 		</span>
 
-		<div ng-show="account.user">
+		<div ng-show="account.user" class="order-phone-message">
 			You can one click order anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 		</div>
 
@@ -26,6 +26,7 @@
 		<div class="order-invite-code field-container" ng-show="order.new && referral.invite_url && referral.enabled">
 			<h4>Invite Code</h4>
 			Earn Crunch Credit for every new friend who orders with this link!
+			<br/>
 			<input type="text" style="margin:10px;" ng-click-select-all value="{{referral.invite_url.replace('http://','')}}" readonly="readonly" />
 		</div>
 
@@ -58,13 +59,8 @@
 			<div>
 				{{order._restaurant_name}}: 
 				<b>
-					<span ng-show="restaurant.phone">
-						<span ng-show="isMobile"><a href="tel:{{restaurant.phone}}">{{ restaurant.phone }}</a></span>
-						<span ng-show="!isMobile">{{ restaurant.phone }}</span>
-					</span>
-					<span ng-show="!restaurant.phone">
-						<i class="icon-spinner icon-spin"></i>
-					</span>
+					<span ng-show="isMobile"><a href="tel:{{order._restaurant_phone}}">{{ order._restaurant_phone | formatPhone }}</a></span>
+					<span ng-show="!isMobile">{{ order._restaurant_phone | formatPhone }}</span>
 				</b>
 			</div>
 

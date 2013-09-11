@@ -470,10 +470,8 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$location.path( '/' );
 		return;
 	}
-
 	$scope.account = { user : AccountService.user, has_auth : AccountService.user.has_auth };
 	$scope.modal = { signupOpen : AccountModalService.signupOpen };
-
 	$scope.order = {};
 	$scope.restaurant = {};
 	
@@ -502,16 +500,11 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$scope.referral.enabled = ReferralService.enabled;
 	});
 
-
 	$scope.$on( 'OrderViewLoadedOrder', function(e, order) {
 		$scope.order = order;	
 		$scope.$safeApply();
 	});
 
-	$scope.$on( 'OrderViewLoadedRestaurant', function(e, restaurant) {
-		$scope.restaurant.phone = $filter( 'formatPhone' )( restaurant.phone );
-		$scope.$safeApply();
-	});
 });
 
 
