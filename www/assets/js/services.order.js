@@ -815,7 +815,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 	return service;
 });
 // OrdersService service
-NGApp.factory('OrdersService', function ($http, $location, $rootScope, RestaurantsService) {
+NGApp.factory('OrdersService', function ($http, $location, $rootScope, RestaurantsService, OrderViewService) {
 	var service = {
 		list: false,
 		reload : true
@@ -827,7 +827,8 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 		if( service.list && !service.reload ){
 			return service.list;
 		}
-
+		OrderViewService.newOrder = false;
+		console.log('OrderViewService',OrderViewService.newOrder);
 		list = false;
 		service.list = list;
 		$http.get(App.service + 'user/orders', {
@@ -899,27 +900,14 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 
 					if( service.newOrder ){
 						service.order.new = service.newOrder;
+					} else {
+						service.order.new = false;
 					}
 
 					service.facebook._order_uuid = service.order.uuid;
 					service.facebook.preLoadOrderStatus();
 					
 					$rootScope.$broadcast( 'OrderViewLoadedOrder', service.order );
-
-					App.cache('Restaurant', service.order.id_restaurant, function () {
-						service.restaurant = this;
-						var complete = function () {
-							if (service.newOrder ) {
-								setTimeout(function () {
-									service.newOrder = false;
-								}, 500);
-							}
-						};
-						$rootScope.$safeApply( function(){
-							complete();
-						});
-						$rootScope.$broadcast( 'OrderViewLoadedRestaurant', service.restaurant );
-					});
 
 				} else {
 					error();
