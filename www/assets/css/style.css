@@ -1469,11 +1469,17 @@ h1.about-header {
 .order-thanks-message {
 	font-size:30px;
 	font-weight:bold;
+	margin-bottom: 30px;
+	display: block;
 }
 .order-thanks-message-small {
 	font-size:14px;
 	display:block;
 	margin-top:5px;
+}
+.order-phone-message{
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
 @-moz-document url-prefix() {
 	.cart-item-config {
@@ -1656,6 +1662,7 @@ h1.about-header {
 	border-top: 1px solid #fbdbc0;
 	margin-left: auto;
 	margin-right: auto;
+	width: 100% !important;
 }
 	.order-invite-code .link{
 		color:#d84e2a;
