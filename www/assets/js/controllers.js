@@ -9,7 +9,6 @@ NGApp.controller('LegalCtrl', function ($scope, $http) {
 	}
 });
 
-
 /**
  * help page
  */
@@ -172,6 +171,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	var account = AccountService;
 	var restaurants = RestaurantsService;
 
+	$scope.warningPlaceholder = false;
+
 	$scope.isUser = account.user.has_auth;
 	$scope.notUser = !account.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
@@ -208,6 +209,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 
 	$scope.$on( 'locationNotServed', function(e, data) {
 		$('.location-address').val('').attr('placeholder','Please include a zip code or city name');
+		$scope.warningPlaceholder = true;
 	});
 	
 	var proceed = function() {
@@ -235,6 +237,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 				// Address not ok
 				function() {
 					$('.location-address').val('').attr('placeholder','Oops! Please enter a street address, city, and zip');
+					$scope.warningPlaceholder = true;
 				}
 			);
 		}

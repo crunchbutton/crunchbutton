@@ -15,7 +15,7 @@
 		<table class="button-letseat-table" cellpadding="0" cellspacing="0">
 			<tr>
 				<td style="width: 100%;">
-					<input type="text" class="location-address" ng-enter="letsEat()" ng-model="location.form.address" placeholder="Enter your zip code or full address"<?=$this->export ? '' : ' autofocus'?>>
+					<input type="text" class="location-address" ng-class="{ 'location-warning' : warningPlaceholder }" ng-enter="letsEat()" ng-model="location.form.address" placeholder="Enter your zip code or full address"<?=$this->export ? '' : ' autofocus'?>>
 				</td>
 				<td>
 					<div class="location-detect">
