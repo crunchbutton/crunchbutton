@@ -57,7 +57,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 		var pic = 'http://crunchbutton.com/assets/images/facebook-like.png';
 		var name = 'Nom';
 		var caption = '';
-		var description = '';
+		var description = url;
 		var message = '';
 		FB.ui({
 			method: 'stream.publish',
