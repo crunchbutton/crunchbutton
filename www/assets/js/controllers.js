@@ -315,7 +315,24 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		$scope.order.showForm = true;
 		$rootScope.closePopup();
 	}
-	$scope.placeAnyway = function(){
+	$scope.addressLetMeChangeIt = function(){
+		$rootScope.closePopup();
+		$scope.order.showForm = true;
+		// Give time to close the modal.
+		setTimeout( function(){ $scope.focus( '#pay-address' );	}, 450 );
+	}
+	$scope.addressPlaceAnyway = function(){
+		$rootScope.closePopup();
+		// Give time to close the modal.
+		setTimeout( function(){ order.submit( true );;	}, 300 );
+	}
+	
+	$scope.giftCardCreditPayment = function(){
+		$rootScope.closePopup();
+		$scope.order.tooglePayment( 'card' );
+		$scope.order.showForm = true;
+	}
+	$scope.giftCardPlaceAnyway = function(){
 		$rootScope.closePopup();
 		$scope.ignoreGiftCardWithCashOrder = true;
 		setTimeout(function(){
