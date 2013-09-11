@@ -37,14 +37,14 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 	service.signin = function(){
 		if( !service.isValidEmailPhone() ){
-			App.alert( 'Please enter a valid email or phone.' );
-			$( '.signin-email' ).focus();
+			alert( 'Please enter a valid email or phone.' );
+			$rootScope.focus( '.signin-email' );
 			return;
 		}
 
 		if( !service.isValidPassword() ){
-			App.alert( 'Please enter your password.' );
-			$( '.signin-password' ).focus();
+			alert( 'Please enter your password.' );
+			$rootScope.focus( '.signin-password' );
 			return;
 		}
 		service.purify();
@@ -78,14 +78,14 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 	service.signup = function(){
 		if( !service.isValidEmailPhone() ){
-			App.alert( 'Please enter a valid email or phone.' );
-			$( '.signup-email' ).focus();
+			alert( 'Please enter a valid email or phone.' );
+			$rootScope.focus( '.signup-email' );
 			return;
 		}
 
 		if( !service.isValidPassword() ){
 			App.alert( 'Please enter a password.' );
-			$( '.signup-password' ).focus();
+			$rootScope.focus( '.signup-password' );
 			return;
 		}
 
@@ -164,7 +164,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 
 // AccountHelpService service
-NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountModalService ){ 
+NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService, AccountModalService ){ 
 	// It starts invisible
 	var service = { 
 			visible : false, 
@@ -185,6 +185,7 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 		modal.header = !show;
 		if( show ){
 			service.reset();
+			$rootScope.focus( '.help-email' );
 		}
 	}
 
@@ -196,8 +197,8 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 
 	service.sendForm = function(){
 		if( !account.isValidEmailPhone() ){
-			App.alert( 'Please enter a valid email or phone.' );
-			$( '.help-email' ).focus();
+			alert( 'Please enter a valid email or phone.' );
+			$rootScope.focus( '.help-email' );
 			return;
 		}
 
@@ -212,7 +213,7 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 					if( data.error ){
 						if( data.error == 'user is not registred' ){
 							service.error = true;
-							$( 'input[name=password-help-email]' ).focus()
+							$rootScope.focus( '.help-email' );
 						}
 					} else {
 						if( data.success = 'success' ){
@@ -230,7 +231,7 @@ NGApp.factory( 'AccountHelpService', function( $http, AccountService, AccountMod
 } );
 
 // AccountModalService service
-NGApp.factory( 'AccountModalService', function( $http, FacebookService ){
+NGApp.factory( 'AccountModalService', function( $http, $rootScope, FacebookService ){
 	
 	var service = {
 		header : true,
@@ -251,6 +252,7 @@ NGApp.factory( 'AccountModalService', function( $http, FacebookService ){
 		service.header = true;
 		App.dialog.show( '.account-container' );
 		service.toggleSignForm( 'signup' );
+		
 	}
 
 	service.facebookOpen = function(){
@@ -268,6 +270,12 @@ NGApp.factory( 'AccountModalService', function( $http, FacebookService ){
 		service.signin = ( form == 'signin' );
 		service.signup = ( form == 'signup' );
 		service.facebookLogin = ( form == 'facebook' );
+		if( service.signin ){
+			$rootScope.focus( '#signin-email' );
+		}
+		if( service.signup ){
+			$rootScope.focus( '#signup-email' );
+		}
 	}
 
 	service.headerIsVisible = function(){
@@ -275,6 +283,7 @@ NGApp.factory( 'AccountModalService', function( $http, FacebookService ){
 	}
 
 	return service;
+
 } );
 
 

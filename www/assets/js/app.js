@@ -155,6 +155,12 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		});
 	});
 
+	$rootScope.focus = function( selector ){
+		setTimeout(function(){
+			angular.element( selector ).focus();
+		}, 100);
+	}
+
 	/* @info: this is how you watch an object rather than a property so i remeber
 	$rootScope.$watch('account.user', function() {
 		// indicates that the user object has changed
