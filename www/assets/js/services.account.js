@@ -186,6 +186,8 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 		if( show ){
 			service.reset();
 			$rootScope.focus( '.help-email' );
+		} else {
+			$rootScope.focus( '.signin-email' );
 		}
 	}
 
@@ -271,10 +273,10 @@ NGApp.factory( 'AccountModalService', function( $http, $rootScope, FacebookServi
 		service.signup = ( form == 'signup' );
 		service.facebookLogin = ( form == 'facebook' );
 		if( service.signin ){
-			$rootScope.focus( '#signin-email' );
+			$rootScope.focus( '.signin-email' );
 		}
 		if( service.signup ){
-			$rootScope.focus( '#signup-email' );
+			$rootScope.focus( '.signup-email' );
 		}
 	}
 
