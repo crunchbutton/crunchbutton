@@ -207,7 +207,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	});
 
 	$scope.$on( 'locationNotServed', function(e, data) {
-		$('.location-address').val('').attr('placeholder','Please enter a zip code or city name');
+		$('.location-address').val('').attr('placeholder','Please include a zip code or city name');
 	});
 	
 	var proceed = function() {
@@ -234,7 +234,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 				}, 
 				// Address not ok
 				function() {
-					$('.location-address').val('').attr('placeholder','Oops! We couldn\'t find that address!');
+					$('.location-address').val('').attr('placeholder','Oops! Please enter a street address, city, and zip');
 				}
 			);
 		}
