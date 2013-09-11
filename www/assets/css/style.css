@@ -106,7 +106,23 @@ html[xmlns] .clearfix {
 		.custom-checkbox+label+label{
 			margin-left: 3px;
 		}
-	
+
+.location-warning::-webkit-input-placeholder { /* WebKit browsers */
+	color: #d74924 !important;
+}
+
+.location-warning:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+	color: #d74924 !important;
+}
+
+.location-warning::-moz-placeholder { /* Mozilla Firefox 19+ */
+	color: #d74924 !important;
+}
+
+.location-warning:-ms-input-placeholder { /* Internet Explorer 10+ */
+	color: #d74924 !important;
+}
+
 /* APP BUSY */
 .app-busy {
 	top:0;
