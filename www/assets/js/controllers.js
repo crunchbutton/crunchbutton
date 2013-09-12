@@ -196,6 +196,10 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	$scope.resetFormLocation = function(){
 		$scope.location.form.address = '';
 		$scope.locationError = false;
+		$scope.warningPlaceholder = false;
+		setTimeout( function(){
+			$scope.focus( '.location-address' );
+		}, 250 );
 	}
 
 	$scope.$watch( 'location.position.pos().city()', function( newValue, oldValue, scope ) {
@@ -210,6 +214,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	$scope.$on( 'locationNotServed', function(e, data) {
 		$('.location-address').val('').attr('placeholder','Please include a zip code or city name');
 		$scope.warningPlaceholder = true;
+		$scope.focus( '.location-address' );
 	});
 	
 	var proceed = function() {
@@ -221,6 +226,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 		$scope.location.form.address = $.trim( $scope.location.form.address );
 		if ( $scope.location.form.address == '' ) {
 			$('.location-address').val('').attr('placeholder','Please enter your address here');
+			$scope.warningPlaceholder = true;
+			$scope.focus( '.location-address' );
 		} else {
 			$scope.location.addVerify( $scope.location.form.address, 
 				// Address ok
@@ -238,6 +245,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 				function() {
 					$('.location-address').val('').attr('placeholder','Oops! Please enter a street address, city, and zip');
 					$scope.warningPlaceholder = true;
+					$scope.focus( '.location-address' );
 				}
 			);
 		}
