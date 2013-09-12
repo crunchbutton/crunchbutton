@@ -162,7 +162,6 @@ var Restaurant = function(id) {
 
 	self.deliveryDiff = function(total) {
 		var diff = parseFloat(self.delivery_min - total).toFixed(2);
-		/* console.log(App.cart.subtotal(), App.cart.total(),self.delivery_min_amt, total, diff); */
 		return diff;
 	}
 
@@ -207,11 +206,54 @@ var Restaurant = function(id) {
 
 		var isOpen =  false;
 		var today = Date.today().toString('ddd').toLowerCase();
+
 		if (this._hours == undefined ||  this._hours[today] == undefined) {
 			this._open = false;
 			return false;
 		}
-		todayHours  = this._hours[today];
+
+		// Check the yesterday time too
+		// because the restauran could be opened from yesterday 10PM to today (like Mirano's see #1707)
+		var yesterday = Date.parse( 'yesterday' ).toString('ddd').toLowerCase();
+
+		if( this._hours[yesterday] != undefined ){
+
+			yesterdayHours = this._hours[yesterday];
+
+			for (i in yesterdayHours) {
+				var openTime  = this._parseDate(yesterdayHours[i][0]);
+				var closeTime = this._parseDate(yesterdayHours[i][1]);
+
+				if (yesterdayHours[i][1] == '24:00') {
+					closeTime = this._parseDate('00:00');
+					closeTime.addDays(1);
+				}
+
+				// Change the time to yesterday
+				openTime.addDays( -1 );
+				closeTime.addDays( -1 );
+
+				// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
+				if (openTime) {
+					var openTime_utc = this._parseDate(openTime.add( - this._tzoffset ).hours().toUTCString());
+				}
+
+				// Convert the close hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
+				if (closeTime) {
+					var closeTime_utc = this._parseDate(closeTime.add( - this._tzoffset ).hours().toUTCString());
+				}
+
+				var now_utc = this._utcNow();
+				if( openTime_utc &&  closeTime_utc ){
+					if (now_utc.between(openTime_utc, closeTime_utc)) {
+						isOpen = true;
+						break;
+					}
+				}
+			}
+		}
+
+		var todayHours = this._hours[today];
 
 		for (i in todayHours) {
 
@@ -235,7 +277,6 @@ var Restaurant = function(id) {
 			// Convert current user date to UTC.
 			// var now_utc = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
 			var now_utc = this._utcNow();
-
 			// if closeTime before openTime, then closeTime should be for tomorrow
 			if( closeTime_utc ){
 				if (closeTime_utc.compareTo(openTime_utc) == -1) {
