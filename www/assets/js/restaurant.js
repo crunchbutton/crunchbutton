@@ -211,9 +211,9 @@ var Restaurant = function(id) {
 			this._open = false;
 			return false;
 		}
-
+ 
 		// Check the yesterday time too
-		// because the restauran could be opened from yesterday 10PM to today (like Mirano's see #1707)
+		// because the restauran could be opened from yesterday 11:30 AM to today 3:45 AM (Like Mirano - See #1707)
 		var yesterday = Date.parse( 'yesterday' ).toString('ddd').toLowerCase();
 
 		if( this._hours[yesterday] != undefined ){
@@ -226,20 +226,22 @@ var Restaurant = function(id) {
 
 				if (yesterdayHours[i][1] == '24:00') {
 					closeTime = this._parseDate('00:00');
-					closeTime.addDays(1);
+					if( closeTime ){
+						closeTime.addDays(1);	
+					}
 				}
-
-				// Change the time to yesterday
-				openTime.addDays( -1 );
-				closeTime.addDays( -1 );
 
 				// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
 				if (openTime) {
+					// Change the time to one day before (yesterday)
+					openTime.addDays( -1 );
 					var openTime_utc = this._parseDate(openTime.add( - this._tzoffset ).hours().toUTCString());
 				}
 
 				// Convert the close hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
 				if (closeTime) {
+					// Change the time to one day before (yesterday)
+					closeTime.addDays( -1 );
 					var closeTime_utc = this._parseDate(closeTime.add( - this._tzoffset ).hours().toUTCString());
 				}
 
