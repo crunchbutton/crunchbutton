@@ -203,6 +203,10 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// Save the user just to add to him the gift cards
 		$user->save();
+
+		// Reload the user from db #1737
+		$user = new User($user->id_user);
+
 		$this->id_user = $user->id_user;
 
 		// Find out if the user posted a gift card code at the notes field and get its value
