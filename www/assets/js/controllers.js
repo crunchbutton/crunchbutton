@@ -233,7 +233,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	$scope.letsEat = function() {
 		$scope.location.form.address = $.trim( $scope.location.form.address );
 		if ( $scope.location.form.address == '' ) {
-			$('.location-address').val('').attr('placeholder','Please enter your address here');
+			$('.location-address').val('').attr('placeholder',$('<div>').html('&#10148; Please enter your address here').text());
 			$scope.warningPlaceholder = true;
 			$scope.focus( '.location-address' );
 		} else {
@@ -261,7 +261,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 				}, 
 				// Address not ok
 				function() {
-					$('.location-address').val('').attr('placeholder','Oops! Please enter a street name, number, and city');
+					$('.location-address').val('').attr('placeholder',$('<div>').html('&#9785;  Oops! Please enter a street name, number, and city').text());
 					$scope.warningPlaceholder = true;
 					$scope.focus( '.location-address' );
 					$scope.isProcessing = false;
