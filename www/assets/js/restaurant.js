@@ -263,7 +263,9 @@ var Restaurant = function(id) {
 			// there is no real 24:00 hours, it's 00:00 for tomorrow
 			if (todayHours[i][1] == '24:00') {
 				closeTime = this._parseDate('00:00');
-				closeTime.addDays(1);
+				if( closeTime ){
+					closeTime.addDays(1);	
+				}
 			}
 
 			// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
