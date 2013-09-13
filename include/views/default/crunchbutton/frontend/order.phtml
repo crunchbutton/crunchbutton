@@ -14,13 +14,15 @@
 			<span class="order-thanks-message-small">(and saved for easy 1 click ordering next time)</span>
 		</span>
 
-		<div ng-show="account.user" class="order-phone-message">
-			You can one click order anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
-		</div>
+		<? if (!$this->export) : ?>
+			<div ng-show="account.user" class="order-phone-message">
+				You can one click order anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+			</div>
+		<? endif ; ?>
 
 		<div ng-show="!account.user.has_auth">
-				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
-				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
+			Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+			<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
 		</div>
 	
 		<div class="order-invite-code field-container" ng-show="order.new && referral.invite_url && referral.enabled">
