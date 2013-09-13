@@ -320,7 +320,7 @@ html[xmlns] .clearfix {
 	background-image:-ms-linear-gradient(top,rgb(236,101,56),rgb(228,55,5));
 	background-image:linear-gradient(top,rgb(236,101,56),rgb(228,55,5));
 	filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#ec6538',EndColorStr='#e43705');
-	box-shadow:1px 1px 10px 5px rgba(221,221,221,1);
+	box-shadow:1px 1px 10px 5px rgba(0,0,0,.1);
 }
 .support-icon {
 	background:url(../images/support-icon.png);
@@ -340,7 +340,9 @@ html[xmlns] .clearfix {
 	position:fixed;
 	right:10px;
 	width:190px;
-	box-shadow:1px 1px 10px 5px rgba(221,221,221,1);
+	box-shadow:1px 1px 10px 5px rgba(0,0,0,.2);
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
 }
 .support-maximized-header {
 	border-top-left-radius:5px;
