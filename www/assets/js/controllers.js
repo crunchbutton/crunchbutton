@@ -173,6 +173,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 
 	$scope.warningPlaceholder = false;
 
+	$scope.isProcessing = false;
+
 	$scope.isUser = account.user.has_auth;
 	$scope.notUser = !account.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
@@ -219,6 +221,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	
 	var proceed = function() {
 		$location.path( '/' + restaurants.permalink );
+		$scope.isProcessing = false;
 	};
 
 	// lets eat button
@@ -229,6 +232,16 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 			$scope.warningPlaceholder = true;
 			$scope.focus( '.location-address' );
 		} else {
+
+			// If the address searching is already in process ignores this request.
+			if( $scope.isProcessing ){
+				// To prevent any kind of problem, set this variable to false after 2 secs.
+				setTimeout( function() { $scope.isProcessing = false; }, 2000 );
+				return;
+			}
+
+			$scope.isProcessing = true;
+
 			$scope.location.addVerify( $scope.location.form.address, 
 				// Address ok
 				function() {
@@ -239,6 +252,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 						// Error
 						function(){
 							$scope.$broadcast( 'locationError' );
+							$scope.isProcessing = false;
 						} );
 				}, 
 				// Address not ok
@@ -246,6 +260,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 					$('.location-address').val('').attr('placeholder','Oops! Please enter a street address, city, and zip');
 					$scope.warningPlaceholder = true;
 					$scope.focus( '.location-address' );
+					$scope.isProcessing = false;
 				}
 			);
 		}
