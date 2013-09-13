@@ -221,7 +221,10 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	
 	var proceed = function() {
 		$location.path( '/' + restaurants.permalink );
+		$scope.location.form.address = '';
+		$scope.warningPlaceholder = false;
 		$scope.isProcessing = false;
+		$scope.$apply();
 	};
 
 	// lets eat button
@@ -261,6 +264,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 					$scope.warningPlaceholder = true;
 					$scope.focus( '.location-address' );
 					$scope.isProcessing = false;
+					$scope.$apply();
 				}
 			);
 		}
