@@ -257,7 +257,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 				}, 
 				// Address not ok
 				function() {
-					$('.location-address').val('').attr('placeholder','Oops! Please enter a street address, city, and zip');
+					$('.location-address').val('').attr('placeholder','Oops! Please enter a street name, number, and city');
 					$scope.warningPlaceholder = true;
 					$scope.focus( '.location-address' );
 					$scope.isProcessing = false;
