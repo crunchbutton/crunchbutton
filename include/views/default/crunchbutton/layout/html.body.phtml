@@ -59,14 +59,6 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-instant="navigation.link('/legal')">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="icon-file" style="margin-left: 2px;"></i></td>
-							<td class="side-menu-label">Legal</a></td>
-						</tr>
-					</table>
-				</li>
 
 				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
 				<li ng-instant="App.test.card()">
@@ -160,7 +152,6 @@
 				<div class="footer-content hidden-phone" ng-controller="MainHeaderCtrl">
 	
 					<a href="javascript:;" ng-click="navigation.link('/help')">Help</a>
-					<a href="javascript:;" ng-click="navigation.link('/legal')">Legal</a>
 					<a ng-show="navigation.account.user" href="javascript:;" ng-click="navigation.link('/orders')">Order History</a>
 					<? if (c::env() == 'beta' || c::env() == 'local') : ?>
 						<a href="javascript:App.test.card();" class="test-card">TEST: card</a>
