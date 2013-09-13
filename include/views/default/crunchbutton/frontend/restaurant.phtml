@@ -392,13 +392,13 @@
 
 <div class="address-not-found-warning order-warning modal zoom-anim-dialog small-container mfp-hide">
 	<h1>Confirm the address?</h1>
-	<p><strong>{{order.form.address}}</strong></p>
+	<p><strong>We could not find the address:<br/>{{order.form.address}}</strong></p>
 	<ul>
 		<li>
-			<div ng-click="addressPlaceAnyway();">Yes</div>
+			<div ng-click="addressPlaceAnyway();">Continue</div>
 		</li>
 		<li>
-			<div ng-click="addressLetMeChangeIt();">No, add a zip code or city</div>
+			<div ng-click="addressLetMeChangeIt();">Add a City or Zip Code</div>
 		</li>
 	</ul>
 </div>
