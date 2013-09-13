@@ -212,48 +212,50 @@ var Restaurant = function(id) {
 			return false;
 		}
  
-		// Check the yesterday time too
-		// because the restauran could be opened from yesterday 11:30 AM to today 3:45 AM (Like Mirano - See #1707)
+		// Check the yesterday time too because the restaurant could be opened from yesterday 11:30 AM to today 3:45 AM (Like Mirano - See #1707)
 		var yesterday = Date.parse( 'yesterday' ).toString('ddd').toLowerCase();
-
 		if( this._hours[yesterday] != undefined ){
-
 			yesterdayHours = this._hours[yesterday];
-
+			
 			for (i in yesterdayHours) {
-				var openTime  = this._parseDate(yesterdayHours[i][0]);
-				var closeTime = this._parseDate(yesterdayHours[i][1]);
+				// Ignores if it throws an error
+				try{
 
-				if (yesterdayHours[i][1] == '24:00') {
-					closeTime = this._parseDate('00:00');
-					if( closeTime ){
-						closeTime.addDays(1);	
+					var openTime  = this._parseDate(yesterdayHours[i][0]);
+					var closeTime = this._parseDate(yesterdayHours[i][1]);
+
+					if (yesterdayHours[i][1] == '24:00') {
+						closeTime = this._parseDate('00:00');
+						if( closeTime ){
+							closeTime.addDays(1);	
+						}
 					}
-				}
 
-				// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
-				if (openTime) {
-					// Change the time to one day before (yesterday)
-					openTime.addDays( -1 );
-					var openTime_utc = this._parseDate(openTime.add( - this._tzoffset ).hours().toUTCString());
-				}
-
-				// Convert the close hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
-				if (closeTime) {
-					// Change the time to one day before (yesterday)
-					closeTime.addDays( -1 );
-					var closeTime_utc = this._parseDate(closeTime.add( - this._tzoffset ).hours().toUTCString());
-				}
-
-				var now_utc = this._utcNow();
-				if( openTime_utc &&  closeTime_utc ){
-					if (now_utc.between(openTime_utc, closeTime_utc)) {
-						isOpen = true;
-						break;
+					// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
+					if (openTime) {
+						// Change the time to one day before (yesterday)
+						openTime.addDays( -1 );
+						var openTime_utc = this._parseDate(openTime.add( - this._tzoffset ).hours().toUTCString());
 					}
-				}
+
+					// Convert the close hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
+					if (closeTime) {
+						// Change the time to one day before (yesterday)
+						closeTime.addDays( -1 );
+						var closeTime_utc = this._parseDate(closeTime.add( - this._tzoffset ).hours().toUTCString());
+					}
+
+					var now_utc = this._utcNow();
+					if( openTime_utc &&  closeTime_utc ){
+						if (now_utc.between(openTime_utc, closeTime_utc)) {
+							isOpen = true;
+							break;
+						}
+					}
+				} catch(e){};
 			}
 		}
+
 
 		var todayHours = this._hours[today];
 
