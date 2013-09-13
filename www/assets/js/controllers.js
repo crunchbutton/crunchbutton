@@ -3,8 +3,8 @@
  */
 NGApp.controller('LegalCtrl', function ($scope, $http) {
 	if (!App.isPhoneGap) {
-		$http.get(App.service + 'legal').success(function(data) {
-			$scope.legal = data.data;
+		$http.get(App.service + 'legal').success( function( data ) {
+			$scope.legal = data.data.replace( '[email]', 'moc.nottubhcnurc@eybdoog'.split('').reverse().join('') );
 		});
 	}
 });
@@ -15,7 +15,7 @@ NGApp.controller('LegalCtrl', function ($scope, $http) {
 NGApp.controller('HelpCtrl', function ($scope, $http) {
 	if (!App.isPhoneGap) {
 		$http.get(App.service + 'help').success(function(data) {
-			$scope.help = data.data;
+			$scope.help = data.data.replace( '[email]', 'moc.nottubhcnurc@sremotsucyppah'.split('').reverse().join('') );
 		});
 	}
 });
