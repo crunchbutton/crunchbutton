@@ -101,7 +101,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 			service.token = status.authResponse.accessToken;
 			$.totalStorage('fbtoken', service.token);
-			
+
 			// if the app already has a user, we dont give a crap about facebook
 			if ( App.config.user.id_user && App.config.user.facebook ) {
 				return;
@@ -121,7 +121,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 					// Just call the user api, this will create a facebook user
 					$http({method: 'GET', url: url, cache: false}).success(function(data) {
-	
+
 						App.log.account({'userID': status.authResponse.userID, 'running': service.running, 'data': data }, 'facebook ajax');
 	
 						if (data.error) {
@@ -129,7 +129,8 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 								App.log.account({'error': data.error}, 'facebook error');
 								service.error.userExists = true;
 							}
-
+							service.running = false;
+							return;
 						} else {
 							service.account.updateInfo();
 							service.account.user = data;

@@ -156,7 +156,6 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 	 * initilize location functions
 	 */
 	service.init = function () {
-		
 		// this method could not be called twice
 		if (service.initied){
 			return;
@@ -314,7 +313,6 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 	 * geocode an address and perform callbacks
 	 */
 	service.geocode = function (address, success, error) {
-
 		service.doGeocode(address, function (results) {
 
 			if (results.alias) {
@@ -337,7 +335,6 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 				} else {
 					var closest = results[0];
 				}
-
 				var loc = new Location({
 					results: results,
 					entered: address,
@@ -346,7 +343,6 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					lon: closest.geometry.location.lng()
 				});
 			}
-
 			success(loc);
 
 		}, function () {
@@ -375,7 +371,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 				address: address
 			};
 			// if we have a bounding result, process based on that
-			if (service.bounding) {
+			if (service.bounding && google && google.maps ) {
 				var latLong = new google.maps.LatLng(service.bounding.lat, service.bounding.lon);
 
 				// Create a cicle bounding box
@@ -579,25 +575,12 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					return;
 				}
 			}
-
 			service.geocode(address, function (loc) {
 				service.position.addLocation(loc);
 				success();
 				$.totalStorage.setItem('boundingv2', service.bounding);
 			}, error);
 		}
-		//service.geocode(address, success, error);
-
-		/*
-			App.log.location( { 'address' : service.address(), 'lat' : service.pos().lat, 'lon' : service.pos().lon  } , 'address not served' );
-
-			App.track('Location Error', {
-				lat: service.pos().lat,
-				lon: service.pos().lon,
-				address: service.address()
-			});
-			*/
-
 	}
 
 	return service;
