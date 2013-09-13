@@ -15,7 +15,12 @@ NGApp.controller('LegalCtrl', function ($scope, $http) {
 NGApp.controller('HelpCtrl', function ($scope, $http) {
 	if (!App.isPhoneGap) {
 		$http.get(App.service + 'help').success(function(data) {
-			$scope.help = data.data.replace( '[email]', 'moc.nottubhcnurc@sremotsucyppah'.split('').reverse().join('') );
+			var help = 'moc.nottubhcnurc@sremotsucyppah'.split('').reverse().join('');
+			var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
+
+			$scope.help = data.data
+				.replace('[email]', '<a href="mailto:' + help + '">' + help + '</a>')
+				.replace('[joinemail]', '<a href="mailto:' + join + '">' + join + '</a>')
 		});
 	}
 });
