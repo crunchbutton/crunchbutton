@@ -62,13 +62,11 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		}
 
 		if (restaurants === false || service.forceLoad) {
-
 			var url = App.service + 'restaurants?lat=' + service.position.pos().lat() + '&lon=' + service.position.pos().lon() + '&range=' + (service.position.range || 2 );
 
 			$http.get(url, {
-				cache: true
+				cache: false
 			}).success(function (data) {
-
 				var list = [];
 				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
 					if (error) {

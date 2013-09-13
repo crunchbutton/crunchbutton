@@ -224,7 +224,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 		$scope.location.form.address = '';
 		$scope.warningPlaceholder = false;
 		$scope.isProcessing = false;
-		$scope.$apply();
+		if (!$scope.$$phase){
+			$scope.$apply();	
+		}
 	};
 
 	// lets eat button
@@ -235,7 +237,6 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 			$scope.warningPlaceholder = true;
 			$scope.focus( '.location-address' );
 		} else {
-
 			// If the address searching is already in process ignores this request.
 			if( $scope.isProcessing ){
 				// To prevent any kind of problem, set this variable to false after 2 secs.
@@ -264,7 +265,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 					$scope.warningPlaceholder = true;
 					$scope.focus( '.location-address' );
 					$scope.isProcessing = false;
-					$scope.$apply();
+					if (!$scope.$$phase){
+						$scope.$apply();	
+					}
 				}
 			);
 		}
@@ -300,7 +303,9 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		if ($scope.open != open) {
 			$scope.open = open;
 		}
-		$scope.$apply();
+		if (!$scope.$$phase){
+			$scope.$apply();	
+		}
 	},1000 * 15);
 	
 	// Set the id_restaurant 
