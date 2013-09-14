@@ -34,6 +34,7 @@ NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsServ
 	if (!App.isPhoneGap) {
 		location.init();
 	}
+
 	var restaurants = RestaurantsService;
 	restaurants.list( 
 		// Success
@@ -191,6 +192,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	if (!App.isPhoneGap) {
 		$scope.location.init();
 	}
+	
+	document.title = 'Food Delivery | Crunchbutton';
 
 	$scope.yourArea = $scope.location.position.pos().city() || 'your area';
 
