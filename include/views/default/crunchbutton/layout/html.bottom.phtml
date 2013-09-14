@@ -22,8 +22,10 @@ var c = <?=json_encode(c::appConfig())?>;
 if (App) {
 	App.config = c;
 	c = null;
+	App.logService = 'http://log.<?=$_SERVER['SERVER_NAME']?>/api/';
 } else {
 	$(function() {
+		App.logService = 'http://log.<?=$_SERVER['SERVER_NAME']?>/api/';
 		App.config = c;
 		c = null;
 	});

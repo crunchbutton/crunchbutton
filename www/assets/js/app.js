@@ -9,6 +9,7 @@
 var App = {
 	tagline: '',
 	service: '/api/',
+	logService: 'http://log.crunchbutton.com/api/',
 	server: '/',
 	imgServer: '/',
 	cached: {},
