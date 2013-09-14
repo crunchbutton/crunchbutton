@@ -139,6 +139,10 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	$rootScope.navigation = MainNavigationService;
 	$rootScope.signout = AccountSignOut;
 	
+	$rootScope.cartScroll = function() {
+		$('html, body, .snap-content-inner').animate({scrollTop: 156}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+	};
+	
 	$rootScope.$on('userAuth', function(e, data) {
 		$rootScope.$safeApply(function($scope) {
 			// @todo: remove double data
