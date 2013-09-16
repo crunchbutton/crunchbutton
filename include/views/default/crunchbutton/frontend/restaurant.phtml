@@ -9,7 +9,7 @@
 			<div ng-click="credit.tooltip=!credit.tooltip" class="giftcard-badge-value">${{credit.value}}</div>
 		</div>
 		<div class="giftcard-badge-tooltip" ng-show="credit.tooltip">
-			You have a <span class="giftcard-value">{{AB.dollar}}{{credit.value}}</span> gift card!
+			You have a <span class="giftcard-value">{{AB.dollar}}{{credit.value}}</span> gift card
 		</div>
 	</div>
 
@@ -17,7 +17,7 @@
 		<h1>{{restaurant.name}}</h1>
 		<div class="giftcard-desktop-container" ng-show="credit.value != '0.00'">
 			<div class="giftcard-desktop-message">
-				You have a <span class="giftcard-value">{{AB.dollar}}{{credit.value}}</span> gift card!
+				You have a <span class="giftcard-value">{{AB.dollar}}{{credit.value}}</span> gift card
 			</div>
 		</div>
 	</div>
@@ -327,7 +327,7 @@
 				for a total of {{order.info.totalText}}
 				&nbsp;
 				<div ng-show="credit.value != '0.00' && order.form.pay_type == 'cash' ">
-					<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your {{AB.dollar}}{{credit.value}} gift card!</div>
+					<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your {{AB.dollar}}{{credit.value}} gift card</div>
 				</div>
 				&nbsp;
 				<span ng-show="order.form.pay_type=='card'">by card</span>
@@ -348,7 +348,7 @@
 		</div>
 
 		<div ng-show="order.subtotal()">
-			<label>You're paying:&nbsp;<span ng-show="order.form.pay_type=='cash'">approximately</span> </label>
+			<label>You're paying:&nbsp;<span ng-show="order.form.pay_type=='cash'" class="unbold">approximately</span></label>
 			&nbsp;{{order.info.breakdownDescription}}&nbsp;
 			<span ng-show="order.info.extraCharges">( + {{order.info.extraCharges}} )</span>
 			<strong class="cart-gift" ng-show="credit.value != '0.00' && order.form.pay_type == 'card' ">
@@ -363,7 +363,7 @@
 			for a total of {{order.info.totalText}}
 			&nbsp;
 				<div ng-show="credit.value != '0.00' && order.form.pay_type == 'cash' ">
-					<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your {{AB.dollar}}{{credit.value}} gift card!</div>
+					<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your {{AB.dollar}}{{credit.value}} gift card</div>
 				</div>
 			&nbsp;
 			<span ng-show="order.form.pay_type=='card'">by card</span>

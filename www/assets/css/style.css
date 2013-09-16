@@ -83,6 +83,9 @@ html[xmlns] .clearfix {
 .pacman-loading {
 	display:none;
 }
+.unbold{
+	font-weight: normal !important;
+}
 /* CUSTOM CHECKBOX */
 .custom-checkbox{
 	background:url(../images/checkbox-unchecked.png);
