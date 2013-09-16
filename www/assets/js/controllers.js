@@ -329,11 +329,7 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		return order.subtotal();
 	}
 	$scope.order.submit = function(){
-		if( ( CreditService.value != '0.00' && OrderService.form.pay_type == 'cash' ) && !$scope.ignoreGiftCardWithCashOrder ){
-			App.dialog.show( '.giftcard-payment-warning' );
-		} else {
-			return order.submit();
-		}
+		return order.submit();
 	}
 	$scope.order.cardInfoChanged = function(){
 		return order.cardInfoChanged();
@@ -374,18 +370,6 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		$rootScope.closePopup();
 		$scope.order.tooglePayment( 'card' );
 		$scope.order.showForm = true;
-	}
-	$scope.giftCardPlaceAnyway = function(){
-		$rootScope.closePopup();
-		$scope.ignoreGiftCardWithCashOrder = true;
-		setTimeout(function(){
-			$scope.order.submit();
-		}, 1000 );
-	}
-	$scope.order.creditCardChanged = function(){
-		 creditCard.validate( order.form.cardNumber );
-		 creditCard.changeIcons( order.form.cardNumber );
-		 return order.cardInfoChanged();
 	}
 	$scope.order.tipChanged = function(){
 		return order.tipChanged();
