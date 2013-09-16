@@ -240,7 +240,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 					$user = c::user();
 					if ( $fb->fbuser()->id ) {
 						$fb_user = User::facebook( $fb->fbuser()->id );
-						if ( $fb_user->id_user && $fb_user->id_user != $user->id_user ) {
+						if ( $user->id_user && $fb_user->id_user && $fb_user->id_user != $user->id_user ) {
 								echo json_encode(['error' => 'facebook id already in use']);
 								exit;
 						}
