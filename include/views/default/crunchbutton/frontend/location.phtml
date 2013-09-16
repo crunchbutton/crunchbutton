@@ -28,7 +28,7 @@
 	</form>
 </div>
 <div class="divider"></div>
-<button ng-show="!locationError" class="button-letseat-form button-bottom" ng-click="letsEat()"><div>Let's Eat!</div></button>
+<button ng-show="!locationError" class="button-letseat-form button-bottom" ng-click="letsEat()"><div>Find Restaurants!</div></button>
 
 <div class="error-location" ng-show="locationError">
 
@@ -36,7 +36,8 @@
 		<div class="home-welcome">
 			<h1>&#9785; Sorry!</h1>
 			<h2>
-				We don't serve <span ng-click="resetFormLocation()" class="loc-your-area change-location-inline">{{yourArea}}</span> yet. Please {{isMobile | iif : 'tap' : 'click'}} <span ng-click="resetFormLocation()" class="change-location-inline">here</span> to enter a different address.
+				We detected your address as <span ng-click="resetFormLocation()" class="loc-your-area change-location-inline">{{yourArea}}</span>, which we don't serve. <br/>
+				Please {{isMobile | iif : 'tap' : 'click'}} <span ng-click="resetFormLocation()" class="change-location-inline">here</span> here to enter a different address.
 				<div ng-hide="recommend.greetings">
 					<div class="home-reccomend-spacer"></div>
 					Have something specific in mind? Tell us your favorite restaurant in your area! After we add it, we will let you know.
@@ -72,8 +73,8 @@
 	
 	<div class="main-content-readable content-item-locations">
 		<div class="home-welcome">
-			<h1>Our popular cities</h1> 
-			<h2>Take a look at some of of the best delivery food in these cities.</h2>
+			<h1>Our most popular cities</h1> 
+			<h2>Take a look at some of the best delivery food in these cities.</h2>
 			<div class="content-item-locations-cities">
 				<span ng-repeat="alias in topCommunities">
 					<span class="content-item-locations-city" ng-click="openCity(alias.alias)" permalink="{{alias.alias}}">{{alias.name}}</span>
