@@ -830,7 +830,6 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 			return service.list;
 		}
 		OrderViewService.newOrder = false;
-		console.log('OrderViewService',OrderViewService.newOrder);
 		list = false;
 		service.list = list;
 		$http.get(App.service + 'user/orders', {
