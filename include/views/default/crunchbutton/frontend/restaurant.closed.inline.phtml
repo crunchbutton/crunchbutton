@@ -8,7 +8,7 @@
 			<span class="restaurant-closed-generic">Currently closed!</span>
 		</span>
 		<span class="restaurant-closed-content">
-			It will be open during the following hours (EDT):<br> 
+			It will be open during the following hours (<span ng-bind="restaurant._tzabbr"></span>):<br> 
 			<span ng-bind-html-unsafe="restaurant.closedMessage() | nl2br"></span>
 		</span>
 	</div>
