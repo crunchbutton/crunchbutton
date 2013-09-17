@@ -201,7 +201,7 @@
 		
 					<label>Phone #</label>
 					<div class="input-item">
-					<input type="tel" name="pay-phone" tabindex="3" ng-model="order.form.phone"></div><div class="divider"></div>
+					<input type="tel" name="pay-phone" tabindex="3" ng-format-phone ng-model="order.form.phone"></div><div class="divider"></div>
 		
 					<label ng-show="order.form.delivery_type=='delivery'">Delivery Address</label>
 					<div ng-show="order.form.delivery_type=='delivery'" class="input-item">

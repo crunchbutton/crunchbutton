@@ -125,3 +125,12 @@ NGApp.directive('ngInstant', function () {
 		});
 	};
 });
+
+
+NGApp.directive( 'ngFormatPhone', function( $filter ) {
+		return function( scope, element, attrs ) {
+				element.bind( 'keyup', function( event ) {
+					element.val( $filter( 'formatPhone' )( element.val() ) );
+				} );
+		};
+} );
