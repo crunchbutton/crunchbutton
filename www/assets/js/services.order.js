@@ -439,7 +439,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			// Check if the user address was already validated
 			if (!service._deliveryAddressOk) {
 
-				if (service.location.bounding) {
+				if (service.location.bounding && google && google.maps && google.maps.LatLng ) {
 					var latLong = new google.maps.LatLng( service.location.bounding.lat, service.location.bounding.lon );
 				}
 				
