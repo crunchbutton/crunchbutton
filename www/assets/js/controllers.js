@@ -303,6 +303,10 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	$scope.order.info = order.info;
 	$scope.open = false;
 	
+	$scope.order.creditCardChanged = function() {
+		order._cardInfoHasChanged = true;
+	};
+	
 	var creditCard = CreditCardService;
 	
 	// update if the restaurant is closed or open
