@@ -476,9 +476,11 @@ App.init = function(config) {
 
 	
 	// set a timeout for when ajax requests timeout
-	$.ajaxSetup({
-		timeout: App.ajaxTimeout
-	});
+	if (App.isPhoneGap) {
+		$.ajaxSetup({
+			timeout: App.ajaxTimeout
+		});
+	}
 
 
 	// replace normal click events for mobile browsers
