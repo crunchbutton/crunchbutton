@@ -1433,9 +1433,9 @@ h1.about-header {
 	font-size:14px;
 	display:block;
 	margin-top:5px;
+	margin-bottom: 20px;
 }
 .order-phone-message{
-	margin-top: 20px;
 	margin-bottom: 10px;
 }
 @-moz-document url-prefix() {
