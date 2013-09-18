@@ -100,12 +100,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		})
 		.when('/reset', {
 			action: 'reset',
-			controller: 'ResetCtrl',
+			controller: 'AccountResetCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
 		.when('/reset/:id', {
 			action: 'reset',
-			controller: 'ResetCtrl',
+			controller: 'AccountResetCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
 		.when('/invite/:id', {
