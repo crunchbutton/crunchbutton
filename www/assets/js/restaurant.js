@@ -309,7 +309,7 @@ var Restaurant = function(id) {
 	self.closedMessage = function(){
 		var isOpenedAt = {};
 		var openTime = this._hours;
-		var weekdayOrder = [ 'Sun','Mon','Tue','Wed','Thu','Fri','Sat' ];
+		var weekdayOrder = [ 'Mon','Tue','Wed','Thu','Fri','Sat', 'Sun' ];
 		var patternHour = /([0])([1-9])(:)([0-9]{2})/;
 		// Format the hour and group the day with the same hour
 		for ( var day in openTime ) {
