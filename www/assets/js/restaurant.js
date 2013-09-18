@@ -314,25 +314,50 @@ var Restaurant = function(id) {
 		// Format the hour and group the day with the same hour
 		for ( var day in openTime ) {
 			var hours = openTime[ day ];
-			var key = '';
 			var openedHoursText = '';
 			var openedHoursTextDivisor = '';
 			for( var hour in hours ){
 				 var open = hours[ hour ][ 0 ];
 				 var close = hours[ hour ][ 1 ];
-				 key += open + close;
 				 var formatedOpen = App.formatTime( open ).toLowerCase().replace( patternHour, '\$2\$3\$4' ).replace( /:00/g, '' ).replace( ' ', '' );
 				 var formatedClose = App.formatTime( close ).toLowerCase().replace( patternHour, '\$2\$3\$4' ).replace( /:00/g, '' ).replace( ' ', '' );
 				 openedHoursText += openedHoursTextDivisor + formatedOpen + ' - ' + formatedClose;
 				 openedHoursTextDivisor = ', ';
 			}
+			// Hours "12 am, 12 am" doesn't need to be shown
+			openedHoursText = openedHoursText.replace( '- 12am, 12am ', '' );
+			var regex = /12am/gi, result, indices = [];
+			var times = 0;
+			while ( (result = regex.exec( openedHoursText )) ) {
+				times++;
+			}
+			if( times >= 2 ){
+				var sequences = openedHoursText.split( ',' );
+				for( var i = 0; i < sequences.length; i++ ){
+					if( sequences[i].indexOf( '12am' ) > 0 ){
+						var first = sequences[i];
+					}
+					if( sequences[i].indexOf( '12am' ) == 0 ){
+						var last = sequences[i];
+					}
+				}
+				var newText = [];
+				for( var i = 0; i < sequences.length; i++ ){
+					if( sequences[i] != first && sequences[i] != last ){
+						newText.push( sequences[i] );
+						newText.push( ', ' );
+					}
+				}
+				newText.push( first );
+				newText.push( last );
+				newText = newText.join('').replace( '- 12am12am -', ' - ' );
+				openedHoursText = newText;
+			}
 			// Remove the ':' to create a cleaner object key
-			key = key.replace( /\:/g, '' );
+			var key = openedHoursText.replace( /[\ \: \- ,]/g, '' );
 			if( !isOpenedAt[ key ] ){
 				isOpenedAt[ key ] = { days : {}, hours : {} };
 			}
-			// Hours "12 am, 12 am" doesn't need to be shown
-			openedHoursText = openedHoursText.replace( '- 12am, 12am ', '' );
 			isOpenedAt[ key ][ 'days' ][ day ] = true;
 			isOpenedAt[ key ][ 'hour' ] = openedHoursText;
 		}
