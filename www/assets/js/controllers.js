@@ -232,7 +232,10 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	$scope.$on( 'locationNotServed', function(e, data) {
 		$('.location-address').val('').attr('placeholder','Please include a zip code or city name');
 		$scope.warningPlaceholder = true;
-		$scope.focus( '.location-address' );
+		// the user might be typing his login/pass - so blur it
+		if( !$.magnificPopup.instance.isOpen ){
+			$scope.focus( '.location-address' );
+		}
 	});
 	
 	var proceed = function() {
@@ -251,7 +254,10 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 		if ( $scope.location.form.address == '' ) {
 			$('.location-address').val('').attr('placeholder',$('<div>').html('&#10148; Please enter your address here').text());
 			$scope.warningPlaceholder = true;
-			$scope.focus( '.location-address' );
+			// the user might be typing his login/pass - so blur it
+			if( !$.magnificPopup.instance.isOpen ){
+				$scope.focus( '.location-address' );
+			}
 		} else {
 			// If the address searching is already in process ignores this request.
 			if( $scope.isProcessing ){
