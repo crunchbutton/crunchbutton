@@ -15,7 +15,7 @@
 		</span>
 
 		<? if (!$this->export) : ?>
-			<div ng-show="account.user" class="order-phone-message">
+			<div ng-show="account.user.has_auth" class="order-phone-message">
 				You can one click order anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 			</div>
 		<? endif ; ?>
