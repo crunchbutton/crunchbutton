@@ -217,8 +217,16 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	});
 
 	$scope.$on( 'locationError', function(e, data) {
-		$scope.recommend.greetings = false;
-		$scope.locationError = true;
+
+		// If the entered address does not have zip code show the enter zip code message #1763
+		var entered = $scope.location.position.pos().entered();
+		var isStreet = $scope.location.position.pos().valid( 'order' );
+		if( isStreet && !entered.match(new RegExp( /\d{5}(?:[-\s]\d{4})?/ )) ){
+			$scope.$broadcast( 'locationNotServed',  true );
+		} else {
+			$scope.recommend.greetings = false;
+			$scope.locationError = true;
+		}
 	});
 
 	$scope.$on( 'locationNotServed', function(e, data) {
