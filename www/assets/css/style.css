@@ -2825,3 +2825,11 @@ h1.about-header {
 		display: none
 	}
 }
+
+
+
+@media (min-width: 321px) and (max-height: 350px) {
+	.pushabutton-getfood {
+		display: none;
+	}
+}

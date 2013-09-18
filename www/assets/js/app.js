@@ -23,7 +23,8 @@ var App = {
 	touchOffset: null,
 	localStorage: false,
 	isPhoneGap: document.location.protocol == 'file:',
-	useNativePrompt: false,
+	useNativeAlert: false,
+	useNativeConfirm: true,
 	ajaxTimeout: 5000,
 	splashHidden: false
 };
@@ -264,7 +265,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 App.alert = function(txt, title) {
 	setTimeout(function() {
 		// @todo: #1546
-		if (App.useNativePrompt && App.isPhoneGap) {
+		if (App.useNativeAlert && App.isPhoneGap) {
 			navigator.notification.alert(txt, null, title || 'Crunchbutton');
 		} else {
 			App.rootScope.$broadcast('notificationAlert', title || null, txt);
@@ -273,7 +274,7 @@ App.alert = function(txt, title) {
 };
 
 App.confirm = function(txt, title) {
-	if (App.useNativePrompt && App.isPhoneGap) {
+	if (App.useNativeConfirm && App.isPhoneGap) {
 		return navigator.notification.confirm(txt, null, title || 'Crunchbutton');
 	} else {
 		return confirm(txt);
