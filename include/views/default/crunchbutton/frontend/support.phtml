@@ -15,10 +15,11 @@
 		</div>
 
 		<div class="support-maximized-content">
-			Call us at (646) 783-1444 <br/>or send a message:
-			<div class="divisor"></div>
+			<span ng-show="!support.thanks">
+				Call us at (646) 783-1444 <br/>or send a message:
+			</span>
 			<div ng-show="support.thanks">
-				Thank you!
+				Thanks, we'll get back to you as fast as we can.
 			</div>
 			<div ng-show="!support.thanks">
 				<form name="formSupport">
