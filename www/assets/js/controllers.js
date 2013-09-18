@@ -627,11 +627,6 @@ NGApp.controller( 'GiftcardCtrl', function ($scope, $location, GiftCardService )
 	setTimeout( function(){ GiftCardService.open(); }, 300 );
 });
 
-NGApp.controller('reset', function ($scope, $location, AccountModalService) {
-	$scope.modal = AccountModalService;
-	$scope.modal.resetOpen();
-	$location.path( '/' );
-});
 
 NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $http, AccountModalService ) {
 	$scope.modal = AccountModalService;
@@ -660,8 +655,12 @@ NGApp.controller( 'AccountSignUpCtrl', function ( $scope, $http, AccountModalSer
 	});
 });
 
-NGApp.controller( 'AccountResetCtrl', function ( $scope, $http, AccountResetService ) {
-	$scope.reset = AccountResetService;
+NGApp.controller( 'AccountResetCtrl', function ( $scope, $http, $location, AccountResetService, AccountModalService ) {
+	if( $location.path().indexOf( 'reset' ) >= 0 ){
+		$scope.reset = AccountResetService;
+		AccountModalService.resetOpen();
+		$location.path( '/' );	
+	}
 });
 
 NGApp.controller( 'GiftCardCtrl', function ( $scope, $http, $rootScope, GiftCardService ) {
