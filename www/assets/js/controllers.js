@@ -626,6 +626,10 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	$scope.referral.facebook = function(){
 		FacebookService.postInvite( $scope.referral.invite_url );
 	}
+	
+	$scope.referral.twitter = function(){
+		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
+	}
 
 });
 
