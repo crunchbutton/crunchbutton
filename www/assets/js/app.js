@@ -506,7 +506,6 @@ App.init = function(config) {
 		App.applyIOSPositionFix();
 	});
 
-
 	var snapperCheck = function() {
 		if ($(window).width() <= 768) {
 			App.snap.enable();
