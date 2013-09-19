@@ -14,6 +14,11 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 				}
 			};
 
+	service.reset = function(){
+		service.form.email = '';
+		service.form.password = '';
+	}
+
 	service.checkUser = function(){
 		if( service.isLogged() ){
 			service.user = App.config.user;
@@ -314,7 +319,7 @@ NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 
 } );
 
-NGApp.factory( 'AccountSignOut', function( $http, $rootScope, AccountFacebookService ){
+NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, AccountFacebookService, AccountService, MainNavigationService ){
 	var service = {};
 	service.facebook = AccountFacebookService;
 	
@@ -332,9 +337,12 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, AccountFacebookSer
 						$rootScope.$broadcast('userAuth', data.user);
 						App.processConfig(data);
 					});
+					// Redirect the user to location page
+					MainNavigationService.link( '/location' );
 				}).error(function() {
 					console.debug('couldnt log out',arguments)
 				});
+				AccountService.reset();
 			};
 
 			if ( service.facebook.facebook.logged || service.facebook.facebook.account.user.facebook ) {
