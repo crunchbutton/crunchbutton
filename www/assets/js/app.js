@@ -565,10 +565,12 @@ App.init = function(config) {
 		account.updateInfo();
 	}
 */
-	$(':input').focus( function() {
-		$(window).scrollTop( $(window).scrollTop() + 1 );
-	});
-
+	// #1774
+	if( App.iOS ){
+		$(':input').focus( function() {
+			$(window).scrollTop( $(window).scrollTop() + 1 );
+		});
+	}
 };
 
 /**
