@@ -498,6 +498,15 @@ App.init = function(config) {
 		disable: 'right'
 	});
 
+	App.snap.on( 'end', function(){
+		App.applyIOSPositionFix();
+	});
+
+	App.snap.on( 'start', function(){
+		App.applyIOSPositionFix();
+	});
+
+
 	var snapperCheck = function() {
 		if ($(window).width() <= 768) {
 			App.snap.enable();
@@ -596,14 +605,23 @@ App.dialog = {
 				open: function() {
 					setTimeout(function() {
 						//$('.wrapper').addClass('dialog-open-effect-b');
+						if( App.iOS ){
+							// #1774
+							var width = angular.element('.mfp-bg').width();
+							angular.element('.mfp-bg').width( width + 10 );
+						}
 					},1);
 				},
 				close: function() {
 					$('.wrapper').removeClass('dialog-open-effect-a dialog-open-effect-b dialog-open-effect-c dialog-open-effect-d');
+					App.applyIOSPositionFix();
 				}
 			}
 			//my-mfp-zoom-in
 		});
+	},
+	isOpen : function(){
+		return $.magnificPopup && $.magnificPopup.instance && $.magnificPopup.instance.isOpen;
 	}
 };
 
@@ -621,4 +639,17 @@ App.playAudio = function(audio) {
 	try {
 		audio.play();
 	} catch(e){}
+}
+
+// Hack to fix iOS the problem with body position when the keyboard is shown #1774
+App.applyIOSPositionFix = function(){
+	if( App.iOS ){
+		setTimeout( function(){
+			angular.element('body').css('width', '+=1').css('width', '-=1');
+			// Again to make sure it will really fix it!
+			setTimeout( function(){
+				angular.element('body').css('width', '+=1').css('width', '-=1');
+			}, 300 )
+		}, 200 );
+	}
 }

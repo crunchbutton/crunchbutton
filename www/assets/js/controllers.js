@@ -233,7 +233,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 		$('.location-address').val('').attr('placeholder','Please include a zip code or city name');
 		$scope.warningPlaceholder = true;
 		// the user might be typing his login/pass - so blur it
-		if( !$.magnificPopup.instance.isOpen ){
+		if( !App.dialog.isOpen() ){
 			$scope.focus( '.location-address' );
 		}
 	});
@@ -255,7 +255,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 			$('.location-address').val('').attr('placeholder',$('<div>').html('&#10148; Please enter your address here').text());
 			$scope.warningPlaceholder = true;
 			// the user might be typing his login/pass - so blur it
-			if( !$.magnificPopup.instance.isOpen ){
+			if( !App.dialog.isOpen() ){
 				$scope.focus( '.location-address' );
 			}
 		} else {
