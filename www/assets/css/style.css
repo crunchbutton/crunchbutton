@@ -2839,3 +2839,12 @@ h1.about-header {
 		display: none;
 	}
 }
+
+@media (max-height: 390px) {
+	.pushabutton-getfood {
+		background-size: 125px;
+		height: 125px;
+		width: 125px;
+	}
+}
+
