@@ -321,40 +321,50 @@ NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 
 NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, AccountFacebookService, AccountService, MainNavigationService ){
 	var service = {};
+	
 	service.facebook = AccountFacebookService;
 	
+	// When the user confirms the signout
+	service.signoutConfirmed = function( button ){
+		// PhoneGap send the button user pressed 1 == OK
+		if( button != 1 ){
+			return;
+		}
+		// Force to remove the cookies
+		$.each(['token', 'location', 'PHPSESSID', 'fbtoken'], function(index, value) {
+			$.totalStorage(value, null);
+		});
+		var signout = function() {
+			// log the session out on the server
+			$http.get(App.service + 'logout').success(function(data) {
+				$http.get(App.service + 'config').success(function(data) {
+					$rootScope.$broadcast('userAuth', data.user);
+					App.processConfig(data);
+				});
+				// Redirect the user to location page
+				MainNavigationService.link( '/location' );
+			}).error(function() {
+				console.debug('couldnt log out',arguments)
+			});
+			AccountService.reset();
+		};
+
+		if ( service.facebook.facebook.logged || service.facebook.facebook.account.user.facebook ) {
+			try { 
+				service.facebook.signout(); 
+			} catch(e) {
+				console.log('e',e);
+			}
+			signout();
+		} else {
+			signout();
+		}
+	}
+
 	// perform a logout
 	service.do = function() {
-		if (App.confirm('Confirm sign out?')) {
-			// Force to remove the cookies
-			$.each(['token', 'location', 'PHPSESSID', 'fbtoken'], function(index, value) {
-				$.totalStorage(value, null);
-			});
-			var signout = function() {
-				// log the session out on the server
-				$http.get(App.service + 'logout').success(function(data) {
-					$http.get(App.service + 'config').success(function(data) {
-						$rootScope.$broadcast('userAuth', data.user);
-						App.processConfig(data);
-					});
-					// Redirect the user to location page
-					MainNavigationService.link( '/location' );
-				}).error(function() {
-					console.debug('couldnt log out',arguments)
-				});
-				AccountService.reset();
-			};
-
-			if ( service.facebook.facebook.logged || service.facebook.facebook.account.user.facebook ) {
-				try { 
-					service.facebook.signout(); 
-				} catch(e) {
-					console.log('e',e);
-				}
-				signout();
-			} else {
-				signout();
-			}
+		if ( App.confirm('Confirm sign out?', 'Crunchbutton', service.signoutConfirmed ) ) {
+			service.signoutConfirmed( 1 );
 		}
 	}
 	return service;

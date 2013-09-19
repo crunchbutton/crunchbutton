@@ -273,9 +273,9 @@ App.alert = function(txt, title) {
 	});
 };
 
-App.confirm = function(txt, title) {
+App.confirm = function(txt, title, fn) {
 	if (App.useNativeConfirm && App.isPhoneGap) {
-		return navigator.notification.confirm(txt, null, title || 'Crunchbutton');
+		return navigator.notification.confirm(txt, fn, title || 'Crunchbutton', 'Ok,Cancel');
 	} else {
 		return confirm(txt);
 	}
