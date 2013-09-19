@@ -556,6 +556,9 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			service._crunchSoundPlayded = true;
 		}
 
+		// Clean the phone string
+		order.phone = order.phone.replace(/-/g, '');
+
 		var url = App.service + 'order';
 
 		$http( {
