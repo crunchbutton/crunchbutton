@@ -416,19 +416,79 @@ html[xmlns] .clearfix {
 }
 
 /* FACEBOOK */
-.facebook { display:none;}
-.facebook-button {
+.facebook {
+	display:none;
+}
+
+.social-button {
 	text-align:center;
 	border-radius:3px;
-	border:1px solid #2b4171;
 	display:block;
-	margin:0 auto;
 	padding:0;
 	text-shadow:1px 1px 0px rgba(0,0,0,.75);
-	background-color:#3c5a97;
 	color:#fff;
 	cursor:pointer;
 	padding:0 5px 0 5px;
+	box-shadow:0 2px 3px rgba(182,182,182,0.75);
+}
+
+.social-button-share {
+	margin: 0 auto;
+}
+
+.social-button-invite {
+	float: left;
+	width: 150px;
+	margin-right: 15px;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+.twitter-button {
+	color: #333;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	background-color: white;
+	background-image: -moz-linear-gradient(top, #ffffff, #dedede);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#dedede));
+	background-image: -ms-linear-gradient(top, #ffffff, #dedede);
+	background-image: linear-gradient(top, #ffffff, #dedede);
+	background-image: -o-linear-gradient(top, #ffffff, #dedede);
+	border: #ccc solid 1px;
+	filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#dedede');
+}
+
+.twitter-button .icon-twitter {
+	color: #00acee;
+}
+
+.social-button-invite .icon-twitter, .social-button-invite .icon-facebook {
+	padding: 3px;
+}
+
+.social-button-share {
+	margin-bottom: 15px;
+	margin-top: 25px;
+	width: 200px;
+}
+
+.social-button-text,
+.social-button i {
+	padding: 6px;
+	float: left;
+}
+
+.social-button-invite .social-button-text {
+	padding: 7px 6px 7px 6px;
+	font-size: 12px;
+}
+
+.twitter-button .social-button-text {
+	border-left: 1px solid #ccc;
+}
+
+.facebook-button {
+	border:1px solid #2b4171;
+	background-color:#3c5a97;
 	background-image:-webkit-gradient(linear,left top,left bottom,from(rgb(64,97,159)),to(rgb(54,82,141)));
 	background-image:-webkit-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
 	background-image:-moz-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
@@ -436,71 +496,22 @@ html[xmlns] .clearfix {
 	background-image:-ms-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
 	background-image:linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
 	filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#40619f',EndColorStr='#36528d');
-	box-shadow:0 2px 3px rgba(182,182,182,0.75);
 }
-.facebook-button .icon-facebook {
+
+.social-button i {
 	margin-right:7px;
 	font-size:20px;
 }
-.facebook-button .facebook-button-text {
+
+.social-button-text {
 	padding-left:13px;
 	border-left:1px solid #2c4272;
 	box-shadow:inset 1px 0 0 rgba(255,255,255,.1);
 	padding-top:7px;
 }
 
-.facebook-invite-button{
-	float:left;
-	margin:10px;
-	color:#FFF;
-	display:block;
-	padding:5px;
-	width:170px;
-	text-align:center;
-	border-radius:3px;
-	text-shadow:1px 1px 0px rgba(0,0,0,.5);
-	text-decoration:none;
-	border:1px solid #2b4171;
-	font-weight:bold;
-	background-image:-webkit-gradient(linear,left top,left bottom,from(rgb(64,97,159)),to(rgb(54,82,141)));
-	background-image:-webkit-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
-	background-image:-moz-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
-	background-image:-o-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
-	background-image:-ms-linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
-	background-image:linear-gradient(top,rgb(64,97,159),rgb(54,82,141));
-	filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#40619f',EndColorStr='#36528d');
-}
-	.facebook-invite-button i{
-		margin-right:7px;
-		font-size:20px;
-	}
 
-.twitter-invite-button{
-	color:#333;
-	display:block;
-	padding:5px;
-	width:150px;
-	text-align:center;
-	border-radius:3px;
-	text-shadow:1px 1px 0px rgba(255,255,255,.5);
-	text-decoration:none;
-	border:1px solid #afbcc2;
-	font-weight:bold;
-	background-color: #d6e7ed;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(211, 227, 234)), to(rgb(218, 235, 241)));
-	background-image: -webkit-linear-gradient(top, rgb(211, 227, 234), rgb(218, 235, 241));
-	background-image: -moz-linear-gradient(top, rgb(211, 227, 234), rgb(218, 235, 241));
-	background-image: -o-linear-gradient(top, rgb(211, 227, 234), rgb(218, 235, 241));
-	background-image: -ms-linear-gradient(top, rgb(211, 227, 234), rgb(218, 235, 241));
-	background-image: linear-gradient(top, rgb(211, 227, 234), rgb(218, 235, 241));
-	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr='#d3e3ea', EndColorStr='#daebf1');
-	margin:10px;
-	float:left;
-}
-	.twitter-invite-button i{
-		font-size:21px;
-		color:#00aced;
-	}
+
 
 /* SNAPS */
 .snap-drawers {
@@ -1208,7 +1219,7 @@ h1.about-header {
 .order-options {
 	border-top:1px solid #F5F5F5;
 	margin-top:10px;
-	padding:10px;
+	padding: 10px 0 0 0;
 }
 
 .content-item-locations-city {
@@ -1287,10 +1298,11 @@ h1.about-header {
 	padding-top: 10px;
 	border-top: 1px solid #F5F5F5;	
 }
-	.invite-code-container input[type=text]{
-		text-align: center;
-		width: 250px !important;
-	}
+.invite-code-container input[type=text] {
+	text-align: center;
+	width: 250px !important;
+	margin: 10px 10px 10px 0;
+}
 .dish-name {
 	color:#d74924;
 }
@@ -1413,15 +1425,6 @@ h1.about-header {
 	float:right;
 	height:30px;
 	width:45px;
-}
-.facebook-button-share {
-	margin-bottom:15px;
-	margin-top:25px;
-	width:200px;
-}
-.facebook-button .facebook-button-text,.facebook-button .icon-facebook {
-	padding:6px;
-	float:left;
 }
 .order-thanks-message {
 	font-size:30px;
@@ -1763,6 +1766,9 @@ h1.about-header {
 	}
 }
 @media(max-width:768px) {
+	.social-button-invite {
+		width: 115px;
+	}
 	.home-reccomend-message-content {
 		text-align: center;
 	}
