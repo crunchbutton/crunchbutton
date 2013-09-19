@@ -1,7 +1,7 @@
 <div class="facebook">
-	<div class="facebook-button" ng-click="facebook.auth()">
-		<span class="icon-facebook"></span>
-		<span class="facebook-button-text">{{title}}</span>
+	<div class="social-button facebook-button" ng-click="facebook.auth()">
+		<i class="icon-facebook"></i>
+		<span class="social-button-text">{{title}}</span>
 		<div class="divider"></div>
 	</div>
 	<div class="wait" ng-show="facebook.facebook.wait && !facebook.facebook.error.userExists && !facebook.facebook.error.unknown && !facebook.facebook.error.login">

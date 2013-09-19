@@ -20,19 +20,21 @@
 
 	<div>
 		<div class="invite-code-container field-container" ng-show="referral.enabled">
-			<div class="restaurant-item-title">Invite code</div>
+			<div class="restaurant-item-title">Crunch Credit Invites</div>
 			<p>
 				For every NEW friend who orders food, we'll award you Crunch Credit.
 				<br/>
-				You have {{referral.limit - referral.invites }} invite(s) remaining.
+				You have {{referral.limit - referral.invites}} invite{{referral.limit - referral.invites == 1 | iif : '' : 's'}} remaining.
 			</p>
 
-			<input type="text" style="margin:10px;" ng-click-select-all value="{{referral.invite_url.replace('http://','')}}" readonly="readonly" />
-
-			<p>
-				<a target="blank"class="twitter-invite-button" href="https://twitter.com/intent/tweet?url={{referral.invite_url}}&text=#nom"><i class="icon-twitter"></i> Tweet on Twitter</a>
-				<a href="#" class="facebook-invite-button" ng-click="referral.facebook()"><i class="icon-facebook" style=""></i> Share on Facebook</a>
-			</p>
+			<div class="social-button twitter-button social-button-invite" ng-click="referral.twitter();">
+				<i class="icon-twitter"></i><span class="social-button-text">Tweet</span>
+			</div>
+			<div class="social-button facebook-button social-button-invite" ng-click="referral.facebook();">
+				<i class="icon-facebook"></i><span class="social-button-text">Share</span>
+			</div>
+			<div class="divider"></div>
+			Invite URL: <input type="text" ng-click-select-all value="{{referral.invite_url.replace('http://','')}}" readonly="readonly" />
 			
 			<div class="divider"></div>
 		</div>
