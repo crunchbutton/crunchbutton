@@ -273,10 +273,14 @@ NGApp.factory( 'AccountModalService', function( $http, $rootScope, FacebookServi
 		service.signup = ( form == 'signup' );
 		service.facebookLogin = ( form == 'facebook' );
 		if( service.signin ){
-			$rootScope.focus( '.signin-email' );
+			if( !App.iOS() ){
+				$rootScope.focus( '.signin-email' );
+			}
 		}
 		if( service.signup ){
-			$rootScope.focus( '.signup-email' );
+			if( !App.iOS() ){
+				$rootScope.focus( '.signup-email' );
+			}
 		}
 	}
 

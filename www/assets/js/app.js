@@ -566,7 +566,7 @@ App.init = function(config) {
 	}
 */
 	// #1774
-	if( App.iOS ){
+	if( App.iOS() ){
 		$(':input').focus( function() {
 			$(window).scrollTop( $(window).scrollTop() + 1 );
 		});
@@ -611,7 +611,7 @@ App.dialog = {
 				open: function() {
 					setTimeout(function() {
 						//$('.wrapper').addClass('dialog-open-effect-b');
-						if( App.iOS ){
+						if( App.iOS() ){
 							// #1774
 							var width = angular.element('.mfp-bg').width();
 							angular.element('.mfp-bg').width( width + 10 );
@@ -649,7 +649,7 @@ App.playAudio = function(audio) {
 
 // Hack to fix iOS the problem with body position when the keyboard is shown #1774
 App.applyIOSPositionFix = function(){
-	if( App.iOS ){
+	if( App.iOS() ){
 		setTimeout( function(){
 			angular.element('body').css('width', '+=1').css('width', '-=1');
 			// Again to make sure it will really fix it!
