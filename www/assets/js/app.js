@@ -129,7 +129,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, AccountService, MainNavigationService, AccountSignOut, CartService) {
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService) {
 
 	// define external pointers
 	App.rootScope = $rootScope;
@@ -259,7 +259,20 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		}
 	});
 
+	// Make the window's size available to all scope
+	$rootScope.windowWidth = $window.outerWidth;
+	$rootScope.windowHeight = $window.outerHeight;
+
+	// Window resize event
+	angular.element( $window ).bind( 'resize',function(){
+		$rootScope.windowWidth = $window.outerWidth;
+		$rootScope.windowHeight = $window.outerHeight;
+		$rootScope.$apply( 'windowWidth' );
+		$rootScope.$apply( 'windowHeight' );
+	});
+
 	AccountService.checkUser();
+
 });
 
 App.alert = function(txt, title) {
@@ -658,3 +671,19 @@ App.applyIOSPositionFix = function(){
 		}, 200 );
 	}
 }
+
+// Methods used by phoneGap
+App.noInternet = {
+	show: function(){
+		App.rootScope.connectionError = true;
+		App.rootScope.$safeApply();
+	},
+	hide : function(){
+		App.rootScope.connectionError = false;
+		App.rootScope.$safeApply();
+		location.reload();
+	}
+} 
+
+
+

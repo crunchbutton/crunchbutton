@@ -742,8 +742,13 @@ NGApp.controller( 'NotificationAlertCtrl', function ( $scope, $rootScope  ) {
 	});
 });
 
-
 NGApp.controller( 'InviteCtrl', function ( $scope, $routeParams, $location, ReferralService ) {
+	// Just store the cookie, it will be used later
+	$.cookie( 'referral', $routeParams.id );
+	$location.path( '/' );
+});
+
+NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 	// Just store the cookie, it will be used later
 	$.cookie( 'referral', $routeParams.id );
 	$location.path( '/' );

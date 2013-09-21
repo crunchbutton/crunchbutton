@@ -86,6 +86,18 @@ html[xmlns] .clearfix {
 .unbold{
 	font-weight: normal !important;
 }
+
+.connection-error{
+	width:100%;
+	z-index:1000;
+	top:0;
+	left:0;
+	position:absolute;
+	background:#FFF;
+	height:100px;
+	padding-top: 10px;
+	text-align: center;
+}
 /* CUSTOM CHECKBOX */
 .custom-checkbox{
 	background:url(../images/checkbox-unchecked.png);
@@ -2847,4 +2859,3 @@ h1.about-header {
 		width: 125px;
 	}
 }
-
