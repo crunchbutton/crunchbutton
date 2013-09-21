@@ -674,16 +674,18 @@ App.applyIOSPositionFix = function(){
 
 // Methods used by phoneGap
 App.noInternet = {
+	isOffLine : false,
 	show: function(){
 		App.rootScope.connectionError = true;
 		App.rootScope.$safeApply();
+		App.noInternet.isOffLine = true;
 	},
 	hide : function(){
 		App.rootScope.connectionError = false;
 		App.rootScope.$safeApply();
-		location.reload();
+		if( App.noInternet.isOffLine ){
+			App.rootScope.reload();
+		}
+		App.noInternet.isOffLine = false;
 	}
 } 
-
-
-
