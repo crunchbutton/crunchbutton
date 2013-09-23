@@ -558,6 +558,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 
 	$scope.$on( 'referralStatusLoaded', function(e, data) {
 		$scope.referral.invite_url = ReferralService.invite_url;
+		$scope.referral.invite_url_cleared = 
 		$scope.referral.value = ReferralService.value;
 		$scope.referral.enabled = ReferralService.enabled;
 	});
@@ -566,6 +567,10 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$scope.order = order;	
 		$scope.$safeApply();
 	});
+
+	$scope.referral.cleaned_url = function(){
+		return ReferralService.cleaned_url();
+	}
 
 });
 
@@ -609,6 +614,10 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 		invites : ReferralService.invites,
 		enabled : ReferralService.enabled
 	}	
+
+	$scope.referral.cleaned_url = function(){
+		return ReferralService.cleaned_url();
+	}
 
 	// Load the invite_url
 	if( !ReferralService.invite_url ){

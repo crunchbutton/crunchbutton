@@ -126,11 +126,51 @@ NGApp.directive('ngInstant', function () {
 	};
 });
 
+NGApp.directive('ngKeyDown', function () {
+	return {
+		restrict: 'A',
+		link: function (scope, elem, attr) {
+			angular.element(elem).bind('keydown', function (evt) {
+				scope.$eval(attr.ngKeyDown);
+			});
+		}
+	};
+});
+
+NGApp.directive('ngKeyUp', function () {
+	return {
+		restrict: 'A',
+		link: function (scope, elem, attr) {
+			angular.element(elem).bind('keyup', function (evt) {
+				scope.$eval(attr.ngKeyUp);
+			});
+		}
+	};
+});
+
+NGApp.directive('ngSimulateReadOnly', function () {
+	return {
+		restrict: 'A',
+		link: function (scope, elem, attr) {
+			if( App.isMobile() || App.isPhoneGap() ){
+				angular.element(elem).bind('click keyup keydown change blur focus', function (evt) {
+					elem.val(attr.ngSimulateReadOnly);
+					elem.select();
+				});
+			} else {
+				elem.attr( 'readonly', 'readonly' );
+				angular.element(elem).bind('click', function (evt) {
+					elem.select();
+				});
+			}
+		}
+	};
+});
 
 NGApp.directive( 'ngFormatPhone', function( $filter ) {
-		return function( scope, element, attrs ) {
-				element.bind( 'keyup', function( event ) {
-					element.val( $filter( 'formatPhone' )( element.val() ) );
-				} );
-		};
+	return function( scope, element, attrs ) {
+		element.bind( 'keyup', function( event ) {
+			element.val( $filter( 'formatPhone' )( element.val() ) );
+		} );
+	};
 } );
