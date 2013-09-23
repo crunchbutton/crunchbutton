@@ -2859,3 +2859,11 @@ h1.about-header {
 		width: 125px;
 	}
 }
+
+
+
+@media(max-width:767px) {
+	.home-welcome-user {
+		display: none;
+	}
+}

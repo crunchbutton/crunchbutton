@@ -34,8 +34,15 @@ NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsServ
 	if (!App.isPhoneGap) {
 		location.init();
 	}
-
+	
 	var restaurants = RestaurantsService;
+
+	// @hack
+	// just force the location to the food-delivery page. if we dont have a loc it sends us back to location anyway
+	$location.path( '/' + restaurants.permalink );
+	return;
+
+	/*
 	restaurants.list( 
 		// Success
 		function(){
@@ -46,6 +53,7 @@ NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsServ
 			$location.path( '/location' );
 		} 
 	);
+	*/
 });
 
 
@@ -296,9 +304,14 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	}
 	
 	$scope.locEat = function() {
+		$('.location-detect-loader').show();
+		$('.location-detect-icon').hide();
 		$scope.location.getLocationByBrowser(function(loc) {
 			$scope.location.position.addLocation(loc);
 			proceed();
+			$('.location-detect-loader').hide();
+			$('.location-detect-icon').show();
+
 		});
 	};
 
