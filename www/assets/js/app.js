@@ -140,6 +140,8 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	$rootScope.navigation = MainNavigationService;
 	$rootScope.signout = AccountSignOut;
 	
+	$rootScope.test = App.test;
+	
 	$rootScope.cartScroll = function() {
 		$('html, body, .snap-content-inner').animate({scrollTop: 156}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	};
