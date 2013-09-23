@@ -682,7 +682,6 @@ App.verifyConnection = {
 	isOffLine: false,
 	forceReload: false,
 	init: function () {
-		alert('init')
 		if (App.isPhoneGap) {
 			document.addEventListener("online", App.verifyConnection.goOnline, false);
 			document.addEventListener("offline", App.verifyConnection.goOffline, false);
