@@ -296,9 +296,14 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	}
 	
 	$scope.locEat = function() {
+		$('.location-detect-loader').show();
+		$('.location-detect-icon').hide();
 		$scope.location.getLocationByBrowser(function(loc) {
 			$scope.location.position.addLocation(loc);
 			proceed();
+			$('.location-detect-loader').hide();
+			$('.location-detect-icon').show();
+
 		});
 	};
 
