@@ -7,9 +7,12 @@
 </div>
 
 <div ng-show="restaurants">
-	<div class="home-welcome home-tagline main-content-readable" ng-class="{'home-welcome-user': account.user.id_user}">
+	<div class="home-welcome home-tagline main-content-readable" ng-class="{'home-welcome-anony-hasuser': account.user.id_user}">
 		<h1 ng-bind-html-unsafe="slogan"></h1>
 		<h2 ng-bind-html-unsafe="tagline"></h2>
+	</div>
+	<div class="home-welcome home-tagline main-content-readable home-welcome-user" ng-show="account.user.id_user">
+		<h1 ng-bind-html-unsafe="motivationText"></h1>
 	</div>
 
 	<div class="content-padder-before"></div>
