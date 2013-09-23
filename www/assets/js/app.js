@@ -140,6 +140,8 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	$rootScope.navigation = MainNavigationService;
 	$rootScope.signout = AccountSignOut;
 	
+	$rootScope.test = App.test;
+	
 	$rootScope.cartScroll = function() {
 		$('html, body, .snap-content-inner').animate({scrollTop: 156}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	};
@@ -458,8 +460,9 @@ App.init = function(config) {
 	App._init = true;
 
 	// temporary fix for drawers overslcrolling
-	$(document).on('touchmove', '.snap-drawers', function(e) {
-		e.preventDefault()
+	$(document).on('touchmove', '.snap-drawers, .mfp-wrap', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
 	});
 
 	App.verifyConnection.init();
