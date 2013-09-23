@@ -462,6 +462,8 @@ App.init = function(config) {
 		e.preventDefault()
 	});
 
+	App.verifyConnection.init();
+
 	/* @todo: need to finish this
 	var lastX, lastY, dThresh = 10;
 	$(document).on('touchmove', 'body', function(e) {
@@ -673,19 +675,47 @@ App.applyIOSPositionFix = function(){
 }
 
 // Methods used by phoneGap
-App.noInternet = {
-	isOffLine : false,
-	show: function(){
-		App.rootScope.connectionError = true;
-		App.rootScope.$safeApply();
-		App.noInternet.isOffLine = true;
-	},
-	hide : function(){
-		App.rootScope.connectionError = false;
-		App.rootScope.$safeApply();
-		if( App.noInternet.isOffLine ){
-			App.rootScope.reload();
+App.verifyConnection = {
+	isOffLine: false,
+	forceReload: false,
+	init: function () {
+		alert('init')
+		if (App.isPhoneGap) {
+			document.addEventListener("online", App.verifyConnection.goOnline, false);
+			document.addEventListener("offline", App.verifyConnection.goOffline, false);
+			App.verifyConnection.check();
 		}
-		App.noInternet.isOffLine = false;
+	},
+	check: function () {
+		var networkState = navigator.connection.type;
+		if (networkState == Connection.NONE) {
+			// If the app starts without internet, force reload it.
+			App.verifyConnection.forceReload = true;
+			App.verifyConnection.goOffline();
+		}
+	},
+	goOffline: function () {
+		$('#connection-error').show();
+		$('#connection-error').height(window.innerHeight);
+		$('#connection-error').width(window.window.innerWidth);
+		navigator.splashscreen.hide();
+		App.verifyConnection.isOffLine = true;
+	},
+	goOnline: function () {
+		$('#connection-error').hide();
+		if (App.verifyConnection.isOffLine) {
+			if (App.verifyConnection.forceReload) {
+				navigator.splashscreen.show();
+				window.location.reload(true);
+				setTimeout(function () {
+					navigator.splashscreen.hide();
+				}, 2500);
+
+				App.verifyConnection.forceReload = false;
+			} else {
+				App.rootScope.reload();
+			}
+		}
+		App.verifyConnection.isOffLine = false;
 	}
-} 
+}
