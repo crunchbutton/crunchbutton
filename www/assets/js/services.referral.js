@@ -50,6 +50,10 @@ NGApp.factory( 'ReferralService', function( $http, $rootScope ){
 	}
 
 	
+	service.cleaned_url = function(){
+		return service.invite_url && service.invite_url.replace('http://','');
+	}
+
 	$rootScope.$on( 'userAuth', function(e, data) {
 		service.invite_url = null;
 		service.value = 0;

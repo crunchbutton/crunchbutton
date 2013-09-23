@@ -24,12 +24,12 @@
 			Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 			<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
 		</div>
-	
+
 		<div class="order-invite-code field-container" ng-show="order.new && referral.invite_url && referral.enabled">
 			<h4>Invite Code</h4>
 			Earn Crunch Credit for every new friend who orders with this link!
 			<br/>
-			<input type="text" ng-click-select-all value="{{referral.invite_url.replace('http://','')}}" readonly="readonly" />
+			<input type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="{{referral.cleaned_url()}}" />
 		</div>
 
 		<div class="order-details">

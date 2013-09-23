@@ -34,8 +34,7 @@
 				<i class="icon-facebook"></i><span class="social-button-text">Share</span>
 			</div>
 			<div class="divider"></div>
-			Invite URL: <input type="text" ng-click-select-all value="{{referral.invite_url.replace('http://','')}}" readonly="readonly" />
-			
+			Invite URL: <input type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="{{referral.cleaned_url()}}" />
 			<div class="divider"></div>
 		</div>
 	</div>
