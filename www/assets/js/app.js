@@ -458,8 +458,9 @@ App.init = function(config) {
 	App._init = true;
 
 	// temporary fix for drawers overslcrolling
-	$(document).on('touchmove', '.snap-drawers', function(e) {
-		e.preventDefault()
+	$(document).on('touchmove', '.snap-drawers, .mfp-wrap', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
 	});
 
 	/* @todo: need to finish this
