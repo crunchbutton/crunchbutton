@@ -298,6 +298,12 @@ var Restaurant = function(id) {
 			}
 		}
 
+		if( isOpen ){
+			var minToClose = self.isAboutToClose();
+			if( !isNaN( parseFloat( minToClose ) ) && minToClose == 0 ){
+				isOpen = false;
+			}
+		}
 		this._open = isOpen;
 		return isOpen;
 	}
