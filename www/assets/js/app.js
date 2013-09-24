@@ -465,8 +465,6 @@ App.init = function(config) {
 		e.stopPropagation();
 	});
 
-	App.verifyConnection.init();
-
 	/* @todo: need to finish this
 	var lastX, lastY, dThresh = 10;
 	$(document).on('touchmove', 'body', function(e) {
