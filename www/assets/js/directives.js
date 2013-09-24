@@ -153,7 +153,7 @@ NGApp.directive('ngSimulateReadOnly', function () {
 		restrict: 'A',
 		link: function (scope, elem, attr) {
 			if( App.isMobile() || App.isPhoneGap ){
-				angular.element(elem).bind('click keyup keydown change blur focus', function (evt) {
+				angular.element(elem).bind('click keyup keydown change focus', function (evt) {
 					elem.val(attr.ngSimulateReadOnly);
 					elem.select();
 				});
