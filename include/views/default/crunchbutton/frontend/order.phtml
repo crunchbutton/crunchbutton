@@ -7,32 +7,63 @@
 	<div class="content-padder-before"></div>
 
 	<div class="order-info content-padder main-content-readable">
-	
 		<span class="order-thanks-message" ng-show="order.new">
-			Crunched!&nbsp;
+			<div class="toon-cherry"></div>
+			<span class="order-thanks-message-crunched">Crunched!</span>
 			<span class="order-thanks-message-block"> Your order is placed</span>
-			<span class="order-thanks-message-small">(and saved for easy 1 click ordering next time)</span>
+			<span class="order-thanks-message-small">and saved for easy 1 click reordering</span>
+			<div class="divider"></div>
 		</span>
 
+<? /*
 		<? if (!$this->export) : ?>
 			<div ng-show="account.user.has_auth" class="order-phone-message">
 				You can one click order anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 			</div>
 		<? endif ; ?>
-
-		<div ng-show="!account.user.has_auth">
-			Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
-			<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
-		</div>
-
-		<div class="order-invite-code field-container" ng-show="order.new && referral.invite_url && referral.enabled">
-			<h4>Invite Code</h4>
-			Earn Crunch Credit for every new friend who orders with this link!
-			<br/>
-			<input type="text" ng-simulate-read-only="{{referral.cleaned_url()}}" value="{{referral.cleaned_url()}}" />
-		</div>
+*/ ?>
 
 		<div class="order-details">
+			<div ng-hide="account.user.has_auth">
+				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
+				<br />
+				<div class="divider dots"></div>
+			</div>
+			
+
+			<div class="social-button facebook-button social-button-share clearfix" ng-click="facebook();">
+				<i class="icon-facebook"></i><span class="social-button-text">Share what you ordered</span>
+				<div class="divider"></div>
+			</div>
+			<div ng-show="order.new && referral.invite_url && referral.enabled">
+				Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
+				<br /><br />
+			</div>
+			
+			<div class="divider dots"></div>
+			<br />
+
+		
+			For updates on your order, please call
+			<div>
+				{{order._restaurant_name}}: 
+				<b>
+					<span ng-show="isMobile"><a href="tel:{{order._restaurant_phone}}">{{ order._restaurant_phone | formatPhone }}</a></span>
+					<span ng-show="!isMobile">{{ order._restaurant_phone | formatPhone }}</span>
+				</b>
+			</div>
+
+			<br>
+
+			You can reach Crunchbutton by texting or calling <b> 
+			<span ng-show="isMobile"><a href="tel:(646) 783-1444">{{ '6467831444' | formatPhone }}</a></span>
+			<span ng-show="!isMobile">{{ '6467831444' | formatPhone }}</span>
+			</b>
+
+			<br><br>
+			<div class="divider dots"></div>
+			<br>
 
 			<div ng-show="(order.delivery_type == 'delivery')">
 				<b>Your delivery address:</b><br><span ng-bind-html-unsafe="order.address | nl2br"></span><br><br>
@@ -44,7 +75,7 @@
 	
 			<b>Your phone #:</b><br>{{ order.phone | formatPhone }}<br><br>
 	
-			<b>Your order:</b><span ng-bind-html-unsafe="order._message"></span><br><br>
+			<b>Your receipt:</b><span ng-bind-html-unsafe="order._message"></span><br><br>
 	
 			<i ng-show="order.notes" ng-bind-html-unsafe="order.notes | nl2br"></i><br><br>
 	
@@ -57,30 +88,7 @@
 	
 			<br><br>
 	
-			For updates on your order, please call
-			<div>
-				{{order._restaurant_name}}: 
-				<b>
-					<span ng-show="isMobile"><a href="tel:{{order._restaurant_phone}}">{{ order._restaurant_phone | formatPhone }}</a></span>
-					<span ng-show="!isMobile">{{ order._restaurant_phone | formatPhone }}</span>
-				</b>
-			</div>
 
-			<br><br>
-
-			You can reach Crunchbutton by texting or calling <b> 
-			<span ng-show="isMobile"><a href="tel:(646) 783-1444">{{ '6467831444' | formatPhone }}</a></span>
-			<span ng-show="!isMobile">{{ '6467831444' | formatPhone }}</span>
-			</b> <br><br>
-	
-			We've saved your order for easy 1 click ordering next time
-
-			<br><br>
-
-			<div class="social-button facebook-button social-button-share clearfix" ng-click="facebook();">
-				<i class="icon-facebook"></i><span class="social-button-text">Share what you ordered</span>
-				<div class="divider"></div>
-			</div>
 	
 		</div>
 	</div>
