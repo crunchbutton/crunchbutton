@@ -459,6 +459,8 @@ App.init = function(config) {
 	}
 	App._init = true;
 
+	App.verifyConnection.init();
+
 	// temporary fix for drawers overslcrolling
 	$(document).on('touchmove', '.snap-drawers, .mfp-wrap', function(e) {
 		e.preventDefault();
@@ -504,8 +506,8 @@ App.init = function(config) {
 	FastClick.attach(document.body);
 	
 	// add ios7 styles for nav bar and page height
-	if (App.isPhoneGap && App.iOS7()) {
-		$('body').addClass('ios7');
+	if (App.isPhoneGap && !App.iOS7()) {
+		$('body').removeClass('ios7');
 	}
 	
 	// add the side swipe menu for mobile view
@@ -681,8 +683,8 @@ App.verifyConnection = {
 	forceReload: false,
 	init: function () {
 		if (App.isPhoneGap) {
-			document.addEventListener("online", App.verifyConnection.goOnline, false);
-			document.addEventListener("offline", App.verifyConnection.goOffline, false);
+			document.addEventListener('online', App.verifyConnection.goOnline, false);
+			document.addEventListener('offline', App.verifyConnection.goOffline, false);
 			App.verifyConnection.check();
 		}
 	},
@@ -695,27 +697,24 @@ App.verifyConnection = {
 		}
 	},
 	goOffline: function () {
-		$('#connection-error').show();
-		$('#connection-error').height(window.innerHeight);
-		$('#connection-error').width(window.window.innerWidth);
+		if (App._remoteConfig) {
+			return;
+		}
+		$('.connection-error').show();
 		navigator.splashscreen.hide();
 		App.verifyConnection.isOffLine = true;
 	},
 	goOnline: function () {
-		$('#connection-error').hide();
 		if (App.verifyConnection.isOffLine) {
 			if (App.verifyConnection.forceReload) {
-				navigator.splashscreen.show();
 				window.location.reload(true);
-				setTimeout(function () {
-					navigator.splashscreen.hide();
-				}, 2500);
-
 				App.verifyConnection.forceReload = false;
+
 			} else {
 				App.rootScope.reload();
 			}
 		}
 		App.verifyConnection.isOffLine = false;
+		$('.connection-error').hide();
 	}
 }

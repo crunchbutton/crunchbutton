@@ -86,17 +86,6 @@ html[xmlns] .clearfix {
 .unbold{
 	font-weight: normal !important;
 }
-#connection-error{
-	width:100%;
-	z-index:1000;
-	top:0;
-	left:0;
-	position:absolute;
-	background:#FFF;
-	padding-top: 10px;
-	text-align: center;
-	display:none;
-}
 
 /* CUSTOM CHECKBOX */
 .custom-checkbox{
@@ -2871,4 +2860,19 @@ h1.about-header {
 	.home-welcome-user {
 		display: none;
 	}
+}
+
+.connection-error {
+	top: 0;
+	bottom:0;
+	left:0;
+	right:0;
+	width: 100%;
+	height: 100%;
+	z-index:1000;
+	position:absolute;
+	background:#FFF;
+	padding-top: 10px;
+	text-align: center;
+	display:none;
 }
