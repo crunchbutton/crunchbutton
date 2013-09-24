@@ -2872,7 +2872,17 @@ h1.about-header {
 	z-index:1000;
 	position:absolute;
 	background:#FFF;
-	padding-top: 10px;
 	text-align: center;
 	display:none;
+	background: #fff9ea;
+	overflow: hidden;
+}
+
+.connection-error-image {
+	background: url(../images/ui-error-connection.png) no-repeat;
+	width: 267px;
+	height: 386px;
+	background-size: 100%;
+	margin: 0 auto;
+	margin-top: 20%;
 }
