@@ -15,8 +15,27 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 	service.position = PositionsService;
 
 	service.sort = function () {
-		// dont not sort. if a restaurant closes we want to make sure it apears so
 
+		var list = service.getStatus();
+
+		list.sort(sort_by({
+			name: '_open',
+			reverse: true
+		}, {
+			name: 'delivery',
+			reverse: true
+		}, {
+			name: '_weight',
+			primer: parseInt,
+			reverse: true
+		}));
+
+		restaurants = list;
+		return restaurants;
+	}
+
+	service.getStatus = function () {
+		
 		var list = restaurants;
 
 		for (var x in list) {
@@ -31,23 +50,13 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				if (list[x].delivery != '1') {
 					list[x]._tag = 'takeout';
 				} else if (list[x].isAboutToClose()) {
+					list[x]._minToClose = list[x].isAboutToClose();
 					list[x]._tag = 'closing';
 				}
 			}
 			// show short description
 			list[x]._short_description = (list[x].short_description || ('Top Order: ' + (list[x].top_name ? (list[x].top_name || list[x].top_name) : '')));
 		};
-		list.sort(sort_by({
-			name: '_open',
-			reverse: true
-		}, {
-			name: 'delivery',
-			reverse: true
-		}, {
-			name: '_weight',
-			primer: parseInt,
-			reverse: true
-		}));
 
 		restaurants = list;
 		return restaurants;

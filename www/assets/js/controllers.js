@@ -90,7 +90,7 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 /**
  * Show the restaurants
  */
-NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, RestaurantsService, LocationService) {
+NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, RestaurantsService, LocationService) {
 
 	$scope.restaurants = false;
 
@@ -107,6 +107,20 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	var restaurants = RestaurantsService;
 
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
+
+	// Update the close/open/about_to_close status from the restaurants
+	var updateStatus = function(){
+		updateRestaurantStatus = $timeout( function(){
+			// Update status of the restaurant's list
+			$scope.restaurants = restaurants.sort();
+			updateStatus();
+		} , 1000 * 15 );
+	}
+
+	$scope.$on( '$destroy', function(){
+		// Kills the timer when the controller is changed
+		$timeout.cancel( updateRestaurantStatus );
+	});
 
 	$scope.display = function($event) {
 		var restaurant = this.restaurant;
@@ -153,6 +167,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			document.title = city + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
 
 			$scope.restaurants = restaurants.sort();
+			updateStatus();
 			$scope.slogan = slogan;
 			$scope.tagline = tagline;
 
