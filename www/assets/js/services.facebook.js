@@ -29,59 +29,62 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 	// This method let the user type his message before post
 	service.postOrder = function(){
-
-		if( !service.orderStatus ){
+		if( service.orderStatus ){    
+			var status = service.orderStatus;
+			status.link = service.referral.cleaned_url();
+			FB.ui({
+				method: 'feed',
+				user_message_prompt: 'CrunchButton: Publish This!',
+				link: status.link,
+				href: status.link,
+				picture: status.picture,
+				name: status.name,
+				caption: status.caption,
+				attachment: {
+					name: status.name,
+			  	caption: status.caption,
+					description: status.description,
+					href: status.link,
+					media:[{'type':'image','src':status.picture,'href':status.link}],
+			},
+			action_links: [{ text: 'CrunchButton', href: 'https://crunchbutton.com' } ],
+			description: status.description
+			}, function(response){
+				if (response && response.post_id) {
+					App.alert( 'Thank you for sharing!' );
+				}
+			});
+		} else {
 			service.preLoadOrderStatus();
 			App.alert( 'Oops, please try again!' );
 			return;
 		}
-		var status = service.orderStatus;
-		status.link = service.referral.cleaned_url();
-
-		FB.ui({
-			method: 'stream.publish',
-			user_message_prompt: 'CrunchButton: Publish This!',
-			message: status.message,
-			attachment: {
-				name: status.name,
-				caption: status.caption,
-				description: status.description,
-				href: status.link,
-				media:[{'type':'image','src':status.picture,'href':status.link}],
-			},
-			action_links: [{ text: status.site_name, href: status.link}]
-		},
-		function(response) {
-			if (response && response.post_id) {
-				App.alert( 'Thank you for sharing!' );
-			}
-		} );
 	}
 
 	service.postInvite = function( url ){
 		var pic = 'http://crunchbutton.com/assets/images/facebook-like.png';
-		var name = 'Nom';
-		var caption = '';
-		var description = url;
-		var message = '';
 		FB.ui({
-			method: 'stream.publish',
-			user_message_prompt: 'CrunchButton!',
-			message: message,
+			method: 'feed',
+			user_message_prompt: 'CrunchButton',
+			link: url,
+			href: url,
+			picture: pic,
+			name: 'Nom',
+			caption:' ',
+			description: url,
 			attachment: {
-				name: name,
-				caption: caption,
-				description: description,
+				name: 'CrunchButton',
+				caption: ' ',
+				description: url,
 				href: url,
-				media:[{'type':'image','src': pic,'href':url}],
+				media:[{'type':'image','src':pic,'href':url}],
 			},
-			action_links: [{ text: 'CrunchButton', href: 'https://crunchbutton.com' } ]
-		},
-		function(response) {
+			action_links: [{ text: 'CrunchButton', href: 'https://crunchbutton.com' } ],
+		}, function(response){
 			if (response && response.post_id) {
 				App.alert( 'Thank you for sharing!' );
 			}
-		} );
+		});
 	}
 
 	// request permission to post on a users timeline
