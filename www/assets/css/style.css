@@ -2863,6 +2863,11 @@ h1.about-header {
 
 
 @media(max-width:767px) {
+	.home-welcome-anony-hasuser {
+		display: none;
+	}
+}
+@media(min-width:768px) {
 	.home-welcome-user {
 		display: none;
 	}

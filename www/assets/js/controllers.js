@@ -100,6 +100,9 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		$location.path( '/' );
 		return;
 	}
+	
+	var motivationText = ['You are awesome','You are loved','You are beautiful','You\'re at the top of your game','You are rad'];
+	$scope.motivationText = motivationText[Math.floor(Math.random() * motivationText.length)];
 
 	var restaurants = RestaurantsService;
 
