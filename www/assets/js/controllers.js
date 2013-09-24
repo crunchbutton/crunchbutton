@@ -114,7 +114,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			// Update status of the restaurant's list
 			$scope.restaurants = restaurants.sort();
 			updateStatus();
-		} , 1000 * 15 );
+		} , 1000 * 30 );
 	}
 
 	$scope.$on( '$destroy', function(){
