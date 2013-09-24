@@ -2855,6 +2855,20 @@ h1.about-header {
 	.home-welcome-anony-hasuser {
 		display: none;
 	}
+	/*
+	.home-welcome-user {
+		margin: 0 auto;
+		margin-bottom: 10px;
+		margin-top: 3px;
+		width: 300px;
+	}
+	.home-welcome-user h1 {
+		float: left;
+		margin: 20px 0 0 5px;
+		width: 180px;
+		line-height: 1.4em;
+	}
+	*/
 }
 @media(min-width:768px) {
 	.home-welcome-user {
@@ -2884,5 +2898,21 @@ h1.about-header {
 	height: 386px;
 	background-size: 100%;
 	margin: 0 auto;
-	margin-top: 20%;
+	margin-top: 90px;
+}
+
+.toon-cherry {
+	background: url(../images/toon-cherry.png) no-repeat;
+	background-size: 100%;
+	width: 86px;
+	height: 139px;
+	float: right;
+}
+
+.toon-orange {
+	background: url(../images/toon-orange.png) no-repeat;
+	background-size: 100%;
+	width: 87px;
+	height: 113px;
+	float: right;
 }
