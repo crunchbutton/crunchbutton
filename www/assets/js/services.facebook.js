@@ -1,5 +1,5 @@
 // FacebookService service
-NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, AccountService ){
+NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, AccountService, ReferralService) {
 
 	var service = {
 		token : false,
@@ -11,6 +11,8 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 		running : false,
 		error : { unknown : false, userExists : false, login : false }
 	}
+	
+	service.referral = ReferralService;
 
 	service.account = AccountService;
 
@@ -27,24 +29,27 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 
 	// This method let the user type his message before post
 	service.postOrder = function(){
+
 		if( !service.orderStatus ){
 			service.preLoadOrderStatus();
 			App.alert( 'Oops, please try again!' );
 			return;
 		}
 		var status = service.orderStatus;
+		status.link = service.referral.cleaned_url();
+
 		FB.ui({
 			method: 'stream.publish',
 			user_message_prompt: 'CrunchButton: Publish This!',
 			message: status.message,
 			attachment: {
-			name: status.name,
-			caption: status.caption,
-			description: status.description,
-			href: status.link,
-			media:[{'type':'image','src':status.picture,'href':status.link}],
+				name: status.name,
+				caption: status.caption,
+				description: status.description,
+				href: status.link,
+				media:[{'type':'image','src':status.picture,'href':status.link}],
 			},
-			action_links: [{ text: status.site_name, href: status.site_url }]
+			action_links: [{ text: status.site_name, href: status.link}]
 		},
 		function(response) {
 			if (response && response.post_id) {

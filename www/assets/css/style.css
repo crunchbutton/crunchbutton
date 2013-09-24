@@ -1143,11 +1143,11 @@ h1.about-header {
 	width:150px;
 }
 .order-details {
-	border-top:1px solid #fbdbc0;
-	margin:10px;
 	padding-bottom:10px;
-	padding-top:10px;
 	font-size:13px !important;
+}
+.order-details .social-button-share {
+	margin-top: 10px;
 }
 .order-details .credit {
 	color:#999;
@@ -1166,9 +1166,7 @@ h1.about-header {
 	float:left;
 	margin-bottom:3px;
 }
-.field-container {
-	width:400px;
-}
+
 .payment-total {
 	margin-top:25px;
 	margin-bottom:10px;
@@ -1620,7 +1618,6 @@ h1.about-header {
 	padding: 10px;
 	padding-top: 20px;
 	margin-bottom: 0!important;
-	border-top: 1px solid #fbdbc0;
 	margin-left: auto;
 	margin-right: auto;
 	width: 100% !important;
@@ -1755,9 +1752,6 @@ h1.about-header {
 	}
 	.logo {
 		margin:0 auto;
-	}
-	.order-details {
-		border-top:1px solid #CCC;
 	}
 	.content-item-locations-cities {
 		text-align:center;
@@ -2109,12 +2103,23 @@ h1.about-header {
 	.order-thanks-message {
 		padding-top:10px !important;
 		display:block;
-		font-size:25px !important;
+	}
+	.order-thanks-message-small {
+		font-size:11px;
+		display:block;
+		font-weight: normal;
 	}
 	.order-thanks-message-block {
+		font-size:15px;
+		display:block;
+		line-height:1.5em;
+		margin-top:15px;
+	}
+	.order-thanks-message-crunched {
 		display:block;
 		line-height:30px;
-		margin-top:15px;
+		margin-top:25px;
+		font-size:25px;
 	}
 	.cart-item {
 		background:#ecf1fb;
@@ -2874,6 +2879,9 @@ h1.about-header {
 	.home-welcome-user {
 		display: none;
 	}
+	.toon-cherry {
+		display: none;	
+	}
 }
 
 .connection-error {
@@ -2914,5 +2922,13 @@ h1.about-header {
 	background-size: 100%;
 	width: 87px;
 	height: 113px;
+	float: right;
+}
+
+.toon-apple {
+	background: url(../images/toon-apple.png) no-repeat;
+	background-size: 100%;
+	width: 109px;
+	height: 182px;
 	float: right;
 }
