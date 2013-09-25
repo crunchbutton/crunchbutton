@@ -132,13 +132,11 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		if (!restaurant.open()) {
 			$rootScope.$broadcast('restaurantClosedClick', restaurant);
 		} else {
-			var el = $($event.target).closest('.meal-item').find('.meal-item-content');
+			var el = $($event.target).parents('.meal-item').find('.meal-item-content');
 			var s = $(el).data('spinner');
-			if (!s) {
-				s = Ladda.create(el.get(0));
-				$(el).data('spinner', s);
+			if (s) {
+				s.start();
 			}
-			s.start();
 
 			// @todo: this is kind of redundundant
 			// make sure that the restaurant is actulay loaded first
@@ -182,6 +180,14 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 				$('.content').removeClass('short-meal-list');
 			}
 			$('.content').removeClass('smaller-width');
+			
+			setTimeout(function() {
+				$('.meal-item-content').each(function() {
+					var s = Ladda.create(this);
+					$(this).data('spinner', s);		
+					$scope.spin = s;		
+				});
+			},1);
 
 		}, 
 		// Error
@@ -314,7 +320,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 				}, 
 				// Address not ok
 				function() {
-					$('.location-address').val('').attr('placeholder',$('<div>').html(((App.isPhoneGap || App.isMobile()) ? '' : '&#9785;  ') + 'Oops! Please enter a street name, number, and city').text());
+					var oopsText = App.isPhoneGap ? 'Oops! Please enter an address' : '&#9785; Oops! Please enter a street name, number, and city';
+					$('.location-address').val('').attr('placeholder',$('<div>').html(oopsText).text());
 					$scope.warningPlaceholder = true;
 					$scope.focus( '.location-address' );
 					$scope.isProcessing = false;
