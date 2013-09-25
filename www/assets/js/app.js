@@ -380,16 +380,29 @@ App.identify = function() {
 
 /**
  * controls the busy state of the app
+ * @sky-loader
  */
 App.busy = {
+	_busy: false,
+	stage: function() {
+		$('#Stage').height('100%').width('100%');
+		return AdobeEdge.getComposition('EDGE-977700350').getStage();
+	},
 	isBusy: function() {
 		return $('.app-busy').length ? true : false;
+		return App.busy._busy;
 	},
 	makeBusy: function() {
-		$('body').append($('<div class="app-busy"></div>').append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>')));
+		return $('body').append($('<div class="app-busy"></div>').append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>')));
+		App.busy._busy = true;
+		$('.order-sky-loader').addClass('play');
+		App.busy.stage().play(0);
 	},
 	unBusy: function() {
-		$('.app-busy').remove();
+		return $('.app-busy').remove();
+		App.busy._busy = false;
+		$('.order-sky-loader').removeClass('play');
+		App.busy.stage().stop();
 	}
 };
 
@@ -718,3 +731,4 @@ App.verifyConnection = {
 		$('.connection-error').hide();
 	}
 }
+
