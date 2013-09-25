@@ -350,7 +350,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 /**
  * restaurant page
  */
-NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootScope, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
+NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootScope, $timeout, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
 
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 	var order = OrderService;
@@ -367,16 +367,32 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	var creditCard = CreditCardService;
 	
 	// update if the restaurant is closed or open
-	$rootScope.updateOpen = setInterval(function() {
-		var open = $scope.restaurant.open();
-		if ($scope.open != open) {
-			$scope.open = open;
-		}
-		if (!$scope.$$phase){
-			$scope.$apply();	
-		}
-	},1000 * 15);
-	
+	var updateStatus = function(){
+		updateRestaurantStatus = $timeout( function(){
+			var open = $scope.restaurant.open();
+			console.log('open',open);
+			if ($scope.open != open) {
+				$scope.open = open;
+			}
+			if (!$scope.$$phase){
+				$scope.$apply();	
+			}
+			updateStatus();
+		} , 1000 * 15 );
+	}
+
+	$scope.$on( '$destroy', function(){
+		// Kills the timer when the controller is changed
+		$timeout.cancel( updateRestaurantStatus );
+	});
+
+	$rootScope.$on( 'appResume', function(e, data) {
+		updateStatus();
+	});
+
+	updateStatus();
+
+
 	// Set the id_restaurant 
 	order.cart.setRestaurant( $routeParams.id );
 
