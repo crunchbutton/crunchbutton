@@ -646,7 +646,7 @@ html[xmlns] .clearfix {
 	font-family:"Open Sans","Droid Sans","Helvetica","Arial",sans-serif;
 	border:1px solid #f78160;
 	font-size:22px;
-	padding:.45em .6em .5em .6em;
+	padding:.45em 0 .5em .6em;
 	box-shadow:inset 0 0 6px rgba(0,0,0,.2);
 	width:100%;
 	color:#888;
