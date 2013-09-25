@@ -601,6 +601,9 @@ App.init = function(config) {
 			$(window).scrollTop( $(window).scrollTop() + 1 );
 		});
 	}
+
+	App.phoneGapListener.init();
+
 };
 
 /**
@@ -696,8 +699,8 @@ App.verifyConnection = {
 	forceReload: false,
 	init: function () {
 		if (App.isPhoneGap) {
-			document.addEventListener('online', App.verifyConnection.goOnline, false);
-			document.addEventListener('offline', App.verifyConnection.goOffline, false);
+			document.addEventListener('online', , false);
+			document.addEventListener('offline', , false);
 			App.verifyConnection.check();
 		}
 	},
@@ -732,3 +735,31 @@ App.verifyConnection = {
 	}
 }
 
+// Phonegap events listeners
+App.phoneGapListener = {
+	init : function(){
+		document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
+		document.addEventListener( 'pause', App.phoneGapListener.pause , false );
+		document.addEventListener( 'resume', App.phoneGapListener.resume , false );
+		document.addEventListener( 'online', App.phoneGapListener.online , false );
+		document.addEventListener( 'offline', App.phoneGapListener.offline , false );
+	},
+	deviceready : function(){
+		// deviceready
+	},
+	resume : function(){
+		dateTime.restart();
+		App.rootScope.$broadcast( 'appResume', false );	
+	},
+	pause : function(){
+		// pause
+	},
+	online : function(){
+		// online
+		App.verifyConnection.goOnline();
+	},
+	offline : function(){
+		// offline
+		App.verifyConnection.goOffline();
+	}
+};

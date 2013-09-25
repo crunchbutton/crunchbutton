@@ -86,7 +86,6 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 	);
 });
 
-
 /**
  * Show the restaurants
  */
@@ -114,12 +113,18 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			// Update status of the restaurant's list
 			$scope.restaurants = restaurants.sort();
 			updateStatus();
-		} , 1000 * 30 );
+		} , 1000 * 15 );
 	}
 
 	$scope.$on( '$destroy', function(){
 		// Kills the timer when the controller is changed
 		$timeout.cancel( updateRestaurantStatus );
+	});
+
+	$rootScope.$on( 'appResume', function(e, data) {
+		if( $location.path() == '/' + RestaurantsService.permalink ){
+			updateStatus();
+		}
 	});
 
 	$scope.display = function($event) {
