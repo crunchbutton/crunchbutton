@@ -56,10 +56,10 @@
 			<div class="home-recommend-thank-you" ng-show="recommend.greetings">
 				<div class="divider"></div>
 				<div class="home-recommend-message-thank-you">
-					<div ng-show="account.user">
+					<div ng-show="account.user.has_auth">
 						<span class="home-reccomend-message-content">We'll let you know if they make it to Crunchbutton.</span>
 					</div>
-					<div ng-show="!account.user">
+					<div ng-show="!account.user.has_auth">
 						<button ng-click="modal.signupOpen()" class="home-recommend-button"><div>Create an account</div></button>
 						<span class="home-reccomend-message-content">and we'll let you know when we launch in your area!</span>
 					</div>
