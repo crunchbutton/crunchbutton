@@ -482,7 +482,9 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 							$rootScope.$safeApply( function(){
 								// Make sure that the form will be visible
 								service.showForm = true;
-								$('[name="pay-address"]').focus();
+								if (!App.isPhoneGap) {
+									$('[name="pay-address"]').focus();
+								}
 								// Write the found address at the address field, so the user can check it.
 								service.form.address = theClosestAddress.formatted();
 							} );

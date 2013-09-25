@@ -127,34 +127,6 @@ html[xmlns] .clearfix {
 	color: #e77558 !important;
 }
 
-/* APP BUSY */
-.app-busy {
-	top:0;
-	left:0;
-	position:fixed;
-	height:100%;
-	width:100%;
-	background:rgba(0,0,0,.2);
-	z-index:1000;
-}
-.app-busy-loader {
-	height:100px;
-	width:100px;
-	border-radius:12px;
-	background:rgba(52,52,52,.8);
-	left:50%;
-	top:200px;
-	margin-left:-50px;
-	position:absolute;
-}
-.app-busy-loader-icon {
-	margin:0 auto;
-	background:url(../images/loader.gif)no-repeat;
-	width:48px;
-	height:48px;
-	margin-top:25px;
-}
-
 /* MODAL STUFF */
 .modal .icons-ul {
 	margin-left:1.5em;
@@ -2931,4 +2903,60 @@ h1.about-header {
 	width: 109px;
 	height: 182px;
 	float: right;
+}
+
+.order-sky-loader {
+	display: none;
+}
+
+
+@media(max-width:767px) {
+	#Stage {
+		margin: auto;
+	}
+	.order-sky-loader {
+		position: absolute;
+		z-index: 100000;
+		top:0;
+		left:0;
+		bottom: 0;
+		right: 0;
+		background: #f5844d;
+		width: 100%;
+		height: 100%;
+	}
+	.order-sky-loader.play {
+		display: block;
+	}
+}
+
+
+.edgeLoad-EDGE-977700350 { visibility:hidden; }
+
+/* APP BUSY */
+.app-busy {
+	top:0;
+	left:0;
+	position:fixed;
+	height:100%;
+	width:100%;
+	background:rgba(0,0,0,.2);
+	z-index:1000;
+}
+.app-busy-loader {
+	height:100px;
+	width:100px;
+	border-radius:12px;
+	background:rgba(52,52,52,.8);
+	left:50%;
+	top:200px;
+	margin-left:-50px;
+	position:absolute;
+}
+.app-busy-loader-icon {
+	margin:0 auto;
+	background:url(../images/loader.gif)no-repeat;
+	width:48px;
+	height:48px;
+	margin-top:25px;
 }
