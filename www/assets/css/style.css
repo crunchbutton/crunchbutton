@@ -1915,7 +1915,8 @@ h1.about-header {
 		background:#f5f5f5 url(../images/crisp_paper_ruffles-mobile.png);
 	}
 	.page-location .bg,.bg.route.location {
-		background:#f5f5f5 url(../images/appbg/marlas-tacos.jpg);
+		background:#f5f5f5 url(../images/appbg/sandwich.jpg);
+		background-size: 950px;
 	}
 	.bottom-spacer {
 		height:50px;
