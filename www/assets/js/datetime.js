@@ -10,6 +10,14 @@ dateTime.update = function(){
 	setTimeout( function(){ dateTime.update(); } ,1000);
 }
 
+// This method will be called by phonegap at the 'resume' event
+dateTime.restart = function(){
+	dateTime.timer = 0;
+	dateTime.now = false;
+	var now = new Date();
+	_gmtServer = now.getUTCFullYear() + '/' + (now.getUTCMonth()+1) + '/' + now.getUTCDate() + '/' + now.getUTCHours() + '/' + now.getUTCMinutes() + '/' + now.getUTCSeconds();
+}
+
 dateTime.toString = function(){
 	return dateTime.now.toString( 'dd MMMM yyyy HH:mm:ss' );
 }
