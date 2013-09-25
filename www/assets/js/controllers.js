@@ -309,7 +309,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 				}, 
 				// Address not ok
 				function() {
-					$('.location-address').val('').attr('placeholder',$('<div>').html(((App.isPhoneGap || App.isMobile()) ? '' : '&#9785;  ') + 'Oops! Please enter a street name, number, and city').text());
+					var oopsText = App.isPhoneGap ? 'Oops! Please enter an address' : '&#9785; Oops! Please enter a street name, number, and city';
+					$('.location-address').val('').attr('placeholder',$('<div>').html(oopsText).text());
 					$scope.warningPlaceholder = true;
 					$scope.focus( '.location-address' );
 					$scope.isProcessing = false;
