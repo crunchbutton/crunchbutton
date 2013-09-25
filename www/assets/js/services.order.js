@@ -577,7 +577,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 						if( !json.errors ){
 							json = {
 								status: 'false',
-								errors: ['Sorry! Something went horribly wrong trying to place your order! <br/> Please make sure your credit card info is correct!']
+								errors: ['Sorry! An error has occurred trying to place your order! <br/> Please make sure your credit card info is correct!']
 							};	
 						}
 						$rootScope.$broadcast( 'orderProcessingError', true );
@@ -586,7 +586,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 					App.log.order(json, 'processing error');
 					json = {
 						status: 'false',
-						errors: ['Sorry! Something went horribly wrong trying to place your order! <br/> Please make sure your credit card info is correct!']
+						errors: ['Sorry! An error has occurred trying to place your order! <br/> Please make sure your credit card info is correct!']
 					};
 					$rootScope.$broadcast( 'orderProcessingError', true );
 				}
