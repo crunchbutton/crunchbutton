@@ -127,13 +127,11 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		if (!restaurant.open()) {
 			$rootScope.$broadcast('restaurantClosedClick', restaurant);
 		} else {
-			var el = $($event.target).closest('.meal-item').find('.meal-item-content');
+			var el = $($event.target).parents('.meal-item').find('.meal-item-content');
 			var s = $(el).data('spinner');
-			if (!s) {
-				s = Ladda.create(el.get(0));
-				$(el).data('spinner', s);
+			if (s) {
+				s.start();
 			}
-			s.start();
 
 			// @todo: this is kind of redundundant
 			// make sure that the restaurant is actulay loaded first
@@ -177,6 +175,14 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 				$('.content').removeClass('short-meal-list');
 			}
 			$('.content').removeClass('smaller-width');
+			
+			setTimeout(function() {
+				$('.meal-item-content').each(function() {
+					var s = Ladda.create(this);
+					$(this).data('spinner', s);		
+					$scope.spin = s;		
+				});
+			},1);
 
 		}, 
 		// Error
