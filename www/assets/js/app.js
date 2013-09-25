@@ -699,8 +699,6 @@ App.verifyConnection = {
 	forceReload: false,
 	init: function () {
 		if (App.isPhoneGap) {
-			document.addEventListener('online', , false);
-			document.addEventListener('offline', , false);
 			App.verifyConnection.check();
 		}
 	},
