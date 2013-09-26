@@ -79,7 +79,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 				}
 			}
 		}
-		
+
 		// if there was no number, and there was a user with a stored card, use the users stored card
 		if (!$params['number'] && $params['user'] && $params['user']->stripe_id) {
 			$reason = true;

@@ -773,3 +773,39 @@ App.phoneGapListener = {
 		App.verifyConnection.goOffline();
 	}
 };
+
+App.tokenizeCard = function(card, complete) {
+	balanced.card.create(card, function(response) {
+		var res = {
+			status: false
+		};
+		switch (response.status) {
+			case 201:
+				res.status = true;
+				res.id = response.data.id;
+				res.uri = response.data.uri;
+				res.lastfour = card.card_number.substr(-4);
+				res.month = card.expiration_month;
+				res.year = card.expiration_year;
+				break;
+
+			case 400:
+				res.error = 'Missing fields';
+				break;
+
+			case 402:
+				res.error = 'Unable to authorize';
+				break;
+
+			case 404:
+				res.error = 'Unexpected error';
+				break;
+
+			case 500:
+				res.error = 'Error processing payment';
+				break;
+		}
+		console.debug('>> Balanced tokenization response',response);
+		complete(res);
+	});
+};
