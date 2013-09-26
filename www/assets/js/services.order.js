@@ -358,16 +358,24 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			order.tip = service.form.tip;
 			order.autotip_value = service.form.autotip;
 		}
-
-		if (service._cardInfoHasChanged) {
-			order.card = {
-				number: service.form.cardNumber,
-				month: service.form.cardMonth,
-				year: service.form.cardYear
-			};
-		} else {
-			order.card = {};
+		
+		var displayErrors = function(errors) {
+			if (!$.isEmptyObject(errors)) {
+				$('body').scrollTop($('.payment-form').position().top - 80);
+				service.errors(errors);
+				App.busy.unBusy();
+	
+				App.track('OrderError', errors);
+				// Log the error
+				App.log.order({
+					'errors': errors
+				}, 'validation error');
+				return true;
+			}
+			return false;
 		}
+		
+
 		var errors = {};
 		if (!order.name) {
 			errors['name'] = 'Please enter your name.';
@@ -379,7 +387,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		if (order.delivery_type == 'delivery' && !order.address) {
 			errors['address'] = 'Please enter an address.';
 		}
-		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !order.card.number) || (!service.account.user.id_user && !order.card.number))) {
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardNumber) || (!service.account.user.id_user && !service.form.cardNumber))) {
 			errors['card'] = 'Please enter a valid card #.';
 		}
 		/*if (order.pay_type == 'card' && service._cardInfoHasChanged && ( order.card.month == '' || !order.card.month ) ) {
@@ -396,24 +404,12 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		if (service.restaurant.meetDeliveryMin(_total) && service.form.delivery_type == 'delivery') {
 			errors['delivery_min'] = 'Please meet the delivery minimum of ' + service.info.dollarSign + service.restaurant.delivery_min + '.';
 		}
-
-		if (!$.isEmptyObject(errors)) {
-			$('body').scrollTop($('.payment-form').position().top - 80);
-			service.errors(errors);
-			App.busy.unBusy();
-
-			App.track('OrderError', errors);
-			// Log the error
-			App.log.order({
-				'errors': errors
-			}, 'validation error');
+		
+		var er = displayErrors(errors);
+		if (er) {
 			return;
 		}
-		// Play the crunch audio just once, when the user clicks at the Get Food button
-		if (App.iOS() && !service._crunchSoundPlayded) {
-			App.playAudio('get-food-audio');
-			service._crunchSoundPlayded = true;
-		}
+
 		// if it is a delivery order we need to check the address
 		if (order.delivery_type == 'delivery') {
 			// Correct Legacy Addresses in Database to Avoid Screwing Users #1284
@@ -551,85 +547,121 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		if (!service._deliveryAddressOk) {
 			return;
 		}
+			
+		var processOrder = function(card) {
+			if (card === false) {
+				// nada
+			} else if (!card.status) {
+				var er = displayErrors({
+					process: card.error
+				});
+				return;
 
-		// Play the crunch audio just once, when the user clicks at the Get Food button
-		if (!service._crunchSoundPlayded) {
-			App.playAudio('get-food-audio');
-			service._crunchSoundPlayded = true;
-		}
+			} else {
+				order.card = {
+					id: card.id,
+					lastfour: card.lastfour,
+					month: card.month,
+					year: card.year
+				};
+			}
+			
+			// Play the crunch audio just once, when the user clicks at the Get Food button
+			if (!service._crunchSoundPlayded) {
+				App.playAudio('get-food-audio');
+				service._crunchSoundPlayded = true;
+			}
 
-		// Clean the phone string
-		order.phone = order.phone.replace(/-/g, '');
-
-		var url = App.service + 'order';
-
-		$http( {
-			method: 'POST',
-			url: url,
-			data: $.param( order),
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-			} ).success( function( json ) {
-				try {
-					if( json.uuid ){
-						var uuid = json.uuid;
-					} else {
-						App.log.order(json, 'processing error');	
-						if( !json.errors ){
-							json = {
-								status: 'false',
-								errors: ['Sorry! An error has occurred trying to place your order! <br/> Please make sure your credit card info is correct!']
-							};	
+			// Clean the phone string
+			order.phone = order.phone.replace(/-/g, '');
+	
+			var url = App.service + 'order';
+	
+			$http( {
+				method: 'POST',
+				url: url,
+				data: $.param( order),
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				} ).success( function( json ) {
+					try {
+						if( json.uuid ){
+							var uuid = json.uuid;
+						} else {
+							App.log.order(json, 'processing error');	
+							if( !json.errors ){
+								json = {
+									status: 'false',
+									errors: ['Sorry! An error has occurred trying to place your order! <br/> Please make sure your credit card info is correct!']
+								};	
+							}
+							$rootScope.$broadcast( 'orderProcessingError', true );
 						}
+					} catch (e) {
+						App.log.order(json, 'processing error');
+						json = {
+							status: 'false',
+							errors: ['Sorry! An error has occurred trying to place your order! <br/> Please make sure your credit card info is correct!']
+						};
 						$rootScope.$broadcast( 'orderProcessingError', true );
 					}
-				} catch (e) {
-					App.log.order(json, 'processing error');
-					json = {
-						status: 'false',
-						errors: ['Sorry! An error has occurred trying to place your order! <br/> Please make sure your credit card info is correct!']
-					};
-					$rootScope.$broadcast( 'orderProcessingError', true );
-				}
-				if (json.status == 'false') {
-					service.errors(json.errors);
-					App.track('OrderError', json.errors);
-					// Log the error
-					App.log.order({
-						'errors': json.errors
-					}, 'validation error - php');
-				} else {
-					if (json.token) {
-						$.cookie( 'token', json.token );
-					}
-
-					service.account.updateInfo();
-					App.cache('Order', json.uuid, function () {
-						App.track('Ordered', {
-							'total': this.final_price,
-							'subtotal': this.price,
-							'tip': this.tip,
-							'restaurant': service.restaurant.name,
-							'paytype': this.pay_type,
-							'ordertype': this.order_type,
-							'user': this.user,
-							'items': service.cart.totalItems()
+					if (json.status == 'false') {
+						service.errors(json.errors);
+						App.track('OrderError', json.errors);
+						// Log the error
+						App.log.order({
+							'errors': json.errors
+						}, 'validation error - php');
+					} else {
+						if (json.token) {
+							$.cookie( 'token', json.token );
+						}
+	
+						service.account.updateInfo();
+						App.cache('Order', json.uuid, function () {
+							App.track('Ordered', {
+								'total': this.final_price,
+								'subtotal': this.price,
+								'tip': this.tip,
+								'restaurant': service.restaurant.name,
+								'paytype': this.pay_type,
+								'ordertype': this.order_type,
+								'user': this.user,
+								'items': service.cart.totalItems()
+							});
+							// Clean the cart
+							service.cart.clean();
+							// Resets the gift card notes field
+							service.giftcard.notes_field.reset();
+							$rootScope.$safeApply( function(){
+								$rootScope.$broadcast( 'newOrder' );
+								OrderViewService.newOrder = true;
+								$location.path( '/order/' + uuid );	
+							} );
 						});
-						// Clean the cart
-						service.cart.clean();
-						// Resets the gift card notes field
-						service.giftcard.notes_field.reset();
-						$rootScope.$safeApply( function(){
-							$rootScope.$broadcast( 'newOrder' );
-							OrderViewService.newOrder = true;
-							$location.path( '/order/' + uuid );	
-						} );
-					});
-				}
-				setTimeout(function () {
-					App.busy.unBusy();
-				}, 400);
-			}	);
+					}
+					setTimeout(function () {
+						App.busy.unBusy();
+					}, 400);
+				});
+		}
+		
+
+		if (service._cardInfoHasChanged && order.pay_type == 'card') {
+			// need to generate a new tokenized card
+			App.tokenizeCard({
+				card_number: service.form.cardNumber,
+				expiration_month: service.form.cardMonth,
+				expiration_year: service.form.cardYear,
+				security_code: null
+			}, processOrder);
+		} else {
+			order.card = {};
+			processOrder(false)
+		}
+
+		
 	} // end service.processOrder
+
 
 	service.tipChanged = function () {
 		service._tipHasChanged = true;
