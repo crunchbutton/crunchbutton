@@ -656,7 +656,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			}, processOrder);
 		} else {
 			order.card = {};
-			processOrder(false)
+			processOrder(false);
 		}
 
 		
@@ -826,7 +826,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			service._useRestaurantBoundingBox = true;
 			service.form.name = 'MR TEST';
 			service.form.phone = '***REMOVED***';
-			service.form.address = '123 main';
+			service.form.address = service.restaurant.address;
 			service.form.cardNumber = '4242424242424242';
 			service.form.cardMonth = '2';
 			service.form.cardYear = '2016';
