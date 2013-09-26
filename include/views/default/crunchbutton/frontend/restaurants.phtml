@@ -22,7 +22,7 @@
 
 			<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="meal-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants">
 
-				<div class="meal-item-content ladda-button" data-style="zoom-out" data-spinner-color="#333333">
+				<div class="meal-item-content ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#333333">
 					<div class="ladda-label">
 						<div class="meal-pic" style="background: url({{restaurant.img64}});"></div>
 						<h2 class="meal-restaurant">{{restaurant.name}}</h2>

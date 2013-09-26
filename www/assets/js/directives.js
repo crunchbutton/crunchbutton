@@ -148,6 +148,15 @@ NGApp.directive('ngKeyUp', function () {
 	};
 });
 
+NGApp.directive('ngSpinner', function () {
+	return {
+		restrict: 'A',
+		link: function (scope, elem, attr) {
+			elem.data( 'spinner', Ladda.create( elem.get(0) ) );
+		}
+	};
+});
+
 NGApp.directive('ngSimulateReadOnly', function () {
 	return {
 		restrict: 'A',
