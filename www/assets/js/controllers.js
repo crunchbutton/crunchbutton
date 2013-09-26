@@ -645,7 +645,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 		return;
 	}
 
-	$scope.account = { hasFacebook : AccountService.user.facebook };
+	$scope.account = AccountService;
 
 	// Alias to method AccountSignOut.do()
 	$scope.signout = AccountSignOut.do;
