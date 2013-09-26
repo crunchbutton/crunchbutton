@@ -2865,7 +2865,7 @@ h1.about-header {
 	width: 100%;
 	height: 100%;
 	z-index:1000;
-	position:absolute;
+	position:fixed;
 	background:#FFF;
 	text-align: center;
 	display:none;

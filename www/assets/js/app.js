@@ -131,6 +131,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService) {
 
+	$window.addEventListener( 'offline', function () {
+		if( !App.phoneGap ){
+			App.connectionError();	
+		}
+	}, true );
+
 	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
@@ -740,11 +746,13 @@ App.verifyConnection = {
 // Phonegap events listeners
 App.phoneGapListener = {
 	init : function(){
-		document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
-		document.addEventListener( 'pause', App.phoneGapListener.pause , false );
-		document.addEventListener( 'resume', App.phoneGapListener.resume , false );
-		document.addEventListener( 'online', App.phoneGapListener.online , false );
-		document.addEventListener( 'offline', App.phoneGapListener.offline , false );
+		if( App.phoneGap ){
+			document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
+			document.addEventListener( 'pause', App.phoneGapListener.pause , false );
+			document.addEventListener( 'resume', App.phoneGapListener.resume , false );
+			document.addEventListener( 'online', App.phoneGapListener.online , false );
+			document.addEventListener( 'offline', App.phoneGapListener.offline , false );
+		}
 	},
 	deviceready : function(){
 		// deviceready
