@@ -64,6 +64,9 @@ class Client
         }
         $request->expects('json');
         $response = $request->sendIt();
+        if( $response->hasErrors() ){
+            return ;
+        }
         if ($response->hasErrors() || $response->code == 300) {
             if ($this->convert_error != null) {
                 $error = call_user_func($this->convert_error, $response);
