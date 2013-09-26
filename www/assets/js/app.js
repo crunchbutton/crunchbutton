@@ -131,12 +131,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService) {
 
-	$window.addEventListener( 'offline', function () {
-		if( !App.phoneGap ){
-			App.connectionError();	
-		}
-	}, true );
-
 	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
@@ -280,6 +274,23 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	});
 
 	AccountService.checkUser();
+
+
+	$window.addEventListener( 'offline', function () {
+		if( !App.phoneGap ){
+			App.verifyConnection.goOffline();	
+		}
+	}, true );
+
+	$window.addEventListener( 'online', function () {
+		if( !App.phoneGap ){
+			// It is safer reload the browser
+			window.location.reload(true);	
+		}
+	}, true );
+
+	// Preload the connection error image
+	(new Image()).src = '/assets/images/ui-error-connection.png';
 
 });
 
