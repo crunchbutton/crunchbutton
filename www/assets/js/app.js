@@ -685,14 +685,14 @@ App.applyIOSPositionFix = function(){
 	if( App.iOS() ){
 		setTimeout( function(){
 			angular.element('body').css('width', '+=1').css('width', '-=1');
-			// Verifies if the top bar had its position changed
-			if(  parseInt( $('.navs').css('left') ) != 0 ){
-				$('.navs').css('left', 0 );
-			}
+			$('.navs').css('width','+=1').css('width','-=1');
+			$('.navs').css('left', '+=1').css('left', '-=1');
 			// Again to make sure it will really fix it!
 			setTimeout( function(){
 				angular.element('body').css('width', '+=1').css('width', '-=1');
-			}, 300 )
+				$('.navs').css('width','+=1').css('width','-=1');
+				$('.navs').css('left', '+=1').css('left', '-=1');
+			}, 300 );
 		}, 200 );
 	}
 }
