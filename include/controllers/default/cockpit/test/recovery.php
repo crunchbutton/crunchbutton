@@ -13,9 +13,9 @@ class Controller_test_recovery extends Crunchbutton_Controller_Account {
 				$balanced_id = $user->balanced_id;
 				$account = Crunchbutton_Balanced_Account::byId( $balanced_id );	
 				if( $account->email_address ){
-					$uuid = str_replace( '@_DOMAIN_' , '', $account->email_address );
-					$user->uuid = $uuid;
-					$user->save();
+					// $uuid = str_replace( '@_DOMAIN_' , '', $account->email_address );
+					// $user->uuid = $uuid;
+					// $user->save();
 					$this->users_ok[] = array( 'name' => $user->name, 'user_id' => $user->id_user );
 				} else {
 					$this->users_no_ok[] = array( 'name' => $user->name, 'user_id' => $user->id_user );
