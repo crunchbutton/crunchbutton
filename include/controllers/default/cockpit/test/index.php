@@ -2,7 +2,9 @@
 
 class Controller_test extends Crunchbutton_Controller_Account {
 	public function init() {
-		
+		echo c::balanced()->uri;
+		exit;
+
 		$r = new Restaurant;
 		$r->name = 'asd';
 		$r->save();

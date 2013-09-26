@@ -20,17 +20,11 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 		$reason = false;
 		
 		// if there is any card information provided, charge with it
-		if ($params['number']) {
+		if ($params['card']) {
 			$reason = true;
 			try {
-			
-				$card = c::balanced()->createCard(null, null, null, null,
-					$params['name'],
-					$params['number'],
-					null,
-					$params['exp_month'],
-					$params['exp_year']
-				);
+
+				$card = Crunchbutton_Balanced_Card::byId($params['card']['id']);
 
 				if (!$this->customer()) {
 					$customer = c::balanced()->createBuyer(

@@ -67,10 +67,6 @@ class Crunchbutton_Order extends Cana_Table {
 			]);
 		}
 
-		$this->_number    = $params['card']['number'];
-		$this->_exp_month = $params['card']['month'];
-		$this->_exp_year  = $params['card']['year'];
-
 		$subtotal = 0;
 
 		foreach ($params['cart'] as $d) {
@@ -89,6 +85,8 @@ class Crunchbutton_Order extends Cana_Table {
 
 			$this->_dishes[] = $dish;
 		}
+		
+		$this->_card = $params['card'];
 
 		$this->id_restaurant = $params['restaurant'];
 
@@ -276,8 +274,8 @@ class Crunchbutton_Order extends Cana_Table {
 			$user->address = $this->address;
 		}
 
-		if ($this->pay_type == 'card' && $params['card']['number']) {
-			$user->card = str_repeat('*',strlen($params['card']['number'])-4).substr($params['card']['number'],-4);
+		if ($this->pay_type == 'card' && $params['card']['id']) {
+			$user->card = '************'.$params['card']['lastfour'];
 			$user->card_exp_year = $params['card']['year'];
 			$user->card_exp_month = $params['card']['month'];
 		}
@@ -530,9 +528,7 @@ class Crunchbutton_Order extends Cana_Table {
 				if( $amount > 0 ){
 						$r = $charge->charge([
 						'amount' => $amount,
-						'number' => $this->_number,
-						'exp_month' => $this->_exp_month,
-						'exp_year' => $this->_exp_year,
+						'card' => $this->_card,
 						'name' => $this->name,
 						'address' => $this->address,
 						'phone' => $this->phone,
