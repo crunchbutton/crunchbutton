@@ -28,7 +28,10 @@
 	</form>
 </div>
 <div class="divider"></div>
-<button ng-show="!locationError" class="button-letseat-form button-bottom" ng-click="letsEat()"><div>Find Restaurants!</div></button>
+<button ng-show="!locationError" ng-spinner class="button-letseat-form button-bottom ladda-button" data-style="zoom-out" data-spinner-color="#FFFFFF" ng-click="letsEat()">
+	<div class="ladda-label">Find Restaurants!</div>
+	<span class="ladda-spinner"></span>
+</button>
 
 <div class="error-location" ng-show="locationError">
 

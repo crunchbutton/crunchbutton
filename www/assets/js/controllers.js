@@ -180,14 +180,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 				$('.content').removeClass('short-meal-list');
 			}
 			$('.content').removeClass('smaller-width');
-			
-			setTimeout(function() {
-				$('.meal-item-content').each(function() {
-					var s = Ladda.create(this);
-					$(this).data('spinner', s);		
-					$scope.spin = s;		
-				});
-			},1);
 
 		}, 
 		// Error
@@ -254,7 +246,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	});
 
 	$scope.$on( 'locationError', function(e, data) {
-
+		spin.stop();
 		// If the entered address does not have zip code show the enter zip code message #1763
 		var entered = $scope.location.position.pos().entered();
 		var isStreet = $scope.location.position.pos().valid( 'order' );
@@ -267,6 +259,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	});
 
 	$scope.$on( 'locationNotServed', function(e, data) {
+		spin.stop();
 		$('.location-address').val('').attr('placeholder','Please include a zip code or city name');
 		$scope.warningPlaceholder = true;
 		// the user might be typing his login/pass - so blur it
@@ -287,6 +280,10 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 
 	// lets eat button
 	$scope.letsEat = function() {
+
+		// Start the spinner
+		spin.start();
+
 		$scope.location.form.address = $.trim( $scope.location.form.address );
 		if ( $scope.location.form.address == '' ) {
 			$('.location-address').val('').attr('placeholder',$('<div>').html('&#10148; Please enter your address here').text());
@@ -320,6 +317,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 				}, 
 				// Address not ok
 				function() {
+					spin.stop();
 					var oopsText = App.isPhoneGap ? 'Oops! Please enter an address' : '&#9785; Oops! Please enter a street name, number, and city';
 					$('.location-address').val('').attr('placeholder',$('<div>').html(oopsText).text());
 					$scope.warningPlaceholder = true;
@@ -344,6 +342,20 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 
 		});
 	};
+
+	var spin = {
+		start : function(){
+			if( spin.obj ){
+				spin.obj.start();
+			}
+		},
+		stop : function(){
+			if( spin.obj ){
+				spin.obj.stop();
+			}
+		}
+	};
+	setTimeout( function(){ spin.obj = $('.button-letseat-form').data('spinner'); }, 500 );
 
 });
 
