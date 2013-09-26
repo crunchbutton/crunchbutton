@@ -7,6 +7,9 @@ class Controller_test_recovery extends Crunchbutton_Controller_Account {
 	public $users_no_ok;
 
 	public function init() {
+
+		die( 'remove this die in order to get it working!' );
+
 		$users = User::q( 'SELECT * FROM `user` u WHERE u.balanced_id IS NOT NULL AND uuid IS NULL' );
 		foreach ( $users as $user ) {
 			if( $user->balanced_id ){
