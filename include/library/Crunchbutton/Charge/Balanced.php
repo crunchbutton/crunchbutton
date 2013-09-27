@@ -24,12 +24,10 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 			$reason = true;
 			try {
 
-				$card = Crunchbutton_Balanced_Card::byId($params['card']['id']);
-
 				if (!$this->customer()) {
 					$customer = c::balanced()->createBuyer(
 						'session-'.c::auth()->session()->id_session.'@_DOMAIN_',
-						$card->uri,
+						$params['card']['uri'],
 						[
 							'name' => $params['name'],
 							'phone' => $params['phone'],
@@ -39,7 +37,7 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 					$this->_customer = $customer;
 
 				} else {
-					$this->customer()->addCard($card);
+					$this->customer()->addCard($params['card']['uri']);
 				}
 
 				$c = $this->customer()->debit($params['amount'] * 100, 'Crunchbutton', $params['restaurant']->name);
