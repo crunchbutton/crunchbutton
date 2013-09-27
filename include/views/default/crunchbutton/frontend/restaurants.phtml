@@ -20,7 +20,7 @@
 	<div class="content-padder">
 		<div class="meal-items {{mealItemClass}}">
 
-			<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="meal-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants">
+			<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="meal-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
 
 				<div class="meal-item-content ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#333333">
 					<div class="ladda-label">
@@ -37,6 +37,9 @@
 				</div>
 				<div class="meal-item-spacer"></div>
 			</div>
+			<button class="showMoreRestaurants" ng-show="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
+				Show more
+			</button>
 		</div>
 	</div>
 </div>
