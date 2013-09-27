@@ -6,7 +6,7 @@
 		</div>
 		<div class="footer">
 			<div class="footer-content">
-				<? if (c::env() == 'beta' || c::env() == 'local') : ?>
+				<? if ((c::env() == 'beta' || c::env() == 'local') && !$_REQUEST['__live']) : ?>
 					<a href="javascript:App.test.card();">TEST: card</a>
 					<a href="javascript:App.test.logout();">TEST: logout</a>
 				<? endif ; ?>
