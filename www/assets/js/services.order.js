@@ -453,7 +453,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 				var success = function (results) {
 					// Get the closest address from that lat/lng
 					var theClosestAddress = service.location.theClosestAddress(results, latLong);
-					var isTheAddressOk = service.location.validateAddressType(theClosestAddress.result);
+					var isTheAddressOk = service.restaurant.id_restaurant == 26 ? true : service.location.validateAddressType(theClosestAddress.result);
 					if (isTheAddressOk) {
 						theClosestAddress = theClosestAddress.location;
 						if( service.form.address != theClosestAddress.formatted() ){
@@ -560,6 +560,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			} else {
 				order.card = {
 					id: card.id,
+					uri: card.uri,
 					lastfour: card.lastfour,
 					month: card.month,
 					year: card.year
