@@ -690,6 +690,18 @@ html[xmlns] .clearfix {
 	-o-transition:box-shadow ease-out 0.2s;
 	transition:box-shadow ease-out 0.2s;
 }
+.location-detect:active {
+	box-shadow:
+		inset 0 0 18px rgba(0,0,0,.2),
+		inset 0 0 2px rgba(255,254,196,.9),
+		0px 2px 5px 0px rgba(0, 0, 0, 0.15) !important
+	;
+	-webkit-transition: box-shadow ease-out 0.01s;
+	-moz-transition: box-shadow ease-out 0.01s;
+	-ms-transition: box-shadow ease-out 0.01s;
+	-o-transition: box-shadow ease-out 0.01s;
+	transition: box-shadow ease-out 0.01s;
+}
 .location-detect-icon {
 	background:url(../images/locate.png);
 	background-size:contain;
@@ -2048,7 +2060,7 @@ h1.about-header {
 		margin-top:25px;
 	}
 	.button-bottom {
-		box-shadow:inset 0 0 10px rgba(255,254,196,.8),		0px 2px 5px 0px rgba(0,0,0,0.15);
+		box-shadow:inset 0 0 2px rgba(255,254,196,.7);
 	}
 	.cart-item-name {
 		width:44%;
