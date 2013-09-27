@@ -2985,3 +2985,7 @@ h1.about-header {
 	height:48px;
 	margin-top:25px;
 }
+
+.meal-item:active .meal-item-content {
+	margin-top: 2px;
+}
