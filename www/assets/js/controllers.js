@@ -93,6 +93,11 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	$scope.restaurants = false;
 
+	$scope.showMoreRestaurants = function(){
+		var step = 3;
+		$scope.restaurantsToShow += step;
+	}
+
 	var location = LocationService;
 	if( !location.initied ){
 		location.init();
@@ -111,7 +116,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	var updateStatus = function(){
 		updateRestaurantStatus = $timeout( function(){
 			// Update status of the restaurant's list
-			$scope.restaurants = restaurants.sort();
+			$scope.restaurants = restaurants.getStatus();
 			updateStatus();
 		} , 1000 * 15 );
 	}
@@ -158,6 +163,14 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	restaurants.list( 
 		// Success
 		function(){
+
+			// Limit the number of restaurants to be rended when page loads
+			if( App.isMobile() ){
+				$scope.restaurantsToShow = 6;	
+			} else {
+				$scope.restaurantsToShow = 100;	
+			}
+			
 			try {
 				var slogan = App.slogan.slogan;
 				var sloganReplace = prep + ' ' +  city;
