@@ -18,10 +18,10 @@
 					<input type="text" class="location-address" ng-class="{ 'location-warning' : warningPlaceholder }" ng-enter="letsEat()" ng-model="location.form.address" placeholder="<?=$this->export ? 'Enter zip code or address' : 'Enter your zip code or full address'?>"<?=$this->export ? '' : ' autofocus'?>>
 				</td>
 				<td>
-					<div class="location-detect">
-						<div class="location-detect-icon" ng-click="locEat()"></div>
-						<div class="location-detect-loader"></div>
-					</div>
+				<button class="location-detect ladda-button" ng-spinner data-style="zoom-out" style="display:block !important;" data-spinner-color="#FFFFFF" ng-click="locEat()">
+					<div class="location-detect-icon ladda-label"></div>
+					<div class="ladda-spinner"></div>
+				</button>
 				</td>
 			</tr>
 		</table>

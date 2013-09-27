@@ -290,6 +290,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 		$scope.location.form.address = $.trim( $scope.location.form.address );
 		if ( $scope.location.form.address == '' ) {
 			$('.location-address').val('').attr('placeholder',$('<div>').html('&#10148; Please enter your address here').text());
+			spin.stop();
 			$scope.warningPlaceholder = true;
 			// the user might be typing his login/pass - so blur it
 			if( !App.dialog.isOpen() ){
@@ -335,15 +336,23 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 	}
 	
 	$scope.locEat = function() {
-		$('.location-detect-loader').show();
-		$('.location-detect-icon').hide();
-		$scope.location.getLocationByBrowser(function(loc) {
+		var locSpin = $( '.location-detect' ).data( 'spinner' );
+		var error = function(){
+			$scope.$broadcast( 'locationNotServed' );
+			locSpin.stop();
+		}
+		locSpin.start();
+		$scope.location.getLocationByBrowser( function(loc) {
+			// Add the position at the locations
 			$scope.location.position.addLocation(loc);
-			proceed();
-			$('.location-detect-loader').hide();
-			$('.location-detect-icon').show();
-
-		});
+			// Verify if user address is served
+			restaurants.list( 
+				// Success
+				proceed,
+				// Error
+				error 
+			);
+		}, error );
 	};
 
 	var spin = {
