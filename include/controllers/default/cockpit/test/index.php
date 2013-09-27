@@ -2,6 +2,16 @@
 
 class Controller_test extends Crunchbutton_Controller_Account {
 	public function init() {
+	
+		if (c::admin()->permission()->check(['test','testsss'])) {
+			echo 'true';
+		} else {
+			echo 'false';
+		}
+		
+		exit;
+		
+
 		echo c::balanced()->uri;
 		exit;
 
