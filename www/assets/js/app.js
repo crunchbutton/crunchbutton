@@ -275,6 +275,23 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 	AccountService.checkUser();
 
+
+	$window.addEventListener( 'offline', function () {
+		if( !App.phoneGap ){
+			App.verifyConnection.goOffline();	
+		}
+	}, true );
+
+	$window.addEventListener( 'online', function () {
+		if( !App.phoneGap ){
+			// It is safer reload the browser
+			window.location.reload(true);	
+		}
+	}, true );
+
+	// Preload the connection error image
+	(new Image()).src = '/assets/images/ui-error-connection.png';
+
 });
 
 App.alert = function(txt, title) {
@@ -740,11 +757,13 @@ App.verifyConnection = {
 // Phonegap events listeners
 App.phoneGapListener = {
 	init : function(){
-		document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
-		document.addEventListener( 'pause', App.phoneGapListener.pause , false );
-		document.addEventListener( 'resume', App.phoneGapListener.resume , false );
-		document.addEventListener( 'online', App.phoneGapListener.online , false );
-		document.addEventListener( 'offline', App.phoneGapListener.offline , false );
+		if( App.phoneGap ){
+			document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
+			document.addEventListener( 'pause', App.phoneGapListener.pause , false );
+			document.addEventListener( 'resume', App.phoneGapListener.resume , false );
+			document.addEventListener( 'online', App.phoneGapListener.online , false );
+			document.addEventListener( 'offline', App.phoneGapListener.offline , false );
+		}
 	},
 	deviceready : function(){
 		// deviceready
