@@ -118,7 +118,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	$scope.$on( '$destroy', function(){
 		// Kills the timer when the controller is changed
-		$timeout.cancel( updateRestaurantStatus );
+		try{
+			$timeout.cancel( updateRestaurantStatus );	
+		} catch(e){}
+		
 	});
 
 	$rootScope.$on( 'appResume', function(e, data) {
@@ -382,7 +385,6 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	var updateStatus = function(){
 		updateRestaurantStatus = $timeout( function(){
 			var open = $scope.restaurant.open();
-			console.log('open',open);
 			if ($scope.open != open) {
 				$scope.open = open;
 			}

@@ -46,6 +46,54 @@ NGApp.config(function($compileProvider){
 	$compileProvider.urlSanitizationWhitelist(/.*/);
 });
 
+// This config will intercept all the ajax requests and take care of the errors
+NGApp.config(function ( $httpProvider) {
+
+	var interceptor = function ( $q, $injector ) {
+
+		function success( response ) {
+			return response;
+		}
+
+		function error( response ) {
+			var status = response.status;
+			// URL not found or offline
+			if( status == 0 ){
+				var showError = false;
+				var url = response.config.url;
+				if ( url ) {
+					// Check if the url was an api url
+					if( url.indexOf( App.service ) >= 0 ){
+						var api = url.split( App.service );
+						if( api.length > 0 ){
+							// Get the api endpoint
+							api = api[1];
+							var showErrorFor = [ 'order', 'restaurant', 'user' ];
+							for( var i = 0; i < showErrorFor.length; i++ ){
+								if( api.indexOf( showErrorFor[i] ) >= 0 ){
+									showError = true;
+									break;
+								}
+							}
+						}
+					}					
+				} else {
+					showError = true;
+				}
+				if( showError && !$( '.connection-error' ).is( ':visible' ) ){
+					App.connectionError();
+				}
+			}
+			return $q.reject( response );
+		}
+
+		return function ( promise ) {
+			return promise.then( success, error );
+		}
+	};
+	$httpProvider.responseInterceptors.push(interceptor);
+});
+
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider, RestaurantsService) {
 	$routeProvider
 		.when('/location', {
@@ -274,23 +322,6 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	});
 
 	AccountService.checkUser();
-
-
-	$window.addEventListener( 'offline', function () {
-		if( !App.phoneGap ){
-			App.verifyConnection.goOffline();	
-		}
-	}, true );
-
-	$window.addEventListener( 'online', function () {
-		if( !App.phoneGap ){
-			// It is safer reload the browser
-			window.location.reload(true);	
-		}
-	}, true );
-
-	// Preload the connection error image
-	(new Image()).src = '/assets/images/ui-error-connection.png';
 
 });
 
@@ -761,8 +792,8 @@ App.phoneGapListener = {
 			document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
 			document.addEventListener( 'pause', App.phoneGapListener.pause , false );
 			document.addEventListener( 'resume', App.phoneGapListener.resume , false );
-			document.addEventListener( 'online', App.phoneGapListener.online , false );
-			document.addEventListener( 'offline', App.phoneGapListener.offline , false );
+			// document.addEventListener( 'online', App.phoneGapListener.online , false );
+			// document.addEventListener( 'offline', App.phoneGapListener.offline , false );
 		}
 	},
 	deviceready : function(){
@@ -777,11 +808,11 @@ App.phoneGapListener = {
 	},
 	online : function(){
 		// online
-		App.verifyConnection.goOnline();
+		// App.verifyConnection.goOnline();
 	},
 	offline : function(){
 		// offline
-		App.verifyConnection.goOffline();
+		// App.verifyConnection.goOffline();
 	}
 };
 
