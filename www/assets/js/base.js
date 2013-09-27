@@ -1,7 +1,8 @@
 if (typeof(console) == 'undefined') {
 	console = {
 		log: function() { return null; },
-		debug: function() { return null; }
+		debug: function() { return null; },
+		error: function() { return null; }
 	};
 }
 

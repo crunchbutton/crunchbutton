@@ -587,6 +587,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 						if( json.uuid ){
 							var uuid = json.uuid;
 						} else {
+							console.error('Error',json);
 							App.log.order(json, 'processing error');	
 							if( !json.errors ){
 								json = {
@@ -597,6 +598,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 							$rootScope.$broadcast( 'orderProcessingError', true );
 						}
 					} catch (e) {
+						console.error('Exception',e,json);
 						App.log.order(json, 'processing error');
 						json = {
 							status: 'false',
