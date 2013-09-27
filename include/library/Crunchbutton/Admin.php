@@ -11,6 +11,13 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return $this->_timezone;
 	}
+	
+	public function permission() {
+		if (!isset($this->_permission)) {
+			$this->_permission = new Crunchbutton_Acl_Admin($this);
+		}
+		return $this->_permission;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();

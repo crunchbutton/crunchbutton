@@ -70,14 +70,27 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 		c::view()->restaurant = $restaurant;
 
 		if (c::getPagePiece($page_piece_index) == 'new') {
+			// @permission check for restaurant permissions
+			if (!c::admin()->permission()->check(['global','restaurants-all'])) {
+				return;
+			}
 			$restaurant->save();
 			$this->_form();
+
 		} elseif ($restaurant->id_restaurant) {
 			switch (c::getPagePiece($page_piece_index+1)) {
 				case 'pay':
+					// @permission
+					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-pay'])) {
+						return;
+					}
 					c::view()->display('restaurants/pay');
 					break;
 				case 'image':
+					// @permission
+					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-image'])) {
+						return;
+					}
 					if ($_FILES['image']) {
 						$ext = pathinfo( $_FILES['image']['name'], PATHINFO_EXTENSION );
 						$file = '/home/i.crunchbutton/www/image/'.$restaurant->permalink.'.'.$ext;
@@ -90,10 +103,18 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					c::view()->display('restaurants/image');
 					break;
 				case 'fax':
+					// @permission
+					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-fax'])) {
+						return;
+					}
 					c::view()->notification = $restaurant->fax();
 					c::view()->display('restaurants/fax');
 					break;
 				default:
+					// @permission
+					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-edit'])) {
+						return;
+					}
 					$this->_form();
 					break;
 			}
