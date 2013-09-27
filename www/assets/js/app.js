@@ -776,7 +776,7 @@ App.tokenizeCard = function(card, complete) {
 				res.status = true;
 				res.id = response.data.id;
 				res.uri = response.data.uri;
-				res.lastfour = card.card_number.substr(-4);
+				res.lastfour = response.data.last_four;
 				res.month = card.expiration_month;
 				res.year = card.expiration_year;
 				break;
@@ -797,7 +797,7 @@ App.tokenizeCard = function(card, complete) {
 				res.error = 'Error processing payment';
 				break;
 		}
-		console.debug('>> Balanced tokenization response',response);
+		console.debug('Balanced tokenization response',response);
 		complete(res);
 	});
 };
