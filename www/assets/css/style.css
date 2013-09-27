@@ -668,8 +668,8 @@ html[xmlns] .clearfix {
 	}
 .location-detect {
 	margin:2px 0 0 0;
-	height:51px;
-	width:51px;
+	height:53px;
+	width:53px;
 	background:#f78160;
 	border-top-right-radius:2px;
 	border-bottom-right-radius:2px;
@@ -693,8 +693,10 @@ html[xmlns] .clearfix {
 .location-detect-icon {
 	background:url(../images/locate.png);
 	background-size:contain;
-	height:50px;
-	width:50px;
+	height:49px;
+	width:49px;
+	margin-left: -2px;
+	margin-top: -2px;
 }
 .location-detect-loader {
 	background:url(../images/loader-location.gif);
@@ -1846,21 +1848,18 @@ h1.about-header {
 		font-size:16px;
 	}
 	.location-detect {
-		height:37px;
-		width:37px;
+		height:39px;
+		width:39px;
 		margin:2px 0 0 0;
 	}
 	.enter-location {
 		margin-top:10px;
 	}
 	.location-detect-icon {
-		height:37px;
-		width:37px;
-	}
-	.location-detect-loader {
-		height:20px;
-		width:20px;
-		margin:8px 0 0 8px;
+		height:36px;
+		width:36px;
+		margin-left: -9px !important;
+		margin-top: -5px;
 	}
 	.snap-content {
 		position:absolute;
