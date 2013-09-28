@@ -23,11 +23,13 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 		if ($params['card']) {
 			$reason = true;
 			try {
+				// building the uri is faster than building the object since we dont have to go to the server again
+				$card = c::balanced()->cards->uri.'/'.$params['card']['id'];
 
 				if (!$this->customer()) {
 					$customer = c::balanced()->createBuyer(
 						'session-'.c::auth()->session()->id_session.'@_DOMAIN_',
-						$params['card']['uri'],
+						$card,
 						[
 							'name' => $params['name'],
 							'phone' => $params['phone'],
@@ -37,7 +39,7 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 					$this->_customer = $customer;
 
 				} else {
-					$this->customer()->addCard($params['card']['uri']);
+					$this->customer()->addCard($card);
 				}
 
 				$c = $this->customer()->debit($params['amount'] * 100, 'Crunchbutton', $params['restaurant']->name);
