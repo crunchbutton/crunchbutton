@@ -26,7 +26,8 @@ var App = {
 	useNativeAlert: false,
 	useNativeConfirm: true,
 	ajaxTimeout: 5000,
-	splashHidden: false
+	splashHidden: false,
+	restaurantsPaging: false
 };
 
 // enable localstorage on phonegap
