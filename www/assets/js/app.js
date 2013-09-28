@@ -860,3 +860,19 @@ App.tokenizeCard = function(card, complete) {
 		complete(res);
 	});
 };
+
+
+App.profile = {
+	_timer:false,
+	log: function(n) {
+		// @debug: remove this return line to see the profile output
+		return;
+		var now = new Date();
+		if (App.profile._timer) {
+			console.debug('>> PROFILE',now.getTime() - App.profile._timer.getTime(),n);
+		} else {
+			console.debug('>> PROFILE',0,n);
+		}
+		App.profile._timer = now;
+	}
+}
