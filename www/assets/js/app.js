@@ -842,9 +842,17 @@ App.tokenizeCard = function(card, complete) {
 			case 404:
 				res.error = 'Unexpected error';
 				break;
+				
+			case 409:
+				res.error = 'Unable to validate';
+				break;
 
 			case 500:
 				res.error = 'Error processing payment';
+				break;
+				
+			case 999:
+				res.error = 'Unable to reach payment server';
 				break;
 		}
 		console.debug('Balanced tokenization response',response);
