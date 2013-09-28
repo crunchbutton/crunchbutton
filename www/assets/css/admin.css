@@ -653,7 +653,6 @@ table.list tr:nth-of-type(even) {
 
 .admin-item-right input, .admin-item-left input {
 	width: 100%;
-	font-size: 20px;
 }
 
 .admin-item-right input[type=checkbox],
@@ -663,10 +662,9 @@ table.list tr:nth-of-type(even) {
 
 .admin-item-right textarea {
 	width: 98%;
-	font-size: 16px;
 	color: black;
 	background: #ffffff;
-	height: 100px;
+	height: 4em;
 }
 
 .admin-item-right textarea.small {
@@ -675,7 +673,7 @@ table.list tr:nth-of-type(even) {
 
 .admin-item-right select {
 	width: 100%;
-	font-size: 16px;
+	height: auto;
 }
 
 .invalid {
