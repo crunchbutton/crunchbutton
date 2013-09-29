@@ -105,6 +105,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		return;
 	}
 	
+	App.profile.log('start ctl');
+	
 	var motivationText = ['You are awesome','You are loved','You are beautiful','You\'re at the top of your game','You are rad'];
 	$scope.motivationText = motivationText[Math.floor(Math.random() * motivationText.length)];
 
@@ -163,9 +165,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	restaurants.list( 
 		// Success
 		function(){
+			App.profile.log('return from list');
 
 			// Limit the number of restaurants to be rended when page loads
-			if( App.isMobile() ){
+			if (App.isMobile() && App.restaurantsPaging) {
 				$scope.restaurantsToShow = 4;	
 			} else {
 				$scope.restaurantsToShow = 100;	
@@ -186,9 +189,12 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			document.title = city + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
 
 			$scope.restaurants = restaurants.sort();
+			App.profile.log('returned sorting');
 			updateStatus();
 			$scope.slogan = slogan;
 			$scope.tagline = tagline;
+			
+			App.profile.log('finished everything');
 
 			if ( $scope.restaurants.length == 4 ) {
 				$('.content').addClass('short-meal-list');

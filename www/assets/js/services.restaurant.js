@@ -15,8 +15,8 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 	service.position = PositionsService;
 
 	service.sort = function () {
-
 		var list = service.getStatus();
+		App.profile.log('start sort');
 
 		list.sort(sort_by({
 			name: '_open',
@@ -29,19 +29,22 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			primer: parseInt,
 			reverse: true
 		}));
+		
+		App.profile.log('end sort');
 
 		restaurants = list;
 		return restaurants;
 	}
 
 	service.getStatus = function () {
-		
+		App.profile.log('start status');
 		var list = restaurants;
 
 		for (var x in list) {
-
+			App.profile.log('start calc open');
 			// recalculate restaurant open status on relist
 			list[x].open();
+			App.profile.log('end calc open');
 
 			// determine which tags to display
 			if (!list[x]._open) {
@@ -57,6 +60,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			// show short description
 			list[x]._short_description = (list[x].short_description || ('Top Order: ' + (list[x].top_name ? (list[x].top_name || list[x].top_name) : '')));
 		};
+		App.profile.log('end status');
 
 		restaurants = list;
 		return restaurants;
@@ -69,6 +73,8 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			}
 			return false;
 		}
+		
+		App.profile.log('start list');
 
 		if (restaurants === false || service.forceLoad) {
 			var url = App.service + 'restaurants?lat=' + service.position.pos().lat() + '&lon=' + service.position.pos().lon() + '&range=' + (service.position.range || 2 );
@@ -76,6 +82,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			$http.get(url, {
 				cache: false
 			}).success(function (data) {
+				App.profile.log('got list');
 				var list = [];
 				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
 					if (error) {
