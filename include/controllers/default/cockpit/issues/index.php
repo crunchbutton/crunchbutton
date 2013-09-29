@@ -4,6 +4,10 @@
 class Controller_issues extends Crunchbutton_Controller_Account {
 	public function init() {
 
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
+
 		$client = new Github\Client(
 			new Github\HttpClient\CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache'))
 		);

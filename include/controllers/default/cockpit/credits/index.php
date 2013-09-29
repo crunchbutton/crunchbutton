@@ -2,6 +2,9 @@
 
 class Controller_credits extends Crunchbutton_Controller_Account {
 	public function init() {
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
 		c::view()->page = 'credits';
 
 		if( c::getPagePiece(1) == 'new' ){ 

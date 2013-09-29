@@ -3,7 +3,9 @@
 
 class Controller_fax extends Crunchbutton_Controller_Account {
 	public function init() {
-
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
 
 		$r = new Restaurant($_REQUEST['id_restaurant']);
 		foreach ($r->notifications() as $notification) {

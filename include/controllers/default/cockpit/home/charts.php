@@ -54,6 +54,10 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
+
 		$this->chart = new Crunchbutton_Chart;
 
 		if( c::getPagePiece(2) == 'weeks' ){

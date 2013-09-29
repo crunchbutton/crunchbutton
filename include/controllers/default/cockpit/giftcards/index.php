@@ -3,6 +3,10 @@
 class Controller_giftcards extends Crunchbutton_Controller_Account {
 	public function init() {
 
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
+
 		c::view()->page = 'giftcards';
 
 		if( c::getPagePiece(1) == 'new' ){ 

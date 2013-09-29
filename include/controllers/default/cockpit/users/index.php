@@ -3,6 +3,10 @@
 class Controller_users extends Crunchbutton_Controller_Account {
 	public function init() {
 
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
+
 		$users = [];
 		$ordered = [];
 		$orders = Order::q('select * from `order` where env="live" order by date asc');

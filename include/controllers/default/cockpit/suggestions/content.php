@@ -4,6 +4,10 @@ class Controller_suggestions_content extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
+
 		$search = [];
 	
 		if ($_REQUEST['limit']) {

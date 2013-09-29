@@ -6,6 +6,7 @@
 <!-- content -->
 <div class="container-fluid padded">
 	<div class="row-fluid action-nav-normal">
+		<?php if ( c::admin()->permission()->check( [ 'global','restaurants'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/restaurants/new" title="New Restaurant">
@@ -15,6 +16,8 @@
 				<span class="triangle-button red"><i class="icon-plus"></i></span>
 			</div>
 		</div>
+		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','support'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/support" title="Support">
@@ -24,6 +27,8 @@
 				<span class="label label-black"><?=$this->data['all']['tickets']?></span>
 			</div>
 		</div>
+		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','issues'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="https://github.com/crunchbutton/crunchbutton" title="Github" target="_blank">
@@ -32,6 +37,8 @@
 				</a>
 			</div>
 		</div>
+		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','facebook'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="https://www.facebook.com/crunchbutton" title="Facebook" target="_blank">
@@ -40,6 +47,8 @@
 				</a>
 			</div>
 		</div>
+		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','curation'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/home/curation" title="Curation">
@@ -48,6 +57,8 @@
 				</a>
 			</div>
 		</div>
+		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','marketing'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/home/marketing" title="Curation">
@@ -56,7 +67,9 @@
 				</a>
 			</div>
 		</div>
+		<?php } ?>
 	</div>
+	<?php if ( c::admin()->permission()->check( [ 'global','metrics'] ) ) { ?>
 	 <div class="box">
 			<div class="box-header">
 				 <span class="title">Metrics</span>
@@ -158,6 +171,7 @@
 				 </div>
 			</div>
 	 </div>
+	 <?php } ?>
 </div>
 <div id="modal-simple" class="modal hide fade" style="display: none;" aria-hidden="true">
 	 <div class="modal-header">
