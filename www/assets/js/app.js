@@ -876,3 +876,50 @@ App.profile = {
 		App.profile._timer = now;
 	}
 }
+
+App.share = function(params) {
+
+	var pic = params.picture || 'http://crunchbutton.com/assets/images/facebook-like.png';
+
+	if (App.isPhoneGap && App.iOS()) {
+		var description = params.caption + ".\r\n" + params.description.replace(/(<br \/>)|(\n)/g,'');
+		CDV.FB.share([params.url, params.name, '', description, pic], params.success, params.fail);
+
+	} else {
+		FB.ui({
+			method: 'feed',
+			user_message_prompt: 'CrunchButton',
+			link: params.url,
+			href: params.url,
+			picture: pic,
+			name: params.name,
+			caption:params.caption,
+			description: params.description,
+			attachment: {
+				name: 'CrunchButton',
+				caption: ' ',
+				description: params.url,
+				href: params.url,
+				media:[{
+					type: 'image',
+					src: pic,
+					href: params.url
+				}],
+			},
+			action_links: [{ text: 'CrunchButton', href: 'https://crunchbutton.com' } ],
+			description: params.description
+		}, function(response) {
+			console.log(response);
+			if (response && response.post_id) {
+				if (typeof params.success === 'function') {
+					params.success(response);
+				}
+			} else {
+				if (typeof params.fail === 'function') {
+					params.fail(response);
+				}
+			}
+		});
+	}
+	
+}

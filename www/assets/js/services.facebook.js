@@ -32,27 +32,12 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 		if( service.orderStatus ){    
 			var status = service.orderStatus;
 			status.link = service.referral.cleaned_url();
-			FB.ui({
-				method: 'feed',
-				user_message_prompt: 'CrunchButton: Publish This!',
-				link: status.link,
-				href: status.link,
-				picture: status.picture,
+			App.share({
+				url: 'http://' + status.link,
 				name: status.name,
 				caption: status.caption,
-				attachment: {
-					name: status.name,
-			  	caption: status.caption,
-					description: status.description,
-					href: status.link,
-					media:[{'type':'image','src':status.picture,'href':status.link}],
-			},
-			action_links: [{ text: 'CrunchButton', href: 'https://crunchbutton.com' } ],
-			description: status.description
-			}, function(response){
-				if (response && response.post_id) {
-					App.alert( 'Thank you for sharing!' );
-				}
+				description: status.description,
+				picture: status.picture
 			});
 		} else {
 			service.preLoadOrderStatus();
@@ -61,29 +46,12 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 		}
 	}
 
-	service.postInvite = function( url ){
-		var pic = 'http://crunchbutton.com/assets/images/facebook-like.png';
-		FB.ui({
-			method: 'feed',
-			user_message_prompt: 'CrunchButton',
-			link: url,
-			href: url,
-			picture: pic,
-			name: 'Nom',
-			caption:' ',
-			description: url,
-			attachment: {
-				name: 'CrunchButton',
-				caption: ' ',
-				description: url,
-				href: url,
-				media:[{'type':'image','src':pic,'href':url}],
-			},
-			action_links: [{ text: 'CrunchButton', href: 'https://crunchbutton.com' } ],
-		}, function(response){
-			if (response && response.post_id) {
-				App.alert( 'Thank you for sharing!' );
-			}
+	service.postInvite = function(url) {
+		App.share({
+			url: url,
+			name: 'Noms',
+			caption: ' ',
+			description: url
 		});
 	}
 
