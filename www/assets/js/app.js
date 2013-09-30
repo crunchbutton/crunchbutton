@@ -371,7 +371,9 @@ App.toggleMenu = function() {
  * scroll to the top of the page
  */
 App.scrollTop = function() {
-	$('html, body, .snap-content-inner').scrollTop(0);
+	setTimeout(function() {
+		$('html, body, .snap-content-inner').animate({scrollTop: 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+	},1);
 };
 
 
