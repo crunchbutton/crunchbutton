@@ -564,10 +564,6 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		giftcard.notes_field.content = $scope.order.form.notes;
 		giftcard.notes_field.start();
 	}
-	// Validate gift card at the notes field
-	$scope.$watch( 'order.form.notes', function( newValue, oldValue, scope ) {
-		$scope.checkGiftCard();
-	});
 
 	var credit = CreditService;
 	$scope.credit = {};

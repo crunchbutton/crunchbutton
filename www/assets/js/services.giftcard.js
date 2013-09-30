@@ -5,7 +5,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		redeemed : false,
 		code : false,
 		value : '',
-		notes_field : { content : '', giftcards : { success : [], error : [] }, value : '0.00', removed : false, id_restaurant : null, hasGiftCards : false, restaurant_accepts : false }, /* Notes field */
+		notes_field : { lastValidation: '', content : '', giftcards : { success : [], error : [] }, value : '0.00', removed : false, id_restaurant : null, hasGiftCards : false, restaurant_accepts : false }, /* Notes field */
 		modal : {
 			intro : true,
 			error : false,
@@ -161,71 +161,55 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.notes_field.start = function(){
+
 		service.notes_field.hasGiftCards = false;
-		if( service.notes_field.content && service.notes_field.content != '' ){
-			var words = service.notes_field.content.split( ' ' );
-		} else {
-			var words = [];
-		}
-		if( !service.notes_field.running ){
-			service.notes_field.running = true;
-			service.notes_field.total = 0;
-			var giftcards = {};
+		
+		if( service.notes_field.content == '' ){
 			service.notes_field.giftcards.success = [];
-			service.notes_field.giftcards.error = [];
-			service.notes_field.justOneGiftCardError = false;
-			for ( var x in words ) {
-				var word = $.trim( words[ x ] );
-				if( word != '' ){
-					word = word.replace( /[^a-zA-Z 0-9]+/g, '' );
-					if( !giftcards[ word ] ){
-						service.notes_field.total++;
-					}
-					giftcards[ word ] = word;
-				}
-			}
-			var hasGiftsToValidate = false;
-			$.each( giftcards, function( key, value ) {
-				hasGiftsToValidate = true;
-				var url = App.service + 'giftcard/validate';
-				$http( {
-					method: 'POST',
-					url: url,
-					data: $.param( { 'code' : value } ),
-					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-					} ).success( function( data ) {
-						if( data.success ){
-							service.notes_field.hasGiftCards = true;
-							var giftcard = data.success;
-							if( giftcard.id_restaurant &&  giftcard.id_restaurant != service.notes_field.id_restaurant ){
-								giftcard.error = 'other restaurant';
-							}
-							/* Issue #1615 */
-							if( service.notes_field.giftcards.success.length < 1 ){
-								service.notes_field.giftcards.success.push( data.success );	
-							} else {
-								service.notes_field.justOneGiftCardError = true;
-							}
-						} else if( data.error ){
-							service.notes_field.giftcards.error.push( data );
+		}
+
+		if( service.notes_field.content && service.notes_field.content != '' ){
+
+		var words = service.notes_field.content;
+
+		if( words == service.notes_field.lastValidation ){
+			return;
+		}
+
+		service.notes_field.lastValidation = words;
+
+		if( !service.notes_field.running ){
+
+			service.notes_field.running = true;
+			
+			var url = App.service + 'giftcard/validate-words';
+			
+			$http( {
+				method: 'POST',
+				url: url,
+				data: $.param( { 'words' : words } ),
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				} ).success( function( data ) {
+					if( data.success ){
+						service.notes_field.hasGiftCards = true;
+						var giftcard = data.success;
+						if( giftcard.id_restaurant &&  giftcard.id_restaurant != service.notes_field.id_restaurant ){
+							giftcard.error = 'other restaurant';
 						}
-						service.notes_field.total--;
-						service.notes_field.checkAllValidated();
-					}	).error(function( data, status ) { service.notes_field.total--; service.notes_field.checkAllValidated(); } );
-			} );
-			if( !hasGiftsToValidate ){
-				service.notes_field.checkAllValidated();
+						service.notes_field.giftcards.success.push( data.success );	
+					} else if( data.error ){
+						service.notes_field.giftcards.success = [];
+					}
+					service.notes_field.total--;
+					service.notes_field.checkAllValidated();
+					service.notes_field.running = false;
+				}	).error(function( data, status ) { service.notes_field.total--; service.notes_field.checkAllValidated();  service.notes_field.running = false; } );
 			}
 		}
 	}
 
 	service.notes_field.checkAllValidated = function(){
-		if( service.notes_field.total <= 0 ){
-			service.notes_field.running = false;
-		}
-		if( !service.notes_field.running ){
-			service.notes_field.compareValues();
-		}
+		service.notes_field.compareValues();
 		$rootScope.$broadcast( 'giftCardUpdate' );
 	}
 
@@ -234,14 +218,17 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		var values = 0;
 		if( service.notes_field.giftcards.success.length > 0 ){
 			$.each( service.notes_field.giftcards.success, function( key, giftcard ) {
+				console.log('giftcard',giftcard);
 				if( giftcard && !giftcard.error ){
 					values += parseFloat( giftcard.value ); 
 				}
 			} );
 		}
+
 		if( service.notes_field.value > values ){
 			service.notes_field.removed = true;
 		}
+
 		if( service.notes_field.restaurant_accepts ){
 			service.notes_field.value = App.ceil( values ).toFixed( 2 );
 			credit.setValue( App.ceil( credit.redeemed + values ).toFixed( 2 ) );
