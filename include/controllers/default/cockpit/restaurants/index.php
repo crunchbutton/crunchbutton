@@ -16,6 +16,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 	 */
 	private function _form()
 	{
+
 		$view = Cana::view();
 		/* @var $view Cana_View */
 
@@ -71,7 +72,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 
 		if (c::getPagePiece($page_piece_index) == 'new') {
 			// @permission check for restaurant permissions
-			if (!c::admin()->permission()->check(['global','restaurants-all'])) {
+			if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud'])) {
 				return;
 			}
 			$restaurant->save();
@@ -81,7 +82,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			switch (c::getPagePiece($page_piece_index+1)) {
 				case 'pay':
 					// @permission
-					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-pay'])) {
+					if (!c::admin()->permission()->check(['global', 'restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-pay'])) {
 						return;
 					}
 					c::view()->display('restaurants/pay');
@@ -112,7 +113,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					break;
 				default:
 					// @permission
-					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-edit'])) {
+					if (!c::admin()->permission()->check(['global','restaurants-all','restaurants-crud','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-edit'])) {
 						return;
 					}
 					$this->_form();
