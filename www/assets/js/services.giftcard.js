@@ -177,13 +177,9 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		}
 
 		service.notes_field.lastValidation = words;
-
 		if( !service.notes_field.running ){
-
 			service.notes_field.running = true;
-			
 			var url = App.service + 'giftcard/validate-words';
-			
 			$http( {
 				method: 'POST',
 				url: url,
