@@ -12,16 +12,29 @@ NGApp.controller('LegalCtrl', function ($scope, $http) {
 /**
  * help page
  */
-NGApp.controller('HelpCtrl', function ($scope, $http) {
+NGApp.controller('HelpCtrl', function ($scope, $http, $compile, MainNavigationService) {
+
 	if (!App.isPhoneGap) {
+
+		$scope.legal = function(){
+			MainNavigationService.link( '/legal' );
+		}
+
 		$http.get(App.service + 'help').success(function(data) {
+
 			var help = 'moc.nottubhcnurc@sremotsucyppah'.split('').reverse().join('');
 			var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
 
 			$scope.help = data.data
 				.replace('[email]', '<a href="mailto:' + help + '">' + help + '</a>')
 				.replace('[joinemail]', '<a href="mailto:' + join + '">' + join + '</a>')
+
+			$scope.help = $compile( $scope.help )( $scope );
+
 		});
+
+
+
 	}
 });
 
