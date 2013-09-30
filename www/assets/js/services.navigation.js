@@ -1,5 +1,5 @@
 // MainHeaderService service
-NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route, AccountModalService, RestaurantsService){ 
+NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route, AccountModalService, RestaurantsService, OrderViewService){ 
 	
 	var service = {
 		page : '',
@@ -40,6 +40,10 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 				service.buttons.location = true;
 				service.buttons.back = true;
 				service.buttons.menu = false;
+				if( OrderViewService.newOrder ){
+					service.buttons.back = false;
+					service.buttons.menu = true;
+				}
 				break;
 			default:
 				service.buttons.back = false;
