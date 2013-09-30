@@ -4,6 +4,10 @@ class Controller_home_curation extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
+
 		$orderByCategory = ( c::getPagePiece(2) == 'category' );
 		$showInactive = ( $_GET[ 'showInactive' ] ) ? $_GET[ 'showInactive' ] : 0;
 

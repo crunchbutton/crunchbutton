@@ -2,7 +2,9 @@
 
 class Controller_orders_notify extends Crunchbutton_Controller_Account {
 	public function init() {
-
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
 		$order = new Order(c::getPagePiece(3));
 		if (!$order->id_order) {
 			die('invalid order');

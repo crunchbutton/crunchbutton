@@ -2,7 +2,9 @@
 
 class Controller_orders_content extends Crunchbutton_Controller_Account {
 	public function init() {
-
+		if (!c::admin()->permission()->check(['global', 'orders'])) {
+			return ;
+		}
 		$search = [];
 		if ($_REQUEST['limit']) {
 			$search['limit'] = intval($_REQUEST['limit']);

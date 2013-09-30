@@ -2,6 +2,11 @@
 
 class Controller_suggestions extends Crunchbutton_Controller_Account {
 	public function init() {
+
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
+		
 		$suggestion = Suggestion::o(c::getPagePiece(1));
 		c::view()->page = 'suggestions';
 

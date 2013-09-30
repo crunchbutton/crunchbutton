@@ -3,6 +3,10 @@
 class Controller_payments_begin extends Crunchbutton_Controller_Account {
   public function init() {
 
+    if (!c::admin()->permission()->check(['global'])) {
+      return ;
+    }
+
     if($_REQUEST['order_by'] == 'last_payment') {
       $q = 'select '
           .'  restaurant.*, max(p.date) as "last_pay", p.`id_restaurant` as "p_id_rest" '

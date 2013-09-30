@@ -4,6 +4,10 @@ class Controller_giftcards_credits extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
+		if (!c::admin()->permission()->check(['global'])) {
+			return ;
+		}
+
 		$action = c::getPagePiece(2);
 
 		switch ( $action ) {
