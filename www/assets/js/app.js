@@ -58,8 +58,8 @@ NGApp.config(function ( $httpProvider) {
 
 		function error( response ) {
 			var status = response.status;
-			// URL not found or offline
-			if( status == 0 ){
+			// Is offline
+			if( !window.navigator.onLine ){
 				var showError = false;
 				var url = response.config.url;
 				if ( url ) {
@@ -83,6 +83,9 @@ NGApp.config(function ( $httpProvider) {
 				}
 				if( showError && !$( '.connection-error' ).is( ':visible' ) ){
 					App.connectionError();
+					if (App.busy.isBusy()) {
+						App.busy.unBusy();
+					}
 				}
 			}
 			return $q.reject( response );
