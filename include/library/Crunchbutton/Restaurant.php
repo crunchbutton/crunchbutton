@@ -771,7 +771,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	// Return minutes left to close
-	public function closeIn() {
+	public function closesIn() {
 		if( !$this->open() ){
 			return false;
 		}
@@ -1015,16 +1015,20 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$out              = $this->properties();
 		$out['_open']     = $this->open();
-		$out['_closeIn']  = $this->closeIn();
+		$out['_closesIn']  = $this->closesIn();
 		$out['_minimumTime']  = 15; // Min minutes to show the hurry message
 		// $out['_openIn']   = $this->openIn();
-		$out['_closeIn']  = $this->closeIn();
+		$out['_closesIn']  = $this->closesIn();
 		
+		if( $out['_closesIn'] <= 1 ){
+			$out['_open'] = false;
+		}
+
 		if( $out['_open'] ){
 			if( $out[ 'delivery' ] != 1 ){
 				$out['_tag']  = 'takeout';	
 			} else {
-				if( $out['_closeIn'] <= $out['_minimumTime'] ){
+				if( $out['_closesIn'] <= $out['_minimumTime'] ){
 					$out['_tag']  = 'closing';
 				}
 			}
