@@ -195,11 +195,15 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		// 4) get a more specific bounding location result from google
 		if (App.isPhoneGap) {
 			// @todo: id like to use native gelocation if posible at some point
-		} else if (google && google.load && !google.maps) {
-			google.load('maps', '3', {
-				callback: service.googleCallback,
-				other_params: 'sensor=false'
-			});
+		} else {
+			try{
+				if( google && google.load && !google.maps ){
+					google.load('maps', '3', {
+						callback: service.googleCallback,
+						other_params: 'sensor=false'
+					});
+				}
+			} catch(e){}
 		}
 	}
 
