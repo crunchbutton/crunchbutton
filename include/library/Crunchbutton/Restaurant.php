@@ -770,6 +770,60 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	// Return minutes left to close
+	public function closeIn() {
+		if( !$this->open() ){
+			return false;
+		}
+		$hours = $this->hours();
+		$DeLorean = new TimeMachine($this->timezone);
+		$today    = $DeLorean->now();
+		$day      = strtolower($today->format('D'));
+		foreach ($hours as $hour) {
+			if ($hour->day != $day) {
+				continue;
+			}
+			$open  = new DateTime('today '.$hour->time_open,  new DateTimeZone($this->timezone));
+			$close = new DateTime('today '.$hour->time_close, new DateTimeZone($this->timezone));
+			if ($close->getTimestamp() < $open->getTimestamp()) {
+				$close = new DateTime('+1 day '.$hour->time_close, new DateTimeZone($this->timezone));
+			}
+			if ($today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp()) {
+				$interval = $today->diff( $close );
+				$minutes = $interval->days * 24 * 60;
+				$minutes += $interval->h * 60;
+				$minutes += $interval->i;
+				return $minutes;
+			}
+		}
+		return false;
+	}
+
+	// Return minutes left to open
+	public function openIn() {
+		if( $this->open() ){
+			return false;
+		}
+		$hours = $this->hours();
+		$DeLorean = new TimeMachine($this->timezone);
+		$today    = $DeLorean->now();
+		$day      = strtolower($today->format('D'));
+		foreach ($hours as $hour) {
+			if ($hour->day != $day) {
+				continue;
+			}
+			$open  = new DateTime('today '.$hour->time_open,  new DateTimeZone($this->timezone));
+			if ($today->getTimestamp() < $open->getTimestamp()) {
+				$interval = $today->diff( $open );
+				$minutes = $interval->days * 24 * 60;
+				$minutes += $interval->h * 60;
+				$minutes += $interval->i;
+				return $minutes;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Returns all the notifications linked to this restaurant
 	 *
@@ -961,7 +1015,22 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$out              = $this->properties();
 		$out['_open']     = $this->open();
-		$out['_weight']    = $this->weight();
+		$out['_closeIn']  = $this->closeIn();
+		$out['_minimumTime']  = 15; // Min minutes to show the hurry message
+		// $out['_openIn']   = $this->openIn();
+		$out['_closeIn']  = $this->closeIn();
+		
+		if( $out['_open'] ){
+			if( $out[ 'delivery' ] != 1 ){
+				$out['_tag']  = 'takeout';	
+			} else {
+				if( $out['_closeIn'] <= $out['_minimumTime'] ){
+					$out['_tag']  = 'closing';
+				}
+			}
+		} else {
+			$out['_tag']  = 'closed';
+		}
 
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;

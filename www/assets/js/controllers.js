@@ -133,7 +133,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			// Update status of the restaurant's list
 			$scope.restaurants = restaurants.getStatus();
 			updateStatus();
-		} , 1000 * 15 );
+		} , 1000 * 35 );
 	}
 
 	$scope.$on( '$destroy', function(){
@@ -203,7 +203,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 			$scope.restaurants = restaurants.sort();
 			App.profile.log('returned sorting');
-			updateStatus();
+			// Wait one minute until update the status of the restaurants
+			setTimeout( function(){
+				updateStatus();
+			}, 1000 * 60 );
 			$scope.slogan = slogan;
 			$scope.tagline = tagline;
 			
