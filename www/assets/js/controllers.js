@@ -176,10 +176,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	var prep = restaurants.position.pos().prep();
 	var city = restaurants.position.pos().city();
 
-	if( !city || city == '' ){
-		city = 'your area';
-	}
-
 	restaurants.list( 
 		// Success
 		function(){
@@ -194,7 +190,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			
 			try {
 				var slogan = App.slogan.slogan;
-				var sloganReplace = prep + ' ' +  city;
+				var sloganReplace = ( prep || 'in' ) + ' ' + ( city || 'your area' );
 				sloganReplace = $.trim(sloganReplace);
 				var tagline = App.tagline.tagline.replace('%s', sloganReplace);
 				slogan = slogan.replace('%s', sloganReplace);
@@ -204,7 +200,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 				var tagline = '';
 			}
 
-			document.title = city + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
+			document.title = ( city || '' ) + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
 
 			$scope.restaurants = restaurants.sort();
 			App.profile.log('returned sorting');
