@@ -51,13 +51,13 @@ var Restaurant = function(id) {
 	 *
 	 * @return int|boolean
 	 */
-	this.closeIn = function() {
+	this.closesIn = function() {
 		/**
 		 * How many minutes to closing time to trigger the notification
 		 *
 		 * @var int
 		 */
-		var today       = Date.today().toString('ddd').toLowerCase();
+		var today = Date.today().toString('ddd').toLowerCase();
 		var tomorrow = Date.today().add(1).days().toString('ddd').toLowerCase();
 
 		if (this._hours == undefined ||  this._hours[today] == undefined) {
@@ -129,6 +129,7 @@ var Restaurant = function(id) {
 			if (utcNow.between(openTime, closeTime)) {
 				var minutes = (closeTime.getTime() - utcNow.getTime()) /1000/60;
 				minutes = Math.floor(minutes);
+				self._closesIn = minutes;
 				return minutes;
 			}
 		}
@@ -298,12 +299,12 @@ var Restaurant = function(id) {
 		}
 
 		if( isOpen ){
-			var minToClose = self.closeIn();
+			self.closesIn();
+			var minToClose = self._closesIn;
 			if( !isNaN( parseFloat( minToClose ) ) && minToClose == 0 ){
 				isOpen = false;
 			}
 		}
-		this._open = isOpen;
 		return isOpen;
 	}
 
