@@ -1,7 +1,16 @@
 // ReferralService service
-NGApp.factory( 'ReferralService', function( $http, $rootScope ){
+NGApp.factory( 'ReferralService', function( $http, $rootScope, $location ){
 
 	var service = { invite_url : null, value : 0, invites : 0, limit : 0 };
+
+	service.check = function(){
+		var param = $location.search();
+		if( param.invite ){
+			$.cookie( 'referral', param.invite );	
+			// Remove the invite from url
+			$location.url( $location.path() );
+		}
+	}
 
 	service.getInviteCode = function(){
 		var url = App.service + 'referral/code';
