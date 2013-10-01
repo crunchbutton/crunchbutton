@@ -176,6 +176,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	var prep = restaurants.position.pos().prep();
 	var city = restaurants.position.pos().city();
 
+	if( !city || city == '' ){
+		city = 'your area';
+	}
+
 	restaurants.list( 
 		// Success
 		function(){
