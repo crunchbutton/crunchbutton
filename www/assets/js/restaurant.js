@@ -46,152 +46,9 @@ var Restaurant = function(id) {
 		return Date.parse( dateTime.toString() );
 	}
 
-	/**
-	 * Returns the minutes if it's about to close
-	 *
-	 * @return int|boolean
-	 */
+
 	this.closesIn = function() {
-		/**
-		 * How many minutes to closing time to trigger the notification
-		 *
-		 * @var int
-		 */
-		var today = Date.today().toString('ddd').toLowerCase();
-		var tomorrow = Date.today().add(1).days().toString('ddd').toLowerCase();
 
-		if (this._hours == undefined ||  this._hours[today] == undefined) {
-			return false;
-		}
-
-		todayHours  = this._hours[today];
-
-		// Check the time it will open and close tomorrow
-		if( this._hours[ tomorrow ] ){
-			var tomorrowHours = this._hours[tomorrow];
-			var tomorrowItOpensAt = tomorrowHours[0][0];
-			var tomorrowItClosesAt = tomorrowHours[0][1];
-		} else {
-			var tomorrowItOpensAt = false;
-			var tomorrowItClosesAt = false;
-		}
-
-		for (i in todayHours) {
-			var openTime  = Date.parse(todayHours[i][0]);
-			var closeTime = Date.parse(todayHours[i][1]);
-			
-			var nextHour = parseInt( i ) + 1;
-			if( todayHours[ nextHour ] ){
-				var nextHourOpenTime = todayHours[ nextHour ][0];
-				var nextHourCloseTime = todayHours[ nextHour ][1];
-			} else {
-				var nextHourOpenTime = false;
-				var nextHourCloseTime = false;
-			}
-
-			var previousHour = parseInt( i ) - 1;
-			if( todayHours[ previousHour ] ){
-				var previousHourOpenTime = todayHours[ previousHour ][0];
-				var previousHourCloseTime = todayHours[ previousHour ][1];
-			} else {
-				var previousHourOpenTime = false;
-				var previousHourCloseTime = false;
-			}
-
-			// there is no real 24:00 hours, it's 00:00 for tomorrow
-			if (todayHours[i][1] == '24:00' || todayHours[i][1] == '00:00') {
-				closeTime = Date.parse('00:00');
-				// if it opens tomorrow at 00:00 it means it will no close today at 00:00
-				if( tomorrowItOpensAt == '00:00' || tomorrowItOpensAt == '0:00' ){
-					closeTime = Date.parse( tomorrowItClosesAt );
-				} 
-				// else if the next hour starts at 00:00 it means it will no close today at 00:00
-				else if( nextHourOpenTime == '00:00' || nextHourOpenTime == '0:00' ){
-					closeTime = Date.parse( nextHourCloseTime );
-				}
-				// else if the previous hour starts at 00:00 it means it will no close today at 00:00
-				else if( previousHourOpenTime == '00:00' || previousHourOpenTime == '0:00' ){
-					closeTime = Date.parse( previousHourCloseTime );
-				} 
-				closeTime.addDays(1);
-			}
-
-			// if closeTime before openTime, then closeTime should be for tomorrow
-			if (closeTime.compareTo(openTime) == -1) {
-				closeTime.addDays(1);
-			}
-
-			closeTime = this._utcTime(closeTime);
-
-			openTime  = closeTime.clone().addMinutes(-1 * self._minimumTime);
-			utcNow    = this._utcNow();
-
-			if (utcNow.between(openTime, closeTime)) {
-				var minutes = (closeTime.getTime() - utcNow.getTime()) /1000/60;
-				minutes = Math.floor(minutes);
-				self._closesIn = minutes;
-				return minutes;
-			}
-		}
-
-		return false;
-	}
-
-	self.categories = function() {
-		return self.loadType('Category','categories');
-	}
-
-	self.notifications = function() {
-		return self.loadType('Notification','notifications');
-	}
-
-	self.top = function() {
-		var categories = self.categories();
-
-		for (var x in categories) {
-
-			var dishes = categories[x].dishes();
-
-			for (var xx in dishes) {
-				if (dishes[xx].top == 1) {
-					return dishes[xx];
-				}
-			}
-		}
-	}
-
-	self.deliveryDiff = function(total) {
-		var diff = parseFloat(self.delivery_min - total).toFixed(2);
-		return diff;
-	}
-
-	self.meetDeliveryMin = function(total) {
-		return total < parseFloat(self.delivery_min) ? true : false;
-	}
-
-	self.dateFromItem = function(item, offset) {
-		var
-			theTime = item.split(':'),
-			theDate = new Date();
-
-		theDate.setHours(theTime[0]);
-		theDate.setMinutes(theTime[1] + offset);
-		return theDate;
-	}
-
-	/**
-	 * Checks if a restaurant is open now for delivery
-	 *
-	 * Checks if now() is between openTime and closeTime. The closing time could
-	 * be for tomorrow morning (1am) so we need to handle those cases too. See
-	 * issue #605.
-	 *
-	 * Do not use logic in PHP as the page could have been open for a while.
-	 *
-	 * @todo add offset validation
-	 *       offset = -(today.getTimezoneOffset()); // @todo: ensure this works on positive tz
-	 */
-	self.open = function() {
 		// this overrides everything
 		if(this.open_for_business === "0") {
 			this._open = false;
@@ -298,14 +155,144 @@ var Restaurant = function(id) {
 			}
 		}
 
-		if( isOpen ){
-			self.closesIn();
-			var minToClose = self._closesIn;
-			if( !isNaN( parseFloat( minToClose ) ) && minToClose == 0 ){
-				isOpen = false;
+		if( !isOpen ){
+			this._open = false;
+			return false;
+		} else {
+			this._open = true;
+		}
+
+		var today = Date.today().toString('ddd').toLowerCase();
+		var tomorrow = Date.today().add(1).days().toString('ddd').toLowerCase();
+
+		todayHours  = this._hours[today];
+
+		// Check the time it will open and close tomorrow
+		if( this._hours[ tomorrow ] ){
+			var tomorrowHours = this._hours[tomorrow];
+			var tomorrowItOpensAt = tomorrowHours[0][0];
+			var tomorrowItClosesAt = tomorrowHours[0][1];
+		} else {
+			var tomorrowItOpensAt = false;
+			var tomorrowItClosesAt = false;
+		}
+
+		for (i in todayHours) {
+			var openTime  = Date.parse(todayHours[i][0]);
+			var closeTime = Date.parse(todayHours[i][1]);
+			
+			var nextHour = parseInt( i ) + 1;
+			if( todayHours[ nextHour ] ){
+				var nextHourOpenTime = todayHours[ nextHour ][0];
+				var nextHourCloseTime = todayHours[ nextHour ][1];
+			} else {
+				var nextHourOpenTime = false;
+				var nextHourCloseTime = false;
+			}
+
+			var previousHour = parseInt( i ) - 1;
+			if( todayHours[ previousHour ] ){
+				var previousHourOpenTime = todayHours[ previousHour ][0];
+				var previousHourCloseTime = todayHours[ previousHour ][1];
+			} else {
+				var previousHourOpenTime = false;
+				var previousHourCloseTime = false;
+			}
+
+			// there is no real 24:00 hours, it's 00:00 for tomorrow
+			if (todayHours[i][1] == '24:00' || todayHours[i][1] == '00:00') {
+				closeTime = Date.parse('00:00');
+				// if it opens tomorrow at 00:00 it means it will no close today at 00:00
+				if( tomorrowItOpensAt == '00:00' || tomorrowItOpensAt == '0:00' ){
+					closeTime = Date.parse( tomorrowItClosesAt );
+				} 
+				// else if the next hour starts at 00:00 it means it will no close today at 00:00
+				else if( nextHourOpenTime == '00:00' || nextHourOpenTime == '0:00' ){
+					closeTime = Date.parse( nextHourCloseTime );
+				}
+				// else if the previous hour starts at 00:00 it means it will no close today at 00:00
+				else if( previousHourOpenTime == '00:00' || previousHourOpenTime == '0:00' ){
+					closeTime = Date.parse( previousHourCloseTime );
+				} 
+				closeTime.addDays(1);
+			}
+
+			// if closeTime before openTime, then closeTime should be for tomorrow
+			if (closeTime.compareTo(openTime) == -1) {
+				closeTime.addDays(1);
+			}
+
+			closeTime = this._utcTime(closeTime);
+			utcNow    = this._utcNow();
+
+			var minutes = (closeTime.getTime() - utcNow.getTime()) /1000/60;
+			minutes = Math.floor(minutes);
+			this._closesIn = minutes;
+			if( this._closesIn <= 0 ){
+				this._open = false;
 			}
 		}
-		return isOpen;
+
+		return false;
+	}
+
+	self.categories = function() {
+		return self.loadType('Category','categories');
+	}
+
+	self.notifications = function() {
+		return self.loadType('Notification','notifications');
+	}
+
+	self.top = function() {
+		var categories = self.categories();
+
+		for (var x in categories) {
+
+			var dishes = categories[x].dishes();
+
+			for (var xx in dishes) {
+				if (dishes[xx].top == 1) {
+					return dishes[xx];
+				}
+			}
+		}
+	}
+
+	self.deliveryDiff = function(total) {
+		var diff = parseFloat(self.delivery_min - total).toFixed(2);
+		return diff;
+	}
+
+	self.meetDeliveryMin = function(total) {
+		return total < parseFloat(self.delivery_min) ? true : false;
+	}
+
+	self.dateFromItem = function(item, offset) {
+		var
+			theTime = item.split(':'),
+			theDate = new Date();
+
+		theDate.setHours(theTime[0]);
+		theDate.setMinutes(theTime[1] + offset);
+		return theDate;
+	}
+
+	/**
+	 * Checks if a restaurant is open now for delivery
+	 *
+	 * Checks if now() is between openTime and closeTime. The closing time could
+	 * be for tomorrow morning (1am) so we need to handle those cases too. See
+	 * issue #605.
+	 *
+	 * Do not use logic in PHP as the page could have been open for a while.
+	 *
+	 * @todo add offset validation
+	 *       offset = -(today.getTimezoneOffset()); // @todo: ensure this works on positive tz
+	 */
+	self.open = function() {
+		this.closesIn();
+		return this._open;
 	}
 
 	self.deliveryHere = function( distance ){

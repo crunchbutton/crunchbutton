@@ -152,7 +152,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	$scope.display = function($event) {
 		var restaurant = this.restaurant;
-		if (!restaurant.open()) {
+		restaurant.closesIn();
+		if (!restaurant._open) {
 			$rootScope.$broadcast('restaurantClosedClick', restaurant);
 		} else {
 			var el = $($event.target).parents('.meal-item').find('.meal-item-content');
