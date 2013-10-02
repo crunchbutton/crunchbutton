@@ -14,7 +14,8 @@ class Crunchbutton_User extends Cana_Table {
 	
 	public function orders() {
 		$orders = Order::q('
-			select * from `order`
+			select o.date, o.id_order, o.uuid, r.name restaurant_name, r.permalink restaurant_permalink, r.timezone timezone, "compressed" type from `order` o
+			inner join restaurant r on r.id_restaurant = o.id_restaurant
 			where
 				id_user="'.$this->id_user.'"
 				and id_user is not null

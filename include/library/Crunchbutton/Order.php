@@ -1157,6 +1157,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function exports() {
+
 		$out = $this->properties();
 
 		unset($out['id_user']);
@@ -1164,21 +1165,30 @@ class Crunchbutton_Order extends Cana_Table {
 		unset($out['id_order']);
 
 		$out['id'] = $this->uuid;
-
-		$out['_restaurant_name'] = $this->restaurant()->name;
-		$out['_restaurant_permalink'] = $this->restaurant()->permalink;
-		$out['_restaurant_phone'] = $this->restaurant()->phone;
-		$out['user'] = $this->user()->uuid;
-		$out['_message'] = nl2br($this->orderMessage('web'));
-		$out['charged'] = $this->charged();
-		$credit = $this->chargedByCredit();
-		if( $credit > 0 ){
-			$out['credit'] = $credit;
-		} else {
-			$out['credit'] = 0;
-		}
 		
-		$timezone = new DateTimeZone($this->restaurant()->timezone);
+		if( isset( $out[ 'type' ] ) && $out[ 'type' ] == 'compressed' ){
+			$out['_restaurant_name'] = $out['restaurant_name'];
+			$out['_restaurant_permalink'] = $out['restaurant_permalink'];
+			$timezone = new DateTimeZone( $out['timezone'] );
+			unset( $out['type'] );
+			unset( $out['uuid'] );
+			unset( $out['restaurant_name'] );
+			unset( $out['restaurant_permalink'] );
+		} else {
+			$out['_restaurant_name'] = $this->restaurant()->name;
+			$out['_restaurant_permalink'] = $this->restaurant()->permalink;
+			$out['_restaurant_phone'] = $this->restaurant()->phone;
+			$out['user'] = $this->user()->uuid;
+			$out['_message'] = nl2br($this->orderMessage('web'));
+			$out['charged'] = $this->charged();
+			$credit = $this->chargedByCredit();
+			if( $credit > 0 ){
+				$out['credit'] = $credit;
+			} else {
+				$out['credit'] = 0;
+			}
+			$timezone = new DateTimeZone($this->restaurant()->timezone);
+		}
 
 		$date = new DateTime($this->date);
 		$date->setTimeZone($timezone);
