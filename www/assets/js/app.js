@@ -477,9 +477,9 @@ App.test = {
 		App.alert(JSON.stringify(App.cart.items));
 	},
 	clearloc: function() {
-		$.totalstorage('community',null);
-		$.totalstorage('location_lat',null);
-		$.totalstorage('location_lon',null);
+		$.totalStorage('community',null);
+		$.totalStorage('location_lat',null);
+		$.totalStorage('location_lon',null);
 		location.href = '/';
 	},
 	reload: function() {

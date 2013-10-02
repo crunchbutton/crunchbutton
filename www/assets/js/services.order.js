@@ -8,6 +8,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 	service.giftcard = GiftCardService;
 	service.credit = CreditService;
 	service.restaurant = {};
+	service.startStoreEntederInfo = false;
 
 	// Listener to user signin/signout
 	$rootScope.$on( 'userAuth', function(e, data) {
@@ -120,6 +121,31 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		service.form.cardMonth = ( service.account.user.card_exp_month ) ? service.account.user.card_exp_month : '';
 		service.form.cardYear = ( service.account.user.card_exp_year ) ? service.account.user.card_exp_year : '';
 		service.updateTotal();
+
+		if( !service.account.user.id_user ){
+			var userEntered = $.totalStorage( 'userEntered' );
+			if( userEntered ){
+				service.form.name = ( userEntered.name && userEntered.name != '' ? userEntered.name : service.form.name );
+				service.form.phone = $filter( 'formatPhone' )( ( userEntered.phone && userEntered.phone != '' ? userEntered.phone : service.form.phone ) );
+				service.form.address = ( userEntered.address && userEntered.address != '' ? userEntered.address : service.form.address );
+				service.form.notes = ( userEntered.notes && userEntered.notes != '' ? userEntered.notes : service.form.notes );
+				service.form.delivery_type = ( userEntered.delivery_type && userEntered.delivery_type != '' ? userEntered.delivery_type : service.form.delivery_type );
+				service.form.pay_type = ( userEntered.pay_type && userEntered.pay_type != '' ? userEntered.pay_type : service.form.pay_type );
+				service.form.cardMonth = ( userEntered.cardMonth && userEntered.cardMonth != '' ? userEntered.cardMonth : service.form.cardMonth );
+				service.form.cardYear = ( userEntered.cardYear && userEntered.cardYear != '' ? userEntered.cardYear : service.form.cardYear );
+				if( userEntered.tip && userEntered.tip != '' ){
+					var _tip = userEntered.tip;
+					setTimeout(function() { 
+						service.form.tip = _tip; 
+						service.tipChanged();
+						service.updateTotal(); 
+					}, 10 );
+				} else {
+					service.updateTotal();
+				}
+			}
+			service.startStoreEntederInfo = true;
+		}
 
 		// If the user has presets at other's restaurants but he did not typed his address yet
 		// and the actual restaurant is a delivery only #875
@@ -618,7 +644,11 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 						if (json.token) {
 							$.cookie( 'token', json.token );
 						}
-	
+						
+						// Clean the user entered info
+						$.totalStorage( 'userEntered', null );
+						service.startStoreEntederInfo = false;
+
 						service.account.updateInfo();
 						App.cache('Order', json.uuid, function () {
 							App.track('Ordered', {
@@ -633,6 +663,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 							});
 							// Clean the cart
 							service.cart.clean();
+
 							// Resets the gift card notes field
 							service.giftcard.notes_field.reset();
 							$rootScope.$safeApply( function(){

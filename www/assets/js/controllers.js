@@ -522,6 +522,16 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	$scope.$on( 'orderLoaded', function(e, data) {
 		$scope.order.loaded = order.loaded;
 		$scope.order.showForm = order.showForm;
+
+		// watch form changes and stores it
+		$scope.$watch( 'order.form', function( newValue, oldValue, scope ) {
+			if( order.startStoreEntederInfo && !order.account.user.id_user ){
+				var userEntered = angular.copy( order.form );
+				userEntered.cardNumber = '';
+				$.totalStorage( 'userEntered', userEntered );
+			}
+		}, true);
+
 	});
 
 	// Alias to CartService 'public' methods
