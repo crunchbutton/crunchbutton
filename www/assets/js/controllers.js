@@ -32,9 +32,6 @@ NGApp.controller('HelpCtrl', function ($scope, $http, $compile, MainNavigationSe
 			$scope.help = $compile( $scope.help )( $scope );
 
 		});
-
-
-
 	}
 });
 
@@ -240,7 +237,7 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
 /**
  * Change location
  */
-NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, RestaurantsService, LocationService, AccountService ) {
+NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, RestaurantsService, LocationService, AccountService, PositionsService ) {
 
 	var account = AccountService;
 	var restaurants = RestaurantsService;
@@ -299,7 +296,12 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 
 	$scope.$on( 'locationNotServed', function(e, data) {
 		spin.stop();
-		$('.location-address').val('').attr('placeholder','Please include a zip code or city name');
+		var pos = PositionsService.pos();
+		if( pos.entered() ){
+			$('.location-address').val('').attr('placeholder','Please include a zip code or city name');	
+		} else {
+			$('.location-address').val('').attr('placeholder','Please enter an address or zip');	
+		}
 		$scope.warningPlaceholder = true;
 		// the user might be typing his login/pass - so blur it
 		if( !App.dialog.isOpen() ){
