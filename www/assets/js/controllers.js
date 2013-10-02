@@ -532,6 +532,8 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 			}
 		}, true);
 
+		$scope.checkGiftCard();
+
 	});
 
 	// Alias to CartService 'public' methods
@@ -574,6 +576,7 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		$scope.giftcard.removed = giftcard.notes_field.removed;
 		$scope.giftcard.hasGiftCards = giftcard.notes_field.hasGiftCards;
 		$scope.giftcard.justOneGiftCardError = giftcard.notes_field.justOneGiftCardError;
+		$scope.giftcard.hasValue = ( parseFloat( giftcard.notes_field.value ) > 0 );
 	});
 
 	$scope.checkGiftCard = function(){
@@ -582,12 +585,17 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	}
 
 	var credit = CreditService;
-	$scope.credit = {};
+	$scope.credit = { hasValue : false };
 	// Event will be called when the credit changes
 	$scope.$on( 'creditChanged', function(e, data) {
 		$scope.credit.value = credit.value;
 		$scope.credit.redeemed = credit.redeemed;
 		$scope.order.updateTotal();
+		if( parseFloat( $scope.credit.value ) > 0 ){
+			$scope.credit.hasValue = true;
+		} else {
+			$scope.credit.hasValue = false;
+		}
 	});
 
 	$scope.$on( 'creditCardInfoChanged', function(e, data) {

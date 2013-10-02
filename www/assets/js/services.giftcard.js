@@ -163,9 +163,11 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 	service.notes_field.start = function(){
 
 		service.notes_field.hasGiftCards = false;
+		service.notes_field.giftcards.success = [];
 		
 		if( service.notes_field.content == '' ){
-			service.notes_field.giftcards.success = [];
+			service.notes_field.lastValidation = '';
+			service.notes_field.checkAllValidated();
 		}
 
 		if( service.notes_field.content && service.notes_field.content != '' ){
