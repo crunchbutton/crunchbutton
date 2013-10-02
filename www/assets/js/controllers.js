@@ -417,6 +417,7 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
 	var order = OrderService;
 	order.loaded = false;
+	order.startStoreEntederInfo = false;
 	$scope.order = {};
 	$scope.order.form = order.form;
 	$scope.order.info = order.info;
