@@ -75,7 +75,6 @@ App.AB = {
 			}
 			var opt = opts[Math.floor(Math.random()*opts.length)];
 			App.config.ab[key] = opt.name
-			App.trackProperty('AB-' + key, opt.name);
 		}
 
 		App.AB.save();

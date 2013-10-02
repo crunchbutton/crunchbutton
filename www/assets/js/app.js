@@ -387,7 +387,7 @@ App.scrollTop = function() {
 
 
 /**
- * Sends a tracking item to mixpanel, or to google ads if its an order
+ * Sends a tracking item to google, or to google ads if its an order
  */
 App.track = function() {
 	if (App.config.env != 'live') {
@@ -395,48 +395,10 @@ App.track = function() {
 	}
 	if (arguments[0] == 'Ordered') {
 		$('img.conversion').remove();
-		mixpanel.people.track_charge(arguments[1].total);
 		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + location.href + '">').appendTo($('body'));
 	}
-	if (arguments[1]) {
-		mixpanel.track(arguments[0],arguments[1]);
-	} else {
-		mixpanel.track(arguments[0]);
-	}
 };
 
-
-/**
- * Tracks a property to mixpanel
- */
-App.trackProperty = function(prop, value) {
-	//  || App.config.env != 'live'
-	if (App.config.env != 'live') {
-		return;
-	}
-
-	var params = {};
-	params[prop] = value;
-
-	mixpanel.register_once(params);
-};
-
-/**
- * Itendity the user to mixpanel
- */
-App.identify = function() {
-	if (App.config.env != 'live') {
-		return;
-	}
-	if (App.config.user.uuid) {
-		mixpanel.identify(App.config.user.uuid);
-		mixpanel.people.set({
-			$name: App.config.user.name,
-			$ip: App.config.user.ip,
-			$email: App.config.user.email
-		});
-	}
-};
 
 /**
  * controls the busy state of the app
@@ -517,9 +479,6 @@ App.processConfig = function(json, user) {
 		App.config = json;
 	}
 	App.AB.init();
-	if (App.config.user) {
-		App.identify();
-	}
 };
 
 /**
