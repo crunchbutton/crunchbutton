@@ -331,7 +331,7 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, Account
 			return;
 		}
 		// Force to remove the cookies
-		$.each(['token', 'location', 'PHPSESSID', 'fbtoken'], function(index, value) {
+		$.each(['token', 'location', 'PHPSESSID', 'fbtoken', 'userEntered'], function(index, value) {
 			$.totalStorage(value, null);
 		});
 		var signout = function() {
