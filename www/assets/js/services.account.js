@@ -136,7 +136,6 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 				if( data.id_user != '' ){
 					service.user = data;
 					App.config.user = data;
-					App.identify();
 					$rootScope.$safeApply();
 				}
 				if( callback ){
