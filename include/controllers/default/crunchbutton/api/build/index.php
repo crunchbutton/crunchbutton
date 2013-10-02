@@ -27,6 +27,7 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 			'/admin',
 			'/theme',
 			'/landing',
+			'/sky',
 			'/like'
 		];
 		$path = c::config()->dirs->www.'assets/images';

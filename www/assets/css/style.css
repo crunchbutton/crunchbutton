@@ -80,9 +80,6 @@ html[xmlns] .clearfix {
 	color:#fff;
 	font-size:11px;
 }
-.pacman-loading {
-	display:none;
-}
 .unbold{
 	font-weight: normal !important;
 }
@@ -337,17 +334,19 @@ html[xmlns] .clearfix {
 	box-shadow:1px 1px 10px 5px rgba(0,0,0,.1);
 }
 .support-icon {
-	background:url(../images/support-icon.png);
 	float:left;
 	height:20px;
-	margin:-2px 10px 0 0;
+	margin:-4px 10px 0 0 !important;
 	width:21px;
+	color: #fff;
+	font-size: 20px;
+	text-shadow:1px 1px 0 rgba(0,0,0,.5);
 }
 .support-title {
 	color:#FFF;
 	font-size:13px;
 	float:left;
-	text-shadow:1px 1px 1px #000;
+	text-shadow:1px 1px 0 rgba(0,0,0,.5);
 }
 .support-maximized {
 	bottom:0;
@@ -1842,15 +1841,7 @@ h1.about-header {
 	.signin-icon,.signin-user {
 		margin-top:0;
 	}
-	.pacman-loading {
-		background:url(../images/pacman.gif)no-repeat;
-		height:24px;
-		position:absolute;
-		width:24px;
-	}
-	.pacman-left {
-		left:19px;
-	}
+
 	.signin-icon {
 		background:url(../images/sign-in-icon.png)no-repeat !important;
 		background-size:contain !important;
@@ -3009,10 +3000,11 @@ h1.about-header {
 }
 .app-busy-loader-icon {
 	margin:0 auto;
-	background:url(../images/loader.gif)no-repeat;
-	width:48px;
-	height:48px;
-	margin-top:25px;
+	background: url(../images/ajax_loader_orange_512.gif) no-repeat;
+	width:60px;
+	height:60px;
+	margin-top:20px;
+	background-size:100%;
 }
 
 .meal-item:active .meal-item-content {
@@ -3021,7 +3013,7 @@ h1.about-header {
 
 .ajax-loader-teal {
 	margin: 0 auto;
-	background: url(../images/ajax_loader_orange_512.gif);
+	background: url(../images/ajax_loader_orange_512.gif) no-repeat;
 	height: 64px;
 	width: 64px;
 	background-size:100%;
