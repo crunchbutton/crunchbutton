@@ -377,6 +377,8 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 
 					$words = explode( ' ', $words );
 
+					$words = array_unique( $words );
+
 					foreach( $words as $word ){
 						// Get the giftcard (promo) by code
 						$giftcard = Crunchbutton_Promo::byCode( $word );
