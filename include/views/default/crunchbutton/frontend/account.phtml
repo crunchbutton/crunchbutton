@@ -1,6 +1,6 @@
 <div class="account-container modal zoom-anim-dialog small-container mfp-hide">
 	<div ng-controller="AccountModalHeaderCtrl" class="header" ng-show="modal.header">
-		<h1 class="signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Sign in</h1>
+		<h1 class="signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Log In</h1>
 		<div class="divisor">|</div>
 		<h1 class="signup {{ modal.signup && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signup' )">Sign up</h1>
 		<div class="divider"></div>
@@ -29,7 +29,7 @@
 			<button ng-click="account.signin();">Log in</button>
 			<div class="divider"></div>
 
-		<div facebook-signin-button title="Login with Facebook"></div>
+		<div facebook-signin-button title="Log in with Facebook"></div>
 		</div>
 		<div ng-show="help.visible">
 			<form class="signin-help-form" name="formLoginHelp" novalidate>
@@ -83,14 +83,14 @@
 		<div ng-show="account.user.has_auth">
 			<h1>Congratulations!</h1>
 			<div class="success">
-				You can now sign in using <strong>{{account.email}}</strong>!
+				You can now log in using <strong>{{account.email}}</strong>!
 			</div>
 		</div>
 	</div>
 
 	<div ng-controller="AccountFacebookCtrl" ng-show="modal.facebookLogin">
 		<div>
-			<h1>Login with Facebook</h1>
+			<h1>Log in with Facebook</h1>
 			<div facebook-signin-button title="Connect with Facebook"></div>
 		</div>
 	</div>
