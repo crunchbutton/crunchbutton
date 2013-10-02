@@ -79,12 +79,12 @@ body {
 }
 
 .wrapper {
-	background: url(/assets/images/landing-bg.gif);
+	background: url(/assets/images/landing/landing-bg.gif);
 	border-bottom: 1px solid rgba(0,0,0,.1);
 }
 
 .content {
-	background: url(/assets/images/landing-home.jpg) no-repeat;
+	background: url(/assets/images/landing/landing-home.jpg) no-repeat;
 	background-position: top center;
 	width: 1024px;
 	margin: 0 auto;

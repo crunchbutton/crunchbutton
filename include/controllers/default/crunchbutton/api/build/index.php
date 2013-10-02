@@ -16,6 +16,7 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		// images
 		$exclude = [
 			'/admin',
+			'/addme',
 			'/social',
 			'/mprinter',
 			'/micro',
@@ -24,7 +25,9 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 			'/datepicker',
 			'/compat',
 			'/admin',
-			'/theme'
+			'/theme',
+			'/landing',
+			'/like'
 		];
 		$path = c::config()->dirs->www.'assets/images';
 		$dir  = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
