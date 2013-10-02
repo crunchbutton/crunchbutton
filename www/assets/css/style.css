@@ -748,14 +748,6 @@ html[xmlns] .clearfix {
 	margin-left: -2px;
 	margin-top: -2px;
 }
-.location-detect-loader {
-	background:url(../images/loader-location.gif);
-	background-size:contain;
-	height:24px;
-	width:24px;
-	margin:14px;
-	display:none;
-}
 .location-icon {
 	float:right;
 	width:45px;
@@ -3025,4 +3017,12 @@ h1.about-header {
 
 .meal-item:active .meal-item-content {
 	margin-top: 2px;
+}
+
+.ajax-loader-teal {
+	margin: 0 auto;
+	background: url(../images/ajax_loader_orange_512.gif);
+	height: 64px;
+	width: 64px;
+	background-size:100%;
 }
