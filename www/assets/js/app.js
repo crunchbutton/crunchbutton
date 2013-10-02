@@ -494,7 +494,7 @@ App.init = function(config) {
 	App.verifyConnection.init();
 
 	// temporary fix for drawers overslcrolling
-	$(document).on('touchmove', '.snap-drawers, .mfp-wrap', function(e) {
+	$(document).on('touchmove', '.snap-drawers, .mfp-wrap, .support-container', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 	});
