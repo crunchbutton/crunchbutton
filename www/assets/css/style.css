@@ -259,24 +259,26 @@ html[xmlns] .clearfix {
 .order-warning, .order-warning h1{
 	font-size: 14px !important;
 }
-	.order-warning strong{
-		font-weight: bold;
-	}
-	.order-warning ul{
-		margin-top: 10px;
-	}
-		.order-warning ul li{
-			cursor: pointer;
-			margin: 10px 0;
-			text-decoration: underline;
-		}
-.showMoreRestaurants{
+.order-warning strong {
+	font-weight: bold;
+}
+.order-warning ul{
+	margin-top: 10px;
+}
+.order-warning ul li {
+	cursor: pointer;
+	margin: 10px 0;
+	text-decoration: underline;
+}
+
+
+.show-more-restaurants {
 	color: #FFF;
 	font-size: 15px;
 	font-weight: bold;
-	text-shadow:1px 1px 1px #000;
+	text-shadow:1px 1px 1px rgba(0,0,0,.5);
 	padding: 10px;
-	margin: 15px 0 0 0;
+	margin: 15px 0 20px 0;
 	display: block;
 	width: 80%;
 	margin: 0 auto;
@@ -299,6 +301,14 @@ html[xmlns] .clearfix {
 	-o-transition:box-shadow ease-out 0.2s;
 	transition:box-shadow ease-out 0.2s;
 }
+
+
+@media(max-width:767px) {
+	.show-more-restaurants {
+		width: 302px;
+	}
+}
+
 /* SUPPORT */
 .support-container {
 	z-index:150;

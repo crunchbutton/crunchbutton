@@ -179,8 +179,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			App.profile.log('return from list');
 
 			// Limit the number of restaurants to be rended when page loads
-			if (App.isMobile() && App.restaurantsPaging) {
-				$scope.restaurantsToShow = 4;	
+			if (App.restaurantsPaging.enabled) {
+				$scope.restaurantsToShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
 			} else {
 				$scope.restaurantsToShow = 100;	
 			}
