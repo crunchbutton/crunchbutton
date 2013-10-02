@@ -532,6 +532,8 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 			}
 		}, true);
 
+		GiftCardService.notes_field.lastValidation = false;
+
 		$scope.checkGiftCard();
 
 	});
