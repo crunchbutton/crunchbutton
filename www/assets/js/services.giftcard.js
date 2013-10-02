@@ -216,7 +216,6 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		var values = 0;
 		if( service.notes_field.giftcards.success.length > 0 ){
 			$.each( service.notes_field.giftcards.success, function( key, giftcard ) {
-				console.log('giftcard',giftcard);
 				if( giftcard && !giftcard.error ){
 					values += parseFloat( giftcard.value ); 
 				}
