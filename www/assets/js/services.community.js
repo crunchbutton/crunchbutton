@@ -7,7 +7,7 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 
 	service.route = function( id, success, error ){
 		
-		var parts = id.split( '/' );
+		var parts = id.toLowerCase().split( '/' );
 		var alias = false;
 		var restaurant = false;
 
