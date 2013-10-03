@@ -115,8 +115,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		return;
 	}
 	
-	App.profile.log('start ctl');
-	
 	var motivationText = ['You are awesome','You are loved','You are beautiful','You\'re at the top of your game','You are rad'];
 	$scope.motivationText = motivationText[Math.floor(Math.random() * motivationText.length)];
 
@@ -126,31 +124,43 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	// Update the close/open/about_to_close status from the restaurants
 	var updateStatus = function(){
-		updateRestaurantStatus = $timeout( function(){
+		updateRestaurantsStatus = $timeout( function(){
 			// Update status of the restaurant's list
 			$scope.restaurants = restaurants.getStatus();
+			$rootScope.$safeApply();
 			updateStatus();
 		} , 1000 * 35 );
 	}
 
 	$scope.$on( '$destroy', function(){
+		RestaurantsService.forceGetStatus = true;
 		// Kills the timer when the controller is changed
 		try{
-			$timeout.cancel( updateRestaurantStatus );	
+			$timeout.cancel( updateRestaurantsStatus );	
 		} catch(e){}
 		
 	});
 
+	// It means the list is already loaded so we need to update the restaurant's status
+	if( RestaurantsService.forceGetStatus ){
+		setTimeout( function(){
+			$scope.restaurants = restaurants.getStatus();
+			updateStatus();
+			$rootScope.$safeApply();
+		}, 1 );
+	}
+
 	$rootScope.$on( 'appResume', function(e, data) {
 		if( $location.path() == '/' + RestaurantsService.permalink ){
+			$scope.restaurants = restaurants.getStatus();
 			updateStatus();
 		}
 	});
 
 	$scope.display = function($event) {
 		var restaurant = this.restaurant;
-
-		if ( !restaurant.open() ) {
+		restaurant.closesIn();
+		if ( !restaurant._open ) {
 			$rootScope.$broadcast('restaurantClosedClick', restaurant);
 		} else {
 			var el = $($event.target).parents('.meal-item').find('.meal-item-content');
@@ -158,7 +168,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			if (s) {
 				s.start();
 			}
-
 			// @todo: this is kind of redundundant
 			// make sure that the restaurant is actulay loaded first
 			App.cache('Restaurant', restaurant.permalink, function () {
@@ -432,7 +441,8 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	// update if the restaurant is closed or open
 	var updateStatus = function(){
 		updateRestaurantStatus = $timeout( function(){
-			var open = $scope.restaurant.open();
+			$scope.restaurant.closesIn();
+			var open = $scope.restaurant._open;
 			if ($scope.open != open) {
 				$scope.open = open;
 			}
@@ -613,7 +623,8 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		$scope.restaurant = data.restaurant;
 		order.restaurant = $scope.restaurant;
 		MainNavigationService.restaurant = $scope.restaurant;
-		$scope.open = $scope.restaurant.open();
+		$scope.restaurant.closesIn();
+		$scope.open = $scope.restaurant._open;
 		
 		order.init();
 		// Update some gift cards variables

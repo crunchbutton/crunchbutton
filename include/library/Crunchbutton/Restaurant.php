@@ -756,7 +756,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$close = new DateTime('+1 day '.$hour->time_close, new DateTimeZone($this->timezone));
 			}
 
-
 			if ($today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp()) {
 				return true;
 			}
@@ -1018,10 +1017,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['_closesIn']  = $this->closesIn();
 		$out['_minimumTime']  = 15; // Min minutes to show the hurry message
 		// $out['_openIn']   = $this->openIn();
-		$out['_closesIn']  = $this->closesIn();
 		
-		if( $out['_closesIn'] <= 1 ){
+		if( $out['_closesIn'] == 0 ){
 			$out['_open'] = false;
+			$out['_closesIn'] = false;
 		}
 
 		if( $out['_open'] ){
