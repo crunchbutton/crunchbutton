@@ -72,8 +72,12 @@
 					<div ng-repeat="item in order.cart.items">
 
 						<div class="cart-item cart-item-dish">
-
-							<div class="cart-button cart-button-remove" ng-click="order.cart.remove(item.details.id);"><span></span></div>
+							<div class="hidden-desktop">
+								<div class="button-orange cart-button cart-button-remove" ng-click="order.cart.remove(item.details.id);"><span class="icon-remove"></span></div>
+							</div>
+							<div class="hidden-phone">
+								<div class="cart-button cart-button-remove" ng-click="order.cart.remove(item.details.id);"><span class="icon-remove-sign"></span></div>
+							</div>
 
 							<div class="cart-item-name">{{item.details.name}}
 								<span class="cart-item-description">{{item.details.description}}</span>
@@ -84,7 +88,7 @@
 						</div>
 
 						<!-- Customizable options -->
-						<div ng-show="item.details.customization.customizable && item.details.customization.expanded">
+						<div class="cart-customize-options" ng-show="item.details.customization.customizable && item.details.customization.expanded">
 							
 							<div ng-repeat="option in item.details.customization.options">
 
@@ -94,10 +98,10 @@
 
 										<!-- Customizable - checkbox -->
 										<div ng-switch-when="check">
-												<input type="checkbox" custom-checkbox ng-change="order.cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
-												<label ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</label>
-												<label ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</label>
-												<div class="divider"></div>
+											<input type="checkbox" custom-checkbox ng-change="order.cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
+											<a ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</a>
+											<a ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</a>
+											<div class="divider"></div>
 										</div>
 
 										<!-- Customizable - select -->
@@ -118,7 +122,7 @@
 
 			<div class="default-order-check" ng-show="order.info.totalItems && restaurant._open">
 				<input custom-checkbox type="checkbox" ng-model="order.form.make_default" id="default-order-check">
-				<label for="default-order-check">Save this order for next time</label>
+				<a ng-click="order.form.make_default = !order.form.make_default;">Save this order for next time</a>
 				<div class="divider"></div>
 			</div>
 
@@ -336,7 +340,7 @@
 	
 	</form>
 
-	<div ng-show="restaurant._open && order.cart.hasItems()" class="button-bottom-wrapper button-bottom-inline"><button class="button-bottom" ng-click="order.submit();"><div>Get Food</div></button></div>
+	<div ng-show="restaurant._open && order.cart.hasItems()" class="button-bottom-wrapper button-bottom-inline"><button class="button-bottom button-orange" ng-click="order.submit();"><div>Get Food</div></button></div>
 
 	<!-- stored user info -->
 	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open && !order.showForm && order.cart.hasItems()">
