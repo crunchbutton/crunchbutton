@@ -246,7 +246,7 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
 /**
  * Change location
  */
-NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, RestaurantsService, LocationService, AccountService, PositionsService ) {
+NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService ) {
 
 	var account = AccountService;
 	var restaurants = RestaurantsService;
@@ -311,6 +311,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 		} else {
 			$('.location-address').val('').attr('placeholder','Please enter an address or zip');	
 		}
+
+		$rootScope.locationPlaceholder = $('.location-address').attr('placeholder');
+		$rootScope.warningPlaceholder = true;
 		$scope.warningPlaceholder = true;
 		// the user might be typing his login/pass - so blur it
 		if( !App.dialog.isOpen() ){
@@ -318,6 +321,20 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, Restaurant
 		}
 	});
 	
+
+	if( $rootScope.locationPlaceholder ){
+		$('.location-address').val('').attr( 'placeholder', $rootScope.locationPlaceholder );
+	}
+
+	if( $rootScope.locationPlaceholder ){
+		$scope.warningPlaceholder = $rootScope.warningPlaceholder;
+	}
+
+	$scope.$on( '$destroy', function(){
+		$rootScope.locationPlaceholder = false;
+		$rootScope.warningPlaceholder = false;
+	});
+
 	var proceed = function() {
 		$location.path( '/' + restaurants.permalink );
 		$scope.location.form.address = '';
