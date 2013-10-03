@@ -47,7 +47,7 @@ var Restaurant = function(id) {
 	}
 
 
-	this.closesIn = function() {
+	this.closesIn = function( trueIfItIsOpen ) {
 
 		// this overrides everything
 		if(this.open_for_business === "0") {
@@ -61,7 +61,6 @@ var Restaurant = function(id) {
 			return false;
 		}
 
-		var isOpen =  false;
 		var today = Date.today().toString('ddd').toLowerCase();
 
 		if (this._hours == undefined ||  this._hours[today] == undefined) {
@@ -103,16 +102,16 @@ var Restaurant = function(id) {
 					}
 
 					var now_utc = this._utcNow();
-					if( openTime_utc &&  closeTime_utc ){
-						if (now_utc.between(openTime_utc, closeTime_utc)) {
-							isOpen = true;
+
+					if( openTime_utc && closeTime_utc ){
+						if( now_utc.between( openTime_utc, closeTime_utc ) ) {
+							this._open = true;
 							break;
 						}
 					}
 				} catch(e){};
 			}
 		}
-
 
 		var todayHours = this._hours[today];
 
@@ -147,19 +146,15 @@ var Restaurant = function(id) {
 				}
 			}
 
-			if( openTime_utc &&  closeTime_utc ){
-				if (now_utc.between(openTime_utc, closeTime_utc)) {
-					isOpen = true;
-					break;
+			if( openTime_utc && closeTime_utc ){
+				if ( now_utc.between( openTime_utc, closeTime_utc ) ) {
+					this._open = true;
 				}
 			}
 		}
 
-		if( !isOpen ){
-			this._open = false;
-			return false;
-		} else {
-			this._open = true;
+		if( trueIfItIsOpen ){
+			return true;
 		}
 
 		var today = Date.today().toString('ddd').toLowerCase();
@@ -228,7 +223,7 @@ var Restaurant = function(id) {
 			var minutes = (closeTime.getTime() - utcNow.getTime()) /1000/60;
 			minutes = Math.floor(minutes);
 			this._closesIn = minutes;
-			if( this._closesIn <= 0 ){
+			if( this._closesIn == 0 ){
 				this._open = false;
 			}
 		}
@@ -291,8 +286,7 @@ var Restaurant = function(id) {
 	 *       offset = -(today.getTimezoneOffset()); // @todo: ensure this works on positive tz
 	 */
 	self.open = function() {
-		this.closesIn();
-		return this._open;
+		return this.closesIn( true );
 	}
 
 	self.deliveryHere = function( distance ){
