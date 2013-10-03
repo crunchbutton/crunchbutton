@@ -58,11 +58,11 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 
 		if ($success) {
 			// if the transaction was a success, create the token
-			$params['card'] = substr($params['number'], -4);
+			//$params['card'] = substr($params['number'], -4);
 		}
 		
 		// if there was no number, and there was a user with a stored card, use the users stored card
-		if (!$params['number'] && $params['user'] && $this->customer()->id) {
+		if (!$params['card'] && $params['user'] && $this->customer()->id) {
 
 			$reason = true;
 			try {
