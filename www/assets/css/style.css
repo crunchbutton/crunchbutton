@@ -85,21 +85,19 @@ html[xmlns] .clearfix {
 }
 
 /* CUSTOM CHECKBOX */
-.custom-checkbox{
-	background:url(../images/checkbox-unchecked.png);
+.custom-checkbox {
+	color: #d7dcde;
 	display: block;
 	height: 20px;
 	width: 20px;
-	background-size:100%;
 	float: left;
 	margin: 0 5px 0 0;
 }
 .custom-checkbox, .custom-checkbox+label, .custom-checkbox+label+label{
 	cursor: pointer;	
 }
-.custom-checkbox.checked{
-	background:url(../images/checkbox-checked.png);
-	background-size:100%;
+.custom-checkbox.checked {
+	color: #ec7063;
 }
 .custom-checkbox+label, .custom-checkbox+label+label{
 	padding-top: 4px;
@@ -1055,21 +1053,6 @@ h1.about-header {
 .cart-button span {
 	display: block;
 }
-
-@media(max-width:767px) {
-	.cart-button span {
-		margin: 3px 0 0 6px;
-		display: block;
-	}
-	.cart-button {
-		width:28px;
-		height:26px !important;
-		margin-top:-4px;
-		margin-left:-4px;
-		border-radius:2px;
-		color: #fff;
-	}
-}
 .button-orange {
 	display:block;
 	background:-moz-linear-gradient(#fb422e,#fb2418);
@@ -1111,6 +1094,21 @@ h1.about-header {
 	margin-top:25px;
 	height:45px;
 	text-transform:uppercase;
+}
+
+@media(max-width:767px) {
+	.cart-button span {
+		margin: 3px 0 0 6px;
+		display: block;
+	}
+	.cart-button {
+		width:28px;
+		height:26px !important;
+		margin-top:-4px;
+		margin-left:-4px;
+		border-radius:2px;
+		color: #fff;
+	}
 }
 
 
@@ -1397,10 +1395,10 @@ h1.about-header {
 	display:none;
 }
 .default-order-check {
-	font-size:12px;
 	margin-top:20px;
 }
 .default-order-check a {
+	font-size:12px;
 	margin-left: 5px;
 	cursor: pointer;
 }
@@ -3025,4 +3023,12 @@ h1.about-header {
 	.hidden-phone {
 		display: none !important;
 	}
+}
+
+.cart-customize-check.custom-checkbox {
+	font-size: 20px;
+}
+
+.default-order-check .custom-checkbox {
+	font-size: 18px;
 }
