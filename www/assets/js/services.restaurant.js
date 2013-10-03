@@ -1,7 +1,7 @@
 // Restaurant list service
 NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsService ) {
 
-	var service = { permalink : 'food-delivery', forceLoad : true };
+	var service = { permalink : 'food-delivery', forceLoad : true, forceGetStatus : false };
 	var restaurants = false;
 
 	service.reset = function () {
@@ -68,6 +68,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					}
 				}
 			}
+
 			// show short description
 			list[x]._short_description = (list[x].short_description || ('Top Order: ' + (list[x].top_name ? (list[x].top_name || list[x].top_name) : '')));
 		};
@@ -90,6 +91,8 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		if (restaurants === false || service.forceLoad) {
 			var url = App.service + 'restaurants?lat=' + service.position.pos().lat() + '&lon=' + service.position.pos().lon() + '&range=' + (service.position.range || 2 );
 
+			service.forceGetStatus = false;
+
 			$http.get(url, {
 				cache: false
 			}).success(function (data) {
@@ -111,7 +114,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					return list;
 				}
 			});
-
 			service.forceLoad = false;
 		} else {
 			if (success) {
