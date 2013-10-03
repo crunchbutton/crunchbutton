@@ -31,14 +31,15 @@
 				<div class="divider dots"></div>
 			</div>
 			
-
-			<div class="social-button facebook-button social-button-share clearfix" ng-click="facebook();">
-				<i class="icon-facebook"></i><span class="social-button-text">Share what you ordered</span>
-				<div class="divider"></div>
-			</div>
-			<div ng-show="order.new && referral.invite_url && referral.enabled">
-				Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
-				<br /><br />
+			<div ng-show="account.user.has_auth">
+				<div class="social-button facebook-button social-button-share clearfix" ng-click="facebook();">
+					<i class="icon-facebook"></i><span class="social-button-text">Share what you ordered</span>
+					<div class="divider"></div>
+				</div>
+				<div ng-show="order.new && referral.invite_url && referral.enabled">
+					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
+					<br /><br />
+				</div>
 			</div>
 			
 			<div class="divider dots"></div>
