@@ -246,7 +246,11 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
 /**
  * Change location
  */
+<<<<<<< HEAD
 NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
+=======
+NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService ) {
+>>>>>>> bbe739fd5ec4eb167e628ff53e04126b9735fa39
 	var account = AccountService;
 	var restaurants = RestaurantsService;
 
@@ -880,10 +884,13 @@ NGApp.controller( 'RecommendRestaurantCtrl', function ( $scope, $http, $rootScop
 		AccountService.forceDontReloadAfterAuth = true;
 		AccountModalService.signupOpen();
 	}
+<<<<<<< HEAD
 
 	$rootScope.$on('userCreated', function(e, data) {
 		RecommendRestaurantService.relateUser();
 	});
+=======
+>>>>>>> bbe739fd5ec4eb167e628ff53e04126b9735fa39
 });
 
 NGApp.controller( 'RestaurantClosedCtrl', function ( $scope, $rootScope ) {
