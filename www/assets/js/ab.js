@@ -20,6 +20,22 @@ App.AB = {
 				slogan: 'Push a button. Get Food.'
 			}
 		],
+		nothingInTheCardMobile: [
+			{
+				name: 'Begin by clicking on anything from our curated menu below!'
+			},
+			{
+				name: 'Choose food below!'
+			}
+		],
+		nothingInTheCardDesktop: [
+			{
+				name: 'Begin by clicking on anything from our curated menu on the left!'
+			},
+			{
+				name: 'Choose Food!'
+			}
+		],
 		restaurantPage: [
 			{
 				name: 'restaurant-page-noimage'
