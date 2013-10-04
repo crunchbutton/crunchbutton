@@ -594,9 +594,6 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 
 	$scope.AB = {
 		dollar: (App.config.ab && App.config.ab.dollarSign == 'show') ? '$' : '',
-		changeablePrice: function (dish) {
-			return (App.config.ab && App.config.ab.changeablePrice == 'show' && dish.changeable_price) ? '+' : ''
-		},
 		restaurantPage: (App.config.ab && App.config.ab.restaurantPage == 'restaurant-page-noimage') ? ' restaurant-pic-wrapper-hidden' : ''
 	};
 
