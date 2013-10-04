@@ -453,9 +453,9 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	$scope.order.info = order.info;
 	$scope.open = false;
 
-	$scope.nothingInTheCardDesktop = App.config.ab.nothingInTheCardDesktop;
-	$scope.nothingInTheCardMobile = App.config.ab.nothingInTheCardMobile;
-	
+	$scope.nothingInTheCartDesktop = App.AB.pluck('nothingInTheCartDesktop', App.config.ab.nothingInTheCartDesktop).line;
+	$scope.nothingInTheCartMobile = App.AB.pluck('nothingInTheCartMobile', App.config.ab.nothingInTheCartMobile).line;
+
 	$scope.order.creditCardChanged = function() {
 		order._cardInfoHasChanged = true;
 	};

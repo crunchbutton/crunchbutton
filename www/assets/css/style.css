@@ -1803,9 +1803,6 @@ h1.about-header {
 	.content {
 		width: 670px;
 	}
-	.order-begin .desktop {
-		display:none;
-	}
 	.home-tagline,.home-welcome {
 		text-align:center;
 	}
@@ -2680,9 +2677,6 @@ h1.about-header {
 	}
 	.order-begin-wrap {
 		width:310px;
-	}
-	.order-begin .mobile {
-		display:none;
 	}
 	.order-begin-wrap {
 		font-size:15px;

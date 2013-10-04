@@ -20,20 +20,25 @@ App.AB = {
 				slogan: 'Push a button. Get Food.'
 			}
 		],
-		nothingInTheCardMobile: [
+		nothingInTheCartMobile: [
 			{
-				name: 'Begin by clicking on anything from our curated menu below!'
+				name: 'empty-cart-mobile-begin',
+				line: 'Begin by tapping on anything from our curated menu below!'
 			},
 			{
-				name: 'Choose food below!'
+				name: 'empty-cart-mobile-food',
+				line: 'Choose food below!',
+				disabled: true
 			}
 		],
-		nothingInTheCardDesktop: [
+		nothingInTheCartDesktop: [
 			{
-				name: 'Begin by clicking on anything from our curated menu on the left!'
+				name: 'empty-cart-desktop-begin',
+				line: 'Begin by clicking on anything from our curated menu on the left!'
 			},
 			{
-				name: 'Choose Food!'
+				name: 'empty-cart-desktop-food',
+				line: 'Choose Food!'
 			}
 		],
 		restaurantPage: [
