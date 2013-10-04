@@ -2769,7 +2769,9 @@ h1.about-header {
 	}
 	.restaurant-closed{
 		margin-top: 15px;
-		width: 100%;
+		width: 98% !important;
+		margin-left: auto;
+		margin-right: auto;
 	}
 	.restaurant-closed-content{
 		display: table-cell;
