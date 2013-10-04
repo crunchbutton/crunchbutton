@@ -2092,6 +2092,9 @@ h1.about-header {
 	.button-bottom-show {
 		bottom:0 !important;
 	}
+	.button-bottom-show-notification-bar-on{
+		bottom: 20px !important;
+	}
 	.restaurant-closed-name {
 		display:none;
 	}

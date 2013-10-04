@@ -760,6 +760,11 @@ App.verifyConnection = {
 	}
 }
 
+App.setNotificationBarStatus = function( status ){
+	App.rootScope.notificationBarStatus = status;
+	App.rootScope.$safeApply();
+}
+
 // Phonegap events listeners
 App.phoneGapListener = {
 	init : function(){
