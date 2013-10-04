@@ -36,14 +36,6 @@ App.AB = {
 			{
 				name : 'hide'
 			}
-		],
-		changeablePrice: [
-			{
-				name : 'show'
-			},
-			{
-				name : 'hide'
-			}
 		]
 	},
 	init: function() {
