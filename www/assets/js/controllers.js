@@ -246,10 +246,10 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
 /**
  * Change location
  */
-NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService ) {
-
+NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
 	var account = AccountService;
 	var restaurants = RestaurantsService;
+
 
 	$scope.warningPlaceholder = false;
 
@@ -258,7 +258,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	$scope.isUser = account.user.has_auth;
 	$scope.notUser = !account.user.has_auth;
 	$scope.topCommunities = App.topCommunities;
-	$scope.recommend = {};
+	$scope.recommend = RecommendRestaurantService;
 
 	$scope.location = LocationService;
 
@@ -298,9 +298,12 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		if( isStreet && !entered.match(new RegExp( /\d{5}(?:[-\s]\d{4})?/ )) ){
 			$scope.$broadcast( 'locationNotServed',  true );
 		} else {
-			$scope.recommend.greetings = false;
 			$scope.locationError = true;
 		}
+	});
+
+	$rootScope.$on( 'NewLocationAdded', function(e, data) {
+		$scope.recommend.greetings = false;
 	});
 
 	$scope.$on( 'locationNotServed', function(e, data) {
@@ -333,6 +336,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	$scope.$on( '$destroy', function(){
 		$rootScope.locationPlaceholder = false;
 		$rootScope.warningPlaceholder = false;
+		AccountService.forceDontReloadAfterAuth = false;
 	});
 
 	var proceed = function() {
@@ -868,10 +872,18 @@ NGApp.controller( 'MainHeaderCtrl', function ( $scope, MainNavigationService, Or
 	});
 });
 
-NGApp.controller( 'RecommendRestaurantCtrl', function ( $scope, $http, RecommendRestaurantService, AccountService, AccountModalService ) {
+NGApp.controller( 'RecommendRestaurantCtrl', function ( $scope, $http, $rootScope, RecommendRestaurantService, AccountService, AccountModalService ) {
 	$scope.recommend = RecommendRestaurantService;
 	$scope.account = AccountService;
 	$scope.modal = AccountModalService;
+	$scope.signupOpen = function(){
+		AccountService.forceDontReloadAfterAuth = true;
+		AccountModalService.signupOpen();
+	}
+
+	$rootScope.$on('userCreated', function(e, data) {
+		RecommendRestaurantService.relateUser();
+	});
 });
 
 NGApp.controller( 'RestaurantClosedCtrl', function ( $scope, $rootScope ) {

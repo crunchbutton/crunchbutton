@@ -37,7 +37,7 @@ class Controller_api_Suggestion extends Crunchbutton_Controller_Rest {
 				
 					$suggesion = new Suggestion;
 
-					$suggesion->id_user = c::user()->name ? c::user()->id_user : null;
+					$suggesion->id_user = c::user()->id_user ? c::user()->id_user : null;
 
 					$suggesion->status = 'new';
 					$suggesion->type = 'restaurant';

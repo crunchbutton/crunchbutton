@@ -121,6 +121,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 					service.callback = false;
 				} else {
 					$.magnificPopup.close();
+					$rootScope.$broadcast('userCreated', service.user);
 					$rootScope.$broadcast('userAuth', service.user);
 				}
 			}		

@@ -39,7 +39,9 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService, 
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 					service.greetings = true;
-					service.addRecommendation( data.id_suggestion );
+					if( !service.account.user.id_user ){
+						service.addRecommendation( data.id_suggestion );	
+					}
 					service.form.restaurant = '';
 			}	);
 	}
@@ -52,7 +54,8 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService, 
 	}
 
 	service.relateUser = function(){
-		if( service.getRecommendations() ){
+		console.log('service.getRecommendations()',service.getRecommendations());
+		if( service.getRecommendations() && service.account.user.id_user ){
 			var url = App.service + 'suggestion/relateuser';
 			$.each( recommendations, function(index, value) {
 				var id_suggestion = value;
