@@ -247,9 +247,9 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
  * Change location
  */
 NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService ) {
-
 	var account = AccountService;
 	var restaurants = RestaurantsService;
+
 
 	$scope.warningPlaceholder = false;
 
@@ -333,6 +333,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	$scope.$on( '$destroy', function(){
 		$rootScope.locationPlaceholder = false;
 		$rootScope.warningPlaceholder = false;
+		AccountService.forceDontReloadAfterAuth = false;
 	});
 
 	var proceed = function() {
@@ -872,6 +873,10 @@ NGApp.controller( 'RecommendRestaurantCtrl', function ( $scope, $http, Recommend
 	$scope.recommend = RecommendRestaurantService;
 	$scope.account = AccountService;
 	$scope.modal = AccountModalService;
+	$scope.signupOpen = function(){
+		AccountService.forceDontReloadAfterAuth = true;
+		AccountModalService.signupOpen();
+	}
 });
 
 NGApp.controller( 'RestaurantClosedCtrl', function ( $scope, $rootScope ) {
