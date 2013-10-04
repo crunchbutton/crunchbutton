@@ -215,7 +215,10 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			}
 			// reload the actual controller
 			console.log('userAuth!');
-			$rootScope.reload();
+			if( !AccountService.forceDontReloadAfterAuth ){
+				$rootScope.reload();	
+			}
+			AccountService.forceDontReloadAfterAuth = false;
 		});
 	});
 
