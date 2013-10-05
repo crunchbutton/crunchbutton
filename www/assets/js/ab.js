@@ -60,10 +60,8 @@ App.AB = {
 		]
 	},
 	init: function() {
-		if (!App.config.ab) {
-			// we dont have ab variables. generate them
-			App.AB.create(true);
-		}
+		// we dont have ab variables. generate them
+		App.AB.create(false);
 		App.AB.load();
 	},
 	create: function(clear) {
