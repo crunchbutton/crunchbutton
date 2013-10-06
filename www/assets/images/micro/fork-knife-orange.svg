@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="126px" height="126px" viewBox="0 0 126 126" style="enable-background:new 0 0 126 126;" xml:space="preserve">
+<font horiz-adv-x="1792">
+<!-- Copyright: Copyright 2013 Adobe System Incorporated. All rights reserved. -->
+<font-face font-family="FontAwesome" units-per-em="1792" underline-position="-179" underline-thickness="90"/>
+<missing-glyph horiz-adv-x="896" d="M224,112l0,1312l448,0l0,-1312l-448,0M112,0l672,0l0,1536l-672,0l0,-1536z"/>
+<glyph unicode="&#xF0F5;" horiz-adv-x="1408" d="M640,1472C640,1507 611,1536 576,1536C541,1536 512,1507 512,1472l0,-416C512,1021 483,992 448,992C413,992 384,1021 384,1056l0,416C384,1507 355,1536 320,1536C285,1536 256,1507 256,1472l0,-416C256,1021 227,992 192,992C157,992 128,1021 128,1056l0,416C128,1507 99,1536 64,1536C29,1536 0,1507 0,1472l0,-640C0,751 52,678 128,651l0,-779C128,-198 186,-256 256,-256l128,0C454,-256 512,-198 512,-128l0,779C588,678 640,751 640,832M1408,1472C1408,1507 1379,1536 1344,1536l-256,0C912,1536 768,1392 768,1216l0,-800C768,399 783,384 800,384l224,0l0,-512C1024,-198 1082,-256 1152,-256l128,0C1350,-256 1408,-198 1408,-128z"/>
+<glyph unicode=" " horiz-adv-x="448"/>
+</font>
+
+	<circle style="fill:#F5844D;stroke:#FFFFFF;stroke-width:8;stroke-miterlimit:10;" cx="63" cy="63" r="59"/>
+<text transform="matrix(1.15 0 0 1 38.6665 84.3335)" style="fill:#FFFFFF; font-family:'FontAwesome'; font-size:52;"> </text>
+</svg>
