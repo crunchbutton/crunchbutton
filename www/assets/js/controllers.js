@@ -51,19 +51,6 @@ NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsServ
 	// just force the location to the food-delivery page. if we dont have a loc it sends us back to location anyway
 	$location.path( '/' + restaurants.permalink );
 	return;
-
-	/*
-	restaurants.list( 
-		// Success
-		function(){
-			$location.path( '/' + restaurants.permalink );
-		},
-		// Error
-		function(){
-			$location.path( '/location' );
-		} 
-	);
-	*/
 });
 
 

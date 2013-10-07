@@ -310,8 +310,6 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			App.scrollTop();
 		},1);
 		
-		clearInterval($rootScope.updateOpen);
-		
 		if (App.isPhoneGap && !App.splashHidden && navigator.splashscreen) {
 			App.splashHidden = true;
 			setTimeout(function() {

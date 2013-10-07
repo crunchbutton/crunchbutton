@@ -208,6 +208,8 @@
                             utils.dispatchEvent('animating');
                         }, 1);
                         
+                        clearInterval(cache.animatingInterval);
+                        
                         utils.events.addEvent(settings.element, utils.transitionCallback(), action.translate.easeCallback);
                         action.translate.x(n);
                     }
