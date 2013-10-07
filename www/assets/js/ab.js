@@ -69,6 +69,11 @@ App.AB = {
 			App.config.ab = {};
 		}
 		
+		// Creates the ab object case it don't exist
+		if( App.config && !App.config.ab ){
+			App.config.ab = {};
+		}
+
 		// loop through each option type
 		for (var key in App.AB.options) {
 			if (App.config.ab[key]) {
@@ -87,10 +92,7 @@ App.AB = {
 			var opt = opts[Math.floor(Math.random()*opts.length)];
 			App.config.ab[key] = opt.name
 		}
-
 		App.AB.save();
-		console.log(App.config.ab);
-		
 	},
 	load: function() {
 		App.slogan = App.AB.pluck('slogan', App.config.ab.slogan);
