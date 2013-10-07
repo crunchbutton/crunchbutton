@@ -26,7 +26,20 @@ App.capitalize = function(word) {
 };
 
 App.request = function(url, complete, error) {
-	$.getJSON(url).done(complete).fail(error);
+	if( angular ){
+		var http = angular.element( 'html' ).injector().get( '$http' );
+		http( { url: url, method: 'GET' } ).success( function( data ) { 
+			if( complete ){
+				complete( data );	
+			}
+		}	).error(function( data ) {
+			if( error ){
+				error( data )
+			}
+		} );
+	} else {
+		$.getJSON(url).done(complete).fail(error);
+	}
 };
 
 // @todo replace with lazyorm.js
