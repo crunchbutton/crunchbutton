@@ -26,6 +26,9 @@ body {
 	line-height: 1;
 	font-size: 10px;
 	color: #312f38;
+	-webkit-transition: font-size 0.2s;
+	background: #fffef8;
+	letter-spacing: .5px;
 }
 body, input, textarea {
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
@@ -87,7 +90,7 @@ html {
 }
 
 .content {
-	max-width: 600px;
+	max-width: 767px;
 	margin: 0 auto;
 }
 
@@ -117,17 +120,6 @@ html {
 	margin: 31px 0 0 25px;
 	-webkit-transition: all 0.2s;
 }
-
-@media(max-width:500px) {
-	.logo {
-		width: 190px;
-		height: 37px;
-	}
-	.menu {
-		margin: 25px 0 0 10px;
-	}
-}
-
 
 /*
 .animated {
@@ -206,30 +198,59 @@ html {
 .pushabutton {
 	background: url(/assets/images/micro/push-a-button.svg) no-repeat;
 	background-position: center center;
-	width: 170px;
-	height: 170px;
+	width: 17em;
+	height: 17em;
 	background-size: 100%;
 	margin: 0 auto;
 	padding-top: 50px;
 }
 .divider-circle {
 	background: url(/assets/images/micro/fork-knife-orange.svg) center center no-repeat;
-	width: 65px;
-	height: 65px;
+	width: 6.5em;
+	height: 6.5em;
 	background-size: 100%;
-	margin-top: -32px;
-	margin-left:-32px;
+	margin-top: -3.2em;
+	margin-left:-3.2em;
     left: 50%;
     position: absolute;
+}
+h4 {
+	font-weight: bold;
+	font-size: 1.3em;
+	line-height: 1.9em;
+}
+p {
+	font-size: 1.2em;
+	line-height: 1.55em;
+}
+.home-join-us {
+	background: url(/assets/images/micro/home-join-us.svg) no-repeat;
+	width: 25em;
+	height: 20em;
+	background-size: 100%;
+	margin: 0 auto;
+	margin-top: 50px;
 }
 
 
 /* BUTTONS */
 .button {
 	border: 0;
-	padding: .9em 0 .9em 0;
-	border-radius: 6px;
+	padding: .6em 0 .6em 0;
+	border-radius: 5px;
 	cursor: pointer;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 1.3em;
+	width: 100%;
+	letter-spacing:-.8px;
+	
+
+	-webkit-transition:all linear 0.08s;
+	-moz-transition:all linear 0.08s;
+	-ms-transition:all linear 0.08s;
+	-o-transition:all linear 0.08s;
+	transition:all linear 0.08s;
 }
 .button.pushable.orange {
 	box-shadow: 0 3px 0 #961500;
@@ -237,12 +258,6 @@ html {
 .button.pushable {
 	margin-top: 0;
 	margin-bottom: 3px;
-
-	-webkit-transition:all linear 0.08s;
-	-moz-transition:all linear 0.08s;
-	-ms-transition:all linear 0.08s;
-	-o-transition:all linear 0.08s;
-	transition:all linear 0.08s;
 }
 .button.pushable:active {
 	margin-top: 3px;
@@ -251,11 +266,43 @@ html {
 }
 .button.orange {
 	background: #df4a32;
-	color: #fff;
+}
+.button.lightorange {
+	background: #fc9a6b;
+	font-weight: 900;
+}
+.button.green {
+	background: #00bd9e;
+	font-weight: 900;
+}
+.button.lightorange:active {
+	background: #e78d62;
+}
+.button.green:active {
+	background: #00a58a;
 }
 .find-restaurants {
 	font-size: 19px;
-	text-transform: uppercase;
-	width: 100%;
 	max-width: 300px;
+	padding: .9em 0 .9em 0;
+	border-radius: 6px;
+	letter-spacing: 0;
+}
+
+
+@media(min-width:500px) {
+	body {
+		font-size: 12px;
+	}
+}
+
+
+@media(max-width:500px) {
+	.logo {
+		width: 190px;
+		height: 37px;
+	}
+	.menu {
+		margin: 25px 0 0 10px;
+	}
 }
