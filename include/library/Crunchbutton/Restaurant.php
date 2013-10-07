@@ -1012,13 +1012,22 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 */
 	public function exports($ignore = [], $where = []) {
 
-		$out              = $this->properties();
-		$out['_open']     = $this->open();
+		// method ByRand doesnt need all the properties
+		if( $out['type'] && $out['type'] == 'byrange' ){
+			$_ignore = [ 'type', 'credit','address','max_items','tax','active','phone','fee_restaurant','fee_customer','delivery_min','delivery_min_amt','notes_todo','pickup_estimated_time','delivery_fee','delivery_estimated_time','notes_owner','confirmation','zip','customer_receipt','cash','giftcard','email','notes','balanced_id','balanced_bank','fee_on_subtotal','payment_method','id_restaurant_pay_another_restaurant','charge_credit_fee','waive_fee_first_month','pay_promotions','pay_apology_credits','check_address','contact_name','summary_fax','summary_email','summary_frequency','legal_name_payment','tax_id','community','_preset','id_community', '_hoursFormat', 'loc_long', 'lat_lat', 'id_community' ];
+			foreach ( $_ignore as $property ) {
+				$ignore[ $property ] = true;
+			}
+		}
+
+		$out               = $this->properties();
+		$out['_open']      = $this->open();
 		$out['_closesIn']  = $this->closesIn();
 		$out['_weight']    = $this->weight();
 		$out['_minimumTime']  = 15; // Min minutes to show the hurry message
 		// $out['_openIn']   = $this->openIn();
-		
+
+
 		if( $out['_closesIn'] == 0 ){
 			$out['_open'] = false;
 			$out['_closesIn'] = false;
@@ -1078,14 +1087,25 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 
-		foreach ($this->hours(true) as $hours) {
-			$out['_hoursFormat'][$hours->day][] = [$hours->time_open, $hours->time_close];
+		if (!$ignore['_hoursFormat']) {
+			foreach ($this->hours(true) as $hours) {
+				$out['_hoursFormat'][$hours->day][] = [$hours->time_open, $hours->time_close];
+			}
 		}
+
 		foreach ($this->hours() as $hours) {
 			$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 		}
-		if ($this->preset()->count()) {
-			$out['_preset'] = $this->preset()->get(0)->exports();
+		
+		if (!$ignore['_preset']) {
+			if ($this->preset()->count()) {
+				$out['_preset'] = $this->preset()->get(0)->exports();
+			}
+		}
+
+		// Remove ignored methods
+		foreach ( $ignore as $property => $val ) {
+			unset( $out[ $property ] );
 		}
 
 		$out['id_community'] = $this->community()->id_community;
@@ -1218,6 +1238,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$query = '
 			SELECT
 				count(*) as _weight,
+				"byrange" type,
 				((ACOS(SIN('.$params['lat'].' * PI() / 180) * SIN(loc_lat * PI() / 180) + COS('.$params['lat'].' * PI() / 180) * COS(loc_lat * PI() / 180) * COS(('.$params['lon'].' - loc_long) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`,
 				restaurant.*
 			FROM `restaurant`
