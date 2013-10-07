@@ -488,6 +488,9 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	$scope.order.subtotal = function(){
 		return order.subtotal();
 	}
+	$scope.order.total = function(){
+		return order.total();
+	}
 	$scope.order.submit = function(){
 		return order.submit();
 	}
@@ -607,6 +610,7 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	// Event will be called when the credit changes
 	$scope.$on( 'creditChanged', function(e, data) {
 		$scope.credit.value = credit.value;
+		$scope.credit.number = parseFloat( credit.value );
 		$scope.credit.redeemed = credit.redeemed;
 		$scope.order.updateTotal();
 		if( parseFloat( $scope.credit.value ) > 0 ){

@@ -320,7 +320,10 @@
 				<span ng-show="order.info.extraCharges">( + {{order.info.extraCharges}} )</span>
 				<strong class="cart-gift" ng-show="credit.hasValue && order.form.pay_type == 'card' ">
 					<span>
-						&nbsp;(-{{AB.dollar}}{{credit.value}} credit 
+						&nbsp;(-{{AB.dollar}}
+						<span ng-show="order.total() <= credit.number">{{order.total()}}</span>
+						<span ng-show="order.total() > credit.number">{{credit.value}}</span>
+						&nbsp;credit 
 
 						<span ng-show="order.info.creditLeft != ''" class="gift-left">
 							- You'll still have {{AB.dollar}}{{order.info.creditLeft}} gift card left
@@ -356,8 +359,10 @@
 			<span ng-show="order.info.extraCharges">( + {{order.info.extraCharges}} )</span>
 			<strong class="cart-gift" ng-show="credit.hasValue && order.form.pay_type == 'card' ">
 					<span>
-						&nbsp;(-{{AB.dollar}}{{credit.value}} credit 
-
+						&nbsp;(-{{AB.dollar}}
+						<span ng-show="order.total() <= credit.number">{{order.total()}}</span>
+						<span ng-show="order.total() > credit.number">{{credit.value}}</span>
+						&nbsp;credit 
 						<span ng-show="order.info.creditLeft != ''" class="gift-left">
 							- You'll still have {{AB.dollar}}{{order.info.creditLeft}} gift card left
 						</span> )
