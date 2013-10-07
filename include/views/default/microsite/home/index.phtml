@@ -1,5 +1,17 @@
 <div class="home-top">
-	<div class="menu"></div>
+	<div id="dropdown-menu" class="dropdown dropdown-tip">
+		<ul class="dropdown-menu">
+			<li><a href="/restaurants">Restaurants</a></li>
+			<li><a href="/orders">Previous Orders</a></li>
+			<li><a href="/location">Change Location</a></li>
+			<li class="dropdown-divider"></li>
+			<li><a href="/help">FAQ</a></li>
+			<li><a href="/logout">Log Out</a></li>
+	    </ul>
+	</div>
+
+
+	<div class="menu" data-dropdown="#dropdown-menu"></div>
 	<div class="logo"></div>
 	<div class="pushabutton"></div>
 	<div class="home-inputs">
@@ -44,6 +56,12 @@
 	<h4>We’re expanding!</h4>
 	<p>We may not be everywhere yet, but the communities we are in love us! Take a look at some of our most popular locations.</p>
 	<br />
+	<div class="popular-locations">
+		<div class="map map-new-haven"></div>
+		<div class="map map-dc"></div>
+		<div class="map map-providence"></div>
+		<div class="map map-venice"></div>
+	</div>
 </div>
 
 <div class="home-white content-padding">
