@@ -22,8 +22,10 @@ NGApp.directive( 'restaurantIsClosed', function () {
 
 NGApp.directive( 'preLoadImage', function() {
 		return function( scope, element, attrs ) {
-			var image = new Image();
-			image.src = attrs.preLoad;
+			if( attrs.preLoad ){
+				var image = new Image();
+				image.src = attrs.preLoad;
+			}
 		};
 } );
 

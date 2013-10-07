@@ -553,11 +553,8 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 				$.totalStorage( 'userEntered', userEntered );
 			}
 		}, true);
-
 		GiftCardService.notes_field.lastValidation = false;
-
 		$scope.checkGiftCard();
-
 	});
 
 	// Alias to CartService 'public' methods
@@ -626,7 +623,6 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	var restaurantService = RestaurantService;
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
-
 		var community = data.community;
 		$scope.restaurant = data.restaurant;
 		order.restaurant = $scope.restaurant;
@@ -640,7 +636,9 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
 		
 		// Load the credit info
-		credit.getCredit( $scope.restaurant.id_restaurant );
+		if( OrderService.account.user && OrderService.account.user.id_user ){
+			credit.getCredit( $scope.restaurant.id_restaurant );	
+		}
 		
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
