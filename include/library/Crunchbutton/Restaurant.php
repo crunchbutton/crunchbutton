@@ -1015,6 +1015,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out              = $this->properties();
 		$out['_open']     = $this->open();
 		$out['_closesIn']  = $this->closesIn();
+		$out['_weight']    = $this->weight();
 		$out['_minimumTime']  = 15; // Min minutes to show the hurry message
 		// $out['_openIn']   = $this->openIn();
 		
