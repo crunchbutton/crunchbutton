@@ -49,12 +49,12 @@
 				<div ng-show="!order.cart.hasItems()" class="order-begin-wrap">
 					<div class="order-begin">
 						<div class="icon">
-							<i class="icon-arrow-left hidden-phone"></i> 	
-							<i class="icon-arrow-down hidden-desktop"></i> 
+							<i class="icon-arrow-left hidden-lt-1023"></i>
+							<i class="icon-arrow-down hidden-gt-1024"></i> 
 						</div>
 						<div class="text">
-							<span class="hidden-phone">{{nothingInTheCartDesktop}}</span>
-							<span class="hidden-desktop">{{nothingInTheCartMobile}}</span>
+							<span class="hidden-lt-1023">{{nothingInTheCartDesktop}}</span>
+							<span class="hidden-gt-1024">{{nothingInTheCartMobile}}</span>
 						</div>
 					</div>
 					<div class="divider"></div>

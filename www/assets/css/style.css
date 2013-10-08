@@ -3024,11 +3024,25 @@ h1.about-header {
 		display: none !important;
 	}
 }
+
 @media(max-width:767px) {
 	.hidden-phone {
 		display: none !important;
 	}
 }
+
+@media(min-width:1023px) {
+	.hidden-gt-1024 {
+		display: none !important;
+	}
+}
+
+@media(max-width:1024px) {
+	.hidden-lt-1023 {
+		display: none !important;
+	}
+}
+
 
 .cart-customize-check.custom-checkbox {
 	font-size: 20px;
