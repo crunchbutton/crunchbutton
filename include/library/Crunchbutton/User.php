@@ -153,6 +153,10 @@ class Crunchbutton_User extends Cana_Table {
 		$out['ip'] = $_SERVER['REMOTE_ADDR'];
 		$out['email'] = $this->email ? $this->email : $this->email();
 		
+
+		if (c::env() == 'beta' || c::env() == 'local') {
+			$out['debug'] = true;
+		}
 		
 		unset($out['balanced_id']);
 		unset($out['stripe_id']);
