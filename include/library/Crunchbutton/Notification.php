@@ -10,7 +10,7 @@ class Crunchbutton_Notification extends Cana_Table
 
 	public function send(Crunchbutton_Order $order) {
 
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		if ($_SESSION['admin'] && c::admin()->testphone) {
 			c::config()->twilio->testnumber = c::admin()->testphone;
 		}
@@ -157,7 +157,7 @@ class Crunchbutton_Notification extends Cana_Table
 		$date = $order->date();
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		
 		$message = 'FAX Error: O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ').';
 		$message .= "\n";

@@ -15,7 +15,7 @@ class Crunchbutton_Support_Note extends Cana_Table {
 	}
 
 	public function notify_by_sms() {
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		$twilio = new Twilio(
 				c::config()->twilio->{$env}->sid, 
 				c::config()->twilio->{$env}->token

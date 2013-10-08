@@ -6,7 +6,7 @@ class Crunchbutton_Charge_Stripe extends Crunchbutton_Charge {
 	}
 	
 	public function charge($params = []) {
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		Stripe::setApiKey(c::config()->stripe->{$env}->secret);
 		$success = false;
 		$reason = false;

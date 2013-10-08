@@ -146,7 +146,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						else {
 							$phone = $email;
 
-							$env = c::env() == 'live' ? 'live' : 'dev';
+							$env = c::getEnv();
 
 							$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
