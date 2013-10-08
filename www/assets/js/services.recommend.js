@@ -54,7 +54,6 @@ NGApp.factory( 'RecommendRestaurantService', function( $http, PositionsService, 
 	}
 
 	service.relateUser = function(){
-		console.log('service.getRecommendations()',service.getRecommendations());
 		if( service.getRecommendations() && service.account.user.id_user ){
 			var url = App.service + 'suggestion/relateuser';
 			$.each( recommendations, function(index, value) {
