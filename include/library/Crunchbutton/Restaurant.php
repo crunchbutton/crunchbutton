@@ -1263,6 +1263,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$sum += $restaurant->_weight;
 		}
 		foreach ($restaurants as $restaurant) {
+			$restaurant->_weight_old = $restaurant->_weight;
 			$restaurant->_weight = (($restaurant->_weight / $sum) * 100) + $restaurant->weight_adj;
 		}
 

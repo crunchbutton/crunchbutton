@@ -1,0 +1,214 @@
+<?
+	$this->title = 'Restaurants';
+	$this->titleicon = 'food';
+	$this->titleLink = '/restaurants';
+	
+	$this->title2 = 'Weight Adjustment';
+	$this->title2icon = 'bar-chart';
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span12"	>
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Enter address to see restaurants within radius and adjust weight:</span></div>
+				<div class="box-content padded">
+					<div class="row-fluid">
+						<div class="span12">
+							<div class="span8">
+								<input type="text" name="address" value="yale" class="address span12">	
+							</div>
+							<div class="span4">
+								<button type="button" id="search-restaurants" class="search-restaurants btn btn-green">Let's Adjust Weight!</button>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="note large">
+								Important: at live the sort criteria are: (1) open; (2) delivery; (3) weight.
+							</div>
+						</div>
+					</div>
+				
+					<!-- address-loader spin -->
+					<div class="row-fluid address-loader">
+						<div class="box-content">
+							<center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center>
+						</div>
+					</div>
+
+					<!-- address error message -->
+					<div class="row-fluid address-error">
+						<div class="alert alert-error">
+							<strong>Oops!</strong> Address not found! Please try it again!
+						</div>
+					</div>
+				</div>
+
+			</div>	
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid padded address-found" >
+	<div class="row-fluid">
+		<div class="span12"	>
+			<div class="box">
+				<div class="box-header">
+					<span class="title full-address"></span>
+				</div>
+
+				<div class="box-content">
+					
+					<div class="row-fluid">
+						
+						<div class="span12 padded">
+							<div class="row-fluid">
+								<div class="span1"><strong>Latitude:</strong></div>
+								<div class="span2 latitude"></div>
+								<div class="span1"><strong>Longitude:</strong></div>
+								<div class="span2 longitude"></div>
+								<div class="span1"><strong>Range:</strong></div>
+								<div class="span2 range">2 miles</div>
+							</div>
+						</div>
+
+					</div>
+
+					<!-- restaurants-loader spin -->
+					<div class="row-fluid restaurants-loader">
+						<div class="box-content">
+							<center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center>
+						</div>
+					</div>
+
+					<div class="row-fluid restaurants-result">
+						
+					</div>
+
+				</div>
+			</div>	
+		</div>
+	</div>
+</div>
+
+<style type="text/css">
+	.address-error, .address-loader, .address-found, .restaurants-loader, .restaurants-result{
+		display: none;
+	}
+	.restaurants-result{
+		border-top:1px solid #CCC;
+	}
+</style>
+
+<script type="text/javascript" src="/assets/js/location.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+$(function() {
+
+	$(document).on('click', '.search-restaurants', function() {
+		searchAddress();
+	} );
+
+});
+
+var _location = {};
+
+function searchAddress(){
+
+	resetDivs();
+
+	var address = $.trim( $( '.address' ).val() );
+	if( address == '' ){
+		alert( 'Please enter the address!' );
+		$( '.address' ).focus();
+		return;
+	}
+	$( '.address-loader' ).show();
+	var params = { address: address };
+	var geocoder = new google.maps.Geocoder();
+	geocoder.geocode( params, function ( results, status ) {
+		if (status == google.maps.GeocoderStatus.OK) {
+			_location = new Location( { results: results, lat: results[0].geometry.location.lat(), lon: results[0].geometry.location.lng() } );
+			addressFound();
+		} else {
+			$( '.address-loader' ).hide();
+			$( '.address-error' ).show();
+			$( '.restaurants-result' ).html( '' );
+		}
+	});
+}
+
+function searchRestaurants(){
+
+	$( '.restaurants-result' ).html( '' );
+	$( '.restaurants-loader' ).show();
+
+	var url = '/restaurants/weight/restaurants?lat=' + _location.lat() + '&lon=' + _location.lon() + '&range=2';
+	$.ajax({
+		type: 'GET',
+		url: url,
+		success: function( data ) {
+			$( '.restaurants-result' ).show();
+			$( '.restaurants-result' ).html( data );
+			$( '.restaurants-loader' ).hide();
+		},
+		error: function( ){
+			alert( 'Oops, something bad happened!' );
+			$( '.restaurants-loader' ).hide();
+		}
+	});
+}
+
+function saveWeight(){
+	var url = '';
+	var total = $( '.weight_adj' ).size();
+	
+	$( '.weight_adj' ).each( function(){
+		
+		var weight = $( this );
+		var  id = weight.attr( 'id' );
+		var data = { weight_adj : weight.val() };
+
+		var url = App.service + 'restaurant/' + id + '/weight-adj';
+		$.ajax({
+			type: 'POST',
+			data: data,
+			url: url,
+			success: function( data ) {
+				total--;
+				if( total == 0 ){
+					searchRestaurants();
+				}
+			},
+			error: function( ){
+				alert( 'Oops, something bad happened!' );
+			}
+		});		
+	} );
+}
+
+function addressFound(){
+	$( '.address-loader' ).hide();
+	
+	$( '.address-found' ).show();
+
+	$( '.full-address' ).html( '<i class="icon-building"></i> ' + _location.address() );
+	$( '.latitude' ).html( _location.lat() );
+	$( '.longitude' ).html( _location.lon() );
+
+	searchRestaurants();
+
+}
+
+function resetDivs(){
+	_location = {};
+	$( '.address-loader' ).hide();
+	$( '.address-loader' ).hide();
+	$( '.address-error' ).hide();
+	$( '.restaurants-result' ).hide();
+	$( '.restaurants-result' ).html( '' );
+}
+
+
+</script>

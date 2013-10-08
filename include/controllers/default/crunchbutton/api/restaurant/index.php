@@ -254,6 +254,13 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 						case 'dishes':
 							$this->_saveDishes($r);
 							break;
+						
+						case  'weight-adj':
+							$weight_adj = $this->request()['weight_adj'];
+							$r->weight_adj = $weight_adj;
+							$r->save();
+							echo json_encode( [ 'success' => 'dish saved' ] );
+						break;
 
 						default:
 							$this->_saveRestaurant($r);

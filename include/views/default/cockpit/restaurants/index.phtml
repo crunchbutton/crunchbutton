@@ -18,7 +18,12 @@
 				</select>
 				<div class="divider"></div>
 				<br><br>
-				<button type="submit" class="btn btn-blue new-restaurant">Create New</button>
+				<button type="submit" class="btn btn-blue new-restaurant">Create New</button> 
+				<?php if (c::admin()->permission()->check(['global'])) { ?>
+				&nbsp;&nbsp;
+				<a href="/restaurants/weight/" class="btn btn-green">Weight adjustment</a>
+				<?php } ?>
+				
 			</div>
 		</div>
 	</div>
