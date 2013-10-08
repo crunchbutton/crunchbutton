@@ -36,6 +36,7 @@ class Crunchbutton_App extends Cana_App {
 			case 'cockpit._DOMAIN_':
 				$env = 'live';
 				break;
+			case 'wenzel.beta.crunchr.co':
 			case 'beta.crunchr.co':
 			case 'beta.cockpit.crunchr.co':
 			case 'beta.cockpit._DOMAIN_':
@@ -78,6 +79,7 @@ class Crunchbutton_App extends Cana_App {
 			case 'dev.spicywithdelivery.com':
 			case 'beta.cockpit.crunchr.co':
 			case 'beta.cockpit._DOMAIN_':
+			case 'wenzel.beta.crunchr.co':
 				$params['env'] = 'beta';
 				break;
 

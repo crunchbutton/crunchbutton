@@ -25,6 +25,7 @@ class Controller_api_config extends Crunchbutton_Controller_Rest {
 						$config['restaurants'][] = $restaurant->exports();
 					}
 				}
+
 				echo json_encode($config);
 				break;
 		}
