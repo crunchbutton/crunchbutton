@@ -34,7 +34,7 @@ class Crunchbutton_Hipchat_Notification extends Cana_Model {
 
 	public static function sendNotification($msg) {
 		$msg = urlencode(str_replace('\n', ' ', $msg));
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		$msg = "[env:$env]+" . $msg;
 		$url = self::$api_url.
 			'?auth_token='.self::$auth_token.

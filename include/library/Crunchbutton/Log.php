@@ -12,7 +12,7 @@ class Crunchbutton_Log extends Cana_Table {
 		if ($log->level == 'critical') {
 			// send notifications
 			
-			$env = c::env() == 'live' ? 'live' : 'dev';
+			$env = c::getEnv();
 			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 			
 			foreach (c::config()->text as $supportName => $supportPhone) {

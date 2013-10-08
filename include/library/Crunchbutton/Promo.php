@@ -254,7 +254,7 @@ class Crunchbutton_Promo extends Cana_Table
 
 			if( $this->notify_phone ){
 		
-				$env = c::env() == 'live' ? 'live' : 'dev';
+				$env = c::getEnv();
 				
 				$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 				
@@ -316,7 +316,7 @@ class Crunchbutton_Promo extends Cana_Table
 			'type' => 'promo_email'
 		]);
 
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 
 		if( $env == 'live' ){
 			$serverUrl = '_DOMAIN_';
@@ -366,7 +366,7 @@ class Crunchbutton_Promo extends Cana_Table
 				'type' => 'promo_sms'
 			]);
 
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$phone = $gift->phone;
@@ -374,8 +374,6 @@ class Crunchbutton_Promo extends Cana_Table
 		if( !$phone ){
 			return false;
 		}
-
-		$env = c::env() == 'live' ? 'live' : 'dev';
 
 		if( $env == 'live' ){
 			$serverUrl = '_DOMAIN_';

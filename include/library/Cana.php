@@ -154,7 +154,7 @@ class Cana extends Cana_Model {
 			$sleep = ' -s='.$ms;
 		}
 
-		$env = ' -e=' . ( c::env() == 'live' ? 'live' : c::env() );
+		$env = ' -e=' . ( c::getEnv(false) );
 
 		$cmd = c::config()->dirs->root.'cli/timeout.php'.$sleep.' -c='.str_replace("'",'"',escapeshellarg($encoded)) . $env;
 
