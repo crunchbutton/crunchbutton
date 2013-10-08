@@ -3,7 +3,7 @@
 /* ghetto verion */
 class Crunchbutton_Phaxio {
 	public function __construct($params = []) {
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		$cmd = 'curl https://api.phaxio.com/v1/send '
 			.'-F "to='.$params['to'].'" '
 			.'-F "filename=@'.$params['file'].'" ';
@@ -40,7 +40,7 @@ class Crunchbutton_Phaxio {
 	}
 
 	public function fax_html($fax_number, $html_string) {
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		$html_string = str_replace('"','\"',$html_string);
 		$html_string = str_replace('$','\$',$html_string);
 		$cmd = 'curl '

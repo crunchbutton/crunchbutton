@@ -18,7 +18,7 @@ class Crunchbutton_Suggestion extends Cana_Table {
 	}
 	
 	public function notify() {
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		$phones = c::config()->suggestion->{$env}->phone;
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 

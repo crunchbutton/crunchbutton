@@ -30,7 +30,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			}
 
 			// Issue #1250 - make Max CB a phone call in addition to a text
-			$env = c::env() == 'live' ? 'live' : 'dev';
+			$env = c::getEnv();
 
 			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
@@ -93,7 +93,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			}
 
 			// Issue #1250 - make Max CB a phone call in addition to a text
-			$env = c::env() == 'live' ? 'live' : 'dev';
+			$env = c::getEnv();
 
 			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
