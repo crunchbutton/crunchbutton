@@ -766,12 +766,14 @@ App.setNotificationBarStatus = function( status ){
 // Phonegap events listeners
 App.phoneGapListener = {
 	init : function(){
-		if( App.phoneGap ){
+		if( App.isPhoneGap ){
 			document.addEventListener( 'deviceready', App.phoneGapListener.deviceready , false );
 			document.addEventListener( 'pause', App.phoneGapListener.pause , false );
 			document.addEventListener( 'resume', App.phoneGapListener.resume , false );
-			// document.addEventListener( 'online', App.phoneGapListener.online , false );
-			// document.addEventListener( 'offline', App.phoneGapListener.offline , false );
+			document.addEventListener( 'online', App.phoneGapListener.online , false );
+			if( !navigator.onLine ){
+				App.verifyConnection.goOffline();
+			}
 		}
 	},
 	deviceready : function(){
@@ -786,11 +788,7 @@ App.phoneGapListener = {
 	},
 	online : function(){
 		// online
-		// App.verifyConnection.goOnline();
-	},
-	offline : function(){
-		// offline
-		// App.verifyConnection.goOffline();
+		App.verifyConnection.goOnline();
 	}
 };
 
