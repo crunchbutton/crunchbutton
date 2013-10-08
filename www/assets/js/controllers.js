@@ -14,11 +14,11 @@ NGApp.controller('LegalCtrl', function ($scope, $http) {
  */
 NGApp.controller('HelpCtrl', function ($scope, $http, $compile, MainNavigationService) {
 
-	if (!App.isPhoneGap) {
+	$scope.legal = function(){
+		MainNavigationService.link( '/legal' );
+	}
 
-		$scope.legal = function(){
-			MainNavigationService.link( '/legal' );
-		}
+	if (!App.isPhoneGap) {
 
 		$http.get(App.service + 'help').success(function(data) {
 

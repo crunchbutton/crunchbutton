@@ -26,7 +26,7 @@ App.capitalize = function(word) {
 };
 
 App.request = function(url, complete, error) {
-	if( angular ){
+	if( angular && angular.element && angular.element( 'html' ) && angular.element( 'html' ).injector() && angular.element( 'html' ).injector().get( '$http' ) ){
 		var http = angular.element( 'html' ).injector().get( '$http' );
 		http( { url: url, method: 'GET' } ).success( function( data ) { 
 			if( complete ){
