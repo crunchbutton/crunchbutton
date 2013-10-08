@@ -10,6 +10,15 @@ class Controller_view extends Cana_Controller {
 		} else {
 			$file = 'frontend/'.$file;
 		}
+		
+		if ($_REQUEST['theme']) {
+			c::config()->site->theme = preg_replace('/[^a-z]/','',$_REQUEST['theme']);
+			c::buildView(['layout' => c::config()->defaults->layout]);
+			$theme = $_REQUEST['theme'];
+		} else {
+			$theme = 'crunchbutton';
+		}
+
 		if (file_exists(c::config()->dirs->view.'default/crunchbutton/'.$file.'.phtml')) {
 			c::view()->layout('layout/blank');
 			c::view()->export = true;
