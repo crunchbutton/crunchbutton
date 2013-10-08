@@ -294,7 +294,6 @@ class Crunchbutton_App extends Cana_App {
 
 	
 	public function buildView($params = array()) {
-
 		// domain level setup
 		$params['theme'][] = $this->config()->defaults->version.'/'.$this->config()->defaults->theme.'/';
 		if (is_array($themes = json_decode($this->config()->site->theme,'array'))) {
