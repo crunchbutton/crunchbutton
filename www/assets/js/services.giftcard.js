@@ -214,6 +214,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 	service.notes_field.compareValues = function(){
 		service.notes_field.removed = false;
 		var values = 0;
+console.log('values',values);
 		if( service.notes_field.giftcards.success.length > 0 ){
 			$.each( service.notes_field.giftcards.success, function( key, giftcard ) {
 				if( giftcard && !giftcard.error ){
@@ -221,15 +222,17 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 				}
 			} );
 		}
-
+console.log(' service.notes_field.value', service.notes_field.value);
 		if( service.notes_field.value > values ){
 			service.notes_field.removed = true;
 		}
 
 		if( service.notes_field.restaurant_accepts ){
+console.log('credit.redeemed',credit.redeemed);
 			service.notes_field.value = App.ceil( values ).toFixed( 2 );
 			credit.setValue( App.ceil( credit.redeemed + values ).toFixed( 2 ) );
 		}
+console.log(' { value : service.value }', { value : service.value });
 		$rootScope.$broadcast( 'creditChanged',  { value : service.value } );
 	}
 
