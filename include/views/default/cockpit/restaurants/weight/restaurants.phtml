@@ -1,0 +1,44 @@
+<?php
+$restaurants = $this->restaurants;
+if ( sizeof( $restaurants ) == 0 ) { ?>
+	<div class="span12 padded">
+		<div class="row-fluid">
+			No results found!
+		</div>
+	</div>
+<?php } else { ?>
+	<table class="table table-normal">
+		<thead>
+			<td>Restaurant</td>
+			<td>Weight</td>
+			<td>Weight Adjustment</td>
+			<td>Efective weight</td>
+			<td>Delivery</td>
+		</thead>
+		<?php foreach ( $restaurants as $restaurant ) {
+			?>
+			<tr>
+				<td><?php echo $restaurant->name; ?></td>
+				<td><?php echo $restaurant->_weight_old; ?></td>
+				<td>
+					<input type="text" class="weight_adj" id="<?php echo $restaurant->id_restaurant; ?>" value="<?php echo $restaurant->weight_adj; ?>"/>
+				</td>
+				<td><?php echo $restaurant->_weight; ?></td>
+				<td><?php if( $restaurant->delivery == 1 ){ echo '<span style="color:green;">Yes</span>'; } else { echo '<span style="color:grey;">No</span>'; } ?></td>
+			</tr>
+			<?php
+		} ?>
+	</table>
+	<div class="span12 padded">
+		<button type="button" id="save-weight" class="save-restaurants btn btn-blue">Save and reload</button>
+	</div>
+	<script type="text/javascript">
+		$(function() {
+
+			$(document).on('click', '.save-restaurants', function() {
+				saveWeight();
+			} );
+
+		});
+	</script>
+<?php } ?>
