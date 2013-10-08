@@ -3,7 +3,7 @@ class Controller_api_twilio_error extends Crunchbutton_Controller_Rest {
 
 	public function init() {
 			
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 
 		switch ( c::getPagePiece( 3 ) ) {
 
@@ -45,7 +45,7 @@ class Controller_api_twilio_error extends Crunchbutton_Controller_Rest {
 
 	public function processErrorMessage( $error_message, $callto ){
 		
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 
 		$twilio = new Services_Twilio( c::config()->twilio->{ $env }->sid, c::config()->twilio->{ $env }->token );
 

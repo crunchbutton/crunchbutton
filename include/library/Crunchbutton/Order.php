@@ -284,7 +284,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$user->delivery_type = $this->delivery_type;
 		$user->tip = $this->tip;
 
-		$this->env = c::env();
+		$this->env = c::getEnv();
 		$this->processor = c::config()->processor;
 
 		$user->save();
@@ -690,7 +690,7 @@ class Crunchbutton_Order extends Cana_Table {
 			return;
 		} 
 
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		$num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
 
 		$log = new Notification_Log;
@@ -721,7 +721,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function receipt() {
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		//$num = ($env == 'live' ? $this->phone : c::config()->twilio->testnumber);
 		$num = $this->phone;
 
@@ -877,7 +877,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$date = $order->date();
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		
 		$message = 'O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ') not confirmed.';
 		$message .= "\n";
@@ -1241,7 +1241,7 @@ class Crunchbutton_Order extends Cana_Table {
 					switch ($this->processor) {
 						case 'stripe':
 						default:
-							$env = c::env() == 'live' ? 'live' : 'dev';
+							$env = c::getEnv();
 							Stripe::setApiKey(c::config()->stripe->{$env}->secret);
 							$ch = Stripe_Charge::retrieve($this->txn);
 							try {

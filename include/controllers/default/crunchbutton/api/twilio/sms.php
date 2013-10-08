@@ -5,7 +5,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 		$phone = str_replace('+1','',$_REQUEST['From']);
 		$body = trim($_REQUEST['Body']);
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$tsess = Session_Twilio::get();
 		$tsess->data = json_encode($_REQUEST);
@@ -216,7 +216,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 		$nums[] = $rsess->phone;
 
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 
 		// Log
 		Log::debug( [ 'action' => 'replying message', 'rep' => $rep, 'session id' => $rsess->id_session_twilio, 'num' => $nums, 'message' => $message, 'type' => 'sms' ] );

@@ -45,7 +45,7 @@ class Crunchbutton_Support extends Cana_Table {
 
 		$support = $this;
 
-		$env = c::env() == 'live' ? 'live' : 'dev';
+		$env = c::getEnv();
 
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
@@ -190,7 +190,7 @@ class Crunchbutton_Support extends Cana_Table {
 		// Issue #1100 - Call David if CB receives a support after 1AM
 		if( $hour >= 1 && $hour <= 7 ){
 		
-			$env = c::env() == 'live' ? 'live' : 'dev';
+			$env = c::getEnv();
 			
 			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
