@@ -36,6 +36,9 @@ body, input, textarea {
 ol, ul {
 	list-style: none;
 }
+b {
+	font-weight: bold;
+}
 blockquote, q {
 	quotes: none;
 }
@@ -237,7 +240,7 @@ h4 {
 }
 p {
 	font-size: 1.2em;
-	line-height: 1.55em;
+	line-height: 1.6em;
 }
 .home-join-us {
 	background: url(/assets/images/micro/home-join-us.svg) no-repeat;
@@ -345,13 +348,13 @@ p {
 }
 
 
+
+/* GLOBAL */
 @media(min-width:500px) {
 	body {
 		font-size: 12px;
 	}
 }
-
-
 @media(max-width:500px) {
 	.logo {
 		width: 190px;
@@ -361,18 +364,20 @@ p {
 		margin: 25px 0 0 10px;
 	}
 }
+.divider {
+	clear: both;
+}
 
 
 
 
-/* dropdowns */
+/* DROPDOWNS */
 .dropdown {
 	position: absolute;
 	z-index: 9999999;
 	display: none;
 	font-size: 12px;
 }
-
 .dropdown .dropdown-menu,
 .dropdown .dropdown-panel {
 	min-width: 160px;
@@ -387,15 +392,12 @@ p {
 	padding: 4px 0;
 	margin: 0;
 }
-
 .dropdown .dropdown-panel {
 	padding: 10px;
 }
-
 .dropdown.dropdown-tip {
 	margin-top: 8px;
 }
-
 .dropdown.dropdown-tip:before {
   position: absolute;
   top: -6px;
@@ -407,12 +409,10 @@ p {
   border-bottom-color: rgba(0, 0, 0, 0.2);
   display: inline-block;
 }
-
 .dropdown.dropdown-tip.dropdown-anchor-right:before {
 	left: auto;
 	right: 9px;
 }
-
 .dropdown.dropdown-tip:after {
   position: absolute;
   top: -5px;
@@ -423,26 +423,21 @@ p {
   border-bottom: 6px solid #FFF;
   display: inline-block;
 }
-
 .dropdown.dropdown-tip.dropdown-anchor-right:after {
 	left: auto;
 	right: 10px;
 }
-
-
 .dropdown.dropdown-scroll .dropdown-menu,
 .dropdown.dropdown-scroll .dropdown-panel {
 	max-height: 358px;
 	overflow: auto;
 }
-
 .dropdown .dropdown-menu LI {
 	list-style: none;
 	padding: 0 0;
 	margin: 0;
 	line-height: 18px;
 }
-
 .dropdown .dropdown-menu LI > A,
 .dropdown .dropdown-menu LABEL {
 	display: block;
@@ -474,9 +469,44 @@ p {
 	background-repeat: no-repeat;
 }
 
-.dropdown .undo A { background-image: url(icons/arrow-curve-180-left.png); }
-.dropdown .redo A { background-image: url(icons/arrow-curve.png); }
-.dropdown .cut A { background-image: url(icons/scissors.png); }
-.dropdown .copy A { background-image: url(icons/document-copy.png); }
-.dropdown .paste A { background-image: url(icons/clipboard.png); }
-.dropdown .delete A { background-image: url(icons/cross-script.png); }
+
+/* FAQ */
+.faq-tomato {
+	background: url(/assets/images/micro/faq-tomato.svg) no-repeat;
+	width: 7.1em;
+	height: 11.6em;
+	background-size: 100%;
+	float: left;
+	margin-left: 4em;
+}
+.bubble-tailless-green {
+	background: url(/assets/images/micro/bubble-tailless-green.svg) no-repeat;
+	width: 14.6em;
+	height: 5.7em;
+	background-size: 100%;
+	float: left;
+	margin-top: 2em;
+}
+.bubble-tailless-green .text {
+	display: block;
+	margin-left: 1.3em;
+	color: #fff;
+	font-size: 1.2em;
+	line-height: 1.4em;
+	padding-top: .9em;
+}
+.faq-bubble-wrap {
+	width: 26em;
+	margin: 0 auto;
+}
+.faq-sun {
+	background: url(/assets/images/micro/faq-sun.svg) no-repeat;
+	width: 26.4em;
+	height: 10.6em;
+	background-size: 100%;
+	margin: 0 auto;
+}
+.faq-heart {
+	color: #ff6b82;
+	font-size: 8.5em;
+}
