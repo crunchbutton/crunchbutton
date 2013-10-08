@@ -1,0 +1,1 @@
+ALTER TABLE `user` ADD `debug` TINYINT( 1 ) NOT NULL DEFAULT 0;
