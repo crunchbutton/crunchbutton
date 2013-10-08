@@ -284,7 +284,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$user->delivery_type = $this->delivery_type;
 		$user->tip = $this->tip;
 
-		$this->env = c::getEnv();
+		$this->env = c::getEnv(false);
 		$this->processor = c::config()->processor;
 
 		$user->save();
