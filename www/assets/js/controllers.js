@@ -640,9 +640,9 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
 		
 		// Load the credit info
-		if( OrderService.account.user && OrderService.account.user.id_user ){
+		// if( OrderService.account.user && OrderService.account.user.id_user ){
 			credit.getCredit( $scope.restaurant.id_restaurant );	
-		}
+		// }
 		
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
