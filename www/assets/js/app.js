@@ -304,7 +304,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
-		}).addClass('page-' + MainNavigationService.page);
+		}).addClass('page-' + MainNavigationService.page, 'at-top');
 		
 		setTimeout(function() {
 			App.scrollTop();

@@ -17,19 +17,17 @@
 
 
 
-<script>
+<script type="text/javascript">
 	$(document).ready(function() {
 		$('.home-top').scrollspy({
-                min: -100,
-                max: 50,
-                onEnter: function(element, position) {
-                	console.log('ENTER');
-                    $('.page-location .nav-top').addClass('at-top');
-                },
-                onLeave: function(element, position) {
-                	console.log('LEAVE');
-                    $('.page-location .nav-top').removeClass('at-top');
-                }
-            });
+			min: -100,
+			max: 50,
+			onEnter: function(element, position) {
+				$('.page-location .nav-top').addClass('at-top');
+			},
+			onLeave: function(element, position) {
+				$('.page-location .nav-top').removeClass('at-top');
+			}
+		});
 	});
 </script>
