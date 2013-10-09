@@ -51,7 +51,7 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 		foreach ($data['headers'] as $key => $header) {
 			header($key.': '.$header);
 		}
-		
+
 		echo $data['content'];
 		exit;
 
