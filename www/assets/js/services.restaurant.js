@@ -57,7 +57,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			list[x].closesIn();
 
 			// determine which tags to display
-			if (!list[x]._open) {
+			if (!list[x]._open || list[x]._closesIn == 0) {
 				list[x]._tag = 'closed';
 			} else {
 				if (list[x].delivery != '1') {
@@ -65,7 +65,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				} else {
 					if( list[x]._closesIn <= list[x]._minimumTime && list[x]._closesIn > 0 ){
 						list[x]._tag = 'closing';	
-					}
+					} 
 				}
 			}
 
