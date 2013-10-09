@@ -18,10 +18,9 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 		require 'Minify.php';
 	}
 	
-	public function serve($files) {
+	public function serve($files, $quiet = true) {
 		foreach ($files as $key => $file) {
 			if (!file_exists($file)) {
-
 				unset($files[$key]);
 			}
 		}
@@ -30,7 +29,7 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 		return Minify::serve('Files', [
 			'files'  => $files,
 			'maxAge' => 86400,
-			'quiet' => true
+			'quiet' => $quiet
 		]);
     }
 }

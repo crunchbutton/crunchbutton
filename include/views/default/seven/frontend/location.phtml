@@ -1,0 +1,72 @@
+<div class="home-top">
+	<div id="dropdown-menu" class="dropdown dropdown-tip">
+		<ul class="dropdown-menu">
+			<li><a href="/restaurants">Restaurants</a></li>
+			<li><a href="/orders">Previous Orders</a></li>
+			<li><a href="/location">Change Location</a></li>
+			<li class="dropdown-divider"></li>
+			<li><a href="/help">FAQ</a></li>
+			<li><a href="/logout">Log Out</a></li>
+	    </ul>
+	</div>
+
+	<div class="menu" data-dropdown="#dropdown-menu"></div>
+	<div class="logo"></div>
+	<div class="pushabutton"></div>
+	<div class="home-inputs">
+		<table cellpadding="0" cellspacing="0" class="home-location">
+			<tr>
+				<td style="width: 100%;"><input class="enter-location" placeholder="Enter your location" ng-model="location.form.address"></td>
+				<td><button class="find-location" ng-click="locEat()"><span class="icon icon-location-arrow "></span></button></td>
+			</tr>
+		</table>
+		<button class="button pushable orange find-restaurants ladda-button" ng-click="letsEat()" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF">
+			<div class="ladda-label">Find Restaurants!</div>
+			<span class="ladda-spinner"></span>
+		</button>
+	</div>
+</div>
+
+<div class="divider-orange-food divider-circle"></div>
+
+<div class="content-padding">
+	<br /><br /><br />
+	<h4>Order the top food. For free.</h4>
+	<p>We find the best delivery restaurants in your area, curate their menus, and make it easy for you to order with a single click.</p>
+</div>
+
+<div class="home-join-us"></div>
+
+<div class="content-padding">
+	<br /><br />
+	<h4>Are you a delivery foodie?</h4>
+	<p>Join our marketing intern program and get a free pink gorilla suit! Also maybe some money too.</p>
+	<br />
+	<button class="button green">Contact Us</button>
+</div>
+
+<div class="content-padding">
+	<br />
+	<h4>Restaurant owner?</h4>
+	<p>We are always looking for the next popular sandwich. Apply today and reach campuses nationwide!</p>
+	<br />
+	<button class="button lightorange">more info</button>
+</div>
+
+<div class="content-padding">
+	<br />
+	<h4>We’re expanding!</h4>
+	<p>We may not be everywhere yet, but the communities we are in love us! Take a look at some of our most popular locations.</p>
+	<br /><br /><br />
+	<div class="popular-locations">
+		<div class="map map-new-haven"></div>
+		<div class="map map-dc"></div>
+		<div class="map map-providence"></div>
+		<div class="map map-venice"></div>
+	</div>
+</div>
+
+<div class="home-white content-padding">
+	<br /><br /><br />
+	<div class="logo-finger"></div>
+</div>

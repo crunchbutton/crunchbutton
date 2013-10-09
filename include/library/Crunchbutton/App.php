@@ -57,6 +57,7 @@ class Crunchbutton_App extends Cana_App {
 		switch ($_SERVER['SERVER_NAME']) {
 			case 'crunchbutton.localhost':
 			case 'wenzel.localhost':
+			case 'seven.localhost':
 				$params['env'] = 'local';
 				break;
 			case 'crunchr.co':
