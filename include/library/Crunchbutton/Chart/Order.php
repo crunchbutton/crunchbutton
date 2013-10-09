@@ -160,18 +160,37 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 	public function byWeekPerCommunity( $render = false ){
 
-		$query = "SELECT YEARWEEK(date) AS Week,
+		$community = ( $_REQUEST[ 'community' ] ) ? $_REQUEST[ 'community' ] : false;
+
+		if( $community ){
+			$query = "SELECT YEARWEEK(date) AS Week,
 										 COUNT(*) AS Total,
 										 r.community AS 'Group'
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
 							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
-								AND r.community IS NOT NULL
+								AND r.community = '{$community}'
 								{$this->queryExcludeUsers}
 							GROUP BY YEARWEEK(date), r.community
 							ORDER BY YEARWEEK(date) DESC";
-		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
+				$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
+		} else {
+
+			$query = "SELECT YEARWEEK(date) AS Week,
+											 COUNT(*) AS Total,
+											 r.community AS 'Group'
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+									AND r.community IS NOT NULL
+									{$this->queryExcludeUsers}
+								GROUP BY YEARWEEK(date), r.community
+								ORDER BY YEARWEEK(date) DESC";
+			$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
+
+		}
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
@@ -392,19 +411,38 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 	public function byDayPerCommunity( $render = false ){
 
-		$query = "SELECT DATE_FORMAT( date ,'%Y-%m-%d') AS Day,
-										 COUNT(*) AS Total,
-										 r.community AS 'Group'
-							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
-								AND r.community IS NOT NULL
-								{$this->queryExcludeUsers}
-							GROUP BY DATE_FORMAT( date ,'%Y-%m-%d'), r.community
-							ORDER BY DATE_FORMAT( date ,'%Y-%m-%d') DESC";
+		$community = ( $_REQUEST[ 'community' ] ) ? $_REQUEST[ 'community' ] : false;
 
-		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
+		if( $community ){
+			$query = "SELECT DATE_FORMAT( date ,'%Y-%m-%d') AS Day,
+											 COUNT(*) AS Total,
+											 r.community AS 'Group'
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
+									AND r.community = '{$community}'
+									{$this->queryExcludeUsers}
+								GROUP BY DATE_FORMAT( date ,'%Y-%m-%d'), r.community
+								ORDER BY DATE_FORMAT( date ,'%Y-%m-%d') DESC";
+
+			$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+		} else {
+			$query = "SELECT DATE_FORMAT( date ,'%Y-%m-%d') AS Day,
+											 COUNT(*) AS Total,
+											 r.community AS 'Group'
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
+									AND r.community IS NOT NULL
+									{$this->queryExcludeUsers}
+								GROUP BY DATE_FORMAT( date ,'%Y-%m-%d'), r.community
+								ORDER BY DATE_FORMAT( date ,'%Y-%m-%d') DESC";
+
+			$parsedData = $this->parseDataDaysGroup( $query, $this->description );
+		}
+
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
@@ -413,18 +451,37 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 	public function byMonthPerCommunity( $render = false ){
 
-		$query = "SELECT DATE_FORMAT( date ,'%Y-%m') AS Month,
-										 COUNT(*) AS Total,
-										 r.community AS 'Group'
-							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
-								AND r.community IS NOT NULL
-								{$this->queryExcludeUsers}
-							GROUP BY DATE_FORMAT( date ,'%Y-%m'), r.community
-							ORDER BY DATE_FORMAT( date ,'%Y-%m') DESC";
-		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
+		$community = ( $_REQUEST[ 'community' ] ) ? $_REQUEST[ 'community' ] : false;
+
+		if( $community ){
+			$query = "SELECT DATE_FORMAT( date ,'%Y-%m') AS Month,
+											 COUNT(*) AS Total,
+											 r.community AS 'Group'
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
+									AND r.community = '{$community}'
+									{$this->queryExcludeUsers}
+								GROUP BY DATE_FORMAT( date ,'%Y-%m'), r.community
+								ORDER BY DATE_FORMAT( date ,'%Y-%m') DESC";
+			$parsedData = $this->parseDataMonthSimple( $query, $this->description );
+		} else {
+			$query = "SELECT DATE_FORMAT( date ,'%Y-%m') AS Month,
+											 COUNT(*) AS Total,
+											 r.community AS 'Group'
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
+									AND r.community IS NOT NULL
+									{$this->queryExcludeUsers}
+								GROUP BY DATE_FORMAT( date ,'%Y-%m'), r.community
+								ORDER BY DATE_FORMAT( date ,'%Y-%m') DESC";
+			$parsedData = $this->parseDataMonthGroup( $query, $this->description );
+		}
+
+
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
@@ -658,6 +715,44 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 			if( !$days[ $order->Label ] ){
 				$days[ $order->Label ] = [];	
 			}
+			$days[ $order->Label ][ 'Order' ] = $order->Total;
+		}
+
+		foreach ( $newUsers as $new ) {
+			if( !$days[ $new->Label ] ){
+				$days[ $new->Label ] = [];	
+			}
+			$days[ $new->Label ][ 'New' ] = $new->Total;
+		}
+
+		$data = [];
+
+		foreach ( $days as $label => $values ) {
+			$new = $values[ 'New' ];
+			$repeat = $values[ 'Order' ] - $new;
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' ); 
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $data;
+	}
+
+	public function repeatPerDayByCommunityGrouped( $render = false ){
+
+		$user = new Crunchbutton_Chart_User();
+		$newUsers = $user->newByDayByCommunityGrouped();
+		$orders = $this->byDayPerCommunity();
+
+		$data = [];
+		$communities = [];
+		$days = [];
+
+		foreach ( $orders as $order ) {
+			if( !$days[ $order->Label ] ){
+				$days[ $order->Label ] = [];	
+			}
 			$days[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
 			$communities[ $order->Type ] = true;
 		}
@@ -689,7 +784,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 	public function repeatVsNewPerDayPerCommunity( $render = false ){
 
 		$user = new Crunchbutton_Chart_User();
-		$newUsers = $user->newByDayByCommunity();
+		$newUsers = $user->newByDayByCommunityGrouped();
 		$orders = $this->byDayPerCommunity();
 
 		$data = [];
@@ -735,7 +830,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 	public function repeatVsNewPerMonthPerCommunity( $render = false ){
 
 		$user = new Crunchbutton_Chart_User();
-		$newUsers = $user->newByMonthByCommunity();
+		$newUsers = $user->newByMonthByCommunityGrouped();
 		$orders = $this->byMonthPerCommunity();
 
 		$data = [];
@@ -781,7 +876,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 	public function repeatVsNewPerWeekPerCommunity( $render = false ){
 
 		$user = new Crunchbutton_Chart_User();
-		$newUsers = $user->newByWeekByCommunity();
+		$newUsers = $user->newByWeekByCommunityGrouped();
 		$orders = $this->byWeekPerCommunity();
 
 		$data = [];
@@ -910,6 +1005,43 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 			if( !$weeks[ $order->Label ] ){
 				$weeks[ $order->Label ] = [];	
 			}
+			$weeks[ $order->Label ][ 'Order' ] = $order->Total;
+		}
+
+		foreach ( $newUsers as $new ) {
+			if( !$weeks[ $new->Label ] ){
+				$weeks[ $new->Label ] = [];	
+			}
+			$weeks[ $new->Label ][ 'New' ] = $new->Total;
+		}
+
+		$data = [];
+
+		foreach ( $weeks as $label => $values ) {
+			$new = $values[ 'New' ];
+			$repeat = $values[ 'Order' ] - $new;
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' ); 
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit );
+		}
+		return $data;
+	}
+
+	public function repeatPerWeekByCommunityGrouped( $render = false ){
+		$user = new Crunchbutton_Chart_User();
+		$newUsers = $user->newByWeekByCommunityGrouped();
+		$orders = $this->byWeekPerCommunity();
+
+		$communities = [];
+		$data = [];
+		$weeks = [];
+
+		foreach ( $orders as $order ) {
+			if( !$weeks[ $order->Label ] ){
+				$weeks[ $order->Label ] = [];	
+			}
 			$weeks[ $order->Label ][ 'Order' ][ $order->Type ] = $order->Total;
 			$communities[ $order->Type ] = true;
 		}
@@ -978,6 +1110,44 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		$user = new Crunchbutton_Chart_User();
 		$newUsers = $user->newByMonthByCommunity();
+		$orders = $this->byMonthPerCommunity();
+
+		$data = [];
+		$communities = [];
+		$months = [];
+
+		foreach ( $orders as $order ) {
+			if( !$months[ $order->Label ] ){
+				$months[ $order->Label ] = [];	
+			}
+			$months[ $order->Label ][ 'Order' ] = $order->Total;
+		}
+
+		foreach ( $newUsers as $new ) {
+			if( !$months[ $new->Label ] ){
+				$months[ $new->Label ] = [];	
+			}
+			$months[ $new->Label ][ 'New' ] = $new->Total;
+		}
+
+		$data = [];
+
+		foreach ( $months as $label => $values ) {
+			$new = $values[ 'New' ];
+			$repeat = $values[ 'Order' ] - $new;
+			$data[] = ( object ) array( 'Label' => $label, 'Total' => $repeat, 'Type' => 'Orders' ); 
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
+		}
+		return $data;
+	}
+
+	public function repeatPerMonthByCommunityGrouped( $render = false ){
+
+		$user = new Crunchbutton_Chart_User();
+		$newUsers = $user->newByMonthByCommunityGrouped();
 		$orders = $this->byMonthPerCommunity();
 
 		$data = [];
@@ -1096,7 +1266,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		$user = new Crunchbutton_Chart_User();
 
 		$activeUsers = $user->activeByMonthByCommunity();
-		$newUsers = $user->newByMonthByCommunity();
+		$newUsers = $user->newByMonthByCommunityGrouped();
 		$orders = $this->byMonthPerCommunity();
 
 		$communities = $this->allCommunities();
@@ -1166,7 +1336,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		$user = new Crunchbutton_Chart_User();
 
 		$activeUsers = $user->activeByWeekByCommunity();
-		$newUsers = $user->newByWeekByCommunity();
+		$newUsers = $user->newByWeekByCommunityGrouped();
 		$orders = $this->byWeekPerCommunity();
 
 		$communities = $this->allCommunities();

@@ -14,6 +14,15 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 																'gross-revenue-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'byMonthByCommunity' ) ) ),
 															)
 												),
+												'group-revenue-by-community' => array(
+														'title' => 'Gross Revenue',
+														'tags' => array( 'reps' ),
+														'charts' => array(  
+																'gross-revenue-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'byDay' ),
+																'gross-revenue-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'byWeek' ),
+																'gross-revenue-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'byMonth' ),
+															)
+												),
 										);
 
 	public function __construct() {
@@ -41,20 +50,40 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 
 	public function byDayByCommunity( $render = false ){
 
-		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
-											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
-											r.community AS `Group`
-							FROM `order` o
-						LEFT JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-						WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
-							AND r.community IS NOT NULL
-							{$this->queryExcludeUsers}
-						GROUP BY DATE_FORMAT( o.date ,'%Y-%m-%d'),
-										 r.community
-						ORDER BY DATE_FORMAT( o.date ,'%Y-%m-%d') DESC";
+		$community = ( $_REQUEST[ 'community' ] ) ? $_REQUEST[ 'community' ] : false;
 
-		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
+		if( $community ){
+			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
+												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												r.community AS `Group`
+								FROM `order` o
+							LEFT JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
+								AND r.community = '{$community}'
+								{$this->queryExcludeUsers}
+							GROUP BY DATE_FORMAT( o.date ,'%Y-%m-%d'),
+											 r.community
+							ORDER BY DATE_FORMAT( o.date ,'%Y-%m-%d') DESC";
+
+			$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+		} else {
+			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
+												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												r.community AS `Group`
+								FROM `order` o
+							LEFT JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
+								AND r.community IS NOT NULL
+								{$this->queryExcludeUsers}
+							GROUP BY DATE_FORMAT( o.date ,'%Y-%m-%d'),
+											 r.community
+							ORDER BY DATE_FORMAT( o.date ,'%Y-%m-%d') DESC";
+
+			$parsedData = $this->parseDataDaysGroup( $query, $this->description );
+		}
+
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
@@ -82,20 +111,40 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 
 	public function byMonthByCommunity( $render = false ){
 
-		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
-											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
-											r.community AS `Group`
-							FROM `order` o
-						LEFT JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-						WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
-							AND r.community IS NOT NULL
-							{$this->queryExcludeUsers}
-						GROUP BY DATE_FORMAT( o.date ,'%Y-%m'),
-										 r.community
-						ORDER BY DATE_FORMAT( o.date ,'%Y-%m') DESC";
+		$community = ( $_REQUEST[ 'community' ] ) ? $_REQUEST[ 'community' ] : false;
 
-		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
+		if( $community ){
+			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
+												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												r.community AS `Group`
+								FROM `order` o
+							LEFT JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
+								AND r.community = '{$community}'
+								{$this->queryExcludeUsers}
+							GROUP BY DATE_FORMAT( o.date ,'%Y-%m'),
+											 r.community
+							ORDER BY DATE_FORMAT( o.date ,'%Y-%m') DESC";
+
+			$parsedData = $this->parseDataMonthSimple( $query, $this->description );
+		} else {
+			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
+												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												r.community AS `Group`
+								FROM `order` o
+							LEFT JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
+								AND r.community IS NOT NULL
+								{$this->queryExcludeUsers}
+							GROUP BY DATE_FORMAT( o.date ,'%Y-%m'),
+											 r.community
+							ORDER BY DATE_FORMAT( o.date ,'%Y-%m') DESC";
+
+			$parsedData = $this->parseDataMonthGroup( $query, $this->description );
+		}
+
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
@@ -104,20 +153,40 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 
 	public function byWeekByCommunity( $render = false ){
 
-		$query = "SELECT YEARWEEK(date) AS `Week`,
-											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
-											r.community AS `Group`
-							FROM `order` o
-						LEFT JOIN user u ON u.id_user = o.id_user
-						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-						WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
-							AND r.community IS NOT NULL
-							{$this->queryExcludeUsers}
-						GROUP BY YEARWEEK(date),
-										 r.community
-						ORDER BY YEARWEEK(date) DESC";
+		$community = ( $_REQUEST[ 'community' ] ) ? $_REQUEST[ 'community' ] : false;
 
-		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
+		if( $community ){
+			$query = "SELECT YEARWEEK(date) AS `Week`,
+												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												r.community AS `Group`
+								FROM `order` o
+							LEFT JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
+								AND r.community = '{$community}'
+								{$this->queryExcludeUsers}
+							GROUP BY YEARWEEK(date),
+											 r.community
+							ORDER BY YEARWEEK(date) DESC";
+
+			$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
+		} else {
+			$query = "SELECT YEARWEEK(date) AS `Week`,
+												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
+												r.community AS `Group`
+								FROM `order` o
+							LEFT JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
+								AND r.community IS NOT NULL
+								{$this->queryExcludeUsers}
+							GROUP BY YEARWEEK(date),
+											 r.community
+							ORDER BY YEARWEEK(date) DESC";
+
+			$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
+		}
+
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}

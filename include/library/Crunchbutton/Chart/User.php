@@ -10,18 +10,36 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 														'title' => 'New Users',
 														'tags' => array( 'main' ),
 														'charts' => array(  
-																'users-new-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newByDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByDayByCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByDayCohort' ) ) ),
-																'users-new-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByWeekByCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByWeekCohort' ) ), 'default' => true ),
-																'users-new-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByMonthByCommunity' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByMonthCohort' ) ) ),
+																'users-new-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newByDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByDayByCommunityGrouped' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByDayCohort' ) ) ),
+																'users-new-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByWeekByCommunityGrouped' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByWeekCohort' ) ), 'default' => true ),
+																'users-new-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByMonthByCommunityGrouped' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByMonthCohort' ) ) ),
+															)
+												),
+												'group-new-users-community' => array(
+														'title' => 'New Users',
+														'tags' => array( 'reps' ),
+														'charts' => array(  
+																'users-new-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'newByDayByCommunity' ),
+																'users-new-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'newByWeekByCommunity', 'default' => true ),
+																'users-new-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'newByMonthByCommunity' ),
+															)
+												),
+												'group-users-repeat-community' => array(
+														'title' => 'Repeat Orders',
+														'tags' => array( 'reps' ),
+														'charts' => array(  
+																'orders-repeat-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'repeatPerDayByCommunity' ),
+																'orders-repeat-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'repeatPerWeekByCommunity', 'default' => true ),
+																'orders-repeat-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'repeatPerMonthByCommunity' ),
 															)
 												),
 												'group-users-repeat' => array(
 														'title' => 'Repeat Orders',
 														'tags' => array( 'main' ),
 														'charts' => array(  
-																'orders-repeat-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'repeatPerDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerDayByCommunity' ) ) ),
-																'orders-repeat-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'repeatPerWeek', 'default' => true, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerWeekByCommunity' ) ) ),
-																'orders-repeat-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatPerMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerMonthByCommunity' ) ) ),
+																'orders-repeat-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'repeatPerDay', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerDayByCommunityGrouped' ) ) ),
+																'orders-repeat-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'repeatPerWeek', 'default' => true, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerWeekByCommunityGrouped' ) ) ),
+																'orders-repeat-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatPerMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatPerMonthByCommunityGrouped' ) ) ),
 															)
 												),
 												'group-users-reclaimed' => array(
@@ -1288,7 +1306,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
-	public function newByMonthByCommunity( $render = false ){
+	public function newByMonthByCommunityGrouped( $render = false ){
 
 		$query = "SELECT SUM(1) AS Total,
 										 DATE_FORMAT(o.date ,'%Y-%m') AS Month,
@@ -1314,7 +1332,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
-	public function newByDayByCommunity( $render = false ){
+	public function newByDayByCommunityGrouped( $render = false ){
 
 		$query = "SELECT SUM(1) AS Total,
 										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
@@ -1616,7 +1634,90 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
+	public function newByMonthByCommunity( $render = false ){
+
+		$community = $_REQUEST[ 'community' ];
+
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m') AS Month,
+										 community AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.community
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.community = '{$community}'
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+
+		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
+
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
+		}
+		return $parsedData;
+	}
+
+	public function newByDayByCommunity( $render = false ){
+
+		$community = $_REQUEST[ 'community' ];
+
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
+										 community AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.community
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.community = '{$community}'
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+
+		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
 	public function newByWeekByCommunity( $render = false ){
+
+		$community = $_REQUEST[ 'community' ];
+
+		$query = "SELECT SUM(1) AS Total,
+										 YEARWEEK(o.date) AS Week,
+										 community AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.community
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.community = '{$community}'
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone, r.community) orders ON o.id_order = orders.id_order
+							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
+
+		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
+		}
+		return $parsedData;
+	}
+
+	public function newByWeekByCommunityGrouped( $render = false ){
 
 		$query = "SELECT SUM(1) AS Total,
 										 YEARWEEK(o.date) AS Week,
@@ -1646,6 +1747,11 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return array( 'data' => $order->repeatPerDay( false ), 'unit' =>$order->unit, 'interval' => 'day' );
 	}
 
+	public function repeatPerDayByCommunityGrouped( $render = false ){
+		$order = new Crunchbutton_Chart_Order();
+		return array( 'data' => $order->repeatPerDayByCommunityGrouped( false ), 'unit' =>$order->unit, 'interval' => 'day' );
+	}
+
 	public function repeatPerDayByCommunity( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerDayByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'day' );
@@ -1656,19 +1762,28 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return array( 'data' => $order->repeatPerWeek( false ), 'unit' =>$order->unit, 'interval' => 'week' );
 	}
 
+	public function repeatPerWeekByCommunityGrouped( $render = false ){
+		$order = new Crunchbutton_Chart_Order();
+		return array( 'data' => $order->repeatPerWeekByCommunityGrouped( false ), 'unit' =>$order->unit, 'interval' => 'week' );
+	}
+
 	public function repeatPerWeekByCommunity( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerWeekByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'week' );
-	}
+	}	
 
 	public function repeatPerMonth( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerMonth( false ), 'unit' =>$order->unit, 'interval' => 'month' );
 	}
 
-	public function repeatPerMonthByCommunity( $render = false ){
+	public function repeatPerMonthByCommunityGrouped( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
-		return array( 'data' => $order->repeatPerMonthByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'week' );
+		return array( 'data' => $order->repeatPerMonthByCommunityGrouped( false ), 'unit' =>$order->unit, 'interval' => 'month' );
 	}
 
+	public function repeatPerMonthByCommunity( $render = false ){
+		$order = new Crunchbutton_Chart_Order();
+		return array( 'data' => $order->repeatPerMonthByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'month' );
+	}
 }

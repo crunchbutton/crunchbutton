@@ -69,7 +69,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 		$user = new Crunchbutton_Chart_User();
 
 		$activeUsers = $user->activeByMonthByCommunity();
-		$newUsers = $user->newByMonthByCommunity();
+		$newUsers = $user->newByMonthByCommunityGrouped();
 
 		$communities = $this->allCommunities();
 
@@ -190,7 +190,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 		$user = new Crunchbutton_Chart_User();
 
 		$activeUsers = $user->activeByWeekByCommunity();
-		$newUsers = $user->newByWeekByCommunity();
+		$newUsers = $user->newByWeekByCommunityGrouped();
 
 		$communities = $this->allCommunities();
 

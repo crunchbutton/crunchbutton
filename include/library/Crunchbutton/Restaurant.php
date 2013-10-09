@@ -1289,7 +1289,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public static function getCommunities(){
-		$data = c::db()->get( 'SELECT DISTINCT( community ) community FROM restaurant WHERE community IS NOT NULL' );
+		$data = c::db()->get( 'SELECT DISTINCT( community ) community FROM restaurant WHERE community IS NOT NULL AND community != "" ORDER BY community ASC' );
 		$communities = [];
 		foreach ( $data as $item ) {
 			$communities[] = $item->community;
