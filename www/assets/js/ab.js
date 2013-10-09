@@ -61,7 +61,7 @@ App.AB = {
 	},
 	init: function() {
 		// we dont have ab variables. generate them
-		App.AB.create(false);
+		App.AB.create(true);
 		App.AB.load();
 	},
 	create: function(clear) {
@@ -97,7 +97,6 @@ App.AB = {
 	load: function() {
 		App.slogan = App.AB.pluck('slogan', App.config.ab.slogan);
 		App.tagline = App.AB.pluck('tagline', App.config.ab.tagline);
-
 		if (!App.slogan || !App.tagline) {
 			App.AB.create(true);
 			App.AB.load(true);
@@ -117,9 +116,7 @@ App.AB = {
 			data: {ab: App.config.ab},
 			dataType: 'json',
 			type: 'POST',
-			complete: function(json) {
-
-			}
+			complete: function(json) {}
 		});
 	}
 };
