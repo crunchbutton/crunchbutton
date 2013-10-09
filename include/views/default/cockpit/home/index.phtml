@@ -38,16 +38,7 @@
 			</div>
 		</div>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','facebook'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="https://www.facebook.com/crunchbutton" title="Facebook" target="_blank">
-				<i class="icon-facebook-sign"></i>
-				<span>Facebook</span>
-				</a>
-			</div>
-		</div>
-		<?php } ?>
+
 		<?php if ( c::admin()->permission()->check( [ 'global','curation'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
@@ -64,6 +55,16 @@
 				<a href="/home/marketing" title="Curation">
 				<i class="icon-bullhorn"></i>
 				<span>Marketing</span>
+				</a>
+			</div>
+		</div>
+		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<div class="span2">
+			<div class="span12 action-nav-button">
+				<a href="/charts/community" title="Metrics by Community">
+				<i class="icon-group"></i>
+				<span>Community metrics</span>
 				</a>
 			</div>
 		</div>
