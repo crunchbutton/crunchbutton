@@ -42,13 +42,13 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 	service.signin = function(){
 		if( !service.isValidEmailPhone() ){
-			alert( 'Please enter a valid email or phone.' );
+			App.alert( 'Please enter a valid email or phone.', null, true );
 			$rootScope.focus( '.signin-email' );
 			return;
 		}
 
 		if( !service.isValidPassword() ){
-			alert( 'Please enter your password.' );
+			App.alert( 'Please enter your password.', null, true );
 			$rootScope.focus( '.signin-password' );
 			return;
 		}
@@ -83,13 +83,13 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 	service.signup = function(){
 		if( !service.isValidEmailPhone() ){
-			alert( 'Please enter a valid email or phone.' );
+			App.alert( 'Please enter a valid email or phone.', null, true );
 			$rootScope.focus( '.signup-email' );
 			return;
 		}
 
 		if( !service.isValidPassword() ){
-			App.alert( 'Please enter a password.' );
+			App.alert( 'Please enter a password.', null, true );
 			$rootScope.focus( '.signup-password' );
 			return;
 		}
@@ -161,7 +161,10 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 	}
 
 	service.isValidPassword = function(){
-		return service.password != '';
+		if( service.form.password ){
+			return service.form.password != '';
+		}
+		return false;
 	}
 
 	return service;
@@ -204,7 +207,7 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 
 	service.sendForm = function(){
 		if( !account.isValidEmailPhone() ){
-			alert( 'Please enter a valid email or phone.' );
+			App.alert( 'Please enter a valid email or phone.', null, true );
 			$rootScope.focus( '.help-email' );
 			return;
 		}
