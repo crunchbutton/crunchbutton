@@ -19,6 +19,11 @@
 
 			<div class="row-fluid">
 
+				<?php
+					$community = str_replace( ' ', '-', $community );
+					$community = strtolower( $community );
+				?>
+
 				<div class="span4 new-users" id="new-users-<?php echo $community; ?>" community="<?php echo $community; ?>"></div>
 				<div class="span4 repeated-orders" id="repeated-orders-<?php echo $community; ?>" community="<?php echo $community; ?>"></div>
 				<div class="span4 group-revenue-by" id="group-revenue-by-<?php echo $community; ?>" community="<?php echo $community; ?>"></div>
