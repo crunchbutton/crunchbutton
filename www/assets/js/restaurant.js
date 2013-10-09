@@ -228,11 +228,6 @@ var Restaurant = function(id) {
 			}
 		}
 
-		if( this._closesIn <= 0 ){
-			this._open = false;
-			this._closesIn = 0;
-		}
-
 		return false;
 	}
 

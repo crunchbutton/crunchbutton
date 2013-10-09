@@ -63,7 +63,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				if (list[x].delivery != '1') {
 					list[x]._tag = 'takeout';
 				} else {
-					if( list[x]._closesIn <= list[x]._minimumTime ){
+					if( list[x]._closesIn <= list[x]._minimumTime && list[x]._closesIn > 0 ){
 						list[x]._tag = 'closing';	
 					}
 				}
