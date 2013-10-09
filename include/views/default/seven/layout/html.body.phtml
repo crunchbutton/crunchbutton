@@ -1,0 +1,186 @@
+
+<div class="snap-drawers" ng-controller="SideMenuCtrl">
+	<div class="snap-drawer snap-drawer-left">
+		<div>
+			<div class="pushabutton-getfood"></div>
+			<ul>
+				<li ng-instant="navigation.link('/food-delivery')">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-food"></i></td>
+							<td class="side-menu-label">Restaurants</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-show="account.user.id_user" ng-instant="navigation.link('/orders')">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-time"></i></td>
+							<td class="side-menu-label">Previous Orders</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-instant="navigation.link('/location')">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-map-marker" style="margin-left: 3px;"></i></td>
+							<td class="side-menu-label">Change Location</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-instant="navigation.link('/help')">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-question-sign"></i></td>
+							<td class="side-menu-label">FAQ</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-show="!account.user.id_user" ng-instant="navigation.signin()">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-user"></i></td>
+							<td class="side-menu-label">Log In</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-show="account.user.id_user" ng-instant="signout.do()">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-mail-reply"></i></td>
+							<td class="side-menu-label">Logout</a></td>
+						</tr>
+					</table>
+				</li>
+
+				<li ng-instant="test.card()" ng-show="account.user.debug">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-circle-blank"></i></td>
+							<td class="side-menu-label">TEST: card</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-instant="test.clearloc()" ng-show="account.user.debug">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-circle-blank"></i></td>
+							<td class="side-menu-label">TEST: clear loc</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-instant="test.reload()" ng-show="account.user.debug">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="icon-circle-blank"></i></td>
+							<td class="side-menu-label">TEST: reload page</a></td>
+						</tr>
+					</table>
+				</li>
+			</ul>
+			<div>
+				<p>&copy; <?=date('Y')?> YouBeo. All rights reserved.</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="wrapper">
+	
+	<div id="snap-content" class="snap-content">
+		<div class="navs" data-position="fixed" ng-controller="MainHeaderCtrl">
+			<div class="nav nav-top">
+				<div class="content">
+
+
+				
+					<div id="dropdown-menu" class="dropdown dropdown-tip">
+						<ul class="dropdown-menu">
+							<li><a ng-click="navigation.link('/food-delivery')">Restaurants</a></li>
+							<li><a ng-click="navigation.link('/orders')" ng-show="account.user.id_user">Previous Orders</a></li>
+							<li><a ng-click="navigation.link('/location')">Change Location</a></li>
+							<li class="dropdown-divider"></li>
+							<li><a ng-click="navigation.link('/help')">FAQ</a></li>
+							<li><a ng-click="navigation.signin()" ng-show="!account.user.id_user">Log In</a></li>
+							<li><a ng-click="signout.do()" ng-show="account.user.id_user">Log Out</a></li>
+					    </ul>
+					</div>
+				
+					<div class="menu side" ng-click="navigation.menu()"></div>
+					<div class="menu drop" data-dropdown="#dropdown-menu"></div>
+
+					<div class="logo" ng-click="navigation.home()"></div>
+
+					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()"></div>
+	
+				</div>
+			</div>
+			<div class="nav nav-cart" ng-click="cartScroll()">
+				<div class="cart-summary cart-summary-detail">
+					<div class="cart-summary-icon"></div>
+					<div class="cart-summary-item-count"><span>{{order.info.totalItems}}</span></div>
+					<div class="cart-summary-items">{{order.info.cartSummary}}</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && !notificationBarStatus ), 'button-bottom-show-notification-bar-on': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && notificationBarStatus )}" class="button-bottom-wrapper">
+			<button class="button pushable orange get-food" ng-click="navigation.order.submit();"><div>Get Food</div></button>
+		</div>
+
+		<div class="snap-content-inner bg" ng-scroll-position>
+			<div class="body">
+				<div class="content<?=$e?>">
+					<div class="main-content pages">
+						<div ng-view><?=$this->content?></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="divider"></div>
+
+			<div class="footer">
+
+				<? if (!$this->export) : ?>
+					<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
+				<? endif ; ?>
+
+				<div class="footer-content hidden-phone" ng-controller="MainHeaderCtrl">
+	
+					<a href="javascript:;" ng-click="navigation.link('/help')">Help</a>
+					<a ng-show="navigation.account.user" href="javascript:;" ng-click="navigation.link('/orders')">Order History</a>
+
+					<a href="javascript:App.test.card();" class="test-card" ng-show="account.user.debug">TEST: card</a>
+					<a href="javascript:App.test.logout();" class="test-logout" ng-show="account.user.debug">TEST: logout</a>
+					<a href="javascript:App.test.clearloc();" class="test-clearloc" ng-show="account.user.debug">TEST: clear loc</a>
+					<a href="javascript:;" ng-click="navigation.link('/')" ng-show="account.user.debug">TEST: go home</a>
+					<a href="javascript:;" ng-click="navigation.link('/location')" ng-show="account.user.debug">TEST: go location</a>
+
+					<br />
+					<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
+				</div>
+			</div>
+
+		</div>
+
+
+	</div>
+
+	<div class="divider"></div>
+</div>
+
+<div ng-include="'assets/view/notification.alert.html'"></div>
+<div ng-include="'assets/view/restaurant.closed.html'"></div>
+<div ng-include="'assets/view/restaurant.suggestion.tooltip.html'"></div>
+<div ng-include="'assets/view/account.html'"></div>
+<div ng-include="'assets/view/account.reset.html'"></div>
+<div ng-include="'assets/view/account.facebook.html'"></div>
+<div ng-include="'assets/view/restaurant.closed.inline.html'"></div>
+<div ng-include="'assets/view/giftcard.html'"></div>
+<div ng-include="'assets/view/suggestion.html'"></div>
+<div ng-include="'assets/view/support.html'"></div>
+<div ng-include="'assets/view/connection.error.html'"></div>
+
+<div id="fb-root"></div>
+
