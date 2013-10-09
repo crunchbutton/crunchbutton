@@ -11,8 +11,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="apple-touch-icon-precomposed" href="/assets/images/micro/appicon.png">
 
+<? if (c::config()->bundle) : ?>
+	<link rel="stylesheet" type="text/css" href="/assets/css/bundle.css?v=<?=Cana_Util::gitVersion()?>&s=microsite">
+<? else : ?>
+	<?=$this->display('bundle/css', ['set' => ['style' => ['microsite']]])?>
+<? endif ; ?>
 
-<link rel="stylesheet" type="text/css" href="/assets/css/microsite.css?v=<?=Cana_Util::gitVersion()?>">
 <link rel="stylesheet" type="text/css" href="/assets/css/font-awesome.css?v=<?=Cana_Util::gitVersion()?>">
 <link rel="shortcut icon" href="/assets/images/micro/favicon.ico">
 
