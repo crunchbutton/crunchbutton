@@ -41,6 +41,10 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$params = array_merge( $chart->$method( true ), $info );
 				$this->renderColumn( $params, $chart->getGroupedCharts( $info ), $description, $title );
 				break;
+			case 'column-community':
+				$params = array_merge( $chart->$method( true ), $info );
+				$this->renderColumnCommunity( $params, $chart->getGroupedCharts( $info ), $description, $title );
+				break;
 			case 'area':
 				$params = array_merge( $chart->$method( true ), $info );
 				$this->renderArea( $params, $chart->getGroupedCharts( $info ), $description, $title );
@@ -158,6 +162,46 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					'divId' => $this->divId,
 					'description' => $description
 		]]); 
+	}
+
+	private function renderColumnCommunity( $params, $groups, $description, $title ){
+
+		$subtitle = $params[ 'title' ] . ' : ' . $groups[ $this->chartId ][ 'title' ];
+
+		if( !$title ){
+			$title = $subtitle;
+			$subtitle = '';
+		}
+
+		$divId = c::getPagePiece(3) . '-' . $_REQUEST[ 'community' ];
+
+		$interval = ( $params[ 'interval' ] ) ? $params[ 'interval' ] : 'week';
+
+		$chartId = $this->chartId . '-' . $_REQUEST[ 'community' ];
+
+		return c::view()->display('charts/column-community', ['set' => [
+						'chartId' => $chartId,
+						'data' => $params[ 'data' ] ,
+						'interval' => $interval,
+						'to' => $this->chart->to,
+						'from' => $this->chart->from,
+						'to_month' => $this->chart->to_month,
+						'from_month' => $this->chart->from_month,
+						'to_day' => $this->chart->to_day,
+						'from_day' => $this->chart->from_day,
+						'months' => $months,
+						'number' => $this->number,
+						'unit' => $params[ 'unit' ] ,
+						'totalWeeks' => $this->chart->totalWeeks(),
+						'totalMonths' => $this->chart->totalMonths(),
+						'totalDays' => $this->chart->totalDays(),
+						'title' => $title,
+						'subtitle' => $subtitle,
+						'groups' => $groups,
+						'info' => $params,
+						'divId' => $divId,
+						'description' => $description
+					]]); 
 	}
 
 	private function renderColumn( $params, $groups, $description, $title ){

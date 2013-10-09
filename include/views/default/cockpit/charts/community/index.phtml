@@ -1,0 +1,122 @@
+<?
+	$this->title = 'Communities metrics';
+	$this->subtitle = 'Crunchbutton overview';
+	$this->titleicon = 'bar-chart';
+
+	$communities = $this->communities;
+
+?>
+<div class="container-fluid padded">
+	<div class="box">
+		<div class="box-header">
+			 <span class="title">Metrics</span>
+		</div>
+		<div class="box-content padded">
+
+		<?php foreach( $communities as $community ) { ?>
+
+			<center><h3><?php echo $community; ?></h3></center>
+
+			<div class="row-fluid">
+
+				<div class="span4 new-users" id="new-users-<?php echo $community; ?>" community="<?php echo $community; ?>"></div>
+				<div class="span4 repeated-orders" id="repeated-orders-<?php echo $community; ?>" community="<?php echo $community; ?>"></div>
+				<div class="span4 group-revenue-by" id="group-revenue-by-<?php echo $community; ?>" community="<?php echo $community; ?>"></div>
+				
+			</div>
+
+			<hr/>
+
+		<?php } ?>
+
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+
+$( document ).ready( function(){
+
+	$( '.new-users' ).each( function(){
+		var area = $( this );
+		var chart = area.attr( 'id' );
+		var community = area.attr( 'community' );
+		var url = '/home/charts/users-new-per-week-by-community/group-new-users-community/?activeUserDays=45&=1&community=' + community;
+		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
+	} );
+
+	$( '.repeated-orders' ).each( function(){
+		var area = $( this );
+		var chart = area.attr( 'id' );
+		var community = area.attr( 'community' );
+		var url = '/home/charts/orders-repeat-week-by-community/group-users-repeat-community/?activeUserDays=45&=1&community=' + community;
+		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
+	} );
+
+	$( '.group-revenue-by' ).each( function(){
+		var area = $( this );
+		var chart = area.attr( 'id' );
+		var community = area.attr( 'community' );
+		var url = '/home/charts/gross-revenue-per-week-by-community/group-revenue-by-community/?activeUserDays=45&=1&community=' + community;
+		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
+	} );
+
+} );
+
+	function loadChart( info ){
+ 
+		var divId = info[ 'divId' ];
+		var permalink = info[ 'permalink' ];
+		var chart = $( '#' + divId );	
+		chart.attr( 'data-permalink', permalink );
+		var params = { 'community' : info[ 'community' ] };
+
+		if( info[ 'interval' ] ){
+			params[ 'interval' ] = info[ 'interval' ];
+		}
+
+		var slider = $( '#slider-' + divId );
+		if( slider.length > 0 ){
+			if( slider.attr( 'data-from' ) ){
+				params[ 'from' ] = slider.attr( 'data-from' );	
+			}
+			if( slider.attr( 'data-to' ) ){
+				params[ 'to' ] = slider.attr( 'data-to' );	
+			}
+		}
+
+		var strParams = "?";
+		for ( var key in params ) {
+			if ( strParams != "?" ) {
+				strParams += "&";
+			}
+			strParams += key + "=" + params[key];
+		}
+
+		var group = divId.replace( '-' + info[ 'community' ], '' );
+
+		var url = '/home/charts/' + permalink + '/' + divId + '/' + strParams;
+
+		if( info[ 'force' ] ){
+			chart.html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
+		}
+
+		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
+	
+	}
+
+	function loadSubChart( id ){
+		var select = $( id );
+		var divId = $( '#' + id ).attr( 'data-divId' );
+		var slider = $( '#slider-' + divId );
+		slider.attr( 'data-from', false );
+		slider.attr( 'data-to', false );
+		var values = $( '#' + id + ' option:selected' ).val().split( '|' );
+		var interval = values[ 1 ];
+		var community = $( '#' + id ).attr( 'community' );
+		var permalink = values[ 0 ].replace( '-' + community, '' );
+		$( '#' + divId ).html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
+		 loadChart( { 'divId' : divId, 'permalink' : permalink, 'interval' : interval, 'community' : community } ); 
+	}
+
+</script>
