@@ -114,14 +114,13 @@ html {
 
 
 .menu {
-	background: url(/assets/images/micro/menu.svg) no-repeat;
-	background-position: center center;
+	background: url(/assets/images/micro/menu.svg) center center no-repeat;
+	background-size: 100%;
 	width: 44px;
 	height: 28px;
-	background-size: 100%;
 	float: left;
 	margin: 8px 0 0 25px;
-	-webkit-transition: all 0.2s;
+	-webkit-transition: opacity 0.2s;
 	cursor: pointer;
 }
 
@@ -374,6 +373,9 @@ p {
 	.menu.side {
 		display: none;
 	}
+	.top-pad {
+		height: 90px;
+	}
 }
 @media(max-width:499px) {
 	.logo {
@@ -388,6 +390,9 @@ p {
 	}
 	.menu.side {
 		display: block;
+	}
+	.top-pad {
+		height: 65px;
 	}
 }
 .divider {
@@ -603,4 +608,25 @@ p {
 .nav-top {
 	background: #f78155;
 	padding-top: 15px;
+}
+
+.nav-cart {
+	display:none;
+}
+
+.page-location .nav-top {
+	-webkit-transition:background 0.2s ease;
+	-moz-transition:background 0.2s ease;
+	-ms-transition:background 0.2s ease;
+	-o-transition:background 0.2s ease;
+	transition:background 0.2s ease;
+}
+
+.page-location .nav-top.at-top {
+	background: none;
+}
+
+.page-location .nav-top.at-top .menu {
+	background: url(/assets/images/micro/menu-location.svg) center center no-repeat;
+	background-size: 100%;
 }

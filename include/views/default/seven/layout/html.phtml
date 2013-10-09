@@ -5,6 +5,7 @@
 <script src="//js.balancedpayments.com/v1/balanced.js"></script>
 <script src="/assets/js/jquery.autosize-min.js?v=<?=Cana_Util::gitVersion()?>"></script>
 <script src="/assets/js/jquery.dropdown-min.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/jquery.scrollspy.js?v=<?=Cana_Util::gitVersion()?>"></script>
 
 <? if (c::config()->bundle) : ?>
 	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=app"></script>
@@ -13,3 +14,22 @@
 <? endif ; ?>
 
 <?=$this->display('layout/html.bottom')?>
+
+
+
+<script>
+	$(document).ready(function() {
+		$('.home-top').scrollspy({
+                min: -100,
+                max: 50,
+                onEnter: function(element, position) {
+                	console.log('ENTER');
+                    $('.page-location .nav-top').addClass('at-top');
+                },
+                onLeave: function(element, position) {
+                	console.log('LEAVE');
+                    $('.page-location .nav-top').removeClass('at-top');
+                }
+            });
+	});
+</script>

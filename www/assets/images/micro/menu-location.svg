@@ -3,8 +3,8 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="87.3px" height="56px" viewBox="0 0 87.3 56" style="enable-background:new 0 0 87.3 56;" xml:space="preserve">
-<path style="fill:#F56B3B;enable-background:new    ;" d="M87.3,46c0,5.5-4.5,10-10,10H10C4.5,56,0,51.5,0,46V10C0,4.5,4.5,0,10,0
-	h67.3c5.5,0,10,4.5,10,10V46z"/>
+<path style="opacity:0.14;" d="M87.3,46c0,5.5-4.5,10-10,10H10C4.5,56,0,51.5,0,46V10C0,4.5,4.5,0,10,0h67.3c5.5,0,10,4.5,10,10V46z
+	"/>
 <path style="fill:#FFFFFF;" d="M66,14.5c0,1.9-1.6,3.5-3.5,3.5H24.6c-1.9,0-3.5-1.6-3.5-3.5l0,0c0-1.9,1.6-3.5,3.5-3.5h37.9
 	C64.4,11,66,12.6,66,14.5L66,14.5z"/>
 <path style="fill:#FFFFFF;" d="M66,28.5c0,1.9-1.6,3.5-3.5,3.5H24.6c-1.9,0-3.5-1.6-3.5-3.5l0,0c0-1.9,1.6-3.5,3.5-3.5h37.9
@@ -13,7 +13,7 @@
 	C64.4,39,66,40.6,66,42.5L66,42.5z"/>
 <g id="vOC7jN_1_" style="display:none;">
 	
-		<image style="display:inline;overflow:visible;enable-background:new    ;" width="101" height="74" id="vOC7jN_2_" xlink:href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/7AARRHVja3kAAQAEAAAAHgAA/+4AIUFkb2JlAGTAAAAAAQMA
+		<image style="display:inline;overflow:visible;" width="101" height="74" id="vOC7jN_2_" xlink:href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAAD/7AARRHVja3kAAQAEAAAAHgAA/+4AIUFkb2JlAGTAAAAAAQMA
 EAMCAwYAAAJOAAADKgAABI3/2wCEABALCwsMCxAMDBAXDw0PFxsUEBAUGx8XFxcXFx8eFxoaGhoX
 Hh4jJSclIx4vLzMzLy9AQEBAQEBAQEBAQEBAQEABEQ8PERMRFRISFRQRFBEUGhQWFhQaJhoaHBoa
 JjAjHh4eHiMwKy4nJycuKzU1MDA1NUBAP0BAQEBAQEBAQEBAQP/CABEIAEoAZQMBIgACEQEDEQH/
