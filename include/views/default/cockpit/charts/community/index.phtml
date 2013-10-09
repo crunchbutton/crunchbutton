@@ -1,5 +1,5 @@
 <?
-	$this->title = 'Communities metrics';
+	$this->title = 'Community metrics';
 	$this->subtitle = 'Crunchbutton overview';
 	$this->titleicon = 'bar-chart';
 
@@ -9,7 +9,7 @@
 <div class="container-fluid padded">
 	<div class="box">
 		<div class="box-header">
-			 <span class="title">Metrics</span>
+			 <span class="title">Community metrics</span>
 		</div>
 		<div class="box-content padded">
 			<div class="row-fluid">
@@ -34,9 +34,13 @@
 
 			<?php } ?>
 		</div>
+		
+		<hr/>
 
 		<?php foreach( $communities as $community ) { ?>
+
 		<?php
+			$restaurants = $community->restaurants;
 			$_community = str_replace( ' ', '-', $community->community );
 			$_community = strtolower( $_community );
 		?>
