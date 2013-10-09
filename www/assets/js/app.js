@@ -336,11 +336,12 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 });
 
-App.alert = function(txt, title) {
+App.alert = function( txt, title, useNativeAlert ) {
 	setTimeout(function() {
-		// @todo: #1546
-		if (App.useNativeAlert && App.isPhoneGap) {
+		if (useNativeAlert && App.isPhoneGap) {
 			navigator.notification.alert(txt, null, title || 'Crunchbutton');
+		} else if ( useNativeAlert ) {
+			alert( txt );
 		} else {
 			App.rootScope.$broadcast('notificationAlert', title || null, txt);
 		}
