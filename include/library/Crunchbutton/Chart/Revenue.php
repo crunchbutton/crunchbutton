@@ -18,9 +18,9 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 														'title' => 'Gross Revenue',
 														'tags' => array( 'reps' ),
 														'charts' => array(  
-																'gross-revenue-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'byDay' ),
-																'gross-revenue-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'byWeek' ),
-																'gross-revenue-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'byMonth' ),
+																'gross-revenue-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'byDayByCommunity' ),
+																'gross-revenue-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'byWeekByCommunity' ),
+																'gross-revenue-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'byMonthByCommunity' ),
 															)
 												),
 										);
@@ -169,7 +169,7 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 											 r.community
 							ORDER BY YEARWEEK(date) DESC";
 
-			$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
+			$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		} else {
 			$query = "SELECT YEARWEEK(date) AS `Week`,
 												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
