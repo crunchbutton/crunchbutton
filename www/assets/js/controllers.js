@@ -283,6 +283,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		var entered = $scope.location.position.pos().entered();
 		var isStreet = $scope.location.position.pos().valid( 'order' );
 		if( isStreet && !entered.match(new RegExp( /\d{5}(?:[-\s]\d{4})?/ )) ){
+			$('.location-address').val('').attr('placeholder','Please include a zip code');	
 			$scope.$broadcast( 'locationNotServed',  true );
 		} else {
 			$scope.locationError = true;
@@ -297,7 +298,13 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		spin.stop();
 		var pos = PositionsService.pos();
 		if( pos.type() == 'user' ){
-			$('.location-address').val('').attr('placeholder','Please include a zip code or city name');	
+			var entered = $scope.location.position.pos().entered();
+			var isStreet = $scope.location.position.pos().valid( 'order' );
+			if( isStreet && !entered.match(new RegExp( /\d{5}(?:[-\s]\d{4})?/ )) ){
+				$('.location-address').val('').attr('placeholder','Please include a zip code');	
+			} else {
+				$('.location-address').val('').attr('placeholder','Please include a zip code or city name');	
+			}
 		} else {
 			$('.location-address').val('').attr('placeholder','Please enter an address or zip');	
 		}
