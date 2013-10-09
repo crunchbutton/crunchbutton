@@ -1297,6 +1297,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $communities;
 	}
 
+	public static function getCommunitiesWithRestaurantsNumber(){
+		$data = c::db()->get( 'SELECT SUM(1) restaurants, community FROM restaurant WHERE community IS NOT NULL AND community != "" GROUP BY community' );
+		$communities = [];
+		foreach ( $data as $item ) {
+			$communities[] = $item;
+		}
+		return $communities;
+	}
+
+	
+
 	public static function getRestaurantsByCommunity( $community ){
 		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}'" );
 	}

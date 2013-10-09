@@ -7,7 +7,7 @@ class Controller_charts_community extends Crunchbutton_Controller_Account {
 			return ;
 		}
 
-		c::view()->communities = Restaurant::getCommunities();
+		c::view()->communities = Restaurant::getCommunitiesWithRestaurantsNumber();
 		c::view()->display( 'charts/community/index' );
 
 	}

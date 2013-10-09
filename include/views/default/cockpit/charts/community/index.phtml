@@ -12,26 +12,47 @@
 			 <span class="title">Metrics</span>
 		</div>
 		<div class="box-content padded">
+			<div class="row-fluid">
+			<h3>Communities</h3>
+
+			<?php foreach( $communities as $community ) { ?>
+				 <div class="span4">
+						<div>
+							<?php 
+								$restaurants = $community->restaurants;
+								$_community = str_replace( ' ', '-', $community->community ); 
+								$_community = strtolower( $_community );
+							?>
+							 <input type="checkbox" 
+									class="icheck" 
+									id="checkbox-<?php echo $_community;?>" 
+									community="<?php echo $_community;?>" 
+									name="checkbox-<?php echo $_community;?>">
+							 <label for="checkbox-<?php echo $_community;?>"><?php echo $community->community; ?> ( <?php echo $restaurants; ?> restaurants )</label>
+						</div>
+				 </div>
+
+			<?php } ?>
+		</div>
 
 		<?php foreach( $communities as $community ) { ?>
+		<?php
+			$_community = str_replace( ' ', '-', $community->community );
+			$_community = strtolower( $_community );
+		?>
+		<div class="container-<?php echo $_community; ?>" style="display:none;">
+				<center><h3><?php echo $community->community; ?> ( <?php echo $restaurants; ?> restaurants )</h3></center>
 
-			<center><h3><?php echo $community; ?></h3></center>
+				<div class="row-fluid">
 
-			<div class="row-fluid">
+					<div type="new-users" class="span4 new-users <?php echo $_community; ?>" id="new-users-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
+					<div type="repeated-orders" class="span4 repeated-orders <?php echo $_community; ?>" id="repeated-orders-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
+					<div type="gross-revenue" class="span4 group-revenue-by <?php echo $_community; ?>" id="group-revenue-by-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
+					
+				</div>
 
-				<?php
-					$community = str_replace( ' ', '-', $community );
-					$community = strtolower( $community );
-				?>
-
-				<div class="span4 new-users" id="new-users-<?php echo $community; ?>" community="<?php echo $community; ?>"></div>
-				<div class="span4 repeated-orders" id="repeated-orders-<?php echo $community; ?>" community="<?php echo $community; ?>"></div>
-				<div class="span4 group-revenue-by" id="group-revenue-by-<?php echo $community; ?>" community="<?php echo $community; ?>"></div>
-				
-			</div>
-
-			<hr/>
-
+				<hr/>
+		</div>
 		<?php } ?>
 
 		</div>
@@ -39,32 +60,49 @@
 </div>
 <script type="text/javascript">
 
+function loadChartsOfCommunity( community ){
+
+	$( '.container-' + community ).show();
+	$( '.' + community ).each( function(){
+		var area = $( this );
+		var chart = area.attr( 'id' );
+		var type = area.attr( 'type' );
+		var partial = '';
+		switch( type){
+			case 'new-users':
+				partial = 'users-new-per-week-by-community/group-new-users-community';
+				break;
+			case 'repeated-orders':
+				partial = 'orders-repeat-week-by-community/group-users-repeat-community';
+				break;
+			case 'gross-revenue':
+				partial = 'gross-revenue-per-week-by-community/group-revenue-by-community';
+				break;
+		}
+
+		var url = '/home/charts/' + partial + '/?activeUserDays=45&=1&community=' + community;
+		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
+	} );
+}
+
 
 $( document ).ready( function(){
 
-	$( '.new-users' ).each( function(){
-		var area = $( this );
-		var chart = area.attr( 'id' );
-		var community = area.attr( 'community' );
-		var url = '/home/charts/users-new-per-week-by-community/group-new-users-community/?activeUserDays=45&=1&community=' + community;
-		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
-	} );
+	$( '.icheck' ).on( 'ifChanged', function( event ){
 
-	$( '.repeated-orders' ).each( function(){
-		var area = $( this );
-		var chart = area.attr( 'id' );
-		var community = area.attr( 'community' );
-		var url = '/home/charts/orders-repeat-week-by-community/group-users-repeat-community/?activeUserDays=45&=1&community=' + community;
-		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
-	} );
-
-	$( '.group-revenue-by' ).each( function(){
-		var area = $( this );
-		var chart = area.attr( 'id' );
-		var community = area.attr( 'community' );
-		var url = '/home/charts/gross-revenue-per-week-by-community/group-revenue-by-community/?activeUserDays=45&=1&community=' + community;
-		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
-	} );
+		var check = $( this );
+		var community = check.attr( 'community' );
+		var container = $( '.container-' + community );
+		if( check.is( ':checked' ) ){
+			if( !container.attr( 'loaded' ) ){
+				loadChartsOfCommunity( community );
+				container.attr( 'loaded', true );
+			}
+			container.show();
+		} else {
+			container.hide();
+		}
+	});
 
 } );
 
