@@ -607,6 +607,7 @@ p {
 }
 .nav-top {
 	background: #f78155;
+	background: rgba(247, 125, 79,.97);
 	padding-top: 15px;
 }
 
@@ -629,4 +630,30 @@ p {
 .page-location .nav-top.at-top .menu {
 	background: url(/assets/images/micro/menu-location.svg) center center no-repeat;
 	background-size: 100%;
+}
+
+
+
+
+
+
+
+
+
+.small-container {
+	background:#fff;
+	width:250px;
+	margin:40px auto;
+	position:relative;
+	border-radius:4px;
+	padding:20px;
+}
+.small-container {
+	line-height:20px;
+}
+.small-container h1 {
+	color:#D74924;
+	font-size:1.4em;
+	font-weight:400;
+	margin-bottom:18px;
 }

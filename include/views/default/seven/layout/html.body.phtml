@@ -92,8 +92,6 @@
 			<div class="nav nav-top">
 				<div class="content">
 
-
-				
 					<div id="dropdown-menu" class="dropdown dropdown-tip">
 						<ul class="dropdown-menu">
 							<li><a ng-click="navigation.link('/food-delivery')">Restaurants</a></li>
@@ -103,6 +101,11 @@
 							<li><a ng-click="navigation.link('/help')">FAQ</a></li>
 							<li><a ng-click="navigation.signin()" ng-show="!account.user.id_user">Log In</a></li>
 							<li><a ng-click="signout.do()" ng-show="account.user.id_user">Log Out</a></li>
+							<li class="dropdown-divider" ng-show="account.user.debug"></li>
+							<li><a ng-click="App.test.card()" ng-show="account.user.debug">TEST: card</a></li>
+							<li><a ng-click="App.test.clearloc()" ng-show="account.user.debug">TEST: clear location</a></li>
+							<li><a ng-click="navigation.link('/')" ng-show="account.user.debug">TEST: go home</a></li>
+							<li><a ng-click="App.test.card()" ng-show="account.user.debug">TEST: card</a></li>
 					    </ul>
 					</div>
 				
@@ -147,17 +150,7 @@
 				<? endif ; ?>
 
 				<div class="footer-content hidden-phone" ng-controller="MainHeaderCtrl">
-	
-					<a href="javascript:;" ng-click="navigation.link('/help')">Help</a>
-					<a ng-show="navigation.account.user" href="javascript:;" ng-click="navigation.link('/orders')">Order History</a>
 
-					<a href="javascript:App.test.card();" class="test-card" ng-show="account.user.debug">TEST: card</a>
-					<a href="javascript:App.test.logout();" class="test-logout" ng-show="account.user.debug">TEST: logout</a>
-					<a href="javascript:App.test.clearloc();" class="test-clearloc" ng-show="account.user.debug">TEST: clear loc</a>
-					<a href="javascript:;" ng-click="navigation.link('/')" ng-show="account.user.debug">TEST: go home</a>
-					<a href="javascript:;" ng-click="navigation.link('/location')" ng-show="account.user.debug">TEST: go location</a>
-
-					<br />
 					<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
 				</div>
 			</div>
