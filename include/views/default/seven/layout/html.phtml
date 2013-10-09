@@ -1,0 +1,15 @@
+<?=$this->display('layout/html.top')?>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+<script src="//js.balancedpayments.com/v1/balanced.js"></script>
+<script src="/assets/js/jquery.autosize-min.js?v=<?=Cana_Util::gitVersion()?>"></script>
+<script src="/assets/js/jquery.dropdown-min.js?v=<?=Cana_Util::gitVersion()?>"></script>
+
+<? if (c::config()->bundle) : ?>
+	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=app"></script>
+<? else : ?>
+	<?=$this->display('bundle/js', ['set' => ['scripts' => ['app']]])?>
+<? endif ; ?>
+
+<?=$this->display('layout/html.bottom')?>
