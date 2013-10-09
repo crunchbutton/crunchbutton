@@ -296,7 +296,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	$scope.$on( 'locationNotServed', function(e, data) {
 		spin.stop();
 		var pos = PositionsService.pos();
-		if( pos.type == 'user' ){
+		if( pos.type() == 'user' ){
 			$('.location-address').val('').attr('placeholder','Please include a zip code or city name');	
 		} else {
 			$('.location-address').val('').attr('placeholder','Please enter an address or zip');	
