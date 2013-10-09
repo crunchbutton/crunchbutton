@@ -1,26 +1,19 @@
 <div class="home-top">
-	<div id="dropdown-menu" class="dropdown dropdown-tip">
-		<ul class="dropdown-menu">
-			<li><a href="/restaurants">Restaurants</a></li>
-			<li><a href="/orders">Previous Orders</a></li>
-			<li><a href="/location">Change Location</a></li>
-			<li class="dropdown-divider"></li>
-			<li><a href="/help">FAQ</a></li>
-			<li><a href="/logout">Log Out</a></li>
-	    </ul>
-	</div>
 
-	<div class="menu" data-dropdown="#dropdown-menu"></div>
-	<div class="logo"></div>
 	<div class="pushabutton"></div>
 	<div class="home-inputs">
 		<table cellpadding="0" cellspacing="0" class="home-location">
 			<tr>
-				<td style="width: 100%;"><input class="enter-location" placeholder="Enter your location" ng-model="location.form.address"></td>
-				<td><button class="find-location" ng-click="locEat()"><span class="icon icon-location-arrow "></span></button></td>
+				<td style="width: 100%;"><input class="enter-location" placeholder="Enter your location" ng-enter="letsEat()" ng-model="location.form.address"></td>
+				<td>				
+					<button class="location-detect ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF" ng-click="locEat()">
+						<span class="icon icon-location-arrow "></span>
+						<div class="ladda-spinner"></div>
+					</button>
+				</td>
 			</tr>
 		</table>
-		<button class="button pushable orange find-restaurants ladda-button" ng-click="letsEat()" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF">
+		<button class="button pushable orange find-restaurants button-letseat-form ladda-button" ng-click="letsEat()" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF">
 			<div class="ladda-label">Find Restaurants!</div>
 			<span class="ladda-spinner"></span>
 		</button>
