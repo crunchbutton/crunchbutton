@@ -59,7 +59,7 @@
 			</div>
 		</div>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities', 'metrics-communities-page'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/charts/community" title="Metrics by Community">
