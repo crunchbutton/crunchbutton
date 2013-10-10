@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 /**
  *
@@ -72,7 +72,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 
 		if (c::getPagePiece($page_piece_index) == 'new') {
 			// @permission check for restaurant permissions
-			if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud'])) {
+			if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-create'])) {
 				return;
 			}
 			$restaurant->save();

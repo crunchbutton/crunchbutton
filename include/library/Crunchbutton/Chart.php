@@ -27,6 +27,7 @@ class Crunchbutton_Chart extends Cana_Model {
 		foreach( $this->groups as $id_group => $group ){
 			$info[ 'id_group' ] = $id_group;
 			$info[ 'title' ] = $group[ 'title' ];
+			$info[ 'tags' ] = $group[ 'tags' ];
 			$charts = $group[ 'charts' ];
 			if( count( $charts ) > 0 ){
 				foreach ( $charts as $id_chart => $chart ) {

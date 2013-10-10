@@ -3,6 +3,36 @@
 class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 	public function process( $info, $chart ){
+
+		// Check if the user has permission to see the chart
+		$hasPermission = c::admin()->permission()->check( [ 'global', 'metrics-all' ] );
+
+		if( !$hasPermission ){
+			
+			// $charts = Chart::getAllCharts();
+
+			$hasTag = false;
+
+			$tags = $info[ 'tags' ];
+
+			if( $tags ){
+				foreach( $tags as $tag ){
+					$hasTag = true;
+					$hasPermission = c::admin()->permission()->check( [ "metrics-{$tag}" ] );
+					if( $hasPermission ){ break; }	
+				}
+			}
+				
+			if( !$hasTag ){
+				$hasPermission = c::admin()->permission()->check( [ 'metrics-no-grouped-charts' ] );
+			}
+
+		}
+
+		if( !$hasPermission ){
+			return;
+		}
+
 		$title = $info[ 'title' ];
 		$subTitle = $info['chart'][ 'title' ];
 		$type = $info['chart'][ 'type' ];
@@ -57,10 +87,6 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 	}
 
 	public function init() {
-
-		if (!c::admin()->permission()->check(['global'])) {
-			return ;
-		}
 
 		$this->chart = new Crunchbutton_Chart;
 
