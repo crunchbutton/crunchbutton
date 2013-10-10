@@ -6,7 +6,8 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 		
 		if (c::app()->cache()->cached($cacheid) && !$_REQUEST['nocache']) {
 			$data = c::app()->cache()->read($cacheid);
-			$mtime = c::cache()->mtime($cache);
+			$mtime = c::cache()->mtime($cacheid);
+
 		} else {
 
 			if ($_REQUEST['s']) {

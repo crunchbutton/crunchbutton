@@ -17,9 +17,14 @@
 		</div>
 		<div class="restaurants-orange"></div>
 		<div class="divider"></div>
+		<div class="restaurants-tagline">
+			<h1>Order the top local delivery food.</h1>
+			<h2>Choose one of these awesome restaurants</h2>
+		</div>
+		<div class="divider"></div>
 	</div>
 
-	<div class="content-padding restaurants-items">
+	<div class="restaurants-items">
 		<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="restaurants-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
 
 			
@@ -46,7 +51,7 @@
 		</div>
 
 		<button class="button green" ng-show="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
-			Show more restaurants
+			More awesome Restauratnts
 		</button>
 
 	</div>
