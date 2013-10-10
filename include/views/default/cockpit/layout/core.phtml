@@ -149,7 +149,7 @@
 			*/ ?>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','restaurants-crud'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','restaurants-all','restaurants-list','restaurants-crud','restaurants-create'] ) ) { ?>
 		<li class="<?=$this->page == 'restaurants' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/restaurants">

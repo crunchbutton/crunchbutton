@@ -6,7 +6,7 @@
 <!-- content -->
 <div class="container-fluid padded">
 	<div class="row-fluid action-nav-normal">
-		<?php if ( c::admin()->permission()->check( [ 'global','restaurants-crud'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','restaurants-crud','restaurants-create'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/restaurants/new" title="New Restaurant">
@@ -70,7 +70,7 @@
 		</div>
 		<?php } ?>
 	</div>
-	<?php if ( c::admin()->permission()->check( [ 'global','metrics'] ) ) { ?>
+	<?php if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-main', 'metrics-investors', 'metrics-detailed-analytics', 'metrics-no-grouped-charts' ] ) ) { ?>
 	 <div class="box">
 			<div class="box-header">
 				 <span class="title">Metrics</span>
@@ -84,11 +84,11 @@
 				 <?php
 						foreach ($this->graphs as $category => $graphs ){ 
 							?>
-				 <h5><?php echo $category; ?></h5>
+				 <h5><?php echo $category;?></h5>
 				 <?php
 						$count = 1;
 						foreach ($graphs as $id => $graph ){ 
-						
+
 							if( $count == 1 ){
 									echo '<div class="row-fluid">';
 								}
@@ -199,8 +199,10 @@
 			<?php
 				 }
 				 ?>
-			<h4>Cohorts</h4>
-			<a href="/charts/cohort/" class="btn btn-green"><i class="icon-group"></i> Manage cohorts </a> 
+			<?php if ( c::admin()->permission()->check( ['global','metrics-manage-cohorts'] ) ) { ?>
+				<h4>Cohorts</h4>
+				<a href="/charts/cohort/" class="btn btn-green"><i class="icon-group"></i> Manage cohorts </a> 
+			<?php } ?>
 	 </div>
 	 <div class="modal-footer">
 			<button class="btn btn-default" data-dismiss="modal">Close</button>
