@@ -22,7 +22,7 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 				}
 			}
 
-			$src = c::view()->render('bundle/js',['set' => ['scripts' => $scripts]]);
+			$src = c::view()->render('bundle/bundler.js',['set' => ['scripts' => $scripts]]);
 
 			$doc = new DOMDocument('1.0');
 			@$doc->loadHTML($src);
