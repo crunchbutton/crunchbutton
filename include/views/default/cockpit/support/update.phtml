@@ -87,9 +87,11 @@ $support = $this->support;
 					<label>How to Prevent This in the Future?</label>
 					<textarea name="how_to_prevent" id="how_to_prevent"><?php echo $support->how_to_prevent;?></textarea>
 				</li>
+				<?php if( c::admin()->permission()->check( [ 'global', 'support-all', 'support-crud' ] ) ) { ?>	
 				<li class="input">
 					<button type="button" class="btn btn-blue button-update">Save changes</button>
 				</li>
+				<?php } ?>
 			</ul>
 		</form>
 	</div>
