@@ -171,7 +171,7 @@
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>
 		<maxconfirmback>2</maxconfirmback>
-		<warningOrderNotConfirmedTime>720000</warningOrderNotConfirmedTime>
+		<warningOrderNotConfirmedTime>420000</warningOrderNotConfirmedTime>
 		<confirmTime>30000</confirmTime>
 		<confirmFaxTime>30000</confirmFaxTime>
 		<confirmTimeFaxReceived>300000</confirmTimeFaxReceived>
