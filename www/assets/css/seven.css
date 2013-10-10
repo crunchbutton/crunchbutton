@@ -678,6 +678,7 @@ p {
 	margin-bottom: 10px;
 	display: inline-block;
 	width: auto;
+	text-align: left;
 }
 .restaurants-pic {
 	height: 115px;
@@ -718,7 +719,7 @@ p {
 	background: #ed4f41;
 	border-radius: 4px;
 	padding: 10px 12px 10px 12px;
-	width: 100%;
+	width: 270px;
 	clear: both;
 
 }

@@ -109,8 +109,8 @@
 					    </ul>
 					</div>
 				
-					<div class="menu side" ng-click="navigation.menu()"></div>
-					<div class="menu drop" data-dropdown="#dropdown-menu"></div>
+					<div class="menu side" ng-click="navigation.menu()" ng-show="navigation.buttons.menu"></div>
+					<div class="menu drop" data-dropdown="#dropdown-menu" ng-show="navigation.buttons.menu"></div>
 
 					<div class="logo" ng-click="navigation.home()"></div>
 
