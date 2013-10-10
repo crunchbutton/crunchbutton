@@ -1,12 +1,12 @@
 <?
-	 $this->title = 'Dashboard';
-	 $this->subtitle = 'Crunchbutton overview';
-	 $this->titleicon = 'dashboard';
-	 ?>
+	$this->title = 'Dashboard';
+	$this->subtitle = 'Crunchbutton overview';
+	$this->titleicon = 'dashboard';
+?>
 <!-- content -->
 <div class="container-fluid padded">
 	<div class="row-fluid action-nav-normal">
-		<?php if ( c::admin()->permission()->check( [ 'global','restaurants-crud','restaurants-create'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud','restaurants-create'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/restaurants/new" title="New Restaurant">
@@ -17,12 +17,12 @@
 			</div>
 		</div>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','support'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view' ] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/support" title="Support">
 				<i class="icon-comments-alt"></i>
-				<span>Support</span>
+					<span>Support</span>
 				</a>
 				<span class="label label-black"><?=$this->data['all']['tickets']?></span>
 			</div>
