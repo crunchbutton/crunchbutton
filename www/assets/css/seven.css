@@ -160,7 +160,7 @@ html {
 .home-location td {
 	vertical-align: top;
 }
-.enter-location {
+.location-address {
 	border: 2px solid #003f35;
 	border-top-left-radius:6px;
 	border-bottom-left-radius:6px;
@@ -336,7 +336,7 @@ p {
 	background: #e78d62;
 }
 .button.green:active {
-	background: #00bea0;
+	background: #00b195;
 }
 .find-restaurants {
 	font-size: 19px;
@@ -379,7 +379,7 @@ p {
 }
 @media(max-width:499px) {
 	.logo {
-		width: 190px;
+		width: 180px;
 		height: 37px;
 	}
 	.menu {
@@ -609,6 +609,7 @@ p {
 	background: #f78155;
 	background: rgba(247, 125, 79,.97);
 	padding-top: 15px;
+	border-bottom: 1px solid rgba(233, 114, 69, .97);
 }
 
 .nav-cart {
@@ -616,15 +617,16 @@ p {
 }
 
 .page-location .nav-top {
-	-webkit-transition:background 0.2s ease;
-	-moz-transition:background 0.2s ease;
-	-ms-transition:background 0.2s ease;
-	-o-transition:background 0.2s ease;
-	transition:background 0.2s ease;
+	-webkit-transition:background 0.2s ease, border 0.2s ease;
+	-moz-transition:background 0.2s ease, border 0.2s ease;
+	-ms-transition:background 0.2s ease, border 0.2s ease;
+	-o-transition:background 0.2s ease, border 0.2s ease;
+	transition:background 0.2s ease, border 0.2s ease;
 }
 
 .page-location .nav-top.at-top {
 	background: none;
+	border-bottom: none;
 }
 
 .page-location .nav-top.at-top .menu {
@@ -656,4 +658,89 @@ p {
 	font-size:1.4em;
 	font-weight:400;
 	margin-bottom:18px;
+}
+
+
+
+/* RESTAURANTS LIST */
+
+.restaurants-item .restaurants-open {
+	background: #fc9a6b;
+	width: 290px;
+	height: 120px;
+	border-radius: 6px;
+	padding: 2px;
+	margin-bottom: 15px;
+	display: inline-block;
+}
+.restaurants-pic {
+	height: 115px;
+	border-top-left-radius:3px;
+	border-top-right-radius:3px;
+	overflow:hidden;
+	margin-bottom:12px;
+	background-size:cover !important;
+}
+.restaurants-item-content {
+
+}
+.restaurants-open .restaurants-name {
+	font-size: 15px;
+	text-shadow:1px 1px 0 rgba(0,0,0,.5);
+	color: #fff;
+	font-weight: 700;
+}
+.restaurants-open .restaurants-description {
+	font-size: 10px;
+	color: #fff;
+	text-shadow:1px 1px 0 rgba(0,0,0,.7);
+}
+
+.restaurants-closed .restaurants-name {
+	color: #fff;
+	font-size: 12px;
+	font-weight: bold;
+	margin-bottom: .2em;
+}
+
+.restaurants-closed .restaurants-opensin {
+	color: #fff;
+	font-size: 10px;
+	font-style: italic;
+}
+
+.restaurants-closed {
+	background: #ed4f41;
+	border-radius: 4px;
+	padding: 10px 12px 10px 12px;
+
+}
+.restaurants-orange {
+	background: url(/assets/images/micro/restaurants-orange.svg) no-repeat;
+	width: 7.9em;
+	height: 10.3em;
+	background-size: 100%;
+	float: left;
+	margin-top: 2.2em;
+}
+.bubble-tail-green {
+	background: url(/assets/images/micro/bubble-tail-green.svg) no-repeat;
+	width: 18.2em;
+	height: 7.4em;
+	background-size: 100%;
+	float: left;
+	margin-top: 1em;
+}
+.bubble-tail-green .text {
+	display: block;
+	margin-left: 1.3em;
+	color: #fff;
+	font-size: 1.45em;
+	line-height: 1.3em;
+	padding-top: .6em;
+	font-weight: 600;
+}
+.restaurants-bubble-wrap {
+	width: 27em;
+	margin: 0 auto;
 }
