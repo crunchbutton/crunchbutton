@@ -663,22 +663,27 @@ p {
 
 
 /* RESTAURANTS LIST */
-
+.restaurants-items {
+	text-align: center;
+}
 .restaurants-item .restaurants-open {
 	background: #fc9a6b;
 	width: 290px;
 	height: 120px;
 	border-radius: 6px;
 	padding: 2px;
-	margin-bottom: 15px;
 	display: inline-block;
+}
+.restaurants-item {
+	margin-bottom: 10px;
+	display: inline-block;
+	width: auto;
 }
 .restaurants-pic {
 	height: 115px;
 	border-top-left-radius:3px;
 	border-top-right-radius:3px;
 	overflow:hidden;
-	margin-bottom:12px;
 	background-size:cover !important;
 }
 .restaurants-item-content {
@@ -713,6 +718,8 @@ p {
 	background: #ed4f41;
 	border-radius: 4px;
 	padding: 10px 12px 10px 12px;
+	width: 100%;
+	clear: both;
 
 }
 .restaurants-orange {
@@ -730,10 +737,11 @@ p {
 	background-size: 100%;
 	float: left;
 	margin-top: 1em;
+	margin-right: 1.5em;
 }
 .bubble-tail-green .text {
 	display: block;
-	margin-left: 1.3em;
+	margin-left: 1.7em;
 	color: #fff;
 	font-size: 1.45em;
 	line-height: 1.3em;
@@ -741,6 +749,6 @@ p {
 	font-weight: 600;
 }
 .restaurants-bubble-wrap {
-	width: 27em;
+	width: 29em;
 	margin: 0 auto;
 }

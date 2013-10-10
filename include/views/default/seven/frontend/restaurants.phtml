@@ -19,7 +19,7 @@
 		<div class="divider"></div>
 	</div>
 
-	<div class="content-padder">
+	<div class="content-padding restaurants-items">
 		<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="restaurants-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
 
 			
