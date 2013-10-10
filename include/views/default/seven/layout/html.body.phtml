@@ -133,25 +133,28 @@
 		</div>
 
 		<div class="snap-content-inner bg" ng-scroll-position>
-			<div class="body">
-				<div class="content<?=$e?>">
-					<div class="main-content pages">
-						<div ng-view><?=$this->content?></div>
-					</div>
+			<div class="content<?=$e?>">
+				<div class="main-content">
+					<div ng-view><?=$this->content?></div>
 				</div>
 			</div>
 
 			<div class="divider"></div>
 
 			<div class="footer">
-
-				<? if (!$this->export) : ?>
-					<div class="fb-like-mobile fb-like-box" data-href="http://www.facebook.com/crunchbutton" data-width="300" data-show-faces="false" data-stream="false" data-header="false"></div>
-				<? endif ; ?>
-
-				<div class="footer-content hidden-phone" ng-controller="MainHeaderCtrl">
-
-					<span class="copyright">&copy; <?=date('Y')?> YouBeo. All rights reserved.</span>
+				<div class="divider line"></div>
+				<div class="content-padding">
+					<? if (!$this->export) : ?>
+						<div class="fb-like-box" data-width="200" data-href="https://www.facebook.com/crunchbutton" data-width="The pixel width of the plugin" data-height="The pixel height of the plugin" data-show-faces="false" data-header="false" data-stream="false" data-show-border="false"></div>
+					<? endif ; ?>
+	
+					<div class="social">
+						<a class="icon-facebook"></a>
+						<a class="icon-twitter"></a>
+						<a class="icon-linkedin"></a>
+					</div>
+					<div class="divider"></div>
+					<span class="copyright">&copy; <?=date('Y')?> YouBeo, Inc.</span>
 				</div>
 			</div>
 
