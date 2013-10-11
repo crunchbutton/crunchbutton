@@ -29,6 +29,14 @@ class Controller_api_siteconfig extends Crunchbutton_Controller_RestAccount {
 				case 'support-phone-afterhours':
 					$hasPermisstion = c::admin()->permission()->check( [ 'global', 'support-all', 'support-settings' ] );
 					break;
+				case 'referral-inviter-credit-value':
+				case 'referral-invited-credit-value':
+				case 'referral-add-credit-to-invited':
+				case 'referral-limit-per-code':
+				case 'referral-is-enable':
+				case 'referral-invites-limit-per-code':
+					$hasPermisstion = c::admin()->permission()->check( [ 'global', 'invite-promo' ] );
+				break;
 			}
 		}
 

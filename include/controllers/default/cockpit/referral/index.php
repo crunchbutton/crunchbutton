@@ -2,7 +2,7 @@
 
 class Controller_referral extends Crunchbutton_Controller_Account {
 	public function init() {
-		if (!c::admin()->permission()->check(['global'])) {
+		if (!c::admin()->permission()->check(['global','invite-promo'])) {
 			return ;
 		}
 		
