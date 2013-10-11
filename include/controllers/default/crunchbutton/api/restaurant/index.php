@@ -140,9 +140,11 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 					/* @var $r Crunchbutton_Restaurant */
 
 					// Permissions
-					// if ( c::admin()->permission()->check(['global', 'restaurants-all', , "restaurant-{$this->restaurant->id_restaurant}-pay" ])) {
+					if( !c::admin() ){
+						return;
+					}
+
 					$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-all" ]);
-					
 					if( !$hasPermission ){
 						switch ($action) {
 							case 'fake-merchant':
@@ -293,7 +295,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							$weight_adj = $this->request()['weight_adj'];
 							$r->weight_adj = $weight_adj;
 							$r->save();
-							echo json_encode( [ 'success' => 'dish saved' ] );
+							echo json_encode( [ 'success' => 'saved' ] );
 						break;
 
 						default:

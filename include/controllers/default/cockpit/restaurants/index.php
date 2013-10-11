@@ -52,6 +52,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 	}
 
 	public function init() {
+
 		c::view()->page = 'restaurants';
 
 		if(c::getPagePiece(1) == 'legacy') {

@@ -1,4 +1,7 @@
 <?php
+
+$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud' ] );
+
 $restaurants = $this->restaurants;
 if ( sizeof( $restaurants ) == 0 ) { ?>
 	<div class="span12 padded">
@@ -21,7 +24,22 @@ if ( sizeof( $restaurants ) == 0 ) { ?>
 				<td><?php echo $restaurant->name; ?></td>
 				<td><?php echo $restaurant->_weight_old; ?></td>
 				<td>
-					<input type="text" class="weight_adj" id="<?php echo $restaurant->id_restaurant; ?>" value="<?php echo $restaurant->weight_adj; ?>"/>
+					<?php  
+
+					if( $hasPermissionToAllRestaurants ){
+						$hasPermission = true;
+					} else {
+						$hasPermission = c::admin()->permission()->check( [ "restaurant-{$restaurant->id_restaurant}-edit", "restaurant-{$restaurant->id_restaurant}-all" ] );
+					}
+					if( $hasPermission ){
+						?>
+							<input type="text" class="weight_adj" id="<?php echo $restaurant->id_restaurant; ?>" value="<?php echo $restaurant->weight_adj; ?>"/>
+						<?php	
+					} else {
+						echo $restaurant->weight_adj; 
+					}
+					?>
+					
 				</td>
 				<td><?php echo $restaurant->_weight; ?></td>
 				<td><?php if( $restaurant->delivery == 1 ){ echo '<span style="color:green;">Yes</span>'; } else { echo '<span style="color:grey;">No</span>'; } ?></td>
