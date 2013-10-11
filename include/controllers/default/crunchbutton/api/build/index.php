@@ -19,7 +19,6 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 			'/addme',
 			'/social',
 			'/mprinter',
-			'/micro',
 			'/giftcard',
 			'/food',
 			'/datepicker',

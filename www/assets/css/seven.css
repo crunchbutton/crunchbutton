@@ -27,11 +27,13 @@ body {
 	font-size: 10px;
 	color: #312f38;
 	-webkit-transition: font-size 0.2s;
-	background: #fffef8;
-	letter-spacing: .5px;
+	letter-spacing: .03em;
 }
 body, input, textarea {
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
+}
+body, .bg {
+	background: #fffef8;
 }
 ol, ul {
 	list-style: none;
@@ -103,7 +105,7 @@ html {
 }
 
 .logo {
-	background: url(/assets/images/micro/crunchbutton-logo.svg) no-repeat;
+	background: url(../images/micro/crunchbutton-logo.svg) no-repeat;
 	background-position: top center;
 	width: 254px;
 	height: 50px;
@@ -114,7 +116,7 @@ html {
 
 
 .menu {
-	background: url(/assets/images/micro/menu.svg) center center no-repeat;
+	background: url(../images/micro/menu.svg) center center no-repeat;
 	background-size: 100%;
 	width: 44px;
 	height: 28px;
@@ -194,7 +196,7 @@ html {
 	color: #e1f1ee;
 }
 .home-top {
-	background: url(/assets/images/micro/bg-sandwich.jpg);
+	background: url(../images/micro/bg-sandwich.jpg);
 	background-position: top right;
 	background-size: 150%;
 	padding: 0 0 60px 0;
@@ -205,16 +207,19 @@ html {
 	margin-bottom: 50px;
 }
 .logo-finger {
-	background: url(/assets/images/micro/logo-finger.svg) no-repeat;
-	background-position: center center;
+	background: url(../images/micro/logo-finger.svg) center center no-repeat;
+	background-size: 100%;
 	width: 7.8em;
 	height: 8.8em;
-	background-size: 100%;
 	margin: 0 auto;
 	padding-top: 100px;
 }
+.logo-finger-blue {
+	background: url(../images/micro/logo-finger-blue.svg) center center no-repeat;
+	background-size: 100%;
+}
 .pushabutton {
-	background: url(/assets/images/micro/push-a-button.svg) no-repeat;
+	background: url(../images/micro/push-a-button.svg) no-repeat;
 	background-position: center center;
 	width: 17em;
 	height: 17em;
@@ -223,7 +228,7 @@ html {
 	padding-top: 50px;
 }
 .divider-circle {
-	background: url(/assets/images/micro/fork-knife-orange.svg) center center no-repeat;
+	background: url(../images/micro/fork-knife-orange.svg) center center no-repeat;
 	width: 6.5em;
 	height: 6.5em;
 	background-size: 100%;
@@ -242,7 +247,7 @@ p {
 	line-height: 1.6em;
 }
 .home-join-us {
-	background: url(/assets/images/micro/home-join-us.svg) no-repeat;
+	background: url(../images/micro/home-join-us.svg) no-repeat;
 	width: 25em;
 	height: 20em;
 	background-size: 100%;
@@ -253,22 +258,22 @@ p {
 
 /* MAPS */
 .map-venice {
-	background: url(/assets/images/micro/map-venice.svg) no-repeat;
+	background: url(../images/micro/map-venice.svg) no-repeat;
 	width: 5.6em;
 	height: 7.4em;
 }
 .map-new-haven {
-	background: url(/assets/images/micro/map-new-haven.svg) no-repeat;
+	background: url(../images/micro/map-new-haven.svg) no-repeat;
 	width: 7.2em;
 	height: 6.9em;
 }
 .map-providence {
-	background: url(/assets/images/micro/map-providence.svg) no-repeat;
+	background: url(../images/micro/map-providence.svg) no-repeat;
 	width: 6.0em;
 	height: 7.4em;
 }
 .map-dc {
-	background: url(/assets/images/micro/map-dc.svg) no-repeat;
+	background: url(../images/micro/map-dc.svg) no-repeat;
 	width: 5.7em;
 	height: 6.8em;
 }
@@ -503,7 +508,7 @@ p {
 
 /* FAQ */
 .faq-tomato {
-	background: url(/assets/images/micro/faq-tomato.svg) no-repeat;
+	background: url(../images/micro/faq-tomato.svg) no-repeat;
 	width: 7.1em;
 	height: 11.8em;
 	background-size: 100%;
@@ -511,7 +516,7 @@ p {
 	margin-left: 4em;
 }
 .bubble-tailless-green {
-	background: url(/assets/images/micro/bubble-tailless-green.svg) no-repeat;
+	background: url(../images/micro/bubble-tailless-green.svg) no-repeat;
 	width: 14.6em;
 	height: 5.7em;
 	background-size: 100%;
@@ -531,7 +536,7 @@ p {
 	margin: 0 auto;
 }
 .faq-sun {
-	background: url(/assets/images/micro/faq-sun.svg) no-repeat;
+	background: url(../images/micro/faq-sun.svg) no-repeat;
 	width: 26.4em;
 	height: 10.6em;
 	background-size: 100%;
@@ -567,10 +572,144 @@ p {
 
 
 
+
+
+
+
 /* SNAPS */
-.snap-drawers {
-	display: none;
+@media(min-width:500px) {
+	.snap-drawers {
+		display:none;
+	}
 }
+@media(max-width:499px) {
+	.footer {
+		display: none;
+	}
+	.snap-content-inner {
+		position:absolute;
+		top:0;
+		right:0;
+		bottom:0;
+		left:0;
+		width:auto;
+		height:auto;
+		z-index:3;
+		overflow:auto;
+		overflow-x:hidden;
+		-webkit-overflow-scrolling:touch;
+		-webkit-transform:translate3d(0,0,0);
+		-moz-transform:translate3d(0,0,0);
+		-ms-transform:translate3d(0,0,0);
+		-o-transform:translate3d(0,0,0);
+		transform:translate3d(0,0,0);
+	}
+	.snap-content {
+		position:absolute;
+		top:0;
+		right:0;
+		bottom:0;
+		left:0;
+		width:auto;
+		height:auto;
+		z-index:2;
+		-webkit-overflow-scrolling:touch;
+		-webkit-transform:translate3d(0,0,0);
+		-moz-transform:translate3d(0,0,0);
+		-ms-transform:translate3d(0,0,0);
+		-o-transform:translate3d(0,0,0);
+		transform:translate3d(0,0,0);
+
+	}
+	.snap-drawer {
+		position:absolute;
+		top:0;
+		right:auto;
+		bottom:0;
+		left:auto;
+		width:265px;
+		height:auto;
+		overflow:auto;
+		-webkit-overflow-scrolling:touch;
+		-webkit-transition:width 0.3s ease;
+		-moz-transition:width 0.3s ease;
+		-ms-transition:width 0.3s ease;
+		-o-transition:width 0.3s ease;
+		transition:width 0.3s ease;
+
+	}
+	.snap-drawers {
+		background:#3d3731;
+		color:#eee;
+		font-family:Helvetica,Arial,sans-serif;
+		position:absolute;
+		top:0;
+		right:0;
+		bottom:0;
+		left:0;
+		width:auto;
+		height:auto;
+		overflow:hidden;
+	}
+	.snap-drawer-left {
+		left:0;
+		z-index:1;
+	}
+	.snapjs-expand-left .snap-drawer-left {
+		width:100%;
+	}
+	.snap-drawer ul {
+		padding:0;
+		margin:0;
+		list-style-type:none;
+	}
+	.snap-drawer li {
+		display:block;
+		border-bottom:1px solid rgba(0,0,0,0.1);
+		padding:8px 0 2px 0;
+		font-weight:bold;
+		text-decoration:none;
+		color:#fff;
+		text-indent:20px;
+	}
+	.snap-drawer p {
+		opacity:0.5;
+		padding:15px;
+		font-size:12px;
+	}
+	@-moz-document url-prefix() {
+		.snap-content {
+			transform:none;
+		}
+	}
+	.snap-drawer [class^="icon-"] {
+		font-size:25px;
+	}
+	.side-menu-wrap {
+		height: 28px;
+	}
+	.side-menu-wrap {
+		margin-left: -20px;
+	}
+	.side-menu-label {
+		margin-top: -10px;
+		vertical-align: top;
+		line-height: 1.6em;
+		margin-bottom: 20px;
+		font-size: 14px;
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
 
 .button-bottom-wrapper {
 	-webkit-transition:bottom 0.5s ease;
@@ -630,7 +769,7 @@ p {
 }
 
 .page-location .nav-top.at-top .menu {
-	background: url(/assets/images/micro/menu-location.svg) center center no-repeat;
+	background: url(../images/micro/menu-location.svg) center center no-repeat;
 	background-size: 100%;
 }
 
@@ -666,6 +805,7 @@ p {
 .restaurants-items {
 	text-align: center;
 }
+
 .restaurants-item .restaurants-open {
 	background: #fc9a6b;
 	width: 290px;
@@ -675,7 +815,7 @@ p {
 	display: inline-block;
 }
 .restaurants-item {
-	margin-bottom: 10px;
+	margin: 0 5px 10px 5px;
 	display: inline-block;
 	width: auto;
 	text-align: left;
@@ -724,7 +864,7 @@ p {
 
 }
 .restaurants-orange {
-	background: url(/assets/images/micro/restaurants-orange.svg) no-repeat;
+	background: url(../images/micro/restaurants-orange.svg) no-repeat;
 	width: 7.9em;
 	height: 10.3em;
 	background-size: 100%;
@@ -732,7 +872,7 @@ p {
 	margin-top: 2.2em;
 }
 .bubble-tail-green {
-	background: url(/assets/images/micro/bubble-tail-green.svg) no-repeat;
+	background: url(../images/micro/bubble-tail-green.svg) no-repeat;
 	width: 18.2em;
 	height: 7.4em;
 	background-size: 100%;
@@ -752,4 +892,66 @@ p {
 .restaurants-bubble-wrap {
 	width: 29em;
 	margin: 0 auto;
+}
+.restaurants-tagline {
+	margin-top: -1.1em;
+	margin-bottom: 3em;
+}
+.restaurants-tagline h1 {
+	font-size: 1.2em;
+	margin-bottom: .8em;
+}
+.restaurants-tagline h2 {
+	font-size: 1.2em;
+	text-transform: uppercase;
+	font-weight: bold;
+	letter-spacing: -.02em;
+}
+
+.support-container {
+	display: none;
+}
+​.facebook {
+	display: none;
+}
+
+.footer .social {
+	float: right;
+	margin-top: 10px;
+}
+
+.footer .social [class^="icon-"] {
+	font-size: 25px;
+	padding-right: 10px;
+	-webkit-transition:color 0.2s ease;
+	-moz-transition:color 0.2s ease;
+	-ms-transition:color 0.2s ease;
+	-o-transition:color 0.2s ease;
+	transition:color 0.2s ease;
+	color: #4b4855;
+	cursor: pointer;
+
+}
+.footer .social [class^="icon-"]:hover, .footer .social [class^="icon-"]:active {
+	color: #00bea0;
+}
+
+.footer {
+	margin-top: 50px;
+	text-align: center;
+}
+
+
+.divider.line {
+	background: #c7c7c7;
+	height: 1px;
+}
+
+.fb-like-box {
+	float: left;
+}
+
+.copyright {
+	font-size: 10px;
+	color: #6c6976;
 }

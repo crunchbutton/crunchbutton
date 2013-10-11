@@ -7,7 +7,7 @@
 		<? if ($this->restaurant->image()) : ?>
 			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$this->restaurant->facebook()->getFileName()?>">
 		<? else : ?>
-			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/share.jpg">
+			<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">
 		<? endif ; ?>
 
 	<? elseif ($this->community->id_community) : ?>
@@ -17,7 +17,7 @@
 			<? if ($restaurant->image()) : ?>
 				<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/cache/images/<?=$restaurant->facebook()->getFileName()?>">
 			<? else : ?>
-				<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/share.jpg">
+				<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">
 			<? endif ; ?>
 
 			<? break;?>
@@ -26,7 +26,7 @@
 	<? else : ?>
 		<meta property="og:title" content="Crunchbutton - One click food ordering">
 		<meta property="og:description" content="We feature the top restaurants in your neighborhood. Order your favorite dishes with a click of one button from your computer or phone.">
-		<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/share.jpg">
+		<meta property="og:image" content="http://<?=$_SERVER['HTTP_HOST']?>/assets/images/facebook-like.png">
 	<? endif ; ?>
 
 	<meta property="og:type" content="company">
