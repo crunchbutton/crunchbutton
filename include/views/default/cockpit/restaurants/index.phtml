@@ -1,6 +1,9 @@
 <?
 	$this->title = 'Restaurants';
 	$this->titleicon = 'food';
+
+	$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud' ] );
+
 ?>
 
 <!-- restaurants page -->
@@ -12,14 +15,27 @@
 	
 				<select id="restaurant-id" class="chosen-select" style="width:480px;">
 					<option value="" selected>Choose...</option>
-					<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
-					<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> (permalink: <?=$restaurant->permalink?>)</option>
-					<? endforeach ; ?>
+					<?php  
+					$restaurants = Restaurant::q('select * from restaurant order by name');
+					if( $hasPermissionToAllRestaurants ){
+						foreach ( $restaurants as $restaurant ) {
+							?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+						}
+					} else {
+						foreach ( $restaurants as $restaurant ) {
+							if( c::admin()->permission()->check( [ "restaurant-{$restaurant->id_restaurant}-edit", "restaurant-{$restaurant->id_restaurant}-all" ] ) ){
+								?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+							}
+						}
+					}
+					?>
 				</select>
 				<div class="divider"></div>
 				<br><br>
+				<?php if (c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud'])) { ?>
 				<button type="submit" class="btn btn-blue new-restaurant">Create New</button> 
-				<?php if (c::admin()->permission()->check(['global'])) { ?>
+				<?php } ?>
+				<?php if (c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page'])) { ?>
 				&nbsp;&nbsp;
 				<a href="/restaurants/weight/" class="btn btn-green">Weight adjustment</a>
 				<?php } ?>
