@@ -19,7 +19,7 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('.home-top').scrollspy({
+		var sp = {
 			min: -100,
 			max: 50,
 			onEnter: function(element, position) {
@@ -28,6 +28,10 @@
 			onLeave: function(element, position) {
 				$('.page-location .nav-top').removeClass('at-top');
 			}
-		});
+		};
+		$('.home-top').scrollspy(sp);
+		sp.container = $('.snap-content-inner');
+		$('.home-top').scrollspy(sp);
+
 	});
 </script>
