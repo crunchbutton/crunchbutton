@@ -201,7 +201,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','locations'] ) ) { ?>
 		<li class="<?=$this->page == 'loc' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/loc">
@@ -210,7 +210,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','logs'] ) ) { ?>
 		<li class="<?=$this->page == 'logs' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/logs">
@@ -219,7 +219,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','invite-promo'] ) ) { ?>
 		<li class="<?=$this->page == 'referral' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/referral">

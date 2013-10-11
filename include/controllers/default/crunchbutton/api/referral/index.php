@@ -8,6 +8,10 @@ class Controller_api_referral extends Crunchbutton_Controller_Rest {
 			case 'save':
 				if ( $_SESSION['admin'] && $this->method() == 'post' ) {
 
+					if( !c::admin()->permission()->check( [ 'global', 'invite-promo' ] ) ){
+						return;
+					}
+
 					Crunchbutton_Config::store( Crunchbutton_Referral::KEY_IS_REFERRAL_ENABLE, $this->request()['enabled'] );
 					Crunchbutton_Config::store( Crunchbutton_Referral::KEY_INVITER_CREDIT_VALUE, $this->request()['inviter_credit'] );
 					Crunchbutton_Config::store( Crunchbutton_Referral::KEY_INVITED_CREDIT_VALUE, $this->request()['invited_credit'] );
