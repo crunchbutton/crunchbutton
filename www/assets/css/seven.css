@@ -808,8 +808,8 @@ p {
 
 .restaurants-item .restaurants-open {
 	background: #fc9a6b;
-	width: 290px;
-	height: 120px;
+	width: 29em;
+	height: 12em;
 	border-radius: 6px;
 	padding: 2px;
 	display: inline-block;
@@ -859,7 +859,7 @@ p {
 	background: #ed4f41;
 	border-radius: 4px;
 	padding: 10px 12px 10px 12px;
-	width: 270px;
+	width: 27em;
 	clear: both;
 
 }
