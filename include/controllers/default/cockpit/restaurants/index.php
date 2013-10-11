@@ -66,13 +66,20 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 
 		$restaurant = Restaurant::o(c::getPagePiece($page_piece_index));
 
+		if( $restaurant->id_restaurant != '' && $restaurant->id_restaurant ){
+			if( !c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud', "restaurant-{$restaurant->id_restaurant}-edit", "restaurant-{$restaurant->id_restaurant}-all" ] ) ){
+				return;
+			}
+		}
+
 		/* @var $restaurant Crunchbutton_Restaurant */
 		$this->restaurant = $restaurant;
 		c::view()->restaurant = $restaurant;
 
 		if (c::getPagePiece($page_piece_index) == 'new') {
+
 			// @permission check for restaurant permissions
-			if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-create'])) {
+			if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud'])) {
 				return;
 			}
 			$restaurant->save();
@@ -82,14 +89,14 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			switch (c::getPagePiece($page_piece_index+1)) {
 				case 'pay':
 					// @permission
-					if (!c::admin()->permission()->check(['global', 'restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-pay'])) {
+					if (!c::admin()->permission()->check(['global', 'restaurants-all','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-pay'])) {
 						return;
 					}
 					c::view()->display('restaurants/pay');
 					break;
 				case 'image':
 					// @permission
-					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-image'])) {
+					if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud', 'restaurant-'.$restaurant->id_restaurant.'-all', 'restaurant-'.$restaurant->id_restaurant.'-edit','restaurant-'.$restaurant->id_restaurant.'-image'])) {
 						return;
 					}
 					if ($_FILES['image']) {
@@ -105,7 +112,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					break;
 				case 'fax':
 					// @permission
-					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-fax'])) {
+					if (!c::admin()->permission()->check(['global', 'restaurants-all','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-fax'])) {
 						return;
 					}
 					c::view()->notification = $restaurant->fax();
@@ -113,7 +120,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					break;
 				default:
 					// @permission
-					if (!c::admin()->permission()->check(['global','restaurants-all','restaurants-crud','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-edit'])) {
+					if (!c::admin()->permission()->check(['global','restaurants-all','restaurants-crud','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-edit'])) {
 						return;
 					}
 					$this->_form();

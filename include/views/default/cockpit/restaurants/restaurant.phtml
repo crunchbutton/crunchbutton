@@ -30,13 +30,19 @@
 			<span>Notes</span>
 		</li>
 	
+		<?php if (c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$this->restaurant->id_restaurant}-all", "restaurant-{$this->restaurant->id_restaurant}-fax" ])) { ?>
+
 		<li class="action-nav-button">
 			<a href="/restaurants/<?=$this->restaurant->id_restaurant?>/fax" class="tip" title="" data-original-title="Fax">
 				<i class="icon-print"></i>
 			</a>
 			<span>Fax</span>
 		</li>
+
+		<?php } ?>
 	
+		<?php if (c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$this->restaurant->id_restaurant}-all", "restaurant-{$this->restaurant->id_restaurant}-pay" ])) { ?>
+
 		<li class="action-nav-button">
 			<a href="/restaurants/<?=$this->restaurant->id_restaurant?>/pay" class="tip" title="" data-original-title="Pay">
 				<i class="icon-money"></i>
@@ -44,6 +50,8 @@
 			<span>Pay</span>
 		</li>
 	
+		<?php } ?>
+
 		<li class="action-nav-button">
 			<a href="http://crunchbutton.com/food-delivery/<?=$this->restaurant->permalink?>" class="tip" title="" data-original-title="View" target="_blank">
 				<i class="icon-file"></i>
@@ -51,12 +59,16 @@
 			<span>View</span>
 		</li>
 		
+		<?php if (c::admin()->permission()->check(['global', 'restaurants-all' ])) { ?>
+
 		<li class="action-nav-button">
 			<a href="/restaurants/legacy/<?=$this->restaurant->id_restaurant?>" class="tip" title="" data-original-title="Old Admin">
 				<i class="icon-book"></i>
 			</a>
 			<span>Old Admin</span>
 		</li>
+
+		<?php } ?>
 		
 		<li class="action-nav-button">
 			<a href="javascript:;" class="tip" title="" data-original-title="Revert" id="revert-button">

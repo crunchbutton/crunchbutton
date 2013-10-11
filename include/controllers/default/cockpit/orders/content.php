@@ -50,7 +50,7 @@ class Controller_orders_content extends Crunchbutton_Controller_Account {
 
 		if ($_REQUEST['export']) {
 			
-			if( !c::admin()->permission()->check(['global','orders-all','orders-export'] ){
+			if( !c::admin()->permission()->check(['global','orders-all','orders-export'] ) ) {
 				return;
 			}
 

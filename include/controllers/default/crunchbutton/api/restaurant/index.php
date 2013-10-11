@@ -139,6 +139,40 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 					$r = Restaurant::o(c::getPagePiece(2));
 					/* @var $r Crunchbutton_Restaurant */
 
+					// Permissions
+					// if ( c::admin()->permission()->check(['global', 'restaurants-all', , "restaurant-{$this->restaurant->id_restaurant}-pay" ])) {
+					$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-all" ]);
+					
+					if( !$hasPermission ){
+						switch ($action) {
+							case 'fake-merchant':
+							case 'fakeremove-merchant':
+							case 'remove-bankinfo':
+							case 'paymentinfo':
+							case 'merchant':
+							case 'credit':
+							case 'bankinfo':
+								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-pay" ]);
+								break;
+
+							case 'weight-adj':
+							case 'categories':
+							case 'notifications':
+							case 'hours':
+							case 'delete-category': 
+							case 'delete-dish': 
+							case 'save-dish':
+							case 'dishes':
+							default:
+								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-edit" ]);
+								break;
+						}	
+					}
+
+					if( !$hasPermission ){
+						return;
+					}
+
 					$action = c::getPagePiece(3);
 					switch ($action) {
 						case 'categories':
