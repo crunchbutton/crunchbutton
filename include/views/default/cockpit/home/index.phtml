@@ -17,7 +17,7 @@
 			</div>
 		</div>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view' ] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view', 'support-crud', 'support-settings' ] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/support" title="Support">
@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','issues'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global', 'github'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="https://github.com/crunchbutton/crunchbutton" title="Github" target="_blank">
@@ -49,7 +49,7 @@
 			</div>
 		</div>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','marketing'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','marketing-events'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/home/marketing" title="Curation">
