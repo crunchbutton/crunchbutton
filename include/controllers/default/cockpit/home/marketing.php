@@ -4,7 +4,7 @@ class Controller_home_marketing extends Crunchbutton_Controller_Account {
 
 	public function init() {
 	
-		if (!c::admin()->permission()->check(['global'])) {
+		if (!c::admin()->permission()->check(['global','marketing-events'])) {
 			return ;
 		}
 

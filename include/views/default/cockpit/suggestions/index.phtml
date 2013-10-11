@@ -2,6 +2,9 @@
 	$this->title = 'Suggestions';
 	$this->subtitle = 'people want shit.';
 	$this->titleicon = 'envelope-alt';
+
+	$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'suggestions-all' ] );
+
 ?>
 <!-- content -->
 <div class="container-fluid padded">
@@ -70,10 +73,21 @@
 									<label class="span3">Restaurant</label>
 									<span class="span8 pull-right">
 										<select name="restaurant" class="chzn-select">
-											<option value="" selected>[ All ]</option>
-											<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
-												<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
-											<? endforeach ; ?>
+											<?php  
+											$restaurants = Restaurant::q('select * from restaurant order by name');
+											if( $hasPermissionToAllRestaurants ){
+												echo '<option value="" selected>[ All ]</option>';
+												foreach ( $restaurants as $restaurant ) {
+													?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+												}
+											} else {
+												foreach ( $restaurants as $restaurant ) {
+													if( c::admin()->permission()->check( [ "suggestions-list-restaurant-{$restaurant->id_restaurant}" ] ) ){
+														?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+													}
+												}
+											}
+											?>
 										</select>
 									</span>
 									<div class="clearfix"></div>
@@ -83,9 +97,11 @@
 									<span class="span8 pull-right">
 										<select name="community" class="chzn-select">
 											<option value="" selected>[ All ]</option>
-											<? foreach (Community::q('select * from community order by name') as $community) : ?>
-												<option value="<?=$community->id_community?>"><?=$community->name?></option>
+											<?php if( $hasPermissionToAllRestaurants ) { ?>
+											<? foreach (Restaurant::getCommunities() as $community) :  ?>
+												<option value="<?=$community?>"><?=$community?></option>
 											<? endforeach ; ?>
+											<?php } ?>
 										</select>
 									</span>
 									<div class="clearfix"></div>
