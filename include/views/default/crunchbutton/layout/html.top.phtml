@@ -16,7 +16,7 @@
 <? if (c::config()->bundle) : ?>
 	<link rel="stylesheet" type="text/css" href="/assets/css/bundle.css?v=<?=Cana_Util::gitVersion()?>&s=style">
 <? else : ?>
-	<?=$this->display('bundle/css', ['set' => ['style' => ['style']]])?>
+	<?=$this->display('bundle/bundler.css')?>
 <? endif ; ?>
 <link rel="shortcut icon" href="/favicon.ico">
 
