@@ -95,7 +95,7 @@ html {
 	user-select: none;
 }
 
-.content {
+.content, .footer .content-padding {
 	max-width: 767px;
 	margin: 0 auto;
 }
