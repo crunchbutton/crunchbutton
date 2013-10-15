@@ -28,8 +28,9 @@ class Crunchbutton_Admin extends Cana_Table {
 			} else {
 				$restaurants = [];
 				foreach ($this->permission()->_userPermission as $key => $perm) {
-					$find = '/^RESTAURANT-([0-9])+$/i';
+					$find = '/^RESTAURANT-([0-9]+)$/i';
 					if (preg_match($find,$key)) {
+
 						$key = preg_replace($find,'\\1',$key);
 						$restaurants[$key] = Restaurant::o($key);
 					}
