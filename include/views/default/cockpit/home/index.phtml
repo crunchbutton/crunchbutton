@@ -6,7 +6,7 @@
 <!-- content -->
 <div class="container-fluid padded">
 	<div class="row-fluid action-nav-normal">
-		<?php if ( c::admin()->permission()->check( [ 'global','restaurants-all','restaurants-create'] ) ) { ?>
+		<? if ( c::admin()->permission()->check( [ 'global','restaurants-all','restaurants-create'] ) ) : ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/restaurants/new" title="New Restaurant">
@@ -16,8 +16,8 @@
 				<span class="triangle-button red"><i class="icon-plus"></i></span>
 			</div>
 		</div>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','support'] ) ) { ?>
+		<? endif ; ?>
+		<? if ( c::admin()->permission()->check( [ 'global','support'] ) ) : ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/support" title="Support">
@@ -27,8 +27,8 @@
 				<span class="label label-black"><?=$this->data['all']['tickets']?></span>
 			</div>
 		</div>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','issues'] ) ) { ?>
+		<? endif ; ?>
+		<? if ( c::admin()->permission()->check( [ 'global','issues'] ) ) : ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="https://github.com/crunchbutton/crunchbutton" title="Github" target="_blank">
@@ -37,9 +37,9 @@
 				</a>
 			</div>
 		</div>
-		<?php } ?>
+		<? endif ; ?>
 
-		<?php if ( c::admin()->permission()->check( [ 'global','curation-all','curation-view'] ) ) { ?>
+		<? if ( c::admin()->permission()->check( [ 'global','curation-all','curation-view'] ) ) : ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/home/curation" title="Curation">
@@ -48,8 +48,8 @@
 				</a>
 			</div>
 		</div>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','marketing-all','marketing-view'] ) ) { ?>
+		<? endif ; ?>
+		<? if ( c::admin()->permission()->check( [ 'global','marketing-all','marketing-view'] ) ) : ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/home/marketing" title="Curation">
@@ -58,8 +58,8 @@
 				</a>
 			</div>
 		</div>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','community-metrics-all','community-metrics-view'] ) ) { ?>
+		<? endif ; ?>
+		<? if ( c::admin()->permission()->check( [ 'global','community-metrics-all','community-metrics-view'] ) ) : ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/charts/community" title="Metrics by Community">
@@ -68,9 +68,9 @@
 				</a>
 			</div>
 		</div>
-		<?php } ?>
+		<? endif ; ?>
 	</div>
-	<?php if ( c::admin()->permission()->check( [ 'global','metrics-all','metrics-view'] ) ) { ?>
+	<? if ( c::admin()->permission()->check( [ 'global','metrics-all','metrics-view'] ) ) : ?>
 	 <div class="box">
 			<div class="box-header">
 				 <span class="title">Metrics</span>
@@ -81,39 +81,36 @@
 				 </ul>
 			</div>
 			<div class="box-content padded">
-				 <?php
-						foreach ($this->graphs as $category => $graphs ){ 
-							?>
-				 <h5><?php echo $category; ?></h5>
-				 <?php
-						$count = 1;
-						foreach ($graphs as $id => $graph ){ 
-						
-							if( $count == 1 ){
-									echo '<div class="row-fluid">';
-								}
-								$title = $graph[ 'title' ];
-								$divId = $id;
-								?>
+				 <? foreach ($this->graphs as $category => $graphs) : ?> 
+				 <h5><?=$category?></h5>
+				 <? 
+					$count = 1;
+					foreach ($graphs as $id => $graph) {
+						if ($count == 1) {
+							echo '<div class="row-fluid">';
+						}
+						$title = $graph['title'];
+						$divId = $id;
+				?>
 				 <div class="span4">
-						<div>
-							 <input type="checkbox" 
-									class="icheck cat-<?php echo strtolower( str_replace( ' ', '-', $category ) ); ?>" 
-									id="checkbox-<?php echo $divId;?>" 
-									data-divId="<?php echo $divId;?>" 
-									name="checkbox-<?php echo $divId;?>">
-							 <label for="checkbox-<?php echo $divId;?>"><?php echo $title; ?></label>
-						</div>
+					<div>
+						 <input type="checkbox" 
+							class="icheck cat-<?=strtolower(str_replace(' ', '-', $category))?>" 
+							id="checkbox-<?=$divId?>" 
+							data-divId="<?=$divId?>" 
+							name="checkbox-<?=$divId?>">
+						 <label for="checkbox-<?=$divId?>"><?=$title?></label>
+					</div>
 				 </div>
 				 <?
-						if( $count % 3 == 0 ){ 
-							echo '</div>';
-							$count = 0; 
-						}
-						$count++;
-						} 
-						if( $count != 1){ echo '</div>'; }
-						?>
+					if( $count % 3 == 0 ){ 
+						echo '</div>';
+						$count = 0; 
+					}
+					$count++;
+					} 
+					if( $count != 1){ echo '</div>'; }
+					?>
 				 <hr/>
 				 <? 
 						foreach ( $graphs as $id => $graph ){ 
@@ -125,7 +122,7 @@
 						<div style="clear:both;"></div>
 				
 				 <?php
-						}
+						endforeach ;
 					?>
 			<!-- Settings -->
 			 <div class="row-fluid">
@@ -172,7 +169,7 @@
 				 </div>
 			</div>
 	 </div>
-	 <?php } ?>
+	 <? endif ; ?>
 </div>
 <div id="modal-simple" class="modal hide fade" style="display: none;" aria-hidden="true">
 	 <div class="modal-header">
