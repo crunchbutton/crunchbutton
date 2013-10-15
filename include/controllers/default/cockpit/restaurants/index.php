@@ -112,7 +112,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					break;
 				default:
 					// @permission
-					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-edit'])) {
+					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-edit'])) {
 						return;
 					}
 					$this->_form();
