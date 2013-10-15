@@ -2,6 +2,8 @@
 
 class Controller_test extends Crunchbutton_Controller_Account {
 	public function init() {
+		c::admin()->restaurants();
+		exit;
 		$r = new Restaurant(21);
 
 
