@@ -73,11 +73,12 @@ class Crunchbutton_Admin extends Cana_Table {
 			$this->_communities = $communities;
 
 		}
-		
-
-		
 
 		return $this->_communities;
+	}
+	
+	public function makePass($pass) {
+		return sha1(c::crypt()->encrypt($pass));
 	}
 
 	public function __construct($id = null) {
