@@ -583,6 +583,9 @@ p {
 	}
 }
 @media(max-width:499px) {
+	body {
+		overflow: hidden;
+	}
 	.footer {
 		display: none;
 	}
@@ -613,13 +616,12 @@ p {
 		width:auto;
 		height:auto;
 		z-index:2;
-		-webkit-overflow-scrolling:touch;
+		overflow: hidden;
 		-webkit-transform:translate3d(0,0,0);
 		-moz-transform:translate3d(0,0,0);
 		-ms-transform:translate3d(0,0,0);
 		-o-transform:translate3d(0,0,0);
 		transform:translate3d(0,0,0);
-
 	}
 	.snap-drawer {
 		position:absolute;
