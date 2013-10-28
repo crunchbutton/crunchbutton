@@ -896,7 +896,9 @@ p {
 	color: #fff;
 	font-size: .9em;
 	font-weight: 600;
-	padding: .6em;
+	padding: .6em .8em .6em .8em;
+	z-index: 6;
+	position: relative;
 }
 
 .meal-item-tag-bottom {
@@ -909,6 +911,8 @@ p {
 	width: 0;
 	height: 0;
 	content: " ";
+	z-index: 5;
+	position: relative;
 }
 
 .restaurants-orange {
