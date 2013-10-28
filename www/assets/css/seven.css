@@ -115,6 +115,9 @@ html {
 }
 
 
+
+
+
 .menu {
 	background: url(../images/micro/menu.svg) center center no-repeat;
 	background-size: 100%;
@@ -684,7 +687,7 @@ p {
 			transform:none;
 		}
 	}
-	.snap-drawer [class^="icon-"] {
+	.snap-drawer .fa {
 		font-size:25px;
 	}
 	.side-menu-wrap {
@@ -974,7 +977,7 @@ p {
 	margin-top: 10px;
 }
 
-.footer .social [class^="icon-"] {
+.footer .social .fa {
 	font-size: 25px;
 	padding-right: 10px;
 	-webkit-transition:color 0.2s ease;
@@ -984,9 +987,10 @@ p {
 	transition:color 0.2s ease;
 	color: #4b4855;
 	cursor: pointer;
+	text-decoration: none;
 
 }
-.footer .social [class^="icon-"]:hover, .footer .social [class^="icon-"]:active {
+.footer .social .fa:hover, .footer .social .fa:active {
 	color: #00bea0;
 }
 
@@ -1008,4 +1012,25 @@ p {
 .copyright {
 	font-size: 10px;
 	color: #6c6976;
+}
+
+
+
+/* ORDERS PAGE */
+.order-item {
+	background: #00bea0;
+	color: #fff;
+	padding: 5px;
+	border-radius: 4px;
+}
+
+.orders-oranges {
+	background: url(../images/micro/orders-oranges.svg) no-repeat;
+	background-position: top center;
+	width: 12.9em;
+	height: 3.5em;
+	background-size: 100%;
+	margin: 0 auto;
+	margin-top: 10em;
+	-webkit-transition: all 0.2s;
 }
