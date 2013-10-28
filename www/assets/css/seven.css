@@ -807,13 +807,32 @@ p {
 }
 
 .restaurants-item .restaurants-open {
-	background: #fc9a6b;
+	border: 1px solid #c1c1c1;
+	background: #fff;
 	width: 29em;
 	height: 12em;
-	border-radius: 6px;
+	border-radius: 4px;
 	padding: 2px;
 	display: inline-block;
+	
+	margin-bottom: 2px;
+	margin-top: 0;
+	
+	-webkit-transition:border 0.2s ease;
+	-moz-transition:border 0.2s ease;
+	-ms-transition:border 0.2s ease;
+	-o-transition:border 0.2s ease;
+	transition:border 0.2s ease;
 }
+
+.restaurants-item .restaurants-open:hover {
+	border: 1px solid #f78256;
+}
+.restaurants-item .restaurants-open:active {
+	margin-bottom: 0;
+	margin-top: 2px;
+}
+
 .restaurants-item {
 	margin: 0 5px 10px 5px;
 	display: inline-block;
@@ -821,25 +840,27 @@ p {
 	text-align: left;
 }
 .restaurants-pic {
-	height: 115px;
-	border-top-left-radius:3px;
-	border-top-right-radius:3px;
+	height: 8em;
+	border-top-left-radius:1px;
+	border-top-right-radius:1px;
 	overflow:hidden;
 	background-size:cover !important;
+	background-position: center center !important;
+	box-shadow: inset rgba(0,0,0,0.3) 0 0 40px;
 }
 .restaurants-item-content {
 
 }
 .restaurants-open .restaurants-name {
-	font-size: 15px;
-	text-shadow:1px 1px 0 rgba(0,0,0,.5);
-	color: #fff;
+	padding: .6em 0 0 .5em;
+	font-size: 1.4em;
+	color: #424242;
 	font-weight: 700;
 }
 .restaurants-open .restaurants-description {
-	font-size: 10px;
-	color: #fff;
-	text-shadow:1px 1px 0 rgba(0,0,0,.7);
+	padding: .2em 0 0 .5em;
+	font-size: 1.1em;
+	color: #535353;
 }
 
 .restaurants-closed .restaurants-name {
@@ -856,6 +877,7 @@ p {
 }
 
 .restaurants-closed {
+	border: 1px solid #ed4f41;
 	background: #ed4f41;
 	border-radius: 4px;
 	padding: 10px 12px 10px 12px;
@@ -863,6 +885,32 @@ p {
 	clear: both;
 
 }
+
+.meal-item-tag {
+	background: #00bd9e;
+	box-shadow: 0 2px 0 #018872;
+	margin-right: -7px;
+	border-radius: 3px;
+	margin-top: -11.7em;
+	float: right;
+	color: #fff;
+	font-size: .9em;
+	font-weight: 600;
+	padding: .6em;
+}
+
+.meal-item-tag-bottom {
+	margin-top: -8.9em;
+	margin-right: -11px;
+	float: right;
+	border-color: transparent transparent transparent #018872;
+	border-style: solid;
+	border-width: 4px;
+	width: 0;
+	height: 0;
+	content: " ";
+}
+
 .restaurants-orange {
 	background: url(../images/micro/restaurants-orange.svg) no-repeat;
 	width: 7.9em;
