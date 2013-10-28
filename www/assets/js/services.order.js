@@ -897,17 +897,19 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 	var restaurants = RestaurantsService;
 
 	service.load = function () {
-		if( service.list && !service.reload ){
+		if (service.list && !service.reload) {
 			return service.list;
 		}
+
 		OrderViewService.newOrder = false;
 		list = false;
 		service.list = list;
+
 		$http.get(App.service + 'user/orders', {
 			cache: false
 		}).success(function (json) {
 			service.reload = false;
-			if( json ){
+			if (json) {
 				for (var x in json) {
 					json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');	
 				}	
