@@ -49,8 +49,8 @@
 				<div ng-show="!order.cart.hasItems()" class="order-begin-wrap">
 					<div class="order-begin">
 						<div class="icon">
-							<i class="icon-arrow-left hidden-lt-1023"></i>
-							<i class="icon-arrow-down hidden-gt-1024"></i> 
+							<i class="fa fa-arrow-left hidden-lt-1023"></i>
+							<i class="fa fa-arrow-down hidden-gt-1024"></i> 
 						</div>
 						<div class="text">
 							<span class="hidden-lt-1023">{{nothingInTheCartDesktop}}</span>
@@ -72,10 +72,10 @@
 
 						<div class="cart-item cart-item-dish">
 							<div class="hidden-desktop">
-								<div class="button-orange cart-button cart-button-remove" ng-click="order.cart.remove(item.details.id);"><span class="icon-remove"></span></div>
+								<div class="button-orange cart-button cart-button-remove" ng-click="order.cart.remove(item.details.id);"><span class="fa fa-times"></span></div>
 							</div>
 							<div class="hidden-phone">
-								<div class="cart-button cart-button-remove" ng-click="order.cart.remove(item.details.id);"><span class="icon-remove-sign"></span></div>
+								<div class="cart-button cart-button-remove" ng-click="order.cart.remove(item.details.id);"><span class="fa fa-times-circle"></span></div>
 							</div>
 
 							<div class="cart-item-name">{{item.details.name}}
@@ -140,7 +140,7 @@
 				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
 				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
 					<li ng-repeat="dish in category.dishes()" ng-click="order.cart.add( dish.id_dish )" class="dish-item">
-						<span class="dish-name"><i class="icon-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-price">({{AB.dollar}}{{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span>
+						<span class="dish-name"><i class="fa fa-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-price">({{AB.dollar}}{{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span>
 					</li>
 				</ul>
 			</div>

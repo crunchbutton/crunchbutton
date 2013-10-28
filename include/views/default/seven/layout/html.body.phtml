@@ -7,7 +7,7 @@
 				<li ng-instant="navigation.link('/food-delivery')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
-							<td class="side-menu-icon"><i class="icon-food"></i></td>
+							<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
 							<td class="side-menu-label">Restaurants</a></td>
 						</tr>
 					</table>
@@ -15,7 +15,7 @@
 				<li ng-show="account.user.id_user" ng-instant="navigation.link('/orders')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
-							<td class="side-menu-icon"><i class="icon-time"></i></td>
+							<td class="side-menu-icon"><i class="fa fa-clock-o"></i></td>
 							<td class="side-menu-label">Previous Orders</a></td>
 						</tr>
 					</table>
@@ -23,7 +23,7 @@
 				<li ng-instant="navigation.link('/location')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
-							<td class="side-menu-icon"><i class="icon-map-marker" style="margin-left: 3px;"></i></td>
+							<td class="side-menu-icon"><i class="fa fa-map-marker" style="margin-left: 3px;"></i></td>
 							<td class="side-menu-label">Change Location</a></td>
 						</tr>
 					</table>
@@ -31,7 +31,7 @@
 				<li ng-instant="navigation.link('/help')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
-							<td class="side-menu-icon"><i class="icon-question-sign"></i></td>
+							<td class="side-menu-icon"><i class="fa fa-question-circle"></i></td>
 							<td class="side-menu-label">Help</a></td>
 						</tr>
 					</table>
@@ -39,7 +39,7 @@
 				<li ng-show="!account.user.id_user" ng-instant="navigation.signin()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
-							<td class="side-menu-icon"><i class="icon-user"></i></td>
+							<td class="side-menu-icon"><i class="fa fa-user"></i></td>
 							<td class="side-menu-label">Log In</a></td>
 						</tr>
 					</table>
@@ -47,7 +47,7 @@
 				<li ng-show="account.user.id_user" ng-instant="signout.do()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
-							<td class="side-menu-icon"><i class="icon-mail-reply"></i></td>
+							<td class="side-menu-icon"><i class="fa fa-mail-reply"></i></td>
 							<td class="side-menu-label">Logout</a></td>
 						</tr>
 					</table>
@@ -56,7 +56,7 @@
 				<li ng-instant="test.card()" ng-show="account.user.debug">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
-							<td class="side-menu-icon"><i class="icon-circle-blank"></i></td>
+							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
 							<td class="side-menu-label">TEST: card</a></td>
 						</tr>
 					</table>
@@ -64,7 +64,7 @@
 				<li ng-instant="test.clearloc()" ng-show="account.user.debug">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
-							<td class="side-menu-icon"><i class="icon-circle-blank"></i></td>
+							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
 							<td class="side-menu-label">TEST: clear loc</a></td>
 						</tr>
 					</table>
@@ -72,7 +72,7 @@
 				<li ng-instant="test.reload()" ng-show="account.user.debug">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
-							<td class="side-menu-icon"><i class="icon-circle-blank"></i></td>
+							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
 							<td class="side-menu-label">TEST: reload page</a></td>
 						</tr>
 					</table>
@@ -149,9 +149,9 @@
 					<? endif ; ?>
 	
 					<div class="social">
-						<a class="icon-facebook"></a>
-						<a class="icon-twitter"></a>
-						<a class="icon-linkedin"></a>
+						<a class="fa fa-facebook"></a>
+						<a class="fa fa-twitter"></a>
+						<a class="fa fa-linkedin"></a>
 					</div>
 					<div class="divider"></div>
 					<span class="copyright">&copy; <?=date('Y')?> YouBeo, Inc.</span>

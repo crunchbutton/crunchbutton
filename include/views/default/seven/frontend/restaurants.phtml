@@ -39,7 +39,6 @@
 						<h2 class="restaurants-name">{{restaurant.name}}</h2>
 						<h3 class="restaurants-description">{{restaurant._short_description}}</h3>
 
-
 						<div ng-switch on="restaurant._tag">
 							<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
 							<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
