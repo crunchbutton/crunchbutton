@@ -39,14 +39,14 @@
 						<h2 class="restaurants-name">{{restaurant.name}}</h2>
 						<h3 class="restaurants-description">{{restaurant._short_description}}</h3>
 
-						<div class="meal-item-tag-bottom"></div>						
-						<div class="meal-item-tag about-to-close">Hurry, closes in {{restaurant._closesIn}} min!</div>
-
 
 						<div ng-switch on="restaurant._tag">
 							<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
 							<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
 						</div>
+						
+						<div class="meal-item-tag-bottom" ng-show="restaurant._tag == 'closing' || restaurant._tag == 'takeout'"></div>
+
 					</div>
 					<span class="ladda-spinner"></span>
 				</div>
