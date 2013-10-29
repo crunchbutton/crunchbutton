@@ -911,7 +911,8 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 			service.reload = false;
 			if (json) {
 				for (var x in json) {
-					json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');	
+					json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');
+					json[x]._date = new Date(json[x].date);
 				}	
 				list = json;
 			} else {

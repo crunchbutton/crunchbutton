@@ -112,6 +112,7 @@ html {
 	background-size: 100%;
 	margin: 0 auto;
 	-webkit-transition: all 0.2s;
+	cursor: pointer;
 }
 
 
@@ -1020,8 +1021,9 @@ p {
 .order-item {
 	background: #00bea0;
 	color: #fff;
-	padding: 5px;
+	padding: 7px 6px 4px 4px;
 	border-radius: 4px;
+	cursor: pointer;
 }
 
 .orders-oranges {
@@ -1033,4 +1035,34 @@ p {
 	margin: 0 auto;
 	margin-top: 10em;
 	-webkit-transition: all 0.2s;
+}
+
+.order-month {
+	font-size: 1.2em;
+	text-align:center;
+}
+
+.order-day {
+	font-size: 2.5em;
+	font-weight: bold;
+	text-align:center;
+}
+
+.order-name {
+	text-decoration: underline;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.order-link {
+	font-size: 3.64em;
+	float: right;
+}
+
+.order-date {
+	margin-right: 1.8em;
+}
+
+.order-date, .order-details {
+	float: left;
 }
