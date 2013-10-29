@@ -360,6 +360,12 @@ p {
 	background: #fe9872;
 	font-weight: 900;
 }
+.button.pushable.lightorange {
+	box-shadow: 0 2px 0 #de7e5b;
+}
+.button.pushable.lightorange:active {
+
+}
 .button.green {
 	background: #00bea0;
 	font-weight: 900;
@@ -812,24 +818,64 @@ p {
 
 
 
-
-.small-container {
-	background:#fff;
-	width:250px;
+/* DIALOGS */
+.dialog {
+	background:#fffef8;
+	width:290px;
 	margin:40px auto;
 	position:relative;
-	border-radius:4px;
-	padding:20px;
+	border-radius:6px;
 }
-.small-container {
+.dialog {
 	line-height:20px;
 }
-.small-container h1 {
-	color:#D74924;
-	font-size:1.4em;
-	font-weight:400;
-	margin-bottom:18px;
+.dialog h1 {
+	color: #eb592a;
+	font-size: 17px;
+	font-weight: 600;
+	margin-bottom: 12px;
 }
+.dialog p.dialog-hours {
+	font-size: 10px;
+}
+
+.dialog p {
+	font-size: 12px;
+}
+
+.mfp-bg {
+	background-color: #1c0f0e !important;
+}
+.mfp-close {
+	display: none !important;
+}
+.dialog-egg {
+	background: url(../images/micro/dialog-egg.svg) no-repeat;
+	background-position: top center;
+	width: 68px;
+	height: 112px;
+	background-size: 100%;
+	-webkit-transition: all 0.2s;
+	float: right;
+	margin-top: -5px;
+	margin-left: 15px;
+}
+
+.dialog-divider {
+	border-top: 1px solid #e3e2df;
+}
+
+.dialog-padding {
+	padding: 14px;
+}
+
+.dialog-bottom-buttons .button {
+	border-radius: 4px;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+
 
 
 
@@ -883,6 +929,9 @@ p {
 .restaurants-item-content {
 
 }
+.restaurants-closed, .restaurants-open {
+	cursor: pointer;
+}
 .restaurants-open .restaurants-name {
 	padding: .6em 0 0 .5em;
 	font-size: 1.4em;
@@ -915,7 +964,6 @@ p {
 	padding: 10px 12px 10px 12px;
 	width: 27em;
 	clear: both;
-
 }
 
 .meal-item-tag {
