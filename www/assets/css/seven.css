@@ -871,8 +871,12 @@ p {
 
 .dialog-bottom-buttons .button {
 	border-radius: 4px;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: bold;
+}
+
+.dialog-bottom-buttons {
+	height: 34px;
 }
 
 
