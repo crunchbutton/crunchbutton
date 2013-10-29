@@ -176,6 +176,7 @@ html {
 	width: 100%;
 	height: 20px;
 }
+
 .location-detect {
 	background: #00bd9e;
 	border-top-right-radius:6px;
@@ -195,6 +196,13 @@ html {
 	-o-transition:all linear 0.08s;
 	transition:all linear 0.08s;
 }
+/* wierd issue with height only on mobile safari */
+@media screen and (max-device-width: 480px) {
+	.location-detect  {
+		height: 38px;
+	}
+}
+
 .location-detect:active {
 	background: #00a88c;
 	color: #e1f1ee;
@@ -225,12 +233,27 @@ html {
 .pushabutton {
 	background: url(../images/micro/push-a-button.svg) no-repeat;
 	background-position: center center;
-	width: 17em;
-	height: 17em;
+	width: 16em;
+	height: 16em;
 	background-size: 100%;
 	margin: 0 auto;
 	padding-top: 50px;
+	-webkit-transition: all 0.2s;
 }
+@media (min-width: 321px) and (max-height: 350px) {
+	.pushabutton {
+		display: none;
+	}
+}
+@media (max-height: 390px) {
+	.pushabutton {
+		background-size: 100%;
+		height: 12.5em;
+		width: 12.5em;
+	}
+}
+
+
 .divider-circle {
 	background: url(../images/micro/fork-knife-orange.svg) center center no-repeat;
 	width: 6.5em;
@@ -668,6 +691,9 @@ p {
 		padding:0;
 		margin:0;
 		list-style-type:none;
+	}
+	.snap-drawer li:first-child {
+		border-top:1px solid rgba(0,0,0,0.1);
 	}
 	.snap-drawer li {
 		display:block;
