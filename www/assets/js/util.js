@@ -119,6 +119,13 @@ Date.prototype.getMonthNameShort = function(lang) {
 Date.locale = {
 	en: {
 		month_names: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-		month_names_short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+		month_names_short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
 	}
 };
+
+
+Number.prototype.pad = String.prototype.pad = function(width, z) {
+	var z = z || '0';
+	var n = this + '';
+	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
