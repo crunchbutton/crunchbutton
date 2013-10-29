@@ -332,11 +332,11 @@ p {
 	width: 100%;
 	letter-spacing:-.8px;
 
-	-webkit-transition:all linear 0.08s;
-	-moz-transition:all linear 0.08s;
-	-ms-transition:all linear 0.08s;
-	-o-transition:all linear 0.08s;
-	transition:all linear 0.08s;
+	-webkit-transition:background linear 0.08s;
+	-moz-transition:background linear 0.08s;
+	-ms-transition:background linear 0.08s;
+	-o-transition:background linear 0.08s;
+	transition:background linear 0.08s;
 }
 .button.pushable.orange {
 	box-shadow: 0 3px 0 #961500;
