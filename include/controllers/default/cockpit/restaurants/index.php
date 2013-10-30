@@ -41,14 +41,13 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 	 *
 	 * @return void
 	 */
-	private function _list()
-	{
-		$view = Cana::view();
-		/* @var $view Cana_View */
+	private function _list() {
 
-		$communities       = Crunchbutton_Community::q('SELECT * FROM community');
-		$view->communities = $communities;
-		$view->display('restaurants/index');
+		$communities = Crunchbutton_Community::q('SELECT * FROM community');
+
+		c::view()->restaurants = c::admin()->restaurants();
+		c::view()->communities = $communities;
+		c::view()->display('restaurants/index');
 	}
 
 	public function init() {
@@ -82,14 +81,14 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			switch (c::getPagePiece($page_piece_index+1)) {
 				case 'pay':
 					// @permission
-					if (!c::admin()->permission()->check(['global', 'restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-pay'])) {
+					if (!c::admin()->permission()->check(['global', 'restaurants-all','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-pay'])) {
 						return;
 					}
 					c::view()->display('restaurants/pay');
 					break;
 				case 'image':
 					// @permission
-					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-image'])) {
+					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-image'])) {
 						return;
 					}
 					if ($_FILES['image']) {
@@ -105,7 +104,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					break;
 				case 'fax':
 					// @permission
-					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-fax'])) {
+					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-fax'])) {
 						return;
 					}
 					c::view()->notification = $restaurant->fax();
@@ -113,7 +112,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					break;
 				default:
 					// @permission
-					if (!c::admin()->permission()->check(['global','restaurants-all','restaurants-crud','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-edit'])) {
+					if (!c::admin()->permission()->check(['global','restaurants-all','restaurant-'.$restaurant->id_restaurant,'restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-edit'])) {
 						return;
 					}
 					$this->_form();

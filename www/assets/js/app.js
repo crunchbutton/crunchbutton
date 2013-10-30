@@ -304,7 +304,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
-		}).addClass('page-' + MainNavigationService.page, 'at-top');
+		}).addClass('page-' + MainNavigationService.page + ' at-top');
 		
 		setTimeout(function() {
 			App.scrollTop();
@@ -828,8 +828,19 @@ App.tokenizeCard = function(card, complete) {
 				res.error = 'Error processing payment';
 				break;
 				
+			// a lack of any response from the ios sdk
 			case 999:
 				res.error = 'Unable to reach payment server';
+				break;
+			
+			// a response from the ios sdk that was both ilformated and didnt not validate
+			case 666:
+				res.error = 'Unable to validate your card';
+				break;
+
+			// who knows wtf this is
+			default:
+				res.error = 'Unable to validate your card at this time';
 				break;
 		}
 		console.debug('Balanced tokenization response',response);

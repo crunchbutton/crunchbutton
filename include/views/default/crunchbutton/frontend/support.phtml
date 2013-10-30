@@ -1,7 +1,7 @@
 <div ng-controller="SupportCtrl" class="support-container" ng-show="!App.isMobile()">
 
 	<div class="support-minimized" ng-show="support.minimized" ng-click="support.toggle();">
-		<div class="icon-comments-alt support-icon"></div>
+		<div class="fa fa-comment-o support-icon"></div>
 		<div class="support-title">Contact us?</div>
 		<div class="divider"></div>
 	</div>
@@ -9,7 +9,7 @@
 	<div class="support-maximized" ng-show="support.maximized">
 
 		<div class="support-maximized-header" ng-click="support.toggle();">
-			<div class="icon-comments-alt support-icon"></div>
+			<div class="fa fa-comment-o support-icon"></div>
 			<div class="support-title">Question? Comment?</div>
 			<div class="divider"></div>
 		</div>
@@ -34,7 +34,7 @@
 					<div class="divider"></div>
 					<button ng-show="!support.isSending" class="support-button" ng-click="support.send();">Send by sms</button>
 					<div class="divider"></div>
-					<i ng-show="support.isSending" class="icon-spinner icon-spin"></i>
+					<i ng-show="support.isSending" class=" fa fa-spinner fa-spin"></i>
 				</form>				
 			</div>
 

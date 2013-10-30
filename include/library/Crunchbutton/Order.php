@@ -152,13 +152,14 @@ class Crunchbutton_Order extends Cana_Table {
 		if (!$this->restaurant()->open()) {
 			$errors['closed'] = 'This restaurant is closed.';
 
-			$DeLorean = new TimeMachine($this->restaurant()->timezone);
+			$time = new DateTime('now', new DateTimeZone($this->restaurant()->timezone));
 			$debug    = [
 				'type'       => 'closed',
-				'now'        => $DeLorean->now(),
+				'time'        => $time->format('Y-m-d H:i:s'),
+				'timezone'   => $this->restaurant()->timezone,
 				'cart'       => $params['cart'],
 				'params'     => $params,
-				'restaurant' => $this->restaurant()->exports(['categories' => true, 'notifications' => true]),
+				'restaurant' => $this->restaurant()->exports(),
 			];
 			Crunchbutton_Log::error($debug);
 
@@ -173,23 +174,23 @@ class Crunchbutton_Order extends Cana_Table {
 
 		if ($errors) {
 		// Log the order - validation error
-		Log::debug([
-							'action' 				=> 'validation error',
-							'address' 			=> $params['address'],
-							'phone' 				=> $params['phone'],
-							'pay_type' 			=> $params['pay_type'],
-							'tip' 					=> $params['tip'],
-							'autotip'				=> $params['autotip'],
-							'autotip_value'	=> $params['autotip_value'],
-							'name' 					=> $params['name'],
-							'user_id' 			=> c::user()->id_user,
-							'delivery_type' => $params['delivery_type'],
-							'restaurant' 		=> $params['restaurant'],
-							'notes' 				=> $params['notes'],
-							'errors' 				=> $params['errors'],
-							'cart' 					=> $params['cart'],
-							'type' 					=> 'order-log'
-						]);
+			Log::debug([
+				'action' 				=> 'validation error',
+				'address' 			=> $params['address'],
+				'phone' 				=> $params['phone'],
+				'pay_type' 			=> $params['pay_type'],
+				'tip' 					=> $params['tip'],
+				'autotip'				=> $params['autotip'],
+				'autotip_value'	=> $params['autotip_value'],
+				'name' 					=> $params['name'],
+				'user_id' 			=> c::user()->id_user,
+				'delivery_type' => $params['delivery_type'],
+				'restaurant' 		=> $params['restaurant'],
+				'notes' 				=> $params['notes'],
+				'errors' 				=> $params['errors'],
+				'cart' 					=> $params['cart'],
+				'type' 					=> 'order-log'
+			]);
 			return $errors;
 		}
 

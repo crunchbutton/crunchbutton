@@ -1,0 +1,44 @@
+<div class="top-pad"></div>
+
+<div ng-show="!orders.list">
+	<div class="main-content-readable home-greeting">
+		<div class="home-welcome">
+			<h2>One sec! I know its here somewhere...</h2>
+			<br />
+			<div class="ajax-loader-teal"></div>
+			<br />
+		</div>
+	</div>
+</div>
+
+<div ng-show="orders.list">
+	
+	<div class="content-padding">
+		<br />
+		<h4>Noms.</h4>
+		<p>Look at all that great food! You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it!</p>
+		<br /><br />
+	</div>
+
+	<div class="content-padding">
+		<ul class="orders-list">
+			<li ng-repeat="order in orders.list" class="order-item" ng-click="orders.receipt(order.id)">
+				<div class="order-date">
+					<div class="order-month">{{order._date.getMonthNameShort()}}</div>
+					<div class="order-day">{{order._date.getDate().pad(2)}}</div>
+				</div>
+				<div class="order-details">
+					<span class="order-name" ng-click="orders.restaurant(order._restaurant_permalink)">
+						{{order._restaurant_name}}
+					</span>
+				</div>
+
+				<div class="order-link fa fa-arrow-circle-right"></div>
+				<div class="divider"></div>		
+			</li>
+		</ul>
+	</div>
+	
+	<div class="orders-oranges"></div>
+
+</div>

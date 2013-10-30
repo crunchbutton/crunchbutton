@@ -95,7 +95,7 @@ html {
 	user-select: none;
 }
 
-.content {
+.content, .footer .content-padding {
 	max-width: 767px;
 	margin: 0 auto;
 }
@@ -112,7 +112,11 @@ html {
 	background-size: 100%;
 	margin: 0 auto;
 	-webkit-transition: all 0.2s;
+	cursor: pointer;
 }
+
+
+
 
 
 .menu {
@@ -172,6 +176,7 @@ html {
 	width: 100%;
 	height: 20px;
 }
+
 .location-detect {
 	background: #00bd9e;
 	border-top-right-radius:6px;
@@ -191,6 +196,13 @@ html {
 	-o-transition:all linear 0.08s;
 	transition:all linear 0.08s;
 }
+/* wierd issue with height only on mobile safari */
+@media screen and (max-device-width: 480px) {
+	.location-detect  {
+		height: 38px;
+	}
+}
+
 .location-detect:active {
 	background: #00a88c;
 	color: #e1f1ee;
@@ -221,12 +233,27 @@ html {
 .pushabutton {
 	background: url(../images/micro/push-a-button.svg) no-repeat;
 	background-position: center center;
-	width: 17em;
-	height: 17em;
+	width: 16em;
+	height: 16em;
 	background-size: 100%;
 	margin: 0 auto;
 	padding-top: 50px;
+	-webkit-transition: all 0.2s;
 }
+@media (min-width: 321px) and (max-height: 350px) {
+	.pushabutton {
+		display: none;
+	}
+}
+@media (max-height: 390px) {
+	.pushabutton {
+		background-size: 100%;
+		height: 12.5em;
+		width: 12.5em;
+	}
+}
+
+
 .divider-circle {
 	background: url(../images/micro/fork-knife-orange.svg) center center no-repeat;
 	width: 6.5em;
@@ -332,6 +359,12 @@ p {
 .button.lightorange {
 	background: #fe9872;
 	font-weight: 900;
+}
+.button.pushable.lightorange {
+	box-shadow: 0 2px 0 #de7e5b;
+}
+.button.pushable.lightorange:active {
+
 }
 .button.green {
 	background: #00bea0;
@@ -583,6 +616,9 @@ p {
 	}
 }
 @media(max-width:499px) {
+	body {
+		overflow: hidden;
+	}
 	.footer {
 		display: none;
 	}
@@ -613,13 +649,12 @@ p {
 		width:auto;
 		height:auto;
 		z-index:2;
-		-webkit-overflow-scrolling:touch;
+		overflow: hidden;
 		-webkit-transform:translate3d(0,0,0);
 		-moz-transform:translate3d(0,0,0);
 		-ms-transform:translate3d(0,0,0);
 		-o-transform:translate3d(0,0,0);
 		transform:translate3d(0,0,0);
-
 	}
 	.snap-drawer {
 		position:absolute;
@@ -663,6 +698,9 @@ p {
 		margin:0;
 		list-style-type:none;
 	}
+	.snap-drawer li:first-child {
+		border-top:1px solid rgba(0,0,0,0.1);
+	}
 	.snap-drawer li {
 		display:block;
 		border-bottom:1px solid rgba(0,0,0,0.1);
@@ -682,7 +720,7 @@ p {
 			transform:none;
 		}
 	}
-	.snap-drawer [class^="icon-"] {
+	.snap-drawer .fa {
 		font-size:25px;
 	}
 	.side-menu-wrap {
@@ -780,24 +818,68 @@ p {
 
 
 
-
-.small-container {
-	background:#fff;
-	width:250px;
+/* DIALOGS */
+.dialog {
+	background:#fffef8;
+	width:290px;
 	margin:40px auto;
 	position:relative;
-	border-radius:4px;
-	padding:20px;
+	border-radius:6px;
 }
-.small-container {
+.dialog {
 	line-height:20px;
 }
-.small-container h1 {
-	color:#D74924;
-	font-size:1.4em;
-	font-weight:400;
-	margin-bottom:18px;
+.dialog h1 {
+	color: #eb592a;
+	font-size: 17px;
+	font-weight: 600;
+	margin-bottom: 12px;
 }
+.dialog p.dialog-hours {
+	font-size: 10px;
+}
+
+.dialog p {
+	font-size: 12px;
+}
+
+.mfp-bg {
+	background-color: #1c0f0e !important;
+}
+.mfp-close {
+	display: none !important;
+}
+.dialog-egg {
+	background: url(../images/micro/dialog-egg.svg) no-repeat;
+	background-position: top center;
+	width: 68px;
+	height: 112px;
+	background-size: 100%;
+	-webkit-transition: all 0.2s;
+	float: right;
+	margin-top: -5px;
+	margin-left: 15px;
+}
+
+.dialog-divider {
+	border-top: 1px solid #e3e2df;
+}
+
+.dialog-padding {
+	padding: 14px;
+}
+
+.dialog-bottom-buttons .button {
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.dialog-bottom-buttons {
+	height: 34px;
+}
+
+
 
 
 
@@ -807,13 +889,32 @@ p {
 }
 
 .restaurants-item .restaurants-open {
-	background: #fc9a6b;
+	border: 1px solid #c1c1c1;
+	background: #fff;
 	width: 29em;
 	height: 12em;
-	border-radius: 6px;
+	border-radius: 4px;
 	padding: 2px;
 	display: inline-block;
+	
+	margin-bottom: 2px;
+	margin-top: 0;
+	
+	-webkit-transition:border 0.2s ease;
+	-moz-transition:border 0.2s ease;
+	-ms-transition:border 0.2s ease;
+	-o-transition:border 0.2s ease;
+	transition:border 0.2s ease;
 }
+
+.restaurants-item .restaurants-open:hover {
+	border: 1px solid #f78256;
+}
+.restaurants-item .restaurants-open:active {
+	margin-bottom: 0;
+	margin-top: 2px;
+}
+
 .restaurants-item {
 	margin: 0 5px 10px 5px;
 	display: inline-block;
@@ -821,25 +922,30 @@ p {
 	text-align: left;
 }
 .restaurants-pic {
-	height: 115px;
-	border-top-left-radius:3px;
-	border-top-right-radius:3px;
+	height: 8em;
+	border-top-left-radius:1px;
+	border-top-right-radius:1px;
 	overflow:hidden;
 	background-size:cover !important;
+	background-position: center center !important;
+	box-shadow: inset rgba(0,0,0,0.3) 0 0 40px;
 }
 .restaurants-item-content {
 
 }
+.restaurants-closed, .restaurants-open {
+	cursor: pointer;
+}
 .restaurants-open .restaurants-name {
-	font-size: 15px;
-	text-shadow:1px 1px 0 rgba(0,0,0,.5);
-	color: #fff;
+	padding: .6em 0 0 .5em;
+	font-size: 1.4em;
+	color: #424242;
 	font-weight: 700;
 }
 .restaurants-open .restaurants-description {
-	font-size: 10px;
-	color: #fff;
-	text-shadow:1px 1px 0 rgba(0,0,0,.7);
+	padding: .2em 0 0 .5em;
+	font-size: 1.1em;
+	color: #535353;
 }
 
 .restaurants-closed .restaurants-name {
@@ -856,13 +962,43 @@ p {
 }
 
 .restaurants-closed {
+	border: 1px solid #ed4f41;
 	background: #ed4f41;
 	border-radius: 4px;
 	padding: 10px 12px 10px 12px;
 	width: 27em;
 	clear: both;
-
 }
+
+.meal-item-tag {
+	background: #00bd9e;
+	box-shadow: 0 2px 0 #018872;
+	margin-right: -7px;
+	border-radius: 3px;
+	margin-top: -11.7em;
+	float: right;
+	color: #fff;
+	font-size: .9em;
+	font-weight: 600;
+	padding: .6em .8em .6em .8em;
+	z-index: 6;
+	position: relative;
+}
+
+.meal-item-tag-bottom {
+	margin-top: -8.9em;
+	margin-right: -11px;
+	float: right;
+	border-color: transparent transparent transparent #018872;
+	border-style: solid;
+	border-width: 4px;
+	width: 0;
+	height: 0;
+	content: " ";
+	z-index: 5;
+	position: relative;
+}
+
 .restaurants-orange {
 	background: url(../images/micro/restaurants-orange.svg) no-repeat;
 	width: 7.9em;
@@ -920,7 +1056,7 @@ p {
 	margin-top: 10px;
 }
 
-.footer .social [class^="icon-"] {
+.footer .social .fa {
 	font-size: 25px;
 	padding-right: 10px;
 	-webkit-transition:color 0.2s ease;
@@ -930,9 +1066,10 @@ p {
 	transition:color 0.2s ease;
 	color: #4b4855;
 	cursor: pointer;
+	text-decoration: none;
 
 }
-.footer .social [class^="icon-"]:hover, .footer .social [class^="icon-"]:active {
+.footer .social .fa:hover, .footer .social .fa:active {
 	color: #00bea0;
 }
 
@@ -954,4 +1091,56 @@ p {
 .copyright {
 	font-size: 10px;
 	color: #6c6976;
+}
+
+
+
+/* ORDERS PAGE */
+.order-item {
+	background: #00bea0;
+	color: #fff;
+	padding: 7px 6px 4px 4px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.orders-oranges {
+	background: url(../images/micro/orders-oranges.svg) no-repeat;
+	background-position: top center;
+	width: 12.9em;
+	height: 3.5em;
+	background-size: 100%;
+	margin: 0 auto;
+	margin-top: 10em;
+	-webkit-transition: all 0.2s;
+}
+
+.order-month {
+	font-size: 1.2em;
+	text-align:center;
+}
+
+.order-day {
+	font-size: 2.5em;
+	font-weight: bold;
+	text-align:center;
+}
+
+.order-name {
+	text-decoration: underline;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.order-link {
+	font-size: 3.64em;
+	float: right;
+}
+
+.order-date {
+	margin-right: 1.8em;
+}
+
+.order-date, .order-details {
+	float: left;
 }

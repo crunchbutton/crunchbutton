@@ -1,0 +1,13 @@
+<div class="restaurant-closed-container zoom-anim-dialog mfp-hide dialog" ng-controller="RestaurantClosedCtrl">
+	<div class="dialog-padding">
+		<h1 ng-bind="restaurant.name"></h1>
+		<div class="dialog-egg"></div>
+		<p>is currently closed. It will be open during the following hours (<span ng-bind="restaurant._tzabbr"></span>):<br /><br />
+		<p ng-bind-html-unsafe="restaurant.closedMessage()" class="dialog-hours"></p>
+		<div class="divider"></div>
+	</div>
+	<div class="dialog-divider"></div>
+	<div class="dialog-padding dialog-bottom-buttons">
+		<button class="button lightorange pushable" ng-click="closePopup()">ok</button>
+	</div>
+</div>
