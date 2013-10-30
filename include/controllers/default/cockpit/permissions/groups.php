@@ -1,0 +1,64 @@
+<?php
+
+class Controller_Permissions_Groups extends Crunchbutton_Controller_Account {
+	
+	public function init() {
+		
+		if (!c::admin()->permission()->check(['global','permissions-all', 'permission-groups'])) {
+			return ;
+		}
+
+		$action = c::getPagePiece(2);
+
+		switch ( $action ) {
+
+			case 'content':
+				$this->search();
+				break;
+
+			case 'new':
+				$this->form();
+				break;
+
+			case 'remove':
+				$id_group = $_REQUEST[ 'id_group' ];
+				$group = Crunchbutton_Group::o( $id_group );
+				if( $group->id_group ){
+					$group->delete();
+				}
+				echo 'ok';
+				break;
+
+			default:
+				if( is_numeric( $action ) ){
+					$this->form();
+					exit;
+				}
+				c::view()->page = 'permissions';
+				c::view()->display('permissions/groups/index');
+				break;
+		}
+	
+	}
+
+	private function search(){
+		$search = [];
+		if ( $_REQUEST[ 'name' ] ) {
+			$search[ 'name' ] = $_REQUEST[ 'name' ];
+		}
+		c::view()->groups = Crunchbutton_Group::find( $search );
+		c::view()->layout( 'layout/ajax' );
+		c::view()->display( 'permissions/groups/content' );
+	}
+
+	private function form(){
+		$id_group = c::getPagePiece(2);
+		if( $id_group != 'new' ){
+			c::view()->group = Crunchbutton_Group::o( $id_group );
+		} else {
+			c::view()->group = new Crunchbutton_Group();
+		}
+		c::view()->display( 'permissions/groups/form' );
+	}
+
+}
