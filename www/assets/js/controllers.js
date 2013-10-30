@@ -656,12 +656,14 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		var position = PositionsService;
 		var address = position.pos();
 
-		// If the typed address is different of the user address the typed one will be used #1152
-		if( address.type() == 'user' && address.valid( 'order' ) ){
-			if( order._useCompleteAddress ){
-				$scope.order.form.address = address.formatted();
-			} else {
-				$scope.order.form.address = address.entered();
+		// If the typed address is valid (order) and the user address is empty use the typed one #1152 and #1989 
+		if( !order.account.user || order.account.user.address == '' ){
+			if( address.type() == 'user' && address.valid( 'order' ) ){
+				if( order._useCompleteAddress ){
+					$scope.order.form.address = address.formatted();
+				} else {
+					$scope.order.form.address = address.entered();
+				}
 			}
 		}
 		
