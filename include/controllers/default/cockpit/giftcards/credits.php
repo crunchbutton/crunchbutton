@@ -4,7 +4,7 @@ class Controller_giftcards_credits extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global'])) {
+		if (!c::admin()->permission()->check(['global','gift-card-all', 'gift-card-anti-cheat'])) {
 			return ;
 		}
 

@@ -8,6 +8,36 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 			case 'post':
 				
 				if ($_SESSION['admin']) {
+
+					// Verify the permissions
+					switch ( c::getPagePiece( 2 ) ) {
+						case 'sms':
+						case 'email':
+						case 'bunchemail':
+						case 'bunchsms':
+						case 'generate':
+							$ids_restaurant = $this->request()['id_restaurant'];
+							foreach ( $ids_restaurant as $id_restaurant ) {
+								if (!c::admin()->permission()->check( [ 'global','gift-card-all', 'gift-card-create-all', "gift-card-create-restaurant-{$id_restaurant}", "gift-card-restaurant-{$id_restaurant}"])) {
+									return ;
+								}
+							}
+							break;
+						case 'relateuser':
+							$giftcard = Crunchbutton_Promo::o( $this->request()['id_promo'] );
+							if (!c::admin()->permission()->check( [ 'global','gift-card-all', 'gift-card-create-all', "gift-card-create-restaurant-{$giftcard->id_restaurant}", "gift-card-restaurant-{$giftcard->id_restaurant}"])) {
+								return;
+							}
+							break;
+						case 'delete':
+						case 'removecredit':
+								if (!c::admin()->permission()->check( [ 'global','gift-card-all', 'gift-card-delete'])) {
+									return ;
+								}
+							break;
+					}
+									
+
 					switch ( c::getPagePiece( 2 ) ) {
 
 						case 'generate':
@@ -42,6 +72,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 
 							foreach( $ids_restaurant as $id_restaurant ){
 								if( trim( $id_restaurant ) != '' ){
+
 									for( $i = 1; $i<= $total; $i++) {
 										$giftcard = new Crunchbutton_Promo;
 										// id_restaurant == * means any restaurant

@@ -17,6 +17,11 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 		switch (c::getPagePiece(3)) {
 			
 			case 'refund':
+
+				if ( !c::admin()->permission()->check(['global','orders-all','orders-refund'])) {
+					return ;
+				}
+
 				if (!$order->get(0)->refund()) {
 					echo json_encode(['status' => 'false', 'errors' => 'failed to refund']);
 					exit;
@@ -24,6 +29,11 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'pay_if_refunded':
+
+				if ( !c::admin()->permission()->check(['global','orders-all','orders-refund'])) {
+					return ;
+				}
+
 				$order->pay_if_refunded = c::getPagePiece(4);
 				$order->save();
 				echo json_encode(['status' => 'success']);
@@ -31,6 +41,11 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				break;
 
 			case 'resend_notification':
+
+				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
+					return ;
+				}
+
 				if ( $order->resend_notify() ) {
 					echo json_encode(['status' => 'success']);
 					exit;

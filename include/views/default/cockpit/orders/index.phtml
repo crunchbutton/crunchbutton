@@ -2,6 +2,9 @@
 	$this->title = 'Orders';
 	$this->subtitle = 'people order shit! then eat it!';
 	$this->titleicon = 'truck';
+
+	$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'orders-all' ] );
+
 ?>
 
 
@@ -75,10 +78,21 @@
 									<label class="span3">Restaurant</label>
 									<span class="span8 pull-right">
 										<select name="restaurant" class="chzn-select">
-											<option value="" selected>[ All ]</option>
-											<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
-												<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
-											<? endforeach ; ?>
+											<?php  
+											$restaurants = Restaurant::q('select * from restaurant order by name');
+											if( $hasPermissionToAllRestaurants ){
+												echo '<option value="" selected>[ All ]</option>';
+												foreach ( $restaurants as $restaurant ) {
+													?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+												}
+											} else {
+												foreach ( $restaurants as $restaurant ) {
+													if( c::admin()->permission()->check( [ "orders-list-restaurant-{$restaurant->id_restaurant}" ] ) ){
+														?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+													}
+												}
+											}
+											?>
 										</select>
 									</span>
 									<div class="clearfix"></div>
@@ -88,9 +102,11 @@
 									<span class="span8 pull-right">
 										<select name="community" class="chzn-select">
 											<option value="" selected>[ All ]</option>
+											<?php if( $hasPermissionToAllRestaurants ) { ?>
 											<? foreach (Restaurant::getCommunities() as $community) :  ?>
 												<option value="<?=$community?>"><?=$community?></option>
 											<? endforeach ; ?>
+											<?php } ?>
 										</select>
 									</span>
 									<div class="clearfix"></div>
@@ -105,19 +121,22 @@
 			<center>
 				<button type="submit" class="btn btn-blue admin-order-search"> Search </button>	
 				&nbsp;&nbsp;
+				<?php if( c::admin()->permission()->check(['global','orders-all','orders-new-users']) ) { ?>
 				<a class="btn btn-green" href="/orders/newusers/">New users</a>
+				<?php } ?>
 			</center>
 			<br />
 		</div>
 
 		<div class="box">
 			<div class="box-header"><span class="title">Results</span>
+				<?php if( c::admin()->permission()->check(['global','orders-all','orders-export']) ) { ?>
 				<ul class="box-toolbar">
 					<li class="toolbar-link">
 						<a href="javascript:;" class="admin-order-export" title="Export"><i class="icon-download-alt"></i></a>
 					</li>
 				</ul>
-			
+			<?php } ?>
 			</div>
 			<div class="box-content">
 				<div class="orders-loader"><center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center></div>

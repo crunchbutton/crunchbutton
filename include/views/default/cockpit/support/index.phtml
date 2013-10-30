@@ -19,9 +19,11 @@
 									<input type="text" placeholder="" name="support-phone-afterhours" id="support-phone-afterhours" value='<?=c::config()->site->config('support-phone-afterhours')->value?>'>
 								</span>
 							</li>
-							<li class="input">
-								<button type="button" class="btn btn-blue button-save-settings">Save changes</button>
-							</li>
+							<?php if( c::admin()->permission()->check( [ 'global', 'support-all', 'support-settings' ] ) ) { ?>					
+								<li class="input">
+									<button type="button" class="btn btn-blue button-save-settings">Save changes</button>
+								</li>
+							<?php } ?>
 						</ul>
 					</form>
 				</div>
@@ -31,9 +33,11 @@
 		<div class="span6">
 			<div class="box">
 				<div class="box-header"><span class="title">Stuff</span></div>
+				<?php if (c::admin()->permission()->check(['global', 'support-all', 'support-crud' ])) { ?>
 				<div class="box-content padded">
 					<a href="/support/new"><button type="submit" class="btn btn-blue new-restaurant">New Support Ticket</button></a>
 				</div>
+				<?php } ?>
 			</div>
 		</div>
 	</div>
@@ -47,10 +51,11 @@
 				<span class="title">Recent Issues</span>
 				<ul class="box-toolbar">
 					<li><span class="label label-green"><?=$this->total?> open</span></li>
-
+					<?php if (c::admin()->permission()->check(['global', 'support-all', 'support-crud' ])) { ?>
 					<li class="toolbar-link">
 						<a href="/support/new" title="Create new"><i class="icon-edit"></i></a>
 					</li>
+					<?php } ?>
 				</ul>
 			</div>
 			<div class="box-content">

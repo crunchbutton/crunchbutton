@@ -2,7 +2,7 @@
 
 class Controller_orders_newusers extends Crunchbutton_Controller_Account {
 	public function init() {
-		if (!c::admin()->permission()->check(['global'])) {
+		if (!c::admin()->permission()->check(['global','orders-all','orders-new-users'])) {
 			return ;
 		}
 		if( c::getPagePiece( 2 ) == 'sendemail' ){ 
