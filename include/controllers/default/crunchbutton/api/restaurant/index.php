@@ -139,6 +139,42 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 					$r = Restaurant::o(c::getPagePiece(2));
 					/* @var $r Crunchbutton_Restaurant */
 
+					// Permissions
+					if( !c::admin() ){
+						return;
+					}
+
+					$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-all" ]);
+					if( !$hasPermission ){
+						switch ($action) {
+							case 'fake-merchant':
+							case 'fakeremove-merchant':
+							case 'remove-bankinfo':
+							case 'paymentinfo':
+							case 'merchant':
+							case 'credit':
+							case 'bankinfo':
+								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-pay" ]);
+								break;
+
+							case 'weight-adj':
+							case 'categories':
+							case 'notifications':
+							case 'hours':
+							case 'delete-category': 
+							case 'delete-dish': 
+							case 'save-dish':
+							case 'dishes':
+							default:
+								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-edit" ]);
+								break;
+						}	
+					}
+
+					if( !$hasPermission ){
+						return;
+					}
+
 					$action = c::getPagePiece(3);
 					switch ($action) {
 						case 'categories':
@@ -259,7 +295,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							$weight_adj = $this->request()['weight_adj'];
 							$r->weight_adj = $weight_adj;
 							$r->save();
-							echo json_encode( [ 'success' => 'dish saved' ] );
+							echo json_encode( [ 'success' => 'saved' ] );
 						break;
 
 						default:

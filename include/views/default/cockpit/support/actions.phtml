@@ -5,6 +5,7 @@ $support = $this->support;
 	<div class="alert alert-refund" style="display:none;">
 		<span class="alert-message"></span>
 	</div>
+	<?php if( c::admin()->permission()->check( [ 'global', 'support-all', 'support-crud' ] ) ) { ?>	
 	<div class="box">
 		<div class="box-header">
 			<span class="title">Actions</span>
@@ -30,4 +31,5 @@ $support = $this->support;
 			</ul>
 		</div>
 	</div>
+	<?php } ?>
 <?php } ?>

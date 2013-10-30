@@ -3,7 +3,7 @@
 class Controller_support extends Crunchbutton_Controller_Account {
 	public function init() {
 	
-		if (!c::admin()->permission()->check(['global'])) {
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			return ;
 		}
 	
@@ -11,6 +11,11 @@ class Controller_support extends Crunchbutton_Controller_Account {
 
 		switch ($action) {
 			case 'new':
+
+				if (!c::admin()->permission()->check(['global', 'support-all', 'support-crud' ])) {
+					return ;
+				}
+
 				self::create($support, $_REQUEST);
 				header('Location: /support/'.$support->id_support);
 				exit;
@@ -40,26 +45,34 @@ class Controller_support extends Crunchbutton_Controller_Account {
 						break;
 
 					case 'conversation' :
-						self::setRep($support);
-						$sn = self::respond($support, $_POST);
-						c::view()->display('support/conversation.note', ['set' => ['note' => $sn]]);
-						exit;
+						if (c::admin()->permission()->check(['global', 'support-all', 'support-crud' ])) {
+							self::setRep($support);
+							$sn = self::respond($support, $_POST);
+							c::view()->display('support/conversation.note', ['set' => ['note' => $sn]]);
+							exit;
+						}
 						break;
 
 					case 'note' :
-						$support->addNote($_POST['text'], 'rep', 'internal');
-						exit;
+						if (c::admin()->permission()->check(['global', 'support-all', 'support-crud' ])) {
+							$support->addNote($_POST['text'], 'rep', 'internal');
+							exit;
+						}
 						break;
 
 					case 'update':
-						self::update( $support, $_POST );
-						echo $support->json();
-						exit;
+						if (c::admin()->permission()->check(['global', 'support-all', 'support-crud' ])) {
+							self::update( $support, $_POST );
+							echo $support->json();
+							exit;
+						}
 						break;
 
 					case 'actions':
-						self::setRep($support);
-						self::action($support, $_POST);
+						if (c::admin()->permission()->check(['global', 'support-all', 'support-crud' ])) {
+							self::setRep($support);
+							self::action($support, $_POST);
+						}
 						break;
 				}
 

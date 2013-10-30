@@ -3,7 +3,7 @@
 class Controller_logs_content extends Crunchbutton_Controller_Account {
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global'])) {
+		if (!c::admin()->permission()->check(['global','logs'])) {
 			return ;
 		}
 
