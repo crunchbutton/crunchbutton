@@ -33,7 +33,7 @@
 			
 			<div ng-show="account.user.has_auth">
 				<div class="social-button facebook-button social-button-share clearfix" ng-click="facebook();">
-					<i class="icon-facebook"></i><span class="social-button-text">Share what you ordered</span>
+					<i class="fa fa-facebook"></i><span class="social-button-text">Share what you ordered</span>
 					<div class="divider"></div>
 				</div>
 				<div ng-show="order.new && referral.invite_url && referral.enabled">
@@ -97,7 +97,7 @@
 	<br>
 	
 	<? if (!$this->export) : ?>
-		<a data-ng-href="/printorder/{{ order.uuid }}" <?=$this->export ? '' : ' target="_blank"'?> class="print-icon"><i class="icon-print"></i> Print Receipt</a>
+		<a data-ng-href="/printorder/{{ order.uuid }}" <?=$this->export ? '' : ' target="_blank"'?> class="print-icon"><i class="fa fa-print"></i> Print Receipt</a>
 	<? endif ; ?>
 
 	<div class="divider"></div>

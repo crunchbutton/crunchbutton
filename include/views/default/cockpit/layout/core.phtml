@@ -61,7 +61,7 @@
 							</li>
 
 							<li class="divider"></li>
-							<li><a href="#"><i class="icon-off"></i> <span>Logout</span></a></li>
+							<li><a href="http://log:out@<?=$_SERVER['HTTP_HOST']?>"><i class="icon-off"></i> <span>Logout</span></a></li>
 						</ul>
 					</li>
 				</ul>
@@ -89,7 +89,7 @@
 <!-- side nav -->
 <div class="primary-sidebar">
 	<ul class="nav nav-collapse collapse nav-collapse-primary">
-		<?php if ( c::admin()->permission()->check( [ 'global','dashboard'] ) ) { ?>
+
 		<li class="<?=$this->page == 'home' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/dashboard">
@@ -97,8 +97,8 @@
 				<span>Dashboard</span>
 			</a>
 		</li>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','orders'] ) ) { ?>
+
+		<?php if ( c::admin()->permission()->check( [ 'global','orders-all','orders-view'] ) ) { ?>
 		<li class="dark-nav <?=$this->page == 'orders' ? 'active' : ''?>">
 			<span class="glow"></span>
 
@@ -149,7 +149,7 @@
 			*/ ?>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','restaurants-all','restaurants-list','restaurants-crud','restaurants-create'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','restaurants-view'] ) ) { ?>
 		<li class="<?=$this->page == 'restaurants' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/restaurants">
@@ -158,7 +158,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','customers-all','customers-view'] ) ) { ?>
 		<li class="<?=$this->page == 'customers' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/customers">
@@ -185,7 +185,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','support-all','support-view'] ) ) { ?>
 		<li class="<?=$this->page == 'support' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/support">

@@ -2,21 +2,23 @@
 
 class Controller_test extends Crunchbutton_Controller_Account {
 	public function init() {
-	
-		$id = 'CC7kIW3yIIOJfFJl5fvDy8hG';
-		 c::balanced();
-
-		echo c::balanced()->cards->uri.'/'.$id;
-
+		c::admin()->restaurants();
 		exit;
-	
-		$card = Crunchbutton_Balanced_Card::byId($id);
-		echo $card->uri;
+		$r = new Restaurant(21);
+
+
+		$time = '2013-10-13 00:12:00';
+//$time = new DateTime($time, new DateTimeZone($r->timezone));
+//echo $time->format('Y-m-d H:i:s');
+
+
+		if ($r->open($time)) {
+			echo 'open';
+		} else {
+			echo 'closed';
+		}
+		
 		exit;
-		
-		
-		
-		die(c::balanced()->uri);
 	
 		if (c::admin()->permission()->check(['test','testsss'])) {
 			echo 'true';

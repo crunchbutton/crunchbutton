@@ -27,7 +27,6 @@
 	<div class="restaurants-items">
 		<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="restaurants-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
 
-			
 			<div class="restaurants-closed" ng-show="restaurant._tag == 'closed'">
 				<h2 class="restaurants-name">{{restaurant.name}}</h2>
 				<div class="restaurants-opensin">Opens in 4 hours</div>			
@@ -36,14 +35,17 @@
 			<div class="restaurants-open" ng-hide="restaurant._tag == 'closed'">
 				<div class="restaurants-item-content ladda-button" style="background: url({{restaurant.img64}});" ng-spinner data-style="zoom-out" data-spinner-color="#333333">
 					<div class="ladda-label">
-						<div class="restaurants-pic" style="background: url({{restaurant.img64}});">
+						<div class="restaurants-pic" style="background: url({{restaurant.img64}});"></div>
 						<h2 class="restaurants-name">{{restaurant.name}}</h2>
 						<h3 class="restaurants-description">{{restaurant._short_description}}</h3>
-						</div>
+
 						<div ng-switch on="restaurant._tag">
 							<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
 							<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
 						</div>
+						
+						<div class="meal-item-tag-bottom" ng-show="restaurant._tag == 'closing' || restaurant._tag == 'takeout'"></div>
+
 					</div>
 					<span class="ladda-spinner"></span>
 				</div>
@@ -51,7 +53,7 @@
 		</div>
 
 		<button class="button green" ng-show="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
-			More awesome Restauratnts
+			More awesome Restaurants
 		</button>
 
 	</div>

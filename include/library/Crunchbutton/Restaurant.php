@@ -717,26 +717,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	/**
 	 * Confirms a restaurant is open
-	 *
-	 * Uses TimeMachine to test if the restaurant is open forcing time travel
-	 *
-	 * @link /api/TimeMachine/set?time=12:30am
-	 * @link /api/TimeMachine/reset
 	 */
-	public function open() {
+	public function open($dt = null) {
 
-		if (c::env() != 'live' && ($this->id_restaurant == 1 || $this->id_restaurant == 18)) {
-			// return true;
-		}
-
-		if(!$this->open_for_business) {
+		if (!$this->open_for_business) {
 			return false;
 		}
 
 		$hours = $this->hours();
-		$DeLorean = new TimeMachine($this->timezone);
-		$today    = $DeLorean->now();
-		$day      = strtolower($today->format('D'));
+		$today = new DateTime($dt ? $dt : 'now', new DateTimeZone($this->timezone));
+		$day = strtolower($today->format('D'));
 
 		$hasHours = false;
 
@@ -761,7 +751,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 
-		if( !$hasHours ){
+		if (!$hasHours) {
 			// a restaurant with no hours is never open
 			return false;
 		}
@@ -770,14 +760,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	// Return minutes left to close
-	public function closesIn() {
-		if( !$this->open() ){
+	public function closesIn($dt = null) {
+		if (!$this->open()) {
 			return false;
 		}
 		$hours = $this->hours();
-		$DeLorean = new TimeMachine($this->timezone);
-		$today    = $DeLorean->now();
+		$today = new DateTime($dt ? $dt : 'now', new DateTimeZone($this->timezone));
 		$day      = strtolower($today->format('D'));
+
 		foreach ($hours as $hour) {
 			if ($hour->day != $day) {
 				continue;
@@ -799,21 +789,22 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	// Return minutes left to open
-	public function openIn() {
-		if( $this->open() ){
+	public function openIn($dt) {
+		if ($this->open()) {
 			return false;
 		}
+
 		$hours = $this->hours();
-		$DeLorean = new TimeMachine($this->timezone);
-		$today    = $DeLorean->now();
+		$today = new DateTime($dt ? $dt : 'now', new DateTimeZone($this->timezone));
 		$day      = strtolower($today->format('D'));
+
 		foreach ($hours as $hour) {
 			if ($hour->day != $day) {
 				continue;
 			}
 			$open  = new DateTime('today '.$hour->time_open,  new DateTimeZone($this->timezone));
 			if ($today->getTimestamp() < $open->getTimestamp()) {
-				$interval = $today->diff( $open );
+				$interval = $today->diff($open);
 				$minutes = $interval->days * 24 * 60;
 				$minutes += $interval->h * 60;
 				$minutes += $interval->i;
@@ -1296,17 +1287,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 		return $communities;
 	}
-
-	public static function getCommunitiesWithRestaurantsNumber(){
-		$data = c::db()->get( 'SELECT SUM(1) restaurants, community FROM restaurant WHERE community IS NOT NULL AND community != "" GROUP BY community' );
-		$communities = [];
-		foreach ( $data as $item ) {
-			$communities[] = $item;
-		}
-		return $communities;
-	}
-
-	
 
 	public static function getRestaurantsByCommunity( $community ){
 		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}'" );

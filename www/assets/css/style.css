@@ -468,11 +468,11 @@ html[xmlns] .clearfix {
 	filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ffffff', endColorstr='#dedede');
 }
 
-.twitter-button .icon-twitter {
+.twitter-button .fa-twitter {
 	color: #00acee;
 }
 
-.social-button-invite .icon-twitter, .social-button-invite .icon-facebook {
+.social-button-invite .fa-twitter, .social-button-invite .fa-facebook {
 	padding: 3px;
 }
 
@@ -610,7 +610,7 @@ html[xmlns] .clearfix {
 .snapjs-expand-left .snap-drawer-left,.snapjs-expand-right .snap-drawer-right {
 	width:100%;
 }
-.snap-drawer [class^="icon-"] {
+.snap-drawer .fa {
 	font-size:25px;
 }
 
