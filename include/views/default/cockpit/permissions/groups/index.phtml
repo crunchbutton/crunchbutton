@@ -3,8 +3,8 @@
 	$this->titleicon = 'lock';
 	$this->titleLink = '/permissions';
 	
-	$this->title2 = 'Users';
-	$this->title2icon = 'user';
+	$this->title2 = 'Groups';
+	$this->title2icon = 'group';
 
 ?>
 <!-- content -->
@@ -22,8 +22,8 @@
 							</div>
 							<div class="span6 separate-sections">
 								 <ul class="padded separate-sections">
-										<li><button class="btn btn-blue admin-user-search"><i class="icon-search"></i>&nbsp;&nbsp;&nbsp; Search </button> 
-											 <a href="/permissions/users/new" class="btn btn-green admin-user-new"><i class="icon-user"></i>&nbsp;&nbsp;&nbsp; New User </a> 
+										<li><button class="btn btn-blue admin-group-search"><i class="icon-search"></i>&nbsp;&nbsp;&nbsp; Search </button> 
+											 <a href="/permissions/groups/new" class="btn btn-green admin-group-new"><i class="icon-group"></i>&nbsp;&nbsp;&nbsp; New Group </a> 
 										</li>
 								 </ul>
 							</div>
@@ -42,25 +42,26 @@
 	 </div>
 </div>
 <script>
+
 	$(function() {		
 
-		$(document).on('click', '.admin-user-search', function() {
-			App.permissions.admin.load();
+		$(document).on('click', '.admin-group-search', function() {
+			App.permissions.group.load();
 		} );
 
 		$(document).on('keyup', '[name="name"]', function( e ) {
 			if (e.which == 13) {
-				App.permissions.admin.load();
+				App.permissions.group.load();
 			}
 		} );
 
-		App.permissions.admin.load();
+		App.permissions.group.load();
 
-		$(document).on('click', '.admin-user-remove', function() {
+		$(document).on('click', '.group-remove', function() {
 			var button = $( this );
-			if( confirm( 'Confirm? This action will remove the user!' ) ){
-				var id_admin = button.attr( 'data-id' );
-				App.permissions.admin.remove( id_admin );
+			if( confirm( 'Confirm? This action remove the group!' ) ){
+				var id_group = button.attr( 'data-id' );
+				App.permissions.group.remove( id_group );
 			} 
 		} );
 

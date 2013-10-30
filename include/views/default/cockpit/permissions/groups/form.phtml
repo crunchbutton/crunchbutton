@@ -1,0 +1,122 @@
+<?
+	$this->title = 'Permissions';
+	$this->titleicon = 'lock';
+	$this->titleLink = '/permissions/groups';
+	
+	$this->title2 = 'Groups';
+	$this->title2icon = 'group';
+
+	$group = $this->group;
+
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Group</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<li>
+							<span>Name</span>
+							<span class="pull-right">
+								<input type="text" name="name" maxlength="40" id="name" value="<?php echo $group->name; ?>" />
+								<div class="note">Please don't use spaces use dashes instead!</div>
+							</span>
+						</li>
+						<li class="input">
+							<button type="submit" class="btn btn-blue admin-save"><i class="icon-save"></i> Save </button> 
+						</li>
+					</ul>
+			</div>
+			</div>
+		</div>
+		<?php if( $group->usersTotal() > 0 ) { ?>
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Users</span>
+				</div>
+				<div class="box-content ">
+					<ul class="box-list">
+						<?php 
+						$users = $group->users();
+						foreach( $users as $user ){
+						?>
+							<li>
+								<span>
+									<?php echo $user->name; ?>
+								</span>
+								<span class="pull-right">
+									<?php echo $user->login; ?>
+								</span>
+							</li>
+						<?php } ?>
+					</ul>
+			</div>
+			</div>
+		</div>
+		<?php } ?>
+	</div>
+</div>
+<script>
+
+$(function() {
+	$(document).on('click', '.admin-save', function() {
+		sendForm();
+	} );
+});
+
+var processing = false;
+
+function sendForm(){
+
+	if( processing ){
+		return;
+	}
+
+	var name = $.trim( $( '#name' ).val() );
+	
+	if( name == '' ){
+		alert( 'Please type a name!' );
+		$( '#name' ).focus();
+		return;
+	}
+
+	var data = { 'name' : name};
+	
+	processing = true;
+	
+	$( '.admin-save' ).html( '<i class="icon-spinner icon-spin"></i> Please wait' );
+
+	var url = App.service + 'permissions/groups/<?php echo $group->id_group; ?>';
+	$.ajax({
+		type: "POST",
+		dataType: 'json',
+		data: data,
+		url: url,
+		success: function( json ) {
+			processing = false;
+			if( json.error ){
+				if( json.error == 'login' ){
+					alert( 'This login is already in use!' );
+					$( '#login' ).focus();
+					$( '.admin-save' ).html( '<i class="icon-save"></i> Save ' );
+				} else {
+					alert( 'Error at saving the user!' );
+					$( '.admin-save' ).html( '<i class="icon-save"></i> Save ' );
+				}
+			} else {
+				alert( 'Group saved!' );
+				location.href = '/permissions/groups/';
+			}
+		},
+		error: function( ){
+			processing = false;
+			alert( 'Error at saving the user!' );
+			$( '.admin-save' ).html( '<i class="icon-save"></i> Save ' );
+		}
+	});
+}
+</script>

@@ -42,7 +42,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return $this->_restaurants;
 	}
-	
+
 	public function communities() {
 		if (!isset($this->_communities)) {
 			$communities = [];
@@ -130,8 +130,8 @@ class Crunchbutton_Admin extends Cana_Table {
 
 		$query .= " ORDER BY name DESC";
 
-		$gifts = self::q($query);
-		return $gifts;
+		$admins = self::q($query);
+		return $admins;
 	}
 
 	public function __construct($id = null) {
