@@ -1,10 +1,11 @@
 <?
-	$this->title = 'Gift cards';
-	$this->titleicon = 'gift';
-	$this->titleLink = '/giftcards';
+	$this->title = 'Permissions';
+	$this->titleicon = 'lock';
+	$this->titleLink = '/permissions';
 	
-	$this->title2 = 'Groups';
-	$this->title2icon = 'group';
+	$this->title2 = 'Users';
+	$this->title2icon = 'user';
+
 ?>
 <!-- content -->
 <div class="container-fluid padded">
@@ -21,8 +22,8 @@
 							</div>
 							<div class="span6 separate-sections">
 								 <ul class="padded separate-sections">
-										<li><button class="btn btn-blue admin-giftcard-group-search"><i class="icon-search"></i>&nbsp;&nbsp;&nbsp; Search </button> 
-											 <a href="/giftcards/groups/new" class="btn btn-green admin-giftcard-group-new"><i class="icon-group"></i>&nbsp;&nbsp;&nbsp; New Group </a> 
+										<li><button class="btn btn-blue admin-user-search"><i class="icon-search"></i>&nbsp;&nbsp;&nbsp; Search </button> 
+											 <a href="/permissions/users/new" class="btn btn-green admin-user-new"><i class="icon-user"></i>&nbsp;&nbsp;&nbsp; New User </a> 
 										</li>
 								 </ul>
 							</div>
@@ -32,35 +33,34 @@
 			<div class="box">
 				 <div class="box-header"><span class="title">Results</span></div>
 				 <div class="box-content">
-						<div class="giftcards-group-loader">
+						<div class="permissions-loader">
 							 <center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center>
 						</div>
-						<div class="giftcards-group-content"></div>
+						<div class="permissions-content"></div>
 				 </div>
 			</div>
 	 </div>
 </div>
 <script>
-
 	$(function() {		
 
-		$(document).on('click', '.admin-giftcard-group-search', function() {
-			App.giftcardsGroup.load();
+		$(document).on('click', '.admin-user-search', function() {
+			App.permissions.admin.load();
 		} );
 
 		$(document).on('keyup', '[name="name"]', function( e ) {
 			if (e.which == 13) {
-				App.giftcardsGroup.load();
+				App.permissions.admin.load();
 			}
 		} );
 
-		App.giftcardsGroup.load();
+		App.permissions.admin.load();
 
-		$(document).on('click', '.admin-giftcard-group-remove', function() {
+		$(document).on('click', '.admin-user-remove', function() {
 			var button = $( this );
-			if( confirm( 'Confirm? This action will not remove the gift cards!' ) ){
-				var id_promo_group = button.attr( 'data-id' );
-				App.giftcardsGroup.remove( id_promo_group );
+			if( confirm( 'Confirm? This action will not remove the user!' ) ){
+				var id_admin = button.attr( 'data-id' );
+				App.permissions.admin.remove( id_admin );
 			} 
 		} );
 

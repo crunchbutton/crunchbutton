@@ -76,9 +76,62 @@ class Crunchbutton_Admin extends Cana_Table {
 
 		return $this->_communities;
 	}
+
+	public function loginExists( $login ){
+		if( trim( $login ) != '' ){
+			return Crunchbutton_Admin::login( $login );
+		}
+		return false;
+	}
+
+	public function groups(){
+		if( !$this->_groups ){
+			$this->_groups = Crunchbutton_Group::q( "SELECT g.* FROM `group` g INNER JOIN admin_group ag ON ag.id_group = g.id_group AND ag.id_admin = {$this->id_admin} ORDER BY name ASC" );
+		}
+		return $this->_groups;
+	}
+
+	public function removeGroups(){
+		Cana::db()->query( "DELETE FROM `admin_group` WHERE id_admin = {$this->id_admin}" );
+	}
+
+	public function hasGroup( $id_group ){
+		$groups = $this->groups();
+		foreach( $groups as $group ){
+			if( $id_group == $group->id_group ){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function groups2str(){
+		$groups = $this->groups();
+		$str = '';
+		$commas = '';
+		foreach( $groups as $group ){
+			$str .= $commas . $group->name;
+			$commas = ', ';
+		}
+		return $str;
+	}
 	
 	public function makePass($pass) {
 		return sha1(c::crypt()->encrypt($pass));
+	}
+
+	public static function find($search = []) {
+
+		$query = 'SELECT `admin`.* FROM `admin` WHERE id_admin IS NOT NULL ';
+		
+		if ( $search[ 'name' ] ) {
+			$query .= " AND name LIKE '%{$search[ 'name' ]}%' ";
+		}
+
+		$query .= " ORDER BY name DESC";
+
+		$gifts = self::q($query);
+		return $gifts;
 	}
 
 	public function __construct($id = null) {
