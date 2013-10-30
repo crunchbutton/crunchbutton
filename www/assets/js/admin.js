@@ -1809,3 +1809,34 @@ App.giftcardsGroup = {
 }
 
 
+App.permissions = {};
+App.permissions.admin = {
+	params: function() {
+		return {
+			name: $('input[name="name"]').val()
+		};
+	},
+	load: function() {
+		$('.permissions-loader').show();
+		$('.permissions-content').html('');
+		$.ajax({
+			url: '/permissions/users/content',
+			data: App.permissions.admin.params(),
+			complete: function(content) {
+				$('.permissions-content').html(content.responseText);
+				$('.permissions-loader').hide();
+			}
+		});
+	},
+	remove: function( id_admin ){
+		$.ajax({
+			url: '/permissions/users/remove',
+			type: "POST",
+			data: { 'id_admin': id_admin } ,
+			complete: function() {
+				App.permissions.admin.load();
+			}
+		});
+	},
+}
+

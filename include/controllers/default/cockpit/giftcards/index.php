@@ -1,6 +1,7 @@
 <?php
 
 class Controller_giftcards extends Crunchbutton_Controller_Account {
+
 	public function init() {
 
 		if (!c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-list-page', 'gift-card-list-all'])) {

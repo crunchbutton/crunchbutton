@@ -1,0 +1,33 @@
+<?php 
+$admins = $this->admins;
+?>
+<?php if (!$admins->count()) { ?>
+	No results found
+<?php } else { ?>
+	<table class="table table-normal">
+		<thead>
+			<td>Name</td>
+			<td>Login</td>
+			<td>Group(s)</td>
+			<td>Phone</td>
+			<td>Txt</td>
+			<td>Email</td>
+			<td></td>
+		</thead>
+		<?php foreach ( $admins as $admin ) { ?>
+			<tr>
+				<td><?php echo $admin->name;?> </td>
+				<td><?php echo $admin->login;?> </td>
+				<td><?php echo $admin->groups2str(); ?></td>
+				<td><?php echo $admin->phone; ?></td>
+				<td><?php echo $admin->txt; ?></td>
+				<td><?php echo $admin->email; ?></td>
+				<td style="width:150px;">
+					<a href="/permissions/users/<?php echo $admin->id_admin; ?>" class="btn btn-green"><i class="icon-edit"></i> Edit</a>
+					&nbsp;
+					<button data-id="<?php echo $admin->id_admin; ?>" class="btn admin-user-remove btn-red"><i class="icon-trash"></i> Remove</button>
+				</td>
+			</tr>
+		<?php } ?>
+	</table>
+<?php } ?>
