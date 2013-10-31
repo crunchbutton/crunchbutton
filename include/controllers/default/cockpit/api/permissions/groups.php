@@ -6,7 +6,9 @@ class Controller_api_Permissions_Groups extends Crunchbutton_Controller_RestAcco
 			return ;
 		}
 		switch ( $this->method() ) {
+
 			case 'post':
+
 				$id_group = c::getPagePiece( 3 );
 
 				$action = c::getPagePiece( 4 );

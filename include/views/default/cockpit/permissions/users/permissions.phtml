@@ -1,18 +1,19 @@
 <?
-	 $this->title = 'Permissions';
-	 $this->titleicon = 'lock';
-	 $this->titleLink = '/permissions/groups';
+	$this->title = 'Permissions';
+	$this->titleicon = 'lock';
+	$this->titleLink = '/permissions/users';
+	
+	$this->title2 = 'Users';
+	$this->title2icon = 'user';
+
+	$admin = $this->admin;
 	 
-	 $this->title2 = 'Groups permissions';
-	 $this->title2icon = 'group';
+	$_permissions = $this->permissions;
+	$_elements = $this->elements;
 	 
-	 $group = $this->group;
-	 $_permissions = $this->permissions;
-	 $_elements = $this->elements;
-	 
-	 ?>
+?>
 <div class="container-fluid padded">
-	 <h2>Permissions of Group <?php echo $group->name ?></h2>
+	 <h2>Permissions of User <?php echo $admin->name ?></h2>
 </div>
 <div class="container-fluid padded">
 	 <div class="row-fluid">
@@ -50,7 +51,7 @@
 										<li>
 											<label for="<?php echo $permission; ?>">
 												<?php if( $type == 'checkbox' ) { 
-													$checked = ( $group->hasPermission( $permission ) ) ? 'checked="checked"' : '' ;
+													$checked = ( $admin->hasPermission( $permission ) ) ? 'checked="checked"' : '' ;
 													?>
 													<span class="pull-right">
 														<input type="checkbox" <?php echo $checked; ?> class="icheck permissions" value="1" name="<?php echo $permission; ?>" id="<?php echo $permission; ?>">
@@ -66,7 +67,7 @@
 														$elements = $_elements[ $element ];
 														foreach ( $elements as $element ) { 
 															$value = str_replace( 'ID' , $element->id, $permission);
-															$selected = ( $group->hasPermission( $value ) ) ? 'selected="selected"' : '' ;
+															$selected = ( $admin->hasPermission( $value ) ) ? 'selected="selected"' : '' ;
 															?>
 															<option <?php echo $selected; ?> value="<?php echo $value; ?>"><?php echo $element->name; ?></option>
 														<? } ?>
@@ -132,7 +133,7 @@
 
 		} );
 		
-		var url = App.service + 'permissions/groups/<?php echo $group->id_group; ?>/permissions';
+		var url = App.service + 'permissions/users/<?php echo $admin->id_admin; ?>/permissions';
 		$.ajax({
 			type: 'POST',
 			dataType: 'json',

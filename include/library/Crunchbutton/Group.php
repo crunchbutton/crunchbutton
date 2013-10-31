@@ -57,7 +57,7 @@ class Crunchbutton_Group extends Cana_Table {
 			if( !$this->hasPermission( $key ) ){
 				$_permission = new Crunchbutton_Admin_Permission();
 				$_permission->id_group = $this->id_group;
-				$_permission->permission = $key;
+				$_permission->permission = trim( $key );
 				$_permission->allow = 1;
 				$_permission->save();
 				$dependencies = $_permission->getDependency( $key );
