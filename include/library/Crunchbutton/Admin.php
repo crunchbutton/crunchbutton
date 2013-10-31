@@ -95,6 +95,47 @@ class Crunchbutton_Admin extends Cana_Table {
 		Cana::db()->query( "DELETE FROM `admin_group` WHERE id_admin = {$this->id_admin}" );
 	}
 
+	public function permissions(){
+		if( !$this->_permissions ){
+			$this->_permissions = c::db()->get( "SELECT * FROM admin_permission WHERE id_admin = {$this->id_admin}" );	
+		}
+		return $this->_permissions;
+	}
+
+	public function hasPermission( $permission ){
+		$permissions = $this->permissions();
+		foreach( $permissions as $_permission ){
+			if( $_permission->permission == $permission && $_permission->allow == 1 ){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function removePermissions(){
+		c::db()->query( "DELETE FROM admin_permission WHERE id_admin = {$this->id_admin}" );
+	}
+
+	public function addPermissions( $permissions ){
+		foreach( $permissions as $key => $val ){
+			if( !$this->hasPermission( $key ) ){
+				$_permission = new Crunchbutton_Admin_Permission();
+				$_permission->id_admin = $this->id_admin;
+				$_permission->permission = trim( $key );
+				$_permission->allow = 1;
+				$_permission->save();
+				$dependencies = $_permission->getDependency( $key );
+				if( $dependencies ){
+					foreach( $dependencies as $dependency ){
+						$this->addPermissions( array( $dependency => 1 ) );
+					}
+				}
+
+			}
+		}
+	}
+
+
 	public function hasGroup( $id_group ){
 		$groups = $this->groups();
 		foreach( $groups as $group ){
