@@ -70,7 +70,7 @@
 				<div class="box-content ">
 					<ul class="box-list">
 						<li class="input">
-							<button type="submit" class="btn btn-blue admin-save"><i class="icon-save"></i> Save </button> 
+							<button type="submit" class="btn btn-green admin-save"><i class="icon-save"></i> Save </button> 
 						</li>
 					</ul>
 				</div>
@@ -111,6 +111,11 @@
 							</select>
 						</span>
 					</li>
+					<?php if( $admin->id_admin ){ ?>
+					<li>
+						<a href="/permissions/users/permissions/<?php echo $admin->id_admin; ?>" class="btn btn-blue"><i class="icon-unlock"></i> Edit Permissions of this user</a>
+					</li>
+					<?php } ?>
 				</ul>
 			</div>
 		</div>
