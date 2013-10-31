@@ -110,7 +110,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						echo '<br/><br/>';
 					} ?>
 					<?php if( $permissionNotification ) { ?>
-						<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend notification</a>
+						<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend restaurant notification(s)</a>
 					<?php } ?>
 				</td>
 				<td style="width: 300px; white-space: normal;">

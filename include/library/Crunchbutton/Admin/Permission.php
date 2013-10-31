@@ -15,14 +15,14 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 
 		/* Global's permissions */
 		$_permissions[ 'global' ] = array( 'description' => 'Global' );
-		$_permissions[ 'global' ][ 'permissions' ] = array( 'global' => array( 'description' => 'Could do any action at cockpit.' ) );
+		$_permissions[ 'global' ][ 'permissions' ] = array( 'global' => array( 'description' => 'Can perform any action in cockpit' ) );
 
 		/* Restaurants's permissions */
 		$_permissions[ 'restaurant' ] = array( 'description' => 'Restaurant\'s permissions' );
 		$_permissions[ 'restaurant' ][ 'permissions' ] = array( 
-																											'restaurants-all' => array( 'description' => 'Do all about the restaurants' ),
-																											'restaurants-list-page' => array( 'description' => 'View the restaurant\'s list page' ),
-																											'restaurants-crud' => array( 'description' => 'Create, update, retrieve and delete any restaurant' ),
+																											'restaurants-all' => array( 'description' => 'Can perform any action with all restaurants' ),
+																											'restaurants-list-page' => array( 'description' => 'View restaurants he has access to' ),
+																											'restaurants-crud' => array( 'description' => 'Create, update, retrieve and delete ALL restaurants' ),
 																											'restaurant-ID-all' => array( 'description' => 'Do all about the restaurant ID', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'restaurants-list-page' ) ),
 																											'restaurant-ID-edit' => array( 'description' => 'Edit the info about the restaurant ID, it does not include payment and send fax', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'restaurants-list-page' ) ),
 																											'restaurant-ID-pay' => array( 'description' => 'Make the payment of the restaurant ID', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'restaurants-list-page' ) ),
@@ -33,9 +33,9 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		/* Orders's permissions */ 
 		$_permissions[ 'order' ] = array( 'description' => 'Orders\'s permissions' );
 		$_permissions[ 'order' ][ 'permissions' ] = array( 
-																											'orders-all' => array( 'description' => 'Do all about orders' ),
-																											'orders-list-page' => array( 'description' => 'View the order\'s list page' ),
-																											'orders-list-restaurant-ID' => array( 'description' => 'View the orders of the restaurant ID', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'orders-list-page' ) ),
+																											'orders-all' => array( 'description' => 'Can perform any action with orders' ),
+																											'orders-list-page' => array( 'description' => 'View new users page for restaurants he has access to' ),
+																											'orders-list-restaurant-ID' => array( 'description' => 'View the orders only from these restaurants', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'orders-list-page' ) ),
 																											'orders-new-users' => array( 'description' => 'View new users page', 'dependency' => array( 'orders-list-page' ) ),
 																											'orders-notification' => array( 'description' => 'Send notification', 'dependency' => array( 'orders-list-page' ) ),
 																											'orders-refund' => array( 'description' => 'Refund orders', 'dependency' => array( 'orders-list-page' ) ),
@@ -45,17 +45,17 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		/* Gift card's permissions */ 
 		$_permissions[ 'giftcard' ] = array( 'description' => 'Gift card\'s permissions' );
 		$_permissions[ 'giftcard' ][ 'permissions' ] = array( 
-																											'gift-card-all' => array( 'description' => 'Do all about gift cards' ),
-																											'gift-card-list-page' => array( 'description' => 'View the list page' ),
-																											'gift-card-list-restaurant-ID' => array( 'description' => 'View the gift cards of the restaurant ID', 'type' => 'combo', 'element' => 'Restaurant' ),
-																											'gift-card-list-all' => array( 'description' => 'View gift cards from all the restaurants' ),
-																											'gift-card-create' => array( 'description' => 'Create gift card' ),
-																											'gift-card-create-all' => array( 'description' => 'Create gift cards to any restaurant' ),
+																											'gift-card-all' => array( 'description' => 'Can perform any action with gift cards' ),
+																											'gift-card-list-page' => array( 'description' => 'View main gift card page' ),
+																											'gift-card-list-all' => array( 'description' => 'View gift cards from ALL the restaurants' ),
+																											'gift-card-list-restaurant-ID' => array( 'description' => 'View the gift cards from ONLY these restaurants', 'type' => 'combo', 'element' => 'Restaurant' ),
+																											'gift-card-create' => array( 'description' => 'Ability to create gift cards' ),
+																											'gift-card-create-all' => array( 'description' => 'Ability to create gift cards to ALL restaurants' ),
 																											'gift-card-create-restaurant-ID' => array( 'description' => 'Create gift cards to restaurant ID', 'dependency' => array( 'gift-card-create' ), 'type' => 'combo', 'element' => 'Restaurant' ),
 																											'gift-card-groups' => array( 'description' => 'Manage gift card groups' ),
 																											'gift-card-restaurant-ID' => array( 'description' => 'Create and list gift card for the restaurant ID', 'type' => 'combo', 'element' => 'Restaurant' ),
-																											'gift-card-delete' => array( 'description' => 'Delete or remove the credits from a gift card' ),
-																											'gift-card-anti-cheat' => array( 'description' => 'View the gift card anti cheat page' ),
+																											'gift-card-delete' => array( 'description' => 'Ability to delete gift cards and reduce their size' ),
+																											'gift-card-anti-cheat' => array( 'description' => 'Ability to view the gift card anti cheat page' ),
 																										);
 
 		/* Metric's permissions */ 
@@ -66,8 +66,8 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'metrics-investors' => array( 'description' => 'View the `For Investor` charts' ),
 																											'metrics-detailed-analytics' => array( 'description' => 'View the `Detailed Analytics` charts' ),
 																											'metrics-no-grouped-charts' => array( 'description' => 'View the `No grouped` and `Old Graphs` charts' ),
-																											'metrics-communities-all' => array( 'description' => 'View the all communities metrics.' ),
-																											'metrics-communities-page' => array( 'description' => 'View the all communities metrics.' ),
+																											'metrics-communities-all' => array( 'description' => 'View metrics from ALL communities' ),
+																											'metrics-communities-page' => array( 'description' => 'View the Community Metrics page' ),
 																											'metrics-communities-ID' => array( 'description' => 'See the metrics of the community ID', 'dependency' => array( 'metrics-communities-page' ), 'type' => 'combo', 'element' => 'Community' ),
 																											'metrics-manage-cohort' => array( 'description' => 'Manage the cohorts' ),
 																										);
@@ -75,26 +75,26 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		/* Support's permissions */ 
 		$_permissions[ 'support' ] = array( 'description' => 'Support\'s permissions' );
 		$_permissions[ 'support' ][ 'permissions' ] = array( 
-																											'support-all' => array( 'description' => 'Do all about support' ),
+																											'support-all' => array( 'description' => 'Can perform ALL support related actions' ),
 																											'support-crud' => array( 'description' => 'Create, update and delete any support ticket' ),
 																											'support-view' => array( 'description' => 'View the support page' ),
-																											'support-settings' => array( 'description' => 'Change support setting' ),
+																											'support-settings' => array( 'description' => 'Change support settings' ),
 																										);
 
 		/* Suggestions's permissions */ 
 		$_permissions[ 'suggestion' ] = array( 'description' => 'Suggestions\'s permissions' );
 		$_permissions[ 'suggestion' ][ 'permissions' ] = array( 
-																											'suggestions-all' => array( 'description' => 'Do all about suggestions' ),
+																											'suggestions-all' => array( 'description' => 'Can perform any action with suggestions' ),
 																											'suggestions-list-page' => array( 'description' => 'View suggestions page' ),
-																											'suggestions-list-restaurant-ID' => array( 'description' => 'View the food suggestions for the restaurant ID', 'dependency' => array( 'suggestions-list-page' ), 'type' => 'combo', 'element' => 'Restaurant' ),
+																											'suggestions-list-restaurant-ID' => array( 'description' => 'View the food suggestions for these restaurant', 'dependency' => array( 'suggestions-list-page' ), 'type' => 'combo', 'element' => 'Restaurant' ),
 																										);
 
 		/* Other's permissions */ 
 		$_permissions[ 'permissions' ] = array( 'description' => 'Admin user\'s permissions' );
 		$_permissions[ 'permissions' ][ 'permissions' ] = array( 
-																										'permission-all' => array( 'description' => 'Do all about admin users and groups (create, update, delete, assign permissions)' ),
-																										'permission-users' => array( 'description' => 'Do all about admin users (create, update, delete, assign permissions)' ),
-																										'permission-groups' => array( 'description' => 'Do all about admin groups (create, update, delete, assign permissions)' ),
+																										'permission-all' => array( 'description' => 'Can perform ALL actions with admin users and groups (i.e. create, update, delete, assign permissions)' ),
+																										'permission-users' => array( 'description' => 'Can perform actions with ONLY admin users (create, update, delete, assign permissions) ' ),
+																										'permission-groups' => array( 'description' => 'Can perform actions with ONLY admin groups (create, update, delete, assign permissions) ' ),
 																										);
 
 		/* Other's permissions */ 
