@@ -1,6 +1,6 @@
 <?php
 
-class Controller_api_Permissions_Users extends Crunchbutton_Controller_Rest {
+class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 
@@ -20,7 +20,6 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_Rest {
 						exit();
 					}
 				}
-
 				$name = $_REQUEST[ 'name' ];
 				$phone = $_REQUEST[ 'phone' ];
 				$txt = $_REQUEST[ 'txt' ];
@@ -43,7 +42,7 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_Rest {
 				$admin->timezone = $timezone;
 				$admin->login = $login;
 				if( $password != '' ){
-					$admin->password = $password;	
+					$admin->pass = $admin->makePass( $password );
 				}
 				$admin->save();
 				$admin->removeGroups();
