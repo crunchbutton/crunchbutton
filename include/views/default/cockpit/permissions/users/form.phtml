@@ -8,6 +8,7 @@
 
 	$admin = $this->admin;
 
+	$_permissions = new Crunchbutton_Admin_Permission();
 ?>
 <div class="container-fluid padded">
 	<div class="row-fluid">
@@ -119,6 +120,112 @@
 				</ul>
 			</div>
 		</div>
+
+		<?php if( $admin->id_admin ) { ?>
+		<div class="accordion" id="accordion">
+		<?php 
+
+		$userPermissions = $admin->getPermissionsByUser();
+
+		if( $userPermissions->count() > 0 ){
+			?>
+			<div class="accordion-group">
+				<div class="accordion-heading">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $admin->id_admin; ?>">
+						Permissions of the user
+					</a>
+				</div>
+				<div id="collapse<?php echo $admin->id_admin; ?>" class="accordion-body collapse" style="height: 0px;">
+					<div class="accordion-inner">
+						<ul>
+							<?php foreach( $userPermissions as $permission ) { ?>
+								<li>
+										<?php 
+											$info = $_permissions->getPermissionInfo( $permission->permission ); 
+											if( $info ){
+												echo $info[ 'description' ];
+											}
+										?>
+										&nbsp;<span class="note"><?php echo $permission->permission ?></span>
+								</li>
+							<?php } ?>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<?php
+		}
+
+		$groups = $admin->groups();
+		if( $groups->count() > 0 ){
+			foreach( $groups as $group ){
+				$groupPermissions = $group->permissions();
+				?>
+			<div class="accordion-group">
+				<div class="accordion-heading">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo str_replace( ' ' , '', $group->name); ?>">
+						Permissions of the group "<?php echo $group->name ?>"
+					</a>
+				</div>
+				<div id="collapse<?php echo str_replace( ' ' , '', $group->name); ?>" class="accordion-body collapse" style="height: 0px;">
+					<div class="accordion-inner">
+						<ul>
+							<?php foreach( $groupPermissions as $permission ) { ?>
+								<li>
+										<?php 
+											$info = $_permissions->getPermissionInfo( $permission->permission ); 
+											if( $info ){
+												echo $info[ 'description' ];
+											}
+										?>
+										&nbsp;<span class="note"><?php echo $permission->permission ?></span>
+								</li>
+							<?php } ?>
+						</ul>
+					</div>
+				</div>
+			</div>
+				<?php
+
+			}
+		}
+
+		?><!--
+			<div class="accordion-group">
+				<div class="accordion-heading">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+						Collapsible Group Item #2
+					</a>
+				</div>
+				<div id="collapseTwo" class="accordion-body collapse" style="height: 0px;">
+					<div class="accordion-inner">
+						Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+					</div>
+				</div>
+			</div>
+			<div class="accordion-group">
+				<div class="accordion-heading">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+						Collapsible Group Item #3
+					</a>
+				</div>
+				<div id="collapseThree" class="accordion-body in collapse" style="height: auto;">
+					<div class="accordion-inner">
+					<ul >
+							<li>
+								<span>Login</span>
+								<span class="pull-right">
+									<input type="text" name="login" <?php if( $admin->id_admin ) { echo 'readonly="readonly"'; } ?> maxlength="40" id="login" value="<?php echo $admin->login; ?>" />
+								</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>-->
+		</div>
+
+		<?php } ?>
+
 
 	</div>
 </div>

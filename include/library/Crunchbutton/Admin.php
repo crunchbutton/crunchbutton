@@ -11,7 +11,17 @@ class Crunchbutton_Admin extends Cana_Table {
 		}
 		return $this->_timezone;
 	}
+
+	public function getPermissionsByGroups(){
+		return c::db()->get( "SELECT ap.*, g.name as group_name FROM admin_permission ap
+										INNER JOIN admin_group ag ON ap.id_group = ap.id_group and ag.id_admin = {$this->id_admin}
+										INNER JOIN `group` g ON g.id_group = ag.id_group ORDER BY group_name, permission ASC" );
+	}
 	
+	public function getPermissionsByUser(){
+		return c::db()->get( "SELECT * FROM admin_permission WHERE id_admin = {$this->id_admin}" );
+	}
+
 	public function permission() {
 		if (!isset($this->_permission)) {
 			$this->_permission = new Crunchbutton_Acl_Admin($this);
