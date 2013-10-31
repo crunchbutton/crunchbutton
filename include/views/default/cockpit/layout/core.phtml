@@ -228,6 +228,15 @@
 			</a>
 		</li>
 		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','permissions-all','permissions-users','permissions-groups'] ) ) { ?>
+		<li class="<?=$this->page == 'permissions' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/permissions">
+				<i class="icon-unlock icon-2x"></i>
+				<span>User/Permissions</span>
+			</a>
+		</li>
+		<?php } ?>
 	</ul>
 
 	<? /*

@@ -8,6 +8,8 @@ class Controller_Permissions_Groups extends Crunchbutton_Controller_Account {
 			return ;
 		}
 
+		c::view()->page = 'permissions';
+
 		$action = c::getPagePiece(2);
 
 		switch ( $action ) {
@@ -38,7 +40,6 @@ class Controller_Permissions_Groups extends Crunchbutton_Controller_Account {
 					$this->form();
 					exit;
 				}
-				c::view()->page = 'permissions';
 				c::view()->display('permissions/groups/index');
 				break;
 		}

@@ -4,9 +4,12 @@ class Controller_Permissions_Users extends Crunchbutton_Controller_Account {
 	
 	public function init() {
 		
+
 		if (!c::admin()->permission()->check(['global','permissions-all', 'permission-users'])) {
 			return ;
 		}
+
+		c::view()->page = 'permissions';
 
 		$action = c::getPagePiece(2);
 
@@ -38,11 +41,9 @@ class Controller_Permissions_Users extends Crunchbutton_Controller_Account {
 					$this->form();
 					exit;
 				}
-				c::view()->page = 'permissions';
 				c::view()->display('permissions/users/index');
 				break;
 		}
-	
 	}
 
 	private function search(){

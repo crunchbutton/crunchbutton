@@ -22,7 +22,9 @@ $admins = $this->admins;
 				<td><?php echo $admin->phone; ?></td>
 				<td><?php echo $admin->txt; ?></td>
 				<td><?php echo $admin->email; ?></td>
-				<td style="width:150px;">
+				<td style="width:280px;">
+					<a href="/permissions/users/permissions/<?php echo $admin->id_admin; ?>" class="btn btn-blue"><i class="icon-unlock"></i> Permissions</a>
+					&nbsp;
 					<a href="/permissions/users/<?php echo $admin->id_admin; ?>" class="btn btn-green"><i class="icon-edit"></i> Edit</a>
 					&nbsp;
 					<button data-id="<?php echo $admin->id_admin; ?>" class="btn admin-user-remove btn-red"><i class="icon-trash"></i> Remove</button>

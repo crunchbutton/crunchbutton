@@ -5,8 +5,14 @@
 <!-- content -->
 <div class="container-fluid padded">
 	<div class="row-fluid">
-		<div class="box">
-			
+		<div class="box padded">
+			<?php if (c::admin()->permission()->check(['global','permissions-all', 'permission-groups'])) { ?>
+				<a class="btn btn-blue" href="/permissions/groups"> <i class="icon-group"> </i>Groups</a>
+				&nbsp;
+			<?php } ?>
+			<?php if (c::admin()->permission()->check(['global','permissions-all', 'permission-users'])) { ?>
+				<a class="btn btn-green" href="/permissions/users"> <i class="icon-user"></i> Users</a>
+			<?php } ?>
 		</div>
 	</div>
 </div>
