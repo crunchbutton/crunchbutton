@@ -109,6 +109,16 @@
 						<input type=input id=restaurant-permalink />
 					</div>
 				</div>
+
+				<div class=admin-item>
+					<div class=admin-item-left>
+						<div class=admin-item-name>Community</div>
+						<div class=admin-item-desc>for metrics purposes</div>
+					</div>
+					<div class=admin-item-right>
+						<input type=input id=restaurant-community />
+					</div>
+				</div>
 			
 				<div class=admin-item>
 					<div class=admin-item-left>
@@ -190,15 +200,7 @@
 					</div>
 				</div>
 
-				<div class=admin-item>
-					<div class=admin-item-left>
-						<div class=admin-item-name>Community</div>
-						<div class=admin-item-desc>for metrics purposes</div>
-					</div>
-					<div class=admin-item-right>
-						<input type=input id=restaurant-community />
-					</div>
-				</div>
+
 
 			</div>
 		</div>
@@ -613,7 +615,7 @@
 			<input type=input class=admin-menu-dish-name placeholder="Dish name" />
 		</div>
 		<div class=admin-item-col-small>
-			<input type=input class=admin-menu-dish-price placeholder=$ />
+			$ <input type=input class=admin-menu-dish-price placeholder=$ style="width:70%" />
 		</div>
 		<div class=admin-item-col-small>
 			<div class="admin-button-workflow-fit details-button">details</div>
@@ -643,7 +645,7 @@
 				<div class="admin-button-workflow-fit add-checkbox-option">add checkbox option</div>
 			</div>
 			<div class=admin-item-col-med>
-				<div class="admin-button-workflow-fit add-option-group">add multi-valued option</div>
+				<div class="admin-button-workflow-fit add-option-group">add Dropdown Options</div>
 			</div>
 			<div class=admin-option-group-hr></div>
 			<div class=dish-option-groups-container></div>
@@ -696,8 +698,8 @@
 		<div class=admin-item-col-med>
 			<input type=input class=admin-menu-option-name placeholder="Option name" />
 		</div>
-		<div class=admin-item-col-small>
-			<input type=input class=admin-menu-option-price placeholder=$ />
+		<div class=admin-item-col-med>
+			additional $$ amount <input type=input class=admin-menu-option-price placeholder=$ style="width:70%" />
 		</div>
 		<div class="admin-item-col-fit vertical-middle">
 			<div class="move_option_up sprite-arrow_up" title="Move this option up"></div>
@@ -732,6 +734,7 @@
 				<div class="copy-dish-to-category-button admin-button-workflow">copy</div>
 			</div>
 		</div>
+		<!-- 
 		<div class=admin-modal-item>
 			<div class=admin-modal-explanation>
 				Copy the options for this dish to another dish, and keep them linked (option names and prices stay synced).
@@ -743,6 +746,7 @@
 				<div class="copy-options-to-dish-linked-button admin-button-workflow">copy</div>
 			</div>
 		</div>
+		 -->
 		<div class=admin-modal-item>
 			<div class=admin-modal-explanation>
 				Copy the options for this dish to another dish, and unlink them (option names and prices can be changed independently).

@@ -83,6 +83,11 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud'])) {
 				return;
 			}
+			$restaurant->cash = 1;
+			$restaurant->credit = 1;
+			$restaurant->giftcard = 1;
+			$restaurant->delivery = 1;
+			$restaurant->takeout = 1;
 			$restaurant->save();
 			$this->_form();
 
