@@ -92,8 +92,8 @@
 
 				<div class=admin-item>
 					<div class=admin-item-left>
-						<div class=admin-item-name>Name</div>
-						<div class=admin-item-desc>for display</div>
+						<div class=admin-item-name>Restaurant Name</div>
+						<div class=admin-item-desc>displayed to customers and the restaurant</div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-name />
@@ -103,7 +103,7 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Permalink</div>
-						<div class=admin-item-desc>crunchbutton.com/food-delivery/&lt;permalink></div>
+						<div class=admin-item-desc>forms the URL: crunchbutton.com/food-delivery/&lt;permalink></div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-permalink />
@@ -113,7 +113,7 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Community</div>
-						<div class=admin-item-desc>for metrics purposes</div>
+						<div class=admin-item-desc>for metrics - make sure all your restaurants have the EXACT same community</div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-community />
@@ -122,8 +122,8 @@
 			
 				<div class=admin-item>
 					<div class=admin-item-left>
-						<div class=admin-item-name>Tagline 1</div>
-						<div class=admin-item-desc>on the restaurants list page</div>
+						<div class=admin-item-name>Text under Restaurant Name on Choose Restaurant Page</div>
+						<div class=admin-item-desc>Choose something funny, awesome, and cool, but descriptive like “delicious chijapanesethai in yo mouth" or "chicken tikka delicious"</div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-short-description />
@@ -132,8 +132,8 @@
 			
 				<div class=admin-item>
 					<div class=admin-item-left>
-						<div class=admin-item-name>Tagline 2</div>
-						<div class=admin-item-desc>on the restaurant order page</div>
+						<div class=admin-item-name>Text under Restaurant Name on Restaurant Checkout Page</div>
+						<div class=admin-item-desc>Choose something funny, awesome, and cool, but descriptive that’s different from the text on Choose Restaurant page AND works well with the menu below</div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-message />
@@ -158,11 +158,11 @@
 					<div class=admin-item-right>
 						<textarea id=restaurant-address></textarea>
 						<div class=admin-item-col-med>
-							Latitude
+							Latitude (automagically calculated)
 							<input type=input id=restaurant-lat />
 						</div>
 						<div class=admin-item-col-med>
-							Longitude
+							Longitude (automagically calculated)
 							<input type=input id=restaurant-lng />
 						</div>
 						<div class=admin-item-col-large>
@@ -173,8 +173,8 @@
 			
 				<div class=admin-item>
 					<div class=admin-item-left>
-						<div class=admin-item-name>Active</div>
-						<div class=admin-item-desc>is it listed on the live site</div>
+						<div class=admin-item-name>Is It Active?</div>
+						<div class=admin-item-desc>listed on live site</div>
 					</div>
 					<div class=admin-item-right>
 						<div class=admin-item-col-small id=restaurant-active-container></div>
@@ -183,7 +183,7 @@
 			
 				<div class=admin-item>
 					<div class=admin-item-left>
-						<div class=admin-item-name>Open for Business</div>
+						<div class=admin-item-name>Is It Accepting Orders?</div>
 						<div class=admin-item-desc>is this restaurant accepting orders during open hours</div>
 					</div>
 					<div class=admin-item-right>
@@ -215,7 +215,7 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Notifications</div>
-						<div class=admin-item-desc>what happens when an order goes through</div>
+						<div class=admin-item-desc>how restaurants are notified of orders</div>
 					</div>
 					<div class=admin-item-right>
 						<div class=admin-item-col-x-wide id=notifications-container></div>
@@ -227,8 +227,8 @@
 			
 				<div class=admin-item>
 					<div class=admin-item-left>
-						<div class=admin-item-name>Timezone</div>
-						<div class=admin-item-desc>where the restaurant is</div>
+						<div class=admin-item-name>Timezone Where the Restaurant Is</div>
+						<div class=admin-item-desc>if you screw this up, you will die</div>
 					</div>
 					<div class=admin-item-right>
 						<select id=restaurant-timezone>
@@ -243,9 +243,11 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Hours</div>
-						<div class=admin-item-desc>restaurant's actual open hours</div>
-						<div class=admin-item-desc>e.g. 12PM - 2:30AM</div>
-						<div class=admin-item-desc>use a comma for multiple time segments</div>
+							<div class=admin-item-desc>restaurant's actual open hours </div>
+							<div class=admin-item-desc>e.g. “12 PM - 2:30 AM” </div>
+							<div class=admin-item-desc>use a comma for multiple time segments</div>
+							<div class=admin-item-desc>e.g. “11 am - 1:30 PM, 2:15 PM - 1 AM”</div>
+							<div class=admin-item-desc>Don’t forget to include whatever buffer for closing the restaurant told you. It’s usually ~15 min before regular closing.</div>
 					</div>
 					<div class=admin-item-right id=restaurant-hours>
 						<div class=admin-item-right-row>
@@ -327,7 +329,7 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Transactions</div>
-						<div class=admin-item-desc>allowed payment methods</div>
+						<div class=admin-item-desc>allowed payment methods - leave the defaults unless you discuss with us otherwise</div>
 					</div>
 					<div class=admin-item-right>
 						<div class=admin-item-col-small>
@@ -379,7 +381,7 @@
 							<input type=input id=restaurant-delivery-radius />
 						</div>
 						<div class=admin-item-col-small>
-							<div class=admin-item-label>Est. time (minutes)</div>
+							<div class=admin-item-label>Est. delivery time (minutes)</div>
 							<input type=input id=restaurant-delivery-estimated-time />
 						</div>
 					</div>
@@ -396,7 +398,7 @@
 							<div id=restaurant-takeout-container></div>
 						</div>
 						<div class=admin-item-col-small>
-							<div class=admin-item-label>Est. time (minutes)</div>
+							<div class=admin-item-label>Est. takeout time (minutes)</div>
 							<input type=input id=restaurant-pickup-estimated-time />
 						</div>
 					</div>
@@ -413,7 +415,7 @@
 							<input type=input id=restaurant-fee-restaurant />
 						</div>
 						<div class=admin-item-col-small>
-							Customer fee (%)
+							Customer fee (always leave 0)
 							<input type=input id=restaurant-fee-customer />
 						</div>
 						<div class=admin-item-col-small>
@@ -422,7 +424,7 @@
 						</div>
 					</div>
 				</div>
-			
+			<!-- 
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Sorting</div>
@@ -437,10 +439,12 @@
 						</div>
 					</div>
 				</div>
-			
+			-->
+
+
 				<div class=admin-item>
 					<div class=admin-item-left>
-						<div class=admin-item-name>Actions</div>
+						<div class=admin-item-name>Actions (ignore this if you’re a marketing rep)</div>
 					</div>
 					<div class=admin-item-right>
 						<div class=admin-item-col-med>
@@ -462,7 +466,13 @@
 		<div class="box">
 			<a name="menu"></a>
 			<div class="box-header"><span class="title">Menu</span></div>
+
+				<div class="padded">
+					<a data-toggle="modal" class="btn btn-blue" href="#modal-simple"><i class="icon-info-sign "></i> Curation instructions</a>
+				</div>
+
 			<div class="box-content padded">
+
 
 				<div id=restaurant-menu-container>
 				</div>
@@ -490,11 +500,12 @@
 			<div class="box-header"><span class="title">Notes</span></div>
 			<div class="box-content padded">
 			
-			
+				<div>Anything worth knowing about the restaurant (optional)</div>
+
 				<div class=admin-item>
 					<div class=admin-item-left>
-						<div class=admin-item-name>Email</div>
-						<div class=admin-item-desc>used internally</div>
+						<div class=admin-item-name>Restaurant Email or Owner’s Email</div>
+						<div class=admin-item-desc>optional</div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-email />
@@ -523,7 +534,7 @@
 			
 				<div class=admin-item>
 					<div class=admin-item-left>
-						<div class=admin-item-name>About the Owner</div>
+						<div class=admin-item-name>Owner’s name, phone number, best times to reach him and notes on his personality, attitude towards Crunchbutton</div>
 						<div class=admin-item-desc></div>
 					</div>
 					<div class=admin-item-right>
@@ -627,17 +638,18 @@
 			<div class="delete-menu-dish sprite-x_alt" title="Delete this dish"></div>
 		</div>
 		<div class="admin-item-right hidden admin-menu-dish-details">
-			Description
-			<textarea class="small admin-menu-dish-description"></textarea>
+			Description - descriptions can only be 60 characters before they get cut off
+			<input type="text" class="small admin-menu-dish-description" maxlength="60"></input>
+
 			<div class=admin-option-group-hr></div>
 			<div class=admin-item-col-fit>
 				<label>
 					<input type=checkbox class=admin-menu-dish-expand-view>
-					Expanded view when added to cart
+					Expanded view when added to cart (for items like where you want the user to see options, like pizza toppings and sizes)
 				</label>
 				<label>
 					<input type=checkbox class=admin-menu-dish-top-item>
-					Show star
+					Show STAR (usually just for items in the first category on the menu)
 				</label>
 			</div>
 			<div class=admin-option-group-hr></div>
@@ -645,7 +657,7 @@
 				<div class="admin-button-workflow-fit add-checkbox-option">add checkbox option</div>
 			</div>
 			<div class=admin-item-col-med>
-				<div class="admin-button-workflow-fit add-option-group">add Dropdown Options</div>
+				<div class="admin-button-workflow-fit add-option-group">add dropdown option</div>
 			</div>
 			<div class=admin-option-group-hr></div>
 			<div class=dish-option-groups-container></div>
@@ -767,7 +779,49 @@
 
 </div>
 
+<div id="modal-simple" class="modal hide fade" style="display: none;" aria-hidden="true">
+	 <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h6 id="modal-tablesLabel">Curation instructions</h6>
+	 </div>
+	 <div class="modal-body">
+			<h4>Categories and Dishes</h4>
+			<ul>
+<li>Put the top 1-3 dishes in the first category, usually titled “Recommended Order” </li>
+<li>Except at Pizza restaurants, where the first category should be titled “Pizza” and include all the size options as separate food items, with basic options for all toppings they can add</li>
+<li>Make “Drinks” the last category</li>
+<li>Have a “Vegetarian” category, if possible</li>
+<li>Don't include a category called "Miscellaneous" or "Other" - every category should have a clear theme</li>
+<li>No more than 4-5 items in a category (except sushi)</li>
+<li>Keep item names short and visually pleasing</li>
+<li>When possible, it should be obvious what an item is without having to check the description</li>
+</ul>
+	<h4>Options</h4>
+	<ul>
+<li>Use Checkbox options for things like toppings and Dropdown options for things like sizes and flavors of Nantucket Nectar
+<ul>
+<li>Dropdown options are used for sizes and other situations in which only 1 of a set of options can be chosen, like a flavor of Nantucket Nectar.</li>
+<li>Checkboxes are for basic included options (like toppings) and additional optional options. 
+<ul>
+<li>For basic included options, save them Default Checked.</li>
+<li>For additional optional options, save them Default Unchecked. </li>
+<li>E.G. on an item called BLT Sandwich
+<ul>
+<li>make these options default checked: Bacon, Lettuce, Tomato</li>
+<li>make these options default unchecked: Add Hot Sauce, Add Avocado</li></ul></li>
+</li>
+</ul>
+</ul>
+</li>
+<li>If it is unclear what a dish is, and the description is too long, then use checkbox options to list all the toppings/ingredients in the dish, ie “Lomo Saltado” would have 5 separate checkbox options, all checked by default, Red Onions, Cilantro, Tomatoes, Steamed Rice, and French Fries</li>
+<li>The dish name should be self-explanatory without having to look at the category name (aka "Italian Sub" not just "Italian")</li>
 
+</ul>	
+	 </div>
+	 <div class="modal-footer">
+			<button class="btn btn-default" data-dismiss="modal">Close</button>
+	 </div>
+</div>
 
 <script type=text/javascript src=https://maps.googleapis.com/maps/api/js?sensor=false></script>
 <script type=text/javascript src=/assets/js/admin_restaurant.js?v=<?=Cana_Util::gitVersion()?>></script>
