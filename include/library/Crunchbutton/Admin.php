@@ -12,6 +12,39 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $this->_timezone;
 	}
 
+	public function getAllPermissionsName(){
+		return c::db()->get( "SELECT DISTINCT( ap.permission ) FROM admin_permission ap WHERE ap.id_admin = {$this->id_admin} OR ap.id_group IN ( SELECT id_group FROM admin_group WHERE id_admin = {$this->id_admin} )" );
+		
+	}
+
+	public function getRestaurantsUserHasPermission(){
+		$restaurants_ids = [];
+		$_permissions = new Crunchbutton_Admin_Permission();
+		$all = $_permissions->all();
+		// Get all restaurants permissions
+		$restaurant_permissions = $all[ 'restaurant' ][ 'permissions' ];
+		$permissions = $this->getAllPermissionsName();
+		$restaurants_id = array();
+		foreach ( $permissions as $permission ) {
+			$permission = $permission->permission;
+			$info = $_permissions->getPermissionInfo( $permission );
+			$name = $info[ 'permission' ];
+			foreach( $restaurant_permissions as $restaurant_permission_name => $meta ){
+				if( $restaurant_permission_name == $name ){
+					if( strstr( $name, 'ID' ) ){
+						$regex = str_replace( 'ID' , '((.)*)', $name );
+						$regex = '/' . $regex . '/';
+						preg_match( $regex, $permission, $matches );
+						if( count( $matches ) > 0 ){
+							$restaurants_ids[] = $matches[ 1 ];
+						}
+					}
+				}
+			}
+		}
+		return array_unique( $restaurants_ids );
+	}
+
 	public function getPermissionsByGroups(){
 		return c::db()->get( "SELECT ap.*, g.name as group_name FROM admin_permission ap
 										INNER JOIN admin_group ag ON ap.id_group = ap.id_group and ag.id_admin = {$this->id_admin}
@@ -132,22 +165,25 @@ class Crunchbutton_Admin extends Cana_Table {
 	}
 
 	public function addPermissions( $permissions ){
-		foreach( $permissions as $key => $val ){
-			if( !$this->hasPermission( $key ) ){
-				$_permission = new Crunchbutton_Admin_Permission();
-				$_permission->id_admin = $this->id_admin;
-				$_permission->permission = trim( $key );
-				$_permission->allow = 1;
-				$_permission->save();
-				// reset the permissions
-				$this->_permissions = false;
-				$dependencies = $_permission->getDependency( $key );
-				if( $dependencies ){
-					foreach( $dependencies as $dependency ){
-						$this->addPermissions( array( $dependency => 1 ) );
-					}
-				}
 
+		if( $permissions && is_array( $permissions ) ){
+			foreach( $permissions as $key => $val ){
+				if( !$this->hasPermission( $key ) ){
+					$_permission = new Crunchbutton_Admin_Permission();
+					$_permission->id_admin = $this->id_admin;
+					$_permission->permission = trim( $key );
+					$_permission->allow = 1;
+					$_permission->save();
+					// reset the permissions
+					$this->_permissions = false;
+					$dependencies = $_permission->getDependency( $key );
+					if( $dependencies ){
+						foreach( $dependencies as $dependency ){
+							$this->addPermissions( array( $dependency => 1 ) );
+						}
+					}
+
+				}
 			}
 		}
 	}

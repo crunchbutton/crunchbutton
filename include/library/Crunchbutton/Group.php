@@ -59,19 +59,21 @@ class Crunchbutton_Group extends Cana_Table {
 	}
 
 	public function addPermissions( $permissions ){
-		foreach( $permissions as $key => $val ){
-			if( !$this->hasPermission( $key ) ){
-				$_permission = new Crunchbutton_Admin_Permission();
-				$_permission->id_group = $this->id_group;
-				$_permission->permission = trim( $key );
-				$_permission->allow = 1;
-				$_permission->save();
-				// reset the permissions
-				$this->_permissions = false;
-				$dependencies = $_permission->getDependency( $key );
-				if( $dependencies ){
-					foreach( $dependencies as $dependency ){
-						$this->addPermissions( array( $dependency => 1 ) );
+		if( $permissions && is_array( $permissions ) ){
+			foreach( $permissions as $key => $val ){
+				if( !$this->hasPermission( $key ) ){
+					$_permission = new Crunchbutton_Admin_Permission();
+					$_permission->id_group = $this->id_group;
+					$_permission->permission = trim( $key );
+					$_permission->allow = 1;
+					$_permission->save();
+					// reset the permissions
+					$this->_permissions = false;
+					$dependencies = $_permission->getDependency( $key );
+					if( $dependencies ){
+						foreach( $dependencies as $dependency ){
+							$this->addPermissions( array( $dependency => 1 ) );
+						}
 					}
 				}
 			}
