@@ -12,11 +12,11 @@
 	 
 	 ?>
 <div class="container-fluid padded">
-	 <h2>Permissions of Group <?php echo $group->name ?></h2>
-</div>
-<div class="container-fluid padded">
 	 <div class="row-fluid">
 			<div class="span6">
+				<h4>
+					Permissions of Group <?php echo $group->name ?>
+			</h4>
 				<?php 
 					foreach( $_permissions as $permission_group ){ 
 						$description = $permission_group[ 'description' ];

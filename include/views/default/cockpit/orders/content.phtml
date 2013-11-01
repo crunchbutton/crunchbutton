@@ -69,10 +69,12 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 							?>
 							<br />
 							<br /> 
-							<?php if( $permissionRefund ) { ?>
-								<div class="pointer pay_if_refunded" data-value="<?php if( $order->pay_if_refunded ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
-									<span><?php if( $order->pay_if_refunded ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span> Pay if Refunded?
-								</div>
+							<?php if( $order->refunded ) { ?>
+								<?php if( $permissionRefund ) { ?>
+									<div class="pointer pay_if_refunded" data-value="<?php if( $order->pay_if_refunded ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
+										<span><?php if( $order->pay_if_refunded ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span> Pay restaurant despite refund (e.g. this refund was our fault)
+									</div>
+								<?php } ?>
 							<?php } ?>
 					<br/>
 
@@ -98,7 +100,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 				<td>
 					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
 				</td>
-				<td>
+				<td nowrap="nowrap">
 					<?=$order->restaurant()->name?>
 					<hr/>
 					<?php if( $order->restaurant()->confirmation || $order->restaurant()->hasPhoneNotification() ){
@@ -110,8 +112,12 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						echo '<br/><br/>';
 					} ?>
 					<?php if( $permissionNotification ) { ?>
-						<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend restaurant notification(s)</a>
+						<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend restaurant <br/>notification(s)</a>
 					<?php } ?>
+					<hr/>
+					<span title="Timezone">
+						<i class="icon-globe"></i> <?=$order->restaurant()->timezone?>
+					</span>
 				</td>
 				<td style="width: 300px; white-space: normal;">
 					<ul>

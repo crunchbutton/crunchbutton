@@ -13,11 +13,11 @@
 	 
 ?>
 <div class="container-fluid padded">
-	 <h2>Permissions of User <?php echo $admin->name ?></h2>
-</div>
-<div class="container-fluid padded">
 	 <div class="row-fluid">
-			<div class="span6">
+			<div class="span6 ">
+				 <h4>
+					"<?php echo $admin->name ?>" has these permissions in addition to his group permissions.
+				</h4>
 				<?php 
 					foreach( $_permissions as $permission_group ){ 
 						$description = $permission_group[ 'description' ];
@@ -84,7 +84,7 @@
 				 <?php 
 				 	} 
 				?>
-						 <div class="box">
+				<div class="box">
 				<div class="box-header">
 					 <span class="title">
 					 Save
@@ -98,6 +98,54 @@
 					 </ul>
 				</div>
 		 	</div>
+			</div>
+			<div class="span6">
+			<h5>The user has permissions from these groups:</h5>
+			<?php 
+			$_permissions = new Crunchbutton_Admin_Permission();
+			$groups = $admin->groups();
+			if( $groups->count() > 0 ){ ?>
+				
+			<?php 
+			foreach( $groups as $group ){
+				$groupPermissions = $group->permissions();
+				?>
+
+				<div class="box">
+				<div class="box-header">
+					 <span class="title">
+					 Group-level Permissions: "<?php echo $group->name ?>"
+					 </span>
+				</div>
+				<div class="box-content padded">
+					 <ul>
+							<?php foreach( $groupPermissions as $permission ) { ?>
+								<li>
+										<?php 
+											$info = $_permissions->getPermissionInfo( $permission->permission ); 
+											if( $info ){
+												echo $info[ 'description' ];
+											}
+										?>
+										&nbsp;<span class="note"><?php echo $permission->permission ?></span>
+								</li>
+							<?php } ?>
+						</ul>
+											<div class="padded">
+						<a href="/permissions/groups/<?php echo $group->id_group; ?>" class="btn btn-green"><i class="icon-group"></i> View Group</a>
+					</div>
+				</div>
+		 	</div>
+
+
+				<?php
+
+			} ?>
+
+			<?php
+		}
+
+		?>
 			</div>
 	 </div>
 
