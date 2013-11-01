@@ -17,15 +17,21 @@ class Crunchbutton_Group extends Cana_Table {
 		return $this->_permissions;
 	}
 
-	public function hasPermission( $permission ){
+	public function hasPermission( $permission, $useRegex = false ){
 		$permissions = $this->permissions();
 		foreach( $permissions as $_permission ){
 			if( $_permission->permission == $permission && $_permission->allow == 1 ){
 				return true;
 			}
+			if( $useRegex ){
+				if( preg_match( $permission, $_permission->permission )  && $_permission->allow == 1 ){
+					return true;
+				}
+			}
 		}
 		return false;
 	}
+
 
 	public static function find($search = []) {
 
@@ -60,13 +66,14 @@ class Crunchbutton_Group extends Cana_Table {
 				$_permission->permission = trim( $key );
 				$_permission->allow = 1;
 				$_permission->save();
+				// reset the permissions
+				$this->_permissions = false;
 				$dependencies = $_permission->getDependency( $key );
 				if( $dependencies ){
 					foreach( $dependencies as $dependency ){
 						$this->addPermissions( array( $dependency => 1 ) );
 					}
 				}
-
 			}
 		}
 	}
