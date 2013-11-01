@@ -381,8 +381,14 @@ var WIDGET = {
 			$(option_group_dom).find('.add-option').click(function() {
 				id_option = UTIL.create_unique_id();
 				id_dish_option = UTIL.create_unique_id();
+
+				var isDefault = '0';
+				if( $(option_group_dom).find('input[type=radio]:checked').length == 0 ){
+					isDefault = '1';
+				}
+
 				self.add_option(option_group_dom, {
-					default : '0',
+					default : isDefault,
 					description : null,
 					id : id_option,
 					id_option : id_option,
