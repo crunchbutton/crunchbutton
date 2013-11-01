@@ -61,13 +61,23 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		$_permissions[ 'giftcard' ][ 'permissions' ] = array( 
 																											'gift-card-all' => array( 'description' => 'Can perform any action with gift cards' ),
 																											'gift-card-list-page' => array( 'description' => 'View main gift card page' ),
+																											'gift-card-create' => array( 'description' => 'Ability to create gift cards' ),
 																											'gift-card-list-all' => array( 'description' => 'View gift cards from ALL the restaurants' ),
 																											'gift-card-list-restaurant-ID' => array( 'description' => 'View the gift cards from ONLY these restaurants:', 'type' => 'combo', 'element' => 'Restaurant' ),
-																											'gift-card-create' => array( 'description' => 'Ability to create gift cards' ),
 																											'gift-card-create-all' => array( 'description' => 'Ability to create gift cards to ALL restaurants' ),
-																											'gift-card-create-restaurant-ID' => array( 'description' => 'Create gift cards to restaurant ID', 'dependency' => array( 'gift-card-create' ), 'type' => 'combo', 'element' => 'Restaurant' ),
+																											
+																											'gift-card-create-restaurant-ID' => array( 
+																																												'description' => 'Create gift cards to restaurant ID', 
+																																												'dependency' => array( 'gift-card-create' ), 
+																																												'type' => 'combo', 'element' => 'Restaurant',
+																																												'additional' => array( 
+																																														'label' => 'Additional gift card:',
+																																														'permissions' => array(
+																																															'gift-card-restaurant-ID' => array( 'description' => 'View gift cards he has access to', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'gift-card-create' ) ),
+																																														)
+																																													)
+																																											),
 																											'gift-card-groups' => array( 'description' => 'Manage gift card groups' ),
-																											'gift-card-restaurant-ID' => array( 'description' => 'Create and list gift card for the restaurant ID', 'type' => 'combo', 'element' => 'Restaurant' ),
 																											'gift-card-delete' => array( 'description' => 'Ability to delete gift cards and reduce their size' ),
 																											'gift-card-anti-cheat' => array( 'description' => 'Ability to view the gift card anti cheat page' ),
 																										);
@@ -120,7 +130,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		$_permissions[ 'other' ][ 'permissions' ] = array( 
 																										'github' => array( 'description' => 'View github page and issues' ),
 																										'customers-all' => array( 'description' => 'Do all about customers' ),
-																										'curation' => array( 'description' => 'View curation page' ),
+																										'curation' => array( 'description' => 'View curation page--only for restaurants user has access to' ),
 																										'locations' => array( 'description' => 'View the locations page' ),
 																										'marketing-events' => array( 'description' => 'View the marketing events page' ),
 																										'logs' => array( 'description' => 'View the logs page' ),
@@ -152,6 +162,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 				$regex = str_replace( 'ID' , '(.)*', $key );
 				$regex = '/' . $regex . '/';
 				if( preg_match( $regex, $permission ) > 0 ){
+					$meta[ 'permission' ] = $key;
 					return $meta;
 				}
 				if( $meta[ 'additional' ] ){
