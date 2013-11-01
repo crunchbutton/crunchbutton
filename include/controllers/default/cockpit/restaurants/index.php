@@ -88,6 +88,8 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			$restaurant->giftcard = 1;
 			$restaurant->delivery = 1;
 			$restaurant->takeout = 1;
+			$restaurant->confirmation = 1;
+			$restaurant->fee_customer = '0';
 			$restaurant->save();
 			$this->_form();
 
