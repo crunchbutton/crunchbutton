@@ -103,7 +103,7 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Permalink</div>
-						<div class=admin-item-desc>forms the URL: crunchbutton.com/food-delivery/&lt;permalink></div>
+						<div class=admin-item-desc style="width:340px;">crunchbutton.com/food-delivery/<b>whateveryouwritehere</b></div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-permalink />
@@ -113,7 +113,7 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Community</div>
-						<div class=admin-item-desc>for metrics - make sure all your restaurants have the EXACT same community</div>
+						<div class=admin-item-desc>give all your restaurants the EXACT SAME community</div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-community />
@@ -123,7 +123,8 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Text under Restaurant Name on Choose Restaurant Page</div>
-						<div class=admin-item-desc>Choose something funny, awesome, and cool, but descriptive like “delicious chijapanesethai in yo mouth" or "chicken tikka delicious"</div>
+						<div class=admin-item-desc>choose something funny, awesome, and cool, but descriptive like “delicious chijapanesethai in yo mouth" or "chicken tikka delicious"</div>
+						<div class=admin-item-desc>text size limit 40 chars</div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-short-description />
@@ -133,7 +134,7 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Text under Restaurant Name on Restaurant Checkout Page</div>
-						<div class=admin-item-desc>Choose something funny, awesome, and cool, but descriptive that’s different from the text on Choose Restaurant page AND works well with the menu below</div>
+						<div class=admin-item-desc>write something that’s different from the text on Choose Restaurant page AND that works well with the restaurant’s menu</div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-message />
@@ -174,7 +175,8 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Is It Active?</div>
-						<div class=admin-item-desc>listed on live site</div>
+						<div class=admin-item-desc>(listed on live site)</div>
+						<div class=admin-item-desc>Leave inactive you place a “Test Order” and call the restaurant to tell them they’re active.</div>
 					</div>
 					<div class=admin-item-right>
 						<div class=admin-item-col-small id=restaurant-active-container></div>
@@ -184,7 +186,7 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Is It Accepting Orders?</div>
-						<div class=admin-item-desc>is this restaurant accepting orders during open hours</div>
+						<div class=admin-item-desc>close on snowdays, etc.</div>
 					</div>
 					<div class=admin-item-right>
 						<div class=admin-item-col-small id=restaurant-open-for-business-container></div>
@@ -329,7 +331,6 @@
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Transactions</div>
-						<div class=admin-item-desc>allowed payment methods - leave the defaults unless you discuss with us otherwise</div>
 					</div>
 					<div class=admin-item-right>
 						<div class=admin-item-col-small>
@@ -499,15 +500,13 @@
 		
 		<div class="box">
 			<a name="notes"></a>
-			<div class="box-header"><span class="title">Notes</span></div>
+			<div class="box-header"><span class="title">Notes on Restaurant (optional)</span></div>
 			<div class="box-content padded">
-			
-				<div>Anything worth knowing about the restaurant (optional)</div>
-
+		
 				<div class=admin-item>
 					<div class=admin-item-left>
 						<div class=admin-item-name>Restaurant Email or Owner’s Email</div>
-						<div class=admin-item-desc>optional</div>
+						<div class=admin-item-desc></div>
 					</div>
 					<div class=admin-item-right>
 						<input type=input id=restaurant-email />
@@ -647,7 +646,7 @@
 			<div class=admin-item-col-fit>
 				<label>
 					<input type=checkbox class=admin-menu-dish-expand-view>
-					Expanded view when added to cart (for items like where you want the user to see options, like pizza toppings and sizes)
+					Expanded view when added to cart (for when you want the user to see options, like sizes and pizza toppings)
 				</label>
 				<label>
 					<input type=checkbox class=admin-menu-dish-top-item>
