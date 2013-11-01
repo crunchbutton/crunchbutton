@@ -979,7 +979,7 @@ var WIDGET = {
 					id_notification: null,
 					id_restaurant: restaurant.id, 
 					type: 'confirmation',
-					value: 'main phone', // TODO update this when backend supports it
+					value: 'restaurant phone #', // TODO update this when backend supports it
 			};
 			self.notification_widgets = [];
 			for(i in notifications) {
