@@ -4,7 +4,8 @@ class Controller_orders_content extends Crunchbutton_Controller_Account {
 	public function init() {
 		
 		$restaurant_id = $_REQUEST['restaurant'];
-		if( !c::admin()->permission()->check( [ 'global', 'orders-all', "orders-list-restaurant-{$restaurant_id}" ] ) ){
+
+		if( !c::admin()->permission()->check( [ 'global', 'orders-all', 'orders-list-page', "orders-list-restaurant-{$restaurant_id}" ] ) ){
 			return;
 		}
 
