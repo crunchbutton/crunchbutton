@@ -158,6 +158,7 @@
 			<?php 
 			foreach( $groups as $group ){
 				$groupPermissions = $group->permissions();
+				$groupPermissions = Crunchbutton_Admin_Permission::groupedPermissions( $groupPermissions );
 				?>
 
 				<div class="box">
@@ -167,18 +168,21 @@
 					 </span>
 				</div>
 				<div class="box-content padded">
-					 <ul>
-							<?php foreach( $groupPermissions as $permission ) { ?>
+					 	<ul>
+							<?php 
+							if( count( $groupPermissions ) > 0 ){
+							foreach( $groupPermissions as $permission ) { ?>
 								<li>
 										<?php 
-											$info = $_permissions->getPermissionInfo( $permission->permission ); 
-											if( $info ){
-												echo $info[ 'description' ];
+											echo $permission[ 'description' ];
+											if( $permission[ 'elements' ] ){
+												?>
+												&nbsp;<br/><span class="note"><?php echo join( ', ', $permission[ 'elements' ] ); ?></span>
+												<?php
 											}
 										?>
-										&nbsp;<span class="note"><?php echo $permission->permission ?></span>
 								</li>
-							<?php } ?>
+							<?php } } ?>
 						</ul>
 											<div class="padded">
 						<a href="/permissions/groups/<?php echo $group->id_group; ?>" class="btn btn-green"><i class="icon-group"></i> View Group</a>
