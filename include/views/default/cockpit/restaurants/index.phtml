@@ -35,10 +35,6 @@
 				<?php if (c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud'])) { ?>
 				<button type="submit" class="btn btn-blue new-restaurant">Create New</button> 
 				<?php } ?>
-				<?php if (c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page'])) { ?>
-				&nbsp;&nbsp;
-				<a href="/restaurants/weight/" class="btn btn-green">Weight adjustment</a>
-				<?php } ?>
 				
 			</div>
 		</div>

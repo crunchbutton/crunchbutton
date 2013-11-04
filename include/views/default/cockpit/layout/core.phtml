@@ -156,6 +156,15 @@
 			</a>
 		</li>
 		<?php } ?>
+		<?php if ( c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page'] ) ) { ?>
+		<li class="<?=$this->page == 'restaurants' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/restaurants/weight/">
+				<i class="icon-bar-chart icon-2x"></i>
+				<span>Weight adjustment</span>
+			</a>
+		</li>
+		<?php } ?>
 		<?php if ( c::admin()->permission()->check( [ 'global', 'customers-all'] ) ) { ?>
 		<li class="<?=$this->page == 'customers' ? 'active' : ''?>">
 			<span class="glow"></span>
