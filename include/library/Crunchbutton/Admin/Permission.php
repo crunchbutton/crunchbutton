@@ -47,9 +47,9 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		$_permissions[ 'order' ][ 'doAllPermission' ] = 'orders-all';
 		$_permissions[ 'order' ][ 'permissions' ] = array( 
 																											'orders-all' => array( 'description' => 'Can perform any action with orders' ),
-																											'orders-list-page' => array( 'description' => 'View new users page for restaurants he has access to' ),
-																											'orders-list-restaurant-ID' => array( 'description' => 'View the orders only from these restaurants:', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'orders-list-page' ) ),
-																											'orders-new-users' => array( 'description' => 'View new users page', 'dependency' => array( 'orders-list-page' ) ),
+																											'orders-list-page' => array( 'description' => 'View main orders page' ),
+																											'orders-list-restaurant-ID' => array( 'description' => 'View the orders only from these restaurants:', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'orders-list-page' ), 'copy' => array( 'title' => 'Copy from restaurants he has access to (CRUD or Edit)', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
+																											'orders-new-users' => array( 'description' => 'View new users page for restaurants he has access to', 'dependency' => array( 'orders-list-page' ) ),
 																											'orders-notification' => array( 'description' => 'Send notification', 'dependency' => array( 'orders-list-page' ) ),
 																											'orders-refund' => array( 'description' => 'Refund orders', 'dependency' => array( 'orders-list-page' ) ),
 																											'orders-export' => array( 'description' => 'Export orders', 'dependency' => array( 'orders-list-page' ) ),
@@ -63,13 +63,14 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'gift-card-list-page' => array( 'description' => 'View main gift card page' ),
 																											'gift-card-create' => array( 'description' => 'Ability to create gift cards' ),
 																											'gift-card-list-all' => array( 'description' => 'View gift cards from ALL the restaurants' ),
-																											'gift-card-list-restaurant-ID' => array( 'description' => 'View the gift cards from ONLY these restaurants:', 'type' => 'combo', 'element' => 'Restaurant' ),
+																											'gift-card-list-restaurant-ID' => array( 'description' => 'View the gift cards from ONLY these restaurants:', 'type' => 'combo', 'element' => 'Restaurant', 'copy' => array( 'title' => 'Copy from restaurants he has access to (CRUD or Edit)', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
 																											'gift-card-create-all' => array( 'description' => 'Ability to create gift cards to ALL restaurants' ),
 																											
 																											'gift-card-create-restaurant-ID' => array( 
-																																												'description' => 'Create gift cards to restaurant ID', 
+																																												'description' => 'Create gift cards to these restaurants', 
 																																												'dependency' => array( 'gift-card-create' ), 
 																																												'type' => 'combo', 'element' => 'Restaurant',
+																																												'copy' => array( 'title' => 'Copy from restaurants he has access to (CRUD or Edit)', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ),
 																																												'additional' => array( 
 																																														'label' => 'Additional gift card:',
 																																														'permissions' => array(
@@ -113,7 +114,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		$_permissions[ 'suggestion' ][ 'permissions' ] = array( 
 																											'suggestions-all' => array( 'description' => 'Can perform any action with suggestions' ),
 																											'suggestions-list-page' => array( 'description' => 'View suggestions page' ),
-																											'suggestions-list-restaurant-ID' => array( 'description' => 'View the food suggestions for these restaurants:', 'dependency' => array( 'suggestions-list-page' ), 'type' => 'combo', 'element' => 'Restaurant' ),
+																											'suggestions-list-restaurant-ID' => array( 'description' => 'View the food suggestions for these restaurants:', 'dependency' => array( 'suggestions-list-page' ), 'type' => 'combo', 'element' => 'Restaurant', 'copy' => array( 'title' => 'Copy from restaurants he has access to (CRUD or Edit)', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
 																										);
 
 		/* Other's permissions */ 
