@@ -153,8 +153,47 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		return $this->_elements;
 	}
 
+	public function getElement( $element, $id ){
+		$elements = $this->elements();
+		if( $elements[ $element ] ){
+			$elements = $elements[ $element ];
+			foreach( $elements as $element ){
+				if( $element->id == $id ){
+					return $element->name;
+				}
+			}
+		}
+		return $id;
+	}
+
 	public function all(){
 		return $this->_permissions;
+	}
+
+	public function groupedPermissions( $permissions ){
+		$_permission = new Crunchbutton_Admin_Permission;
+		$_permissions = [];
+		foreach( $permissions as $permission ){
+			$info = $_permission->getPermissionInfo( $permission->permission ); 
+			if( $info ){
+				// echo '<pre>';var_dump( $info );exit();
+				if( strstr( $info[ 'permission' ], 'ID' ) ){
+					$regex = str_replace( 'ID' , '((.)*)', $info[ 'permission' ] );
+					$regex = '/^' . $regex . '$/';
+					preg_match( $regex, $permission->permission, $matches );
+					if( count( $matches ) > 0 ){
+						$id = $matches[ 1 ];
+						if( !$_permissions[ $info[ 'permission' ] ] ){
+							$_permissions[ $info[ 'permission' ] ] = array( 'description' => $info[ 'description' ], 'elements' => [] );	
+						}
+						$_permissions[ $info[ 'permission' ] ][ 'elements' ][] = $_permission->getElement( $info[ 'element' ], $id );
+					}
+				} else {
+					$_permissions[ $info[ 'permission' ] ] = array( 'description' => $info[ 'description' ] );
+				}
+			}
+		}
+		return $_permissions;
 	}
 
 	public function getPermissionInfo( $permission ){
@@ -162,7 +201,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		foreach( $all_permissions as $group ){
 			$permissions = $group[ 'permissions' ];
 			foreach( $permissions as $key => $meta ){
-				$regex = str_replace( 'ID' , '(.)*', $key );
+				$regex = str_replace( 'ID' , '((.)*)', $key );
 				$regex = '/^' . $regex . '$/';
 				if( preg_match( $regex, $permission ) > 0 ){
 					$meta[ 'permission' ] = $key;
