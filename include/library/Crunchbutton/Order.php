@@ -590,7 +590,8 @@ class Crunchbutton_Order extends Cana_Table {
 			// If the user doesnt have permission to all restaurants show just the ones he could see
 			if( !$hasPermissionToAllRestaurants ){
 				$restaurants = c::admin()->getRestaurantsUserHasPermissionToSeeTheirOrders();
-				$query .= ' and `order`.id_restaurant IN (' . join( $restaurants, ',' ) . ')';
+				$restaurants[] = 0;
+				$query .= ' and `order`.id_restaurant IN ( ' . join( $restaurants, ',' ) . ')';
 			}
 		}
 
@@ -1382,6 +1383,34 @@ class Crunchbutton_Order extends Cana_Table {
 			return $row->total;
 		}
 		return 0;
+	}
+
+	public function restaurantsUserHasPermissionToSeeTheirOrders(){
+		$restaurants_ids = [];
+		$_permissions = new Crunchbutton_Admin_Permission();
+		$all = $_permissions->all();
+		// Get all restaurants permissions
+		$restaurant_permissions = $all[ 'order' ][ 'permissions' ];
+		$permissions = c::admin()->getAllPermissionsName();
+		$restaurants_id = array();
+		foreach ( $permissions as $permission ) {
+			$permission = $permission->permission;
+			$info = $_permissions->getPermissionInfo( $permission );
+			$name = $info[ 'permission' ];
+			foreach( $restaurant_permissions as $restaurant_permission_name => $meta ){
+				if( $restaurant_permission_name == $name ){
+					if( strstr( $name, 'ID' ) ){
+						$regex = str_replace( 'ID' , '((.)*)', $name );
+						$regex = '/' . $regex . '/';
+						preg_match( $regex, $permission, $matches );
+						if( count( $matches ) > 0 ){
+							$restaurants_ids[] = $matches[ 1 ];
+						}
+					}
+				}
+			}
+		}
+		return array_unique( $restaurants_ids );
 	}
 
 	public function __construct($id = null) {

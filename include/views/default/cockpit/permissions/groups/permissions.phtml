@@ -93,13 +93,13 @@
 											<?php 
 											} 
 											if ( $meta[ 'additional' ] ) {
-												$adicional = $meta[ 'additional' ];
-												$adicional_permissions = $adicional[ 'permissions' ];
+												$additional = $meta[ 'additional' ];
+												$additional_permissions = $additional[ 'permissions' ];
 												$father = $permission;
 												?>
-												<b><?php echo $adicional[ 'label' ]; ?></b><br/>
+												<b><?php echo $additional[ 'label' ]; ?></b><br/>
 												<?php 
-												foreach( $adicional_permissions as $permission => $meta  ){
+												foreach( $additional_permissions as $permission => $meta  ){
 													$description = $meta[ 'description' ];
 													$pattern = '/' . str_replace( 'ID' , '.*', $permission ) . '/';
 													$checked = ( $group->hasPermission( $pattern, true ) ) ? 'checked="checked"' : '' ;

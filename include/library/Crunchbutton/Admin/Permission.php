@@ -104,6 +104,8 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		$_permissions[ 'support' ][ 'permissions' ] = array( 
 																											'support-all' => array( 'description' => 'Can perform ALL support related actions' ),
 																											'support-crud' => array( 'description' => 'Create, update and delete any support ticket' ),
+																											'support-create' => array( 'description' => 'Create support ticket', 'dependency' => array( 'support-view' ) ),
+																											'support-create-edit-ID' => array( 'description' => 'Create, update and delete any support ticket he has access to', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'support-view' ), 'copy' => array( 'title' => 'Copy from restaurants he has access to (CRUD or Edit)', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
 																											'support-view' => array( 'description' => 'View the support page' ),
 																											'support-settings' => array( 'description' => 'Change support settings' ),
 																										);
@@ -161,11 +163,12 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 			$permissions = $group[ 'permissions' ];
 			foreach( $permissions as $key => $meta ){
 				$regex = str_replace( 'ID' , '(.)*', $key );
-				$regex = '/' . $regex . '/';
+				$regex = '/^' . $regex . '$/';
 				if( preg_match( $regex, $permission ) > 0 ){
 					$meta[ 'permission' ] = $key;
 					return $meta;
 				}
+
 				if( $meta[ 'additional' ] ){
 					$additional_permissions = $meta[ 'additional' ][ 'permissions' ];
 					foreach( $additional_permissions as $_key => $_meta ){
