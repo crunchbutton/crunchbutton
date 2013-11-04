@@ -578,14 +578,22 @@ class Crunchbutton_Order extends Cana_Table {
 			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';
 		}
 
+		$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'orders-all' ] );	
+
 		if ($search['restaurant']) {
-			$query .= ' and `order`.id_restaurant="'.$search['restaurant'].'" ';
+			if( $hasPermissionToAllRestaurants || c::admin()->permission()->check( [ "orders-list-restaurant-{$search['restaurant']}" ] ) ){
+				$query .= ' and `order`.id_restaurant="'.$search['restaurant'].'" ';
+			} else {
+				exit;
+			}
+		} else {
+			// If the user doesnt have permission to all restaurants show just the ones he could see
+			if( !$hasPermissionToAllRestaurants ){
+				$restaurants = c::admin()->getRestaurantsUserHasPermissionToSeeTheirOrders();
+				$query .= ' and `order`.id_restaurant IN (' . join( $restaurants, ',' ) . ')';
+			}
 		}
-/*
-		if ($search['community']) {
-			$query .= ' and `order`.id_community="'.$search['community'].'" ';
-		}
-*/
+
 		if ($search['community']) {
 			$query .= ' and `restaurant`.community="'.$search['community'].'" ';
 		}
