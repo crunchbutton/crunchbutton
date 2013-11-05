@@ -24,7 +24,8 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'restaurants-all' => array( 'description' => 'Can perform any action with ALL restaurants' ),
 																											'restaurants-list-page' => array( 'description' => 'View restaurants he has access to' ),
 																											'restaurants-crud' => array( 'description' => 'Create, update, retrieve and delete ALL restaurants' ),
-																											'restaurant-ID-all' => array( 'description' => 'Can perform any action with ONLY these restaurants', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'restaurants-list-page' ) ),
+																											'restaurants-create' => array( 'description' => 'Create restaurants and edit the restaurants created by the user', 'dependency' => array( 'restaurants-list-page' ) ),
+																											/* 'restaurant-ID-all' => array( 'description' => 'Can perform any action with ONLY these restaurants', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'restaurants-list-page' ) ), */
 																											'restaurant-ID-edit' => array( 
 																																					'description' => 'Edit the info about the restaurant ID, it does not include payment and send fax', 
 																																					'type' => 'combo', 
