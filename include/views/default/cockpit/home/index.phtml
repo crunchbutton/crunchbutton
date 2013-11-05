@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global', 'github'] ) ) { ?>
+		<!-- <?php if ( c::admin()->permission()->check( [ 'global', 'github'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="https://github.com/crunchbutton/crunchbutton" title="Github" target="_blank">
@@ -37,7 +37,7 @@
 				</a>
 			</div>
 		</div>
-		<?php } ?>
+		<?php } ?> -->
 
 		<?php if ( c::admin()->permission()->check( [ 'global','curation'] ) ) { ?>
 		<div class="span2">
@@ -52,7 +52,7 @@
 		<?php if ( c::admin()->permission()->check( [ 'global','marketing-events'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
-				<a href="/home/marketing" title="Curation">
+				<a href="/home/marketing" title="Marketing">
 				<i class="icon-bullhorn"></i>
 				<span>Marketing</span>
 				</a>
@@ -62,9 +62,19 @@
 		<?php if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities', 'metrics-communities-page'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
-				<a href="/charts/community" title="Metrics by Community">
+				<a href="/charts/community" title="Community metrics">
 				<i class="icon-group"></i>
 				<span>Community metrics</span>
+				</a>
+			</div>
+		</div>
+		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-restaurants-page'] ) ) { ?>
+		<div class="span2">
+			<div class="span12 action-nav-button">
+				<a href="/charts/restaurant" title="Restaurant metrics">
+				<i class="icon-bar-chart"></i>
+				<span>Restaurant metrics</span>
 				</a>
 			</div>
 		</div>
