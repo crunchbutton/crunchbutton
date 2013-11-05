@@ -14,7 +14,6 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 						$tsess->phone = $this->request()['phone'];
 						$tsess->data = json_encode( $_REQUEST );
 						$tsess->save();
-
 						$support = new Crunchbutton_Support;
 						$support->type = Crunchbutton_Support::TYPE_BOX_NEED_HELP;
 						$support->name = $this->request()['name'];
@@ -29,7 +28,6 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 						$support->save();
 						echo $support->json();
 						$support->queNotify();
-
 					break;
 					case 'say':
 						$this->say();

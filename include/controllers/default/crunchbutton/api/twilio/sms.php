@@ -7,10 +7,10 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		$body = trim($_REQUEST['Body']);
 		$env = c::getEnv();
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-		$tsess = Session_Twilio::get();
+		
+		$tsess = Session_Twilio::get( $_REQUEST );
 		$tsess->data = json_encode($_REQUEST);
 		$tsess->save();
-
 		$to = str_replace('+1','',$_REQUEST['To']);
 
 		// Log
