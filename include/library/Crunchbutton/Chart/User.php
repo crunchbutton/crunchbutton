@@ -1695,7 +1695,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE r.community = '{$community}'
+								 WHERE REPLACE(r.community, ' ', '-') = '{$community}'
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
@@ -1751,7 +1751,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE r.community = '{$community}'
+								 WHERE REPLACE(r.community, ' ', '-') = '{$community}'
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
@@ -1805,7 +1805,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE r.community = '{$community}'
+								 WHERE REPLACE(r.community, ' ', '-') = '{$community}'
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone, r.community) orders ON o.id_order = orders.id_order
 							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
