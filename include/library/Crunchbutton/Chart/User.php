@@ -24,6 +24,15 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 																'users-new-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'newByMonthByCommunity' ),
 															)
 												),
+												'group-new-users-restaurant' => array(
+														'title' => 'New Users',
+														'tags' => array( 'reps' ),
+														'charts' => array(  
+																'users-new-per-day-by-restaurant' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-restaurant', 'method' => 'newByDayByRestaurant' ),
+																'users-new-per-week-by-restaurant' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-restaurant', 'method' => 'newByWeekByRestaurant', 'default' => true ),
+																'users-new-per-month-by-restaurant' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-restaurant', 'method' => 'newByMonthByRestaurant' ),
+															)
+												),
 												'group-users-repeat-community' => array(
 														'title' => 'Repeat Orders',
 														'tags' => array( 'reps' ),
@@ -31,6 +40,15 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 																'orders-repeat-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'repeatPerDayByCommunity' ),
 																'orders-repeat-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'repeatPerWeekByCommunity', 'default' => true ),
 																'orders-repeat-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'repeatPerMonthByCommunity' ),
+															)
+												),
+												'group-users-repeat-restaurant' => array(
+														'title' => 'Repeat Orders',
+														'tags' => array( 'reps' ),
+														'charts' => array(  
+																'orders-repeat-day-by-restaurant' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-restaurant', 'method' => 'repeatPerDayByRestaurant' ),
+																'orders-repeat-week-by-restaurant' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-restaurant', 'method' => 'repeatPerWeekByRestaurant', 'default' => true ),
+																'orders-repeat-month-by-restaurant' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-restaurant', 'method' => 'repeatPerMonthByRestaurant' ),
 															)
 												),
 												'group-users-repeat' => array(
@@ -1634,6 +1652,34 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
+	public function newByMonthByRestaurant( $render = false ){
+
+		$restaurant = $_REQUEST[ 'restaurant' ];
+
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m') AS Month,
+										 restaurant AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.name as restaurant
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.id_restaurant = '{$restaurant}'
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+
+		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
+
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
+		}
+		return $parsedData;
+	}
+
 	public function newByMonthByCommunity( $render = false ){
 
 		$community = $_REQUEST[ 'community' ];
@@ -1662,6 +1708,34 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
+	public function newByDayByRestaurant( $render = false ){
+
+		$restaurant = $_REQUEST[ 'restaurant' ];
+
+		$query = "SELECT SUM(1) AS Total,
+										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
+										 restaurant AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.name as restaurant
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.id_restaurant = '{$restaurant}'
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
+							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+
+		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
 	public function newByDayByCommunity( $render = false ){
 
 		$community = $_REQUEST[ 'community' ];
@@ -1686,6 +1760,32 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
+	public function newByWeekByRestaurant( $render = false ){
+
+		$restaurant = $_REQUEST[ 'restaurant' ];
+
+		$query = "SELECT SUM(1) AS Total,
+										 YEARWEEK(o.date) AS Week,
+										 restaurant AS `Group`
+							FROM `order` o
+							INNER JOIN
+								(SELECT min(id_order) id_order,
+												u.phone,
+												r.name as restaurant
+								 FROM `order` o
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 WHERE r.id_restaurant = '{$restaurant}'
+										{$this->queryExcludeUsers}
+								 GROUP BY u.phone, r.name) orders ON o.id_order = orders.id_order
+							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
+		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
 		return $parsedData;
 	}
@@ -1770,6 +1870,21 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	public function repeatPerWeekByCommunity( $render = false ){
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerWeekByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'week' );
+	}	
+
+	public function repeatPerWeekByRestaurant( $render = false ){
+		$order = new Crunchbutton_Chart_Order();
+		return array( 'data' => $order->repeatPerWeekByRestaurant( false ), 'unit' =>$order->unit, 'interval' => 'week' );
+	}	
+
+	public function repeatPerDayByRestaurant( $render = false ){
+		$order = new Crunchbutton_Chart_Order();
+		return array( 'data' => $order->repeatPerDayByRestaurant( false ), 'unit' =>$order->unit, 'interval' => 'day' );
+	}	
+
+	public function repeatPerMonthByRestaurant( $render = false ){
+		$order = new Crunchbutton_Chart_Order();
+		return array( 'data' => $order->repeatPerMonthByRestaurant( false ), 'unit' =>$order->unit, 'interval' => 'month' );
 	}	
 
 	public function repeatPerMonth( $render = false ){
