@@ -94,7 +94,7 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 							LEFT JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
-								AND r.community = '{$community}'
+								AND REPLACE(r.community, ' ', '-') = '{$community}'
 								{$this->queryExcludeUsers}
 							GROUP BY DATE_FORMAT( o.date ,'%Y-%m-%d'),
 											 r.community
@@ -180,7 +180,7 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 							LEFT JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
-								AND r.community = '{$community}'
+								AND REPLACE(r.community, ' ', '-') = '{$community}'
 								{$this->queryExcludeUsers}
 							GROUP BY DATE_FORMAT( o.date ,'%Y-%m'),
 											 r.community
@@ -247,7 +247,7 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 							LEFT JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
 							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
-								AND r.community = '{$community}'
+								AND REPLACE(r.community, ' ', '-') = '{$community}'
 								{$this->queryExcludeUsers}
 							GROUP BY YEARWEEK(date),
 											 r.community
