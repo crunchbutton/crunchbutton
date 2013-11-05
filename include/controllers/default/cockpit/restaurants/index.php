@@ -80,7 +80,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 		if (c::getPagePiece($page_piece_index) == 'new') {
 
 			// @permission check for restaurant permissions
-			if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud'])) {
+			if (!c::admin()->permission()->check(['global','restaurants-all', 'restaurants-crud', 'restaurants-create'])) {
 				return;
 			}
 			$restaurant->cash = 1;
@@ -91,6 +91,12 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			$restaurant->confirmation = 1;
 			$restaurant->fee_customer = '0';
 			$restaurant->save();
+
+			// Give the user the permission to edit the created restaurant
+			$permission = array( "restaurant-{$restaurant->id_restaurant}-edit" => 1 );
+			echo '<pre>';var_dump( $permission );exit();
+			c::admin()->addPermissions( $permission );
+
 			$this->_form();
 
 		} elseif ($restaurant->id_restaurant) {
