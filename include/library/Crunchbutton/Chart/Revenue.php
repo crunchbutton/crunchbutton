@@ -43,9 +43,8 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
 											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total'
 							FROM `order` o
-							LEFT JOIN community c ON o.id_community = c.id_community
+							LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
-								{$this->queryExcludeCommunties}
 								{$this->queryExcludeUsers}
 							GROUP BY Day
 							ORDER BY Day DESC";
@@ -129,9 +128,8 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
 											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total'
 							FROM `order` o
-							LEFT JOIN community c ON o.id_community = c.id_community
+							LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
-								{$this->queryExcludeCommunties}
 								{$this->queryExcludeUsers}
 							GROUP BY Month
 							ORDER BY Month DESC";
@@ -281,9 +279,8 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 		$query = "SELECT YEARWEEK(date) AS `Week`,
 											CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total'
 							FROM `order` o
-							LEFT JOIN community c ON o.id_community = c.id_community
+							LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
-								{$this->queryExcludeCommunties}
 								{$this->queryExcludeUsers}
 							GROUP BY YEARWEEK(date)
 							ORDER BY YEARWEEK(date) DESC";
