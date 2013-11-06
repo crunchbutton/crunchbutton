@@ -3,6 +3,11 @@
 class Controller_api_order extends Crunchbutton_Controller_Rest {
 	public function init() {
 
+		$rules = new Crunchbutton_Order_Rules();
+		$order = Order::o(8396);
+		$rules->run( $order );
+		// $rules->validation_fiveMinutesSinceLastOrder_EqualOrders($order);
+echo '<pre>';var_dump( 1 );exit();
 		$order = Order::uuid(c::getPagePiece(2));
 		/* @var $order Crunchbutton_Order */
 		if (!$order->id_order) {
