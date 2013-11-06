@@ -389,6 +389,11 @@ class Crunchbutton_Order extends Cana_Table {
 			Crunchbutton_Hipchat_Notification::OrderPlaced($order);
 		});
 
+		// Cana::timeout(function() use($order) {
+			$rules = new Crunchbutton_Order_Rules();
+			$rules->run( $order );
+		// });
+
 
 		if( Crunchbutton_Referral::isReferralEnable() ){
 			// If the user was invited we'll give credit to the inviter user 
