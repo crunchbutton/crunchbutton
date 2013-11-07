@@ -389,10 +389,10 @@ class Crunchbutton_Order extends Cana_Table {
 			Crunchbutton_Hipchat_Notification::OrderPlaced($order);
 		});
 
-		// Cana::timeout(function() use($order) {
+		Cana::timeout(function() use($order) {
 			$rules = new Crunchbutton_Order_Rules();
 			$rules->run( $order );
-		// });
+		});
 
 
 		if( Crunchbutton_Referral::isReferralEnable() ){
