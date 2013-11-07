@@ -154,6 +154,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'GiftcardCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
+		.when('/gift', {
+			action: 'giftcard',
+			controller: 'GiftcardCtrl',
+			templateUrl: 'assets/view/home.html'
+		})
+		.when('/gift/:id', {
+			action: 'giftcard',
+			controller: 'GiftcardCtrl',
+			templateUrl: 'assets/view/home.html'
+		})
 		.when('/reset', {
 			action: 'reset',
 			controller: 'AccountResetCtrl',

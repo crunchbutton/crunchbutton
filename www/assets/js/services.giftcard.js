@@ -36,7 +36,13 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.parseURLCode = function(){
-		service.code = $location.path().replace( '/giftcard', '' );
+		var url = $location.path();
+		// check if the url contains giftcard or just gift
+		if( url.indexOf( 'giftcard' ) > 0 ){
+			service.code = $location.path().replace( '/giftcard', '' );	
+		} else {
+			service.code = $location.path().replace( '/gift', '' );	
+		}
 		service.code = service.code.replace( '/', '' );
 	}
 
