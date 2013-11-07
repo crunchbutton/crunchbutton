@@ -44,7 +44,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																										);
 
 		/* Orders's permissions */ 
-		$_permissions[ 'order' ] = array( 'description' => 'Orders\'s permissions' );
+		$_permissions[ 'order' ] = array( 'description' => 'Orders Page permissions' );
 		$_permissions[ 'order' ][ 'doAllPermission' ] = 'orders-all';
 		$_permissions[ 'order' ][ 'permissions' ] = array( 
 																											'orders-all' => array( 'description' => 'Can perform any action with orders' ),
