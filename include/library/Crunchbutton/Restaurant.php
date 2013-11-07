@@ -835,6 +835,15 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $this->_notifications;
 	}
 
+	public function notification_types(){
+		$types = array();
+		$notifications = $this->notifications();
+		foreach( $notifications as $notification ){
+			$types[ $notification->type ] = $notification->type;
+		}
+		return $types;
+	}
+
 	public function preset() {
 		return Preset::q('
 			select * from preset where id_restaurant="'.$this->id_restaurant.'"

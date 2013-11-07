@@ -97,10 +97,19 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					// all our support is right now. we should think of a solution
 					// to this and change it eventually. also right now our db times
 					// are all pst. we should change that too.
+
+					$types = $restaurant->notification_types();
+					if( count( $types ) > 0 ){
+						$notifications = '/ RN: ' . join( '/', $types );
+					} else {
+						$notifications = '';
+					}
+					
+
 					$edt_datetime = strtotime($order->date);
 					date_default_timezone_set('America/New_York');
 					$edt_datetime = date('D, M d, g:i a', $edt_datetime) . ' EDT';
-					$last_cb = "Last Order: #$order->id_order, from $restaurant->name, on $edt_datetime. -  R: $restaurant->phone - C: $order->name / $order->phone";
+					$last_cb = "Last Order: #$order->id_order, from $restaurant->name, on $edt_datetime. -  R: $restaurant->phone {$notifications} - C: $order->name / $order->phone";
 				} else {
 					$last_cb = 'Last Order: None.';
 				}
