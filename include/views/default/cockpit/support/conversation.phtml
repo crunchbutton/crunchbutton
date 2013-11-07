@@ -5,9 +5,11 @@
 	<div id="history" class="box-content chat-box-wrapper"></div>
 	<? /* <p class="note text-center">Last message received at 14:55</p> */ ?>
 	<hr class="divider">
+	<?php if ($this->support->permissionToEdit()) { ?>	
 	<div class="box-footer flat padded">
 		<div class="input-append">
 			<input type="text" name="text-conversation-reply" id="text-conversation-reply" placeholder="Reply to customer">
+			
 			<ul class="add-on">
 				<li>
 					<button class="btn btn-blue btn-conversation-reply"><i class="icon-mobile-phone"></i> Reply to Customer</button>
@@ -15,6 +17,7 @@
 			</ul>
 		</div>
 	</div>
+	<?php } ?>
 	<div class="box-footer flat padded">
 	
 		<div class="span6">

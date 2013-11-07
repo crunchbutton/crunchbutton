@@ -1025,7 +1025,7 @@ App.credits = {
 			
 			var url = App.service + 'credit/new';
 			$.ajax({
-				type: "POST",
+				type: 'POST',
 				dataType: 'json',
 				data: data,
 				url: url,
@@ -1563,7 +1563,7 @@ App.giftcards = {
 			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'phones' : phones, 'paid_by' : paid_by, 'id_restaurant_paid_by' : id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact };
 			var url = App.service + 'giftcard/bunchsms';
 			$.ajax({
-				type: "POST",
+				type: 'POST',
 				dataType: 'json',
 				data: data,
 				url: url,
@@ -1652,7 +1652,7 @@ App.giftcards = {
 			var data = { 'value' : value,'id_restaurant' : id_restaurant, 'emails' : emails, 'subject':subject, 'content': content, 'paid_by' : paid_by, 'id_restaurant_paid_by' : id_restaurant_paid_by, 'note' : note, 'created_by' : created_by, 'track' : track, 'notify_phone' : notify_phone, 'name' : name, 'how_delivery' : how_delivery, 'contact' : contact };
 			var url = App.service + 'giftcard/bunchemail';
 			$.ajax({
-				type: "POST",
+				type: 'POST',
 				dataType: 'json',
 				data: data,
 				url: url,
@@ -1676,7 +1676,7 @@ App.giftcards = {
 			var data = { 'id_promo' : id_promo };
 			var url = App.service + 'giftcard/sms';
 			$.ajax({
-				type: "POST",
+				type: 'POST',
 				dataType: 'json',
 				data: data,
 				url: url,
@@ -1700,7 +1700,7 @@ App.giftcards = {
 			var data = { 'id_promo' : id_promo };
 			var url = App.service + 'giftcard/email';
 			$.ajax({
-				type: "POST",
+				type: 'POST',
 				dataType: 'json',
 				data: data,
 				url: url,
@@ -1730,7 +1730,7 @@ App.giftcards = {
 			var data = { 'id_promo' : id_promo, 'id_user' : id_user };
 			var url = App.service + 'giftcard/relateuser';
 			$.ajax({
-				type: "POST",
+				type: 'POST',
 				dataType: 'json',
 				data: data,
 				url: url,
@@ -1799,7 +1799,7 @@ App.giftcardsGroup = {
 	remove: function( id_promo_group ){
 		$.ajax({
 			url: '/giftcards/groups/remove',
-			type: "POST",
+			type: 'POST',
 			data: { 'id_promo_group': id_promo_group } ,
 			complete: function() {
 				App.giftcardsGroup.load();
@@ -1809,3 +1809,64 @@ App.giftcardsGroup = {
 }
 
 
+App.permissions = {};
+
+App.permissions.admin = {
+	params: function() {
+		return {
+			name: $('input[name="name"]').val()
+		};
+	},
+	load: function() {
+		$('.permissions-loader').show();
+		$('.permissions-content').html('');
+		$.ajax({
+			url: '/permissions/users/content',
+			data: App.permissions.admin.params(),
+			complete: function(content) {
+				$('.permissions-content').html(content.responseText);
+				$('.permissions-loader').hide();
+			}
+		});
+	},
+	remove: function( id_admin ){
+		$.ajax({
+			url: '/permissions/users/remove',
+			type: 'POST',
+			data: { 'id_admin': id_admin } ,
+			complete: function() {
+				App.permissions.admin.load();
+			}
+		});
+	},
+}
+
+App.permissions.group = {
+	params: function() {
+		return {
+			name: $('input[name="name"]').val()
+		};
+	},
+	load: function() {
+		$('.permissions-loader').show();
+		$('.permissions-content').html('');
+		$.ajax({
+			url: '/permissions/groups/content',
+			data: App.permissions.group.params(),
+			complete: function(content) {
+				$('.permissions-content').html(content.responseText);
+				$('.permissions-loader').hide();
+			}
+		});
+	},
+	remove: function( id_group ){
+		$.ajax({
+			url: '/permissions/groups/remove',
+			type: 'POST',
+			data: { 'id_group': id_group } ,
+			complete: function() {
+				App.permissions.group.load();
+			}
+		});
+	},
+}

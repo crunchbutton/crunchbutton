@@ -3,6 +3,39 @@
 class Controller_home_charts extends Crunchbutton_Controller_Account {
 
 	public function process( $info, $chart ){
+
+		// Check if the user has permission to see the chart
+		$hasPermission = c::admin()->permission()->check( [ 'global', 'metrics-all' ] );
+
+		if( !$hasPermission ){
+			
+			// $charts = Chart::getAllCharts();
+
+			$hasTag = false;
+
+			$tags = $info[ 'tags' ];
+
+			if( $tags ){
+				foreach( $tags as $tag ){
+					$hasTag = true;
+					$hasPermission = c::admin()->permission()->check( [ "metrics-{$tag}" ] );
+					if( !$hasPermission && $tag == 'reps' ){
+						$hasPermission = c::admin()->permission()->check( [ 'metrics-communities-all', "metrics-communities-{$_REQUEST[ 'community' ]}", "metrics-restaurant-{$_REQUEST[ 'restaurant' ]}" ] );
+					}
+					if( $hasPermission ){ break; }	
+				}
+			}
+
+			if( !$hasTag ){
+				$hasPermission = c::admin()->permission()->check( [ 'metrics-no-grouped-charts' ] );
+			}
+
+		}
+
+		if( !$hasPermission ){
+			return;
+		}
+
 		$title = $info[ 'title' ];
 		$subTitle = $info['chart'][ 'title' ];
 		$type = $info['chart'][ 'type' ];
@@ -45,6 +78,10 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 				$params = array_merge( $chart->$method( true ), $info );
 				$this->renderColumnCommunity( $params, $chart->getGroupedCharts( $info ), $description, $title );
 				break;
+			case 'column-restaurant':
+				$params = array_merge( $chart->$method( true ), $info );
+				$this->renderColumnRestaurant( $params, $chart->getGroupedCharts( $info ), $description, $title );
+				break;
 			case 'area':
 				$params = array_merge( $chart->$method( true ), $info );
 				$this->renderArea( $params, $chart->getGroupedCharts( $info ), $description, $title );
@@ -57,10 +94,6 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 	}
 
 	public function init() {
-
-		if (!c::admin()->permission()->check(['global'])) {
-			return ;
-		}
 
 		$this->chart = new Crunchbutton_Chart;
 
@@ -180,6 +213,46 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		$chartId = $this->chartId . '-' . $_REQUEST[ 'community' ];
 
 		return c::view()->display('charts/column-community', ['set' => [
+						'chartId' => $chartId,
+						'data' => $params[ 'data' ] ,
+						'interval' => $interval,
+						'to' => $this->chart->to,
+						'from' => $this->chart->from,
+						'to_month' => $this->chart->to_month,
+						'from_month' => $this->chart->from_month,
+						'to_day' => $this->chart->to_day,
+						'from_day' => $this->chart->from_day,
+						'months' => $months,
+						'number' => $this->number,
+						'unit' => $params[ 'unit' ] ,
+						'totalWeeks' => $this->chart->totalWeeks(),
+						'totalMonths' => $this->chart->totalMonths(),
+						'totalDays' => $this->chart->totalDays(),
+						'title' => $title,
+						'subtitle' => $subtitle,
+						'groups' => $groups,
+						'info' => $params,
+						'divId' => $divId,
+						'description' => $description
+					]]); 
+	}
+
+	private function renderColumnRestaurant( $params, $groups, $description, $title ){
+
+		$subtitle = $params[ 'title' ] . ' : ' . $groups[ $this->chartId ][ 'title' ];
+
+		if( !$title ){
+			$title = $subtitle;
+			$subtitle = '';
+		}
+
+		$divId = c::getPagePiece(3) . '-' . $_REQUEST[ 'restaurant' ];
+
+		$interval = ( $params[ 'interval' ] ) ? $params[ 'interval' ] : 'week';
+
+		$chartId = $this->chartId . '-' . $_REQUEST[ 'restaurant' ];
+
+		return c::view()->display('charts/column-restaurant', ['set' => [
 						'chartId' => $chartId,
 						'data' => $params[ 'data' ] ,
 						'interval' => $interval,

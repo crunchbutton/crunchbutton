@@ -3,7 +3,7 @@
 class Controller_support extends Crunchbutton_Controller_Account {
 	public function init() {
 	
-		if (!c::admin()->permission()->check(['global'])) {
+		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			return ;
 		}
 	
@@ -11,6 +11,11 @@ class Controller_support extends Crunchbutton_Controller_Account {
 
 		switch ($action) {
 			case 'new':
+
+				if ( !Crunchbutton_Support::adminHasCreatePermission() ) {
+					return ;
+				}
+
 				self::create($support, $_REQUEST);
 				header('Location: /support/'.$support->id_support);
 				exit;
@@ -40,26 +45,34 @@ class Controller_support extends Crunchbutton_Controller_Account {
 						break;
 
 					case 'conversation' :
-						self::setRep($support);
-						$sn = self::respond($support, $_POST);
-						c::view()->display('support/conversation.note', ['set' => ['note' => $sn]]);
-						exit;
+						if ($support->permissionToEdit()) {
+							self::setRep($support);
+							$sn = self::respond($support, $_POST);
+							c::view()->display('support/conversation.note', ['set' => ['note' => $sn]]);
+							exit;
+						}
 						break;
 
 					case 'note' :
-						$support->addNote($_POST['text'], 'rep', 'internal');
-						exit;
+						if ($support->permissionToEdit()) {
+							$support->addNote($_POST['text'], 'rep', 'internal');
+							exit;
+						}
 						break;
 
 					case 'update':
-						self::update( $support, $_POST );
-						echo $support->json();
-						exit;
+						if ($support->permissionToEdit()) {
+							self::update( $support, $_POST );
+							echo $support->json();
+							exit;
+						}
 						break;
 
 					case 'actions':
-						self::setRep($support);
-						self::action($support, $_POST);
+						if ($support->permissionToEdit()) {
+							self::setRep($support);
+							self::action($support, $_POST);
+						}
 						break;
 				}
 
@@ -69,14 +82,32 @@ class Controller_support extends Crunchbutton_Controller_Account {
 
 		c::view()->page = 'support';
 
-		if ($support->id_support) {
+		if ( $support->id_support ) {
+
+			if( !$support->permissionToEdit() ){
+				return ;
+			}
+
+
 			// show the support's form
 			c::view()->support = $support;
 			c::view()->display('support/support');	
 		} else {
 			// show the supports list
-			c::view()->recent = Support::q('select * from support order by id_support desc limit 50');
-			c::view()->total = Support::q('select count(*) as count from support where status="open"')->count;
+
+			
+
+			// If the user doesnt have permission to see all the support, lets get the restaurants he could se
+			if( !c::admin()->permission()->check(['global', 'support-all', 'support-crud' ] ) ){
+				$restaurants = c::admin()->getRestaurantsUserHasPermissionToSeeTheirTickets();
+				$restaurants[] = -1;
+				$where = ' AND id_restaurant IN( ' . join( $restaurants, ',' ) . ')';
+			}
+
+			$query = "SELECT * FROM support WHERE 1=1 {$where} ORDER BY id_support DESC LIMIT 50";
+
+			c::view()->recent = Support::q( $query );
+			c::view()->total = Support::q("SELECT COUNT(*) AS count FROM support WHERE status = 'open' {$where}")->count;
 			c::view()->display('support/index');
 		}
 	}
@@ -130,11 +161,16 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			$changes[] = 'Hot to prevent changed to: ' . $args['how_to_prevent'];
 		}
 
+		if( $support->id_restaurant != $args['id_restaurant'] ){
+			$changes[] = 'Changed restaurant to: ' . $args['id_restaurant'];
+		}
+
 		$changes = join( "\n", $changes );
 		if( trim( $changes ) != '' ){
 			$support->systemNote( $changes );	
 		}
 		
+		$support->id_restaurant 					= $args['id_restaurant'			];
 		$support->user_perspective 				= $args['user_perspective'			];
 		$support->user_perspective_other 	= $args['user_perspective_other'];
 		$support->description_client 			= $args['description_client'		];

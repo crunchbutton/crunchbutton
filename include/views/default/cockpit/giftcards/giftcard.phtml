@@ -160,14 +160,18 @@ if ( $credit->id_credit ) {
 									<a target="_blank" class="btn btn-gray" href="/giftcards/print/<?=$this->giftcard->id_promo;?>"><i class="icon-print"></i> Print</a>&nbsp;
 									<a target="_blank" class="btn btn-blue" href="/giftcards/print-flyer/<?=$this->giftcard->id_promo;?>"><i class="icon-picture"></i> Print flyer</a>&nbsp;
 								<?php } ?>
-								<?php if( $this->giftcard->phone ) { ?>
-									<div class="btn btn-blue admin-giftcard-sms"><i class="icon-phone"></i> Send by sms</div>&nbsp;
-								<?php } ?>
-								<?php if( $this->giftcard->email ) { ?>
-									<div class="btn btn-blue admin-giftcard-email"><i class="icon-envelope"></i> Send by email</div>&nbsp;
-								<?php } ?>
-								<?php if( !$this->giftcard->user()->id_user && !$this->giftcard->note ) { ?>
-									<div class="btn btn-green admin-giftcard-save"><i class="icon-user"></i> Relate user</div>&nbsp;
+								<?php 
+								if( c::admin()->permission()->check( [ 'global', 'gift-card-all', 'gift-card-create-all', "gift-card-restaurant-{$this->giftcard->id_restaurant}", "gift-card-restaurant-create-{$this->giftcard->id_restaurant}" ] ) ){
+								?>
+									<?php if( $this->giftcard->phone ) { ?>
+										<div class="btn btn-blue admin-giftcard-sms"><i class="icon-phone"></i> Send by sms</div>&nbsp;
+									<?php } ?>
+									<?php if( $this->giftcard->email ) { ?>
+										<div class="btn btn-blue admin-giftcard-email"><i class="icon-envelope"></i> Send by email</div>&nbsp;
+									<?php } ?>
+									<?php if( !$this->giftcard->user()->id_user && !$this->giftcard->note ) { ?>
+										<div class="btn btn-green admin-giftcard-save"><i class="icon-user"></i> Relate user</div>&nbsp;
+									<?php } ?>
 								<?php } ?>
 							</td>
 						</tr>
@@ -259,6 +263,9 @@ if ( $credit->id_credit ) {
 			</div>
 			<!-- box track info end -->
 			<!-- box danger zone start -->
+			<?php 
+			if (c::admin()->permission()->check( [ 'global','gift-card-all', 'gift-card-delete'])) {
+			?>
 			<div class="box">
 				<div class="box-header">
 					<span class="title">Danger Zone</span>
@@ -281,6 +288,7 @@ if ( $credit->id_credit ) {
 					<?php } ?>
 				</div>
 			</div>
+			<?php } ?>
 			<!-- box danger zone end -->
 		</div>
 	</div>

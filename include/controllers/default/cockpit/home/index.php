@@ -40,37 +40,48 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		
 		$graphs = [];
 
-		$graphs[ 'Main' ] = array_merge( 
+		if ( c::admin()->permission()->check( ['global','metrics-all','metrics-main'] ) ) {
+
+			$graphs[ 'Main' ] = array_merge( 
 																								$chartUsers->getGroups( 'main' ), 
 																								$chartRevenue->getGroups( 'main' ),
 																								$chartGift->getGroups( 'main' ),
 																								$chartOrder->getGroups( 'main' ),
 																								$chartChurn->getGroups( 'main' )
 																							);
+		}
 
-		$graphs[ 'For Investors' ] = array_merge( 
+		if ( c::admin()->permission()->check( ['global','metrics-all','metrics-investors'] ) ) {
+
+			$graphs[ 'For Investors' ] = array_merge( 
 																								$chartUsers->getGroups( 'investors' ), 
 																								$chartRevenue->getGroups( 'investors' ),
 																								$chartChurn->getGroups( 'investors' ),
 																								$chartGift->getGroups( 'investors' ),
 																								$chartOrder->getGroups( 'investors' )
 																							);
+		}
 
-		$graphs[ 'Detailed Analytics' ] = array_merge( 
+		if ( c::admin()->permission()->check( ['global','metrics-all','metrics-detailed-analytics'] ) ) {
+			
+			$graphs[ 'Detailed Analytics' ] = array_merge( 
 																								$chartUsers->getGroups( 'detailed-analytics' ), 
 																								$chartRevenue->getGroups( 'detailed-analytics' ),
 																								$chartChurn->getGroups( 'detailed-analytics' ),
 																								$chartGift->getGroups( 'detailed-analytics' ),
 																								$chartOrder->getGroups( 'detailed-analytics' )
 																							);
+		}
 		
-		$graphs[ 'Old Graphs' ] = array_merge( 
+		if ( c::admin()->permission()->check( ['global','metrics-all','metrics-no-grouped-charts'] ) ) {
+			$graphs[ 'Old Graphs' ] = array_merge( 
 																								$chartUsers->getGroups(), 
 																								$chartRevenue->getGroups(),
 																								$chartChurn->getGroups(),
 																								$chartGift->getGroups(),
 																								$chartOrder->getGroups()
 																							);
+		}
 
 		c::view()->graphs = $graphs;
 		c::view()->display('home/index');

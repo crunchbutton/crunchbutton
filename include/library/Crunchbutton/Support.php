@@ -269,6 +269,68 @@ class Crunchbutton_Support extends Cana_Table {
 		return $this->_order;
 	}
 
+	public function permissionToEdit(){
+		if( $this->id_restaurant ){
+			$userHasPermission = c::admin()->permission()->check( ['global', 'support-all', 'support-crud' ] );
+			if( !$userHasPermission ){
+				$restaurants = c::admin()->getRestaurantsUserHasPermissionToSeeTheirTickets();
+				foreach ( $restaurants as $id_restaurant ) {
+					if( $id_restaurant == $this->id_restaurant ){
+						$userHasPermission = true;	
+					}
+				}
+			}	
+		} else {
+			$userHasPermission = c::admin()->permission()->check( ['global', 'support-all', 'support-crud', 'support-create' ] );
+		}
+		return $userHasPermission;
+	}
 
+	public function restaurantsUserHasPermissionToSeeTheirTickets(){
+		$restaurants_ids = [];
+		$_permissions = new Crunchbutton_Admin_Permission();
+		$all = $_permissions->all();
+		// Get all restaurants permissions
+		$restaurant_permissions = $all[ 'support' ][ 'permissions' ];
+		$permissions = c::admin()->getAllPermissionsName();
+		$restaurants_id = array();
+		foreach ( $permissions as $permission ) {
+			$permission = $permission->permission;
+			$info = $_permissions->getPermissionInfo( $permission );
+			$name = $info[ 'permission' ];
+			foreach( $restaurant_permissions as $restaurant_permission_name => $meta ){
+				if( $restaurant_permission_name == $name ){
+					if( strstr( $name, 'ID' ) ){
+						$regex = str_replace( 'ID' , '((.)*)', $name );
+						$regex = '/' . $regex . '/';
+						preg_match( $regex, $permission, $matches );
+						if( count( $matches ) > 0 ){
+							$restaurants_ids[] = $matches[ 1 ];
+						}
+					}
+				}
+			}
+		}
+		return array_unique( $restaurants_ids );
+	}
+
+	public function adminHasCreatePermission(){
+		$hasCreatePermission = c::admin()->permission()->check( ['global', 'support-all', 'support-crud', 'support-create' ] );
+		if( !$hasCreatePermission ){
+			$pattern = '/' . str_replace( 'ID' , '.*', 'support-crud-ID' ) . '/';
+			$hasCreatePermission = c::admin()->hasPermission( $pattern, true );
+			if( !$hasCreatePermission ){
+				$groups = c::admin()->groups();
+				if( $groups->count() ){
+					foreach ( $groups as $group ) {
+						if( $group->hasPermission( $pattern, true ) ){
+							$hasCreatePermission = true;
+						}
+					}
+				}
+			}
+		}
+		return $hasCreatePermission;
+	}
 
 }

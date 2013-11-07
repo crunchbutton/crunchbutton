@@ -89,7 +89,6 @@
 <!-- side nav -->
 <div class="primary-sidebar">
 	<ul class="nav nav-collapse collapse nav-collapse-primary">
-
 		<li class="<?=$this->page == 'home' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/dashboard">
@@ -97,8 +96,7 @@
 				<span>Dashboard</span>
 			</a>
 		</li>
-
-		<?php if ( c::admin()->permission()->check( [ 'global','orders-all','orders-view'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','orders','orders-all','orders-list-page','orders-new-users'] ) ) { ?>
 		<li class="dark-nav <?=$this->page == 'orders' ? 'active' : ''?>">
 			<span class="glow"></span>
 
@@ -149,7 +147,7 @@
 			*/ ?>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','restaurants-view'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','restaurants-all','restaurants-list-page','restaurants-crud','restaurants-create'] ) ) { ?>
 		<li class="<?=$this->page == 'restaurants' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/restaurants">
@@ -158,7 +156,16 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','customers-all','customers-view'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page'] ) ) { ?>
+		<li class="<?=$this->page == 'restaurants' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/restaurants/weight/">
+				<i class="icon-bar-chart icon-2x"></i>
+				<span>Weight adjustment</span>
+			</a>
+		</li>
+		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global', 'customers-all'] ) ) { ?>
 		<li class="<?=$this->page == 'customers' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/customers">
@@ -167,7 +174,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if (c::admin()->permission()->check(['global', 'suggestions-all', 'suggestions-list-page'])) { ?>
 		<li class="<?=$this->page == 'suggestions' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/suggestions">
@@ -176,7 +183,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if (c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-list-page', 'gift-card-list-all'])) { ?>
 		<li class="<?=$this->page == 'giftcards' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/giftcards">
@@ -185,7 +192,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','support-all','support-view'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view', 'support-crud', 'support-settings' ] ) ) { ?>
 		<li class="<?=$this->page == 'support' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/support">
@@ -194,7 +201,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global', 'github'] ) ) { ?>
 		<li class="<?=$this->page == 'issues' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/issues">
@@ -203,7 +210,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','locations'] ) ) { ?>
 		<li class="<?=$this->page == 'loc' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/loc">
@@ -212,7 +219,7 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','logs'] ) ) { ?>
 		<li class="<?=$this->page == 'logs' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/logs">
@@ -221,12 +228,30 @@
 			</a>
 		</li>
 		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global'] ) ) { ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','rules'] ) ) { ?>
+		<li class="<?=$this->page == 'rules' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/rules">
+				<i class="icon-filter icon-2x"></i>
+				<span>Rules settings</span>
+			</a>
+		</li>
+		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','invite-promo'] ) ) { ?>
 		<li class="<?=$this->page == 'referral' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/referral">
 				<i class="icon-bullhorn icon-2x"></i>
 				<span>Invite promo</span>
+			</a>
+		</li>
+		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','permissions-all','permissions-users','permissions-groups'] ) ) { ?>
+		<li class="<?=$this->page == 'permissions' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/permissions">
+				<i class="icon-unlock icon-2x"></i>
+				<span>User/Permissions</span>
 			</a>
 		</li>
 		<?php } ?>

@@ -27,6 +27,15 @@
 			</tr>
 		</thead>
 
+<?php 
+$permissionRefund = c::admin()->permission()->check(['global','orders-all','orders-refund']);
+$permissionNotification = c::admin()->permission()->check(['global','orders-all','orders-notification']);
+$permissionGiftCard = c::admin()->permission()->check(['global','orders-all','gift-card-all','gift-card-crud']);
+$permissionSupportCreate = c::admin()->permission()->check(['global','support-all','support-crud']);
+$permissionSupportView = c::admin()->permission()->check(['global','support-all','support-crud', 'support-view']);
+
+?>
+
 		<? foreach ($this->orders as $order) :  /* @var $order Crunchbutton_Order */?>
 			<? $date = $order->date(); ?>
 			<tr class="list-order-item">
@@ -37,11 +46,15 @@
 					<?=$order->env?>
 					<br/>
 					<br/>
+
+						<?php if( $permissionRefund ) { ?>
 							<? if ($order->refunded) : ?>
 								REFUNDED
 							<? else : ?>
 								<a href="javascript:;" class="refund" data-charged="<?php echo $order->charged(); ?>" data-gift="<?php if( $order->chargedByCredit() > 0 ){ echo $order->chargedByCredit(); } else { echo '0'; } ?>" data-uuid="<?=$order->uuid?>">REFUND</a>
 							<? endif ; ?>
+						<?php } ?>
+
 							<?php 
 							$credit = $order->hasCredit();
 							if( $credit > 0 ){
@@ -56,19 +69,29 @@
 							?>
 							<br />
 							<br /> 
-
-							<div class="pointer pay_if_refunded" data-value="<?php if( $order->pay_if_refunded ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
-								<span><?php if( $order->pay_if_refunded ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span> Pay if Refunded?
-							</div>
+							<?php if( $order->refunded ) { ?>
+								<?php if( $permissionRefund ) { ?>
+									<div class="pointer pay_if_refunded" data-value="<?php if( $order->pay_if_refunded ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
+										<span><?php if( $order->pay_if_refunded ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span> Pay restaurant despite refund (e.g. this refund was our fault)
+									</div>
+								<?php } ?>
+							<?php } ?>
 					<br/>
 
 					<?
+
 						$support = Support::getSupportForOrder($order->id);
-						if($support) {
-							echo '<i class="icon-comments"></i> <a href="/support/' . $support->id . '">View support ticket</a>';
+						if($suppor ) {
+
+							if( $permissionSupportCreate ){
+								echo '<i class="icon-comments"></i> <a href="/support/' . $support->id . '">View support ticket</a>';	
+							}
+							
 						}
 						else {
-							echo '<i class="icon-comments"></i> <a href="javascript:create_support_from_order(' . $order->id . ');">Create support ticket</a>';
+							if( $permissionSupportView ){
+								echo '<i class="icon-comments"></i> <a href="javascript:create_support_from_order(' . $order->id . ');">Create support ticket</a>';
+							}
 						}
 					?>
 
@@ -77,7 +100,7 @@
 				<td>
 					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
 				</td>
-				<td>
+				<td nowrap="nowrap">
 					<?=$order->restaurant()->name?>
 					<hr/>
 					<?php if( $order->restaurant()->confirmation || $order->restaurant()->hasPhoneNotification() ){
@@ -88,7 +111,13 @@
 						}
 						echo '<br/><br/>';
 					} ?>
-					<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend notification</a>
+					<?php if( $permissionNotification ) { ?>
+						<i class="icon-bullhorn"></i> <a href="javascript:;" class="resend_notification" data-confirmed="<?php echo $order->confirmed; ?>" data-uuid="<?=$order->uuid?>">Resend restaurant <br/>notification(s)</a>
+					<?php } ?>
+					<hr/>
+					<span title="Timezone">
+						<i class="icon-globe"></i> <?=$order->restaurant()->timezone?>
+					</span>
 				</td>
 				<td style="width: 300px; white-space: normal;">
 					<ul>
@@ -177,12 +206,14 @@
 								</td>
 							</tr>
 						<? endif ?>
+						<?php if( $permissionGiftCard ){ ?>
 						<tr>
 							<td>
 								<br/>
 								<a href="/giftcards/new?id_user=<?php echo $order->user()->id_user; ?>&id_restaurant=<?php echo $order->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $order->id_order; ?>"><i class="icon-gift"></i> Add gift card</a>
 							</td>
 						</tr>
+						<?php } ?>
 					</table>
 				</td>
 			</tr>

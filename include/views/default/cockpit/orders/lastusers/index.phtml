@@ -1,0 +1,61 @@
+<?
+	$this->title = 'Orders';
+	$this->subtitle = 'people order shit! then eat it!';
+	$this->titleicon = 'truck';
+	$orders = $this->orders;
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">New users</span></div>
+				<div class="box-content padded">
+					<div class="row-fluid">
+						<div class="span12">
+							
+							<div class="row-fluid">
+								<div class="span1">
+								<label>Limit</label>
+								</div>
+								<div class="span2">
+									<input type="number" name="limit" id="limit" value="25" class="span12">	
+								</div>
+								<div class="span4">
+									<button type="button" id="search-restaurants" class="search-restaurants btn btn-green">Load</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>	
+		<div class="box">
+			<div id="results"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function() {
+
+	$(document).on('click', '.search-restaurants', function() {
+		loadOrders();
+	} );
+	loadOrders();
+});
+
+function loadOrders(){
+
+	var url = '/orders/lastusers/content/' + $( '#limit' ).val() ;
+	$.ajax({
+		type: 'GET',
+		url: url,
+		success: function( data ) {
+			$( '#results' ).html( data );
+		},
+		error: function( ){
+			alert( 'Oops, something bad happened!' );
+		}
+	});
+}
+</script>

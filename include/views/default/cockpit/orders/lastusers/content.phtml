@@ -1,0 +1,71 @@
+<?php 
+$orders = $this->orders;
+if( $orders && $orders->count() > 0 ) { ?>
+	<div class="box-header">
+		<span class="title">Showing last <?php echo $orders->count(); ?> new users</span>
+	</div>
+	<table class="list-orders table table-normal">
+		<thead>
+			<tr>
+				<td>Order info</td>
+				<td>Dishes</td>
+				<td>User info</td>
+				<td>Payment info</td>
+			</tr>
+		</thead>
+	<?php
+	foreach ( $orders as $order ) {
+		$user = $order->user();
+		$restaurant = $order->restaurant();
+		?>
+			<tr>
+				<td valign="top">
+					<?php $date = $order->date();?>
+					<?=$date->format('M jS Y')?> <?=$date->format('g:i:s A')?> 
+					<br/>
+					Restaurant: <?php echo $restaurant->name; ?>
+					<br/>
+					Delivery:  <?php echo $order->delivery_type; ?>
+					<br/>
+					Estimated delivery: <?php if( $order->restaurant()->delivery_estimated_time ){ echo $order->restaurant()->delivery_estimated_time . ' min.'; } else { echo '-'; } ?>
+					<br/>
+					# <?php echo $order->id_order; ?>
+				</td>
+				<td valign="top">
+					<ul>
+						<?php foreach ($order->dishes() as $dish) : ?>
+						<li>
+							<?
+								$food = $dish->dish()->name;
+								$cartPrice = $dish->dish()->price;
+								$options = $dish->options();?>
+								<?=$food?>
+
+						</li>
+						<? endforeach ; ?>
+					</ul>
+				</td>
+				<td valign="top">
+					Name: <?php echo $user->name; ?> 
+					<br/>
+					Phone: <?php echo $user->phone; ?> 
+					<br/>
+					<?php if( $user->email ){ ?>
+						Email: <?php echo $user->email; ?> 
+						<br/>
+					<?php } ?>
+					Address: <?php echo $order->address; ?>
+				</td>
+				<td valign="top">
+					Type: <?php echo $order->pay_type; ?>
+					<br />
+					Tip: $<?=$order->tip()?> <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo '(' . $order->tip . '%)'; } ?>
+					<br />
+					Total: $<?=number_format($order->final_price,2)?>
+				</td>
+			</tr>
+		<?
+	}
+?>
+</table>
+<?php } ?>
