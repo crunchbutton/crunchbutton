@@ -8,7 +8,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 	public function __construct() {
 
 		$this->_rules[ 'gift-card-redeemed' ] = array( 	'method' => 'validation_newGiftCardRedeemed', 
-																										'alert' => 'User redeemed two different gift cards in less than %s days. GC: %s, %s ',
+																										'alert' => 'User redeemed two different gift cards in less than %s days. GC: #%s, #%s ',
 																										'settings' => array(	'time' => 'rule-time-since-last-order-time', 
 																																					'active' => 'rule-time-since-last-order-active', 
 																																					'warning-cs' => 'rule-time-since-last-order-cs', 
