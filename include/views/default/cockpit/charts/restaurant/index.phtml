@@ -1,0 +1,165 @@
+<?
+	$this->title = 'Restaurant metrics';
+	$this->subtitle = 'Crunchbutton overview';
+	$this->titleicon = 'bar-chart';
+
+	$restaurants = $this->restaurants;
+
+?>
+<div class="container-fluid padded">
+	<div class="box">
+		<div class="box-header">
+			 <span class="title">Restaurant metrics</span>
+		</div>
+		<div class="box-content padded">
+			<div class="row-fluid">
+			<h3>Restaurants</h3>
+
+			<?php foreach( $restaurants as $restaurant ) { ?>
+				 <div class="span4">
+						<div>
+							<?php 
+								$_div_id = $restaurant->id_restaurant; 
+							?>
+							 <input type="checkbox" 
+									class="icheck" 
+									id="checkbox-<?php echo $_div_id;?>" 
+									restaurant="<?php echo $_div_id;?>" 
+									name="checkbox-<?php echo $_div_id;?>">
+							 <label for="checkbox-<?php echo $_div_id;?>"><?php echo $restaurant->name; ?></label>
+						</div>
+				 </div>
+
+			<?php } ?>
+		</div>
+		
+		<hr/>
+
+		<?php foreach( $restaurants as $restaurant ) { ?>
+
+		<?php
+			$_div_id = $restaurant->id_restaurant; 
+		?>
+		<div class="container-<?php echo $_div_id; ?>" style="display:none;">
+				<center><h3><?php echo $restaurant->name; ?></h3></center>
+
+				<div class="row-fluid">
+
+					<div type="new-users" class="span4 new-users <?php echo $_div_id; ?>" id="new-users-<?php echo $_div_id; ?>" restaurant="<?php echo $_div_id; ?>"></div>
+					<div type="repeated-orders" class="span4 repeated-orders <?php echo $_div_id; ?>" id="repeated-orders-<?php echo $_div_id; ?>" restaurant="<?php echo $_div_id; ?>"></div>
+					<div type="gross-revenue" class="span4 group-revenue-by <?php echo $_div_id; ?>" id="group-revenue-by-<?php echo $_div_id; ?>" restaurant="<?php echo $_div_id; ?>"></div>
+					
+				</div>
+
+				<hr/>
+		</div>
+		<?php } ?>
+
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+function loadChartsOfrestaurant( restaurant ){
+
+	$( '.container-' + restaurant ).show();
+	$( '.' + restaurant ).each( function(){
+		var area = $( this );
+		var chart = area.attr( 'id' );
+		var type = area.attr( 'type' );
+		var partial = '';
+		switch( type){
+			case 'new-users':
+				partial = 'users-new-per-week-by-restaurant/group-new-users-restaurant';
+				break;
+			case 'repeated-orders':
+				partial = 'orders-repeat-week-by-restaurant/group-users-repeat-restaurant';
+				break;
+			case 'gross-revenue':
+				partial = 'gross-revenue-per-week-by-restaurant/group-revenue-by-restaurant';
+				break;
+		}
+
+		var url = '/home/charts/' + partial + '/?activeUserDays=45&=1&restaurant=' + restaurant;
+		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
+	} );
+}
+
+
+$( document ).ready( function(){
+
+	$( '.icheck' ).on( 'ifChanged', function( event ){
+
+		var check = $( this );
+		var restaurant = check.attr( 'restaurant' );
+		var container = $( '.container-' + restaurant );
+		if( check.is( ':checked' ) ){
+			if( !container.attr( 'loaded' ) ){
+				loadChartsOfrestaurant( restaurant );
+				container.attr( 'loaded', true );
+			}
+			container.show();
+		} else {
+			container.hide();
+		}
+	});
+
+} );
+
+	function loadChart( info ){
+ console.log('info',info);
+		var divId = info[ 'divId' ];
+		var permalink = info[ 'permalink' ];
+		var chart = $( '#' + divId );	
+		chart.attr( 'data-permalink', permalink );
+		var params = { 'restaurant' : info[ 'restaurant' ] };
+
+		if( info[ 'interval' ] ){
+			params[ 'interval' ] = info[ 'interval' ];
+		}
+
+		var slider = $( '#slider-' + divId );
+		if( slider.length > 0 ){
+			if( slider.attr( 'data-from' ) ){
+				params[ 'from' ] = slider.attr( 'data-from' );	
+			}
+			if( slider.attr( 'data-to' ) ){
+				params[ 'to' ] = slider.attr( 'data-to' );	
+			}
+		}
+
+		var strParams = "?";
+		for ( var key in params ) {
+			if ( strParams != "?" ) {
+				strParams += "&";
+			}
+			strParams += key + "=" + params[key];
+		}
+
+		var group = divId.replace( '-' + info[ 'restaurant' ], '' );
+
+		var url = '/home/charts/' + permalink + '/' + divId + '/' + strParams;
+
+		if( info[ 'force' ] ){
+			chart.html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
+		}
+
+		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
+	
+	}
+
+	function loadSubChart( id ){
+		var select = $( id );
+		var divId = $( '#' + id ).attr( 'data-divId' );
+		var slider = $( '#slider-' + divId );
+		slider.attr( 'data-from', false );
+		slider.attr( 'data-to', false );
+		var values = $( '#' + id + ' option:selected' ).val().split( '|' );
+		var interval = values[ 1 ];
+		var restaurant = $( '#' + id ).attr( 'restaurant' );
+		var permalink = values[ 0 ].replace( '-' + restaurant, '' );
+		$( '#' + divId ).html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
+		 loadChart( { 'divId' : divId, 'permalink' : permalink, 'interval' : interval, 'restaurant' : restaurant } ); 
+	}
+
+</script>

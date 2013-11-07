@@ -2,6 +2,9 @@
 	$this->title = 'Orders';
 	$this->subtitle = 'people order shit! then eat it!';
 	$this->titleicon = 'truck';
+
+	$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'orders-all' ] );
+
 ?>
 
 
@@ -31,7 +34,7 @@
 									<div class="clearfix"></div>
 								</li>
 								<li>
-									<label class="span3">Limit</label>
+									<label class="span3"># Orders displayed</label>
 									<span class="span8 pull-right">
 										<? $envs = ['live','beta','dev','local']; ?>
 										<input type="number" name="limit" value="25" min="0">
@@ -43,19 +46,13 @@
 						<div class="span6 separate-sections">
 							<ul class="padded separate-sections">
 								<li class="input">
-									<?
-										$date = new DateTime('now');
-										$start = $date->format('m/d/Y');
-										$date->modify('14 days ago');
-										$end = $date->format('m/d/Y');
-									?>
 									<label class="span3">Date range</label>
 									<span class="span8 pull-right">
-										<span class="dates">
-											from &nbsp; <input name="date-range-end" class="date-picker" type="text" style="width: 90px;" value="<?=$end?>">
-											&nbsp; to &nbsp; <input name="date-range-start" class="date-picker" type="text" style="width: 90px;" value="<?=$start?>">
+										<span class="dates" style="display:none;">
+											from &nbsp; <input name="date-range-end" class="date-picker" disabled="disabled" type="text" style="width: 90px;" value="">
+											&nbsp; to &nbsp; <input name="date-range-start" class="date-picker" disabled="disabled" type="text" style="width: 90px;" value="">
 										</span>
-										<label><input type="checkbox" name="date-range-all">&nbsp;All Dates</label>
+										<label><input type="checkbox" checked="checked" name="date-range-all">&nbsp;All Dates</label>
 									</span>
 									<div class="clearfix"></div>
 			
@@ -75,10 +72,21 @@
 									<label class="span3">Restaurant</label>
 									<span class="span8 pull-right">
 										<select name="restaurant" class="chzn-select">
-											<option value="" selected>[ All ]</option>
-											<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
-												<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
-											<? endforeach ; ?>
+										echo '<option value="" selected>[ All ]</option>';
+											<?php  
+											$restaurants = Restaurant::q('select * from restaurant order by name');
+											if( $hasPermissionToAllRestaurants ){
+												foreach ( $restaurants as $restaurant ) {
+													?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+												}
+											} else {
+												foreach ( $restaurants as $restaurant ) {
+													if( c::admin()->permission()->check( [ "orders-list-restaurant-{$restaurant->id_restaurant}" ] ) ){
+														?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+													}
+												}
+											}
+											?>
 										</select>
 									</span>
 									<div class="clearfix"></div>
@@ -88,9 +96,11 @@
 									<span class="span8 pull-right">
 										<select name="community" class="chzn-select">
 											<option value="" selected>[ All ]</option>
+											<?php if( $hasPermissionToAllRestaurants ) { ?>
 											<? foreach (Restaurant::getCommunities() as $community) :  ?>
 												<option value="<?=$community?>"><?=$community?></option>
 											<? endforeach ; ?>
+											<?php } ?>
 										</select>
 									</span>
 									<div class="clearfix"></div>
@@ -105,19 +115,22 @@
 			<center>
 				<button type="submit" class="btn btn-blue admin-order-search"> Search </button>	
 				&nbsp;&nbsp;
-				<a class="btn btn-green" href="/orders/newusers/">New users</a>
+				<?php if( c::admin()->permission()->check(['global','orders-all','orders-new-users']) ) { ?>
+				<a class="btn btn-green" href="/orders/lastusers/">New users</a>
+				<?php } ?>
 			</center>
 			<br />
 		</div>
 
 		<div class="box">
 			<div class="box-header"><span class="title">Results</span>
+				<?php if( c::admin()->permission()->check(['global','orders-all','orders-export']) ) { ?>
 				<ul class="box-toolbar">
 					<li class="toolbar-link">
 						<a href="javascript:;" class="admin-order-export" title="Export"><i class="icon-download-alt"></i></a>
 					</li>
 				</ul>
-			
+			<?php } ?>
 			</div>
 			<div class="box-content">
 				<div class="orders-loader"><center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center></div>
@@ -217,5 +230,6 @@
 				$( 'input[name="date-range-end"]').datepicker( "option", "maxDate", selectedDate );
 			}
 		});
+
 	});
 </script>

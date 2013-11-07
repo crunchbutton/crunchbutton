@@ -1134,7 +1134,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			foreach($category['_dishes'] as &$dish) {
 				$dish['optionGroups'] = [];
 				if(!intval($dish['id_category'])) {
-					$sql = 'SELECT * FROM category WHERE name like \''.$category['name'].'\' ORDER BY sort ASC LIMIT 1';
+					$sql = "SELECT * FROM category WHERE name = '". $category['name']. "' AND id_restaurant = '" . $restaurant[ 'id_restaurant'] . "'  ORDER BY sort ASC LIMIT 1";
 					$c = Crunchbutton_Category::q($sql);
 					$dish['id_category'] = $c->id_category;
 				}
@@ -1288,10 +1288,66 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $communities;
 	}
 
+	public static function getCommunitiesWithRestaurantsNumber(){
+					$data = c::db()->get( 'SELECT SUM(1) restaurants, community FROM restaurant WHERE community IS NOT NULL AND community != "" GROUP BY community' );
+					$communities = [];
+					foreach ( $data as $item ) {
+									$communities[] = $item;
+					}
+					return $communities;
+	}
+
 	public static function getRestaurantsByCommunity( $community ){
 		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}'" );
 	}
 
+
+	public function restaurantsUserHasPermission(){
+		$restaurants_ids = [];
+		$_permissions = new Crunchbutton_Admin_Permission();
+		$all = $_permissions->all();
+		// Get all restaurants permissions
+		$restaurant_permissions = $all[ 'restaurant' ][ 'permissions' ];
+		$permissions = c::admin()->getAllPermissionsName();
+		$restaurants_id = array();
+		foreach ( $permissions as $permission ) {
+			$permission = $permission->permission;
+			$info = $_permissions->getPermissionInfo( $permission );
+			$name = $info[ 'permission' ];
+			foreach( $restaurant_permissions as $restaurant_permission_name => $meta ){
+				if( $restaurant_permission_name == $name ){
+					if( strstr( $name, 'ID' ) ){
+						$regex = str_replace( 'ID' , '((.)*)', $name );
+						$regex = '/' . $regex . '/';
+						preg_match( $regex, $permission, $matches );
+						if( count( $matches ) > 0 ){
+							$restaurants_ids[] = $matches[ 1 ];
+						}
+					}
+				}
+			}
+		}
+		return array_unique( $restaurants_ids );
+	}
+
+	public function adminWithSupportAccess(){
+		$permission = "support-create-edit-{$this->id_restaurant}";
+		$query = "SELECT DISTINCT(name),
+						       txt FROM
+						  (SELECT a.*
+						   FROM admin_permission ap
+						   INNER JOIN admin_group ag ON ap.id_group = ag.id_group
+						   INNER JOIN admin a ON ag.id_admin = a.id_admin
+						   WHERE ap.permission = '{$permission}'
+						     AND ap.id_group IS NOT NULL
+						   UNION SELECT a.*
+						   FROM admin_permission ap
+						   INNER JOIN admin a ON ap.id_admin = a.id_admin
+						   WHERE ap.permission = '{$permission}'
+						     AND ap.id_admin IS NOT NULL) admin
+						WHERE txt IS NOT NULL";
+		return Admin::q( $query );
+	}
 
 	public function save() {
 		if (!$this->timezone) {

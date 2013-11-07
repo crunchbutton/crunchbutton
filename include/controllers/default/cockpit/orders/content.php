@@ -2,10 +2,15 @@
 
 class Controller_orders_content extends Crunchbutton_Controller_Account {
 	public function init() {
-		if (!c::admin()->permission()->check(['global', 'orders'])) {
-			return ;
+		
+		$restaurant_id = $_REQUEST['restaurant'];
+
+		if( !c::admin()->permission()->check( [ 'global', 'orders-all', 'orders-list-page', "orders-list-restaurant-{$restaurant_id}" ] ) ){
+			return;
 		}
+
 		$search = [];
+
 		if ($_REQUEST['limit']) {
 			$search['limit'] = intval($_REQUEST['limit']);
 		}
@@ -37,7 +42,7 @@ class Controller_orders_content extends Crunchbutton_Controller_Account {
 		if ($_REQUEST['restaurant']) {
 			$search['restaurant'] = $_REQUEST['restaurant'];
 		}
-		
+
 		if ($_REQUEST['community']) {
 			$search['community'] = $_REQUEST['community'];
 		}
@@ -45,6 +50,11 @@ class Controller_orders_content extends Crunchbutton_Controller_Account {
 		c::view()->orders = Order::find($search);
 
 		if ($_REQUEST['export']) {
+			
+			if( !c::admin()->permission()->check(['global','orders-all','orders-export'] ) ) {
+				return;
+			}
+
 			c::view()->layout('layout/csv');
 			c::view()->display('orders/csv', ['display' => true, 'filter' => false]);
 		} else {

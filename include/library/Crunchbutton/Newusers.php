@@ -92,6 +92,23 @@ class Crunchbutton_Newusers extends Cana_Table {
 		$config->save();
 	}
 
+	public static function getLastOnes( $limit = 25 ){
+		$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'orders-all' ] );	
+		if( !$hasPermissionToAllRestaurants  ){
+			$restaurants = c::admin()->getRestaurantsUserHasPermissionToSeeTheirOrders();
+			$where = ' WHERE id_restaurant IN (' . join( $restaurants, ',' ) . ')';
+		} 
+		$query = "SELECT *
+							FROM `order` o
+							WHERE id_order IN
+									(SELECT id_order
+									 FROM
+										 (SELECT count(*) AS orders, id_order, phone, date
+											FROM `order` o
+											GROUP BY phone HAVING orders = 1) orders {$where}) ORDER BY id_order DESC LIMIT {$limit}";
+		return Crunchbutton_Order::q( $query );
+	}
+
 	public static function getNewOnes(){
 		$query = 'SELECT *
 							FROM `order` o

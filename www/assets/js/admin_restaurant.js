@@ -381,8 +381,14 @@ var WIDGET = {
 			$(option_group_dom).find('.add-option').click(function() {
 				id_option = UTIL.create_unique_id();
 				id_dish_option = UTIL.create_unique_id();
+
+				var isDefault = '0';
+				if( $(option_group_dom).find('input[type=radio]:checked').length == 0 ){
+					isDefault = '1';
+				}
+
 				self.add_option(option_group_dom, {
-					default : '0',
+					default : isDefault,
 					description : null,
 					id : id_option,
 					id_option : id_option,
@@ -973,7 +979,7 @@ var WIDGET = {
 					id_notification: null,
 					id_restaurant: restaurant.id, 
 					type: 'confirmation',
-					value: 'main phone', // TODO update this when backend supports it
+					value: 'restaurant phone #', // TODO update this when backend supports it
 			};
 			self.notification_widgets = [];
 			for(i in notifications) {
@@ -1300,7 +1306,7 @@ var DOM_MAP = {
 				'input#restaurant-fee-restaurant' : ['fee_restaurant'],
 				'input#restaurant-fee-customer' : ['fee_customer'],
 				'input#restaurant-tax' : ['tax'],
-				'input#restaurant-weight-adj' : ['weight_adj'],
+				/* 'input#restaurant-weight-adj' : ['weight_adj'], */
 				'input#restaurant-community' : ['community'],
 			},
 			widget : [], // a list of widgets supporting 'apply' and 'flush' funcs etc

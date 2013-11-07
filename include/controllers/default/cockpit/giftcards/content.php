@@ -4,9 +4,11 @@ class Controller_giftcards_content extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global'])) {
-			return ;
+		$restaurant_id = $_REQUEST['restaurant'];
+		if( !c::admin()->permission()->check( [ 'global', 'orders-all', "gift-card-list-restaurant-{$restaurant_id}", "gift-card-list-restaurant-{$restaurant_id}", "gift-card-restaurant-{$restaurant_id}" ] ) ){
+			return;
 		}
+
 
 		$search = [];
 	
