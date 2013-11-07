@@ -1,0 +1,12 @@
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-time-since-last-order-time', '30');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-time-since-last-order-active', '1');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-time-since-last-order-cs', '1');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-time-since-last-order-reps', '1');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-time-since-last-order-equal-time', '30');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-time-since-last-order-equal-active', '1');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-time-since-last-order-equal-cs', '1');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-time-since-last-order-equal-reps', '1');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-gift-card-redeemed-time', '30');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-gift-card-redeemed-active', '1');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-gift-card-redeemed-cs', '1');
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'rule-gift-card-redeemed-reps', '1');
