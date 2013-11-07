@@ -1,0 +1,120 @@
+<?
+	$this->title = 'Rules';
+	$this->titleicon = 'filter';
+	$this->titleLink = '/rules';
+	
+	$rules = $this->rules;
+
+?>
+<!-- Preview stuff -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span6">
+			<div class="box">
+				<div class="box-header">
+					<span class="title">Settings</span>
+				</div>
+				<div class="box-content">
+					<ul class="box-list">
+						<?php
+						$_rules = $rules->rules();
+						foreach ( $_rules as $rule => $meta ) {
+							?>
+								<li>
+									<span><b><?php echo $meta[ 'title' ] ?></b></span>
+								</li>
+								<?php
+								$settings = $meta[ 'settings' ];
+								foreach( $settings as $key => $setting ){
+									switch ( $key ) {
+										case 'time':
+											$title = 'Time in ' . $meta[ 'period' ] . ':';
+											$type = 'numeric';
+											break;
+										case 'active':
+											$title = 'Is rule active?';
+											$type = 'checkbox';
+											break;
+										case 'warning-cs':
+											$title = 'Send message to Custom Service?';
+											$type = 'checkbox';
+											break;
+										case 'warning-rep':
+											$title = 'Send message to reps?';
+											$type = 'checkbox';
+											break;
+									}
+									$value = $rules->getSetting( $setting );
+									?>
+									<li>
+										<span><?php echo $title; ?></span>
+										<span class="pull-right">
+											<?php switch ( $type ) {
+												case 'numeric':
+													?>
+													<input type="number" class="settings" name="<?php echo $setting; ?>" id="<?php echo $setting; ?>" maxlength="5" value="<?php echo $value; ?>" />
+													<?php
+													break;
+												case 'checkbox':
+													$checked = ( $value == '1' ) ? 'checked="checked"' : '';
+													?>
+													<input <?php echo $checked; ?> class="icheck settings" type="checkbox" name="<?php echo $setting; ?>" id="<?php echo $setting; ?>" maxlength="5" value="1" />
+													<?php
+													break;
+											} ?>
+											
+										</span>
+									</li>
+									<?php
+								}
+								?><hr/><?php
+						} ?>
+						<li class="input">
+							<button type="submit" class="btn btn-blue admin-save"><i class="icon-save"></i> Save </button> 
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+	$(function() {
+
+		$(document).on('click', '.admin-save', function() {
+			
+			var data = {};
+
+			$( '.settings' ).each( function(){
+				var field = $( this );
+				var value = field.val();
+				if( field.is( ':checkbox' ) ){
+					value = ( field.is( ':checked' ) ? 1 : 0 );
+				}
+				data[ field.attr( 'id' ) ] = value;
+			} );
+
+			var url = App.service + 'rules/save';
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				data: data,
+				url: url,
+				success: function( json ) {
+					if( json.error ){
+						alert( 'Error at saving!' );
+					} else {
+						alert( 'Settings saved!' );
+						location.href = '/rules';
+					}
+				},
+				error: function( ){
+					alert( 'Error at saving!' );
+				}
+			});
+
+		} );
+	} )
+
+</script>

@@ -228,6 +228,15 @@
 			</a>
 		</li>
 		<?php } ?>
+		<?php if ( c::admin()->permission()->check( [ 'global','rules'] ) ) { ?>
+		<li class="<?=$this->page == 'rules' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/rules">
+				<i class="icon-filter icon-2x"></i>
+				<span>Rules settings</span>
+			</a>
+		</li>
+		<?php } ?>
 		<?php if ( c::admin()->permission()->check( [ 'global','invite-promo'] ) ) { ?>
 		<li class="<?=$this->page == 'referral' ? 'active' : ''?>">
 			<span class="glow"></span>
