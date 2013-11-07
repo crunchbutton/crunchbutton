@@ -135,13 +135,14 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		/* Other's permissions */ 
 		$_permissions[ 'other' ] = array( 'description' => 'Other\'s permissions' );
 		$_permissions[ 'other' ][ 'permissions' ] = array( 
-																										'github' => array( 'description' => 'View github page and issues' ),
-																										'customers-all' => array( 'description' => 'Do all about customers' ),
-																										'curation' => array( 'description' => 'View curation page--only for restaurants user has access to' ),
-																										'locations' => array( 'description' => 'View the locations page' ),
-																										'marketing-events' => array( 'description' => 'View the marketing events page' ),
-																										'logs' => array( 'description' => 'View the logs page' ),
-																										'invite-promo' => array( 'description' => 'View and edit invite promo settings' ),
+																											'github' => array( 'description' => 'View github page and issues' ),
+																											'customers-all' => array( 'description' => 'Do all about customers' ),
+																											'curation' => array( 'description' => 'View curation page--only for restaurants user has access to' ),
+																											'locations' => array( 'description' => 'View the locations page' ),
+																											'marketing-events' => array( 'description' => 'View the marketing events page' ),
+																											'logs' => array( 'description' => 'View the logs page' ),
+																											'invite-promo' => array( 'description' => 'View and edit invite promo settings' ),
+																											'rules' => array( 'description' => 'View and edit rules of the orders alerts' ),
 																										);
 
 		$this->_permissions = $_permissions;
