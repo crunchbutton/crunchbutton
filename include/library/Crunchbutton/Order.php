@@ -793,10 +793,11 @@ class Crunchbutton_Order extends Cana_Table {
 
 			// Log
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed started', 'time' => $timer, 'type' => 'notification' ]);
-
+			/* Removed for while by @pererinha asked by @DavidKlumpp at 11/07/2013
 			c::timeout(function() use($order, $timer) {
 				$order->warningOrderNotConfirmed();
 			}, $timer );
+			*/
 		}
 	}
 
@@ -877,7 +878,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function warningOrderNotConfirmed(){
-
+		return;
 		$order = $this;
 
 		$isConfirmed = Order::isConfirmed( $this->id_order );
