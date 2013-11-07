@@ -71,7 +71,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 		$support->id_user = $order->id_user;
 		$support->id_order = $order->id_order;
 		$support->id_restaurant = $order->id_restaurant;
-		$support->name = $alert;
+		$support->name = $message;
 		$support->phone = $order->phone;
 		$support->ip = $_SERVER['REMOTE_ADDR'];
 		$support->datetime = date('Y-m-d H:i:s');
@@ -79,7 +79,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 		$note = new Support_Note();
 		$note->id_support = $support->id_support;
-		$note->text = $alert;
+		$note->text = $message;
 		$note->from = 'system';
 		$note->visibility = 'internal';
 		$note->save();
