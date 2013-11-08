@@ -450,6 +450,10 @@ p {
 .divider {
 	clear: both;
 }
+.divider.dots {
+	background: #eeede7;
+	height: 1px;
+}
 
 
 
@@ -1191,6 +1195,7 @@ p {
 	text-transform: uppercase;
 }
 
+
 /* restaurant box messages */
 .restaurant-box {
 	background: #f45e46;
@@ -1289,6 +1294,14 @@ p {
 	margin-top: 1em;
 }
 
+.restaurant-category {
+	font-size: 1.3em;
+	color: #312f38;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin-top: 1em;
+}
+
 .dish-item {
 	background: #fffaf8;
 	border: 2px solid #e46436;
@@ -1312,4 +1325,70 @@ p {
 .dish-item-description {
 	color: #e7806c;
 	font-size: 1.0em;
+}
+
+
+/* restaurant payment form */
+.payment-form-toggle {
+	border: 2px solid #00bea0;
+	background: #fff;
+	color: #00bea0;
+	cursor: pointer;
+	font-size: 1.4em;
+	text-transform: uppercase;
+	padding: .3em .8em .3em .8em;
+	border-radius: 4px;
+	font-weight: bold;
+}
+.payment-form-toggle.toggle-active {
+	background: #00bea0;
+	border: 2px solid #00bea0;
+	color: #fff;
+}
+
+.restaurant-payment-spacer {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+.payment-form-input {
+	font-size: 1.3em;
+	border-radius: 3px;
+	border: 2px solid #00957f;
+	padding: .3em .6em .3em .6em;
+	color: #174e46;
+
+}
+.payment-form-icon {
+	color: #00957f;
+	font-size: 1.8em;
+	width: 1em;
+	text-align: center;
+	padding-right: .5em;
+}
+
+
+.payment-form-row {
+	display: table-row;
+}
+.payment-form-icon, .payment-form-input {
+	display: table-cell;
+	vertical-align: top;
+	padding-top: .4em;
+}
+
+.payment-form-input::-webkit-input-placeholder {
+	color: #afc6c2;
+}
+.payment-form-input:-moz-placeholder { 
+	color: #afc6c2;
+}
+.payment-form-input::-moz-placeholder {
+	color: #afc6c2;
+}
+.payment-form-input:-ms-input-placeholder {
+	color: #afc6c2;
+}
+
+.bottom-spacer {
+	height: 100px;
 }
