@@ -39,7 +39,6 @@
 		<div class="cart-items">
 			<div ng-show="restaurant._open">
 
-
 				<div ng-show="!order.cart.hasItems()" class="restaurant-box">
 					<div class="restaurant-box-inner">
 						<span class="restaurant-box-icon">
@@ -53,7 +52,7 @@
 				</div>
 
 				<div ng-show="order.cart.hasItems()">
-					<div class="restaurant-title">Your Order</div>
+					<div class="restaurant-title">The Order</div>
 			
 					<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="delivery-minimum-error">
 						Add $<span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> from menu to meet delivery minimum.
@@ -122,29 +121,34 @@
 		
 		<!-- menu -->
 		<div class="restaurant-items">
-			<div class="content-item-name content-item-main-name">
-				<h1>
-					Add to your order 
-					<span suggestion-tool-tip type="desktop"></span>
-				</h1>
+			<div class="restaurant-title">The Menu</div>
+			
+			<div ng-show="fullmenu">
+				<div ng-repeat="category in restaurant.categories()">
+					<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
+					<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
+						<li ng-repeat="dish in category.dishes()" ng-click="order.cart.add(dish.id_dish)" class="dish-item">
+							<span class="dish-item-name"><i class="fa fa-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-item-price">(${{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
+							<span class="dish-item-description">{{dish.description}}</span>
+						</li>
+					</ul>
+				</div>
+
+				<button class="button lightorange restaurant-items-toggle" ng-click="fullmenu=0">less food</button>
 			</div>
-		
-			<div ng-repeat="category in restaurant.categories()">
-				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
-				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-					<li ng-repeat="dish in category.dishes()" ng-click="order.cart.add( dish.id_dish )" class="dish-item">
-						<span class="dish-name"><i class="fa fa-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-price">({{AB.dollar}}{{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span>
-					</li>
-				</ul>
+			
+			<div ng-show="!fullmenu">
+				<div ng-repeat="category in restaurant.categories()">
+					<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
+						<li ng-repeat="dish in category.dishes() | filter: {top: 1}" ng-click="order.cart.add(dish.id_dish)" class="dish-item">
+							<span class="dish-item-name">{{dish.name}}</span><span class="dish-item-price">(${{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
+							<span class="dish-item-description">{{dish.description}}</span>
+						</li>
+					</ul>
+				</div>
+				
+				<button class="button lightorange restaurant-items-toggle" ng-click="fullmenu=1">more food</button>
 			</div>
-			<?php 
-			/* Remove the suggestion link: Issue #1703
-			<div class="suggestion-link-container" ng-controller="RecommendFoodCtrl">
-				<div class="suggestion-link-title">Really want something else?</div>
-					<a href="javascript:;" ng-click="recommend.modal.open();"><b><i>Suggest other food</i></b></a>
-			</div> 
-			*/
-			?>
 			
 		</div>
 		<div class="divider"></div>
@@ -326,8 +330,6 @@
 		</div>
 	
 	</form>
-
-	<div ng-show="restaurant._open && order.cart.hasItems()" class="button-bottom-wrapper button-bottom-inline"><button class="button-bottom button-orange" ng-click="order.submit();"><div>Get Food</div></button></div>
 
 	<!-- stored user info -->
 	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open && !order.showForm && order.cart.hasItems()">
