@@ -93,7 +93,10 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			$restaurant->save();
 
 			// Give the user the permission to edit the created restaurant
-			$permission = array( "restaurant-{$restaurant->id_restaurant}-edit" => 1 );
+			$permission = array(	
+														"restaurant-{$restaurant->id_restaurant}-edit" => 1,
+														"orders-list-restaurant-{$restaurant->id_restaurant}" => 1 
+													);
 			c::admin()->addPermissions( $permission );
 
 			$this->_form();
