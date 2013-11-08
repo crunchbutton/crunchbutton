@@ -1177,23 +1177,40 @@ p {
 	margin-top: .4em;
 	font-size: 1.2em;
 }
+.restaurant-title {
+	font-size: 1.3em;
+	color: #312f38;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+/* restaurant box messages */
 .restaurant-box {
 	background: #f45e46;
 	border-radius: 6px;
 	color: #fff;
-	padding: .6em;
+	padding: .7em;
+}
+.restaurant-box-inner {
+	display: table-row;
 }
 .restaurant-box-icon {
-	font-size: 3.1em;
-	float: left;
-	margin-left: .2em;
+	font-size: 2.5em;
+	padding: .1em .5em 0 .2em;
 }
-.restaurant-box-content {
-	float: left;
-	margin-left: 1em;
+.restaurant-box-icon, .restaurant-box-content {
+	display: table-cell;
+	vertical-align: middle;
+}
+.restaurant-box-align-top {
+	vertical-align: top;
 }
 .restaurant-box-title {
 	font-weight: bold;
+	font-size: 1.2em;
+	line-height: 1.4em;
+}
+.restaurant-box-subtitle {
 	font-size: 1.2em;
 	line-height: 1.4em;
 }
@@ -1203,12 +1220,8 @@ p {
 	line-height: 1.4em;
 }
 
-.restaurant-title {
-	font-size: 1.3em;
-	color: #312f38;
-	font-weight: bold;
-	text-transform: uppercase;
-}
+
+
 
 .cart-item {
 	background: #f77748;

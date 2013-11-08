@@ -38,30 +38,28 @@
 		<!-- cart -->
 		<div class="cart-items">
 			<div ng-show="restaurant._open">
-				<div class="restaurant-title">
-					Your Order
-				</div>
 
-				<div class="divider"></div>
 
-				<div ng-show="!order.cart.hasItems()" class="order-begin-wrap">
-					<div class="restaurant-box">
-						<div class="icon">
-							<i class="fa fa-arrow-left hidden-lt-1023"></i>
-							<i class="fa fa-arrow-down hidden-gt-1024"></i> 
-						</div>
-						<div class="text">
-							<span class="hidden-lt-1023">{{nothingInTheCartDesktop}}</span>
-							<span class="hidden-gt-1024">{{nothingInTheCartMobile}}</span>
-						</div>
+				<div ng-show="!order.cart.hasItems()" class="restaurant-box">
+					<div class="restaurant-box-inner">
+						<span class="restaurant-box-icon">
+							<i class="fa fa-arrow-down"></i> 
+						</span>
+						<span class="restaurant-box-content">
+							<? /* <span class="hidden-lt-1023">{{nothingInTheCartDesktop}}</span> */ ?>
+							<span class="restaurant-box-subtitle restaurant-box-align">{{nothingInTheCartMobile}}</span>
+						</span>
 					</div>
-					<div class="divider"></div>
 				</div>
-				<div class="divider"></div>
 
-				<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="delivery-minimum-error">
-					Add $<span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> from menu to meet delivery minimum.
+				<div ng-show="order.cart.hasItems()">
+					<div class="restaurant-title">Your Order</div>
+			
+					<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="delivery-minimum-error">
+						Add $<span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> from menu to meet delivery minimum.
+					</div>
 				</div>
+
 
 				<!-- Cart's basket -->
 				<div ng-repeat="item in order.cart.items">

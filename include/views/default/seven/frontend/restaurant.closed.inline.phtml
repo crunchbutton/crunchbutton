@@ -1,13 +1,14 @@
 <div class="restaurant-box" ng-show="!open && order.loaded">
-	<div class="restaurant-box-icon">
-		<i class="fa fa-clock-o"></i>
+	<div class="restaurant-box-inner">
+		<span class="restaurant-box-icon restaurant-box-align-top">
+			<i class="fa fa-clock-o"></i>
+		</span>
+		<span class="restaurant-box-content">
+			<div class="restaurant-box-title">Currently closed!</div>
+			<div class="restaurant-box-text">
+				It will be open during the following hours (<span ng-bind="restaurant._tzabbr"></span>):<br> 
+				<span ng-bind-html-unsafe="restaurant.closedMessage() | nl2br"></span>
+			</div>
+		</span>
 	</div>
-	<div class="restaurant-box-content">
-		<div class="restaurant-box-title">Currently closed!</div>
-		<div class="restaurant-box-text">
-			It will be open during the following hours (<span ng-bind="restaurant._tzabbr"></span>):<br> 
-			<span ng-bind-html-unsafe="restaurant.closedMessage() | nl2br"></span>
-		</div>
-	</div>
-	<div class="divider"></div>
 </div>
