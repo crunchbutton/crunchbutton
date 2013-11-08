@@ -43,7 +43,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 																													);
 
 		$this->_rules[ 'monitor-name-phone' ] = array(	'method' => 'validation_monitorNamePhone', 
-																														'alert' => 'Monitor alert: The user %s P#%s just ordered some food. O#%s',
+																														'alert' => 'Monitor alert: The user %s P#%s just ordered some food from %s. O#%s',
 																														'settings' => array(	'active' => 'rule-monitor-name-phone-active', 
 																																									'name' => 'rule-monitor-name-phone-name', 
 																																									'phone' => 'rule-monitor-name-phone-phone', 
@@ -193,7 +193,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 		$mail = new Crunchbutton_Email_RulesNotify([
 			'message' => $message,
 			'subject' => $message,
-			'to' => $email
+			'email' => $email
 		]);
 
 		$mail->send();
@@ -304,8 +304,9 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 		if( count( $matches ) > 0 ){
 
+			$message = $this->createAlert( $rule[ 'alert' ], array( $order->name, $order->phone, $order->restaurant()->name, $order->id_order ) );
+
 			// Send sms
-			$message = $this->createAlert( $rule[ 'alert' ], array( $order->name, $order->phone, $order->id_order ) );
 			$phones = $this->getSetting( $rule[ 'settings' ][ 'warning-phone' ] );
 			if( $phones && trim( $phones ) != '' ){
 				$phones = explode( ',', $phones );
