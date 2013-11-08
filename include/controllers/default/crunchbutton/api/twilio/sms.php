@@ -26,7 +26,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		}
 		
 		$usersToReceiveSMS = Support::adminPossibleSupportSMSReps();
-		if( count( $usersToReceiveSMS ) ){
+		if( count( $usersToReceiveSMS ) > 0 ){
 			foreach( $usersToReceiveSMS as $user ){
 				$sendSMSTo[ $user->name ] = $user->txt;
 			}
@@ -187,7 +187,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							}
 							
 							$usersToReceiveSMS = $restaurant->adminReceiveSupportSMS();
-							if( count( $usersToReceiveSMS ) ){
+							if( count( $usersToReceiveSMS ) > 0 ){
 								foreach( $usersToReceiveSMS as $user ){
 									$sendSMSTo[ $user->name ] = $user->txt;
 								}
@@ -296,7 +296,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			
 			if( $support->id_order && $support->order()->id_order ){
 				$usersToReceiveSMS = $support->order()->restaurant()->adminReceiveSupportSMS();
-				if( count( $usersToReceiveSMS ) ){
+				if( count( $usersToReceiveSMS ) > 0 ){
 					foreach( $usersToReceiveSMS as $user ){
 						$sendSMSTo[ $user->name ] = $user->txt;
 					}
