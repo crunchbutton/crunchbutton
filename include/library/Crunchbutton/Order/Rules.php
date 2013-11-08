@@ -193,7 +193,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 		$mail = new Crunchbutton_Email_RulesNotify([
 			'message' => $message,
 			'subject' => $message,
-			'to' => $email
+			'email' => $email
 		]);
 
 		$mail->send();
