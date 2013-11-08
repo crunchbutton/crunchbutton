@@ -794,6 +794,7 @@ var WIDGET = {
 							top : '0',
 							top_name : null,
 							type : 'dish',
+							expand_view : '1'
 						},
 						{duration:100});
 			});
