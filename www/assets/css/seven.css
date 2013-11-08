@@ -29,7 +29,7 @@ body {
 	-webkit-transition: font-size 0.2s;
 	letter-spacing: .03em;
 }
-body, input, textarea {
+body, input, textarea, button {
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 }
 body, .bg {
