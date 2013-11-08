@@ -53,6 +53,30 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				}
 			// });
 
+
+			// Send SMS to Reps - Issue #2027
+			$usersToReceiveSMS = $this->order()->restaurant()->adminReceiveSupportSMS();
+			if( count( $usersToReceiveSMS ) > 0 ){
+				foreach( $usersToReceiveSMS as $user ){
+					$sendSMSTo[ $user->name ] = $user->txt;
+				}
+				$message = '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone()."\n C# ".$this->order()->name . ' / ' . $this->order()->phone();
+				$message = str_split($message,160);
+				foreach ( $sendSMSTo as $supportName => $supportPhone) {
+					$num = $supportPhone;
+					foreach ($message as $msg) {
+						try {
+							// Log
+							Log::debug( [ 'action' => 'sending sms MAX CB ', 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'max-call' ] );
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+						} catch (Exception $e) {
+							// Log
+							Log::debug( [ 'action' => 'ERROR!!! sending sms MAX CB ', 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'max-call' ] );
+						}
+					}
+				}
+			}
+
 			Log::critical([
 				'id_notification_log' => $this->id_notification_log,
 				'id_notification' => $this->id_notification,
@@ -114,6 +138,29 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 					'+1'.$supportPhone,
 					$url
 				);
+			}
+
+			// Send SMS to Reps - Issue #2027
+			$usersToReceiveSMS = $this->order()->restaurant()->adminReceiveSupportSMS();
+			if( count( $usersToReceiveSMS ) > 0 ){
+				foreach( $usersToReceiveSMS as $user ){
+					$sendSMSTo[ $user->name ] = $user->txt;
+				}
+				$message = '#'.$this->id_order.' MAX CONFIRM CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone()."\nC# ".$this->order()->phone();
+				$message = str_split($message,160);
+				foreach ( $sendSMSTo as $supportName => $supportPhone) {
+					$num = $supportPhone;
+					foreach ($message as $msg) {
+						try {
+							// Log
+							Log::debug( [ 'action' => 'sending sms MAX CONFIRM CB ', 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'max-call' ] );
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+						} catch (Exception $e) {
+							// Log
+							Log::debug( [ 'action' => 'ERROR!!! sending sms MAX CONFIRM CB ', 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'max-call' ] );
+						}
+					}
+				}
 			}
 
 			Log::critical([
