@@ -59,6 +59,11 @@ a {
 	text-decoration: underline;
 }
 
+input[type="text"], input[type="email"], input[type="search"], input[type="password"] {
+	-webkit-appearance: caret;
+	-moz-appearance: caret;
+}
+
 ::selection {
 	background: rgba(47,154,211,.5);
 	color: #fff;
