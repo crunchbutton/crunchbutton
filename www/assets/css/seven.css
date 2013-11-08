@@ -1177,9 +1177,32 @@ p {
 	margin-top: .4em;
 	font-size: 1.2em;
 }
-.order-begin {
+.restaurant-box {
 	background: #f45e46;
+	border-radius: 6px;
+	color: #fff;
+	padding: .6em;
 }
+.restaurant-box-icon {
+	font-size: 3.1em;
+	float: left;
+	margin-left: .2em;
+}
+.restaurant-box-content {
+	float: left;
+	margin-left: 1em;
+}
+.restaurant-box-title {
+	font-weight: bold;
+	font-size: 1.2em;
+	line-height: 1.4em;
+}
+.restaurant-box-text {
+	margin-top: .5em;
+	font-size: 1em;
+	line-height: 1.4em;
+}
+
 .restaurant-title {
 	font-size: 1.3em;
 	color: #312f38;
@@ -1227,12 +1250,13 @@ p {
 .cart-item-customize-name, .cart-item-customize-price {
 	color: #454545;
 	cursor: pointer;
-	padding: .6em;
 }
 .cart-item-customize-name {
 	font-size: 1.2em;
+	padding: .6em;
 }
 .cart-item-customize-price {
 	float: right;
 	font-size: 1em;
+	padding: .6em .6em 0 0;
 }
