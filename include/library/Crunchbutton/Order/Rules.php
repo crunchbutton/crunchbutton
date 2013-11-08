@@ -15,7 +15,8 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 																																					'warning-rep' => 'rule-time-since-last-order-reps' 
 																																				),
 																										'title' => 'Gift cards redeemed',
-																										'period' => 'days'
+																										'period' => 'days',
+																										'action' => 'registerTicket'
 																									);
 
 		$this->_rules[ 'time-since-last-order' ] = array(	'method' => 'validation_timeSinceLastOrder_DifferentOrders', 
@@ -26,7 +27,8 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 																																						'warning-rep' => 'rule-time-since-last-order-equal-reps' 
 																																					),
 																											'title' => 'Time since last order (different content)',
-																											'period' => 'minutes'
+																											'period' => 'minutes',
+																											'action' => 'registerTicket'
 																										);
 
 		$this->_rules[ 'time-since-last-order-equal' ] = array(	'method' => 'validation_timeSinceLastOrder_EqualOrders', 
@@ -38,6 +40,18 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 																																								),
 																														'title' => 'Time since last order (equal content)',
 																														'period' => 'minutes'
+																													);
+
+		$this->_rules[ 'monitor-name-phone' ] = array(	'method' => 'validation_monitorNamePhone', 
+																														'alert' => 'Monitor alert: The user %s P#%s just ordered some food. O#%s',
+																														'settings' => array(	'active' => 'rule-monitor-name-phone-active', 
+																																									'name' => 'rule-monitor-name-phone-name', 
+																																									'phone' => 'rule-monitor-name-phone-phone', 
+																																									'warning-phone' => 'rule-monitor-name-phone-warning-phone', 
+																																									'warning-email' => 'rule-monitor-name-phone-warning-email', 
+																																								),
+																														'title' => 'Monitor name/phone',
+																														'action' => 'registerTicket'
 																													);
 		$this->loadSettings();
 	}
@@ -106,7 +120,9 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 			if( $result ){
 				$failed = true;
 				$message = $this->createAlert( $rule[ 'alert' ], $result );
-				$this->registerTicket( $order, $rule, $result );
+				if( $rule[ 'action' ] == 'registerTicket' ){
+					$this->registerTicket( $order, $rule, $result );	
+				}
 				Log::debug( [ 'id_order' => $order->id_order, 'status' => 'failed', 'rule' => $key, 'message' => $message, 'type' => 'order-rules' ] );
 			}
 		}
@@ -166,6 +182,21 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 				Log::debug( [ 'action' => 'ERROR!!! sending sms - rule failed', 'phone' => $phone, 'msg' => $msg, 'type' => 'order-rules' ] );
 			}
 		}
+	}
+
+	public function notify_email( $email, $message ){
+
+		$env = c::getEnv();
+
+		$message .= ' E: ' . $env;
+
+		$mail = new Crunchbutton_Email_RulesNotify([
+			'message' => $message,
+			'subject' => $message,
+			'to' => $email
+		]);
+
+		$mail->send();
 	}
 
 	/* validations */
@@ -243,4 +274,54 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 		return false; 
 	}
 
+	public function validation_monitorNamePhone( $order, $rule ){
+		
+		$matches = array();
+
+		// Verify names
+		$names = $this->getSetting( $rule[ 'settings' ][ 'name' ] );
+		if( $names && trim( $names ) != '' ){
+			$names = explode( ',', $names );
+			foreach( $names as $name ){
+				$name = trim( $name );
+				if( strtolower( trim( $order->name ) ) == strtolower( $name ) ){
+					$matches[ 'name' ] = $name;
+				}
+			}
+		}
+
+		// Verify phones
+		$phones = $this->getSetting( $rule[ 'settings' ][ 'phone' ] );
+		if( $phones && trim( $phones ) != '' ){
+			$phones = explode( ',', $phones );
+			foreach( $phones as $phone ){
+				$phone = trim( $phone );
+				if( strtolower( trim( $order->phone ) ) == strtolower( $phone ) ){
+					$matches[ 'phone' ] = $phone;
+				}
+			}
+		} 
+
+		if( count( $matches ) > 0 ){
+
+			// Send sms
+			$message = $this->createAlert( $rule[ 'alert' ], array( $order->name, $order->phone, $order->id_order ) );
+			$phones = $this->getSetting( $rule[ 'settings' ][ 'warning-phone' ] );
+			if( $phones && trim( $phones ) != '' ){
+				$phones = explode( ',', $phones );
+				foreach( $phones as $phone ){
+					$this->notify_sms( $phone, $message );
+				}
+			}
+
+			// Send email
+			$emails = $this->getSetting( $rule[ 'settings' ][ 'warning-email' ] );
+			if( $emails && trim( $emails ) != '' ){
+				$emails = explode( ',', $emails );
+				foreach( $emails as $email ){
+					$this->notify_email( $email, $message );
+				}
+			}
+		}
+	}
 }
