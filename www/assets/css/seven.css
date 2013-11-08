@@ -323,14 +323,13 @@ p {
 /* BUTTONS */
 .button {
 	border: 0;
-	padding: .6em 0 .6em 0;
+	padding: .5em 0 .5em 0;
 	border-radius: 5px;
 	cursor: pointer;
 	color: #fff;
 	text-transform: uppercase;
 	font-size: 1.3em;
 	width: 100%;
-	letter-spacing:-.8px;
 
 	-webkit-transition:background linear 0.08s;
 	-moz-transition:background linear 0.08s;
@@ -358,7 +357,7 @@ p {
 }
 .button.lightorange {
 	background: #fe9872;
-	font-weight: 900;
+	font-weight: bold;
 }
 .button.pushable.lightorange {
 	box-shadow: 0 2px 0 #de7e5b;
@@ -368,7 +367,7 @@ p {
 }
 .button.green {
 	background: #00bea0;
-	font-weight: 900;
+	font-weight: bold;
 }
 .button.lightorange:active {
 	background: #e78d62;
@@ -387,12 +386,15 @@ p {
 .button.get-food {
 	display: block;
 	font-size: 18px;
-	font-weight: bold;
+	font-weight: 800;
 	width: 300px;
 	margin: 0 auto;
-	padding: .5em 0 .5em 0;
+	padding: .36em 0 .36em 0;
 	letter-spacing:1px;
 	margin-top: 7px;
+	background: #e24538;
+	box-shadow: 0 3px 0 #980c08;
+	
 }
 .button.pushable.get-food:active {
 	margin-top: 10px;
@@ -417,6 +419,9 @@ p {
 	.restaurant-pad {
 		height: 66px;
 	}
+	.restaurant-pic {
+		height: 9em;
+	}
 }
 @media(max-width:499px) {
 	.logo {
@@ -437,6 +442,9 @@ p {
 	}
 	.restaurant-pad {
 		height: 53px;
+	}
+	.restaurant-pic {
+		height: 11em;
 	}
 }
 .divider {
@@ -1156,7 +1164,6 @@ p {
  * restaurant page
  */
 .restaurant-pic {
-	height: 12em;
 	overflow:hidden;
 	background-size:cover !important;
 	background-position: center center !important;
@@ -1272,4 +1279,37 @@ p {
 	float: right;
 	font-size: 1em;
 	padding: .6em .6em 0 0;
+}
+
+
+.restaurant-items {
+	margin-top: 1em;
+}
+.restaurant-items-toggle {
+	margin-top: 1em;
+}
+
+.dish-item {
+	background: #fffaf8;
+	border: 2px solid #e46436;
+	border-radius: 4px;
+	color: #d9462f;
+	padding: .7em .8em .6em .8em;
+	margin-top: .6em;
+	cursor: pointer;
+
+	line-height: 1.5em;
+	height: 3em;
+}
+.dish-item-name {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+.dish-item-price {
+	font-size: 1.1em;
+	float: right;
+}
+.dish-item-description {
+	color: #e7806c;
+	font-size: 1.0em;
 }
