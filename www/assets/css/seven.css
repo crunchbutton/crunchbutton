@@ -414,6 +414,9 @@ p {
 	.top-pad {
 		height: 90px;
 	}
+	.restaurant-pad {
+		height: 66px;
+	}
 }
 @media(max-width:499px) {
 	.logo {
@@ -431,6 +434,9 @@ p {
 	}
 	.top-pad {
 		height: 65px;
+	}
+	.restaurant-pad {
+		height: 53px;
 	}
 }
 .divider {
@@ -1143,4 +1149,90 @@ p {
 
 .order-date, .order-details {
 	float: left;
+}
+
+
+/**
+ * restaurant page
+ */
+.restaurant-pic {
+	height: 12em;
+	overflow:hidden;
+	background-size:cover !important;
+	background-position: center center !important;
+	box-shadow: inset rgba(0,0,0,0.35) 0 0 200px;
+	padding: 1.5em;
+}
+.restaurant-name {
+	color: #fff;
+	text-shadow: 1px 1px 0 rgba(0,0,0,.6);
+	vertical-align: bottom;
+	bottom: 0;
+}
+.restaurant-name h1 {
+	font-size: 2em;
+	font-weight: 600;
+}
+.restaurant-name h2 {
+	margin-top: .4em;
+	font-size: 1.2em;
+}
+.order-begin {
+	background: #f45e46;
+}
+.restaurant-title {
+	font-size: 1.3em;
+	color: #312f38;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.cart-item {
+	background: #f77748;
+	border-radius: 5px;
+	color: #fff;
+	padding: .6em .9em .5em .9em;
+	margin-top: .6em;
+}
+.cart-button {
+	float: left;
+	font-size: 3.4em;
+}
+.cart-item-text {
+	margin-top: .2em;
+	margin-left: 1em;
+	float: left;
+	line-height: 1.5em;
+}
+.cart-item-name {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+.cart-item-description {
+	font-size: 1em;
+}
+.cart-item-config {
+	margin-top: .3em;
+	margin-right: .2em;
+	font-size: 1.2em;
+	text-decoration: underline;
+	color: #fff;
+	float: right;
+	cursor: pointer;
+}
+.cart-customize-options {
+	margin-left: 1em;
+	margin-top: 1em;
+}
+.cart-item-customize-name, .cart-item-customize-price {
+	color: #454545;
+	cursor: pointer;
+	padding: .6em;
+}
+.cart-item-customize-name {
+	font-size: 1.2em;
+}
+.cart-item-customize-price {
+	float: right;
+	font-size: 1em;
 }
