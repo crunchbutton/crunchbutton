@@ -18,6 +18,14 @@ class Crunchbutton_Config extends Cana_Table {
 		return $config;
 	}
 	
+	public static function getVal( $key ){
+		$config = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` = '{$key}'" );
+		if( $config->value ){
+			return $config->value;
+		}
+		return false;
+	}
+
 	public static function blank($key, $value, $site = null) {
 		$config = new Crunchbutton_Config;
 		$config->id_site = $site;
