@@ -314,6 +314,24 @@ class Crunchbutton_Support extends Cana_Table {
 		return array_unique( $restaurants_ids );
 	}
 
+	public function adminPossibleSupportSMSReps(){
+		$query = "SELECT DISTINCT(name),
+									 txt FROM
+							(SELECT a.*
+							 FROM admin_permission ap
+							 INNER JOIN admin_group ag ON ap.id_group = ag.id_group
+							 INNER JOIN admin a ON ag.id_admin = a.id_admin
+							 WHERE ap.permission LIKE 'support-receive-notification-%'
+								 AND ap.id_group IS NOT NULL
+							 UNION SELECT a.*
+							 FROM admin_permission ap
+							 INNER JOIN admin a ON ap.id_admin = a.id_admin
+							 WHERE ap.permission LIKE 'support-receive-notification-%'
+								 AND ap.id_admin IS NOT NULL) admin
+						WHERE txt IS NOT NULL";
+		return Admin::q( $query );
+	}
+
 	public function adminHasCreatePermission(){
 		$hasCreatePermission = c::admin()->permission()->check( ['global', 'support-all', 'support-crud', 'support-create' ] );
 		if( !$hasCreatePermission ){

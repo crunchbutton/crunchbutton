@@ -20,7 +20,19 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
 			.'<Response>';
 
+		$sendSMSTo = array();
 		foreach (c::config()->text as $supportName => $supportPhone) {
+			$sendSMSTo[ $supportName ] = $supportPhone;
+		}
+		
+		$usersToReceiveSMS = Support::adminPossibleSupportSMSReps();
+		if( count( $usersToReceiveSMS ) ){
+			foreach( $usersToReceiveSMS as $user ){
+				$sendSMSTo[ $user->name ] = $user->txt;
+			}
+		}
+
+		foreach ( $sendSMSTo as $supportName => $supportPhone ) {
 			if ($supportPhone == $phone) {
 				$type = 'rep';
 				$rep = $supportName;
@@ -32,7 +44,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			
 			case 'rep':
 			
-				foreach (c::config()->text as $supportName => $supportPhone) {
+				foreach ( $sendSMSTo as $supportName => $supportPhone) {
 					if ($supportName == $rep) continue;
 					$nums[] = $supportPhone;
 				}
@@ -80,6 +92,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				break;
 
 			default:
+				
 				$_SESSION['sms-action'] = 'support-ask';
 
 				Log::debug( [ 'action' => 'returning sms', 'msg' => $body, 'type' => 'sms' ] );
@@ -92,19 +105,18 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$order = null;
 				}
 				if($order->id_order) {
+					
 					$restaurant = new Restaurant($order->id_restaurant);
 					// hard-coding eastern daylight time because that's where
 					// all our support is right now. we should think of a solution
 					// to this and change it eventually. also right now our db times
 					// are all pst. we should change that too.
-
 					$types = $restaurant->notification_types();
 					if( count( $types ) > 0 ){
 						$notifications = '/ RN: ' . join( '/', $types );
 					} else {
 						$notifications = '';
 					}
-					
 
 					$edt_datetime = strtotime($order->date);
 					date_default_timezone_set('America/New_York');
@@ -168,21 +180,30 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 							$b = $message;
 
+
+							$sendSMSTo = array();
+							foreach (c::config()->text as $supportName => $supportPhone) {
+								$sendSMSTo[ $supportName ] = $supportPhone;
+							}
+							
+							$usersToReceiveSMS = $restaurant->adminReceiveSupportSMS();
+							if( count( $usersToReceiveSMS ) ){
+								foreach( $usersToReceiveSMS as $user ){
+									$sendSMSTo[ $user->name ] = $user->txt;
+								}
+							}
+
 							// c::timeout(function() use ($b, $env, $twilio) {
-								foreach (c::config()->text as $supportName => $supportPhone) {
+								foreach ( $sendSMSTo as $supportName => $supportPhone) {
 									$num = $supportPhone;
 									foreach ($b as $msg) {
 										try {
 											// Log
-											Log::debug( [ 'action' => 'sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-											$twilio->account->sms_messages->create(
-												c::config()->twilio->{$env}->outgoingTextCustomer,
-												'+1'.$num,
-												$msg
-											);
+											Log::debug( [ 'action' => 'sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
+											$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
 										} catch (Exception $e) {
 											// Log
-											Log::debug( [ 'action' => 'ERROR: sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
+											Log::debug( [ 'action' => 'ERROR: sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
 										}
 									}
 								}
@@ -257,11 +278,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					try {
 						// Log
 						Log::debug( [ 'action' => 'sending sms', 'session id' => $rsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-						$twilio->account->sms_messages->create(
-							c::config()->twilio->{$env}->outgoingTextCustomer,
-							'+1'.$num,
-							$msg
-						);
+						$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
 					} catch (Exception $e) {
 						Log::debug( [ 'action' => 'ERROR: sending sms', 'session id' => $rsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
 					}
@@ -272,18 +289,29 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			$msg_support = $rep . ' replied @' . $id_session . ' : ' . $body; 
 			$msg_support = str_split( $msg_support, 160 );
 
-			foreach ( c::config()->text as $supportName => $supportPhone ) {
+			$sendSMSTo = array();
+			foreach (c::config()->text as $supportName => $supportPhone) {
+				$sendSMSTo[ $supportName ] = $supportPhone;
+			}
+			
+			if( $support->id_order && $support->order()->id_order ){
+				$usersToReceiveSMS = $support->order()->restaurant()->adminReceiveSupportSMS();
+				if( count( $usersToReceiveSMS ) ){
+					foreach( $usersToReceiveSMS as $user ){
+						$sendSMSTo[ $user->name ] = $user->txt;
+					}
+				}	
+			}
+			
+
+			foreach ( $sendSMSTo as $supportName => $supportPhone ) {
 				$num = $supportPhone;
 				foreach ( $msg_support as $msg ) {
 					if( $supportName != $rep ){
 						try {
 							// Log
 							Log::debug( [ 'action' => 'replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
-							$twilio->account->sms_messages->create(
-								c::config()->twilio->{$env}->outgoingTextCustomer,
-								'+1'.$num,
-								$msg
-							);
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
 						} catch (Exception $e) {
 							// Log
 							Log::debug( [ 'action' => 'ERROR: replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
