@@ -59,9 +59,8 @@ a {
 	text-decoration: underline;
 }
 
-input[type="text"], input[type="email"], input[type="search"], input[type="password"] {
-	-webkit-appearance: caret;
-	-moz-appearance: caret;
+input[type="text"], input[type="tel"], input[type="password"], textarea {
+	-webkit-appearance: none;
 }
 
 ::selection {
@@ -1376,7 +1375,6 @@ p {
 	display: table-row;
 }
 .payment-form-icon, .payment-form-input {
-	display: table-cell;
 	vertical-align: top;
 	padding-top: .4em;
 }
@@ -1396,4 +1394,13 @@ p {
 
 .bottom-spacer {
 	height: 100px;
+}
+
+.autosize {
+	margin: .1em 0 .2em 2px;
+	-webkit-transition: height 0.2s;
+	-moz-transition: height 0.2s;
+	-ms-transition: height 0.2s;
+	-o-transition: height 0.2s;
+	transition: height 0.2s;
 }
