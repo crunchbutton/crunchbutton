@@ -1,4 +1,11 @@
 /**
+ * About page
+ */
+NGApp.controller('AboutCtrl', function ($scope, $http) {
+
+});
+
+/**
  * legal page
  */
 NGApp.controller('LegalCtrl', function ($scope, $http) {
