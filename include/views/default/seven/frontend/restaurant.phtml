@@ -167,12 +167,10 @@
 			<!-- user info -->
 			<div class="delivery-info-container">
 				<div ng-show="(restaurant.delivery == '1' && restaurant.takeout == '1')">
-
-					<div class="input-item toggle-wrapper clearfix">
+					<div class="toggle-wrapper clearfix">
 						<button ng-click="order.toogleDelivery( 'delivery' )" ng-class="{'toggle-active': order.form.delivery_type=='delivery' }" class="payment-form-toggle">delivery</button>
 						<button ng-click="order.toogleDelivery( 'takeout' )" ng-class="{'toggle-active': order.form.delivery_type=='takeout' }" class="payment-form-toggle">takeout</button>
 					</div>
-
 				</div>
 
 				<div ng-show="(restaurant.delivery == '1' && restaurant.takeout != '1')">
@@ -185,22 +183,22 @@
 				</div>
 
 				<div class="personal-info field-container">
-					<div class="payment-field-group">
+					<div class="payment-form-group">
 						<i class="fa fa-user payment-form-icon"></i>
 						<input type="text" name="pay-name" tabindex="2" ng-model="order.form.name" class="payment-form-input" placeholder="name">
 					</div>
 
-					<div class="payment-field-group">
+					<div class="payment-form-group">
 						<i class="fa fa-phone payment-form-icon"></i>
 						<input type="tel" name="pay-phone" tabindex="3" ng-format-phone ng-model="order.form.phone" class="payment-form-input" placeholder="phone number">
 					</div>
 
-					<div class="payment-field-group">
-						<i ng-show="order.form.delivery_type=='delivery'" class="fa fa-map-marker payment-form-icon"></i>
+					<div class="payment-form-group">
+						<i ng-show="order.form.delivery_type=='delivery'" class="fa fa-map-marker payment-form-icon animate-show"></i>
 						<textarea ng-autosize ng-show="order.form.delivery_type=='delivery'" class="payment-form-input" ng-model="order.form.address" name="pay-address" id="pay-address" tabindex="5" placeholder="address"></textarea>
 					</div>
 
-					<div class="payment-field-group">
+					<div class="payment-form-group">
 
 						<i class="fa fa-bullhorn payment-form-icon"></i>
 						<textarea ng-autosize name="notes" ng-blur="checkGiftCard()" ng-model="order.form.notes" tabindex="6" class="payment-form-input" placeholder="notes"></textarea>
@@ -247,56 +245,40 @@
 	
 				</div>
 			</div>
-		
-			<div class="divider"></div>
+
 			
 			<!-- payment info -->
 			<div class="payment-info-container">
 		
 				<div class="payment-info field-container">
-		
-					<label class="pay-title-label">Payment Method</label>
-					<div class="input-item toggle-wrapper">
-						<button ng-click="order.tooglePayment( 'card' )" ng-show="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="toggle-item">card</button> 
-						<span ng-show="(restaurant.credit == '1' && restaurant.cash == '1')" class="toggle-spacer">or</span> 
-						<button ng-click="order.tooglePayment( 'cash' )" ng-show="(restaurant.cash == '1')"  ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="toggle-item">cash</button>
+					<div class="toggle-wrapper clearfix">
+						<button ng-click="order.tooglePayment( 'card' )" ng-show="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="payment-form-toggle">card</button> 
+						<button ng-click="order.tooglePayment( 'cash' )" ng-show="(restaurant.cash == '1')"  ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="payment-form-toggle">cash</button>
 					</div>
-	
-					<div class="divider"></div>
-		
-						<div ng-show="order.form.pay_type=='card'" class="payment-card-info"><p>Your credit card information is <br />super secure and encrypted.<br /><br /></p>
-							<div class="card-icons">
-								<div class="payment-card card-visa payment-card-grey" pre-load-image="/assets/images/payment/card-visa-grey@2x.png" title="visa"></div>
-								<div class="payment-card card-master-card" pre-load-image="/assets/images/payment/card-master-grey@2x.png" title="master card"></div>
-								<div class="payment-card card-amex" pre-load-image="/assets/images/payment/card-amex-grey@2x.png" title="american express"></div>
-								<div class="payment-card card-discover" pre-load-image="/assets/images/payment/card-discover-grey@2x.png" title="discover card"></div>
-							</div>
-						</div>
 
-						<label ng-show="order.form.pay_type=='card'">Credit card #</label>
+					<div class="payment-form-group" ng-show="order.form.pay_type=='card'">
+						<i class="fa fa-credit-card payment-form-icon"></i>
+						<input type="tel" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber" class="payment-form-input">
+					</div>
+					
+					<div class="payment-form-group" ng-show="order.form.pay_type=='card'">
+						<i class="fa payment-form-icon"></i>
+						<select ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7" class="payment-form-select payment-form-input">{{order.form.card.month}}</select> 
+						<select ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8" class="payment-form-select payment-form-input"></select> 
+					</div>
 
-						<div ng-show="order.form.pay_type=='card'" class="payment-form-input"><input type="tel" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber"></div><div class="divider"></div>
-		
-						<label ng-show="order.form.pay_type=='card'">Expiration</label>
-						<div ng-show="order.form.pay_type=='card'" class="payment-form-input">
-
-							<select  ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7">{{order.form.card.month}}</select> 
-
-							<select  ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8"></select> 
-
-							<div class="divider"></div>
-						</div>
-		
-						<div class="divider"></div>
-
-						<label ng-show="order.form.pay_type=='card'">Tip</label>
-						<div ng-show="order.form.pay_type=='card'" class="payment-form-input">
-	
+					<div class="payment-form-group" ng-show="order.form.pay_type=='card'">
+						<i class="fa fa-thumbs-up payment-form-icon"></i>
 						<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
-						<select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips()" ng-change="order.tipChanged();" class="tip" tabindex="9"></select> 
-						<div class="divider"></div>
+						<select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips()" ng-change="order.tipChanged();" class="tip payment-form-select payment-form-input" tabindex="9"></select> 
+
 					</div>
+
+
+
+
 				</div>
+
 		
 			</div>
 			

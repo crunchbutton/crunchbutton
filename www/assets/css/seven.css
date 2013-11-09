@@ -59,7 +59,7 @@ a {
 	text-decoration: underline;
 }
 
-input[type="text"], input[type="tel"], input[type="password"], textarea {
+input[type="text"], input[type="tel"], input[type="password"], textarea, select {
 	-webkit-appearance: none;
 }
 
@@ -1248,7 +1248,8 @@ p {
 }
 .cart-button {
 	float: left;
-	font-size: 3.4em;
+	font-size: 2.8em;
+	margin-top: .06em;
 }
 .cart-item-text {
 	margin-top: .2em;
@@ -1371,12 +1372,15 @@ p {
 }
 
 
-.payment-form-row {
+.payment-form-group {
 	display: table-row;
 }
-.payment-form-icon, .payment-form-input {
+.payment-form-icon, .payment-form-input, .payment-form-select {
 	vertical-align: top;
 	padding-top: .4em;
+}
+.payment-form-select {
+	background: #fff;
 }
 
 .payment-form-input::-webkit-input-placeholder {
@@ -1403,4 +1407,12 @@ p {
 	-ms-transition: height 0.2s;
 	-o-transition: height 0.2s;
 	transition: height 0.2s;
+}
+
+
+.animate-show {
+  -webkit-transition:all linear 0.5s;
+
+
+
 }
