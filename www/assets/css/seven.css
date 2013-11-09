@@ -1453,3 +1453,20 @@ p {
 	-o-transition: height 0.2s;
 	transition: height 0.2s;
 }
+
+
+
+/* about page */
+.about-pear {
+	background: url(../images/micro/about-pear.svg) no-repeat;
+	background-position: top center;
+	width: 75px;
+	height: 129px;
+	background-size: 100%;
+	float: right;
+	-webkit-transition: all 0.2s;
+}
+.about-bubble-wrap {
+	width: 28em;
+	margin: 0 auto;
+}
