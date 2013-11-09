@@ -455,8 +455,7 @@ p {
 	clear: both;
 }
 .divider.dots {
-	background: #eeede7;
-	height: 1px;
+	border-top: 1px solid #eeede7;
 }
 
 
@@ -1198,6 +1197,9 @@ p {
 	font-weight: bold;
 	text-transform: uppercase;
 }
+.restaurant-category {
+	padding-top: 1em;
+}
 
 
 /* restaurant box messages */
@@ -1299,14 +1301,6 @@ p {
 	margin-top: 1em;
 }
 
-.restaurant-category {
-	font-size: 1.3em;
-	color: #312f38;
-	font-weight: bold;
-	text-transform: uppercase;
-	margin-top: 1em;
-}
-
 .dish-item {
 	background: #fffaf8;
 	border: 2px solid #e46436;
@@ -1350,7 +1344,10 @@ p {
 	border: 2px solid #00bea0;
 	color: #fff;
 }
-
+.restaurant-total-spacer {
+	margin-top: 1em;
+	margin-bottom: 2em;
+}
 .restaurant-payment-spacer {
 	margin-top: 1em;
 	margin-bottom: 1em;
@@ -1400,6 +1397,54 @@ p {
 	height: 100px;
 }
 
+
+
+.restaurant-payment-item {
+	display: block;
+}
+.restaurant-banana {
+	background: url(../images/micro/restaurant-banana.svg) no-repeat;
+	background-position: top center;
+	width: 73px;
+	height: 171px;
+	background-size: 100%;
+	margin: 0 auto;
+	-webkit-transition: all 0.2s;
+}
+.payment-total {
+
+}
+
+.delivery-minimum-error {
+	margin-top: .4em;
+	margin-bottom: .2em;
+}
+
+/* optional title bar styles */
+.restaurant-title-wrap {
+	display: table-row;
+	width: 100%;
+}
+.restaurant-title {
+	display: table-cell;
+	white-space:nowrap;
+}
+.restaurant-title-bar {
+	display: table-cell;
+	width: 100%;
+	padding-left: 1em;
+	vertical-align: middle;
+}
+.restaurant-title-bar-inner {
+	background: #d5c2bf;
+	width: 100%;
+	font-size: .1em;
+}
+
+
+
+
+/* appended by autosize directive */
 .autosize {
 	margin: .1em 0 .2em 2px;
 	-webkit-transition: height 0.2s;
@@ -1407,12 +1452,4 @@ p {
 	-ms-transition: height 0.2s;
 	-o-transition: height 0.2s;
 	transition: height 0.2s;
-}
-
-
-.animate-show {
-  -webkit-transition:all linear 0.5s;
-
-
-
 }
