@@ -129,6 +129,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'HelpCtrl',
 			templateUrl: 'assets/view/help.html'
 		})
+		.when('/about', {
+			action: 'about',
+			controller: 'AboutCtrl',
+			templateUrl: 'assets/view/about.html'
+		})
 		.when('/orders', {
 			action: 'orders',
 			controller: 'OrdersCtrl',
