@@ -161,6 +161,18 @@ NGApp.directive('ngSpinner', function () {
 	};
 });
 
+NGApp.directive('ngAutosize', function () {
+	return {
+		restrict: 'A',
+		link: function (scope, elem, attr) {
+			setTimeout( function(){
+				elem.addClass('autosize');
+				elem.data( 'autosize', elem.autosize({append: "\n"}) );	
+			}, 1 );
+		}
+	};
+});
+
 NGApp.directive('ngSimulateReadOnly', function () {
 	return {
 		restrict: 'A',
