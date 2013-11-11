@@ -10,9 +10,7 @@ class Crunchbutton_Chart_DeliveryFeeTips extends Crunchbutton_Chart {
 														'title' => 'Delivery fees + Tips',
 														'tags' => array( 'reps' ),
 														'charts' => array(  
-																// 'gross-revenue-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'byDayByCommunity' ),
 																'delivery-fee-tips-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'byWeekByCommunity' ),
-																// 'gross-revenue-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'byMonthByCommunity' ),
 															),
 												),
 										);
