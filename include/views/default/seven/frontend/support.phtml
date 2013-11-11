@@ -1,0 +1,25 @@
+
+<div class="support-container zoom-anim-dialog mfp-hide dialog" ng-controller="SupportCtrl">
+	<span ng-show="!support.thanks">
+		Send a message, we'll reply to you by text.
+	</span>
+	<div ng-show="support.thanks">
+		Thanks, we'll get back to you as fast as we can.
+	</div>
+	<div ng-show="!support.thanks">
+		<form name="formSupport">
+			<label>Name</label>
+			<input type="text" maxlength="50" ng-model="support.form.name" name="support-name"/>
+			<div class="div	ider"></div>
+			<label>Phone</label>
+			<input type="text" maxlength="30" ng-model="support.form.phone" name="support-phone" />
+			<div class="divider"></div>
+			<label>Message</label>
+			<textarea name="support-message" ng-model="support.form.message"></textarea>
+			<div class="divider"></div>
+			<button ng-show="!support.isSending" class="support-button" ng-click="support.send();">Send</button>
+			<div class="divider"></div>
+			<i ng-show="support.isSending" class=" fa fa-spinner fa-spin"></i>
+		</form>				
+	</div>
+</div>
