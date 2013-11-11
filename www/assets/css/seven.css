@@ -104,9 +104,18 @@ html {
 	margin: 0 auto;
 }
 
-.content-padding {
-	padding: 10px;
+@media screen and (min-width: 768px) {
+	.content-padding {
+		padding: 10px 0 10px 0;
+	}
 }
+@media screen and (max-width: 767px) {
+	.content-padding {
+		padding: 10px;
+	}
+}
+
+
 
 .logo {
 	background: url(../images/micro/crunchbutton-logo.svg) no-repeat;
