@@ -988,7 +988,7 @@ p {
 	border: 3px solid #ed4f41;
 	background: #ed4f41;
 	border-radius: 4px;
-	padding: 8px 10px 8px 10px;
+	padding: 10px 12px 10px 12px;
 	width: 27em;
 	clear: both;
 }
@@ -1181,7 +1181,8 @@ p {
 	-moz-filter: brightness(0.85) contrast(145%);
 	-o-filter: brightness(0.85) contrast(145%);
 	-ms-filter: brightness(0.85) contrast(145%);
-	
+
+	-webkit-transform: translateZ(0);
 }
 .restaurant-name {
 	color: #fff;
