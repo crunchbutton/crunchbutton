@@ -417,7 +417,7 @@ p {
 		height: 66px;
 	}
 	.restaurant-pic {
-		height: 9em;
+		height: 10em;
 	}
 }
 @media(max-width:499px) {
@@ -441,7 +441,7 @@ p {
 		height: 53px;
 	}
 	.restaurant-pic {
-		height: 11em;
+		height: 12em;
 	}
 }
 .divider {
@@ -1165,14 +1165,18 @@ p {
 	overflow:hidden;
 	background-size:cover !important;
 	background-position: center center !important;
-	box-shadow: inset rgba(0,0,0,0.35) 0 0 200px;
-	padding: 1.5em;
+/*	box-shadow: inset rgba(0,0,0,0.35) 0 0 200px; */
+	-webkit-filter: brightness(0.8) contrast(115%);
+	
 }
 .restaurant-name {
 	color: #fff;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.6);
 	vertical-align: bottom;
-	bottom: 0;
+	position: absolute;
+	margin-top: -6em;
+	padding: 1.2em;
+	z-index: 90;
 }
 .restaurant-name h1 {
 	font-size: 2em;
