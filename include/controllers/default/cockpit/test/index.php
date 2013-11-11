@@ -2,6 +2,12 @@
 
 class Controller_test extends Crunchbutton_Controller_Account {
 	public function init() {
+
+		$n = 1;
+		echo $n - 100  * floor($n / 100) . rand(1,1000) . floor($n/100);
+		exit;
+		echo Base36::encode('12345');
+		exit;
 		c::admin()->restaurants();
 		exit;
 		$r = new Restaurant(21);
