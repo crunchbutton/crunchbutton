@@ -985,10 +985,10 @@ p {
 }
 
 .restaurants-closed {
-	border: 1px solid #ed4f41;
+	border: 3px solid #ed4f41;
 	background: #ed4f41;
 	border-radius: 4px;
-	padding: 10px 12px 10px 12px;
+	padding: 8px 10px 8px 10px;
 	width: 27em;
 	clear: both;
 }
