@@ -13,6 +13,10 @@ NGApp.factory( 'SupportService', function( $http, AccountService ){
 	service.form.name = angular.copy( service.account.user.name );
 	service.form.phone = angular.copy( service.account.user.phone );
 	service.form.message = '';
+	
+	service.dialog = function() {
+		App.dialog.show('.support-container');
+	}
 
 	service.toggle = function(){
 		service.minimized = !service.minimized;

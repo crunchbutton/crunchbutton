@@ -36,6 +36,14 @@
 						</tr>
 					</table>
 				</li>
+				<li ng-instant="navigation.link('/about')">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-question-circle"></i></td>
+							<td class="side-menu-label">About</a></td>
+						</tr>
+					</table>
+				</li>
 				<li ng-show="!account.user.id_user" ng-instant="navigation.signin()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
@@ -96,6 +104,7 @@
 							<li><a ng-click="navigation.link('/location')">Change Location</a></li>
 							<li class="dropdown-divider"></li>
 							<li><a ng-click="navigation.link('/help')">Help</a></li>
+							<li><a ng-click="navigation.link('/about')">About</a></li>
 							<li><a ng-click="navigation.signin()" ng-show="!account.user.id_user">Log In</a></li>
 							<li><a ng-click="signout.do()" ng-show="account.user.id_user">Log Out</a></li>
 							<li class="dropdown-divider" ng-show="account.user.debug"></li>
@@ -165,7 +174,6 @@
 
 <div ng-include="'assets/view/notification.alert.html'"></div>
 <div ng-include="'assets/view/restaurant.closed.html'"></div>
-<div ng-include="'assets/view/restaurant.suggestion.tooltip.html'"></div>
 <div ng-include="'assets/view/account.html'"></div>
 <div ng-include="'assets/view/account.reset.html'"></div>
 <div ng-include="'assets/view/account.facebook.html'"></div>

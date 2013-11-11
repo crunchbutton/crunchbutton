@@ -98,7 +98,6 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'metrics-communities-ID' => array( 'description' => 'See the metrics of these community', 'dependency' => array( 'metrics-communities-page' ), 'type' => 'combo', 'element' => 'Community' ),
 																											'metrics-restaurants-page' => array( 'description' => 'View the Restaurant Metrics page' ),
 																											'metrics-restaurant-ID' => array( 'description' => 'See the metrics of these restaurant', 'dependency' => array( 'metrics-restaurants-page' ), 'type' => 'combo', 'element' => 'Restaurant', 'copy' => array( 'title' => 'Copy from restaurants he has access to edit', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
-
 																											'metrics-manage-cohort' => array( 'description' => 'Manage the cohorts' ),
 																										);
 
@@ -110,6 +109,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'support-crud' => array( 'description' => 'Create, update and delete any support ticket' ),
 																											'support-create' => array( 'description' => 'Create support ticket', 'dependency' => array( 'support-view' ) ),
 																											'support-create-edit-ID' => array( 'description' => 'Create, update and delete any support ticket he has access to', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'support-view' ), 'copy' => array( 'title' => 'Copy from restaurants he has access to edit', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
+																											'support-receive-notification-ID' => array( 'description' => 'Receive sms notification from these restaurants', 'type' => 'combo', 'element' => 'Restaurant', 'dependency' => array( 'support-view' ), 'copy' => array( 'title' => 'Copy from restaurants he has access to edit', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
 																											'support-view' => array( 'description' => 'View the support page' ),
 																											'support-settings' => array( 'description' => 'Change support settings' ),
 																										);

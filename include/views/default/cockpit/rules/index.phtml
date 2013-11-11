@@ -26,6 +26,9 @@
 								<?php
 								$settings = $meta[ 'settings' ];
 								foreach( $settings as $key => $setting ){
+
+									$tip = '';
+
 									switch ( $key ) {
 										case 'time':
 											$title = 'Time in ' . $meta[ 'period' ] . ':';
@@ -36,34 +39,75 @@
 											$type = 'checkbox';
 											break;
 										case 'warning-cs':
-											$title = 'Send message to Custom Service?';
+											$title = 'Send message to Customer Service?';
 											$type = 'checkbox';
 											break;
 										case 'warning-rep':
 											$title = 'Send message to reps?';
 											$type = 'checkbox';
 											break;
+										case 'name':
+										case 'phone':
+										case 'warning-phone':
+										case 'warning-email':
+
+											switch ( $key ) {
+												case 'name':
+													$title = 'Name(s) to monitor:';
+													$tip = 'Use commas to separe names.';
+													break;
+												case 'phone':
+													$title = 'Phone(s) to monitor:';
+													$tip = 'Just numbers. Use commas to separe phones.';
+													break;
+												case 'warning-phone':
+													$title = 'Send sms to:';
+													$tip = 'Just numbers. Use commas to separe phones.';
+													break;
+												case 'warning-email':
+													$title = 'Send email to:';
+													$tip = 'Use commas to separe emails.';
+													break;
+											}
+
+											
+											$type = 'text';
+											break;
 									}
 									$value = $rules->getSetting( $setting );
 									?>
 									<li>
-										<span><?php echo $title; ?></span>
-										<span class="pull-right">
+										<span>
+											<?php echo $title; ?>
+										</span>
+										
 											<?php switch ( $type ) {
 												case 'numeric':
 													?>
-													<input type="number" class="settings" name="<?php echo $setting; ?>" id="<?php echo $setting; ?>" maxlength="5" value="<?php echo $value; ?>" />
+													<span class="pull-right">
+														<input type="number" class="settings" name="<?php echo $setting; ?>" id="<?php echo $setting; ?>" maxlength="5" value="<?php echo $value; ?>" />
+													</span>
+													<?php
+													break;
+												case 'text':
+													?>
+													<input type="text" class="settings" name="<?php echo $setting; ?>" id="<?php echo $setting; ?>" style="width:100%;" maxlength="250" value="<?php echo $value; ?>" />
+													<?php if( $tip != '' ) { ?>
+														<div class="note"><?php echo $tip; ?></div>
+													<?php } ?>
 													<?php
 													break;
 												case 'checkbox':
 													$checked = ( $value == '1' ) ? 'checked="checked"' : '';
 													?>
-													<input <?php echo $checked; ?> class="icheck settings" type="checkbox" name="<?php echo $setting; ?>" id="<?php echo $setting; ?>" maxlength="5" value="1" />
+													<span class="pull-right">
+														<input <?php echo $checked; ?> class="icheck settings" type="checkbox" name="<?php echo $setting; ?>" id="<?php echo $setting; ?>" maxlength="5" value="1" />
+													</span>
 													<?php
 													break;
 											} ?>
 											
-										</span>
+										
 									</li>
 									<?php
 								}

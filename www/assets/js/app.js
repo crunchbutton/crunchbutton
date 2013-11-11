@@ -129,6 +129,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'HelpCtrl',
 			templateUrl: 'assets/view/help.html'
 		})
+		.when('/about', {
+			action: 'about',
+			controller: 'AboutCtrl',
+			templateUrl: 'assets/view/about.html'
+		})
 		.when('/orders', {
 			action: 'orders',
 			controller: 'OrdersCtrl',
@@ -150,6 +155,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/home.html'
 		})
 		.when('/giftcard/:id', {
+			action: 'giftcard',
+			controller: 'GiftcardCtrl',
+			templateUrl: 'assets/view/home.html'
+		})
+		.when('/gift', {
+			action: 'giftcard',
+			controller: 'GiftcardCtrl',
+			templateUrl: 'assets/view/home.html'
+		})
+		.when('/gift/:id', {
 			action: 'giftcard',
 			controller: 'GiftcardCtrl',
 			templateUrl: 'assets/view/home.html'

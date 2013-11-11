@@ -1,0 +1,1 @@
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'cockpit-expanded-view-checked-as-default', '1');
