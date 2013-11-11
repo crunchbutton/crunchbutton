@@ -751,21 +751,30 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			// Forces the recalculation of total because the tip was changed.
 			service.info.totalText = service.info.dollarSign + this.charged();
 		}
-		var _total = service.restaurant.delivery_min_amt == 'subtotal' ? service.subtotal() : service.total();
+		var total = service.total();
+		var _total = service.restaurant.delivery_min_amt == 'subtotal' ? service.subtotal() : total;
 		if (service.restaurant.meetDeliveryMin(_total) && service.form.delivery_type == 'delivery') {
 			service.info.deliveryMinDiff = service.restaurant.deliveryDiff(_total);
 		} else {
 			service.info.deliveryMinDiff = '';
 		}
+		var breakdown = service.totalbreakdown();
 		service.info.totalItems = service.cart.totalItems();
-		service.info.extraCharges = service.extraChargesText(service.totalbreakdown());
+		service.info.extraCharges = service.extraChargesText(breakdown);
 		service.info.breakdownDescription = service.info.dollarSign + this.subtotal().toFixed(2);
 		service.info.cartSummary = service.cart.summary();
+		service.info.taxes = breakdown.taxes.toFixed(2);
+		service.info.tip = breakdown.tip.toFixed(2);
+		service.info.subtotal = breakdown.subtotal.toFixed(2);
+		service.info.fee = breakdown.fee.toFixed(2);
+		service.info.delivery = breakdown.delivery.toFixed(2);
+		service.info.total = total;
+		
 		if (service.form.pay_type == 'card' && credit > 0) {
 			service.info.creditLeft = '';
-			if (this.total() < credit) {
-				service.info.creditLeft = App.ceil((credit - this.total())).toFixed(2);
-				credit = this.total();
+			if (total < credit) {
+				service.info.creditLeft = App.ceil((credit - total)).toFixed(2);
+				credit = total;
 			}
 		} 
 	}

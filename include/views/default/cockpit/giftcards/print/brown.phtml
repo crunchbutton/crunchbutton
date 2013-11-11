@@ -1,11 +1,51 @@
+<?php 
+	if( $_REQUEST[ 'asked' ] != '1' ){
+		?>
+		<script type="text/javascript">
+		if( confirm( 'Use url "gift/code"?' ) ){
+			document.location = document.location + '?asked=1&url=gift';
+		} else {
+			document.location = document.location + '?asked=1';
+		}
+		</script>
+		<?php
+		exit;
+	}
+?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<title>Gift card</title>
+		<link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
 		<link href='http://fonts.googleapis.com/css?family=Atomic+Age' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard/reset.css">
 		<link rel="stylesheet" type="text/css" href="/assets/css/giftcard/brown.css">
+		<style type="text/css">
+		.legal{
+			font-family: 'Abel', sans-serif;
+			color: #887973;
+			font-size:9px;
+			margin-top: 325px;
+			position: absolute;
+			width: 816px;
+			text-align: center;
+		}
+		.mobile{
+			color: #FFF;
+			position: absolute;
+			text-align: left;
+			font-size: 12px;
+			width: 519px;
+			margin-left: 269px;
+			margin-top: 210px;
+		}
+		.info{
+			<?php if( $_REQUEST[ 'url' ] == 'gift' ) { ?>
+				font-size:34px;
+			<?php } ?>
+		}
+		</style>
 	</head>
 	<body>
 <?php 
@@ -34,10 +74,9 @@ if( sizeof( $giftcards ) > 0 ) {
 			<div class="page">
 			<?php
 		}
-	?><div class="giftcard <?php if( $count % 3 != 1 ){ ?>negativemargin<?php } ?>">
-		<div class="value <?php if( $giftcard->value > 9 ){ echo 'small'; } ?>"><?php echo $giftcard->value;?></div>
-		<div class="info">crunchbutton.com/giftcard/<?php echo $giftcard->code;?></div><img  style="width:816px;"  src="/assets/images/giftcard/print-brown.svg?<?php echo $imageCached; ?>"/>
-</div>
+	?><div class="giftcard"><div class="value <?php if( $giftcard->value > 9 ){ echo 'small'; } ?>"><?php echo $giftcard->value;?></div><div class="info">crunchbutton.com/<?php if( $_REQUEST[ 'url' ] == 'gift' ) { ?>gift<?php } else { ?>giftcard<?php } ?>/<?php echo $giftcard->code;?></div><div class="legal">Valid for $<?php echo $giftcard->value; ?> off one order on crunchbutton.com for new users only. One per user. Has no cash value and is not a jelly donut. Not valid for past orders. Will not be replaced if lost or stolen. May be canceled any time without notice.</div>
+	<div class="mobile">Or use our iPhone app and, in the Notes section of your order, enter: <?php echo $giftcard->code;?></div>
+	<img  style="width:816px;"  src="/assets/images/giftcard/print-brown.svg?<?php echo $imageCached; ?>"/></div>
 	<?php 
 		if( $count % 3 == 0 ){
 			$newPage = true;

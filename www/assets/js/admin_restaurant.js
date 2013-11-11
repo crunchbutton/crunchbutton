@@ -794,6 +794,7 @@ var WIDGET = {
 							top : '0',
 							top_name : null,
 							type : 'dish',
+							expand_view : expanded_view_checked
 						},
 						{duration:100});
 			});
@@ -1106,6 +1107,8 @@ var ADMIN = {
 			w = DOM_MAP.map.data.widget.pop().remove();
 		}
 		w = UTIL.create_widget('toggle', $('#restaurant-active-container'));
+		w = UTIL.create_widget('toggle', $('#restaurant-delivery-service-container'), {text : ['yes', 'no'],field_name:'delivery_service'});
+		w = UTIL.create_widget('toggle', $('#restaurant-formal-relationship-container'), {text : ['yes', 'no'],field_name:'formal_relationship'});
 		w = UTIL.create_widget('toggle', $('#restaurant-open-for-business-container'), {
 				text : ['open', 'closed'],
 				field_name : 'open_for_business',

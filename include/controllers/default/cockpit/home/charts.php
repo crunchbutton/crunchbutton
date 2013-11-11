@@ -136,6 +136,11 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 		$info = $chart->getChartInfo( $this->chartId );
 		if( $info ){ $this->process( $info, $chart ); exit; }
 
+		// Check if it is an Order card chart
+		$chart = new Crunchbutton_Chart_DeliveryFeeTips();
+		$info = $chart->getChartInfo( $this->chartId );
+		if( $info ){ $this->process( $info, $chart ); exit; }
+
 	}
 
 	private function renderPieCommunities( $params, $groups, $description, $title ){
