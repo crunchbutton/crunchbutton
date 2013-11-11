@@ -1174,8 +1174,13 @@ p {
 	overflow:hidden;
 	background-size:cover !important;
 	background-position: center center !important;
-/*	box-shadow: inset rgba(0,0,0,0.35) 0 0 200px; */
-	-webkit-filter: brightness(0.8) contrast(115%);
+	box-shadow: inset rgba(0,0,0,0.15) 0 0 200px; 
+
+	filter: brightness(0.85) contrast(145%);
+	-webkit-filter: brightness(0.85) contrast(145%);
+	-moz-filter: brightness(0.85) contrast(145%);
+	-o-filter: brightness(0.85) contrast(145%);
+	-ms-filter: brightness(0.85) contrast(145%);
 	
 }
 .restaurant-name {
