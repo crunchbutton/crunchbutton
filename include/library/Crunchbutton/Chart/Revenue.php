@@ -268,7 +268,6 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 
 			$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
 		}
-
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
