@@ -1553,3 +1553,45 @@ p {
 	line-height: 1.4em;
 	padding: .7em .9em .5em .9em;
 }
+
+.owner-icon {
+	border-radius: 1.6em;
+	font-size: 2.1em;
+	padding: .43em;
+	background: #fe9872;
+	color: #fffef9;
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	text-align: center;
+	line-height: 1em;
+	float: left;
+	margin: .2em 1em 0 0;
+	clear: left;
+	
+	display: table-cell;
+	vertical-align: top;
+}
+
+.owner-content p {
+	margin-bottom: 1.3em;
+}
+
+.owner-text {
+	display: table-cell;
+	vertical-align: top;
+}
+.owner-block {
+	display: table-row;
+}
+
+
+.owner-brocoli {
+	background: url(../images/micro/owner-brocoli.svg) no-repeat;
+	background-position: top center;
+	width: 76px;
+	height: 131px;
+	background-size: 100%;
+	float: right;
+	-webkit-transition: all 0.2s;
+}
