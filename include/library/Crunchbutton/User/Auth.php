@@ -125,7 +125,7 @@ class Crunchbutton_User_Auth extends Cana_Table {
 		');
 		if( $row->_items && $row->_items[0] ){
 				$row = $row->_items[0];
-				return  true;
+				return  $row->id_user_auth;
 		}
 		return false;
 	}

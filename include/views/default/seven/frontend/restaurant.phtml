@@ -17,14 +17,11 @@
 			<h1>{{restaurant.name}}</h1>
 			<h2>{{restaurant.message || restaurant.short_description}}</h2>
 		</div>
-		
-		<div class="giftcard-badge-container" ng-show="credit.hasValue">
-			<div class="giftcard-badge">
-				<div ng-click="credit.tooltip=!credit.tooltip" class="giftcard-badge-value">${{credit.value}}</div>
-			</div>
-			<div class="giftcard-badge-tooltip" ng-show="credit.tooltip">
-				You have a <span class="giftcard-value">{{AB.dollar}}{{credit.value}}</span> gift card
-			</div>
+		<div class="giftcard-badge" ng-show="credit.hasValue">
+			<i class="fa fa-certificate"></i>
+			<div class="giftcard-badge-value"><sup>$</sup>{{Math.round(credit.value)}}</div>
+			<div class="giftcard-badge-text">gift card</div>
+
 		</div>
 		
 		<div class="divider"></div>
