@@ -1190,12 +1190,18 @@ p {
 
 
 /* ORDERS PAGE */
-.order-item {
+.order-item-wrap {
 	background: #00bea0;
 	color: #fff;
 	padding: 7px 6px 4px 4px;
 	border-radius: 4px;
 	cursor: pointer;
+	margin-bottom: .8em;
+
+}
+.order-item {
+	display: table-row;
+	width: 100%;
 }
 
 .orders-oranges {
@@ -1205,7 +1211,8 @@ p {
 	height: 3.5em;
 	background-size: 100%;
 	margin: 0 auto;
-	margin-top: 10em;
+	margin-top: 7em;
+	margin-bottom: 3em;
 	-webkit-transition: all 0.2s;
 }
 
@@ -1224,19 +1231,32 @@ p {
 	text-decoration: underline;
 	font-weight: bold;
 	font-size: 1.2em;
+	margin-bottom: .5em;
+	margin-top: .3em;
+}
+
+.order-summary {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1em;
+	display: inline-block;
 }
 
 .order-link {
 	font-size: 3.64em;
-	float: right;
 }
 
 .order-date {
-	margin-right: 1.8em;
+	padding-right: 1.4em;
 }
 
-.order-date, .order-details {
-	float: left;
+.order-details {
+	width: 100%;
+}
+
+.order-date, .order-details, .order-link {
+	display: table-cell;
+	vertical-align: top;
 }
 
 
@@ -1498,6 +1518,12 @@ p {
 
 }
 
+
+.default-order-check {
+	margin-top: .4em;
+	cursor: pointer;
+}
+
 .delivery-minimum-error {
 	margin-top: .4em;
 	margin-bottom: .2em;
@@ -1615,4 +1641,38 @@ p {
 .owners-bubble-wrap .bubble-tail {
 	float: left;
 	font-size: .9em;
+}
+
+
+.giftcard-badge-text {
+	margin-top: 1em;
+}
+.giftcard-badge-value {
+	width: 3.1em;
+	text-align: center;
+	font-size: 1.3em;
+	margin-top: -2.3em;
+	font-weight: bold;
+	color: #fff;
+}
+.giftcard-badge-value sup {
+	font-size: .8em;
+	vertical-align: top;
+}
+.giftcard-badge .fa {
+	font-size: 4.9em;
+	color: #00bd9e;
+}
+
+.giftcard-badge {
+	margin-right: .1em;
+	border-radius: 3px;
+	margin-top: -13.3em;
+	float: right;
+	color: #fff;
+	font-size: .9em;
+	font-weight: 600;
+	padding: .6em .8em .6em .8em;
+	z-index: 6;
+	position: relative;
 }

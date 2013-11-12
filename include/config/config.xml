@@ -9,14 +9,14 @@
 	<imgCache>http://i._DOMAIN_/cache/</imgCache>
 	<db>
 		<live>
-			<user>crunch</user>
+			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton</db>
 			<host>localhost</host>
 			<prefix></prefix>
 		</live>
 		<beta>
-			<user>crunch</user>
+			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton_dev</db>
 			<host>localhost</host>
@@ -59,6 +59,10 @@
 			<app>_KEY_</app>
 			<secret>_KEY_</secret> 
 		</local>
+		<seven>
+			<app>_KEY_</app>
+			<secret>_KEY_</secret> 
+		</seven>
 		<live>
 			<app>_KEY_</app>
 			<secret>_KEY_</secret>

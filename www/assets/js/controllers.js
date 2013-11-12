@@ -467,6 +467,8 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	$scope.order.form = order.form;
 	$scope.order.info = order.info;
 	$scope.open = false;
+	
+	$scope.Math = window.Math;
 
 	$scope.nothingInTheCartDesktop = App.AB.pluck('nothingInTheCartDesktop', App.config.ab.nothingInTheCartDesktop).line;
 	$scope.nothingInTheCartMobile = App.AB.pluck('nothingInTheCartMobile', App.config.ab.nothingInTheCartMobile).line;
