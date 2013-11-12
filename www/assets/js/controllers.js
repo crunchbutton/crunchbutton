@@ -1,4 +1,18 @@
 /**
+ * reps page
+ */
+NGApp.controller('RepsCtrl', function ($scope, $http) {
+
+});
+
+/**
+ * owners page
+ */
+NGApp.controller('OwnersCtrl', function ($scope, $http) {
+
+});
+
+/**
  * About page
  */
 NGApp.controller('AboutCtrl', function ($scope, $http) {
