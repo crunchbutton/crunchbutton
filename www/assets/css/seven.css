@@ -138,7 +138,7 @@ html {
 	width: 44px;
 	height: 28px;
 	float: left;
-	margin: 8px 0 0 25px;
+	margin: 8px 0 0 10px;
 	-webkit-transition: opacity 0.2s;
 	cursor: pointer;
 }
@@ -146,6 +146,57 @@ html {
 .menu:active {
 	opacity: .4;
 }
+
+.nav-back {
+	position:absolute;
+	background-color: #f56b3b;
+	height:28px;
+	padding: 0 10px 0 8px;
+	z-index : 0;
+	border-radius: 5px;
+	-webkit-border-top-left-radius : 10px 15px;
+	-webkit-border-bottom-left-radius : 10px 15px;
+	font-size : 11px;
+	display : block; 
+	text-align:center;
+	color:#fff;
+
+	line-height : 28px;
+	font-weight: 700;
+    
+	cursor: pointer;
+    
+	float: left;
+	margin: 8px 0 0 14px;
+	-webkit-transition: opacity 0.2s;
+}
+
+.nav-back:before{
+	position:absolute;
+	top:8%;
+	left:-4px;
+	background-color: #f56b3b;
+	height : 23px;
+	width: 25px;
+	-webkit-transform : rotate(-45deg) skew(-10deg, -10deg);
+	-webkit-border-top-right-radius : 100px 40px;
+	-webkit-border-top-left-radius : 30px 2px;
+	-webkit-border-bottom-right-radius : 2px 30px;
+	-webkit-border-bottom-left-radius : 40px 100px;
+	z-index : 1;
+	content : ' ';
+	-webkit-mask-image : 
+		-webkit-gradient(linear, left top, right bottom,
+			from(#000000), 
+			color-stop(0.33,#000000), 
+			color-stop(0.5, transparent), 
+			to(transparent));
+}
+
+.nav-back:active {
+	opacity: .4;
+}
+
 
 
 ::-webkit-input-placeholder {
@@ -410,6 +461,14 @@ p {
 
 
 /* GLOBAL */
+@media(min-width:768px) {
+	.menu {
+		margin: 8px 0 0 0;
+	}
+	.nav-back {
+		margin: 8px 0 0 4px;
+	}
+}
 @media(min-width:500px) {
 	body {
 		font-size: 12px;
@@ -437,6 +496,9 @@ p {
 	}
 	.menu {
 		margin: 3px 0 0 10px;
+	}
+	.nav-back {
+		margin: 3px 0 0 14px;
 	}
 	.menu.drop {
 		display: none;
