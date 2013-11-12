@@ -1589,8 +1589,8 @@ p {
 .owner-brocoli {
 	background: url(../images/micro/owner-brocoli.svg) no-repeat;
 	background-position: top center;
-	width: 76px;
-	height: 131px;
+	width: 7.6em;
+	height: 13.1em;
 	background-size: 100%;
 	float: right;
 	-webkit-transition: all 0.2s;
