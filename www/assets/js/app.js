@@ -134,6 +134,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'AboutCtrl',
 			templateUrl: 'assets/view/about.html'
 		})
+		.when('/reps', {
+			action: 'reps',
+			controller: 'RepsCtrl',
+			templateUrl: 'assets/view/reps.html'
+		})
+		.when('/owners', {
+			action: 'owners',
+			controller: 'OwnersCtrl',
+			templateUrl: 'assets/view/owners.html'
+		})
 		.when('/orders', {
 			action: 'orders',
 			controller: 'OrdersCtrl',
