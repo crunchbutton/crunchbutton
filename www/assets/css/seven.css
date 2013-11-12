@@ -1564,6 +1564,8 @@ p {
 	padding: .7em .9em .5em .9em;
 }
 
+
+/* owners page */
 .owner-icon {
 	border-radius: 1.6em;
 	font-size: 2.1em;
@@ -1594,7 +1596,6 @@ p {
 .owner-block {
 	display: table-row;
 }
-
 
 .owner-brocoli {
 	background: url(../images/micro/owner-brocoli.svg) no-repeat;
