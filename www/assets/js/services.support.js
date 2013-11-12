@@ -38,30 +38,52 @@ NGApp.factory( 'SupportService', function( $http, AccountService ){
 	service.send = function(){
 
 		service.purify();
+		
+		var error = '';
+		var errors = [];
 
-		if ( service.form.name == '' ){
-			App.alert( 'Please enter your name.' );
-			$('input[name=support-name]').focus();
-			return;
+		if (!service.form.name || !service.form.phone || !App.phone.validate(service.form.phone) || !service.form.message) {
+			error += 'Please enter ';
+			
+			if (!service.form.name) {
+				errors[errors.length] = 'your name';
+			}
+			
+			if (!App.phone.validate(service.form.phone)) {
+				errors[errors.length] = 'a valid phone number';
+			}
+			
+			if (!service.form.message) {
+				errors[errors.length] = 'a message';
+			}
+			
+			for (var x in errors) {
+				error += (x != 0 ? ', ' : '') + (errors.length > 1 && x == errors.length-1 ? 'and ' : '') + errors[x] + (x == errors.length-1 ? '.' : '');
+			}
 		}
+		
+		if (error) {
+			service.error = error;
+			
+			if (!service.form.message){
+				$('textarea[name=support-message]').focus();
+			}
+			
+			if (!App.phone.validate( service.form.phone)) {
+				$('input[name=support-phone]').focus();
+			}
 
-		if ( service.form.phone == '' ){
-			App.alert( 'Please enter your phone.' );
-			$('input[name=support-phone]').focus();
+			if (!service.form.name){
+				$('input[name=support-name]').focus();
+			}
+			
 			return;
-		}
 
-		if ( !App.phone.validate( service.form.phone ) ) {
-			App.alert( 'Please enter a valid phone.' );
-			$('input[name=support-phone]').focus();
-			return;
+		} else {
+			service.error = '';
 		}
-
-		if ( service.form.message == '' ){
-			App.alert( 'Please enter the message.' );
-			$('textarea[name=support-message]').focus();
-			return;
-		}
+		
+		// passes validation
 
 		if (!service.isSending){
 			
