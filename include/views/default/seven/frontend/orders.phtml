@@ -14,7 +14,6 @@
 <div ng-show="orders.list">
 	
 	<div class="content-padding">
-		<br />
 		<h4>Noms.</h4>
 		<p>Look at all that great food! You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it!</p>
 		<br /><br />
@@ -22,18 +21,23 @@
 
 	<div class="content-padding">
 		<ul class="orders-list">
-			<li ng-repeat="order in orders.list" class="order-item" ng-click="orders.receipt(order.id)">
-				<div class="order-date">
-					<div class="order-month">{{order._date.getMonthNameShort()}}</div>
-					<div class="order-day">{{order._date.getDate().pad(2)}}</div>
+			<li ng-repeat="order in orders.list" class="order-item-wrap" ng-click="orders.receipt(order.id)">
+				<div class="order-item">
+					<div class="order-date">
+						<div class="order-month">{{order._date.getMonthNameShort()}}</div>
+						<div class="order-day">{{order._date.getDate().pad(2)}}</div>
+					</div>
+					<div class="order-details">
+						<div class="order-name" ng-click="orders.restaurant(order._restaurant_permalink)">
+							{{order._restaurant_name}}
+						</div>
+						<div class="order-summary">
+							{{order.summary}}
+						</div>
+					</div>
+	
+					<div class="order-link fa fa-arrow-circle-right"></div>
 				</div>
-				<div class="order-details">
-					<span class="order-name" ng-click="orders.restaurant(order._restaurant_permalink)">
-						{{order._restaurant_name}}
-					</span>
-				</div>
-
-				<div class="order-link fa fa-arrow-circle-right"></div>
 				<div class="divider"></div>		
 			</li>
 		</ul>
