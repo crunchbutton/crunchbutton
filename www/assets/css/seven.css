@@ -960,7 +960,7 @@ p {
 	cursor: pointer;
 }
 .restaurants-open .restaurants-name {
-	padding: .6em 0 0 .5em;
+	padding: .6em 0 0 .4em;
 	font-size: 1.4em;
 	color: #424242;
 	font-weight: 700;
@@ -985,10 +985,10 @@ p {
 }
 
 .restaurants-closed {
-	border: 3px solid #ed4f41;
+	border: 1px solid #ed4f41;
 	background: #ed4f41;
 	border-radius: 4px;
-	padding: 10px 12px 10px 12px;
+	padding: 1em 1.2em 1em 1.2em;
 	width: 27em;
 	clear: both;
 }
@@ -1069,7 +1069,7 @@ p {
 
 
 ​.facebook {
-	display: none;
+	display: none !important;
 }
 
 .footer .social {
@@ -1174,7 +1174,8 @@ p {
 	overflow:hidden;
 	background-size:cover !important;
 	background-position: center center !important;
-	box-shadow: inset rgba(0,0,0,0.15) 0 0 200px; 
+	box-shadow: inset rgba(0,0,0,0.15) 0 0 200px;
+	margin-bottom: 2px; 
 
 	filter: brightness(0.85) contrast(145%);
 	-webkit-filter: brightness(0.85) contrast(145%);
