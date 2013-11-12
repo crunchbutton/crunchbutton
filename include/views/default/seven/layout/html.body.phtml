@@ -115,12 +115,11 @@
 					    </ul>
 					</div>
 				
-					<div class="menu side" ng-click="navigation.menu()" ng-show="navigation.buttons.menu"></div>
-					<div class="menu drop" data-dropdown="#dropdown-menu" ng-show="navigation.buttons.menu"></div>
+					<div title="Menu" class="menu side" ng-click="navigation.menu()" ng-show="navigation.buttons.menu"></div>
+					<div title="Menu" class="menu drop" data-dropdown="#dropdown-menu" ng-show="navigation.buttons.menu"></div>
+					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()">back</div>
 
 					<div class="logo" ng-click="navigation.home()"></div>
-
-					<div title="Back" ng-show="navigation.buttons.back" class="nav-back" ng-instant="back()"></div>
 	
 				</div>
 			</div>
