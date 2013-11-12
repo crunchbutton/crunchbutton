@@ -942,18 +942,50 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function orderMessage($type) {
 
+		// @TODO: need to combine all this stuff into one streamlined thing
+	
+		if ($type == 'summary') {
+			// does not show duplicate items, configuration, or item count. returns human readable
+			$dishes = [];
+			foreach ($this->dishes() as $dish) {
+				$dishes[$dish->id_dish] = $dish;
+			}
+			$dishes = array_values($dishes);
+			$food = '';
+			$c = count($dishes);
+			foreach ($dishes as $x => $dish) {
+				$food .= ($x != 0 ? ', ' : '') . ($c > 1 && $x == $c-1 ? '& ' : '') . $dish->dish()->name . ($x == $c-1 ? '.' : '');
+			}
+			return $food;
+		}
+
+		
+		// everything else
 		switch ($type) {
 			case 'sms':
 			case 'web':
 			case 'support':
 				$with = 'w/';
 				$space = ',';
+				$group = false;
+				$showCount = false;
 				break;
 
 			case 'phone':
 				$with = '. ';
 				$space = '.';
+				$group = false;
+				$showCount = true;
 				break;
+
+			case 'summary':
+			case 'facebook':
+				$with = '';
+				$space = '';
+				$group = true;
+				$showCount = false;
+				break;
+
 		}
 
 		if ($type == 'phone') {
@@ -1223,6 +1255,8 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		$out['_date_tz'] = $date->format('Y-m-d H:i:s');
 		$out['_tz'] = $date->format('T');
+		
+		$out['summary'] = $this->orderMessage('summary');
 
 		return $out;
 	}
