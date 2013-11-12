@@ -48,15 +48,16 @@
 						</span>
 					</div>
 				</div>
+				
+			
+				<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="dialog-message-error delivery-minimum-error">
+					Add <sup>$</sup><span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> more to meet the delivery minimum.
+				</div>
 
 				<div ng-show="order.cart.hasItems()">
 					<div class="restaurant-title-wrap">
 						<div class="restaurant-title">The Order</div>
 						<div class="restaurant-title-bar"><div class="restaurant-title-bar-inner">&nbsp;</div></div>
-					</div>
-			
-					<div ng-show="order.info.deliveryMinDiff && order.cart.hasItems()" class="delivery-minimum-error">
-						Add $<span class="delivery-min-diff">{{order.info.deliveryMinDiff}}</span> more to meet the delivery minimum.
 					</div>
 				</div>
 
