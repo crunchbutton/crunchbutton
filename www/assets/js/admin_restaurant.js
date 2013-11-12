@@ -1530,5 +1530,97 @@ var ASYNC = {
 	},
 };
 
+var hour_override = {};
 
+hour_override.load = function(){
+	var url = '/restaurants/' + _id_restaurant + '/hour_override';
+	$.get( url, function( data ) {
+		$( '.modal-hour_override-body' ).html( data );
+	} );
+}
+
+hour_override.remove = function( id_restaurant_hour_override ){
+
+	if( !confirm( 'Confirm remove?' ) ){
+		return;
+	}
+
+	var url = App.service + 'houroverride/remove';
+	$.ajax({
+		type: 'POST',
+		dataType: 'json',
+		data: { 'id_restaurant_hour_override' : id_restaurant_hour_override },
+		url: url,
+		success: function( json ) {
+			if( json.error ){
+				alert( 'Error removing!' );
+			} else {
+				alert( 'Removed!' );
+				hour_override.load();
+			}
+		},
+		error: function( ){
+			alert( 'Error removing!' );
+		}
+	});
+}
+
+
+hour_override.save = function(){
+
+	var date_start = $( '#hour_override_date_start' ).val();
+	var date_start_hour = $( '#hour_override_date_start_hour' ).val();
+	var date_end = $( '#hour_override_date_end' ).val();
+	var date_end_hour = $( '#hour_override_date_end_hour' ).val();
+	var type = $( '#hour_override_type' ).val();
+	var notes = $( '#hour_override_notes' ).val();
+
+	if( $.trim( date_start ) == '' ){
+		alert( 'Please type the start date.' );
+		$( '#hour_override_date_start' ).focus();
+		return;
+	}
+	
+	if( $.trim( date_end ) == '' ){
+		alert( 'Please type the end date.' );
+		$( '#hour_override_date_end' ).focus();
+		return;
+	}
+
+	if( $.trim( notes ) == '' ){
+		alert( 'Please type the notes.' );
+		$( '#hour_override_notes' ).focus();
+		return;
+	}
+
+	var data = { 
+			'id_restaurant' : _id_restaurant, 
+			'date_start' : date_start, 
+			'date_start_hour' : date_start_hour, 
+			'date_end' : date_end, 
+			'date_end_hour' : date_end_hour, 
+			'type' : type, 
+			'notes' : notes
+		}
+
+	var url = App.service + 'houroverride/add';
+	$.ajax({
+		type: 'POST',
+		dataType: 'json',
+		data: data,
+		url: url,
+		success: function( json ) {
+			if( json.error ){
+				alert( 'Error adding!' );
+			} else {
+				alert( 'Added!' );
+				hour_override.load();
+			}
+		},
+		error: function( ){
+			alert( 'Error adding!' );
+		}
+	});
+
+}
 

@@ -110,13 +110,16 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					}
 					c::view()->display('restaurants/pay');
 					break;
-				case 'holidays':
+				case 'hour_override':
 				$ss = new Crunchbutton_Restaurant_Hour_Override();
 					// @permission
 					if( !c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud', "restaurant-{$restaurant->id_restaurant}-edit", "restaurant-{$restaurant->id_restaurant}-all" ] ) ){
 						return;
 					}
-					c::view()->display('restaurants/holidays');
+					c::view()->hours = Crunchbutton_Restaurant_Hour_Override::q( 'SELECT * FROM restaurant_hour_override WHERE id_restaurant = ' . $restaurant->id_restaurant );
+					c::view()->restaurant = $restaurant;
+					c::view()->layout('layout/ajax');
+					c::view()->display('restaurants/hour_override');
 					break;
 				case 'image':
 					// @permission

@@ -207,6 +207,8 @@
 						<div class=admin-item-desc>close on snowdays, etc.</div>
 					</div>
 					<div class=admin-item-right>
+						<a data-toggle="modal" class="btn btn-blue modal-hour_override" href="#modal-hour_override"><i class="icon-info-sign "></i> hour_override</a>
+
 						<div class=admin-item-col-small id=restaurant-open-for-business-container></div>
 					</div>
 				</div>
@@ -489,7 +491,7 @@
 			<div class="box-header"><span class="title">Menu</span></div>
 
 				<div class="padded">
-					<a data-toggle="modal" class="btn btn-blue" href="#modal-simple"><i class="icon-info-sign "></i> Curation instructions</a>
+					<a data-toggle="modal" class="btn btn-blue" href="#modal-curation"><i class="icon-info-sign "></i> Curation instructions</a>
 				</div>
 
 			<div class="box-content padded">
@@ -798,7 +800,7 @@
 
 </div>
 
-<div id="modal-simple" class="modal hide fade" style="display: none;" aria-hidden="true">
+<div id="modal-curation" class="modal hide fade" style="display: none;" aria-hidden="true">
 	 <div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			<h6 id="modal-tablesLabel">Curation instructions</h6>
@@ -806,46 +808,70 @@
 	 <div class="modal-body">
 			<h4>Categories and Dishes</h4>
 			<ul>
-<li>Put the top 1-3 dishes in the first category, usually titled “Recommended Order” </li>
-<li>Except at Pizza restaurants, where the first category should be titled “Pizza” and include all the size options as separate food items, with basic options for all toppings they can add</li>
-<li>Make “Drinks” the last category</li>
-<li>Have a “Vegetarian” category, if possible</li>
-<li>Don't include a category called "Miscellaneous" or "Other" - every category should have a clear theme</li>
-<li>No more than 4-5 items in a category (except sushi)</li>
-<li>Keep item names short and visually pleasing</li>
-<li>When possible, it should be obvious what an item is without having to check the description</li>
-</ul>
-	<h4>Options</h4>
-	<ul>
-<li>Use Checkbox options for things like toppings and Dropdown options for things like sizes and flavors of Nantucket Nectar
-<ul>
-<li>Dropdown options are used for sizes and other situations in which only 1 of a set of options can be chosen, like a flavor of Nantucket Nectar.</li>
-<li>Checkboxes are for basic included options (like toppings) and additional optional options. 
-<ul>
-<li>For basic included options, save them Default Checked.</li>
-<li>For additional optional options, save them Default Unchecked. </li>
-<li>E.G. on an item called BLT Sandwich
-<ul>
-<li>make these options default checked: Bacon, Lettuce, Tomato</li>
-<li>make these options default unchecked: Add Hot Sauce, Add Avocado</li></ul></li>
-</li>
-</ul>
-</ul>
-</li>
-<li>If it is unclear what a dish is, and the description is too long, then use checkbox options to list all the toppings/ingredients in the dish, ie “Lomo Saltado” would have 5 separate checkbox options, all checked by default, Red Onions, Cilantro, Tomatoes, Steamed Rice, and French Fries</li>
-<li>The dish name should be self-explanatory without having to look at the category name (aka "Italian Sub" not just "Italian")</li>
-
-</ul>	
+				 <li>Put the top 1-3 dishes in the first category, usually titled “Recommended Order” </li>
+				 <li>Except at Pizza restaurants, where the first category should be titled “Pizza” and include all the size options as separate food items, with basic options for all toppings they can add</li>
+				 <li>Make “Drinks” the last category</li>
+				 <li>Have a “Vegetarian” category, if possible</li>
+				 <li>Don't include a category called "Miscellaneous" or "Other" - every category should have a clear theme</li>
+				 <li>No more than 4-5 items in a category (except sushi)</li>
+				 <li>Keep item names short and visually pleasing</li>
+				 <li>When possible, it should be obvious what an item is without having to check the description</li>
+			</ul>
+			<h4>Options</h4>
+			<ul>
+				 <li>
+						Use Checkbox options for things like toppings and Dropdown options for things like sizes and flavors of Nantucket Nectar
+						<ul>
+							 <li>Dropdown options are used for sizes and other situations in which only 1 of a set of options can be chosen, like a flavor of Nantucket Nectar.</li>
+							 <li>
+									Checkboxes are for basic included options (like toppings) and additional optional options. 
+									<ul>
+										 <li>For basic included options, save them Default Checked.</li>
+										 <li>For additional optional options, save them Default Unchecked. </li>
+										 <li>
+												E.G. on an item called BLT Sandwich
+												<ul>
+													 <li>make these options default checked: Bacon, Lettuce, Tomato</li>
+													 <li>make these options default unchecked: Add Hot Sauce, Add Avocado</li>
+												</ul>
+										 </li>
+										 </li>
+									</ul>
+						</ul>
+				 </li>
+				 <li>If it is unclear what a dish is, and the description is too long, then use checkbox options to list all the toppings/ingredients in the dish, ie “Lomo Saltado” would have 5 separate checkbox options, all checked by default, Red Onions, Cilantro, Tomatoes, Steamed Rice, and French Fries</li>
+				 <li>The dish name should be self-explanatory without having to look at the category name (aka "Italian Sub" not just "Italian")</li>
+			</ul>
 	 </div>
 	 <div class="modal-footer">
 			<button class="btn btn-default" data-dismiss="modal">Close</button>
 	 </div>
 </div>
 
+<!-- hour_override stuff -->
+<div id="modal-hour_override" class="modal hide fade" style="display: none;" aria-hidden="true">
+	 <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h6 id="modal-tablesLabel">hour_override</h6>
+	 </div>
+	 <div class="modal-body modal-hour_override-body"></div>
+	 <div class="modal-footer">
+			<button class="btn btn-default" data-dismiss="modal">Close</button>
+	 </div>
+</div>
+
+
 <script type=text/javascript src=https://maps.googleapis.com/maps/api/js?sensor=false></script>
 <script type=text/javascript src=/assets/js/admin_restaurant.js?v=<?=Cana_Util::gitVersion()?>></script>
 <script type=text/javascript src=/assets/js/intro.js?v=<?=Cana_Util::gitVersion()?>></script>
 <script>
+$( document ).ready( function(){
+	$('.modal-hour_override').click(function(e) {
+		e.preventDefault();
+		hour_override.load();
+	} );
+} );
+var _id_restaurant = '<?=$this->restaurant->id_restaurant?>';
 var expanded_view_checked = <?php echo ( Crunchbutton_Config::getVal( 'cockpit-expanded-view-checked-as-default' ) == '1' ) ? '1' : '0'; ?>;
 ADMIN.restaurant_init(<?=$this->restaurant->id_restaurant?>);
 </script>
