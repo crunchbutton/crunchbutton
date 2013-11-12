@@ -104,9 +104,18 @@ html {
 	margin: 0 auto;
 }
 
-.content-padding {
-	padding: 10px;
+@media screen and (min-width: 768px) {
+	.content-padding {
+		padding: 10px 0 10px 0;
+	}
 }
+@media screen and (max-width: 767px) {
+	.content-padding {
+		padding: 10px;
+	}
+}
+
+
 
 .logo {
 	background: url(../images/micro/crunchbutton-logo.svg) no-repeat;
@@ -129,7 +138,7 @@ html {
 	width: 44px;
 	height: 28px;
 	float: left;
-	margin: 8px 0 0 25px;
+	margin: 8px 0 0 10px;
 	-webkit-transition: opacity 0.2s;
 	cursor: pointer;
 }
@@ -137,6 +146,57 @@ html {
 .menu:active {
 	opacity: .4;
 }
+
+.nav-back {
+	position:absolute;
+	background-color: #f56b3b;
+	height:28px;
+	padding: 0 10px 0 8px;
+	z-index : 0;
+	border-radius: 5px;
+	-webkit-border-top-left-radius : 10px 15px;
+	-webkit-border-bottom-left-radius : 10px 15px;
+	font-size : 11px;
+	display : block; 
+	text-align:center;
+	color:#fff;
+
+	line-height : 28px;
+	font-weight: 700;
+    
+	cursor: pointer;
+    
+	float: left;
+	margin: 8px 0 0 14px;
+	-webkit-transition: opacity 0.2s;
+}
+
+.nav-back:before{
+	position:absolute;
+	top:8%;
+	left:-4px;
+	background-color: #f56b3b;
+	height : 23px;
+	width: 25px;
+	-webkit-transform : rotate(-45deg) skew(-10deg, -10deg);
+	-webkit-border-top-right-radius : 100px 40px;
+	-webkit-border-top-left-radius : 30px 2px;
+	-webkit-border-bottom-right-radius : 2px 30px;
+	-webkit-border-bottom-left-radius : 40px 100px;
+	z-index : 1;
+	content : ' ';
+	-webkit-mask-image : 
+		-webkit-gradient(linear, left top, right bottom,
+			from(#000000), 
+			color-stop(0.33,#000000), 
+			color-stop(0.5, transparent), 
+			to(transparent));
+}
+
+.nav-back:active {
+	opacity: .4;
+}
+
 
 
 ::-webkit-input-placeholder {
@@ -360,7 +420,8 @@ p {
 	box-shadow: 0 2px 0 #de7e5b;
 }
 .button.pushable.lightorange:active {
-
+	box-shadow: none;
+	margin-top: 2px;
 }
 .button.green {
 	background: #00bea0;
@@ -400,6 +461,14 @@ p {
 
 
 /* GLOBAL */
+@media(min-width:768px) {
+	.menu {
+		margin: 8px 0 0 0;
+	}
+	.nav-back {
+		margin: 8px 0 0 4px;
+	}
+}
 @media(min-width:500px) {
 	body {
 		font-size: 12px;
@@ -417,7 +486,7 @@ p {
 		height: 66px;
 	}
 	.restaurant-pic {
-		height: 9em;
+		height: 10em;
 	}
 }
 @media(max-width:499px) {
@@ -427,6 +496,9 @@ p {
 	}
 	.menu {
 		margin: 3px 0 0 10px;
+	}
+	.nav-back {
+		margin: 3px 0 0 14px;
 	}
 	.menu.drop {
 		display: none;
@@ -441,7 +513,7 @@ p {
 		height: 53px;
 	}
 	.restaurant-pic {
-		height: 11em;
+		height: 12em;
 	}
 }
 .divider {
@@ -562,15 +634,20 @@ p {
 	float: left;
 	margin-left: 4em;
 }
-.bubble-tailless-green {
-	background: url(../images/micro/bubble-tailless-green.svg) no-repeat;
+.bubble-tailless {
 	width: 14.6em;
 	height: 5.7em;
-	background-size: 100%;
+	background-size: 100% !important;
 	float: left;
 	margin-top: 2em;
 }
-.bubble-tailless-green .text {
+.bubble-tailless-green {
+	background: url(../images/micro/bubble-tailless-green.svg) no-repeat;
+}
+.bubble-tailless-beige {
+	background: url(../images/micro/bubble-tailless-beige.svg) no-repeat;
+}
+.bubble-tailless .text {
 	display: block;
 	margin-left: 1.3em;
 	color: #fff;
@@ -951,7 +1028,7 @@ p {
 	cursor: pointer;
 }
 .restaurants-open .restaurants-name {
-	padding: .6em 0 0 .5em;
+	padding: .6em 0 0 .4em;
 	font-size: 1.4em;
 	color: #424242;
 	font-weight: 700;
@@ -979,7 +1056,7 @@ p {
 	border: 1px solid #ed4f41;
 	background: #ed4f41;
 	border-radius: 4px;
-	padding: 10px 12px 10px 12px;
+	padding: 1em 1.2em 1em 1.2em;
 	width: 27em;
 	clear: both;
 }
@@ -1021,16 +1098,21 @@ p {
 	float: left;
 	margin-top: 2.2em;
 }
-.bubble-tail-green {
-	background: url(../images/micro/bubble-tail-green.svg) no-repeat;
+.bubble-tail {
 	width: 18.2em;
 	height: 7.4em;
-	background-size: 100%;
+	background-size: 100% !important;
 	float: left;
 	margin-top: 1em;
 	margin-right: 1.5em;
 }
-.bubble-tail-green .text {
+.bubble-tail-green {
+	background: url(../images/micro/bubble-tail-green.svg) no-repeat;
+}
+.bubble-tail-beige {
+	background: url(../images/micro/bubble-tail-beige.svg) no-repeat;
+}
+.bubble-tail .text {
 	display: block;
 	margin-left: 1.7em;
 	color: #fff;
@@ -1060,7 +1142,7 @@ p {
 
 
 ​.facebook {
-	display: none;
+	display: none !important;
 }
 
 .footer .social {
@@ -1165,14 +1247,25 @@ p {
 	overflow:hidden;
 	background-size:cover !important;
 	background-position: center center !important;
-	box-shadow: inset rgba(0,0,0,0.35) 0 0 200px;
-	padding: 1.5em;
+	box-shadow: inset rgba(0,0,0,0.15) 0 0 200px;
+	margin-bottom: 2px; 
+
+	filter: brightness(0.85) contrast(145%);
+	-webkit-filter: brightness(0.85) contrast(145%);
+	-moz-filter: brightness(0.85) contrast(145%);
+	-o-filter: brightness(0.85) contrast(145%);
+	-ms-filter: brightness(0.85) contrast(145%);
+
+	-webkit-transform: translateZ(0);
 }
 .restaurant-name {
 	color: #fff;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.6);
 	vertical-align: bottom;
-	bottom: 0;
+	position: absolute;
+	margin-top: -6em;
+	padding: 1.2em;
+	z-index: 90;
 }
 .restaurant-name h1 {
 	font-size: 2em;
@@ -1343,7 +1436,9 @@ p {
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
-.payment-form-input {
+
+/* global form styles */
+.form-input {
 	font-size: 1.3em;
 	border-radius: 3px;
 	border: 2px solid #00957f;
@@ -1351,36 +1446,33 @@ p {
 	color: #174e46;
 
 }
-.payment-form-icon {
+.form-icon {
 	color: #00957f;
 	font-size: 1.8em;
 	width: 1em;
 	text-align: center;
 	padding-right: .5em;
 }
-
-
-.payment-form-group {
+.form-group {
 	display: table-row;
 }
-.payment-form-icon, .payment-form-input, .payment-form-select {
+.form-icon, .form-input, .form-select {
 	vertical-align: top;
 	padding-top: .4em;
 }
-.payment-form-select {
+.form-select {
 	background: #fff;
 }
-
-.payment-form-input::-webkit-input-placeholder {
+.form-input::-webkit-input-placeholder {
 	color: #afc6c2;
 }
-.payment-form-input:-moz-placeholder { 
+.form-input:-moz-placeholder { 
 	color: #afc6c2;
 }
-.payment-form-input::-moz-placeholder {
+.form-input::-moz-placeholder {
 	color: #afc6c2;
 }
-.payment-form-input:-ms-input-placeholder {
+.form-input:-ms-input-placeholder {
 	color: #afc6c2;
 }
 
@@ -1460,4 +1552,67 @@ p {
 .about-bubble-wrap {
 	width: 28em;
 	margin: 0 auto;
+}
+
+.dialog-message-error {
+	color: #fff;
+	background: #e1574c;
+	margin-bottom: 1em;
+	border-radius: 4px;
+	font-size: 1.2em;
+	line-height: 1.4em;
+	padding: .7em .9em .5em .9em;
+}
+
+
+/* owners page */
+.owner-icon {
+	border-radius: 1.6em;
+	font-size: 2.1em;
+	padding: .43em;
+	background: #fe9872;
+	color: #fffef9;
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	text-align: center;
+	line-height: 1em;
+	float: left;
+	margin: .2em 1em 0 0;
+	clear: left;
+	
+	display: table-cell;
+	vertical-align: top;
+}
+
+.owner-content p {
+	margin-bottom: 1.3em;
+}
+
+.owner-text {
+	display: table-cell;
+	vertical-align: top;
+}
+.owner-block {
+	display: table-row;
+}
+
+.owner-brocoli {
+	background: url(../images/micro/owner-brocoli.svg) no-repeat;
+	background-position: top center;
+	width: 7.6em;
+	height: 13.1em;
+	background-size: 100%;
+	float: right;
+	-webkit-transition: all 0.2s;
+	margin-top: .3em;
+}
+.owners-bubble-wrap {
+	width: 26em;
+	margin: 0 auto;
+}
+
+.owners-bubble-wrap .bubble-tail {
+	float: left;
+	font-size: .9em;
 }
