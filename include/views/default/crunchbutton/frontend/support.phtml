@@ -21,6 +21,12 @@
 			<div ng-show="support.thanks">
 				Thanks, we'll get back to you as fast as we can.
 			</div>
+
+			<div class="dialog-message-error" ng-show="support.error && !support.thanks">
+				<i class="fa fa-frown-o"></i>&nbsp;&nbsp;
+				<span ng-bind-html-unsafe="support.error"></span>
+			</div>
+
 			<div ng-show="!support.thanks">
 				<form name="formSupport">
 					<label>Name</label>

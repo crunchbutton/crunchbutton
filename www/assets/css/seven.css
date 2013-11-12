@@ -1426,7 +1426,9 @@ p {
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
-.payment-form-input {
+
+/* global form styles */
+.form-input {
 	font-size: 1.3em;
 	border-radius: 3px;
 	border: 2px solid #00957f;
@@ -1434,36 +1436,33 @@ p {
 	color: #174e46;
 
 }
-.payment-form-icon {
+.form-icon {
 	color: #00957f;
 	font-size: 1.8em;
 	width: 1em;
 	text-align: center;
 	padding-right: .5em;
 }
-
-
-.payment-form-group {
+.form-group {
 	display: table-row;
 }
-.payment-form-icon, .payment-form-input, .payment-form-select {
+.form-icon, .form-input, .form-select {
 	vertical-align: top;
 	padding-top: .4em;
 }
-.payment-form-select {
+.form-select {
 	background: #fff;
 }
-
-.payment-form-input::-webkit-input-placeholder {
+.form-input::-webkit-input-placeholder {
 	color: #afc6c2;
 }
-.payment-form-input:-moz-placeholder { 
+.form-input:-moz-placeholder { 
 	color: #afc6c2;
 }
-.payment-form-input::-moz-placeholder {
+.form-input::-moz-placeholder {
 	color: #afc6c2;
 }
-.payment-form-input:-ms-input-placeholder {
+.form-input:-ms-input-placeholder {
 	color: #afc6c2;
 }
 
@@ -1543,4 +1542,14 @@ p {
 .about-bubble-wrap {
 	width: 28em;
 	margin: 0 auto;
+}
+
+.dialog-message-error {
+	color: #fff;
+	background: #e1574c;
+	margin-bottom: 1em;
+	border-radius: 4px;
+	font-size: 1.2em;
+	line-height: 1.4em;
+	padding: .7em .9em .5em .9em;
 }
