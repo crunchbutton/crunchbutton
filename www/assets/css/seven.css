@@ -1535,7 +1535,6 @@ p {
 }
 
 .delivery-minimum-error {
-	margin-top: .4em;
 	margin-bottom: .2em;
 }
 
@@ -1665,9 +1664,11 @@ p {
 	font-weight: bold;
 	color: #fff;
 }
-.giftcard-badge-value sup {
+sup {
 	font-size: .8em;
 	vertical-align: top;
+	margin-top: -.2em;
+	display: inline-block;
 }
 .giftcard-badge .fa {
 	font-size: 4.9em;
@@ -1685,4 +1686,13 @@ p {
 	padding: .6em .8em .6em .8em;
 	z-index: 6;
 	position: relative;
+}
+
+.restaurants-more {
+	margin: 0 auto;
+	width: 22.71em;
+}
+
+.restaurants-items {
+	margin-bottom: 2em;
 }
