@@ -369,7 +369,8 @@ p {
 	box-shadow: 0 2px 0 #de7e5b;
 }
 .button.pushable.lightorange:active {
-
+	box-shadow: none;
+	margin-top: 2px;
 }
 .button.green {
 	background: #00bea0;
