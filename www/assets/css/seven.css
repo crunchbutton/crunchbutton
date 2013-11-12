@@ -634,15 +634,20 @@ p {
 	float: left;
 	margin-left: 4em;
 }
-.bubble-tailless-green {
-	background: url(../images/micro/bubble-tailless-green.svg) no-repeat;
+.bubble-tailless {
 	width: 14.6em;
 	height: 5.7em;
-	background-size: 100%;
+	background-size: 100% !important;
 	float: left;
 	margin-top: 2em;
 }
-.bubble-tailless-green .text {
+.bubble-tailless-green {
+	background: url(../images/micro/bubble-tailless-green.svg) no-repeat;
+}
+.bubble-tailless-beige {
+	background: url(../images/micro/bubble-tailless-beige.svg) no-repeat;
+}
+.bubble-tailless .text {
 	display: block;
 	margin-left: 1.3em;
 	color: #fff;
@@ -1093,16 +1098,21 @@ p {
 	float: left;
 	margin-top: 2.2em;
 }
-.bubble-tail-green {
-	background: url(../images/micro/bubble-tail-green.svg) no-repeat;
+.bubble-tail {
 	width: 18.2em;
 	height: 7.4em;
-	background-size: 100%;
+	background-size: 100% !important;
 	float: left;
 	margin-top: 1em;
 	margin-right: 1.5em;
 }
-.bubble-tail-green .text {
+.bubble-tail-green {
+	background: url(../images/micro/bubble-tail-green.svg) no-repeat;
+}
+.bubble-tail-beige {
+	background: url(../images/micro/bubble-tail-beige.svg) no-repeat;
+}
+.bubble-tail .text {
 	display: block;
 	margin-left: 1.7em;
 	color: #fff;
@@ -1594,4 +1604,14 @@ p {
 	background-size: 100%;
 	float: right;
 	-webkit-transition: all 0.2s;
+	margin-top: .3em;
+}
+.owners-bubble-wrap {
+	width: 26em;
+	margin: 0 auto;
+}
+
+.owners-bubble-wrap .bubble-tail {
+	float: left;
+	font-size: .9em;
 }
