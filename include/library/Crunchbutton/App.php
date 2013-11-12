@@ -176,8 +176,17 @@ class Crunchbutton_App extends Cana_App {
 
 		$config->host_callback = $host_callback;
 
-		$config->facebook->app = $config->facebook->{$env}->app;
-		$config->facebook->secret = $config->facebook->{$env}->secret;
+		switch ($_SERVER['SERVER_NAME']) {
+			case 'seven.localhost':
+				$config->facebook->app = $config->facebook->seven->app;
+				$config->facebook->secret = $config->facebook->seven->secret;
+				break;
+
+			default:
+				$config->facebook->app = $config->facebook->{$env}->app;
+				$config->facebook->secret = $config->facebook->{$env}->secret;
+				break;
+		}
 		
 		$config->github->id = $config->github->{$params['env']}->id;
 		$config->github->secret = $config->github->{$params['env']}->secret;
