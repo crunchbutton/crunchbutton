@@ -42,6 +42,17 @@ class Crunchbutton_Site extends Cana_Table {
 		return $conf;
 	}
 	
+	public function exposedConfig() {
+		$config = $this->config();
+		$conf = [];
+		foreach ($config as $c) {
+			if ($c->exposed) {
+				$conf[$c->key] = $c->value;
+			}
+		}
+		return $conf;
+	}
+	
 	public static function byDomain($domain = null) {
 		$domain = is_null($domain) ? $_SERVER['HTTP_HOST'] : $domain;
 

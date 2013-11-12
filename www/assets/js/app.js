@@ -134,6 +134,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'AboutCtrl',
 			templateUrl: 'assets/view/about.html'
 		})
+		.when('/jobs', {
+			action: 'jobs',
+			controller: 'JobsCtrl',
+			templateUrl: 'assets/view/jobs.html'
+		})
+		.when('/owners', {
+			action: 'owners',
+			controller: 'OwnersCtrl',
+			templateUrl: 'assets/view/owners.html'
+		})
 		.when('/orders', {
 			action: 'orders',
 			controller: 'OrdersCtrl',
@@ -358,7 +368,7 @@ App.alert = function( txt, title, useNativeAlert ) {
 		} else if ( useNativeAlert ) {
 			alert( txt );
 		} else {
-			App.rootScope.$broadcast('notificationAlert', title || null, txt);
+			App.rootScope.$broadcast('notificationAlert', title || 'Woops!', txt);
 		}
 	});
 };
@@ -676,11 +686,10 @@ App.dialog = {
 			midClick: true,
 			removalDelay: 300,
 			overflowY: 'auto',
-			mainClass: 'my-mfp-zoom-in', //my-mfp-slide-bottom
+			mainClass: 'my-mfp-zoom-in',
 			callbacks: {
 				open: function() {
 					setTimeout(function() {
-						//$('.wrapper').addClass('dialog-open-effect-b');
 						if( App.iOS() ){
 							// #1774
 							var width = angular.element('.mfp-bg').width();
