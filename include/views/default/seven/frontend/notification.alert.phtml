@@ -1,0 +1,12 @@
+<div class="notification-alert-container zoom-anim-dialog mfp-hide dialog" ng-controller="NotificationAlertCtrl">
+	<div class="dialog-padding">
+		<h1 ng-bind="title" ng-show="title"></h1>
+		<div class="dialog-egg"></div>
+		<p ng-bind-html-unsafe="message"></p>
+		<div class="divider"></div>
+	</div>
+	<div class="dialog-divider"></div>
+	<div class="dialog-padding dialog-bottom-buttons">
+		<button class="button lightorange pushable" ng-click="closePopup()">ok</button>
+	</div>
+</div>

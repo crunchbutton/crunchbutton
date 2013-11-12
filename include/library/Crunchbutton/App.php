@@ -323,7 +323,7 @@ class Crunchbutton_App extends Cana_App {
 		foreach ($stack as $theme) {
 			$this->controllerStack($theme);
 		}
-		
+
 		if (!$this->isCompat()) {
 			$params['layout'] =  'layout/compat';		
 		} else {
@@ -418,6 +418,8 @@ class Crunchbutton_App extends Cana_App {
 				];
 			}
 		}
+		
+		$config['site'] = $this->config()->site->exposedConfig();
 
 		return $config;
 	}

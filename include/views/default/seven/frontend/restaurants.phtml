@@ -9,7 +9,7 @@
 <div ng-show="restaurants">
 
 	<div class="restaurants-bubble-wrap">
-		<div class="bubble-tail-green">
+		<div class="bubble-tail bubble-tail-green">
 			<div class="text">
 				Push a button.<br />
 				&nbsp;&nbsp;&nbsp;&nbsp;Get food.
@@ -33,7 +33,7 @@
 			</div>
 
 			<div class="restaurants-open" ng-hide="restaurant._tag == 'closed'">
-				<div class="restaurants-item-content ladda-button" style="background: url({{restaurant.img64}});" ng-spinner data-style="zoom-out" data-spinner-color="#333333">
+				<div class="restaurants-item-content ladda-button" style="background: url({{restaurant.img}});" ng-spinner data-style="zoom-out" data-spinner-color="#333333">
 					<div class="ladda-label">
 						<div class="restaurants-pic" style="background: url({{restaurant.img64}});"></div>
 						<h2 class="restaurants-name">{{restaurant.name}}</h2>
