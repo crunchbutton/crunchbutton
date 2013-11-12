@@ -66,20 +66,26 @@ NGApp.factory('CartService', function () {
 				}
 			}
 		}
-		service.restaurants[ service.id_restaurant ].items[id] = {};
-		service.restaurants[ service.id_restaurant ].items[id].id = item;
-		service.restaurants[ service.id_restaurant ].items[id].options = options;
-		/* Template viewer stuff */
-		service.restaurants[ service.id_restaurant ].items[id].details = {};
-		service.restaurants[ service.id_restaurant ].items[id].details.id = id;
-		service.restaurants[ service.id_restaurant ].items[id].details.name = dish.name;
-		service.restaurants[ service.id_restaurant ].items[id].details.description = dish.description != null ? dish.description : '';
-		/* Customization stuff */
-		service.restaurants[ service.id_restaurant ].items[id].details.customization = {};
-		service.restaurants[ service.id_restaurant ].items[id].details.customization.customizable = (dish.options().length > 0);
-		service.restaurants[ service.id_restaurant ].items[id].details.customization.expanded = ( expanded && (parseInt(dish.expand_view) > 0) );
-		service.restaurants[ service.id_restaurant ].items[id].details.customization.options = service._parseCustomOptions(dish_options, options);
-		service.restaurants[ service.id_restaurant ].items[id].details.customization.rawOptions = dish_options;
+		service.restaurants[ service.id_restaurant ].items[id] = {
+			id: item,
+			options: options,
+			
+			/* Template viewer stuff */
+			details: {
+				id: id,
+				name: dish.name,
+				description: dish.description != null ? dish.description : ''
+			},
+
+			/* Customization stuff */
+			customization: {
+				customizable: (dish.options().length > 0),
+				expanded: ( expanded && (parseInt(dish.expand_view) > 0) ),
+				options: service._parseCustomOptions(dish_options, options),
+				rawOptions: dish_options
+			}
+		};
+
 		//TODO:: If it is a mobile add the items at the top #1035
 		App.track('Dish added', {
 			id_dish: dish.id_dish,
