@@ -1467,6 +1467,10 @@ p {
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
+.stored-info-spacer {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
 
 /* global form styles */
 .form-input {
