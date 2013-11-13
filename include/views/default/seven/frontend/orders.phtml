@@ -1,13 +1,11 @@
 <div class="top-pad"></div>
 
 <div ng-show="!orders.list">
-	<div class="main-content-readable home-greeting">
-		<div class="home-welcome">
-			<h2>One sec! I know its here somewhere...</h2>
-			<br />
-			<div class="ajax-loader-teal"></div>
-			<br />
-		</div>
+	<div class="content-padding">
+		<h4>One sec!</h4>
+		<p>I know its here somewhere...</p>
+		<div class="ajax-loader-teal"></div>
+		<br />
 	</div>
 </div>
 
@@ -31,6 +29,7 @@
 						<div class="order-name" ng-click="orders.restaurant(order._restaurant_permalink)">
 							{{order._restaurant_name}}
 						</div>
+						<div class="divider"></div>
 						<div class="order-summary">
 							{{order.summary}}
 						</div>
