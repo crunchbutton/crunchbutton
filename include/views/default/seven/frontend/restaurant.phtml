@@ -292,28 +292,35 @@
 	</form>
 
 	<!-- stored user info -->
+	
 	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open && !order.showForm && order.cart.hasItems()">
-
-		<div>
-			<label>Your phone number:&nbsp;</label>
-			<i ng-show="user.phone">{{ user.phone | formatPhone }}</i>
-			<i ng-show="!user.phone">no phone # provided</i>
+		
+		<div class="divider dots stored-info-spacer"></div>
+			<div class="content-padding">
+			
+			<p>We’ve saved your payment and delivery info for one click reordering.</p>
+		
+			<div>
+				<label>Your phone number:&nbsp;</label>
+				<i ng-show="user.phone">{{ user.phone | formatPhone }}</i>
+				<i ng-show="!user.phone">no phone # provided</i>
+			</div>
+		
+			<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
+				<label>Your food will be delivered to:</label><br />
+				<span ng-bind-html-unsafe="order.form.address | nl2br"></span>
+				<i ng-hide="order.form.address">no address provided</i>
+			</div>
+		
+			<div ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'">
+				<label>Delivery Address:</label> <i>takeout</i>
+			</div>
+		
+			<div>
+				<span class="clickable" ng-click="order.showForm=true">Change delivery or payment details</span>
+			</div>
+		
 		</div>
-
-		<div ng-show="restaurant.delivery == '1' && order.form.delivery_type=='delivery'">
-			<label>Your food will be delivered to:</label><br />
-			<span ng-bind-html-unsafe="order.form.address | nl2br"></span>
-			<i ng-hide="order.form.address">no address provided</i>
-		</div>
-
-		<div ng-show="restaurant.takeout == '1' && order.form.delivery_type=='takeout'">
-			<label>Delivery Address:</label> <i>takeout</i>
-		</div>
-
-		<div>
-			<span class="clickable" ng-click="order.showForm=true">Change delivery or payment details</span>
-		</div>
-
 	</div>
 
 </div>

@@ -416,6 +416,10 @@ p {
 	background: #fe9872;
 	font-weight: bold;
 }
+.button.facebook {
+	background: #385ca2;
+	font-weight: bold;
+}
 .button.pushable.lightorange {
 	box-shadow: 0 2px 0 #de7e5b;
 }
@@ -1233,6 +1237,7 @@ p {
 	font-size: 1.2em;
 	margin-bottom: .5em;
 	margin-top: .3em;
+	float: left;
 }
 
 .order-summary {
@@ -1700,4 +1705,44 @@ sup {
 
 .restaurants-items {
 	margin-bottom: 2em;
+}
+
+.button.facebook .fa {
+	margin-right: .4em;
+
+}
+
+
+/* order page */
+.icon-support {
+	background: url(../images/micro/icon-support.svg) no-repeat;
+	background-position: top center;
+	width: 2.4em;
+	height: 2.8em;
+	background-size: 100%;
+}
+
+.icon-chef {
+	background: url(../images/micro/icon-chef.svg) no-repeat;
+	background-position: top center;
+	width: 2.0em;
+	height: 2.6em;
+	background-size: 100%;
+}
+
+.order-info a {
+	text-decoration: none;
+}
+
+.order-info p {
+	line-height: 1.5em;
+}
+
+.order-icon, .order-info {
+	float: left;
+}
+
+.order-icon {
+	margin: .4em 1.8em 0 1em;
+	width: 2em;
 }
