@@ -1,0 +1,109 @@
+<div class="top-pad"></div>
+
+<div ng-show="!order.id">
+	<div class="content-padding">
+		<h4>One sec!</h4>
+		<p>I know its here somewhere...</p>
+		<div class="ajax-loader-teal"></div>
+		<br />
+	</div>
+</div>
+
+<div ng-show="order.id">
+
+	<div class="content-padding">
+
+	<button class="button green" ng-click="support.dialog()">Reorder</button>
+
+	<div class="order-info content-padder main-content-readable">
+		<span class="order-thanks-message" ng-show="order.new">
+			<div class="toon-cherry"></div>
+			<span class="order-thanks-message-crunched">Crunched!</span>
+			<span class="order-thanks-message-block"> Your order is placed</span>
+			<span class="order-thanks-message-small">and saved for easy 1 click reordering</span>
+			<div class="divider"></div>
+		</span>
+
+		<div class="order-details">
+			<div ng-hide="account.user.has_auth">
+				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
+				<br />
+				<div class="divider dots"></div>
+			</div>
+			
+			<div ng-show="account.user.has_auth">
+
+				<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
+
+				<div ng-show="order.new && referral.invite_url && referral.enabled">
+					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
+					<br /><br />
+				</div>
+			</div>
+			
+			<div class="divider dots"></div>
+			<br />
+
+			<div class="order-icon"><div class="icon-chef"></div></div>
+			<div class="order-info">
+				<p>
+					For updates on your order, please call
+					<br /><b>{{order._restaurant_name}}: <a href="tel:{{order._restaurant_phone}}" target="_blank">{{ order._restaurant_phone | formatPhone }}</a></b>
+					<br /><br />
+				</p>
+			</div>
+			
+			<div class="divider"></div>
+
+
+			<div class="order-icon"><div class="icon-support"></div></div>
+			<div class="order-info">
+				<p>
+					For website or app support, please call
+					<br /><b>Crunchbutton: <a href="tel:(646) 783-1444" target="_blank">{{ '6467831444' | formatPhone }}</a></b>
+				</p>
+			</div>
+
+			<div class="divider"></div>
+
+			<div class="divider dots"></div>
+			<br>
+
+			<div ng-show="(order.delivery_type == 'delivery')">
+				<b>Your delivery address:</b><br><span ng-bind-html-unsafe="order.address | nl2br"></span><br><br>
+			</div>
+	
+			<div ng-hide="(order.delivery_type == 'delivery')">
+				<b>Takeout order</b><br><br>
+			</div>
+	
+			<b>Your phone #:</b><br>{{ order.phone | formatPhone }}<br><br>
+	
+			<b>Your receipt:</b><span ng-bind-html-unsafe="order._message"></span><br><br>
+	
+			<i ng-show="order.notes" ng-bind-html-unsafe="order.notes | nl2br"></i><br><br>
+	
+			<b ng-show="(order.pay_type == 'card')">Your total:<br></b>
+			<b ng-hide="(order.pay_type == 'card')">Your approximate total:<br></b>
+			
+			${{order.charged | formatPrice}}
+	
+			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+	
+			<br><br>
+	
+
+	
+		</div>
+	</div>
+	
+	<br>
+	
+	<? if (!$this->export) : ?>
+		<a data-ng-href="/printorder/{{ order.uuid }}" <?=$this->export ? '' : ' target="_blank"'?> class="print-icon"><i class="fa fa-print"></i> Print Receipt</a>
+	<? endif ; ?>
+
+	<div class="divider"></div>
+	</div>
+</div>
