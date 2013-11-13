@@ -514,7 +514,9 @@ class Crunchbutton_Chart extends Cana_Model {
 						$regex = '/' . $regex . '/';
 						preg_match( $regex, $permission, $matches );
 						if( count( $matches ) > 0 ){
-							$restaurants_ids[] = $matches[ 1 ];
+							if( is_numeric( $matches[ 1 ] ) ){
+								$restaurants_ids[] = $matches[ 1 ];	
+							}
 						}
 					}
 				}
