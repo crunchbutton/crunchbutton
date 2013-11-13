@@ -60,6 +60,10 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			$page_piece_index = 2;
 		} else if(c::getPagePiece(1) == 'analytics') {
 			echo 1;
+		} else if(c::getPagePiece(1) == 'hours_override') {
+			c::view()->overrides = Crunchbutton_Restaurant_Hour_Override::getNexts();
+			c::view()->display('restaurants/hours_override');
+			exit;
 		}
 		else {
 			$page_piece_index = 1;
@@ -116,7 +120,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 					if( !c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud', "restaurant-{$restaurant->id_restaurant}-edit", "restaurant-{$restaurant->id_restaurant}-all" ] ) ){
 						return;
 					}
-					c::view()->hours = Crunchbutton_Restaurant_Hour_Override::q( 'SELECT * FROM restaurant_hour_override WHERE id_restaurant = ' . $restaurant->id_restaurant );
+					c::view()->hours = Crunchbutton_Restaurant_Hour_Override::q( 'SELECT * FROM restaurant_hour_override WHERE id_restaurant = ' . $restaurant->id_restaurant . ' ORDER BY id_restaurant_hour_override DESC' );
 					c::view()->restaurant = $restaurant;
 					c::view()->layout('layout/ajax');
 					c::view()->display('restaurants/hour_override');

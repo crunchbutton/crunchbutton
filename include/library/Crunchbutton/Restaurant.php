@@ -724,8 +724,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			return false;
 		}
 
+		// Check if it is closed by override
+		$isClosedByOverride = Crunchbutton_Restaurant_Hour_Override::restaurantIsOpen( $this->id_restaurant );
+		if( !$isClosedByOverride ){
+			return false;
+		}
+		
+		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 		$hours = $this->hours();
-		$today = new DateTime($dt ? $dt : 'now', new DateTimeZone($this->timezone));
 		$day = strtolower($today->format('D'));
 
 		$hasHours = false;
@@ -756,6 +762,31 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			return false;
 		}
 
+		return false;
+	}
+
+	public function next_open_time(){
+		$hours = $this->hours( true );
+		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
+		$day = strtolower( $today->format( 'D' ) );
+		$weekdays = array();
+		for( $i = 0; $i <= 6; $i++ ){
+			$weekdays[] = strtolower( date( 'D', mktime( 0, 0, 0, date( 'n', $time ), date('j', $time ) + $i ,date( 'Y', $time ) ) ) );
+		}
+		foreach ( $weekdays as $weekday ) {
+			foreach ( $hours as $hour ) {
+				if ( $hour->day != $weekday ) {
+					continue;
+				}
+				$open  = new DateTime( $hour->time_open,  new DateTimeZone( $this->timezone ) );
+				if( $day == $weekday ){
+					$open->modify( '-7 days' );	
+				}
+				if ( $today->getTimestamp() < $open->getTimestamp() ) {
+					return $open;
+				}
+			}
+		}
 		return false;
 	}
 

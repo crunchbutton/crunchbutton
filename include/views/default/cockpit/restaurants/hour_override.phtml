@@ -1,5 +1,20 @@
 <?php  
 $hours = $this->hours;
+$restaurant = $this->restaurant;
+
+$isOpen = $restaurant->open();
+
+$timezone = new DateTimeZone( $restaurant->timezone );
+
+$date_start = new DateTime( 'now ', $timezone );
+$hour_override_date_start = $date_start->format( 'm/d/Y' );
+$hour_override_date_start_hour = $date_start->format( 'H:i' );
+
+$date_end = $restaurant->next_open_time();
+if( $date_end ){
+	$hour_override_date_end = $date_end->format( 'm/d/Y' );
+	$hour_override_date_end_hour = $date_end->format( 'H:i' );
+}
 ?>
 <div class="row-fluid">
 	<div class="container-fluid">
@@ -8,7 +23,6 @@ $hours = $this->hours;
 				<div class="box">
 					<div class="box-header"><span class="title">Add Date</span></div>
 					<div class="box-content padded">
-						<h4 class="restaurant-item-title">Add new date</h4>
 						<form id="restaurant-bank-info" onsubmit="return false;">
 							<div class="row-fluid">
 								<div class="span12">
@@ -16,13 +30,13 @@ $hours = $this->hours;
 										<strong>Start at:</strong>
 									</div>
 									<div class="span3">
-										<input type="text" class="datepicker span12" id="hour_override_date_start" name="hour_override_date_start">
+										<input type="text" value="<?php echo $hour_override_date_start; ?>" class="datepicker span12" id="hour_override_date_start" name="hour_override_date_start">
 									</div>
 									<div class="span2">
 										Hour:
 									</div>
 									<div class="span3">
-										<input type="text" name="hour_override_date_start_hour" id="hour_override_date_start_hour" class="span8">
+										<input type="text" value="<?php echo $hour_override_date_start_hour; ?>" name="hour_override_date_start_hour" id="hour_override_date_start_hour" class="span8">
 									</div>
 								</div>
 							</div>
@@ -32,13 +46,33 @@ $hours = $this->hours;
 										<strong>Finish at:</strong>
 									</div>
 									<div class="span3">
-										<input type="text" class="datepicker span12" id="hour_override_date_end" name="hour_override_date_end">
+										<input type="text" value="<?php echo $hour_override_date_end; ?>" class="datepicker span12" id="hour_override_date_end" name="hour_override_date_end">
 									</div>
 									<div class="span2">
 										Hour:
 									</div>
 									<div class="span3">
-										<input type="text" name="hour_override_date_end_hour" id="hour_override_date_end_hour" class="span8">
+										<input type="text" value="<?php echo $hour_override_date_end_hour; ?>" name="hour_override_date_end_hour" id="hour_override_date_end_hour" class="span8">
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Timezone</strong>
+									</div>
+									<div class="span8">
+										 <strong><?php echo $timezone->getName(); ?></strong>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Notes</strong>
+									</div>
+									<div class="span8">
+										<input type="text" name="hour_override_notes" id="hour_override_notes" maxlength="250" />
 									</div>
 								</div>
 							</div>
@@ -49,19 +83,9 @@ $hours = $this->hours;
 									</div>
 									<div class="span3">
 										<select name="hour_override_type" id="hour_override_type">
-												<option value="close" default>Closed</option>
-												<option value="open">Opened</option>
+												<option value="<?php echo Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED; ?>" <?php if( $isOpen ){ echo 'selected="selected"'; } ?>>Closed</option>
+												<option value="<?php echo Crunchbutton_Restaurant_Hour_Override::TYPE_OPENED ?>" <?php if( !$isOpen ){ echo 'selected="selected"'; }  ?>>Opened</option>
 										</select>
-									</div>
-								</div>
-							</div>
-							<div class="row-fluid">
-								<div class="span12">
-									<div class="span4">
-										<strong>Notes</strong>
-									</div>
-									<div class="span8">
-										<input type="text" name="hour_override_notes" id="hour_override_notes" maxlength="255" />
 									</div>
 								</div>
 							</div>
@@ -83,7 +107,7 @@ $hours = $this->hours;
 	</div>
 	<?php if( $hours->count() > 0 ) { ?>
 	<div class="box">
-		<div class="box-header"><span class="title">Hours</span></div>
+		<div class="box-header"><span class="title">Hours: <?php echo $restaurant->timezone; ?></span></div>
 		<div class="box-content">
 			<table class="table table-normal">
 				<thead>
@@ -110,7 +134,7 @@ $hours = $this->hours;
 							</td>
 							<td><?php echo $hour->status(); ?></td>
 							<td><?php echo $hour->notes; ?> - <?php echo $hour->admin()->name; ?></td>
-							<td><button type="button" onclick="hour_override.remove( '<?php echo $hour->id_restaurant_hour_override; ?>' );" class="btn btn-small btn-red">Remove</button> </td>
+							<td><button type="button" onclick="hour_override.remove( '<?php echo $hour->id_restaurant_hour_override; ?>' );" class="btn btn-small btn-red"><i title="Remove" class="icon-trash"/></button> </td>
 						</tr>
 						<?php
 					} ?>

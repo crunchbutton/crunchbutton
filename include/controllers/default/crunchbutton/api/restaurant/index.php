@@ -116,7 +116,6 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 		if (!$restaurant->id_restaurant) {
 			$restaurant = Crunchbutton_Restaurant::o(c::getPagePiece(2));
 		}
-
 		if ($restaurant->id_restaurant) {
 			$where = [];
 			if (preg_match('/admin/i',$_SERVER['HTTP_REFERER'])) { // if API is being called by the admin

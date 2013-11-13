@@ -9,13 +9,17 @@ class Controller_api_houroverride extends Crunchbutton_Controller_RestAccount {
 		// }
 		$id_restaurant_hour_override = $this->request()[ 'id_restaurant_hour_override' ];
 		if( $id_restaurant_hour_override ){
-			$hour = new Crunchbutton_Restaurant_Hour_Override();
+			$hour = Crunchbutton_Restaurant_Hour_Override::o( $id_restaurant_hour_override );
 			$id_restaurant = $hour->restaurant()->id_restaurant;
 		} else {
 			$id_restaurant = $this->request()[ 'id_restaurant' ];	
 		}
 
-		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud','restaurant-'.$hour->restaurant()->id_restaurant.'-all','restaurant-'.$hour->restaurant()->id_restaurant.'-edit'])) {
+		if( !$id_restaurant ){
+			return;
+		}
+
+		if (!c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud','restaurant-'.$id_restaurant.'-all','restaurant-'.$id_restaurant.'-edit'])) {
 			return;
 		}
 
@@ -33,15 +37,32 @@ class Controller_api_houroverride extends Crunchbutton_Controller_RestAccount {
 						break;
 
 					case 'add':
+
 						$hour = new Crunchbutton_Restaurant_Hour_Override();
 						$hour->id_restaurant = $this->request()[ 'id_restaurant' ];
-						$hour->date_start = $this->request()[ 'date_start' ];
-						$hour->date_end = $this->request()[ 'date_end' ];
+
+						$date_start = $this->request()[ 'date_start' ];
+						$date_start = explode( '/' , $date_start );
+						$date_start_hour = ( $this->request()[ 'date_start_hour' ] ) ? $this->request()[ 'date_start_hour' ] : '00:00';
+						$date_start = $date_start[ 2 ] . '/' . $date_start[ 0 ] . '/' . $date_start[ 1 ] . ' ' . $date_start_hour . ':00';
+
+						$date_end = $this->request()[ 'date_end' ];
+						$date_end = explode( '/' , $date_end );
+						$date_end_hour = ( $this->request()[ 'date_end_hour' ] ) ? $this->request()[ 'date_end_hour' ] : '00:00';
+						$date_end = $date_end[ 2 ] . '/' . $date_end[ 0 ] . '/' . $date_end[ 1 ] . ' ' . $date_end_hour . ':00';
+
+						$hour->date_start = $date_start;
+						$hour->date_end = $date_end;
 						$hour->type = $this->request()[ 'type' ];
 						$hour->notes = $this->request()[ 'notes' ];
 						$hour->id_admin = c::admin()->id_admin;
 						$hour->save();
-						echo json_encode( [ 'success' => 'success' ] );
+
+						if( $hour->id_restaurant_hour_override ){
+							echo json_encode( [ 'success' => 'success' ] );	
+						} else {
+							echo json_encode( [ 'error' => 'error' ] );
+						}	
 						exit;
 						break;
 				}
