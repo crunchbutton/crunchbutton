@@ -20,13 +20,8 @@ class Controller_home_curation extends Crunchbutton_Controller_Account {
 		if( c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud'] ) ){
 			$restaurants = Restaurant::q('SELECT * FROM restaurant WHERE active = 1 ORDER BY name ASC');
 		} else {
-			$_restaurants_id = c::admin()->getRestaurantsUserHasPermission();
-			$in = '-1';
-			if( count( $_restaurants_id ) > 0 ){
-				foreach( $_restaurants_id as $_restaurant_id ){
-					$in .= ',' . $_restaurant_id;
-				}
-			}
+			$_restaurants_id = c::admin()->getRestaurantsUserHasCurationPermission();
+			$in = join( ',', $_restaurants_id );
 			$restaurants = Restaurant::q("SELECT * FROM restaurant WHERE active = 1 AND id_restaurant IN( {$in} ) ORDER BY name ASC");
 		}
 

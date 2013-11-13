@@ -138,6 +138,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'github' => array( 'description' => 'View github page and issues' ),
 																											'customers-all' => array( 'description' => 'Do all about customers' ),
 																											'curation' => array( 'description' => 'View curation page--only for restaurants user has access to' ),
+																											'curation-communities-ID' => array( 'description' => 'See the curation metrics of the restaurants of these communities', 'dependency' => array( 'curation' ), 'type' => 'combo', 'element' => 'Community' ),
 																											'locations' => array( 'description' => 'View the locations page' ),
 																											'marketing-events' => array( 'description' => 'View the marketing events page' ),
 																											'logs' => array( 'description' => 'View the logs page' ),
