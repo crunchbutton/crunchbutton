@@ -18,10 +18,6 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
 body {
 	line-height: 1;
 	font-size: 10px;
@@ -40,14 +36,6 @@ ol, ul {
 }
 b {
 	font-weight: bold;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
 }
 table {
 	border-collapse: collapse;
@@ -90,14 +78,7 @@ html {
 	-webkit-tap-highlight-color: rgba(205,69,29,.5);
 }
 
-*:not(input):not(textarea) {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: -moz-none;
-	-o-user-select: none;
-	user-select: none;
-}
+
 
 .content, .footer .content-padding {
 	max-width: 767px;
@@ -112,6 +93,14 @@ html {
 @media screen and (max-width: 767px) {
 	.content-padding {
 		padding: 10px;
+	}
+	*:not(input):not(textarea) {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: -moz-none;
+		-o-user-select: none;
+		user-select: none;
 	}
 }
 
@@ -1464,17 +1453,18 @@ p {
 	border: 2px solid #00bea0;
 	color: #fff;
 }
-.restaurant-total-spacer {
+
+.spacer-one-one {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+.spacer-one-two {
 	margin-top: 1em;
 	margin-bottom: 2em;
 }
-.restaurant-payment-spacer {
-	margin-top: 1em;
-	margin-bottom: 1em;
-}
-.stored-info-spacer {
-	margin-top: 1em;
-	margin-bottom: 1em;
+.spacer-two-two {
+	margin-top: 2em;
+	margin-bottom: 2em;
 }
 
 /* global form styles */
@@ -1730,11 +1720,68 @@ sup {
 	background-size: 100%;
 }
 
+.icon-user {
+	background: url(../images/micro/icon-user.svg) no-repeat;
+	background-position: top center;
+	width: 1.9em;
+	height: 2.4em;
+	background-size: 100%;
+}
+
+.icon-deivery {
+	background: url(../images/micro/icon-deivery.svg) no-repeat;
+	background-position: top center;
+	width: 2.2em;
+	height: 1.5em;
+	background-size: 100%;
+}
+
+.icon-card {
+	background: url(../images/micro/icon-card.svg) no-repeat;
+	background-position: top center;
+	width: 2.3em;
+	height: 1.6em;
+	background-size: 100%;
+}
+
+.icon-clock {
+	background: url(../images/micro/icon-clock.svg) no-repeat;
+	background-position: top center;
+	width: 1.6em;
+	height: 1.9em;
+	background-size: 100%;
+}
+
+.icon-timer {
+	background: url(../images/micro/icon-timer.svg) no-repeat;
+	background-position: top center;
+	width: 1.6em;
+	height: 1.9em;
+	background-size: 100%;
+}
+
+.icon-map-home {
+	background: url(../images/micro/icon-map-home.svg) no-repeat;
+	background-position: top center;
+	width: 1.6em;
+	height: 2.4em;
+	background-size: 100%;
+}
+
+.icon-map-restaurant {
+	background: url(../images/micro/icon-map-restaurant.svg) no-repeat;
+	background-position: top center;
+	width: 1.6em;
+	height: 2.4em;
+	background-size: 100%;
+}
+
+
 .order-info a {
 	text-decoration: none;
 }
 
-.order-info p {
+.order-content p {
 	line-height: 1.5em;
 }
 
