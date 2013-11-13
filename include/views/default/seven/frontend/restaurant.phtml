@@ -166,7 +166,7 @@
 		<div class="divider"></div>
 	</div>
 
-	<div class="divider dots restaurant-payment-spacer" ng-show="order.loaded && order.cart.hasItems() && order.showForm"></div>
+	<div class="divider dots spacer-one-one" ng-show="order.loaded && order.cart.hasItems() && order.showForm"></div>
 
 
 	<!-- payment and user info -->
@@ -295,7 +295,7 @@
 	
 	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open && !order.showForm && order.cart.hasItems()">
 		
-		<div class="divider dots stored-info-spacer"></div>
+		<div class="divider dots spacer-one-one"></div>
 			<div class="content-padding">
 			
 			<p>We’ve saved your payment and delivery info for one click reordering.</p>
@@ -330,7 +330,7 @@
 
 
 <!-- total breakdown -->
-<div class="divider dots restaurant-total-spacer" ng-show="order.info.subtotal && order.info.subtotal!='0.00'"></div>
+<div class="divider dots spacer-one-two" ng-show="order.info.subtotal && order.info.subtotal!='0.00'"></div>
 
 <div class="payment-total" ng-show="order.info.subtotal && order.info.subtotal!='0.00'">
 	<div class="restaurant-banana"></div>
