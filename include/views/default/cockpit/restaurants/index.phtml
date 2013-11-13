@@ -33,9 +33,11 @@
 				<div class="divider"></div>
 				<br><br>
 				<?php if (c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurants-create'])) { ?>
-				<button type="submit" class="btn btn-blue new-restaurant">Create New</button> 
+				<button type="submit" class="btn btn-blue new-restaurant">Create New</button> &nbsp;&nbsp;
 				<?php } ?>
-				
+				<a href="/restaurants/hours_override/" class="btn btn-green">
+					<i class="icon-calendar"></i>&nbsp;Hours override list
+				</a>
 			</div>
 		</div>
 	</div>

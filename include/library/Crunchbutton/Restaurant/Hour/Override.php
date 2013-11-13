@@ -2,6 +2,9 @@
 
 class Crunchbutton_Restaurant_Hour_Override extends Cana_Table {
 
+	const TYPE_CLOSED = 'close';
+	const TYPE_OPENED = 'open';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -10,13 +13,55 @@ class Crunchbutton_Restaurant_Hour_Override extends Cana_Table {
 			->load($id);
 	}
 
+	public static function getNexts(){
+		$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud' ] );
+		$where = '';
+		if( !$hasPermissionToAllRestaurants ){
+			$id_restaurants = Restaurant::restaurantsUserHasPermission();
+			$where = 'AND ho.id_restaurant IN(' . join( $id_restaurants, ',' ) . ')';
+		}
+		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$today_mysql = $today->format( 'Y-m-d' );
+
+		$today->modify( '+30 days' );	
+		$month_mysql = $today->format( 'Y-m-d' );
+
+		$query = "SELECT r.name, ho.* FROM restaurant_hour_override ho
+								INNER JOIN restaurant r ON r.id_restaurant = ho.id_restaurant
+								WHERE 
+									DATE_FORMAT( date_start, '%Y-%m-%d' ) >= '{$today_mysql}' 
+									AND
+									DATE_FORMAT( date_start, '%Y-%m-%d' ) <= '{$month_mysql}' 
+									{$where}
+								ORDER BY r.name ASC, ho.date_start ASC";
+		return Crunchbutton_Restaurant_Hour_Override::q( $query );
+	}
+
+	public static function restaurantIsOpen( $id_restaurant ){
+		$restaurant = Restaurant::o( $id_restaurant );
+		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
+		$today_mysql = $today->format('Y-m-d H:i');
+		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override WHERE date_start <= '{$today_mysql}' and date_end >= '{$today_mysql}'" );
+		if( $overrides->count() > 0 ){
+			foreach( $overrides as $override ){
+				if( $override->type == Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED ){
+					return false;
+				}
+				if( $override->type == Crunchbutton_Restaurant_Hour_Override::TYPE_OPENED ){
+					return true;
+				}
+			}
+		}
+		return true;
+	}
+
 	public function restaurant(){
 		return Restaurant::o( $this->id_restaurant );
 	}
 
 	public function status(){
 		if ( !isset( $this->_status ) ) {
-			$this->_status = ( $this->type == 'close' ) ? 'Closed' : 'Opened';
+			$this->_status = ( $this->type == Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED ) ? 'Closed' : 'Opened';
 		}
 		return $this->_status;
 	}
@@ -27,16 +72,14 @@ class Crunchbutton_Restaurant_Hour_Override extends Cana_Table {
 
 	function date_start(){
 		if ( !isset( $this->_date_start ) ) {
-			$this->_date_start = new DateTime( $this->date_start, new DateTimeZone( c::config()->timezone ) );
-			$this->_date_start->setTimezone( new DateTimeZone( $this->restaurant()->timezone ) );
+			$this->_date_start = new DateTime( $this->date_start, new DateTimeZone( $this->restaurant()->timezone ) );
 		}
 		return $this->_date_start;
 	}
 
 	function date_end(){
 		if ( !isset( $this->_date_end ) ) {
-			$this->_date_end = new DateTime( $this->date_end, new DateTimeZone( c::config()->timezone ) );
-			$this->_date_end->setTimezone( new DateTimeZone( $this->restaurant()->timezone ) );
+			$this->_date_end = new DateTime( $this->date_end, new DateTimeZone( $this->restaurant()->timezone ) );
 		}
 		return $this->_date_end;
 	}

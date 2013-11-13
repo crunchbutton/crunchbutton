@@ -1,0 +1,52 @@
+<?
+	$this->title = 'Restaurants';
+	$this->titleicon = 'food';
+	$this->titleLink = '/restaurants/';
+	$this->title2 = 'Hours override';
+	$this->title2icon = 'calendar';
+	$overrides = $this->overrides;
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	 <div class="row-fluid">
+			<div class="box">
+				 <div class="box-header"><span class="title">Hours override for next 30 days</span></div>
+				 <div class="box-content">
+						<?php if( $overrides->count() > 0 ) { ?>
+							<table class="table table-normal">
+								<thead>
+									<tr>
+										<td>Restaurant</td>
+										<td>Start at</td>
+										<td>Finish at</td>
+										<td>Status</td>
+										<td>Notes</td>
+									</tr>
+								</thead>
+									<?php foreach ( $overrides as $hour ) {
+										?>
+										<tr>
+											<td>
+												<a style="text-decoration:underline;" href="/restaurants/<?php echo $hour->id_restaurant; ?>">
+													<?php echo $hour->name; ?>
+												</a>
+											</td>
+											<td nowrap="nowrap">
+												<?php echo $hour->date_start()->format('M jS Y'); ?> - <?php echo $hour->date_start()->format('g:i:s A'); ?>
+											</td>
+											<td nowrap="nowrap">
+												<?php echo $hour->date_end()->format('M jS Y'); ?> - <?php echo $hour->date_end()->format('g:i:s A'); ?>
+											</td>
+											<td><?php echo $hour->status(); ?></td>
+											<td><?php echo $hour->notes; ?> - <?php echo $hour->admin()->name; ?></td>
+										</tr>
+										<?php
+									} ?>
+							</table>
+						<?php } else { ?>
+							No results
+						<?php } ?>
+				 </div>
+			</div>
+	 </div>
+</div>
