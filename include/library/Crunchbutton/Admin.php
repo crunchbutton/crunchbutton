@@ -17,6 +17,10 @@ class Crunchbutton_Admin extends Cana_Table {
 		
 	}
 
+	public function getRestaurantsUserHasCurationPermission(){
+		return Crunchbutton_Restaurant::restaurantsUserHasCurationPermission();
+	}
+
 	public function getRestaurantsUserHasPermission(){
 		return Crunchbutton_Restaurant::restaurantsUserHasPermission();
 	}
