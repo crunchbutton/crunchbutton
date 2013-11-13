@@ -675,12 +675,12 @@ var WIDGET = {
 
 			$( dish_dom ).find( '.admin-menu-dish-description' ).first().on( 'keyup', function(){
 				var remaining = 60 - $( this ).val().length;
-				$( dish_dom ).find( '.description-warning' ).text( 'Description - required ' + remaining + ' characters remaining before text is cut off' );
+				$( dish_dom ).find( '.description-warning' ).text( remaining );
 			} )
 			
 			setTimeout( function(){
 				var remaining = 60 - $( dish_dom ).find( '.admin-menu-dish-description' ).first().val().length;
-				$( dish_dom ).find( '.description-warning' ).text( 'Description - required ' + remaining + ' characters remaining before text is cut off' );	
+				$( dish_dom ).find( '.description-warning' ).text( remaining );
 			}, 100 );
 			
 
