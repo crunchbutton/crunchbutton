@@ -416,6 +416,10 @@ p {
 	background: #fe9872;
 	font-weight: bold;
 }
+.button.facebook {
+	background: #385ca2;
+	font-weight: bold;
+}
 .button.pushable.lightorange {
 	box-shadow: 0 2px 0 #de7e5b;
 }
@@ -1233,6 +1237,7 @@ p {
 	font-size: 1.2em;
 	margin-bottom: .5em;
 	margin-top: .3em;
+	float: left;
 }
 
 .order-summary {
@@ -1263,18 +1268,28 @@ p {
 /**
  * restaurant page
  */
+.restaurant-pic-overlay {
+	height: 100%;
+	width: 100%;
+	background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 54%, rgba(0,0,0,0.25) 76%, rgba(0,0,0,0.45) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(54%,rgba(0,0,0,0.15)), color-stop(76%,rgba(0,0,0,0.25)), color-stop(100%,rgba(0,0,0,0.45))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%); /* IE10+ */
+	background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#73000000',GradientType=0 ); /* IE6-9 */
+}
 .restaurant-pic {
 	overflow:hidden;
 	background-size:cover !important;
 	background-position: center center !important;
-	box-shadow: inset rgba(0,0,0,0.15) 0 0 200px;
 	margin-bottom: 2px; 
 
-	filter: brightness(0.85) contrast(145%);
-	-webkit-filter: brightness(0.85) contrast(145%);
-	-moz-filter: brightness(0.85) contrast(145%);
-	-o-filter: brightness(0.85) contrast(145%);
-	-ms-filter: brightness(0.85) contrast(145%);
+	filter: brightness(0.95) contrast(135%);
+	-webkit-filter: brightness(0.95) contrast(135%);
+	-moz-filter: brightness(0.95) contrast(135%);
+	-o-filter: brightness(0.95) contrast(135%);
+	-ms-filter: brightness(0.95) contrast(135%);
 
 	-webkit-transform: translateZ(0);
 }
@@ -1311,7 +1326,7 @@ p {
 	background: #f45e46;
 	border-radius: 6px;
 	color: #fff;
-	padding: .7em;
+	padding: 1em .7em 1em .7em;
 }
 .restaurant-box-inner {
 	display: table-row;
@@ -1351,6 +1366,7 @@ p {
 	color: #fff;
 	padding: .6em .9em .5em .9em;
 	margin-top: .6em;
+	height: 3.3em;
 }
 .cart-button {
 	float: left;
@@ -1456,6 +1472,10 @@ p {
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
+.stored-info-spacer {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
 
 /* global form styles */
 .form-input {
@@ -1525,7 +1545,6 @@ p {
 }
 
 .delivery-minimum-error {
-	margin-top: .4em;
 	margin-bottom: .2em;
 }
 
@@ -1655,9 +1674,11 @@ p {
 	font-weight: bold;
 	color: #fff;
 }
-.giftcard-badge-value sup {
+sup {
 	font-size: .8em;
 	vertical-align: top;
+	margin-top: -.2em;
+	display: inline-block;
 }
 .giftcard-badge .fa {
 	font-size: 4.9em;
@@ -1675,4 +1696,53 @@ p {
 	padding: .6em .8em .6em .8em;
 	z-index: 6;
 	position: relative;
+}
+
+.restaurants-more {
+	margin: 0 auto;
+	width: 22.71em;
+}
+
+.restaurants-items {
+	margin-bottom: 2em;
+}
+
+.button.facebook .fa {
+	margin-right: .4em;
+
+}
+
+
+/* order page */
+.icon-support {
+	background: url(../images/micro/icon-support.svg) no-repeat;
+	background-position: top center;
+	width: 2.4em;
+	height: 2.8em;
+	background-size: 100%;
+}
+
+.icon-chef {
+	background: url(../images/micro/icon-chef.svg) no-repeat;
+	background-position: top center;
+	width: 2.0em;
+	height: 2.6em;
+	background-size: 100%;
+}
+
+.order-info a {
+	text-decoration: none;
+}
+
+.order-info p {
+	line-height: 1.5em;
+}
+
+.order-icon, .order-info {
+	float: left;
+}
+
+.order-icon {
+	margin: .4em 1.8em 0 1em;
+	width: 2em;
 }
