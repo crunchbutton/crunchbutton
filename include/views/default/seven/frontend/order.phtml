@@ -15,7 +15,7 @@
 
 	<button class="button green" ng-click="support.dialog()">Reorder</button>
 
-	<div class="order-info content-padder main-content-readable">
+	<div class="content-padder main-content-readable">
 		<span class="order-thanks-message" ng-show="order.new">
 			<div class="toon-cherry"></div>
 			<span class="order-thanks-message-crunched">Crunched!</span>
@@ -24,7 +24,7 @@
 			<div class="divider"></div>
 		</span>
 
-		<div class="order-details">
+		<div class="order-content">
 			<div ng-hide="account.user.has_auth">
 				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
 				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
@@ -41,9 +41,8 @@
 					<br /><br />
 				</div>
 			</div>
-			
-			<div class="divider dots"></div>
-			<br />
+
+			<div class="divider dots spacer-two-two"></div>
 
 			<div class="order-icon"><div class="icon-chef"></div></div>
 			<div class="order-info">
@@ -53,9 +52,7 @@
 					<br /><br />
 				</p>
 			</div>
-			
 			<div class="divider"></div>
-
 
 			<div class="order-icon"><div class="icon-support"></div></div>
 			<div class="order-info">
@@ -64,12 +61,69 @@
 					<br /><b>Crunchbutton: <a href="tel:(646) 783-1444" target="_blank">{{ '6467831444' | formatPhone }}</a></b>
 				</p>
 			</div>
-
 			<div class="divider"></div>
 
-			<div class="divider dots"></div>
-			<br>
+			<div class="divider dots spacer-two-two"></div>
+			
+			<div class="order-icon"><div class="icon-delivery"></div></div>
+			<div class="order-info">
+				<p>
+					<span ng-show="(order.delivery_type == 'delivery')">Delivery order</span>
+					<span ng-hide="(order.delivery_type == 'delivery')">Takeout order</span>
+				</p>
+			</div>
+			<div class="divider"></div>
+			
+			<div class="order-icon"><div class="icon-card"></div></div>
+			<div class="order-info">
+				<p>
+					<span ng-show="(order.pay_type == 'card')">Paid by card ending in <b>{{order.card.lastfour}}</b></span>
+					<span ng-hide="(order.pay_type == 'card')">Pay<span ng-show="(order.delivery_type == 'delivery')"> and tip</span> with <b>cash</b></span>
+				</p>
+			</div>
+			<div class="divider"></div>
+			
+			<div class="order-icon"><div class="icon-clock"></div></div>
+			<div class="order-info">
+				<p>
+					Ordered at {{order.date}}
+				</p>
+			</div>
+			<div class="divider"></div>
+			
+			<div class="order-icon"><div class="icon-timer"></div></div>
+			<div class="order-info">
+				<p>
+					Expected by {{order.date}}
+				</p>
+			</div>
+			<div class="divider"></div>
+			
+			<div class="divider dots spacer-two-two"></div>
+			
+			<div class="order-icon"><div class="icon-user"></div></div>
+			<div class="order-info">
+				<p>
+					{{order.name}}
+					<br>{{ order.phone | formatPhone }}
+				</p>
+			</div>
+			<div class="divider"></div>
 
+	
+			<b>Your receipt:</b><span ng-bind-html-unsafe="order._message"></span><br><br>
+	
+			<i ng-show="order.notes" ng-bind-html-unsafe="order.notes | nl2br"></i><br><br>
+	
+
+			
+			${{order.charged | formatPrice}}
+	
+			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+	
+			<br><br>
+			
+			
 			<div ng-show="(order.delivery_type == 'delivery')">
 				<b>Your delivery address:</b><br><span ng-bind-html-unsafe="order.address | nl2br"></span><br><br>
 			</div>
@@ -77,21 +131,6 @@
 			<div ng-hide="(order.delivery_type == 'delivery')">
 				<b>Takeout order</b><br><br>
 			</div>
-	
-			<b>Your phone #:</b><br>{{ order.phone | formatPhone }}<br><br>
-	
-			<b>Your receipt:</b><span ng-bind-html-unsafe="order._message"></span><br><br>
-	
-			<i ng-show="order.notes" ng-bind-html-unsafe="order.notes | nl2br"></i><br><br>
-	
-			<b ng-show="(order.pay_type == 'card')">Your total:<br></b>
-			<b ng-hide="(order.pay_type == 'card')">Your approximate total:<br></b>
-			
-			${{order.charged | formatPrice}}
-	
-			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
-	
-			<br><br>
 	
 
 	
