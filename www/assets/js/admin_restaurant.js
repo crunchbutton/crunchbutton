@@ -1159,6 +1159,7 @@ var ADMIN = {
 					DOM_MAP.apply();
 					ADMIN.save_is_safe = true;
 					UTIL.show_msg('Restaurant loaded.');
+					isDeliveryServiceChecked();
 					$( '#save-button' ).html( 'Save' );
 					ADMIN.isRestaurantLoaded = true;
 				});

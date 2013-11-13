@@ -174,16 +174,17 @@
 			
 				<div class=admin-item>
 					<div class=admin-item-left>
-						<div class=admin-item-name>Delivery Service?</div>
+						<div class=admin-item-name>3rd Party Delivery?</div>
 					</div>
 					<div class=admin-item-right>
 						<div class=admin-item-col-small id=restaurant-delivery-service-container></div>
 					</div>
 				</div>
 			
-				<div class=admin-item>
+				<div class=admin-item id="formal-relationship-container">
 					<div class=admin-item-left>
 						<div class=admin-item-name>Formal Relationship?</div>
+						<div class=admin-item-desc>e.g. if a rep is doing delivery from McDonald’s but has no formal relationship with them, select “no”"</div>
 					</div>
 					<div class=admin-item-right>
 						<div class=admin-item-col-small id=restaurant-formal-relationship-container></div>
@@ -870,7 +871,19 @@ $( document ).ready( function(){
 		e.preventDefault();
 		hour_override.load();
 	} );
+
+	$( '#restaurant-delivery-service-container' ).click( function(){
+		isDeliveryServiceChecked();
+	} );
+
 } );
+function isDeliveryServiceChecked(){
+	if( $( '#restaurant-delivery-service-container' ).text() == 'no' ){
+			$( '#formal-relationship-container' ).hide();
+		} else {
+			$( '#formal-relationship-container' ).show();
+		}
+}
 var _id_restaurant = '<?=$this->restaurant->id_restaurant?>';
 var expanded_view_checked = <?php echo ( Crunchbutton_Config::getVal( 'cockpit-expanded-view-checked-as-default' ) == '1' ) ? '1' : '0'; ?>;
 ADMIN.restaurant_init(<?=$this->restaurant->id_restaurant?>);
