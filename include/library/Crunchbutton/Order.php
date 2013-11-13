@@ -944,7 +944,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// @TODO: need to combine all this stuff into one streamlined thing
 	
-		if ($type == 'summary') {
+		if ($type == 'summary' || $type == 'facebook') {
 			// does not show duplicate items, configuration, or item count. returns human readable
 			$dishes = [];
 			foreach ($this->dishes() as $dish) {
@@ -979,7 +979,6 @@ class Crunchbutton_Order extends Cana_Table {
 				break;
 
 			case 'summary':
-			case 'facebook':
 				$with = '';
 				$space = '';
 				$group = true;
@@ -1006,14 +1005,6 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 
 			$foodItem = "\n- ".$prefix.preg_replace($pFind, $pReplace, $dish->dish()->name);
-			
-			// Facebook does not share the options
-			if( $type == 'facebook' ){
-				$foodItem .= '. ';
-				$food .= $foodItem;
-				continue;
-			}
-
 			$options = $dish->options();
 
 			if (gettype($options) == 'array') {
