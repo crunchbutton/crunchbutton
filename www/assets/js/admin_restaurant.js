@@ -487,7 +487,7 @@ var WIDGET = {
 			duration = args.duration || 0;
 			$(category_dom).find('.restaurant-dishes-container').first().append(dish_dom);
 			$(dish_dom).hide().show(duration);
-			this.apply_dish(dish_dom, dish);
+			this.apply_dish(dish_dom, dish );
 		};
 
 		this.copy_options_to_dish_unlinked = function(dish_dom_from, dish_to_id) {
@@ -661,11 +661,35 @@ var WIDGET = {
 					})());
 		};
 
-		this.apply_dish = function(dish_dom, dish) {
+		this.apply_dish = function(dish_dom, dish ) {
+			
 			// 'view' button
 			$(dish_dom).find('.details-button').first().click(function() {
 				UTIL.toggle_visibility(dish_dom.find('.admin-menu-dish-details'));
+				if( $( this ).text() == 'collapse details' ){
+					$( this ).text( 'expand details' );
+				} else {
+					$( this ).text( 'collapse details' );
+				}
 			});
+
+			$( dish_dom ).find( '.admin-menu-dish-description' ).first().on( 'keyup', function(){
+				var remaining = 60 - $( this ).val().length;
+				$( dish_dom ).find( '.description-warning' ).text( 'Description - required ' + remaining + ' characters remaining before text is cut off' );
+			} )
+			
+			setTimeout( function(){
+				var remaining = 60 - $( dish_dom ).find( '.admin-menu-dish-description' ).first().val().length;
+				$( dish_dom ).find( '.description-warning' ).text( 'Description - required ' + remaining + ' characters remaining before text is cut off' );	
+			}, 100 );
+			
+
+			// it means is a new one
+			if( isNaN( dish.id_dish ) ){
+				dish_dom.find('.admin-menu-dish-details').show();
+				$(dish_dom).find('.details-button').first().text( 'collapse details' );
+			}
+
 			$(dish_dom).find('.delete-menu-dish').first().click(function() {
 				$(dish_dom).slideUp(100, function(){$(dish_dom).remove();});
 			});
