@@ -735,16 +735,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function open($dt = null) {
 
 		if (!$this->open_for_business) {
-			if( $this->forceOpen() ){
+			/*if( $this->forceOpen() ){
 				return true;
-			}
+			}*/
 			return false;
 		}
 
-		if( $this->forceClose() ){
+		/*if( $this->forceClose() ){
 			return false;
 		}
-
+		*/
 		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 		$hours = $this->hours();
 		$day = strtolower($today->format('D'));
