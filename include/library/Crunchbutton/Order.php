@@ -330,6 +330,9 @@ class Crunchbutton_Order extends Cana_Table {
 		c::auth()->session()->id_user = $user->id_user;
 		c::auth()->session()->generateAndSaveToken();
 
+		$agent = Crunchbutton_Agent::getAgent();
+		$this->id_agent = $agent->id_agent;
+
 		$this->id_user = $this->_user->id_user;
 		$this->date = date('Y-m-d H:i:s');
 		$this->id_community = $this->restaurant()->community()->id_community;
