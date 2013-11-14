@@ -875,21 +875,6 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 			service.form.cardYear = '2016';
 			service.form.tip = 'autotip';
 			service.tooglePayment( 'card' );
-			// Add one dish of each category
-			if( !service._askedAboutFood ){
-				service._askedAboutFood = true;
-				if( confirm( 'Add some food?' ) ){
-					var categories = service.restaurant.categories()
-					for( x in categories ){
-						category = categories[ x ];
-						var dishes = category.dishes();
-						for( y in dishes ){
-							var dish = dishes[ y ];
-							service.cart.add( dish.id_dish );
-						}
-					}
-				}
-			}
 			$rootScope.$broadcast( 'creditCardInfoChanged', true  );
 		});
 	}
