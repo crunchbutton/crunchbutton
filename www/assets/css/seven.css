@@ -1827,6 +1827,9 @@ sup {
 	line-height: .4em;
 }
 
+.order-info-address a {
+	color: #312f38;
+}
 
 .order-comment-arrow {
 	width: 0;
