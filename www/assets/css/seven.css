@@ -1728,11 +1728,11 @@ sup {
 	background-size: 100%;
 }
 
-.icon-deivery {
-	background: url(../images/micro/icon-deivery.svg) no-repeat;
+.icon-delivery {
+	background: url(../images/micro/icon-delivery.svg) no-repeat;
 	background-position: top center;
 	width: 2.2em;
-	height: 1.5em;
+	height: 1.6em;
 	background-size: 100%;
 }
 
@@ -1776,6 +1776,28 @@ sup {
 	background-size: 100%;
 }
 
+.icon-cash {
+	background: url(../images/micro/icon-cash.svg) no-repeat;
+	background-position: top center;
+	width: 2.1em;
+	height: 1.6em;
+	background-size: 100%;
+}
+
+.icon-takeout {
+	background: url(../images/micro/icon-takeout.svg) no-repeat;
+	background-position: top center;
+	width: 1.5em;
+	height: 2.0em;
+	background-size: 100%;
+}
+
+.order-map {
+	width: 100%;
+	height: 15em;
+	background-size:cover !important;
+
+}
 
 .order-info a {
 	text-decoration: none;
@@ -1789,7 +1811,36 @@ sup {
 	float: left;
 }
 
+.order-info-oneline {
+	min-height: 2.2em;
+	margin-top: .4em;
+}
+
 .order-icon {
 	margin: .4em 1.8em 0 1em;
 	width: 2em;
+	text-align: center;
+}
+
+.order-info-address {
+	font-size: 1.1em;
+	line-height: .4em;
+}
+
+
+.order-comment-arrow {
+	width: 0;
+	height: 0;
+	border-left: 7px solid transparent;
+	border-right: 7px solid transparent;
+	border-bottom: 7px solid #00957f;
+	margin-left: 1.2em;
+}
+
+.order-comment {
+	background: #00957f;
+	color: #fff;
+	padding: .7em .9em .5em 1em;
+	border-radius: 4px;
+	margin-bottom: .8em;
 }

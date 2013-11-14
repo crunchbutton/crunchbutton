@@ -12,137 +12,159 @@
 <div ng-show="order.id">
 
 	<div class="content-padding">
-
-	<button class="button green" ng-click="support.dialog()">Reorder</button>
-
-	<div class="content-padder main-content-readable">
-		<span class="order-thanks-message" ng-show="order.new">
-			<div class="toon-cherry"></div>
-			<span class="order-thanks-message-crunched">Crunched!</span>
-			<span class="order-thanks-message-block"> Your order is placed</span>
-			<span class="order-thanks-message-small">and saved for easy 1 click reordering</span>
-			<div class="divider"></div>
-		</span>
-
-		<div class="order-content">
-			<div ng-hide="account.user.has_auth">
-				Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
-				<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
-				<br />
-				<div class="divider dots"></div>
-			</div>
-			
-			<div ng-show="account.user.has_auth">
-
-				<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
-
-				<div ng-show="order.new && referral.invite_url && referral.enabled">
-					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
-					<br /><br />
+	
+		<button class="button green" ng-click="support.dialog()">Reorder</button>
+	
+		<div class="content-padder main-content-readable">
+			<span class="order-thanks-message" ng-show="order.new">
+				<div class="toon-cherry"></div>
+				<span class="order-thanks-message-crunched">Crunched!</span>
+				<span class="order-thanks-message-block"> Your order is placed</span>
+				<span class="order-thanks-message-small">and saved for easy 1 click reordering</span>
+				<div class="divider"></div>
+			</span>
+	
+			<div class="order-content">
+				<div ng-hide="account.user.has_auth">
+					Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
+					<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
+					<br />
+					<div class="divider dots"></div>
 				</div>
-			</div>
-
-			<div class="divider dots spacer-two-two"></div>
-
-			<div class="order-icon"><div class="icon-chef"></div></div>
-			<div class="order-info">
+				
+				<div ng-show="account.user.has_auth">
+	
+					<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
+	
+					<div ng-show="order.new && referral.invite_url && referral.enabled">
+						Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
+						<br /><br />
+					</div>
+				</div>
+	
+				<div class="divider dots spacer-two-two"></div>
+	
+				<div class="order-icon"><div class="icon-chef"></div></div>
+				<div class="order-info">
+					<p>
+						For updates on your order, please call
+						<br /><b>{{order._restaurant_name}}: <a href="tel:{{order._restaurant_phone}}" target="_blank">{{ order._restaurant_phone | formatPhone }}</a></b>
+						<br /><br />
+					</p>
+				</div>
+				<div class="divider"></div>
+	
+				<div class="order-icon"><div class="icon-support"></div></div>
+				<div class="order-info">
+					<p>
+						For website or app support, please call
+						<br /><b>Crunchbutton: <a href="tel:(646) 783-1444" target="_blank">{{ '6467831444' | formatPhone }}</a></b>
+					</p>
+				</div>
+				<div class="divider"></div>
+	
+				<div class="divider dots spacer-two-two"></div>
+				
+				<div class="order-icon">
+					<div ng-show="(order.delivery_type == 'delivery')" class="icon-delivery"></div>
+					<div ng-hide="(order.delivery_type == 'delivery')" class="icon-takeout"></div>
+				</div>
+				<div class="order-info order-info-oneline">
+					<p>
+						<span ng-show="(order.delivery_type == 'delivery')">Delivery order</span>
+						<span ng-hide="(order.delivery_type == 'delivery')">Takeout order</span>
+					</p>
+				</div>
+				<div class="divider"></div>
+				
+				<div class="order-icon">
+					<div ng-show="(order.pay_type == 'card')" class="icon-card"></div>
+					<div ng-hide="(order.pay_type == 'card')" class="icon-cash"></div>
+				</div>
+				<div class="order-info order-info-oneline">
+					<p>
+						<span ng-show="(order.pay_type == 'card')">Paid by card ending in <b>{{order.card.lastfour}}</b></span>
+						<span ng-hide="(order.pay_type == 'card')">Pay<span ng-show="(order.delivery_type == 'delivery')"> and tip</span> with <b>cash</b></span>
+					</p>
+				</div>
+				<div class="divider"></div>
+				
+				<div class="order-icon"><div class="icon-clock"></div></div>
+				<div class="order-info order-info-oneline">
+					<p>
+						Ordered at {{order.date}}
+					</p>
+				</div>
+				<div class="divider"></div>
+				
+				<div class="order-icon"><div class="icon-timer"></div></div>
+				<div class="order-info order-info-oneline">
+					<p>
+						Expected by {{order.date}}
+					</p>
+				</div>
+				<div class="divider"></div>
+				
+				<div class="divider dots spacer-two-two"></div>
+				
+				<div class="order-icon"><div class="icon-user"></div></div>
+				<div class="order-info">
+					<p>
+						{{order.name}}
+						<br>{{ order.phone | formatPhone }}
+					</p>
+				</div>
+				<div class="divider"></div>
+				
+				<div ng-show="order.notes">
+					<div class="order-comment-arrow"></div>
+					<div class="order-comment">
+						<p ng-bind-html-unsafe="order.notes | nl2br"></p>
+					</div>
+					<br />
+				</div>
+				
+				<div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:green%7Clabel:A%7C{{order.address.replace('#','') | nl2cm}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div>
+				
+				<div class="divider spacer-two-two"></div>
+				
+				<div class="order-icon"><div class="icon-map-home"></div></div>
+				<div class="order-info">
+					<p class="order-info-address"ng-bind-html-unsafe="order.address | nl2br"></p>
+					<br />
+				</div>
+				<div class="divider"></div>
+				
+				<div class="order-icon"><div class="icon-map-restaurant"></div></div>
+				<div class="order-info">
+					<p class="order-info-address" ng-bind-html-unsafe="order._restaurant_address | nl2br"></p>
+				</div>
+				<div class="divider"></div>
+				
+				<div class="divider dots spacer-two-two"></div>
+		
+				<h4>Your receipt:</h4>
 				<p>
-					For updates on your order, please call
-					<br /><b>{{order._restaurant_name}}: <a href="tel:{{order._restaurant_phone}}" target="_blank">{{ order._restaurant_phone | formatPhone }}</a></b>
-					<br /><br />
+					<span ng-bind-html-unsafe="order._message"></span>
+					<br><br>
+					Total: $<span ng-bind-html-unsafe="order.charged | formatPrice"></span>
+					<br><br>
 				</p>
-			</div>
-			<div class="divider"></div>
+				
 
-			<div class="order-icon"><div class="icon-support"></div></div>
-			<div class="order-info">
-				<p>
-					For website or app support, please call
-					<br /><b>Crunchbutton: <a href="tel:(646) 783-1444" target="_blank">{{ '6467831444' | formatPhone }}</a></b>
-				</p>
-			</div>
-			<div class="divider"></div>
+				<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 
-			<div class="divider dots spacer-two-two"></div>
-			
-			<div class="order-icon"><div class="icon-delivery"></div></div>
-			<div class="order-info">
-				<p>
-					<span ng-show="(order.delivery_type == 'delivery')">Delivery order</span>
-					<span ng-hide="(order.delivery_type == 'delivery')">Takeout order</span>
-				</p>
 			</div>
-			<div class="divider"></div>
-			
-			<div class="order-icon"><div class="icon-card"></div></div>
-			<div class="order-info">
-				<p>
-					<span ng-show="(order.pay_type == 'card')">Paid by card ending in <b>{{order.card.lastfour}}</b></span>
-					<span ng-hide="(order.pay_type == 'card')">Pay<span ng-show="(order.delivery_type == 'delivery')"> and tip</span> with <b>cash</b></span>
-				</p>
-			</div>
-			<div class="divider"></div>
-			
-			<div class="order-icon"><div class="icon-clock"></div></div>
-			<div class="order-info">
-				<p>
-					Ordered at {{order.date}}
-				</p>
-			</div>
-			<div class="divider"></div>
-			
-			<div class="order-icon"><div class="icon-timer"></div></div>
-			<div class="order-info">
-				<p>
-					Expected by {{order.date}}
-				</p>
-			</div>
-			<div class="divider"></div>
-			
-			<div class="divider dots spacer-two-two"></div>
-			
-			<div class="order-icon"><div class="icon-user"></div></div>
-			<div class="order-info">
-				<p>
-					{{order.name}}
-					<br>{{ order.phone | formatPhone }}
-				</p>
-			</div>
-			<div class="divider"></div>
-
-	
-			<b>Your receipt:</b><span ng-bind-html-unsafe="order._message"></span><br><br>
-	
-			<i ng-show="order.notes" ng-bind-html-unsafe="order.notes | nl2br"></i><br><br>
-	
-
-			
-			${{order.charged | formatPrice}}
-	
-			<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
-	
-			<br><br>
-			
-			
-			<div ng-show="(order.delivery_type == 'delivery')">
-				<b>Your delivery address:</b><br><span ng-bind-html-unsafe="order.address | nl2br"></span><br><br>
-			</div>
-	
-			<div ng-hide="(order.delivery_type == 'delivery')">
-				<b>Takeout order</b><br><br>
-			</div>
-	
-
-	
 		</div>
-	</div>
+		
+		<br>
+		
+		<? if (!$this->export) : ?>
+			<br><br>
+			<a data-ng-href="/printorder/{{ order.uuid }}" <?=$this->export ? '' : ' target="_blank"'?> class="print-icon"><button class="button lightorange" ng-click="support.dialog()"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
+			<br />
+		<? endif ; ?>
 	
-	<br>
-	
-	<? if (!$this->export) : ?>
-		<a data-ng-href="/printorder/{{ order.uuid }}" <?=$this->export ? '' : ' target="_blank"'?> class="print-icon"><i class="fa fa-print"></i> Print Receipt</a>
-	<? endif ; ?>
-
-	<div class="divider"></div>
+		<div class="divider"></div>
 	</div>
 </div>
