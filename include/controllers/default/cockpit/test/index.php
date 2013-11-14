@@ -2,6 +2,22 @@
 
 class Controller_test extends Crunchbutton_Controller_Account {
 	public function init() {
+		$c = c::lob()->checks()->create([
+			'name' => 'Demo Check',
+			'to' => [
+				'name' => 'Harry Zhang',
+				'address_line1' => '123 Test Street',
+				'address_city' => 'Mountain View',
+				'address_state' => 'CA',
+				'address_zip' => '94041',
+				'address_country' => 'US'
+			],
+			'bank_account' => c::lob()->defaultAccount(),
+			'amount' => '2200',
+			'memo' => 'rent'
+		]);
+		print_r($c->id);
+		exit;
 
 		$n = 1;
 		echo $n - 100  * floor($n / 100) . rand(1,1000) . floor($n/100);

@@ -15,13 +15,13 @@ class Cana_Curl extends Cana_Model {
 	var $error;
 	var $request;
 	
-	public function __construct($url, $data = null, $method = 'post', $proxy = null, $headers = false, $useragent = null) {
-		$this->request($url, $data, $method, $proxy, $headers, $useragent);
+	public function __construct($url, $data = null, $method = 'post', $proxy = null, $headers = false, $useragent = null, $user = null) {
+		$this->request($url, $data, $method, $proxy, $headers, $useragent, $user);
 		$this->request = $url;
 		$this->parseHeaders($this->_headersRaw);
 	}
 	
-	private function request($url, $data = null, $method = 'post', $proxy = null, $headers = false, $useragent = null) {
+	private function request($url, $data = null, $method = 'post', $proxy = null, $headers = false, $useragent = null, $user = null) {
 
 		$ch = curl_init();	
 		
@@ -29,15 +29,12 @@ class Cana_Curl extends Cana_Model {
 		
 		if ($method == 'post') {
 			if (is_array($data)) {
-				foreach ($data as $key => $item) {
-					if ($datapost)
-						$datapost .= '&';
-					$datapost .= $key.'='.@urlencode($item);
-				}
+				$datapost = http_build_query($data);
 			}
-			curl_setopt($ch, CURLOPT_URL,$url);  
+			curl_setopt($ch, CURLOPT_URL,$url);
 			curl_setopt($ch, CURLOPT_POST, true); 
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $datapost);
+
 		} else {
 			if (is_array($data)) {
 				foreach ($data as $key => $item) {
@@ -49,13 +46,13 @@ class Cana_Curl extends Cana_Model {
 		}
 		
 		if (!is_null($proxy)) {
-		
-			//curl_setopt($ch, CURLOPT_USERPWD, $user.':'.$pass);
-			//curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
 			curl_setopt($ch, CURLOPT_PROXY, true);
 			curl_setopt($ch, CURLOPT_PROXY, $proxy['server']);
 			curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
 			
+		} elseif (!is_null($user)) {
+			curl_setopt($ch, CURLOPT_USERPWD, $user['user'].':'.$user['pass']);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		}
 		//curl_setopt($ch, CURLOPT_FILE, $fp)
 		
