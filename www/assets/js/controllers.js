@@ -729,6 +729,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.modal = { signupOpen : AccountModalService.signupOpen };
 	$scope.order = {};
 	$scope.restaurant = {};
+	$scope.width = $(window).width();
 	
 	OrderViewService.load();
 
