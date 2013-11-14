@@ -1792,6 +1792,31 @@ sup {
 	background-size: 100%;
 }
 
+.icon-phone {
+	background: url(../images/micro/icon-phone.svg) no-repeat;
+	background-position: top center;
+	width: 1.4em;
+	height: 1.4em;
+	background-size: 100%;
+	margin-top: .2em;
+}
+
+.icon-notes {
+	background: url(../images/micro/icon-notes.svg) no-repeat;
+	background-position: top center;
+	width: 1.9em;
+	height: 1.6em;
+	background-size: 100%;
+}
+
+.icon-credit {
+	background: url(../images/micro/icon-credit.svg) no-repeat;
+	background-position: top center;
+	width: 2.5em;
+	height: 1.9em;
+	background-size: 100%;
+}
+
 .order-map {
 	width: 100%;
 	height: 15em;
@@ -1807,6 +1832,9 @@ sup {
 	line-height: 1.5em;
 }
 
+.order-icon div {
+	display: inline-block;
+}
 .order-icon, .order-info {
 	float: left;
 }
@@ -1846,4 +1874,14 @@ sup {
 	padding: .7em .9em .5em 1em;
 	border-radius: 4px;
 	margin-bottom: .8em;
+}
+
+.side-menu-icon {
+	width: 60px;
+}
+
+.restaurant-info-address {
+	margin-top: .2em;
+	font-size: 1.1em;
+	line-height: 1.4em;
 }
