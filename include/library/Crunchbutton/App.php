@@ -455,6 +455,21 @@ class Crunchbutton_App extends Cana_App {
 		return $this->_balanced;
 	}
 	
+	public function lob($d = true) {
+		if (!$this->_lob) {
+			if (c::env() == 'live') {
+				$env = 'live';
+			} elseif ($d) {
+				$env = 'dev';
+			} else {
+				$env = c::env();
+			}
+
+			$this->_lob = $lob = new \Lob\Lob(c::config()->lob->{$env}->key, c::config()->lob->{$env}->account);
+		}
+		return $this->_lob;
+	}
+	
 	public function isBot() {
 		if (!isset($this->_isBot)) {
 			$this->_isBot = preg_match('/googlebot|slurp|yahoo|bingbot|jeeves|scoutjet|webcrawl/i',$_SERVER['HTTP_USER_AGENT']);

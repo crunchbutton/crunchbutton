@@ -196,6 +196,16 @@
 			<secret>_KEY_</secret>
 		</dev>
 	</phaxio>
+	<lob>
+		<dev>
+			<key>_KEY_</key>
+			<account>***REMOVED***</account>
+		</dev>
+		<live>
+			<key>_KEY_</key>
+			<account>***REMOVED***</account>
+		</live>
+	</lob>
 	<crypt>
 		<key>_KEY_</key>
 	</crypt>
