@@ -166,6 +166,10 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 		
 		$env = c::getEnv();
 
+		if ( $env != 'live' ) {
+			return;
+		}
+
 		$message .= ' E: ' . $env;
 
 		$twilio = new Twilio( c::config()->twilio->{ $env }->sid, c::config()->twilio->{ $env }->token );
