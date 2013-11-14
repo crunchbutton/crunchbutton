@@ -58,8 +58,15 @@ class Controller_Permissions_Groups extends Crunchbutton_Controller_Account {
 
 	private function form_permissions(){
 		if( c::getPagePiece(3) ){
-			c::view()->group = Crunchbutton_Group::o( c::getPagePiece(3) );
+
 			$permissions = new Crunchbutton_Admin_Permission();
+			if( c::getPagePiece(4) == 'new' ){
+				c::view()->default = $permissions->groupDefaultPermissions();
+			} else {
+				c::view()->default = array();
+			}
+
+			c::view()->group = Crunchbutton_Group::o( c::getPagePiece(3) );
 			c::view()->permissions = $permissions->all();
 			c::view()->elements = $permissions->elements();
 			c::view()->display( 'permissions/groups/permissions' );	
