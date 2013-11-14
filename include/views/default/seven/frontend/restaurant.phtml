@@ -204,7 +204,8 @@
 					</div>
 
 					<div class="payment-form-group form-group">
-						<i ng-show="order.form.delivery_type=='delivery'" class="fa fa-map-marker payment-form-icon form-icon animate-show"></i>
+						<i class="fa fa-map-marker payment-form-icon form-icon animate-show"></i>
+						<p>Pickup from: {{restaurant.address | nl2br}}</p>
 						<textarea ng-autosize ng-show="order.form.delivery_type=='delivery'" class="payment-form-input form-input" ng-model="order.form.address" name="pay-address" id="pay-address" tabindex="5" placeholder="address"></textarea>
 					</div>
 
