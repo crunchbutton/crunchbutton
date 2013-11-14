@@ -100,7 +100,9 @@
 				<div class="order-icon"><div class="icon-timer"></div></div>
 				<div class="order-info order-info-oneline">
 					<p>
-						Expected by {{order.date}}
+						Expected by&nbsp;
+						<span ng-show="(order.delivery_type == 'delivery')">{{order._restaurant_delivery_estimated_time}}</span>
+						<span ng-hide="(order.delivery_type == 'delivery')">{{order._restaurant_pickup_estimated_time}}</span>
 					</p>
 				</div>
 				<div class="divider"></div>
