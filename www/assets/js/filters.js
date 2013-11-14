@@ -26,11 +26,21 @@ NGApp.filter( 'formatPrice', function() {
 	};
 });
 
-// Price format filter
+// text format filter
 NGApp.filter( 'nl2br', function() {
 	return function( input ) {
 		if( input != null ){
 			return input.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br/>$2');	
+		}
+		return input;
+	};
+});
+
+// text format filter
+NGApp.filter( 'nl2cm', function() {
+	return function( input ) {
+		if( input != null ){
+			return input.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1, $2');	
 		}
 		return input;
 	};
