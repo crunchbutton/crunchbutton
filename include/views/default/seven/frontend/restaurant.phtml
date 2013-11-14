@@ -88,6 +88,12 @@
 							<div class="cart-item-customize-item">
 							
 								<div ng-switch on="option.type">
+								
+									<!-- Customizable - select -->
+									<div ng-switch-when="select">
+										<label class="cart-item-customize-select-name">{{option.name}}</label>
+										<select ng-change="order.cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
+									</div>
 
 									<!-- Customizable - checkbox -->
 									<div ng-switch-when="check">
@@ -97,11 +103,7 @@
 										<div class="divider"></div>
 									</div>
 
-									<!-- Customizable - select -->
-									<div ng-switch-when="select">
-										<label class="cart-item-customize-select-name">{{option.name}}</label>
-										<select ng-change="order.cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
-									</div>
+
 
 								</div>
 							</div>
