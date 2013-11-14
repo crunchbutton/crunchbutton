@@ -121,7 +121,11 @@ function sendForm(){
 				$( '.admin-save' ).html( '<i class="icon-save"></i> Save ' );
 			} else {
 				alert( 'Group saved!' );
+				<?php if( $group->id_group ) { ?>
+				location.href = '/permissions/groups/';
+				<?php } else { ?>
 				location.href = '/permissions/groups/permissions/' + json.success + '/new';
+				<?php } ?>
 			}
 		},
 		error: function( ){
