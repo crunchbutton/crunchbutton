@@ -271,7 +271,7 @@
 				processing = false;
 				if( json.success ){
 					alert( 'Permssions saved!' );
-					location.reload();
+					location.href = '/permissions/groups/permissions/<?php echo $group->id_group;?>';
 				} else {
 					alert( 'Error saving permissions!' );
 				}
