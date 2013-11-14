@@ -117,22 +117,16 @@ function sendForm(){
 		success: function( json ) {
 			processing = false;
 			if( json.error ){
-				if( json.error == 'login' ){
-					alert( 'This login is already in use!' );
-					$( '#login' ).focus();
-					$( '.admin-save' ).html( '<i class="icon-save"></i> Save ' );
-				} else {
-					alert( 'Error at saving the user!' );
-					$( '.admin-save' ).html( '<i class="icon-save"></i> Save ' );
-				}
+				alert( 'Error at saving the group!' );
+				$( '.admin-save' ).html( '<i class="icon-save"></i> Save ' );
 			} else {
 				alert( 'Group saved!' );
-				location.href = '/permissions/groups/';
+				location.href = '/permissions/groups/permissions/' + json.success + '/new';
 			}
 		},
 		error: function( ){
 			processing = false;
-			alert( 'Error at saving the user!' );
+			alert( 'Error at saving the group!' );
 			$( '.admin-save' ).html( '<i class="icon-save"></i> Save ' );
 		}
 	});

@@ -159,6 +159,12 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		return $this->_elements;
 	}
 
+	// permissions that will be checked by default when the admin is creating a new group #2068
+	public function groupDefaultPermissions(){
+		return array( 'restaurants-list-page', 'restaurants-create', 'restaurants-weight-adj-page', 'orders-list-page', 'orders-new-users', 'curation' );
+	}
+
+
 	public function getElement( $element, $id ){
 		$elements = $this->elements();
 		if( $elements[ $element ] ){

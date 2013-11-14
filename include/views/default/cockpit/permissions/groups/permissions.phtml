@@ -10,6 +10,8 @@
 	$_permissions = $this->permissions;
 	$_elements = $this->elements;
 
+	$_default = $this->default;
+
 ?>
 <div class="container-fluid padded">
 	 <div class="row-fluid">
@@ -56,6 +58,10 @@
 											<label for="<?php echo $permission; ?>">
 												<?php if( $type == 'checkbox' ) { 
 													$checked = ( $group->hasPermission( $permission ) ) ? 'checked="checked"' : '' ;
+
+													$checked = ( in_array( $permission , $_default ) ) ? 'checked="checked"' : $checked ;
+													
+
 													?>
 													<span class="pull-right">
 														<input type="checkbox" <?php echo $checked; ?> class="icheck permissions <?php if( $isPermissionFather ) { ?>do-all-father <?php } ?>" family-name="<?php echo $doAllPermission;?>" value="1" name="<?php echo $permission; ?>" id="<?php echo $permission; ?>">
