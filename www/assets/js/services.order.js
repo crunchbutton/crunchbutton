@@ -920,8 +920,9 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 			service.reload = false;
 			if (json) {
 				for (var x in json) {
+					var arr = json[x].date.split(/[- :]/);
+					json[x]._date = new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4], arr[5]);
 					json[x].timeFormat = json[x]._date_tz.replace(/^[0-9]+-([0-9]+)-([0-9]+) ([0-9]+:[0-9]+):[0-9]+$/i, '$1/$2 $3');
-					json[x]._date = new Date(json[x].date);
 				}	
 				list = json;
 			} else {
@@ -973,32 +974,35 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 			method: 'GET',
 			url: url,
 			cache: true
-			} ).success( function( data ) {
-				service.order = data;
-				if ( service.order.uuid ) {
-					service.order._final_price = parseFloat( service.order.final_price ).toFixed(2);
+		}).success( function( data ) {
+			service.order = data;
+			if (service.order.uuid) {
+				service.order._final_price = parseFloat(service.order.final_price).toFixed(2);
 
-					if( service.order.credit ){
-						service.order._credit = parseFloat( service.order.credit ).toFixed(2);
-					}
-
-					if( service.newOrder ){
-						service.order.new = service.newOrder;
-					} else {
-						service.order.new = false;
-					}
-
-					service.facebook._order_uuid = service.order.uuid;
-					service.facebook.preLoadOrderStatus();
-					
-					$rootScope.$broadcast( 'OrderViewLoadedOrder', service.order );
-
-				} else {
-					error();
+				if (service.order.credit) {
+					service.order._credit = parseFloat(service.order.credit).toFixed(2);
 				}
-			} ).error( function( data ) {
+
+				if (service.newOrder) {
+					service.order.new = service.newOrder;
+				} else {
+					service.order.new = false;
+				}
+
+				var arr = data.date.split(/[- :]/);
+				service.order._date = new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4], arr[5]);
+
+				service.facebook._order_uuid = service.order.uuid;
+				service.facebook.preLoadOrderStatus();
+				
+				$rootScope.$broadcast( 'OrderViewLoadedOrder', service.order );
+
+			} else {
 				error();
-			});
+			}
+		}).error(function(data) {
+			error();
+		});
 	}
 	return service;
 });
