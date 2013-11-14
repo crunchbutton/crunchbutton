@@ -76,6 +76,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 									</div>
 								<?php } ?>
 							<?php } ?>
+							
 					<br/>
 
 					<?
@@ -214,6 +215,12 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 							</td>
 						</tr>
 						<?php } ?>
+						<?php if( $order->id_agent ) { ?>
+							<tr>
+								<td><i class="icon-desktop"></i> <?php echo $order->agent()->os . ' ' . $order->agent()->browser ?></td>
+							</tr>
+								<?php 
+							} ?>
 					</table>
 				</td>
 			</tr>

@@ -1394,6 +1394,10 @@ class Crunchbutton_Order extends Cana_Table {
 			return null;
 	}
 
+	public function agent() {
+		return Agent::o($this->id_community);
+	}
+
 	public function community() {
 		return Community::o($this->id_community);
 	}
