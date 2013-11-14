@@ -7,7 +7,7 @@ App.AB = {
 		tagline: [
 			{
 				name: 'tagline-for-free',
-				tagline: 'Order the top food %s. For free. <br /> After you order, everything is saved for future 1 click ordering. <br /><strong>Choose a restaurant:</strong>'
+				tagline: 'Order the top food %s. <br /> After you order, everything is saved for future 1 click ordering. <br /><strong>Choose a restaurant:</strong>'
 			},
 			{
 				name: 'tagline-no-free',
