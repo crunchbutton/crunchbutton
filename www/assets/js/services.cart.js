@@ -74,17 +74,20 @@ NGApp.factory('CartService', function () {
 			details: {
 				id: id,
 				name: dish.name,
-				description: dish.description != null ? dish.description : ''
+				description: dish.description != null ? dish.description : '',
+
+				/* Customization stuff */
+				customization: {
+					customizable: (dish.options().length > 0),
+					expanded: ( expanded && (parseInt(dish.expand_view) > 0) ),
+					options: service._parseCustomOptions(dish_options, options),
+					rawOptions: dish_options
+				}
 			},
 
-			/* Customization stuff */
-			customization: {
-				customizable: (dish.options().length > 0),
-				expanded: ( expanded && (parseInt(dish.expand_view) > 0) ),
-				options: service._parseCustomOptions(dish_options, options),
-				rawOptions: dish_options
-			}
+
 		};
+		console.log(service.restaurants[ service.id_restaurant ].items[id]);
 
 		//TODO:: If it is a mobile add the items at the top #1035
 		App.track('Dish added', {
