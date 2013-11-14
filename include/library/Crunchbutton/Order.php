@@ -1231,6 +1231,7 @@ class Crunchbutton_Order extends Cana_Table {
 			$out['_restaurant_phone'] = $this->restaurant()->phone;
 			$out['_restaurant_lat'] = $this->restaurant()->loc_lat;
 			$out['_restaurant_lon'] = $this->restaurant()->loc_long;
+			$out['_restaurant_address'] = $this->restaurant()->address;
 			$out['user'] = $this->user()->uuid;
 			$out['_message'] = nl2br($this->orderMessage('web'));
 			$out['charged'] = $this->charged();
