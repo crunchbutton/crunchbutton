@@ -40,7 +40,7 @@ NGApp.filter( 'nl2br', function() {
 NGApp.filter( 'nl2cm', function() {
 	return function( input ) {
 		if( input != null ){
-			return input.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1, $2');	
+			return input.replace(/\r/g, '').replace(/\n/g,', ');	
 		}
 		return input;
 	};
