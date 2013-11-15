@@ -1,3 +1,7 @@
+<?
+	$bot = c::app()->isBot();
+
+?>
 
 <div class="top-pad"></div>
 
@@ -9,7 +13,7 @@
 			$this->title = $this->restaurant->name.' | '.($this->community->id_community ? $this->community->name : 'Local').' Food Delivery | Order from '.($this->community->id_community && $this->community->name_alt() ? $this->community->name_alt() : 'Local').' Restaurants | Crunchbutton';
 		?>
 
-		<? if (c::app()->isBot()) : ?>
+		<? if ($bot) : ?>
 			<div class="home-text">
 				<div class="breadcrumb">
 					<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
@@ -97,7 +101,8 @@
 		<?
 			$this->title = $this->community->name.' Food Delivery | Order Food from '.($this->community->name_alt() ? $this->community->name_alt() : 'Local').' Restaurants | Crunchbutton';
 		?>
-		<? if (c::app()->isBot()) : ?>
+
+		<? if ($bot) : ?>
 			<div class="home-text">
 				<h1><?=$this->community->name?> Online Food Delivery</h1>
 				<h2>Mobile food delivery</h2>
@@ -131,22 +136,64 @@
 			$this->title = 'Food Delivery | Order from Local Restaurants | Crunchbutton';
 		?>
 	
-		<? if (c::app()->isBot()) : ?>
-	
-			<h1>Push a button. Get food.</h1>
-			<h2>Order <b>delivery</b> &amp; <b>takeout</b> using Crunchbutton on your iPhone, Android, or computer.</h2>
-			<p>
-				Order a <b>Wenzel</b>, your favorite <b>Pizza</b>, some General Tso's Chicken, or something else! Customize the toppings one your pizza and have it delivered to your home. Pepperoni, sausage, cheese, sauce, whatever!
-				Don't want pizza? How about other <b>Italian food</b> like pasta, or a sandwich? Build your own sandwich, or order a <b>Wenzel</b>.
-				We also have lots of <b>wings</b>, BBQ wings, spicy wings, hot wings, teriyaki wings.
-				Or how about some appetizers, or deserts?
-				<br /><br />
-				Try our <b>iPhone</b> and <b>Android</b> App for mobile food ordering.
-				<br /><br />
-				Love <b>Chinese food</b> or <b>asian food</b>? have some Pad Thai, or fried rice, or egg rolls.
-				O! Don't forget <b>sushi</b>! Get some sushi delivered online.
-				<b>Mediterranean food</b>! Falafel, soup, hummus, Grape Leaves, and some Baba Ghannoush!
-			</p>
+		<div class="restaurants-bubble-wrap">
+			<div class="bubble-tail bubble-tail-green">
+				<div class="text">
+					<h1>Push a button.<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;Get food.</h1>
+				</div>
+			</div>
+			<div class="restaurants-orange"></div>
+			<div class="divider"></div>
+			<div class="restaurants-tagline">
+				<? if ($bot) : ?>
+					<h1>Order the top local delivery food.</h1>
+					<h2>Delivery from our awesome restaurants</h2>
+				<? else : ?>
+					<h1>Order the top local delivery food.</h1>
+					<h2>Choose one of these awesome restaurants</h2>
+				<? endif ; ?>
+			</div>
+			<div class="divider"></div>
+		</div>
+
+		<? if ($bot) : ?>
+			<div class="content-padding">
+				<h4>The best curated menus for your community or college</h4>
+				<p>
+					Get the best local delivery food from 
+					<? foreach (Community_Alias::q('select * from community') as $community) : ?>
+						<b><a href="/<?=$community->permalink?>"><?=$community->name?></a></b>, 
+					<? endforeach ; ?>
+					.
+					<br /><br />
+				</p>
+				
+				<h4>Local delivery food on your iPhone, Android, or mobile device</h4>
+				<p>
+					Download <a href="https://itunes.apple.com/app/id721780390" target="_blank">Crunchbutton on the App Store</a> on iTunes for iPhone. 
+					<br /><br />
+				</p>
+
+				<h4>Order <b>delivery</b> &amp; <b>takeout</b> using Crunchbutton on your iPhone, Android, or computer.</h4>
+				<p>
+					Order a <b>Wenzel</b>, your favorite <b>Pizza</b>, some General Tso's Chicken, or something else! Customize the toppings on your pizza and have it delivered to your home. Pepperoni, sausage, cheese, sauce, whatever! 
+					Don't want pizza? How about other <b>Italian food</b> like pasta, or a sandwich? Build your own sandwich, or order a <b>Wenzel</b>. 
+					We also have lots of <b>wings</b>, BBQ wings, spicy wings, hot wings, teriyaki wings.
+					Or how about some appetizers, or deserts?
+					<br /><br />
+				</p>
+				
+				<h4>All sorts of junk food late night!</h4>
+				<p>
+					Love <b>Chinese food</b> or <b>asian food</b>? Have some Pad Thai, or fried rice, or egg rolls. 
+					O! Don't forget <b>sushi</b>! Get some sushi delivered online. 
+					<b> Mediterranean food</b>! Falafel, soup, hummus, Grape Leaves, and some Baba Ghannoush!
+					<br /><br />
+				</p>
+
+
+			</div>
 	
 			<div itemscope itemtype="http://schema.org/localbusiness">
 				<link itemprop="url" href="/"/>
@@ -154,30 +201,13 @@
 				<link itemprop="photo" href="/assets/images/appicon.png"/>
 				<meta itemprop="name" content="Crunchbutton"/>
 			</div>
-	
-		<? else : ?>
-	
-			<div class="restaurants-bubble-wrap">
-				<div class="bubble-tail bubble-tail-green">
-					<div class="text">
-						Push a button.<br />
-						&nbsp;&nbsp;&nbsp;&nbsp;Get food.
-					</div>
-				</div>
-				<div class="restaurants-orange"></div>
-				<div class="divider"></div>
-				<div class="restaurants-tagline">
-					<h1>Order the top local delivery food.</h1>
-					<h2>Choose one of these awesome restaurants</h2>
-				</div>
-				<div class="divider"></div>
-			</div>
+
 		<? endif ; ?>
 	
 	<? endif ; ?>
 
 </div>
-<? if (c::app()->isBot()) : ?>
+<? if ($bot) : ?>
 <script>
 $ = null;
 </script>
