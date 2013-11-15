@@ -375,20 +375,28 @@
 <!-- total breakdown -->
 <div class="divider dots spacer-one-two" ng-show="order.info.subtotal && order.info.subtotal!='0.00'"></div>
 
-<div class="payment-total" ng-show="order.info.subtotal && order.info.subtotal!='0.00'">
+<div class="payment-total content-padding" ng-show="order.info.subtotal && order.info.subtotal!='0.00'">
 	<div class="restaurant-banana"></div>
-				
-	<span class="restaurant-payment-item">Subtotal: <span ng-show="order.form.pay_type=='cash'">~</span>${{order.info.subtotal}}</span>
-	<span class="restaurant-payment-item">Tax: ${{order.info.taxes}}</span>
-	<span class="restaurant-payment-item" ng-show="order.form.pay_type!='cash' && order.info.tip!='0.00'">Tip: ${{order.info.tip}}</span>
-	<span class="restaurant-payment-item" ng-show="order.info.delivery!='0.00'">Delivery Fee: ${{order.info.delivery}}</span>
-	<span class="restaurant-payment-item" ng-show="order.info.fee!='0.00'">Service Fee: ${{order.info.fee}}</span>
-	<span class="restaurant-payment-item" ng-show="credit.hasValue && order.form.pay_type == 'card'">Credit: -$
-		<span ng-show="order.total() <= credit.number">{{order.info.total}}</span>
-		<span ng-show="order.total() > credit.number">{{credit.value}}</span>
-	</span>
-	<span class="restaurant-payment-item">Bananas: 0</span>
-	<span class="restaurant-payment-item">Total: <b>{{order.info.totalText}}</b></span>
+	
+	<div class="payment-ribbon">
+		<div class="payment-ribbon-tail"></div>
+		<div class="payment-ribbon-content">
+			<span class="restaurant-payment-item">Subtotal: <span ng-show="order.form.pay_type=='cash'">~</span>${{order.info.subtotal}}</span>
+			<span class="restaurant-payment-item">Tax: ${{order.info.taxes}}</span>
+			<span class="restaurant-payment-item" ng-show="order.form.pay_type!='cash' && order.info.tip!='0.00'">Tip: ${{order.info.tip}}</span>
+			<span class="restaurant-payment-item" ng-show="order.info.delivery!='0.00'">Delivery Fee: ${{order.info.delivery}}</span>
+			<span class="restaurant-payment-item" ng-show="order.info.fee!='0.00'">Service Fee: ${{order.info.fee}}</span>
+			<span class="restaurant-payment-item" ng-show="credit.hasValue && order.form.pay_type == 'card'">Credit: -$
+				<span ng-show="order.total() <= credit.number">{{order.info.total}}</span>
+				<span ng-show="order.total() > credit.number">{{credit.value}}</span>
+			</span>
+			<span class="restaurant-payment-item">Bananas: 0</span>
+			<span class="restaurant-payment-item">Total: <b>{{order.info.totalText}}</b></span>
+		</div>
+	</div>
+	<div class="divider"></div>
+
+	<br><br><br>
 
 	<div ng-show="credit.hasValue && order.form.pay_type == 'cash' ">
 		<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your ${{credit.value}} gift card</div>

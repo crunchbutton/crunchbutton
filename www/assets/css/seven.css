@@ -1526,8 +1526,10 @@ p {
 	width: 73px;
 	height: 171px;
 	background-size: 100%;
-	margin: 0 auto;
 	-webkit-transition: all 0.2s;
+	float: left;
+	margin-left: 2em;
+	margin-top: -1em;
 }
 .payment-total {
 
@@ -1920,3 +1922,35 @@ sup {
     100% { opacity: 1; }
 }
 */
+
+
+
+
+.payment-ribbon {
+	-webkit-transform : rotate(-5deg);
+	float: right;
+	margin-top: 2em;
+	margin-right: -7em;
+}
+
+
+.payment-ribbon-content {
+	float: left;
+	width: 200px;
+	font-size: 1.1em;
+	background: #64a1e5;
+	color: #fff;
+	padding: .8em 0 .8em 0;
+	line-height: 1.2em;
+	margin-left: -1em;
+}
+
+.payment-ribbon-tail {
+	float: left;
+	width: 0; 
+	height: 0;
+	border: 3.5em solid #64a1e5;
+	border-left: 3.5em solid transparent;
+}
+
+
