@@ -61,17 +61,13 @@ NGApp.controller('HelpCtrl', function ($scope, $http, $compile, MainNavigationSe
  * Home controller
  */
 NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsService, LocationService) {
-	var location = LocationService;
 	if (!App.isPhoneGap) {
-		location.init();
-	}
-	
-	var restaurants = RestaurantsService;
-
-	// @hack
-	// just force the location to the food-delivery page. if we dont have a loc it sends us back to location anyway
-	$location.path( '/' + restaurants.permalink );
-	return;
+		LocationService.init();
+	} else {
+		// @hack
+		// just force the location to the food-delivery page. if we dont have a loc it sends us back to location anyway
+		// $location.path( '/' + RestaurantsService.permalink );	
+	}	
 });
 
 
