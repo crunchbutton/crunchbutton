@@ -85,7 +85,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			}
 			return false;
 		}
-		
 		App.profile.log('start list');
 
 		if (restaurants === false || service.forceLoad) {

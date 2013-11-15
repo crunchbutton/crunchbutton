@@ -176,6 +176,13 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 			for (var x in cookieLocs) {
 				service.position.addLocation(new Location(cookieLocs[x]._properties));
 			}
+			// If we have a valid coockie position redirect the user to restaurants page
+			if ( service.position.pos().valid( 'restaurants' ) ) {
+				$location.path( '/' + RestaurantsService.permalink );
+				service.loadRestaurantsPage = false;
+			}
+		} else {
+			$location.path( '/location' );
 		}
 
 		if (cookieBounding) {
