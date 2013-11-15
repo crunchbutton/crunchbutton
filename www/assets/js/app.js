@@ -570,6 +570,8 @@ App.init = function(config) {
 		$('body').removeClass('ios7');
 	}
 	
+	$('body').removeClass('no-init');
+	
 	// add the side swipe menu for mobile view
 	App.snap = new Snap({
 		element: document.getElementById('snap-content'),
