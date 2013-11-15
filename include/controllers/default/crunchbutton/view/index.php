@@ -7,6 +7,7 @@ class Controller_view extends Cana_Controller {
 
 		if ($file == 'body') {
 			$file = 'layout/html.body';
+			c::view()->content = c::view()->render('home/index');
 		} else {
 			$file = 'frontend/'.$file;
 		}
