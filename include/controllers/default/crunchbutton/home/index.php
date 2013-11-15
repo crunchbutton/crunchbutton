@@ -3,19 +3,23 @@
 class Controller_home extends Cana_Controller {
 	public function init() {
 		if (c::getPagePiece(0)) {
-			$c = Community::permalink(c::getPagePiece(0));
-
-			if ($c->id_community) {
-				if (c::getPagePiece(1)) {
-
-					$r = Restaurant::permalink(c::getPagePiece(1));
-					if ($r->id_restaurant) {
-						Cana::view()->restaurant = $r;
-					}
+			if (c::getPagePiece(0) != 'food-delivery') {
+				$c = Community::permalink(c::db()->escape(c::getPagePiece(0)));
+				
+				if ($c->id_community) {
+					c::view()->community = $c;
 				}
-				Cana::view()->community = $c;
+			}
+
+			if ($c->id_community || c::getPagePiece(0) == 'food-delivery' && c::getPagePiece(1)) {
+				$r = Restaurant::permalink(c::db()->escape(c::getPagePiece(1)));
+
+				if ($r->id_restaurant) {
+					c::view()->restaurant = $r;
+				}
 			}
 		}
-		Cana::view()->display('home/index');
+
+		c::view()->display('home/index');
 	}
 }
