@@ -206,7 +206,6 @@ html {
 
 /* home location header */
 .home-location {
-	margin-top: 50px;
 	width: 100%;
 }
 .home-location td {
@@ -229,7 +228,7 @@ html {
 	border-bottom-right-radius:6px;
 	border: 2px solid #003f35;
 	font-size: 22px;
-	padding: .2em;
+	padding: 0;
 	color: #fff;
 	margin: 0 0 15px 0;
 	width: 40px;
@@ -259,10 +258,16 @@ html {
 	background-size: 150%;
 	padding: 0 0 60px 0;
 }
+.home-inputs h4 {
+	color: #fff;
+	text-transform: uppercase;
+	margin-bottom: .5em;
+}
 .home-inputs {
-	width: 300px;
+	width: 30em;
 	margin: 0 auto;
-	margin-bottom: 50px;
+	margin-bottom: 5em;
+	margin-top: 5em;
 }
 .logo-finger {
 	background: url(../images/micro/logo-finger.svg) center center no-repeat;
@@ -427,8 +432,8 @@ p {
 	background: #00b195;
 }
 .find-restaurants {
-	font-size: 19px;
-	max-width: 300px;
+	font-size: 1.9em;
+	max-width: 30em;
 	padding: .9em 0 .9em 0;
 	border-radius: 6px;
 	letter-spacing: 0;
