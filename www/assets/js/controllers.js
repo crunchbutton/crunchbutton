@@ -49,9 +49,7 @@ NGApp.controller('HelpCtrl', function ($scope, $http, $compile, MainNavigationSe
 			$scope.help = data.data
 				.replace('[email]', '<a href="mailto:' + help + '">' + help + '</a>')
 				.replace('[joinemail]', '<a href="mailto:' + join + '">' + join + '</a>')
-
 			$scope.help = $compile( $scope.help )( $scope );
-
 		});
 	}
 });
@@ -66,8 +64,12 @@ NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsServ
 	} else {
 		// @hack
 		// just force the location to the food-delivery page. if we dont have a loc it sends us back to location anyway
-		// $location.path( '/' + RestaurantsService.permalink );	
+		$location.path( '/' + RestaurantsService.permalink );	
 	}	
+	// If it have a valid restaurant position just reditect to restaurants page
+	if( LocationService.position.pos().valid( 'restaurants' ) ){
+		$location.path( '/' + RestaurantsService.permalink );
+	}
 });
 
 
@@ -104,7 +106,6 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
  * Show the restaurants
  */
 NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, RestaurantsService, LocationService) {
-
 	$scope.restaurants = false;
 
 	$scope.showMoreRestaurants = function(){

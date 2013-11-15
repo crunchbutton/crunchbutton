@@ -124,6 +124,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 	$rootScope.$on( 'NewLocationAdded', function(e, data) {
 		service.forceLoad = true;
+		restaurants = false;
 	});
 
 	return service;
