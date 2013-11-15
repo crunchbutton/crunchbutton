@@ -1885,3 +1885,33 @@ sup {
 	font-size: 1.1em;
 	line-height: 1.4em;
 }
+
+.no-init .hide-before-init {
+	display: none !important;
+}
+
+/*
+.ani-elip-one {
+	opacity: 0;
+	-webkit-animation: ani-elip-dot 1.3s infinite;
+	-webkit-animation-delay: 0.0s;
+}
+
+.ani-elip-two {
+	opacity: 0;
+	-webkit-animation: ani-elip-dot 1.3s infinite;
+	-webkit-animation-delay: 0.2s;
+}
+
+.ani-elip-three {
+	opacity: 0;
+	-webkit-animation: ani-elip-dot 1.3s infinite;
+	-webkit-animation-delay: 0.3s;
+}
+
+@-webkit-keyframes ani-elip-dot {
+	0% { opacity: 0; }
+	50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+*/
