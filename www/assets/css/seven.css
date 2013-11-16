@@ -924,8 +924,15 @@ p {
 	z-index:100;
 }
 .nav-top {
+/*
+	background: #f97e5c;
+	background: rgba(241,126,92,.97);
+*/
+
 	background: #f78155;
 	background: rgba(247, 125, 79,.97);
+
+
 	padding-top: 15px;
 	border-bottom: 1px solid rgba(233, 114, 69, .97);
 }
@@ -959,26 +966,30 @@ p {
 /* DIALOGS */
 .dialog {
 	background:#fffef8;
-	width:290px;
-	margin:40px auto;
+	width: 29em;
+	margin: 4em auto;
 	position:relative;
 	border-radius:6px;
 }
+@media screen and (min-width: 768px) {
+	.dialog {
+		width: 35em;
+	}
+}
 .dialog {
-	line-height:20px;
+	line-height:2em;
 }
 .dialog h1 {
 	color: #eb592a;
-	font-size: 17px;
+	font-size: 1.6em;
 	font-weight: 600;
-	margin-bottom: 12px;
+	margin-bottom: .7em;
 }
 .dialog p.dialog-hours {
-	font-size: 10px;
+	font-size: 1em;
 }
-
 .dialog p {
-	font-size: 12px;
+	font-size: 1.2em;
 }
 
 .mfp-bg {
@@ -990,13 +1001,13 @@ p {
 .dialog-egg {
 	background: url(../images/micro/dialog-egg.svg) no-repeat;
 	background-position: top center;
-	width: 68px;
-	height: 112px;
+	width: 6.8em;
+	height: 11.2em;
 	background-size: 100%;
 	-webkit-transition: all 0.2s;
 	float: right;
-	margin-top: -5px;
-	margin-left: 15px;
+	margin-top: -.5em;
+	margin-left: 1.5em;
 }
 
 .dialog-divider {
@@ -1004,17 +1015,17 @@ p {
 }
 
 .dialog-padding {
-	padding: 14px;
+	padding: 1.4em;
 }
 
 .dialog-bottom-buttons .button {
 	border-radius: 4px;
-	font-size: 14px;
+	font-size: 1.4em;
 	font-weight: bold;
 }
 
 .dialog-bottom-buttons {
-	height: 34px;
+	height: 3.4em;
 }
 
 
@@ -1550,6 +1561,15 @@ p {
 	color: #fff;
 }
 
+.spacer-half {
+	margin-top: .5em;
+}
+
+.spacer-one-onehalf {
+	margin-top: 1em;
+	margin-bottom: 1.5em;
+}
+
 .spacer-one-one {
 	margin-top: 1em;
 	margin-bottom: 1em;
@@ -1687,15 +1707,24 @@ p {
 	margin: 0 auto;
 }
 
-.dialog-message-error {
+.dialog-message {
 	color: #fff;
-	background: #e1574c;
 	margin-bottom: 1em;
 	border-radius: 4px;
 	font-size: 1.2em;
 	line-height: 1.4em;
 	padding: .7em .9em .5em .9em;
 }
+
+.dialog-message-error {
+	background: #e1574c;
+}
+
+.dialog-message-success {
+	background: #77c675;
+}
+
+
 
 
 /* owners page */
@@ -1978,6 +2007,10 @@ sup {
 	width: 60px;
 }
 
+.side-menu li {
+	cursor: pointer;
+}
+
 .restaurant-info-address {
 	margin-top: .2em;
 	font-size: 1.1em;
@@ -2043,4 +2076,33 @@ sup {
 	margin-top: 2em;
 	margin-right: -10.4em;
 
+}
+
+
+.account-container .account-title-link  {
+	font-size: 1.2em;
+	text-transform: uppercase;
+	font-weight: bold;
+	letter-spacing: -.02em;
+	margin-right: 3em;
+}
+.account-container .account-title-link.link {
+	color: #e95d1a;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.button.account-go {
+	width: 8em;
+	float: right;
+}
+
+.account-login-help {
+	cursor: pointer;
+	color: #312f38;
+
+	margin-top: .4em;
+	margin-left: .5em;
+	display: block;
+	float: left;
 }
