@@ -4,7 +4,7 @@
 
 		<p ng-show="support.thanks && !support.error">Thanks, we'll get back to you as fast as we can.</p>
 		
-		<div class="dialog-message-error" ng-show="support.error && !support.thanks">
+		<div class="dialog-message dialog-message-error" ng-show="support.error && !support.thanks">
 			<i class="fa fa-frown-o"></i>&nbsp;&nbsp;
 			<span ng-bind-html-unsafe="support.error"></span>
 		</div>
@@ -26,7 +26,7 @@
 					<textarea ng-model="support.form.message" class="form-input support-form-input" name="support-message" tabindex="3" placeholder="message"></textarea>
 				</div>
 
-			</form>				
+			</form>
 		</div>
 
 		<div class="divider"></div>
