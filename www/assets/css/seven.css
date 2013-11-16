@@ -1336,6 +1336,48 @@ p {
 
 	-webkit-transform: translateZ(0);
 }
+.restaurant-comment {
+	margin-top: -11em;
+	position: absolute;
+	background: rgba(0,0,0,.5);
+	border-radius: 4px;
+	padding: .5em .6em .5em .6em;
+	margin-left: .8em;
+	margin-right: .8em;
+}
+.restaurant-comment-wrap {
+	display: table-row;
+}
+
+.restaurant-comment-image {
+	display: table-cell;
+	vertical-align: top;
+}
+.restaurant-comment-image-img {
+	background-size: 100% !important;
+	height: 3.6em;
+	width: 3.6em;
+}
+.restaurant-comment-content {
+	font-size: .8em;
+	display: table-cell;
+	color: #fff;
+	padding-left: 1em;
+	vertical-align: top;
+}
+.restaurant-comment-content h4 {
+	margin-top: -.3em;
+	text-transform: uppercase;
+	line-height: 1.5em;
+}
+.restaurant-comment-content p {
+	line-height: 1.3em;
+}
+
+
+
+
+
 .restaurant-name {
 	color: #fff;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.6);

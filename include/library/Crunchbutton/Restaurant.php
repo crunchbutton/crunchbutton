@@ -1160,6 +1160,23 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		foreach ( $ignore as $property => $val ) {
 			unset( $out[ $property ] );
 		}
+		
+		$comment = $this->comment();
+		
+		if ($comment->id_restaurant_comment) {
+			$auths = $comment->user()->auths();
+			foreach ($auths as $auth) {
+				if ($auth->type == 'facebook') {
+					$id = $auth->auth;
+					break;
+				}
+			}
+			$out['comment'] = [
+				'content' => $comment->content,
+				'user' => $comment->user()->get(0)->name(),
+				'fb' => $id
+			];
+		}
 
 		return $out;
 	}
@@ -1492,6 +1509,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 								 AND ap.id_admin IS NOT NULL) admin
 						WHERE txt IS NOT NULL";
 		return Admin::q( $query );
+	}
+	
+	public function comment() {
+		if (!isset($this->_comment)) {
+			$this->_comment = Restaurant_Comment::q('select * from restaurant_comment where top=1 && id_restaurant='.$this->id_restaurant.'');
+		}
+		return $this->_comment;
 	}
 
 	public function save() {
