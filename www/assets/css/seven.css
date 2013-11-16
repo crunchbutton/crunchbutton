@@ -2004,7 +2004,23 @@ sup {
 }
 
 .side-menu-icon {
-	width: 60px;
+	width: 70px;
+}
+
+.side-menu-icon .fa.fa-lightbulb-o {
+	margin-left: 5px;
+}
+
+.side-menu-icon .fa.fa-map-marker {
+	margin-left: 5px;
+}
+
+.side-menu-icon .fa.fa-cutlery {
+	margin-left: 2px;
+}
+
+.side-menu-icon .fa.fa-sign-in {
+	margin-left: 2px;
 }
 
 .side-menu li {
