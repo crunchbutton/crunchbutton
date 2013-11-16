@@ -82,7 +82,11 @@
 				<button class="button lightorange account-go" ng-click="account.signin();">Go!</button>
 				<div class="divider"></div>
 				<div class="spacer-half"></div>
-				<div facebook-signin-button title="Log in with Facebook"></div>
+				<button class="button facebook" ng-click="facebook.auth()">
+					<i class="fa fa-facebook-square"></i>&nbsp;
+					<span ng-hide="facebook.facebook.wait">Log in with Facebook</span>
+					<span ng-show="facebook.facebook.wait">Just a sec...</span>
+				</button>
 			</div>
 
 			<div ng-show="help.visible">
@@ -114,7 +118,11 @@
 				<button class="button lightorange account-go" ng-click="account.signup();">Go!</button>
 				<div class="divider"></div>
 				<div class="spacer-one-half"</div>
-				<div facebook-signin-button title="Signup with Facebook"></div>
+				<button class="button facebook" ng-click="facebook.auth()">
+					<i class="fa fa-facebook-square"></i>&nbsp;
+					<span ng-hide="facebook.facebook.wait">Sign up with Facebook</span>
+					<span ng-show="facebook.facebook.wait">Just a sec...</span>
+				</button>
 			</div>
 
 			<div ng-show="account.user.has_auth">

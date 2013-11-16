@@ -2122,3 +2122,94 @@ sup {
 	display: block;
 	float: left;
 }
+
+.staff-judd {
+	background: url(../images/micro/staff-judd.png) no-repeat;
+}
+.staff-devin {
+	background: url(../images/micro/staff-devin.png) no-repeat;
+}
+.staff-nick {
+	background: url(../images/micro/staff-nick.png) no-repeat;
+}
+.staff-david {
+	background: url(../images/micro/staff-david.png) no-repeat;
+}
+.staff-daniel {
+	background: url(../images/micro/staff-daniel.png) no-repeat;
+}
+
+.staff-image {
+	width: 9em;
+	height: 9em;
+	background-size: 100%;
+	-webkit-transition: all 0.2s;
+	float: left;
+	margin: 0 1em 1em 0;
+}
+
+.staff h1 {
+	font-size: 1.5em;
+	font-weight: bold;
+	margin-bottom: .4em;
+	padding-top: .44em;
+}
+.staff h2 {
+	font-size: 1.4em;
+	margin-bottom: .6em;
+}
+
+.staff .staff-favorite {
+	font-size: 1.1em;
+	line-height: 1.55em;
+}
+
+.staff .staff-content {
+	clear: both;
+}
+
+.staff {
+	margin-bottom: 3em;
+}
+
+@media screen and (max-width: 400px) {
+	.staff-orite {
+		display: none;
+	}
+}
+
+.about-green-orange {
+	background: url(../images/micro/about-green-orange.svg) no-repeat;
+	background-position: top center;
+	width: 7.7em;
+	height: 10.1em;
+	background-size: 100%;
+	margin: 0 auto;
+	-webkit-transition: all 0.2s;
+	margin-top: -4.8em;
+}
+
+.about-join-bubble-wrap {
+	margin: 0 auto;
+	width: 17.7em;
+}
+
+.bubble-curved-green {
+	background: url(../images/micro/bubble-curved-green.svg) no-repeat;
+	background-position: top center;
+	width: 17.7em;
+	height: 11.5em;
+	background-size: 100%;
+	-webkit-transition: all 0.2s;
+	margin-top: 7em;
+	margin-left: -2em;
+}
+
+.bubble-curved-green .text {
+	display: block;
+	color: #fff;
+	font-size: 1.5em;
+	font-weight: bold;
+	line-height: 1.4em;
+	padding: 1.1em 0 0 1.5em;
+}
