@@ -1926,31 +1926,24 @@ sup {
 
 
 
+.payment-ribbon-content {
+	font-size: 1.1em;
+	color: #fff;
+	line-height: 1.2em;
+	padding: .8em 0 .8em 7em;
+}
+
 .payment-ribbon {
+	-webkit-backface-visibility: hidden;
+	background: url(../images/micro/payment-ribbon.svg) no-repeat;
+	background-position: top center;
+	width: 29.8em;
+	height: auto;
+	background-size: auto 100%;
+	-webkit-transition: all 0.2s;
 	-webkit-transform : rotate(-5deg);
 	float: right;
 	margin-top: 2em;
-	margin-right: -7em;
+	margin-right: -10.4em;
+
 }
-
-
-.payment-ribbon-content {
-	float: left;
-	width: 200px;
-	font-size: 1.1em;
-	background: #64a1e5;
-	color: #fff;
-	padding: .8em 0 .8em 0;
-	line-height: 1.2em;
-	margin-left: -1em;
-}
-
-.payment-ribbon-tail {
-	float: left;
-	width: 0; 
-	height: 0;
-	border: 3.5em solid #64a1e5;
-	border-left: 3.5em solid transparent;
-}
-
-
