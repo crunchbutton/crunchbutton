@@ -2213,3 +2213,36 @@ sup {
 	line-height: 1.4em;
 	padding: 1.1em 0 0 1.5em;
 }
+
+
+.connection-error {
+	top: 0;
+	bottom:0;
+	left:0;
+	right:0;
+	width: 100%;
+	height: 100%;
+	z-index:1000;
+	position: fixed;
+	text-align: center;
+	display: none;
+	background: #fff9ea;
+	overflow: hidden;
+}
+
+.connection-error-image {
+	background: url(../images/micro/connection-error.svg) no-repeat;
+	width: 26.7em;
+	height: 38.6em;
+	background-size: 100%;
+	margin: 0 auto;
+	margin-top: 9em;
+}
+
+.connection-error-image .text {
+	color: #fff9eb;
+	font-size: 1.2em;
+	line-height: 1.4em;
+	padding-top: 1.7em;
+	padding-left: .7em;
+}
