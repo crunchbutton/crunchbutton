@@ -238,9 +238,14 @@
                     if( utils.canTransform() ){
                         var theTranslate = 'translate3d(' + n + 'px, 0,0)';
                         settings.element.style[cache.vendor+'Transform'] = theTranslate;
-                        console.log(n);
-                        var del = $('.snap-drawer').get(0);                        
-//                        del.style[cache.vendor+'Transform'] = theTranslate;
+
+						// paralax menu
+						var hideDistance = 55;
+						var nn = ((n / settings.maxPosition) * hideDistance) - hideDistance;
+                        var sideHide = $('.snap-drawer').get(0);
+                        var theSideTranslate = 'translate3d(' + nn + 'px, 0,0)';
+                        sideHide.style[cache.vendor+'Transform'] = theSideTranslate;
+
                     } else {
                         settings.element.style.width = (win.innerWidth || doc.documentElement.clientWidth)+'px';
 
