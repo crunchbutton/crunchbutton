@@ -134,7 +134,8 @@
 
 
 		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && !notificationBarStatus ), 'button-bottom-show-notification-bar-on': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && notificationBarStatus )}" class="button-bottom-wrapper">
-			<button class="button pushable orange get-food" ng-click="navigation.order.submit();"><div>Get Food</div></button>
+			<button ng-show="navigation.order.form.name || navigation.order.form.phone" class="button pushable orange get-food" ng-click="navigation.order.submit();"><div>Get Food</div></button>
+			<button ng-show="!navigation.order.form.name && !navigation.order.form.phone" class="button pushable orange get-food" ng-click="navigation.order.checkout();"><div>Checkout</div></button>
 		</div>
 
 		<div class="snap-content-inner bg" ng-scroll-position>
