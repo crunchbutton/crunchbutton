@@ -45,7 +45,7 @@ App.NGinit = function() {
 	}
 };
 
-var NGApp = angular.module('NGApp', []);
+var NGApp = angular.module('NGApp', [ 'ngRoute' ] );
 
 NGApp.config(function($compileProvider){
 	$compileProvider.urlSanitizationWhitelist(/.*/);
