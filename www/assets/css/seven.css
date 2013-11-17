@@ -388,21 +388,9 @@ p {
 	-o-transition:background linear 0.08s;
 	transition:background linear 0.08s;
 }
-.button.pushable.orange {
-	box-shadow: 0 3px 0 #961500;
-}
-.button.pushable.orange:active {
-	background: #cf3a22;
-}
-.button.pushable {
-	margin-top: 0;
-	margin-bottom: 3px;
-}
-.button.pushable:active {
-	margin-top: 3px;
-	margin-bottom:0;
-	box-shadow: none;
-}
+
+
+/* colors */
 .button.orange {
 	background: #df4a32;
 }
@@ -414,31 +402,17 @@ p {
 	background: #385ca2;
 	font-weight: bold;
 }
-.button.pushable.lightorange {
-	box-shadow: 0 2px 0 #de7e5b;
-}
-.button.pushable.lightorange:active {
-	box-shadow: none;
-	margin-top: 2px;
-}
 .button.green {
 	background: #00bea0;
 	font-weight: bold;
 }
-.button.lightorange:active {
-	background: #e78d62;
-}
-.button.green:active {
-	background: #00b195;
-}
-.find-restaurants {
+.button.find-restaurants {
 	font-size: 1.9em;
 	max-width: 30em;
 	padding: .9em 0 .9em 0;
 	border-radius: 6px;
 	letter-spacing: 0;
 }
-
 .button.get-food {
 	display: block;
 	font-size: 18px;
@@ -450,14 +424,68 @@ p {
 	margin-top: 7px;
 	background: #e24538;
 	box-shadow: 0 3px 0 #980c08;
-	
 }
-.button.pushable.get-food:active {
+
+/* active colors */
+.button.orange:active {
+	background: #ce412a;
+}
+.button.lightorange:active {
+	background: #e78d62;
+}
+.button.green:active {
+	background: #00b195;
+}
+.button.facebook:active {
+	background: #2f4f8d;
+}
+
+/* pushable border colors */
+.button-pushable .button.orange {
+	box-shadow: 0 3px 0 #961500;
+}
+.button-pushable .button.lightorange {
+	box-shadow: 0 2px 0 #de7e5b;
+}
+.button-pushable .button.facebook {
+	box-shadow: 0 2px 0 #203d74;
+}
+
+
+
+
+
+/* pushable states */
+
+.button-pushable {
+	margin-top: 0;
+	margin-bottom: 3px;
+}
+.button-pushable .button:active {
+	margin-bottom: 0;
+	box-shadow: none;
+	margin-top: 4px;
+}
+
+
+.button.pushable.lightorange:active {
+	margin-top: 2px;
+}
+.button-pushable .button.get-food:active {
 	margin-top: 10px;
 }
+.button-pushable .button.find-restaurants:active {
+	margin-top: 5px;
+}
+
+.button-pushable.find-restaurants {
+	height: 6em;
+}
 
 
 
+
+/* nav */
 .nav-cart .fa {
 	margin-left: -4px;
 }
@@ -2193,27 +2221,36 @@ sup {
 	margin: 0 auto;
 	width: 17.7em;
 }
-
-.bubble-curved-green {
-	background: url(../images/micro/bubble-curved-green.svg) no-repeat;
-	background-position: top center;
+.bubble-curved {
+	background-position: top center !important;
+	background-size: 100% !important;
 	width: 17.7em;
 	height: 11.5em;
-	background-size: 100%;
 	-webkit-transition: all 0.2s;
-	margin-top: 7em;
 	margin-left: -2em;
 }
+.bubble-curved-green {
+	background: url(../images/micro/bubble-curved-green.svg) no-repeat;
+	margin-top: 7em;
+}
+.bubble-curved-white {
+	background: url(../images/micro/bubble-curved-white.svg) no-repeat;
+}
 
-.bubble-curved-green .text {
+.bubble-curved .text {
 	display: block;
-	color: #fff;
 	font-size: 1.5em;
 	font-weight: bold;
 	line-height: 1.4em;
 	padding: 1.1em 0 0 1.5em;
 }
 
+.bubble-curved-green .text {
+	color: #fff;
+}
+.bubble-curved-white .text {
+
+}
 
 .connection-error {
 	top: 0;
@@ -2245,4 +2282,61 @@ sup {
 	line-height: 1.4em;
 	padding-top: 1.7em;
 	padding-left: .7em;
+}
+
+.splash-top p {
+	color: #fff;
+}
+
+.page-splash .navs {
+	display: none;
+}
+
+.splash-continue {
+	color: #ffddb8;
+	text-transform: uppercase;
+	font-size: 1.1em;
+	font-weight: bold;
+	letter-spacing: -.02em;
+}
+
+.splash-top p {
+	text-align: center;
+}
+
+.splash-top {
+	top: 0;
+	bottom:0;
+	left:0;
+	right:0;
+	width: 100%;
+	height: 100%;
+	z-index:1000;
+	position: fixed;
+	overflow: hidden;
+	text-align: center;
+}
+
+.splash-inputs {
+	display: inline-block;
+	width: 30em;
+}
+
+.splash-bottom {
+	position: fixed;
+	bottom: 2em;
+	width: 100%;
+}
+
+.splash-inputs .button.facebook {
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+.splash-inputs .button-pushable {
+	height: 5em;
+}
+
+.splash-inputs .button-pushable .button:active {
+	margin-top: 4px;
 }

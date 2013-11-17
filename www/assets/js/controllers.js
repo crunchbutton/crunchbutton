@@ -1,4 +1,11 @@
 /**
+ * splash page
+ */
+NGApp.controller('SplashCtrl', function ($scope, $http, AccountFacebookService) {
+	$scope.facebook = AccountFacebookService;
+});
+
+/**
  * reps page
  */
 NGApp.controller('RepsCtrl', function ($scope, $http) {
