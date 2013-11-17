@@ -2,12 +2,22 @@
 
 <div class="about-bubble-wrap">
 	<div class="bubble-tail bubble-tail-green">
-		<div class="text">
-			<b>&nbsp;&nbsp;Hey there!</b><br />
-			Nice to meet you!
+		<div class="text" ng-switch="pearMessage">
+			<span ng-switch-when="1">I don't actually work here.</span>
+			<span ng-switch-when="2">These guys do though.</span>
+			<span ng-switch-when="3">You should buy them a beer.</span>
+			<span ng-switch-when="4">I'm sure they deserve it.</span>
+			<span class="single-line" ng-switch-when="5">Maybe two.</span>
+			<span class="single-line" ng-switch-when="6">Or three.</span>
+			<span ng-switch-when="7">In fact just buy them a keg.</span>
+			<span class="single-line" ng-switch-when="8">Me?</span>
+			<span class="small" ng-switch-when="9">I'll take a magnum of Veuve Clicquot, thanks.</span>
+			<span class="single-line" ng-switch-when="10">Cheers!</span>
+			<span class="single-line" ng-switch-when="11"><i class="fa fa-glass"></i> <i class="fa fa-glass"></i> <i class="fa fa-glass"></i></span>
+			<span ng-switch-default><b>Hey there!</b><br>Nice to meet you!</span>
 		</div>
 	</div>
-	<div class="about-pear"></div>
+	<div class="about-pear" ng-instant="pearMessage = (pearMessage > 11 && 1) || pearMessage + 1"></div>
 	<div class="divider"></div>
 </div>
 

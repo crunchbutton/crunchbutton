@@ -1197,12 +1197,23 @@ p {
 }
 .bubble-tail .text {
 	display: block;
-	margin-left: 1.7em;
+	margin-left: 1.2em;
+	margin-right: 2em;
 	color: #fff;
 	font-size: 1.45em;
 	line-height: 1.3em;
 	padding-top: .6em;
 	font-weight: 600;
+	text-align: center;
+}
+.bubble-tail .text .small {
+	font-size: .8em;
+	line-height: 1.2em;
+	margin-top: .1em;
+	display: block;
+}
+.bubble-tail .text .single-line {
+	line-height: 2.6em;
 }
 .restaurants-bubble-wrap {
 	width: 29em;
