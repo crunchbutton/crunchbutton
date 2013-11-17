@@ -388,7 +388,13 @@ p {
 	-o-transition:background linear 0.08s;
 	transition:background linear 0.08s;
 }
-
+.button.ani-all {
+	-webkit-transition:all linear 0.08s;
+	-moz-transition:all linear 0.08s;
+	-ms-transition:all linear 0.08s;
+	-o-transition:all linear 0.08s;
+	transition:all linear 0.08s;
+}
 
 /* colors */
 .button.orange {
@@ -451,33 +457,24 @@ p {
 	box-shadow: 0 2px 0 #203d74;
 }
 
-
-
-
-
 /* pushable states */
-
 .button-pushable {
 	margin-top: 0;
 	margin-bottom: 3px;
+	height: 4em;
 }
 .button-pushable .button:active {
-	margin-bottom: 0;
 	box-shadow: none;
 	margin-top: 4px;
 }
 
-
-.button.pushable.lightorange:active {
-	margin-top: 2px;
-}
+/* pushable margins */
 .button-pushable .button.get-food:active {
 	margin-top: 10px;
 }
 .button-pushable .button.find-restaurants:active {
 	margin-top: 5px;
 }
-
 .button-pushable.find-restaurants {
 	height: 6em;
 }
@@ -2249,7 +2246,15 @@ sup {
 	color: #fff;
 }
 .bubble-curved-white .text {
-
+	padding-left:0;
+	padding-right: 1em;
+}
+.bubble-curved-white .text .small {
+	font-size: .7em;
+	line-height: 1.4em;
+	margin-top: -.1em;
+	padding: 0 1em 0 1em;
+	display: inline-block;
 }
 
 .connection-error {
@@ -2299,11 +2304,13 @@ sup {
 	font-weight: bold;
 	letter-spacing: -.02em;
 }
-
 .splash-top p {
 	text-align: center;
 }
-
+.splash-tagline {
+	text-shadow: 0 0 20px rgba(0,0,0,.6);
+	font-weight: 600;
+}
 .splash-top {
 	top: 0;
 	bottom:0;
@@ -2316,27 +2323,29 @@ sup {
 	overflow: hidden;
 	text-align: center;
 }
-
 .splash-inputs {
 	display: inline-block;
 	width: 30em;
 }
-
-.splash-bottom {
-	position: fixed;
-	bottom: 2em;
-	width: 100%;
-}
-
 .splash-inputs .button.facebook {
 	padding-top: 1em;
 	padding-bottom: 1em;
 }
-
 .splash-inputs .button-pushable {
 	height: 5em;
 }
-
 .splash-inputs .button-pushable .button:active {
 	margin-top: 4px;
+}
+@media screen and (min-height: 600px) {
+	.splash-bottom {
+		margin-top: 6em;
+	}
+}
+@media screen and (max-height: 599px) {
+	.splash-bottom {
+		position: fixed;
+		bottom: 2em;
+		width: 100%;
+	}
 }
