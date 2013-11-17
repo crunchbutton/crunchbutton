@@ -925,6 +925,10 @@ p {
 	.static-nav-viewport .snap-content-inner .content {
 		margin-top: -51px;
 	}
+	
+	.page-splash .static-nav-viewport .snap-content-inner {
+		margin-top: 0;
+	}
 }
 
 
@@ -2428,6 +2432,7 @@ sup {
 	-webkit-animation-timing-function: ease-in-out;
 	position: absolute;
 	z-index: 10;
+	pointer-events:none;
 }
 
 @-webkit-keyframes bubble-hover {
@@ -2437,3 +2442,71 @@ sup {
 }
 
 
+
+.splash-tagline {
+	margin-bottom: 2em;
+}
+	
+@media screen and (min-height: 530px) {
+	.splash-spacer-one {
+		height: 5em;
+	}
+	.splash-spacer-two {
+		height: 6em;
+	}
+}
+@media screen and (max-height: 529px) {
+	.splash-spacer-one {
+		height: 4em;
+	}
+	.splash-spacer-two {
+		height: 5em;
+	}
+}
+@media screen and (max-height: 499px) {
+	.splash-spacer-one {
+		height: 3em;
+	}
+	.splash-spacer-two {
+		height: 4em;
+	}
+	.splash-continue {
+		margin-top: 1em;
+	}
+
+}
+
+
+@media screen and (max-height: 469px) {
+	.splash-top .logo {
+		display: none;
+	}
+	.splash-spacer-two {
+		height: 2em;
+	}
+	.splash-spacer-one {
+		height: 4em;
+	}
+	.splash-inputs .button.facebook {
+		padding-top: .5em;
+		padding-bottom: .5em;
+	}
+	.splash-inputs .button-pushable {
+		height: 4em;
+	}
+}
+
+@media screen and (max-height: 379px) {
+	.splash-spacer-two {
+		height: 0;
+	}
+	.splash-spacer-one {
+		height: 2em;
+	}
+	.splash-tagline {
+		margin-bottom: .4em;
+	}
+	.splash-bottom {
+		bottom: 1.2em;
+	}
+}
