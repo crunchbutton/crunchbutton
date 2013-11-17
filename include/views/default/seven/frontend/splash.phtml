@@ -1,10 +1,10 @@
 <div class="bg home-top splash-top">
 	<div class="splash-spacer-one"></div>
-	<div title="Crunchbutton" class="logo" ng-click="navigation.home()"></div>
+	<div title="Crunchbutton" class="logo animated-resize" ng-click="navigation.home()"></div>
 	<div class="splash-spacer-two"></div>
 
 	<div class="splash-bubble-wrap">
-		<div class="bubble-curved bubble-curved-white bubble-animated">
+		<div class="bubble-curved bubble-curved-white bubble-animated animated-resize">
 			<div class="text" ng-switch="splashMessage">
 				<span class="single-line" ng-switch-when="2">Hey!!</span>
 				<span class="single-line" ng-switch-when="3">Try logging in!</span>
@@ -30,7 +30,7 @@
 		<div class="bubble-curved-spacer"></div>
 	</div>
 
-	<div class="about-green-orange" ng-instant="splashMessage = (splashMessage > 18 && 1) || splashMessage + 1"></div>
+	<div class="about-green-orange animated-resize" ng-instant="splashMessage = (splashMessage > 18 && 1) || splashMessage + 1"></div>
 	<div class="divider"></div>
 	
 	<div class="splash-bottom">
