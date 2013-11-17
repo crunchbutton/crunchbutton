@@ -3,6 +3,7 @@
  */
 NGApp.controller('SplashCtrl', function ($scope, $http, AccountFacebookService) {
 	$scope.facebook = AccountFacebookService;
+	App.parallax.setupBackgroundImage($('.home-top').get(0));
 });
 
 /**
@@ -262,6 +263,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	var account = AccountService;
 	var restaurants = RestaurantsService;
 
+	App.parallax.setupBackgroundImage($('.home-top').get(0));
 
 	$scope.warningPlaceholder = false;
 

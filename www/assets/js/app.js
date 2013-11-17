@@ -27,6 +27,12 @@ var App = {
 	useNativeConfirm: true,
 	ajaxTimeout: 5000,
 	splashHidden: false,
+	parallax: {
+		bg: null,
+		x: 0,
+		y: 0,
+		enabled: true
+	},
 	restaurantsPaging: {
 		enabled: true,
 		desktop: 9,
@@ -344,6 +350,8 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
 		}).addClass('page-' + MainNavigationService.page + ' at-top');
 		
+		App.parallax.bg = null;
+		
 		setTimeout(function() {
 			App.scrollTop();
 		},1);
@@ -592,6 +600,7 @@ App.init = function(config) {
 		App.snap = new Snap({
 			element: document.getElementById('snap-content'),
 			menu: document.getElementById('side-menu'),
+			menuDragDistance: 68,
 			disable: 'right'
 		});
 
