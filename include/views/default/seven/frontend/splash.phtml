@@ -2,35 +2,35 @@
 	<br><br><br><br><br>
 	<div title="Crunchbutton" class="logo" ng-click="navigation.home()"></div>
 	<br><br><br><br><br><br>
-	
+
 	
 	<div class="about-join-bubble-wrap">
 		<div class="bubble-curved bubble-curved-white">
 			<div class="text" ng-switch="splashMessage">
-				<span ng-switch-when="1">Hey!!</span>
-				<span ng-switch-when="2">Try logging in!</span>
-				<span ng-switch-when="3">No, down THERE!</span>
-				<span ng-switch-when="4">Stop!</span>
-				<span ng-switch-when="5">Stop touching me!</span>
-				<span ng-switch-when="6">@#%*@%&!</span>
-				<span ng-switch-when="7">...</span>
-				<span ng-switch-when="8">....</span>
-				<span ng-switch-when="9">.....</span>
-				<span ng-switch-when="10">......</span>
-				<span ng-switch-when="11">.......</span>
-				<span ng-switch-when="12">........</span>
-				<span ng-switch-when="13">You win.</span>
-				<span ng-switch-when="14">You win!</span>
-				<span ng-switch-when="15">You WIN!</span>
-				<span class="small" ng-switch-when="16">You can touch me all you want.</span>
-				<span class="small" ng-switch-when="17">As long as your promise not to tell.</span>
-				<span ng-switch-when="18"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
-				<span ng-switch-default>Oh, Hello!</span>
+				<span class="single-line" ng-switch-when="2">Hey!!</span>
+				<span class="single-line" ng-switch-when="3">Try logging in!</span>
+				<span class="single-line" ng-switch-when="4">No, down THERE!</span>
+				<span ng-switch-when="5">You are in for a treat</span>
+				<span ng-switch-when="6">I can tell you are excited</span>
+				<span class="small" ng-switch-when="7">Perhaps too excited to follow directions</span>
+				<span class="small" ng-switch-when="8">But the next page is even MORE exciting!</span>
+				<span class="single-line" ng-switch-when="9">You can do it!</span>
+				<span class="single-line" ng-switch-when="10">I believe in you!</span>
+				<span class="single-line" ng-switch-when="11">You are awesome!</span>
+				<span class="single-line" ng-switch-when="12">Log in!</span>
+				<span class="single-line" ng-switch-when="13">YA!</span>
+				<span ng-switch-when="14">There is now cow level.</span>
+				<span ng-switch-when="15">Snape kills Dumbledore.</span>
+				<span class="small" ng-switch-when="16">Rubber baby buggy bumpers.</span>
+				<span class="single-line" ng-switch-when="17">@#%*@%&!</span>
+				<span class="single-line" ng-switch-when="18"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+				<span class="single-line" ng-switch-when="1">Oh, Hello!</span>
+				<span class="single-line" ng-switch-default>Oh, Hello!</span>
 			</div>
 		</div>
 	</div>
 
-	<div class="about-green-orange" ng-instant="splashMessage = (splashMessage > 17 && 1) || splashMessage + 1"></div>
+	<div class="about-green-orange" ng-instant="splashMessage = (splashMessage > 18 && 1) || splashMessage + 1"></div>
 	<div class="divider"></div>
 	
 	<div class="splash-bottom">
