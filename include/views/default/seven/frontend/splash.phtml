@@ -21,16 +21,30 @@
 				<span ng-switch-when="14">There is now cow level.</span>
 				<span ng-switch-when="15">Snape kills Dumbledore.</span>
 				<span class="small" ng-switch-when="16">Rubber baby buggy bumpers.</span>
-				<span class="single-line" ng-switch-when="17">@#%*@%&!</span>
-				<span class="single-line" ng-switch-when="18"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
-				<span class="single-line" ng-switch-when="1">Oh, Hello!</span>
-				<span class="single-line" ng-switch-default>Oh, Hello!</span>
+				<span class="small" ng-switch-when="17" style="margin-top: 1.2em;">
+					<i class="fa fa-arrow-circle-up"></i> 
+					<i class="fa fa-arrow-circle-up"></i> 
+					<i class="fa fa-arrow-circle-down"></i> 
+					<i class="fa fa-arrow-circle-down"></i> 
+					<i class="fa fa-arrow-circle-left"></i> 
+					<i class="fa fa-arrow-circle-right"></i> 
+					<i class="fa fa-arrow-circle-left"></i> 
+					<i class="fa fa-arrow-circle-right"></i> 
+					B 
+					A 
+				</span>
+				<span class="single-line" ng-switch-when="18">@#%*@%&!</span>
+				
+				
+				<span class="single-line" ng-switch-when="19"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+				<span class="single-line" ng-switch-when="1">Oh, Hello!&nbsp;&nbsp;</span>
+				<span class="single-line" ng-switch-default>Oh, Hello!&nbsp;&nbsp;</span>
 			</div>
 		</div>
 		<div class="bubble-curved-spacer"></div>
 	</div>
 
-	<div class="about-green-orange animated-resize" ng-instant="splashMessage = (splashMessage > 18 && 1) || splashMessage + 1"></div>
+	<div class="about-green-orange animated-resize" ng-instant="splashMessage = (splashMessage > 19 && 1) || splashMessage + 1"></div>
 	<div class="divider"></div>
 	
 	<div class="splash-bottom">
