@@ -587,32 +587,38 @@ App.init = function(config) {
 	$('body').removeClass('no-init');
 	
 	// add the side swipe menu for mobile view
-	App.snap = new Snap({
-		element: document.getElementById('snap-content'),
-		disable: 'right'
-	});
+	if (typeof Snap !== 'undefined') {
 
-	App.snap.on( 'end', function(){
-		App.applyIOSPositionFix();
-	});
+		App.snap = new Snap({
+			element: document.getElementById('snap-content'),
+			disable: 'right'
+		});
 
-	App.snap.on( 'start', function(){
-		App.applyIOSPositionFix();
-	});
+		App.snap.on( 'end', function(){
+			App.applyIOSPositionFix();
+		});
+	
+		App.snap.on( 'start', function(){
+			App.applyIOSPositionFix();
+		});
 
-	var snapperCheck = function() {
-		if ($(window).width() <= 768) {
-			App.snap.enable();
-		} else {
-			App.snap.close();
-			App.snap.disable();
-		}
-	};
-	snapperCheck();
-
-	$(window).resize(function() {
+		var snapperCheck = function() {
+			if ($(window).width() <= 768) {
+				App.snap.enable();
+			} else {
+				App.snap.close();
+				App.snap.disable();
+			}
+		};
 		snapperCheck();
-	});
+	
+		$(window).resize(function() {
+			snapperCheck();
+		});
+
+	}
+
+
 
 	// init the storage type. cookie, or localstorage if phonegap
 	$.totalStorage.ls(App.localStorage);
@@ -744,6 +750,10 @@ App.playAudio = function(audio) {
 
 // Hack to fix iOS the problem with body position when the keyboard is shown #1774
 App.applyIOSPositionFix = function(){
+	// this seems to do more harm than good with ui2
+	if ($('.is-ui2').get(0)) {
+		return;
+	}
 	if( App.iOS() ){
 		setTimeout( function(){
 			angular.element('body').css('width', '+=1').css('width', '-=1');
