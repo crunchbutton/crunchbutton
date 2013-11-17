@@ -1,23 +1,43 @@
 <div class="bg home-top splash-top">
-	<br><br><br><br>
+	<br><br><br><br><br>
 	<div title="Crunchbutton" class="logo" ng-click="navigation.home()"></div>
-	<br><br><br><br>
+	<br><br><br><br><br><br>
 	
 	
 	<div class="about-join-bubble-wrap">
 		<div class="bubble-curved bubble-curved-white">
-			<div class="text">
-				Oh, Hello!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<div class="text" ng-switch="splashMessage">
+				<span ng-switch-when="1">Hey!!</span>
+				<span ng-switch-when="2">Try logging in!</span>
+				<span ng-switch-when="3">No, down THERE!</span>
+				<span ng-switch-when="4">Stop!</span>
+				<span ng-switch-when="5">Stop touching me!</span>
+				<span ng-switch-when="6">@#%*@%&!</span>
+				<span ng-switch-when="7">...</span>
+				<span ng-switch-when="8">....</span>
+				<span ng-switch-when="9">.....</span>
+				<span ng-switch-when="10">......</span>
+				<span ng-switch-when="11">.......</span>
+				<span ng-switch-when="12">........</span>
+				<span ng-switch-when="13">You win.</span>
+				<span ng-switch-when="14">You win!</span>
+				<span ng-switch-when="15">You WIN!</span>
+				<span class="small" ng-switch-when="16">You can touch me all you want.</span>
+				<span class="small" ng-switch-when="17">As long as your promise not to tell.</span>
+				<span class="small" ng-switch-when="18"><i class="fa fa-heart"></i><i class="fa fa-heart"></i><i class="fa fa-heart"></i></span>
+				<span ng-switch-default>Oh, Hello!</span>
 			</div>
 		</div>
 	</div>
-	<div class="about-green-orange"></div>
+
+	<div class="about-green-orange" ng-instant="splashMessage = (splashMessage > 17 && 1) || splashMessage + 1"></div>
 	<div class="divider"></div>
 	
 	<div class="splash-bottom">
 		<div class="splash-inputs">
-			<p>
-				We’re Crunchbutton. We deliver you the best food from the best restaurants in your community.
+			<p class="splash-tagline">
+				We’re Crunchbutton.
+				<br>We deliver you the best food from the best restaurants in your community.
 				<br><br>
 			</p>
 			<div class="button-pushable">
