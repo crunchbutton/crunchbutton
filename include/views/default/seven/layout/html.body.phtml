@@ -125,17 +125,15 @@
 					</div>
 
 					<div title="Crunchbutton" class="logo" ng-click="navigation.home()"></div>
-					
 
-	
 				</div>
 			</div>
 		</div>
 
 
 		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && !notificationBarStatus ), 'button-bottom-show-notification-bar-on': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && notificationBarStatus )}" class="button-bottom-wrapper">
-			<div class="button-pushable" ng-show="navigation.order.form.name || navigation.order.form.phone"><button class="button orange get-food" ng-click="navigation.order.submit();"><div>Get Food</div></button></div>
-			<div class="button-pushable" ng-show="!navigation.order.form.name && !navigation.order.form.phone"><button class="button orange get-food" ng-click="navigation.order.checkout();"><div>Checkout</div></button></div>
+			<div class="button-pushable" ng-show="navigation.order.form.name || navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.submit();"><div>Get Food</div></button></div>
+			<div class="button-pushable" ng-show="!navigation.order.form.name && !navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.checkout();"><div>Checkout</div></button></div>
 		</div>
 
 		<div class="snap-content-inner bg" ng-scroll-position>
@@ -183,3 +181,4 @@
 <div ng-include="'assets/view/connection.error.html'"></div>
 
 <div id="fb-root"></div>
+<div class="is-ui2"></div>

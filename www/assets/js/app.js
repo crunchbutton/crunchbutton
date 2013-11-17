@@ -37,6 +37,14 @@ var App = {
 // enable localstorage on phonegap
 App.localStorage = App.isPhoneGap;
 
+App.setLoggedIn = function(loggedIn) {
+	if ($('.is-ui2').get(0) && !loggedIn) {
+		setTimeout(function(){
+			App.go('/splash');		
+		},10);
+	}
+};
+
 App.NGinit = function() {
 	$('body').attr('ng-controller', 'AppController');
 	angular.bootstrap(document,['NGApp']);
@@ -520,6 +528,7 @@ App.processConfig = function(json, user) {
 	} else {
 		App.config = json;
 	}
+	App.setLoggedIn(App.config.user.uuid ? true : false);
 	App.AB.init();
 };
 
