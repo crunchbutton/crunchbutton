@@ -16,6 +16,7 @@
         var settings = {
             element: null,
             menu: null,
+            menuDragDistance: 0,
             dragger: null,
             disable: 'none',
             addBodyClasses: true,
@@ -243,7 +244,7 @@
                         settings.element.style[cache.vendor+'Transform'] = theTranslate;
 
 						// paralax menu
-						var hideDistance = 55;
+						var hideDistance = settings.menuDragDistance;
 						var nn = ((n / settings.maxPosition) * hideDistance) - hideDistance;
                         var theSideTranslate = 'translate3d(' + nn + 'px, 0,0)';
                         settings.menu.style[cache.vendor+'Transform'] = theSideTranslate;
