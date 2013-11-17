@@ -15,6 +15,7 @@
     var Snap = Snap || function(userOpts) {
         var settings = {
             element: null,
+            menu: null,
             dragger: null,
             disable: 'none',
             addBodyClasses: true,
@@ -212,6 +213,8 @@
                         
                         utils.events.addEvent(settings.element, utils.transitionCallback(), action.translate.easeCallback);
                         action.translate.x(n);
+
+                        
                     }
                     if(n===0){
                            settings.element.style[cache.vendor+'Transform'] = '';
@@ -242,9 +245,8 @@
 						// paralax menu
 						var hideDistance = 55;
 						var nn = ((n / settings.maxPosition) * hideDistance) - hideDistance;
-                        var sideHide = $('.snap-drawer').get(0);
                         var theSideTranslate = 'translate3d(' + nn + 'px, 0,0)';
-                        sideHide.style[cache.vendor+'Transform'] = theSideTranslate;
+                        settings.menu.style[cache.vendor+'Transform'] = theSideTranslate;
 
                     } else {
                         settings.element.style.width = (win.innerWidth || doc.documentElement.clientWidth)+'px';

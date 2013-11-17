@@ -591,6 +591,7 @@ App.init = function(config) {
 
 		App.snap = new Snap({
 			element: document.getElementById('snap-content'),
+			menu: document.getElementById('side-menu'),
 			disable: 'right'
 		});
 
