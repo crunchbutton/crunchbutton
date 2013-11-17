@@ -425,7 +425,7 @@ p {
 	font-weight: 800;
 	width: 300px;
 	margin: 0 auto;
-	padding: .36em 0 .36em 0;
+	padding: .39em 0 .39em 0;
 	letter-spacing:1px;
 	margin-top: 7px;
 	background: #e24538;
@@ -919,26 +919,41 @@ p {
 
 
 .button-bottom-wrapper {
-	-webkit-transition:bottom 0.5s ease;
-	-moz-transition:bottom 0.5s ease;
-	-ms-transition:bottom 0.5s ease;
-	-o-transition:bottom 0.5s ease;
-	transition:bottom 0.5s ease;
+	position: fixed;
+	left: 0;
+	right: 0;
+	z-index: 102;
+	bottom: 0;
+	width: 100%;
+	background: #2b2937;
+	height: 54px;
 
-	position:fixed;
-	left:0;
-	right:0;
-	z-index:102;
-	bottom:0;
-	width:100%;
-	background:#2b2937;
-	height:54px;
+	-webkit-transition:all 0.3s ease-out;
+	   -moz-transition:all 0.3s ease-out;
+	    -ms-transition:all 0.3s ease-out;
+	     -o-transition:all 0.3s ease-out;
+	        transition:all 0.3s ease-out;
+	
+	-webkit-transform-origin: left bottom;
+	   -moz-transform-origin: left bottom;
+	   -moz-transform-origin: left bottom;
+	    -ms-transform-origin: left bottom;
+	     -o-transform-origin: left bottom;
+	        transform-origin: left bottom;
 
-	bottom: -67px;
+	-webkit-transform:translate3d(0,67px,0);
+	   -moz-transform:translate3d(0,67px,0);
+	    -ms-transform:translate3d(0,67px,0);
+	     -o-transform:translate3d(0,67px,0);
+	        transform:translate3d(0,67px,0);
 }
 
 .button-bottom-show {
-	bottom:0 !important;
+	-webkit-transform:translate3d(0,0,0);
+	   -moz-transform:translate3d(0,0,0);
+	    -ms-transform:translate3d(0,0,0);
+	     -o-transform:translate3d(0,0,0);
+	        transform:translate3d(0,0,0);
 }
 
 
