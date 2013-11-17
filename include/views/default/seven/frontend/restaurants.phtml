@@ -1,7 +1,7 @@
 <div class="top-pad"></div>
 
 <div class="restaurants-bubble-wrap">
-	<div class="bubble-tail bubble-tail-green">
+	<div class="bubble-tail bubble-tail-green bubble-animated">
 		<div class="text" ng-switch="pushMessage">
 			<span class="small" ng-switch-when="2">Push one of those restaurants down there.</span>
 			<span ng-switch-when="3">The RESTAURANTS.</span>
@@ -20,6 +20,7 @@
 			<span ng-switch-when="1">Push a button.<br>Get food.&nbsp;&nbsp;&nbsp;&nbsp;</span>
 			<span ng-switch-default>Push a button.<br>Get food.&nbsp;&nbsp;&nbsp;&nbsp;</span>
 		</div>
+		<div class="bubble-tail-spacer"></div>
 	</div>
 	<div class="restaurants-orange" ng-instant="pushMessage = (pushMessage > 15 && 1) || pushMessage + 1"></div>
 	<div class="divider"></div>

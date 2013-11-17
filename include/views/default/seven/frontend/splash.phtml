@@ -3,14 +3,13 @@
 	<div title="Crunchbutton" class="logo" ng-click="navigation.home()"></div>
 	<br><br><br><br><br><br>
 
-	
 	<div class="about-join-bubble-wrap">
-		<div class="bubble-curved bubble-curved-white">
+		<div class="bubble-curved bubble-curved-white bubble-animated">
 			<div class="text" ng-switch="splashMessage">
 				<span class="single-line" ng-switch-when="2">Hey!!</span>
 				<span class="single-line" ng-switch-when="3">Try logging in!</span>
 				<span class="single-line" ng-switch-when="4">No, down THERE!</span>
-				<span ng-switch-when="5">You are in for a treat</span>
+				<span ng-switch-when="5">You are in<br>for a treat</span>
 				<span ng-switch-when="6">I can tell you are excited</span>
 				<span class="small" ng-switch-when="7">Perhaps too excited to follow directions</span>
 				<span class="small" ng-switch-when="8">But the next page is even MORE exciting!</span>
@@ -28,15 +27,16 @@
 				<span class="single-line" ng-switch-default>Oh, Hello!</span>
 			</div>
 		</div>
+		<div class="bubble-curved-spacer"></div>
 	</div>
 
-	<div class="about-green-orange" ng-instant="splashMessage = (splashMessage > 18 && 1) || splashMessage + 1"></div>
+	<div class="about-green-orange" ng-instant="(splashMessage = (splashMessage > 18 && 1) || splashMessage + 1); internetBreakage = internetBreakage + 1"></div>
 	<div class="divider"></div>
 	
 	<div class="splash-bottom">
 		<div class="splash-inputs">
 			<p class="splash-tagline">
-				We’re Crunchbutton.
+				<b>We’re Crunchbutton.</b>
 				<br>We deliver you the best food from the best restaurants in your community.
 				<br><br>
 			</p>
