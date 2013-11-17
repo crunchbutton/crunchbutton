@@ -273,9 +273,9 @@ html {
 	color: #e1f1ee;
 }
 .home-top {
-	background: url(../images/micro/bg-sandwich.jpg);
+	background: #90562f url(../images/micro/bg-sandwich.jpg);
 	background-position: top right;
-	background-size: 150%;
+	background-size: cover;
 	padding: 0 0 60px 0;
 }
 .home-inputs h4 {
@@ -863,6 +863,11 @@ p {
 		height:auto;
 		overflow:auto;
 		-webkit-overflow-scrolling: touch;
+		-webkit-transform: translate3d(0,0,0);
+		   -moz-transform: translate3d(0,0,0);
+		    -ms-transform: translate3d(0,0,0);
+		     -o-transform: translate3d(0,0,0);
+		        transform: translate3d(0,0,0);
 		-webkit-transition: width 0.3s ease;
 		   -moz-transition: width 0.3s ease;
 		    -ms-transition: width 0.3s ease;
@@ -2533,6 +2538,9 @@ sup {
 	.splash-spacer-two {
 		height: 6em;
 	}
+	.splash-bottom {
+		bottom: 7.7em;
+	}
 }
 @media screen and (max-height: 529px) {
 	.splash-spacer-one {
@@ -2540,6 +2548,9 @@ sup {
 	}
 	.splash-spacer-two {
 		height: 5em;
+	}
+	.splash-bottom {
+		bottom: 6em;
 	}
 }
 @media screen and (max-height: 499px) {
@@ -2549,7 +2560,9 @@ sup {
 	.splash-spacer-two {
 		height: 4em;
 	}
-
+	.splash-bottom {
+		bottom: 4em;
+	}
 }
 
 
@@ -2569,6 +2582,9 @@ sup {
 	}
 	.splash-inputs .button-pushable {
 		height: 4em;
+	}
+	.splash-bottom {
+		bottom: 2.2em;
 	}
 }
 
