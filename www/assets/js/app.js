@@ -109,6 +109,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'LocationCtrl',
 			templateUrl: 'assets/view/location.html'
 		})
+		.when('/splash', {
+			action: 'splash',
+			controller: 'SplashCtrl',
+			templateUrl: 'assets/view/splash.html'
+		})
 		.when('/food-delivery', {
 			action: 'restaurants',
 			controller: 'RestaurantsCtrl',

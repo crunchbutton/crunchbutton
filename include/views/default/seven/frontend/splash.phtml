@@ -1,0 +1,37 @@
+<div class="bg home-top splash-top">
+	<br><br><br><br>
+	<div title="Crunchbutton" class="logo" ng-click="navigation.home()"></div>
+	<br><br><br><br>
+	
+	
+	<div class="about-join-bubble-wrap">
+		<div class="bubble-curved bubble-curved-white">
+			<div class="text">
+				Oh, Hello!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</div>
+		</div>
+	</div>
+	<div class="about-green-orange"></div>
+	<div class="divider"></div>
+	
+	<div class="splash-bottom">
+		<div class="splash-inputs">
+			<p>
+				We’re Crunchbutton. We deliver you the best food from the best restaurants in your community.
+				<br><br>
+			</p>
+			<div class="button-pushable">
+				<button class="button facebook" ng-click="facebook.auth()">
+					<i class="fa fa-facebook-square"></i>&nbsp;
+					<span ng-hide="facebook.facebook.wait">Log in with Facebook</span>
+					<span ng-show="facebook.facebook.wait">Just a sec...</span>
+				</button>
+			</div>
+	
+			<p>
+				<br>
+				<a href="" class="splash-continue" ng-instant="navigation.link('/location')">Continue without logging in</a>
+			</p>
+		</div>
+	</div>
+</div>
