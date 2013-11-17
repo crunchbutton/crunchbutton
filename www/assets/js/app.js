@@ -40,7 +40,7 @@ App.localStorage = App.isPhoneGap;
 App.setLoggedIn = function(loggedIn) {
 	if ($('.is-ui2').get(0) && !loggedIn) {
 		setTimeout(function(){
-			App.go('/splash');		
+			App.go('/splash');
 		},10);
 	}
 };

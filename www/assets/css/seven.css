@@ -453,6 +453,9 @@ p {
 .button-pushable .button.lightorange {
 	box-shadow: 0 2px 0 #de7e5b;
 }
+.button-pushable .button.green {
+	box-shadow: 0 2px 0 #00927b;
+}
 .button-pushable .button.facebook {
 	box-shadow: 0 2px 0 #203d74;
 }
@@ -1178,7 +1181,7 @@ p {
 	width: 7.9em;
 	height: 10.3em;
 	background-size: 100%;
-	float: left;
+	float: right;
 	margin-top: 2.2em;
 }
 .bubble-tail {
@@ -1188,6 +1191,9 @@ p {
 	float: left;
 	margin-top: 1em;
 	margin-right: 1.5em;
+}
+.bubble-tail-spacer {
+	height: 7.4em;
 }
 .bubble-tail-green {
 	background: url(../images/micro/bubble-tail-green.svg) no-repeat;
@@ -2228,6 +2234,7 @@ sup {
 .about-join-bubble-wrap {
 	margin: 0 auto;
 	width: 17.7em;
+	margin-top: 7em;
 }
 .bubble-curved {
 	background-position: top center !important;
@@ -2239,8 +2246,8 @@ sup {
 }
 .bubble-curved-green {
 	background: url(../images/micro/bubble-curved-green.svg) no-repeat;
-	margin-top: 7em;
 }
+
 .bubble-curved-white {
 	background: url(../images/micro/bubble-curved-white.svg) no-repeat;
 }
@@ -2372,3 +2379,22 @@ sup {
 		width: 100%;
 	}
 }
+
+.bubble-curved-spacer {
+	height: 11.5em;
+}
+
+.bubble-animated {
+	-webkit-animation-duration: 2.5s;
+	-webkit-animation-name: bubble-hover;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: ease-in-out;
+	position: absolute;
+}
+
+@-webkit-keyframes bubble-hover {
+	0% { -webkit-transform:translateY(0); }
+	45% { -webkit-transform:translateY(-.5em); }
+    100% { -webkit-transform:translateY(0); }
+}
+

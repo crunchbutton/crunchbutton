@@ -1,7 +1,7 @@
 <div class="top-pad"></div>
 
 <div class="about-bubble-wrap">
-	<div class="bubble-tail bubble-tail-green">
+	<div class="bubble-tail bubble-tail-green bubble-animated">
 		<div class="text" ng-switch="pearMessage">
 			<span ng-switch-when="2">I don't actually work here.</span>
 			<span ng-switch-when="3">These guys do though.</span>
@@ -17,6 +17,7 @@
 			<span ng-switch-when="1"><b>Hey there!</b><br>Nice to meet you!</span>
 			<span ng-switch-default><b>Hey there!</b><br>Nice to meet you!</span>
 		</div>
+		<div class="bubble-tail-spacer"></div>
 	</div>
 	<div class="about-pear" ng-instant="pearMessage = (pearMessage > 12 && 1) || pearMessage + 1"></div>
 	<div class="divider"></div>
@@ -90,8 +91,7 @@
 	</div>
 
 	<div class="about-join-bubble-wrap">
-		<div class="bubble-curved bubble-curved-green">
-
+		<div class="bubble-curved bubble-curved-green bubble-animated">
 			<div class="text" ng-switch="orangeMessage">
 				<span class="small" ng-switch-when="2">So you can write stupid messages like this</span>
 				<span  ng-switch-when="3">That no one will ever read</span>
@@ -108,6 +108,7 @@
 				<span class="single-line" ng-switch-default><b>Join the team!<b></span>
 			</div>
 		</div>
+		<div class="bubble-curved-spacer"></div>
 	</div>
 	<div class="about-green-orange" ng-instant="orangeMessage = (orangeMessage > 12 && 1) || orangeMessage + 1"></div>
 	<div class="divider"></div>

@@ -1,7 +1,7 @@
 <div class="top-pad"></div>
 
 <div class="owners-bubble-wrap">
-	<div class="bubble-tail bubble-tail-beige">
+	<div class="bubble-tail bubble-tail-beige bubble-animated">
 		<div class="text" ng-switch="ownerMessage">
 			<span class="single-line" ng-switch-when="1">Get it?</span>
 			<span class="single-line" ng-switch-when="2"><b>GOOD</b> for you!!</span>
@@ -19,6 +19,7 @@
 			<span class="single-line" ng-switch-when="14"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
 			<span ng-switch-default><b>We're good</b><br>for your business!</span>
 		</div>
+		<div class="bubble-tail-spacer"></div>
 	</div>
 	<div class="owner-brocoli" ng-instant="ownerMessage = (ownerMessage > 14 && 1) || ownerMessage + 1"></div>
 	<div class="divider"></div>
