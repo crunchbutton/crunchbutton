@@ -131,6 +131,7 @@ html {
 	height: 28px;
 	float: left;
 	margin: 8px 0 0 10px;
+	cursor: pointer;
 	-webkit-transform:translate3d(0,0,0);
 	-webkit-transition: opacity 0.2s;
 	   -moz-transition: opacity 0.2s;
@@ -610,11 +611,11 @@ p {
 .dropdown {
 	position: absolute;
 	z-index: 9999999;
-	display: none;
-	font-size: 12px;
+	font-size: 1em;
+	margin-top: 45px;
+	margin-left: 15px;
 }
-.dropdown .dropdown-menu,
-.dropdown .dropdown-panel {
+.dropdown .dropdown-menu{
 	min-width: 160px;
 	max-width: 360px;
 	list-style: none;
@@ -627,64 +628,45 @@ p {
 	padding: 4px 0;
 	margin: 0;
 }
-.dropdown .dropdown-panel {
-	padding: 10px;
-}
-.dropdown.dropdown-tip {
-	margin-top: 8px;
-}
 .dropdown.dropdown-tip:before {
-  position: absolute;
-  top: -6px;
-  left: 9px;
-  content: '';
-  border-left: 7px solid transparent;
-  border-right: 7px solid transparent;
-  border-bottom: 7px solid #CCC;
-  border-bottom-color: rgba(0, 0, 0, 0.2);
-  display: inline-block;
+	position: absolute;
+	top: -6px;
+	left: 9px;
+	content: '';
+	border-left: 7px solid transparent;
+	border-right: 7px solid transparent;
+	border-bottom: 7px solid #CCC;
+/*  border-bottom-color: rgba(0, 0, 0, 0.2);*/
+	display: inline-block;
 }
-.dropdown.dropdown-tip.dropdown-anchor-right:before {
-	left: auto;
-	right: 9px;
-}
+
 .dropdown.dropdown-tip:after {
-  position: absolute;
-  top: -5px;
-  left: 10px;
-  content: '';
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-bottom: 6px solid #FFF;
-  display: inline-block;
+	position: absolute;
+	top: -5px;
+	left: 10px;
+	content: '';
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-bottom: 6px solid #FFF;
+	display: inline-block;
 }
-.dropdown.dropdown-tip.dropdown-anchor-right:after {
-	left: auto;
-	right: 10px;
-}
-.dropdown.dropdown-scroll .dropdown-menu,
-.dropdown.dropdown-scroll .dropdown-panel {
-	max-height: 358px;
-	overflow: auto;
-}
+
 .dropdown .dropdown-menu LI {
 	list-style: none;
 	padding: 0 0;
 	margin: 0;
 	line-height: 18px;
 }
-.dropdown .dropdown-menu LI > A,
-.dropdown .dropdown-menu LABEL {
+.dropdown .dropdown-menu LI > A {
 	display: block;
 	color: #555;
 	text-decoration: none;
 	line-height: 18px;
-	padding: 3px 15px;
+	padding: 3px 10px;
 	white-space: nowrap;
 }
 
-.dropdown .dropdown-menu LI > A:hover,
-.dropdown .dropdown-menu LABEL:hover {
+.dropdown .dropdown-menu LI > A:hover {
 	background-color: #08C;
 	color: #FFF;
 	cursor: pointer;
@@ -697,11 +679,10 @@ p {
 	margin: 5px 0;
 }
 
-/* Icon Examples - icons courtesy of http://p.yusukekamiyamane.com/ */
-.dropdown.has-icons LI > A {
-	padding-left: 30px;
-	background-position: 8px center;
-	background-repeat: no-repeat;
+.dropdown .fa {
+	width: 12px;
+	text-align: center;
+	margin-right: 10px;
 }
 
 
@@ -788,6 +769,10 @@ p {
 }
 
 @media(max-width:768px) {
+
+	#dropdown-menu {
+		display: none !important;
+	}
 	body {
 		overflow: hidden;
 	}

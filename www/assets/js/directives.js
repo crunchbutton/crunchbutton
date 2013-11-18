@@ -217,7 +217,6 @@ NGApp.directive('ngScrollSpy', function () {
 					$('.nav-top').addClass('at-top');
 				},
 				onLeave: function(element, position) {
-				console.log('leave');
 					$('.nav-top').removeClass('at-top');
 				}
 			};
@@ -305,3 +304,30 @@ NGApp.directive( 'ngFormatPhone', function( $filter ) {
 		} );
 	};
 } );
+
+
+/* toggle elements, and then untoggle on next mouse click. used for menu */
+NGApp.directive('ngToggle', function() {
+	return {
+		restrict: 'A',
+		link: function (scope, elem, attr) {
+
+			elem.bind('click', function(event) {
+				setTimeout(function() {
+					$(document).one('click', function(e) {
+						if (e.target == event.target) {
+							return;
+						}
+						scope.$apply(function() {
+							scope[attr.ngToggle] = false;
+						});
+					});
+				},0);
+	
+				scope.$apply(function() {
+					scope[attr.ngToggle] = true;
+				});
+			});
+		}
+	};
+});
