@@ -145,7 +145,7 @@
 					</div>
 
 					<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-						<li ng-repeat="dish in category.dishes()" ng-click="order.cart.add(dish.id_dish)" class="dish-item">
+						<li ng-repeat="dish in category.dishes()" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
 							<span class="dish-item-name"><i class="fa fa-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-item-price">(${{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
 							<span class="dish-item-description">{{dish.description}}</span>
 						</li>
@@ -164,7 +164,7 @@
 
 				<div ng-repeat="category in restaurant.categories()">
 					<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-						<li ng-repeat="dish in category.dishes() | filter: {top: 1}" ng-click="order.cart.add(dish.id_dish)" class="dish-item">
+						<li ng-repeat="dish in category.dishes() | filter: {top: 1}" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
 							<span class="dish-item-name">{{dish.name}}</span><span class="dish-item-price">(${{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
 							<span class="dish-item-description">{{dish.description}}</span>
 						</li>
