@@ -769,8 +769,7 @@ p {
 }
 
 @media(max-width:768px) {
-
-	#dropdown-menu {
+	.dropdown {
 		display: none !important;
 	}
 	body {
@@ -1673,7 +1672,8 @@ p {
 	border: 2px solid #00957f;
 	padding: .3em .6em .3em .6em;
 	color: #174e46;
-
+	width: 100%;
+	box-sizing: border-box;
 }
 .form-icon {
 	color: #00957f;
@@ -1683,11 +1683,15 @@ p {
 	padding-right: .5em;
 }
 .form-group {
-	display: table-row;
+	display: table;
+	width: 100%;
+	box-sizing: border-box;
+	white-space:nowrap;
 }
 .form-icon, .form-input, .form-select {
 	vertical-align: top;
 	padding-top: .4em;
+	display: table-cell !important;
 }
 .form-select {
 	background: #fff;
@@ -2718,11 +2722,6 @@ sup {
 	width: 280px;
 	left: 10px;
 	border-radius: 5px;
-}
-
-
-.location-detect .fa {
-
 }
 
 /* places auto complete */
