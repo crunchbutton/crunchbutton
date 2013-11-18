@@ -147,7 +147,7 @@ html {
 	position:absolute;
 	z-index : 0;
 	cursor: pointer;
-	margin: 8px 0 0 14px;
+	margin: 8px 0 0 6px;
 	background: url(../images/micro/back.svg) center center no-repeat;
 	background-size: 100%;
 	width: 50px;
@@ -421,10 +421,21 @@ p {
 	background: #e24538;
 	box-shadow: 0 3px 0 #980c08;
 }
+.button.download {
+	font-size: 1.9em;
+	margin: 0 auto;
+	padding: .8em 0 .8em 0;
+	background: #e53f3c;
+	box-shadow: 0 3px 0 #9a000d;
+	font-weight: bold;
+}
 
 /* active colors */
 .button.orange:active {
 	background: #ce412a;
+}
+.button.download:active {
+	background: #d13b39;
 }
 .button.lightorange:active {
 	background: #e78d62;
@@ -462,7 +473,7 @@ p {
 }
 
 /* pushable margins */
-.button-pushable .button.get-food:active {
+.button-pushable .button.get-food:active{
 	margin-top: 10px;
 }
 .button-pushable .button.find-restaurants:active {
@@ -470,6 +481,9 @@ p {
 }
 .button-pushable.find-restaurants {
 	height: 6em;
+}
+.button-pushable .button.download:active {
+	margin-top: 4px;
 }
 
 
@@ -529,7 +543,7 @@ p {
 		margin: 8px 0 0 0;
 	}
 	.nav-back {
-		margin: 8px 0 0 4px;
+		margin: 8px 0 0 -4px;
 	}
 	.nav-cart {
 		margin: 8px 0 0 0;
@@ -564,7 +578,7 @@ p {
 		margin: 3px 0 0 10px;
 	}
 	.nav-back {
-		margin: 3px 0 0 14px;
+		margin: 3px 0 0 6px;
 	}
 	.nav-cart {
 		margin: 3px 10px 0 0;
@@ -2579,4 +2593,107 @@ sup {
 	    -ms-transition: all 0.2s;
 	     -o-transition: all 0.2s;
 	        transition: all 0.2s;
+}
+
+
+.download-phone {
+	background: url(../images/micro/download-phone.png) no-repeat;
+	width: 195px;
+	height: 408px;
+	background-size: 100%;
+	margin: 0 auto;
+}
+
+.download-top {
+	text-align: center;
+	font-weight: bold;
+	color: #fff;
+}
+
+.download-top h1 {
+	font-size: 3em;
+	margin-bottom: .4em;
+}
+
+.download-top h2 {
+	font-size: 2em;
+}
+
+.page-download .navs {
+	display: none;
+}
+
+.download-top {
+	max-width: 27em;
+	margin: 0 auto;
+}
+
+.download-top p {
+	margin-top: 2.4em;
+}
+
+.download-top .button-pushable {
+	margin-top: 3em;
+
+}
+
+.page-download .splash-spacer-two {
+	min-height: 1em;
+}
+
+@media screen and (min-height: 700px) {
+	.download-bottom {
+		margin-top: 5em;
+	}
+}
+
+@media screen and (max-height: 699px) {
+	.download-bottom {
+		position: fixed;
+		bottom: -100px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-height: 599px) {
+	.download-bottom {
+		position: fixed;
+		bottom: -200px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-height: 349px) {
+	.download-bottom {
+		position: fixed;
+		bottom: -280px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-height: 249px) {
+	.download-bottom {
+		display: none;
+	}
+}
+
+@media screen and (max-height: 444px) {
+	.button.download {
+		padding-top: .5em;
+		padding-bottom: .5em;
+		font-size: 1.5em;
+	}
+	.download-top .button-pushable {
+		margin-top: 1.7em;
+	}
+	.download-top h1 {
+		font-size: 2.5em;
+		margin-bottom: .4em;
+	}
+	.download-top h2 {
+		font-size: 1.5em;
+	}
+	.download-top p {
+		margin-top: .8em;
+	}
 }
