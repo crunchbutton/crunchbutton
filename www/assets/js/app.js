@@ -250,6 +250,10 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		$('html, body, .snap-content-inner').animate({scrollTop: 156}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	};
 	
+	$rootScope.cancelDownload = function() {
+		$.totalStorage('_viewmobile', true);
+	};
+	
 	$rootScope.$on('userAuth', function(e, data) {
 		$rootScope.$safeApply(function($scope) {
 			// @todo: remove double data
@@ -683,6 +687,13 @@ App.init = function(config) {
 		$(':input').focus( function() {
 			$(window).scrollTop( $(window).scrollTop() + 1 );
 		});
+	}
+
+	// show download page only if its ui2 in an ios browser
+	if (App.iOS() && !App.isPhoneGap && !$.totalStorage('_viewmobile') && $('.is-ui2').get(0)) {
+		setTimeout(function(){
+			App.go('/download');
+		},10);
 	}
 
 	App.phoneGapListener.init();
