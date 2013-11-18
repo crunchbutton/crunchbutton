@@ -2713,3 +2713,16 @@ sup {
     50% { -webkit-transform:translateY(0); }
     100% { -webkit-transform:translateY(0); }
 }
+
+.animate-cart-add {
+	-webkit-transform: translate3d(0,0,0);
+	-webkit-transition: all 0.3s ease-in;
+
+	position: absolute;
+	background: #f56b3b;
+	z-index: 9999;
+	height: 30px;
+	width: 280px;
+	left: 10px;
+	border-radius: 5px;
+}
