@@ -543,15 +543,6 @@ p {
 
 /* GLOBAL */
 @media(min-width:769px) {
-	.menu {
-		margin: 8px 0 0 0;
-	}
-	.nav-back {
-		margin: 8px 0 0 -4px;
-	}
-	.nav-cart {
-		margin: 8px 0 0 0;
-	}
 	.menu.drop {
 		display: block;
 	}
