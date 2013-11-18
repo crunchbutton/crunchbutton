@@ -2697,3 +2697,19 @@ sup {
 		margin-top: .8em;
 	}
 }
+
+
+.image-animated {
+	-webkit-animation-duration: 5s;
+	-webkit-animation-name: image-hover;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: ease-in-out;
+	-webkit-animation-delay: 2s;
+}
+
+@-webkit-keyframes image-hover {
+	0% { -webkit-transform:translateY(0); }
+	22.5% { -webkit-transform:translateY(-.5em); }
+    50% { -webkit-transform:translateY(0); }
+    100% { -webkit-transform:translateY(0); }
+}
