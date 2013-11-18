@@ -1674,6 +1674,11 @@ p {
 	margin-bottom: 2em;
 }
 
+.spacer-two-one {
+	margin-top: 2em;
+	margin-bottom: 1em;
+}
+
 /* global form styles */
 .form-input {
 	font-size: 1.3em;
@@ -2726,4 +2731,12 @@ sup {
 	width: 280px;
 	left: 10px;
 	border-radius: 5px;
+}
+
+
+
+.page-location .snap-content-inner.bg {
+	background: #fffef8 url(../images/micro/location-hidden-orange.svg) no-repeat;
+	background-position: center 60px;
+	background-size: 141px 93px;
 }
