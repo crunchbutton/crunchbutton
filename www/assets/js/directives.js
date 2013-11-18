@@ -3,28 +3,29 @@ NGApp.directive('addToCart', function() {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
 			element.bind('click', function (e) {
-
-				setTimeout(function() {
-					var el = $(element.get(0));
-					var cart = $('.nav-cart');
-
-					var animate = $('<div class="animate-cart-add">').css({
-						top: el.position().top+20
-					});
-					animate.bind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function() {
-						$(this).remove();
-					});
-					animate.appendTo('body');
+				if ($('.is-ui2').get(0)) {
 					setTimeout(function() {
-						animate.css({
-							top: cart.position().top,
-							left: cart.position().left,
-							width: cart.width()/2,
-							height: cart.height()/2,
-							opacity: .3
-						});	
-					},1);
-				},0);
+						var el = $(element.get(0));
+						var cart = $('.nav-cart');
+
+						var animate = $('<div class="animate-cart-add">').css({
+							top: el.position().top+20
+						});
+						animate.bind('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function() {
+							$(this).remove();
+						});
+						animate.appendTo('body');
+						setTimeout(function() {
+							animate.css({
+								top: cart.position().top,
+								left: cart.position().left,
+								width: cart.width()/2,
+								height: cart.height()/2,
+								opacity: .3
+							});	
+						},1);
+					},0);
+				}
 				
 				setTimeout(function() {
 					scope.order.cart.add(attrs.idDish);
