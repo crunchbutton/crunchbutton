@@ -1171,7 +1171,7 @@ var ADMIN = {
 				{
 					type : 'api',
 					obj	: 'restaurant',
-					data: { restaurant:ADMIN.restaurant, obj:'restaurant' },
+					data: { restaurant:ADMIN.restaurant, obj:'restaurant', cockpit:true },
 					id	 : this.id_restaurant,
 				},
 				function(rsp) {
@@ -1327,6 +1327,7 @@ var DOM_MAP = {
 				'input#restaurant-lat' : ['loc_lat'],
 				'input#restaurant-lng' : ['loc_long'],
 				'input#restaurant-delivery-min' : ['delivery_min'],
+				'input#restaurant-delivery-service-markup' : ['delivery_service_markup'],
 				'input#restaurant-delivery-fee' : ['delivery_fee'],
 				'input#restaurant-delivery-radius' : ['delivery_radius'],
 				'input#restaurant-delivery-estimated-time' : ['delivery_estimated_time'],
