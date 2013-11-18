@@ -8,7 +8,8 @@ class Controller_test_recoveryUserAuth extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
-		// die( 'remove this die in order to get it working!!!' );
+		die( 'remove this die in order to get it working!!!' );
+
 		$auths = User_Auth::q( 'SELECT * FROM user_auth WHERE active = 0 AND auth IS NULL AND type = "local"' );
 		foreach ( $auths as $auth ) {
 			$phone = $auth->email;
