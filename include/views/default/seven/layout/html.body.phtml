@@ -119,7 +119,7 @@
 					<div title="Menu" class="menu drop" data-dropdown="#dropdown-menu" ng-show="navigation.buttons.menu"></div>
 					<div title="Back" ng-show="navigation.buttons.back" class="nav-back hide-before-init" ng-instant="back()"></div>
 					
-					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll()" ng-show="order.info.totalItems">
+					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll(order.restaurant.permalink)" ng-show="order.info.totalItems">
 						<div class="fa fa-shopping-cart"></div>
 						<div class="nav-cart-count">{{order.info.totalItems}}</div>
 					</div>
