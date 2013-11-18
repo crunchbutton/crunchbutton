@@ -1236,7 +1236,7 @@ p {
 	height: 7.4em;
 	background-size: 100% !important;
 	float: left;
-	margin-top: 1em;
+	margin-top: 1.5em;
 	margin-right: 1.5em;
 }
 .bubble-tail-spacer {
@@ -1271,6 +1271,7 @@ p {
 .restaurants-bubble-wrap {
 	width: 29em;
 	margin: 0 auto;
+	margin-top: -10px;
 }
 .restaurants-tagline {
 	margin-top: -1.1em;
