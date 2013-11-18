@@ -44,7 +44,7 @@ var App = {
 App.localStorage = App.isPhoneGap;
 
 App.setLoggedIn = function(loggedIn) {
-	if ($('.is-ui2').get(0) && !loggedIn) {
+	if ($('.is-ui2').get(0) && !loggedIn && App.isPhoneGap) {
 		setTimeout(function(){
 			App.go('/splash');
 		},10);
@@ -127,6 +127,10 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			action: 'splash',
 			controller: 'SplashCtrl',
 			templateUrl: 'assets/view/splash.html'
+		})
+		.when('/download', {
+			action: 'download',
+			templateUrl: 'assets/view/download.html'
 		})
 		.when('/food-delivery', {
 			action: 'restaurants',
