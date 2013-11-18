@@ -261,8 +261,12 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		} else {
 			scroll();
 		}
-
-
+	};
+	
+	$rootScope.scrollHalf = function(permalink) {
+		$('html, body, .snap-content-inner').animate({
+			scrollTop: 530 - $('.navs').height() - 10
+		}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	};
 	
 	$rootScope.cancelDownload = function() {
