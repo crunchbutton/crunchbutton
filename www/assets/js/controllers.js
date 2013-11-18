@@ -699,8 +699,6 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 				}
 			}
 		}
-		
-		App.scrollTop();
 
 		$scope.order.cart.items = order.cart.getItems();
 

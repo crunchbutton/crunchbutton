@@ -246,8 +246,23 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	
 	$rootScope.test = App.test;
 	
-	$rootScope.cartScroll = function() {
-		$('html, body, .snap-content-inner').animate({scrollTop: 156}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+	$rootScope.cartScroll = function(permalink) {
+		//$('.snap-content-inner').scrollTop() + $('.cart-items').offset().top
+		var top = 183 - $('.navs').height() - 10;
+
+		var scroll = function() {
+			$('html, body, .snap-content-inner').animate({
+				scrollTop: top
+			}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+		};
+		if ($rootScope.navigation.page != 'restaurant') {
+			$rootScope.scrollTop = top;
+			App.go('/food-delivery/' + permalink);
+		} else {
+			scroll();
+		}
+
+
 	};
 	
 	$rootScope.cancelDownload = function() {
@@ -360,10 +375,9 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 		}).addClass('page-' + MainNavigationService.page + ' at-top');
 		
 		App.parallax.bg = null;
-		
-		setTimeout(function() {
-			App.scrollTop();
-		},1);
+
+		App.scrollTop($rootScope.scrollTop);
+		$rootScope.scrollTop = 0;
 		
 		if (App.isPhoneGap && !App.splashHidden && navigator.splashscreen) {
 			App.splashHidden = true;
@@ -436,10 +450,11 @@ App.toggleMenu = function() {
 /**
  * scroll to the top of the page
  */
-App.scrollTop = function() {
+App.scrollTop = function(top) {
 	setTimeout(function() {
-		$('html, body, .snap-content-inner').animate({scrollTop: 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
-	},1);
+		console.log(top);
+		$('html, body, .snap-content-inner').animate({scrollTop: top || 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+	},3);
 };
 
 
