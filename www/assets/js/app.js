@@ -252,6 +252,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	
 	$rootScope.cancelDownload = function() {
 		$.totalStorage('_viewmobile', true);
+		App.go('/location');
 	};
 	
 	$rootScope.$on('userAuth', function(e, data) {
