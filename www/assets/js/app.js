@@ -372,7 +372,9 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
-		}).addClass('page-' + MainNavigationService.page + ' at-top');
+		}).addClass('page-' + MainNavigationService.page);
+		
+		$('.nav-top').addClass('at-top');
 		
 		App.parallax.bg = null;
 
