@@ -2762,6 +2762,7 @@ sup {
 	margin-top: -2px;
 	border-bottom: none;
 	width: 30em !important;
+
 }
 
 .pac-item {
@@ -2770,6 +2771,7 @@ sup {
 	background: #fff;
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 	padding: 2px 4px 2px 4px;
+	cursor: pointer;
 }
 .pac-item:first-child {
 	border-top-left-radius: 2px;
