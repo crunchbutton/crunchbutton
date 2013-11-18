@@ -582,32 +582,6 @@ App.init = function(config) {
 		e.stopPropagation();
 	});
 
-	/* @todo: need to finish this
-	var lastX, lastY, dThresh = 10;
-	$(document).on('touchmove', 'body', function(e) {
-		e = e.originalEvent;
-		return;
-
-		var currentY = e.touches[0].clientY;
-		if (currentY > lastY) {
-			console.log('DOWN');
-		} else {
-			console.log('UP');
-		}
-		lastY = currentY;
-	
-		var currentX = e.touches[0].clientX;
-		if (currentX > lastX) {
-			console.log('RIGHT');
-			e.preventDefault();
-		} else {
-			console.log('LEFT');
-			e.preventDefault();
-		}
-		lastX = currentX;		
-	});
-	*/
-
 	// replace normal click events for mobile browsers
 	FastClick.attach(document.body);
 	
@@ -663,11 +637,13 @@ App.init = function(config) {
 		CB.config = null;
 	}
 
+	// @todo: is this isued anymore in ui2?
 	$(document).on('click', '.button-deliver-payment, .dp-display-item a, .dp-display-item .clickable', function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();
 	});
 
+	// @todo: is this isued anymore in ui2?
 	$(document).on({
 		mousedown: function() {
 			$(this).addClass('button-bottom-click');
@@ -683,6 +659,7 @@ App.init = function(config) {
 		}
 	}, '.button-bottom');
 
+	// process the config, and startup angular
 	App.processConfig(config || App.config);
 	App.AB.init();
 	App.NGinit();
@@ -691,15 +668,9 @@ App.init = function(config) {
 	$.cookie('loc','', { expires : ( new Date(1970,01,01) ) });
 	$.cookie('locv2','', { expires : ( new Date(1970,01,01) ) });
 
-/*
-	if( App.config.user.id_user ){
-		var account = angular.element( 'html' ).injector().get( 'AccountService' );
-		account.user = App.config.user;
-		account.updateInfo();
-	}
-*/
 	// #1774
-	if( App.iOS() ){
+	// @todo: this no longer seems to happen in ui2
+	if (App.iOS() && !$('.is-ui2').get(0)){
 		$(':input').focus( function() {
 			$(window).scrollTop( $(window).scrollTop() + 1 );
 		});
@@ -713,7 +684,6 @@ App.init = function(config) {
 	}
 
 	App.phoneGapListener.init();
-
 };
 
 /**
