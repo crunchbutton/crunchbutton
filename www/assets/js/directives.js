@@ -198,10 +198,11 @@ NGApp.directive('ngScrollSpy', function () {
 				min: -300,
 				max: 50,
 				onEnter: function(element, position) {
-					$('.page-location .nav-top').addClass('at-top');
+					$('.nav-top').addClass('at-top');
 				},
 				onLeave: function(element, position) {
-					$('.page-location .nav-top').removeClass('at-top');
+				console.log('leave');
+					$('.nav-top').removeClass('at-top');
 				}
 			};
 			$(elem).scrollspy(sp);
