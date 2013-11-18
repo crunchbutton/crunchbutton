@@ -590,6 +590,12 @@ App.init = function(config) {
 
 	// replace normal click events for mobile browsers
 	FastClick.attach(document.body);
+
+	$(document).on({
+		'DOMNodeInserted': function() {
+			$('.pac-item, .pac-item span', this).addClass('needsclick');
+		}
+	}, '.pac-container');
 	
 	// add ios7 styles for nav bar and page height
 	if (App.isPhoneGap && !App.iOS7()) {

@@ -1,3 +1,30 @@
+NGApp.directive('geoComplete', function() {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+		
+	
+	
+	
+			element.geocomplete()
+				.bind('geocode:result', function(event, result) {
+					console.log("Result: " + result.formatted_address);
+				}).bind('geocode:error', function(event, status) {
+					console.log("ERROR: " + status);
+				}).bind('geocode:multiple', function(event, results) {
+					console.log("Multiple: " + results.length + " results found");
+				});
+        /*
+        $("#find").click(function(){
+          $("#geocomplete").trigger("geocode");
+        });
+        */
+
+
+		}
+	};
+});
+
 NGApp.directive('addToCart', function() {
 	return {
 		restrict: 'A',
