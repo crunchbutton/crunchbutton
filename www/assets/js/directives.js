@@ -190,6 +190,55 @@ NGApp.directive('ngKeyUp', function () {
 	};
 });
 
+NGApp.directive('ngScrollSpy', function () {
+	return {
+		restrict: 'A',
+		link: function (scope, elem, attr) {
+			var sp = {
+				min: -300,
+				max: 50,
+				onEnter: function(element, position) {
+					$('.page-location .nav-top').addClass('at-top');
+				},
+				onLeave: function(element, position) {
+					$('.page-location .nav-top').removeClass('at-top');
+				}
+			};
+			$(elem).scrollspy(sp);
+			sp.container = $('.snap-content-inner');
+			$(elem).scrollspy(sp);
+			
+			if (App.isPhoneGap) {
+				var sp = {
+					min: -130,
+					max: -90,
+					onEnter: function(element, position) {
+						$('.page-location .snap-content-inner.bg').addClass('step-two');
+					},
+					onLeave: function(element, position) {
+						$('.page-location .snap-content-inner.bg').removeClass('step-two');
+					},
+					container: $('.snap-content-inner')
+				};
+				$(elem).scrollspy(sp);
+
+				var sp = {
+					min: -300,
+					max: -130,
+					onEnter: function(element, position) {
+						$('.page-location .snap-content-inner.bg').addClass('step-three');
+					},
+					onLeave: function(element, position) {
+						$('.page-location .snap-content-inner.bg').removeClass('step-three');
+					},
+					container: $('.snap-content-inner')
+				};
+				$(elem).scrollspy(sp);
+			}
+		}
+	};
+});
+
 NGApp.directive('ngSpinner', function () {
 	return {
 		restrict: 'A',

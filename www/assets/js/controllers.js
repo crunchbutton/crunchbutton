@@ -262,6 +262,7 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
  * Change location
  */
 NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
+
 	var account = AccountService;
 	var restaurants = RestaurantsService;
 
