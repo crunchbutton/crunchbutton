@@ -96,27 +96,26 @@
 		<div class="navs" data-position="fixed" ng-controller="MainHeaderCtrl">
 			<div class="nav nav-top">
 				<div class="content">
-
-					<div id="dropdown-menu" class="dropdown dropdown-tip">
+					<div class="hide-before-init dropdown dropdown-tip" ng-show="menudropdown">
 						<ul class="dropdown-menu">
-							<li><a ng-click="navigation.link('/food-delivery')">Restaurants</a></li>
-							<li><a ng-click="navigation.link('/orders')" ng-show="account.user.id_user">Previous Orders</a></li>
-							<li><a ng-click="navigation.link('/location')">Change Location</a></li>
+							<li><a ng-click="navigation.link('/food-delivery')"><i class="fa fa-cutlery"></i>Restaurants</a></li>
+							<li><a ng-click="navigation.link('/orders')" ng-show="account.user.id_user"><i class="fa fa-truck"></i>Previous Orders</a></li>
+							<li><a ng-click="navigation.link('/location')"><i class="fa fa-map-marker"></i>Change Location</a></li>
 							<li class="dropdown-divider"></li>
-							<li><a ng-click="navigation.link('/help')">Help</a></li>
-							<li><a ng-click="navigation.link('/about')">About</a></li>
-							<li><a ng-click="navigation.signin()" ng-show="!account.user.id_user">Log In</a></li>
-							<li><a ng-click="signout.do()" ng-show="account.user.id_user">Log Out</a></li>
+							<li><a ng-click="navigation.link('/help')"><i class="fa fa-heart"></i>Help</a></li>
+							<li><a ng-click="navigation.link('/about')"><i class="fa fa-lightbulb-o"></i>About</a></li>
+							<li><a ng-click="navigation.signin()" ng-show="!account.user.id_user"><i class="fa fa-sign-in"></i>Log In</a></li>
+							<li><a ng-click="signout.do()" ng-show="account.user.id_user"><i class="fa fa-sign-out"></i>Log Out</a></li>
 							<li class="dropdown-divider" ng-show="account.user.debug"></li>
-							<li><a ng-click="App.test.card()" ng-show="account.user.debug">TEST: card</a></li>
-							<li><a ng-click="App.test.clearloc()" ng-show="account.user.debug">TEST: clear location</a></li>
-							<li><a ng-click="navigation.link('/')" ng-show="account.user.debug">TEST: go home</a></li>
-							<li><a ng-click="App.test.card()" ng-show="account.user.debug">TEST: card</a></li>
+							<li><a ng-click="App.test.card()" ng-show="account.user.debug"><i class="fa fa-circle-o"></i>TEST: card</a></li>
+							<li><a ng-click="App.test.clearloc()" ng-show="account.user.debug"><i class="fa fa-circle-o"></i>TEST: clear location</a></li>
+							<li><a ng-click="navigation.link('/')" ng-show="account.user.debug"><i class="fa fa-circle-o"></i>TEST: go home</a></li>
+							<li><a ng-click="App.test.card()" ng-show="account.user.debug"><i class="fa fa-circle-o"></i>TEST: card</a></li>
 					    </ul>
 					</div>
 				
 					<div title="Menu" class="menu side" ng-click="navigation.menu()" ng-show="navigation.buttons.menu"></div>
-					<div title="Menu" class="menu drop" data-dropdown="#dropdown-menu" ng-show="navigation.buttons.menu"></div>
+					<div title="Menu" class="menu drop" ng-show="navigation.buttons.menu" ng-toggle="menudropdown"></div>
 					<div title="Back" ng-show="navigation.buttons.back" class="nav-back hide-before-init" ng-instant="back()"></div>
 					
 					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll(order.restaurant.permalink)" ng-show="order.info.totalItems">
