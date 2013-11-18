@@ -177,8 +177,17 @@
 		</div>
 		<div class="divider"></div>
 	</div>
+	
+	
+	<div class="divider dots spacer-one-one" ng-show="!account.user.id_user"></div>
+	<div class="content-padding" ng-show="!account.user.id_user">
+		<p>Already signed up? Don't enter all that stuff again!</p>
+		<br>
+		<button class="button green" ng-click="navigation.signin()">Log in</button>
+	</div>
 
 	<div class="divider dots spacer-one-one" ng-show="order.loaded && order.cart.hasItems() && order.showForm"></div>
+	
 
 
 	<!-- payment and user info -->
