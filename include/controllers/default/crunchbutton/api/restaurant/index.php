@@ -122,7 +122,14 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 				// @todo: refered can be spoofed!!! who put this here?! wtf?!
 				$where['Dish']['active'] = NULL;
 			}
-			$json = json_encode($restaurant->exports($ignore = [], $where));
+			$isCockpit = ( $_REQUEST[ 'cockpit' ] || ( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false )  ) ? true : false;
+			if( $isCockpit ){
+				// dont show the price recalculated by delivery_service_markup at cockpit
+				$ignore = array( 'delivery_service_markup_prices' => 1 );
+			} else {
+				$ignore = [];
+			}
+			$json = json_encode($restaurant->exports( $ignore, $where));
 		} else {
 			$json = json_encode(['error' => 'invalid object']);
 		}
