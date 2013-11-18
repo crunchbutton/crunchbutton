@@ -2735,8 +2735,14 @@ sup {
 
 
 
-.page-location .snap-content-inner.bg {
-	background: #fffef8 url(../images/micro/location-hidden-orange.svg) no-repeat;
-	background-position: center 60px;
-	background-size: 141px 93px;
+.page-location .snap-content-inner.bg, .location-overpull-preload-one {
+	background: #fffef8 url(../images/micro/location-hidden-orange1.svg) no-repeat;
+	background-position: center 40px !important;
+	background-size: 175px 90px !important;
+}
+.page-location .snap-content-inner.bg.step-two, .location-overpull-preload-two {
+	background: #fffef8 url(../images/micro/location-hidden-orange2.svg) no-repeat;
+}
+.page-location .snap-content-inner.bg.step-three, .location-overpull-preload-three {
+	background: #fffef8 url(../images/micro/location-hidden-orange3.svg) no-repeat;
 }
