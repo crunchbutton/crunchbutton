@@ -1092,8 +1092,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out['_tag']  = 'closed';
 		}
 
-
-
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
 
@@ -1110,6 +1108,39 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if (!$ignore['categories']) {
 			foreach ($this->categories() as $category) {
 				$out['_categories'][] = $category->exports($where);
+			}
+
+			// To make sure it will be ignored at cockpit
+			$isCockpit = ( $_REQUEST[ 'cockpit' ] || ( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false )  ) ? true : false;
+			if( $isCockpit ){
+				$ignore[ 'delivery_service_markup_prices' ] = true;	
+			}
+			if ( !$ignore[ 'delivery_service_markup_prices' ] ) {
+				// Recalculate the price using the delivery_service_markup variable #2032
+				$delivery_service_markup = $this->delivery_service_markup;
+				if( $delivery_service_markup && $delivery_service_markup > 0 ){
+					// Categories
+					for( $i=0; $i<( count( $out[ '_categories' ] ) ); $i++ ){
+						// Dishes
+						for( $j=0; $j<( count( $out[ '_categories' ][ $i ][ '_dishes' ] ) ); $j++ ){
+							$price = $out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'price' ];
+							if( $price > 0 ){
+								$price = $price + ( $price * $delivery_service_markup / 100 );
+								$price = number_format( $price, 2 );
+								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'price' ] = $price;	
+							}
+							// Options
+							for( $k=0; $k<( count( $out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ] ) ); $k++ ){
+								$price = $out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'price' ];
+								if( $price > 0 ){
+									$price = $price + ( $price * $delivery_service_markup / 100 );
+									$price = number_format( $price, 2 );
+									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'price' ] = $price;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 
