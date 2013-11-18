@@ -79,9 +79,9 @@ class Crunchbutton_Order extends Cana_Table {
 			$dish->id_dish = $d['id'];
 			$price = $dish->dish()->price;
 			if( $delivery_service_markup > 0 && $price > 0 ){
-				$price = $price + number_format( $price * $delivery_service_markup / 100 );
-				$delivery_service_markup_value += number_format( $price * $delivery_service_markup / 100 );
+				$price = $price + ( $price * $delivery_service_markup / 100 );
 				$price = number_format( $price, 2 );
+				$delivery_service_markup_value += ( $dish->dish()->price * $delivery_service_markup / 100 );
 			}
 			$subtotal += $price;
 			if ($d['options']) {
@@ -91,8 +91,8 @@ class Crunchbutton_Order extends Cana_Table {
 					$price = $option->option()->price;
 					if( $delivery_service_markup > 0 && $price > 0 ){
 						$price = $price + ( $price * $delivery_service_markup / 100 );
-						$delivery_service_markup_value += number_format( $price * $delivery_service_markup / 100 );
 						$price = number_format( $price, 2 );
+						$delivery_service_markup_value += ( $option->option()->price * $delivery_service_markup / 100 );
 					}
 					$subtotal += $price;
 //                    $subtotal += $option->option()->optionPrice($d['options']);
