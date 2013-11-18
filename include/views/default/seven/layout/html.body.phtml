@@ -117,14 +117,14 @@
 				
 					<div title="Menu" class="menu side" ng-click="navigation.menu()" ng-show="navigation.buttons.menu"></div>
 					<div title="Menu" class="menu drop" data-dropdown="#dropdown-menu" ng-show="navigation.buttons.menu"></div>
-					<div title="Back" ng-show="navigation.buttons.back" class="nav-back hide-before-init" ng-instant="back()">back</div>
+					<div title="Back" ng-show="navigation.buttons.back" class="nav-back hide-before-init" ng-instant="back()"></div>
 					
-					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll()" ng-show="order.info.totalItems">
+					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll(order.restaurant.permalink)" ng-show="order.info.totalItems">
 						<div class="fa fa-shopping-cart"></div>
 						<div class="nav-cart-count">{{order.info.totalItems}}</div>
 					</div>
 
-					<div title="Crunchbutton" class="logo" ng-click="navigation.home()"></div>
+					<div title="Crunchbutton" class="logo animated-resize" ng-click="navigation.home()"></div>
 
 				</div>
 			</div>

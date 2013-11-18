@@ -33,6 +33,7 @@ NGApp.factory('CartService', function () {
 			dish = App.cache('Dish', item);
 		dish_options = dish.options(),
 		options = [];
+		
 		var expanded = true;
 		if (arguments[1]) {
 			options = arguments[1].options;

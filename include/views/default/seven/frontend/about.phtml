@@ -11,7 +11,7 @@
 			<span class="single-line" ng-switch-when="7">Or three.</span>
 			<span ng-switch-when="8">In fact just buy them a keg.</span>
 			<span class="single-line" ng-switch-when="9">Me?</span>
-			<span class="small" ng-switch-when="10">I'll take a magnum of Veuve Clicquot, thanks.</span>
+			<span class="small" ng-switch-when="10" style="margin-top: .5em;">A bottle of Veuve Clicquot, please.</span>
 			<span class="single-line" ng-switch-when="11">Cheers!</span>
 			<span class="single-line" ng-switch-when="12"><i class="fa fa-glass"></i> <i class="fa fa-glass"></i> <i class="fa fa-glass"></i></span>
 			<span ng-switch-when="1"><b>Hey there!</b><br>Nice to meet you!</span>
@@ -19,14 +19,14 @@
 		</div>
 		<div class="bubble-tail-spacer"></div>
 	</div>
-	<div class="about-pear" ng-instant="pearMessage = (pearMessage > 12 && 1) || pearMessage + 1"></div>
+	<div class="about-pear animated-resize" ng-instant="pearMessage = (pearMessage > 12 && 1) || pearMessage + 1"></div>
 	<div class="divider"></div>
 </div>
 
 <div class="content-padding">
 	<br />
 	<div class="staff">
-		<div class="staff-judd staff-image"></div>
+		<div class="staff-judd staff-image animated-resize"></div>
 		<h1>Judd Rosenblatt</h1>
 		<h2>Chief Eater</h2>
 		<p class="staff-favorite">
@@ -39,9 +39,9 @@
 	</div>
 
 	<div class="staff">
-		<div class="staff-devin staff-image"></div>
+		<div class="staff-devin staff-image animated-resize"></div>
 		<h1>Devin Smith</h1>
-		<h2>Head Chef</h2>
+		<h2>Executive Chef</h2>
 		<p class="staff-favorite">
 			Fav<span class="staff-orite">orite</span> food: Toro Sushi
 			<br>Fav<span class="staff-orite">orite</span> beer: Matilda
@@ -52,7 +52,7 @@
 	</div>
 	
 	<div class="staff">
-		<div class="staff-david staff-image"></div>
+		<div class="staff-david staff-image animated-resize"></div>
 		<h1>David Klumpp</h1>
 		<h2>Chief Taster</h2>
 		<p class="staff-favorite">
@@ -65,7 +65,7 @@
 	</div>
 	
 	<div class="staff">
-		<div class="staff-nick staff-image"></div>
+		<div class="staff-nick staff-image animated-resize"></div>
 		<h1>Nick Hunter</h1>
 		<h2>Garbage Disposal</h2>
 		<p class="staff-favorite">
@@ -78,7 +78,7 @@
 	</div>
 	
 	<div class="staff">
-		<div class="staff-daniel staff-image"></div>
+		<div class="staff-daniel staff-image animated-resize"></div>
 		<h1>Daniel Camargo</h1>
 		<h2>Sous-chef</h2>
 		<p class="staff-favorite">
@@ -91,7 +91,7 @@
 	</div>
 
 	<div class="about-join-bubble-wrap">
-		<div class="bubble-curved bubble-curved-green bubble-animated">
+		<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
 			<div class="text" ng-switch="orangeMessage">
 				<span class="small" ng-switch-when="2">So you can write stupid messages like this</span>
 				<span  ng-switch-when="3">That no one will ever read</span>
@@ -110,7 +110,7 @@
 		</div>
 		<div class="bubble-curved-spacer"></div>
 	</div>
-	<div class="about-green-orange" ng-instant="orangeMessage = (orangeMessage > 12 && 1) || orangeMessage + 1"></div>
+	<div class="about-green-orange animated-resize" ng-instant="orangeMessage = (orangeMessage > 12 && 1) || orangeMessage + 1"></div>
 	<div class="divider"></div>
 
 	<p>
