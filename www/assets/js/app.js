@@ -27,6 +27,12 @@ var App = {
 	useNativeConfirm: true,
 	ajaxTimeout: 5000,
 	splashHidden: false,
+	parallax: {
+		bg: null,
+		x: 0,
+		y: 0,
+		enabled: true
+	},
 	restaurantsPaging: {
 		enabled: true,
 		desktop: 9,
@@ -38,7 +44,7 @@ var App = {
 App.localStorage = App.isPhoneGap;
 
 App.setLoggedIn = function(loggedIn) {
-	if ($('.is-ui2').get(0) && !loggedIn) {
+	if ($('.is-ui2').get(0) && !loggedIn && App.isPhoneGap) {
 		setTimeout(function(){
 			App.go('/splash');
 		},10);
@@ -121,6 +127,10 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			action: 'splash',
 			controller: 'SplashCtrl',
 			templateUrl: 'assets/view/splash.html'
+		})
+		.when('/download', {
+			action: 'download',
+			templateUrl: 'assets/view/download.html'
 		})
 		.when('/food-delivery', {
 			action: 'restaurants',
@@ -236,8 +246,28 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	
 	$rootScope.test = App.test;
 	
-	$rootScope.cartScroll = function() {
-		$('html, body, .snap-content-inner').animate({scrollTop: 156}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+	$rootScope.cartScroll = function(permalink) {
+		//$('.snap-content-inner').scrollTop() + $('.cart-items').offset().top
+		var top = 183 - $('.navs').height() - 10;
+
+		var scroll = function() {
+			$('html, body, .snap-content-inner').animate({
+				scrollTop: top
+			}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+		};
+		if ($rootScope.navigation.page != 'restaurant') {
+			$rootScope.scrollTop = top;
+			App.go('/food-delivery/' + permalink);
+		} else {
+			scroll();
+		}
+
+
+	};
+	
+	$rootScope.cancelDownload = function() {
+		$.totalStorage('_viewmobile', true);
+		App.go('/location');
 	};
 	
 	$rootScope.$on('userAuth', function(e, data) {
@@ -344,9 +374,10 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
 		}).addClass('page-' + MainNavigationService.page + ' at-top');
 		
-		setTimeout(function() {
-			App.scrollTop();
-		},1);
+		App.parallax.bg = null;
+
+		App.scrollTop($rootScope.scrollTop);
+		$rootScope.scrollTop = 0;
 		
 		if (App.isPhoneGap && !App.splashHidden && navigator.splashscreen) {
 			App.splashHidden = true;
@@ -419,10 +450,11 @@ App.toggleMenu = function() {
 /**
  * scroll to the top of the page
  */
-App.scrollTop = function() {
+App.scrollTop = function(top) {
 	setTimeout(function() {
-		$('html, body, .snap-content-inner').animate({scrollTop: 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
-	},1);
+		console.log(top);
+		$('html, body, .snap-content-inner').animate({scrollTop: top || 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+	},3);
 };
 
 
@@ -550,32 +582,6 @@ App.init = function(config) {
 		e.stopPropagation();
 	});
 
-	/* @todo: need to finish this
-	var lastX, lastY, dThresh = 10;
-	$(document).on('touchmove', 'body', function(e) {
-		e = e.originalEvent;
-		return;
-
-		var currentY = e.touches[0].clientY;
-		if (currentY > lastY) {
-			console.log('DOWN');
-		} else {
-			console.log('UP');
-		}
-		lastY = currentY;
-	
-		var currentX = e.touches[0].clientX;
-		if (currentX > lastX) {
-			console.log('RIGHT');
-			e.preventDefault();
-		} else {
-			console.log('LEFT');
-			e.preventDefault();
-		}
-		lastX = currentX;		
-	});
-	*/
-
 	// replace normal click events for mobile browsers
 	FastClick.attach(document.body);
 	
@@ -592,6 +598,7 @@ App.init = function(config) {
 		App.snap = new Snap({
 			element: document.getElementById('snap-content'),
 			menu: document.getElementById('side-menu'),
+			menuDragDistance: 95,
 			disable: 'right'
 		});
 
@@ -630,11 +637,13 @@ App.init = function(config) {
 		CB.config = null;
 	}
 
+	// @todo: is this isued anymore in ui2?
 	$(document).on('click', '.button-deliver-payment, .dp-display-item a, .dp-display-item .clickable', function() {
 		$('.payment-form').show();
 		$('.delivery-payment-info, .content-padder-before').hide();
 	});
 
+	// @todo: is this isued anymore in ui2?
 	$(document).on({
 		mousedown: function() {
 			$(this).addClass('button-bottom-click');
@@ -650,6 +659,7 @@ App.init = function(config) {
 		}
 	}, '.button-bottom');
 
+	// process the config, and startup angular
 	App.processConfig(config || App.config);
 	App.AB.init();
 	App.NGinit();
@@ -658,22 +668,22 @@ App.init = function(config) {
 	$.cookie('loc','', { expires : ( new Date(1970,01,01) ) });
 	$.cookie('locv2','', { expires : ( new Date(1970,01,01) ) });
 
-/*
-	if( App.config.user.id_user ){
-		var account = angular.element( 'html' ).injector().get( 'AccountService' );
-		account.user = App.config.user;
-		account.updateInfo();
-	}
-*/
 	// #1774
-	if( App.iOS() ){
+	// @todo: this no longer seems to happen in ui2
+	if (App.iOS() && !$('.is-ui2').get(0)){
 		$(':input').focus( function() {
 			$(window).scrollTop( $(window).scrollTop() + 1 );
 		});
 	}
 
-	App.phoneGapListener.init();
+	// show download page only if its ui2 in an ios browser
+	if (App.iOS() && !App.isPhoneGap && !$.totalStorage('_viewmobile') && $('.is-ui2').get(0)) {
+		setTimeout(function(){
+			App.go('/download');
+		},10);
+	}
 
+	App.phoneGapListener.init();
 };
 
 /**

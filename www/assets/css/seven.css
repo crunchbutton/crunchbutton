@@ -23,6 +23,10 @@ body {
 	font-size: 10px;
 	color: #312f38;
 	-webkit-transition: font-size 0.2s;
+	   -moz-transition: font-size 0.2s;
+	    -ms-transition: font-size 0.2s;
+	     -o-transition: font-size 0.2s;
+	        transition: font-size 0.2s;
 	letter-spacing: .03em;
 }
 body, input, textarea, button {
@@ -72,6 +76,10 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 
 html {
 	-webkit-text-size-adjust: none;
+	   -moz-text-size-adjust: none;
+	    -ms-text-size-adjust: none;
+	     -o-text-size-adjust: none;
+	        text-size-adjust: none;
 }
 
 * {
@@ -97,10 +105,11 @@ html {
 	*:not(input):not(textarea) {
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: -moz-none;
-		-o-user-select: none;
-		user-select: none;
+		 -khtml-user-select: none;
+		   -moz-user-select: -moz-none;
+		    -ms-user-select: none;
+		     -o-user-select: none;
+		        user-select: none;
 	}
 }
 
@@ -108,18 +117,12 @@ html {
 
 .logo {
 	background: url(../images/micro/crunchbutton-logo.svg) no-repeat;
-	background-position: top center;
 	width: 254px;
 	height: 50px;
 	background-size: 100%;
 	margin: 0 auto;
-	-webkit-transition: all 0.2s;
 	cursor: pointer;
 }
-
-
-
-
 
 .menu {
 	background: url(../images/micro/menu.svg) center center no-repeat;
@@ -128,8 +131,12 @@ html {
 	height: 28px;
 	float: left;
 	margin: 8px 0 0 10px;
+	-webkit-transform:translate3d(0,0,0);
 	-webkit-transition: opacity 0.2s;
-	cursor: pointer;
+	   -moz-transition: opacity 0.2s;
+	    -ms-transition: opacity 0.2s;
+	     -o-transition: opacity 0.2s;
+	        transition: opacity 0.2s;
 }
 
 .menu:active {
@@ -138,55 +145,26 @@ html {
 
 .nav-back {
 	position:absolute;
-	background-color: #f56b3b;
-	height:28px;
-	padding: 0 10px 0 8px;
 	z-index : 0;
-	border-radius: 5px;
-	-webkit-border-top-left-radius : 10px 15px;
-	-webkit-border-bottom-left-radius : 10px 15px;
-	font-size : 11px;
-	display : block; 
-	text-align:center;
-	color:#fff;
-
-	line-height : 28px;
-	font-weight: 700;
-    
 	cursor: pointer;
-    
+	margin: 8px 0 0 6px;
+	background: url(../images/micro/back.svg) center center no-repeat;
+	background-size: 100%;
+	width: 50px;
+	height: 28px;
 	float: left;
-	margin: 8px 0 0 14px;
-	-webkit-transition: opacity 0.2s;
-}
 
-.nav-back:before{
-	position:absolute;
-	top:8%;
-	left:-4px;
-	background-color: #f56b3b;
-	height : 23px;
-	width: 25px;
-	-webkit-transform : rotate(-45deg) skew(-10deg, -10deg);
-	-webkit-border-top-right-radius : 100px 40px;
-	-webkit-border-top-left-radius : 30px 2px;
-	-webkit-border-bottom-right-radius : 2px 30px;
-	-webkit-border-bottom-left-radius : 40px 100px;
-	z-index : 1;
-	content : ' ';
-	-webkit-mask-image : 
-		-webkit-gradient(linear, left top, right bottom,
-			from(#000000), 
-			color-stop(0.33,#000000), 
-			color-stop(0.5, transparent), 
-			to(transparent));
+	-webkit-transform:translate3d(0,0,0);
+	-webkit-transition: opacity 0.2s;
+	   -moz-transition: opacity 0.2s;
+	    -ms-transition: opacity 0.2s;
+	     -o-transition: opacity 0.2s;
+	        transition: opacity 0.2s;
 }
 
 .nav-back:active {
 	opacity: .4;
 }
-
-
 
 ::-webkit-input-placeholder {
 	color: #858585;
@@ -235,11 +213,17 @@ html {
 	height: 39px;
 	cursor: pointer;
 
-	-webkit-transition:all linear 0.08s;
-	-moz-transition:all linear 0.08s;
-	-ms-transition:all linear 0.08s;
-	-o-transition:all linear 0.08s;
-	transition:all linear 0.08s;
+	-webkit-transform: translate3d(0,0,0);
+	   -moz-transform: translate3d(0,0,0);
+	    -ms-transform: translate3d(0,0,0);
+	     -o-transform: translate3d(0,0,0);
+	        transform: translate3d(0,0,0);
+
+	-webkit-transition: all linear 0.08s;
+	   -moz-transition: all linear 0.08s;
+	    -ms-transition: all linear 0.08s;
+	     -o-transition: all linear 0.08s;
+	        transition: all linear 0.08s;
 }
 /* wierd issue with height only on mobile safari */
 @media screen and (max-device-width: 480px) {
@@ -253,9 +237,9 @@ html {
 	color: #e1f1ee;
 }
 .home-top {
-	background: url(../images/micro/bg-sandwich.jpg);
+	background: #90562f url(../images/micro/bg-sandwich.jpg);
 	background-position: top right;
-	background-size: 150%;
+	background-size: cover;
 	padding: 0 0 60px 0;
 }
 .home-inputs h4 {
@@ -382,18 +366,24 @@ p {
 	font-size: 1.3em;
 	width: 100%;
 
-	-webkit-transition:background linear 0.08s;
-	-moz-transition:background linear 0.08s;
-	-ms-transition:background linear 0.08s;
-	-o-transition:background linear 0.08s;
-	transition:background linear 0.08s;
+	-webkit-transition: background linear 0.08s;
+	   -moz-transition: background linear 0.08s;
+	    -ms-transition: background linear 0.08s;
+	     -o-transition: background linear 0.08s;
+	        transition: background linear 0.08s;
 }
 .button.ani-all {
-	-webkit-transition:all linear 0.08s;
-	-moz-transition:all linear 0.08s;
-	-ms-transition:all linear 0.08s;
-	-o-transition:all linear 0.08s;
-	transition:all linear 0.08s;
+	-webkit-transform: translate3d(0,0,0);
+	   -moz-transform: translate3d(0,0,0);
+	    -ms-transform: translate3d(0,0,0);
+	     -o-transform: translate3d(0,0,0);
+	        transform: translate3d(0,0,0);
+
+	-webkit-transition: all linear 0.08s;
+	   -moz-transition: all linear 0.08s;
+	    -ms-transition: all linear 0.08s;
+	     -o-transition: all linear 0.08s;
+	        transition: all linear 0.08s;
 }
 
 /* colors */
@@ -431,10 +421,21 @@ p {
 	background: #e24538;
 	box-shadow: 0 3px 0 #980c08;
 }
+.button.download {
+	font-size: 1.9em;
+	margin: 0 auto;
+	padding: .8em 0 .8em 0;
+	background: #e53f3c;
+	box-shadow: 0 3px 0 #9a000d;
+	font-weight: bold;
+}
 
 /* active colors */
 .button.orange:active {
 	background: #ce412a;
+}
+.button.download:active {
+	background: #d13b39;
 }
 .button.lightorange:active {
 	background: #e78d62;
@@ -472,7 +473,7 @@ p {
 }
 
 /* pushable margins */
-.button-pushable .button.get-food:active {
+.button-pushable .button.get-food:active{
 	margin-top: 10px;
 }
 .button-pushable .button.find-restaurants:active {
@@ -480,6 +481,9 @@ p {
 }
 .button-pushable.find-restaurants {
 	height: 6em;
+}
+.button-pushable .button.download:active {
+	margin-top: 4px;
 }
 
 
@@ -501,20 +505,21 @@ p {
 	padding: 0;
 	z-index : 0;
 	border-radius: 5px;
-
 	font-size : 23px;
 	display : block; 
 	text-align:center;
 	color:#fff;
-
 	line-height : 28px;
 	font-weight: 700;
-    
 	cursor: pointer;
-    
 	float: right;
 	margin: 8px 10px 0 0;
-	-webkit-transition: opacity 0.2s;
+
+	-webkit-transition: all opacity 0.2s;
+	   -moz-transition: all opacity 0.2s;
+	    -ms-transition: all opacity 0.2s;
+	     -o-transition: all opacity 0.2s;
+	        transition: all opacity 0.2s;
 }
 
 .nav-cart-count {
@@ -538,7 +543,7 @@ p {
 		margin: 8px 0 0 0;
 	}
 	.nav-back {
-		margin: 8px 0 0 4px;
+		margin: 8px 0 0 -4px;
 	}
 	.nav-cart {
 		margin: 8px 0 0 0;
@@ -573,7 +578,7 @@ p {
 		margin: 3px 0 0 10px;
 	}
 	.nav-back {
-		margin: 3px 0 0 14px;
+		margin: 3px 0 0 6px;
 	}
 	.nav-cart {
 		margin: 3px 10px 0 0;
@@ -803,12 +808,12 @@ p {
 		z-index:3;
 		overflow:auto;
 		overflow-x:hidden;
-		-webkit-overflow-scrolling:touch;
-		-webkit-transform:translate3d(0,0,0);
-		-moz-transform:translate3d(0,0,0);
-		-ms-transform:translate3d(0,0,0);
-		-o-transform:translate3d(0,0,0);
-		transform:translate3d(0,0,0);
+		-webkit-overflow-scrolling: touch;
+		-webkit-transform: translate3d(0,0,0);
+		   -moz-transform: translate3d(0,0,0);
+		    -ms-transform: translate3d(0,0,0);
+		     -o-transform: translate3d(0,0,0);
+		        transform: translate3d(0,0,0);
 	}
 	.snap-content {
 		position:absolute;
@@ -820,11 +825,11 @@ p {
 		height:auto;
 		z-index:2;
 		overflow: hidden;
-		-webkit-transform:translate3d(0,0,0);
-		-moz-transform:translate3d(0,0,0);
-		-ms-transform:translate3d(0,0,0);
-		-o-transform:translate3d(0,0,0);
-		transform:translate3d(0,0,0);
+		-webkit-transform: translate3d(0,0,0);
+		   -moz-transform: translate3d(0,0,0);
+		    -ms-transform: translate3d(0,0,0);
+		     -o-transform: translate3d(0,0,0);
+		        transform: translate3d(0,0,0);
 	}
 	.snap-drawer {
 		position:absolute;
@@ -835,12 +840,17 @@ p {
 		width:265px;
 		height:auto;
 		overflow:auto;
-		-webkit-overflow-scrolling:touch;
-		-webkit-transition:width 0.3s ease;
-		-moz-transition:width 0.3s ease;
-		-ms-transition:width 0.3s ease;
-		-o-transition:width 0.3s ease;
-		transition:width 0.3s ease;
+		-webkit-overflow-scrolling: touch;
+		-webkit-transform: translate3d(0,0,0);
+		   -moz-transform: translate3d(0,0,0);
+		    -ms-transform: translate3d(0,0,0);
+		     -o-transform: translate3d(0,0,0);
+		        transform: translate3d(0,0,0);
+		-webkit-transition: width 0.3s ease;
+		   -moz-transition: width 0.3s ease;
+		    -ms-transition: width 0.3s ease;
+		     -o-transition: width 0.3s ease;
+		        transition: width 0.3s ease;
 
 	}
 	.snap-drawers {
@@ -911,6 +921,7 @@ p {
 	
 	
 	/* static viewport. no fixed position nac header */
+	/*
 	.static-nav-viewport .navs {
 		width:auto;
 		top: auto;
@@ -929,6 +940,7 @@ p {
 	.page-splash .static-nav-viewport .snap-content-inner {
 		margin-top: 0;
 	}
+	*/
 }
 
 
@@ -964,19 +976,19 @@ p {
 	     -o-transform-origin: left bottom;
 	        transform-origin: left bottom;
 
-	-webkit-transform:translate3d(0,67px,0);
-	   -moz-transform:translate3d(0,67px,0);
-	    -ms-transform:translate3d(0,67px,0);
-	     -o-transform:translate3d(0,67px,0);
-	        transform:translate3d(0,67px,0);
+	-webkit-transform: translate3d(0,67px,0);
+	   -moz-transform: translate3d(0,67px,0);
+	    -ms-transform: translate3d(0,67px,0);
+	     -o-transform: translate3d(0,67px,0);
+	        transform: translate3d(0,67px,0);
 }
 
 .button-bottom-show {
-	-webkit-transform:translate3d(0,0,0);
-	   -moz-transform:translate3d(0,0,0);
-	    -ms-transform:translate3d(0,0,0);
-	     -o-transform:translate3d(0,0,0);
-	        transform:translate3d(0,0,0);
+	-webkit-transform: translate3d(0,0,0);
+	   -moz-transform: translate3d(0,0,0);
+	    -ms-transform: translate3d(0,0,0);
+	     -o-transform: translate3d(0,0,0);
+	        transform: translate3d(0,0,0);
 }
 
 
@@ -1003,11 +1015,11 @@ p {
 
 
 .page-location .nav-top {
-	-webkit-transition:background 0.2s ease, border 0.2s ease;
-	-moz-transition:background 0.2s ease, border 0.2s ease;
-	-ms-transition:background 0.2s ease, border 0.2s ease;
-	-o-transition:background 0.2s ease, border 0.2s ease;
-	transition:background 0.2s ease, border 0.2s ease;
+	-webkit-transition: background 0.2s ease, border 0.2s ease;
+	   -moz-transition: background 0.2s ease, border 0.2s ease;
+	    -ms-transition: background 0.2s ease, border 0.2s ease;
+	     -o-transition: background 0.2s ease, border 0.2s ease;
+	        transition: background 0.2s ease, border 0.2s ease;
 }
 
 .page-location .nav-top.at-top {
@@ -1068,7 +1080,6 @@ p {
 	width: 6.8em;
 	height: 11.2em;
 	background-size: 100%;
-	-webkit-transition: all 0.2s;
 	float: right;
 	margin-top: -.5em;
 	margin-left: 1.5em;
@@ -1113,11 +1124,11 @@ p {
 	margin-bottom: 2px;
 	margin-top: 0;
 	
-	-webkit-transition:border 0.2s ease;
-	-moz-transition:border 0.2s ease;
-	-ms-transition:border 0.2s ease;
-	-o-transition:border 0.2s ease;
-	transition:border 0.2s ease;
+	-webkit-transition: border 0.2s ease;
+	   -moz-transition: border 0.2s ease;
+	    -ms-transition: border 0.2s ease;
+	     -o-transition: border 0.2s ease;
+	        transition: border 0.2s ease;
 }
 
 .restaurants-item .restaurants-open:hover {
@@ -1225,7 +1236,7 @@ p {
 	height: 7.4em;
 	background-size: 100% !important;
 	float: left;
-	margin-top: 1em;
+	margin-top: 1.5em;
 	margin-right: 1.5em;
 }
 .bubble-tail-spacer {
@@ -1260,6 +1271,7 @@ p {
 .restaurants-bubble-wrap {
 	width: 29em;
 	margin: 0 auto;
+	margin-top: -10px;
 }
 .restaurants-tagline {
 	margin-top: -1.1em;
@@ -1289,15 +1301,15 @@ p {
 .footer .social .fa {
 	font-size: 25px;
 	padding-right: 10px;
-	-webkit-transition:color 0.2s ease;
-	-moz-transition:color 0.2s ease;
-	-ms-transition:color 0.2s ease;
-	-o-transition:color 0.2s ease;
-	transition:color 0.2s ease;
 	color: #4b4855;
 	cursor: pointer;
 	text-decoration: none;
-
+	
+	-webkit-transition: color 0.2s ease;
+	   -moz-transition: color 0.2s ease;
+	    -ms-transition: color 0.2s ease;
+	     -o-transition: color 0.2s ease;
+	        transition: color 0.2s ease;
 }
 .footer .social .fa:hover, .footer .social .fa:active {
 	color: #00bea0;
@@ -1307,7 +1319,6 @@ p {
 	margin-top: 50px;
 	text-align: center;
 }
-
 
 .divider.line {
 	background: #c7c7c7;
@@ -1333,7 +1344,6 @@ p {
 	border-radius: 4px;
 	cursor: pointer;
 	margin-bottom: .8em;
-
 }
 .order-item {
 	display: table-row;
@@ -1349,7 +1359,6 @@ p {
 	margin: 0 auto;
 	margin-top: 7em;
 	margin-bottom: 3em;
-	-webkit-transition: all 0.2s;
 }
 
 .order-month {
@@ -1417,13 +1426,17 @@ p {
 	background-position: center center !important;
 	margin-bottom: 2px; 
 
-	filter: brightness(0.95) contrast(135%);
 	-webkit-filter: brightness(0.95) contrast(135%);
-	-moz-filter: brightness(0.95) contrast(135%);
-	-o-filter: brightness(0.95) contrast(135%);
-	-ms-filter: brightness(0.95) contrast(135%);
+	   -moz-filter: brightness(0.95) contrast(135%);
+	    -ms-filter: brightness(0.95) contrast(135%);
+	     -o-filter: brightness(0.95) contrast(135%);
+	        filter: brightness(0.95) contrast(135%);
 
-	-webkit-transform: translateZ(0);
+	-webkit-transform: translate3d(0,0,0);
+	   -moz-transform: translate3d(0,0,0);
+	    -ms-transform: translate3d(0,0,0);
+	     -o-transform: translate3d(0,0,0);
+	        transform: translate3d(0,0,0);
 }
 .restaurant-comment {
 	margin-top: -11em;
@@ -1661,6 +1674,11 @@ p {
 	margin-bottom: 2em;
 }
 
+.spacer-two-one {
+	margin-top: 2em;
+	margin-bottom: 1em;
+}
+
 /* global form styles */
 .form-input {
 	font-size: 1.3em;
@@ -1715,7 +1733,6 @@ p {
 	width: 73px;
 	height: 171px;
 	background-size: 100%;
-	-webkit-transition: all 0.2s;
 	float: left;
 	margin-left: 2em;
 	margin-top: -1em;
@@ -1762,10 +1779,10 @@ p {
 .autosize {
 	margin: .1em 0 .2em 2px;
 	-webkit-transition: height 0.2s;
-	-moz-transition: height 0.2s;
-	-ms-transition: height 0.2s;
-	-o-transition: height 0.2s;
-	transition: height 0.2s;
+	   -moz-transition: height 0.2s;
+	    -ms-transition: height 0.2s;
+	     -o-transition: height 0.2s;
+	        transition: height 0.2s;
 }
 
 
@@ -1778,7 +1795,6 @@ p {
 	height: 129px;
 	background-size: 100%;
 	float: right;
-	-webkit-transition: all 0.2s;
 }
 .about-bubble-wrap {
 	width: 28em;
@@ -1820,7 +1836,6 @@ p {
 	float: left;
 	margin: .2em 1em 0 0;
 	clear: left;
-	
 	display: table-cell;
 	vertical-align: top;
 }
@@ -1844,7 +1859,6 @@ p {
 	height: 13.1em;
 	background-size: 100%;
 	float: right;
-	-webkit-transition: all 0.2s;
 	margin-top: .3em;
 }
 .owners-bubble-wrap {
@@ -2158,18 +2172,26 @@ sup {
 }
 
 .payment-ribbon {
-	-webkit-backface-visibility: hidden;
 	background: url(../images/micro/payment-ribbon.svg) no-repeat;
 	background-position: top center;
 	width: 29.8em;
 	height: auto;
 	background-size: auto 100%;
-	-webkit-transition: all 0.2s;
-	-webkit-transform : rotate(-5deg);
 	float: right;
 	margin-top: 2em;
 	margin-right: -10.4em;
 
+	-webkit-backface-visibility: hidden;
+	   -moz-backface-visibility: hidden;
+	    -ms-backface-visibility: hidden;
+	     -o-backface-visibility: hidden;
+	        backface-visibility: hidden;
+
+	-webkit-transform: rotate(-5deg);
+	   -moz-transform: rotate(-5deg);
+	    -ms-transform: rotate(-5deg);
+	     -o-transform: rotate(-5deg);
+	        transform: rotate(-5deg);
 }
 
 
@@ -2221,7 +2243,6 @@ sup {
 	width: 9em;
 	height: 9em;
 	background-size: 100%;
-	-webkit-transition: all 0.2s;
 	float: left;
 	margin: 0 1em 1em 0;
 }
@@ -2263,7 +2284,6 @@ sup {
 	height: 10.1em;
 	background-size: 100%;
 	margin: 0 auto;
-	-webkit-transition: all 0.2s;
 	margin-top: -4.8em;
 }
 
@@ -2282,7 +2302,6 @@ sup {
 	background-size: 100% !important;
 	width: 17.7em;
 	height: 11.5em;
-	-webkit-transition: all 0.2s;
 	margin-left: -2em;
 }
 .bubble-curved-green {
@@ -2426,10 +2445,32 @@ sup {
 }
 
 .bubble-animated {
+
 	-webkit-animation-duration: 2.5s;
 	-webkit-animation-name: bubble-hover;
 	-webkit-animation-iteration-count: infinite;
 	-webkit-animation-timing-function: ease-in-out;
+
+	-moz-animation-duration: 2.5s;
+	-moz-animation-name: bubble-hover;
+	-moz-animation-iteration-count: infinite;
+	-moz-animation-timing-function: ease-in-out;
+	
+	-ms-animation-duration: 2.5s;
+	-ms-animation-name: bubble-hover;
+	-ms-animation-iteration-count: infinite;
+	-ms-animation-timing-function: ease-in-out;
+	
+	-o-animation-duration: 2.5s;
+	-o-animation-name: bubble-hover;
+	-o-animation-iteration-count: infinite;
+	-o-animation-timing-function: ease-in-out;
+	
+	animation-duration: 2.5s;
+	animation-name: bubble-hover;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+	
 	position: absolute;
 	z-index: 10;
 	pointer-events:none;
@@ -2441,10 +2482,37 @@ sup {
     100% { -webkit-transform:translateY(0); }
 }
 
+@-moz-keyframes bubble-hover {
+	0% { -moz-transform:translateY(0); }
+	45% { -moz-transform:translateY(-.5em); }
+    100% { -moz-transform:translateY(0); }
+}
+
+@-ms-keyframes bubble-hover {
+	0% { -ms-transform:translateY(0); }
+	45% { -ms-transform:translateY(-.5em); }
+    100% { -ms-transform:translateY(0); }
+}
+
+@-o-keyframes bubble-hover {
+	0% { -o-transform:translateY(0); }
+	45% { -o-transform:translateY(-.5em); }
+    100% { -o-transform:translateY(0); }
+}
+
+@keyframes bubble-hover {
+	0% { transform:translateY(0); }
+	45% { transform:translateY(-.5em); }
+    100% { transform:translateY(0); }
+}
 
 
 .splash-tagline {
 	margin-bottom: 2em;
+}
+.splash-continue {
+	margin-top: 1em;
+	display: block;
 }
 	
 @media screen and (min-height: 530px) {
@@ -2454,6 +2522,9 @@ sup {
 	.splash-spacer-two {
 		height: 6em;
 	}
+	.splash-bottom {
+		bottom: 7.7em;
+	}
 }
 @media screen and (max-height: 529px) {
 	.splash-spacer-one {
@@ -2461,6 +2532,9 @@ sup {
 	}
 	.splash-spacer-two {
 		height: 5em;
+	}
+	.splash-bottom {
+		bottom: 6em;
 	}
 }
 @media screen and (max-height: 499px) {
@@ -2470,10 +2544,9 @@ sup {
 	.splash-spacer-two {
 		height: 4em;
 	}
-	.splash-continue {
-		margin-top: 1em;
+	.splash-bottom {
+		bottom: 4em;
 	}
-
 }
 
 
@@ -2494,6 +2567,9 @@ sup {
 	.splash-inputs .button-pushable {
 		height: 4em;
 	}
+	.splash-bottom {
+		bottom: 2.2em;
+	}
 }
 
 @media screen and (max-height: 379px) {
@@ -2509,4 +2585,164 @@ sup {
 	.splash-bottom {
 		bottom: 1.2em;
 	}
+}
+
+.animated-resize {
+	-webkit-transform: translate3d(0,0,0);
+	   -moz-transform: translate3d(0,0,0);
+	    -ms-transform: translate3d(0,0,0);
+	     -o-transform: translate3d(0,0,0);
+	        transform: translate3d(0,0,0);
+
+	-webkit-transition: all 0.2s;
+	   -moz-transition: all 0.2s;
+	    -ms-transition: all 0.2s;
+	     -o-transition: all 0.2s;
+	        transition: all 0.2s;
+}
+
+
+.download-phone {
+	background: url(../images/micro/download-phone.png) no-repeat;
+	width: 195px;
+	height: 408px;
+	background-size: 100%;
+	margin: 0 auto;
+}
+
+.download-top {
+	text-align: center;
+	font-weight: bold;
+	color: #fff;
+}
+
+.download-top h1 {
+	font-size: 3em;
+	margin-bottom: .4em;
+}
+
+.download-top h2 {
+	font-size: 2em;
+}
+
+.page-download .navs {
+	display: none;
+}
+
+.download-top {
+	max-width: 27em;
+	margin: 0 auto;
+}
+
+.download-top p {
+	margin-top: 2.4em;
+}
+
+.download-top .button-pushable {
+	margin-top: 3em;
+
+}
+
+.page-download .splash-spacer-two {
+	min-height: 1em;
+}
+
+@media screen and (min-height: 700px) {
+	.download-bottom {
+		margin-top: 5em;
+	}
+}
+
+@media screen and (max-height: 699px) {
+	.download-bottom {
+		position: fixed;
+		bottom: -100px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-height: 599px) {
+	.download-bottom {
+		position: fixed;
+		bottom: -200px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-height: 349px) {
+	.download-bottom {
+		position: fixed;
+		bottom: -280px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-height: 249px) {
+	.download-bottom {
+		display: none;
+	}
+}
+
+@media screen and (max-height: 444px) {
+	.button.download {
+		padding-top: .5em;
+		padding-bottom: .5em;
+		font-size: 1.5em;
+	}
+	.download-top .button-pushable {
+		margin-top: 1.7em;
+	}
+	.download-top h1 {
+		font-size: 2.5em;
+		margin-bottom: .4em;
+	}
+	.download-top h2 {
+		font-size: 1.5em;
+	}
+	.download-top p {
+		margin-top: .8em;
+	}
+}
+
+
+.image-animated {
+	-webkit-animation-duration: 5s;
+	-webkit-animation-name: image-hover;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: ease-in-out;
+	-webkit-animation-delay: 2s;
+}
+
+@-webkit-keyframes image-hover {
+	0% { -webkit-transform:translateY(0); }
+	22.5% { -webkit-transform:translateY(-.5em); }
+    50% { -webkit-transform:translateY(0); }
+    100% { -webkit-transform:translateY(0); }
+}
+
+.animate-cart-add {
+	-webkit-transform: translate3d(0,0,0);
+	-webkit-transition: all 0.3s ease-in;
+
+	position: absolute;
+	background: #f56b3b;
+	z-index: 9999;
+	height: 30px;
+	width: 280px;
+	left: 10px;
+	border-radius: 5px;
+}
+
+
+
+.page-location .snap-content-inner.bg, .location-overpull-preload-one {
+	background: #fffef8 url(../images/micro/location-hidden-orange1.svg) no-repeat;
+	background-position: center 40px !important;
+	background-size: 175px 90px !important;
+}
+.page-location .snap-content-inner.bg.step-two, .location-overpull-preload-two {
+	background: #fffef8 url(../images/micro/location-hidden-orange2.svg) no-repeat;
+}
+.page-location .snap-content-inner.bg.step-three, .location-overpull-preload-three {
+	background: #fffef8 url(../images/micro/location-hidden-orange3.svg) no-repeat;
 }
