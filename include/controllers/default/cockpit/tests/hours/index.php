@@ -18,5 +18,8 @@ class Controller_tests_hours extends Crunchbutton_Controller_Account {
 		c::view()->time = new DateTime($time, new DateTimeZone($restaurant->timezone));
 
 		c::view()->display('tests/hours/index');
+
+		
+		
 	}
 }

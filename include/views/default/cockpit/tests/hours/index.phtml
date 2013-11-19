@@ -17,7 +17,7 @@
 								<select class="test-restaurant chosen-select" style="width:480px;">
 									<option value="" selected>Choose...</option>
 									<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) : ?>
-										<option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> (permalink: <?=$restaurant->permalink?>)</option>
+										<option value="<?=$restaurant->id_restaurant?> <?php if( $restaurant->id_restaurant == $this->restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> "><?=$restaurant->name?> (permalink: <?=$restaurant->permalink?>)</option>
 									<? endforeach ; ?>
 								</select>
 							</span>
@@ -44,18 +44,36 @@
 			<div class="box-content padded">
 				<?=$this->restaurant->name?> is <b><?=$this->open ? 'OPEN' : 'CLOSED'?></b> <?=$this->now ? 'now' : 'at '.$this->time->format('Y-m-d H:i:s')?>
 			</div>
+
+		</div>
+
+		<div class="box">
+			<div class="box-content padded">
+				<strong>Closed message:</strong>
+				<br/><br/>
+				<div id="closedMessage"></div>
+			</div>
+			
 		</div>
 
 		
 	</div>
 </div>
 
-
-
-
+<script type="text/javascript" src="/assets/js/base.js"></script>
+<script type="text/javascript" src="/assets/js/restaurant.js"></script>
+<script type="text/javascript" src="/assets/js/date.js"></script>
 <script>
+/* override Orm.load method we dont need it right now */
+var Orm = { load : function(){} };
+<?php
+$utc_str = gmdate( 'Y/n/d/H/i/s', time() );
+$utc = strtotime( $utc_str );
+?>
+var _gmtServer = '<?php echo $utc_str;?>';
 
 $(document).ready(function() {
+
 	var go = function() {
 		var loc = '/tests/hours?r=' + $('.test-restaurant option:selected').val() + '&t=' + $('.test-time').val();
 		location.href = loc;
@@ -63,8 +81,12 @@ $(document).ready(function() {
 	$('.chosen-select').select2();
 	$('.test-restaurant').change(go);
 	$('.test-calculate').click(go);
+
+	var restaurant = new Restaurant();
+	$.extend( restaurant, <?php echo json_encode( $this->restaurant->exports() ); ?>);
+	$( '#closedMessage' ).html( restaurant.closedMessage() );
+	console.log('restaurant.open()',restaurant.open());
 });
 </script>
-
-
+<script type="text/javascript" src="/assets/js/datetime.js"></script>
 
