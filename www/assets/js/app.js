@@ -458,7 +458,6 @@ App.toggleMenu = function() {
  */
 App.scrollTop = function(top) {
 	setTimeout(function() {
-		console.log(top);
 		$('html, body, .snap-content-inner').animate({scrollTop: top || 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	},3);
 };
