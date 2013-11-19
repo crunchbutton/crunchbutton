@@ -4,7 +4,7 @@
 		<div>
 			<div class="pushabutton"></div>
 			<ul>
-				<li ng-instant="navigation.link('/splash')" ng-show="!account.user.id_user">
+				<li ng-click="navigation.link('/splash')" ng-show="!account.user.id_user">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-rocket"></i></td>
@@ -12,7 +12,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-instant="navigation.link('/food-delivery')">
+				<li ng-click="navigation.link('/food-delivery')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
@@ -20,7 +20,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-show="account.user.id_user" ng-instant="navigation.link('/orders')">
+				<li ng-show="account.user.id_user" ng-click="navigation.link('/orders')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
@@ -28,7 +28,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-instant="navigation.link('/location')">
+				<li ng-click="navigation.link('/location')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-map-marker"></i></td>
@@ -36,7 +36,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-instant="navigation.link('/help')">
+				<li ng-click="navigation.link('/help')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-heart"></i></td>
@@ -44,7 +44,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-instant="navigation.link('/about')">
+				<li ng-click="navigation.link('/about')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-lightbulb-o"></i></td>
@@ -52,7 +52,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-instant="navigation.link('/jobs')">
+				<li ng-click="navigation.link('/jobs')">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-beer"></i></td>
@@ -60,7 +60,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-show="!account.user.id_user" ng-instant="navigation.signin()">
+				<li ng-show="!account.user.id_user" ng-click="navigation.signin()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-sign-in"></i></td>
@@ -68,7 +68,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-show="account.user.id_user" ng-instant="signout.do()">
+				<li ng-show="account.user.id_user" ng-click="signout.do()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
@@ -77,7 +77,7 @@
 					</table>
 				</li>
 
-				<li ng-instant="test.card()" ng-show="account.user.debug">
+				<li ng-click="test.card()" ng-show="account.user.debug">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
@@ -85,7 +85,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-instant="test.clearloc()" ng-show="account.user.debug">
+				<li ng-click="test.clearloc()" ng-show="account.user.debug">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
@@ -93,7 +93,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-instant="test.reload()" ng-show="account.user.debug">
+				<li ng-click="test.reload()" ng-show="account.user.debug">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
@@ -109,7 +109,7 @@
 <div class="wrapper static-nav-viewport">
 	
 	<div id="snap-content" class="snap-content">
-		<div class="navs" data-position="fixed" ng-controller="MainHeaderCtrl">
+		<div class="navs fixed" data-position="fixed" ng-controller="MainHeaderCtrl">
 			<div class="nav nav-top">
 				<div class="content">
 					<div class="hide-before-init dropdown dropdown-tip" ng-show="menudropdown">
@@ -134,7 +134,7 @@
 				
 					<div title="Menu" class="menu side" ng-click="navigation.menu()" ng-show="navigation.buttons.menu"></div>
 					<div title="Menu" class="menu drop" ng-show="navigation.buttons.menu" ng-toggle="menudropdown"></div>
-					<div title="Back" ng-show="navigation.buttons.back" class="nav-back hide-before-init" ng-instant="back()"></div>
+					<div title="Back" ng-show="navigation.buttons.back" class="nav-back hide-before-init" ng-click="back()"></div>
 					
 					<div title="Cart" class="nav-cart hide-before-init" ng-click="cartScroll(order.restaurant.permalink)" ng-show="order.info.totalItems">
 						<div class="fa fa-shopping-cart"></div>
@@ -148,7 +148,7 @@
 		</div>
 
 
-		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && !notificationBarStatus ), 'button-bottom-show-notification-bar-on': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && notificationBarStatus )}" class="button-bottom-wrapper">
+		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && !notificationBarStatus ), 'button-bottom-show-notification-bar-on': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && notificationBarStatus )}" class="button-bottom-wrapper fixed">
 			<div class="button-pushable" ng-show="navigation.order.form.name || navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.submit();"><div>Get Food</div></button></div>
 			<div class="button-pushable" ng-show="!navigation.order.form.name && !navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.checkout();"><div>Checkout</div></button></div>
 		</div>

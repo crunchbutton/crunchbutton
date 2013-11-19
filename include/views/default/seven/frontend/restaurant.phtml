@@ -183,7 +183,7 @@
 	<div class="content-padding" ng-show="!account.user.id_user">
 		<p>Already signed up? Don't enter all that stuff again! Not signed up yet? Don't worry, you don't have to sign up to order, but we <b><i>highly</i></b> recommend it! That way you don't have to enter this stuff ever again!</p>
 		<br>
-		<button class="button green" ng-click="navigation.signin()">Log in / Sign up</button>
+		<button class="button facebook" ng-click="navigation.signin()">Log in / Sign up</button>
 	</div>
 
 	<div class="divider dots spacer-one-one" ng-show="order.loaded && order.cart.hasItems() && order.showForm"></div>
@@ -426,8 +426,6 @@
 		<div class="divider"></div>
 	</div>
 	<div class="divider"></div>
-
-	<br><br><br>
 
 	<div ng-show="credit.hasValue && order.form.pay_type == 'cash' ">
 		<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your ${{credit.value}} gift card</div>
