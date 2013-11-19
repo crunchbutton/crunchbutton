@@ -2,9 +2,14 @@
 	<div class="dialog-padding">
 	
 		<? /* Header links */ ?>
-		<div ng-controller="AccountModalHeaderCtrl" class="header" ng-show="modal.header">
-			<span class="account-title-link signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Log In</span>
-			<span class="account-title-link signup {{ modal.signup && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signup' )">Sign up</span>
+		<div ng-controller="AccountModalHeaderCtrl" class="header">
+			<div ng-show="modal.header">
+				<span class="account-title-link signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Log In</span>
+				<span class="account-title-link signup {{ modal.signup && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signup' )">Sign up</span>
+			</div>
+			<div ng-show="!modal.header">
+				<span class="account-title-link signin link" ng-click="help.show(false)">&laquo; back</span>
+			</div>
 			<div class="divider spacer-one-one"></div>
 		</div>
 
@@ -96,7 +101,6 @@
 					<input type="text" maxlength="250" name="email" required  class="form-input support-form-input" ng-enter="help.sendForm()" validate-login placeholder="email or phone" tabindex="10" ng-model="account.form.email">
 				</form>
 
-				<a class="account-login-help" ng-click="help.show(false)">Back to log in</a>
 				<button class="button lightorange account-go" ng-click="help.sendForm()">Reset</button>
 				<div class="divider"></div>
 				<div class="spacer-half"></div>
