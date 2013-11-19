@@ -12,18 +12,18 @@
 		<div ng-show="!support.thanks">
 			<form>
 				<div class="support-form-group form-group">
-					<i class="fa fa-user support-form-icon form-icon"></i>
-					<input type="text" maxlength="50" ng-model="support.form.name" name="support-name" tabindex="1" class="form-input support-form-input" placeholder="name">
+					<i class="fa fa-user support-form-icon form-icon form-field"></i>
+					<input type="text" maxlength="50" ng-model="support.form.name" name="support-name" tabindex="1" class="form-input support-form-input form-field" placeholder="name">
 				</div>
 
 				<div class="support-form-group form-group">
-					<i class="fa fa-phone support-form-icon form-icon"></i>
-					<input type="tel" maxlength="30" ng-model="support.form.phone" name="support-phone" tabindex="2" ng-format-phone class="form-input support-form-input" placeholder="phone number">
+					<i class="fa fa-phone support-form-icon form-icon form-field"></i>
+					<input type="tel" maxlength="30" ng-model="support.form.phone" name="support-phone" tabindex="2" ng-format-phone class="form-input support-form-input form-field" placeholder="phone number">
 				</div>
 
 				<div class="support-form-group form-group">
-					<i class="fa fa-bullhorn support-form-icon form-icon"></i>
-					<textarea ng-model="support.form.message" class="form-input support-form-input" name="support-message" tabindex="3" placeholder="message"></textarea>
+					<i class="fa fa-bullhorn support-form-icon form-icon form-field"></i>
+					<textarea ng-autosize ng-model="support.form.message" class="form-input support-form-input form-field" name="support-message" tabindex="3" placeholder="message"></textarea>
 				</div>
 
 			</form>

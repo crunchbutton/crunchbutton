@@ -1678,7 +1678,7 @@ p {
 .form-icon {
 	color: #00957f;
 	font-size: 1.8em;
-	width: 1em;
+	width: 1.1em;
 	text-align: center;
 	padding-right: .5em;
 }
@@ -1688,10 +1688,10 @@ p {
 	box-sizing: border-box;
 	white-space:nowrap;
 }
-.form-icon, .form-input, .form-select {
+.form-field, .form-field.fa {
 	vertical-align: top;
 	padding-top: .4em;
-	display: table-cell !important;
+	display: table-cell;
 }
 .form-select {
 	background: #fff;
@@ -1768,7 +1768,7 @@ p {
 
 /* appended by autosize directive */
 .autosize {
-	margin: .1em 0 .2em 2px;
+	margin-bottom: .5em;
 	-webkit-transition: height 0.2s;
 	   -moz-transition: height 0.2s;
 	    -ms-transition: height 0.2s;
