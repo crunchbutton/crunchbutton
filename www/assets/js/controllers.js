@@ -8,18 +8,23 @@ NGApp.controller('SplashCtrl', function ($scope, $http, AccountFacebookService) 
 	}
 });
 
-/**
- * reps page
- */
-NGApp.controller('RepsCtrl', function ($scope, $http) {
 
+/**
+ * jobs page
+ */
+NGApp.controller('JobsCtrl', function ($scope, $http) {
+	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
+	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
+	$scope.reps = reps;
+	$scope.devs = devs;
 });
 
 /**
  * owners page
  */
 NGApp.controller('OwnersCtrl', function ($scope, $http) {
-
+	var reps = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
+	$scope.reps = reps;
 });
 
 /**

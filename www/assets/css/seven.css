@@ -315,11 +315,19 @@ p {
 }
 .home-join-us {
 	background: url(../images/micro/home-join-us.svg) no-repeat;
-	width: 25em;
-	height: 20em;
+	width: 21.3em;
+	height: 13.6em;
 	background-size: 100%;
 	margin: 0 auto;
-	margin-top: 50px;
+	margin-top: 15em;
+}
+.jobs-bubble-wrap {
+	margin: 0 auto;
+	width: 28em;
+	margin-top: 7em;
+}
+.jobs-bubble-wrap .bubble-curved-green {
+	margin-left: 10em;
 }
 
 
@@ -2376,6 +2384,20 @@ sup {
 
 .page-splash .navs {
 	display: none;
+}
+
+.alternate-link {
+	text-transform: uppercase;
+	font-size: 1.2em;
+	font-weight: bold;
+	letter-spacing: -.02em;
+	text-align: center;
+}
+
+.alternate-link a {
+	color: #312f38;
+	text-decoration: none;
+
 }
 
 .splash-continue {
