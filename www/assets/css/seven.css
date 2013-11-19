@@ -2157,8 +2157,8 @@ sup {
 
 .payment-wrap {
 	overflow: hidden;
-	width: 18em;
-	height: 15em;
+	width: 20em;
+	height: 16em;
 	margin-right: -1em;
 	float: right;
 }
@@ -2167,18 +2167,16 @@ sup {
 	font-size: 1.1em;
 	color: #fff;
 	line-height: 1.2em;
-	padding: .8em 0 .8em 7em;
+	padding: .8em 0 .8em 6em;
 }
 
 .payment-ribbon {
 	background: url(../images/micro/payment-ribbon.svg) no-repeat;
-	background-position: top center;
 	width: 29.8em;
 	height: auto;
 	background-size: auto 100%;
-	float: right;
+	margin-left: .5em;
 	margin-top: 2em;
-	margin-right: -10.4em;
 
 	-webkit-backface-visibility: hidden;
 	   -moz-backface-visibility: hidden;
@@ -2191,6 +2189,8 @@ sup {
 	    -ms-transform: rotate(-5deg);
 	     -o-transform: rotate(-5deg);
 	        transform: rotate(-5deg);
+	        
+
 }
 
 
