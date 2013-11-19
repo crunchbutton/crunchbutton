@@ -829,6 +829,7 @@ p {
 		width:265px;
 		height:auto;
 		overflow:auto;
+		overflow-x:hidden;
 		-webkit-overflow-scrolling: touch;
 		-webkit-transform: translate3d(0,0,0);
 		   -moz-transform: translate3d(0,0,0);
@@ -905,31 +906,6 @@ p {
 		margin-bottom: 20px;
 		font-size: 14px;
 	}
-	
-
-	
-	
-	/* static viewport. no fixed position nac header */
-	/*
-	.static-nav-viewport .navs {
-		width:auto;
-		top: auto;
-		left: auto;
-		right:auto;
-		position: relative;
-		background: #fff;
-	}
-	.static-nav-viewport .snap-content-inner {
-		margin-top: 51px;
-	}
-	.static-nav-viewport .snap-content-inner .content {
-		margin-top: -51px;
-	}
-	
-	.page-splash .static-nav-viewport .snap-content-inner {
-		margin-top: 0;
-	}
-	*/
 }
 
 
@@ -939,11 +915,12 @@ p {
 
 
 
-
+.fixed {
+	position: fixed;
+}
 
 
 .button-bottom-wrapper {
-	position: fixed;
 	left: 0;
 	right: 0;
 	z-index: 102;
@@ -986,7 +963,6 @@ p {
 	top:0;
 	left:0;
 	right:0;
-	position:fixed;
 	z-index:100;
 }
 .nav-top {
@@ -1508,6 +1484,8 @@ p {
 	border-radius: 6px;
 	color: #fff;
 	padding: 1em .7em 1em .7em;
+	/* @test */
+	background: #00bea0;
 }
 .restaurant-box-inner {
 	display: table-row;
@@ -1600,6 +1578,8 @@ p {
 }
 .restaurant-items-toggle {
 	margin-top: 1em;
+	/* @test */
+	background: #f45e46 !important;
 }
 
 .dish-item {
@@ -1610,9 +1590,13 @@ p {
 	padding: .7em .8em .6em .8em;
 	margin-top: .6em;
 	cursor: pointer;
-
 	line-height: 1.5em;
 	height: 3em;
+
+	/* @test */
+	background: #f88256;
+	color: #fff;
+	border: 0;
 }
 .dish-item-name {
 	font-weight: bold;
@@ -1625,7 +1609,12 @@ p {
 .dish-item-description {
 	color: #e7806c;
 	font-size: 1.0em;
+	
+	/* @test */
+	color: #fff;
+	opacity: .8;
 }
+
 
 
 /* restaurant payment form */
@@ -1718,7 +1707,7 @@ p {
 }
 
 .bottom-spacer {
-	height: 100px;
+	height: 70px;
 }
 
 
@@ -2354,7 +2343,6 @@ sup {
 	width: 100%;
 	height: 100%;
 	z-index:1000;
-	position: fixed;
 	text-align: center;
 	display: none;
 	background: #fff9ea;
@@ -2422,7 +2410,6 @@ sup {
 	width: 100%;
 	height: 100%;
 	z-index:1000;
-	position: fixed;
 	overflow: hidden;
 	text-align: center;
 }
@@ -2447,9 +2434,11 @@ sup {
 }
 @media screen and (max-height: 599px) {
 	.splash-bottom {
-		position: fixed;
 		bottom: 2em;
 		width: 100%;
+	}
+	.fixed-599 {
+		position: fixed;
 	}
 }
 
@@ -2668,15 +2657,16 @@ sup {
 
 @media screen and (max-height: 699px) {
 	.download-bottom {
-		position: fixed;
 		bottom: -100px;
 		width: 100%;
+	}
+	.fixed-699 {
+		position: fixed;
 	}
 }
 
 @media screen and (max-height: 599px) {
 	.download-bottom {
-		position: fixed;
 		bottom: -200px;
 		width: 100%;
 	}
@@ -2684,7 +2674,6 @@ sup {
 
 @media screen and (max-height: 349px) {
 	.download-bottom {
-		position: fixed;
 		bottom: -280px;
 		width: 100%;
 	}
