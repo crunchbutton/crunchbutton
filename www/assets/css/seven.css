@@ -1667,7 +1667,7 @@ p {
 	font-size: 1.3em;
 	border-radius: 3px;
 	border: 2px solid #00957f;
-	padding: .3em .6em .3em .6em;
+	padding: .2em .6em .3em .6em;
 	color: #174e46;
 	width: 100%;
 	box-sizing: border-box;
@@ -1687,8 +1687,10 @@ p {
 }
 .form-field, .form-field.fa {
 	vertical-align: top;
-	padding-top: .4em;
 	display: table-cell;
+}
+.form-field.fa {
+	padding-top: .4em;
 }
 .form-select {
 	background: #fff;
