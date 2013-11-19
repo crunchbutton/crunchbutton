@@ -244,6 +244,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	$rootScope.account = AccountService;
 	$rootScope.navigation = MainNavigationService;
 	$rootScope.signout = AccountSignOut;
+	$rootScope.isPhoneGap = App.isPhoneGap;
 	
 	$rootScope.test = App.test;
 	
