@@ -2105,6 +2105,18 @@ sup {
 	margin-left: 2px;
 }
 
+.side-menu-icon .fa.fa-sign-out {
+	margin-left: 2px;
+}
+
+.side-menu-icon .fa.fa-facebook {
+	margin-left: 5px;
+}
+
+.side-menu a {
+	color: #fff;
+}
+
 .side-menu li {
 	cursor: pointer;
 }
