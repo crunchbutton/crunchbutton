@@ -32,7 +32,7 @@ class Cana_Thumb extends Cana_Model {
 		} else {
 			throw new Exception('Could not find imagemagick');
 		}
-		
+
 		if ($this->_im && isset($params['img'])) {
 			$this->writeThumb($params['img']);
 		}
@@ -206,7 +206,7 @@ class Cana_Thumb extends Cana_Model {
 		$cmd = $this->_im;
 		
 		// height and width
-		$cmd .= ' -size '.$image['info'][0].'x'.$image['info'][1].' '.escapeshellarg($image['src'].($this->_pdfpage !== false ? '['.$this->_pdfpage.']' : '')).' -thumbnail '.$image['width'].'x'.$image['height'];
+		$cmd .= ' -strip -size '.$image['info'][0].'x'.$image['info'][1].' '.escapeshellarg($image['src'].($this->_pdfpage !== false ? '['.$this->_pdfpage.']' : '')).' -thumbnail '.$image['width'].'x'.$image['height'];
 		
 		// crop resizing
 	    if ($this->_crop) {
@@ -230,7 +230,7 @@ class Cana_Thumb extends Cana_Model {
 	    
 	    //jpg compression
 	    if ($this->_format == 'jpg') {
-	    	$cmd .= ' quality '.$this->_quality;
+	    	$cmd .= ' -quality '.$this->_quality.'% ';
 		}
 	    
 		// text
