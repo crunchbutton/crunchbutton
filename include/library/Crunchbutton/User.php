@@ -2,6 +2,14 @@
 
 class Crunchbutton_User extends Cana_Table {
 
+	public function name() {
+		if (!isset($this->_name)) {
+			$name = explode(' ',$this->name);
+			$this->_name = $name[0];
+		}
+		return $this->_name;		
+	}
+
 	public function byPhone($phone) {
 		$phone = preg_replace('/[^0-9]/i','',$phone);
 		return User::q('select * from user where phone="'.$phone.'" order by id_user desc limit 1');

@@ -342,6 +342,14 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		service.processOrder();
 	}
 	
+	service.checkout = function() {
+		service.scrollToForm();
+	}
+	
+	service.scrollToForm = function() {
+		$('html, body, .snap-content-inner').animate({scrollTop: $('.payment-form').position().top - 80}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+	}
+	
 	service.errors = function(errors) {
 		var error = '';
 		for (var x in errors) {
@@ -387,7 +395,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 		
 		var displayErrors = function(errors) {
 			if (!$.isEmptyObject(errors)) {
-				$('body').scrollTop($('.payment-form').position().top - 80);
+				service.scrollToForm();
 				service.errors(errors);
 				App.busy.unBusy();
 	

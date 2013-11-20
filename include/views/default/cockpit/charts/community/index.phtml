@@ -16,7 +16,7 @@
 			<h3>Communities</h3>
 
 			<?php foreach( $communities as $community ) { ?>
-				 <div class="span4">
+				 <div class="span3">
 						<div>
 							<?php 
 								$restaurants = $community->restaurants;
@@ -34,7 +34,12 @@
 
 			<?php } ?>
 		</div>
-		
+		<hr/>
+		<div>
+			<a href="/charts/community/delivery-tips">
+				Delivery fees + Tips Graphs
+			</a>
+		</div>
 		<hr/>
 
 		<?php foreach( $communities as $community ) { ?>
@@ -47,12 +52,9 @@
 		<div class="container-<?php echo $_community; ?>" style="display:none;">
 				<center><h3><?php echo $community->community; ?> ( <?php echo $restaurants; ?> restaurants )</h3></center>
 				<div class="row-fluid">
-					<div type="new-users" class="span6 new-users <?php echo $_community; ?>" id="new-users-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
-					<div type="repeated-orders" class="span6 repeated-orders <?php echo $_community; ?>" id="repeated-orders-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
-				</div>
-				<div class="row-fluid">
-					<div type="gross-revenue" class="span6 group-revenue-by <?php echo $_community; ?>" id="group-revenue-by-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
-					<div type="delivery-fee-tips" class="span6 group-delivery-fee-tips <?php echo $_community; ?>" id="group-delivery-fee-tips-by-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
+					<div type="new-users" class="span4 new-users <?php echo $_community; ?>" id="new-users-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
+					<div type="repeated-orders" class="span4 repeated-orders <?php echo $_community; ?>" id="repeated-orders-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
+					<div type="gross-revenue" class="span4 group-revenue-by <?php echo $_community; ?>" id="group-revenue-by-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
 				</div>
 				<hr/>
 		</div>
@@ -80,9 +82,6 @@ function loadChartsOfCommunity( community ){
 				break;
 			case 'gross-revenue':
 				partial = 'gross-revenue-per-week-by-community/group-revenue-by-community';
-				break;
-			case 'delivery-fee-tips':
-				partial = 'delivery-fee-tips-week-by-community/group-delivery-fee-tips-by-community';
 				break;
 		}
 

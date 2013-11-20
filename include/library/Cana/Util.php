@@ -10,7 +10,7 @@
 
 class Cana_Util extends Cana_Model {
 	public static function gitVersion() {
-		$v = file_get_contents(Cana::config()->dirs->root.'.git/ORIG_HEAD');
+		$v = @file_get_contents(Cana::config()->dirs->root.'.git/ORIG_HEAD');
 		return trim($v);
 	}
 
@@ -32,6 +32,33 @@ class Cana_Util extends Cana_Model {
 		return $reverse ? array_reverse($array) : $array;
 	}
 	
+	public static function format_time( $time ) {
+		$h = floor( $time / 100 );
+		$m = $time - ( 100 * $h );
+		if( $h >= 24 ){
+			$h -= 24;
+		}
+		$mintute_formated = ':' . str_pad( $m, 2, '0', STR_PAD_LEFT ); 
+		return $h . $mintute_formated;
+	}
+
+	function sort_col($table, $colname) {
+		$tn = $ts = $temp_num = $temp_str = array();
+		foreach ($table as $key => $row) {
+			if(is_numeric(substr($row[$colname], 0, 1))) {
+				$tn[$key] = $row[$colname];
+				$temp_num[$key] = $row;
+			}
+			else {
+				$ts[$key] = $row[$colname];
+				$temp_str[$key] = $row;
+			}
+		}
+		unset($table);
+		array_multisort($tn, SORT_ASC, SORT_NUMERIC, $temp_num); 
+		array_multisort($ts, SORT_ASC, SORT_STRING, $temp_str);
+		return array_merge($temp_num, $temp_str);
+	}
 
 	public static function convertBytes($bytesIn,  $from = 'bytes', $to = 'bytes') {
 	

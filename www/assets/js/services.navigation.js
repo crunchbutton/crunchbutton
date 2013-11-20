@@ -13,7 +13,9 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	service.modal = AccountModalService;
 
 	service.home = function() {
-		if (App.isPhoneGap || App.isMobile()) {
+		if (App.isPhoneGap && cordova) {
+			$('html, body, .snap-content-inner').animate({scrollTop: 0}, 200, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+		} else if (App.isMobile()) {
 			service.menu();
 		} else {
 			service.link();

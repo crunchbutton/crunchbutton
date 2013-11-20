@@ -24,6 +24,11 @@ class Controller_charts_community extends Crunchbutton_Controller_Account {
 			$communities = $_communities;
 		}
 		c::view()->communities = $communities;
-		c::view()->display( 'charts/community/index' );
+
+		if( c::getPagePiece( 2 ) == 'delivery-tips' ){
+			c::view()->display( 'charts/community/delivery_tips' );
+		} else {
+			c::view()->display( 'charts/community/index' );
+		}
 	}
 }

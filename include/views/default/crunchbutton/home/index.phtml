@@ -19,7 +19,7 @@
 				<div class="bubble-tail bubble-tail-green">
 					<div class="text">
 						<h1 itemprop="name">Push a button.<br />
-						&nbsp;&nbsp;&nbsp;&nbsp;Get food.</h1>
+						Get food.&nbsp;&nbsp;&nbsp;&nbsp;</h1>
 					</div>
 				</div>
 				<div class="restaurants-orange"></div>
@@ -31,86 +31,85 @@
 				<div class="divider"></div>
 			</div>
 
-
-
-			<div class="home-text">
-				<div class="breadcrumb">
-					<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-						<a href="/" itemprop="url">
-							<span itemprop="title">Crunchbutton</span>
-						</a>
-					</span> ≫ 
-					<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-						<a href="/food-delivery" itemprop="url">
-							<span itemprop="title">Food Delivery</span>
-						</a>
-					</span> ≫ 
-					<? if ($this->community->id_community) : ?>
+			<div class="content-padding">
+				<div class="home-text">
+					<div class="breadcrumb">
 						<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-							<a href="/<?=$this->community->permalink?>" itemprop="url">
-								<span itemprop="title"><?=$this->community->name?></span>
+							<a href="/" itemprop="url">
+								<span itemprop="title">Crunchbutton</span>
 							</a>
-						</span> ≫ 
-					<? endif ; ?>
-					<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-						<a href="/<?=$this->community->permalink?>/<?=$this->restaurant->permalink?>" itemprop="url">
-							<span itemprop="title"><b><?=$this->restaurant->name?></b></span>
-						</a>
-					</span>
+						</span> &raquo; 
+						<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+							<a href="/food-delivery" itemprop="url">
+								<span itemprop="title">Food Delivery</span>
+							</a>
+						</span> &raquo; 
+						<? if ($this->community->id_community) : ?>
+							<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+								<a href="/<?=$this->community->permalink?>" itemprop="url">
+									<span itemprop="title"><?=$this->community->name?></span>
+								</a>
+							</span> &raquo; 
+						<? endif ; ?>
+						<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+							<a href="/<?=$this->community->permalink?>/<?=$this->restaurant->permalink?>" itemprop="url">
+								<span itemprop="title"><b><?=$this->restaurant->name?></b></span>
+							</a>
+						</span>
+					</div>
 				</div>
 	
-			</div>
+				<div itemscope itemtype="http://schema.org/restaurant">
+			
+					<link itemprop="url" href="/<?=$this->community->permalink?>/<?=$this->restaurant->permalink?>"/>
+					<link itemprop="image" href="<?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>"/>
+					<link itemprop="photo" href="<?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>"/>
+					
+					<br><br>
+					<img width="100%" src="<?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>" title="<?=$this->restaurant->name?>" alt="<?=$this->restaurant->name?>">
+
+					<meta itemprop="priceRange" content="<?=$this->restaurant->priceRange()?>">
+					<div itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">
+						<meta itemprop="longitude" content="<?=$this->restaurant->loc_lat?>">
+						<meta itemprop="latitude" content="<?=$this->restaurant->loc_long?>">
+					</div>
+			
+					<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+						<meta itemprop="ratingValue" content="5.0">
+						<meta itemprop="reviewCount" content="<?=$this->restaurant->ratingCount()?>">
+					</div>
 	
-		
-			<div itemscope itemtype="http://schema.org/restaurant">
-		
-				<link itemprop="url" href="/<?=$this->community->permalink?>/<?=$this->restaurant->permalink?>"/>
-				<link itemprop="image" href="<?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>"/>
-				<link itemprop="photo" href="<?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>"/>
-		
-				<meta itemprop="priceRange" content="<?=$this->restaurant->priceRange()?>">
-				<div itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">
-					<meta itemprop="longitude" content="<?=$this->restaurant->loc_lat?>">
-					<meta itemprop="latitude" content="<?=$this->restaurant->loc_long?>">
+					<? foreach ($this->restaurant->categories() as $category) : ?>
+						<br><h4><?=$category->name()?></h4>
+						<ul date-id_category="1">
+	
+							<? foreach ($category->dishes() as $dish) : ?>
+								<li itemscope itemtype="http://data-vocabulary.org/Product">
+									<meta itemprop="image" content="http://<?=$_SERVER['HTTP_HOST']?><?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>" />
+									<? if ($dish->description) : ?>
+										<meta itemprop="description" content="<?=$dish->description?>" />
+									<? endif ; ?>
+									<meta itemprop="category" content="<?=$category->name()?>" />
+									<meta itemprop="availability" content="in_stock" />
+	
+									<? if ($dish->ratingCount()) : ?>
+										<span itemprop="review" itemscope itemtype="http://data-vocabulary.org/Review-aggregate">
+											<meta itemprop="rating" content="5">
+											<meta itemprop="count" content="<?=$dish->ratingCount()?>">
+										</span>
+									<? endif ; ?>
+	
+									<p>
+										<a href="#<?=$dish->name?>" data-id_dish="1">
+											<span itemprop="name"><b><?=$dish->name?></b></span>&nbsp;&nbsp;$<span itemprop="price"><?=number_format($dish->price,2)?></span>
+										</a>
+										<?=$dish->description ? ' - '.$dish->description : ''?>&nbsp;
+									</p>
+								</li>
+							<? endforeach ; ?>
+						</ul>
+					<? endforeach ; ?>
 				</div>
-		
-				<div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
-					<meta itemprop="ratingValue" content="5.0">
-					<meta itemprop="reviewCount" content="<?=$this->restaurant->ratingCount()?>">
-				</div>
-
-				<? foreach ($this->restaurant->categories() as $category) : ?>
-					<br><h4><?=$category->name()?></h4>
-					<ul date-id_category="1">
-
-						<? foreach ($category->dishes() as $dish) : ?>
-							<li itemscope itemtype="http://data-vocabulary.org/Product">
-								<meta itemprop="image" content="http://<?=$_SERVER['HTTP_HOST']?><?=$this->restaurant->image() ? $this->restaurant->publicImagePath().$this->restaurant->image()->getFileName() : ''?>" />
-								<? if ($dish->description) : ?>
-									<meta itemprop="description" content="<?=$dish->description?>" />
-								<? endif ; ?>
-								<meta itemprop="category" content="<?=$category->name()?>" />
-								<meta itemprop="availability" content="in_stock" />
-
-								<? if ($dish->ratingCount()) : ?>
-									<span itemprop="review" itemscope itemtype="http://data-vocabulary.org/Review-aggregate">
-										<meta itemprop="rating" content="5">
-										<meta itemprop="count" content="<?=$dish->ratingCount()?>">
-									</span>
-								<? endif ; ?>
-
-								<p>
-									<a href="#<?=$dish->name?>" data-id_dish="1">
-										<span itemprop="name"><b><?=$dish->name?></b></span>&nbsp;&nbsp;$<span itemprop="price"><?=number_format($dish->price,2)?></span>
-									</a>
-									<?=$dish->description ? ' - '.$dish->description : ''?>&nbsp;
-								</p>
-							</li>
-						<? endforeach ; ?>
-					</ul>
-				<? endforeach ; ?>
-
-
 			</div>
 		<? endif ; ?>
 	<? elseif ($this->community->id_community) : ?>
@@ -122,7 +121,7 @@
 			<div class="bubble-tail bubble-tail-green">
 				<div class="text">
 					<h1>Push a button.<br />
-					&nbsp;&nbsp;&nbsp;&nbsp;Get food.</h1>
+					Get food.&nbsp;&nbsp;&nbsp;&nbsp;</h1>
 				</div>
 			</div>
 			<div class="restaurants-orange"></div>
@@ -141,26 +140,27 @@
 
 		<? if ($bot) : ?>
 
-			<div class="breadcrumb">
-				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-					<a href="/" itemprop="url">
-						<span itemprop="title">Crunchbutton</span>
-					</a>
-				</span> ≫ 
-				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-					<a href="/food-delivery" itemprop="url">
-						<span itemprop="title">Order Food</span>
-					</a>
-				</span> ≫ 
-				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-					<a href="/<?=$this->community->permalink?>" itemprop="url">
-						<span itemprop="title"><?=$this->community->name?></span>
-					</a>
-				</span>
-			</div>
-
-			<br>
 			<div class="content-padding">
+				<div class="breadcrumb">
+					<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+						<a href="/" itemprop="url">
+							<span itemprop="title">Crunchbutton</span>
+						</a>
+					</span> &raquo; 
+					<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+						<a href="/food-delivery" itemprop="url">
+							<span itemprop="title">Order Food</span>
+						</a>
+					</span> &raquo; 
+					<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+						<a href="/<?=$this->community->permalink?>" itemprop="url">
+							<span itemprop="title"><?=$this->community->name?></span>
+						</a>
+					</span>
+				</div>
+
+				<br>
+
 				<h4>You love <?=$this->community->name?>, we love <?=$this->community->name?>. We all win!</h4>
 				<p>
 					We go door to door signing up only the restaurants that the community really loves. We make sure that Crunchbutton has only <b>the best restaurants</b> and delivery food. Don'f forget the dessert!
@@ -186,7 +186,7 @@
 			</div>
 
 		<? endif ; ?>
-	
+
 	<? else : ?>
 		<?
 			$this->title = 'Food Delivery | Order from Local Restaurants | Crunchbutton';
@@ -196,7 +196,7 @@
 			<div class="bubble-tail bubble-tail-green">
 				<div class="text">
 					<h1>Push a button.<br />
-					&nbsp;&nbsp;&nbsp;&nbsp;Get food.</h1>
+					Get food.&nbsp;&nbsp;&nbsp;&nbsp;</h1>
 				</div>
 			</div>
 			<div class="restaurants-orange"></div>

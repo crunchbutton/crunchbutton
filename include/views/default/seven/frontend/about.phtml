@@ -1,26 +1,122 @@
 <div class="top-pad"></div>
 
 <div class="about-bubble-wrap">
-	<div class="bubble-tail bubble-tail-green">
-		<div class="text">
-			<b>&nbsp;&nbsp;Hey there!</b><br />
-			Nice to meet you!
+	<div class="bubble-tail bubble-tail-green bubble-animated">
+		<div class="text" ng-switch="pearMessage">
+			<span ng-switch-when="2">I don't actually work here.</span>
+			<span ng-switch-when="3">These guys do though.</span>
+			<span ng-switch-when="4">You should buy them a beer.</span>
+			<span ng-switch-when="5">I'm sure they deserve it.</span>
+			<span class="single-line" ng-switch-when="6">Maybe two.</span>
+			<span class="single-line" ng-switch-when="7">Or three.</span>
+			<span ng-switch-when="8">In fact just buy them a keg.</span>
+			<span class="single-line" ng-switch-when="9">Me?</span>
+			<span class="small" ng-switch-when="10" style="margin-top: .5em;">A bottle of Veuve Clicquot, please.</span>
+			<span class="single-line" ng-switch-when="11">Cheers!</span>
+			<span class="single-line" ng-switch-when="12"><i class="fa fa-glass"></i> <i class="fa fa-glass"></i> <i class="fa fa-glass"></i></span>
+			<span ng-switch-when="1"><b>Hey there!</b><br>Nice to meet you!</span>
+			<span ng-switch-default><b>Hey there!</b><br>Nice to meet you!</span>
 		</div>
+		<div class="bubble-tail-spacer"></div>
 	</div>
-	<div class="about-pear"></div>
+	<div class="about-pear animated-resize" ng-instant="pearMessage = (pearMessage > 12 && 1) || pearMessage + 1" instant-pass-thru></div>
 	<div class="divider"></div>
 </div>
 
 <div class="content-padding">
 	<br />
-	<h4>So, what exactly do you do?</h4>
-	<p>We highlight the top food from the top restaurants in a community. Place an order, and we save it for next time, along with your delivery and payment info. Reorder your favorites with a single tap :)</p>
-	<br /><br />
-	<h4>Hey! I need help with my order!</h4>
-	<p>Please visit your <a href="/orders">Previous Orders</a> and contact the restaurant you ordered from.</p>
-	<br /><br />
-	<h4>Need to contact Crunchbutton?</h4>
-	<p>Call or text us at <a href="tel:+16467831444">(646) 783-1444</a> or email us at <a href="mailto:happycustomers@crunchbutton.com">happycustomers@crunchbutton.com</a>.</p>
-	<br /><br />
-	<button class="button green">Live chat with us</button>
+	<div class="staff">
+		<div class="staff-judd staff-image animated-resize"></div>
+		<h1>Judd Rosenblatt</h1>
+		<h2>Chief Eater</h2>
+		<p class="staff-favorite">
+			Fav<span class="staff-orite">orite</span> food: THE Wenzel
+			<br>Fav<span class="staff-orite">orite</span> beer: Oatmeal Stout
+		</p>
+		<p class="staff-content">
+			Entrepreneur, Yale grad, and other words go here. I dont have anything to say because im too busy trying to make things look pretty right now. Maybe you should think of some shit. Or maybe close ur mouth.
+		</p>
+	</div>
+
+	<div class="staff">
+		<div class="staff-devin staff-image animated-resize"></div>
+		<h1>Devin Smith</h1>
+		<h2>Executive Chef</h2>
+		<p class="staff-favorite">
+			Fav<span class="staff-orite">orite</span> food: Toro Sushi
+			<br>Fav<span class="staff-orite">orite</span> beer: Matilda
+		</p>
+		<p class="staff-content">
+			Building stuff. Thats what he does. Since Devin was a kid he has been building software and websites. Devin brings his passion for design and development to Crunchbutton paired with a strong belgian ale. 
+		</p>
+	</div>
+	
+	<div class="staff">
+		<div class="staff-david staff-image animated-resize"></div>
+		<h1>David Klumpp</h1>
+		<h2>Chief Taster</h2>
+		<p class="staff-favorite">
+			Fav<span class="staff-orite">orite</span> food: Chocolate Crostata
+			<br>Fav<span class="staff-orite">orite</span> beer: Root Beer
+		</p>
+		<p class="staff-content">
+			We're not really sure what he does. But without him we're pretty sure that we would be thrown into a state of chaos.
+		</p>
+	</div>
+	
+	<div class="staff">
+		<div class="staff-nick staff-image animated-resize"></div>
+		<h1>Nick Hunter</h1>
+		<h2>Garbage Disposal</h2>
+		<p class="staff-favorite">
+			Fav<span class="staff-orite">orite</span> food: Mexican
+			<br>Fav<span class="staff-orite">orite</span> beer: Hefeweizen
+		</p>
+		<p class="staff-content">
+			He like miso soup too much. And I honestly cant even tell if this is a pic of nick or not.
+		</p>
+	</div>
+	
+	<div class="staff">
+		<div class="staff-daniel staff-image animated-resize"></div>
+		<h1>Daniel Camargo</h1>
+		<h2>Sous-chef</h2>
+		<p class="staff-favorite">
+			Fav<span class="staff-orite">orite</span> food: Pepperoni Pizza
+			<br>Fav<span class="staff-orite">orite</span> beer: Stella Artois
+		</p>
+		<p class="staff-content">
+			Hes in Brazil.
+		</p>
+	</div>
+
+	<div class="about-join-bubble-wrap">
+		<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
+			<div class="text" ng-switch="orangeMessage">
+				<span class="small" ng-switch-when="2">So you can write stupid messages like this</span>
+				<span  ng-switch-when="3">That no one will ever read</span>
+				<span ng-switch-when="4">So you could put anything</span>
+				<span class="single-line" ng-switch-when="5">No really.</span>
+				<span class="single-line" ng-switch-when="6">Like...</span>
+				<span class="single-line" ng-switch-when="7">"Hi Crystal!"</span>
+				<span ng-switch-when="8">Did I mention we like beer?</span>
+				<span class="single-line" ng-switch-when="9">Yeah we do.</span>
+				<span ng-switch-when="10">We even brew our own beer</span>
+				<span class="small" ng-switch-when="11">That just screams cool right there</span>
+				<span class="single-line" ng-switch-when="12"><i class="fa fa-beer"></i> <i class="fa fa-beer"></i> <i class="fa fa-beer"></i></span>
+				<span class="single-line" ng-switch-when="1"><b>Join the team!</b></span>
+				<span class="single-line" ng-switch-default><b>Join the team!</b></span>
+			</div>
+		</div>
+		<div class="bubble-curved-spacer"></div>
+	</div>
+	<div class="about-green-orange animated-resize" ng-instant="orangeMessage = (orangeMessage > 12 && 1) || orangeMessage + 1" instant-pass-thru></div>
+	<div class="divider"></div>
+
+	<p>
+		<br><br>
+		Like food? Like fun? Like beer? Then we want you! Join our young ambitious team in sunny LA!
+	</p>
+	<br>
+	<button class="button lightorange" ng-click="navigation.link('/jobs')">Jobs</button>
 </div>

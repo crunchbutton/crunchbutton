@@ -694,8 +694,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function hours($gmt = false) {
-		
-		$force_close = $this->forceClose();
 
 		$gmt = $gmt ? '1' : '0';
 
@@ -732,19 +730,24 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	/**
 	 * Confirms a restaurant is open
 	 */
-	public function open($dt = null) {
+	public function open( $dt = null ) {
 
 		if (!$this->open_for_business) {
-			/*if( $this->forceOpen() ){
+			if( $this->forceOpen() ){
 				return true;
-			}*/
+			}
+			return false;
+		}
+		// it means some overrided hour is forcing it to be opened
+		if( $this->forceOpen() ){
+			return true;
+		}
+
+		// it means some overrided hour is forcing it to be closed
+		if( $this->forceClose() ){
 			return false;
 		}
 
-		/*if( $this->forceClose() ){
-			return false;
-		}
-		*/
 		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 		$hours = $this->hours();
 		$day = strtolower($today->format('D'));
@@ -806,13 +809,25 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	// Return minutes left to close
-	public function closesIn($dt = null) {
-		if (!$this->open()) {
+	public function closesIn( $dt = null ) {
+		if ( !$this->open() ) {
 			return false;
 		}
-		$hours = $this->hours();
+
+		$_hours = [];
+		foreach ( $this->hours() as $hour ) {
+			$_hours[$hour->day][] = [$hour->time_open, $hour->time_close];
+		}
+		$_hours = $this->overrideHours( $_hours );
+		$hours = [];
+		foreach( $_hours as $day => $segments ){
+			foreach( $segments as $segment ){
+				$hours[] = ( object ) [ 'day' => $day, 'time_open' => $segment[ 0 ], 'time_close' => $segment[ 1 ] ];
+			}
+		}
+
 		$today = new DateTime($dt ? $dt : 'now', new DateTimeZone($this->timezone));
-		$day      = strtolower($today->format('D'));
+		$day = strtolower($today->format('D'));
 
 		foreach ($hours as $hour) {
 			if ($hour->day != $day) {
@@ -835,14 +850,25 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	// Return minutes left to open
-	public function openIn($dt) {
+	public function openIn( $dt = null ) {
 		if ($this->open()) {
 			return false;
 		}
 
-		$hours = $this->hours();
+		$_hours = [];
+		foreach ( $this->hours() as $hour ) {
+			$_hours[$hour->day][] = [$hour->time_open, $hour->time_close];
+		}
+		$_hours = $this->overrideHours( $_hours );
+		$hours = [];
+		foreach( $_hours as $day => $segments ){
+			foreach( $segments as $segment ){
+				$hours[] = ( object ) [ 'day' => $day, 'time_open' => $segment[ 0 ], 'time_close' => $segment[ 1 ] ];
+			}
+		}
+
 		$today = new DateTime($dt ? $dt : 'now', new DateTimeZone($this->timezone));
-		$day      = strtolower($today->format('D'));
+		$day = strtolower($today->format('D'));
 
 		foreach ($hours as $hour) {
 			if ($hour->day != $day) {
@@ -1046,6 +1072,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $this->_weight;
 	}
 
+	public function export_force_override_hours(){
+		$data = $this->exports();
+		$data[ '_hours' ] = $this->overrideHours( $data[ '_hours' ] );
+		return $data;
+	}
+
 	/**
 	 * Returns an array with all the information for a Restaurant.
 	 *
@@ -1073,7 +1105,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['_closesIn'] = $this->closesIn();
 		$out['_weight'] = $this->weight();
 		$out['_minimumTime']  = 15; // Min minutes to show the hurry message
-		// $out['_openIn']   = $this->openIn();
+		$out['_openIn']   = $this->openIn();
 
 		if( $out['_closesIn'] == 0 ){
 			$out['_open'] = false;
@@ -1092,8 +1124,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out['_tag']  = 'closed';
 		}
 
-
-
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
 
@@ -1110,6 +1140,39 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if (!$ignore['categories']) {
 			foreach ($this->categories() as $category) {
 				$out['_categories'][] = $category->exports($where);
+			}
+
+			// To make sure it will be ignored at cockpit
+			$isCockpit = ( $_REQUEST[ 'cockpit' ] || ( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false )  ) ? true : false;
+			if( $isCockpit ){
+				$ignore[ 'delivery_service_markup_prices' ] = true;	
+			}
+			if ( !$ignore[ 'delivery_service_markup_prices' ] ) {
+				// Recalculate the price using the delivery_service_markup variable #2032
+				$delivery_service_markup = $this->delivery_service_markup;
+				if( $delivery_service_markup && $delivery_service_markup > 0 ){
+					// Categories
+					for( $i=0; $i<( count( $out[ '_categories' ] ) ); $i++ ){
+						// Dishes
+						for( $j=0; $j<( count( $out[ '_categories' ][ $i ][ '_dishes' ] ) ); $j++ ){
+							$price = $out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'price' ];
+							if( $price > 0 ){
+								$price = $price + ( $price * $delivery_service_markup / 100 );
+								$price = number_format( $price, 2 );
+								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'price' ] = $price;	
+							}
+							// Options
+							for( $k=0; $k<( count( $out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ] ) ); $k++ ){
+								$price = $out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'price' ];
+								if( $price > 0 ){
+									$price = $price + ( $price * $delivery_service_markup / 100 );
+									$price = number_format( $price, 2 );
+									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'price' ] = $price;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -1146,7 +1209,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 		}
 
-		$out['_hours'] = $this->overrideHours( $out['_hours'] );
+		// Dont export the overrided hours at cockpit
+		if( !$isCockpit || $ignore['force_override_hours'] == true ){
+			$out['_hours'] = $this->overrideHours( $out['_hours'] );	
+		}
 
 		if (!$ignore['_preset']) {
 			if ($this->preset()->count()) {
@@ -1160,45 +1226,168 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		foreach ( $ignore as $property => $val ) {
 			unset( $out[ $property ] );
 		}
+		
+		$comment = $this->comment();
+		
+		if ($comment->id_restaurant_comment) {
+			$auths = $comment->user()->auths();
+			foreach ($auths as $auth) {
+				if ($auth->type == 'facebook') {
+					$id = $auth->auth;
+					break;
+				}
+			}
+			$out['comment'] = [
+				'content' => $comment->content,
+				'user' => $comment->user()->get(0)->name(),
+				'fb' => $id
+			];
+		}
 
 		return $out;
 	}
 
 	public function overrideHours( $hours ){
-		/*
-		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override WHERE id_restaurant = {$this->id_restaurant}" );
-		if(  $overrides->count() ){
-			foreach( $overrides as $override ){
-				$type = $override->type;
-				$date_start = new DateTime( $override->date_start, new DateTimeZone( $this->timezone ) );
-				$date_end = new DateTime( $override->date_end, new DateTimeZone( $this->timezone ) );
-				$date_start->setTimezone( new DateTimeZone('GMT' ) );
-				$date_end->setTimezone( new DateTimeZone('GMT' ) );
-				foreach ( $hours as $weekday => $hour ) {
-					$time_close = new DateTime( $hour->time_close, new DateTimeZone( $this->timezone ) );
-					// if it is the same weekday
-					if( $date_start->format( 'D' ) == $time_open->format( 'D' ) ){
-						if( $type == Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED ){
-							if( $date_start->format( 'His' ) > $time_open->format( 'His' ) ){
-								$hour->time_open = $time_open->format( 'Y-m-d' ) . ' ' . $date_start->format( 'H:i' );
-							}
-							$hour->time_close = $date_end->format( 'Y-m-d H:i' );
-						}	
-					}
-					$interval = date_diff( $datetime1, $datetime2 );
-					/*if( $date_end->format( 'D' ) == $time_close->format( 'D' ) ){
-						if( $type == Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED ){
-							if( $date_end->format( 'His' ) < $time_close->format( 'His' ) ){
-								$hour->time_close = $time_close->format( 'Y-m-d' ) . ' ' . $date_end->format( 'H:i' );
-							}
-						}	
-					}
-				}	
+
+		if( count( $hours ) == 0 ){
+			return $hours;
+		}
+
+		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
+		
+		// Convert to hours starting at monday
+		$hoursStartFinish = [];
+		foreach( $hours as $day => $segments ){
+			$dayshours = array_search( $day, $weekdays ) * 2400;
+			foreach( $segments as $times ){
+				preg_match( '/(\d+):(\d+)/', $times[ 0 ], $hour_open );
+				preg_match( '/(\d+):(\d+)/', $times[ 1 ], $hour_close );
+				$hour_open = ( $dayshours + intval( $hour_open[ 1 ] ) * 100 ) + intval( $hour_open[ 2 ] );
+				$hour_close = ( $dayshours + intval( $hour_close[ 1 ] ) * 100 ) + intval( $hour_close[ 2 ] );
+				$hoursStartFinish[] = [ 'open' => $hour_open, 'close' => $hour_close ];
 			}
 		}
-				*/
-		return $hours;
+
+		$monday = date('Y-m-d', strtotime('monday this week') );
+		$sunday = date('Y-m-d', strtotime('sunday this week') );
+		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override 
+																															WHERE id_restaurant = {$this->id_restaurant} 
+																															AND
+																															( DATE_FORMAT( date_start, '%Y-%m-%d' ) >= '{$monday}' AND DATE_FORMAT( date_start, '%Y-%m-%d' ) <= '{$sunday}' )
+																															OR 
+
+																															( DATE_FORMAT( date_start, '%Y-%m-%d' ) < '{$monday}' AND DATE_FORMAT( date_end, '%Y-%m-%d' ) > '{$monday}' )	" );
+		$hoursStartFinishOverrideClose = [];
+		if( $overrides->count() ){
+
+			foreach( $overrides as $override ){
+
+				$monday = new DateTime( date('Y-m-d H:i:s', strtotime('monday this week') ), new DateTimeZone( $this->timezone ) );
+				$date_start = new DateTime( $override->date_start, new DateTimeZone( $this->timezone ) );
+				// Limit the override to this week
+				if( $date_start < $monday ){
+					$date_start = $monday;
+				}
+				$dayshours = array_search( strtolower( $date_start->format( 'D' ) ), $weekdays ) * 2400;
+				$hour_open = ( $dayshours + intval( $date_start->format( 'H' ) ) * 100 ) + intval( $date_start->format( 'i' ) );
+
+				$sunday = new DateTime( date('Y-m-d H:i:s', strtotime('sunday this week') ), new DateTimeZone( $this->timezone ) );
+				$sunday->setTime( 23, 59 );
+				$date_end = new DateTime( $override->date_end, new DateTimeZone( $this->timezone ) );
+				// Limit the override to this week
+				if( $date_end > $sunday ){
+					$date_end = $sunday;
+				}
+				$dayshours = array_search( strtolower( $date_end->format( 'D' ) ), $weekdays ) * 2400;
+
+				$hour_close = ( $dayshours + intval( $date_end->format( 'H' ) ) * 100 ) + intval( $date_end->format( 'i' ) );
+				if( $override->type == Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED ){
+					$hoursStartFinishOverrideClose[] = [ 'start' => $hour_open, 'end' => $hour_close ];	
+				} else if( $override->type == 'open' ){
+					// Merge the override open hours at the open/close array
+					$hoursStartFinish[] = [ 'open' => $hour_open, 'close' => $hour_close ];
+				}
+			}
+		}
+
+		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
+
+		// Merge the hours
+		foreach( $hoursStartFinish as $key => $val ){
+			$getNext = false;
+			foreach( $hoursStartFinish as $keyNext => $valNext ){
+				if( $getNext ){
+					if( $hoursStartFinish[ $keyNext ][ 'open' ] <= $hoursStartFinish[ $key ][ 'close' ] 
+							&& $hoursStartFinish[ $keyNext ][ 'close' ] - $hoursStartFinish[ $key ][ 'open' ] < 3600 ) {
+						$hoursStartFinish[ $key ][ 'close' ] = $hoursStartFinish[ $keyNext ][ 'close' ];
+						unset( $hoursStartFinish[ $keyNext ] );
+						$getNext = false;
+					}
+				}
+				if( $key == $keyNext ){
+					$getNext = true;
+				}
+			}
+		}
+
+		foreach( $hoursStartFinishOverrideClose as $keyClose => $valClose ){
+			foreach( $hoursStartFinish as $keyOpen => $valOpen ){
+				// the close override is between a segment
+				if(	$hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] >= $hoursStartFinish[ $keyOpen ][ 'open' ] 
+						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] < $hoursStartFinish[ $keyOpen ][ 'close' ] ){
+					$hoursStartFinish[] = [ 'open' => $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ], 'close' => $hoursStartFinish[ $keyOpen ][ 'close' ] ];	
+					$hoursStartFinish[ $keyOpen ][ 'close' ] = $hoursStartFinishOverrideClose[ $keyClose ][ 'start' ];
+				} else
+				// the close override start after the segment but ends before it
+				if(	$hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] <= $hoursStartFinish[ $keyOpen ][ 'open' ] 
+						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'open' ] 
+						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'close' ] ){
+					unset( $hoursStartFinish[ $keyOpen ] );
+				} else 
+				if(	$hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] <= $hoursStartFinish[ $keyOpen ][ 'open' ] 
+						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'open' ] ){
+					$hoursStartFinish[ $keyOpen ][ 'open' ] = $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ];
+				}
+			}
+		}
+
+		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
+
+		foreach( $hoursStartFinish as $key => $val ){
+			$getNext = false;
+			foreach( $hoursStartFinish as $keyNext => $valNext ){
+				if( $getNext ){
+					if( $hoursStartFinish[ $keyNext ][ 'open' ] <= $hoursStartFinish[ $key ][ 'close' ] 
+							&& $hoursStartFinish[ $keyNext ][ 'close' ] - $hoursStartFinish[ $key ][ 'open' ] < 3600 ) {
+						$hoursStartFinish[ $key ][ 'close' ] = $hoursStartFinish[ $keyNext ][ 'close' ];
+						unset( $hoursStartFinish[ $keyNext ] );
+						$getNext = false;
+					}
+				}
+				if( $key == $keyNext ){
+					$getNext = true;
+				}
+			}
+		}
+		$_hours = [];
+		foreach( $hoursStartFinish as $key => $val ){
+			$open = $hoursStartFinish[ $key ][ 'open' ];
+			$close = $hoursStartFinish[ $key ][ 'close' ];
+			$weekday = $weekdays[ floor( $open / 2400 ) ];
+			while( $open >= 2400 ) {
+				$open -= 2400;
+				$close -= 2400;
+			}
+			if( !$hours[ $weekday ] ){
+				$hours[ $weekday ] = [];	
+			}
+			$_hours[ $weekday ][] = array( Cana_Util::format_time( $open ), Cana_Util::format_time( $close ) );
+		}
+		return $_hours;
 	}
+
+
+
 	/**
 	 * Imports an array with all the information for a Restaurant.
 	 *
@@ -1492,6 +1681,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 								 AND ap.id_admin IS NOT NULL) admin
 						WHERE txt IS NOT NULL";
 		return Admin::q( $query );
+	}
+	
+	public function comment() {
+		if (!isset($this->_comment)) {
+			$this->_comment = Restaurant_Comment::q('select * from restaurant_comment where top=1 && id_restaurant='.$this->id_restaurant.'');
+		}
+		return $this->_comment;
 	}
 
 	public function save() {

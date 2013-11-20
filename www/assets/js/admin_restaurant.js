@@ -1171,7 +1171,7 @@ var ADMIN = {
 				{
 					type : 'api',
 					obj	: 'restaurant',
-					data: { restaurant:ADMIN.restaurant, obj:'restaurant' },
+					data: { restaurant:ADMIN.restaurant, obj:'restaurant', cockpit:true },
 					id	 : this.id_restaurant,
 				},
 				function(rsp) {
@@ -1327,6 +1327,7 @@ var DOM_MAP = {
 				'input#restaurant-lat' : ['loc_lat'],
 				'input#restaurant-lng' : ['loc_long'],
 				'input#restaurant-delivery-min' : ['delivery_min'],
+				'input#restaurant-delivery-service-markup' : ['delivery_service_markup'],
 				'input#restaurant-delivery-fee' : ['delivery_fee'],
 				'input#restaurant-delivery-radius' : ['delivery_radius'],
 				'input#restaurant-delivery-estimated-time' : ['delivery_estimated_time'],
@@ -1590,13 +1591,14 @@ hour_override.remove = function( id_restaurant_hour_override ){
 	});
 }
 
-
 hour_override.save = function(){
 
 	var date_start = $( '#hour_override_date_start' ).val();
 	var date_start_hour = $( '#hour_override_date_start_hour' ).val();
+	var hour_override_date_start_ampm = $( '#hour_override_date_start_ampm' ).val();
 	var date_end = $( '#hour_override_date_end' ).val();
 	var date_end_hour = $( '#hour_override_date_end_hour' ).val();
+	var hour_override_date_end_ampm = $( '#hour_override_date_end_ampm' ).val();
 	var type = $( '#hour_override_type' ).val();
 	var notes = $( '#hour_override_notes' ).val();
 
@@ -1622,8 +1624,10 @@ hour_override.save = function(){
 			'id_restaurant' : _id_restaurant, 
 			'date_start' : date_start, 
 			'date_start_hour' : date_start_hour, 
+			'hour_override_date_start_ampm' : hour_override_date_start_ampm, 
 			'date_end' : date_end, 
 			'date_end_hour' : date_end_hour, 
+			'hour_override_date_end_ampm' : hour_override_date_end_ampm, 
 			'type' : type, 
 			'notes' : notes
 		}

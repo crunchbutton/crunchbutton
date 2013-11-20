@@ -3,9 +3,6 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
 <script src="//js.balancedpayments.com/v1/balanced.js"></script>
-<script src="/assets/js/jquery.autosize-min.js?v=<?=Cana_Util::gitVersion()?>"></script>
-<script src="/assets/js/jquery.dropdown-min.js?v=<?=Cana_Util::gitVersion()?>"></script>
-<script src="/assets/js/jquery.scrollspy.js?v=<?=Cana_Util::gitVersion()?>"></script>
 
 <? if (c::config()->bundle) : ?>
 	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=app"></script>
@@ -15,20 +12,4 @@
 
 <?=$this->display('layout/html.bottom')?>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		var sp = {
-			min: -100,
-			max: 50,
-			onEnter: function(element, position) {
-				$('.page-location .nav-top').addClass('at-top');
-			},
-			onLeave: function(element, position) {
-				$('.page-location .nav-top').removeClass('at-top');
-			}
-		};
-		$('.home-top').scrollspy(sp);
-		sp.container = $('.snap-content-inner');
-		$('.home-top').scrollspy(sp);
-	});
-</script>
+<script src="//maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>

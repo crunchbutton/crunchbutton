@@ -1,15 +1,30 @@
 /**
- * reps page
+ * splash page
  */
-NGApp.controller('RepsCtrl', function ($scope, $http) {
+NGApp.controller('SplashCtrl', function ($scope, $http, AccountFacebookService) {
+	$scope.facebook = AccountFacebookService;
+	if (App.parallax.setupBackgroundImage) {
+		App.parallax.setupBackgroundImage($('.home-top').get(0));
+	}
+});
 
+
+/**
+ * jobs page
+ */
+NGApp.controller('JobsCtrl', function ($scope, $http) {
+	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
+	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
+	$scope.reps = reps;
+	$scope.devs = devs;
 });
 
 /**
  * owners page
  */
 NGApp.controller('OwnersCtrl', function ($scope, $http) {
-
+	var reps = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
+	$scope.reps = reps;
 });
 
 /**
@@ -252,9 +267,13 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
  * Change location
  */
 NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
+
 	var account = AccountService;
 	var restaurants = RestaurantsService;
 
+	if (App.parallax.setupBackgroundImage) {
+		App.parallax.setupBackgroundImage($('.home-top').get(0));
+	}
 
 	$scope.warningPlaceholder = false;
 
@@ -686,8 +705,6 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 				}
 			}
 		}
-		
-		App.scrollTop();
 
 		$scope.order.cart.items = order.cart.getItems();
 
