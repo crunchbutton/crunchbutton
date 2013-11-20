@@ -8,12 +8,14 @@ $timezone = new DateTimeZone( $restaurant->timezone );
 
 $date_start = new DateTime( 'now ', $timezone );
 $hour_override_date_start = $date_start->format( 'm/d/Y' );
-$hour_override_date_start_hour = $date_start->format( 'H:i' );
+$hour_override_date_start_hour = $date_start->format( 'h:i' );
+$hour_override_date_start_ampm = $date_start->format( 'A' );
 
 $date_end = $restaurant->next_open_time();
 if( $date_end ){
 	$hour_override_date_end = $date_end->format( 'm/d/Y' );
-	$hour_override_date_end_hour = $date_end->format( 'H:i' );
+	$hour_override_date_end_hour = $date_end->format( 'h:i' );
+	$hour_override_date_end_ampm = $date_end->format( 'A' );
 }
 ?>
 <div class="row-fluid">
@@ -26,33 +28,45 @@ if( $date_end ){
 						<form id="restaurant-bank-info" onsubmit="return false;">
 							<div class="row-fluid">
 								<div class="span12">
-									<div class="span4">
+									<div class="span3">
 										<strong>Start at:</strong>
 									</div>
 									<div class="span3">
-										<input type="text" value="<?php echo $hour_override_date_start; ?>" class="datepicker span12" id="hour_override_date_start" name="hour_override_date_start">
+										<input type="text" value="<?php echo $hour_override_date_start; ?>" class=" span12" id="hour_override_date_start" name="hour_override_date_start">
 									</div>
-									<div class="span2">
+									<div class="span1">
 										Hour:
 									</div>
-									<div class="span3">
-										<input type="text" value="<?php echo $hour_override_date_start_hour; ?>" name="hour_override_date_start_hour" id="hour_override_date_start_hour" class="span8">
+									<div class="span2">
+										<input type="text" value="<?php echo $hour_override_date_start_hour; ?>" name="hour_override_date_start_hour" id="hour_override_date_start_hour" class="span10"> 
+									</div>
+									<div class="span2">
+										<select class="span10" name="hour_override_date_start_ampm" id="hour_override_date_start_ampm">
+											<option <?php if( $hour_override_date_start_ampm == 'AM' ){ echo 'selected="selected"'; } ?> value="AM">AM</option>
+											<option <?php if( $hour_override_date_start_ampm == 'PM' ){ echo 'selected="selected"'; } ?> value="PM">PM</option>
+										</select>
 									</div>
 								</div>
 							</div>
 							<div class="row-fluid">
 								<div class="span12">
-									<div class="span4">
+									<div class="span3">
 										<strong>Finish at:</strong>
 									</div>
 									<div class="span3">
-										<input type="text" value="<?php echo $hour_override_date_end; ?>" class="datepicker span12" id="hour_override_date_end" name="hour_override_date_end">
+										<input type="text" value="<?php echo $hour_override_date_end; ?>" class=" span12" id="hour_override_date_end" name="hour_override_date_end">
 									</div>
-									<div class="span2">
+									<div class="span1">
 										Hour:
 									</div>
-									<div class="span3">
-										<input type="text" value="<?php echo $hour_override_date_end_hour; ?>" name="hour_override_date_end_hour" id="hour_override_date_end_hour" class="span8">
+									<div class="span2">
+										<input type="text" value="<?php echo $hour_override_date_end_hour; ?>" name="hour_override_date_end_hour" id="hour_override_date_end_hour" class="span10">
+									</div>
+									<div class="span2">
+										<select class="span10" name="hour_override_date_end_ampm" id="hour_override_date_end_ampm">
+											<option <?php if( $hour_override_date_end_ampm == 'AM' ){ echo 'selected="selected"'; } ?> value="AM">AM</option>
+											<option <?php if( $hour_override_date_end_ampm == 'PM' ){ echo 'selected="selected"'; } ?> value="PM">PM</option>
+										</select>
 									</div>
 								</div>
 							</div>
@@ -123,12 +137,12 @@ if( $date_end ){
 						?>
 						<tr>
 							<td nowrap="nowrap">
-								<?php echo $hour->date_start()->format('M jS Y'); ?>
+								<?php echo $hour->date_start()->format('M jS Y - D'); ?>
 								<br/>
 								<?php echo $hour->date_start()->format('g:i:s A'); ?>
 							</td>
 							<td nowrap="nowrap">
-								<?php echo $hour->date_end()->format('M jS Y'); ?>
+								<?php echo $hour->date_end()->format('M jS Y - D'); ?>
 								<br/>
 								<?php echo $hour->date_end()->format('g:i:s A'); ?>
 							</td>

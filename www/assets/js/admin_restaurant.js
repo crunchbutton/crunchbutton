@@ -1591,13 +1591,14 @@ hour_override.remove = function( id_restaurant_hour_override ){
 	});
 }
 
-
 hour_override.save = function(){
 
 	var date_start = $( '#hour_override_date_start' ).val();
 	var date_start_hour = $( '#hour_override_date_start_hour' ).val();
+	var hour_override_date_start_ampm = $( '#hour_override_date_start_ampm' ).val();
 	var date_end = $( '#hour_override_date_end' ).val();
 	var date_end_hour = $( '#hour_override_date_end_hour' ).val();
+	var hour_override_date_end_ampm = $( '#hour_override_date_end_ampm' ).val();
 	var type = $( '#hour_override_type' ).val();
 	var notes = $( '#hour_override_notes' ).val();
 
@@ -1623,8 +1624,10 @@ hour_override.save = function(){
 			'id_restaurant' : _id_restaurant, 
 			'date_start' : date_start, 
 			'date_start_hour' : date_start_hour, 
+			'hour_override_date_start_ampm' : hour_override_date_start_ampm, 
 			'date_end' : date_end, 
 			'date_end_hour' : date_end_hour, 
+			'hour_override_date_end_ampm' : hour_override_date_end_ampm, 
 			'type' : type, 
 			'notes' : notes
 		}
