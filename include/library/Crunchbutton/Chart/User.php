@@ -1264,9 +1264,9 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 				$days = intval( $interval->format('%d') );
 
 				if( $days <= 4 ){ $_data[ $week ][ 'Power' ]++; }
-				if( $days > 4 && $days < 11 ){ $_data[ $week ][ 'Weekly' ]++; }
-				if( $days > 11 && $days < 18 ){ $_data[ $week ][ 'Bi-Weekly' ]++; }
-				if( $days > 18 && $days < 25 ){ $_data[ $week ][ 'Tri-Weekly' ]++; }
+				if( $days > 4 && $days <= 11 ){ $_data[ $week ][ 'Weekly' ]++; }
+				if( $days > 11 && $days <= 18 ){ $_data[ $week ][ 'Bi-Weekly' ]++; }
+				if( $days > 18 && $days <= 25 ){ $_data[ $week ][ 'Tri-Weekly' ]++; }
 				if( $days > 25 ){ $_data[ $week ][ 'Monthly' ]++; }
 			}
 		}

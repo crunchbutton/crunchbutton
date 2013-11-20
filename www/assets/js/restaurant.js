@@ -294,91 +294,123 @@ var Restaurant = function(id) {
 	}
 
 	self.closedMessage = function(){
+		var hours = this._hours;
+		var formated = [];
+
+		// Convert to hours starting at monday
+		var weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
+		var hoursStartFinish = [];
+		for( var day in hours ) {
+			var dayhours = weekdays.indexOf( day ) * 2400;
+			for( var i in hours[ day ] ) {
+				var _open = /(\d+):(\d+)/.exec( hours[ day ][ i ][0] );
+				var _close = /(\d+):(\d+)/.exec( hours[ day ][ i ][1] );
+				var open = ( dayhours + parseInt( _open[ 1 ], 10 ) * 100 + parseInt( _open[ 2 ], 10 ) );
+				var close = ( dayhours + parseInt( _close[ 1 ], 10 ) * 100 + parseInt( _close[ 2 ], 10 ) );
+				hoursStartFinish.push( { 'open' : open, 'close' : close } );
+			}
+		}
+
+		// Sort
+		hoursStartFinish.sort( function( a, b ) { return ( a.open < b.open ? -1 : ( a.open > b.open ? 1 : 0 ) ); } );
+
+		// Merge
+		for( var i = 0; i < hoursStartFinish.length-1; i++) {
+			if( hoursStartFinish[ i + 1 ].open <= hoursStartFinish[ i ].close && hoursStartFinish[ i + 1 ].close - hoursStartFinish[ i ].open < 3600 ) {
+				hoursStartFinish[ i ].close = hoursStartFinish[ i + 1 ].close;
+				hoursStartFinish.splice(i+1,1);
+				i--;
+				continue;
+			}
+		}
+
+		// Format
+		for( var i in hoursStartFinish ) {
+			segment = hoursStartFinish[ i ];
+			var weekday = weekdays[ Math.floor( segment.open / 2400 ) ];
+			while( segment.open >= 2400 ) {
+				segment.open -= 2400;
+				segment.close -= 2400;
+			}
+			
+			format_time = function( time ) {
+				var h = Math.floor( time / 100 );
+				var m = time - ( 100 * h );
+				var hour_formated = '';
+				var mintute_formated = '';
+				var ampm = '';
+				switch( true ){
+					case ( h === 0 ):
+						hour_formated = '' + ( h + 12 ); ampm = 'am'; 
+						break;
+					case ( h === 12 ):
+						ampm = 'pm';
+						break;
+					case ( h === 24 ):
+						hour_formated = '12'; ampm = 'am'; 
+						break;
+					case ( h < 12 ):
+						ampm = 'am';
+						break;
+					case ( h < 24 ):
+						hour_formated = '' + ( h - 12 ); ampm = 'pm';
+						break;
+					default:
+						hour_formated = '' + ( h - 24 ); ampm = 'am'; 
+						break;
+				}
+				if( m ) { 
+					mintute_formated = ':' + App.pad( m, 2 ); 
+				}
+				return '' + ( hour_formated || h ) + mintute_formated + ampm;
+			};
+			segment.formated = format_time( segment.open ) + ' - ' + format_time( segment.close );
+			if( !formated[ weekday ] ){
+				formated[ weekday ] = { formated : '' };
+			}
+			formated[ weekday ].formated += segment.formated + ', ';
+		}
+
+		// Merge days with same open/close hours
 		var isOpenedAt = {};
-		var openTime = this._hours;
-		var weekdayOrder = [ 'Mon','Tue','Wed','Thu','Fri','Sat', 'Sun' ];
-		var patternHour = /([0])([1-9])(:)([0-9]{2})/;
-		// Format the hour and group the day with the same hour
-		for ( var day in openTime ) {
-			var hours = openTime[ day ];
-			var openedHoursText = '';
-			var openedHoursTextDivisor = '';
-			for( var hour in hours ){
-				 var open = hours[ hour ][ 0 ];
-				 var close = hours[ hour ][ 1 ];
-				 var formatedOpen = App.formatTime( open ).toLowerCase().replace( patternHour, '\$2\$3\$4' ).replace( /:00/g, '' ).replace( ' ', '' );
-				 var formatedClose = App.formatTime( close ).toLowerCase().replace( patternHour, '\$2\$3\$4' ).replace( /:00/g, '' ).replace( ' ', '' );
-				 openedHoursText += openedHoursTextDivisor + formatedOpen + ' - ' + formatedClose;
-				 openedHoursTextDivisor = ', ';
-			}
-			// Hours "12 am, 12 am" doesn't need to be shown
-			openedHoursText = openedHoursText.replace( '- 12am, 12am ', '' );
-			var regex = /12am/gi, result, indices = [];
-			var times = 0;
-			while ( (result = regex.exec( openedHoursText )) ) {
-				times++;
-			}
-			if( times >= 2 ){
-				var sequences = openedHoursText.split( ',' );
-				for( var i = 0; i < sequences.length; i++ ){
-					if( sequences[i].indexOf( '12am' ) > 0 ){
-						var first = sequences[i];
-					}
-					if( sequences[i].indexOf( '12am' ) == 0 ){
-						var last = sequences[i];
-					}
+		var sorted = [];
+		for( var i in weekdays ){
+			if( formated[ weekdays[ i ] ] ){
+				var time = $.trim( formated[ weekdays[ i ] ].formated );
+				time = time.substring( 0, time.length - 1 );
+				var day = weekdays[ i ];
+				var key = time.replace( /[\ \: \- ,]/g, '' );
+				if( !isOpenedAt[ key ] ){
+					isOpenedAt[ key ] = { days : {}, hours : {} };
 				}
-				var newText = [];
-				for( var i = 0; i < sequences.length; i++ ){
-					if( sequences[i] != first && sequences[i] != last ){
-						newText.push( sequences[i] );
-						newText.push( ', ' );
-					}
-				}
-				newText.push( first );
-				newText.push( last );
-				newText = newText.join('').replace( '- 12am12am -', ' - ' );
-				openedHoursText = newText;
+				isOpenedAt[ key ][ 'days' ][ day ] = day;
+				isOpenedAt[ key ][ 'hour' ] = time;
 			}
-			// Remove the ':' to create a cleaner object key
-			var key = openedHoursText.replace( /[\ \: \- ,]/g, '' );
-			if( !isOpenedAt[ key ] ){
-				isOpenedAt[ key ] = { days : {}, hours : {} };
-			}
-			isOpenedAt[ key ][ 'days' ][ day ] = true;
-			isOpenedAt[ key ][ 'hour' ] = openedHoursText;
 		}
-		// Create an object with all days and its hours
-		var _opened = {};
-		for( var hour in isOpenedAt ){
-			var days = isOpenedAt[ hour ][ 'days' ];
-			var commas = '';
-			var keys = '';
-			for( day in days ){
-				keys += commas + App.capitalize( day );
-				commas = ', ';
-			}
-			hours = isOpenedAt[hour][ 'hour' ];
-			_opened[ keys ] = hours;
-		}
+
 		// Group the days e.g. 'Mon, Tue, Wed, Sat' will became 'Mon - Wed, Sat'
 		var _groupedDays = {};
-		for( var days in _opened ){
-			var weekdays = days.split( ',' );
+		for( var i in isOpenedAt ){
+			var segment = isOpenedAt[ i ];
+			var time = segment.hour;
+			var days = [];
+			for( var j in segment.days ){
+				days.push( segment.days[ j ] );
+			}
 			var nextPosition = -1;
 			var sequenceStartedAt = false;
 			var groupedDays = {};
-			var totalWeekdays = weekdays.length;
-			for ( var i = 0; i <= totalWeekdays; ++i) {
-				var weekday = $.trim( weekdays[ i ] );
-				var position = weekdayOrder.indexOf( weekday );
+			var totalWeekdays = days.length;
+			for ( var i = 0; i <= totalWeekdays; ++i ) {
+				var weekday = $.trim( days[ i ] );
+				var position = weekdays.indexOf( weekday );
 				if( nextPosition != position ){
 					sequenceStartedAt = weekday;
-					groupedDays[sequenceStartedAt] = [];
-					groupedDays[sequenceStartedAt] = [weekday];
+					groupedDays[ sequenceStartedAt ] = [];
+					groupedDays[ sequenceStartedAt ] = [ weekday ];
 				}
 				if( nextPosition == position ){
-					groupedDays[sequenceStartedAt].push( weekday );
+					groupedDays[ sequenceStartedAt ].push( weekday );
 				}
 				nextPosition = position + 1;
 			}
@@ -400,20 +432,22 @@ var Restaurant = function(id) {
 				}
 			}
 			key += ': ';
-			_groupedDays[ key ] = _opened[days];
+			_groupedDays[ key ] = time;
 		}
-		// Sort the hours according to the weekdayOrder sequence Sun to Sat
-		var ordered = [];
-		for ( var index = 0; index < weekdayOrder.length; ++index) {
-			var weekday = weekdayOrder[ index ];
-			for( var day in _groupedDays ){
-				var regexp = new RegExp( '^' + weekday, 'i' )
-				if( regexp.test( day ) ){
-					ordered.push( day + _groupedDays[ day ] );
+
+		var formated = [];
+		for( var i in _groupedDays ){
+			var sequence = i.split( ' ' );
+			for( var j in sequence ){
+				if( $.trim( sequence[ j ] ) != '' ){
+					sequence[ j ] = sequence[ j ].charAt( 0 ).toUpperCase() + sequence[ j ].slice( 1 );	
 				}
 			}
+			var days = sequence.join( ' ' ) + _groupedDays[i];
+			formated.push( days );
 		}
-		return ordered.join( '<br>' );
+		return formated.join( '<br/>' );
+		return formated.join( '<br/>' );
 	}
 
 	self.preset = function() {

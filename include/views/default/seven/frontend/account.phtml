@@ -1,97 +1,140 @@
 <div class="account-container zoom-anim-dialog mfp-hide dialog mfp-hide">
-	<div ng-controller="AccountModalHeaderCtrl" class="header" ng-show="modal.header">
-		<h1 class="signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Log In</h1>
-		<div class="divisor">|</div>
-		<h1 class="signup {{ modal.signup && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signup' )">Sign up</h1>
-		<div class="divider"></div>
-	</div>
-	<div ng-controller="AccountSignInCtrl" ng-show="modal.signin">
-		<div ng-show="!help.visible">
-			<form name="formSignin" ng-submit="account.signin()">
-				<input type="email" maxlength="250" name="email" class="signin-email" ng-enter="account.signin()" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.form.email" />
-				<div class="divider"></div>
-				<input type="password" maxlength="250" name="password" class="signin-password" ng-enter="account.signin()" required placeholder="password" tabindex="10" ng-model="account.form.password" />
-				<div class="divider"></div>
-				<div ng-show="formSignin.$dirty && formSignin.$invalid" class="error">
-					<div ng-show="formSignin.email.$error">
-						Please enter a valid email or phone.
-					</div>
-					<div ng-show="formSignin.password.$error">
-						Please enter your password.
-					</div>
-				</div>
-				<div ng-show="account.error.signin" class="error">
-					Your log in information was incorrect.
-				</div>
-			</form>
-			<div class="divider"></div>
-			<a class="help-link" ng-click="help.show(true)">Password help?</a>
-			<button ng-click="account.signin();">Log in</button>
-			<div class="divider"></div>
-
-		<div facebook-signin-button title="Log in with Facebook"></div>
+	<div class="dialog-padding">
+	
+		<? /* Header links */ ?>
+		<div ng-controller="AccountModalHeaderCtrl" class="header">
+			<div ng-show="modal.header">
+				<span class="account-title-link signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Log In</span>
+				<span class="account-title-link signup {{ modal.signup && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signup' )">Sign up</span>
+			</div>
+			<div ng-show="!modal.header">
+				<span class="account-title-link signin link" ng-click="help.show(false)">&laquo; back</span>
+			</div>
+			<div class="divider spacer-one-one"></div>
 		</div>
-		<div ng-show="help.visible">
-			<form class="signin-help-form" name="formLoginHelp" novalidate>
-				<h1>Password help?</h1>
-				<input type="text" maxlength="250" name="email" required  class="help-email" ng-enter="help.sendForm()" validate-login placeholder="email or phone" tabindex="10" ng-model="account.form.email">
-				<div class="divider"></div>
-				<div ng-show="help.error" class="error">
-					Sorry, that email/phone is not registered with us.
+
+		<? /* Error messages */ ?>
+		<div class="dialog-message dialog-message-error" ng-controller="AccountSignInCtrl">
+
+			<div ng-show="formSignin.$dirty && formSignin.$invalid">
+				<div ng-show="formSignin.email.$error">
+					Please enter a valid email or phone.
 				</div>
-			</form>
-			<a class="help-link" ng-click="help.show(false)">Never mind</a>
-			<button ng-click="help.sendForm()">Reset</button>
-			<div class="divider"></div>
-			<div ng-show="formLoginHelp.$dirty && formLoginHelp.$invalid" class="error">
+				<div ng-show="formSignin.password.$error">
+					Please enter your password.
+				</div>
+			</div>
+			<div ng-show="account.error.signin" class="error">
+				Your log in information was incorrect.
+			</div>
+	
+			<div ng-show="help.error" class="error">
+				Sorry, that email/phone is not registered with us.
+			</div>
+					
+			<div ng-show="formLoginHelp.$dirty && formLoginHelp.$invalid">
 				Please enter a valid email or phone.
 			</div>
-			
-			<div ng-show="help.success.visible" class="success">
-				You will receive a code to reset your password! It will expire in 24 hours.
-				<div ng-show="help.success.facebook.visible">
-					You can also try logging in with <span class="login-facebook">Facebook</span>.
+
+			<div ng-show="formSignup.$dirty && formSignup.$invalid">
+				<div ng-show="formSignup.email.$error">
+					Please enter a valid email or phone.
+				</div>
+				<div ng-show="formSignup.password.$error">
+					Please enter your password.
 				</div>
 			</div>
-		</div>
-	</div>
-	<div ng-controller="AccountSignUpCtrl" ng-show="modal.signup">
-		<div class="signup-form-options" ng-show="!account.user.has_auth">
-			<form class="signin-form" name="formSignup" novalidate>
-				<input type="text" maxlength="250" name="email" class="signup-email" ng-enter="account.signup()" validate-login required placeholder="email or phone" tabindex="10" ng-model="account.form.email" />
-				<div class="divider"></div>
-				<input type="password" maxlength="250" name="password" class="signup-password" ng-enter="account.signup()" required placeholder="password" tabindex="10" ng-model="account.form.password" />
-				<div class="divider"></div>
-				<div ng-show="formSignup.$dirty && formSignup.$invalid" class="error">
-					<div ng-show="formSignup.email.$error">
-						Please enter a valid email or phone.
-					</div>
-					<div ng-show="formSignup.password.$error">
-						Please enter your password.
-					</div>
-				</div>
-				<div ng-show="account.error.signup" class="error">
-					It seems that the email is already registered!
-				</div>
-			</form>
-			<div class="divider"></div>
-			<button ng-click="account.signup();">Sign up</button>
-			<div class="divider"></div>
+			<div ng-show="account.error.signup" class="error">
+				It seems that the email is already registered!
+			</div>
 			
-			<div facebook-signin-button title="Signup with Facebook"></div>
+
+			<div ng-show="facebook.facebook.error.userExists">
+				Sorry, it seems the facebook user is already related with other user.
+			</div>
+			<div ng-show="facebook.facebook.error.unknown">
+				Sorry, something bad happened.
+			</div>
+			<div ng-show="facebook.facebook.error.login">
+				Sorry, it seems you cancelled login or did not fully authorize.
+			</div>
+	
 		</div>
-		<div ng-show="account.user.has_auth">
-			<h1>Congratulations!</h1>
-			<div class="success">
-				You can now log in using <strong>{{account.email}}</strong>!
+
+		<? /* success messages */ ?>	
+		<div class="dialog-message dialog-message-success" ng-controller="AccountSignInCtrl">
+			<div ng-show="help.success.visible">
+				<p>Please check your email or phone. You will receive a password reset link that will expire in 24 hours.</p>
 			</div>
 		</div>
+
+		<? /* Log in form fields */ ?>
+		<div ng-controller="AccountSignInCtrl" ng-show="modal.signin">
+
+			<div ng-show="!help.visible">
+			
+				<form name="formSignin" ng-submit="account.signin()">
+					<div class="support-form-group form-group">
+						<input type="email" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" class="form-input support-form-input" placeholder="email address" ng-enter="account.signin()">
+					</div>
+					<div class="support-form-group form-group">
+						<input type="password" maxlength="250" ng-model="account.form.password" name="password" tabindex="11" class="form-input support-form-input" placeholder="password" ng-enter="account.signin()">
+					</div>
+				</form>
+
+				<div class="divider spacer-half"></div>
+				<a class="account-login-help" ng-click="help.show(true)">Password help?</a>
+				<button class="button lightorange account-go" ng-click="account.signin();">Go!</button>
+				<div class="divider"></div>
+				<div class="spacer-half"></div>
+				<button class="button facebook" ng-click="facebook.auth()">
+					<i class="fa fa-facebook-square"></i>&nbsp;
+					<span ng-hide="facebook.facebook.wait">Log in with Facebook</span>
+					<span ng-show="facebook.facebook.wait">Just a sec...</span>
+				</button>
+			</div>
+
+			<div ng-show="help.visible">
+				<form name="formLoginHelp" novalidate>
+					<p>Enter your email or phone number and we will send you a link to reset your password.</p>
+					<br />
+					<input type="text" maxlength="250" name="email" required  class="form-input support-form-input" ng-enter="help.sendForm()" validate-login placeholder="email or phone" tabindex="10" ng-model="account.form.email">
+				</form>
+
+				<button class="button lightorange account-go" ng-click="help.sendForm()">Reset</button>
+				<div class="divider"></div>
+				<div class="spacer-half"></div>
+			</div>
+		</div>
+	
+		<? /* Sign up form fields */ ?>
+		<div ng-controller="AccountSignUpCtrl" ng-show="modal.signup">
+			<div ng-show="!account.user.has_auth">
+				<form name="formSignup" novalidate>
+					<div class="support-form-group form-group">
+						<input type="email" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" class="form-input support-form-input" placeholder="email address" ng-enter="account.signup()">
+					</div>
+					<div class="support-form-group form-group">
+						<input type="password" maxlength="250" ng-model="account.form.password" name="password" tabindex="11" class="form-input support-form-input" placeholder="password" ng-enter="account.signup()">
+					</div>
+				</form>
+
+				<button class="button lightorange account-go" ng-click="account.signup();">Go!</button>
+				<div class="divider"></div>
+				<div class="spacer-one-half"</div>
+				<button class="button facebook" ng-click="facebook.auth()">
+					<i class="fa fa-facebook-square"></i>&nbsp;
+					<span ng-hide="facebook.facebook.wait">Sign up with Facebook</span>
+					<span ng-show="facebook.facebook.wait">Just a sec...</span>
+				</button>
+			</div>
+
+			<div ng-show="account.user.has_auth">
+				<h1>Congratulations!</h1>
+				<p>You can now log in using <b>{{account.email}}</b>!</p>
+			</div>
+		</div>
+	
 	</div>
 
-	<div ng-controller="AccountFacebookCtrl" ng-show="modal.facebookLogin">
-		<div>
-			<h1>Log in with Facebook</h1>
-			<div facebook-signin-button title="Connect with Facebook"></div>
-		</div>
-	</div>
 </div>

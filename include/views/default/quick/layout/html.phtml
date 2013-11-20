@@ -1,0 +1,263 @@
+<!doctype html>
+<html>
+<head>
+<title><?=$this->title ? $this->title : 'Crunchbutton'?></title>
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale = 1.0,maximum-scale = 1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="shortcut icon" href="/favicon-admin.ico">
+
+<style type="text/css">
+	body, table, td, tr, p, h1, h2, h3, h4, button {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		font-family: Museo Slab, Helvetica, Lucida Grande, Arial, sans-serif;
+	}
+	
+	@media(min-width:500px) {
+		body {
+			font-size: 12px;
+		}
+	
+	}
+	@media(max-width:499px) {
+		body {
+			font-size: 10px;
+		}
+	}
+	
+	.control {
+		background: #6fa3f1;
+
+	}
+	
+	.content {
+		
+	}
+
+	.wrap {
+		padding: .5em;
+		max-width: 740px;
+		margin: 0 auto;
+	}
+	.header {
+		background-color: #f97e5c;
+		color: #fff;
+		font-size: 1.7em;
+		padding: .5em;
+	}
+	.divider {
+		clear: both;
+	}
+	.divider.dots {
+		border-top: 1px solid #eeede7;
+	}
+	
+	.restaurant-name {
+		float: left;
+	}
+
+	.order-id {
+		float: right;
+	}
+	
+	.order-icon {
+		font-size: 2em;
+	}
+	
+	
+	.order-comment-arrow {
+		width: 0;
+		height: 0;
+		border-left: 7px solid transparent;
+		border-right: 7px solid transparent;
+		border-bottom: 7px solid #00957f;
+		margin-left: 1.2em;
+	}
+	
+	.order-comment {
+		background: #00957f;
+		color: #fff;
+		padding: .7em .9em .5em 1em;
+		border-radius: 4px;
+		margin-bottom: .8em;
+	}
+
+	.icon-support {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-support.svg) no-repeat;
+		background-position: top center;
+		width: 2.4em;
+		height: 2.8em;
+		background-size: 100%;
+	}
+	
+	.icon-chef {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-chef.svg) no-repeat;
+		background-position: top center;
+		width: 2.0em;
+		height: 2.6em;
+		background-size: 100%;
+	}
+	
+	.icon-user {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-user.svg) no-repeat;
+		background-position: top center;
+		width: 1.9em;
+		height: 2.4em;
+		background-size: 100%;
+	}
+	
+	.icon-delivery {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-delivery.svg) no-repeat;
+		background-position: top center;
+		width: 2.2em;
+		height: 1.6em;
+		background-size: 100%;
+	}
+	
+	.icon-card {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-card.svg) no-repeat;
+		background-position: top center;
+		width: 2.3em;
+		height: 1.6em;
+		background-size: 100%;
+	}
+	
+	.icon-clock {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-clock.svg) no-repeat;
+		background-position: top center;
+		width: 1.6em;
+		height: 1.9em;
+		background-size: 100%;
+	}
+	
+	.icon-timer {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-timer.svg) no-repeat;
+		background-position: top center;
+		width: 1.6em;
+		height: 1.9em;
+		background-size: 100%;
+	}
+	
+	.icon-map-home {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-map-home.svg) no-repeat;
+		background-position: top center;
+		width: 1.6em;
+		height: 2.4em;
+		background-size: 100%;
+	}
+	
+	.icon-map-restaurant {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-map-restaurant.svg) no-repeat;
+		background-position: top center;
+		width: 1.6em;
+		height: 2.4em;
+		background-size: 100%;
+	}
+	
+	.icon-cash {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-cash.svg) no-repeat;
+		background-position: top center;
+		width: 2.1em;
+		height: 1.6em;
+		background-size: 100%;
+	}
+	
+	.icon-takeout {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-takeout.svg) no-repeat;
+		background-position: top center;
+		width: 1.5em;
+		height: 2.0em;
+		background-size: 100%;
+	}
+	
+	.icon-phone {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-phone.svg) no-repeat;
+		background-position: top center;
+		width: 1.4em;
+		height: 1.4em;
+		background-size: 100%;
+		margin-top: .2em;
+	}
+	
+	.icon-notes {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-notes.svg) no-repeat;
+		background-position: top center;
+		width: 1.9em;
+		height: 1.6em;
+		background-size: 100%;
+	}
+	
+	.icon-credit {
+		background: url(http://dev.crunchr.co/assets/images/micro/icon-credit.svg) no-repeat;
+		background-position: top center;
+		width: 2.5em;
+		height: 1.9em;
+		background-size: 100%;
+	}
+	
+	
+	
+	
+
+	td {
+		border: 0;
+		padding: .5em;
+	}
+
+	.fooditem {
+		border-bottom: 1px solid #999;
+	}
+	
+	.topitem {
+		border-bottom: 2px solid #999;
+	}
+	
+	.control .message {
+		float: left;
+	}
+	
+	.control .button {
+		float: right;
+	}
+	
+	.button {
+		padding: .3em .8em .3em .8em;
+		margin: .6em;
+		color: #fff;
+		cursor: pointer;
+		font-size: 1.2em;
+		font-weight: bold;
+	}
+	
+	.button-yes {
+		background: #076b0e;
+	}
+	
+	.button-no {
+		background: #7a0c0c;
+	}
+
+</style>
+</head>
+
+<body>
+	<div class="control">
+		<div class="wrap">
+			<div class="message">Accept this order?</div>
+			<button class="button button-no">No</button>
+			<button class="button button-yes">Yes</button>
+			<div class="divider"></div>
+		</div>
+	</div>
+	
+	<div class="content">
+		<div class="wrap">
+			<?=$this->content?>
+		</div>
+	</div>
+</body>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</html>

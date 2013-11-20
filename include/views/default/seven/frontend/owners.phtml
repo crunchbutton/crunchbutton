@@ -1,13 +1,27 @@
 <div class="top-pad"></div>
 
 <div class="owners-bubble-wrap">
-	<div class="bubble-tail bubble-tail-beige">
-		<div class="text">
-			<b>&nbsp;&nbsp;We're good</b><br />
-			for your business!
+	<div class="bubble-tail bubble-tail-beige bubble-animated">
+		<div class="text" ng-switch="ownerMessage">
+			<span class="single-line" ng-switch-when="1">Get it?</span>
+			<span class="single-line" ng-switch-when="2"><b>GOOD</b> for you!!</span>
+			<span ng-switch-when="3">No but seriously though</span>
+			<span ng-switch-when="4">You really should use Crunchbutton</span>
+			<span ng-switch-when="5">Our customers are awesome</span>
+			<span class="single-line" ng-switch-when="6">They love us</span>
+			<span class="small" ng-switch-when="7">And we are more than willing to share that love</span>
+			<span ng-switch-when="8">For a small fee of course</span>
+			<span ng-switch-when="9">I mean nothing is free</span>
+			<span class="single-line" ng-switch-when="10">Not even love</span>
+			<span class="single-line" ng-switch-when="11">Except from me</span>
+			<span class="single-line" ng-switch-when="12">I love you</span>
+			<span ng-switch-when="13">That was completely free</span>
+			<span class="single-line" ng-switch-when="14"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+			<span ng-switch-default><b>We're good</b><br>for your business!</span>
 		</div>
+		<div class="bubble-tail-spacer"></div>
 	</div>
-	<div class="owner-brocoli"></div>
+	<div class="owner-brocoli animated-resize" ng-instant="ownerMessage = (ownerMessage > 14 && 1) || ownerMessage + 1"></div>
 	<div class="divider"></div>
 </div>
 
@@ -55,5 +69,7 @@
 		</div>
 	</div>
 	<br><br>
-	<a href="tel:+18003514161" target="_blank"><button class="button green">Call us @ 800-351-4161</button></a>
+	<a href="mailto:{{reps}}" target="_blank"><button class="button green">send us an email</button></a>
+	<br><br>
+	<p class="alternate-link"><a href="tel:+18003514161">or call us @ 800-351-4161</a></p>
 </div>

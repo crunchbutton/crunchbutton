@@ -1,0 +1,1 @@
+ALTER TABLE  `order` ADD  `fee_restaurant` float DEFAULT NULL;

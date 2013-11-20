@@ -1,21 +1,40 @@
 
 
 <div class="content-padding">
-	<br /><br />
-	<div class="home-join-us"></div>
+	<div class="jobs-bubble-wrap">
+		<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
+			<div class="text" ng-switch="orangeMessage">
+				<span class="single-line" ng-switch-when="2">Free delivery food</span>
+				<span ng-switch-when="3">Free pink gorilla suit</span>
+				<span class="single-line" ng-switch-when="4">Free hugs</span>
+				<span ng-switch-when="5">Now THOSE are benefits!</span>
+				<span ng-switch-when="6">What more could you want?</span>
+				<span ng-switch-when="7">Good weather, you say?</span>
+				<span ng-switch-when="8">Great people, you say?</span>
+				<span ng-switch-when="9">Oh yeah, we got that too!</span>
+				<span class="small" ng-switch-when="10">Send us a message and grab a beer with us!</span>
+				<span class="single-line" ng-switch-when="11"><i class="fa fa-beer"></i> <i class="fa fa-beer"></i> <i class="fa fa-beer"></i></span>
+				<span class="single-line" ng-switch-when="1"><b>Free beer!</b></span>
+				<span class="single-line" ng-switch-default><b>Free beer!</b></span>
+			</div>
+		</div>
+	</div>
+
+	<div class="home-join-us" ng-instant="orangeMessage = (orangeMessage > 11 && 1) || orangeMessage + 1" instant-pass-thru></div>
+	<div class="divider"></div>
 </div>
 
 <div class="content-padding" ng-controller="SupportCtrl">
 	<br />
 
-	<h4>Marketing Interns</h4>
-	<p>We offer an extensive paid internship program for ambitious candidates, as well as pink gorilla suits.</p>
+	<h4>Community Representative</h4>
+	<p>No one knows more about your college or community than you. Thats why we're going to hire you! You will be responsible for scouting the area to get restaurants signed up, and later be directly involved in end user marketing.</p>
 	<br />
-	<a href="mailto:campusreps@crunchbutton.com" target="_blank"><button class="button green">join up</button></a>
+	<a href="mailto:{{reps}}" target="_blank"><button class="button lightorange">join up</button></a>
 	<br /><br /><br /><br />
 
 	<h4>Rockstar Developers &amp; Designers</h4>
-	<p>Developer? Rockstar? Perfect.</p>
+	<p>Look at this beautiful website! It's almost perfect! You know what would make it better? Your magical touch! Join our small team of developers located in LA/Brazil and lets get shit done!</p>
 	<br />
-	<a href="mailto:rockstarsonly@crunchbutton.com" target="_blank"><button class="button lightorange">rock out</button></a>
+	<a href="mailto:{{devs}}" target="_blank"><button class="button green">rock out</button></a>
 </div>

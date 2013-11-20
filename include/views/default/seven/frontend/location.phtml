@@ -1,65 +1,93 @@
-<div class="bg home-top">
-	<div class="top-pad"></div>
-	<div class="pushabutton"></div>
-	<div class="home-inputs">
-		<table cellpadding="0" cellspacing="0" class="home-location">
-			<tr>
-				<td style="width: 100%;"><input class="location-address" placeholder="Enter your location" ng-enter="letsEat()" ng-model="location.form.address"></td>
-				<td>				
-					<button class="location-detect ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF" ng-click="locEat()">
-						<span class="fa fa-location-arrow "></span>
-						<div class="ladda-spinner"></div>
-					</button>
-				</td>
-			</tr>
-		</table>
-		<button class="button pushable orange find-restaurants button-letseat-form ladda-button" ng-click="letsEat()" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF">
-			<div class="ladda-label">Find Restaurants!</div>
-			<span class="ladda-spinner"></span>
-		</button>
+<div class="bg">
+	<div class="home-top">
+		<div class="top-pad"></div>
+		<div class="pushabutton"></div>
+		<div class="home-inputs">
+			<h4>What's your address?</h4>
+			<table cellpadding="0" cellspacing="0" class="home-location">
+				<tr>
+					<td style="width: 100%;"><input class="location-address" placeholder="e.g. 37 Elm St, New Haven CT 06511" ng-enter="letsEat()" ng-model="location.form.address" geo-complete></td>
+					<td>				
+						<button class="location-detect ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF" ng-click="locEat()">
+							<span class="fa fa-location-arrow "></span>
+							<div class="ladda-spinner"></div>
+						</button>
+					</td>
+				</tr>
+			</table>
+			<div class="button-pushable find-restaurants">
+				<button class="button orange find-restaurants button-letseat-form ladda-button" ng-click="letsEat()" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF">
+					<div class="ladda-label">Find Restaurants!</div>
+					<span class="ladda-spinner"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+	
+	<div class="divider-orange-food divider-circle" ng-click="scrollHalf()"></div>
+	
+	<div class="content-padding">
+		<br /><br /><br />
+		<h4>Order the best local delivery food</h4>
+		<p>We find the top delivery restaurants in your area, curate their menus, and make it easy for you to order with a single click.</p>
+	</div>
+	
+	
+	
+	<div class="about-join-bubble-wrap">
+		<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
+			<div class="text" ng-switch="orangeMessage">
+				<span class="small" ng-switch-when="2">So you can write stupid messages like this</span>
+				<span  ng-switch-when="3">That no one will ever read</span>
+				<span ng-switch-when="4">So you could put anything</span>
+				<span class="single-line" ng-switch-when="5">No really.</span>
+				<span class="single-line" ng-switch-when="6">Like...</span>
+				<span class="single-line" ng-switch-when="7">"Hi Crystal!"</span>
+				<span ng-switch-when="8">Did I mention we like beer?</span>
+				<span class="single-line" ng-switch-when="9">Yeah we do.</span>
+				<span ng-switch-when="10">We even brew our own beer</span>
+				<span class="small" ng-switch-when="11">That just screams cool right there</span>
+				<span class="single-line" ng-switch-when="12"><i class="fa fa-beer"></i> <i class="fa fa-beer"></i> <i class="fa fa-beer"></i></span>
+				<span class="single-line" ng-switch-when="1"><b>Join us!</b></span>
+				<span class="single-line" ng-switch-default><b>Join us!</b></span>
+			</div>
+		</div>
+		<div class="bubble-curved-spacer"></div>
+	</div>
+	<div class="about-green-orange animated-resize" ng-instant="orangeMessage = (orangeMessage > 12 && 1) || orangeMessage + 1" instant-pass-thru></div>
+	<div class="divider"></div>
+	
+	<div class="content-padding">
+		<br /><br />
+		<h4>Are you a delivery foodie?</h4>
+		<p>Join our marketing intern program and get a free pink gorilla suit! Also maybe some money too. We are always looking for great people. Developer? Designer? Give us a ring!</p>
+		<br />
+		<button class="button lightorange" ng-click="navigation.link('/jobs')">Work with us</button>
+	</div>
+	
+	<div class="content-padding">
+		<br />
+		<h4>Restaurant owner?</h4>
+		<p>We are always looking for the next popular sandwich. Apply today and reach campuses nationwide!</p>
+		<br />
+		<button class="button green" ng-click="navigation.link('/owners')">Add your restaurant</button>
+	</div>
+	
+	<div class="divider dots spacer-two-two"></div>
+	
+	<div class="content-padding">
+		<h4>We’re expanding!</h4>
+		<p>We may not be everywhere yet, but the communities we are in love us! Take a look at some of our most popular locations.</p>
+		<br /><br /><br />
+		<div class="popular-locations">
+			<div class="map map-new-haven"></div>
+			<div class="map map-dc"></div>
+			<div class="map map-providence"></div>
+			<div class="map map-venice"></div>
+		</div>
 	</div>
 </div>
 
-<div class="divider-orange-food divider-circle"></div>
-
-<div class="content-padding">
-	<br /><br /><br />
-	<h4>Order the top food. For free.</h4>
-	<p>We find the best delivery restaurants in your area, curate their menus, and make it easy for you to order with a single click.</p>
-</div>
-
-<div class="home-join-us"></div>
-
-<div class="content-padding">
-	<br /><br />
-	<h4>Are you a delivery foodie?</h4>
-	<p>Join our marketing intern program and get a free pink gorilla suit! Also maybe some money too.</p>
-	<br />
-	<button class="button green" ng-click="navigation.link('/jobs')">Contact Us</button>
-</div>
-
-<div class="content-padding">
-	<br />
-	<h4>Restaurant owner?</h4>
-	<p>We are always looking for the next popular sandwich. Apply today and reach campuses nationwide!</p>
-	<br />
-	<button class="button lightorange" ng-click="navigation.link('/owners')">more info</button>
-</div>
-
-<div class="content-padding">
-	<br />
-	<h4>We’re expanding!</h4>
-	<p>We may not be everywhere yet, but the communities we are in love us! Take a look at some of our most popular locations.</p>
-	<br /><br /><br />
-	<div class="popular-locations">
-		<div class="map map-new-haven"></div>
-		<div class="map map-dc"></div>
-		<div class="map map-providence"></div>
-		<div class="map map-venice"></div>
-	</div>
-</div>
-
-<div class="home-white content-padding">
-	<br /><br /><br />
-	<div class="logo-finger"></div>
-</div>
+<div class="location-overpull-preload-one"></dvi>
+<div class="location-overpull-preload-two"></dvi>
+<div class="location-overpull-preload-three"></dvi>

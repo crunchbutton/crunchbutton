@@ -69,26 +69,42 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$subtotal = 0;
 
+		$this->id_restaurant = $params['restaurant'];
+
+		$delivery_service_markup = ( $this->restaurant()->delivery_service_markup ) ? $this->restaurant()->delivery_service_markup : 0;
+		$this->delivery_service_markup = $delivery_service_markup;
+		$delivery_service_markup_value = 0;
 		foreach ($params['cart'] as $d) {
 			$dish = new Order_Dish;
 			$dish->id_dish = $d['id'];
-			$subtotal += $dish->dish()->price;
+			$price = $dish->dish()->price;
+			if( $delivery_service_markup > 0 && $price > 0 ){
+				$price = $price + ( $price * $delivery_service_markup / 100 );
+				$price = number_format( $price, 2 );
+				$delivery_service_markup_value += ( $dish->dish()->price * $delivery_service_markup / 100 );
+			}
+			$subtotal += $price;
 			if ($d['options']) {
 				foreach ($d['options'] as $o) {
 					$option = new Order_Dish_Option;
 					$option->id_option = $o;
-					$subtotal += $option->option()->price;
+					$price = $option->option()->price;
+					if( $delivery_service_markup > 0 && $price > 0 ){
+						$price = $price + ( $price * $delivery_service_markup / 100 );
+						$price = number_format( $price, 2 );
+						$delivery_service_markup_value += ( $option->option()->price * $delivery_service_markup / 100 );
+					}
+					$subtotal += $price;
 //                    $subtotal += $option->option()->optionPrice($d['options']);
 					$dish->_options[] = $option;
 				}
 			}
-
 			$this->_dishes[] = $dish;
 		}
 		
-		$this->_card = $params['card'];
+		$this->delivery_service_markup_value = number_format( $delivery_service_markup_value, 2 );
 
-		$this->id_restaurant = $params['restaurant'];
+		$this->_card = $params['card'];
 
 		// price
 		$this->price = Util::ceil($subtotal, 2);
@@ -102,6 +118,10 @@ class Crunchbutton_Order extends Cana_Table {
 		$serviceFee = Util::ceil($serviceFee, 2);
 		$totalWithFees = $this->price + $this->delivery_fee + $serviceFee;
 		$totalWithFees = Util::ceil($totalWithFees, 2);
+
+		// Start to store the fee_restaurant because it could change and we need to know the
+		// exacly value at the moment the user ordered his food
+		$this->fee_restaurant = $this->restaurant()->fee_restaurant;
 
 		// tip
 		$this->tip = $params['tip'];

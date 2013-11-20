@@ -1,0 +1,166 @@
+<?
+	$this->title = 'Community metrics';
+	$this->subtitle = 'Crunchbutton overview';
+	$this->titleicon = 'bar-chart';
+
+	$communities = $this->communities;
+
+?>
+<div class="container-fluid padded">
+	<div class="box">
+		<div class="box-header">
+			 <span class="title">Community metrics</span>
+		</div>
+		<div class="box-content padded">
+			<div class="row-fluid">
+			<h3>Communities</h3>
+
+			<?php foreach( $communities as $community ) { ?>
+				 <div class="span4">
+						<div>
+							<?php 
+								$restaurants = $community->restaurants;
+								$_community = str_replace( ' ', '-', $community->community ); 
+								$_community = strtolower( $_community );
+							?>
+							 <input type="checkbox" 
+									class="icheck" 
+									id="checkbox-<?php echo $_community;?>" 
+									community="<?php echo $_community;?>" 
+									name="checkbox-<?php echo $_community;?>">
+							 <label for="checkbox-<?php echo $_community;?>"><?php echo $community->community; ?> ( <?php echo $restaurants; ?> restaurants )</label>
+						</div>
+				 </div>
+
+			<?php } ?>
+		</div>
+		
+		<hr/>
+
+		<?php foreach( $communities as $community ) { ?>
+
+		<?php
+			$restaurants = $community->restaurants;
+			$_community = str_replace( ' ', '-', $community->community );
+			$_community = strtolower( $_community );
+		?>
+		<div class="container-<?php echo $_community; ?>" style="display:none;">
+				<center><h3><?php echo $community->community; ?> ( <?php echo $restaurants; ?> restaurants )</h3></center>
+				<div class="row-fluid">
+					<div type="delivery-fee-tips" class="span12 group-delivery-fee-tips <?php echo $_community; ?>" id="group-delivery-fee-tips-by-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
+				</div>
+				<hr/>
+		</div>
+		<?php } ?>
+
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+function loadChartsOfCommunity( community ){
+
+	$( '.container-' + community ).show();
+	$( '.' + community ).each( function(){
+		var area = $( this );
+		var chart = area.attr( 'id' );
+		var type = area.attr( 'type' );
+		var partial = '';
+		switch( type){
+			case 'new-users':
+				partial = 'users-new-per-week-by-community/group-new-users-community';
+				break;
+			case 'repeated-orders':
+				partial = 'orders-repeat-week-by-community/group-users-repeat-community';
+				break;
+			case 'gross-revenue':
+				partial = 'gross-revenue-per-week-by-community/group-revenue-by-community';
+				break;
+			case 'delivery-fee-tips':
+				partial = 'delivery-fee-tips-week-by-community/group-delivery-fee-tips-by-community';
+				break;
+		}
+
+		var url = '/home/charts/' + partial + '/?activeUserDays=45&=1&community=' + community;
+		$.ajax( { url: url, } ).done( function( data ) { area.html( data ); } );
+	} );
+}
+
+
+$( document ).ready( function(){
+
+	$( '.icheck' ).on( 'ifChanged', function( event ){
+
+		var check = $( this );
+		var community = check.attr( 'community' );
+		var container = $( '.container-' + community );
+		if( check.is( ':checked' ) ){
+			if( !container.attr( 'loaded' ) ){
+				loadChartsOfCommunity( community );
+				container.attr( 'loaded', true );
+			}
+			container.show();
+		} else {
+			container.hide();
+		}
+	});
+
+} );
+
+	function loadChart( info ){
+ 
+		var divId = info[ 'divId' ];
+		var permalink = info[ 'permalink' ];
+		var chart = $( '#' + divId );	
+		chart.attr( 'data-permalink', permalink );
+		var params = { 'community' : info[ 'community' ] };
+
+		if( info[ 'interval' ] ){
+			params[ 'interval' ] = info[ 'interval' ];
+		}
+
+		var slider = $( '#slider-' + divId );
+		if( slider.length > 0 ){
+			if( slider.attr( 'data-from' ) ){
+				params[ 'from' ] = slider.attr( 'data-from' );	
+			}
+			if( slider.attr( 'data-to' ) ){
+				params[ 'to' ] = slider.attr( 'data-to' );	
+			}
+		}
+
+		var strParams = "?";
+		for ( var key in params ) {
+			if ( strParams != "?" ) {
+				strParams += "&";
+			}
+			strParams += key + "=" + params[key];
+		}
+
+		var group = divId.replace( '-' + info[ 'community' ], '' );
+
+		var url = '/home/charts/' + permalink + '/' + divId + '/' + strParams;
+
+		if( info[ 'force' ] ){
+			chart.html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
+		}
+
+		$.ajax( { url: url, }).done( function( data ) { chart.html( data ); } );
+	
+	}
+
+	function loadSubChart( id ){
+		var select = $( id );
+		var divId = $( '#' + id ).attr( 'data-divId' );
+		var slider = $( '#slider-' + divId );
+		slider.attr( 'data-from', false );
+		slider.attr( 'data-to', false );
+		var values = $( '#' + id + ' option:selected' ).val().split( '|' );
+		var interval = values[ 1 ];
+		var community = $( '#' + id ).attr( 'community' );
+		var permalink = values[ 0 ].replace( '-' + community, '' );
+		$( '#' + divId ).html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
+		 loadChart( { 'divId' : divId, 'permalink' : permalink, 'interval' : interval, 'community' : community } ); 
+	}
+
+</script>

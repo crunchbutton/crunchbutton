@@ -44,12 +44,28 @@ class Controller_api_houroverride extends Crunchbutton_Controller_RestAccount {
 						$date_start = $this->request()[ 'date_start' ];
 						$date_start = explode( '/' , $date_start );
 						$date_start_hour = ( $this->request()[ 'date_start_hour' ] ) ? $this->request()[ 'date_start_hour' ] : '00:00';
-						$date_start = $date_start[ 2 ] . '/' . $date_start[ 0 ] . '/' . $date_start[ 1 ] . ' ' . $date_start_hour . ':00';
+						$date_start_hour = explode( ':', $date_start_hour );
+						$date_start_hr = $date_start_hour[ 0 ];
+						$date_start_mn = $date_start_hour[ 1 ];
+						$hour_override_date_start_ampm = $this->request()[ 'hour_override_date_start_ampm' ];
+						if( $hour_override_date_start_ampm == 'PM' ){
+							$date_start_hr = $date_start_hr + 12;
+						}
+
+						$date_start = $date_start[ 2 ] . '/' . $date_start[ 0 ] . '/' . $date_start[ 1 ] . ' ' . $date_start_hr . ':' . $date_start_mn;
 
 						$date_end = $this->request()[ 'date_end' ];
 						$date_end = explode( '/' , $date_end );
 						$date_end_hour = ( $this->request()[ 'date_end_hour' ] ) ? $this->request()[ 'date_end_hour' ] : '00:00';
-						$date_end = $date_end[ 2 ] . '/' . $date_end[ 0 ] . '/' . $date_end[ 1 ] . ' ' . $date_end_hour . ':00';
+						$date_end_hour = explode( ':', $date_end_hour );
+						$date_end_hr = $date_end_hour[ 0 ];
+						$date_end_mn = $date_end_hour[ 1 ];
+						$hour_override_date_end_ampm = $this->request()[ 'hour_override_date_end_ampm' ];
+						if( $hour_override_date_end_ampm == 'PM' ){
+							$date_end_hr = $date_end_hr + 12;
+						}
+
+						$date_end = $date_end[ 2 ] . '/' . $date_end[ 0 ] . '/' . $date_end[ 1 ] . ' ' . $date_end_hr . ':' . $date_end_mn;
 
 						$hour->date_start = $date_start;
 						$hour->date_end = $date_end;
