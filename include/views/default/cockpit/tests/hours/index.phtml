@@ -1,4 +1,6 @@
 <?
+$this->restaurant->exports();
+
 	$this->title = 'TESTS';
 	$this->titleicon = 'food';
 ?>
@@ -38,11 +40,15 @@
 			</div>
 		</div>
 		
-		
-
 		<div class="box">
 			<div class="box-content padded">
 				<?=$this->restaurant->name?> is <b><?=$this->open ? 'OPEN' : 'CLOSED'?></b> <?=$this->now ? 'now' : 'at '.$this->time->format('Y-m-d H:i:s')?>
+				<br/>
+				<strong>Curent time: </strong><?php
+					$today = new DateTime( 'now', new DateTimeZone( $this->restaurant->timezone ) );
+					echo $today->format(' M jS Y g:i:s A - D ');
+					echo ' (' . $this->restaurant->timezone . ')';
+				?>
 			</div>
 
 		</div>
@@ -50,30 +56,24 @@
 		<div class="box">
 			<div class="box-content padded">
 				<strong>Closed message:</strong>
-				<br/><br/>
+				<br/>
 				<div id="closedMessage"></div>
+				<br/><br/>
+				<strong>Close in:</strong> <span id="closesIn"></span>
+				<br/>
+				<strong>Open in:</strong> <span id="openIn"></span>
 			</div>
-			
 		</div>
 
-		
 	</div>
 </div>
-
 <script type="text/javascript" src="/assets/js/base.js"></script>
 <script type="text/javascript" src="/assets/js/restaurant.js"></script>
 <script type="text/javascript" src="/assets/js/date.js"></script>
 <script>
 /* override Orm.load method we dont need it right now */
 var Orm = { load : function(){} };
-<?php
-$utc_str = gmdate( 'Y/n/d/H/i/s', time() );
-$utc = strtotime( $utc_str );
-?>
-var _gmtServer = '<?php echo $utc_str;?>';
-
 $(document).ready(function() {
-
 	var go = function() {
 		var loc = '/tests/hours?r=' + $('.test-restaurant option:selected').val() + '&t=' + $('.test-time').val();
 		location.href = loc;
@@ -81,12 +81,10 @@ $(document).ready(function() {
 	$('.chosen-select').select2();
 	$('.test-restaurant').change(go);
 	$('.test-calculate').click(go);
-
 	var restaurant = new Restaurant();
-	$.extend( restaurant, <?php echo json_encode( $this->restaurant->exports() ); ?>);
+	$.extend( restaurant, <?php echo json_encode( $this->restaurant->export_force_override_hours() ); ?>);
 	$( '#closedMessage' ).html( restaurant.closedMessage() );
-	console.log('restaurant.open()',restaurant.open());
+	$( '#closesIn' ).html( ( restaurant._closesIn ? restaurant._closesIn + ' minutes' : 'it is closed!' ) );
+	$( '#openIn' ).html( ( restaurant._openIn ? restaurant._openIn + ' minutes' : 'it is opened!' ) );
 });
 </script>
-<script type="text/javascript" src="/assets/js/datetime.js"></script>
-
