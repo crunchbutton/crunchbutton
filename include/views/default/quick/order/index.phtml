@@ -9,195 +9,209 @@
 </div>
 
 <div class="order">
-	<div class="icon-<?=$this->order->delivery_type == 'delivery' ? 'delivery' : 'takeout'?> order-icon"></div>
-	<div class="order-info">
-		<?=$this->order->delivery_type == 'delivery' ? 'Delivery' : 'Takeout'?>
+	<div class="order-item-block">
+		<div class="order-icon"><i class="icon-<?=$this->order->delivery_type == 'delivery' ? 'delivery' : 'takeout'?>"></i></div>
+		<div class="order-info">
+			<?=$this->order->delivery_type == 'delivery' ? 'Delivery' : 'Takeout'?>
+		</div>
+	</div>
+
+	<div class="order-item-block">	
+		<div class="order-icon"><i class="icon-<?=$this->order->pay_type == 'card' ? 'card' : 'cash'?>"></i></div>
+		<div class="order-info">
+			<?=$this->order->pay_type == 'card' ? 'Card' : 'Cash'?>
+		</div>
 	</div>
 	
-	<div class="icon-<?=$this->order->pay_type == 'card' ? 'card' : 'cash'?> order-icon"></div>
-	<div class="order-info">
-		<?=$this->order->pay_type == 'card' ? 'Card' : 'Cash'?>
+	<div class="order-item-block">
+		<div class="order-icon"><i class="icon-clock"></i></div>
+		<div class="order-info">
+			<?=$this->order->date()->format('h:i A')?>
+		</div>
 	</div>
 	
-	<div class="icon-clock order-icon"></div>
-	<div class="order-info">
-		<?=$this->order->date()->format('h:i A')?>
+	<div class="order-item-block">
+		<div class="order-icon"><i class="icon-timer"></i></div>
+		<div class="order-info">
+			<?=$this->order->date()->modify('+'.$this->order->restaurant()->delivery_estimated_time.' minutes')->format('h:i A')?>
+		</div>
 	</div>
 	
-	<div class="icon-timer order-icon"></div>
-	<div class="order-inco">
-		<?=$this->order->date()->modify('+'.$this->order->restaurant()->delivery_estimated_time.' minutes')->format('h:i A')?>
-	</div>
-	
+	<div class="divider"></div>
+
 	<div class="divider dots"></div>
-	<div class="icon-user order-icon"></div>
-	<div class="order-inco">
+	<br><br>
+	
+	<div class="order-icon"><i class="icon-user"></i></div>
+	<div class="order-info">
 		<?=$this->order->name?>
-		<br><?=$this->order->phone?>
+		<br><a href="tel:+1<?=$this->order->phone?>"><?=preg_replace('/^(\d{3})(\d{3})(\d{4})$/i', '$1-$2-$3', $this->order->phone)?></a>
 	</div>
 
 	<? if ($this->order->notes) : ?>
-
 		<div class="order-comment-arrow"></div>
 		<div class="order-comment">
 			<p><?=nl2br($this->order->notes)?></p>
 		</div>
 
 	<? endif ; ?>
+
 	
-	<a href="{{order.mapLink}}"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size=640x300&markers=color:green%7Clabel:A%7C<?=str_replace("\n",' ',str_replace($this->order->address,'#',''))?>&markers=color:red%7Clabel:B%7C<?=$this->order->restaurant()->lat?>,<?=$this->order->restaurant()->lon?>&sensor=false&visual_refresh=true');"></div></a>
+	<a href="{{order.mapLink}}"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size=640x300&markers=color:green%7Clabel:A%7C<?=str_replace("\n",' ',str_replace('#','',$this->order->address))?>&markers=color:red%7Clabel:B%7C<?=$this->order->restaurant()->lat?>,<?=$this->order->restaurant()->lon?>&sensor=false&visual_refresh=true');"></div></a>
 			
-	<div class="divider spacer-two-two"></div>
+	<br>
 	
-	<div class="order-icon"><div class="icon-map-home"></div></div>
-	<div class="order-info">
-		<p class="order-info-address"><a href="{{order.mapLink}}"><?=nl2br($this->order->address)?></a></p>
-		<br />
+	<div class="order-item-block order-map-block">
+		<div class="order-icon"><i class="icon-map-home"></i></div>
+		<div class="order-info">
+			<p class="order-info-address"><a href="{{order.mapLink}}"><?=nl2br($this->order->address)?></a></p>
+		</div>
 	</div>
-	<div class="divider"></div>
-	
-	<div class="order-icon"><div class="icon-map-restaurant"></div></div>
-	<div class="order-info">
-		<p class="order-info-address"><a href="{{order.mapLink}}"><?=nl2br($this->order->restaurant()->address)?></a></p>
+
+	<div class="order-item-block order-map-block">
+		<div class="order-icon"><i class="icon-map-restaurant"></i></div>
+		<div class="order-info">
+			<p class="order-info-address"><a href="{{order.mapLink}}"><?=nl2br($this->order->restaurant()->address)?></a></p>
+		</div>
 	</div>
-	<div class="divider"></div>
+	
+	
+	
+	
+	<br><br>
+	<div class="divider dots"></div>
+	<br><br>
 	
 	
 	
 	
 	
+		
+		
 	
+	<table width="100%" celpadding="0" cellspacing="0" class="detail">
+		<thead style="font-weight:bold">
+			<td class="topitem">Qty</td>
+			<td class="topitem">Item</td>
+			<td class="topitem">Price</td>
+		</thead>
 	
+		<? foreach ($this->order->dishes() as $dish) : ?>
+			<tr>
+				<td class="fooditem">1</td>
+				<td class="fooditem"><?
+					$food = $dish->dish()->name;
+					$cartPrice = $dish->dish()->price;
+					$options = $dish->options();
 	
-	
-	
-	
-	
-	
-
-<table width="100%" celpadding="0" cellspacing="0" class="detail">
-	<thead style="font-weight:bold">
-		<td class="topitem">Qty</td>
-		<td class="topitem">Item</td>
-		<td class="topitem">Price</td>
-	</thead>
-
-	<? foreach ($this->order->dishes() as $dish) : ?>
-		<tr>
-			<td class="fooditem">1</td>
-			<td class="fooditem"><?
-				$food = $dish->dish()->name;
-				$cartPrice = $dish->dish()->price;
-				$options = $dish->options();
-
-				if (gettype($options) == 'array') {
-					$options = i::o($options);
-				}
-
-				if ($options->count()) {
-					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
-
-					foreach ($dish->options() as $option) {
-						if ($option->option()->type == 'select') {
-							continue;
-						}
-						$cartPrice += $option->option()->price;
-						if($option->option()->id_option_parent) {
-							$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
-							$food .= "$optionGroup->name: ";
-						}
-						$food .= $option->option()->name.', ';
+					if (gettype($options) == 'array') {
+						$options = i::o($options);
 					}
-					$food = substr($food, 0, -2);
-
-					$food .= '</i>';
-				}
-
-				$withoutDefaultOptions = '';
-				if( $dish->id_order_dish && $dish->id_dish ){ 
-					$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
-					$commas = ' ';
-					if( $optionsNotChoosen->count() ){
-						foreach( $optionsNotChoosen as $dish_option ){
-							$withoutDefaultOptions .= $commas . '<i> No ' . $dish_option->option()->name . '</i>';
-							$commas = ', ';
+	
+					if ($options->count()) {
+						$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
+	
+						foreach ($dish->options() as $option) {
+							if ($option->option()->type == 'select') {
+								continue;
+							}
+							$cartPrice += $option->option()->price;
+							if($option->option()->id_option_parent) {
+								$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
+								$food .= "$optionGroup->name: ";
+							}
+							$food .= $option->option()->name.', ';
+						}
+						$food = substr($food, 0, -2);
+	
+						$food .= '</i>';
+					}
+	
+					$withoutDefaultOptions = '';
+					if( $dish->id_order_dish && $dish->id_dish ){ 
+						$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+						$commas = ' ';
+						if( $optionsNotChoosen->count() ){
+							foreach( $optionsNotChoosen as $dish_option ){
+								$withoutDefaultOptions .= $commas . '<i> No ' . $dish_option->option()->name . '</i>';
+								$commas = ', ';
+							}
 						}
 					}
-				}
-
-				if ( $options->count() && $withoutDefaultOptions != '' ) {
-					$food .= '. ';
-				}
-				$food .= $withoutDefaultOptions;
-
-				?>
-				<?=$food?>
-			</td>
-			<td style="width: 1%;" class="fooditem">$<?=number_format($cartPrice,2)?></td>
-		</tr>
-	<? endforeach ; ?>
-
-	<tr class="class">
-		<td></td>
-		<td style="text-align:right">Subtotal</td>
-		<td>$<?=number_format($this->order->price,2)?></td>
-	</tr>
-	<? if ($this->order->pay_type == 'card' && $this->order->tip) : ?>
-		<tr>
-			<td></td>
-			<td style="text-align:right">Tip <?php if( $this->order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $this->order->tip . '%'; } ?></td>
-			<td>$<?=$this->order->tip()?></td>
-		</tr>
-	<? endif ; ?>
-	<? if ($this->order->restaurant()->delivery_fee) : ?>
-		<tr>
-			<td></td>
-			<td style="text-align:right">Delivery Fee</td>
-			<td>$<?=$this->order->deliveryFee()?></td>
-		</tr>
-	<? endif ; ?>
-
-	<? if ($this->order->restaurant()->fee_customer) : ?>
-		<tr>
-			<td></td>
-			<td style="text-align:right">Service Fee</td>
-			<td>$<?=$this->order->serviceFee()?></td>
-		</tr>
-	<? endif ; ?>
 	
-	<tr>
-		<td></td>
-		<td style="text-align:right">Tax</td>
-		<td>$<?=$this->order->tax()?></td>
-	</tr>
-
-	<tr style="font-weight:bold;">
-		<td></td>
-		<td style="text-align:right">Total</td>
-		<td>$<?=number_format($this->order->final_price,2)?></td>
-	</tr>
+					if ( $options->count() && $withoutDefaultOptions != '' ) {
+						$food .= '. ';
+					}
+					$food .= $withoutDefaultOptions;
 	
-	<?php /* Just the user and CB will see this info about gift card. See #1006. */ ?>
-	<?php if( $user && $this->order->chargedByCredit() > 0 ) { ?>
-	<tr style="font-weight:bold;">
-		<td></td>
-		<td style="text-align:right"><?php if( $this->order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>
-		<td>$<?=number_format($this->order->chargedByCredit(),2)?></td>
-	</tr>
-
-	<tr style="font-weight:bold;">
-		<td></td>
-		<td style="text-align:right"><?php if( $this->order->pay_type == 'card' ) { ?>Total Charged <?php } else { ?> Total Owed <?php } ?></td>
-		<td>$<?=number_format($this->order->charged(),2)?></td>
-	</tr>
-	<?php } ?>
-
-	<? if ($this->order->pay_type == 'card' && $this->order->tip == 0) : ?>
-		<tr>
-			<td colspan="3" style="text-align:left">Customer is tipping with cash</td>
+					?>
+					<?=$food?>
+				</td>
+				<td style="width: 1%;" class="fooditem">$<?=number_format($cartPrice,2)?></td>
+			</tr>
+		<? endforeach ; ?>
+	
+		<tr class="class">
+			<td></td>
+			<td style="text-align:right">Subtotal</td>
+			<td>$<?=number_format($this->order->price,2)?></td>
 		</tr>
-	<? endif ; ?>
-</table>
+		<? if ($this->order->pay_type == 'card' && $this->order->tip) : ?>
+			<tr>
+				<td></td>
+				<td style="text-align:right">Tip <?php if( $this->order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $this->order->tip . '%'; } ?></td>
+				<td>$<?=$this->order->tip()?></td>
+			</tr>
+		<? endif ; ?>
+		<? if ($this->order->restaurant()->delivery_fee) : ?>
+			<tr>
+				<td></td>
+				<td style="text-align:right">Delivery Fee</td>
+				<td>$<?=$this->order->deliveryFee()?></td>
+			</tr>
+		<? endif ; ?>
+	
+		<? if ($this->order->restaurant()->fee_customer) : ?>
+			<tr>
+				<td></td>
+				<td style="text-align:right">Service Fee</td>
+				<td>$<?=$this->order->serviceFee()?></td>
+			</tr>
+		<? endif ; ?>
+		
+		<tr>
+			<td></td>
+			<td style="text-align:right">Tax</td>
+			<td>$<?=$this->order->tax()?></td>
+		</tr>
+	
+		<tr style="font-weight:bold;">
+			<td></td>
+			<td style="text-align:right">Total</td>
+			<td><b>$<?=number_format($this->order->final_price,2)?></b></td>
+		</tr>
+		
+		<?php /* Just the user and CB will see this info about gift card. See #1006. */ ?>
+		<?php if( $user && $this->order->chargedByCredit() > 0 ) { ?>
+		<tr style="font-weight:bold;">
+			<td></td>
+			<td style="text-align:right"><?php if( $this->order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>
+			<td>$<?=number_format($this->order->chargedByCredit(),2)?></td>
+		</tr>
+	
+		<tr style="font-weight:bold;">
+			<td></td>
+			<td style="text-align:right"><?php if( $this->order->pay_type == 'card' ) { ?>Total Charged <?php } else { ?> Total Owed <?php } ?></td>
+			<td>$<?=number_format($this->order->charged(),2)?></td>
+		</tr>
+		<?php } ?>
+	
+		<? if ($this->order->pay_type == 'card' && $this->order->tip == 0) : ?>
+			<tr>
+				<td colspan="3" style="text-align:left"><b>Customer is tipping with cash</b></td>
+			</tr>
+		<? endif ; ?>
+	</table>
 
 	
 	
