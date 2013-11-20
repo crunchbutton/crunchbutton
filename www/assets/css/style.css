@@ -257,6 +257,9 @@ html[xmlns] .clearfix {
 .order-warning, .order-warning h1{
 	font-size: 14px !important;
 }
+.order-warning p{
+	font-size: 12px;
+}
 .order-warning strong {
 	font-weight: bold;
 }
@@ -264,11 +267,12 @@ html[xmlns] .clearfix {
 	margin-top: 10px;
 }
 .order-warning ul li {
+	color: #d74924;
 	cursor: pointer;
 	margin: 10px 0;
 	text-decoration: underline;
+	font-size: 12px;
 }
-
 
 .show-more-restaurants {
 	color: #FFF;
