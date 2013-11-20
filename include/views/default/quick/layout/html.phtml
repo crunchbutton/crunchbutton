@@ -8,12 +8,31 @@
 <link rel="shortcut icon" href="/favicon-admin.ico">
 
 <style type="text/css">
+	@font-face {
+	    font-family: 'Museo Slab';
+	    src: url('/assets/fonts/museo_slab_500-webfont.eot');
+	    src: url('/assets/fonts/museo_slab_500-webfont.eot?#iefix') format('embedded-opentype'),
+	         url('/assets/fonts/museo_slab_500-webfont.woff') format('woff'),
+	         url('/assets/fonts/museo_slab_500-webfont.ttf') format('truetype'),
+	         url('/assets/fonts/museo_slab_500-webfont.svg#MuseoSlab500Regular') format('svg');
+	    font-weight: normal;
+	    font-style: normal;
+	}
+
 	body, table, td, tr, p, h1, h2, h3, h4, button {
 		margin: 0;
 		padding: 0;
 		border: 0;
 		font-family: Museo Slab, Helvetica, Lucida Grande, Arial, sans-serif;
 	}
+	
+input[type="submit"]:focus, input[type="button"]:focus, input[type="text"]:focus, button, :focus {
+	outline : none;
+}
+input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, button::-moz-focus-inner {
+	border : 0;
+}
+
 	
 	@media(min-width:500px) {
 		body {
@@ -28,8 +47,19 @@
 	}
 	
 	.control {
-		background: #6fa3f1;
 
+		background-image: -moz-linear-gradient( 90deg, rgb(203,203,203) 0%, rgb(232,232,232) 100%);
+		background-image: -webkit-linear-gradient( 90deg, rgb(203,203,203) 0%, rgb(232,232,232) 100%);
+		background-image: -ms-linear-gradient( 90deg, rgb(203,203,203) 0%, rgb(232,232,232) 100%);
+		box-shadow: 0px 1px 0px 0px rgb( 150, 150, 150 );
+
+
+	}
+	
+	.control .buttons {
+		display: table-cell;
+		vertical-align: middle;
+		text-align: right;
 	}
 	
 	.content {
@@ -63,9 +93,45 @@
 	}
 	
 	.order-icon {
-		font-size: 2em;
+		font-size: 1.2em;
+		display: table-cell;
+		width: 3.2em;
+		text-align: center;
+		vertical-align: middle;
+	}
+	.order-info {
+		display: table-cell;
+		font-size: 1.3em;
+		vertical-align: middle;
+		line-height: 1.4em;
+	}
+	.order-item-block {
+		display: table;
+		float: left;
+		width: 15em;
+		margin: 1em 0 1em 0;
+	}
+	.order-map-block {
+		width: 100%;
+		margin-top: 0;
+		
 	}
 	
+	.order-map {
+		width: 100%;
+		height: 15em;
+		background-size:cover !important;
+	}
+	
+	[class*='icon-'] {
+		display: inline-block;
+	}
+	
+	a {
+		color: #d74924;
+		text-decoration: underline;
+	}
+
 	
 	.order-comment-arrow {
 		width: 0;
@@ -128,7 +194,7 @@
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-clock.svg) no-repeat;
 		background-position: top center;
 		width: 1.6em;
-		height: 1.9em;
+		height: 2em;
 		background-size: 100%;
 	}
 	
@@ -136,7 +202,7 @@
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-timer.svg) no-repeat;
 		background-position: top center;
 		width: 1.6em;
-		height: 1.9em;
+		height: 2.3em;
 		background-size: 100%;
 	}
 	
@@ -144,7 +210,7 @@
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-map-home.svg) no-repeat;
 		background-position: top center;
 		width: 1.6em;
-		height: 2.4em;
+		height: 2.41em;
 		background-size: 100%;
 	}
 	
@@ -152,7 +218,7 @@
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-map-restaurant.svg) no-repeat;
 		background-position: top center;
 		width: 1.6em;
-		height: 2.4em;
+		height: 2.41em;
 		background-size: 100%;
 	}
 	
@@ -196,10 +262,6 @@
 		height: 1.9em;
 		background-size: 100%;
 	}
-	
-	
-	
-	
 
 	td {
 		border: 0;
@@ -214,29 +276,45 @@
 		border-bottom: 2px solid #999;
 	}
 	
+	.control .wrap {
+		width: 100%;
+		box-sizing: border-box;
+		display: table;
+	}
+	
 	.control .message {
-		float: left;
+		font-size: 1.3em;
+		display: table-cell;
+		vertical-align: middle;
+		text-shadow:1px 1px 0px #fff
 	}
-	
-	.control .button {
-		float: right;
-	}
-	
+
 	.button {
-		padding: .3em .8em .3em .8em;
-		margin: .6em;
+		padding: .3em 1em .3em 1em;
+		margin: .2em 0 .2em .6em;
 		color: #fff;
 		cursor: pointer;
-		font-size: 1.2em;
+		font-size: 1.4em;
 		font-weight: bold;
+		border: 1px solid rgba(0,0,0,.2);
+		box-shadow: 0px 0px 3px rgba(0,0,0,.3);
+		text-shadow: 1px 1px 0 rgba(0,0,0,.4);
+		-webkit-transition: all .09s ease;
+	}
+	
+	.button:active {
+		-webkit-transform:translate(0, 2px);
+		box-shadow: 0px 0px 1px rgba(0,0,0,.3);
 	}
 	
 	.button-yes {
-		background: #076b0e;
+		background: #7bca72;
+		border-radius: 4px;
 	}
 	
 	.button-no {
-		background: #7a0c0c;
+		background: #dc534b;
+		border-radius: 4px;
 	}
 
 </style>
@@ -246,8 +324,11 @@
 	<div class="control">
 		<div class="wrap">
 			<div class="message">Accept this order?</div>
-			<button class="button button-no">No</button>
-			<button class="button button-yes">Yes</button>
+				<div class="buttons">
+					<button class="button button-yes">Yes</button>
+					<button class="button button-no">No</button>
+				</div>
+			</div>
 			<div class="divider"></div>
 		</div>
 	</div>
@@ -260,4 +341,5 @@
 </body>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/assets/js/fastclick.js"></script>
 </html>
