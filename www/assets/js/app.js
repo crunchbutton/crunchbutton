@@ -63,7 +63,7 @@ App.NGinit = function() {
 var NGApp = angular.module('NGApp', [ 'ngRoute' ] );
 
 NGApp.config(function($compileProvider){
-	$compileProvider.urlSanitizationWhitelist(/.*/);
+	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
 
 // This config will intercept all the ajax requests and take care of the errors
