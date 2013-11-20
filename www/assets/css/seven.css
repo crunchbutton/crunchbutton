@@ -2412,6 +2412,9 @@ sup {
 .splash-top p {
 	text-align: center;
 }
+.splash-tagline b {
+	font-size: 1.1em;
+}
 .splash-tagline {
 	text-shadow: 0 0 20px rgba(0,0,0,.6);
 	font-weight: 600;
