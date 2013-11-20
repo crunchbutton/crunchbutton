@@ -345,7 +345,11 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, Account
 					App.processConfig(data);
 				});
 				// Redirect the user to location page
-				MainNavigationService.link( '/location' );
+				if (App.isPhoneGap) {
+					MainNavigationService.link( '/splash' );
+				} else {
+					MainNavigationService.link( '/location' );
+				}
 			}).error(function() {
 				console.debug('couldnt log out',arguments)
 			});
