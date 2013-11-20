@@ -505,7 +505,8 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 						distance = service.location.km2Miles( distance );
 
 						if (!service.restaurant.deliveryHere(distance)) {
-							App.alert('Sorry, you are out of delivery range or have an invalid address. <br>Please check your address, or order takeout.');
+							App.busy.unBusy();
+							App.dialog.show( '.address-out-of-range-warning' );
 							
 							App.busy.unBusy();
 

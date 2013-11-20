@@ -574,6 +574,11 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		// Give time to close the modal.
 		setTimeout( function(){ order.submit( true );;	}, 300 );
 	}
+	$scope.addressOutOfRangePlaceAnyway = function(){
+		$rootScope.closePopup();
+		// Give time to close the modal.
+		setTimeout( function(){ order.submit( true );;	}, 300 );
+	}
 	
 	$scope.giftCardCreditPayment = function(){
 		$rootScope.closePopup();
