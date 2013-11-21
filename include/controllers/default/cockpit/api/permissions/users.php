@@ -58,7 +58,7 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccou
 								$notification = new Crunchbutton_Admin_Notification();
 								$notification->value = $value;
 								$notification->type = $type;
-								$notification->active = $active;
+								$notification->active = 1;
 								$notification->id_admin = $id_admin;
 								$notification->save();
 								if( $notification->id_admin_notification ){
