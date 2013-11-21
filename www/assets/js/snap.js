@@ -182,7 +182,13 @@
                     }
                 },
                 easeCallback: function(){
+
                     settings.element.style[cache.vendor+'Transition'] = '';
+					// paralax menu
+					if (settings.menu) {
+						settings.menu.style[cache.vendor+'Transition'] = '';
+					}
+
                     cache.translation = action.translate.get.matrix(4);
                     cache.easing = false;
                     clearInterval(cache.animatingInterval);
@@ -205,6 +211,11 @@
                         cache.easingTo = n;
 
                         settings.element.style[cache.vendor+'Transition'] = 'all ' + settings.transitionSpeed + 's ' + settings.easing;
+                        
+						// paralax menu
+						if (settings.menu) {
+							settings.menu.style[cache.vendor+'Transition'] = 'all ' + settings.transitionSpeed + 's ' + settings.easing;
+						}
 
                         cache.animatingInterval = setInterval(function() {
                             utils.dispatchEvent('animating');
@@ -222,6 +233,7 @@
                        }
                 },
                 x: function(n) {
+
                     if( (settings.disable==='left' && n>0) ||
                         (settings.disable==='right' && n<0)
                     ){ return; }
@@ -273,6 +285,7 @@
                     utils.events.removeEvent(settings.element, utils.eventType('up'), action.drag.endDrag);
                 },
                 startDrag: function(e) {
+
                     // No drag on ignored elements
                     var target = e.target ? e.target : e.srcElement,
                         ignoreParent = utils.parentUntil(target, 'data-snap-ignore');
@@ -323,6 +336,7 @@
                     };
                 },
                 dragging: function(e) {
+
                     if (cache.isDragging && settings.touchToDrag) {
 
                         var thePageX = utils.page('X', e),
@@ -429,6 +443,7 @@
                     }
                 },
                 endDrag: function(e) {
+
                     if (cache.isDragging) {
                         utils.dispatchEvent('end');
                         var translated = action.translate.get.matrix(4);
