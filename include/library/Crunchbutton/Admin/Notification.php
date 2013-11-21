@@ -60,7 +60,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	public function phoneCall( Crunchbutton_Order $order ){
 
 		$env = c::getEnv();
-		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber );
+		$num = ($env == 'live' ? $this->value : '2039051915' );
 
 		// Log
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
