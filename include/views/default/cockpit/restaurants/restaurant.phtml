@@ -843,18 +843,31 @@
 			</div>
 
 			<div class="admin-item-col-med-2 restaurant-notification">
-				<select>
+				<select name="type">
 					<option value="fax">Fax</option>
 					<option value="sms">Text Message</option>
 					<option value="email">Email</option>
 					<option value="phone">Phone Call</option>
 					<option value="url">URL Request</option>
 					<option value="confirmation">Confirmation Phone Call</option>
+					<option value="admin">Admin</option>
 				</select>
 			</div>
 
 			<div class="admin-item-col-med-2">
 				<input name="val" type="input">
+				<select name="id_admin" style="display:none;">
+					<option value="">Choose the admin</option>
+					<?php
+					$admins = Crunchbutton_Admin::getAdminsWithNotifications();
+					if( $admins->count() > 0 ){
+						foreach( $admins as $admin ){
+							echo "<option value='{$admin->id_admin}'>{$admin->name}</option>";
+						}
+					}
+					?>
+				</select>
+
 			</div>
 		</div>
 

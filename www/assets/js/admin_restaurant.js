@@ -998,6 +998,7 @@ var WIDGET = {
 				self.notification_widgets[i].remove();
 			}
 			notifications = restaurant._notifications || {};
+			console.log('notifications',notifications);
 			notifications['confirmation'] = {
 					active: restaurant.confirmation,
 					id: null,
@@ -1024,7 +1025,7 @@ var WIDGET = {
 					restaurant.confirmation = data.active;
 					continue;
 				}
-				if(!data.value || data.value==='') continue;
+				if( ( !data.value || data.value==='' ) && data.type != 'admin' ) continue;
 				restaurant._notifications.push(data);
 			}
 		},
@@ -1046,24 +1047,42 @@ var WIDGET = {
 
 		$(self.dom).find('.admin-toggle-active').replaceWith(self.w_active.dom);
 
+		$(self.dom).find('select[name=type]').on( 'change', function(){
+			self.typeChanged();
+		} );
+
+		this.typeChanged = function(){
+			var type = $(self.dom).find('select[name=type]').val();
+			if( type == 'admin' ){
+				$(self.dom).find('select[name=id_admin]').show();
+				$(self.dom).find('input[name=val]').hide();
+			} else {
+				$(self.dom).find('select[name=id_admin]').hide();
+				$(self.dom).find('input[name=val]').show();
+			}
+		}
+
 		this.val = function(arg) {
 			return null;
 		}
 		this.apply = function(data) {
 			self.w_active.val(data.active);
 			self.id_notification = data.id_notification;
-			$(self.dom).find('select').val(data.type);
+			$(self.dom).find('select[name=type]').val(data.type);
+			$(self.dom).find('select[name=id_admin]').val(data.id_admin);
 			$(self.dom).find('input[name=val]').val(data.value);
 			if(data.type === 'confirmation') {
 				$(self.dom).find('input[name=val]').prop('disabled', true);
-			}
+			};
+			self.typeChanged();
 		},
 		this.flush = function() {
 			data = {
 				active : self.w_active.val(),
 				id : self.id_notification,
 				id_notification : self.id_notification,
-				type : $(self.dom).find('select').val(),
+				type : $(self.dom).find('select[name=type]').val(),
+				id_admin : $(self.dom).find('select[name=id_admin]').val(),
 				value : $(self.dom).find('input[name=val]').val(),
 			};
 			return data;
