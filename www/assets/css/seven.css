@@ -1484,8 +1484,8 @@ p {
 	border-radius: 6px;
 	color: #fff;
 	padding: 1em .7em 1em .7em;
-	/* @test */
-	background: #00bea0;
+	/* @test 
+	background: #00bea0;*/
 }
 .restaurant-box-inner {
 	display: table-row;
@@ -1578,13 +1578,13 @@ p {
 }
 .restaurant-items-toggle {
 	margin-top: 1em;
-	/* @test */
-	background: #f45e46 !important;
+	/* @test
+	background: #f45e46 !important; */
 }
 
 .dish-item {
 	background: #fffaf8;
-	border: 2px solid #e46436;
+	border: 1px solid #e46436;
 	border-radius: 4px;
 	color: #d9462f;
 	padding: .7em .8em .6em .8em;
@@ -1593,10 +1593,11 @@ p {
 	line-height: 1.5em;
 	height: 3em;
 
-	/* @test */
+	/* @test
 	background: #f88256;
 	color: #fff;
 	border: 0;
+	 */
 }
 .dish-item-name {
 	font-weight: bold;
@@ -1610,9 +1611,9 @@ p {
 	color: #e7806c;
 	font-size: 1.0em;
 	
-	/* @test */
+	/* @test
 	color: #fff;
-	opacity: .8;
+	opacity: .8; */
 }
 
 
@@ -2787,4 +2788,9 @@ sup {
 
 .pac-icon-marker {
 	background-image: url(../images/micro/autocomplete-icons_hdpi.png) !important;
+}
+
+
+@media screen and (min-width: 769px) {
+
 }
