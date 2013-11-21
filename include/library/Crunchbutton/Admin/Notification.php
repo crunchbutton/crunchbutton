@@ -9,15 +9,13 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	const TYPE_FAX   = 'fax';
 	const REPS_COCKPIT = 'http://cbtn.io/';
 
-	const TEST_FAX = '_PHONE_';
-	const TEST_EMAIL = '_EMAIL';
-	const TEST_NUMBER = '***REMOVED***';
-
 	public function send( Crunchbutton_Order $order ) {
 
 		if ($_SESSION['admin'] && c::admin()->testphone) {
 			c::config()->twilio->testnumber = c::admin()->testphone;
 		}
+
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin', 'notification_type' => $this->type, 'type' => 'admin_notification' ]);
 
 		switch ( $this->type ) {
 			case Crunchbutton_Admin_Notification::TYPE_FAX :
@@ -41,7 +39,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	public function sendFax( Crunchbutton_Order $order ){
 
 		$env = c::getEnv();
-		$fax = ($env == 'live' ? $this->value : static::TEST_FAX );
+		$fax = $this->value;
 		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
 		$mail = new Email_Order( [ 'order' => $order, 'cockpit_url' => $cockpit_url  ] );
 
@@ -60,7 +58,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	public function phoneCall( Crunchbutton_Order $order ){
 
 		$env = c::getEnv();
-		$num = ($env == 'live' ? $this->value : '2039051915' );
+		$num = $this->value;
 
 		// Log
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
@@ -81,8 +79,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$env = c::getEnv();
 
-		$sms = ($env == 'live' ? $this->value : '***REMOVED***' );
-		// $sms = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
+		$sms = $this->value;
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 		
@@ -107,7 +104,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	public function sendEmail( Crunchbutton_Order $order ){
 
 		$env = c::getEnv();
-		$mail = ($env == 'live' ? $this->value : static::TEST_EMAIL );
+		$mail = $this->value;
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send mail to admin', 'mail' => $mail, 'type' => 'admin_notification' ]);
 		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
 		$mail = new Email_Order( [	'order' => $order, 
