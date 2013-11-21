@@ -56,26 +56,7 @@
 			</div>
 		</div>
 
-			
-
-			<div class="box">
-				<div class="box-header">
-					<span class="title">Save</span>
-				</div>
-				<div class="box-content ">
-					<ul class="box-list">
-						<li class="input">
-							<button type="submit" class="btn btn-green admin-save"><i class="icon-save"></i> Save </button> 
-						</li>
-					</ul>
-				</div>
-			</div>
-
-	</div>
-
-	<div class="span6">
-		
-	<div class="box">
+		<div class="box">
 				<div class="box-header">
 					<span class="title">Optional</span>
 				</div>
@@ -122,6 +103,59 @@
 					</ul>
 				</div>
 			</div>
+
+		<div class="box">
+			<div class="box-header">
+				<span class="title">Save</span>
+			</div>
+			<div class="box-content ">
+				<ul class="box-list">
+					<li class="input">
+						<button type="submit" class="btn btn-green admin-save"><i class="icon-save"></i> Save </button> 
+					</li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="span6">
+		
+			<?php if( $admin->id_admin ) { 
+
+			$notifications = $admin->getNotifications();
+
+			?>
+				<div class="box">
+				<div class="box-header">
+					 <span class="title">
+					 Notifications
+					 </span>
+				</div>
+				<div class="box-content padded">
+					 	<ul>
+							<?php 
+							if( $notifications->count() > 0 ){
+							foreach( $notifications as $notification ) { ?>
+								<li> 
+									<?php if( $notification->active == 1 ) { ?>
+										<span class="label label-green"> Active </span>
+									<?php } else { ?>
+										<span class="label label-grey"> Inactive </span>
+									<?php } ?> <?php echo $notification->type; ?> : <?php echo $notification->value; ?> 
+								</li>
+							<?php } 
+							} ?>
+						</ul>
+						<?php if( $admin->id_admin ){ ?>
+						<div class="padded">
+							<a href="/permissions/users/notifications/<?php echo $admin->id_admin; ?>" class="btn btn-blue"><i class="icon-bullhorn"></i> Edit Notifications of this user</a>
+						</div>
+						<?php } ?>
+				</div>
+		 </div>
+
+		 <?php } ?>
 
 		<?php if( $admin->id_admin ) { 
 

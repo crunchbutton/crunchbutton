@@ -25,6 +25,54 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccou
 						echo json_encode( ['success' => $admin->id_admin ] );
 						break;
 					
+					case 'notifications':
+
+						switch ( c::getPagePiece( 5 ) ) {
+							case 'active':
+								$id_admin_notification = $_REQUEST[ 'id_admin_notification' ];
+								$active = $_REQUEST[ 'active' ];
+								$notification = Crunchbutton_Admin_Notification::o( $id_admin_notification );
+								if( $notification->id_admin_notification ){
+									$notification->active = $active;
+									$notification->save();
+									echo json_encode( ['success' => $notification->id_admin_notification ] );	
+								} else {
+									echo json_encode( ['error' => '1' ] );	
+								}
+								break;
+							
+							case 'remove':
+								$id_admin_notification = $_REQUEST[ 'id_admin_notification' ];
+								$notification = Crunchbutton_Admin_Notification::o( $id_admin_notification );
+								if( $notification->id_admin_notification ){
+									$notification->delete();
+									echo json_encode( ['success' => 'removed' ] );	
+								} else {
+									echo json_encode( ['error' => '1' ] );	
+								}
+								break;
+
+							case 'save':
+								$value = $_REQUEST[ 'value' ];
+								$type = $_REQUEST[ 'type' ];
+								$notification = new Crunchbutton_Admin_Notification();
+								$notification->value = $value;
+								$notification->type = $type;
+								$notification->active = $active;
+								$notification->id_admin = $id_admin;
+								$notification->save();
+								if( $notification->id_admin_notification ){
+									echo json_encode( ['success' => $notification->id_admin_notification ] );	
+								} else {
+									echo json_encode( ['error' => '1' ] );	
+								}
+								break;
+							default:
+								echo json_encode( [ 'error' => 'invalid object' ] );
+						}
+
+						break;
+
 					default:
 						if( !$id_admin ){
 							if( Crunchbutton_Admin::loginExists( $_REQUEST[ 'login' ] ) ){

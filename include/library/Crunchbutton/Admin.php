@@ -19,9 +19,12 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $this->_timezone;
 	}
 
+	public function getNotifications( $oderby = 'active DESC, id_admin_notification DESC' ){
+		return Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} ORDER BY {$oderby}" );
+	}
+
 	public function getAllPermissionsName(){
 		return c::db()->get( "SELECT DISTINCT( ap.permission ) FROM admin_permission ap WHERE ap.id_admin = {$this->id_admin} OR ap.id_group IN ( SELECT id_group FROM admin_group WHERE id_admin = {$this->id_admin} )" );
-		
 	}
 
 	public function getRestaurantsUserHasCurationPermission(){
