@@ -654,12 +654,23 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if(!$elements)
 			return;
 		foreach ($elements as $data) {
-			if (!$data['value']) continue;
+			$shouldSave = false;
+			if( $data['type'] == 'admin' && $data['id_admin'] ){
+				$id_admin = $data['id_admin'];
+				$value = '';
+				$shouldSave = true;
+			} if( $data['type'] != 'admin' && $data['value'] ){
+				$value = $data['value'];
+				$id_admin = NULL;
+				$shouldSave = true;
+			}
+			if (!$shouldSave) { continue; }
 			$element                = new Crunchbutton_Notification($data['id_notification']);
 			$element->id_restaurant = $this->id_restaurant;
 			$element->active        = ($data['active'] == 'true' || $data['active'] == '1') ? "1" : "0";
 			$element->type          = $data['type'];
-			$element->value         = $data['value'];
+			$element->id_admin      = $id_admin;
+			$element->value         = $value;
 			$element->save();
 		}
 
