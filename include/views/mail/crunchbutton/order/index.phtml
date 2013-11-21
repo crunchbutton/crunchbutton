@@ -111,8 +111,6 @@
 <div class="xhatch separator-small"></div>
 
 
-
-
 <?=$this->render('order/details',['set' => ['order' => $order, 'user' => $user]]);?>
 <br /><br />
 <? if (!$order->_print) : ?>
@@ -124,9 +122,18 @@
 	</table>
 <? endif ; ?>
 
+
+<?php 
+/* Link to reps */
+if( $this->cockpit_url ) { ?>
+	<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
+		<tr>
+			<td style="text-align: left; font-weight:bold;" class="text-size-small">Access: <a style="color:#000;" target="_blank" href="<?php echo $this->cockpit_url; ?>"><?php echo $this->cockpit_url; ?></a></td>
+		</tr>
+	</table>
+<?php } ?>
+
 <div class="xhatch separator-big"></div>
-
-
 
 <? if (!$user && $order->restaurant()->customer_receipt) : ?>
 	<br /><br />
