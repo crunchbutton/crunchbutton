@@ -38,11 +38,6 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 					$order->deliveryReject(c::admin());
 					$res['status'] = true;
 					break;
-
-				default:
-					echo json_encode(['error' => 'invalid action']);
-					exit;
-					break;
 			}
 		}
 		
