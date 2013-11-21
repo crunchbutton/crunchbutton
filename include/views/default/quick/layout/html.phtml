@@ -47,19 +47,17 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 	}
 	
 	.control {
-
 		background-image: -moz-linear-gradient( 90deg, rgb(203,203,203) 0%, rgb(232,232,232) 100%);
 		background-image: -webkit-linear-gradient( 90deg, rgb(203,203,203) 0%, rgb(232,232,232) 100%);
 		background-image: -ms-linear-gradient( 90deg, rgb(203,203,203) 0%, rgb(232,232,232) 100%);
 		box-shadow: 0px 1px 0px 0px rgb( 150, 150, 150 );
-
-
 	}
 	
 	.control .buttons {
 		display: table-cell;
 		vertical-align: middle;
 		text-align: right;
+		width: 100%;
 	}
 	
 	.content {
@@ -145,7 +143,7 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 	.order-comment {
 		background: #00957f;
 		color: #fff;
-		padding: .7em .9em .5em 1em;
+		padding: .9em .9em .8em 1em;
 		border-radius: 4px;
 		margin-bottom: .8em;
 	}
@@ -286,7 +284,8 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 		font-size: 1.3em;
 		display: table-cell;
 		vertical-align: middle;
-		text-shadow:1px 1px 0px #fff
+		text-shadow:1px 1px 0px #fff;
+		white-space:nowrap;
 	}
 
 	.button {
@@ -299,7 +298,6 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 		border: 1px solid rgba(0,0,0,.2);
 		box-shadow: 0px 0px 3px rgba(0,0,0,.3);
 		text-shadow: 1px 1px 0 rgba(0,0,0,.4);
-		-webkit-transition: all .09s ease;
 	}
 	
 	.button:active {
@@ -316,18 +314,73 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 		background: #dc534b;
 		border-radius: 4px;
 	}
+	
+	.order-status-delivered .status-control:not(.control-delivered) {
+		display: none !important;
+	}
+	
+	.order-status-pickedup .status-control:not(.control-pickedup) {
+		display: none !important;
+	}
+	
+	.order-status-rejected .status-control:not(.control-rejected) {
+		display: none !important;
+	}
+	
+	.order-status-accepted .status-control:not(.control-accepted) {
+		display: none !important;
+	}
+	
+	.order-status-accepted-other .status-control:not(.control-accepted-other) {
+		display: none !important;
+	}
+	
+	.order-status-none .status-control:not(.control-accept-reject) {
+		display: none !important;
+	}
+
 
 </style>
 </head>
 
+
 <body>
 	<div class="control">
-		<div class="wrap">
-			<div class="message">Accept this order?</div>
+		<div class="wrap <?=$orderStatusClass?>">
+			<div class="status-control control-accept-reject">
+				<div class="message">Accept this order?</div>
 				<div class="buttons">
-					<button class="button button-yes">Yes</button>
-					<button class="button button-no">No</button>
+					<button class="button button-yes button-accept">Yes</button>
+					<button class="button button-no button-reject">No</button>
 				</div>
+			</div>
+			<div class="status-control control-rejected">
+				<div class="message">You rejected. </div>
+				<div class="buttons">
+					<button class="button button-yes button-accept">Accept</button>
+				</div>
+			</div>
+			<div class="status-control control-accepted">
+				<div class="message">You accepted.</div>
+				<div class="buttons">
+					<button class="button button-yes button-pickedup">Picked up</button>
+					<button class="button button-no button-reject">Cancel</button>
+				</div>
+			</div>
+			<div class="status-control control-accepted-other">
+				This order has been accepted by <span class="delivery-accepted"><?=$this->order->deliveryStatus('accepted') ? $this->order->deliveryStatus('accepted')->name : ''?></span>.
+			</div>
+			<div class="status-control control-pickedup">
+				<div class="message">You picked up.</div>
+				<div class="buttons">
+					<button class="button button-yes button-delivered">Delivered</button>
+				</div>
+			</div>
+			<div class="status-control control-pickedup-other">
+				This order has been picked up by <span class="delivery-pickedup"><?=$this->order->deliveryStatus('pickedup') ? $this->order->deliveryStatus('pickedup')->name : ''?></span>.
+			</div>
+			<div class="status-control control-delivered">
+				This order has been delivered by <span class="delivery-delivered"><?=$this->order->deliveryStatus('delivered') ? $this->order->deliveryStatus('delivered')->name : ''?></span>.
 			</div>
 			<div class="divider"></div>
 		</div>
@@ -342,4 +395,58 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/assets/js/fastclick.js"></script>
+
+<script>
+	$(document).ready(function(){
+		var d = <?=json_encode($this->order->deliveryExports())?>;
+		var id_admin = '<?=c::admin()->id_admin?>';
+		var id_order = '<?=$this->order->id_order?>';
+		
+		var updateStatus = function(data) {
+			console.log(data);
+			$('.wrap').removeClass('order-status-delivered order-status-pickedup order-status-rejected order-status-accepted order-status-accepted-other order-status-none');
+
+			var className;
+
+			if (data['delivery-status'].delivered) {
+				className = 'order-status-delivered';
+
+			} else if (data['delivery-status'].pickedup) {
+				className = 'order-status-pickedup';
+		
+			} else if (data['delivery-status'].accepted && data['delivery-status'].accepted.id_admin != id_admin) {
+				className = 'order-status-accepted-other';
+		
+			} else if (data['delivery-status'].accepted && data['delivery-status'].accepted.id_admin == id_admin) {
+				className = 'order-status-accepted';
+		
+			} else if (data['self-reply'] == 'rejected') {
+				className = 'order-status-rejected';
+
+			} else {
+				className = 'order-status-none';
+			}
+			
+			$('.wrap').addClass(className);
+		};
+
+		$('.button-reject').click(function() {
+			$.post('/api/order/' + id_order + '/delivery-reject', updateStatus,'json');
+		});
+
+		$('.button-accept').click(function() {
+			$.post('/api/order/' + id_order + '/delivery-accept', updateStatus,'json');
+		});
+		
+		$('.button-pickedup').click(function() {
+			$.post('/api/order/' + id_order + '/delivery-pickedup', updateStatus,'json');
+		});
+		
+		$('.button-delivered').click(function() {
+			$.post('/api/order/' + id_order + '/delivery-delivered', updateStatus,'json');
+		});
+		
+		updateStatus(d);
+	});
+</script>
 </html>
