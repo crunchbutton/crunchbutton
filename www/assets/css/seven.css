@@ -273,10 +273,11 @@ html {
 .pushabutton {
 	background: url(../images/micro/push-a-button.svg) no-repeat;
 	background-position: center center;
-	width: 16em;
-	height: 16em;
+	width: 14em;
+	height: 14em;
 	background-size: 100%;
 	margin: 0 auto;
+	margin-bottom: 1em;
 	padding-top: 50px;
 	-webkit-transition: all 0.2s;
 }
@@ -846,7 +847,6 @@ p {
 	.snap-drawers {
 		background:#3d3731;
 		color:#eee;
-		font-family:Helvetica,Arial,sans-serif;
 		position:absolute;
 		top:0;
 		right:0;
@@ -905,6 +905,7 @@ p {
 		line-height: 1.6em;
 		margin-bottom: 20px;
 		font-size: 14px;
+		font-weight: 200;
 	}
 }
 
