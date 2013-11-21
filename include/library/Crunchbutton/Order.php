@@ -1505,11 +1505,11 @@ class Crunchbutton_Order extends Cana_Table {
 			foreach ($this->_actions as $action) {
 				switch ($action->type) {
 					case 'delivery-delivered':
-						$this->_deliveryStatus['delivered'] = Admin::o($admin);
+						$this->_deliveryStatus['delivered'] = Admin::o($action->id_admin);
 						break;
 						
 					case 'delivery-pickedup':
-						$this->_deliveryStatus['pickedup'] = Admin::o($admin);
+						$this->_deliveryStatus['pickedup'] = Admin::o($action->id_admin);
 						break;
 
 					case 'delivery-accepted':
@@ -1521,7 +1521,7 @@ class Crunchbutton_Order extends Cana_Table {
 						break;
 				}
 			}
-			
+
 			foreach ($acpt as $admin => $status) {
 				if ($status) {
 					$this->_deliveryStatus['accepted'] = Admin::o($admin);
@@ -1544,7 +1544,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->_actions = null;
 		return true;
 	}
-	
+
 	public function deliveryReject($admin) {
 		(new Order_Action([
 			'id_order' => $this->id_order,
@@ -1555,11 +1555,8 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->_actions = null;
 		return true;
 	}
-	
+
 	public function deliveryPickedup($admin) {
-		if (!$this->deliveryStatus('accepted')) {
-			die('asd');
-		}
 		if (!$this->deliveryStatus('accepted') || $this->deliveryStatus('accepted')->id_admin != $admin->id_admin) {
 			return false;
 		}
@@ -1574,9 +1571,6 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 	
 	public function deliveryDelivered($admin) {
-		if (!$this->deliveryStatus('accepted')) {
-			die('asd');
-		}
 		if (!$this->deliveryStatus('accepted') || $this->deliveryStatus('accepted')->id_admin != $admin->id_admin) {
 			return false;
 		}
@@ -1589,7 +1583,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->_actions = null;
 		return true;
 	}
-	
+
 	public function deliveryReply($admin) {
 		$act = false;
 		foreach ($this->_actions as $action) {
