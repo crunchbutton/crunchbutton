@@ -19,6 +19,10 @@ class Controller_Permissions_Users extends Crunchbutton_Controller_Account {
 				$this->form_permissions();
 				break;
 
+			case 'notifications':
+				$this->form_notifications();
+				break;
+
 			case 'content':
 				$this->search();
 				break;
@@ -54,6 +58,13 @@ class Controller_Permissions_Users extends Crunchbutton_Controller_Account {
 		c::view()->admins = Crunchbutton_Admin::find( $search );
 		c::view()->layout( 'layout/ajax' );
 		c::view()->display( 'permissions/users/content' );
+	}
+
+	private function form_notifications(){
+	if( c::getPagePiece(3) ){
+			c::view()->admin = Crunchbutton_Admin::o( c::getPagePiece(3) );
+			c::view()->display( 'permissions/users/notifications' );	
+		}
 	}
 
 	private function form_permissions(){
