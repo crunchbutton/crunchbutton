@@ -107,6 +107,57 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				exit;
 				break;
 
+			case 'sayorderadmin':
+				header('Content-type: text/xml');
+				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";
+
+				$cockipt_url = Crunchbutton_Admin_Notification::REPS_COCKPIT . $order->id_order;
+
+				$pauseRepeat =
+						'<Pause length="1" />'
+						.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat the order. '.($order->delivery_type == 'delivery' ? 'Press 2 to spell out the street name.' : '').'
+						 Press 3 to spell out the cockpit url.
+						</Say>';
+
+				switch ($this->request()['Digits']) {
+					case '3':
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">';
+						echo Crunchbutton_Admin_Notification::spellOutURL( $order->id_order );
+
+						for ($x = 0; $x <= $repeat; $x++) {
+							echo $pauseRepeat;
+						}
+
+						echo '</Gather>';
+						break;
+					case '2':
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+							.$order->streetName();
+
+						for ($x = 0; $x <= $repeat; $x++) {
+							echo $pauseRepeat;
+						}
+
+						echo '</Gather>';
+						break;
+					case '1':
+					default:
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>';
+						
+						echo '<Say voice="male"> <![CDATA[ Access ' . $cockipt_url . '  ]]> </Say>';
+
+						for ($x = 0; $x <= $repeat; $x++) {
+							echo $pauseRepeat;
+						}
+
+						echo '</Gather>';
+						break;
+				}
+				echo '</Response>';
+				exit;
+				break;
+
 			case 'sayorderonly':
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";

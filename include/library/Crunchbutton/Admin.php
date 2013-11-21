@@ -23,6 +23,13 @@ class Crunchbutton_Admin extends Cana_Table {
 		return Crunchbutton_Admin::q( 'SELECT DISTINCT( a.id_admin ), a.name FROM admin a INNER JOIN admin_notification an ON an.id_admin = a.id_admin ORDER BY a.name ASC' );
 	}
 
+	public function activeNotifications(){
+		if( !$this->_activeNotifications ){
+			$this->_activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+		}
+		return $this->_activeNotifications;
+	}
+
 	public function getNotifications( $oderby = 'active DESC, id_admin_notification DESC' ){
 		return Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} ORDER BY {$oderby}" );
 	}

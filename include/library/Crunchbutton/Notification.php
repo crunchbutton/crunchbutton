@@ -7,6 +7,7 @@ class Crunchbutton_Notification extends Cana_Table
 	const TYPE_PHONE = 'phone';
 	const TYPE_URL   = 'url';
 	const TYPE_FAX   = 'fax';
+	const TYPE_ADMIN = 'admin';
 
 	public function send(Crunchbutton_Order $order) {
 
@@ -187,6 +188,10 @@ class Crunchbutton_Notification extends Cana_Table
 		}
 	}
 
+
+	public function admin(){
+		return Crunchbutton_Admin::o( $this->id_admin );
+	}
 
 	public function confirm() {
 
