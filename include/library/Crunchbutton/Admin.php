@@ -5,6 +5,13 @@ class Crunchbutton_Admin extends Cana_Table {
 		return Crunchbutton_Admin::q('select * from admin where login="'.c::db()->escape($login).'" limit 1')->get(0);
 	}
 	
+	public function publicExports() {
+		return [
+			'name' => $this->name,
+			'id_admin' => $this->id_admin
+		];
+	}
+	
 	public function timezone() {
 		if (!isset($this->_timezone)) {
 			$this->_timezone = new DateTimeZone($this->timezone);

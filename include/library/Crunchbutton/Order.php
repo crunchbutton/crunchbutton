@@ -1491,6 +1491,147 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return array_unique( $restaurants_ids );
 	}
+	
+	/*
+		get the delivery status of the order based on reps or restaurants actions agaisnt it
+		@todo: add restaurant actions
+	*/
+	public function deliveryStatus($type = null) {
+		if (!$this->_actions) {
+			$this->_actions = Order_Action::q('select * from order_action where id_order="'.$this->id_order.'" order by timestamp');
+			$this->_deliveryStatus = ['accepted' => false, 'delivered' => false, 'pickedup' => false];
+			$acpt = [];
+
+			foreach ($this->_actions as $action) {
+				switch ($action->type) {
+					case 'delivery-delivered':
+						$this->_deliveryStatus['delivered'] = Admin::o($admin);
+						break;
+						
+					case 'delivery-pickedup':
+						$this->_deliveryStatus['pickedup'] = Admin::o($admin);
+						break;
+
+					case 'delivery-accepted':
+						$acpt[$action->id_admin] = true;
+						break;
+						
+					case 'delivery-rejected':
+						$acpt[$action->id_admin] = false;
+						break;
+				}
+			}
+			
+			foreach ($acpt as $admin => $status) {
+				if ($status) {
+					$this->_deliveryStatus['accepted'] = Admin::o($admin);
+				}
+			}
+		}
+		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
+	}
+	
+	public function deliveryAccept($admin) {
+		if ($this->deliveryStatus('accepted')) {
+			return false;
+		}
+		(new Order_Action([
+			'id_order' => $this->id_order,
+			'id_admin' => $admin->id_admin,
+			'timestamp' => date('Y-m-d H:i:s'),
+			'type' => 'delivery-accepted'
+		]))->save();
+		$this->_actions = null;
+		return true;
+	}
+	
+	public function deliveryReject($admin) {
+		(new Order_Action([
+			'id_order' => $this->id_order,
+			'id_admin' => $admin->id_admin,
+			'timestamp' => date('Y-m-d H:i:s'),
+			'type' => 'delivery-rejected'
+		]))->save();
+		$this->_actions = null;
+		return true;
+	}
+	
+	public function deliveryPickedup($admin) {
+		if (!$this->deliveryStatus('accepted')) {
+			die('asd');
+		}
+		if (!$this->deliveryStatus('accepted') || $this->deliveryStatus('accepted')->id_admin != $admin->id_admin) {
+			return false;
+		}
+		(new Order_Action([
+			'id_order' => $this->id_order,
+			'id_admin' => $admin->id_admin,
+			'timestamp' => date('Y-m-d H:i:s'),
+			'type' => 'delivery-pickedup'
+		]))->save();
+		$this->_actions = null;
+		return true;
+	}
+	
+	public function deliveryDelivered($admin) {
+		if (!$this->deliveryStatus('accepted')) {
+			die('asd');
+		}
+		if (!$this->deliveryStatus('accepted') || $this->deliveryStatus('accepted')->id_admin != $admin->id_admin) {
+			return false;
+		}
+		(new Order_Action([
+			'id_order' => $this->id_order,
+			'id_admin' => $admin->id_admin,
+			'timestamp' => date('Y-m-d H:i:s'),
+			'type' => 'delivery-delivered'
+		]))->save();
+		$this->_actions = null;
+		return true;
+	}
+	
+	public function deliveryReply($admin) {
+		$act = false;
+		foreach ($this->_actions as $action) {
+			if ($action->id_admin && $admin->id_admin) {
+				switch ($action->type) {
+					case 'delivery-delivered':
+						$act = 'delivered';
+						continue;
+						break;
+						
+					case 'delivery-pickedup':
+						$act = 'pickedup';
+						continue;
+						break;
+
+					case 'delivery-accepted':
+						$act = 'accepted';
+						continue;
+						break;
+						
+					case 'delivery-rejected':
+						$act = 'rejected';
+						continue;
+						break;
+				}
+			}
+		}
+		return $act;
+	}
+	
+	public function deliveryExports() {
+		return [
+			'id_order' => $this->id_order,
+			'uuid' => $this->uuid,
+			'delivery-status' => [
+				'delivered' => $this->deliveryStatus('delivered') ? $this->deliveryStatus('delivered')->publicExports() : false,
+				'pickedup' => $this->deliveryStatus('pickedup') ? $this->deliveryStatus('pickedup')->publicExports() : false,
+				'accepted' => $this->deliveryStatus('accepted') ? $this->deliveryStatus('accepted')->publicExports() : false
+			],
+			'self-reply' => $this->deliveryReply(c::admin())
+		];
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();

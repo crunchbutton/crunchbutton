@@ -53,25 +53,25 @@
 		<div class="order-comment">
 			<p><?=nl2br($this->order->notes)?></p>
 		</div>
-
+	<? else : ?>
+		<br>
 	<? endif ; ?>
 
-	
-	<a href="{{order.mapLink}}"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size=640x300&markers=color:green%7Clabel:A%7C<?=str_replace("\n",' ',str_replace('#','',$this->order->address))?>&markers=color:red%7Clabel:B%7C<?=$this->order->restaurant()->lat?>,<?=$this->order->restaurant()->lon?>&sensor=false&visual_refresh=true');"></div></a>
+	<a href="http://maps.apple.com/?daddr=<?=$this->order->address?>&saddr=<?=$this->order->restaurant()->address?>"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?size=640x300&markers=color:green%7Clabel:A%7C<?=str_replace("\n",' ',str_replace('#','',$this->order->address))?>&markers=color:red%7Clabel:B%7C<?=$this->order->restaurant()->loc_lat?>,<?=$this->order->restaurant()->loc_long?>&sensor=false&visual_refresh=true');"></div></a>
 			
 	<br>
 	
 	<div class="order-item-block order-map-block">
 		<div class="order-icon"><i class="icon-map-home"></i></div>
 		<div class="order-info">
-			<p class="order-info-address"><a href="{{order.mapLink}}"><?=nl2br($this->order->address)?></a></p>
+			<p class="order-info-address"><a href="http://maps.apple.com/?q=<?=$this->order->address?>"><?=nl2br($this->order->address)?></a></p>
 		</div>
 	</div>
 
 	<div class="order-item-block order-map-block">
 		<div class="order-icon"><i class="icon-map-restaurant"></i></div>
 		<div class="order-info">
-			<p class="order-info-address"><a href="{{order.mapLink}}"><?=nl2br($this->order->restaurant()->address)?></a></p>
+			<p class="order-info-address"><a href="http://maps.apple.com/?q=<?=$this->order->restaurant()->address?>"><?=nl2br($this->order->restaurant()->address)?></a></p>
 		</div>
 	</div>
 	
@@ -213,16 +213,6 @@
 		<? endif ; ?>
 	</table>
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
