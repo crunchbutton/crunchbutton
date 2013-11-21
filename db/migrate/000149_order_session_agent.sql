@@ -1,0 +1,5 @@
+ALTER TABLE `order` DROP FOREIGN KEY order_ibfk_4;
+ALTER TABLE `order` DROP FOREIGN KEY order_ibfk_5;
+
+ALTER TABLE `order` ADD CONSTRAINT `order_ibfk4` FOREIGN KEY(`id_session`) REFERENCES `session`(`id_session`) ON DELETE CASCADE ON UPDATE SET NULL;
+ALTER TABLE `order` ADD CONSTRAINT `order_ibfk5` FOREIGN KEY(`id_agent`) REFERENCES `agent`(`id_agent`) ON DELETE CASCADE ON UPDATE SET NULL;
