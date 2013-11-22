@@ -25,7 +25,9 @@ class Crunchbutton_Admin extends Cana_Table {
 
 	public function activeNotifications(){
 		if( !$this->_activeNotifications ){
-			$this->_activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+			if( $this->id_admin ){
+				$this->_activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+			}
 		}
 		return $this->_activeNotifications;
 	}
