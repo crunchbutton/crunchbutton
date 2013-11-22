@@ -57,17 +57,7 @@
 
 				var map = new google.maps.Map(document.getElementById('map_canvas'), settings);
 				var windows = [];
-				
-				<? foreach (Community::all() as $community) : ?>
 
-					var myCircle = new google.maps.Circle({
-						center: new google.maps.LatLng(<?=$community->loc_lat?>,<?=$community->loc_lon?>),
-						radius: 1609 * 5,
-						map: map
-					});
-
-				<? endforeach ; ?>
-				
 				<? foreach ($this->restaurants as $restaurant) : ?>
 					var point<?=$restaurant->id_restaurant?> = new google.maps.LatLng(<?=$restaurant->loc_lat?>,<?=$restaurant->loc_long?>);
 					var marker<?=$restaurant->id_restaurant?> = new google.maps.Marker({
@@ -75,8 +65,16 @@
 						raiseOnDrag: false,
 						map: map,
 						position: point<?=$restaurant->id_restaurant?>,
-						title: "<?=$restaurant->name?>",
+						title: "<?=$restaurant->name?>"
 					});
+					
+					<? if ($restaurant->delivery_radius) : ?>
+						var myCircle<?=$restaurant->id_restaurant?> = new google.maps.Circle({
+							center: point<?=$restaurant->id_restaurant?>,
+							radius: (1609 * <?=$restaurant->delivery_radius?>),
+							map: map
+						});
+					<? endif ; ?>
 
 					var contentString<?=$restaurant->id_restaurant?> = '<div style="width: 200px;">'
 						+ "<h2><b><?=$restaurant->name?></b></h2>"
