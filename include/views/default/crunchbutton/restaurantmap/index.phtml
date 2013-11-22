@@ -57,6 +57,19 @@
 
 				var map = new google.maps.Map(document.getElementById('map_canvas'), settings);
 				var windows = [];
+				var circles = [];
+				
+				var blurCircle = function(circle) {
+					if (!circle) {
+						return;
+					}
+					circle.setOptions({
+						fillColor: '#000000', 
+						strokeColor: '#000000',
+						fillOpacity: 0.05,
+						strokeOpacity: 0.5,
+					});
+				};
 
 				<? foreach ($this->restaurants as $restaurant) : ?>
 					var point<?=$restaurant->id_restaurant?> = new google.maps.LatLng(<?=$restaurant->loc_lat?>,<?=$restaurant->loc_long?>);
@@ -73,8 +86,11 @@
 							center: point<?=$restaurant->id_restaurant?>,
 							radius: (1609 * <?=$restaurant->delivery_radius?>),
 							fillOpacity: 0.05,
+							strokeOpacity: 0.5,
 							map: map
 						});
+					<? else : ?>
+						var myCircle<?=$restaurant->id_restaurant?> = null;
 					<? endif ; ?>
 
 					var contentString<?=$restaurant->id_restaurant?> = '<div style="width: 200px;">'
@@ -86,11 +102,29 @@
 						content: contentString<?=$restaurant->id_restaurant?>
 					});
 					windows[windows.length] = infowindow<?=$restaurant->id_restaurant?>;
+					circles[circles.length] = myCircle<?=$restaurant->id_restaurant?>;
+
 					google.maps.event.addListener(marker<?=$restaurant->id_restaurant?>, 'click', function() {
 						for (var x in windows) {
 							windows[x].close();
 						}
+						for (var x in circles) {
+							blurCircle(circles[x]);
+						}
 						infowindow<?=$restaurant->id_restaurant?>.open(map,marker<?=$restaurant->id_restaurant?>);
+						<? if ($restaurant->delivery_radius) : ?>
+							google.maps.event.addListener(infowindow<?=$restaurant->id_restaurant?>,'closeclick',function() {
+								blurCircle(myCircle<?=$restaurant->id_restaurant?>);
+							});
+							
+							myCircle<?=$restaurant->id_restaurant?>.setOptions({
+								fillColor: '#ff7800', 
+								strokeColor: '#ab5000',
+								fillOpacity: 0.3,
+								strokeOpacity: 0.9,
+								zIndex: 99999
+							});
+						<? endif ; ?>
 					});
 
 				<? endforeach; ?>
