@@ -15,9 +15,37 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	const IS_ENABLE_DEFAULT = true;
 	const IS_ENABLE_TO_TAKEOUT_DEFAULT = false;
 
-	public function send( Crunchbutton_Order $order ) {
+	public function resendNotification(){
 
-		$this->loadSettings();
+		// Get orders with active admin notifications from the last 24 hours
+		$query = 'SELECT DISTINCT( o.id_order ), o.*
+							FROM `order` o
+							INNER JOIN `restaurant` r ON o.id_restaurant = o.id_restaurant
+							INNER JOIN `notification` n ON n.id_restaurant = o.id_restaurant AND n.active = 1 AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '" 
+							INNER JOIN `admin_notification` an ON an.id_admin = n.id_admin AND an.active = 1
+
+							WHERE o.date > DATE_SUB( NOW(), INTERVAL 24 HOUR )
+							ORDER BY o.id_order ASC';
+
+		$orders = Crunchbutton_Order::q( $query );
+		if( $orders->count() > 0 ){
+			foreach ( $orders as $order ) {
+				if( !$order->wasAcceptedByRep() ){
+					Log::debug( [ 'order' => $order->id_order, 'action' => 'resend admin notification', 'type' => 'admin_notification' ]);
+					foreach ( $order->restaurant()->notifications() as $n ) {
+						Log::debug([ 'order' => $order->id_order, 'action' => 'starting resend notification', 'notification_type' => $n->type, 'notification_value' => $n->value, 'notification_id_admin' => $n->id_admin, 'type' => 'notification']);
+						if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
+							foreach( $n->admin()->activeNotifications() as $adminNotification ){
+								$adminNotification->send( $order );
+							}
+						} 
+					}
+				}
+			}
+		}
+	}
+
+	public function send( Crunchbutton_Order $order ) {
 
 		$is_enable = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_DEFAULT );
 		if( !$is_enable ){
@@ -57,13 +85,13 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$env = c::getEnv();
 		$fax = $this->value;
 		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
-		$mail = new Email_Order( [ 'order' => $order, 'cockpit_url' => $cockpit_url  ] );
 
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'send fax to admin', 'fax' => $fax, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
+return;
+		$mail = new Email_Order( [ 'order' => $order, 'cockpit_url' => $cockpit_url  ] );
 		$temp = tempnam('/tmp','fax');
 		file_put_contents($temp, $mail->message());
 		rename($temp, $temp.'.html');
-
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'send fax to admin', 'fax' => $fax, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
 
 		$fax = new Phaxio( [ 'to' => $fax, 'file' => $temp.'.html' ] );
 
@@ -76,7 +104,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$num = $this->value;
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
-
+return;
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingRestaurant,
@@ -84,9 +112,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			'http://'.c::config()->host_callback.'/api/order/'.$order->id_order.'/sayorderadmin'
 		);
 
-		$log->remote = $call->sid;
-		$log->status = $call->status;
-		$log->save();
 	}
 
 	public function sendSms( Crunchbutton_Order $order ){
@@ -104,7 +129,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$message = str_split( $message , 160 );
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms to admin', 'num' => $sms, 'host' => c::config()->host_callback, 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
-
+return;
 		foreach ($message as $msg) {
 			$twilio->account->sms_messages->create(
 				c::config()->twilio->{$env}->outgoingTextRestaurant,
@@ -113,6 +138,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			);
 			continue;
 		}
+
 	}
 
 	public function sendEmail( Crunchbutton_Order $order ){
@@ -121,6 +147,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$mail = $this->value;
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send mail to admin', 'mail' => $mail, 'type' => 'admin_notification' ]);
 		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
+return;
 		$mail = new Email_Order( [	'order' => $order, 
 																'email' => $mail,
 																'cockpit_url' => $cockpit_url 
@@ -173,10 +200,14 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	}
 
 	public function getSetting( $key ){
+		if( !$this->_config ){
+			$this->loadSettings();
+		}
 		return $this->_config[ $key ];
 	}
 
 	public function __construct($id = null) {
+		$this->loadSettings();
 		parent::__construct();
 		$this
 			->table('admin_notification')

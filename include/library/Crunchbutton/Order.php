@@ -1641,6 +1641,21 @@ class Crunchbutton_Order extends Cana_Table {
 		return $act;
 	}
 	
+	public function wasAcceptedByRep(){
+		$query = "SELECT * FROM 
+								order_action ac 
+							WHERE 
+								ac.id_order = {$this->id_order} 
+							AND ( ac.type = '" . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . "' 
+										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . "' 
+										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "' )";
+		$action = Crunchbutton_Order_Action::q( $query );
+		if( $action->count() > 0 ){
+			return true;
+		}
+		return false;
+	}
+
 	public function deliveryExports() {
 		return [
 			'id_order' => $this->id_order,
