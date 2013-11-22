@@ -87,7 +87,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send fax to admin', 'fax' => $fax, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
-return;
+
 		$mail = new Email_Order( [ 'order' => $order, 'cockpit_url' => $cockpit_url  ] );
 		$temp = tempnam('/tmp','fax');
 		file_put_contents($temp, $mail->message());
@@ -104,7 +104,7 @@ return;
 		$num = $this->value;
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
-return;
+
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingRestaurant,
@@ -129,7 +129,7 @@ return;
 		$message = str_split( $message , 160 );
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms to admin', 'num' => $sms, 'host' => c::config()->host_callback, 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
-return;
+
 		foreach ($message as $msg) {
 			$twilio->account->sms_messages->create(
 				c::config()->twilio->{$env}->outgoingTextRestaurant,
@@ -147,7 +147,7 @@ return;
 		$mail = $this->value;
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send mail to admin', 'mail' => $mail, 'type' => 'admin_notification' ]);
 		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
-return;
+
 		$mail = new Email_Order( [	'order' => $order, 
 																'email' => $mail,
 																'cockpit_url' => $cockpit_url 
