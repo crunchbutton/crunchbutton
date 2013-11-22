@@ -5,7 +5,8 @@ App.log = {
 	type : {
 		order: 'order-js',
 		account: 'account-js',
-		location: 'location-js'
+		location: 'location-js',
+		game: 'game-score'
 	}
 }
 
@@ -26,6 +27,10 @@ App.log.doLog = function(data, callback) {
 			}
 		}
 	} );
+}
+
+App.log.game = function(score){
+	App.log.doLog( { 'type' : App.log.type.game, 'info' : score, 'action' :  null } );
 }
 
 App.log.order = function( info, action ){

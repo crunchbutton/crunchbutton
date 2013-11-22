@@ -18,14 +18,17 @@
 	<div class="cafe-request">
 		<h4>{{requested.name}}</h4>
 	</div>
+	{{score}}
 	<div class="cafe-level">
-		<b>{{stats.level.name}}</b><br>
-		Time: <b>{{stats.timer}}</b> / <b>{{stats.level.time/1000}}:00</b> seconds<br>
+		<b>{{stats.round.name}}</b><br>
+		Time: <b>{{stats.timer}}</b> / <b>{{stats.round.time/1000}}:00</b> seconds<br>
 		Errors: <b>{{stats.errors}}</b><br>
 		Success: <b>{{stats.success}}</b><br>
-		Required: <b>{{stats.level.required}}</b><br>
+		Required: <b>{{stats.round.required}}</b><br>
 	</div>
 	<br><br><br>
-	<button class="cafe-button" ng-repeat="button in items" ng-click="buttonPress(button.id)">{{button.name}}</button>
+	<button class="cafe-button {{button.id}}" ng-repeat="button in items" ng-instant="buttonPress(button.id)">{{button.name && stats.round.descriptions ? button.name : ''}}</button>
 	<div class="divider"></div>
 </div>
+
+<div class="cafe-button cafe-preload {{button.id}}" ng-repeat="button in allitems"></div>
