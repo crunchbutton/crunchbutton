@@ -811,7 +811,8 @@ App.dialog = {
  * play crunch audio sound
  */
 App.playAudio = function(audio) {
-	if (App.isPhoneGap) {
+	App.stopAudio();
+	if (App.isPhoneGap && audio == 'get-food-audio') {
 		try {
 			navigator.notification.vibrate(100);
 		} catch (e) {}
@@ -821,6 +822,18 @@ App.playAudio = function(audio) {
 	try {
 		audio.play();
 	} catch(e){}
+}
+
+App.stopAudio = function() {
+
+
+		$.each($('audio'), function () {
+			try {
+				this.pause();
+				this.currentTime = 0;
+			} catch (e){}
+		});
+
 }
 
 // Hack to fix iOS the problem with body position when the keyboard is shown #1774

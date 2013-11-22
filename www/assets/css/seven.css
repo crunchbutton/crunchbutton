@@ -2812,6 +2812,7 @@ sup {
 	height: 5em;
 	margin: .5em;
 	float: left;
+	background-size: cover !important;
 }
 .cafe-message {
 	height: 3.1em;
@@ -2819,4 +2820,55 @@ sup {
 }
 .cafe-request {
 	height: 2.1em;
+}
+
+.cafe-button.nachos {
+	background: url(../images/micro/cafe/nachos.jpg);
+}
+.cafe-button.wenzel {
+	background: url(http://dev.crunchr.co/assets/images/food/wenzel-side.jpg);
+}
+.cafe-button.spicytunaroll {
+	background: url(http://dev.crunchr.co/assets/images/food/1fish2fish.jpg);
+}
+.cafe-button.orangechicken {
+	background: url(http://dev.crunchr.co/assets/images/food/china-garden.jpeg);
+}
+.cafe-button.megaburger {
+	background: url(http://dev.crunchr.co/assets/images/food/fiveguys.jpg);
+}
+.cafe-button.spicywith {
+	background: url(http://dev.crunchr.co/assets/images/food/jos.jpg);
+}
+.cafe-button.allmeatpizza {
+	background: url(http://dev.crunchr.co/assets/images/food/manny-and-olgas.jpg);
+}
+.cafe-button.shrimptacos {
+	background: url(http://dev.crunchr.co/assets/images/food/marlas-cafe.jpg);
+}
+.cafe-button.chickentikkamasala {
+	background: url(http://dev.crunchr.co/assets/images/food/punjab.jpg);
+}
+.cafe-button.padthai {
+	background: url(http://dev.crunchr.co/assets/images/food/siam-best.jpg);
+}
+.cafe-button.boringsalad {
+	background: url(http://dev.crunchr.co/assets/images/food/boulder-salad.jpeg);
+}
+.cafe-button.pancakes {
+	background: url(http://dev.crunchr.co/assets/images/food/meeting-street-cafe.png);
+}
+.cafe-button.chickenparmsandwich {
+	background: url(http://dev.crunchr.co/assets/images/food/marvelous-pizza.jpeg);
+}
+.cafe-button.steaksandwich {
+	background: url(http://dev.crunchr.co/assets/images/food/georges.jpg);
+}
+.cafe-button.curryrice {
+	background: url(../images/micro/cafe/curryrice.jpg);
+}
+
+.cafe-button.cafe-preload {
+	height: 0;
+	width: 0;
 }

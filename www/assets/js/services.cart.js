@@ -88,7 +88,6 @@ NGApp.factory('CartService', function () {
 
 
 		};
-		console.log(service.restaurants[ service.id_restaurant ].items[id]);
 
 		//TODO:: If it is a mobile add the items at the top #1035
 		App.track('Dish added', {

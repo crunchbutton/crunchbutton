@@ -44,6 +44,21 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		$files[] = 'audio/crunch.mp3';
 		$files[] = 'audio/crunch.ogg';
 		
+		$files[] = 'audio/win.mp3';
+		$files[] = 'audio/win.ogg';
+		
+		$files[] = 'audio/start.mp3';
+		$files[] = 'audio/start.ogg';
+		
+		$files[] = 'audio/loose.mp3';
+		$files[] = 'audio/loose.ogg';
+		
+		$files[] = 'audio/fail.mp3';
+		$files[] = 'audio/fail.ogg';
+		
+		$files[] = 'audio/good.mp3';
+		$files[] = 'audio/good.ogg';
+		
 		// fonts
 		$use = '/fontawesome|opensans/i';
 		foreach (new DirectoryIterator(c::config()->dirs->www.'assets/fonts') as $fileInfo) {
