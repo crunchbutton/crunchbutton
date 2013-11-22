@@ -9,13 +9,29 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	const TYPE_FAX   = 'fax';
 	const REPS_COCKPIT = 'http://cbtn.io/';
 
+	const IS_ENABLE_KEY = 'notification-admin-is-enable';
+	const IS_ENABLE_TO_TAKEOUT_KEY = 'notification-admin-is-enable-takeout';
+
+	const IS_ENABLE_DEFAULT = true;
+	const IS_ENABLE_TO_TAKEOUT_DEFAULT = false;
+
 	public function send( Crunchbutton_Order $order ) {
 
-		if ($_SESSION['admin'] && c::admin()->testphone) {
-			c::config()->twilio->testnumber = c::admin()->testphone;
+		$this->loadSettings();
+
+		$is_enable = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_DEFAULT );
+		if( !$is_enable ){
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin is disabled', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'admin_notification' ]);
+			return;
 		}
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin', 'notification_type' => $this->type, 'type' => 'admin_notification' ]);
+		$is_enable_takeout = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_DEFAULT );
+		if( $order->delivery_type == Crunchbutton_Order::SHIPPING_TAKEOUT && $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_KEY ) != '1' ){
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin to TAKEOUT is disabled', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'admin_notification' ]);
+			return;
+		}
+
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin starting', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'admin_notification' ]);
 
 		switch ( $this->type ) {
 			case Crunchbutton_Admin_Notification::TYPE_FAX :
@@ -47,7 +63,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		file_put_contents($temp, $mail->message());
 		rename($temp, $temp.'.html');
 
-		// Log
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send fax to admin', 'fax' => $fax, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
 
 		$fax = new Phaxio( [ 'to' => $fax, 'file' => $temp.'.html' ] );
@@ -60,7 +75,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$env = c::getEnv();
 		$num = $this->value;
 
-		// Log
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
 
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
@@ -83,12 +97,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 		
-		$message = $order->message( 'sms' );
-		$message .= ' ' . static::REPS_COCKPIT . $order->id_order;
+		$message = static::REPS_COCKPIT . $order->id_order;
+		$message .= "\n";
+		$message .= $order->message( 'sms-admin' );
 
 		$message = str_split( $message , 160 );
 
-		// Log
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms to admin', 'num' => $sms, 'host' => c::config()->host_callback, 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
 
 		foreach ($message as $msg) {
@@ -149,6 +163,17 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$spaceName .= '<Say voice="'.c::config()->twilio->voice.'"><![CDATA['.$letter.']]></Say><Pause length="1" />';
 		}
 		return $spaceName;
+	}
+
+	private function loadSettings(){
+		$configs = Crunchbutton_Config::q( "SELECT * FROM config WHERE `key` LIKE 'notification-admin-%'" );
+		foreach ( $configs as $config ) {
+			$this->_config[ $config->key ] = $config->value;
+		}
+	}
+
+	public function getSetting( $key ){
+		return $this->_config[ $key ];
 	}
 
 	public function __construct($id = null) {
