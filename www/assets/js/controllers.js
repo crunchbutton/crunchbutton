@@ -983,3 +983,272 @@ NGApp.controller( 'NoInternetCtrl', function ( $scope ) {
 	$.cookie( 'referral', $routeParams.id );
 	$location.path( '/' );
 });
+
+
+/**
+ * mini game controller
+ */
+NGApp.controller('CafeCtrl', function ($scope, $http) {
+	var
+		gameStart = null,
+		timer = null,
+		messageTimeout = null,
+		enabled = false,
+		level = 0,
+		startTimer = null;
+	
+	var getItem = function(key) {
+		for (var x in items) {
+			if (items[x].id == key) {
+				return items[x];
+			}
+		}
+		return null;
+	};
+
+	$scope.buttonPress = function(id) {
+		if (!$scope.requested || !enabled) {
+			return;
+		}
+
+		var clicked = getItem(id);
+
+		if ($scope.requested.id == clicked.id) {
+			$scope.stats.success++;
+			if ($scope.stats.success >= rounds[level].required) {
+				win();
+				return;
+			}
+			showMessage('Yay. Keep going!','good');	
+			requestPress();
+		} else {
+			enabled = false;
+			$scope.stats.errors++;
+			showMessage('You suck! Wait 2 seconds!','error');
+			setTimeout(function() {
+				enabled = true;
+			},2000);
+		}
+	};
+	
+	var showMessage = function(message, type) {
+		clearTimeout(messageTimeout);
+		$scope.message = {};
+		$scope.message[type] = message;
+
+		messageTimeout = setTimeout(function() {
+			$scope.$apply(function() {
+				$scope.message = null;
+			});
+		},2000);
+	};
+	
+	var requestPress = function() {
+		var cloned = $scope.items.slice(0);
+
+		if (!$scope.requested) {
+			var newrequest = $.pluck(cloned,1);
+			newrequest = newrequest[0];
+		} else {
+			var previous = newrequest = $scope.requested;
+			while (newrequest.id == previous.id) {
+				newrequest = $.pluck(cloned,1);
+				newrequest = newrequest[0];
+			}
+		}
+
+		if ($scope.$$phase) {
+			$scope.requested = newrequest;
+		} else {
+			$scope.$apply(function($scope) {
+				$scope.requested = newrequest;
+			});
+		}
+	};
+	
+	var loose = function() {
+		$scope.stop();
+
+		if ($scope.$$phase) {
+			$scope.message = {error: 'You loose.'};
+
+		} else {
+			$scope.$apply(function($scope) {
+				$scope.message = {error: 'You loose.'};
+			});
+		}
+	};
+	
+	var win = function() {
+		$scope.stop();
+		level++;
+
+		if ($scope.$$phase) {
+			$scope.message = {good: 'You win! Try the next level!'};
+
+		} else {
+			$scope.$apply(function($scope) {
+				$scope.message = {good: 'You win! Try the next level!'};
+			});
+		}
+	};
+	
+	var updateTimer = function() {
+		var now = new Date;
+		var diffMs = now.getTime() - gameStart.getTime();
+		var diff = Math.round(diffMs / 10).pad(4);
+		
+		if (diffMs >= rounds[level].time) {
+			loose();
+			return;
+		}
+		
+		diff = (diff + ' ').slice(0,2) + ':' + (diff + ' ').slice(2,4);
+
+		if ($scope.$$phase) {
+			$scope.stats.timer = diff;
+		} else {
+			$scope.$apply(function($scope) {
+				$scope.stats.timer = diff;
+			});
+		}
+	};
+	
+	var rounds = [
+		{
+			name: 'Trial Level ',
+			time: 20000,
+			required: 3
+		},
+		{
+			name: 'Level 1',
+			time: 20000,
+			required: 10
+		},
+		{
+			name: 'Level 2',
+			time: 20000,
+			required: 20
+		},
+		{
+			name: 'Level 3',
+			time: 20000,
+			required: 30
+		},
+		{
+			name: 'Level 4',
+			time: 20000,
+			required: 40
+		}
+	];
+
+	var items = [
+		{
+			name: 'Wenzel',
+			id: 'wenzel'
+		},
+		{
+			name: 'Spicy With',
+			id: 'spicywith'
+		},
+		{
+			name: 'All Meat Pizza',
+			id: 'allmeatpizza'
+		},
+		{
+			name: 'Mega Burger',
+			id: 'megaburger'
+		},
+		{
+			name: 'Curry Rice',
+			id: 'curryrice'
+		},
+		{
+			name: 'Steak Sandwich',
+			id: 'steaksandwich'
+		},
+		{
+			name: 'Spicy Tuna Roll',
+			id: 'spicytunaroll'
+		},
+		{
+			name: 'Nachos',
+			id: 'nachos'
+		},
+		{
+			name: 'Shrimp Tacos',
+			id: 'shrimptacos'
+		},
+		{
+			name: 'Orange Chicken',
+			id: 'orangechicken'
+		},
+		{
+			name: 'Chicken Parm Sandwich',
+			id: 'chickenparmsandwich'
+		},
+		{
+			name: 'Virgin Mojito',
+			id: 'virginmojito'
+		},
+		{
+			name: 'Chicken Tikka Masala',
+			id: 'chickentikkamasala'
+		},
+		{
+			name: 'Bucket of Waffles',
+			id: 'bucketofwaffles'
+		},
+		{
+			name: 'Boring Salad',
+			id: 'boringsalad'
+		}
+	];
+
+	$scope.stop = function() {
+		clearTimeout(startTimer);
+		clearTimeout(messageTimeout);
+		clearInterval(timer);
+		gameStart = null;
+
+		$scope.message = null;
+		$scope.requested = null;
+		enabled = false;
+		$scope.running = false;
+		$scope.items = [];
+	};
+
+	$scope.start = function() {
+		$scope.items = $.pluck(items,6);
+		$scope.message = {good: 'Starting in 3 seconds!'};
+		$scope.stats = {
+			timer: '00:00',
+			level: rounds[level],
+			errors: 0,
+			success: 0
+		};
+
+		startTimer = setTimeout(function() {
+			gameStart = new Date();
+			timer = setInterval(function() {
+				updateTimer();
+			},10);
+		
+			if ($scope.$$phase) {
+				$scope.message = null;
+			} else {
+				$scope.$apply(function($scope) {
+					$scope.message = null;
+				});
+			}
+			
+			requestPress();
+			enabled = true;			
+		},3000);
+		$scope.running = true;
+	};
+	
+	$scope.timer = '00:00';
+
+
+});
