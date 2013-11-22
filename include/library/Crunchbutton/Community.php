@@ -25,6 +25,17 @@ class Crunchbutton_Community extends Cana_Table {
 
 		return self::q($q);
 	}
+	
+	public function restaurantByLoc() {
+		if (!isset($this->_restaurantsByLoc)) {
+			$this->_restaurantsByLoc = Restaurant::byRange([
+				'lat' => $this->loc_lat,
+				'lon' => $this->loc_lon,
+				'range' => $this->range,
+			]);
+		}
+		return $this->_restaurantsByLoc;
+	}
 
 	/**
 	 * Returns all the restaurants that belong to this Community
