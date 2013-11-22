@@ -13,6 +13,7 @@ class Controller_restaurantmap extends Cana_Controller {
 		}
 		
 		Cana::view()->layout('layout/blank');
+		Cana::view()->useFilter(false);
 		Cana::view()->display('restaurantmap/index');
 	}
 }
