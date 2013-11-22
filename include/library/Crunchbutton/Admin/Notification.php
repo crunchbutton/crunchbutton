@@ -102,14 +102,15 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$env = c::getEnv();
 		$num = $this->value;
+		$url = 'http://'.c::config()->host_callback.'/api/order/'.$order->id_order.'/sayorderadmin';
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => c::config()->host_callback, 'url' => $url, 'type' => 'admin_notification' ]);
 
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingRestaurant,
 			'+1'.$num,
-			'http://'.c::config()->host_callback.'/api/order/'.$order->id_order.'/sayorderadmin'
+			$url
 		);
 
 	}
