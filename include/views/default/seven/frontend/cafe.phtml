@@ -1,0 +1,31 @@
+<div class="top-pad"></div>
+
+
+<div class="content-padding">
+	<button class="button lightorange" ng-click="start()" ng-show="!running">Start</button>
+	<button class="button lightorange" ng-click="stop()" ng-show="running">Stop</button>
+	<br><br>
+	
+	<div class="cafe-message">
+		<div class="dialog-message dialog-message-error" ng-show="message.error">
+			<span ng-bind-html-unsafe="message.error"></span>
+		</div>
+		<div class="dialog-message dialog-message-success" ng-show="message.good">
+			<span ng-bind-html-unsafe="message.good"></span>
+		</div>
+	</div>
+
+	<div class="cafe-request">
+		<h4>{{requested.name}}</h4>
+	</div>
+	<div class="cafe-level">
+		<b>{{stats.level.name}}</b><br>
+		Time: <b>{{stats.timer}}</b> / <b>{{stats.level.time/1000}}:00</b> seconds<br>
+		Errors: <b>{{stats.errors}}</b><br>
+		Success: <b>{{stats.success}}</b><br>
+		Required: <b>{{stats.level.required}}</b><br>
+	</div>
+	<br><br><br>
+	<button class="cafe-button" ng-repeat="button in items" ng-click="buttonPress(button.id)">{{button.name}}</button>
+	<div class="divider"></div>
+</div>

@@ -223,6 +223,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'HomeCtrl',
 			templateUrl: 'assets/view/home.html'
 		})
+		.when('/cafe', {
+			action: 'cafe',
+			controller: 'CafeCtrl',
+			templateUrl: 'assets/view/cafe.html'
+		})
 		.otherwise({
 			action: 'home',
 			controller: 'DefaultCtrl',

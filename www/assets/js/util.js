@@ -129,3 +129,14 @@ Number.prototype.pad = String.prototype.pad = function(width, z) {
 	var n = this + '';
 	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
+
+
+$.pluck = function(ar, len) {
+	for (var i = ar.length - 1; i > 0; i--) {
+		var j = Math.floor(Math.random() * (i + 1));
+		var temp = ar[i];
+		ar[i] = ar[j];
+		ar[j] = temp;
+	}
+	return ar.slice(0, len || len.length);
+};

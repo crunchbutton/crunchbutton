@@ -273,13 +273,19 @@ html {
 .pushabutton {
 	background: url(../images/micro/push-a-button.svg) no-repeat;
 	background-position: center center;
-	width: 14em;
-	height: 14em;
 	background-size: 100%;
 	margin: 0 auto;
-	margin-bottom: 1em;
 	padding-top: 50px;
 	-webkit-transition: all 0.2s;
+}
+.snap-drawer .pushabutton {
+	width: 14em;
+	height: 14em;
+	margin-bottom: 1em;
+}
+.home-top .pushabutton {
+	width: 16em;
+	height: 16em;
 }
 @media (min-width: 321px) and (max-height: 350px) {
 	.pushabutton {
@@ -875,7 +881,6 @@ p {
 		display:block;
 		border-bottom:1px solid rgba(0,0,0,0.1);
 		padding:8px 0 2px 0;
-		font-weight:bold;
 		text-decoration:none;
 		color:#fff;
 		text-indent:20px;
@@ -905,7 +910,6 @@ p {
 		line-height: 1.6em;
 		margin-bottom: 20px;
 		font-size: 14px;
-		font-weight: 200;
 	}
 }
 
@@ -2794,4 +2798,25 @@ sup {
 
 @media screen and (min-width: 769px) {
 
+}
+
+.cafe-button {
+	border: 0;
+	background: #fe9872;
+	color: #fff;
+	font-size: 1.5em;
+	cursor: pointer;
+	border-radius: 4px;
+	padding: 1em 0 1em 0;
+	width: 9em;
+	height: 5em;
+	margin: .5em;
+	float: left;
+}
+.cafe-message {
+	height: 3.1em;
+	margin-bottom: 1em;
+}
+.cafe-request {
+	height: 2.1em;
 }
