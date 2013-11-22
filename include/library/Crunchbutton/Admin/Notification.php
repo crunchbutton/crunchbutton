@@ -33,7 +33,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				if( !$order->wasAcceptedByRep() ){
 					Log::debug( [ 'order' => $order->id_order, 'action' => 'resend admin notification', 'type' => 'admin_notification' ]);
 					foreach ( $order->restaurant()->notifications() as $n ) {
-						Log::debug([ 'order' => $order->id_order, 'action' => 'starting resend notification', 'notification_type' => $n->type, 'env' => c::getEnv();, 'notification_id_admin' => $n->id_admin, 'type' => 'notification']);
+						Log::debug([ 'order' => $order->id_order, 'action' => 'starting resend notification', 'notification_type' => $n->type, 'env' => c::getEnv(), 'notification_id_admin' => $n->id_admin, 'type' => 'notification']);
 						if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
 							foreach( $n->admin()->activeNotifications() as $adminNotification ){
 								$adminNotification->send( $order );
