@@ -143,6 +143,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 					case '1':
 					default:
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+							.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
 							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>';
 						
 						echo '<Say voice="male"> <![CDATA[ Access ' . $cockipt_url . '  ]]> </Say>';
