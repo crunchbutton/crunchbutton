@@ -33,7 +33,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				if( !$order->wasAcceptedByRep() ){
 					Log::debug( [ 'order' => $order->id_order, 'action' => 'resend admin notification', 'type' => 'admin_notification' ]);
 					foreach ( $order->restaurant()->notifications() as $n ) {
-						Log::debug([ 'order' => $order->id_order, 'action' => 'starting resend notification', 'notification_type' => $n->type, 'env' => c::getEnv(), 'notification_id_admin' => $n->id_admin, 'type' => 'notification']);
+						Log::debug([ 'order' => $order->id_order, 'action' => 'starting resend notification', 'notification_type' => $n->type, 'env' => c::getEnv(), 'notification_id_admin' => $n->id_admin, 'type' => 'admin_notification']);
 						if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
 							foreach( $n->admin()->activeNotifications() as $adminNotification ){
 								$adminNotification->send( $order );
@@ -80,13 +80,26 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		}
 	}
 
+	public function host_callback(){
+		if( !c::config()->host_callback ){
+			if( c::getEnv() == 'live' ){
+				return '_DOMAIN_';
+			} else if( c::getEnv() == 'beta' ){
+				return 'beta.crunchr.co';
+			} else {
+				return $_SERVER['HTTP_HOST'];
+			}
+		}
+		return c::config()->host_callback;
+	}
+
 	public function sendFax( Crunchbutton_Order $order ){
 
 		$env = c::getEnv();
 		$fax = $this->value;
 		$cockpit_url = static::REPS_COCKPIT . $order->id_order;
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'send fax to admin', 'fax' => $fax, 'host' => c::config()->host_callback, 'type' => 'admin_notification' ]);
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'send fax to admin', 'fax' => $fax, 'host' => $this->host_callback(), 'type' => 'admin_notification' ]);
 
 		$mail = new Email_Order( [ 'order' => $order, 'cockpit_url' => $cockpit_url  ] );
 		$temp = tempnam('/tmp','fax');
@@ -102,9 +115,9 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$env = c::getEnv();
 		$num = $this->value;
-		$url = 'http://'.c::config()->host_callback.'/api/order/'.$order->id_order.'/sayorderadmin';
+		$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/sayorderadmin';
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => c::config()->host_callback, 'url' => $url, 'type' => 'admin_notification' ]);
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => $this->host_callback(), 'env' => $env, 'url' => $url, 'type' => 'admin_notification' ]);
 
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$call = $twilio->account->calls->create(
@@ -129,7 +142,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$message = str_split( $message , 160 );
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms to admin', 'num' => $sms, 'host' => c::config()->host_callback, 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'send sms to admin', 'num' => $sms, 'host' => $this->host_callback(), 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
 
 		foreach ($message as $msg) {
 			$twilio->account->sms_messages->create(
