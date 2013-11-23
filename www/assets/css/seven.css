@@ -1139,7 +1139,7 @@ p {
 	box-shadow: inset rgba(0,0,0,0.3) 0 0 40px;
 }
 .restaurants-item-content {
-
+	height: 11.7em;
 }
 .restaurants-closed, .restaurants-open {
 	cursor: pointer;
