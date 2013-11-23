@@ -183,16 +183,24 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		if ( !restaurant._open ) {
 			$rootScope.$broadcast('restaurantClosedClick', restaurant);
 		} else {
-			var el = $($event.target).parents('.meal-item').find('.meal-item-content');
-			var s = $(el).data('spinner');
-			if (s) {
+
+			if (!$('.is-ui2').get(0)) {
+				var el = $($event.target).parents('.meal-item').find('.meal-item-content');
+				var s = $(el).data('spinner');
 				s.start();
 			}
+
 			// @todo: this is kind of redundundant
 			// make sure that the restaurant is actulay loaded first
 			App.cache('Restaurant', restaurant.permalink, function () {
 				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink);
 			}, function() {
+
+				if ($('.is-ui2').get(0)) {
+					var el = $($event.target).parents('.restaurants-item').find('.restaurants-item-content');
+					var s = $(el).data('spinner');
+				}
+
 				App.connectionError();
 				s.stop();
 			});
