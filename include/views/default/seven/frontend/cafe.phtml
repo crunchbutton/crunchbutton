@@ -2,7 +2,7 @@
 
 
 <div class="content-padding">
-	<button class="button lightorange" ng-click="start()" ng-show="!running">Start</button>
+	<button class="button green" ng-click="start()" ng-show="!running">Start</button>
 	<button class="button lightorange" ng-click="stop()" ng-show="running">Stop</button>
 	<br><br>
 	
@@ -24,6 +24,7 @@
 		Time: <b>{{stats.timer}}</b> / <b>{{stats.round.time/1000}}:00</b> seconds<br>
 		Errors: <b>{{stats.errors}}</b><br>
 		Success: <b>{{stats.success}}</b><br>
+		Difficulty: <b>{{$scope.difficulties[difficulty].name}}</b><br>
 		Required: <b>{{stats.round.required}}</b><br>
 	</div>
 	<br><br><br>
