@@ -134,11 +134,11 @@ html {
 	margin: 8px 0 0 10px;
 	cursor: pointer;
 	-webkit-transform:translate3d(0,0,0);
-	-webkit-transition: opacity 0.2s;
-	   -moz-transition: opacity 0.2s;
-	    -ms-transition: opacity 0.2s;
-	     -o-transition: opacity 0.2s;
-	        transition: opacity 0.2s;
+	-webkit-transition: opacity 0.1s;
+	   -moz-transition: opacity 0.1s;
+	    -ms-transition: opacity 0.1s;
+	     -o-transition: opacity 0.1s;
+	        transition: opacity 0.1s;
 }
 
 .menu:active {
@@ -157,11 +157,11 @@ html {
 	float: left;
 
 	-webkit-transform:translate3d(0,0,0);
-	-webkit-transition: opacity 0.2s;
-	   -moz-transition: opacity 0.2s;
-	    -ms-transition: opacity 0.2s;
-	     -o-transition: opacity 0.2s;
-	        transition: opacity 0.2s;
+	-webkit-transition: opacity 0.1s;
+	   -moz-transition: opacity 0.1s;
+	    -ms-transition: opacity 0.1s;
+	     -o-transition: opacity 0.1s;
+	        transition: opacity 0.1s;
 }
 
 .nav-back:active {
@@ -536,11 +536,12 @@ p {
 	float: right;
 	margin: 8px 10px 0 0;
 
-	-webkit-transition: all opacity 0.2s;
-	   -moz-transition: all opacity 0.2s;
-	    -ms-transition: all opacity 0.2s;
-	     -o-transition: all opacity 0.2s;
-	        transition: all opacity 0.2s;
+	-webkit-transform:translate3d(0,0,0);
+	-webkit-transition: opacity 0.1s;
+	   -moz-transition: opacity 0.1s;
+	    -ms-transition: opacity 0.1s;
+	     -o-transition: opacity 0.1s;
+	        transition: opacity 0.1s;
 }
 
 .nav-cart-count {
