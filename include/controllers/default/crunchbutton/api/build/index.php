@@ -48,8 +48,8 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		$files[] = 'audio/start.mp3';
 		$files[] = 'audio/start.ogg';
 		
-		$files[] = 'audio/loose.mp3';
-		$files[] = 'audio/loose.ogg';
+		$files[] = 'audio/lose.mp3';
+		$files[] = 'audio/lose.ogg';
 		
 		$files[] = 'audio/fail.mp3';
 		$files[] = 'audio/fail.ogg';

@@ -100,17 +100,17 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 	};
 	
 	// triggered when the time runs out
-	var loose = function(mseconds) {
+	var lose = function(mseconds) {
 		ms = mseconds;
-		App.playAudio('cafe-loose');
+		App.playAudio('cafe-lose');
 		$scope.stop();
 
 		if ($scope.$$phase) {
-			$scope.message = {error: 'You loose.'};
+			$scope.message = {error: 'You lose.'};
 
 		} else {
 			$scope.$apply(function($scope) {
-				$scope.message = {error: 'You loose.'};
+				$scope.message = {error: 'You lose.'};
 			});
 		}
 	};
@@ -139,7 +139,7 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		var diff = Math.round(diffMs / 10).pad(4);
 		
 		if (diffMs >= rounds[round].time) {
-			loose(diffMs);
+			lose(diffMs);
 			return;
 		}
 		
@@ -375,6 +375,9 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			errors: $scope.stats.errors,
 			success: $scope.stats.success
 		});
+		
+		$scope.stats.win = win;
+		$scope.stats.score = $scope.score;
 
 		ms = 0;
 		startSeconds = 0;
@@ -459,4 +462,7 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			random: true
 		}
 	];
+	
+	$scope.loseTest = true;
+	$scope.home = false;
 });
