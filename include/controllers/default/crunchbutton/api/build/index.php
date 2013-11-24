@@ -7,10 +7,8 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		$files = [];
 
 		// views
-		foreach (new DirectoryIterator(c::config()->dirs->view.'default/crunchbutton/frontend') as $fileInfo) {
-			if (!$fileInfo->isDot()) {
-				$files[] = 'view/'.$fileInfo->getBasename('.phtml').'.html';
-			}
+		foreach (Crunchbutton_Util::frontendTemplates(true) as $file) {
+			$files[] = 'view/'.$file.'.html';
 		}
 
 		// images
