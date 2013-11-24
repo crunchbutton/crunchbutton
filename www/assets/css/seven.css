@@ -983,8 +983,6 @@ p {
 }
 
 
-
-
 .page-location .nav-top {
 	-webkit-transition: background 0.2s ease, border 0.2s ease;
 	   -moz-transition: background 0.2s ease, border 0.2s ease;
@@ -2807,10 +2805,11 @@ sup {
 }
 
 
-@media screen and (min-width: 769px) {
 
-}
 
+
+
+/* crunch cafe */
 .cafe-button {
 	border: 0;
 	background: #fe9872;
@@ -2883,3 +2882,82 @@ sup {
 	height: 0;
 	width: 0;
 }
+
+.page-cafe .nav-top {
+	background: url(../images/micro/cafe/awning.svg) repeat-x;
+	border-bottom: none;
+	background-size: 6em;
+	height: 5.55em;
+}
+.page-cafe .nav-top.at-top .nav-cart {
+	display: none;
+}
+.page-cafe .nav-top.at-top .menu {
+	background: url(../images/micro/menu-location.svg) center center no-repeat;
+	background-size: 100%;
+}
+
+.page-cafe .nav-top .logo {
+	display: none;
+}
+
+.cafe-start {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	z-index:1001;
+}
+@media screen and (min-width: 769px) {
+	.double-content-padding {
+		padding: 20px 0 20px 0;
+	}
+}
+@media screen and (max-width: 768px) {
+	.double-content-padding {
+		padding: 20px;
+	}
+}
+
+.button.pink {
+	background: #ef59a1;
+}
+.button.pink.big {
+	padding: .7em 0 .7em 0;
+	font-size: 1.9em;
+	font-weight: 900;
+}
+.button.pink:active {
+	background: #d24689;
+}
+.button.pushable.pink {
+	box-shadow: 0 3px 0 #ad1f63;
+}
+.button.pushable.pink:active {
+	box-shadow: none;
+	-webkit-transform: translateY(3px);
+}
+.cafe-start-toons {
+	background: url(../images/micro/cafe/start-toons.svg) no-repeat;
+	width: 26.6em;
+	height: 15.5em;
+	background-size: 100%;
+	margin: 0 auto;
+}
+.cafe-logo-clean {
+	background: url(../images/micro/cafe/logo-cafe-clean.svg) no-repeat;
+	width: 14.5em;
+	height: 2em;
+	background-size: 100%;
+	margin: 0 auto;
+}
+.cafe-top {
+	top: 0;
+	bottom:0;
+	left:0;
+	right:0;
+	width: 100%;
+	height: 100%;
+	z-index:1000;
+	overflow: hidden;
+}
+
