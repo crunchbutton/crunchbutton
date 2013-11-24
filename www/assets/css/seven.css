@@ -2973,3 +2973,49 @@ sup {
 	overflow: hidden;
 }
 
+.cafe-stats {
+	font-family: Omnes;
+	font-weight: bold;
+	font-size: 1.4em;
+	color: #79616b;
+	margin: 0 auto;
+	display: table;
+	margin-top: 1em;
+	text-align: left;
+}
+
+.cafe-stats p {
+	line-height: 1.1em;
+}
+
+.stat-key, .stat-value {
+	display: table-cell;
+	padding: .2em;
+}
+
+.stat-key {
+	width: 6em;
+}
+
+.stat-item {
+	display: table-row;
+}
+
+.cafe-brag {
+	color: #ff9500;
+	text-transform: uppercase;
+	font-size: 1.2em;
+	font-weight: bold;
+	letter-spacing: -.02em;
+	text-align: center;
+}
+
+.cafe-over {
+	text-align: center;
+}
+
+.cafe-bubble-wrap {
+	margin: 0 auto;
+	width: 17.7em;
+	margin-top: 3em;
+}
