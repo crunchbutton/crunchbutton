@@ -462,7 +462,4 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			random: true
 		}
 	];
-	
-	$scope.loseTest = true;
-	$scope.home = false;
 });

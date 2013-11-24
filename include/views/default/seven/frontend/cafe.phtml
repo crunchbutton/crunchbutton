@@ -1,8 +1,12 @@
 
 
-<div class="cafe-start cafe-animate" ng-show="home">
+<div class="cafe-start cafe-animate" ng-show="!running">
 	<div class="double-content-padding">
-		<button class="pushable button pink pushable big ani-all" ng-click="start()">Start</button>
+		<button class="pushable button pink pushable big ani-all" ng-click="start()">
+			<span ng-show="home">Start</span>
+			<span ng-show="!home && stats.win">Next Level</span>
+			<span ng-show="!home && !stats.win">Try again</span>
+		</button>
 	</div>
 </div>
 
@@ -49,17 +53,31 @@
 		</div>
 		
 		<! -- game endded win/lose -->
-		<div ng-show="loseTest || (!running && !home)" class="cafe-game">
+		<div ng-show="!running && !home" class="cafe-over">
 			<div class="content-padding">
 			
 				<div class="cafe-stats">
-					<b>{{stats.round.name}}</b> / <b>{{$scope.difficulties[difficulty].name}}</b><br>
-					Time: <b>{{stats.timer}}</b> / <b>{{stats.round.time/1000}}:00</b> seconds<br>
-					Orders: <b>{{stats.success}}</b> / <b>{{stats.round.required}}</b>
-				</div>
+					<div class="stat-item">
+						<div class="stat-key">Level:</div>
+						<div class="stat-value">{{stats.round.name}} / {{$scope.difficulties[difficulty].name}}</div>
+					</div>
 
-				<div ng-show="!stats.win">
-					<div class="about-join-bubble-wrap">
+					<div class="stat-item">
+						<div class="stat-key">Orders:</div>
+						<div class="stat-value">{{stats.success}} / {{stats.round.required}}</div>
+					</div>
+					
+					<div class="stat-item">
+						<div class="stat-key">Time:</div>
+						<div class="stat-value">{{stats.timer}} / {{stats.round.time/1000}}:00 s</div>
+					</div>
+				</div>
+				
+				<br><br>
+				<a href="" class="cafe-brag">Brag on Facebook</a>
+
+				<div ng-show="stats.win">
+					<div class="cafe-bubble-wrap">
 						<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
 							<div class="text" ng-switch="winMessage">
 								<span class="single-line" ng-switch-when="1">Congratulations!</span>
@@ -84,8 +102,8 @@
 					<p><br>Well, that was easy. Let’s try the next level!</p>
 				</div>
 				
-				<div ng-show="stats.win">
-					<div class="about-join-bubble-wrap">
+				<div ng-show="!stats.win">
+					<div class="cafe-bubble-wrap">
 						<div class="bubble-curved bubble-curved-red bubble-animated animated-resize">
 							<div class="text" ng-switch="loseMessage">
 								<span class="small" ng-switch-when="1">Well, maybe you don't suck...</span>
@@ -93,8 +111,8 @@
 								<span class="single-line" ng-switch-when="3">I know its hard</span>
 								<span class="small" ng-switch-when="4" style="margin-top: -.3em">But its nothing compare to writing content for this.</span>
 								<span class="single-line" ng-switch-when="5">Honestly.</span>
-								<span ng-switch-when="6">I feel like I'm talking to myself</span>
-								<span ng-switch-when="7">I'm a crazy person!</span>
+								<span ng-switch-when="6">It's like I'm talking to myself</span>
+								<span ng-switch-when="7">I feel like I'm taking crazy pills!</span>
 								<span class="single-line" ng-switch-when="8"><i class="fa fa-frown-o"></i> <i class="fa fa-smile-o"></i> <i class="fa fa-meh-o"></i></span>
 								<span class="single-line" ng-switch-default><b>You suck!</b></span>
 							</div>
