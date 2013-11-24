@@ -1,6 +1,18 @@
 <?php
 
 class Crunchbutton_Util extends Cana_Model {
+	public function frontendTemplates($export = false) {
+		$files = [];
+		foreach (new DirectoryIterator(c::config()->dirs->view.'default/crunchbutton/frontend') as $fileInfo) {
+			if (!$fileInfo->isDot() && $fileInfo->getBasename() != '.DS_Store' ) {
+				$files[] = $fileInfo->getBasename('.phtml');
+			}
+		}
+		if ($export) {
+			$files[] = 'legal';
+		}
+		return $files;
+	}
 
 	public static function ceil($value, $precision) {
 		$pow = pow ( 10, $precision ); 

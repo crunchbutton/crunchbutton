@@ -1,9 +1,0 @@
-<div class="top-pad"></div>
-
-<div class="content-padding">
-	<? if (!$this->export) : ?>
-		<div ng-bind-html-unsafe="legal"></div>
-	<? else : ?>
-		<?=$this->display('legal/index')?>
-	<? endif ; ?>
-</div>
