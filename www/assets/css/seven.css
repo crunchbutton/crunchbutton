@@ -712,6 +712,15 @@ p {
 	float: left;
 	margin-left: 4em;
 }
+.faq-tomato-green {
+	background: url(../images/micro/faq-tomato-green.svg) no-repeat;
+	width: 8.7em;
+	height: 14.3em;
+	background-size: 100%;
+	margin: 0 auto;
+	margin-top: -4.8em;
+}
+
 .bubble-tailless {
 	width: 14.6em;
 	height: 5.7em;
@@ -2324,7 +2333,10 @@ sup {
 .bubble-curved-green {
 	background: url(../images/micro/bubble-curved-green.svg) no-repeat;
 }
-
+.bubble-curved-red {
+	background: url(../images/micro/bubble-curved-red.svg) no-repeat;
+	color: #fff;
+}
 .bubble-curved-white {
 	background: url(../images/micro/bubble-curved-white.svg) no-repeat;
 }
