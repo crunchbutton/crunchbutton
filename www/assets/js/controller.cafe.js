@@ -194,56 +194,98 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		{
 			name: 'Round 2',
 			time: 20000,
+			required: 5,
+			descriptions: true,
+			scoreMultiplier: 1.5
+		},
+		{
+			name: 'Round 2',
+			time: 20000,
 			required: 7,
 			descriptions: true,
-			scoreMultiplier: 1.1
+			scoreMultiplier: 1.7
 		},
 		{
 			name: 'Round 3',
 			time: 20000,
 			required: 10,
 			descriptions: false,
-			scoreMultiplier: 1.3
+			scoreMultiplier: 2
 		},
 		{
 			name: 'Round 4',
 			time: 20000,
 			required: 13,
 			descriptions: false,
-			scoreMultiplier: 1.5
+			scoreMultiplier: 2.3
 		},
 		{
 			name: 'Round 5',
 			time: 20000,
 			required: 15,
 			descriptions: false,
-			scoreMultiplier: 1.7
+			scoreMultiplier: 5
 		},
 		{
 			name: 'Round 6',
 			time: 25000,
-			required: 27,
+			required: 17,
 			descriptions: false,
-			scoreMultiplier: 2.0
+			scoreMultiplier: 2.7
 		},
 		{
 			name: 'Round 7',
 			time: 20000,
-			required: 25,
+			required: 18,
 			descriptions: false,
-			scoreMultiplier: 5.0
+			scoreMultiplier: 2.8
 		},
 		{
 			name: 'Round 8',
 			time: 20000,
-			required: 30,
+			required: 19,
 			descriptions: false,
 			scoreMultiplier: 5.0
 		},
 		{
 			name: 'Round 9',
 			time: 20000,
-			required: 100,
+			required: 20,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'Round 9',
+			time: 20000,
+			required: 21,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'Round 9',
+			time: 20000,
+			required: 22,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'Round 9',
+			time: 20000,
+			required: 23,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'Round 9',
+			time: 20000,
+			required: 24,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'Round 9',
+			time: 20000,
+			required: 25,
 			descriptions: false,
 			scoreMultiplier: 100
 		}
@@ -355,11 +397,13 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			App.alert('I think you beat it...');
 			return;
 		}
-		if ($scope.difficulty > 1) {
+		$scope.home = false;
+
+		if ($scope.difficulties[$scope.difficulty].random) {
 			var cloned = $scope.allitems.slice(0);
-			$scope.items = $.pluck(cloned,6);
+			$scope.items = $.pluck(cloned,$scope.difficulties[$scope.difficulty].items);
 		} else {
-			$scope.items = $scope.allitems.slice(0, 6);
+			$scope.items = $scope.allitems.slice(0, $scope.difficulties[$scope.difficulty].items);
 		}
 		$scope.message = {good: 'Starting in 3!'};
 
@@ -396,15 +440,23 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 	$scope.difficulty = 0;
 	$scope.timer = '00:00';
 	
+	$scope.home = true;
+	
 	$scope.difficulties = [
 		{
-			name: 'Easy'
+			name: 'Easy',
+			items: 4,
+			random: false
 		},
 		{
-			name: 'Medium'
+			name: 'Medium',
+			items: 6,
+			random: false
 		},
 		{
-			name: 'Hard'
+			name: 'Hard',
+			items: 6,
+			random: true
 		}
 	];
 });
