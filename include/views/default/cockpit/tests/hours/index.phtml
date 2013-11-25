@@ -43,13 +43,12 @@ $this->restaurant->exports();
 		
 		<div class="box">
 			<div class="box-content padded">
-				<?=$this->restaurant->name?> is <b title="<?php echo $this->time->format(' M jS Y g:i:s A - D '); ?>"><?=$this->open ? 'OPEN' : 'CLOSED'?></b> <?=$this->now ? 'now (' . $this->time->format(' M jS Y g:i:s A ') . ')' : 'at '.$this->time->format(' M jS Y g:i:s A ')?>
+				<?=$this->restaurant->name?> is <b title="<?php echo $this->time->format(' M jS Y g:i:s A - D '); ?>"><?=$this->open ? 'OPEN' : 'CLOSED'?></b> <?=$this->now ? 'now (' . $this->time->format(' M jS Y g:i:s A ') . ')' : 'at '.$this->time->format(' M jS Y g:i:s A ');?>
 				<br/>
 				<br/>
 			</div>
 
 		</div>
-
 		<div class="box">
 			<div class="box-content padded">
 				<strong>Closed message:</strong>
@@ -64,10 +63,18 @@ $this->restaurant->exports();
 
 	</div>
 </div>
+<script type="text/javascript">
+<?php
+	$utc_str = gmdate( 'Y/n/d/H/i/s', time() );
+	$utc = strtotime( $utc_str );
+?>
+var _gmtServer = '<?=$utc_str?>';
+</script>
 <script type="text/javascript" src="/assets/js/base.js"></script>
 <script type="text/javascript" src="/assets/js/restaurant.js"></script>
 <script type="text/javascript" src="/assets/js/date.js"></script>
-<script>
+<script type="text/javascript" src="/assets/js/datetime.js"></script>
+<script type="text/javascript">
 /* override Orm.load method we dont need it right now */
 var Orm = { load : function(){} };
 $(document).ready(function() {
@@ -89,6 +96,8 @@ $(document).ready(function() {
 		closesIn = '-';
 		openIn = '-';
 	}
+	restaurant.closesIn();
+	setTimeout( function(){ console.log( 'js:closein = ' + restaurant._closesIn );}, 500 );
 
 	$( '#closesIn' ).html( closesIn );
 	$( '#openIn' ).html( openIn );
