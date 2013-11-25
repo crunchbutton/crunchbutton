@@ -185,107 +185,142 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 	// array of rounds in order
 	var rounds = [
 		{
-			name: 'Round 1',
+			name: 'Training',
 			time: 20000,
 			required: 3,
 			descriptions: true,
 			scoreMultiplier: .2
 		},
 		{
-			name: 'Round 2',
+			name: '2',
 			time: 20000,
 			required: 5,
 			descriptions: true,
 			scoreMultiplier: 1.5
 		},
 		{
-			name: 'Round 2',
+			name: '2',
 			time: 20000,
 			required: 7,
 			descriptions: true,
 			scoreMultiplier: 1.7
 		},
 		{
-			name: 'Round 3',
+			name: '3',
 			time: 20000,
 			required: 10,
 			descriptions: false,
 			scoreMultiplier: 2
 		},
 		{
-			name: 'Round 4',
+			name: '4',
 			time: 20000,
 			required: 13,
 			descriptions: false,
 			scoreMultiplier: 2.3
 		},
 		{
-			name: 'Round 5',
+			name: '5',
 			time: 20000,
 			required: 15,
 			descriptions: false,
 			scoreMultiplier: 5
 		},
 		{
-			name: 'Round 6',
-			time: 25000,
+			name: '6',
+			time: 20000,
 			required: 17,
 			descriptions: false,
 			scoreMultiplier: 2.7
 		},
 		{
-			name: 'Round 7',
+			name: '7',
 			time: 20000,
 			required: 18,
 			descriptions: false,
 			scoreMultiplier: 2.8
 		},
 		{
-			name: 'Round 8',
+			name: '8',
 			time: 20000,
 			required: 19,
 			descriptions: false,
 			scoreMultiplier: 5.0
 		},
 		{
-			name: 'Round 9',
+			name: '9',
 			time: 20000,
 			required: 20,
 			descriptions: false,
 			scoreMultiplier: 100
 		},
 		{
-			name: 'Round 9',
+			name: '10',
 			time: 20000,
 			required: 21,
 			descriptions: false,
 			scoreMultiplier: 100
 		},
 		{
-			name: 'Round 9',
+			name: '10',
 			time: 20000,
 			required: 22,
 			descriptions: false,
 			scoreMultiplier: 100
 		},
 		{
-			name: 'Round 9',
+			name: '11',
 			time: 20000,
 			required: 23,
 			descriptions: false,
 			scoreMultiplier: 100
 		},
 		{
-			name: 'Round 9',
+			name: '12',
 			time: 20000,
 			required: 24,
 			descriptions: false,
 			scoreMultiplier: 100
 		},
 		{
-			name: 'Round 9',
+			name: '13',
 			time: 20000,
 			required: 25,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: '14',
+			time: 20000,
+			required: 26,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: '14',
+			time: 20000,
+			required: 27,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: '15',
+			time: 20000,
+			required: 28,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: '16',
+			time: 20000,
+			required: 29,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'THE END',
+			time: 20000,
+			required: 30,
 			descriptions: false,
 			scoreMultiplier: 100
 		}
@@ -361,8 +396,7 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		clearTimeout(startTimer);
 		clearTimeout(messageTimeout);
 		clearInterval(timer);
-		
-		
+
 		$scope.score = createScore();
 		
 		App.log.game({
@@ -397,6 +431,7 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 	// start the game
 	$scope.start = function() {
 		if (!rounds[round]) {
+			// they beat this difficulty
 			App.alert('I think you beat it...');
 			return;
 		}
@@ -440,7 +475,7 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		$scope.running = true;
 	};
 	
-	$scope.difficulty = 0;
+	$scope.difficulty = '0';
 	$scope.timer = '00:00';
 	
 	$scope.home = true;
