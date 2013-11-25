@@ -115,6 +115,7 @@
 			</ul>
 		</div>
 	</div>
+	<div class="snap-drawer snap-drawer-right side-menu"></div>
 </div>
 
 <div class="wrapper static-nav-viewport">
@@ -125,14 +126,14 @@
 				<div class="content">
 					<div class="hide-before-init dropdown dropdown-tip" ng-show="menudropdown">
 						<ul class="dropdown-menu">
-							<li><a ng-click="navigation.link('/splash')" ng-show="!account.user.id_user"><i class="fa fa-rocket"></i>Get Started!</a></li>
-							<li><a ng-click="navigation.link('/food-delivery')"><i class="fa fa-cutlery"></i>Restaurants</a></li>
-							<li><a ng-click="navigation.link('/orders')" ng-show="account.user.id_user"><i class="fa fa-truck"></i>Previous Orders</a></li>
-							<li><a ng-click="navigation.link('/location')"><i class="fa fa-map-marker"></i>Change Location</a></li>
+							<li><a href="/splash" ng-click="navigation.link('/splash')" ng-show="!account.user.id_user"><i class="fa fa-rocket"></i>Get Started!</a></li>
+							<li><a href="/food-delivery" ng-click="navigation.link('/food-delivery')"><i class="fa fa-cutlery"></i>Restaurants</a></li>
+							<li><a href="/orders" ng-click="navigation.link('/orders')" ng-show="account.user.id_user"><i class="fa fa-truck"></i>Previous Orders</a></li>
+							<li><a href="/location" ng-click="navigation.link('/location')"><i class="fa fa-map-marker"></i>Change Location</a></li>
 							<li class="dropdown-divider"></li>
-							<li><a ng-click="navigation.link('/help')"><i class="fa fa-heart"></i>Help</a></li>
-							<li><a ng-click="navigation.link('/about')"><i class="fa fa-lightbulb-o"></i>About</a></li>
-							<li><a ng-click="navigation.link('/jobs')"><i class="fa fa-beer"></i>Free Beer</a></li>
+							<li><a href="/help" ng-click="navigation.link('/help')"><i class="fa fa-heart"></i>Help</a></li>
+							<li><a href="/about" ng-click="navigation.link('/about')"><i class="fa fa-lightbulb-o"></i>About</a></li>
+							<li><a href="/jobs" ng-click="navigation.link('/jobs')"><i class="fa fa-beer"></i>Free Beer</a></li>
 							<li><a ng-click="navigation.signin()" ng-show="!account.user.id_user"><i class="fa fa-sign-in"></i>Log In</a></li>
 							<li><a ng-click="signout.do()" ng-show="account.user.id_user"><i class="fa fa-sign-out"></i>Log Out</a></li>
 							<li class="dropdown-divider" ng-show="account.user.debug"></li>
@@ -184,7 +185,9 @@
 						<a href="http://www.linkedin.com/company/crunchbutton" target="_blank" class="fa fa-linkedin"></a>
 					</div>
 					<div class="divider"></div>
-					<span class="copyright">&copy; <?=date('Y')?> YouBeo, Inc.</span>
+					<div class="copyright">&copy; <?=date('Y')?> <a href="/legal">Crunchbutton</a></div>
+					<div class="divider"></div>
+					<br>
 				</div>
 			</div>
 
@@ -211,22 +214,22 @@
 
 
 <audio id="cafe-fail">
-	<source src="/assets/audio/fail.mp3"></source>
-	<source src="/assets/audio/fail.ogg"></source>
+	<source src="assets/audio/fail.mp3"></source>
+	<source src="assets/audio/fail.ogg"></source>
 </audio>
 <audio id="cafe-win">
-	<source src="/assets/audio/win.mp3"></source>
-	<source src="/assets/audio/win.ogg"></source>
+	<source src="assets/audio/win.mp3"></source>
+	<source src="assets/audio/win.ogg"></source>
 </audio>
 <audio id="cafe-loose">
-	<source src="/assets/audio/loose.mp3"></source>
-	<source src="/assets/audio/loose.ogg"></source>
+	<source src="assets/audio/lose.mp3"></source>
+	<source src="assets/audio/lose.ogg"></source>
 </audio>
 <audio id="cafe-good">
-	<source src="/assets/audio/good.mp3"></source>
-	<source src="/assets/audio/good.ogg"></source>
+	<source src="assets/audio/good.mp3"></source>
+	<source src="assets/audio/good.ogg"></source>
 </audio>
 <audio id="cafe-start">
-	<source src="/assets/audio/start.mp3"></source>
-	<source src="/assets/audio/start.ogg"></source>
+	<source src="assets/audio/start.mp3"></source>
+	<source src="assets/audio/start.ogg"></source>
 </audio>

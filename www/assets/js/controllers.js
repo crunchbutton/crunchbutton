@@ -1,18 +1,17 @@
 /**
  * splash page
  */
-NGApp.controller('SplashCtrl', function ($scope, $http, AccountFacebookService) {
+NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
 	$scope.facebook = AccountFacebookService;
 	if (App.parallax.setupBackgroundImage) {
 		App.parallax.setupBackgroundImage($('.home-top').get(0));
 	}
 });
 
-
 /**
  * jobs page
  */
-NGApp.controller('JobsCtrl', function ($scope, $http) {
+NGApp.controller('JobsCtrl', function ($scope) {
 	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
 	var devs = 'moc.nottubhcnurc@ylnosratskcor'.split('').reverse().join('');
 	$scope.reps = reps;
@@ -22,51 +21,37 @@ NGApp.controller('JobsCtrl', function ($scope, $http) {
 /**
  * owners page
  */
-NGApp.controller('OwnersCtrl', function ($scope, $http) {
-	var reps = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
-	$scope.reps = reps;
+NGApp.controller('OwnersCtrl', function ($scope) {
+	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
+	$scope.join = join;
 });
 
 /**
  * About page
  */
-NGApp.controller('AboutCtrl', function ($scope, $http) {
+NGApp.controller('AboutCtrl', function ($scope) {
 
 });
 
 /**
  * legal page
  */
-NGApp.controller('LegalCtrl', function ($scope, $http) {
-	if (!App.isPhoneGap) {
-		$http.get(App.service + 'legal').success( function( data ) {
-			$scope.legal = data.data.replace( '[email]', 'moc.nottubhcnurc@eybdoog'.split('').reverse().join('') );
-		});
-	}
+NGApp.controller('LegalCtrl', function ($scope) {
+	console.log('legal start');
+	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
+	var goodbye = 'moc.nottubhcnurc@eybdoog'.split('').reverse().join('');
+	$scope.join = join;
+	$scope.goodbye = goodbye;
 });
 
 /**
  * help page
  */
-NGApp.controller('HelpCtrl', function ($scope, $http, $compile, MainNavigationService) {
-
-	$scope.legal = function(){
-		MainNavigationService.link( '/legal' );
-	}
-
-	if (!App.isPhoneGap) {
-
-		$http.get(App.service + 'help').success(function(data) {
-
-			var help = 'moc.nottubhcnurc@sremotsucyppah'.split('').reverse().join('');
-			var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
-
-			$scope.help = data.data
-				.replace('[email]', '<a href="mailto:' + help + '">' + help + '</a>')
-				.replace('[joinemail]', '<a href="mailto:' + join + '">' + join + '</a>')
-			$scope.help = $compile( $scope.help )( $scope );
-		});
-	}
+NGApp.controller('HelpCtrl', function ($scope) {
+	var customers = 'moc.nottubhcnurc@sremotsucyppah'.split('').reverse().join('');
+	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
+	$scope.customers = customers;
+	$scope.join = join;
 });
 
 
@@ -183,16 +168,24 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		if ( !restaurant._open ) {
 			$rootScope.$broadcast('restaurantClosedClick', restaurant);
 		} else {
-			var el = $($event.target).parents('.meal-item').find('.meal-item-content');
-			var s = $(el).data('spinner');
-			if (s) {
+
+			if (!$('.is-ui2').get(0)) {
+				var el = $($event.target).parents('.meal-item').find('.meal-item-content');
+				var s = $(el).data('spinner');
 				s.start();
 			}
+
 			// @todo: this is kind of redundundant
 			// make sure that the restaurant is actulay loaded first
 			App.cache('Restaurant', restaurant.permalink, function () {
 				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink);
 			}, function() {
+
+				if ($('.is-ui2').get(0)) {
+					var el = $($event.target).parents('.restaurants-item').find('.restaurants-item-content');
+					var s = $(el).data('spinner');
+				}
+
 				App.connectionError();
 				s.stop();
 			});

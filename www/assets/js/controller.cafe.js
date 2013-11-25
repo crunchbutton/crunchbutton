@@ -10,15 +10,16 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		enabled = false,
 		round = 0,
 		startTimer = null,
+		startSeconds = 0,
 		ms = 0,
 		level = 1,
 		currentXp = 0;
 	
 	// get the item by key value
 	var getItem = function(key) {
-		for (var x in items) {
-			if (items[x].id == key) {
-				return items[x];
+		for (var x in $scope.allitems) {
+			if ($scope.allitems[x].id == key) {
+				return $scope.allitems[x];
 			}
 		}
 		return null;
@@ -46,24 +47,32 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			enabled = false;
 			$scope.stats.errors++;
 			App.playAudio('cafe-fail');
-			showMessage('You suck! Wait 2 seconds!','error');
+			showMessage('You suck! Wait 1 second!','error', 1000);
 			setTimeout(function() {
 				enabled = true;
-			},2000);
+			},1000);
 		}
 	};
 	
 	// show a message for a limited period of time
-	var showMessage = function(message, type) {
+	var showMessage = function(message, type, time) {
 		clearTimeout(messageTimeout);
-		$scope.message = {};
-		$scope.message[type] = message;
+		
+		if ($scope.$$phase) {
+			$scope.message = {};
+			$scope.message[type] = message;
+		} else {
+			$scope.$apply(function($scope) {
+				$scope.message = {};
+				$scope.message[type] = message;
+			});
+		}
 
 		messageTimeout = setTimeout(function() {
 			$scope.$apply(function() {
 				$scope.message = null;
 			});
-		},2000);
+		},time || 2000);
 	};
 	
 	// pluck a new item out of the array of 6 for the user to press
@@ -91,17 +100,17 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 	};
 	
 	// triggered when the time runs out
-	var loose = function(mseconds) {
+	var lose = function(mseconds) {
 		ms = mseconds;
-		App.playAudio('cafe-loose');
+		App.playAudio('cafe-lose');
 		$scope.stop();
 
 		if ($scope.$$phase) {
-			$scope.message = {error: 'You loose.'};
+			$scope.message = {error: 'You lose.'};
 
 		} else {
 			$scope.$apply(function($scope) {
-				$scope.message = {error: 'You loose.'};
+				$scope.message = {error: 'You lose.'};
 			});
 		}
 	};
@@ -130,7 +139,7 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		var diff = Math.round(diffMs / 10).pad(4);
 		
 		if (diffMs >= rounds[round].time) {
-			loose(diffMs);
+			lose(diffMs);
 			return;
 		}
 		
@@ -151,7 +160,7 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		var penalty = ($scope.stats.errors || 0) * 100;
 		var goals = ($scope.stats.success || 0) * 1000;
 
-		var score = Math.round(((timeBonus - penalty + goals) * rounds[round].scoreMultiplier) / 10);
+		var score = Math.round((((timeBonus - penalty + goals) * rounds[round].scoreMultiplier) / 10) * $scope.difficulty);
 
 		return score < 0 ? 0 : score;
 	};
@@ -185,63 +194,105 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		{
 			name: 'Round 2',
 			time: 20000,
+			required: 5,
+			descriptions: true,
+			scoreMultiplier: 1.5
+		},
+		{
+			name: 'Round 2',
+			time: 20000,
 			required: 7,
 			descriptions: true,
-			scoreMultiplier: 1.1
+			scoreMultiplier: 1.7
 		},
 		{
 			name: 'Round 3',
 			time: 20000,
 			required: 10,
 			descriptions: false,
-			scoreMultiplier: 1.3
+			scoreMultiplier: 2
 		},
 		{
 			name: 'Round 4',
 			time: 20000,
 			required: 13,
 			descriptions: false,
-			scoreMultiplier: 1.5
+			scoreMultiplier: 2.3
 		},
 		{
 			name: 'Round 5',
 			time: 20000,
 			required: 15,
 			descriptions: false,
-			scoreMultiplier: 1.7
+			scoreMultiplier: 5
 		},
 		{
 			name: 'Round 6',
 			time: 25000,
-			required: 27,
+			required: 17,
 			descriptions: false,
-			scoreMultiplier: 2.0
+			scoreMultiplier: 2.7
 		},
 		{
 			name: 'Round 7',
 			time: 20000,
-			required: 25,
+			required: 18,
 			descriptions: false,
-			scoreMultiplier: 5.0
+			scoreMultiplier: 2.8
 		},
 		{
 			name: 'Round 8',
 			time: 20000,
-			required: 30,
+			required: 19,
 			descriptions: false,
 			scoreMultiplier: 5.0
 		},
 		{
 			name: 'Round 9',
 			time: 20000,
-			required: 100,
+			required: 20,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'Round 9',
+			time: 20000,
+			required: 21,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'Round 9',
+			time: 20000,
+			required: 22,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'Round 9',
+			time: 20000,
+			required: 23,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'Round 9',
+			time: 20000,
+			required: 24,
+			descriptions: false,
+			scoreMultiplier: 100
+		},
+		{
+			name: 'Round 9',
+			time: 20000,
+			required: 25,
 			descriptions: false,
 			scoreMultiplier: 100
 		}
 	];
 
 	// array of posible items
-	var items = [
+	$scope.allitems = [
 		{
 			name: 'Wenzel',
 			id: 'wenzel'
@@ -251,8 +302,8 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			id: 'spicywith'
 		},
 		{
-			name: 'All Meat Pizza',
-			id: 'allmeatpizza'
+			name: 'Pizza',
+			id: 'pizza'
 		},
 		{
 			name: 'Mega Burger',
@@ -263,12 +314,12 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			id: 'curryrice'
 		},
 		{
-			name: 'Steak Sandwich',
-			id: 'steaksandwich'
-		},
-		{
 			name: 'Spicy Tuna Roll',
 			id: 'spicytunaroll'
+		},
+		{
+			name: 'Steak Sandwich',
+			id: 'steaksandwich'
 		},
 		{
 			name: 'Nachos',
@@ -311,6 +362,7 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		clearTimeout(messageTimeout);
 		clearInterval(timer);
 		
+		
 		$scope.score = createScore();
 		
 		App.log.game({
@@ -323,8 +375,12 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			errors: $scope.stats.errors,
 			success: $scope.stats.success
 		});
+		
+		$scope.stats.win = win;
+		$scope.stats.score = $scope.score;
 
 		ms = 0;
+		startSeconds = 0;
 		gameStart = null;
 		$scope.message = null;
 		$scope.requested = null;
@@ -344,8 +400,15 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			App.alert('I think you beat it...');
 			return;
 		}
-		$scope.items = $.pluck(items,6);
-		$scope.message = {good: 'Starting in 3 seconds!'};
+		$scope.home = false;
+
+		if ($scope.difficulties[$scope.difficulty].random) {
+			var cloned = $scope.allitems.slice(0);
+			$scope.items = $.pluck(cloned,$scope.difficulties[$scope.difficulty].items);
+		} else {
+			$scope.items = $scope.allitems.slice(0, $scope.difficulties[$scope.difficulty].items);
+		}
+		$scope.message = {good: 'Starting in 3!'};
 
 		$scope.stats = {
 			timer: '00:00',
@@ -353,29 +416,50 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			errors: 0,
 			success: 0
 		};
-
-		startTimer = setTimeout(function() {
-			App.playAudio('cafe-start');
-			gameStart = new Date();
-			timer = setInterval(function() {
-				updateTimer();
-			},10);
 		
-			if ($scope.$$phase) {
-				$scope.message = null;
-			} else {
-				$scope.$apply(function($scope) {
-					$scope.message = null;
-				});
-			}
+		startSeconds = 0;
+
+		startTimer = setInterval(function() {
+			startSeconds++;
+			if (startSeconds == 3) {
+				clearInterval(startTimer);
+				App.playAudio('cafe-start');
+				gameStart = new Date();
+				timer = setInterval(function() {
+					updateTimer();
+				},10);
 			
-			requestPress();
-			enabled = true;			
-		},3000);
+				showMessage('Go!!','good');	
+				
+				requestPress();
+				enabled = true;
+			} else {
+				showMessage('Starting in ' + (3 - startSeconds) + '!','good');	
+			}
+		},1000);
 		$scope.running = true;
 	};
 	
-	
+	$scope.difficulty = 0;
 	$scope.timer = '00:00';
-	$scope.allitems = items;
+	
+	$scope.home = true;
+	
+	$scope.difficulties = [
+		{
+			name: 'Easy',
+			items: 4,
+			random: false
+		},
+		{
+			name: 'Medium',
+			items: 6,
+			random: false
+		},
+		{
+			name: 'Hard',
+			items: 6,
+			random: true
+		}
+	];
 });

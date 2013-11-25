@@ -271,7 +271,15 @@ NGApp.directive('ngSpinner', function () {
 		restrict: 'A',
 		link: function (scope, elem, attr) {
 			setTimeout( function(){
-				elem.data( 'spinner', Ladda.create( elem.get(0) ) );	
+				var spinner = Ladda.create(elem.get(0));
+				elem.data('spinner', spinner);
+
+				if (attr.spinnerAutostart) {
+					$(elem).click(function() {
+						spinner.start();
+
+					});
+				}
 			}, 1 );
 		}
 	};

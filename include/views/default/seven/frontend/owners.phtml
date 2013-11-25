@@ -21,7 +21,7 @@
 		</div>
 		<div class="bubble-tail-spacer"></div>
 	</div>
-	<div class="owner-brocoli animated-resize" ng-instant="ownerMessage = (ownerMessage > 14 && 1) || ownerMessage + 1"></div>
+	<div class="owner-brocoli animated-resize" ng-instant="ownerMessage = (ownerMessage > 13 ? 0 : (ownerMessage + 1))"></div>
 	<div class="divider"></div>
 </div>
 
@@ -69,7 +69,7 @@
 		</div>
 	</div>
 	<br><br>
-	<a href="mailto:{{reps}}" target="_blank"><button class="button green">send us an email</button></a>
+	<a href="mailto:{{join}}"><button class="button green">send us an email</button></a>
 	<br><br>
 	<p class="alternate-link"><a href="tel:+18003514161">or call us @ 800-351-4161</a></p>
 </div>
