@@ -986,7 +986,10 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 				var arr = data.date.split(/[- :]/);
 				service.order._date = new Date(arr[0], arr[1]-1, arr[2], arr[3], arr[4], arr[5]);
 
-				service.order.mapLink = 'maps:q=?' +(service.order.delivery_type == 'delivery' ? 's' : 'd') + 'addr=' + service.order.address.replace(/\r|\n/g,' ') + '&' + (service.order.delivery_type == 'delivery' ? 'd' : 's') + 'addr=' + service.order._restaurant_address.replace(/\r|\n/g,' ');
+				var order_address = ( service.order.address ) ? service.order.address.replace(/\r|\n/g,' ') : '';
+				var restaurant_address = ( service.order._restaurant_address ) ? service.order._restaurant_address.replace(/\r|\n/g,' ') : '';
+
+				service.order.mapLink = 'maps:q=?' +(service.order.delivery_type == 'delivery' ? 's' : 'd') + 'addr=' + order_address + '&' + (service.order.delivery_type == 'delivery' ? 'd' : 's') + 'addr=' + restaurant_address;
 
 				service.facebook._order_uuid = service.order.uuid;
 				service.facebook.preLoadOrderStatus();
