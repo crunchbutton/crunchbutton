@@ -904,7 +904,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$minutes = $close - $time_since_monday;
 				$hours = floor( $minutes / 100 );
 				$minutes = $minutes - ( $hours * 100 );
-				$minutes = $minutes - 40;
+				if( $minutes > 60 ){
+					$minutes = $minutes - 40;
+				}
 				return ( $hours * 60 ) + $minutes;
 			}
 		}
@@ -969,7 +971,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$time = ( $dt ? $dt : 'now' );
 		$today = new DateTime( $time, new DateTimeZone( $this->timezone ) );
 		$week = ( int ) date( 'W', strtotime( $today->format( 'Y-m-d' ) ) );
-		
+
 		$monday = date ('Y-m-d', strtotime ( date( 'Y' ) . 'W' . $week . '1' ) ); 
 		$monday = new DateTime( $monday . '00:00:00', new DateTimeZone( $this->timezone ) );
 
@@ -983,10 +985,31 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$minutes = $open - $time_since_monday;
 				$hours = floor( $minutes / 100 );
 				$minutes = $minutes - ( $hours * 100 );
-				$minutes = $minutes - 40;
+				if( $minutes > 60 ){
+					$minutes = $minutes - 40;
+				}
 				return ( $hours * 60 ) + $minutes;
 			}
 		}
+
+		// it seems it will be opened just next week --- REVIEW IT
+		$week += 1;
+		$monday = date ('Y-m-d', strtotime ( date( 'Y' ) . 'W' . $week . '1' ) ); 
+		$monday = new DateTime( $monday . '00:00:00', new DateTimeZone( $this->timezone ) );
+		$interval = $monday->diff( $today );
+		$time_since_monday = ( $interval->m * 30 * 24 * 100 ) + ( $interval->d * 24 * 100 ) + ( $interval->h * 100 ) + ( $interval->i );
+		$start_on_monday = 0;
+		foreach( $hoursStartFinish as $segment ){
+			$open = $segment[ 'open' ];
+			$close = $segment[ 'close' ];
+			if( $open > $start_on_monday ){
+				$minutes = $open + $time_since_monday;
+				$hours = floor( $minutes / 100 );
+				$minutes = $minutes - ( $hours * 100 );
+				return ( $hours * 60 ) + $minutes + $time_since_monday;
+			}
+		}
+
 		return false;
 	}
 
@@ -1219,9 +1242,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$closesIn_hours = floor( $out['_closesIn'] / 60 );
 			$closesIn_minutes = $out['_closesIn'] - ( $closesIn_hours * 60 );
 			if( $closesIn_hours > 0 ){
-				$out['_closesIn_formated'] = $closesIn_hours . ' hours ' . ( $closesIn_minutes > 0 ? ' and ' . $closesIn_minutes . ' minutes' : '' ) ;
+				$out['_closesIn_formated'] = $closesIn_hours . ( $closesIn_hours > 1 ? ' hours ' : ' hour ' ) . ( $closesIn_minutes > 0 ? ' and ' . $closesIn_minutes . ' minutes' : '' ) ;
 			} else {
-				$out['_closesIn_formated'] = ( $closesIn_minutes > 0 ? ' and ' . $closesIn_minutes . ' minutes' : '' ) ;
+				$out['_closesIn_formated'] = ( $closesIn_minutes > 0 ? $closesIn_minutes . ' minutes' : '' ) ;
 			}
 			
 		}
@@ -1229,9 +1252,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$openIn_hours = floor( $out['_openIn'] / 60 );
 			$openIn_minutes = $out['_openIn'] - ( $openIn_hours * 60 );
 			if( $openIn_hours > 0 ){
-				$out['_openIn_formated'] = $openIn_hours . ' hours ' . ( $openIn_minutes > 0 ? ' and ' . $openIn_minutes . ' minutes' : '' ) ;
+				$out['_openIn_formated'] = $openIn_hours . ( $openIn_hours > 1 ? ' hours ' : ' hour ' ) . ( $openIn_minutes > 0 ? ' and ' . $openIn_minutes . ' minutes' : '' ) ;
 			} else {
-				$out['_openIn_formated'] = ( $openIn_minutes > 0 ? ' and ' . $openIn_minutes . ' minutes' : '' ) ;
+				$out['_openIn_formated'] = ( $openIn_minutes > 0 ? $openIn_minutes . ' minutes' : '' ) ;
 			}
 			
 		}
