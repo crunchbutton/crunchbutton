@@ -2840,9 +2840,6 @@ sup {
 	height: 3.1em;
 	margin-bottom: 1em;
 }
-.cafe-request {
-	height: 2.1em;
-}
 
 .cafe-button.nachos {
 	background: url(../images/micro/cafe/nachos.jpg);
@@ -2919,6 +2916,13 @@ sup {
 	width: 100%;
 	z-index:1001;
 }
+.cafe-buttons {
+	position: fixed;
+	bottom: 1.3em;
+	width: 100%;
+	z-index:1001;
+	
+}
 @media screen and (min-width: 769px) {
 	.double-content-padding {
 		padding: 20px 0 20px 0;
@@ -2974,7 +2978,7 @@ sup {
 }
 
 .cafe-stats {
-	font-family: Omnes, ChalkboardSE, Comic Sans MS, cursive, sans-serif;
+	font-family: "Omnes", "Chalkboard SE", "Comic Sans MS", sans-serif;
 	font-weight: bold;
 	font-size: 1.4em;
 	color: #79616b;
@@ -3018,4 +3022,9 @@ sup {
 	margin: 0 auto;
 	width: 17.7em;
 	margin-top: 3em;
+}
+
+.cafe-time-timer {
+	width: 3.2em;
+	display: inline-block;
 }

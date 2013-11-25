@@ -10,6 +10,14 @@
 	</div>
 </div>
 
+<div class="cafe-buttons" ng-show="running">
+	<div class="content-padding">
+		<button class="cafe-button {{button.id}}" ng-repeat="button in items" ng-instant="buttonPress(button.id)">{{button.name && stats.round.descriptions ? button.name : ''}}</button>
+	</div>
+</div>
+
+				
+
 <div class="cafe-top fixed">
 	<div class="top-pad"></div>
 
@@ -36,19 +44,38 @@
 					<div class="dialog-message dialog-message-success" ng-show="message.good">
 						<span ng-bind-html-unsafe="message.good"></span>
 					</div>
-				</div>
-			
+				</div>			
+
 				<div class="cafe-request">
-					<h4>{{requested.name}}</h4>
+					<div class="cafe-bubble-wrap">
+						<div class="bubble-request bubble-curved bubble-curved-green bubble-animated animated-resize" ng-show="requested.name">
+							<div class="text">
+								<span class="single-line"><b>{{requested.name}}</b></span>
+							</div>
+						</div>
+						<div class="bubble-curved-spacer"></div>
+					</div>
+					<div class="about-green-orange animated-resize" ng-instant="winMessage = (winMessage > 11 ? 0 : (winMessage+1))" instant-pass-thru></div>
+					<div class="divider"></div>
 				</div>
-				
-				<div class="cafe-level">
-					<b>{{stats.round.name}}</b> / <b>{{$scope.difficulties[difficulty].name}}</b><br>
-					Time: <b>{{stats.timer}}</b> / <b>{{stats.round.time/1000}}:00</b> seconds<br>
-					Orders: <b>{{stats.success}}</b> / <b>{{stats.round.required}}</b>
+
+				<div class="cafe-stats">
+					<div class="stat-item">
+						<div class="stat-key">Level:</div>
+						<div class="stat-value">{{stats.round.name}}&nbsp;&nbsp;/&nbsp;&nbsp;{{difficulties[difficulty].name}}</div>
+					</div>
+
+					<div class="stat-item">
+						<div class="stat-key">Orders:</div>
+						<div class="stat-value">{{stats.success}}&nbsp;&nbsp;/&nbsp;&nbsp;{{stats.round.required}}</div>
+					</div>
+					
+					<div class="stat-item">
+						<div class="stat-key">Time:</div>
+						<div class="stat-value"><span class="cafe-time-timer">{{stats.timer}}</span>&nbsp;/&nbsp;&nbsp;{{stats.round.time/1000}}:00</div>
+					</div>
 				</div>
-				<br><br><br>
-				<button class="cafe-button {{button.id}}" ng-repeat="button in items" ng-instant="buttonPress(button.id)">{{button.name && stats.round.descriptions ? button.name : ''}}</button>
+
 			</div>
 		</div>
 		
@@ -59,17 +86,17 @@
 				<div class="cafe-stats">
 					<div class="stat-item">
 						<div class="stat-key">Level:</div>
-						<div class="stat-value">{{stats.round.name}} / {{$scope.difficulties[$scope.difficulty].name}}</div>
+						<div class="stat-value">{{stats.round.name}}&nbsp;&nbsp;/&nbsp;&nbsp;{{difficulties[difficulty].name}}</div>
 					</div>
 
 					<div class="stat-item">
 						<div class="stat-key">Orders:</div>
-						<div class="stat-value">{{stats.success}} / {{stats.round.required}}</div>
+						<div class="stat-value">{{stats.success}}&nbsp;&nbsp;/&nbsp;&nbsp;{{stats.round.required}}</div>
 					</div>
 					
 					<div class="stat-item">
 						<div class="stat-key">Time:</div>
-						<div class="stat-value">{{stats.timer}} / {{stats.round.time/1000}}:00 s</div>
+						<div class="stat-value">{{stats.win ? stats.timer : stats.round.time/1000 + ':00'}}&nbsp;&nbsp;/&nbsp;&nbsp;{{stats.round.time/1000}}:00</div>
 					</div>
 				</div>
 				
