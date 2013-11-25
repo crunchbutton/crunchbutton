@@ -143,7 +143,7 @@ NGApp.directive( 'customCheckbox', function () {
 		restrict: 'A',
 		require: 'ngModel',
 		replace: true,
-		template: '<span class="custom-checkbox icon-check-sign"></span>',
+		template: '<span class="custom-checkbox fa fa-check-square"></span>',
 		link: function (scope, elem, attrs, ctrl) {
 			var label = angular.element('label[for="' + attrs.id + '"]');
 			label.bind('click', function () {
