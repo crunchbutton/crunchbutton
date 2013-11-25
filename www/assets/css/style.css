@@ -2758,6 +2758,14 @@ h1.about-header {
 	}
 }
 @media(max-width:767px) {
+	body {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		overflow: hidden;
+	}
 	.order-begin .icon {
 		font-size:23px;
 	}
