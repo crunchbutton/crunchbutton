@@ -3,23 +3,22 @@
 <div class="about-bubble-wrap">
 	<div class="bubble-tail bubble-tail-green bubble-animated">
 		<div class="text" ng-switch="pearMessage">
-			<span ng-switch-when="2">I don't actually work here.</span>
-			<span ng-switch-when="3">These guys do though.</span>
-			<span ng-switch-when="4">You should buy them a beer.</span>
-			<span ng-switch-when="5">I'm sure they deserve it.</span>
-			<span class="single-line" ng-switch-when="6">Maybe two.</span>
-			<span class="single-line" ng-switch-when="7">Or three.</span>
-			<span ng-switch-when="8">In fact just buy them a keg.</span>
-			<span class="single-line" ng-switch-when="9">Me?</span>
-			<span class="small" ng-switch-when="10" style="margin-top: .5em;">A bottle of Veuve Clicquot, please.</span>
-			<span class="single-line" ng-switch-when="11">Cheers!</span>
-			<span class="single-line" ng-switch-when="12"><i class="fa fa-glass"></i> <i class="fa fa-glass"></i> <i class="fa fa-glass"></i></span>
-			<span ng-switch-when="1"><b>Hey there!</b><br>Nice to meet you!</span>
+			<span ng-switch-when="1">I don't actually work here.</span>
+			<span ng-switch-when="2">These guys do though.</span>
+			<span ng-switch-when="3">You should buy them a beer.</span>
+			<span ng-switch-when="4">I'm sure they deserve it.</span>
+			<span class="single-line" ng-switch-when="5">Maybe two.</span>
+			<span class="single-line" ng-switch-when="6">Or three.</span>
+			<span ng-switch-when="7">In fact just buy them a keg.</span>
+			<span class="single-line" ng-switch-when="8">Me?</span>
+			<span class="small" ng-switch-when="9" style="margin-top: .5em;">A bottle of Veuve Clicquot, please.</span>
+			<span class="single-line" ng-switch-when="10">Cheers!</span>
+			<span class="single-line" ng-switch-when="11"><i class="fa fa-glass"></i> <i class="fa fa-glass"></i> <i class="fa fa-glass"></i></span>
 			<span ng-switch-default><b>Hey there!</b><br>Nice to meet you!</span>
 		</div>
 		<div class="bubble-tail-spacer"></div>
 	</div>
-	<div class="about-pear animated-resize" ng-instant="pearMessage = (pearMessage > 12 && 1) || pearMessage + 1" instant-pass-thru></div>
+	<div class="about-pear animated-resize" ng-instant="pearMessage = (pearMessage > 10 ? 0 : (pearMessage + 1))" instant-pass-thru></div>
 	<div class="divider"></div>
 </div>
 
@@ -93,24 +92,23 @@
 	<div class="about-join-bubble-wrap">
 		<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
 			<div class="text" ng-switch="orangeMessage">
-				<span class="small" ng-switch-when="2">So you can write stupid messages like this</span>
-				<span  ng-switch-when="3">That no one will ever read</span>
-				<span ng-switch-when="4">So you could put anything</span>
-				<span class="single-line" ng-switch-when="5">No really.</span>
-				<span class="single-line" ng-switch-when="6">Like...</span>
-				<span class="single-line" ng-switch-when="7">"Hi Crystal!"</span>
-				<span ng-switch-when="8">Did I mention we like beer?</span>
-				<span class="single-line" ng-switch-when="9">Yeah we do.</span>
-				<span ng-switch-when="10">We even brew our own beer</span>
-				<span class="small" ng-switch-when="11">That just screams cool right there</span>
-				<span class="single-line" ng-switch-when="12"><i class="fa fa-beer"></i> <i class="fa fa-beer"></i> <i class="fa fa-beer"></i></span>
-				<span class="single-line" ng-switch-when="1"><b>Join the team!</b></span>
+				<span class="small" ng-switch-when="1">So you can write stupid messages like this</span>
+				<span  ng-switch-when="2">That no one will ever read</span>
+				<span ng-switch-when="3">So you could put anything</span>
+				<span class="single-line" ng-switch-when="4">No really.</span>
+				<span class="single-line" ng-switch-when="5">Like...</span>
+				<span class="single-line" ng-switch-when="6">"Hi Crystal!"</span>
+				<span ng-switch-when="7">Did I mention we like beer?</span>
+				<span class="single-line" ng-switch-when="8">Yeah we do.</span>
+				<span ng-switch-when="9">We even brew our own beer</span>
+				<span class="small" ng-switch-when="10">That just screams cool right there</span>
+				<span class="single-line" ng-switch-when="11"><i class="fa fa-beer"></i> <i class="fa fa-beer"></i> <i class="fa fa-beer"></i></span>
 				<span class="single-line" ng-switch-default><b>Join the team!</b></span>
 			</div>
 		</div>
 		<div class="bubble-curved-spacer"></div>
 	</div>
-	<div class="about-green-orange animated-resize" ng-instant="orangeMessage = (orangeMessage > 12 && 1) || orangeMessage + 1" instant-pass-thru></div>
+	<div class="about-green-orange animated-resize" ng-instant="orangeMessage = (orangeMessage > 10 ? 0 : (orangeMessage + 1))" instant-pass-thru></div>
 	<div class="divider"></div>
 
 	<p>

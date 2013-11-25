@@ -6,7 +6,7 @@
 			<h4>What's your address?</h4>
 			<table cellpadding="0" cellspacing="0" class="home-location">
 				<tr>
-					<td style="width: 100%;"><input class="location-address" placeholder="e.g. 37 Elm St, New Haven CT 06511" ng-enter="letsEat()" ng-model="location.form.address" geo-complete></td>
+					<td style="width: 100%;"><input class="location-address" autocapitalize="off" autocorrect="off" placeholder="e.g. 37 Elm St, New Haven CT 06511" ng-enter="letsEat()" ng-model="location.form.address" geo-complete></td>
 					<td>				
 						<button class="location-detect ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF" ng-click="locEat()">
 							<span class="fa fa-location-arrow "></span>
@@ -37,24 +37,23 @@
 	<div class="about-join-bubble-wrap">
 		<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
 			<div class="text" ng-switch="orangeMessage">
-				<span class="small" ng-switch-when="2">So you can write stupid messages like this</span>
-				<span  ng-switch-when="3">That no one will ever read</span>
-				<span ng-switch-when="4">So you could put anything</span>
-				<span class="single-line" ng-switch-when="5">No really.</span>
-				<span class="single-line" ng-switch-when="6">Like...</span>
-				<span class="single-line" ng-switch-when="7">"Hi Crystal!"</span>
-				<span ng-switch-when="8">Did I mention we like beer?</span>
-				<span class="single-line" ng-switch-when="9">Yeah we do.</span>
-				<span ng-switch-when="10">We even brew our own beer</span>
-				<span class="small" ng-switch-when="11">That just screams cool right there</span>
-				<span class="single-line" ng-switch-when="12"><i class="fa fa-beer"></i> <i class="fa fa-beer"></i> <i class="fa fa-beer"></i></span>
-				<span class="single-line" ng-switch-when="1"><b>Join us!</b></span>
+				<span class="small" ng-switch-when="1">So you can write stupid messages like this</span>
+				<span  ng-switch-when="2">That no one will ever read</span>
+				<span ng-switch-when="3">So you could put anything</span>
+				<span class="single-line" ng-switch-when="4">No really.</span>
+				<span class="single-line" ng-switch-when="5">Like...</span>
+				<span class="single-line" ng-switch-when="6">"Hi Crystal!"</span>
+				<span ng-switch-when="7">Did I mention we like beer?</span>
+				<span class="single-line" ng-switch-when="8">Yeah we do.</span>
+				<span ng-switch-when="9">We even brew our own beer</span>
+				<span class="small" ng-switch-when="10">That just screams cool right there</span>
+				<span class="single-line" ng-switch-when="11"><i class="fa fa-beer"></i> <i class="fa fa-beer"></i> <i class="fa fa-beer"></i></span>
 				<span class="single-line" ng-switch-default><b>Join us!</b></span>
 			</div>
 		</div>
 		<div class="bubble-curved-spacer"></div>
 	</div>
-	<div class="about-green-orange animated-resize" ng-instant="orangeMessage = (orangeMessage > 12 && 1) || orangeMessage + 1" instant-pass-thru></div>
+	<div class="about-green-orange animated-resize" ng-instant="orangeMessage = (orangeMessage > 10 ? 0 : (orangeMessage + 1))" instant-pass-thru></div>
 	<div class="divider"></div>
 	
 	<div class="content-padding">

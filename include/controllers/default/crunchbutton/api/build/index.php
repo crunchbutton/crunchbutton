@@ -7,10 +7,8 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		$files = [];
 
 		// views
-		foreach (new DirectoryIterator(c::config()->dirs->view.'default/crunchbutton/frontend') as $fileInfo) {
-			if (!$fileInfo->isDot()) {
-				$files[] = 'view/'.$fileInfo->getBasename('.phtml').'.html';
-			}
+		foreach (Crunchbutton_Util::frontendTemplates(true) as $file) {
+			$files[] = 'view/'.$file.'.html';
 		}
 
 		// images
@@ -50,8 +48,8 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		$files[] = 'audio/start.mp3';
 		$files[] = 'audio/start.ogg';
 		
-		$files[] = 'audio/loose.mp3';
-		$files[] = 'audio/loose.ogg';
+		$files[] = 'audio/lose.mp3';
+		$files[] = 'audio/lose.ogg';
 		
 		$files[] = 'audio/fail.mp3';
 		$files[] = 'audio/fail.ogg';

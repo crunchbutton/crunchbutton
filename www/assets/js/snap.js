@@ -229,8 +229,8 @@
                         
                     }
                     if(n===0){
-                           settings.element.style[cache.vendor+'Transform'] = '';
-                       }
+						settings.element.style[cache.vendor+'Transform'] = '';
+                    }
                 },
                 x: function(n) {
 
@@ -310,6 +310,9 @@
                     
                     utils.dispatchEvent('start');
                     settings.element.style[cache.vendor+'Transition'] = '';
+					if (settings.menu) {
+						settings.menu.style[cache.vendor+'Transition'] = '';
+					}
                     cache.isDragging = true;
                     cache.hasIntent = null;
                     cache.intentChecked = false;

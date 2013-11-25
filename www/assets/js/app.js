@@ -37,8 +37,7 @@ var App = {
 		enabled: true,
 		desktop: 9,
 		mobile: 6
-	},
-	menuScroll: false
+	}
 };
 
 // enable localstorage on phonegap
@@ -587,54 +586,8 @@ App.init = function(config) {
 	App._init = true;
 
 	App.verifyConnection.init();
-	
-	var preventScrollClass;
-	if (App.menuScroll) {
-		// @bug
-		// this s a ghetto fix just so we can allow vertical scrolling on the sideswipe menu
-		// what happens is sometimes you are able to drag the body by using the sideswipe menu
-		// @note: so what happens is the bodys scrollleft gets messed up when you scroll the drawer
-		App.fix = function() {
-			if ($('body').scrollLeft() == 0) {
-				return;
-			}
-			$('body').scrollLeft(0);
-			var classes = ['fixed','fixed-599','fixed-699'];
-			var els = [];
-			for (var x in classes) {
-				var el = $('.' + classes[x]);
-				els[classes[x]] = el;
-				el.removeClass(classes[x]);
-			}
-			setTimeout(function() {
-				for (var x in els) {
-					els[x].addClass(x);
-				}
-			});
-		};
-		setInterval(App.fix, 10);
-		var start;
-		$(document).on({
-			touchstart: function(e) {
-				start = e.originalEvent.pageX;
-			},
-			touchmove: function(e) {
-				if (e.originalEvent.pageX > start) {
-					e.preventDefault();
-					e.stopPropagation();
-				}
-			},
-			touchend: function() {
-				App.fix();
-			}
-		}, '.side-menu');
-		
-		preventScrollClass = '.mfp-wrap';
-	} else {
-		preventScrollClass = '.snap-drawers, .mfp-wrap, .support-container';
-	}
 
-	$(document).on('touchmove', preventScrollClass, function(e) {
+	$(document).on('touchmove', '.mfp-wrap', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 	});
