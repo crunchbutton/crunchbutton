@@ -10,6 +10,8 @@
  */
 class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
+	public $__dt = null;
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -743,6 +745,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 */
 	public function open( $dt = null ) {
 
+		if( $dt ){
+			$this->_dt = $dt;
+		}
+
 		if (!$this->open_for_business) {
 			if( $this->forceOpen() ){
 				return true;
@@ -759,7 +765,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			return false;
 		}
 
-		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
+		$time = ( $dt ? $dt : 'now' );
+		$today = new DateTime( $time, new DateTimeZone( $this->timezone ) );
 		$hours = $this->hours();
 		$day = strtolower($today->format('D'));
 
@@ -769,19 +776,24 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 			$hasHours = true;
 
-			if ($hour->day != $day) {
+			if ( $hour->day != $day ) {
 				continue;
 			}
 
-			$open  = new DateTime('today '.$hour->time_open,  new DateTimeZone($this->timezone));
-			$close = new DateTime('today '.$hour->time_close, new DateTimeZone($this->timezone));
-
-			// if closeTime before openTime, then closeTime should be for tomorrow
-			if ($close->getTimestamp() < $open->getTimestamp()) {
-				$close = new DateTime('+1 day '.$hour->time_close, new DateTimeZone($this->timezone));
+			if( $dt ){
+				$open  = new DateTime( $today->format( 'Y-m-d' ) . ' ' . $hour->time_open,  new DateTimeZone( $this->timezone ) );
+				$close = new DateTime( $today->format( 'Y-m-d' ) . ' ' . $hour->time_close, new DateTimeZone( $this->timezone ) );	
+			} else {
+				$open  = new DateTime( 'today ' . $hour->time_open,  new DateTimeZone( $this->timezone ) );
+				$close = new DateTime( 'today ' . $hour->time_close, new DateTimeZone( $this->timezone ) );	
 			}
 
-			if ($today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp()) {
+			// if closeTime before openTime, then closeTime should be for tomorrow
+			if ( $close->getTimestamp() < $open->getTimestamp() ) {
+				date_add( $close, date_interval_create_from_date_string( '1 day' ) );
+			}
+
+			if ( $today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp() ) {
 				return true;
 			}
 		}
@@ -821,7 +833,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	// Return minutes left to close
 	public function closesIn( $dt = null ) {
-		if ( !$this->open() ) {
+		if ( !$this->open( $dt ) ) {
 			return false;
 		}
 
@@ -829,32 +841,71 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		foreach ( $this->hours() as $hour ) {
 			$_hours[$hour->day][] = [$hour->time_open, $hour->time_close];
 		}
+
 		$_hours = $this->overrideHours( $_hours );
 		$hours = [];
 		foreach( $_hours as $day => $segments ){
 			foreach( $segments as $segment ){
-				$hours[] = ( object ) [ 'day' => $day, 'time_open' => $segment[ 0 ], 'time_close' => $segment[ 1 ] ];
+				$hours[] = ( object ) [ 'day' => $day, 'time_open' => $segment[ 0 ], 'time_close' => $segment[ 1 ] ];				
 			}
 		}
 
-		$today = new DateTime($dt ? $dt : 'now', new DateTimeZone($this->timezone));
-		$day = strtolower($today->format('D'));
+		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
+		// Convert to hours starting at monday
+		$hoursStartFinish = [];
+		foreach( $hours as $day => $segments ){
+			$day = $segments->day;
+			$dayshours = array_search( $day, $weekdays ) * 2400;
+				preg_match( '/(\d+):(\d+)/', $segments->time_open, $hour_open );
+				preg_match( '/(\d+):(\d+)/', $segments->time_close, $hour_close );
+				$hour_open = ( $dayshours + intval( $hour_open[ 1 ] ) * 100 ) + intval( $hour_open[ 2 ] );
+				$hour_close = ( $dayshours + intval( $hour_close[ 1 ] ) * 100 ) + intval( $hour_close[ 2 ] );
+				if( $hour_open > $hour_close ){
+					$hour_close += 2400;
+				}
+				$hoursStartFinish[] = [ 'open' => $hour_open, 'close' => $hour_close ];
+		}
 
-		foreach ($hours as $hour) {
-			if ($hour->day != $day) {
-				continue;
+		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
+
+		// Merge the hours
+		foreach( $hoursStartFinish as $key => $val ){
+			$getNext = false;
+			foreach( $hoursStartFinish as $keyNext => $valNext ){
+				if( $getNext ){
+					if( $hoursStartFinish[ $keyNext ][ 'open' ] <= $hoursStartFinish[ $key ][ 'close' ] 
+							&& $hoursStartFinish[ $keyNext ][ 'close' ] - $hoursStartFinish[ $key ][ 'open' ] < 3600 ) {
+						$hoursStartFinish[ $key ][ 'close' ] = $hoursStartFinish[ $keyNext ][ 'close' ];
+						unset( $hoursStartFinish[ $keyNext ] );
+						$getNext = false;
+					}
+				}
+				if( $key == $keyNext ){
+					$getNext = true;
+				}
 			}
-			$open  = new DateTime('today '.$hour->time_open,  new DateTimeZone($this->timezone));
-			$close = new DateTime('today '.$hour->time_close, new DateTimeZone($this->timezone));
-			if ($close->getTimestamp() < $open->getTimestamp()) {
-				$close = new DateTime('+1 day '.$hour->time_close, new DateTimeZone($this->timezone));
-			}
-			if ($today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp()) {
-				$interval = $today->diff( $close );
-				$minutes = $interval->days * 24 * 60;
-				$minutes += $interval->h * 60;
-				$minutes += $interval->i;
-				return $minutes;
+		}
+
+		$time = ( $dt ? $dt : 'now' );
+		$today = new DateTime( $time, new DateTimeZone( $this->timezone ) );
+		$week = ( int ) date( 'W', strtotime( $today->format( 'Y-m-d' ) ) );
+		$monday = date ('Y-m-d', strtotime ( date( 'Y' ) . 'W' . $week . '1' ) ); 
+		$monday = new DateTime( $monday . '00:00:00', new DateTimeZone( $this->timezone ) );
+
+		$interval = $monday->diff( $today );
+
+		$dayshours = array_search( strtolower( $today->format( 'D' ) ), $weekdays ) * 2400;		
+		$time_since_monday = ( $interval->m * 30 * 24 * 100 ) + ( $interval->d * 24 * 100 ) + ( $interval->h * 100 ) + ( $interval->i );
+
+		foreach( $hoursStartFinish as $segment ){
+			$open = $segment[ 'open' ];
+			$close = $segment[ 'close' ];
+			if( $open < $time_since_monday && $close > $time_since_monday ){
+				$minutes = $close - $time_since_monday;
+				$hours = floor( $minutes / 100 );
+				$minutes = $minutes - ( $hours * 100 );
+				$minutes = $minutes - 40;
+				return ( $hours * 60 ) + $minutes;
 			}
 		}
 		return false;
@@ -862,7 +913,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	// Return minutes left to open
 	public function openIn( $dt = null ) {
-		if ($this->open()) {
+		if ( $this->open( $dt ) ) {
 			return false;
 		}
 
@@ -870,28 +921,70 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		foreach ( $this->hours() as $hour ) {
 			$_hours[$hour->day][] = [$hour->time_open, $hour->time_close];
 		}
+
 		$_hours = $this->overrideHours( $_hours );
 		$hours = [];
 		foreach( $_hours as $day => $segments ){
 			foreach( $segments as $segment ){
-				$hours[] = ( object ) [ 'day' => $day, 'time_open' => $segment[ 0 ], 'time_close' => $segment[ 1 ] ];
+				$hours[] = ( object ) [ 'day' => $day, 'time_open' => $segment[ 0 ], 'time_close' => $segment[ 1 ] ];				
 			}
 		}
 
-		$today = new DateTime($dt ? $dt : 'now', new DateTimeZone($this->timezone));
-		$day = strtolower($today->format('D'));
+		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
+		// Convert to hours starting at monday
+		$hoursStartFinish = [];
+		foreach( $hours as $day => $segments ){
+			$day = $segments->day;
+			$dayshours = array_search( $day, $weekdays ) * 2400;
+				preg_match( '/(\d+):(\d+)/', $segments->time_open, $hour_open );
+				preg_match( '/(\d+):(\d+)/', $segments->time_close, $hour_close );
+				$hour_open = ( $dayshours + intval( $hour_open[ 1 ] ) * 100 ) + intval( $hour_open[ 2 ] );
+				$hour_close = ( $dayshours + intval( $hour_close[ 1 ] ) * 100 ) + intval( $hour_close[ 2 ] );
+				if( $hour_open > $hour_close ){
+					$hour_close += 2400;
+				}
+				$hoursStartFinish[] = [ 'open' => $hour_open, 'close' => $hour_close ];
+		}
 
-		foreach ($hours as $hour) {
-			if ($hour->day != $day) {
-				continue;
+		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
+
+		// Merge the hours
+		foreach( $hoursStartFinish as $key => $val ){
+			$getNext = false;
+			foreach( $hoursStartFinish as $keyNext => $valNext ){
+				if( $getNext ){
+					if( $hoursStartFinish[ $keyNext ][ 'open' ] <= $hoursStartFinish[ $key ][ 'close' ] 
+							&& $hoursStartFinish[ $keyNext ][ 'close' ] - $hoursStartFinish[ $key ][ 'open' ] < 3600 ) {
+						$hoursStartFinish[ $key ][ 'close' ] = $hoursStartFinish[ $keyNext ][ 'close' ];
+						unset( $hoursStartFinish[ $keyNext ] );
+						$getNext = false;
+					}
+				}
+				if( $key == $keyNext ){
+					$getNext = true;
+				}
 			}
-			$open  = new DateTime('today '.$hour->time_open,  new DateTimeZone($this->timezone));
-			if ($today->getTimestamp() < $open->getTimestamp()) {
-				$interval = $today->diff($open);
-				$minutes = $interval->days * 24 * 60;
-				$minutes += $interval->h * 60;
-				$minutes += $interval->i;
-				return $minutes;
+		}
+
+		$time = ( $dt ? $dt : 'now' );
+		$today = new DateTime( $time, new DateTimeZone( $this->timezone ) );
+		$week = ( int ) date( 'W', strtotime( $today->format( 'Y-m-d' ) ) );
+		
+		$monday = date ('Y-m-d', strtotime ( date( 'Y' ) . 'W' . $week . '1' ) ); 
+		$monday = new DateTime( $monday . '00:00:00', new DateTimeZone( $this->timezone ) );
+
+		$interval = $monday->diff( $today );
+		$time_since_monday = ( $interval->m * 30 * 24 * 100 ) + ( $interval->d * 24 * 100 ) + ( $interval->h * 100 ) + ( $interval->i );
+
+		foreach( $hoursStartFinish as $segment ){
+			$open = $segment[ 'open' ];
+			$close = $segment[ 'close' ];
+			if( $open > $time_since_monday ){
+				$minutes = $open - $time_since_monday;
+				$hours = floor( $minutes / 100 );
+				$minutes = $minutes - ( $hours * 100 );
+				$minutes = $minutes - 40;
+				return ( $hours * 60 ) + $minutes;
 			}
 		}
 		return false;
@@ -1113,16 +1206,35 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['_open']      	= $this->open();
 		$out['_force_open']	= $this->forceOpen();
 		$out['_force_close'] = $this->forceClose();
-		$out['_closesIn'] = $this->closesIn();
+		$out['_closesIn'] = $this->closesIn( $this->_dt );
 		$out['_weight'] = $this->weight();
 		$out['_minimumTime']  = 15; // Min minutes to show the hurry message
-		$out['_openIn']   = $this->openIn();
+		$out['_openIn']   = $this->openIn( $this->_dt );
 
-		if( $out['_closesIn'] == 0 ){
+		if( $out['_closesIn'] === 0 ){
 			$out['_open'] = false;
 			$out['_closesIn'] = false;
 		}
-
+		if( $out['_closesIn'] ){
+			$closesIn_hours = floor( $out['_closesIn'] / 60 );
+			$closesIn_minutes = $out['_closesIn'] - ( $closesIn_hours * 60 );
+			if( $closesIn_hours > 0 ){
+				$out['_closesIn_formated'] = $closesIn_hours . ' hours ' . ( $closesIn_minutes > 0 ? ' and ' . $closesIn_minutes . ' minutes' : '' ) ;
+			} else {
+				$out['_closesIn_formated'] = ( $closesIn_minutes > 0 ? ' and ' . $closesIn_minutes . ' minutes' : '' ) ;
+			}
+			
+		}
+		if( $out['_openIn'] ){
+			$openIn_hours = floor( $out['_openIn'] / 60 );
+			$openIn_minutes = $out['_openIn'] - ( $openIn_hours * 60 );
+			if( $openIn_hours > 0 ){
+				$out['_openIn_formated'] = $openIn_hours . ' hours ' . ( $openIn_minutes > 0 ? ' and ' . $openIn_minutes . ' minutes' : '' ) ;
+			} else {
+				$out['_openIn_formated'] = ( $openIn_minutes > 0 ? ' and ' . $openIn_minutes . ' minutes' : '' ) ;
+			}
+			
+		}
 		if( $out['_open'] ){
 			if( $out[ 'delivery' ] != 1 ){
 				$out['_tag']  = 'takeout';	
@@ -1279,8 +1391,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 
-		$monday = date('Y-m-d', strtotime('monday this week') );
-		$sunday = date('Y-m-d', strtotime('sunday this week') );
+		$monday = date( 'Y-m-d', strtotime( 'monday this week' ) );
+		$sunday = date( 'Y-m-d', strtotime( 'sunday this week' ) );
 		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override 
 																															WHERE id_restaurant = {$this->id_restaurant} 
 																															AND
@@ -1363,7 +1475,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
-
 		foreach( $hoursStartFinish as $key => $val ){
 			$getNext = false;
 			foreach( $hoursStartFinish as $keyNext => $valNext ){
@@ -1389,10 +1500,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$open -= 2400;
 				$close -= 2400;
 			}
+
 			if( !$hours[ $weekday ] ){
 				$hours[ $weekday ] = [];	
 			}
-			$_hours[ $weekday ][] = array( Cana_Util::format_time( $open ), Cana_Util::format_time( $close ) );
+			$_hours[ $weekday ][] = array( Cana_Util::format_time( $open ), Cana_Util::format_time( $close ) );	
+			
 		}
 		return $_hours;
 	}

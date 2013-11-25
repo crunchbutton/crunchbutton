@@ -27,7 +27,8 @@ $this->restaurant->exports();
 						<li>
 							<span>Time</span>
 							<span class="pull-right">
-								<input type="text" class="test-time" value="<?=$this->now ? 'NOW' : $this->time->format('Y-m-d H:i:s')?>">
+								<input type="text" class="test-time span12" value="<?= $this->time->format('M jS Y g:i:s A')?>">
+								<?php echo$this->restaurant->timezone; ?>
 							</span>
 						</li>
 						<li>
@@ -42,13 +43,9 @@ $this->restaurant->exports();
 		
 		<div class="box">
 			<div class="box-content padded">
-				<?=$this->restaurant->name?> is <b><?=$this->open ? 'OPEN' : 'CLOSED'?></b> <?=$this->now ? 'now' : 'at '.$this->time->format('Y-m-d H:i:s')?>
+				<?=$this->restaurant->name?> is <b><?=$this->open ? 'OPEN' : 'CLOSED'?></b> <?=$this->now ? 'now (' . $this->time->format(' M jS Y g:i:s A - D ') . ')' : 'at '.$this->time->format(' M jS Y g:i:s A - D ')?>
 				<br/>
-				<strong>Curent time: </strong><?php
-					$today = new DateTime( 'now', new DateTimeZone( $this->restaurant->timezone ) );
-					echo $today->format(' M jS Y g:i:s A - D ');
-					echo ' (' . $this->restaurant->timezone . ')';
-				?>
+				<br/>
 			</div>
 
 		</div>
@@ -84,7 +81,8 @@ $(document).ready(function() {
 	var restaurant = new Restaurant();
 	$.extend( restaurant, <?php echo json_encode( $this->restaurant->export_force_override_hours() ); ?>);
 	$( '#closedMessage' ).html( restaurant.closedMessage() );
-	$( '#closesIn' ).html( ( restaurant._closesIn ? restaurant._closesIn + ' minutes' : 'it is closed!' ) );
-	$( '#openIn' ).html( ( restaurant._openIn ? restaurant._openIn + ' minutes' : 'it is opened!' ) );
+
+	$( '#closesIn' ).html( ( restaurant._closesIn ? restaurant._closesIn + ' minutes (' + restaurant._closesIn_formated + ' )' : 'it is closed!' ) );
+	$( '#openIn' ).html( ( restaurant._openIn ? restaurant._openIn + ' minutes (' + restaurant._openIn_formated + ' )'  : 'it is opened!' ) );
 });
 </script>
