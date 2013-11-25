@@ -82,7 +82,15 @@ $(document).ready(function() {
 	$.extend( restaurant, <?php echo json_encode( $this->restaurant->export_force_override_hours() ); ?>);
 	$( '#closedMessage' ).html( restaurant.closedMessage() );
 
-	$( '#closesIn' ).html( ( restaurant._closesIn ? restaurant._closesIn + ' minutes (' + restaurant._closesIn_formated + ' )' : 'it is closed!' ) );
-	$( '#openIn' ).html( ( restaurant._openIn ? restaurant._openIn + ' minutes (' + restaurant._openIn_formated + ' )'  : 'it is opened!' ) );
+	var closesIn = ( restaurant._closesIn ? restaurant._closesIn + ' minute(s) (' + restaurant._closesIn_formated + ' )' : 'it is closed!' );
+	var openIn = ( restaurant._openIn ? restaurant._openIn + ' minute(s) (' + restaurant._openIn_formated + ' )'  : 'it is opened!' );
+
+	if( !restaurant._closesIn && !restaurant._openIn ){
+		closesIn = '-';
+		openIn = '-';
+	}
+
+	$( '#closesIn' ).html( closesIn );
+	$( '#openIn' ).html( openIn );
 });
 </script>
