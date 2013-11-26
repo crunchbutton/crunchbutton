@@ -770,6 +770,14 @@ App.playAudio = function(audio) {
 	}).play();
 }
 
+App.vibrate = function() {
+	if (App.isPhoneGap) {
+		try {
+			navigator.notification.vibrate(100);
+		} catch (e) {}
+	}
+}
+
 // Hack to fix iOS the problem with body position when the keyboard is shown #1774
 App.applyIOSPositionFix = function(){
 	// this seems to do more harm than good with ui2
