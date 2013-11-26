@@ -42,20 +42,20 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		$files[] = 'audio/crunch.mp3';
 		$files[] = 'audio/crunch.ogg';
 		
-		$files[] = 'audio/win.mp3';
-		$files[] = 'audio/win.ogg';
+		$files[] = 'audio/cafe-win.mp3';
+		$files[] = 'audio/cafe-win.ogg';
 		
-		$files[] = 'audio/start.mp3';
-		$files[] = 'audio/start.ogg';
+		$files[] = 'audio/cafe-start.mp3';
+		$files[] = 'audio/cafe-start.ogg';
 		
-		$files[] = 'audio/lose.mp3';
-		$files[] = 'audio/lose.ogg';
+		$files[] = 'audio/cafe-lose.mp3';
+		$files[] = 'audio/cafe-lose.ogg';
 		
-		$files[] = 'audio/fail.mp3';
-		$files[] = 'audio/fail.ogg';
+		$files[] = 'audio/cafe-fail.mp3';
+		$files[] = 'audio/cafe-fail.ogg';
 		
-		$files[] = 'audio/good.mp3';
-		$files[] = 'audio/good.ogg';
+		$files[] = 'audio/cafe-good.mp3';
+		$files[] = 'audio/cafe-good.ogg';
 		
 		// fonts
 		$use = '/fontawesome|opensans/i';

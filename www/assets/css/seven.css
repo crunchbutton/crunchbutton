@@ -2842,49 +2842,49 @@ sup {
 }
 
 .cafe-button.nachos {
-	background: url(../images/micro/cafe/nachos.jpg);
+	background: url(../images/micro/cafe/button-nachos.jpg);
 }
 .cafe-button.wenzel {
-	background: url(http://dev.crunchr.co/assets/images/food/wenzel-side.jpg);
+	background: url(../images/micro/cafe/button-wenzel.jpg);
 }
 .cafe-button.spicytunaroll {
-	background: url(http://dev.crunchr.co/assets/images/food/1fish2fish.jpg);
+	background: url(../images/micro/cafe/button-spicytuna.jpg);
 }
 .cafe-button.orangechicken {
-	background: url(http://dev.crunchr.co/assets/images/food/china-garden.jpeg);
+	background: url(../images/micro/cafe/button-orangechicken.jpg);
 }
 .cafe-button.megaburger {
-	background: url(http://dev.crunchr.co/assets/images/food/fiveguys.jpg);
+	background: url(../images/micro/cafe/button-burger.jpg);
 }
 .cafe-button.spicywith {
-	background: url(http://dev.crunchr.co/assets/images/food/jos.jpg);
+	background: url(../images/micro/cafe/button-wiff.jpg);
 }
 .cafe-button.pizza {
-	background: url(http://dev.crunchr.co/assets/images/food/manny-and-olgas.jpg);
+	background: url(../images/micro/cafe/button-pizza.jpg);
 }
 .cafe-button.shrimptacos {
-	background: url(http://dev.crunchr.co/assets/images/food/marlas-cafe.jpg);
+	background: url(../images/micro/cafe/button-shrimptacos.jpg);
 }
 .cafe-button.chickentikkamasala {
-	background: url(http://dev.crunchr.co/assets/images/food/punjab.jpg);
+	background: url(../images/micro/cafe/button-chickentikka.jpg);
 }
 .cafe-button.padthai {
-	background: url(http://dev.crunchr.co/assets/images/food/siam-best.jpg);
+	background: url(../images/micro/cafe/button-padthai.jpg);
 }
 .cafe-button.boringsalad {
-	background: url(http://dev.crunchr.co/assets/images/food/boulder-salad.jpeg);
+	background: url(../images/micro/cafe/button-salad.jpg);
 }
 .cafe-button.pancakes {
-	background: url(http://dev.crunchr.co/assets/images/food/meeting-street-cafe.png);
+	background: url(../images/micro/cafe/button-pancakes.jpg);
 }
 .cafe-button.chickenparmsandwich {
-	background: url(http://dev.crunchr.co/assets/images/food/marvelous-pizza.jpeg);
+	background: url(../images/micro/cafe/button-chickenparm.jpg);
 }
 .cafe-button.steaksandwich {
-	background: url(http://dev.crunchr.co/assets/images/food/georges.jpg);
+	background: url(../images/micro/cafe/button-steaksandwich.jpg);
 }
 .cafe-button.curryrice {
-	background: url(../images/micro/cafe/curryrice.jpg);
+	background: url(../images/micro/cafe/button-curry.jpg);
 }
 
 .cafe-button.cafe-preload {
@@ -2910,19 +2910,6 @@ sup {
 	display: none;
 }
 
-.cafe-start {
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-	z-index:1001;
-}
-.cafe-buttons {
-	position: fixed;
-	bottom: 1.3em;
-	width: 100%;
-	z-index:1001;
-	
-}
 @media screen and (min-width: 769px) {
 	.double-content-padding {
 		padding: 20px 0 20px 0;
@@ -2966,16 +2953,34 @@ sup {
 	background-size: 100%;
 	margin: 0 auto;
 }
-.cafe-top {
-	top: 0;
-	bottom:0;
-	left:0;
-	right:0;
-	width: 100%;
-	height: 100%;
-	z-index:1000;
-	overflow: hidden;
+
+
+@media screen and (max-width: 768px) {
+	.cafe-start {
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		z-index:1001;
+	}
+	.cafe-buttons {
+		position: fixed;
+		bottom: 1.3em;
+		width: 100%;
+		z-index:1001;
+	}
+	.cafe-top {
+		top: 0;
+		bottom:0;
+		left:0;
+		right:0;
+		width: 100%;
+		height: 100%;
+		z-index:1000;
+		overflow: hidden;
+		position: fixed;
+	}
 }
+
 
 .cafe-stats {
 	font-family: "Omnes", "Chalkboard SE", "Comic Sans MS", sans-serif;
