@@ -176,8 +176,7 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		var penalty = ($scope.stats.errors || 0) * 100;
 		var goals = ($scope.stats.success || 0) * 1000;
 
-		var score = Math.round((((timeBonus - penalty + goals) * rounds[round].scoreMultiplier) / 10) * $scope.difficulty);
-
+		var score = Math.round(((timeBonus - penalty + goals) * rounds[round].scoreMultiplier) * ($scope.difficulty + 1) * .1);
 		return score < 0 ? 0 : score;
 	};
 	
@@ -289,56 +288,56 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			time: 20000,
 			required: 23,
 			descriptions: false,
-			scoreMultiplier: 5.5
+			scoreMultiplier: 5.6
 		},
 		{
 			name: '12',
 			time: 20000,
 			required: 24,
 			descriptions: false,
-			scoreMultiplier: 9
+			scoreMultiplier: 6.2
 		},
 		{
 			name: '13',
 			time: 20000,
 			required: 25,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 6.9
 		},
 		{
 			name: '14',
 			time: 20000,
 			required: 26,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 7.5
 		},
 		{
 			name: '14',
 			time: 20000,
 			required: 27,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 8.5
 		},
 		{
 			name: '15',
 			time: 20000,
 			required: 28,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 9.8
 		},
 		{
 			name: '16',
 			time: 20000,
 			required: 29,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 11
 		},
 		{
 			name: 'THE END',
 			time: 20000,
 			required: 30,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 15
 		}
 	];
 
@@ -349,8 +348,8 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			id: 'wenzel'
 		},
 		{
-			name: 'Spicy With',
-			id: 'spicywith'
+			name: 'Spicy Wiff',
+			id: 'spicywiff'
 		},
 		{
 			name: 'Pizza',
@@ -438,6 +437,8 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		$scope.running = false;
 		$scope.items = [];
 		$scope.stats.time = (rounds[round].time / 1000) + ':00';
+		$scope.winMessage = 0;
+		$scope.loseMessage = 0;
 
 		if (win) {
 			round++;
@@ -489,12 +490,23 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			}
 		},1000);
 		$scope.running = true;
+		$('body').addClass('game-running');
 	};
 	
 	$scope.difficulty = '0';
 	$scope.timer = '00:00';
 	
 	$scope.home = true;
+	
+	$scope.$watch('home', function() {
+		if ($scope.home) {
+			$('body').addClass('game-home');
+		} else {
+			$('body').removeClass('game-home');
+		}
+	});
+	
+	$('body').addClass('game-home');
 	
 	$scope.difficulties = [
 		{

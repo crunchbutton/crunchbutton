@@ -2856,7 +2856,7 @@ sup {
 .cafe-button.megaburger {
 	background: url(../images/micro/cafe/button-burger.jpg);
 }
-.cafe-button.spicywith {
+.cafe-button.spicywiff {
 	background: url(../images/micro/cafe/button-wiff.jpg);
 }
 .cafe-button.pizza {
@@ -2904,10 +2904,6 @@ sup {
 .page-cafe .nav-top.at-top .menu {
 	background: url(../images/micro/menu-location.svg) center center no-repeat;
 	background-size: 100%;
-}
-
-.page-cafe .nav-top .logo {
-	display: none;
 }
 
 @media screen and (min-width: 769px) {
@@ -3032,4 +3028,18 @@ sup {
 .cafe-time-timer {
 	width: 3.2em;
 	display: inline-block;
+}
+
+.page-cafe .nav-top .logo {
+	background: url(../images/micro/cafe/logo-cafe-awning.svg) no-repeat;
+	width: 15em;
+	height: 2.6em;
+	background-size: 100%;
+	margin: 0 auto;
+	cursor: pointer;
+	background-position: bottom;
+}
+
+.page-cafe.game-home .nav-top .logo {
+	display: none;
 }
