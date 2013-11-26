@@ -750,7 +750,8 @@ class Crunchbutton_Order extends Cana_Table {
 		} 
 
 		$env = c::getEnv();
-		$num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
+		$num = ($env == 'live' ? $this->restaurant()->phone : '***REMOVED***');
+		// $num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber); !!BACKHERE
 
 		$log = new Notification_Log;
 		$log->type = 'confirm';
