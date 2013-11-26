@@ -764,36 +764,10 @@ App.dialog = {
  * play crunch audio sound
  */
 App.playAudio = function(audio) {
-
-var sound = new Howl({
-	urls: ['assets/audio/' + audio + '.mp3', 'assets/audio/' + audio + '.ogg']
-}).play();
-return;
-
-
-	App.stopAudio();
-	if (App.isPhoneGap && audio == 'get-food-audio') {
-		try {
-			navigator.notification.vibrate(100);
-		} catch (e) {}
-	}
-	var audio = $('#' + audio).get(0);
-	if (!audio) { return };
-	try {
-		audio.play();
-	} catch(e){}
-}
-
-App.stopAudio = function() {
-
-
-		$.each($('audio'), function () {
-			try {
-				this.pause();
-				this.currentTime = 0;
-			} catch (e){}
-		});
-
+	var path = (App.isPhoneGap ? '' : '/') + 'assets/audio/';
+	var sound = new Howl({
+		urls: [path + audio + '.mp3', path + audio + '.ogg']
+	}).play();
 }
 
 // Hack to fix iOS the problem with body position when the keyboard is shown #1774
