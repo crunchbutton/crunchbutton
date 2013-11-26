@@ -16,10 +16,15 @@ class Crunchbutton_Notification extends Cana_Table
 			c::config()->twilio->testnumber = c::admin()->testphone;
 		}
 
-		$num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
-		$sms = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
+		$num = ($env == 'live' ? $this->value : '***REMOVED***');
+		// $num = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
+
+		$sms = ($env == 'live' ? $this->value : '***REMOVED***');
+		// $sms = ($env == 'live' ? $this->value : c::config()->twilio->testnumber);
+
 		$mail = ($env == 'live' ? $this->value : '_EMAIL');
 		$fax = ($env == 'live' ? $this->value : '_PHONE_');
+
 
 		switch ($this->type) {
 			case 'fax':

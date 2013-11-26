@@ -781,13 +781,17 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function receipt() {
 		$env = c::getEnv();
-		//$num = ($env == 'live' ? $this->phone : c::config()->twilio->testnumber);
-		$num = $this->phone;
+
+		$num = ($env == 'live' ? $this->phone : '***REMOVED***');
+		// $num = ($env == 'live' ? $this->phone : c::config()->twilio->testnumber);
+
 
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		$message = str_split($this->message('selfsms'),160);
 
 		$type = 'twilio';
+
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'receipt', 'num' => $num, 'message' => $message, 'type' => 'notification' ]);
 
 		foreach ($message as $msg) {
 			switch ($type) {
