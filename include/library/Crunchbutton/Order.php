@@ -834,6 +834,8 @@ class Crunchbutton_Order extends Cana_Table {
 			c::timeout(function() use($order) {
 				$order->receipt();
 			}, 30 * 1000); // 30 seconds
+		} else {
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'receipt already sent', 'type' => 'notification' ]);
 		}
 
 		// Start the timer to check if the order was confirmed. #1049
