@@ -1,24 +1,10 @@
 
 
-<div class="cafe-start cafe-animate" ng-show="!running">
-	<div class="double-content-padding">
-		<button class="pushable button pink pushable big ani-all" ng-click="start()">
-			<span ng-show="home">Start</span>
-			<span ng-show="!home && stats.win">Next Level</span>
-			<span ng-show="!home && !stats.win">Try again</span>
-		</button>
-	</div>
-</div>
 
-<div class="cafe-buttons" ng-show="running">
-	<div class="content-padding">
-		<button class="cafe-button {{button.id}}" ng-repeat="button in items" ng-instant="buttonPress(button.id)">{{button.name && stats.round.descriptions ? button.name : ''}}</button>
-	</div>
-</div>
 
 				
 
-<div class="cafe-top fixed">
+<div class="cafe-top">
 	<div class="top-pad"></div>
 
 		<!-- home -->
@@ -98,6 +84,11 @@
 						<div class="stat-key">Time:</div>
 						<div class="stat-value">{{stats.win ? stats.timer : stats.round.time/1000 + ':00'}}&nbsp;&nbsp;/&nbsp;&nbsp;{{stats.round.time/1000}}:00</div>
 					</div>
+					
+					<div class="stat-item" ng-show="stats.win">
+						<div class="stat-key">Score:</div>
+						<div class="stat-value">{{stats.score}}</div>
+					</div>
 				</div>
 				
 				<br><br>
@@ -154,6 +145,24 @@
 		</div>
 
 		<div class="divider"></div>
+	</div>
+	
+	<div class="divider"></div>
+	
+	<div class="cafe-start" ng-show="!running">
+		<div class="double-content-padding">
+			<button class="pushable button pink pushable big ani-all" ng-click="start()">
+				<span ng-show="home">Start</span>
+				<span ng-show="!home && stats.win">Next Level</span>
+				<span ng-show="!home && !stats.win">Try again</span>
+			</button>
+		</div>
+	</div>
+	
+	<div class="cafe-buttons" ng-show="running">
+		<div class="content-padding">
+			<button class="cafe-button {{button.id}}" ng-repeat="button in items" ng-instant="buttonPress(button.id)">{{button.name && stats.round.descriptions ? button.name : ''}}</button>
+		</div>
 	</div>
 	
 	<div class="cafe-button cafe-preload {{button.id}}" ng-repeat="button in allitems"></div>

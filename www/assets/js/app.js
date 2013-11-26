@@ -764,6 +764,13 @@ App.dialog = {
  * play crunch audio sound
  */
 App.playAudio = function(audio) {
+
+var sound = new Howl({
+	urls: ['assets/audio/' + audio + '.mp3', 'assets/audio/' + audio + '.ogg']
+}).play();
+return;
+
+
 	App.stopAudio();
 	if (App.isPhoneGap && audio == 'get-food-audio') {
 		try {

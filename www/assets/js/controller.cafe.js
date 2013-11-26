@@ -13,7 +13,8 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		startSeconds = 0,
 		ms = 0,
 		level = 1,
-		currentXp = 0;
+		currentXp = 0,
+		previous = {time: 0, id: 0};
 	
 	// get the item by key value
 	var getItem = function(key) {
@@ -39,11 +40,26 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 				win();
 				return;
 			}
+			
+			previous = {time: new Date, id: clicked.id};
+			
 			App.playAudio('cafe-good');
-			showMessage('Yay. Keep going!','good');	
+			showMessage('Yay. Keep going!','good');
 			requestPress();
 
 		} else {
+
+			// prevent double press
+
+			if (previous.time) {
+				var now = new Date;
+				var diff = now.getTime() - previous.time.getTime();
+				if (diff <= 500 && previous.id == clicked.id) {
+					return;
+				}
+			}
+
+
 			enabled = false;
 			$scope.stats.errors++;
 			App.playAudio('cafe-fail');
@@ -224,63 +240,63 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			time: 20000,
 			required: 15,
 			descriptions: false,
-			scoreMultiplier: 5
+			scoreMultiplier: 2.5
 		},
 		{
 			name: '6',
 			time: 20000,
 			required: 17,
 			descriptions: false,
-			scoreMultiplier: 2.7
+			scoreMultiplier: 3
 		},
 		{
 			name: '7',
 			time: 20000,
 			required: 18,
 			descriptions: false,
-			scoreMultiplier: 2.8
+			scoreMultiplier: 3.3
 		},
 		{
 			name: '8',
 			time: 20000,
 			required: 19,
 			descriptions: false,
-			scoreMultiplier: 5.0
+			scoreMultiplier: 3.7
 		},
 		{
 			name: '9',
 			time: 20000,
 			required: 20,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 4
 		},
 		{
 			name: '10',
 			time: 20000,
 			required: 21,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 4.5
 		},
 		{
 			name: '10',
 			time: 20000,
 			required: 22,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 5
 		},
 		{
 			name: '11',
 			time: 20000,
 			required: 23,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 5.5
 		},
 		{
 			name: '12',
 			time: 20000,
 			required: 24,
 			descriptions: false,
-			scoreMultiplier: 100
+			scoreMultiplier: 9
 		},
 		{
 			name: '13',
