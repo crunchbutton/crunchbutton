@@ -224,7 +224,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$user->save();
 
 		// Reload the user from db #1737
-		$user = new User($user->id_user);
+		$user = User::o($user->id_user);
 
 		$this->id_user = $user->id_user;
 
