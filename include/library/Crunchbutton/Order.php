@@ -750,8 +750,7 @@ class Crunchbutton_Order extends Cana_Table {
 		} 
 
 		$env = c::getEnv();
-		$num = ($env == 'live' ? $this->restaurant()->phone : '***REMOVED***');
-		// $num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber); !!BACKHERE
+		$num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
 
 		$log = new Notification_Log;
 		$log->type = 'confirm';
@@ -783,8 +782,7 @@ class Crunchbutton_Order extends Cana_Table {
 	public function receipt() {
 		$env = c::getEnv();
 
-		$num = ($env == 'live' ? $this->phone : '2037728167');
-		// $num = ($env == 'live' ? $this->phone : c::config()->twilio->testnumber);
+		$num = ($env == 'live' ? $this->phone : c::config()->twilio->testnumber);
 
 
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
