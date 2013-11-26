@@ -272,7 +272,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						]);
 
 						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. We will resend the order confirmation.</Say>';
-						$order->que();
+						$order->que( false );
 						break;
 					case '0':
 						echo '<Dial timeout="10" record="true">'.c::config()->phone->restaurant.'</Dial>';
