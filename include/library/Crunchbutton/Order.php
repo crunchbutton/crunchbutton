@@ -791,7 +791,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$type = 'twilio';
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'receipt', 'num' => $num, 'message' => $message, 'type' => 'notification' ]);
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'receipt', 'num' => $num, 'message' => $message, 'type' => 'notification' ]);
 
 		foreach ($message as $msg) {
 			switch ($type) {
@@ -1448,7 +1448,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function agent() {
-		return Agent::o($this->id_community);
+		return Agent::o($this->id_agent);
 	}
 
 	public function community() {
