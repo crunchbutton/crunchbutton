@@ -2,10 +2,14 @@
 
 class Crunchbutton_Log extends Cana_Table {
 	public static function __callStatic($func, $args) {
+
+		$data = $args[0];
+		$data['env'] = c::getEnv();
+
 		$log = new Log;
 		$log->level = $func;
 		$log->type = $args[0]['type'];
-		$log->data = json_encode($args[0]);
+		$log->data = json_encode( $data );
 		$log->date = date('Y-m-d H:i:s');
 		$log->save();
 		
