@@ -169,7 +169,8 @@
 			<outgoingRestaurant>+1_PHONE_</outgoingRestaurant>
 		</olddev>
 		<fallbackUrl>_URL_</fallbackUrl>
-		<testnumber>_PHONE_</testnumber>
+		<!-- <testnumber>_PHONE_</testnumber> -->
+		<testnumber>***REMOVED***</testnumber>
 		<voice>male</voice>
 		<greeting>Hello. This is crunchbutton, </greeting>
 		<maxcallback>5</maxcallback>
