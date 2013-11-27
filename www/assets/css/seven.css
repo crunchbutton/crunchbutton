@@ -2853,6 +2853,7 @@ sup {
 	margin: .5em;
 	float: left;
 	background-size: cover !important;
+	font-weight: bold;
 }
 .cafe-message {
 	height: 3.1em;
@@ -2916,10 +2917,10 @@ sup {
 	background-size: 6em;
 	height: 5.55em;
 }
-.page-cafe .nav-top.at-top .nav-cart {
+.page-cafe .nav-top .nav-cart {
 	display: none;
 }
-.page-cafe .nav-top.at-top .menu {
+.page-cafe .nav-top .menu {
 	background: url(../images/micro/menu-location.svg) center center no-repeat;
 	background-size: 100%;
 }
