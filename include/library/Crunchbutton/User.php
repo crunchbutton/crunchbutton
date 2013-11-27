@@ -226,6 +226,28 @@ class Crunchbutton_User extends Cana_Table {
 	public function debits(){
 		return Crunchbutton_Credit::debitByUser( $this->id_user );
 	}
+	
+	public function image() {
+		if (!isset($this->_image)) {
+			$auths = $this->auths();
+			foreach ($auths as $auth) {
+				if ($auth->type == 'facebook') {
+					$image = 'http://graph.facebook.com/'.$auth->auth.'/picture?type=square&height=200&width=200';
+					break;
+				}
+			}
+			if (!$image) {
+				foreach ($auths as $auth) {
+					if ($auth->type == 'local') {
+						$image = 'http://www.gravatar.com/avatar/'.md5(strtolower($auth->email)).'?s=480&d=404';
+						break;
+					}
+				}
+			}
+			$this->_image = $image;
+		}
+		return $this->_image;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
