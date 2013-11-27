@@ -195,7 +195,8 @@ return;
 
 	public function maxCallWasConfirmed(){
 		$notification = $this;
-		$notification = Notification_Log::q( "SELECT * FROM notification_log WHERE type = 'maxcall' AND id_order = {$notification->id_order}" );
+		$notification = Notification_Log::o( $notification->id_notification_log );
+		Log::debug( [ 'order' => $notification->id_order, 'id_notification_log' => $notification->id_notification_log, 'status' => $notification->status, 'action' => 'maxCallWasConfirmed', 'type' => 'notification' ]);
 		if( $notification->id_notification_log ){
 			if( $notification->status != 'success' ){
 				$this->tellRepsAboutMaxCall();
