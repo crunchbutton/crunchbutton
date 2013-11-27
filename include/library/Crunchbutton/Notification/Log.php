@@ -195,9 +195,9 @@ return;
 
 	public function maxCallWasConfirmed(){
 		$notification = $this;
-		$notification = Notification_Log::o( $notification->id_notification_log );
+		$notification = Notification_Log::getMaxCallNotification( $notification->id_order );	
 		if( $notification->id_notification_log ){
-			Log::debug( [ 'order' => $notification->id_order, 'action' => 'MAX CB - confirmed', 'status' => $notification->status, 'type' => 'notification' ]);
+			Log::debug( [ 'order' => $notification->id_order, 'id_notification_log' => $notification->id_notification_log, 'action' => 'MAX CB - confirmed', 'status' => $notification->status, 'type' => 'notification' ]);
 			if( $notification->status != 'success' ){
 				$this->tellRepsAboutMaxConfirmationCall();
 			}
