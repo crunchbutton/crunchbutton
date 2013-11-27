@@ -1639,6 +1639,24 @@ p {
 	opacity: .8; */
 }
 
+@media screen and (min-width: 769px) {
+	.cart-items, .restaurant-items {
+		width: 49%;
+		font-size: 10px;
+		clear: none;
+	}
+	.cart-items {
+		float: right;
+	}
+	.restaurant-items {
+		float: left;
+		margin-top: 0;
+	}
+	.restaurant-menu-category:first-child .restaurant-category {
+		padding-top: 0;
+	}
+}
+
 
 
 /* restaurant payment form */
