@@ -255,7 +255,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 							Log::debug( [ 'order' => $order->id_order, 'id_notification' => $notification->id_notification_log ,'action' => 'MAX CB', 'data' => json_encode($_REQUEST), 'type' => 'notification' ]);
 							
-							echo '<Gather action="/api/order/'.$order->id_order.'/maxconfirmation?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
+							echo '<Gather action="/api/order/'.$order->id_order.'/maxcalling?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
 								echo '<Say voice="'.c::config()->twilio->voice.'">';
 								echo 'Max call back for order number ' . $order->id_order . ' has timed out to ' . $order->restaurant()->name . ' from ' . $order->name;
 									echo '</Say>';
