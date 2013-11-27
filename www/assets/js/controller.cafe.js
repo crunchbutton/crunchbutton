@@ -207,7 +207,7 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 			scoreMultiplier: .2
 		},
 		{
-			name: '2',
+			name: '1',
 			time: 20000,
 			required: 5,
 			descriptions: true,
@@ -216,117 +216,75 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		{
 			name: '2',
 			time: 20000,
-			required: 7,
-			descriptions: true,
-			scoreMultiplier: 1.7
-		},
-		{
-			name: '3',
-			time: 20000,
 			required: 10,
 			descriptions: false,
 			scoreMultiplier: 2
 		},
 		{
-			name: '4',
-			time: 20000,
-			required: 13,
-			descriptions: false,
-			scoreMultiplier: 2.3
-		},
-		{
-			name: '5',
+			name: '3',
 			time: 20000,
 			required: 15,
 			descriptions: false,
 			scoreMultiplier: 2.5
 		},
 		{
-			name: '6',
+			name: '4',
 			time: 20000,
-			required: 17,
+			required: 18,
 			descriptions: false,
 			scoreMultiplier: 3
 		},
 		{
-			name: '7',
-			time: 20000,
-			required: 18,
-			descriptions: false,
-			scoreMultiplier: 3.3
-		},
-		{
-			name: '8',
-			time: 20000,
-			required: 19,
-			descriptions: false,
-			scoreMultiplier: 3.7
-		},
-		{
-			name: '9',
+			name: '5',
 			time: 20000,
 			required: 20,
 			descriptions: false,
 			scoreMultiplier: 4
 		},
 		{
-			name: '10',
+			name: '6',
 			time: 20000,
-			required: 21,
+			required: 22,
 			descriptions: false,
 			scoreMultiplier: 4.5
 		},
 		{
-			name: '10',
+			name: '7',
 			time: 20000,
-			required: 22,
-			descriptions: false,
-			scoreMultiplier: 5
-		},
-		{
-			name: '11',
-			time: 20000,
-			required: 23,
+			required: 24,
 			descriptions: false,
 			scoreMultiplier: 5.6
 		},
 		{
-			name: '12',
-			time: 20000,
-			required: 24,
-			descriptions: false,
-			scoreMultiplier: 6.2
-		},
-		{
-			name: '13',
+			name: '8',
 			time: 20000,
 			required: 25,
 			descriptions: false,
 			scoreMultiplier: 6.9
 		},
 		{
-			name: '14',
+			name: '9',
 			time: 20000,
 			required: 26,
 			descriptions: false,
 			scoreMultiplier: 7.5
 		},
 		{
-			name: '14',
+			name: '10',
 			time: 20000,
 			required: 27,
 			descriptions: false,
 			scoreMultiplier: 8.5
 		},
 		{
-			name: '15',
+			name: '11',
 			time: 20000,
 			required: 28,
 			descriptions: false,
 			scoreMultiplier: 9.8
 		},
 		{
-			name: '16',
+			name: '12',
 			time: 20000,
 			required: 29,
 			descriptions: false,
