@@ -587,7 +587,7 @@ App.init = function(config) {
 
 	App.verifyConnection.init();
 
-	$(document).on('touchmove', '.mfp-wrap', function(e) {
+	$(document).on('touchmove', ($('.is-ui2').get(0) ? '.mfp-wrap' : '.snap-drawers, .mfp-wrap, .support-container'), function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 	});
