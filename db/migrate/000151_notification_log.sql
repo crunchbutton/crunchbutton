@@ -1,0 +1,1 @@
+ALTER TABLE `notification_log` CHANGE `type` `type` ENUM('confirm','twilio','phaxio','maxcall');

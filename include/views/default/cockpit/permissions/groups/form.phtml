@@ -25,6 +25,12 @@
 								<div class="note">Please don't use spaces-use dashes instead!</div>
 							</span>
 						</li>
+						<li>
+							<span>Description</span>
+							<span class="pull-right">
+								<input type="text" name="description" maxlength="250" id="description" value="<?php echo $group->description; ?>" />
+							</span>
+						</li>
 						<li class="input">
 							<button type="submit" class="btn btn-green admin-save"><i class="icon-save"></i> Save </button> 
 						</li>
@@ -95,6 +101,7 @@ function sendForm(){
 	}
 
 	var name = $.trim( $( '#name' ).val() );
+	var description = $.trim( $( '#description' ).val() );
 	
 	if( name == '' ){
 		alert( 'Please type a name!' );
@@ -102,7 +109,7 @@ function sendForm(){
 		return;
 	}
 
-	var data = { 'name' : name};
+	var data = { 'name' : name, 'description' : description };
 	
 	processing = true;
 	
