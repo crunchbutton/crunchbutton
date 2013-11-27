@@ -125,11 +125,10 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$this->status = 'maxconfirmbackexceeded';
 			$this->save();
 			
-///// WARNING_TAG REMOVE THIS COMMENTS
-/*			if (c::env() != 'live') {
+			if (c::env() != 'live') {
 				return;
 			}
-*/
+
 			// Create a new maxcall notification_log
 			$log = new Notification_Log();
 			$log->status = 'pending';
@@ -139,9 +138,6 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			$log->save();
 
 			$this->tellRepsAboutMaxConfirmationCall();
-
-///// WARNING_TAG REMOVE THIS
-return;
 
 			// Send SMS to Reps - Issue #2027
 			$usersToReceiveSMS = $this->order()->restaurant()->adminReceiveSupportSMS();
