@@ -1,4 +1,5 @@
 var Orm = {
+
 	properties: function() {
 		var properties = {};
 		for (var name in this) {
@@ -37,6 +38,7 @@ var Orm = {
 
 	load: function(id) {
 		var self = this;
+		this.cachedAt = ( Math.floor( new Date().getTime() / 1000 ) );
 		if (typeof(id) == 'object') {
 			this.finished(id);
 		} else {

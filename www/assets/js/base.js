@@ -44,6 +44,7 @@ App.request = function(url, complete, error) {
 
 // @todo replace with lazyorm.js
 App.cache = function(type, id) {
+
 	var finalid, args = arguments, complete, partComplete, partError;
 
 	complete = args[2] ? args[2] : function() {};
@@ -69,14 +70,29 @@ App.cache = function(type, id) {
 	if (typeof(id) == 'object') {
 		eval('App.cached[type][id.id] = new '+type+'(id,partComplete, partError)');
 		finalid = id.id;
-
 	} else if (!App.cached[type][id]) {
 		eval('App.cached[type][id] = new '+type+'(id,partComplete, partError)');
-
 	} else {
-		complete.call(App.cached[type][id]);
+		var element = App.cached[type][id];
+		var removedFromCache = false;
+		if( element.cachedAt ){
+			var now = ( Math.floor( new Date().getTime() / 1000 ) );
+			var age = Math.floor( now - element.cachedAt );
+			if( age >= App.cachedObjectsExpiresIn ){
+				removedFromCache = true;
+				App.cached[type][id] = null;
+				if (typeof(id) == 'object') {
+					eval('App.cached[type][id.id] = new '+type+'(id,partComplete, partError)');
+					finalid = id.id;
+				} else {
+					eval('App.cached[type][id] = new '+type+'(id,partComplete, partError)');
+				}
+			}
+		}
+		if( !removedFromCache ){
+			complete.call( App.cached[type][id] );
+		}
 	}
-	
 	// @todo: remove this and things that use it
 	return App.cached[type][finalid || id];
 

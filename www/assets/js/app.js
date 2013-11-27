@@ -37,7 +37,8 @@ var App = {
 		enabled: true,
 		desktop: 9,
 		mobile: 6
-	}
+	},
+	cachedObjectsExpiresIn : 86400 // 86400 seconds is 24 hours
 };
 
 // enable localstorage on phonegap
