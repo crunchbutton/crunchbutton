@@ -234,11 +234,13 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						case 1:
 							if( $_REQUEST['id_notification'] ){
 								$notification = Notification_Log::o( $_REQUEST['id_notification'] );	
-								if( $notification->id_notification_log ){
+							} else {
+								$notification = Notification_Log::getMaxCallNotification( $order->id_order );	
+							}
+							if( $notification->id_notification_log ){
 									$notification->status = 'success';
 									$notification->data = json_encode($_REQUEST);
 									$notification->save();
-								}
 								Log::debug( [ 'order' => $notification->id_order, 'action' => 'MAX CB - confirmed', 'data' => json_encode($_REQUEST), 'id_notification_log'=> $notification->id_notification_log, 'type' => 'notification' ]);
 							} else {
 								Log::debug( [ 'order' => $notification->id_order, 'action' => 'MAX CB - confirmation error', 'data' => json_encode($_REQUEST), 'type' => 'notification' ]);
@@ -248,7 +250,10 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							echo '</Say>';
 							break;
 						default:
-							Log::debug( [ 'order' => $order->id_order, 'id_notification' => $_REQUEST['id_notification'] ,'action' => 'MAX CB', 'data' => json_encode($_REQUEST), 'type' => 'notification' ]);
+
+							$notification = Notification_Log::getMaxCallNotification( $order->id_order );	
+
+							Log::debug( [ 'order' => $order->id_order, 'id_notification' => $notification->id_notification_log ,'action' => 'MAX CB', 'data' => json_encode($_REQUEST), 'type' => 'notification' ]);
 							
 							echo '<Gather action="/api/order/'.$order->id_order.'/maxconfirmation?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
 							echo '<Say voice="'.c::config()->twilio->voice.'">';

@@ -100,6 +100,11 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		}
 	}
 	
+
+	public function getMaxCallNotification( $id_order ){
+		return Notification_Log::q( "SELECT * FROm notification_log WHERE id_order ='$id_order' AND type ='maxcall' " );
+	}
+
 	public function queCallback() {
 		$log = $this;
 
@@ -208,11 +213,12 @@ return;
 	}
 
 	public function tellRepsAboutMaxConfirmationCall(){
+		
 		$env = c::getEnv();
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		
 		// Create a notification_log
-		$log = new Notification_Log;
+		$log = new Notification_Log();
 		$log->status = 'pending';
 		$log->type = 'maxcall';
 		$log->date = date('Y-m-d H:i:s');
