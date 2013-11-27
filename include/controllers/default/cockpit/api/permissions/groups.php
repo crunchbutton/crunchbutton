@@ -24,6 +24,7 @@ class Controller_api_Permissions_Groups extends Crunchbutton_Controller_RestAcco
 					
 					default:
 						$name = $_REQUEST[ 'name' ];
+						$description = $_REQUEST[ 'description' ];
 						if( $id_group ){
 							$group = Crunchbutton_Group::o( $id_group );
 						} else {
@@ -31,6 +32,7 @@ class Controller_api_Permissions_Groups extends Crunchbutton_Controller_RestAcco
 						}
 						$name = str_replace( ' ' , '-', $name );
 						$group->name = $name;
+						$group->description = $description;
 						$group->save();
 						echo json_encode( ['success' => $group->id_group ] );
 						break;

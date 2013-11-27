@@ -228,14 +228,40 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 			case 'maxcalling' : 
 				header('Content-type: text/xml');
-				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<Response>';
-					echo '<Say voice="'.c::config()->twilio->voice.'">';
-					echo 'Max call back for order number ' . $order->id_order . ' has timed out to ' . $order->restaurant()->name . ' from ' . $order->name;
-					echo '</Say>';
+					echo '<?xml version="1.0" encoding="UTF-8"?>';
+					echo '<Response>';
+					switch ($this->request()['Digits']) {
+						case 1:
+							if( $_REQUEST['id_notification'] ){
+								$notification = Notification_Log::o( $_REQUEST['id_notification'] );	
+								if( $notification->id_notification_log ){
+									$notification->status = 'success';
+									$notification->data = json_encode($_REQUEST);
+									$notification->save();
+								}
+								Log::debug( [ 'order' => $notification->id_order, 'action' => 'MAX CB - confirmed', 'data' => json_encode($_REQUEST), 'id_notification_log'=> $notification->id_notification_log, 'type' => 'notification' ]);
+							} else {
+								Log::debug( [ 'order' => $notification->id_order, 'action' => 'MAX CB - confirmation error', 'data' => json_encode($_REQUEST), 'type' => 'notification' ]);
+							}
+							echo '<Say voice="'.c::config()->twilio->voice.'">';
+							echo 'Thank you';
+							echo '</Say>';
+							break;
+						default:
+							Log::debug( [ 'order' => $order->id_order, 'id_notification' => $_REQUEST['id_notification'] ,'action' => 'MAX CB', 'data' => json_encode($_REQUEST), 'type' => 'notification' ]);
+							
+							echo '<Gather action="/api/order/'.$order->id_order.'/maxconfirmation?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
+							echo '<Say voice="'.c::config()->twilio->voice.'">';
+							echo 'Max call back for order number ' . $order->id_order . ' has timed out to ' . $order->restaurant()->name . ' from ' . $order->name;
+							echo '<Pause length="1" />';
+							echo Notification_Log::maxCallMSayAtTheEndOfMessage();
+							echo '</Say>';
+							echo '</Gather>';
+							break;
+					}
 					echo '</Response>';
 				exit;
 				break;
-
 
 			case 'doconfirm':
 				header('Content-type: text/xml');
