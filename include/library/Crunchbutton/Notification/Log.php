@@ -197,6 +197,7 @@ return;
 		$notification = $this;
 		$notification = Notification_Log::o( $notification->id_notification_log );
 		if( $notification->id_notification_log ){
+			Log::debug( [ 'order' => $notification->id_order, 'action' => 'MAX CB - confirmed', 'status' => $notification->status, 'type' => 'notification' ]);
 			if( $notification->status != 'success' ){
 				$this->tellRepsAboutMaxConfirmationCall();
 			}
