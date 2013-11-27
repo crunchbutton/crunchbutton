@@ -96,6 +96,8 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 	public function callback() {
 		$nl = Notification_Log::q('select * from notification_log where id_order="'.$this->id_order.'" and status="callback" and `type`="twilio"');
 
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - count', 'count' => $nl->count(), 'type' => 'notification' ]);
+
 		if ($nl->count() >= c::config()->twilio->maxcallback) {
 			$this->status = 'maxcallbackexceeded';
 			$this->save();
