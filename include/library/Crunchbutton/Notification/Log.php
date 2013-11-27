@@ -130,6 +130,14 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				return;
 			}
 */
+			// Create a new maxcall notification_log
+			$log = new Notification_Log();
+			$log->status = 'pending';
+			$log->type = 'maxcall';
+			$log->date = date('Y-m-d H:i:s');
+			$log->id_order = $this->id_order;
+			$log->save();
+
 			$this->tellRepsAboutMaxConfirmationCall();
 
 ///// WARNING_TAG REMOVE THIS
@@ -186,7 +194,8 @@ return;
 	}
 
 	public function maxCallWasConfirmed(){
-		$notification = Notification_Log::q( "SELECT * FROM notification_log WHERE type = 'maxcall' AND id_order = {$this->id_notification_log}" );
+		$notification = $this;
+		$notification = Notification_Log::q( "SELECT * FROM notification_log WHERE type = 'maxcall' AND id_order = {$notification->id_notification_log}" );
 		if( $notification->id_notification_log ){
 			if( $notification->status != 'success' ){
 				$this->tellRepsAboutMaxCall();
@@ -217,14 +226,6 @@ return;
 		$env = c::getEnv();
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 		
-		// Create a notification_log
-		$log = new Notification_Log();
-		$log->status = 'pending';
-		$log->type = 'maxcall';
-		$log->date = date('Y-m-d H:i:s');
-		$log->id_order = $this->id_order;
-		$log->save();
-		
 		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling?id_notification=' . $log->id_notification;
 		
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'callto'=> $support, 'type' => 'notification' ]);
@@ -232,7 +233,7 @@ return;
 		$users = $this->repsWillReceiveMaxCallWarning();
 		foreach( $users as $user ){
 			if( !$user->phone ){
-				Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - dont have phone', 'user' => $user->name, 'id_user' => $user->id_user, 'url' => $url, 'type' => 'notification' ]);
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - dont have phone', 'user' => $user->name, 'id_user' => $user->id_admin, 'url' => $url, 'type' => 'notification' ]);
 				continue;
 			}
 			$phone = $user->phone;
@@ -240,7 +241,10 @@ return;
 			$call = $twilio->account->calls->create( c::config()->twilio->{$env}->outgoingRestaurant, '+1'.$phone, $url );
 		}
 
-		$timeToWait = Notification_Log::maxCallMinutesToWaitBeforeRecall();
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - time to recall', 'timeToWait' => $timeToWait, 'type' => 'notification' ]);
+
+		$notification = $this;
+
 		c::timeout(function() use( $notification ) {
 			$notification->maxCallWasConfirmed();
 		}, $timeToWait * 60 * 1000 );
