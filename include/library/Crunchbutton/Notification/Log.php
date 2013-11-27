@@ -228,20 +228,23 @@ return;
 		
 		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling?id_notification=' . $log->id_notification;
 		
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'callto'=> $support, 'type' => 'notification' ]);
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'callto'=> $support, 'type' => 'notification' ]);
 		
 		$users = $this->repsWillReceiveMaxCallWarning();
 		foreach( $users as $user ){
 			if( !$user->phone ){
-				Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - dont have phone', 'user' => $user->name, 'id_user' => $user->id_admin, 'url' => $url, 'type' => 'notification' ]);
+				Log::debug( [ 'order' => $this->id_order, 'action' => 'MAX CB - dont have phone', 'user' => $user->name, 'id_user' => $user->id_admin, 'url' => $url, 'type' => 'notification' ]);
 				continue;
 			}
 			$phone = $user->phone;
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - calling', 'user' => $user->name, 'id_user' => $user->id_user, 'phone' => $user->phone, 'url' => $url, 'type' => 'notification' ]);
+			Log::debug( [ 'order' => $this->id_order, 'action' => 'MAX CB - calling', 'user' => $user->name, 'id_user' => $user->id_admin, 'phone' => $user->phone, 'url' => $url, 'type' => 'notification' ]);
 			$call = $twilio->account->calls->create( c::config()->twilio->{$env}->outgoingRestaurant, '+1'.$phone, $url );
 		}
 
-		Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - time to recall', 'timeToWait' => $timeToWait, 'type' => 'notification' ]);
+
+		$timeToWait = $this->maxCallMinutesToWaitBeforeRecall();
+
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'MAX CB - time to recall', 'timeToWait' => $timeToWait, 'type' => 'notification' ]);
 
 		$notification = $this;
 
