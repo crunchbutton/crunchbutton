@@ -1,6 +1,9 @@
 // MainHeaderService service
 NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, $route, AccountModalService, RestaurantsService, OrderViewService){ 
 	
+	// This variable will store the animation type.
+	$rootScope.animationClass = '';
+
 	var service = {
 		page : '',
 		buttons : {
@@ -26,7 +29,16 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		return service.link( RestaurantsService.permalink );
 	}
 
-	service.link = function( path ){
+	/* the transitions type could be push, fade, pop or none */
+	service.link = function( path, transition ){
+		var animationClass = '';
+		switch( transition ){
+			case 'push': animationClass = 'animationPush'; break;
+			case 'fade': animationClass = 'animationFade'; break;
+			case 'pop': animationClass = 'animationPop'; break;
+			default: animationClass = '';
+		}
+		// $rootScope.animationClass = animationClass;
 		$location.path( path || '/' );
 		App.snap.close();
 	}

@@ -60,7 +60,7 @@ App.NGinit = function() {
 	}
 };
 
-var NGApp = angular.module('NGApp', [ 'ngRoute' ] );
+var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngAnimate' ] );
 
 NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
@@ -443,12 +443,32 @@ App.connectionError = function() {
 	App.rootScope.$broadcast('notificationAlert', 'Connection Error', 'Sorry! We could not reach the server right now. Try again when your internet is back!');
 };
 
-App.go = function(url) {
+App.go = function( url, transition ){
+	var animationClass = '';
+	switch( transition ){
+		case 'push': animationClass = 'animationPush'; break;
+		case 'fade': animationClass = 'animationFade'; break;
+		case 'pop': animationClass = 'animationPop'; break;
+		default: animationClass = '';
+	}
+	App.rootScope.animationClass = animationClass;
+	console.log('App.rootScope.animationClass',App.rootScope.animationClass);
+	App.rootScope.$safeApply();
 	// @todo: do some tests to figure out if we need this or not
 	// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
-	App.location.path(url || '/');
-	App.rootScope.$safeApply();
-
+	/*console.log('App.rootScope.animationClass',App.rootScope.animationClass);
+	if( App.rootScope.animationClass != '' ){
+		setTimeout( function(){
+			App.location.path( url || '/' );
+		}, 10 );
+	} else {
+		App.location.path( url || '/' );
+	}*/
+	setTimeout( function(){
+		App.location.path( url || '/' );
+		App.rootScope.$safeApply();
+	}, 10 );
+	
 };
 
 App.toggleMenu = function() {

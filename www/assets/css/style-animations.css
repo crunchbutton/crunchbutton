@@ -1,0 +1,122 @@
+/* animationFade stuff */
+/*
+.animationFade.ng-enter, .animationFade.ng-leave {
+	-webkit-transition:0.5s linear all;
+	transition:0.5s linear all;
+}
+.animationFade.ng-enter, .animationFade.ng-leave.ng-leave-active {
+	opacity:0;
+}
+.animationFade.ng-leave, .animationFade.ng-enter.ng-enter-active {
+	opacity:1;
+}
+*/
+/* animationPush stuff */
+.animationPush.ng-enter {
+	-webkit-animation: 0.5s animationPush-enter ease-out;
+	animation: 0.5s animationPush-enter ease-out;
+}
+
+.animationPush.ng-leave {
+	-webkit-animation: 0.5s animationPush-leave  ease-out;
+	animation: 0.5s animationPush-leave ease-out;
+}
+
+@keyframes animationPush-enter {
+	from {
+		left:300px;
+		opacity:0;
+	}
+	to {
+		left:0;
+		opacity:1;
+	}
+}
+
+@-webkit-keyframes animationPush-enter {
+	from {
+		left:300px;
+		opacity:0;
+	}
+	to {
+		left:0;
+		opacity:1;
+	}
+}
+
+@keyframes animationPush-leave {
+	from {
+		left:0;
+		opacity:1;
+	}
+	to {
+		left:-300px;
+		opacity:0;
+	}
+}
+
+@-webkit-keyframes animationPush-leave {
+	from {
+		left:0;
+		opacity:1;
+	}
+	to {
+		left:-300px;
+		opacity:0;
+	}
+}
+
+/* animationPop stuff */
+.animationPop.ng-enter {
+	-webkit-animation: 0.5s animationPop-enter ease-out;
+	animation: 0.5s animationPop-enter ease-out;
+}
+
+.animationPop.ng-leave {
+	-webkit-animation: 0.5s animationPop-leave ease-out;
+	animation: 0.5s animationPop-leave ease-out;
+}
+
+@keyframes animationPop-enter {
+	from {
+		left:-300px;
+		opacity:0;
+	}
+	to {
+		left:0;
+		opacity:1;
+	}
+}
+
+@-webkit-keyframes animationPop-enter {
+	from {
+		left:-300px;
+		opacity:0;
+	}
+	to {
+		left:0;
+		opacity:1;
+	}
+}
+
+@keyframes animationPop-leave {
+	from {
+		left:0;
+		opacity:1;
+	}
+	to {
+		left:300px;
+		opacity:0;
+	}
+}
+
+@-webkit-keyframes animationPop-leave {
+	from {
+		left:0;
+		opacity:1;
+	}
+	to {
+		left:300px;
+		opacity:0;
+	}
+}

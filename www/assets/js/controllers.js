@@ -178,7 +178,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			// @todo: this is kind of redundundant
 			// make sure that the restaurant is actulay loaded first
 			App.cache('Restaurant', restaurant.permalink, function () {
-				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink);
+				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'pop' );
 			}, function() {
 
 				if ($('.is-ui2').get(0)) {
