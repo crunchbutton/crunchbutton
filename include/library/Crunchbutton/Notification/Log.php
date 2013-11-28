@@ -213,7 +213,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		$group_name = Config::getVal( Crunchbutton_Notification_Log::MAX_CALL_GROUP_KEY );
 		$group = Crunchbutton_Group::byName( $group_name );
 		if( $group->id_group ){
-			return $group->users();
+			return Crunchbutton_Admin_Group::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );	
 		}
 		return false;
 	}
