@@ -3055,3 +3055,10 @@ h1.about-header {
 .default-order-check .custom-checkbox {
 	font-size: 18px;
 }
+
+.ng-hide {
+	display:none!important;
+}
+
+
+

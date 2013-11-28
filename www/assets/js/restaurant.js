@@ -222,7 +222,9 @@ var Restaurant = function(id) {
 
 			var minutes = (closeTime.getTime() - utcNow.getTime()) /1000/60;
 			minutes = Math.floor(minutes);
-			this._closesIn = minutes;
+			if( minutes <= 15 ){
+				this._closesIn = minutes;	
+			}
 			if( this._closesIn == 0 ){
 				this._open = false;
 			}
