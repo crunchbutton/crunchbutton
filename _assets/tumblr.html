@@ -808,6 +808,13 @@ strong, .formspringmeFooter a {
     }
 }
 
+.author {
+    display: none;
+}
+.permalink .author {
+    display: block;
+}
+
 {CustomCSS}
 </style>
 {block:IfGoogleAnalyticsWebPropertyID}<script>
@@ -933,7 +940,7 @@ _gaq.push(['_trackPageview']);
 	{block:IfShowPostNotes}{block:NoteCount}<a href="{Permalink}" title="See post with notes">{NoteCountWithLabel}</a>{/block:NoteCount}{/block:IfShowPostNotes}
 	{block:Date}{block:IfDisqusShortname}<a href="{Permalink}#disqus_thread" class="comments">{lang:View comments}</a> {/block:IfDisqusShortname}{/block:Date}
 	{block:Reblog}(via <a href="{ReblogParentURL}" title="{ReblogParentTitle}">{ReblogParentName}</a>{block:RebloggedFromReblog} &amp; <a href="{ReblogRootURL}" title="{ReblogRootTitle}">{ReblogRootName}</a>{block:RebloggedFromReblog}){/block:Reblog}
-	{block:HasTags}<span class="tags">Tags: {block:Tags}<a href="{TagURL}">{Tag}</a> {/block:Tags}</span>{/block:HasTags}
+	{block:HasTags}<span class="tags">{block:Tags}#<a href="{TagURL}">{Tag}</a> {/block:Tags}</span>{/block:HasTags}
 </div>
 
 {block:IfShowPostNotes}{block:PostNotes}<div class="notecontainer">{PostNotes}</div>{/block:PostNotes}{/block:IfShowPostNotes}
