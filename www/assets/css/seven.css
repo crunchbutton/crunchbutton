@@ -279,7 +279,6 @@ html {
 	background-size: 100%;
 	margin: 0 auto;
 	padding-top: 50px;
-	-webkit-transition: all 0.2s;
 }
 .snap-drawer .pushabutton {
 	width: 14em;
@@ -2236,8 +2235,6 @@ sup {
 	    -ms-transform: rotate(-5deg);
 	     -o-transform: rotate(-5deg);
 	        transform: rotate(-5deg);
-	        
-
 }
 
 
