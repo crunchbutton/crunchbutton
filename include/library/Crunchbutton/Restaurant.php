@@ -807,24 +807,37 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function next_open_time(){
-		$hours = $this->hours( true );
 		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 		$day = strtolower( $today->format( 'D' ) );
 		$weekdays = array();
+		$_hours = array();
+		// get next week 7 days
 		for( $i = 0; $i <= 6; $i++ ){
-			$weekdays[] = strtolower( date( 'D', mktime( 0, 0, 0, date( 'n', $time ), date('j', $time ) + $i ,date( 'Y', $time ) ) ) );
+			$weekdays[] = strtolower( $today->format( 'D' ) );
+			$_hours[ strtolower( $today->format( 'D' ) ) ][ 'date' ] = $today->format( 'Y-m-d' );
+			$_hours[ strtolower( $today->format( 'D' ) ) ][ 'day' ] = strtolower( $today->format( 'D' ) );
+			$today->modify( '+ 1 day' );
 		}
+		$hours = $this->hours();
+		foreach ( $this->hours() as $hour ) {
+			$_hours[ $hour->day ][ 'hours' ][] = [$hour->time_open, $hour->time_close];
+		}
+		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 		foreach ( $weekdays as $weekday ) {
-			foreach ( $hours as $hour ) {
-				if ( $hour->day != $weekday ) {
+			foreach ( $_hours as $hours ) {
+				if ( $hours[ 'day' ] != $weekday ) {
 					continue;
 				}
-				$open  = new DateTime( $hour->time_open,  new DateTimeZone( $this->timezone ) );
-				if( $day == $weekday ){
-					$open->modify( '-7 days' );	
-				}
-				if ( $today->getTimestamp() < $open->getTimestamp() ) {
-					return $open;
+				foreach( $hours[ 'hours' ] as $hour ){
+					$h = explode( ':', $hour[ 0 ] );
+					$open = new DateTime( $hours[ 'date' ], new DateTimeZone( $this->timezone ) );
+					$open->setTime( $h[0], $h[1], 0 );
+					if( $day == $weekday ){
+						$open->modify( '-7 days' );	
+					}
+					if ( $today->getTimestamp() < $open->getTimestamp() ) {
+						return $open;
+					}
 				}
 			}
 		}
@@ -1217,7 +1230,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @return array
 	 */
 	public function exports($ignore = [], $where = []) {
-
 		$out = $this->properties();
 		// method ByRand doesnt need all the properties
 		if( $out['type'] && $out['type'] == 'byrange' ){
