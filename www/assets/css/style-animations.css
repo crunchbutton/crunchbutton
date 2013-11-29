@@ -1,19 +1,26 @@
-/* make sure hardware acceleration is on in case its not for some reason */
-.animation-fade.ng-enter, .animation-fade.ng-leave,
-.animation-push.ng-enter, .animation-push.ng-leave,
-.animation-pop.ng-enter, .animation-pop.ng-leave {
-	-webkit-transform: translateZ(0);
-}
 /* animation-fade stuff */
 .animation-fade.ng-enter, .animation-fade.ng-leave {
-	-webkit-transition: 0.31s cubic-bezier(.28,.01,.61,.98);
+	position: absolute;
+
 }
-.animation-fade.ng-enter, .animation-fade.ng-leave.ng-leave-active {
-	opacity:0;
+.animation-fade.ng-enter {
+	z-index: 99998;
+
 }
-.animation-fade.ng-leave, .animation-fade.ng-enter.ng-enter-active {
-	opacity:1;
+.animation-fade.ng-leave {
+	z-index: 99999;
+	-webkit-animation: 0.6s animation-fade-enter ease-out;
 }
+
+@-webkit-keyframes animation-fade-enter {
+	from {
+		opacity:1;
+	}
+	to {
+		opacity:0;
+	}
+}
+
 
 /* animation-push stuff */
 .animation-push.ng-enter {
@@ -77,4 +84,12 @@
 		-webkit-transform: translateX(300px);
 		opacity:0;
 	}
+}
+
+
+
+/* some custom animated per page stuff */
+.animation-fade.ng-leave .splash-top .logo {
+	-webkit-transition: .2s ease-out;
+	-webkit-transform: translateY(-30px);
 }
