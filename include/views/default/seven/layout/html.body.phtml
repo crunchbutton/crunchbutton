@@ -1,5 +1,5 @@
 
-<div class="snap-drawers static-nav-viewport" ng-controller="SideMenuCtrl">
+<div class="snap-drawers static-nav-viewport loggedout-hideable" ng-controller="SideMenuCtrl">
 	<div class="snap-drawer snap-drawer-left side-menu" id="side-menu">
 		<div>
 			<div class="pushabutton"></div>
@@ -118,7 +118,7 @@
 	<div class="snap-drawer snap-drawer-right side-menu"></div>
 </div>
 
-<div class="wrapper static-nav-viewport">
+<div class="wrapper static-nav-viewport loggedout-hideable">
 	
 	<div id="snap-content" class="snap-content">
 		<div class="navs fixed" data-position="fixed" ng-controller="MainHeaderCtrl">
@@ -167,7 +167,7 @@
 
 		<div class="snap-content-inner bg" ng-scroll-position>
 			<div class="content" ng-scroll-spy>
-				<div ng-view><?=$this->content?></div>
+				<div ng-view id="ng-view"><?=$this->content?></div>
 			</div>
 
 			<div class="divider"></div>
@@ -211,3 +211,4 @@
 
 <div id="fb-root"></div>
 <div class="is-ui2"></div>
+<div class="preload-home"></div>

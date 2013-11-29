@@ -3062,3 +3062,10 @@ sup {
 .page-cafe.game-home .nav-top .logo {
 	display: none;
 }
+
+
+.preload-home {
+	height: 0;
+	width: 0;
+	background: url(../images/micro/bg-sandwich.jpg);
+}
