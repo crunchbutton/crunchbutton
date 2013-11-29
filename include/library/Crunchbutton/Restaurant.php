@@ -811,15 +811,18 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 		$day = strtolower( $today->format( 'D' ) );
 		$weekdays = array();
+		// get next week 7 days
 		for( $i = 0; $i <= 6; $i++ ){
-			$weekdays[] = strtolower( date( 'D', mktime( 0, 0, 0, date( 'n', $time ), date('j', $time ) + $i ,date( 'Y', $time ) ) ) );
+			$weekdays[] = strtolower( $today->format( 'D' ) );
+			$today->modify( '+ 1 day' );
 		}
+		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 		foreach ( $weekdays as $weekday ) {
 			foreach ( $hours as $hour ) {
 				if ( $hour->day != $weekday ) {
 					continue;
 				}
-				$open  = new DateTime( $hour->time_open,  new DateTimeZone( $this->timezone ) );
+				$open = new DateTime( $hour->time_open,  new DateTimeZone( $this->timezone ) );
 				if( $day == $weekday ){
 					$open->modify( '-7 days' );	
 				}
