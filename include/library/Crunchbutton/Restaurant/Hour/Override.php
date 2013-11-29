@@ -42,7 +42,7 @@ class Crunchbutton_Restaurant_Hour_Override extends Cana_Table {
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$today_mysql = $today->format('Y-m-d H:i');
 		$type_closed = Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED;
-		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override WHERE date_start <= '{$today_mysql}' and date_end >= '{$today_mysql}' AND type = '{$type_closed}' LIMIT 1" );
+		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override WHERE date_start <= '{$today_mysql}' AND date_end >= '{$today_mysql}' AND type = '{$type_closed}' AND id_restaurant = {$id_restaurant} LIMIT 1" );
 		if( $overrides->count() > 0 ){
 			return true;
 		}
@@ -54,7 +54,7 @@ class Crunchbutton_Restaurant_Hour_Override extends Cana_Table {
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$today_mysql = $today->format('Y-m-d H:i');
 		$type_opened = Crunchbutton_Restaurant_Hour_Override::TYPE_OPENED;
-		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override WHERE date_start <= '{$today_mysql}' and date_end >= '{$today_mysql}' AND type = '{$type_opened}' LIMIT 1" );
+		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override WHERE date_start <= '{$today_mysql}' and date_end >= '{$today_mysql}' AND type = '{$type_opened}'  AND id_restaurant = {$id_restaurant} LIMIT 1" );
 		if( $overrides->count() > 0 ){
 			return true;
 		}
@@ -65,7 +65,7 @@ class Crunchbutton_Restaurant_Hour_Override extends Cana_Table {
 		$restaurant = Restaurant::o( $id_restaurant );
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$today_mysql = $today->format('Y-m-d H:i');
-		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override WHERE date_start <= '{$today_mysql}' and date_end >= '{$today_mysql}'" );
+		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override WHERE date_start <= '{$today_mysql}' and date_end >= '{$today_mysql}' AND id_restaurant = {$id_restaurant} " );
 		if( $overrides->count() > 0 ){
 			foreach( $overrides as $override ){
 				if( $override->type == Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED ){
