@@ -22,11 +22,13 @@ body {
 	line-height: 1;
 	font-size: 10px;
 	color: #312f38;
+	/*
 	-webkit-transition: font-size 0.2s;
 	   -moz-transition: font-size 0.2s;
 	    -ms-transition: font-size 0.2s;
 	     -o-transition: font-size 0.2s;
 	        transition: font-size 0.2s;
+	        */
 	letter-spacing: .03em;
 }
 body, input, textarea, button {
@@ -2651,6 +2653,7 @@ sup {
 	}
 }
 
+/*
 .animated-resize {
 	-webkit-transform: translate3d(0,0,0);
 	   -moz-transform: translate3d(0,0,0);
@@ -2664,7 +2667,7 @@ sup {
 	     -o-transition: all 0.2s;
 	        transition: all 0.2s;
 }
-
+*/
 
 .download-phone {
 	background: url(../images/micro/download-phone.png) no-repeat;

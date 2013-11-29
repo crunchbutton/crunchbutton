@@ -1,7 +1,12 @@
+/* make sure hardware acceleration is on in case its not for some reason */
+.animation-fade.ng-enter, .animation-fade.ng-leave,
+.animation-push.ng-enter, .animation-push.ng-leave,
+.animation-pop.ng-enter, .animation-pop.ng-leave {
+	-webkit-transform: translateZ(0);
+}
 /* animation-fade stuff */
 .animation-fade.ng-enter, .animation-fade.ng-leave {
-	-webkit-transition:0.5s linear all;
-	transition:0.5s linear all;
+	-webkit-transition: 0.31s cubic-bezier(.28,.01,.61,.98);
 }
 .animation-fade.ng-enter, .animation-fade.ng-leave.ng-leave-active {
 	opacity:0;
@@ -12,114 +17,64 @@
 
 /* animation-push stuff */
 .animation-push.ng-enter {
-	-webkit-animation: 0.5s animation-push-enter ease-out;
-	animation: 0.5s animation-push-enter ease-out;
+	-webkit-animation: 0.31s animation-push-enter cubic-bezier(.28,.01,.61,.98);
 	position: absolute;
 }
 
 .animation-push.ng-leave {
-	-webkit-animation: 0.5s animation-push-leave  ease-out;
-	animation: 0.5s animation-push-leave ease-out;
+	-webkit-animation: 0.31s animation-push-leave cubic-bezier(.28,.01,.61,.98);
 	position: absolute;
-}
-
-@keyframes animation-push-enter {
-	from {
-		left:300px;
-		opacity:0;
-	}
-	to {
-		left:0;
-		opacity:1;
-	}
 }
 
 @-webkit-keyframes animation-push-enter {
 	from {
-		left:300px;
+		-webkit-transform: translateX(300px);
 		opacity:0;
 	}
 	to {
-		left:0;
+		-webkit-transform: translateX(0);
 		opacity:1;
-	}
-}
-
-@keyframes animation-push-leave {
-	from {
-		left:0;
-		opacity:1;
-	}
-	to {
-		left:-300px;
-		opacity:0;
 	}
 }
 
 @-webkit-keyframes animation-push-leave {
 	from {
-		left:0;
+		-webkit-transform: translateX(0);
 		opacity:1;
 	}
 	to {
-		left:-300px;
+		-webkit-transform: translateX(-300px);
 		opacity:0;
 	}
 }
 
 /* animation-pop stuff */
 .animation-pop.ng-enter {
-	-webkit-animation: 0.5s animation-pop-enter ease-out;
-	animation: 0.5s animation-pop-enter ease-out;
+	-webkit-animation: 0.31s animation-pop-enter cubic-bezier(.28,.01,.61,.98);
 	position: absolute;
 }
 
 .animation-pop.ng-leave {
-	-webkit-animation: 0.5s animation-pop-leave ease-out;
-	animation: 0.5s animation-pop-leave ease-out;
+	-webkit-animation: 0.31s animation-pop-leave cubic-bezier(.28,.01,.61,.98);
 	position: absolute;
 }
-
-@keyframes animation-pop-enter {
-	from {
-		left:-300px;
-		opacity:0;
-	}
-	to {
-		left:0;
-		opacity:1;
-	}
-}
-
 @-webkit-keyframes animation-pop-enter {
 	from {
-		left:-300px;
+		-webkit-transform: translateX(-300px);
 		opacity:0;
 	}
 	to {
-		left:0;
+		-webkit-transform: translateX(0);
 		opacity:1;
 	}
 }
-
-@keyframes animation-pop-leave {
-	from {
-		left:0;
-		opacity:1;
-	}
-	to {
-		left:300px;
-		opacity:0;
-	}
-}
-
 @-webkit-keyframes animation-pop-leave {
 	from {
-		left:0;
+		-webkit-transform: translateX(0);
 		opacity:1;
 	}
 	to {
-		left:300px;
+		-webkit-transform: translateX(300px);
 		opacity:0;
 	}
 }
