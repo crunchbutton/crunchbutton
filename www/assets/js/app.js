@@ -38,6 +38,7 @@ var App = {
 		desktop: 9,
 		mobile: 6
 	},
+	transitionForDesktop : false,
 	cachedObjectsExpiresIn : 86400 // 86400 seconds is 24 hours
 };
 
@@ -324,8 +325,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	$rootScope.back = function() {
 		App.snap.close();
 		var backwards = false;
-
-		switch($route.current.action) {
+		switch( $route.current.action ) {
 			case 'order':
 				backwards = '/orders';
 				break;
@@ -336,9 +336,8 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 				backwards = '/location';
 				break;
 		}
-
-		if (backwards) {
-			App.go(backwards);
+		if ( backwards ) {
+			App.go( backwards, 'pop' );
 		} else {
 			history.back();
 		}
@@ -444,31 +443,14 @@ App.connectionError = function() {
 };
 
 App.go = function( url, transition ){
-	var animationClass = '';
-	switch( transition ){
-		case 'push': animationClass = 'animationPush'; break;
-		case 'fade': animationClass = 'animationFade'; break;
-		case 'pop': animationClass = 'animationPop'; break;
-		default: animationClass = '';
+	if( App.isNarrowScreen() || App.transitionForDesktop ){
+		App.rootScope.animationClass = transition ? 'animation-' + transition : '';
+		App.rootScope.$safeApply();
 	}
-	App.rootScope.animationClass = animationClass;
-	console.log('App.rootScope.animationClass',App.rootScope.animationClass);
-	App.rootScope.$safeApply();
 	// @todo: do some tests to figure out if we need this or not
 	// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
-	/*console.log('App.rootScope.animationClass',App.rootScope.animationClass);
-	if( App.rootScope.animationClass != '' ){
-		setTimeout( function(){
-			App.location.path( url || '/' );
-		}, 10 );
-	} else {
-		App.location.path( url || '/' );
-	}*/
-	setTimeout( function(){
-		App.location.path( url || '/' );
-		App.rootScope.$safeApply();
-	}, 10 );
-	
+	App.location.path( url || '/' );
+	App.rootScope.$safeApply();
 };
 
 App.toggleMenu = function() {

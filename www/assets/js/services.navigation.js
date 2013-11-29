@@ -31,14 +31,9 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 
 	/* the transitions type could be push, fade, pop or none */
 	service.link = function( path, transition ){
-		var animationClass = '';
-		switch( transition ){
-			case 'push': animationClass = 'animationPush'; break;
-			case 'fade': animationClass = 'animationFade'; break;
-			case 'pop': animationClass = 'animationPop'; break;
-			default: animationClass = '';
+		if( App.isNarrowScreen() || App.transitionForDesktop ){
+			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
 		}
-		// $rootScope.animationClass = animationClass;
 		$location.path( path || '/' );
 		App.snap.close();
 	}
