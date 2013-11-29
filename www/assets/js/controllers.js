@@ -178,7 +178,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			// @todo: this is kind of redundundant
 			// make sure that the restaurant is actulay loaded first
 			App.cache('Restaurant', restaurant.permalink, function () {
-				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'pop' );
+				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );
 			}, function() {
 
 				if ($('.is-ui2').get(0)) {
@@ -242,7 +242,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		}, 
 		// Error
 		function(){
-			$location.path( '/location' );
+			App.go( '/location' );
 		}
 	);
 });
@@ -291,7 +291,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	$scope.locationError = false;
 
 	$scope.openCity = function( city ){
-		$location.path( '/' + city );
+		App.go( '/' + city, 'push' );
 	}
 
 	$scope.resetFormLocation = function(){
@@ -364,7 +364,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	});
 
 	var proceed = function() {
-		$location.path( '/' + restaurants.permalink );
+		App.go( '/' + restaurants.permalink, 'push' );
 		$scope.location.form.address = '';
 		$scope.warningPlaceholder = false;
 		$scope.isProcessing = false;

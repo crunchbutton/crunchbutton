@@ -382,7 +382,8 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 				address: address
 			};
 			// if we have a bounding result, process based on that
-			if (service.bounding && google && google.maps ) {
+			if ( service.bounding && google && google.maps && google.maps.LatLng ) {
+
 				var latLong = new google.maps.LatLng(service.bounding.lat, service.bounding.lon);
 
 				// Create a cicle bounding box

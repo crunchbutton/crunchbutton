@@ -679,7 +679,7 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 							$rootScope.$safeApply( function(){
 								$rootScope.$broadcast( 'newOrder' );
 								OrderViewService.newOrder = true;
-								$location.path( '/order/' + uuid );	
+								App.go( '/order/' + uuid, 'push' );	
 							} );
 						});
 					}
@@ -930,11 +930,11 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 	}
 
 	service.restaurant = function (permalink) {
-		$location.path('/' + restaurants.permalink + '/' + permalink);
+		App.go( '/' + restaurants.permalink + '/' + permalink, 'push' );
 	};
 
 	service.receipt = function (id_order) {
-		$location.path('/order/' + id_order);
+		App.go( '/order/' + id_order, 'push' );
 	};
 
 	// Reload the orders list
