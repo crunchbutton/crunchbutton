@@ -807,24 +807,37 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function next_open_time(){
-		$hours = $this->hours( true );
 		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 		$day = strtolower( $today->format( 'D' ) );
 		$weekdays = array();
+		$_hours = array();
+		// get next week 7 days
 		for( $i = 0; $i <= 6; $i++ ){
-			$weekdays[] = strtolower( date( 'D', mktime( 0, 0, 0, date( 'n', $time ), date('j', $time ) + $i ,date( 'Y', $time ) ) ) );
+			$weekdays[] = strtolower( $today->format( 'D' ) );
+			$_hours[ strtolower( $today->format( 'D' ) ) ][ 'date' ] = $today->format( 'Y-m-d' );
+			$_hours[ strtolower( $today->format( 'D' ) ) ][ 'day' ] = strtolower( $today->format( 'D' ) );
+			$today->modify( '+ 1 day' );
 		}
+		$hours = $this->hours();
+		foreach ( $this->hours() as $hour ) {
+			$_hours[ $hour->day ][ 'hours' ][] = [$hour->time_open, $hour->time_close];
+		}
+		$today = new DateTime( 'now', new DateTimeZone( $this->timezone ) );
 		foreach ( $weekdays as $weekday ) {
-			foreach ( $hours as $hour ) {
-				if ( $hour->day != $weekday ) {
+			foreach ( $_hours as $hours ) {
+				if ( $hours[ 'day' ] != $weekday ) {
 					continue;
 				}
-				$open  = new DateTime( $hour->time_open,  new DateTimeZone( $this->timezone ) );
-				if( $day == $weekday ){
-					$open->modify( '-7 days' );	
-				}
-				if ( $today->getTimestamp() < $open->getTimestamp() ) {
-					return $open;
+				foreach( $hours[ 'hours' ] as $hour ){
+					$h = explode( ':', $hour[ 0 ] );
+					$open = new DateTime( $hours[ 'date' ], new DateTimeZone( $this->timezone ) );
+					$open->setTime( $h[0], $h[1], 0 );
+					if( $day == $weekday ){
+						$open->modify( '-7 days' );	
+					}
+					if ( $today->getTimestamp() < $open->getTimestamp() ) {
+						return $open;
+					}
 				}
 			}
 		}
@@ -1217,7 +1230,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @return array
 	 */
 	public function exports($ignore = [], $where = []) {
-
 		$out = $this->properties();
 		// method ByRand doesnt need all the properties
 		if( $out['type'] && $out['type'] == 'byrange' ){
@@ -1429,7 +1441,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 			foreach( $overrides as $override ){
 
-				$monday = new DateTime( date('Y-m-d H:i:s', strtotime('monday this week') ), new DateTimeZone( $this->timezone ) );
+				$monday = new DateTime( date( 'Y-m-d H:i:s', strtotime( 'monday this week' ) ), new DateTimeZone( $this->timezone ) );
 				$date_start = new DateTime( $override->date_start, new DateTimeZone( $this->timezone ) );
 				// Limit the override to this week
 				if( $date_start < $monday ){
@@ -1449,7 +1461,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 				$hour_close = ( $dayshours + intval( $date_end->format( 'H' ) ) * 100 ) + intval( $date_end->format( 'i' ) );
 				if( $override->type == Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED ){
-					$hoursStartFinishOverrideClose[] = [ 'start' => $hour_open, 'end' => $hour_close ];	
+					$hoursStartFinishOverrideClose[] = [ 'start' => $hour_open, 'end' => $hour_close, '_start' => $date_start->format( 'Y-m-d H:i:s' ), '_data_end' => $date_end->format( 'Y-m-d H:i:s' ) ];	
 				} else if( $override->type == 'open' ){
 					// Merge the override open hours at the open/close array
 					$hoursStartFinish[] = [ 'open' => $hour_open, 'close' => $hour_close ];
@@ -1477,6 +1489,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 
+// nao está pegando o fechamento de sexta as 17h!
+
 		foreach( $hoursStartFinishOverrideClose as $keyClose => $valClose ){
 			foreach( $hoursStartFinish as $keyOpen => $valOpen ){
 				// the close override is between a segment
@@ -1485,20 +1499,28 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 					$hoursStartFinish[] = [ 'open' => $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ], 'close' => $hoursStartFinish[ $keyOpen ][ 'close' ] ];	
 					$hoursStartFinish[ $keyOpen ][ 'close' ] = $hoursStartFinishOverrideClose[ $keyClose ][ 'start' ];
 				} else
-				// the close override start after the segment but ends before it
+				// the close override starts after the segment but ends before it
 				if(	$hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] <= $hoursStartFinish[ $keyOpen ][ 'open' ] 
 						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'open' ] 
 						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'close' ] ){
 					unset( $hoursStartFinish[ $keyOpen ] );
 				} else 
+				// the close override starts before the regular hour and ends after it
 				if(	$hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] <= $hoursStartFinish[ $keyOpen ][ 'open' ] 
 						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'open' ] ){
 					$hoursStartFinish[ $keyOpen ][ 'open' ] = $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ];
+				} else 
+				// the close override starts after the regular hour and ends after it
+				if(	$hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] >= $hoursStartFinish[ $keyOpen ][ 'open' ] 
+						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] < $hoursStartFinish[ $keyOpen ][ 'close' ]
+						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'close' ] ){
+					$hoursStartFinish[ $keyOpen ][ 'close' ] = $hoursStartFinishOverrideClose[ $keyClose ][ 'start' ];
 				}
 			}
 		}
 
 		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
+
 		foreach( $hoursStartFinish as $key => $val ){
 			$getNext = false;
 			foreach( $hoursStartFinish as $keyNext => $valNext ){
