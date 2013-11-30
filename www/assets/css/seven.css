@@ -2684,12 +2684,6 @@ sup {
 	margin: 0 auto;
 }
 
-.download-top {
-	text-align: center;
-	font-weight: bold;
-	color: #fff;
-}
-
 .download-top h1 {
 	font-size: 3em;
 	margin-bottom: .4em;
@@ -2701,11 +2695,6 @@ sup {
 
 .page-download .navs {
 	display: none;
-}
-
-.download-top {
-	max-width: 27em;
-	margin: 0 auto;
 }
 
 .download-top p {
@@ -3085,4 +3074,47 @@ sup {
 }
 .page-location .cafe-bubble-wrap {
 	margin-top: 0;
+}
+
+.app-store {
+	background: url(../images/micro/app-store.svg) no-repeat;
+	width: 16.9em;
+	height: 5em;
+	background-size: 100%;
+	cursor: pointer;
+}
+
+
+.download-top {
+	font-weight: bold;
+	color: #fff;
+	text-align: left;
+}
+
+
+@media screen and (min-width: 769px) {
+	.download-mobile {
+		display: none;
+	}
+	.download-phone {
+		float: left;
+	}
+	.download-top {
+		padding-left: 20em;
+	}
+	.download-desktop .content {
+		max-width: 600px;
+	}
+}
+@media screen and (max-width: 768px) {
+	.download-desktop {
+		display: none;
+	}
+
+	.download-top {
+		max-width: 27em;
+		margin: 0 auto;
+		text-align: center;
+	}
+
 }
