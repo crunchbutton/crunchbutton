@@ -12,7 +12,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="navigation.link('/food-delivery')" ng-show="account.user.id_user">
+				<li ng-click="navigation.link('/food-delivery')" ng-show="account.user.id_user && account.user.name">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
@@ -120,7 +120,7 @@
 						<ul class="dropdown-menu">
 							<li><a href="/splash" ng-click="navigation.link('/splash')" ng-show="!account.user.id_user"><i class="fa fa-rocket"></i>Get Started!</a></li>
 							<li><a href="/food-delivery" ng-click="navigation.link('/food-delivery')" ng-show="account.user.id_user"><i class="fa fa-cutlery"></i>Restaurants</a></li>
-							<li><a href="/orders" ng-click="navigation.link('/orders')" ng-show="account.user.id_user"><i class="fa fa-truck"></i>Previous Orders</a></li>
+							<li><a href="/orders" ng-click="navigation.link('/orders')" ng-show="account.user.id_user && account.user.name"><i class="fa fa-truck"></i>Previous Orders</a></li>
 							<li><a href="/location" ng-click="navigation.link('/location')" ng-show="account.user.id_user"><i class="fa fa-map-marker"></i>Change Location</a></li>
 							<li class="dropdown-divider"></li>
 							<li><a href="/help" ng-click="navigation.link('/help')"><i class="fa fa-heart"></i>Help</a></li>
