@@ -205,6 +205,16 @@ html {
 	width: 103%;
 	box-sizing: border-box;
 }
+.location-recommend {
+	border: 2px solid #003f35;
+	border-radius: 6px;
+	font-size: 15px;
+	padding: .5em 0 .5em .6em;
+	margin: 0 0 15px 0;
+	height: 40px;
+	width: 100%;
+	box-sizing: border-box;
+}
 
 .location-detect {
 	background: #00bd9e;
@@ -249,9 +259,9 @@ html {
 	background-position: top right;
 	background-size: cover;
 	padding: 0 0 60px 0;
-}
-.home-inputs h4 {
 	color: #fff;
+}
+.home-inputs h4.action {
 	text-transform: uppercase;
 	margin-bottom: .5em;
 }
@@ -1110,12 +1120,13 @@ p {
 	
 	box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.15);
 
-
+/*
 	-webkit-transition: -webkit-transform 0.2s ease, box-shadow 0.2s ease;
 	   -moz-transition: -moz-transform 0.2s ease, box-shadow 0.2s ease;
 	    -ms-transition: -ms-transform 0.2s ease, box-shadow 0.2s ease;
 	     -o-transition: -o-transform 0.2s ease, box-shadow 0.2s ease;
 	        transition: transform 0.2s ease, box-shadow 0.2s ease;
+	        */
 
 }
 
@@ -1123,6 +1134,7 @@ p {
 	border: 1px solid #f78256;
 }
 .restaurants-item .restaurants-open:active {
+/*
 	-webkit-transform: translateY(2px);
 	   -moz-transform: translateY(2px);
 	    -ms-transform: translateY(2px);
@@ -1130,6 +1142,7 @@ p {
 	        transform: translateY(2px);
 
 	box-shadow: 0px 0 0 0px rgba(0,0,0,0.15);
+	*/
 }
 
 .restaurants-item {
@@ -2356,6 +2369,7 @@ sup {
 }
 .bubble-curved-white {
 	background: url(../images/micro/bubble-curved-white.svg) no-repeat;
+	color: #312f38;
 }
 
 .bubble-curved .text {
@@ -2424,12 +2438,12 @@ sup {
 	padding-left: .7em;
 }
 
-.splash-top p {
-	color: #fff;
-}
-
 .page-splash .navs {
 	display: none;
+}
+
+.center-text {
+	text-align: center;
 }
 
 .alternate-link {
@@ -2478,7 +2492,7 @@ sup {
 	display: inline-block;
 	width: 30em;
 }
-.splash-inputs .button.facebook {
+.splash-inputs .button {
 	padding-top: 1em;
 	padding-bottom: 1em;
 }
@@ -3068,4 +3082,11 @@ sup {
 	height: 0;
 	width: 0;
 	background: url(../images/micro/bg-sandwich.jpg);
+}
+
+.page-location .faq-tomato-green {
+	font-size: 8px;
+}
+.page-location .cafe-bubble-wrap {
+	margin-top: 0;
 }
