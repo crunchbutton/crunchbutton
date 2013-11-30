@@ -1,26 +1,103 @@
 <div class="bg">
 	<div class="home-top">
 		<div class="top-pad"></div>
-		<div class="pushabutton"></div>
-		<div class="home-inputs">
-			<h4>What's your address?</h4>
-			<table cellpadding="0" cellspacing="0" class="home-location">
-				<tr>
-					<td style="width: 100%;"><input class="location-address" autocapitalize="off" autocorrect="off" placeholder="e.g. 37 Elm St, New Haven CT 06511" ng-enter="letsEat()" ng-model="location.form.address" geo-complete></td>
-					<td>				
-						<button class="location-detect ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF" ng-click="locEat()">
-							<span class="fa fa-location-arrow "></span>
-							<div class="ladda-spinner"></div>
-						</button>
-					</td>
-				</tr>
-			</table>
-			<div class="button-pushable find-restaurants">
-				<button class="button orange find-restaurants button-letseat-form ladda-button" ng-click="letsEat()" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF">
-					<div class="ladda-label">Find Restaurants!</div>
-					<span class="ladda-spinner"></span>
-				</button>
+	
+		<div ng-show="!locationError">
+			<div class="pushabutton"></div>
+			<div class="home-inputs">
+				<h4 class="action">What's your address?</h4>
+				<table cellpadding="0" cellspacing="0" class="home-location">
+					<tr>
+						<td style="width: 100%;"><input class="location-address" autocapitalize="off" autocorrect="off" placeholder="e.g. 37 Elm St, New Haven CT 06511" ng-enter="letsEat()" ng-model="location.form.address" geo-complete></td>
+						<td>				
+							<button class="location-detect ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF" ng-click="locEat()">
+								<span class="fa fa-location-arrow "></span>
+								<div class="ladda-spinner"></div>
+							</button>
+						</td>
+					</tr>
+				</table>
+				<div class="button-pushable find-restaurants">
+					<button class="button orange find-restaurants button-letseat-form ladda-button" ng-click="letsEat()" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF">
+						<div class="ladda-label">Find Restaurants!</div>
+						<span class="ladda-spinner"></span>
+					</button>
+				</div>
 			</div>
+		</div>
+		
+		<div ng-show="locationError">
+			<div class="home-inputs">
+			<div class="splash-inputs">
+
+				<div class="cafe-bubble-wrap">
+					<div class="bubble-curved bubble-curved-white bubble-animated animated-resize">
+						<div class="text" ng-switch="loseMessage">
+							<div ng-show="!account.user.id_user && !recommend.greetings">
+								<span class="single-line" ng-switch-when="1">Don't worry</span>
+								<span class="small" ng-switch-when="2">Just let us know that you want crunchbutton</span>
+								<span class="small" ng-switch-when="3">and we will be there<br> as soon as we can!</span>
+								<span class="single-line" ng-switch-when="4"><i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i></span>
+								<span class="single-line" ng-switch-default><b>Oh, no!</b></span>
+							</div>
+							<div ng-show="account.user.id_user && !recommend.greetings">
+								<span class="single-line" ng-switch-when="1">What's the best?</span>
+								<span ng-switch-when="2">We listen to our users</span>
+								<span class="small" ng-switch-when="3">Let us know <br>and we will add it!</span>
+								<span class="single-line" ng-switch-when="4"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+								<span ng-switch-default><b>What's your favorite?</b></span>
+							</div>
+							<div ng-show="recommend.greetings">
+								<span class="small" ng-switch-when="1">We check this<br> stuff daily!</span>
+								<span class="small" ng-switch-when="2">We will get back to you as soon as we can!</span>
+								<span class="single-line" ng-switch-when="3"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+								<span class="single-line" ng-switch-when="4"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+								<span class="single-line" ng-switch-default><b>Thanks!</b></span>
+							</div>
+						</div>
+					</div>
+					<div class="bubble-curved-spacer"></div>
+				</div>
+				<div class="faq-tomato-green animated-resize" ng-instant="loseMessage = (loseMessage > 3 ? 0 : (loseMessage+1))" instant-pass-thru></div>
+				<div class="divider spacer-one-two"></div>
+				
+				<div ng-show="!account.user.id_user && !recommend.greetings">
+					<h4>We don't serve that address yet.</h4>
+					<p>But you can get notified when we are in your area. We are always expanding and looking for that next popular sandwich. Log in and let us know what you want to see on crunchbutton!</p>
+					<div class="divider spacer-one-two"></div>
+
+					<div class="button-pushable">
+						<button class="button facebook" ng-click="facebook.auth()">
+							<i class="fa fa-facebook-square"></i>&nbsp;
+							<span ng-hide="facebook.facebook.wait">Log in with Facebook</span>
+							<span ng-show="facebook.facebook.wait">Just a sec...</span>
+						</button>
+					</div>
+				</div>
+				
+				<div ng-show="account.user.id_user && !recommend.greetings">
+					<h4>We don't serve that address yet.</h4>
+					<p>But you can recommend something. Let us know what you want to see on crunchbutton!</p>
+					<div class="divider spacer-one-two"></div>
+
+					<input class="location-recommend" autocapitalize="off" autocorrect="off" placeholder="e.g. Alpha Delta Pizza" ng-enter="recommend.send()" ng-model="recommend.form.restaurant">
+					
+					<div class="button-pushable">
+						<button class="button orange" ng-click="recommend.send()"><b>Recommend</b></button>
+					</div>
+				</div>
+				
+				<div ng-show="recommend.greetings">
+					<h4>Sent to our brains!</h4>
+					<p>We will let you know soon! Thanks for trying crunchbutton!</p>
+				</div>
+	
+				<p class="center-text">
+					<a href="" class="splash-continue" ng-instant="resetFormLocation()">Try another location</a>
+				</p>
+			</div>
+		</div>
+
 		</div>
 	</div>
 	
