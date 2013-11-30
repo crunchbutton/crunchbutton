@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Crunchbutton for iPhone and iPad in the Apple App store</title>
+<meta name="fragment" content="!" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon-precomposed" href="/assets/images/micro/appicon.png">
+<link rel="shortcut icon" href="/assets/images/micro/appicon.png">
+
+
+<style>
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+body {
+	line-height: 1;
+	font-size: 10px;
+	color: #312f38;
+	letter-spacing: .03em;
+	background: #fffef8;
+}
+body, button {
+	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
+}
+::selection {
+	background: rgba(47,154,211,.5);
+	color: #fff;
+	text-shadow: none;
+}
+input[type="submit"]:focus, input[type="button"]:focus, input[type="text"]:focus, button, :focus {
+	outline : none;
+}
+html {
+	-webkit-text-size-adjust: none;
+	   -moz-text-size-adjust: none;
+	    -ms-text-size-adjust: none;
+	     -o-text-size-adjust: none;
+	        text-size-adjust: none;
+}
+* {
+	-webkit-tap-highlight-color: rgba(205,69,29,.5);
+}
+.home-top {
+	background: #90562f url(/assets/images/micro/bg-sandwich.jpg);
+	background-position: top right;
+	background-size: cover;
+	padding: 0 0 60px 0;
+	color: #fff;
+}
+h4 {
+	font-weight: bold;
+	font-size: 1.3em;
+	line-height: 1.9em;
+}
+p {
+	font-size: 1.2em;
+	line-height: 1.6em;
+}
+.button {
+	border: 0;
+	padding: .5em 0 .5em 0;
+	border-radius: 5px;
+	cursor: pointer;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 1.3em;
+	width: 100%;
+
+	-webkit-transition: background linear 0.08s;
+	   -moz-transition: background linear 0.08s;
+	    -ms-transition: background linear 0.08s;
+	     -o-transition: background linear 0.08s;
+	        transition: background linear 0.08s;
+}
+.button.ani-all {
+	-webkit-transform: translate3d(0,0,0);
+	   -moz-transform: translate3d(0,0,0);
+	    -ms-transform: translate3d(0,0,0);
+	     -o-transform: translate3d(0,0,0);
+	        transform: translate3d(0,0,0);
+
+	-webkit-transition: all linear 0.08s;
+	   -moz-transition: all linear 0.08s;
+	    -ms-transition: all linear 0.08s;
+	     -o-transition: all linear 0.08s;
+	        transition: all linear 0.08s;
+}
+.button.download {
+	font-size: 1.9em;
+	margin: 0 auto;
+	padding: .8em 0 .8em 0;
+	background: #e53f3c;
+	box-shadow: 0 3px 0 #9a000d;
+	font-weight: bold;
+}
+.button.download:active {
+	background: #d13b39;
+}
+/* pushable states */
+.button-pushable {
+	margin-top: 0;
+	margin-bottom: 3px;
+	height: 4em;
+}
+.button-pushable .button:active {
+	box-shadow: none;
+	margin-top: 4px;
+}
+.button-pushable .button.download:active {
+	margin-top: 4px;
+}
+@media(min-width:500px) {
+	body {
+		font-size: 12px;
+	}
+}
+.divider {
+	clear: both;
+}
+.fixed {
+	position: fixed;
+}
+.splash-continue {
+	color: #ffddb8;
+	text-transform: uppercase;
+	font-size: 1.1em;
+	font-weight: bold;
+	letter-spacing: -.02em;
+	text-decortion: underline;
+}
+.splash-top {
+	top: 0;
+	bottom:0;
+	left:0;
+	right:0;
+	width: 100%;
+	height: 100%;
+	z-index:1000;
+	overflow: hidden;
+	text-align: center;
+}
+.splash-tagline {
+	margin-bottom: 2em;
+}
+.splash-continue {
+	margin-top: 1em;
+	display: block;
+}
+	
+@media screen and (min-height: 530px) {
+	.splash-spacer-one {
+		height: 5em;
+	}
+	.splash-spacer-two {
+		height: 6em;
+	}
+	.splash-bottom {
+		bottom: 7.7em;
+	}
+}
+@media screen and (max-height: 529px) {
+	.splash-spacer-one {
+		height: 4em;
+	}
+	.splash-spacer-two {
+		height: 5em;
+	}
+	.splash-bottom {
+		bottom: 6em;
+	}
+}
+@media screen and (max-height: 499px) {
+	.splash-spacer-one {
+		height: 3em;
+	}
+	.splash-spacer-two {
+		height: 4em;
+	}
+	.splash-bottom {
+		bottom: 4em;
+	}
+}
+
+
+@media screen and (max-height: 469px) {
+	.splash-top .logo {
+		display: none;
+	}
+	.splash-spacer-two {
+		height: 2em;
+	}
+	.splash-spacer-one {
+		height: 4em;
+	}
+	.splash-inputs .button.facebook {
+		padding-top: .5em;
+		padding-bottom: .5em;
+	}
+	.splash-inputs .button-pushable {
+		height: 4em;
+	}
+	.splash-bottom {
+		bottom: 2.2em;
+	}
+}
+
+@media screen and (max-height: 379px) {
+	.splash-spacer-two {
+		height: 0;
+	}
+	.splash-spacer-one {
+		height: 2em;
+	}
+	.splash-tagline {
+		margin-bottom: .4em;
+	}
+	.splash-bottom {
+		bottom: 1.2em;
+	}
+}
+
+.download-phone {
+	background: url(/assets/images/micro/download-phone.png) no-repeat;
+	width: 195px;
+	height: 408px;
+	background-size: 100%;
+	margin: 0 auto;
+}
+
+.download-top {
+	text-align: center;
+	font-weight: bold;
+	color: #fff;
+}
+
+.download-top h1 {
+	font-size: 3em;
+	margin-bottom: .4em;
+}
+
+.download-top h2 {
+	font-size: 2em;
+}
+
+.page-download .navs {
+	display: none;
+}
+
+.download-top {
+	max-width: 27em;
+	margin: 0 auto;
+}
+
+.download-top p {
+	margin-top: 2.4em;
+}
+
+.download-top .button-pushable {
+	margin-top: 3em;
+
+}
+
+.page-download .splash-spacer-two {
+	min-height: 1em;
+}
+
+@media screen and (min-height: 700px) {
+	.download-bottom {
+		margin-top: 5em;
+	}
+}
+
+@media screen and (max-height: 699px) {
+	.download-bottom {
+		bottom: -100px;
+		width: 100%;
+	}
+	.fixed-699 {
+		position: fixed;
+	}
+}
+
+@media screen and (max-height: 599px) {
+	.download-bottom {
+		bottom: -200px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-height: 349px) {
+	.download-bottom {
+		bottom: -280px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-height: 249px) {
+	.download-bottom {
+		display: none;
+	}
+}
+
+@media screen and (max-height: 444px) {
+	.button.download {
+		padding-top: .5em;
+		padding-bottom: .5em;
+		font-size: 1.5em;
+	}
+	.download-top .button-pushable {
+		margin-top: 1.7em;
+	}
+	.download-top h1 {
+		font-size: 2.5em;
+		margin-bottom: .4em;
+	}
+	.download-top h2 {
+		font-size: 1.5em;
+	}
+	.download-top p {
+		margin-top: .8em;
+	}
+}
+
+
+.image-animated {
+	-webkit-animation-duration: 5s;
+	-webkit-animation-name: image-hover;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: ease-in-out;
+	-webkit-animation-delay: 2s;
+}
+
+@-webkit-keyframes image-hover {
+	0% { -webkit-transform:translateY(0); }
+	22.5% { -webkit-transform:translateY(-.5em); }
+    50% { -webkit-transform:translateY(0); }
+    100% { -webkit-transform:translateY(0); }
+}
+
+
+</style>
+</head>
+
+<body>
+
+	<div class="bg home-top splash-top fixed">
+		<div class="splash-spacer-two"></div>
+	
+		<div class="download-top">
+			<h1>Hey,</h1>
+			<h2>theres an app for that.</h2>
+	
+			<div class="button-pushable">
+				<a href="https://itunes.apple.com/app/id721780390" target="_blank">
+					<button class="button orange download ani-all" ng-click="letsEat()" ng-spinner data-style="zoom-out" data-spinner-color="#FFFFFF">
+						Download
+					</button>
+				</a>
+			</div>
+			<div class="divider"></div>
+			<p><a href="javascript:;" class="splash-continue" onclick="cancelDownload()">Continue to mobile site</a></p>
+		</div>
+		<div class="divider"></div>
+		
+		<div class="download-bottom fixed-699">
+			<a href="https://itunes.apple.com/app/id721780390" target="_blank"><div class="download-phone image-animated"></div></a>
+		</div>
+	
+	</div>
+</body>
+
+<script>
+	var cancelDownload = function() {
+		var exdate = new Date();
+		exdate.setDate(exdate.getDate() + 5);
+		document.cookie = '_viewmobile=true; expires=' + exdate.toUTCString();
+		location.href = location.href;
+	};
+</script>
+
+
+</html>

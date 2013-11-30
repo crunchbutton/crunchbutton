@@ -335,7 +335,9 @@ class Crunchbutton_App extends Cana_App {
 		}
 
 		if (!$this->isCompat()) {
-			$params['layout'] =  'layout/compat';		
+			$params['layout'] =  'layout/compat';
+		} else if ($this->isDownloadable()) {
+			$params['layout'] =  'layout/download';
 		} else {
 			$params['layout'] =  $this->config()->defaults->layout;
 		}
@@ -343,6 +345,14 @@ class Crunchbutton_App extends Cana_App {
 		parent::buildView($params);
 		
 		return $this;
+	}
+	
+	public function isDownloadable() {
+		if (preg_match('/ios|iphone|ipad/i',$_SERVER['HTTP_USER_AGENT']) && !$_COOKIE['_viewmobile']) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public function getTheme($config = null) {
