@@ -128,6 +128,8 @@
 							<li><a ng-click="navigation.signin()" ng-show="!account.user.id_user"><i class="fa fa-sign-in"></i>Log In</a></li>
 							<li><a ng-click="signout.do()" ng-show="account.user.id_user"><i class="fa fa-sign-out"></i>Log Out</a></li>
 							<li class="dropdown-divider" ng-show="account.user.debug"></li>
+							<li><a href="/download" ng-click="navigation.link('/download')"><i class="fa fa-mobile-phone"></i>Download for iPhone</a></li>
+							<li class="dropdown-divider"></li>
 							<li><a ng-click="App.test.card()" ng-show="account.user.debug"><i class="fa fa-circle-o"></i>TEST: card</a></li>
 							<li><a ng-click="App.test.clearloc()" ng-show="account.user.debug"><i class="fa fa-circle-o"></i>TEST: clear location</a></li>
 							<li><a ng-click="navigation.link('/')" ng-show="account.user.debug"><i class="fa fa-circle-o"></i>TEST: go home</a></li>
