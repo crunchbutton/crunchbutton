@@ -81,7 +81,8 @@ html {
 }
 
 body {
-	background: url(/assets/images/micro/darktire.png);
+	background: url(/assets/images/micro/darktire.png) top left;
+	background-size: 250px 250px;
 }
 
 
