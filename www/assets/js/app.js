@@ -242,7 +242,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService) {
+NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService, LocationService) {
 
 	// define external pointers
 	App.rootScope = $rootScope;
@@ -295,8 +295,17 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			if( !App.config.user.id_user ){
 				CartService.clean();
 			}
-			// reload the actual controller
+
+			LocationService.init(true);
+			if (App.config.user.id_user) {
+				$location.path('/food-delivery');
+			}
+			
+			App.snap.close();
+
 			console.log('userAuth!');
+
+			// reload the actual controller
 			if( !AccountService.forceDontReloadAfterAuth ){
 				$rootScope.reload();	
 			}
@@ -414,6 +423,8 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	});
 
 	AccountService.checkUser();
+	
+	LocationService.init();
 
 	ReferralService.check();
 

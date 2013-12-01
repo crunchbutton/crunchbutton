@@ -79,6 +79,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 	}
 
 	service.list = function (success, error) {
+		
 		if (!service.position.pos().valid('restaurants')) {
 			if (error) {
 				error();

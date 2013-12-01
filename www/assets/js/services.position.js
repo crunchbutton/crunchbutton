@@ -156,11 +156,17 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 	 * initilize location functions
 	 */
 	service.init = function () {
+		// force refresh
+
+		var force = false;
+		if (arguments[0]) {
+			force = true;
+		}
+
 		// this method could not be called twice
-		if (service.initied){
+		if (service.initied && !force) {
 			return;
 		}
-		service.initied = true;
 		
 		// 1) set bounding to maxmind results if we have them
 		if (App.config.loc.lat && App.config.loc.lon) {
@@ -176,13 +182,6 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 			for (var x in cookieLocs) {
 				service.position.addLocation(new Location(cookieLocs[x]._properties));
 			}
-			// If we have a valid coockie position redirect the user to restaurants page
-			if ( ( $location.path() == '/' || $location.path() == '/location' ) && service.position.pos().valid( 'restaurants' ) ) {
-				setTimeout( function(){ $location.path( '/' + RestaurantsService.permalink ); }, 1 );
-				service.loadRestaurantsPage = false;
-			}
-		} else {
-			$location.path( '/location' );
 		}
 
 		if (cookieBounding) {
@@ -197,7 +196,21 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 				lon: service.account.user.location_lon,
 				type: 'user'
 			};
+			
+			service.position.addLocation(new Location({
+				lat: service.account.user.location_lat,
+				lon: service.account.user.location_lon,
+				type: 'user'
+			}));
+			
+			service.loadRestaurantsPage = true;
 		}
+		
+		if (service.initied) {
+			return;
+		}
+		
+		service.initied = true;
 
 		// 4) get a more specific bounding location result from google
 		if (App.isPhoneGap) {
@@ -235,9 +248,6 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 						service.restaurantsService.list(
 							// Success
 							function () {
-								if (service.loadRestaurantsPage) {
-									$location.path('/' +RestaurantsService.permalink);
-								}
 								service.loadRestaurantsPage = true;
 							},
 							// Error
@@ -267,30 +277,27 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 
 		// 5) if there are location
 		if( service.position.locs.length ){
-					var loc = service.position.pos();
-					service.reverseGeocode(loc.lat(), loc.lon(),
+			var loc = service.position.pos();
+			service.reverseGeocode(loc.lat(), loc.lon(),
+			// Success
+			function (loc) {
+				service.bounding = {
+					lat: loc.lat(),
+					lon: loc.lon(),
+					city: loc.city()
+				};
+				service.restaurantsService.list(
 					// Success
-					function (loc) {
-						service.bounding = {
-							lat: loc.lat(),
-							lon: loc.lon(),
-							city: loc.city()
-						};
-						service.restaurantsService.list(
-							// Success
-							function () {
-								if (service.loadRestaurantsPage) {
-									$location.path('/' +RestaurantsService.permalink);
-								}
-								service.loadRestaurantsPage = true;
-							},
-							// Error
-							function () {
-								$rootScope.$broadcast( 'locationNotServed',  true );
-							});
+					function () {
+						service.loadRestaurantsPage = true;
 					},
 					// Error
-					function () {});
+					function () {
+						$rootScope.$broadcast( 'locationNotServed',  true );
+					});
+			},
+			// Error
+			function () {});
 		} else 
 		// 6) if there is no previously used locations of any kind
 		if (!service.position.locs.length) {
@@ -304,9 +311,6 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 						service.position.addLocation(loc);
 						service.restaurantsService.list(
 							function () {
-								if (service.loadRestaurantsPage) {
-									$location.path('/' +RestaurantsService.permalink);
-								}
 								service.loadRestaurantsPage = true;
 							},
 							function () {
