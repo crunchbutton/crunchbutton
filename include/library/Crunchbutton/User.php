@@ -2,6 +2,43 @@
 
 class Crunchbutton_User extends Cana_Table {
 
+	public function tipper() {
+		// returns a weighted tipper value. 0 = unknown. 5 = the best
+		if (!isset($this->_tipper)) {
+			$orders = $this->orders();
+			$o = [];
+			foreach ($orders as $order) {
+				if ($order->delivery_type == 'delivery' && $order->pay_type == 'card' && $order->tip) {
+					if ($order->tip_type == 'number') {
+						$o[] = round(($order->tip / $order->price) * 100);
+					} else if ($order->tip_type == 'percent') {
+						$o[] = $order->tip;
+					}
+				}
+			}
+			
+			if (!count($o)) {
+				$tipper = 0;
+			} else {
+				$score = array_sum($o) / count($o);
+			}
+
+			if ($score < 5) {
+				$tipper = 1;
+			} else if ($score < 10) {
+				$tipper = 2;
+			} else if ($score < 15) {
+				$tipper = 3;
+			} else if ($score < 20) {
+				$tipper = 4;
+			} else {
+				$tipper = 5;
+			}
+			$this->_tipper = $tipper;
+		}
+		return $this->_tipper;
+	}
+
 	public function name() {
 		if (!isset($this->_name)) {
 			$name = explode(' ',$this->name);
@@ -20,16 +57,27 @@ class Crunchbutton_User extends Cana_Table {
 		return $order;
 	}
 	
-	public function orders() {
-		$orders = Order::q('
-			select o.date, o.id_order, o.uuid, r.name restaurant_name, r.permalink restaurant_permalink, r.timezone timezone, "compressed" type from `order` o
-			inner join restaurant r on r.id_restaurant = o.id_restaurant
-			where
-				id_user="'.$this->id_user.'"
-				and id_user is not null
-				order by date desc
-		');
-		return $orders;
+	public function orders($type = 'full') {
+		if (!$this->id_user) {
+			return new Order;
+		}
+		if (!isset($this->_orders)) {
+			if ($type == 'compact') {
+				$q = '
+					select o.date, o.id_order, o.uuid, r.name restaurant_name, r.permalink restaurant_permalink, r.timezone timezone, "compressed" type from `order` o
+					inner join restaurant r on r.id_restaurant = o.id_restaurant
+					where
+						id_user="'.$this->id_user.'"
+						and id_user is not null
+						order by date desc
+				';
+			} else {
+				$q = 'select * from `order` where id_user="'.$this->id_user.'"';
+			}
+			
+			$this->_orders = Order::q($q);
+		}
+		return $this->_orders;
 	}
 
 	public function watched() {
@@ -168,6 +216,8 @@ class Crunchbutton_User extends Cana_Table {
 		
 		unset($out['balanced_id']);
 		unset($out['stripe_id']);
+		
+		$out['tipper'] = $this->tipper();
 		
 		return $out;
 	}

@@ -2,6 +2,9 @@
 
 class Controller_test extends Crunchbutton_Controller_Account {
 	public function init() {
+	
+
+	exit;
 		$c = c::lob()->checks()->create([
 			'name' => 'Demo Check',
 			'to' => [
