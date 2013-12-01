@@ -39,14 +39,15 @@ var App = {
 		mobile: 6
 	},
 	transitionForDesktop : false,
-	cachedObjectsExpiresIn : 86400 // 86400 seconds is 24 hours
+	cachedObjectsExpiresIn : 86400, // 86400 seconds is 24 hours
+	enableSplash: true
 };
 
 // enable localstorage on phonegap
 App.localStorage = App.isPhoneGap;
 
 App.setLoggedIn = function(loggedIn) {
-	if ($('.is-ui2').get(0) && !loggedIn && App.isPhoneGap) {
+	if ($('.is-ui2').get(0) && !loggedIn && App.isPhoneGap && App.enableSplash) {
 		setTimeout(function(){
 			App.go('/splash');
 		},10);
@@ -705,7 +706,34 @@ App.init = function(config) {
 	}
 
 	App.phoneGapListener.init();
+	$(window).trigger('nginit');
 };
+
+App.handleUrl = function(url) {
+	// only happens if being pased from a url in the native app
+
+	var handler = 'crunchbutton://';
+
+	if (!App.isPhoneGap || url.indexOf(handler) < 0) {
+		return;
+	}
+
+	url = url.replace(handler, '');
+	url = url.replace(/^\//,'');
+	url = '/' + url;
+	url = url.split('?');
+	url = url[0];
+
+	if (App._init) {
+		// already launched. just nav
+		App.go(url);
+	} else {
+		// launching with url params
+		$(window).on('nginit', function() {
+			App.go(url);
+		});
+	}
+}
 
 /**
  * dialog functions
