@@ -1,6 +1,21 @@
 /**
  * splash page
  */
+NGApp.controller('DownloadCtrl', function ($scope, $http) {
+	$scope.text = {
+		number: '',
+		sent: false,
+		send: function() {
+			$http.post(App.service + 'download?num=' + $scope.text.number.replace(/-/g,''));				
+			$scope.text.sent = true;
+
+		}
+	};
+});
+
+/**
+ * splash page
+ */
 NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
 	$scope.facebook = AccountFacebookService;
 	if (App.parallax.setupBackgroundImage) {
