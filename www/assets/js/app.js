@@ -132,6 +132,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		})
 		.when('/download', {
 			action: 'download',
+			controller: 'DownloadCtrl',
 			templateUrl: 'assets/view/download.html'
 		})
 		.when('/food-delivery', {

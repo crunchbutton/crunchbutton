@@ -453,14 +453,6 @@ p {
 	background: #e24538;
 	box-shadow: 0 3px 0 #980c08;
 }
-.button.download {
-	font-size: 1.9em;
-	margin: 0 auto;
-	padding: .8em 0 .8em 0;
-	background: #e53f3c;
-	box-shadow: 0 3px 0 #9a000d;
-	font-weight: bold;
-}
 
 /* active colors */
 .button.orange:active {
@@ -2463,9 +2455,7 @@ sup {
 	font-weight: bold;
 	letter-spacing: -.02em;
 }
-.splash-top p {
-	text-align: center;
-}
+
 .splash-tagline b {
 	font-size: 1.1em;
 }
@@ -2701,13 +2691,87 @@ sup {
 	margin-top: 2.4em;
 }
 
-.download-top .button-pushable {
-	margin-top: 3em;
+.page-download .splash-spacer-two {
+	min-height: 1em;
+}
+
+
+.app-store {
+	background: url(../images/micro/app-store.svg) no-repeat;
+	width: 16.9em;
+	height: 5em;
+	background-size: 100%;
+	cursor: pointer;
+}
+
+
+.download-top {
+	color: #fff;
+	text-align: left;
+}
+
+
+@media screen and (min-width: 769px) {
+	.download-mobile {
+		display: none;
+	}
+	.download-phone {
+		float: left;
+	}
+	.download-top {
+		padding-left: 20em;
+	}
+	.download-desktop .content {
+		max-width: 600px;
+	}
+	.button.download {
+		margin: 0 auto;
+		padding: .8em 0 .8em 0;
+		background: #e53f3c;
+		box-shadow: 0 3px 0 #9a000d;
+	}
+
+}
+@media screen and (max-width: 768px) {
+	.download-desktop {
+		display: none;
+	}
+
+	.download-top {
+		font-weight: bold;
+		max-width: 27em;
+		margin: 0 auto;
+		text-align: center;
+	}
+	.button.download {
+		font-size: 1.9em;
+		margin: 0 auto;
+		padding: .8em 0 .8em 0;
+		background: #e53f3c;
+		box-shadow: 0 3px 0 #9a000d;
+		font-weight: bold;
+	}
+
+	.download-top .button-pushable {
+		margin-top: 3em;
+	
+	}
 
 }
 
-.page-download .splash-spacer-two {
-	min-height: 1em;
+.download-top-grid {
+	height: 400px;
+	width: 90%;
+}
+
+.download-top-grid-head {
+	padding-top: 1em;
+	padding-bottom: 1.5em;
+	height: 1em;
+}
+
+.download-top-grid-foot {
+	vertical-align: bottom;
 }
 
 @media screen and (min-height: 700px) {
@@ -3074,47 +3138,4 @@ sup {
 }
 .page-location .cafe-bubble-wrap {
 	margin-top: 0;
-}
-
-.app-store {
-	background: url(../images/micro/app-store.svg) no-repeat;
-	width: 16.9em;
-	height: 5em;
-	background-size: 100%;
-	cursor: pointer;
-}
-
-
-.download-top {
-	font-weight: bold;
-	color: #fff;
-	text-align: left;
-}
-
-
-@media screen and (min-width: 769px) {
-	.download-mobile {
-		display: none;
-	}
-	.download-phone {
-		float: left;
-	}
-	.download-top {
-		padding-left: 20em;
-	}
-	.download-desktop .content {
-		max-width: 600px;
-	}
-}
-@media screen and (max-width: 768px) {
-	.download-desktop {
-		display: none;
-	}
-
-	.download-top {
-		max-width: 27em;
-		margin: 0 auto;
-		text-align: center;
-	}
-
 }
