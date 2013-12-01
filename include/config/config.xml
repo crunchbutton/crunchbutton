@@ -198,11 +198,11 @@
 	<lob>
 		<dev>
 			<key>_KEY_</key>
-			<account>***REMOVED***</account>
+			<account>_KEY_</account>
 		</dev>
 		<live>
 			<key>_KEY_</key>
-			<account>***REMOVED***</account>
+			<account>_KEY_</account>
 		</live>
 	</lob>
 	<crypt>
