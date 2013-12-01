@@ -297,6 +297,7 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 			}
 
 			LocationService.init(true);
+
 			if (App.config.user.id_user) {
 				$location.path('/food-delivery');
 			}

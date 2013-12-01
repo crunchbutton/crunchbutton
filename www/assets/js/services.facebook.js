@@ -123,8 +123,9 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 						}
 
 						App.log.account({'userID': status.authResponse.userID} , 'facebook currentPage');
-						$rootScope.$broadcast('userAuth', service.user);
+						$rootScope.$broadcast('userAuth', service.account.user);
 						service.running = false;
+						service.wait = false;
 					});
 				}
 			}
