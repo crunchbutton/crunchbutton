@@ -57,10 +57,6 @@ NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, A
 
 	service.init = function () {
 
-		// If this variable is true the restaurant's page will be loaded after the location get started
-		service.location.loadRestaurantsPage = false;
-		service.location.init();
-
 		if (App.config.ab && App.config.ab.dollarSign == 'show') {
 			service.info.dollarSign = '$';
 		}

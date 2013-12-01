@@ -61,6 +61,7 @@ class Crunchbutton_User extends Cana_Table {
 		if (!$this->id_user) {
 			return new Order;
 		}
+		
 		if (!isset($this->_orders)) {
 			if ($type == 'compact') {
 				$q = '

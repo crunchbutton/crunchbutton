@@ -75,16 +75,17 @@ NGApp.controller('HelpCtrl', function ($scope) {
  */
 NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsService, LocationService) {
 	if (!App.isPhoneGap) {
-		LocationService.init();
+		// If it have a valid restaurant position just reditect to restaurants page
+		if (LocationService.position.pos().valid('restaurants')) {
+			$location.path('/' + RestaurantsService.permalink);
+		} else {
+			$location.path('/location');
+		}
 	} else {
 		// @hack
 		// just force the location to the food-delivery page. if we dont have a loc it sends us back to location anyway
-		$location.path( '/' + RestaurantsService.permalink );	
+		$location.path('/' + RestaurantsService.permalink);	
 	}	
-	// If it have a valid restaurant position just reditect to restaurants page
-	if( LocationService.position.pos().valid( 'restaurants' ) ){
-		$location.path( '/' + RestaurantsService.permalink );
-	}
 });
 
 
@@ -123,13 +124,13 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, RestaurantsService, LocationService) {
 	$scope.restaurants = false;
 
-	$scope.showMoreRestaurants = function(){
+	$scope.showMoreRestaurants = function() {
 		var step = 3;
 		$scope.restaurantsToShow += step;
-	}
+	};
 
 	var location = LocationService;
-	if( !location.initied ){
+	if (!location.initied) {
 		location.init();
 		$location.path( '/' );
 		return;
