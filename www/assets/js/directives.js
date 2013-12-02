@@ -23,11 +23,15 @@ NGApp.directive( 'ngBindHtmlUnsafe', [ function() {
 	}
 } ] );
 
-NGApp.directive('addToCart', function() {
+NGApp.directive('addToCart', function(OrderService) {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
 			element.bind('click', function (e) {
+				if (!OrderService.restaurant._open) {
+					return;
+				}
+					
 				if ($('.is-ui2').get(0)) {
 					setTimeout(function() {
 						var el = $(element.get(0));
