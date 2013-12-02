@@ -178,6 +178,7 @@ class Crunchbutton_Auth {
 		$user->locale = $profile->locale;
 		$user->gender = $profile->gender;
 		$user->timezone = $profile->timezone;
+		$user->saving_from = $user->saving_from.'Auth::load - ';
 		$user->save();
 	}
 

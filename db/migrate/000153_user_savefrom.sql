@@ -1,0 +1,1 @@
+ALTER TABLE  `user` ADD  `saving_from` VARCHAR(255) DEFAULT NULL;
