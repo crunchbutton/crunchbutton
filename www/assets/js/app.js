@@ -254,6 +254,10 @@ NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootS
 	$rootScope.signout = AccountSignOut;
 	$rootScope.isPhoneGap = App.isPhoneGap;
 	
+	$rootScope.debug = function() {
+		return App.config.user.debug;
+	};
+	
 	$rootScope.test = App.test;
 	
 	$rootScope.cartScroll = function(permalink) {
