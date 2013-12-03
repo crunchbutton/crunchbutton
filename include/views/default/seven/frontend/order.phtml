@@ -162,12 +162,12 @@
 		
 		<br>
 		
-		<? if (!$this->export) : ?>
-			<br><br>
-			<a data-ng-href="/printorder/{{ order.uuid }}" <?=$this->export ? '' : ' target="_blank"'?> class="print-icon"><button class="button lightorange" ng-click="support.dialog()"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
-			<br />
-		<? endif ; ?>
-	
+
+		<br><br>
+		<a href="<?=$this->export ? '{{server}}' : ''?>/printorder/{{ order.uuid }}" target="_blank" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
+		<br />
+
+		
 		<div class="divider"></div>
 	</div>
 </div>
