@@ -590,7 +590,7 @@ p {
 		height: 90px;
 	}
 	.restaurant-pad {
-		height: 66px;
+
 	}
 	.restaurant-pic {
 		height: 10em;
@@ -614,7 +614,7 @@ p {
 		height: 65px;
 	}
 	.restaurant-pad {
-		height: 51px;
+
 	}
 	.restaurant-pic {
 		height: 12em;
@@ -998,7 +998,7 @@ p {
 }
 
 
-.page-location .nav-top {
+.page-location .nav-top, .page-restaurant .nav-top {
 	-webkit-transition: background 0.2s ease, border 0.2s ease;
 	   -moz-transition: background 0.2s ease, border 0.2s ease;
 	    -ms-transition: background 0.2s ease, border 0.2s ease;
@@ -1006,17 +1006,22 @@ p {
 	        transition: background 0.2s ease, border 0.2s ease;
 }
 
-.page-location .nav-top.at-top {
+.page-location .nav-top.at-top, .page-restaurant .nav-top.at-top {
 	background: none;
 	border-bottom: none;
 }
 
-.page-location .nav-top.at-top .menu {
+.page-location .nav-top.at-top .menu, .page-restaurant .nav-top.at-top .menu {
 	background: url(../images/micro/menu-location.svg) center center no-repeat;
 	background-size: 100%;
 }
 
-.page-location .nav-top.at-top .nav-cart {
+.page-location .nav-top.at-top .nav-back, .page-restaurant .nav-top.at-top .nav-back {
+	background: url(../images/micro/back-location.svg) center center no-repeat;
+	background-size: 100%;
+}
+
+.page-location .nav-top.at-top .nav-cart, .page-restaurant .nav-top.at-top .nav-cart {
 	background: rgba(0,0,0,.14);
 }
 
