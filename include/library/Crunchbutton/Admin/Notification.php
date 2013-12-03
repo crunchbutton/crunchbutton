@@ -34,7 +34,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		if( $orders->count() > 0 ){
 			foreach ( $orders as $order ) {
 				if( !$order->wasAcceptedByRep() ){
-
+					echo '#'.$order->id_order.' was not accepted'."\n";
 					// also notify global dispatch
 					$this->alertDispatch($order);
 					
@@ -47,6 +47,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							}
 						} 
 					}
+				} else {
+					echo '#'.$order->id_order.' was accepted'."\n";
 				}
 			}
 		}
