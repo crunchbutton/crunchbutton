@@ -1271,6 +1271,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 			
 		}
+
 		if( $out['_open'] ){
 			if( $out[ 'delivery' ] != 1 ){
 				$out['_tag']  = 'takeout';	
@@ -1431,11 +1432,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$sunday = date( 'Y-m-d', strtotime( 'sunday this week' ) );
 		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override 
 																															WHERE id_restaurant = {$this->id_restaurant} 
-																															AND
+																															AND (
 																															( DATE_FORMAT( date_start, '%Y-%m-%d' ) >= '{$monday}' AND DATE_FORMAT( date_start, '%Y-%m-%d' ) <= '{$sunday}' )
 																															OR 
-
-																															( DATE_FORMAT( date_start, '%Y-%m-%d' ) < '{$monday}' AND DATE_FORMAT( date_end, '%Y-%m-%d' ) > '{$monday}' )	" );
+																															( DATE_FORMAT( date_start, '%Y-%m-%d' ) < '{$monday}' AND DATE_FORMAT( date_end, '%Y-%m-%d' ) > '{$monday}' )	) " );
 		$hoursStartFinishOverrideClose = [];
 		if( $overrides->count() ){
 
