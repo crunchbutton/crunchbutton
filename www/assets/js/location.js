@@ -12,7 +12,8 @@ var Location = function( params ) {
 		type: null,
 		subtype: null,
 		address: null,
-		prep: null
+		prep: null,
+		_ignoreAtCookies: false
 	};
 
 	// parse the city name from the result set
