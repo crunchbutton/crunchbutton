@@ -601,7 +601,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			// Play the crunch audio just once, when the user clicks at the Get Food button
 			if (!service._crunchSoundPlayded) {
 				App.playAudio('crunch');
-				App.vibrate();
 				service._crunchSoundPlayded = true;
 			}
 
@@ -647,6 +646,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 							'errors': json.errors
 						}, 'validation error - php');
 					} else {
+					
+						App.vibrate();
+
 						if (json.token) {
 							$.cookie( 'token', json.token );
 						}

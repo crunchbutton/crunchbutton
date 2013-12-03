@@ -38,7 +38,14 @@
 					<tr><td class="download-top-grid-act">
 
 						<div ng-show="text.sent">
-							<p>Excited?! Ya I bet you are! Crunchbutton on iPhone is pretty much the most fun you will ever have ordering food!</p>
+							<p>To one click log into the app, link your account with facebook here.
+							</p>
+							<br><br>
+
+							<div class="button-pushable" ng-show="!account.user.facebook">
+								<button class="button facebook ani-all" ng-click="facebook()"><i class="fa fa-facebook-square"></i> Connect with Facebook</button>
+							</div>
+							
 						</div>
 						
 						<div ng-show="!text.sent">
@@ -47,7 +54,7 @@
 								<input type="tel" class="location-recommend" placeholder="e.g. 646-783-1444" ng-format-phone autocapitalize="off" autocorrect="off" ng-enter="text.send()" ng-model="text.number">
 							</div>
 							<div class="button-pushable">
-								<button class="button download" ng-click="text.send()">Text me the link</button>
+								<button class="button download ani-all" ng-click="text.send()">Text me the link</button>
 							</div>
 						</div>
 					</td></tr>

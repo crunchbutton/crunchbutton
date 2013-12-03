@@ -221,6 +221,8 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		// Save the user just to add to him the gift cards
+		$user->saving_from = $user->saving_from.'Order->process 1 - ';
+		
 		$user->save();
 
 		// Reload the user from db #1737
@@ -308,6 +310,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->env = c::getEnv(false);
 		$this->processor = c::config()->processor;
 
+		$user->saving_from = $user->saving_from.'Order->process 2 - ';
 		$user->save();
 
 		$user = new User($user->id_user);

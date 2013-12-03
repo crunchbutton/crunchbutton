@@ -122,6 +122,7 @@ class Crunchbutton_User extends Cana_Table {
 			$fb = new Crunchbutton_Auth_Facebook;
 			$user->name = $fb->fbuser()->name;
 			$user->email = $fb->fbuser()->email;
+			$user->saving_from = $user->saving_from.'User::facebookCreate - ';
 			$user->save();
 
 			$userAuth = new User_Auth;

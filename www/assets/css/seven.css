@@ -2687,10 +2687,6 @@ sup {
 	display: none;
 }
 
-.download-top p {
-	margin-top: 2.4em;
-}
-
 .page-download .splash-spacer-two {
 	min-height: 1em;
 }
@@ -2730,13 +2726,14 @@ sup {
 		background: #e53f3c;
 		box-shadow: 0 3px 0 #9a000d;
 	}
-
+	.download-top p {
+		margin-top: 1.4em;
+	}
 }
 @media screen and (max-width: 768px) {
 	.download-desktop {
 		display: none;
 	}
-
 	.download-top {
 		font-weight: bold;
 		max-width: 27em;
@@ -2751,12 +2748,12 @@ sup {
 		box-shadow: 0 3px 0 #9a000d;
 		font-weight: bold;
 	}
-
 	.download-top .button-pushable {
 		margin-top: 3em;
-	
 	}
-
+	.download-top p {
+		margin-top: 2.4em;
+	}
 }
 
 .download-top-grid {

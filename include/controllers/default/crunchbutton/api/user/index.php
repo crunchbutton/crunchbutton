@@ -94,6 +94,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 										$user->phone = $_POST[ 'email' ];
 									}
 									$user->name = '';
+									$user->saving_from = $user->saving_from.'API user post - ';
 									$user->save();
 								}
 								$user_auth = new User_Auth();
