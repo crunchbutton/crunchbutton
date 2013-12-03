@@ -1592,13 +1592,43 @@ p {
 }
 .cart-item-customize-name {
 	font-size: 1.2em;
-	padding: .6em;
+	padding: .28em 0 .5em 0;
+	display: inline-block;
+	vertical-align: top;
+	margin-bototm: 1.5em;
 }
 .cart-item-customize-price {
 	float: right;
 	font-size: 1em;
 	padding: .6em .6em 0 0;
 }
+
+
+
+/* CUSTOM CHECKBOX */
+.custom-checkbox {
+	color: #d7dcde;
+	height: 20px;
+	width: 20px;
+	margin: 0 .5em 0 0;
+	font-size: 1.9em;
+	vertical-align: top;
+}
+.custom-checkbox, .custom-checkbox+label, .custom-checkbox+label+label{
+	cursor: pointer;	
+}
+.custom-checkbox.checked {
+	color: #ec7063;
+}
+.custom-checkbox+label, .custom-checkbox+label+label{
+	padding-top: 4px;
+	display: block;
+	float: left;
+}
+.custom-checkbox+label+label{
+	margin-left: 3px;
+}
+
 
 
 .restaurant-items {
@@ -3139,4 +3169,36 @@ sup {
 }
 .page-location .cafe-bubble-wrap {
 	margin-top: 0;
+}
+
+select {
+	border: 2px solid #555;
+	padding: .3em;
+	border-radius: 5px;
+	font-size: 1.2em;
+}
+
+.cart-item-customize-item-select:after {
+	font-family: FontAwesome;
+	font-size: 1.7em;
+	color: #f77748;
+	height: 1.1em;
+	width: 1.4em;
+	border-left: 2px solid #f77748;
+	content: '\f0d7';
+	position: absolute;
+	margin-left: -1.8em;
+	margin-top: .2em;
+	padding-left: .37em;
+	padding-top: .3em;
+	pointer-events:none;
+}
+
+.cart-item-customize-select-name {
+	font-size: 1.2em;
+	margin-right: 1em;
+	display: inline-block;
+}
+.cart-item-customize-item select {
+	border-color: #f77748;
 }
