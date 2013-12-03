@@ -121,7 +121,8 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 /**
  * Show the restaurants
  */
-NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, RestaurantsService, LocationService) {
+NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, RestaurantsService, LocationService, RestaurantService ) {
+
 	$scope.restaurants = false;
 
 	$scope.showMoreRestaurants = function() {
@@ -178,7 +179,20 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		}
 	});
 
-	$scope.display = function($event) {
+	$scope.display = function( $event ){
+		var restaurant = this.restaurant;
+		restaurant.closesIn();
+		if ( !restaurant._open ) {
+			$rootScope.$broadcast('restaurantClosedClick', restaurant);
+		} else {
+			// Store the load info of the clicked restaurant to optmize the restaurant page load
+			RestaurantService.basicInfo = restaurant;
+			App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );
+		}
+	};
+
+	$scope.old_display = function($event) {
+		return;
 		var restaurant = this.restaurant;
 		restaurant.closesIn();
 		if ( !restaurant._open ) {
@@ -482,16 +496,28 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 /**
  * restaurant page
  */
-NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootScope, $timeout, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
+NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $rootScope, $timeout, RestaurantService, OrderService, CreditService, GiftCardService, PositionsService, MainNavigationService, CreditCardService) {
 
-	// we dont need to put all the Service methods and variables at the $scope - it is expensive
+console.time('RestaurantCtrl');
+
 	var order = OrderService;
 	order.loaded = false;
-	order.startStoreEntederInfo = false;
 	$scope.order = {};
+	$scope.open = false;
+
+	$scope.restaurant = false;
+
+	if( RestaurantService.basicInfo ){
+console.time('basicInfo');
+		$scope.restaurant = RestaurantService.basicInfo;
+		$scope.open = $scope.restaurant._open;
+console.timeEnd('basicInfo');
+	}
+
+	// we dont need to put all the Service methods and variables at the $scope - it is expensive
+	order.startStoreEntederInfo = false;
 	$scope.order.form = order.form;
 	$scope.order.info = order.info;
-	$scope.open = false;
 	
 	$scope.Math = window.Math;
 
@@ -521,15 +547,14 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 
 	$scope.$on( '$destroy', function(){
 		// Kills the timer when the controller is changed
-		$timeout.cancel( updateRestaurantStatus );
+		if( updateRestaurantStatus ){
+			$timeout.cancel( updateRestaurantStatus );	
+		}
 	});
 
 	$rootScope.$on( 'appResume', function(e, data) {
 		updateStatus();
 	});
-
-	updateStatus();
-
 
 	// Set the id_restaurant 
 	order.cart.setRestaurant( $routeParams.id );
@@ -605,6 +630,8 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 
 	// Event will be called when the order loaded
 	$scope.$on( 'orderLoaded', function(e, data) {
+console.time('orderLoaded');
+
 		$scope.order.loaded = order.loaded;
 		$scope.order.showForm = order.showForm;
 
@@ -618,6 +645,7 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 		}, true);
 		GiftCardService.notes_field.lastValidation = false;
 		$scope.checkGiftCard();
+console.timeEnd('orderLoaded');
 	});
 
 	// Alias to CartService 'public' methods
@@ -685,51 +713,81 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	});
 
 	var restaurantService = RestaurantService;
+
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
+
+console.time('restaurantLoaded');
+
 		var community = data.community;
 		$scope.restaurant = data.restaurant;
 		order.restaurant = $scope.restaurant;
 		MainNavigationService.restaurant = $scope.restaurant;
-		$scope.restaurant.closesIn();
-		$scope.open = $scope.restaurant._open;
-		
-		order.init();
-		// Update some gift cards variables
-		giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
-		giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
-		
-		// Load the credit info
-		if( OrderService.account.user && OrderService.account.user.id_user ){
-			credit.getCredit( $scope.restaurant.id_restaurant );	
+
+		// If we have the basic Info we don't need to run this closesIn right now
+		// this method is expensive (about 6 milliseconds)
+		if( !RestaurantService.basicInfo ){
+			$scope.restaurant.closesIn();	
 		}
 		
+		$scope.open = $scope.restaurant._open;
+
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
-		var position = PositionsService;
-		var address = position.pos();
-
-		// If the typed address is valid (order) and the user address is empty use the typed one #1152 and #1989 
-		if( !order.account.user || order.account.user.address == '' ){
-			if( address.type() == 'user' && address.valid( 'order' ) ){
-				if( order._useCompleteAddress ){
-					$scope.order.form.address = address.formatted();
-				} else {
-					$scope.order.form.address = address.entered();
+/* 
+// FYI - Test to verify if the bind-once worked -> Just uncomment this lines
+		setTimeout( function(){
+			for (var x in $scope.restaurant.categories()) {
+				$scope.restaurant.categories()[x].name = $scope.restaurant.categories()[x].name + ' - ' + x;
+				console.log('category',$scope.restaurant.categories()[x].name);
+				for (var y in $scope.restaurant.categories()[x].dishes() ) {
+					$scope.restaurant.categories()[x].dishes()[y].name = $scope.restaurant.categories()[x].dishes()[y].name + ' - ' + y;
+					console.log('dish',$scope.restaurant.categories()[x].dishes()[y].name);
 				}
 			}
-		}
+		}, 1500 );
+*/
 
-		$scope.order.cart.items = order.cart.getItems();
+		// We don't need to wait until the order finish to show the cart items
+		setTimeout( function(){ 
+console.time('orderInit');
+			order.init(); 
 
-		// @todo: do we still neded this??
-		// $('.body').css({ 'min-height': $('.restaurant-items').height()});
+			// Update some gift cards variables
+			giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
+			giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
+			
+			// Load the credit info
+			if( OrderService.account.user && OrderService.account.user.id_user ){
+				credit.getCredit( $scope.restaurant.id_restaurant );	
+			}
 
-		// Place cash order even if the user has gift card see #1485
-		$scope.ignoreGiftCardWithCashOrder = false;
+			var position = PositionsService;
+			var address = position.pos();
 
-		setTimeout( function(){ $scope.checkGiftCard(); }, 500 );
+			// If the typed address is valid (order) and the user address is empty use the typed one #1152 and #1989 
+			if( !order.account.user || order.account.user.address == '' ){
+				if( address.type() == 'user' && address.valid( 'order' ) ){
+					if( order._useCompleteAddress ){
+						$scope.order.form.address = address.formatted();
+					} else {
+						$scope.order.form.address = address.entered();
+					}
+				}
+			}
 
+			$scope.order.cart.items = order.cart.getItems();
+
+			// @todo: do we still neded this??
+			// $('.body').css({ 'min-height': $('.restaurant-items').height()});
+
+			// Place cash order even if the user has gift card see #1485
+			$scope.ignoreGiftCardWithCashOrder = false;
+
+console.timeEnd('orderInit');
+		}, 1 );
+
+console.timeEnd('restaurantLoaded')
 	});
 
 	$('.config-icon').addClass('config-icon-mobile-hide');
@@ -738,8 +796,13 @@ NGApp.controller('RestaurantCtrl', function ($scope, $http, $routeParams, $rootS
 	$('.content').removeClass('smaller-width');
 	$('.content').removeClass('short-meal-list');
 	
-	// Finally Load the restaurant
-	restaurantService.init();
+	// View loaded, so load the restaurant
+	$scope.$on( '$viewContentLoaded', function ( event ) {
+		restaurantService.init();
+		updateStatus();
+	});
+
+console.timeEnd('RestaurantCtrl');
 	
 });
 

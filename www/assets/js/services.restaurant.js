@@ -147,8 +147,8 @@ NGApp.factory( 'CommunityService', function( $http ){
 } );
 
 //RestaurantService Service
-NGApp.factory('RestaurantService', function ($http, $routeParams, $rootScope, CommunityService ) {
-	var service = {};
+NGApp.factory( 'RestaurantService', function ($http, $routeParams, $rootScope, CommunityService ) {
+	var service = { basicInfo : null };
 	service.init = function(){
 		App.cache('Restaurant', $routeParams.id, function () {
 			var restaurant = this;

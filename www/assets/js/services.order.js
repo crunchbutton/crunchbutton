@@ -1,5 +1,5 @@
 //OrderService Service
-NGApp.factory('OrderService', function ($http, $location, $rootScope, $filter, AccountService, CartService, LocationService, CreditService, GiftCardService, OrderViewService ) {
+NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, AccountService, CartService, LocationService, CreditService, GiftCardService, OrderViewService ) {
 
 	var service = {};
 	service.location = LocationService;
