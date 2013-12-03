@@ -91,15 +91,18 @@ html {
 
 
 
-.content, .footer .content-padding {
-	max-width: 767px;
-	margin: 0 auto;
-}
-
 @media screen and (min-width: 769px) {
 	.content-padding {
 		padding: 10px 0 10px 0;
 	}
+	.restaurants-items,
+	.nav .content,
+	.page-restaurant .content,
+	.page-cafe .content,
+	.content-padding {
+		max-width: 767px;
+		margin: 0 auto;
+	}	
 }
 @media screen and (max-width: 768px) {
 	.content-padding {
