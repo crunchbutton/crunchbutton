@@ -704,7 +704,7 @@ console.time('restaurantLoaded');
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
-/* 
+/*
 // FYI - Test to verify if the bind-once worked -> Just uncomment this lines
 		setTimeout( function(){
 			for (var x in $scope.restaurant.categories()) {
@@ -716,7 +716,7 @@ console.time('restaurantLoaded');
 				}
 			}
 		}, 1500 );
-*/
+// */
 
 		// We don't need to wait until the order finish to show the cart items
 		setTimeout( function(){ 
