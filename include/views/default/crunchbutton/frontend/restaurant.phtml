@@ -1,8 +1,10 @@
+<? /* --> REMOVED, ONE LESS THING TO WATCH
 <div ng-show="!order.loaded">
-	<? /* THIS WILL SHOW UP WHEN A RESTAURANT PAGE IS DIRECTLY LOADED FROM A BROWSER BEFORE THE PAGE SHOWS. */ ?>
+ THIS WILL SHOW UP WHEN A RESTAURANT PAGE IS DIRECTLY LOADED FROM A BROWSER BEFORE THE PAGE SHOWS. 
 </div>
+*/ ?>
 
-<div ng-show="order.loaded">
+<div ng-show="restaurant">
 
 	<div class="giftcard-badge-container" ng-show="credit.hasValue">
 		<div class="giftcard-badge">
@@ -34,10 +36,18 @@
 
 	<div class="restaurant-closed-mobile" restaurant-is-closed></div>
 
+	<div class="main-content-readable" ng-show="!order.loaded">
+		<div class="cart-items {{AB.restaurantPage}}">		
+			<div class="restaurant-item-title text-your-order">
+				Loading
+			</div>
+		</div>
+	</div>
+
 	<!-- main-content-readable-margin -->
 	<div class="main-content-readable">
 		<!-- cart -->
-		<div class="cart-items {{AB.restaurantPage}}">
+		<div class="cart-items {{AB.restaurantPage}}" ng-show="order.loaded">
 			<div ng-show="restaurant._open">
 				<div class="restaurant-item-title text-your-order">
 					Your Order 
@@ -82,7 +92,7 @@
 								<span class="cart-item-description">{{item.details.description}}</span>
 							</div>
 
-							<div ng-show="item.details.customization.customizable" ng-click="item.details.customization.expanded=!item.details.customization.expanded" class="cart-item-config"><a href="javascript:;">Customize</a></div>
+							<div ng-if="item.details.customization.customizable" ng-click="item.details.customization.expanded=!item.details.customization.expanded" class="cart-item-config"><a href="javascript:;">Customize</a></div>
 
 						</div>
 
@@ -116,6 +126,7 @@
 						</div>
 
 					</div>
+
 				</div>
 			</div>
 
@@ -136,14 +147,16 @@
 				</h1>
 			</div>
 		
-			<div ng-repeat="category in restaurant.categories()">
+			<div ng-bind-once ng-repeat="category in restaurant.categories()">
 				<div class="restaurant-item-title">{{category.name}}{{category.locName()}}</div>
 				<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-					<li ng-repeat="dish in category.dishes()" ng-click="order.cart.add( dish.id_dish )" class="dish-item">
-						<span class="dish-name"><i class="fa fa-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-price">({{AB.dollar}}{{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span>
+					<li ng-bind-once ng-repeat="dish in category.dishes()" ng-click="order.cart.add( dish.id_dish )" class="dish-item">
+						<span class="dish-name"><i class="fa fa-star" ng-if="dish.top"></i> {{dish.name}}</span>
+						<span class="dish-price">({{AB.dollar}}{{dish.price}}<span ng-if="dish.changeable_price">+</span>)</span>
 					</li>
 				</ul>
 			</div>
+
 			<?php 
 			/* Remove the suggestion link: Issue #1703
 			<div class="suggestion-link-container" ng-controller="RecommendFoodCtrl">

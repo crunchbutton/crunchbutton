@@ -266,6 +266,15 @@ NGApp.directive('ngScrollSpy', function () {
 	};
 });
 
+NGApp.directive( 'ngBindOnce', function( $timeout ) {
+	return {
+		scope: true,
+		link: function( $scope, $element ) {
+				$timeout( function() { $scope.$destroy(); }, 0 );
+			}
+	}
+} );
+
 NGApp.directive('ngSpinner', function () {
 	return {
 		restrict: 'A',
