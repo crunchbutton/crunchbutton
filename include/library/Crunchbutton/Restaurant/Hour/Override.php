@@ -44,7 +44,7 @@ class Crunchbutton_Restaurant_Hour_Override extends Cana_Table {
 		$type_closed = Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED;
 		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override WHERE date_start <= '{$today_mysql}' AND date_end >= '{$today_mysql}' AND type = '{$type_closed}' AND id_restaurant = {$id_restaurant} LIMIT 1" );
 		if( $overrides->count() > 0 ){
-			return true;
+			return $overrides->notes;
 		}
 		return false;
 	}

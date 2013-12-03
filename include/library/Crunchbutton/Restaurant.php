@@ -1241,7 +1241,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		$out['_open']      	= $this->open();
 		$out['_force_open']	= $this->forceOpen();
-		$out['_force_close'] = $this->forceClose();
+		$forceClose = $this->forceClose();
+		if( $forceClose ){
+			$out['_force_close'] = true;
+			$out['_force_close_notes'] = $forceClose;
+		} else {
+			$out['_force_close'] = false;
+		}
+		
 		$out['_closesIn'] = $this->closesIn( $this->_dt );
 		$out['_weight'] = $this->weight();
 		$out['_minimumTime']  = 15; // Min minutes to show the hurry message
@@ -1282,6 +1289,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		} else {
 			$out['_tag']  = 'closed';
+			if( $out[ '_force_close' ] ){
+				$out['_tag']  = 'force_close';
+			}
 		}
 
 		$timezone = new DateTimeZone( $this->timezone );
