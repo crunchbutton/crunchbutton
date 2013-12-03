@@ -58,7 +58,11 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 			// determine which tags to display
 			if (!list[x]._open || list[x]._closesIn == 0) {
-				list[x]._tag = 'closed';
+				if( list[x]._force_close ){
+					list[x]._tag = 'force_close';
+				} else {
+					list[x]._tag = 'closed';	
+				}
 			} else {
 				if (list[x].delivery != '1') {
 					list[x]._tag = 'takeout';

@@ -42,8 +42,12 @@
 				<div class="restaurants-opensin">Opens in 4 hours</div>			
 			</div>
 
+			<div class="restaurants-closed" ng-show="restaurant._tag == 'force_close'">
+				<h2 class="restaurants-name">{{restaurant.name}}</h2>
+				<div class="restaurants-opensin">Temporarily closed {{restaurant._force_close_notes}}</div>			
+			</div>
 
-			<div class="restaurants-open" ng-hide="restaurant._tag == 'closed'">
+			<div class="restaurants-open" ng-hide="restaurant._tag == 'closed' || restaurant._tag == 'force_close'">
 				<div class="restaurants-item-content ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#333333" data-spinner-autostart="true">
 					<div class="ladda-label">
 						<div class="restaurants-pic meal-pic" style="background: url({{restaurant.img64}});"></div>
@@ -55,7 +59,7 @@
 							<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
 						</div>
 						
-						<div class="meal-item-tag-bottom" ng-show="restaurant._tag == 'closing' || restaurant._tag == 'takeout'"></div>
+						<div class="meal-item-tag-bottom" ng-show="restaurant._tag == 'closing' || restaurant._tag == 'takeout' || restaurant._tag == 'force_close'"></div>
 
 					</div>
 					<span class="ladda-spinner"></span>
