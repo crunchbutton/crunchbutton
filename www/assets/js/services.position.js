@@ -13,13 +13,32 @@ NGApp.factory('PositionsService', function ( $rootScope ) {
 		service.locs.push(loc);
 		var locs = [];
 		for( x in service.locs ){
-			locs.push( service.locs[x].toCookie() );
+			if( !service.locs[x]._ignoreAtCookies ){
+				locs.push( service.locs[x].toCookie() );	
+			}
 		}
 		if( locs.length > service.storageLimit ){
 			locs = locs.slice( locs.length - service.storageLimit );
 		}
 		$.totalStorage( 'locsv3', locs );
 		$rootScope.$broadcast( 'NewLocationAdded', true );
+	}
+
+	// Removes the last added location
+	service.removeNotServedLocation = function(){
+		var loc = service.locs.pop();
+		loc._ignoreAtCookies = true;
+		service.locs.push(loc);
+		var locs = [];
+		for( x in service.locs ){
+			if( !service.locs[x]._ignoreAtCookies ){
+				locs.push( service.locs[x].toCookie() );	
+			}
+		}
+		if( locs.length > service.storageLimit ){
+			locs = locs.slice( locs.length - service.storageLimit );
+		}
+		$.totalStorage( 'locsv3', locs );
 	}
 
 	/**

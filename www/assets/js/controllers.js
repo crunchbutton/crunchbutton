@@ -318,6 +318,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		} else {
 			$scope.locationError = true;
 		}
+		// Remove the location from cockie
+		PositionsService.removeNotServedLocation();
 	});
 
 	$rootScope.$on( 'NewLocationAdded', function(e, data) {
@@ -325,6 +327,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	});
 
 	$scope.$on( 'locationNotServed', function(e, data) {
+		console.debug('fucking not serverd');
 		spin.stop();
 		var pos = PositionsService.pos();
 		if( pos.type() == 'user' ){
@@ -338,6 +341,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		} else {
 			$('.location-address').val('').attr('placeholder','Please enter an address or zip');	
 		}
+
+		// Remove the location from cockie
+		PositionsService.removeNotServedLocation();
 
 		$rootScope.locationPlaceholder = $('.location-address').attr('placeholder');
 		$rootScope.warningPlaceholder = true;
