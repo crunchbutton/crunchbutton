@@ -794,6 +794,12 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.referral.cleaned_url = function(){
 		return ReferralService.cleaned_url();
 	}
+	
+	$scope.print = function() {
+		window.open('http://google.com', '_blank');
+		$('.order-print').get(0).contentWindow.document.body.innerHTML = $('.order-print-content').html();
+		$('.order-print').get(0).contentWindow.print();
+	};
 
 });
 
