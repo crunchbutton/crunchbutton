@@ -3,6 +3,8 @@
 class Controller_test extends Crunchbutton_Controller_Account {
 	public function init() {
 	
+print_r(Order::q('select now() as id'));
+	
 
 	exit;
 		$c = c::lob()->checks()->create([
@@ -16,8 +18,8 @@ class Controller_test extends Crunchbutton_Controller_Account {
 				'address_country' => 'US'
 			],
 			'bank_account' => c::lob()->defaultAccount(),
-			'amount' => '2200',
-			'memo' => 'rent'
+			'amount' => '1',
+			'memo' => 'TEST'
 		]);
 		print_r($c->id);
 		exit;
