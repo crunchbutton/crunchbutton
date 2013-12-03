@@ -4,7 +4,7 @@
 	<? /* THIS WILL SHOW UP WHEN A RESTAURANT PAGE IS DIRECTLY LOADED FROM A BROWSER BEFORE THE PAGE SHOWS. */ ?>
 </div>
 
-<div ng-show="order.loaded">
+<div ng-show="restaurant">
 
 	<div class="restaurant-pad"></div>
 	
@@ -42,7 +42,7 @@
 		<div restaurant-is-closed></div>
 
 		<!-- cart -->
-		<div class="cart-items">
+		<div class="cart-items" ng-show="order.loaded">
 			<div ng-show="restaurant._open">
 
 				<div ng-show="!order.cart.hasItems()" class="restaurant-box">
@@ -135,7 +135,7 @@
 		<div class="restaurant-items">
 			
 			<div ng-show="fullmenu">
-				<div class="restaurant-menu-category" ng-repeat="category in restaurant.categories()">
+				<div ng-bind-once class="restaurant-menu-category" ng-repeat="category in restaurant.categories()">
 				
 					<div class="restaurant-title-wrap">
 						<div class="restaurant-title restaurant-category">{{category.name}}{{category.locName()}}</div>
@@ -143,8 +143,8 @@
 					</div>
 
 					<ul class="resturant-dishes resturant-dish-container" date-id_category="{{category.id_category}}">
-						<li ng-repeat="dish in category.dishes()" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
-							<span class="dish-item-name"><i class="fa fa-star" ng-show="dish.top"></i> {{dish.name}}</span><span class="dish-item-price">(${{dish.price}}<span ng-show="dish.changeable_price">+</span>)</span><br />
+						<li ng-bind-once ng-repeat="dish in category.dishes()" class="dish-item" data-id_dish="{{dish.id_dish}}" add-to-cart>
+							<span class="dish-item-name"><i class="fa fa-star" ng-if="dish.top"></i> {{dish.name}}</span><span class="dish-item-price">(${{dish.price}}<span ng-if="dish.changeable_price">+</span>)</span><br />
 							<span class="dish-item-description">{{dish.description}}</span>
 						</li>
 					</ul>
