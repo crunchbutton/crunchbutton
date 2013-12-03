@@ -2722,6 +2722,7 @@ sup {
 	}
 	.download-desktop .content {
 		max-width: 600px;
+		margin: 0 auto;
 	}
 	.button.download {
 		margin: 0 auto;
