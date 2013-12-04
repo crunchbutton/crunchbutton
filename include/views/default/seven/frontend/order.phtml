@@ -1,6 +1,6 @@
 <div class="top-pad"></div>
 
-<div ng-show="!order.id">
+<div ng-if="!order.id">
 	<div class="content-padding">
 		<h4>One sec!</h4>
 		<p>I know its here somewhere...</p>
@@ -9,14 +9,14 @@
 	</div>
 </div>
 
-<div ng-show="order.id">
+<div ng-if="order.id">
 
 	<div class="content-padding">
 	
 		<button class="button green" ng-click="support.dialog()">Reorder</button>
 	
 		<div class="content-padder main-content-readable">
-			<span class="order-thanks-message" ng-show="order.new">
+			<span class="order-thanks-message" ng-if="order.new">
 				<div class="toon-cherry"></div>
 				<span class="order-thanks-message-crunched">Crunched!</span>
 				<span class="order-thanks-message-block"> Your order is placed</span>
@@ -32,11 +32,11 @@
 					<div class="divider dots"></div>
 				</div>
 				
-				<div ng-show="account.user.has_auth">
+				<div ng-if="account.user.has_auth">
 	
 					<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
 	
-					<div ng-show="order.new && referral.invite_url && referral.enabled">
+					<div ng-if="order.new && referral.invite_url && referral.enabled">
 						Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
 						<br /><br />
 					</div>
@@ -118,7 +118,7 @@
 				</div>
 				<div class="divider"></div>
 				
-				<div ng-show="order.notes">
+				<div ng-if="order.notes">
 					<div class="order-comment-arrow"></div>
 					<div class="order-comment">
 						<p ng-bind-html-unsafe="order.notes | nl2br"></p>
@@ -155,7 +155,7 @@
 				</p>
 				
 
-				<div class="credit" ng-show="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+				<div class="credit" ng-if="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
 
 			</div>
 		</div>
