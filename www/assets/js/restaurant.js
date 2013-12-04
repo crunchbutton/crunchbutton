@@ -48,7 +48,6 @@ var Restaurant = function(id) {
 
 	// In test
 	this.closesIn = function( trueIfItIsOpen ) {
-		console.time('closes');
 		
 		// this overrides everything
 		if( this.open_for_business === "0" ) {
@@ -102,8 +101,6 @@ var Restaurant = function(id) {
 			}
 		}
 
-console.timeEnd('closes');
-console.log('this._closesIn',this._closesIn);
 		return false;
 	}
 
