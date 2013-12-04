@@ -23,7 +23,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 																											'alert' => 'User placed two orders (same restaurant but with different contents) in less than %s min. Os: #%s, #%s ',
 																											'settings' => array(	'time' => 'rule-time-since-last-order-time', 
 																																						'active' => 'rule-time-since-last-order-active', 
-																																						'warning-group' => 'rule-time-since-last-order-cs', 
+																																						'warning-group' => 'rule-time-since-last-order-group', 
 																																						'warning-rep' => 'rule-time-since-last-order-reps' 
 																																					),
 																											'title' => 'Time since last order (different content)',
