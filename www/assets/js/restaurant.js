@@ -46,190 +46,64 @@ var Restaurant = function(id) {
 		return Date.parse( dateTime.toString() );
 	}
 
-
+	// In test
 	this.closesIn = function( trueIfItIsOpen ) {
-
+		console.time('closes');
+		
 		// this overrides everything
-		if(this.open_for_business === "0") {
+		if( this.open_for_business === "0" ) {
 			this._open = false;
 			return false;
 		}
 
 		// If it doesn't have hours it is never open
-		if(!this._hours) {
+		if( !this._hours ) {
 			this._open = false;
 			return false;
 		}
 
-		var today = Date.today().toString('ddd').toLowerCase();
+		var now_utc = this._utcNow();
+		var now_utc_hour = ( ( now_utc.getDay() - 1 ) * 2400 ) + ( now_utc.getHours() * 100 ) + now_utc.getMinutes();
 
-		if (this._hours == undefined ||  this._hours[today] == undefined) {
-			this._open = false;
-			return false;
-		}
- 
-		// Check the yesterday time too because the restaurant could be opened from yesterday 11:30 AM to today 3:45 AM (Like Mirano - See #1707)
-		var yesterday = Date.parse( 'yesterday' ).toString('ddd').toLowerCase();
-		if( this._hours[yesterday] != undefined ){
-			yesterdayHours = this._hours[yesterday];
-			
-			for (i in yesterdayHours) {
-				// Ignores if it throws an error
-				try{
-
-					var openTime  = this._parseDate(yesterdayHours[i][0]);
-					var closeTime = this._parseDate(yesterdayHours[i][1]);
-
-					if (yesterdayHours[i][1] == '24:00') {
-						closeTime = this._parseDate('00:00');
-						if( closeTime ){
-							closeTime.addDays(1);	
-						}
-					}
-
-					// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
-					if (openTime) {
-						// Change the time to one day before (yesterday)
-						openTime.addDays( -1 );
-						var openTime_utc = this._parseDate(openTime.add( - this._tzoffset ).hours().toUTCString());
-					}
-
-					// Convert the close hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
-					if (closeTime) {
-						// Change the time to one day before (yesterday)
-						closeTime.addDays( -1 );
-						var closeTime_utc = this._parseDate(closeTime.add( - this._tzoffset ).hours().toUTCString());
-					}
-
-					var now_utc = this._utcNow();
-
-					if( openTime_utc && closeTime_utc ){
-						if( now_utc.between( openTime_utc, closeTime_utc ) ) {
-							this._open = true;
-							break;
-						}
-					}
-				} catch(e){};
-			}
+		// It means it will close at sunday after 12 AM, convert it to monday
+		if( now_utc_hour > ( 16800 ) ){
+			now_utc_hour = now_utc_hour - 16800;
 		}
 
-		var todayHours = this._hours[today];
+		for( hour in this._hours_converted_utc ){
+			var open = this._hours_converted_utc[ hour ].open;
+			var close = this._hours_converted_utc[ hour ].close;
+			if( now_utc_hour >= open && now_utc_hour <= close ){
 
-		for (i in todayHours) {
+				this._open = true;
 
-			var openTime  = this._parseDate(todayHours[i][0]);
-			var closeTime = this._parseDate(todayHours[i][1]);
-
-			// there is no real 24:00 hours, it's 00:00 for tomorrow
-			if (todayHours[i][1] == '24:00') {
-				closeTime = this._parseDate('00:00');
-				if( closeTime ){
-					closeTime.addDays(1);	
+				if( trueIfItIsOpen ){
+					return true;
 				}
-			}
 
-			// Convert the open hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
-			if (openTime) {
-				var openTime_utc = this._parseDate(openTime.add( - this._tzoffset ).hours().toUTCString());
-			}
-			// Convert the close hour to UTC just to compare, based on _tzoffset (TimZone OffSet)
-			if (closeTime) {
-				var closeTime_utc = this._parseDate(closeTime.add( - this._tzoffset ).hours().toUTCString());
-			}
-			// Convert current user date to UTC.
-			// var now_utc = Date.parse( Date.now().add( (new Date).getTimezoneOffset() / 60 ).hours().toUTCString() );
-			var now_utc = this._utcNow();
-			// if closeTime before openTime, then closeTime should be for tomorrow
-			if( closeTime_utc ){
-				if (closeTime_utc.compareTo(openTime_utc) == -1) {
-					closeTime_utc.addDays(1);
+				var close_str = close.toString();
+				var min_close = parseInt( close_str.substr( ( close_str.length - 2 ), 2 ) );
+				if( min_close == 0 ){ min_close = 60; }
+				
+				var now_utc_hour_str = now_utc_hour.toString();
+				var min_now = parseInt( now_utc_hour_str.substr( ( now_utc_hour_str.length - 2 ), 2 ) );
+				if( min_now == 0 ){ min_now = 60; }
+				
+				if( min_close < min_now ){
+					min_close += 60;
 				}
-			}
+				
+				this._closesIn = ( Math.floor( ( close - now_utc_hour ) / 100 ) * 60 ) + ( min_close - min_now );
 
-			if( openTime_utc && closeTime_utc ){
-				if ( now_utc.between( openTime_utc, closeTime_utc ) ) {
-					this._open = true;
+				if( this._closesIn == 0 ){
+					this._open = false;
 				}
+				break;
 			}
 		}
 
-		if( trueIfItIsOpen ){
-			return true;
-		}
-
-		var today = Date.today().toString('ddd').toLowerCase();
-		var tomorrow = Date.today().add(1).days().toString('ddd').toLowerCase();
-
-		todayHours  = this._hours[today];
-
-		// Check the time it will open and close tomorrow
-		if( this._hours[ tomorrow ] ){
-			var tomorrowHours = this._hours[tomorrow];
-			var tomorrowItOpensAt = tomorrowHours[0][0];
-			var tomorrowItClosesAt = tomorrowHours[0][1];
-		} else {
-			var tomorrowItOpensAt = false;
-			var tomorrowItClosesAt = false;
-		}
-
-		for (i in todayHours) {
-			var openTime  = Date.parse(todayHours[i][0]);
-			var closeTime = Date.parse(todayHours[i][1]);
-			
-			var nextHour = parseInt( i ) + 1;
-			if( todayHours[ nextHour ] ){
-				var nextHourOpenTime = todayHours[ nextHour ][0];
-				var nextHourCloseTime = todayHours[ nextHour ][1];
-			} else {
-				var nextHourOpenTime = false;
-				var nextHourCloseTime = false;
-			}
-
-			var previousHour = parseInt( i ) - 1;
-			if( todayHours[ previousHour ] ){
-				var previousHourOpenTime = todayHours[ previousHour ][0];
-				var previousHourCloseTime = todayHours[ previousHour ][1];
-			} else {
-				var previousHourOpenTime = false;
-				var previousHourCloseTime = false;
-			}
-
-			// there is no real 24:00 hours, it's 00:00 for tomorrow
-			if (todayHours[i][1] == '24:00' || todayHours[i][1] == '00:00') {
-				closeTime = Date.parse('00:00');
-				// if it opens tomorrow at 00:00 it means it will no close today at 00:00
-				if( tomorrowItOpensAt == '00:00' || tomorrowItOpensAt == '0:00' ){
-					closeTime = Date.parse( tomorrowItClosesAt );
-				} 
-				// else if the next hour starts at 00:00 it means it will no close today at 00:00
-				else if( nextHourOpenTime == '00:00' || nextHourOpenTime == '0:00' ){
-					closeTime = Date.parse( nextHourCloseTime );
-				}
-				// else if the previous hour starts at 00:00 it means it will no close today at 00:00
-				else if( previousHourOpenTime == '00:00' || previousHourOpenTime == '0:00' ){
-					closeTime = Date.parse( previousHourCloseTime );
-				} 
-				closeTime.addDays(1);
-			}
-
-			// if closeTime before openTime, then closeTime should be for tomorrow
-			if (closeTime.compareTo(openTime) == -1) {
-				closeTime.addDays(1);
-			}
-
-			closeTime = this._utcTime(closeTime);
-			utcNow    = this._utcNow();
-
-			var minutes = (closeTime.getTime() - utcNow.getTime()) /1000/60;
-			minutes = Math.floor(minutes);
-			if( minutes <= 15 ){
-				this._closesIn = minutes;	
-			}
-			if( this._closesIn == 0 ){
-				this._open = false;
-			}
-		}
-
+console.timeEnd('closes');
+console.log('this._closesIn',this._closesIn);
 		return false;
 	}
 
