@@ -98,13 +98,13 @@
 								<div ng-switch on="option.type">
 								
 									<!-- Customizable - select -->
-									<div ng-switch-when="select">
+									<div ng-switch-when="select" class="cart-item-customize-item-select">
 										<label class="cart-item-customize-select-name">{{option.name}}</label>
 										<select ng-change="order.cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
 									</div>
 
 									<!-- Customizable - checkbox -->
-									<div ng-switch-when="check">
+									<div ng-switch-when="check" class="cart-item-customize-item-check">
 										<input type="checkbox" custom-checkbox ng-change="order.cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
 										<span ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</span>
 										<span ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</span>
