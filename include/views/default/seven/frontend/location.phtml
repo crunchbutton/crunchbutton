@@ -2,7 +2,7 @@
 	<div class="home-top">
 		<div class="top-pad"></div>
 	
-		<div ng-show="!locationError">
+		<div ng-if="!locationError">
 			<div class="pushabutton"></div>
 			<div class="home-inputs">
 				<h4 class="action">What's your address?</h4>
@@ -26,28 +26,28 @@
 			</div>
 		</div>
 		
-		<div ng-show="locationError">
+		<div ng-if="locationError">
 			<div class="home-inputs">
 			<div class="splash-inputs">
 
 				<div class="cafe-bubble-wrap">
 					<div class="bubble-curved bubble-curved-white bubble-animated animated-resize">
 						<div class="text" ng-switch="loseMessage">
-							<div ng-show="!account.user.id_user && !recommend.greetings">
+							<div ng-if="!account.user.id_user && !recommend.greetings">
 								<span class="single-line" ng-switch-when="1">Don't worry</span>
 								<span class="small" ng-switch-when="2">Just let us know that you want crunchbutton</span>
 								<span class="small" ng-switch-when="3">and we will be there<br> as soon as we can!</span>
 								<span class="single-line" ng-switch-when="4"><i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i> <i class="fa fa-cutlery"></i></span>
 								<span class="single-line" ng-switch-default><b>Oh, no!</b></span>
 							</div>
-							<div ng-show="account.user.id_user && !recommend.greetings">
+							<div ng-if="account.user.id_user && !recommend.greetings">
 								<span class="single-line" ng-switch-when="1">What's the best?</span>
 								<span ng-switch-when="2">We listen to our users</span>
 								<span class="small" ng-switch-when="3">Let us know <br>and we will add it!</span>
 								<span class="single-line" ng-switch-when="4"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
 								<span ng-switch-default><b>What's your<br>favorite?</b></span>
 							</div>
-							<div ng-show="recommend.greetings">
+							<div ng-if="recommend.greetings">
 								<span class="small" ng-switch-when="1">We check this<br> stuff daily!</span>
 								<span class="small" ng-switch-when="2">We will get back to you as soon as we can!</span>
 								<span class="single-line" ng-switch-when="3"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
@@ -61,7 +61,7 @@
 				<div class="faq-tomato-green animated-resize" ng-instant="loseMessage = (loseMessage > 3 ? 0 : (loseMessage+1))" instant-pass-thru></div>
 				<div class="divider spacer-one-two"></div>
 				
-				<div ng-show="!account.user.id_user && !recommend.greetings">
+				<div ng-if="!account.user.id_user && !recommend.greetings">
 					<h4>We don't serve that address yet.</h4>
 					<p>But you can get notified when we are in your area. We are always expanding and looking for that next popular sandwich. Log in and let us know what you want to see on crunchbutton!</p>
 					<div class="divider spacer-one-two"></div>
@@ -70,12 +70,12 @@
 						<button class="button facebook" ng-click="facebook.auth()">
 							<i class="fa fa-facebook-square"></i>&nbsp;
 							<span ng-hide="facebook.facebook.wait">Log in with Facebook</span>
-							<span ng-show="facebook.facebook.wait">Just a sec...</span>
+							<span ng-if="facebook.facebook.wait">Just a sec...</span>
 						</button>
 					</div>
 				</div>
 				
-				<div ng-show="account.user.id_user && !recommend.greetings">
+				<div ng-if="account.user.id_user && !recommend.greetings">
 					<h4>We don't serve that address yet.</h4>
 					<p>But you can recommend something. Let us know what you want to see on crunchbutton!</p>
 					<div class="divider spacer-one-two"></div>
@@ -87,7 +87,7 @@
 					</div>
 				</div>
 				
-				<div ng-show="recommend.greetings">
+				<div ng-if="recommend.greetings">
 					<h4>Sent to our brains!</h4>
 					<p>We will let you know soon! Thanks for trying crunchbutton!</p>
 				</div>
@@ -115,7 +115,7 @@
 		<div class="bubble-curved bubble-curved-green bubble-animated animated-resize">
 			<div class="text" ng-switch="orangeMessage">
 				<span class="small" ng-switch-when="1">So you can write stupid messages like this</span>
-				<span  ng-switch-when="2">That no one will ever read</span>
+				<span ng-switch-when="2">That no one will ever read</span>
 				<span ng-switch-when="3">So you could put anything</span>
 				<span class="single-line" ng-switch-when="4">No really.</span>
 				<span class="single-line" ng-switch-when="5">Like...</span>
