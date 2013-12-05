@@ -764,7 +764,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 				updateStatus();
 				forceReload();
 				console.debug('forceReload: go go');
+				$rootScope.$safeApply();
 			} else {
+				$rootScope.$safeApply();
 				console.debug('forceReload: no need');
 			}
 		} , 2000 );
