@@ -1038,9 +1038,3 @@ App.share = function(params) {
 		});
 	}
 }
-
-
- function glocs(){
-	var ps = angular.element( 'html' ).injector().get( 'PositionsService' );
-	return ps.locs;
-}
