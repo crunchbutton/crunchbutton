@@ -9,10 +9,6 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 			$order = Order::o(c::getPagePiece(2));
 		}
 
-		
-		$rules = new Crunchbutton_Order_Rules();
-		$rules->run( $order );
-exit;
 		$pauseRepeat =
 			'<Pause length="1" />'
 			.'<Say voice="'.c::config()->twilio->voice.'">Press 1 to repeat the order. Press 2 to confirm the order. '.($order->delivery_type == 'delivery' ? 'Press 3 to spell out the street name.' : '').'</Say>';
