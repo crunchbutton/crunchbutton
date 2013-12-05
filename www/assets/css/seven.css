@@ -590,7 +590,7 @@ p {
 		height: 90px;
 	}
 	.restaurant-pad {
-		height: 66px;
+
 	}
 	.restaurant-pic {
 		height: 10em;
@@ -614,7 +614,7 @@ p {
 		height: 65px;
 	}
 	.restaurant-pad {
-		height: 51px;
+
 	}
 	.restaurant-pic {
 		height: 12em;
@@ -998,7 +998,7 @@ p {
 }
 
 
-.page-location .nav-top {
+.page-location .nav-top, .page-restaurant .nav-top {
 	-webkit-transition: background 0.2s ease, border 0.2s ease;
 	   -moz-transition: background 0.2s ease, border 0.2s ease;
 	    -ms-transition: background 0.2s ease, border 0.2s ease;
@@ -1006,17 +1006,22 @@ p {
 	        transition: background 0.2s ease, border 0.2s ease;
 }
 
-.page-location .nav-top.at-top {
+.page-location .nav-top.at-top, .page-restaurant .nav-top.at-top {
 	background: none;
 	border-bottom: none;
 }
 
-.page-location .nav-top.at-top .menu {
+.page-location .nav-top.at-top .menu, .page-restaurant .nav-top.at-top .menu {
 	background: url(../images/micro/menu-location.svg) center center no-repeat;
 	background-size: 100%;
 }
 
-.page-location .nav-top.at-top .nav-cart {
+.page-location .nav-top.at-top .nav-back, .page-restaurant .nav-top.at-top .nav-back {
+	background: url(../images/micro/back-location.svg) center center no-repeat;
+	background-size: 100%;
+}
+
+.page-location .nav-top.at-top .nav-cart, .page-restaurant .nav-top.at-top .nav-cart {
 	background: rgba(0,0,0,.14);
 }
 
@@ -1410,31 +1415,28 @@ p {
 .restaurant-pic-overlay {
 	height: 100%;
 	width: 100%;
-	background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 54%, rgba(0,0,0,0.25) 76%, rgba(0,0,0,0.45) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(54%,rgba(0,0,0,0.15)), color-stop(76%,rgba(0,0,0,0.25)), color-stop(100%,rgba(0,0,0,0.45))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%); /* IE10+ */
-	background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#73000000',GradientType=0 ); /* IE6-9 */
+
+	background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 54%, rgba(0,0,0,0.25) 76%, rgba(0,0,0,0.45) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(54%,rgba(0,0,0,0.15)), color-stop(76%,rgba(0,0,0,0.25)), color-stop(100%,rgba(0,0,0,0.45)));
+	background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%);
+	background: -o-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%);
+	background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%);
+	background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 54%,rgba(0,0,0,0.25) 76%,rgba(0,0,0,0.45) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#73000000',GradientType=0 );
+
 }
 .restaurant-pic {
-	overflow:hidden;
+	overflow: hidden;
 	background-size:cover !important;
 	background-position: center center !important;
 	margin-bottom: 2px; 
 
-	-webkit-filter: brightness(0.95) contrast(135%);
-	   -moz-filter: brightness(0.95) contrast(135%);
-	    -ms-filter: brightness(0.95) contrast(135%);
-	     -o-filter: brightness(0.95) contrast(135%);
-	        filter: brightness(0.95) contrast(135%);
+	-webkit-filter: brightness(0.75) contrast(135%);
+	   -moz-filter: brightness(0.75) contrast(135%);
+	    -ms-filter: brightness(0.75) contrast(135%);
+	     -o-filter: brightness(0.75) contrast(135%);
+	        filter: brightness(0.75) contrast(135%);
 
-	-webkit-transform: translate3d(0,0,0);
-	   -moz-transform: translate3d(0,0,0);
-	    -ms-transform: translate3d(0,0,0);
-	     -o-transform: translate3d(0,0,0);
-	        transform: translate3d(0,0,0);
 }
 .restaurant-comment {
 	margin-top: -11em;
@@ -1592,13 +1594,43 @@ p {
 }
 .cart-item-customize-name {
 	font-size: 1.2em;
-	padding: .6em;
+	padding: .28em 0 .5em 0;
+	display: inline-block;
+	vertical-align: top;
+	margin-bototm: 1.5em;
 }
 .cart-item-customize-price {
 	float: right;
 	font-size: 1em;
 	padding: .6em .6em 0 0;
 }
+
+
+
+/* CUSTOM CHECKBOX */
+.custom-checkbox {
+	color: #d7dcde;
+	height: 20px;
+	width: 20px;
+	margin: 0 .5em 0 0;
+	font-size: 1.9em;
+	vertical-align: top;
+}
+.custom-checkbox, .custom-checkbox+label, .custom-checkbox+label+label{
+	cursor: pointer;	
+}
+.custom-checkbox.checked {
+	color: #ec7063;
+}
+.custom-checkbox+label, .custom-checkbox+label+label{
+	padding-top: 4px;
+	display: block;
+	float: left;
+}
+.custom-checkbox+label+label{
+	margin-left: 3px;
+}
+
 
 
 .restaurant-items {
@@ -3139,4 +3171,36 @@ sup {
 }
 .page-location .cafe-bubble-wrap {
 	margin-top: 0;
+}
+
+select {
+	border: 2px solid #555;
+	padding: .3em;
+	border-radius: 5px;
+	font-size: 1.2em;
+}
+
+.cart-item-customize-item-select:after {
+	font-family: FontAwesome;
+	font-size: 1.7em;
+	color: #f77748;
+	height: 1.1em;
+	width: 1.4em;
+	border-left: 2px solid #f77748;
+	content: '\f0d7';
+	position: absolute;
+	margin-left: -1.8em;
+	margin-top: .2em;
+	padding-left: .37em;
+	padding-top: .3em;
+	pointer-events:none;
+}
+
+.cart-item-customize-select-name {
+	font-size: 1.2em;
+	margin-right: 1em;
+	display: inline-block;
+}
+.cart-item-customize-item select {
+	border-color: #f77748;
 }

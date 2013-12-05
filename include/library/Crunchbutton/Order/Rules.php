@@ -9,10 +9,10 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 		$this->_rules[ 'gift-card-redeemed' ] = array( 	'method' => 'validation_newGiftCardRedeemed', 
 																										'alert' => 'User redeemed two different gift cards in less than %s days. GC: #%s, #%s ',
-																										'settings' => array(	'time' => 'rule-time-since-last-order-time', 
-																																					'active' => 'rule-time-since-last-order-active', 
-																																					'warning-cs' => 'rule-time-since-last-order-cs', 
-																																					'warning-rep' => 'rule-time-since-last-order-reps' 
+																										'settings' => array(	'time' => 'rule-gift-card-redeemed-time', 
+																																					'active' => 'rule-gift-card-redeemed-active', 
+																																					'warning-group' => 'rule-gift-card-redeemed-group', 
+																																					'warning-rep' => 'rule-gift-card-redeemed-reps' 
 																																				),
 																										'title' => 'Gift cards redeemed',
 																										'period' => 'days',
@@ -21,10 +21,10 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 		$this->_rules[ 'time-since-last-order' ] = array(	'method' => 'validation_timeSinceLastOrder_DifferentOrders', 
 																											'alert' => 'User placed two orders (same restaurant but with different contents) in less than %s min. Os: #%s, #%s ',
-																											'settings' => array(	'time' => 'rule-time-since-last-order-equal-time', 
-																																						'active' => 'rule-time-since-last-order-equal-active', 
-																																						'warning-cs' => 'rule-time-since-last-order-equal-cs', 
-																																						'warning-rep' => 'rule-time-since-last-order-equal-reps' 
+																											'settings' => array(	'time' => 'rule-time-since-last-order-time', 
+																																						'active' => 'rule-time-since-last-order-active', 
+																																						'warning-group' => 'rule-time-since-last-order-group', 
+																																						'warning-rep' => 'rule-time-since-last-order-reps' 
 																																					),
 																											'title' => 'Time since last order (different content)',
 																											'period' => 'minutes',
@@ -33,10 +33,10 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 		$this->_rules[ 'time-since-last-order-equal' ] = array(	'method' => 'validation_timeSinceLastOrder_EqualOrders', 
 																														'alert' => 'User ordered same thing two times in less than %s minutes. Os: #%s, #%s ',
-																														'settings' => array(	'time' => 'rule-gift-card-redeemed-time', 
-																																									'active' => 'rule-gift-card-redeemed-active', 
-																																									'warning-cs' => 'rule-gift-card-redeemed-cs', 
-																																									'warning-rep' => 'rule-gift-card-redeemed-reps' 
+																														'settings' => array(	'time' => 'rule-time-since-last-order-equal-time', 
+																																									'active' => 'rule-time-since-last-order-equal-active', 
+																																									'warning-group' => 'rule-time-since-last-order-equal-group', 
+																																									'warning-rep' => 'rule-time-since-last-order-equal-reps' 
 																																								),
 																														'title' => 'Time since last order (equal content)',
 																														'period' => 'minutes'
@@ -70,6 +70,17 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 	public function rules(){
 		return $this->_rules;
+	}
+
+	public function getUsersByRuleGroup( $group ){
+		$group = Crunchbutton_Group::byName( $group );
+		if ( $group->id_group ) {
+			$admins = Crunchbutton_Admin::q('SELECT admin.* FROM admin LEFT JOIN admin_group using( id_admin ) WHERE id_group= "'. $group->id_group . '"' );
+			if( $admins->count() ){
+				return $admins;
+			}
+		}
+		return false;
 	}
 
 	public function createAlert( $string, $array ){
@@ -137,22 +148,29 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 		$send_to = array();
 
 		// Notify custom service
-		$warning_cs = ( $this->getSetting( $rule[ 'settings' ][ 'warning-cs' ] ) == '1' );
-		if( $warning_cs ){
-			foreach (c::config()->text as $supportName => $supportPhone) {
-				$phone = $supportPhone;
-				$send_to[ $phone ] = $message;
-			}			
+		// 
+		$group_name = $this->getSetting( $rule[ 'settings' ][ 'warning-group' ] );
+		if( $group_name ){
+			$admins = $this->getUsersByRuleGroup( $group_name );
+			if( $admins && $admins->count() > 0 ){
+				foreach ( $admins as $admin ) {
+					if( $admin->txt ){
+						$send_to[ $admin->txt ] = $message;
+					}
+				}			
+			}	
 		}
 
 		// Notify reps with support access
 		$warning_rep = ( $this->getSetting( $rule[ 'settings' ][ 'warning-rep' ] ) == '1' );
 		if( $warning_rep ){
 			$admins = $order->restaurant()->adminWithSupportAccess();
-			foreach ( $admins as $admin ) {
-				$phone = $admin->txt;
-				$send_to[ $phone ] = $message;
-				
+			if( $admins && $admins->count() > 0 ){
+				foreach ( $admins as $admin ) {
+					if( $admin->txt ){
+						$send_to[ $phone ] = $message;	
+					}
+				}
 			}
 		}
 
@@ -174,7 +192,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 		$twilio = new Twilio( c::config()->twilio->{ $env }->sid, c::config()->twilio->{ $env }->token );
 		$msgs = str_split( $message, 160 );
-		foreach($msgs as $msg) {
+		foreach( $msgs as $msg ) {
 			try {
 				Log::debug( [ 'action' => 'sending sms - rule failed', 'phone' => $phone, 'msg' => $msg, 'type' => 'order-rules' ] );
 				$twilio->account->sms_messages->create(

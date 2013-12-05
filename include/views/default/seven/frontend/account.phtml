@@ -3,11 +3,11 @@
 	
 		<? /* Header links */ ?>
 		<div ng-controller="AccountModalHeaderCtrl" class="header">
-			<div ng-show="modal.header">
+			<div ng-if="modal.header">
 				<span class="account-title-link signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Log In</span>
 				<span class="account-title-link signup {{ modal.signup && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signup' )">Sign up</span>
 			</div>
-			<div ng-show="!modal.header">
+			<div ng-if="!modal.header">
 				<span class="account-title-link signin link" ng-click="help.show(false)">&laquo; back</span>
 			</div>
 			<div class="divider spacer-one-one"></div>
@@ -16,46 +16,46 @@
 		<? /* Error messages */ ?>
 		<div class="dialog-message dialog-message-error" ng-controller="AccountSignInCtrl">
 
-			<div ng-show="formSignin.$dirty && formSignin.$invalid">
-				<div ng-show="formSignin.email.$error">
+			<div ng-if="formSignin.$dirty && formSignin.$invalid">
+				<div ng-if="formSignin.email.$error">
 					Please enter a valid email or phone.
 				</div>
-				<div ng-show="formSignin.password.$error">
+				<div ng-if="formSignin.password.$error">
 					Please enter your password.
 				</div>
 			</div>
-			<div ng-show="account.error.signin" class="error">
+			<div ng-if="account.error.signin" class="error">
 				Your log in information was incorrect.
 			</div>
 	
-			<div ng-show="help.error" class="error">
+			<div ng-if="help.error" class="error">
 				Sorry, that email/phone is not registered with us.
 			</div>
 					
-			<div ng-show="formLoginHelp.$dirty && formLoginHelp.$invalid">
+			<div ng-if="formLoginHelp.$dirty && formLoginHelp.$invalid">
 				Please enter a valid email or phone.
 			</div>
 
-			<div ng-show="formSignup.$dirty && formSignup.$invalid">
-				<div ng-show="formSignup.email.$error">
+			<div ng-if="formSignup.$dirty && formSignup.$invalid">
+				<div ng-if="formSignup.email.$error">
 					Please enter a valid email or phone.
 				</div>
-				<div ng-show="formSignup.password.$error">
+				<div ng-if="formSignup.password.$error">
 					Please enter your password.
 				</div>
 			</div>
-			<div ng-show="account.error.signup" class="error">
+			<div ng-if="account.error.signup" class="error">
 				It seems that the email is already registered!
 			</div>
 			
 
-			<div ng-show="facebook.facebook.error.userExists">
+			<div ng-if="facebook.facebook.error.userExists">
 				Sorry, it seems the facebook user is already related with other user.
 			</div>
-			<div ng-show="facebook.facebook.error.unknown">
+			<div ng-if="facebook.facebook.error.unknown">
 				Sorry, something bad happened.
 			</div>
-			<div ng-show="facebook.facebook.error.login">
+			<div ng-if="facebook.facebook.error.login">
 				Sorry, it seems you cancelled login or did not fully authorize.
 			</div>
 	
@@ -63,15 +63,15 @@
 
 		<? /* success messages */ ?>	
 		<div class="dialog-message dialog-message-success" ng-controller="AccountSignInCtrl">
-			<div ng-show="help.success.visible">
+			<div ng-if="help.success.visible">
 				<p>Please check your email or phone. You will receive a password reset link that will expire in 24 hours.</p>
 			</div>
 		</div>
 
 		<? /* Log in form fields */ ?>
-		<div ng-controller="AccountSignInCtrl" ng-show="modal.signin">
+		<div ng-controller="AccountSignInCtrl" ng-if="modal.signin">
 
-			<div ng-show="!help.visible">
+			<div ng-if="!help.visible">
 			
 				<form name="formSignin" ng-submit="account.signin()">
 					<div class="support-form-group form-group">
@@ -94,7 +94,7 @@
 				</button>
 			</div>
 
-			<div ng-show="help.visible">
+			<div ng-if="help.visible">
 				<form name="formLoginHelp" novalidate>
 					<p>Enter your email or phone number and we will send you a link to reset your password.</p>
 					<br />
@@ -108,8 +108,8 @@
 		</div>
 	
 		<? /* Sign up form fields */ ?>
-		<div ng-controller="AccountSignUpCtrl" ng-show="modal.signup">
-			<div ng-show="!account.user.has_auth">
+		<div ng-controller="AccountSignUpCtrl" ng-if="modal.signup">
+			<div ng-if="!account.user.has_auth">
 				<form name="formSignup" novalidate>
 					<div class="support-form-group form-group">
 						<input type="email" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" class="form-input support-form-input" placeholder="email address" ng-enter="account.signup()">
@@ -129,7 +129,7 @@
 				</button>
 			</div>
 
-			<div ng-show="account.user.has_auth">
+			<div ng-if="account.user.has_auth">
 				<h1>Congratulations!</h1>
 				<p>You can now log in using <b>{{account.email}}</b>!</p>
 			</div>

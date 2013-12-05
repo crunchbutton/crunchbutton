@@ -1248,7 +1248,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		} else {
 			$out['_force_close'] = false;
 		}
-		
+
 		$out['_closesIn'] = $this->closesIn( $this->_dt );
 		$out['_weight'] = $this->weight();
 		$out['_minimumTime']  = 15; // Min minutes to show the hurry message
@@ -1356,7 +1356,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out[ 'balanced_bank' ] = NULL;
 			$out[ 'notes' ] = NULL;
 			$out[ 'email' ] = NULL;
-		}
+		}		
 
 		if (!$ignore['notifications']) {
 			$where = [];
@@ -1382,6 +1382,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// Dont export the overrided hours at cockpit
 		if( !$isCockpit || $ignore['force_override_hours'] == true ){
 			$out['_hours'] = $this->overrideHours( $out['_hours'] );	
+			$out['_hours_converted_utc'] = $this->hoursStartingMondayUTC( $out['_hours'] );	
 		}
 
 		if (!$ignore['_preset']) {
@@ -1415,6 +1416,50 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		return $out;
+	}
+
+	public function hoursStartingMondayUTC( $hours ){
+
+		if( count( $hours ) == 0 ){
+			return $hours;
+		}
+
+		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
+
+		$monday = date( 'Y-m-d', strtotime( 'monday this week' ) );
+		
+		$_hours_utc = [];
+		foreach( $hours as $day => $segments ){
+			foreach( $segments as $times ){
+				$open = new DateTime('next '. $day . ' ' . $times[0], new DateTimeZone($this->timezone));
+				$open->setTimezone(new DateTimeZone('GMT'));
+				$close = new DateTime('next '.$day. ' ' . $times[1], new DateTimeZone($this->timezone));
+				$close->setTimezone(new DateTimeZone('GMT'));
+				$hour_open = $open->format('H:i');
+				$hour_close = $close->format('H:i');
+				if( !$_hours_utc[ $day ] ){
+					$_hours_utc[ $day ] = [];
+				}
+				$_hours_utc[ $day ][] = [ 'open' => $hour_open, 'close' => $hour_close ];
+			}
+		}
+
+		// Convert to hours starting at monday
+		$_hours = [];
+		foreach( $_hours_utc as $day => $segments ){
+			$dayshours = array_search( $day, $weekdays ) * 2400;
+			foreach( $segments as $times ){
+				preg_match( '/(\d+):(\d+)/', $times[ 'open' ], $hour_open );
+				preg_match( '/(\d+):(\d+)/', $times[ 'close' ], $hour_close );
+				$hour_open = ( $dayshours + intval( $hour_open[ 1 ] ) * 100 ) + intval( $hour_open[ 2 ] );
+				$hour_close = ( $dayshours + intval( $hour_close[ 1 ] ) * 100 ) + intval( $hour_close[ 2 ] );
+				if( $hour_close < $hour_open ){
+					$hour_close += 2400;
+				}
+				$_hours[] = [ 'open' => $hour_open, 'close' => $hour_close ];
+			}
+		}
+		return $_hours;
 	}
 
 	public function overrideHours( $hours ){
@@ -1498,8 +1543,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				}
 			}
 		}
-
-// nao está pegando o fechamento de sexta as 17h!
 
 		foreach( $hoursStartFinishOverrideClose as $keyClose => $valClose ){
 			foreach( $hoursStartFinish as $keyOpen => $valOpen ){

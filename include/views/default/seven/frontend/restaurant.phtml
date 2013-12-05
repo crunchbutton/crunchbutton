@@ -8,14 +8,14 @@
 
 	<div class="restaurant-pad"></div>
 	
-	<div ng-show="restaurant.image">
+	<div ng-if="restaurant.image">
 
 		<div class="restaurant-pic" style="background: url({{restaurant.img}});"><div class="restaurant-pic-overlay"></div></div>
 		<div class="restaurant-name">
 			<h1>{{restaurant.name}}</h1>
 			<h2>{{restaurant.message || restaurant.short_description}}</h2>
 		</div>
-		<div class="restaurant-comment" ng-show="restaurant.comment">
+		<div class="restaurant-comment" ng-if="restaurant.comment">
 			<div class="restaurant-comment-wrap">
 				<div class="restaurant-comment-image">
 					<div class="restaurant-comment-image-img" style="background: url(http://graph.facebook.com/{{restaurant.comment.fb}}/picture?type=normal)"></div>
@@ -26,7 +26,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="giftcard-badge" ng-show="credit.hasValue">
+		<div class="giftcard-badge" ng-if="credit.hasValue">
 			<i class="fa fa-certificate"></i>
 			<div class="giftcard-badge-value"><sup>$</sup>{{Math.round(credit.value)}}</div>
 			<div class="giftcard-badge-text">gift card</div>
@@ -42,7 +42,7 @@
 		<div restaurant-is-closed></div>
 
 		<!-- cart -->
-		<div class="cart-items" ng-show="order.loaded">
+		<div class="cart-items">
 			<div ng-show="restaurant._open">
 
 				<div ng-show="!order.cart.hasItems()" class="restaurant-box">
@@ -82,7 +82,7 @@
 							<span class="cart-item-description">{{item.details.description}}</span>
 						</div>
 
-						<div ng-show="item.details.customization.customizable" ng-click="item.details.customization.expanded=!item.details.customization.expanded" class="cart-item-config">Customize</div>
+						<div ng-if="item.details.customization.customizable" ng-click="item.details.customization.expanded=!item.details.customization.expanded" class="cart-item-config">Customize</div>
 						
 						<div class="divider"></div>
 
@@ -98,13 +98,13 @@
 								<div ng-switch on="option.type">
 								
 									<!-- Customizable - select -->
-									<div ng-switch-when="select">
+									<div ng-switch-when="select" class="cart-item-customize-item-select">
 										<label class="cart-item-customize-select-name">{{option.name}}</label>
 										<select ng-change="order.cart.customizeItem(option, item)" ng-model="option.selected" ng-options="opt.id_option as opt.name for opt in option.options" class="cart-customize-select"></select>
 									</div>
 
 									<!-- Customizable - checkbox -->
-									<div ng-switch-when="check">
+									<div ng-switch-when="check" class="cart-item-customize-item-check">
 										<input type="checkbox" custom-checkbox ng-change="order.cart.customizeItem(option, item)" ng-model="option.checked" class="cart-customize-check">
 										<span ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-name">{{option.name}}</span>
 										<span ng-click="option.checked = !option.checked; order.cart.customizeItem(option, item);" class="cart-item-customize-price">{{option.priceFormated}}</span>
@@ -177,16 +177,14 @@
 	</div>
 	
 	
-	<div class="divider dots spacer-one-one" ng-show="!account.user.id_user"></div>
-	<div class="content-padding" ng-show="!account.user.id_user">
+	<div class="divider dots spacer-one-one" ng-if="!account.user.id_user"></div>
+	<div class="content-padding" ng-if="!account.user.id_user">
 		<p>Already signed up? Don't enter all that stuff again! Not signed up yet? Don't worry, you don't have to sign up to order, but we <b><i>highly</i></b> recommend it!</p>
 		<br>
 		<button class="button facebook" ng-click="navigation.signin()">Log in / Sign up</button>
 	</div>
 
-	<div class="divider dots spacer-one-one" ng-show="order.loaded && order.cart.hasItems() && order.showForm"></div>
-	
-
+	<div class="divider dots spacer-one-one" ng-if="order.loaded && order.cart.hasItems() && order.showForm"></div>
 
 	<!-- payment and user info -->
 	<form class="payment-form content-padding" ng-show="order.loaded && order.cart.hasItems() && order.showForm">
@@ -234,7 +232,7 @@
 
 					<div class="payment-form-group form-group">
 						<i class="fa fa-map-marker payment-form-icon form-icon form-field"></i>
-						<p ng-show="order.form.delivery_type!='delivery'">Pickup from: <span ng-bind-html-unsafe="restaurant.address | nl2br"></span></p>
+						<p ng-if="order.form.delivery_type!='delivery'">Pickup from: <span ng-bind-html-unsafe="restaurant.address | nl2br"></span></p>
 						<textarea ng-autosize ng-show="order.form.delivery_type=='delivery'" class="payment-form-input form-input form-field" ng-model="order.form.address" name="pay-address" id="pay-address" tabindex="5" placeholder="address"></textarea>
 					</div>
 
@@ -246,19 +244,19 @@
 						<!-- Gift card messages -->
 						<div class="giftcard-info">
 
-							<div class="warning" ng-show="giftcard.removed">
+							<div class="warning" ng-if="giftcard.removed">
 								You just removed a gift card. If you still want to use that gift card, you must put it back in the notes field.
 							</div>
 
-							<div ng-show="restaurant.giftcard == 0 && giftcard.hasGiftCards">
+							<div ng-if="restaurant.giftcard == 0 && giftcard.hasGiftCards">
 								This restaurant does not accept gift card.
 							</div>
 
-							<div ng-show="giftcard.hasValue && order.form.pay_type == 'cash' ">
+							<div ng-if="giftcard.hasValue && order.form.pay_type == 'cash' ">
 								Pay with a card, NOT CASH, to use your ${{giftcard.value}} gift card!</span>
 							</div>
 
-							<div ng-show="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
+							<div ng-if="restaurant.giftcard == 1 && order.form.pay_type == 'card' ">
 								<!-- Gift card success -->
 								<div ng-repeat="success in giftcard.giftcards.success">
 									<div ng-show="!success.error">
@@ -277,7 +275,7 @@
 									</div>
 								</div>
 							</div>
-							<spa ng-show="giftcard.justOneGiftCardError">
+							<spa ng-if="giftcard.justOneGiftCardError">
 								You can only use one gift card at a time!
 							</span>
 						</div>
@@ -323,7 +321,7 @@
 
 	<!-- stored user info -->
 	
-	<div class="delivery-payment-info main-content-readable" ng-show="restaurant._open && !order.showForm && order.cart.hasItems()">
+	<div class="delivery-payment-info main-content-readable" ng-if="restaurant._open && !order.showForm && order.cart.hasItems()">
 		
 		<div class="divider dots spacer-one-one"></div>
 			<div class="content-padding">
@@ -396,13 +394,10 @@
 </div>
 
 
-
-
-
 <!-- total breakdown -->
 <div class="divider dots spacer-one-two" ng-show="order.info.subtotal && order.info.subtotal!='0.00'"></div>
 
-<div class="payment-total content-padding" ng-show="order.info.subtotal && order.info.subtotal!='0.00'">
+<div class="payment-total content-padding" ng-if="order.info.subtotal && order.info.subtotal!='0.00'">
 	<div class="restaurant-banana animated-resize"></div>
 	
 	<div class="payment-wrap">
@@ -425,7 +420,7 @@
 	</div>
 	<div class="divider"></div>
 
-	<div ng-show="credit.hasValue && order.form.pay_type == 'cash' ">
+	<div ng-if="credit.hasValue && order.form.pay_type == 'cash' ">
 		<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your ${{credit.value}} gift card</div>
 	</div>
 </div>
