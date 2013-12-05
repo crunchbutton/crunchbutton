@@ -28,11 +28,12 @@ class Controller_giftcards extends Crunchbutton_Controller_Account {
 			} else {
 				c::view()->user = false;
 			}
-			if( $_GET[ 'id_restaurant' ] != '' ){ 
-				$id_restaurant = $_GET[ 'id_restaurant' ];
-			} else {
-				$id_restaurant = false;
-			}
+			// See Issue #1820
+			// if( $_GET[ 'id_restaurant' ] != '' ){ 
+			// 	$id_restaurant = $_GET[ 'id_restaurant' ];
+			// } else {
+			// 	$id_restaurant = false;
+			// }
 			if( $_GET[ 'id_order_reference' ] != '' ){ 
 				$id_order_reference = $_GET[ 'id_order_reference' ];
 			} else {
