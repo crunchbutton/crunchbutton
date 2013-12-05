@@ -327,7 +327,6 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	});
 
 	$scope.$on( 'locationNotServed', function(e, data) {
-		console.debug('fucking not serverd');
 		spin.stop();
 		var pos = PositionsService.pos();
 		if( pos.type() == 'user' ){
@@ -520,7 +519,14 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.$on( '$destroy', function(){
 		// Kills the timer when the controller is changed
 		if( updateRestaurantStatus ){
-			$timeout.cancel( updateRestaurantStatus );	
+			try{
+				$timeout.cancel( updateRestaurantStatus );
+			} catch(e){}
+		}
+		if( forceReloadTimer ){
+			try{
+				$timeout.cancel( forceReloadTimer );
+			} catch(e){}
 		}
 	});
 
@@ -602,7 +608,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	// Event will be called when the order loaded
 	$scope.$on( 'orderLoaded', function(e, data) {
-
 		$scope.order.loaded = order.loaded;
 		$scope.order.showForm = order.showForm;
 
@@ -616,7 +621,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		}, true);
 		GiftCardService.notes_field.lastValidation = false;
 		$scope.checkGiftCard();
-
 	});
 
 	// Alias to CartService 'public' methods
@@ -687,7 +691,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
-
 		var community = data.community;
 		$scope.restaurant = data.restaurant;
 
@@ -702,7 +705,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.open = $scope.restaurant._open;
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
-
 
 		setTimeout( function(){
 
@@ -756,7 +758,19 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		restaurantService.init();
 		updateStatus();
 	}
-	
+
+	// update if the restaurant is closed or open
+	var forceReload = function(){
+		forceReloadTimer = $timeout( function(){
+			if( !order.loaded ){
+				restaurantService.init();
+				updateStatus();
+				forceReload();
+			} 
+		} , 2000 );
+	}
+	forceReload();
+
 });
 
 
