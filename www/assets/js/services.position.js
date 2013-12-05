@@ -11,34 +11,41 @@ NGApp.factory('PositionsService', function ( $rootScope ) {
 	 */
 	service.addLocation = function (loc) {
 		service.locs.push(loc);
-		var locs = [];
-		for( x in service.locs ){
-			if( !service.locs[x]._ignoreAtCookies ){
-				locs.push( service.locs[x].toCookie() );	
-			}
-		}
-		if( locs.length > service.storageLimit ){
-			locs = locs.slice( locs.length - service.storageLimit );
-		}
-		$.totalStorage( 'locsv3', locs );
+		service.storeLocations();
 		$rootScope.$broadcast( 'NewLocationAdded', true );
 	}
 
-	// Removes the last added location
-	service.removeNotServedLocation = function(){
-		var loc = service.locs.pop();
-		loc._ignoreAtCookies = true;
-		service.locs.push(loc);
+	service.storeLocations = function(){		
+		// Duplicated positions should not be saved at cookie
+		var keys = {};
+		service.locs.reverse();
+		for( x in service.locs ){
+			var key = service.locs[ x ].getKey();
+			if( keys[ key ] ){
+				service.locs[ x ].markToRemove();
+			}
+			keys[ key ] = true;
+		}
+		service.locs.reverse();
+
 		var locs = [];
 		for( x in service.locs ){
-			if( !service.locs[x]._ignoreAtCookies ){
+			// Stores just the served and not repeated locations
+			if( service.locs[x].storeAtCookie() ){
 				locs.push( service.locs[x].toCookie() );	
 			}
 		}
+
 		if( locs.length > service.storageLimit ){
 			locs = locs.slice( locs.length - service.storageLimit );
 		}
 		$.totalStorage( 'locsv3', locs );
+	}
+
+	service.removeNotServedLocation = function(){
+		// Mark to remove the last added location - it is not served
+		service.locs[ service.locs.length - 1 ].markToRemove();
+		service.storeLocations();
 	}
 
 	/**

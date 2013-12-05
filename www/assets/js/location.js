@@ -13,7 +13,7 @@ var Location = function( params ) {
 		subtype: null,
 		address: null,
 		prep: null,
-		_ignoreAtCookies: false
+		removeFromCookie: false
 	};
 
 	// parse the city name from the result set
@@ -223,6 +223,14 @@ var Location = function( params ) {
 		return self._properties.entered;
 	}
 
+	self.markToRemove = function(){
+		return self._properties.removeFromCookie = true;	
+	}
+
+	self.storeAtCookie = function(){
+		return !self._properties.removeFromCookie;	
+	}
+
 	self.setEntered = function( entered ){
 		self._properties.entered = entered;
 	}
@@ -235,6 +243,11 @@ var Location = function( params ) {
 			}
 		}	
 		return new Location( properties );
+	}
+
+	// Returns a key string based on its position
+	self.getKey = function(){
+		return ( self.lat() + self.lon() + '' ).replace( '-', '' );
 	}
 
 	for (var x in params) {
