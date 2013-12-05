@@ -141,7 +141,7 @@ NGApp.directive('ngClickSelectAll', function() {
 NGApp.directive( 'customCheckbox', function () {
 
 	// Hack to not work at desktop and don't trow any error
-	if( !App.isMobile() ){ return { restrict: 'E' };}
+	//if( !App.isMobile() ){ return { restrict: 'E' };}
 
 	return {
 		restrict: 'A',

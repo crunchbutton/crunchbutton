@@ -1,15 +1,15 @@
 <div class="support-container zoom-anim-dialog mfp-hide dialog" ng-controller="SupportCtrl">
 	<div class="dialog-padding">
-		<h1 ng-show="!support.error && !support.thanks">Send us a message</h1>
+		<h1 ng-if="!support.error && !support.thanks">Send us a message</h1>
 
-		<p ng-show="support.thanks && !support.error">Thanks, we'll get back to you as fast as we can.</p>
+		<p ng-if="support.thanks && !support.error">Thanks, we'll get back to you as fast as we can.</p>
 		
-		<div class="dialog-message dialog-message-error" ng-show="support.error && !support.thanks">
+		<div class="dialog-message dialog-message-error" ng-if="support.error && !support.thanks">
 			<i class="fa fa-frown-o"></i>&nbsp;&nbsp;
 			<span ng-bind-html-unsafe="support.error"></span>
 		</div>
 
-		<div ng-show="!support.thanks">
+		<div ng-if="!support.thanks">
 			<form>
 				<div class="support-form-group form-group">
 					<i class="fa fa-user support-form-icon form-icon form-field"></i>
@@ -33,12 +33,12 @@
 	</div>
 	<div class="dialog-divider"></div>
 
-	<div class="dialog-padding dialog-bottom-buttons" ng-show="!support.thanks">
-		<button class="button lightorange pushable" ng-show="!support.isSending" ng-click="support.send();" tabindex="4">send</button>
-		<i ng-show="support.isSending" class=" fa fa-spinner fa-spin"></i>
+	<div class="dialog-padding dialog-bottom-buttons" ng-if="!support.thanks">
+		<button class="button lightorange pushable" ng-if="!support.isSending" ng-click="support.send();" tabindex="4">send</button>
+		<i ng-if="support.isSending" class=" fa fa-spinner fa-spin"></i>
 	</div>
 	
-	<div class="dialog-padding dialog-bottom-buttons" ng-show="support.thanks">
+	<div class="dialog-padding dialog-bottom-buttons" ng-if="support.thanks">
 		<button class="button lightorange pushable" ng-click="closePopup()">you're welcome</button>
 	</div>
 

@@ -32,17 +32,17 @@
 
 
 
-<div ng-show="restaurants">
+<div ng-if="restaurants">
 
 	<div class="restaurants-items">
 		<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="restaurants-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
 
-			<div class="restaurants-closed" ng-show="restaurant._tag == 'closed'">
+			<div class="restaurants-closed" ng-if="restaurant._tag == 'closed'">
 				<h2 class="restaurants-name">{{restaurant.name}}</h2>
 				<div class="restaurants-opensin">Opens in 4 hours</div>			
 			</div>
 
-			<div class="restaurants-closed" ng-show="restaurant._tag == 'force_close'">
+			<div class="restaurants-closed" ng-if="restaurant._tag == 'force_close'">
 				<h2 class="restaurants-name">{{restaurant.name}}</h2>
 				<div class="restaurants-opensin">Temporarily closed {{restaurant._force_close_notes}}</div>			
 			</div>
@@ -59,7 +59,7 @@
 							<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
 						</div>
 						
-						<div class="meal-item-tag-bottom" ng-show="restaurant._tag == 'closing' || restaurant._tag == 'takeout' || restaurant._tag == 'force_close'"></div>
+						<div class="meal-item-tag-bottom" ng-if="restaurant._tag == 'closing' || restaurant._tag == 'takeout' || restaurant._tag == 'force_close'"></div>
 
 					</div>
 					<span class="ladda-spinner"></span>
@@ -69,7 +69,7 @@
 
 		<div class="divider"></div>
 
-		<button class="button green restaurants-more" ng-show="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
+		<button class="button green restaurants-more" ng-if="restaurantsToShow < restaurants.length" ng-click="showMoreRestaurants()">
 			More awesome Restaurants
 		</button>
 

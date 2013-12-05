@@ -30,11 +30,13 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			ORDER BY o.id_order ASC
 		';
 
-		$orders = Crunchbutton_Order::q( $query );
-		if( $orders->count() > 0 ){
+		$orders = Crunchbutton_Order::q($query);
+		echo 'working with '.$orders->count().' orders'."\n";
+
+		if ($orders->count() > 0) {
 			foreach ( $orders as $order ) {
 				if( !$order->wasAcceptedByRep() ){
-
+					echo '#'.$order->id_order.' was not accepted'."\n";
 					// also notify global dispatch
 					$this->alertDispatch($order);
 					
@@ -47,6 +49,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							}
 						} 
 					}
+				} else {
+					echo '#'.$order->id_order.' was accepted'."\n";
 				}
 			}
 		}
