@@ -31,7 +31,7 @@
 						<h3 class="meal-food">{{restaurant._short_description}}</h3>
 						<div ng-switch on="restaurant._tag">
 							<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
-							<div class="meal-item-tag about-to-close" ng-show="restaurant._closesIn <= 15" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
+							<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
 							<div class="meal-item-tag-closed" ng-switch-when="closed">Opens in a few hours</div>
 							<div class="meal-item-tag-closed" ng-switch-when="force_close">Temporarily closed {{restaurant._force_close_notes}}</div>
 						</div>
