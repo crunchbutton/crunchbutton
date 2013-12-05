@@ -5,7 +5,7 @@ class Crunchbutton_Chart extends Cana_Model {
 	public $activeUsersInterval = 45; // Days
 	public $queryOnlyCommunties = 'AND c.id_community IN (1, 4)';
 	public $queryExcludeCommunties = "AND c.name != 'Testing' AND c.name IS NOT NULL";
-	public $queryExcludeUsers = "AND o.name NOT LIKE '%test%' and o.name != 'Judd' and o.name != 'dave' and o.name != 'Nick' and o.name != 'Devin'";
+	public $queryExcludeUsers = "AND o.name NOT LIKE '%test%' and o.name != 'Judd' and o.name != 'dave' and o.name != 'Nick' and o.name != 'Devin' AND ( o.id_community != 6 OR o.id_community IS NULL ) ";
 	public $minDate = '2012-09-02'; #Issue 1523 - Fist week of September/12
 
 	public $from_month;
