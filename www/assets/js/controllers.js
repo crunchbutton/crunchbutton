@@ -158,9 +158,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	$scope.$on( '$destroy', function(){
 		RestaurantsService.forceGetStatus = true;
 		// Kills the timer when the controller is changed
-		try{
-			$timeout.cancel( updateRestaurantsStatus );	
-		} catch(e){}
+		try{ $timeout.cancel( updateRestaurantsStatus );} catch(e){}
 		
 	});
 
@@ -758,19 +756,16 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	// update if the restaurant is closed or open
 	var forceReload = function(){
 		forceReloadTimer = $timeout( function(){
-			console.debug('forceReload: init');
 			if( !order.loaded ){
 				restaurantService.init();
 				updateStatus();
 				forceReload();
-				console.debug('forceReload: go go');
 				$rootScope.$safeApply();
 			} else {
 				$rootScope.$safeApply();
-				console.debug('forceReload: no need');
 			}
 		} , 2000 );
-	}
+	};
 	forceReload();
 
 });
