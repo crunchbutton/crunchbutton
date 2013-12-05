@@ -46,9 +46,7 @@ var Restaurant = function(id) {
 		return Date.parse( dateTime.toString() );
 	}
 
-	// In test
-	this.closesIn = function( trueIfItIsOpen ) {
-		
+	this.closesIn = function( trueIfItIsOpen ) {		
 		// this overrides everything
 		if( this.open_for_business === "0" ) {
 			this._open = false;
@@ -68,6 +66,10 @@ var Restaurant = function(id) {
 		if( now_utc_hour > ( 16800 ) ){
 			now_utc_hour = now_utc_hour - 16800;
 		}
+
+		this._open = false;
+
+		var nextOpenShouldBe = false;
 
 		for( hour in this._hours_converted_utc ){
 			var open = this._hours_converted_utc[ hour ].open;
@@ -93,15 +95,64 @@ var Restaurant = function(id) {
 				}
 				
 				this._closesIn = ( Math.floor( ( close - now_utc_hour ) / 100 ) * 60 ) + ( min_close - min_now );
-
-				if( this._closesIn == 0 ){
-					this._open = false;
-				}
-				break;
+			}
+			// if it is closed lets check how much time till it open
+			if( !nextOpenShouldBe && now_utc_hour <= open ){
+				nextOpenShouldBe = open;
 			}
 		}
 
+		if( this._closesIn <= 0 ){
+			this._open = false;
+		}
+
+		// If it is closed, calcule how much time till it open
+		if( !this._open && nextOpenShouldBe ){
+			var open_str = nextOpenShouldBe.toString();
+			var min_open = parseInt( open_str.substr( ( open_str.length - 2 ), 2 ) );
+			if( min_open == 0 ){ min_open = 60; }
+			var now_utc_hour_str = now_utc_hour.toString();
+			var min_now = parseInt( now_utc_hour_str.substr( ( now_utc_hour_str.length - 2 ), 2 ) );
+			if( min_now == 0 ){ min_now = 60; }
+			if( min_open < min_now ){
+				min_open += 60;
+			}
+			this._openIn = ( Math.floor( ( nextOpenShouldBe - now_utc_hour ) / 100 ) * 60 ) + ( min_open - min_now );
+		}		
+
+		// Add the tags
+		if( !this._open ){
+			this._tag = 'closed';
+		} 
+		if( this._open && this._closesIn <= this._minimumTime ){
+			this._tag = 'closing';
+		}
+
 		return false;
+	}
+
+	self.formatTime = function( time ){
+		var formated = '';
+		if( time && time > 0 ){
+			var hours = Math.floor( time / 60 );
+			var minutes = time - ( hours * 60 );
+			if( hours > 0 ){
+				formated = hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) + ( minutes > 0 ? ' and ' + ( minutes ) + ( minutes > 1 ? ' minutes' : 'minute' ) : '' ) ;
+			} else {
+				formated = ( minutes > 0 ) ? minutes + ' minutes' : '';
+			}			
+		}
+		return formated;
+	}
+
+	self.closesInFormated = function(){
+		this._closesIn_formated = this.formatTime( this._closesIn );
+		return this._closesIn_formated;
+	}
+
+	self.openInFormated = function(){
+		this._openIn_formated = this.formatTime( this._openIn );
+		return this._openIn_formated;
 	}
 
 	self.categories = function() {
