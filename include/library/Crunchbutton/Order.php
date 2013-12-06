@@ -1664,6 +1664,21 @@ class Crunchbutton_Order extends Cana_Table {
 		return false;
 	}
 
+	public function hasGiftCardIssued(){
+		// check if it has a gift card
+		$promo = Crunchbutton_Promo::q( "SELECT * FROM promo p WHERE p.id_order_reference = {$this->id_order}" );
+		if( $promo->count() > 0 ){
+			return true;
+		}
+		// check if it has credit
+		$credit = Crunchbutton_Credit::q( "SELECT * FROM credit c WHERE c.id_order_reference = {$this->id_order}" );
+		if( $credit->count() > 0 ){
+			return true;
+		}
+		return false;
+
+	}
+
 	public function deliveryExports() {
 		return [
 			'id_order' => $this->id_order,
