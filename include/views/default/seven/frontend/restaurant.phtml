@@ -338,9 +338,7 @@
 				</p>
 			</div>
 			<div class="divider"></div>
-			
 			<div class="order-icon">
-				<div class="icon-card"></div>
 					<div class="icon-credit" ng-show="order.form.pay_type=='card' && order.total() <= credit.number"></div>
 					<div class="icon-card" ng-show="order.form.pay_type=='card' && order.total() > credit.number"></div>
 					<div class="icon-cash" ng-show="order.form.pay_type=='cash'"></div>
@@ -348,8 +346,8 @@
 			<div class="order-info order-info-oneline">
 				<p>
 					<span ng-show="order.form.pay_type=='card' && order.total() <= credit.number">Gift card balance</span>
-					<span ng-show="order.form.pay_type=='card' && credit.number && order.total() > credit.number">Card ending in 9999 &amp; - {{credit.value}} credit</span>
-					<span ng-show="order.form.pay_type=='card' && !credit.number">Card ending in 9999</span>
+					<span ng-show="order.form.pay_type=='card' && credit.number && order.total() > credit.number">Card ending in {{user.card_ending}} &amp; - {{credit.value}} credit</span>
+					<span ng-show="order.form.pay_type=='card' && !credit.number">Card ending in {{user.card_ending}}</span>
 					<span ng-show="order.form.pay_type=='cash'">Pay and tip with <b>cash</b></span>
 				</p>
 			</div>
@@ -420,16 +418,10 @@
 	</div>
 	<div class="divider"></div>
 
-	<div ng-if="credit.hasValue && order.form.pay_type == 'cash' ">
+	<div ng-if="credit.hasValue && order.form.pay_type == 'cash' && order.total() >= credit.number">
 		<div class="giftcard-payment-message">Pay with a card, NOT CASH, to use your ${{credit.value}} gift card</div>
 	</div>
 </div>
-
-
-
-
-
-
 
 <div class="divider bottom-spacer"></div>
 
