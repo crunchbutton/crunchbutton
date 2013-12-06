@@ -23,7 +23,6 @@ var Location = function( params ) {
 		}
 
 		var result = results[0] || results;
-
 		if( typeof result.types === 'string' ) {
 			var type = result.types;
 		} else {
@@ -50,8 +49,8 @@ var Location = function( params ) {
 				self._properties.detail = 3;
 				break;
 			case 'route':
-				self._properties.city = result.address_components[1].long_name;
-				self._properties.region = result.address_components[3].short_name;
+				self._properties.city = result.address_components[0].long_name;
+				self._properties.region = result.address_components[1].short_name;
 				self._properties.detail = 4;
 				break;
 			default:
