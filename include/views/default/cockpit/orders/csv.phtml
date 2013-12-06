@@ -38,13 +38,30 @@ $headers = [
 	'Gift Card Other restaurant',
 	'Total Charged',
 	'Notes',
+	'Formal Relationship',
+	'3rd Party Delivery',
+	'Fee on Subtotal',
+	'Charge Credit Fees',
+	'Pay for Promotions',
+	'Payment Method',
+	'Pay if Refunded',
+	'Promotion Maximum',
+	'Paid with CB Card',
+	'Gift card issued',
+	'Gift card value',
 ];
+
 
 echo implode(',', $headers)."\n";
 ?>
 <? foreach ($this->orders as $order) :
 	/* @var $order Crunchbutton_Order */
 	$date = $order->date();
+	$giftcard = $order->hasGiftCard();
+	$credit = $order->hasCredit();
+
+	$giftcard = $giftcard + $credit;
+
 	if( $order->chargedByCredit() > 0 ){
 		$credit = number_format($order->chargedByCredit(),2);
 		$credit_crunchbutton = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_CRUNCHBUTTON );
@@ -92,7 +109,18 @@ echo implode(',', $headers)."\n";
 		"<?=$credit_promotional									// Credit paid by promotional?>",
 		"<?=$credit_other_restaurant						// Credit paid by other restaurant?>",
 		"<?=$charged														// Total charged?>",
-		"<?=$order->notes?>"
+		"<?=$order->notes?>",
+		"<?=$order->restaurant()->formal_relationship > 0	? 'yes' : ''			// Formal Relationship?>",
+		"<?=$order->restaurant()->delivery_service > 0	? 'yes' : ''				// 3rd Party Delivery?>",
+		"<?=$order->restaurant()->fee_on_subtotal > 0	? 'yes' : ''					// Fee on Subtotal?>",
+		"<?=$order->restaurant()->charge_credit_fee > 0	? 'yes' : ''				// Charge Credit Fees?>",
+		"<?=$order->restaurant()->pay_promotions > 0	? 'yes' : ''					// Pay for Promotions?>",
+		"<?=$order->restaurant()->payment_method														// Payment Method?>",
+		"<?=$order->pay_if_refunded > 0	? 'yes' : ''												// Pay if Refunded?>",
+		"<?=$order->restaurant()->promotion_maximum													// Promotion Maximum?>",
+		"<?=$order->paid_with_cb_card > 0	? 'yes' : ''											// Paid with CB Card?>",
+		"<?=$order->hasGiftCardIssued()	? 'yes' : ''												// Gift card issued?>",
+		"<?=$giftcard ? $giftcard : ''																			// Gift card value?>"
 <?
 	$output = ob_get_clean();
 	$output = preg_replace('/\n|\r|\t/i', '', $output);
