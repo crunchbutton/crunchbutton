@@ -12,6 +12,7 @@ class Controller_api_restaurants extends Crunchbutton_Controller_Rest {
 			foreach ($restaurants as $restaurant) {
 				$data = $restaurant->exports(['categories' => true]);
 				$data[ 'top_name' ] = $restaurant->top()->top_name;
+				$data[ '_short_description' ] = ( $data[ 'short_description' ] ? $data[ 'short_description' ] : (  $data[ 'top_name' ] ? 'Top Order: ' . $data[ 'top_name' ] : ''  ) );
 				$config['restaurants'][] = $data;
 			}
 		}

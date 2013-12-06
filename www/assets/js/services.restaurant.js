@@ -20,11 +20,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		
 		var list = restaurants;
 
-		for (var x in list) {
-			// show short description
-			list[x]._short_description = (list[x].short_description || ('Top Order: ' + (list[x].top_name ? (list[x].top_name || list[x].top_name) : '')));
-		};
-
 		list.sort(sort_by({
 			name: '_open',
 			reverse: true
@@ -49,6 +44,14 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 		var list = restaurants;
 
+		var totalClosedRestaurantsAfter = 0;
+		var totalClosedRestaurantsBefore = 0;
+		for (var x in list) {
+			if( !list[x]._open ){
+				totalClosedRestaurantsBefore++;
+			}
+		}
+		
 		for (var x in list) {
 			App.profile.log('start calc open');
 			
@@ -63,6 +66,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				} else {
 					list[x]._tag = 'closed';	
 				}
+				list[x].openInFormated();
 			} else {
 				if (list[x].delivery != '1') {
 					list[x]._tag = 'takeout';
@@ -73,12 +77,19 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				}
 			}
 
-			// show short description
-			list[x]._short_description = (list[x].short_description || ('Top Order: ' + (list[x].top_name ? (list[x].top_name || list[x].top_name) : '')));
+			if( !list[x]._open ){
+				totalClosedRestaurantsAfter++;
+			}
 		};
 		App.profile.log('end status');
 
 		restaurants = list;
+
+		// Reorder the restaurants
+		if( totalClosedRestaurantsAfter != totalClosedRestaurantsBefore ){
+			service.sort();
+		}
+
 		return restaurants;
 	}
 
