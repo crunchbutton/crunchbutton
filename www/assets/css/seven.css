@@ -1564,8 +1564,7 @@ p {
 }
 .cart-item-text {
 	margin-top: .2em;
-	margin-left: 1em;
-	float: left;
+	margin-left: 2.5em;
 	line-height: 1.5em;
 }
 .cart-item-name {
@@ -1574,14 +1573,18 @@ p {
 }
 .cart-item-description {
 	font-size: 1em;
+	text-overflow: ellipsis;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
 }
 .cart-item-config {
+	float: right;
 	margin-top: .3em;
 	margin-right: .2em;
 	font-size: 1.2em;
 	text-decoration: underline;
 	color: #fff;
-	float: right;
 	cursor: pointer;
 }
 .cart-customize-options {
@@ -1670,7 +1673,10 @@ p {
 .dish-item-description {
 	color: #e7806c;
 	font-size: 1.0em;
-	
+	text-overflow: ellipsis;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden;
 	/* @test
 	color: #fff;
 	opacity: .8; */
