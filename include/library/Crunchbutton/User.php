@@ -191,6 +191,11 @@ class Crunchbutton_User extends Cana_Table {
 		$out = $this->properties();
 		// $out[ 'last_tip_delivery' ] = Order::lastTipByDelivery( $this->id_user, 'delivery' );
 		// $out[ 'last_tip_takeout' ] = Order::lastTipByDelivery( $this->id_user, 'takeout' );
+
+		if( $out['card'] ){
+			$out['card_ending'] = substr( $out['card'], -4, 4 );
+		}
+		
 		$out[ 'last_tip_type' ] = Order::lastTipType( $this->id_user );
 		$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
 		$out[ 'facebook' ] = User_Auth::userHasFacebookAuth( $this->id_user );
@@ -209,8 +214,8 @@ class Crunchbutton_User extends Cana_Table {
 			$out['presets'][$preset->id_restaurant] = $preset->exports();
 		}
 		$out['ip'] = $_SERVER['REMOTE_ADDR'];
-		$out['email'] = $this->email ? $this->email : $this->email();
-		
+		$out['email'] = $this->email ? $this->email : $this->email();	
+
 
 		if (c::env() == 'beta' || c::env() == 'local') {
 			$out['debug'] = true;
