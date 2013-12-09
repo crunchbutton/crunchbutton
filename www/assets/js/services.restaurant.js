@@ -20,19 +20,44 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		
 		var list = restaurants;
 
-		list.sort( sort_by({
-			name: '_open',
-			reverse: true
-		}, {
-			name: 'delivery',
-			reverse: true
-		}, {
-			name: '_weight',
-			primer: parseInt,
-			reverse: true
-		}));
+		list.sort( 
+			sort_by( {
+				name: '_open',
+				reverse: true
+			}, {
+				name: 'delivery',
+				reverse: true
+			}, {
+				name: '_weight',
+				primer: parseInt,
+				reverse: true
+			}, {
+				name: '_openIn',
+				primer: parseInt,
+				reverse: false
+			} )
+		);
+
+		var areAllTheRestaurantsClosed = true;
+
+		for (var x in list) {
+			if( list[x]._open ){
+				areAllTheRestaurantsClosed = false;
+			}
+		}
 		
-		App.profile.log('end sort');
+
+		if( areAllTheRestaurantsClosed ){
+			var tagRestaurantsAsClosing = 3;
+			for (var x in list) {
+				if( tagRestaurantsAsClosing <= 0 ){
+					break;
+				}
+				tagRestaurantsAsClosing--;
+				list[x]._tag = 'opening';	
+				console.log('list[x]._tag',list[x]._tag);
+			}
+		}
 
 		restaurants = list;
 		return restaurants;
