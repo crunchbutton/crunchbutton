@@ -1038,3 +1038,48 @@ App.share = function(params) {
 		});
 	}
 }
+
+
+window.onload=function(){
+	setTimeout( function(){
+				var list = [ 
+					{ 'name' : 'rest 1a', '_open': true, 'delivery' : true, '_weight' : 100 } ,
+					{ 'name' : 'rest 1b', '_open': false, 'delivery' : true, '_weight' : 100, '_openIn' : 100 } ,
+					{ 'name' : 'rest 2a', '_open': true, 'delivery' : true, '_weight' : 90 } ,
+					{ 'name' : 'rest 2b', '_open': false, 'delivery' : true, '_weight' : 90, '_openIn' : 90 } ,
+					{ 'name' : 'rest 3a', '_open': true, 'delivery' : true, '_weight' : 80 } ,
+					{ 'name' : 'rest 3b', '_open': false, 'delivery' : true, '_weight' : 90, '_openIn' : 80 } ,
+					{ 'name' : 'rest 4a', '_open': true, 'delivery' : true, '_weight' : 70 } ,
+					{ 'name' : 'rest 4b', '_open': false, 'delivery' : true, '_weight' : 90, '_openIn' : 100 } ,
+					{ 'name' : 'rest 5a', '_open': true, 'delivery' : true, '_weight' : 60 } ,
+					{ 'name' : 'rest 5b', '_open': false, 'delivery' : true, '_weight' : 90, '_openIn' : 100 } ,
+					{ 'name' : 'rest 6a', '_open': true, 'delivery' : true, '_weight' : 50 } ,
+					{ 'name' : 'rest 6b', '_open': false, 'delivery' : true, '_weight' : 90, '_openIn' : 100 } ,
+					{ 'name' : 'rest 7a', '_open': true, 'delivery' : true, '_weight' : 30 } ,
+					{ 'name' : 'rest 7b', '_open': false, 'delivery' : true, '_weight' : 30, '_openIn' : 100 } ,
+					{ 'name' : 'rest 8a', '_open': true, 'delivery' : true, '_weight' : 20 } ,
+					{ 'name' : 'rest 8b', '_open': false, 'delivery' : true, '_weight' : 20, '_openIn' : 100 } ,
+					{ 'name' : 'rest 9a', '_open': true, 'delivery' : true, '_weight' : 10 } ,
+					{ 'name' : 'rest 9b', '_open': false, 'delivery' : true, '_weight' : 10, '_openIn' : 100 } ,
+					{ 'name' : 'rest 10a', '_open': true, 'delivery' : true, '_weight' : 1 } ,
+					{ 'name' : 'rest 10b', '_open': false, 'delivery' : true, '_weight' : 1, '_openIn' : 100 } ,
+				];
+
+			list.sort( sort_by({
+				name: '_open',
+				reverse: true
+			}, {
+				name: 'delivery',
+				reverse: true
+			}, {
+				name: '_weight',
+				primer: parseInt,
+				reverse: true
+			}));
+
+		console.table( list )
+
+	}, 500 );
+}
+
+
