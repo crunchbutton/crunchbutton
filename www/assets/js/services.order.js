@@ -102,7 +102,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.form.name = service.account.user.name;
 		service.form.phone = $filter( 'formatPhone' )( service.account.user.phone );
 		service.form.address = service.account.user.address;
-		service.form.notes = ( service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant] && service.account.user.presets[service.restaurant.id_restaurant].notes ) ? service.account.user.presets[service.restaurant.id_restaurant].notes : '';
+		// Use the last notes #2102
+		service.form.notes = ( service.account.user && service.account.user.last_notes ) ? service.account.user.last_notes : '';
+		// service.form.notes = ( service.account.user && service.account.user.presets && service.account.user.presets[service.restaurant.id_restaurant] && service.account.user.presets[service.restaurant.id_restaurant].notes ) ? service.account.user.presets[service.restaurant.id_restaurant].notes : '';
 
 		if( service.form.delivery_type == 'takeout' ){
 			service.form.tip = 0;
