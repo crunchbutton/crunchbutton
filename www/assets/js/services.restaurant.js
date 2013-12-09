@@ -20,7 +20,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		
 		var list = restaurants;
 
-		list.sort(sort_by({
+		list.sort( sort_by({
 			name: '_open',
 			reverse: true
 		}, {
