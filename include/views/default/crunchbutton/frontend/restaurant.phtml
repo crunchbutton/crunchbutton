@@ -400,6 +400,11 @@
 			<label>Delivery Address:</label> <i>takeout</i>
 		</div>
 
+		<div ng-show="order.form.notes">
+			<label>Notes:&nbsp;</label>
+			<i>{{ order.form.notes }}</i>
+		</div>
+
 		<div>
 			<span class="clickable" ng-click="order.showForm=true">Change delivery or payment details</span>
 		</div>
