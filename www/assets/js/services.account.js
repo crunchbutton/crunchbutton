@@ -300,7 +300,6 @@ NGApp.factory( 'AccountModalService', function( $http, $rootScope, FacebookServi
 	}
 
 	service.toggleSignForm = function( form ){
-		console.log('form',form);
 		service.facebook.account.errorReset();
 		service.facebook.wait = false;
 		service.signin = ( form == 'signin' );
