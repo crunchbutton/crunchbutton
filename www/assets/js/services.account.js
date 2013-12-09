@@ -81,6 +81,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 			} ).success( function( data ) {
 					if( data.error ){
 						service.errors.push( service.errorsList[ 'login-incorrect' ] );
+						App.rootScope.$safeApply();
 						App.log.account( { 'error' : data.error } , 'sign in error' );
 					} else {
 						service.user = data;
@@ -186,6 +187,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 // AccountHelpService service
 NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService, AccountModalService ){ 
+
 	// It starts invisible
 	var service = { 
 			visible : false, 
@@ -209,6 +211,9 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 	var modal = AccountModalService;
 
 	service.show = function( show ){
+		service.success.visible = false;
+		account.errorReset();
+		service.errorReset();
 		service.visible = show;
 		modal.header = !show;
 		if( show ){
@@ -282,7 +287,6 @@ NGApp.factory( 'AccountModalService', function( $http, $rootScope, FacebookServi
 		service.header = true;
 		App.dialog.show( '.account-container' );
 		service.toggleSignForm( 'signup' );
-		
 	}
 
 	service.facebookOpen = function(){
@@ -296,6 +300,7 @@ NGApp.factory( 'AccountModalService', function( $http, $rootScope, FacebookServi
 	}
 
 	service.toggleSignForm = function( form ){
+		console.log('form',form);
 		service.facebook.account.errorReset();
 		service.facebook.wait = false;
 		service.signin = ( form == 'signin' );
