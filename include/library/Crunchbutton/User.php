@@ -210,12 +210,17 @@ class Crunchbutton_User extends Cana_Table {
 		} else {
 			$out[ 'last_order' ] = false;
 		}
+
+		$lastNote = $this->getLastNote();
+		if( $lastNote ){
+			$out['last_notes'] = trim( $lastNote );
+		}
+
 		foreach ($this->presets() as $preset) {
 			$out['presets'][$preset->id_restaurant] = $preset->exports();
 		}
 		$out['ip'] = $_SERVER['REMOTE_ADDR'];
 		$out['email'] = $this->email ? $this->email : $this->email();	
-
 
 		if (c::env() == 'beta' || c::env() == 'local') {
 			$out['debug'] = true;
@@ -229,7 +234,21 @@ class Crunchbutton_User extends Cana_Table {
 		return $out;
 	}
 
-	public function  creditsExport(){
+	public function getLastNote(){
+		$lastOrderNotes = $this->lastOrder();
+		if( $lastOrderNotes->notes ){
+			$notes = $lastOrderNotes->notes;
+			// filter to remove a gift card code
+			$promos = Crunchbutton_Promo::q( "SELECT * FROM promo p WHERE p.id_user = {$this->id_user}" );
+			foreach( $promos as $promo ){
+				$notes = str_replace( $promo->code , '', $notes );
+			}
+			return $notes;
+		}
+		return false;
+	}
+
+	public function creditsExport(){
 		$credits = $this->credits();
 		$out = array();
 		foreach ( $credits  as $credit ) {
