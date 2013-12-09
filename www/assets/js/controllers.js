@@ -901,9 +901,10 @@ NGApp.controller( 'GiftcardCtrl', function ($scope, $location, GiftCardService )
 	setTimeout( function(){ GiftCardService.open(); }, 300 );
 });
 
-
-NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $http, AccountModalService ) {
+NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {
 	$scope.modal = AccountModalService;
+	$scope.account = AccountService;
+	$scope.help = AccountHelpService;
 });
 
 
