@@ -4,15 +4,30 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 	var service = { 
 				callback : false, 
 				user : false, 
-				error : { 
-						signin : false, 
-						signup : false 
-					},
 				form : {
 					email : '', 
 					password : ''	
 				}
 			};
+
+	// array with the errors
+	service.errors = [];
+
+	// reset the erros
+	service.errorReset = function(){
+		service.errors = [];		
+	}
+
+	service.errorsList = { 
+			'enter-email-phone': 'Please enter a valid email or phone.', 
+			'enter-password': 'Please enter your password.', 
+			'login-incorrect': 'Your log in information was incorrect.', 
+			'already-registred': 'It seems that the email is already registered!', 
+			'not-registred': 'Sorry, that email/phone is not registered with us.',
+			'enter-code':'Please enter the reset code.',
+			'code-invalid':'Sorry, this code is invalid.',
+			'code-expired':'Sorry, this code is expired.'
+		};
 
 	service.reset = function(){
 		service.form.email = '';
@@ -41,20 +56,20 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 	}
 
 	service.signin = function(){
+		service.errorReset();
 		if( !service.isValidEmailPhone() ){
-			App.alert( 'Please enter a valid email or phone.', null, true );
+			service.errors.push( service.errorsList[ 'enter-email-phone' ] );
 			$rootScope.focus( '.signin-email' );
 			return;
 		}
 
 		if( !service.isValidPassword() ){
-			App.alert( 'Please enter your password.', null, true );
+			service.errors.push( service.errorsList[ 'enter-password' ] );
 			$rootScope.focus( '.signin-password' );
 			return;
 		}
-		service.purify();
 
-		service.error.signin = false;
+		service.purify();
 
 		var url = App.service + 'user/auth';
 
@@ -65,8 +80,8 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 					if( data.error ){
+						service.errors.push( service.errorsList[ 'login-incorrect' ] );
 						App.log.account( { 'error' : data.error } , 'sign in error' );
-						service.error.signin = true;
 					} else {
 						service.user = data;
 						service.updateInfo();
@@ -82,21 +97,20 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 	}
 
 	service.signup = function(){
+		service.errorReset();
 		if( !service.isValidEmailPhone() ){
-			App.alert( 'Please enter a valid email or phone.', null, true );
+			service.errors.push( service.errorsList[ 'enter-email-phone' ] );
 			$rootScope.focus( '.signup-email' );
 			return;
 		}
 
 		if( !service.isValidPassword() ){
-			App.alert( 'Please enter a password.', null, true );
+			service.errors.push( service.errorsList[ 'enter-password' ] );
 			$rootScope.focus( '.signup-password' );
 			return;
 		}
 
 		service.purify();
-
-		service.error.signin = false;
 
 		var url = App.service + 'user/create/local';
 
@@ -109,10 +123,9 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 
 			if (data.error) {
 				if( data.error == 'user exists' ){
-					service.error.signup = true;
+					service.errors.push( service.errorsList[ 'already-registred' ] );
 				}
 				App.log.account( { 'error' : data.error, 'login' : service.form.email } , 'sign up error' );
-
 			} else {
 				service.updateInfo();
 				service.user = data;
@@ -176,7 +189,6 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 	// It starts invisible
 	var service = { 
 			visible : false, 
-			error : false,
 			success : { 
 				visible : false, 
 				facebook : { 
@@ -184,6 +196,14 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 				} 
 			}
 		};
+
+	// array with the errors
+	service.errors = [];
+
+	// reset the erros
+	service.errorReset = function(){
+		service.errors = [];
+	}
 
 	var account = AccountService;
 	var modal = AccountModalService;
@@ -200,14 +220,15 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 	}
 
 	service.reset = function(){
-		service.error = false;
+		service.errorReset();
 		service.success.visible = false;
 		service.success.facebook.visible = false;
 	}
 
 	service.sendForm = function(){
+		service.errorReset();
 		if( !account.isValidEmailPhone() ){
-			App.alert( 'Please enter a valid email or phone.', null, true );
+			service.errors.push( AccountService.errorsList[ 'enter-email-phone' ] );
 			$rootScope.focus( '.help-email' );
 			return;
 		}
@@ -222,7 +243,7 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 			} ).success( function( data ) {
 					if( data.error ){
 						if( data.error == 'user is not registred' ){
-							service.error = true;
+							service.errors.push( AccountService.errorsList[ 'not-registred' ] );
 							$rootScope.focus( '.help-email' );
 						}
 					} else {
@@ -234,7 +255,6 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 							}
 						}
 					}
-					
 			}	);
 	}
 	return service;
@@ -276,6 +296,7 @@ NGApp.factory( 'AccountModalService', function( $http, $rootScope, FacebookServi
 	}
 
 	service.toggleSignForm = function( form ){
+		service.facebook.account.errorReset();
 		service.facebook.wait = false;
 		service.signin = ( form == 'signin' );
 		service.signup = ( form == 'signup' );
@@ -323,6 +344,7 @@ NGApp.factory( 'AccountFacebookService', function( $http, FacebookService ){
 } );
 
 NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, AccountFacebookService, AccountService, MainNavigationService ){
+	
 	var service = {};
 	
 	service.facebook = AccountFacebookService;
@@ -378,19 +400,30 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, Account
 } );
 
 
-NGApp.factory( 'AccountResetService', function( $http, $location ){
+NGApp.factory( 'AccountResetService', function( $http, $location, AccountService ){
+
 	var service = {
 		step : 1,
 		form : { code : '', password : '' },
 		success : false,
 		error : false
 	};
+
+	// array with the errors
+	service.errors = [];
+
+	// reset the erros
+	service.errorReset = function(){
+		service.errors = [];		
+	}
+
 	service.form.code = $location.path().replace( '/reset', '' );
 	service.form.code = service.form.code.replace( '/', '' );
 	service.validateCode = function(){
+		service.errorReset();
 		service.form.code = $.trim( service.form.code );
 		if( service.form.code == '' ){
-			service.error = 'empty';
+			service.errors.push( AccountService.errorsList[ 'enter-code' ] );
 			$( '#account-reset-code' ).focus();
 			return;	
 		}
@@ -403,27 +436,26 @@ NGApp.factory( 'AccountResetService', function( $http, $location ){
 			} ).success( function( data ) {
 					if( data.error ){
 						if( data.error == 'invalid code' ){
-							service.error = 'invalid';
+							service.errors.push( AccountService.errorsList[ 'code-invalid' ] );
 						}
 						if( data.error == 'expired code' ){
-							service.error = 'expired';
+							service.errors.push( AccountService.errorsList[ 'code-expired' ] );
 						}
 						$( '#account-reset-code' ).focus();
 						return;
 					} else {
 						if( data.success = 'valid code' ){
 							service.step = 2;
-							service.error = false;
 						}
 					}
-					
 			}	);
 	}
 
 	service.changePassword = function(){
+		service.errorReset();
 		service.form.password = $.trim( service.form.password );
 		if( service.form.password == '' ){
-			service.error = 'empty';
+			service.errors.push( AccountService.errorsList[ 'enter-password' ] );
 			$( '#account-reset-password' ).focus();
 			return;	
 		}
@@ -435,7 +467,7 @@ NGApp.factory( 'AccountResetService', function( $http, $location ){
 			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			} ).success( function( data ) {
 					if( data.error ){
-						service.error = 'invalid';
+						service.errors.push( AccountService.errorsList[ 'code-invalid' ] );
 						service.step = 1;
 						return;
 					} else {

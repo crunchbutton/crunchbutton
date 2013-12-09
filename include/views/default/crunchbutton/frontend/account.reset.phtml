@@ -4,15 +4,13 @@
 			<h1>Password reset</h1>
 			<input type="text" maxlength="250" id="account-reset-code" value="" ng-enter="reset.validateCode()" ng-model="reset.form.code" placeholder="enter the reset code" tabindex="10" />
 			<div class="divider"></div>
-			<div ng-show="reset.error == 'empty'" class="error">
-				Please enter the reset code.
+			
+			<div class="error">
+				<div ng-repeat="error in reset.errors">
+					{{error}}
+				</div>
 			</div>
-			<div ng-show="reset.error == 'invalid'" class="error">
-				Sorry, this code is invalid.
-			</div>
-			<div ng-show="reset.error == 'expired'" class="error">
-				Sorry, this code is expired.
-			</div>
+
 		</form>
 		<button ng-click="reset.validateCode();">Reset</button>
 		<div class="divider"></div>
@@ -22,11 +20,10 @@
 			<h1>Type your new password</h1>
 			<input type="password" maxlength="250" ng-model="reset.form.password" ng-enter="reset.changePassword()" id="account-reset-password" value="" placeholder="password" tabindex="10" />
 			<div class="divider"></div>
-			<div ng-show="reset.error == 'empty'" class="error">
-				Please enter your new password.
-			</div>
-			<div ng-show="reset.error == 'invalid'" class="error">
-				Sorry, this code is invalid.
+			<div class="error">
+				<div ng-repeat="error in reset.errors">
+					{{error}}
+				</div>
 			</div>
 		</form>
 		<button ng-click="reset.changePassword();" ng-show="!reset.success">Change</button>

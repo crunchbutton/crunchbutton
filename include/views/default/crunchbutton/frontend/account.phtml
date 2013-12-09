@@ -12,41 +12,38 @@
 				<div class="divider"></div>
 				<input type="password" maxlength="250" name="password" class="signin-password" ng-enter="account.signin()" required placeholder="password" tabindex="10" ng-model="account.form.password" />
 				<div class="divider"></div>
-				<div ng-show="formSignin.$dirty && formSignin.$invalid" class="error">
-					<div ng-show="formSignin.email.$error">
-						Please enter a valid email or phone.
-					</div>
-					<div ng-show="formSignin.password.$error">
-						Please enter your password.
+				
+				<div class="error">
+					<div ng-repeat="error in account.errors">
+						{{error}}
 					</div>
 				</div>
-				<div ng-show="account.error.signin" class="error">
-					Your log in information was incorrect.
-				</div>
+
 			</form>
 			<div class="divider"></div>
 			<a class="help-link" ng-click="help.show(true)">Password help?</a>
 			<button ng-click="account.signin();">Log in</button>
 			<div class="divider"></div>
-
-		<div facebook-signin-button title="Log in with Facebook"></div>
+			<div facebook-signin-button title="Log in with Facebook"></div>
 		</div>
 		<div ng-show="help.visible">
 			<form class="signin-help-form" name="formLoginHelp" novalidate>
+				
 				<h1>Password help?</h1>
 				<input type="text" maxlength="250" name="email" required  class="help-email" ng-enter="help.sendForm()" validate-login placeholder="email or phone" tabindex="10" ng-model="account.form.email">
 				<div class="divider"></div>
-				<div ng-show="help.error" class="error">
-					Sorry, that email/phone is not registered with us.
+				
+				<div class="error">
+					<div ng-repeat="error in help.errors">
+						{{error}}
+					</div>
 				</div>
+
 			</form>
 			<a class="help-link" ng-click="help.show(false)">Never mind</a>
 			<button ng-click="help.sendForm()">Reset</button>
 			<div class="divider"></div>
-			<div ng-show="formLoginHelp.$dirty && formLoginHelp.$invalid" class="error">
-				Please enter a valid email or phone.
-			</div>
-			
+
 			<div ng-show="help.success.visible" class="success">
 				You will receive a code to reset your password! It will expire in 24 hours.
 				<div ng-show="help.success.facebook.visible">
@@ -62,17 +59,13 @@
 				<div class="divider"></div>
 				<input type="password" maxlength="250" name="password" class="signup-password" ng-enter="account.signup()" required placeholder="password" tabindex="10" ng-model="account.form.password" />
 				<div class="divider"></div>
-				<div ng-show="formSignup.$dirty && formSignup.$invalid" class="error">
-					<div ng-show="formSignup.email.$error">
-						Please enter a valid email or phone.
-					</div>
-					<div ng-show="formSignup.password.$error">
-						Please enter your password.
+
+				<div class="error">
+					<div ng-repeat="error in account.errors">
+						{{error}}
 					</div>
 				</div>
-				<div ng-show="account.error.signup" class="error">
-					It seems that the email is already registered!
-				</div>
+
 			</form>
 			<div class="divider"></div>
 			<button ng-click="account.signup();">Sign up</button>
