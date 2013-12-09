@@ -22,6 +22,13 @@ NGApp.factory('CartService', function () {
 		}
 	}
 
+	// Collapse all items
+	service.collapseItems = function(){
+		for( x in service.restaurants[ service.id_restaurant ].items ){
+			service.restaurants[ service.id_restaurant ].items[ x ].details.customization.expanded = false;
+		}
+	}
+
 	service.clean = function(){
 		for( x in service.restaurants ){
 			service.restaurants[x] = { uuidInc : 0, items : {} };
@@ -29,6 +36,9 @@ NGApp.factory('CartService', function () {
 	}
 
 	service.add = function (item) {
+
+		// Collapose all expanded items when user adds a new one
+		service.collapseItems();
 		var id = service.uuid(),
 			dish = App.cache('Dish', item);
 		dish_options = dish.options(),
@@ -67,6 +77,7 @@ NGApp.factory('CartService', function () {
 				}
 			}
 		}
+
 		service.restaurants[ service.id_restaurant ].items[id] = {
 			id: item,
 			options: options,
