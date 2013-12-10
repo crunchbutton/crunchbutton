@@ -30,8 +30,6 @@
 	<div class="divider"></div>
 </div>
 
-
-
 <div ng-if="restaurants">
 
 	<div class="restaurants-items">
@@ -57,6 +55,7 @@
 						<div ng-switch on="restaurant._tag">
 							<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
 							<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
+							<div class="meal-item-tag about-to-close" ng-switch-when="opening">Opens in {{restaurant._openIn_formated}}</div>
 						</div>
 						
 						<div class="meal-item-tag-bottom" ng-if="restaurant._tag == 'closing' || restaurant._tag == 'takeout' || restaurant._tag == 'force_close'"></div>
