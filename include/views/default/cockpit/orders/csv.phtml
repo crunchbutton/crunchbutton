@@ -52,6 +52,8 @@ $headers = [
 	'Gift card value',
 	'Summary Fax',
 	'Summary Email',
+	'Delivery Driver ID',
+	'Delivery Driver Name'
 ];
 
 
@@ -126,8 +128,11 @@ echo implode(',', $headers)."\n";
 		"<?=$order->hasGiftCardIssued()	? 'yes' : ''												// Gift card issued?>",
 		"<?=$giftcard ? $giftcard : ''																			// Gift card value?>",
 		"<?=$order->restaurant()->summary_fax																// Summary Fax?>",
-		"<?=$order->restaurant()->summary_email															// Summary Email?>"
+		"<?=$order->restaurant()->summary_email															// Summary Email?>",
+		"<?=$order->getDeliveryDriver()->id_admin														// Delivery Driver ID?>",
+		"<?=$order->getDeliveryDriver()->name																// Delivery Driver Name?>"
 <?
+
 	$output = ob_get_clean();
 	$output = preg_replace('/\n|\r|\t/i', '', $output);
 	echo "$output\n";
