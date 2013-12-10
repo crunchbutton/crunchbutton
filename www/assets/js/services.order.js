@@ -893,6 +893,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 });
 // OrdersService service
 NGApp.factory('OrdersService', function ($http, $location, $rootScope, RestaurantsService, OrderViewService) {
+
 	var service = {
 		list: false,
 		reload : true
@@ -909,9 +910,9 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 		list = false;
 		service.list = list;
 
-		$http.get(App.service + 'user/orders', {
+		$http.get( App.service + 'user/orders', {
 			cache: false
-		}).success(function (json) {
+		}).success( function (json) {
 			service.reload = false;
 			if (json) {
 				for (var x in json) {
@@ -922,11 +923,17 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 				list = json;
 			} else {
 				// User has no orders
-				list = true;	
+				list = true;
 			}
 			service.list = list;
 			$rootScope.$broadcast( 'OrdersLoaded', service.list );
-		});
+		} ).error( function(data, status, headers, config ) {
+			if( status == 404 ){
+				// force reload the orders
+				console.log('force reload the orders');
+				setTimeout( function(){ service.reload = true; service.load(); }, 500 );
+			}
+		} );	
 	}
 
 	service.restaurant = function (permalink) {

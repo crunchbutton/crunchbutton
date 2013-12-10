@@ -45,14 +45,12 @@ NGApp.controller('OwnersCtrl', function ($scope) {
  * About page
  */
 NGApp.controller('AboutCtrl', function ($scope) {
-
 });
 
 /**
  * legal page
  */
 NGApp.controller('LegalCtrl', function ($scope) {
-	console.log('legal start');
 	var join = 'moc.nottubhcnurc@nioj'.split('').reverse().join('');
 	var goodbye = 'moc.nottubhcnurc@eybdoog'.split('').reverse().join('');
 	$scope.join = join;
@@ -835,7 +833,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
  * @todo: change to account page
  */
 NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService ) {
-	
+
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
 		return;
@@ -855,7 +853,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	if( OrdersService.reload ){
 		OrdersService.load();
 	} else {
-		$scope.orders.list = OrdersService.list;	
+		$scope.orders.list = OrdersService.list;
 	}
 
 	$scope.$on( 'OrdersLoaded', function(e, data) {
