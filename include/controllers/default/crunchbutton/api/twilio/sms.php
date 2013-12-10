@@ -119,7 +119,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					}
 
 					$edt_datetime = strtotime($order->date);
-					date_default_timezone_set('America/New_York');
+					date_default_timezone_set('America/Los_Angeles');
 					$edt_datetime = date('D, M d, g:i a', $edt_datetime) . ' EDT';
 					$last_cb = "Last Order: #$order->id_order, from $restaurant->name, on $edt_datetime. -  R: $restaurant->phone {$notifications} - C: $order->name / $order->phone";
 				} else {
