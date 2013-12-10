@@ -957,6 +957,10 @@ NGApp.controller( 'MainHeaderCtrl', function ( $scope, MainNavigationService, Or
 	});
 });
 
+NGApp.controller( 'BottomCtrl', function ( $scope, MainNavigationService, OrderService ) {
+	$scope.navigation = MainNavigationService;
+});
+
 NGApp.controller( 'RecommendRestaurantCtrl', function ( $scope, $http, $rootScope, RecommendRestaurantService, AccountService, AccountModalService ) {
 	$scope.recommend = RecommendRestaurantService;
 	$scope.account = AccountService;
