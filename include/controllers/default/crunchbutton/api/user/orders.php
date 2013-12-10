@@ -8,7 +8,7 @@ class Controller_api_user_orders extends Crunchbutton_Controller_Rest {
 				if ( method_exists( $orders, 'count' ) && $orders->count() > 0) {
 					echo $orders->json();
 				} else {
-					//echo json_encode([]);
+					echo json_encode( [] );
 				}
 				break;
 
