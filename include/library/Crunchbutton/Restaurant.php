@@ -1921,7 +1921,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function save() {
 		if (!$this->timezone) {
-			$this->timezone = 'America/New_York';
+			$this->timezone = 'America/Los_Angeles';
 		}
 
 		parent::save();

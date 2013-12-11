@@ -52,6 +52,7 @@ table {
 a {
 	color: #d74924;
 	text-decoration: underline;
+	cursor: pointer;
 }
 
 input[type="text"], input[type="tel"], input[type="password"], textarea, select {
