@@ -184,7 +184,7 @@ class Crunchbutton_Support extends Cana_Table {
 
 	public function makeACall(){
 
-		$dateTime = new DateTime( 'now', new DateTimeZone('America/New_York'));
+		$dateTime = new DateTime( 'now', new DateTimeZone('America/Los_Angeles'));
 		$hour = $dateTime->format( 'H' );
 
 		// Issue #1100 - Call David if CB receives a support after 1AM

@@ -17,4 +17,9 @@ class Crunchbutton_Order_Action extends Cana_Table {
 			->idVar('id_order_action')
 			->load($id);
 	}
+
+	public function admin(){
+		return Admin::o( $this->id_admin );
+	}
+
 }

@@ -893,6 +893,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 });
 // OrdersService service
 NGApp.factory('OrdersService', function ($http, $location, $rootScope, RestaurantsService, OrderViewService) {
+
 	var service = {
 		list: false,
 		reload : true
@@ -900,7 +901,14 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 
 	var restaurants = RestaurantsService;
 
+	service.checkItWasLoaded = function(){
+		if( !service.list ){
+			service.load();			
+		}
+	}
+
 	service.load = function () {
+
 		if (service.list && !service.reload) {
 			return service.list;
 		}
@@ -908,10 +916,11 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 		OrderViewService.newOrder = false;
 		list = false;
 		service.list = list;
+		var url = App.service + 'user/orders';
 
-		$http.get(App.service + 'user/orders', {
+		$http.get( url , {
 			cache: false
-		}).success(function (json) {
+		}).success( function ( json ) {
 			service.reload = false;
 			if (json) {
 				for (var x in json) {
@@ -922,11 +931,17 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 				list = json;
 			} else {
 				// User has no orders
-				list = true;	
+				list = true;
 			}
 			service.list = list;
+			console.log('service.list',service.list);
 			$rootScope.$broadcast( 'OrdersLoaded', service.list );
-		});
+		} ).error( function( data, status, headers, config ) { 
+		 		setTimeout( function(){ service.checkItWasLoaded(); }, 500 );
+		 } ).then( function(){
+		 		setTimeout( function(){ service.checkItWasLoaded(); }, 1500 );
+		 } );	
+
 	}
 
 	service.restaurant = function (permalink) {

@@ -38,6 +38,7 @@ $headers = [
 	'Gift Card Other restaurant',
 	'Total Charged',
 	'Notes',
+	'Fee Customer',
 	'Formal Relationship',
 	'3rd Party Delivery',
 	'Fee on Subtotal',
@@ -49,6 +50,10 @@ $headers = [
 	'Paid with CB Card',
 	'Gift card issued',
 	'Gift card value',
+	'Summary Fax',
+	'Summary Email',
+	'Delivery Driver ID',
+	'Delivery Driver Name'
 ];
 
 
@@ -110,6 +115,7 @@ echo implode(',', $headers)."\n";
 		"<?=$credit_other_restaurant						// Credit paid by other restaurant?>",
 		"<?=$charged														// Total charged?>",
 		"<?=$order->notes?>",
+		"<?=$order->restaurant()->fee_customer 															// Fee Customer?>",
 		"<?=$order->restaurant()->formal_relationship > 0	? 'yes' : ''			// Formal Relationship?>",
 		"<?=$order->restaurant()->delivery_service > 0	? 'yes' : ''				// 3rd Party Delivery?>",
 		"<?=$order->restaurant()->fee_on_subtotal > 0	? 'yes' : ''					// Fee on Subtotal?>",
@@ -120,8 +126,13 @@ echo implode(',', $headers)."\n";
 		"<?=$order->restaurant()->promotion_maximum													// Promotion Maximum?>",
 		"<?=$order->paid_with_cb_card > 0	? 'yes' : ''											// Paid with CB Card?>",
 		"<?=$order->hasGiftCardIssued()	? 'yes' : ''												// Gift card issued?>",
-		"<?=$giftcard ? $giftcard : ''																			// Gift card value?>"
+		"<?=$giftcard ? $giftcard : ''																			// Gift card value?>",
+		"<?=$order->restaurant()->summary_fax																// Summary Fax?>",
+		"<?=$order->restaurant()->summary_email															// Summary Email?>",
+		"<?=$order->getDeliveryDriver()->id_admin														// Delivery Driver ID?>",
+		"<?=$order->getDeliveryDriver()->name																// Delivery Driver Name?>"
 <?
+
 	$output = ob_get_clean();
 	$output = preg_replace('/\n|\r|\t/i', '', $output);
 	echo "$output\n";
