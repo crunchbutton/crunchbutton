@@ -286,10 +286,10 @@ NGApp.directive('ngSpinner', function () {
 			setTimeout( function(){
 				var spinner = Ladda.create(elem.get(0));
 				elem.data('spinner', spinner);
-				if ( attr.spinnerAutostart == 'true' ) {
+				if ( attr.spinnerAutostart != 'false' ) {
 					$( elem ).click(function() {
 						spinner.start();
-					});
+					} );
 				}
 			}, 1 );
 		}
