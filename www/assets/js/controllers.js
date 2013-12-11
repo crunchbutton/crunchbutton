@@ -381,19 +381,17 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	// lets eat button
 	$scope.letsEat = function() {
 
-		// Start the spinner
-		spin.start();
-
 		$scope.location.form.address = $.trim( $scope.location.form.address );
 		if ( $scope.location.form.address == '' ) {
 			$('.location-address').val('').attr('placeholder',$('<div>').html('&#10148; Please enter your address here').text());
-			spin.stop();
 			$scope.warningPlaceholder = true;
 			// the user might be typing his login/pass - so blur it
 			if( !App.dialog.isOpen() ){
 				$scope.focus( '.location-address' );
 			}
 		} else {
+			// Start the spinner
+			spin.start();
 			// If the address searching is already in process ignores this request.
 			if( $scope.isProcessing ){
 				// To prevent any kind of problem, set this variable to false after 2 secs.
