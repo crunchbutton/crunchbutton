@@ -21,12 +21,11 @@ var Restaurant = function(id) {
 	 *
 	 * @returns Date
 	 */
-	this._utcTime = function(serverTime)
-	{
+	this._utcTime = function( serverTime ){
 		return this._parseDate(serverTime.add( - this._tzoffset ).hours().toUTCString());
 	}
 	
-	this._parseDate = function(dateStr) {
+	this._parseDate = function( dateStr ) {
 		if (!dateStr) {
 			return null;
 		}
@@ -41,8 +40,7 @@ var Restaurant = function(id) {
 	 *
 	 * @return Date
 	 */
-	this._utcNow = function()
-	{
+	this._utcNow = function(){
 		return Date.parse( dateTime.toString() );
 	}
 
@@ -137,7 +135,7 @@ var Restaurant = function(id) {
 			var hours = Math.floor( time / 60 );
 			var minutes = time - ( hours * 60 );
 			if( hours > 0 ){
-				formated = hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) + ( minutes > 0 ? ' and ' + ( minutes ) + ( minutes > 1 ? ' minutes' : 'minute' ) : '' ) ;
+				formated = hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) /* + ( minutes > 0 ? ' and ' + ( minutes ) + ( minutes > 1 ? ' minutes' : ' minute' ) : '' ) */;
 			} else {
 				formated = ( minutes > 0 ) ? minutes + ' minutes' : '';
 			}			
