@@ -689,7 +689,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.$on( 'restaurantLoaded', function(e, data) {
 		var community = data.community;
 		$scope.restaurant = data.restaurant;
-
+		
 		order.restaurant = $scope.restaurant;
 		MainNavigationService.restaurant = $scope.restaurant;
 
@@ -704,39 +704,57 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		setTimeout( function(){
 
-			order.init(); 
+			var process = function(){
 
-			// Update some gift cards variables
-			giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
-			giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
-			
-			// Load the credit info
-			if( OrderService.account.user && OrderService.account.user.id_user ){
-				credit.getCredit( $scope.restaurant.id_restaurant );	
-			}
+				order.init();
 
-			var position = PositionsService;
-			var address = position.pos();
+				// Update some gift cards variables
+				giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
+				giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
+				
+				// Load the credit info
+				if( OrderService.account.user && OrderService.account.user.id_user ){
+					credit.getCredit( $scope.restaurant.id_restaurant );	
+				}
 
-			// If the typed address is valid (order) and the user address is empty use the typed one #1152 and #1989 
-			if( !order.account.user || order.account.user.address == '' ){
-				if( address.type() == 'user' && address.valid( 'order' ) ){
-					if( order._useCompleteAddress ){
-						$scope.order.form.address = address.formatted();
-					} else {
-						$scope.order.form.address = address.entered();
+				var position = PositionsService;
+				var address = position.pos();
+
+				// If the typed address is valid (order) and the user address is empty use the typed one #1152 and #1989 
+				if( !order.account.user || order.account.user.address == '' ){
+					if( address.type() == 'user' && address.valid( 'order' ) ){
+						if( order._useCompleteAddress ){
+							$scope.order.form.address = address.formatted();
+						} else {
+							$scope.order.form.address = address.entered();
+						}
 					}
 				}
+
+				$scope.order.cart.items = order.cart.getItems();
+
+				// @todo: do we still neded this??
+				// $('.body').css({ 'min-height': $('.restaurant-items').height()});
+
+				// Place cash order even if the user has gift card see #1485
+				$scope.ignoreGiftCardWithCashOrder = false;
+
 			}
 
-			$scope.order.cart.items = order.cart.getItems();
+			// Method that checks if the preset must to be reloaded #1988
+			OrderService.account.checkPresetUpdate( data.restaurant.id_restaurant, 
+				// will be called if the preset was reloaded
+				function(){
+					order.resetCart();
+					process();
+				}, 
+				// will be called if the preset was not reloaded
+				function(){
+					process();					
+				}
+			);
 
-			// @todo: do we still neded this??
-			// $('.body').css({ 'min-height': $('.restaurant-items').height()});
-
-			// Place cash order even if the user has gift card see #1485
-			$scope.ignoreGiftCardWithCashOrder = false;
-		}, 10);
+		}, 10 );
 	});
 
 	$('.config-icon').addClass('config-icon-mobile-hide');
@@ -858,6 +876,8 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 		OrdersService.load();
 	} else {
 		$scope.orders.list = OrdersService.list;
+		// Check if the orders list need to be updated #1988
+		OrdersService.checkUpdate();
 	}
 
 	$scope.$on( 'OrdersLoaded', function(e, data) {
