@@ -33,6 +33,7 @@
 <div ng-if="restaurants">
 
 	<div class="restaurants-items">
+		
 		<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="restaurants-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
 
 			<div class="restaurants-closed" ng-if="restaurant._tag == 'closed'">
@@ -46,7 +47,8 @@
 			</div>
 
 			<div class="restaurants-open" ng-hide="restaurant._tag == 'closed' || restaurant._tag == 'force_close'">
-				<div class="restaurants-item-content ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#333333" data-spinner-autostart="true">
+				
+				<div class="restaurants-item-content ladda-button" ng-spinner data-style="zoom-out" data-spinner-color="#333333" data-spinner-autostart="{{restaurant._open}}">
 					<div class="ladda-label">
 						<div class="restaurants-pic meal-pic" style="background: url({{restaurant.img64}});"></div>
 						<h2 class="restaurants-name">{{restaurant.name}}</h2>
@@ -55,7 +57,7 @@
 						<div ng-switch on="restaurant._tag">
 							<div class="meal-item-tag" ng-switch-when="takeout">Take out only</div>
 							<div class="meal-item-tag about-to-close" ng-switch-when="closing">Hurry, closes in {{restaurant._closesIn}} min!</div>
-							<div class="meal-item-tag about-to-close" ng-switch-when="opening">Opens in {{restaurant._openIn_formated}}</div>
+							<div class="meal-item-tag about-to-open" ng-switch-when="opening">Opens in {{restaurant._openIn_formated}} </div>
 						</div>
 						
 						<div class="meal-item-tag-bottom" ng-if="restaurant._tag == 'closing' || restaurant._tag == 'takeout' || restaurant._tag == 'force_close'"></div>

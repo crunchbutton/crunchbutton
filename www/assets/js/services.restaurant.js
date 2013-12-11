@@ -20,24 +20,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		
 		var list = restaurants;
 
-		list.sort( 
-			sort_by( {
-				name: '_open',
-				reverse: true
-			}, {
-				name: 'delivery',
-				reverse: true
-			}, {
-				name: '_weight',
-				primer: parseInt,
-				reverse: true
-			}, {
-				name: '_openIn',
-				primer: parseInt,
-				reverse: false
-			} )
-		);
-
 		var areAllTheRestaurantsClosed = true;
 
 		for (var x in list) {
@@ -45,9 +27,38 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				areAllTheRestaurantsClosed = false;
 			}
 		}
-		
+
+		// if all are closed sort by that are opening the soonest
+		if( areAllTheRestaurantsClosed ){
+			list.sort( 
+				sort_by( {
+					name: '_openIn',
+					primer: parseInt,
+					reverse: false
+				} )
+			);
+		} else {
+			list.sort( 
+				sort_by( {
+					name: '_open',
+					reverse: true
+				}, {
+					name: 'delivery',
+					reverse: true
+				}, {
+					name: '_weight',
+					primer: parseInt,
+					reverse: true
+				}, {
+					name: '_openIn',
+					primer: parseInt,
+					reverse: false
+				} )
+			);
+		}
 
 		if( areAllTheRestaurantsClosed ){
+			// Number of restaurants that will have the opening tag
 			var tagRestaurantsAsClosing = 3;
 			for (var x in list) {
 				if( tagRestaurantsAsClosing <= 0 ){
@@ -55,7 +66,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				}
 				tagRestaurantsAsClosing--;
 				list[x]._tag = 'opening';	
-				console.log('list[x]._tag',list[x]._tag);
 			}
 		}
 
@@ -68,19 +78,19 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		App.profile.log('start status');
 
 		var list = restaurants;
-
+		var allClosed = true;
 		var totalClosedRestaurantsAfter = 0;
 		var totalClosedRestaurantsBefore = 0;
+
 		for (var x in list) {
 			if( !list[x]._open ){
 				totalClosedRestaurantsBefore++;
+			} else {
+				allClosed = false;
 			}
 		}
 		
 		for (var x in list) {
-			App.profile.log('start calc open');
-			
-			App.profile.log('end calc open');
 
 			list[x].closesIn();
 
@@ -106,15 +116,13 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				totalClosedRestaurantsAfter++;
 			}
 		};
-		App.profile.log('end status');
 
 		restaurants = list;
 
 		// Reorder the restaurants
-		if( totalClosedRestaurantsAfter != totalClosedRestaurantsBefore ){
+		if( allClosed || ( totalClosedRestaurantsAfter != totalClosedRestaurantsBefore ) ){
 			service.sort();
 		}
-
 		return restaurants;
 	}
 

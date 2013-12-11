@@ -169,6 +169,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		}, 1 );
 	}
 
+	var status
+
 	$rootScope.$on( 'appResume', function(e, data) {
 		if( $location.path() == '/' + RestaurantsService.permalink ){
 			$scope.restaurants = restaurants.getStatus();
@@ -180,7 +182,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		var restaurant = this.restaurant;
 		restaurant.closesIn();
 		if ( !restaurant._open ) {
-			$rootScope.$broadcast('restaurantClosedClick', restaurant);
+			$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
+			$scope.restaurants = restaurants.getStatus();
 		} else {
 			// Store the load info of the clicked restaurant to optmize the restaurant page load
 			RestaurantService.basicInfo = restaurant;
@@ -222,7 +225,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			// Wait one minute until update the status of the restaurants
 			setTimeout( function(){
 				updateStatus();
-			}, 1000 * 60 );
+			}, 1000 * 1 );
+			// }, 1000 * 60 );
 			$scope.slogan = slogan;
 			$scope.tagline = tagline;
 			
