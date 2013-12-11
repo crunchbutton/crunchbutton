@@ -152,7 +152,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		} else {
 			service.showForm = true;
 		}
-
 		// Load the order
 		if (service.cart.hasItems()) {
 			service.reloadOrder();
@@ -173,9 +172,12 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.loaded = true;
 		$rootScope.$broadcast( 'orderLoaded',  true );
 	}
+	service.resetCart = function(){
+		service.cart.reset()
+	}
 	service.reloadOrder = function () {
 		var cart = service.cart.getCart();
-		service.cart.reset()
+		service.resetCart();
 		service.loadFlatOrder(cart);
 	}
 	service.loadFlatOrder = function (cart) {
@@ -907,15 +909,29 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 		}
 	}
 
+	// Check if the user has ordered from other device or browser tab and update the list
+	service.checkUpdate = function(){
+		var url = App.service + 'user/orders/total';
+		$http.get( url, {
+			cache: false
+		} ).success( function ( data ) {
+			if( data.total != service.list.length ){
+				service.reload = true;
+				service.load();
+			}
+		} );
+	}
+
 	service.load = function () {
 
-		if (service.list && !service.reload) {
+		if ( service.list && !service.reload ) {
 			return service.list;
 		}
 
 		OrderViewService.newOrder = false;
 		list = false;
 		service.list = list;
+
 		var url = App.service + 'user/orders';
 
 		$http.get( url , {
@@ -934,7 +950,6 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 				list = true;
 			}
 			service.list = list;
-			console.log('service.list',service.list);
 			$rootScope.$broadcast( 'OrdersLoaded', service.list );
 		} ).error( function( data, status, headers, config ) { 
 		 		setTimeout( function(){ service.checkItWasLoaded(); }, 500 );
