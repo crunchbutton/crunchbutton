@@ -1,19 +1,3 @@
-NGApp.directive('geoComplete', function() {
-	return {
-		restrict: 'A',
-		link: function(scope, element, attrs) {
-			element.geocomplete()
-				.bind('geocode:result', function(event, result) {
-					console.log('Result: ' + result.formatted_address);
-				}).bind('geocode:error', function(event, status) {
-					console.log('ERROR: ' + status);
-				}).bind('geocode:multiple', function(event, results) {
-					console.log('Multiple: ' + results.length + ' results found');
-				});
-		}
-	};
-});
-
 NGApp.directive( 'ngBindHtmlUnsafe', [ function() {
 	return function( scope, element, attr ) {
 		element.addClass( 'ng-binding' ).data( '$binding', attr.ngBindHtmlUnsafe );
@@ -358,6 +342,27 @@ NGApp.directive('ngToggle', function() {
 					scope[attr.ngToggle] = true;
 				});
 			});
+		}
+	};
+});
+
+NGApp.directive( 'geoComplete', function() {
+	return {
+		restrict: 'A',
+    scope: { ngModel : '=', geoCompleteEnter : '&' },
+		link: function( scope, element, attrs ) {
+			var el = document.getElementById( attrs.id );
+			var autoComplete = new google.maps.places.Autocomplete( el, { types: [ 'geocode' ] } );
+			 google.maps.event.addListener( autoComplete, 'place_changed', function() {
+				var place = autoComplete.getPlace();
+				scope.$apply( function() {
+					scope.ngModel = el.value;
+					// we need to give some time to scope
+					setTimeout( function(){
+						scope.geoCompleteEnter();
+					}, 5 );
+				} );
+			} );
 		}
 	};
 });
