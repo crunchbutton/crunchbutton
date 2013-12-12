@@ -382,13 +382,38 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	$scope.letsEat = function() {
 
 		$scope.location.form.address = $.trim( $scope.location.form.address );
+		
 		if ( $scope.location.form.address == '' ) {
-			$('.location-address').val('').attr('placeholder',$('<div>').html('&#10148; Please enter your address here').text());
-			$scope.warningPlaceholder = true;
-			// the user might be typing his login/pass - so blur it
-			if( !App.dialog.isOpen() ){
-				$scope.focus( '.location-address' );
-			}
+			var locSpin = $( '.location-detect' ).data( 'spinner' );
+			locSpin.start();
+			$scope.location.getLocationByBrowser( function(loc) {
+				locSpin.stop();
+				// Add the position at the locations
+				$scope.location.position.addLocation( loc );
+				// Verify if user address is served
+				restaurants.list( 
+					// Yay the user's location is served
+					proceed,
+					// Error not served
+					function(){
+						var error = function(){
+						locSpin.stop();
+						$scope.$broadcast( 'locationNotServed' );
+						}
+					}
+				);
+			}, 
+			// Error, user doesn't shared his location
+			function(){
+				locSpin.stop();
+				$('.location-address').val('').attr('placeholder',$('<div>').html('&#10148; Please enter your address here').text());
+				$scope.warningPlaceholder = true;
+				// the user might be typing his login/pass - so blur it
+				if( !App.dialog.isOpen() ){
+					$scope.focus( '.location-address' );
+				}
+			} );
+
 		} else {
 			// Start the spinner
 			spin.start();
