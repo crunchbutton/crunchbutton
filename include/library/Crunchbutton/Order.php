@@ -1288,6 +1288,8 @@ class Crunchbutton_Order extends Cana_Table {
 			unset( $out['restaurant_name'] );
 			unset( $out['restaurant_permalink'] );
 		} else {
+			$date = new DateTime( $this->date, new DateTimeZone( $this->restaurant()->timezone ) );
+			$out['date_formated'] = $date->format( 'g:i a, M dS, Y' );
 			$out['_restaurant_name'] = $this->restaurant()->name;
 			$out['_restaurant_permalink'] = $this->restaurant()->permalink;
 			$out['_restaurant_phone'] = $this->restaurant()->phone;
@@ -1296,6 +1298,8 @@ class Crunchbutton_Order extends Cana_Table {
 			$out['_restaurant_address'] = $this->restaurant()->address;
 			$out['_restaurant_delivery_estimated_time'] = $this->restaurant()->delivery_estimated_time;
 			$out['_restaurant_pickup_estimated_time'] = $this->restaurant()->pickup_estimated_time;
+			$out['_restaurant_delivery_estimated_time_formated'] = $this->restaurant()->calc_delivery_estimated_time( $this->date );
+			$out['_restaurant_pickup_estimated_time_formated'] = $this->restaurant()->calc_pickup_estimated_time( $this->date );
 			$out['user'] = $this->user()->uuid;
 			$out['_message'] = nl2br($this->orderMessage('web'));
 			$out['charged'] = $this->charged();
