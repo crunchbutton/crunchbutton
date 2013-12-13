@@ -140,11 +140,11 @@ html {
 	margin: 8px 0 0 10px;
 	cursor: pointer;
 	-webkit-transform:translate3d(0,0,0);
-	-webkit-transition: opacity 0.1s;
-	   -moz-transition: opacity 0.1s;
-	    -ms-transition: opacity 0.1s;
-	     -o-transition: opacity 0.1s;
-	        transition: opacity 0.1s;
+	-webkit-transition: opacity 1s;
+	   -moz-transition: opacity 1s;
+	    -ms-transition: opacity 1s;
+	     -o-transition: opacity 1s;
+	        transition: opacity 1s;
 }
 
 .menu:active {
@@ -573,6 +573,13 @@ p {
 	}
 	.menu.side {
 		display: none;
+	}
+	.menu{
+		-webkit-transition: opacity 0.1s;
+	   -moz-transition: opacity 0.1s;
+	    -ms-transition: opacity 0.1s;
+	     -o-transition: opacity 0.1s;
+	        transition: opacity 0.1s;
 	}
 }
 @media(max-width: 768px) {
