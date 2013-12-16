@@ -346,6 +346,19 @@ NGApp.directive('ngToggle', function() {
 	};
 });
 
+NGApp.directive( 'modalReset', function( $rootScope ) {
+	return {
+		restrict: 'A',
+		link: function( scope, element, attrs ){	
+			scope.$on( 'modalClosed', function( e, data ) {
+				if( attrs.modalReset ){
+					scope.$eval( attrs.modalReset );	
+				}
+			} );
+		}
+	}
+} );
+
 NGApp.directive( 'geoComplete', function() {
 	return {
 		restrict: 'A',

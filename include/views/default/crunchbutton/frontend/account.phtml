@@ -1,5 +1,5 @@
 <div class="account-container modal zoom-anim-dialog small-container mfp-hide">
-	<div ng-controller="AccountModalHeaderCtrl" class="header" ng-show="modal.header">
+	<div ng-controller="AccountModalHeaderCtrl" modal-reset="resetModal()" class="header" ng-show="modal.header">
 		<h1 class="signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Log In</h1>
 		<div class="divisor">|</div>
 		<h1 class="signup {{ modal.signup && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signup' )">Sign up</h1>
