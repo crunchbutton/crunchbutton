@@ -1358,7 +1358,7 @@ class Crunchbutton_Order extends Cana_Table {
 			// Refund the gift
 			$this->refundGiftFromOrder();
 
-			if ($this->charged()) {
+			if ( intval( $this->charged() ) > 0 ) {
 
 				if ($this->pay_type == self::PAY_TYPE_CREDIT_CARD) {
 

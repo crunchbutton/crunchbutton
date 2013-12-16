@@ -51,7 +51,8 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 							<? if ($order->refunded) : ?>
 								REFUNDED
 							<? else : ?>
-								<a href="javascript:;" class="refund" data-charged="<?php echo $order->charged(); ?>" data-gift="<?php if( $order->chargedByCredit() > 0 ){ echo $order->chargedByCredit(); } else { echo '0'; } ?>" data-uuid="<?=$order->uuid?>">REFUND</a>
+								<a href="javascript:;" class="refund" data-charged="<?php echo $order->charged(); ?>" data-gift="<?php if( $order->chargedByCredit() > 0 ){ echo $order->chargedByCredit(); } else { echo '0'; } ?>" data-uuid="<?=$order->uuid?>">REFUND
+								</a>
 							<? endif ; ?>
 						<?php } ?>
 
