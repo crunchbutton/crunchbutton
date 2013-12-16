@@ -1,4 +1,32 @@
 <ul class="chat-box">
+	<?php if( $this->support ) { 
+		if( $this->support->type == 'SMS' || $this->support->type == 'BOX_NEED_HELP' ) { ?>
+			<span class="conversation-client">
+			<? $date = $this->support->date(); ?>
+			<li class="arrow-box-left">
+				<div class="avatar"><img class="avatar-small" src="/assets/images/admin/user.jpg" /></div>
+				<div class="info">
+					<span class="name"><strong><?=$this->support->name?></strong> <span class="badge badge-blue">user</span></span>
+					<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?=$this->support->relativeTime()?></span>
+				</div>
+				<?=nl2br($this->support->message); ?>
+			</li>
+			</span>
+		<?php } else { ?>
+		<span class="conversation-system">
+			<? $date = $this->support->date(); ?>
+			<li class="arrow-box-right gray">
+				<div class="avatar"><img class="avatar-small" src="/assets/images/admin/system.png" /></div>
+				<div class="info">
+					<span class="name"><strong>Staff</strong> <span class="badge badge-green">system</span></span>
+					<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?=$this->support->relativeTime()?></span>
+				</div>
+				<?=$this->support->name?> <br>
+				<?=nl2br($this->support->message); ?>
+			</li>
+			</span>
+		<?php } ?>
+	<?php } ?>
 	<? foreach ($this->notes as $note): ?>
 		<span class="conversation-<?php echo $note->from;?>">
 			<? $this->display('support/conversation.note.'.$note->from, ['set' => ['note' => $note]]); ?>

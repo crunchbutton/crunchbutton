@@ -39,6 +39,7 @@ class Controller_support extends Crunchbutton_Controller_Account {
 		
 					case 'history':
 						c::view()->layout('layout/ajax');
+						c::view()->support = $support;
 						c::view()->notes = $support->notes();
 						c::view()->display( 'support/converstaion.history' );
 						exit;
