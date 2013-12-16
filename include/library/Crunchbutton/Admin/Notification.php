@@ -38,7 +38,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				if( !$order->wasAcceptedByRep() ){
 					echo '#'.$order->id_order.' was not accepted'."\n";
 					// also notify global dispatch
-					//$this->alertDispatch($order);
+					$this->alertDispatch($order);
 					
 					Log::debug( [ 'order' => $order->id_order, 'action' => 'resend admin notification', 'type' => 'admin_notification' ]);
 					foreach ( $order->restaurant()->notifications() as $n ) {
