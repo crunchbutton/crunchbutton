@@ -1153,7 +1153,7 @@ var ADMIN = {
 		w = UTIL.create_widget('toggle', $('#restaurant-delivery-service-container'), {text : ['yes', 'no'],field_name:'delivery_service'});
 		w = UTIL.create_widget('toggle', $('#restaurant-formal-relationship-container'), {text : ['yes', 'no'],field_name:'formal_relationship'});
 		w = UTIL.create_widget('toggle', $('#restaurant-open-for-business-container'), {
-				text : ['open', 'closed'],
+				text : ['close now', 'open now'],
 				field_name : 'open_for_business',
 		});
 		w = UTIL.create_widget('toggle', $('#restaurant-cash-container'), {field_name:'cash'});
@@ -1186,6 +1186,7 @@ var ADMIN = {
 	load_restaurant_by_id : function() {
 		// may be called multiple times per pageload
 		this.create_widgets();
+
 		ASYNC.req(
 				{
 					type : 'api',
@@ -1205,7 +1206,18 @@ var ADMIN = {
 					isDeliveryServiceChecked();
 					$( '#save-button' ).html( 'Save' );
 					ADMIN.isRestaurantLoaded = true;
+					ADMIN.restaurant_update_closed_open();
 				});
+	},
+	restaurant_update_closed_open : function(){
+		// open / close
+		if( ADMIN.restaurant ){
+			if( ADMIN.restaurant._open ){
+				$( '.admin-restaurant-open-closed' ).html( 'This restaurant is <strong>open</strong> now.' );
+			} else {
+				$( '.admin-restaurant-open-closed' ).html( 'This restaurant is <strong>closed</strong> now.' );
+			}
+		}
 	},
 	restaurant_revert : function() {
 		ADMIN.restaurant = ADMIN.restaurant_original;
@@ -1252,6 +1264,7 @@ var ADMIN = {
 					DOM_MAP.apply();
 					UTIL.show_msg('Restaurant saved.');
 					$('#save-button').text('Save');
+					ADMIN.restaurant_update_closed_open();
 				});
 	},
 };
