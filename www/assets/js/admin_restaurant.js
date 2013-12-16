@@ -1210,6 +1210,7 @@ var ADMIN = {
 				});
 	},
 	restaurant_update_closed_open : function(){
+		return;
 		// open / close
 		if( ADMIN.restaurant ){
 			if( ADMIN.restaurant._open ){
