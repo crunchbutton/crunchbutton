@@ -220,7 +220,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<Response>';
 					echo '<Say voice="'.c::config()->twilio->voice.'">';
-					echo 'Max confirmation call for order number ' . $order->id_order . ' has timed out to ' . $order->restaurant()->name . ' from ' . $order->name;
+					echo 'Max confirmation call for order number ' . $order->id_order . ' has timed out to ' . htmlentities( $order->restaurant()->name ) . ' from ' . $order->name;
 					echo '</Say>';
 					echo '</Response>';
 				exit;
@@ -257,7 +257,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							
 							echo '<Gather action="/api/order/'.$order->id_order.'/maxcalling?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
 								echo '<Say voice="'.c::config()->twilio->voice.'">';
-								echo 'Max call back for order number ' . $order->id_order . ' has timed out to ' . $order->restaurant()->name . ' from ' . $order->name;
+								echo 'Max call back for order number ' . $order->id_order . ' has timed out to ' . htmlentities( $order->restaurant()->name ) . ' from ' . $order->name;
 									echo '</Say>';
 								echo '<Pause length="1" />';
 								echo '<Say voice="'.c::config()->twilio->voice.'">';
