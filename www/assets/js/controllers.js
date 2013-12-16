@@ -950,7 +950,12 @@ NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $http, AccountMod
 	$scope.modal = AccountModalService;
 	$scope.account = AccountService;
 	$scope.help = AccountHelpService;
+	$scope.resetModal = function(){
+		$scope.modal.toggleSignForm( 'signin' );
+		$scope.help.show( false );
+	}
 });
+
 
 
 NGApp.controller( 'AccountFacebookCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {

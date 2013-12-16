@@ -763,11 +763,9 @@ App.dialog = {
 				'<h1>' + arguments[0] + '</h1>' +
 				'<div class="small-container-content">' + arguments[1] + '</div>' +
 				'</div>';
-
 		} else if ($(arguments[0]).length) {
 			// its a dom element
-			var src = $(arguments[0]);
-
+			var src = $( arguments[0] );
 		} else {
 			console.log('ERROR WITH DIALOG');
 			return;
@@ -799,6 +797,7 @@ App.dialog = {
 				close: function() {
 					$('.wrapper').removeClass('dialog-open-effect-a dialog-open-effect-b dialog-open-effect-c dialog-open-effect-d');
 					App.applyIOSPositionFix();
+					App.rootScope.$broadcast( 'modalClosed' );
 				}
 			}
 			//my-mfp-zoom-in
