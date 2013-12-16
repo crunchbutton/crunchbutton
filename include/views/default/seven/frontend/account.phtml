@@ -3,7 +3,7 @@
 	<div class="dialog-padding">
 	
 		<? /* Header links */ ?>
-		<div ng-controller="AccountModalHeaderCtrl" class="header">
+		<div ng-controller="AccountModalHeaderCtrl" modal-reset="resetModal()" class="header">
 			
 			<div ng-show="modal.header">
 				<span class="account-title-link signin {{ modal.signin && 'active' || 'link' }}" ng-click="modal.toggleSignForm( 'signin' )">Log In</span>
