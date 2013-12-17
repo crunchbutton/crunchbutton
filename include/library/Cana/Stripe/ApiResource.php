@@ -13,12 +13,13 @@ abstract class Stripe_ApiResource extends Stripe_Object
   {
     $requestor = new Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl();
-    list($response, $apiKey) = $requestor->request('get', $url);
+
+    list($response, $apiKey) = $requestor->request('get', $url, $this->_retrieveOptions);
     $this->refreshFrom($response, $apiKey);
     return $this;
    }
 
-  public static function classUrl($class)
+  public static function className($class)
   {
     // Useful for namespaces: Foo\Stripe_Charge
     if ($postfix = strrchr($class, '\\'))
@@ -28,7 +29,13 @@ abstract class Stripe_ApiResource extends Stripe_Object
     $class = str_replace('_', '', $class);
     $name = urlencode($class);
     $name = strtolower($name);
-    return "/${name}s";
+    return $name;
+  }
+
+  public static function classUrl($class)
+  {
+    $base = self::_scopedLsb($class, 'className', $class);
+    return "/v1/${base}s";
   }
 
   public function instanceUrl()
@@ -39,7 +46,7 @@ abstract class Stripe_ApiResource extends Stripe_Object
       throw new Stripe_InvalidRequestError("Could not determine which URL to request: $class instance has invalid ID: $id", null);
     }
     $id = Stripe_ApiRequestor::utf8($id);
-    $base = self::classUrl($class);
+    $base = $this->_lsb('classUrl', $class);
     $extn = urlencode($id);
     return "$base/$extn";
   }
@@ -56,7 +63,7 @@ abstract class Stripe_ApiResource extends Stripe_Object
   {
     self::_validateCall('all', $params, $apiKey);
     $requestor = new Stripe_ApiRequestor($apiKey);
-    $url = self::classUrl($class);
+    $url = self::_scopedLsb($class, 'classUrl', $class);
     list($response, $apiKey) = $requestor->request('get', $url, $params);
     return Stripe_Util::convertToStripeObject($response, $apiKey);
   }
@@ -65,7 +72,7 @@ abstract class Stripe_ApiResource extends Stripe_Object
   {
     self::_validateCall('create', $params, $apiKey);
     $requestor = new Stripe_ApiRequestor($apiKey);
-    $url = self::classUrl($class);
+    $url = self::_scopedLsb($class, 'classUrl', $class);
     list($response, $apiKey) = $requestor->request('post', $url, $params);
     return Stripe_Util::convertToStripeObject($response, $apiKey);
   }
@@ -73,11 +80,10 @@ abstract class Stripe_ApiResource extends Stripe_Object
   protected function _scopedSave($class)
   {
     self::_validateCall('save');
-    if ($this->_unsavedValues) {
-      $requestor = new Stripe_ApiRequestor($this->_apiKey);
-      $params = array();
-      foreach ($this->_unsavedValues->toArray() as $k)
-	$params[$k] = $this->$k;
+    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $params = $this->serializeParameters();
+
+    if (count($params) > 0) {
       $url = $this->instanceUrl();
       list($response, $apiKey) = $requestor->request('post', $url, $params);
       $this->refreshFrom($response, $apiKey);

@@ -17,7 +17,7 @@ class Stripe_ApiRequestor
 
   public static function utf8($value)
   {
-    if (is_string($value))
+    if (is_string($value) && mb_detect_encoding($value, "UTF-8", TRUE) != "UTF-8")
       return utf8_encode($value);
     else
       return $value;
@@ -25,8 +25,8 @@ class Stripe_ApiRequestor
 
   private static function _encodeObjects($d)
   {
-    if ($d instanceof Stripe_ApiRequestor) {
-      return $d->id;
+    if ($d instanceof Stripe_ApiResource) {
+      return self::utf8($d->id);
     } else if ($d === true) {
       return 'true';
     } else if ($d === false) {
@@ -34,16 +34,36 @@ class Stripe_ApiRequestor
     } else if (is_array($d)) {
       $res = array();
       foreach ($d as $k => $v)
-	$res[$k] = self::_encodeObjects($v);
+      	$res[$k] = self::_encodeObjects($v);
       return $res;
     } else {
-      return $d;
+      return self::utf8($d);
     }
   }
 
-  public static function encode($d)
+  public static function encode($arr, $prefix=null)
   {
-    return http_build_query($d, null, '&');
+    if (!is_array($arr))
+      return $arr;
+
+    $r = array();
+    foreach ($arr as $k => $v) {
+      if (is_null($v))
+        continue;
+
+      if ($prefix && $k && !is_int($k))
+        $k = $prefix."[".$k."]";
+      else if ($prefix)
+        $k = $prefix."[]";
+
+      if (is_array($v)) {
+        $r[] = self::encode($v, $k, true);
+      } else {
+        $r[] = urlencode($k)."=".urlencode($v);
+      }
+    }
+
+    return implode("&", $r);
   }
 
   public function request($meth, $url, $params=null)
@@ -98,6 +118,8 @@ class Stripe_ApiRequestor
     $headers = array('X-Stripe-Client-User-Agent: ' . json_encode($ua),
 		     'User-Agent: Stripe/v1 PhpBindings/' . Stripe::VERSION,
                      'Authorization: Bearer ' . $myApiKey);
+    if (Stripe::$apiVersion)
+      $headers[] = 'Stripe-Version: ' . Stripe::$apiVersion;
     list($rbody, $rcode) = $this->_curlRequest($meth, $absUrl, $headers, $params);
     return array($rbody, $rcode, $myApiKey);
   }
