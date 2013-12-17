@@ -1,7 +1,12 @@
 <?php
 
-class Stripe_Transfer extends Stripe_ApiResource
+class Stripe_ApplicationFee extends Stripe_ApiResource
 {
+  public static function className($class)
+  {
+    return 'application_fee';
+  }
+
   public static function constructFrom($values, $apiKey=null)
   {
     $class = get_class();
@@ -20,16 +25,12 @@ class Stripe_Transfer extends Stripe_ApiResource
     return self::_scopedAll($class, $params, $apiKey);
   }
 
-  public static function create($params=null, $apiKey=null)
+  public function refund($params=null)
   {
-    $class = get_class();
-    return self::_scopedCreate($class, $params, $apiKey);
+    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $url = $this->instanceUrl() . '/refund';
+    list($response, $apiKey) = $requestor->request('post', $url, $params);
+    $this->refreshFrom($response, $apiKey);
+    return $this;
   }
-
-  public function save()
-  {
-    $class = get_class();
-    return self::_scopedSave($class);
-  }
-
 }

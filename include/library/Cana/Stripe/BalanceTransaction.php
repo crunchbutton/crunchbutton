@@ -1,7 +1,11 @@
 <?php
 
-class Stripe_Transfer extends Stripe_ApiResource
+class Stripe_BalanceTransaction extends Stripe_ApiResource
 {
+  public static function classUrl($class) {
+    return "/v1/balance/history";
+  }
+
   public static function constructFrom($values, $apiKey=null)
   {
     $class = get_class();
@@ -19,17 +23,4 @@ class Stripe_Transfer extends Stripe_ApiResource
     $class = get_class();
     return self::_scopedAll($class, $params, $apiKey);
   }
-
-  public static function create($params=null, $apiKey=null)
-  {
-    $class = get_class();
-    return self::_scopedCreate($class, $params, $apiKey);
-  }
-
-  public function save()
-  {
-    $class = get_class();
-    return self::_scopedSave($class);
-  }
-
 }

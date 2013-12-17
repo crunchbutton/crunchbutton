@@ -6,6 +6,7 @@ abstract class Stripe_Util
   {
     if (!is_array($array))
       return false;
+
     // TODO: this isn't actually correct in general, but it's correct given Stripe's responses
     foreach (array_keys($array) as $k) {
       if (!is_numeric($k))
@@ -19,7 +20,7 @@ abstract class Stripe_Util
     $results = array();
     foreach ($values as $k => $v) {
       // FIXME: this is an encapsulation violation
-      if (Stripe_Object::$_permanentAttributes->includes($k)) {
+      if ($k[0] == '_') {
         continue;
       }
       if ($v instanceof Stripe_Object) {
@@ -37,11 +38,18 @@ abstract class Stripe_Util
 
   public static function convertToStripeObject($resp, $apiKey)
   {
-    $types = array('charge' => 'Stripe_Charge',
-		   'customer' => 'Stripe_Customer',
-		   'invoice' => 'Stripe_Invoice',
-		   'invoiceitem' => 'Stripe_InvoiceItem', 'event' => 'Stripe_Event',
-		   'transfer' => 'Stripe_Transfer');
+    $types = array(
+      'card' => 'Stripe_Card',
+      'charge' => 'Stripe_Charge',
+      'customer' => 'Stripe_Customer',
+      'list' => 'Stripe_List',
+      'invoice' => 'Stripe_Invoice',
+      'invoiceitem' => 'Stripe_InvoiceItem',
+      'event' => 'Stripe_Event',
+      'transfer' => 'Stripe_Transfer',
+      'plan' => 'Stripe_Plan',
+      'recipient' => 'Stripe_Recipient'
+    );
     if (self::isList($resp)) {
       $mapped = array();
       foreach ($resp as $i)
