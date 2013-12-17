@@ -575,6 +575,11 @@ class Crunchbutton_Order extends Cana_Table {
 					default:
 						if( $user && $user->payment_type() ){
 							$stripe_id = $user->payment_type()->stripe_id;
+							// if we dont have the stripe_id at the user_payment_type table, try to use the one from user table
+							// it will be copy to the user_payment_type in a few miliseconds
+							if( !$stripe_id ){
+								$stripe_id = $user->stripe_id;
+							}
 						}
 						$charge = new Charge_Stripe([
 							'stripe_id' => $stripe_id
@@ -585,6 +590,11 @@ class Crunchbutton_Order extends Cana_Table {
 						if( $user && $user->payment_type() ){
 							$balanced_id = $user->payment_type()->balanced_id;
 						}
+							// if we dont have the balanced_id at the user_payment_type table, try to use the one from user table
+							// it will be copy to the user_payment_type in a few miliseconds
+							if( !$balanced_id ){
+								$balanced_id = $user->balanced_id;
+							}
 						$charge = new Charge_Balanced([
 							'balanced_id' => $balanced_id
 						]);
