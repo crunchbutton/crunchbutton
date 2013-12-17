@@ -274,19 +274,6 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->txn = $this->transaction();
 		}
 
-		if ($this->_customer->id) {
-			switch (c::config()->processor) {
-				case 'stripe':
-				default:
-					$user->stripe_id = $this->_customer->id;
-					break;
-
-				case 'balanced':
-					$user->balanced_id = $this->_customer->id;
-					break;
-			}
-		}
-
 		$user->location_lat = $params['lat'];
 		$user->location_lon = $params['lon'];
 
@@ -295,12 +282,6 @@ class Crunchbutton_Order extends Cana_Table {
 
 		if ($this->delivery_type == 'delivery') {
 			$user->address = $this->address;
-		}
-
-		if ($this->pay_type == 'card' && $params['card']['id']) {
-			$user->card = '************'.$params['card']['lastfour'];
-			$user->card_exp_year = $params['card']['year'];
-			$user->card_exp_month = $params['card']['month'];
 		}
 
 		$user->pay_type = $this->pay_type;
@@ -313,8 +294,55 @@ class Crunchbutton_Order extends Cana_Table {
 		$user->saving_from = $user->saving_from.'Order->process 2 - ';
 		$user->save();
 
-		$user = new User($user->id_user);
+		$user = new User( $user->id_user );
 		$this->_user = $user;
+
+		// If the pay_type is card 
+		if ($this->pay_type == 'card' ) {
+			// Verify if the user already has a payment type
+			$payment_type = $user->payment_type();
+			if( !$payment_type ){
+				// Copy the last user's payment
+				$payment_type = Crunchbutton_User_Payment_Type::copyPaymentFromUserTable( $user->id_user );	
+			}
+			$saveThisPayment = false;
+			// The user hasnt any payment type, so lets create one
+			if( $payment_type ){
+				// Compare this payment with the last one
+				if( $params['card']['id'] && $params['card']['year'] && $params['card']['lastfour'] && $params['card']['month'] && ( 
+						$user_payment_type->card != '************'.$params['card']['lastfour'] ||
+						$user_payment_type->card_exp_year != $params['card']['year'] || 
+						$user_payment_type->card_exp_month != $params['card']['month'] ) ){
+					$saveThisPayment = true;
+				}
+			} else {
+				$saveThisPayment = true;
+			}
+			if( $saveThisPayment ){
+				$user_payment_type = new Crunchbutton_User_Payment_Type();
+				$user_payment_type->id_user = $user->id_user;
+				$user_payment_type->active = 1;
+				if ($this->_customer->id) {
+					switch (c::config()->processor) {
+						case 'stripe':
+						default:
+							$user_payment_type->stripe_id = $this->_customer->id;
+							break;
+						case 'balanced':
+							$user_payment_type->balanced_id = $this->_customer->id;
+							break;
+					}
+				}
+				$user_payment_type->card = '************'.$params['card']['lastfour'];
+				$user_payment_type->card_type = $params['card']['card_type'];
+				$user_payment_type->card_exp_year = $params['card']['year'];
+				$user_payment_type->card_exp_month = $params['card']['month'];
+				$user_payment_type->date = date('Y-m-d H:i:s');
+				$user_payment_type->save();
+				// Desactive others payments
+				$user_payment_type->desactiveOlderPaymentsType( $user->id_user, $user_payment_type->id_user_payment_type );
+			}
+		}
 
 		// If the user typed a password it will create a new user auth
 		if( $params['password'] != '' ){
@@ -545,14 +573,20 @@ class Crunchbutton_Order extends Cana_Table {
 				switch (c::config()->processor) {
 					case 'stripe':
 					default:
+						if( $user && $user->payment_type() ){
+							$stripe_id = $user->payment_type()->stripe_id;
+						}
 						$charge = new Charge_Stripe([
-							'stripe_id' => $user->stripe_id
+							'stripe_id' => $stripe_id
 						]);
 						break;
 
 					case 'balanced':
+						if( $user && $user->payment_type() ){
+							$balanced_id = $user->payment_type()->balanced_id;
+						}
 						$charge = new Charge_Balanced([
-							'balanced_id' => $user->balanced_id
+							'balanced_id' => $balanced_id
 						]);
 						break;
 				}

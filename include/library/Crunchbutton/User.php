@@ -222,6 +222,15 @@ class Crunchbutton_User extends Cana_Table {
 		$out['ip'] = $_SERVER['REMOTE_ADDR'];
 		$out['email'] = $this->email ? $this->email : $this->email();	
 
+		// Get user payment type
+		$payment_type = $this->payment_type();
+		if( $payment_type ){
+			$out[ 'card' ] = $payment_type->card;
+			$out[ 'card_type' ] = $payment_type->card_type;
+			$out[ 'card_exp_year' ] = $payment_type->card_exp_year;
+			$out[ 'card_exp_month' ] = $payment_type->card_exp_month;
+		}
+
 		if (c::env() == 'beta' || c::env() == 'local') {
 			$out['debug'] = true;
 		}
@@ -232,6 +241,10 @@ class Crunchbutton_User extends Cana_Table {
 		$out['tipper'] = $this->tipper();
 		
 		return $out;
+	}
+
+	public function payment_type(){
+		return Crunchbutton_User_Payment_Type::getUserPaymentType( $this->id_user );
 	}
 
 	public function getLastNote(){

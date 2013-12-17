@@ -597,6 +597,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 					id: card.id,
 					uri: card.uri,
 					lastfour: card.lastfour,
+					card_type: card.card_type,
 					month: card.month,
 					year: card.year
 				};

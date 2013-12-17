@@ -931,6 +931,7 @@ App.tokenizeCard = function(card, complete) {
 				res.status = true;
 				res.id = response.data.id;
 				res.uri = response.data.uri;
+				res.card_type = response.data.card_type;
 				res.lastfour = response.data.last_four;
 				res.month = card.expiration_month;
 				res.year = card.expiration_year;
