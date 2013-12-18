@@ -5,7 +5,7 @@ class Controller_test_restaurantSummary extends Crunchbutton_Controller_Account 
 
 	public function init() {
 
-		// die( 'remove this die in order to get it working!' );
+		die( 'remove this die in order to get it working!' );
 		$restaurants = Restaurant::q( 'SELECT * FROM restaurant' );
 		foreach ( $restaurants as $restaurant ) {
 			$hasEmailNotification = false;
