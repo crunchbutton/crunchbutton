@@ -90,6 +90,19 @@ $(function() {
 	</script>
 <? endif ; ?>
 
-<script type="text/javascript">
-	balanced.init('<?=c::balanced()->uri?>');
-</script>
+
+<?php 				
+switch (Crunchbutton_User_Payment_Type::processor()) {
+	case 'stripe':
+		?><script src="/assets/js/tokenizeCard.stripe.js?v=<?=Cana_Util::gitVersion()?>"></script>
+		<script type="text/javascript">Stripe.setPublishableKey('<?=c::config()->stripe->{c::getEnv()}->{'public'}?>');</script><?php
+		break;
+	case 'balanced':
+	default:
+		?>
+			<script src="/assets/js/tokenizeCard.balanced.js?v=<?=Cana_Util::gitVersion()?>"></script>
+			<script type="text/javascript">balanced.init('<?=c::balanced()->uri?>');</script>
+		<?php
+		break;
+}
+?>

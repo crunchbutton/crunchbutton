@@ -100,8 +100,8 @@
 	</text>
 	<stripe>
 		<dev>
-			<secret>***REMOVED***</secret>
-			<public>***REMOVED***</public>
+			<secret>sk_0BKV9vsjL1Cqnd1nDYKg0o6TrkJJz</secret>
+			<public>pk_0BKVfM5Xxd4RmvUjzUhQxeUpKUMZx</public>
 		</dev>
 		<live>
 			<secret>***REMOVED***</secret>
@@ -208,5 +208,5 @@
 	<crypt>
 		<key>_KEY_</key>
 	</crypt>
-	<processor>balanced</processor>
+	<processor>stripe</processor>
 </data>
