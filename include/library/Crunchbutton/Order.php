@@ -289,7 +289,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$user->tip = $this->tip;
 
 		$this->env = c::getEnv(false);
-		$this->processor = c::config()->processor;
+		$this->processor = Crunchbutton_User_Payment_Type::processor();
 
 		$user->saving_from = $user->saving_from.'Order->process 2 - ';
 		$user->save();
@@ -323,7 +323,7 @@ class Crunchbutton_Order extends Cana_Table {
 				$user_payment_type->id_user = $user->id_user;
 				$user_payment_type->active = 1;
 				if ($this->_customer->id) {
-					switch (c::config()->processor) {
+					switch (Crunchbutton_User_Payment_Type::processor()) {
 						case 'stripe':
 						default:
 							$user_payment_type->stripe_id = $this->_customer->id;
@@ -366,7 +366,7 @@ class Crunchbutton_Order extends Cana_Table {
 		User_Auth::createPhoneAuthFromFacebook( $user->id_user, $user->phone );
 
 		if ($this->_customer->id) {
-			switch (c::config()->processor) {
+			switch (Crunchbutton_User_Payment_Type::processor()) {
 				case 'balanced':
 					$this->_customer->email_address = 'uuid-'.$user->uuid.'@_DOMAIN_';
 					try {
@@ -570,7 +570,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 			case 'card':
 				$user = c::user()->id_user ? c::user() : null;
-				switch (c::config()->processor) {
+				switch (Crunchbutton_User_Payment_Type::processor()) {
 					case 'stripe':
 					default:
 						if( $user && $user->payment_type() ){
@@ -606,7 +606,7 @@ class Crunchbutton_Order extends Cana_Table {
 				// If the amount is 0 it means that the user used his credit.
 
 				if( $amount > 0 ){
-						$r = $charge->charge([
+						$r = $charge->charge( [
 						'amount' => $amount,
 						'card' => $this->_card,
 						'name' => $this->name,

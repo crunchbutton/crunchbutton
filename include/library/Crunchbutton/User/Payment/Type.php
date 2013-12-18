@@ -2,10 +2,15 @@
 
 class Crunchbutton_User_Payment_Type extends Cana_Table {
 
+	public function processor(){
+		return c::config()->processor;
+	}	
+
 	public function getUserPaymentType( $id_user = null ){
 		$id_user = ( $id_user ) ? $id_user : c::user()->id_user;
 		if( $id_user ){
-			$payment = Crunchbutton_User_Payment_Type::q( 'SELECT * FROM user_payment_type WHERE id_user = "' . $id_user . '" AND active = 1 ORDER BY id_user_payment_type DESC LIMIT 1' );
+			$where = ' AND ' . Crunchbutton_User_Payment_Type::processor() . '_id IS NOT NULL';
+			$payment = Crunchbutton_User_Payment_Type::q( 'SELECT * FROM user_payment_type WHERE id_user = "' . $id_user . '" AND active = 1 ' . $where . ' ORDER BY id_user_payment_type DESC LIMIT 1' );
 			if( $payment->id_user_payment_type ){
 				return $payment;
 			}
@@ -14,7 +19,8 @@ class Crunchbutton_User_Payment_Type extends Cana_Table {
 	}
 
 	public function desactiveOlderPaymentsType( $id_user, $id_user_payment_type ){
-		$query = 'UPDATE user_payment_type SET active = 0 WHERE id_user = ' . $id_user . ' AND id_user_payment_type != ' . $id_user_payment_type;
+		$where = ' AND ' . Crunchbutton_User_Payment_Type::processor() . '_id IS NOT NULL';
+		$query = 'UPDATE user_payment_type SET active = 0 WHERE id_user = ' . $id_user . ' AND id_user_payment_type != ' . $id_user_payment_type . $where;
 		c::db()->query( $query );
 	}
 

@@ -4,8 +4,17 @@
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-route.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-animate.min.js"></script>
-<script src="//js.balancedpayments.com/v1/balanced.js"></script>
-
+<?php 				
+switch (Crunchbutton_User_Payment_Type::processor()) {
+	case 'stripe':
+		?><script type="text/javascript" src="//js.stripe.com/v2/"></script><?php
+		break;
+	case 'balanced':
+	default:
+		?><script src="//js.balancedpayments.com/v1/balanced.js"></script><?php
+		break;
+}
+?>
 <? if (c::config()->bundle) : ?>
 	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=app"></script>
 <? else : ?>

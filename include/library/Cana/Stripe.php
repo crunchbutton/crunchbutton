@@ -14,9 +14,10 @@ if (!function_exists('json_decode')) {
 abstract class Stripe
 {
   public static $apiKey;
-  public static $apiBase = 'https://api.stripe.com/v1';
+  public static $apiBase = 'https://api.stripe.com';
+  public static $apiVersion = null;
   public static $verifySslCerts = true;
-  const VERSION = '1.7.2';
+  const VERSION = '1.10.1';
 
   public static function getApiKey()
   {
@@ -26,6 +27,16 @@ abstract class Stripe
   public static function setApiKey($apiKey)
   {
     self::$apiKey = $apiKey;
+  }
+
+  public static function getApiVersion()
+  {
+    return self::$apiVersion;
+  }
+
+  public static function setApiVersion($apiVersion)
+  {
+    self::$apiVersion = $apiVersion;
   }
 
   public static function getVerifySslCerts() {
@@ -50,9 +61,6 @@ if (!function_exists('json_decode')) {
 if (!function_exists('mb_detect_encoding')) {
   throw new Exception('Stripe needs the Multibyte String PHP extension.');
 }
-
-// Stripe singleton
-require(dirname(__FILE__) . '/Stripe/Stripe.php');
 
 // Utilities
 require(dirname(__FILE__) . '/Stripe/Util.php');
