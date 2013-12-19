@@ -219,6 +219,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								$r->contact_name = $this->request()['contact_name'];
 								$r->summary_fax = $this->request()['summary_fax'];
 								$r->summary_email = $this->request()['summary_email'];
+								$r->summary_method = $this->request()['summary_method'];
 								$r->summary_frequency = $this->request()['summary_frequency'];
 								$r->legal_name_payment = $this->request()['legal_name_payment'];
 								$r->tax_id = $this->request()['tax_id'];
@@ -226,6 +227,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								$r->waive_fee_first_month = $this->request()['waive_fee_first_month'];
 								$r->pay_promotions = $this->request()['pay_promotions'];
 								$r->pay_apology_credits = $this->request()['pay_apology_credits'];
+								$r->max_apology_credit = $this->request()['max_apology_credit'];
 								$r->save();
 								echo json_encode( [ 'success' => 'restaurant saved' ] );
 							}

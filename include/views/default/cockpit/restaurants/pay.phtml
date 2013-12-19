@@ -184,6 +184,12 @@
 											<input type="checkbox" name="pay_promotions" id="pay_promotions" class="iButton-icons" <?=$this->restaurant->pay_promotions ? 'checked' : ''?>>
 										</span>
 									</li>
+									<li class="input">
+										<span>Max Apology Credit</span>
+										<span class="pull-right span9">
+											<input type="number" class="fill-up" name="max_apology_credit" maxlength="5" id="max_apology_credit" value="<?php echo $this->restaurant->max_apology_credit;?>" />
+										</span>
+									</li>
 									<li>
 										<span>Pay For Promotions?</span>
 										<span class="pull-right">
@@ -220,6 +226,22 @@
 											<input type="number" name="summary_frequency" maxlength="5" id="summary_frequency" value="<?php echo $this->restaurant->summary_frequency;?>" />
 										</span>
 									</li>
+									<li class="input">
+										<span>Summary Method</span>
+										<span class="pull-right span9">
+											<?php 
+												$options = array( 'fax', 'email' );
+												?>
+											<select name="summary_method" id="summary_method" class="uniform">
+												<option value="">None</option>
+												<? foreach ($options as $option) { 
+													$selected = ( $option == $this->restaurant->summary_method ) ? 'selected="selected"' : ''; ?>
+												<option <?=$selected?> value="<?=$option?>"><?=$option?></option>
+												<? } ?>
+											</select>
+										</span>
+									</li>
+									
 									<li class="input">
 										<span>Legal Name for Payment</span>
 										<span class="pull-right span9">
@@ -332,6 +354,8 @@
 				summary_email : ( $( '#summary_email' ).val() ),
 				summary_frequency : ( $( '#summary_frequency' ).val() ),
 				legal_name_payment : ( $( '#legal_name_payment' ).val() ),
+				summary_method : ( $( '#summary_method' ).val() ),
+				max_apology_credit : ( $( '#max_apology_credit' ).val() ),
 				tax_id : ( $( '#tax_id' ).val() ),
 				charge_credit_fee : ( $( '#charge_credit_fee' ).is( ':checked' ) ? '1' : 0 ),
 				waive_fee_first_month : ( $( '#waive_fee_first_month' ).is( ':checked' ) ? '1' : 0 ),
