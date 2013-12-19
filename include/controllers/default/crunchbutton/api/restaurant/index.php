@@ -151,6 +151,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 					}
 
 					$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-all" ]);
+
 					if( !$hasPermission ){
 						switch ($action) {
 							case 'fake-merchant':
@@ -178,7 +179,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 					}
 
 					if( !$hasPermission ){
-						return;
+						echo json_encode( [ 'error' => 'permission denied: ' . $action ] );
 					}
 
 					$action = c::getPagePiece(3);
