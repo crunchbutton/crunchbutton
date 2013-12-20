@@ -143,6 +143,11 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 								$message .= ': ';
 							}
 							$message .= htmlspecialchars($body);
+
+							$support = Support::getByTwilioSessionId($tsess->id_session_twilio);
+							if( $support->id_support ){
+								$message .= ' http://cbtn.io/support/' . $support->id_support . '?r=1';	
+							}
 							$message = str_split($message,160);
 
 							if(!$_SESSION['last_cb']) {
@@ -150,7 +155,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 								$message[] = $last_cb;
 							}
 
-							$support = Support::getByTwilioSessionId($tsess->id_session_twilio);
+							
 							if(!$support->id_support) {
 								$support = new Crunchbutton_Support;
 								$support->type = Crunchbutton_Support::TYPE_SMS;
@@ -174,10 +179,6 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							}
 
 							$support->makeACall();
-
-							if( $support->id_support ){
-								$message .= ' http://cbtn.io/support/' . $support->id_support . '?r=1';	
-							}
 
 							// Log
 							Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
