@@ -2,6 +2,20 @@
 
 class Controller_tests_svb_stripe extends Crunchbutton_Controller_Account {
 	public function init() {
+
+				$env = 'dev';
+				Stripe::setApiKey(c::config()->stripe->{$env}->secret);
+				$charge = Stripe_Token::create(array(
+    "bank_account" => array(
+    "country" => "US",
+    "routing_number" => "110000000",
+    "account_number" => "000123456789"
+  )
+));
+
+				echo '<pre>';var_dump( $charge );exit();
+				exit;
+
 		switch (c::getPagePiece(3)) {
 			case 'charge':
 

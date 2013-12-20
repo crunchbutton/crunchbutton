@@ -6,157 +6,232 @@
 	$this->title2 = 'Pay';
 	$this->title2icon = 'money';
 ?>
-
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="container-fluid padded">
 			<div class="row-fluid">
 				<div class="span6">
+
 					<div class="box">
-						<div class="box-header"><span class="title">Bank Info</span></div>
+						<div class="box-header">
+							<div class="title">Payments</div>
+
+							<ul class="nav nav-tabs nav-tabs-right">
+								<li class="__active"><a href="#balanced" data-toggle="tab">Balanced</i></a></li>
+								<li><a href="#stripe" class="active" data-toggle="tab">Stripe</a></li>
+							</ul>
+
+						</div>
+
 						<div class="box-content padded">
-							<? if ($this->payment->balanced_bank) : ?>
-							<b>This restaurant already has a bank account. <a href="javascript:;" class="restaurant-merchant-button-accountremove">Remove</a></b>
-							<? else : ?>
-							<h4 class="restaurant-item-title">Add <?=$this->payment->balanced_bank ? 'New ' : ''?>Bank Info</h4>
-							<form id="restaurant-bank-info" onsubmit="return false;">
-								<table class="admin-restaurant-pay-form">
-									<tr>
-										<td>Routing #</td>
-										<td>
-											<input type="text" name="routing">
-										</td>
-									</tr>
-									<tr>
-										<td>Account #</td>
-										<td>
-											<input type="text" name="account">
-										</td>
-									</tr>
-									<tr>
-										<td>Name on Account</td>
-										<td>
-											<input type="text" name="name">
-										</td>
-									</tr>
-									<tr>
-										<td>Type</td>
-										<td>
-											<select name="type" class="chzn-select" >
-													<option value="checking" default>Checking</option>
-													<option value="savings">Savings</option>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2">
-											<br />
-											<button type="submit" class="btn btn-blue restaurant-bank-info-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
-											&nbsp;&nbsp;&nbsp;<i class="restaurant-bank-info-button-loading icon-spinner icon-spin" style="display:none;"></i>
-										</td>
-									</tr>
-								</table>
-							</form>
-							<? endif ; ?>
+							<div class="tab-content">
+								<div class="tab-pane __active" id="balanced" style="overflow:hidden;">
+									<!-- Balanced stuff BEGIN -->
+									<div class="box">
+										<div class="box-header"><span class="title">Bank Info</span></div>
+										<div class="box-content padded">
+											<? if ($this->payment->balanced_bank) : ?>
+											<b>This restaurant already has a bank account. <a href="javascript:;" class="restaurant-merchant-button-accountremove">Remove</a></b>
+											<? else : ?>
+											<h4 class="restaurant-item-title">Add <?=$this->payment->balanced_bank ? 'New ' : ''?>Bank Info</h4>
+											<form id="restaurant-bank-info" onsubmit="return false;">
+												<table class="admin-restaurant-pay-form">
+													<tr>
+														<td>Routing #</td>
+														<td>
+															<input type="text" class="span8" name="routing">
+														</td>
+													</tr>
+													<tr>
+														<td>Account #</td>
+														<td>
+															<input type="text" class="span8" name="account">
+														</td>
+													</tr>
+													<tr>
+														<td>Name on Account</td>
+														<td>
+															<input type="text" class="span8" name="name">
+														</td>
+													</tr>
+													<tr>
+														<td>Type</td>
+														<td>
+															<select name="type" class="chzn-select span8" >
+																	<option value="checking" default>Checking</option>
+																	<option value="savings">Savings</option>
+															</select>
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2">
+															<br />
+															<button type="submit" class="btn btn-blue restaurant-bank-info-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+															&nbsp;&nbsp;&nbsp;<i class="restaurant-bank-info-button-loading icon-spinner icon-spin" style="display:none;"></i>
+														</td>
+													</tr>
+												</table>
+											</form>
+											<? endif ; ?>
+										</div>
+									</div>
+									<div class="box">
+										<div class="box-header"><span class="title">Merchant Configuration</span></div>
+										<div class="box-content padded">
+											<? if ($this->payment->balanced_id == c::config()->balanced->sharedMerchant) : ?>
+											<b><?=$this->payment->name?> is using a fake merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
+											<? elseif ($this->payment->balanced_id) : ?>
+											<b><?=$this->payment->name?> already has a merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>		
+											<? else : ?>
+											<h4 class="restaurant-item-title">Create a Merchant Account</h4>
+											<form id="restaurant-merchant" onsubmit="return false;">
+												<table class="admin-restaurant-pay-form ">
+													<? /*
+														<tr>
+															<td class="label-sub">Merchant Type</td>
+															<td class="content-sub">
+																<select name="type">
+																	<option value="person">Person</option>
+																	<option value="business">Business</option>
+																</select>
+															</td>
+														</tr>
+														<tr>
+															<td>taxid (business)</td>
+															<td>
+																<input type="text" name="taxid">
+															</td>
+														</tr>
+														<tr>
+															<td>person name (business)</td>
+															<td>
+																<input type="text" name="person">
+															</td>
+														</tr>
+														*/ ?>
+													<tr>
+														<td>Name</td>
+														<td>
+															<input type="text" class="span8" name="name">
+														</td>
+													</tr>
+													<tr>
+														<td>Date of Birth (YYYY-MM)</td>
+														<td>
+															<input type="text" name="dob" class="span8">
+														</td>
+													</tr>
+													<tr>
+														<td>Address</td>
+														<td>
+															<input type="text" name="address" class="span8">
+														</td>
+													</tr>
+													<tr>
+														<td>ZIP code</td>
+														<td>
+															<input type="text" name="zip" class="span8">
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2">
+															<br />
+															<button type="submit" class="btn btn-blue restaurant-merchant-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+															<button type="submit" class="btn btn-blue restaurant-merchant-button-fake"><i class="icon-globe"></i>&nbsp;&nbsp;&nbsp; Use global merchant </button>
+														</td>
+													</tr>
+												</table>
+											</form>
+											<? endif ; ?>
+										</div>
+									</div>
+									<div class="box">
+										<div class="box-header"><span class="title">Send Payment</span></div>
+										<div class="box-content padded">
+											<form id="restaurant-pay" onsubmit="return false;">
+												<table class="admin-restaurant-pay-form">
+													<tr>
+														<td>Amount</td>
+														<td>
+															<input type="text" name="amount" class="span8">
+														</td>
+													</tr>
+													<tr>
+														<td>Note</td>
+														<td>
+															<input type="text" name="note" class="span8">
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2">
+															<br />
+															<button type="submit" class="btn btn-blue restaurant-pay-button"><i class="icon-cloud-upload"></i>&nbsp;&nbsp;&nbsp; Send </button>
+														</td>
+													</tr>
+												</table>
+											</form>
+										</div>
+									</div>
+									<!-- Balanced stuff END -->
+								</div>
+								<div class="tab-pane active" id="stripe" style="overflow:hidden;">
+<!-- Stripe stuff - BEGIN -->
+									<div class="box">
+										<div class="box-header"><span class="title">Bank Info</span></div>
+										<div class="box-content padded">
+											
+											<h4 class="restaurant-item-title">Add Bank Info</h4>
+											<form id="restaurant-bank-info-stripe" onsubmit="return false;">
+												<table class="admin-restaurant-pay-form">
+													<tr>
+														<td>Name on Account</td>
+														<td>
+															<input type="text" class="span8" name="name">
+														</td>
+													</tr>
+													<tr>
+														<td>Routing #</td>
+														<td>
+															<input type="text" class="span8" name="stripe-routing-number" value="111000025">
+														</td>
+													</tr>
+													<tr>
+														<td>Account #</td>
+														<td>
+															<input type="text" class="span8" name="stripe-account-number" value="000123456789">
+														</td>
+													</tr>
+													<tr>
+														<td>Type</td>
+														<td>
+															<select name="stripe-type" class="chzn-select span8" >
+																	<option value="individual" default>Individual</option>
+																	<option value="corporation">Corporation</option>
+															</select>
+														</td>
+													</tr>
+
+													<tr>
+														<td colspan="2">
+															<br />
+															<button type="button" class="btn btn-blue restaurant-bank-info-stripe-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+															&nbsp;&nbsp;&nbsp;<i class="restaurant-bank-info-stripe--button-loading icon-spinner icon-spin" style="display:none;"></i>
+														</td>
+													</tr>
+												</table>
+											</form>
+
+										</div>
+									</div>
+
+<!-- Stripe stuff - END -->
+
+								</div>
+							</div>
 						</div>
 					</div>
-					<div class="box">
-						<div class="box-header"><span class="title">Merchant Configuration</span></div>
-						<div class="box-content padded">
-							<? if ($this->payment->balanced_id == c::config()->balanced->sharedMerchant) : ?>
-							<b><?=$this->payment->name?> is using a fake merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
-							<? elseif ($this->payment->balanced_id) : ?>
-							<b><?=$this->payment->name?> already has a merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>		
-							<? else : ?>
-							<h4 class="restaurant-item-title">Create a Merchant Account</h4>
-							<form id="restaurant-merchant" onsubmit="return false;">
-								<table class="admin-restaurant-pay-form">
-									<? /*
-										<tr>
-											<td class="label-sub">Merchant Type</td>
-											<td class="content-sub">
-												<select name="type">
-													<option value="person">Person</option>
-													<option value="business">Business</option>
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<td>taxid (business)</td>
-											<td>
-												<input type="text" name="taxid">
-											</td>
-										</tr>
-										<tr>
-											<td>person name (business)</td>
-											<td>
-												<input type="text" name="person">
-											</td>
-										</tr>
-										*/ ?>
-									<tr>
-										<td>Name</td>
-										<td>
-											<input type="text" name="name">
-										</td>
-									</tr>
-									<tr>
-										<td>Date of Birth (YYYY-MM)</td>
-										<td>
-											<input type="text" name="dob">
-										</td>
-									</tr>
-									<tr>
-										<td>Address</td>
-										<td>
-											<input type="text" name="address">
-										</td>
-									</tr>
-									<tr>
-										<td>ZIP code</td>
-										<td>
-											<input type="text" name="zip">
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2">
-											<br />
-											<button type="submit" class="btn btn-blue restaurant-merchant-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
-											<button type="submit" class="btn btn-blue restaurant-merchant-button-fake"><i class="icon-globe"></i>&nbsp;&nbsp;&nbsp; Use global merchant </button>
-										</td>
-									</tr>
-								</table>
-							</form>
-							<? endif ; ?>
-						</div>
-					</div>
-					<div class="box">
-						<div class="box-header"><span class="title">Send Payment</span></div>
-						<div class="box-content padded">
-							<form id="restaurant-pay" onsubmit="return false;">
-								<table class="admin-restaurant-pay-form">
-									<tr>
-										<td>Amount</td>
-										<td>
-											<input type="text" name="amount">
-										</td>
-									</tr>
-									<tr>
-										<td>Note</td>
-										<td>
-											<input type="text" name="note">
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2">
-											<br />
-											<button type="submit" class="btn btn-blue restaurant-pay-button"><i class="icon-cloud-upload"></i>&nbsp;&nbsp;&nbsp; Send </button>
-										</td>
-									</tr>
-								</table>
-							</form>
-						</div>
-					</div>
+
+					
 				</div>
 				<div class="span6">
 					<div class="box">
@@ -432,6 +507,50 @@
 			})
 		});
 
+
+		$('.restaurant-bank-info-stripe-button').click(function() {
+
+			var routingNumber = $('[name=stripe-routing-number]').val();
+			var accountNumber = $('[name=stripe-account-number]').val();
+			var country = 'US';
+			if( $.trim( routingNumber ) == '' ){
+				alert( 'Please type the Routing!' );
+				$('[name=stripe-routing-number]').focus();
+				return;
+			}
+
+			if( !Stripe.bankAccount.validateRoutingNumber( routingNumber, country )  ){
+				alert( 'Please type a valid Routing!' );
+				$('[name=stripe-routing-number]').focus();
+				return;
+			}
+
+			if( $.trim( accountNumber ) == '' ){
+				alert( 'Please type the Account!' );
+				$('[name=stripe-account-number]').focus();
+				return;
+			}
+
+			if( !Stripe.bankAccount.validateAccountNumber( accountNumber, country )  ){
+				alert( 'Please type a valid Account!' );
+				$('[name=stripe-account-number]').focus();
+				return;
+			}
+
+			$( '.restaurant-bank-info-stripe-button-loading' ).show();
+
+			Stripe.bankAccount.createToken({
+				country: country,
+				routingNumber: routingNumber,
+				accountNumber: accountNumber,
+			}, function( status, response ){
+				console.log('reponse', status, response);
+			});
+
+
+		} );
+
 	});
 </script>
-
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript">Stripe.setPublishableKey('<?=c::config()->stripe->{c::getEnv()}->{'public'}?>');</script>
