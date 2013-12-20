@@ -207,7 +207,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 										try {
 											// Log
 											Log::debug( [ 'action' => 'sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-											// $twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+											$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
 										} catch (Exception $e) {
 											// Log
 											Log::debug( [ 'action' => 'ERROR: sending sms - support-ask', 'session id' => $tsess->id_session_twilio, 'to' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
