@@ -178,8 +178,13 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							// Log
 							Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
 
-							$b = $message;
+							$support = Support::getByTwilioSessionId($tsess->id_session_twilio);
 
+							if( $support->id_support ){
+								$message .= ' http://cbtn.io/support/' . $support->id_support . '?r=1';	
+							}
+							
+							$b = $message;
 
 							$sendSMSTo = array();
 							foreach (c::config()->text as $supportName => $supportPhone) {
