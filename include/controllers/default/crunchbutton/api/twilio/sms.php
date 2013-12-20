@@ -175,14 +175,14 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 							$support->makeACall();
 
+							if( $support->id_support ){
+								$message .= ' http://cbtn.io/support/' . $support->id_support . '?r=1';	
+							}
+
 							// Log
 							Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
 
 							$support = Support::getByTwilioSessionId($tsess->id_session_twilio);
-
-							if( $support->id_support ){
-								$message .= ' http://cbtn.io/support/' . $support->id_support . '?r=1';	
-							}
 							
 							$b = $message;
 
