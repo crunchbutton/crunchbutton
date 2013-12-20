@@ -12,7 +12,7 @@ class Crunchbutton_Support_Rep extends Cana_Table {
 	public static function createSupportRep(){
 		$admin = c::admin();
 		$rep = new Crunchbutton_Support_Rep();
-		$rep->name = c::admin()->name;
+		$rep->name = c::admin()->login;
 		$rep->phone = c::admin()->txt;
 		$rep->active = 1;
 		$rep->save();
