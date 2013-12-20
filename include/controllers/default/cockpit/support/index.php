@@ -5,8 +5,8 @@ class Controller_support extends Crunchbutton_Controller_Account {
 	
 		if (!c::admin()->permission()->check(['global', 'support-all', 'support-view', 'support-crud' ])) {
 			return ;
-		}
-	
+		} 
+
 		$action = c::getPagePiece(1);
 
 		switch ($action) {
@@ -24,6 +24,12 @@ class Controller_support extends Crunchbutton_Controller_Account {
 			default:
 				$support = Support::o(c::getPagePiece(1));
 				$action = c::getPagePiece(2);
+
+				// link rep #1723
+				if( $_REQUEST[ 'r' ] && $support->id_support ){
+					$support->id_support_rep = Support_Rep::getLoggedInRep()->id_support_rep;
+					$support->save();
+				} 
 
 				switch ($action) {
 				
@@ -113,7 +119,7 @@ class Controller_support extends Crunchbutton_Controller_Account {
 		}
 	}
 
-	// ---------------------------------------
+	// --------------------------------------
 
 	public static function respond($support, $args=[]) {
 		if ($args['text'] == '') return;

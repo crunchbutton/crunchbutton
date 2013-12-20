@@ -143,14 +143,9 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 								$message .= ': ';
 							}
 							$message .= htmlspecialchars($body);
-							$message = str_split($message,160);
-
-							if(!$_SESSION['last_cb']) {
-								$_SESSION['last_cb'] = $last_cb;
-								$message[] = $last_cb;
-							}
 
 							$support = Support::getByTwilioSessionId($tsess->id_session_twilio);
+
 							if(!$support->id_support) {
 								$support = new Crunchbutton_Support;
 								$support->type = Crunchbutton_Support::TYPE_SMS;
@@ -175,11 +170,23 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 							$support->makeACall();
 
+							$message = str_split($message,160);
+
+							if(!$_SESSION['last_cb']) {
+								$_SESSION['last_cb'] = $last_cb;
+								$message[] = $last_cb;
+							}
+
+							if( $support->id_support ){
+								$message [] = '@'.$tsess->id_session_twilio.'  http://cbtn.io/support/' . $support->id_support . '?r=1';	
+							}
+							
 							// Log
 							Log::debug( [ 'action' => 'sms action - support-ask', 'message' => $message, 'type' => 'sms' ] );
 
+							$support = Support::getByTwilioSessionId($tsess->id_session_twilio);
+							
 							$b = $message;
-
 
 							$sendSMSTo = array();
 							foreach (c::config()->text as $supportName => $supportPhone) {
