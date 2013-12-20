@@ -189,24 +189,30 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							break;
 						case 'fake-merchant':
 							if ($r->id_restaurant) {
-								$r->balanced_id = c::config()->balanced->sharedMerchant;
-								$r->save();
+								$payment = $r->payment_type();
+								$payment->id_restaurant = $r->id_restaurant;
+								$payment->balanced_id = c::config()->balanced->sharedMerchant;
+								$payment->save();
 								echo json_encode( [ 'success' => 'success' ] );
 							}
 							break;
 
 						case 'fakeremove-merchant':
 							if ($r->id_restaurant) {
-								$r->balanced_id = null;
-								$r->save();
+								$payment = $r->payment_type();
+								$payment->id_restaurant = $r->id_restaurant;
+								$payment->balanced_id = null;
+								$payment->save();
 								echo json_encode( [ 'success' => 'success' ] );
 							}
 							break;
 
 						case 'remove-bankinfo':
 							if ($r->id_restaurant) {
-								$r->balanced_bank = null;
-								$r->save();
+								$payment = $r->payment_type();
+								$payment->id_restaurant = $r->id_restaurant;
+								$payment->balanced_bank = null;
+								$payment->save();
 								echo json_encode( [ 'success' => 'success' ] );
 							}
 							break;
@@ -214,22 +220,24 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 						case 'paymentinfo':
 
 							if ( $r->id_restaurant ) {
-								$r->payment_method = $this->request()['payment_method'];
-								$r->id_restaurant_pay_another_restaurant = $this->request()['id_restaurant_pay_another_restaurant'];
-								$r->check_address = $this->request()['check_address'];
-								$r->contact_name = $this->request()['contact_name'];
-								$r->summary_fax = $this->request()['summary_fax'];
-								$r->summary_email = $this->request()['summary_email'];
-								$r->summary_method = $this->request()['summary_method'];
-								$r->summary_frequency = $this->request()['summary_frequency'];
-								$r->legal_name_payment = $this->request()['legal_name_payment'];
-								$r->tax_id = $this->request()['tax_id'];
-								$r->charge_credit_fee = $this->request()['charge_credit_fee'];
-								$r->waive_fee_first_month = $this->request()['waive_fee_first_month'];
-								$r->pay_promotions = $this->request()['pay_promotions'];
-								$r->pay_apology_credits = $this->request()['pay_apology_credits'];
-								$r->max_apology_credit = $this->request()['max_apology_credit'];
-								$r->save();
+								$payment = $r->payment_type();
+								$payment->id_restaurant = $r->id_restaurant;
+								$payment->payment_method = $this->request()['payment_method'];
+								$payment->id_restaurant_pay_another_restaurant = $this->request()['id_restaurant_pay_another_restaurant'];
+								$payment->check_address = $this->request()['check_address'];
+								$payment->contact_name = $this->request()['contact_name'];
+								$payment->summary_fax = $this->request()['summary_fax'];
+								$payment->summary_email = $this->request()['summary_email'];
+								$payment->summary_method = $this->request()['summary_method'];
+								$payment->summary_frequency = $this->request()['summary_frequency'];
+								$payment->legal_name_payment = $this->request()['legal_name_payment'];
+								$payment->tax_id = $this->request()['tax_id'];
+								$payment->charge_credit_fee = $this->request()['charge_credit_fee'];
+								$payment->waive_fee_first_month = $this->request()['waive_fee_first_month'];
+								$payment->pay_promotions = $this->request()['pay_promotions'];
+								$payment->pay_apology_credits = $this->request()['pay_apology_credits'];
+								$payment->max_apology_credit = $this->request()['max_apology_credit'];
+								$payment->save();
 								echo json_encode( [ 'success' => 'restaurant saved' ] );
 							}
 						break;

@@ -1,7 +1,7 @@
 <?
-	$this->title = $this->restaurant->name;
+	$this->title = $this->restaurnt->name;
 	$this->titleicon = 'food';
-	$this->titleLink = '/restaurants/'.$this->restaurant->id_restaurant;
+	$this->titleLink = '/restaurants/'.$this->restaurnt->id_restaurant;
 
 	$this->title2 = 'Pay';
 	$this->title2icon = 'money';
@@ -15,10 +15,10 @@
 					<div class="box">
 						<div class="box-header"><span class="title">Bank Info</span></div>
 						<div class="box-content padded">
-							<? if ($this->restaurant->balanced_bank) : ?>
+							<? if ($this->payment->balanced_bank) : ?>
 							<b>This restaurant already has a bank account. <a href="javascript:;" class="restaurant-merchant-button-accountremove">Remove</a></b>
 							<? else : ?>
-							<h4 class="restaurant-item-title">Add <?=$this->restaurant->balanced_bank ? 'New ' : ''?>Bank Info</h4>
+							<h4 class="restaurant-item-title">Add <?=$this->payment->balanced_bank ? 'New ' : ''?>Bank Info</h4>
 							<form id="restaurant-bank-info" onsubmit="return false;">
 								<table class="admin-restaurant-pay-form">
 									<tr>
@@ -63,10 +63,10 @@
 					<div class="box">
 						<div class="box-header"><span class="title">Merchant Configuration</span></div>
 						<div class="box-content padded">
-							<? if ($this->restaurant->balanced_id == c::config()->balanced->sharedMerchant) : ?>
-							<b><?=$this->restaurant->name?> is using a fake merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
-							<? elseif ($this->restaurant->balanced_id) : ?>
-							<b><?=$this->restaurant->name?> already has a merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>		
+							<? if ($this->payment->balanced_id == c::config()->balanced->sharedMerchant) : ?>
+							<b><?=$this->payment->name?> is using a fake merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
+							<? elseif ($this->payment->balanced_id) : ?>
+							<b><?=$this->payment->name?> already has a merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>		
 							<? else : ?>
 							<h4 class="restaurant-item-title">Create a Merchant Account</h4>
 							<form id="restaurant-merchant" onsubmit="return false;">
@@ -169,61 +169,61 @@
 									<li>
 										<span>Charge Credit Fees?</span>
 										<span class="pull-right">
-										<input type="checkbox" name="charge_credit_fee" id="charge_credit_fee" class="iButton-icons" <?=$this->restaurant->charge_credit_fee ? 'checked' : ''?>>
+										<input type="checkbox" name="charge_credit_fee" id="charge_credit_fee" class="iButton-icons" <?=$this->payment->charge_credit_fee ? 'checked' : ''?>>
 										</span>
 									</li>
 									<li>
 										<span>Waive Fee 1st Month?</span>
 										<span class="pull-right">
-										<input type="checkbox" name="waive_fee_first_month" id="waive_fee_first_month" class="iButton-icons" <?=$this->restaurant->waive_fee_first_month ? 'checked' : ''?>>
+										<input type="checkbox" name="waive_fee_first_month" id="waive_fee_first_month" class="iButton-icons" <?=$this->payment->waive_fee_first_month ? 'checked' : ''?>>
 										</span>
 									</li>
 									<li>
 										<span>Pay For Apology Credits?</span>
 										<span class="pull-right">
-											<input type="checkbox" name="pay_promotions" id="pay_promotions" class="iButton-icons" <?=$this->restaurant->pay_promotions ? 'checked' : ''?>>
+											<input type="checkbox" name="pay_promotions" id="pay_promotions" class="iButton-icons" <?=$this->payment->pay_promotions ? 'checked' : ''?>>
 										</span>
 									</li>
 									<li class="input">
 										<span>Max Apology Credit</span>
 										<span class="pull-right span9">
-											<input type="number" class="fill-up" name="max_apology_credit" maxlength="5" id="max_apology_credit" value="<?php echo $this->restaurant->max_apology_credit;?>" />
+											<input type="number" class="fill-up" name="max_apology_credit" maxlength="5" id="max_apology_credit" value="<?php echo $this->payment->max_apology_credit;?>" />
 										</span>
 									</li>
 									<li>
 										<span>Pay For Promotions?</span>
 										<span class="pull-right">
-											<input type="checkbox" name="pay_apology_credits" id="pay_apology_credits" class="iButton-icons" <?=$this->restaurant->pay_apology_credits ? 'checked' : ''?>>
+											<input type="checkbox" name="pay_apology_credits" id="pay_apology_credits" class="iButton-icons" <?=$this->payment->pay_apology_credits ? 'checked' : ''?>>
 										</span>
 									</li>
 									<li class="input">
 										<span>Check Address</span>
 										<span class="pull-right span9">
-											<input type="text" class="fill-up" name="check_address" maxlength="255" id="check_address" value="<?php echo $this->restaurant->check_address;?>" />
+											<input type="text" class="fill-up" name="check_address" maxlength="255" id="check_address" value="<?php echo $this->payment->check_address;?>" />
 										</span>
 									</li>
 									<li class="input">
 										<span>Contact Name</span>
 										<span class="pull-right span9">
-											<input type="text" name="contact_name" maxlength="255" id="contact_name" value="<?php echo $this->restaurant->contact_name;?>" />
+											<input type="text" name="contact_name" maxlength="255" id="contact_name" value="<?php echo $this->payment->contact_name;?>" />
 										</span>
 									</li>
 									<li class="input">
 										<span>Summary Fax</span>
 										<span class="pull-right span9">
-											<input type="text" name="summary_fax" maxlength="255" id="summary_fax" value="<?php echo $this->restaurant->summary_fax;?>" />
+											<input type="text" name="summary_fax" maxlength="255" id="summary_fax" value="<?php echo $this->payment->summary_fax;?>" />
 										</span>
 									</li>
 									<li class="input">
 										<span>Summary Email</span>
 										<span class="pull-right span9">
-											<input type="text" name="summary_email" maxlength="255" id="summary_email" value="<?php echo $this->restaurant->summary_email;?>" />
+											<input type="text" name="summary_email" maxlength="255" id="summary_email" value="<?php echo $this->payment->summary_email;?>" />
 										</span>
 									</li>
 									<li class="input">
 										<span>Summary Frequency</span>
 										<span class="pull-right span9">
-											<input type="number" name="summary_frequency" maxlength="5" id="summary_frequency" value="<?php echo $this->restaurant->summary_frequency;?>" />
+											<input type="number" name="summary_frequency" maxlength="5" id="summary_frequency" value="<?php echo $this->payment->summary_frequency;?>" />
 										</span>
 									</li>
 									<li class="input">
@@ -235,7 +235,7 @@
 											<select name="summary_method" id="summary_method" class="uniform">
 												<option value="">None</option>
 												<? foreach ($options as $option) { 
-													$selected = ( $option == $this->restaurant->summary_method ) ? 'selected="selected"' : ''; ?>
+													$selected = ( $option == $this->payment->summary_method ) ? 'selected="selected"' : ''; ?>
 												<option <?=$selected?> value="<?=$option?>"><?=$option?></option>
 												<? } ?>
 											</select>
@@ -245,13 +245,13 @@
 									<li class="input">
 										<span>Legal Name for Payment</span>
 										<span class="pull-right span9">
-											<input type="text" name="legal_name_payment" maxlength="255" id="legal_name_payment" value="<?php echo $this->restaurant->legal_name_payment;?>" />
+											<input type="text" name="legal_name_payment" maxlength="255" id="legal_name_payment" value="<?php echo $this->payment->legal_name_payment;?>" />
 										</span>
 									</li>
 									<li class="input">
 										<span>Tax ID # </span>
 										<span class="pull-right span9">
-											<input type="text" name="tax_id" maxlength="255" id="tax_id" value="<?php echo $this->restaurant->tax_id;?>" />
+											<input type="text" name="tax_id" maxlength="255" id="tax_id" value="<?php echo $this->payment->tax_id;?>" />
 										</span>
 									</li>
 									<div style="clear: both;"></div>
@@ -263,7 +263,7 @@
 												?>
 											<select name="payment_method" id="payment_method" class="uniform">
 												<? foreach ($options as $option) { 
-													$selected = ( $option == $this->restaurant->payment_method ) ? 'selected="selected"' : ''; ?>
+													$selected = ( $option == $this->payment->payment_method ) ? 'selected="selected"' : ''; ?>
 												<option <?=$selected?> value="<?=$option?>"><?=$option?></option>
 												<? } ?>
 											</select>
@@ -275,7 +275,7 @@
 											<select class="chzn-select" name="id_restaurant_pay_another_restaurant" id="id_restaurant_pay_another_restaurant">
 												<option value="" selected>Choose...</option>
 												<? foreach (Restaurant::q('select * from restaurant order by name') as $restaurant) :
-													$selected = ( $restaurant->id_restaurant == $this->restaurant->id_restaurant_pay_another_restaurant ) ? 'selected="selected"' : ''; ?>
+													$selected = ( $restaurant->id_restaurant == $this->payment->id_restaurant_pay_another_restaurant ) ? 'selected="selected"' : ''; ?>
 												<option <?=$selected?> value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option>
 												<? endforeach ; ?>
 											</select>
@@ -323,7 +323,7 @@
 		
 		$('.restaurant-merchant-button').click(function() {
 			var form = $(this).closest('form');
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/merchant', {
+			$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/merchant', {
 				type: 'person', /* form.find('[name="type"]').val() */
 				name: form.find('[name="name"]').val(),
 				address: form.find('[name="address"]').val(),
@@ -343,9 +343,9 @@
 			var parent = $( this ).parent();
 			var button = parent.html();
 		
-			parent.html( '<i class="icon-cogs"></i> Processing' );
+			parent.html( '<i class="icon-spinner icon-spin"></i> Processing' );
 
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/paymentinfo', {
+			$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/paymentinfo', {
 				payment_method : ( $( '#payment_method' ).val() ),
 				id_restaurant_pay_another_restaurant : ( $( '#id_restaurant_pay_another_restaurant' ).val() ),
 				check_address : ( $( '#check_address' ).val() ),
@@ -375,19 +375,19 @@
 		} );
 
 		$('.restaurant-merchant-button-fake').click(function() {
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/fake-merchant', function() {
+			$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/fake-merchant', function() {
 				location.href = location.href;
 			});
 		});
 		
 		$('.restaurant-merchant-button-fakeremove').click(function() {
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/fakeremove-merchant', function() {
+			$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/fakeremove-merchant', function() {
 				location.href = location.href;
 			});
 		});
 		
 		$('.restaurant-merchant-button-accountremove').click(function() {
-			$.post('/api/restaurant/<?=$this->restaurant->id_restaurant?>/remove-bankinfo', function() {
+			$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/remove-bankinfo', function() {
 				location.href = location.href;
 			});
 		});		
@@ -397,7 +397,7 @@
 			$( '.restaurant-bank-info-button-loading' ).show();
 			$.ajax({
 				type: 'POST',
-				url: '/api/restaurant/<?=$this->restaurant->id_restaurant?>/bankinfo',
+				url: '/api/restaurant/<?=$this->payment->id_restaurant?>/bankinfo',
 				data: {
 								routing: form.find('[name="routing"]').val(),
 								account: form.find('[name="account"]').val(),
@@ -423,11 +423,11 @@
 			var form = $(this).closest('form');
 			$.ajax({
 				type: 'POST',
-				url: '/api/restaurant/<?=$this->restaurant->id_restaurant?>/credit',
+				url: '/api/restaurant/<?=$this->payment->id_restaurant?>/credit',
 				data: { amount: form.find('[name="amount"]').val(), note: form.find('[name="note"]').val() },
 				complete: function(){
 					alert( 'done' );
-					location.href = location.href;
+					
 				}
 			})
 		});

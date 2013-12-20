@@ -231,9 +231,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			print_r($e);
 			exit;
 		}
-
-		$this->balanced_id = $merchant->id;
-		$this->save();
+		$payment = $this->payment_type();
+		$payment->id_restaurant = $this->id_restaurant;
+		$payment->balanced_id = $merchant->id;
+		$payment->save();
 
 		return $merchant;
 
@@ -241,8 +242,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function merchant() {
 
-		if ($this->balanced_id) {
-			$a = Crunchbutton_Balanced_Merchant::byId($this->balanced_id);
+		$payment_type = $this->payment_type(); 
+
+		if ($payment_type->balanced_id) {
+			$a = Crunchbutton_Balanced_Merchant::byId($payment_type->balanced_id);
 			if ($a->id) {
 				$merchant = $a;
 			}
@@ -252,8 +255,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$a = Crunchbutton_Balanced_Merchant::byRestaurant($this);
 			if ($a->id) {
 				if (c::env() == 'live') {
-					$this->balanced_id = $a->id;
-					$this->save();
+					$payment = $r->payment_type();
+					$payment->id_restaurant = $r->id_restaurant;
+					$payment->balanced_id = $a->id;
+					$payment->save();
 				}
 				$merchant = $a;
 			}
@@ -271,8 +276,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		try {
 			$bank = c::balanced()->createBankAccount($name, $account, $routing,  $type);
 			$info = $this->merchant()->addBankAccount($bank);
-			$this->balanced_bank = $bank->id;
-			$this->save();
+			$payment_type = $this->payment_type(); 
+			$payment_type->id_restaurant = $this->id_restaurant;
+			$payment_type->balanced_bank = $bank->id;
+			$payment_type->save();
 			echo json_encode( [ 'success' => 'success' ] );
 		} catch (Exception $e) {
 			print_r($e);
@@ -1933,6 +1940,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$minutes = round( ( ( $time->format( 'i' ) + $this->delivery_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
 		$minutes -= $time->format( 'i' );
 		return date( 'g:i a', strtotime( $time->format( 'Y-m-d H:i' ) . ' + ' . $minutes . ' minute' ) );
+	}
+
+	public function payment_type(){
+		return Crunchbutton_Restaurant_Payment_Type::byRestaurant( $this->id_restaurant );
 	}
 
 	public function save() {

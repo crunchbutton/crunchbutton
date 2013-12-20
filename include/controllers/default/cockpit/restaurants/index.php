@@ -109,9 +109,11 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			switch (c::getPagePiece($page_piece_index+1)) {
 				case 'pay':
 					// @permission
+
 					if (!c::admin()->permission()->check(['global', 'restaurants-all','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-pay'])) {
 						return;
 					}
+					c::view()->payment = $restaurant->payment_type();
 					c::view()->display('restaurants/pay');
 					break;
 				case 'hour_override':
