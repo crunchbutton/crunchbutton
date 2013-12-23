@@ -161,6 +161,10 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							case 'merchant':
 							case 'credit':
 							case 'bankinfo':
+							case 'remove-stripe-recipient':
+							case 'stripe-recipient':
+							case 'stripe-account':
+							case 'stripe-credit':
 								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-pay" ]);
 								break;
 
@@ -197,6 +201,28 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							}
 							break;
 
+						case 'stripe-account':
+							if ($r->id_restaurant) {
+								$bank_account = $this->request()['bank_account'];
+								if( $r->saveStripeBankAccount( $bank_account ) ){
+									echo json_encode( [ 'success' => 'success' ] );	
+								} else {
+									echo json_encode( [ 'error' => 'error' ] );	
+								}
+								
+							}
+							break;
+
+						case 'remove-stripe-recipient':
+							if ( $r->id_restaurant ) {
+								$payment = $r->payment_type();
+								$payment->stripe_id = null;
+								$payment->stripe_account_id = null;
+								$payment->save();
+								echo json_encode( [ 'success' => 'success' ] );
+							}
+							break;
+
 						case 'fakeremove-merchant':
 							if ($r->id_restaurant) {
 								$payment = $r->payment_type();
@@ -214,6 +240,20 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								$payment->balanced_bank = null;
 								$payment->save();
 								echo json_encode( [ 'success' => 'success' ] );
+							}
+							break;
+
+						case 'stripe-recipient':
+							if ($r->id_restaurant) {
+								$name = $this->request()['name'];
+								$type = $this->request()['type'];
+								$tax_id = $this->request()['tax_id'];
+								if( $r->saveStripeRecipient( $name, $type, $tax_id ) ){
+									echo json_encode( [ 'success' => 'success' ] );	
+								} else {
+									echo json_encode( [ 'error' => 'error' ] );	
+								}
+								
 							}
 							break;
 
@@ -256,13 +296,35 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							$this->_saveNotifications($r);
 							break;
 
+						case 'stripe-credit':
+							if ($r->id_restaurant) {
+								$p = Payment::credit([
+									'id_restaurant' => $r->id_restaurant,
+									'amount' => $this->request()['amount'],
+									'note' => $this->request()['note'],
+									'type' => 'stripe'
+								]);
+								if( $p ){
+									echo json_encode( [ 'success' => 'success' ] );
+								} else {
+									echo json_encode( [ 'error' => 'error' ] );
+								}
+							}
+							break;
+
 						case 'credit':
 							if ($r->id_restaurant) {
 								$p = Payment::credit([
 									'id_restaurant' => $r->id_restaurant,
 									'amount' => $this->request()['amount'],
-									'note' => $this->request()['note']
+									'note' => $this->request()['note'],
+									'type' => 'balanced'
 								]);
+								if( $p ){
+									echo json_encode( [ 'success' => 'success' ] );
+								} else {
+									echo json_encode( [ 'error' => 'error' ] );
+								}
 							}
 							break;
 

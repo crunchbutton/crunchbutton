@@ -1,0 +1,1 @@
+ALTER TABLE `payment` ADD `stripe_id` VARCHAR( 255 ) NULL DEFAULT NULL;

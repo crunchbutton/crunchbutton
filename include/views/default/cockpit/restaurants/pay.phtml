@@ -17,7 +17,7 @@
 							<div class="title">Payments</div>
 
 							<ul class="nav nav-tabs nav-tabs-right">
-								<li class="__active"><a href="#balanced" data-toggle="tab">Balanced</i></a></li>
+								<li class="active"><a href="#balanced" data-toggle="tab">Balanced</i></a></li>
 								<li><a href="#stripe" class="active" data-toggle="tab">Stripe</a></li>
 							</ul>
 
@@ -25,7 +25,7 @@
 
 						<div class="box-content padded">
 							<div class="tab-content">
-								<div class="tab-pane __active" id="balanced" style="overflow:hidden;">
+								<div class="tab-pane active" id="balanced" style="overflow:hidden;">
 									<!-- Balanced stuff BEGIN -->
 									<div class="box">
 										<div class="box-header"><span class="title">Bank Info</span></div>
@@ -174,39 +174,50 @@
 									</div>
 									<!-- Balanced stuff END -->
 								</div>
-								<div class="tab-pane active" id="stripe" style="overflow:hidden;">
+								<div class="tab-pane" id="stripe" style="overflow:hidden;">
 <!-- Stripe stuff - BEGIN -->
 									<div class="box">
-										<div class="box-header"><span class="title">Bank Info</span></div>
+
+										<div class="box-header"><span class="title">Recipient</span></div>
 										<div class="box-content padded">
 											
-											<h4 class="restaurant-item-title">Add Bank Info</h4>
-											<form id="restaurant-bank-info-stripe" onsubmit="return false;">
+											<?php if( $this->payment->stripe_id ) { 
+
+												$recipient = $this->payment->getRecipientInfo();
+												?>
+											<b>This restaurant already has a recipient (Stripe). 
+												<br/><br/><a href="https://manage.stripe.com/recipients/<?php echo $this->payment->stripe_id; ?>" target="_blank"><i class="icon-external-link"></i> Recipient info</a></b> 
+												| <a href="javascript:$('.stripe-recipient-form').show();" ><i class="icon-edit"></i> Update</a></b>
+												| <a href="javascript:;" class="restaurant-stripe-recipient-remove"><i class="icon-remove"></i> Remove</a></b>
+											<?php } ?>
+
+											<div class="stripe-recipient-form" <?php if( $this->payment->stripe_id ){ echo 'style="display:none;"'; }?> >
+
+											<h4 class="restaurant-item-title">
+											<?php if( $this->payment->stripe_id ){ echo '<hr/>'; } ?>
+											 Recipient Info</h4>
+
+
+											<form >
 												<table class="admin-restaurant-pay-form">
 													<tr>
-														<td>Name on Account</td>
+														<td>Name</td>
 														<td>
-															<input type="text" class="span8" name="name">
+															<input type="text" class="span8" name="stripe-name" value="<?php echo $recipient->name; ?>" >
 														</td>
 													</tr>
 													<tr>
-														<td>Routing #</td>
+														<td>SSN or EIN</td>
 														<td>
-															<input type="text" class="span8" name="stripe-routing-number" value="111000025">
-														</td>
-													</tr>
-													<tr>
-														<td>Account #</td>
-														<td>
-															<input type="text" class="span8" name="stripe-account-number" value="000123456789">
+															<input type="text" class="span8" name="stripe-tax-id" value="">
 														</td>
 													</tr>
 													<tr>
 														<td>Type</td>
 														<td>
 															<select name="stripe-type" class="chzn-select span8" >
-																	<option value="individual" default>Individual</option>
-																	<option value="corporation">Corporation</option>
+																	<option <?php if( $recipient->type == 'individual' ){ echo 'selected="selected"'; } ?> value="individual" default>Individual</option>
+																	<option <?php if( $recipient->type == 'corporation' ){ echo 'selected="selected"'; } ?> value="corporation">Corporation</option>
 															</select>
 														</td>
 													</tr>
@@ -214,16 +225,80 @@
 													<tr>
 														<td colspan="2">
 															<br />
-															<button type="button" class="btn btn-blue restaurant-bank-info-stripe-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
-															&nbsp;&nbsp;&nbsp;<i class="restaurant-bank-info-stripe--button-loading icon-spinner icon-spin" style="display:none;"></i>
+															<button type="button" class="btn btn-blue stripe-recipient-info"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+															&nbsp;&nbsp;&nbsp;<i class="stripe-recipient-info-loading icon-spinner icon-spin" style="display:none;"></i>
 														</td>
 													</tr>
 												</table>
 											</form>
-
+											</div>
 										</div>
 									</div>
 
+									<?php if( $this->payment->stripe_id ) { ?>
+									<div class="box">
+										<div class="box-header"><span class="title">
+										<?php if( $this->payment->stripe_account_id ){ echo 'Change '; } else { echo 'Add ';} ?>Account</span></div>
+										<div class="box-content padded">
+											<?php if( $this->payment->stripe_account_id ){ ?>
+												<b>This restaurant already has an account (Stripe).</b>
+												<hr/>
+											<?php } ?>
+											<form>
+												<table class="admin-restaurant-pay-form">
+													<tr>
+														<td>Account #</td>
+														<td>
+															<input type="text" name="stripe-routing-number" class="span8" value="">
+														</td>
+													</tr>
+													<tr>
+														<td>Routing #</td>
+														<td>
+															<input type="text" name="stripe-account-number" class="span8" value="">
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2">
+															<br />
+															<button type="button" class="btn btn-blue stripe-account-add"><i class="icon-cloud-upload"></i>&nbsp;&nbsp;&nbsp; <?php if( $this->payment->stripe_account_id ){ echo 'Update '; } else { echo 'Add ';} ?> Account </button>
+														</td>
+													</tr>
+												</table>
+											</form>
+										</div>
+									</div>
+								<?php } ?>
+
+								<?php if( $this->payment->stripe_id && $this->payment->stripe_account_id ) { ?>
+									<div class="box">
+										<div class="box-header"><span class="title">Send Payment</span></div>
+										<div class="box-content padded">
+											<form id="stripe-restaurant-pay" onsubmit="return false;">
+												<table class="admin-restaurant-pay-form">
+													<tr>
+														<td>Amount</td>
+														<td>
+															<input type="text" name="stripe-amount" class="span8">
+														</td>
+													</tr>
+													<tr>
+														<td>Note</td>
+														<td>
+															<input type="text" name="stripe-note" class="span8">
+														</td>
+													</tr>
+													<tr>
+														<td colspan="2">
+															<br />
+															<button type="button" class="btn btn-blue restaurant-pay-stripe-button"><i class="icon-cloud-upload"></i>&nbsp;&nbsp;&nbsp; Send </button>
+														</td>
+													</tr>
+												</table>
+											</form>
+										</div>
+									</div>
+								<?php } ?>
 <!-- Stripe stuff - END -->
 
 								</div>
@@ -373,18 +448,30 @@
 		</div>
 		<div class="box">
 			<div class="box-header"><span class="title">Recent Payments</span></div>
-			<div class="box-content padded">
-				<table width="100%" cellpadding="4" cellspacing="4">
-					<tr>
-						<th>Date</th>
-						<th>Amount</th>
-						<th>Note</th>
-					</tr>
+			<div class="box-content">
+				<table class="table table-normal">
+					<thead>
+						<tr>
+							<td>Date</td>
+							<td>Amount</td>
+							<td>Note</td>
+							<td>Type</td>
+							<td>Info</td>
+						</tr>
+					</thead>
 					<? foreach ($this->restaurant->payments() as $payment) : ?>
 					<tr>
 						<td><?=$payment->date?></td>
 						<td>$<?=$payment->amount?></td>
 						<td><?=$payment->note?></td>
+						<td><?=$payment->type()?></td>
+						<td><?php 
+						if( $payment->type() == 'stripe' ) {
+							echo '<a style="text-decoration:underline;" target="_blank" href="https://manage.stripe.com/transfers/' . $payment->stripe_id . '">' . $payment->stripe_id . '</a>';
+						} else {
+							echo $payment->balanced_id;
+						}
+							?></td>
 					</tr>
 					<? endforeach; ?>
 				</table>
@@ -455,6 +542,14 @@
 			});
 		});
 		
+		$('.restaurant-stripe-recipient-remove').click(function() {
+			if( confirm( 'Confirm remove recipient?' ) ){
+				$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/remove-stripe-recipient', function() {
+					location.href = location.href;
+				});
+			}
+		});
+
 		$('.restaurant-merchant-button-fakeremove').click(function() {
 			$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/fakeremove-merchant', function() {
 				location.href = location.href;
@@ -494,25 +589,94 @@
 			});
 		});
 
+	$('.restaurant-pay-stripe-button').click(function() {
+			var amount = $( '[name=stripe-amount]' ).val();
+			if( $.trim( amount ) == '' ){
+				alert( 'Please type the amount!' );
+				$( '[name=stripe-amount]' ).focus();
+				return;
+			}
+			var note = $( '[name=stripe-note]' ).val();
+			if( $.trim( note ) == '' ){
+				alert( 'Please type the note!' );
+				$( '[name=stripe-note]' ).focus();
+				return;
+			}
+			$.ajax({
+				type: 'POST',
+				url: '/api/restaurant/<?=$this->payment->id_restaurant?>/stripe-credit',
+				data: { amount: amount, note : note },
+				complete: function( data ){
+					if( data.success ){
+						alert( 'Paid!' );
+						location.href = location.href;
+					} else {
+						alert( 'Error, please see the console.' );
+						console.log(data);
+					}
+				}
+			})
+		});
+
 		$('.restaurant-pay-button').click(function() {
 			var form = $(this).closest('form');
 			$.ajax({
 				type: 'POST',
 				url: '/api/restaurant/<?=$this->payment->id_restaurant?>/credit',
 				data: { amount: form.find('[name="amount"]').val(), note: form.find('[name="note"]').val() },
-				complete: function(){
-					alert( 'done' );
-					
+				complete: function( data ){
+					if( data.success ){
+						alert( 'Paid!' );
+						location.href = location.href;
+					} else {
+						alert( 'Error, please see the console.' );
+						console.log(data);
+					}
 				}
 			})
 		});
 
 
-		$('.restaurant-bank-info-stripe-button').click(function() {
+		$('.stripe-recipient-info').click(function() {
+
+			var name = $('[name=stripe-name]').val();
+			var type = $('[name=stripe-type]').val();
+			var tax_id = $('[name=stripe-tax-id]').val();
+			
+			if( $.trim( name ) == '' ){
+				alert( 'Please type the Name!' );
+				$('[name=stripe-name]').focus();
+				return;
+			}
+
+			if( $.trim( type ) == '' ){
+				alert( 'Please choose the Type!' );
+				$('[name=stripe-type]').focus();
+				return;
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: '/api/restaurant/<?=$this->payment->id_restaurant?>/stripe-recipient',
+				data: { name: name, type: type, tax_id: tax_id }
+			}).done(function( data ) {
+				if( data.success ){
+					location.href = location.href;
+				} else {
+					$( '.restaurant-bank-info-button-loading' ).hide();
+					alert( 'Error: see the console!'  );
+					console.log('Err:', data );	
+				}
+			})
+
+		} );
+
+		$('.stripe-account-add').click(function() {
 
 			var routingNumber = $('[name=stripe-routing-number]').val();
 			var accountNumber = $('[name=stripe-account-number]').val();
 			var country = 'US';
+
 			if( $.trim( routingNumber ) == '' ){
 				alert( 'Please type the Routing!' );
 				$('[name=stripe-routing-number]').focus();
@@ -537,14 +701,28 @@
 				return;
 			}
 
-			$( '.restaurant-bank-info-stripe-button-loading' ).show();
-
 			Stripe.bankAccount.createToken({
 				country: country,
 				routingNumber: routingNumber,
 				accountNumber: accountNumber,
 			}, function( status, response ){
-				console.log('reponse', status, response);
+				$.ajax({
+					type: 'POST',
+					url: '/api/restaurant/<?=$this->payment->id_restaurant?>/stripe-account',
+					data: { bank_account: response.id },
+				}).done(function( data ) {
+				if( data.success ){
+					location.href = location.href;
+				} else {
+					$( '.restaurant-bank-info-button-loading' ).hide();
+					alert( 'Error: see the console!'  );
+					console.log('Err:', data );	
+				}
+			}).fail(function(jqXHR, textStatus) {
+				$( '.restaurant-bank-info-button-loading' ).hide();
+				alert( 'Error: see the console!'  );
+				console.log('Err:', jqXHR.responseText);
+			});
 			});
 
 

@@ -272,6 +272,66 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $merchant;
 	}
 
+	public function saveStripeBankAccount( $bank_account ){
+		$payment_type = $this->payment_type(); 
+		try{
+			Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);
+			if( $payment_type->stripe_id ){
+				$recipient = $payment_type->getRecipientInfo();
+				$recipient->bank_account = $bank_account;
+				$recipient->save();
+				$payment_type->stripe_account_id = $bank_account;
+				$payment_type->save();	
+				return true;
+			} 
+		} catch (Exception $e) {
+			print_r($e);
+			exit;
+		}
+		return false;
+	}
+
+	public function saveStripeRecipient( $name, $type, $tax_id ){
+		
+		$payment_type = $this->payment_type(); 
+
+		try{
+		
+			$tax_id = ( $tax_id == '' ) ? NULL : $tax_id;
+
+			Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);
+
+			if( $payment_type->stripe_id ){
+
+				$recipient = $payment_type->getRecipientInfo();
+				$recipient->name = $name;
+				$recipient->type = $type;
+				$recipient->tax_id = $tax_id;
+				$recipient->save();
+
+			} else {
+
+				$recipient = Stripe_Recipient::create( array(
+					'name' => $name,
+					'type' => $type,
+					'tax_id' => $tax_id
+				));
+				if( !$recipient->id ){
+					return false;
+				}
+				$payment_type = $this->payment_type(); 
+				$payment_type->stripe_id = $recipient->id;
+				$payment_type->save();	
+			}
+			
+			return true;
+		} catch (Exception $e) {
+			print_r($e);
+			exit;
+		}
+
+	}
+
 	public function saveBankInfo($name, $account, $routing, $type) {
 		try {
 			$bank = c::balanced()->createBankAccount($name, $account, $routing,  $type);
