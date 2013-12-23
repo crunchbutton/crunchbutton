@@ -473,10 +473,13 @@ class Crunchbutton_Order extends Cana_Table {
 					}
 					$referral->date = date('Y-m-d H:i:s');
 					$referral->save();
-					// Finally give credit to inviter
-					$referral->addCreditToInviter();
+					// See #1660
+					if( $this->pay_type == 'card' ){
+						// Finally give credit to inviter
+						$referral->addCreditToInviter();
+					}
 
-					Log::debug([ 'inviter_code' => $inviter_code, 'totalOrdersByPhone' => $totalOrdersByPhone, 'type' => 'referral' ]);
+					Log::debug([ 'inviter_code' => $inviter_code, 'totalOrdersByPhone' => $totalOrdersByPhone, 'type' => 'referral', 'pay_type' => $this->pay_type ]);
 
 				}
 				Crunchbutton_Referral::removeCookie();
