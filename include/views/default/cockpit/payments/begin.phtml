@@ -271,14 +271,14 @@ foreach($this->restaurants as $i=>$restaurant) {
 
       <div style='padding:5px; border-bottom:1px solid #ccc;' class='summary_row'>
         <div>
-          <a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->summary_email?>"); return false;'>
+          <a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->payment_type()->summary_email?>"); return false;'>
             <span class="remove_row icon-user"></span>
           </a>&nbsp;&nbsp;
           <span>Email: </span>
           <span class='RST<?=$restaurant->id?>_summary_email'>
             <?
-              if($restaurant->summary_email) {
-                echo "<strong>$restaurant->summary_email</strong> ";
+              if($restaurant->payment_type()->summary_email) {
+                echo "<strong>$restaurant->payment_type()->summary_email</strong> ";
               }
               else {
                 echo '<strong>None</strong>';
@@ -291,7 +291,7 @@ foreach($this->restaurants as $i=>$restaurant) {
       <div style='padding:5px; border-bottom:1px solid #ccc;' class='summary_row'>
         <div>
           <!--
-          <a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->summary_fax?>"); return false;'>
+          <a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->payment_type()->summary_fax?>"); return false;'>
             <span class="remove_row icon-user"></span>
           </a> -->
           &nbsp;
@@ -299,7 +299,7 @@ foreach($this->restaurants as $i=>$restaurant) {
           <span class='RST<?=$restaurant->id?>_summary_fax'>
             <?
               if($restaurant->summary_fax) {
-                echo "<strong>$restaurant->summary_fax</strong> ";
+                echo "<strong>$restaurant->payment_type()->summary_fax</strong> ";
               }
               else {
                 echo '<strong>None</strong>';
@@ -312,13 +312,13 @@ foreach($this->restaurants as $i=>$restaurant) {
       <div style='padding:5px; border-bottom:1px solid #ccc;' class='summary_row'>
         <div>
           <!--
-          <a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->summary_email?>"); return false;'>
+          <a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->payment_type()->summary_email?>"); return false;'>
             <span class="remove_row icon-user"></span>
           </a> -->
           &nbsp;
           <span>Payment Method: </span>
           <span class='RST<?=$restaurant->id?>_payment_method'>
-            <strong><?= $restaurant->payment_method ?></strong>
+            <strong><?= $restaurant->payment_type()->payment_method ?></strong>
           </span>
         </div>
       </div>

@@ -12,17 +12,20 @@ class Controller_payments_begin extends Crunchbutton_Controller_Account {
           .'  restaurant.*, max(p.date) as "last_pay", p.`id_restaurant` as "p_id_rest" '
           .'  from restaurant '
           .'  left outer join (select id_restaurant,`date` from `payment`) as p using(id_restaurant) '
+          .' inner join restaurant_payment_type rpt on rpt.id_restaurant = restaurant.id_restaurant '
           .'  where active=1 '
-          .((!$_REQUEST['payment_method'])?'':' and `payment_method`="'.$_REQUEST['payment_method'].'" ')
+          .((!$_REQUEST['payment_method'])?'':' and `rpt.payment_method`="'.$_REQUEST['payment_method'].'" ')
           .'  group by id_restaurant '
           .'  order by '
           .'    (case when p_id_rest is null then 1 else 0 end) asc,'
           .'    last_pay asc ';
     }
     else {
-      $q = 'select * from restaurant where active=1 ';
+      $q = 'select * from restaurant 
+        inner join restaurant_payment_type rpt on rpt.id_restaurant = restaurant.id_restaurant
+      where active=1 ';
       if($_REQUEST['payment_method']) {
-        $q.=" and `payment_method`='".$_REQUEST['payment_method']."' ";
+        $q.=" and `rpt.payment_method`='".$_REQUEST['payment_method']."' ";
       }
       $q.= ' order by name asc ';
     }
