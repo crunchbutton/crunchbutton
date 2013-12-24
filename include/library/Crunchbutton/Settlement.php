@@ -33,9 +33,11 @@ Restaurant::extend(['payableOrders' => function($filters = []) {
 		$orders = Order::q($q);
 
 
-		// PER ORDER FEE CALCULATION
-		// calculate each orders fees
 		foreach ($orders as $order) {
+		
+			/***
+			 * BEGIN PER ORDER FEE CALCULATION
+			 */
 
 			// @note: i dont know what this is at all or why its a fixed 85% -devin
 			if (Crunchbutton_Credit::creditByOrderPaidBy($order->id_order, Crunchbutton_Credit::PAID_BY_PROMOTIONAL)) {
@@ -60,9 +62,18 @@ Restaurant::extend(['payableOrders' => function($filters = []) {
 				$order->restaurant()->_settlement_cash += $order->_display_final_price;
 			}
 
-			// these are fees we charge the restaurant. we subtract these values from the total
+			/***
+			 * BEGIN PER RESTAURANT FEE CALCULATION
+			 */
+
 			$order->restaurant()->_settlement_cc_fees += $order->_cc_fee;
 			$order->restaurant()->_settlement_cb_fees += $order->_cb_fee;
+			
+			// @todo: determine if a driver picked this up and add them to a payment list
+			
+			/*
+			 * END PER ORDER FEE CALCULATION
+			 ***/
 
 		}
 
@@ -99,6 +110,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 				+ $restaurant->_settlement_card
 				- $restaurant->_settlement_cc_fees
 				- $restaurant->_settlement_cb_fees;
+			/*
+			 * END PER ORDER FEE CALCULATION
+			 ***/
 		}
 	}
 
