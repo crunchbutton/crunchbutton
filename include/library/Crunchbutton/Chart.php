@@ -336,6 +336,39 @@ class Crunchbutton_Chart extends Cana_Model {
 		return date( $dateStr, strtotime( $date ) );
 	}
 
+	public function dateToMonth( $date, $showYear = false ){
+		$dateStr = ( $showYear ) ? 'M/y' : 'M';
+		return date( $dateStr, strtotime( $date ) );
+	}
+
+
+	public function dateToWeek( $date, $showYear = false ){
+			
+		if( !$this->_daysToWeek ){	
+			$query = "SELECT DISTINCT( DATE_FORMAT( o.date, '%Y-%m-%d' ) ) date,
+									YEARWEEK(o.date) week,
+									DATE_FORMAT(STR_TO_DATE(CONCAT(YEARWEEK(o.date), ' Sunday'), '%X%V %W') ,'%b %d') dateWithoutYear,
+									DATE_FORMAT(STR_TO_DATE(CONCAT(YEARWEEK(o.date), ' Sunday'), '%X%V %W') ,'%b %d %Y') dateWithYear
+									FROM `order` o
+									WHERE YEARWEEK(o.date) IS NOT NULL
+									ORDER BY week ASC";
+			$results = c::db()->get( $query );
+			$this->_daysToWeek = array();
+			foreach ( $results as $result ) {
+				if( !$result->week ){
+					continue;
+				}
+				$this->_daysToWeek[ $result->date ] = array( 'dateWithYear' => $result->dateWithYear, 'dateWithoutYear' => $result->dateWithoutYear );
+			}
+		}
+		if( $showYear ){
+			return $this->_daysToWeek[ $date ][ 'dateWithYear' ];
+		} else {
+			return $this->_daysToWeek[ $date ][ 'dateWithoutYear' ];
+		}
+
+	}
+
 	public function parseWeek( $week, $showYear = false ){
 
 		if( !$this->_weeksParsed ){	
