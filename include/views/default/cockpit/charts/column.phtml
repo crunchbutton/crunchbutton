@@ -316,6 +316,33 @@ $(function () {
 			}
 		},
 		tooltip: {
+			formatter: function (tooltip) {
+							var items = this.points || splat(this), series = items[0].series, s;
+
+							/* build the header */
+							s = [series.tooltipHeaderFormatter(items[0])];
+
+							/* sort the values */
+							items.sort(function(a, b){
+								return ((a.y < b.y) ? -1 : ((a.y > b.y) ? 1 : 0));
+							});
+							items.reverse();
+
+							/* build the values */
+							$.each(items, function (i, item) {
+								if( item.y <= 0 ){
+									return;
+								}
+									series = item.series;
+									s.push( ( series.tooltipFormatter && series.tooltipFormatter( item ) ) ||
+											item.point.tooltipFormatter( series.tooltipOptions.pointFormat ) );
+							});
+
+							/* footer */
+							s.push(tooltip.options.footerFormat || '');
+
+							return s.join('');
+					},
 			shared:true,
 			crosshairs:true,
 			valueSuffix: ' <?=$unit?>'
