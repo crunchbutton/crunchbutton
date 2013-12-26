@@ -65,7 +65,15 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				foreach( $usersToReceiveSMS as $user ){
 					$sendSMSTo[ $user->name ] = $user->txt;
 				}
-				$message = '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone()."\n C# ".$this->order()->name . ' / ' . $this->order()->phone();
+
+				$types = $this->order()->restaurant()->notification_types();
+				if( count( $types->get(0) ) > 0 ){
+					$notifications = '/ RN: ' . join( '/', $types->get(0) );
+				} else {
+					$notifications = '';
+				}
+
+				$message = '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone(). $notifications . "\n C# ".$this->order()->name . ' / ' . $this->order()->phone();
 				$message = str_split($message,160);
 				foreach ( $sendSMSTo as $supportName => $supportPhone) {
 					$num = $supportPhone;
@@ -145,7 +153,13 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				foreach( $usersToReceiveSMS as $user ){
 					$sendSMSTo[ $user->name ] = $user->txt;
 				}
-				$message = '#'.$this->id_order.' MAX CONFIRM CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone()."\nC# ".$this->order()->phone();
+				$types = $this->order()->restaurant()->notification_types();
+				if( count( $types->get(0) ) > 0 ){
+					$notifications = '/ RN: ' . join( '/', $types->get(0) );
+				} else {
+					$notifications = '';
+				}
+				$message = '#'.$this->id_order.' MAX CONFIRM CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone().$notifications."\nC# ".$this->order()->phone();
 				$message = str_split($message,160);
 				foreach ( $sendSMSTo as $supportName => $supportPhone) {
 					$num = $supportPhone;

@@ -252,6 +252,12 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						default:
 
 							$notification = Notification_Log::getMaxCallNotification( $order->id_order );	
+							$types = $order->restaurant()->notification_types();
+							if( count( $types->get(0) ) > 0 ){
+								$notifications = 'Restaurant notifications . ' . join( ' . ', $types->get(0) );
+							} else {
+								$notifications = '';
+							}
 
 							Log::debug( [ 'order' => $order->id_order, 'id_notification' => $notification->id_notification_log ,'action' => 'MAX CB', 'data' => json_encode($_REQUEST), 'type' => 'notification' ]);
 							
@@ -260,6 +266,10 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 								echo 'Max call back for order number ' . $order->id_order . ' has timed out to ' . htmlentities( $order->restaurant()->name ) . ' from ' . $order->name;
 									echo '</Say>';
 								echo '<Pause length="1" />';
+								echo '<Say voice="'.c::config()->twilio->voice.'">';
+								echo $notifications;
+									echo '</Say>';
+									echo '<Pause length="1" />';
 								echo '<Say voice="'.c::config()->twilio->voice.'">';
 									echo Notification_Log::maxCallMSayAtTheEndOfMessage();
 								echo '</Say>';
