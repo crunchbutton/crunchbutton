@@ -15,6 +15,15 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 																'users-new-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'newByMonthByCommunityGrouped' ), array( 'title' => 'Cohort', 'type' => 'cohort', 'method' => 'newByMonthCohort' ) ) ),
 															)
 												),
+												'group-historical-new-users' => array(
+														'title' => 'Historical New Users',
+														'tags' => array( 'detailed-analytics' ),
+														'charts' => array(  
+																'users-new-per-day-historical' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newByDayHistorical' ),
+																'users-new-per-week-historical' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'newByWeekHistorical' ),
+																'users-new-per-month-historical' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'newByMonthHistorical' ),
+															)
+												),
 												'group-new-users-community' => array(
 														'title' => 'New Users',
 														'tags' => array( 'reps' ),
@@ -136,6 +145,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 															 {$this->queryExcludeUsers}
 															 {$this->queryOnlyCommunties}
 														 GROUP BY u.phone ) ActiveUsers";
+	
 				$union = ' UNION ';	
 		}	
 
@@ -1359,6 +1369,58 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
+	public function newByDayHistorical( $render = false ){
+		$newUsers = $this->newByDay();
+		$usersReclaimed = $this->reclaimedByDay();
+		$data = [];
+		for( $i = 0; $i < count( $newUsers ); $i++ ){
+			$data[] = ( object ) array( 
+											'Label' => $newUsers[ $i ]->Label, 
+											'Total' => ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ), 
+											'Type' => $newUsers[ $i ]->Type, 
+											);
+		}
+		// echo '<pre>'; var_dump( $data ); exit;
+		if( $render ){
+			return array( 'data' => $data, 'unit' => 'Users', 'interval' => 'day' );
+		}
+		return $data;		
+	}	
+
+	public function newByWeekHistorical( $render = false ){
+		$newUsers = $this->newByWeek();
+		$usersReclaimed = $this->reclaimedByWeek();
+		$data = [];
+		for( $i = 0; $i < count( $newUsers ); $i++ ){
+			$data[] = ( object ) array( 
+											'Label' => $newUsers[ $i ]->Label, 
+											'Total' => ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ), 
+											'Type' => $newUsers[ $i ]->Type, 
+											);
+		}
+		// echo '<pre>'; var_dump( $data ); exit;
+		if( $render ){
+			return array( 'data' => $data, 'unit' => 'Users', 'interval' => 'week' );
+		}
+		return $data;		
+	}	
+
+	public function newByMonthHistorical( $render = false ){
+		$newUsers = $this->newByMonth();
+		$usersReclaimed = $this->reclaimedByMonth();
+		$data = [];
+		for( $i = 0; $i < count( $newUsers ); $i++ ){
+			$data[] = ( object ) array( 
+											'Label' => $newUsers[ $i ]->Label, 
+											'Total' => ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ), 
+											'Type' => $newUsers[ $i ]->Type, 
+											);
+		}
+		if( $render ){
+			return array( 'data' => $data, 'unit' => 'Users', 'interval' => 'month' );
+		}
+		return $data;		
+	}	
 	public function newByDay( $render = false ){
 
 		$query = "SELECT SUM(1) AS Total,

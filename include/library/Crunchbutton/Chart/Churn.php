@@ -25,10 +25,43 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 																// 'churn-rate-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'activeByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByMonthByCommunity' ) ) ),
 															)
 												),
+												'group-historical-churn-rate-per-active-user' => array(
+														'title' => 'Historical Churn Rate per Active User',
+														'activeDays' => 60,
+														'tags' => array( 'detailed-analytics' ),
+														'charts' => array(  
+																'historial-churn-rate-per-active-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'historicalActiveByDay'),
+															)
+												),
 										);
 
 	public function __construct() {
 		parent::__construct();
+	}
+
+	
+	public function historicalActiveByDay( $render = false ){
+		$user = new Crunchbutton_Chart_User();
+		$daysForward = $this->activeUsersInterval;
+		$activeUsers = $user->activeByDay();
+		$newUsers = $user->newByDay();
+		$activeToday = $this->activeFromLastDays();
+
+		$data = [];
+		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
+			$activeForwardDays = $activeUsers[ ( $i + $daysForward ) ]->Total;
+			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
+			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
+			$newForwardDaysPlusOne = $newUsers[ ( $i + $daysForward +  1 ) ]->Total;
+			$churn = ( ( $activeForwardDaysPlusOne + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeToday;
+			// Do not show the negatives
+			// $churn = ( $churn < 0 )	? 0 : $churn;
+			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
+		}
+		if( $render ){
+			return array( 'data' => $data, 'unit' => '%', 'interval' => 'day' );
+		}
+		return $data;		
 	}
 
 	public function activeByDay( $render = false ){

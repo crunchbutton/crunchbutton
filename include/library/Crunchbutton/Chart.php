@@ -3,9 +3,9 @@
 class Crunchbutton_Chart extends Cana_Model {
 
 	public $activeUsersInterval = 45; // Days
-	public $queryOnlyCommunties = 'AND c.id_community IN (1, 4)';
-	public $queryExcludeCommunties = "AND c.name != 'Testing' AND c.name IS NOT NULL";
-	public $queryExcludeUsers = "AND o.name NOT LIKE '%test%' and o.name != 'Judd' and o.name != 'dave' and o.name != 'Nick' and o.name != 'Devin' AND ( o.id_community != 6 OR o.id_community IS NULL ) ";
+	public $queryOnlyCommunties = ''; // 'AND c.id_community IN (1, 4)';
+	public $queryExcludeCommunties = ''; //"AND c.name != 'Testing' AND c.name IS NOT NULL";
+	public $queryExcludeUsers = "AND o.name NOT LIKE '%test%' and o.name != 'Judd' and o.name != 'dave' and o.name != 'Nick' and o.name != 'Devin'";
 	public $minDate = '2012-09-02'; #Issue 1523 - Fist week of September/12
 
 	public $from_month;
@@ -236,6 +236,22 @@ class Crunchbutton_Chart extends Cana_Model {
 			$communities[] = $result->community;
 		}
 		return $communities;
+	}
+
+	public function activeFromLastDays( $lastDays = 60 ){
+		$query = "SELECT COUNT(*) as Total
+								FROM
+								  (SELECT u.phone,
+								          o.date,
+								          u.id_user
+								   FROM `order` o
+								   INNER JOIN user u ON u.id_user = o.id_user
+								   WHERE o.date >= NOW() - INTERVAL {$lastDays} DAY
+								    	{$this->queryExcludeUsers}
+								   GROUP BY u.phone) active"; 
+
+		$results = c::db()->get( $query );
+		return $results->get(0)->Total;
 	}
 
 	public function allDays(){
