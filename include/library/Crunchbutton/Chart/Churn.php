@@ -61,7 +61,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
 			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
 			$newForwardDaysPlusOne = $newUsers[ ( $i + $daysForward +  1 ) ]->Total;
-			$churn = ( ( $activeToday + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeToday;
+			$churn = ( ( $activeLastDays + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeToday;
 			// $churn = ( ( $activeForwardDays + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeLastDays;
 			// Do not show the negatives
 			$churn = ( $churn < 0 )	? 0 : $churn;
