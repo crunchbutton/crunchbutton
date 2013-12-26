@@ -11,8 +11,8 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 														'activeDays' => 60,
 														'charts' => array(  
 																'churn-rate-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byDay' ),
-																// 'churn-rate-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byWeek'),
-																// 'churn-rate-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byMonth'),
+																'churn-rate-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byWeek'),
+																'churn-rate-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byMonth'),
 															)
 												),
 												'group-churn-rate-per-active-user' => array(
@@ -21,8 +21,8 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 														'tags' => array( 'investors' ),
 														'charts' => array(  
 																'churn-rate-per-active-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'activeByDay'),
-																// 'churn-rate-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'activeByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByWeekByCommunity' ) ) ),
-																// 'churn-rate-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'activeByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByMonthByCommunity' ) ) ),
+																'churn-rate-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'activeByWeek' /* , 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByWeekByCommunity' ) ) */ ),
+																'churn-rate-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'activeByMonth' /*, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByMonthByCommunity' ) ) */ ),
 															)
 												),
 												'group-historical-churn' => array(
@@ -99,37 +99,6 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 	}
 
 	public function activeByDay( $render = false ){
-	/* OLD FORMULA
-		$user = new Crunchbutton_Chart_User();
-
-		$activeUsers = $user->activeByDay();
-		$newUsers = $user->newByDay();
-
-		$data = [];
-		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
-			$active = $activeUsers[ $i ]->Total;
-			$new = $newUsers[ $i ]->Total;
-			if( $i - 1 >= 0 ){
-				$activePrev = $activeUsers[ $i - 1 ]->Total;
-			} else {
-				$activePrev = 0;
-			}
-			$lost = ( ( $activePrev + $new ) - $active );
-			$lost = ( $lost < 0 )	? 0 : $lost;
-
-			// Formula: so, divide the number lost by the previous day's total
-			if( $activePrev != 0 && $lost != 0 ){
-				$result = $lost / $activePrev;	
-			} else {
-				$result = 0;
-			}
-			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => number_format( $result, 4 ), 'Type' => 'Total' );
-		}
-		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
-		}
-		return $data;
-	*/		
 		$user = new Crunchbutton_Chart_User();
 		$daysForward = $this->activeUsersInterval;
 		$activeUsers = $user->activeByDay();
@@ -148,7 +117,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
 		}
 		if( $render ){
-			return array( 'data' => $data, 'unit' => '%', 'interval' => 'day' );
+			return array( 'data' => $data, 'unit' => 'Users', 'interval' => 'day' );
 		}
 		return $data;
 	}
@@ -209,69 +178,119 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 	}
 
 	public function activeByMonth( $render = false ){
-		
-		$user = new Crunchbutton_Chart_User();
-
-		$activeUsers = $user->activeByMonth();
-		$newUsers = $user->newByMonth();
-
-		$data = [];
-		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
-			$active = $activeUsers[ $i ]->Total;
-			$new = $newUsers[ $i ]->Total;
-			if( $i - 1 >= 0 ){
-				$activePrev = $activeUsers[ $i - 1 ]->Total;
-			} else {
-				$activePrev = 0;
-			}
-			$lost = ( ( $activePrev + $new ) - $active );
-			$lost = ( $lost < 0 )	? 0 : $lost;
-
-			// Formula: so, divide the number lost by the previous month's total
-			if( $activePrev != 0 && $lost != 0 ){
-				$result = $lost / $activePrev;	
-			} else {
-				$result = 0;
-			}
-			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => number_format( $result, 4 ), 'Type' => 'Total' );
-		}
-		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
-		}
-		return $data;
-	}
-
-	public function activeByWeek( $render = false ){
 
 		$user = new Crunchbutton_Chart_User();
-
-		$activeUsers = $user->activeByWeek();
-		$newUsers = $user->newByWeek();
-
-		$data = [];
+		$daysForward = $this->activeUsersInterval;
+		$activeUsers = $user->activeByDay();
+		$newUsers = $user->newByDay();
+		// Formula #2251
+		$_data = [];
 		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
-			$active = $activeUsers[ $i ]->Total;
-			$new = $newUsers[ $i ]->Total;
-			if( $i - 1 >= 0 ){
-				$activePrev = $activeUsers[ $i - 1 ]->Total;
-			} else {
-				$activePrev = 0;
-			}
-			$lost = ( ( $activePrev + $new ) - $active );
-			$lost = ( $lost < 0 )	? 0 : $lost;
-
-			// Formula: so, divide the number lost by the previous week's total
-			if( $activePrev != 0 && $lost != 0 ){
-				$result = $lost / $activePrev;	
-			} else {
-				$result = 0;
-			}
-			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => number_format( $result, 4 ), 'Type' => 'Total' );
+			$activeToday = $activeUsers[ $i ];
+			$activeForwardDays = $activeUsers[ ( $i + $daysForward ) ]->Total;
+			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
+			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
+			$newForwardDaysPlusOne = $newUsers[ ( $i + $daysForward +  1 ) ]->Total;
+			$_data[] = array( 'activeToday' => $activeToday, 'activeForwardDays' => $activeForwardDays, 'activeForwardDaysPlusOne' => $activeForwardDaysPlusOne, 'newForwardDays' => $newForwardDays, 'newForwardDaysPlusOne' => $newForwardDaysPlusOne );
 		}
+		$allDays = $this->allDays();
+		$days = [];
+		$months = [];
+		$data = [];
+
+		$byDay = $this->activeByDay();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$days[] = $allDays[ $i ];
+		}
+
+		for( $i = 0; $i < count( $byDay ); $i++ ){
+			$month = $this->dateToMonth( $days[ $i ] );
+			if( !$months[ $month ] ){
+				
+				$months[ $month ] = array( 	'Label' => $month,
+																	'activeToday' => $_data[ $i ][ 'activeToday' ], 
+																	'activeForwardDays' => $_data[ $i ][ 'activeForwardDays' ], 
+																	'activeForwardDaysPlusOne' => $_data[ $i ][ 'activeForwardDaysPlusOne' ], 
+																	'newForwardDays' => $_data[ $i ][ 'newForwardDays' ], 
+																	'newForwardDaysPlusOne' => $_data[ $i ][ 'newForwardDaysPlusOne' ]
+																);
+			} else {
+				$months[ $month ][ 'activeToday' ] = $months[ $month ][ 'activeToday' ] + $_data[ $i ][ 'activeToday' ];
+				$months[ $month ][ 'activeForwardDays' ] = $months[ $month ][ 'activeForwardDays' ] + $_data[ $i ][ 'activeForwardDays' ];
+				$months[ $month ][ 'activeForwardDaysPlusOne' ] = $months[ $month ][ 'activeForwardDaysPlusOne' ] + $_data[ $i ][ 'activeForwardDaysPlusOne' ];
+				$months[ $month ][ 'newForwardDays' ] = $months[ $month ][ 'newForwardDays' ] + $_data[ $i ][ 'newForwardDays' ];
+				$months[ $month ][ 'newForwardDaysPlusOne' ] = $months[ $month ][ 'newForwardDaysPlusOne' ] + $_data[ $i ][ 'newForwardDaysPlusOne' ];
+			}
+		}
+
+		foreach( $months as $month ){
+			$churn = ( ( $month[ 'activeForwardDaysPlusOne' ] + $month[ 'newForwardDaysPlusOne' ] ) - $month[ 'activeForwardDaysPlusOne' ] ) / $month[ 'activeToday' ];
+			$data[] = ( object ) array( 'Label' => $month[ 'Label' ] , 'Total' => $churn, 'Type' => '%' );
+		}
+
 		if( $render ){
 			return array( 'data' => $data, 'unit' => $this->unit );
 		}
 		return $data;
+	}
+
+	public function activeByWeek( $render = false ){		
+		$user = new Crunchbutton_Chart_User();
+		$daysForward = $this->activeUsersInterval;
+		$activeUsers = $user->activeByDay();
+		$newUsers = $user->newByDay();
+		// Formula #2251
+		$_data = [];
+		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
+			$activeToday = $activeUsers[ $i ];
+			$activeForwardDays = $activeUsers[ ( $i + $daysForward ) ]->Total;
+			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
+			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
+			$newForwardDaysPlusOne = $newUsers[ ( $i + $daysForward +  1 ) ]->Total;
+			$_data[] = array( 'activeToday' => $activeToday, 'activeForwardDays' => $activeForwardDays, 'activeForwardDaysPlusOne' => $activeForwardDaysPlusOne, 'newForwardDays' => $newForwardDays, 'newForwardDaysPlusOne' => $newForwardDaysPlusOne );
+		}
+		$allDays = $this->allDays();
+		$days = [];
+		$weeks = [];
+		$data = [];
+
+		$byDay = $this->activeByDay();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$days[] = $allDays[ $i ];
+		}
+
+		for( $i = 0; $i < count( $byDay ); $i++ ){
+			$week = $this->dateToWeek( $days[ $i ] );
+			if( !$weeks[ $week ] ){
+				
+				$weeks[ $week ] = array( 	'Label' => $week,
+																	'activeToday' => $_data[ $i ][ 'activeToday' ], 
+																	'activeForwardDays' => $_data[ $i ][ 'activeForwardDays' ], 
+																	'activeForwardDaysPlusOne' => $_data[ $i ][ 'activeForwardDaysPlusOne' ], 
+																	'newForwardDays' => $_data[ $i ][ 'newForwardDays' ], 
+																	'newForwardDaysPlusOne' => $_data[ $i ][ 'newForwardDaysPlusOne' ]
+																);
+			} else {
+				$weeks[ $week ][ 'activeToday' ] = $weeks[ $week ][ 'activeToday' ] + $_data[ $i ][ 'activeToday' ];
+				$weeks[ $week ][ 'activeForwardDays' ] = $weeks[ $week ][ 'activeForwardDays' ] + $_data[ $i ][ 'activeForwardDays' ];
+				$weeks[ $week ][ 'activeForwardDaysPlusOne' ] = $weeks[ $week ][ 'activeForwardDaysPlusOne' ] + $_data[ $i ][ 'activeForwardDaysPlusOne' ];
+				$weeks[ $week ][ 'newForwardDays' ] = $weeks[ $week ][ 'newForwardDays' ] + $_data[ $i ][ 'newForwardDays' ];
+				$weeks[ $week ][ 'newForwardDaysPlusOne' ] = $weeks[ $week ][ 'newForwardDaysPlusOne' ] + $_data[ $i ][ 'newForwardDaysPlusOne' ];
+			}
+		}
+
+		foreach( $weeks as $week ){
+			$churn = ( ( $week[ 'activeForwardDaysPlusOne' ] + $week[ 'newForwardDaysPlusOne' ] ) - $week[ 'activeForwardDaysPlusOne' ] ) / $week[ 'activeToday' ];
+			$data[] = ( object ) array( 'Label' => $week[ 'Label' ] , 'Total' => $churn, 'Type' => '%' );
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit );
+		}
+		return $data;
+		
 	}
 
 	public function activeByWeekByCommunity( $render = false ){
@@ -331,25 +350,30 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 
 	public function byWeek( $render = false ){
 
-		$user = new Crunchbutton_Chart_User();
-
-		$activeUsers = $user->activeByWeek();
-		$newUsers = $user->newByWeek();
-
+		$allDays = $this->allDays();
+		$days = [];
+		$weeks = [];
 		$data = [];
-		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
-			$active = $activeUsers[ $i ]->Total;
-			$new = $newUsers[ $i ]->Total;
-			if( $i - 1 >= 0 ){
-				$activePrev = $activeUsers[ $i - 1 ]->Total;
-			} else {
-				$activePrev = 0;
-			}
-			$churn = ( ( $activePrev + $new ) - $active );
-			// Do not show the negatives
-			$churn = ( $churn < 0 )	? 0 : $churn;
-			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
+
+		$byDay = $this->byDay();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$days[] = $allDays[ $i ];
 		}
+
+		for( $i = 0; $i < count( $byDay ); $i++ ){
+			$week = $this->dateToWeek( $days[ $i ] );
+			if( !$weeks[ $week ] ){
+				$weeks[ $week ] = array( 'Label' => $week, 'Total' => $byDay[ $i ]->Total );
+			} else {
+				$weeks[ $week ][ 'Total' ] = $weeks[ $week ][ 'Total' ] + $byDay[ $i ]->Total;
+			}
+		}
+
+		foreach( $weeks as $week ){
+			$data[] = ( object ) array( 'Label' => $week[ 'Label' ] , 'Total' => $week[ 'Total' ], 'Type' => 'Users' );
+		}
+
 		if( $render ){
 			return array( 'data' => $data, 'unit' => $this->unit );
 		}
@@ -357,36 +381,10 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 	}
 
 	public function byDay( $render = false ){
-		/* THE OLD AND WRONG FORMULA
-		$user = new Crunchbutton_Chart_User();
-
-		$activeUsers = $user->activeByDay();
-		$newUsers = $user->newByDay();
-
-		$data = [];
-		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
-			$active = $activeUsers[ $i ]->Total;
-			$new = $newUsers[ $i ]->Total;
-			if( $i - 1 >= 0 ){
-				$activePrev = $activeUsers[ $i - 1 ]->Total;
-			} else {
-				$activePrev = 0;
-			}
-			$churn = ( ( $activePrev + $new ) - $active );
-			// Do not show the negatives
-			$churn = ( $churn < 0 )	? 0 : $churn;
-
-			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
-		}
-		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
-		}
-		return $data;
-		*/
+		
 		$user = new Crunchbutton_Chart_User();
 		$daysForward = $this->activeUsersInterval;
 		$activeUsers = $user->activeByDay();
-		$newUsers = $user->newByDay();
 		// Formula #2251
 		$data = [];
 		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
@@ -406,29 +404,33 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 	}
 
 	public function byMonth( $render = false ){
-		
-		$user = new Crunchbutton_Chart_User();
 
-		$activeUsers = $user->activeByMonth();
-		$newUsers = $user->newByMonth();
-
+		$allDays = $this->allDays();
+		$days = [];
+		$months = [];
 		$data = [];
-		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
-			$active = $activeUsers[ $i ]->Total;
-			$new = $newUsers[ $i ]->Total;
-			if( $i - 1 >= 0 ){
-				$activePrev = $activeUsers[ $i - 1 ]->Total;
-			} else {
-				$activePrev = 0;
-			}
-			$churn = ( ( $activePrev + $new ) - $active );
-			// Do not show the negatives
-			$churn = ( $churn < 0 )	? 0 : $churn;
 
-			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
+		$byDay = $this->byDay();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$days[] = $allDays[ $i ];
 		}
+
+		for( $i = 0; $i < count( $byDay ); $i++ ){
+			$month = $this->dateToMonth( $days[ $i ], true );
+			if( !$months[ $month ] ){
+				$months[ $month ] = array( 'Label' => $month, 'Total' => $byDay[ $i ]->Total );
+			} else {
+				$months[ $month ][ 'Total' ] = $months[ $month ][ 'Total' ] + $byDay[ $i ]->Total;
+			}
+		}
+
+		foreach( $months as $month ){
+			$data[] = ( object ) array( 'Label' => $month[ 'Label' ] , 'Total' => $month[ 'Total' ], 'Type' => 'Users' );
+		}
+
 		if( $render ){
-			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'month' );
+			return array( 'data' => $data, 'unit' => $this->unit );
 		}
 		return $data;
 	}
