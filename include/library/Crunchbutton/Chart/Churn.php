@@ -45,7 +45,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 		$daysForward = $this->activeUsersInterval;
 		$activeUsers = $user->activeByDay();
 		$newUsers = $user->newByDay();
-		$activeToday = $this->activeFromLastDays();
+		$activeLastDays = $this->activeFromLastDays();
 
 		$data = [];
 		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
@@ -53,15 +53,15 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
 			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
 			$newForwardDaysPlusOne = $newUsers[ ( $i + $daysForward +  1 ) ]->Total;
-			$churn = ( ( $activeForwardDaysPlusOne + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeToday;
+			$churn = ( ( $activeForwardDaysPlusOne + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeLastDays;
 			// Do not show the negatives
-			// $churn = ( $churn < 0 )	? 0 : $churn;
+			$churn = ( $churn < 0 )	? 0 : $churn;
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
 		}
 		if( $render ){
-			return array( 'data' => $data, 'unit' => '%', 'interval' => 'day' );
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
 		}
-		return $data;		
+		return $data;
 	}
 
 	public function activeByDay( $render = false ){
