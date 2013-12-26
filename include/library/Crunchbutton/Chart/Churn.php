@@ -57,6 +57,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 
 		$data = [];
 		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
+			$activeToday = $activeUsers[ $i ]->Total;
 			$activeForwardDays = $activeUsers[ ( $i + $daysForward ) ]->Total;
 			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
 			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
