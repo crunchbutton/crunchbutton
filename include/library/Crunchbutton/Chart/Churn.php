@@ -11,8 +11,8 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 														'activeDays' => 60,
 														'charts' => array(  
 																'churn-rate-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'byDay' ),
-																'churn-rate-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byWeek'),
-																'churn-rate-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byMonth'),
+																// 'churn-rate-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'byWeek'),
+																// 'churn-rate-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'byMonth'),
 															)
 												),
 												'group-churn-rate-per-active-user' => array(
@@ -21,8 +21,8 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 														'tags' => array( 'investors' ),
 														'charts' => array(  
 																'churn-rate-per-active-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'activeByDay'),
-																'churn-rate-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'activeByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByWeekByCommunity' ) ) ),
-																'churn-rate-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'activeByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByMonthByCommunity' ) ) ),
+																// 'churn-rate-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'activeByWeek', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByWeekByCommunity' ) ) ),
+																// 'churn-rate-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'activeByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByMonthByCommunity' ) ) ),
 															)
 												),
 										);
@@ -32,7 +32,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 	}
 
 	public function activeByDay( $render = false ){
-		
+	/* OLD FORMULA
 		$user = new Crunchbutton_Chart_User();
 
 		$activeUsers = $user->activeByDay();
@@ -60,6 +60,28 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 		}
 		if( $render ){
 			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $data;
+	*/		
+		$user = new Crunchbutton_Chart_User();
+		$daysForward = $this->activeUsersInterval;
+		$activeUsers = $user->activeByDay();
+		$newUsers = $user->newByDay();
+		// Formula #2251
+		$data = [];
+		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
+			$activeToday = $activeUsers[ $i ];
+			$activeForwardDays = $activeUsers[ ( $i + $daysForward ) ]->Total;
+			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
+			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
+			$newForwardDaysPlusOne = $newUsers[ ( $i + $daysForward +  1 ) ]->Total;
+			$churn = ( ( $activeForwardDaysPlusOne + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeToday;
+			// Do not show the negatives
+			// $churn = ( $churn < 0 )	? 0 : $churn;
+			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
+		}
+		if( $render ){
+			return array( 'data' => $data, 'unit' => '%', 'interval' => 'day' );
 		}
 		return $data;
 	}
@@ -268,7 +290,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 	}
 
 	public function byDay( $render = false ){
-		
+		/* THE OLD AND WRONG FORMULA
 		$user = new Crunchbutton_Chart_User();
 
 		$activeUsers = $user->activeByDay();
@@ -287,6 +309,27 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			// Do not show the negatives
 			$churn = ( $churn < 0 )	? 0 : $churn;
 
+			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
+		}
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $data;
+		*/
+		$user = new Crunchbutton_Chart_User();
+		$daysForward = $this->activeUsersInterval;
+		$activeUsers = $user->activeByDay();
+		$newUsers = $user->newByDay();
+		// Formula #2251
+		$data = [];
+		for( $i = 0; $i < sizeof( $activeUsers ); $i++ ){
+			$activeForwardDays = $activeUsers[ ( $i + $daysForward ) ]->Total;
+			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
+			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
+			$newForwardDaysPlusOne = $newUsers[ ( $i + $daysForward +  1 ) ]->Total;
+			$churn = ( ( $activeForwardDaysPlusOne + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne );
+			// Do not show the negatives
+			$churn = ( $churn < 0 )	? 0 : $churn;
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
 		}
 		if( $render ){
