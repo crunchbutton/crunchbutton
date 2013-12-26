@@ -26,11 +26,11 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 															)
 												),
 												'group-historical-churn-rate-per-active-user' => array(
-														'title' => 'Historical Churn Rate per Active User',
+														'title' => 'Historical Churn',
 														'activeDays' => 60,
 														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
-																'historial-churn-rate-per-active-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'historicalActiveByDay'),
+																'historial-churn-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'historicalChurnByDay'),
 															)
 												),
 										);
@@ -40,7 +40,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 	}
 
 	
-	public function historicalActiveByDay( $render = false ){
+	public function historicalChurnByDay( $render = false ){
 		$user = new Crunchbutton_Chart_User();
 		$daysForward = $this->activeUsersInterval;
 		$activeUsers = $user->activeByDay();
@@ -53,7 +53,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
 			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
 			$newForwardDaysPlusOne = $newUsers[ ( $i + $daysForward +  1 ) ]->Total;
-			$churn = ( ( $activeForwardDaysPlusOne + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeLastDays;
+			$churn = ( ( $activeLastDays + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne );
 			// Do not show the negatives
 			$churn = ( $churn < 0 )	? 0 : $churn;
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
