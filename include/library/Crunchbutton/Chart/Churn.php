@@ -61,7 +61,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
 			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
 			$newForwardDaysPlusOne = $newUsers[ ( $i + $daysForward +  1 ) ]->Total;
-			$churn = ( ( $activeForwardDaysPlusOne + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeToday;
+			$churn = ( ( $activeForwardDays + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeToday;
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
 		}
 		if( $render ){
@@ -105,9 +105,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			$activeForwardDaysPlusOne = $activeUsers[ ( $i + $daysForward + 1 ) ]->Total;
 			$newForwardDays = $newUsers[ ( $i + $daysForward ) ]->Total;
 			$newForwardDaysPlusOne = $newUsers[ ( $i + $daysForward +  1 ) ]->Total;
-			$churn = ( ( $activeForwardDaysPlusOne + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeToday;
-			// Do not show the negatives
-			// $churn = ( $churn < 0 )	? 0 : $churn;
+			$churn = ( ( $activeForwardDays + $newForwardDaysPlusOne ) - $activeForwardDaysPlusOne ) / $activeToday;
 			$data[] = ( object ) array( 'Label' => $activeUsers[ $i ]->Label, 'Total' => $churn, 'Type' => 'Users' );
 		}
 		if( $render ){
