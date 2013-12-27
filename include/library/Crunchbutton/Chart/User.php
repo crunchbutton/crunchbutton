@@ -16,7 +16,7 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 															)
 												),
 												'group-historical-new-users' => array(
-														'title' => 'Historical New Users',
+														'title' => 'New + Unchurned Users',
 														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'users-new-per-day-historical' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'newByDayHistorical' ),
@@ -1372,15 +1372,15 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	public function newByDayHistorical( $render = false ){
 		$newUsers = $this->newByDay();
 		$usersReclaimed = $this->reclaimedByDay();
+		$activeUsers = $this->activeByDay();
 		$data = [];
 		for( $i = 0; $i < count( $newUsers ); $i++ ){
 			$data[] = ( object ) array( 
 											'Label' => $newUsers[ $i ]->Label, 
-											'Total' => ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ), 
+											'Total' => ( ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ) / $activeUsers[ $i ]->Total ), 
 											'Type' => $newUsers[ $i ]->Type, 
 											);
 		}
-		// echo '<pre>'; var_dump( $data ); exit;
 		if( $render ){
 			return array( 'data' => $data, 'unit' => 'Users', 'interval' => 'day' );
 		}
@@ -1390,15 +1390,15 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	public function newByWeekHistorical( $render = false ){
 		$newUsers = $this->newByWeek();
 		$usersReclaimed = $this->reclaimedByWeek();
+		$activeUsers = $this->activeByWeek();
 		$data = [];
 		for( $i = 0; $i < count( $newUsers ); $i++ ){
 			$data[] = ( object ) array( 
 											'Label' => $newUsers[ $i ]->Label, 
-											'Total' => ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ), 
+											'Total' => ( ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ) / $activeUsers[ $i ]->Total ), 
 											'Type' => $newUsers[ $i ]->Type, 
 											);
 		}
-		// echo '<pre>'; var_dump( $data ); exit;
 		if( $render ){
 			return array( 'data' => $data, 'unit' => 'Users', 'interval' => 'week' );
 		}
@@ -1408,11 +1408,12 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	public function newByMonthHistorical( $render = false ){
 		$newUsers = $this->newByMonth();
 		$usersReclaimed = $this->reclaimedByMonth();
+		$activeUsers = $this->activeByMonth();
 		$data = [];
 		for( $i = 0; $i < count( $newUsers ); $i++ ){
 			$data[] = ( object ) array( 
 											'Label' => $newUsers[ $i ]->Label, 
-											'Total' => ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ), 
+											'Total' => ( ( $newUsers[ $i ]->Total + $usersReclaimed[ $i ]->Total ) / $activeUsers[ $i ]->Total ), 
 											'Type' => $newUsers[ $i ]->Type, 
 											);
 		}
