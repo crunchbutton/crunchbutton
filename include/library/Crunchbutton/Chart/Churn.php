@@ -31,6 +31,8 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'historial-churn-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'historicalChurnByDay'),
+																'historial-churn-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'historicalChurnByWeek'),
+																'historial-churn-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'historicalChurnByMonth'),
 															)
 												),
 												'group-historical-churn-rate-per-active-user' => array(
@@ -39,6 +41,8 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 														'tags' => array( 'detailed-analytics' ),
 														'charts' => array(  
 																'historial-churn-rate-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'historicalChurnRateByDay'),
+																'historial-churn-rate-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'historicalChurnRateByWeek'),
+																'historial-churn-rate-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'historicalChurnRateByMonth'),
 															)
 												),
 										);
@@ -47,7 +51,68 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 		parent::__construct();
 	}
 
+	public function historicalChurnRateByWeek( $render = false ){
+		$allDays = $this->allDays();
+		$days = [];
+		$weeks = [];
+		$data = [];
+
+		$byDay = $this->historicalChurnRateByDay();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$days[] = $allDays[ $i ];
+		}
+
+		for( $i = 0; $i < count( $byDay ); $i++ ){
+			$week = $this->dateToWeek( $days[ $i ] );
+			if( !$weeks[ $week ] ){
+				$weeks[ $week ] = array( 'Label' => $week, 'Total' => $byDay[ $i ]->Total );
+			} else {
+				$weeks[ $week ][ 'Total' ] = $weeks[ $week ][ 'Total' ] + $byDay[ $i ]->Total;
+			}
+		}
+
+		foreach( $weeks as $week ){
+			$data[] = ( object ) array( 'Label' => $week[ 'Label' ] , 'Total' => $week[ 'Total' ], 'Type' => 'Users' );
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit );
+		}
+		return $data;
+	}
 	
+	public function historicalChurnRateByMonth( $render = false ){
+		$allDays = $this->allDays();
+		$days = [];
+		$months = [];
+		$data = [];
+
+		$byDay = $this->historicalChurnRateByDay();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$days[] = $allDays[ $i ];
+		}
+
+		for( $i = 0; $i < count( $byDay ); $i++ ){
+			$month = $this->dateToMonth( $days[ $i ], true );
+			if( !$months[ $month ] ){
+				$months[ $month ] = array( 'Label' => $month, 'Total' => $byDay[ $i ]->Total );
+			} else {
+				$months[ $month ][ 'Total' ] = $months[ $month ][ 'Total' ] + $byDay[ $i ]->Total;
+			}
+		}
+
+		foreach( $months as $month ){
+			$data[] = ( object ) array( 'Label' => $month[ 'Label' ] , 'Total' => $month[ 'Total' ], 'Type' => 'Users' );
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit );
+		}
+		return $data;
+	}
+
 	public function historicalChurnRateByDay( $render = false ){
 		$user = new Crunchbutton_Chart_User();
 		$daysForward = $this->activeUsersInterval;
@@ -72,6 +137,71 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 			return array( 'data' => $data, 'unit' => 'Users', 'interval' => 'day' );
 		}
 		return $data;
+	}
+
+
+	public function historicalChurnByMonth( $render = false ){
+		$allDays = $this->allDays();
+		$days = [];
+		$months = [];
+		$data = [];
+
+		$byDay = $this->historicalChurnByDay();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$days[] = $allDays[ $i ];
+		}
+
+		for( $i = 0; $i < count( $byDay ); $i++ ){
+			$month = $this->dateToMonth( $days[ $i ], true );
+			if( !$months[ $month ] ){
+				$months[ $month ] = array( 'Label' => $month, 'Total' => $byDay[ $i ]->Total );
+			} else {
+				$months[ $month ][ 'Total' ] = $months[ $month ][ 'Total' ] + $byDay[ $i ]->Total;
+			}
+		}
+
+		foreach( $months as $month ){
+			$data[] = ( object ) array( 'Label' => $month[ 'Label' ] , 'Total' => $month[ 'Total' ], 'Type' => 'Users' );
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit );
+		}
+		return $data;
+	}
+
+	public function historicalChurnByWeek( $render = false ){
+		
+		$allDays = $this->allDays();
+		$days = [];
+		$weeks = [];
+		$data = [];
+
+		$byDay = $this->historicalChurnByDay();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$days[] = $allDays[ $i ];
+		}
+
+		for( $i = 0; $i < count( $byDay ); $i++ ){
+			$week = $this->dateToWeek( $days[ $i ] );
+			if( !$weeks[ $week ] ){
+				$weeks[ $week ] = array( 'Label' => $week, 'Total' => $byDay[ $i ]->Total );
+			} else {
+				$weeks[ $week ][ 'Total' ] = $weeks[ $week ][ 'Total' ] + $byDay[ $i ]->Total;
+			}
+		}
+
+		foreach( $weeks as $week ){
+			$data[] = ( object ) array( 'Label' => $week[ 'Label' ] , 'Total' => $week[ 'Total' ], 'Type' => 'Users' );
+		}
+
+		if( $render ){
+			return array( 'data' => $data, 'unit' => $this->unit );
+		}
+		return $data;
+
 	}
 
 	public function historicalChurnByDay( $render = false ){
