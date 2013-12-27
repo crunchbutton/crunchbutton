@@ -121,35 +121,55 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		parent::__construct();
 	}
 
+	public function activeHistoricalByDay( $render = false ){
+
+		$query = [];
+
+		$allMonths = $this->allDays();
+		
+		$now = time();
+
+		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
+			$day = $allMonths[ $i ];
+
+			$days = floor( ( $now - strtotime( $day ) ) / ( 60 * 60 * 24 ) ) + $this->activeUsersInterval;
+
+			$query[] = "SELECT '{$day}' AS Day, 
+													COUNT(*) AS Total FROM 
+													( SELECT DISTINCT( o.phone ) FROM `order` o WHERE o.date <= '{$day}'  ) a,
+													( SELECT DISTINCT( o.phone ) FROM `order` o WHERE o.date >= NOW() - INTERVAL $days DAY ) b
+										WHERE a.phone = b.phone";
+		}	
+
+		$parsedData = $this->parseDataDaysSimple( join( ' UNION ', $query ), $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
 	public function activeByDay( $render = false ){
 
-		$query = '';
-		$union = '';
+		$query = [];
 
 		$allMonths = $this->allDays();
 
 		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
 			$day = $allMonths[ $i ];
-			$query .= $union . "SELECT '{$day}' AS Day,
+			$query[] = "SELECT '{$day}' AS Day,
 																 COUNT(*) AS Total
 													FROM
-														( SELECT u.phone,
+														( SELECT o.phone,
 																		 o.date,
-																		 u.id_user,
-																		 c.name
+																		 o.id_user
 														 FROM `order` o
-														 INNER JOIN user u ON u.id_user = o.id_user
-														 LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
 														 WHERE o.date <= '{$day}'
 														 	 AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
 															 {$this->queryExcludeUsers}
-															 {$this->queryOnlyCommunties}
-														 GROUP BY u.phone ) ActiveUsers";
-	
-				$union = ' UNION ';	
+														 GROUP BY o.phone ) ActiveUsers";
 		}	
 
-		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+		$parsedData = $this->parseDataDaysSimple( join( ' UNION ', $query ), $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
@@ -282,32 +302,25 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 	public function activeByMonth( $render = false ){
 
-		$query = '';
-		$union = '';
+		$query = [];
 
 		$allMonths = $this->allMonths();
 		for( $i = $this->from_month -1 ; $i < $this->to_month; $i++ ){
 			$month = $allMonths[ $i ];
-			$query .= $union . "SELECT '{$month}' AS Month,
+			$query[] = "SELECT '{$month}' AS Month,
 																 COUNT(*) AS Total
 													FROM
-														( SELECT u.phone,
+														( SELECT o.phone,
 																		 o.date,
-																		 u.id_user,
-																		 c.name
+																		 o.id_user
 														 FROM `order` o
-														 INNER JOIN user u ON u.id_user = o.id_user
-														 LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
 														 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
 															 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
 															 {$this->queryExcludeUsers}
-															 {$this->queryOnlyCommunties}
-														 GROUP BY u.phone ) ActiveUsers";
-
-				$union = ' UNION ';	
+														 GROUP BY o.phone ) ActiveUsers";
 		}	
 
-		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
+		$parsedData = $this->parseDataMonthSimple( join( ' UNION ', $query ), $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
 		}
@@ -609,29 +622,24 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$allWeeks = $this->allWeeks();
 
-		$query = '';
-		$union = '';
+		$query = [];
 		for( $i = $this->from -1 ; $i < $this->to; $i++ ){
 			$week = $allWeeks[ $i ];
 
-			$query .= $union . "SELECT '{$week}' AS Week,
+			$query[] = "SELECT '{$week}' AS Week,
 																 COUNT(*) AS Total
 													FROM
-														( SELECT u.phone,
+														( SELECT o.phone,
 																		 o.date,
-																		 u.id_user,
-																		 c.name
+																		 o.id_user
 														 FROM `order` o
-														 INNER JOIN user u ON u.id_user = o.id_user
-														 LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
 														 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 															 AND o.date >= STR_TO_DATE('{$week} Saturday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
 															 {$this->queryExcludeUsers}
-														 GROUP BY u.phone) ActiveUsers";
-				$union = ' UNION ';	
+														 GROUP BY o.phone) ActiveUsers";
 		}
 
-		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
+		$parsedData = $this->parseDataWeeksSimple( join( ' UNION ', $query ), $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
 		}
