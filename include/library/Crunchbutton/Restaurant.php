@@ -1345,7 +1345,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			if( $out[ 'delivery' ] != 1 ){
 				$out['_tag']  = 'takeout';	
 			} else {
-				if( $out['_closesIn'] <= $out['_minimumTime'] ){
+				if( $out['_closesIn'] <= $out['_minimumTime'] && $out['_closesIn'] !== false){
 					$out['_tag']  = 'closing';
 				}
 			}

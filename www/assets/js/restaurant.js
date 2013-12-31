@@ -116,13 +116,15 @@ var Restaurant = function(id) {
 				min_open += 60;
 			}
 			this._openIn = ( Math.floor( ( nextOpenShouldBe - now_utc_hour ) / 100 ) * 60 ) + ( min_open - min_now );
-		}		
+		}
+		
+		this._tag = '';
 
 		// Add the tags
 		if( !this._open ){
 			this._tag = 'closed';
 		} 
-		if( this._open && this._closesIn <= this._minimumTime ){
+		if( this._open && this._closesIn <= this._minimumTime && this._closesIn !== 'false'){
 			this._tag = 'closing';
 		}
 
