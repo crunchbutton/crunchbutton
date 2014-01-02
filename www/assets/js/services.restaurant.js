@@ -204,14 +204,14 @@ NGApp.factory( 'RestaurantService', function ($http, $routeParams, $rootScope, C
 	}
 
 	service.init = function(){
-		console.time('restaurant');
+
 		
 		App.cache('Restaurant', $routeParams.id, function () {
 			var restaurant = this;
 			service.loadedList[ $routeParams.id ] = true;
 			var community = CommunityService.getById( restaurant.id_community );
 			$rootScope.$broadcast( 'restaurantLoaded',  { restaurant : restaurant, community : community } );
-			console.timeEnd('restaurant');
+
 		});
 	}
 	return service;
