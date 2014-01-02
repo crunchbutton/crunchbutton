@@ -36,10 +36,20 @@
 
 	<div class="restaurant-closed-mobile" restaurant-is-closed></div>
 
-	<div class="main-content-readable" ng-show="!order.loaded">
+	<div class="main-content-readable" ng-show="!restaurantLoaded">
 		<div class="cart-items {{AB.restaurantPage}}">		
 			<div class="restaurant-item-title text-your-order">
 				Loading
+			</div>
+		</div>
+	</div>
+
+	<div class="main-content-readable" ng-show="restaurantLoaded && !order.loaded">
+		<div class="cart-items {{AB.restaurantPage}}">
+			<div ng-show="restaurant._open">
+				<div class="restaurant-item-title text-your-order">
+					Your Order 
+				</div>
 			</div>
 		</div>
 	</div>
