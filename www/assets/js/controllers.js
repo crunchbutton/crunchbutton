@@ -764,20 +764,22 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 			}
 
+			// Call anyway
+			process();
+
 			// Method that checks if the preset must to be reloaded #1988
 			OrderService.account.checkPresetUpdate( data.restaurant.id_restaurant, 
 				// will be called if the preset was reloaded
 				function(){
+					// reset cart
 					order.resetCart();
+					// call process again
 					process();
-				}, 
-				// will be called if the preset was not reloaded
-				function(){
-					process();					
 				}
 			);
 
-		}, 10 );
+		} );
+
 	});
 
 	$('.config-icon').addClass('config-icon-mobile-hide');
@@ -789,7 +791,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	if( RestaurantService.basicInfo ){
 		// If we have the basic info of the restaurant we just wait till the transition animation ends before load the restaurant data
 		$scope.$on( '$routeChangeSuccess', function ( event ) {
-			setTimeout( function(){ restaurantService.init(); updateStatus(); }, 100 );
+			setTimeout( function(){ restaurantService.init(); updateStatus(); }, 10 );
 		} );
 	} else {
 		restaurantService.init();

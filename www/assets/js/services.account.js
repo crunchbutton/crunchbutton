@@ -159,7 +159,7 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 			}	);
 	}
 
-	service.checkPresetUpdate = function( id_restaurant, callbackReload, callbackDontReload ){
+	service.checkPresetUpdate = function( id_restaurant, callbackReload ){
 		if( service.user.id_user ){
 			var url = App.service + 'user/preset/' + id_restaurant;
 			$http( {
@@ -178,12 +178,8 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 					}
 					if( reload ){
 						service.updateInfo( null, callbackReload );
-					} else {
-						callbackDontReload();
 					}
 				}	);
-		} else {
-			callbackDontReload();
 		}
 	}
 
