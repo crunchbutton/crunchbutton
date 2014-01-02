@@ -196,12 +196,22 @@ NGApp.factory( 'CommunityService', function( $http ){
 
 //RestaurantService Service
 NGApp.factory( 'RestaurantService', function ($http, $routeParams, $rootScope, CommunityService ) {
-	var service = { basicInfo : null };
+	
+	var service = { basicInfo : null, loadedList: {} };
+
+	service.alreadyLoaded = function(){
+		return ( service.loadedList[ $routeParams.id ] ? true : false );
+	}
+
 	service.init = function(){
+		console.time('restaurant');
+		
 		App.cache('Restaurant', $routeParams.id, function () {
 			var restaurant = this;
+			service.loadedList[ $routeParams.id ] = true;
 			var community = CommunityService.getById( restaurant.id_community );
 			$rootScope.$broadcast( 'restaurantLoaded',  { restaurant : restaurant, community : community } );
+			console.timeEnd('restaurant');
 		});
 	}
 	return service;

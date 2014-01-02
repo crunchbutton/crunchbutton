@@ -501,6 +501,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.order = {};
 	$scope.open = false;
 
+	$scope.restaurantLoaded = RestaurantService.alreadyLoaded();
+
 	$scope.restaurant = false;
 
 	if( RestaurantService.basicInfo ){
@@ -710,6 +712,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
+
+		$scope.restaurantLoaded = RestaurantService.alreadyLoaded();
+		
 		var community = data.community;
 		$scope.restaurant = data.restaurant;
 		
