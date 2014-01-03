@@ -225,8 +225,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			// Wait one minute until update the status of the restaurants
 			setTimeout( function(){
 				updateStatus();
-			}, 1000 * 1 );
-			// }, 1000 * 60 );
+			}, 1000 * 60 );
 			$scope.slogan = slogan;
 			$scope.tagline = tagline;
 			

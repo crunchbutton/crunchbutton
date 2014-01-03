@@ -16,8 +16,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 	service.sort = function () {
 		
-		App.profile.log('start sort');
-		
 		var list = restaurants;
 
 		var areAllTheRestaurantsClosed = true;
@@ -47,11 +45,15 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					reverse: true
 				}, {
 					name: '_weight',
-					primer: parseInt,
+					primer: parseFloat,
 					reverse: true
 				}, {
 					name: '_openIn',
 					primer: parseInt,
+					reverse: false
+				}, {
+					name: 'distance',
+					primer: parseFloat,
 					reverse: false
 				} )
 			);
@@ -74,8 +76,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 	}
 
 	service.getStatus = function () {
-
-		App.profile.log('start status');
 
 		var list = restaurants;
 		var allClosed = true;
@@ -123,6 +123,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		if( allClosed || ( totalClosedRestaurantsAfter != totalClosedRestaurantsBefore ) ){
 			service.sort();
 		}
+
 		return restaurants;
 	}
 
@@ -134,7 +135,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			}
 			return false;
 		}
-		App.profile.log('start list');
 
 		if (restaurants === false || service.forceLoad) {
 			var url = App.service + 'restaurants?lat=' + service.position.pos().lat() + '&lon=' + service.position.pos().lon() + '&range=' + (service.position.range || 2 );
@@ -144,7 +144,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			$http.get(url, {
 				cache: false
 			}).success(function (data) {
-				App.profile.log('got list');
 				var list = [];
 				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
 					if (error) {
