@@ -1386,7 +1386,7 @@ class Crunchbutton_Order extends Cana_Table {
 					$creditRefounded = new Crunchbutton_Credit();
 					$creditRefounded->id_user = $credit->id_user;
 					$creditRefounded->type = Crunchbutton_Credit::TYPE_CREDIT;
-					$creditRefounded->id_restaurant = $this->id_restaurant;
+					// $creditRefounded->id_restaurant = $this->id_restaurant;
 					$creditRefounded->date = date('Y-m-d H:i:s');
 					$creditRefounded->value = $credit->value;
 					$creditRefounded->id_order_reference = $this->id_order_reference;
