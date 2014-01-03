@@ -1389,7 +1389,7 @@ class Crunchbutton_Order extends Cana_Table {
 					// $creditRefounded->id_restaurant = $this->id_restaurant;
 					$creditRefounded->date = date('Y-m-d H:i:s');
 					$creditRefounded->value = $credit->value;
-					$creditRefounded->id_order_reference = $this->id_order_reference;
+					$creditRefounded->id_order_reference = $this->id_order;
 					$creditRefounded->id_restaurant_paid_by = $this->id_restaurant_paid_by;
 					$creditRefounded->paid_by = $this->paid_by;
 					$creditRefounded->note = 'Value ' . $credit->value . ' refunded from order: ' . $this->id_order . ' - ' . date('Y-m-d H:i:s');
