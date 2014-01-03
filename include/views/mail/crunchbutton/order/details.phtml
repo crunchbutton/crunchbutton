@@ -1,4 +1,6 @@
-
+<?php  
+$delivery_service_markup = ( $order->delivery_service_markup ) ? $order->delivery_service_markup : 0;
+?>
 <table width="100%" celpadding="0" cellspacing="0" class="detail">
 	<thead style="font-weight:bold">
 		<td class="topitem">Qty</td>
@@ -12,6 +14,11 @@
 			<td class="fooditem"><?
 				$food = $dish->dish()->name;
 				$cartPrice = $dish->dish()->price;
+				// add the delivery markup 
+				if( $delivery_service_markup > 0 && $cartPrice > 0 ){
+					$cartPrice = $cartPrice + number_format( ( $dish->dish()->price * $delivery_service_markup / 100 ), 2 );
+				}
+
 				$options = $dish->options();
 
 				if (gettype($options) == 'array') {
@@ -26,6 +33,10 @@
 							continue;
 						}
 						$cartPrice += $option->option()->price;
+						// add the delivery markup 
+						if( $delivery_service_markup > 0 && $cartPrice > 0 ){
+							$cartPrice = $cartPrice + number_format( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
+						}
 						if($option->option()->id_option_parent) {
 							$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
 							$food .= "$optionGroup->name: ";
