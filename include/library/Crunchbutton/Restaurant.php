@@ -964,6 +964,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$time = ( $dt ? $dt : 'now' );
 		$today = new DateTime( $time, new DateTimeZone( $this->timezone ) );
 		$week = ( int ) date( 'W', strtotime( $today->format( 'Y-m-d' ) ) );
+		if( $week <= 9 ){
+			$week = '0' . $week;
+		}
 		$monday = date ('Y-m-d', strtotime ( date( 'Y' ) . 'W' . $week . '1' ) ); 
 		$monday = new DateTime( $monday . '00:00:00', new DateTimeZone( $this->timezone ) );
 
@@ -1047,6 +1050,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$time = ( $dt ? $dt : 'now' );
 		$today = new DateTime( $time, new DateTimeZone( $this->timezone ) );
 		$week = ( int ) date( 'W', strtotime( $today->format( 'Y-m-d' ) ) );
+		if( $week <= 9 ){
+			$week = '0' . $week;
+		}
 
 		$monday = date ('Y-m-d', strtotime ( date( 'Y' ) . 'W' . $week . '1' ) ); 
 		$monday = new DateTime( $monday . '00:00:00', new DateTimeZone( $this->timezone ) );

@@ -33,6 +33,10 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					name: '_openIn',
 					primer: parseInt,
 					reverse: false
+				}, {
+					name: 'distance',
+					primer: parseFloat,
+					reverse: false
 				} )
 			);
 		} else {
