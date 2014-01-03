@@ -81,7 +81,7 @@ class Crunchbutton_Order extends Cana_Table {
 			if( $delivery_service_markup > 0 && $price > 0 ){
 				$price = $price + ( $price * $delivery_service_markup / 100 );
 				$price = number_format( $price, 2 );
-				$delivery_service_markup_value += ( $dish->dish()->price * $delivery_service_markup / 100 );
+				$delivery_service_markup_value += number_format( $dish->dish()->price * $delivery_service_markup / 100, 2 );
 			}
 			$subtotal += $price;
 			if ($d['options']) {
@@ -92,7 +92,7 @@ class Crunchbutton_Order extends Cana_Table {
 					if( $delivery_service_markup > 0 && $price > 0 ){
 						$price = $price + ( $price * $delivery_service_markup / 100 );
 						$price = number_format( $price, 2 );
-						$delivery_service_markup_value += ( $option->option()->price * $delivery_service_markup / 100 );
+						$delivery_service_markup_value += number_format( $option->option()->price * $delivery_service_markup / 100, 2 );
 					}
 					$subtotal += $price;
 //                    $subtotal += $option->option()->optionPrice($d['options']);
@@ -102,6 +102,7 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->_dishes[] = $dish;
 		}
 		
+		// to make sure the value will be 2 decimals
 		$this->delivery_service_markup_value = number_format( $delivery_service_markup_value, 2 );
 
 		$this->_card = $params['card'];
