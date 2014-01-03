@@ -253,8 +253,8 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 							$notification = Notification_Log::getMaxCallNotification( $order->id_order );	
 							$types = $order->restaurant()->notification_types();
-							if( method_exists( $types, 'get') && count( $types->get(0) ) > 0 ){
-								$notifications = 'Restaurant notifications . ' . join( ' . ', $types->get(0) );
+							if( count( $types ) > 0 ){
+								$notifications = 'Restaurant notifications . ' . join( ' . ', $types );
 							} else {
 								$notifications = '';
 							}
