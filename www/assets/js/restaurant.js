@@ -58,8 +58,12 @@ var Restaurant = function(id) {
 		}
 
 		var now_utc = this._utcNow();
-		var now_utc_hour = ( ( now_utc.getDay() - 1 ) * 2400 ) + ( now_utc.getHours() * 100 ) + now_utc.getMinutes();
+		var weekday = now_utc.getDay();
+		if( weekday == 0 ){
+			weekday = 7;
+		} 
 
+		var now_utc_hour = ( ( weekday - 1 ) * 2400 ) + ( now_utc.getHours() * 100 ) + now_utc.getMinutes();
 		// It means it will close at sunday after 12 AM, convert it to monday
 		if( now_utc_hour > ( 16800 ) ){
 			now_utc_hour = now_utc_hour - 16800;
