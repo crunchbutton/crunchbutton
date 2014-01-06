@@ -768,30 +768,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$this->hours();
 	}
 
-	public function hours($gmt = false) {
-
-		$gmt = $gmt ? '1' : '0';
-
-		if (!isset($this->_hours[$gmt])) {
-			$hours = Hour::q('select * from hour where id_restaurant="'.$this->id_restaurant.'"');
-
-			if ($gmt) {
-
-				$timezone = new DateTime('now ', new DateTimeZone($this->timezone));
-				$timezone = $timezone->format('O');
-				foreach ($hours as $hour) {
-					$open = new DateTime('next '.$hour->day. ' ' .$hour->time_open, new DateTimeZone($this->timezone));
-					$open->setTimezone(new DateTimeZone('GMT'));
-					$close = new DateTime('next '.$hour->day. ' ' .$hour->time_close, new DateTimeZone($this->timezone));
-					$close->setTimezone(new DateTimeZone('GMT'));
-					$hour->time_open = $open->format('Y-m-d H:i');
-					$hour->time_close = $close->format('Y-m-d H:i');
-				}
-			}
-			$this->_hours[$gmt] = $hours;
-		}
-
-		return $this->_hours[$gmt];
+	public function hours( $gmt = false ) {
+		return Hour::hoursByRestaurant( $this, $gmt );
 	}
 
 	public function forceClose(){
@@ -904,6 +882,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 		return false;
+	}
+
+	public function export_hours(){
+		return Hour::getUTCByRestaurant( $this );
 	}
 
 	// Return minutes left to close
