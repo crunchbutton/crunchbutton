@@ -709,6 +709,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	var restaurantService = RestaurantService;
 
+
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
 
@@ -758,7 +759,10 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 					}
 				}
 
+				
 				$scope.order.cart.items = order.cart.getItems();
+				
+				$rootScope.$safeApply( function($scope) {} );
 
 				// @todo: do we still neded this??
 				// $('.body').css({ 'min-height': $('.restaurant-items').height()});
