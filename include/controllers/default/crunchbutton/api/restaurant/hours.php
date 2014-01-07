@@ -9,14 +9,15 @@ class Controller_api_restaurant_hours extends Crunchbutton_Controller_Rest {
 		}
 		switch ( c::getPagePiece( 4 ) ) {
 			case 'week':
-				// export the hours for the week
-				$utc = ( c::getPagePiece( 5 ) == 'utc' || c::getPagePiece( 5 ) == 'gmt' );
-				echo json_encode( $r->export_hours_week( $utc ) );exit;;
+				// export the hours for the whole week
+				$no_utc = ( c::getPagePiece( 5 ) != 'regular' );
+				echo json_encode( $r->export_hours_week( $no_utc ) );exit;;
 				break;
 			
 			default:
 				// export the hours for the next 24 hours
-				echo json_encode( $r->export_hours_week() );exit;;
+				$no_utc = ( c::getPagePiece( 4 ) != 'regular' );
+				echo json_encode( $r->export_hours_next_24_hours( $no_utc ) );exit;;
 				break;
 		}
 	}
