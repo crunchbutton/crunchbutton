@@ -41,7 +41,22 @@ class Cana_Util extends Cana_Model {
 		} else {
 			$m--;
 		}
-		return $h.$m;
+		return intval( $h . str_pad( $m, 2, '0', STR_PAD_LEFT ) );
+	}
+
+	public static function sum_minutes( $time, $minutes ){
+		if( intval( $time ) == -1 ){
+			return 0;
+		}
+		$h = floor( $time / 100 );
+		$m = $time - ( 100 * $h );
+		if( $m == 59 ){
+			$m = '00';
+			$h++;
+		} else {
+			$m++;
+		}
+		return intval( $h . str_pad( $m, 2, '0', STR_PAD_LEFT ) );
 	}
 
 	public static function format_time( $time ) {

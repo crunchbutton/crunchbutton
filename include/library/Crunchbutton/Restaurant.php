@@ -884,8 +884,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return false;
 	}
 
-	public function export_hours(){
-		return Hour::getByRestaurant( $this );
+	public function export_hours_week( $gmt = false ){
+		return Hour::getByRestaurantWeek( $this, $gmt );
 	}
 
 	// Return minutes left to close
