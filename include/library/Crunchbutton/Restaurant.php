@@ -1292,6 +1292,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$ignore[ $property ] = true;
 			}
 		}
+/*
+	
+		--> REMOVED THE HOURS MESSY #2278
 
 		$out['_open']      	= $this->open();
 		$out['_force_open']	= $this->forceOpen();
@@ -1316,7 +1319,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$closesIn_hours = floor( $out['_closesIn'] / 60 );
 			$closesIn_minutes = $out['_closesIn'] - ( $closesIn_hours * 60 );
 			if( $closesIn_hours > 0 ){
-				$out['_closesIn_formated'] = $closesIn_hours . ( $closesIn_hours > 1 ? ' hours ' : ' hour ' ) /* . ( $closesIn_minutes > 0 ? 'and ' . $closesIn_minutes . ' minutes' : '' ) */ ;
+				$out['_closesIn_formated'] = $closesIn_hours . ( $closesIn_hours > 1 ? ' hours ' : ' hour ' ); // . ( $closesIn_minutes > 0 ? 'and ' . $closesIn_minutes . ' minutes' : '' ) ;
 			} else {
 				$out['_closesIn_formated'] = ( $closesIn_minutes > 0 ? $closesIn_minutes . ' minutes' : '' ) ;
 			}
@@ -1326,7 +1329,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$openIn_hours = floor( $out['_openIn'] / 60 );
 			$openIn_minutes = $out['_openIn'] - ( $openIn_hours * 60 );
 			if( $openIn_hours > 0 ){
-				$out['_openIn_formated'] = $openIn_hours . ( $openIn_hours > 1 ? ' hours ' : ' hour ' ) /* . ( $openIn_minutes > 0 ? 'and ' . $openIn_minutes . ' minutes' : '' ) */ ;
+				$out['_openIn_formated'] = $openIn_hours . ( $openIn_hours > 1 ? ' hours ' : ' hour ' ); // . ( $openIn_minutes > 0 ? 'and ' . $openIn_minutes . ' minutes' : '' );
 			} else {
 				$out['_openIn_formated'] = ( $openIn_minutes > 0 ? $openIn_minutes . ' minutes' : '' ) ;
 			}
@@ -1347,6 +1350,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out['_tag']  = 'force_close';
 			}
 		}
+		*/
 
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
@@ -1422,6 +1426,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out['_notifications'][$notification->id_notification] = $notification->exports();
 			}
 		}
+/*
+		--> REMOVED THE HOURS MESSY #2278
 
 		if (!$ignore['_hoursFormat']) {
 			foreach ($this->hours(true) as $hours) {
@@ -1437,6 +1443,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( !$isCockpit || $ignore['force_override_hours'] == true ){
 			$out['_hours'] = $this->overrideHours( $out['_hours'] );	
 			$out['_hours_converted_utc'] = $this->hoursStartingMondayUTC( $out['_hours'] );	
+		}
+*/
+		if( $isCockpit ){
+			foreach ($this->hours() as $hours) {
+				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
+			}			
+		} else {
+			$out['_hours'] = $this->export_hours_next_24_hours();
 		}
 
 		if (!$ignore['_preset']) {
