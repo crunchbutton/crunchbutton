@@ -32,6 +32,18 @@ class Cana_Util extends Cana_Model {
 		return $reverse ? array_reverse($array) : $array;
 	}
 	
+	public static function subtract_minutes( $time, $minutes ) {
+		$h = floor( $time / 100 );
+		$m = $time - ( 100 * $h );
+		if( $m == 0 ){
+			$m = 59;
+			$h--;
+		} else {
+			$m--;
+		}
+		return $h.$m;
+	}
+
 	public static function format_time( $time ) {
 		$h = floor( $time / 100 );
 		$m = $time - ( 100 * $h );

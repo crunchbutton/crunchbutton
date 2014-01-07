@@ -29,13 +29,14 @@ class Crunchbutton_Hour extends Cana_Table {
 		return $restaurant->_hours[ $gmt ] ;
 	}
 
-	public function getUTCByRestaurant( $restaurant ){
-		$hours = Hour::getWeekUTCByRestaurant( $restaurant, true );
-		echo '<pre>'; var_dump( $hours ); exit;
-
+	public function getByRestaurant( $restaurant, $utc = true ){
+		return Hour::getWeekByRestaurant( $restaurant, $utc, true );
 	}
 
-	public function getWeekUTCByRestaurant( $restaurant, $just24hours = false ){
+	public function getWeekByRestaurant( $restaurant, $utc = true, $just24hours = false ){
+
+		///// REMOVE THIS LINE
+		$utc = false;
 
 		$minutesInAHour = 24 * 60;
 
@@ -45,82 +46,60 @@ class Crunchbutton_Hour extends Cana_Table {
 			$_hours[ $hour->day ][] = [ $hour->time_open, $hour->time_close ];
 		}
 
-		// Get the hollidays and override 
-		$_hours = $this->overrideHours( $_hours );
-		
-		$hours = $_hours;
+		// Merge the restaurant hours with the holidays
+		$hours = Hour::mergeHolidays( $_hours );
 
 		if( count( $hours ) == 0 ){
 			return $hours;
 		}
 
-		// Continue where
-		// http://localhost/api/restaurant/hours/1
-		// ----> check the date of 00 mondays and 24 sunday
-		
+		$getDay = new DateTime( 'now', new DateTimeZone( 'GMT' ) );
+		// step back two days
+		$getDay->modify( '-2 day' );
 
-		$today = new DateTime( 'now', new DateTimeZone( 'GMT' ) );
-		$last_close = false;
-		$_hours_utc = [];
+		// loop to get all the days of the week, starting by yestarday
+		for( $i=0; $i<=6; $i++ ){
+			$getDay->modify( '+1 day' );
+			$actualDay = strtolower( $getDay->format( 'D' ) );
+			foreach( $hours as $day => $segments ){
+				// get the days in sequence
+				if( $day != $actualDay ){ continue; }
+				foreach( $segments as $times ){
 
-		foreach( $hours as $day => $segments ){
-			
-			foreach( $segments as $times ){
+					$open = new DateTime( $getDay->format( 'Y-m-d' ) . ' ' . $times[ 'from' ], new DateTimeZone( $restaurant->timezone ) );
+					if( $utc ){
+						$open->setTimezone( new DateTimeZone( 'GMT' ) );	
+					}
+					
 
-				$open = new DateTime( 'next ' . $day . ' ' . $times[ 0 ], new DateTimeZone( $this->timezone ) );
-				$open->setTimezone( new DateTimeZone( 'GMT' ) );
+					$close = new DateTime( $getDay->format( 'Y-m-d' ) . ' ' . $times[ 'to' ], new DateTimeZone( $restaurant->timezone ) );
+					if( $utc ){
+						$close->setTimezone( new DateTimeZone( 'GMT' ) );
+					}
 
-				$interval = $open->diff( $today );
-				$interval_open = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
+					if( $open->format( 'Hi' ) > $close->format( 'Hi' ) ){
+						$close->modify( '+1 day' );
+					}
 
-				$back7Days = false;
+					$open_ini = $open->format( 'Y-m-d H:i' );
+					$open_end = $close->format( 'Y-m-d H:i' );
 
-				if( $interval_open >= ( $minutesInAHour * 6 ) ){
-					$open->modify( '-7 days' );
-					$interval = $open->diff( $today );
-					$interval_open = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
-					$back7Days = true;
+					$data = array( 'from' => $open_ini, 'to' => $open_end, 'status' => $times[ 'status' ] );
+					if( $times[ 'notes' ] ){
+						$data[ 'notes' ] = $times[ 'notes' ];
+					}
+
+					$_hours_utc[] = ( object ) $data;	
 				}
-
-				$close = new DateTime( 'next ' . $day . ' ' . $times[ 1 ], new DateTimeZone( $this->timezone ) );
-				$close->setTimezone( new DateTimeZone( 'GMT' ) );
-
-				$interval = $close->diff( $today );
-				$interval_close = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
-
-				if( $back7Days && $interval_close >= ( $minutesInAHour * 6 ) ){
-					$close->modify( '-7 days' );
-					$interval = $close->diff( $today );
-					$interval_close = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
-				}
-
-				$open_ini = $open->format( 'Y-m-d H:i' );
-				$open_end = $close->format( 'Y-m-d H:i' );
-
-				// if last close is false and it opens after midnight 
-				if( !$last_close && $open->format( 'Hi' ) > '0000' ){
-					$last_close = date( 'Y-m-d H:i', strtotime( '-1 minutes', strtotime( $open->format( 'Y-m-d 00:00' ) ) ) );
-				}
-
-				if( $last_close ){
-					$close_ini = $datetime_from = date( 'Y-m-d H:i', strtotime( '+1 minutes', strtotime( $last_close ) ) );
-					$close_end = $datetime_from = date( 'Y-m-d H:i', strtotime( '-1 minutes', strtotime( $open_ini ) ) );
-					$_hours_utc[] = ( object ) array( 'from' => $close_ini, 'to' => $close_end, 'status' => 'closed' );
-				}
-
-				$last_close = $open_end;
-
-				// if( $interval_open <= $minutesInAHour || $interval_close <= $minutesInAHour ){
-					$_hours_utc[] = ( object ) array( 'minutesInAHour' => $minutesInAHour, 'from' => $open_ini, 'interval_open' => $interval_open, 'to' => $open_end, 'interval_close' => $interval_close, 'status' => 'open' );	
-				// }
-
-			}
+			}			
 		}
-		echo '<pre>'; var_dump( $_hours_utc ); exit;
+		
 		return $_hours_utc;
+
 	}
 
-	public function overrideHours( $hours ){
+	// This method merge restaurant hours with the holidays
+	public function mergeHolidays( $hours ){
 
 		if( count( $hours ) == 0 ){
 			return $hours;
@@ -128,7 +107,8 @@ class Crunchbutton_Hour extends Cana_Table {
 
 		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
 		
-		// Convert to hours starting at monday
+		// Convert to hours starting at monday - it is easy to merge
+		// example a time like 234 indicating 2:34 AM
 		$hoursStartFinish = [];
 		foreach( $hours as $day => $segments ){
 			$dayshours = array_search( $day, $weekdays ) * 2400;
@@ -141,8 +121,11 @@ class Crunchbutton_Hour extends Cana_Table {
 			}
 		}
 
+		// Get the monday and sunday of the current week
 		$monday = date( 'Y-m-d', strtotime( 'monday this week' ) );
 		$sunday = date( 'Y-m-d', strtotime( 'sunday this week' ) );
+		
+		// Get the hollidays of the current week
 		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override 
 																															WHERE id_restaurant = {$this->id_restaurant} 
 																															AND (
@@ -156,6 +139,7 @@ class Crunchbutton_Hour extends Cana_Table {
 
 				$monday = new DateTime( date( 'Y-m-d H:i:s', strtotime( 'monday this week' ) ), new DateTimeZone( $this->timezone ) );
 				$date_start = new DateTime( $override->date_start, new DateTimeZone( $this->timezone ) );
+				
 				// Limit the override to this week
 				if( $date_start < $monday ){
 					$date_start = $monday;
@@ -174,7 +158,7 @@ class Crunchbutton_Hour extends Cana_Table {
 
 				$hour_close = ( $dayshours + intval( $date_end->format( 'H' ) ) * 100 ) + intval( $date_end->format( 'i' ) );
 				if( $override->type == Crunchbutton_Restaurant_Hour_Override::TYPE_CLOSED ){
-					$hoursStartFinishOverrideClose[] = [ 'start' => $hour_open, 'end' => $hour_close, '_start' => $date_start->format( 'Y-m-d H:i:s' ), '_data_end' => $date_end->format( 'Y-m-d H:i:s' ) ];	
+					$hoursStartFinishOverrideClose[] = [ 'start' => $hour_open, 'end' => $hour_close, '_start' => $date_start->format( 'Y-m-d H:i:s' ), '_data_end' => $date_end->format( 'Y-m-d H:i:s' ), 'notes' => $override->notes ];	
 				} else if( $override->type == 'open' ){
 					// Merge the override open hours at the open/close array
 					$hoursStartFinish[] = [ 'open' => $hour_open, 'close' => $hour_close ];
@@ -182,9 +166,11 @@ class Crunchbutton_Hour extends Cana_Table {
 			}
 		}
 
+		// Sort the hours
 		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
 
-		// Merge the hours
+		// Merge the regular hours 
+		// this foreach returns a array with the hours merged like: [ [ 'open' => 100, 'close' => 2300 ], [ 'open' => 3830, 'close' => 5050 ] ]
 		foreach( $hoursStartFinish as $key => $val ){
 			$getNext = false;
 			foreach( $hoursStartFinish as $keyNext => $valNext ){
@@ -202,6 +188,7 @@ class Crunchbutton_Hour extends Cana_Table {
 			}
 		}
 
+		// this foreach will merge the regular hours with the override ones
 		foreach( $hoursStartFinishOverrideClose as $keyClose => $valClose ){
 			foreach( $hoursStartFinish as $keyOpen => $valOpen ){
 				// the close override is between a segment
@@ -232,6 +219,7 @@ class Crunchbutton_Hour extends Cana_Table {
 
 		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
 
+		// Merge the hours again
 		foreach( $hoursStartFinish as $key => $val ){
 			$getNext = false;
 			foreach( $hoursStartFinish as $keyNext => $valNext ){
@@ -249,28 +237,62 @@ class Crunchbutton_Hour extends Cana_Table {
 			}
 		}
 
+		// Fill the hours array with the closed hours
 		$_hours = [];
+		$last_close = false;
+		foreach( $hoursStartFinish as $hour ){
+			if( !$last_close && intval( $hour[ 'open' ] ) != 0 ){
+				$last_close = '-1';
+			}
+			if( $last_close !== false ){
+				$_to = Cana_Util::subtract_minutes( $hour[ 'open' ], 1 );
+				$_hours[] = array( 'from' => ( $last_close + 1 ) , 'to' => $_to, 'status' => 'close' );	
+			}
+			$last_close = $hour[ 'close' ];
+			$_hours[] = array( 'from' => $hour[ 'open' ], 'to' => $hour[ 'close' ], 'status' => 'open' );
+		}
+
+		// Put the closed message notes
+		foreach( $_hours as $key => $hour ){
+			if( $_hours[ $key ][ 'status' ] == 'close' ){
+				foreach( $hoursStartFinishOverrideClose as $closedHour ){
+					if( $_hours[ $key ][ 'from' ] >= $closedHour[ 'start' ] && $_hours[ $key ][ 'to' ] <= $closedHour[ 'end' ] ){
+						$_hours[ $key ][ 'notes' ] = $closedHour[ 'notes' ];
+					}
+				}
+			}
+		}
+
+		// Convert all we have to regular hours like 		
+		$hours = [];
 		$atSundayItWillClose = 0;
-		foreach( $hoursStartFinish as $key => $val ){
-			$open = $hoursStartFinish[ $key ][ 'open' ];
-			$close = $hoursStartFinish[ $key ][ 'close' ];
-			if( $open == 0 ){
-				$atSundayItWillClose = $close;
+		foreach( $_hours as $key => $val ){
+			$from = $_hours[ $key ][ 'from' ];
+			$to = $_hours[ $key ][ 'to' ];
+			$status = $_hours[ $key ][ 'status' ];
+			$notes = $_hours[ $key ][ 'notes' ];
+			if( $from == 0 && $status == 'open' ){
+				$atSundayItWillClose = $to;
 			}
-			$weekday = $weekdays[ floor( $open / 2400 ) ];
-			while( $open >= 2400 ) {
-				$open -= 2400;
-				$close -= 2400;
+			$weekday = $weekdays[ floor( $from / 2400 ) ];
+			while( $from >= 2400 ) {
+				$from -= 2400;
+				$to -= 2400;
 			}
-			if( $weekday == 'sun' && $close == 2400 ){
-				$close = $atSundayItWillClose;
+			if( $weekday == 'sun' && $to == 2400 ){
+				$to = $atSundayItWillClose;
+			}
+			$data = array( 'from' => Cana_Util::format_time( $from ), 'to' => Cana_Util::format_time( $to ), 'status' => $status );	
+			if( $notes ){
+				$data[ 'notes' ] = $notes;
 			}
 			if( !$hours[ $weekday ] ){
 				$hours[ $weekday ] = [];	
 			}
-			$_hours[ $weekday ][] = array( Cana_Util::format_time( $open ), Cana_Util::format_time( $close ) );	
+			$hours[ $weekday ][] = $data;
 		}
-		return $_hours;
+
+		return $hours;
 	}
 
 }
