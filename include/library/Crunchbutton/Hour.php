@@ -30,10 +30,14 @@ class Crunchbutton_Hour extends Cana_Table {
 	}
 
 	public function getByRestaurantWeek( $restaurant, $utc = true ){
-		return Hour::getWeekByRestaurant( $restaurant, $utc, true );
+		return Hour::getByRestaurantToExport( $restaurant, $utc );
 	}
 
-	public function getWeekByRestaurant( $restaurant, $utc = true, $just24hours = false ){
+	public function getByRestaurantNext24Hours( $restaurant, $utc = true ){
+		return Hour::getByRestaurantToExport( $restaurant, $utc, true );
+	}
+
+	public function getByRestaurantToExport( $restaurant, $utc = true, $next24hours = false ){
 
 		$hours = $restaurant->hours();
 
@@ -51,45 +55,50 @@ class Crunchbutton_Hour extends Cana_Table {
 			return $hours;
 		}
 
-		$getDay = new DateTime( 'now', new DateTimeZone( 'GMT' ) );
-		
+		$getDay = new DateTime( 'now', new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+			
 		// step back two days
 		$getDay->modify( '-2 day' );
 
 		// loop to get all the days of the week, starting by yestarday
 		for( $i=0; $i<=6; $i++ ){
+
 			$getDay->modify( '+1 day' );
 			$actualDay = strtolower( $getDay->format( 'D' ) );
+
 			foreach( $hours as $day => $segments ){
+
 				// get the days in sequence
 				if( $day != $actualDay ){ continue; }
+
+				// loop to get all the segments
 				foreach( $segments as $times ){
 
-					$open = new DateTime( $getDay->format( 'Y-m-d' ) . ' ' . $times[ 'from' ], new DateTimeZone( $restaurant->timezone ) );
+					// create a Datetime to the start time
+					$start = new DateTime( $getDay->format( 'Y-m-d' ) . ' ' . $times[ 'from' ], new DateTimeZone( $restaurant->timezone ) );
 					// Convert to UTC/GMT case it is needed 
 					if( $utc ){
-						$open->setTimezone( new DateTimeZone( 'GMT' ) );	
+						$start->setTimezone( new DateTimeZone( 'GMT' ) );	
 					}
 
-					$close = new DateTime( $getDay->format( 'Y-m-d' ) . ' ' . $times[ 'to' ], new DateTimeZone( $restaurant->timezone ) );
+					// create a Datetime to the end time
+					$end = new DateTime( $getDay->format( 'Y-m-d' ) . ' ' . $times[ 'to' ], new DateTimeZone( $restaurant->timezone ) );
 					// Convert to UTC/GMT case it is needed 
 					if( $utc ){
-						$close->setTimezone( new DateTimeZone( 'GMT' ) );
+						$end->setTimezone( new DateTimeZone( 'GMT' ) );
 					}
 
-					// If the open hours is higher then open it means it is another day
-					if( $open->format( 'Hi' ) > $close->format( 'Hi' ) ){
-						// $close->modify( '+1 day' );
-					}
-
+					// it means it ends in another day, so add the needed days
 					if( $times[ 'to_days' ] ){
-						$close->modify( '+' . $times[ 'to_days' ] . ' day' );
+						$end->modify( '+' . $times[ 'to_days' ] . ' day' );
 					}
 
-					$open_ini = $open->format( 'Y-m-d H:i' );
-					$open_end = $close->format( 'Y-m-d H:i' );
+					// get the right format
+					$from = $start->format( 'Y-m-d H:i' );
+					$to = $end->format( 'Y-m-d H:i' );
 
-					$data = array( 'from' => $open_ini, 'to' => $open_end, 'status' => $times[ 'status' ] );
+					// create an array to store the info
+					$data = array( 'from' => $from, 'to' => $to, 'status' => $times[ 'status' ] );
 					if( $times[ 'notes' ] ){
 						$data[ 'notes' ] = $times[ 'notes' ];
 					}
@@ -97,7 +106,56 @@ class Crunchbutton_Hour extends Cana_Table {
 				}
 			}			
 		}
-		return $_hours_utc;
+		if( $next24hours ){
+
+			$_hours = [];
+
+			$now = new DateTime( 'now', new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+			$now_plus_24 = new DateTime( 'now', new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+			$now_plus_24->modify( '+1 day' );
+			foreach ( $_hours_utc as $hour ) {
+				
+				$data = false;
+
+				$from = new DateTime( $hour->from, new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+				$to = new DateTime( $hour->to, new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+
+				// case 1
+				if( $from <= $now && $to <= $now_plus_24 && $to > $now ){
+					$data = array( 'from' => $now->format( 'Y-m-d H:i' ), 'to' => $hour->to );
+				} 
+				// case 2
+				else if( $from <= $now && $to >= $now_plus_24 ){
+					$data = array( 'from' => $now->format( 'Y-m-d H:i' ), 'to' => $now_plus_24->format( 'Y-m-d H:i' ) );
+				}
+				// case 3
+				else if( $from >= $now && $to >= $now_plus_24 && $from < $now_plus_24 ){
+					$data = array( 'from' => $hour->from, 'to' => $now_plus_24->format( 'Y-m-d H:i' ) );
+				}
+				// case 4
+				else if( $from >= $now && $to <= $now_plus_24  ){
+					$data = array( 'from' => $hour->from, 'to' => $hour->to );
+				}
+
+				if( $data ){
+					$data[ 'status' ] = $hour->status;
+					if( $hour->notes ){
+						$data[ 'notes' ] = $hour->notes;
+					}
+					
+					$_hours[] = ( object ) $data;
+				}
+
+			}
+
+			// return the last 24 hours
+			return $_hours;
+
+		} else {
+			// Return the whole week
+			return $_hours_utc;
+		}
+		
 	}
 
 	// This method merge restaurant hours with the holidays
@@ -312,7 +370,7 @@ class Crunchbutton_Hour extends Cana_Table {
 			}
 			$hours[ $weekday ][] = $data;
 		}
-// echo '<pre>';var_dump( $hours );exit();
+
 		return $hours;
 	}
 
