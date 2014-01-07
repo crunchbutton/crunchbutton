@@ -30,12 +30,14 @@ class Crunchbutton_Hour extends Cana_Table {
 	}
 
 	public function getUTCByRestaurant( $restaurant ){
-		$hours = Hour::getWeekUTCByRestaurant( $restaurant );
+		$hours = Hour::getWeekUTCByRestaurant( $restaurant, true );
 		echo '<pre>'; var_dump( $hours ); exit;
 
 	}
 
-	public function getWeekUTCByRestaurant( $restaurant ){
+	public function getWeekUTCByRestaurant( $restaurant, $just24hours = false ){
+
+		$minutesInAHour = 24 * 60;
 
 		$hours = $restaurant->hours();
 		$_hours = [];
@@ -51,7 +53,12 @@ class Crunchbutton_Hour extends Cana_Table {
 		if( count( $hours ) == 0 ){
 			return $hours;
 		}
+
+		// Continue where
+		// http://localhost/api/restaurant/hours/1
+		// ----> check the date of 00 mondays and 24 sunday
 		
+
 		$today = new DateTime( 'now', new DateTimeZone( 'GMT' ) );
 		$last_close = false;
 		$_hours_utc = [];
@@ -62,8 +69,30 @@ class Crunchbutton_Hour extends Cana_Table {
 
 				$open = new DateTime( 'next ' . $day . ' ' . $times[ 0 ], new DateTimeZone( $this->timezone ) );
 				$open->setTimezone( new DateTimeZone( 'GMT' ) );
+
+				$interval = $open->diff( $today );
+				$interval_open = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
+
+				$back7Days = false;
+
+				if( $interval_open >= ( $minutesInAHour * 6 ) ){
+					$open->modify( '-7 days' );
+					$interval = $open->diff( $today );
+					$interval_open = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
+					$back7Days = true;
+				}
+
 				$close = new DateTime( 'next ' . $day . ' ' . $times[ 1 ], new DateTimeZone( $this->timezone ) );
 				$close->setTimezone( new DateTimeZone( 'GMT' ) );
+
+				$interval = $close->diff( $today );
+				$interval_close = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
+
+				if( $back7Days && $interval_close >= ( $minutesInAHour * 6 ) ){
+					$close->modify( '-7 days' );
+					$interval = $close->diff( $today );
+					$interval_close = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
+				}
 
 				$open_ini = $open->format( 'Y-m-d H:i' );
 				$open_end = $close->format( 'Y-m-d H:i' );
@@ -80,11 +109,14 @@ class Crunchbutton_Hour extends Cana_Table {
 				}
 
 				$last_close = $open_end;
-				$_hours_utc[] = ( object ) array( 'from' => $open_ini, 'to' => $open_end, 'status' => 'open' );
-				
-			}
 
+				// if( $interval_open <= $minutesInAHour || $interval_close <= $minutesInAHour ){
+					$_hours_utc[] = ( object ) array( 'minutesInAHour' => $minutesInAHour, 'from' => $open_ini, 'interval_open' => $interval_open, 'to' => $open_end, 'interval_close' => $interval_close, 'status' => 'open' );	
+				// }
+
+			}
 		}
+		echo '<pre>'; var_dump( $_hours_utc ); exit;
 		return $_hours_utc;
 	}
 
