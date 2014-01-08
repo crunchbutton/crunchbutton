@@ -51,7 +51,7 @@ class Cana_Util extends Cana_Model {
 		} else {
 			$formated = $minutes . ( ( $minutes > 1 )	? ' minutes' : 'minute' );
 		}
-		return [ 'minutes' => $minutes, 'formated' => $formated ];
+		return [ 'minutes' => $minutes, 'formatted' => $formated ];
 	}
 
 	public static function sum_minutes( $time, $minutes ){

@@ -1413,6 +1413,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	* Hours and Open/Closed methods
 	*/
 
+	// return the hours info used at iphone native app
+	public function hours_legacy(){
+
+	}
+
 	// return the restaurant's hours
 	public function hours( $gmt = false ) {
 		return Hour::hoursByRestaurant( $this, $gmt );
@@ -1482,11 +1487,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	// Return minutes left to open
-	public function openIn( $dt = null ) {
+	public function opensIn( $dt = null ) {
 		// if the restaurant is open return false
 		if ( $this->open( $dt ) ) {
 			return false;
 		}
-		return Hour::restaurantOpenIn( $this );
+		return Hour::restaurantOpensIn( $this );
 	}
 }
