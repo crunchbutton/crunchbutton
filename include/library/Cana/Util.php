@@ -44,6 +44,16 @@ class Cana_Util extends Cana_Model {
 		return intval( $h . str_pad( $m, 2, '0', STR_PAD_LEFT ) );
 	}
 
+	public static function formatMinutes( $minutes ){
+		$hours = floor( $minutes / 60 );
+		if( $hours > 0 ){
+			$formated = $hours . ( ( $hours > 1 )	? ' hours' : 'hour' );
+		} else {
+			$formated = $minutes . ( ( $minutes > 1 )	? ' minutes' : 'minute' );
+		}
+		return [ 'minutes' => $minutes, 'formated' => $formated ];
+	}
+
 	public static function sum_minutes( $time, $minutes ){
 		if( intval( $time ) == -1 ){
 			return 0;

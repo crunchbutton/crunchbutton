@@ -9,6 +9,99 @@ class Crunchbutton_Hour extends Cana_Table {
 			->load($id);
 	}
 
+	public function restaurantNextCloseTime( $restaurant ){
+		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
+		$day = strtolower( $today->format( 'D' ) );
+		$hours = Hour::getByRestaurantWeek( $restaurant, false );
+		foreach( $hours as $hour ){
+			if( $hour->status == 'close' ){
+				$open = new DateTime( $hour->from, new DateTimeZone( $restaurant->timezone ) );
+				if( $open >= $today ){
+					return $open;
+				}
+			}
+		}
+		return false;
+	}
+
+	public function restaurantNextOpenTime( $restaurant ){
+		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
+		$day = strtolower( $today->format( 'D' ) );
+		$hours = Hour::getByRestaurantWeek( $restaurant, false );
+		foreach( $hours as $hour ){
+			if( $hour->status == 'open' ){
+				$open = new DateTime( $hour->from, new DateTimeZone( $restaurant->timezone ) );
+				if( $open >= $today ){
+					return $open;
+				}
+			}
+		}
+		return false;
+	}
+
+	public function restaurantClosesIn( $restaurant ){
+		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
+		$close = Hour::restaurantNextCloseTime( $restaurant );
+		if( $close ){
+			$interval = $today->diff( $close );
+			$minutes = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
+			if( $minutes > 0 ){
+				return $minutes;
+			} 
+		}
+		return false;
+	}
+
+	public function restaurantOpenIn( $restaurant ){
+		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
+		$open = Hour::restaurantNextOpenTime( $restaurant );
+		if( $open ){
+			$interval = $today->diff( $open );
+			$minutes = ( $interval->m * 30 * 24 * 60 ) + ( $interval->d * 24 * 60 ) + ( $interval->h * 60 ) + ( $interval->i );
+			if( $minutes > 0 ){
+				return $minutes;
+			} 
+		}
+		return false;
+	}
+
+	public function restaurantIsOpen( $restaurant, $dt = null ){
+
+		$time = ( $dt ? $dt : 'now' );
+		$today = new DateTime( $time, new DateTimeZone( $restaurant->timezone ) );
+		$day = strtolower( $today->format( 'D' ) );
+
+		$hours = $restaurant->hours();
+
+		foreach ( $hours as $hour ) {
+
+			$hasHours = true;
+
+			if ( $hour->day != $day ) {
+				continue;
+			}
+
+			if( $dt ){
+				$open  = new DateTime( $today->format( 'Y-m-d' ) . ' ' . $hour->time_open,  new DateTimeZone( $restaurant->timezone ) );
+				$close = new DateTime( $today->format( 'Y-m-d' ) . ' ' . $hour->time_close, new DateTimeZone( $restaurant->timezone ) );	
+			} else {
+				$open  = new DateTime( 'today ' . $hour->time_open,  new DateTimeZone( $restaurant->timezone ) );
+				$close = new DateTime( 'today ' . $hour->time_close, new DateTimeZone( $restaurant->timezone ) );	
+			}
+
+			// if closeTime before openTime, then closeTime should be for tomorrow
+			if ( $close->getTimestamp() < $open->getTimestamp() ) {
+				date_add( $close, date_interval_create_from_date_string( '1 day' ) );
+			}
+
+			if ( $today->getTimestamp() >= $open->getTimestamp() && $today->getTimestamp() <= $close->getTimestamp() ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public function hoursByRestaurant( $restaurant, $gmt = false ){
 		if ( !isset( $restaurant->_hours[ $gmt ] ) ) {
 			$hours = Hour::q( "SELECT * FROM hour WHERE id_restaurant = {$restaurant->id_restaurant}" );
@@ -37,10 +130,12 @@ class Crunchbutton_Hour extends Cana_Table {
 		return Hour::getByRestaurantToExport( $restaurant, $utc, true );
 	}
 
-	public function getByRestaurantToExport( $restaurant, $utc = true, $next24hours = false ){
-
+	public function getRestaurantRegularPlusHolidayHours( $restaurant ){
+		
+		// Get the restaurant's regular hours
 		$hours = $restaurant->hours();
 
+		// empty array to store the merged hours
 		$_hours = [];
 
 		// Convert the hours to a simple array
@@ -49,7 +144,12 @@ class Crunchbutton_Hour extends Cana_Table {
 		}
 
 		// Merge the restaurant hours with the holidays
-		$hours = Hour::mergeHolidays( $_hours );
+		return Hour::mergeHolidays( $_hours, $restaurant );
+	}
+
+	public function getByRestaurantToExport( $restaurant, $utc = true, $next24hours = false ){
+
+		$hours = Hour::getRestaurantRegularPlusHolidayHours( $restaurant );
 
 		if( count( $hours ) == 0 ){
 			return $hours;
@@ -159,7 +259,7 @@ class Crunchbutton_Hour extends Cana_Table {
 	}
 
 	// This method merge restaurant hours with the holidays
-	public function mergeHolidays( $hours ){
+	public function mergeHolidays( $hours, $restaurant ){
 
 		if( count( $hours ) == 0 ){
 			return $hours;
@@ -190,7 +290,7 @@ class Crunchbutton_Hour extends Cana_Table {
 		
 		// Get the hollidays of the current week
 		$overrides = Crunchbutton_Restaurant_Hour_Override::q( "SELECT * FROM restaurant_hour_override 
-																															WHERE id_restaurant = {$this->id_restaurant} 
+																															WHERE id_restaurant = {$restaurant->id_restaurant} 
 																															AND (
 																															( DATE_FORMAT( date_start, '%Y-%m-%d' ) >= '{$monday}' AND DATE_FORMAT( date_start, '%Y-%m-%d' ) <= '{$sunday}' )
 																															OR 
@@ -200,8 +300,8 @@ class Crunchbutton_Hour extends Cana_Table {
 
 			foreach( $overrides as $override ){
 
-				$monday = new DateTime( date( 'Y-m-d H:i:s', strtotime( 'monday this week' ) ), new DateTimeZone( $this->timezone ) );
-				$date_start = new DateTime( $override->date_start, new DateTimeZone( $this->timezone ) );
+				$monday = new DateTime( date( 'Y-m-d H:i:s', strtotime( 'monday this week' ) ), new DateTimeZone( $restaurant->timezone ) );
+				$date_start = new DateTime( $override->date_start, new DateTimeZone( $restaurant->timezone ) );
 				
 				// Limit the override to this week
 				if( $date_start < $monday ){
@@ -210,9 +310,9 @@ class Crunchbutton_Hour extends Cana_Table {
 				$dayshours = array_search( strtolower( $date_start->format( 'D' ) ), $weekdays ) * 2400;
 				$hour_open = ( $dayshours + intval( $date_start->format( 'H' ) ) * 100 ) + intval( $date_start->format( 'i' ) );
 
-				$sunday = new DateTime( date('Y-m-d H:i:s', strtotime('sunday this week') ), new DateTimeZone( $this->timezone ) );
+				$sunday = new DateTime( date('Y-m-d H:i:s', strtotime('sunday this week') ), new DateTimeZone( $restaurant->timezone ) );
 				$sunday->setTime( 23, 59 );
-				$date_end = new DateTime( $override->date_end, new DateTimeZone( $this->timezone ) );
+				$date_end = new DateTime( $override->date_end, new DateTimeZone( $restaurant->timezone ) );
 				// Limit the override to this week
 				if( $date_end > $sunday ){
 					$date_end = $sunday;
