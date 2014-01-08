@@ -14,7 +14,9 @@ class Controller_api_restaurant_hours extends Crunchbutton_Controller_Rest {
 			case 'week':
 				// export the hours for the whole week
 				$no_utc = ( c::getPagePiece( 5 ) != 'regular' );
-				echo json_encode( $r->hours_week( $no_utc ) );exit;;
+				$hours = $r->hours_week( $no_utc );
+				if( !$hours ){ $hours = []; }
+				echo json_encode( $hours );exit;;
 				break;
 
 			case 'status':
@@ -67,7 +69,9 @@ class Controller_api_restaurant_hours extends Crunchbutton_Controller_Rest {
 			// export the hours for the next 24 hours
 			default:
 				$no_utc = ( c::getPagePiece( 4 ) != 'regular' );
-				echo json_encode( $r->hours_next_24_hours( $no_utc ) );exit;;
+				$hours = $r->hours_next_24_hours( $no_utc );
+				if( !$hours ){ $hours = []; }
+				echo json_encode( $hours );exit;;
 				break;
 		}
 	}

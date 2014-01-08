@@ -1091,7 +1091,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 
 		// get the legacy data
-		$out = array_merge( $out, $this->hours_legacy() );
+		// $out = array_merge( $out, $this->hours_legacy() );
 
 		return $out;
 	}
@@ -1532,30 +1532,40 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	// Return the next open time
 	public function next_open_time(){
-		// if the restaurant is open return false
-		if ( $this->open( $dt ) ) {
-			return false;
-		}
-		return Hour::restaurantNextOpenTime( $this );
+		if( $this->open_for_business ){
+			// if the restaurant is open return false
+			if ( $this->closed() ) {
+				return Hour::restaurantNextOpenTime( $this );	
+			}
+		} 
+		return false;
 	}
 
 	// return the next close time
 	public function next_close_time(){
-		// if the restaurant is closed return false
-		if ( $this->closed( $dt ) ) {
-			return false;
+		if( $this->open_for_business ){
+			// if the restaurant is closed return false
+			if ( $this->open() ) {
+				return Hour::restaurantNextCloseTime( $this );
+			}
 		}
-		return Hour::restaurantNextCloseTime( $this );
+		return false;
 	}
 
 	// Export the restaurant statuses: open/close for the week starting at the previous day
 	public function hours_week( $gmt = true ){
-		return Hour::getByRestaurantWeek( $this, $gmt );
+		if( $this->open_for_business ){
+			return Hour::getByRestaurantWeek( $this, $gmt );
+		} 
+		return false;
 	}
 
 	// Export the restaurant statuses: open/close for the next 24 hours
 	public function hours_next_24_hours( $gmt = false ){
-		return Hour::getByRestaurantNext24Hours( $this, $gmt );
+		if( $this->open_for_business ){
+			return Hour::getByRestaurantNext24Hours( $this, $gmt );	
+		}
+		return false;
 	}
 
 	// Return minutes left to close
@@ -1569,10 +1579,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	// Return minutes left to open
 	public function opensIn( $dt = null ) {
-		// if the restaurant is open return false
-		if ( $this->open( $dt ) ) {
-			return false;
+		if( $this->open_for_business ){
+				// if the restaurant is open return false
+			if ( $this->open( $dt ) ) {
+				return false;
+			}
+			return Hour::restaurantOpensIn( $this );
 		}
-		return Hour::restaurantOpensIn( $this );
+		return false;
 	}
 }
