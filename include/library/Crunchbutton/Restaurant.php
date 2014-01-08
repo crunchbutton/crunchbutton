@@ -1056,7 +1056,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 			}			
 		} else {
-			$out['_hours'] = $this->hours_next_24_hours();
+			$out['hours'] = $this->hours_next_24_hours( true );
 		}
 
 		if (!$ignore['_preset']) {
@@ -1088,6 +1088,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				'fb' => $id
 			];
 		}
+
+
+		// get the legacy data
+		$out = array_merge( $out, $this->hours_legacy() );
 
 		return $out;
 	}
@@ -1416,6 +1420,83 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	// return the hours info used at iphone native app
 	public function hours_legacy(){
 
+		$data = [];
+		$data[ 'open_for_business' ] = $this->open_for_business;
+		$data[ '_open' ] = $this->open();
+
+		// force open
+		$data[ '_force_open' ] = Crunchbutton_Restaurant_Hour_Override::forceOpen( $this->id_restaurant );;
+
+		// force close
+		$forceClose = Crunchbutton_Restaurant_Hour_Override::forceClose( $this->id_restaurant );
+		if( $forceClose ){
+			$data['_force_close'] = true;
+			$data['_force_close_notes'] = $forceClose;
+		} else {
+			$data['_force_close'] = false;
+		}
+
+		// if it is open shows closesIn
+		if( $data[ '_open' ] ){
+			$closesIn = $this->closesIn();
+			$data[ '_closesIn' ] = $closesIn;
+			if( $data['_closesIn'] === 0 ){
+					$data[ '_open' ] = false;
+					$data[ '_closesIn' ] = false;
+			} else {
+				$data[ '_closesIn_formated' ] = Cana_Util::formatMinutes( $closesIn )[ 'formatted' ];	
+			}
+		} else {
+			$data[ '_closesIn' ] = false;
+		}
+		
+		// if it is closed shows opensIn
+		if( !$data[ '_open' ] ){
+			$opensIn = $this->opensIn();
+			$data[ '_openIn' ] = $opensIn;
+			if( $data[ '_openIn' ] ){
+				$data[ '_openIn_formated' ] = Cana_Util::formatMinutes( $opensIn )[ 'formatted' ];
+			}
+		} else {
+			$data[ '_openIn' ] = false;
+		}
+
+		// Min minutes to show the hurry message
+		$data[ '_minimumTime' ] = 15;  
+
+		// tags
+		if( $data['_open'] ){
+			if( $this->delivery != 1 ){
+				$data['_tag']  = 'takeout';        
+			} else {
+			if( $data['_closesIn'] <= $data['_minimumTime'] && $data['_closesIn'] !== false){
+		      $data['_tag']  = 'closing';
+				}
+			}
+		} else {
+			$data['_tag']  = 'closed';
+			if( $data[ '_force_close' ] ){
+				$data['_tag']  = 'force_close';
+			}
+		}
+
+		$data[ 'open_holidays' ] = $this->open_holidays;
+
+		// hours utc formatted
+		$hours = $this->hours( true );
+		foreach ( $hours as $hours ) {
+			$data[ '_hoursFormat' ][ $hours->day ][] = [ $hours->time_open, $hours->time_close ];
+		}
+
+		$hours = $this->hours();
+		$_hours = [];
+		foreach ( $hours as $hours ) {
+			$_hours[ $hours->day ][] = [ $hours->time_open, $hours->time_close ];
+		}
+		$data[ '_hours' ] = Hour::mergeHolidays( $_hours, $this, false );
+		$data[ '_hours_converted_utc' ] = Hour::hoursStartingMondayUTC( $_hours );
+		
+		return $data;
 	}
 
 	// return the restaurant's hours
