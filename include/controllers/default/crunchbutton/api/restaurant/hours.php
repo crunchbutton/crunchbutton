@@ -56,12 +56,12 @@ class Controller_api_restaurant_hours extends Crunchbutton_Controller_Rest {
 				break;
 
 			// return the amount of time to open
-			case 'open-in':
-				$minutes = $r->openIn();
+			case 'opens-in':
+				$minutes = $r->opensIn();
 				if( $minutes ){
-					echo json_encode( [ 'open-in' => Cana_Util::formatMinutes( $minutes ) ] );exit;;	
+					echo json_encode( [ 'opens-in' => Cana_Util::formatMinutes( $minutes ) ] );exit;;	
 				}
-				echo json_encode( [ 'open-in' => false ] );exit;;
+				echo json_encode( [ 'opens-in' => false ] );exit;;
 				break;
 
 			// export the hours for the next 24 hours

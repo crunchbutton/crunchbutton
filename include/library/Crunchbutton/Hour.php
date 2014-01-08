@@ -52,7 +52,7 @@ class Crunchbutton_Hour extends Cana_Table {
 		return false;
 	}
 
-	public function restaurantOpenIn( $restaurant ){
+	public function restaurantOpensIn( $restaurant ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$open = Hour::restaurantNextOpenTime( $restaurant );
 		if( $open ){
