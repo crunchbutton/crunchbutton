@@ -48,6 +48,11 @@ class Controller_api_restaurant_hours extends Crunchbutton_Controller_Rest {
 				echo json_encode( [ 'next-close' => false ] );exit;;
 				break;
 
+			// return the closed message
+			case 'closed-message':
+				echo json_encode( [ 'closed-message' => $r->closed_message() ] );exit;;
+				break;
+
 			// return the amount of time to open
 			case 'closes-in':
 				$minutes = $r->closesIn();

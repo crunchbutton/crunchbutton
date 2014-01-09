@@ -1059,6 +1059,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out['hours'] = $this->hours_next_24_hours( true );
 		}
 
+		$out['closed_message'] = $this->closed_message();
+
 		if (!$ignore['_preset']) {
 			if ($this->preset()->count()) {
 				$out['_preset'] = $this->preset()->get(0)->exports();
@@ -1528,6 +1530,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// Calculate the hours to verify if it is open or not
 		return Hour::restaurantIsOpen( $this, $dt );
+	}
+
+	// return the closed message
+	public function closed_message(){
+		return Hour::restaurantClosedMessage( $this );	
 	}
 
 	// Return the next open time
