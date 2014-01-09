@@ -22,4 +22,8 @@ dateTime.toString = function(){
 	return dateTime.now.toString( 'dd MMMM yyyy HH:mm:ss' );
 }
 
+dateTime.getNow = function(){
+	return Date.parse( dateTime.toString() );
+}
+
 dateTime.update();

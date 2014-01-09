@@ -7,6 +7,7 @@ var Restaurant = function(id) {
 	this.type = 'Restaurant';
 	this.id_var = 'id_restaurant';
 	this.resource = 'restaurant';
+
 	var
 		self = this,
 		complete;
@@ -15,149 +16,6 @@ var Restaurant = function(id) {
 
 	var complete = arguments[1] || null;
 	self.loadError = arguments[2] || null;
-
-	/**
-	 * Turns serverside time to UTC so we don't use the server time
-	 *
-	 * @returns Date
-	 */
-	this._utcTime = function( serverTime ){
-		return this._parseDate(serverTime.add( - this._tzoffset ).hours().toUTCString());
-	}
-	
-	this._parseDate = function( dateStr ) {
-		if (!dateStr) {
-			return null;
-		}
-
-		dateStr = dateStr.split(',');
-		dateStr = (dateStr.length == 2 ? dateStr[1] : dateStr[0]).trim();
-		return Date.parse(dateStr);
-	}
-
-	/**
-	 * Turn's client browser time to UTC to compare it with a base and not client's side timezone
-	 *
-	 * @return Date
-	 */
-	this._utcNow = function(){
-		return Date.parse( dateTime.toString() );
-	}
-
-	this.closesIn = function( trueIfItIsOpen ) {		
-		// this overrides everything
-		if( this.open_for_business === "0" ) {
-			this._open = false;
-			return false;
-		}
-
-		// If it doesn't have hours it is never open
-		if( !this._hours ) {
-			this._open = false;
-			return false;
-		}
-
-		var now_utc = this._utcNow();
-		var weekday = now_utc.getDay();
-		if( weekday == 0 ){
-			weekday = 7;
-		} 
-
-		var now_utc_hour = ( ( weekday - 1 ) * 2400 ) + ( now_utc.getHours() * 100 ) + now_utc.getMinutes();
-		// It means it will close at sunday after 12 AM, convert it to monday
-		if( now_utc_hour > ( 16800 ) ){
-			now_utc_hour = now_utc_hour - 16800;
-		}
-
-		this._open = false;
-
-		var nextOpenShouldBe = false;
-
-		for( hour in this._hours_converted_utc ){
-			var open = this._hours_converted_utc[ hour ].open;
-			var close = this._hours_converted_utc[ hour ].close;
-			if( now_utc_hour >= open && now_utc_hour <= close ){
-
-				this._open = true;
-
-				if( trueIfItIsOpen ){
-					return true;
-				}
-
-				var close_str = close.toString();
-				var min_close = parseInt( close_str.substr( ( close_str.length - 2 ), 2 ) );
-				if( min_close == 0 ){ min_close = 60; }
-				
-				var now_utc_hour_str = now_utc_hour.toString();
-				var min_now = parseInt( now_utc_hour_str.substr( ( now_utc_hour_str.length - 2 ), 2 ) );
-				if( min_now == 0 ){ min_now = 60; }
-				
-				if( min_close < min_now ){
-					min_close += 60;
-				}
-				
-				this._closesIn = ( Math.floor( ( close - now_utc_hour ) / 100 ) * 60 ) + ( min_close - min_now );
-			}
-			// if it is closed lets check how much time till it open
-			if( !nextOpenShouldBe && now_utc_hour <= open ){
-				nextOpenShouldBe = open;
-			}
-		}
-
-		if( this._closesIn <= 0 ){
-			this._open = false;
-		}
-
-		// If it is closed, calcule how much time till it open
-		if( !this._open && nextOpenShouldBe ){
-			var open_str = nextOpenShouldBe.toString();
-			var min_open = parseInt( open_str.substr( ( open_str.length - 2 ), 2 ) );
-			if( min_open == 0 ){ min_open = 60; }
-			var now_utc_hour_str = now_utc_hour.toString();
-			var min_now = parseInt( now_utc_hour_str.substr( ( now_utc_hour_str.length - 2 ), 2 ) );
-			if( min_now == 0 ){ min_now = 60; }
-			if( min_open < min_now ){
-				min_open += 60;
-			}
-			this._openIn = ( Math.floor( ( nextOpenShouldBe - now_utc_hour ) / 100 ) * 60 ) + ( min_open - min_now );
-		}
-		
-		this._tag = '';
-
-		// Add the tags
-		if( !this._open ){
-			this._tag = 'closed';
-		} 
-		if( this._open && this._closesIn <= this._minimumTime && this._closesIn !== 'false'){
-			this._tag = 'closing';
-		}
-
-		return false;
-	}
-
-	self.formatTime = function( time ){
-		var formated = '';
-		if( time && time > 0 ){
-			var hours = Math.floor( time / 60 );
-			var minutes = time - ( hours * 60 );
-			if( hours > 0 ){
-				formated = hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) /* + ( minutes > 0 ? ' and ' + ( minutes ) + ( minutes > 1 ? ' minutes' : ' minute' ) : '' ) */;
-			} else {
-				formated = ( minutes > 0 ) ? minutes + ' minutes' : '';
-			}			
-		}
-		return formated;
-	}
-
-	self.closesInFormated = function(){
-		this._closesIn_formated = this.formatTime( this._closesIn );
-		return this._closesIn_formated;
-	}
-
-	self.openInFormated = function(){
-		this._openIn_formated = this.formatTime( this._openIn );
-		return this._openIn_formated;
-	}
 
 	self.categories = function() {
 		return self.loadType('Category','categories');
@@ -199,22 +57,6 @@ var Restaurant = function(id) {
 		theDate.setHours(theTime[0]);
 		theDate.setMinutes(theTime[1] + offset);
 		return theDate;
-	}
-
-	/**
-	 * Checks if a restaurant is open now for delivery
-	 *
-	 * Checks if now() is between openTime and closeTime. The closing time could
-	 * be for tomorrow morning (1am) so we need to handle those cases too. See
-	 * issue #605.
-	 *
-	 * Do not use logic in PHP as the page could have been open for a while.
-	 *
-	 * @todo add offset validation
-	 *       offset = -(today.getTimezoneOffset()); // @todo: ensure this works on positive tz
-	 */
-	self.open = function() {
-		return this.closesIn( true );
 	}
 
 	self.deliveryHere = function( distance ){
@@ -401,6 +243,100 @@ var Restaurant = function(id) {
 			complete.call(self);
 		}
 
+	}
+
+	self.tagfy = function( tag ){
+		if( tag ){
+			this._tag = tag;
+			return;
+		}
+
+		this._tag = '';
+		// Add the tags
+		if( !this._open ){
+			this._tag = 'closed';
+		}
+		if( this._open && this._closesIn !== 'false' && this._closesIn <= 15 ){
+			this._tag = 'closing';
+		}
+	}
+
+	/* 
+	** Open/Close check methods 
+	*/
+	// return true if the restaurant is open
+	self.open = function( now, ignoreOpensClosesInCalc ) {	
+		var now = ( now ) ? now : dateTime.getNow();
+		self.processHours();
+		var now_time = now.getTime();
+		// loop to verify if it is open	
+		self._open = false;
+		for( x in this.hours ){
+			if( this.hours[ x ].status == 'open' ){
+				if( now_time >= this.hours[ x ]._from_time && now_time <= this.hours[ x ]._to_time ){
+					self._open = true;
+					if( ignoreOpensClosesInCalc ){
+						return self._open;
+					}
+					// if it is open calc closes in
+					self.closesIn( now );	
+					return self._open;
+				}
+			}
+		}
+		if( ignoreOpensClosesInCalc ){
+			return self._open;
+		}
+		// If it is closed calc opens in
+		self.opensIn( now );
+		return self._open;
+	}
+
+	self.closesIn = function( now ){
+		var now = ( now ) ? now : dateTime.getNow();
+		self._closesIn = false;
+		self._closesIn_formatted = '';
+		self.processHours();
+		var now_time = now.getTime();
+		for( x in this.hours ){
+			if( this.hours[ x ].status == 'close' ){
+				if( now_time <= this.hours[ x ]._from_time ){
+					self._closesIn = timestampDiff( this.hours[ x ]._from_time, now_time );
+					self._closesIn_formatted = formatTime( self._closesIn );
+					return;
+				}
+			}
+		}
+	}
+
+	self.opensIn = function( now ){
+		var now = ( now ) ? now : dateTime.getNow();
+		self._opensIn = false;
+		self._opensIn_formatted = '';
+		self.processHours();
+		var now_time = now.getTime();
+		for( x in this.hours ){
+			if( this.hours[ x ].status == 'open' ){
+				if( now_time <= this.hours[ x ]._from_time ){
+					self._opensIn = timestampDiff( this.hours[ x ]._from_time, now_time );
+					self._opensIn_formatted = formatTime( self._opensIn );
+					return;
+				}
+			}
+		}
+	}
+
+	// Create javascript date objects to faster comparision
+	self.processHours = function(){
+		if( !this._hours_processed ){
+			for( x in this.hours ){
+				this.hours[ x ]._from = Date.parse( this.hours[ x ].from );
+				this.hours[ x ]._from_time = this.hours[ x ]._from.getTime();
+				this.hours[ x ]._to = Date.parse( this.hours[ x ].to );
+				this.hours[ x ]._to_time = this.hours[ x ]._to.getTime();
+			}	
+			this._hours_processed = true;
+		}
 	}
 
 	self.load(id);

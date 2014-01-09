@@ -20,17 +20,23 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 		var areAllTheRestaurantsClosed = true;
 
+		// call here that way this method does not have to be called inside each restaurant object
+		var now = dateTime.getNow();
+
+		// call the method open to check it status and tagfy
 		for (var x in list) {
-			if( list[x]._open ){
+			if( list[x].open( now ) ){
 				areAllTheRestaurantsClosed = false;
 			}
+			list[x].tagfy();
 		}
 
 		// if all are closed sort by that are opening the soonest
 		if( areAllTheRestaurantsClosed ){
+			// Sort by opensIn and distance
 			list.sort( 
 				sort_by( {
-					name: '_openIn',
+					name: '_opensIn',
 					primer: parseInt,
 					reverse: false
 				}, {
@@ -52,7 +58,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					primer: parseFloat,
 					reverse: true
 				}, {
-					name: '_openIn',
+					name: '_opensIn',
 					primer: parseInt,
 					reverse: false
 				}, {
@@ -70,8 +76,8 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				if( tagRestaurantsAsClosing <= 0 ){
 					break;
 				}
+				list[x].tagfy( 'opening' );
 				tagRestaurantsAsClosing--;
-				list[x]._tag = 'opening';	
 			}
 		}
 
@@ -97,7 +103,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		for (var x in list) {
 
 			list[x].closesIn();
-
+/*
 			// determine which tags to display
 			if (!list[x]._open || list[x]._closesIn == 0) {
 				if( list[x]._force_close ){
@@ -115,7 +121,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					} 
 				}
 			}
-
+*/
 			if( !list[x]._open ){
 				totalClosedRestaurantsAfter++;
 			}
@@ -208,8 +214,7 @@ NGApp.factory( 'RestaurantService', function ($http, $routeParams, $rootScope, C
 
 	service.init = function(){
 
-		
-		App.cache('Restaurant', $routeParams.id, function () {
+		App.cache( 'Restaurant', $routeParams.id, function () {
 			var restaurant = this;
 			service.loadedList[ $routeParams.id ] = true;
 			var community = CommunityService.getById( restaurant.id_community );
