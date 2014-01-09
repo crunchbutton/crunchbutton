@@ -15,7 +15,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 	service.position = PositionsService;
 
 	service.sort = function () {
-		
+
 		var list = restaurants;
 
 		var areAllTheRestaurantsClosed = true;
@@ -101,30 +101,10 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		}
 		
 		for (var x in list) {
-
-			list[x].closesIn();
-/*
-			// determine which tags to display
-			if (!list[x]._open || list[x]._closesIn == 0) {
-				if( list[x]._force_close ){
-					list[x]._tag = 'force_close';
-				} else {
-					list[x]._tag = 'closed';	
-				}
-				list[x].openInFormated();
-			} else {
-				if (list[x].delivery != '1') {
-					list[x]._tag = 'takeout';
-				} else {
-					if( list[x]._closesIn <= list[x]._minimumTime && list[x]._closesIn > 0 ){
-						list[x]._tag = 'closing';	
-					} 
-				}
-			}
-*/
-			if( !list[x]._open ){
+			if( !list[x].open() ){
 				totalClosedRestaurantsAfter++;
 			}
+			list[x].tagfy();
 		};
 
 		restaurants = list;
