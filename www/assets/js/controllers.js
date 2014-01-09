@@ -180,8 +180,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	$scope.display = function( $event ){
 		var restaurant = this.restaurant;
-		restaurant.closesIn();
-		if ( !restaurant._open ) {
+		if ( !restaurant.open( dateTime.getNow(), true ) ) {
 			$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
 			$scope.restaurants = restaurants.getStatus();
 		} else {
@@ -197,7 +196,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	restaurants.list( 
 		// Success
 		function(){
-			App.profile.log('return from list');
 
 			// Limit the number of restaurants to be rended when page loads
 			if (App.restaurantsPaging.enabled) {
@@ -221,11 +219,15 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			document.title = ( city || '' ) + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
 
 			$scope.restaurants = restaurants.sort();
-			App.profile.log('returned sorting');
+
 			// Wait one minute until update the status of the restaurants
 			setTimeout( function(){
 				updateStatus();
 			}, 1000 * 60 );
+
+			// $scope.restaurants = restaurants.getStatus();
+			// $rootScope.$safeApply();
+
 			$scope.slogan = slogan;
 			$scope.tagline = tagline;
 			

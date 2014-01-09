@@ -130,6 +130,25 @@ Number.prototype.pad = String.prototype.pad = function(width, z) {
 	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
+// calc the diff between two timestamps
+function timestampDiff( time1, time2 ){
+	return Math.floor( ( time1 - time2 ) / 1000 / 60 );
+}
+
+function formatTime( time ){
+	var formated = '';
+	if( time && time > 0 ){
+		var hours = Math.floor( time / 60 );
+		var minutes = time - ( hours * 60 );
+		if( hours > 0 ){
+			formated = hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) /* + ( minutes > 0 ? ' and ' + ( minutes ) + ( minutes > 1 ? ' minutes' : ' minute' ) : '' ) */;
+		} else {
+			formated = ( minutes > 0 ) ? minutes + ' minutes' : '';
+		}			
+	}
+	return formated;
+}
+
 
 $.pluck = function(ar, len) {
 	for (var i = ar.length - 1; i > 0; i--) {
