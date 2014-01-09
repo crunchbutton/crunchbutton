@@ -527,7 +527,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	// update if the restaurant is closed or open
 	var updateStatus = function(){
 		updateRestaurantStatus = $timeout( function(){
-			$scope.restaurant.closesIn();
+			$scope.restaurant.open();
 			var open = $scope.restaurant._open;
 			if ($scope.open != open) {
 				$scope.open = open;
@@ -722,7 +722,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		// If we have the basic Info we don't need to run this closesIn right now
 		if( !RestaurantService.basicInfo ){
-			$scope.restaurant.closesIn();	
+			$scope.restaurant.open();	
 		}
 		
 		$scope.open = $scope.restaurant._open;
