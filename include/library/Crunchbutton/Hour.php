@@ -572,4 +572,158 @@ class Crunchbutton_Hour extends Cana_Table {
 		return $hours;
 	}
 
+	// Convert hours to PM/AM
+	public function formatTime( $time ){
+		$time = explode( ':', $time );
+		$hour = intval( $time[ 0 ] );
+		$minute = intval( $time[ 1 ] );
+		$ampm = '';
+		switch ( true ) {
+			case ( $hour == 0 || $hour == 24 ):
+				$hour = 12;
+				$ampm = 'am';
+				break;
+			case ( $hour == 12 ):
+				$ampm = 'pm';
+				break;
+			case ( $hour < 12 ):
+				$hour = $hour;
+				$ampm = 'am';
+				break;
+			case ( $hour > 12 ):
+				$hour = ( $hour - 12 );
+				$ampm = 'pm';
+				break;
+		}
+		return $hour . ( ( $minute > 0 ) ? ':' . $minute : '' ) . $ampm;
+	}
+
+	public function restaurantClosedMessage( $restaurant ){
+		
+		$_hours = Hour::getRestaurantRegularPlusHolidayHours( $restaurant );
+
+		// Remove the closes status
+		foreach ( $_hours as $day => $hours ) {
+			foreach( $hours as $key => $hour ){
+				if( $_hours[ $day ][ $key ][ 'status' ] != 'open' ){
+					unset( $_hours[ $day ][ $key ] );
+				}
+			}
+			// re-index the array
+			$_hours[ $day ] = array_values( $_hours[ $day ] );
+		}	
+		// remove the days without hours
+		foreach ( $_hours as $day => $hours ) {
+			if( count( $hours ) == 0 ){
+				unset( $_hours[ $day ]);
+			}
+		}
+
+		// Combine the hours/days that closes after midgnith
+		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
+		foreach( $weekdays as $day ){
+			if( $_hours[ $day ] ){
+				$index = array_search( $day, $weekdays );
+				// Get the prev day to compare
+				if( $index == 0 ){
+					$index_prev = count( $weekdays ) - 1;
+				} else if( $index == ( count( $weekdays ) - 1 ) ){
+					$index_prev = 0;	
+				} else {
+					$index_prev--;
+				}
+				$prev_day = $weekdays[ $index_prev ];
+				// the current day
+				if( $_hours[ $day ] ){
+					// If this days starts at midnight that is a chance this hours belongs to prev day
+					if( $_hours[ $day ] && $_hours[ $day ][ 0 ] && $_hours[ $day ][ 0 ][ 'from' ] && $_hours[ $day ][ 0 ][ 'from' ] == '0:00' ){
+						if( $_hours[ $prev_day ] && $_hours[ $prev_day ][ count( $_hours[ $prev_day ] ) - 1 ] && $_hours[ $prev_day ][ count( $_hours[ $prev_day ] ) - 1 ][ 'from' ] && $_hours[ $prev_day ][ count( $_hours[ $prev_day ] ) - 1 ][ 'to' ] == '0:00' ){
+							$_hours[ $prev_day ][ count( $_hours[ $prev_day ] ) - 1 ] = array( 'from' => $_hours[ $prev_day ][ count( $_hours[ $prev_day ] ) - 1 ][ 'from' ], 'to' => $_hours[ $day ][ 0 ][ 'to' ] );
+							unset( $_hours[ $day ][ 0 ] );
+							$_hours[ $day ] = array_values( $_hours[ $day ] );
+						}
+					}
+				}
+			}
+		}
+
+		// Convert the hours to format am/pm and merge the segments
+		$_partial = [];
+		foreach ( $_hours as $day => $hours ) {
+			$segments = [];
+			foreach( $hours as $key => $hour ){
+				$from = Hour::formatTime( $_hours[ $day ][ $key ][ 'from' ] );
+				$to = Hour::formatTime( $_hours[ $day ][ $key ][ 'to' ] );
+				$segments[] = $from . ' - ' . $to;
+			}
+			$_partial[ $day ] = join( ', ', $segments );
+		}	
+
+		$_group = [];
+		// Group the days with the same hour
+		foreach( $_partial as $day => $hours ){
+			if( !$_group[ $hours ] ){
+				$_group[ $hours ] = [];
+			}
+			$_group[ $hours ][] = $day;
+		}
+
+		// Group the days e.g. 'Mon, Tue, Wed, Sat' will became 'Mon - Wed, Sat'
+		foreach( $_group as $hours => $days ){
+			if( count( $days ) <= 1 ){
+				$_group[ $hours ] = ucfirst( join( ', ', $days ) );
+				continue;
+			}
+			// $days = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
+			// $days = [ 'sat', 'sun' ];
+			$_sequence_index = 0;
+			$_in_sequences = [];
+			$_no_sequences = [];
+			$nextShouldBe = false;
+			for( $i = 0; $i < count( $days ); $i++ ){
+				$index = array_search( $days[ $i ], $weekdays );
+
+				if( $nextShouldBe !== false ){
+					if( $nextShouldBe == $index ){
+						$_in_sequences[ $_sequence_index ][ $days[ $i -1 ] ] = array_search( $days[ $i -1 ], $weekdays );
+						$_in_sequences[ $_sequence_index ][ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );
+						unset( $_no_sequences[ $days[ $i -1 ] ] );
+						unset( $_no_sequences[ $days[ $i ] ] );
+					} else {
+						$_no_sequences[ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );
+						$_sequence_index++;
+					}
+				} else {
+					$_no_sequences[ $days[ $i ] ] = array_search( $days[ $i ], $weekdays );	
+				}
+
+				$nextShouldBe = ( ( $index + 1 ) < ( count( $weekdays ) ) ) ? ( $index + 1 ) : 0; 
+			}
+			$_sequences = [];
+			foreach ( $_in_sequences as $key => $value ) {
+				if( count( $_in_sequences[ $key ] ) == 2 ){
+					$separator = ', ';
+				} else {
+					$separator = ' - ';
+				}
+				$data = [];
+				$keys = array_keys( $_in_sequences[ $key ] );
+				$_sequences[ array_shift( $_in_sequences[ $key ] ) ] = ucfirst( array_shift( $keys ) ) . $separator . ucfirst( array_pop( $keys ) );
+			}	
+			foreach ( $_no_sequences as $key => $value ) {
+				$_sequences[ $_no_sequences[ $key ] ] = ucfirst( $key );
+			}	
+			ksort( $_sequences );
+			$_group[ $hours ] = join( ', ', $_sequences );
+		}
+
+		$_organized = [];
+		// Organize the messy
+		foreach( $_group as $hours => $days ){
+			$_organized[] = $days . ': ' . $hours;
+		}
+
+		return join( ' <br/> ', $_organized );
+	}
+
 }
