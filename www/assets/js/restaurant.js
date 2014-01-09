@@ -94,17 +94,17 @@ var Restaurant = function(id) {
 
 	self.tagfy = function( tag ){
 		if( tag ){
-			this._tag = tag;
+			self._tag = tag;
 			return;
 		}
 
-		this._tag = '';
+		self._tag = '';
 		// Add the tags
-		if( !this._open ){
-			this._tag = 'closed';
+		if( !self._open ){
+			self._tag = 'closed';
 		}
-		if( this._open && this._closesIn !== 'false' && this._closesIn <= 15 ){
-			this._tag = 'closing';
+		if( self._open && self._closesIn !== 'false' && self._closesIn <= 15 ){
+			self._tag = 'closing';
 		}
 	}
 
@@ -127,6 +127,7 @@ var Restaurant = function(id) {
 					}
 					// if it is open calc closes in
 					self.closesIn( now );	
+					self.tagfy();
 					return self._open;
 				}
 			}
@@ -136,6 +137,7 @@ var Restaurant = function(id) {
 		}
 		// If it is closed calc opens in
 		self.opensIn( now );
+		self.tagfy();
 		return self._open;
 	}
 
@@ -153,6 +155,9 @@ var Restaurant = function(id) {
 					return;
 				}
 			}
+		}
+		if( self._closesIn == 0 || self._closesIn === false ){
+			self._open = false;
 		}
 	}
 

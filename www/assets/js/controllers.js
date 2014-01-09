@@ -225,9 +225,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 				updateStatus();
 			}, 1000 * 60 );
 
-			// $scope.restaurants = restaurants.getStatus();
-			// $rootScope.$safeApply();
-
 			$scope.slogan = slogan;
 			$scope.tagline = tagline;
 			
