@@ -1,7 +1,7 @@
 // Restaurant list service
 NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsService ) {
 
-	var service = { permalink : 'food-delivery', forceLoad : true, forceGetStatus : false };
+	var service = { permalink : 'food-delivery', forceLoad : true, forceGetStatus : false, birthdate: false };
 	var restaurants = false;
 
 	service.reset = function () {
@@ -33,9 +33,19 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 		// if all are closed sort by that are opening the soonest
 		if( areAllTheRestaurantsClosed ){
-			// Sort by opensIn and distance
+
+			for (var x in list) {
+				if( list[x].open( now ) ){
+					areAllTheRestaurantsClosed = false;
+				}
+				list[x].tagfy();
+			}
+
 			list.sort( 
 				sort_by( {
+					name: '_hasHours',
+					reverse: true
+				}, {
 					name: '_opensIn',
 					primer: parseInt,
 					reverse: false
@@ -43,6 +53,10 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					name: 'distance',
 					primer: parseFloat,
 					reverse: false
+				}, {
+					name: '_weight',
+					primer: parseFloat,
+					reverse: true
 				} )
 			);
 		} else {
@@ -72,11 +86,11 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		if( areAllTheRestaurantsClosed ){
 			// Number of restaurants that will have the opening tag
 			var tagRestaurantsAsClosing = 3;
-			for (var x in list) {
+			for ( var x in list ) {
 				if( tagRestaurantsAsClosing <= 0 ){
 					break;
 				}
-				list[x].tagfy( 'opening' );
+				list[ x ].tagfy( 'opening' );
 				tagRestaurantsAsClosing--;
 			}
 		}
@@ -134,6 +148,8 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			$http.get(url, {
 				cache: false
 			}).success(function (data) {
+				// property to control the cache expiration of the list
+				service.birthdate = dateTime.getNow();
 				var list = [];
 				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
 					if (error) {

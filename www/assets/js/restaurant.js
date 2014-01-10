@@ -102,9 +102,15 @@ var Restaurant = function(id) {
 		// Add the tags
 		if( !self._open ){
 			self._tag = 'closed';
+			if( self.name,self._closedDueTo ){
+				self._tag = 'force_close';
+			}
 		}
 		if( self._open && self._closesIn !== 'false' && self._closesIn <= 15 ){
 			self._tag = 'closing';
+		}
+		if( !self._hasHours ){
+			self._tag = 'force_close';	
 		}
 	}
 
@@ -112,15 +118,18 @@ var Restaurant = function(id) {
 	** Open/Close check methods 
 	*/
 	// return true if the restaurant is open
-	self.open = function( now, ignoreOpensClosesInCalc ) {	
+	self.open = function( now, ignoreOpensClosesInCalc ) {
+		// if the restaurant has no hours it probably will not be opened for the next 24 hours
+		self._hasHours = false;
 		var now = ( now ) ? now : dateTime.getNow();
 		self.processHours();
 		var now_time = now.getTime();
 		// loop to verify if it is open	
 		self._open = false;
-		for( x in this.hours ){
-			if( this.hours[ x ].status == 'open' ){
-				if( now_time >= this.hours[ x ]._from_time && now_time <= this.hours[ x ]._to_time ){
+		for( x in self.hours ){
+			self._hasHours = true;
+			if( now_time >= self.hours[ x ]._from_time && now_time <= self.hours[ x ]._to_time ){
+				if( self.hours[ x ].status == 'open' ){
 					self._open = true;
 					if( ignoreOpensClosesInCalc ){
 						return self._open;
@@ -129,11 +138,17 @@ var Restaurant = function(id) {
 					self.closesIn( now );	
 					self.tagfy();
 					return self._open;
+				} else if( self.hours[ x ].status == 'close' ){
+					self._closedDueTo = ( self.hours[ x ].notes ) ? self.hours[ x ].notes : false;
+					if( ignoreOpensClosesInCalc ){
+						return self._open;
+					}			
+					// If it is closed calc opens in
+					self.opensIn( now );
+					self.tagfy();
+					return self._open;
 				}
 			}
-		}
-		if( ignoreOpensClosesInCalc ){
-			return self._open;
 		}
 		// If it is closed calc opens in
 		self.opensIn( now );
@@ -147,10 +162,10 @@ var Restaurant = function(id) {
 		self._closesIn_formatted = '';
 		self.processHours();
 		var now_time = now.getTime();
-		for( x in this.hours ){
-			if( this.hours[ x ].status == 'close' ){
-				if( now_time <= this.hours[ x ]._from_time ){
-					self._closesIn = timestampDiff( this.hours[ x ]._from_time, now_time );
+		for( x in self.hours ){
+			if( self.hours[ x ].status == 'close' ){
+				if( now_time <= self.hours[ x ]._from_time ){
+					self._closesIn = timestampDiff( self.hours[ x ]._from_time, now_time );
 					self._closesIn_formatted = formatTime( self._closesIn );
 					return;
 				}
@@ -167,10 +182,10 @@ var Restaurant = function(id) {
 		self._opensIn_formatted = '';
 		self.processHours();
 		var now_time = now.getTime();
-		for( x in this.hours ){
-			if( this.hours[ x ].status == 'open' ){
-				if( now_time <= this.hours[ x ]._from_time ){
-					self._opensIn = timestampDiff( this.hours[ x ]._from_time, now_time );
+		for( x in self.hours ){
+			if( self.hours[ x ].status == 'open' ){
+				if( now_time <= self.hours[ x ]._from_time ){
+					self._opensIn = timestampDiff( self.hours[ x ]._from_time, now_time );
 					self._opensIn_formatted = formatTime( self._opensIn );
 					return;
 				}
@@ -181,11 +196,11 @@ var Restaurant = function(id) {
 	// Create javascript date objects to faster comparision
 	self.processHours = function(){
 		if( !this._hours_processed ){
-			for( x in this.hours ){
-				this.hours[ x ]._from = Date.parse( this.hours[ x ].from );
-				this.hours[ x ]._from_time = this.hours[ x ]._from.getTime();
-				this.hours[ x ]._to = Date.parse( this.hours[ x ].to );
-				this.hours[ x ]._to_time = this.hours[ x ]._to.getTime();
+			for( x in self.hours ){
+				self.hours[ x ]._from = Date.parse( self.hours[ x ].from );
+				self.hours[ x ]._from_time = self.hours[ x ]._from.getTime();
+				self.hours[ x ]._to = Date.parse( self.hours[ x ].to );
+				self.hours[ x ]._to_time = self.hours[ x ]._to.getTime();
 			}	
 			this._hours_processed = true;
 		}

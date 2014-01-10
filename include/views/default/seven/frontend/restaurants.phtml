@@ -43,7 +43,7 @@
 
 			<div class="restaurants-closed" ng-if="restaurant._tag == 'force_close'">
 				<h2 class="restaurants-name">{{restaurant.name}}</h2>
-				<div class="restaurants-opensin">Temporarily closed {{restaurant._force_close_notes}}</div>			
+				<div class="restaurants-opensin">Temporarily closed {{restaurant._closedDueTo}}</div>			
 			</div>
 
 			<div class="restaurants-open" ng-hide="restaurant._tag == 'closed' || restaurant._tag == 'force_close'">
