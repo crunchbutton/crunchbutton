@@ -150,14 +150,15 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			$scope.restaurants = restaurants.getStatus();
 			$rootScope.$safeApply();
 			updateStatus();
-		} , 1000 * 35 );
+		} , 1000 * 15 );
 	}
 
 	$scope.$on( '$destroy', function(){
 		RestaurantsService.forceGetStatus = true;
 		// Kills the timer when the controller is changed
-		try{ $timeout.cancel( updateRestaurantsStatus );} catch(e){}
-		
+		if( typeof( updateRestaurantStatus ) !== 'undefined' && updateRestaurantStatus ){
+			try{ $timeout.cancel( updateRestaurantsStatus );} catch(e){}
+		}
 	});
 
 	// It means the list is already loaded so we need to update the restaurant's status
@@ -524,7 +525,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	
 	var creditCard = CreditCardService;
 	
-	// update if the restaurant is closed or open
+	// update if the restaurant is closed or open every 35 seconds
 	var updateStatus = function(){
 		updateRestaurantStatus = $timeout( function(){
 			$scope.restaurant.open();
@@ -536,15 +537,15 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 				$scope.$apply();	
 			}
 			updateStatus();
-		} , 1000 * 15 );
+		} , 1000 * 35 );
 	}
 
 	$scope.$on( '$destroy', function(){
 		// Kills the timer when the controller is changed
-		if( updateRestaurantStatus ){
+		if( typeof( updateRestaurantStatus ) !== 'undefined' && updateRestaurantStatus ){
 			try{ $timeout.cancel( updateRestaurantStatus ); } catch(e){}
 		}
-		if( forceReloadTimer ){
+		if( typeof( forceReloadTimer ) !== 'undefined' && forceReloadTimer ){
 			try{ $timeout.cancel( forceReloadTimer ); } catch(e){}
 		}
 	});
@@ -720,10 +721,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		order.restaurant = $scope.restaurant;
 		MainNavigationService.restaurant = $scope.restaurant;
 
-		// If we have the basic Info we don't need to run this closesIn right now
-		if( !RestaurantService.basicInfo ){
-			$scope.restaurant.open();	
-		}
+		$scope.restaurant.open();	
 		
 		$scope.open = $scope.restaurant._open;
 
@@ -806,19 +804,19 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	}
 
 	// update if the restaurant is closed or open
-	var forceReload = function(){
-		forceReloadTimer = $timeout( function(){
-			if( !order.loaded ){
-				restaurantService.init();
-				updateStatus();
-				forceReload();
-				$rootScope.$safeApply();
-			} else {
-				$rootScope.$safeApply();
-			}
-		} , 2000 );
-	};
-	forceReload();
+	// var forceReload = function(){
+	// 	forceReloadTimer = $timeout( function(){
+	// 		if( !order.loaded ){
+	// 			restaurantService.init();
+	// 			updateStatus();
+	// 			forceReload();
+	// 			$rootScope.$safeApply();
+	// 		} else {
+	// 			$rootScope.$safeApply();
+	// 		}
+	// 	} , 2000 );
+	// };
+	// forceReload();
 
 });
 

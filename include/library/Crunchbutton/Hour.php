@@ -161,7 +161,7 @@ class Crunchbutton_Hour extends Cana_Table {
 		$getDay->modify( '-2 day' );
 
 		// loop to get all the days of the week, starting by yestarday
-		for( $i=0; $i<=6; $i++ ){
+		for( $i = 0; $i <= 6; $i++ ){
 
 			$getDay->modify( '+1 day' );
 			$actualDay = strtolower( $getDay->format( 'D' ) );
@@ -419,37 +419,40 @@ class Crunchbutton_Hour extends Cana_Table {
 			}
 		}
 
-		// this foreach will merge the regular hours with the override ones
 		foreach( $hoursStartFinishOverrideClose as $keyClose => $valClose ){
+
+			$force_close_start = $valClose[ 'start' ];
+			$force_close_end = $valClose[ 'end' ];
+
 			foreach( $hoursStartFinish as $keyOpen => $valOpen ){
-				// the close override is between a segment
-				if(	$hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] >= $hoursStartFinish[ $keyOpen ][ 'open' ] 
-						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] < $hoursStartFinish[ $keyOpen ][ 'close' ] ){
-					$hoursStartFinish[] = [ 'open' => $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ], 'close' => $hoursStartFinish[ $keyOpen ][ 'close' ] ];	
-					$hoursStartFinish[ $keyOpen ][ 'close' ] = $hoursStartFinishOverrideClose[ $keyClose ][ 'start' ];
-				} else
-				// the close override starts after the segment but ends before it
-				if(	$hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] <= $hoursStartFinish[ $keyOpen ][ 'open' ] 
-						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'open' ] 
-						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'close' ] ){
+
+				$regular_start = $hoursStartFinish[ $keyOpen ][ 'open' ];
+				$regular_end = $hoursStartFinish[ $keyOpen ][ 'close' ];
+
+				// case 1
+				if( $force_close_start <= $regular_start && $force_close_end >= $regular_end ){
 					unset( $hoursStartFinish[ $keyOpen ] );
-				} else 
-				// the close override starts before the regular hour and ends after it
-				if(	$hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] <= $hoursStartFinish[ $keyOpen ][ 'open' ] 
-						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'open' ] ){
-					$hoursStartFinish[ $keyOpen ][ 'open' ] = $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ];
-				} else 
-				// the close override starts after the regular hour and ends after it
-				if(	$hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] >= $hoursStartFinish[ $keyOpen ][ 'open' ] 
-						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'start' ] < $hoursStartFinish[ $keyOpen ][ 'close' ]
-						&& $hoursStartFinishOverrideClose[ $keyClose ][ 'end' ] > $hoursStartFinish[ $keyOpen ][ 'close' ] ){
-					$hoursStartFinish[ $keyOpen ][ 'close' ] = $hoursStartFinishOverrideClose[ $keyClose ][ 'start' ];
+				} else
+				// case 2
+				if( $force_close_start > $regular_start && $force_close_end < $regular_end ){
+					$hoursStartFinish[ $keyOpen ][ 'close' ] = Cana_Util::sum_minutes( $force_close_start, 1 );
+					$hoursStartFinish[] = [ 'open' => Cana_Util::sum_minutes( $force_close_end, 1 ), 'close' => $regular_end ];	
+				} else
+				// case 3
+				if( $force_close_start <= $regular_start && $force_close_end <= $regular_end && $force_close_end > $regular_start ){
+					$hoursStartFinish[ $keyOpen ][ 'open' ] = Cana_Util::sum_minutes( $force_close_end, 1 );
+				} else
+				// case 4
+				if( $force_close_start >= $regular_start && $force_close_end >= $regular_end && $force_close_start < $regular_end ){
+					$hoursStartFinish[ $keyOpen ][ 'close' ] = Cana_Util::sum_minutes( $force_close_start, 1 );
 				}
+
 			}
 		}
 
+		// Sort
 		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
-
+		
 		// Merge the hours again
 		foreach( $hoursStartFinish as $key => $val ){
 			$getNext = false;
@@ -497,7 +500,7 @@ class Crunchbutton_Hour extends Cana_Table {
 		foreach( $_hours as $key => $hour ){
 			if( $_hours[ $key ][ 'status' ] == 'close' ){
 				foreach( $hoursStartFinishOverrideClose as $closedHour ){
-					if( $_hours[ $key ][ 'from' ] >= $closedHour[ 'start' ] && $_hours[ $key ][ 'to' ] <= $closedHour[ 'end' ] ){
+					if( $_hours[ $key ][ 'from' ] <= $closedHour[ 'start' ] && $_hours[ $key ][ 'to' ] >= $closedHour[ 'end' ] ){
 						$_hours[ $key ][ 'notes' ] = $closedHour[ 'notes' ];
 					}
 				}
@@ -595,7 +598,7 @@ class Crunchbutton_Hour extends Cana_Table {
 				$ampm = 'pm';
 				break;
 		}
-		return $hour . ( ( $minute > 0 ) ? ':' . $minute : '' ) . $ampm;
+		return $hour . ( ( $minute > 0 ) ? ':' . str_pad( $minute, 2, '0', STR_PAD_LEFT ) : '' ) . $ampm;
 	}
 
 	public function restaurantClosedMessage( $restaurant ){
@@ -674,8 +677,7 @@ class Crunchbutton_Hour extends Cana_Table {
 				$_group[ $hours ] = ucfirst( join( ', ', $days ) );
 				continue;
 			}
-			// $days = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
-			// $days = [ 'sat', 'sun' ];
+
 			$_sequence_index = 0;
 			$_in_sequences = [];
 			$_no_sequences = [];
