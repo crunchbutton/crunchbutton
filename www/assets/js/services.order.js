@@ -227,7 +227,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			elements.push(service.info.dollarSign + breakdown.taxes.toFixed(2) + ' taxes');
 		}
 		if (breakdown.tip && breakdown.tip > 0) {
-			elements.push(service.info.dollarSign + breakdown.tip + ' tip');
+			elements.push(service.info.dollarSign + breakdown.tip.toFixed(2) + ' tip');
 		}
 		if (elements.length) {
 			if (elements.length > 2) {
@@ -799,6 +799,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		} else {
 			// autotip formula - see github/#940
 			autotipValue = Math.ceil(4 * (subtotal * 0.107 + 0.85)) / 4;
+			if( !isNaN( autotipValue ) ){
+				autotipValue = autotipValue.toFixed( 2 );
+			}
 		}
 		service.form.autotip = autotipValue;
 	}
