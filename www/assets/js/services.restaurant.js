@@ -44,10 +44,16 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			list.sort( 
 				sort_by( {
 					name: '_hasHours',
-					reverse: true
+					reverse: false
 				}, {
 					name: '_opensIn',
-					primer: parseInt,
+					primer: function( n ){
+						if( !isNaN( parseInt( n ) ) ){
+							return parseInt( n );
+						} else {
+							return 9999*9999;
+						}
+					},
 					reverse: false
 				}, {
 					name: 'distance',
@@ -57,6 +63,9 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					name: '_weight',
 					primer: parseFloat,
 					reverse: true
+				}, {
+					name: 'name',
+					reverse: false
 				} )
 			);
 		} else {
@@ -73,7 +82,13 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					reverse: true
 				}, {
 					name: '_opensIn',
-					primer: parseInt,
+					primer: function( n ){
+						if( !isNaN( parseInt( n ) ) ){
+							return parseInt( n );
+						} else {
+							return 9999*9999;
+						}
+					},
 					reverse: false
 				}, {
 					name: 'distance',
