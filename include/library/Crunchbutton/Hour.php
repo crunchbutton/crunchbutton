@@ -319,6 +319,27 @@ class Crunchbutton_Hour extends Cana_Table {
 				}
 			}
 		}
+
+		$_hours = Cana_Util::sort_col( $_hours, 'open' );
+
+		// Merge the regular hours 
+		foreach( $_hours as $key => $val ){
+			$getNext = false;
+			foreach( $_hours as $keyNext => $valNext ){
+				if( $getNext ){
+					if( $_hours[ $keyNext ][ 'open' ] <= $_hours[ $key ][ 'close' ] 
+							&& $_hours[ $keyNext ][ 'close' ] - $_hours[ $key ][ 'open' ] < 3600 ) {
+						$_hours[ $key ][ 'close' ] = $_hours[ $keyNext ][ 'close' ];
+						unset( $_hours[ $keyNext ] );
+						$getNext = false;
+					}
+				}
+				if( $key == $keyNext ){
+					$getNext = true;
+				}
+			}
+		}
+
 		// echo '<pre>'; var_dump( $_hours ); exit;
 		return $_hours;
 
