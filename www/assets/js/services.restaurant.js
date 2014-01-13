@@ -1,7 +1,7 @@
 // Restaurant list service
 NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsService ) {
 
-	var service = { permalink : 'food-delivery', forceLoad : true, forceGetStatus : false, birthdate: false };
+	var service = { permalink : 'food-delivery', forceLoad : true, forceGetStatus : false, cachedAt: false };
 	var restaurants = false;
 
 	service.reset = function () {
@@ -34,40 +34,37 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		// if all are closed sort by that are opening the soonest
 		if( areAllTheRestaurantsClosed ){
 
-			for (var x in list) {
-				if( list[x].open( now ) ){
-					areAllTheRestaurantsClosed = false;
-				}
-				list[x].tagfy();
-			}
+			if( list && list.sort ){
 
-			list.sort( 
-				sort_by( {
-					name: '_hasHours',
-					reverse: false
-				}, {
-					name: '_opensIn',
-					primer: function( n ){
-						if( !isNaN( parseInt( n ) ) ){
-							return parseInt( n );
-						} else {
-							return 9999*9999;
-						}
-					},
-					reverse: false
-				}, {
-					name: 'distance',
-					primer: parseFloat,
-					reverse: false
-				}, {
-					name: '_weight',
-					primer: parseFloat,
-					reverse: true
-				}, {
-					name: 'name',
-					reverse: false
-				} )
-			);
+				list.sort( 
+					sort_by( {
+						name: '_hasHours',
+						reverse: true
+					}, {
+						name: '_opensIn',
+						primer: function( n ){
+							if( !isNaN( parseInt( n ) ) ){
+								return parseInt( n );
+							} else {
+								// the restaurant does not have open hours for next 24 hours, fake opens in to next week just to make it the last of the list
+								return ( 16800 * 60 );
+							}
+						},
+						reverse: false
+					}, {
+						name: 'distance',
+						primer: parseFloat,
+						reverse: false
+					}, {
+						name: '_weight',
+						primer: parseFloat,
+						reverse: true
+					}, {
+						name: 'name',
+						reverse: false
+					} )
+				);
+			}
 		} else {
 			list.sort( 
 				sort_by( {
@@ -86,7 +83,8 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 						if( !isNaN( parseInt( n ) ) ){
 							return parseInt( n );
 						} else {
-							return 9999*9999;
+							// the restaurant does not have open hours for next 24 hours, fake opens in to next week
+							return ( 16800 * 60 );
 						}
 					},
 					reverse: false
@@ -142,11 +140,24 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		if( allClosed || ( totalClosedRestaurantsAfter != totalClosedRestaurantsBefore ) ){
 			service.sort();
 		}
-
+		// check if it is necessary to reload the hours
+		service.reloadHours();
 		return restaurants;
 	}
 
-	service.list = function (success, error) {
+	service.reloadHours = function(){
+		var now = ( Math.floor( new Date().getTime() / 1000 ) );
+		var age = Math.floor( now - service.cachedAt ); // age in seconds
+		// if the age is more or equals to 22 hours reload the hours
+		if( age >= ( ( 60 * 60 ) * 22 ) ){
+			service.cachedAt = now;
+			for ( var x in restaurants ) {
+				restaurants[ x ].reloadHours( true );
+			}
+		}		
+	}
+
+	service.list = function ( success, error ) {
 		
 		if (!service.position.pos().valid('restaurants')) {
 			if (error) {
@@ -156,15 +167,16 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		}
 
 		if (restaurants === false || service.forceLoad) {
+
 			var url = App.service + 'restaurants?lat=' + service.position.pos().lat() + '&lon=' + service.position.pos().lon() + '&range=' + (service.position.range || 2 );
 
 			service.forceGetStatus = false;
 
-			$http.get(url, {
+			$http.get( url, {
 				cache: false
 			}).success(function (data) {
 				// property to control the cache expiration of the list
-				service.birthdate = dateTime.getNow();
+				service.cachedAt = ( Math.floor( new Date().getTime() / 1000 ) );
 				var list = [];
 				if (typeof data.restaurants == 'undefined' || data.restaurants.length == 0) {
 					if (error) {

@@ -150,7 +150,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			$scope.restaurants = restaurants.getStatus();
 			$rootScope.$safeApply();
 			updateStatus();
-		} , 1000 * 15 );
+			console.debug('updatedStatus::Restaurants (5 s)');
+		}, 1000 * 5 );
 	}
 
 	$scope.$on( '$destroy', function(){
@@ -224,12 +225,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			// Wait one minute until update the status of the restaurants
 			setTimeout( function(){
 				updateStatus();
-			}, 1000 * 60 );
+			}, 1000 * 10 );
 
 			$scope.slogan = slogan;
 			$scope.tagline = tagline;
-			
-			App.profile.log('finished everything');
 
 			if ( $scope.restaurants.length == 4 ) {
 				$('.content').addClass('short-meal-list');
@@ -529,6 +528,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	var updateStatus = function(){
 		updateRestaurantStatus = $timeout( function(){
 			$scope.restaurant.open();
+			$scope.restaurant.reloadHours();
 			var open = $scope.restaurant._open;
 			if ($scope.open != open) {
 				$scope.open = open;
@@ -537,7 +537,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 				$scope.$apply();	
 			}
 			updateStatus();
-		} , 1000 * 35 );
+		}, 1000 * 35 );
 	}
 
 	$scope.$on( '$destroy', function(){
@@ -721,7 +721,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		order.restaurant = $scope.restaurant;
 		MainNavigationService.restaurant = $scope.restaurant;
 
-		$scope.restaurant.open();	
+		var open = $scope.restaurant.open();
 		
 		$scope.open = $scope.restaurant._open;
 

@@ -242,11 +242,13 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService, LocationService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService, LocationService) {
 
 	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
+	App.http = $http;
+
 
 	// define global services
 	$rootScope.account = AccountService;

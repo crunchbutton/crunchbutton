@@ -130,20 +130,24 @@ Number.prototype.pad = String.prototype.pad = function(width, z) {
 	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
-// calc the diff between two timestamps
+// calc the diff between two timestamps in seconds
 function timestampDiff( time1, time2 ){
-	return Math.floor( ( time1 - time2 ) / 1000 / 60 );
+	return Math.floor( ( time1 - time2 ) / 1000 );
 }
 
-function formatTime( time ){
+function formatTime( seconds ){
+	if( seconds <= 60 ){
+		return 'less than a minute';
+	}
+	time = Math.floor( seconds / 60 );
 	var formated = '';
 	if( time && time > 0 ){
 		var hours = Math.floor( time / 60 );
 		var minutes = time - ( hours * 60 );
 		if( hours > 0 ){
-			formated = hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) /* + ( minutes > 0 ? ' and ' + ( minutes ) + ( minutes > 1 ? ' minutes' : ' minute' ) : '' ) */;
+			formated = hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) /* + ( minutes > 0 ? ' and ' + ( minutes ) + ( minutes > 1 ? ' minutes' : ' minute' ) : '' ) */ ;
 		} else {
-			formated = ( minutes > 0 ) ? minutes + ' minutes' : '';
+			formated = ( minutes > 1 ) ? minutes + ' minutes' : minutes + ' minute';
 		}			
 	}
 	return formated;
