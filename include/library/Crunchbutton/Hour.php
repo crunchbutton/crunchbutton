@@ -260,11 +260,11 @@ class Crunchbutton_Hour extends Cana_Table {
 
 	// Legacy method
 	public function hoursStartingMondayUTC( $hours ){
-
+		
 		if( count( $hours ) == 0 ){
 			return $hours;
 		}
-// echo '<pre>';var_dump( $hours );exit();
+
 		$weekdays = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
 
 		$monday = date( 'Y-m-d', strtotime( 'monday this week' ) );
@@ -273,57 +273,55 @@ class Crunchbutton_Hour extends Cana_Table {
 		foreach( $hours as $day => $segments ){
 			foreach( $segments as $times ){
 				$open = new DateTime('next '. $day . ' ' . $times[0], new DateTimeZone($this->timezone));
-				$open->setTimezone(new DateTimeZone('GMT'));
 				$close = new DateTime('next '.$day. ' ' . $times[1], new DateTimeZone($this->timezone));
+				if( $open->format('Hi') > $close->format('Hi') ){
+					$close->modify('+1 day');
+				}
 				$close->setTimezone(new DateTimeZone('GMT'));
+				$open->setTimezone(new DateTimeZone('GMT'));
 				$hour_open = $open->format('H:i');
 				$hour_close = $close->format('H:i');
 				if( !$_hours_utc[ $day ] ){
 					$_hours_utc[ $day ] = [];
 				}
-				$_hours_utc[ $day ][] = [ 'open' => $hour_open, 'close' => $hour_close ];
+				$open_day = strtolower( $open->format( 'D' ) );
+				$close_day = strtolower( $close->format( 'D' ) );
+				$_hours_utc[ $day ][] = [ 'open' => $hour_open, 'open_day' => $open_day, 'close_day' => $close_day, 'close' => $hour_close, 'open_datetime' => $open->getTimestamp(), 'close_datetime' => $close->getTimestamp() ];
 			}
 		}
 
 		// Convert to hours starting at monday
 		$_hours = [];
+
 		foreach( $_hours_utc as $day => $segments ){
-			$dayshours = array_search( $day, $weekdays ) * 2400;
+
 			foreach( $segments as $times ){
+				
+				$open_dayshours = array_search( $times[ 'open_day' ], $weekdays ) * 2400;
+				$close_dayshours = array_search( $times[ 'close_day' ], $weekdays ) * 2400;
 				preg_match( '/(\d+):(\d+)/', $times[ 'open' ], $hour_open );
 				preg_match( '/(\d+):(\d+)/', $times[ 'close' ], $hour_close );
-				$hour_open = ( $dayshours + intval( $hour_open[ 1 ] ) * 100 ) + intval( $hour_open[ 2 ] );
-				$hour_close = ( $dayshours + intval( $hour_close[ 1 ] ) * 100 ) + intval( $hour_close[ 2 ] );
-				if( $hour_close < $hour_open ){
-					$hour_close += 2400;
-				}
-				$_hours[] = [ 'open' => $hour_open, 'close' => $hour_close ];
-			}
-		}
+				$hour_open = ( $open_dayshours + intval( $hour_open[ 1 ] ) * 100 ) + intval( $hour_open[ 2 ] );
+				$hour_close = ( $close_dayshours + intval( $hour_close[ 1 ] ) * 100 ) + intval( $hour_close[ 2 ] );
+				// it opens at sunday and closes at monday
+				if( $hour_close < $hour_open && $times[ 'open_day' ] == 'sun' ){
 
-		foreach( $_hours as $key => $val ){
-			$getNext = false;
-			foreach( $_hours as $keyNext => $valNext ){
-				if( $getNext ){
-					if( $_hours[ $keyNext ][ 'open' ] <= $_hours[ $key ][ 'close' ] 
-							&& $_hours[ $keyNext ][ 'close' ] - $_hours[ $key ][ 'open' ] < 3600 ) {
-						$_hours[ $key ][ 'close' ] = $_hours[ $keyNext ][ 'close' ];
-						unset( $_hours[ $keyNext ] );
-						$getNext = false;
+					while( $hour_close < $hour_open ){
+						$hour_close += 2400;
 					}
-				}
-				if( $key == $keyNext ){
-					$getNext = true;
+					$hour_close = ( $hour_close - 16800 );
+					$_hours[] = [ 'open' => $hour_open, 'close' => 16800 ];
+					if( $hour_close != '0' ){
+						$_hours[] = [ 'open' => 0, 'close' => $hour_close ];	
+					}
+				} else {
+					$_hours[] = [ 'open' => $hour_open, 'close' => $hour_close ];
 				}
 			}
 		}
+		// echo '<pre>'; var_dump( $_hours ); exit;
+		return $_hours;
 
-		$hours = [];
-		foreach( $_hours as $hour ){
-			$hours[] = ( object ) $hour;
-		}
-
-		return $hours;
 	}
 
 	// This method merge restaurant hours with the holidays
