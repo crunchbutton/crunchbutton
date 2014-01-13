@@ -722,9 +722,10 @@ class Crunchbutton_Hour extends Cana_Table {
 		$_organized = [];
 		// Organize the messy
 		foreach( $_group as $hours => $days ){
-			$_organized[] = $days . ': ' . $hours;
+			if( trim( $hours ) != '' ){
+				$_organized[] = $days . ': ' . $hours;	
+			}
 		}
-
 		return join( ' <br/> ', $_organized );
 	}
 

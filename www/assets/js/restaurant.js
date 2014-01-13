@@ -63,8 +63,15 @@ var Restaurant = function(id) {
 		return ( distance <= this.delivery_radius )
 	}
 
+	// TODO check why this method is called every time!
 	self.closedMessage = function(){
-		return self['closed_message'];
+		console.log('closedMessage::', self.name);
+		if( self.closed_message != '' ){
+			return self.closed_message;
+		} else {
+			return 'Temporarily closed';
+		}
+
 	}
 
 	self.preset = function() {
@@ -96,20 +103,31 @@ var Restaurant = function(id) {
 		if( tag ){
 			self._tag = tag;
 			return;
+			if( tag == 'opening' ){
+				if( self._opensIn && self._opensIn_formatted != '' ){
+					self._tag = tag;
+				} else {
+					self._tag = 'closed';
+				}
+			} else {
+				self._tag = tag;	
+			}
+			return;
 		}
 
 		self._tag = '';
 		// Add the tags
 		if( !self._open ){
 			self._tag = 'closed';
-			if( self.name,self._closedDueTo ){
+			if( self._closedDueTo ){
 				self._tag = 'force_close';
 			}
 		}
 		if( self._open && self._closesIn !== 'false' && self._closesIn <= 15 ){
 			self._tag = 'closing';
 		}
-		if( !self._hasHours ){
+		// if the restaurant does not have a closed message it has no hours for the week
+		if( self.closed_message == '' ){
 			self._tag = 'force_close';	
 		}
 	}
@@ -195,14 +213,39 @@ var Restaurant = function(id) {
 
 	// Create javascript date objects to faster comparision
 	self.processHours = function(){
-		if( !this._hours_processed ){
+		if( !self._hours_processed ){
 			for( x in self.hours ){
 				self.hours[ x ]._from = Date.parse( self.hours[ x ].from );
 				self.hours[ x ]._from_time = self.hours[ x ]._from.getTime();
 				self.hours[ x ]._to = Date.parse( self.hours[ x ].to );
 				self.hours[ x ]._to_time = self.hours[ x ]._to.getTime();
 			}	
-			this._hours_processed = true;
+			self._hours_processed = true;
+		}
+	}
+
+	// Check the restaurant cache age and reload the hours if it is necessary
+	self.reloadHours = function( forceLoad ){
+		var load = false;
+		var now = ( Math.floor( new Date().getTime() / 1000 ) );
+		if( forceLoad ){
+			load = true;
+		} else {
+			var age = Math.floor( now - self.cachedAt ); // age in seconds	
+			// if the age is more or equals to 22 hours
+			load = ( age >= ( ( 60 * 60 ) * 22 ) );
+		}
+		if( load ){
+			var url = App.service + 'restaurant/hours/' + self.id_restaurant;
+			App.http.get( url, {
+				cache: false
+			} ).success( function ( hours ) {
+				self.cachedAt = now;
+				self.hours = hours;
+				self._hours_processed = false;
+				self.processHours();
+				console.log( self.name, 'hours reloaded' );
+			} );
 		}
 	}
 

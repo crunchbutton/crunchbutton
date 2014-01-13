@@ -1093,7 +1093,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 
 		// get the legacy data
-		// $out = array_merge( $out, $this->hours_legacy() );
+		$out = array_merge( $out, $this->hours_legacy() );
 
 		return $out;
 	}
