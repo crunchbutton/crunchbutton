@@ -1496,7 +1496,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$_hours[ $hours->day ][] = [ $hours->time_open, $hours->time_close ];
 		}
 		$data[ '_hours' ] = Hour::mergeHolidays( $_hours, $this, false );
-		$data[ '_hours_converted_utc' ] = Hour::hoursStartingMondayUTC( $_hours );
+		$_hours_converted_utc = Hour::hoursStartingMondayUTC( $_hours );
+		$hours_converted_utc = [];
+		foreach( $_hours_converted_utc as $_hour_converted_utc ){
+			$hours_converted_utc[] = (object) $_hour_converted_utc;
+		}
+
+		$data[ '_hours_converted_utc' ] = $hours_converted_utc;
 		
 		return $data;
 	}
