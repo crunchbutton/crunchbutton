@@ -151,7 +151,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		// if the age is more or equals to 23 hours reload the hours
 		if( age >= ( ( 60 * 60 ) * 23 ) ){
 			service.cachedAt = now;
-			console.debug('reloading...');
 			for ( var x in restaurants ) {
 				restaurants[ x ].reloadHours( true );
 			}
