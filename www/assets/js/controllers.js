@@ -150,8 +150,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			$scope.restaurants = restaurants.getStatus();
 			$rootScope.$safeApply();
 			updateStatus();
-			console.debug('updatedStatus::Restaurants (5 s)');
-		}, 1000 * 5 );
+		}, 1000 * 35 );
 	}
 
 	$scope.$on( '$destroy', function(){
@@ -225,7 +224,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			// Wait one minute until update the status of the restaurants
 			setTimeout( function(){
 				updateStatus();
-			}, 1000 * 10 );
+			}, 1000 * 60 );
 
 			$scope.slogan = slogan;
 			$scope.tagline = tagline;
@@ -716,14 +715,14 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.restaurantLoaded = RestaurantService.alreadyLoaded();
 		
 		var community = data.community;
+		
 		$scope.restaurant = data.restaurant;
 		
 		order.restaurant = $scope.restaurant;
-		MainNavigationService.restaurant = $scope.restaurant;
 
-		var open = $scope.restaurant.open();
+		MainNavigationService.restaurant = $scope.restaurant;
 		
-		$scope.open = $scope.restaurant._open;
+		$scope.open = $scope.restaurant.open();
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 
@@ -804,19 +803,19 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	}
 
 	// update if the restaurant is closed or open
-	// var forceReload = function(){
-	// 	forceReloadTimer = $timeout( function(){
-	// 		if( !order.loaded ){
-	// 			restaurantService.init();
-	// 			updateStatus();
-	// 			forceReload();
-	// 			$rootScope.$safeApply();
-	// 		} else {
-	// 			$rootScope.$safeApply();
-	// 		}
-	// 	} , 2000 );
-	// };
-	// forceReload();
+	var forceReload = function(){
+		forceReloadTimer = $timeout( function(){
+			if( !order.loaded ){
+				restaurantService.init();
+				updateStatus();
+				forceReload();
+				$rootScope.$safeApply();
+			} else {
+				$rootScope.$safeApply();
+			}
+		} , 2000 );
+	};
+	forceReload();
 
 });
 
@@ -1038,10 +1037,12 @@ NGApp.controller( 'RestaurantClosedCtrl', function ( $scope, $rootScope ) {
 	$rootScope.$on('restaurantClosedClick', function(e, r) {
 		if ($scope.$$phase) {
 			$scope.restaurant = r;
+			$scope.closedMessage = r.closedMessage();
 			App.dialog.show('.restaurant-closed-container');
 		} else {
 			$rootScope.$apply(function(scope) {
 				scope.restaurant = r;
+				scope.closedMessage = r.closedMessage();
 				App.dialog.show('.restaurant-closed-container');
 			}); 
 		}			
