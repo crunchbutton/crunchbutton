@@ -211,8 +211,12 @@ class Crunchbutton_Hour extends Cana_Table {
 			$_hours = [];
 
 			$now = new DateTime( 'now', new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+			// less 5 minutes to compensate the javascript at frontend
+			// without this 5 minutes it could export the hours starting at the minute 8 and at javascript it is at the minute 7:40 - it would show the wrongly closed message
+			$now->modify( '-5 minutes' );
 			$now_plus_24 = new DateTime( 'now', new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
 			$now_plus_24->modify( '+1 day' );
+			$now_plus_24->modify( '-5 minutes' );
 			foreach ( $_hours_utc as $hour ) {
 				
 				$data = false;

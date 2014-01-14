@@ -148,9 +148,10 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 	service.reloadHours = function(){
 		var now = ( Math.floor( new Date().getTime() / 1000 ) );
 		var age = Math.floor( now - service.cachedAt ); // age in seconds
-		// if the age is more or equals to 22 hours reload the hours
-		if( age >= ( ( 60 * 60 ) * 22 ) ){
+		// if the age is more or equals to 23 hours reload the hours
+		if( age >= ( ( 60 * 60 ) * 23 ) ){
 			service.cachedAt = now;
+			console.debug('reloading...');
 			for ( var x in restaurants ) {
 				restaurants[ x ].reloadHours( true );
 			}
@@ -236,7 +237,6 @@ NGApp.factory( 'RestaurantService', function ($http, $routeParams, $rootScope, C
 	}
 
 	service.init = function(){
-
 		App.cache( 'Restaurant', $routeParams.id, function () {
 			var restaurant = this;
 			service.loadedList[ $routeParams.id ] = true;

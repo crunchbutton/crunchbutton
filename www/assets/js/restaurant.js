@@ -63,9 +63,7 @@ var Restaurant = function(id) {
 		return ( distance <= this.delivery_radius )
 	}
 
-	// TODO check why this method is called every time!
 	self.closedMessage = function(){
-		console.log('closedMessage::', self.name);
 		if( self.closed_message != '' ){
 			return self.closed_message;
 		} else {
@@ -232,8 +230,8 @@ var Restaurant = function(id) {
 			load = true;
 		} else {
 			var age = Math.floor( now - self.cachedAt ); // age in seconds	
-			// if the age is more or equals to 22 hours
-			load = ( age >= ( ( 60 * 60 ) * 22 ) );
+			// if the age is more or equals to 23 hours
+			load = ( age >= ( ( 60 * 60 ) * 23 ) );
 		}
 		if( load ){
 			var url = App.service + 'restaurant/hours/' + self.id_restaurant;
