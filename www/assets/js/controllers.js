@@ -714,7 +714,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.restaurantLoaded = RestaurantService.alreadyLoaded();
 		
 		var community = data.community;
-		
+
 		$scope.restaurant = data.restaurant;
 		
 		order.restaurant = $scope.restaurant;
@@ -753,7 +753,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 						}
 					}
 				}
-
 				
 				$scope.order.cart.items = order.cart.getItems();
 				
@@ -801,7 +800,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		updateStatus();
 	}
 
-	// update if the restaurant is closed or open
+	// force reload case it crashed
 	var forceReload = function(){
 		forceReloadTimer = $timeout( function(){
 			if( !order.loaded ){
@@ -812,7 +811,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 			} else {
 				$rootScope.$safeApply();
 			}
-		} , 2000 );
+		} , 1000 * 10 );
 	};
 	forceReload();
 

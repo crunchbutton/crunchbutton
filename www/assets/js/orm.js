@@ -17,14 +17,15 @@ var Orm = {
 	},
 
 	loadType: function(cls, data) {
-		if (!this['__' + data]) {
-			this['__' + data] = [];
-			for (x in this['_' + data]) {
-				this['__' + data][this['__' + data].length] = App.cache(cls, this['_' + data][x]);
+		var self = this;
+		if (!self['__' + data]) {
+			self['__' + data] = [];
+			for (x in self['_' + data]) {
+				self['__' + data][self['__' + data].length] = App.cache(cls, self['_' + data][x]);
 			}
-			this['_' + data] = null;
+			self['_' + data] = null;
 		}
-		return this['__' + data];
+		return self['__' + data];
 	},
 
 	save: function(complete) {
