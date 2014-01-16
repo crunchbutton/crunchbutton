@@ -60,7 +60,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-show="account.user.id_user" ng-click="signout.do()">
+				<li ng-show="account.user.id_user" ng-click="signout.signout()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
@@ -126,7 +126,7 @@
 							<li><a ng-click="navigation.link('/help')"><i class="fa fa-heart"></i>Help</a></li>
 							<li><a ng-click="navigation.link('/about')"><i class="fa fa-lightbulb-o"></i>About</a></li>
 							<li><a ng-click="navigation.signin()" ng-show="!account.user.id_user"><i class="fa fa-sign-in"></i>Log In</a></li>
-							<li><a ng-click="signout.do()" ng-show="account.user.id_user"><i class="fa fa-sign-out"></i>Log Out</a></li>
+							<li><a ng-click="signout.signout()" ng-show="account.user.id_user"><i class="fa fa-sign-out"></i>Log Out</a></li>
 
 							<li class="dropdown-divider"></li>
 							<li><a ng-click="navigation.link('/download')"><i class="fa fa-mobile-phone"></i>Download for iPhone</a></li>

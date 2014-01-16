@@ -72,7 +72,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service._cardInfoHasChanged = false;
 		service._crunchSoundPlayded = false;
 		service._useRestaurantBoundingBox = false;
-		service._useCompleteAddress = false; /* if true it means the address field will be fill with the address found by google api */
+		service._useCompleteAddress = false; // if true it means the address field will be fill with the address found by google api 
 		service._completeAddressWithZipCode = true;
 
 		service.form.pay_type = (service.account.user && service.account.user.pay_type) ? service.account.user.pay_type : 'card';
@@ -897,6 +897,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 	return service;
 });
+
 // OrdersService service
 NGApp.factory('OrdersService', function ($http, $location, $rootScope, RestaurantsService, OrderViewService) {
 
@@ -1013,9 +1014,9 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 				}
 
 				if (service.newOrder) {
-					service.order.new = service.newOrder;
+					service.order._new = service.newOrder;
 				} else {
-					service.order.new = false;
+					service.order._new = false;
 				}
 
 				var arr = data.date.split(/[- :]/);

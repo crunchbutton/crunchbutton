@@ -7,7 +7,7 @@
 	<div class="content-padder-before"></div>
 
 	<div class="order-info content-padder main-content-readable">
-		<span class="order-thanks-message" ng-show="order.new">
+		<span class="order-thanks-message" ng-show="order._new">
 			<div class="toon-cherry"></div>
 			<span class="order-thanks-message-crunched">Crunched!</span>
 			<span class="order-thanks-message-block"> Your order is placed</span>
@@ -36,7 +36,7 @@
 					<i class="fa fa-facebook"></i><span class="social-button-text">Share what you ordered</span>
 					<div class="divider"></div>
 				</div>
-				<div ng-show="order.new && referral.invite_url && referral.enabled">
+				<div ng-show="order._new && referral.invite_url && referral.enabled">
 					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
 					<br /><br />
 				</div>
