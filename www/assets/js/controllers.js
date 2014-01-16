@@ -8,7 +8,6 @@ NGApp.controller('DownloadCtrl', function ($scope, $http) {
 		send: function() {
 			$http.post(App.service + 'download?num=' + $scope.text.number.replace(/-/g,''));				
 			$scope.text.sent = true;
-
 		}
 	};
 });
@@ -170,7 +169,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		}, 1 );
 	}
 
-	var status
+	var status;
 
 	$rootScope.$on( 'appResume', function(e, data) {
 		if( $location.path() == '/' + RestaurantsService.permalink ){
@@ -856,7 +855,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 
 	$scope.$on( 'referralStatusLoaded', function(e, data) {
 		$scope.referral.invite_url = ReferralService.invite_url;
-		$scope.referral.invite_url_cleared = 
+		$scope.referral.invite_url_cleared = ReferralService.value;
 		$scope.referral.value = ReferralService.value;
 		$scope.referral.enabled = ReferralService.enabled;
 	});
@@ -883,6 +882,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
  * Orders page. only avaiable after a user has placed an order or signed up.
  * @todo: change to account page
  */
+ 
 NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService ) {
 
 	if( !AccountService.isLogged() ){
@@ -893,7 +893,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	$scope.account = AccountService;
 
 	// Alias to method AccountSignOut.do()
-	$scope.signout = AccountSignOut.do;
+	$scope.signout = AccountSignOut.signout;
 	$scope.facebook = AccountModalService.facebookOpen;
 	$scope.orders = [];
 

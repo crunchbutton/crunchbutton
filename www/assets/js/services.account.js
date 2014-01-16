@@ -419,7 +419,7 @@ NGApp.factory( 'AccountSignOut', function( $http, $rootScope, $location, Account
 	}
 
 	// perform a logout
-	service.do = function() {
+	service.signout = function() {
 		if ( App.confirm('Confirm sign out?', 'Crunchbutton', service.signoutConfirmed ) ) {
 			service.signoutConfirmed( 1 );
 		}
