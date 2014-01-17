@@ -18,7 +18,6 @@ NGApp.factory( 'PhoneGapService', function( $route, $rootScope ){
 
 		switch( route ){
 			case 'location':
-				alert( route );
 				if( service.isAndroid ){
 					// Fix the location background
 					setTimeout( function(){
