@@ -365,17 +365,19 @@ NGApp.directive( 'geoComplete', function() {
     scope: { ngModel : '=', geoCompleteEnter : '&' },
 		link: function( scope, element, attrs ) {
 			var el = document.getElementById( attrs.id );
-			var autoComplete = new google.maps.places.Autocomplete( el, { types: [ 'geocode' ] } );
-			 google.maps.event.addListener( autoComplete, 'place_changed', function() {
-				var place = autoComplete.getPlace();
-				scope.$apply( function() {
-					scope.ngModel = el.value;
-					// we need to give some time to scope
-					setTimeout( function(){
-						scope.geoCompleteEnter();
-					}, 5 );
+			if( typeof google == 'object' && google.maps && google.maps.places && google.maps.places.Autocomplete ){
+				var autoComplete = new google.maps.places.Autocomplete( el, { types: [ 'geocode' ] } );
+				 google.maps.event.addListener( autoComplete, 'place_changed', function() {
+					var place = autoComplete.getPlace();
+					scope.$apply( function() {
+						scope.ngModel = el.value;
+						// we need to give some time to scope
+						setTimeout( function(){
+							scope.geoCompleteEnter();
+						}, 5 );
+					} );
 				} );
-			} );
+			}
 		}
 	};
 });

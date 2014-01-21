@@ -195,7 +195,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		}
 		
 		// 1) set bounding to maxmind results if we have them
-		if (App.config.loc.lat && App.config.loc.lon) {
+		if (App.config && App.config.loc && App.config.loc.lat && App.config.loc.lon) {
 			service.bounding = App.config.loc;
 			service.bounding.type = 'geoip';
 		}
