@@ -100,7 +100,6 @@ var Restaurant = function(id) {
 	self.tagfy = function( tag ){
 		if( tag ){
 			self._tag = tag;
-			return;
 			if( tag == 'opening' ){
 				if( self._opensIn && self._opensIn_formatted != '' ){
 					self._tag = tag;
@@ -135,6 +134,7 @@ var Restaurant = function(id) {
 	*/
 	// return true if the restaurant is open
 	self.open = function( now, ignoreOpensClosesInCalc ) {
+		self.tagfy( 'opening' );
 		// if the restaurant has no hours it probably will not be opened for the next 24 hours
 		self._hasHours = false;
 		var now = ( now ) ? now : dateTime.getNow();
