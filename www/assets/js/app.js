@@ -258,7 +258,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.server = App.server;
 	
 	$rootScope.debug = function() {
-		return App.config.user.debug;
+		return ( App.config && App.config.user && App.config.user.debug );
 	};
 	
 	$rootScope.test = App.test;
@@ -594,7 +594,7 @@ App.processConfig = function(json, user) {
 	} else {
 		App.config = json;
 	}
-	App.setLoggedIn(App.config.user.uuid ? true : false);
+	App.setLoggedIn( App.config && App.config.user && App.config.user.uuid ? true : false);
 	App.AB.init();
 };
 
@@ -606,8 +606,10 @@ App.init = function(config) {
 	if (App._init) {
 		return;
 	}
+	
 	App._init = true;
 
+	// Check if the device is online or offline
 	App.verifyConnection.init();
 
 	$(document).on('touchmove', ($('.is-ui2').get(0) ? '.mfp-wrap' : '.snap-drawers, .mfp-wrap, .support-container'), function(e) {
@@ -858,6 +860,9 @@ App.verifyConnection = {
 		}
 	},
 	check: function () {
+		console.log( 'network check' );
+		console.log('navigator.connection.type',navigator.connection.type);
+		console.log('Connection.NONE',Connection.NONE);
 		var networkState = navigator.connection.type;
 		if (networkState == Connection.NONE) {
 			// If the app starts without internet, force reload it.
@@ -866,6 +871,7 @@ App.verifyConnection = {
 		}
 	},
 	goOffline: function () {
+		console.log('App._remoteConfig',App._remoteConfig);
 		if (App._remoteConfig) {
 			return;
 		}
@@ -901,8 +907,9 @@ App.phoneGapListener = {
 			document.addEventListener( 'pause', App.phoneGapListener.pause , false );
 			document.addEventListener( 'resume', App.phoneGapListener.resume , false );
 			document.addEventListener( 'online', App.phoneGapListener.online , false );
+			document.addEventListener( 'offline', App.phoneGapListener.offline , false );
 			if( !navigator.onLine ){
-				App.verifyConnection.goOffline();
+				App.phoneGapListener.offline();
 			}
 		}
 	},
@@ -919,6 +926,10 @@ App.phoneGapListener = {
 	online : function(){
 		// online
 		App.verifyConnection.goOnline();
+	},
+	offline: function(){
+		// offline
+		App.verifyConnection.goOffline();
 	}
 };
 
@@ -980,14 +991,5 @@ App.share = function(params) {
 				}
 			}
 		});
-	}
-}
-
-
-App.phoneGap = {
-	android : {
-		layoutFix : {
-
-		}
 	}
 }
