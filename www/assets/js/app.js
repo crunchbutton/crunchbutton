@@ -311,8 +311,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			
 			App.snap.close();
 
-			console.log('userAuth!');
-
 			// reload the actual controller
 			if( !AccountService.forceDontReloadAfterAuth ){
 				$rootScope.reload();	
@@ -410,12 +408,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		App.scrollTop($rootScope.scrollTop);
 		$rootScope.scrollTop = 0;
 		
-		if (App.isPhoneGap && !App.splashHidden && navigator.splashscreen) {
-			App.splashHidden = true;
-			setTimeout(function() {
-				navigator.splashscreen.hide();
-			},1);
-		}
 	});
 
 	// Make the window's size available to all scope
@@ -611,6 +603,7 @@ App.init = function(config) {
 
 	// Check if the device is online or offline
 	App.verifyConnection.init();
+	App.phoneGapListener.init();
 
 	$(document).on('touchmove', ($('.is-ui2').get(0) ? '.mfp-wrap' : '.snap-drawers, .mfp-wrap, .support-container'), function(e) {
 		e.preventDefault();
@@ -668,8 +661,6 @@ App.init = function(config) {
 
 	}
 
-
-
 	// init the storage type. cookie, or localstorage if phonegap
 	$.totalStorage.ls(App.localStorage);
 	
@@ -725,7 +716,6 @@ App.init = function(config) {
 		},10);
 	}
 
-	App.phoneGapListener.init();
 	$(window).trigger('nginit');
 };
 
@@ -856,27 +846,36 @@ App.verifyConnection = {
 	forceReload: false,
 	init: function () {
 		if (App.isPhoneGap) {
-			App.verifyConnection.check();
+			App.verifyConnection.check( function( online ){
+				var timer = ( online ) ? 0 : ( 3500 );
+				// hide splashscreen
+				setTimeout( function(){
+					if ( !App.splashHidden && navigator.splashscreen ) {
+						App.splashHidden = true;
+						navigator.splashscreen.hide();
+					}
+				}, timer );
+			} );
 		}
 	},
-	check: function () {
-		console.log( 'network check' );
-		console.log('navigator.connection.type',navigator.connection.type);
-		console.log('Connection.NONE',Connection.NONE);
+	check: function ( callback ) {
 		var networkState = navigator.connection.type;
-		if (networkState == Connection.NONE) {
+		var online = true;
+		if ( networkState == Connection.NONE ) {
 			// If the app starts without internet, force reload it.
 			App.verifyConnection.forceReload = true;
 			App.verifyConnection.goOffline();
+			online = false;
+		}
+		if( callback ){
+			callback( online );
 		}
 	},
 	goOffline: function () {
-		console.log('App._remoteConfig',App._remoteConfig);
 		if (App._remoteConfig) {
 			return;
 		}
 		$('.connection-error').show();
-		navigator.splashscreen.hide();
 		App.verifyConnection.isOffLine = true;
 	},
 	goOnline: function () {
