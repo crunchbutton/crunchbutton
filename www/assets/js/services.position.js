@@ -222,13 +222,14 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 				lon: service.account.user.location_lon,
 				type: 'user'
 			};
-			
-			service.position.addLocation(new Location({
-				lat: service.account.user.location_lat,
-				lon: service.account.user.location_lon,
-				type: 'user'
-			}));
-			
+
+			if ( !cookieLocs ) {
+				service.position.addLocation(new Location({
+					lat: service.account.user.location_lat,
+					lon: service.account.user.location_lon,
+					type: 'user'
+				}));
+			}
 			service.loadRestaurantsPage = true;
 		}
 		
