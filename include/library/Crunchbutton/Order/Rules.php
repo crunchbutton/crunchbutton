@@ -244,6 +244,13 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 			return false;
 		}
 
+		// Check if the phone belongs to an admin/rep
+		$isAdmin = Admin::checkIfThePhoneBelongsToAnAdmin( $order->phone );
+		if( $isAdmin->count() > 0 ){
+			Log::debug( [ 'id_order' => $order->id_order, 'status' => 'ok', 'rule' => 'gift-card-redeemed', 'message' => 'phone belongs to a rep', 'type' => 'order-rules' ] );
+			return false;
+		}
+
 		// Get last two gift cards
 		$giftcards = Promo::getLastGiftCardsRedeemedFromPhoneNumber( $order->phone, $giftcars_number );
 
