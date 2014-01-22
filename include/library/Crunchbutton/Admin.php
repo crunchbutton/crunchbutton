@@ -11,6 +11,12 @@ class Crunchbutton_Admin extends Cana_Table {
 			'id_admin' => $this->id_admin
 		];
 	}
+
+	public function checkIfThePhoneBelongsToAnAdmin( $phone ){
+		$phone = str_replace( '-', '', $phone );
+		$phone = str_replace( ' ', '', $phone );
+		return Crunchbutton_Admin::q( "SELECT * FROM admin WHERE REPLACE( phone, '-', '' ) = '$phone' OR REPLACE( txt, '-', '' ) = '$phone' OR REPLACE( testphone, '-', '' ) = '$phone'" );
+	}
 	
 	public function timezone() {
 		if (!isset($this->_timezone)) {
