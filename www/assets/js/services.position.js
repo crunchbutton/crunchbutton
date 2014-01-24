@@ -257,7 +257,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 								city: loc.city(),
 								type: 'geolocation'
 							};
-							service.position.addLocation(loc);
+							service.position.addLocation( loc );
 							service.restaurantsService.list(
 								// success - has restaurants
 								function () { App.go( '/food-delivery', 'push' ); },
@@ -267,15 +267,24 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 
 				}, 
 				// error
-				function(){}, 30000 );
-			} 
+				function(){}, 
+				// about 30 secs do detect the location
+				30000 );
+			} else {
+				service.restaurantsService.list(
+					// success - has restaurants
+					function () { App.go( '/food-delivery', 'push' ); },
+					// no restaurant
+					function () { PositionsService.removeNotServedLocation(); } 
+				);
+			}
 		} else {
 			try{
 				if( google && google.load && !google.maps ){
 					google.load('maps', '3', {
 						callback: service.googleCallback,
 						other_params: 'sensor=false'
-					});
+					} );
 				}
 			} catch(e){}
 		}
