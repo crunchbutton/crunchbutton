@@ -43,9 +43,11 @@ NGApp.factory('PositionsService', function ( $rootScope ) {
 	}
 
 	service.removeNotServedLocation = function(){
-		// Mark to remove the last added location - it is not served
-		service.locs[ service.locs.length - 1 ].markToRemove();
-		service.storeLocations();
+		if( service.locs.length > 0 ){
+			// Mark to remove the last added location - it is not served
+			service.locs[ service.locs.length - 1 ].markToRemove();
+			service.storeLocations();
+		}
 	}
 
 	/**
@@ -138,16 +140,20 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 	/**
 	 * get location from the browsers geolocation
 	 */
-	service.getLocationByBrowser = function (success, error) {
+	service.getLocationByBrowser = function ( success, error, timer ) {
 		var success = success || function () {};
 		var error = error || function () {};
 
-		if (navigator.geolocation) {
-			service.timerId = setTimeout(function () {
+		var timer = timer || 5000;
+
+		if ( navigator.geolocation ) {
+
+			service.timerId = setTimeout( function () {
 				error();
-			}, 5000);
+			}, timer );
 
 			navigator.geolocation.getCurrentPosition(function (position) {
+
 				clearTimeout(service.timerId);
 
 				service.position.addLocation(new Location({
@@ -161,16 +167,16 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					lon: position.coords.longitude
 				});
 				// get the city from shared location
-				service.reverseGeocode(position.coords.latitude, position.coords.longitude, success, error);
+				service.reverseGeocode( position.coords.latitude, position.coords.longitude, success, error );
 
-			}, function () {
+			}, function() {
 				clearTimeout(service.timerId);
 				error();
 			}, {
 				maximumAge: 60000,
-				timeout: 5000,
+				timeout: timer,
 				enableHighAccuracy: true
-			});
+			} );
 
 		} else {
 			error();
@@ -182,8 +188,8 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 	 * initilize location functions
 	 */
 	service.init = function () {
-		// force refresh
 
+		// force refresh
 		var force = false;
 		if (arguments[0]) {
 			force = true;
@@ -241,7 +247,28 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 
 		// 4) get a more specific bounding location result from google
 		if (App.isPhoneGap) {
-			// @todo: id like to use native gelocation if posible at some point
+			if ( parseInt( service.position.locs.length ) == 0 ) {
+				service.getLocationByBrowser( 
+					// success
+					function ( loc ) {
+							service.bounding = {
+								lat: loc.lat(),
+								lon: loc.lon(),
+								city: loc.city(),
+								type: 'geolocation'
+							};
+							service.position.addLocation(loc);
+							service.restaurantsService.list(
+								// success - has restaurants
+								function () { App.go( '/food-delivery', 'push' ); },
+								// houston - no restaurant
+								function () { PositionsService.removeNotServedLocation(); } 
+							);
+
+				}, 
+				// error
+				function(){}, 30000 );
+			} 
 		} else {
 			try{
 				if( google && google.load && !google.maps ){
@@ -265,7 +292,7 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 
 			if (service.bounding && service.bounding.lat && service.bounding.lon && !service.bounding.city) {
 
-				service.reverseGeocode(service.bounding.lat, service.bounding.lon,
+				service.reverseGeocode( service.bounding.lat, service.bounding.lon,
 
 					// Success
 					function (loc) {
