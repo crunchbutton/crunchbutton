@@ -48,9 +48,16 @@ App.localStorage = App.isPhoneGap;
 
 App.setLoggedIn = function(loggedIn) {
 	if ($('.is-ui2').get(0) && !loggedIn && App.isPhoneGap && App.enableSplash) {
-		setTimeout(function(){
-			App.go('/splash');
-		},10);
+		var goToSplash = true;
+		if( localStorage && localStorage.locsv3 ){
+			var locsv3 = JSON.parse( localStorage.locsv3 );
+			if( locsv3 && locsv3.length > 0 ){
+				goToSplash = false;
+			}
+		}
+		if( goToSplash ){
+			setTimeout( function(){ App.go( '/splash' ); }, 10 );
+		}
 	}
 };
 
@@ -853,12 +860,12 @@ App.verifyConnection = {
 			App.verifyConnection.check( function( online ){
 				var timer = ( online ) ? 3000 : ( 3500 );
 				// hide splashscreen
-				setTimeout( function(){
+				/*setTimeout( function(){
 					if ( !App.splashHidden && navigator.splashscreen ) {
 						App.splashHidden = true;
 						navigator.splashscreen.hide();
 					}
-				}, timer );
+				}, timer );*/
 			} );
 		}
 	},

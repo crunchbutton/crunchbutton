@@ -16,6 +16,16 @@ NGApp.factory( 'PhoneGapService', function( $route, $rootScope ){
 
 	service.routeChanged = function( route ){
 
+		if( App.isPhoneGap && !App.splashHidden && ( !route || route == 'home' ) ){
+			navigator.splashscreen.show();
+		} else {			
+			setTimeout( function(){
+				navigator.splashscreen.hide();
+				App.splashHidden = true;
+			}, 1000 );
+		}
+
+
 		switch( route ){
 			case 'location':
 				if( service.isAndroid ){
