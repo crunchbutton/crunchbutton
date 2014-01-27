@@ -137,7 +137,7 @@ var Restaurant = function(id) {
 		self.tagfy( 'opening' );
 		// if the restaurant has no hours it probably will not be opened for the next 24 hours
 		self._hasHours = false;
-		var now = ( now ) ? now : dateTime.getNow();
+		var now = ( now && now.getNow ) ? now : dateTime.getNow();
 		self.processHours();
 		var now_time = now.getTime();
 		// loop to verify if it is open	
@@ -173,7 +173,7 @@ var Restaurant = function(id) {
 	}
 
 	self.closesIn = function( now ){
-		var now = ( now ) ? now : dateTime.getNow();
+		var now = ( now && now.getNow ) ? now : dateTime.getNow();
 		self._closesIn = false;
 		self._closesIn_formatted = '';
 		self.processHours();
@@ -193,7 +193,7 @@ var Restaurant = function(id) {
 	}
 
 	self.opensIn = function( now ){
-		var now = ( now ) ? now : dateTime.getNow();
+		var now = ( now && now.getNow ) ? now : dateTime.getNow();
 		self._opensIn = false;
 		self._opensIn_formatted = '';
 		self.processHours();
@@ -242,7 +242,6 @@ var Restaurant = function(id) {
 				self.hours = hours;
 				self._hours_processed = false;
 				self.processHours();
-				console.log( self.name, 'hours reloaded' );
 			} );
 		}
 	}

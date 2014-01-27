@@ -42,6 +42,15 @@ NGApp.factory('PositionsService', function ( $rootScope ) {
 		$.totalStorage( 'locsv3', locs );
 	}
 
+	service.hasValidLocation = function(){
+		for( x in service.locs ){
+			if( service.locs[ x ].storeAtCookie() ){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	service.removeNotServedLocation = function(){
 		if( service.locs.length > 0 ){
 			// Mark to remove the last added location - it is not served
@@ -144,7 +153,8 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		var success = success || function () {};
 		var error = error || function () {};
 
-		var timer = timer || 5000;
+		// it is taking about 25 to 30 secs to detect the user's location at phonegap
+		var timer = timer || ( App.isPhoneGap ? 30000 : 8000 );
 
 		if ( navigator.geolocation ) {
 
@@ -167,9 +177,9 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					lon: position.coords.longitude
 				});
 				// get the city from shared location
-				service.reverseGeocode( position.coords.latitude, position.coords.longitude, success, error );
+				service.reverseGeocode( position.coords.latitude, position.coords.longitude, success, error, 'geolocation' );
 
-			}, function() {
+			}, function( e ) {
 				clearTimeout(service.timerId);
 				error();
 			}, {
@@ -245,39 +255,16 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		
 		service.initied = true;
 
-		// 4) get a more specific bounding location result from google
-		if (App.isPhoneGap) {
-			if ( parseInt( service.position.locs.length ) == 0 ) {
-				service.getLocationByBrowser( 
-					// success
-					function ( loc ) {
-							service.bounding = {
-								lat: loc.lat(),
-								lon: loc.lon(),
-								city: loc.city(),
-								type: 'geolocation'
-							};
-							service.position.addLocation( loc );
-							service.restaurantsService.list(
-								// success - has restaurants
-								function () { App.go( '/food-delivery', 'push' ); },
-								// houston - no restaurant
-								function () { PositionsService.removeNotServedLocation(); } 
-							);
-
-				}, 
-				// error
-				function(){}, 
-				// about 30 secs do detect the location
-				30000 );
-			} else {
+		if ( App.isPhoneGap ) {	
+			if ( parseInt( service.position.locs.length ) > 0 ) {
 				service.restaurantsService.list(
 					// success - has restaurants
 					function () { App.go( '/food-delivery', 'push' ); },
 					// no restaurant
-					function () { PositionsService.removeNotServedLocation(); } 
+					function () {} 
 				);
 			}
+		// 4) get a more specific bounding location result from google
 		} else {
 			try{
 				if( google && google.load && !google.maps ){
@@ -525,7 +512,9 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 	/**
 	 * perform a reverse geocode from lat/lon
 	 */
-	service.reverseGeocode = function (lat, lon, success, error) {
+	service.reverseGeocode = function (lat, lon, success, error, type) {
+
+		var type = type || null;
 
 		App.track('Location Reverse Geocode', {
 			lat: lat,
@@ -543,7 +532,8 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					success(new Location({
 						results: results,
 						lat: lat,
-						lon: lon
+						lon: lon,
+						type : type
 					}));
 				} else {
 					error();

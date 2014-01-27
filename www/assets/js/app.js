@@ -256,7 +256,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.signout = AccountSignOut;
 	$rootScope.isPhoneGap = App.isPhoneGap;
 	$rootScope.server = App.server;
-	
+
 	$rootScope.debug = function() {
 		return ( App.config && App.config.user && App.config.user.debug );
 	};
@@ -421,6 +421,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.$apply( 'windowWidth' );
 		$rootScope.$apply( 'windowHeight' );
 	});
+
+	$scope.hasLocations = function(){
+		return ( LocationService.position.hasValidLocation() );
+	}
 
 	AccountService.checkUser();
 	
@@ -847,7 +851,7 @@ App.verifyConnection = {
 	init: function () {
 		if (App.isPhoneGap) {
 			App.verifyConnection.check( function( online ){
-				var timer = ( online ) ? 0 : ( 3500 );
+				var timer = ( online ) ? 3000 : ( 3500 );
 				// hide splashscreen
 				setTimeout( function(){
 					if ( !App.splashHidden && navigator.splashscreen ) {
