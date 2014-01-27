@@ -337,6 +337,11 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 			$('.location-address').val('').attr('placeholder','Please enter an address or zip');	
 		}
 
+		// if we detect his location and it is not served #2311
+		if( typeof( pos ) != 'undefined' && pos.type() == 'geolocation' ){
+			$scope.locationError = true;
+		}
+
 		// Remove the location from cockie
 		PositionsService.removeNotServedLocation();
 
@@ -348,7 +353,6 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 			$scope.focus( '.location-address' );
 		}
 	});
-	
 
 	if( $rootScope.locationPlaceholder ){
 		$('.location-address').val('').attr( 'placeholder', $rootScope.locationPlaceholder );
@@ -384,6 +388,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 			locSpin.start();
 			$scope.location.getLocationByBrowser( function(loc) {
 				locSpin.stop();
+				// As it should return a new loc we can remove the previous geolocation
+				// that way we don't have two equals location
+				$scope.location.position.removeNotServedLocation();
 				// Add the position at the locations
 				$scope.location.position.addLocation( loc );
 				// Verify if user address is served
@@ -459,6 +466,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		}
 		locSpin.start();
 		$scope.location.getLocationByBrowser( function(loc) {
+			// As it should return a new loc we can remove the previous geolocation
+			// that way we don't have two equals location
+			$scope.location.position.removeNotServedLocation();
 			// Add the position at the locations
 			$scope.location.position.addLocation(loc);
 			// Verify if user address is served
