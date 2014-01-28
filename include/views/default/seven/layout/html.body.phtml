@@ -12,7 +12,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="navigation.link('/food-delivery')" ng-show="account.user.id_user || hasLocations()">
+				<li ng-click="navigation.link('/food-delivery')" ng-show="account.user.id_user">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
@@ -28,7 +28,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="navigation.link('/location')" ng-show="account.user.id_user || hasLocations()">
+				<li ng-click="navigation.link('/location')" ng-show="account.user.id_user">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-map-marker"></i></td>
