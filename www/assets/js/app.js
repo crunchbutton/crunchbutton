@@ -727,6 +727,20 @@ App.init = function(config) {
 		},10);
 	}
 
+	// Init the processor
+	var processor = ( App.config.processor && App.config.processor.type ) ? App.config.processor.type : false;
+	switch( processor ){
+		case 'stripe':
+			Stripe.setPublishableKey( App.config.processor.stripe );
+			break;
+		case 'balanced':
+			balanced.init( App.config.processor.balanced );
+		break;
+		default:
+			console.log( 'Processor error::', App.config.processor );
+		break;
+	}
+
 	$(window).trigger('nginit');
 };
 
