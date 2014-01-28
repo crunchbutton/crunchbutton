@@ -398,6 +398,11 @@ class Crunchbutton_App extends Cana_App {
 			$config['env'] = $this->env();
 			$config['ab'] = json_decode($this->auth()->get('ab'));
 			
+			// export the processor info
+			$config[ 'processor' ][ 'type' ] = Crunchbutton_User_Payment_Type::processor();
+			$config[ 'processor' ][ 'stripe' ] = c::config()->stripe->{c::getEnv()}->{'public'};
+			$config[ 'processor' ][ 'balanced' ] = c::balanced()->uri;
+
 			if (!$this->auth()->get('loc_lat')) {
 				$geo = new Crunchbutton_Geo([
 					'adapter' => 'Geoip_Binary',
