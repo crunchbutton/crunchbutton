@@ -193,11 +193,13 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 								$sendSMSTo[ $supportName ] = $supportPhone;
 							}
 							
-							$usersToReceiveSMS = $restaurant->adminReceiveSupportSMS();
-							if( count( $usersToReceiveSMS ) > 0 ){
-								foreach( $usersToReceiveSMS as $user ){
-									$sendSMSTo[ $user->name ] = $user->txt;
-								}
+							if( $restaurant && $restaurant->id_restaurant ){
+								$usersToReceiveSMS = $restaurant->adminReceiveSupportSMS();
+								if( count( $usersToReceiveSMS ) > 0 ){
+									foreach( $usersToReceiveSMS as $user ){
+										$sendSMSTo[ $user->name ] = $user->txt;
+									}
+								}	
 							}
 
 							// c::timeout(function() use ($b, $env, $twilio) {
