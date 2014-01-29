@@ -67,8 +67,6 @@ App.tokenizeCard_stripe = function( card, complete ) {
 
 App.tokenizeCard_balanced = function(card, complete) {
 
-	console.log( 'call App.tokenizeCard_balanced' );
-
 	balanced.card.create(card, function(response) {
 		var res = {
 			status: false
