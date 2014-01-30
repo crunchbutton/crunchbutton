@@ -114,6 +114,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 	service.getStatus = function () {
 
+		var now = dateTime.getNow();
 		var list = restaurants;
 		var allClosed = true;
 		var totalClosedRestaurantsAfter = 0;
@@ -126,9 +127,9 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				allClosed = false;
 			}
 		}
-		
+
 		for (var x in list) {
-			if( !list[x].open() ){
+			if( !list[x].open( now ) ){
 				totalClosedRestaurantsAfter++;
 			}
 			list[x].tagfy();
