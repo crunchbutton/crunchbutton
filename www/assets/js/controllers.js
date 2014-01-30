@@ -168,10 +168,19 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	var status;
 
 	$rootScope.$on( 'appResume', function(e, data) {
-		if( $location.path() == '/' + RestaurantsService.permalink ){
-			$scope.restaurants = restaurants.getStatus();
-			updateStatus();
+		var checkDateTime = function(){
+			if( dateTime && dateTime.getNow && dateTime.getNow() ){
+				if( $location.path() == '/' + RestaurantsService.permalink ){
+					$scope.restaurants = restaurants.getStatus();
+					updateStatus();
+				}
+			} else {
+				setTimeout( function(){
+					checkDateTime();
+				}, 50 );
+			}
 		}
+		checkDateTime();
 	});
 
 	$scope.display = function( $event ){
@@ -555,7 +564,16 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	});
 
 	$rootScope.$on( 'appResume', function(e, data) {
-		updateStatus();
+		var checkDateTime = function(){
+			if( dateTime && dateTime.getNow && dateTime.getNow() ){
+				updateStatus();
+			} else {
+				setTimeout( function(){
+					checkDateTime();
+				}, 50 );
+			}
+		}
+		checkDateTime();
 	});
 
 	// Set the id_restaurant 
