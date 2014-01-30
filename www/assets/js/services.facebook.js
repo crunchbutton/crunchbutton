@@ -83,9 +83,15 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 				return;
 			}
 
+			// android's returns this variable as userId
+			if( status.authResponse.userId ){
+				status.authResponse.userID = status.authResponse.userId;
+			}
+			
 			if (status.authResponse.userID) {
+
 				App.log.account({'userID': status.authResponse.userID}, 'facebook login');
-				
+
 				// make sure we dont double call the authentication and user creation service
 				if (!service.running) {
 					service.running = true;
@@ -96,7 +102,7 @@ NGApp.factory( 'FacebookService', function( $http, $location, $rootScope, Accoun
 					url = App.service + 'user/facebook?fbrtoken=' + service.token;
 
 					// Just call the user api, this will create a facebook user
-					$http({method: 'GET', url: url, cache: false}).success(function(data) {
+					$http( { method: 'GET', url: url, cache: false } ).success(function( data ) {
 
 						App.log.account({'userID': status.authResponse.userID, 'running': service.running, 'data': data }, 'facebook ajax');
 	
