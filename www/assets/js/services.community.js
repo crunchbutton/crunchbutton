@@ -11,15 +11,18 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 		var alias = false;
 		var restaurant = false;
 
-		for( x in parts ){
-			if( parts[ x ] != '' ){
-				if( App.aliases[parts[x]] ){
-					alias = App.aliases[parts[x]];
-				} else {
-					restaurant = parts[x];
-				}
-			}
+		if( App && App.aliases ){
+			for( x in parts ){
+						if( parts[ x ] != '' ){
+							if( App.aliases[parts[x]] ){
+								alias = App.aliases[parts[x]];
+							} else {
+								restaurant = parts[x];
+							}
+						}
+					}
 		}
+
 
 		success = success || function(){};
 		error = error || function(){};

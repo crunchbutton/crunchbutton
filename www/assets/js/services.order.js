@@ -424,12 +424,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardNumber) || (!service.account.user.id_user && !service.form.cardNumber))) {
 			errors['card'] = 'Please enter a valid card #.';
 		}
-		/*if (order.pay_type == 'card' && service._cardInfoHasChanged && ( order.card.month == '' || !order.card.month ) ) {
+		console.log('service.form',service.form);
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardMonth) || (!service.account.user.id_user && !service.form.cardMonth))) {
 			errors['card_month'] = 'Please enter the card expiration month.';
 		}
-		if (order.pay_type == 'card' && service._cardInfoHasChanged && ( order.card.year == '' || !order.card.year ) ) {
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardYear) || (!service.account.user.id_user && !service.form.cardYear))) {
 			errors['card_year'] = 'Please enter the card expiration year.';
-		}*/
+		}
 		if (!service.cart.hasItems()) {
 			errors['noorder'] = 'Please add something to your order.';
 		}
