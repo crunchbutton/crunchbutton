@@ -14,6 +14,30 @@ class Crunchbutton_Util extends Cana_Model {
 		return $files;
 	}
 
+	public static function stringToColorCode( $str ) {
+		$code = dechex( crc32( $str ) );
+		$code = substr( $code, 0, 6 );
+  	return $code;
+	}
+
+	public static function inverseColor( $color ){
+		$r = dechex( 255 - hexdec( substr( $color, 0, 2 ) ) );
+		$r = ( strlen( $r ) > 1 ) ? $r : '0' . $r;
+		$g = dechex( 255 - hexdec( substr( $color, 2, 2 ) ) );
+		$g = ( strlen( $g ) > 1 ) ? $g : '0' . $g;
+		$b = dechex( 255 - hexdec( substr( $color, 4, 2 ) ) );
+		$b = ( strlen( $b ) > 1 ) ? $b : '0' . $b;
+		return $r . $g . $b;
+	}
+
+	public static function isDarkColor( $color ){
+		$c_r = hexdec( substr( $color, 0, 2 ) );
+		$c_g = hexdec( substr( $color, 2, 2 ) );
+		$c_b = hexdec( substr( $color, 4, 2 ) );
+		// calc brightness value from 0 to 255
+		return ( ( ( $c_r * 299 ) + ( $c_g * 587 ) + ( $c_b * 114 ) ) / 1000 < 130 );
+	}
+
 	public static function ceil($value, $precision) {
 		$pow = pow ( 10, $precision ); 
 		return ( ceil ( $pow * $value ) + ceil ( $pow * $value - ceil ( $pow * $value ) ) ) / $pow;
@@ -33,7 +57,7 @@ class Crunchbutton_Util extends Cana_Model {
 		);
 
 		$title = preg_replace($find, $replace, $title);
-		while (strpos($title,'--') !== false) {
+		while (str($title,'--') !== false) {
 			$title = str_replace('--','-',$title);
 		}
 
