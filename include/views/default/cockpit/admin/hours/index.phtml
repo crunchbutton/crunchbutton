@@ -1,0 +1,256 @@
+<?
+	$this->title = 'Working hours';
+	$this->titleicon = 'time';
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-header">
+				<div class="row-fluid">
+					<div class="span2 padded">
+						<a href="/admin/hours/<?php echo $this->weekPrev; ?>"><i class="icon icon-angle-left"></i> previous</a>
+					</div>
+						<div class="span8 padded" style="text-align:center;">
+							<strong>Week <?php echo $this->week; ?> / <?php echo $this->year; ?></strong>
+						</div>
+					<div class="span2 padded" style="text-align:right;">
+						<a href="/admin/hours/<?php echo $this->weekNext; ?>">next <i class="icon icon-angle-right"></i></a>
+					</div>
+				</div>
+			</div>
+				<div class="box-content">
+					<table width="100%">
+						<tr>
+							<?php foreach( $this->days as $day ) { 
+								$dark = ( $day->format( 'N' ) == 7 || $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+							?>
+								<th width="14%" style="background:<?php echo $dark; ?>">
+									<div class="row-fluid padded">
+										<div class="span12">
+											<strong style="font-size:20px;color:#666;">
+												<?php echo $day->format( 'D' ); ?>
+												<div style="font-size:12px;font-weight:normal;color:#CCC;"><?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?></div>
+											</strong>
+										</div>
+									</div>
+								</th>
+							<?php } ?>
+						</tr>
+						<tr>
+							<?php foreach( $this->days as $day ) { 
+								$dark = ( $day->format( 'N' ) == 7 || $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+							?>
+								<td width="14%" style="background:<?php echo $dark; ?>" valign="top">
+									<div class="row-fluid padded">
+									<?php
+									$hours = Crunchbutton_Admin_Hour::segmentsByDate( $day->format('Y-m-d'), '<br/>' );
+									if( count( $hours > 0 ) ){
+										foreach ( $hours as $hour ) {
+											$color = Util::stringToColorCode( $hour[ 'login' ] );
+											$text_color = ( Util::isDarkColor( $color ) ? 'FFF' : '000' );
+											?>
+											<div style="width:80%;background:#<?php echo $color;?>;border-radius: 3px 3px 3px 3px;-moz-border-radius: 3px 3px 3px 3px;-webkit-border-radius: 3px 3px 3px 3px;border: 0px solid #000000;margin:2px 0;">
+												<div style="padding:8px;font-weight:normal;">
+													<a class="modal-hours-open" href="/admin/hours/edit/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $hour[ 'id_admin' ]; ?>" style="color:#<?php echo $text_color; ?>;">
+														<strong style="font-size:14px;"><?php echo $hour[ 'name' ]; ?></strong>
+														<br/>
+														<?php echo $hour[ 'hours' ]; ?>
+													</a>
+												</div>
+											</div>
+											<?php
+										}
+									}
+									?>							
+									<div>
+										<button class="btn btn-default modal-hours-open" href="/admin/hours/add/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $this->week; ?>" style="width:80%;" title="Add hours to <?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?> (<?php echo $day->format( 'D' ); ?>)">
+											<i class="icon-plus icon-2x"></i>
+										</button>
+									</div>
+									</div>
+								</td>
+							<?php } ?>
+						</tr>
+					</table>
+					<br/>
+					<div class="padded" style="font-size:16px;">
+						<button class="btn btn-blue" onclick="workingHours.copyAll();"><i class="icon-copy icon-2x"></i> Copy the hours from the previous week</button>
+					</div>
+				</div>
+		</div>
+	</div>
+</div>
+<div class="modal hide fade" id="modal-hours" style="display: none;">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" type="button">×</button>
+		<h6 id="modal-hours-title"></h6>
+	</div>
+	<div class="modal-body" id="modal-hours-body"></div>
+	<div class="modal-footer">
+		<button class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+</div>
+<script type="text/javascript">
+$( document ).ready( function(){
+	$( '.modal-hours-open' ).click( function(e) {
+		e.preventDefault();
+		var url = $( this ).attr( 'href' );
+		var title = $( this ).attr( 'title' );
+		$.get( url, function( data ) {
+			$( '#modal-hours' ).modal();
+			$( '#modal-hours-title' ).html( title );
+			$( '#modal-hours-body' ).html( data );
+		} );
+	} );
+} );
+
+var workingHours = {};
+workingHours.admin_tzs = {};
+<?php foreach( $this->reps as $rep ) { ?>
+	workingHours.admin_tzs[ '<?php echo $rep->id_admin ?>' ] = '<?php echo $rep->timezone ?>';
+<?php } ?>
+workingHours.admin_tz = '';
+workingHours.setTimezone = function( id_admin ){
+	workingHours.admin_tz = ( workingHours.admin_tzs[ id_admin ] ) ? workingHours.admin_tzs[ id_admin ] : 'America/Los_Angeles'; 
+	$( '#form-timezone' ).html( '<strong>' + workingHours.admin_tz + '</strong>' );
+};
+
+workingHours.copyAll = function(){
+	if( confirm( 'Confirm copy? This will remove all the hours from this week <?php echo $this->week . '/' . $this->year; ?> !' ) ){
+		$.ajax( {
+			url: '/api/admin/hours/copy-all',
+			method: 'POST',
+			data: { 'year' : '<?php echo $this->year; ?>', 'week' : '<?php echo $this->week; ?>' },
+			dataType: 'json',
+		} ).done( function( data ) {
+			if( data.success ){
+				location.reload();
+			} else {
+				alert( 'Ops, error! ' + data.error );
+			}
+		} );		
+	}
+};
+
+workingHours.add = function(){
+
+	var id_admin = $( '#form-id_admin' ).val();
+	var hours = $.trim( $( '#form-hours' ).val() );
+
+	if( id_admin == '' ){
+		alert( 'Please choose the worker!' );
+		$( '#form-id_admin' ).focus();
+		return;
+	}
+
+	if( hours == '' ){
+		alert( 'Please type the hours!' );
+		$( '#form-hours' ).focus();
+		return;
+	}
+
+	if( !workingHours.validateHours( hours ) ){
+		alert( 'Unable to figure out what this time means!' );
+		$( '#form-hours' ).focus();
+		return;	
+	}
+
+	var weekdays = [];
+	$( '[name="form-weekdays"]' ).each( function(){
+		var checkbox = $( this );
+		if( checkbox.is( ':checked' ) ){
+			weekdays.push( checkbox.val() );	
+		}
+	} );
+
+	$.ajax( {
+		url: '/api/admin/hours/add',
+		method: 'POST',
+		data: { 'id_admin' : id_admin, 'day' : $( '#form-day' ).val(), 'month' : $( '#form-month' ).val(), 'year' : $( '#form-year' ).val(), 'week' : $( '#form-week' ).val(), 'hours' : hours, 'weekdays' : weekdays },
+		dataType: 'json',
+	} ).done( function( data ) {
+		if( data.success ){
+			location.reload();
+		} else {
+			alert( 'Ops, error! ' + data.error );
+		}
+	} );
+};
+
+workingHours.edit = function(){	
+	
+	var hours = $.trim( $( '#form-hours' ).val() );
+
+	if( hours == '' ){
+		alert( 'Please type the hours!' );
+		$( '#form-hours' ).focus();
+		return;
+	}
+
+	if( !workingHours.validateHours( hours ) ){
+		alert( 'Unable to figure out what this time means!' );
+		$( '#form-hours' ).focus();
+		return;	
+	}
+
+	$.ajax( {
+		url: '/api/admin/hours/edit',
+		method: 'POST',
+		data: { 'id_admin' : $( '#form-id_admin' ).val(), 'day' : $( '#form-day' ).val(), 'month' : $( '#form-month' ).val(), 'year' : $( '#form-year' ).val(), 'hours' : hours, 'weekdays' : [] },
+		dataType: 'json',
+	} ).done( function( data ) {
+		if( data.success ){
+			location.reload();
+		} else {
+			alert( 'Ops, error! ' + data.error );
+		}
+	} );
+};
+
+workingHours.copy = function(){
+	if( confirm( 'Confirm copy? This will remove all the hours of this worker from this week!' ) ){
+		$.ajax( {
+			url: '/api/admin/hours/copy',
+			method: 'POST',
+			data: { 'id_admin' : $( '#form-id_admin' ).val(), 'year' : $( '#form-year' ).val(), 'week' : $( '#form-week' ).val() },
+			dataType: 'json',
+		} ).done( function( data ) {
+			if( data.success ){
+				location.reload();
+			} else {
+				alert( 'Ops, error! ' + data.error );
+			}
+		} );		
+	}
+};
+
+workingHours.remove = function(){
+	if( confirm( 'Confirm remove?' ) ){
+		$.ajax( {
+			url: '/api/admin/hours/remove',
+			method: 'POST',
+			data: { 'id_admin' : $( '#form-id_admin' ).val(), 'day' : $( '#form-day' ).val(), 'month' : $( '#form-month' ).val(), 'year' : $( '#form-year' ).val() },
+			dataType: 'json',
+		} ).done( function( data ) {
+			if( data.success ){
+				location.reload();
+			} else {
+				alert( 'Ops, error! ' + data.error );
+			}
+		} );
+	}
+};
+
+workingHours.validateHours = function( hours ){
+	hours = hours.replace( /\(.*?\)/g, '' );
+	segments = hours.split( /(?:and|,)/ );
+	for( i in segments ) {
+		if( !/^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i.exec( segments[ i ] ) ) {
+			return false;
+		}
+	}
+	return true;
+}
+
+</script>

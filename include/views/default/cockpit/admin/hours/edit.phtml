@@ -1,0 +1,75 @@
+<div class="row-fluid">
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span12">
+				<div class="box">
+					<div class="box-header"><span class="title">Edit hours</span></div>
+					<div class="box-content padded">
+						<form>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Worker</strong>
+									</div>
+									<div class="span7">
+										<input type="hidden" name="form-week" id="form-id_admin" value="<?php echo $this->admin->id_admin ?>"/>
+										<input type="hidden" name="form-week" id="form-week" value="<?php echo $this->week ?>"/>
+										<input type="hidden" name="form-year" id="form-year" value="<?php echo $this->year ?>"/>
+										<input type="hidden" name="form-month" id="form-month" value="<?php echo $this->month ?>"/>
+										<input type="hidden" name="form-day" id="form-day" value="<?php echo $this->day ?>"/>
+										<strong><?php echo $this->admin->name; ?></strong>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Day</strong>
+									</div>
+									<div class="span7">
+										<div id="form-timezone"><strong><?php echo $this->month . '/' . $this->day . '/' . $this->year; ?></strong></div>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Hours</strong>
+									</div>
+									<div class="span7">
+										<input type="text" value="<?php echo $this->segment ?>" name="form-hours" id="form-hours"/> <i class=" icon-question-sign" title="e.g. '12 PM - 2:30 AM' - use a comma for multiple time segments e.g. '11 am - 1:30 PM, 2:15 PM - 1 AM'"></i>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Timezone</strong>
+									</div>
+									<div class="span7">
+										<div id="form-timezone"><strong><?php echo $this->admin->timezone; ?></strong></div>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="row-fluid">
+									<div class="span12">
+										<br/>
+									</div>
+								</div>
+								<div class="row-fluid">
+									<div class="span12">
+										<button type="button" onclick="workingHours.edit();" class="btn btn-green"><i class="icon-save"></i> Save </button> 
+										&nbsp;&nbsp;&nbsp;
+										<button type="button" onclick="workingHours.remove();" class="btn btn-red"><i class="icon-trash"></i> Remove all from this day </
+										button> 
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
