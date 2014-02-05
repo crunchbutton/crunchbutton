@@ -15,6 +15,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	const IS_ENABLE_DEFAULT = true;
 	const IS_ENABLE_TO_TAKEOUT_DEFAULT = false;
 
+	const REPS_NONE_WORKING_GROUP_NAME_KEY = 'reps-none-working-group-name';
+
 	public function resendNotification(){
 
 		// Get orders with active admin notifications from the last 3 hours, and only if they have been  there for 3 min
@@ -117,6 +119,30 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				break;
 		}
 	}
+
+	public function warningAboutNoRepsWorking( $order ){
+		$env = c::getEnv();
+		$group = Group::byName( Crunchbutton_Config::getVal( Crunchbutton_Admin_Notification::REPS_NONE_WORKING_GROUP_NAME_KEY ) );
+		$users = $group->users();
+		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		$message = "No drivers for O#{$order->id_order} \nR: {$order->restaurant()->name} / {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()}";
+		$message = str_split( $message,160 );
+		foreach ( $users as $user ) {
+			$num = $user->txt;
+			$name = $user->name;
+			foreach ($message as $msg) {
+				try {
+					// Log
+					Log::debug( [ 'action' => 'Sending no reps working warning ', 'to' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'notification' ] );
+					$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+				} catch (Exception $e) {
+					// Log
+					Log::debug( [ 'action' => 'ERROR!!! Sending no reps working warning ', 'to' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'notification' ] );
+				}
+			}
+		}
+	}
+
 
 	public function host_callback(){
 		if( !c::config()->host_callback ){

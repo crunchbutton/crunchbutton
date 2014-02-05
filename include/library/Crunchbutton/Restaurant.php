@@ -769,6 +769,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 
+	public function adminNotifications(){
+		if (!isset($this->_admin_notifications)) {
+			$this->_admin_notifications = Crunchbutton_Notification::q( "SELECT n.* FROM notification n WHERE id_restaurant = {$this->id_restaurant} AND active = 1 AND type = 'admin' " );
+		}
+		return $this->_admin_notifications;
+	}
+
 	/**
 	 * Returns all the notifications linked to this restaurant
 	 *
@@ -781,11 +788,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function notifications($where = []) {
 		$defaultFilters = [
 			'id_restaurant' => $this->id_restaurant,
-			'active'        => 1,
+			'active'        => 1
 		];
 		$whereSql = $this->_mergeWhere($defaultFilters, $where);
 		if (!isset($this->_notifications)) {
-			$this->_notifications = Crunchbutton_Notification::q("SELECT * FROM notification WHERE $whereSql");
+			$this->_notifications = Crunchbutton_Notification::q( "SELECT * FROM notification WHERE $whereSql" );
 		}
 		return $this->_notifications;
 	}

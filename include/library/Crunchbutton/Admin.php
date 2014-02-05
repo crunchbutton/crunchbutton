@@ -38,6 +38,16 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $this->_activeNotifications;
 	}
 
+	public function isWorking(){
+		$now = new DateTime( 'now', $this->timezone() );
+		$now = $now->format( 'YmdHi' );
+		$hours = Admin_Hour::q( "SELECT * FROM admin_hour WHERE 
+															id_admin = {$this->id_admin} AND
+ 															DATE_FORMAT( date_start, '%Y%m%d%H%i' ) <= {$now} AND 
+  														DATE_FORMAT( date_end, '%Y%m%d%H%i' ) >= {$now} ");
+		return ( $hours->count() > 0 );
+	}
+
 	public function getNotifications( $oderby = 'active DESC, id_admin_notification DESC' ){
 		return Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} ORDER BY {$oderby}" );
 	}
