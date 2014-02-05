@@ -1,6 +1,7 @@
 <?
 	$this->title = 'Working hours';
 	$this->titleicon = 'time';
+	$hasEditPermission = $this->hasEditPermission;
 ?>
 <!-- content -->
 <div class="container-fluid padded">
@@ -52,35 +53,46 @@
 											?>
 											<div style="width:80%;background:#<?php echo $color;?>;border-radius: 3px 3px 3px 3px;-moz-border-radius: 3px 3px 3px 3px;-webkit-border-radius: 3px 3px 3px 3px;border: 0px solid #000000;margin:2px 0;">
 												<div style="padding:8px;font-weight:normal;">
-													<a class="modal-hours-open" title="Edit hours" href="/admin/hours/edit/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $hour[ 'id_admin' ]; ?>" style="color:#<?php echo $text_color; ?>;">
-														<strong style="font-size:14px;"><?php echo $hour[ 'name' ]; ?></strong>
-														<br/>
-														<?php echo $hour[ 'hours' ]; ?>
+													<?php if( $hasEditPermission ) { ?>
+													<a class="modal-hours-open" title="Edit hours" href="/admin/hours/edit/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $hour[ 'id_admin' ]; ?>">
+													<?php } ?>
+														<span style="color:#<?php echo $text_color; ?>;">
+															<strong style="font-size:14px;"><?php echo $hour[ 'name' ]; ?></strong>
+															<br/>
+															<?php echo $hour[ 'hours' ]; ?>
+														</span>
+													<?php if( $hasEditPermission ) { ?>
 													</a>
+													<?php } ?>
 												</div>
 											</div>
 											<?php
 										}
 									}
-									?>							
+									?>	
+									<?php if( $hasEditPermission ) { ?>						
 									<div>
 										<button class="btn btn-default modal-hours-open" href="/admin/hours/add/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $this->week; ?>" style="width:80%;" title="Add hours to <?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?> (<?php echo $day->format( 'D' ); ?>)">
 											<i class="icon-plus icon-2x"></i>
 										</button>
 									</div>
+									<?php } ?>
 									</div>
 								</td>
 							<?php } ?>
 						</tr>
 					</table>
+					<?php if( $hasEditPermission ) { ?>
 					<br/>
 					<div class="padded" style="font-size:16px;">
 						<button class="btn btn-blue" onclick="workingHours.copyAll();"><i class="icon-copy icon-2x"></i> Copy the hours from the previous week</button>
 					</div>
+					<?php } ?>
 				</div>
 		</div>
 	</div>
 </div>
+<?php if( $hasEditPermission ) { ?>
 <div class="modal hide fade" id="modal-hours" style="display: none;">
 	<div class="modal-header">
 		<button class="close" data-dismiss="modal" type="button">×</button>
@@ -254,3 +266,4 @@ workingHours.validateHours = function( hours ){
 }
 
 </script>
+<?php } ?>

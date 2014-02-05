@@ -4,15 +4,21 @@ class Controller_admin_hours extends Crunchbutton_Controller_Account {
 	
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global'])) {
+		if (!c::admin()->permission()->check(['global','permission-users-hours', 'permission-users-hours-view'])) {
 			return ;
 		}
 
+		$hasEditPermission = c::admin()->permission()->check(['global','permission-users-hours']);
+
 		$reps = Admin::q( 'SELECT * FROM admin ORDER BY name ASC' );
+
+		if (!$hasEditPermission) { return ; }
 
 		switch ( c::getPagePiece(2) ) {
 			
 			case 'edit':
+
+				if (!$hasEditPermission) { return ; }
 
 				$year = c::getPagePiece(3) ? c::getPagePiece(3) : date( 'Y' );
 				$month = c::getPagePiece(4) ? c::getPagePiece(4) : date( 'm' );
@@ -38,6 +44,8 @@ class Controller_admin_hours extends Crunchbutton_Controller_Account {
 				break;
 
 			case 'add':
+
+				if (!$hasEditPermission) { return ; }
 
 				$year = c::getPagePiece(3) ? c::getPagePiece(3) : date( 'Y' );
 				$month = c::getPagePiece(4) ? c::getPagePiece(4) : date( 'm' );
@@ -93,6 +101,7 @@ class Controller_admin_hours extends Crunchbutton_Controller_Account {
 				c::view()->year = $year;
 				c::view()->days = $days;
 				c::view()->reps = $reps;
+				c::view()->hasEditPermission = $hasEditPermission;
 				c::view()->startDate = $startDate;
 				c::view()->display( 'admin/hours/index' );
 

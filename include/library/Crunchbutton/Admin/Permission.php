@@ -123,15 +123,18 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'suggestions-list-restaurant-ID' => array( 'description' => 'View the food suggestions for these restaurants:', 'dependency' => array( 'suggestions-list-page' ), 'type' => 'combo', 'element' => 'Restaurant', 'copy' => array( 'title' => 'Copy from restaurants he has access to edit', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
 																										);
 
-		/* Other's permissions */ 
+		/* User/Groups's permissions */ 
 		$_permissions[ 'permissions' ] = array( 'description' => 'Admin user\'s permissions' );
 		$_permissions[ 'permissions' ][ 'doAllPermission' ] = 'permission-all';
 		$_permissions[ 'permissions' ][ 'permissions' ] = array( 
-																										'permission-all' => array( 'description' => 'Can perform ALL actions with admin users and groups (i.e. create, update, delete, assign permissions)' ),
+																										'permission-all' => array( 'description' => 'Can perform ALL actions with admin users and groups (create, update, delete, assign permissions)' ),
 																										'permission-users' => array( 'description' => 'Can perform actions with ONLY admin users (create, update, delete, assign permissions) ' ),
+																										'permission-users-hours' => array( 'description' => 'Can perform ALL actions with admin\'s hours ' ),
+																										'permission-users-hours-view' => array( 'description' => 'Can see the admin\'s hours ' ),
 																										'permission-groups' => array( 'description' => 'Can perform actions with ONLY admin groups (create, update, delete, assign permissions) ' ),
 																										);
 
+	
 		/* Other's permissions */ 
 		$_permissions[ 'other' ] = array( 'description' => 'Other\'s permissions' );
 		$_permissions[ 'other' ][ 'permissions' ] = array( 

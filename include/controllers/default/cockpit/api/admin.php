@@ -4,8 +4,9 @@ class Controller_api_admin extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 		
-		if (!c::admin()->permission()->check(['global'])) {
-			return ;
+		if (!c::admin()->permission()->check(['global','permission-users-hours'])) {
+			echo json_encode( [ 'error' => 'invalid object' ] );
+			exit;
 		}
 		
 		switch ( c::getPagePiece( 2 ) ) {
@@ -44,6 +45,10 @@ class Controller_api_admin extends Crunchbutton_Controller_RestAccount {
 		$week = $this->request()[ 'week' ];
 		$year = $this->request()[ 'year' ];
 		$admins = Admin::q( 'SELECT * FROM admin' );
+		if( !$week || !$year ){
+			echo json_encode( [ 'error' => 'invalid object' ] );
+			exit;
+		}
 		foreach( $admins as $admin ){
 			$this->copyHours( $admin->id_admin, $week, $year );
 		}
@@ -54,6 +59,11 @@ class Controller_api_admin extends Crunchbutton_Controller_RestAccount {
 		$id_admin = ( $id_admin ) ? $id_admin : $this->request()[ 'id_admin' ];
 		$week = ( $week ) ? $week : $this->request()[ 'week' ];
 		$year = ( $year ) ? $year : $this->request()[ 'year' ];
+
+		if( !$id_admin || !$week || !$year ){
+			echo json_encode( [ 'error' => 'invalid object' ] );
+			exit;
+		}
 
 		if( $week < 10 ){
 			$week = '0' . intval( $week );
@@ -109,6 +119,11 @@ class Controller_api_admin extends Crunchbutton_Controller_RestAccount {
 		$month = $this->request()[ 'month' ];
 		$year = $this->request()[ 'year' ];
 		$date = $year . '-' . $month . '-' . $day;
+		if( !$id_admin || !$date ){
+			echo json_encode( [ 'error' => 'invalid object' ] );
+			exit;
+		}
+		Log::debug( [ 'action' => 'admin hours removed', 'id_admin' => $id_admin, 'date' => $date, 'id_admin_edit' => c::admin()->id_admin, 'type' => 'admin-hours' ] );
 		Crunchbutton_Admin_Hour::removeByDateIdAdmin( $date, $id_admin );
 		echo json_encode( array( 'success' => true ) );
 	}
@@ -119,6 +134,11 @@ class Controller_api_admin extends Crunchbutton_Controller_RestAccount {
 		$month = $this->request()[ 'month' ];
 		$year = $this->request()[ 'year' ];
 		$date = $year . '-' . $month . '-' . $day;
+		if( !$id_admin || !$day || !$month || !$year ){
+			echo json_encode( [ 'error' => 'invalid object' ] );
+			exit;
+		}
+		Log::debug( [ 'action' => 'admin hours edited', 'id_admin' => $id_admin, 'date' => $date, 'id_admin_edit' => c::admin()->id_admin, 'type' => 'admin-hours' ] );
 		Crunchbutton_Admin_Hour::removeByDateIdAdmin( $date, $id_admin );
 		$this->addHours();
 	}
@@ -131,6 +151,11 @@ class Controller_api_admin extends Crunchbutton_Controller_RestAccount {
 		$week = $this->request()[ 'week' ];
 		$segments = $this->request()[ 'hours' ];
 		$weekdays = $this->request()[ 'weekdays' ] ;
+
+		if( !$id_admin || !$day || !$month || !$year ){
+			echo json_encode( [ 'error' => 'invalid object' ] );
+			exit;
+		}
 
 		$admin = Admin::o( $id_admin );
 	
