@@ -12,8 +12,6 @@ class Controller_admin_hours extends Crunchbutton_Controller_Account {
 
 		$reps = Admin::q( 'SELECT * FROM admin ORDER BY name ASC' );
 
-		if (!$hasEditPermission) { return ; }
-
 		switch ( c::getPagePiece(2) ) {
 			
 			case 'edit':
