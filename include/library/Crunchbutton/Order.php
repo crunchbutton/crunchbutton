@@ -764,15 +764,29 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function notify() {
 		$order = $this;
+		$needDrivers = false;
+		$hasDriversWorking = false;
 		foreach ( $order->restaurant()->notifications() as $n ) {
 			Log::debug([ 'order' => $order->id_order, 'action' => 'starting notification', 'notification_type' => $n->type, 'notification_value' => $n->value, 'notification_id_admin' => $n->id_admin, 'type' => 'notification']);
+			// Admin notification type means it needs a driver
 			if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
-				foreach( $n->admin()->activeNotifications() as $adminNotification ){
-					$adminNotification->send( $order );
+				$needDrivers = true;
+				$admin = $n->admin();
+				if( $admin->isWorking() ){
+					foreach( $admin->activeNotifications() as $adminNotification ){
+						$hasDriversWorking = true;
+						$adminNotification->send( $order );
+						Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => 'admin', 'type' => 'notification']);
+					}	
 				}
 			} else {
+				Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => $n->type, 'to' => $n->value, 'type' => 'notification']);
 				$n->send( $order );
 			}
+		}
+		if( $needDrivers && !$hasDriversWorking ){
+			Log::debug([ 'order' => $order->id_order, 'action' => 'there is no drivers to get the order', 'type' => 'notification']);
+			Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
 		}
 	}
 

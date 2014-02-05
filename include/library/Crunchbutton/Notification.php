@@ -160,6 +160,10 @@ class Crunchbutton_Notification extends Cana_Table
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
 		$env = c::getEnv();
+
+		if( $env != 'live' ){
+			return;
+		}
 		
 		$message = 'FAX Error: O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ').';
 		$message .= "\n";
