@@ -1,0 +1,145 @@
+<?
+/**
+ * Exports the order information in a CSV file
+ *
+ * @package Crunchbutton.Admin.Order
+ * @category view
+ */
+
+$headers = [
+	'Order ID',
+	'Restaurant ID',
+	'Restaurant Name',
+	'Customer name',
+	'Order Date',
+	'Order Time',
+	'Total',
+	'Subtotal',
+	'Tax',
+	'Tip',
+	'Delivery Fee',
+	'Service Fee',
+	'Customer Fee Percent',
+	'Restaurant Fee Percent',
+	'Cash or Card',
+	'Refunded',
+	'Pay if Refunded',
+	'Check address or bank info',
+	'Payment frequency',
+	'Last date paid',
+	'Customer Phone',
+	'Community',
+	'Restaurant Fax',
+	'Restaurant Email',
+	'Gift Card Total',
+	'Gift Card Crunchbutton',
+	'Gift Card Restaurant',
+	'Gift Card Promotional',
+	'Gift Card Other restaurant',
+	'Total Charged',
+	'Delivery Service Markup %',
+	'Delivery Service Markup Value',
+	'Notes',
+	'Fee Customer',
+	'Formal Relationship',
+	'3rd Party Delivery',
+	'Fee on Subtotal',
+	'Charge Credit Fees',
+	'Pay for Promotions',
+	'Payment Method',
+	'Promotion Maximum',
+	'Paid with CB Card',
+	'Gift card issued',
+	'Gift card value',
+	'Summary Fax',
+	'Summary Email',
+	'Summary Method',
+	'Max Apology Credit',
+	'Delivery Driver ID',
+	'Delivery Driver Name'
+];
+echo implode(',', $headers)."\n";
+?>
+<? foreach ($this->orders as $order) :
+	/* @var $order Crunchbutton_Order */
+	$date = $order->date();
+	$giftcard = $order->hasGiftCard();
+	$credit = $order->hasCredit();
+
+	$giftcard = $giftcard + $credit;
+
+	if( $order->chargedByCredit() > 0 ){
+		$credit = number_format($order->chargedByCredit(),2);
+		$credit_crunchbutton = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_CRUNCHBUTTON );
+		$credit_restaurant = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_RESTAURANT );
+		$credit_promotional = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_PROMOTIONAL );
+		$credit_other_restaurant = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_OTHER_RESTAURANT );
+	} else {
+		$credit = '';
+		$credit_crunchbutton = '';
+		$credit_restaurant = '';
+		$credit_promotional = '';
+		$credit_other_restaurant = '';
+	}
+	$charged = number_format($order->charged(),2);
+	
+	ob_start();
+?>
+		"<?=$order->id_order			              // Order ID?>",
+		"<?=$order->restaurant()->id_restaurant // Restaurant ID?>",
+		"<?=$order->restaurant()->name          // Restaurant Name?>",
+		"<?=$order->name                        // Customer name?>",
+		"<?=$date->format('M jS Y')             // Order Date?>",
+		"<?=$date->format('g:i:s A')            // Order Time?>",
+		<?=number_format($order->final_price,2) // Total?>,
+		<?=number_format($order->price,2)       // Subtotal?>,
+		<?=$order->tax()                        // Tax?>,
+		<?=$order->tip()                        // Tip?>,
+		<?=$order->deliveryFee()                // Delivery Fee?>,
+		<?=$order->serviceFee()                 // Service Fee?>,
+		<?=$order->service_fee                  // Customer Fee Percent?>,
+		<?=$order->restaurant()->fee_restaurant // Restaurant Fee Percent?>,
+		"<?=$order->pay_type                    // Cash or Card?>",
+		"<?=$order->refunded ? 'yes' : ''       // Refunded?>",
+		"<?=$order->pay_if_refunded > 0	? 'yes' : ''	// Pay if Refunded?>",
+		"<?=''                                  // Check address or bank info?>",
+		"<?=''                                  // Payment frequency?>",
+		"<?=''                                  // Last date paid?>",
+		<?=$order->phone?>,
+		<?=$order->community()->name?>,
+		"<?=$order->restaurant()->fax()         // Restaurant fax?>",
+		"<?=$order->restaurant()->email()       // Restaurant email?>",
+		"<?=$credit															// Credit total value?>",
+		"<?=$credit_crunchbutton								// Credit paid by Crunchbutton?>",
+		"<?=$credit_restaurant									// Credit paid by the restaurant?>",
+		"<?=$credit_promotional									// Credit paid by promotional?>",
+		"<?=$credit_other_restaurant						// Credit paid by other restaurant?>",
+		"<?=$charged														// Total charged?>",
+		"<?=$order->delivery_service_markup 		// Delivery Service Markup %?>",
+		"<?=$order->delivery_service_markup_value // Delivery Service Markup Value ?>",
+		"<?=$order->notes?>",
+		"<?=$order->restaurant()->fee_customer 															// Fee Customer?>",
+		"<?=$order->restaurant()->formal_relationship == 1	? 'yes' : ''			// Formal Relationship?>",
+		"<?=$order->restaurant()->delivery_service == 1	? 'yes' : ''				// 3rd Party Delivery?>",
+		"<?=$order->restaurant()->fee_on_subtotal == 1	? 'yes' : ''					// Fee on Subtotal?>",
+		"<?=$order->restaurant()->charge_credit_fee == 1	? 'yes' : ''				// Charge Credit Fees?>",
+		"<?=$order->restaurant()->payment_type()->pay_promotions == 1	? 'yes' : ''					// Pay for Promotions?>",
+		"<?=$order->restaurant()->payment_type()->payment_method														// Payment Method?>",
+		"<?=$order->restaurant()->payment_type()->promotion_maximum													// Promotion Maximum?>",
+		"<?=$order->paid_with_cb_card == 1 ? 'yes' : ''											// Paid with CB Card?>",
+		"<?=$order->hasGiftCardIssued()	? 'yes' : ''												// Gift card issued?>",
+		"<?=$giftcard ? $giftcard : ''																			// Gift card value?>",
+		"<?=$order->restaurant()->payment_type()->summary_fax																// Summary Fax?>",
+		"<?=$order->restaurant()->payment_type()->summary_email															// Summary Email?>",
+		"<?=$order->restaurant()->payment_type()->summary_method														// Summary Method?>",
+		"<?=$order->restaurant()->payment_type()->max_apology_credit												// Max Apology Credit?>",
+		"<?=$order->getDeliveryDriver()->id_admin														// Delivery Driver ID?>",
+		"<?=$order->getDeliveryDriver()->name																// Delivery Driver Name?>"
+		
+<?
+
+	$output = ob_get_clean();
+	$output = preg_replace('/\n|\r|\t/i', '', $output);
+	echo "$output\n";
+?>
+<? endforeach ; ?>

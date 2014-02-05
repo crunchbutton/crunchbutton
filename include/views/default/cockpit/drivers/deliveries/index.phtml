@@ -1,0 +1,145 @@
+<?
+	$this->title = 'Deliveries';
+	$this->titleicon = 'truck';
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-content">
+				<div class="row-fluid">
+					<form class="fill-up">
+						<div class="span6 separate-sections">
+							<ul class="padded separate-sections">
+								<li class="input">
+									<label class="span3">Date range</label>
+									<span class="span8 pull-right">
+										<span class="dates" style="display:none;">
+											from &nbsp; <input name="date-range-end" class="date-picker" disabled="disabled" type="text" style="width: 90px;" value="">
+											&nbsp; to &nbsp; <input name="date-range-start" class="date-picker" disabled="disabled" type="text" style="width: 90px;" value="">
+										</span>
+										<label><input type="checkbox" checked="checked" name="date-range-all">&nbsp;All Dates</label>
+									</span>
+									<div class="clearfix"></div>
+			
+								</li>
+								<li>
+									<label class="span3">Restaurant</label>
+									<span class="span8 pull-right">
+										<select name="restaurant" class="chzn-select">
+											<option value="" selected>[ All ]</option>
+											<?php  
+											foreach ( $this->restaurants as $restaurant ) {
+												?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+											}
+											?>
+										</select>
+									</span>
+									<div class="clearfix"></div>
+								</li>
+								<li>
+									<label class="span3">Driver</label>
+									<span class="span8 pull-right">
+										<select name="driver" class="chzn-select">
+											<option value="" selected>[ All ]</option>
+											<? foreach ( $this->drivers as $driver ) :  ?>
+												<option value="<?=$driver->id_admin?>"><?=$driver->name?></option>
+											<? endforeach ; ?>
+										</select>
+									</span>
+									<div class="clearfix"></div>
+								</li>
+							</ul>	
+						</div>
+						<div class="span6 separate-sections">
+							<ul class="padded separate-sections">
+								<li>
+									<label class="span3"># Orders displayed</label>
+									<span class="span8 pull-right">
+										<input type="number" name="limit" id="limit" value="25" min="0">
+									</span>
+								</li>
+							</ul>	
+						</div>
+
+					</form>
+
+				</div>
+
+			</div>
+			<center>
+				<button type="submit" class="btn btn-blue admin-order-search"> Search </button>	
+				&nbsp;&nbsp;
+			</center>
+			<br />
+		</div>
+
+		<div class="box">
+			<div class="box-header"><span class="title">Results</span>
+				
+				<ul class="box-toolbar">
+					<li class="toolbar-link">
+						<a href="javascript:;" class="admin-order-export" title="Export"><i class="icon-download-alt"></i></a>
+					</li>
+				</ul>
+			
+			</div>
+			<div class="box-content">
+				<div class="orders-loader"><center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center></div>
+				<div class="orders-content"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+var deliveries = {};
+
+deliveries.load = function(){
+	$( '.orders-loader' ).show();
+	$( '.orders-content' ).html( '' );
+	$.ajax({
+		url: '/drivers/deliveries/content',
+		data: deliveries.params(),
+		complete: function(content) {
+			$('.orders-content').html( content.responseText );
+			$('.orders-loader').hide();
+		}
+	} );
+};
+deliveries.export = function() {
+	var params = deliveries.params();
+	params.export = 'csv';
+	location.href = '/drivers/deliveries/content?' + jQuery.param( params );
+};
+
+deliveries.params = function(){
+	var data = {};
+	if( $('input[name="date-range-end"]').val() && $('input[name="date-range-start"]').val() ){
+		data[ 'dates'] = $('input[name="date-range-end"]').val() + ',' + $('input[name="date-range-start"]').val();		
+	}
+	if( $('select[name="restaurant"]').val() ){
+		data[ 'id_restaurant' ] = $('select[name="restaurant"]').val();
+	}
+	if( $('select[name="driver"]').val() ){
+		data[ 'id_admin' ] = $('select[name="driver"]').val();
+	}
+	data[ 'limit' ] = $('input[name="limit"]').val();
+	return data;
+};
+
+$(function() {
+
+	$(document).on('click', '.admin-order-search', function() {
+		deliveries.load();
+	});
+
+	$(document).on('click', '.admin-order-export', function() {
+		deliveries.export();
+	});
+	
+	deliveries.load();
+
+} );
+</script>

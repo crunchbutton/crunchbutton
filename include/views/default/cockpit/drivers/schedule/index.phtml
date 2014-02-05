@@ -1,0 +1,111 @@
+<?
+	$this->title = 'Schedule';
+	$this->titleicon = 'time';
+
+	$date = $this->date;
+
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-header">
+				<div class="row-fluid">
+					<div class="span2 padded">
+						<?php if( $this->dayPrev ) { ?>
+							<a href="/drivers/schedule/<?php echo $this->dayPrev; ?>"><i class="icon icon-angle-left"></i> previous</a>
+						<?php } ?>
+					</div>
+						<div class="span8 padded" style="text-align:center;">
+							<strong>Schedule for <?php echo $this->dateFormatted; ?></strong>
+						</div>
+					<div class="span2 padded" style="text-align:right;">
+						<?php if( $this->dayNext ) { ?>
+							<a href="/drivers/schedule/<?php echo $this->dayNext; ?>">next <i class="icon icon-angle-right"></i></a>
+						<?php } ?>
+					</div>
+				</div>
+			</div>
+			<div class="box-content">
+				<div>
+					<?php foreach( $this->restaurants as $restaurant ) { ?>
+						<?php 
+						$hours = Crunchbutton_Hour::hoursOpenedByRestaurantWeekDay( $restaurant, $date );
+						$drivers = Crunchbutton_Admin_Hour::hoursByDateRestaurant( $restaurant->id_restaurant, $date );
+						 ?>
+						<div class="row-fluid box-section">
+							<div class="span3"><?php echo $restaurant->name; ?></div>
+							<div class="span9">
+								<table width="100%">
+									<tr>
+									<?php for( $i = 0; $i <= 23; $i++ ) { 
+										$isOpen = false;
+										$hasDriver = false;
+
+										if( $hours[ $i ] ){
+											$isOpen = true;
+										}
+										
+										if( $drivers[ $i ] ){
+											$hasDriver = true;
+										}
+
+										if( $isOpen ){
+											$title = 'It is open and doesn\'t has driver!';
+										} else {
+											$title = 'It is closed!';
+										}
+										if( $hasDriver ){
+											$title = 'It has driver.';	
+										}
+
+										?>
+										<td class="hour <?php if( $isOpen ){ echo 'isOpen'; } ?> <?php if( $hasDriver ){ echo 'hasDriver'; } ?>" title="<?php echo $title; ?>">
+											<?php 
+												$hour = $i;
+												$ampm = '';
+												if( $hour < 12 ){
+													$ampm = 'am';
+												} else {
+													$ampm = 'pm';
+												}
+												if( $hour > 12 ){
+													$hour = $hour - 12;
+												}
+												if( $hour < 10 ){
+													$hour = '0' . $hour;
+												}
+												echo $hour . '<div class="ampm">' . $ampm . '<div>' ;
+											?>
+										</td>
+									<?php } ?>
+									</tr>
+								</table>
+							</div>
+						</div>
+					<?php } ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<style type="text/css">
+	.hour{
+		color:#CCC;
+		width: 4%;
+		padding: 1px;
+		text-align: center;
+		border-right: 1px solid #FFF;
+	}
+	.ampm{
+		font-size: 9px;
+	}
+	.isOpen{
+		color:#FFF;
+		background: red;
+	}
+	.hasDriver{
+		color:#FFF;
+		background: green !important;	
+	}
+</style>
