@@ -1,0 +1,43 @@
+<?php if ( !$this->orders->count() ) { ?>
+	No results found
+<?php } else { ?>
+
+	<table class="list-orders table table-normal">
+		<thead>
+			<tr>
+				<td>Order</td>
+				<td>Driver</td>
+				<td>Log</td>
+			</tr>
+		</thead>
+
+		<?php foreach( $this->orders as $order ) { ?>
+			<? $date = $order->date(); ?>
+			<tr>
+				<td valign="top">
+					Order #<?php echo $order->id_order; ?>
+					<br />
+					<?php echo $order->restaurant()->name; ?>
+					<br />
+					<?php echo $date->format('M jS Y')?> <?php echo $date->format('g:i:s A')?>
+				</td>
+				<td valign="top">
+					<?php echo $order->driver()->name; ?>
+				</td>
+				<td valign="top">
+
+				<?php 
+				$logs = $order->actions();
+				foreach( $logs as $log ){
+					$log_date = $log->date();
+					echo $log->type;  ?>: <?php echo $date->format('g:i:s A')?><br/>
+					<?php
+				}
+				?>
+
+				</td>
+			</tr>
+		<?php } ?>
+
+	</table>
+<?php } ?>

@@ -259,6 +259,16 @@
 			</a>
 		</li>
 		<? endif ; ?>
+
+		<? if ( c::admin()->permission()->check( [ 'global'] ) ) : ?>
+		<li class="<?=$this->page == 'drivers' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/drivers">
+				<i class="icon-road icon-2x"></i>
+				<span>Drivers</span>
+			</a>
+		</li>
+		<? endif ; ?>
 	</ul>
 
 	<? /*

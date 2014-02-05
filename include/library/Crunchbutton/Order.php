@@ -558,6 +558,10 @@ class Crunchbutton_Order extends Cana_Table {
 		return $this->_txn;
 	}
 
+	public function actions(){
+		return Crunchbutton_Order_Action::byOrder( $this->id_order );
+	}
+
 	public function date() {
 		if (!isset($this->_date)) {
 			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
@@ -638,6 +642,45 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public static function recent() {
 		return self::q('select * from `order` order by `date` DESC');
+	}
+
+	public static function deliveredByCBDrivers( $search ){
+
+		$where = ' WHERE ( oa.type = "' . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . '"
+										OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '"
+										OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '")';
+
+		if( $search[ 'id_admin' ] ){
+			$where .= ' AND oa.id_admin = ' . $search[ 'id_admin' ];
+		}
+
+		if( $search[ 'id_restaurant' ] ){
+			$where .= ' AND o.id_restaurant = ' . $search[ 'id_restaurant' ];
+		}
+
+		if ( $search[ 'start' ] ) {
+			$s = new DateTime( $search[ 'start' ] );
+			$where .= ' AND DATE( `o.date`) >= "' . $s->format( 'Y-m-d' ) . '"';
+		}
+
+		if ( $search[ 'end' ] ) {
+			$s = new DateTime( $search[ 'end' ] );
+			$where .= ' AND DATE( `o.date` ) <= "' . $s->format( 'Y-m-d' ) . '"';
+		}
+
+		if( $search[ 'limit' ] ){
+			$limit = 'LIMIT '. $search[ 'limit' ];
+		} else {
+			$limit = 'LIMIT 25'; 
+		}
+
+		$query = 'SELECT DISTINCT(o.id_order) id, o.* FROM `order` o 
+								INNER JOIN order_action oa on oa.id_order = o.id_order
+								' . $where . '
+								ORDER BY o.id_order DESC ' . $limit;
+
+		return Order::q( $query );
+
 	}
 
 	public static function find($search = []) {
@@ -788,6 +831,10 @@ class Crunchbutton_Order extends Cana_Table {
 			Log::debug([ 'order' => $order->id_order, 'action' => 'there is no drivers to get the order', 'type' => 'notification']);
 			Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
 		}
+	}
+
+	public function driver(){
+		return Admin::q( "SELECT DISTINCT(a.id_admin) id, a.* FROM order_action o INNER JOIN admin a ON a.id_admin = o.id_admin WHERE o.id_order = {$this->id_order}" );
 	}
 
 	public function resend_notify(){

@@ -13,6 +13,37 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 		return c::db()->query( "DELETE from admin_hour WHERE id_admin = $id_admin AND DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date'" );
 	}
 
+	public function hoursByDateRestaurant( $id_restaurant, $date ){
+		$hours = Crunchbutton_Admin_Hour::q( "SELECT DISTINCT( a.id_admin_hour ) id, a.*, 
+																							DATE_FORMAT( date_start, '%H' ) start_hour, 
+																							DATE_FORMAT( date_start, '%d' ) start_day, 
+																							DATE_FORMAT( date_end, '%H' ) end_hour,
+																							DATE_FORMAT( date_end, '%d' ) end_day 
+																					FROM admin_hour a 
+																						INNER JOIN notification n ON a.id_admin = n.id_admin AND id_restaurant = {$id_restaurant}
+																						WHERE ( DATE_FORMAT( date_start, '%Y-%m-%d' ) = '{$date}' || DATE_FORMAT( date_end, '%Y-%m-%d' ) = '{$date}' )" );
+		$hasDriver = [];
+
+		$day = intval( explode( '-', $date )[ 2 ] );
+		foreach( $hours as $hour ){
+			$start_hour = intval( $hour->start_hour );
+			$start_day = intval( $hour->start_day );
+			$end_hour = intval( $hour->end_hour );
+			$end_day = intval( $hour->end_day );
+
+			if( $end_day > $day ){
+				$end_hour = 23;
+			}
+			if( $end_day == $day && $start_day < $day ){
+				$start_hour = 0;
+			}
+			for( $i = $start_hour; $i <= $end_hour; $i++ ){
+				$hasDriver[ $i ] = true;
+			}
+		}
+		return $hasDriver;
+	}
+
 	public function segmentsByDate( $date, $_join = ', ', $id_admin = false ){
 		$where = ( $id_admin ) ? ' AND id_admin = ' . $id_admin : '';
 		$hours = Crunchbutton_Admin_Hour::q( "SELECT * FROM admin_hour WHERE DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date' $where ORDER BY id_admin, date_start ASC" );

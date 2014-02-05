@@ -38,6 +38,10 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $this->_activeNotifications;
 	}
 
+	public function drivers(){
+		return Admin::q( 'SELECT DISTINCT(a.id_admin) id, a.* FROM admin a INNER JOIN notification n on n.id_admin = a.id_admin ORDER BY a.name' );
+	}
+
 	public function isWorking(){
 		$now = new DateTime( 'now', $this->timezone() );
 		$now = $now->format( 'YmdHi' );

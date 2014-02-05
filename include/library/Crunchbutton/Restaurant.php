@@ -1572,6 +1572,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return false;
 	}
 
+	public function withDrivers(){
+		return Restaurant::q( 'SELECT DISTINCT(r.id_restaurant) id, r.* FROM restaurant r INNER JOIN notification n ON r.id_restaurant = n.id_restaurant AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '" ORDER BY r.name' );
+	}
+
 	// Export the restaurant statuses: open/close for the week starting at the previous day
 	public function hours_week( $gmt = true ){
 		if( $this->open_for_business ){

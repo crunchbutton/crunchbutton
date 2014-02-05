@@ -102,6 +102,44 @@ class Crunchbutton_Hour extends Cana_Table {
 		return false;
 	}
 
+	public function hoursOpenedByRestaurantWeekDay( $restaurant, $day ){
+		
+		$hours_opened = [];
+
+		$hours = Hour::getByRestaurantWeek( $restaurant, false );
+		$day = new DateTime( $day, new DateTimeZone( $restaurant->timezone ) );	
+
+		foreach ( $hours as $hour ) {
+			if( $hour->status == 'open' ){
+				$from = explode( ' ' , $hour->from );
+				$to = explode( ' ' , $hour->to );
+				$from_day = $from[ 0 ];
+				$to_day = $to[ 0 ];
+				if( $from_day == $day->format( 'Y-m-d' ) ){
+					$from_hour = intval( explode( ':', $from[ 1 ] )[0] );
+					$to_hour = intval( explode( ':', $to[ 1 ] )[0] );
+					if( $to_hour < $from_hour ){
+						$to_hour = 23;
+					}
+					for( $i = $from_hour; $i <= $to_hour; $i++ ){
+						$hours_opened[ $i ]	= true;
+					}
+				}
+				if( $to_day == $day->format( 'Y-m-d' ) && $from_day != $day->format( 'Y-m-d' ) ){
+					$from_hour = 0;
+					$to_hour = intval( explode( ':', $to[ 1 ] )[0] );
+					for( $i = $from_hour; $i <= $to_hour; $i++ ){
+						$hours_opened[ $i ]	= true;
+					}	
+				}
+			}
+		}
+
+		return $hours_opened;
+
+	}
+
+
 	public function hoursByRestaurant( $restaurant, $gmt = false ){
 		if ( !isset( $restaurant->_hours[ $gmt ] ) ) {
 			$hours = Hour::q( "SELECT * FROM hour WHERE id_restaurant = {$restaurant->id_restaurant}" );

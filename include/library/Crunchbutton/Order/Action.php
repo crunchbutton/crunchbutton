@@ -18,6 +18,22 @@ class Crunchbutton_Order_Action extends Cana_Table {
 			->load($id);
 	}
 
+	public function byOrder( $id_order ){
+		return Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} ORDER BY id_order_action DESC" );
+	}
+
+	public function restaurant(){
+		return Crunchbutton_Restaurant::q( "SELECT r.* FROM restaurant r INNER JOIN `order` o ON o.id_restaurant = r.id_restaurant  WHERE id_order = {$this->id_order}" );
+	}
+
+	public function date() {
+		if (!isset($this->_date)) {
+			$this->_date = new DateTime($this->timestamp, new DateTimeZone(c::config()->timezone));
+			$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+		}
+		return $this->_date;
+	}
+
 	public function admin(){
 		return Admin::o( $this->id_admin );
 	}
