@@ -52,6 +52,46 @@
 								</div>
 							</div>
 							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Restaurants</strong>
+									</div>
+									<div class="span7">
+										<?php 
+										if( count( $this->restaurants ) > 0 ){
+											$join = '';
+											foreach( $this->restaurants as $restaurant ) { 
+												echo $join . $restaurant;
+												$join = ', ';
+											} 
+										} else {
+											echo '<i>None</i>';
+										}
+										?>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Communities</strong>
+									</div>
+									<div class="span7">
+										<?php 
+										if( count( $this->communities ) > 0 ){
+											$join = '';
+											foreach( $this->communities as $communitie ) { 
+												echo $join . $communitie;
+												$join = ', ';
+											} 
+										} else {
+											echo '<i>None</i>';
+										}
+										?>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
 								<div class="row-fluid">
 									<div class="span12">
 										<br/>
