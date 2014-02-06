@@ -826,14 +826,17 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
-		// get the restaurant community and its drivers
-		$community = $order->restaurant()->community;
-		if( $community ){
-			$group = Crunchbutton_Group::getDeliveryGroupByCommunity( Crunchbutton_Group::driverGroupOfCommunity( $community ) );
-			if( $group->id_group ){
-				$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );	
-				foreach( $drivers as $driver ){
-					$driversToNotify[ $driver->id_admin ] = $driver;
+		// check if the restaurant is using our delivery system
+		if( intval( $order->restaurant()->delivery_service ) == 1 ){		
+			// get the restaurant community and its drivers
+			$community = $order->restaurant()->community;
+			if( $community ){
+				$group = Crunchbutton_Group::getDeliveryGroupByCommunity( Crunchbutton_Group::driverGroupOfCommunity( $community ) );
+				if( $group->id_group ){
+					$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );	
+					foreach( $drivers as $driver ){
+						$driversToNotify[ $driver->id_admin ] = $driver;
+					}
 				}
 			}
 		}
