@@ -31,11 +31,29 @@ class Controller_drivers_hours extends Crunchbutton_Controller_Account {
 
 				$hours = Admin_Hour::segmentsByDate( $date, ', ', $id_admin );
 
-				c::view()->year = $year;
+				$admin = Admin::o( $id_admin );
+
+				$restaurants = $admin->restaurantsHeDeliveryFor();
+				$deliveryFor = [];
+				foreach( $restaurants as $restaurant ){
+					$deliveryFor[ $restaurant->id_restaurant ] = $restaurant->name;
+				}
+
+				$adminCommunities = [];
+				$groups = $admin->groups();
+				foreach ( $groups as $group ) {
+					$pos = strrpos( $group->name, Crunchbutton_Group::DRIVER_GROUPS_PREFIX );
+					if( $pos !== false ){
+						$adminCommunities[ $group->name ] = Group::getRestaurantCommunityName( $group->name );	
+					}
+				}
+
+				c::view()->restaurants = $deliveryFor;
+				c::view()->communities = $adminCommunities;
 				c::view()->month = $month;
 				c::view()->day = $day;
 				c::view()->segment = $hours[ $id_admin ][ 'hours' ];
-				c::view()->admin = Admin::o( $id_admin );
+				c::view()->admin = $admin;
 				c::view()->layout( 'layout/ajax' );
 				c::view()->display( 'drivers/hours/edit' );
 
