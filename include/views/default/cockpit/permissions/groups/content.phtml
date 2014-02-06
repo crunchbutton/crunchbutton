@@ -15,13 +15,23 @@ $groups = $this->groups;
 			<tr>
 				<td><?php echo $group->name;?> </td>
 				<td><?php echo $group->description;?> </td>
-				<td><?php echo $group->usersTotal();?> </td>
+				<td><?php echo $group->usersTotal();?> 
+
+				</td>
+				<?php  
+					// verify if it is an system group
+					$pos = strrpos( $group->name, Crunchbutton_Group::DRIVER_GROUPS_PREFIX );
+				?>
 				<td style="width:280px;">
-					<a href="/permissions/groups/permissions/<?php echo $group->id_group; ?>" class="btn btn-blue"><i class="icon-unlock"></i> Permissions</a>
+					<?php if( $pos === false ) { ?>
+						<a href="/permissions/groups/permissions/<?php echo $group->id_group; ?>" class="btn btn-blue"><i class="icon-unlock"></i> Permissions</a>
+						&nbsp;
+						<a href="/permissions/groups/<?php echo $group->id_group; ?>" class="btn btn-green"><i class="icon-edit"></i> Edit</a>
+					<?php } else { ?>
+						<i style="font-size:11px;">This group could not be modified</i>
+					<?php } ?>
 					&nbsp;
-					<a href="/permissions/groups/<?php echo $group->id_group; ?>" class="btn btn-green"><i class="icon-edit"></i> Edit</a>
-					&nbsp;
-					<button data-id="<?php echo $group->id_group; ?>" class="btn group-remove btn-red"><i class="icon-trash"></i> Remove</button>
+						<button data-id="<?php echo $group->id_group; ?>" class="btn group-remove btn-red"><i class="icon-trash"></i> Remove</button>
 				</td>
 			</tr>
 		<?php } ?>
