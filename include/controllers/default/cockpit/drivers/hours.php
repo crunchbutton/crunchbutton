@@ -1,6 +1,6 @@
 <?php
 
-class Controller_admin_hours extends Crunchbutton_Controller_Account {
+class Controller_drivers_hours extends Crunchbutton_Controller_Account {
 	
 	public function init() {
 
@@ -37,7 +37,7 @@ class Controller_admin_hours extends Crunchbutton_Controller_Account {
 				c::view()->segment = $hours[ $id_admin ][ 'hours' ];
 				c::view()->admin = Admin::o( $id_admin );
 				c::view()->layout( 'layout/ajax' );
-				c::view()->display( 'admin/hours/edit' );
+				c::view()->display( 'drivers/hours/edit' );
 
 				break;
 
@@ -62,7 +62,7 @@ class Controller_admin_hours extends Crunchbutton_Controller_Account {
 				c::view()->week = $week;
 				c::view()->reps = $reps;
 				c::view()->layout( 'layout/ajax' );
-				c::view()->display( 'admin/hours/add' );
+				c::view()->display( 'drivers/hours/add' );
 
 				break;
 			
@@ -101,7 +101,7 @@ class Controller_admin_hours extends Crunchbutton_Controller_Account {
 				c::view()->reps = $reps;
 				c::view()->hasEditPermission = $hasEditPermission;
 				c::view()->startDate = $startDate;
-				c::view()->display( 'admin/hours/index' );
+				c::view()->display( 'drivers/hours/index' );
 
 				break;
 		}

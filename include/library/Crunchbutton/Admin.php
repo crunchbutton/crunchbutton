@@ -38,6 +38,10 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $this->_activeNotifications;
 	}
 
+	public function restaurantsHeDeliveryFor(){
+		return Restaurant::q( 'SELECT DISTINCT( r.id_restaurant ) id, r.* FROM restaurant r INNER JOIN notification n ON n.id_restaurant = r.id_restaurant AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '" AND n.active = 1 AND r.active = 1 AND n.id_admin = ' . $this->id_admin );
+	}
+
 	public function drivers(){
 		return Admin::q( 'SELECT DISTINCT(a.id_admin) id, a.* FROM admin a INNER JOIN notification n on n.id_admin = a.id_admin ORDER BY a.name' );
 	}
@@ -172,6 +176,10 @@ class Crunchbutton_Admin extends Cana_Table {
 	public function removeGroups(){
 		Cana::db()->query( "DELETE FROM `admin_group` WHERE id_admin = {$this->id_admin}" );
 	}
+
+	public function removeGroup( $id_group ){
+		Cana::db()->query( "DELETE FROM `admin_group` WHERE id_admin = {$this->id_admin} AND id_group = {$id_group}" );
+	}	
 
 	public function permissions(){
 		if( !$this->_permissions ){

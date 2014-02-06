@@ -1270,7 +1270,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public static function getCommunities(){
-		$data = c::db()->get( 'SELECT DISTINCT( community ) community FROM restaurant WHERE community IS NOT NULL AND community != "" ORDER BY community ASC' );
+		$data = c::db()->get( 'SELECT DISTINCT( community ) community FROM restaurant WHERE community IS NOT NULL AND community != "" AND active = 1 ORDER BY community ASC' );
 		$communities = [];
 		foreach ( $data as $item ) {
 			$communities[] = $item->community;
@@ -1288,7 +1288,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public static function getRestaurantsByCommunity( $community ){
-		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}'" );
+		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}' AND active = 1 ORDER BY name ASC" );
 	}
 
 	public function restaurantsUserHasCurationPermission(){
@@ -1570,6 +1570,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 		return false;
+	}
+
+	public function drivers(){
+		return Admin::q( 'SELECT DISTINCT( a.id_admin ) id, a. * FROM admin a INNER JOIN notification n ON a.id_admin = n.id_admin AND n.id_restaurant = ' . $this->id_restaurant . ' AND n.active = 1 AND n.type = "' . Crunchbutton_Notification::TYPE_ADMIN . '"');
 	}
 
 	public function withDrivers(){

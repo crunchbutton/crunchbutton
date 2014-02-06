@@ -2,12 +2,49 @@
 
 class Crunchbutton_Group extends Cana_Table {
 
+	const DRIVER_GROUPS_PREFIX = 'drivers-';
+
+	public function driverGroupOfCommunity( $community ){
+		return str_replace( ' ' , '-', Crunchbutton_Group::DRIVER_GROUPS_PREFIX . strtolower( $community ) );
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
 			->table('group')
 			->idVar('id_group')
 			->load($id);
+	}
+
+	public function getRestaurantCommunityName( $community ){
+		$communities = Restaurant::getCommunities();
+		foreach( $communities as $_community ){
+			if( Crunchbutton_Group::driverGroupOfCommunity( $_community ) == $community ){
+				return $_community;
+			}
+		}	
+	}
+
+	public function getDeliveryGroupByCommunity( $community ){
+		
+		if( !$community ){
+			die( 'Error:getDeliveryGroupByCommunity' );
+		}
+
+		$group = Crunchbutton_Group::byName( $community );
+		if( $group->id_group ){
+			return $group;
+		}
+
+		// Get the community name
+		$description = Crunchbutton_Group::getRestaurantCommunityName( $community );
+
+		$description .= ' drivers group';
+		$group = new Crunchbutton_Group();
+		$group->name = $community;
+		$group->description = $description;
+		$group->save();
+		return $group;
 	}
 
 	public function permissions(){
@@ -49,9 +86,13 @@ class Crunchbutton_Group extends Cana_Table {
 
 	public function users(){
 		if( $this->id_group ){
-			return Crunchbutton_Admin_Group::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$this->id_group}" );	
+			return Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$this->id_group}" );	
 		} 
 		return false;
+	}
+
+	public function removeUsers(){
+		c::db()->query( "DELETE FROM admin_group WHERE id_group = {$this->id_group}" );
 	}
 
 	public function removePermissions(){

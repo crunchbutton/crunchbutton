@@ -1,0 +1,86 @@
+<?
+	$this->title = 'Drivers';
+	$this->titleicon = 'road';
+	$this->titleLink = '/drivers';
+	$this->title2 = 'Assign by driver';
+	$this->title2icon = 'magnet';
+	$this->title2Link = '/drivers/assign';
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-header">
+				<span class="title">Assign by driver</span>
+			</div>
+			<div class="box-content">
+				<ul class="box-list">
+					<li>
+						<label><strong>Driver</strong></label>
+						<span>
+							<select class="chzn-select" name="id_admin" id="id_admin" data-placeholder="Choose a driver">
+								<option></option>
+								<? foreach ( $this->drivers as $driver ) { ?>
+									<option value="<?php echo $driver->id_admin; ?>" <?php if( $this->id_admin == $driver->id_admin ){ echo 'selected="selected"'; } ?> ><?php echo $driver->name; ?></option>
+								<? } ?>
+							</select>
+						</span>
+					</li>
+					<?php if( $this->id_admin ) { ?>
+						<li>
+							<label><strong>Restaurants</strong></label>
+							<span>
+								<select id="id_restaurant" class="chzn-select" multiple name="id_restaurant" data-placeholder="Choose the restaurants" style="width:100%;">
+								<option></option>
+								<? foreach ( $this->restaurants as $restaurant ) { ?>
+									<option value="<?php echo $restaurant->id_restaurant; ?>" <?php if( $this->restaurants_delivery[ $restaurant->id_restaurant ] ){ echo 'selected="selected"'; } ?> ><?php echo $restaurant->name; ?></option>
+								<? } ?>
+								</select>
+							</span>
+						</li>
+						<li>
+							<label><strong>Communities</strong></label>
+							<span>
+								<select id="community" class="chzn-select" multiple name="community" data-placeholder="Choose the communities" style="width:100%;">
+								<option></option>
+								<? foreach ( $this->communities as $group => $community ) { ?>
+									<option value="<?php echo $group; ?>" <?php if( $this->admin_communities[ $group ] ){ echo 'selected="selected"'; } ?>><?php echo $community; ?></option>
+								<? } ?>
+								</select>
+							</span>
+						</li>
+						<li>
+							<span>
+								<button type="button" onclick="assign.save();" class="btn btn-green"><i class="icon-save"></i> Save </button> 
+							</span>
+						</li>
+					<?php } ?>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var assign = {};
+assign.save = function(){
+	var data = { 'id_admin' : $( '#id_admin' ).val(), 'id_restaurant' : $( '#id_restaurant' ).val(), 'community' : $( '#community' ).val() };
+	$.ajax( {
+		url: '/api/drivers/driver',
+		method: 'POST',
+		data: data,
+		dataType: 'json',
+	} ).done( function( data ) {
+		if( data.success ){
+			alert( 'Saved!' );
+			location.reload();
+		} else {
+			alert( 'Ops, error! ' + data.error );
+		}
+	} );
+};
+$(document).ready( function(){
+	$( '#id_admin' ).on( 'change', function(){
+		location.href = '/drivers/assign/driver/' + $( this ).val();
+	} );
+} );
+</script>

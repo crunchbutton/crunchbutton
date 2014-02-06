@@ -1,6 +1,10 @@
 <?
-	$this->title = 'Working hours';
-	$this->titleicon = 'time';
+	$this->title = 'Drivers';
+	$this->titleicon = 'road';
+	$this->titleLink = '/drivers';
+	$this->title2 = 'Working hours';
+	$this->title2icon = 'time';
+
 	$hasEditPermission = $this->hasEditPermission;
 ?>
 <!-- content -->
@@ -10,13 +14,13 @@
 			<div class="box-header">
 				<div class="row-fluid">
 					<div class="span2 padded">
-						<a href="/admin/hours/<?php echo $this->weekPrev; ?>"><i class="icon icon-angle-left"></i> previous</a>
+						<a href="/drivers/hours/<?php echo $this->weekPrev; ?>"><i class="icon icon-angle-left"></i> previous</a>
 					</div>
 						<div class="span8 padded" style="text-align:center;">
 							<strong>Week <?php echo $this->week; ?> / <?php echo $this->year; ?></strong>
 						</div>
 					<div class="span2 padded" style="text-align:right;">
-						<a href="/admin/hours/<?php echo $this->weekNext; ?>">next <i class="icon icon-angle-right"></i></a>
+						<a href="/drivers/hours/<?php echo $this->weekNext; ?>">next <i class="icon icon-angle-right"></i></a>
 					</div>
 				</div>
 			</div>
@@ -54,7 +58,7 @@
 											<div style="width:80%;background:#<?php echo $color;?>;border-radius: 3px 3px 3px 3px;-moz-border-radius: 3px 3px 3px 3px;-webkit-border-radius: 3px 3px 3px 3px;border: 0px solid #000000;margin:2px 0;">
 												<div style="padding:8px;font-weight:normal;">
 													<?php if( $hasEditPermission ) { ?>
-													<a class="modal-hours-open" title="Edit hours" href="/admin/hours/edit/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $hour[ 'id_admin' ]; ?>">
+													<a class="modal-hours-open" title="Edit hours" href="/drivers/hours/edit/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $hour[ 'id_admin' ]; ?>">
 													<?php } ?>
 														<span style="color:#<?php echo $text_color; ?>;">
 															<strong style="font-size:14px;"><?php echo $hour[ 'name' ]; ?></strong>
@@ -72,7 +76,7 @@
 									?>	
 									<?php if( $hasEditPermission ) { ?>						
 									<div>
-										<button class="btn btn-default modal-hours-open" href="/admin/hours/add/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $this->week; ?>" style="width:80%;" title="Add hours to <?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?> (<?php echo $day->format( 'D' ); ?>)">
+										<button class="btn btn-default modal-hours-open" href="/drivers/hours/add/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $this->week; ?>" style="width:80%;" title="Add hours to <?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?> (<?php echo $day->format( 'D' ); ?>)">
 											<i class="icon-plus icon-2x"></i>
 										</button>
 									</div>
@@ -131,7 +135,7 @@ workingHours.setTimezone = function( id_admin ){
 workingHours.copyAll = function(){
 	if( confirm( 'Confirm copy? This will remove all the hours from this week <?php echo $this->week . '/' . $this->year; ?> !' ) ){
 		$.ajax( {
-			url: '/api/admin/hours/copy-all',
+			url: '/api/drivers/hours/copy-all',
 			method: 'POST',
 			data: { 'year' : '<?php echo $this->year; ?>', 'week' : '<?php echo $this->week; ?>' },
 			dataType: 'json',
@@ -177,7 +181,7 @@ workingHours.add = function(){
 	} );
 
 	$.ajax( {
-		url: '/api/admin/hours/add',
+		url: '/api/drivers/hours/add',
 		method: 'POST',
 		data: { 'id_admin' : id_admin, 'day' : $( '#form-day' ).val(), 'month' : $( '#form-month' ).val(), 'year' : $( '#form-year' ).val(), 'week' : $( '#form-week' ).val(), 'hours' : hours, 'weekdays' : weekdays },
 		dataType: 'json',
@@ -207,7 +211,7 @@ workingHours.edit = function(){
 	}
 
 	$.ajax( {
-		url: '/api/admin/hours/edit',
+		url: '/api/drivers/hours/edit',
 		method: 'POST',
 		data: { 'id_admin' : $( '#form-id_admin' ).val(), 'day' : $( '#form-day' ).val(), 'month' : $( '#form-month' ).val(), 'year' : $( '#form-year' ).val(), 'hours' : hours, 'weekdays' : [] },
 		dataType: 'json',
@@ -223,7 +227,7 @@ workingHours.edit = function(){
 workingHours.copy = function(){
 	if( confirm( 'Confirm copy? This will remove all the hours of this worker from this week!' ) ){
 		$.ajax( {
-			url: '/api/admin/hours/copy',
+			url: '/api/drivers/hours/copy',
 			method: 'POST',
 			data: { 'id_admin' : $( '#form-id_admin' ).val(), 'year' : $( '#form-year' ).val(), 'week' : $( '#form-week' ).val() },
 			dataType: 'json',
@@ -240,7 +244,7 @@ workingHours.copy = function(){
 workingHours.remove = function(){
 	if( confirm( 'Confirm remove?' ) ){
 		$.ajax( {
-			url: '/api/admin/hours/remove',
+			url: '/api/drivers/hours/remove',
 			method: 'POST',
 			data: { 'id_admin' : $( '#form-id_admin' ).val(), 'day' : $( '#form-day' ).val(), 'month' : $( '#form-month' ).val(), 'year' : $( '#form-year' ).val() },
 			dataType: 'json',
