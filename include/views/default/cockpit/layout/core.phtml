@@ -363,9 +363,11 @@
 				
 				<? if ($this->title2) : ?>
 	        		<div class="breadcrumb-button">
+	        		<? if ($this->title2Link) : ?><a href="<?=$this->title2Link?>"><? endif ; ?>
 						<span class="breadcrumb-label">
 							<i class="icon-<?=$this->title2icon?>"></i> <?=$this->title2?>
 						</span>
+						<? if ($this->title2Link) : ?></a><? endif ; ?>
 						<span class="breadcrumb-arrow"><span></span></span>
 					</div>
 				<? endif ; ?>

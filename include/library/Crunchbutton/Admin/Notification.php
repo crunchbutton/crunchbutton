@@ -87,6 +87,13 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 	public function send( Crunchbutton_Order $order ) {
 
+		$env = c::getEnv();
+
+		if( $env != 'live' ){
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'admin_notification' ]);
+			return;
+		}
+
 		$is_enable = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_DEFAULT );
 		if( !$is_enable ){
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin is disabled', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'admin_notification' ]);
@@ -121,7 +128,14 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	}
 
 	public function warningAboutNoRepsWorking( $order ){
+		
 		$env = c::getEnv();
+
+		if( $env != 'live' ){
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'warningAboutNoRepsWorking at DEV - not sent','type' => 'admin_notification' ]);
+			return;
+		}
+
 		$group = Group::byName( Crunchbutton_Config::getVal( Crunchbutton_Admin_Notification::REPS_NONE_WORKING_GROUP_NAME_KEY ) );
 		$users = $group->users();
 		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );

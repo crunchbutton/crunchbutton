@@ -806,27 +806,51 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function notify() {
+
 		$order = $this;
 		$needDrivers = false;
 		$hasDriversWorking = false;
+
+		$driversToNotify = [];
+
 		foreach ( $order->restaurant()->notifications() as $n ) {
-			Log::debug([ 'order' => $order->id_order, 'action' => 'starting notification', 'notification_type' => $n->type, 'notification_value' => $n->value, 'notification_id_admin' => $n->id_admin, 'type' => 'notification']);
 			// Admin notification type means it needs a driver
 			if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
 				$needDrivers = true;
 				$admin = $n->admin();
-				if( $admin->isWorking() ){
-					foreach( $admin->activeNotifications() as $adminNotification ){
-						$hasDriversWorking = true;
-						$adminNotification->send( $order );
-						Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => 'admin', 'type' => 'notification']);
-					}	
-				}
+				// Store the drivers
+				$driversToNotify[ $admin->id_admin ] = $admin;
 			} else {
 				Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => $n->type, 'to' => $n->value, 'type' => 'notification']);
 				$n->send( $order );
 			}
 		}
+
+		// get the restaurant community and its drivers
+		$community = $order->restaurant()->community;
+		if( $community ){
+			$group = Crunchbutton_Group::getDeliveryGroupByCommunity( Crunchbutton_Group::driverGroupOfCommunity( $community ) );
+			if( $group->id_group ){
+				$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );	
+				foreach( $drivers as $driver ){
+					$driversToNotify[ $driver->id_admin ] = $driver;
+				}
+			}
+		}
+
+		// Send notification to drivers
+		if( count( $driversToNotify ) > 0 ){
+			foreach( $driversToNotify as $driver ){
+				if( $driver->isWorking() ){
+					foreach( $driver->activeNotifications() as $adminNotification ){
+						$hasDriversWorking = true;
+						$adminNotification->send( $order );
+						Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => 'admin', 'type' => 'notification']);
+					}	
+				}
+			}
+		}
+
 		if( $needDrivers && !$hasDriversWorking ){
 			Log::debug([ 'order' => $order->id_order, 'action' => 'there is no drivers to get the order', 'type' => 'notification']);
 			Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );

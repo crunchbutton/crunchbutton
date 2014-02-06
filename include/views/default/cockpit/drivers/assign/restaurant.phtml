@@ -1,0 +1,77 @@
+<?
+	$this->title = 'Drivers';
+	$this->titleicon = 'road';
+	$this->titleLink = '/drivers';
+	$this->title2 = 'Assign by restaurant';
+	$this->title2icon = 'magnet';
+	$this->title2Link = '/drivers/assign';
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-header">
+				<span class="title">Assign by restaurant</span>
+			</div>
+			<div class="box-content">
+				<ul class="box-list">
+					<li>
+						<label><strong>Restaurant</strong></label>
+						<span>
+							<select class="chzn-select" name="id_restaurant" id="id_restaurant" data-placeholder="Choose a restaurant">
+								<option></option>
+								<? foreach ( $this->restaurants as $restaurant ) { ?>
+									<option value="<?php echo $restaurant->id_restaurant; ?>" <?php if( $this->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?php echo $restaurant->name; ?></option>
+								<? } ?>
+							</select>
+						</span>
+					</li>
+					<?php ?>
+					<?php if( $this->id_restaurant ) { ?>
+						<li>
+							<label><strong>Drivers</strong></label>
+							<span>
+								<select id="id_admin" class="chzn-select" multiple name="id_admin" data-placeholder="Choose the drivers" style="width:100%;">
+								<option></option>
+								<? foreach ( $this->drivers as $driver ) { ?>
+									<option value="<?php echo $driver->id_admin; ?>" <?php if( $this->drivers_delivery[ $driver->id_admin ] ){ echo 'selected="selected"'; } ?> ><?php echo $driver->name; ?></option>
+								<? } ?>
+								</select>
+							</span>
+						</li>
+						<li>
+							<span>
+								<button type="button" onclick="assign.save();" class="btn btn-green"><i class="icon-save"></i> Save </button> 
+							</span>
+						</li>
+					<?php } 
+					?>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var assign = {};
+assign.save = function(){
+	var data = { 'id_admin' : $( '#id_admin' ).val(), 'id_restaurant' : $( '#id_restaurant' ).val() };
+	$.ajax( {
+		url: '/api/drivers/restaurant',
+		method: 'POST',
+		data: data,
+		dataType: 'json',
+	} ).done( function( data ) {
+		if( data.success ){
+			alert( 'Saved!' );
+			location.reload();
+		} else {
+			alert( 'Ops, error! ' + data.error );
+		}
+	} );
+};
+$(document).ready( function(){
+	$( '#id_restaurant' ).on( 'change', function(){
+		location.href = '/drivers/assign/restaurant/' + $( this ).val();
+	} );
+} );
+</script>
