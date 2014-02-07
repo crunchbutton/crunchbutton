@@ -4,7 +4,7 @@ class Controller_api_drivers extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 		
-		if (!c::admin()->permission()->check(['global','permission-users-hours'])) {
+		if (!c::admin()->permission()->check(['global','drivers-working-hours'])) {
 			echo json_encode( [ 'error' => 'invalid object' ] );
 			exit;
 		}

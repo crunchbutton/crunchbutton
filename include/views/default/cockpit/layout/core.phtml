@@ -230,7 +230,7 @@
 			</a>
 		</li>
 		<? endif ; ?>
-		<? if ( c::admin()->permission()->check( [ 'global','permissions-all','permissions-users','permissions-groups','permission-users-hours','permission-users-hours-view'] ) ) : ?>
+		<? if ( c::admin()->permission()->check( [ 'global','permissions-all','permissions-users','permissions-groups','drivers-working-hours','drivers-working-hours-view'] ) ) : ?>
 		<li class="<?=$this->page == 'permissions' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/permissions">
@@ -260,7 +260,7 @@
 		</li>
 		<? endif ; ?>
 
-		<? if ( c::admin()->permission()->check( [ 'global'] ) ) : ?>
+		<? if ( c::admin()->permission()->check( [ 'global','drivers-page'] ) ) : ?>
 		<li class="<?=$this->page == 'drivers' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/drivers">

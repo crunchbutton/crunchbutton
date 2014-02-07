@@ -4,7 +4,7 @@ class Controller_drivers_assign extends Crunchbutton_Controller_Account {
 	
 	public function init() {
 
-		if ( !c::admin()->permission()->check( [ 'global' ] ) ){
+		if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-assign' ] ) ) {
 			return ;
 		}
 
