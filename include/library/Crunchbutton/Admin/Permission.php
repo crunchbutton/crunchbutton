@@ -138,10 +138,10 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		$_permissions[ 'permissions' ][ 'doAllPermission' ] = 'drivers-all';
 		$_permissions[ 'permissions' ][ 'permissions' ] = array( 
 																										'drivers-all' => array( 'description' => 'Can perform ALL actions about drivers', 'dependency' => array( 'drivers-page' ) ),
-																										'drivers-orders-view' => array( 'description' => 'View and export orders by drivers' 'dependency' => array( 'drivers-page' ) ),
-																										'drivers-assign' => array( 'description' => 'Can assign drivers to community/restaurant' 'dependency' => array( 'drivers-page' ) ),
-																										'drivers-working-hours' => array( 'description' => 'Can edit the driver\'s working hours' 'dependency' => array( 'drivers-page' ) ),
-																										'drivers-working-hours-view' => array( 'description' => 'Can view the driver\'s working hours' 'dependency' => array( 'drivers-page' ) ),
+																										'drivers-orders-view' => array( 'description' => 'View and export orders by drivers', 'dependency' => array( 'drivers-page' ) ),
+																										'drivers-assign' => array( 'description' => 'Can assign drivers to community/restaurant', 'dependency' => array( 'drivers-page' ) ),
+																										'drivers-working-hours' => array( 'description' => 'Can edit the driver\'s working hours', 'dependency' => array( 'drivers-page' ) ),
+																										'drivers-working-hours-view' => array( 'description' => 'Can view the driver\'s working hours', 'dependency' => array( 'drivers-page' ) ),
 																										'drivers-page' => array( 'description' => 'Can see the drivers manage page ' ),
 																										);
 
