@@ -123,18 +123,30 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 																											'suggestions-list-restaurant-ID' => array( 'description' => 'View the food suggestions for these restaurants:', 'dependency' => array( 'suggestions-list-page' ), 'type' => 'combo', 'element' => 'Restaurant', 'copy' => array( 'title' => 'Copy from restaurants he has access to edit', 'permissions' => array( 'restaurant-ID-all', 'restaurant-ID-edit' ) ) ),
 																										);
 
+	
 		/* User/Groups's permissions */ 
 		$_permissions[ 'permissions' ] = array( 'description' => 'Admin user\'s permissions' );
 		$_permissions[ 'permissions' ][ 'doAllPermission' ] = 'permission-all';
 		$_permissions[ 'permissions' ][ 'permissions' ] = array( 
 																										'permission-all' => array( 'description' => 'Can perform ALL actions with admin users and groups (create, update, delete, assign permissions)' ),
 																										'permission-users' => array( 'description' => 'Can perform actions with ONLY admin users (create, update, delete, assign permissions) ' ),
-																										'permission-users-hours' => array( 'description' => 'Can perform ALL actions with admin\'s hours ' ),
-																										'permission-users-hours-view' => array( 'description' => 'Can see the admin\'s hours ' ),
 																										'permission-groups' => array( 'description' => 'Can perform actions with ONLY admin groups (create, update, delete, assign permissions) ' ),
 																										);
 
-	
+	/* Drivers permissions */ 
+		$_permissions[ 'permissions' ] = array( 'description' => 'Manage driver\'s stuff' );
+		$_permissions[ 'permissions' ][ 'doAllPermission' ] = 'drivers-all';
+		$_permissions[ 'permissions' ][ 'permissions' ] = array( 
+																										'drivers-all' => array( 'description' => 'Can perform ALL actions about drivers', 'dependency' => array( 'drivers-page' ) ),
+																										'drivers-orders-view' => array( 'description' => 'View and export orders by drivers' 'dependency' => array( 'drivers-page' ) ),
+																										'drivers-assign' => array( 'description' => 'Can assign drivers to community/restaurant' 'dependency' => array( 'drivers-page' ) ),
+																										'drivers-working-hours' => array( 'description' => 'Can edit the driver\'s working hours' 'dependency' => array( 'drivers-page' ) ),
+																										'drivers-working-hours-view' => array( 'description' => 'Can view the driver\'s working hours' 'dependency' => array( 'drivers-page' ) ),
+																										'drivers-page' => array( 'description' => 'Can see the drivers manage page ' ),
+																										);
+
+
+
 		/* Other's permissions */ 
 		$_permissions[ 'other' ] = array( 'description' => 'Other\'s permissions' );
 		$_permissions[ 'other' ][ 'permissions' ] = array( 

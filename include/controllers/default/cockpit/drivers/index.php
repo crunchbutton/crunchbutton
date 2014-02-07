@@ -4,23 +4,25 @@ class Controller_drivers extends Crunchbutton_Controller_Account {
 	
 	public function init() {
 
-		if ( !c::admin()->permission()->check( [ 'global' ] ) ){
-			return ;
-		}
-
 		switch ( c::getPagePiece( 1 ) ){
 			
 			case 'deliveries':
-					$this->deliveries();
+					if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-orders-view' ] ) ) {
+						$this->deliveries();
+					}
 				break;
 
 			case 'schedule':
-					$this->schedule();
+					if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) {
+						$this->schedule();
+					}
 				break;
 
 			default:
-				c::view()->page = 'drivers';
-				c::view()->display( 'drivers/index' );
+				if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-page' ] ) ) {
+					c::view()->page = 'drivers';
+					c::view()->display( 'drivers/index' );
+				}
 				break;
 		}
 	}

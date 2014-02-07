@@ -10,16 +10,24 @@
 				<span class="title">Drivers</span>
 			</div>
 			<div class="box-content padded">
-				<a href="/drivers/deliveries"> <i class="icon-truck"></i> Delivered orders</a>
-				<br />
-				<br />
-				<a href="/drivers/assign"> <i class="icon-magnet"></i> Assign drivers to restaurants/communities</a>
-				<br />
-				<br />
-				<a href="/drivers/hours"> <i class="icon-time"></i> Working hours</a>
-				<br />
-				<br />
-				<a href="/drivers/schedule"> <i class="icon-calendar"></i> Schedule</a>
+				<?php if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-orders-view' ] ) ) { ?>
+					<a href="/drivers/deliveries"> <i class="icon-truck"></i> Delivered orders</a>
+					<br />
+					<br />
+				<?php } ?>
+				<?php if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-assign' ] ) ) { ?>
+					<a href="/drivers/assign"> <i class="icon-magnet"></i> Assign drivers to restaurants/communities</a>
+					<br />
+					<br />
+				<?php } ?> 
+				<?php if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
+					<a href="/drivers/hours"> <i class="icon-time"></i> Working hours</a>
+					<br />
+					<br />
+				<?php } ?>
+				<?php if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
+					<a href="/drivers/schedule"> <i class="icon-calendar"></i> Schedule</a>
+				<?php } ?>
 			</div>
 		</div>
 	</div>
