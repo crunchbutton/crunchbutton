@@ -79,14 +79,6 @@ class Crunchbutton_Restaurant_Communities extends Cana_Table {
 			return;
 		}
 
-		$query = ' SELECT COUNT( DISTINCT( id_admin ) ) AS Total FROM (
-									SELECT DISTINCT( a.id_admin ) FROM admin a
-										INNER JOIN admin_notification an ON a.id_admin = an.id_admin
-								UNION
-									SELECT DISTINCT( a.id_admin ) FROM admin a
-										INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
-										INNER JOIN `group` g ON ag.id_group = g.id_group AND g.id_group = "' . Crunchbutton_Group::driverGroupOfCommunity( $this->slug ) . '" ) drivers';		
-
 		$drivers = $this->getDriversOfCommunity();
 		$total = $drivers->count();
 
@@ -99,6 +91,10 @@ class Crunchbutton_Restaurant_Communities extends Cana_Table {
 	}
 
 	public function getDriversOfCommunity(){
+
+
+		$group = Crunchbutton_Group::driverGroupOfCommunity( $this->community );
+
 		$query = 'SELECT a.* FROM admin a 
 												INNER JOIN (
 													SELECT DISTINCT(id_admin) FROM (
@@ -110,7 +106,7 @@ class Crunchbutton_Restaurant_Communities extends Cana_Table {
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a 
 														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin 
-														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%" 
+														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = "' . $group . '" 
 														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
 														) drivers
 													) 
