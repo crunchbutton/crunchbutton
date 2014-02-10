@@ -1,89 +1,79 @@
 <?php 
 $restaurants = $this->restaurants; 
 ?>
-	<div class="box">
-		<div class="box-header">
-			<div class="title">Restaurants</div>
-		</div>
 
-		<div class="box-content">
-			<div class="row-fluid">
-				<?php if( count( $restaurants ) > 0 ) { ?>
-					<table class="restaurant-grid">
-						<tr>
-							<th width="15%">
-								Restaurant
-							</th>
-							<th width="10%">
-								Phone
-							</th>
-							<th width="5%">
-								Orders
-							</th>
-							<th width="20%">
-								Hours
-							</th>
-							<th width="10%">
-								Status
-							</th>
-							<th width="150"></th>
-							<th width="90"></th>
-							<th width="250"></th>
-							<th width="50"></th>
-						</tr>
-					<?php foreach( $restaurants as $restaurant ) { ?>
-						<tr>
-							<td>
-								<?php echo $restaurant->name; ?>
-							</td>
-							<td>
-								<?php echo $restaurant->phone(); ?>
-							</td>
-							<td>
-								<?php echo $restaurant->totalOrders(); ?>
-							</td>
-							<td>
-								<strong><?php echo $restaurant->timezone; ?></strong>
-								<br />
-								<?php echo $restaurant->closed_message(); ?>
-							</td>
-							<td>
-								<?php if( $restaurant->open() ){ ?>
-									<span class="label label-green">Open</span>
-								<?php } else { ?>
-									<span class="label label-gray">Closed</span>
-								<?php } ?>
-							</td>
-							<td>
-								<?php 
-									if( $restaurant->open_for_business ){
-										$status = 'close';
-										$label = 'Force close';
-										$color = 'blue';
-									} else {
-										$status = 'open';
-										$label = 'Remove "force close"';
-										$color = 'red';
-									}
-								?>
-								<button class="btn btn-<?php echo $color; ?>" onclick="community.quickClose( <?php echo $restaurant->id_restaurant; ?>, '<?php echo $status; ?>' )"><?php echo $label; ?></button>
-							</td>
-							<td>
-								<a class="btn btn-black" data-toggle="modal" href= "#modal-hour_override" onclick="community.holidays( <?php echo $restaurant->id_restaurant; ?> )">Holidays</a>
-							</td>
-							<td>
-								<a href="/drivers/assign/restaurant/<?php echo $restaurant->id_restaurant; ?>">Assign drivers only to this restaurant</a>
-							</td>
-							<td>
-								<a class="btn btn-green" href="/restaurants/<?php echo $restaurant->id_restaurant; ?>"><strong>Edit</strong></a>
-							</td>
-						</tr>
-					<?php } ?>
-					</table>
-					<?php } else { 
-						echo 'There are no restaurants.';
-					} ?>
-			</div>
-		</div>
-	</div>
-</div>
+<?php if( count( $restaurants ) > 0 ) { ?>
+<table class="restaurant-grid">
+	<tr>
+		<th width="15%">
+			Restaurant
+		</th>
+		<th width="10%">
+			Phone
+		</th>
+		<th width="5%">
+			Orders
+		</th>
+		<th width="20%">
+			Hours
+		</th>
+		<th width="10%">
+			Status
+		</th>
+		<th width="150"></th>
+		<th width="90"></th>
+		<th width="250"></th>
+		<th width="50"></th>
+	</tr>
+<?php foreach( $restaurants as $restaurant ) { ?>
+	<tr>
+		<td>
+			<?php echo $restaurant->name; ?>
+		</td>
+		<td>
+			<?php echo $restaurant->phone(); ?>
+		</td>
+		<td>
+			<?php echo $restaurant->totalOrders(); ?>
+		</td>
+		<td>
+			<strong><?php echo $restaurant->timezone; ?></strong>
+			<br />
+			<?php echo $restaurant->closed_message(); ?>
+		</td>
+		<td>
+			<?php if( $restaurant->open() ){ ?>
+				<span class="label label-green">Open</span>
+			<?php } else { ?>
+				<span class="label label-gray">Closed</span>
+			<?php } ?>
+		</td>
+		<td>
+			<?php 
+				if( $restaurant->open_for_business ){
+					$status = 'close';
+					$label = 'Force close';
+					$color = 'blue';
+				} else {
+					$status = 'open';
+					$label = 'Remove "force close"';
+					$color = 'red';
+				}
+			?>
+			<button class="btn btn-<?php echo $color; ?>" onclick="community.quickClose( <?php echo $restaurant->id_restaurant; ?>, '<?php echo $status; ?>' )"><?php echo $label; ?></button>
+		</td>
+		<td>
+			<a class="btn btn-black" data-toggle="modal" href= "#modal-hour_override" onclick="community.holidays( <?php echo $restaurant->id_restaurant; ?> )">Holidays</a>
+		</td>
+		<td>
+			<a href="/drivers/assign/restaurant/<?php echo $restaurant->id_restaurant; ?>">Assign drivers only to this restaurant</a>
+		</td>
+		<td>
+			<a class="btn btn-green" href="/restaurants/<?php echo $restaurant->id_restaurant; ?>"><strong>Edit</strong></a>
+		</td>
+	</tr>
+<?php } ?>
+</table>
+<?php } else { 
+	echo 'There are no restaurants.';
+} ?>

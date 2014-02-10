@@ -87,7 +87,11 @@ class Controller_drivers extends Crunchbutton_Controller_Account {
 				break;
 
 			default:
+
+				$id_admin = c::getPagePiece( 2 );
+
 				c::view()->restaurants = Restaurant::withDrivers();
+				c::view()->id_admin = $id_admin;
 				c::view()->drivers = Admin::drivers();
 				c::view()->page = 'drivers';
 				c::view()->display( 'drivers/deliveries/index' );

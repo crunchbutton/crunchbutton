@@ -324,7 +324,7 @@ function sendForm(){
 				}
 			} else {
 				alert( 'User saved!' );
-				location.href = '/permissions/users/';
+				location.href = '/permissions/users/' + json.success;
 			}
 		},
 		error: function( ){

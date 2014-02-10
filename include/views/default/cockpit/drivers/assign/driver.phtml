@@ -16,7 +16,7 @@
 			<div class="box-content">
 				<ul class="box-list">
 					<li>
-						<label><strong>Driver</strong></label>
+						<label><strong>Driver *</strong></label>
 						<span>
 							<select class="chzn-select" name="id_admin" id="id_admin" data-placeholder="Choose a driver">
 								<option></option>
@@ -25,6 +25,9 @@
 								<? } ?>
 							</select>
 						</span>
+						<div class="note">
+							*Admin users with active notifications.
+						</div>
 					</li>
 					<?php if( $this->id_admin ) { ?>
 						<li>

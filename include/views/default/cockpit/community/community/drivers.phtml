@@ -1,112 +1,109 @@
 <?php 
 $drivers = $this->drivers; 
 ?>
-	<div class="box">
-		<div class="box-header">
-			<div class="title">Drivers</div>
-		</div>
-
-		<div class="box-content">
-			<div class="row-fluid">
-				<?php if( count( $drivers ) > 0 ) { ?>
-					<table class="drivers-grid">
-						<tr>
-							<th>
-								Driver
-							</th>
-							<th>
-								Phone
-							</th>
-							<th>
-								Orders delivered
-							</th>
-							<th>
-								Notifications
-							</th>
-							<th>
-								Hours
-							</th>
-							<th>
-								Status
-							</th>
-							<th width="120"></th>
-							<th width="100"></th>
-						</tr>
-					<?php foreach( $drivers as $driver ) { ?>
-						<tr>
-							<td>
-								<?php echo $driver->name; ?>
-							</td>
-							<td>
-								<?php echo $driver->phone(); ?>
-							</td>
-							<td>
-								<?php echo $driver->totalOrdersDelivered(); ?>
-							</td>
-							<td>
-								<?php 
-								$notifications = $driver->getNotifications(); 
-								if( $notifications && count( $notifications ) > 0 ){
-									foreach( $notifications as $notification ){
-										switch ( $notification->type ) {
-											case 'phone':
-												$icon = 'phone';
-												break;
-											case 'email':
-												$icon = 'envelope';
-												break;
-											case 'sms':
-												$icon = 'mobile-phone';
-										}
-										$active = ( !$notification->active ) ? 'class="deleted" title="Not active"' : '';
-										?>
-										<div <?php echo $active; ?>>
-											<i class="icon icon-<?php echo $icon; ?>" title="<?php echo $notification->type; ?>"></i>	<?php echo $notification->value; ?>
-										</div>
-										<?
-									}
-								}
-								?>
-							</td>
-							<td>
-								<strong><?php echo $driver->timezone; ?></strong>
-								<?php 
-									$workingHours = $driver->workingHoursWeek(); 
-									if( count( $workingHours ) > 0 ){
-										foreach( $workingHours as $weekday => $hours ){
-											?>
-											<div><?php echo $weekday; ?>: <strong><?php echo $hours; ?></strong></div>
-											<?php
-										}	
-									} else {
-										echo '<div>-</div>';
-									}
-								?>
-							</td>
-							<td>
-								<?php if( $driver->isWorking() ){ ?>
-									<span class="label label-green">Is working</span>
-								<?php } else { ?>
-									<span class="label label-gray">Isn't working</span>
-								<?php }  ?>
-							</td>
-							<td>
-								<a href="/permissions/users/notifications/<?php echo $driver->id_admin ?>" class="btn btn-default">
-									Edit notifications
-								</a>
-							</td>
-							<td>
-								<a href="/permissions/users/<?php echo $driver->id_admin ?>" class="btn btn-green">
-									Edit Driver
-								</a>								
-							</td>
-						</tr>
-					<?php } ?>
-					</table>
-					<?php } else { 
-						echo 'There are no drivers.';
-					} ?>
-			</div>
-		</div>
-	</div>
-</div>
+<?php if( count( $drivers ) > 0 ) { ?>
+<table class="drivers-grid">
+	<tr>
+		<th>
+			Driver
+		</th>
+		<th>
+			Phone
+		</th>
+		<th>
+			Orders delivered
+		</th>
+		<th>
+			Notifications
+		</th>
+		<th>
+			Hours
+		</th>
+		<th>
+			Status
+		</th>
+		<th width="150"></th>
+		<th width="120"></th>
+		<th width="100"></th>
+	</tr>
+<?php foreach( $drivers as $driver ) { ?>
+	<tr>
+		<td>
+			<?php echo $driver->name; ?>
+		</td>
+		<td>
+			<?php echo $driver->phone(); ?>
+		</td>
+		<td>
+			<a href="/drivers/deliveries/<?php echo $driver->id_admin; ?>">
+				<?php echo $driver->totalOrdersDelivered(); ?>
+			</a>
+		</td>
+		<td>
+			<?php 
+			$notifications = $driver->getNotifications(); 
+			if( $notifications && count( $notifications ) > 0 ){
+				foreach( $notifications as $notification ){
+					switch ( $notification->type ) {
+						case 'phone':
+							$icon = 'phone';
+							break;
+						case 'email':
+							$icon = 'envelope';
+							break;
+						case 'sms':
+							$icon = 'mobile-phone';
+					}
+					$active = ( !$notification->active ) ? 'class="deleted" title="Not active"' : '';
+					?>
+					<div <?php echo $active; ?>>
+						<i class="icon icon-<?php echo $icon; ?>" title="<?php echo $notification->type; ?>"></i>	<?php echo $notification->value; ?>
+					</div>
+					<?
+				}
+			}
+			?>
+		</td>
+		<td>
+			<strong><?php echo $driver->timezone; ?></strong>
+			<?php 
+				$workingHours = $driver->workingHoursWeek(); 
+				if( count( $workingHours ) > 0 ){
+					foreach( $workingHours as $weekday => $hours ){
+						?>
+						<div><?php echo $weekday; ?>: <strong><?php echo $hours; ?></strong></div>
+						<?php
+					}	
+				} else {
+					echo '<div>-</div>';
+				}
+			?>
+		</td>
+		<td>
+			<?php if( $driver->isWorking() ){ ?>
+				<span class="label label-green">Is working</span>
+			<?php } else { ?>
+				<span class="label label-gray">Isn't working</span>
+			<?php }  ?>
+		</td>
+		<td>
+			<a href="drivers/assign/driver/<?php echo $driver->id_admin ?>" class="btn btn-black">
+				Assign community
+			</a>
+		</td>
+		<td>
+			<a href="/permissions/users/notifications/<?php echo $driver->id_admin ?>" class="btn btn-default">
+				Edit notifications
+			</a>
+		</td>
+		<td>
+			<a href="/permissions/users/<?php echo $driver->id_admin ?>" class="btn btn-green">
+				Edit Driver
+			</a>								
+		</td>
+	</tr>
+<?php } ?>
+</table>
+<?php } else { 
+	echo 'There are no drivers.';
+} ?>

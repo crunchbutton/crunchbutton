@@ -45,9 +45,12 @@
 									<span class="span8 pull-right">
 										<select name="driver" class="chzn-select">
 											<option value="" selected>[ All ]</option>
-											<? foreach ( $this->drivers as $driver ) :  ?>
-												<option value="<?=$driver->id_admin?>"><?=$driver->name?></option>
-											<? endforeach ; ?>
+											<?php
+											foreach ( $this->drivers as $driver ) { 
+												$selected = ( $driver->id_admin == $this->id_admin ) ? 'selected="selected"' : '';
+												?>
+												<option <?php echo $selected; ?> value="<?=$driver->id_admin?>"><?=$driver->name?></option>
+											<? } ?>
 										</select>
 									</span>
 									<div class="clearfix"></div>
