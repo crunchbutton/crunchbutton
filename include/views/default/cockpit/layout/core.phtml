@@ -270,7 +270,7 @@
 		</li>
 		<? endif ; ?>
 
-		<? if ( c::admin()->permission()->check( [ 'global'] ) ) : ?>
+		<? if ( c::admin()->permission()->check( [ 'global','community-page'] ) ) : ?>
 		<li class="<?=$this->page == 'community' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/community">

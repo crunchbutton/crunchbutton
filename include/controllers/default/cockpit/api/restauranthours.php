@@ -4,7 +4,7 @@ class Controller_api_restaurantHours extends Crunchbutton_Controller_RestAccount
 	
 	public function init() {
 		
-		if (!c::admin()->permission()->check(['global'])) {
+		if ( !c::admin()->permission()->check( [ 'global','community-all', 'community-restaurants' ] ) ) {
 			echo json_encode( [ 'error' => 'invalid object' ] );
 			exit;
 		}

@@ -4,7 +4,7 @@ class Controller_api_drivers_restaurant extends Crunchbutton_Controller_RestAcco
 	
 	public function init() {
 		
-		if (!c::admin()->permission()->check( [ 'global' ] ) ) {
+		if (!c::admin()->permission()->check( ['global','drivers-assign', 'drivers-all'] ) ) {
 			echo json_encode( [ 'error' => 'invalid object' ] );
 			exit;
 		}

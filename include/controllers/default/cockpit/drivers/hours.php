@@ -4,11 +4,11 @@ class Controller_drivers_hours extends Crunchbutton_Controller_Account {
 	
 	public function init() {
 
-		if (!c::admin()->permission()->check(['global','drivers-working-hours', 'drivers-working-hours-view'])) {
+		if (!c::admin()->permission()->check(['global', 'drivers-all', 'drivers-working-hours', 'drivers-working-hours-view'])) {
 			return ;
 		}
 
-		$hasEditPermission = c::admin()->permission()->check(['global','drivers-working-hours']);
+		$hasEditPermission = c::admin()->permission()->check(['global','drivers-working-hours', 'drivers-all']);
 
 		$reps = Admin::q( 'SELECT DISTINCT( a.id_admin ) id, a.* FROM admin a INNER JOIN admin_notification an ON an.id_admin = a.id_admin AND an.active = 1 ORDER BY name ASC' );
 
