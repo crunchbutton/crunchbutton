@@ -35,7 +35,7 @@ class Crunchbutton_Restaurant_Communities extends Cana_Table {
 	}
 
 	public function restaurants(){
-		return Restaurant::q( 'SELECT * FROM restaurant r WHERE r.active = 1 AND r.community = "' . $this->community . '" ORDER BY r.name ASC ' );
+		return Restaurant::q( 'SELECT * FROM restaurant r WHERE r.community = "' . $this->community . '" ORDER BY r.active DESC, r.name ASC ' );
 	}
 
 	public function newUsersLastWeek(){
@@ -125,7 +125,8 @@ class Crunchbutton_Restaurant_Communities extends Cana_Table {
 			return;
 		}
 
-		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE community = '{$this->slug}' AND active = 1 AND name NOT LIKE '%test%'";
+		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE community = '{$this->name()}' AND name NOT LIKE '%test%'";
+
 		$result = c::db()->get( $query );
 		$total = $result->_items[0]->Total;
 

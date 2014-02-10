@@ -25,10 +25,16 @@ $restaurants = $this->restaurants;
 		<th width="250"></th>
 		<th width="50"></th>
 	</tr>
-<?php foreach( $restaurants as $restaurant ) { ?>
-	<tr>
+<?php foreach( $restaurants as $restaurant ) { 
+
+	$active = ( !$restaurant->active ) ? 'class="inactive"' : '';
+	?>
+	<tr <?php echo $active; ?>>
 		<td>
 			<?php echo $restaurant->name; ?>
+			<?php if( !$restaurant->active ){
+				echo '<br/> INACTIVE';
+				} ?>
 		</td>
 		<td>
 			<?php echo $restaurant->phone(); ?>
