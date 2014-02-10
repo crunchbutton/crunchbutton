@@ -1,0 +1,36 @@
+<?
+	$this->title = 'Communities';
+	$this->titleicon = 'group';
+	$communities = $this->communities;
+?>
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-header">
+				<span class="title">Select a community</span>
+			</div>
+			<div class="box-content padded">
+				<select id="community" name="community" class="chosen-select" style="width:480px;">
+					<option value="" selected>Choose...</option>
+					<?php  
+					foreach ( $communities as $community ) {
+						?><option value="<?php echo Crunchbutton_Restaurant_Communities::communityNameToSlug( $community ); ?>"><?php echo $community; ?></option><?php 
+					}
+					?>
+				</select>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$( document ).ready( function(){
+	
+	$('.chosen-select').select2();
+
+	$( '#community' ).on( 'change', function(){
+		document.location = '/community/' + $( this ).val();
+	} );
+
+} );
+</script>

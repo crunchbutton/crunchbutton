@@ -104,7 +104,6 @@ class Crunchbutton_Chart extends Cana_Model {
 
 	}
 	
-
 	public function processInterval( $interval ){
 		
 		$param_interval = $_REQUEST[ 'interval' ];
@@ -402,6 +401,10 @@ class Crunchbutton_Chart extends Cana_Model {
 		$_days = [];
 		foreach ( $data as $item ) {
 			$_days[ $item->Day ] = $item->Total;
+		}
+
+		if( $this->justGetTheData ){
+			return $_days;
 		}
 
 		$allDays = $this->allDays();

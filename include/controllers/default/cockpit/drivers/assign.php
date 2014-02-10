@@ -36,7 +36,7 @@ class Controller_drivers_assign extends Crunchbutton_Controller_Account {
 		c::view()->restaurants = Restaurant::q( 'SELECT * FROM restaurant WHERE active = 1 ORDER BY name ASC' );
 
 		// drivers
-		c::view()->drivers = Admin::q( 'SELECT DISTINCT( a.id_admin ) id, a.* FROM admin a INNER JOIN admin_notification an ON an.id_admin = a.id_admin AND an.active = 1 ORDER BY name ASC' );	
+		c::view()->drivers = Admin::drivers();
 
 		// communities
 		$communities = [];

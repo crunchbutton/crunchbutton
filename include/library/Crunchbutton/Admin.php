@@ -43,7 +43,18 @@ class Crunchbutton_Admin extends Cana_Table {
 	}
 
 	public function drivers(){
-		return Admin::q( 'SELECT DISTINCT(a.id_admin) id, a.* FROM admin a INNER JOIN notification n on n.id_admin = a.id_admin ORDER BY a.name' );
+		return Admin::q( 'SELECT a.* FROM admin a 
+												INNER JOIN (
+													SELECT DISTINCT(id_admin) FROM (
+													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN notification n ON n.id_admin = a.id_admin INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+													UNION
+													SELECT DISTINCT(a.id_admin) FROM admin a 
+														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin 
+														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name LIKE "' . Crunchbutton_Group::DRIVER_GROUPS_PREFIX . '%" 
+														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+														) drivers
+													) 
+											drivers ON drivers.id_admin = a.id_admin ORDER BY name ASC' );
 	}
 
 	public function isWorking(){

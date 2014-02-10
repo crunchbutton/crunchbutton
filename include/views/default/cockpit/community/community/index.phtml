@@ -1,0 +1,148 @@
+<?
+	$community = $this->community;
+	$this->title = 'Community';
+	$this->titleicon = 'group';
+	$this->titleLink = '/community';
+
+	$this->title2 = $community[ 'name' ];
+?>
+
+<!-- content -->
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="container-fluid">
+			<div class="row-fluid">
+
+				<div class="area-top clearfix">
+					<div class="pull-left header">
+						<h3 class="title">
+							<i class="icon-dashboard"></i>
+							<?php echo $community[ 'name' ]; ?>
+						</h3>
+						<h5> Summary of the last 7 days </h5>
+					</div>
+					<ul class="inline pull-right sparkline-box">
+						<li class="sparkline-row">
+							<h4 class="blue"><span>Orders</span> <?php echo $community[ 'ordersLastWeek' ][ 'total' ]; ?></h4>
+							<span class="mini-chart" color="#6e97aa"><?php echo $community[ 'ordersLastWeek' ][ 'week' ];  ?></span>
+						</li>
+						<li class="sparkline-row">
+							<h4 class="green"><span>New users</span> <?php echo $community[ 'newUsersLastWeek' ][ 'total' ]; ?></h4>
+							<span class="mini-chart" color="#8fae53"><?php echo $community[ 'newUsersLastWeek' ][ 'week' ];  ?></span>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="box">
+		<div class="box-header">
+			<div class="title">Some numbers</div>
+		</div>
+
+		<div class="box-content padded">
+			<div class="row-fluid">
+				<div class="separate-sections" style="margin-top: 5px;">
+
+					<div class="row-fluid">
+
+						<?php foreach( $community[ 'numbers' ] as $numbers ) { ?>
+						
+						<div class="span3">
+							<div class="dashboard-stats small">
+								<ul class="inline">
+									<li class="glyph"><i class="icon-<?php echo $numbers[ 'icon' ]; ?>"></i></li>
+									<li class="count"><?php echo $numbers['values'][ 'community' ]; ?></li>
+								</ul>
+								<div class="progress progress-blue"><div class="bar tip" title="<?php echo $numbers['values'][ 'percent' ]; ?>% of total (<?php echo $numbers['values'][ 'all' ]; ?>)" data-percent="<?php echo $numbers['values'][ 'percent' ]; ?>"></div></div>
+								<div class="stats-label">Total <?php echo $numbers[ 'title' ]; ?></div>
+							</div>
+						</div>
+						<?php } ?>
+
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>
+<div id="restaurants"></div>
+<div class="modal hide fade" id="modal-hour_override" style="display: none;">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" type="button">×</button>
+
+		<h6 id="modal-tablesLabel">Close times (holidays)</h6>
+	</div>
+
+	<div class="modal-body modal-hour_override-body"></div>
+
+	<div class="modal-footer">
+		<button class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+</div>
+<script type="text/javascript">
+var community = { slug : '<?php echo $community[ 'slug' ]; ?>' };
+
+var _id_restaurant = false;
+
+$( document ).ready( function(){
+
+	/* mini charts */
+	$( '.mini-chart' ).each( function(){
+		var color = $( this ).attr( 'color' );
+		$( this ).sparkline('html', { type: 'bar', barColor: color, 'height' : '40px', barWidth : '5px'} );
+	} );
+
+	community.restaurants();
+
+} );
+
+community.restaurants = function(){
+	$.ajax( {
+		url: '/community/' + community.slug + '/restaurants',
+		complete: function(content) {
+			$('#restaurants').html( content.responseText );
+		}
+	} );
+};
+
+community.quickClose = function( id_restaurant, status ){
+	var status = ( status == 'open' ) ? 'open' : 'close';
+	$.ajax( {
+		url: '/api/restauranthours/' + id_restaurant + '/' + status,
+		complete: function( request ) {
+			console.log('request',request);
+			if( request.success ){
+				community.restaurants();
+			} else {
+				alert( 'Oops, error! Please try again!' );
+			}
+		}
+	} );
+};
+
+community.holidays = function( id_restaurant ){	
+	_id_restaurant = id_restaurant;
+	hour_override.setCallback( function(){
+		community.restaurants();
+	} );
+	hour_override.load();
+};
+
+</script>
+<style type="text/css">
+	.restaurant-grid{
+		width: 100%;
+	}
+	.restaurant-grid td, .restaurant-grid th{
+		padding:10px 0 10px 10px;
+	}
+	.restaurant-grid tr:nth-of-type(odd){
+		background:#F5F5F5;
+	}
+	.restaurant-grid th{
+		background: #F5F5F5;
+	}
+</style>
