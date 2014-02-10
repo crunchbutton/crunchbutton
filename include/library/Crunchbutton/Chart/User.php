@@ -1778,9 +1778,9 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
-	public function newByDayByCommunity( $render = false ){
+	public function newByDayByCommunity( $render = false, $community = false ){
 
-		$community = $_REQUEST[ 'community' ];
+		$community = ( $community ? $community : $_REQUEST[ 'community' ] );
 
 		$query = "SELECT SUM(1) AS Total,
 										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
@@ -1943,4 +1943,29 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerMonthByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'month' );
 	}
+
+
+	public function totalUsersAll(){
+		$query = "SELECT
+										 COUNT( DISTINCT( o.phone ) ) AS Total
+							FROM `order` o
+							INNER JOIN user u ON u.id_user = o.id_user
+								{$this->queryExcludeUsers}";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->Total; 	
+	}
+
+	public function totalUsersByCommunity( $community ){
+		$query = "SELECT
+										 COUNT( DISTINCT( o.phone ) ) AS Total
+							FROM `order` o
+							INNER JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							WHERE REPLACE(r.community, ' ', '-') = '{$community}'
+								{$this->queryExcludeUsers}";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->Total; 	
+	}
+	
+
 }

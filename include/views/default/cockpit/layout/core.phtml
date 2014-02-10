@@ -269,6 +269,17 @@
 			</a>
 		</li>
 		<? endif ; ?>
+
+		<? if ( c::admin()->permission()->check( [ 'global'] ) ) : ?>
+		<li class="<?=$this->page == 'community' ? 'active' : ''?>">
+			<span class="glow"></span>
+			<a href="/community">
+				<i class="icon-group icon-2x"></i>
+				<span>Communities</span>
+			</a>
+		</li>
+		<? endif ; ?>
+
 	</ul>
 
 	<? /*

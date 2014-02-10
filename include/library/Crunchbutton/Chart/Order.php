@@ -444,9 +444,13 @@ public function byDayPerRestaurant( $render = false ){
 		return $parsedData;
 	}
 
-	public function byDayPerCommunity( $render = false ){
+	public function byDayPerCommunity( $render = false, $_community = false ){
 
 		$community = ( $_REQUEST[ 'community' ] ) ? $_REQUEST[ 'community' ] : false;
+
+		if( !$community && $_community ){
+			$community = $_community;
+		}
 
 		if( $community ){
 			$query = "SELECT DATE_FORMAT( date ,'%Y-%m-%d') AS Day,
@@ -460,7 +464,6 @@ public function byDayPerRestaurant( $render = false ){
 									{$this->queryExcludeUsers}
 								GROUP BY DATE_FORMAT( date ,'%Y-%m-%d'), r.community
 								ORDER BY DATE_FORMAT( date ,'%Y-%m-%d') DESC";
-
 			$parsedData = $this->parseDataDaysSimple( $query, $this->description );
 		} else {
 			$query = "SELECT DATE_FORMAT( date ,'%Y-%m-%d') AS Day,
@@ -1721,4 +1724,37 @@ public function byDayPerRestaurant( $render = false ){
 		return $data;
 	}
 
+	public function totalOrdersByRestaurant( $id_restaurant ){
+		$query = "SELECT
+										 COUNT(*) AS Total
+							FROM `order` o
+							WHERE id_restaurant = {$id_restaurant}
+								{$this->queryExcludeUsers}";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->Total; 
+	}
+
+	public function totalOrdersByCommunity( $community ){
+		$query = "SELECT
+										 COUNT(*) AS Total
+							FROM `order` o
+							INNER JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							WHERE REPLACE(r.community, ' ', '-') = '{$community}'
+								{$this->queryExcludeUsers}";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->Total; 
+	}
+	
+	public function totalOrdersAll(){
+		$query = "SELECT
+										 COUNT(*) AS Total
+							FROM `order` o
+							INNER JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							WHERE 1=1
+								{$this->queryExcludeUsers}";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->Total; 
+	}
 }
