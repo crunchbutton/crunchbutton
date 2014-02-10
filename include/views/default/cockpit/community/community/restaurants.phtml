@@ -27,6 +27,8 @@ $restaurants = $this->restaurants;
 	</tr>
 <?php foreach( $restaurants as $restaurant ) { 
 
+	$permission = c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud','restaurant-'.$restaurant->id_restaurant.'-all','restaurant-'.$restaurant->id_restaurant.'-edit']);
+	
 	$active = ( !$restaurant->active ) ? 'class="inactive"' : '';
 	?>
 	<tr <?php echo $active; ?>>
@@ -66,16 +68,24 @@ $restaurants = $this->restaurants;
 					$color = 'red';
 				}
 			?>
+			<?php if( $permission ) { ?>
 			<button class="btn btn-<?php echo $color; ?>" onclick="community.quickClose( <?php echo $restaurant->id_restaurant; ?>, '<?php echo $status; ?>' )"><?php echo $label; ?></button>
+			<?php } ?>
 		</td>
 		<td>
+			<?php if( $permission ) { ?>
 			<a class="btn btn-black" data-toggle="modal" href= "#modal-hour_override" onclick="community.holidays( <?php echo $restaurant->id_restaurant; ?> )">Holidays</a>
+			<?php } ?>
 		</td>
 		<td>
-			<a href="/drivers/assign/restaurant/<?php echo $restaurant->id_restaurant; ?>">Assign drivers only to this restaurant</a>
+			<?php if (c::admin()->permission()->check(['global','drivers-assign', 'drivers-all'])) { ?>
+				<a href="/drivers/assign/restaurant/<?php echo $restaurant->id_restaurant; ?>">Assign drivers only to this restaurant</a>
+			<?php } ?>
 		</td>
 		<td>
-			<a class="btn btn-green" href="/restaurants/<?php echo $restaurant->id_restaurant; ?>"><strong>Edit</strong></a>
+			<?php if( $permission ){ ?>
+				<a class="btn btn-green" href="/restaurants/<?php echo $restaurant->id_restaurant; ?>"><strong>Edit</strong></a>
+			<?php } ?>
 		</td>
 	</tr>
 <?php } ?>

@@ -6,32 +6,78 @@ class Controller_community extends Crunchbutton_Controller_Account {
 
 		$slug = c::getPagePiece( 1 );
 
+		if ( !c::admin()->permission()->check( [ 'global','community-all','community-page' ] ) ) {
+			return;
+		}
+
 		c::view()->page = 'community';
 
 		if( $slug ){
 
+			$permission = "community-communities-{$slug}";
+
 			switch ( c::getPagePiece( 2 ) ) {
 
 				case 'restaurants':
+
+					if ( ( 	( !c::admin()->permission()->check( [ 'global','community-all', $permission ] ) ) ) ||
+									( !c::admin()->permission()->check( [ 'global','community-all', 'community-restaurants' ] ) )
+						) {
+						return;
+					}
+
 					c::view()->restaurants = $this->restaurants( $slug );
 					c::view()->layout( 'layout/ajax' );
 					c::view()->display( 'community/community/restaurants' );
 					break;
 				
 			case 'drivers':
+					
+					if ( ( 	( !c::admin()->permission()->check( [ 'global','community-all', $permission ] ) ) ) ||
+									( !c::admin()->permission()->check( [ 'global','community-all', 'community-restaurants' ] ) )
+						) {
+						return;
+					}
+
+					if ( !c::admin()->permission()->check( [ 'global','community-all', 'community-restaurants' ] ) ) {
+						return;
+					}
+					
 					c::view()->drivers = $this->drivers( $slug );
 					c::view()->layout( 'layout/ajax' );
 					c::view()->display( 'community/community/drivers' );
 					break;
 
 				default:
+
+					$permission = "community-communities-{$slug}";
+					if ( !c::admin()->permission()->check( [ 'global','community-all', $permission ] ) ) {
+						return;
+					}
+
 					c::view()->community = $this->basicInfo( $slug );
+					c::view()->restaurantsPermissions = ( c::admin()->permission()->check( [ 'global','community-all', 'community-restaurants' ] ) );
+					c::view()->driversPermissions = ( c::admin()->permission()->check( [ 'global','community-all', 'community-drivers' ] ) );
 					c::view()->display( 'community/community/index' );
 					break;
 			}
 
 		} else {
-			c::view()->communities = Restaurant::getCommunities();
+			$communities = Restaurant::getCommunities();
+			if ( !c::admin()->permission()->check( [ 'global','community-all' ] ) ) {
+				$_communities = [];
+				foreach ( $communities as $community ) {
+					$permission_name = strtolower( $community );
+					$permission_name = str_replace( ' ' , '-', $permission_name );
+					$permission_name = "community-communities-{$permission_name}";
+					if( c::admin()->permission()->check( [ $permission_name ] ) ){
+						$_communities[] = $community;
+					}
+				}
+				$communities = $_communities;
+			}
+			c::view()->communities = $communities;
+			
 			c::view()->display( 'community/index' );
 		}
 	}
