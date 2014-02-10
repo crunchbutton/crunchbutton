@@ -68,11 +68,14 @@ class Controller_drivers_hours extends Crunchbutton_Controller_Account {
 				$day = c::getPagePiece(5) ? c::getPagePiece(5) : date( 'd' );
 				$week = c::getPagePiece(6) ? c::getPagePiece(6) : date( 'W' );
 
+				$id_admin = c::getPagePiece(7) ? c::getPagePiece(7) : false;
+
 				$days = [];
 				for( $i = 0; $i <= 6; $i++ ){
 					$days[] = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . $i ) ), new DateTimeZone( c::config()->timezone  ) );
 				}
 
+				c::view()->id_admin = $id_admin;
 				c::view()->year = $year;
 				c::view()->month = $month;
 				c::view()->day = $day;
