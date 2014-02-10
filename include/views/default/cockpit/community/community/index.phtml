@@ -61,14 +61,13 @@
 							</div>
 						</div>
 						<?php } ?>
-
 				</div>
-				
 			</div>
 		</div>
 	</div>
 </div>
 <div id="restaurants"></div>
+<div id="drivers"></div>
 <div class="modal hide fade" id="modal-hour_override" style="display: none;">
 	<div class="modal-header">
 		<button class="close" data-dismiss="modal" type="button">×</button>
@@ -97,7 +96,18 @@ $( document ).ready( function(){
 
 	community.restaurants();
 
+	community.drivers();
+
 } );
+
+community.drivers = function(){
+	$.ajax( {
+		url: '/community/' + community.slug + '/drivers',
+		complete: function(content) {
+			$('#drivers').html( content.responseText );
+		}
+	} );
+};
 
 community.restaurants = function(){
 	$.ajax( {
@@ -144,5 +154,25 @@ community.holidays = function( id_restaurant ){
 	}
 	.restaurant-grid th{
 		background: #F5F5F5;
+	}
+	.drivers-grid{
+		width: 100%;
+	}
+	.drivers-grid td, .drivers-grid th{
+		vertical-align:text-top;
+		padding:10px 0 10px 10px;
+	}
+	.drivers-grid tr:nth-of-type(odd){
+		background:#F5F5F5;
+	}
+	.drivers-grid th{
+		background: #F5F5F5;
+	}
+	.drivers-grid .deleted{
+		color:#CCC;
+		text-decoration:line-through;
+	}
+	.drivers-grid .icon{
+		margin-right: 5px;
 	}
 </style>

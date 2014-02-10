@@ -17,12 +17,30 @@ class Crunchbutton_Admin extends Cana_Table {
 		$phone = str_replace( ' ', '', $phone );
 		return Crunchbutton_Admin::q( "SELECT * FROM admin WHERE REPLACE( phone, '-', '' ) = '$phone' OR REPLACE( txt, '-', '' ) = '$phone' OR REPLACE( testphone, '-', '' ) = '$phone'" );
 	}
+
+	public function totalOrdersDelivered(){
+		$query = 'SELECT COUNT( DISTINCT( o.id_order ) ) AS Total FROM `order` o 
+								INNER JOIN order_action oa on oa.id_order = o.id_order
+							WHERE oa.id_admin = ' . $this->id_admin . ' AND 
+							( oa.type = "' . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . '" || 
+								oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '" || 
+								oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '" )';
+		$result = c::db()->get( $query );
+		return $result->_items[0]->Total; 
+	}
 	
 	public function timezone() {
 		if (!isset($this->_timezone)) {
 			$this->_timezone = new DateTimeZone($this->timezone);
 		}
 		return $this->_timezone;
+	}
+
+	public function phone(){
+		$phone = $this->phone;
+		$phone = preg_replace('/[^\d]*/i','',$phone);
+		$phone = preg_replace('/(\d{3})(\d{3})(.*)/', '\\1-\\2-\\3', $phone);
+		return $phone;
 	}
 
 	public function getAdminsWithNotifications(){
@@ -65,6 +83,29 @@ class Crunchbutton_Admin extends Cana_Table {
  															DATE_FORMAT( date_start, '%Y%m%d%H%i' ) <= {$now} AND 
   														DATE_FORMAT( date_end, '%Y%m%d%H%i' ) >= {$now} ");
 		return ( $hours->count() > 0 );
+	}
+
+	public function workingHoursWeek(){
+
+		$date = date( 'Y\WW' );
+		$weekdays = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri','Sat' ];
+		$hours = [];
+		for( $i = 0; $i <= 6; $i++ ){
+			$day = $date . $i;
+			$day = new DateTime( $day, $this->timezone() );
+			$_hours = Crunchbutton_Admin_Hour::segmentsByDate( $day->format( 'Y-m-d' ), $_join = ', ', $this->id_admin );
+			if( $_hours[ $this->id_admin ] && $_hours[ $this->id_admin ][ 'hours' ] ){
+				if( !$hours[ $_hours[ $this->id_admin ][ 'hours' ] ] ){
+					$hours[ $_hours[ $this->id_admin ][ 'hours' ] ] = [];
+				}
+				$hours[ $_hours[ $this->id_admin ][ 'hours' ] ][] = $weekdays[ $i ];
+			}			
+		}
+		$weekdays = [];
+		foreach( $hours as $hour => $weekday ){
+			$weekdays[ join( $weekday, ', ' ) ] = $hour;
+		}
+		return $weekdays;
 	}
 
 	public function getNotifications( $oderby = 'active DESC, id_admin_notification DESC' ){

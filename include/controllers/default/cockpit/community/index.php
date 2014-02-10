@@ -3,6 +3,7 @@
 class Controller_community extends Crunchbutton_Controller_Account {
 	
 	public function init() {
+
 		$slug = c::getPagePiece( 1 );
 
 		c::view()->page = 'community';
@@ -17,6 +18,12 @@ class Controller_community extends Crunchbutton_Controller_Account {
 					c::view()->display( 'community/community/restaurants' );
 					break;
 				
+			case 'drivers':
+					c::view()->drivers = $this->drivers( $slug );
+					c::view()->layout( 'layout/ajax' );
+					c::view()->display( 'community/community/drivers' );
+					break;
+
 				default:
 					c::view()->community = $this->basicInfo( $slug );
 					c::view()->display( 'community/community/index' );
@@ -27,6 +34,25 @@ class Controller_community extends Crunchbutton_Controller_Account {
 			c::view()->communities = Restaurant::getCommunities();
 			c::view()->display( 'community/index' );
 		}
+	}
+
+	public function drivers( $slug ){
+		$community = new Restaurant_Communities();
+		$community->setSlug( $slug );
+		$drivers = $community->getDriversOfCommunity();
+		// sort by working
+		$_sorted = [];
+		foreach( $drivers as $driver ){
+			if( $driver->isWorking() ){
+				$_sorted[] = $driver;	
+			}
+		}
+		foreach( $drivers as $driver ){
+			if( !$driver->isWorking() ){
+				$_sorted[] = $driver;	
+			}
+		}
+		return $_sorted;
 	}
 
 	public function restaurants( $slug ){
