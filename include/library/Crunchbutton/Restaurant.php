@@ -1105,6 +1105,19 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $out;
 	}
 
+	public function hasDeliveryService(){
+		// At first check the delivery_service
+		if( $this->delivery_service ){
+			return 1;
+		} 
+		// Second, check if it has an admin active notification
+		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
+		$notification = Notification::q( "SELECT n.* FROM notification n WHERE n.id_restaurant = {$this->id_restaurant} AND n.active = 1 AND n.type = '{$type_admin}' LIMIT 1");
+		if( $notification->id_notification ){
+			return 1;
+		}
+		return 0;
+	}
 
 	/**
 	 * Imports an array with all the information for a Restaurant.

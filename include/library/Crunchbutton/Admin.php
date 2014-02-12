@@ -43,6 +43,19 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $phone;
 	}
 
+	public function getPhoneNumber(){
+		if( $this->phone ){
+			return $this->phone;
+		} 
+		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+		foreach( $notifications as $notification ){
+			if( $notification->type == Crunchbutton_Admin_Notification::TYPE_PHONE ){
+				return $notification->value;		
+			}
+		}
+		return false;
+	}
+
 	public function getAdminsWithNotifications(){
 		return Crunchbutton_Admin::q( 'SELECT DISTINCT( a.id_admin ), a.name FROM admin a INNER JOIN admin_notification an ON an.id_admin = a.id_admin ORDER BY a.name ASC' );
 	}
