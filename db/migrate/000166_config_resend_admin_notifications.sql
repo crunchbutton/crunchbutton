@@ -1,0 +1,1 @@
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'notification-admin-use-new-notify-method', '0');

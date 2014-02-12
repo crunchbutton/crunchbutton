@@ -19,27 +19,111 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 	public function resendNotification(){
 
-		
-		/*
-		!! DEPRECATED
-		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
+		// this method resendNotification should be in use till the next push - 2014-02-12 @pererinha
+		$use_new_method = $this->getSetting( 'notification-admin-use-new-notify-method' );
+		if( $use_new_method && intval( $use_new_method ) > 0 ){
+				$message = 'Using NEW resendNotification method!';
+				Log::debug( [ 'action' => $message, 'type' => 'delivery-driver' ] );
+				echo $message . "\n";
+			return $this->new_resendNotification();
+		} 
+
+		$message = 'Using OLD resendNotification method!';
+		Log::debug( [ 'action' => $message, 'type' => 'delivery-driver' ] );
+		echo $message . "\n";
+
 		// Get orders with active admin notifications from the last 3 hours, and only if they have been  there for 3 min
-		$query = "SELECT DISTINCT(o.id_order) id, o.* FROM `order` o
-							INNER JOIN ( SELECT DISTINCT(id) id_restaurant FROM (
-														SELECT DISTINCT(r.id_restaurant) id, r.* FROM restaurant r WHERE r.delivery_service = 1 AND r.active = 1
-															UNION
-														SELECT DISTINCT(r.id_restaurant) id, r.* FROM restaurant r 
-															INNER JOIN notification n ON n.id_restaurant = r.id_restaurant AND r.active = 1 AND n.type = '{$type_admin}' 
-														) restaurants_with_delivery 
-													) restaurants_with_delivery ON restaurants_with_delivery.id_restaurant = o.id_restaurant
-							WHERE o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 3 MINUTE) ORDER BY o.id_order ASC";
-		*/
-
-		// Interval
-
+		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
+		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
 		$orderFromLast = ' 3 HOUR';
 
-		$query = "SELECT * FROM `order` o WHERE o.delivery_service = 1 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 3 MINUTE) ORDER BY o.id_order ASC";
+		$query = "SELECT DISTINCT(id) id,
+										 orders.*
+							FROM
+								(SELECT DISTINCT(o.id_order) id,
+												o.*
+								 FROM `order` o
+								 INNER JOIN `restaurant` r ON o.id_restaurant = o.id_restaurant
+								 INNER JOIN `notification` n ON n.id_restaurant = o.id_restaurant
+								 AND n.active = 1
+								 AND n.type = '{$type_admin}'
+								 INNER JOIN `admin_notification` an ON an.id_admin = n.id_admin
+								 AND an.active = 1
+								 WHERE o.delivery_type = '{$type_delivery}'
+									 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast})
+									 AND o.date < DATE_SUB(NOW(), INTERVAL 3 MINUTE)
+								 UNION SELECT DISTINCT(o.id_order) id,
+															o.*
+								 FROM `order` o
+								 INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+								 AND r.delivery_service = 1
+								 WHERE o.delivery_type = '{$type_delivery}'
+									 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast})
+									 AND o.date < DATE_SUB(NOW(), INTERVAL 3 MINUTE) ) orders
+							ORDER BY id_order ASC";
+
+
+		$orders = Crunchbutton_Order::q($query);
+
+		echo 'working with '.$orders->count().' orders'."\n";
+
+		if ($orders->count() > 0) {
+			foreach ( $orders as $order ) {
+				if( !$order->wasAcceptedByRep() ){
+					echo '#'.$order->id_order.' was not accepted'."\n";
+					// also notify global dispatch
+					$this->alertDispatch($order);
+
+					Log::debug( [ 'order' => $order->id_order, 'action' => 'resend admin notification', 'type' => 'admin_notification' ]);
+					foreach ( $order->restaurant()->notifications() as $n ) {
+						Log::debug([ 'order' => $order->id_order, 'action' => 'starting resend notification', 'notification_type' => $n->type, 'env' => c::getEnv(), 'notification_id_admin' => $n->id_admin, 'type' => 'admin_notification']);
+						if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
+							foreach( $n->admin()->activeNotifications() as $adminNotification ){
+								$adminNotification->send( $order );
+							}
+						}
+					}
+				} else {
+					echo '#'.$order->id_order.' was accepted'."\n";
+				}
+			}
+		}
+	}
+
+	public function alertDispatch(Crunchbutton_Order $order) {
+		$group = Crunchbutton_Group::byName(Config::getVal('rep-fail-group-name'));
+
+		if ($group->id_group) {
+			$ags = Crunchbutton_Admin::q('
+				SELECT admin.* FROM admin
+				LEFT JOIN admin_group using(id_admin)
+				WHERE id_group="'.$group->id_group.'"
+			');
+
+			$env = c::getEnv();
+			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+			$message = 'Reps failed to pickup order http://cbtn.io/' . $order->id_order;
+
+			foreach ($ags as $a) {
+				// notify each person
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'send rep failed notification to admin', 'num' => $a->txt, 'host' => $_SERVER['HTTP_HOST'], 'message' => $message, 'type' => 'dispatch_notification' ]);
+
+				$twilio->account->sms_messages->create(
+					c::config()->twilio->{$env}->outgoingTextRestaurant,
+					'+1'.$a->txt,
+					$message
+				);
+			}
+		}
+	}
+
+	public function new_resendNotification(){
+
+		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
+		$type_delivery = Crunchbutton_Order::SHIPPING_DELIVERY;
+		$orderFromLast = ' 3 HOUR';
+
+		$query = "SELECT * FROM `order` o WHERE o.delivery_type = '{$type_delivery}' AND o.delivery_service = 1 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 3 MINUTE) ORDER BY o.id_order ASC";
 
 		$orders = Crunchbutton_Order::q($query);
 
@@ -72,7 +156,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 					// More info: https://github.com/crunchbutton/crunchbutton/issues/2352#issuecomment-34780213
 					if( $attempts == 3 ){
-						$this->alertDispatch( $order );
+						$this->new_alertDispatch( $order );
 						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
 						break;
 					}
@@ -115,7 +199,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						}
 					}
 					Crunchbutton_Admin_Notification_Log::register( $order->id_order );
-
 					if( !$hasDriversWorking ){
 						$message = '#'.$order->id_order.' there is no drivers to get the order';
 						Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
@@ -132,7 +215,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		}
 	}
 	
-	public function alertDispatch(Crunchbutton_Order $order) {
+	public function new_alertDispatch(Crunchbutton_Order $order) {
 
 		$group = Crunchbutton_Group::byName(Config::getVal('rep-fail-group-name'));
 
@@ -144,7 +227,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 			$message = 'Reps failed to pickup order http://cbtn.io/' . $order->id_order;
 
-			foreach ($ags as $a) {
+			foreach ( $ags as $a ) {
 				// notify each person
 				$message = '#'.$order->id_order.' sms: reps failed to pickup order';
 				echo $message."\n";
@@ -281,7 +364,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			}
 		}
 	}
-
 
 	public function host_callback(){
 		if( !c::config()->host_callback ){
