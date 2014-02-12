@@ -154,7 +154,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				$num = $a->getPhoneNumber();
 				if( $num ){
 
-					$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/'.$call;					
+					$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/pick-up-fail';
 					$message = '#'.$order->id_order.' call: reps failed to pickup order url: ' . $url;
 					echo $message."\n";
 					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
