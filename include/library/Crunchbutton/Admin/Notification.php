@@ -63,6 +63,13 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 					echo $message."\n";
 
+					if( $attempts > 3 ){
+						$message = '#'.$order->id_order.' CS was already texted about it - attempts ' . $attempts;
+						Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
+						echo $message."\n";
+						break;
+					}
+
 					// More info: https://github.com/crunchbutton/crunchbutton/issues/2352#issuecomment-34780213
 					if( $attempts == 3 ){
 						$this->alertDispatch( $order );

@@ -52,6 +52,7 @@ class Controller_drivers_hours extends Crunchbutton_Controller_Account {
 				c::view()->communities = $adminCommunities;
 				c::view()->month = $month;
 				c::view()->day = $day;
+				c::view()->year = $year;
 				c::view()->segment = $hours[ $id_admin ][ 'hours' ];
 				c::view()->admin = $admin;
 				c::view()->layout( 'layout/ajax' );
