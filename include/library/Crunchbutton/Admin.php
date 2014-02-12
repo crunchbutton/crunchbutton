@@ -64,7 +64,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		return Admin::q( 'SELECT a.* FROM admin a 
 												INNER JOIN (
 													SELECT DISTINCT(id_admin) FROM (
-													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN notification n ON n.id_admin = a.id_admin INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+													SELECT DISTINCT(a.id_admin) FROM admin a INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
 													UNION
 													SELECT DISTINCT(a.id_admin) FROM admin a 
 														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin 
