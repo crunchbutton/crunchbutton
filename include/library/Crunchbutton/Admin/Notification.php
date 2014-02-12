@@ -66,6 +66,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					// More info: https://github.com/crunchbutton/crunchbutton/issues/2352#issuecomment-34780213
 					if( $attempts == 3 ){
 						$this->alertDispatch( $order );
+						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
 						break;
 					}
 
@@ -205,7 +206,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 				}
 				if( $call != '' ){
 					$env = c::getEnv();
-					$num = $this->value;
+					$num = $phoneNumber;
 					$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/'.$call;
 					Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => $this->host_callback(), 'env' => $env, 'url' => $url, 'type' => 'admin_notification' ]);
 					$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
