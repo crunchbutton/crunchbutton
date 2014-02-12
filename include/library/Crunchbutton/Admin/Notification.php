@@ -61,7 +61,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 									 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast})
 									 AND o.date < DATE_SUB(NOW(), INTERVAL 3 MINUTE) ) orders
 							ORDER BY id_order ASC";
-
+echo $query;exit;
 
 		$orders = Crunchbutton_Order::q($query);
 
@@ -189,7 +189,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						foreach( $driversToNotify as $driver ){
 							if( $driver->isWorking() ){
 								foreach( $driver->activeNotifications() as $adminNotification ){
-									$adminNotification->send( $order );
+									$adminNotification->new_send( $order );
 									$hasDriversWorking = true;
 									$message = '#'.$order->id_order.' sending notification to ' . $driver->name . ' # ' . $adminNotification->value;
 									Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
@@ -254,6 +254,48 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	}
 
 	public function send( Crunchbutton_Order $order ) {
+
+		$env = c::getEnv();
+
+		if( $env != 'live' ){
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'admin_notification' ]);
+			// return;
+		}
+
+		$is_enable = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_DEFAULT );
+		if( !$is_enable ){
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin is disabled', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'admin_notification' ]);
+			return;
+		}
+
+		$is_enable_takeout = ( !is_null( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_KEY ) ) ? ( $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_KEY ) == '1' ) : Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_DEFAULT );
+		if( $order->delivery_type == Crunchbutton_Order::SHIPPING_TAKEOUT && $this->getSetting( Crunchbutton_Admin_Notification::IS_ENABLE_TO_TAKEOUT_KEY ) != '1' ){
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin to TAKEOUT is disabled', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'admin_notification' ]);
+			return;
+		}
+
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin starting', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'admin_notification' ]);
+
+		switch ( $this->type ) {
+			case Crunchbutton_Admin_Notification::TYPE_FAX :
+				$this->sendFax( $order );
+				break;
+
+			case Crunchbutton_Admin_Notification::TYPE_SMS :
+				$this->sendSms( $order );
+				break;
+
+			case Crunchbutton_Admin_Notification::TYPE_PHONE :
+				$this->phoneCall( $order );
+				break;
+
+			case Crunchbutton_Admin_Notification::TYPE_EMAIL :
+				$this->sendEmail( $order );
+				break;
+		}
+	}
+
+	public function new_send( Crunchbutton_Order $order ) {
 
 		$env = c::getEnv();
 
