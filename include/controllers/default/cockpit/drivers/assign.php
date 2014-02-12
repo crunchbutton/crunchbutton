@@ -52,7 +52,7 @@ class Controller_drivers_assign extends Crunchbutton_Controller_Account {
 		$this->loadData();
 
 		if( c::getPagePiece( 3 ) ){
-			$community = c::getPagePiece( 3 );
+			$community = Crunchbutton_Group::normalizeDriverGroup( c::getPagePiece( 3 ) );
 			$group = Crunchbutton_Group::getDeliveryGroupByCommunity( $community );
 			$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
 			$deliveryFor = [];

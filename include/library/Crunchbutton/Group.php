@@ -5,7 +5,7 @@ class Crunchbutton_Group extends Cana_Table {
 	const DRIVER_GROUPS_PREFIX = 'drivers-';
 
 	public function driverGroupOfCommunity( $community ){
-		return str_replace( ' ' , '-', Crunchbutton_Group::DRIVER_GROUPS_PREFIX . strtolower( $community ) );
+		return Crunchbutton_Group::normalizeDriverGroup( str_replace( ' ' , '-', Crunchbutton_Group::DRIVER_GROUPS_PREFIX . strtolower( $community ) ), 0, 20);
 	}
 
 	public function __construct($id = null) {
@@ -25,11 +25,17 @@ class Crunchbutton_Group extends Cana_Table {
 		}	
 	}
 
+	public function normalizeDriverGroup( $community ){
+		return substr( $community, 0, 20 );
+	}
+
 	public function getDeliveryGroupByCommunity( $community ){
 		
 		if( !$community ){
 			die( 'Error:getDeliveryGroupByCommunity' );
 		}
+
+		$community = Crunchbutton_Group::normalizeDriverGroup( $community );
 
 		$group = Crunchbutton_Group::byName( $community );
 		if( $group->id_group ){
