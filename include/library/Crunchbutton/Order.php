@@ -391,6 +391,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->id_user = $this->_user->id_user;
 		$this->date = date('Y-m-d H:i:s');
+		$this->delivery_service = $this->restaurant()->hasDeliveryService();
 		$this->id_community = $this->restaurant()->community()->id_community;
 		$this->save();
 
@@ -852,6 +853,7 @@ class Crunchbutton_Order extends Cana_Table {
 					}	
 				}
 			}
+			Crunchbutton_Admin_Notification_Log::register( $this->id_order );	
 		}
 
 		if( $needDrivers && !$hasDriversWorking ){
@@ -962,10 +964,10 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$order = $this;
 
-		Cana::timeout(function() use($order) {
+		// Cana::timeout(function() use($order) {
 			/* @var $order Crunchbutton_Order */
 			$order->notify();
-		});
+		// });
 
 		if( $sendReceipt ){
 			c::timeout(function() use($order) {

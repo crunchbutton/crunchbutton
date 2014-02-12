@@ -1,0 +1,1 @@
+ALTER TABLE  `order` ADD  `delivery_service` TINYINT( 1 ) NOT NULL DEFAULT '0';

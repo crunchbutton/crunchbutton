@@ -159,6 +159,29 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				exit;
 				break;
 
+			case 'driver-first-call-warning':
+			case 'driver-second-call-warning':
+				if( c::getPagePiece(3) == 'driver-second-call-warning' ){
+					$message = 'Confirm the order . otherwise . a Crunchbutton customer service representative will call you shortly. . .';
+				} else {
+					$message = 'Confirm the order . otherwise . we will call back . . ';
+				}
+				header('Content-type: text/xml');
+				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+							. '<Pause length="1" />'
+							. '<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' . . </Say>'
+							.'<Say voice="'.c::config()->twilio->voice.'">You have not confirmed order number ' . $order->id_order . ' . . </Say>' 
+							.'<Say voice="'.c::config()->twilio->voice.'">' . $message . '</Say>';
+							$pauseRepeat = '<Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. </Say>';
+							for ($x = 0; $x <= $repeat; $x++) {
+								echo $pauseRepeat;
+							}
+							echo '</Gather>';
+				echo '</Response>';
+				exit;
+				break;
+
 			case 'sayorderonly':
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";

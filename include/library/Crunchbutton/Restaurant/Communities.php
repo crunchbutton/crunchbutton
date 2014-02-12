@@ -92,7 +92,6 @@ class Crunchbutton_Restaurant_Communities extends Cana_Table {
 
 	public function getDriversOfCommunity(){
 
-
 		$group = Crunchbutton_Group::driverGroupOfCommunity( $this->community );
 
 		$query = 'SELECT a.* FROM admin a 
