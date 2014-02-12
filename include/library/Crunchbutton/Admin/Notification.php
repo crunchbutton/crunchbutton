@@ -37,10 +37,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		// Interval
 
-		$orderFromLast = ' 2 DAY';
+		$orderFromLast = ' 3 HOUR';
 
 		$query = "SELECT * FROM `order` o WHERE o.delivery_service = 1 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast} ) AND o.date < DATE_SUB(NOW(), INTERVAL 3 MINUTE) ORDER BY o.id_order ASC";
-
+echo $query;exit;
 		$orders = Crunchbutton_Order::q($query);
 
 		$message = 'working with '.$orders->count().' orders';
