@@ -26,6 +26,10 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 			$description .= ' Second phone call';
 		}
 
+		if( $attempts == 3 ){
+			$description .= ' Alert to CS';
+		}
+
 		$log->id_order = $id_order;
 		$log->description = $description;
 		$log->date = date('Y-m-d H:i:s');
