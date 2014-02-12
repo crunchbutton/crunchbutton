@@ -61,7 +61,6 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 									 AND o.date > DATE_SUB(NOW(), INTERVAL {$orderFromLast})
 									 AND o.date < DATE_SUB(NOW(), INTERVAL 3 MINUTE) ) orders
 							ORDER BY id_order ASC";
-echo $query;exit;
 
 		$orders = Crunchbutton_Order::q($query);
 
