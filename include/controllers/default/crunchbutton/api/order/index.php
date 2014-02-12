@@ -182,6 +182,23 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				exit;
 				break;
 
+			case 'pick-up-fail':
+				header('Content-type: text/xml');
+				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderadmin" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+							. '<Pause length="1" />'
+							. '<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' . . </Say>'
+							.'<Say voice="'.c::config()->twilio->voice.'">Reps failed to pickup order ' . $order->id_order . ' . . </Say>';
+							$pauseRepeat = '<Pause length="1" /><Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. </Say>';
+							for ($x = 0; $x <= $repeat; $x++) {
+								echo $pauseRepeat;
+							}
+							echo '</Gather>';
+				echo '</Response>';
+				exit;
+				break;
+
+
 			case 'sayorderonly':
 				header('Content-type: text/xml');
 				echo '<?xml version="1.0" encoding="UTF-8"?><Response>'."\n";

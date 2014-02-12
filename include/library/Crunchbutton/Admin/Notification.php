@@ -146,8 +146,26 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 			foreach ($ags as $a) {
 				// notify each person
-				Log::debug( [ 'order' => $order->id_order, 'action' => 'send rep failed notification to admin', 'num' => $a->txt, 'host' => $_SERVER['HTTP_HOST'], 'message' => $message, 'type' => 'dispatch_notification' ]);
+				$message = '#'.$order->id_order.' sms: reps failed to pickup order';
+				echo $message."\n";
+				Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $a->txt, 'message' => $message, 'type' => 'delivery-driver' ]);
 				$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextRestaurant, '+1'.$a->txt, $message );
+
+				$num = $a->getPhoneNumber();
+				if( $num ){
+
+					$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/'.$call;					
+					$message = '#'.$order->id_order.' call: reps failed to pickup order url: ' . $url;
+					echo $message."\n";
+					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
+
+					$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+					$call = $twilio->account->calls->create(
+						c::config()->twilio->{$env}->outgoingRestaurant,
+						'+1'.$num,
+						$url
+					);	
+				}
 			}
 		}
 	}
