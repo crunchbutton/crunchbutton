@@ -66,6 +66,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					// More info: https://github.com/crunchbutton/crunchbutton/issues/2352#issuecomment-34780213
 					if( $attempts == 3 ){
 						$this->alertDispatch( $order );
+						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
 						break;
 					}
 
