@@ -100,7 +100,7 @@ class Crunchbutton_Restaurant_Communities extends Cana_Table {
 													SELECT DISTINCT(id_admin) FROM (
 													SELECT DISTINCT(a.id_admin)
 														FROM admin a
-														INNER JOIN notification n ON n.id_admin = a.id_admin
+														INNER JOIN notification n ON n.id_admin = a.id_admin AND n.active = 1
 														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
 														INNER JOIN restaurant r ON r.id_restaurant = n.id_restaurant AND r.community = "' . $this->community . '"
 													UNION
