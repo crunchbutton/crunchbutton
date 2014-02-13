@@ -3,6 +3,9 @@ $delivery_service_markup = ( $order->delivery_service_markup ) ? $order->deliver
 $isRestaurant = !$user;
 if( $isDriverCockpit ){
 	$isRestaurant = false;
+	if( $delivery_service_markup == 0 ){
+		$isDriverCockpit = false;
+	}
 }
 ?>
 <table width="100%" celpadding="0" cellspacing="0" class="detail">
