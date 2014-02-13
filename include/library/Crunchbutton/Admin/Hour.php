@@ -46,7 +46,7 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 
 	public function segmentsByDate( $date, $_join = ', ', $id_admin = false ){
 		$where = ( $id_admin ) ? ' AND id_admin = ' . $id_admin : '';
-		$hours = Crunchbutton_Admin_Hour::q( "SELECT * FROM admin_hour WHERE DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date' $where ORDER BY id_admin, date_start ASC" );
+		$hours = Crunchbutton_Admin_Hour::q( "SELECT * FROM admin_hour WHERE DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date' $where ORDER BY date_start, id_admin ASC" );
 		$admins = [];
 		foreach ( $hours as $hour ) {
 			$join = '';
