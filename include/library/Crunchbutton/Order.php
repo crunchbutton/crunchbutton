@@ -964,10 +964,10 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$order = $this;
 
-		// Cana::timeout(function() use($order) {
+		Cana::timeout(function() use($order) {
 			/* @var $order Crunchbutton_Order */
 			$order->notify();
-		// });
+		});
 
 		if( $sendReceipt ){
 			c::timeout(function() use($order) {
