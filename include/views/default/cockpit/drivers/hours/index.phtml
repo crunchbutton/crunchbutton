@@ -54,6 +54,28 @@
 										foreach ( $hours as $hour ) {
 											$color = Util::stringToColorCode( $hour[ 'login' ] );
 											$text_color = ( Util::isDarkColor( $color ) ? 'FFF' : '000' );
+
+											$admin = Admin::o( $hour[ 'id_admin' ] );
+											$communities = '';
+											if ( $admin->id_admin ) {
+												$adminCommunities = [];
+												$groups = $admin->groups();
+												foreach ( $groups as $group ) {
+													$pos = strrpos( $group->name, Crunchbutton_Group::DRIVER_GROUPS_PREFIX );
+													if( $pos !== false ){
+														$adminCommunities[ $group->name ] = Group::getRestaurantCommunityName( $group->name );	
+													}
+												}
+												if( count( $adminCommunities ) > 0 && $adminCommunities != '' ){
+													$join = '';
+													foreach( $adminCommunities as $communitie ) { 
+														$communities .= $join . $communitie;
+														$join = ', ';
+													} 
+												} else {
+													$communities = 'None';
+												}
+											}
 											?>
 											<div style="width:80%;background:#<?php echo $color;?>;border-radius: 3px 3px 3px 3px;-moz-border-radius: 3px 3px 3px 3px;-webkit-border-radius: 3px 3px 3px 3px;border: 0px solid #000000;margin:2px 0;">
 												<div style="padding:8px;font-weight:normal;">
@@ -64,6 +86,7 @@
 															<strong style="font-size:14px;"><?php echo $hour[ 'name' ]; ?></strong>
 															<br/>
 															<?php echo $hour[ 'hours' ]; ?>
+															<div style="font-size:11px">(<?php echo $communities ?>)</div>
 														</span>
 													<?php if( $hasEditPermission ) { ?>
 													</a>
@@ -74,7 +97,7 @@
 										}
 									}
 									?>	
-									<?php if( $hasEditPermission ) { ?>						
+									<?php if( $hasEditPermission ) { ?>
 									<div>
 										<button class="btn btn-default modal-hours-open" href="/drivers/hours/add/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $this->week; ?>" style="width:80%;" title="Add hours to <?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?> (<?php echo $day->format( 'D' ); ?>)">
 											<i class="icon-plus icon-2x"></i>
