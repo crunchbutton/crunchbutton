@@ -111,7 +111,15 @@
 <div class="xhatch separator-small"></div>
 
 
-<?=$this->render('order/details',['set' => ['order' => $order, 'user' => $user]]);?>
+<?php
+$user = false;
+if( $user ){
+	echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user]]);	
+} else {
+	echo $this->render('order/details_restaurant',['set' => ['order' => $order, 'user' => $user]]);
+}
+
+;?>
 <br /><br />
 <? if (!$order->_print) : ?>
 	<table cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 20px;">
