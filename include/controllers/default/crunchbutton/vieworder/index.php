@@ -11,7 +11,8 @@ class Controller_vieworder extends Cana_Controller {
 
 		$mail = new Email_Order([
 			'order' => $order,
-			'user' => true
+			'user' => true,
+			'cockpit' => true
 		]);
 		echo $mail->message();
 		exit;

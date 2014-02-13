@@ -113,11 +113,8 @@
 
 <?php
 // customer / cockpit and drivers will see the value with the markup #2369
-if( $user || $this->cockpit_url ){
-	echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user]]);	
-} else {
-	echo $this->render('order/details_restaurant',['set' => ['order' => $order, 'user' => $user]]);
-}
+$isDriverCockpit = ( $cockpit || $this->cockpit_url );
+echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user, 'isDriverCockpit' => $isDriverCockpit ]]);	
 
 ;?>
 <br /><br />
