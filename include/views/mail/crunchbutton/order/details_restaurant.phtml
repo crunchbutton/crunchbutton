@@ -118,9 +118,9 @@ $subTotal = 0;
 
 <?php 
 
-$serviceFee = ($subTotal + $order->delivery_fee) * Util::ceil(($order->service_fee/100),2);
+$serviceFee = ($subTotal + $order->deliveryFee()) * Util::ceil(($order->service_fee/100),2);
 $serviceFee = Util::ceil($serviceFee, 2);
-$totalWithFees = $subTotal + $this->delivery_fee + $serviceFee;
+$totalWithFees = $subTotal + $order->deliveryFee() + $serviceFee;
 $totalWithFees = Util::ceil($totalWithFees, 2);
 
 ?>
