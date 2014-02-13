@@ -313,7 +313,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		// If the entered address does not have zip code show the enter zip code message #1763
 		var entered = $scope.location.position.pos().entered();
 		var isStreet = $scope.location.position.pos().valid( 'order' );
-		if( isStreet && !entered.match(new RegExp( /\d{5}(?:[-\s]\d{4})?/ )) ){
+		if( isStreet && entered && !entered.match(new RegExp( /\d{5}(?:[-\s]\d{4})?/ )) ){
 			$('.location-address').val('').attr('placeholder','Please include a zip code');	
 			$scope.$broadcast( 'locationNotServed',  true );
 		} else {
