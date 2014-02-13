@@ -78,7 +78,7 @@
 									</div>
 									<div class="span7">
 										<?php 
-										if( count( $this->communities ) > 0 ){
+										if( count( $this->communities ) > 0 && $this->communities != '' ){
 											$join = '';
 											foreach( $this->communities as $communitie ) { 
 												echo $join . $communitie;
