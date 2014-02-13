@@ -24,7 +24,8 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 		
 		$params['messageHtml'] = $this->view()->render('order/index',['display' => true, 'set' => [
 			'order' => $params['order'],
-			'user' => $params['user']
+			'user' => $params['user'],
+			'cockpit' => $params['cockpit']
 		]]);
 
 		parent::__construct($params);				
