@@ -114,6 +114,9 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 		if( $end_ampm == 'pm' && $end_hour < 12 ){
 			$end_hour = $end_hour + 12;
 		}
+		if( $end_ampm == 'am' && $end_hour == 12 ){
+			$end_hour = 24;
+		}
 		if( $end_ampm == 'am' && $end_hour < $start_hour ){
 			$end_hour = $end_hour + 24;
 		}
