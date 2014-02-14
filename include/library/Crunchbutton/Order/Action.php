@@ -19,7 +19,7 @@ class Crunchbutton_Order_Action extends Cana_Table {
 	}
 
 	public function byOrder( $id_order ){
-		return Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} ORDER BY id_order_action DESC" );
+		return Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} ORDER BY id_order_action ASC" );
 	}
 
 	public function restaurant(){

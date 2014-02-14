@@ -12,8 +12,10 @@
 			</tr>
 		</thead>
 
-		<?php foreach( $this->orders as $order ) { ?>
-			<? $date = $order->date(); ?>
+		<?php 
+			foreach( $this->orders as $order ) { 
+				$timeToDelivery = '';
+				$date = $order->date(); ?>
 			<tr>
 				<td style="vertical-align:top;">
 					Order #<?php echo $order->id_order; ?>
@@ -65,9 +67,17 @@
 							$color = '#000';
 							break;
 					}
+					if( $log->type == Crunchbutton_Order_Action::DELIVERY_DELIVERED ){
+					 	$timeToDelivery = $date->diff( $_date );
+					 	$timeToDelivery = ( $timeToDelivery->days * 24 * 60 ) + ( $timeToDelivery->h * 60 ) + ( $timeToDelivery->i );
+						$timeToDelivery .= ' minutes';
+					}
 					?>
 						<span style="color:<?php echo $color; ?>"><?php echo $log->type; ?></span> : <?php echo $_date->format('g:i:s A')?><br/>
 					<?php
+				}
+				if( $timeToDelivery != '' ){
+					echo '<strong style="color:#666;font-size:12px;">Delivered in ' . $timeToDelivery . '</strong>';
 				}
 				if( !$hasLog ){
 					echo '<i style="color:#CCC;font-size:11px;">-</i>';
