@@ -647,9 +647,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public static function deliveredByCBDrivers( $search ){
 
-		$where = ' WHERE ( oa.type = "' . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . '"
-										OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . '"
-										OR oa.type = "' . Crunchbutton_Order_Action::DELIVERY_DELIVERED . '")';
+		$where = ' WHERE 1 = 1';
 
 		if( $search[ 'id_admin' ] ){
 			$where .= ' AND oa.id_admin = ' . $search[ 'id_admin' ];
@@ -675,11 +673,10 @@ class Crunchbutton_Order extends Cana_Table {
 			$limit = 'LIMIT 25'; 
 		}
 
-		$query = 'SELECT DISTINCT(o.id_order) id, o.* FROM `order` o 
-								INNER JOIN order_action oa on oa.id_order = o.id_order
-								' . $where . '
-								ORDER BY o.id_order DESC ' . $limit;
-
+		$query = 'SELECT DISTINCT(o.id_order) id, o.* FROM `order` o
+							INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.delivery_service = 1
+							' . $where . '
+							ORDER BY o.id_order DESC ' . $limit;
 		return Order::q( $query );
 
 	}

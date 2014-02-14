@@ -7,34 +7,72 @@
 			<tr>
 				<td>Order</td>
 				<td>Driver</td>
-				<td>Log</td>
+				<td>Notifications</td>
+				<td>Actions</td>
 			</tr>
 		</thead>
 
 		<?php foreach( $this->orders as $order ) { ?>
 			<? $date = $order->date(); ?>
 			<tr>
-				<td valign="top">
+				<td style="vertical-align:top;">
 					Order #<?php echo $order->id_order; ?>
 					<br />
 					<?php echo $order->restaurant()->name; ?>
 					<br />
 					<?php echo $date->format('M jS Y')?> <?php echo $date->format('g:i:s A')?>
 				</td>
-				<td valign="top">
-					<?php echo $order->driver()->name; ?>
+				<td style="vertical-align:top;">
+					<?php 
+						if( $order->driver()->name ){
+							echo $order->driver()->name;
+						} else {
+							echo '<i style="color:#CCC;font-size:11px;">None</i>';
+						}
+						?>
 				</td>
-				<td valign="top">
-
+				<td style="vertical-align:top;">
 				<?php 
+					$hasNotification = false;
+					$notifications = Crunchbutton_Admin_Notification_Log::byOrder( $order->id_order );
+					foreach( $notifications as $notification ){
+						$hasNotification = true;
+						$_date = $notification->date();
+						echo $notification->description . ' : ' . $_date->format( 'g:i:s A' ) . '<br/>';
+					}
+					if( !$hasNotification ){
+						echo '<i style="color:#CCC;font-size:11px;">-</i>';
+					}
+				?>
+				</td>
+				<td style="vertical-align:top;">
+				<?php 
+				$hasLog = false;
 				$logs = $order->actions();
 				foreach( $logs as $log ){
-					$log_date = $log->date();
-					echo $log->type;  ?>: <?php echo $date->format('g:i:s A')?><br/>
+					$hasLog = true;
+					$_date = $log->date();
+					switch ( $log->type ) {
+						case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+							$color = '#fb3927';
+							break;
+						case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+						case Crunchbutton_Order_Action::DELIVERY_PICKEDUP:
+						case Crunchbutton_Order_Action::DELIVERY_DELIVERED:
+							$color = '#009c48';
+							break;
+						default:
+							$color = '#000';
+							break;
+					}
+					?>
+						<span style="color:<?php echo $color; ?>"><?php echo $log->type; ?></span> : <?php echo $_date->format('g:i:s A')?><br/>
 					<?php
 				}
+				if( !$hasLog ){
+					echo '<i style="color:#CCC;font-size:11px;">-</i>';
+				}
 				?>
-
 				</td>
 			</tr>
 		<?php } ?>
