@@ -33,7 +33,6 @@ $permissionNotification = c::admin()->permission()->check(['global','orders-all'
 $permissionGiftCard = c::admin()->permission()->check(['global','orders-all','gift-card-all','gift-card-crud']);
 $permissionSupportCreate = c::admin()->permission()->check(['global','support-all','support-crud']);
 $permissionSupportView = c::admin()->permission()->check(['global','support-all','support-crud', 'support-view']);
-
 ?>
 
 		<? foreach ($this->orders as $order) :  /* @var $order Crunchbutton_Order */?>
@@ -96,6 +95,12 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 							}
 						}
 					?>
+					<br/>
+					<br/>
+					<strong>Order #<?=$order->id?></strong><br/>
+					<a target="blank" href="/vieworder/<?=$order->uuid?>">Drivers view</a><br/>
+					<a target="blank" href="/vieworder/<?=$order->uuid?>/restaurant">Restaurant view</a><br/>
+					<a target="blank" href="/vieworder/<?=$order->uuid?>/customer">Customer view</a>
 
 
 				</td>
