@@ -7,6 +7,7 @@ if( $isDriverCockpit ){
 		$isDriverCockpit = false;
 	}
 }
+$isRestaurant = true;
 ?>
 <table width="100%" celpadding="0" cellspacing="0" class="detail">
 	<thead style="font-weight:bold">
@@ -176,13 +177,14 @@ if( $isDriverCockpit ){
 	</tr>
 <?php 
 
+
 $serviceFee = Util::ceil( ( $subTotal + $order->deliveryFee() ) * Util::ceil( ( $order->service_fee / 100 ), 2 ), 2);
 $totalWithFees = Util::ceil( ( $subTotal + $order->deliveryFee() + $serviceFee ), 2 );
-$total =  Util::ceil( $totalWithFees + $order->tip + $tax, 2 );
+$total =  Util::ceil( $totalWithFees + $order->tip() + $tax, 2 );
 
 $regular_serviceFee = Util::ceil( ( $regular_subTotal + $order->deliveryFee() ) * Util::ceil( ( $order->service_fee / 100 ), 2 ), 2);
 $regular_totalWithFees = Util::ceil( ( $regular_subTotal + $order->deliveryFee() + $regular_serviceFee ), 2 );
-$regular_total =  Util::ceil( $regular_totalWithFees + $order->tip + $regular_tax, 2 )
+$regular_total =  Util::ceil( $regular_totalWithFees + $order->tip() + $regular_tax, 2 )
 
 ?>
 
