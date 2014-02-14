@@ -19,12 +19,12 @@
 					$restaurants = Restaurant::q('select * from restaurant order by name');
 					if( $hasPermissionToAllRestaurants ){
 						foreach ( $restaurants as $restaurant ) {
-							?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+							?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> | <?=$restaurant->community?> | <?=$restaurant->permalink?> </option><?php 
 						}
 					} else {
 						foreach ( $restaurants as $restaurant ) {
 							if( c::admin()->permission()->check( [ "restaurant-{$restaurant->id_restaurant}-edit", "restaurant-{$restaurant->id_restaurant}-all" ] ) ){
-								?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?></option><?php 
+								?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> | <?=$restaurant->community?> | <?=$restaurant->permalink?> </option><?php 
 							}
 						}
 					}
