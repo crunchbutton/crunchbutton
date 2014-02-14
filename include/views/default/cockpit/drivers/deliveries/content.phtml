@@ -27,7 +27,16 @@
 				<td style="vertical-align:top;">
 					<?php 
 						if( $order->driver()->name ){
-							echo $order->driver()->name;
+							echo '<strong>' . $order->driver()->name . '</strong>';
+							if( $order->driver()->phone ){
+								echo '<br/><i class="icon icon-phone"></i> ' . $order->driver()->phone;	
+							}
+							if( $order->driver()->txt ){
+								echo '<br/><i class="icon icon-mobile-phone"></i> ' . $order->driver()->txt;	
+							}
+							if( $order->driver()->email ){
+								echo '<br/><i class="icon icon-envelope"></i> ' . $order->driver()->email;	
+							}
 						} else {
 							echo '<i style="color:#CCC;font-size:11px;">None</i>';
 						}
