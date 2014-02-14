@@ -138,7 +138,29 @@ if( $this->cockpit_url ) { ?>
 	</table>
 <?php } ?>
 
-<div class="xhatch separator-big"></div>
+<?php
+$icon = '';
+if( $isDriverCockpit ){
+	if( $version == 'restaurant' ){
+		$icon = 'restaurant';
+	} else if( $version == 'customer' ){
+		$icon = 'customer';
+	} else {
+		$icon = 'driver';	
+	}
+} else {
+	if( $user ){
+		$icon = 'customer';
+	} else {
+		$icon = 'restaurant';
+	}
+}
+?>
+<div class="xhatch separator-big" style="text-align:right!important;">
+<?php if( $icon != '' ) { ?>
+	<img style="margin:4px 4px 0 0" src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/ico-'. $icon . '.png')?>">
+<?php } ?>
+</div>
 
 <? if (!$user && $order->restaurant()->customer_receipt) : ?>
 	<br /><br />
