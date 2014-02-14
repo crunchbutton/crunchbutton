@@ -18,7 +18,8 @@
 				$date = $order->date(); ?>
 			<tr>
 				<td style="vertical-align:top;">
-					Order #<?php echo $order->id_order; ?>
+					<a href="/vieworder/<?php echo $order->uuid; ?>" target="blank">Order #<?php echo $order->id_order; ?></a>
+					
 					<br />
 					<?php echo $order->restaurant()->name; ?>
 					<br />

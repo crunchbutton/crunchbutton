@@ -7,6 +7,17 @@ if( $isDriverCockpit ){
 		$isDriverCockpit = false;
 	}
 }
+
+// force version at cockpit
+if( $version == 'restaurant' ){
+	$isRestaurant = true;
+	$isDriverCockpit = false;
+}
+if( $version == 'customer' ){
+	$user = true;
+	$isRestaurant = false;
+	$isDriverCockpit = false;	
+}
 ?>
 <table width="100%" celpadding="0" cellspacing="0" class="detail">
 	<thead style="font-weight:bold">
@@ -14,7 +25,7 @@ if( $isDriverCockpit ){
 		<td class="topitem">Item</td>
 		<?php if( $isDriverCockpit ) { ?>
 		<td class="topitem" nowrap="nowrap">Customer Price</td>
-		<td class="topitem" style="font-size:12px;color:#666;">Store Price</td>
+		<td class="topitem" style="width:80px;font-size:12px;color:#666;">Store Price</td>
 		<?php } else { ?>
 			<td class="topitem">Price</td>
 		<?php } ?>
@@ -139,7 +150,6 @@ if( $isDriverCockpit ){
 			<td></td>
 			<td style="text-align:right">Delivery Fee</td>
 			<td>$<?=$order->deliveryFee()?></td>
-			<td></td>
 		</tr>
 	<? endif ; ?>
 
@@ -176,7 +186,6 @@ if( $isDriverCockpit ){
 	</tr>
 <?php 
 
-
 $serviceFee = Util::ceil( ( $subTotal + $order->deliveryFee() ) * Util::ceil( ( $order->service_fee / 100 ), 2 ), 2);
 $totalWithFees = Util::ceil( ( $subTotal + $order->deliveryFee() + $serviceFee ), 2 );
 $total =  Util::ceil( $totalWithFees + $order->tip() + $tax, 2 );
@@ -184,7 +193,6 @@ $total =  Util::ceil( $totalWithFees + $order->tip() + $tax, 2 );
 $regular_serviceFee = Util::ceil( ( $regular_subTotal + $order->deliveryFee() ) * Util::ceil( ( $order->service_fee / 100 ), 2 ), 2);
 $regular_totalWithFees = Util::ceil( ( $regular_subTotal + $order->deliveryFee() + $regular_serviceFee ), 2 );
 $regular_total =  Util::ceil( $regular_totalWithFees + $order->tip() + $regular_tax, 2 )
-
 ?>
 
 	<tr style="font-weight:bold;">

@@ -114,7 +114,7 @@
 <?php
 // customer / cockpit and drivers will see the value with the markup #2369
 $isDriverCockpit = ( $cockpit || $this->cockpit_url );
-echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user, 'isDriverCockpit' => $isDriverCockpit ]]);	
+echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user, 'isDriverCockpit' => $isDriverCockpit, 'version' => $version ]]);	
 
 ;?>
 <br /><br />

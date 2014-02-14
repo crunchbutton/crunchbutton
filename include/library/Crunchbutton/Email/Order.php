@@ -1,6 +1,5 @@
 <?php
 
-
 class Crunchbutton_Email_Order extends Crunchbutton_Email {
 	private $_mailConfig;
 	
@@ -22,10 +21,17 @@ class Crunchbutton_Email_Order extends Crunchbutton_Email {
 		
 		$this->view()->message = $params['message'];
 		
+		if( $params['version'] ){
+			$version = $params['version'];
+		} else {
+			$version = false;
+		}
+
 		$params['messageHtml'] = $this->view()->render('order/index',['display' => true, 'set' => [
 			'order' => $params['order'],
 			'user' => $params['user'],
-			'cockpit' => $params['cockpit']
+			'cockpit' => $params['cockpit'],
+			'version' => $version
 		]]);
 
 		parent::__construct($params);				
