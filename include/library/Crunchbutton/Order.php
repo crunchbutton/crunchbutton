@@ -68,32 +68,35 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		$subtotal = 0;
+		$subtotal_plus_delivery_service_markup = 0;
 
 		$this->id_restaurant = $params['restaurant'];
 
 		$delivery_service_markup = ( $this->restaurant()->delivery_service_markup ) ? $this->restaurant()->delivery_service_markup : 0;
 		$this->delivery_service_markup = $delivery_service_markup;
-		$delivery_service_markup_value = 0;
+
 		foreach ($params['cart'] as $d) {
 			$dish = new Order_Dish;
 			$dish->id_dish = $d['id'];
 			$price = $dish->dish()->price;
-			if( $delivery_service_markup > 0 && $price > 0 ){
-				$price = $price + ( $price * $delivery_service_markup / 100 );
-				$price = number_format( $price, 2 );
-				$delivery_service_markup_value += number_format( $dish->dish()->price * $delivery_service_markup / 100, 2 );
+			$price_delivery_markup = $dish->dish()->price;
+			if( $delivery_service_markup > 0 && $price_delivery_markup > 0 ){
+				$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
+				$price_delivery_markup = number_format( $price_delivery_markup, 2 );
 			}
 			$subtotal += $price;
+			$subtotal_plus_delivery_service_markup += $price_delivery_markup;
 			if ($d['options']) {
 				foreach ($d['options'] as $o) {
 					$option = new Order_Dish_Option;
 					$option->id_option = $o;
 					$price = $option->option()->price;
-					if( $delivery_service_markup > 0 && $price > 0 ){
+					$price_delivery_markup = $option->option()->price;
+					if( $delivery_service_markup > 0 && $price_delivery_markup > 0 ){
 						$price = $price + ( $price * $delivery_service_markup / 100 );
 						$price = number_format( $price, 2 );
-						$delivery_service_markup_value += number_format( $option->option()->price * $delivery_service_markup / 100, 2 );
 					}
+					$subtotal_plus_delivery_service_markup += $price_delivery_markup;
 					$subtotal += $price;
 //                    $subtotal += $option->option()->optionPrice($d['options']);
 					$dish->_options[] = $option;
@@ -103,12 +106,13 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		
 		// to make sure the value will be 2 decimals
-		$this->delivery_service_markup_value = number_format( $delivery_service_markup_value, 2 );
+		$this->delivery_service_markup_value = Util::ceil( $subtotal_plus_delivery_service_markup - $subtotal, 2 );
 
 		$this->_card = $params['card'];
 
-		// price
-		$this->price = Util::ceil($subtotal, 2);
+		// price and price_plus_delivery_markup #2236
+		$this->price = Util::ceil( $subtotal, 2 );
+		$this->price_plus_delivery_markup = Util::ceil( $subtotal_plus_delivery_service_markup, 2 );
 
 		// delivery fee
 		$this->delivery_fee = ($this->restaurant()->delivery_fee && $this->delivery_type == 'delivery') ? $this->restaurant()->delivery_fee : 0;
@@ -116,9 +120,9 @@ class Crunchbutton_Order extends Cana_Table {
 		// service fee for customer
 		$this->service_fee = $this->restaurant()->fee_customer;
 		$serviceFee = ($this->price + $this->delivery_fee) * Util::ceil(($this->service_fee/100),2);
-		$serviceFee = Util::ceil($serviceFee, 2);
-		$totalWithFees = $this->price + $this->delivery_fee + $serviceFee;
-		$totalWithFees = Util::ceil($totalWithFees, 2);
+		$serviceFee = Util::ceil( $serviceFee, 2);
+		$totalWithFees = $this->price + $this->delivery_fee + $serviceFee;	
+		$totalWithFees = Util::ceil( $totalWithFees, 2);
 
 		// Start to store the fee_restaurant because it could change and we need to know the
 		// exacly value at the moment the user ordered his food
@@ -140,11 +144,19 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		// tax
+		/* taxes should be calculate using the price without markup - #2236 and #2248 */
 		$this->tax = $this->restaurant()->tax;
+		$baseToCalcTax = $totalWithFees;
+		if( intval( $this->restaurant()->delivery_service ) != 0 ){
+			// 
+			$baseToCalcTax -= $this->delivery_fee;
+		}
+		
 		$tax = $totalWithFees * ($this->tax/100);
 		$tax = Util::ceil($tax, 2);
 
 		$this->final_price = Util::ceil($totalWithFees + $tip + $tax, 2); // price
+		$this->final_price_plus_delivery_markup = Util::ceil($this->final_price + $this->delivery_service_markup_value, 2);
 
 		$this->order = json_encode($params['cart']);
 
@@ -519,7 +531,13 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function charged(){
-		return number_format( abs( ( $this->final_price ) - ( $this->chargedByCredit() ) ), 2 );
+
+		if( $this->final_price_plus_delivery_markup && floatval( $this->final_price_plus_delivery_markup ) > 0 ){
+			$final_price = $this->final_price_plus_delivery_markup;
+		} else {
+			$final_price = $this->final_price;
+		}
+		return number_format( abs( ( $final_price ) - ( $this->chargedByCredit() ) ), 2 );
 	}
 
 	public function debitFromUserCredit( $id_user ){
@@ -1411,8 +1429,21 @@ class Crunchbutton_Order extends Cana_Table {
 		unset($out['id_user']);
 		unset($out['id']);
 		unset($out['id_order']);
+		unset($out['delivery_service_markup']);
+		unset($out['delivery_service_markup_value']);
 
 		$out['id'] = $this->uuid;
+
+		if( $out[ 'price_plus_delivery_markup' ] && floatval( $out[ 'price_plus_delivery_markup' ] ) > 0 ){
+			$out[ 'price' ] = $out[ 'price_plus_delivery_markup' ];	
+		}
+
+		if( $out[ 'final_price_plus_delivery_markup' ] && floatval( $out[ 'final_price_plus_delivery_markup' ] ) > 0 ){
+			$out[ 'final_price' ] = $out[ 'final_price_plus_delivery_markup' ];	
+		}
+
+		unset( $out[ 'price_plus_delivery_markup' ] );
+		unset( $out[ 'final_price_plus_delivery_markup' ] );
 		
 		if( isset( $out[ 'type' ] ) && $out[ 'type' ] == 'compressed' ){
 			$out['_restaurant_name'] = $out['restaurant_name'];
@@ -1446,6 +1477,7 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 			$timezone = new DateTimeZone($this->restaurant()->timezone);
 		}
+
 
 		$date = new DateTime($this->date);
 		$date->setTimeZone($timezone);

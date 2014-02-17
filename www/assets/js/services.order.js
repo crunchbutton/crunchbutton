@@ -242,6 +242,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	service.subtotal = function () {
 		return service.cart.subtotal();
 	}
+	// remove the markup at subtotal
+	service.subtotalWithoutMarkup = function () {
+		return service.cart.subtotalWithoutMarkup();
+	}
 	/**
 	 * delivery cost
 	 *
@@ -322,13 +326,20 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	service.totalbreakdown = function () {
 		var elements = {};
 		var total = this.subtotal();
+		var totalWithoutMarkup = this.subtotalWithoutMarkup();
 		var feeTotal = total;
 		elements['subtotal'] = this.subtotal();
+		elements['subtotalWithoutMarkup'] = this.subtotalWithoutMarkup();
 		elements['delivery'] = this._breackDownDelivery();
 		feeTotal += elements['delivery'];
 		elements['fee'] = this._breackDownFee(feeTotal);
 		feeTotal += elements['fee'];
-		elements['taxes'] = this._breackDownTaxes(feeTotal);
+		/* taxes should be calculate using the price without markup - #2236 and #2248 */
+		if( parseInt( service.restaurant.delivery_service ) ==  0 ){
+			totalWithoutMarkup += elements['delivery'];
+		}
+		console.log('service.restaurant.delivery_service',service.restaurant.delivery_service);
+		elements['taxes'] = this._breackDownTaxes( parseFloat( totalWithoutMarkup ) );
 		elements['tip'] = this._breakdownTip(total);
 		return elements;
 	}

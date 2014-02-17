@@ -220,6 +220,27 @@ NGApp.factory('CartService', function () {
 			}
 		}
 		total = App.ceil(total);
+		service.subtotalWithoutMarkup();
+		return total;
+	}
+	service.subtotalWithoutMarkup = function () {
+		var
+		total = 0,
+			options;
+		for (var x in service.restaurants[ service.id_restaurant ].items) {
+			total += parseFloat(App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].price);
+			if( App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].makup ){
+				total -= parseFloat(App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].makup);	
+			}
+			options = service.restaurants[ service.id_restaurant ].items[x].options;
+			for (var xx in options) {
+				var option = App.cached['Option'][options[xx]];
+				if (option === undefined) continue; // option does not exist anymore
+				total += parseFloat(option.optionPriceWithoutMarkup(options));
+			}
+		}
+		total = App.ceil(total);
+		console.log('subtotalWithoutMarkup',total);
 		return total;
 	}
 	service.totalItems = function () {
