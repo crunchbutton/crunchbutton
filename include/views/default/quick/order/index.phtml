@@ -33,7 +33,11 @@
 	<div class="order-item-block">
 		<div class="order-icon"><i class="icon-timer"></i></div>
 		<div class="order-info">
-			<?=$this->order->date()->modify('+'.$this->order->restaurant()->delivery_estimated_time.' minutes')->format('h:i A')?>
+			<?php 
+			if( $this->order->restaurant()->delivery_estimated_time ){
+				$this->order->date()->modify('+'.$this->order->restaurant()->delivery_estimated_time.' minutes')->format('h:i A');	
+			}
+			 ?>
 		</div>
 	</div>
 	
