@@ -1,7 +1,25 @@
 var Option = function(id) {
 	this.type = 'Option';
 	var self = this;
-	
+
+	self.optionPriceWithoutMarkup = function(options) {
+		var price = parseFloat(self.price);
+		if( self.markup ){
+			prive -= parseFloat(self.markup);	
+		}
+		
+		for (var x in self.prices) {
+			if (options.indexOf(self.prices[x].id_option_parent) !== -1) {
+				price += parseFloat(self.prices[x].price);
+				if( self.prices[x].markup ){
+					price -= self.prices[x].markup;
+				}
+			}
+		}
+
+		return price;
+	}
+
 	self.optionPrice = function(options) {
 		var price = parseFloat(self.price);
 
