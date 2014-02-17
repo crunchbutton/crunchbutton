@@ -86,6 +86,15 @@ class Controller_drivers extends Crunchbutton_Controller_Account {
 				}
 				break;
 
+			case 'action':
+				$id_order = c::getPagePiece( 3 );
+				c::view()->id_order = $id_order;
+				c::view()->order = Order::o( $id_order );
+				c::view()->drivers = Admin::drivers();
+				c::view()->actions = [ Crunchbutton_Order_Action::DELIVERY_ACCEPTED, Crunchbutton_Order_Action::DELIVERY_PICKEDUP, Crunchbutton_Order_Action::DELIVERY_DELIVERED, Crunchbutton_Order_Action::DELIVERY_REJECTED ];
+				c::view()->layout( 'layout/ajax' );
+				c::view()->display( 'drivers/deliveries/action' );
+				break;
 			default:
 
 				$id_admin = c::getPagePiece( 2 );

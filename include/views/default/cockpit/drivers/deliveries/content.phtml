@@ -19,7 +19,8 @@
 			<tr>
 				<td style="vertical-align:top;">
 					<a href="/vieworder/<?php echo $order->uuid; ?>" target="blank">Order #<?php echo $order->id_order; ?></a>
-					
+					<br/>
+					<a href="http://cbtn.io/<?php echo $order->id_order; ?>" target="blank">http://cbtn.io/<?php echo $order->id_order; ?></a>
 					<br />
 					<?php echo $order->restaurant()->name; ?>
 					<br />
@@ -59,18 +60,21 @@
 				</td>
 				<td style="vertical-align:top;">
 				<?php 
+				$editActions = true;
 				$_log = '';
 				$logs = $order->actions();
 				foreach( $logs as $log ){
 					$_date = $log->date();
 					switch ( $log->type ) {
 						case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+							$editActions = false;
 							$color = '#fb3927';
 							break;
 						case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
 						case Crunchbutton_Order_Action::DELIVERY_PICKEDUP:
 						case Crunchbutton_Order_Action::DELIVERY_DELIVERED:
 							$color = '#009c48';
+							$editActions = false;
 							break;
 						default:
 							$color = '#000';
@@ -83,6 +87,15 @@
 					}
 						$_log .= '<span style="color:' . $color . '">' . $log->type . '</span> : ' . $_date->format('g:i:s A') . '<br/>';
 				}
+
+				if( $editActions ){
+					?>
+						<div>
+							<button onclick="deliveries.action( <?php echo $order->id_order ?> );" class="btn btn-blue"> Assign driver</button>
+						</div>
+					<?php
+				}
+
 				if( $timeToDelivery != '' ){
 					echo '<strong style="color:#666;font-size:12px;">Delivered in ' . $timeToDelivery . '</strong><br/>';
 				}
@@ -95,6 +108,5 @@
 				</td>
 			</tr>
 		<?php } ?>
-
 	</table>
 <?php } ?>

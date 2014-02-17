@@ -97,11 +97,26 @@
 		</div>
 	</div>
 </div>
-
+<div class="modal hide fade" id="modal-hours" style="display: none;">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" type="button">×</button>
+		<h6 id="modal-hours-title">Assign driver</h6>
+	</div>
+	<div class="modal-body" id="modal-hours-body"></div>
+	<div class="modal-footer">
+		<button class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+</div>
 <script>
-
 var deliveries = {};
 
+deliveries.action = function( id_order ){
+	var url = '/drivers/deliveries/action/' + id_order;
+	$.get( url, function( data ) {
+		$( '#modal-hours' ).modal();
+		$( '#modal-hours-body' ).html( data );
+	} );
+};
 deliveries.load = function(){
 	$( '.orders-loader' ).show();
 	$( '.orders-content' ).html( '' );
@@ -148,4 +163,38 @@ $(function() {
 	deliveries.load();
 
 } );
+
+deliveries.assign = function(){
+	var id_admin = $( '#form-id_admin' ).val();
+	var id_order = $( '#form-id_order' ).val();
+	if( $.trim( id_admin ) == '' ){
+		alert( 'Please select a driver' );
+		$( '#form-id_admin' ).focus();
+		return;
+	}
+
+	var actions = [];
+	$( '[name="form-action"]' ).each( function(){
+		var checkbox = $( this );
+		if( checkbox.is( ':checked' ) ){
+			actions.push( checkbox.val() );	
+		}
+	} );
+
+	$.ajax( {
+		url: '/api/drivers/assign/order/' + id_order,
+		method: 'POST',
+		data: { 'id_admin' : id_admin, 'actions' : actions },
+		dataType: 'json',
+	} ).done( function( data ) {
+		if( data.success ){
+			$( '#modal-hours' ).modal( 'hide' );
+			deliveries.load();
+		} else {
+			alert( 'Ops, error! ' + data.error );
+		}
+	} );
+
+};
+
 </script>
