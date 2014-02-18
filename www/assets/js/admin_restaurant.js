@@ -1238,7 +1238,7 @@ var ADMIN = {
 		}
 
 		// About payment
-		if( $('#restaurant-payment_method').val() == '' ){
+		if( $( '#restaurant-formal-relationship-container' ).text() == 'yes' && $('#restaurant-payment_method').val() == '' ){
 			alert( 'Please select the payment method.' );
 			$('#restaurant-payment_method').focus();
 			return;
