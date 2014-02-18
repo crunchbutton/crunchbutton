@@ -1020,7 +1020,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 								$price = $price + ( $price * $delivery_service_markup / 100 );
 								$price = number_format( $price, 2 );
 								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'price' ] = $price;	
-								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'makup' ] = number_format( $price - $price_original, 2 );	
+								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'markup' ] = number_format( $price - $price_original, 2 );	
 							}
 							// Options
 							for( $k=0; $k<( count( $out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ] ) ); $k++ ){
@@ -1031,7 +1031,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 									$price = $price + ( $price * $delivery_service_markup / 100 );
 									$price = number_format( $price, 2 );
 									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'price' ] = $price;
-									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'makup' ] = number_format( $price - $price_original, 2 );	
+									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'markup' ] = number_format( $price - $price_original, 2 );	
 								}
 							}
 						}

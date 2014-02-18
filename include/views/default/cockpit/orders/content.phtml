@@ -41,6 +41,10 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 				<td>
 					<a href="/vieworder/<?=$order->uuid?>">#<?=$order->id?></a>
 					<br/>
+					<a title="Drivers view" target="blank" href="/vieworder/<?=$order->uuid?>"><img style="opacity:.7" src="/assets/images/mprinter/ico-driver.png"></a>&nbsp;&nbsp;&nbsp;
+					<a target="blank" title="Restaurant view" href="/vieworder/<?=$order->uuid?>/restaurant"><img style="opacity:.7" src="/assets/images/mprinter/ico-restaurant.png"></a>&nbsp;&nbsp;&nbsp;
+					<a target="blank" title="Customer view" href="/vieworder/<?=$order->uuid?>/customer"><img style="opacity:.7" src="/assets/images/mprinter/ico-customer.png"></a>
+					<br/>
 					<br/>
 					<?=$order->env?>
 					<br/>
@@ -80,7 +84,6 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					<br/>
 
 					<?
-
 						$support = Support::getSupportForOrder($order->id);
 						if($suppor ) {
 
@@ -96,13 +99,6 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						}
 					?>
 					<br/>
-					<br/>
-					<strong>Order #<?=$order->id?></strong><br/>
-					<a target="blank" href="/vieworder/<?=$order->uuid?>">Drivers view</a><br/>
-					<a target="blank" href="/vieworder/<?=$order->uuid?>/restaurant">Restaurant view</a><br/>
-					<a target="blank" href="/vieworder/<?=$order->uuid?>/customer">Customer view</a>
-
-
 				</td>
 				<td>
 					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
@@ -126,7 +122,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						<i class="icon-globe"></i> <?=$order->restaurant()->timezone?>
 					</span>
 				</td>
-				<td style="width: 300px; white-space: normal;">
+				<td style="width: 230px; white-space: normal;">
 					<ul>
 					<? foreach ($order->dishes() as $dish) : ?>
 						<li>
@@ -151,12 +147,26 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					<table style="margin:0;">
 						<tr>
 							<td style="border-top:0;">Subtotal</td>
-							<td style="border-top:0;">$<?=number_format($order->price,2)?></td>
+							<td style="border-top:0;">$
+							<?php
+							if( $order->price_plus_delivery_markup && $order->price_plus_delivery_markup > 0 ) {
+								echo number_format( $order->price_plus_delivery_markup, 2 );
+							} else {
+								echo number_format( $order->price, 2 );
+							}
+							?>
+							</td>
 						</tr>
 						<?php if( $order->delivery_service_markup_value > 0 ) { ?>
 						<tr>
 							<td nowrap="nowrap">Delivery service percent <br/>(included at subtotal) <br/>
-								(+<?=$order->delivery_service_markup ? $order->delivery_service_markup : '0'?>% of $<?=number_format($order->price - $order->delivery_service_markup_value,2)?>)
+								(+<?=$order->delivery_service_markup ? $order->delivery_service_markup : '0'?>% of $
+								<?php 
+								if( $order->price_plus_delivery_markup ) {
+									echo number_format( $order->price, 2 );
+								} else { 
+									number_format( $order->price - $order->delivery_service_markup_value, 2 );
+								} ?>)
 							</td>
 							<td>
 								$<?=number_format( $order->delivery_service_markup_value, 2 )?> 
@@ -174,7 +184,18 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 							<td>$<?=$order->deliveryFee()?></td>
 						</tr>
 						<tr>
-							<td>Tax</td>
+							<td nowrap="">
+							Tax <br/>
+								<?php 
+								if( $order->tax ){
+									if( $order->price_plus_delivery_markup && $order->delivery_service_markup_value ) {
+										echo $order->tax . '% of ' . number_format( $order->price, 2 ) . '<br/>(subtotal without markup)';
+									} else { 
+										echo $order->tax . '% of ' . number_format( $order->price, 2 ) ;
+									} 
+								}
+								?>
+							</td>
 							<td>$<?=$order->tax()?> (<?=$order->tax ? $order->tax : '0'?>%)</td>
 						</tr>
 						<tr>
@@ -183,7 +204,14 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						</tr>
 						<tr>
 							<td>Total</td>
-							<td>$<?=number_format($order->final_price,2)?></td>
+							<td>$
+							<?php
+							if( $order->price_plus_delivery_markup && $order->final_price_plus_delivery_markup > 0 ) {
+								echo number_format( $order->final_price_plus_delivery_markup, 2 );
+							} else {
+								echo number_format( $order->final_price, 2 );
+							}
+							?></td>
 						</tr>
 						<?php if( $order->chargedByCredit() > 0 ) { ?>
 						<tr style="background:#F5F5F5;">
