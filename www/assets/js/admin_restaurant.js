@@ -1236,6 +1236,14 @@ var ADMIN = {
 			$('#restaurant-community').focus();
 			return;
 		}
+
+		// About payment
+		if( $('#restaurant-payment_method').val() == '' ){
+			alert( 'Please select the payment method.' );
+			$('#restaurant-payment_method').focus();
+			return;
+		}
+
 		validation_warnings = DOM_MAP.validate();
 		if(validation_warnings.length) {
 			console.log(validation_warnings);
