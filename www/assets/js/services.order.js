@@ -332,19 +332,15 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		elements['subtotalWithoutMarkup'] = this.subtotalWithoutMarkup();
 		elements['delivery'] = this._breackDownDelivery();
 		feeTotal += elements['delivery'];
-		elements['fee'] = this._breackDownFee(feeTotal);
+		elements['fee'] = this._breackDownFee( feeTotal );
 		feeTotal += elements['fee'];
 		/* 	- taxes should be calculated using the price without markup 
 				- if restaurant uses 3rd party delivery service remove the delivery_fee
 				- see #2236 and #2248 */
-		// Check if the restaurant uses 3rd party delivery 
+		
+		// Check if the restaurant uses 3rd party delivery if it not, add the delivery fee
 		if( parseInt( service.restaurant.delivery_service ) ==  0 ){
-			// Add the calculated fee and the delivery value
-			totalWithoutMarkup += elements['fee'];
 			totalWithoutMarkup += elements[ 'delivery' ];
-		} else {
-			// recalculate the fee whitout the delivery because the restaurant is using 3rd delivery
-			totalWithoutMarkup += this._breackDownFee( totalWithoutMarkup );
 		}
 		// Caculate the tax using the total without the marked up prices
 		elements['taxes'] = this._breackDownTaxes( totalWithoutMarkup );
