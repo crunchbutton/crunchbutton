@@ -152,12 +152,11 @@ class Crunchbutton_Order extends Cana_Table {
 				- if restaurant uses 3rd party delivery service remove the delivery_fee
 				- see #2236 and #2248 */
 		if( intval( $this->restaurant()->delivery_service ) == 1 ){
-			$baseToCalcTaxServiceFee = ( $this->price ) * Util::ceil( ( $this->service_fee / 100 ), 2 );
-			$baseToCalcTax = Util::ceil( $this->price + $baseToCalcTaxServiceFee, 2 );
+			$baseToCalcTax = Util::ceil( $this->price, 2 );
 		} else {
-			$baseToCalcTaxServiceFee = ( $this->price + $this->delivery_fee ) * Util::ceil( ( $this->service_fee / 100 ), 2 );
-			$baseToCalcTax = Util::ceil( $this->price + $baseToCalcTaxServiceFee + $this->delivery_fee, 2 );
+			$baseToCalcTax = Util::ceil( $this->price + $this->delivery_fee, 2 );
 		}
+
 		$this->tax = $this->restaurant()->tax;
 		$tax = $baseToCalcTax * ( $this->tax / 100 );
 		$tax = Util::ceil( $tax, 2 );
@@ -814,11 +813,9 @@ class Crunchbutton_Order extends Cana_Table {
 				- if restaurant uses 3rd party delivery service remove the delivery_fee
 				- see #2236 and #2248 */
 		if( intval( $this->restaurant()->delivery_service ) == 1 ){
-			$baseToCalcTaxServiceFee = ( $this->price ) * Util::ceil( ( $this->service_fee / 100 ), 2 );
-			$baseToCalcTax = Util::ceil( $this->price + $baseToCalcTaxServiceFee, 2 );
+			$baseToCalcTax = Util::ceil( $this->price, 2 );
 		} else {
-			$baseToCalcTaxServiceFee = ( $this->price + $this->deliveryFee() ) * Util::ceil( ( $this->service_fee / 100 ), 2 );
-			$baseToCalcTax = Util::ceil( $this->price + $baseToCalcTaxServiceFee + $this->delivery_fee, 2 );
+			$baseToCalcTax = Util::ceil( $this->price + $this->delivery_fee, 2 );
 		}
 		return Util::ceil( $baseToCalcTax * ( $this->tax / 100 ), 2 );
 	}
