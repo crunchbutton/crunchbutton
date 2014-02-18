@@ -5,7 +5,7 @@ var Option = function(id) {
 	self.optionPriceWithoutMarkup = function(options) {
 		var price = parseFloat(self.price);
 		if( self.markup ){
-			prive -= parseFloat(self.markup);	
+			price -= parseFloat(self.markup);	
 		}
 		
 		for (var x in self.prices) {

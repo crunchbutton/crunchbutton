@@ -30,10 +30,6 @@ if( $version == 'customer' ){
 			<td class="topitem">Price</td>
 		<?php } ?>
 	</thead>
-<?php  
-	$subTotal = 0;
-	$regular_subTotal = 0;
-?>
 	<? foreach ($order->dishes() as $dish) : ?>
 		<tr>
 			<td class="fooditem">1</td>
@@ -114,10 +110,6 @@ if( $version == 'customer' ){
 			</td>
 			<?php } ?>
 		</tr>
-		<?php
-		$subTotal += $price;
-		$regular_subTotal += $regular_price;
-		?>
 	<? endforeach ; ?>
 
 	<tr class="class">
@@ -126,53 +118,64 @@ if( $version == 'customer' ){
 		<td>
 		$<?php 
 		if( $isRestaurant ){
-			echo number_format( $regular_subTotal, 2 );
+			echo number_format( $order->price, 2 );
 		} else {
-			echo number_format( $subTotal, 2 );	
+			echo number_format( $order->price_plus_delivery_markup, 2 );	
 		}
 		?>
 		</td>
 		<?php if( $isDriverCockpit ) { ?>
 		<td style="font-size:12px;color:#666;">
-		$<?php echo number_format( $regular_subTotal, 2 ); ?>
+		$<?php echo number_format( $order->price, 2 ); ?>
 		</td>
 		<?php } ?>
 	</tr>
-	<? if ($order->pay_type == 'card' && $order->tip) : ?>
+	<? if ( $order->pay_type == 'card' && $order->tip ) : ?>
 		<tr>
 			<td></td>
 			<td style="text-align:right">Tip <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $order->tip . '%'; } ?></td>
 			<td>$<?=$order->tip()?></td>
+			<?php if( $isDriverCockpit ) { ?>
+			<td style="font-size:12px;color:#666;">
+				$<?=$order->tip()?>
+			</td>
+			<?php } ?>
 		</tr>
 	<? endif ; ?>
-	<? if ($order->restaurant()->delivery_fee) : ?>
+	<? if ( $order->restaurant()->delivery_fee ) : ?>
 		<tr>
 			<td></td>
 			<td style="text-align:right">Delivery Fee</td>
 			<td>$<?=$order->deliveryFee()?></td>
+			<?php if( $isDriverCockpit ) { ?>
+			<td style="font-size:12px;color:#666;">
+				$<?=$order->deliveryFee()?>
+			</td>
+			<?php } ?>
 		</tr>
 	<? endif ; ?>
 
-	<? if ($order->restaurant()->fee_customer) : ?>
+	<? if ( $order->restaurant()->fee_customer ) : ?>
 		<tr>
 			<td></td>
 			<td style="text-align:right">Service Fee</td>
 			<td>$<?=$order->serviceFee()?></td>
-			<td></td>
+			<?php if( $isDriverCockpit ) { ?>
+			<td style="font-size:12px;color:#666;">
+				$$<?=$order->serviceFee()?>
+			</td>
+			<?php } ?>
 		</tr>
 	<? endif ; ?>
 	
-	<?php
-	$tax = number_format( ( $subTotal + $order->deliveryFee() + $order->serviceFee() ) * ( $order->tax / 100 ) , 2 );
-	$regular_tax = number_format( ( $regular_subTotal + $order->deliveryFee() + $order->serviceFee() ) * ( $order->tax / 100 ) , 2 );
-	?>
 	<tr>
 		<td></td>
 		<td style="text-align:right">Tax</td>
 		<td>
 		$<?php 
+		$tax = $order->tax();
 		if( $isRestaurant ){
-			echo number_format( $regular_tax, 2 );
+			echo number_format( $tax, 2 );
 		} else {
 			echo number_format( $tax, 2 );	
 		}
@@ -180,20 +183,10 @@ if( $version == 'customer' ){
 		</td>
 		<?php if( $isDriverCockpit ) { ?>
 		<td style="font-size:12px;color:#666;">
-			$<?php echo number_format( $regular_tax, 2 ); ?>
+			$<?php echo number_format( $tax, 2 ); ?>
 		</td>
 		<?php } ?>
 	</tr>
-<?php 
-
-$serviceFee = Util::ceil( ( $subTotal + $order->deliveryFee() ) * Util::ceil( ( $order->service_fee / 100 ), 2 ), 2);
-$totalWithFees = Util::ceil( ( $subTotal + $order->deliveryFee() + $serviceFee ), 2 );
-$total =  Util::ceil( $totalWithFees + $order->tip() + $tax, 2 );
-
-$regular_serviceFee = Util::ceil( ( $regular_subTotal + $order->deliveryFee() ) * Util::ceil( ( $order->service_fee / 100 ), 2 ), 2);
-$regular_totalWithFees = Util::ceil( ( $regular_subTotal + $order->deliveryFee() + $regular_serviceFee ), 2 );
-$regular_total =  Util::ceil( $regular_totalWithFees + $order->tip() + $regular_tax, 2 )
-?>
 
 	<tr style="font-weight:bold;">
 		<td></td>
@@ -201,15 +194,15 @@ $regular_total =  Util::ceil( $regular_totalWithFees + $order->tip() + $regular_
 		<td>
 		$<?php 
 		if( $isRestaurant ){
-			echo number_format( $regular_total, 2 );
+			echo number_format( $order->final_price, 2 );
 		} else {
-			echo number_format( $total, 2 );	
+			echo number_format( $order->final_price_plus_delivery_markup, 2 );
 		}
 		?>
 		</td>
 		<?php if( $isDriverCockpit ) { ?>
 		<td style="font-size:12px;color:#666;">
-			$<?php echo number_format( $regular_total, 2 ); ?>
+			$<?php echo number_format( $order->final_price, 2 ); ?>
 		</td>
 		<?php } ?>
 	</tr>

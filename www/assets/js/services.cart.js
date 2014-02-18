@@ -229,8 +229,8 @@ NGApp.factory('CartService', function () {
 			options;
 		for (var x in service.restaurants[ service.id_restaurant ].items) {
 			total += parseFloat(App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].price);
-			if( App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].makup ){
-				total -= parseFloat(App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].makup);	
+			if( App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].markup ){
+				total -= parseFloat(App.cached['Dish'][service.restaurants[ service.id_restaurant ].items[x].id].markup);	
 			}
 			options = service.restaurants[ service.id_restaurant ].items[x].options;
 			for (var xx in options) {
@@ -240,7 +240,6 @@ NGApp.factory('CartService', function () {
 			}
 		}
 		total = App.ceil(total);
-		console.log('subtotalWithoutMarkup',total);
 		return total;
 	}
 	service.totalItems = function () {

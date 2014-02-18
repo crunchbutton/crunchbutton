@@ -79,8 +79,8 @@ class Crunchbutton_Order extends Cana_Table {
 			$dish = new Order_Dish;
 			$dish->id_dish = $d['id'];
 			$price = $dish->dish()->price;
-			$price_delivery_markup = $dish->dish()->price;
-			if( $delivery_service_markup > 0 && $price_delivery_markup > 0 ){
+			$price_delivery_markup = $price;
+			if( $delivery_service_markup && $price_delivery_markup > 0 ){
 				$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
 				$price_delivery_markup = number_format( $price_delivery_markup, 2 );
 			}
@@ -91,10 +91,10 @@ class Crunchbutton_Order extends Cana_Table {
 					$option = new Order_Dish_Option;
 					$option->id_option = $o;
 					$price = $option->option()->price;
-					$price_delivery_markup = $option->option()->price;
-					if( $delivery_service_markup > 0 && $price_delivery_markup > 0 ){
-						$price = $price + ( $price * $delivery_service_markup / 100 );
-						$price = number_format( $price, 2 );
+					$price_delivery_markup = $price;
+					if( $delivery_service_markup && $price_delivery_markup > 0 ){
+						$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
+						$price_delivery_markup = number_format( $price_delivery_markup, 2 );
 					}
 					$subtotal_plus_delivery_service_markup += $price_delivery_markup;
 					$subtotal += $price;
@@ -130,7 +130,6 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// tip
 		$this->tip = $params['tip'];
-
 		if(!strcmp($this->tip, 'autotip')) {
 			$this->tip = floatval($params['autotip_value']);
 			$tip = $this->tip;
@@ -138,25 +137,33 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->tip_type = static::TIP_NUMBER;
 		}
 		else {
-			$tip = ($this->price * ($this->tip/100));
-			$tip = Util::ceil($tip, 2);
+			// tip - percent
+			/* 	- to calculate the tip it must use as reference the price with mark up
+						because the marked up price was the one shown the the user 
+					- see talk between pererinha and david at hipchat 02/17/2014 
+						https://github.com/crunchbutton/crunchbutton/issues/2248#issuecomment-35381055 */
+			$tip = ( $this->price_plus_delivery_markup * ( $this->tip / 100 ) );
+			$tip = Util::ceil( $tip, 2 );
 			$this->tip_type = static::TIP_PERCENT;
 		}
 
 		// tax
-		/* taxes should be calculate using the price without markup - #2236 and #2248 */
-		$this->tax = $this->restaurant()->tax;
-		$baseToCalcTax = $totalWithFees;
-		if( intval( $this->restaurant()->delivery_service ) != 0 ){
-			// 
-			$baseToCalcTax -= $this->delivery_fee;
+		/* 	- taxes should be calculated using the price without markup  
+				- if restaurant uses 3rd party delivery service remove the delivery_fee
+				- see #2236 and #2248 */
+		if( intval( $this->restaurant()->delivery_service ) == 1 ){
+			$baseToCalcTaxServiceFee = ( $this->price ) * Util::ceil( ( $this->service_fee / 100 ), 2 );
+			$baseToCalcTax = Util::ceil( $this->price + $baseToCalcTaxServiceFee, 2 );
+		} else {
+			$baseToCalcTaxServiceFee = ( $this->price + $this->delivery_fee ) * Util::ceil( ( $this->service_fee / 100 ), 2 );
+			$baseToCalcTax = Util::ceil( $this->price + $baseToCalcTaxServiceFee + $this->delivery_fee, 2 );
 		}
-		
-		$tax = $totalWithFees * ($this->tax/100);
-		$tax = Util::ceil($tax, 2);
+		$this->tax = $this->restaurant()->tax;
+		$tax = $baseToCalcTax * ( $this->tax / 100 );
+		$tax = Util::ceil( $tax, 2 );
 
-		$this->final_price = Util::ceil($totalWithFees + $tip + $tax, 2); // price
-		$this->final_price_plus_delivery_markup = Util::ceil($this->final_price + $this->delivery_service_markup_value, 2);
+		$this->final_price = Util::ceil( $totalWithFees + $tip + $tax, 2 ); // price
+		$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value, 2 );
 
 		$this->order = json_encode($params['cart']);
 
@@ -789,12 +796,31 @@ class Crunchbutton_Order extends Cana_Table {
 		if( $this->tip_type == self::TIP_NUMBER ){
 			return number_format( $this->tip, 2 );
 		} else {
-			return number_format($this->price * ($this->tip/100),2);	
+			/* 	- to calculate the tip it must use as reference the price with mark up
+						because the marked up price was the one shown the the user 
+					- see talk between pererinha and david at hipchat 02/17/2014 
+						https://github.com/crunchbutton/crunchbutton/issues/2248#issuecomment-35381055 */
+			if( $this->price_plus_delivery_markup && $this->price_plus_delivery_markup > 0 ){
+				$tip = ( $this->price_plus_delivery_markup * ( $this->tip / 100 ) );	
+			} else {
+				$tip = ( $this->price * ( $this->tip / 100 ) );
+			}
+			return number_format( $tip, 2 );
 		}
 	}
 
 	public function tax() {
-		return number_format(($this->price + $this->deliveryFee() + $this->serviceFee()) * ($this->tax/100),2);
+		/* 	- taxes should be calculated using the price without markup  
+				- if restaurant uses 3rd party delivery service remove the delivery_fee
+				- see #2236 and #2248 */
+		if( intval( $this->restaurant()->delivery_service ) == 1 ){
+			$baseToCalcTaxServiceFee = ( $this->price ) * Util::ceil( ( $this->service_fee / 100 ), 2 );
+			$baseToCalcTax = Util::ceil( $this->price + $baseToCalcTaxServiceFee, 2 );
+		} else {
+			$baseToCalcTaxServiceFee = ( $this->price + $this->deliveryFee() ) * Util::ceil( ( $this->service_fee / 100 ), 2 );
+			$baseToCalcTax = Util::ceil( $this->price + $baseToCalcTaxServiceFee + $this->delivery_fee, 2 );
+		}
+		return Util::ceil( $baseToCalcTax * ( $this->tax / 100 ), 2 );
 	}
 
 	public function deliveryFee() {
