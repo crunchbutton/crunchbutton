@@ -1103,9 +1103,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			];
 		}
 
-
 		// get the legacy data
-		$out = array_merge( $out, $this->hours_legacy() );
+		$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 
 		return $out;
 	}
@@ -1459,7 +1458,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	*/
 
 	// return the hours info used at iphone native app
-	public function hours_legacy(){
+	public function hours_legacy( $isCockpit ){
 
 		$data = [];
 		$data[ 'open_for_business' ] = $this->open_for_business;
@@ -1534,7 +1533,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		foreach ( $hours as $hours ) {
 			$_hours[ $hours->day ][] = [ $hours->time_open, $hours->time_close ];
 		}
-		$data[ '_hours' ] = Hour::mergeHolidays( $_hours, $this, false );
+
+		if( !$isCockpit ){
+			$data[ '_hours' ] = Hour::mergeHolidays( $_hours, $this, false );
+		}
+
 		$_hours_converted_utc = Hour::hoursStartingMondayUTC( $_hours );
 		$hours_converted_utc = [];
 		foreach( $_hours_converted_utc as $_hour_converted_utc ){
