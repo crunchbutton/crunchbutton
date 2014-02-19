@@ -97,7 +97,11 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						}
 						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
 						if( !$hasDriversWorking ){
-							$message = '#'.$order->id_order.' there is no drivers to get the order';
+							$restaurant = $order->restaurant()->name;
+							if( $order->restaurant()->community && $order->restaurant()->community != '' ){
+								$restaurant .= ' (' . $order->restaurant()->community . ')';
+							} 
+							$message = '#'.$order->id_order.' there is no drivers to get the order - ' . $restaurant;
 							Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
 							echo $message."\n";
 							Crunchbutton_Admin_Notification::warningAboutNoRepsWorking( $order );
@@ -128,6 +132,11 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			foreach ( $ags as $a ) {
 				// notify each person
 				$message = '#'.$order->id_order.' sms: reps failed to pickup order';
+				$message .= "\n";
+				$message .= $order->restaurant()->name;
+				if( $order->restaurant()->community && $order->restaurant()->community != '' ){
+					$message .= ' (' . $order->restaurant()->community . ')';
+				} 
 				echo $message."\n";
 				Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $a->txt, 'message' => $message, 'type' => 'delivery-driver' ]);
 				$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextRestaurant, '+1'.$a->txt, $message );
@@ -137,6 +146,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 					$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/pick-up-fail';
 					$message = '#'.$order->id_order.' call: reps failed to pickup order url: ' . $url;
+					$message .= "\n";
+					$message .= $order->restaurant()->name;
+					if( $order->restaurant()->community && $order->restaurant()->community != '' ){
+						$message .= ' (' . $order->restaurant()->community . ')';
+					} 
+
 					echo $message."\n";
 					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
 
@@ -245,7 +260,14 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		$group = Group::byName( Crunchbutton_Config::getVal( Crunchbutton_Admin_Notification::REPS_NONE_WORKING_GROUP_NAME_KEY ) );
 		$users = $group->users();
 		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-		$message = "No drivers for O#{$order->id_order} \nR: {$order->restaurant()->name} / {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()}";
+
+		if( $order->restaurant()->community && $order->restaurant()->community != '' ){
+			$community = '(' . $order->restaurant()->community . ') ';
+		} else {
+			$community = '';
+		}
+
+		$message = "No drivers for O#{$order->id_order} \nR: {$order->restaurant()->name} {$community}/ {$order->restaurant()->phone()} \nC: {$order->name} / {$order->phone()}";
 		$message = str_split( $message,160 );
 		foreach ( $users as $user ) {
 			$num = $user->txt;
