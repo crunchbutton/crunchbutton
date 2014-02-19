@@ -121,7 +121,13 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$date = $order->date();
 					$date = $date->format( 'D, M d, g:i a T' );
 
-					$last_cb = "Last Order: #$order->id_order, from $restaurant->name, on $date. -  R: $restaurant->phone {$notifications} - C: $order->name / $order->phone";
+					if( $restaurant->community && $restaurant->community != '' ){
+						$community = '(' . $restaurant->community . ')';
+					} else {
+						$community = '';
+					}
+
+					$last_cb = "Last Order: #$order->id_order, from $restaurant->name $community, on $date. -  R: $restaurant->phone {$notifications} - C: $order->name / $order->phone";
 				} else {
 					$last_cb = 'Last Order: None.';
 				}
