@@ -1286,7 +1286,12 @@ class Crunchbutton_Order extends Cana_Table {
 				$msg .= "Order confirmed!\n\n";
 				// Changed this line above #1541
 				// $msg .= "Contact ".$this->restaurant()->shortName().": ".$this->restaurant()->phone().".\n";
-				$msg .= "Restaurant Phone: ".$this->restaurant()->phone().".\n";
+				if( $this->delivery_service ){
+					$phone = c::config()->phone->support;
+					$msg .= "Customer service: ".$phone.".\n";	
+				} else {
+					$msg .= "Restaurant Phone: ".$this->restaurant()->phone().".\n";	
+				}
 				$msg .= "To contact Crunchbutton, text us back.\n\n";
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
 					$msg .= "Remember to tip!\n\n";
