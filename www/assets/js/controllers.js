@@ -99,7 +99,9 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 					lat: results.alias.lat(),
 					lon: results.alias.lon(),
 					city: results.alias.city(),
-					prep: results.alias.prep()
+					prep: results.alias.prep(),
+					image: results.alias.image(),
+					permalink: results.alias.permalink()
 				} ) );
 				var url = '/' + RestaurantsService.permalink + ( restaurant ? '/' + restaurant : '' )
 				$location.path( url );
@@ -197,6 +199,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 	var prep = restaurants.position.pos().prep();
 	var city = restaurants.position.pos().city();
+	var image = restaurants.position.pos().getImage();
 
 	restaurants.list( 
 		// Success
@@ -232,6 +235,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 			$scope.slogan = slogan;
 			$scope.tagline = tagline;
+			$scope.image = image;
 
 			if ( $scope.restaurants.length == 4 ) {
 				$('.content').addClass('short-meal-list');

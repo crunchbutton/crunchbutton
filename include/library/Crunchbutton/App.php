@@ -424,7 +424,7 @@ class Crunchbutton_App extends Cana_App {
 		}
 		
 		if (in_array('extended', $output)) {
-			$config['aliases'] = Community_Alias::all(['id_community', 'prep', 'name_alt']);
+			$config['aliases'] = Community_Alias::all(['id_community', 'prep', 'name_alt', 'permalink', 'image']);
 			$config['locations'] = Community::all_locations();
 			$config['facebookScope'] = c::config()->facebook->default->scope;
 
