@@ -109,6 +109,8 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 				</td>
 				<td nowrap="nowrap">
 					<?=$order->restaurant()->name?>
+					<br/>
+					<?=$order->restaurant()->community?>
 					<hr/>
 					<?php if( $order->restaurant()->confirmation || $order->restaurant()->hasPhoneNotification() ){
 						if( $order->confirmed ) { 
