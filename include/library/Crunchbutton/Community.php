@@ -59,10 +59,11 @@ class Crunchbutton_Community extends Cana_Table {
 					restaurant_community.sort,
 					restaurant.delivery DESC
 			');
-
+/*
 			$this->_restaurants->sort([
 				'function' => 'open'
 			]);
+*/
 		}
 		return $this->_restaurants;
 	}

@@ -3060,5 +3060,8 @@ h1.about-header {
 	display:none!important;
 }
 
-
-
+.community-image{
+	background-size:cover !important;
+	width: 200px;
+	height: 88px;
+}

@@ -10,7 +10,6 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 		var parts = id.toLowerCase().split( '/' );
 		var alias = false;
 		var restaurant = false;
-
 		if( App && App.aliases ){
 			for( x in parts ){
 						if( parts[ x ] != '' ){
@@ -38,7 +37,9 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 					verified: true,
 					prep: alias.prep,
 					city: alias.name_alt,
-					address: alias.name_alt
+					address: alias.name_alt,
+					permalink: alias.permalink,
+					image: alias.image,
 				});
 				success( { alias: res }, restaurant );
 				return;

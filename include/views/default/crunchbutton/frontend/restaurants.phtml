@@ -8,7 +8,8 @@
 
 <div ng-show="restaurants">
 	<div class="home-welcome home-tagline main-content-readable" ng-class="{'home-welcome-anony-hasuser': account.user.id_user}">
-		<h1 ng-bind-html-unsafe="slogan"></h1>
+		<div ng-show="image" class="community-image" style="background-image:url('/assets/images/community/{{image}}');"></div>
+		<h1 ng-bind-html-unsafe="slogan" ng-hide="image"></h1>
 		<h2 ng-bind-html-unsafe="tagline"></h2>
 	</div>
 
