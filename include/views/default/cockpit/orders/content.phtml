@@ -108,7 +108,9 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
 				</td>
 				<td nowrap="nowrap">
-					<?=$order->restaurant()->name?>
+					<a href="/restaurants/<?=$order->restaurant()->id_restaurant?>">
+						<?=$order->restaurant()->name?>
+					</a>
 					<br/>
 					<?=$order->restaurant()->community?>
 					<hr/>
