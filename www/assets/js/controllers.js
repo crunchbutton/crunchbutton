@@ -101,7 +101,7 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 					city: results.alias.city(),
 					prep: results.alias.prep(),
 					image: results.alias.image(),
-					permalink: results.alias.permalink(),
+					permalink: results.alias.permalink()
 				} ) );
 				var url = '/' + RestaurantsService.permalink + ( restaurant ? '/' + restaurant : '' )
 				$location.path( url );

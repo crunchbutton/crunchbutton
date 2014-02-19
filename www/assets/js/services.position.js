@@ -388,7 +388,9 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 					lat: results.alias.lat(),
 					lon: results.alias.lon(),
 					city: results.alias.city(),
-					prep: results.alias.prep()
+					prep: results.alias.prep(),
+					image: results.alias.image(),
+					permalink: results.alias.permalink()
 				});
 			} else {
 
