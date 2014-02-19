@@ -1,0 +1,1 @@
+ALTER TABLE  `community` ADD `image` TINYINT( 1 ) NOT NULL DEFAULT '0';
