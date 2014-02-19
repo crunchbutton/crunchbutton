@@ -245,8 +245,6 @@ var Location = function( params ) {
 	}
 
 	self.getImage = function(){
-		console.log('self.image()',self.image());
-		console.log('this.image()',this.image());
 		if( self.image() ){
 			return self.permalink() + '.png';
 		}
