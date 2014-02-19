@@ -379,7 +379,6 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 	 */
 	service.geocode = function (address, success, error) {
 		service.doGeocode(address, function (results) {
-console.log('results',results);
 			if (results.alias) {
 				var loc = new Location({
 					address: results.alias.address(),
