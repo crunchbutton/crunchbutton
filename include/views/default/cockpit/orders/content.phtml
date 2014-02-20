@@ -193,9 +193,6 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 								<?php 
 								if( $order->tax ){
 									if( $order->price_plus_delivery_markup && $order->delivery_service_markup_value ) {
-
-										deliveryFee()
-
 										echo $order->tax . '% of ' . number_format( $order->price, 2 ) . '<br/>(subtotal without markup)';
 									} else { 
 										echo $order->tax . '% of ' . number_format( $order->price, 2 ) ;
