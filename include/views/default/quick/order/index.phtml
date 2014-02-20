@@ -88,6 +88,7 @@
 <?php 
 $isDriverCockpit = true; 
 $delivery_service_markup = ( $this->order->delivery_service_markup ) ? $this->order->delivery_service_markup : 0;
+$order = $this->order;
 ?>
 <table width="100%" celpadding="0" cellspacing="0" class="detail">
 	<thead style="font-weight:bold">
@@ -95,16 +96,12 @@ $delivery_service_markup = ( $this->order->delivery_service_markup ) ? $this->or
 		<td class="topitem">Item</td>
 		<?php if( $isDriverCockpit ) { ?>
 		<td class="topitem" nowrap="nowrap">Customer Price</td>
-		<td class="topitem" style="width:80px;font-size:11px;color:#999;">Store Price</td>
+		<td class="topitem" style="width:80px;font-size:12px;color:#666;">Store Price</td>
 		<?php } else { ?>
 			<td class="topitem">Price</td>
 		<?php } ?>
 	</thead>
-<?php  
-	$subTotal = 0;
-	$regular_subTotal = 0;
-?>
-	<? foreach ($this->order->dishes() as $dish) : ?>
+	<? foreach ($order->dishes() as $dish) : ?>
 		<tr>
 			<td class="fooditem">1</td>
 			<td class="fooditem"><?
@@ -213,15 +210,11 @@ $delivery_service_markup = ( $this->order->delivery_service_markup ) ? $this->or
 				?>
 			</td>
 			<?php if( $isDriverCockpit ) { ?>
-			<td class="fooditem" style="font-size:11px;color:#999;">
+			<td class="fooditem" style="font-size:12px;color:#666;">
 				$<?php echo number_format( $regular_price, 2 ); ?>
 			</td>
 			<?php } ?>
 		</tr>
-		<?php
-		$subTotal += $price;
-		$regular_subTotal += $regular_price;
-		?>
 	<? endforeach ; ?>
 
 	<tr class="class">
@@ -230,74 +223,91 @@ $delivery_service_markup = ( $this->order->delivery_service_markup ) ? $this->or
 		<td>
 		$<?php 
 		if( $isRestaurant ){
-			echo number_format( $regular_subTotal, 2 );
+			// legacy
+			if( intval( $delivery_service_markup ) > 0 && !$order->price_plus_delivery_markup ){
+				echo number_format( $order->price - $order->delivery_service_markup_value, 2);
+			} else {
+				echo number_format( $order->price, 2 );
+			}	
 		} else {
-			echo number_format( $subTotal, 2 );	
+			if( $order->price_plus_delivery_markup ){
+				echo number_format( $order->price_plus_delivery_markup, 2 );		
+			} else {
+				echo number_format( $order->price, 2 );
+			}
 		}
 		?>
 		</td>
 		<?php if( $isDriverCockpit ) { ?>
-		<td style="font-size:11px;color:#999;">
-		$<?php echo number_format( $regular_subTotal, 2 ); ?>
+		<td style="font-size:12px;color:#666;">
+		$<?php
+		// legacy
+		if( intval( $delivery_service_markup ) > 0 && !$order->price_plus_delivery_markup ){
+			echo number_format( $order->price - $order->delivery_service_markup_value, 2);
+		} else {
+			echo number_format( $order->price, 2 );
+		}
+		?>
 		</td>
 		<?php } ?>
 	</tr>
-	<? if ($this->order->pay_type == 'card' && $this->order->tip) : ?>
+	<? if ( $order->pay_type == 'card' && $order->tip ) : ?>
 		<tr>
 			<td></td>
-			<td style="text-align:right">Tip <?php if( $this->order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $this->order->tip . '%'; } ?></td>
-			<td>$<?=$this->order->tip()?></td>
+			<td style="text-align:right">Tip <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $order->tip . '%'; } ?></td>
+			<td>$<?=$order->tip()?></td>
+			<?php if( $isDriverCockpit ) { ?>
+			<td style="font-size:12px;color:#666;">
+				$<?=$order->tip()?>
+			</td>
+			<?php } ?>
 		</tr>
 	<? endif ; ?>
-	<? if ($this->order->restaurant()->delivery_fee) : ?>
+	<? if ( $order->restaurant()->delivery_fee ) : ?>
 		<tr>
 			<td></td>
 			<td style="text-align:right">Delivery Fee</td>
-			<td>$<?=$this->order->deliveryFee()?></td>
+			<td>$<?=$order->deliveryFee()?></td>
+			<?php if( $isDriverCockpit ) { ?>
+			<td style="font-size:12px;color:#666;">
+				$<?=$order->deliveryFee()?>
+			</td>
+			<?php } ?>
 		</tr>
 	<? endif ; ?>
 
-	<? if ($this->order->restaurant()->fee_customer) : ?>
+	<? if ( $order->restaurant()->fee_customer ) : ?>
 		<tr>
 			<td></td>
 			<td style="text-align:right">Service Fee</td>
-			<td>$<?=$this->order->serviceFee()?></td>
-			<td></td>
+			<td>$<?=$order->serviceFee()?></td>
+			<?php if( $isDriverCockpit ) { ?>
+			<td style="font-size:12px;color:#666;">
+				$$<?=$order->serviceFee()?>
+			</td>
+			<?php } ?>
 		</tr>
 	<? endif ; ?>
 	
-	<?php
-	$tax = number_format( ( $subTotal + $this->order->deliveryFee() + $this->order->serviceFee() ) * ( $this->order->tax / 100 ) , 2 );
-	$regular_tax = number_format( ( $regular_subTotal + $this->order->deliveryFee() + $this->order->serviceFee() ) * ( $this->order->tax / 100 ) , 2 );
-	?>
 	<tr>
 		<td></td>
 		<td style="text-align:right">Tax</td>
 		<td>
 		$<?php 
+		$tax = $order->tax();
 		if( $isRestaurant ){
-			echo number_format( $regular_tax, 2 );
+			echo number_format( $tax, 2 );
 		} else {
 			echo number_format( $tax, 2 );	
 		}
 		?>
 		</td>
 		<?php if( $isDriverCockpit ) { ?>
-		<td style="font-size:11px;color:#999;">
-			$<?php echo number_format( $regular_tax, 2 ); ?>
+		<td style="font-size:12px;color:#666;">
+			$<?php echo number_format( $tax, 2 ); ?>
 		</td>
 		<?php } ?>
 	</tr>
-<?php 
-
-$serviceFee = Util::ceil( ( $subTotal + $this->order->deliveryFee() ) * Util::ceil( ( $this->order->service_fee / 100 ), 2 ), 2);
-$totalWithFees = Util::ceil( ( $subTotal + $this->order->deliveryFee() + $serviceFee ), 2 );
-$total =  Util::ceil( $totalWithFees + $this->order->tip() + $tax, 2 );
-
-$regular_serviceFee = Util::ceil( ( $regular_subTotal + $this->order->deliveryFee() ) * Util::ceil( ( $this->order->service_fee / 100 ), 2 ), 2);
-$regular_totalWithFees = Util::ceil( ( $regular_subTotal + $this->order->deliveryFee() + $regular_serviceFee ), 2 );
-$regular_total =  Util::ceil( $regular_totalWithFees + $this->order->tip() + $regular_tax, 2 )
-?>
 
 	<tr style="font-weight:bold;">
 		<td></td>
@@ -305,35 +315,51 @@ $regular_total =  Util::ceil( $regular_totalWithFees + $this->order->tip() + $re
 		<td>
 		$<?php 
 		if( $isRestaurant ){
-			echo number_format( $regular_total, 2 );
+			// legacy
+			if( intval( $delivery_service_markup ) > 0 && !$order->final_price_plus_delivery_markup ){
+				echo number_format( $order->final_price - $order->delivery_service_markup_value, 2);
+			} else {
+				echo number_format( $order->final_price, 2 );
+			}
 		} else {
-			echo number_format( $total, 2 );	
+			if( $order->final_price_plus_delivery_markup ){
+				echo number_format( $order->final_price_plus_delivery_markup, 2 );
+			} else {
+				echo number_format( $order->final_price, 2 );
+			}
 		}
 		?>
 		</td>
 		<?php if( $isDriverCockpit ) { ?>
-		<td style="font-size:11px;color:#999;">
-			$<?php echo number_format( $regular_total, 2 ); ?>
+		<td style="font-size:12px;color:#666;">
+		$<?php
+		// legacy
+		if( intval( $delivery_service_markup ) > 0 && !$order->final_price_plus_delivery_markup ){
+			echo number_format( $order->final_price - $order->delivery_service_markup_value, 2);
+		} else {
+			echo number_format( $order->final_price, 2 );
+		}
+		?>
 		</td>
 		<?php } ?>
 	</tr>
 	
 	<?php /* Just the user and CB will see this info about gift card. See #1006. */ ?>
-	<?php if( $user && $this->order->chargedByCredit() > 0 ) { ?>
+	<?php if( $user && $order->chargedByCredit() > 0 ) { ?>
 	<tr style="font-weight:bold;">
 		<td></td>
-		<td style="text-align:right"><?php if( $this->order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>
-		<td>$<?=number_format($this->order->chargedByCredit(),2)?></td>
+		<td style="text-align:right"><?php if( $order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>
+		<td>$<?=number_format($order->chargedByCredit(),2)?></td>
 	</tr>
 
 	<tr style="font-weight:bold;">
 		<td></td>
-		<td style="text-align:right"><?php if( $this->order->pay_type == 'card' ) { ?>Total Charged <?php } else { ?> Total Owed <?php } ?></td>
-		<td>$<?=number_format($this->order->charged(),2)?></td>
+		<td style="text-align:right"><?php if( $order->pay_type == 'card' ) { ?>Total Charged <?php } else { ?> Total Owed <?php } ?></td>
+		<td>$<?=number_format($order->charged(),2)?></td>
 	</tr>
 	<?php } ?>
 
-	<? if ($this->order->pay_type == 'card' && $this->order->tip == 0) : ?>
+	<? if ($order->pay_type == 'card' && $order->tip == 0) : ?>
 		<tr>
 			<td colspan="3" style="text-align:left">Customer is tipping with cash</td>
 		</tr>

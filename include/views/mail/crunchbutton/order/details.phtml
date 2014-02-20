@@ -152,15 +152,31 @@ if( $version == 'customer' ){
 		<td>
 		$<?php 
 		if( $isRestaurant ){
-			echo number_format( $order->price, 2 );
+			// legacy
+			if( intval( $delivery_service_markup ) > 0 && !$order->price_plus_delivery_markup ){
+				echo number_format( $order->price - $order->delivery_service_markup_value, 2);
+			} else {
+				echo number_format( $order->price, 2 );
+			}	
 		} else {
-			echo number_format( $order->price_plus_delivery_markup, 2 );	
+			if( $order->price_plus_delivery_markup ){
+				echo number_format( $order->price_plus_delivery_markup, 2 );		
+			} else {
+				echo number_format( $order->price, 2 );
+			}
 		}
 		?>
 		</td>
 		<?php if( $isDriverCockpit ) { ?>
 		<td style="font-size:12px;color:#666;">
-		$<?php echo number_format( $order->price, 2 ); ?>
+		$<?php
+		// legacy
+		if( intval( $delivery_service_markup ) > 0 && !$order->price_plus_delivery_markup ){
+			echo number_format( $order->price - $order->delivery_service_markup_value, 2);
+		} else {
+			echo number_format( $order->price, 2 );
+		}
+		?>
 		</td>
 		<?php } ?>
 	</tr>
@@ -228,15 +244,31 @@ if( $version == 'customer' ){
 		<td>
 		$<?php 
 		if( $isRestaurant ){
-			echo number_format( $order->final_price, 2 );
+			// legacy
+			if( intval( $delivery_service_markup ) > 0 && !$order->final_price_plus_delivery_markup ){
+				echo number_format( $order->final_price - $order->delivery_service_markup_value, 2);
+			} else {
+				echo number_format( $order->final_price, 2 );
+			}
 		} else {
-			echo number_format( $order->final_price_plus_delivery_markup, 2 );
+			if( $order->final_price_plus_delivery_markup ){
+				echo number_format( $order->final_price_plus_delivery_markup, 2 );
+			} else {
+				echo number_format( $order->final_price, 2 );
+			}
 		}
 		?>
 		</td>
 		<?php if( $isDriverCockpit ) { ?>
 		<td style="font-size:12px;color:#666;">
-			$<?php echo number_format( $order->final_price, 2 ); ?>
+		$<?php
+		// legacy
+		if( intval( $delivery_service_markup ) > 0 && !$order->final_price_plus_delivery_markup ){
+			echo number_format( $order->final_price - $order->delivery_service_markup_value, 2);
+		} else {
+			echo number_format( $order->final_price, 2 );
+		}
+		?>
 		</td>
 		<?php } ?>
 	</tr>

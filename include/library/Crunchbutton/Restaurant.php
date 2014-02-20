@@ -28,7 +28,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if (!$this->delivery_min) {
 			return true;
 		}
-		$price = $this->delivery_min_amt == 'subtotal' ? $order->price : $order->final_price;
+		if( $order->final_price_plus_delivery_markup && $order->price_plus_delivery_markup ){
+			$price = $this->delivery_min_amt == 'subtotal' ? $order->price_plus_delivery_markup : $order->final_price_plus_delivery_markup;	
+		} else {
+			$price = $this->delivery_min_amt == 'subtotal' ? $order->price : $order->final_price;	
+		}
 		return $price < $this->delivery_min ? false : true;
 	}
 
