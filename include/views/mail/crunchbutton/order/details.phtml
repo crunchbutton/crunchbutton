@@ -64,7 +64,10 @@ if( $version == 'customer' ){
 						$regular_price += $option->option()->price;
 						// add the delivery markup 
 						if( $delivery_service_markup > 0 && $price > 0 ){
-							$price = $price + number_format( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
+							if( $option->option()->price > 0 ){
+								$option_price = number_format( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );	
+								$price = $price + $option_price;
+							}
 						}
 						if($option->option()->id_option_parent) {
 							$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
