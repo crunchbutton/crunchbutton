@@ -347,10 +347,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		// The tip will use as base the total price (with the markup)
 		elements['tip'] = this._breakdownTip(total);
 
-		console.log( 'with markup:', feeTotal, this._breackDownTaxes( feeTotal ) )
-		console.log( 'without markup', totalWithoutMarkup, elements['taxes'] );
-		console.log( 'tip', elements['tip'] );
-		
 		return elements;
 	}
 
