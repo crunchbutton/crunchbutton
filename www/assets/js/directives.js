@@ -131,13 +131,20 @@ NGApp.directive( 'customCheckbox', function () {
 		restrict: 'A',
 		require: 'ngModel',
 		replace: true,
-		template: '<span class="custom-checkbox fa fa-check-square"></span>',
+		template: '<span class="custom-checkbox fa fa-square"></span>',
 		link: function (scope, elem, attrs, ctrl) {
 			var label = angular.element('label[for="' + attrs.id + '"]');
 			label.bind('click', function () {
 				scope.$apply(function () {
 					elem.toggleClass( 'checked' );
 					ctrl.$setViewValue( elem.hasClass( 'checked' ) );
+					if( elem.hasClass('checked') ){
+						elem.removeClass('fa-square');
+						elem.addClass('fa-check-square');
+					} else {
+						elem.addClass('fa-square');
+						elem.removeClass('fa-check-square');
+					}
 				});
 			});
 
@@ -145,14 +152,25 @@ NGApp.directive( 'customCheckbox', function () {
 				scope.$apply(function () {
 					elem.toggleClass( 'checked' );
 					ctrl.$setViewValue( elem.hasClass( 'checked' ) );
+					if( elem.hasClass('checked') ){
+						elem.removeClass('fa-square');
+						elem.addClass('fa-check-square');
+					} else {
+						elem.addClass('fa-square');
+						elem.removeClass('fa-check-square');
+					}
 				});
 			});
 
 			ctrl.$render = function () {
 				if (!elem.hasClass('checked') && ctrl.$viewValue) {
 					elem.addClass('checked');
+					elem.removeClass('fa-square');
+					elem.addClass('fa-check-square');
 				} else if (elem.hasClass('checked') && !ctrl.$viewValue) {
 					elem.removeClass('checked');
+					elem.addClass('fa-square');
+					elem.removeClass('fa-check-square');
 				}
 			};			
 		}

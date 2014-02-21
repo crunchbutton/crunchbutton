@@ -869,6 +869,7 @@ class Crunchbutton_Order extends Cana_Table {
 		// Delete all the notification log in order to start a new one
 		// Notification_Log::DeleteFromOrder( $order->id_order );
 		// Log::debug([ 'order' => $order->id_order, 'action' => 'deleted previous notifications', 'type' => 'notification']);
+		Crunchbutton_Admin_Notification_Log::cleanLog( $order->id_order );
 		$order->notify();
 	}
 
@@ -1284,9 +1285,10 @@ class Crunchbutton_Order extends Cana_Table {
 			case 'selfsms':
 				$msg  = "Crunchbutton.com #".$this->id_order."\n\n";
 				$msg .= "Order confirmed!\n\n";
-				// Changed this line above #1541
-				// $msg .= "Contact ".$this->restaurant()->shortName().": ".$this->restaurant()->phone().".\n";
-				$msg .= "Restaurant Phone: ".$this->restaurant()->phone().".\n";
+				// #2416
+				if( !$this->delivery_service ){
+					$msg .= "Restaurant Phone: ".$this->restaurant()->phone().".\n";	
+				}
 				$msg .= "To contact Crunchbutton, text us back.\n\n";
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
 					$msg .= "Remember to tip!\n\n";

@@ -85,141 +85,259 @@
 	<br><br>
 	<div class="divider dots"></div>
 	<br><br>
-	
-	
-	
-	
-	
-		
-		
-	
-	<table width="100%" celpadding="0" cellspacing="0" class="detail">
-		<thead style="font-weight:bold">
-			<td class="topitem">Qty</td>
-			<td class="topitem">Item</td>
+<?php 
+$isDriverCockpit = true; 
+$delivery_service_markup = ( $this->order->delivery_service_markup ) ? $this->order->delivery_service_markup : 0;
+?>
+<table width="100%" celpadding="0" cellspacing="0" class="detail">
+	<thead style="font-weight:bold">
+		<td class="topitem">Qty</td>
+		<td class="topitem">Item</td>
+		<?php if( $isDriverCockpit ) { ?>
+		<td class="topitem" nowrap="nowrap">Customer Price</td>
+		<td class="topitem" style="width:80px;font-size:11px;color:#999;">Store Price</td>
+		<?php } else { ?>
 			<td class="topitem">Price</td>
-		</thead>
-	
-		<? foreach ($this->order->dishes() as $dish) : ?>
-			<tr>
-				<td class="fooditem">1</td>
-				<td class="fooditem"><?
-					$food = $dish->dish()->name;
-					$cartPrice = $dish->dish()->price;
-					$options = $dish->options();
-	
-					if (gettype($options) == 'array') {
-						$options = i::o($options);
-					}
-	
-					if ($options->count()) {
-						$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
-	
-						foreach ($dish->options() as $option) {
-							if ($option->option()->type == 'select') {
-								continue;
-							}
-							$cartPrice += $option->option()->price;
-							if($option->option()->id_option_parent) {
-								$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
-								$food .= "$optionGroup->name: ";
-							}
-							$food .= $option->option()->name.', ';
+		<?php } ?>
+	</thead>
+<?php  
+	$subTotal = 0;
+	$regular_subTotal = 0;
+?>
+	<? foreach ($this->order->dishes() as $dish) : ?>
+		<tr>
+			<td class="fooditem">1</td>
+			<td class="fooditem"><?
+				$food = $dish->dish()->name;
+				$price = $dish->dish()->price;
+				$regular_price = $dish->dish()->price;
+				// add the delivery markup 
+				if( $delivery_service_markup > 0 && $price > 0 ){
+					$price = $price + number_format( ( $dish->dish()->price * $delivery_service_markup / 100 ), 2 );
+					$price = number_format( $price, 2 );
+				}
+				$regular_price = number_format( $regular_price, 2 );
+
+				$options = $dish->options();
+
+				if (gettype($options) == 'array') {
+					$options = i::o($options);
+				}
+
+				$withOptions = '';
+
+				$selectOptions = '';
+
+				if ($options->count()) {					
+
+					foreach ($dish->options() as $option) {
+						if ($option->option()->type == 'select') {
+							continue;
 						}
-						$food = substr($food, 0, -2);
-	
-						$food .= '</i>';
-					}
-	
-					$withoutDefaultOptions = '';
-					if( $dish->id_order_dish && $dish->id_dish ){ 
-						$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
-						$commas = ' ';
-						if( $optionsNotChoosen->count() ){
-							foreach( $optionsNotChoosen as $dish_option ){
-								$withoutDefaultOptions .= $commas . '<i> No ' . $dish_option->option()->name . '</i>';
-								$commas = ', ';
+						$price += $option->option()->price;
+						$regular_price += $option->option()->price;
+						// add the delivery markup 
+						if( $delivery_service_markup > 0 && $price > 0 ){
+							if( $option->option()->price > 0 ){
+								$option_price = number_format( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );	
+								$price = $price + $option_price;
 							}
 						}
+						if($option->option()->id_option_parent) {
+							$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
+							// $withOptions .= "$optionGroup->name: ";
+							if( $selectOptions == '' ){
+								$selectOptions .= '&nbsp;&nbsp;';
+							}
+							$selectOptions .= '<i style="font-weight:600;">' . $optionGroup->name . ': ';
+							$selectOptions .= $option->option()->name.', ';
+						} else {
+							if( $withOptions == '' ){
+								$withOptions .= '<i style="font-weight:600;">&nbsp;&nbsp;With:&nbsp;';
+							}
+							$withOptions .= $option->option()->name.', ';
+						}
+						$regular_price = number_format( $regular_price, 2 );
 					}
-	
-					if ( $options->count() && $withoutDefaultOptions != '' ) {
-						$food .= '. ';
+					$withOptions = substr($withOptions, 0, -2);
+					$selectOptions = substr($selectOptions, 0, -2);
+					if( $withOptions != '' ){
+						$withOptions .= '</i>';
 					}
-					$food .= $withoutDefaultOptions;
-	
-					?>
-					<?=$food?>
-				</td>
-				<td style="width: 1%;" class="fooditem">$<?=number_format($cartPrice,2)?></td>
-			</tr>
-		<? endforeach ; ?>
-	
-		<tr class="class">
-			<td></td>
-			<td style="text-align:right">Subtotal</td>
-			<td>$<?=number_format($this->order->price,2)?></td>
+				}
+
+				$withoutDefaultOptions = '';
+				if( $dish->id_order_dish && $dish->id_dish ){ 
+					$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+					$commas = ' ';
+					if( $optionsNotChoosen->count() ){
+						foreach( $optionsNotChoosen as $dish_option ){
+							$withoutDefaultOptions .= $commas . '<i style="font-weight:600;">&nbsp;No ' . $dish_option->option()->name . '</i>';
+							$commas = ', ';
+						}
+					}
+				}
+
+				if ( $withOptions == '' && $withoutDefaultOptions == '' && $selectOptions == '' ) {
+					$food .= '.';
+				} else {
+					$food .= ': ';
+				}
+
+				if( $withOptions != '' ){
+					$withOptions .= '.';
+				}
+
+				if( $withoutDefaultOptions != '' ){
+					$withoutDefaultOptions .= '.';
+				}
+
+				if( $selectOptions != '' ){
+					
+					$selectOptions .= '.';
+				}
+
+				$food .= $withoutDefaultOptions;
+				$food .= $withOptions;
+				$food .= $selectOptions;
+				?>
+				<?=$food?>
+			</td>
+			<td style="width: 1%;" class="fooditem">
+				$<?php 
+				if( $isRestaurant ){
+					echo number_format( $regular_price, 2 );
+				} else {
+					echo number_format( $price, 2 );	
+				}
+				?>
+			</td>
+			<?php if( $isDriverCockpit ) { ?>
+			<td class="fooditem" style="font-size:11px;color:#999;">
+				$<?php echo number_format( $regular_price, 2 ); ?>
+			</td>
+			<?php } ?>
 		</tr>
-		<? if ($this->order->pay_type == 'card' && $this->order->tip) : ?>
-			<tr>
-				<td></td>
-				<td style="text-align:right">Tip <?php if( $this->order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $this->order->tip . '%'; } ?></td>
-				<td>$<?=$this->order->tip()?></td>
-			</tr>
-		<? endif ; ?>
-		<? if ($this->order->restaurant()->delivery_fee) : ?>
-			<tr>
-				<td></td>
-				<td style="text-align:right">Delivery Fee</td>
-				<td>$<?=$this->order->deliveryFee()?></td>
-			</tr>
-		<? endif ; ?>
-	
-		<? if ($this->order->restaurant()->fee_customer) : ?>
-			<tr>
-				<td></td>
-				<td style="text-align:right">Service Fee</td>
-				<td>$<?=$this->order->serviceFee()?></td>
-			</tr>
-		<? endif ; ?>
-		
+		<?php
+		$subTotal += $price;
+		$regular_subTotal += $regular_price;
+		?>
+	<? endforeach ; ?>
+
+	<tr class="class">
+		<td></td>
+		<td style="text-align:right">Subtotal</td>
+		<td>
+		$<?php 
+		if( $isRestaurant ){
+			echo number_format( $regular_subTotal, 2 );
+		} else {
+			echo number_format( $subTotal, 2 );	
+		}
+		?>
+		</td>
+		<?php if( $isDriverCockpit ) { ?>
+		<td style="font-size:11px;color:#999;">
+		$<?php echo number_format( $regular_subTotal, 2 ); ?>
+		</td>
+		<?php } ?>
+	</tr>
+	<? if ($this->order->pay_type == 'card' && $this->order->tip) : ?>
 		<tr>
 			<td></td>
-			<td style="text-align:right">Tax</td>
-			<td>$<?=$this->order->tax()?></td>
+			<td style="text-align:right">Tip <?php if( $this->order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $this->order->tip . '%'; } ?></td>
+			<td>$<?=$this->order->tip()?></td>
 		</tr>
-	
-		<tr style="font-weight:bold;">
+	<? endif ; ?>
+	<? if ($this->order->restaurant()->delivery_fee) : ?>
+		<tr>
 			<td></td>
-			<td style="text-align:right">Total</td>
-			<td><b>$<?=number_format($this->order->final_price,2)?></b></td>
+			<td style="text-align:right">Delivery Fee</td>
+			<td>$<?=$this->order->deliveryFee()?></td>
 		</tr>
-		
-		<?php /* Just the user and CB will see this info about gift card. See #1006. */ ?>
-		<?php if( $user && $this->order->chargedByCredit() > 0 ) { ?>
-		<tr style="font-weight:bold;">
-			<td></td>
-			<td style="text-align:right"><?php if( $this->order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>
-			<td>$<?=number_format($this->order->chargedByCredit(),2)?></td>
-		</tr>
-	
-		<tr style="font-weight:bold;">
-			<td></td>
-			<td style="text-align:right"><?php if( $this->order->pay_type == 'card' ) { ?>Total Charged <?php } else { ?> Total Owed <?php } ?></td>
-			<td>$<?=number_format($this->order->charged(),2)?></td>
-		</tr>
-		<?php } ?>
-	
-		<? if ($this->order->pay_type == 'card' && $this->order->tip == 0) : ?>
-			<tr>
-				<td colspan="3" style="text-align:left"><b>Customer is tipping with cash</b></td>
-			</tr>
-		<? endif ; ?>
-	</table>
+	<? endif ; ?>
 
+	<? if ($this->order->restaurant()->fee_customer) : ?>
+		<tr>
+			<td></td>
+			<td style="text-align:right">Service Fee</td>
+			<td>$<?=$this->order->serviceFee()?></td>
+			<td></td>
+		</tr>
+	<? endif ; ?>
 	
+	<?php
+	$tax = number_format( ( $subTotal + $this->order->deliveryFee() + $this->order->serviceFee() ) * ( $this->order->tax / 100 ) , 2 );
+	$regular_tax = number_format( ( $regular_subTotal + $this->order->deliveryFee() + $this->order->serviceFee() ) * ( $this->order->tax / 100 ) , 2 );
+	?>
+	<tr>
+		<td></td>
+		<td style="text-align:right">Tax</td>
+		<td>
+		$<?php 
+		if( $isRestaurant ){
+			echo number_format( $regular_tax, 2 );
+		} else {
+			echo number_format( $tax, 2 );	
+		}
+		?>
+		</td>
+		<?php if( $isDriverCockpit ) { ?>
+		<td style="font-size:11px;color:#999;">
+			$<?php echo number_format( $regular_tax, 2 ); ?>
+		</td>
+		<?php } ?>
+	</tr>
+<?php 
+
+$serviceFee = Util::ceil( ( $subTotal + $this->order->deliveryFee() ) * Util::ceil( ( $this->order->service_fee / 100 ), 2 ), 2);
+$totalWithFees = Util::ceil( ( $subTotal + $this->order->deliveryFee() + $serviceFee ), 2 );
+$total =  Util::ceil( $totalWithFees + $this->order->tip() + $tax, 2 );
+
+$regular_serviceFee = Util::ceil( ( $regular_subTotal + $this->order->deliveryFee() ) * Util::ceil( ( $this->order->service_fee / 100 ), 2 ), 2);
+$regular_totalWithFees = Util::ceil( ( $regular_subTotal + $this->order->deliveryFee() + $regular_serviceFee ), 2 );
+$regular_total =  Util::ceil( $regular_totalWithFees + $this->order->tip() + $regular_tax, 2 )
+?>
+
+	<tr style="font-weight:bold;">
+		<td></td>
+		<td style="text-align:right">Total</td>
+		<td>
+		$<?php 
+		if( $isRestaurant ){
+			echo number_format( $regular_total, 2 );
+		} else {
+			echo number_format( $total, 2 );	
+		}
+		?>
+		</td>
+		<?php if( $isDriverCockpit ) { ?>
+		<td style="font-size:11px;color:#999;">
+			$<?php echo number_format( $regular_total, 2 ); ?>
+		</td>
+		<?php } ?>
+	</tr>
 	
-	
-	
+	<?php /* Just the user and CB will see this info about gift card. See #1006. */ ?>
+	<?php if( $user && $this->order->chargedByCredit() > 0 ) { ?>
+	<tr style="font-weight:bold;">
+		<td></td>
+		<td style="text-align:right"><?php if( $this->order->pay_type == 'card' ) { ?>Gift Card <?php } else { ?> Already Paid by Gift Card <?php } ?></td>
+		<td>$<?=number_format($this->order->chargedByCredit(),2)?></td>
+	</tr>
+
+	<tr style="font-weight:bold;">
+		<td></td>
+		<td style="text-align:right"><?php if( $this->order->pay_type == 'card' ) { ?>Total Charged <?php } else { ?> Total Owed <?php } ?></td>
+		<td>$<?=number_format($this->order->charged(),2)?></td>
+	</tr>
+	<?php } ?>
+
+	<? if ($this->order->pay_type == 'card' && $this->order->tip == 0) : ?>
+		<tr>
+			<td colspan="3" style="text-align:left">Customer is tipping with cash</td>
+		</tr>
+	<? endif ; ?>
+</table>
 
 </div>

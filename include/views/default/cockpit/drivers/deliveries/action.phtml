@@ -1,0 +1,75 @@
+<div class="row-fluid">
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span12">
+				<div class="box">
+					<div class="box-content padded">
+						<form>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Order</strong>
+									</div>
+									<div class="span7">
+										<strong>#<?php echo $this->id_order; ?></strong>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Driver</strong>
+									</div>
+									<div class="span7">
+										<input type="hidden" name="form-id_order" id="form-id_order" value="<?php echo $this->id_order; ?>" />
+										<select name="form-id_admin" id="form-id_admin">
+												<option></option>
+												<?php foreach( $this->drivers as $driver ) { ?>
+													<option value="<?php echo $driver->id_admin ?>"><?php echo $driver->name; ?></option>
+												<?php } ?>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid inputs">
+								<div class="span12">
+									<div class="span4">
+										<strong>Action</strong>
+									</div>
+									<div class="span8">
+										<?php
+										foreach( $this->actions as $action ){
+											?>
+												<div>
+													<input name="form-action" type="checkbox" class="icheck" value="<?php echo $action; ?>"><label for="form-<?php echo $action; ?>"><?php echo $action; ?></label>
+												</div>
+											<?php	
+										}
+										?>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid inputs">
+								<div class="row-fluid">
+									<div class="span12">
+										<br/>
+									</div>
+								</div>
+								<div class="row-fluid">
+									<div class="span6">
+										<button type="button" onclick="deliveries.assign();" class="btn btn-green"><i class="icon-save"></i> Assign </button> 
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$( document ).ready( function(){
+	$( '.icheck' ).iCheck( { checkboxClass: "icheckbox_flat-aero", radioClass: "iradio_flat-aero" } );
+} );
+</script>
