@@ -21,7 +21,7 @@
 							<?php 
 								$restaurants = $community->restaurants;
 								$_community = str_replace( ' ' , '', $_community );
-								$_community = preg_replace('/[^A-Za-z0-9]/', '', $community->community );
+								$_community = preg_replace('/[^A-Za-z0-9 ]/', '', $community->community );
 								$_community = strtolower( $_community );
 							?>
 
@@ -49,7 +49,7 @@
 		<?php
 			$restaurants = $community->restaurants;
 			$_community = str_replace( ' ' , '', $_community );
-			$_community = preg_replace('/[^A-Za-z0-9]/', '', $community->community );
+			$_community = preg_replace('/[^A-Za-z0-9 ]/', '', $community->community );
 			$_community = strtolower( $_community );
 		?>
 		<div class="container-<?php echo $_community; ?>" style="display:none;">
