@@ -20,10 +20,9 @@
 						<div>
 							<?php 
 								$restaurants = $community->restaurants;
-								$_community = preg_replace('/[^A-Za-z0-9]/', '', $community->community );
+								$_community = str_replace( ' ', '-', $community->community ); 
 								$_community = strtolower( $_community );
 							?>
-
 							 <input type="checkbox" 
 									class="icheck" 
 									id="checkbox-<?php echo $_community;?>" 
@@ -47,7 +46,7 @@
 
 		<?php
 			$restaurants = $community->restaurants;
-			$_community = preg_replace('/[^A-Za-z0-9]/', '', $community->community );
+			$_community = str_replace( ' ', '-', $community->community );
 			$_community = strtolower( $_community );
 		?>
 		<div class="container-<?php echo $_community; ?>" style="display:none;">
@@ -99,7 +98,6 @@ $( document ).ready( function(){
 		var check = $( this );
 		var community = check.attr( 'community' );
 		var container = $( '.container-' + community );
-		console.log( '.container-' + community, container );
 		if( check.is( ':checked' ) ){
 			if( !container.attr( 'loaded' ) ){
 				loadChartsOfCommunity( community );
