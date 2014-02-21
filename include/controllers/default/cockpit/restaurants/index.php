@@ -93,6 +93,11 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			$restaurant->delivery = 1;
 			$restaurant->takeout = 1;
 			$restaurant->confirmation = 1;
+			$restaurant->charge_credit_fee = 1;
+			$restaurant->pay_promotions = 1;
+			$restaurant->pay_apology_credits = 1;
+			$restaurant->promotion_maximum = 2;
+			$restaurant->max_apology_credit = 5;
 			$restaurant->fee_customer = '0';
 			$restaurant->save();
 

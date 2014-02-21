@@ -46,7 +46,8 @@ class Crunchbutton_Dish extends Cana_Table {
 				WHERE
 					id_dish="'.$this->id_dish.'"
 				ORDER BY
-					dish_option.sort ASC, option.type asc, option.name
+					option.type desc,
+					dish_option.sort ASC, option.name
 			', $this->db());
 		}
 		if (gettype($this->_options) == 'array') {

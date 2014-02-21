@@ -34,11 +34,59 @@ class Controller_api_drivers extends Crunchbutton_Controller_RestAccount {
 						echo json_encode( [ 'error' => 'invalid object' ] );
 						break;
 				}
-			break;
+				break;
+			case 'assign':
+				switch ( c::getPagePiece( 3 ) ) {
+					case 'order':
+						$this->assignOrder();
+						break;
+					default:
+						echo json_encode( [ 'error' => 'invalid object' ] );
+						break;	
+				}
+				break;
 			default:
 				echo json_encode( [ 'error' => 'invalid object' ] );
-			break;
+				break;
 		}
+	}
+
+	public function assignOrder(){
+		$id_order = c::getPagePiece( 4 );
+		$id_admin = $this->request()[ 'id_admin' ];
+		$actions = $this->request()[ 'actions' ];
+
+		$order = Order::o( $id_order );
+		if( !$order->id_order ){
+			echo json_encode( [ 'error' => 'invalid object' ] );
+			exit;
+		}
+
+		$admin = Admin::o( $id_admin );
+		if( !$admin->id_admin ){
+			echo json_encode( [ 'error' => 'invalid object' ] );
+			exit;
+		}
+
+		if( count( $actions ) > 0 ){
+			foreach( $actions as $action ){
+				switch ( $action ) {
+					case Crunchbutton_Order_Action::DELIVERY_ACCEPTED:
+						$order->deliveryAccept( $admin );
+						break;
+					case Crunchbutton_Order_Action::DELIVERY_PICKEDUP:
+						$order->deliveryPickedup( $admin );
+						break;
+					case Crunchbutton_Order_Action::DELIVERY_DELIVERED:
+						$order->deliveryDelivered( $admin );
+						break;
+					case Crunchbutton_Order_Action::DELIVERY_REJECTED:
+						$order->deliveryReject( $admin );
+						break;
+				}
+			}
+		}
+		echo json_encode( array( 'success' => true ) );
 	}
 
 	public function copyAllHours(){

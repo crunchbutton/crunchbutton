@@ -73,7 +73,13 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 					$notifications = '';
 				}
 
-				$message = '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone(). $notifications . "\n C# ".$this->order()->name . ' / ' . $this->order()->phone();
+				if( $this->order()->restaurant()->community && $this->order()->restaurant()->community != '' ){
+					$community = ' (' . $this->order()->restaurant()->community . ')';
+				} else {
+					$community = '';
+				}
+
+				$message = '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name.$community."\nR# ".$this->order()->restaurant()->phone(). $notifications . "\n C# ".$this->order()->name . ' / ' . $this->order()->phone();
 				$message = str_split($message,160);
 				foreach ( $sendSMSTo as $supportName => $supportPhone) {
 					$num = $supportPhone;
@@ -159,7 +165,14 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				} else {
 					$notifications = '';
 				}
-				$message = '#'.$this->id_order.' MAX CONFIRM CB for '.$this->order()->restaurant()->name."\nR# ".$this->order()->restaurant()->phone().$notifications."\nC# ".$this->order()->phone();
+
+				if( $this->order()->restaurant()->community && $this->order()->restaurant()->community != '' ){
+					$community = ' (' . $this->order()->restaurant()->community . ')';
+				} else {
+					$community = '';
+				}
+
+				$message = '#'.$this->id_order.' MAX CONFIRM CB for '.$this->order()->restaurant()->name. $community. "\nR# ".$this->order()->restaurant()->phone().$notifications."\nC# ".$this->order()->phone();
 				$message = str_split($message,160);
 				foreach ( $sendSMSTo as $supportName => $supportPhone) {
 					$num = $supportPhone;

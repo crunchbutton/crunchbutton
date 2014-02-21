@@ -13,7 +13,9 @@ var Location = function( params ) {
 		subtype: null,
 		address: null,
 		prep: null,
-		removeFromCookie: false
+		removeFromCookie: false,
+		permalink: null,
+		image: false
 	};
 
 	// parse the city name from the result set
@@ -234,11 +236,26 @@ var Location = function( params ) {
 		self._properties.entered = entered;
 	}
 
+	self.image = function(){
+		return ( parseInt( self._properties.image ) > 0 || self._properties.image != '0' );
+	}
+
+	self.permalink = function(){
+		return self._properties.permalink;
+	}
+
+	self.getImage = function(){
+		if( self.image() ){
+			return self.permalink() + '.png';
+		}
+		return false;
+	}
+
 	self.toCookie = function(){
 		var properties = {};
 		for (var x in this._properties ) {
 			if( x != 'results' ){
-				properties[x] = this._properties[x];	
+				properties[x] = this._properties[x];
 			}
 		}	
 		return new Location( properties );

@@ -54,8 +54,11 @@ if( $version == 'customer' ){
 					$options = i::o($options);
 				}
 
-				if ($options->count()) {
-					$food .= '<i>&nbsp;&nbsp;&nbsp;w/&nbsp;&nbsp;&nbsp;';
+				$withOptions = '';
+
+				$selectOptions = '';
+
+				if ($options->count()) {					
 
 					foreach ($dish->options() as $option) {
 						if ($option->option()->type == 'select') {
@@ -65,18 +68,32 @@ if( $version == 'customer' ){
 						$regular_price += $option->option()->price;
 						// add the delivery markup 
 						if( $delivery_service_markup > 0 && $price > 0 ){
-							$price = $price + number_format( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );
+							if( $option->option()->price > 0 ){
+								$option_price = number_format( ( $option->option()->price * $delivery_service_markup / 100 ), 2 );	
+								$price = $price + $option_price;
+							}
 						}
 						if($option->option()->id_option_parent) {
 							$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
-							$food .= "$optionGroup->name: ";
+							// $withOptions .= "$optionGroup->name: ";
+							if( $selectOptions == '' ){
+								$selectOptions .= '&nbsp;&nbsp;';
+							}
+							$selectOptions .= '<i style="font-weight:600;">' . $optionGroup->name . ': ';
+							$selectOptions .= $option->option()->name.', ';
+						} else {
+							if( $withOptions == '' ){
+								$withOptions .= '<i style="font-weight:600;">&nbsp;&nbsp;With:&nbsp;';
+							}
+							$withOptions .= $option->option()->name.', ';
 						}
-						$food .= $option->option()->name.', ';
 						$regular_price = number_format( $regular_price, 2 );
 					}
-					$food = substr($food, 0, -2);
-
-					$food .= '</i>';
+					$withOptions = substr($withOptions, 0, -2);
+					$selectOptions = substr($selectOptions, 0, -2);
+					if( $withOptions != '' ){
+						$withOptions .= '</i>';
+					}
 				}
 
 				$withoutDefaultOptions = '';
@@ -85,17 +102,34 @@ if( $version == 'customer' ){
 					$commas = ' ';
 					if( $optionsNotChoosen->count() ){
 						foreach( $optionsNotChoosen as $dish_option ){
-							$withoutDefaultOptions .= $commas . '<i> No ' . $dish_option->option()->name . '</i>';
+							$withoutDefaultOptions .= $commas . '<i style="font-weight:600;">&nbsp;No ' . $dish_option->option()->name . '</i>';
 							$commas = ', ';
 						}
 					}
 				}
 
-				if ( $options->count() && $withoutDefaultOptions != '' ) {
-					$food .= '. ';
+				if ( $withOptions == '' && $withoutDefaultOptions == '' && $selectOptions == '' ) {
+					$food .= '.';
+				} else {
+					$food .= ': ';
 				}
-				$food .= $withoutDefaultOptions;
 
+				if( $withOptions != '' ){
+					$withOptions .= '.';
+				}
+
+				if( $withoutDefaultOptions != '' ){
+					$withoutDefaultOptions .= '.';
+				}
+
+				if( $selectOptions != '' ){
+					
+					$selectOptions .= '.';
+				}
+
+				$food .= $withoutDefaultOptions;
+				$food .= $withOptions;
+				$food .= $selectOptions;
 				?>
 				<?=$food?>
 			</td>

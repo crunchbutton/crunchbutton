@@ -13,6 +13,12 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 		return Crunchbutton_Admin_Notification_Log::q( $query );
 	}
 
+	// Clear the log to restart the notification process 
+	public function cleanLog( $id_order ){
+		$query = "DELETE FROM admin_notification_log WHERE id_order = {$id_order}";
+		c::db()->query( $query );
+	}
+
 	public function restaurant(){
 		return Crunchbutton_Restaurant::q( "SELECT r.* FROM restaurant r INNER JOIN `order` o ON o.id_restaurant = r.id_restaurant  WHERE id_order = {$this->id_order}" );
 	}
