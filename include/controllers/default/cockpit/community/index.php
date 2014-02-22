@@ -12,6 +12,12 @@ class Controller_community extends Crunchbutton_Controller_Account {
 
 		c::view()->page = 'community';
 
+		// Report with the orders from the last 14 days
+		if( $slug == 'report' ){
+			$this->report();
+			exit;
+		}
+
 		if( $slug ){
 
 			$permission = "community-communities-{$slug}";
@@ -128,5 +134,23 @@ class Controller_community extends Crunchbutton_Controller_Account {
 		return $info;
 	}
 
+	public function report(){
+		$interval = 14;
+		$communities = Restaurant::getCommunities();
+		$orders = [];
+		$days = [];
+		foreach ( $communities as $community ) {
+			$orders[ $community ] = Restaurant::getOrdersFromLastDaysByCommunity( $community, $interval );
+		}
+		$today = new DateTime( $time, new DateTimeZone( 'America/Los_Angeles' ) ); 
+		for( $i = 0; $i <= $interval; $i++ ){
+			$days[] = $today->format( 'm/d/Y' );
+			$today->modify( '-1 day' );
+		}
+		c::view()->days = $days;
+		c::view()->orders = $orders;
+		c::view()->layout('layout/csv');
+		c::view()->display('community/csv', ['display' => true, 'filter' => false]);
+	}
 
 }

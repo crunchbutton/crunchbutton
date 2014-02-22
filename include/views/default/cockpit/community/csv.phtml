@@ -1,0 +1,26 @@
+<?
+$separator = ',';
+$headers = [ 'Date' ];
+foreach( $this->orders as $communities => $day ){
+	$headers[] = $communities;
+}
+echo implode( $separator, $headers ) . "\n";
+
+// print dates
+$content = [];
+foreach( $this->days as $day ){
+	ob_start();
+	echo $day . $separator;
+	foreach( $this->orders as $communities => $days ){
+		foreach( $days as $orders ){
+			if( $orders->day == $day ){
+				echo $orders->orders;
+			}
+		}
+		echo $separator;
+	}
+	$output = ob_get_clean();
+	$output = preg_replace('/\n|\r|\t/i', '', $output);
+	echo "$output\n";
+}
+?>
