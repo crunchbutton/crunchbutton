@@ -130,9 +130,10 @@
 				if( $withoutDefaultOptions != '' ){ $withoutDefaultOptions .= '.'; }
 				if( $selectOptions != '' ){ $selectOptions .= '.'; }
 
-				$food .= $withoutDefaultOptions;
-				$food .= $withOptions;
 				$food .= $selectOptions;
+				$food .= $withOptions;
+				$food .= $withoutDefaultOptions;
+				
 				?>
 				<?=$food?>
 			</td>
