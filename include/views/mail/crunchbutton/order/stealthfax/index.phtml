@@ -2,9 +2,10 @@
 <table width="100%" celpadding="0" cellspacing="0" class="stealthfax-community">
 	<tr>
 		<td>
-			<?=$order->restaurant()->community?>
-			<?php if( $order->restaurant()->community != '' ){ echo ": "; } ?>
-			<?=$order->restaurant()->name?>
+			<?=$order->restaurant()->community?> Student Order
+		</td>
+		<td style="text-align:right;">
+			Ref. # <?php echo $order->id_order; ?>
 		</td>
 	</tr>
 </table>
@@ -21,7 +22,7 @@
 			Phone
 		</td>
 		<td class="stealthfax-top-label stealthfax-top-content-last">
-			Pick time
+			Pickup Time
 		</td>
 	</tr>
 	<tr>
