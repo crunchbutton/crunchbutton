@@ -23,6 +23,8 @@ class Crunchbutton_Notification extends Cana_Table
 		$fax = ($env == 'live' ? $this->value : '_PHONE_');
 
 
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'send notification', 'value' => $this->value, 'notification type' => $this->type, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
+
 		switch ($this->type) {
 
 			case Crunchbutton_Notification::TYPE_STEALTH:
