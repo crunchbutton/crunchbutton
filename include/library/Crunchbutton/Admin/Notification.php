@@ -154,13 +154,14 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 					echo $message."\n";
 					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
-
+					/* 
+					Removed the phone call for while - asked by David 2/23/2014
 					$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 					$call = $twilio->account->calls->create(
 						c::config()->twilio->{$env}->outgoingRestaurant,
 						'+1'.$num,
 						$url
-					);	
+					);	*/
 				}
 			}
 		}
