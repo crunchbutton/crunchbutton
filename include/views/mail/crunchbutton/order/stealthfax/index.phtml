@@ -16,7 +16,7 @@
 			Date
 		</td>
 		<td class="stealthfax-top-label">
-			Contact
+			Student
 		</td>
 		<td class="stealthfax-top-label">
 			Phone
@@ -27,7 +27,7 @@
 	</tr>
 	<tr>
 		<td class="stealthfax-top-content">
-			<?=$order->date()->format('D, M jS Y, H:i:s (T)')?>
+			<?=$order->date()->format('D, M jS Y, h:i a T')?>
 		</td>
 		<td class="stealthfax-top-content">
 			<?=$order->name?>
@@ -36,7 +36,7 @@
 			<?=$order->phone()?>
 		</td>
 		<td class="stealthfax-top-content stealthfax-top-content-last">
-			<?=$order->expectedBy()->format('h:i')?>
+			<?=$order->expectedBy()->format('h:i a')?>
 		</td>
 	</tr>
 </table>
