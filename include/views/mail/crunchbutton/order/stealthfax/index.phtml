@@ -1,0 +1,141 @@
+
+<table width="100%" celpadding="0" cellspacing="0" class="stealthfax-community">
+	<tr>
+		<td>
+			<?=$order->restaurant()->community?>
+			<?php if( $order->restaurant()->community != '' ){ echo ": "; } ?>
+			<?=$order->restaurant()->name?>
+		</td>
+	</tr>
+</table>
+
+<table width="100%" celpadding="0" cellspacing="0" class="stealthfax-top">
+	<tr>
+		<td class="stealthfax-top-label">
+			Date
+		</td>
+		<td class="stealthfax-top-label">
+			Contact
+		</td>
+		<td class="stealthfax-top-label">
+			Phone
+		</td>
+		<td class="stealthfax-top-label stealthfax-top-content-last">
+			Pick time
+		</td>
+	</tr>
+	<tr>
+		<td class="stealthfax-top-content">
+			<?=$order->date()->format('D, M jS Y, H:i:s (T)')?>
+		</td>
+		<td class="stealthfax-top-content">
+			<?=$order->name?>
+		</td>
+		<td class="stealthfax-top-content">
+			<?=$order->phone()?>
+		</td>
+		<td class="stealthfax-top-content stealthfax-top-content-last">
+			<?=$order->expectedBy()->format('h:i')?>
+		</td>
+	</tr>
+</table>
+
+<br /><br />
+
+<h1 class="stealthfax-takeout-message">
+	For Takeout, Customer Will Pay On Arrival
+</h1>
+
+<br />
+
+<? if ($order->notes) : ?>
+	<h2>NOTES:<br />
+		<?=nl2br(strip_tags($order->notes))?>
+	</h2><br />
+<? endif ; ?>
+
+<br />
+
+<table width="100%" celpadding="0" cellspacing="0" class="stealthfax-grid">
+	<thead style="font-weight:bold">
+		<td class="stealthfax-grid">Qty</td>
+		<td class="stealthfax-grid">Item</td>
+	</thead>
+	<? foreach ($order->dishes() as $dish) : ?>
+		<tr>
+			<td class="stealthfax-grid">1</td>
+			<td class="stealthfax-grid"><?
+				$food = $dish->dish()->name;
+				
+				$options = $dish->options();
+
+				if (gettype($options) == 'array') {
+					$options = i::o($options);
+				}
+
+				$withOptions = '';
+
+				$selectOptions = '';
+
+				if ($options->count()) {					
+
+					foreach ($dish->options() as $option) {
+						if ($option->option()->type == 'select') {
+							continue;
+						}
+
+						if($option->option()->id_option_parent) {
+							$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
+							// $withOptions .= "$optionGroup->name: ";
+							if( $selectOptions == '' ){
+								$selectOptions .= '&nbsp;&nbsp;';
+							}
+							$selectOptions .= '<i style="font-weight:600;">' . $optionGroup->name . ': ';
+							$selectOptions .= $option->option()->name.', ';
+						} else {
+							if( $withOptions == '' ){
+								$withOptions .= '<i style="font-weight:600;">&nbsp;&nbsp;With:&nbsp;';
+							}
+							$withOptions .= $option->option()->name.', ';
+						}
+
+					}
+					$withOptions = substr($withOptions, 0, -2);
+					$selectOptions = substr($selectOptions, 0, -2);
+					if( $withOptions != '' ){
+						$withOptions .= '</i>';
+					}
+				}
+
+				$withoutDefaultOptions = '';
+				if( $dish->id_order_dish && $dish->id_dish ){ 
+					$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+					$commas = ' ';
+					if( $optionsNotChoosen->count() ){
+						foreach( $optionsNotChoosen as $dish_option ){
+							$withoutDefaultOptions .= $commas . '<i style="font-weight:600;">&nbsp;No ' . $dish_option->option()->name . '</i>';
+							$commas = ', ';
+						}
+					}
+				}
+
+				if ( $withOptions == '' && $withoutDefaultOptions == '' && $selectOptions == '' ) {
+					$food .= '.';
+				} else {
+					$food .= ': ';
+				}
+
+				if( $withOptions != '' ){ $withOptions .= '.'; }
+				if( $withoutDefaultOptions != '' ){ $withoutDefaultOptions .= '.'; }
+				if( $selectOptions != '' ){ $selectOptions .= '.'; }
+
+				$food .= $withoutDefaultOptions;
+				$food .= $withOptions;
+				$food .= $selectOptions;
+				?>
+				<?=$food?>
+			</td>
+		</tr>
+
+	<? endforeach ; ?>
+</table>
