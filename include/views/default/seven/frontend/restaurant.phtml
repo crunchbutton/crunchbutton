@@ -197,6 +197,7 @@
 					<div class="toggle-wrapper clearfix">
 						<button ng-click="order.toogleDelivery( 'delivery' )" ng-class="{'toggle-active': order.form.delivery_type=='delivery' }" class="payment-form-toggle">delivery</button>
 						<button ng-click="order.toogleDelivery( 'takeout' )" ng-class="{'toggle-active': order.form.delivery_type=='takeout' }" class="payment-form-toggle">takeout</button>
+						<div class="divider"></div>
 					</div>
 				</div>
 				
@@ -213,10 +214,9 @@
 							<span class="take-out-only">Take out only!</span>
 						</div>
 					</div>
-
-
-
 				</div>
+				
+				<div class="divider spacer-one-two"></div>
 
 
 				<div class="personal-info field-container">
@@ -232,7 +232,7 @@
 
 					<div class="payment-form-group form-group">
 						<i class="fa fa-map-marker payment-form-icon form-icon form-field"></i>
-						<p ng-if="order.form.delivery_type!='delivery'">Pickup from: <span ng-bind-html-unsafe="restaurant.address | nl2br"></span></p>
+						<p class="pickup-info" ng-if="order.form.delivery_type!='delivery'">Pickup from:<br><span ng-bind-html-unsafe="restaurant.address | nl2br"></span></p>
 						<textarea ng-autosize ng-show="order.form.delivery_type=='delivery'" class="payment-form-input form-input form-field" ng-model="order.form.address" name="pay-address" id="pay-address" tabindex="5" placeholder="address"></textarea>
 					</div>
 
@@ -283,16 +283,22 @@
 	
 				</div>
 			</div>
-
 			
 			<!-- payment info -->
 			<div class="payment-info-container">
+			
+
+				<div class="divider spacer-two-two"></div>
+				<div class="divider spacer-one-one"></div>
 		
 				<div class="payment-info field-container">
 					<div class="toggle-wrapper clearfix">
 						<button ng-click="order.tooglePayment( 'card' )" ng-show="(restaurant.credit == '1')" ng-class="{'toggle-active': order.form.pay_type=='card' }" class="payment-form-toggle">card</button> 
 						<button ng-click="order.tooglePayment( 'cash' )" ng-show="(restaurant.cash == '1')"  ng-class="{'toggle-active': order.form.pay_type=='cash' }" class="payment-form-toggle">cash</button>
+						<div class="divider"></div>
 					</div>
+					
+					<div class="divider spacer-two-two"></div>
 
 					<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
 						<i class="fa fa-credit-card payment-form-icon form-icon form-field"></i>
@@ -301,18 +307,21 @@
 					
 					<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
 						<i class="fa payment-form-icon form-icon form-field"></i>
-						<select ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7" class="payment-form-select payment-form-input form-input form-field">{{order.form.card.month}}</select> 
-						<select ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8" class="payment-form-select payment-form-input form-input form-field"></select> 
+						<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7" class="payment-form-select payment-form-input form-input form-field">{{order.form.card.month}}</select></div>
+						<div class="form-input-select"><select ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8" class="payment-form-select payment-form-input form-input form-field payment-form-select-year"></select></div>
 					</div>
 
 					<div class="payment-form-group form-group" ng-show="order.form.pay_type=='card'">
 						<i class="fa fa-thumbs-up payment-form-icon form-icon form-field"></i>
 						<input type="hidden" name="pay-autotip-value" ng-model="order.form.autotip" value="0">
-						<select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips()" ng-change="order.tipChanged();" class="tip payment-form-select payment-form-input form-input form-field" tabindex="9"></select> 
+						<div class="form-input-select"><select ng-model="order.form.tip" ng-options="tip.value as tip.label for tip in order._tips()" ng-change="order.tipChanged();" class="tip payment-form-select payment-form-input form-input form-field" tabindex="9"></select></div>
 
 					</div>
 				</div>
+
 			</div>
+
+
 			
 
 		</div>
