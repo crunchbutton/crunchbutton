@@ -1,0 +1,134 @@
+<div class="box">
+	<div class="box-header">
+		<span class="title">Recent Issues</span>
+		<ul class="box-toolbar">
+			<li><span class="label label-green"><?php echo $this->totalOpened; ?> open</span></li>
+		</ul>
+	</div>
+
+	<div class="box-content">
+
+		<div class="table-header">
+			<div class="row-fluid">
+				<div class="span3">
+				<br/>
+					<div class="btn-group">
+						<button class="btn btn-default  dropdown-toggle" data-toggle="dropdown">Status: <?php echo $this->status; ?> <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="#" onclick="load('/support/plus/content?status=*')">All</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?status=open')">Open</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?status=closed')">Closed</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<table cellpadding="0" cellspacing="0" border="0" class="table table-normal">
+			<thead>
+				<tr>
+					<td style="width: 60px;"><div>#</div></td>
+					<td style="width: 140px;"><div>Date</div></td>
+					<td style="width: 140px;"><div>Name</div></td>
+					<td><div>Message</div></td>
+					<td style="width: 60px;"><div>Status</div></td>
+					<td style="width: 60px;"><div>Driver</div></td>
+					<td style="width: 110px;"><div>Last update user</div></td>
+					<td style="width: 110px;"><div>Last update admin</div></td>
+					<td style="width: 90px;"></td>
+				</tr>
+			</thead>
+			<tbody>
+				<?php 
+					$zebra = '-dark';
+					foreach ( $this->tickets as $support ){ 
+						$zebra = ( $zebra == '' ) ? '-dark' : '';
+						$lastReplyFrom = $support->lastReplyFrom();	
+						if( $lastReplyFrom == 'client' ){
+							$class = 'row-red';
+						} else {
+							$class = 'row-green';
+						}
+					?>
+					<tr class="<?php echo $class.$zebra; ?>">
+						<td style="white-space: nowrap;">
+							<a href="/support/plus/<?= $support->id_support ?>">
+								#<?=str_pad($support->id_support, 4, '0000', STR_PAD_LEFT)?>&nbsp;&nbsp;&nbsp;
+							</a>
+						</td>
+						<td nowrap><?php echo $support->repTime()->format( 'M/d D H:iA' ); ?></td>
+						<td nowrap><?php echo $support->name(); ?></td>
+						<td><?php echo $support->lastCustomerMessage()->body; ?></td>
+						<td><?php echo $support->status; ?></td>
+						<td><?php if( $support->order()->driver()->name ) { ?>
+							<a href="/permissions/users/<?php echo $support->order()->driver()->id_admin ?>">
+								<?php echo $support->order()->driver()->name; ?>
+							</a>
+							<?php } ?>
+							<td>
+								<?php echo $support->lastCustomerMessage()->relativeTime(); ?>
+							</td>
+							<td>
+								<?php echo $support->lastAdminMessage()->relativeTime(); ?>
+							</td>
+						</td>
+						<td>
+							<a href="/support/plus/<?= $support->id_support ?>"><button class="btn btn-mini btn-default"><i class="icon-comments"></i></button></a>
+							&nbsp;
+							<a href="/support/plus/<?= $support->id_support ?>"><button class="btn btn-mini btn-default">View</button></a>
+						</td>
+					</tr>
+				<?php 
+					} 
+				?>
+			</tbody>
+		</table>
+
+		<?php 
+		$paginationLink = $this->paginationLink . '&page='; 
+		$lastPage = ceil( $this->total / $this->resultsPerPage );
+
+		$nextPage = ( $this->page + 1 <= $lastPage ) ? $this->page + 1 : $this->page;
+		$prevPage = ( $this->page - 1 >= 1 ) ? $this->page - 1 : 1;
+		?>
+
+		<div class="table-footer">
+			<div class="dataTables_info">Showing <?php echo $this->startingAt; ?> to <?php echo $this->endingAt; ?> of <?php echo $this->total; ?> entries</div>
+			<div class="dataTables_paginate paging_full_numbers">
+				
+				<a class="first paginate_button <?php if( $this->page == 1 ){ echo 'paginate_button_disabled'; } ?>" href="#" onclick="load('<?php echo $paginationLink ?>1')">First</a>
+				<a class="previous paginate_button <?php if( $this->page == 1 ){ echo 'paginate_button_disabled'; } ?>" href="#" onclick="load('<?php echo $paginationLink . $prevPage ?>')">Previous</a>
+
+				<span>
+					<?php
+					$step = 2;
+					$pageTotal = 5;
+					
+					if( $this->page <= 2 ){
+						$pageStart = 1;
+					} else {
+						$pageStart = $this->page - $step;	
+					}
+					$pageEnd = ( $pageStart + $pageTotal ) - 1;
+					if( $pageEnd > $lastPage ){
+						$pageEnd = $lastPage;
+						$pageStart = ( $pageEnd - ( $pageTotal - 1 ) );
+						$pageStart = ( $pageStart < 1 ) ? 1 : $pageStart;
+					}
+
+					for( $i = $pageStart; $i <= $pageEnd; $i++ ){
+						$class = ( $i == $this->page ) ? 'paginate_active' : 'paginate_button';
+						?>
+						<a class="<?php echo $class; ?>" href="#" onclick="load('<?php echo $paginationLink . $i ?>');"><?php echo $i; ?></a>
+						<?php	
+					}
+					?>
+				</span>
+
+				<a class="next paginate_button <?php if( $this->page == $lastPage ){ echo 'paginate_button_disabled'; } ?>" href="#" onclick="load('<?php echo $paginationLink . $nextPage ?>')">Next</a>
+				<a class="last paginate_button <?php if( $this->page == $lastPage ){ echo 'paginate_button_disabled'; } ?>" href="#" onclick="load('<?php echo $paginationLink . $lastPage ?>')">Last</a>
+
+			</div>
+		</div>
+	</div>
+</div>

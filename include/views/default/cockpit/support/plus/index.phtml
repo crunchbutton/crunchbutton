@@ -1,0 +1,100 @@
+<?
+	$this->title = 'Support';
+	$this->titleicon = 'comments';
+?>
+
+<div class="container-fluid padded">
+	<div class="row-fluid">
+	<div id="issues"></div>
+	</div>
+</div>
+
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="span6">
+			<?php if( c::admin()->permission()->check( [ 'global', 'support-all', 'support-settings' ] ) ) { ?>
+			<div class="box">
+				<div class="box-header"><span class="title">Settings</span></div>
+
+				<div class="box-content">
+					<form class="fill-up">
+						<ul class="box-list">
+							<li class="input">
+								<span>Num to call after 1AM</span>
+								<span class="pull-right">
+									<input type="text" placeholder="" name="support-phone-afterhours" id="support-phone-afterhours" value='<?=c::config()->site->config('support-phone-afterhours')->value?>'>
+								</span>
+							</li>
+								<li class="input">
+									<button type="button" class="btn btn-blue button-save-settings">Save changes</button>
+								</li>
+						</ul>
+					</form>
+				</div>
+
+			</div>
+			<?php } ?>
+		</div>
+		<?php if ( Crunchbutton_Support::adminHasCreatePermission() ) { ?>
+		<div class="span6">
+			<div class="box">
+				<div class="box-header"><span class="title">Stuff</span></div>
+				<div class="box-content padded">
+					<a href="/support/plus/new"><button type="submit" class="btn btn-blue new-restaurant">New Support Ticket</button></a>
+				</div>
+			</div>
+		</div>
+		<?php } ?>
+	</div>
+</div>
+<div id="chats"></div>
+<script type="text/javascript">
+var status = 'open';
+
+function load( url ){
+	$.ajax( {
+		url: url,
+		complete: function( content ) {
+			$( '#issues' ).html( content.responseText );
+		}
+	} );
+};
+
+$(function() {
+	load( '/support/plus/content?status=' + status );
+} );
+
+	$(function() {
+		$('.button-save-settings').click(function() {
+			var self = $(this);
+			$(this).attr('disabled','disabled');
+
+			$.ajax({
+				type: 'POST',
+				url: '/api/siteconfig',
+				data: {
+					key: 'support-phone-afterhours',
+					value: $('[name="support-phone-afterhours"]').val()
+				},
+				complete: function(data) {
+					self.removeAttr('disabled');
+				}
+			});
+
+		});
+	});
+</script>
+<style type="text/css">
+	.row-green{
+		background: #cef5d7 !important;
+	}
+		.row-green-dark{
+			background: #b4f0c2 !important;		
+		}
+	.row-red{
+		background: #ffbdbd !important;
+	}
+		.row-red-dark{
+			background: #ffa3a3 !important;		
+		}
+</style>

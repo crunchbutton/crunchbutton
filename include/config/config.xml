@@ -94,10 +94,12 @@
 		<restaurant>_PHONE_</restaurant>
 	</phone>
 	<text>
-		<Judd>_PHONE_</Judd>
+		<!-- <Judd>_PHONE_</Judd>
 		<David>_PHONE_</David>
 		<Nick>_PHONE_</Nick>
-		<Tyler>_PHONE_</Tyler>
+		<Tyler>_PHONE_</Tyler> -->
+		<Daniel>***REMOVED***</Daniel>
+		<!-- <Daniel>2037728167</Daniel> -->
 	</text>
 	<stripe>
 		<dev>
