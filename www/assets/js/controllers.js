@@ -995,10 +995,11 @@ NGApp.controller( 'AccountFacebookCtrl', function ( $scope, $http, AccountModalS
 	$scope.modal = AccountModalService;
 });
 
-NGApp.controller( 'AccountSignInCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {
+NGApp.controller( 'AccountSignInCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService, AccountFacebookService ) {
 	$scope.modal = AccountModalService;
 	$scope.account = AccountService;
 	$scope.help = AccountHelpService;
+	$scope.facebook = AccountFacebookService;
 });
 
 NGApp.controller( 'AccountSignUpCtrl', function ( $scope, $http, AccountModalService, AccountService ) {
