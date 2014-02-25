@@ -55,6 +55,7 @@ $(function() {
 <script type="text/javascript">
 	$(function() {
 		window.fbAsyncInit = function() {
+			console.debug('Init facebook <?=Cana::config()->facebook->app?>');
 			FB.init({
 				appId: '<?=Cana::config()->facebook->app?>',
 				cookie: true,
