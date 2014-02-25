@@ -1826,8 +1826,18 @@ p {
 
 
 .default-order-check {
-	margin-top: .4em;
+	margin-top: 1em;
 	cursor: pointer;
+}
+
+.default-order-check .custom-checkbox {
+	float: left;
+}
+
+.default-order-check a {
+	padding-top: .3em;
+	display: block;
+	float: left;
 }
 
 .delivery-minimum-error {
