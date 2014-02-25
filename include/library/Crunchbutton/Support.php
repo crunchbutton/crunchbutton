@@ -5,6 +5,9 @@ class Crunchbutton_Support extends Cana_Table {
 	const TYPE_SMS = 'SMS';
 	const TYPE_BOX_NEED_HELP = 'BOX_NEED_HELP';
 
+	const STATUS_OPEN = 'open';
+	const STATUS_CLOSED = 'closed';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -18,11 +21,150 @@ class Crunchbutton_Support extends Cana_Table {
 	  }
 	}
 	
+	public function lastReplyFrom(){
+		return $this->lastMessage()->from;
+	}
+
+	public function firstMessage(){
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' ORDER BY id_support_message ASC LIMIT 1 ' );
+	}
+
+	public function lastMessage(){
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' ORDER BY id_support_message DESC LIMIT 1 ' );
+	}
+
+	public function lastAdminMessage(){
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_REP . '" ORDER BY id_support_message DESC LIMIT 1 ' );
+	}
+
+	public function lastCustomerMessage(){
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '" ORDER BY id_support_message DESC LIMIT 1 ' );
+	}
+
+	public function name(){
+		$message = $this->firstMessage();
+		return $message->name;
+	}
+
+	public function message(){
+		$message = $this->firstMessage();
+		return $message->body;	
+	}
+
+	public function createNewSMSTicket( $params = [] ){
+		$messageParams = [];
+		$support = new Crunchbutton_Support();
+		$support->type = Crunchbutton_Support::TYPE_SMS;
+		$support->phone = $params[ 'phone' ];
+		$support->status = Crunchbutton_Support::STATUS_OPEN;
+		$support->ip = $_SERVER[ 'REMOTE_ADDR' ];
+		$support->id_session_twilio = $params[ 'id_session_twilio' ];
+		$support->date = date( 'Y-m-d H:i:s' );
+		if( $params[ 'id_order' ] ) {
+			$order = Order::o( $params[ 'id_order' ] );
+			$support->id_order = $order->id_order;
+			$support->id_restaurant = $order->id_restaurant;
+			$support->id_user = $order->id_user;
+			$messageParams[ 'name' ] = $order->name;
+		}
+		$support->save();
+		// Params to create the new Support message
+		$messageParams[ 'phone' ] = $params[ 'phone' ];
+		$messageParams[ 'body' ] = $params[ 'body' ];
+		$support->addCustomerMessage( $messageParams );
+		return Crunchbutton_Support::o( $support->id_support );
+	}
+
+	public function addCustomerMessage( $params = [] ){
+		$messageParams[ 'id_admin' ] = NULL;
+		$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_SMS;
+		$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_CLIENT;
+		$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_EXTERNAL;
+		$messageParams[ 'name' ] = $params[ 'name' ];
+		$messageParams[ 'phone' ] = $params[ 'phone' ];
+		$messageParams[ 'body' ] = $params[ 'body' ];
+		$this->addMessage( $messageParams );
+	}
+
+	public function addAdminReply( $body ){
+		if( trim( $body ) != '' ){
+			$admin = Crunchbutton_Admin::o( c::admin()->id_admin );
+			$message = $this->addAdminMessage( [ 'body' => $body, 'phone' => $admin->phone ] );
+			if( $message->id_support_message ){
+				$message->notify();
+			}
+		}
+	}
+
+	public function addAdminMessage( $params = [] ){
+		$admin = Crunchbutton_Admin::getByPhone( $params[ 'phone' ] );
+		if( $admin->id_admin ){
+			$messageParams[ 'id_admin' ] = $admin->id_admin;
+			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_SMS;
+			$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_REP;
+			$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_EXTERNAL;
+			$messageParams[ 'name' ] = $admin->name;
+			$messageParams[ 'phone' ] = $params[ 'phone' ];
+			$messageParams[ 'body' ] = $params[ 'body' ];
+			return $this->addMessage( $messageParams );
+		}
+	}
+
+	public function addSystemMessage( $body ) {
+		$messageParams[ 'id_admin' ] = null;
+		$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_NOTE;
+		$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_SYSTEM;
+		$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL;
+		$messageParams[ 'body' ] = $body;
+		$this->addMessage( $messageParams );
+	}
+
+	public function addNote( $body ){
+		if( trim( $body ) != '' ){
+			$admin = Crunchbutton_Admin::o( c::admin()->id_admin );
+			$messageParams[ 'id_admin' ] = $admin->id_admin;
+			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_NOTE;
+			$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_REP;
+			$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL;
+			$messageParams[ 'name' ] = $admin->name;
+			$messageParams[ 'phone' ] = $params[ 'phone' ];
+			$messageParams[ 'body' ] = $body;
+			$message = $this->addMessage( $messageParams );
+		}
+	}
+
+	public function addMessage( $params = [] ){
+		$message = new Crunchbutton_Support_Message();
+		$message->id_support = $this->id_support;
+		$message->id_admin = $params[ 'id_admin' ];
+		$message->from = $params[ 'from' ];
+		$message->type = $params[ 'type' ];
+		$message->visibility = $params[ 'visibility' ];
+		$message->phone = $params[ 'phone' ];
+		$message->name = $params[ 'name' ];
+		$message->body = $params[ 'body' ];
+		$today = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$message->date = $today->format( 'Y-m-d H:i:s' );
+		$message->save();
+
+		// Relate the admin with the message
+		if( $message->id_admin ){
+			$this->id_admin = $message->id_admin;
+			$this->save();
+		}
+
+		return $message;
+	}
+
 	public function queNotify() {
 		$support = $this;
 		c::timeout(function() use($support) {
 			$support->notify();
 		}); 
+	}
+
+	public function messages(){
+		return Crunchbutton_Support_Message::q( "SELECT * FROM support_message WHERE id_support = {$this->id_support} ORDER BY id_support_message ASC" );
 	}
 
 	public function getByTwilioSessionId( $id_session_twilio ){
@@ -168,7 +310,7 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function rep() {
-		return Support_Rep::o($this->id_support_rep);
+		return Crunchbutton_Admin::o($this->id_admin);
 	}
 
 	public function save() {
@@ -178,7 +320,7 @@ class Crunchbutton_Support extends Cana_Table {
 		}
 		parent::save();
 		if($initial_save) {
-			Crunchbutton_Hipchat_Notification::NewSupport($this);
+			// Crunchbutton_Hipchat_Notification::NewSupport($this);
 		}
 	}
 
@@ -228,20 +370,6 @@ class Crunchbutton_Support extends Cana_Table {
 		$this->id_restaurant = $order->id_restaurant;
 		$this->id_user = $order->id_user;
 		$this->name = $order->name;
-	}
-
-	public function addNote($text, $from, $visibility) {
-		$sn = new Support_Note();
-		$sn->id_support = $this->id;
-		$sn->text = $text;
-		$sn->from = $from;
-		$sn->visibility = $visibility;
-		$sn->save();
-		return $sn;
-	}
-
-	public function systemNote($text) {
-		self::addNote($text, 'system', 'internal');
 	}
 
 	public static function getSupportForOrder($id_order) {

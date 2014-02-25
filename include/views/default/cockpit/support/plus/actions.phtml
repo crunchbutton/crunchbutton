@@ -1,0 +1,35 @@
+<?php
+$support = $this->support;
+?>
+<? if ($this->support->id_order) { ?>
+	<div class="alert alert-refund" style="display:none;">
+		<span class="alert-message"></span>
+	</div>
+	<?php if ($support->permissionToEdit()) { ?>	
+	<div class="box">
+		<div class="box-header">
+			<span class="title">Actions</span>
+		</div>
+		<div class="box-content ">
+			<ul class="box-list">
+				<li>
+					<span>Refund</span>
+					<span class="pull-right">
+						<? if ( $support->order()->refunded ): ?>
+							<b>Order refunded.</b>
+						<? else: ?>
+							<a title="Refund" href="javascript://" data-charged="<?php echo $support->order()->charged(); ?>" data-gift="<?php if( $support->order()->chargedByCredit() > 0 ){ echo $support->order()->chargedByCredit(); } else { echo '0'; } ?>" data-uuid="<?=$support->order()->uuid?>" class="btn btn-green button-refund"><i class="icon-reply"></i></a>
+						<? endif ?>
+					</span>
+				</li>
+				<li>
+					<span>Gift card</span>
+					<span class="pull-right">
+						<a title="Issue a gift card" href="/giftcards/new?id_user=<?php echo $support->order()->user()->id_user; ?>&id_restaurant=<?php echo $support->order()->restaurant()->id_restaurant; ?>&id_order_reference=<?php echo $support->order()->id_order; ?>" class="btn btn-green"><i class="icon-gift"></i></a>
+					</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<?php } ?>
+<?php } ?>

@@ -1,0 +1,73 @@
+<script type="text/javascript" src="/assets/js/admin.support.js?v=<?php echo Cana_Util::gitVersion()?>"></script>
+<div class="box" id="box-chat-<?php echo $this->support->id_support;?>">
+	<div class="box-header">
+		<div class="title">
+			<span><i></i></span>
+			Chat #<?php echo $this->support->id_support;?>
+		</div>
+		<ul class="box-toolbar">
+			<li class="toolbar-link">
+				<a href="#box-chat-<?php echo $this->support->id_support;?>" id="chat-minimize-<?php echo $this->support->id_support;?>">
+					<i class="icon-angle-down"></i>
+				</a>
+				<a href="#box-chat-<?php echo $this->support->id_support;?>" id="chat-maximize-<?php echo $this->support->id_support;?>" style="display:none;">
+					<i class="icon-angle-up"></i>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="box-content padded" id="chat-box-content-<?php echo $this->support->id_support;?>">
+
+		<div id="chat-history-<?php echo $this->support->id_support;?>" style="height:300px;overflow:auto;"></div>
+
+		<div class="chat-message-box" id="message-box-<?php echo $this->support->id_support; ?>">
+			<textarea name="reply_<?php echo $this->support->id_support; ?>" id="reply_<?php echo $this->support->id_support; ?>" rows="1" placeholder="enter the text and press enter to send"></textarea>
+		</div>
+		<div id="chat-settings">
+
+			<div class="row-fluid">
+				<div class="span3">
+					<label><input type="checkbox" checked="checked" id="autoscroll_<?php echo $this->support->id_support; ?>"/>&nbsp;Auto scroll</label>
+				</div>
+				<div class="span3">
+					<a href="#">
+						<button class="btn btn-default" id="chat-refresh-<?php echo $this->support->id_support;?>">
+							<i class="icon-refresh"></i> Refresh
+						</button>
+					</a>
+				</div>
+			</div>
+			
+		</div>
+
+		<div id="sending-<?php echo $this->support->id_support; ?>" style="display:none;">
+			<i class="icon-spinner icon-spin"></i> Sending
+		</div>
+
+	</div>
+</div>
+<script type="text/javascript">
+	$( document ).ready( function(){
+		var chat_<?php echo $this->support->id_support ?> = new SupportChat( '<?php echo $this->support->id_support ?>' );
+		$( '#chat-refresh-<?php echo $this->support->id_support;?>' ).on( 'click', function(){
+			chat_<?php echo $this->support->id_support ?>.history();
+		} );
+		$( '#reply_<?php echo $this->support->id_support; ?>' ).keypress( function( e ){
+			if( e.keyCode == 13 ){
+				var text = $( '#reply_<?php echo $this->support->id_support; ?>' ).val();
+				chat_<?php echo $this->support->id_support ?>.reply( text );
+				$( '#reply_<?php echo $this->support->id_support; ?>' ).val( '' );
+			}     
+		} );
+		$( '#chat-minimize-<?php echo $this->support->id_support;?>' ).on( 'click', function(){
+			chat_<?php echo $this->support->id_support ?>.minimize();
+		} );
+		$( '#chat-maximize-<?php echo $this->support->id_support;?>' ).on( 'click', function(){
+			chat_<?php echo $this->support->id_support ?>.maximize();
+		} );
+		
+		/* load the history */
+		chat_<?php echo $this->support->id_support ?>.history();
+	} );
+</script>
