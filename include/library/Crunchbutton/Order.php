@@ -862,7 +862,10 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function driver(){
-		return Admin::q( "SELECT DISTINCT(a.id_admin) id, a.* FROM order_action o INNER JOIN admin a ON a.id_admin = o.id_admin WHERE o.id_order = {$this->id_order}" );
+		if( $this->id_order ){
+			return Admin::q( "SELECT DISTINCT(a.id_admin) id, a.* FROM order_action o INNER JOIN admin a ON a.id_admin = o.id_admin WHERE o.id_order = {$this->id_order}" );	
+		}
+		
 	}
 
 	public function resend_notify(){

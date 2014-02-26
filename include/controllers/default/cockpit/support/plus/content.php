@@ -39,7 +39,7 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 		$endingAt = ( $startingAt + $resultsPerPage - 1 );
 		$endingAt = ( $endingAt > $total ) ? $total : $endingAt;
 
-		c::view()->totalOpened = Support::q("SELECT COUNT(*) AS count FROM support WHERE status = 'open' {$where}")->count;
+		c::view()->totalOpened = Support::q("SELECT COUNT(*) AS count FROM support WHERE status = 'open'")->count;
 
 		c::view()->tickets = $tickets;
 		c::view()->total = $total;

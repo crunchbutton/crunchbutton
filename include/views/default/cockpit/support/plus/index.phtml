@@ -35,19 +35,11 @@
 			</div>
 			<?php } ?>
 		</div>
-		<?php if ( Crunchbutton_Support::adminHasCreatePermission() ) { ?>
-		<div class="span6">
-			<div class="box">
-				<div class="box-header"><span class="title">Stuff</span></div>
-				<div class="box-content padded">
-					<a href="/support/plus/new"><button type="submit" class="btn btn-blue new-restaurant">New Support Ticket</button></a>
-				</div>
-			</div>
-		</div>
-		<?php } ?>
 	</div>
 </div>
-<div id="chats"></div>
+
+<div id="container-chats"></div>
+
 <script type="text/javascript">
 var status = 'open';
 
@@ -85,6 +77,20 @@ $(function() {
 	});
 </script>
 <style type="text/css">
+	.chat-title{
+		cursor: pointer;
+	}
+	.chat-cointainer{
+		position:fixed;
+		height:344px;
+		width:250px;
+		bottom:5px;
+		z-index:1;
+	}
+	.chat-input{
+		width: 241px;
+		border: 1px solid #FFF;
+	}
 	.row-green{
 		background: #cef5d7 !important;
 	}
@@ -97,4 +103,14 @@ $(function() {
 		.row-red-dark{
 			background: #ffa3a3 !important;		
 		}
+		.avatar{
+			width: 20px;
+		}
+	.arrow-box-left{
+		margin-left: 20px !important;
+	}
+	.arrow-box-right{
+		margin-right: 20px !important;
+	}
 </style>
+<script type="text/javascript" src="/assets/js/admin.support.js?v=<?php echo Cana_Util::gitVersion()?>"></script>
