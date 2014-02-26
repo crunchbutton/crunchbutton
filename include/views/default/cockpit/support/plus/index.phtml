@@ -41,7 +41,9 @@
 <div id="container-chats"></div>
 
 <script type="text/javascript">
+
 var status = 'open';
+var type = 'support';
 
 function load( url ){
 	$.ajax( {
@@ -53,7 +55,7 @@ function load( url ){
 };
 
 $(function() {
-	load( '/support/plus/content?status=' + status );
+	load( '/support/plus/content?status=' + status + '&type=' + type );
 } );
 
 	$(function() {

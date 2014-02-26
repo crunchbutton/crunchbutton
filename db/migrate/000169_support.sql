@@ -2,6 +2,9 @@ ALTER TABLE `support` ADD `id_admin` int(10) unsigned DEFAULT NULL;
 ALTER TABLE `support` ADD INDEX ( `id_admin` );
 ALTER TABLE `support` ADD CONSTRAINT support_ibfk_6 FOREIGN KEY (id_admin) REFERENCES `admin`(id_admin);
 
+ALTER TABLE support MODIFY COLUMN type ENUM( 'SMS','BOX_NEED_HELP', 'WARNING' );
+
+
 CREATE TABLE `support_message` (
   `id_support_message` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `id_support` int(11) unsigned DEFAULT NULL,
