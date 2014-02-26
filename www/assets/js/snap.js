@@ -286,6 +286,11 @@
                 },
                 startDrag: function(e) {
 
+                	// ignore on right click
+					if (e && e.button && e.button == 2) {
+						return;
+					}
+
                     // No drag on ignored elements
                     var target = e.target ? e.target : e.srcElement,
                         ignoreParent = utils.parentUntil(target, 'data-snap-ignore');
