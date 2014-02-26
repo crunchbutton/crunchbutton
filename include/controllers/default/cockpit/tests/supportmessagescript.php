@@ -1,9 +1,6 @@
 <?php
 
-/*
-Script to populate the support message table
-*/
-class Controller_tests_supportmessageacript extends Crunchbutton_Controller_Account {
+class Controller_tests_supportmessagescript extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
