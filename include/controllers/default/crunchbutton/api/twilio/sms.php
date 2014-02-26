@@ -21,7 +21,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			.'<Response>';
 
 		$sendSMSTo = array();
-		foreach (c::config()->text as $supportName => $supportPhone) {
+		foreach ( c::config()->text as $supportName => $supportPhone) {
 			$sendSMSTo[ $supportName ] = $supportPhone;
 		}
 		
