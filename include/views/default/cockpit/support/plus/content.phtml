@@ -10,16 +10,24 @@
 
 		<div class="table-header">
 			<div class="row-fluid">
-				<div class="span3">
+				<div class="span1">
 				<br/>
 					<div class="btn-group">
 						<button class="btn btn-default  dropdown-toggle" data-toggle="dropdown">Status: <?php echo $this->status; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" onclick="load('/support/plus/content?status=*')">All</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?status=')">All</a></li>
 							<li><a href="#" onclick="load('/support/plus/content?status=open')">Open</a></li>
 							<li><a href="#" onclick="load('/support/plus/content?status=closed')">Closed</a></li>
 						</ul>
 					</div>
+				</div>
+				<div class="span10">
+					<br/>
+					<button onclick="load('/support/plus/content?status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
+				</div>
+				<div class="span1" id="warning-loaded" style="display:none;">
+					<br/>
+					<span style="float:right;" class="label label-blue"><i class="icon-ok-sign"></i> Loaded</span>
 				</div>
 			</div>
 		</div>
@@ -73,7 +81,7 @@
 							</td>
 						</td>
 						<td>
-							<a href="/support/plus/<?= $support->id_support ?>"><button class="btn btn-mini btn-default"><i class="icon-comments"></i></button></a>
+							<a href="javascript://" onclick="SupportChats.createChat( '<?php echo $support->id_support; ?>' )"><button class="btn btn-mini btn-default"><i class="icon-comments"></i></button></a>
 							&nbsp;
 							<a href="/support/plus/<?= $support->id_support ?>"><button class="btn btn-mini btn-default">View</button></a>
 						</td>
@@ -132,3 +140,11 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	setTimeout( function(){
+		$( '#warning-loaded' ).fadeIn();
+		setTimeout( function(){
+			$( '#warning-loaded' ).fadeOut();
+		}, 100 );
+	}, 700 );
+</script>
