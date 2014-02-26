@@ -4,6 +4,7 @@ class Crunchbutton_Support extends Cana_Table {
 
 	const TYPE_SMS = 'SMS';
 	const TYPE_BOX_NEED_HELP = 'BOX_NEED_HELP';
+	const TYPE_WARNING = 'WARNING';
 
 	const STATUS_OPEN = 'open';
 	const STATUS_CLOSED = 'closed';
@@ -72,6 +73,46 @@ class Crunchbutton_Support extends Cana_Table {
 		$messageParams[ 'phone' ] = $params[ 'phone' ];
 		$messageParams[ 'body' ] = $params[ 'body' ];
 		$support->addCustomerMessage( $messageParams );
+		return Crunchbutton_Support::o( $support->id_support );
+	}
+
+	public function createNewBoxTicket( $params = [] ){
+		$messageParams = [];
+		$support = new Crunchbutton_Support();
+		$support->type = Crunchbutton_Support::TYPE_BOX_NEED_HELP;
+		$support->phone = $params[ 'phone' ];
+		$support->status = Crunchbutton_Support::STATUS_OPEN;
+		$support->ip = $_SERVER[ 'REMOTE_ADDR' ];
+		$support->id_session_twilio = $params[ 'id_session_twilio' ];
+		$support->date = date( 'Y-m-d H:i:s' );
+		if( c::user()->id_user ){
+			$support->id_user = c::user()->id_user;	
+		}
+		$support->save();
+		// Params to create the new Support message
+		$messageParams[ 'name' ] = $params[ 'name' ];
+		$messageParams[ 'phone' ] = $params[ 'phone' ];
+		$messageParams[ 'body' ] = $params[ 'body' ];
+		$support->addCustomerMessage( $messageParams );
+		return Crunchbutton_Support::o( $support->id_support );
+	}
+
+	public function createNewWarning( $params = [] ){
+		$support = new Crunchbutton_Support();
+		$support->type = Crunchbutton_Support::TYPE_WARNING;
+		$support->status = Crunchbutton_Support::STATUS_OPEN;
+		$support->ip = $_SERVER[ 'REMOTE_ADDR' ];
+		$support->id_session_twilio = null;
+		$support->date = date( 'Y-m-d H:i:s' );
+		if( $params[ 'id_order' ] ) {
+			$order = Order::o( $params[ 'id_order' ] );
+			$support->id_order = $order->id_order;
+			$support->id_restaurant = $order->id_restaurant;
+			$support->id_user = $order->id_user;
+			$support->phone = $order->phone;
+		}
+		$support->save();
+		$support->addSystemMessage( $params[ 'body' ] );
 		return Crunchbutton_Support::o( $support->id_support );
 	}
 
@@ -191,6 +232,8 @@ class Crunchbutton_Support extends Cana_Table {
 
 		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
+		$message = $this->firstMessage();
+
 		$message =
 			"(support-" . $env . "): ".
 			$support->name.
@@ -198,7 +241,7 @@ class Crunchbutton_Support extends Cana_Table {
 			"phone: ".
 			$support->phone.
 			"\n\n".
-			$support->message;
+			$message->body;
 
 		// Log
 		Log::debug( [ 'action' => 'support', 'message' => $message, 'type' => 'support' ] );

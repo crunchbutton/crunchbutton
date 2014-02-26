@@ -11,7 +11,8 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 		$resultsPerPage = 15;
 
 		$page = ( $_REQUEST[ 'page' ] ) ? $_REQUEST[ 'page' ] : 1;
-		$status = ( $_REQUEST[ 'status' ] ) ? $_REQUEST[ 'status' ] : '*';
+		$status = ( $_REQUEST[ 'status' ] ) ? $_REQUEST[ 'status' ] : 'all';
+		$type = ( $_REQUEST[ 'type' ] ) ? $_REQUEST[ 'type' ] : 'all';
 
 		$paginationLink = '/support/plus/content?';
 
@@ -23,9 +24,18 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 			$where = ' AND id_restaurant IN( ' . join( $restaurants, ',' ) . ')';
 		}
 
-		if( $status != '*' && $status != '' ){
+		if( $status != 'all' && $status != '' ){
 			$where = ' AND status = "' . $status . '"';
 			$paginationLink .= '&status=' . $status;
+		}
+
+		if( $type != 'all' && $type != '' ){
+			if( $type == 'warning' ){
+				$where = ' AND type = "' . Crunchbutton_Support::TYPE_WARNING . '"';	
+			} else if( 'support' ){
+				$where = ' AND ( type = "' . Crunchbutton_Support::TYPE_BOX_NEED_HELP . '" OR type = "' . Crunchbutton_Support::TYPE_SMS . '" ) ';	
+			}
+			$paginationLink .= '&type=' . $type;
 		}
 
 		$query = "SELECT * FROM support WHERE 1=1 {$where} ORDER BY id_support DESC LIMIT {$limit}";
@@ -43,8 +53,9 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 
 		c::view()->tickets = $tickets;
 		c::view()->total = $total;
+		c::view()->type = $type;
 		c::view()->page = $page;
-		c::view()->status = ( $status == '' || $status == '*' ) ? 'all' : $status;
+		c::view()->status = ( $status == '' ) ? 'all' : $status;
 		c::view()->startingAt = $startingAt;
 		c::view()->endingAt = $endingAt;
 		c::view()->resultsPerPage = $resultsPerPage;

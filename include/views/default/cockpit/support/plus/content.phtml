@@ -15,15 +15,26 @@
 					<div class="btn-group">
 						<button class="btn btn-default  dropdown-toggle" data-toggle="dropdown">Status: <?php echo $this->status; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" onclick="load('/support/plus/content?status=')">All</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?status=open')">Open</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?status=closed')">Closed</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&status=all')">All</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&status=open')">Open</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&status=closed')">Closed</a></li>
 						</ul>
 					</div>
 				</div>
-				<div class="span10">
+				<div class="span1">
+				<br/>
+					<div class="btn-group">
+						<button class="btn btn-default  dropdown-toggle" data-toggle="dropdown">Type: <?php echo $this->type; ?> <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="#" onclick="load('/support/plus/content?staus=<?php echo $this->status; ?>&type=all')">All</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?staus=<?php echo $this->status; ?>&type=support')">Support</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?staus=<?php echo $this->status; ?>&type=warning')">Warning</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="span9">
 					<br/>
-					<button onclick="load('/support/plus/content?status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
+					<button onclick="load('/support/plus/content?type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
 				</div>
 				<div class="span1" id="warning-loaded" style="display:none;">
 					<br/>
@@ -37,6 +48,7 @@
 				<tr>
 					<td style="width: 60px;"><div>#</div></td>
 					<td style="width: 140px;"><div>Date</div></td>
+					<td style="width: 140px;"><div>Type</div></td>
 					<td style="width: 140px;"><div>Name</div></td>
 					<td><div>Message</div></td>
 					<td style="width: 60px;"><div>Status</div></td>
@@ -57,6 +69,27 @@
 						} else {
 							$class = 'row-green';
 						}
+					switch ( $support->type ) {
+						case Crunchbutton_Support::TYPE_SMS:
+						case Crunchbutton_Support::TYPE_BOX_NEED_HELP:
+							$type = 'Support';
+							$name = $support->name();
+							$driver = $support->order()->driver()->name;
+							$message = $support->lastCustomerMessage()->body;
+							$customer_time = $support->lastCustomerMessage()->relativeTime();
+							$admin_time = $support->lastAdminMessage()->relativeTime();
+							$chat = true;
+							break;
+						case Crunchbutton_Support::TYPE_WARNING:
+							$name = '-';
+							$driver = false;
+							$type = 'System warning';
+							$message = $support->lastMessage()->body;
+							$customer_time = '-';
+							$admin_time = $support->lastMessage()->relativeTime();
+							$chat = false;
+							break;
+					} 
 					?>
 					<tr class="<?php echo $class.$zebra; ?>">
 						<td style="white-space: nowrap;">
@@ -65,25 +98,28 @@
 							</a>
 						</td>
 						<td nowrap><?php echo $support->repTime()->format( 'M/d D H:iA' ); ?></td>
-						<td nowrap><?php echo $support->name(); ?></td>
-						<td><?php echo $support->lastCustomerMessage()->body; ?></td>
+						<td nowrap><?php echo $type; ?></td>
+						<td nowrap><?php echo $name; ?></td>
+						<td><?php echo $message; ?></td>
 						<td><?php echo $support->status; ?></td>
-						<td nowrap=""><?php if( $support->order()->driver()->name ) { ?>
+						<td nowrap=""><?php if( $driver ) { ?>
 							<a href="/permissions/users/<?php echo $support->order()->driver()->id_admin ?>">
 								<?php echo $support->order()->driver()->name; ?>
 							</a>
-							<?php } ?>
+							<?php } else { ?>-<?php } ?>
 							<td>
-								<?php echo $support->lastCustomerMessage()->relativeTime(); ?>
+								<?php echo $customer_time; ?>
 							</td>
 							<td>
-								<?php echo $support->lastAdminMessage()->relativeTime(); ?>
+								<?php echo $admin_time; ?>
 							</td>
 						</td>
 						<td>
-							<a href="javascript://" onclick="SupportChats.createChat( '<?php echo $support->id_support; ?>' )"><button class="btn btn-mini btn-default"><i class="icon-comments"></i></button></a>
-							&nbsp;
 							<a href="/support/plus/<?= $support->id_support ?>"><button class="btn btn-mini btn-default">View</button></a>
+							<?php if( $chat ) { ?>
+							&nbsp;
+							<a href="javascript://" onclick="SupportChats.createChat( '<?php echo $support->id_support; ?>' )"><button class="btn btn-mini btn-default"><i class="icon-comments"></i></button></a>
+							<?php } ?>
 						</td>
 					</tr>
 				<?php 

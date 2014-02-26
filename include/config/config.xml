@@ -98,11 +98,11 @@
 		<restaurant>_PHONE_</restaurant>
 	</phone>
 	<text>
-		<!-- <Judd>_PHONE_</Judd>
+		<Judd>_PHONE_</Judd>
 		<David>_PHONE_</David>
 		<Nick>_PHONE_</Nick>
 		<Tyler>_PHONE_</Tyler> -->
-		<Daniel>***REMOVED***</Daniel>
+		<!-- <Daniel>***REMOVED***</Daniel> -->
 		<!-- <Daniel>***REMOVED***</Daniel> -->
 	</text>
 	<stripe>

@@ -32,12 +32,12 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			}
 		}
 
-		foreach ( $sendSMSTo as $supportName => $supportPhone ) {
-			if ($supportPhone == $phone) {
-				$type = 'rep';
-				$rep = $supportName;
-				Log::debug( [ 'action' => 'rep valid', 'rep' => $supportName, 'rep phone' => $supportPhone, 'type' => 'sms' ] );
-			}
+		$admin = Admin::getByPhone( $phone );
+
+		if( $admin->id_admin ){
+			$rep = $admin;
+			$type = 'rep';
+			Log::debug( [ 'action' => 'rep valid', 'rep' => $admin->name, 'rep phone' => $admin->phone, 'type' => 'sms' ] );
 		}
 
 		switch ($type) {
@@ -45,7 +45,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			case 'rep':
 			
 				foreach ( $sendSMSTo as $supportName => $supportPhone) {
-					if ($supportName == $rep) continue;
+					if ($supportPhone == $phone) continue;
 					$nums[] = $supportPhone;
 				}
 
@@ -65,7 +65,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						if( $body != '' ){
 							$this->reply( $rsess->id_session_twilio, $phone, $body, $twilio );
 						} else {
-							$msg = "$rep is now replying to @".$rsess->id_session_twilio.'. Type a message to respond.';
+							$msg = $rep->name . " is now replying to @".$rsess->id_session_twilio.'. Type a message to respond.';
 						}
 					}
 				} 
