@@ -18,14 +18,16 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 
 		$limit = ( $page == 1 ? 0 : ( ( ( $page - 1 ) * $resultsPerPage ) + 1 ) ) . ',' . $resultsPerPage;
 
+		$where = '';
+
 		if( !c::admin()->permission()->check(['global', 'support-all', 'support-crud' ] ) ){
 			$restaurants = c::admin()->getRestaurantsUserHasPermissionToSeeTheirTickets();
 			$restaurants[] = -1;
-			$where = ' AND id_restaurant IN( ' . join( $restaurants, ',' ) . ')';
+			$where .= ' AND id_restaurant IN( ' . join( $restaurants, ',' ) . ')';
 		}
 
 		if( $status != 'all' && $status != '' ){
-			$where = ' AND status = "' . $status . '"';
+			$where .= ' AND status = "' . $status . '"';
 			$paginationLink .= '&status=' . $status;
 		}
 
@@ -33,7 +35,7 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 			if( $type == 'warning' ){
 				$where = ' AND type = "' . Crunchbutton_Support::TYPE_WARNING . '"';	
 			} else if( 'support' ){
-				$where = ' AND ( type = "' . Crunchbutton_Support::TYPE_BOX_NEED_HELP . '" OR type = "' . Crunchbutton_Support::TYPE_SMS . '" ) ';	
+				$where .= ' AND ( type = "' . Crunchbutton_Support::TYPE_BOX_NEED_HELP . '" OR type = "' . Crunchbutton_Support::TYPE_SMS . '" ) ';	
 			}
 			$paginationLink .= '&type=' . $type;
 		}
