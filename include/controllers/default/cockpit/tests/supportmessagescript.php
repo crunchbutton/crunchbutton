@@ -1,9 +1,12 @@
 <?php
 
+set_time_limit(0);
+
 /*
 Script to populate the support message table
 */
-class Controller_Tests_SupportMessageScript extends Crunchbutton_Controller_Account {
+class Controller_Tests_supportmessageacript extends Crunchbutton_Controller_Account {
+
 	public function init() {
 
 		$supports = Support::q( 'SELECT * FROM support ORDER BY id_support DESC' );
@@ -67,7 +70,7 @@ class Controller_Tests_SupportMessageScript extends Crunchbutton_Controller_Acco
 				}
 			}
 
-		// 4: Copy the data from support_note to support_message
+			// 4: Copy the data from support_note to support_message
 			$support_notes = Support_Note::q( 'SELECT s.* FROM support_note s INNER JOIN support_answer a ON a.id_support = s.id_support AND s.text != a.message WHERE s.id_support = ' . $support->id_support );
 			
 			foreach( $support_notes as $sn ){
@@ -136,8 +139,7 @@ class Controller_Tests_SupportMessageScript extends Crunchbutton_Controller_Acco
 					$message->save();	
 				}
 			}
-
-
 		}
+		echo 'ok';
 	}
 }
