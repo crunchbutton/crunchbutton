@@ -26,19 +26,19 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function firstMessage(){
-		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' ORDER BY id_support_message ASC LIMIT 1 ' );
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' ORDER BY date ASC, id_support_message ASC LIMIT 1 ' );
 	}
 
 	public function lastMessage(){
-		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' ORDER BY id_support_message DESC LIMIT 1 ' );
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
 	}
 
 	public function lastAdminMessage(){
-		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_REP . '" ORDER BY id_support_message DESC LIMIT 1 ' );
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_REP . '" ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
 	}
 
 	public function lastCustomerMessage(){
-		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '" ORDER BY id_support_message DESC LIMIT 1 ' );
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '" ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
 	}
 
 	public function name(){
@@ -164,7 +164,7 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function messages(){
-		return Crunchbutton_Support_Message::q( "SELECT * FROM support_message WHERE id_support = {$this->id_support} ORDER BY id_support_message ASC" );
+		return Crunchbutton_Support_Message::q( "SELECT * FROM support_message WHERE id_support = {$this->id_support} ORDER BY date ASC, id_support_message ASC" );
 	}
 
 	public function getByTwilioSessionId( $id_session_twilio ){

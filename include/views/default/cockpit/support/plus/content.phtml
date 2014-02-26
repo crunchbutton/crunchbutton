@@ -68,7 +68,7 @@
 						<td nowrap><?php echo $support->name(); ?></td>
 						<td><?php echo $support->lastCustomerMessage()->body; ?></td>
 						<td><?php echo $support->status; ?></td>
-						<td><?php if( $support->order()->driver()->name ) { ?>
+						<td nowrap=""><?php if( $support->order()->driver()->name ) { ?>
 							<a href="/permissions/users/<?php echo $support->order()->driver()->id_admin ?>">
 								<?php echo $support->order()->driver()->name; ?>
 							</a>
