@@ -84,7 +84,10 @@
 										<strong>Timezone</strong>
 									</div>
 									<div class="span7">
-										<div id="form-timezone"><strong><?php echo $this->admin->timezone; ?></strong></div>
+										<div id="form-timezone"><strong>
+										<?php echo $this->admin->timezone; ?>
+										<?php $now = new DateTime( 'now', new DateTimeZone( $this->admin->timezone ) ); ?> (<?php echo $now->format( 'T' ); ?>)
+										</strong></div>
 									</div>
 								</div>
 							</div>
