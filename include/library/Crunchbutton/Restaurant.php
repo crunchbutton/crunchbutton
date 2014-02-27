@@ -1031,12 +1031,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 								$price = $out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'price' ];
 								$price_original = $price;
 								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'o_price' ] = $price;
-								if( $price > 0 ){
+								// if( $price > 0 ){
+								// The markup should be applied even to subtract prices: #2434
 									$price = $price + ( $price * $delivery_service_markup / 100 );
 									$price = number_format( $price, 2 );
 									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'price' ] = $price;
 									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'markup' ] = number_format( $price - $price_original, 2 );	
-								}
+								// }
 							}
 						}
 					}
@@ -1118,12 +1119,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( $this->delivery_service ){
 			return 1;
 		} 
+		/*
 		// Second, check if it has an admin active notification
 		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
 		$notification = Notification::q( "SELECT n.* FROM notification n WHERE n.id_restaurant = {$this->id_restaurant} AND n.active = 1 AND n.type = '{$type_admin}' LIMIT 1");
 		if( $notification->id_notification ){
 			return 1;
-		}
+		}*/
 		return 0;
 	}
 

@@ -80,7 +80,7 @@ class Crunchbutton_Order extends Cana_Table {
 			$dish->id_dish = $d['id'];
 			$price = $dish->dish()->price;
 			$price_delivery_markup = $price;
-			if( $delivery_service_markup && $price_delivery_markup > 0 ){
+			if( $delivery_service_markup ){
 				$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
 				$price_delivery_markup = number_format( $price_delivery_markup, 2 );
 			}
@@ -92,7 +92,7 @@ class Crunchbutton_Order extends Cana_Table {
 					$option->id_option = $o;
 					$price = $option->option()->price;
 					$price_delivery_markup = $price;
-					if( $delivery_service_markup && $price_delivery_markup > 0 ){
+					if( $delivery_service_markup ){
 						$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
 						$price_delivery_markup = number_format( $price_delivery_markup, 2 );
 					}
@@ -106,7 +106,7 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		
 		// to make sure the value will be 2 decimals
-		$this->delivery_service_markup_value = Util::ceil( $subtotal_plus_delivery_service_markup - $subtotal, 2 );
+		$this->delivery_service_markup_value = number_format( $subtotal_plus_delivery_service_markup - $subtotal, 2 );
 
 		$this->_card = $params['card'];
 
@@ -814,7 +814,7 @@ class Crunchbutton_Order extends Cana_Table {
 		/* 	- taxes should be calculated using the price without markup  
 				- if restaurant uses 3rd party delivery service remove the delivery_fee
 				- see #2236 and #2248 */
-		if( intval( $this->restaurant()->delivery_service ) == 1 ){
+		if( intval( $this->delivery_service ) == 1 ){
 			$baseToCalcTax = Util::ceil( $this->price, 2 );
 		} else {
 			$baseToCalcTax = Util::ceil( $this->price + $this->delivery_fee, 2 );

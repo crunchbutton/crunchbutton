@@ -14,7 +14,9 @@ $headers = [
 	'Order Date',
 	'Order Time',
 	'Total',
+	'Total plus Delivery Markup',
 	'Subtotal',
+	'Subtotal plus Delivery Markup',
 	'Tax',
 	'Tip',
 	'Delivery Fee',
@@ -56,7 +58,8 @@ $headers = [
 	'Summary Method',
 	'Max Apology Credit',
 	'Delivery Driver ID',
-	'Delivery Driver Name'
+	'Delivery Driver Name',
+
 ];
 
 
@@ -94,7 +97,9 @@ echo implode(',', $headers)."\n";
 		"<?=$date->format('M jS Y')             // Order Date?>",
 		"<?=$date->format('g:i:s A')            // Order Time?>",
 		<?=number_format($order->final_price,2) // Total?>,
+		<?=number_format($order->final_price_plus_delivery_markup,2) // Total plus Delivery Markup?>,
 		<?=number_format($order->price,2)       // Subtotal?>,
+		<?=number_format($order->price_plus_delivery_markup,2)       // Subtotal plus Delivery Markup?>,
 		<?=$order->tax()                        // Tax?>,
 		<?=$order->tip()                        // Tip?>,
 		<?=$order->deliveryFee()                // Delivery Fee?>,
@@ -122,7 +127,7 @@ echo implode(',', $headers)."\n";
 		"<?=$order->notes?>",
 		"<?=$order->restaurant()->fee_customer 															// Fee Customer?>",
 		"<?=$order->restaurant()->formal_relationship == 1	? 'yes' : ''			// Formal Relationship?>",
-		"<?=$order->restaurant()->delivery_service == 1	? 'yes' : ''				// 3rd Party Delivery?>",
+		"<?=$order->delivery_service == 1	? 'yes' : ''				// 3rd Party Delivery?>",
 		"<?=$order->restaurant()->fee_on_subtotal == 1	? 'yes' : ''					// Fee on Subtotal?>",
 		"<?=$order->restaurant()->charge_credit_fee == 1	? 'yes' : ''				// Charge Credit Fees?>",
 		"<?=$order->restaurant()->payment_type()->pay_promotions == 1	? 'yes' : ''					// Pay for Promotions?>",
