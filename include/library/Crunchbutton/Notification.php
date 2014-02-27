@@ -8,6 +8,7 @@ class Crunchbutton_Notification extends Cana_Table
 	const TYPE_URL   = 'url';
 	const TYPE_FAX   = 'fax';
 	const TYPE_ADMIN = 'admin';
+	const TYPE_STEALTH = 'stealth';
 
 	public function send(Crunchbutton_Order $order) {
 
@@ -22,7 +23,31 @@ class Crunchbutton_Notification extends Cana_Table
 		$fax = ($env == 'live' ? $this->value : '_PHONE_');
 
 
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'send notification', 'value' => $this->value, 'notification type' => $this->type, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
+
 		switch ($this->type) {
+
+			case Crunchbutton_Notification::TYPE_STEALTH:
+
+				$mail = new Crunchbutton_Email_Order_Stealthfax( [ 'order' => $order ] );
+
+				$temp = tempnam('/tmp','fax');
+				file_put_contents($temp, $mail->message());
+				rename($temp, $temp.'.html');
+
+				// Log
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'send stealth fax', 'fax' => $fax, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
+
+				$fax = new Phaxio( [ 'to' => $fax, 'file' => $temp.'.html' ] );
+
+				unlink($temp.'.html');
+
+				if ( !$fax->success ) {
+					$this->smsFaxError( $order );
+				}
+
+				break;
+
 			case 'fax':
 				$mail = new Email_Order([
 					'order' => $order

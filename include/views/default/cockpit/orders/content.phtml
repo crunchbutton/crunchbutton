@@ -100,8 +100,13 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					?>
 					<br/>
 				</td>
-				<td>
+				<td nowrap="">
 					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
+					&nbsp;
+					<?php 
+						$now = new DateTime( 'now', new DateTimeZone( $order->restaurant()->timezone ) );
+						echo $now->format( 'T' );
+					?>
 				</td>
 				<td nowrap="nowrap">
 					<a href="/restaurants/<?=$order->restaurant()->id_restaurant?>">

@@ -91,23 +91,7 @@ class Crunchbutton_Order_Rules extends Cana_Model {
 
 		$message = $this->createAlert( $rule[ 'alert' ], $result );
 
-		$support = new Crunchbutton_Support();
-		$support->status = 'open';
-		$support->id_user = $order->id_user;
-		$support->id_order = $order->id_order;
-		$support->id_restaurant = $order->id_restaurant;
-		$support->name = $message;
-		$support->phone = $order->phone;
-		$support->ip = $_SERVER['REMOTE_ADDR'];
-		$support->datetime = date('Y-m-d H:i:s');
-		$support->save();
-
-		$note = new Support_Note();
-		$note->id_support = $support->id_support;
-		$note->text = $message;
-		$note->from = 'system';
-		$note->visibility = 'internal';
-		$note->save();
+		$support = Crunchbutton_Support::createNewWarning(  [ 'id_order' => $order->id_order, 'body' => $message ] );
 
 		$message .= ' - ';
 		$message .= ' U: ' . $order->name;

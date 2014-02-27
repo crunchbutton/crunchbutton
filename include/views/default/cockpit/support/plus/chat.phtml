@@ -1,0 +1,72 @@
+<div class="box" id="box-chat-<?php echo $this->support->id_support;?>">
+	<div class="box-header">
+		<div class="title chat-title" id="chat-title-<?php echo $this->support->id_support;?>">
+			<span><i id="chat-warning-<?php echo $this->support->id_support;?>" class="icon-bell-alt" style="display:none"></i></span>
+			&nbsp;Chat #<?php echo $this->support->id_support;?>
+		</div>
+		<ul class="box-toolbar">
+			<li>
+				<a href="javascript://" id="chat-minimize-<?php echo $this->support->id_support;?>">
+					<i class="icon-angle-down"></i>
+				</a>
+				<a href="javascript://" id="chat-maximize-<?php echo $this->support->id_support;?>" style="display:none;">
+					<i class="icon-angle-up"></i>
+				</a>
+			</li>
+			<li>
+				<a href="javascript://" id="chat-close-<?php echo $this->support->id_support;?>">
+					<i class="icon-remove"></i>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="box-content" id="chat-box-content-<?php echo $this->support->id_support;?>">
+
+		<div id="chat-history-<?php echo $this->support->id_support;?>" style="height:280px;overflow:auto;"></div>
+
+		<div id="message-box-<?php echo $this->support->id_support; ?>">
+			<input type="text" name="reply_<?php echo $this->support->id_support; ?>" id="reply_<?php echo $this->support->id_support; ?>" rows="1" placeholder="enter the text and press enter to send" class="chat-input">
+		</div>
+
+		<div id="sending-<?php echo $this->support->id_support; ?>" style="height:10px;padding:10px;display:none;">
+			<i class="icon-spinner icon-spin"></i> Sending
+		</div>
+
+		<div id="chat-live-<?php echo $this->support->id_support; ?>"></div>
+
+	</div>
+</div>
+<script type="text/javascript">
+	SupportChats.chats[ <?php echo $this->support->id_support ?> ] = new SupportChat( '<?php echo $this->support->id_support ?>' );
+	setTimeout( function(){
+		$( '#chat-title-<?php echo $this->support->id_support;?>' ).on( 'click', function(){
+			SupportChats.chats[ <?php echo $this->support->id_support ?> ].toggle();
+		} );		
+		$( '#chat-refresh-<?php echo $this->support->id_support;?>' ).on( 'click', function(){
+			SupportChats.chats[ <?php echo $this->support->id_support ?> ].history();
+		} );
+		$( '#reply_<?php echo $this->support->id_support; ?>' ).keypress( function( e ){
+			if( e.keyCode == 13 ){
+				var text = $( '#reply_<?php echo $this->support->id_support; ?>' ).val();
+				SupportChats.chats[ <?php echo $this->support->id_support ?> ].reply( text );
+				$( '#reply_<?php echo $this->support->id_support; ?>' ).val( '' );
+			}     
+		} );
+
+		$( '#chat-close-<?php echo $this->support->id_support;?>' ).on( 'click', function(){
+			SupportChats.chats[ <?php echo $this->support->id_support ?> ].close();
+		} );
+
+		$( '#chat-minimize-<?php echo $this->support->id_support;?>' ).on( 'click', function(){
+			SupportChats.chats[ <?php echo $this->support->id_support ?> ].minimize();
+		} );
+
+		$( '#chat-maximize-<?php echo $this->support->id_support;?>' ).on( 'click', function(){
+			SupportChats.chats[ <?php echo $this->support->id_support ?> ].maximize();
+		} );
+		
+		/* load the history */
+		SupportChats.chats[ <?php echo $this->support->id_support ?> ].history();
+	}, 1000 );
+</script>

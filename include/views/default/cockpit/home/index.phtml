@@ -6,7 +6,8 @@
 <!-- content -->
 <div class="container-fluid padded">
 	<div class="row-fluid action-nav-normal">
-		<?php if ( c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud','restaurants-create'] ) ) { ?>
+		
+		<?php /* if ( c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud','restaurants-create'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="/restaurants/new" title="New Restaurant">
@@ -16,7 +17,7 @@
 				<span class="triangle-button red"><i class="icon-plus"></i></span>
 			</div>
 		</div>
-		<?php } ?>
+		<?php }*/ ?>
 		<?php if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view', 'support-crud', 'support-settings' ] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">

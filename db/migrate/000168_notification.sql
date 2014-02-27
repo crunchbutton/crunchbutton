@@ -1,0 +1,1 @@
+ALTER TABLE notification MODIFY COLUMN type ENUM( 'sms','email','phone','url','fax','admin', 'stealth' );

@@ -1,0 +1,123 @@
+<div class="box">
+	<div class="box-header">
+		<span class="title">Info</span>
+		<ul class="box-toolbar">
+			<li><span class="label label-<?=$this->support->status == 'closed' ? 'red' : 'green'?>"><?=strtoupper($this->support->status) ?></span></li>
+		</ul>
+	</div>
+	<div class="box-content ">
+	
+		<table class="table table-striped ">
+			<tr>
+				<td>User</td>
+				<td>
+					<?=$this->support->user()->name?><br />
+					<?=Crunchbutton_Util::format_phone( $this->support->phone );?><br />
+				</td>
+				<td>
+					<div class="btn-group">
+						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
+						<ul class="dropdown-menu">
+							<li><a href="#">Unlink User</a></li>
+							<li><a href="#">Link another user</a></li>
+							<li><a href="/giftcards/new?&id_user=<?=$this->support->id_user?>&id_restaurant=<?=$this->support->restaurant()->id_restaurant?>&id_order_reference=<?=$this->support->id_order?>">Issue a gift card</a></li>							
+						</ul>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>Rep</td>
+				<td>
+
+					<? if ($this->support->rep()->id_admin) : ?>
+						<?=$this->support->rep()->name?><br />
+						<?=Crunchbutton_Util::format_phone($this->support->rep()->phone)?>
+
+					<? else : ?>
+						(no rep has handled this ticket)
+					<? endif ; ?>
+				</td>
+				<td>
+					<div class="btn-group">
+						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
+						<ul class="dropdown-menu">
+							<li><a href="#">Unlink Rep</a></li>
+							<li><a href="#">Link another rep</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Order
+					<? if ($this->support->id_order) : ?>
+						<br><a target="_blank" href="/vieworder/<?=$order->uuid?>">#<?=$this->support->order()->id_order?></a><br>
+					<? endif ; ?>
+				</td>
+				<td>
+					<?php if( $this->support->order()->driver()->name ) { ?>
+							<a href="/permissions/users/<?php echo $this->support->order()->driver()->id_admin ?>">
+								<strong>Driver: &nbsp;<?php echo $this->support->order()->driver()->name; ?></strong>
+							</a>
+							<br/>
+					<?php } ?>
+
+					<? if ($this->support->id_order) : ?>
+						
+						<?=$this->support->order()->message('support')?>
+
+					<? else : ?>
+						(no linked order)
+					<? endif ; ?>
+					<? if ($this->support->id_order) { ?>
+						<? $giftcard = $this->support->order()->hasGiftCard();
+						if( $giftcard > 0 ){
+							echo '<br/><br/><i class="icon-gift"></i> Received <b>$' . number_format( $giftcard, 2 ) . '</b> gift card.';
+						}
+					?>
+					<? } ?>
+				</td>
+				<td>
+					<div class="btn-group">
+						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
+						<ul class="dropdown-menu">
+							<li><a href="#">Unlink Order</a></li>
+							<li><a href="#">Link another order</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>Restaurant</td>
+				<td>
+					<?php 
+					if( c::admin()->permission()->check( ['global', 'support-all', 'support-crud' ] ) ){
+						$restaurants = Restaurant::q('SELECT * FROM restaurant ORDER BY name');	
+					} else {
+						$restaurantsUserHasPermission = $this->support->restaurantsUserHasPermissionToSeeTheirTickets();
+						$restaurantsUserHasPermission[] = -1;
+						$restaurants = Restaurant::q('SELECT * FROM restaurant WHERE id_restaurant IN (' . join( ',', $restaurantsUserHasPermission ) . ') ORDER BY name');	
+					}
+					?>
+					<select id="id_restaurant" class="chzn-select" name="id_restaurant" data-placeholder="Choose a restaurant" style="width:100%;">
+					<?php  
+					foreach ( $restaurants as $restaurant ) {
+						?><option value="<?=$restaurant->id_restaurant?>" <?php if( $this->support->restaurant()->id_restaurant == $restaurant->id_restaurant ){ echo 'selected="selected"'; } ?> ><?=$restaurant->name?></option><?php 
+					}
+					?>
+					</select>
+				</td>
+				<td>
+					<div class="btn-group">
+						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
+						<ul class="dropdown-menu">
+							<li><a target="_blank" href="https://crunchbutton.com/food-delivery/<?=$this->support->restaurant()->permalink?>">View on site</a></li>
+							<li><a target="_blank" href="/restaurants/<?=$this->support->restaurant()->id_restaurant?>">Edit Restaurant</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</table>
+		
+	</div>
+</div>
