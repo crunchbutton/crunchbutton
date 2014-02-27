@@ -52,14 +52,11 @@ var SupportChatInterface = {
 	},
 	container : function(){
 		var self = this;
-		return $( '#chat-cointainer-' + self.id_support );
+		return $( '#chat-container-' + self.id_support );
 	},
 	close : function(){
 		var self = this;
-		var container = self.container();
-		container.html( '' );
-		container.remove();
-		delete SupportChats.chats[ self.id_support ]
+		SupportChats.close( self.id_support );
 		self = null;
 	},
 	toggle : function(){
@@ -145,14 +142,46 @@ var SupportChat = function( id_support ) {
 var SupportChats = {
 	chats : {},
 	count : function(){
-		return Object.keys( SupportChats.chats ).length;
+		var chats = 0;
+		for( x in SupportChats.chats ){
+			if( SupportChats.chats[ x ] && SupportChats.chats[ x ].id_support ){
+				chats++;	
+			}
+		}
+		return chats;
 	},
-	container : function( id_support, content ){
+	close : function( id_support ){
+		var container = SupportChats.chats[ id_support ].container();
+		container.html( '' );
+		container.remove();
+		delete SupportChats.chats[ id_support ];
+		SupportChats.reorderWindows();
+	},
+	nextPosition : function(){
 		var totalChats = SupportChats.count();
 		var positionRight = 10 + parseInt( ( totalChats ) * 260 );
-		return '<div class="chat-cointainer" style="right:' + positionRight + 'px" id="chat-cointainer-' + id_support + '">' + content + '</div>';
+		return positionRight;
+	},
+	container : function( id_support, content ){
+		return '<div class="chat-container" style="right:' + SupportChats.nextPosition() + 'px" id="chat-container-' + id_support + '">' + content + '</div>';
+	},
+	reorderWindows : function(){
+		var chats = 0;
+		for( x in SupportChats.chats ){
+			if( SupportChats.chats[ x ] ){
+				var container = SupportChats.chats[ x ].container();
+				console.log('container',container);
+				var positionRight = 10 + parseInt( ( chats ) * 260 );
+				container.css( 'right', positionRight );
+				chats++;	
+			}
+		}
 	},
 	createChat : function( id_support ){
+		if( ( SupportChats.nextPosition() + 260 ) > $( window ).width() ){
+			alert( 'It seems you have too many chat windows opened, please close one before open another.' );
+			return;
+		}
 		if( !SupportChats.chats[ id_support ] ){
 			var url = '/support/plus/chat/' + id_support;
 			$.ajax( {

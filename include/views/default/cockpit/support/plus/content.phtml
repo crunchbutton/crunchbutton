@@ -10,35 +10,48 @@
 
 		<div class="table-header">
 			<div class="row-fluid">
-				<div class="span1">
+				<div class="span2">
 				<br/>
 					<div class="btn-group">
-						<button class="btn btn-default  dropdown-toggle" data-toggle="dropdown">Status: <?php echo $this->status; ?> <span class="caret"></span></button>
+						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Status: <?php echo $this->status; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&status=all')">All</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&status=open')">Open</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&status=closed')">Closed</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=all')">All</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=open')">Open</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=closed')">Closed</a></li>
 						</ul>
 					</div>
 				</div>
-				<div class="span1">
+				<div class="span2">
 				<br/>
 					<div class="btn-group">
-						<button class="btn btn-default  dropdown-toggle" data-toggle="dropdown">Type: <?php echo $this->type; ?> <span class="caret"></span></button>
+						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Type: <?php echo $this->type; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" onclick="load('/support/plus/content?status=<?php echo $this->status; ?>&type=all')">All</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?status=<?php echo $this->status; ?>&type=support')">Support</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?status=<?php echo $this->status; ?>&type=warning')">Warning</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=all')">All</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=support')">Support</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=warning')">Warning</a></li>
 						</ul>
 					</div>
 				</div>
-				<div class="span9">
-					<br/>
-					<button onclick="load('/support/plus/content?type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
+				<div class="span2">
+				<br/>
+					<div class="btn-group">
+						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Auto refresh: <?php echo $this->autoRefresh; ?> <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&autoRefresh=on&status=all')">On</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&autoRefresh=off&status=open')">Off</a></li>
+						</ul>
+					</div>
 				</div>
-				<div class="span1" id="warning-loaded" style="display:none;">
+				<div class="span4">
 					<br/>
-					<span style="float:right;" class="label label-blue"><i class="icon-ok-sign"></i> Loaded</span>
+					<button onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
+				</div>
+				<div class="span2" style="text-align:right;">
+					<br/>
+					<div style="height:25px">
+						<span id="warning-loaded" style="display:none;" class="label label-blue"><i class="icon-ok-sign"></i> Loaded</span>
+					</div>
+					<span id="auto-refresh-timer" style="display:none;" ><i class="icon-clock"></i> Refresh in <span id="auto-refresh-timer-counter"></span></span>
 				</div>
 			</div>
 		</div>
@@ -181,6 +194,28 @@
 		$( '#warning-loaded' ).fadeIn();
 		setTimeout( function(){
 			$( '#warning-loaded' ).fadeOut();
-		}, 100 );
-	}, 700 );
+		}, 500 );
+	}, 100 );
+	<?php if( $this->autoRefresh == 'on' ) { ?>
+		var timeToWait = 30;
+		var autoRefresh = '<?php echo $this->autoRefresh; ?>';
+		var autoRefreshTimerCount = timeToWait;
+		var autoRefreshTimer = null;
+		function autoRefreshCounter(){
+			$( '#auto-refresh-timer-counter' ).html( autoRefreshTimerCount );
+			autoRefreshTimerCount--;
+			autoRefreshTimer = setTimeout( function(){
+				clearTimeout( autoRefreshTimer );
+				autoRefreshCounter();
+			}, 1000 );
+			if( autoRefreshTimerCount == 0 ){
+				if( autoRefresh == 'on' ){
+					load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>');
+				}
+			}
+		};
+		$( '#auto-refresh-timer-counter' ).html( autoRefreshTimerCount );
+		$( '#auto-refresh-timer' ).show();
+		autoRefreshCounter();
+	<?php } ?>
 </script>
