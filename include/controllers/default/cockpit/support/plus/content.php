@@ -13,8 +13,9 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 		$page = ( $_REQUEST[ 'page' ] ) ? $_REQUEST[ 'page' ] : 1;
 		$status = ( $_REQUEST[ 'status' ] ) ? $_REQUEST[ 'status' ] : 'all';
 		$type = ( $_REQUEST[ 'type' ] ) ? $_REQUEST[ 'type' ] : 'all';
+		$autoRefresh = ( $_REQUEST[ 'autoRefresh' ] ) ? $_REQUEST[ 'autoRefresh' ] : 'on';
 
-		$paginationLink = '/support/plus/content?';
+		$paginationLink = '/support/plus/content?autoRefresh=' . $autoRefresh;
 
 		$limit = ( $page == 1 ? 0 : ( ( ( $page - 1 ) * $resultsPerPage ) + 1 ) ) . ',' . $resultsPerPage;
 
@@ -57,6 +58,7 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 		c::view()->total = $total;
 		c::view()->type = $type;
 		c::view()->page = $page;
+		c::view()->autoRefresh = $autoRefresh;
 		c::view()->status = ( $status == '' ) ? 'all' : $status;
 		c::view()->startingAt = $startingAt;
 		c::view()->endingAt = $endingAt;
