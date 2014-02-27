@@ -56,6 +56,8 @@
 											$text_color = ( Util::isDarkColor( $color ) ? 'FFF' : '000' );
 
 											$admin = Admin::o( $hour[ 'id_admin' ] );
+											$now = new DateTime( 'now', new DateTimeZone( $admin->timezone ) );
+
 											$communities = '';
 											if ( $admin->id_admin ) {
 												$adminCommunities = [];
@@ -85,7 +87,7 @@
 														<span style="color:#<?php echo $text_color; ?>;">
 															<strong style="font-size:14px;"><?php echo $hour[ 'name' ]; ?></strong>
 															<div style="font-size:11px">(<?php echo $communities ?>)</div>
-															<?php echo $hour[ 'hours' ]; ?>
+															<?php echo $hour[ 'hours' ]; ?> (<?php echo $now->format( 'T' ); ?>)
 														</span>
 													<?php if( $hasEditPermission ) { ?>
 													</a>
@@ -146,7 +148,8 @@ $( document ).ready( function(){
 var workingHours = {};
 workingHours.admin_tzs = {};
 <?php foreach( $this->reps as $rep ) { ?>
-	workingHours.admin_tzs[ '<?php echo $rep->id_admin ?>' ] = '<?php echo $rep->timezone ?>';
+	<?php $now = new DateTime( 'now', new DateTimeZone( $rep->timezone ) ); ?> 
+	workingHours.admin_tzs[ '<?php echo $rep->id_admin ?>' ] = '<?php echo $rep->timezone ?> (<?php echo $now->format( 'T' ); ?>)';
 <?php } ?>
 workingHours.admin_tz = '';
 workingHours.setTimezone = function( id_admin ){
