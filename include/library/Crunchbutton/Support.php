@@ -5,6 +5,7 @@ class Crunchbutton_Support extends Cana_Table {
 	const TYPE_SMS = 'SMS';
 	const TYPE_BOX_NEED_HELP = 'BOX_NEED_HELP';
 	const TYPE_WARNING = 'WARNING';
+	const TYPE_TICKET = 'TICKET';
 
 	const STATUS_OPEN = 'open';
 	const STATUS_CLOSED = 'closed';
@@ -94,6 +95,32 @@ class Crunchbutton_Support extends Cana_Table {
 		$messageParams[ 'phone' ] = $params[ 'phone' ];
 		$messageParams[ 'body' ] = $params[ 'body' ];
 		$support->addCustomerMessage( $messageParams );
+		return Crunchbutton_Support::o( $support->id_support );
+	}
+
+	public function createNewTicket( $params = [] ){
+		$support = new Crunchbutton_Support();
+		$support->type = Crunchbutton_Support::TYPE_TICKET;
+		$support->status = Crunchbutton_Support::STATUS_OPEN;
+		$support->id_session_twilio = null;
+		$support->id_admin = c::admin()->id_admin;
+		$support->date = date( 'Y-m-d H:i:s' );
+		if( $params[ 'id_order' ] ) {
+			$order = Order::o( $params[ 'id_order' ] );
+			$support->id_order = $order->id_order;
+			$support->id_restaurant = $order->id_restaurant;
+			$support->id_user = $order->id_user;
+			$support->phone = $order->phone;
+		}
+		$support->save();
+		if( $params[ 'id_order' ] ) {
+			$order = Order::o( $params[ 'id_order' ] );
+			$messageParams[ 'name' ] = $order->name;
+			$messageParams[ 'phone' ] = $order->phone;
+			$messageParams[ 'body' ] = $params[ 'body' ];
+			$support->addCustomerMessage( $messageParams );
+		}
+		$support->addSystemMessage( $params[ 'body' ] );
 		return Crunchbutton_Support::o( $support->id_support );
 	}
 
