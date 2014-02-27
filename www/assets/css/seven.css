@@ -619,7 +619,7 @@ p {
 		margin: 3px 10px 0 0;
 	}
 	.top-pad {
-		height: 65px;
+		height: 71px;
 	}
 	.restaurant-pad {
 
@@ -1721,6 +1721,13 @@ p {
 	padding: .3em .8em .3em .8em;
 	border-radius: 4px;
 	font-weight: bold;
+	width: 48%;
+}
+.payment-form-toggle:first-child {
+	float: left;
+}
+.payment-form-toggle:nth-child(2) {
+	float: right;
 }
 .payment-form-toggle.toggle-active {
 	background: #00bea0;
@@ -1755,16 +1762,47 @@ p {
 	margin-bottom: 1em;
 }
 
+.toggle-wrapper {
+	width: 100%;
+	box-sizing: border-box;
+}
+
 /* global form styles */
 .form-input {
 	font-size: 1.3em;
 	border-radius: 3px;
 	border: 2px solid #00957f;
-	padding: .2em .6em .3em .6em;
+	padding: .35em .6em .35em .6em;
 	color: #174e46;
 	width: 100%;
 	box-sizing: border-box;
+	margin: 0;
+	background: #fff;
 }
+select.form-input {
+	width: auto;
+	float: left;
+	min-width: 6em;
+}
+.form-input-select:after {
+	font-family: FontAwesome;
+	font-size: 1.7em;
+	color: #00957f;
+	height: 1.3em;
+	width: 1.4em;
+	border-left: 2px solid #00957f;
+	content: '\f0d7';
+	position: absolute;
+	margin-left: -1.8em;
+	margin-top: .1em;
+	padding-left: .37em;
+	padding-top: .3em;
+	pointer-events:none;
+}
+.payment-form-select-year {
+	margin-left: 1.2em;
+}
+
 .form-icon {
 	color: #00957f;
 	font-size: 1.8em;
@@ -1777,6 +1815,7 @@ p {
 	width: 100%;
 	box-sizing: border-box;
 	white-space:nowrap;
+	margin-bottom: .45em;
 }
 .form-field, .form-field.fa {
 	vertical-align: top;
@@ -1826,8 +1865,18 @@ p {
 
 
 .default-order-check {
-	margin-top: .4em;
+	margin-top: 1em;
 	cursor: pointer;
+}
+
+.default-order-check .custom-checkbox {
+	float: left;
+}
+
+.default-order-check a {
+	padding-top: .3em;
+	display: block;
+	float: left;
 }
 
 .delivery-minimum-error {
@@ -1860,7 +1909,7 @@ p {
 
 /* appended by autosize directive */
 .autosize {
-	margin-bottom: .5em;
+	margin-bottom: .1em;
 	-webkit-transition: height 0.2s;
 	   -moz-transition: height 0.2s;
 	    -ms-transition: height 0.2s;
@@ -1980,7 +2029,7 @@ sup {
 .giftcard-badge {
 	margin-right: .1em;
 	border-radius: 3px;
-	margin-top: -13.3em;
+	margin-top: -8.8em;
 	float: right;
 	color: #fff;
 	font-size: .9em;
@@ -2138,7 +2187,16 @@ sup {
 	display: inline-block;
 }
 .order-icon, .order-info {
+	margin-bottom: 1em;
 	float: left;
+}
+.order-info {
+	max-width: 250px;
+}
+
+.pickup-info {
+	max-width: 250px;
+	margin-bottom: .6em;
 }
 
 .order-info-oneline {

@@ -672,9 +672,10 @@ class Crunchbutton_Order extends Cana_Table {
 	public static function deliveredByCBDrivers( $search ){
 
 		$where = ' WHERE 1 = 1';
+		$innerJoin = ' ';
 
 		if( $search[ 'id_admin' ] ){
-			$where .= ' AND oa.id_admin = ' . $search[ 'id_admin' ];
+			$innerJoin .= ' INNER JOIN order_action oa ON oa.id_order = o.id_order AND oa.id_admin = ' . $search[ 'id_admin' ];
 		}
 
 		if( $search[ 'id_restaurant' ] ){
@@ -699,8 +700,9 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$query = 'SELECT DISTINCT(o.id_order) id, o.* FROM `order` o
 							INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.delivery_service = 1
-							' . $where . '
+							' . $innerJoin . $where . '
 							ORDER BY o.id_order DESC ' . $limit;
+
 		return Order::q( $query );
 
 	}
@@ -901,7 +903,10 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function driver(){
-		return Admin::q( "SELECT DISTINCT(a.id_admin) id, a.* FROM order_action o INNER JOIN admin a ON a.id_admin = o.id_admin WHERE o.id_order = {$this->id_order}" );
+		if( $this->id_order ){
+			return Admin::q( "SELECT DISTINCT(a.id_admin) id, a.* FROM order_action o INNER JOIN admin a ON a.id_admin = o.id_admin WHERE o.id_order = {$this->id_order}" );	
+		}
+		
 	}
 
 	public function resend_notify(){

@@ -12,6 +12,10 @@ class Crunchbutton_Admin extends Cana_Table {
 		];
 	}
 
+	public function getByPhone( $phone ){
+		return Crunchbutton_Admin::q( "SELECT * FROM admin a WHERE REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}' ORDER BY id_admin DESC LIMIT 1 " );
+	}
+
 	public function checkIfThePhoneBelongsToAnAdmin( $phone ){
 		$phone = str_replace( '-', '', $phone );
 		$phone = str_replace( ' ', '', $phone );

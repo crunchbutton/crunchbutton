@@ -1,0 +1,221 @@
+<div class="box">
+	<div class="box-header">
+		<span class="title">Recent Issues</span>
+		<ul class="box-toolbar">
+			<li><span class="label label-green"><?php echo $this->totalOpened; ?> open</span></li>
+		</ul>
+	</div>
+
+	<div class="box-content">
+
+		<div class="table-header">
+			<div class="row-fluid">
+				<div class="span2">
+				<br/>
+					<div class="btn-group">
+						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Status: <?php echo $this->status; ?> <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=all')">All</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=open')">Open</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=closed')">Closed</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="span2">
+				<br/>
+					<div class="btn-group">
+						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Type: <?php echo $this->type; ?> <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=all')">All</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=support')">Support</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=warning')">Warning</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="span2">
+				<br/>
+					<div class="btn-group">
+						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Auto refresh: <?php echo $this->autoRefresh; ?> <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&autoRefresh=on&status=all')">On</a></li>
+							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&autoRefresh=off&status=open')">Off</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="span4">
+					<br/>
+					<button onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
+				</div>
+				<div class="span2" style="text-align:right;">
+					<br/>
+					<div style="height:25px">
+						<span id="warning-loaded" style="display:none;" class="label label-blue"><i class="icon-ok-sign"></i> Loaded</span>
+					</div>
+					<span id="auto-refresh-timer" style="display:none;" ><i class="icon-clock"></i> Refresh in <span id="auto-refresh-timer-counter"></span></span>
+				</div>
+			</div>
+		</div>
+
+		<table cellpadding="0" cellspacing="0" border="0" class="table table-normal">
+			<thead>
+				<tr>
+					<td style="width: 60px;"><div>#</div></td>
+					<td style="width: 140px;"><div>Date</div></td>
+					<td style="width: 60px;"><div>Type</div></td>
+					<td style="width: 100px;"><div>Name</div></td>
+					<td><div>Message</div></td>
+					<td style="width: 60px;"><div>Status</div></td>
+					<td style="width: 60px;"><div>Driver</div></td>
+					<td style="width: 110px;"><div>Last update user</div></td>
+					<td style="width: 110px;"><div>Last update admin</div></td>
+					<td style="width: 90px;"></td>
+				</tr>
+			</thead>
+			<tbody>
+				<?php 
+					$zebra = '-dark';
+					foreach ( $this->tickets as $support ){ 
+						$zebra = ( $zebra == '' ) ? '-dark' : '';
+						$lastReplyFrom = $support->lastReplyFrom();	
+						if( $lastReplyFrom == 'client' ){
+							$class = 'row-red';
+						} else {
+							$class = 'row-green';
+						}
+					switch ( $support->type ) {
+						case Crunchbutton_Support::TYPE_SMS:
+						case Crunchbutton_Support::TYPE_BOX_NEED_HELP:
+							$type = 'Support';
+							$name = $support->name();
+							$driver = $support->order()->driver()->name;
+							$message = $support->lastCustomerMessage()->body;
+							$customer_time = $support->lastCustomerMessage()->relativeTime();
+							$admin_time = $support->lastAdminMessage()->relativeTime();
+							$chat = true;
+							break;
+						case Crunchbutton_Support::TYPE_WARNING:
+							$name = '-';
+							$driver = false;
+							$type = 'System warning';
+							$message = $support->lastMessage()->body;
+							$customer_time = '-';
+							$admin_time = $support->lastMessage()->relativeTime();
+							$chat = false;
+							break;
+					} 
+					?>
+					<tr class="<?php echo $class.$zebra; ?>">
+						<td style="white-space: nowrap;">
+							<a href="/support/plus/<?= $support->id_support ?>">
+								#<?=str_pad($support->id_support, 4, '0000', STR_PAD_LEFT)?>&nbsp;&nbsp;&nbsp;
+							</a>
+						</td>
+						<td nowrap><?php echo $support->repTime()->format( 'M/d H:iA T' ); ?></td>
+						<td nowrap><?php echo $type; ?></td>
+						<td nowrap><?php echo $name; ?></td>
+						<td><?php echo $message; ?></td>
+						<td><?php echo $support->status; ?></td>
+						<td nowrap=""><?php if( $driver ) { ?>
+							<a href="/permissions/users/<?php echo $support->order()->driver()->id_admin ?>">
+								<?php echo $support->order()->driver()->name; ?>
+							</a>
+							<?php } else { ?>-<?php } ?>
+							<td>
+								<?php echo $customer_time; ?>
+							</td>
+							<td>
+								<?php echo $admin_time; ?>
+							</td>
+						</td>
+						<td>
+							<a href="/support/plus/<?= $support->id_support ?>"><button class="btn btn-mini btn-default">View</button></a>
+							<?php if( $chat ) { ?>
+							&nbsp;
+							<a href="javascript://" onclick="SupportChats.createChat( '<?php echo $support->id_support; ?>' )"><button class="btn btn-mini btn-default"><i class="icon-comments"></i></button></a>
+							<?php } ?>
+						</td>
+					</tr>
+				<?php 
+					} 
+				?>
+			</tbody>
+		</table>
+
+		<?php 
+		$paginationLink = $this->paginationLink . '&page='; 
+		$lastPage = ceil( $this->total / $this->resultsPerPage );
+
+		$nextPage = ( $this->page + 1 <= $lastPage ) ? $this->page + 1 : $this->page;
+		$prevPage = ( $this->page - 1 >= 1 ) ? $this->page - 1 : 1;
+		?>
+
+		<div class="table-footer">
+			<div class="dataTables_info">Showing <?php echo $this->startingAt; ?> to <?php echo $this->endingAt; ?> of <?php echo $this->total; ?> entries</div>
+			<div class="dataTables_paginate paging_full_numbers">
+				
+				<a class="first paginate_button <?php if( $this->page == 1 ){ echo 'paginate_button_disabled'; } ?>" href="#" onclick="load('<?php echo $paginationLink ?>1')">First</a>
+				<a class="previous paginate_button <?php if( $this->page == 1 ){ echo 'paginate_button_disabled'; } ?>" href="#" onclick="load('<?php echo $paginationLink . $prevPage ?>')">Previous</a>
+
+				<span>
+					<?php
+					$step = 2;
+					$pageTotal = 5;
+					
+					if( $this->page <= 2 ){
+						$pageStart = 1;
+					} else {
+						$pageStart = $this->page - $step;	
+					}
+					$pageEnd = ( $pageStart + $pageTotal ) - 1;
+					if( $pageEnd > $lastPage ){
+						$pageEnd = $lastPage;
+						$pageStart = ( $pageEnd - ( $pageTotal - 1 ) );
+						$pageStart = ( $pageStart < 1 ) ? 1 : $pageStart;
+					}
+
+					for( $i = $pageStart; $i <= $pageEnd; $i++ ){
+						$class = ( $i == $this->page ) ? 'paginate_active' : 'paginate_button';
+						?>
+						<a class="<?php echo $class; ?>" href="#" onclick="load('<?php echo $paginationLink . $i ?>');"><?php echo $i; ?></a>
+						<?php	
+					}
+					?>
+				</span>
+
+				<a class="next paginate_button <?php if( $this->page == $lastPage ){ echo 'paginate_button_disabled'; } ?>" href="#" onclick="load('<?php echo $paginationLink . $nextPage ?>')">Next</a>
+				<a class="last paginate_button <?php if( $this->page == $lastPage ){ echo 'paginate_button_disabled'; } ?>" href="#" onclick="load('<?php echo $paginationLink . $lastPage ?>')">Last</a>
+
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	setTimeout( function(){
+		$( '#warning-loaded' ).fadeIn();
+		setTimeout( function(){
+			$( '#warning-loaded' ).fadeOut();
+		}, 500 );
+	}, 100 );
+	<?php if( $this->autoRefresh == 'on' ) { ?>
+		var timeToWait = 30;
+		var autoRefresh = '<?php echo $this->autoRefresh; ?>';
+		var autoRefreshTimerCount = timeToWait;
+		var autoRefreshTimer = null;
+		function autoRefreshCounter(){
+			$( '#auto-refresh-timer-counter' ).html( autoRefreshTimerCount );
+			autoRefreshTimerCount--;
+			autoRefreshTimer = setTimeout( function(){
+				clearTimeout( autoRefreshTimer );
+				autoRefreshCounter();
+			}, 1000 );
+			if( autoRefreshTimerCount == 0 ){
+				if( autoRefresh == 'on' ){
+					load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>');
+				}
+			}
+		};
+		$( '#auto-refresh-timer-counter' ).html( autoRefreshTimerCount );
+		$( '#auto-refresh-timer' ).show();
+		autoRefreshCounter();
+	<?php } ?>
+</script>

@@ -1636,6 +1636,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return Hour::restaurantClosesIn( $this );
 	}
 
+	public function getOrdersFromLastDaysByCommunity( $community, $days = 14 ){
+		$query = "SELECT SUM(1) orders, DATE_FORMAT( o.date, '%m/%d/%Y' ) day FROM `order` o
+					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.community = '$community'
+					WHERE o.date > DATE_SUB(CURDATE(), INTERVAL $days DAY) AND o.name NOT LIKE '%test%' GROUP BY day ORDER BY o.date ASC";
+		return c::db()->get( $query );
+	}
+
 	// Return minutes left to open
 	public function opensIn( $dt = null ) {
 		if( $this->open_for_business ){

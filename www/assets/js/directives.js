@@ -305,7 +305,7 @@ NGApp.directive('ngAutosize', function () {
 			setTimeout( function(){
 				elem.addClass('autosize');
 				elem.data( 'autosize', elem.autosize() );	
-			}, 1 );
+			}, 800 );
 		}
 	};
 });

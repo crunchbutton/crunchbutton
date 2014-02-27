@@ -182,6 +182,11 @@ class Crunchbutton_App extends Cana_App {
 				$config->facebook->app = $config->facebook->seven->app;
 				$config->facebook->secret = $config->facebook->seven->secret;
 				break;
+				
+			case 'dev.crunchr.co':
+				$config->facebook->app = $config->facebook->dev->app;
+				$config->facebook->secret = $config->facebook->dev->secret;
+				break;
 
 			default:
 				$config->facebook->app = $config->facebook->{$env}->app;

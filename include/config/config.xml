@@ -71,6 +71,10 @@
 			<app>_KEY_</app>
 			<secret>_KEY_</secret>
 		</beta>
+		<dev>
+			<app>_KEY_</app>
+			<secret>_KEY_</secret>
+		</dev>
 		<staging>
 			<app>_KEY_</app>
 			<secret>_KEY_</secret>
@@ -98,6 +102,8 @@
 		<David>_PHONE_</David>
 		<Nick>_PHONE_</Nick>
 		<Tyler>_PHONE_</Tyler>
+		<!-- <Daniel>***REMOVED***</Daniel> -->
+		<!-- <Daniel>***REMOVED***</Daniel> -->
 	</text>
 	<stripe>
 		<dev>

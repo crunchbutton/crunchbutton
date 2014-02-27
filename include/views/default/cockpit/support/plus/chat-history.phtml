@@ -1,0 +1,68 @@
+<ul class="chat-box">
+<?php 
+$messages = $this->support->messages();
+$last_id_support_message = 0;
+foreach( $messages as $message ){
+	$date = $message->date();
+	switch ( $message->from ) {
+		case Crunchbutton_Support_Message::TYPE_FROM_CLIENT:
+			?>
+				<li class="arrow-box-left">
+					<div class="info">
+						<span class="name"><strong>
+							<?php if( $message->name ) { echo $message->name; } else { echo '-'; } ?>
+						</strong> <span class="badge badge-blue">user</span></span>
+						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime()?></span>
+					</div>
+				<?php echo nl2br( $message->body ); ?>
+				</li>
+			<?php
+			$last_id_support_message = $message->id_support_message;
+			break;
+		case Crunchbutton_Support_Message::TYPE_FROM_REP:
+			?>
+				<li class="arrow-box-right gray">
+					<div class="info">
+						<span class="name">
+							<strong>
+								<?php echo $message->admin()->name; ?>
+							</strong> 
+							<?php
+							switch ( $message->type ) {
+								case Crunchbutton_Support_Message::TYPE_SMS:
+									echo '<span class="badge badge-green">SMS</span> ';
+									break;
+								case Crunchbutton_Support_Message::TYPE_NOTE:
+									echo '<span class="badge badge-gray">Note</span>';
+									break;
+							}
+							?>
+						</span>
+						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime(); ?></span>
+					</div>
+					<?php echo nl2br( $message->body ); ?>
+				</li>
+			<?php
+			break;
+		case Crunchbutton_Support_Message::TYPE_FROM_SYSTEM:
+			?>
+				<li class="arrow-box-right gray">
+					<div class="info">
+						<span class="name">
+							<strong>System</strong> 
+							<span class="badge badge-gray">Log</span>
+							<?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?> 
+						</span>
+						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime(); ?></span>
+					</div>
+					<?php echo nl2br( $message->body ); ?>
+				</li>
+			<?php
+			break;
+	}
+}
+?>
+</ul>
+<script type="text/javascript">
+	SupportChats.chats[ <?php echo $this->support->id_support ?> ].setLastIdSupportMessage( '<?php echo $last_id_support_message; ?>0' );
+</script>
