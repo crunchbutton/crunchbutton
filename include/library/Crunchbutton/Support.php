@@ -113,6 +113,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$support->phone = $order->phone;
 		}
 		$support->save();
+
 		if( $params[ 'id_order' ] ) {
 			$order = Order::o( $params[ 'id_order' ] );
 			$messageParams[ 'name' ] = $order->name;
@@ -120,6 +121,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$messageParams[ 'body' ] = $params[ 'body' ];
 			$support->addCustomerMessage( $messageParams );
 		}
+		
 		$support->addSystemMessage( $params[ 'body' ] );
 		return Crunchbutton_Support::o( $support->id_support );
 	}

@@ -35,8 +35,10 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 		if( $type != 'all' && $type != '' ){
 			if( $type == 'warning' ){
 				$where = ' AND type = "' . Crunchbutton_Support::TYPE_WARNING . '"';	
-			} else if( 'support' ){
+			} else if(  $type == 'support' ){
 				$where .= ' AND ( type = "' . Crunchbutton_Support::TYPE_BOX_NEED_HELP . '" OR type = "' . Crunchbutton_Support::TYPE_SMS . '" ) ';	
+			} else if (  $type == 'ticket' ){
+				$where = ' AND type = "' . Crunchbutton_Support::TYPE_TICKET . '"';	
 			}
 			$paginationLink .= '&type=' . $type;
 		}
