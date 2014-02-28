@@ -55,6 +55,53 @@ class Controller_Support_Plus extends Crunchbutton_Controller_Account {
 						exit;
 						break;
 
+					case 'remove-rep' :
+						if ( $support->permissionToEdit() ) {
+							$support->id_admin = null;
+							$support->save();
+							echo 'ok';
+							exit;
+						}
+						break;
+
+					case 'remove-order' :
+						if ( $support->permissionToEdit() ) {
+							$support->id_order = null;
+							$support->save();
+							echo 'ok';
+							exit;
+						}
+						break;
+
+					case 'link-rep':
+						if ( $support->permissionToEdit() ) {
+
+							$admin = Admin::o( $_POST[ 'id_admin' ] );
+							if( $admin->id_admin ){
+								$support->id_admin = $admin->id_admin;
+								$support->save();
+								echo 'ok';	
+							} else {
+								echo 'error';
+							}
+							exit;
+						}
+						break;
+
+					case 'link-order':
+						if ( $support->permissionToEdit() ) {
+
+							$order = Order::o( $_POST[ 'id_order' ] );
+							if( $order->id_order ){
+								$support->id_order = $order->id_order;
+								$support->save();
+								echo 'ok';	
+							} else {
+								echo 'error';
+							}
+							exit;
+						}
+						break;
 					case 'conversation' :
 						if ( $support->permissionToEdit() ) {
 							if( $_POST['text'] ){
