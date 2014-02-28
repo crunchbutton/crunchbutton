@@ -1170,7 +1170,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 		
 		if( $env == 'live' ){
-			foreach ( c::config()->text as $supportName => $supportPhone ) {
+			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 				foreach ( $message as $msg ) {
 					Log::debug( [ 'order' => $order->id_order, 'action' => 'warningOrderNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
 					try {

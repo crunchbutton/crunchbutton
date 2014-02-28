@@ -104,7 +104,7 @@ class Controller_api_twilio_error extends Crunchbutton_Controller_Rest {
 		$message = str_split( $sms_error, 160 );
 
 		// Send this message to the customer service
-		foreach ( c::config()->text as $supportName => $supportPhone) {
+		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 			
 			$num = $supportPhone;
 			

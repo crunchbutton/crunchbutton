@@ -10,6 +10,8 @@ class Crunchbutton_Support extends Cana_Table {
 	const STATUS_OPEN = 'open';
 	const STATUS_CLOSED = 'closed';
 
+	const CUSTOM_SERVICE_GROUP_NAME_KEY = 'custom-service-group-name';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
@@ -23,6 +25,23 @@ class Crunchbutton_Support extends Cana_Table {
 	  }
 	}
 	
+	public function getUsers(){
+		$support = array();
+		$group = Crunchbutton_Group::byName( Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ) );
+		if( $group->id_group ){
+			$users = Crunchbutton_Admin_Group::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
+			if ( $users->count() > 0 ) {
+				foreach ( $users as $user ) {
+					if( $user->name && $user->txt ){
+						$support[ $user->name ] = $user->txt;	
+					}
+				}
+			}
+		}
+		// no users, return a empty array
+		return $support;
+	}
+
 	public function lastReplyFrom(){
 		return $this->lastMessage()->from;
 	}
@@ -279,7 +298,7 @@ class Crunchbutton_Support extends Cana_Table {
 		$message = str_split( $message, 160 );
 
 		// Send this message to the customer service
-		foreach (c::config()->text as $supportName => $supportPhone) {
+		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 			$num = $supportPhone;
 			foreach ($message as $msg) {
 				try {
@@ -513,24 +532,6 @@ class Crunchbutton_Support extends Cana_Table {
 			}
 		}
 		return array_unique( $restaurants_ids );
-	}
-
-	public function adminPossibleSupportSMSReps(){
-		$query = "SELECT DISTINCT(name),
-									 txt FROM
-							(SELECT a.*
-							 FROM admin_permission ap
-							 INNER JOIN admin_group ag ON ap.id_group = ag.id_group
-							 INNER JOIN admin a ON ag.id_admin = a.id_admin
-							 WHERE ap.permission LIKE 'support-receive-notification-%'
-								 AND ap.id_group IS NOT NULL
-							 UNION SELECT a.*
-							 FROM admin_permission ap
-							 INNER JOIN admin a ON ap.id_admin = a.id_admin
-							 WHERE ap.permission LIKE 'support-receive-notification-%'
-								 AND ap.id_admin IS NOT NULL) admin
-						WHERE txt IS NOT NULL";
-		return Admin::q( $query );
 	}
 
 	public function adminHasCreatePermission(){

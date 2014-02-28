@@ -19,7 +19,7 @@ class Crunchbutton_Log extends Cana_Table {
 			$env = c::getEnv();
 			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 			
-			foreach (c::config()->text as $supportName => $supportPhone) {
+			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 				$nums[] = $supportPhone;
 			}
 			
