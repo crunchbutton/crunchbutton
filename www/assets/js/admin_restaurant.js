@@ -1153,7 +1153,7 @@ var ADMIN = {
 		w = UTIL.create_widget('toggle', $('#restaurant-delivery-service-container'), {text : ['yes', 'no'],field_name:'delivery_service'});
 		w = UTIL.create_widget('toggle', $('#restaurant-formal-relationship-container'), {text : ['yes', 'no'],field_name:'formal_relationship'});
 		w = UTIL.create_widget('toggle', $('#restaurant-open-for-business-container'), {
-				text : ['close now', 'open now'],
+				text : ['Yes, it is!','No, it\'s not'],
 				field_name : 'open_for_business',
 		});
 		w = UTIL.create_widget('toggle', $('#restaurant-cash-container'), {field_name:'cash'});
