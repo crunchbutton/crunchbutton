@@ -176,19 +176,7 @@ class Controller_Support_Plus extends Crunchbutton_Controller_Account {
 	}
 
 	public static function create(&$support, $args = []) {
-		$support = new Support;
-		$support->status = 'open';
-		$support->message = 'Ticket created from admin panel.';
-		$support->id_admin = c::admin()->id_admin;
-
-		if ($args['id_order']) {
-			$order = Order::o($args['id_order']);
-			$support->id_order = $order->id;
-			$support->id_restaurant = $order->id_restaurant;
-			$support->id_user = $order->id_user;
-			$support->name = User::o($order->id_user)->name;
-		}
-		$support->save();
+		$support = Crunchbutton_Support::createNewTicket(  [ 'id_order' => $args['id_order'], 'body' => 'Ticket created from admin panel.' ] );
 	}
 	
 	public static function setRep(&$support) {

@@ -93,8 +93,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			service.form.delivery_type = 'takeout';
 		}
 		// If the restaurant does not takeout
-		if( service.restaurant.takeout != 1 && service.form.delivery_type == 'takeout' ){
+		if( parseInt( service.restaurant.takeout ) != 1 && service.form.delivery_type == 'takeout' ){
 			service.form.delivery_type = 'delivery';
+		}
+
+		// Force the takeout verification
+		if( parseInt( service.restaurant.takeout ) != 1 ){
+			service.form.delivery_type = 'delivery';	
 		}
 
 		service.form.autotip = 0;
@@ -143,6 +148,20 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				}
 			}
 			service.startStoreEntederInfo = true;
+		}
+
+		// If the restaurant does not delivery
+		if( service.restaurant.delivery != 1 ){
+			service.form.delivery_type = 'takeout';
+		}
+		// If the restaurant does not takeout
+		if( parseInt( service.restaurant.takeout ) != 1 && service.form.delivery_type == 'takeout' ){
+			service.form.delivery_type = 'delivery';
+		}
+
+		// Force the takeout verification
+		if( parseInt( service.restaurant.takeout ) != 1 ){
+			service.form.delivery_type = 'delivery';	
 		}
 
 		// If the user has presets at other's restaurants but he did not typed his address yet
@@ -441,7 +460,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardNumber) || (!service.account.user.id_user && !service.form.cardNumber))) {
 			errors['card'] = 'Please enter a valid card #.';
 		}
-		console.log('service.form',service.form);
+
 		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardMonth) || (!service.account.user.id_user && !service.form.cardMonth))) {
 			errors['card_month'] = 'Please enter the card expiration month.';
 		}
