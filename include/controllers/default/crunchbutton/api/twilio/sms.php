@@ -21,15 +21,8 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			.'<Response>';
 
 		$sendSMSTo = array();
-		foreach ( c::config()->text as $supportName => $supportPhone) {
+		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 			$sendSMSTo[ $supportName ] = $supportPhone;
-		}
-		
-		$usersToReceiveSMS = Support::adminPossibleSupportSMSReps();
-		if( count( $usersToReceiveSMS ) > 0 ){
-			foreach( $usersToReceiveSMS as $user ){
-				$sendSMSTo[ $user->name ] = $user->txt;
-			}
 		}
 
 		$admin = Admin::getByPhone( $phone );
@@ -184,7 +177,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 							$b = $message;
 
 							$sendSMSTo = array();
-							foreach (c::config()->text as $supportName => $supportPhone) {
+							foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 								$sendSMSTo[ $supportName ] = $supportPhone;
 							}
 							
@@ -288,7 +281,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			$msg_support = str_split( $msg_support, 160 );
 
 			$sendSMSTo = array();
-			foreach (c::config()->text as $supportName => $supportPhone) {
+			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 				$sendSMSTo[ $supportName ] = $supportPhone;
 			}
 			

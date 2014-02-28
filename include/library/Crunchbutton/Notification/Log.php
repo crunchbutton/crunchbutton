@@ -39,14 +39,13 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
-			$support = c::config()->text;
 
 			$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling';
 
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'callto'=> $support, 'type' => 'notification' ]);
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'type' => 'notification' ]);
 
 			// c::timeout(function() use( $support, $twilio, $url ) {
-				foreach ( $support as $supportName => $supportPhone ) {
+				foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 					// Log
 					Log::debug( [ 'order' => $order->id_order, 'action' => 'MAX CB', 'supportPhone' => $supportPhone, 'supportName' => $supportName, 'url' => $url, 'type' => 'notification' ]);
 
