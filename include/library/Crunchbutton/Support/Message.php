@@ -44,9 +44,13 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$message = Support::o($this->id_support);
 		return $message;
 	}
-	
-	public function relativeTime(  ) {
-		return Crunchbutton_Util::relativeTime( $this->date, 'utc', 'utc' );
+
+	public function relativeTime( $forceUTC = false ) {
+		$date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
+		if( $forceUTC ){
+			$date->setTimezone( new DateTimeZone( 'utc' ) );	
+		}
+		return Crunchbutton_Util::relativeTime( $date->format( 'Y-m-d H:i:s' ), 'utc', 'utc' );
 	}
 	
 	public function date() {

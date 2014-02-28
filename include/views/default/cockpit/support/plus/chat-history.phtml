@@ -12,7 +12,7 @@ foreach( $messages as $message ){
 						<span class="name"><strong>
 							<?php if( $message->name ) { echo $message->name; } else { echo '-'; } ?>
 						</strong> <span class="badge badge-blue">user</span></span>
-						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime()?></span>
+						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?></span>
 					</div>
 				<?php echo nl2br( $message->body ); ?>
 				</li>
@@ -38,7 +38,7 @@ foreach( $messages as $message ){
 							}
 							?>
 						</span>
-						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime(); ?></span>
+						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
 					</div>
 					<?php echo nl2br( $message->body ); ?>
 				</li>
@@ -53,7 +53,7 @@ foreach( $messages as $message ){
 							<span class="badge badge-gray">Log</span>
 							<?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?> 
 						</span>
-						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime(); ?></span>
+						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
 					</div>
 					<?php echo nl2br( $message->body ); ?>
 				</li>
