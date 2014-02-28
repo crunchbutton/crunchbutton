@@ -87,7 +87,13 @@
 														<span style="color:#<?php echo $text_color; ?>;">
 															<strong style="font-size:14px;"><?php echo $hour[ 'name' ]; ?></strong>
 															<div style="font-size:11px">(<?php echo $communities ?>)</div>
-															<?php echo $hour[ 'hours' ]; ?> (<?php echo $now->format( 'T' ); ?>)
+															<span class="admin-timezone">
+																<?php echo $hour[ 'hours' ]; ?> (<?php echo $now->format( 'T' ); ?>)
+															</span>
+															<span class="pst-timezone">
+																<?php echo $hour[ 'pst' ]; ?> (PST)
+															</span>
+															<br/>
 														</span>
 													<?php if( $hasEditPermission ) { ?>
 													</a>
@@ -110,12 +116,17 @@
 							<?php } ?>
 						</tr>
 					</table>
-					<?php if( $hasEditPermission ) { ?>
+					
 					<br/>
 					<div class="padded" style="font-size:16px;">
-						<button class="btn btn-blue" onclick="workingHours.copyAll();"><i class="icon-copy icon-2x"></i> Copy the hours from the previous week</button>
+						<?php if( $hasEditPermission ) { ?>
+							<button class="btn btn-blue" onclick="workingHours.copyAll();"><i class="icon-copy"></i> Copy the hours from the previous week</button>
+						<?php } ?>
+						<button style="margin-left:20px;" class="btn btn-default" onclick="workingHours.toggleTimezone();"><i class="icon-time"></i> Show hours in&nbsp;
+						<span class="pst-timezone">driver's timezone</span>
+						<span class="admin-timezone">PST timezone</span>
+						</button>
 					</div>
-					<?php } ?>
 				</div>
 		</div>
 	</div>
@@ -131,7 +142,13 @@
 		<button class="btn btn-default" data-dismiss="modal">Close</button>
 	</div>
 </div>
+<style type="text/css">
+	.admin-timezone{
+		display: none;
+	}
+</style>
 <script type="text/javascript">
+
 $( document ).ready( function(){
 	$( '.modal-hours-open' ).click( function(e) {
 		e.preventDefault();
@@ -147,6 +164,18 @@ $( document ).ready( function(){
 
 var workingHours = {};
 workingHours.admin_tzs = {};
+workingHours.showingHoursAtTimezone = 'pst';
+workingHours.toggleTimezone = function(){
+	$( '.' + workingHours.showingHoursAtTimezone + '-timezone' ).hide();
+	if( workingHours.showingHoursAtTimezone == 'pst' ){
+		workingHours.showingHoursAtTimezone = 'admin';
+	} else {
+		workingHours.showingHoursAtTimezone = 'pst';
+	}
+	$( '.' + workingHours.showingHoursAtTimezone + '-timezone' ).show();
+};
+
+
 <?php foreach( $this->reps as $rep ) { ?>
 	<?php $now = new DateTime( 'now', new DateTimeZone( $rep->timezone ) ); ?> 
 	workingHours.admin_tzs[ '<?php echo $rep->id_admin ?>' ] = '<?php echo $rep->timezone ?> (<?php echo $now->format( 'T' ); ?>)';
