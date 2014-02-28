@@ -59,6 +59,7 @@ class Controller_Support_Plus extends Crunchbutton_Controller_Account {
 						if ( $support->permissionToEdit() ) {
 							$support->id_admin = null;
 							$support->save();
+							$support->addSystemMessage( c::admin()->name . ' unlinked rep' );
 							echo 'ok';
 							exit;
 						}
@@ -68,6 +69,7 @@ class Controller_Support_Plus extends Crunchbutton_Controller_Account {
 						if ( $support->permissionToEdit() ) {
 							$support->id_order = null;
 							$support->save();
+							$support->addSystemMessage( c::admin()->name . ' unlinked order' );
 							echo 'ok';
 							exit;
 						}
@@ -80,6 +82,7 @@ class Controller_Support_Plus extends Crunchbutton_Controller_Account {
 							if( $admin->id_admin ){
 								$support->id_admin = $admin->id_admin;
 								$support->save();
+								$support->addSystemMessage( c::admin()->name . ' linked a new rep ' . $admin->name );
 								echo 'ok';	
 							} else {
 								echo 'error';
@@ -95,6 +98,7 @@ class Controller_Support_Plus extends Crunchbutton_Controller_Account {
 							if( $order->id_order ){
 								$support->id_order = $order->id_order;
 								$support->save();
+								$support->addSystemMessage( c::admin()->name . ' linked a new order ' . $order->id_order );
 								echo 'ok';	
 							} else {
 								echo 'error';
