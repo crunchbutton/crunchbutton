@@ -115,7 +115,10 @@
 								#<?=str_pad($support->id_support, 4, '0000', STR_PAD_LEFT)?>&nbsp;&nbsp;&nbsp;
 							</a>
 						</td>
-						<td nowrap><?php echo $support->repTime()->format( 'M/d H:iA T' ); ?></td>
+						<td nowrap><?php 
+							$date = $support->date();
+							echo $date->format( 'M/d H:iA T' ); 
+						?></td>
 						<td nowrap><?php echo $type; ?></td>
 						<td nowrap><?php echo $name; ?></td>
 						<td><?php echo $message; ?></td>
