@@ -56,6 +56,7 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 				$join = $_join;
 			}
 			$admins[ $hour->id_admin ][ 'hours' ] = $admins[ $hour->id_admin ][ 'hours' ] . $join . $hour->segment();
+			$admins[ $hour->id_admin ][ 'pst' ] = $admins[ $hour->id_admin ][ 'pst' ] . $join . $hour->segment( 'PST' );
 		}
 		return $admins;
 	}
@@ -70,8 +71,17 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 		return intval( $hour ) . ( intval( $min ) > 0 ? ':' . intval( $min ) : '' ) . ' ' . $ampm ;
 	}
 
-	public function segment(){
-		return $this->formatedToSegment( $this->date_start() ) . ' - ' . $this->formatedToSegment( $this->date_end() );
+	public function segment( $timezone = false ){
+		if( $timezone ){
+			$date_start = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_start, new DateTimeZone( $this->admin()->timezone ) );
+			$date_start->setTimezone( new DateTimeZone( $timezone ) );
+			$date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end, new DateTimeZone( $this->admin()->timezone ) );
+			$date_end->setTimezone( new DateTimeZone( $timezone ) );
+		} else {
+			$date_start = $this->date_start();
+			$date_end = $this->date_end();
+		}
+		return $this->formatedToSegment( $date_start ) . ' - ' . $this->formatedToSegment( $date_end );
 	}
 
 	public function date_start(){

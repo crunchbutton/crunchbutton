@@ -67,6 +67,32 @@ class Crunchbutton_Order extends Cana_Table {
 			]);
 		}
 
+		$this->id_restaurant = $params['restaurant'];
+
+		// Check if the restaurant delivery #2464
+		if( $this->delivery_type == self::SHIPPING_DELIVERY ){
+			if( !$this->restaurant()->delivery == 0 && $this->restaurant()->takeout == 1 ){
+				$this->delivery_type = self::SHIPPING_TAKEOUT;
+			} else {
+				// log when an order is not delivery nor takeout
+				Crunchbutton_Log::error([
+					'type'         => 'wrong delivery type',
+					'order_params' => $params,
+				]);				
+			}
+		}
+		if( $this->delivery_type == self::SHIPPING_TAKEOUT ){
+			if( $this->restaurant()->takeout == 0 && $this->restaurant()->delivery == 1 ){
+				$this->delivery_type = self::SHIPPING_DELIVERY;
+			} else {
+				// log when an order is not delivery nor takeout
+				Crunchbutton_Log::error([
+					'type'         => 'wrong delivery type',
+					'order_params' => $params,
+				]);				
+			}
+		}
+
 		$subtotal = 0;
 		$subtotal_plus_delivery_service_markup = 0;
 

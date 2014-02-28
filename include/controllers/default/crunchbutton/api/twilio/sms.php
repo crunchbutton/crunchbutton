@@ -86,7 +86,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 			// It means the message came from a customer 
 			default:
-				
+
 				$_SESSION['sms-action'] = 'support-ask';
 
 				Log::debug( [ 'action' => 'returning sms', 'msg' => $body, 'type' => 'sms' ] );
@@ -106,6 +106,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					// to this and change it eventually. also right now our db times
 					// are all pst. we should change that too.
 					$types = $restaurant->notification_types();
+				
 					if( count( $types ) > 0 ){
 						$notifications = '/ RN: ' . join( '/', $types );
 					} else {
@@ -113,6 +114,8 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					}
 
 					$date = $order->date();
+					// #2439
+					$date->setTimezone( new DateTimeZone( c::config()->timezone ) );
 					$date = $date->format( 'D, M d, g:i a T' );
 
 					if( $restaurant->community && $restaurant->community != '' ){
@@ -125,7 +128,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 				} else {
 					$last_cb = 'Last Order: None.';
 				}
-			
+
 				switch ($_SESSION['sms-action']) {
 			
 					case 'support-ask':
