@@ -105,12 +105,10 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 
 				</td>
 				<td nowrap="">
-					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?>
-					&nbsp;
-					<?php 
-						$now = new DateTime( 'now', new DateTimeZone( $order->restaurant()->timezone ) );
-						echo $now->format( 'T' );
-					?>
+					<?php $date->setTimeZone( new DateTimeZone( c::config()->timezone ) ); ?>
+					<?=$date->format('M jS Y')?><br /><br /><?=$date->format('g:i:s A')?> <strong>(<?php echo $date->format( 'T' ) ?>)</strong>
+					<br/>
+
 				</td>
 				<td nowrap="nowrap">
 					<a href="/restaurants/<?=$order->restaurant()->id_restaurant?>">
@@ -132,6 +130,9 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					<?php } ?>
 					<hr/>
 					<span title="Timezone">
+						<?php $date->setTimeZone( new DateTimeZone( $order->restaurant()->timezone ) ); ?>
+						<?=$date->format('M jS Y')?><br /><?=$date->format('g:i:s A')?> <strong>(<?php echo $date->format( 'T' ) ?>)</strong>
+						<br/>
 						<i class="icon-globe"></i> <?=$order->restaurant()->timezone?>
 					</span>
 				</td>
