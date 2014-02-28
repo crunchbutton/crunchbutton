@@ -2,7 +2,9 @@
 	<div class="box-header">
 		<div class="title">History log</div>
 	</div>
-	<div id="history" class="box-content"></div>
+	<div id="history" class="box-content">
+		<i class="icon-spinner icon-spin"></i>
+	</div>
 	<?php if ($this->support->permissionToEdit()) { ?>	
 	<div class="padded">
 		<textarea name="text-conversation-reply" id="text-conversation-reply" placeholder="Reply to customer" class="span12"></textarea>
