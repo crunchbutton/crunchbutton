@@ -65,7 +65,10 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 					$sendSMSTo[ $user->name ] = $user->txt;
 				}
 
-				$types = $this->order()->restaurant()->notification_types();
+
+				$restaurant = Restaurant::o( $this->order()->id_restaurant );
+				$types = $restaurant->notification_types();
+
 				if( count( $types ) > 0 ){
 					$notifications = '/ RN: ' . join( '/', $types );
 				} else {
@@ -158,7 +161,8 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				foreach( $usersToReceiveSMS as $user ){
 					$sendSMSTo[ $user->name ] = $user->txt;
 				}
-				$types = $this->order()->restaurant()->notification_types();
+				$restaurant = Restaurant::o( $this->order()->id_restaurant );
+				$types = $restaurant->notification_types();
 				if( count( $types ) > 0 ){
 					$notifications = '/ RN: ' . join( '/', $types );
 				} else {

@@ -292,9 +292,12 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						default:
 
 							$notification = Notification_Log::getMaxCallNotification( $order->id_order );	
-							$types = $order->restaurant()->notification_types();
+							
+							$restaurant = Restaurant::o( $order->id_restaurant );
+							$types = $restaurant->notification_types();
+							
 							if( count( $types ) > 0 ){
-								$notifications = 'Restaurant notifications . ' . join( ' . ', $types );
+								$notifications = join( ' and ', $types );
 							} else {
 								$notifications = '';
 							}
@@ -302,17 +305,41 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							Log::debug( [ 'order' => $order->id_order, 'id_notification' => $notification->id_notification_log ,'action' => 'MAX CB', 'data' => json_encode($_REQUEST), 'type' => 'notification' ]);
 							
 							echo '<Gather action="/api/order/'.$order->id_order.'/maxcalling?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
+								
 								echo '<Say voice="'.c::config()->twilio->voice.'">';
-								echo 'Max call back for order number ' . $order->id_order . ' has timed out to ' . htmlentities( $order->restaurant()->name ) . ' from ' . $order->name;
+								echo "We've reached max call back for order number " . $order->id_order . " . ";
+									echo htmlentities( $restaurant->name ) . " from " . htmlentities( $order->name );
 									echo '</Say>';
 								echo '<Pause length="1" />';
+
 								echo '<Say voice="'.c::config()->twilio->voice.'">';
-								echo $notifications;
-									echo '</Say>';
-									echo '<Pause length="1" />';
-								echo '<Say voice="'.c::config()->twilio->voice.'">';
-									echo Notification_Log::maxCallMSayAtTheEndOfMessage();
+									echo "The following are restaurant notifications: ";
+									echo ' . ' . $notifications . ' . ';
 								echo '</Say>';
+								echo '<Pause length="1" />';
+								
+								echo '<Say voice="'.c::config()->twilio->voice.'">';
+									echo "Again, the following are restaurant notifications: ";
+									echo ' . ' . $notifications . ' . ';
+								echo '</Say>';
+								echo '<Pause length="1" />';
+
+								echo '<Say voice="'.c::config()->twilio->voice.'">';
+									echo "Got it? Just ";
+									echo ' . ' . $notifications . ' . ';
+								echo '</Say>';
+								echo '<Pause length="1" />';
+
+								echo '<Say voice="'.c::config()->twilio->voice.'">';
+									echo "Hope you have fun dealing with ";
+									echo ' . ' . $notifications . ' . ';
+								echo '</Say>';
+								echo '<Pause length="1" />';
+
+								echo '<Say voice="'.c::config()->twilio->voice.'">';
+									echo "Press 1 to confirm you've received this call . . Otherwise, we will call you back and you'll hear my lovely voice again soon . . ";
+								echo '</Say>';
+
 							echo '</Gather>';
 							break;
 					}
