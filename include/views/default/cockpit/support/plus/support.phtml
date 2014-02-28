@@ -26,7 +26,6 @@
 	</div>
 </div>
 <!-- // end support page -->
-
 <script>
 /* Shows the feedbacks */
 function showAlert( box, css, message ){
@@ -48,10 +47,6 @@ function updateConversationHistory(){
 		url: url
 	} ).done( function( content ) {
 		$( '#history' ).html( content );
-		setTimeout( function(){
-			var box = $( '.chat-box-wrapper' );
-			box.animate( { scrollTop: box[0].scrollHeight + 300 }, 100 );
-		}, 10 );
 	} );
 }
 
@@ -186,7 +181,7 @@ $(function() {
 			text.val( 'Sending...' );
 			text.prop( 'enabled', false );
 
-			$.post(' /support/plus/<?php echo $support->id_support; ?>/note', {
+			$.post('/support/plus/<?php echo $support->id_support; ?>/note', {
 				text: val
 			}, function( ) {
 				text.prop( 'enabled',true );
@@ -249,4 +244,82 @@ $(function() {
 	updateConversationHistory();
 
 });
+
+function unlinkRep(){
+	if( confirm( 'Confirm unlink rep?' ) ){
+		$.ajax( {
+			url: '/support/plus/<?php echo $support->id_support; ?>/remove-rep',
+			complete: function( content ) {
+				location.reload();
+			}
+		} );
+	}
+}
+
+function unlinkOrder(){
+	if( confirm( 'Confirm unlink order?' ) ){
+		$.ajax( {
+			url: '/support/plus/<?php echo $support->id_support; ?>/remove-order',
+			complete: function( content ) {
+				location.reload();
+			}
+		} );
+	}
+}
+
+function linkRepShow(){
+	$( '#link-rep' ).show();
+}
+
+function linkRepSave(){
+
+	var id_admin = $( '#id_admin' ).val();
+
+	if( $.trim( id_admin ) == '' ){
+		alert( 'Please, choose a rep!' );
+		$( '#id_admin' ).focus();
+		return;
+	}
+
+	var url = '/support/plus/<?php echo $support->id_support; ?>/link-rep';
+	$.ajax( {
+		type: 'POST',
+		dataType: 'json',
+		data: { id_admin : id_admin },
+		url: url,
+		complete: function( content ) {
+			if( content.responseText == 'ok' ){
+				location.reload();
+			} else {
+				alert('Oops! An error ocurred.' );
+			}
+		}
+	} );
+}
+
+function linkOrder(){
+
+	var id_order = prompt( 'Please type the order id' );
+
+	if( $.trim( id_order ) == '' ){
+		return;
+	}
+
+	var url = '/support/plus/<?php echo $support->id_support; ?>/link-order';
+	$.ajax( {
+		type: 'POST',
+		dataType: 'json',
+		data: { id_order : id_order },
+		url: url,
+		complete: function( content ) {
+			if( content.responseText == 'ok' ){
+				location.reload();
+			} else {
+				alert('Oops! An error ocurred.' );
+			}
+		}
+	} );
+}
+
+
 </script>

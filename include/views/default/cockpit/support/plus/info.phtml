@@ -18,8 +18,6 @@
 					<div class="btn-group">
 						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
 						<ul class="dropdown-menu">
-							<li><a href="#">Unlink User</a></li>
-							<li><a href="#">Link another user</a></li>
 							<li><a href="/giftcards/new?&id_user=<?=$this->support->id_user?>&id_restaurant=<?=$this->support->restaurant()->id_restaurant?>&id_order_reference=<?=$this->support->id_order?>">Issue a gift card</a></li>							
 						</ul>
 					</div>
@@ -41,10 +39,30 @@
 					<div class="btn-group">
 						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
 						<ul class="dropdown-menu">
-							<li><a href="#">Unlink Rep</a></li>
-							<li><a href="#">Link another rep</a></li>
+							<?php if( $this->support->id_admin ) { ?>
+								<li><a href="javascript:unlinkRep();">Unlink Rep</a></li>
+							<?php } ?>
+							<li><a href="javascript:linkRepShow();">Link another rep</a></li>
 						</ul>
 					</div>
+				</td>
+			</tr>
+			<tr id="link-rep" style="display:none;">
+				<td>Choose a Rep:</td>
+				<td>
+					<?php 
+					$admins = Admin::q('SELECT * FROM admin ORDER BY name');	
+					?>
+					<select id="id_admin" class="chzn-select" name="id_admin" data-placeholder="Choose an admin" style="width:100%;">
+					<?php  
+					foreach ( $admins as $admin ) {
+						?><option value="<?=$admin->id_admin?>" <?php if( $this->support->id_admin == $admin->id_admin ){ echo 'selected="selected"'; } ?> ><?=$admin->name?></option><?php 
+					}
+					?>
+					</select>
+				</td>
+				<td>
+					<button class="btn btn-green" onclick="linkRepSave();"><i class="icon-save"></i></button>
 				</td>
 			</tr>
 			<tr>
@@ -81,8 +99,10 @@
 					<div class="btn-group">
 						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
 						<ul class="dropdown-menu">
-							<li><a href="#">Unlink Order</a></li>
-							<li><a href="#">Link another order</a></li>
+							<?php if( $this->support->id_order ) { ?>
+								<li><a href="javascript:unlinkOrder();">Unlink Order</a></li>
+							<?php } ?>
+							<li><a href="javascript:linkOrder();">Link another order</a></li>
 						</ul>
 					</div>
 				</td>
