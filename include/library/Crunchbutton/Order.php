@@ -1707,6 +1707,12 @@ class Crunchbutton_Order extends Cana_Table {
 		return 0;
 	}
 	
+	public function expectedByStealthFax() {
+		$date = clone $this->date();
+		$date->modify('+ 20 minute');
+		return $date;
+	}
+
 	public function expectedBy() {
 		$date = clone $this->date();
 		if ($this->restaurant()->pickup_estimated_time && $this->delivery_type == 'takeout') {
