@@ -187,8 +187,14 @@ class Crunchbutton_Order extends Cana_Table {
 		$tax = $baseToCalcTax * ( $this->tax / 100 );
 		$tax = Util::ceil( $tax, 2 );
 
-		$this->final_price = Util::ceil( $totalWithFees + $tip + $tax, 2 ); // price
-		$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value, 2 );
+		if( intval( $this->restaurant()->delivery_service ) == 1 ){ 
+			$this->final_price = Util::ceil( $totalWithFees  + $tax, 2 ); // price
+			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value + $tip, 2 );	
+		} else {
+			$this->final_price = Util::ceil( $totalWithFees + $tip + $tax, 2 ); // price
+			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value, 2 );	
+		}
+		
 
 		$this->order = json_encode($params['cart']);
 
