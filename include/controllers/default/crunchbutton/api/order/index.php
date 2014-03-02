@@ -2,38 +2,7 @@
 
 class Controller_api_order extends Crunchbutton_Controller_Rest {
 	public function init() {
-$order = Order::o(c::getPagePiece(2));
-// Send SMS to Reps - Issue #2027
-			
 
-			$sendSMSTo = array();
-			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-				$sendSMSTo[ $supportName ] = $supportPhone;
-			
-			}
-			$usersToReceiveSMS = $order->restaurant()->adminReceiveSupportSMS();
-			foreach( $usersToReceiveSMS as $user ){
-				$sendSMSTo[ $user->name ] = $user->txt;
-			}
-
-			var_dump($sendSMSTo);exit;
-
-			if( $usersToReceiveSMS->count() > 0 ){
-				foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-					$sendSMSTo[ $user->name ] = $user->txt;	
-				}
-				$sendSMSTo[ $user->name ] = $user->txt;
-			}
-			var_dump($sendSMSTo);exit;
-
-var_dump(Crunchbutton_Support::getUsers());
-			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-				$usersToReceiveSMS[ $supportName ] = $supportPhone;
-				var_dump($usersToReceiveSMS);
-			}
-echo '<pre>';
-
-var_dump($usersToReceiveSMS);exit;
 		$order = Order::uuid(c::getPagePiece(2));
 		/* @var $order Crunchbutton_Order */
 		if (!$order->id_order) {
