@@ -58,13 +58,21 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			// });
 
 
+			$sendSMSTo = array();
+			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
+				$sendSMSTo[ $supportName ] = $supportPhone;
+			
+			}
+			
 			// Send SMS to Reps - Issue #2027
 			$usersToReceiveSMS = $this->order()->restaurant()->adminReceiveSupportSMS();
-			if( count( $usersToReceiveSMS ) > 0 ){
-				foreach( $usersToReceiveSMS as $user ){
-					$sendSMSTo[ $user->name ] = $user->txt;
-				}
 
+			foreach( $usersToReceiveSMS as $user ){
+				$sendSMSTo[ $user->name ] = $user->txt;
+			}
+
+			// Send SMS to Reps - Issue #2027
+			if( count( $sendSMSTo ) > 0 ){
 
 				$restaurant = Restaurant::o( $this->order()->id_restaurant );
 				$types = $restaurant->notification_types();
@@ -155,12 +163,22 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 			$this->tellRepsAboutMaxConfirmationCall();
 
+			$sendSMSTo = array();
+			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
+				$sendSMSTo[ $supportName ] = $supportPhone;
+			
+			}
+			
 			// Send SMS to Reps - Issue #2027
 			$usersToReceiveSMS = $this->order()->restaurant()->adminReceiveSupportSMS();
-			if( count( $usersToReceiveSMS ) > 0 ){
-				foreach( $usersToReceiveSMS as $user ){
-					$sendSMSTo[ $user->name ] = $user->txt;
-				}
+
+			foreach( $usersToReceiveSMS as $user ){
+				$sendSMSTo[ $user->name ] = $user->txt;
+			}
+
+
+			if( count( $sendSMSTo ) > 0 ){
+	
 				$restaurant = Restaurant::o( $this->order()->id_restaurant );
 				$types = $restaurant->notification_types();
 				if( count( $types ) > 0 ){
