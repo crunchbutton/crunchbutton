@@ -32,7 +32,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 		$view->restaurantCommunity = $community;
 		$view_name = c::getPagePiece(1) == 'legacy' ?
 				'restaurants/legacy/restaurant'		:
-				'restaurants/restaurant'					;
+				'restaurants/restaurant';
 		$view->display($view_name);
 	}
 

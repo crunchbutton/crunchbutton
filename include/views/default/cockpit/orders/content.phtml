@@ -79,7 +79,12 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 										<span><?php if( $order->pay_if_refunded ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span> Pay restaurant despite refund (e.g. this refund was our fault)
 									</div>
 								<?php } ?>
-							<?php } ?>
+							<?php } ?>						
+				
+							<div class="pointer do_not_reimburse_driver" data-value="<?php if( $order->do_not_reimburse_driver ){ echo 1; } else { echo 0; } ?>" data-uuid="<?=$order->uuid?>">
+								<span><?php if( $order->do_not_reimburse_driver ) { echo '<i class="icon-check"></i>'; } else { echo '<i class="icon-check-empty"></i>'; } ?></span> 
+								Do Not Reimburse Driver?
+							</div>
 							
 					<br/>
 

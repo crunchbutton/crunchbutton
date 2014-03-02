@@ -1,0 +1,1 @@
+ALTER TABLE  `order` ADD  `do_not_reimburse_driver`  TINYINT( 1 ) NOT NULL DEFAULT '0';
