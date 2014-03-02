@@ -1199,6 +1199,9 @@ var ADMIN = {
 						ADMIN.restaurant_original = UTIL.deep_copy(rsp);
 					}
 					ADMIN.restaurant = rsp;
+					if( !ADMIN.restaurant.name ){
+						first_save = true;
+					}
 					window.history.pushState(null, null, ADMIN.restaurant.id_restaurant);
 					DOM_MAP.apply();
 					ADMIN.save_is_safe = true;
@@ -1231,6 +1234,13 @@ var ADMIN = {
 			UTIL.show_msg('Please wait the restaurant load!');
 			return;
 		}
+
+		if( first_save ){
+			alert( 'Please make sure that the fields "3rd Party Delivery" and "Formal Relationship" have the correct values.' );
+			first_save = false;
+			return;
+		}
+
 		if( $('#restaurant-community').val() == '' ){
 			alert( 'Please type the community name.' );
 			$('#restaurant-community').focus();
@@ -1598,3 +1608,5 @@ var ASYNC = {
 		});
 	},
 };
+
+var first_save = false;

@@ -26,6 +26,7 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 	
 	public function getUsers(){
+
 		$support = array();
 		$group = Crunchbutton_Group::byName( Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ) );
 		if( $group->id_group ){
