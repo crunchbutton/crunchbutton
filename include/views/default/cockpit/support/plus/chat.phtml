@@ -5,6 +5,13 @@
 			&nbsp;Chat #<?php echo $this->support->id_support;?>
 		</div>
 		<ul class="box-toolbar">
+			<?php if( $this->support->status == Crunchbutton_Support::STATUS_OPEN ) { ?>
+			<li id="close-ticket-container-<?php echo $this->support->id_support;?>">
+				<a title="Close ticket" href="javascript://" id="chat-close-ticket-<?php echo $this->support->id_support;?>">
+					<i class="icon-off"></i>
+				</a>
+			</li>
+			<?php } ?>
 			<li>
 				<a href="javascript://" id="chat-minimize-<?php echo $this->support->id_support;?>">
 					<i class="icon-angle-down"></i>
@@ -22,7 +29,6 @@
 	</div>
 
 	<div class="box-content" id="chat-box-content-<?php echo $this->support->id_support;?>">
-
 		<div id="chat-history-<?php echo $this->support->id_support;?>" style="height:280px;overflow:auto;"></div>
 
 		<div id="message-box-<?php echo $this->support->id_support; ?>">
@@ -52,6 +58,10 @@
 				SupportChats.chats[ <?php echo $this->support->id_support ?> ].reply( text );
 				$( '#reply_<?php echo $this->support->id_support; ?>' ).val( '' );
 			}     
+		} );
+
+		$( '#chat-close-ticket-<?php echo $this->support->id_support;?>' ).on( 'click', function(){
+			SupportChats.chats[ <?php echo $this->support->id_support ?> ].closeTicket();
 		} );
 
 		$( '#chat-close-<?php echo $this->support->id_support;?>' ).on( 'click', function(){

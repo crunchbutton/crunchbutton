@@ -191,6 +191,7 @@
 		</li>
 		<? endif ; ?>
 		<? if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view', 'support-crud', 'support-settings' ] ) ) : ?>
+		<!--
 		<li class="<?=$this->page == 'support' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/support">
@@ -198,11 +199,12 @@
 				<span>Support</span>
 			</a>
 		</li>
+		-->
 		<li class="<?=$this->page == 'support' ? 'active' : ''?>">
 			<span class="glow"></span>
 			<a href="/support/plus">
-				<i class="icon-lightbulb icon-2x"></i>
-				<span>Support (new)</span>
+				<i class="icon-comments icon-2x"></i>
+				<span>Support</span>
 			</a>
 		</li>
 		<? endif ; ?>
