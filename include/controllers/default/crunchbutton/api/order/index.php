@@ -66,6 +66,20 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 				}
 				break;
 
+			case 'resend_notification_drivers':
+
+				if ( !c::admin()->permission()->check(['global','orders-all','orders-notification'])) {
+					return ;
+				}
+
+				if ( $order->resend_notify_drivers() ) {
+					echo json_encode(['status' => 'success']);
+					exit;
+				} else {
+					echo json_encode(['status' => 'error']);
+				}
+				break;
+
 			case 'say':
 				header('Content-type: text/xml');
 				$message = '<Say voice="'.c::config()->twilio->voice.'">Press 1 to hear the order. Otherwise we will call back in 2 minutes.</Say>'
