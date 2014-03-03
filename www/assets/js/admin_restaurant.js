@@ -1152,6 +1152,7 @@ var ADMIN = {
 		w = UTIL.create_widget('toggle', $('#restaurant-active-container'));
 		w = UTIL.create_widget('toggle', $('#restaurant-delivery-service-container'), {text : ['yes', 'no'],field_name:'delivery_service'});
 		w = UTIL.create_widget('toggle', $('#restaurant-formal-relationship-container'), {text : ['yes', 'no'],field_name:'formal_relationship'});
+		w = UTIL.create_widget('toggle', $('#restaurant-order-notifications-sent-container'), {text : ['yes', 'no'],field_name:'order_notifications_sent'});
 		w = UTIL.create_widget('toggle', $('#restaurant-open-for-business-container'), {
 				text : ['Yes, it is!','No, it\'s not'],
 				field_name : 'open_for_business',
@@ -1207,6 +1208,7 @@ var ADMIN = {
 					ADMIN.save_is_safe = true;
 					UTIL.show_msg('Restaurant loaded.');
 					isDeliveryServiceChecked();
+					isFormalBillingRelationshipChecked();
 					$( '#save-button' ).html( 'Save' );
 					ADMIN.isRestaurantLoaded = true;
 					ADMIN.restaurant_update_closed_open();
