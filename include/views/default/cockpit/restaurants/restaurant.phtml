@@ -222,7 +222,7 @@
 					<div class="admin-item" id="formal-relationship-container">
 						<div class="admin-item-left">
 							<div class="admin-item-name">
-								Formal Relationship?
+								Formal Billing Relationship
 							</div>
 
 							<div class="admin-item-desc">
@@ -232,6 +232,21 @@
 
 						<div class="admin-item-right">
 							<div class="admin-item-col-small" id="restaurant-formal-relationship-container"></div>
+						</div>
+					</div>
+
+
+					<div class="admin-item" id="order-notifications-sent-container">
+						<div class="admin-item-left">
+							<div class="admin-item-name">
+								Order Notifications Sent
+							</div>
+
+							<div class="admin-item-desc"></div>
+						</div>
+
+						<div class="admin-item-right">
+							<div class="admin-item-col-small" id="restaurant-order-notifications-sent-container"></div>
 						</div>
 					</div>
 
@@ -1211,7 +1226,18 @@ $( document ).ready( function(){
 	$( '#restaurant-delivery-service-container' ).click( function(){
 		isDeliveryServiceChecked();
 	} );
+	$( '#restaurant-formal-relationship-container' ).click( function(){
+		isFormalBillingRelationshipChecked();
+	} );
 } );
+
+function isFormalBillingRelationshipChecked(){
+	if( $( '#restaurant-formal-relationship-container' ).text() == 'no' ){
+		$( '#order-notifications-sent-container' ).show();
+	} else {
+		$( '#order-notifications-sent-container' ).hide();
+	}
+}
 
 function isDeliveryServiceChecked(){
 	if( $( '#restaurant-delivery-service-container' ).text() == 'no' ){

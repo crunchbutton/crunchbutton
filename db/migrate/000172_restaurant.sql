@@ -1,0 +1,1 @@
+ALTER TABLE  `restaurant` ADD  `order_notifications_sent` TINYINT( 1 ) NOT NULL DEFAULT '0';
