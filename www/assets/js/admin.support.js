@@ -114,6 +114,21 @@ var SupportChatInterface = {
 		var self = this;
 		$( '#chat-history-' + self.id_support ).scrollTop( $( '#chat-history-' + self.id_support ).prop( 'scrollHeight' ) );
 	},
+	closeTicket : function(){
+		var self = this;
+		if( !confirm( 'Confirm close the ticket #' + self.id_support ) ){
+			return;
+		}
+		var url = '/support/plus/' + self.id_support + '/close-ticket';
+		$.ajax( {
+			type : 'POST',
+			url: url,
+			complete: function( content ) {
+				$( '#close-ticket-container-' + self.id_support ).hide();
+				self.history();
+			}
+		} );
+	},
 	reply : function( text ){
 		var self = this;
 		$( '#message-box-' + self.id_support ).hide();

@@ -1654,7 +1654,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 			$support = $this->getSupport();
 			if ($support) {
-				$support->addNote('Order refunded.', 'system', 'internal');
+				$support->addSystemMessage('Order refunded.');
 			}
 
 			$this->refunded = 1;
