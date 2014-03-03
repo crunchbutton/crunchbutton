@@ -899,6 +899,31 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
+		$this->notifyDrivers();
+	}
+
+	public function notifyDrivers(){
+
+		if( $this->ignoreDrivers ){
+			return;
+		}
+
+		$order = $this;
+		$needDrivers = false;
+		$hasDriversWorking = false;
+
+		$driversToNotify = [];
+
+		foreach ( $order->restaurant()->notifications() as $n ) {
+			// Admin notification type means it needs a driver
+			if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
+				$needDrivers = true;
+				$admin = $n->admin();
+				// Store the drivers
+				$driversToNotify[ $admin->id_admin ] = $admin;
+			}
+		}
+
 		// check if the restaurant is using our delivery system
 		if( intval( $order->restaurant()->delivery_service ) == 1 ){		
 			// get the restaurant community and its drivers
@@ -941,6 +966,12 @@ class Crunchbutton_Order extends Cana_Table {
 		
 	}
 
+	public function resend_notify_drivers(){
+		$order = $this;
+		Crunchbutton_Admin_Notification_Log::cleanLog( $order->id_order );
+		$order->notifyDrivers();
+	}
+
 	public function resend_notify(){
 		$order = $this;
 		// Log::debug([ 'order' => $order->id_order, 'action' => 'restarting starting notification', 'type' => 'notification']);
@@ -948,6 +979,7 @@ class Crunchbutton_Order extends Cana_Table {
 		// Notification_Log::DeleteFromOrder( $order->id_order );
 		// Log::debug([ 'order' => $order->id_order, 'action' => 'deleted previous notifications', 'type' => 'notification']);
 		Crunchbutton_Admin_Notification_Log::cleanLog( $order->id_order );
+		$order->ignoreDrivers = true;
 		$order->notify();
 	}
 
