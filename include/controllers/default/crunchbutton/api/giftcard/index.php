@@ -411,6 +411,12 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 					$words = array_unique( $words );
 
 					foreach( $words as $word ){
+
+						$word = trim( $word );
+
+						if( $word == '' ){
+							continue;
+						}
 						// Get the giftcard (promo) by code
 						$giftcard = Crunchbutton_Promo::byCode( $word );
 						// Check if the giftcard is valid
