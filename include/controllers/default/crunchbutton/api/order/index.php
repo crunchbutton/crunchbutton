@@ -172,6 +172,12 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							.'<Say voice="'.c::config()->twilio->voice.'">'.c::config()->twilio->greeting.' with an order for '.($order->delivery_type == 'delivery' ? 'delivery' : 'pickup').'.</Say>'
 							.'<Say voice="'.c::config()->twilio->voice.'">'.$order->message('phone').'</Say>';
 						
+						echo '<Pause length="1"/>';
+						echo '<Say voice="'.c::config()->twilio->voice.'">' . $order->driverInstructionsFoodStatus() .  '</Say>';
+
+						echo '<Pause length="1"/>';
+						echo '<Say voice="'.c::config()->twilio->voice.'">' . $order->driverInstructionsPaymentStatus() .  '</Say>';
+
 						echo '<Say voice="male"> <![CDATA[ Access ' . $cockipt_url . '  ]]> </Say>';
 
 						for ($x = 0; $x <= $repeat; $x++) {

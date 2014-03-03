@@ -1504,6 +1504,8 @@ class Crunchbutton_Order extends Cana_Table {
 					$msg .= 'TOTAL ' . $this->final_price;
 				}
 
+				$msg .= $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
+
 				break;
 			
 		}
@@ -1961,6 +1963,7 @@ class Crunchbutton_Order extends Cana_Table {
 		
 	}
 
+
 	public function deliveryExports() {
 		return [
 			'id_order' => $this->id_order,
@@ -1972,6 +1975,28 @@ class Crunchbutton_Order extends Cana_Table {
 			],
 			'self-reply' => $this->deliveryReply(c::admin())
 		];
+	}
+
+	public function driverInstructionsPaymentStatus(){
+		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
+		if( $this->restaurant()->formal_relationship == 1 ){
+			if( $this->pay_type == 'cash' ){
+				return 'Pay restaurant';
+			} else {
+				return 'Do not pay restaurant';
+			}
+		} else {
+			return 'Pay restaurant';
+		}
+	}
+
+	public function driverInstructionsFoodStatus(){
+		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
+		if( $this->restaurant()->formal_relationship == 1 || $this->restaurant()->order_notifications_sent == 1 ){
+			return 'Food already prepared';
+		} else {
+			return 'Place order yourself';
+		}
 	}
 
 	public function __construct($id = null) {

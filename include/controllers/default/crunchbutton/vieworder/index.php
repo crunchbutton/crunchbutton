@@ -8,6 +8,8 @@ class Controller_vieworder extends Cana_Controller {
 			die('invalid order');
 		}
 
+		$cockpit_url = false;
+
 		switch ( c::getPagePiece( 2 ) ) {
 			case 'restaurant':
 				$version = 'restaurant';
@@ -17,6 +19,7 @@ class Controller_vieworder extends Cana_Controller {
 				break;
 			default:
 				$version = 'cockpit';
+				$cockpit_url = 'http://cbtn.io/' . $order->id_order;
 				break;
 		}
 		
@@ -27,6 +30,7 @@ class Controller_vieworder extends Cana_Controller {
 			'order' => $order,
 			'user' => true,
 			'cockpit' => true,
+			'cockpit_url' => $cockpit_url,
 			'version' => $version
 		]);
 		echo $mail->message();
