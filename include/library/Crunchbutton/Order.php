@@ -71,7 +71,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// Check if the restaurant delivery #2464
 		if( $this->delivery_type == self::SHIPPING_DELIVERY ){
-			if( !$this->restaurant()->delivery == 0 && $this->restaurant()->takeout == 1 ){
+			if( $this->restaurant()->delivery == 0 && $this->restaurant()->takeout == 1 ){
 				$this->delivery_type = self::SHIPPING_TAKEOUT;
 			} else {
 				// log when an order is not delivery nor takeout
