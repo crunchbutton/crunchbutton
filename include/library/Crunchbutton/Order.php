@@ -797,6 +797,7 @@ class Crunchbutton_Order extends Cana_Table {
 				} else {
 					$q .= '
 						and (`order`.name like "%'.$word.'%"
+						or `order`.id_order = "'.$word.'"
 						or `order`.address like "%'.$word.'%"
 						or `restaurant`.name like "%'.$word.'%"
 						or REPLACE( `order`.phone, "-", "" ) like "%'. ( str_replace( '-' , '',  $word ) ) .'%")
