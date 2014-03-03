@@ -193,6 +193,9 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 					$community = '';
 				}
 
+				$env = c::getEnv();
+				$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+
 				$message = '#'.$this->id_order.' MAX CONFIRM CB for '.$this->order()->restaurant()->name. $community. "\nR# ".$this->order()->restaurant()->phone().$notifications."\nC# ".$this->order()->phone();
 				$message = str_split($message,160);
 				foreach ( $sendSMSTo as $supportName => $supportPhone) {
