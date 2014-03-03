@@ -28,7 +28,7 @@
 					<tr>
 						<td>
 							<br />
-							<button type="submit" class="btn btn-blue admin-order-search restaurant-image-button"><i class="icon-upload-alt"></i>&nbsp;&nbsp;&nbsp; Upload </button>	
+							<button type="button" class="btn btn-blue admin-order-search restaurant-image-button"><i class="icon-upload-alt"></i>&nbsp;&nbsp;&nbsp; Upload </button>	
 						</td>
 					</tr>
 				</table>
@@ -42,8 +42,14 @@
 <script>
 	$(function() {
 		$('.restaurant-image-button').click(function() {
-			var form = $(this).closest('form');
-			form.get(0).submit();
+			if( $('[name=image]').val() == '' ){
+				alert( 'Please choose an image.' );
+				return;
+			} else {
+				var form = $(this).closest('form');
+				form.get(0).submit();	
+			}
+			
 		});
 	});
 </script>
