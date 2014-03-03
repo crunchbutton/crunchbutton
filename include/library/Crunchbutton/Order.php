@@ -1400,6 +1400,9 @@ class Crunchbutton_Order extends Cana_Table {
 				if( !$this->delivery_service ){
 					$msg .= "Restaurant Phone: ".$this->restaurant()->phone().".\n";	
 				}
+				if ($this->delivery_type == 'delivery') {
+					$msg .= "Your order should arrive in about one hour.\n";
+				}
 				$msg .= "To contact Crunchbutton, text us back.\n\n";
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
 					$msg .= "Remember to tip!\n\n";
