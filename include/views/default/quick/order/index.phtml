@@ -41,6 +41,23 @@
 		</div>
 	</div>
 	
+
+	<div class="divider"></div>
+
+	<div class="divider dots"></div>
+
+	<div class="order-item-block-big">
+		<div class="order-info order-info-small">
+			<?php echo $this->order->driverInstructionsPaymentStatus(); ?>
+		</div>
+	</div>
+
+	<div class="order-item-block-big">
+		<div class="order-info order-info-small">
+			<?php echo $this->order->driverInstructionsFoodStatus(); ?>
+		</div>
+	</div>
+
 	<div class="divider"></div>
 
 	<div class="divider dots"></div>
@@ -258,7 +275,11 @@ $order = $this->order;
 			<td>$<?=$order->tip()?></td>
 			<?php if( $isDriverCockpit ) { ?>
 			<td style="font-size:12px;color:#666;">
+				<?php if( intval( $delivery_service_markup ) > 0 ) { ?>
+				$<?php echo number_format( 0, 2 ); ?>
+				<?php } else { ?>
 				$<?=$order->tip()?>
+				<?php } ?>
 			</td>
 			<?php } ?>
 		</tr>

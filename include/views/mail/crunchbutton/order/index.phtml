@@ -107,13 +107,27 @@
 	</tr>
 
 </table>
-
-<div class="xhatch separator-small"></div>
-
-
-<?php
+<?php 
 // customer / cockpit and drivers will see the value with the markup #2369
 $isDriverCockpit = ( $cockpit || $this->cockpit_url );
+if( $this->cockpit_url ){
+	// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
+?>
+	<div class="xhatch separator-small"></div>
+	<table width="100%" celpadding="0" cellspacing="0">
+		<tr>
+			<td width="50%" class="text-size-mid center">
+				<strong><?php echo $order->driverInstructionsFoodStatus(); ?></strong>
+			</td>
+			<td width="50%" class="text-size-mid center">
+				<strong><?php echo $order->driverInstructionsPaymentStatus(); ?></strong>
+			</td>
+		</tr>
+	</table>
+<?php } ?>
+<div class="xhatch separator-small"></div>
+
+<?php
 echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user, 'isDriverCockpit' => $isDriverCockpit, 'version' => $version ]]);	
 
 ;?>
@@ -173,8 +187,6 @@ if( $isDriverCockpit ){
 	<br /><br />
 	<?=$this->display('order/details',['set' => ['order' => $order]])?>
 <? endif ; ?>
-
-
 
 
 <? if ($order->_print) : ?>
