@@ -1109,7 +1109,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		// get the legacy data
-		$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
+		if( !$isCockpit ){
+			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );	
+		}
+		
 
 		return $out;
 	}
