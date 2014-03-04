@@ -320,6 +320,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			
 			// close action
 			case 'close':
+			case 'closed':
 
 				if( $support->id_support ){
 					$support->addSystemMessage( $admin->name . ' closed the message from text message.' );
