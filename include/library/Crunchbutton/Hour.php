@@ -561,7 +561,8 @@ class Crunchbutton_Hour extends Cana_Table {
 		foreach( $_hours as $key => $hour ){
 			if( $_hours[ $key ][ 'status' ] == 'close' ){
 				foreach( $hoursStartFinishOverrideClose as $closedHour ){
-					if( $_hours[ $key ][ 'from' ] <= $closedHour[ 'start' ] && $_hours[ $key ][ 'to' ] >= $closedHour[ 'end' ] ){
+					if( ( $_hours[ $key ][ 'from' ] <= $closedHour[ 'start' ] && $_hours[ $key ][ 'to' ] >= $closedHour[ 'end' ] ) ||
+						( $_hours[ $key ][ 'from' ] >= $closedHour[ 'start' ] && $_hours[ $key ][ 'to' ] <= $closedHour[ 'end' ] ) ){
 						$_hours[ $key ][ 'notes' ] = $closedHour[ 'notes' ];
 					}
 				}
