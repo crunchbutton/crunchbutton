@@ -56,15 +56,15 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 						$atId = '@' . $rsess->id_session_twilio;
 						$body = trim( str_replace( $atId , '',  $body ) );
 						if( $body != '' ){
-							$this->reply( $rsess->id_session_twilio, $phone, $body, $twilio );
+							$this->reply( $rsess->id_session_twilio, $phone, $body );
 						} else {
 							$msg = $rep->name . " is now replying to @".$rsess->id_session_twilio.'. Type a message to respond.';
 						}
 					}
-				} 
+				}
 				// Session already exists
 				elseif ($_SESSION['support-respond-sess']) {
-					$this->reply( $_SESSION['support-respond-sess'], $phone, $body, $twilio );
+					$this->reply( $_SESSION['support-respond-sess'], $phone, $body );
 				} 
 				// No session at all
 				else {
@@ -260,81 +260,101 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 		exit;
 	}
 
-	public function reply( $id_session, $phone, $body, $twilio ){
+	public function warningOtherReps( $admin, $message ){
+
+		$message = str_split( $message, 160 );
+		
+		$env = c::getEnv();
+
+		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+
+		$sendSMSTo = array();
+		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
+			$sendSMSTo[ $supportName ] = $supportPhone;
+		}
+
+		if( $support->id_order && $support->order()->id_order ){
+			$usersToReceiveSMS = $support->order()->restaurant()->adminReceiveSupportSMS();
+			if( count( $usersToReceiveSMS ) > 0 ){
+				foreach( $usersToReceiveSMS as $user ){
+					$sendSMSTo[ $user->name ] = $user->txt;
+				}
+			}	
+		}
+
+		foreach ( $sendSMSTo as $supportName => $supportPhone ) {
+			$num = $supportPhone;
+			foreach ( $message as $msg ) {
+				if( $supportName != $admin->name ){
+					try {
+						// Log
+						Log::debug( [ 'action' => 'warningOtherReps: replying sms: ' . $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+						$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+					} catch (Exception $e) {
+						// Log
+						Log::debug( [ 'action' => 'ERROR: replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+					}
+				}
+			}
+		}
+	}
+
+	public function reply( $id_session, $phone, $body ){
 
 		$rsess = new Session_Twilio( $id_session );
 		$message = $body;
-
 		$nums[] = $rsess->phone;
-
 		$env = c::getEnv();
-
 		$admin = Crunchbutton_Admin::getByPhone( $phone );
-
 		// Log
 		Log::debug( [ 'action' => 'replying message', 'admin' => $admin->id_admin, 'session id' => $rsess->id_session_twilio, 'num' => $nums, 'message' => $message, 'type' => 'sms' ] );
-		
+
 		$support = Crunchbutton_Support::getByTwilioSessionId( $id_session );
+		$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
-		if( $support->id_support ){
-			$support->addAdminMessage( [ 'phone' => $phone, 'body' => $body ] );
-			// Log
-			Log::debug( [ 'action' => 'saving the answer', 'id_support' => $answer->id_support, 'phone' => $phone, 'message' => $message, 'type' => 'sms' ] );
-		}
+		// Get the first word of the message -> action
+		$action = explode( ' ',trim( $body ) );
+		$action = $action[ 0 ];
 
-		// c::timeout(function() use ($nums, $b, $twilio, $env, $id) {
+		switch ( $action ) {
+			
+			// close action
+			case 'close':
 
-			$message = str_split( $message, 160 );
+				if( $support->id_support ){
+					$support->addSystemMessage( $admin->name . ' closed the message from text message.' );
+					$support->status = Crunchbutton_Support::STATUS_CLOSED;
+					$support->save();
+					Log::debug( [ 'action' => 'closing support', 'id_support' => $support->id_support, 'phone' => $phone, 'message' => $message, 'type' => 'sms' ] );
+					$message = $admin->name . ' closed @' . $id_session . ' / ticket #' . $support->id_support; 
+					$this->warningOtherReps( $admin, $message );
+				}				
 
-			foreach ( $nums as $i => $num ) {
+				break;
+			
+			// just reply
+			default:
 
-				foreach ( $message as $msg ) {
-
-					try {
-						// Log
-						Log::debug( [ 'action' => 'sending sms', 'session id' => $rsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-						$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
-					} catch (Exception $e) {
-						Log::debug( [ 'action' => 'ERROR: sending sms', 'session id' => $rsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
-					}
-
+				// Record the admin's message
+				if( $support->id_support ){
+					$support->addAdminMessage( [ 'phone' => $phone, 'body' => $body ] );
+					Log::debug( [ 'action' => 'saving the answer', 'id_support' => $support->id_support, 'phone' => $phone, 'message' => $message, 'type' => 'sms' ] );
 				}
-			}
 
-			$msg_support = $admin->name . ' replied @' . $id_session . ' : ' . $body; 
-			$msg_support = str_split( $msg_support, 160 );
-
-			$sendSMSTo = array();
-			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-				$sendSMSTo[ $supportName ] = $supportPhone;
-			}
-			
-			if( $support->id_order && $support->order()->id_order ){
-				$usersToReceiveSMS = $support->order()->restaurant()->adminReceiveSupportSMS();
-				if( count( $usersToReceiveSMS ) > 0 ){
-					foreach( $usersToReceiveSMS as $user ){
-						$sendSMSTo[ $user->name ] = $user->txt;
-					}
-				}	
-			}
-			
-
-			foreach ( $sendSMSTo as $supportName => $supportPhone ) {
-				$num = $supportPhone;
-				foreach ( $msg_support as $msg ) {
-					if( $supportName != $admin->name ){
+				$message = str_split( $message, 160 );
+				foreach ( $nums as $i => $num ) {
+					foreach ( $message as $msg ) {
 						try {
-							// Log
-							Log::debug( [ 'action' => 'replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+							Log::debug( [ 'action' => 'sending sms', 'session id' => $rsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
 							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
 						} catch (Exception $e) {
-							// Log
-							Log::debug( [ 'action' => 'ERROR: replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+							Log::debug( [ 'action' => 'ERROR: sending sms', 'session id' => $rsess->id_session_twilio, 'num' => $num, 'msg' => $msg, 'type' => 'sms' ] );
 						}
 					}
 				}
-			}
-
-		// });
+				$message = $admin->name . ' replied @' . $id_session . ' : ' . $body; 
+				$this->warningOtherReps( $admin, $message );
+				break;
+		}
 	}
 }
