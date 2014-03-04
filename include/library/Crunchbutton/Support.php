@@ -208,9 +208,48 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function pendingSupport(){
+		Crunchbutton_Support::closeTicketsOlderThanADay();
 		return Crunchbutton_Support::q( 'SELECT s.* FROM support s
 																			INNER JOIN ( SELECT MAX( id_support_message ), id_support, `from` FROM support_message GROUP BY id_support ORDER BY id_support DESC ) sm ON s.id_support = sm.id_support
 																			AND s.status = "' . Crunchbutton_Support::STATUS_OPEN . '" AND sm.from = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '"' );
+	}
+
+	// close all support issues that are older than a day #2487
+	public function closeTicketsOlderThanADay(){
+		$supports = Crunchbutton_Support::q( 'SELECT s.* FROM support s WHERE s.status =  "' . Crunchbutton_Support::STATUS_OPEN . '" ORDER BY id_support ASC' );
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		foreach ( $supports as $support ) {
+			$lastCustomerMessage = $support->lastCustomerMessage();
+			$close = false;
+			if( $lastCustomerMessage->id_support_message ){
+				$support_date = $lastCustomerMessage->date()->get(0);
+				if( $support_date ){
+					$interval = $now->diff( $support_date );
+					$seconds = ( $interval->s ) + ( $interval->i * 60 ) + ( $interval->h * 60 * 60 ) + ( $interval->d * 60 * 60 * 24 ) + ( $interval->m * 60 * 60 * 24 * 30 ) + ( $interval->y * 60 * 60 * 24 * 365 );
+					if( $seconds >= 86400 ){
+						$close = true;
+					}	
+				} else {
+					$close = true;
+				}
+			} else {
+				$support_date = $support->date();
+				if( $support_date ){
+					$interval = $now->diff( $support_date );
+					$seconds = ( $interval->s ) + ( $interval->i * 60 ) + ( $interval->h * 60 * 60 ) + ( $interval->d * 60 * 60 * 24 ) + ( $interval->m * 60 * 60 * 24 * 30 ) + ( $interval->y * 60 * 60 * 24 * 365 );
+					if( $seconds >= 86400 ){
+						$close = true;
+					}	
+				} else {
+					$close = true;
+				}
+			}
+			if( $close ){
+				$support->status = Crunchbutton_Support::STATUS_CLOSED;
+				$support->save();
+				$support->addSystemMessage( 'Automatically close support ticket older than a day' );
+			}
+		}
 	}
 
 	public function addSystemMessage( $body ) {

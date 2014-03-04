@@ -170,15 +170,15 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 																																				'body' => $body, 
 																																				'id_session_twilio' => $tsess->id_session_twilio ] );
 							} else {
-								// Add the new customer message
-								$support->addCustomerMessage( [ 'name' => $order->name, 
-																								'phone' => $phone, 
-																								'body' => $body ] );
 								if( $support->status == Crunchbutton_Support::STATUS_CLOSED ){
 									// Open support
 									$support->status = Crunchbutton_Support::STATUS_OPEN;
 									$support->addSystemMessage( 'Ticket reopened by customer' );
 								}
+								// Add the new customer message
+								$support->addCustomerMessage( [ 'name' => $order->name, 
+																								'phone' => $phone, 
+																								'body' => $body ] );
 								$support->save();
 							}
 
