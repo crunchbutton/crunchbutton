@@ -64,8 +64,15 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function name(){
+		$user = User::o( $this->id_user );
+		if( $user->name ){
+			return $user->name;
+		}
 		$message = $this->firstMessage();
-		return $message->name;
+		if( $message->name ){
+			return $message->name;
+		}
+		return '<i>No name</i>';
 	}
 
 	public function message(){
@@ -198,6 +205,12 @@ class Crunchbutton_Support extends Cana_Table {
 			$messageParams[ 'body' ] = $params[ 'body' ];
 			return $this->addMessage( $messageParams );
 		}
+	}
+
+	public function pendingSupport(){
+		return Crunchbutton_Support::q( 'SELECT s.* FROM support s
+																			INNER JOIN ( SELECT MAX( id_support_message ), id_support, `from` FROM support_message GROUP BY id_support ORDER BY id_support DESC ) sm ON s.id_support = sm.id_support
+																			AND s.status = "' . Crunchbutton_Support::STATUS_OPEN . '" AND sm.from = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '"' );
 	}
 
 	public function addSystemMessage( $body ) {

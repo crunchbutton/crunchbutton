@@ -2,7 +2,8 @@
 	<div class="box-header">
 		<span class="title">Recent Issues</span>
 		<ul class="box-toolbar">
-			<li><span class="label label-green"><?php echo $this->totalOpened; ?> open</span></li>
+			<li><span class="label label-green"><?php echo Crunchbutton_Support::pendingSupport()->count(); ?> tickets waiting for an anwser</span></li>
+			<li><span class="label label-blue"><?php echo $this->totalOpened; ?> open</span></li>
 		</ul>
 	</div>
 
@@ -69,7 +70,7 @@
 					<td style="width: 60px;"><div>Driver</div></td>
 					<td style="width: 110px;"><div>Last update user</div></td>
 					<td style="width: 110px;"><div>Last update admin</div></td>
-					<td style="width: 90px;"></td>
+					<td style="width: 120px;"></td>
 				</tr>
 			</thead>
 			<tbody>
@@ -122,7 +123,7 @@
 						<td nowrap><?php echo $type; ?></td>
 						<td nowrap><?php echo $name; ?></td>
 						<td><?php echo $message; ?></td>
-						<td><?php echo $support->status; ?></td>
+						<td id="status-support-<?php echo $support->id_support; ?>"><?php echo $support->status; ?></td>
 						<td nowrap=""><?php if( $driver ) { ?>
 							<a href="/permissions/users/<?php echo $support->order()->driver()->id_admin ?>">
 								<?php echo $support->order()->driver()->name; ?>
@@ -137,9 +138,13 @@
 						</td>
 						<td>
 							<a href="/support/plus/<?= $support->id_support ?>"><button class="btn btn-mini btn-default">View</button></a>
+							<?php if( $support->status == Crunchbutton_Support::STATUS_OPEN ) { ?>
+							&nbsp;
+							<a title="Close ticket" id="close-ticket-button-<?php echo $support->id_support; ?>" href="javascript://" onclick="SupportChats.closeTicket( '<?php echo $support->id_support; ?>' )"><button class="btn btn-mini btn-default"><i class="icon-off"></i></button></a>
+							<?php } ?>
 							<?php if( $chat ) { ?>
 							&nbsp;
-							<a href="javascript://" onclick="SupportChats.createChat( '<?php echo $support->id_support; ?>' )"><button class="btn btn-mini btn-default"><i class="icon-comments"></i></button></a>
+							<a title="Chat" href="javascript://" onclick="SupportChats.createChat( '<?php echo $support->id_support; ?>' )"><button class="btn btn-mini btn-default"><i class="icon-comments"></i></button></a>
 							<?php } ?>
 						</td>
 					</tr>

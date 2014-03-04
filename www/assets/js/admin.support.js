@@ -116,7 +116,7 @@ var SupportChatInterface = {
 	},
 	closeTicket : function(){
 		var self = this;
-		if( !confirm( 'Confirm close the ticket #' + self.id_support ) ){
+		if( !confirm( 'Confirm close the ticket #' + self.id_support + '?') ){
 			return;
 		}
 		var url = '/support/plus/' + self.id_support + '/close-ticket';
@@ -164,6 +164,21 @@ var SupportChats = {
 			}
 		}
 		return chats;
+	},
+	closeTicket : function( id_support ){
+		var self = this;
+		if( !confirm( 'Confirm close the ticket #' + id_support + '?') ){
+			return;
+		}
+		var url = '/support/plus/' + id_support + '/close-ticket';
+		$.ajax( {
+			type : 'POST',
+			url: url,
+			complete: function( content ) {
+				$( '#close-ticket-button-' + id_support ).hide();
+				$( '#status-support-' + id_support ).html( 'closed' );
+			}
+		} );
 	},
 	close : function( id_support ){
 		var container = SupportChats.chats[ id_support ].container();
