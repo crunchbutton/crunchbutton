@@ -1429,6 +1429,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return date( 'g:i a', strtotime( $time->format( 'Y-m-d H:i' ) . ' + ' . $minutes . ' minute' ) );
 	}
 
+	// Start Telling Customers Estimated Delivery Time #2476
+	public function calc_delivery_estimated_to_text_message( $datetime = null ){
+		$multipleOf = 15;
+		$estimated = 60; // minutes
+		$time = new DateTime( ( $datetime ? $datetime : 'now' ), new DateTimeZone( $this->timezone ) );
+		$minutes = round( ( ( $time->format( 'i' ) + $estimated ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
+		$minutes -= $time->format( 'i' );
+		return date( 'g:i a', strtotime( $time->format( 'Y-m-d H:i' ) . ' + ' . $minutes . ' minute' ) );
+	}
+
 	public function calc_delivery_estimated_time( $datetime = null ){
 		$multipleOf = 5;
 		$time = new DateTime( ( $datetime ? $datetime : 'now' ), new DateTimeZone( $this->timezone ) );
