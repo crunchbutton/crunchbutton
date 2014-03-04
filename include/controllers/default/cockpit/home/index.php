@@ -8,9 +8,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 		$data = [
 			'all' => [
 				'orders' => Order::q('select count(*) as c from `order` where env="live"')->c,
-				'tickets' => Session_Twilio::q('
-					select count(*) as c from support where status="open"
-				')->c,
+				'tickets' => Crunchbutton_Support::pendingSupport()->count(),
 			],
 			'day' => [
 				'orders' => Order::q('
