@@ -8,6 +8,8 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 			return ;
 		} 
 
+		$waiting = Crunchbutton_Support::pendingSupport()->count();
+
 		$resultsPerPage = 15;
 
 		$page = ( $_REQUEST[ 'page' ] ) ? $_REQUEST[ 'page' ] : 1;
@@ -57,6 +59,7 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 		c::view()->totalOpened = Support::q("SELECT COUNT(*) AS count FROM support WHERE status = 'open'")->count;
 
 		c::view()->tickets = $tickets;
+		c::view()->waiting = $waiting;
 		c::view()->total = $total;
 		c::view()->type = $type;
 		c::view()->page = $page;
