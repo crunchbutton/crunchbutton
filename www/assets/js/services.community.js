@@ -5,10 +5,14 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 
 	service.position = PositionsService;
 
-	service.communityStyle = function( permalink ){
+	service.removeCommunityStyle = function(){
 		if( service.style ){
 			angular.element( 'html' ).removeClass( service.style );	
 		}
+	}
+
+	service.communityStyle = function( permalink ){
+		service.removeCommunityStyle();
 		service.style = 'community-' + permalink;
 		angular.element( 'html' ).addClass( service.style );
 	}
@@ -54,6 +58,7 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 				return;
 			}
 		}
+		service.removeCommunityStyle();
 		error();
 	};
 
