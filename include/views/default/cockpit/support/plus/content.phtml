@@ -57,7 +57,8 @@
 				</div>
 			</div>
 		</div>
-
+		<?php 
+		if( $this->total > 0 ) { ?>
 		<table cellpadding="0" cellspacing="0" border="0" class="table table-normal">
 			<thead>
 				<tr>
@@ -209,6 +210,13 @@
 
 			</div>
 		</div>
+		<?php } else {
+			?>
+			<div class="box-content padded">
+				No tickets!
+			</div>
+			<?php
+		}?>
 	</div>
 </div>
 <script type="text/javascript">
