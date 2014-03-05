@@ -5,13 +5,6 @@
 			&nbsp;Chat #<?php echo $this->support->id_support;?>
 		</div>
 		<ul class="box-toolbar">
-			<?php if( $this->support->status == Crunchbutton_Support::STATUS_OPEN ) { ?>
-			<li id="close-ticket-container-<?php echo $this->support->id_support;?>">
-				<a title="Close ticket" href="javascript://" id="chat-close-ticket-<?php echo $this->support->id_support;?>">
-					<i class="icon-off"></i>
-				</a>
-			</li>
-			<?php } ?>
 			<li>
 				<a href="javascript://" id="chat-minimize-<?php echo $this->support->id_support;?>">
 					<i class="icon-angle-down"></i>
@@ -20,10 +13,27 @@
 					<i class="icon-angle-up"></i>
 				</a>
 			</li>
-			<li>
-				<a href="javascript://" id="chat-close-<?php echo $this->support->id_support;?>">
-					<i class="icon-remove"></i>
-				</a>
+			<li class="toolbar-link" id="chat-menu-<?php echo $this->support->id_support;?>">
+				<a href="#" data-toggle="dropdown"><i class="icon-cog"></i></a>
+				<ul class="dropdown-menu">
+					<li>
+						<a href="javascript://" id="chat-close-<?php echo $this->support->id_support;?>">
+							<i class="icon-remove"></i> Close chat
+						</a>
+					</li>
+					<?php if( $this->support->status == Crunchbutton_Support::STATUS_OPEN ) { ?>
+					<li id="close-ticket-container-<?php echo $this->support->id_support;?>">
+						<a title="Close ticket" href="javascript://" id="chat-close-ticket-<?php echo $this->support->id_support;?>">
+							<i class="icon-off"></i> Close ticket
+						</a>
+					</li>
+					<?php } ?>
+					<li>
+						<a href="/support/plus/<?php echo $this->support->id_support;?>" target="_blank" >
+							<i class="icon-eye-open"></i> View ticket
+						</a>
+					</li>
+				</ul>
 			</li>
 		</ul>
 	</div>

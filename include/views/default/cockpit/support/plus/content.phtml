@@ -146,7 +146,7 @@
 							</td>
 						</td>
 						<td>
-							<a href="/support/plus/<?= $support->id_support ?>"><button class="btn btn-mini btn-default">View</button></a>
+							<a title="View ticket" href="/support/plus/<?= $support->id_support ?>"><button class="btn btn-mini btn-default"><i class="icon-eye-open"></i></button></a>
 							<?php if( $support->status == Crunchbutton_Support::STATUS_OPEN ) { ?>
 							&nbsp;
 							<a title="Close ticket" id="close-ticket-button-<?php echo $support->id_support; ?>" href="javascript://" onclick="SupportChats.closeTicket( '<?php echo $support->id_support; ?>' )"><button class="btn btn-mini btn-default"><i class="icon-off"></i></button></a>

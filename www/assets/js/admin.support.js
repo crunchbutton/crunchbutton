@@ -71,6 +71,7 @@ var SupportChatInterface = {
 		var self = this;
 		self.status = 'minimized';
 		$( '#chat-box-content-' + self.id_support ).hide();
+		$( '#chat-menu-' + self.id_support ).hide();
 		$( '#chat-minimize-' + self.id_support ).hide();
 		$( '#chat-maximize-' + self.id_support ).show();
 		self.setPosition();
@@ -79,6 +80,7 @@ var SupportChatInterface = {
 		var self = this;
 		self.status = 'maximized';
 		$( '#chat-box-content-' + self.id_support ).show();
+		$( '#chat-menu-' + self.id_support ).show();
 		$( '#chat-minimize-' + self.id_support ).show();
 		$( '#chat-maximize-' + self.id_support ).hide();
 		self.setPosition();
