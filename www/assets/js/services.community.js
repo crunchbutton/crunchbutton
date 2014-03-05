@@ -7,10 +7,10 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 
 	service.communityStyle = function( permalink ){
 		if( service.style ){
-			angular.element( 'body' ).removeClass( service.style );	
+			angular.element( 'html' ).removeClass( service.style );	
 		}
 		service.style = 'community-' + permalink;
-		angular.element( 'body' ).addClass( service.style );
+		angular.element( 'html' ).addClass( service.style );
 	}
 
 	service.route = function( id, success, error ){
