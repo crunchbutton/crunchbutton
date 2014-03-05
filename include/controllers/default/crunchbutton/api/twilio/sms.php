@@ -33,7 +33,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			Log::debug( [ 'action' => 'rep valid', 'rep' => $admin->name, 'rep phone' => $admin->phone, 'type' => 'sms' ] );
 		}
 
-		switch ($type) {
+		switch ( $type ) {
 			
 			case 'rep':
 			
@@ -117,8 +117,10 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					} else {
 						$community = '';
 					}
-
-					$last_cb = "Last Order: #$order->id_order, from $restaurant->name $community, on $date. -  R: $restaurant->phone {$notifications} - C: $order->name / $order->phone";
+					$last_cb .= "Last Order: #$order->id_order, from $restaurant->name $community, on $date -  R: $restaurant->phone {$notifications} - C: $order->name / $order->phone ";
+					if( $order->address ){
+						$last_cb .= " / " . $order->address;
+					}
 				} else {
 					$last_cb = 'Last Order: None.';
 				}
