@@ -204,6 +204,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	// add the community class
 	if( restaurants.position.pos().type() == 'alias' ){
 		CommunityAliasService.communityStyle( restaurants.position.pos().permalink() );
+	} else {
+		CommunityAliasService.removeCommunityStyle();
 	}
 
 	restaurants.list( 
