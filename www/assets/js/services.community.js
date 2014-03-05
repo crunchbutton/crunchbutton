@@ -5,6 +5,14 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 
 	service.position = PositionsService;
 
+	service.communityStyle = function( permalink ){
+		if( service.style ){
+			angular.element( 'body' ).removeClass( service.style );	
+		}
+		service.style = 'community-' + permalink;
+		angular.element( 'body' ).addClass( service.style );
+	}
+
 	service.route = function( id, success, error ){
 		
 		var parts = id.toLowerCase().split( '/' );
@@ -41,6 +49,7 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 					permalink: alias.permalink,
 					image: alias.image,
 				});
+				service.communityStyle( alias.permalink );
 				success( { alias: res }, restaurant );
 				return;
 			}
