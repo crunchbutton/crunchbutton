@@ -20,33 +20,47 @@ foreach( $messages as $message ){
 			$last_id_support_message = $message->id_support_message;
 			break;
 		case Crunchbutton_Support_Message::TYPE_FROM_REP:
-			?>
-				<li class="arrow-box-right gray">
-					<div class="info">
-						<span class="name">
-							<strong>
-								<?php echo $message->admin()->name; ?>
-							</strong> 
-							<?php
-							switch ( $message->type ) {
-								case Crunchbutton_Support_Message::TYPE_SMS:
-									echo '<span class="badge badge-green">SMS</span> ';
-									break;
-								case Crunchbutton_Support_Message::TYPE_NOTE:
-									echo '<span class="badge badge-gray">Note</span>';
-									break;
-							}
-							?>
-						</span>
-						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
-					</div>
-					<?php echo nl2br( $message->body ); ?>
-				</li>
-			<?php
+			switch ( $message->type ) {
+				case Crunchbutton_Support_Message::TYPE_SMS:
+					?>
+						<li class="arrow-box-right gray">
+							<div class="info">
+								<span class="name">
+									<strong>
+										<?php echo $message->admin()->name; ?>
+									</strong> 
+								<span class="badge badge-green">SMS</span>
+								</span>
+								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
+							</div>
+							<?php echo nl2br( $message->body ); ?>
+						</li>
+					<?php
+					break;
+				
+				case Crunchbutton_Support_Message::TYPE_NOTE:
+					?>
+						<li class="box-note">
+							<div class="info">
+								<span class="name">
+									<strong>
+										<?php echo $message->admin()->name; ?>
+									</strong> 
+								<span class="badge badge-green">NOTE</span>
+								</span>
+								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
+							</div>
+							<?php echo nl2br( $message->body ); ?>
+						</li>
+					<?php
+					break;
+			}
+			
 			break;
+
 		case Crunchbutton_Support_Message::TYPE_FROM_SYSTEM:
 			?>
-				<li class="arrow-box-right gray">
+				<li class="box-note-system">
 					<div class="info">
 						<span class="name">
 							<strong>System</strong> 

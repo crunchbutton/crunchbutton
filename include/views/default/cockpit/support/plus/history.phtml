@@ -19,36 +19,49 @@
 				<?php
 				break;
 			case Crunchbutton_Support_Message::TYPE_FROM_REP:
+				switch ( $message->type ) {
+					case Crunchbutton_Support_Message::TYPE_SMS:
+						?>
+						<li class="arrow-box-right gray">
+							<div class="avatar"><img class="avatar-small" src="/assets/images/admin/user.jpg" /></div>
+							<div class="info">
+								<span class="name">
+									<strong>
+										<?php echo $message->admin()->name; ?>
+									</strong> 
+									<span class="badge badge-green">SMS</span> <?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?> 
+								</span>
+								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
+							</div>
+							<?php echo nl2br( $message->body ); ?>
+						</li>
+						<?php
+						break;
+					
+					case Crunchbutton_Support_Message::TYPE_NOTE:
+						?>
+						<li class="box-note">
+							<div class="info">
+								<span class="name">
+									<strong>
+										<?php echo $message->admin()->name; ?>
+									</strong> 
+									<span class="badge badge-green">NOTE</span>
+								</span>
+								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
+							</div>
+							<?php echo nl2br( $message->body ); ?>
+						</li>
+						<?php
+						break;
+				}
+
 				?>
-					<li class="arrow-box-right gray">
-						<div class="avatar"><img class="avatar-small" src="/assets/images/admin/user.jpg" /></div>
-						<div class="info">
-							<span class="name">
-								<strong>
-									<?php echo $message->admin()->name; ?>
-								</strong> 
-								<?php
-								switch ( $message->type ) {
-									case Crunchbutton_Support_Message::TYPE_SMS:
-										echo '<span class="badge badge-green">SMS</span> ';
-										break;
-									case Crunchbutton_Support_Message::TYPE_NOTE:
-										echo '<span class="badge badge-gray">Note</span>';
-										break;
-								}
-								?>									
-								<?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?> 
-							</span>
-							<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
-						</div>
-						<?php echo nl2br( $message->body ); ?>
-					</li>
 				<?php
 				break;
 			case Crunchbutton_Support_Message::TYPE_FROM_SYSTEM:
 				?>
-					<li class="arrow-box-right gray">
-						<div class="avatar"><img class="avatar-small" src="/assets/images/admin/system.png" /></div>
+					<li class="box-note-system">
 						<div class="info">
 							<span class="name">
 								<strong>System</strong> 
