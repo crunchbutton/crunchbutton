@@ -73,6 +73,12 @@
 					<li class="active"><a href="http://beta.crunchr.co" target="_blank"><i class="icon-home"></i> Beta</a></li>
 					<li class="active"><a href="http://staging.crunchr.co" target="_blank"><i class="icon-home"></i> Staging</a></li>
 					<li class="active"><a href="http://crunchr.co" target="_blank"><i class="icon-home"></i> Live</a></li>
+					<li class="active">
+						<a href="/support/" title="tickets waiting for an anwser">
+							<i class="icon-comments"></i> Support
+							<span class="badge badge-dark-red" id="support-badge" style="display:none;position:absolute;margin-top:-5px;margin-left:5px;">5</span>
+						</a>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -420,5 +426,21 @@
 }
 
 </style>
+<script type="text/javascript">
+	function supportBadge(){
+		var url = '/api/support/count';
+		$.getJSON( url, function( json ){
+			$( '#support-badge' ).html( json.total );
+			$( '#support-badge' ).show();
+			setTimeout( function(){
+				supportBadge();
+			}, 1500 );
+		} );
+	}
+	$(document).ready( function(){
+		supportBadge();
+	} );
+
+</script>
 </body>
 </html>
