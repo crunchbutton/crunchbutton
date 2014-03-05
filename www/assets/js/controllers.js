@@ -117,7 +117,7 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 /**
  * Show the restaurants
  */
-NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, RestaurantsService, LocationService, RestaurantService ) {
+NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, RestaurantsService, LocationService, RestaurantService, CommunityAliasService ) {
 
 	$scope.restaurants = false;
 
@@ -200,6 +200,11 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	var prep = restaurants.position.pos().prep();
 	var city = restaurants.position.pos().city();
 	var image = restaurants.position.pos().getImage();
+
+	// add the community class
+	if( restaurants.position.pos().type() == 'alias' ){
+		CommunityAliasService.communityStyle( restaurants.position.pos().permalink() );
+	}
 
 	restaurants.list( 
 		// Success
