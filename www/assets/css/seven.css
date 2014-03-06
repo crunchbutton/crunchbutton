@@ -1793,6 +1793,7 @@ select.form-input {
 	width: auto;
 	float: left;
 	min-width: 6em;
+	padding-right: 3em;
 }
 .form-input-select:after {
 	font-family: FontAwesome;
@@ -3282,8 +3283,13 @@ select {
 	font-size: 1.2em;
 	margin-right: 1em;
 	display: inline-block;
+	font-weight: bold;
+	margin-bottom: .4em;
 }
 .cart-item-customize-item select {
 	border-color: #f77748;
-	max-width: 90%;
+	max-width: 97%;
+	padding-right: 3em;
+	margin-left: 0;
+	margin-bottom: .8em;
 }
