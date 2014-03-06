@@ -701,6 +701,18 @@ class Crunchbutton_Order extends Cana_Table {
 		return self::q('select * from `order` order by `date` DESC');
 	}
 
+	public static function deliveryOrders( $search = false ){
+
+		$limit = 'LIMIT 20';
+
+		$query = 'SELECT DISTINCT(o.id_order) id, o.* FROM `order` o
+					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.delivery_service = 1
+					' . $innerJoin . $where . '
+					ORDER BY o.id_order DESC ' . $limit;
+
+		return Order::q( $query );		
+	}
+
 	public static function deliveredByCBDrivers( $search ){
 
 		$where = ' WHERE 1 = 1';

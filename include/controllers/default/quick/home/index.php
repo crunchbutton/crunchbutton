@@ -1,26 +1,31 @@
 <?php
 
 class Controller_home extends Crunchbutton_Controller_Account {
-	public function init() {
-		c::view()->layout('layout/html');
-
-
-		
-		if (!c::getPagePiece(0)) {
-			c::view()->display('home/index');
-		} else {
-
-
-			$order = Order::o(c::db()->escape(c::getPagePiece(0)));
 	
-			if (!$order->id_order) {
-				exit;
+	public function init() {
+
+		c::view()->layout( 'layout/html' );
+		
+		if( c::db()->escape( c::getPagePiece( 0 ) ) ){
+			// show the order
+			$order = Order::o( c::db()->escape( c::getPagePiece( 0 ) ) );
+			if ( $order->id_order ) {
+				c::view()->order = $order;
+				c::view()->display('order/index');
+				exit();
+			} else {
+				$this->showList();
 			}
-			c::view()->order = $order;
-
-			c::view()->display('order/index');
+		} else {
+			$this->showList();
 		}
-
-		exit;
 	}
+
+	public function showList(){
+
+		c::view()->orders = Order::deliveryOrders();
+
+		c::view()->display( 'home/index' );
+	}
+
 }

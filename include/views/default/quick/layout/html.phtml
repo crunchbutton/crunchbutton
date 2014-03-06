@@ -479,12 +479,14 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 
 <script>
 	$(document).ready(function(){
+
 		var d = <?=json_encode($this->order->deliveryExports())?>;
 		var id_admin = '<?=c::admin()->id_admin?>';
 		var id_order = '<?=$this->order->id_order?>';
 		
 		var updateStatus = function(data) {
 			console.log(data);
+		
 			$('.wrap').removeClass('order-status-init order-status-delivered order-status-pickedup order-status-rejected order-status-accepted order-status-accepted-other order-status-none');
 
 			var className, name;

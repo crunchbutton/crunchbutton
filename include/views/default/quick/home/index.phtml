@@ -1,15 +1,127 @@
-
+<?php 
+	$orders = $this->orders;
+?>
 <div class="control">
 	<div class="wrap order-status-init">
 		<b>List</b> | 
-		<a href="#">By Restaurant</a>
-
+		<a href="#">Show all</a>
+		 | 
+		<a href="#">Show mine</a>
 		<div class="divider"></div>
 	</div>
 </div>
 
 <div class="content">
 	<div class="wrap">
-		
+		<?php foreach( $orders as $order ) { 
+			$date = $order->date();
+			?>
+			<div class="order-list-item new">
+			<div class="order-list-action">
+					<div class="button">
+						ACCEPT
+					</div>
+					
+				</div>
+				<div class="order-list-date">
+					<div class="day">
+						<?php echo $date->format( 'm/d' ); ?>
+					</div>
+					<div class="hour">
+						<?php echo $date->format( 'h:i' ); ?>
+					</div>
+					<div class="ampm">
+						<?php echo $date->format( 'a' ); ?>
+					</div>
+				</div>
+				<div class="order-list-customer-info">
+					<div class="restaurant">
+						<a href="/<?php echo $order->id_order; ?>">
+							<?php echo $order->restaurant()->name; ?>
+						</a>
+					</div>
+					<div class="customer">
+						<a href="/<?php echo $order->id_order; ?>">
+							<?php echo $order->name; ?> / <?php echo $order->phone; ?>
+						</a>
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+		<?php } ?>
 	</div>
 </div>
+<style type="text/css">
+	.order-list-item a{
+		color: #FFF;
+		text-decoration: none;
+	}
+	.order-list-item{
+		color: #FFF;
+		font-size: 1.1em;
+		padding:0.5em;
+		-webkit-border-radius: .3em;
+		-moz-border-radius: .3em;
+		border-radius: .3em;
+		margin: .5em 0;
+	}
+		.new{ background: #e0463e; }
+
+	.order-list-date{
+		display: table;
+		float: left;
+		width: 4em;
+		font-size: .9em;
+		margin-right: 1em;
+		opacity:0.9;
+	}
+		.order-list-date .day{
+			font-size: .8em;
+			opacity:0.7;
+		}
+		.order-list-date .hour{
+			font-size: 1.5em;
+			font-weight: bold;
+			text-align: right;
+		}
+		.order-list-date .ampm{
+			font-size: .5em;
+			text-align: right;
+			text-transform: uppercase;
+		}
+	.order-list-customer-info{
+		display: table;
+		float: left;
+	}
+		.order-list-customer-info .restaurant{
+			font-weight: bold;
+			font-size: 1.3em;
+			line-height: 1.8em;
+			text-decoration: underline;
+		}
+		.order-list-customer-info .customer{
+			font-size:0.9em;
+		}
+	.order-list-action{
+		display: table;
+		float: right;
+		width: 5em;
+		font-size: .9em;
+	}
+		.order-list-action .button{
+			border: 1px solid #FFF;
+			background: #FFF;
+			text-align: center;	
+			font-weight: 900;
+			-webkit-border-radius: .5em;
+			-moz-border-radius: .5em;
+			border-radius: .5em;
+			padding: 1em;
+			margin-top: .3em;
+			font-size: 1em;
+		}
+		.new .order-list-action .button{
+		 	color:#e0463e;
+		}
+
+</style>
