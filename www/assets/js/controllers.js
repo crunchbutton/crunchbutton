@@ -120,6 +120,8 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, RestaurantsService, LocationService, RestaurantService, CommunityAliasService ) {
 
 	$scope.restaurants = false;
+	
+	$scope.loadingRestaurant = false;
 
 	$scope.showMoreRestaurants = function() {
 		var step = 3;
@@ -185,11 +187,17 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		checkDateTime();
 	});
 
-	$scope.display = function( $event ){
+	$scope.display = function($event){
+		if ($scope.loadingRestaurant) {
+			return;
+		}
+		$scope.loadingRestaurant = true;
 		var restaurant = this.restaurant;
+
 		if ( !restaurant.open( dateTime.getNow(), true ) ) {
 			$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
 			$scope.restaurants = restaurants.getStatus();
+			$scope.loadingRestaurant = false;
 		} else {
 			// Store the load info of the clicked restaurant to optmize the restaurant page load
 			RestaurantService.basicInfo = restaurant;
