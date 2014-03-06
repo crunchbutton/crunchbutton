@@ -23,9 +23,11 @@ class Controller_home extends Crunchbutton_Controller_Account {
 
 	public function showList(){
 
-		$orders = Order::deliveryOrders();
+		$justMineOrders = ( c::db()->escape( c::getPagePiece( 0 ) ) == 'mine' );
 
-		c::view()->justMineOrders = c::db()->escape( c::getPagePiece( 0 ) ) == 'mine';
+		$hours = c::getPagePiece( 1 ) ? c::getPagePiece( 1 ) : 24;
+
+		$orders = Order::deliveryOrders( $hours, ( c::db()->escape( c::getPagePiece( 0 ) ) == 'all' ) );
 
 		$list = [];
 		foreach ( $orders as $order ) {
@@ -37,7 +39,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 										'date' => $order->date(),
 										'restaurant' => $order->restaurant()->name,
 										);
-			if( !c::view()->justMineOrders || ( c::view()->justMineOrders && $order->lastStatus[ 'id_admin' ] == c::admin()->id_admin ) ){
+			if( !$justMineOrders || ( $justMineOrders && $order->lastStatus[ 'id_admin' ] == c::admin()->id_admin ) ){
 				$list[] = $order;
 			}
 		}
@@ -49,6 +51,8 @@ class Controller_home extends Crunchbutton_Controller_Account {
 			return ( $a->lastStatus[ 'order' ] > $b->lastStatus[ 'order' ] );
 		} );
 
+		c::view()->justMineOrders = $justMineOrders;
+		c::view()->hours = $hours;
 		c::view()->orders = $list;
 		c::view()->display( 'home/index' );
 	}

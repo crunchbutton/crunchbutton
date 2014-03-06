@@ -915,6 +915,16 @@ p {
 		color:#fff;
 		text-indent:20px;
 	}
+	.snap-drawer li.nav-active:before {
+		display: block;
+		height: 38px;
+		float: left;
+		margin-top: -8px;
+		width: 3px;
+		content: " ";
+		background: #fe9871;
+		position: absolute;
+	}
 	.snap-drawer p {
 		opacity:0.5;
 		padding:15px;
@@ -1783,6 +1793,7 @@ select.form-input {
 	width: auto;
 	float: left;
 	min-width: 6em;
+	padding-right: 3em;
 }
 .form-input-select:after {
 	font-family: FontAwesome;
@@ -3272,7 +3283,13 @@ select {
 	font-size: 1.2em;
 	margin-right: 1em;
 	display: inline-block;
+	font-weight: bold;
+	margin-bottom: .4em;
 }
 .cart-item-customize-item select {
 	border-color: #f77748;
+	max-width: 97%;
+	padding-right: 3em;
+	margin-left: 0;
+	margin-bottom: .8em;
 }
