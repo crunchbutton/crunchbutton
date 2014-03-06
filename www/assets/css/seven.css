@@ -1457,13 +1457,10 @@ p {
 
 }
 .restaurant-comment {
-	margin-top: -11em;
-	position: absolute;
-	background: rgba(0,0,0,.5);
-	border-radius: 4px;
+	background: #505050;
+	border-radius: 5px;
 	padding: .5em .6em .5em .6em;
-	margin-left: .8em;
-	margin-right: .8em;
+	margin-bottom: 1.1em;
 }
 .restaurant-comment-wrap {
 	display: table-row;
@@ -1503,7 +1500,7 @@ p {
 	text-shadow: 1px 1px 0 rgba(0,0,0,.6);
 	vertical-align: bottom;
 	position: absolute;
-	margin-top: -6em;
+	margin-top: -6.2em;
 	padding: 1.2em;
 	z-index: 90;
 }
