@@ -702,14 +702,14 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public static function deliveryOrders( $search = false ){
-
-		$limit = 'LIMIT 20';
-
-		$query = 'SELECT DISTINCT(o.id_order) id, o.* FROM `order` o
-					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant AND r.delivery_service = 1
-					' . $innerJoin . $where . '
-					ORDER BY o.id_order DESC ' . $limit;
-
+		$interval = '24 HOUR';
+		$id_admin = c::admin()->id_admin;
+		$admin = Admin::o( $id_admin );
+		$deliveryFor = $admin->allPlacesHeDeliveryFor();
+		$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';
+		$where .= ' AND o.delivery_service = 1 ';
+		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
+		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order DESC LIMIT 30';
 		return Order::q( $query );		
 	}
 
@@ -1948,6 +1948,21 @@ class Crunchbutton_Order extends Cana_Table {
 		return $act;
 	}
 	
+
+	public function deliveryLastStatus(){
+		$statuses = $this->deliveryStatus();
+		if( $statuses[ 'delivered' ] ){
+			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3 );
+		} 
+		if( $statuses[ 'pickedup' ] ){
+			return array( 'status' => 'pickedup', 'name' => $statuses[ 'pickedup' ]->name, 'id_admin' => $statuses[ 'pickedup' ]->id_admin,  'order' => 2 );
+		} 
+		if( $statuses[ 'accepted' ] ){
+			return array( 'status' => 'accepted', 'name' => $statuses[ 'accepted' ]->name, 'id_admin' => $statuses[ 'accepted' ]->id_admin,  'order' => 1 );
+		} 
+		return array ( 'status' => 'new', 'order' => 0 );
+	}
+
 	public function wasAcceptedByRep(){
 		$query = "SELECT * FROM 
 								order_action ac 

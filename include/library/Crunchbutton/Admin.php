@@ -92,6 +92,28 @@ class Crunchbutton_Admin extends Cana_Table {
 											drivers ON drivers.id_admin = a.id_admin ORDER BY name ASC' );
 	}
 
+	public function allPlacesHeDeliveryFor(){
+		$deliveryFor = [];
+		$restaurants = $this->restaurantsHeDeliveryFor();
+		foreach( $restaurants as $restaurant ){
+			$deliveryFor[ $restaurant->id_restaurant ] = $restaurant->id_restaurant;
+		}
+		$adminCommunities = [];
+		$groups = $this->groups();
+		foreach ( $groups as $group ) {
+			if( strpos( $group->name, Crunchbutton_Group::DRIVER_GROUPS_PREFIX ) !== false ){
+				$community = str_replace( Crunchbutton_Group::DRIVER_GROUPS_PREFIX, '', $group->name );
+				$restaurants = Restaurant::getRestaurantsByCommunity( $community );
+				foreach( $restaurants as $restaurant ){
+					if( $restaurant->delivery_service ){
+						$deliveryFor[ $restaurant->id_restaurant ] = $restaurant->id_restaurant;
+					}
+				}
+			}
+		}
+		return $deliveryFor;
+	}
+
 	public function isWorking(){
 		$now = new DateTime( 'now', $this->timezone() );
 		$now = $now->format( 'YmdHi' );
