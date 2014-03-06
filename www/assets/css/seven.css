@@ -3285,4 +3285,5 @@ select {
 }
 .cart-item-customize-item select {
 	border-color: #f77748;
+	max-width: 90%;
 }
