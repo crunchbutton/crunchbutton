@@ -915,6 +915,16 @@ p {
 		color:#fff;
 		text-indent:20px;
 	}
+	.snap-drawer li.nav-active:before {
+		display: block;
+		height: 38px;
+		float: left;
+		margin-top: -8px;
+		width: 3px;
+		content: " ";
+		background: #fe9871;
+		position: absolute;
+	}
 	.snap-drawer p {
 		opacity:0.5;
 		padding:15px;
