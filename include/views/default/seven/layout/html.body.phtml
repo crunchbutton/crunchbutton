@@ -4,7 +4,7 @@
 		<div>
 			<div class="pushabutton"></div>
 			<ul>
-				<li ng-click="navigation.link('/splash')" ng-show="!account.user.id_user">
+				<li ng-click="navigation.link('/splash')" ng-if="!account.user.id_user" ng-class="{'nav-active': (navigation.page == 'home')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-rocket"></i></td>
@@ -12,7 +12,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="navigation.link('/food-delivery')" ng-show="account.user.id_user">
+				<li ng-click="navigation.link('/food-delivery')" ng-if="account.user.id_user" ng-class="{'nav-active': (navigation.page == 'restaurants')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
@@ -20,7 +20,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-show="account.user.id_user && account.user.name" ng-click="navigation.link('/orders')">
+				<li ng-if="account.user.id_user && account.user.name" ng-click="navigation.link('/orders')" ng-class="{'nav-active': (navigation.page == 'orders')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
@@ -28,7 +28,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="navigation.link('/location')" ng-show="account.user.id_user">
+				<li ng-click="navigation.link('/location')" ng-if="account.user.id_user" ng-class="{'nav-active': (navigation.page == 'location')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-map-marker"></i></td>
@@ -36,7 +36,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="navigation.link('/help')">
+				<li ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-heart"></i></td>
@@ -44,7 +44,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="navigation.link('/about')">
+				<li ng-click="navigation.link('/about')" ng-class="{'nav-active': (navigation.page == 'about')}">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-lightbulb-o"></i></td>
@@ -52,7 +52,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-show="!account.user.id_user" ng-click="navigation.signin()">
+				<li ng-if="!account.user.id_user" ng-click="navigation.signin()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-sign-in"></i></td>
@@ -60,7 +60,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-show="account.user.id_user" ng-click="signout.signout()">
+				<li ng-if="account.user.id_user" ng-click="signout.signout()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
@@ -80,7 +80,7 @@
 					</a>
 				</li>
 
-				<li ng-click="test.card()" ng-show="debug()">
+				<li ng-click="test.card()" ng-if="debug()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
@@ -88,7 +88,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="test.clearloc()" ng-show="debug()">
+				<li ng-click="test.clearloc()" ng-if="debug()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
@@ -96,7 +96,7 @@
 						</tr>
 					</table>
 				</li>
-				<li ng-click="test.reload()" ng-show="debug()">
+				<li ng-click="test.reload()" ng-if="debug()">
 					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
 						<tr>
 							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
