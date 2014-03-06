@@ -701,12 +701,17 @@ class Crunchbutton_Order extends Cana_Table {
 		return self::q('select * from `order` order by `date` DESC');
 	}
 
-	public static function deliveryOrders( $search = false ){
-		$interval = '24 HOUR';
+	public static function deliveryOrders( $hours = 24, $all = false ){
+		$interval = $hours . ' HOUR';
 		$id_admin = c::admin()->id_admin;
-		$admin = Admin::o( $id_admin );
-		$deliveryFor = $admin->allPlacesHeDeliveryFor();
-		$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';
+		if( !$all ){
+			$admin = Admin::o( $id_admin );
+			$deliveryFor = $admin->allPlacesHeDeliveryFor();
+			$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';			
+		} else {
+			$where = 'WHERE 1=1 ';
+		}
+
 		$where .= ' AND o.delivery_service = 1 ';
 		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order DESC LIMIT 30';

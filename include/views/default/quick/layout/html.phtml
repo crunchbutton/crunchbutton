@@ -422,6 +422,10 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 		color: #FFF;
 		text-decoration: none;
 	}
+	.no-orders{
+		font-size: 1.8em;
+		padding: 1em;
+	}
 	.order-list-item{
 		color: #FFF;
 		font-size: 1.1em;
@@ -502,160 +506,24 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 		.accepted .order-list-action .button{ color:#1ebda0; }
 		.pickedup .order-list-action .button{ color:#505050; }
 
+		.menu-bar{
+			font-size: 1.8em;
+		}
+
 </style>
-</head>
-
-
-<body>
-	<div class="loader-wrap">
-		<div class="loader-frame"><div class="loader">asd</div></div>
-	</div>
-	<div class="control">
-		<div class="wrap order-status-init">
-			<div class="status-control control-accept-reject">
-				<div class="message">Accept this order?</div>
-				<div class="buttons">
-					<button class="button button-yes button-accept">Yes</button>
-					<button class="button button-no button-reject">No</button>
-				</div>
-			</div>
-			<div class="status-control control-rejected">
-				<div class="message">You rejected. </div>
-				<div class="buttons">
-					<button class="button button-yes button-accept">Accept</button>
-				</div>
-			</div>
-			<div class="status-control control-accepted">
-				<div class="message">You accepted.</div>
-				<div class="buttons">
-					<button class="button button-yes button-pickedup">Picked up</button>
-					<button class="button button-no button-reject">Cancel</button>
-				</div>
-			</div>
-			<div class="status-control control-accepted-other">
-				DO NOT DELIVER. THIS ORDER HAS ALREADY BEEN ACCEPTED BY <span class="delivery-name"></span>.
-			</div>
-			<div class="status-control control-pickedup">
-				<div class="message">You picked up.</div>
-				<div class="buttons">
-					<button class="button button-yes button-delivered">Delivered</button>
-				</div>
-			</div>
-			<div class="status-control control-pickedup-other">
-				This order has been picked up by <span class="delivery-name"></span>.
-			</div>
-			<div class="status-control control-delivered">
-				This order has been delivered by <span class="delivery-name"></span>.
-			</div>
-			<div class="divider"></div>
-		</div>
-	</div>
-	
-	<div class="content">
-		<div class="wrap">
-			<?=$this->content?>
-		</div>
-	</div>
-</body>
-
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/assets/js/fastclick.js"></script>
 
+</head>
+<body>
+	<div class="loader-wrap">
+		<div class="loader-frame"><div class="loader">&nbsp;</div></div>
+	</div>
+	<?php echo $this->content; ?>
+</body>
 <script>
-	$(document).ready(function(){
-
-		<?php if( $this->order->id_order ) { ?>
-
-		var d = <?=json_encode($this->order->deliveryExports())?>;
-		var id_admin = '<?=c::admin()->id_admin?>';
-		var id_order = '<?=$this->order->id_order?>';
-		
-		var updateStatus = function(data) {
-			console.log(data);
-		
-			$('.wrap').removeClass('order-status-init order-status-delivered order-status-pickedup order-status-rejected order-status-accepted order-status-accepted-other order-status-none');
-
-			var className, name;
-
-			if (data['delivery-status'].delivered) {
-				className = 'order-status-delivered';
-				name = data['delivery-status'].delivered.name;
-
-			} else if (data['delivery-status'].pickedup) {
-				className = 'order-status-pickedup';
-				name = data['delivery-status'].pickedup.name;
-		
-			} else if (data['delivery-status'].accepted && data['delivery-status'].accepted.id_admin != id_admin) {
-				className = 'order-status-accepted-other';
-				name = data['delivery-status'].accepted.name;
-		
-			} else if (data['delivery-status'].accepted && data['delivery-status'].accepted.id_admin == id_admin) {
-				className = 'order-status-accepted';
-				name = data['delivery-status'].accepted.name;
-		
-			} else if (data['self-reply'] == 'rejected') {
-				className = 'order-status-rejected';
-
-			} else {
-				className = 'order-status-none';
-			}
-			
-			$('.wrap').addClass(className);
-			$('.delivery-name').html(name);
-			
-			$('body').removeClass('loading');
-		};
-		
-		$('.button-reject').click(function() {
-			makebusy();
-			$.post('/api/order/' + id_order + '/delivery-reject', updateStatus,'json');
-		});
-
-		$('.button-accept').click(function() {
-			makebusy();
-			$.post('/api/order/' + id_order + '/delivery-accept', updateStatus,'json');
-		});
-		
-		$('.button-pickedup').click(function() {
-			makebusy();
-			$.post('/api/order/' + id_order + '/delivery-pickedup', updateStatus,'json');
-		});
-		
-		$('.button-delivered').click(function() {
-			makebusy();
-			$.post('/api/order/' + id_order + '/delivery-delivered', updateStatus,'json');
-		});
-	
-		updateStatus(d);
-
-		<?php } else { ?>
-
-
-		$( '.button-list-accept' ).click( function(  ) {
-			var id_order = $( this ).attr( 'id_order' );
-			makebusy();
-			 $.post('/api/order/' + id_order + '/delivery-accept', function(){ location.reload(); },'json'); 
-		} );
-
-		$( '.button-list-pickedup' ).click( function() {
-			var id_order = $( this ).attr( 'id_order' );
-			makebusy();
-			 $.post('/api/order/' + id_order + '/delivery-pickedup', function(){ location.reload(); },'json'); 
-		} );
-
-		$( '.button-list-delivered' ).click( function() {
-			var id_order = $( this ).attr( 'id_order' );
-			makebusy();
-			 $.post('/api/order/' + id_order + '/delivery-delivered', function(){ location.reload(); },'json'); 
-		} );
-		
-
-		<?php } ?>
-
-	} );
 	var makebusy = function() {
-		$('body').addClass('loading');
+		$( 'body' ).addClass( 'loading' );
 	};
-
 </script>
 </html>
