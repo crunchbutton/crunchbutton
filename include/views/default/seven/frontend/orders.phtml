@@ -34,7 +34,7 @@
 						<div class="order-day">{{order._date.getDate().pad(2)}}</div>
 					</div>
 					<div class="order-details">
-						<div class="order-name" ng-click="orders.restaurant(order._restaurant_permalink)">
+						<div class="order-name" ng-click="$event.preventDefault(); $event.stopPropagation(); orders.restaurant(order._restaurant_permalink);">
 							{{order._restaurant_name}}
 						</div>
 						<div class="divider"></div>
