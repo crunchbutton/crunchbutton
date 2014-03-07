@@ -1313,8 +1313,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 					return $communities;
 	}
 
-	public static function getRestaurantsByCommunity( $community ){
-		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}' AND active = 1 ORDER BY name ASC" );
+	public static function getRestaurantsByCommunity( $community, $inactive = false ){
+		if( !$inactive ){
+			$where = 'AND active = 1';
+		}
+		return Crunchbutton_Restaurant::q( "SELECT * FROM restaurant WHERE community = '{$community}' {$where} ORDER BY name ASC" );
 	}
 
 	public function restaurantsUserHasCurationPermission(){
