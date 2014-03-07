@@ -717,7 +717,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$where .= ' AND o.delivery_service = 1 ';
 		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
-		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order DESC LIMIT 30';
+		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
 		return Order::q( $query );		
 	}
 

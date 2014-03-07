@@ -25,7 +25,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 
 		$justMineOrders = ( c::db()->escape( c::getPagePiece( 0 ) ) == 'mine' );
 
-		$hours = c::getPagePiece( 1 ) ? c::getPagePiece( 1 ) : 24;
+		$hours = c::getPagePiece( 1 ) ? c::getPagePiece( 1 ) : 12;
 
 		$orders = Order::deliveryOrders( $hours, ( c::db()->escape( c::getPagePiece( 0 ) ) == 'all' ) );
 
