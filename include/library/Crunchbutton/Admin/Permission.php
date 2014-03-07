@@ -7,7 +7,7 @@ class Crunchbutton_Admin_Permission extends Cana_Table {
 		parent::__construct();
 
 		$_elements = array( 
-												'Restaurant' => c::db()->get( 'SELECT id_restaurant AS id, name AS name FROM restaurant WHERE name IS NOT NULL ORDER BY name ASC' ),
+												'Restaurant' => c::db()->get( 'SELECT id_restaurant AS id, CONCAT( name, " (", community, ")" ) AS name FROM restaurant WHERE name IS NOT NULL ORDER BY name ASC' ),
 												'Community' => c::db()->get( "SELECT DISTINCT( REPLACE( LOWER( community ), ' ', '-' ) ) AS id, community AS name FROM restaurant WHERE community IS NOT NULL ORDER BY community ASC" ),
 											);
 			
