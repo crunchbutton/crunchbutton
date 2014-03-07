@@ -250,7 +250,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 
 // global route change items
 NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, AccountService, MainNavigationService, AccountSignOut, CartService, ReferralService, LocationService, PhoneGapService ) {
-
 	// define external pointers
 	App.rootScope = $rootScope;
 	App.location = $location;
@@ -263,6 +262,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.signout = AccountSignOut;
 	$rootScope.isPhoneGap = App.isPhoneGap;
 	$rootScope.server = App.server;
+	
+	$rootScope.animationClass = '';
 
 	$rootScope.debug = function() {
 		return ( App.config && App.config.user && App.config.user.debug );
@@ -486,11 +487,34 @@ App.toggleMenu = function() {
 };
 
 
+/*
+App.setTop = function() {
+	$('html, body, .snap-content-inner').scrollTop(0);
+	setTimeout(function() {
+		$('html, body, .snap-content-inner').scrollTop(0);
+	},13);
+
+
+	$('#ng-view').css('-webkit-transform','translate3d(0,0,0)');
+	setTimeout(function() {
+		$('#ng-view').css('-webkit-transform','');
+	},1000);
+
+
+};
+*/
+
+
 /**
  * scroll to the top of the page
  */
 App.scrollTop = function(top) {
 	setTimeout(function() {
+		if (!top) {
+			setTimeout(function() {
+				$('html, body, .snap-content-inner').scrollTop(0);
+			},10);
+		}
 		$('html, body, .snap-content-inner').animate({scrollTop: top || 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	},3);
 };
