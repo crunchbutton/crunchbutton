@@ -81,7 +81,7 @@ class Controller_api_twilio_driver extends Crunchbutton_Controller_Rest {
 		if( $invalidOrder ){
 			echo $this->response( 'Invalid order.' );
 		} else {
-			echo $this->response( 'You should use "order command".' . "\n" . 'Accepted commands: accept, picked, delivered or details. ' . "\n" . 'eg. 123 picked' );
+			echo $this->response( 'You should use "order command".' . "\n" . 'Accepted commands: accept (or a), picked (or p), delivered (or d) or details. ' . "\n" . 'eg. 123 p' );
 		}
 		$this->log( [ 'action' => 'help requested', 'invalidOrder' => $invalidOrder ] );
 	}
