@@ -78,7 +78,7 @@ NGApp.controller('HomeCtrl', function ($scope, $http, $location, RestaurantsServ
 		} else {
 			$location.path('/location');
 		}
-	} 
+	}
 	$location.replace();
 });
 
