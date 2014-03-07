@@ -1,6 +1,4 @@
 <div ng-show="!order.loaded">
-	<div class="top-pad"></div>
-
 	<? /* THIS WILL SHOW UP WHEN A RESTAURANT PAGE IS DIRECTLY LOADED FROM A BROWSER BEFORE THE PAGE SHOWS. */ ?>
 </div>
 
@@ -15,17 +13,7 @@
 			<h1>{{restaurant.name}}</h1>
 			<h2>{{restaurant.message || restaurant.short_description}}</h2>
 		</div>
-		<div class="restaurant-comment" ng-if="restaurant.comment">
-			<div class="restaurant-comment-wrap">
-				<div class="restaurant-comment-image">
-					<div class="restaurant-comment-image-img" style="background: url(http://graph.facebook.com/{{restaurant.comment.fb}}/picture?type=normal)"></div>
-				</div>
-				<div class="restaurant-comment-content">
-					<h4>{{restaurant.comment.user}} says</h4>
-					<p>{{restaurant.comment.content}}</p>
-				</div>
-			</div>
-		</div>
+
 		<div class="giftcard-badge" ng-if="credit.hasValue">
 			<i class="fa fa-certificate"></i>
 			<div class="giftcard-badge-value"><sup>$</sup>{{Math.round(credit.value)}}</div>
@@ -38,6 +26,18 @@
 
 	<!-- main-content-readable-margin -->
 	<div class="content-padding">
+	
+		<div class="restaurant-comment" ng-if="restaurant.comment">
+			<div class="restaurant-comment-wrap">
+				<div class="restaurant-comment-image">
+					<div class="restaurant-comment-image-img" style="background: url(http://graph.facebook.com/{{restaurant.comment.fb}}/picture?type=normal)"></div>
+				</div>
+				<div class="restaurant-comment-content">
+					<h4>{{restaurant.comment.user}} says</h4>
+					<p>{{restaurant.comment.content}}</p>
+				</div>
+			</div>
+		</div>
 	
 		<div restaurant-is-closed></div>
 
@@ -402,9 +402,9 @@
 
 
 <!-- total breakdown -->
-<div class="divider dots spacer-one-two" ng-show="order.info.subtotal && order.info.subtotal!='0.00'"></div>
+<div class="divider dots spacer-one-two" ng-show="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open"></div>
 
-<div class="payment-total content-padding" ng-if="order.info.subtotal && order.info.subtotal!='0.00'">
+<div class="payment-total content-padding" ng-if="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open">
 	<div class="restaurant-banana animated-resize"></div>
 	
 	<div class="payment-wrap">

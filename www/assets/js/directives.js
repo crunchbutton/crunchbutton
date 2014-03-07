@@ -19,7 +19,6 @@ NGApp.directive('addToCart', function(OrderService) {
 				if ($('.is-ui2').get(0)) {
 					setTimeout(function() {
 						var el = $(element.get(0));
-						var cart = $('.nav-cart');
 
 						var animate = $('<div class="animate-cart-add">').css({
 							top: el.position().top+20
@@ -30,10 +29,10 @@ NGApp.directive('addToCart', function(OrderService) {
 						animate.appendTo('body');
 						setTimeout(function() {
 							animate.css({
-								top: cart.position().top,
-								left: cart.position().left,
-								width: cart.width()/2,
-								height: cart.height()/2,
+								top: 15,
+								left: $(document).width()-50,
+								width: 44,
+								height: 28,
 								opacity: .3
 							});	
 						},1);

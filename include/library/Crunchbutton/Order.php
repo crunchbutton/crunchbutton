@@ -707,6 +707,9 @@ class Crunchbutton_Order extends Cana_Table {
 		if( !$all ){
 			$admin = Admin::o( $id_admin );
 			$deliveryFor = $admin->allPlacesHeDeliveryFor();
+			if( count( $deliveryFor ) == 0 ){
+				$deliveryFor[] = 0;
+			}
 			$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';			
 		} else {
 			$where = 'WHERE 1=1 ';
