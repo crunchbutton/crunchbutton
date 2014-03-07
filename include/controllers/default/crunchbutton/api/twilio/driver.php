@@ -117,7 +117,7 @@ class Controller_api_twilio_driver extends Crunchbutton_Controller_Rest {
 	}
 
 	public function details( $order ){
-		echo $this->response( $order->message( 'sms' ) );
+		echo $this->response( $order->message( 'sms-driver' ) );
 		$this->log( [ 'action' => 'details requested', 'id_order' => $order->id_order ] );
 	}
 

@@ -1270,6 +1270,7 @@ class Crunchbutton_Order extends Cana_Table {
 		// everything else
 		switch ($type) {
 			case 'sms':
+			case 'sms-driver':
 			case 'web':
 			case 'support':
 				$with = 'w/';
@@ -1478,6 +1479,29 @@ class Crunchbutton_Order extends Cana_Table {
 				if ($this->pay_type == 'card' && $this->tip) {
 					$msg .= " \nTIP: $".$this->tip();
 				}
+				break;
+
+			case 'sms-driver':
+				$spacer = ' / ';
+				$msg = "Crunchbutton #".$this->id_order." \n\n";
+				$msg .= $this->name.' ordered '.$this->delivery_type.' paying by '.$this->pay_type.". \n".$food." \n\nphone: ".preg_replace('/[^\d.]/','',$this->phone).'.';
+				if ($this->delivery_type == 'delivery') {
+					$msg .= " \naddress: ".$this->address;
+				}
+				if ($this->notes) {
+					$msg .= " \nNOTES: ".$this->notes;
+				}
+				$msg .= " \n\nRestaurant: {$this->restaurant()->name} / {$this->restaurant()->phone}";
+				$msg .= " \n\n";
+				// Payment is card and user tipped
+				if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && $this->tip ){
+					$msg .= 'TIP ' . $this->tip() . $spacer;
+				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CREDIT_CARD && !$this->tip ){
+					$msg .= 'TIP BY CASH' . $spacer;
+				} else if( $this->pay_type == Crunchbutton_Order::PAY_TYPE_CASH ){
+					$msg .= 'TOTAL ' . $this->final_price . $spacer;
+				}
+				$msg .= $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
 				break;
 
 			case 'phone':
