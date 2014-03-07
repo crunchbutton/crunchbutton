@@ -2,11 +2,12 @@
 
 class Crunchbutton_Admin_Notification extends Cana_Table {
 
-	const TYPE_SMS   = 'sms';
+	const TYPE_SMS = 'sms';
+	const TYPE_DUMB_SMS = 'sms-dumb';
 	const TYPE_EMAIL = 'email';
 	const TYPE_PHONE = 'phone';
-	const TYPE_URL   = 'url';
-	const TYPE_FAX   = 'fax';
+	const TYPE_URL = 'url';
+	const TYPE_FAX = 'fax';
 	const REPS_COCKPIT = 'http://cbtn.io/';
 
 	const IS_ENABLE_KEY = 'notification-admin-is-enable';
@@ -119,6 +120,13 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 	
 	public function alertDispatch(Crunchbutton_Order $order) {
 
+		$env = c::getEnv();
+
+		if( $env != 'live' ){
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'alertDispatch to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'delivery-driver' ]);
+			return;
+		}
+
 		$group = Crunchbutton_Group::byName(Config::getVal('rep-fail-group-name'));
 
 		if ($group->id_group) {
@@ -202,6 +210,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 				case Crunchbutton_Admin_Notification::TYPE_SMS :
 					$this->sendSms( $order );
+					break;
+
+				case Crunchbutton_Admin_Notification::TYPE_DUMB_SMS :
+					$this->sendDumbSms( $order );
 					break;
 
 				case Crunchbutton_Admin_Notification::TYPE_PHONE :
@@ -332,6 +344,31 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			'+1'.$num,
 			$url
 		);
+
+	}
+
+	public function sendDumbSms( Crunchbutton_Order $order ){
+
+		$env = c::getEnv();
+
+		$sms = $this->value;
+
+		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+		
+		$message .= $order->message( 'sms-driver' );
+
+		$message = str_split( $message , 160 );
+
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'send dumb sms to admin', 'num' => $sms, 'host' => $this->host_callback(), 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
+
+		foreach ($message as $msg) {
+			$twilio->account->sms_messages->create(
+				c::config()->twilio->{$env}->outgoingTextRestaurant,
+				'+1'.$sms,
+				$msg
+			);
+			continue;
+		}
 
 	}
 

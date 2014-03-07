@@ -1,0 +1,1 @@
+ALTER TABLE admin_notification MODIFY COLUMN type ENUM( 'sms','email','phone','url','fax', 'sms-dumb' );
