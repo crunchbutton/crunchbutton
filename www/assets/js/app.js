@@ -492,10 +492,12 @@ App.toggleMenu = function() {
 App.setTop = function() {
 	$('html, body, .snap-content-inner').scrollTop(0);
 
+/*
 	$('#ng-view').css('-webkit-transform','translate3d(0,0,0)');
 	setTimeout(function() {
 		$('#ng-view').css('-webkit-transform','');
 	},1000);
+*/
 
 };
 App.scrollTop = function(top) {
