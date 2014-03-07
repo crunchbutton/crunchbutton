@@ -13,6 +13,7 @@ class Controller_api_twilio_driver extends Crunchbutton_Controller_Rest {
 		$phone = str_replace( '+1', '', $_REQUEST[ 'From' ] );
 		$body = trim( $_REQUEST[ 'Body' ] );
 
+<<<<<<< HEAD
 		if( trim( $phone ) == '' ){
 			$this->adminError();
 			$this->log( [ 'action' => 'admin not found', 'phone' => $phone, 'body' => $body ] );
@@ -20,6 +21,9 @@ class Controller_api_twilio_driver extends Crunchbutton_Controller_Rest {
 		}
 
 		$admin = Admin::getByPhone( $phone );	
+=======
+		$admin = Admin::getByPhone( $phone );
+>>>>>>> ca05cc9e3a1d1d30696e14442d2498f5eb3c6648
 
 		if( !$admin->id_admin ){
 			$this->adminError();
