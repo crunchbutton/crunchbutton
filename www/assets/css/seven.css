@@ -3308,3 +3308,6 @@ select {
 .order-item-wrap:active {
 	opacity: .8;
 }
+.restaurant-pic-wrapper {
+	background: #505050;
+}
