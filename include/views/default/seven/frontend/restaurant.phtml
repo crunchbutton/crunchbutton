@@ -402,9 +402,9 @@
 
 
 <!-- total breakdown -->
-<div class="divider dots spacer-one-two" ng-show="order.info.subtotal && order.info.subtotal!='0.00'"></div>
+<div class="divider dots spacer-one-two" ng-show="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open"></div>
 
-<div class="payment-total content-padding" ng-if="order.info.subtotal && order.info.subtotal!='0.00'">
+<div class="payment-total content-padding" ng-if="order.info.subtotal && order.info.subtotal!='0.00' && restaurant._open">
 	<div class="restaurant-banana animated-resize"></div>
 	
 	<div class="payment-wrap">
