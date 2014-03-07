@@ -54,6 +54,9 @@ a {
 	text-decoration: underline;
 	cursor: pointer;
 }
+a:active {
+	color: #ef8b70;
+}
 
 input[type="text"], input[type="tel"], input[type="password"], textarea, select {
 	-webkit-appearance: none;
@@ -139,12 +142,6 @@ html {
 	float: left;
 	margin: 8px 0 0 10px;
 	cursor: pointer;
-	-webkit-transform:translate3d(0,0,0);
-	-webkit-transition: opacity 1s;
-	   -moz-transition: opacity 1s;
-	    -ms-transition: opacity 1s;
-	     -o-transition: opacity 1s;
-	        transition: opacity 1s;
 }
 
 .menu:active {
@@ -161,13 +158,6 @@ html {
 	width: 50px;
 	height: 28px;
 	float: left;
-
-	-webkit-transform:translate3d(0,0,0);
-	-webkit-transition: opacity 0.1s;
-	   -moz-transition: opacity 0.1s;
-	    -ms-transition: opacity 0.1s;
-	     -o-transition: opacity 0.1s;
-	        transition: opacity 0.1s;
 }
 
 .nav-back:active {
@@ -1581,6 +1571,7 @@ p {
 	height: 3.3em;
 }
 .cart-button {
+	cursor: pointer;
 	float: left;
 	font-size: 2.8em;
 	margin-top: .06em;
@@ -2577,6 +2568,11 @@ sup {
 	font-size: 1.1em;
 	font-weight: bold;
 	letter-spacing: -.02em;
+	margin-top: 1em;
+	display: block;
+}
+.splash-continue:active {
+	color: #eb6557;
 }
 
 .splash-tagline b {
@@ -2695,10 +2691,6 @@ sup {
 
 .splash-tagline {
 	margin-bottom: 2em;
-}
-.splash-continue {
-	margin-top: 1em;
-	display: block;
 }
 	
 @media screen and (min-height: 530px) {
@@ -3297,4 +3289,19 @@ select {
 	padding-right: 3em;
 	margin-left: 0;
 	margin-bottom: .8em;
+}
+.cart-button:active {
+	color: #fec2aa;
+}
+.cart-item-config:active {
+	color: #fec2aa;
+}
+.dish-item:active {
+	opacity: .6;
+}
+.cart-item-customize-name:active {
+	color: #858585;
+}
+.order-item-wrap:active {
+	opacity: .8;
 }
