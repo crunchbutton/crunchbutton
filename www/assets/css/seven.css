@@ -2021,7 +2021,7 @@ select.form-input {
 
 
 .giftcard-badge-text {
-	margin-top: 1em;
+	margin-top: 1.3em;
 }
 .giftcard-badge-value {
 	width: 3.1em;
@@ -2045,7 +2045,7 @@ sup {
 .giftcard-badge {
 	margin-right: .1em;
 	border-radius: 3px;
-	margin-top: -8.8em;
+	margin-top: -7.6em;
 	float: right;
 	color: #fff;
 	font-size: .9em;
