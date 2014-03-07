@@ -103,7 +103,7 @@ class Crunchbutton_Admin extends Cana_Table {
 		foreach ( $groups as $group ) {
 			if( strpos( $group->name, Crunchbutton_Group::DRIVER_GROUPS_PREFIX ) !== false ){
 				$community = str_replace( Crunchbutton_Group::DRIVER_GROUPS_PREFIX, '', $group->name );
-				$restaurants = Restaurant::getRestaurantsByCommunity( $community );
+				$restaurants = Restaurant::getRestaurantsByCommunity( $community, true );
 				foreach( $restaurants as $restaurant ){
 					if( $restaurant->delivery_service ){
 						$deliveryFor[ $restaurant->id_restaurant ] = $restaurant->id_restaurant;
