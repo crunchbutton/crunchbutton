@@ -94,6 +94,7 @@
 		</default>	
 	</facebook>
 	<phone>
+		<driver>_PHONE_</driver>
 		<support>_PHONE_</support>
 		<restaurant>_PHONE_</restaurant>
 	</phone>
@@ -153,8 +154,10 @@
 			<hostname>_DOMAIN_</hostname>
 			<outgoingTextCustomer>+1_PHONE_</outgoingTextCustomer>
 			<outgoingTextRestaurant>+1_PHONE_</outgoingTextRestaurant>
+			<outgoingTextDriver>+1_PHONE_</outgoingTextDriver>
 			<outgoingCustomer>+1_PHONE_</outgoingCustomer>
 			<outgoingRestaurant>+1_PHONE_</outgoingRestaurant>
+			<outgoingDriver>+1_PHONE_</outgoingDriver>
 		</live>
 		<dev>
 			<sid>_KEY_</sid>
@@ -162,8 +165,10 @@
 			<hostname>_DOMAIN_</hostname>
 			<outgoingTextCustomer>+1_PHONE_</outgoingTextCustomer>
 			<outgoingTextRestaurant>+1_PHONE_</outgoingTextRestaurant>
+			<outgoingTextDriver>+1_PHONE_</outgoingTextDriver>
 			<outgoingCustomer>+1_PHONE_</outgoingCustomer>
 			<outgoingRestaurant>+1_PHONE_</outgoingRestaurant>
+			<outgoingDriver>+1_PHONE_</outgoingDriver>
 		</dev>
 		<olddev>
 			<sid>_KEY_</sid>
