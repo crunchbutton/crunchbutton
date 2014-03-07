@@ -32,6 +32,9 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		$fs = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::SELF_FIRST);
 		
 		foreach ($fs as $fileInfo) {
+			if ($fileInfo->getBasename() == '.DS_Store') {
+				continue;
+			}
 			$p = str_replace($path,'',$fileInfo->getPath());
 			if ($fileInfo->isFile() && ((!$p && substr($fileInfo->getBasename(),0,1) != '.') || ($p && !in_array($p, $exclude)))) {
 				$files[] = str_replace('//','/','images/'.$p.'/'.$fileInfo->getBasename());
