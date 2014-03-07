@@ -412,7 +412,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		
 		App.parallax.bg = null;
 
-		App.scrollTop($rootScope.scrollTop);
+		App.setTop();
 		$rootScope.scrollTop = 0;
 		
 	});
@@ -489,6 +489,15 @@ App.toggleMenu = function() {
 /**
  * scroll to the top of the page
  */
+App.setTop = function() {
+	$('html, body, .snap-content-inner').scrollTop(0);
+
+	$('#ng-view').css('-webkit-transform','translate3d(0,0,0)');
+	setTimeout(function() {
+		$('#ng-view').css('-webkit-transform','');
+	},1000);
+
+};
 App.scrollTop = function(top) {
 	setTimeout(function() {
 		$('html, body, .snap-content-inner').animate({scrollTop: top || 0}, 10, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
