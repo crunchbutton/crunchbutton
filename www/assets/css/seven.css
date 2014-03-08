@@ -3321,3 +3321,40 @@ select {
 	margin-top: .9em;
 	margin-bottom: -.3em;
 }
+
+
+
+/* APP BUSY */
+.app-busy {
+	top:0;
+	left:0;
+	position:fixed;
+	height:100%;
+	width:100%;
+	background:rgba(28,14,13,.8);
+	z-index:1000;
+}
+.app-busy-loader {
+	height:100px;
+	width:100px;
+	border-radius:12px;
+	background:rgba(28,14,13,.95);
+	left:50%;
+	top:200px;
+	margin-left:-50px;
+	position:absolute;
+}
+.app-busy-loader-icon {
+	margin:0 auto;
+	background: url(../images/ajax_loader_orange_512.gif) no-repeat;
+	width:60px;
+	height:60px;
+	margin-top:20px;
+	background-size:100%;
+}
+
+@media(max-width:768px) {
+	.app-busy-loader {
+		top:150px;
+	}
+}
