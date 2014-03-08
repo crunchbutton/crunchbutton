@@ -64,16 +64,15 @@
 				
 				<div ng-if="!account.user.id_user && !recommend.greetings">
 					<h4>We don't serve that address yet.</h4>
-					<p>But you can get notified when we are in your area. We are always expanding and looking for that next popular sandwich. Log in and let us know what you want to see on crunchbutton!</p>
+					<p>Crunchbutton is currently in a limited area trial featuring only a select few colleges. Interested in helping to bring Crunchbutton to your area? Become a marketing rep or driver!</p>
+					<? /* <p>But you can get notified when we are in your area. We are always expanding and looking for that next popular sandwich. Log in and let us know what you want to see on crunchbutton!</p> */ ?>
 					<div class="divider spacer-one-two"></div>
 
-					<div class="button-pushable">
-						<button class="button facebook" ng-click="facebook.auth()">
-							<i class="fa fa-facebook-square"></i>&nbsp;
-							<span ng-hide="facebook.facebook.wait">Log in with Facebook</span>
-							<span ng-if="facebook.facebook.wait">Just a sec...</span>
-						</button>
-					</div>
+					<a href="mailto:{{reps}}">
+						<div class="button-pushable">
+							<button class="button orange" ng-click="facebook.auth()"><b>contact us</b></button>
+						</div>
+					</a>
 				</div>
 				
 				<div ng-if="account.user.id_user && !recommend.greetings">
