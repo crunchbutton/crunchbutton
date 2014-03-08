@@ -186,12 +186,12 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 
 							$support->makeACall();
 
-							$message = str_split( $message, 160 );
-
 							if(!$_SESSION['last_cb']) {
 								$_SESSION['last_cb'] = $last_cb;
-								$message[] = $last_cb;
+								$message = $last_cb;
 							}
+
+							$message = str_split( $message, 160 );
 
 							if( $support->id_support ){
 								$message [] = '@'.$tsess->id_session_twilio.'  http://cbtn.io/support/' . $support->id_support . '?r=1';	
