@@ -3311,3 +3311,13 @@ select {
 .restaurant-pic-wrapper {
 	background: #505050;
 }
+
+.dialog-alternate-link {
+	font-size: 1.2em;
+	text-transform: uppercase;
+	font-weight: bold;
+	text-align: center;
+	display: block;
+	margin-top: .9em;
+	margin-bottom: -.3em;
+}
