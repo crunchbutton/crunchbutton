@@ -1924,7 +1924,14 @@ select.form-input {
 	        transition: height 0.2s;
 }
 
-
+.order-cherry {
+	background: url(../images/micro/order-cherry.svg) no-repeat;
+	background-position: top center;
+	width: 80px;
+	height: 129px;
+	background-size: 100%;
+	float: right;
+}
 
 /* about page */
 .about-pear {
@@ -3357,4 +3364,17 @@ select {
 	.app-busy-loader {
 		top:150px;
 	}
+}
+
+.order-tagline {
+	margin-top: -1em;
+}
+.order-tagline h1 {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+.order-tagline h2 {
+	font-size: 1.2em;
+	margin-top: .6em;
 }
