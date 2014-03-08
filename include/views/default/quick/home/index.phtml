@@ -125,16 +125,27 @@ $hours = $this->hours;
 <script>
 	$(document).ready(function(){
 
-		$( '.button-list-accept' ).click( function(  ) {
+		$( '.button-list-accept' ).click( function() {
 			var id_order = $( this ).attr( 'id_order' );
 			makebusy();
-			 $.post('/api/order/' + id_order + '/delivery-accept', function(){ location.reload(); },'json'); 
+			 $.post('/api/order/' + id_order + '/delivery-accept', function( json ){ 
+			 	if( json.status ){
+			 		location.reload();
+			 	} else {
+			 		var name = '';
+			 		if( json[ 'delivery-status' ].accepted.name ){
+			 			var name = 'by ' + json[ 'delivery-status' ].accepted.name;
+			 		}
+			 		alert( 'Ops, error!\n It seems this order was already accepted ' + name + '!'  );
+			 		location.reload();	
+			 	}
+			 }, 'json' ); 
 		} );
 
 		$( '.button-list-pickedup' ).click( function() {
 			var id_order = $( this ).attr( 'id_order' );
 			makebusy();
-			 $.post('/api/order/' + id_order + '/delivery-pickedup', function(){ location.reload(); },'json'); 
+			 $.post('/api/order/' + id_order + '/delivery-pickedup', function( json ){ location.reload(); },'json'); 
 		} );
 
 		$( '.button-list-delivered' ).click( function() {
