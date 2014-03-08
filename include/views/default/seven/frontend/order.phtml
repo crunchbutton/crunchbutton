@@ -11,165 +11,184 @@
 
 <div ng-if="order.id">
 
-	<div class="content-padding">
-		
-		<? /*
-		<button class="button green" ng-click="support.dialog()">Reorder</button>
-		*/ ?>
-	
-		<div class="content-padder main-content-readable">
-			<span class="order-thanks-message" ng-if="!order._new">
-				<div class="toon-cherry"></div>
-				<span class="order-thanks-message-crunched">Crunched!</span>
-				<span class="order-thanks-message-block"> Your order is placed</span>
-				<span class="order-thanks-message-small">and saved for easy 1 click reordering</span>
-				<div class="divider"></div>
-			</span>
-	
-			<div class="order-content">
-				<div ng-hide="account.user.has_auth">
-					Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> on your phone.
-					<a href="javascript:;" ng-click="modal.signupOpen();" class="add-password-button">Create an account</a>
-					<br />
-					<div class="divider dots"></div>
-				</div>
-				
-				<div ng-if="account.user.has_auth">
-	
-					<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
-	
-					<div ng-if="order._new && referral.invite_url && referral.enabled">
-						Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
-						<br /><br />
-					</div>
-				</div>
-	
-				<div class="divider dots spacer-two-two"></div>
-	
-				<div class="order-icon"><div class="icon-chef"></div></div>
-				<div class="order-info">
-					<p>
-						For updates on your order, please call
-						<br /><b>{{order._restaurant_name}}: <a href="tel:{{order._restaurant_phone}}" target="_blank">{{ order._restaurant_phone | formatPhone }}</a></b>
-						<br /><br />
-					</p>
-				</div>
-				<div class="divider"></div>
-	
-				<div class="order-icon"><div class="icon-support"></div></div>
-				<div class="order-info">
-					<p>
-						For website or app support, please call
-						<br /><b>Crunchbutton: <a href="tel:(646) 783-1444" target="_blank">{{ '6467831444' | formatPhone }}</a></b>
-					</p>
-				</div>
-				<div class="divider"></div>
-	
-				<div class="divider dots spacer-two-two"></div>
-				
-				<div class="order-icon">
-					<div ng-show="(order.delivery_type == 'delivery')" class="icon-delivery"></div>
-					<div ng-hide="(order.delivery_type == 'delivery')" class="icon-takeout"></div>
-				</div>
-				<div class="order-info order-info-oneline">
-					<p>
-						<span ng-show="(order.delivery_type == 'delivery')">Delivery order</span>
-						<span ng-hide="(order.delivery_type == 'delivery')">Takeout order</span>
-					</p>
-				</div>
-				<div class="divider"></div>
-				
-				<div class="order-icon">
-					<div ng-show="(order.pay_type == 'card')" class="icon-card"></div>
-					<div ng-hide="(order.pay_type == 'card')" class="icon-cash"></div>
-				</div>
-				<div class="order-info order-info-oneline">
-					<p>
-						<span ng-show="(order.pay_type == 'card')">Paid by card ending in <b>{{order.card.lastfour}}</b></span>
-						<span ng-hide="(order.pay_type == 'card')">Pay<span ng-show="(order.delivery_type == 'delivery')"> and tip</span> with <b>cash</b></span>
-					</p>
-				</div>
-				<div class="divider"></div>
-				
-				<div class="order-icon"><div class="icon-clock"></div></div>
-				<div class="order-info order-info-oneline">
-					<p>
-						Ordered at {{order.date_formated}}
-					</p>
-				</div>
-				<div class="divider"></div>
-				
-				<div class="order-icon"><div class="icon-timer"></div></div>
-				<div class="order-info order-info-oneline">
-					<p>
-						Expected by&nbsp;
-						<span ng-show="(order.delivery_type == 'delivery')">{{order._restaurant_delivery_estimated_time_formated}}</span>
-						<span ng-hide="(order.delivery_type == 'delivery')">{{order._restaurant_pickup_estimated_time_formated}}</span>
-					</p>
-				</div>
-				<div class="divider"></div>
-				
-				<div class="divider dots spacer-two-two"></div>
-				
-				<div class="order-icon"><div class="icon-user"></div></div>
-				<div class="order-info">
-					<p>
-						{{order.name}}
-						<br>{{ order.phone | formatPhone }}
-					</p>
-				</div>
-				<div class="divider"></div>
-				
-				<div ng-if="order.notes">
-					<div class="order-comment-arrow"></div>
-					<div class="order-comment">
-						<p ng-bind-html-unsafe="order.notes | nl2br"></p>
-					</div>
-				</div>
-				
-				<div class="divider spacer-one-two"></div>
-				
-				<a href="{{order.mapLink}}"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:green%7Clabel:A%7C{{order.address.replace('#','') | nl2cm}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
-				
-				<div class="divider spacer-two-two"></div>
-				
-				<div class="order-icon"><div class="icon-map-home"></div></div>
-				<div class="order-info">
-					<p class="order-info-address"><a href="{{order.mapLink}}"><span ng-bind-html-unsafe="order.address | nl2br"></span></a></p>
-					<br />
-				</div>
-				<div class="divider"></div>
-				
-				<div class="order-icon"><div class="icon-map-restaurant"></div></div>
-				<div class="order-info">
-					<p class="order-info-address"><a href="{{order.mapLink}}"><span ng-bind-html-unsafe="order._restaurant_address | nl2br"></span></a></p>
-				</div>
-				<div class="divider"></div>
-				
-				<div class="divider dots spacer-two-two"></div>
-		
-				<h4>Your receipt:</h4>
-				<p>
-					<span ng-bind-html-unsafe="order._message"></span>
-					<br><br>
-					Total: $<span ng-bind-html-unsafe="order.charged | formatPrice"></span>
-					<br><br>
-				</p>
-				
-
-				<div class="credit" ng-if="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
-
+	<div class="about-bubble-wrap" ng-if="!order._new">
+		<div class="bubble-tail bubble-tail-green bubble-animated">
+			<div class="text" ng-switch="cherryMessage">
+				<span ng-switch-when="1" class="single-line">Yay! Food!</span>
+				<span ng-switch-when="2" class="single-line">It's on it's way.</span>
+				<span ng-switch-when="3" class="small">Questions? Please contact the restaurant.</span>
+				<span ng-switch-when="4">Feedback? Send us a text.</span>
+				<span ng-switch-when="5">We'd love to hear your thoughts...</span>
+				<span ng-switch-when="6">suggestions, or even complaints!</span>
+				<span ng-switch-when="7">The customer is always right!</span>
+				<span class="single-line" ng-switch-when="8"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+				<span ng-switch-default class="single-line"><b>Crunched!</b></span>
 			</div>
+			<div class="bubble-tail-spacer"></div>
+		</div>
+		<div class="order-cherry animated-resize" ng-instant="cherryMessage = (cherryMessage > 7 ? 0 : (cherryMessage + 1))" instant-pass-thru></div>
+		<div class="divider"></div>
+		<div class="order-tagline"><h1>Your order is placed</h1><h2>and saved for easy 1 click reordering</h2></div>
+	</div>
+
+
+
+	<div class="order-content">
+		<div ng-hide="account.user.has_auth">
+		
+			<div class="divider dots spacer-two-two"></div>
+			<div class="content-padding">
+				<p>Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our <a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>.</p>
+				<br>
+				<button class="button lightorange" ng-click="modal.signupOpen();">Create an account</button>
+				<br />
+			</div>
+
 		</div>
 		
-		<br>
-		
+		<div ng-if="account.user.has_auth" class="content-padding">
+			<div class="divider spacer-two-two"></div>
+			<div class="divider spacer-two-two"></div>
 
-		<br><br>
-		<a href="<?=$this->export ? '{{server}}' : ''?>/printorder/{{ order.uuid }}" target="_blank" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
-		<br />
-
+			<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
+			<? /*
+			<div ng-if="order._new && referral.invite_url && referral.enabled">
+				Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
+				<br /><br />
+			</div>
+			*/ ?>
+		</div>
+	
+		<div class="divider dots spacer-two-two"></div>
+	
+	
+		<div class="content-padding">
+			<div class="order-icon"><div class="icon-chef"></div></div>
+			<div class="order-info">
+				<p>
+					For updates on your order, please call
+					<br /><b>{{order._restaurant_name}}: <a href="tel:{{order._restaurant_phone}}" target="_blank">{{ order._restaurant_phone | formatPhone }}</a></b>
+					<br /><br />
+				</p>
+			</div>
+			<div class="divider"></div>
+	
+			<div class="order-icon"><div class="icon-support"></div></div>
+			<div class="order-info">
+				<p>
+					For website or app support, please call
+					<br /><b>Crunchbutton: <a href="tel:(646) 783-1444" target="_blank">{{ '6467831444' | formatPhone }}</a></b>
+				</p>
+			</div>
+			<div class="divider"></div>
+		</div>
+	
+		<div class="divider dots spacer-two-two"></div>
 		
-		<div class="divider"></div>
+		<div class="content-padding">
+			
+			<div class="order-icon">
+				<div ng-show="(order.delivery_type == 'delivery')" class="icon-delivery"></div>
+				<div ng-hide="(order.delivery_type == 'delivery')" class="icon-takeout"></div>
+			</div>
+			<div class="order-info order-info-oneline">
+				<p>
+					<span ng-show="(order.delivery_type == 'delivery')">Delivery order</span>
+					<span ng-hide="(order.delivery_type == 'delivery')">Takeout order</span>
+				</p>
+			</div>
+			<div class="divider"></div>
+			
+			<div class="order-icon">
+				<div ng-show="(order.pay_type == 'card')" class="icon-card"></div>
+				<div ng-hide="(order.pay_type == 'card')" class="icon-cash"></div>
+			</div>
+			<div class="order-info order-info-oneline">
+				<p>
+					<span ng-show="(order.pay_type == 'card')">Paid by card ending in <b>{{order.card.lastfour}}</b></span>
+					<span ng-hide="(order.pay_type == 'card')">Pay<span ng-show="(order.delivery_type == 'delivery')"> and tip</span> with <b>cash</b></span>
+				</p>
+			</div>
+			<div class="divider"></div>
+			
+			<div class="order-icon"><div class="icon-clock"></div></div>
+			<div class="order-info order-info-oneline">
+				<p>
+					Ordered at {{order.date_formated}}
+				</p>
+			</div>
+			<div class="divider"></div>
+			
+			<div class="order-icon"><div class="icon-timer"></div></div>
+			<div class="order-info order-info-oneline">
+				<p>
+					Expected by&nbsp;
+					<span ng-show="(order.delivery_type == 'delivery')">{{order._restaurant_delivery_estimated_time_formated}}</span>
+					<span ng-hide="(order.delivery_type == 'delivery')">{{order._restaurant_pickup_estimated_time_formated}}</span>
+				</p>
+			</div>
+			<div class="divider"></div>
+		</div>
+			
+		<div class="divider dots spacer-two-two"></div>
+
+		<div class="content-padding">
+			
+			<div class="order-icon"><div class="icon-user"></div></div>
+			<div class="order-info">
+				<p>
+					{{order.name}}
+					<br>{{ order.phone | formatPhone }}
+				</p>
+			</div>
+			<div class="divider"></div>
+			
+			<div ng-if="order.notes">
+				<div class="order-comment-arrow"></div>
+				<div class="order-comment">
+					<p ng-bind-html-unsafe="order.notes | nl2br"></p>
+				</div>
+			</div>
+			
+			<div class="divider spacer-one-two"></div>
+			
+			<a href="{{order.mapLink}}"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:green%7Clabel:A%7C{{order.address.replace('#','') | nl2cm}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
+			
+			<div class="divider spacer-two-two"></div>
+			
+			<div class="order-icon"><div class="icon-map-home"></div></div>
+			<div class="order-info">
+				<p class="order-info-address"><a href="{{order.mapLink}}"><span ng-bind-html-unsafe="order.address | nl2br"></span></a></p>
+				<br />
+			</div>
+			<div class="divider"></div>
+			
+			<div class="order-icon"><div class="icon-map-restaurant"></div></div>
+			<div class="order-info">
+				<p class="order-info-address"><a href="{{order.mapLink}}"><span ng-bind-html-unsafe="order._restaurant_address | nl2br"></span></a></p>
+			</div>
+			<div class="divider"></div>
+			
+		</div>
+			
+		<div class="divider dots spacer-two-two"></div>
+		
+		<div class="content-padding">
+	
+			<h4>Your receipt:</h4>
+			<p>
+				<span ng-bind-html-unsafe="order._message"></span>
+				<br><br>
+				Total: $<span ng-bind-html-unsafe="order.charged | formatPrice"></span>
+				<br><br>
+			</p>
+			
+	
+			<div class="credit" ng-if="(order.credit && order.credit > 0)">( ${{order._final_price}} - ${{order._credit}} credit )</div>
+
+			<div class="divider spacer-two-two"></div>
+			<a href="<?=$this->export ? '{{server}}' : ''?>/printorder/{{ order.uuid }}" target="_blank" class="print-icon"><button class="button lightorange"><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Print Receipt</button></a>
+		</div>
+		
 	</div>
 </div>
