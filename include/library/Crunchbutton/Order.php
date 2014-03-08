@@ -541,14 +541,14 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function calcFinalPriceMinusUsersCredit(){
-		$final_price = $this->final_price;
+		$final_price = $this->final_price_plus_delivery_markup;
 		if( $this->pay_type == 'card' ){
 			$final_price = $final_price - $this->giftcardValue;
 			if( $this->id_user ){
 				$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $final_price, $this->id_user, $this->id_restaurant, $this->id_order, true );
 				$final_price = $final_price - $chargedByCredit;
 			}
-			Log::debug([ 'issue' => '#1551', 'method' => 'calcFinalPriceMinusUsersCredit', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'final_price' => $final_price, ]);
+			Log::debug([ 'issue' => '#1551', 'method' => 'calcFinalPriceMinusUsersCredit', 'final_price_plus_delivery_markup' => $this->final_price_plus_delivery_markup, 'final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'delivery_service_markup' => $this->delivery_service_markup ]);
 			if( $final_price < 0 ){ $final_price = 0; }
 			return Util::ceil( $final_price, 2 );
 		}
