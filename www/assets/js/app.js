@@ -809,7 +809,7 @@ App.dialog = {
 			// its a dom element
 			var src = $( arguments[0] );
 		} else {
-			console.log('ERROR WITH DIALOG');
+			console.log('ERROR WITH DIALOG',arguments);
 			return;
 		}
 
