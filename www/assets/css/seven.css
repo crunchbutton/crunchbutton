@@ -195,7 +195,7 @@ html {
 	font-size: 15px;
 	padding: .5em 0 .5em .6em;
 	margin: 0 0 15px 0;
-	height: 40px;
+	height: 2.7em;
 	width: 103%;
 	box-sizing: border-box;
 }
@@ -210,19 +210,26 @@ html {
 	box-sizing: border-box;
 }
 
+.location-detect .fa {
+	font-size: 22px;
+}
+
 .location-detect {
 	background: #00bd9e;
 	border-radius: 0;
 	border-top-right-radius:6px;
 	border-bottom-right-radius:6px;
 	border: 2px solid #003f35;
-	font-size: 22px;
+	font-size: 15px;
+	height: 2.7em;
+
 	color: #fff;
 	margin: 0 0 15px 0;
 	width: 40px;
 	height: 40px;
 	cursor: pointer;
-	padding: 0;
+	padding: .5em 0 .5em 0;
+	
 	box-sizing: border-box;
 
 	-webkit-transform: translate3d(0,0,0);
@@ -240,7 +247,7 @@ html {
 /* wierd issue with height only on mobile safari */
 @media screen and (max-device-width: 480px) {
 	.location-detect  {
-		height: 38px;
+
 	}
 }
 
