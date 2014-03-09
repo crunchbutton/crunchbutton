@@ -404,6 +404,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
+		
+		App.track('page', $route.current.action);
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
@@ -527,9 +529,14 @@ App.track = function() {
 	if (App.config.env != 'live') {
 		return;
 	}
+
 	if (arguments[0] == 'Ordered') {
 		$('img.conversion').remove();
 		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + location.href + '">').appendTo($('body'));
+	}
+
+	if (ga) {
+		ga('send', 'event', 'app', arguments[0], arguments[1]);
 	}
 };
 
