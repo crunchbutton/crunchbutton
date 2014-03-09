@@ -313,7 +313,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 			LocationService.init(true);
 
-			if (App.config.user.id_user && ($rootScope.navigation.page == 'location' && $rootScope.navigation.page == 'splash')) {
+			if (App.config.user.id_user && ($rootScope.navigation.page == 'location' || $rootScope.navigation.page == 'splash')) {
 				$location.path('/food-delivery');
 			}
 			
