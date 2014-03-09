@@ -2069,6 +2069,39 @@ class Crunchbutton_Order extends Cana_Table {
 			return 'Place order yourself';
 		}
 	}
+	
+	// decodes 9 digit order #s
+	public static function getByNinjaId($id) {
+		$v = $id[0];
+		$len = substr($id, -1);
+		$id = substr($id, 1, -1);
+		$pad = 5;
+
+		$first = substr($id, 0, 2);
+		$rest = substr(strrev(substr($id, 2)),$pad-$len);
+		$id = $rest.$first;
+
+		return $id;
+	}
+	
+	// generates 9 digit order #s
+	public function ninjaId($version = 1) {
+		$id = $this->id;
+		if ($this->id >= 10000000) {
+			// @todo: ERROR!
+		}
+		$first = substr($id,-2);
+		$rest = substr($id,0,-2);
+		$pad = 5; // works until 10 million orders
+
+		$ret =
+			$version
+			.$first
+			.str_pad(strrev($rest),$pad,'0')
+			.strlen($rest);
+			
+		return $ret;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
