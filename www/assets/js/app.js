@@ -295,7 +295,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 	
 	$rootScope.cancelDownload = function() {
-		$.totalStorage('_viewmobile', true);
+		$.cookie('_viewmobile2', true, { expires: 1 });
 		App.go('/location');
 	};
 	
@@ -752,7 +752,7 @@ App.init = function(config) {
 	}
 
 	// show download page only if its ui2 in an ios browser
-	if (App.iOS() && !App.isPhoneGap && !$.totalStorage('_viewmobile') && $('.is-ui2').get(0)) {
+	if (App.iOS() && !App.isPhoneGap && !$.totalStorage('_viewmobile2') && $('.is-ui2').get(0)) {
 		setTimeout(function(){
 			App.go('/download');
 		},10);
