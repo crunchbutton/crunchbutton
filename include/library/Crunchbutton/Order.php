@@ -1805,15 +1805,12 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function expectedBy() {
-		$date = clone $this->date();
-		if ($this->restaurant()->pickup_estimated_time && $this->delivery_type == 'takeout') {
-			$date->modify('+ '.$this->restaurant()->pickup_estimated_time. ' minute');
-		} else {
-			if( $this->restaurant()->delivery_estimated_time ){
-				$date->modify('+ '.$this->restaurant()->delivery_estimated_time. ' minute');	
-			}
-		}
-		return $date;
+		$time = clone $this->date();
+		$multipleOf = 15;
+		$minutes = round( ( ( $time->format( 'i' ) + $this->restaurant()->delivery_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
+		$minutes -= $time->format( 'i' );
+		$time->modify( '+ ' . $minutes . ' minute' );
+		return $time;
 	}
 
 	public function totalOrdersByPhone( $phone ){
