@@ -148,9 +148,9 @@ class Crunchbutton_Hour extends Cana_Table {
 				$timezone = $timezone->format( 'O' );
 				foreach ( $hours as $hour ) {
 					$open = new DateTime( 'next '.$hour->day. ' ' .$hour->time_open, new DateTimeZone( $restaurant->timezone ) );
-					$open->setTimezone( new DateTimeZone( 'GMT' ) );
+					$open->setTimezone( new DateTimeZone( 'UTC' ) );
 					$close = new DateTime( 'next '.$hour->day. ' ' .$hour->time_close, new DateTimeZone( $restaurant->timezone ) );
-					$close->setTimezone( new DateTimeZone('GMT' ) );
+					$close->setTimezone( new DateTimeZone('UTC' ) );
 					$hour->time_open = $open->format( 'Y-m-d H:i' );
 					$hour->time_close = $close->format( 'Y-m-d H:i' );
 				}
@@ -220,7 +220,7 @@ class Crunchbutton_Hour extends Cana_Table {
 
 					$diff_before = Util::intervalToSeconds( $start->diff( $end ) );
 
-					// Convert to UTC/GMT case it is needed 
+					// Convert to UTC/UTC case it is needed 
 					if( $utc ){
 						$start->setTimezone( new DateTimeZone( 'UTC' ) );	
 						$end->setTimezone( new DateTimeZone( 'UTC' ) );
@@ -259,11 +259,11 @@ class Crunchbutton_Hour extends Cana_Table {
 
 			$_hours = [];
 
-			$now = new DateTime( 'now', new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+			$now = new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
 			// less 5 minutes to compensate the javascript at frontend
 			// without this 5 minutes it could export the hours starting at the minute 8 and at javascript it is at the minute 7:40 - it would show the wrongly closed message
 			$now->modify( '-5 minutes' );
-			$now_plus_24 = new DateTime( 'now', new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+			$now_plus_24 = new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
 			$now_plus_24->modify( '+1 day' );
 			$now_plus_24->modify( '-5 minutes' );
 
@@ -329,8 +329,8 @@ class Crunchbutton_Hour extends Cana_Table {
 				if( $open->format('Hi') > $close->format('Hi') ){
 					$close->modify('+1 day');
 				}
-				$close->setTimezone(new DateTimeZone('GMT'));
-				$open->setTimezone(new DateTimeZone('GMT'));
+				$close->setTimezone(new DateTimeZone('UTC'));
+				$open->setTimezone(new DateTimeZone('UTC'));
 				$hour_open = $open->format('H:i');
 				$hour_close = $close->format('H:i');
 				if( !$_hours_utc[ $day ] ){
