@@ -2226,7 +2226,7 @@ sup {
 	float: left;
 }
 .order-info {
-	max-width: 250px;
+	max-width: 25em;
 }
 
 .pickup-info {
