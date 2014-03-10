@@ -67,6 +67,14 @@ class Controller_api_houroverride extends Crunchbutton_Controller_RestAccount {
 
 						$date_end = $date_end[ 2 ] . '/' . $date_end[ 0 ] . '/' . $date_end[ 1 ] . ' ' . $date_end_hr . ':' . $date_end_mn;
 
+						$start = new DateTime( $date_start, new DateTimeZone( 'UTC' ) );
+						$end = new DateTime( $date_end, new DateTimeZone( 'UTC' ) );
+
+						if( $start > $end ){
+							echo json_encode( [ 'error' => 'The end date should be AFTER start date!' ] );
+							exit();
+						}
+
 						$hour->date_start = $date_start;
 						$hour->date_end = $date_end;
 						$hour->type = $this->request()[ 'type' ];
