@@ -1214,6 +1214,15 @@ p {
 	padding: 1em 1.2em 1em 1.2em;
 	width: 27.7em;
 	clear: both;
+	
+	-webkit-transition: background linear 0.08s;
+	-moz-transition: background linear 0.08s;
+	-ms-transition: background linear 0.08s;
+	-o-transition: background linear 0.08s;
+	transition: background linear 0.08s;
+}
+.restaurants-closed:active {
+	background: #d44235;
 }
 
 .meal-item-tag {
