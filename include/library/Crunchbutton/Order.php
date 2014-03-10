@@ -1424,13 +1424,8 @@ class Crunchbutton_Order extends Cana_Table {
 				// Start Telling Customers Estimated Delivery Time #2476
 				if ( $this->delivery_type == 'delivery' && $this->restaurant()->delivery_estimated_time ) {
 					$msg .= "Your order will arrive around ";
-					if( $this->restaurant()->delivery_service ){
-						$msg .= $this->restaurant()->calc_delivery_estimated_to_text_message();	
-					} else {
-						$msg .= $this->restaurant()->calc_delivery_estimated_time();
-					}
+					$msg .= $this->restaurant()->calc_delivery_estimated_time();	
 					$msg .= "!\n\n";
-					
 				}
 				$msg .= "To contact Crunchbutton, text us back.\n\n";
 				if ($this->pay_type == self::PAY_TYPE_CASH) {
