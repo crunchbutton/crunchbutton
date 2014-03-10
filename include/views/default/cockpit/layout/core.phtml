@@ -470,8 +470,12 @@
 	function supportBadge(){
 		var url = '/api/support/count';
 		$.getJSON( url, function( json ){
-			$( '#support-badge' ).html( json.total );
-			$( '#support-badge' ).show();
+			if (json.total) {
+				$( '#support-badge' ).show().html(json.total);
+			} else {
+				$( '#support-badge' ).hide();
+			}
+
 			setTimeout( function(){
 				supportBadge();
 			}, 10000 );
