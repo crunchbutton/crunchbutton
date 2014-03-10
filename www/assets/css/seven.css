@@ -1124,7 +1124,7 @@ p {
 .restaurants-item .restaurants-open {
 	border: 1px solid #c1c1c1;
 	background: #fff;
-	width: 29em;
+	width: 29.7em;
 	height: 12em;
 	border-radius: 4px;
 	padding: 2px;
@@ -1212,7 +1212,7 @@ p {
 	background: #ed4f41;
 	border-radius: 4px;
 	padding: 1em 1.2em 1em 1.2em;
-	width: 27em;
+	width: 27.7em;
 	clear: both;
 }
 
@@ -1296,7 +1296,7 @@ p {
 	line-height: 2.6em;
 }
 .restaurants-bubble-wrap {
-	width: 29em;
+	width: 30em;
 	margin: 0 auto;
 	margin-top: -10px;
 }
@@ -2067,7 +2067,7 @@ sup {
 
 .restaurants-more {
 	margin: 0 auto;
-	width: 22.71em;
+	width: 23.31em;
 }
 
 .restaurants-items {
