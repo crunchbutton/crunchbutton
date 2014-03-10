@@ -1231,6 +1231,11 @@ p {
 	position: relative;
 }
 
+.meal-item-tag.about-to-open {
+	background: #ed4f41;
+	box-shadow: 0 2px 0 #c83c2f;
+}
+
 .meal-item-tag-bottom {
 	margin-top: -8.9em;
 	margin-right: -11px;
