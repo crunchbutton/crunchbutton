@@ -303,7 +303,7 @@ NGApp.directive('ngAutosize', function () {
 		link: function (scope, elem, attr) {
 			setTimeout( function(){
 				elem.addClass('autosize');
-				elem.data( 'autosize', elem.autosize() );	
+				elem.data( 'autosize', elem.autosize() );
 			}, 800 );
 		}
 	};
