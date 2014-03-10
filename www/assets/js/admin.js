@@ -1964,7 +1964,8 @@ hour_override.save = function(){
 		url: url,
 		success: function( json ) {
 			if( json.error ){
-				alert( 'Error adding!' );
+				var error = ( json.error != 'error' ) ? json.error : '';
+				alert( 'Error adding!' + '\n' + error );
 			} else {
 				alert( 'Added!' );
 				hour_override.load();
