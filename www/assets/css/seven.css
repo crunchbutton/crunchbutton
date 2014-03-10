@@ -1938,11 +1938,6 @@ select.form-input {
 /* appended by autosize directive */
 .autosize {
 	margin-bottom: .1em;
-	-webkit-transition: height 0.2s;
-	   -moz-transition: height 0.2s;
-	    -ms-transition: height 0.2s;
-	     -o-transition: height 0.2s;
-	        transition: height 0.2s;
 }
 
 .order-cherry {
