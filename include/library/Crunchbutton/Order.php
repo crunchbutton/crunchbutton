@@ -2052,12 +2052,12 @@ class Crunchbutton_Order extends Cana_Table {
 		// https://github.com/crunchbutton/crunchbutton/issues/2463#issue-28386594
 		if( $this->restaurant()->formal_relationship == 1 ){
 			if( $this->pay_type == 'cash' ){
-				return 'Pay restaurant';
+				return 'Pay the restaurant';
 			} else {
-				return 'Do not pay restaurant';
+				return 'Do not pay the restaurant';
 			}
 		} else {
-			return 'Pay restaurant';
+			return 'Pay the restaurant';
 		}
 	}
 
@@ -2066,7 +2066,7 @@ class Crunchbutton_Order extends Cana_Table {
 		if( $this->restaurant()->formal_relationship == 1 || $this->restaurant()->order_notifications_sent == 1 ){
 			return 'Food already prepared';
 		} else {
-			return 'Place order yourself';
+			return 'Place the order yourself';
 		}
 	}
 	
