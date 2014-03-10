@@ -100,198 +100,247 @@
 				<span>Dashboard</span>
 			</a>
 		</li>
+		
+		
+		
+		
+		
+		
+
+		
+
 		<? if ( c::admin()->permission()->check( [ 'global','orders','orders-all','orders-list-page','orders-new-users'] ) ) : ?>
-		<li class="dark-nav <?=$this->page == 'orders' ? 'active' : ''?>">
-			<span class="glow"></span>
-
-			<a class="accordion-toggle collapsed " href="/orders">
-				<i class="icon-truck icon-2x"></i>
-				<span>Orders<? /* <i class="icon-caret-down"></i> */ ?></span>
-			</a>
-
-			<? /*
-			data-toggle="collapse" 
-			<ul id="zwz2Ux5SfP" class="collapse ">
-				<li class="">
-					<a href="../ui_lab/buttons.html">
-						<i class="icon-hand-up"></i> Buttons
-					</a>
-				</li>
-		
-				<li class="">
-					<a href="../ui_lab/general.html">
-						<i class="icon-beaker"></i> General elements
-					</a>
-				</li>
-		
-				<li class="">
-					<a href="../ui_lab/icons.html">
-						<i class="icon-info-sign"></i> Icons
-					</a>
-				</li>
-		
-				<li class="">
-					<a href="../ui_lab/grid.html">
-						<i class="icon-th-large"></i> Grid
-					</a>
-				</li>
-		
-				<li class="">
-					<a href="../ui_lab/tables.html">
-						<i class="icon-table"></i> Tables
-					</a>
-				</li>
-		
-				<li class="">
-					<a href="../ui_lab/widgets.html">
-						<i class="icon-plus-sign-alt"></i> Widgets
-					</a>
-				</li>
-			</ul>
-			*/ ?>
-		</li>
+			<li class="dark-nav <?=$this->page == 'orders' ? 'active' : ''?>">
+				<span class="glow"></span>
+	
+				<a class="accordion-toggle" href="/orders">
+					<i class="icon-truck icon-2x"></i>
+					<span>Orders</span>
+				</a>
+			</li>
 		<? endif ; ?>
+
 		<? if ( c::admin()->permission()->check( [ 'global','restaurants-all','restaurants-list-page','restaurants-crud','restaurants-create'] ) ) : ?>
-		<li class="<?=$this->page == 'restaurants' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/restaurants">
-				<i class="icon-food icon-2x"></i>
-				<span>Restaurants</span>
-			</a>
-		</li>
+			<li class="<?=$this->page == 'restaurants' ? 'active' : ''?>">
+				<span class="glow"></span>
+				<a href="/restaurants">
+					<i class="icon-food icon-2x"></i>
+					<span>Restaurants</span>
+				</a>
+			</li>
 		<? endif ; ?>
-		<? if ( c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page'] ) ) : ?>
-		<li class="<?=$this->page == 'restaurants' ? 'active' : ''?>">
+		
+		
+		
+		
+		
+		
+		
+		
+				
+		<li class="dark-nav">
 			<span class="glow"></span>
-			<a href="/restaurants/weight/">
+
+			<a class="accordion-toggle collapsed" href="#admin-nav-customers" data-toggle="collapse" >
+				<i class="icon-smile icon-2x"></i>
+				<span>Customers <i class="icon-caret-down"></i></span>
+			</a>
+			<ul id="admin-nav-customers" class="collapse">
+				<? if (c::admin()->permission()->check(['global', 'suggestions-all', 'suggestions-list-page'])) { ?>
+					<li class="">
+						<a href="/suggestions">
+							<i class="icon-envelope-alt"></i> Suggestions
+						</a>
+					</li>
+				<? } ?>
+				<? if (c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-list-page', 'gift-card-list-all'])) { ?>
+					<li class="">
+						<a href="/giftcards">
+							<i class="icon-gift"></i> Gift cards
+						</a>
+					</li>
+				<? } ?>
+				<? if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view', 'support-crud', 'support-settings' ] ) ) { ?>
+					<li class="">
+						<a href="/support/plus">
+							<i class="icon-comments"></i> Support
+						</a>
+					</li>
+				<? } ?>
+
+			</ul>
+		</li>
+
+
+		<? if ( c::admin()->permission()->check( [ 'global','drivers-page'] ) ) : ?>
+			<li class="dark-nav">
+				<span class="glow"></span>
+	
+				<a class="accordion-toggle collapsed" href="#admin-nav-drivers" data-toggle="collapse" >
+					<i class="icon-road icon-2x"></i>
+					<span>Drivers <i class="icon-caret-down"></i></span>
+				</a>
+				<ul id="admin-nav-drivers" class="collapse">
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-orders-view' ] ) ) { ?>
+						<li class="">
+							<a href="/drivers/deliveries">
+								<i class="icon-truck"></i> Delivered orders
+							</a>
+						</li>
+					<? } ?>
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-assign' ] ) ) { ?>
+						<li class="">
+							<a href="/drivers/assign">
+								<i class="icon-magnet"></i> Assign to R/C
+							</a>
+						</li>
+					<? } ?>
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
+						<li class="">
+							<a href="/drivers/hours">
+								<i class="icon-time"></i> Working hours
+							</a>
+						</li>
+					<? } ?>
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
+						<li class="">
+							<a href="/drivers/schedule">
+								<i class="icon-calendar"></i> Schedule
+							</a>
+						</li>
+					<? } ?>
+	
+				</ul>
+			</li>
+		<? endif ; ?>
+
+
+	
+	
+
+		
+		<li class="dark-nav">
+			<span class="glow"></span>
+
+			<a class="accordion-toggle collapsed" href="#admin-nav-reports" data-toggle="collapse" >
 				<i class="icon-bar-chart icon-2x"></i>
-				<span>Weight adjustment</span>
+				<span>Reports <i class="icon-caret-down"></i></span>
 			</a>
+			<ul id="admin-nav-reports" class="collapse">
+				<? if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-main', 'metrics-investors', 'metrics-detailed-analytics', 'metrics-no-grouped-charts' ] ) ) { ?>
+					<li class="">
+						<a href="/charts">
+							<i class="icon-bar-chart"></i> Overview
+						</a>
+					</li>
+				<? } ?>
+				<? if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities', 'metrics-communities-page'] ) ) { ?>
+					<li class="">
+						<a href="/charts/community">
+							<i class="icon-group"></i> Community metrics
+						</a>
+					</li>
+				<? } ?>
+				<? if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities', 'metrics-communities-page'] ) ) { ?>
+					<li class="">
+						<a href="/charts/restaurant">
+							<i class="icon-food"></i> Restaurant metrics
+						</a>
+					</li>
+				<? } ?>
+				<? if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities', 'metrics-communities-page'] ) ) { ?>
+					<li class="">
+						<a href="/home/marketing">
+							<i class="icon-bullhorn"></i> Marketing
+						</a>
+					</li>
+				<? } ?>
+				<? if ( c::admin()->permission()->check( [ 'global','locations'] ) ) { ?>
+					<li class="">
+						<a href="/loc">
+							<i class="icon-map-marker"></i> Locations
+						</a>
+					</li>
+				<? } ?>
+			</ul>
 		</li>
-		<? endif ; ?>
-		<? if ( c::admin()->permission()->check( [ 'global', 'customers-all'] ) ) : ?>
-		<li class="<?=$this->page == 'customers' ? 'active' : ''?>">
+		
+		
+		<li class="dark-nav">
 			<span class="glow"></span>
-			<a href="/customers">
-				<i class="icon-group icon-2x"></i>
-				<span>Customers</span>
-			</a>
-		</li>
-		<? endif ; ?>
-		<? if (c::admin()->permission()->check(['global', 'suggestions-all', 'suggestions-list-page'])) : ?>
-		<li class="<?=$this->page == 'suggestions' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/suggestions">
-				<i class="icon-envelope-alt icon-2x"></i>
-				<span>Suggestions</span>
-			</a>
-		</li>
-		<? endif ; ?>
-		<? if (c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-list-page', 'gift-card-list-all'])) : ?>
-		<li class="<?=$this->page == 'giftcards' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/giftcards">
-				<i class="icon-gift icon-2x"></i>
-				<span>Gift cards</span>
-			</a>
-		</li>
-		<? endif ; ?>
-		<? if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view', 'support-crud', 'support-settings' ] ) ) : ?>
-		<!--
-		<li class="<?=$this->page == 'support' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/support">
-				<i class="icon-comments icon-2x"></i>
-				<span>Support</span>
-			</a>
-		</li>
-		-->
-		<li class="<?=$this->page == 'support' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/support/plus">
-				<i class="icon-comments icon-2x"></i>
-				<span>Support</span>
-			</a>
-		</li>
-		<? endif ; ?>
 
-		<? if ( c::admin()->permission()->check( [ 'global','locations'] ) ) : ?>
-		<li class="<?=$this->page == 'loc' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/loc">
-				<i class="icon-map-marker icon-2x"></i>
-				<span>Locations</span>
+			<a class="accordion-toggle collapsed" href="#admin-nav-tools" data-toggle="collapse" >
+				<i class="icon-wrench icon-2x"></i>
+				<span>Tools <i class="icon-caret-down"></i></span>
 			</a>
-		</li>
-		<? endif ; ?>
+			<ul id="admin-nav-tools" class="collapse">
+				<? if ( c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page'] ) ) { ?>
+					<li class="">
+						<a href="/restaurants/weight">
+							<i class="icon-female"></i> Weight adjustment
+						</a>
+					</li>
+				<? } ?>
+				<? if ( c::admin()->permission()->check( [ 'global','logs'] ) ) { ?>
+					<li class="">
+						<a href="/logs">
+							<i class="icon-warning-sign"></i> Logs
+						</a>
+					</li>
+				<? } ?>
+				<? if ( c::admin()->permission()->check( [ 'global','rules'] ) ) { ?>
+					<li class="">
+						<a href="/rules">
+							<i class="icon-filter"></i> Rules settings
+						</a>
+					</li>
+				<? } ?>
+				<? if ( c::admin()->permission()->check( [ 'global','invite-promo'] ) ) { ?>
+					<li class="">
+						<a href="/referral">
+							<i class="icon-bullhorn"></i> Invite promo
+						</a>
+					</li>
+				<? } ?>
+				<? if ( c::admin()->permission()->check( [ 'global','permissions-all','permissions-users','permissions-groups','drivers-working-hours','drivers-working-hours-view'] ) ) { ?>
+					<li class="">
+						<a href="/permissions">
+							<i class="icon-unlock"></i> User / Permissions
+						</a>
+					</li>
+				<? } ?>
 
-		<? if ( c::admin()->permission()->check( [ 'global','rules'] ) ) : ?>
-		<li class="<?=$this->page == 'rules' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/rules">
-				<i class="icon-filter icon-2x"></i>
-				<span>Rules settings</span>
-			</a>
+			</ul>
 		</li>
-		<? endif ; ?>
-		<? if ( c::admin()->permission()->check( [ 'global','invite-promo'] ) ) : ?>
-		<li class="<?=$this->page == 'referral' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/referral">
-				<i class="icon-bullhorn icon-2x"></i>
-				<span>Invite promo</span>
-			</a>
-		</li>
-		<? endif ; ?>
-		<? if ( c::admin()->permission()->check( [ 'global','permissions-all','permissions-users','permissions-groups','drivers-working-hours','drivers-working-hours-view'] ) ) : ?>
-		<li class="<?=$this->page == 'permissions' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/permissions">
-				<i class="icon-unlock icon-2x"></i>
-				<span>User/Permissions</span>
-			</a>
-		</li>
+
+	
+	
+
+
+		
+
+
+
+		<? if ( c::admin()->permission()->check( [ 'global','community-page'] ) ) : ?>
+			<li class="<?=$this->page == 'community' ? 'active' : ''?>">
+				<span class="glow"></span>
+				<a href="/community">
+					<i class="icon-group icon-2x"></i>
+					<span>Communities</span>
+				</a>
+			</li>
 		<? endif ; ?>
 		
 		<? if ( c::admin()->permission()->check( [ 'global','settlement'] ) ) : ?>
-		<li class="<?=$this->page == 'settlement' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/settlement">
-				<i class="icon-money icon-2x"></i>
-				<span>Settlement</span>
-			</a>
-		</li>
-		<? endif ; ?>
-		
-		<? if ( c::admin()->permission()->check( [ 'global','logs'] ) ) : ?>
-		<li class="<?=$this->page == 'logs' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/logs">
-				<i class="icon-warning-sign icon-2x"></i>
-				<span>Logs</span>
-			</a>
-		</li>
+			<li class="<?=$this->page == 'settlement' ? 'active' : ''?>">
+				<span class="glow"></span>
+				<a href="/settlement">
+					<i class="icon-money icon-2x"></i>
+					<span>Settlement</span>
+				</a>
+			</li>
 		<? endif ; ?>
 
-		<? if ( c::admin()->permission()->check( [ 'global','drivers-page'] ) ) : ?>
-		<li class="<?=$this->page == 'drivers' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/drivers">
-				<i class="icon-road icon-2x"></i>
-				<span>Drivers</span>
-			</a>
-		</li>
-		<? endif ; ?>
-
-		<? if ( c::admin()->permission()->check( [ 'global','community-page'] ) ) : ?>
-		<li class="<?=$this->page == 'community' ? 'active' : ''?>">
-			<span class="glow"></span>
-			<a href="/community">
-				<i class="icon-group icon-2x"></i>
-				<span>Communities</span>
-			</a>
-		</li>
-		<? endif ; ?>
 
 	</ul>
 

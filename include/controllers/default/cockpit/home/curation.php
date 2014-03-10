@@ -3,6 +3,8 @@
 class Controller_home_curation extends Crunchbutton_Controller_Account {
 
 	public function init() {
+		header('Location: https://github.com/crunchbutton/crunchbutton/issues/2605');
+		exit;
 
 		if (!c::admin()->permission()->check(['global', 'curation'])) {
 			return ;

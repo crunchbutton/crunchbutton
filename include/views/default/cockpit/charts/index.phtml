@@ -1,87 +1,114 @@
 <?
-	$this->title = 'Dashboard';
+	$this->title = 'Charts overview';
 	$this->subtitle = 'Crunchbutton overview';
-	$this->titleicon = 'dashboard';
+	$this->titleicon = 'bar-chart';
 ?>
 <!-- content -->
 <div class="container-fluid padded">
-	<div class="row-fluid action-nav-normal">
-		
-		<?php /* if ( c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud','restaurants-create'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/restaurants/new" title="New Restaurant">
-				<i class="icon-file-alt"></i>
-				<span>New Restaurant</span>
-				</a>
-				<span class="triangle-button red"><i class="icon-plus"></i></span>
-			</div>
-		</div>
-		<?php }*/ ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view', 'support-crud', 'support-settings' ] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/support/plus" title="Support">
-				<i class="icon-comments-alt"></i>
-					<span>Support</span>
-				</a>
-				<span class="label label-black"><?=$this->data['all']['tickets']?></span>
-			</div>
-		</div>
-		<?php } ?>
-		<!-- <?php if ( c::admin()->permission()->check( [ 'global', 'github'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="https://github.com/crunchbutton/crunchbutton" title="Github" target="_blank">
-				<i class="icon-github"></i>
-				<span>Github</span>
-				</a>
-			</div>
-		</div>
-		<?php } ?> -->
 
-		<?php if ( c::admin()->permission()->check( [ 'global','curation'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/home/curation" title="Curation">
-				<i class="icon-food"></i>
-				<span>Curation</span>
-				</a>
+	<?php if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-main', 'metrics-investors', 'metrics-detailed-analytics', 'metrics-no-grouped-charts' ] ) ) { ?>
+	 <div class="box">
+			<div class="box-header">
+				 <span class="title">Metrics</span>
+				 <ul class="box-toolbar">
+						<li class="toolbar-link">
+							 <a data-toggle="modal" href="#modal-simple"><i class="icon-info-sign"></i></a>
+						</li>
+				 </ul>
 			</div>
-		</div>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','marketing-events'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/home/marketing" title="Marketing">
-				<i class="icon-bullhorn"></i>
-				<span>Marketing</span>
-				</a>
-			</div>
-		</div>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities', 'metrics-communities-page'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/charts/community" title="Community metrics">
-				<i class="icon-group"></i>
-				<span>Community metrics</span>
-				</a>
-			</div>
-		</div>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-restaurants-page'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/charts/restaurant" title="Restaurant metrics">
-				<i class="icon-bar-chart"></i>
-				<span>Restaurant metrics</span>
-				</a>
-			</div>
-		</div>
-		<?php } ?>
-	</div>
+			<div class="box-content padded">
+				 <?php
+						foreach ($this->graphs as $category => $graphs ){ 
+							?>
+				 <h5><?php echo $category;?></h5>
+				 <?php
+						$count = 1;
+						foreach ($graphs as $id => $graph ){ 
 
+							if( $count == 1 ){
+									echo '<div class="row-fluid">';
+								}
+								$title = $graph[ 'title' ];
+								$divId = $id;
+								?>
+				 <div class="span4">
+						<div>
+							 <input type="checkbox" 
+									class="icheck cat-<?php echo strtolower( str_replace( ' ', '-', $category ) ); ?>" 
+									id="checkbox-<?php echo $divId;?>" 
+									data-divId="<?php echo $divId;?>" 
+									name="checkbox-<?php echo $divId;?>">
+							 <label for="checkbox-<?php echo $divId;?>"><?php echo $title; ?></label>
+						</div>
+				 </div>
+				 <?
+						if( $count % 3 == 0 ){ 
+							echo '</div>';
+							$count = 0; 
+						}
+						$count++;
+						} 
+						if( $count != 1){ echo '</div>'; }
+						?>
+				 <hr/>
+				 <? 
+						foreach ( $graphs as $id => $graph ){ 
+							$chart = $graph[ 'url' ];
+							$activeDays = ( $graph[ 'activeDays' ] ) ? $graph[ 'activeDays' ] : 45;
+							$divId = $id;
+							echo '<div id="' . $divId . '" data-active-days="' . $activeDays . '" data-permalink="' . $chart . '" class="chart" style="display:none;width:49%;min-height:420px;;float:left;border-bottom:1px solid #CCC;"><i class="icon-spinner icon-spin"></i> Loading </div>';
+						} ?>
+						<div style="clear:both;"></div>
+				
+				 <?php
+						}
+					?>
+			<!-- Settings -->
+			 <div class="row-fluid">
+						<div class="span2">
+							<div>
+								<b>Active user (days)</b>
+							</div>
+							<div>
+								<input name="active-user-days" class="span12" id="active-user-days" type="number" placeholder="days" value="45">
+							</div>
+						</div>
+						<div class="span2">
+							<div>
+								<b>Community</b>
+							</div>
+							<div>
+								<?php 
+									$communities = Restaurant::getCommunities();
+								?>
+								<select name="filter-by-community" id="filter-by-community" class="span10">
+									<option value="">Ignore filter</option>
+									<option value="all">All</option>
+									<?php 
+										foreach( $communities as $community ){
+											echo '<option value="' . $community . '">' . $community . '</option>';
+										}
+									?>
+
+								</select>
+							</div>
+						</div>
+						<div class="span6">
+							 <div id="slider-master"></div>
+							 <br />
+							 <div id="slider-label"></div>
+						</div>
+						<div class="span2">
+							 <button class="btn btn-blue" id="button-reload" title="Reload all charts"><i class="icon-refresh"></i></button>
+							 &nbsp;
+							 <button class="btn btn-green" id="button-open-all" title="Open all">Open all</button>
+						</div>
+						<div class="clearfix"></div>
+						<hr/>
+				 </div>
+			</div>
+	 </div>
+	 <?php } ?>
 </div>
 <div id="modal-simple" class="modal hide fade" style="display: none;" aria-hidden="true">
 	 <div class="modal-header">
