@@ -9,7 +9,7 @@
 }
 .animation-fade.ng-leave {
 	z-index: 99999;
-	-webkit-animation: 0.6s animation-fade-enter ease-out;
+	-webkit-animation: 0.4s animation-fade-enter ease-out;
 }
 
 @-webkit-keyframes animation-fade-enter {

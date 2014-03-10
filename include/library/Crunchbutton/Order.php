@@ -541,14 +541,14 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function calcFinalPriceMinusUsersCredit(){
-		$final_price = $this->final_price;
+		$final_price = $this->final_price_plus_delivery_markup;
 		if( $this->pay_type == 'card' ){
 			$final_price = $final_price - $this->giftcardValue;
 			if( $this->id_user ){
 				$chargedByCredit = Crunchbutton_Credit::calcDebitFromUserCredit( $final_price, $this->id_user, $this->id_restaurant, $this->id_order, true );
 				$final_price = $final_price - $chargedByCredit;
 			}
-			Log::debug([ 'issue' => '#1551', 'method' => 'calcFinalPriceMinusUsersCredit', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'final_price' => $final_price, ]);
+			Log::debug([ 'issue' => '#1551', 'method' => 'calcFinalPriceMinusUsersCredit', 'final_price_plus_delivery_markup' => $this->final_price_plus_delivery_markup, 'final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'delivery_service_markup' => $this->delivery_service_markup ]);
 			if( $final_price < 0 ){ $final_price = 0; }
 			return Util::ceil( $final_price, 2 );
 		}
@@ -2068,6 +2068,39 @@ class Crunchbutton_Order extends Cana_Table {
 		} else {
 			return 'Place order yourself';
 		}
+	}
+	
+	// decodes 9 digit order #s
+	public static function getByNinjaId($id) {
+		$v = $id[0];
+		$len = substr($id, -1);
+		$id = substr($id, 1, -1);
+		$pad = 5;
+
+		$first = substr($id, 0, 2);
+		$rest = substr(strrev(substr($id, 2)),$pad-$len);
+		$id = $rest.$first;
+
+		return $id;
+	}
+	
+	// generates 9 digit order #s
+	public function ninjaId($version = 1) {
+		$id = $this->id;
+		if ($this->id >= 10000000) {
+			// @todo: ERROR!
+		}
+		$first = substr($id,-2);
+		$rest = substr($id,0,-2);
+		$pad = 5; // works until 10 million orders
+
+		$ret =
+			$version
+			.$first
+			.str_pad(strrev($rest),$pad,'0')
+			.strlen($rest);
+			
+		return $ret;
 	}
 
 	public function __construct($id = null) {

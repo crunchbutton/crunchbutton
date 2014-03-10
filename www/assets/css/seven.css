@@ -195,7 +195,7 @@ html {
 	font-size: 15px;
 	padding: .5em 0 .5em .6em;
 	margin: 0 0 15px 0;
-	height: 40px;
+	height: 2.7em;
 	width: 103%;
 	box-sizing: border-box;
 }
@@ -210,19 +210,26 @@ html {
 	box-sizing: border-box;
 }
 
+.location-detect .fa {
+	font-size: 22px;
+}
+
 .location-detect {
 	background: #00bd9e;
 	border-radius: 0;
 	border-top-right-radius:6px;
 	border-bottom-right-radius:6px;
 	border: 2px solid #003f35;
-	font-size: 22px;
+	font-size: 15px;
+	height: 2.7em;
+
 	color: #fff;
 	margin: 0 0 15px 0;
 	width: 40px;
 	height: 40px;
 	cursor: pointer;
-	padding: 0;
+	padding: .5em 0 .5em 0;
+	
 	box-sizing: border-box;
 
 	-webkit-transform: translate3d(0,0,0);
@@ -240,7 +247,7 @@ html {
 /* wierd issue with height only on mobile safari */
 @media screen and (max-device-width: 480px) {
 	.location-detect  {
-		height: 38px;
+
 	}
 }
 
@@ -1102,7 +1109,7 @@ p {
 }
 
 .dialog-bottom-buttons {
-	height: 3.4em;
+	/* height: 3.4em; */
 }
 
 
@@ -1924,7 +1931,14 @@ select.form-input {
 	        transition: height 0.2s;
 }
 
-
+.order-cherry {
+	background: url(../images/micro/order-cherry.svg) no-repeat;
+	background-position: top center;
+	width: 80px;
+	height: 129px;
+	background-size: 100%;
+	float: right;
+}
 
 /* about page */
 .about-pear {
@@ -3310,4 +3324,64 @@ select {
 }
 .restaurant-pic-wrapper {
 	background: #505050;
+}
+
+.dialog-alternate-link {
+	font-size: 1.2em;
+	text-transform: uppercase;
+	font-weight: bold;
+	text-align: center;
+	display: block;
+	margin-top: .9em;
+	margin-bottom: -.3em;
+}
+
+
+
+/* APP BUSY */
+.app-busy {
+	top:0;
+	left:0;
+	position:fixed;
+	height:100%;
+	width:100%;
+	background:rgba(28,14,13,.8);
+	z-index:1000;
+}
+.app-busy-loader {
+	height:100px;
+	width:100px;
+	border-radius:12px;
+	background:rgba(28,14,13,.95);
+	left:50%;
+	top:200px;
+	margin-left:-50px;
+	position:absolute;
+}
+.app-busy-loader-icon {
+	margin:0 auto;
+	background: url(../images/ajax_loader_orange_512.gif) no-repeat;
+	width:60px;
+	height:60px;
+	margin-top:20px;
+	background-size:100%;
+}
+
+@media(max-width:768px) {
+	.app-busy-loader {
+		top:150px;
+	}
+}
+
+.order-tagline {
+	margin-top: -1em;
+}
+.order-tagline h1 {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+.order-tagline h2 {
+	font-size: 1.2em;
+	margin-top: .6em;
 }

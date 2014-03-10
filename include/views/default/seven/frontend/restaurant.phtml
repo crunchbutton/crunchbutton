@@ -434,6 +434,31 @@
 
 <div class="divider bottom-spacer"></div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="address-not-found-warning order-warning modal zoom-anim-dialog small-container mfp-hide">
 	<h1>Confirm your address?</h1>
 	<p><strong>We could not find the address:<br/>{{order.form.address}}</strong></p>
@@ -445,5 +470,37 @@
 			<div ng-click="addressLetMeChangeIt();">Add a City or Zip Code</div>
 		</li>
 	</ul>
+</div>
+
+
+
+
+<div class="address-not-found-warning zoom-anim-dialog mfp-hide dialog" ng-controller="RestaurantClosedCtrl">
+	<div class="dialog-padding">
+		<h1>One sec!</h1>
+		<p><strong>We could not find the address:<br/>{{order.form.address}}</strong></p>
+	</div>
+	<div class="dialog-divider"></div>
+	<div class="dialog-padding dialog-bottom-buttons">
+		<div class="button-pushable"><button class="button lightorange" ng-click="addressLetMeChangeIt();">Add a City or Zip Code</button></div>
+		<a href="" ng-click="addressPlaceAnyway();" class="dialog-alternate-link">Place Order Anyway</a>
+		<div class="divider"></div>
+	</div>
+</div>
+
+
+
+
+<div class="address-out-of-range-warning zoom-anim-dialog mfp-hide dialog" ng-controller="RestaurantClosedCtrl">
+	<div class="dialog-padding">
+		<h1>One sec!</h1>
+		<p>The address <strong>{{order.form.address}}</strong> is out of delivery range, or you have entered an invalid address.<br/><br/>Please check your address, or order takeout.</p>
+	</div>
+	<div class="dialog-divider"></div>
+	<div class="dialog-padding dialog-bottom-buttons">
+		<div class="button-pushable"><button class="button lightorange" ng-click="addressLetMeChangeIt();">Modify Address</button></div>
+		<a href="" ng-click="addressOutOfRangePlaceAnyway();" class="dialog-alternate-link">Place Order Anyway</a>
+		<div class="divider"></div>
+	</div>
 </div>
 

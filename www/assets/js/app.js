@@ -295,7 +295,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	};
 	
 	$rootScope.cancelDownload = function() {
-		$.totalStorage('_viewmobile', true);
+		$.cookie('_viewmobile2', true, { expires: 1 });
 		App.go('/location');
 	};
 	
@@ -313,7 +313,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 			LocationService.init(true);
 
-			if (App.config.user.id_user) {
+			if (App.config.user.id_user && ($rootScope.navigation.page == 'location' || $rootScope.navigation.page == 'splash')) {
 				$location.path('/food-delivery');
 			}
 			
@@ -404,6 +404,8 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
+		
+		App.track('page', $route.current.action);
 
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
@@ -527,9 +529,14 @@ App.track = function() {
 	if (App.config.env != 'live') {
 		return;
 	}
+
 	if (arguments[0] == 'Ordered') {
 		$('img.conversion').remove();
 		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + location.href + '">').appendTo($('body'));
+	}
+
+	if (ga) {
+		ga('send', 'event', 'app', arguments[0], arguments[1]);
 	}
 };
 
@@ -745,7 +752,7 @@ App.init = function(config) {
 	}
 
 	// show download page only if its ui2 in an ios browser
-	if (App.iOS() && !App.isPhoneGap && !$.totalStorage('_viewmobile') && $('.is-ui2').get(0)) {
+	if (App.iOS() && !App.isPhoneGap && !$.totalStorage('_viewmobile2') && $('.is-ui2').get(0)) {
 		setTimeout(function(){
 			App.go('/download');
 		},10);
@@ -809,7 +816,7 @@ App.dialog = {
 			// its a dom element
 			var src = $( arguments[0] );
 		} else {
-			console.log('ERROR WITH DIALOG');
+			console.log('ERROR WITH DIALOG',arguments);
 			return;
 		}
 
