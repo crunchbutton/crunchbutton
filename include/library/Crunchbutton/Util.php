@@ -20,6 +20,15 @@ class Crunchbutton_Util extends Cana_Model {
   	return $code;
 	}
 
+	public static function intervalToSeconds( $interval ){
+		return ( $interval->s )
+         + ( $interval->i * 60 )
+         + ( $interval->h * 60 * 60 )
+         + ( $interval->d * 60 * 60 * 24 )
+         + ( $interval->m * 60 * 60 * 24 * 30 )
+         + ( $interval->y * 60 * 60 * 24 * 365 );
+	}
+
 	public static function inverseColor( $color ){
 		$r = dechex( 255 - hexdec( substr( $color, 0, 2 ) ) );
 		$r = ( strlen( $r ) > 1 ) ? $r : '0' . $r;
