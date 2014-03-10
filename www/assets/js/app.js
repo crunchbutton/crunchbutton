@@ -273,12 +273,11 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	
 	$rootScope.cartScroll = function(permalink) {
 		//$('.snap-content-inner').scrollTop() + $('.cart-items').offset().top
-		var top = 183 - $('.navs').height() - 10;
+		var top = 130 - $('.navs').height() - 10;
+		
 
 		var scroll = function() {
-			$('html, body, .snap-content-inner').animate({
-				scrollTop: top
-			}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+			$('html, body, .snap-content-inner').animate({scrollTop: top}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 		};
 		if ($rootScope.navigation.page != 'restaurant') {
 			$rootScope.scrollTop = top;
