@@ -1124,7 +1124,7 @@ p {
 .restaurants-item .restaurants-open {
 	border: 1px solid #c1c1c1;
 	background: #fff;
-	width: 29em;
+	width: 29.7em;
 	height: 12em;
 	border-radius: 4px;
 	padding: 2px;
@@ -1212,8 +1212,17 @@ p {
 	background: #ed4f41;
 	border-radius: 4px;
 	padding: 1em 1.2em 1em 1.2em;
-	width: 27em;
+	width: 27.7em;
 	clear: both;
+	
+	-webkit-transition: background linear 0.08s;
+	-moz-transition: background linear 0.08s;
+	-ms-transition: background linear 0.08s;
+	-o-transition: background linear 0.08s;
+	transition: background linear 0.08s;
+}
+.restaurants-closed:active {
+	background: #d44235;
 }
 
 .meal-item-tag {
@@ -1229,6 +1238,11 @@ p {
 	padding: .6em .8em .6em .8em;
 	z-index: 6;
 	position: relative;
+}
+
+.meal-item-tag.about-to-open {
+	background: #ed4f41;
+	box-shadow: 0 2px 0 #c83c2f;
 }
 
 .meal-item-tag-bottom {
@@ -1291,7 +1305,7 @@ p {
 	line-height: 2.6em;
 }
 .restaurants-bubble-wrap {
-	width: 29em;
+	width: 30em;
 	margin: 0 auto;
 	margin-top: -10px;
 }
@@ -2062,7 +2076,7 @@ sup {
 
 .restaurants-more {
 	margin: 0 auto;
-	width: 22.71em;
+	width: 23.31em;
 }
 
 .restaurants-items {
