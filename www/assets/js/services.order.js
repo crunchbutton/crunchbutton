@@ -713,6 +713,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 							});
 							// Clean the cart
 							service.cart.clean();
+							service.updateTotal();
 
 							// Resets the gift card notes field
 							service.giftcard.notes_field.reset();

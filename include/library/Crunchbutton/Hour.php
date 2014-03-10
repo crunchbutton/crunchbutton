@@ -148,9 +148,9 @@ class Crunchbutton_Hour extends Cana_Table {
 				$timezone = $timezone->format( 'O' );
 				foreach ( $hours as $hour ) {
 					$open = new DateTime( 'next '.$hour->day. ' ' .$hour->time_open, new DateTimeZone( $restaurant->timezone ) );
-					$open->setTimezone( new DateTimeZone( 'GMT' ) );
+					$open->setTimezone( new DateTimeZone( 'UTC' ) );
 					$close = new DateTime( 'next '.$hour->day. ' ' .$hour->time_close, new DateTimeZone( $restaurant->timezone ) );
-					$close->setTimezone( new DateTimeZone('GMT' ) );
+					$close->setTimezone( new DateTimeZone('UTC' ) );
 					$hour->time_open = $open->format( 'Y-m-d H:i' );
 					$hour->time_close = $close->format( 'Y-m-d H:i' );
 				}
@@ -193,8 +193,8 @@ class Crunchbutton_Hour extends Cana_Table {
 			return $hours;
 		}
 
-		$getDay = new DateTime( 'now', new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
-			
+		$getDay = new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
+
 		// step back two days
 		$getDay->modify( '-2 day' );
 
@@ -202,6 +202,7 @@ class Crunchbutton_Hour extends Cana_Table {
 		for( $i = 0; $i <= 6; $i++ ){
 
 			$getDay->modify( '+1 day' );
+
 			$actualDay = strtolower( $getDay->format( 'D' ) );
 
 			foreach( $hours as $day => $segments ){
@@ -210,21 +211,30 @@ class Crunchbutton_Hour extends Cana_Table {
 				if( $day != $actualDay ){ continue; }
 
 				// loop to get all the segments
-				foreach( $segments as $times ){
 
+				foreach( $segments as $times ){
 					// create a Datetime to the start time
 					$start = new DateTime( $getDay->format( 'Y-m-d' ) . ' ' . $times[ 'from' ], new DateTimeZone( $restaurant->timezone ) );
-					// Convert to UTC/GMT case it is needed 
-					if( $utc ){
-						$start->setTimezone( new DateTimeZone( 'GMT' ) );	
-					}
-
 					// create a Datetime to the end time
 					$end = new DateTime( $getDay->format( 'Y-m-d' ) . ' ' . $times[ 'to' ], new DateTimeZone( $restaurant->timezone ) );
-					// Convert to UTC/GMT case it is needed 
+
+					$diff_before = Util::intervalToSeconds( $start->diff( $end ) );
+
+					// Convert to UTC/UTC case it is needed 
 					if( $utc ){
-						$end->setTimezone( new DateTimeZone( 'GMT' ) );
+						$start->setTimezone( new DateTimeZone( 'UTC' ) );	
+						$end->setTimezone( new DateTimeZone( 'UTC' ) );
 					}
+
+					$diff_after = Util::intervalToSeconds( $start->diff( $end ) );
+
+					// For some odd reason the end hours is not being converted to UTC correctly, this piece of code will make sure that
+					// the time diff remains the same after the conversion
+					if( $diff_before != $diff_after ){
+						$seconds = $diff_before - $diff_after;
+						$end->modify( '-' . $seconds . ' seconds' );
+					}
+
 
 					// it means it ends in another day, so add the needed days
 					if( $times[ 'to_days' ] ){
@@ -244,23 +254,25 @@ class Crunchbutton_Hour extends Cana_Table {
 				}
 			}			
 		}
+
 		if( $next24hours ){
 
 			$_hours = [];
 
-			$now = new DateTime( 'now', new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+			$now = new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
 			// less 5 minutes to compensate the javascript at frontend
 			// without this 5 minutes it could export the hours starting at the minute 8 and at javascript it is at the minute 7:40 - it would show the wrongly closed message
 			$now->modify( '-5 minutes' );
-			$now_plus_24 = new DateTime( 'now', new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+			$now_plus_24 = new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
 			$now_plus_24->modify( '+1 day' );
 			$now_plus_24->modify( '-5 minutes' );
+
 			foreach ( $_hours_utc as $hour ) {
 				
 				$data = false;
 
-				$from = new DateTime( $hour->from, new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
-				$to = new DateTime( $hour->to, new DateTimeZone( ( $utc ? 'GMT' : $restaurant->timezone ) ) );
+				$from = new DateTime( $hour->from, new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
+				$to = new DateTime( $hour->to, new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
 
 				// case 1
 				if( $from <= $now && $to <= $now_plus_24 && $to > $now ){
@@ -284,10 +296,8 @@ class Crunchbutton_Hour extends Cana_Table {
 					if( $hour->notes ){
 						$data[ 'notes' ] = $hour->notes;
 					}
-					
 					$_hours[] = ( object ) $data;
 				}
-
 			}
 
 			// return the last 24 hours
@@ -319,8 +329,8 @@ class Crunchbutton_Hour extends Cana_Table {
 				if( $open->format('Hi') > $close->format('Hi') ){
 					$close->modify('+1 day');
 				}
-				$close->setTimezone(new DateTimeZone('GMT'));
-				$open->setTimezone(new DateTimeZone('GMT'));
+				$close->setTimezone(new DateTimeZone('UTC'));
+				$open->setTimezone(new DateTimeZone('UTC'));
 				$hour_open = $open->format('H:i');
 				$hour_close = $close->format('H:i');
 				if( !$_hours_utc[ $day ] ){

@@ -281,6 +281,10 @@ NGApp.controller( 'CitiesCtrl', function ( $scope ) {
  */
 NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope, RestaurantsService, LocationService, AccountService, PositionsService, RecommendRestaurantService ) {
 
+	var reps = 'moc.nottubhcnurc@spersupmac'.split('').reverse().join('');
+	$scope.reps = reps;
+
+
 	var account = AccountService;
 	var restaurants = RestaurantsService;
 
