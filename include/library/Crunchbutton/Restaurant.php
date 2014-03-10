@@ -1447,7 +1447,6 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function calc_delivery_estimated_time( $datetime = null ){
-		$this->delivery_estimated_time = 30;
 		$multipleOf = 15;
 		$time = new DateTime( ( $datetime ? $datetime : 'now' ), new DateTimeZone( $this->timezone ) );
 		$minutes = round( ( ( $time->format( 'i' ) + $this->delivery_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
