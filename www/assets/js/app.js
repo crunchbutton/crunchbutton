@@ -534,7 +534,7 @@ App.track = function() {
 		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + location.href + '">').appendTo($('body'));
 	}
 
-	if (ga) {
+	if ( typeof( ga ) == 'function' ) {
 		ga('send', 'event', 'app', arguments[0], arguments[1]);
 	}
 };
