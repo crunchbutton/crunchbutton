@@ -6,30 +6,8 @@
 <!-- content -->
 <div class="container-fluid padded">
 	<div class="row-fluid action-nav-normal">
-		
-		<?php /*if ( c::admin()->permission()->check( [ 'global', 'restaurants-all', 'restaurants-crud','restaurants-create'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/restaurants/new" title="New Restaurant">
-				<i class="icon-file-alt"></i>
-				<span>New Restaurant</span>
-				</a>
-				<span class="triangle-button red"><i class="icon-plus"></i></span>
-			</div>
-		</div>
-		<?php ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view', 'support-crud', 'support-settings' ] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/support/plus" title="Support">
-				<i class="icon-comments-alt"></i>
-					<span>Support</span>
-				</a>
-				<span class="label label-black"><?=$this->data['all']['tickets']?></span>
-			</div>
-		</div>
-		<?php } ?>
-		<!-- <?php if ( c::admin()->permission()->check( [ 'global', 'github'] ) ) { ?>
+
+		<?php if ( c::admin()->permission()->check( [ 'global', 'github'] ) ) { ?>
 		<div class="span2">
 			<div class="span12 action-nav-button">
 				<a href="https://github.com/crunchbutton/crunchbutton" title="Github" target="_blank">
@@ -38,82 +16,9 @@
 				</a>
 			</div>
 		</div>
-		<?php } ?> -->
+		<?php } ?>
 
-		<?php if ( c::admin()->permission()->check( [ 'global','curation'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/home/curation" title="Curation">
-				<i class="icon-food"></i>
-				<span>Curation</span>
-				</a>
-			</div>
-		</div>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global','marketing-events'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/home/marketing" title="Marketing">
-				<i class="icon-bullhorn"></i>
-				<span>Marketing</span>
-				</a>
-			</div>
-		</div>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities', 'metrics-communities-page'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/charts/community" title="Community metrics">
-				<i class="icon-group"></i>
-				<span>Community metrics</span>
-				</a>
-			</div>
-		</div>
-		<?php } ?>
-		<?php if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-restaurants-page'] ) ) { ?>
-		<div class="span2">
-			<div class="span12 action-nav-button">
-				<a href="/charts/restaurant" title="Restaurant metrics">
-				<i class="icon-bar-chart"></i>
-				<span>Restaurant metrics</span>
-				</a>
-			</div>
-		</div>
-		<?php } */ ?>
 	</div>
 
 </div>
-<div id="modal-simple" class="modal hide fade" style="display: none;" aria-hidden="true">
-	 <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h6 id="modal-tablesLabel">Metrics info</h6>
-	 </div>
-	 <div class="modal-body">
-			<h4>Communities</h4>
-			<?php 
-				 $communities = Crunchbutton_Restaurant::getCommunities();
-				 foreach( $communities as $community ){
-					?>
-			<b><?php echo $community; ?></b> <br/>
-			<ul>
-				 <?php
-						$restaurants = Crunchbutton_Restaurant::getRestaurantsByCommunity( $community );
-						foreach( $restaurants as $restaurant ){
-							?>
-				 <li><?php echo  $restaurant->name; ?></li>
-				 <?php 
-						}
-						?>
-			</ul>
-			<?php
-				 }
-				 ?>
-			<?php if ( c::admin()->permission()->check( ['global','metrics-manage-cohorts'] ) ) { ?>
-				<h4>Cohorts</h4>
-				<a href="/charts/cohort/" class="btn btn-green"><i class="icon-group"></i> Manage cohorts </a> 
-			<?php } ?>
-	 </div>
-	 <div class="modal-footer">
-			<button class="btn btn-default" data-dismiss="modal">Close</button>
-	 </div>
-</div>
+
