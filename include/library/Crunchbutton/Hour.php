@@ -160,12 +160,12 @@ class Crunchbutton_Hour extends Cana_Table {
 		return $restaurant->_hours[ $gmt ] ;
 	}
 
-	public function getByRestaurantWeek( $restaurant, $utc = true ){
-		return Hour::getByRestaurantToExport( $restaurant, $utc );
+	public function getByRestaurantWeek( $restaurant, $utc = true){
+		return Hour::getByRestaurantToExport( $restaurant, $utc);
 	}
 
-	public function getByRestaurantNext24Hours( $restaurant, $utc = true ){
-		return Hour::getByRestaurantToExport( $restaurant, $utc, true );
+	public function getByRestaurantNext24Hours( $restaurant, $utc = true, $sd = null){
+		return Hour::getByRestaurantToExport( $restaurant, $utc, true, $sd);
 	}
 
 	public function getRestaurantRegularPlusHolidayHours( $restaurant ){
@@ -185,15 +185,18 @@ class Crunchbutton_Hour extends Cana_Table {
 		return Hour::mergeHolidays( $_hours, $restaurant );
 	}
 
-	public function getByRestaurantToExport( $restaurant, $utc = true, $next24hours = false ){
+	public function getByRestaurantToExport( $restaurant, $utc = true, $next24hours = false , $sd = null){
 
 		$hours = Hour::getRestaurantRegularPlusHolidayHours( $restaurant );
 
 		if( count( $hours ) == 0 ){
 			return $hours;
 		}
+		if (!$utc) die('asd');
+		$sd = is_null($sd) ? new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) ) : $sd;
 
-		$getDay = new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
+		$getDay = clone $sd;
+		
 
 		// step back two days
 		$getDay->modify( '-2 day' );
@@ -259,11 +262,13 @@ class Crunchbutton_Hour extends Cana_Table {
 
 			$_hours = [];
 
-			$now = new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
+			$now = clone $sd;
+
 			// less 5 minutes to compensate the javascript at frontend
 			// without this 5 minutes it could export the hours starting at the minute 8 and at javascript it is at the minute 7:40 - it would show the wrongly closed message
 			$now->modify( '-5 minutes' );
-			$now_plus_24 = new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) );
+			
+			$now_plus_24 = clone $sd;
 			$now_plus_24->modify( '+1 day' );
 			$now_plus_24->modify( '-5 minutes' );
 
