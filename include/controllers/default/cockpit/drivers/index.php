@@ -2,6 +2,8 @@
 
 class Controller_drivers extends Crunchbutton_Controller_Account {
 	
+	const ADMIN_DRIVER_LIST_TZ = 'admin-driver-list-tz';
+
 	public function init() {
 
 		switch ( c::getPagePiece( 1 ) ){
@@ -58,6 +60,18 @@ class Controller_drivers extends Crunchbutton_Controller_Account {
 
 	public function deliveries(){
 
+		$admin = Admin::o( c::admin()->id_admin );
+		$default_tz = $admin->getConfig( Controller_drivers::ADMIN_DRIVER_LIST_TZ );
+
+		if( $default_tz->id_admin_config ){
+			$default_tz = $default_tz->value;
+		} else {
+			$default_tz = 'restaurant-tz';
+		}
+
+		c::view()->tz_default = $default_tz;
+		c::view()->admin_tz = c::admin()->timezone;
+
 		switch ( c::getPagePiece( 2 ) ){
 
 			case 'content':
@@ -76,6 +90,7 @@ class Controller_drivers extends Crunchbutton_Controller_Account {
 				if ( $_REQUEST[ 'id_admin' ] ) {
 					$search[ 'id_admin' ] = $_REQUEST[ 'id_admin' ];
 				}
+				
 				c::view()->orders = Order::deliveredByCBDrivers( $search );
 				if ( $_REQUEST[ 'export' ] ) {
 					c::view()->layout( 'layout/csv' );

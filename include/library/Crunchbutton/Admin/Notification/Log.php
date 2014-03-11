@@ -31,6 +31,12 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 		return $this->_date;
 	}
 
+	public function dateAtTz( $timezone ) {
+		$date = new DateTime( $this->date, new DateTimeZone( c::config()->timezone ) );
+		$date->setTimezone( new DateTimeZone( $timezone ) );
+		return $date;
+	}
+
 	public function register( $id_order ){
 		$attempts = Crunchbutton_Admin_Notification_Log::attempts( $id_order );
 		$log = new Crunchbutton_Admin_Notification_Log();
