@@ -31,7 +31,11 @@
 				<td style="vertical-align:top;">
 					<?php 
 						if( $order->driver()->name ){
-							echo '<strong>' . $order->driver()->name . '</strong>';
+							?>
+							<a href="/permissions/users/<?php echo $order->driver()->id_admin ?>" target="_blank">
+								<strong><?php echo $order->driver()->name; ?></strong>
+							</a>
+							<?php
 							if( $order->driver()->phone ){
 								echo '<br/><i class="icon icon-phone"></i> ' . $order->driver()->phone;	
 							}
@@ -41,10 +45,28 @@
 							if( $order->driver()->email ){
 								echo '<br/><i class="icon icon-envelope"></i> ' . $order->driver()->email;	
 							}
+							$activeNotifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$order->driver()->id_admin} AND active = 1" );
+							if ( count( $activeNotifications ) > 0 ) {
+								?>
+								<hr/>
+								<strong>Active notifications:</strong>
+								<?php
+							
+								foreach ( $activeNotifications as $activeNotification ) {
+									?>
+									<br/><strong><?php echo $activeNotification->type ?>: </strong>
+									<?php echo $activeNotification->value ?> 
+									<?php
+								}
+							}
+
 						} else {
 							echo '<i style="color:#CCC;font-size:11px;">None</i>';
 						}
-						?>
+					?>
+					<?php
+
+					?>
 				</td>
 				<td style="vertical-align:top;">
 				<?php 
