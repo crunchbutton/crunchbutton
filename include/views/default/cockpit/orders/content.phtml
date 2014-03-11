@@ -177,7 +177,7 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 						</tr>
 						<?php if( $order->delivery_service_markup_value > 0 ) { ?>
 						<tr>
-							<td nowrap="nowrap">Delivery service percent <br/>(included at subtotal) <br/>
+							<td nowrap="nowrap">Delivery service percent <br/>(included in subtotal) <br/>
 								(+<?=$order->delivery_service_markup ? $order->delivery_service_markup : '0'?>% of $
 								<?php 
 								if( $order->price_plus_delivery_markup ) {
