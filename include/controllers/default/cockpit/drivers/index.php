@@ -66,7 +66,7 @@ class Controller_drivers extends Crunchbutton_Controller_Account {
 		if( $default_tz->id_admin_config ){
 			$default_tz = $default_tz->value;
 		} else {
-			$default_tz = 'restaurant-tz';
+			$default_tz = 'admin-tz';
 		}
 
 		c::view()->tz_default = $default_tz;

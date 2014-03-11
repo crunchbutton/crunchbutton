@@ -1980,7 +1980,6 @@ hour_override.save = function(){
 	});
 }
 
-
 var admin_config = {};
 admin_config.save = function( key, value, success, error ){
 	var url = App.service + 'adminconfig';
