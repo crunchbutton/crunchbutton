@@ -33,6 +33,11 @@ class Crunchbutton_Order_Action extends Cana_Table {
 		return $this->_date;
 	}
 
+	public function dateAtTz( $timezone ) {
+		$date = new DateTime( $this->timestamp, new DateTimeZone( c::config()->timezone ) );
+		$date->setTimezone( new DateTimeZone( $timezone ) );
+		return $date;
+	}
 	public function admin(){
 		return Admin::o( $this->id_admin );
 	}

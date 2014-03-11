@@ -362,6 +362,25 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $admins;
 	}
 
+	public function getConfig( $key ){
+		$config = Crunchbutton_Admin_Config::q( 'SELECT * FROM admin_config WHERE `key` = "' . $key . '" AND id_admin = ' . $this->id_admin );
+		if( $config->id_admin_config ){
+			return $config;
+		}
+		return false;
+	}
+
+	public function setConfig( $key, $value ){
+		$config = $this->getConfig( $key );
+		if( !$config->id_admin_config ){
+			$config = new Crunchbutton_Admin_Config();
+			$config->id_admin = $this->id_admin;
+		}
+		$config->key = $key;
+		$config->value = $value;
+		$config->save();
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this

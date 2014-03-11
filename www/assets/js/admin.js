@@ -1979,3 +1979,31 @@ hour_override.save = function(){
 		}
 	});
 }
+
+
+var admin_config = {};
+admin_config.save = function( key, value, success, error ){
+	var url = App.service + 'adminconfig';
+	$.ajax({
+		type: 'POST',
+		dataType: 'json',
+		data: { 'key' : key, 'value' : value },
+		url: url,
+		success: function( json ) {
+			if( json.error ){
+				if( error ){
+					error( json );
+				}
+			} else {
+				if( success ){
+					success();
+				}
+			}
+		},
+		error: function( ){
+			if( error ){
+				error();
+			}
+		}
+	});
+}

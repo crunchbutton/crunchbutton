@@ -85,6 +85,10 @@
 				
 				<ul class="box-toolbar">
 					<li class="toolbar-link">
+						<a href="javascript:;" title="Show date and time at my Timezone - <?php echo $this->admin_tz; ?>" <?php if( c::view()->tz_default == 'restaurant-tz' ){ echo 'style="display:none;"'; } ?> class="change-to-restaurant-timezone admin-tz"><i class="icon-time"></i> My Timezone</a>
+						<a href="javascript:;" title="Show date and time at restaurants Timezone" <?php if( c::view()->tz_default == 'admin-tz' ){ echo 'style="display:none;"'; } ?> class="change-to-my-timezone restaurant-tz"><i class="icon-time"></i> Restaurant Timezone</a>
+					</li>
+					<li class="toolbar-link">
 						<a href="javascript:;" class="admin-order-export" title="Export"><i class="icon-download-alt"></i></a>
 					</li>
 				</ul>
@@ -159,10 +163,25 @@ $(function() {
 	$(document).on('click', '.admin-order-export', function() {
 		deliveries.export();
 	});
-	
+
+	$(document).on('click', '.change-to-restaurant-timezone', function() {
+		deliveries.toggleTz( 'restaurant-tz' );
+	});
+
+	$(document).on('click', '.change-to-my-timezone', function() {
+		deliveries.toggleTz( 'admin-tz' );
+	});
+
 	deliveries.load();
 
 } );
+
+deliveries.toggleTz = function( tz ){
+	$( '.admin-tz' ).hide();
+	$( '.restaurant-tz' ).hide();
+	$( '.' + tz ).show();
+	admin_config.save( '<?php echo Controller_drivers::ADMIN_DRIVER_LIST_TZ; ?>', tz );
+};
 
 deliveries.assign = function(){
 	var id_admin = $( '#form-id_admin' ).val();
