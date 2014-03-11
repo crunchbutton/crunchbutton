@@ -293,7 +293,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	}
 	service._breackDownTaxes = function (feeTotal) {
 		var taxes = (feeTotal * (service.restaurant.tax / 100));
-		// removed App.ceil - see #2613
+		// removed App.ceil - see #2613 
 		// taxes = App.ceil(taxes);
 		return taxes;
 	}

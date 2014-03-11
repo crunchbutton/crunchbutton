@@ -185,7 +185,6 @@ class Crunchbutton_Order extends Cana_Table {
 			$baseToCalcTax = $this->price + $this->delivery_fee;
 		}
 
-
 		$this->tax = $this->restaurant()->tax;
 		$tax = $baseToCalcTax * ( $this->tax / 100 );
 		$tax = number_format( $tax, 2 );
