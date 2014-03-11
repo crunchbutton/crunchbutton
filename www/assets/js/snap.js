@@ -229,7 +229,10 @@
                         
                     }
                     if(n===0){
+                    	$(settings.element).removeClass('snap-opened');
 						settings.element.style[cache.vendor+'Transform'] = '';
+                    } else {
+                    	$(settings.element).addClass('snap-opened');
                     }
                 },
                 x: function(n) {

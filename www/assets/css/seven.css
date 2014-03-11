@@ -3394,3 +3394,7 @@ select {
 	font-size: 1.2em;
 	margin-top: .6em;
 }
+
+.snap-opened .snap-content-inner {
+	pointer-events: none;
+}
