@@ -10,7 +10,7 @@ foreach( $messages as $message ){
 				<li class="arrow-box-left">
 					<div class="info">
 						<span class="name"><strong>
-							<?php if( $message->name ) { echo $message->name; } else { echo '-'; } ?>
+							<?php if( $message->name ) { echo $message->name; } else { echo '<i>No name</i>'; } ?>
 						</strong> <span class="badge badge-blue">user</span></span>
 						<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?></span>
 					</div>
