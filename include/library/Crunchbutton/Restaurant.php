@@ -1425,7 +1425,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function calc_pickup_estimated_time( $datetime = null ){
-		$multipleOf = 5;
+		$multipleOf = 15;
 		$time = new DateTime( ( $datetime ? $datetime : 'now' ), new DateTimeZone( $this->timezone ) );
 		$minutes = round( ( ( $time->format( 'i' ) + $this->pickup_estimated_time ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
 		$minutes -= $time->format( 'i' );
