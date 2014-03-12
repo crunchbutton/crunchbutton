@@ -63,6 +63,7 @@
 	
 	
 		<div class="content-padding">
+		
 			<div class="order-icon"><div class="icon-chef"></div></div>
 			<div class="order-info">
 				<p>
@@ -152,7 +153,7 @@
 			
 			<div class="divider spacer-one-two"></div>
 			
-			<a href="{{order.mapLink}}"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:green%7Clabel:A%7C{{order.address.replace('#','') | nl2cm}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
+			<a href="{{order.mapLink}}" target="_blank"><div class="order-map" style="background: url('https://maps.googleapis.com/maps/api/staticmap?&size={{width*2}}x300&markers=color:green%7Clabel:A%7C{{order.address.replace('#','') | nl2cm}}&markers=color:red%7Clabel:B%7C{{order._restaurant_lat}},{{order._restaurant_lon}}&sensor=false&visual_refresh=true');"></div></a>
 			
 			<div class="divider spacer-two-two"></div>
 			
