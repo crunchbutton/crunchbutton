@@ -192,7 +192,7 @@ class Crunchbutton_Hour extends Cana_Table {
 		if( count( $hours ) == 0 ){
 			return $hours;
 		}
-		if (!$utc) die('asd');
+
 		$sd = is_null($sd) ? new DateTime( 'now', new DateTimeZone( ( $utc ? 'UTC' : $restaurant->timezone ) ) ) : $sd;
 
 		$getDay = clone $sd;
