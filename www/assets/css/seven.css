@@ -1267,6 +1267,10 @@ p {
 	float: right;
 	margin-top: 2.2em;
 }
+.restaurants-orange.restaurants-orange-sad {
+	background: url(../images/micro/restaurants-orange-sad.svg) no-repeat;
+	background-size: 100%;
+}
 .bubble-tail {
 	width: 18.2em;
 	height: 7.4em;

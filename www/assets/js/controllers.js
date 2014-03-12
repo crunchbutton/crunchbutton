@@ -141,6 +141,18 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	var restaurants = RestaurantsService;
 
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
+	
+	var checkOpen = function() {
+		var allClosed = true;
+		for (var x in $scope.restaurants) {
+			if ($scope.restaurants[x]._open) {
+				allClosed = false;
+				break;
+			}
+		}
+		$scope.allClosed = allClosed;
+					
+	};
 
 	// Update the close/open/about_to_close status from the restaurants
 	var updateStatus = function(){
@@ -149,6 +161,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			$scope.restaurants = restaurants.getStatus();
 			$rootScope.$safeApply();
 			updateStatus();
+			checkOpen();
 		}, 1000 * 35 );
 	}
 
@@ -242,6 +255,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			document.title = ( city || '' ) + ' Food Delivery | Order Food from ' + (city || 'Local') + ' Restaurants | Crunchbutton';
 
 			$scope.restaurants = restaurants.sort();
+			checkOpen();
 
 			// Wait one minute until update the status of the restaurants
 			setTimeout( function(){
