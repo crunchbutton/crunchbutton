@@ -229,7 +229,9 @@
                         
                     }
                     if(n===0){
-                    	$(settings.element).removeClass('snap-opened');
+                    	setTimeout(function() {
+	                    	$(settings.element).removeClass('snap-opened');
+                    	},1);
 						settings.element.style[cache.vendor+'Transform'] = '';
                     } else {
                     	$(settings.element).addClass('snap-opened');
