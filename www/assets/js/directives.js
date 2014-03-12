@@ -15,8 +15,8 @@ NGApp.directive('addToCart', function(OrderService) {
 				if (!OrderService.restaurant._open) {
 					return;
 				}
-					
-				if ($('.is-ui2').get(0)) {
+
+				if (App.isUI2()) {
 					setTimeout(function() {
 						var el = $(element.get(0));
 
@@ -27,7 +27,6 @@ NGApp.directive('addToCart', function(OrderService) {
 							$(this).remove();
 						});
 						animate.appendTo('body');
-						setTimeout(function() {
 							animate.css({
 								top: 15,
 								left: $(document).width()-50,
@@ -35,7 +34,6 @@ NGApp.directive('addToCart', function(OrderService) {
 								height: 28,
 								opacity: .3
 							});	
-						},1);
 					},0);
 				}
 				
