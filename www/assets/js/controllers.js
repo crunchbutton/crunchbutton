@@ -617,6 +617,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.order.submit = function(){
 		return order.submit();
 	}
+	$scope.order.checkout = function(){
+		return order.checkout();
+	}
 	$scope.order.cardInfoChanged = function(){
 		return order.cardInfoChanged();
 	}
