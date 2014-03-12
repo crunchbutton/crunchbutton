@@ -240,6 +240,19 @@ NGApp.directive('ngScrollSpy', function () {
 			
 			if (App.isPhoneGap) {
 				var sp = {
+					min: -300,
+					max: -40,
+					onEnter: function(element, position) {
+						$('.page-location .navs').addClass('hidden-logo');
+					},
+					onLeave: function(element, position) {
+						$('.page-location .navs').removeClass('hidden-logo');
+					},
+					container: $('.snap-content-inner')
+				};
+				$(elem).scrollspy(sp);
+
+				var sp = {
 					min: -130,
 					max: -90,
 					onEnter: function(element, position) {
