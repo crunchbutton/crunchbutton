@@ -1,0 +1,72 @@
+<?
+	$this->title = 'Drivers';
+	$this->titleicon = 'road';
+	$this->titleLink = '/drivers';
+	$this->title2 = 'Shift';
+	$this->title2icon = 'clock';
+
+	$id_community = $this->id_community;
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-header"><span class="title">Select a Community</span></div>
+			<div class="box-content padded">
+				<select id="community-id" class="chosen-select" style="width:480px;">
+					<option value="" selected></option>
+					<?php  
+					$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name' );
+					foreach ( $communities as $community ) {
+						$selected = ( $id_community == $community->id_community ) ? 'selected="selected"' : '';
+						?><option <?php echo $selected; ?> value="<?php echo $community->id_community; ?>"><?php echo $community->name; ?></option><?php 
+					}
+					?>
+				</select>
+				<div class="divider"></div>
+			</div>
+		</div>
+	</div>
+
+	<?php if( $id_community ) { ?>
+		<div class="row-fluid">
+			<div class="box">
+				<div class="box-header"><span class="title">Shifts</span></div>
+				<div class="box-content">
+					<form class="form-horizontal fill-up validatable">
+						<div class="padded">
+							<?php
+							$days = c::view()->days;
+							foreach( $days as $day ){ ?>
+								<div class="row-fluid">
+									<div class="span2">
+										<label><strong><?php echo $day->format( 'D - M/d' ); ?></strong></label>
+									</div>
+									<div class="span4">
+										<input value="" name="<?php echo $day->format( 'D' ); ?>" class="hours" type="text"/>
+									</div>
+								</div>
+							<?php
+							}
+							?>
+						</div>
+					</form>
+					<div class="divider"></div>
+				</div>
+				<div class="form-actions">
+					<button type="button" class="save-shift-community btn btn-blue">Save changes</button>
+				</div>
+			</div>
+		</div>
+	<?php } ?>
+</div>
+<style type="text/css">
+	label{
+		text-align: right;
+	}
+</style>
+<script type="text/javascript" src="/assets/js/admin.shift.js"></script>
+<script type="text/javascript">
+$( document ).ready( function(){
+	shift.community.init();
+} );
+</script>
