@@ -1047,3 +1047,17 @@ App.share = function(params) {
 		});
 	}
 }
+
+App.isUI2 = function() {
+	if (App._UI2IS) {
+		return true;
+	}
+	if (App._UI2ISNT) {
+		return false;
+	}
+	if ($('.is-ui2').get(0)) {
+		return App._UI2IS = true;
+	} else {
+		return App._UI2ISNT = false;
+	}
+}

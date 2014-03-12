@@ -2988,7 +2988,7 @@ sup {
 
 .animate-cart-add {
 	-webkit-transform: translate3d(0,0,0);
-	-webkit-transition: all 0.3s ease-in;
+	-webkit-transition: all 0.2s ease-in;
 
 	position: absolute;
 	background: #f56b3b;
@@ -2997,6 +2997,8 @@ sup {
 	width: 280px;
 	left: 10px;
 	border-radius: 5px;
+	
+	pointer-events: none;
 }
 
 /* places auto complete */
