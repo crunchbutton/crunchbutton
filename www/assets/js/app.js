@@ -1013,7 +1013,7 @@ App.share = function(params) {
 	} else {
 		FB.ui({
 			method: 'feed',
-			user_message_prompt: 'CrunchButton',
+			user_message_prompt: 'Crunchbutton',
 			link: params.url,
 			href: params.url,
 			picture: pic,
@@ -1021,7 +1021,7 @@ App.share = function(params) {
 			caption:params.caption,
 			description: params.description,
 			attachment: {
-				name: 'CrunchButton',
+				name: 'Crunchbutton',
 				caption: ' ',
 				description: params.url,
 				href: params.url,
@@ -1031,7 +1031,7 @@ App.share = function(params) {
 					href: params.url
 				}],
 			},
-			action_links: [{ text: 'CrunchButton', href: 'https://crunchbutton.com' } ],
+			action_links: [{ text: 'Crunchbutton', href: 'https://crunchbutton.com' } ],
 			description: params.description
 		}, function(response) {
 			console.log(response);
