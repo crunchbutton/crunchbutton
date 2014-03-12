@@ -187,7 +187,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->tax = $this->restaurant()->tax;
 		$tax = $baseToCalcTax * ( $this->tax / 100 );
-		$tax = number_format( $tax, 2 );
+		$tax = number_format( round( $tax, 2 ), 2 );
 
 		if( intval( $this->restaurant()->delivery_service ) == 1 ){ 
 			$this->final_price = Util::ceil( $totalWithFees  + $tax, 2 ); // price
@@ -882,7 +882,7 @@ class Crunchbutton_Order extends Cana_Table {
 		} else {
 			$baseToCalcTax = $this->price + $this->delivery_fee;
 		}
-		return number_format( $baseToCalcTax * ( $this->tax / 100 ), 2 );
+		return $tax = number_format( round( $baseToCalcTax * ( $this->tax / 100 ), 2 ), 2 );;
 	}
 
 	public function deliveryFee() {
