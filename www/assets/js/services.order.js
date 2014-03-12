@@ -1064,10 +1064,10 @@ NGApp.factory('OrderViewService', function ($routeParams, $location, $rootScope,
 				var order_address = ( service.order.address ) ? service.order.address.replace(/\r|\n/g,' ') : '';
 				var restaurant_address = ( service.order._restaurant_address ) ? service.order._restaurant_address.replace(/\r|\n/g,' ') : '';
 
-				if( App.iOS() ){
-					service.order.mapLink = 'maps:q=?' +(service.order.delivery_type == 'delivery' ? 's' : 'd') + 'addr=' + order_address + '&' + (service.order.delivery_type == 'delivery' ? 'd' : 's') + 'addr=' + restaurant_address;
+				if (App.iOS()) {
+					service.order.mapLink = 'http://maps.apple.com/?' +(service.order.delivery_type == 'delivery' ? 's' : 'd') + 'addr=' + encodeURIComponent(order_address) + '&' + (service.order.delivery_type == 'delivery' ? 'd' : 's') + 'addr=' + encodeURIComponent(restaurant_address);
 				} else {
-					service.order.mapLink = 'javascript:window.open("http://maps.google.com/maps?' +(service.order.delivery_type == 'delivery' ? 's' : 'd') + 'addr=' + order_address + '&' + (service.order.delivery_type == 'delivery' ? 'd' : 's') + 'addr=' + restaurant_address + '");';
+					service.order.mapLink = 'http://maps.google.com/maps?' +(service.order.delivery_type == 'delivery' ? 's' : 'd') + 'addr=' + encodeURIComponent(order_address) + '&' + (service.order.delivery_type == 'delivery' ? 'd' : 's') + 'addr=' + encodeURIComponent(restaurant_address)+'"';
 				}
 
 				service.facebook._order_uuid = service.order.uuid;
