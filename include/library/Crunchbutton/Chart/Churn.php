@@ -22,7 +22,7 @@ class Crunchbutton_Chart_Churn extends Crunchbutton_Chart {
 														'charts' => array(  
 																'churn-rate-per-active-user-per-day' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column', 'method' => 'activeByDay'),
 																'churn-rate-per-active-user-per-week' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column', 'method' => 'activeByWeek' /* , 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByWeekByCommunity' ) ) */ ),
-																'churn-rate-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'activeByMonth' /*, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByMonthByCommunity' ) ) */ ),
+																/* 'churn-rate-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'activeByMonth' /*, 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'activeByMonthByCommunity' ) ) ), */
 															)
 												),
 												'group-historical-churn' => array(

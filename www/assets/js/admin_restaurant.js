@@ -1243,9 +1243,9 @@ var ADMIN = {
 			return;
 		}
 
-		if( $('#restaurant-community').val() == '' ){
-			alert( 'Please type the community name.' );
-			$('#restaurant-community').focus();
+		if( $('#restaurant-id-community').val() == '' ){
+			alert( 'Please select a community.' );
+			$('#restaurant-id-community').focus();
 			return;
 		}
 
@@ -1376,6 +1376,7 @@ var DOM_MAP = {
 				'textarea#restaurant-notes-todo' : ['notes_todo'],
 				'textarea#restaurant-notes-owner' : ['notes_owner'],
 				'select#restaurant-timezone' : ['timezone'],
+				'select#restaurant-id-community' : ['id_community'],
 				'select#restaurant-summary_method' : ['summary_method'],
 				'select#restaurant-payment_method' : ['payment_method'],
 				'select#restaurant-delivery-min-amt' : ['delivery_min_amt'],
@@ -1391,7 +1392,7 @@ var DOM_MAP = {
 				'input#restaurant-fee-customer' : ['fee_customer'],
 				'input#restaurant-tax' : ['tax'],
 				/* 'input#restaurant-weight-adj' : ['weight_adj'], */
-				'input#restaurant-community' : ['community'],
+				/* 'input#restaurant-community' : ['community'], */
 			},
 			widget : [], // a list of widgets supporting 'apply' and 'flush' funcs etc
 			func : {

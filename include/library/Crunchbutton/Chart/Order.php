@@ -80,16 +80,17 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 
 		$query = "SELECT DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%W') AS `Day`,
 										 COUNT(*) AS `Orders`,
-										 r.community AS `Community`
+										 c.name AS `Community`
 							FROM `order` o
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE env = 'live'
 								{$this->queryExcludeUsers}
-								AND r.community IS NOT NULL
 							GROUP BY DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%W'),
-								r.community
+								c.name
 							ORDER BY DATE_FORMAT(CONVERT_TZ(`date`, '-8:00', '-5:00'), '%Y%m%d'),
-								r.community";
+								c.name";
 		$data = c::db()->get( $query );
 		if( $render ){
 			return array( 'data' => $data, 'unit' => $this->unit, 'hideSlider' => true, 'hideGroups' => true );
@@ -185,28 +186,31 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		if( $community ){
 			$query = "SELECT YEARWEEK(date) AS Week,
 										 COUNT(*) AS Total,
-										 r.community AS 'Group'
+										 c.name AS 'Group'
 							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								INNER JOIN community c ON c.id_community = rc.id_community 
 							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
-								AND REPLACE(r.community, ' ', '-') = '{$community}'
+								AND c.id_community = '{$community}'
 								{$this->queryExcludeUsers}
-							GROUP BY YEARWEEK(date), r.community
+							GROUP BY YEARWEEK(date), c.name
 							ORDER BY YEARWEEK(date) DESC";
 				$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		} else {
 
 			$query = "SELECT YEARWEEK(date) AS Week,
 											 COUNT(*) AS Total,
-											 r.community AS 'Group'
+											 c.name AS 'Group'
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
-									AND r.community IS NOT NULL
 									{$this->queryExcludeUsers}
-								GROUP BY YEARWEEK(date), r.community
+								GROUP BY YEARWEEK(date), c.name
 								ORDER BY YEARWEEK(date) DESC";
 			$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
 
@@ -433,7 +437,7 @@ public function byDayPerRestaurant( $render = false ){
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
 								AND r.id_restaurant = '{$restaurant}'
 								{$this->queryExcludeUsers}
-							GROUP BY DATE_FORMAT( date ,'%Y-%m-%d'), r.community
+							GROUP BY DATE_FORMAT( date ,'%Y-%m-%d')
 							ORDER BY DATE_FORMAT( date ,'%Y-%m-%d') DESC";
 
 		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
@@ -455,27 +459,31 @@ public function byDayPerRestaurant( $render = false ){
 		if( $community ){
 			$query = "SELECT DATE_FORMAT( date ,'%Y-%m-%d') AS Day,
 											 COUNT(*) AS Total,
-											 r.community AS 'Group'
+											 c.name AS 'Group'
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
 								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
-									AND REPLACE(r.community, ' ', '-') = '{$community}'
+									AND c.id_community = '{$community}'
 									{$this->queryExcludeUsers}
-								GROUP BY DATE_FORMAT( date ,'%Y-%m-%d'), r.community
+								GROUP BY DATE_FORMAT( date ,'%Y-%m-%d'), c.name
 								ORDER BY DATE_FORMAT( date ,'%Y-%m-%d') DESC";
 			$parsedData = $this->parseDataDaysSimple( $query, $this->description );
 		} else {
+
 			$query = "SELECT DATE_FORMAT( date ,'%Y-%m-%d') AS Day,
-											 COUNT(*) AS Total,
-											 r.community AS 'Group'
+											COUNT(*) AS Total,
+											c.name AS 'Group'
 								FROM `order` o
-								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
-									AND r.community IS NOT NULL
 									{$this->queryExcludeUsers}
-								GROUP BY DATE_FORMAT( date ,'%Y-%m-%d'), r.community
+								GROUP BY DATE_FORMAT( date ,'%Y-%m-%d'), c.name
 								ORDER BY DATE_FORMAT( date ,'%Y-%m-%d') DESC";
 
 			$parsedData = $this->parseDataDaysGroup( $query, $this->description );
@@ -494,27 +502,29 @@ public function byDayPerRestaurant( $render = false ){
 		if( $community ){
 			$query = "SELECT DATE_FORMAT( date ,'%Y-%m') AS Month,
 											 COUNT(*) AS Total,
-											 r.community AS 'Group'
+											 c.name AS 'Group'
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
 								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
-									AND REPLACE(r.community, ' ', '-') = '{$community}'
+									AND c.id_community = '{$community}'
 									{$this->queryExcludeUsers}
-								GROUP BY DATE_FORMAT( date ,'%Y-%m'), r.community
+								GROUP BY DATE_FORMAT( date ,'%Y-%m'), c.name
 								ORDER BY DATE_FORMAT( date ,'%Y-%m') DESC";
 			$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		} else {
 			$query = "SELECT DATE_FORMAT( date ,'%Y-%m') AS Month,
 											 COUNT(*) AS Total,
-											 r.community AS 'Group'
+											 c.name AS 'Group'
 								FROM `order` o
-								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+									LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 								WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
-									AND r.community IS NOT NULL
 									{$this->queryExcludeUsers}
-								GROUP BY DATE_FORMAT( date ,'%Y-%m'), r.community
+								GROUP BY DATE_FORMAT( date ,'%Y-%m'), c.name
 								ORDER BY DATE_FORMAT( date ,'%Y-%m') DESC";
 			$parsedData = $this->parseDataMonthGroup( $query, $this->description );
 		}
@@ -539,7 +549,7 @@ public function byDayPerRestaurant( $render = false ){
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 								AND r.id_restaurant = '{$restaurant}'
 								{$this->queryExcludeUsers}
-							GROUP BY DATE_FORMAT( date ,'%Y-%m'), r.community
+							GROUP BY DATE_FORMAT( date ,'%Y-%m')
 							ORDER BY DATE_FORMAT( date ,'%Y-%m') DESC";
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 
@@ -553,7 +563,7 @@ public function byDayPerRestaurant( $render = false ){
 
 		$query = "SELECT r.name AS Restaurant,
 										 orders.orders AS Total,
-										 r.community AS 'Group'
+										 c.name AS 'Group'
 							FROM
 								(SELECT count(*) AS orders,
 												o.id_restaurant
@@ -561,8 +571,8 @@ public function byDayPerRestaurant( $render = false ){
 								 WHERE o.date BETWEEN CURDATE() - INTERVAL 1400 DAY AND CURDATE()
 								 GROUP BY o.id_restaurant) orders
 							INNER JOIN restaurant r ON r.id_restaurant = orders.id_restaurant
-							WHERE r.community IS NOT NULL";
-
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'";
 		$data = c::db()->get( $query );
 		$groups = [];
 		foreach( $data as $item ){
@@ -597,12 +607,13 @@ public function byDayPerRestaurant( $render = false ){
 	public function byUsersPerDayByCommunity( $render = false ){
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
 										 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total,
-										 r.community AS 'Group'
+										 c.name AS 'Group'
 							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE 1 = 1
-								AND r.community IS NOT NULL
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
 
 		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
@@ -634,12 +645,13 @@ public function byDayPerRestaurant( $render = false ){
 	public function byUsersPerMonthByCommunity( $render = false ){
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
 										 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total,
-										 r.community AS 'Group'
+										 c.name AS 'Group'
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE 1 = 1
-								AND r.community IS NOT NULL
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
 
 		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
@@ -671,12 +683,13 @@ public function byDayPerRestaurant( $render = false ){
 	public function byUsersPerWeekByCommunity( $render = false ){
 		$query = "SELECT YEARWEEK(date) AS Week,
 										 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total,
-										 r.community AS 'Group'
+										 c.name AS 'Group'
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE 1 = 1
-								AND r.community IS NOT NULL
 							GROUP BY YEARWEEK(date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
@@ -1493,6 +1506,9 @@ public function byDayPerRestaurant( $render = false ){
 				} else {
 					$result = 0;
 				}
+				if( $result < 0 ){
+					$result = 0;	
+				}
 				$data[] = ( object ) array( 'Label' => $label, 'Total' => $result, 'Type' => $community ); 
 			}
 		}
@@ -1561,6 +1577,9 @@ public function byDayPerRestaurant( $render = false ){
 				if( $ordersMinusNewUsers != 0 && $activeUsersAvg != 0 ){
 					$result = ( $order - $new ) / ( $activeUsersAvg );	
 				} else {
+					$result = 0;
+				}
+				if( $result < 0 ){
 					$result = 0;
 				}
 
@@ -1740,7 +1759,9 @@ public function byDayPerRestaurant( $render = false ){
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-							WHERE REPLACE(r.community, ' ', '-') = '{$community}'
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
+							WHERE c.id_community = '{$community}'
 								{$this->queryExcludeUsers}";
 		$result = c::db()->get( $query );
 		return $result->_items[0]->Total; 

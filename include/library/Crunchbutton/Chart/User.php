@@ -153,7 +153,6 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		$query = [];
 
 		$allMonths = $this->allDays();
-
 		for( $i = $this->from_day -1 ; $i < $this->to_day; $i++ ){
 			$day = $allMonths[ $i ];
 			$query[] = "SELECT '{$day}' AS Day,
@@ -791,13 +790,14 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 															 (SELECT u.phone,
 																			 o.date,
 																			 u.id_user,
-																			 r.community
+																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																	AND o.date >= STR_TO_DATE('{$week} Sunday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
-																	AND r.community IS NOT NULL
 																	{$this->queryExcludeUsers}
 																GROUP BY u.phone) ActiveUsers
 														 GROUP BY Community) ActiveUsers
@@ -810,13 +810,14 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 																			 u.phone,
 																			 o.date,
 																			 u.id_user,
-																			 r.community
+																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 																	{$this->queryExcludeUsers}
-																	AND r.community IS NOT NULL
 																GROUP BY u.phone HAVING orders = 1) Orders
 														 WHERE Orders.date BETWEEN STR_TO_DATE('{$week} Sunday', '%X%V %W') AND STR_TO_DATE('{$week} Saturday', '%X%V %W')
 														 GROUP BY Orders.community ) NewUsers ON NewUsers.Label = ActiveUsers.Label
@@ -857,13 +858,14 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 															 (SELECT u.phone,
 																			 o.date,
 																			 u.id_user,
-																			 r.community
+																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
 																	AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
-																	AND r.community IS NOT NULL
 																	{$this->queryExcludeUsers}
 																GROUP BY u.phone) ActiveUsers
 														 GROUP BY Community) ActiveUsers
@@ -876,13 +878,14 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 																			 u.phone,
 																			 o.date,
 																			 u.id_user,
-																			 r.community
+																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
 																	{$this->queryExcludeUsers}
-																	AND r.community IS NOT NULL
 																GROUP BY u.phone HAVING orders = 1) Orders
 														 WHERE Orders.date BETWEEN '{$month}-01' AND LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
 														 GROUP BY Orders.community ) NewUsers ON NewUsers.Label = ActiveUsers.Label
@@ -923,13 +926,14 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 															 (SELECT u.phone,
 																			 o.date,
 																			 u.id_user,
-																			 r.community
+																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+																INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= '{$day}'
 																	AND o.date >= '{$day}' - INTERVAL {$this->activeUsersInterval} DAY
-																	AND r.community IS NOT NULL
 																	{$this->queryExcludeUsers}
 																GROUP BY u.phone) ActiveUsers
 														 GROUP BY Community) ActiveUsers
@@ -942,13 +946,14 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 																			 u.phone,
 																			 o.date,
 																			 u.id_user,
-																			 r.community
+																			 c.name AS community
 																FROM `order` o
 																INNER JOIN user u ON u.id_user = o.id_user
 																LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+																INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 																WHERE o.date <= '{$day}'
 																	{$this->queryExcludeUsers}
-																	AND r.community IS NOT NULL
 																GROUP BY u.phone HAVING orders = 1) Orders
 														 WHERE Orders.date = '{$day}'
 														 GROUP BY Orders.community ) NewUsers ON NewUsers.Label = ActiveUsers.Label
@@ -982,13 +987,14 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 														( SELECT u.phone,
 																		 o.date,
 																		 u.id_user,
-																		 r.community
+																		 c.name AS community
 														 FROM `order` o
 														 INNER JOIN user u ON u.id_user = o.id_user
 														 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 						 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 						 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 														 WHERE o.date <= STR_TO_DATE('{$week} Saturday', '%X%V %W')
 															 AND o.date >= STR_TO_DATE('{$week} Sunday', '%X%V %W') - INTERVAL {$this->activeUsersInterval} DAY
-															 AND r.community IS NOT NULL
 															 {$this->queryExcludeUsers}
 														 GROUP BY u.phone) ActiveUsers
 													GROUP BY ActiveUsers.community";
@@ -1018,13 +1024,14 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 														( SELECT u.phone,
 																		 o.date,
 																		 u.id_user,
-																		 r.community
+																		 c.name AS community
 														 FROM `order` o
 														 INNER JOIN user u ON u.id_user = o.id_user
 														 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+														 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+														 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 														 WHERE o.date <= LAST_DAY( STR_TO_DATE( '{$month}', '%Y-%m' ) )
 															 AND o.date >= '{$month}-01' - INTERVAL {$this->activeUsersInterval} DAY
-														 	 AND r.community IS NOT NULL
 															 {$this->queryExcludeUsers}
 														 GROUP BY u.phone ) ActiveUsers
 													GROUP BY ActiveUsers.community";
@@ -1042,15 +1049,16 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$query = "SELECT YEARWEEK(date) AS `Week`,
 									 COUNT(DISTINCT((u.phone))) AS Total,
-									 r.community AS `Group`
+									 c.name AS `Group`
 						FROM `order` o
-						LEFT JOIN user u ON u.id_user = o.id_user
+						INNER JOIN user u ON u.id_user = o.id_user
 						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+						INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 						WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
-							AND r.community IS NOT NULL
 							{$this->queryExcludeUsers}
 						GROUP BY YEARWEEK(o.date),
-										 r.community
+										c.name
 						ORDER BY YEARWEEK(o.date) DESC";
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
@@ -1064,15 +1072,16 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
 									 COUNT(DISTINCT((u.phone))) AS Total,
-									 r.community AS `Group`
+									 c.name AS `Group`
 						FROM `order` o
-						LEFT JOIN user u ON u.id_user = o.id_user
+						INNER JOIN user u ON u.id_user = o.id_user
 						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+						INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 						WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
-							AND r.community IS NOT NULL
 							{$this->queryExcludeUsers}
 						GROUP BY DATE_FORMAT( o.date ,'%Y-%m-%d'),
-										 r.community
+										 c.name
 						ORDER BY DATE_FORMAT( o.date ,'%Y-%m-%d') DESC";
 
 		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
@@ -1086,15 +1095,16 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 
 		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
 									 COUNT(DISTINCT((u.phone))) AS Total,
-									 r.community AS `Group`
+									 c.name AS `Group`
 						FROM `order` o
-						LEFT JOIN user u ON u.id_user = o.id_user
+						INNER JOIN user u ON u.id_user = o.id_user
 						LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+						INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+						INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 						WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
-							AND r.community IS NOT NULL
 							{$this->queryExcludeUsers}
 						GROUP BY DATE_FORMAT( o.date ,'%Y-%m'),
-										 r.community
+										c.name
 						ORDER BY DATE_FORMAT( o.date ,'%Y-%m') DESC";
 
 		$parsedData = $this->parseDataMonthGroup( $query, $this->description );
@@ -1334,11 +1344,13 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 							INNER JOIN
 								(SELECT min(id_order) id_order,
 												u.phone,
-												r.community
+												c.name AS community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE r.community IS NOT NULL
+								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
+								 WHERE 1 = 1
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
@@ -1352,7 +1364,6 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 	}
 
 	public function newByDayByCommunityGrouped( $render = false ){
-
 		$query = "SELECT SUM(1) AS Total,
 										 DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
 										 community AS `Group`
@@ -1360,15 +1371,16 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 							INNER JOIN
 								(SELECT min(id_order) id_order,
 												u.phone,
-												r.community
+												c.name AS community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE r.community IS NOT NULL
+								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
+								 WHERE 1 = 1
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
-
 		$parsedData = $this->parseDataDaysGroup( $query, $this->description );
 
 		if( $render ){
@@ -1733,11 +1745,13 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 							INNER JOIN
 								(SELECT min(id_order) id_order,
 												u.phone,
-												r.community
+												c.name AS community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE REPLACE(r.community, ' ', '-') = '{$community}'
+								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
+								 WHERE c.id_community = '{$community}'
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
@@ -1789,11 +1803,13 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 							INNER JOIN
 								(SELECT min(id_order) id_order,
 												u.phone,
-												r.community
+												c.name as community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE REPLACE(r.community, ' ', '-') = '{$community}'
+								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
+								 WHERE c.id_community = '{$community}'
 										{$this->queryExcludeUsers}
 								 GROUP BY u.phone) orders ON o.id_order = orders.id_order
 							GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
@@ -1843,15 +1859,16 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 							INNER JOIN
 								(SELECT min(id_order) id_order,
 												u.phone,
-												r.community
+												c.name AS community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE REPLACE(r.community, ' ', '-') = '{$community}'
+								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
+								 WHERE c.id_community = '{$community}'
 										{$this->queryExcludeUsers}
-								 GROUP BY u.phone, r.community) orders ON o.id_order = orders.id_order
+								 GROUP BY u.phone, c.name ) orders ON o.id_order = orders.id_order
 							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
-
 		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit );
@@ -1868,13 +1885,15 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 							INNER JOIN
 								(SELECT min(id_order) id_order,
 												u.phone,
-												r.community
+												c.name AS community
 								 FROM `order` o
 								 INNER JOIN user u ON u.id_user = o.id_user
 								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-								 WHERE r.community IS NOT NULL
+								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
+								 WHERE 1 = 1
 										{$this->queryExcludeUsers}
-								 GROUP BY u.phone, r.community) orders ON o.id_order = orders.id_order
+								 GROUP BY u.phone, c.name) orders ON o.id_order = orders.id_order
 							GROUP BY YEARWEEK(o.date) HAVING Week BETWEEN '{$this->weekFrom}' AND '{$this->weekTo}'";
 
 		$parsedData = $this->parseDataWeeksGroup( $query, $this->description );
@@ -1943,29 +1962,4 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerMonthByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'month' );
 	}
-
-
-	public function totalUsersAll(){
-		$query = "SELECT
-										 COUNT( DISTINCT( o.phone ) ) AS Total
-							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
-								{$this->queryExcludeUsers}";
-		$result = c::db()->get( $query );
-		return $result->_items[0]->Total; 	
-	}
-
-	public function totalUsersByCommunity( $community ){
-		$query = "SELECT
-										 COUNT( DISTINCT( o.phone ) ) AS Total
-							FROM `order` o
-							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
-							WHERE REPLACE(r.community, ' ', '-') = '{$community}'
-								{$this->queryExcludeUsers}";
-		$result = c::db()->get( $query );
-		return $result->_items[0]->Total; 	
-	}
-	
-
 }

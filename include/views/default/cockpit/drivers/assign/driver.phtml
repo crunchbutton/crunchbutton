@@ -44,10 +44,10 @@
 						<li>
 							<label><strong>Communities</strong></label>
 							<span>
-								<select id="community" class="chzn-select" multiple name="community" data-placeholder="Choose the communities" style="width:100%;">
+								<select id="id_community" class="chzn-select" multiple name="id_community" data-placeholder="Choose the communities" style="width:100%;">
 								<option></option>
-								<? foreach ( $this->communities as $group => $community ) { ?>
-									<option value="<?php echo $group; ?>" <?php if( $this->admin_communities[ $group ] ){ echo 'selected="selected"'; } ?>><?php echo $community; ?></option>
+								<? foreach ( $this->communities as $id_community => $community ) { ?>
+									<option value="<?php echo $id_community; ?>" <?php if( $this->admin_communities[ $id_community ] ){ echo 'selected="selected"'; } ?>><?php echo $community; ?></option>
 								<? } ?>
 								</select>
 							</span>
@@ -66,7 +66,7 @@
 <script type="text/javascript">
 var assign = {};
 assign.save = function(){
-	var data = { 'id_admin' : $( '#id_admin' ).val(), 'id_restaurant' : $( '#id_restaurant' ).val(), 'community' : $( '#community' ).val() };
+	var data = { 'id_admin' : $( '#id_admin' ).val(), 'id_restaurant' : $( '#id_restaurant' ).val(), 'id_community' : $( '#id_community' ).val() };
 	$.ajax( {
 		url: '/api/drivers/driver',
 		method: 'POST',

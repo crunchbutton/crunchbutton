@@ -128,15 +128,190 @@ class Crunchbutton_Community extends Cana_Table {
 			->load($id);
 	}
 
+
+	function groupOfDrivers(){
+		$group = Crunchbutton_Group::byName( $this->driverGroup() );
+		if( $group->id_group ){
+			return $group;
+		}
+		$group = Crunchbutton_Group::createDriverGroup( $this->driverGroup(), $this->name );
+		return $group;
+	}
+
+	public function getDriversOfCommunity(){
+		$group = $this->driverGroup();
+		
+		$query = 'SELECT a.* FROM admin a 
+												INNER JOIN (
+													SELECT DISTINCT(id_admin) FROM (
+													SELECT DISTINCT(a.id_admin)
+														FROM admin a
+														INNER JOIN notification n ON n.id_admin = a.id_admin AND n.active = 1
+														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+														INNER JOIN restaurant r ON r.id_restaurant = n.id_restaurant 
+														INNER JOIN restaurant_community c ON c.id_restaurant = r.id_restaurant AND c.id_community = ' . $this->id_community . '
+													UNION
+													SELECT DISTINCT(a.id_admin) FROM admin a 
+														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin 
+														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = "' . $group . '" 
+														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
+														) drivers
+													) 
+											drivers ON drivers.id_admin = a.id_admin ORDER BY name ASC';
+		return Admin::q( $query );
+	}
+
+	public function slug(){
+		return str_replace( ' ' , '-', strtolower( $this->name ) );
+	}
+
+	public function totalUsersByCommunity(){
+		$chart = new Crunchbutton_Chart_User();
+		$total = $chart->totalUsersByCommunity( $this->slug() );
+		$all = $chart->totalUsersAll();
+		
+		$percent = intval( $total * 100 / $all );
+
+		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
+	}
+
+	public function totalOrdersByCommunity(){
+		$chart = new Crunchbutton_Chart_Order();
+		$total = $chart->totalOrdersByCommunity( $this->slug() );
+		$all = $chart->totalOrdersAll();
+		
+		$percent = intval( $total * 100 / $all );
+
+		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
+	}
+
+	public function newUsersLastWeek(){
+		
+		$chart = new Crunchbutton_Chart_User();
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '-1 day' );
+		$chart->dayTo = $now->format( 'Y-m-d' );
+		$now->modify( '-6 days' );
+		$chart->dayFrom = $now->format( 'Y-m-d' );
+		$chart->justGetTheData = true;
+		$orders = $chart->newByDayByCommunity( false, $this->slug() );
+
+		$now->modify( '+6 day' );
+		
+		$_orders = [];
+
+		// fill empty spaces
+		for( $i = 0; $i <= 6 ; $i++ ){
+			$_orders[ $now->format( 'Y-m-d' ) ] = ( $orders[ $now->format( 'Y-m-d' ) ] ? $orders[ $now->format( 'Y-m-d' ) ] : '0' );
+			$now->modify( '-1 day' );
+		}
+
+		$total = 0;
+		$week = [];
+
+		foreach( $_orders as $day => $value ){
+			$total += $value;
+			$week[] = $value;
+		}
+		return [ 'total' => $total, 'week' => join( ',', $week ) ];
+	}
+
+	public function ordersLastWeek(){
+		
+		$chart = new Crunchbutton_Chart_Order();
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$now->modify( '-1 day' );
+		$chart->dayTo = $now->format( 'Y-m-d' );
+		$now->modify( '-6 days' );
+		$chart->dayFrom = $now->format( 'Y-m-d' );
+		$chart->justGetTheData = true;
+		$orders = $chart->byDayPerCommunity( false, $this->slug() );
+
+		$now->modify( '+6 day' );
+		
+		$_orders = [];
+
+		// fill empty spaces
+		for( $i = 0; $i <= 6 ; $i++ ){
+			$_orders[ $now->format( 'Y-m-d' ) ] = ( $orders[ $now->format( 'Y-m-d' ) ] ? $orders[ $now->format( 'Y-m-d' ) ] : '0' );
+			$now->modify( '-1 day' );
+		}
+		
+		$total = 0;
+		$week = [];
+
+		foreach( $_orders as $day => $value ){
+			$total += $value;
+			$week[] = $value;
+		}
+		return [ 'total' => $total, 'week' => join( ',', $week ) ];
+	}
+
+	public function getRestaurants(){
+		return Restaurant::q( 'SELECT * FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ' . $this->id_community . ' ORDER BY r.name' );
+	}
+
+	public function driverDeliveryHere( $id_admin ){
+		$group = $this->groupOfDrivers();
+		if( $group->id_group ){
+			$admin_group = Crunchbutton_Admin_Group::q( "SELECT * FROM admin_group ag WHERE ag.id_group = {$group->id_group} AND ag.id_admin = {$id_admin} LIMIT 1" );
+			if( $admin_group->id_admin_group ){
+				return true;
+			}
+			return false;
+		} else {
+			return false;
+		}
+		return false;
+	}
+
+	public function driverGroup(){
+		if( !$this->driver_group ){
+			$this->driver_group = Crunchbutton_Group::driverGroupOfCommunity( $this->name );
+			$this->save();
+		}
+		return $this->driver_group;
+	}
+
 	/**
 	 * Returns the Testing community
 	 *
 	 * @return Crunchbutton_Community
 	 */
-	public function getTest()
-	{
+	public function getTest(){
 		$row = $this->q('SELECT * FROM community WHERE name="Testing" ')->current();
 		return $row;
+	}
+
+	public function totalDriversByCommunity(){
+
+		$drivers = $this->getDriversOfCommunity();
+		$total = $drivers->count();
+
+		$drivers = Admin::drivers();
+		$all = $drivers->count();
+
+		$percent = intval( $total * 100 / $all );
+
+		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];		
+	}
+
+	public function totalRestaurantsByCommunity(){
+
+		$query = "SELECT COUNT(*) AS Total FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = {$this->id_community}";
+
+		$result = c::db()->get( $query );
+		$total = $result->_items[0]->Total;
+
+		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE active = 1 AND name NOT LIKE '%test%'";
+		$result = c::db()->get( $query );
+		$all = $result->_items[0]->Total; 	
+
+		$percent = intval( $total * 100 / $all );
+
+		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];		
 	}
 
 }

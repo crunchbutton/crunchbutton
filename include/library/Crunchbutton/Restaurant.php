@@ -712,6 +712,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 	
 
+	public function removeCommunity(){
+		c::db()->query( 'DELETE FROM restaurant_community WHERE id_restaurant="'.$this->id_restaurant.'"' );
+	}
+
 	/**
 	 * Save the notifications as they are send by the API
 	 *
@@ -747,6 +751,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$where['active'] = NULL;
 		$elements = $this->notifications($where);
 		return $elements;
+	}
+
+	public function saveCommunity( $id_community ){
+		c::db()->query( 'DELETE FROM restaurant_community WHERE id_restaurant = "' . $this->id_restaurant . '"');
+		$restaurantCommunity = new Crunchbutton_Restaurant_Community();	
+		$restaurantCommunity->id_restaurant = $this->id_restaurant;
+		$restaurantCommunity->id_community = $id_community;
+		$restaurantCommunity->save();
 	}
 
 	/**
@@ -977,7 +989,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @return array
 	 */
 	public function exports($ignore = [], $where = []) {
-		$out = $this->properties();
+		$out = $this->properties();		
 		// method ByRand doesnt need all the properties
 		if( $out['type'] && $out['type'] == 'byrange' ){
 			$_ignore = [ 'type', 'credit','address','max_items','tax','active','phone','fee_restaurant','fee_customer','delivery_min','delivery_min_amt','notes_todo','pickup_estimated_time','delivery_fee','delivery_estimated_time','notes_owner','confirmation','zip','customer_receipt','cash','giftcard','email','notes','balanced_id','balanced_bank','fee_on_subtotal','payment_method','id_restaurant_pay_another_restaurant','charge_credit_fee','waive_fee_first_month','pay_promotions','pay_apology_credits','check_address','contact_name','summary_fax','summary_email','summary_frequency','legal_name_payment','tax_id','community','_preset','id_community', '_hoursFormat', 'loc_long', 'lat_lat', 'id_community' ];
@@ -986,6 +998,13 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			}
 		}
 		$out['_weight'] = $this->weight();
+		$community = $this->community();
+		if( $community->id_community ){
+			$out['id_community'] = $community->id_community;	
+		} else {
+			$out['id_community'] = null;
+		}
+		
 
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
@@ -1147,6 +1166,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$this->$key = $restaurant[$key];
 			}
 		}
+
+		if( $restaurant[ 'id_community' ] ){
+			$this->saveCommunity( $restaurant[ 'id_community' ] );
+			// legacy for while
+			$community = Crunchbutton_Community::o( $restaurant[ 'id_community' ] );
+			if( $community->id_community ){
+				$this->community = $community->name;	
+			}
+		}
+
 		$this->saveHours($restaurant['_hours']);
 		$this->saveNotifications($restaurant['_notifications']);
 		$this->saveCategories($restaurant['_categories']);

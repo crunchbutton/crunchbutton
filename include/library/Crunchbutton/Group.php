@@ -5,7 +5,7 @@ class Crunchbutton_Group extends Cana_Table {
 	const DRIVER_GROUPS_PREFIX = 'drivers-';
 
 	public function driverGroupOfCommunity( $community ){
-		return Crunchbutton_Group::normalizeDriverGroup( str_replace( ' ' , '-', Crunchbutton_Group::DRIVER_GROUPS_PREFIX . strtolower( $community ) ), 0, 20);
+		return Crunchbutton_Group::normalizeDriverGroup( str_replace( ' ' , '-', Crunchbutton_Group::DRIVER_GROUPS_PREFIX . strtolower( str_replace( "'", '', str_replace( '"', '', str_replace( ".", '', $community ) ) ) ) ), 0, 20);
 	}
 
 	public function __construct($id = null) {
@@ -48,6 +48,15 @@ class Crunchbutton_Group extends Cana_Table {
 		$description .= ' drivers group';
 		$group = new Crunchbutton_Group();
 		$group->name = $community;
+		$group->description = $description;
+		$group->save();
+		return $group;
+	}
+
+	public function createDriverGroup( $name, $description ){
+		$description = $description . ' drivers group';
+		$group = new Crunchbutton_Group();
+		$group->name = $name;
 		$group->description = $description;
 		$group->save();
 		return $group;
@@ -129,6 +138,14 @@ class Crunchbutton_Group extends Cana_Table {
 				}
 			}
 		}
+	}
+
+	public function hasUser( $id_admin ){
+		$admin_group = Crunchbutton_Admin_Group::q( "SELECT * FROM admin_group ag WHERE ag.id_group = {$this->id_group} AND ag.id_admin = {$id_admin} LIMIT 1" );
+		if( $admin_group->id_admin_group ){
+			return true;
+		}
+		return false;
 	}
 
 	public function usersTotal(){

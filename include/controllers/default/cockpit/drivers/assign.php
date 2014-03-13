@@ -40,9 +40,9 @@ class Controller_drivers_assign extends Crunchbutton_Controller_Account {
 
 		// communities
 		$communities = [];
-		$_communities = Restaurant::getCommunities();
+		$_communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
 		foreach( $_communities as $community ){
-			$communities[ Crunchbutton_Group::driverGroupOfCommunity( $community ) ] = $community;
+			$communities[ $community->id_community ] = $community->name;
 		}
 		c::view()->communities = $communities;
 	}
@@ -52,18 +52,16 @@ class Controller_drivers_assign extends Crunchbutton_Controller_Account {
 		$this->loadData();
 
 		if( c::getPagePiece( 3 ) ){
-			$community = Crunchbutton_Group::normalizeDriverGroup( c::getPagePiece( 3 ) );
-			$group = Crunchbutton_Group::getDeliveryGroupByCommunity( $community );
-			$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
+			$community = Crunchbutton_Community::o( c::getPagePiece( 3 ) );
+			$drivers = $community->getDriversOfCommunity();
 			$deliveryFor = [];
 			foreach( $drivers as $driver ){
 				$deliveryFor[ $driver->id_admin ] = true;
 			}
-			c::view()->restaurants_community = Restaurant::getRestaurantsByCommunity( Crunchbutton_Group::getRestaurantCommunityName( $community ) );
+			c::view()->restaurants_community = $community->getRestaurants();
 			c::view()->drivers_delivery = $deliveryFor;
 			c::view()->community = $community;
 		}
-
 		c::view()->display( 'drivers/assign/community' );
 	}
 
@@ -99,8 +97,11 @@ class Controller_drivers_assign extends Crunchbutton_Controller_Account {
 			}
 			$adminCommunities = [];
 			$groups = $admin->groups();
-			foreach ( $groups as $group ) {
-				$adminCommunities[ $group->name ] = true;
+			$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
+			foreach ( $communities as $community ) {
+				if( $community->driverDeliveryHere( $admin->id_admin ) ){
+					$adminCommunities[ $community->id_community ] = true;	
+				}
 			}
 			c::view()->admin_communities = $adminCommunities;
 			c::view()->restaurants_delivery = $deliveryFor;
