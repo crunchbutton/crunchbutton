@@ -20,8 +20,8 @@
 						<span>
 							<select class="chzn-select" name="community" id="community" data-placeholder="Choose a community">
 								<option></option>
-								<? foreach ( $this->communities as $group => $community ) { ?>
-									<option value="<?php echo $group; ?>" <?php if( $this->community == $group ){ echo 'selected="selected"'; } ?> ><?php echo $community; ?></option>
+								<? foreach ( $this->communities as $id_community => $name ) { ?>
+									<option value="<?php echo $id_community; ?>" <?php if( $this->community->id_community == $id_community ){ echo 'selected="selected"'; } ?> ><?php echo $name; ?></option>
 								<? } ?>
 							</select>
 						</span>
@@ -29,7 +29,7 @@
 					<?php ?>
 					<?php if( $this->community ) { ?>
 						<li>
-							<label><strong>Restaurants of this community</strong></label>
+							<label><strong>Restaurants of <?php $this->community->name ?></strong></label>
 							<span>
 
 								<?php 
@@ -70,7 +70,7 @@
 <script type="text/javascript">
 var assign = {};
 assign.save = function(){
-	var data = { 'id_admin' : $( '#id_admin' ).val(), 'community' : $( '#community' ).val() };
+	var data = { 'id_admin' : $( '#id_admin' ).val(), 'id_community' : '<?php echo $this->community->id_community ?>' };
 	$.ajax( {
 		url: '/api/drivers/community',
 		method: 'POST',

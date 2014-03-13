@@ -31,8 +31,15 @@
 				 </div>
 			</div>
 			<div class="box">
-				 <div class="box-header"><span class="title">Results</span></div>
-				 <div class="box-content">
+				<div class="box-header">
+					<span class="title">Results</span>
+					<ul class="box-toolbar">
+						<li>
+							<button class="btn btn-default show-drivers-group"><i class="icon-road"></i> <span class="driver-verb">Show</span> drivers group </button> 
+						</li>
+					</ul>
+				</div>
+				<div class="box-content">
 						<div class="permissions-loader">
 							 <center><i class="icon-spinner icon-spin" style="font-size: 50px;"></i></center>
 						</div>
@@ -42,12 +49,24 @@
 	 </div>
 </div>
 <script>
-
+	var showDriversGroup = false;
 	$(function() {		
 
 		$(document).on('click', '.admin-group-search', function() {
 			App.permissions.group.load();
 		} );
+
+		$(document).on('click', '.show-drivers-group', function() {
+			showDriversGroup = !showDriversGroup;
+			if( showDriversGroup ){
+				$( '.driver-group' ).show();
+				$( '.driver-verb' ).html( 'Hide' );
+			} else {
+				$( '.driver-group' ).hide();
+				$( '.driver-verb' ).html( 'Show' );
+			}
+		} );
+
 
 		$(document).on('keyup', '[name="name"]', function( e ) {
 			if (e.which == 13) {
@@ -67,3 +86,6 @@
 
 	});
 </script>
+<style type="text/css">
+	.driver-group{display: none;}
+</style>

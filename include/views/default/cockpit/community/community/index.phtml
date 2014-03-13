@@ -1,5 +1,6 @@
 <?
 	$community = $this->community;
+	// echo '<pre>';var_dump( $community );exit();
 	$this->title = 'Community';
 	$this->titleicon = 'group';
 	$this->titleLink = '/community';
@@ -101,7 +102,7 @@
 				<?php } ?>
 				
 				<?php if (c::admin()->permission()->check(['global','drivers-assign', 'drivers-all'])) { ?>
-				<a href="/drivers/assign/community/<?php echo Crunchbutton_Group::driverGroupOfCommunity( $community[ 'name' ] );?>"> <i class="icon-magnet"></i> Assign drivers to <?php echo $community[ 'name' ]; ?></a>
+				<a href="/drivers/assign/community/<?php echo $community[ 'community' ]->id_community;?>"> <i class="icon-magnet"></i> Assign drivers to <?php echo $community[ 'name' ]; ?></a>
 				<br />
 				<br />
 				<?php } ?>
@@ -130,7 +131,7 @@
 	</div>
 </div>
 <script type="text/javascript">
-var community = { slug : '<?php echo $community[ 'slug' ]; ?>' };
+var community = { id_community : '<?php echo $community[ 'community' ]->id_community; ?>' };
 
 var _id_restaurant = false;
 
@@ -150,7 +151,7 @@ $( document ).ready( function(){
 
 community.drivers = function(){
 	$.ajax( {
-		url: '/community/' + community.slug + '/drivers',
+		url: '/community/' + community.id_community + '/drivers',
 		complete: function(content) {
 			$('#drivers').html( content.responseText );
 		}
@@ -159,7 +160,7 @@ community.drivers = function(){
 
 community.restaurants = function(){
 	$.ajax( {
-		url: '/community/' + community.slug + '/restaurants',
+		url: '/community/' + community.id_community + '/restaurants',
 		complete: function(content) {
 			$('#restaurants').html( content.responseText );
 		}

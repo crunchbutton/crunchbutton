@@ -117,12 +117,28 @@
 							</div>
 
 							<div class="admin-item-desc">
-								give all your restaurants the EXACT SAME community
+								<!-- give all your restaurants the EXACT SAME community -->
 							</div>
 						</div>
 
 						<div class="admin-item-right">
-							<input id="restaurant-community" type="input">
+						
+							<!-- <input id="restaurant-community" type="input"> -->
+
+							<select id="restaurant-id-community">
+								<option value=""></option>
+								<?php
+								$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
+								foreach( $communities as $community ){
+									?>
+									<option value="<?php echo $community->id_community; ?>">
+										<?php echo $community->name; ?>
+									</option>
+									<?php
+								}
+								?>
+							</select>
+
 						</div>
 					</div>
 

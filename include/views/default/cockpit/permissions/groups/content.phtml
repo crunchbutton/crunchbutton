@@ -12,16 +12,16 @@ $groups = $this->groups;
 			<td></td>
 		</thead>
 		<?php foreach ( $groups as $group ) { ?>
-			<tr>
+			<?php  
+			// verify if it is an system group
+			$pos = strrpos( $group->name, Crunchbutton_Group::DRIVER_GROUPS_PREFIX );
+			?>
+			<tr <?php if( $pos !== false ){ echo 'class="driver-group"'; } ?>>
 				<td><?php echo $group->name;?> </td>
 				<td><?php echo $group->description;?> </td>
 				<td><?php echo $group->usersTotal();?> 
 
 				</td>
-				<?php  
-					// verify if it is an system group
-					$pos = strrpos( $group->name, Crunchbutton_Group::DRIVER_GROUPS_PREFIX );
-				?>
 				<td style="width:280px;">
 					<?php if( $pos === false ) { ?>
 						<a href="/permissions/groups/permissions/<?php echo $group->id_group; ?>" class="btn btn-blue"><i class="icon-unlock"></i> Permissions</a>
