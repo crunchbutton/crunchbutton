@@ -9,16 +9,17 @@ class Controller_api_drivers_community extends Crunchbutton_Controller_RestAccou
 			exit;
 		}
 		
-		$community = $this->request()[ 'community' ];
+		$id_community = $this->request()[ 'id_community' ];
 		$admins = $this->request()[ 'id_admin' ];
 
-		if( !$community ){
+		if( !$id_community ){
 			echo json_encode( [ 'error' => 'invalid object' ] );
 			exit;
 		}
 
 		// get the group of this community
-		$group = Crunchbutton_Group::getDeliveryGroupByCommunity( $community );
+		$community = Crunchbutton_Community::o( $id_community );
+		$group = $community->groupOfDrivers();
 
 		if( !$group->id_group ){
 			echo json_encode( [ 'error' => 'invalid object' ] );

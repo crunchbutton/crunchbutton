@@ -60,10 +60,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						continue;
 					} else {
 						$driversToNotify = [];
+
 						foreach ( $order->restaurant()->notifications() as $n ) {
 							// Admin notification type means it needs a driver
 							if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
-								$needDrivers = true;
 								$admin = $n->admin();
 								// Store the drivers
 								$driversToNotify[ $admin->id_admin ] = $admin;
@@ -71,6 +71,17 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						}
 
 						// get the restaurant community and its drivers
+						$communities = $order->restaurant()->communities();
+						foreach( $communities as $community ){
+							if( $community->id_community ){
+								$drivers = $community->getDriversOfCommunity();
+								foreach( $drivers as $driver ){
+									$driversToNotify[ $driver->id_admin ] = $driver;
+								}
+							}
+						}
+
+						// Legacy - lets keep it here for while						
 						$community = $order->restaurant()->community;
 						if( $community ){
 							$group = Crunchbutton_Group::getDeliveryGroupByCommunity( Crunchbutton_Group::driverGroupOfCommunity( $community ) );

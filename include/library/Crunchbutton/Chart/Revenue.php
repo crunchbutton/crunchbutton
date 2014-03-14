@@ -88,30 +88,33 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 		if( $community ){
 			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
 												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
-												r.community AS `Group`
+												c.name AS `Group`
 								FROM `order` o
 							LEFT JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
-								AND REPLACE(r.community, ' ', '-') = '{$community}'
+								AND c.id_community = '{$community}'
 								{$this->queryExcludeUsers}
 							GROUP BY DATE_FORMAT( o.date ,'%Y-%m-%d'),
-											 r.community
+											 c.name
 							ORDER BY DATE_FORMAT( o.date ,'%Y-%m-%d') DESC";
 
 			$parsedData = $this->parseDataDaysSimple( $query, $this->description );
 		} else {
 			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m-%d') AS Day,
 												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
-												r.community AS `Group`
+												c.name  AS `Group`
 								FROM `order` o
 							LEFT JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
-								AND r.community IS NOT NULL
 								{$this->queryExcludeUsers}
 							GROUP BY DATE_FORMAT( o.date ,'%Y-%m-%d'),
-											 r.community
+											 c.name
 							ORDER BY DATE_FORMAT( o.date ,'%Y-%m-%d') DESC";
 
 			$parsedData = $this->parseDataDaysGroup( $query, $this->description );
@@ -173,30 +176,33 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 		if( $community ){
 			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
 												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
-												r.community AS `Group`
+												c.name AS `Group`
 								FROM `order` o
 							LEFT JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
-								AND REPLACE(r.community, ' ', '-') = '{$community}'
+								AND c.id_community = '{$community}'
 								{$this->queryExcludeUsers}
 							GROUP BY DATE_FORMAT( o.date ,'%Y-%m'),
-											 r.community
+											 c.name
 							ORDER BY DATE_FORMAT( o.date ,'%Y-%m') DESC";
 
 			$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		} else {
 			$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
 												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
-												r.community AS `Group`
+												c.name AS `Group`
 								FROM `order` o
-							LEFT JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 INNER JOIN user u ON u.id_user = o.id_user
+								 LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								 INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								 INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
-								AND r.community IS NOT NULL
 								{$this->queryExcludeUsers}
 							GROUP BY DATE_FORMAT( o.date ,'%Y-%m'),
-											 r.community
+											 c.name
 							ORDER BY DATE_FORMAT( o.date ,'%Y-%m') DESC";
 
 			$parsedData = $this->parseDataMonthGroup( $query, $this->description );
@@ -240,30 +246,33 @@ class Crunchbutton_Chart_Revenue extends Crunchbutton_Chart {
 		if( $community ){
 			$query = "SELECT YEARWEEK(date) AS `Week`,
 												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
-												r.community AS `Group`
+												c.name AS `Group`
 								FROM `order` o
 							LEFT JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
-								AND REPLACE(r.community, ' ', '-') = '{$community}'
+								AND c.id_community = '{$community}'
 								{$this->queryExcludeUsers}
 							GROUP BY YEARWEEK(date),
-											 r.community
+											 c.name
 							ORDER BY YEARWEEK(date) DESC";
 
 			$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
 		} else {
 			$query = "SELECT YEARWEEK(date) AS `Week`,
 												CAST(SUM(final_price) AS DECIMAL(14, 2)) AS 'Total',
-												r.community AS `Group`
+												c.name AS `Group`
 								FROM `order` o
-							LEFT JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								LEFT JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+								INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+								INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
 							WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo}
-								AND r.community IS NOT NULL
 								{$this->queryExcludeUsers}
 							GROUP BY YEARWEEK(date),
-											 r.community
+											 c.name
 							ORDER BY YEARWEEK(date) DESC";
 
 			$parsedData = $this->parseDataWeeksGroup( $query, $this->description );

@@ -187,7 +187,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->tax = $this->restaurant()->tax;
 		$tax = $baseToCalcTax * ( $this->tax / 100 );
-		$tax = number_format( $tax, 2 );
+		$tax = number_format( round( $tax, 2 ), 2 );
 
 		if( intval( $this->restaurant()->delivery_service ) == 1 ){ 
 			$this->final_price = Util::ceil( $totalWithFees  + $tax, 2 ); // price
@@ -882,7 +882,7 @@ class Crunchbutton_Order extends Cana_Table {
 		} else {
 			$baseToCalcTax = $this->price + $this->delivery_fee;
 		}
-		return number_format( $baseToCalcTax * ( $this->tax / 100 ), 2 );
+		return $tax = number_format( round( $baseToCalcTax * ( $this->tax / 100 ), 2 ), 2 );;
 	}
 
 	public function deliveryFee() {
@@ -910,26 +910,14 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function notify() {
-
 		$order = $this;
-		$needDrivers = false;
-		$hasDriversWorking = false;
-
-		$driversToNotify = [];
-
 		foreach ( $order->restaurant()->notifications() as $n ) {
 			// Admin notification type means it needs a driver
-			if( $n->type == Crunchbutton_Notification::TYPE_ADMIN ){
-				$needDrivers = true;
-				$admin = $n->admin();
-				// Store the drivers
-				$driversToNotify[ $admin->id_admin ] = $admin;
-			} else {
+			if( $n->type != Crunchbutton_Notification::TYPE_ADMIN ){
 				Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => $n->type, 'to' => $n->value, 'type' => 'notification']);
 				$n->send( $order );
 			}
 		}
-
 		$this->notifyDrivers();
 	}
 
@@ -956,8 +944,21 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		// check if the restaurant is using our delivery system
-		if( intval( $order->restaurant()->delivery_service ) == 1 ){		
+		if( intval( $order->restaurant()->delivery_service ) == 1 ){
+
+			$needDrivers = true;
 			// get the restaurant community and its drivers
+			$communities = $order->restaurant()->communities();
+			foreach( $communities as $community ){
+				if( $community->id_community ){
+					$drivers = $community->getDriversOfCommunity();
+					foreach( $drivers as $driver ){
+						$driversToNotify[ $driver->id_admin ] = $driver;
+					}
+				}
+			}
+
+			// legacy - lets keep it here for while
 			$community = $order->restaurant()->community;
 			if( $community ){
 				$group = Crunchbutton_Group::getDeliveryGroupByCommunity( Crunchbutton_Group::driverGroupOfCommunity( $community ) );

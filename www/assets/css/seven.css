@@ -3404,3 +3404,13 @@ select {
 .snap-opened .snap-content-inner {
 	pointer-events: none;
 }
+.page-location .navs.hidden-logo .logo {
+	opacity: 0;
+}
+.logo {
+	-webkit-transition: all linear 0.18s;
+	   -moz-transition: all linear 0.18s;
+	    -ms-transition: all linear 0.18s;
+	     -o-transition: all linear 0.18s;
+	        transition: all linear 0.18s;
+}
