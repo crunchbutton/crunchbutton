@@ -516,7 +516,10 @@ class Crunchbutton_Hour extends Cana_Table {
 				} else
 				// case 3
 				if( $force_close_start <= $regular_start && $force_close_end <= $regular_end && $force_close_end > $regular_start ){
-					$hoursStartFinish[ $keyOpen ][ 'open' ] = Cana_Util::sum_minutes( $force_close_end, 1 );
+					$open = Cana_Util::sum_minutes( $force_close_end, 1 );
+					if( $open != $hoursStartFinish[ $keyOpen ][ 'close' ] ){
+						$hoursStartFinish[ $keyOpen ][ 'open' ] = Cana_Util::sum_minutes( $force_close_end, 1 );
+					}
 				} else
 				// case 4
 				if( $force_close_start >= $regular_start && $force_close_end >= $regular_end && $force_close_start < $regular_end ){
@@ -528,7 +531,7 @@ class Crunchbutton_Hour extends Cana_Table {
 
 		// Sort
 		$hoursStartFinish = Cana_Util::sort_col( $hoursStartFinish, 'open' );
-		
+
 		// Merge the hours again
 		foreach( $hoursStartFinish as $key => $val ){
 			$getNext = false;
@@ -726,7 +729,6 @@ class Crunchbutton_Hour extends Cana_Table {
 				}
 			}
 		}
-
 		// Convert the hours to format am/pm and merge the segments
 		$_partial = [];
 		foreach ( $_hours as $day => $hours ) {
