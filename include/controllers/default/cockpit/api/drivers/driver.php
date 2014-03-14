@@ -11,7 +11,7 @@ class Controller_api_drivers_driver extends Crunchbutton_Controller_RestAccount 
 		
 		$id_admin = $this->request()[ 'id_admin' ];
 		$restaurants = $this->request()[ 'id_restaurant' ];
-		$communities = $this->request()[ 'community' ];
+		$communities = $this->request()[ 'id_community' ];
 
 
 		$admin = Admin::o( $id_admin );
@@ -22,9 +22,9 @@ class Controller_api_drivers_driver extends Crunchbutton_Controller_RestAccount 
 		}
 
 		// first remove the driver from the delivery groups
-		$_communities = Restaurant::getCommunities();
+		$_communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );;
 		foreach( $_communities as $community ){
-			$group = Crunchbutton_Group::byName( Crunchbutton_Group::driverGroupOfCommunity( $community ) );
+			$group = $community->groupOfDrivers();
 			if( $group->id_group ){
 				$admin->removeGroup( $group->id_group );
 			}
@@ -33,8 +33,9 @@ class Controller_api_drivers_driver extends Crunchbutton_Controller_RestAccount 
 		// relate the communities with the driver
 		if( count( $communities ) > 0 && $communities != '' ){
 			foreach ( $communities as $community ) {
-				$group = Crunchbutton_Group::getDeliveryGroupByCommunity( $community );
-				if( $group->id_group ){
+				$community = Crunchbutton_Community::o( $community );
+				if( $community->id_community ){
+					$group = $community->groupOfDrivers();
 					$adminGroup = new Crunchbutton_Admin_Group();
 					$adminGroup->id_admin = $id_admin;
 					$adminGroup->id_group = $group->id_group;

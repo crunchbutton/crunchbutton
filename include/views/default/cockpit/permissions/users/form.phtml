@@ -269,6 +269,7 @@ function sendForm(){
 	var login = $.trim( $( '#login' ).val() );
 	var password = $.trim( $( '#password' ).val() );
 	var id_group = $.trim( $( '#id_group' ).val() );
+	console.log('id_group',id_group);
 	if( name == '' ){
 		alert( 'Please type a name!' );
 		$( '#name' ).focus();

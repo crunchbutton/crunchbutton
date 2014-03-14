@@ -4,7 +4,7 @@ class Controller_community extends Crunchbutton_Controller_Account {
 	
 	public function init() {
 
-		$slug = c::getPagePiece( 1 );
+		$id_community = c::getPagePiece( 1 );
 
 		if ( !c::admin()->permission()->check( [ 'global','community-all','community-page' ] ) ) {
 			return;
@@ -13,14 +13,16 @@ class Controller_community extends Crunchbutton_Controller_Account {
 		c::view()->page = 'community';
 
 		// Report with the orders from the last 14 days
-		if( $slug == 'report' ){
+		if( $id_community == 'report' ){
 			$this->report();
 			exit;
 		}
 
-		if( $slug ){
+		if( $id_community ){
 
-			$permission = "community-communities-{$slug}";
+			$community = Crunchbutton_Community::o( $id_community );
+
+			$permission = "community-communities-{$community->slug()}";
 
 			switch ( c::getPagePiece( 2 ) ) {
 
@@ -32,7 +34,7 @@ class Controller_community extends Crunchbutton_Controller_Account {
 						return;
 					}
 
-					c::view()->restaurants = $this->restaurants( $slug );
+					c::view()->restaurants = $community->getRestaurants();
 					c::view()->layout( 'layout/ajax' );
 					c::view()->display( 'community/community/restaurants' );
 					break;
@@ -49,19 +51,19 @@ class Controller_community extends Crunchbutton_Controller_Account {
 						return;
 					}
 					
-					c::view()->drivers = $this->drivers( $slug );
+					c::view()->drivers = $this->drivers( $id_community );
 					c::view()->layout( 'layout/ajax' );
 					c::view()->display( 'community/community/drivers' );
 					break;
 
 				default:
 
-					$permission = "community-communities-{$slug}";
+					$permission = "community-communities-{$community->slug()}";
 					if ( !c::admin()->permission()->check( [ 'global','community-all', $permission ] ) ) {
 						return;
 					}
 
-					c::view()->community = $this->basicInfo( $slug );
+					c::view()->community = $this->basicInfo( $id_community );
 					c::view()->restaurantsPermissions = ( c::admin()->permission()->check( [ 'global','community-all', 'community-restaurants' ] ) );
 					c::view()->driversPermissions = ( c::admin()->permission()->check( [ 'global','community-all', 'community-drivers' ] ) );
 					c::view()->display( 'community/community/index' );
@@ -69,28 +71,14 @@ class Controller_community extends Crunchbutton_Controller_Account {
 			}
 
 		} else {
-			$communities = Restaurant::getCommunities();
-			if ( !c::admin()->permission()->check( [ 'global','community-all' ] ) ) {
-				$_communities = [];
-				foreach ( $communities as $community ) {
-					$permission_name = strtolower( $community );
-					$permission_name = str_replace( ' ' , '-', $permission_name );
-					$permission_name = "community-communities-{$permission_name}";
-					if( c::admin()->permission()->check( [ $permission_name ] ) ){
-						$_communities[] = $community;
-					}
-				}
-				$communities = $_communities;
-			}
-			c::view()->communities = $communities;
-			
+			$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
+			c::view()->communities = $communities;			
 			c::view()->display( 'community/index' );
 		}
 	}
 
-	public function drivers( $slug ){
-		$community = new Restaurant_Communities();
-		$community->setSlug( $slug );
+	public function drivers( $id_community ){
+		$community = Crunchbutton_Community::o( $id_community );
 		$drivers = $community->getDriversOfCommunity();
 		// sort by working
 		$_sorted = [];
@@ -107,20 +95,13 @@ class Controller_community extends Crunchbutton_Controller_Account {
 		return $_sorted;
 	}
 
-	public function restaurants( $slug ){
-		$community = new Restaurant_Communities();
-		$community->setSlug( $slug );
-		return $community->restaurants();
-	}
+	public function basicInfo( $id_community ){
 
-	public function basicInfo( $slug ){
-		
-		$info = [ 'slug' => $slug ];
+		$community = Crunchbutton_Community::o( $id_community );
 
-		$community = new Restaurant_Communities();
-		$community->setSlug( $slug );
-		
-		$info[ 'name' ] = $community->name(); 
+		$info[ 'community' ] = $community;
+
+		$info[ 'name' ] = $community->name; 
 		$info[ 'ordersLastWeek' ] = $community->ordersLastWeek();
 		$info[ 'newUsersLastWeek' ] = $community->newUsersLastWeek();
 

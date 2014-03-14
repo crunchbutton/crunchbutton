@@ -1,0 +1,1 @@
+ALTER TABLE  `community` ADD `driver_group` VARCHAR( 20 ) NULL;

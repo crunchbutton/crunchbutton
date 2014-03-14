@@ -9,12 +9,12 @@ class Controller_charts_community extends Crunchbutton_Controller_Account {
 
 		$hasPermissionFullPermission = c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities-all' ] );
 
-		$communities = Restaurant::getCommunitiesWithRestaurantsNumber();
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
 
 		if( !$hasPermissionFullPermission ){
 			$_communities = [];
 			foreach ( $communities as $community ) {
-				$permission_name = strtolower( $community->community );
+				$permission_name = strtolower( $community->name );
 				$permission_name = str_replace( ' ' , '-', $permission_name );
 				$permission_name = "metrics-communities-{$permission_name}";
 				if( c::admin()->permission()->check( [ $permission_name ] ) ){

@@ -27,11 +27,12 @@ class Crunchbutton_Chart_DeliveryFeeTips extends Crunchbutton_Chart {
 		$orders = Order::q( 'SELECT o.*, YEARWEEK( o.date ) yearweek 
 													FROM `order` o 
 														LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+														INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+														INNER JOIN community c ON c.id_community = rc.id_community
 														WHERE o.delivery_type = "' . ORDER::SHIPPING_DELIVERY . '" 
 															AND o.pay_type = "' . ORDER::PAY_TYPE_CREDIT_CARD . '" 
 															AND YEARWEEK(o.date) >= ' . $this->weekFrom . ' 
 															AND YEARWEEK(o.date) <= ' . $this->weekTo . '
-															AND REPLACE( r.community, " ", "-" ) = "' . $community . '"
 															AND r.delivery_service = 1' );
 		$delivery_card = array();
 		foreach( $orders as $order ){
@@ -45,11 +46,12 @@ class Crunchbutton_Chart_DeliveryFeeTips extends Crunchbutton_Chart {
 		$orders = Order::q( 'SELECT o.*, YEARWEEK( o.date ) yearweek 
 													FROM `order` o 
 														LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+														INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+														INNER JOIN community c ON c.id_community = rc.id_community
 														WHERE o.delivery_type = "' . ORDER::SHIPPING_DELIVERY . '" 
 															AND o.pay_type = "' . ORDER::PAY_TYPE_CASH . '" 
 															AND YEARWEEK(o.date) >= ' . $this->weekFrom . ' 
 															AND YEARWEEK(o.date) <= ' . $this->weekTo . '
-															AND REPLACE( r.community, " ", "-" ) = "' . $community . '"
 															AND r.delivery_service = 1
 															AND r.formal_relationship = 0' );
 

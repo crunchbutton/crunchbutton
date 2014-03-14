@@ -19,16 +19,14 @@
 				 <div class="span3">
 						<div>
 							<?php 
-								$restaurants = $community->restaurants;
-								$_community = str_replace( ' ', '-', $community->community ); 
-								$_community = strtolower( $_community );
+								$restaurants = $community->totalRestaurantsByCommunity()[ 'community' ];
 							?>
 							 <input type="checkbox" 
 									class="icheck" 
-									id="checkbox-<?php echo $_community;?>" 
-									community="<?php echo $_community;?>" 
-									name="checkbox-<?php echo $_community;?>">
-							 <label for="checkbox-<?php echo $_community;?>"><?php echo $community->community; ?> ( <?php echo $restaurants; ?> restaurants )</label>
+									id="checkbox-<?php echo $community->id_community;?>" 
+									community="<?php echo $community->id_community;?>" 
+									name="checkbox-<?php echo $community->id_community;?>">
+							 <label for="checkbox-<?php echo $community->id_community;?>"><?php echo $community->name; ?> ( <?php echo $restaurants; ?> restaurants )</label>
 						</div>
 				 </div>
 
@@ -45,16 +43,14 @@
 		<?php foreach( $communities as $community ) { ?>
 
 		<?php
-			$restaurants = $community->restaurants;
-			$_community = str_replace( ' ', '-', $community->community );
-			$_community = strtolower( $_community );
+			$restaurants = $community->totalRestaurantsByCommunity()[ 'community' ];
 		?>
-		<div class="container-<?php echo $_community; ?>" style="display:none;">
-				<center><h3><?php echo $community->community; ?> ( <?php echo $restaurants; ?> restaurants )</h3></center>
+		<div class="container-<?php echo $community->id_community; ?>" style="display:none;">
+				<center><h3><?php echo $community->name; ?> ( <?php echo $restaurants; ?> restaurants )</h3></center>
 				<div class="row-fluid">
-					<div type="new-users" class="span4 new-users <?php echo $_community; ?>" id="new-users-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
-					<div type="repeated-orders" class="span4 repeated-orders <?php echo $_community; ?>" id="repeated-orders-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
-					<div type="gross-revenue" class="span4 group-revenue-by <?php echo $_community; ?>" id="group-revenue-by-<?php echo $_community; ?>" community="<?php echo $_community; ?>"></div>
+					<div type="new-users" class="span4 new-users <?php echo $community->id_community; ?>" id="new-users-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+					<div type="repeated-orders" class="span4 repeated-orders <?php echo $community->id_community; ?>" id="repeated-orders-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+					<div type="gross-revenue" class="span4 group-revenue-by <?php echo $community->id_community; ?>" id="group-revenue-by-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
 				</div>
 				<hr/>
 		</div>

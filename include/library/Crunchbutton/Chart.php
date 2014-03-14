@@ -104,7 +104,7 @@ class Crunchbutton_Chart extends Cana_Model {
 
 	}
 	
-	public function processInterval( $interval ){
+	public function processInterval( $interval, $force = false ){
 		
 		$param_interval = $_REQUEST[ 'interval' ];
 		if( $interval != $param_interval ){
@@ -140,6 +140,9 @@ class Crunchbutton_Chart extends Cana_Model {
 
 				$this->from = array_search( $this->monthToWeek( $this->monthFrom ),  $this->allWeeks() );
 				$this->to = array_search( $this->monthToWeek( $this->monthTo ),  $this->allWeeks() );
+
+				$this->from_day = array_search( $this->monthToDay( $this->monthFrom ), $this->allDays() );
+				$this->to_day = array_search( $this->monthToDay( $this->monthTo ),  $this->allDays() );
 
 				break;
 			
@@ -225,7 +228,7 @@ class Crunchbutton_Chart extends Cana_Model {
 	}
 
 	public function allCommunities(){
-		$query = "SELECT DISTINCT( r.community ) AS community FROM restaurant r WHERE r.community IS NOT NULL ORDER BY r.community ASC";
+		$query = "SELECT DISTINCT( c.name ) community FROM community c INNER JOIN restaurant_community rc ON c.id_community = rc.id_community WHERE c.name NOT LIKE 'test%' ORDER BY c.name ASC";
 		$results = c::db()->get( $query );
 		$communities = array();
 		foreach ( $results as $result ) {
@@ -312,6 +315,10 @@ class Crunchbutton_Chart extends Cana_Model {
 
 	public function monthToWeek( $month ){
 		return date( 'YW', strtotime( $month . '-01' ) );
+	}
+
+	public function monthToDay( $month ){
+		return date( 'Y-m-d', strtotime( $month . '-01' ) );
 	}
 
 	public function dayToWeek( $day ){

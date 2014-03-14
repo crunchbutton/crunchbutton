@@ -15,7 +15,7 @@
 					<option value="" selected>Choose...</option>
 					<?php  
 					foreach ( $communities as $community ) {
-						?><option value="<?php echo Crunchbutton_Restaurant_Communities::communityNameToSlug( $community ); ?>"><?php echo $community; ?></option><?php 
+						?><option value="<?php echo $community->id_community; ?>"><?php echo $community->name; ?></option><?php 
 					}
 					?>
 				</select>

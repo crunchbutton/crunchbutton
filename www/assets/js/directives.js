@@ -240,6 +240,19 @@ NGApp.directive('ngScrollSpy', function () {
 			
 			if (App.isPhoneGap) {
 				var sp = {
+					min: -300,
+					max: -40,
+					onEnter: function(element, position) {
+						$('.page-location .navs').addClass('hidden-logo');
+					},
+					onLeave: function(element, position) {
+						$('.page-location .navs').removeClass('hidden-logo');
+					},
+					container: $('.snap-content-inner')
+				};
+				$(elem).scrollspy(sp);
+
+				var sp = {
 					min: -130,
 					max: -90,
 					onEnter: function(element, position) {
@@ -383,6 +396,7 @@ NGApp.directive( 'geoComplete', function() {
 			if( typeof google == 'object' && google.maps && google.maps.places && google.maps.places.Autocomplete ){
 				var autoComplete = new google.maps.places.Autocomplete( el, { types: [ 'geocode' ] } );
 				 google.maps.event.addListener( autoComplete, 'place_changed', function() {
+					$('body').scrollTop(0);
 					var place = autoComplete.getPlace();
 					scope.$apply( function() {
 						scope.ngModel = el.value;
