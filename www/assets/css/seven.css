@@ -1127,7 +1127,7 @@ p {
 	width: 29.7em;
 	height: 12em;
 	border-radius: 4px;
-	padding: 2px;
+	padding: 2px 2px .2em 2px;
 	display: inline-block;
 	
 	margin-bottom: 2px;
@@ -1142,6 +1142,7 @@ p {
 	        transition: transform 0.2s ease, box-shadow 0.2s ease;
 */
 }
+
 
 @media screen and (min-width: 1025px) {
 	.restaurants-item .restaurants-open:hover {
@@ -1169,8 +1170,8 @@ p {
 }
 .restaurants-pic {
 	height: 8em;
-	border-top-left-radius:1px;
-	border-top-right-radius:1px;
+	border-top-left-radius:.2em;
+	border-top-right-radius:.2em;
 	overflow:hidden;
 	background-size:cover !important;
 	background-position: center center !important;
@@ -1224,6 +1225,44 @@ p {
 .restaurants-closed:active {
 	background: #d44235;
 }
+
+
+
+@media screen and (min-width: 740px) {
+	.restaurants-item .restaurants-open {
+		width: 25.5em;
+		height: 16.2em;
+		border-radius: 6px;
+	}
+	.restaurants-pic {
+		height: 12em;
+		border-top-left-radius:4px;
+		border-top-right-radius:4px;
+	}
+	.restaurants-item-content {
+		height: 16em;
+	}
+	.restaurants-open .restaurants-name {
+		font-size: 1.3em;
+		padding-bottom: .15em;
+	}
+	.restaurants-item {
+		margin: 0 7px 12px 7px ;
+	}
+	.restaurants-closed {
+		border-radius: 5px;
+		width: 23.4em;
+	}
+	.meal-item-closed:first-child:before {
+		content: " ";
+		display: block;
+		height: 20px;
+		width: 20px;
+		background: green;
+		border: 2px solid green;
+	}
+}
+
 
 .meal-item-tag {
 	background: #00bd9e;

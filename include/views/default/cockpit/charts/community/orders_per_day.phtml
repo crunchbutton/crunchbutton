@@ -1,0 +1,61 @@
+<?
+	$this->title = 'Community metrics';
+	$this->subtitle = 'Crunchbutton overview';
+	$this->titleicon = 'bar-chart';
+
+	$communities = $this->communities;
+
+?>
+<div class="container-fluid padded">
+	<div class="box">
+		<div class="box-header">
+			 <span class="title">Select the communities</span>
+		</div>
+		<div class="box-content padded">
+			<div class="row-fluid">
+			<h3>Communities</h3>
+
+			<?php foreach( $communities as $community ) { ?>
+				 <div class="span4">
+						<div>
+							 <input type="checkbox" 
+									class="icheck" 
+									value="<?php echo $community->id_community;?>"
+									id="checkbox-<?php echo $community->id_community;?>" 
+									community="<?php echo $community->id_community;?>" 
+									name="checkbox-<?php echo $community->id_community;?>">
+							 <label for="checkbox-<?php echo $community->id_community;?>"><?php echo $community->name; ?></label>
+						</div>
+				 </div>
+
+			<?php } ?>
+		</div>
+		
+		<hr/>
+		<div id="chart"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+$( document ).ready( function(){
+	$( '.icheck' ).on( 'ifChanged', function( event ){
+		$( '#chart' ).html( '<i class="icon-spinner icon-spin"></i> Loading </div>' );
+		var communities = [];
+		$( 'input[type=checkbox]' ).each( function( ){
+			var checkbox = $( this );
+			if( checkbox.is( ':checked' ) ){
+				communities.push( checkbox.val() );
+			}
+		} );
+		var url = '/home/charts/orders-per-day-per-community/?communities=' + communities.toString();
+		$.ajax( { url: url, } ).done( function( data ) { $( '#chart' ).html( data ); } );
+		
+	} );
+
+} );
+
+</script>
+<style type="text/css">
+	#options-{ display: none;}
+</style>
