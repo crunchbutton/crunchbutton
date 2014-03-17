@@ -16,6 +16,9 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 
 	public function community(){
 		$id_community = $this->request()[ 'id_community' ];
+		$day = $this->request()[ 'day' ];
+		$segment = $this->request()[ 'segment' ];
+		Crunchbutton_Community_Shift::saveShift( $id_community, $day, $segment );
+		echo json_encode( [ 'success' => $day ] );
 	}
-
 }

@@ -18,21 +18,14 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 	}
 
 	public function community(){
-
 		$id_community = c::getPagePiece( 3 );
-		$days = [];
 
 		if( $id_community ){
-			$week = c::getPagePiece( 5 ) ? c::getPagePiece( 5 ) : date( 'W' );
-			if( intval( $week ) < 10 ){
-				$week = '0' . intval( $week );
-			}
-			
-			for( $i = 0; $i <= 6; $i++ ){
-				$days[] = new DateTime( date( 'Y-m-d', strtotime( date( 'Y' ) . 'W' . $week . $i ) ), new DateTimeZone( c::config()->timezone  ) );
-			}
+			$segments = Crunchbutton_Community_Shift::shiftByCommunity( $id_community );
+			c::view()->segments = $segments;
 		}
 
+		$days = [ 'mon','tue','wed','thu','fri','sat','sun' ];
 		c::view()->id_community = $id_community;
 		c::view()->days = $days;
 		c::view()->display( 'drivers/shift/community/index' );
