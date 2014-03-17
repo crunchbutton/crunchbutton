@@ -20,31 +20,36 @@ shift.community.init = function(){
 			var segment = $( this ).val();
 			if( !shift.validate.segment( segment ) ){
 				alert( 'Unable to figure out what this time means.' );
-				field.focus();
+				$( this ).focus();
 				isOk = false;
 				return;
 			}
 		} );
 
+		var count = 0;
+
 		// if it is ok - post
 		if( isOk ){
 			var id_community = $( '#id_community' ).val();
 			var url = App.service + 'drivers/shift/community';
-
 			$( '.hours' ).each( function(){
-				
-				var date = $( this ).attr( 'date' );
+				var day = $( this ).attr( 'day' );
 				var segment = $( this ).val();
-				
+				var id_community = $( '#id_community' ).val();
 				$.ajax( {
 					type: 'POST',
 					dataType: 'json',
-					data: { 'date' : date, 'segment' : segment },
+					data: { 'id_community' : id_community, 'day' : day, 'segment' : segment },
 					url: url,
-					success: function( json ) {},
+					success: function( json ) {
+						count++;
+						if( count == 7 ){
+							alert( 'Shift saved!' );
+							document.location.reload();
+						}
+					},
 					error: function( json ) {}
 				} );
-
 			} );
 		}
 

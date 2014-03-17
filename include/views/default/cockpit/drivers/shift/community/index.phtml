@@ -6,6 +6,8 @@
 	$this->title2icon = 'clock';
 
 	$id_community = $this->id_community;
+	$segments = $this->segments;
+
 ?>
 <div class="container-fluid padded">
 	<div class="row-fluid">
@@ -33,21 +35,28 @@
 				<div class="box-header"><span class="title">Shifts</span></div>
 				<div class="box-content">
 					<form class="form-horizontal fill-up validatable">
+						<input type="hidden" name="id_community" id="id_community" value="<?php echo $id_community ?>">
 						<div class="padded">
 							<?php
 							$days = c::view()->days;
 							foreach( $days as $day ){ ?>
 								<div class="row-fluid">
 									<div class="span2">
-										<label><strong><?php echo $day->format( 'D - M/d' ); ?></strong></label>
+										<label><strong><?php echo ucfirst( $day ); ?></strong></label>
 									</div>
 									<div class="span4">
-										<input value="" name="<?php echo $day->format( 'D' ); ?>" class="hours" type="text"/>
+										<input value="<?php echo $segments[ $day ]; ?>" name="<?php echo $day; ?>" day="<?php echo $day; ?>" class="hours" type="text"/>
 									</div>
 								</div>
 							<?php
 							}
 							?>
+							<div class="row-fluid">
+								<div class="span2"></div>
+								<div class="span4">
+									* Use commas to separate shifts. e.g.: <strong>5pm - 8pm, 8pm - 11pm</strong>.
+								</div>
+							</div>
 						</div>
 					</form>
 					<div class="divider"></div>
