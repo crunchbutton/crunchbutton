@@ -428,8 +428,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		if ( $scope.location.form.address == '' ) {
 			var locSpin = $( '.location-detect' ).data( 'spinner' );
 			locSpin.start();
-			$scope.location.getLocationByBrowser( function(loc) {
-				locSpin.stop();
+			$scope.location.getLocationByBrowser(
+			// Success, got location
+			function(loc) {
 				// As it should return a new loc we can remove the previous geolocation
 				// that way we don't have two equals location
 				$scope.location.position.removeNotServedLocation();
@@ -441,9 +442,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 					proceed,
 					// Error not served
 					function(){
-						var error = function(){
-						locSpin.stop();
-						$scope.$broadcast( 'locationNotServed' );
+						var error = function() {
+							locSpin.stop();
+							$scope.$broadcast( 'locationNotServed' );
 						}
 					}
 				);

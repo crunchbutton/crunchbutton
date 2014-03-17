@@ -32,6 +32,13 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 																'orders-repeat-per-active-user-per-month' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column', 'method' => 'repeatByActiveuserByMonth', 'filters' => array( array( 'title' => 'Community', 'type' => 'community', 'method' => 'repeatByActiveuserByMonthByCommunity' ) ) )
 															)
 												),
+												'group-orders-per-day-per-community' => array(
+														'title' => 'Orders per Day By Community',
+														'tags' => array( 'especial' ),
+														'charts' => array(  
+																'orders-per-day-per-community' => array( 'title' => 'Last 14 Days', 'interval' => 'day', 'type' => 'column', 'method' => 'byDayPerCommunitySelective' ),
+															)
+												),
 												/*
 												'group-orders-repeat' => array(
 														'title' => 'Repeat Orders',
@@ -446,6 +453,79 @@ public function byDayPerRestaurant( $render = false ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
 		return $parsedData;
+	}
+
+	public function byDayPerCommunitySelective(){
+
+			$communities = $_REQUEST[ 'communities' ];
+			$communities = explode( ',' , $communities );
+
+			if( count( $communities ) == 0 ){
+				echo 'Please select one or more communities';
+			}
+
+			$where = ' AND ( ';
+			$or = '';
+			foreach ( $communities as $community ) {
+				$where .= $or . " c.id_community = '{$community}'";
+				$or = ' OR ';
+			}
+			$where .= ' ) ';
+
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$this->dayTo = $now->format( 'Y-m-d' );
+			$now->modify( '- 14 day' );
+			$this->dayFrom = $now->format( 'Y-m-d' );
+
+			$query = "SELECT 	DATE_FORMAT( date ,'%Y-%m-%d') AS Day, 
+												COUNT(*) AS Total, 
+												c.name AS `Group` 
+								FROM `order` o 
+									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+									INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
+									INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
+								WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
+									{$this->queryExcludeUsers}
+									{$where}
+									GROUP BY DATE_FORMAT( date ,'%Y-%m-%d'), c.name
+									ORDER BY DATE_FORMAT( date ,'%Y-%m-%d') DESC";
+
+			$data = c::db()->get( $query );
+
+			$_days = [];
+
+			foreach ( $data as $item ) {
+				$_days[ $item->Day ][ $item->Group ] = $item->Total;
+			}
+
+			$data = [];
+
+			// Get the communities
+			$query = "SELECT DISTINCT( c.name ) AS community FROM community c WHERE 1 = 1 $where";
+			$results = c::db()->get( $query );
+			$communities = array();
+			foreach ( $results as $result ) {
+				if( !$result->community ){
+					continue;
+				}
+				$communities[] = $result->community;
+			}
+
+			$groups = $communities;
+
+			// echo '<pre>';var_dump( $this->from_day );exit();
+
+			$allDays = $this->allDays();
+
+			for( $i = 0; $i < 14; $i++ ){
+				$now->modify( '+ 1 day' );
+				$day = $now->format( 'Y-m-d' );
+				foreach( $groups as $group ){
+					$total = ( $_days[ $day ][ $group ] ) ? $_days[ $day ][ $group ] : 0;
+					$data[] = ( object ) array( 'Label' => $this->parseDay( $day ), 'Total' => $total, 'Type' => $group  ); 
+				}
+			}
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'day' );
 	}
 
 	public function byDayPerCommunity( $render = false, $_community = false ){
