@@ -9,6 +9,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			->load($id);
 	}
 
+	public function autoCopyLastWeek(){
+		
+	}
+
 	public function shiftByCommunityDay( $id_community, $date ){
 		return Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community = "' . $id_community . '" AND DATE_FORMAT( date_start, "%Y-%m-%d" ) = "' . $date . '" ORDER BY id_community_shift ASC' );
 	}

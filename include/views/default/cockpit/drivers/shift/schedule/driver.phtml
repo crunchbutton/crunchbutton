@@ -4,7 +4,6 @@
 	$this->titleLink = '/drivers';
 	$this->title2 = 'Shift';
 	$this->title2icon = 'clock';
-
 	$communities = $this->communities;
 ?>
 <div class="container-fluid padded">
@@ -19,38 +18,36 @@
 								<table width="100%">
 								<tr>
 									<?php 
-									$days = [ 'sun', 'mon','tue','wed','thu','fri','sat' ];
-									foreach( $days as $day ){ ?>
+									foreach( $this->days as $day ){ 
+										$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+									?>
 									<th width="14%" style="background:<?php echo $dark; ?>">
 										<div class="row-fluid padded">
-											<div class="span12">
-												<strong style="font-size:15px;color:#666;">
-													<?php echo ucfirst( $day ); ?>
-												</strong>
-											</div>
+											<strong style="font-size:15px;color:#666;">
+												<?php echo ucfirst( $day->format( l ) ); ?>
+												<div style="font-size:10px;font-weight:normal;color:#CCC;"><?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?></div>
+											</strong>
 										</div>
 									</th>
 									<?php } ?>
 									<tr>
 									<?php 
-									$days = $this->days;
-									foreach( $days as $day ){ 
+									$hasShift = false;
+									foreach( $this->days as $day ){ 
+										$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
 										$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community->id_community, $day->format( 'Y-m-d' ) );
 										?>
-										<td style="background:<?php echo $dark; ?>">
-											<div class="row-fluid padded">
-													<?php 
-													foreach( $segments as $segment ) { 
-														?> <div class="span12"><?php
-														echo trim( Crunchbutton_Community_Shift::startEndToSegment( $segment->start, $segment->end ) );
-														?></div><?php
-													} ?>
-											</div>
+										<td style="background:<?php echo $dark; ?>">											
+											<?php 
+											foreach( $segments as $segment ) { 
+												$hasShift = true;
+												?><div class="row-fluid padded"><?php echo $segment->startEndToString(); ?></div><?php
+											} ?>
 										</td>
 									<?php } ?>
 									</tr>
 								</table>
-								
+								<?php if( !$hasShift ){ ?><i><?php echo $community->name; ?> has no shift for this period!</i><?php } ?>
 							<hr />
 						</div>
 					</div>

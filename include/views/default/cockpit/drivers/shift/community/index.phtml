@@ -61,13 +61,13 @@
 						<table width="100%">
 						<tr>
 							<?php foreach( $this->days as $day ) { 
-								$dark = ( $day->format( 'N' ) == 7 || $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+								$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
 							?>
 								<th width="14%" style="background:<?php echo $dark; ?>">
 									<div class="row-fluid padded">
 										<div class="span12">
 											<strong style="font-size:16px;color:#666;">
-												<?php echo $day->format( 'D' ); ?>
+												<?php echo $day->format( 'l' ); ?>
 												<div style="font-size:10px;font-weight:normal;color:#CCC;"><?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?></div>
 											</strong>
 										</div>
@@ -77,12 +77,11 @@
 						</tr>
 						<tr>
 							<?php foreach( $this->days as $day ) { 
-								$dark = ( $day->format( 'N' ) == 7 || $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+								$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
 								$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $id_community, $day->format( 'Y-m-d' ) );
 							?>
 								<td width="14%" style="background:<?php echo $dark; ?>" valign="top">
 									<div class="row-fluid padded">
-
 										<?php 
 										foreach( $segments as $segment ) { 
 											?><div class="row-fluid">
