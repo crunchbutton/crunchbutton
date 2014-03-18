@@ -5,59 +5,82 @@
 	$this->title2 = 'Shift';
 	$this->title2icon = 'clock';
 	$communities = $this->communities;
+	$id_admin = c::admin()->id_admin;
 ?>
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="box">
-			<div class="box-header"><span class="title">Enter your shift preferences</span></div>
-			<?php foreach( $communities as $community ) { ?>
-				<div class="padded">
-					<div class="row-fluid">
-						<div class="box-content">
-							<h6><?php echo $community->name; ?></h6>
-								<table width="100%">
-								<tr>
-									<?php 
+			<div class="box-header"><span class="title">Sort your shift preferences</span></div>
+			<div class="padded sort-area">
+				<div class="row-fluid">
+					<div class="row-fluid padded">
+						<div class="span4">
+							<strong>Available shifts</strong>
+							<br/><br/>
+							<ul class="available connected">
+								<?php 
+								foreach( $communities as $community ) {
 									foreach( $this->days as $day ){ 
-										$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
-									?>
-									<th width="14%" style="background:<?php echo $dark; ?>">
-										<div class="row-fluid padded">
-											<strong style="font-size:15px;color:#666;">
-												<?php echo ucfirst( $day->format( l ) ); ?>
-												<div style="font-size:10px;font-weight:normal;color:#CCC;"><?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?></div>
-											</strong>
-										</div>
-									</th>
-									<?php } ?>
-									<tr>
-									<?php 
-									$hasShift = false;
-									foreach( $this->days as $day ){ 
-										$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
 										$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community->id_community, $day->format( 'Y-m-d' ) );
-										?>
-										<td style="background:<?php echo $dark; ?>">											
-											<?php 
-											foreach( $segments as $segment ) { 
-												$hasShift = true;
-												?><div class="row-fluid padded">
-														<strong><?php echo $segment->startEndToString(); ?></strong> ( <?php echo $segment->timezoneAbbr(); ?> )
-													</div><?php
-											} ?>
-										</td>
-									<?php } ?>
-									</tr>
-								</table>
-								<?php if( !$hasShift ){ ?><i><?php echo $community->name; ?> has no shift for this period!</i><?php } ?>
-							<hr />
+										foreach ( $segments as $segment ) {
+											if( Crunchbutton_Admin_Shift_Preference::adminHasShift( $id_admin, $segment->id_community_shift ) ){
+												continue;
+											}
+											?>
+											<li id="<?php echo $segment->id_community_shift; ?>">
+												<?php echo $community->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
+												<br/>
+												<strong><?php echo $segment->dateStart()->format( 'l' ); ?> <?php echo $segment->startEndToString(); ?></strong>
+											</li>
+											<?php
+										}
+									}
+								} 
+								?>
+							</ul>
+						</div>
+						<div class="span4">
+							<strong>Shifts you want to work</strong>
+							<br/><br/>
+							<ul class="wantwork connected">
+							<?php
+								$segments = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $this->from, $this->to );
+								foreach ( $segments as $segment ) {
+									?>
+									<li id="<?php echo $segment->id_community_shift; ?>">
+										<?php echo $community->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
+										<br/>
+										<strong><?php echo $segment->dateStart()->format( 'l' ); ?> <?php echo $segment->startEndToString(); ?></strong>
+									</li>
+									<?php
+								}
+							?>
+							</ul>
+						</div>
+						<div class="span4">
+							<strong>Shifts you DONT want to work</strong>
+							<br/><br/>
+							<ul class="dontwantwork connected">
+							<?php
+								$segments = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $this->from, $this->to, true );
+								foreach ( $segments as $segment ) {
+									?>
+									<li id="<?php echo $segment->id_community_shift; ?>">
+										<?php echo $community->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
+										<br/>
+										<strong><?php echo $segment->dateStart()->format( 'l' ); ?> <?php echo $segment->startEndToString(); ?></strong>
+									</li>
+									<?php
+								}
+							?>
+							</ul>
 						</div>
 					</div>
 				</div>
-			<?php } ?>
+			</div>
 			<div class="form-actions">
-							<button type="button" class="save-shift-community btn btn-blue">Save changes</button>
-						</div>
+					<button type="button" class="save-shift-driver btn btn-blue">Save changes</button>
+				</div>
 				<div class="divider"></div>
 			</div>
 		</div>
@@ -65,13 +88,73 @@
 
 </div>
 <style type="text/css">
-	label{
-		text-align: right;
-	}
+ul.available, ul.wantwork, ul.dontwantwork {
+	min-height: 50px;
+	margin: 0px 25px 10px 0px;
+	padding: 2px;
+	border-width: 1px;
+	border-style: solid;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	list-style-type: none;
+	list-style-position: inside;
+}
+ul.available {
+	border-color: #f8e0b1;
+}
+ul.wantwork {
+	border-color: #add38d;
+}
+ul.dontwantwork{
+	border-color: #999;	
+}
+.available li, .wantwork li, .dontwantwork li {
+	margin: 5px;
+	padding: 5px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	cursor: move;
+}
+.available li {
+	background-color: #fcf8e3;
+	border: 1px solid #fbeed5;
+	color: #c09853;
+}
+.wantwork li {
+	background-color: #ebf5e6;
+	border: 1px solid #d6e9c6;
+	color: #468847;
+}
+.dontwantwork li{
+	background-color: #F5F5F5;
+	border: 1px solid #CCC;
+	color: #CCC;	
+	text-decoration:line-through;
+}
+.sortable-dragging {
+	cursor: move;
+	border-color: #ccc !important;
+	background-color: #fafafa !important;
+	color: #bbb !important;
+}
+.sortable-placeholder {
+	height: 40px;
+}
+.available .sortable-placeholder {
+	border: 2px dashed #f8e0b1 !important;
+	background-color: #fefcf5 !important;
+}
+.wantwork .sortable-placeholder {
+	border: 2px dashed #add38d !important;
+	background-color: #f6fbf4 !important;
+}
 </style>
+<script type="text/javascript" src="/assets/js/jquery-sortable.js"></script>
 <script type="text/javascript" src="/assets/js/admin.shift.js"></script>
 <script type="text/javascript">
 $( document ).ready( function(){
-	shift.community.init();
+	shift.drivers.init();
 } );
 </script>

@@ -159,3 +159,51 @@ shift.validate.segment = function( segment ){
 	}
 	return false;
 }
+
+shift.drivers = {};
+
+shift.drivers.init = function(){
+
+	$( '.sort-area' ).click( function() {
+		$( 'html, body' ).animate( { scrollTop: 0 } );
+		return false;
+	} );
+
+	$( '.save-shift-driver' ).click( function() {
+		shift.drivers.save();
+	} );
+
+	$('.available, .wantwork, .dontwantwork').sortable( { connectWith: '.connected' } );
+
+}
+
+shift.drivers.save = function(){
+	var wantWorkItems = [];
+	var dontWantWorkItems = [];
+	var availableItems = [];
+	var allItems = [];
+	$('ul.wantwork li').each( function() {
+		wantWorkItems.push( $( this ).attr( 'id' ) );
+		allItems.push( $( this ).attr( 'id' ) );
+	} );
+	$('ul.dontwantwork li').each( function() {
+		dontWantWorkItems.push( $( this ).attr( 'id' ) );
+		allItems.push( $( this ).attr( 'id' ) );
+	} );
+	$('ul.available li').each( function() {
+		availableItems.push( $( this ).attr( 'id' ) );
+		allItems.push( $( this ).attr( 'id' ) );
+	} );
+	$.ajax( {
+		url: '/api/drivers/shift/driver/',
+		method: 'POST',
+		data: { 'allItems' : allItems, 'dontWantWorkItems' : dontWantWorkItems, 'wantWorkItems' : wantWorkItems, 'availableItems' : availableItems },
+		dataType: 'json',
+	} ).done( function( data ) {
+		if( data.success ){
+			location.reload();
+		} else {
+			alert( 'Ops, error! ' + data.error );
+		}
+	} );
+}
