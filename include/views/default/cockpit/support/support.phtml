@@ -4,7 +4,7 @@
 
 	$this->title = 'Support';
 	$this->titleicon = 'comments';
-	$this->titleLink = '/support/plus';
+	$this->titleLink = '/support';
 	
 	$this->title2 = 'Issue #'.$this->support->id_support;
 	$this->title2icon = 'warning-sign';
@@ -15,13 +15,13 @@
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="span6">
-			<?=$this->display('support/plus/info')?>
-			<?=$this->display('support/plus/actions')?>
-			<?=$this->display('support/plus/update')?>
+			<?=$this->display('support/info')?>
+			<?=$this->display('support/actions')?>
+			<?=$this->display('support/update')?>
 		</div>
 		<div class="span6">
-			<?=$this->display('support/plus/conversation')?>
-			<?=$this->display('support/plus/addnote')?>
+			<?=$this->display('support/conversation')?>
+			<?=$this->display('support/addnote')?>
 		</div>
 	</div>
 </div>
@@ -42,7 +42,7 @@ function showAlert( box, css, message ){
 
 /* Update the Log history */
 function updateConversationHistory(){
-	var url = '/support/plus/<?php echo $support->id_support; ?>/history';
+	var url = '/support/<?php echo $support->id_support; ?>/history';
 	$.ajax( {
 		url: url
 	} ).done( function( content ) {
@@ -100,7 +100,7 @@ $(function() {
 		text.val( 'Sending...' );
 		text.prop( 'enabled', false );
 		
-		$.post('/support/plus/<?php echo $support->id_support; ?>/conversation', {
+		$.post('/support/<?php echo $support->id_support; ?>/conversation', {
 			text: val
 		}, function( ) {
 			text.prop( 'enabled',true );
@@ -148,7 +148,7 @@ $(function() {
 								'how_to_prevent' : how_to_prevent
 							};
 
-		var url = '/support/plus/<?php echo $support->id_support; ?>/update';
+		var url = '/support/<?php echo $support->id_support; ?>/update';
 		$.ajax({
 			type: 'POST',
 			dataType: 'json',
@@ -181,7 +181,7 @@ $(function() {
 			text.val( 'Sending...' );
 			text.prop( 'enabled', false );
 
-			$.post('/support/plus/<?php echo $support->id_support; ?>/note', {
+			$.post('/support/<?php echo $support->id_support; ?>/note', {
 				text: val
 			}, function( ) {
 				text.prop( 'enabled',true );
@@ -249,7 +249,7 @@ $(function() {
 function unlinkRep(){
 	if( confirm( 'Confirm unlink rep?' ) ){
 		$.ajax( {
-			url: '/support/plus/<?php echo $support->id_support; ?>/remove-rep',
+			url: '/support/<?php echo $support->id_support; ?>/remove-rep',
 			complete: function( content ) {
 				location.reload();
 			}
@@ -260,7 +260,7 @@ function unlinkRep(){
 function unlinkOrder(){
 	if( confirm( 'Confirm unlink order?' ) ){
 		$.ajax( {
-			url: '/support/plus/<?php echo $support->id_support; ?>/remove-order',
+			url: '/support/<?php echo $support->id_support; ?>/remove-order',
 			complete: function( content ) {
 				location.reload();
 			}
@@ -282,7 +282,7 @@ function linkRepSave(){
 		return;
 	}
 
-	var url = '/support/plus/<?php echo $support->id_support; ?>/link-rep';
+	var url = '/support/<?php echo $support->id_support; ?>/link-rep';
 	$.ajax( {
 		type: 'POST',
 		dataType: 'json',
@@ -306,7 +306,7 @@ function linkOrder(){
 		return;
 	}
 
-	var url = '/support/plus/<?php echo $support->id_support; ?>/link-order';
+	var url = '/support/<?php echo $support->id_support; ?>/link-order';
 	$.ajax( {
 		type: 'POST',
 		dataType: 'json',
