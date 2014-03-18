@@ -41,7 +41,9 @@
 											<?php 
 											foreach( $segments as $segment ) { 
 												$hasShift = true;
-												?><div class="row-fluid padded"><?php echo $segment->startEndToString(); ?></div><?php
+												?><div class="row-fluid padded">
+														<strong><?php echo $segment->startEndToString(); ?></strong> ( <?php echo $segment->timezoneAbbr(); ?> )
+													</div><?php
 											} ?>
 										</td>
 									<?php } ?>
