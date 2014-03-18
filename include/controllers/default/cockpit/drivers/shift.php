@@ -13,7 +13,9 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 					case 'add':
 						$this->communityAdd();
 						break;
-					
+					case 'edit':
+						$this->communityEdit();
+						break;
 					default:
 						$this->community();
 						break;
@@ -38,8 +40,25 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 	public function scheduleDriver(){
 		$admin = Admin::o( c::admin()->id_admin );
+		$week = c::getPagePiece( 8 ) ? c::getPagePiece( 8 ) : date( 'W' );
+		$days = [];
+		for( $i = 0; $i <= 6; $i++ ){
+			$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . $i ) ), new DateTimeZone( c::config()->timezone  ) );
+			$day->modify( '+ 7 day' );
+			$days[] = $day;
+		}
 		c::view()->communities = $admin->communitiesHeDeliveriesFor();
 		c::view()->display( 'drivers/shift/schedule/driver' );
+	}
+
+	public function communityEdit(){
+		$id_community_shift = c::getPagePiece( 4 );
+		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
+		if( $shift->id_community_shift ){
+			c::view()->layout( 'layout/ajax' );
+			c::view()->shift = $shift;
+			c::view()->display( 'drivers/shift/community/edit' );
+		}
 	}
 
 	public function communityAdd(){

@@ -19,7 +19,7 @@
 								<table width="100%">
 								<tr>
 									<?php 
-									$days = [ 'mon','tue','wed','thu','fri','sat','sun' ];
+									$days = [ 'sun', 'mon','tue','wed','thu','fri','sat' ];
 									foreach( $days as $day ){ ?>
 									<th width="14%" style="background:<?php echo $dark; ?>">
 										<div class="row-fluid padded">
@@ -33,9 +33,9 @@
 									<?php } ?>
 									<tr>
 									<?php 
-									$days = [ 'mon','tue','wed','thu','fri','sat','sun' ];
+									$days = $this->days;
 									foreach( $days as $day ){ 
-										$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community->id_community, $day );
+										$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community->id_community, $day->format( 'Y-m-d' ) );
 										?>
 										<td style="background:<?php echo $dark; ?>">
 											<div class="row-fluid padded">
