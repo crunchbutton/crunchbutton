@@ -15,6 +15,14 @@ NGApp.factory( 'PhoneGapService', function( $route, $rootScope ){
 	} );
 
 	service.routeChanged = function( route ){
+		// hiden the keyboard accessory on the location page.
+		if (App.isPhoneGap && App.iOS() && navigator && navigator.keyboard) {
+			if (route == 'location') {
+				navigator.keyboard.hide();
+			} else {
+				navigator.keyboard.show();
+			}
+		}
 
 		if( App.isPhoneGap && !App.splashHidden && ( !route || route == 'home' ) ){
 			//navigator.splashscreen.show();
