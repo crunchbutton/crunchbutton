@@ -9,6 +9,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			->load($id);
 	}
 
+	public function shiftByCommunityDay( $id_community, $date ){
+		return Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community = "' . $id_community . '" AND DATE_FORMAT( date_start, "%Y-%m-%d" ) = "' . $date . '" ORDER BY id_community_shift ASC' );
+	}
+
 	public function shiftByCommunity( $id_community ){
 		$weekdays = [ 'mon' =>  false, 'tue' =>  false, 'wed' =>  false, 'thu' =>  false, 'fri' =>  false, 'sat' =>  false, 'sun'  =>  false ];
 		foreach( $weekdays as $day => $val ){
@@ -22,27 +26,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $weekdays;
 	}
 
-	public function saveShift( $id_community, $day, $segment ){
-		if( trim( $id_community ) == '' ){
-			return;
-		}
-		// remove old hours
-		c::db()->query( 'DELETE FROM community_shift WHERE id_community=" ' . $id_community . '" AND day = "' . $day . '"');
-		$segments = explode( ',' , $segment );
-		foreach( $segments as $segment ){
-			$segment = Crunchbutton_Community_Shift::parseSegment( $segment );
-			if( $segment[ 'start' ] && $segment[ 'end' ] ){
-				// save start
-				$shift = new Crunchbutton_Community_Shift();
-				$shift->id_community = $id_community;
-				$shift->day = $day;
-				$shift->start = $segment[ 'start' ];
-				$shift->end = $segment[ 'end' ];
-				$shift->save();
-			}
-		}
-	}
-
 	public function parseSegment( $segment ){
 		$pattern = '@^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$@i';
 		preg_match( $pattern, $segment , $matches);
@@ -51,11 +34,63 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return array( 'start' => $start, 'end' => $end );
 	}
 
-	public function startEndToSegment( $start, $end ){
-		$time = Crunchbutton_Community_Shift::timeToSegmentString( $start );
+	public function community(){
+		if( !$this->_community ){
+			$this->_community = Crunchbutton_Community::o( $this->id_community );
+		}
+		return $this->_community;
+	}
+
+	public function timezone(){
+		if( !$this->_timezone ){
+			$this->_timezone = $this->community()->timezone;
+		}
+		return $this->_timezone;
+	}
+
+	public function dateStart(){
+
+		if( $timezone ){
+			$date = $this->dateStart();
+			$date->setTimezone( new DateTimeZone( $timezone ) );
+			return $date;
+		}
+
+		if( !$this->_date_start ){
+			$this->_date_start = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_start, new DateTimeZone( $this->timezone() ) );	
+		}
+		return $this->_date_start;
+	}
+
+	public function copyHoursFromTo( $from, $to ){
+		// continue here
+	}
+
+	public function timezoneAbbr(){
+		$dateTime = new DateTime(); 
+		$dateTime->setTimeZone( new DateTimeZone( $this->timezone() ) ); 
+		return $dateTime->format( 'T' ); 
+	}
+
+	public function dateEnd( $timezone = false ){
+		
+		if( $timezone ){
+			$date = $this->dateEnd();
+			$date->setTimezone( new DateTimeZone( $timezone ) );
+			return $date;
+		}
+
+		if( !$this->_date_end ){
+			$this->_date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end, new DateTimeZone( $this->timezone() ) );	
+		}
+		return $this->_date_end;
+	}
+
+	public function startEndToString( $timezone = false ){
+		$time = Crunchbutton_Community_Shift::timeToSegmentString( $this->dateStart( $timezone )->format( 'H:i' ) );
 		$time .= ' - ';
-		$time .= Crunchbutton_Community_Shift::timeToSegmentString( $end );
-		return $time;
+		$time .= Crunchbutton_Community_Shift::timeToSegmentString( $this->dateEnd( $timezone )->format( 'H:i' ) );
+		return trim( $time );
 	}
 
 	public function timeToSegmentString( $time ){

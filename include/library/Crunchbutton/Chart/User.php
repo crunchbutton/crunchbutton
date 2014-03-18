@@ -1962,4 +1962,27 @@ class Crunchbutton_Chart_User extends Crunchbutton_Chart {
 		$order = new Crunchbutton_Chart_Order();
 		return array( 'data' => $order->repeatPerMonthByCommunity( false ), 'unit' =>$order->unit, 'interval' => 'month' );
 	}
+
+	public function totalUsersAll(){
+		$query = "SELECT
+										 COUNT( DISTINCT( o.phone ) ) AS Total
+							FROM `order` o
+							INNER JOIN user u ON u.id_user = o.id_user
+								{$this->queryExcludeUsers}";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->Total; 	
+	}
+
+	public function totalUsersByCommunity( $id_community ){
+		$query = "SELECT
+										 COUNT( DISTINCT( o.phone ) ) AS Total
+							FROM `order` o
+							INNER JOIN user u ON u.id_user = o.id_user
+							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = '{$id_community}'
+								{$this->queryExcludeUsers}";
+		$result = c::db()->get( $query );
+		return $result->_items[0]->Total; 	
+	}
+
 }

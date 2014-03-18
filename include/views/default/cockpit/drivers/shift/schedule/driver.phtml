@@ -1,0 +1,78 @@
+<?
+	$this->title = 'Drivers';
+	$this->titleicon = 'road';
+	$this->titleLink = '/drivers';
+	$this->title2 = 'Shift';
+	$this->title2icon = 'clock';
+
+	$communities = $this->communities;
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-header"><span class="title">Enter your shift preferences</span></div>
+			<?php foreach( $communities as $community ) { ?>
+				<div class="padded">
+					<div class="row-fluid">
+						<div class="box-content">
+							<h6><?php echo $community->name; ?></h6>
+								<table width="100%">
+								<tr>
+									<?php 
+									$days = [ 'mon','tue','wed','thu','fri','sat','sun' ];
+									foreach( $days as $day ){ ?>
+									<th width="14%" style="background:<?php echo $dark; ?>">
+										<div class="row-fluid padded">
+											<div class="span12">
+												<strong style="font-size:15px;color:#666;">
+													<?php echo ucfirst( $day ); ?>
+												</strong>
+											</div>
+										</div>
+									</th>
+									<?php } ?>
+									<tr>
+									<?php 
+									$days = [ 'mon','tue','wed','thu','fri','sat','sun' ];
+									foreach( $days as $day ){ 
+										$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community->id_community, $day );
+										?>
+										<td style="background:<?php echo $dark; ?>">
+											<div class="row-fluid padded">
+													<?php 
+													foreach( $segments as $segment ) { 
+														?> <div class="span12"><?php
+														echo trim( Crunchbutton_Community_Shift::startEndToSegment( $segment->start, $segment->end ) );
+														?></div><?php
+													} ?>
+											</div>
+										</td>
+									<?php } ?>
+									</tr>
+								</table>
+								
+							<hr />
+						</div>
+					</div>
+				</div>
+			<?php } ?>
+			<div class="form-actions">
+							<button type="button" class="save-shift-community btn btn-blue">Save changes</button>
+						</div>
+				<div class="divider"></div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<style type="text/css">
+	label{
+		text-align: right;
+	}
+</style>
+<script type="text/javascript" src="/assets/js/admin.shift.js"></script>
+<script type="text/javascript">
+$( document ).ready( function(){
+	shift.community.init();
+} );
+</script>

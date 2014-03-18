@@ -167,7 +167,7 @@ class Crunchbutton_Community extends Cana_Table {
 
 	public function totalUsersByCommunity(){
 		$chart = new Crunchbutton_Chart_User();
-		$total = $chart->totalUsersByCommunity( $this->slug() );
+		$total = $chart->totalUsersByCommunity( $this->id_community );
 		$all = $chart->totalUsersAll();
 		
 		$percent = intval( $total * 100 / $all );
@@ -177,7 +177,7 @@ class Crunchbutton_Community extends Cana_Table {
 
 	public function totalOrdersByCommunity(){
 		$chart = new Crunchbutton_Chart_Order();
-		$total = $chart->totalOrdersByCommunity( $this->slug() );
+		$total = $chart->totalOrdersByCommunity( $this->id_community );
 		$all = $chart->totalOrdersAll();
 		
 		$percent = intval( $total * 100 / $all );
@@ -215,6 +215,14 @@ class Crunchbutton_Community extends Cana_Table {
 			$week[] = $value;
 		}
 		return [ 'total' => $total, 'week' => join( ',', $week ) ];
+	}
+
+	public function getOrdersFromLastDaysByCommunity( $days = 14 ){
+		$query = "SELECT SUM(1) orders, DATE_FORMAT( o.date, '%m/%d/%Y' ) day FROM `order` o
+					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+					INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = '{$this->id_community}'
+					WHERE o.date > DATE_SUB(CURDATE(), INTERVAL $days DAY) AND o.name NOT LIKE '%test%' GROUP BY day ORDER BY o.date ASC";
+		return c::db()->get( $query );
 	}
 
 	public function ordersLastWeek(){

@@ -1,0 +1,111 @@
+<div class="row-fluid">
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span12">
+				<div class="box">
+					<div class="box-header"><span class="title">Add hours</span></div>
+					<div class="box-content padded">
+						<form>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Community:</strong>
+									</div>
+									<div class="span7">
+										<?php echo $this->community->name; ?>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Date:</strong>
+									</div>
+									<div class="span7">
+										<input type="hidden" name="form-id_community" id="form-id_community" value="<?php echo $this->community->id_community ?>"/>
+										<input type="hidden" name="form-year" id="form-year" value="<?php echo $this->year ?>"/>
+										<input type="hidden" name="form-month" id="form-month" value="<?php echo $this->month ?>"/>
+										<input type="hidden" name="form-day" id="form-day" value="<?php echo $this->day ?>"/>
+										<?php echo $this->month . '/' . $this->day . '/' . $this->year; ?>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Timezone</strong>
+									</div>
+									<div class="span7">
+										<strong><?php echo $this->community->timezone; ?></strong>
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Hours</strong>
+									</div>
+									<div class="span7">
+										<input type="text" name="form-hours" id="form-hours"/> 
+										<br/>
+										*Add this one shift per time.
+										<br/><br/>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Apply same hours to</strong>
+									</div>
+									<div class="span8">
+										<div class="row-fluid">
+											<?php 
+											$count = 1;
+											foreach( $this->days as $day ) { 
+												if( $count == 1 )
+												?>
+												<div class="span3">
+													<input type="checkbox" class="icheck" value="<?php echo $day->format( 'Y-m-d' ); ?>" name="form-weekdays" id="form-<?php echo $day->format( 'D' ); ?>"><label for="form-<?php echo $day->format( 'D' ); ?>"><?php echo $day->format( 'D' ); ?></label>
+												</div>
+											<?php 
+												$count++;
+											} ?>
+										</div>	
+									</div>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="row-fluid">
+									<div class="span12">
+										<br/>
+									</div>
+								</div>
+								<div class="row-fluid">
+									<div class="span6">
+										<button type="button" onclick="shift.community.add();" class="btn btn-green"><i class="icon-save"></i> Save </button> 
+									</div>
+								</div>
+								<div class="row-fluid">
+									<div class="span12">
+										<hr/>
+										Click below to copy the same hours of the last week (for all weekdays)
+										<br/>
+										<br/>
+										<button type="button" onclick="shift.community.copy();" class="btn btn-default"><i class="icon-copy"></i> Copy last week hours </button> 
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$( document ).ready( function(){
+	$( '.icheck' ).iCheck( { checkboxClass: "icheckbox_flat-aero", radioClass: "iradio_flat-aero" } );
+} );
+</script>

@@ -12,49 +12,89 @@ shift.community.init = function(){
 		}		
 	} );
 
-	$( '.save-shift-community' ).on( 'click', function(){
-		var isOk = true;
-		// at first validate all fields
-		$( '.hours' ).each( function(){
-			if( !isOk ){ return; }
-			var segment = $( this ).val();
-			if( !shift.validate.segment( segment ) ){
-				alert( 'Unable to figure out what this time means.' );
-				$( this ).focus();
-				isOk = false;
-				return;
-			}
+	$( '.modal-hours-open' ).click( function(e) {
+		e.preventDefault();
+		var url = $( this ).attr( 'href' );
+		var title = $( this ).attr( 'title' );
+		$.get( url, function( data ) {
+			$( '#modal-hours' ).modal();
+			$( '#modal-hours-title' ).html( title );
+			$( '#modal-hours-body' ).html( data );
 		} );
-
-		var count = 0;
-
-		// if it is ok - post
-		if( isOk ){
-			var id_community = $( '#id_community' ).val();
-			var url = App.service + 'drivers/shift/community';
-			$( '.hours' ).each( function(){
-				var day = $( this ).attr( 'day' );
-				var segment = $( this ).val();
-				var id_community = $( '#id_community' ).val();
-				$.ajax( {
-					type: 'POST',
-					dataType: 'json',
-					data: { 'id_community' : id_community, 'day' : day, 'segment' : segment },
-					url: url,
-					success: function( json ) {
-						count++;
-						if( count == 7 ){
-							alert( 'Shift saved!' );
-							document.location.reload();
-						}
-					},
-					error: function( json ) {}
-				} );
-			} );
-		}
-
 	} );
+
+	shift.community.toggleTimezone();
+
 }
+
+shift.community.tz = 'pst';
+shift.community.toggleTimezone = function(){
+	$( '.pst-timezone' ).hide();
+	$( '.community-timezone' ).hide();
+	if( shift.community.tz == 'pst' ){
+		shift.community.tz = 'community';
+	} else {
+		shift.community.tz = 'pst';
+	}
+	$( '.' + shift.community.tz + '-timezone' ).show();
+};
+
+shift.community.copyAll = function( id_community, week, year ){
+	if( confirm( 'Confirm copy? This will remove all the hours from this week ' + week + '/' +  year + '!' ) ){
+		$.ajax( {
+			url: '/api/drivers/shift/community/copy-all',
+			method: 'POST',
+			data: { 'year' : year, 'week' : week, 'id_community' : id_community },
+			dataType: 'json',
+		} ).done( function( data ) {
+			if( data.success ){
+				location.reload();
+			} else {
+				alert( 'Ops, error! ' + data.error );
+			}
+		} );		
+	}
+}
+
+shift.community.add = function(){
+
+	var id_community = $( '#form-id_community' ).val();
+	var hours = $.trim( $( '#form-hours' ).val() );
+
+	if( hours == '' ){
+		alert( 'Please type the hours!' );
+		$( '#form-hours' ).focus();
+		return;
+	}
+
+	if( !shift.validate.segment( hours ) ){
+		alert( 'Unable to figure out what this time means!' );
+		$( '#form-hours' ).focus();
+		return;	
+	}
+
+	var weekdays = [];
+	$( '[name="form-weekdays"]' ).each( function(){
+		var checkbox = $( this );
+		if( checkbox.is( ':checked' ) ){
+			weekdays.push( checkbox.val() );	
+		}
+	} );
+
+	$.ajax( {
+		url: '/api/drivers/shift/community/add',
+		method: 'POST',
+		data: { 'id_community' : id_community, 'day' : $( '#form-day' ).val(), 'month' : $( '#form-month' ).val(), 'year' : $( '#form-year' ).val(), 'week' : $( '#form-week' ).val(), 'hours' : hours, 'weekdays' : weekdays },
+		dataType: 'json',
+	} ).done( function( data ) {
+		if( data.success ){
+			location.reload();
+		} else {
+			alert( 'Ops, error! ' + data.error );
+		}
+	} );
+};
+
 
 shift.validate = {};
 shift.validate.segment = function( segment ){
@@ -62,14 +102,8 @@ shift.validate.segment = function( segment ){
 		return true;
 	}
 	segment = segment.replace( /\(.*?\)/g, '' );
-	segments = segment.split( /(?:and|,)/ );
-	for( i in segments ) {
-		if( /^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i.exec( segments[ i ] ) ) {
-			return true;
-		}
+	if( /^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i.exec( segment ) ) {
+		return true;
 	}
 	return false;
 }
-
-
-

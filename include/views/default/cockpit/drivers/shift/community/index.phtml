@@ -6,6 +6,8 @@
 	$this->title2icon = 'clock';
 
 	$id_community = $this->id_community;
+	$year = $this->year;
+	$week = $this->week;
 	$segments = $this->segments;
 
 ?>
@@ -32,42 +34,106 @@
 	<?php if( $id_community ) { ?>
 		<div class="row-fluid">
 			<div class="box">
-				<div class="box-header"><span class="title">Shifts</span></div>
-				<div class="box-content">
-					<form class="form-horizontal fill-up validatable">
-						<input type="hidden" name="id_community" id="id_community" value="<?php echo $id_community ?>">
-						<div class="padded">
-							<?php
-							$days = c::view()->days;
-							foreach( $days as $day ){ ?>
-								<div class="row-fluid">
-									<div class="span2">
-										<label><strong><?php echo ucfirst( $day ); ?></strong></label>
-									</div>
-									<div class="span4">
-										<input value="<?php echo $segments[ $day ]; ?>" name="<?php echo $day; ?>" day="<?php echo $day; ?>" class="hours" type="text"/>
-									</div>
-								</div>
-							<?php
-							}
-							?>
-							<div class="row-fluid">
-								<div class="span2"></div>
-								<div class="span4">
-									* Use commas to separate shifts. e.g.: <strong>5pm - 8pm, 8pm - 11pm</strong>.
-								</div>
-							</div>
+				<div class="box-header">
+				<div class="row-fluid">
+					<div class="span2 padded">
+						<a href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->weekPrev; ?>"><i class="icon icon-angle-left"></i> previous</a>
+					</div>
+						<div class="span8 padded" style="text-align:center;">
+							<strong>Shift for week <?php echo $this->week; ?> / <?php echo $this->year; ?></strong>
 						</div>
+					<div class="span2 padded" style="text-align:right;">
+						<a href="/drivers/shift/community/17/<?php echo $this->weekNext; ?>">next <i class="icon icon-angle-right"></i></a>
+					</div>
+				</div>
+			</div>
+				<div class="box-content">
+					<form class="form-horizontal">
+						<div class="padded">
+							<div class="row-fluid">
+								<center>
+									<h4>
+										From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
+									</h4>
+								</center>
+								<hr/>
+						</div>
+						<table width="100%">
+						<tr>
+							<?php foreach( $this->days as $day ) { 
+								$dark = ( $day->format( 'N' ) == 7 || $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+							?>
+								<th width="14%" style="background:<?php echo $dark; ?>">
+									<div class="row-fluid padded">
+										<div class="span12">
+											<strong style="font-size:16px;color:#666;">
+												<?php echo $day->format( 'D' ); ?>
+												<div style="font-size:10px;font-weight:normal;color:#CCC;"><?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?></div>
+											</strong>
+										</div>
+									</div>
+								</th>
+							<?php } ?>
+						</tr>
+						<tr>
+							<?php foreach( $this->days as $day ) { 
+								$dark = ( $day->format( 'N' ) == 7 || $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+								$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $id_community, $day->format( 'Y-m-d' ) );
+							?>
+								<td width="14%" style="background:<?php echo $dark; ?>" valign="top">
+									<div class="row-fluid padded">
+
+										<?php 
+										foreach( $segments as $segment ) { 
+											?><div class="row-fluid">
+											<span class="community-timezone">
+												<strong><?php echo $segment->startEndToString(); ?></strong> ( <?php echo $segment->timezoneAbbr(); ?> )
+											</span>
+											<span class="pst-timezone">
+												<strong><?php echo $segment->startEndToString( c::config()->timezone ); ?></strong> (PST)
+											</span>
+											<br/><br/>
+											</div><?php
+										} ?>
+										<button class="btn btn-default modal-hours-open" href="/drivers/shift/community/add/<?php echo $id_community ?>/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $this->week; ?>" style="width:80%;" title="Add hours to <?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?> (<?php echo $day->format( 'D' ); ?>)">
+											<i class="icon-plus icon-2x"></i>
+										</button>
+									</div>
+								</td>
+						<?php } ?>
+						</tr>	
+					</table>
 					</form>
 					<div class="divider"></div>
 				</div>
-				<div class="form-actions">
-					<button type="button" class="save-shift-community btn btn-blue">Save changes</button>
-				</div>
 			</div>
+
+			<div class="padded">
+			
+			<button class="btn btn-blue" onclick="shift.community.copyAll();"><i class="icon-copy"></i> Copy the hours from the previous week</button>
+			
+			<button style="margin-left:20px;" class="btn btn-default" onclick="shift.community.toggleTimezone();"><i class="icon-time"></i> Show hours in&nbsp;
+			<span class="pst-timezone">community timezone</span>
+			<span class="community-timezone">PST timezone</span>
+			</button>
+
 		</div>
 	<?php } ?>
 </div>
+
+</div>
+
+<div class="modal hide fade" id="modal-hours" style="display: none;">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" type="button">×</button>
+		<h6 id="modal-hours-title"></h6>
+	</div>
+	<div class="modal-body" id="modal-hours-body"></div>
+	<div class="modal-footer">
+		<button class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+</div>
+
 <style type="text/css">
 	label{
 		text-align: right;

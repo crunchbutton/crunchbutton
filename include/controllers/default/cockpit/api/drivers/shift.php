@@ -15,10 +15,73 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 	}
 
 	public function community(){
-		$id_community = $this->request()[ 'id_community' ];
-		$day = $this->request()[ 'day' ];
-		$segment = $this->request()[ 'segment' ];
-		Crunchbutton_Community_Shift::saveShift( $id_community, $day, $segment );
-		echo json_encode( [ 'success' => $day ] );
+
+		switch ( c::getPagePiece( 4 ) ) {
+
+			case 'add':
+
+				$id_community = $this->request()[ 'id_community' ];
+				$day = $this->request()[ 'day' ];
+				$month = $this->request()[ 'month' ];
+				$year = $this->request()[ 'year' ];
+				$week = $this->request()[ 'week' ];
+				$segments = $this->request()[ 'hours' ];
+				$weekdays = $this->request()[ 'weekdays' ] ;
+
+
+				$community = Crunchbutton_Community::o( $id_community );
+
+				$timezone = $community->timezone;
+
+				if( !$id_community || !$day || !$month || !$year ){
+					echo json_encode( [ 'error' => 'invalid object' ] );
+					exit;
+				}
+
+				$hours = [];
+
+				if( count( $weekdays ) > 0 ){
+					foreach( $weekdays as $weekday ){
+						$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $weekday . ' 00:00:00', new DateTimeZone( $timezone ) );
+						$_hours = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $segments, $timezone );
+						if( $_hours ){
+							$hours[] = [ 'start' => $_hours[ 'start' ], 'end' => $_hours[ 'end' ] ];	
+						}
+					}
+				} else {
+					// add just the hour for the day
+					$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $year . '-' . $month . '-' . $day . ' 00:00:00', new DateTimeZone( $timezone ) );
+					$_hours = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $segments, $timezone );
+					if( $_hours ){
+						$hours[] = [ 'start' => $_hours[ 'start' ], 'end' => $_hours[ 'end' ] ];	
+					}
+				}
+
+				foreach( $hours as $hour ){
+					$shift = new Crunchbutton_Community_Shift();
+					$shift->id_community = $id_community;
+					$shift->date_start = $hour[ 'start' ];
+					$shift->date_end = $hour[ 'end' ];
+					if( $shift->date_start && $shift->date_end ){
+						$shift->save();	
+					}
+				}
+
+				echo json_encode( array( 'success' => true ) );
+				break;
+			
+			case 'copy-all':
+
+				$year = $this->request()[ 'year' ];
+				$week = $this->request()[ 'week' ];
+				$id_community = $this->request()[ 'id_community' ];
+				
+
+				echo json_encode( array( 'success' => true ) );
+				break;
+			default:
+				echo json_encode( [ 'error' => 'invalid object' ] );
+				break;
+		}
 	}
 }
