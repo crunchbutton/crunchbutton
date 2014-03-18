@@ -96,15 +96,24 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				$year = $this->request()[ 'year' ];
 				$week = $this->request()[ 'week' ];
 				$id_community = $this->request()[ 'id_community' ];
-				
 
+				// Start week at monday #2666
+				$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+
+				$days = [];
 				for( $i = 0; $i <= 6; $i++ ){
-					$dateFrom = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . $i ) ), new DateTimeZone( c::config()->timezone  ) );
+					$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+					$firstDay->modify( '+ 1 day' );
+				}
+				
+				foreach( $days as $day ){
+					$dateFrom = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 					$dateFrom->modify( '- 7 day' );
-					$dateTo = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . $i ) ), new DateTimeZone( c::config()->timezone  ) );
+					$dateTo = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 					Crunchbutton_Community_Shift::removeHoursFromDay( $id_community, $dateTo->format( 'Y-m-d' ) );
 					Crunchbutton_Community_Shift::copyHoursFromTo( $id_community, $dateFrom->format( 'Y-m-d' ), $dateTo->format( 'Y-m-d' ) );
-				}				
+				}
+
 				echo json_encode( array( 'success' => true ) );
 				break;
 			default:
