@@ -2,7 +2,7 @@
 
 class Controller_users extends Crunchbutton_Controller_Account {
 	public function init() {
-
+		die('not in use');
 		if (!c::admin()->permission()->check(['global'])) {
 			return ;
 		}
@@ -10,6 +10,7 @@ class Controller_users extends Crunchbutton_Controller_Account {
 		$users = [];
 		$ordered = [];
 		$orders = Order::q('select * from `order` where env="live" order by date asc');
+		die('asd');
 		foreach ($orders as $order) {
 			if (!$users[$order->phone]) {
 				$users[$order->phone]['name'] = $order->name;
