@@ -13,6 +13,12 @@
 			<div class="box-header"><span class="title">Sort your shift preferences</span></div>
 			<div class="padded sort-area">
 				<div class="row-fluid">
+					<center>
+						<h4>
+							From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
+						</h4>
+					</center>
+					<hr/>
 					<div class="row-fluid padded">
 						<div class="span4">
 							<strong>Available shifts</strong>
@@ -44,7 +50,7 @@
 							<br/><br/>
 							<ul class="wantwork connected">
 							<?php
-								$segments = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $this->from, $this->to );
+								$segments = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $this->from->format( 'Y-m-d' ), $this->to->format( 'Y-m-d' ) );
 								foreach ( $segments as $segment ) {
 									?>
 									<li id="<?php echo $segment->id_community_shift; ?>">
@@ -62,7 +68,7 @@
 							<br/><br/>
 							<ul class="dontwantwork connected">
 							<?php
-								$segments = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $this->from, $this->to, true );
+								$segments = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $this->from->format( 'Y-m-d' ), $this->to->format( 'Y-m-d' ), true );
 								foreach ( $segments as $segment ) {
 									?>
 									<li id="<?php echo $segment->id_community_shift; ?>">
