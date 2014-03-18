@@ -46,11 +46,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function remove( $id_community_shift ){
-		return c::db()->query( "DELETE from community_shift WHERE id_community_shift = " . $id_community_shift );
+		return c::db()->query( "DELETE FROM community_shift WHERE id_community_shift = " . $id_community_shift );
 	}
 
 	public function removeHoursFromDay( $id_community, $date ){
-		return c::db()->query( "DELETE from community_shift WHERE id_community = $id_community AND DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date'" );
+		return c::db()->query( "DELETE FROM community_shift WHERE id_community = $id_community AND DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date'" );
 	}
 
 	public function copyHoursFromTo( $id_community, $dayFrom, $dayTo ){
