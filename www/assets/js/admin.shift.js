@@ -12,6 +12,17 @@ shift.community.init = function(){
 		}		
 	} );
 
+	$( '.modal-hours-edit' ).click( function(e) {
+		e.preventDefault();
+		var url = $( this ).attr( 'href' );
+		var title = $( this ).attr( 'title' );
+		$.get( url, function( data ) {
+			$( '#modal-hours' ).modal();
+			$( '#modal-hours-title' ).html( title );
+			$( '#modal-hours-body' ).html( data );
+		} );
+	} );
+
 	$( '.modal-hours-open' ).click( function(e) {
 		e.preventDefault();
 		var url = $( this ).attr( 'href' );
@@ -56,23 +67,65 @@ shift.community.copyAll = function( id_community, week, year ){
 	}
 }
 
-shift.community.add = function(){
+shift.community.remove = function(){
+	var id_community_shift = $( '#form-id_community_shift' ).val();
+	if( confirm( 'Confirm remove this shift?' ) ){
+		$.ajax( {
+			url: '/api/drivers/shift/community/remove',
+			method: 'POST',
+			data: { 'id_community_shift' : id_community_shift },
+			dataType: 'json',
+		} ).done( function( data ) {
+			if( data.success ){
+				location.reload();
+			} else {
+				alert( 'Ops, error! ' + data.error );
+			}
+		} );
+	}
+};
 
-	var id_community = $( '#form-id_community' ).val();
+shift.community.edit = function(){
+	var id_community_shift = $( '#form-id_community_shift' ).val();
 	var hours = $.trim( $( '#form-hours' ).val() );
-
 	if( hours == '' ){
 		alert( 'Please type the hours!' );
 		$( '#form-hours' ).focus();
 		return;
 	}
-
 	if( !shift.validate.segment( hours ) ){
 		alert( 'Unable to figure out what this time means!' );
 		$( '#form-hours' ).focus();
 		return;	
 	}
 
+	$.ajax( {
+		url: '/api/drivers/shift/community/edit',
+		method: 'POST',
+		data: { 'id_community_shift' : id_community_shift, 'hours' : hours },
+		dataType: 'json',
+	} ).done( function( data ) {
+		if( data.success ){
+			location.reload();
+		} else {
+			alert( 'Ops, error! ' + data.error );
+		}
+	} );
+};
+
+shift.community.add = function(){
+	var id_community = $( '#form-id_community' ).val();
+	var hours = $.trim( $( '#form-hours' ).val() );
+	if( hours == '' ){
+		alert( 'Please type the hours!' );
+		$( '#form-hours' ).focus();
+		return;
+	}
+	if( !shift.validate.segment( hours ) ){
+		alert( 'Unable to figure out what this time means!' );
+		$( '#form-hours' ).focus();
+		return;	
+	}
 	var weekdays = [];
 	$( '[name="form-weekdays"]' ).each( function(){
 		var checkbox = $( this );
@@ -80,7 +133,6 @@ shift.community.add = function(){
 			weekdays.push( checkbox.val() );	
 		}
 	} );
-
 	$.ajax( {
 		url: '/api/drivers/shift/community/add',
 		method: 'POST',

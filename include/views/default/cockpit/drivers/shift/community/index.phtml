@@ -86,12 +86,14 @@
 										<?php 
 										foreach( $segments as $segment ) { 
 											?><div class="row-fluid">
-											<span class="community-timezone">
-												<strong><?php echo $segment->startEndToString(); ?></strong> ( <?php echo $segment->timezoneAbbr(); ?> )
-											</span>
-											<span class="pst-timezone">
-												<strong><?php echo $segment->startEndToString( c::config()->timezone ); ?></strong> (PST)
-											</span>
+											<a class="modal-hours-edit" href="/drivers/shift/community/edit/<?php echo $segment->id_community_shift; ?>" title="Edit hours">
+												<span class="community-timezone" title="<?php echo $segment->fullDate(); ?>">
+													<strong><?php echo $segment->startEndToString(); ?></strong> ( <?php echo $segment->timezoneAbbr(); ?> )
+												</span>
+												<span class="pst-timezone" title="<?php echo $segment->fullDate( c::config()->timezone ); ?>">
+													<strong><?php echo $segment->startEndToString( c::config()->timezone ); ?></strong> (PST)
+												</span>
+											</a>
 											<br/><br/>
 											</div><?php
 										} ?>
@@ -110,7 +112,7 @@
 
 			<div class="padded">
 			
-			<button class="btn btn-blue" onclick="shift.community.copyAll();"><i class="icon-copy"></i> Copy the hours from the previous week</button>
+			<button class="btn btn-blue" onclick="shift.community.copyAll( '<?php echo $id_community; ?>', '<?php echo $this->week; ?>', '<?php echo $this->year; ?>' );"><i class="icon-copy"></i> Copy the hours from the previous week</button>
 			
 			<button style="margin-left:20px;" class="btn btn-default" onclick="shift.community.toggleTimezone();"><i class="icon-time"></i> Show hours in&nbsp;
 			<span class="pst-timezone">community timezone</span>

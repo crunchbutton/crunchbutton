@@ -41,6 +41,29 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $this->_community;
 	}
 
+	public function remove( $id_community_shift ){
+		return c::db()->query( "DELETE from community_shift WHERE id_community_shift = " . $id_community_shift );
+	}
+
+	public function removeHoursFromDay( $id_community, $date ){
+		return c::db()->query( "DELETE from community_shift WHERE id_community = $id_community AND DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date'" );
+	}
+
+	public function copyHoursFromTo( $id_community, $dayFrom, $dayTo ){
+		$shifts = Crunchbutton_Community_Shift::shiftByCommunityDay( $id_community, $dayFrom );
+		foreach( $shifts as $shift ){
+			$date_start = DateTime::createFromFormat( 'Y-m-d H:i:s', $dayTo . ' ' . $shift->dateStart()->format( 'H:i:s' ), new DateTimeZone( $shift->timezone() ) );	
+			$date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $dayTo . ' ' . $shift->dateEnd()->format( 'H:i:s' ), new DateTimeZone( $shift->timezone() ) );	
+			$newShift = new Crunchbutton_Community_Shift();
+			$newShift->id_community = $id_community;
+			$newShift->date_start = $date_start->format( 'Y-m-d H:i:s' );
+			$newShift->date_end = $date_end->format( 'Y-m-d H:i:s' );
+			if( $newShift->date_start && $newShift->date_end ){
+				$newShift->save();	
+			}
+		}
+	}
+
 	public function timezone(){
 		if( !$this->_timezone ){
 			$this->_timezone = $this->community()->timezone;
@@ -48,7 +71,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $this->_timezone;
 	}
 
-	public function dateStart(){
+	public function timezoneAbbr(){
+		$dateTime = new DateTime(); 
+		$dateTime->setTimeZone( new DateTimeZone( $this->timezone() ) ); 
+		return $dateTime->format( 'T' ); 
+	}
+
+	public function dateStart( $timezone = false ){
 
 		if( $timezone ){
 			$date = $this->dateStart();
@@ -60,16 +89,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$this->_date_start = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_start, new DateTimeZone( $this->timezone() ) );	
 		}
 		return $this->_date_start;
-	}
-
-	public function copyHoursFromTo( $from, $to ){
-		// continue here
-	}
-
-	public function timezoneAbbr(){
-		$dateTime = new DateTime(); 
-		$dateTime->setTimeZone( new DateTimeZone( $this->timezone() ) ); 
-		return $dateTime->format( 'T' ); 
 	}
 
 	public function dateEnd( $timezone = false ){
@@ -107,7 +126,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$min = '';
 			$separator = '';
 		}
-		return $hour . $separator . $min . $ampm;
+		return intval( $hour ) . $separator . $min . $ampm;
+	}
+
+	public function fullDate( $timezone = false ){
+		return 'From ' . $this->dateStart( $timezone )->format( 'M jS Y g:i A T' ) . ' to ' . $this->dateEnd( $timezone )->format( 'M jS Y g:i A T' ); 
 	}
 
 	public function parseHour( $hour, $min, $ampm ){
