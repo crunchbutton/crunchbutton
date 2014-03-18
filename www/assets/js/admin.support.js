@@ -17,7 +17,7 @@ var SupportChatInterface = {
 		if( !self.id_support ){
 			return;
 		}
-		var url = '/support/plus/chat/' + self.id_support + '/history';
+		var url = '/support/chat/' + self.id_support + '/history';
 		$.ajax( {
 			url: url,
 			complete: function( content ) {
@@ -121,7 +121,7 @@ var SupportChatInterface = {
 		if( !confirm( 'Confirm close the ticket #' + self.id_support + '?') ){
 			return;
 		}
-		var url = '/support/plus/' + self.id_support + '/close-ticket';
+		var url = '/support/' + self.id_support + '/close-ticket';
 		$.ajax( {
 			type : 'POST',
 			url: url,
@@ -135,7 +135,7 @@ var SupportChatInterface = {
 		var self = this;
 		$( '#message-box-' + self.id_support ).hide();
 		$( '#sending-' + self.id_support ).show();
-		var url = '/support/plus/' + self.id_support + '/conversation';
+		var url = '/support/' + self.id_support + '/conversation';
 		$.ajax( {
 			type : 'POST',
 			data : { 'text' : text },
@@ -172,7 +172,7 @@ var SupportChats = {
 		if( !confirm( 'Confirm close the ticket #' + id_support + '?') ){
 			return;
 		}
-		var url = '/support/plus/' + id_support + '/close-ticket';
+		var url = '/support/' + id_support + '/close-ticket';
 		$.ajax( {
 			type : 'POST',
 			url: url,
@@ -215,7 +215,7 @@ var SupportChats = {
 			return;
 		}
 		if( !SupportChats.chats[ id_support ] ){
-			var url = '/support/plus/chat/' + id_support;
+			var url = '/support/chat/' + id_support;
 			$.ajax( {
 				url: url,
 				complete: function( content ) {
