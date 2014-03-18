@@ -1833,15 +1833,14 @@ public function byDayPerRestaurant( $render = false ){
 		return $result->_items[0]->Total; 
 	}
 
-	public function totalOrdersByCommunity( $community ){
+	public function totalOrdersByCommunity( $id_community ){
 		$query = "SELECT
 										 COUNT(*) AS Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
 							LEFT JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
 							INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant
-							INNER JOIN community c ON c.id_community = rc.id_community AND c.name NOT LIKE 'test%'
-							WHERE c.id_community = '{$community}'
+							WHERE rc.id_community = '{$id_community}'
 								{$this->queryExcludeUsers}";
 		$result = c::db()->get( $query );
 		return $result->_items[0]->Total; 

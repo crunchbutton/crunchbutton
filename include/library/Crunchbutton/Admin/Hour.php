@@ -105,7 +105,7 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 		return $this->_admin;
 	}
 
-	public function segmentToDate( $date_base, $segment ){
+	public function segmentToDate( $date_base, $segment, $timezone = false ){
 		$matches = [];
 		preg_match( '/^ *(\d+)(?:\:(\d+))? *(am|pm) *(?:to|-) *(\d+)(?:\:(\d+))? *(am|pm) *$/i', $segment, $matches );
 		$start_hour = $matches[ 1 ];
@@ -143,6 +143,12 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 		if( $end_day ){
 			$date_end->modify( '+' . $end_day . ' day' );
 		}
+
+		if( $timezone ){
+			$date_start->setTimezone( new DateTimeZone( $timezone ) );
+			$date_end->setTimezone( new DateTimeZone( $timezone ) );
+		}
+
 		if( $date_start->format( 'Y-m-d H:i:s' ) && $date_end->format( 'Y-m-d H:i:s' ) ){
 			return [ 'start' => $date_start->format( 'Y-m-d H:i:s' ), 'end' => $date_end->format( 'Y-m-d H:i:s' ) ];
 		}

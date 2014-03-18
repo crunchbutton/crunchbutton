@@ -20,9 +20,20 @@ class Controller_scripts_restaurantcommunity extends Crunchbutton_Controller_Acc
 				}
 			}
 		}
-
+		
 		$this->addDriverGroup();
+		$this->addTimezone();
+	}
 
+	public function addTimezone(){
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community' );
+		foreach( $communities as $community ){
+			$restaurant = Crunchbutton_Restaurant::q( 'SELECT r.* FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = ' . $community->id_community . ' WHERE r.active = 1 LIMIT 1' );
+			if( $restaurant->id_restaurant ){
+				$community->timezone = $restaurant->timezone;
+				$community->save();
+			}
+		}
 	}
 
 	public function addDriverGroup(){

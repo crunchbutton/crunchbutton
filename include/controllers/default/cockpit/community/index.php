@@ -117,11 +117,11 @@ class Controller_community extends Crunchbutton_Controller_Account {
 
 	public function report(){
 		$interval = 14;
-		$communities = Restaurant::getCommunities();
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
 		$orders = [];
 		$days = [];
 		foreach ( $communities as $community ) {
-			$orders[ $community ] = Restaurant::getOrdersFromLastDaysByCommunity( $community, $interval );
+			$orders[ $community->name ] = $community->getOrdersFromLastDaysByCommunity( $interval );
 		}
 		$today = new DateTime( $time, new DateTimeZone( 'America/Los_Angeles' ) ); 
 		for( $i = 0; $i <= $interval; $i++ ){
