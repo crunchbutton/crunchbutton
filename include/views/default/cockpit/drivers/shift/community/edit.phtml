@@ -44,12 +44,66 @@ $shift = $this->shift;
 									</div>
 									<div class="span7">
 										<input type="text" value="<?php echo $shift->startEndToString(); ?>" name="form-hours" id="form-hours"/> 
-										<br/>
-										*Add this one shift per time.
 										<br/><br/>
 									</div>
 								</div>
 							</div>
+							<?php
+								$_drivers = $shift->getDrivers();
+								$hasDriver = false;
+								$drivers = [];
+								foreach( $_drivers as $driver ){
+									$hasDriver = true;
+									$drivers[] = $driver->name;
+								}
+								if( $hasDriver ){
+									$drivers = join( ', ', $drivers ); 	
+								} 
+							?>
+							<?php if( $hasDriver ) { ?>
+							<div class="row-fluid">
+								<div class="span12">
+									<div class="span4">
+										<strong>Drivers assigned to this shift</strong>
+									</div>
+									<div class="span7">
+										<?php echo $drivers; ?>
+										<br/><br/>
+									</div>
+								</div>
+							</div>
+							<?php } ?>
+							<?php 
+								$preferences = $shift->getAdminPreferences();
+								$hasDriver = false;
+								foreach( $preferences as $preference ) { 
+									if( $preference->ranking > 0 ){
+										$hasDriver = true;
+									}
+								}
+								if( $hasDriver ){
+									?>
+								<div class="row-fluid">
+									<div class="span12">
+										<div class="span4">
+											<strong>Drivers that want to work at this shift</strong>
+										</div>
+										<div class="span7">
+											<?php 
+											$commas = '';
+											foreach( $preferences as $preference ) { 
+												if( $preference->ranking > 0 ){
+													echo $commas . $preference->admin()->name . ' (' . $preference->ranking . ')';
+													$commas = ', ';	
+												}
+											} ?>
+											<br/><br/>
+										</div>
+									</div>
+								</div>
+									<?php
+								}
+							?>
 							<div class="row-fluid">
 								<div class="row-fluid">
 									<div class="span12">
