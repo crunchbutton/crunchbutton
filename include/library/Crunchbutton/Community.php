@@ -140,7 +140,6 @@ class Crunchbutton_Community extends Cana_Table {
 
 	public function getDriversOfCommunity(){
 		$group = $this->driverGroup();
-		
 		$query = 'SELECT a.* FROM admin a 
 												INNER JOIN (
 													SELECT DISTINCT(id_admin) FROM (

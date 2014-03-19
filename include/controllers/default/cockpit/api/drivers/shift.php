@@ -5,13 +5,12 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 		switch ( c::getPagePiece( 3 ) ) {
 			case 'community':
-				$this->community();				
+				$this->community();
 				break;
 			
 			case 'driver':
-				$this->driver();				
+				$this->driver();
 				break;
-			
 
 			default:
 				echo json_encode( [ 'error' => 'invalid object' ] );
@@ -19,58 +18,82 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
-	public function driver(){
-		
-		$allItems = $this->request()[ 'allItems' ];
-		$wantWorkItems = $this->request()[ 'wantWorkItems' ];
-		$dontWantWorkItems = $this->request()[ 'dontWantWorkItems' ];
-		$completed = $this->request()[ 'completed' ];
-		$shifts = $this->request()[ 'shifts' ];
-
-		if( count( $allItems ) > 0 ){
-
-			$id_admin = c::admin()->id_admin;
-	
-			$status = Crunchbutton_Admin_Shift_Status::currentStatus( $id_admin );
-			$status->completed = $completed;
-			$status->shifts = $shifts;
-			$status->date = date('Y-m-d H:i:s');
-			$status->save();
-
-			// remove all items
-			if( count( $allItems ) > 0 ){
-				foreach( $allItems as $item ){
-					Crunchbutton_Admin_Shift_Preference::removeByAdminShift( $id_admin, $item );
-				}
+	public function driverAssign(){
+		$ids_admin = $this->request()[ 'id_admin' ];
+		$id_community_shift = $this->request()[ 'id_community_shift' ];
+		if( $id_community_shift ){
+			Crunchbutton_Admin_Shift_Assign::removeAssignment( $id_community_shift );
+			if( count( $ids_admin ) > 0 ){
+				foreach( $ids_admin as $id_admin ){
+					Crunchbutton_Admin_Shift_Assign::assignAdminToShift( $id_admin, $id_community_shift );		
+				}	
 			}
-			// wantWorkItems
-			$count = 1;
-			if( count( $wantWorkItems ) > 0 ){
-				foreach( $wantWorkItems as $item ){
-					$preference = new Crunchbutton_Admin_Shift_Preference();
-					$preference->id_admin = $id_admin;
-					$preference->id_community_shift = $item;
-					$preference->ranking = $count;
-					$preference->save();
-					$count++;
-				}
-			}
-
-			// dontWantWorkItems
-			if( count( $dontWantWorkItems ) > 0 ){
-				foreach( $dontWantWorkItems as $item ){
-					$preference = new Crunchbutton_Admin_Shift_Preference();
-					$preference->id_admin = $id_admin;
-					$preference->id_community_shift = $item;
-					$preference->ranking = 0;
-					$preference->save();
-				}
-			}
-
 			echo json_encode( array( 'success' => true ) );
-
 		} else {
 			echo json_encode( [ 'error' => 'invalid object' ] );
+		}
+	}
+
+	public function driver(){
+		
+		switch ( c::getPagePiece( 4 ) ) {
+		
+			case 'assign':
+				$this->driverAssign();
+				break;
+
+			default:
+				$allItems = $this->request()[ 'allItems' ];
+				$wantWorkItems = $this->request()[ 'wantWorkItems' ];
+				$dontWantWorkItems = $this->request()[ 'dontWantWorkItems' ];
+				$completed = $this->request()[ 'completed' ];
+				$shifts = $this->request()[ 'shifts' ];
+
+				if( count( $allItems ) > 0 ){
+
+					$id_admin = c::admin()->id_admin;
+			
+					$status = Crunchbutton_Admin_Shift_Status::currentStatus( $id_admin );
+					$status->completed = $completed;
+					$status->shifts = $shifts;
+					$status->date = date('Y-m-d H:i:s');
+					$status->save();
+
+					// remove all items
+					if( count( $allItems ) > 0 ){
+						foreach( $allItems as $item ){
+							Crunchbutton_Admin_Shift_Preference::removeByAdminShift( $id_admin, $item );
+						}
+					}
+					// wantWorkItems
+					$count = 1;
+					if( count( $wantWorkItems ) > 0 ){
+						foreach( $wantWorkItems as $item ){
+							$preference = new Crunchbutton_Admin_Shift_Preference();
+							$preference->id_admin = $id_admin;
+							$preference->id_community_shift = $item;
+							$preference->ranking = $count;
+							$preference->save();
+							$count++;
+						}
+					}
+
+					// dontWantWorkItems
+					if( count( $dontWantWorkItems ) > 0 ){
+						foreach( $dontWantWorkItems as $item ){
+							$preference = new Crunchbutton_Admin_Shift_Preference();
+							$preference->id_admin = $id_admin;
+							$preference->id_community_shift = $item;
+							$preference->ranking = 0;
+							$preference->save();
+						}
+					}
+					echo json_encode( array( 'success' => true ) );
+
+				} else {
+					echo json_encode( [ 'error' => 'invalid object' ] );
+				}				
+				break;
 		}
 	
 	}

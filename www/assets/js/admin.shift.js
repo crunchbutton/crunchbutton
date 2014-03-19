@@ -8,7 +8,7 @@ shift.community.init = function(){
 
 	$( '#community-id' ).change( function( event ) {
 		if( $.trim( $( '#community-id' ).val() ) != '' ){
-			document.location.href = '/drivers/shift/community/' + $( '#community-id' ).val();	
+			document.location.href = '/drivers/shift/community/' + $( '#community-id' ).val() + '/' + shift.community.year + '/' + shift.community.week;	
 		}		
 	} );
 
@@ -180,7 +180,15 @@ shift.drivers.init = function(){
 	} );
 	
 
-	$('.available, .wantwork, .dontwantwork').sortable( { connectWith: '.connected' } );
+	$('.available, .wantwork, .dontwantwork').sortable( { 'connectWith': '.connected', 'distance' : 0, 'stop' : function(){
+		$( '.available .position, .wantwork .position, .dontwantwork .position' ).hide();
+		var count = 1;
+		$( '.wantwork .position' ).each( function( ){
+			$( this ).html( count + ')&nbsp;' );
+			$( this ).show();
+			count++;
+		} );
+	} } );
 
 }
 
@@ -227,6 +235,49 @@ shift.drivers.update = function( completed ){
 		url: '/api/drivers/shift/driver/',
 		method: 'POST',
 		data: { 'allItems' : allItems, 'dontWantWorkItems' : dontWantWorkItems, 'wantWorkItems' : wantWorkItems, 'availableItems' : availableItems, 'completed' : completed, 'shifts' : shifts },
+		dataType: 'json',
+	} ).done( function( data ) {
+		if( data.success ){
+			location.reload();
+		} else {
+			alert( 'Ops, error! ' + data.error );
+		}
+	} );
+}
+
+shift.summary = { assign : {} };
+
+shift.summary.init = function(){
+	$( '.modal-shift-assign' ).click( function(e) {
+		e.preventDefault();
+		var url = $( this ).attr( 'href' );
+		var title = $( this ).attr( 'title' );
+		$.get( url, function( data ) {
+			$( '#modal-shift' ).modal();
+			$( '#modal-shift-title' ).html( title );
+			$( '#modal-shift-body' ).html( data );
+		} );
+	} );
+	shift.community.toggleTimezone();
+}
+
+shift.summary.assign.init = function(){	
+	$( '.icheck' ).iCheck( { checkboxClass: "icheckbox_flat-aero", radioClass: "iradio_flat-aero" } );
+}
+
+shift.summary.assign.save = function(){
+	var id_community_shift = $( '#id_community_shift' ).val();
+	var id_admin = [];
+	$( '[name="form-id_admin"]' ).each( function(){
+		var checkbox = $( this );
+		if( checkbox.is( ':checked' ) ){
+			id_admin.push( checkbox.val() );	
+		}
+	} );
+	$.ajax( {
+		url: '/api/drivers/shift/driver/assign/',
+		method: 'POST',
+		data: { 'id_community_shift' : id_community_shift, 'id_admin' : id_admin },
 		dataType: 'json',
 	} ).done( function( data ) {
 		if( data.success ){
