@@ -5,7 +5,6 @@
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span12">
-	
 						<form>
 							<input type="hidden" value="<?php echo $shift->id_community_shift; ?>" id="id_community_shift" name="id_community_shift" />
 							<div class="row-fluid">
@@ -63,8 +62,18 @@
 									</thead>
 									<tbody>
 									<?php 
+									$alreadyShown = [];
+									$driversDontWantWorkHere = [];
 									$preferences = $shift->getAdminPreferences();
-									if( count( $preferences ) > 0 ){
+									$hasDrivers = false;
+									$week = $shift->week();
+									$year = $shift->year();
+									foreach( $preferences as $preference ){ 
+										if( $preference->ranking > 0 ){
+											$hasDrivers = true;
+										}
+									}
+									if( $hasDrivers ){
 									?>
 									<tr>
 										<td colspan="5">
@@ -72,12 +81,8 @@
 										</td>
 									</tr>
 									<?php
-									$week = $shift->week();
-									$year = $shift->year();
 									$firstDayOfWeek = $shift->firstDayOfWeek()->format( 'Y-m-d' );
 									$lastDayOfWeek = $shift->lastDayOfWeek()->format( 'Y-m-d' );
-									$alreadyShown = [];
-									$driversDontWantWorkHere = [];
 									foreach( $preferences as $preference ){ 
 										$admin = $preference->admin();
 										$alreadyShown[] = $admin->id_admin;
@@ -85,7 +90,6 @@
 											$driversDontWantWorkHere[] = $admin;	
 											continue;
 										}
-										
 										$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $admin->id_admin, $week, $year );
 										$checked = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $admin->id_admin, $shift->id_community_shift ) ) ? 'checked="checked"' : '';
 										$adminShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $admin->id_admin, $firstDayOfWeek, $lastDayOfWeek );

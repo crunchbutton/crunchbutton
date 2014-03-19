@@ -114,11 +114,10 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 	public function summary(){
 
 		// Start week at monday #2666
-		$year = date( 'Y', strtotime( '- 1 day' ) );
-		$week = date( 'W', strtotime( '- 1 day' ) );
+		$year = ( c::getPagePiece( 3 ) ) ? c::getPagePiece( 3 ) : date( 'Y', strtotime( '- 1 day' ) );
+		$week = ( c::getPagePiece( 4 ) ) ? c::getPagePiece( 4 ) : date( 'W', strtotime( '- 1 day' ) );
+		
 		$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
-		$firstDay->modify( '+ 1 week' );
-		$week = $firstDay->format( 'W' );
 		$days = [];
 		for( $i = 0; $i <= 6; $i++ ){
 			$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
@@ -128,6 +127,19 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		c::view()->to = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 		$firstDay->modify( '-6 day' );
 		c::view()->from = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		if( $week <= 1 ){
+			$weekPrev = ( $year - 1 ) . '/52';
+		} else {
+			$weekPrev = ( $year ) . '/' . ( $week - 1 );
+		}
+		if( $week >= 52 ){
+			$weekNext = ( $year + 1 ) . '/01';
+		} else {
+			$weekNext = ( $year ) . '/' . ( $week + 1 );
+		}
+
+		c::view()->weekPrev = $weekPrev;
+		c::view()->weekNext = $weekNext;
 		c::view()->days = $days;
 		c::view()->week = $week;
 		c::view()->year = $year;
