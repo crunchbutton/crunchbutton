@@ -24,9 +24,18 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 		$allItems = $this->request()[ 'allItems' ];
 		$wantWorkItems = $this->request()[ 'wantWorkItems' ];
 		$dontWantWorkItems = $this->request()[ 'dontWantWorkItems' ];
+		$completed = $this->request()[ 'completed' ];
+		$shifts = $this->request()[ 'shifts' ];
+
 		if( count( $allItems ) > 0 ){
 
 			$id_admin = c::admin()->id_admin;
+	
+			$status = Crunchbutton_Admin_Shift_Status::currentStatus( $id_admin );
+			$status->completed = $completed;
+			$status->shifts = $shifts;
+			$status->date = date('Y-m-d H:i:s');
+			$status->save();
 
 			// remove all items
 			if( count( $allItems ) > 0 ){
