@@ -197,7 +197,7 @@ if( $version == 'customer' ){
 			<td>$<?=$order->deliveryFee()?></td>
 			<?php if( $isDriverCockpit ) { ?>
 			<td style="font-size:12px;color:#666;">
-				$<?=$order->deliveryFee()?>
+				&mdash;
 			</td>
 			<?php } ?>
 		</tr>
@@ -262,9 +262,9 @@ if( $version == 'customer' ){
 		$<?php
 		// legacy
 		if( intval( $delivery_service_markup ) > 0 && !$order->final_price_plus_delivery_markup ){
-			echo number_format( $order->final_price - $order->delivery_service_markup_value, 2);
+			echo number_format( $order->final_price - $order->delivery_service_markup_value - $order->restaurant()->delivery_fee, 2);
 		} else {
-			echo number_format( $order->final_price, 2 );
+			echo number_format( $order->final_price - $order->restaurant()->delivery_fee, 2 );
 		}
 		?>
 		</td>
