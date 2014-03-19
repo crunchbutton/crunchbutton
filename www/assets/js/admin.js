@@ -1752,7 +1752,7 @@ App.giftcards = {
 
 function create_support_from_order(id_order) {
 	full_post(
-		'/support/plus/new',
+		'/support/new',
 		{
 			'action' : 'new',
 			'id_order' : id_order,

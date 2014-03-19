@@ -1,7 +1,7 @@
 /**
  * cafe mini game controller
  */
- 
+/* 
 NGApp.controller('CafeCtrl', function ($scope, $http) {
 	var
 		gameStart = null,
@@ -484,3 +484,4 @@ NGApp.controller('CafeCtrl', function ($scope, $http) {
 		}
 	];
 });
+*/

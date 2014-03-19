@@ -422,24 +422,8 @@ class Crunchbutton_Support extends Cana_Table {
 		return $supports;
 	}
 
-	public function notes($internalexternal = null, $date = null) {
-		$q = 'select * from support_note where id_support="'.$this->id_support.'"';
-		if ($internalexternal) {
-			$q .= ' and visibility="'.$internalexternal.'"';
-		}
-		if ($date) {
-			$q .= ' and `datetime`>="'.$date.'"';
-		}
-		$q .= ' order by datetime asc';
-		return Crunchbutton_Support_Note::q($q);
-	}
-
 	public function user() {
 		return User::o($this->id_user);
-	}
-
-	public function answers() {
-		return Crunchbutton_Support_Answer::q('SELECT * FROM `support_answer` WHERE id_support=' . $this->id_support . ' ORDER BY date DESC');
 	}
 
 	public function date() {

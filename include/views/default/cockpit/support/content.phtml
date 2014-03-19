@@ -16,9 +16,9 @@
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Status: <?php echo $this->status; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=all')">All</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=open')">Open</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=closed')">Closed</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=all')">All</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=open')">Open</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=closed')">Closed</a></li>
 						</ul>
 					</div>
 				</div>
@@ -27,10 +27,10 @@
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Type: <?php echo $this->type; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=all')">All</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=support')">Support</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=ticket')">Ticket from orders page</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=warning')">Warning</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=all')">All</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=support')">Support</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=ticket')">Ticket from orders page</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=warning')">Warning</a></li>
 						</ul>
 					</div>
 				</div>
@@ -39,14 +39,14 @@
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Auto refresh: <?php echo $this->autoRefresh; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&autoRefresh=on&status=all')">On</a></li>
-							<li><a href="#" onclick="load('/support/plus/content?type=<?php echo $this->type; ?>&autoRefresh=off&status=open')">Off</a></li>
+							<li><a href="#" onclick="load('/support/content?type=<?php echo $this->type; ?>&autoRefresh=on&status=all')">On</a></li>
+							<li><a href="#" onclick="load('/support/content?type=<?php echo $this->type; ?>&autoRefresh=off&status=open')">Off</a></li>
 						</ul>
 					</div>
 				</div>
 				<div class="span4">
 					<br/>
-					<button onclick="load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
+					<button onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
 				</div>
 				<div class="span2" style="text-align:right;">
 					<br/>
@@ -122,7 +122,7 @@
 					?>
 					<tr class="<?php echo $class.$zebra; ?>">
 						<td style="white-space: nowrap;">
-							<a href="/support/plus/<?= $support->id_support ?>">
+							<a href="/support/<?= $support->id_support ?>">
 								#<?=str_pad($support->id_support, 4, '0000', STR_PAD_LEFT)?>&nbsp;&nbsp;&nbsp;
 							</a>
 						</td>
@@ -147,7 +147,7 @@
 							</td>
 						</td>
 						<td>
-							<a title="View ticket" href="/support/plus/<?= $support->id_support ?>"><button class="btn btn-mini btn-default"><i class="icon-eye-open"></i></button></a>
+							<a title="View ticket" href="/support/<?= $support->id_support ?>"><button class="btn btn-mini btn-default"><i class="icon-eye-open"></i></button></a>
 							<?php if( $support->status == Crunchbutton_Support::STATUS_OPEN ) { ?>
 							&nbsp;
 							<a title="Close ticket" id="close-ticket-button-<?php echo $support->id_support; ?>" href="javascript://" onclick="SupportChats.closeTicket( '<?php echo $support->id_support; ?>' )"><button class="btn btn-mini btn-default"><i class="icon-off"></i></button></a>
@@ -240,7 +240,7 @@
 			}, 1000 );
 			if( autoRefreshTimerCount == 0 ){
 				if( autoRefresh == 'on' ){
-					load('/support/plus/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>');
+					load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>');
 				}
 			}
 		};
