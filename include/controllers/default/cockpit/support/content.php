@@ -1,6 +1,6 @@
 <?php
 
-class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
+class Controller_Support_Content extends Crunchbutton_Controller_Account {
 
 	public function init() {
 
@@ -17,7 +17,7 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 		$type = ( $_REQUEST[ 'type' ] ) ? $_REQUEST[ 'type' ] : 'all';
 		$autoRefresh = ( $_REQUEST[ 'autoRefresh' ] ) ? $_REQUEST[ 'autoRefresh' ] : 'on';
 
-		$paginationLink = '/support/plus/content?autoRefresh=' . $autoRefresh;
+		$paginationLink = '/support/content?autoRefresh=' . $autoRefresh;
 
 		$limit = ( $page == 1 ? 0 : ( ( ( $page - 1 ) * $resultsPerPage ) + 1 ) ) . ',' . $resultsPerPage;
 
@@ -70,7 +70,7 @@ class Controller_Support_Plus_Content extends Crunchbutton_Controller_Account {
 		c::view()->resultsPerPage = $resultsPerPage;
 		c::view()->paginationLink = $paginationLink;
 		c::view()->layout('layout/ajax');
-		c::view()->display('support/plus/content');
+		c::view()->display('support/content');
 
 	}
 
