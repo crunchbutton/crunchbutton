@@ -54,7 +54,9 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 			$firstDay->modify( '+ 1 day' );
 		}
-		c::view()->days = $days;		
+
+		c::view()->status = Crunchbutton_Admin_Shift_Status::currentStatus( $admin->id_admin );
+		c::view()->days = $days;
 		c::view()->from = new DateTime( $days[ 0 ]->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 		c::view()->to = new DateTime( $days[ 6 ]->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 		c::view()->communities = $admin->communitiesHeDeliveriesFor();

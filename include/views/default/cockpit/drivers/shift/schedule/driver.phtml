@@ -11,7 +11,7 @@
 	<div class="row-fluid">
 		<div class="box">
 			<div class="box-header"><span class="title">Sort your shift preferences</span></div>
-			<div class="padded sort-area">
+			<div class="padded">
 				<div class="row-fluid">
 					<center>
 						<h4>
@@ -19,9 +19,9 @@
 						</h4>
 					</center>
 					<hr/>
-					<div class="row-fluid padded">
+					<div class="row-fluid sort-area">
 						<div class="span4">
-							<strong>Available shifts</strong>
+							<strong>Available shifts:</strong>
 							<br/><br/>
 							<ul class="available connected">
 								<?php 
@@ -46,7 +46,7 @@
 							</ul>
 						</div>
 						<div class="span4">
-							<strong>Shifts you want to work</strong>
+							<strong>Shifts you want to work:</strong>
 							<br/><br/>
 							<ul class="wantwork connected">
 							<?php
@@ -64,7 +64,7 @@
 							</ul>
 						</div>
 						<div class="span4">
-							<strong>Shifts you DONT want to work</strong>
+							<strong>Shifts you DONT want to work:</strong>
 							<br/><br/>
 							<ul class="dontwantwork connected">
 							<?php
@@ -83,9 +83,34 @@
 						</div>
 					</div>
 				</div>
+				<hr/>
+				<div class="row-fluid">
+					<div class="span4">
+						<strong>How many shifts would you like to work this week?</strong>
+					</div>
+					<div class="span4">
+						<select id="shifts" class="chosen-select">
+							<option value=""></option>
+							<?php for( $i = 1; $i <= 10; $i++ ) { 
+								$selected = ( $this->status->shifts == $i ) ? 'selected="selected"' : '';
+								?>
+								<option <?php echo $selected; ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+							<?php } ?>
+						</select>	
+					</div>
+				</div>
 			</div>
+			
 			<div class="form-actions">
-					<button type="button" class="save-shift-driver btn btn-blue">Save changes</button>
+					<button type="button" class="update-shift-driver btn btn-blue"><i class="icon-save"></i> Update</button>&nbsp;&nbsp;
+
+					<button type="button" class="complete-shift-driver btn btn-green">
+						<?php if( $this->status->completed == '1' ) { ?>
+							<i class="icon-thumbs-up"></i> Already completed
+						<?php } else { ?>
+							<i class="icon-ok"></i> Complete
+						<?php } ?>
+					</button>
 				</div>
 				<div class="divider"></div>
 			</div>

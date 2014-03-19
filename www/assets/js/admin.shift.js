@@ -169,35 +169,64 @@ shift.drivers.init = function(){
 		return false;
 	} );
 
-	$( '.save-shift-driver' ).click( function() {
-		shift.drivers.save();
+	$( '.chosen-select' ).select2();
+
+	$( '.update-shift-driver' ).click( function() {
+		shift.drivers.update( false );
 	} );
+
+	$( '.complete-shift-driver' ).click( function() {
+		shift.drivers.update( true );
+	} );
+	
 
 	$('.available, .wantwork, .dontwantwork').sortable( { connectWith: '.connected' } );
 
 }
 
-shift.drivers.save = function(){
+shift.drivers.update = function( completed ){
 	var wantWorkItems = [];
 	var dontWantWorkItems = [];
 	var availableItems = [];
 	var allItems = [];
+	var hasAvailableItem = false;
+	var shifts = $( '#shifts' ).val();
+	$('ul.available li').each( function() {
+		hasAvailableItem = true;
+		availableItems.push( $( this ).attr( 'id' ) );
+		allItems.push( $( this ).attr( 'id' ) );
+	} );
+
+	if( completed ){
+		if( hasAvailableItem ){
+			alert( 'Ops, it seems you still have available items!' );
+			return;
+		}
+		if( $.trim( shifts ) == '' ){
+			alert( 'Ops, you need to answer: "How many shifts would you like to work this week?" !' );
+			$( '#shifts' ).focus();
+			return;
+		}
+	}
+	if( parseInt( shifts ) > 0 && !hasAvailableItem ){
+		completed = true;
+	}
+
+	completed = ( completed ) ? 1 : 0;
+
 	$('ul.wantwork li').each( function() {
 		wantWorkItems.push( $( this ).attr( 'id' ) );
 		allItems.push( $( this ).attr( 'id' ) );
 	} );
+
 	$('ul.dontwantwork li').each( function() {
 		dontWantWorkItems.push( $( this ).attr( 'id' ) );
-		allItems.push( $( this ).attr( 'id' ) );
-	} );
-	$('ul.available li').each( function() {
-		availableItems.push( $( this ).attr( 'id' ) );
 		allItems.push( $( this ).attr( 'id' ) );
 	} );
 	$.ajax( {
 		url: '/api/drivers/shift/driver/',
 		method: 'POST',
-		data: { 'allItems' : allItems, 'dontWantWorkItems' : dontWantWorkItems, 'wantWorkItems' : wantWorkItems, 'availableItems' : availableItems },
+		data: { 'allItems' : allItems, 'dontWantWorkItems' : dontWantWorkItems, 'wantWorkItems' : wantWorkItems, 'availableItems' : availableItems, 'completed' : completed, 'shifts' : shifts },
 		dataType: 'json',
 	} ).done( function( data ) {
 		if( data.success ){
