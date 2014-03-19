@@ -34,9 +34,10 @@
 											}
 											?>
 											<li id="<?php echo $segment->id_community_shift; ?>">
+												<span class="position"></span>
 												<?php echo $community->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
 												<br/>
-												<strong><?php echo $segment->dateStart()->format( 'l' ); ?> <?php echo $segment->startEndToString(); ?></strong>
+												<strong><?php echo $segment->dateStart()->format( 'l' ); ?>:&nbsp;&nbsp;<?php echo $segment->startEndToString(); ?></strong>
 											</li>
 											<?php
 										}
@@ -51,14 +52,17 @@
 							<ul class="wantwork connected">
 							<?php
 								$segments = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $this->from->format( 'Y-m-d' ), $this->to->format( 'Y-m-d' ) );
+								$count = 1;
 								foreach ( $segments as $segment ) {
 									?>
 									<li id="<?php echo $segment->id_community_shift; ?>">
+										<span class="position"><?php echo $count; ?>)&nbsp;</span>
 										<?php echo $community->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
 										<br/>
-										<strong><?php echo $segment->dateStart()->format( 'l' ); ?> <?php echo $segment->startEndToString(); ?></strong>
+										<strong><?php echo $segment->dateStart()->format( 'l' ); ?>:&nbsp;&nbsp;<?php echo $segment->startEndToString(); ?></strong>
 									</li>
 									<?php
+									$count++;
 								}
 							?>
 							</ul>
@@ -72,9 +76,10 @@
 								foreach ( $segments as $segment ) {
 									?>
 									<li id="<?php echo $segment->id_community_shift; ?>">
+										<span class="position"></span>
 										<?php echo $community->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
 										<br/>
-										<strong><?php echo $segment->dateStart()->format( 'l' ); ?> <?php echo $segment->startEndToString(); ?></strong>
+										<strong><?php echo $segment->dateStart()->format( 'l' ); ?>:&nbsp;&nbsp;<?php echo $segment->startEndToString(); ?></strong>
 									</li>
 									<?php
 								}
@@ -119,6 +124,9 @@
 
 </div>
 <style type="text/css">
+.position{
+	font-weight: bold;
+}
 ul.available, ul.wantwork, ul.dontwantwork {
 	min-height: 50px;
 	margin: 0px 25px 10px 0px;

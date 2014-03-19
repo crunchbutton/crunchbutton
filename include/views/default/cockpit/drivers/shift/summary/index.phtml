@@ -1,0 +1,121 @@
+<?
+	$this->title = 'Drivers';
+	$this->titleicon = 'road';
+	$this->titleLink = '/drivers';
+	$this->title2 = 'Shift';
+	$this->title2icon = 'clock';
+
+?>
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-header">
+				<div class="row-fluid">
+					<div class="span2 padded">
+						<a href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->weekPrev; ?>"><i class="icon icon-angle-left"></i> previous</a>
+					</div>
+						<div class="span8 padded" style="text-align:center;">
+							<strong>Shift for week <?php echo $this->week; ?> / <?php echo $this->year; ?></strong>
+						</div>
+					<div class="span2 padded" style="text-align:right;">
+						<a href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->weekNext; ?>">next <i class="icon icon-angle-right"></i></a>
+					</div>
+				</div>
+			</div>
+			<div class="box-content">
+				<div class="padded">
+					<div class="row-fluid">
+						<center>
+							<h4>
+								From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
+							</h4>
+						</center>
+						<hr/>
+					</div>
+					<table width="100%">
+						<tr>
+							<?php foreach( $this->days as $day ) { 
+								$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+							?>
+								<th width="14%" style="background:<?php echo $dark; ?>">
+									<div class="row-fluid padded">
+										<div class="span12">
+											<strong style="font-size:16px;color:#666;">
+												<?php echo $day->format( 'l' ); ?>
+												<div style="font-size:10px;font-weight:normal;color:#CCC;"><?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?></div>
+											</strong>
+										</div>
+									</div>
+								</th>
+							<?php } ?>
+						</tr>
+						<tr>
+							<?php foreach( $this->days as $day ) { 
+								$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+								$segments = Crunchbutton_Community_Shift::shiftsByDay( $day->format( 'Y-m-d' ) );
+							?>
+								<td width="14%" style="background:<?php echo $dark; ?>" valign="top">
+									<div class="row-fluid">
+										<?php 
+										foreach( $segments as $segment ) { 
+											?><div class="row-fluid">
+												<div class="shift span11">
+													<a class="modal-shift-assign" href="/drivers/shift/summary/shift/<?php echo $segment->id_community_shift; ?>" title="Assign drivers">
+														<div><strong><?php echo $segment->community()->name; ?></strong></div>
+														<span class="community-timezone" title="<?php echo $segment->fullDate(); ?>">
+															<strong><?php echo $segment->startEndToString(); ?></strong> ( <?php echo $segment->timezoneAbbr(); ?> )
+														</span>
+														<span class="pst-timezone" title="<?php echo $segment->fullDate( c::config()->timezone ); ?>">
+															<strong><?php echo $segment->startEndToString( c::config()->timezone ); ?></strong> (PST)
+														</span>
+													</a>
+												</div>
+											</div><?php
+										} ?>
+									</div>
+								</td>
+						<?php } ?>
+						</tr>	
+					</table>
+					<div class="divider"></div>
+				</div>
+			</div>
+			<div class="padded">
+				<button style="margin-left:20px;" class="btn btn-default" onclick="shift.community.toggleTimezone();"><i class="icon-time"></i> Show hours in&nbsp;
+				<span class="pst-timezone">community timezone</span>
+				<span class="community-timezone">PST timezone</span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal hide fade" id="modal-shift" style="display: none;">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" type="button">×</button>
+		<h6 id="modal-shift-title"></h6>
+	</div>
+	<div class="modal-body" id="modal-shift-body"></div>
+	<div class="modal-footer">
+		<button class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+</div>
+
+<style type="text/css">
+	.shift{
+		min-height: 50px;
+		margin: 0px 25px 10px 8px !important;
+		padding: 5px;
+		border-width: 1px;
+		border-style: solid;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
+	}
+</style>
+<script type="text/javascript" src="/assets/js/admin.shift.js"></script>
+<script type="text/javascript">
+$( document ).ready( function(){
+	shift.summary.init();
+} );
+</script>
