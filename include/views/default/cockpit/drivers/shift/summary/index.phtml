@@ -58,6 +58,7 @@
 									<div class="row-fluid">
 										<?php 
 										foreach( $segments as $segment ) { 
+<<<<<<< HEAD
 											$segment = Crunchbutton_Community_Shift::o( $segment->id_community_shift );
 											$_drivers = $segment->getDrivers();
 											$hasDriver = false;
@@ -72,6 +73,10 @@
 											
 											?><div class="row-fluid">
 												<div class="shift span11 <?php if( $hasDriver ){ echo 'hasDrivers'; } else { echo 'hasntDrivers'; } ?>">
+=======
+											?><div class="row-fluid">
+												<div class="shift span11">
+>>>>>>> 0b321aa63ee6bb2e27a77b0e1f6a531a9a4589e8
 													<a class="modal-shift-assign" href="/drivers/shift/summary/shift/<?php echo $segment->id_community_shift; ?>" title="Assign drivers">
 														<div><strong><?php echo $segment->community()->name; ?></strong></div>
 														<span class="community-timezone" title="<?php echo $segment->fullDate(); ?>">
@@ -80,9 +85,12 @@
 														<span class="pst-timezone" title="<?php echo $segment->fullDate( c::config()->timezone ); ?>">
 															<strong><?php echo $segment->startEndToString( c::config()->timezone ); ?></strong> (PST)
 														</span>
+<<<<<<< HEAD
 														<?php if( $hasDriver ) { ?>
 															<span><strong>Drivers:</strong>&nbsp;<?php echo $drivers; ?></span>
 														<?php } ?>
+=======
+>>>>>>> 0b321aa63ee6bb2e27a77b0e1f6a531a9a4589e8
 													</a>
 												</div>
 											</div><?php
@@ -127,6 +135,7 @@
 		-moz-border-radius: 3px;
 		border-radius: 3px;
 	}
+<<<<<<< HEAD
 	.shift.hasDrivers{
 		background-color: #ebf5e6;
 		border: 1px solid #d6e9c6;
@@ -145,6 +154,8 @@
 		display: block;
 		margin: 5px 0;
 	}
+=======
+>>>>>>> 0b321aa63ee6bb2e27a77b0e1f6a531a9a4589e8
 </style>
 <script type="text/javascript" src="/assets/js/admin.shift.js"></script>
 <script type="text/javascript">
