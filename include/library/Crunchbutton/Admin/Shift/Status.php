@@ -10,11 +10,16 @@ class Crunchbutton_Admin_Shift_Status extends Cana_Table {
 	}
 
 	public function currentStatus( $id_admin ){
-		$year = date( 'Y' );
-		$week = date( 'W' );
+		// Start week at monday #2666
+		$year = date( 'Y', strtotime( '- 1 day' ) );
+		$week = date( 'Y', strtotime( '- 1 day' ) );
 		$date = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
 		$date->modify( '+ 1 week' );
 		return Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $id_admin, $date->format( 'W' ), $date->format( 'Y' ) );
+	}
+
+	public function totalShiftsAssigned(){
+
 	}
 
 	public function getByAdminWeekYear( $id_admin, $week, $year ){

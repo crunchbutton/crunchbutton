@@ -7,8 +7,8 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		c::view()->page = 'drivers';
 
 		switch ( c::getPagePiece( 2 ) ) {
+			
 			case 'community':
-				
 				switch ( c::getPagePiece( 3 ) ) {
 					case 'add':
 						$this->communityAdd();
@@ -32,21 +32,32 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 				}
 				break;
 
-			default:
+			case 'summary':
+				switch ( c::getPagePiece( 3 ) ) {
+					case 'shift':
+						$this->summaryShift();
+					break;
+					default:
+						$this->summary();
+					break;
+				}
 				
+				break;
+
+			default:
 				break;
 		}
 	}
 
 	public function scheduleDriver(){
+
 		$admin = Admin::o( c::admin()->id_admin );
-		$year = date( 'Y' );
-		$week = date( 'W' );
 		
 		// Start week at monday #2666
+		$year = date( 'Y', strtotime( '- 1 day' ) );
+		$week = date( 'W', strtotime( '- 1 day' ) );
+		
 		$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
-
-		// Get next week
 		$firstDay->modify( '+ 1 week' );
 
 		$days = [];
@@ -67,8 +78,8 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		$id_community_shift = c::getPagePiece( 4 );
 		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
 		if( $shift->id_community_shift ){
-			c::view()->layout( 'layout/ajax' );
 			c::view()->shift = $shift;
+			c::view()->layout( 'layout/ajax' );
 			c::view()->display( 'drivers/shift/community/edit' );
 		}
 	}
@@ -100,14 +111,47 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		}
 	}
 
+	public function summary(){
+
+		// Start week at monday #2666
+		$year = date( 'Y', strtotime( '- 1 day' ) );
+		$week = date( 'W', strtotime( '- 1 day' ) );
+		$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+		$firstDay->modify( '+ 1 week' );
+		$week = $firstDay->format( 'W' );
+		$days = [];
+		for( $i = 0; $i <= 6; $i++ ){
+			$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+			$firstDay->modify( '+ 1 day' );
+		}
+		$firstDay->modify( '-1 day' );
+		c::view()->to = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		$firstDay->modify( '-6 day' );
+		c::view()->from = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		c::view()->days = $days;
+		c::view()->week = $week;
+		c::view()->year = $year;
+		c::view()->display( 'drivers/shift/summary/index' );
+
+	}
+
+	public function summaryShift(){
+		$id_shift = c::getPagePiece( 4 );
+		$shift = Crunchbutton_Community_Shift::o( $id_shift );
+		if( $shift->id_community_shift ){
+			c::view()->shift = $shift;
+			c::view()->layout( 'layout/ajax' );
+			c::view()->display( 'drivers/shift/summary/shift' );	
+		}
+	}
+
 	public function community(){
 		
 		$id_community = c::getPagePiece( 3 );
+		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : false );
+		$week = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : false );
 
-		if( $id_community ){
-
-			$year = c::getPagePiece( 4 ) ? c::getPagePiece( 4 ) : date( 'Y' ) ;
-			$week = c::getPagePiece( 5 ) ? c::getPagePiece( 5 ) : date( 'W' ) ;
+		if( $id_community && $year && $week ){
 
 			if( intval( $week ) < 10 ){
 				$week = '0' . intval( $week );
@@ -135,15 +179,21 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 			c::view()->weekPrev = $weekPrev;
 			c::view()->weekNext = $weekNext;
-			c::view()->week = $week;
-			c::view()->year = $year;
 			c::view()->days = $days;
 			$firstDay->modify( '-1 day' );
 			c::view()->to = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 			$firstDay->modify( '-6 day' );
 			c::view()->from = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+			c::view()->id_community = $id_community;
+		} else {
+			$year = date( 'Y', strtotime( '- 1 day' ) );
+			$week = date( 'W', strtotime( '- 1 day' ) );
+			$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+			$day->modify( '+ 1 week' );
+			$week = $day->format( 'W' );
 		}
-		c::view()->id_community = $id_community;
+		c::view()->week = $week;
+		c::view()->year = $year;
 		c::view()->display( 'drivers/shift/community/index' );
 	}
 }
