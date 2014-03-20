@@ -82,7 +82,7 @@
 					?>
 					<li <?php echo $active; ?>><a href="#drivers" data-toggle="tab"><i class="icon-road"></i> <span>Drivers</span></a></li>
 				<?php } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) 
+				<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) { ?>
 				<li><a href="#shifts" data-toggle="tab"><i class="icon-truck"></i> <span>Shifts (Beta)</span></a></li>
 				<?php } ?>
 				<li><a href="#more" data-toggle="tab"><i class="icon-cog"></i> <span>More actions</span></a></li>
@@ -157,7 +157,7 @@ $( document ).ready( function(){
 
 	community.drivers();
 	<?php 
-	if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) {
+	if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) {
 	$year = date( 'Y', strtotime( '- 1 day' ) );
 	$week = date( 'W', strtotime( '- 1 day' ) );
 	$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
