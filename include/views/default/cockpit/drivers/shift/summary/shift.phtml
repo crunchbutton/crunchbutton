@@ -107,13 +107,24 @@
 										<?php } 
 										}
 									?>
+									<?php 
+									$otherDrivers = $shift->community()->getDriversOfCommunity();
+									$hasDrivers = false;
+									foreach( $otherDrivers as $admin ){ 
+										if( in_array( $admin->id_admin, $alreadyShown ) ){
+											continue;
+										}
+										$hasDrivers = true;
+									}
+									if ( $hasDrivers ){
+									?>
 									<tr>
 										<td colspan="5">
 											<strong><center>Other drivers</center></strong>
 										</td>
 									</tr>
 									<?php
-									$otherDrivers = $shift->community()->getDriversOfCommunity();
+
 									foreach( $otherDrivers as $admin ){ 
 										if( in_array( $admin->id_admin, $alreadyShown ) ){
 											continue;
@@ -134,6 +145,7 @@
 										</tr>
 										<?php
 										}
+									}
 									?>
 									<?php if( count( $driversDontWantWorkHere ) > 0 ) { ?>
 										<tr>
