@@ -218,48 +218,35 @@
 						</li>
 					<? } ?>
 	
-				</ul>
-			</li>
-		<? endif ; ?>
-
-<?php if( c::env() == 'beta' || c::env() == 'local' ){ ?>
-<!-- Just temporary -->
-		<? if ( c::admin()->permission()->check( [ 'global','drivers-page'] ) ) : ?>
-			<li class="dark-nav">
-				<span class="glow"></span>
-	
-				<a class="accordion-toggle collapsed" href="#admin-nav-drivers-new" data-toggle="collapse" >
-					<i class="icon-road icon-2x"></i>
-					<span>Drivers (NEW)<i class="icon-caret-down"></i></span>
-				</a>
-				<ul id="admin-nav-drivers-new" class="collapse">
-					
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
 					<li class="">
 						<a href="/drivers/shift/community">
-							<i class="icon-truck"></i> Community shifts
+							<i class="icon-truck"></i> Community shifts (Beta)
 						</a>
 					</li>
+					<? } ?>
 
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
 					<li class="">
 						<a href="/drivers/shift/summary">
-							<i class="icon-file-alt"></i> Summary
+							<i class="icon-file-alt"></i> Summary (Beta)
 						</a>
 					</li>
+					<? } ?>
 				
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
 					<li class="">
 						<a href="/drivers/shift/schedule/driver">
-							<i class="icon-calendar"></i> Schedule - for drivers
+							<i class="icon-calendar"></i> Schedule - for drivers (Beta)
 						</a>
 					</li>
+					<? } ?>
 
 				</ul>
 			</li>
 		<? endif ; ?>
-<!-- -->
-<?php } ?>	
-	
 
-		
+			
 		<li class="dark-nav">
 			<span class="glow"></span>
 

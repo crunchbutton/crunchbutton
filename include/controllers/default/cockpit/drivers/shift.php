@@ -9,16 +9,20 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		switch ( c::getPagePiece( 2 ) ) {
 			
 			case 'community':
-				switch ( c::getPagePiece( 3 ) ) {
-					case 'add':
-						$this->communityAdd();
-						break;
-					case 'edit':
-						$this->communityEdit();
-						break;
-					default:
-						$this->community();
-						break;
+
+				if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) {
+
+					switch ( c::getPagePiece( 3 ) ) {
+						case 'add':
+							$this->communityAdd();
+							break;
+						case 'edit':
+							$this->communityEdit();
+							break;
+						default:
+							$this->community();
+							break;
+					}
 				}
 				break;
 			
@@ -33,15 +37,18 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 				break;
 
 			case 'summary':
-				switch ( c::getPagePiece( 3 ) ) {
-					case 'shift':
-						$this->summaryShift();
-					break;
-					default:
-						$this->summary();
-					break;
+
+				if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) {
+
+					switch ( c::getPagePiece( 3 ) ) {
+						case 'shift':
+							$this->summaryShift();
+						break;
+						default:
+							$this->summary();
+						break;
+					}
 				}
-				
 				break;
 
 			default:
