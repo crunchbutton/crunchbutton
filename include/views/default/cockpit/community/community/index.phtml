@@ -82,8 +82,8 @@
 					?>
 					<li <?php echo $active; ?>><a href="#drivers" data-toggle="tab"><i class="icon-road"></i> <span>Drivers</span></a></li>
 				<?php } ?>
-				<?php if( c::env() == 'beta' || c::env() == 'local' ){ ?>
-				<li><a href="#shifts" data-toggle="tab"><i class="icon-truck"></i> <span>Shifts</span></a></li>
+				<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) 
+				<li><a href="#shifts" data-toggle="tab"><i class="icon-truck"></i> <span>Shifts (Beta)</span></a></li>
 				<?php } ?>
 				<li><a href="#more" data-toggle="tab"><i class="icon-cog"></i> <span>More actions</span></a></li>
 			</ul>
@@ -157,13 +157,13 @@ $( document ).ready( function(){
 
 	community.drivers();
 	<?php 
+	if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) {
 	$year = date( 'Y', strtotime( '- 1 day' ) );
 	$week = date( 'W', strtotime( '- 1 day' ) );
 	$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
 	$day->modify( '+ 1 week' );
 	$week = $day->format( 'W' );
 	?>
-	<?php if( c::env() == 'beta' || c::env() == 'local' ){ ?>
 	community.shifts( '/drivers/shift/community/<?php echo $community[ 'community' ]->id_community; ?>/<?php echo $year; ?>/<?php echo $week; ?>?ajax=1' );
 	<?php } ?>
 
