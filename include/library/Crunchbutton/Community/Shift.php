@@ -9,12 +9,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			->load($id);
 	}
 
-	public function autoCopyLastWeek(){
-		
-	}
+	public function autoCopyLastWeek(){}
 
 	public function shiftsByDay( $date ){
+		Crunchbutton_Community_Shift::createRecurringEvent( $date );
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN community c ON c.id_community = cs.id_community WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $date . '" ORDER BY c.name, cs.date_start ASC' );
+	}
+
+	public function shiftsByCommunityPeriod( $id_community, $from, $to ){
+		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $to . '" AND id_community = "' . $id_community . '" ORDER BY cs.date_start ASC' );
 	}
 
 	public function week(){
@@ -46,8 +49,39 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function shiftByCommunityDay( $id_community, $date ){
-		return Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community = "' . $id_community . '" AND DATE_FORMAT( date_start, "%Y-%m-%d" ) = "' . $date . '" ORDER BY id_community_shift ASC' );
+		Crunchbutton_Community_Shift::createRecurringEvent( $date );
+		return Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community = "' . $id_community . '" AND DATE_FORMAT( date_start, "%Y-%m-%d" ) = "' . $date . '" AND active = 1 ORDER BY id_community_shift ASC' );
 	}
+
+	public function createRecurringEvent( $date ){
+		// Search for recurring events
+		$day =  new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
+		$weekday = $day->format( 'w' );
+		$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE recurring = 1 AND DATE_FORMAT( date_start, "%w" ) = "' . $weekday . '"' );
+		// Create the recurring events
+		foreach( $shifts as $shift ){
+			if( $shift->dateStart()->format( 'Ymd' ) < $day->format( 'Ymd' ) ){
+				$date_base = DateTime::createFromFormat( 'Y-m-d H:i:s', $date . ' 00:00:00', new DateTimeZone( c::config()->timezone ) );
+				$hours = Crunchbutton_Admin_Hour::segmentToDate( $date_base, $shift->startEndToString(), $timezone );
+				if( $hours ){
+					// Check if the recurring event was already created
+					$checkShift = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community_shift_father = ' . $shift->id_community_shift . ' AND date_start = "' . $hours[ 'start' ] . '" AND date_end = "' . $hours[ 'end' ] . '"' );
+					if( !$checkShift->id_community_shift ){
+						$newShift = new Crunchbutton_Community_Shift();
+						$newShift->id_community = $shift->id_community;
+						$newShift->date_start = $hours[ 'start' ];
+						$newShift->date_end = $hours[ 'end' ];
+						$newShift->active = 1;
+						$newShift->id_community_shift_father = $shift->id_community_shift;
+						if( $newShift->date_start && $newShift->date_end ){
+							$newShift->save();	
+						}
+					}
+				}
+			}
+		}
+	}
+
 
 	public function shiftByCommunity( $id_community ){
 		$weekdays = [ 'mon' =>  false, 'tue' =>  false, 'wed' =>  false, 'thu' =>  false, 'fri' =>  false, 'sat' =>  false, 'sun'  =>  false ];
@@ -77,8 +111,31 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $this->_community;
 	}
 
+	public function removeRecurring( $id_community_shift ){
+		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
+		if( $shift->id_community_shift_father ){
+			c::db()->query( "UPDATE community_shift SET recurring = 0 WHERE id_community_shift = " . $shift->id_community_shift_father );	
+			Crunchbutton_Community_Shift::removeRecurringChildren( $shift->id_community_shift_father );
+		}		
+	}
+
+	public function removeRecurringChildren( $id_community_shift_father ){
+		$now =  new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		c::db()->query( 'DELETE FROM community_shift WHERE id_community_shift_father = ' . $id_community_shift_father . ' AND date_start >= "' . $now->format( 'Y-m-d' ) . '"' );
+	}
+
 	public function remove( $id_community_shift ){
-		return c::db()->query( "DELETE FROM community_shift WHERE id_community_shift = " . $id_community_shift );
+		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
+		if( $shift->recurring ){
+			// If it is a recurring remove its childen
+			Crunchbutton_Community_Shift::removeRecurringChildren( $shift->id_community_shift );
+		}
+		// If it has a father, just desactive the event - to avoid it the be re created again
+		if( $shift->id_community_shift_father ){
+			c::db()->query( "UPDATE community_shift SET active = 0 WHERE id_community_shift = " . $id_community_shift );
+		} else {
+			c::db()->query( "DELETE FROM community_shift WHERE id_community_shift = " . $id_community_shift );
+		}		
 	}
 
 	public function removeHoursFromDay( $id_community, $date ){
@@ -94,6 +151,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$newShift->id_community = $id_community;
 			$newShift->date_start = $date_start->format( 'Y-m-d H:i:s' );
 			$newShift->date_end = $date_end->format( 'Y-m-d H:i:s' );
+			$newShift->active = 1;
 			if( $newShift->date_start && $newShift->date_end ){
 				$newShift->save();	
 			}
@@ -204,6 +262,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function getDrivers(){
 		return Crunchbutton_Admin::q( 'SELECT a.* FROM admin a INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin AND asa.id_community_shift = ' . $this->id_community_shift );
+	}
+
+	public function communitiesWithDeliveryService(){
+		return Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c
+																				INNER JOIN restaurant_community rc ON c.id_community = rc.id_community
+																				INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant AND r.delivery_service = 1 
+																			ORDER BY c.name ASC' );
 	}
 
 }

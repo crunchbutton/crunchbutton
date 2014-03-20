@@ -1,0 +1,150 @@
+<?
+	$this->title = 'Drivers';
+	$this->titleicon = 'road';
+	$this->titleLink = '/drivers';
+	$this->title2 = 'Shift';
+	$this->title2icon = 'clock';
+
+	$communities = $this->communities;
+	$from = $this->from;
+	$to = $this->to;
+	$year = $this->year;
+	$week = $this->week;
+
+	$hasDrivers = [];
+
+?>
+
+<div class="container-fluid padded">
+	<div class="row-fluid">
+		<div class="box">
+			<div class="box-header"><span class="title">Shift status: <?php echo 'from ' .  $from->format( 'M jS Y ' ) . ' to ' . $to->format( 'M jS Y ' ); ?></span></div>
+			<div class="box-content">
+				<table width="100%" class="table table-normal">
+					<thead>
+						<tr>
+							<td>Community</td>
+							<td>Shifts</td>
+							<td>Drivers</td>
+							<td>Completed the Schedule</td>
+						</tr>
+					</thead>
+					<tbody>
+				<?php 
+					foreach( $communities as $community ) { 
+
+						$hasDrivers[ $community->id_community ] = false;
+
+						$shifts = $community->hasShiftByPeriod( $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' )  );
+						$drivers = $community->getDriversOfCommunity();
+
+						$totalShifts = 0;
+						$totalDrivers = 0;
+						$totalDriversCompleted = 0;
+						foreach( $shifts as $shift ){ $totalShifts++; }
+						foreach( $drivers as $driver ){ 
+							$totalDrivers++; 
+							$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
+							if( $status->completed == '1' ){
+								$totalDriversCompleted++;
+							}
+						}
+						if( $totalDrivers > 0 ){
+							$hasDrivers[ $community->id_community ] = true;
+						}
+						?>
+					<tr>
+						<td><?php echo $community->name; ?></td>
+						<td>
+							<a href="/drivers/shift/community/<?php echo $community->id_community; ?>/<?php echo $year; ?>/<?php echo $week; ?>">
+								<span <?php if( $totalShifts == 0 ) { echo 'style="color:red;font-weight:bold;"'; } ?>>
+									<?php echo $totalShifts; ?>
+								</span>
+							</a>
+						</td>
+						<td>
+							<a href="/drivers/assign/community/<?php echo $community->id_community; ?>">
+								<span <?php if( $totalDrivers == 0 ) { echo 'style="color:red;font-weight:bold;"'; } ?>>
+									<?php echo $totalDrivers; ?>
+								</span>
+							</a>
+						<td>
+							<span <?php if( $totalDriversCompleted == 0 ) { echo 'style="color:red;font-weight:bold;"'; } ?>>
+								<?php echo $totalDriversCompleted; ?>
+							</span>
+						</td>
+						</td>
+					</tr>
+				<?php 
+					}
+				?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+
+		<div class="box">
+			<div class="box-header"><span class="title">Drivers status: <?php echo 'from ' .  $from->format( 'M jS Y ' ) . ' to ' . $to->format( 'M jS Y ' ); ?></span></div>
+			<div class="box-content">
+				<table width="100%" class="table table-normal">
+					<thead>
+						<tr>
+							<td>Driver</td>
+							<td>Completed</td>
+							<td>Shifts assigned to</td>
+							<td>Shifts want to work at</td>
+						</tr>
+					</thead>
+					<tbody>
+				<?php 
+					foreach( $communities as $community ) { 
+						if( !$hasDrivers[ $community->id_community ] ){
+							continue;
+						}
+						?>
+						<tr>
+							<td colspan="4">
+								<strong>
+									<center>
+										<?php echo $community->name ?>
+									</center>
+								</strong>
+							</td>
+						</tr>
+						<?php
+						$drivers = $community->getDriversOfCommunity();
+						foreach( $drivers as $driver ){ 
+							$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
+							$adminShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
+							$totalShifts = $adminShifts->count();
+							?>
+							<tr>
+								<td>
+									<?php echo $driver->name; ?> ( <?php echo $driver->phone(); ?> )
+								</td>
+								<td>
+									<?php if( $status->completed == 1 ){ ?>
+										<strong style="color:green;">Yes</strong>
+									<?php } else { ?>
+										<strong style="color:red;">No</strong>
+									<?php } ?>
+								</td>
+								<td>
+									<?php echo $status->shifts; ?>
+								</td>
+								<td>
+									<?php echo $totalShifts; ?>
+								</td>
+							</tr>
+				<?php 
+						}
+					}
+				?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+</div>
