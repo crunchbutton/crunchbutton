@@ -44,7 +44,7 @@ class Controller_charts_community extends Crunchbutton_Controller_Account {
 
 	public function data(){
 		$hasPermissionFullPermission = c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-communities-all' ] );
-		$communities = Restaurant::getCommunitiesWithRestaurantsNumber();
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community' );
 		$_communities = [];
 		foreach ( $communities as $community ) {
 			$permission_name = strtolower( $community->community );
