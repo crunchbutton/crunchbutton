@@ -50,6 +50,16 @@ shift.community.toggleTimezone = function(){
 	$( '.' + shift.community.tz + '-timezone' ).show();
 };
 
+shift.community.reload = function(){
+	console.log('shift.community.ajax',shift.community.ajax);
+	if( shift.community.ajax ){
+		$( '#modal-hours' ).modal( 'hide' );
+		community.shifts( shift.community.url );
+	} else {
+		location.reload();
+	}
+}
+
 shift.community.copyAll = function( id_community, week, year ){
 	if( confirm( 'Confirm copy? This will remove all the hours from this week ' + week + '/' +  year + '!' ) ){
 		$.ajax( {
@@ -59,7 +69,7 @@ shift.community.copyAll = function( id_community, week, year ){
 			dataType: 'json',
 		} ).done( function( data ) {
 			if( data.success ){
-				location.reload();
+				shift.community.reload();
 			} else {
 				alert( 'Ops, error! ' + data.error );
 			}
@@ -77,7 +87,7 @@ shift.community.remove = function(){
 			dataType: 'json',
 		} ).done( function( data ) {
 			if( data.success ){
-				location.reload();
+				shift.community.reload();
 			} else {
 				alert( 'Ops, error! ' + data.error );
 			}
@@ -106,7 +116,7 @@ shift.community.edit = function(){
 		dataType: 'json',
 	} ).done( function( data ) {
 		if( data.success ){
-			location.reload();
+			shift.community.reload();
 		} else {
 			alert( 'Ops, error! ' + data.error );
 		}
@@ -140,7 +150,7 @@ shift.community.add = function(){
 		dataType: 'json',
 	} ).done( function( data ) {
 		if( data.success ){
-			location.reload();
+			shift.community.reload();
 		} else {
 			alert( 'Ops, error! ' + data.error );
 		}

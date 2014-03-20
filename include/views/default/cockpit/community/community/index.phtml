@@ -82,6 +82,9 @@
 					?>
 					<li <?php echo $active; ?>><a href="#drivers" data-toggle="tab"><i class="icon-road"></i> <span>Drivers</span></a></li>
 				<?php } ?>
+				<?php if( c::env() == 'beta' || c::env() == 'local' ){ ?>
+				<li><a href="#shifts" data-toggle="tab"><i class="icon-truck"></i> <span>Shifts</span></a></li>
+				<?php } ?>
 				<li><a href="#more" data-toggle="tab"><i class="icon-cog"></i> <span>More actions</span></a></li>
 			</ul>
 	</div>
@@ -113,6 +116,12 @@
 				<a href="/drivers/schedule"> <i class="icon-calendar"></i> Schedule</a>
 				<?php } ?>
 			</div>
+			<div class="tab-pane" id="shifts">
+				<div class="row-fluid">
+					<div id="shifts-content"></div>
+				</div>
+				
+			</div>
 		</div>
 	</div>
 </div>
@@ -131,6 +140,7 @@
 	</div>
 </div>
 <script type="text/javascript">
+
 var community = { id_community : '<?php echo $community[ 'community' ]->id_community; ?>' };
 
 var _id_restaurant = false;
@@ -146,8 +156,32 @@ $( document ).ready( function(){
 	community.restaurants();
 
 	community.drivers();
+	<?php 
+	$year = date( 'Y', strtotime( '- 1 day' ) );
+	$week = date( 'W', strtotime( '- 1 day' ) );
+	$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+	$day->modify( '+ 1 week' );
+	$week = $day->format( 'W' );
+	?>
+	<?php if( c::env() == 'beta' || c::env() == 'local' ){ ?>
+	community.shifts( '/drivers/shift/community/<?php echo $community[ 'community' ]->id_community; ?>/<?php echo $year; ?>/<?php echo $week; ?>?ajax=1' );
+	<?php } ?>
 
 } );
+
+community.shifts = function( url ){
+	$.ajax( {
+		url: url,
+		complete: function(content) {
+			$('#shifts-content').html( content.responseText );
+			$( '.shift-previous, .shift-next' ).click( function(e) {
+				e.preventDefault();
+				var url = $( this ).attr( 'href' ) + '?ajax=1';
+				community.shifts( url );
+			} );
+		}
+	} );
+};
 
 community.drivers = function(){
 	$.ajax( {

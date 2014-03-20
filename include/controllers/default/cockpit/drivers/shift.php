@@ -206,6 +206,11 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		}
 		c::view()->week = $week;
 		c::view()->year = $year;
+		if( $_REQUEST[ 'ajax' ] ){
+			c::view()->ajax = true;
+			c::view()->layout( 'layout/ajax' );	
+		}
+		
 		c::view()->display( 'drivers/shift/community/index' );
 	}
 }
