@@ -120,7 +120,12 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 
 			case 'remove':
 				$id_community_shift = $this->request()[ 'id_community_shift' ];
-				Crunchbutton_Community_Shift::remove( $id_community_shift );
+				$recurring = $this->request()[ 'recurring' ];
+				if( $recurring > 0 ){
+					Crunchbutton_Community_Shift::removeRecurring( $id_community_shift );
+				} else {
+					Crunchbutton_Community_Shift::remove( $id_community_shift );
+				}
 				echo json_encode( array( 'success' => true ) );
 				break;
 
@@ -132,7 +137,8 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				$year = $this->request()[ 'year' ];
 				$week = $this->request()[ 'week' ];
 				$segments = $this->request()[ 'hours' ];
-				$weekdays = $this->request()[ 'weekdays' ] ;
+				$weekdays = $this->request()[ 'weekdays' ];
+				$recurring = $this->request()[ 'recurring' ];
 
 				$community = Crunchbutton_Community::o( $id_community );
 
@@ -167,6 +173,8 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 					$shift->id_community = $id_community;
 					$shift->date_start = $hour[ 'start' ];
 					$shift->date_end = $hour[ 'end' ];
+					$shift->recurring = $recurring;
+					$shift->active = 1;
 					if( $shift->date_start && $shift->date_end ){
 						$shift->save();	
 					}

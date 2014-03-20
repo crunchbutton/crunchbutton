@@ -305,6 +305,10 @@ class Crunchbutton_Community extends Cana_Table {
 		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];		
 	}
 
+	public function hasShiftByPeriod( $from = false, $to = false ){
+		return Crunchbutton_Community_Shift::shiftsByCommunityPeriod( $this->id_community, $from, $to );
+	}
+
 	public function totalRestaurantsByCommunity(){
 
 		$query = "SELECT COUNT(*) AS Total FROM restaurant r INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = {$this->id_community}";

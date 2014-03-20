@@ -36,6 +36,16 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 				}
 				break;
 
+			case 'status':
+				switch ( c::getPagePiece( 3 ) ) {
+					case 'shift':
+						$this->statusShift();
+					break;
+					default:
+					break;
+				}
+				break;
+
 			case 'summary':
 
 				if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) {
@@ -63,7 +73,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		// Start week at monday #2666
 		$year = date( 'Y', strtotime( '- 1 day' ) );
 		$week = date( 'W', strtotime( '- 1 day' ) );
-		
+
 		$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
 		$firstDay->modify( '+ 1 week' );
 
@@ -220,4 +230,26 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		
 		c::view()->display( 'drivers/shift/community/index' );
 	}
+
+	public function statusShift(){
+
+		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : date( 'Y', strtotime( '- 1 day' ) ) );
+		$week = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : date( 'W', strtotime( '- 1 day' ) ) );
+
+		$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+		$from = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		$day->modify( '+6 day' );
+		$to = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		
+
+		$communities = Crunchbutton_Community_Shift::communitiesWithDeliveryService();
+
+		c::view()->year = $year;
+		c::view()->week = $week;
+		c::view()->to = $to;
+		c::view()->from = $from;
+		c::view()->communities = $communities;
+		c::view()->display( 'drivers/shift/status/index' );
+	}
+
 }

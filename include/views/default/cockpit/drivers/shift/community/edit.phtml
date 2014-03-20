@@ -37,13 +37,29 @@ $shift = $this->shift;
 									</div>
 								</div>
 							</div>
+							<?php if( $shift->id_community_shift_father || $shift->recurring > 0  ){ ?>
+								<div class="row-fluid">
+									<div class="span12">
+										<div class="span4">
+											<strong>Repeat</strong>
+										</div>
+										<div class="span7">
+											Repeat every <?php echo $shift->dateStart()->format( 'l' ); ?>
+										</div>
+									</div>
+								</div>
+							<?php } ?>
 							<div class="row-fluid">
 								<div class="span12">
 									<div class="span4">
 										<strong>Hours</strong>
 									</div>
 									<div class="span7">
-										<input type="text" value="<?php echo $shift->startEndToString(); ?>" name="form-hours" id="form-hours"/> 
+										<?php if( $shift->id_community_shift_father || $shift->recurring > 0  ){ ?>
+											<?php echo $shift->startEndToString(); ?>
+										<?php } else { ?>
+											<input type="text" value="<?php echo $shift->startEndToString(); ?>" name="form-hours" id="form-hours"/> 
+										<?php } ?>
 										<br/><br/>
 									</div>
 								</div>
@@ -112,7 +128,16 @@ $shift = $this->shift;
 								</div>
 								<div class="row-fluid">
 									<div class="span6">
-										<button type="button" onclick="shift.community.edit();" class="btn btn-green"><i class="icon-save"></i> Save </button> <button type="button" onclick="shift.community.remove();" class="btn btn-red"><i class="icon-trash"></i> Remove </button> 
+
+										<?php if( $shift->id_community_shift_father ){ ?>
+											<button type="button" onclick="shift.community.remove();" class="btn btn-red"><i class="icon-trash"></i> Remove </button> 
+											&nbsp;<button type="button" onclick="shift.community.removeRecurring();" class="btn btn-red"><i class="icon-trash"></i> Remove recurrence</button> 
+										<?php } else if( $shift->recurring > 0 ){ ?>
+											<button type="button" onclick="shift.community.removeRecurringFather();" class="btn btn-red"><i class="icon-trash"></i> Remove </button> 
+										<?php } else { ?>
+											<button type="button" onclick="shift.community.edit();" class="btn btn-green"><i class="icon-save"></i> Save </button>
+											&nbsp;<button type="button" onclick="shift.community.remove();" class="btn btn-red"><i class="icon-trash"></i> Remove </button> 
+										<?php } ?>
 									</div>
 								</div>
 							</div>

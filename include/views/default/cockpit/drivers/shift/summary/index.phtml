@@ -73,7 +73,11 @@
 											?><div class="row-fluid">
 												<div class="shift span11 <?php if( $hasDriver ){ echo 'hasDrivers'; } else { echo 'hasntDrivers'; } ?>">
 													<a class="modal-shift-assign" href="/drivers/shift/summary/shift/<?php echo $segment->id_community_shift; ?>" title="Assign drivers">
-														<div><strong><?php echo $segment->community()->name; ?></strong></div>
+														<div>
+															<?php if( $segment->id_community_shift_father || $segment->recurring > 0 ){ ?>
+																<i class="icon-retweet" title="It is a recurring event"></i>&nbsp;
+															<?php } ?>
+														<strong><?php echo $segment->community()->name; ?></strong></div>
 														<span class="community-timezone" title="<?php echo $segment->fullDate(); ?>">
 															<strong><?php echo $segment->startEndToString(); ?></strong> ( <?php echo $segment->timezoneAbbr(); ?> )
 														</span>

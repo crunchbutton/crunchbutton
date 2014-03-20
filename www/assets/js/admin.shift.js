@@ -71,7 +71,7 @@ shift.community.copyAll = function( id_community, week, year ){
 			if( data.success ){
 				shift.community.reload();
 			} else {
-				alert( 'Ops, error! ' + data.error );
+				alert( 'Oops, error! ' + data.error );
 			}
 		} );		
 	}
@@ -89,7 +89,43 @@ shift.community.remove = function(){
 			if( data.success ){
 				shift.community.reload();
 			} else {
-				alert( 'Ops, error! ' + data.error );
+				alert( 'Oops, error! ' + data.error );
+			}
+		} );
+	}
+};
+
+shift.community.removeRecurringFather = function(){
+	var id_community_shift = $( '#form-id_community_shift' ).val();
+	if( confirm( 'Confirm remove it? It will remove the recurrence too.' ) ){
+		$.ajax( {
+			url: '/api/drivers/shift/community/remove',
+			method: 'POST',
+			data: { 'id_community_shift' : id_community_shift },
+			dataType: 'json',
+		} ).done( function( data ) {
+			if( data.success ){
+				shift.community.reload();
+			} else {
+				alert( 'Oops, error! ' + data.error );
+			}
+		} );
+	}
+};
+
+shift.community.removeRecurring = function(){
+	var id_community_shift = $( '#form-id_community_shift' ).val();
+	if( confirm( 'Confirm remove it? It will remove all the future shifts of this recurrence.' ) ){
+		$.ajax( {
+			url: '/api/drivers/shift/community/remove',
+			method: 'POST',
+			data: { 'id_community_shift' : id_community_shift, 'recurring' : 1 },
+			dataType: 'json',
+		} ).done( function( data ) {
+			if( data.success ){
+				shift.community.reload();
+			} else {
+				alert( 'Oops, error! ' + data.error );
 			}
 		} );
 	}
@@ -118,7 +154,7 @@ shift.community.edit = function(){
 		if( data.success ){
 			shift.community.reload();
 		} else {
-			alert( 'Ops, error! ' + data.error );
+			alert( 'Oops, error! ' + data.error );
 		}
 	} );
 };
@@ -126,6 +162,8 @@ shift.community.edit = function(){
 shift.community.add = function(){
 	var id_community = $( '#form-id_community' ).val();
 	var hours = $.trim( $( '#form-hours' ).val() );
+	var recurring = ( $( '#form-recurring' ).is( ':checked' ) ) ? 1 : 0;
+
 	if( hours == '' ){
 		alert( 'Please type the hours!' );
 		$( '#form-hours' ).focus();
@@ -146,13 +184,13 @@ shift.community.add = function(){
 	$.ajax( {
 		url: '/api/drivers/shift/community/add',
 		method: 'POST',
-		data: { 'id_community' : id_community, 'day' : $( '#form-day' ).val(), 'month' : $( '#form-month' ).val(), 'year' : $( '#form-year' ).val(), 'week' : $( '#form-week' ).val(), 'hours' : hours, 'weekdays' : weekdays },
+		data: { 'id_community' : id_community, 'day' : $( '#form-day' ).val(), 'month' : $( '#form-month' ).val(), 'year' : $( '#form-year' ).val(), 'week' : $( '#form-week' ).val(), 'hours' : hours, 'weekdays' : weekdays, 'recurring' : recurring },
 		dataType: 'json',
 	} ).done( function( data ) {
 		if( data.success ){
 			shift.community.reload();
 		} else {
-			alert( 'Ops, error! ' + data.error );
+			alert( 'Oops, error! ' + data.error );
 		}
 	} );
 };
@@ -217,11 +255,11 @@ shift.drivers.update = function( completed ){
 
 	if( completed ){
 		if( hasAvailableItem ){
-			alert( 'Ops, it seems you still have available items!' );
+			alert( 'OOops, you still have some available shifts to sort!' );
 			return;
 		}
 		if( $.trim( shifts ) == '' ){
-			alert( 'Ops, you need to answer: "How many shifts would you like to work this week?" !' );
+			alert( 'Oops, you need to answer: "How many shifts would you like to work this week?" !' );
 			$( '#shifts' ).focus();
 			return;
 		}
@@ -250,7 +288,7 @@ shift.drivers.update = function( completed ){
 		if( data.success ){
 			location.reload();
 		} else {
-			alert( 'Ops, error! ' + data.error );
+			alert( 'Oops, error! ' + data.error );
 		}
 	} );
 }
@@ -293,7 +331,7 @@ shift.summary.assign.save = function(){
 		if( data.success ){
 			location.reload();
 		} else {
-			alert( 'Ops, error! ' + data.error );
+			alert( 'Oops, error! ' + data.error );
 		}
 	} );
 }
