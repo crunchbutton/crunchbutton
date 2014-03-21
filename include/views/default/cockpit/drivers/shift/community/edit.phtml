@@ -56,7 +56,7 @@ $shift = $this->shift;
 									</div>
 									<div class="span7">
 										<?php if( $shift->id_community_shift_father || $shift->recurring > 0  ){ ?>
-											<?php echo $shift->startEndToString(); ?>
+											<?php echo $shift->startEndToString(); ?> (<?php echo $shift->timezoneAbbr(); ?>)
 										<?php } else { ?>
 											<input type="text" value="<?php echo $shift->startEndToString(); ?>" name="form-hours" id="form-hours"/> 
 										<?php } ?>
