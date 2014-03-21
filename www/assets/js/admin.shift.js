@@ -279,10 +279,14 @@ shift.drivers.update = function( completed ){
 		dontWantWorkItems.push( $( this ).attr( 'id' ) );
 		allItems.push( $( this ).attr( 'id' ) );
 	} );
+
+	var year = shift.drivers.year;
+	var week = shift.drivers.week;
+
 	$.ajax( {
 		url: '/api/drivers/shift/driver/',
 		method: 'POST',
-		data: { 'allItems' : allItems, 'dontWantWorkItems' : dontWantWorkItems, 'wantWorkItems' : wantWorkItems, 'availableItems' : availableItems, 'completed' : completed, 'shifts' : shifts },
+		data: { 'allItems' : allItems, 'dontWantWorkItems' : dontWantWorkItems, 'wantWorkItems' : wantWorkItems, 'availableItems' : availableItems, 'completed' : completed, 'shifts' : shifts, 'year' : year, 'week' : week },
 		dataType: 'json',
 	} ).done( function( data ) {
 		if( data.success ){

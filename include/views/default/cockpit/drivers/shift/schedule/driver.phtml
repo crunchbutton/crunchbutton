@@ -6,6 +6,10 @@
 	$this->title2icon = 'clock';
 	$communities = $this->communities;
 	$id_admin = c::admin()->id_admin;
+
+	$totalShifts = 0;
+	$current = date( 'YW', strtotime( '- 1 day' ) );
+	$editable = ( intval( $this->year . $this->week ) >= $current );
 ?>
 <div class="container-fluid padded">
 	<div class="row-fluid">
@@ -13,11 +17,27 @@
 			<div class="box-header"><span class="title">Sort your shift preferences</span></div>
 			<div class="padded">
 				<div class="row-fluid">
-					<center>
-						<h4>
-							From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
-						</h4>
-					</center>
+
+					<div class="row-fluid">
+						<div class="span2 padded">
+							<br/><br/>
+							<?php if( intval( str_replace( '/' , '', $this->weekPrev ) ) >= $current  ) { ?>
+							<a class="shift-previous" href="/drivers/shift/schedule/driver/<?php echo $this->weekPrev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a>
+							<?php } ?>
+						</div>
+							<div class="span8 padded" style="text-align:center;">
+								<h4>
+									From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
+								</h4>
+								<br/>
+								Week <?php echo $this->week; ?>/<?php echo $this->year; ?>
+							</div>
+						<div class="span2 padded" style="text-align:right;">
+							<br/><br/>
+							<a class="shift-next" href="/drivers/shift/schedule/driver/<?php echo $this->weekNext; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a>
+						</div>
+					</div>
+
 					<hr/>
 					<div class="row-fluid sort-area">
 						<div class="span4">
@@ -29,12 +49,14 @@
 									foreach( $this->days as $day ){ 
 										$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community->id_community, $day->format( 'Y-m-d' ) );
 										foreach ( $segments as $segment ) {
+											$totalShifts++;
 											if( Crunchbutton_Admin_Shift_Preference::adminHasShift( $id_admin, $segment->id_community_shift ) ){
 												continue;
 											}
 											?>
 											<li id="<?php echo $segment->id_community_shift; ?>">
 												<span class="position"></span>
+												
 												<?php echo $community->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
 												<br/>
 												<strong><?php echo $segment->dateStart()->format( 'l' ); ?>:&nbsp;&nbsp;<?php echo $segment->startEndToString(); ?></strong>
@@ -56,8 +78,9 @@
 								foreach ( $segments as $segment ) {
 									?>
 									<li id="<?php echo $segment->id_community_shift; ?>">
+										
 										<span class="position"><?php echo $count; ?>)&nbsp;</span>
-										<?php echo $community->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
+										<?php echo $segment->community()->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
 										<br/>
 										<strong><?php echo $segment->dateStart()->format( 'l' ); ?>:&nbsp;&nbsp;<?php echo $segment->startEndToString(); ?></strong>
 									</li>
@@ -76,8 +99,9 @@
 								foreach ( $segments as $segment ) {
 									?>
 									<li id="<?php echo $segment->id_community_shift; ?>">
+										
 										<span class="position"></span>
-										<?php echo $community->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
+										<?php echo $segment->community()->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
 										<br/>
 										<strong><?php echo $segment->dateStart()->format( 'l' ); ?>:&nbsp;&nbsp;<?php echo $segment->startEndToString(); ?></strong>
 									</li>
@@ -89,6 +113,7 @@
 					</div>
 				</div>
 				<hr/>
+				<?php if( $totalShifts > 0 && $editable ) { ?>
 				<div class="row-fluid">
 					<div class="span4">
 						<strong>How many shifts would you like to work this week?</strong>
@@ -104,11 +129,15 @@
 						</select>	
 					</div>
 				</div>
+				<?php } ?>
 			</div>
 			
-			<div class="form-actions">
+			<?php if( $totalShifts > 0 ) { ?>
+				<?php
+				if( $editable ){
+				?>
+				<div class="form-actions">
 					<button type="button" class="update-shift-driver btn btn-blue"><i class="icon-save"></i> Update</button>&nbsp;&nbsp;
-
 					<button type="button" class="complete-shift-driver btn btn-green">
 						<?php if( $this->status->completed == '1' ) { ?>
 							<i class="icon-thumbs-up"></i> Already completed
@@ -117,7 +146,13 @@
 						<?php } ?>
 					</button>
 				</div>
-				<div class="divider"></div>
+				<?php } ?>
+			<?php } else { ?>
+				<div class="row-fluid padded">
+					Sorry, there are no shift for you this week.
+				</div>
+			<?php } ?>
+			<div class="divider"></div>
 			</div>
 		</div>
 	</div>
@@ -127,6 +162,10 @@
 .position{
 	font-weight: bold;
 }
+<?php if( $totalShifts == 0 ) { ?>
+	hr, .sort-area{ display: none; }
+
+<?php } ?>
 ul.available, ul.wantwork, ul.dontwantwork {
 	min-height: 50px;
 	margin: 0px 25px 10px 0px;
@@ -154,7 +193,7 @@ ul.dontwantwork{
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
-	cursor: move;
+	<?php if( $editable ) { ?> cursor: move; <?php } ?>
 }
 .available li {
 	background-color: #fcf8e3;
@@ -194,6 +233,10 @@ ul.dontwantwork{
 <script type="text/javascript" src="/assets/js/admin.shift.js"></script>
 <script type="text/javascript">
 $( document ).ready( function(){
-	shift.drivers.init();
+	<?php if( $editable ) { ?>
+		shift.drivers.year = '<?php echo $this->year; ?>';
+		shift.drivers.week = '<?php echo $this->week; ?>';
+		shift.drivers.init();
+	<?php } ?>
 } );
 </script>
