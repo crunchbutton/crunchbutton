@@ -26,6 +26,7 @@
 							<td>Community</td>
 							<td>Shifts</td>
 							<td>Drivers</td>
+							<td>Restaurants</td>
 							<td>Completed the Schedule</td>
 						</tr>
 					</thead>
@@ -37,6 +38,7 @@
 
 						$shifts = $community->hasShiftByPeriod( $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' )  );
 						$drivers = $community->getDriversOfCommunity();
+						$restaurants = $community->totalRestaurantsByCommunity()[ 'community' ];
 
 						$totalShifts = 0;
 						$totalDrivers = 0;
@@ -54,7 +56,11 @@
 						}
 						?>
 					<tr>
-						<td><?php echo $community->name; ?></td>
+						<td>
+							<a href="/community/<?php echo $community->id_community; ?>">
+								<?php echo $community->name; ?>
+							</a>
+						</td>
 						<td>
 							<a href="/drivers/shift/community/<?php echo $community->id_community; ?>/<?php echo $year; ?>/<?php echo $week; ?>">
 								<span <?php if( $totalShifts == 0 ) { echo 'style="color:red;font-weight:bold;"'; } ?>>
@@ -68,11 +74,14 @@
 									<?php echo $totalDrivers; ?>
 								</span>
 							</a>
+						</td>
+						<td>
+							<?php echo $restaurants; ?>
+						</td>
 						<td>
 							<span <?php if( $totalDriversCompleted == 0 ) { echo 'style="color:red;font-weight:bold;"'; } ?>>
 								<?php echo $totalDriversCompleted; ?>
 							</span>
-						</td>
 						</td>
 					</tr>
 				<?php 
