@@ -89,7 +89,6 @@
 										$admin = $preference->admin();
 										$alreadyShown[] = $admin->id_admin;
 										if( $preference->ranking == 0 ){
-											// $driversDontWantWorkHere[] = $admin;	
 											continue;
 										}
 										$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $admin->id_admin, $week, $year );
