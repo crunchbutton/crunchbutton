@@ -3,7 +3,7 @@
 	$this->titleicon = 'road';
 	$this->titleLink = '/drivers';
 	$this->title2 = 'Shift';
-	$this->title2icon = 'clock';
+	$this->title2icon = 'time';
 
 	$id_community = $this->id_community;
 	$year = $this->year;
@@ -44,7 +44,7 @@
 				<div class="row-fluid">
 
 						<div class="span12 padded" style="text-align:center;">
-							<strong>Shift for week <?php echo $this->week; ?> / <?php echo $this->year; ?></strong>
+							<strong>Shifts for week <?php echo $this->week; ?> / <?php echo $this->year; ?></strong>
 						</div>
 					
 				</div>
@@ -54,6 +54,7 @@
 						<div>
 							<div class="row-fluid">
 								<div class="span2 padded">
+									<br/>
 									<a class="shift-previous" href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->weekPrev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a>
 								</div>
 									<div class="span8 padded" style="text-align:center;">
@@ -62,6 +63,7 @@
 										</h4>
 									</div>
 								<div class="span2 padded" style="text-align:right;">
+									<br/>
 									<a class="shift-next" href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->weekNext; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a>
 								</div>
 						</div>
