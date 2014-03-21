@@ -9,8 +9,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			->load($id);
 	}
 
-	public function autoCopyLastWeek(){}
-
 	public function shiftsByDay( $date ){
 		Crunchbutton_Community_Shift::createRecurringEvent( $date );
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN community c ON c.id_community = cs.id_community WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $date . '" ORDER BY c.name, cs.date_start ASC' );
@@ -271,5 +269,161 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 																			ORDER BY c.name ASC' );
 	}
 
+	public function sendWarningToDrivers(){
+
+		$year = date( 'Y', strtotime( '- 1 day' ) );
+		$week = date( 'W', strtotime( '- 1 day' ) );
+
+		$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+		$day->modify( '+ 1 week' );
+
+		$from = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		$day->modify( '+6 day' );
+		$to = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		
+
+
+
+		$log = 'Starting the driver schedule verification period from ' . $from->format( 'Y-m-d' ) . ' to ' . $to->format( 'Y-m-d' ) . ' at ' . date( 'Y-m-d H:i:s l' );
+		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+		echo $log."\n";
+
+		switch ( date( 'l' ) ) {
+			case 'Monday':
+				$driversMessage = 'Hey [name]! Please fill out your schedule for next week at cockpit._DOMAIN_/schedule. If you have any questions, just text us back.';
+				$warningDrivers = true;
+				$warningCS = false;
+				break;
+			case 'Wednesday':
+				$driversMessage = 'Remember: update your Crunchbutton schedule for next week atg cockpit._DOMAIN_/schedule. Don\'t leave us hanging :(';
+					$warningDrivers = true;
+					$warningCS = false;
+				break;
+			case 'Thursday':
+					$warningCS = true;
+					$driversMessage = false;
+					break;
+			default:
+				$driversMessage = false;
+				$warningCS = false;
+				break;
+		}
+
+		$communitiesWithShift = [];
+		$communitiesWithoutShift = [];
+
+		$driversWillReceiveTheNotification = [];
+
+		// Get the communities with active and delivery_service restaurants
+		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 ORDER BY c.name' );
+		foreach( $communities as $community ){
+			// Check if the community has shift for current week
+			$shifts = Crunchbutton_Community_Shift::shiftsByCommunityPeriod( $community->id_community, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
+			if( $shifts->count() > 0 ){
+				$drivers = $community->getDriversOfCommunity();
+				foreach( $drivers as $driver ){
+					$preferences = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
+					if( $preferences->completed == 0 ){
+						$driversWillReceiveTheNotification[] = array(  'id_admin' => $driver->id_admin, 'name' => $driver->name, 'txt' => $driver->txt, 'phone' => $driver->phone );
+					}
+				}
+			} else {
+				$communitiesWithoutShift[] = $community->name;
+			}
+		}
+
+		$log = 'communitiesWithoutShift: ' . count( $communitiesWithoutShift ) . ', list ' . join( ', ', $communitiesWithoutShift );
+		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+		echo $log."\n";
+
+
+		$log = 'driversWillReceiveTheNotification: ' . count( $driversWillReceiveTheNotification );
+		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+		echo $log."\n";
+
+
+		$env = c::getEnv();
+
+		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+
+		if( count( $communitiesWithoutShift ) > 0 ){
+
+			$message = "The following communities doesn't have shifts for the current week: " . join( ', ', $communitiesWithoutShift );
+			
+			$message = str_split( $message, 160 );
+
+			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
+				$num = $supportPhone;
+				foreach ( $message as $msg ) {
+					if( $supportName != $admin->name ){
+						try {
+							// Log
+							Log::debug( [ 'action' => 'community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+						} catch (Exception $e) {
+							// Log
+							Log::debug( [ 'action' => 'ERROR: community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
+						}
+					}
+				}
+			}
+		}
+
+		Log::debug( [ 'action' => 'notification sms', 'total' => count( $driversWillReceiveTheNotification ), 'type' => 'driver-schedule' ] );
+
+
+		if( $warningCS && count( $driversWillReceiveTheNotification ) > 0 ){
+
+			$message = count( $driversWillReceiveTheNotification ) . ' drivers didn\'t completed their schedule, the list of drivers is available here at cockpit._DOMAIN_/drivers/shift/status/shift';
+
+			$message = str_split( $message, 160 );
+
+			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
+				$num = $supportPhone;
+				foreach ( $message as $msg ) {
+					if( $supportName != $admin->name ){
+						try {
+							// Log
+							Log::debug( [ 'action' => 'sending the drivers list', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+						} catch (Exception $e) {
+							// Log
+							Log::debug( [ 'action' => 'ERROR: sending the drivers list', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
+						}
+					}
+				}
+			}
+		}
+
+		if( $warningDrivers ){
+			foreach( $driversWillReceiveTheNotification as $driver ){
+				$id_admin = $driver[ 'id_admin' ];
+				$name = $driver[ 'name' ];
+				$txt = $driver[ 'txt' ];
+				$phone = $driver[ 'phone' ];
+				
+				$message = str_replace( '[name]' , $name, $driversMessage );
+
+				$num = ( $txt != '' ) ? $txt : $phone; 
+
+				$message = str_split( $message, 160 );
+				
+				if( $num != '' ){
+					foreach ( $message as $msg ) {
+						try {
+							// Log
+							Log::debug( [ 'action' => 'sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
+							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
+						} catch (Exception $e) {
+							// Log
+							Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
+						}
+					}
+				} else {
+					Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
+				}
+			}
+		}
+	}
 }
 
