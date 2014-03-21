@@ -2,8 +2,9 @@
 	$this->title = 'Drivers';
 	$this->titleicon = 'road';
 	$this->titleLink = '/drivers';
-	$this->title2 = 'Shift';
-	$this->title2icon = 'clock';
+	$this->title2 = 'Summary';
+	$this->title2icon = 'time';
+	$this->titleLink = '/drivers/shift/summary/';
 
 ?>
 <div class="container-fluid padded">
@@ -11,25 +12,29 @@
 		<div class="box">
 			<div class="box-header">
 				<div class="row-fluid">
-					<div class="span2 padded">
-						<a href="/drivers/shift/summary/<?php echo $this->weekPrev; ?>"><i class="icon icon-angle-left"></i> previous</a>
-					</div>
-						<div class="span8 padded" style="text-align:center;">
-							<strong>Shift for week <?php echo $this->week; ?> / <?php echo $this->year; ?></strong>
-						</div>
-					<div class="span2 padded" style="text-align:right;">
-						<a href="/drivers/shift/summary/<?php echo $this->weekNext; ?>">next <i class="icon icon-angle-right"></i></a>
+					<div class="span12 padded" style="text-align:center;">
+						<strong>Shifts for week <?php echo $this->week; ?> / <?php echo $this->year; ?></strong>
 					</div>
 				</div>
 			</div>
 			<div class="box-content">
 				<div class="padded">
 					<div class="row-fluid">
-						<center>
-							<h4>
-								From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
-							</h4>
-						</center>
+							<div class="row-fluid">
+								<div class="span2 padded">
+									<br/>
+									<a class="shift-previous" href="/drivers/shift/summary/<?php echo $this->weekPrev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a>
+								</div>
+									<div class="span8 padded" style="text-align:center;">
+										<h4>
+											From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
+										</h4>
+									</div>
+								<div class="span2 padded" style="text-align:right;">
+									<br/>
+									<a class="shift-next" href="/drivers/shift/summary/<?php echo $this->weekNext; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a>
+								</div>
+						</div>
 						<hr/>
 					</div>
 					<table width="100%">
