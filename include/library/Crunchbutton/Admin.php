@@ -16,6 +16,11 @@ class Crunchbutton_Admin extends Cana_Table {
 		return Crunchbutton_Admin::q( "SELECT * FROM admin a WHERE REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}' ORDER BY id_admin DESC LIMIT 1 " );
 	}
 
+	public function getCSAdminByPhone( $phone ){
+		$group = Crunchbutton_Group::byName( Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ) );
+		return Crunchbutton_Admin::q( "SELECT * FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = '" . $group->id_group ."' WHERE REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}' ORDER BY a.id_admin DESC LIMIT 1 " );
+	}
+
 	public function checkIfThePhoneBelongsToAnAdmin( $phone ){
 		$phone = str_replace( '-', '', $phone );
 		$phone = str_replace( ' ', '', $phone );

@@ -25,7 +25,7 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 			$sendSMSTo[ $supportName ] = $supportPhone;
 		}
 
-		$admin = Admin::getByPhone( $phone );
+		$admin = Admin::getCSAdminByPhone( $phone );
 
 		if( $admin->id_admin ){
 			$rep = $admin;
