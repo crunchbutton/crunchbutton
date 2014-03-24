@@ -58,6 +58,11 @@
 											<td style="width:60px;">Ranking</td>
 											<td>Shifts wants to work</td>
 											<td>Total assigned shifts</td>
+											<td>
+												<?php if( $shift->isRecurring() ) { ?>
+													Make it permanent?
+												<?php } ?>
+											</td>
 										</tr>
 									</thead>
 									<tbody>
@@ -78,7 +83,7 @@
 									if( $hasDrivers ){
 									?>
 									<tr>
-										<td colspan="5">
+										<td colspan="6">
 											<strong><center>Drivers that want to work at this shift</center></strong>
 										</td>
 									</tr>
@@ -93,6 +98,7 @@
 										}
 										$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $admin->id_admin, $week, $year );
 										$checked = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $admin->id_admin, $shift->id_community_shift ) ) ? 'checked="checked"' : '';
+										$checkedPermanently = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $admin->id_admin, $shift->id_community_shift ) ) ? 'checked="checked"' : '';
 										$adminShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $admin->id_admin, $firstDayOfWeek, $lastDayOfWeek );
 										$totalShifts = $adminShifts->count();
 										?>
@@ -104,6 +110,11 @@
 											<td><?php echo $preference->ranking; ?></td>
 											<td><?php echo $status->shifts; ?></td>
 											<td><?php echo $totalShifts; ?></td>
+											<td>
+												<?php if( $shift->isRecurring() ) { ?>
+													<input type="checkbox" class="icheck" <?php echo $checkedPermanently; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin_permanently" id="form-id_admin_permanently-<?php echo $admin->id_admin; ?>">
+												<?php } ?>
+											</td>
 										</tr>
 										<?php } 
 										}
@@ -132,6 +143,7 @@
 										}
 										$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $admin->id_admin, $week, $year );
 										$checked = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $admin->id_admin, $shift->id_community_shift ) ) ? 'checked="checked"' : '';
+										$checkedPermanently = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $admin->id_admin, $shift->id_community_shift ) ) ? 'checked="checked"' : '';
 										$adminShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $admin->id_admin, $firstDayOfWeek, $lastDayOfWeek );
 										$totalShifts = $adminShifts->count();
 										?>
@@ -143,6 +155,11 @@
 											<td>-</td>
 											<td><?php echo $status->shifts; ?></td>
 											<td><?php echo $totalShifts; ?></td>
+											<td>
+												<?php if( $shift->isRecurring() ) { ?>
+													<input type="checkbox" class="icheck" <?php echo $checkedPermanently; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin_permanently" id="form-id_admin_permanently-<?php echo $admin->id_admin; ?>">
+												<?php } ?>
+											</td>
 										</tr>
 										<?php
 										}
@@ -158,6 +175,7 @@
 										foreach( $driversDontWantWorkHere as $admin ){ 
 											$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $admin->id_admin, $week, $year );
 											$checked = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $admin->id_admin, $shift->id_community_shift ) ) ? 'checked="checked"' : '';
+											$checkedPermanently = ( Crunchbutton_Admin_Shift_Assign_Permanently::adminIsPermanently( $admin->id_admin, $shift->id_community_shift ) ) ? 'checked="checked"' : '';
 											$adminShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $admin->id_admin, $firstDayOfWeek, $lastDayOfWeek );
 											$totalShifts = $adminShifts->count();
 											?>
@@ -169,6 +187,11 @@
 												<td>-</td>
 												<td><?php echo $status->shifts; ?></td>
 												<td><?php echo $totalShifts; ?></td>
+												<td>
+													<?php if( $shift->isRecurring() ) { ?>
+														<input type="checkbox" class="icheck" <?php echo $checkedPermanently; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin_permanently" id="form-id_admin_permanently-<?php echo $admin->id_admin; ?>">
+													<?php } ?>
+											</td>
 											</tr>
 										<?php
 										}
@@ -190,10 +213,10 @@
 								</div>
 							</div>
 						</form>
-					
 		</div>
 	</div>
 </div>
+<script type="text/javascript" src="/assets/js/admin.shift.js"></script>
 <script type="text/javascript">
 $( document ).ready( function(){
 	shift.summary.assign.init();

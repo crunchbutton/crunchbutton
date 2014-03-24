@@ -9,7 +9,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			->load($id);
 	}
 
-
 	public function driversCouldDeliveryOrder( $id_order ){
 		if( !$id_order ){
 			return false;
@@ -60,6 +59,22 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return $day;
 	}
 
+	public function isRecurring(){
+		if( $this->recurringId() ){
+			return true;
+		}
+	}
+
+	public function recurringId(){
+		if( $this->recurring ){
+			return $this->id_community_shift;
+		}
+		if( $this->id_community_shift_father ){
+			return $this->id_community_shift_father;
+		}
+		return false;
+	}
+
 	public function shiftByCommunityDay( $id_community, $date ){
 		Crunchbutton_Community_Shift::createRecurringEvent( $date );
 		return Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community = "' . $id_community . '" AND DATE_FORMAT( date_start, "%Y-%m-%d" ) = "' . $date . '" AND active = 1 ORDER BY id_community_shift ASC' );
@@ -67,6 +82,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function createRecurringEvent( $date ){
 		// Search for recurring events
+		$now =  new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$day =  new DateTime( $date, new DateTimeZone( c::config()->timezone ) );
 		$weekday = $day->format( 'w' );
 		$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE recurring = 1 AND DATE_FORMAT( date_start, "%w" ) = "' . $weekday . '"' );
@@ -88,12 +104,40 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						if( $newShift->date_start && $newShift->date_end ){
 							$newShift->save();	
 						}
+
+						// Create the permanent assigments
+						$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift );
+						foreach( $permanentlys as $permanently ){
+							if( $permanently->id_admin ){
+								$assignment = new Crunchbutton_Admin_Shift_Assign();
+								$assignment->id_admin = $permanently->id_admin;
+								$assignment->id_community_shift = $newShift->id_community_shift;
+								$assignment->date = date('Y-m-d H:i:s');
+								$assignment->save();
+							}	
+						}
+					} else {
+
+						if( $now < $checkShift->dateStart()->get( 0 ) ){
+							// Create the permanent assigments
+							$permanentlys = Crunchbutton_Admin_Shift_Assign_Permanently::getByShift( $shift->id_community_shift );
+							foreach( $permanentlys as $permanently ){
+								if( $permanently->id_admin ){
+									if( !Crunchbutton_Admin_Shift_Assign::adminHasShift( $permanently->id_admin, $checkShift->id_community_shift ) ){
+										$assignment = new Crunchbutton_Admin_Shift_Assign();
+										$assignment->id_admin = $permanently->id_admin;
+										$assignment->id_community_shift = $checkShift->id_community_shift;
+										$assignment->date = date('Y-m-d H:i:s');
+										$assignment->save();	
+									}
+								}	
+							}
+						}
 					}
 				}
 			}
 		}
 	}
-
 
 	public function shiftByCommunity( $id_community ){
 		$weekdays = [ 'mon' =>  false, 'tue' =>  false, 'wed' =>  false, 'thu' =>  false, 'fri' =>  false, 'sat' =>  false, 'sun'  =>  false ];
