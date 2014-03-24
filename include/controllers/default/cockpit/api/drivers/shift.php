@@ -21,11 +21,22 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 	public function driverAssign(){
 		$ids_admin = $this->request()[ 'id_admin' ];
 		$id_community_shift = $this->request()[ 'id_community_shift' ];
+		$ids_admin_permanently = $this->request()[ 'id_admin_permanently' ];
+
+		$permanently = [];
+		if( count( $ids_admin_permanently ) > 0 ){
+			foreach( $ids_admin_permanently as $id_admin_permanently ){
+				$permanently[ $id_admin_permanently ] = true;
+			}	
+		}
+		
+
 		if( $id_community_shift ){
 			Crunchbutton_Admin_Shift_Assign::removeAssignment( $id_community_shift );
 			if( count( $ids_admin ) > 0 ){
 				foreach( $ids_admin as $id_admin ){
-					Crunchbutton_Admin_Shift_Assign::assignAdminToShift( $id_admin, $id_community_shift );		
+					$_permanently = ( $permanently[ $id_admin ] ) ? true : false;
+					Crunchbutton_Admin_Shift_Assign::assignAdminToShift( $id_admin, $id_community_shift, $_permanently );
 				}	
 			}
 			echo json_encode( array( 'success' => true ) );

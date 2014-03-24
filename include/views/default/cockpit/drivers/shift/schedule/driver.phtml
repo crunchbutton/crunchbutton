@@ -45,6 +45,7 @@
 							<br/><br/>
 							<ul class="available connected">
 								<?php 
+								$addShiftAsAssigned = [];
 								foreach( $communities as $community ) {
 									foreach( $this->days as $day ){ 
 										$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community->id_community, $day->format( 'Y-m-d' ) );
@@ -53,6 +54,11 @@
 											if( Crunchbutton_Admin_Shift_Preference::adminHasShift( $id_admin, $segment->id_community_shift ) ){
 												continue;
 											}
+											if( Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $segment->id_community_shift ) ){
+												$addShiftAsAssigned[] = $segment;
+												continue;
+											}
+											
 											?>
 											<li id="<?php echo $segment->id_community_shift; ?>">
 												<span class="position"></span>
@@ -75,6 +81,24 @@
 							<?php
 								$segments = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $this->from->format( 'Y-m-d' ), $this->to->format( 'Y-m-d' ) );
 								$count = 1;
+								if( count( $addShiftAsAssigned ) > 0 ){
+									foreach( $addShiftAsAssigned as $segment ){
+										$locked = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $segment->id_community_shift ) ? 'locked' : '' );
+										?>
+										<li id="<?php echo $segment->id_community_shift; ?>" class="<?php echo $locked; ?>">
+											<span class="position"><?php echo $count; ?>)&nbsp;</span>
+											<?php echo $segment->community()->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
+											<br/>
+											<strong><?php echo $segment->dateStart()->format( 'l' ); ?>:&nbsp;&nbsp;<?php echo $segment->startEndToString(); ?></strong>
+											<?php if( $locked != '' ) { ?>
+												<div><i class="icon-lock"></i> You are assigned to this shift.</div>
+											<?php } ?>
+										</li>
+										<?php
+										$count++;	
+									}
+								}
+								
 								foreach ( $segments as $segment ) {
 									$locked = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $segment->id_community_shift ) ? 'locked' : '' );
 									?>

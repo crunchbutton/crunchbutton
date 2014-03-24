@@ -324,21 +324,43 @@ shift.summary.init = function(){
 
 shift.summary.assign.init = function(){	
 	$( '.icheck' ).iCheck( { checkboxClass: "icheckbox_flat-aero", radioClass: "iradio_flat-aero" } );
+	$( '[name="form-id_admin_permanently"]' ).on( 'ifChanged', function( event, obj ){
+		var checkbox = $( this );
+		if( checkbox.is( ':checked' ) ){
+			var id = checkbox.val();
+			$( '#form-id_admin-' + id ).iCheck( 'check' );
+		}
+	} );
+	$( '[name="form-id_admin"]' ).on( 'ifChanged', function( event, obj ){
+		var checkbox = $( this );
+		if( !checkbox.is( ':checked' ) ){
+			var id = checkbox.val();
+			$( '#form-id_admin_permanently-' + id ).iCheck( 'uncheck' );
+		}
+	} );
 }
 
 shift.summary.assign.save = function(){
 	var id_community_shift = $( '#id_community_shift' ).val();
 	var id_admin = [];
+	var id_admin_permanently = [];
 	$( '[name="form-id_admin"]' ).each( function(){
 		var checkbox = $( this );
 		if( checkbox.is( ':checked' ) ){
 			id_admin.push( checkbox.val() );	
 		}
 	} );
+	$( '[name="form-id_admin_permanently"]' ).each( function(){
+		var checkbox = $( this );
+		if( checkbox.is( ':checked' ) ){
+			id_admin_permanently.push( checkbox.val() );	
+		}
+	} );
+
 	$.ajax( {
 		url: '/api/drivers/shift/driver/assign/',
 		method: 'POST',
-		data: { 'id_community_shift' : id_community_shift, 'id_admin' : id_admin },
+		data: { 'id_community_shift' : id_community_shift, 'id_admin' : id_admin, 'id_admin_permanently' : id_admin_permanently },
 		dataType: 'json',
 	} ).done( function( data ) {
 		if( data.success ){

@@ -17,6 +17,7 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 	}
 
 	public function removeAssignment( $id_community_shift ){
+		Crunchbutton_Admin_Shift_Assign_Permanently::removeByShift( $id_community_shift );
 		return c::db()->query( "DELETE FROM admin_shift_assign WHERE id_community_shift = " . $id_community_shift );
 	}
 
@@ -26,14 +27,24 @@ class Crunchbutton_Admin_Shift_Assign extends Cana_Table {
 																							' WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $date_start . '" AND DATE_FORMAT( cs.date_end, "%Y-%m-%d" ) <= "' . $date_end . '"' );
 	}
 
-	public function assignAdminToShift( $id_admin, $id_community_shift ){
+	public function assignAdminToShift( $id_admin, $id_community_shift, $permanently ){
 		if( !Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $id_community_shift ) ){
 			$assignment = new Crunchbutton_Admin_Shift_Assign();
 			$assignment->id_admin = $id_admin;
 			$assignment->id_community_shift = $id_community_shift;
 			$assignment->date = date('Y-m-d H:i:s');
 			$assignment->save();
+			Crunchbutton_Admin_Shift_Assign_Permanently::removeByAdminShift( $id_admin, $id_community_shift );
+			if( $permanently ){
+				Crunchbutton_Admin_Shift_Assign_Permanently::addDriver( $id_admin, $id_community_shift );	
+			}
+		} else {
+			Crunchbutton_Admin_Shift_Assign_Permanently::removeByAdminShift( $id_admin, $id_community_shift );
+			if( $permanently ){
+				Crunchbutton_Admin_Shift_Assign_Permanently::addDriver( $id_admin, $id_community_shift );	
+			}
 		}
+
 		return true;
 	}
 
