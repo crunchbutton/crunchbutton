@@ -112,11 +112,11 @@ class Controller_api_twilio_sms extends Crunchbutton_Controller_Rest {
 					$date->setTimezone( new DateTimeZone( c::config()->timezone ) );
 					$date = $date->format( 'D, M d, g:i a T' );
 
-					if( $restaurant->community && $restaurant->community != '' ){
-						$community = '(' . $restaurant->community . ')';
-					} else {
-						$community = '';
+					$community = $restaurant->communityNames();
+					if( $community != '' ){
+						$community = '(' . $community . ')';
 					}
+
 					$last_cb .= "Last Order: #$order->id_order, from $restaurant->name $community, on $date -  R: $restaurant->phone {$notifications} - C: $order->name / $order->phone ";
 					if( $order->address ){
 						$last_cb .= " / " . $order->address;

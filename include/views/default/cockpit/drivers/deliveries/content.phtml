@@ -27,7 +27,7 @@
 					<br />
 					<?php echo $order->restaurant()->name; ?>
 					<br />
-					<?php echo $order->restaurant()->community; ?>
+					<?php echo $order->restaurant()->communityNames(); ?>
 					<br />
 					<div class="admin-tz" <?php if( $tz_default == 'restaurant-tz' ){ echo 'style="display:none;"'; } ?>>
 						<?php echo $date_admin_tz->format('M jS Y')?> <?php echo $date_admin_tz->format('g:i:s A T')?>	

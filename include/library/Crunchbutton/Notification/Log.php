@@ -83,10 +83,9 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 					$notifications = '';
 				}
 
-				if( $this->order()->restaurant()->community && $this->order()->restaurant()->community != '' ){
-					$community = ' (' . $this->order()->restaurant()->community . ')';
-				} else {
-					$community = '';
+				$community = $this->order()->restaurant()->communityNames();
+				if( $community != '' ){
+					$community = '(' . $community . ')';
 				}
 
 				$message = '#'.$this->id_order.' MAX CB for '.$this->order()->restaurant()->name.$community."\nR# ".$this->order()->restaurant()->phone(). $notifications . "\n C# ".$this->order()->name . ' / ' . $this->order()->phone();
@@ -187,10 +186,9 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 					$notifications = '';
 				}
 
-				if( $this->order()->restaurant()->community && $this->order()->restaurant()->community != '' ){
-					$community = ' (' . $this->order()->restaurant()->community . ')';
-				} else {
-					$community = '';
+				$community = $this->order()->restaurant()->communityNames();
+				if( $community != '' ){
+					$community = '(' . $community . ')';
 				}
 
 				$env = c::getEnv();

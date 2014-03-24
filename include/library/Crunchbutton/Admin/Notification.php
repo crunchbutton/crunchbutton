@@ -93,10 +93,32 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							}
 						}
 
-						// Send notification to drivers
+						$driverAlreadyNotified = [];
+
+						$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
+						if( $drivers ){
+							foreach( $drivers as $driver ){
+								$driverAlreadyNotified[] = $driver->id_admin;
+								foreach( $driver->activeNotifications() as $adminNotification ){
+									$adminNotification->send( $order );
+									$hasDriversWorking = true;
+									$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' # ' . $adminNotification->value;
+									Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
+									echo $message."\n";
+								}	
+							}
+						}
+
+						// Send notification to drivers - legacy
 						if( count( $driversToNotify ) > 0 ){
 							foreach( $driversToNotify as $driver ){
 								if( $driver->isWorking() ){
+									if( in_array( $driver->id_admin, $driverAlreadyNotified ) ){
+										$message = '#'.$order->id_order.' notification to ' . $driver->name . ' already sent';
+										Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
+										echo $message."\n";
+										continue;
+									}
 									foreach( $driver->activeNotifications() as $adminNotification ){
 										$adminNotification->send( $order );
 										$hasDriversWorking = true;
@@ -107,10 +129,12 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 								}
 							}
 						}
+
 						Crunchbutton_Admin_Notification_Log::register( $order->id_order );
 						if( !$hasDriversWorking ){
 							$restaurant = $order->restaurant()->name;
-							if( $order->restaurant()->community && $order->restaurant()->community != '' ){
+							$community = $order->restaurant()->communityNames();
+							if( $community != '' ){
 								$restaurant .= ' (' . $order->restaurant()->community . ')';
 							} 
 							$message = '#'.$order->id_order.' there is no drivers to get the order - ' . $restaurant;
@@ -128,7 +152,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			}
 		}
 	}
-	
+
 	public function alertDispatch(Crunchbutton_Order $order) {
 
 		$env = c::getEnv();
