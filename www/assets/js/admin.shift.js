@@ -228,17 +228,21 @@ shift.drivers.init = function(){
 		'items': ':not(.locked)',
 		'distance' : 0
 		} ).bind( 'sortupdate', function() {
-				$( '.available .position, .wantwork .position, .dontwantwork .position' ).hide();
-					var count = 1;
-					$( '.wantwork .position' ).each( function( ){
-						$( this ).html( count + ')&nbsp;' );
-						$( this ).show();
-						count++;
-					} );
+				shift.drivers.order();
+				setTimeout( function(){
 					shift.drivers.update();
+				}, 500 );
 			} );
+}
 
-
+shift.drivers.order = function(){
+	$( '.available .position, .wantwork .position, .dontwantwork .position' ).hide();
+	var count = 1;
+	$( '.wantwork .position' ).each( function( ){
+		$( this ).html( count + ')&nbsp;' );
+		$( this ).show();
+		count++;
+	} );
 }
 
 shift.drivers.update = function( completed ){
@@ -293,6 +297,8 @@ shift.drivers.update = function( completed ){
 		if( data.success ){
 			if( completed > 0 ){
 				location.reload();	
+			} else {
+				shift.drivers.order();
 			}
 		} else {
 			alert( 'Oops, error! ' + data.error );

@@ -27,12 +27,15 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 				break;
 			
 			case 'schedule':
-				switch ( c::getPagePiece( 3 ) ) {
-					case 'driver':
-						$this->scheduleDriver();
-					break;
-					default:
-					break;
+
+				if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) || c::admin()->isDriver() ) {
+					switch ( c::getPagePiece( 3 ) ) {
+						case 'driver':
+							$this->scheduleDriver();
+						break;
+						default:
+						break;
+					}
 				}
 				break;
 

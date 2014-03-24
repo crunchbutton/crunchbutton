@@ -100,13 +100,6 @@
 			</a>
 		</li>
 		
-		
-		
-		
-		
-		
-
-		
 
 		<? if ( c::admin()->permission()->check( [ 'global','orders','orders-all','orders-list-page','orders-new-users'] ) ) : ?>
 			<li class="dark-nav <?=$this->page == 'orders' ? 'active' : ''?>">
@@ -141,46 +134,44 @@
 		<? endif ; ?>
 		
 		
-		
-		
-		
-		
-				
-		<li class="dark-nav">
-			<span class="glow"></span>
+	
+		<? if (c::admin()->permission()->check(['global', 'suggestions-all', 'suggestions-list-page', 'gift-card-all', 'gift-card-list-page', 'gift-card-list-all' ,'support-all', 'support-view', 'support-crud', 'support-settings' ])) : ?>
 
-			<a class="accordion-toggle collapsed" href="#admin-nav-customers" data-toggle="collapse" >
-				<i class="icon-smile icon-2x"></i>
-				<span>Customers <i class="icon-caret-down"></i></span>
-			</a>
-			<ul id="admin-nav-customers" class="collapse">
-				<? if (c::admin()->permission()->check(['global', 'suggestions-all', 'suggestions-list-page'])) { ?>
-					<li class="">
-						<a href="/suggestions">
-							<i class="icon-envelope-alt"></i> Suggestions
-						</a>
-					</li>
-				<? } ?>
-				<? if (c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-list-page', 'gift-card-list-all'])) { ?>
-					<li class="">
-						<a href="/giftcards">
-							<i class="icon-gift"></i> Gift cards
-						</a>
-					</li>
-				<? } ?>
-				<? if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view', 'support-crud', 'support-settings' ] ) ) { ?>
-					<li class="">
-						<a href="/support">
-							<i class="icon-comments"></i> Support
-						</a>
-					</li>
-				<? } ?>
+			<li class="dark-nav">
+				<span class="glow"></span>
 
-			</ul>
-		</li>
+				<a class="accordion-toggle collapsed" href="#admin-nav-customers" data-toggle="collapse" >
+					<i class="icon-smile icon-2x"></i>
+					<span>Customers <i class="icon-caret-down"></i></span>
+				</a>
+				<ul id="admin-nav-customers" class="collapse">
+					<? if (c::admin()->permission()->check(['global', 'suggestions-all', 'suggestions-list-page'])) { ?>
+						<li class="">
+							<a href="/suggestions">
+								<i class="icon-envelope-alt"></i> Suggestions
+							</a>
+						</li>
+					<? } ?>
+					<? if (c::admin()->permission()->check(['global', 'gift-card-all', 'gift-card-list-page', 'gift-card-list-all'])) { ?>
+						<li class="">
+							<a href="/giftcards">
+								<i class="icon-gift"></i> Gift cards
+							</a>
+						</li>
+					<? } ?>
+					<? if ( c::admin()->permission()->check( [ 'global','support-all', 'support-view', 'support-crud', 'support-settings' ] ) ) { ?>
+						<li class="">
+							<a href="/support">
+								<i class="icon-comments"></i> Support
+							</a>
+						</li>
+					<? } ?>
 
+				</ul>
+			</li>
+		<? endif ; ?>
 
-		<? if ( c::admin()->permission()->check( [ 'global','drivers-page'] ) ) : ?>
+		<? if ( c::admin()->permission()->check( [ 'global','drivers-page'] ) || c::admin()->isDriver() ) : ?>
 			<li class="dark-nav">
 				<span class="glow"></span>
 	
@@ -234,10 +225,10 @@
 					</li>
 					<? } ?>
 				
-					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) || c::admin()->isDriver() ) { ?>
 					<li class="">
 						<a href="/drivers/shift/schedule/driver">
-							<i class="icon-calendar"></i> Schedule - for drivers (Beta)
+							<i class="icon-calendar"></i> Schedule - for drivers
 						</a>
 					</li>
 					<? } ?>
@@ -246,6 +237,7 @@
 			</li>
 		<? endif ; ?>
 
+	<? if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-main', 'metrics-investors', 'metrics-detailed-analytics', 'metrics-no-grouped-charts', 'metrics-communities', 'metrics-communities-page', 'locations' ] ) ) { ?>
 			
 		<li class="dark-nav">
 			<span class="glow"></span>
@@ -293,7 +285,10 @@
 			</ul>
 		</li>
 		
-		
+		<? } ?>
+
+		<? if ( c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page', 'logs', 'rules', 'invite-promo', 'permissions-all','permissions-users','permissions-groups','drivers-working-hours','drivers-working-hours-view', 'settlement'] ) ) { ?>
+
 		<li class="dark-nav">
 			<span class="glow"></span>
 
@@ -347,11 +342,7 @@
 
 			</ul>
 		</li>
-
-	
-
-
-
+		<?php } ?>
 	</ul>
 
 	<? /*

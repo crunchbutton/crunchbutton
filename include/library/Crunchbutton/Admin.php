@@ -114,6 +114,12 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $deliveryFor;
 	}
 
+	public function isDriver(){
+		$query = 'SELECT COUNT(*) AS Total FROM admin_group ag INNER JOIN `group` g ON g.id_group = ag.id_group WHERE ag.id_admin = ' . $this->id_admin . ' AND g.name LIKE "drivers-%"';
+		$result = c::db()->get( $query );
+		return ( $result->_items[0]->Total > 0 );
+	}
+
 	public function communitiesHeDeliveriesFor(){
 		$deliveryFor = [];
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
