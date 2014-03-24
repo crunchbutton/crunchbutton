@@ -266,17 +266,44 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 	public function statusShift(){
 
-		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : date( 'Y', strtotime( '- 1 day' ) ) );
-		$week = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : date( 'W', strtotime( '- 1 day' ) ) );
 
-		$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+		if( c::getPagePiece( 4 ) && c::getPagePiece( 5 ) ){
+			$year = c::getPagePiece( 4 );
+			$week = c::getPagePiece( 5 );
+			$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+		} else {
+			$year = date( 'Y', strtotime( '- 1 day' ) );
+			$week = date( 'W', strtotime( '- 1 day' ) );
+			$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+
+			if( date( 'l' ) == 'Monday' ){
+				$day->modify( '+ 1 week' );
+			}
+
+			$week = $day->format( 'W' );
+			$year = $day->format( 'Y' );
+		}
+
 		$from = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 		$day->modify( '+6 day' );
 		$to = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 		
 
 		$communities = Crunchbutton_Community_Shift::communitiesWithDeliveryService();
+		
+		if( $week <= 1 ){
+			$weekPrev = ( $year - 1 ) . '/52';
+		} else {
+			$weekPrev = ( $year ) . '/' . ( $week - 1 );
+		}
+		if( $week >= 52 ){
+			$weekNext = ( $year + 1 ) . '/01';
+		} else {
+			$weekNext = ( $year ) . '/' . ( $week + 1 );
+		}
 
+		c::view()->weekPrev = $weekPrev;
+		c::view()->weekNext = $weekNext;
 		c::view()->year = $year;
 		c::view()->week = $week;
 		c::view()->to = $to;
