@@ -18,7 +18,15 @@
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="box">
-			<div class="box-header"><span class="title">Shift status: <?php echo 'from ' .  $from->format( 'M jS Y ' ) . ' to ' . $to->format( 'M jS Y ' ); ?></span></div>
+			<div class="box-header">
+				<span class="title">Shift status: <?php echo 'from ' .  $from->format( 'M jS Y ' ) . ' to ' . $to->format( 'M jS Y ' ); ?></span>
+
+				<ul class="box-toolbar">
+					<li><a class="shift-previous" href="/drivers/shift/status/shift/<?php echo $this->weekPrev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a></li>
+					<li><a class="shift-next" href="/drivers/shift/status/shift/<?php echo $this->weekNext; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a></li>
+				</ul>
+
+			</div>
 			<div class="box-content">
 				<table width="100%" class="table table-normal">
 					<thead>
@@ -101,8 +109,8 @@
 						<tr>
 							<td>Driver</td>
 							<td>Completed</td>
-							<td>Shifts assigned to</td>
-							<td>Shifts want to work at</td>
+							<td>Shifts wants to work</td>
+							<td>Total assigned shifts</td>
 						</tr>
 					</thead>
 					<tbody>
@@ -115,7 +123,7 @@
 						<tr>
 							<td colspan="4">
 								<strong>
-									<center>
+									<center style="font-size:14px;">
 										<?php echo $community->name ?>
 									</center>
 								</strong>
@@ -130,7 +138,7 @@
 							?>
 							<tr>
 								<td>
-									<?php echo $driver->name; ?> ( <?php echo $driver->phone(); ?> )
+									<a href="/permissions/users/<?php echo $driver->id_admin; ?>"> <?php echo $driver->name; ?> </a> ( <?php echo $driver->phone(); ?> )
 								</td>
 								<td>
 									<?php if( $status->completed == 1 ){ ?>
