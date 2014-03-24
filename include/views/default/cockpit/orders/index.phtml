@@ -77,12 +77,12 @@
 											$restaurants = Restaurant::q('select * from restaurant order by name');
 											if( $hasPermissionToAllRestaurants ){
 												foreach ( $restaurants as $restaurant ) {
-													?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> - <?=$restaurant->community?></option><?php 
+													?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> - <?=$restaurant->communityNames()?></option><?php 
 												}
 											} else {
 												foreach ( $restaurants as $restaurant ) {
 													if( c::admin()->permission()->check( [ "orders-list-restaurant-{$restaurant->id_restaurant}" ] ) ){
-														?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> - <?=$restaurant->community?></option><?php 
+														?><option value="<?=$restaurant->id_restaurant?>"><?=$restaurant->name?> - <?=$restaurant->communityNames()?></option><?php 
 													}
 												}
 											}

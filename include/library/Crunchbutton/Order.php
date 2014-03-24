@@ -945,7 +945,6 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// check if the restaurant is using our delivery system
 		if( intval( $order->restaurant()->delivery_service ) == 1 ){
-
 			$needDrivers = true;
 			// get the restaurant community and its drivers
 			$communities = $order->restaurant()->communities();
@@ -971,10 +970,31 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
+		$driverAlreadyNotified = [];
+
+		$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
+		if( $drivers ){
+			foreach( $drivers as $driver ){
+				$driverAlreadyNotified[] = $driver->id_admin;
+				foreach( $driver->activeNotifications() as $adminNotification ){
+					$adminNotification->send( $order );
+					$hasDriversWorking = true;
+					$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' # ' . $adminNotification->value;
+					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
+				}	
+			}
+		}
+
+
 		// Send notification to drivers
 		if( count( $driversToNotify ) > 0 ){
 			foreach( $driversToNotify as $driver ){
 				if( $driver->isWorking() ){
+					if( in_array( $driver->id_admin, $driverAlreadyNotified ) ){
+						$message = '#'.$order->id_order.' notification to ' . $driver->name . ' already sent';
+						Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
+						continue;
+					}
 					foreach( $driver->activeNotifications() as $adminNotification ){
 						$hasDriversWorking = true;
 						$adminNotification->send( $order );

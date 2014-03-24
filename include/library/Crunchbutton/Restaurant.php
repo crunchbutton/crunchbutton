@@ -164,9 +164,18 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $communities;
 	}
 
+	public function communityNames(){
+		$names = [];
+		$communities = $this->communities();
+		foreach( $communities as $community ){
+			$names[] = $community->name;
+		}
+		return join( ', ', $names );
+	}
+
 	public function communities() {
 		if (!isset($this->_communities)) {
-			$this->_communities = Community::q('select community.* from community left join restaurant_community using(id_community) where id_restaurant="'.$this->id_restaurant.'"');
+			$this->_communities = Community::q('select community.* from community left join restaurant_community using(id_community) where id_restaurant="'.$this->id_restaurant.'" ORDER BY community.name ASC');
 		}
 		return $this->_communities;
 	}

@@ -9,6 +9,20 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			->load($id);
 	}
 
+
+	public function driversCouldDeliveryOrder( $id_order ){
+		if( !$id_order ){
+			return false;
+		}
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		return Admin::q( 'SELECT a.* FROM admin a 
+												INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin 
+												INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
+												INNER JOIN restaurant_community rc ON rc.id_community = cs.id_community
+												INNER JOIN `order` o ON o.id_restaurant = rc.id_restaurant
+											WHERE o.id_order = ' . $id_order . ' AND cs.date_start <= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.date_end >= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.active = 1 ');
+	}
+
 	public function shiftsByDay( $date ){
 		Crunchbutton_Community_Shift::createRecurringEvent( $date );
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN community c ON c.id_community = cs.id_community WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $date . '" ORDER BY c.name, cs.date_start ASC' );
@@ -280,9 +294,6 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$from = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 		$day->modify( '+6 day' );
 		$to = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
-		
-
-
 
 		$log = 'Starting the driver schedule verification period from ' . $from->format( 'Y-m-d' ) . ' to ' . $to->format( 'Y-m-d' ) . ' at ' . date( 'Y-m-d H:i:s l' );
 		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
@@ -359,7 +370,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						try {
 							// Log
 							Log::debug( [ 'action' => 'community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextDriver, '+1'.$num, $msg );
 						} catch (Exception $e) {
 							// Log
 							Log::debug( [ 'action' => 'ERROR: community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
@@ -385,7 +396,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						try {
 							// Log
 							Log::debug( [ 'action' => 'sending the drivers list', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextDriver, '+1'.$num, $msg );
 						} catch (Exception $e) {
 							// Log
 							Log::debug( [ 'action' => 'ERROR: sending the drivers list', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
@@ -413,7 +424,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						try {
 							// Log
 							Log::debug( [ 'action' => 'sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
+							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
 						} catch (Exception $e) {
 							// Log
 							Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
