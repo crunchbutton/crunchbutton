@@ -212,11 +212,6 @@ shift.drivers = {};
 
 shift.drivers.init = function(){
 
-	$( '.sort-area' ).click( function() {
-		$( 'html, body' ).animate( { scrollTop: 0 } );
-		return false;
-	} );
-
 	$( '.chosen-select' ).select2();
 
 	$( '.update-shift-driver' ).click( function() {
@@ -227,16 +222,22 @@ shift.drivers.init = function(){
 		shift.drivers.update( true );
 	} );
 	
+	$( '.available, .wantwork, .dontwantwork' ).sortable( { 
+		'connectWith': '.connected', 
+		'forcePlaceholderSize': true,
+		'items': ':not(.locked)',
+		'distance' : 0
+		} ).bind( 'sortupdate', function() {
+				$( '.available .position, .wantwork .position, .dontwantwork .position' ).hide();
+					var count = 1;
+					$( '.wantwork .position' ).each( function( ){
+						$( this ).html( count + ')&nbsp;' );
+						$( this ).show();
+						count++;
+					} );
+					shift.drivers.update();
+			} );
 
-	$('.available, .wantwork, .dontwantwork').sortable( { 'connectWith': '.connected', 'distance' : 0, 'stop' : function(){
-		$( '.available .position, .wantwork .position, .dontwantwork .position' ).hide();
-		var count = 1;
-		$( '.wantwork .position' ).each( function( ){
-			$( this ).html( count + ')&nbsp;' );
-			$( this ).show();
-			count++;
-		} );
-	} } );
 
 }
 
@@ -255,7 +256,7 @@ shift.drivers.update = function( completed ){
 
 	if( completed ){
 		if( hasAvailableItem ){
-			alert( 'OOops, you still have some available shifts to sort!' );
+			alert( 'Oops, you still have some available shifts to sort!' );
 			return;
 		}
 		if( $.trim( shifts ) == '' ){
@@ -290,7 +291,9 @@ shift.drivers.update = function( completed ){
 		dataType: 'json',
 	} ).done( function( data ) {
 		if( data.success ){
-			location.reload();
+			if( completed > 0 ){
+				location.reload();	
+			}
 		} else {
 			alert( 'Oops, error! ' + data.error );
 		}

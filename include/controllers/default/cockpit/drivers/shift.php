@@ -79,7 +79,12 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			$year = date( 'Y', strtotime( '- 1 day' ) );
 			$week = date( 'W', strtotime( '- 1 day' ) );
 			$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
-			$firstDay->modify( '+ 1 week' );
+			if( date( 'l' ) == 'Monday' ){
+				$firstDay->modify( '+ 2 week' );	
+			} else {
+				$firstDay->modify( '+ 1 week' );
+			}
+			
 			$week = $firstDay->format( 'W' );
 			$year = $firstDay->format( 'Y' );
 		}
@@ -156,8 +161,10 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		// Start week at monday #2666
 		$year = ( c::getPagePiece( 3 ) ) ? c::getPagePiece( 3 ) : date( 'Y', strtotime( '- 1 day' ) );
 		$week = ( c::getPagePiece( 4 ) ) ? c::getPagePiece( 4 ) : date( 'W', strtotime( '- 1 day' ) );
-		
 		$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+		if( date( 'l' ) == 'Monday' ){
+			$firstDay->modify( '+ 1 week' );
+		}
 		$days = [];
 		for( $i = 0; $i <= 6; $i++ ){
 			$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
