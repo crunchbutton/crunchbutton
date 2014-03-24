@@ -69,20 +69,23 @@
 							</ul>
 						</div>
 						<div class="span4">
-							<strong>Shifts you want to work:</strong>
+							<strong>Shifts you want to work, ranked from most to least preferred:</strong>
 							<br/><br/>
 							<ul class="wantwork connected">
 							<?php
 								$segments = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $this->from->format( 'Y-m-d' ), $this->to->format( 'Y-m-d' ) );
 								$count = 1;
 								foreach ( $segments as $segment ) {
+									$locked = ( Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $segment->id_community_shift ) ? 'locked' : '' );
 									?>
-									<li id="<?php echo $segment->id_community_shift; ?>">
-										
+									<li id="<?php echo $segment->id_community_shift; ?>" class="<?php echo $locked; ?>">
 										<span class="position"><?php echo $count; ?>)&nbsp;</span>
 										<?php echo $segment->community()->name; ?> - <?php echo $segment->dateStart()->format( 'M jS Y' ); ?>
 										<br/>
 										<strong><?php echo $segment->dateStart()->format( 'l' ); ?>:&nbsp;&nbsp;<?php echo $segment->startEndToString(); ?></strong>
+										<?php if( $locked != '' ) { ?>
+											<div><i class="icon-exclamation-sign"></i> You are assigned to this shift.</div>
+										<?php } ?>
 									</li>
 									<?php
 									$count++;
@@ -91,7 +94,7 @@
 							</ul>
 						</div>
 						<div class="span4">
-							<strong>Shifts you DONT want to work:</strong>
+							<strong>Shifts you CANNOT work:</strong>
 							<br/><br/>
 							<ul class="dontwantwork connected">
 							<?php
@@ -121,7 +124,7 @@
 					<div class="span4">
 						<select id="shifts" class="chosen-select">
 							<option value=""></option>
-							<?php for( $i = 1; $i <= 10; $i++ ) { 
+							<?php for( $i = 12; $i >= 1; $i-- ) { 
 								$selected = ( $this->status->shifts == $i ) ? 'selected="selected"' : '';
 								?>
 								<option <?php echo $selected; ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
@@ -130,6 +133,10 @@
 					</div>
 				</div>
 				<?php } ?>
+				<div class="row-fluid">
+				<br/><br/>
+				* If you have any questions, please text us at (phone number).
+				</div>
 			</div>
 			
 			<?php if( $totalShifts > 0 ) { ?>
@@ -137,7 +144,7 @@
 				if( $editable ){
 				?>
 				<div class="form-actions">
-					<button type="button" class="update-shift-driver btn btn-blue"><i class="icon-save"></i> Update</button>&nbsp;&nbsp;
+					<!-- <button type="button" class="update-shift-driver btn btn-blue"><i class="icon-save"></i> Update</button>&nbsp;&nbsp; -->
 					<button type="button" class="complete-shift-driver btn btn-green">
 						<?php if( $this->status->completed == '1' ) { ?>
 							<i class="icon-thumbs-up"></i> Already completed
@@ -210,6 +217,9 @@ ul.dontwantwork{
 	border: 1px solid #CCC;
 	color: #CCC;	
 	text-decoration:line-through;
+}
+.locked{
+	cursor: default !important;
 }
 .sortable-dragging {
 	cursor: move;
