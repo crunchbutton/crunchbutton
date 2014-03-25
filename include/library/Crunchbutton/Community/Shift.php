@@ -343,8 +343,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 		echo $log."\n";
 
-		// switch ( date( 'l' ) ) {
-		switch ( 'Wednesday' ) {
+		switch ( date( 'l' ) ) {
 			case 'Monday':
 				$driversMessage = 'Hey [name]! Please fill out your schedule for next week at cockpit._DOMAIN_/schedule. If you have any questions, just text us back.';
 				$warningDrivers = true;
@@ -438,7 +437,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						try {
 							// Log
 							Log::debug( [ 'action' => 'community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							// $twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
 						} catch (Exception $e) {
 							// Log
 							Log::debug( [ 'action' => 'ERROR: community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
