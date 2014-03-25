@@ -26,8 +26,7 @@
 					<li><a class="shift-next" href="/drivers/shift/status/shift/<?php echo $this->weekNext; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a></li>
 				</ul>
 
-			</div>
-			<div class="box-content">
+			</div>			<div class="box-content">
 				<table width="100%" class="table table-normal">
 					<thead>
 						<tr>
@@ -111,6 +110,7 @@
 							<td>Completed</td>
 							<td>Shifts wants to work</td>
 							<td>Total assigned shifts</td>
+							<td>Send sms about schedule?</td>
 						</tr>
 					</thead>
 					<tbody>
@@ -121,7 +121,7 @@
 						}
 						?>
 						<tr>
-							<td colspan="4">
+							<td colspan="5">
 								<strong>
 									<center style="font-size:14px;">
 										<?php echo $community->name ?>
@@ -135,6 +135,13 @@
 							$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
 							$adminShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
 							$totalShifts = $adminShifts->count();
+							$receiveSMS = $driver->getConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING );
+							if( $receiveSMS->id_admin_config ){
+								$receiveSMS = $receiveSMS->value;
+							} else {
+								$receiveSMS = false;
+							}
+							$checked = ( $receiveSMS && $receiveSMS > 0 ) ? 'checked="checked"' : '';
 							?>
 							<tr>
 								<td>
@@ -153,6 +160,10 @@
 								<td>
 									<?php echo $totalShifts; ?>
 								</td>
+								<td>
+									<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $driver->id_admin; ?>" name="form-receive-sms" id="form-receive-sms-<?php echo $driver->id_admin; ?>">
+									<i class="icon-thumbs-up" style="opacity:0;;color:green;margin:0 0 0 10px;" id="saved-<?php echo $driver->id_admin; ?>"></i>
+								</td>
 							</tr>
 				<?php 
 						}
@@ -162,6 +173,11 @@
 				</table>
 			</div>
 		</div>
-
 	</div>
 </div>
+<script type="text/javascript" src="/assets/js/admin.shift.js"></script>
+<script type="text/javascript">
+$( document ).ready( function(){
+	shift.status.init();
+} );
+</script>
