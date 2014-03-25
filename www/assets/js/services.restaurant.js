@@ -23,9 +23,12 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		// call here that way this method does not have to be called inside each restaurant object
 		var now = dateTime.getNow();
 
+		var totalOpen = 0;
+
 		// call the method open to check it status and tagfy
 		for (var x in list) {
 			if( list[x].open( now ) ){
+				totalOpen++;
 				areAllTheRestaurantsClosed = false;
 			}
 			list[x].tagfy();
@@ -109,6 +112,19 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					list[ x ].restaurantBlockStyle = true;
 				}
 			}
+		} else {
+			if( totalOpen % 2 != 0 ){
+				for ( var x in list ) {
+					if( !list[ x ].open( now ) ){
+						console.log('list[ x ]', x ,list[ x ].name);
+						var prev = x - 1;
+						if( list[ prev ] ){
+							list[ prev ].restaurantBlockStyle = true;
+							break;
+						}
+					}
+				}
+			}			
 		}
 
 		restaurants = list;
