@@ -343,7 +343,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 		echo $log."\n";
 
-		switch ( date( 'l' ) ) {
+		switch ( 'Monday' ) {
 			case 'Monday':
 				$driversMessage = 'Hey [name]! Please fill out your schedule for next week at cockpit._DOMAIN_/schedule. If you have any questions, just text us back.';
 				$warningDrivers = true;
@@ -374,28 +374,51 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		foreach( $communities as $community ){
 			// Check if the community has shift for current week
 			$shifts = Crunchbutton_Community_Shift::shiftsByCommunityPeriod( $community->id_community, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
-			if( $shifts->count() > 0 ){
-				$drivers = $community->getDriversOfCommunity();
-				foreach( $drivers as $driver ){
-					$preferences = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
+		
+			$drivers = $community->getDriversOfCommunity();
+			
+			echo "\n";
+			$log = $community->name . ' has ' .  $drivers->count() . ' drivers';
+			Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+			echo $log."\n";
+			echo "\n";
+
+			foreach( $drivers as $driver ){
+
+				$preferences = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
+
+				$receiveSMS = $driver->getConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING );
+				if( $receiveSMS->id_admin_config ){
+					$receiveSMS = $receiveSMS->value;
+				} else {
+					$receiveSMS = false;
+				}
+				if( $receiveSMS ){
+					$log = 'driver set up to RECEIVE sms: ' . $driver->name . ' - ' . $community->name;
+					Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+					echo $log."\n";
 					if( $preferences->completed == 0 ){
 						$driversWillReceiveTheNotification[] = array(  'id_admin' => $driver->id_admin, 'name' => $driver->name, 'txt' => $driver->txt, 'phone' => $driver->phone );
 					}
+				} else {
+					$log = 'driver set up to NOT receive sms: ' . $driver->name;
+					Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+					echo $log."\n";
 				}
-			} else {
+			}
+			if( $shifts->count() == 0 ){
 				$communitiesWithoutShift[] = $community->name;
 			}
 		}
-
+		echo "\n";
 		$log = 'communitiesWithoutShift: ' . count( $communitiesWithoutShift ) . ', list ' . join( ', ', $communitiesWithoutShift );
 		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 		echo $log."\n";
 
-
+		echo "\n";
 		$log = 'driversWillReceiveTheNotification: ' . count( $driversWillReceiveTheNotification );
 		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 		echo $log."\n";
-
 
 		$env = c::getEnv();
 
@@ -414,7 +437,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						try {
 							// Log
 							Log::debug( [ 'action' => 'community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextDriver, '+1'.$num, $msg );
+							// $twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
 						} catch (Exception $e) {
 							// Log
 							Log::debug( [ 'action' => 'ERROR: community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
@@ -424,8 +447,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			}
 		}
 
+		echo "\n";
 		Log::debug( [ 'action' => 'notification sms', 'total' => count( $driversWillReceiveTheNotification ), 'type' => 'driver-schedule' ] );
-
 
 		if( $warningCS && count( $driversWillReceiveTheNotification ) > 0 ){
 
@@ -440,9 +463,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						try {
 							// Log
 							Log::debug( [ 'action' => 'sending the drivers list', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextDriver, '+1'.$num, $msg );
+							$log = 'Sending sms to: ' . $supportName . ' - ' . $supportPhone . ': ' . $msg;
+							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+							echo $log."\n";
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
 						} catch (Exception $e) {
 							// Log
+							$log = 'Error Sending sms to: ' . $supportName . ' - ' . $supportPhone . ': ' . $msg;
+							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+							echo $log."\n";
 							Log::debug( [ 'action' => 'ERROR: sending the drivers list', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
 						}
 					}
@@ -451,7 +480,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		}
 
 		if( $warningDrivers ){
+
 			foreach( $driversWillReceiveTheNotification as $driver ){
+
 				$id_admin = $driver[ 'id_admin' ];
 				$name = $driver[ 'name' ];
 				$txt = $driver[ 'txt' ];
@@ -468,10 +499,16 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						try {
 							// Log
 							Log::debug( [ 'action' => 'sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextDriver, '+1'.$num, $msg );
+							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
+							$log = 'Sending sms to: ' . $name . ' - ' . $num . ': ' . $msg;
+							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+							echo $log."\n";
 						} catch (Exception $e) {
 							// Log
 							Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
+							$log = 'Error Sending sms to: ' . $name . ' - ' . $num . ': ' . $msg;
+							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
+							echo $log."\n";
 						}
 					}
 				} else {

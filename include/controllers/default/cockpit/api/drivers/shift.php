@@ -12,9 +12,26 @@ class Controller_api_drivers_shift extends Crunchbutton_Controller_RestAccount {
 				$this->driver();
 				break;
 
+			case 'driver-schedule-sms-config':
+				$this->driverScheduleSMSConfig();
+				break;
+
 			default:
 				echo json_encode( [ 'error' => 'invalid object' ] );
 				break;
+		}
+	}
+
+	public function driverScheduleSMSConfig(){
+		$id_admin = $this->request()[ 'id_admin' ];
+		$admin = Admin::o( $id_admin );
+		if( $admin->id_admin ){
+			$value = $this->request()[ 'value' ];
+			$value = ( $value && $value > 0 ) ? 1 : 0;
+			$admin->setConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING, $value );
+			echo json_encode( [ 'success' => 'success' ] );
+		} else {
+			echo json_encode( [ 'error' => 'invalid object' ] );
 		}
 	}
 

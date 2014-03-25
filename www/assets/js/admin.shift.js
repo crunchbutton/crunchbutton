@@ -370,3 +370,29 @@ shift.summary.assign.save = function(){
 		}
 	} );
 }
+
+shift.status = {};
+shift.status.init = function(){
+	$( '[name="form-receive-sms"]' ).on( 'ifChanged', function( event, obj ){
+		var checkbox = $( this );
+		var value = checkbox.is( ':checked' ) ? 1 : 0;
+		var id_admin = checkbox.val();
+		$.ajax( {
+			url: '/api/drivers/shift/driver-schedule-sms-config/',
+			method: 'POST',
+			data: { 'value' : value, 'id_admin' : id_admin },
+			dataType: 'json',
+		} ).done( function( data ) {
+			if( data.success ){
+				$( '#saved-' + id_admin ).fadeTo( 'fast' , 1, function() {
+					$( '#saved-' + id_admin ).fadeTo( 'fast', 0 );
+				} );
+				console.log( 'saved!' );
+			} else {
+				alert( 'Oops, error! ' + data.error );
+			}
+		} );
+
+
+	} );	
+}

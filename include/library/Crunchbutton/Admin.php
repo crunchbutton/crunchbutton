@@ -1,6 +1,10 @@
 <?php
 
 class Crunchbutton_Admin extends Cana_Table {
+
+	const CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING = 'schedule-sms';
+
+
 	public static function login($login) {
 		return Crunchbutton_Admin::q('select * from admin where login="'.c::db()->escape($login).'" limit 1')->get(0);
 	}
