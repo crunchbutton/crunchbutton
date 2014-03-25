@@ -1261,6 +1261,16 @@ p {
 		background: green;
 		border: 2px solid green;
 	}
+	.restaurant-block{
+		display: block;
+		width: 100%;
+	}
+		.restaurant-block.restaurants-item{
+			text-align: center; !important;
+		}
+			.restaurant-block.restaurants-item .restaurants-open{
+				text-align: left;
+			}
 }
 
 

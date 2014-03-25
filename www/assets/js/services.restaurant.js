@@ -105,6 +105,9 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				}
 				list[ x ].tagfy( 'opening' );
 				tagRestaurantsAsClosing--;
+				if( tagRestaurantsAsClosing == 0 ){
+					list[ x ].restaurantBlockStyle = true;
+				}
 			}
 		}
 
