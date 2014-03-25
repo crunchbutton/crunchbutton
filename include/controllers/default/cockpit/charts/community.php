@@ -47,13 +47,13 @@ class Controller_charts_community extends Crunchbutton_Controller_Account {
 		$communities = Crunchbutton_Community::q( 'SELECT * FROM community' );
 		$_communities = [];
 		foreach ( $communities as $community ) {
-			$permission_name = strtolower( $community->community );
+			$permission_name = strtolower( $community->name );
 			$permission_name = str_replace( ' ' , '-', $permission_name );
 			$permission_name = "metrics-communities-{$permission_name}";
 			if( $hasPermissionFullPermission || c::admin()->permission()->check( [ $permission_name ] ) ){
 				$_communities[] = $community;
 			}
 		}
-		c::view()->communities = $communities;
+		c::view()->communities = $_communities;
 	}
 }

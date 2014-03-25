@@ -3,6 +3,7 @@
 class Controller_charts extends Crunchbutton_Controller_Account {
 
 	public function init() {
+
 		if (!c::admin()->permission()->check(['global', 'metrics-manage-cohorts'])) {
 			return ;
 		}

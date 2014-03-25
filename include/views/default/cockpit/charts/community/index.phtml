@@ -33,6 +33,7 @@
 			<?php } ?>
 		</div>
 		<hr/>
+		<?php if (c::admin()->permission()->check(['global', 'metrics-all'])) { ?>
 		<div>
 			<a href="/charts/community/delivery-tips">
 				Delivery fees + Tips Graphs
@@ -42,7 +43,7 @@
 			</a>
 		</div>
 		<hr/>
-
+		<?php } ?>
 		<?php foreach( $communities as $community ) { ?>
 
 		<?php
