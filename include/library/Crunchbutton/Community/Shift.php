@@ -343,7 +343,8 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 		echo $log."\n";
 
-		switch ( 'Monday' ) {
+		// switch ( date( 'l' ) ) {
+		switch ( 'Wednesday' ) {
 			case 'Monday':
 				$driversMessage = 'Hey [name]! Please fill out your schedule for next week at cockpit._DOMAIN_/schedule. If you have any questions, just text us back.';
 				$warningDrivers = true;
