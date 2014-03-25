@@ -20,7 +20,11 @@ class Controller_home_charts extends Crunchbutton_Controller_Account {
 					$hasTag = true;
 					$hasPermission = c::admin()->permission()->check( [ "metrics-{$tag}" ] );
 					if( !$hasPermission && $tag == 'reps' ){
-						$hasPermission = c::admin()->permission()->check( [ 'metrics-communities-all', "metrics-communities-{$_REQUEST[ 'community' ]}", "metrics-restaurant-{$_REQUEST[ 'restaurant' ]}" ] );
+						if( $_REQUEST[ 'community' ] ){
+							$community = Crunchbutton_Community::o( $_REQUEST[ 'community' ] );
+							$community = $community->name;
+						}
+						$hasPermission = c::admin()->permission()->check( [ 'metrics-communities-all', "metrics-communities-{$community}", "metrics-restaurant-{$_REQUEST[ 'restaurant' ]}" ] );
 					}
 					if( $hasPermission ){ break; }	
 				}
