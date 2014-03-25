@@ -53,7 +53,7 @@
 
 	<div class="restaurants-items">
 		
-		<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false}" class="restaurants-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
+		<div ng-click="display($event)" ng-class="{'meal-item-closed': restaurant._open==false, 'restaurant-block': restaurant.restaurantBlockStyle}" class="restaurants-item" data-id_restaurant="{{restaurant.id_restaurant}}" data-permalink="{{restaurant.permalink}}" ng-repeat="restaurant in restaurants | limitTo:restaurantsToShow">
 
 			<div class="restaurants-closed" ng-if="restaurant._tag == 'closed'">
 				<h2 class="restaurants-name">{{restaurant.name}}</h2>
