@@ -18,24 +18,32 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 		var list = restaurants;
 
-		var areAllTheRestaurantsClosed = true;
+		var areAllTheRestaurantsMinimized = true;
 
 		// call here that way this method does not have to be called inside each restaurant object
 		var now = dateTime.getNow();
 
-		var totalOpen = 0;
+		var totalMaximized = 0;
 
-		// call the method open to check it status and tagfy
-		for (var x in list) {
-			if( list[x].open( now ) ){
-				totalOpen++;
-				areAllTheRestaurantsClosed = false;
+		// call the method open to check it status and tagfy - 2662
+		for ( var x in list ) {
+			if( list[ x ].openRestaurantPage( now, true ) ){ 
+				list[ x ]._maximized = true;
+				areAllTheRestaurantsMinimized = false;
+				if( !list[ x ]._open ){
+					list[ x ].tagfy( 'opening' );
+				} else {
+					list[x].tagfy();
+				}
+				totalMaximized++;
+			} else {
+				list[ x ]._maximized = false;
+				list[x].tagfy();
 			}
-			list[x].tagfy();
 		}
 
 		// if all are closed sort by that are opening the soonest
-		if( areAllTheRestaurantsClosed ){
+		if( areAllTheRestaurantsMinimized ){
 
 			if( list && list.sort ){
 
@@ -71,6 +79,9 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		} else {
 			list.sort( 
 				sort_by( {
+					name: '_maximized',
+					reverse: true
+				},  {
 					name: '_open',
 					reverse: true
 				}, {
@@ -99,8 +110,8 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			);
 		}
 
-		if( areAllTheRestaurantsClosed ){
-			// Number of restaurants that will have the opening tag
+		if( areAllTheRestaurantsMinimized ){
+			// Number of restaurants that will have the opening tag is 3
 			var tagRestaurantsAsClosing = 3;
 			for ( var x in list ) {
 				if( tagRestaurantsAsClosing <= 0 ){
@@ -113,10 +124,9 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				}
 			}
 		} else {
-			if( totalOpen % 2 != 0 ){
+			if( totalMaximized % 2 != 0 ){
 				for ( var x in list ) {
-					if( !list[ x ].open( now ) ){
-						console.log('list[ x ]', x ,list[ x ].name);
+					if( list[x]._tag == 'closed' ){
 						var prev = x - 1;
 						if( list[ prev ] ){
 							list[ prev ].restaurantBlockStyle = true;
@@ -135,7 +145,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 		var now = dateTime.getNow();
 		var list = restaurants;
-		var allClosed = true;
+		var areAllTheRestaurantsMinimized = true;
 		var totalClosedRestaurantsAfter = 0;
 		var totalClosedRestaurantsBefore = 0;
 
@@ -143,21 +153,30 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			if( !list[x]._open ){
 				totalClosedRestaurantsBefore++;
 			} else {
-				allClosed = false;
+				areAllTheRestaurantsMinimized = false;
 			}
 		}
 
-		for (var x in list) {
-			if( !list[x].open( now ) ){
-				totalClosedRestaurantsAfter++;
+		// call the method open to check it status and tagfy - 2662
+		for ( var x in list ) {
+			if( list[ x ].openRestaurantPage( now, true ) ){ 
+				areAllTheRestaurantsMinimized = false;
+				totalClosedRestaurantsBefore++;
+				if( !list[ x ]._open ){
+					list[ x ].tagfy( 'opening' );
+				} else {
+					list[x].tagfy();
+				}
+			} else {
+				list[ x ]._maximized = false;
+				list[x].tagfy();
 			}
-			list[x].tagfy();
-		};
+		}
 
 		restaurants = list;
 
 		// Reorder the restaurants
-		if( allClosed || ( totalClosedRestaurantsAfter != totalClosedRestaurantsBefore ) ){
+		if( areAllTheRestaurantsMinimized || ( totalClosedRestaurantsAfter != totalClosedRestaurantsBefore ) ){
 			service.sort();
 		}
 		// check if it is necessary to reload the hours

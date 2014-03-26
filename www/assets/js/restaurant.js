@@ -98,6 +98,7 @@ var Restaurant = function(id) {
 	}
 
 	self.tagfy = function( tag ){
+
 		if( tag ){
 			self._tag = tag;
 			if( tag == 'opening' ){
@@ -136,17 +137,31 @@ var Restaurant = function(id) {
 		return dateTime.getNow();
 	}
 
+	self.openRestaurantPage = function( now ){
+		// See 2662
+		now = self.getNow( now );
+		if( self.open( now, true ) ){
+			return true;
+		}
+		self.opensIn( now );
+		if( self._opensIn && self._opensIn < ( 3600 ) ){
+			return true;
+		}
+		return false;
+	}
+
 	/* 
 	** Open/Close check methods 
 	*/
 	// return true if the restaurant is open
 	self.open = function( now, ignoreOpensClosesInCalc ) {
+
 		self.tagfy( 'opening' );
 		// if the restaurant has no hours it probably will not be opened for the next 24 hours
 		self._hasHours = false;
 		
 		now = self.getNow( now );
-		
+
 		self.processHours();
 		var now_time = now.getTime();
 		// loop to verify if it is open	
@@ -215,6 +230,11 @@ var Restaurant = function(id) {
 					return;
 				}
 			}
+		}
+		// it means the restaurant will not be opened for the next 24 hours
+		if( self.next_open_time ){
+				self._opensIn = timestampDiff( Date.parse( self.next_open_time ), now_time );
+				self._opensIn_formatted = formatTime( self._opensIn, self.next_open_time_message );
 		}
 	}
 
