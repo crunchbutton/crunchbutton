@@ -350,7 +350,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$warningCS = false;
 				break;
 			case 'Wednesday':
-				$driversMessage = 'Remember: update your Crunchbutton schedule for next week atg cockpit._DOMAIN_/schedule. Don\'t leave us hanging :(';
+				$driversMessage = 'Remember: update your Crunchbutton schedule for next week at cockpit._DOMAIN_/schedule. Don\'t leave us hanging :(';
 					$warningDrivers = true;
 					$warningCS = false;
 				break;
