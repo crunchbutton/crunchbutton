@@ -25,6 +25,11 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 
 		var totalMaximized = 0;
 
+		for ( var x in list ) {
+			list[ x ].restaurantBlockStyle = false;
+			list[ x ].open( now );
+		}
+
 		// call the method open to check it status and tagfy - 2662
 		for ( var x in list ) {
 			if( list[ x ].openRestaurantPage( now, true ) ){ 

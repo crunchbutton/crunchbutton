@@ -98,7 +98,6 @@ var Restaurant = function(id) {
 	}
 
 	self.tagfy = function( tag ){
-
 		if( tag ){
 			self._tag = tag;
 			if( tag == 'opening' ){
