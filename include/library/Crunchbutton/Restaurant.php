@@ -1101,8 +1101,17 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
 			}			
 		} else {
-			$out['hours'] = $this->hours_next_24_hours( true );
+			$out[ 'hours' ] = $this->hours_next_24_hours( true );
+			$next_open_time = $this->next_open_time( true );
+			if( $next_open_time ){
+				$next_open_time_restaurant_tz = $this->next_open_time();
+
+				$out[ 'next_open_time' ] = ( $next_open_time ) ? $next_open_time->format( 'Y-m-d H:i' ) : false;
+				$out[ 'next_open_time_message' ] = $this->next_open_time_message();
+			}
+			
 		}
+
 
 		$out['closed_message'] = $this->closed_message();
 
@@ -1649,12 +1658,22 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return Hour::restaurantClosedMessage( $this );	
 	}
 
-	// Return the next open time
-	public function next_open_time(){
+	public function next_open_time_message( $utc = false ){
 		if( $this->open_for_business ){
 			// if the restaurant is open return false
 			if ( $this->closed() ) {
-				return Hour::restaurantNextOpenTime( $this );	
+				return Hour::restaurantNextOpenTimeMessage( $this, $utc );	
+			}
+		} 
+		return false;
+	}
+
+	// Return the next open time
+	public function next_open_time( $utc = false ){
+		if( $this->open_for_business ){
+			// if the restaurant is open return false
+			if ( $this->closed() ) {
+				return Hour::restaurantNextOpenTime( $this, $utc );	
 			}
 		} 
 		return false;

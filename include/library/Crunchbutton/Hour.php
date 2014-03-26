@@ -24,7 +24,21 @@ class Crunchbutton_Hour extends Cana_Table {
 		return false;
 	}
 
-	public function restaurantNextOpenTime( $restaurant ){
+	public function restaurantNextOpenTimeMessage( $restaurant, $utc = false ){
+		$nexOpen = Hour::restaurantNextOpenTime( $restaurant, $utc = false );
+		$day = new DateTime( 'now', new DateTimeZone( ( $utc ? $utc : $restaurant->timezone ) ) );
+		$day->modify( '+ 1 day' );
+		$tomorrow = new DateTime( $day->format( 'Y-m-d' ) . '23:59:59', new DateTimeZone( ( $utc ? $utc : $restaurant->timezone ) ) );
+		$isTomorrow = ( $nexOpen < $tomorrow );
+
+		return array(	'day' => $nexOpen->format( 'l' ), 
+									'hour' => intval( $nexOpen->format( 'h' ) ),
+									'min' => $nexOpen->format( 'i' ),
+									'tomorrow' => ( $isTomorrow ? 'Tomorrow' : false ),
+									'ampm' => strtoupper( $nexOpen->format( 'a' ) ) );
+	}
+
+	public function restaurantNextOpenTime( $restaurant, $utc = false ){
 		$today = new DateTime( 'now', new DateTimeZone( $restaurant->timezone ) );
 		$day = strtolower( $today->format( 'D' ) );
 		$hours = Hour::getByRestaurantWeek( $restaurant, false );
@@ -32,6 +46,9 @@ class Crunchbutton_Hour extends Cana_Table {
 			if( $hour->status == 'open' ){
 				$open = new DateTime( $hour->from, new DateTimeZone( $restaurant->timezone ) );
 				if( $open >= $today ){
+					if( $utc ){
+						$open->setTimezone( new DateTimeZone( 'UTC' ) );
+					}
 					return $open;
 				}
 			}

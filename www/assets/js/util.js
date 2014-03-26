@@ -135,22 +135,27 @@ function timestampDiff( time1, time2 ){
 	return Math.floor( ( time1 - time2 ) / 1000 );
 }
 
-function formatTime( seconds ){
+function formatTime( seconds, message ){
 	if( seconds <= 60 ){
 		return 'less than a minute';
 	}
-	time = Math.floor( seconds / 60 );
-	var formated = '';
+	var time = Math.floor( seconds / 60 );
 	if( time && time > 0 ){
 		var hours = Math.floor( time / 60 );
 		var minutes = time - ( hours * 60 );
 		if( hours > 0 ){
-			formated = hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) /* + ( minutes > 0 ? ' and ' + ( minutes ) + ( minutes > 1 ? ' minutes' : ' minute' ) : '' ) */ ;
+			// #2662
+			if( hours <= 24 ){
+				return 'in ' + ( hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) );	
+			}
+			if( hours > 24 ){
+				return ( message.tomorrow ? message.tomorrow : message.day ) + ' at ' + message.hour + ( parseInt( message.min ) > 0 ? ':' + message.min : '' ) + ' ' + message.ampm;
+			}
 		} else {
-			formated = ( minutes > 1 ) ? minutes + ' minutes' : minutes + ' minute';
+			return 'in ' + ( ( minutes > 1 ) ? minutes + ' minutes' : minutes + ' minute' );
 		}			
 	}
-	return formated;
+	return '';
 }
 
 

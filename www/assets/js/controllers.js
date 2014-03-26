@@ -207,7 +207,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		$scope.loadingRestaurant = true;
 		var restaurant = this.restaurant;
 
-		if ( !restaurant.open( dateTime.getNow(), true ) ) {
+		// if ( !restaurant.open( dateTime.getNow(), true ) ) {
+		if ( !restaurant.openRestaurantPage( dateTime.getNow() ) ) {
 			$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
 			$scope.restaurants = restaurants.getStatus();
 			$scope.loadingRestaurant = false;
