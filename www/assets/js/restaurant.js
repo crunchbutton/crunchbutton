@@ -198,9 +198,7 @@ var Restaurant = function(id) {
 			// if it doesn't have hours it is forced to be closed
 			self._tag = 'force_close';
 			self._closedDueTo = ' '; // There is no reason, leave it blank
-			console.log( self.name, self._tag )
 		}
-		
 	}
 
 	self.closesIn = function( now ){
