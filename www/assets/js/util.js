@@ -149,7 +149,11 @@ function formatTime( seconds, message ){
 				return 'in ' + ( hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) );	
 			}
 			if( hours > 24 ){
-				return ( message.tomorrow ? message.tomorrow : message.day ) + ' at ' + message.hour + ( parseInt( message.min ) > 0 ? ':' + message.min : '' ) + ' ' + message.ampm;
+				if( message ){
+					return ( message.tomorrow ? message.tomorrow : message.day ) + ' at ' + message.hour + ( parseInt( message.min ) > 0 ? ':' + message.min : '' ) + ' ' + message.ampm;	
+				} else {
+					return 'in ' + ( hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) );	
+				}
 			}
 		} else {
 			return 'in ' + ( ( minutes > 1 ) ? minutes + ' minutes' : minutes + ' minute' );

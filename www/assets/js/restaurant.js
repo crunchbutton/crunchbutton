@@ -165,34 +165,42 @@ var Restaurant = function(id) {
 		var now_time = now.getTime();
 		// loop to verify if it is open	
 		self._open = false;
-		for( x in self.hours ){
-			self._hasHours = true;
-			if( now_time >= self.hours[ x ]._from_time && now_time <= self.hours[ x ]._to_time ){
-				if( self.hours[ x ].status == 'open' ){
-					self._open = true;
-					if( ignoreOpensClosesInCalc ){
+		if( self.hours ){
+			for( x in self.hours ){
+				self._hasHours = true;
+				if( now_time >= self.hours[ x ]._from_time && now_time <= self.hours[ x ]._to_time ){
+					if( self.hours[ x ].status == 'open' ){
+						self._open = true;
+						if( ignoreOpensClosesInCalc ){
+							return self._open;
+						}
+						// if it is open calc closes in
+						self.closesIn( now );	
+						self.tagfy();
+						return self._open;
+					} else if( self.hours[ x ].status == 'close' ){
+						self._closedDueTo = ( self.hours[ x ].notes ) ? self.hours[ x ].notes : false;
+						if( ignoreOpensClosesInCalc ){
+							return self._open;
+						}			
+						// If it is closed calc opens in
+						self.opensIn( now );
+						self.tagfy();
 						return self._open;
 					}
-					// if it is open calc closes in
-					self.closesIn( now );	
-					self.tagfy();
-					return self._open;
-				} else if( self.hours[ x ].status == 'close' ){
-					self._closedDueTo = ( self.hours[ x ].notes ) ? self.hours[ x ].notes : false;
-					if( ignoreOpensClosesInCalc ){
-						return self._open;
-					}			
-					// If it is closed calc opens in
-					self.opensIn( now );
-					self.tagfy();
-					return self._open;
 				}
 			}
+			// If it is closed calc opens in
+			self.opensIn( now );
+			self.tagfy();
+			return self._open;
+		} else {
+			// if it doesn't have hours it is forced to be closed
+			self._tag = 'force_close';
+			self._closedDueTo = ' '; // There is no reason, leave it blank
+			console.log( self.name, self._tag )
 		}
-		// If it is closed calc opens in
-		self.opensIn( now );
-		self.tagfy();
-		return self._open;
+		
 	}
 
 	self.closesIn = function( now ){
@@ -201,14 +209,16 @@ var Restaurant = function(id) {
 		self._closesIn_formatted = '';
 		self.processHours();
 		var now_time = now.getTime();
-		for( x in self.hours ){
-			if( self.hours[ x ].status == 'close' ){
-				if( now_time <= self.hours[ x ]._from_time ){
-					self._closesIn = timestampDiff( self.hours[ x ]._from_time, now_time );
-					self._closesIn_formatted = formatTime( self._closesIn );
-					return;
+		if( self.hours ){
+			for( x in self.hours ){
+				if( self.hours[ x ].status == 'close' ){
+					if( now_time <= self.hours[ x ]._from_time ){
+						self._closesIn = timestampDiff( self.hours[ x ]._from_time, now_time );
+						self._closesIn_formatted = formatTime( self._closesIn );
+						return;
+					}
 				}
-			}
+			}			
 		}
 		if( self._closesIn == 0 || self._closesIn === false ){
 			self._open = false;
