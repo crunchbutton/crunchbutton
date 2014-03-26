@@ -313,7 +313,7 @@ class Crunchbutton_App extends Cana_App {
 		// domain level setup
 		
 		if ($this->isMobile()) {
-			$this->config()->site->theme =  'seven';
+			// $this->config()->site->theme =  'seven';
 		}
 		
 		$params['theme'][] = $this->config()->defaults->version.'/'.$this->config()->defaults->theme.'/';
