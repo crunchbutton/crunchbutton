@@ -311,6 +311,11 @@ class Crunchbutton_App extends Cana_App {
 	
 	public function buildView($params = array()) {
 		// domain level setup
+		
+		if ($this->isMobile()) {
+			$this->config()->site->theme =  'seven';
+		}
+		
 		$params['theme'][] = $this->config()->defaults->version.'/'.$this->config()->defaults->theme.'/';
 		if (is_array($themes = json_decode($this->config()->site->theme,'array'))) {
 			$themes = array_reverse($themes);
@@ -341,7 +346,7 @@ class Crunchbutton_App extends Cana_App {
 
 		if (!$this->isCompat()) {
 			$params['layout'] =  'layout/compat';
-		} else if ($this->isDownloadable()) {
+		} elseif ($this->isDownloadable()) {
 			$params['layout'] =  'layout/download';
 		} else {
 			$params['layout'] =  $this->config()->defaults->layout;
