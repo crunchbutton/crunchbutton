@@ -149,6 +149,7 @@
 	</support>
 	<twilio>
 		<live>
+			<app>_KEY_</app>
 			<sid>_KEY_</sid>
 			<token>_KEY_</token>
 			<hostname>_DOMAIN_</hostname>
@@ -160,6 +161,7 @@
 			<outgoingDriver>+1_PHONE_</outgoingDriver>
 		</live>
 		<dev>
+			<app>_KEY_</app>
 			<sid>_KEY_</sid>
 			<token>_KEY_</token>
 			<hostname>_DOMAIN_</hostname>
