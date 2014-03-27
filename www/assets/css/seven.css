@@ -2641,8 +2641,10 @@ sup {
 	font-size: 1.1em;
 	font-weight: bold;
 	letter-spacing: -.02em;
-	margin-top: 1em;
+	margin-top: .5em;
 	display: block;
+	height: 2.5em;
+	padding-top: .5em;
 }
 .splash-continue:active {
 	color: #eb6557;
@@ -2780,7 +2782,7 @@ sup {
 		height: 6em;
 	}
 	.splash-bottom {
-		bottom: 7.7em;
+		bottom: 6.1em;
 	}
 }
 @media screen and (max-height: 529px) {
