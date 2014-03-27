@@ -3491,3 +3491,8 @@ select {
 	font-size: 1.1em;
 	margin-right: .4em;
 }
+
+.order-buttons .button {
+	padding-top: .8em;
+	padding-bottom: .8em;
+}
