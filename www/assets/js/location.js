@@ -20,6 +20,7 @@ var Location = function( params ) {
 
 	// parse the city name from the result set
 	self.setCityFromResult = function(results) {
+
 		if (!results) {
 			return;
 		}
@@ -52,7 +53,11 @@ var Location = function( params ) {
 				break;
 			case 'route':
 				self._properties.city = result.address_components[0].long_name;
-				self._properties.region = result.address_components[1].short_name;
+				if( result.address_components[1] ){
+					self._properties.region = result.address_components[1].short_name;	
+				} else {
+					self._properties.region = result.address_components[0].short_name;	
+				}
 				self._properties.detail = 4;
 				break;
 			default:
@@ -269,7 +274,7 @@ var Location = function( params ) {
 	for (var x in params) {
 		this._properties[x] = params[x];
 	}
-	
+
 	if (params && params.results) {
 		self.setCityFromResult(params.results);
 		self.setAddressFromResult(params.results);
