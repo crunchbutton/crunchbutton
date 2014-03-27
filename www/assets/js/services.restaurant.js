@@ -130,7 +130,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 			}
 		} else {			
 			for ( var x in list ) {
-				if( list[x]._tag == 'closed' ){
+				if( !list[x]._maximized ){
 					var prev = x - 1;
 					if( list[ prev ] && list[ prev ]._maximized ){
 						list[ x ]._divider = true;
