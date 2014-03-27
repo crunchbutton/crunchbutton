@@ -16,7 +16,7 @@ class Controller_api_twilio_outgoing extends Crunchbutton_Controller_Rest {
 
 		switch (c::getPagePiece(3)) {
 			case 'restaurant':
-				$callerId = c::config()->twilio->live->restaurant;
+				$callerId = c::config()->twilio->live->outgoingRestaurant;
 				break;
 			case 'driver':
 				$callerId = c::config()->twilio->live->outgoingDriver;
