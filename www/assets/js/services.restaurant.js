@@ -116,16 +116,18 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		}
 
 		if( areAllTheRestaurantsMinimized ){
-			// Number of restaurants that will have the opening tag is 3
+			// Number of restaurants that will have the opening tag is 3 #2456
 			var tagRestaurantsAsClosing = 3;
 			for ( var x in list ) {
 				if( tagRestaurantsAsClosing <= 0 ){
 					break;
 				}
 				list[ x ].tagfy( 'opening' );
+				list[x]._maximized = true;
 				tagRestaurantsAsClosing--;
-				if( tagRestaurantsAsClosing == 0 ){
+				if( tagRestaurantsAsClosing < 0 ){
 					list[ x ]._divider = true;
+					break;
 				}
 			}
 		} else {			
