@@ -181,8 +181,44 @@ class Crunchbutton_Admin extends Cana_Table {
 		return c::db()->get( "SELECT DISTINCT( ap.permission ) FROM admin_permission ap WHERE ap.id_admin = {$this->id_admin} OR ap.id_group IN ( SELECT id_group FROM admin_group WHERE id_admin = {$this->id_admin} )" );
 	}
 
-	public function getRestaurantsUserHasCurationPermission(){
-		return Crunchbutton_Restaurant::restaurantsUserHasCurationPermission();
+	public function permissionCuration() {
+		return false;
+
+		/**
+		 why is all this permissions stuff so unorganized!
+		 
+		$_permissions = new Crunchbutton_Admin_Permission();
+		$restaurants_ids = Restaurant::restaurantsUserHasPermission();
+		$all = $_permissions->all();
+		// Get all restaurants permissions
+		$permissions = c::admin()->getAllPermissionsName();
+		$communities = array();
+		foreach ( $permissions as $permission ) {
+			$permission = $permission->permission;
+			$info = $_permissions->getPermissionInfo( $permission );
+			$name = $info[ 'permission' ];
+			if( $name == 'curation-communities-ID' ){
+				if( strstr( $name, 'ID' ) ){
+					$regex = str_replace( 'ID' , '((.)*)', $name );
+					$regex = '/' . $regex . '/';
+					preg_match( $regex, $permission, $matches );
+					if( count( $matches ) > 0 ){
+						$communities[] = $matches[ 1 ];
+					}
+				}
+			}
+		}
+		foreach( $communities as $community ){
+			$restaurants = Restaurant::getRestaurantsByCommunity( $community );
+			foreach ( $restaurants as $restaurant ) {
+				$restaurants_ids[] = $restaurant->id_restaurant;
+			}
+		}
+		return array_unique( $restaurants_ids );
+		*/
+
+
+
 	}
 
 	public function getRestaurantsUserHasPermission(){

@@ -98,6 +98,7 @@
 				foreach ( $data as $restaurant ) {
 				?>
 					<tr style="background:#ededf2;border-top:1px solid #333;border-bottom:1px solid #666;">
+						<td></td>
 						<td style="font-weight:bold;">
 							<?php echo $restaurant[ 'Name' ]; ?>
 						</td>
@@ -161,6 +162,7 @@
 							$active = ( $food[ 'active' ] == '0' ) ? 'color:#CCC;' : '';
 							?>
 							<tr style="<?php echo $active; ?>">
+								<td style="padding:2px 5px; width: 2px;"><?=$food['top'] ? 'asd<i class="fa fa-star"></i>' : 'xx'?></td>
 								<td style="padding:2px 5px;"><?php echo $food[ 'name' ]; ?> </td>
 								<td style="padding:2px 5px;"><?php echo $times; ?></td>
 								<td style="padding:2px 5px;" class="first-order force-hide"><?php echo $first_order; ?></td>
