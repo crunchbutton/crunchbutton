@@ -962,6 +962,12 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		$('.order-print').get(0).contentWindow.print();
 	};
 
+	if ( App.busy.isBusy() ) {
+		setTimeout( function(){
+			App.busy.unBusy();
+		}, 500 );
+	}
+
 });
 
 
