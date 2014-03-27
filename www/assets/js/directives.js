@@ -238,22 +238,25 @@ NGApp.directive('ngScrollSpy', function () {
 			sp.container = $('.snap-content-inner');
 			$(elem).scrollspy(sp);
 			
+
+			
 			if (App.isPhoneGap) {
+
 				var sp = {
 					min: -300,
 					max: -40,
 					onEnter: function(element, position) {
-						$('.page-location .navs').addClass('hidden-logo');
+						$('body').addClass('hidden-logo');
 					},
 					onLeave: function(element, position) {
-						$('.page-location .navs').removeClass('hidden-logo');
+						$('body').removeClass('hidden-logo');
 					},
 					container: $('.snap-content-inner')
 				};
 				$(elem).scrollspy(sp);
 
 				var sp = {
-					min: -130,
+					min: -135,
 					max: -90,
 					onEnter: function(element, position) {
 						$('.page-location .snap-content-inner.bg').addClass('step-two');
