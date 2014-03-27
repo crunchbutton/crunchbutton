@@ -1105,11 +1105,13 @@ NGApp.controller( 'RestaurantClosedCtrl', function ( $scope, $rootScope ) {
 		if ($scope.$$phase) {
 			$scope.restaurant = r;
 			$scope.closedMessage = r.closedMessage();
+			$scope.acceptingOrders = ( parseInt( r.open_for_business ) > 0 );
 			App.dialog.show('.restaurant-closed-container');
 		} else {
 			$rootScope.$apply(function(scope) {
 				scope.restaurant = r;
 				scope.closedMessage = r.closedMessage();
+				$scope.acceptingOrders = ( parseInt( r.open_for_business ) > 0 );
 				App.dialog.show('.restaurant-closed-container');
 			}); 
 		}			

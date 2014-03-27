@@ -2,7 +2,15 @@
 	<div class="dialog-padding">
 		<h1 ng-bind="restaurant.name"></h1>
 		<div class="dialog-egg animated-resize"></div>
-		<p>is currently closed. It will be open during the following hours (<span ng-bind="restaurant._tzabbr"></span>):<br /><br />
+		<p>
+			<span ng-if="acceptingOrders">
+				is currently closed. It will be open during the following hours 
+			</span>
+			<span ng-if="!acceptingOrders">
+				You can't place an order here right now, but you usually can during these hours
+			</span>
+			&nbsp;(<span ng-bind="restaurant._tzabbr"></span>):<br /><br />
+		</p>
 		<p ng-bind-html-unsafe="closedMessage" class="dialog-hours"></p>
 		<div class="divider"></div>
 	</div>
@@ -11,3 +19,4 @@
 		<div class="button-pushable"><button class="button lightorange" ng-click="closePopup()">ok</button></div>
 	</div>
 </div>
+
