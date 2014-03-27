@@ -3468,3 +3468,26 @@ select {
 	     -o-transition: opacity linear 0.18s;
 	        transition: opacity linear 0.18s;
 }
+.facebook-like-link {
+	text-decoration: none !important;
+}
+.facebook-like {
+	color: #fff;
+	border: 1px solid #42578d;
+	border-bottom-color: #324884;
+	background: #4d65a3 -webkit-linear-gradient(top, #4d65a3 0%,#415999 100%);
+	border-radius: 4px;
+	padding: .45em 1em .5em 1em;
+	font-size: 1.1em;
+	font-weight: bold;
+	cursor: pointer;
+	margin-left: 17px;
+	display: block;
+	position: fixed;
+	bottom: 15px;
+}
+
+.facebook-like .fa {
+	font-size: 1.1em;
+	margin-right: .4em;
+}
