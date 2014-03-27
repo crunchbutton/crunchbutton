@@ -1743,12 +1743,6 @@ p {
 	cursor: pointer;
 	line-height: 1.5em;
 	height: 3em;
-
-	/* @test
-	background: #f88256;
-	color: #fff;
-	border: 0;
-	 */
 }
 .dish-item-name {
 	font-weight: bold;
@@ -3384,7 +3378,8 @@ select {
 	color: #fec2aa;
 }
 .dish-item:active {
-	opacity: .6;
+	border-color: #faaf93;
+	opacity: .8;
 }
 .cart-item-customize-name:active {
 	color: #858585;
