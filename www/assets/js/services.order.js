@@ -725,9 +725,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 							} );
 						});
 					}
-					setTimeout(function () {
-						App.busy.unBusy();
-					}, 400);
 				});
 		}
 		
