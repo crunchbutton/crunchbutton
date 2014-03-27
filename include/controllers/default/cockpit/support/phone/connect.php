@@ -19,8 +19,7 @@ class Controller_Support_Phone_Connect extends Crunchbutton_Controller_Account {
 		}
 		
 		
-		$num = '_PHONE_';
-		$_REQUEST['phone'] = '_PHONE_';
+		$num = c::admin()->phone;
 		$host = 'dev.crunchr.co';
 		//c::config()->host_callback
 
