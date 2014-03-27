@@ -3452,7 +3452,7 @@ select {
 .snap-opened .snap-content-inner {
 	pointer-events: none;
 }
-.hidden-logo .logo {
+.page-restaurant.hidden-logo .logo, .page-location.hidden-logo .logo {
 	opacity: 0;
 }
 .logo {
