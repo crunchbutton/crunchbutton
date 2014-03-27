@@ -148,6 +148,11 @@
 		</live>
 	</support>
 	<twilio>
+		<apps>
+			<driver>_KEY_</driver>
+			<customer>_KEY_</customer>
+			<restaurant>_KEY_</restaurant>
+		</apps>
 		<live>
 			<sid>_KEY_</sid>
 			<token>_KEY_</token>
