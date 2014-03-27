@@ -1,111 +1,101 @@
 
 <div class="snap-drawers static-nav-viewport loggedout-hideable" ng-controller="SideMenuCtrl">
 	<div class="snap-drawer snap-drawer-left side-menu" id="side-menu">
-		<div>
-			<div class="pushabutton"></div>
-			<ul>
-				<li ng-click="navigation.link('/splash')" ng-if="!account.user.id_user" ng-class="{'nav-active': (navigation.page == 'splash')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-rocket"></i></td>
-							<td class="side-menu-label">Get Started</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="navigation.link('/food-delivery')" ng-if="account.user.id_user" ng-class="{'nav-active': (navigation.page == 'restaurants')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
-							<td class="side-menu-label">Restaurants</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-if="account.user.id_user && account.user.name" ng-click="navigation.link('/orders')" ng-class="{'nav-active': (navigation.page == 'orders')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
-							<td class="side-menu-label">Previous Orders</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="navigation.link('/location')" ng-if="account.user.id_user" ng-class="{'nav-active': (navigation.page == 'location')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-map-marker"></i></td>
-							<td class="side-menu-label">Change Location</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-heart"></i></td>
-							<td class="side-menu-label">Help</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="navigation.link('/about')" ng-class="{'nav-active': (navigation.page == 'about')}">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-lightbulb-o"></i></td>
-							<td class="side-menu-label">About</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-if="!account.user.id_user" ng-click="navigation.signin()">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-sign-in"></i></td>
-							<td class="side-menu-label">Log In</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-if="account.user.id_user" ng-click="signout.signout()">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
-							<td class="side-menu-label">Logout</a></td>
-						</tr>
-					</table>
-				</li>
-				
-				<li>
-					<a href="{{(isPhoneGap && 'fb://profile/372531956099058' || !isPhoneGap && 'http://facebook.com/crunchbutton')}}" target="_blank">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-facebook-square"></i></td>
-							<td class="side-menu-label">Like!</a></td>
-						</tr>
-					</table>
-					</a>
-				</li>
 
-				<li ng-click="test.card()" ng-if="debug()">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
-							<td class="side-menu-label">TEST: card</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="test.clearloc()" ng-if="debug()">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
-							<td class="side-menu-label">TEST: clear loc</a></td>
-						</tr>
-					</table>
-				</li>
-				<li ng-click="test.reload()" ng-if="debug()">
-					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-						<tr>
-							<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
-							<td class="side-menu-label">TEST: reload page</a></td>
-						</tr>
-					</table>
-				</li>
-			</ul>
-		</div>
+		<div class="pushabutton"></div>
+		<ul>
+			<li ng-click="navigation.link('/splash')" ng-if="!account.user.id_user" ng-class="{'nav-active': (navigation.page == 'splash')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-rocket"></i></td>
+						<td class="side-menu-label">Get Started</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.link('/food-delivery')" ng-if="account.user.id_user" ng-class="{'nav-active': (navigation.page == 'restaurants')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
+						<td class="side-menu-label">Food</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-if="account.user.id_user && account.user.name" ng-click="navigation.link('/orders')" ng-class="{'nav-active': (navigation.page == 'orders')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
+						<td class="side-menu-label">My Orders</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.link('/location')" ng-if="account.user.id_user" ng-class="{'nav-active': (navigation.page == 'location')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-map-marker"></i></td>
+						<td class="side-menu-label">Change Location</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-heart"></i></td>
+						<td class="side-menu-label">Help</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-if="!account.user.id_user" ng-click="navigation.signin()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-sign-in"></i></td>
+						<td class="side-menu-label">Log In</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-if="account.user.id_user" ng-click="signout.signout()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
+						<td class="side-menu-label">Logout</a></td>
+					</tr>
+				</table>
+			</li>
+
+			<li ng-click="test.card()" ng-if="debug()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
+						<td class="side-menu-label">TEST: card</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="test.clearloc()" ng-if="debug()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
+						<td class="side-menu-label">TEST: clear loc</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="test.reload()" ng-if="debug()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-circle-o"></i></td>
+						<td class="side-menu-label">TEST: reload page</a></td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+		
+		
+			
+
+		<a href="{{(isPhoneGap && 'fb://profile/372531956099058' || !isPhoneGap && 'http://facebook.com/crunchbutton')}}" target="_blank" class="facebook-like-link">
+			<button class="facebook-like">
+				<i class="fa fa-facebook-square"></i> Like
+			</button>
+		</a>
+
 	</div>
 	<div class="snap-drawer snap-drawer-right side-menu"></div>
 </div>
@@ -119,8 +109,8 @@
 					<div class="hide-before-init dropdown dropdown-tip" ng-show="menudropdown">
 						<ul class="dropdown-menu">
 							<li><a ng-click="navigation.link('/splash')" ng-show="!account.user.id_user"><i class="fa fa-rocket"></i>Get Started!</a></li>
-							<li><a ng-click="navigation.link('/food-delivery')" ng-show="account.user.id_user"><i class="fa fa-cutlery"></i>Restaurants</a></li>
-							<li><a ng-click="navigation.link('/orders')" ng-show="account.user.id_user && account.user.name"><i class="fa fa-truck"></i>Previous Orders</a></li>
+							<li><a ng-click="navigation.link('/food-delivery')" ng-show="account.user.id_user"><i class="fa fa-cutlery"></i>Food</a></li>
+							<li><a ng-click="navigation.link('/orders')" ng-show="account.user.id_user && account.user.name"><i class="fa fa-truck"></i>My Orders</a></li>
 							<li><a ng-click="navigation.link('/location')" ng-show="account.user.id_user"><i class="fa fa-map-marker"></i>Change Location</a></li>
 							<li class="dropdown-divider"></li>
 							<li><a ng-click="navigation.link('/help')"><i class="fa fa-heart"></i>Help</a></li>
@@ -209,3 +199,7 @@
 <div id="fb-root"></div>
 <div class="is-ui2"></div>
 <div class="preload-home"></div>
+
+<div class="location-overpull-preload-one"></div>
+<div class="location-overpull-preload-two"></div>
+<div class="location-overpull-preload-three"></div>

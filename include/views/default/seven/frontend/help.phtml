@@ -18,7 +18,7 @@
 	<br /><br />
 	<h4>Hey! I need help with my order!</h4>
 	<p ng-show="!account.user.id_user"><a ng-click="navigation.signin()">Sign in to see your previous orders</a> and contact the restaurant you ordered from.</p>
-	<p ng-show="account.user.id_user">Please visit your <a ng-click="navigation.link('/orders','push')">Previous Orders</a> and contact the restaurant you ordered from.</p>
+	<p ng-show="account.user.id_user">Please visit your <a ng-click="navigation.link('/orders','push')">My Orders</a> and contact the restaurant you ordered from.</p>
 	<br /><br />
 	<h4>Need to contact Crunchbutton?</h4>
 	<p>Call or text us at <a href="tel:+16467831444">(646) 783-1444</a> or email us at <a href="mailto:{{customers}}">{{customers}}</a>.</p>
@@ -33,6 +33,12 @@
 </div>
 
 <div class="content-padding">
+	<h4>Who are you?!</h4>
+	<p>We're people! People who love food so much that we want to share our passion without asking you to even leave your homes.</p>
+	<br>
+	<button class="button lightorange" ng-click="navigation.link('/about','push')">Meet the team</button>
+	<br><br><br>
+	
 	<h4>How do I order food?</h4>
 	<p>Easy! Just go to <a href="http://crunchbutton.com" target="_blank">crunchbutton.com</a> and click the restaurant you want to order from. Add whatever food you want, and enter your address, phone, and payment info. Click "Get Food" and try to stay hungry! The restaurant will call you when they're outside.</p>
 	<br /><br />

@@ -2,8 +2,7 @@
 
 <div ng-if="!order.id">
 	<div class="content-padding">
-		<h4>One sec!</h4>
-		<p>I know its here somewhere...</p>
+		<h4>Loading order awesomeness...</h4>
 		<div class="ajax-loader-teal"></div>
 		<br />
 	</div>
@@ -32,31 +31,36 @@
 	</div>
 
 
-
 	<div class="order-content">
 		<div ng-hide="account.user.has_auth">
 		
 			<div class="divider dots spacer-two-two"></div>
-			<div class="content-padding">
+			<div class="content-padding order-buttons">
 				<p>Create an account to reorder your favorite food anywhere, including <a data-ng-href="http://crunchbutton.com">crunchbutton.com</a> and our <a data-ng-href="https://itunes.apple.com/app/id721780390">iOS App</a>.</p>
 				<br>
-				<button class="button lightorange" ng-click="modal.signupOpen();">Create an account</button>
+				<div class="button-pushable">
+					<button class="button lightorange" ng-click="modal.signupOpen();">Create an account</button>
+				</div>
 				<br />
 			</div>
 
 		</div>
 		
-		<div ng-if="account.user.has_auth" class="content-padding">
-			<div class="divider spacer-two-two"></div>
-			<div class="divider spacer-two-two"></div>
-
-			<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
-			<? /*
-			<div ng-if="order._new && referral.invite_url && referral.enabled">
-				Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
-				<br /><br />
+		<div ng-show="account.user.has_auth">
+			<div ng-if="order._new">
+				<div class="divider dots spacer-two-two"></div>
 			</div>
-			*/ ?>
+			<div class="content-padding order-buttons">
+				<div class="button-pushable">
+					<button class="button facebook" ng-click="facebook();"><i class="fa fa-facebook-square"></i> share your order</button>
+				</div>
+				<? /*
+				<div ng-if="order._new && referral.invite_url && referral.enabled">
+					Earn <b>Crunch Credit</b> for every new friend who orders with your shared link!
+					<br /><br />
+				</div>
+				*/ ?>
+			</div>
 		</div>
 	
 		<div class="divider dots spacer-two-two"></div>
