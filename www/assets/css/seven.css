@@ -1264,6 +1264,9 @@ p {
 		background: green;
 		border: 2px solid green;
 	}
+
+}
+@media screen and (max-width: 990px) and (min-width: 740px) {
 	.restaurant-block{
 		display: block;
 		width: 100%;
