@@ -259,10 +259,10 @@ NGApp.directive('ngScrollSpy', function () {
 					min: -135,
 					max: -90,
 					onEnter: function(element, position) {
-						$('.page-location .snap-content-inner.bg').addClass('step-two');
+						$('.snap-content-inner.bg').addClass('step-two');
 					},
 					onLeave: function(element, position) {
-						$('.page-location .snap-content-inner.bg').removeClass('step-two');
+						$('.snap-content-inner.bg').removeClass('step-two');
 					},
 					container: $('.snap-content-inner')
 				};
@@ -272,10 +272,10 @@ NGApp.directive('ngScrollSpy', function () {
 					min: -300,
 					max: -130,
 					onEnter: function(element, position) {
-						$('.page-location .snap-content-inner.bg').addClass('step-three');
+						$('.snap-content-inner.bg').addClass('step-three');
 					},
 					onLeave: function(element, position) {
-						$('.page-location .snap-content-inner.bg').removeClass('step-three');
+						$('.snap-content-inner.bg').removeClass('step-three');
 					},
 					container: $('.snap-content-inner')
 				};

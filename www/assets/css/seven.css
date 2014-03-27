@@ -1443,8 +1443,8 @@ p {
 	height: 3.5em;
 	background-size: 100%;
 	margin: 0 auto;
-	margin-top: 7em;
-	margin-bottom: 3em;
+	margin-top: 1em;
+	margin-bottom: 2em;
 }
 
 .order-month {
@@ -3452,7 +3452,7 @@ select {
 .snap-opened .snap-content-inner {
 	pointer-events: none;
 }
-.hidden-logo .logo {
+.page-restaurant.hidden-logo .logo, .page-location.hidden-logo .logo {
 	opacity: 0;
 }
 .logo {
@@ -3467,4 +3467,32 @@ select {
 	    -ms-transition: opacity linear 0.18s;
 	     -o-transition: opacity linear 0.18s;
 	        transition: opacity linear 0.18s;
+}
+.facebook-like-link {
+	text-decoration: none !important;
+}
+.facebook-like {
+	color: #fff;
+	border: 1px solid #42578d;
+	border-bottom-color: #324884;
+	background: #4d65a3 -webkit-linear-gradient(top, #4d65a3 0%,#415999 100%);
+	border-radius: 4px;
+	padding: .45em 1em .5em 1em;
+	font-size: 1.1em;
+	font-weight: bold;
+	cursor: pointer;
+	margin-left: 17px;
+	display: block;
+	position: fixed;
+	bottom: 15px;
+}
+
+.facebook-like .fa {
+	font-size: 1.1em;
+	margin-right: .4em;
+}
+
+.order-buttons .button {
+	padding-top: .8em;
+	padding-bottom: .8em;
 }
