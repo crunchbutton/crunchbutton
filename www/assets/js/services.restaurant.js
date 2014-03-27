@@ -26,7 +26,7 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		var totalMaximized = 0;
 
 		for ( var x in list ) {
-			list[ x ].restaurantBlockStyle = false;
+			list[ x ]._divider = false;
 			list[ x ].open( now );
 		}
 
@@ -125,21 +125,19 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 				list[ x ].tagfy( 'opening' );
 				tagRestaurantsAsClosing--;
 				if( tagRestaurantsAsClosing == 0 ){
-					list[ x ].restaurantBlockStyle = true;
+					list[ x ]._divider = true;
 				}
 			}
-		} else {
-			if( totalMaximized % 2 != 0 ){
-				for ( var x in list ) {
-					if( list[x]._tag == 'closed' ){
-						var prev = x - 1;
-						if( list[ prev ] ){
-							list[ prev ].restaurantBlockStyle = true;
-							break;
-						}
+		} else {			
+			for ( var x in list ) {
+				if( list[x]._tag == 'closed' ){
+					var prev = x - 1;
+					if( list[ prev ] && list[ prev ]._maximized ){
+						list[ x ]._divider = true;
+						break;
 					}
 				}
-			}			
+			}
 		}
 
 		restaurants = list;

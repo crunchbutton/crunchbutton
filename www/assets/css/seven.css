@@ -1266,19 +1266,11 @@ p {
 	}
 
 }
-@media screen and (max-width: 990px) and (min-width: 740px) {
-	.restaurant-block{
-		display: block;
-		width: 100%;
-	}
-		.restaurant-block.restaurants-item{
-			text-align: center; !important;
-		}
-			.restaurant-block.restaurants-item .restaurants-open{
-				text-align: left;
-			}
-}
 
+.restaurant-list-divider{
+	height: 1px;
+	width: 100%;
+}
 
 .meal-item-tag {
 	background: #00bd9e;
