@@ -123,9 +123,24 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	
 	$scope.loadingRestaurant = false;
 
+	var showMoreStage = 1; // stage 1: show top 6 maximized, stage 2: show all maximized, stage 3: show all - #2456
+
 	$scope.showMoreRestaurants = function() {
-		var step = 3;
-		$scope.restaurantsToShow += step;
+		showMoreStage++;
+		if( showMoreStage == 2 ){
+			var restaurantsToShow = 0;
+			for ( var x in $scope.restaurants ) {
+				if( $scope.restaurants[ x ]._maximized ){
+					restaurantsToShow++;
+				}
+			}
+			$scope.restaurantsToShow = restaurantsToShow;
+			return;
+		}
+		if( showMoreStage == 3 ){
+			$scope.restaurantsToShow = $scope.restaurants.length;
+			return;
+		}
 	};
 
 	var location = LocationService;
@@ -234,13 +249,6 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		// Success
 		function(){
 
-			// Limit the number of restaurants to be rended when page loads
-			if (App.restaurantsPaging.enabled) {
-				$scope.restaurantsToShow = App.isMobile() ? App.restaurantsPaging.mobile : App.restaurantsPaging.desktop;
-			} else {
-				$scope.restaurantsToShow = 100;	
-			}
-			
 			try {
 				var slogan = App.slogan.slogan;
 				var sloganReplace = ( prep || 'in' ) + ' ' + ( city || 'your area' );
@@ -257,6 +265,19 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 			$scope.restaurants = restaurants.sort();
 			checkOpen();
+
+			var restaurantsToShow = 0;
+			for ( var x in $scope.restaurants ) {
+				if( $scope.restaurants[ x ]._maximized ){
+					restaurantsToShow++;
+				}
+			}
+			if( restaurantsToShow > 6 ){
+				restaurantsToShow = 6;
+			} else if ( restaurantsToShow < 6 ) {
+				showMoreStage = 2;
+			}
+			$scope.restaurantsToShow = restaurantsToShow;
 
 			// Wait one minute until update the status of the restaurants
 			setTimeout( function(){
