@@ -25,7 +25,8 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 			'/theme',
 			'/landing',
 			'/sky',
-			'/like'
+			'/like',
+			'/micro/cafe'
 		];
 		$path = c::config()->dirs->www.'assets/images';
 		$dir  = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
@@ -45,6 +46,7 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		$files[] = 'audio/crunch.mp3';
 		$files[] = 'audio/crunch.ogg';
 		
+		/*
 		$files[] = 'audio/cafe-win.mp3';
 		$files[] = 'audio/cafe-win.ogg';
 		
@@ -59,6 +61,7 @@ class Controller_api_build extends Crunchbutton_Controller_Rest {
 		
 		$files[] = 'audio/cafe-good.mp3';
 		$files[] = 'audio/cafe-good.ogg';
+		*/
 		
 		// fonts
 		$use = '/fontawesome|opensans/i';
