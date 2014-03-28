@@ -46,7 +46,7 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 
 	public function segmentsByDate( $date, $_join = ', ', $id_admin = false ){
 		$where = ( $id_admin ) ? ' AND id_admin = ' . $id_admin : '';
-		$hours = Crunchbutton_Admin_Hour::q( "SELECT * FROM admin_hour WHERE DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date' $where ORDER BY date_start, id_admin ASC" );
+		$hours = Crunchbutton_Admin_Hour::q( "SELECT * FROM admin_hour WHERE id_admin IS NOT NULL AND DATE_FORMAT( date_start, '%Y-%m-%d' ) = '$date' $where ORDER BY date_start, id_admin ASC" );
 		$admins = [];
 		foreach ( $hours as $hour ) {
 			$join = '';
@@ -62,13 +62,15 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 	}
 
 	public function formatedToSegment( $dateTime ){
-		$hour = $dateTime->format( 'h' );
-		if( $hour > 12 ){
-			$hour = $hour - 12;
+		if( $dateTime ){
+			$hour = $dateTime->format( 'h' );
+			if( $hour > 12 ){
+				$hour = $hour - 12;
+			}
+			$min = $dateTime->format( 'i' );
+			$ampm = $dateTime->format( 'a' );
+			return intval( $hour ) . ( intval( $min ) > 0 ? ':' . intval( $min ) : '' ) . ' ' . $ampm ;	
 		}
-		$min = $dateTime->format( 'i' );
-		$ampm = $dateTime->format( 'a' );
-		return intval( $hour ) . ( intval( $min ) > 0 ? ':' . intval( $min ) : '' ) . ' ' . $ampm ;
 	}
 
 	public function segment( $timezone = false ){
