@@ -55,6 +55,49 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 		return false;
 	}
 
+	// This method will sign in or sign up an user
+	service.enter = function(){
+		service.errorReset();
+		if( !service.isValidEmailPhone() ){
+			service.errors.push( service.errorsList[ 'enter-email-phone' ] );
+			$rootScope.focus( '.signin-email' );
+			return;
+		}
+
+		if( !service.isValidPassword() ){
+			service.errors.push( service.errorsList[ 'enter-password' ] );
+			$rootScope.focus( '.signin-password' );
+			return;
+		}
+
+		service.purify();
+
+		var url = App.service + 'user/enter';
+
+		$http( {
+			method: 'POST',
+			url: url,
+			data: $.param( { 'email' : service.form.email, 'password' : service.form.password } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
+					if( data.error ){
+						service.errors.push( service.errorsList[ 'login-incorrect' ] );
+						App.rootScope.$safeApply();
+					} else {
+						service.user = data;
+						service.updateInfo();
+						if( service.callback ){
+							service.callback();
+							service.callback = false;
+						} else {
+							$.magnificPopup.close();
+							$rootScope.$broadcast( 'userAuth', service.user );
+						}
+					}
+			}	);
+	}
+
+
 	service.signin = function(){
 		service.errorReset();
 		if( !service.isValidEmailPhone() ){
@@ -288,6 +331,8 @@ NGApp.factory( 'AccountHelpService', function( $http, $rootScope, AccountService
 	}
 	return service;
 } );
+
+
 
 // AccountModalService service
 NGApp.factory( 'AccountModalService', function( $http, $rootScope, FacebookService ){

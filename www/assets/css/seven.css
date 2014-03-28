@@ -2419,6 +2419,7 @@ sup {
 }
 
 
+.account-reset-container .account-title-link,
 .account-container .account-title-link  {
 	font-size: 1.2em;
 	text-transform: uppercase;
@@ -2426,6 +2427,7 @@ sup {
 	letter-spacing: -.02em;
 	margin-right: 3em;
 }
+.account-reset-container .account-title-link.link,
 .account-container .account-title-link.link {
 	color: #e95d1a;
 	text-decoration: underline;
@@ -3496,3 +3498,79 @@ select {
 	padding-top: .8em;
 	padding-bottom: .8em;
 }
+
+.account-reset-container, .account-container{
+	width: 29em;
+}
+.account-modal{
+	font-size:1.12em;
+	line-height: 1.6em;
+}
+	.account-modal .facebook{
+		font-size: 1.2em;
+		font-weight: normal;
+		margin-top: 1.6em;
+	}
+
+	.account-modal a.back-link,
+	.account-modal a.bottom-link{
+		color: #f06e35;
+		font-size: 1.2em;
+		font-weight: normal;
+		display: block;
+	}
+		.account-modal a.back-link{
+			color: #ed5534;
+			margin-bottom: 1em;
+			font-weight: 600;
+			text-decoration: none;
+		}
+		.account-modal a.bottom-link{
+			text-align: center;	
+			margin-top: 1.6em;
+		}
+	.account-modal .form{
+		margin-top: 1.3em;
+	}
+		.account-modal .form .input{
+			color: #134e46;
+			border:2px solid #00bfa2;
+			border-radius: 3px;
+			display: block;
+			font-size: 1.3em;
+			margin-bottom: 0.8em;
+			padding:0.3em 0.3em;
+			width: 94%;
+		}
+	.account-modal .help{
+		color:#696575;
+		display: block;
+		font-size: 1.2em;
+		text-align: right;
+		font-weight: 600;
+	}
+
+	.account-modal .divisor{
+		margin-top: .8em;
+		border-top: 1px solid #cac9c7;
+		width: 100%;
+		height: 1em;
+	}
+
+	.account-modal .dialog-message{
+		font-size:1em;
+	}
+
+	.button.account-submit {
+		background-color: #ff9676;
+		font-size: 1.4em;
+		max-width: 30em;
+		/*margin-top: 1.4em;*/
+		padding: .6em 0 .6em 0;
+		border-radius: 6px;
+		letter-spacing: 0;
+		box-shadow: 0 3px 0 #e07c60;
+	}
+		.button.account-submit:active{
+			background-color: #e07c60;
+		}

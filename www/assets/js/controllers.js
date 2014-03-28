@@ -1056,6 +1056,21 @@ NGApp.controller( 'AccountModalHeaderCtrl', function ( $scope, $http, AccountMod
 });
 
 
+NGApp.controller( 'AccountSevenCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService, AccountFacebookService ) {
+	$scope.tab = 'facebook';
+	$scope.account = AccountService;
+	$scope.help = AccountHelpService;
+	$scope.facebook = AccountFacebookService;
+	$scope.showTab = function( tab ){
+		$scope.account.errorReset();
+		$scope.help.reset();
+		$scope.tab = tab;
+	}
+	$scope.resetModal = function(){
+		$scope.showTab( 'facebook' );
+	}
+});
+
 
 NGApp.controller( 'AccountFacebookCtrl', function ( $scope, $http, AccountModalService, AccountService, AccountHelpService ) {
 	$scope.modal = AccountModalService;

@@ -1,0 +1,47 @@
+<div class="giftcard-container zoom-anim-dialog mfp-hide dialog mfp-hide" ng-controller="GiftCardCtrl">
+
+	<div class="dialog-padding account-modal">
+
+		<div ng-show="modal.intro">
+			<div class="wait">Just a sec.</div>
+		</div>
+
+		<!-- Error -->
+		<div ng-show="modal.error && !modal.success">
+			<div>Oops, error!</div>
+			<br/>
+			<div class="dialog-message dialog-message-error" ng-show="modal.error == 'used'">
+				Sorry, this gift card was already used.
+			</div>
+			<div class="dialog-message dialog-message-error" ng-show="modal.error == 'invalid'">
+				Sorry, this is an invalid gift card.
+			</div>
+			<div class="dialog-message dialog-message-error" ng-show="modal.error != 'used' && modal.error != 'invalid'">
+				Please try it again.
+			</div>
+		</div>
+
+		<!-- Success -->
+		<div ng-show="modal.success && !modal.error">
+			<div ng-show="!user">Welcome!</div>
+			<div ng-show="user">Congrats!</div>
+			<div ng-show="modal.restaurant">
+				Congrats, you just got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{modal.restaurant.name}}</b>.
+			</div>
+			<div ng-show="!modal.restaurant">
+				Congrats, you just got a <b>${{giftcard.value}}</b> gift card.
+			</div>
+			<div>
+				Go ahead and order some food!
+			</div>
+			<div class="divisor"></div>
+			<div class="button-pushable" ng-show="!help.success.visible">
+				<button ng-click="modal.close()" class="button account-submit">Great</button>
+			</div>
+			
+			
+		</div>
+
+	</div>
+
+</div>
