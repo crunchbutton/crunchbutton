@@ -491,8 +491,8 @@ p {
 /* pushable states */
 .button-pushable {
 	margin-top: 0;
-	margin-bottom: 3px;
-	height: 4em;
+/*	margin-bottom: 3px; @test*/
+	height: 3.5em;
 }
 .button-pushable .button:active {
 	box-shadow: none;
@@ -1107,7 +1107,6 @@ p {
 
 .dialog-bottom-buttons .button {
 	border-radius: 4px;
-	font-size: 1.4em;
 	font-weight: bold;
 }
 
@@ -2822,7 +2821,7 @@ sup {
 		padding-bottom: .5em;
 	}
 	.splash-inputs .button-pushable {
-		height: 4em;
+		height: 3.5em;
 	}
 	.splash-bottom {
 		bottom: 2.2em;
@@ -3486,7 +3485,7 @@ select {
 	margin-left: 17px;
 	display: block;
 	position: fixed;
-	bottom: 15px;
+	bottom: 14px;
 }
 
 .facebook-like .fa {
@@ -3494,83 +3493,51 @@ select {
 	margin-right: .4em;
 }
 
-.order-buttons .button {
-	padding-top: .8em;
-	padding-bottom: .8em;
+.order-buttons .button, .account-modal .button.facebook {
+	padding-top: .6em;
+	padding-bottom: .6em;
 }
 
-.account-reset-container, .account-container{
-	width: 29em;
+
+.account-modal-bold {
+	font-size: 1.1em;
 }
-.account-modal{
-	font-size:1.12em;
-	line-height: 1.6em;
+
+.account-modal .facebook{
+	font-size: 1.2em;
 }
-	.account-modal .facebook{
-		font-size: 1.2em;
-		font-weight: normal;
-		margin-top: 1.6em;
-	}
 
-	.account-modal a.back-link,
-	.account-modal a.bottom-link{
-		color: #f06e35;
-		font-size: 1.2em;
-		font-weight: normal;
-		display: block;
-	}
-		.account-modal a.back-link{
-			color: #ed5534;
-			margin-bottom: 1em;
-			font-weight: 600;
-			text-decoration: none;
-		}
-		.account-modal a.bottom-link{
-			text-align: center;	
-			margin-top: 1.6em;
-		}
-	.account-modal .form{
-		margin-top: 1.3em;
-	}
-		.account-modal .form .input{
-			color: #134e46;
-			border:2px solid #00bfa2;
-			border-radius: 3px;
-			display: block;
-			font-size: 1.3em;
-			margin-bottom: 0.8em;
-			padding:0.3em 0.3em;
-			width: 94%;
-		}
-	.account-modal .help{
-		color:#696575;
-		display: block;
-		font-size: 1.2em;
-		text-align: right;
-		font-weight: 600;
-	}
+.account-modal .help{
+	color: #444;
+	margin-right: .3em;
+	float: right;
+}
 
-	.account-modal .divisor{
-		margin-top: .8em;
-		border-top: 1px solid #cac9c7;
-		width: 100%;
-		height: 1em;
-	}
+.account-modal a.back-link,
+.account-modal a.bottom-link,
+.account-modal .help {
+	font-size: 1.2em;
+	font-weight: bold;
+	letter-spacing: -.04em;
+	display: block;
+	text-transform: uppercase;
+}
 
-	.account-modal .dialog-message{
-		font-size:1em;
-	}
+.account-modal a.back-link,
+.account-modal a.bottom-link{
+	color: #f06e35;
+}
 
-	.button.account-submit {
-		background-color: #ff9676;
-		font-size: 1.4em;
-		max-width: 30em;
-		/*margin-top: 1.4em;*/
-		padding: .6em 0 .6em 0;
-		border-radius: 6px;
-		letter-spacing: 0;
-		box-shadow: 0 3px 0 #e07c60;
-	}
-		.button.account-submit:active{
-			background-color: #e07c60;
-		}
+.account-modal a.back-link{
+	margin-bottom: 1em;
+	text-decoration: none;
+}
+.account-modal a.bottom-link{
+	text-align: center;	
+	margin-top: .8em;
+	margin-bottom: -.3em;
+}
+
+
+
+

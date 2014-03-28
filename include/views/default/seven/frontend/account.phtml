@@ -1,96 +1,95 @@
 <div class="account-container zoom-anim-dialog mfp-hide dialog mfp-hide">
 
-	<div class="dialog-padding account-modal">
+
+	<div ng-controller="AccountSevenCtrl" modal-reset="resetModal()">
 	
-		<div ng-controller="AccountSevenCtrl" modal-reset="resetModal()">
-		
-			<div ng-show="tab == 'facebook'">
+		<div ng-show="tab == 'facebook'" class="dialog-padding account-modal">
+			<p ng-show="account.user">
+				We got your account right here! Link your account with facebook here so you never have to enter your info again!
+			</p>
 
-				<div ng-show="account.user">
-					We got your account right here! Link your account with facebook here so you never have to enter your info again!
-				</div>
+			<p ng-show="!account.user">
+				<b class="account-modal-bold">Get your Crunchbutton account!</b><br>
+				Log in or sign up using the same awesome button.
+			</p>
+			
+			<div class="divider spacer-one-two"></div>
 
-				<div ng-show="!account.user">
-					Get your crunchbutton account! Its all the rage theses days. Log in or sign up using the same awesome button.
-				</div>
-
+			<div class="button-pushable">
 				<button class="button facebook" ng-click="facebook.auth()">
-					<span ng-hide="facebook.facebook.wait">HOP ON IN USING FACEBOOK</span>
+					<span ng-hide="facebook.facebook.wait">Hop in using Facebook</span>
 					<span ng-show="facebook.facebook.wait">Just a sec...</span>
 				</button>
-
-				<a href="#" class="bottom-link" ng-click="showTab( 'form' )">OTHER OPTIONS</a>
-
 			</div>
 
-			<div ng-show="tab == 'form'">
+			<a href="#" class="bottom-link" ng-click="showTab( 'form' )">Other Options</a>
+		</div>
 
-				<a href="#" ng-click="showTab( 'facebook' )" class="back-link"><span>&laquo;</span> BACK</a>
+
+		<div ng-show="tab == 'form'">
+			<div class="dialog-padding account-modal">
+				<a href="" ng-click="showTab( 'facebook' )" class="back-link"><span>&laquo;</span> BACK</a>
+				<p>Not a fan of facebook? Don’t worry. We won't tell anyone. Log in or sign up below.</p>
 				
-				<div ng-show="account.user">
-					We got your account right here! Either go back and link it with a social network, or add a password right here. The choice is yours.
-				</div>
+				<div class="divider spacer-one-two"></div>
 
-				<div ng-show="!account.user">
-					Not a fan of facebook? Don’t worry. We wont tell anyone. Log in or sign up below.
-				</div>
-
-				<div>
-
-					<form name="accountForm" class="form">
-						<input type="email" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="input" ng-enter="account.enter()">
-						
-						<input type="password" class="input" maxlength="250" ng-model="account.form.password" name="password" tabindex="11" placeholder="password" ng-enter="account.enter()">
-					</form>
-				
-					<div class="dialog-message dialog-message-error" ng-repeat="error in account.errors">{{error}}</div>
-
-					<a ng-show="!account.user" href="#" class="help" ng-click="showTab( 'reset' )">FORGOT PASSWORD</a>
-
-					<div class="divisor"></div>
-
-					<div class="button-pushable">
-						<button class="button account-submit" ng-click="account.enter()">Join the cool kids club</button>
+				<form name="accountForm">
+					<div class="support-form-group form-group">
+						<input type="email" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="form-input form-field" ng-enter="account.enter()">
 					</div>
-				</div>
-				
+					
+					<div class="support-form-group form-group">
+						<input type="password" class="form-input form-field" maxlength="250" ng-model="account.form.password" name="password" tabindex="11" placeholder="password" ng-enter="account.enter()">
+					</div>
+				</form>
+			
+				<div class="dialog-message dialog-message-error" ng-repeat="error in account.errors">{{error}}</div>
 
+				<a ng-show="!account.user" href="#" class="help" ng-click="showTab( 'reset' )">Forgot Password</a>
+				<div class="divider"></div>
 			</div>
-
-			<div ng-show="tab == 'reset'">
-				
-				<a href="#" ng-click="showTab('form')" class="back-link"><span>&laquo;</span> BACK</a>
-
-				<div>
-					Password help?
+			<div class="dialog-divider"></div>
+			<div class="dialog-padding dialog-bottom-buttons" ng-if="!support.thanks">
+				<div class="button-pushable">
+					<button class="button account-submit lightorange" ng-click="account.enter()">Join the cool kids club</button>
 				</div>
+			</div>
+		</div>
 
-				<div>
+
+		<div ng-show="tab == 'reset'">
+			<div class="dialog-padding account-modal">
+				<a href="" ng-click="showTab('form')" class="back-link"><span>&laquo;</span> BACK</a>
+				
+				<div ng-show="!help.success.visible">
+					<p>Forgot your password? Lets get you a new one!</p>
+				
+					<div class="divider spacer-one-onehalf"></div>
 
 					<form name="accountReset" class="form">
-						<input type="email" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="input" ng-enter="help.sendForm()">
+						<div class="support-form-group form-group">
+							<input type="email" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="form-input form-field" ng-enter="help.sendForm()">
+						</div>
 					</form>
-
-					<div class="dialog-message dialog-message-error" ng-repeat="error in help.errors">{{error}}</div>	
-
-					<div class="divisor"></div>
-
-					<div class="button-pushable" ng-show="!help.success.visible">
-						<button ng-click="help.sendForm()" class="button account-submit">Reset</button>
-					</div>
-
-					<div class="dialog-message dialog-message-success" ng-show="help.success.visible">
-						Please check your email or phone. 
-						<br/>
-						You will receive a password reset link that will expire in 24 hours.
-					</div>
-
 				</div>
 
+				<div class="dialog-message dialog-message-error" ng-repeat="error in help.errors">{{error}}</div>	
+				<div class="dialog-message dialog-message-success" ng-show="help.success.visible">
+					Please check your email or phone. 
+					<br/>
+					You will receive a password reset link that will expire in 24 hours.
+				</div>
 			</div>
 
+			<div class="dialog-divider" ng-show="!help.success.visible"></div>
+			<div class="dialog-padding dialog-bottom-buttons" ng-show="!help.success.visible">
+				<div class="button-pushable">
+					<button class="button account-submit lightorange" ng-click="help.sendForm()">Reset Password</button>
+				</div>
+			</div>
 		</div>
 
 	</div>
+
 
 </div>
