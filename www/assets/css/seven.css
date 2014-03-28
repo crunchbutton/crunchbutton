@@ -3507,37 +3507,37 @@ select {
 	font-size: 1.2em;
 }
 
-	.account-modal a.back-link,
-	.account-modal a.bottom-link,
-	.account-modal .help {
-		font-size: 1.2em;
-		font-weight: bold;
-		letter-spacing: -.04em;
-		display: block;
-		text-transform: uppercase;
-	}
+.account-modal .help{
+	color: #444;
+	margin-right: .3em;
+	float: right;
+}
 
-	.account-modal a.back-link,
-	.account-modal a.bottom-link{
-		color: #f06e35;
+.account-modal a.back-link,
+.account-modal a.bottom-link,
+.account-modal .help {
+	font-size: 1.2em;
+	font-weight: bold;
+	letter-spacing: -.04em;
+	display: block;
+	text-transform: uppercase;
+}
+
+.account-modal a.back-link,
+.account-modal a.bottom-link{
+	color: #f06e35;
+}
+
+.account-modal a.back-link{
+	margin-bottom: 1em;
+	text-decoration: none;
+}
+.account-modal a.bottom-link{
+	text-align: center;	
+	margin-top: .8em;
+	margin-bottom: -.3em;
+}
 
 
-	}
-		.account-modal a.back-link{
-			margin-bottom: 1em;
-			text-decoration: none;
-		}
-		.account-modal a.bottom-link{
-			text-align: center;	
-			margin-top: .8em;
-			margin-bottom: -.3em;
-		}
-
-	.account-modal .help{
-		color: #444;
-
-		margin-right: .3em;
-		float: right;
-	}
 
 
