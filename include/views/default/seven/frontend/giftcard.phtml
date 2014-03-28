@@ -1,15 +1,14 @@
 <div class="giftcard-container zoom-anim-dialog mfp-hide dialog mfp-hide" ng-controller="GiftCardCtrl">
 
-	<div class="dialog-padding account-modal">
 
-		<div ng-show="modal.intro">
-			<div class="wait">Just a sec.</div>
-		</div>
 
-		<!-- Error -->
-		<div ng-show="modal.error && !modal.success">
-			<div>Oops, error!</div>
-			<br/>
+	<div ng-show="modal.intro" class="dialog-padding account-modal">
+		<p>Doin' stuff. Just a sec...</p>
+	</div>
+
+	<!-- Error -->
+	<div ng-show="modal.error && !modal.success">
+		<div class="dialog-padding account-modal">
 			<div class="dialog-message dialog-message-error" ng-show="modal.error == 'used'">
 				Sorry, this gift card was already used.
 			</div>
@@ -20,28 +19,35 @@
 				Please try it again.
 			</div>
 		</div>
-
-		<!-- Success -->
-		<div ng-show="modal.success && !modal.error">
-			<div ng-show="!user">Welcome!</div>
-			<div ng-show="user">Congrats!</div>
-			<div ng-show="modal.restaurant">
-				Congrats, you just got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{modal.restaurant.name}}</b>.
-			</div>
-			<div ng-show="!modal.restaurant">
-				Congrats, you just got a <b>${{giftcard.value}}</b> gift card.
-			</div>
-			<div>
-				Go ahead and order some food!
-			</div>
-			<div class="divisor"></div>
-			<div class="button-pushable" ng-show="!help.success.visible">
-				<button ng-click="modal.close()" class="button account-submit">Great</button>
-			</div>
-			
-			
-		</div>
-
 	</div>
+
+	<!-- Success -->
+	<div ng-show="modal.success && !modal.error">
+		<div class="dialog-padding account-modal">
+			<p>
+				<b>Congrats!</b>
+			</p>
+			<div class="divider spacer-one-onehalf"></div>
+			<p>
+
+				<span ng-show="modal.restaurant">
+					You just got a <b>${{giftcard.value}}</b> gift card to <b class="pointer" ng-click="giftcard.openRestaurant();">{{modal.restaurant.name}}</b>.
+				</span>
+				<span ng-show="!modal.restaurant">
+					You just got a <b>${{giftcard.value}}</b> gift card.
+				</span>
+
+				&nbsp;Go ahead and order some food!
+			</p>
+		</div>
+		
+		<div class="dialog-divider"></div>
+		<div class="dialog-padding dialog-bottom-buttons">
+			<div class="button-pushable">
+				<button ng-click="modal.close()" class="button green">Great</button>
+			</div>
+		</div>
+	</div>
+
 
 </div>
