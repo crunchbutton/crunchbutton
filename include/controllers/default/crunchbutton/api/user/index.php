@@ -56,6 +56,57 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						exit;
 						break;
 				}
+
+			case 'enter':
+
+				$params = array();
+				$params[ 'email' ] = $_POST[ 'email' ];
+				$params[ 'password' ] = $_POST[ 'password' ];
+				$emailExists = User_Auth::checkEmailExists( $_POST[ 'email' ] );
+				// if the email exists do the login
+				if( $emailExists ){
+						$user = c::auth()->doAuthByLocalUser( $params );
+					if( $user ){
+						echo c::user()->json();
+					} else {
+						echo json_encode(['error' => 'invalid user']);
+					}
+				} 
+				// else create a new user
+				else {
+					$user = c::user();
+					if (!$user->id_user) {
+						// we dont have a user, and we need to make one
+						$user = new User;
+						$user->active = 1;
+						if( filter_var( $_POST[ 'email' ], FILTER_VALIDATE_EMAIL ) ){
+							$user->email = $_POST[ 'email' ];
+						} else {
+							$user->phone = $_POST[ 'email' ];
+						}
+						$user->name = '';
+						$user->saving_from = $user->saving_from.'API user post - ';
+						$user->save();
+					}
+					$user_auth = new User_Auth();
+					$user_auth->id_user = $user->id_user;
+					$user_auth->type = 'local';
+					$user_auth->auth = User_Auth::passwordEncrypt( $params[ 'password' ] );
+					$user_auth->email = $params[ 'email' ];
+					$user_auth->active = 1;
+					$user_auth->save();
+
+					// This line will create a phone user auth just if the user already has an email auth
+					if( $user->phone ){
+						User_Auth::createPhoneAuth( $user->id_user, $user->phone );	
+					}
+					
+					$user = c::auth()->doAuthByLocalUser( $params );
+					echo c::user()->json();
+				}
+
+				break;
+
 			case 'auths':
 				switch ($this->method()) {
 					case 'get':
