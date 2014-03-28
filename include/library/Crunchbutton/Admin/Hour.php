@@ -93,9 +93,21 @@ class Crunchbutton_Admin_Hour extends Cana_Table {
 
 	public function date_end(){
 		if ( !isset( $this->_date_end ) ) {
-			$this->_date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end, new DateTimeZone( $this->admin()->timezone ) );
+			if( Crunchbutton_Admin_Hour::validateTimezone( $this->admin()->timezone ) ){
+				$this->_date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end, new DateTimeZone( $this->admin()->timezone ) );
+			} else {
+				echo '<pre>';var_dump( $this->admin() );exit();
+			}
+			
 		}
 		return $this->_date_end;
+	}
+
+	public function validateTimezone( $timezone ){
+		if ( in_array( $timezone, DateTimeZone::listIdentifiers() ) ) {
+			return true;
+		}
+		return false;
 	}
 
 	public function admin(){
