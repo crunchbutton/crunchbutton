@@ -1303,7 +1303,7 @@ class Crunchbutton_Order extends Cana_Table {
 			case 'sms':
 			case 'sms-driver':
 			case 'web':
-			case 'support':
+			case 'support': 
 				$with = 'w/';
 				$space = ',';
 				$group = false;
@@ -1434,7 +1434,7 @@ class Crunchbutton_Order extends Cana_Table {
 	 *
 	 * @return string
 	 */
-	public function message($type) {
+	public function message($type, $timezone = false) {
 
 		$food = $this->orderMessage($type);
 
@@ -1467,8 +1467,13 @@ class Crunchbutton_Order extends Cana_Table {
 			case 'support':
 				
 				$date = new DateTime($this->date);
-				$timezone = new DateTimeZone($this->restaurant()->timezone);
-				$date->setTimeZone($timezone);
+				if( $timezone ){
+					$timezone = new DateTimeZone($timezone);	
+				} else {
+					$timezone = new DateTimeZone($this->restaurant()->timezone);
+				}
+				
+				$date->setTimeZone( $timezone );
 				$when = $date->format('M j, g:i a');
 
 				$confirmed = $this->confirmed? 'yes' : 'no';
