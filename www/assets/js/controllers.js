@@ -446,6 +446,8 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	// lets eat button
 	$scope.letsEat = function() {
 
+		$scope.blur( '.location-address' );
+
 		$scope.location.form.address = $.trim( $scope.location.form.address );
 		
 		if ( $scope.location.form.address == '' ) {
