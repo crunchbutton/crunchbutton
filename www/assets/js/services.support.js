@@ -15,6 +15,8 @@ NGApp.factory( 'SupportService', function( $http, AccountService ){
 	service.form.message = '';
 	
 	service.dialog = function() {
+		service.thanks = false;
+		service.form.message = '';
 		App.dialog.show('.support-container');
 	}
 
