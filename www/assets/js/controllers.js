@@ -710,6 +710,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	}
 
 	$rootScope.$on( 'orderProcessingError', function(e, data) {
+		if (App.busy.isBusy()) {
+			App.busy.unBusy();
+		}
 		order.showForm = true;
 		$scope.order.showForm = order.showForm;
 	});
