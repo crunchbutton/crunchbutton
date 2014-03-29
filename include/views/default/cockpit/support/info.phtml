@@ -69,7 +69,7 @@
 				<td>
 					Order
 					<? if ($this->support->id_order) : ?>
-						<br><a target="_blank" href="/vieworder/<?=$order->uuid?>">#<?=$this->support->order()->id_order?></a><br>
+						<br><a target="_blank" href="/vieworder/<?=$this->support->order()->uuid?>">#<?=$this->support->order()->id_order?></a><br>
 					<? endif ; ?>
 				</td>
 				<td>
@@ -82,7 +82,7 @@
 
 					<? if ($this->support->id_order) : ?>
 						
-						<?=$this->support->order()->message('support')?>
+						<?=$this->support->order()->message('support', c::config()->timezone)?>
 
 					<? else : ?>
 						(no linked order)
