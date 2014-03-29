@@ -203,6 +203,9 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 		var force = false;
 		if (arguments[0]) {
 			force = true;
+			if( App.isPhoneGap ){
+				service.initied = false;	
+			}
 		}
 
 		// this method could not be called twice
