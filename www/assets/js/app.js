@@ -332,6 +332,12 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}, 100);
 	}
 
+	$rootScope.blur = function( selector ){
+		setTimeout(function(){
+			angular.element( selector ).blur();
+		}, 100);
+	}
+
 	/* @info: this is how you watch an object rather than a property so i remeber
 	$rootScope.$watch('account.user', function() {
 		// indicates that the user object has changed
