@@ -37,7 +37,7 @@ NGApp.factory( 'CommunityAliasService', function( PositionsService ){
 
 		success = success || function(){};
 		error = error || function(){};
-
+console.log('alias',alias);
 		if (alias) {
 			// Get the location of the alias
 			var loc = App.locations[ alias.id_community ];
