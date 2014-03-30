@@ -22,13 +22,13 @@
 				</button>
 			</div>
 
-			<a href="#" class="bottom-link" ng-click="showTab( 'form' )">Other Options</a>
+			<span class="bottom-link cursor" ng-click="changeTab( 'form' )">Other Options</span>
 		</div>
 
 
 		<div ng-show="tab == 'form'">
 			<div class="dialog-padding account-modal">
-				<a href="" ng-click="showTab( 'facebook' )" class="back-link"><span>&laquo;</span> BACK</a>
+				<span ng-click="changeTab( 'facebook' )" class="back-link cursor"><span>&laquo;</span> BACK</span>
 				<p>Not a fan of facebook? Don’t worry. We won't tell anyone. Log in or sign up below.</p>
 				
 				<div class="divider spacer-one-two"></div>
@@ -45,7 +45,7 @@
 			
 				<div class="dialog-message dialog-message-error" ng-repeat="error in account.errors">{{error}}</div>
 
-				<a ng-show="!account.user" href="#" class="help" ng-click="showTab( 'reset' )">Forgot Password</a>
+				<span ng-show="!account.user" class="help cursor" ng-click="changeTab( 'reset' )">Forgot Password</span>
 				<div class="divider"></div>
 			</div>
 			<div class="dialog-divider"></div>
@@ -59,7 +59,7 @@
 
 		<div ng-show="tab == 'reset'">
 			<div class="dialog-padding account-modal">
-				<a href="" ng-click="showTab('form')" class="back-link"><span>&laquo;</span> BACK</a>
+				<span ng-click="changeTab('form')" class="back-link cursor"><span>&laquo;</span> BACK</span>
 				
 				<div ng-show="!help.success.visible">
 					<p>Forgot your password? Let's get you a new one!</p>
