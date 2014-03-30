@@ -216,22 +216,41 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	});
 
 	$scope.display = function($event){
-		if ($scope.loadingRestaurant) {
+		if ( $scope.loadingRestaurant ) {
 			return;
 		}
 		$scope.loadingRestaurant = true;
 		var restaurant = this.restaurant;
 
-		// if ( !restaurant.open( dateTime.getNow(), true ) ) {
-		if ( !restaurant.openRestaurantPage( dateTime.getNow() ) ) {
-			$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
-			$scope.restaurants = restaurants.getStatus();
-			$scope.loadingRestaurant = false;
-		} else {
-			// Store the load info of the clicked restaurant to optmize the restaurant page load
-			RestaurantService.basicInfo = restaurant;
-			App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );
+		var checkHours = function(){
+			if ( restaurant.openRestaurantPage( dateTime.getNow() ) ) {
+				// Store the load info of the clicked restaurant to optmize the restaurant page load			
+				RestaurantService.basicInfo = restaurant;
+				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );	
+			} else {
+				$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
+				$scope.restaurants = restaurants.getStatus();
+			}
 		}
+		// See #2799
+		restaurant.isActive( 
+			function( active ){
+				if( active ){
+					$scope.loadingRestaurant = false;
+					checkHours();
+				} else {
+					$scope.loadingRestaurant = false;
+					restaurant.inactive = true;
+					$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
+					// Remove the inactive restaurant from list
+					$rootScope.$safeApply( function(){
+						restaurants.removeInactive( restaurant.id_restaurant );
+						$scope.restaurants = restaurants.getStatus();
+					} );
+				}
+			}
+		);
+
 	};
 
 	var prep = restaurants.position.pos().prep();
@@ -1152,12 +1171,14 @@ NGApp.controller( 'RestaurantClosedCtrl', function ( $scope, $rootScope ) {
 		if ($scope.$$phase) {
 			$scope.restaurant = r;
 			$scope.closedMessage = r.closedMessage();
+			$scope.active = ( r.inactive ? false : true );
 			$scope.acceptingOrders = ( parseInt( r.open_for_business ) > 0 );
 			App.dialog.show('.restaurant-closed-container');
 		} else {
 			$rootScope.$apply(function(scope) {
 				scope.restaurant = r;
 				scope.closedMessage = r.closedMessage();
+				$scope.active = ( r.inactive ? false : true );
 				$scope.acceptingOrders = ( parseInt( r.open_for_business ) > 0 );
 				App.dialog.show('.restaurant-closed-container');
 			}); 

@@ -193,12 +193,22 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 		var now = ( Math.floor( new Date().getTime() / 1000 ) );
 		var age = Math.floor( now - service.cachedAt ); // age in seconds
 		// if the age is more or equals to 23 hours reload the hours
-		if( age >= ( ( 60 * 60 ) * 23 ) ){
+		// if( age >= ( ( 60 * 60 ) * 23 ) ){
 			service.cachedAt = now;
 			for ( var x in restaurants ) {
 				restaurants[ x ].reloadHours( true );
 			}
-		}		
+		// }		
+	}
+
+	service.removeInactive = function( id_restaurant ){
+		var list = [];
+		for ( var x in restaurants ) {
+			if( restaurants[ x ].id_restaurant != id_restaurant ){
+				list.push( restaurants[ x ] );
+			}
+		}
+		restaurants = list;
 	}
 
 	service.list = function ( success, error ) {
