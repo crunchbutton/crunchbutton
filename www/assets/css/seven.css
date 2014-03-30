@@ -3513,8 +3513,13 @@ select {
 	float: right;
 }
 
-.account-modal a.back-link,
-.account-modal a.bottom-link,
+.account-modal .cursor{
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.account-modal span.back-link,
+.account-modal span.bottom-link,
 .account-modal .help {
 	font-size: 1.2em;
 	font-weight: bold;
@@ -3523,16 +3528,16 @@ select {
 	text-transform: uppercase;
 }
 
-.account-modal a.back-link,
-.account-modal a.bottom-link{
+.account-modal span.back-link,
+.account-modal span.bottom-link{
 	color: #f06e35;
 }
 
-.account-modal a.back-link{
+.account-modal span.back-link{
 	margin-bottom: 1em;
 	text-decoration: none;
 }
-.account-modal a.bottom-link{
+.account-modal span.bottom-link{
 	text-align: center;	
 	margin-top: .8em;
 	margin-bottom: -.3em;
