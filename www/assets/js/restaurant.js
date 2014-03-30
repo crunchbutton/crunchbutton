@@ -84,11 +84,13 @@ var Restaurant = function(id) {
 		self.categories();
 		
 		if (App.isPhoneGap) {
-			var img = self.image.replace(/^.*\/|\.[^.]*$/g, '');
-			// restaurant page image
-			self.img = App.imgServer + '630x280/' + img +  '.jpg?crop=1';
-			// restaurants page thumbnail
-			self.img64 = App.imgServer + '596x596/' + img +  '.jpg';
+			if( self.image ){
+				var img = self.image.replace(/^.*\/|\.[^.]*$/g, '');
+				// restaurant page image
+				self.img = App.imgServer + '630x280/' + img +  '.jpg?crop=1';
+				// restaurants page thumbnail
+				self.img64 = App.imgServer + '596x596/' + img +  '.jpg';
+			}
 		}
 
 		if (typeof complete == 'function') {
