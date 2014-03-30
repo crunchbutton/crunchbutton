@@ -258,6 +258,20 @@ var Restaurant = function(id) {
 		}
 	}
 
+	self.isActive = function( callback ){
+		var url = App.service + 'restaurant/active/' + self.id_restaurant;
+		console.log('url',url);
+		App.http.get( url, {
+			cache: false
+		} ).success( function ( status ) {
+			if( callback ){
+				callback( status.active );
+			};
+		} ).error( function(){
+			callback( false );
+		} );
+	}
+
 	// Check the restaurant cache age and reload the hours if it is necessary
 	self.reloadHours = function( forceLoad ){
 		var load = false;
@@ -269,6 +283,7 @@ var Restaurant = function(id) {
 			// if the age is more or equals to 23 hours
 			load = ( age >= ( ( 60 * 60 ) * 23 ) );
 		}
+		console.log('load',load);
 		if( load ){
 			var url = App.service + 'restaurant/hours/' + self.id_restaurant;
 			App.http.get( url, {
