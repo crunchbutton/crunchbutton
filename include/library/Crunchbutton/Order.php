@@ -465,8 +465,7 @@ class Crunchbutton_Order extends Cana_Table {
 		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$this->notes' => $this->notes ]);
 
 		$this->debitFromUserCredit( $user->id_user );
-
-		if ($params['make_default']) {
+		if ( $params['make_default'] == 'true' ) {
 			$preset = $user->preset($this->restaurant()->id_restaurant);
 			if ($preset->id_preset) {
 				$preset->delete();
@@ -491,7 +490,7 @@ class Crunchbutton_Order extends Cana_Table {
 		
 		$order = $this;
 
-		if ($params['make_default']) {
+		if ( $params['make_default'] == 'true' ) {
 			// Cana::timeout(function() use($order) {
 				Preset::cloneFromOrder($order);
 			// });

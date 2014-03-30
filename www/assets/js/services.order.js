@@ -458,13 +458,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (order.delivery_type == 'delivery' && !order.address) {
 			errors['address'] = 'Please enter an address.';
 		}
-		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardNumber) || (!service.account.user.id_user && !service.form.cardNumber)) || (!service.form.cardNumber)) {
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardNumber) || (!service.account.user.id_user && !service.form.cardNumber) || (!service.form.cardNumber) ) ) {
 			errors['card'] = 'Please enter a valid card #.';
 		}
-		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardMonth) || (!service.account.user.id_user && !service.form.cardMonth) || (!service.form.cardMonth) )) {
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardMonth) || (!service.account.user.id_user && !service.form.cardMonth) || (!service.form.cardMonth) ) ) {
 			errors['card_month'] = 'Please enter the card expiration month.';
 		}
-		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardYear) || (!service.account.user.id_user && !service.form.cardYear)) || (!service.form.cardYear) ) {
+		if (order.pay_type == 'card' && ((service._cardInfoHasChanged && !service.form.cardYear) || (!service.account.user.id_user && !service.form.cardYear) || (!service.form.cardYear) ) ) {
 			errors['card_year'] = 'Please enter the card expiration year.';
 		}
 		if (!service.cart.hasItems()) {
