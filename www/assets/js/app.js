@@ -367,7 +367,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				break;
 		}
 		if ( backwards ) {
-			App.go( backwards, 'push' );
+			App.go( backwards, 'pop' );
 		} else {
 			history.back();
 		}
@@ -483,6 +483,15 @@ App.go = function( url, transition ){
 	// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
 	App.location.path( url || '/' );
 	App.rootScope.$safeApply();
+
+	// Remove the animation from rootScope #2827
+	if( App.isNarrowScreen() || App.transitionForDesktop ){
+		setTimeout( function(){
+			App.rootScope.$safeApply( function(){
+				App.rootScope.animationClass = '';
+			} );
+		}, 500 );
+	}
 };
 
 App.toggleMenu = function() {
