@@ -13,7 +13,14 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		if( !$id_order ){
 			return false;
 		}
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+
+		$order = Order::o( $id_order );
+		if( $order->restaurant()->timezone ){
+			$now = new DateTime( 'now', new DateTimeZone( $order->restaurant()->timezone ) );	
+		} else {
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		}
+	
 		return Admin::q( 'SELECT a.* FROM admin a 
 												INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin 
 												INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
