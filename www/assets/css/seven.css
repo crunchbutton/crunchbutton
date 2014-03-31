@@ -1334,8 +1334,8 @@ p {
 }
 .bubble-tail .text {
 	display: block;
-	margin-left: 1.2em;
-	margin-right: 2em;
+	margin-left: .6em;
+	margin-right: 1.6em;
 	color: #fff;
 	font-size: 1.45em;
 	line-height: 1.3em;
@@ -1359,17 +1359,23 @@ p {
 }
 .restaurants-tagline {
 	margin-top: -1.1em;
-	margin-bottom: 3em;
+	margin-bottom: 2em;
 }
 .restaurants-tagline h1 {
 	font-size: 1.2em;
 	margin-bottom: .8em;
 }
 .restaurants-tagline h2 {
-	font-size: 1.2em;
+	font-size: 1.3em;
 	text-transform: uppercase;
 	font-weight: bold;
-	letter-spacing: -.02em;
+	letter-spacing: -.01em;
+	margin-top: -1.1em;
+	color: #444;
+}
+.restaurants-push-tagline {
+	font-size: .95em;
+	line-height: 1.1em;
 }
 
 
