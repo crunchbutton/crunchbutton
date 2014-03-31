@@ -836,8 +836,13 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.open = $scope.restaurant.open();
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
+		
+
+
 
 		setTimeout( function(){
+			// add that its been loaded so we can show the overpull peeking guy
+			$('body').addClass('page-restaurant-loaded');
 
 			var process = function(){
 
