@@ -3480,9 +3480,8 @@ select {
 }
 .facebook-like {
 	color: #fff;
-	border: 1px solid #42578d;
-	border-bottom-color: #324884;
-	background: #4d65a3 -webkit-linear-gradient(top, #4d65a3 0%,#415999 100%);
+	border: 0;
+	background: #4d65a3 -webkit-linear-gradient(top, #4a62bc 0%,#3b50a3 100%);
 	border-radius: 4px;
 	padding: .45em 1em .5em 1em;
 	font-size: 1.1em;
