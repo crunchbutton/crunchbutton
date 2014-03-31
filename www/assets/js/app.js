@@ -676,6 +676,14 @@ App.init = function(config) {
 		}
 	}, '.pac-container');
 	
+	$(document).on('mousedown', '.pac-item', function() {
+		$('body').scrollTop(0);
+		$('html').css('height','3000px');
+		setTimeout(function() {
+			$('html').css('height','');
+		});
+	});
+	
 	// add ios7 styles for nav bar and page height
 	if (App.isPhoneGap && !App.iOS7()) {
 		$('body').removeClass('ios7');
