@@ -367,7 +367,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 				break;
 		}
 		if ( backwards ) {
-			App.go( backwards, 'pop' );
+			App.go( backwards, 'push' );
 		} else {
 			history.back();
 		}
