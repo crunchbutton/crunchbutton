@@ -397,7 +397,7 @@ NGApp.directive( 'geoComplete', function() {
 		link: function( scope, element, attrs ) {
 			var el = document.getElementById( attrs.id );
 			if( typeof google == 'object' && google.maps && google.maps.places && google.maps.places.Autocomplete ){
-				var autoComplete = new google.maps.places.Autocomplete( el, { types: [ 'geocode' ] } );
+				var autoComplete = new google.maps.places.Autocomplete( el, { types: [ 'establishment','geocode' ] } );
 				 google.maps.event.addListener( autoComplete, 'place_changed', function() {
 					$('body').scrollTop(0);
 					var place = autoComplete.getPlace();
