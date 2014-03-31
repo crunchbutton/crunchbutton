@@ -3,29 +3,27 @@
 <div class="restaurants-bubble-wrap">
 	<div class="bubble-tail bubble-tail-green bubble-animated">
 		<div class="text" ng-switch="pushMessage">
-			<span class="small" ng-switch-when="1">Push one of those restaurants down there.</span>
-			<span ng-switch-when="2">The RESTAURANTS.</span>
-			<span ng-switch-when="3">The AWESOME restaurants.</span>
-			<span class="single-line" ng-switch-when="4">Down there.</span>
-			<span class="single-line" ng-switch-when="5">NOT me!!</span>
-			<span class="single-line" ng-switch-when="6">@#%*@%&!</span>
-			<span class="single-line" ng-switch-when="7">...</span>
-			<span class="single-line" ng-switch-when="8">....</span>
-			<span class="single-line" ng-switch-when="9">.....</span>
-			<span class="single-line" ng-switch-when="10">......</span>
-			<span class="single-line" ng-switch-when="11">.......</span>
-			<span class="single-line" ng-switch-when="12">........</span>
-			<span class="single-line" ng-switch-when="13">I quit.</span>
-			<span class="single-line" ng-switch-when="14"><i class="fa fa-suitcase"></i> <i class="fa fa-suitcase"></i> <i class="fa fa-suitcase"></i></span>
-			<span ng-switch-default>Push a button.<br>Get food.&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			<span ng-switch-when="1">We choose<br>the best food...</span>
+			<span ng-switch-when="2">From the best restaurants...</span>
+			<span ng-switch-when="3">So you don't<br> have to!</span>
+			<span ng-switch-when="4">Screw huge<br> menus!</span>
+			<span class="single-line" ng-switch-when="5">Screw gross food!!</span>
+			<span ng-switch-when="6">We only have awesome stuff!</span>
+			<span class="single-line" ng-switch-when="7">Got a suggestion?</span>
+			<span ng-switch-when="8">Want to work<br> for us?</span>
+			<span class="single-line" ng-switch-when="9">Send us a text!</span>
+			<span ng-switch-when="10">We are always looking for...</span>
+			<span ng-switch-when="11" class="single-line">Awesome people...</span>
+			<span class="single-line" ng-switch-when="12">And great food!</span>
+			<span class="single-line" ng-switch-when="13"><i class="fa fa-heart"></i> <i class="fa fa-heart"></i> <i class="fa fa-heart"></i></span>
+			<span ng-switch-default class="restaurants-push-tagline">Push a button.<br>Get food delivered.</span>
 		</div>
 		<div class="bubble-tail-spacer"></div>
 	</div>
 	<div class="restaurants-orange" ng-instant="pushMessage = (pushMessage > 13 ? 0 : (pushMessage + 1))" instant-pass-thru></div>
 	<div class="divider"></div>
 	<div class="restaurants-tagline">
-		<h1>Order the top local delivery food.</h1>
-		<h2>Choose one of these awesome restaurants</h2>
+		<h2><i class="fa fa-hand-o-right"></i>&nbsp;&nbsp;Choose a restaurant</h2>
 	</div>
 	<div class="divider"></div>
 </div>
