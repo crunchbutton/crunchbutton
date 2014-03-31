@@ -157,7 +157,10 @@ var Restaurant = function(id) {
 	// return true if the restaurant is open
 	self.open = function( now, ignoreOpensClosesInCalc ) {
 
-		self.tagfy( 'opening' );
+		if( !ignoreOpensClosesInCalc ){
+			self.tagfy( 'opening' );	
+		}
+
 		// if the restaurant has no hours it probably will not be opened for the next 24 hours
 		self._hasHours = false;
 		
