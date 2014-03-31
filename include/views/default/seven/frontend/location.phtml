@@ -5,7 +5,7 @@
 		<div ng-if="!locationError">
 			<div class="pushabutton"></div>
 			<div class="home-inputs">
-				<h4 class="action">What's your address?</h4>
+				<h4 class="action">What's your full address?</h4>
 				<table cellpadding="0" cellspacing="0" class="home-location">
 					<tr>
 						<td style="width: 100%;"><input class="location-address" autocapitalize="off" autocorrect="off" placeholder="e.g. 37 Elm St, New Haven CT 06511" geo-complete-enter="letsEat()" id="input-location-address" ng-model="location.form.address" geo-complete >
@@ -70,11 +70,9 @@
 				<? /* <p>But you can get notified when we are in your area. We are always expanding and looking for that next popular sandwich. Log in and let us know what you want to see on crunchbutton!</p> */ ?>
 				<div class="divider spacer-one-two"></div>
 
-				<a href="mailto:{{reps}}">
-					<div class="button-pushable">
-						<button class="button orange" ng-click="facebook.auth()"><b>bring crunchbutton to you!</b></button>
-					</div>
-				</a>
+				<div class="button-pushable">
+					<button class="button orange" ng-click="navigation.link('/jobs','push')"><b>bring crunchbutton to you!</b></button>
+				</div>
 
 				
 				<? /*
