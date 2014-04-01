@@ -475,22 +475,20 @@ App.connectionError = function() {
 };
 
 App.go = function( url, transition ){
-	if( App.isNarrowScreen() || App.transitionForDesktop ){
-		App.rootScope.animationClass = transition ? 'animation-' + transition : '';
-		App.rootScope.$safeApply();
-	}
-	// @todo: do some tests to figure out if we need this or not
-	// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
-	App.location.path( url || '/' );
-	App.rootScope.$safeApply();
-
-	// Remove the animation from rootScope #2827
+	// Remove the animation from rootScope #2827 before start the new one
+	App.rootScope.animationClass = '';
 	if( App.isNarrowScreen() || App.transitionForDesktop ){
 		setTimeout( function(){
-			App.rootScope.$safeApply( function(){
-				App.rootScope.animationClass = '';
-			} );
-		}, 500 );
+			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
+			App.rootScope.$safeApply();
+			// @todo: do some tests to figure out if we need this or not
+			// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
+			App.location.path( url || '/' );
+			App.rootScope.$safeApply();		
+		}, 10 );		
+	} else {
+		App.location.path( url || '/' );
+		App.rootScope.$safeApply();		
 	}
 };
 
