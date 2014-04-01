@@ -75,21 +75,16 @@ NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
 
+
 // This config will intercept all the ajax requests and take care of the errors
-NGApp.config(function ( $httpProvider) {
-
-	var interceptor = function ( $q, $injector ) {
-
-		function success( response ) {
-			return response;
-		}
-
-		function error( response ) {
-			var status = response.status;
-			// Is offline
-			if( !window.navigator.onLine ){
+NGApp.config( function( $provide, $httpProvider ) {
+	$provide.factory( 'httpInterceptor', function( $q ) {
+		var onError = function( rejection ){
+			var status = rejection.status;
+			// Is offline or the server wasn't found
+			if( !window.navigator.onLine || status == 0 ){
 				var showError = false;
-				var url = response.config.url;
+				var url = rejection.config.url;
 				if ( url ) {
 					// Check if the url was an api url
 					if( url.indexOf( App.service ) >= 0 ){
@@ -111,20 +106,37 @@ NGApp.config(function ( $httpProvider) {
 				}
 				if( showError && !$( '.connection-error' ).is( ':visible' ) ){
 					App.connectionError();
-					if (App.busy.isBusy()) {
+					if ( App.busy.isBusy() ) {
 						App.busy.unBusy();
 					}
 				}
 			}
-			return $q.reject( response );
 		}
 
-		return function ( promise ) {
-			return promise.then( success, error );
-		}
-	};
-	$httpProvider.responseInterceptors.push(interceptor);
-});
+		return {
+			// request ok
+			request: function( config ) {
+				return config || $q.when( config );
+			},
+			// response ok
+ 			response: function( response ) {
+				return response || $q.when( response );
+			},
+			// request no ok
+			requestError: function( rejection ) {
+				onError( rejection );
+				return $q.reject( rejection );
+			},
+			// response no ok
+			responseError: function ( rejection ) {
+				onError( rejection );
+				return $q.reject( rejection );
+			}
+		};
+	});
+	$httpProvider.interceptors.push( 'httpInterceptor' );
+} );
+
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider, RestaurantsService) {
 	$routeProvider
@@ -409,7 +421,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
-		
+		App.rootScope.current = MainNavigationService.page;
 		App.track('page', $route.current.action);
 
 		$('body').removeClass(function (index, css) {
@@ -471,6 +483,7 @@ App.confirm = function(txt, title, fn, buttons) {
 
 
 App.connectionError = function() {
+	App.rootScope.$broadcast( 'connectionError' );
 	App.rootScope.$broadcast('notificationAlert', 'Connection Error', 'Sorry! We could not reach the server right now. Try again when your internet is back!');
 };
 
