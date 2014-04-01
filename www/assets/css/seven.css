@@ -3548,6 +3548,22 @@ select {
 	margin-bottom: -.3em;
 }
 
+/* community-usc image */
+.community-usc .community-image{
+	background-size:100% !important;
+	display: block;
+	background-repeat:no-repeat;
+	margin-bottom: 40px;
+	height: 91px;
+	width: 100%;
+}
 
-
-
+/* community-usc image */
+.community-unc .community-image{
+	background-size:100% !important;
+	display: block;
+	background-repeat:no-repeat;
+	margin-bottom: 40px;
+	height: 88px;
+	width: 200px;
+}
