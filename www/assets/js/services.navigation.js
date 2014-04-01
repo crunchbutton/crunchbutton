@@ -53,11 +53,30 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 					service.buttons.back = false;
 					service.buttons.menu = true;
 				}
+				// show the back button just after the transition finish
+				if( service.buttons.back ){
+					service.buttons.back = false;
+					setTimeout(function() {
+						$rootScope.$safeApply( function(){
+							service.buttons.back = true;
+						} );
+					}, 500 );
+				}
 				break;
 			default:
+				var backPrev = service.buttons.back;
 				service.buttons.back = false;
 				service.buttons.location = ( service.page != 'location' );
 				service.buttons.menu = true;
+				if( backPrev && service.buttons.menu ){
+					service.buttons.menu = false;
+					setTimeout(function() {
+						$rootScope.$safeApply( function(){
+							service.buttons.menu = true;
+						} );
+					}, 50 );
+				}
+
 				break;
 		}
 	}
