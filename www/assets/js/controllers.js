@@ -386,6 +386,12 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		$scope.yourArea = $scope.location.position.pos().city() || 'your area';
 	});
 
+	// on connection error - reset
+	$rootScope.$on( 'connectionError', function(e, data) {
+		$scope.isProcessing = false;
+		spin.stop();
+	} );
+
 	$scope.$on( 'locationError', function(e, data) {
 		spin.stop();
 		// If the entered address does not have zip code show the enter zip code message #1763
