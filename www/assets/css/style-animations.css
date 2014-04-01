@@ -35,6 +35,10 @@
 	opacity:0;
 }
 
+.ng-leave {
+	opacity: 0;
+}
+
 
 /* animation-push stuff */
 .animation-push.ng-enter {
