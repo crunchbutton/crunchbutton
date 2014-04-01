@@ -21,20 +21,6 @@
 	}
 }
 
-/* menu / back animation */
-.animate-menu.ng-hide-add, .animate-menu.ng-hide-remove {
-	display:block !important;
-}
-.animate-menu {
-	position: absolute;;
-	opacity:1;
-	transition:all linear 0.1s;
-	-webkit-transition:all linear 0.1s;
-}
-.animate-menu.ng-hide {
-	opacity:0;
-}
-
 .ng-leave {
 	opacity: 0;
 }
