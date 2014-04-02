@@ -3571,7 +3571,7 @@ select {
 /* community-usc image */
 .community-unc .community-image{
 	background-image:url('http://dev.crunchr.co/assets/images/community/unc.svg' );
-	background-size: 16em;
+	background-size: 100%;
 	display: block;
 	background-repeat:no-repeat;
 	background-position: center top;
