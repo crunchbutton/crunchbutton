@@ -1062,7 +1062,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$comment = $this->comment();
 		
 		if ($comment->id_restaurant_comment) {
-			$auths = $comment->user()->auths();
+			$auths = $comment->user()->auths()->get(0);
+
 			foreach ($auths as $auth) {
 				if ($auth->type == 'facebook') {
 					$id = $auth->auth;
