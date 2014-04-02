@@ -1314,7 +1314,7 @@ p {
 	height: 10.3em;
 	background-size: 100%;
 	float: right;
-	margin-top: 2.2em;
+	margin-top: 1em;
 }
 .restaurants-orange.restaurants-orange-sad {
 	background: url(../images/micro/restaurants-orange-sad.svg) no-repeat;
@@ -1362,6 +1362,9 @@ p {
 	margin: 0 auto;
 	margin-top: -10px;
 }
+.restaurants-bubble-wrap h1 {
+	line-height: 1.4em;
+}
 .restaurants-tagline {
 	margin-top: -1.1em;
 	margin-bottom: 2em;
@@ -1379,8 +1382,12 @@ p {
 	color: #444;
 }
 .restaurants-push-tagline {
-	font-size: .95em;
+	font-size: .9em;
 	line-height: 1.1em;
+	font-weight: normal;
+}
+.restaurants-push-tagline b {
+	font-size: 1.1em;
 }
 
 

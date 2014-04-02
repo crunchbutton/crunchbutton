@@ -1,9 +1,15 @@
 <div class="top-pad"></div>
 
+	
+<div class="content-padding">
+	<div class="orders-oranges animated-resize"></div>
+	<? /* You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it! */ ?>
+	
+</div>
+
 <div ng-show="!orders.list">
 	<div class="content-padding">
-		<h4>Energizing...</h4>
-		<p>Cross circuiting to A... Cross circuiting to B...</p>
+		<h4>Energizing..............</h4>
 		<div class="ajax-loader-teal"></div>
 		<br />
 	</div>
@@ -18,13 +24,6 @@
 </div>
 
 <div ng-show="orders.list && orders.list.length > 0">
-	
-	<div class="content-padding">
-		<div class="orders-oranges animated-resize"></div>
-		<? /* You know, you can reorder any of your previous orders by taping on one of them, then reordering from the next page. Try it! */ ?>
-		
-	</div>
-
 	<div class="content-padding">
 		<ul class="orders-list">
 			<li ng-repeat="order in orders.list" class="order-item-wrap" ng-click="orders.receipt(order.id)">
