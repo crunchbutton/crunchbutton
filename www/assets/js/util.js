@@ -137,7 +137,7 @@ function timestampDiff( time1, time2 ){
 
 function formatTime( seconds, message ){
 	if( seconds <= 60 ){
-		return 'less than a minute';
+		return 'in less than a minute';
 	}
 	var time = Math.floor( seconds / 60 );
 	if( time && time > 0 ){
