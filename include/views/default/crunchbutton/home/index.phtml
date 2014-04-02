@@ -18,8 +18,8 @@
 			<div class="restaurants-bubble-wrap">
 				<div class="bubble-tail bubble-tail-green">
 					<div class="text">
-						<h1 itemprop="name">Push a button.<br />
-						Get food delivered.&nbsp;&nbsp;&nbsp;&nbsp;</h1>
+						<h1 itemprop="name">Push a button<br />
+						Get delivery food&nbsp;&nbsp;&nbsp;&nbsp;</h1>
 					</div>
 				</div>
 				<div class="restaurants-orange"></div>
@@ -126,15 +126,13 @@
 			</div>
 			<div class="restaurants-orange"></div>
 			<div class="divider"></div>
-			<div class="restaurants-tagline">
-				<? if ($bot) : ?>
+			<? if ($bot) : ?>
+				<div class="restaurants-tagline">
 					<h1><?=$this->community->name?> Food Delivery</h1>
-					<h2>Live in <?=$this->community->name_alt?>? Get some food!</h2>
-				<? else : ?>
-					<h2><i class="fa fa-hand-o-right"></i>&nbsp;&nbsp;Choose a restaurant</h2>
-				<? endif ; ?>
-			</div>
-			<div class="divider"></div>
+					<h2>Choose a <?=$this->community->name_alt?> restaurant:</h2>
+				</div>
+				<div class="divider"></div>
+			<? endif ; ?>		
 		</div>
 
 		<? if ($bot) : ?>
@@ -194,21 +192,18 @@
 		<div class="restaurants-bubble-wrap">
 			<div class="bubble-tail bubble-tail-green">
 				<div class="text">
-					<h1>Push a button.<br />
-					Get food delivered.</h1>
+					<h1 class="restaurants-push-tagline"><b>Push a button</b><br>Get delivery food</h1>
 				</div>
 			</div>
 			<div class="restaurants-orange"></div>
-			<div class="divider"></div>
-			<div class="restaurants-tagline">
-				<? if ($bot) : ?>
+			<div class="divider"></div>			
+			<? if ($bot) : ?>
+				<div class="restaurants-tagline">
 					<h1>Order the top local delivery food.</h1>
-					<h2>Delivery from our awesome restaurants</h2>
-				<? else : ?>
-					<h2><i class="fa fa-hand-o-right"></i>&nbsp;&nbsp;Choose a restaurant</h2>
-				<? endif ; ?>
-			</div>
-			<div class="divider"></div>
+					<h2>Choose an  awesome restaurants</h2>
+				</div>
+				<div class="divider"></div>
+			<? endif ; ?>
 		</div>
 
 		<? if ($bot) : ?>
