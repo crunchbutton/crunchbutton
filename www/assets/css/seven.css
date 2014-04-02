@@ -3555,6 +3555,7 @@ select {
 
 /* community-usc image */
 .community-usc .community-image{
+	background-image:url('/assets/images/community/usc.svg' );
 	background-size:100% !important;
 	display: block;
 	background-repeat:no-repeat;
@@ -3565,6 +3566,7 @@ select {
 
 /* community-usc image */
 .community-unc .community-image{
+	background-image:url('/assets/images/community/unc.png' );
 	background-size:100% !important;
 	display: block;
 	background-repeat:no-repeat;
