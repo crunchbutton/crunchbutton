@@ -3553,22 +3553,28 @@ select {
 	margin-bottom: -.3em;
 }
 
+.community-image {
+	margin-top: .5em;
+}
+
 /* community-usc image */
-.community-usc .community-image{
+.community-usc .community-image {
 	background-image:url('http://dev.crunchr.co/assets/images/community/usc.svg' );
-	background-size:100% !important;
+	background-size: 100%;
 	display: block;
 	background-repeat:no-repeat;
-	height: 91px;
-	width: 100%;
+	background-position: center top;
+	height: 8.1em;
+	width: 30em;
 }
 
 /* community-usc image */
 .community-unc .community-image{
-	background-image:url('http://dev.crunchr.co/assets/images/community/unc.png' );
-	background-size:100% !important;
+	background-image:url('http://dev.crunchr.co/assets/images/community/unc.svg' );
+	background-size: 16em;
 	display: block;
 	background-repeat:no-repeat;
-	height: 88px;
-	width: 200px;
+	background-position: center top;
+	height: 8.6em;
+	width: 30em;
 }
