@@ -180,6 +180,10 @@ NGApp.factory('LocationService', function ($location, $rootScope, RestaurantsSer
 				service.reverseGeocode( position.coords.latitude, position.coords.longitude, success, error, 'geolocation' );
 
 			}, function( e ) {
+				// error 2 = gps is off
+				if( e.code == 2 ){
+					App.alert( 'Where are you? Your GPS appears to be off. Turn it back on and lets do this!' );
+				}
 				clearTimeout(service.timerId);
 				error();
 			}, {
