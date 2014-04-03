@@ -700,29 +700,53 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 						service.startStoreEntederInfo = false;
 
 						service.account.updateInfo();
-						App.cache('Order', json.uuid, function () {
-							App.track('Ordered', {
-								'total': this.final_price,
-								'subtotal': this.price,
-								'tip': this.tip,
-								'restaurant': service.restaurant.name,
-								'paytype': this.pay_type,
-								'ordertype': this.order_type,
-								'user': this.user,
-								'items': service.cart.totalItems()
-							});
-							// Clean the cart
-							service.cart.clean();
-							service.updateTotal();
 
-							// Resets the gift card notes field
-							service.giftcard.notes_field.reset();
-							$rootScope.$safeApply( function(){
-								$rootScope.$broadcast( 'newOrder' );
-								OrderViewService.newOrder = true;
-								App.go( '/order/' + uuid, 'push' );	
+						var orderCached = false;
+
+						var cacheOrder = function(){
+
+							App.cache('Order', json.uuid, function () {
+
+								orderCached = true;
+								App.track('Ordered', {
+									'total': this.final_price,
+									'subtotal': this.price,
+									'tip': this.tip,
+									'restaurant': service.restaurant.name,
+									'paytype': this.pay_type,
+									'ordertype': this.order_type,
+									'user': this.user,
+									'items': service.cart.totalItems()
+								});
+
+								// Clean the cart
+								service.cart.clean();
+								service.updateTotal();
+
+								// Resets the gift card notes field
+								service.giftcard.notes_field.reset();
+
+								$rootScope.$safeApply( function(){
+									$rootScope.$broadcast( 'newOrder' );
+									OrderViewService.newOrder = true;
+									App.go( '/order/' + uuid, 'push' );	
+								} );
+
 							} );
-						});
+						}
+
+						var laps = 0;
+						var watchDog = function(){
+							if( laps >= 30 ){ return; }
+							if( !orderCached ){
+								cacheOrder();
+								setTimeout( function() { watchDog(); }, 500 );
+							}
+							laps++;
+						}
+
+						watchDog();
+
 					}
 				});
 		}

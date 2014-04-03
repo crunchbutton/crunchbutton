@@ -887,7 +887,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 				// Place cash order even if the user has gift card see #1485
 				$scope.ignoreGiftCardWithCashOrder = false;
-
 			}
 
 			// Call anyway
