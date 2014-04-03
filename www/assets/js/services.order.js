@@ -581,7 +581,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 						}
 					} else {
 						// Address was found but it is not valid (for example it could be a city name)
-						App.alert('It looks like your address is incomplete. <br>Please enter a street name, number, and city.');
+						App.dialog.show( '.address-incomplete-warning' );
 						App.busy.unBusy();
 						// Make sure that the form will be visible
 						$rootScope.$safeApply( function(){
@@ -598,7 +598,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 				}
 				// Address not found!
 				var error = function () {
-					App.alert('It looks like your address is incomplete. <br>Please enter a street name, number, and city.');
+					App.dialog.show( '.address-incomplete-warning' );
 					App.busy.unBusy();
 					// Log the error
 					App.log.order({

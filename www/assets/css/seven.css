@@ -3511,13 +3511,13 @@ select {
 	margin-right: .4em;
 }
 
-.order-buttons .button, .account-modal .button.facebook {
+.order-buttons .button, .account-modal .button.facebook, .order-warning.button {
 	padding-top: .6em;
 	padding-bottom: .6em;
 }
 
 
-.account-modal-bold {
+.account-modal-bold, .order-warning-bold {
 	font-size: 1.1em;
 }
 
@@ -3531,7 +3531,7 @@ select {
 	float: right;
 }
 
-.account-modal .cursor{
+.account-modal .cursor, .order-warning .cursor{
 	cursor: pointer;
 	text-decoration: underline;
 }
@@ -3546,9 +3546,19 @@ select {
 	text-transform: uppercase;
 }
 
+.order-warning .link,
 .account-modal span.back-link,
 .account-modal span.bottom-link{
 	color: #f06e35;
+}
+
+.order-warning-bold{
+	font-size: 1.2em;
+}
+
+.order-warning .link{
+	display: block;
+	margin-top: 1em;
 }
 
 .account-modal span.back-link{
