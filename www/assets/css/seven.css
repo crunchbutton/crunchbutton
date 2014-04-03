@@ -1487,8 +1487,9 @@ p {
 .order-summary {
 	overflow: hidden;
 	text-overflow: ellipsis;
-	height: 1em;
+	height: 1.2em;
 	display: inline-block;
+	line-height: 1.1em;
 }
 
 .order-link {
