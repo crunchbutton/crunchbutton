@@ -708,6 +708,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.order.showForm = true;
 		$rootScope.closePopup();
 	}
+
 	$scope.addressLetMeChangeIt = function(){
 		$rootScope.closePopup();
 		$scope.order.showForm = true;
