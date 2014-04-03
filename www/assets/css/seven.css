@@ -2713,12 +2713,6 @@ sup {
 	}
 }
 
-@media screen and (max-height: 480px) {
-	.splash-bottom {
-		bottom: 8em !important;
-	}
-}
-
 .bubble-curved-spacer {
 	height: 11.5em;
 }
