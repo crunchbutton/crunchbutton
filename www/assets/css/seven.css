@@ -3530,6 +3530,7 @@ select {
 	text-decoration: underline;
 }
 
+.order-warning .link,
 .account-modal span.back-link,
 .account-modal span.bottom-link,
 .account-modal .help {
@@ -3553,6 +3554,7 @@ select {
 .order-warning .link{
 	display: block;
 	margin-top: 1em;
+	text-align: center;
 }
 
 .account-modal span.back-link{
