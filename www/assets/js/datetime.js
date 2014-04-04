@@ -31,7 +31,6 @@ dateTime.reload = function(){
 			clearTimeout( dateTime.gears );	
 		}
 		dateTime.update();
-		alert( _gmtServer );
 		App.rootScope.$broadcast( 'appResume', false );	
 	} ).error( function(){ window.location.reload(); } );
 }
