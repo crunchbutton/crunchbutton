@@ -600,6 +600,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.order = {};
 	$scope.open = false;
 
+	$scope.isIOs = App.iOS();
+
 	$scope.restaurantLoaded = RestaurantService.alreadyLoaded();
 
 	$scope.restaurant = false;
