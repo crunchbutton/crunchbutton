@@ -473,7 +473,7 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 		var _total = service.restaurant.delivery_min_amt == 'subtotal' ? service.subtotal() : service.total();
 		if (service.restaurant.meetDeliveryMin(_total) && service.form.delivery_type == 'delivery') {
-			errors['delivery_min'] = 'Please meet the delivery minimum of ' + service.info.dollarSign + service.restaurant.delivery_min + '.';
+			errors['delivery_min'] = 'Please meet the delivery minimum of $' + service.restaurant.delivery_min + '.';
 		}
 		
 		var er = displayErrors(errors);
