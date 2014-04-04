@@ -806,6 +806,16 @@ App.init = function(config) {
 	}
 
 	$(window).trigger('nginit');
+	
+	/*
+	if (!App.isPhoneGap) {
+		$(document).mousemove(function(e) {
+			if ($('.parallax-bg').length) {
+				console.log(e.pageX, e.pageY);
+			}
+		});
+	}
+	*/
 };
 
 App.handleUrl = function(url) {
