@@ -390,7 +390,9 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	service.errors = function(errors) {
 		var error = '';
 		for (var x in errors) {
-			error += '<li><i class="icon-li icon-warning-sign"></i>' + errors[x] + '</li>';
+			if( x != 'debug' ){
+				error += '<li><i class="icon-li icon-warning-sign"></i>' + errors[x] + '</li>';	
+			}
 		}
 		App.alert('<ul class="icons-ul">' + error + '</ul>');
 	}
