@@ -169,6 +169,8 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 					
 	};
 
+	var updateRestaurantsStatus = null;
+
 	// Update the close/open/about_to_close status from the restaurants
 	var updateStatus = function(){
 		updateRestaurantsStatus = $timeout( function(){
@@ -183,7 +185,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 	$scope.$on( '$destroy', function(){
 		RestaurantsService.forceGetStatus = true;
 		// Kills the timer when the controller is changed
-		if( typeof( updateRestaurantStatus ) !== 'undefined' && updateRestaurantStatus ){
+		if( typeof( updateRestaurantsStatus ) !== 'undefined' && updateRestaurantsStatus ){
 			try{ $timeout.cancel( updateRestaurantsStatus );} catch(e){}
 		}
 	});
@@ -204,6 +206,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			if( dateTime && dateTime.getNow && dateTime.getNow() ){
 				if( $location.path() == '/' + RestaurantsService.permalink ){
 					$scope.restaurants = restaurants.getStatus();
+					$rootScope.$safeApply();
 					updateStatus();
 				}
 			} else {
