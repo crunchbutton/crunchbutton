@@ -834,6 +834,7 @@ App.handleUrl = function(url) {
 	}
 }
 
+
 /**
  * dialog functions
  */
@@ -846,8 +847,17 @@ App.dialog = {
 				'<div class="small-container-content">' + arguments[1] + '</div>' +
 				'</div>';
 		} else if ($(arguments[0]).length) {
-			// its a dom element
-			var src = $( arguments[0] );
+			// its a dom selector
+			var src = $(arguments[0]);
+			
+			// fix to prevent 2 dialogs from ever appearing. only show the second. #2919
+			if (src.length > 1) {
+				for (var x = 0; x < src.length - 1; x++) {
+					src.get(x).remove();
+				}
+				var src = $(arguments[0]);
+			}
+
 		} else {
 			console.log('ERROR WITH DIALOG',arguments);
 			return;
