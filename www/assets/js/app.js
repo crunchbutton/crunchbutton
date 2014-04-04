@@ -805,6 +805,16 @@ App.init = function(config) {
 		break;
 	}
 
+	window.addEventListener( 'pageshow', function(){ 
+		// the first pageshow should be ignored
+		if( App._firstPageShowHasHappened ){
+			dateTime.reload(); 
+		}
+		App._firstPageShowHasHappened = true;
+	}, false );
+
+	// window.addEventListener( 'pagehide', function(){}, false );
+
 	$(window).trigger('nginit');
 };
 
@@ -1006,7 +1016,7 @@ App.phoneGapListener = {
 	},
 	resume : function(){
 		dateTime.restart();
-		App.rootScope.$broadcast( 'appResume', false );	
+		App.rootScope.$broadcast( 'appResume', false );
 	},
 	pause : function(){
 		// pause
