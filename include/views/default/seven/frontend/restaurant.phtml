@@ -406,7 +406,7 @@
 		<div class="restaurant-banana animated-resize"></div>
 		
 		<div class="payment-wrap">
-			<div class="payment-ribbon">
+			<div class="payment-ribbon" ng-class="{'backface':!isIOs}">
 				<div class="payment-ribbon-content">
 					<span class="restaurant-payment-item">Subtotal: <span ng-show="order.form.pay_type=='cash'">~</span>${{order.info.subtotal}}</span>
 					<span class="restaurant-payment-item">Tax: ${{order.info.taxes}}</span>
