@@ -2415,19 +2415,14 @@ sup {
 }
 
 .payment-ribbon {
+	
 	background: url(../images/micro/payment-ribbon.svg) no-repeat;
 	width: 29.8em;
 	height: auto;
 	background-size: auto 100%;
 	margin-left: .5em;
 	margin-top: 2em;
-
-	-webkit-backface-visibility: hidden;
-	   -moz-backface-visibility: hidden;
-	    -ms-backface-visibility: hidden;
-	     -o-backface-visibility: hidden;
-	        backface-visibility: hidden;
-
+	
 	-webkit-transform: rotate(-5deg);
 	   -moz-transform: rotate(-5deg);
 	    -ms-transform: rotate(-5deg);
@@ -2435,6 +2430,13 @@ sup {
 	        transform: rotate(-5deg);
 }
 
+.payment-ribbon.backface{
+	-webkit-backface-visibility: hidden;
+	   -moz-backface-visibility: hidden;
+	    -ms-backface-visibility: hidden;
+	     -o-backface-visibility: hidden;
+	        backface-visibility: hidden;
+}
 
 .account-reset-container .account-title-link,
 .account-container .account-title-link  {
