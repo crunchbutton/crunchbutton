@@ -17,7 +17,7 @@ class Cana_Db_MySQL_Db extends mysqli {
 			ini_set('mysql.connect_timeout',10);
 			ini_set('mysqli.reconnect',1);
 		}
-		parent::__construct($params->host, $params->user, $params->pass, $params->db);
+		parent::__construct($params->host, $params->user, $params->pass ? $params->pass : null, $params->db);
 	}
 
 	/*
