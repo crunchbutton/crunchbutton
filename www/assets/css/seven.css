@@ -2133,6 +2133,7 @@ sup {
 	padding: .6em .8em .6em .8em;
 	z-index: 6;
 	position: relative;
+	display: none;
 }
 
 .restaurants-more {
