@@ -4,11 +4,11 @@ php:
   - 5.4
 
 env:
-  - DB=mysql
+  - TRAVIS=1
 
 before_script:
   - mysql -e "create database IF NOT EXISTS crunchbutton;" -uroot;
 
 # omitting "script:" will default to phpunit
 # use the $DB env variable to determine the phpunit.xml to use
-script: phpunit --configuration travis/phpunit_$DB.xml --coverage-text
+script: phpunit --configuration travis/phpunit_mysql.xml --coverage-text
