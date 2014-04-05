@@ -1,36 +1,26 @@
 <?php
 
 
-class HelloWorldTest extends PHPUnit_Framework_TestCase
-{
-    /**
-     * @var PDO
-     */
-    private $pdo;
+class HelloWorldTest extends PHPUnit_Framework_TestCase {
 
-    public function setUp()
-    {
-        $this->pdo = new PDO($GLOBALS['db_dsn'], $GLOBALS['db_username'], $GLOBALS['db_password']);
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->pdo->query("CREATE TABLE hello (what VARCHAR(50) NOT NULL)");
-    }
+	private $pdo;
 
-    public function tearDown()
-    {
-        $this->pdo->query("DROP TABLE hello");
-    }
+	public function setUp() {
+	   // $this->pdo = new PDO($GLOBALS['db_dsn'], $GLOBALS['db_username'], $GLOBALS['db_password']);
+	   // $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	   // $this->pdo->query("CREATE TABLE hello (what VARCHAR(50) NOT NULL)");
+	}
 
-    public function testHelloWorld()
-    {
-        $helloWorld = new HelloWorld($this->pdo);
+	public function tearDown() {
+	   // $this->pdo->query("DROP TABLE hello");
+	}
 
-        $r = new Crunchbutton_Restaurant;
-    }
+	public function testHelloWorld() {
+		$r = new Restaurant(1);
+		$this->assertEquals('Alpha Delta Pizza', $r->name);
+	}
 
-    public function testHello()
-    {
-        $helloWorld = new HelloWorld($this->pdo);
-
-        $this->assertEquals('Hello Bar', 'Hello Bar');
-    }
+	public function testHello() {
+		$this->assertEquals('Hello Bar', 'Hello Bar');
+	}
 }
