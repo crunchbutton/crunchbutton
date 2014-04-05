@@ -1,3 +1,53 @@
+NGApp.directive( 'ngResizeText', [ function() {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+
+			elements = $(element);
+			
+			var resize = function() {
+				var el, _len;
+
+				if (elements.length < 0) {
+					return;
+				}
+				
+				elements.css('font-size','').removeClass('resized');
+				
+				var _results = [];
+				for (var _i = 0, _len = elements.length; _i < _len; _i++) {
+					el = elements[_i];
+					_results.push((function(el) {
+						var resizeText = function() {
+							var elNewFontSize;
+							elNewFontSize = (parseInt($(el).css('font-size').slice(0, -2)) - 1) + 'px';
+							return $(el).css('font-size', elNewFontSize);
+						};
+						var _results1 = [];
+						while (el.scrollHeight > el.offsetHeight) {
+							_results1.push(resizeText());
+						}
+						return _results1;
+					})(el));
+				}
+				
+				elements.addClass('resized');
+				return _results;
+			};
+
+			setTimeout(resize,1);
+
+			$(window).bind('resize',resize);
+
+			scope.$on('$destroy', function() {
+				$(window).unbind('resize',resize);
+			});
+
+
+		}
+	};
+}]);
+
 NGApp.directive( 'ngBindHtmlUnsafe', [ function() {
 	return function( scope, element, attr ) {
 		element.addClass( 'ng-binding' ).data( '$binding', attr.ngBindHtmlUnsafe );
