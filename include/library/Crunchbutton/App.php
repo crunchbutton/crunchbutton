@@ -112,6 +112,7 @@ class Crunchbutton_App extends Cana_App {
 								break;
 							default:
 								if (getenv('TRAVIS')) {
+									die('IS TRAVIS');
 									$params['env'] = 'travis';
 									$_SERVER['SERVER_NAME'] = 'dev.crunchr.co';
 									$host_callback = 'dev.crunchr.co';
