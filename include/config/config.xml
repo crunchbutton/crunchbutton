@@ -29,6 +29,13 @@
 			<host>localhost</host>
 			<prefix></prefix>	
 		</local>
+		<travis>
+			<user>root</user>
+			<pass></pass>
+			<db>crunchbutton</db>
+			<host>localhost</host>
+			<prefix></prefix>	
+		</travis>
 	</db>
 	<defaults>
 		<page>home</page>
