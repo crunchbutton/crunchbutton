@@ -127,7 +127,7 @@ class Cana_App extends Cana_Model {
 			$connect->user = $this->crypt()->decrypt($connect->user);
 			$connect->pass = $this->crypt()->decrypt($connect->pass);
 		}
-		
+		print_r($connect);exit;
 		$this->_db = new Cana_Db($connect);
 		
 		return $this;

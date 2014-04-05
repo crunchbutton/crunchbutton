@@ -176,8 +176,7 @@ class Crunchbutton_App extends Cana_App {
 				exit;
 			}
 		}
-print_r($params);
-exit;
+
 		parent::init($params);
 		
 		$config = $this->config();
