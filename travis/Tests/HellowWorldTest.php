@@ -1,6 +1,6 @@
 <?php
 
-require_once('HelloWorld.php');
+require_once('travis/Tests/HelloWorld.php');
 
 class HelloWorldTest extends PHPUnit_Framework_TestCase
 {
