@@ -354,6 +354,7 @@
 						<div class="icon-cash" ng-show="order.form.pay_type=='cash'"></div>
 				</div>
 				<div class="order-info order-info-oneline">
+				
 					<p>
 						<span ng-show="order.form.pay_type=='card' && order.total() <= credit.number">Gift card balance</span>
 						<span ng-show="order.form.pay_type=='card' && credit.number && order.total() > credit.number">Card ending in {{user.card_ending}} &amp; - {{credit.value}} credit</span>
