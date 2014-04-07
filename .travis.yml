@@ -12,4 +12,4 @@ before_script:
 
 # omitting "script:" will default to phpunit
 # use the $DB env variable to determine the phpunit.xml to use
-script: phpunit --configuration travis/phpunit_mysql.xml --coverage-text
+script: phpunit --configuration travis/phpunit.xml --coverage-text
