@@ -69,6 +69,11 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$this->id_restaurant = $params['restaurant'];
 
+		// Check if the restaurant is active #2938
+		if( $this->restaurant()->active == 0 ){
+			$errors['inactive'] = 'This restaurant is not accepting orders.';
+		}
+
 		// Check if the restaurant delivery #2464
 		if( $this->delivery_type == self::SHIPPING_DELIVERY ){
 			if( $this->restaurant()->delivery == 0 && $this->restaurant()->takeout == 1 ){
