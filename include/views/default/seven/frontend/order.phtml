@@ -110,7 +110,7 @@
 			</div>
 			<div class="order-info order-info-oneline">
 				<p>
-					<span ng-show="(order.pay_type == 'card')">Paid by card ending in <b>{{order.card.lastfour}}</b></span>
+					<span ng-show="(order.pay_type == 'card')">Paid by card <span ng-show="order.card_ending">ending in <b>{{order.card_ending}}</b></span></span>
 					<span ng-hide="(order.pay_type == 'card')">Pay<span ng-show="(order.delivery_type == 'delivery')"> and tip</span> with <b>cash</b></span>
 				</p>
 			</div>

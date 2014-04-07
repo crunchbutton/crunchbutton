@@ -14,7 +14,7 @@
 				<h1 ng-resize-text>{{restaurant.name}}</h1>
 				<h2>{{restaurant.message || restaurant.short_description}}</h2>
 			</div>
-	
+
 			<div class="giftcard-badge" ng-if="credit.hasValue">
 				<i class="fa fa-certificate"></i>
 				<div class="giftcard-badge-value"><sup>$</sup>{{Math.round(credit.value)}}</div>
@@ -331,7 +331,7 @@
 	
 		<!-- stored user info -->
 		
-		<div class="delivery-payment-info main-content-readable" ng-if="restaurant._open && !order.showForm && order.cart.hasItems()">
+		<div class="delivery-payment-info main-content-readable" ng-if="order.loaded && restaurant._open && !order.showForm && order.cart.hasItems()">
 			
 			<div class="divider dots spacer-one-one"></div>
 				<div class="content-padding">
@@ -354,6 +354,7 @@
 						<div class="icon-cash" ng-show="order.form.pay_type=='cash'"></div>
 				</div>
 				<div class="order-info order-info-oneline">
+				
 					<p>
 						<span ng-show="order.form.pay_type=='card' && order.total() <= credit.number">Gift card balance</span>
 						<span ng-show="order.form.pay_type=='card' && credit.number && order.total() > credit.number">Card ending in {{user.card_ending}} &amp; - {{credit.value}} credit</span>
