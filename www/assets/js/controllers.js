@@ -837,28 +837,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	var validateGiftCard = false;
 
-	// see #2799
-	$rootScope.$on( 'UserRestaurantInfoLoaded', function( e, data ) {
-		validateGiftCard = true;
-		// process credit
-		credit.processCredit( parseFloat( data.credit ) );	
-		// process gift card
-		giftcard.notes_field.processJson( data.giftcard );
-		// process the preset stuff
-		var id_preset = data.id_preset;
-		// Method that checks if the preset must to be reloaded #1988
-		OrderService.account.checkPresetUpdate( id_preset, $scope.restaurant.id_restaurant, 
-			// will be called if the preset was reloaded
-			function(){
-				// reset cart
-				order.resetCart();
-				// call process again
-				process();
-			}
-		);
-	} );
-
 	var restaurantService = RestaurantService;
+
 
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
@@ -877,45 +857,68 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 		
+
+		var process = function(){
+
+			order.init();
+
+			// Update some gift cards variables
+			giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
+			giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
+			
+			var position = PositionsService;
+			var address = position.pos();
+
+			// If the typed address is valid (order) and the user address is empty use the typed one #1152 and #1989 
+			if( !order.account.user || order.account.user.address == '' ){
+				if( address.type() == 'user' && address.valid( 'order' ) ){
+					if( order._useCompleteAddress ){
+						$scope.order.form.address = address.formatted();
+					} else {
+						$scope.order.form.address = address.entered();
+					}
+				}
+			}
+			
+			$scope.order.cart.items = order.cart.getItems();
+			
+			$rootScope.$safeApply( function($scope) {} );
+
+			// @todo: do we still neded this??
+			// $('.body').css({ 'min-height': $('.restaurant-items').height()});
+
+			// Place cash order even if the user has gift card see #1485
+			$scope.ignoreGiftCardWithCashOrder = false;
+		}	
+
 		setTimeout( function(){
 			// add that its been loaded so we can show the overpull peeking guy
 			$('body').addClass('page-restaurant-loaded');
 
-			var process = function(){
-
-				order.init();
-
-				// Update some gift cards variables
-				giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
-				giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
-				
-				var position = PositionsService;
-				var address = position.pos();
-
-				// If the typed address is valid (order) and the user address is empty use the typed one #1152 and #1989 
-				if( !order.account.user || order.account.user.address == '' ){
-					if( address.type() == 'user' && address.valid( 'order' ) ){
-						if( order._useCompleteAddress ){
-							$scope.order.form.address = address.formatted();
-						} else {
-							$scope.order.form.address = address.entered();
-						}
-					}
-				}
-				
-				$scope.order.cart.items = order.cart.getItems();
-				
-				$rootScope.$safeApply( function($scope) {} );
-
-				// @todo: do we still neded this??
-				// $('.body').css({ 'min-height': $('.restaurant-items').height()});
-
-				// Place cash order even if the user has gift card see #1485
-				$scope.ignoreGiftCardWithCashOrder = false;
-			}
-
 			// Call anyway
-			process();
+			process();	
+
+			// see #2799
+			$scope.$on( 'UserRestaurantInfoLoaded', function( e, data ) {
+				validateGiftCard = true;
+				// process credit
+				credit.processCredit( parseFloat( data.credit ) );	
+				// process gift card
+				giftcard.notes_field.processJson( data.giftcard );
+				// process the preset stuff
+				var id_preset = data.id_preset;
+				// Method that checks if the preset must to be reloaded #1988
+				OrderService.account.checkPresetUpdate( id_preset, $scope.restaurant.id_restaurant, 
+					// will be called if the preset was reloaded
+					function(){
+						console.debug( 'reloaded' );
+						// reset cart
+						order.resetCart();
+						// Process again
+						process();
+					}
+				);
+			} );
 
 			// see #2799
 			order.loadUserRestaurantInfo( function( json ){ $rootScope.$broadcast( 'UserRestaurantInfoLoaded', json ); } );
