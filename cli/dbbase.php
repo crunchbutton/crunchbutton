@@ -14,7 +14,6 @@ if (trim(`whoami`) == 'arzynik') {
 	$dump = 'mysqldump';
 }
 
-// include our libraries AFTER the nap, so we dont keep mysql or our memory awake
 require_once('../include/crunchbutton.php');
 
 
@@ -23,6 +22,8 @@ $connect = c::config()->db->{c::app()->env()};
 $cmd[] = 'rm '.$file;
 $cmd[] = $dump.' -d -u '.$connect->user.' -p'.$connect->pass.' '.$connect->db.' >> '.$file;
 $cmd[] = $dump.' --no-create-info --skip-triggers -u '.$connect->user.' -p'.$connect->pass.' '.$connect->db.' config group site >> '.$file;
+$cmd[] = 'sed  "s/devin/root/g" '.$file.' > '.$file.'tmp';
+$cmd[] = 'mv '.$file.'tmp '.$file;
 
 foreach ($cmd as $c) {
 	exec($c);
