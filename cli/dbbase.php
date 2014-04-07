@@ -2,6 +2,8 @@
 <?php
 //local
 
+$file = '../db/dump.sql';
+
 error_reporting(E_ALL ^ (E_NOTICE | E_STRICT));
 ini_set('display_errors',true);
 
@@ -18,9 +20,9 @@ require_once('../include/crunchbutton.php');
 
 $connect = c::config()->db->{c::app()->env()};
 
-$cmd[] = 'rm dbdump.sql';
-$cmd[] = $dump.' -d -u '.$connect->user.' -p'.$connect->pass.' '.$connect->db.' >> dbdump.sql';
-$cmd[] = $dump.' --no-create-info --skip-triggers -u '.$connect->user.' -p'.$connect->pass.' '.$connect->db.' config group site >> dbdump.sql';
+$cmd[] = 'rm '.$file;
+$cmd[] = $dump.' -d -u '.$connect->user.' -p'.$connect->pass.' '.$connect->db.' >> '.$file;
+$cmd[] = $dump.' --no-create-info --skip-triggers -u '.$connect->user.' -p'.$connect->pass.' '.$connect->db.' config group site >> '.$file;
 
 foreach ($cmd as $c) {
 	exec($c);
