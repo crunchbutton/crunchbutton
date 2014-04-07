@@ -85,8 +85,10 @@ spl_autoload_register(function ($className) {
 		}
 	}
 
-	throw new Cana_Exception_MissingLibrary('The file '.$GLOBALS['config']['dirs']['library'] . $className . '.php'.' does not exist');
-	exit;
+	if (!getenv('TRAVIS')) {
+		throw new Cana_Exception_MissingLibrary('The file '.$GLOBALS['config']['dirs']['library'] . $className . '.php'.' does not exist');
+		exit;
+	}
 });
 
 
