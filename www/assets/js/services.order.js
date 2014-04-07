@@ -940,6 +940,25 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		return 'autotip';
 	}
 
+	// see #2799
+	service.loadUserRestaurantInfo = function ( success, error ) {
+		var url = App.service + 'user/restaurant/' + service.restaurant.id_restaurant;
+		$http( {
+			method: 'POST',
+			url: url,
+			cache: false,
+			data: $.param( { 'words' : service.form.notes } ),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			} ).success( function( data ) {
+				if( success ){
+					success( data );
+				}
+			}	)
+			.error(function( data, status ) { 
+				error( data, status );
+			} );
+	}
+
 	service._test = function(){
 		$rootScope.$safeApply( 
 			function(){
@@ -1022,7 +1041,6 @@ NGApp.factory('OrdersService', function ($http, $location, $rootScope, Restauran
 		 } ).then( function(){
 		 		setTimeout( function(){ service.checkItWasLoaded(); }, 1500 );
 		 } );	
-
 	}
 
 	service.restaurant = function (permalink) {
