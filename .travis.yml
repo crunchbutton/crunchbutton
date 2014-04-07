@@ -7,7 +7,8 @@ env:
   - TRAVIS=1
 
 before_script:
-  - mysql -e "create database IF NOT EXISTS crunchbutton;" -uroot;
+  - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
+  - mysql -uroot crunchbutton_travis < db/dump.sql
 
 # omitting "script:" will default to phpunit
 # use the $DB env variable to determine the phpunit.xml to use
