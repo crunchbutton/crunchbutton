@@ -190,11 +190,7 @@ class Crunchbutton_User extends Cana_Table {
 	public function exports() {
 		$out = $this->properties();
 		// $out[ 'last_tip_delivery' ] = Order::lastTipByDelivery( $this->id_user, 'delivery' );
-		// $out[ 'last_tip_takeout' ] = Order::lastTipByDelivery( $this->id_user, 'takeout' );
-
-		if( $out['card'] ){
-			$out['card_ending'] = substr( $out['card'], -4, 4 );
-		}
+		// $out[ 'last_tip_takeout' ] = Order::lastTipByDelivery( $this->id_user, 'takeout' )
 		
 		$out[ 'last_tip_type' ] = Order::lastTipType( $this->id_user );
 		$out[ 'last_tip' ] = Order::lastTip( $this->id_user );
@@ -229,6 +225,9 @@ class Crunchbutton_User extends Cana_Table {
 			$out[ 'card_type' ] = $payment_type->card_type;
 			$out[ 'card_exp_year' ] = $payment_type->card_exp_year;
 			$out[ 'card_exp_month' ] = $payment_type->card_exp_month;
+		}
+		if( $out['card'] ){
+			$out['card_ending'] = substr( $out['card'], -4, 4 );
 		}
 
 		if (c::env() == 'beta' || c::env() == 'local') {
