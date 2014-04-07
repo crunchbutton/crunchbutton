@@ -22,7 +22,7 @@ $connect = c::config()->db->{c::app()->env()};
 $cmd[] = 'rm '.$file;
 $cmd[] = $dump.' -d -u '.$connect->user.' -p'.$connect->pass.' '.$connect->db.' >> '.$file;
 $cmd[] = $dump.' --no-create-info --skip-triggers -u '.$connect->user.' -p'.$connect->pass.' '.$connect->db.' config group site >> '.$file;
-$cmd[] = 'sed  "s/devin/root/g" '.$file.' > '.$file.'tmp';
+$cmd[] = 'sed  "s/\`devin\`@\`%\`/\`root\`@\`localhost\`/g" '.$file.' > '.$file.'tmp';
 $cmd[] = 'mv '.$file.'tmp '.$file;
 
 foreach ($cmd as $c) {
