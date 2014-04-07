@@ -12,8 +12,6 @@ env:
 before_script:
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
   - mysql -uroot crunchbutton_travis < db/dump.sql;
-  - sudo rm -r /var/lib/apt/lists 
-  - sudo mkdir -p /var/lib/apt/lists/partial
   - sudo apt-get clean
   - sudo apt-get update
   - sudo apt-get install apache2
