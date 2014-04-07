@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit bootstrap="Tests/bootstrap.php" colors="true">
-    <php>
-        <var name="db_dsn" value="mysql:dbname=hello_world_test;host=localhost"/>
-        <var name="db_username" value="root"/>
-        <var name="db_password" value=""/>
-    </php>
-
     <testsuites>
-        <testsuite name="Hello World Test Suite">
+        <testsuite name="Crunchbutton Backend">
             <directory>./Tests/</directory>
         </testsuite>
     </testsuites>
