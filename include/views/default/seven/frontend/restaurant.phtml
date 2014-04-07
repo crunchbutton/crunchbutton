@@ -331,7 +331,7 @@
 	
 		<!-- stored user info -->
 		
-		<div class="delivery-payment-info main-content-readable" ng-if="restaurant._open && !order.showForm && order.cart.hasItems()">
+		<div class="delivery-payment-info main-content-readable" ng-if="order.loaded && restaurant._open && !order.showForm && order.cart.hasItems()">
 			
 			<div class="divider dots spacer-one-one"></div>
 				<div class="content-padding">
