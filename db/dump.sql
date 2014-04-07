@@ -799,7 +799,7 @@ CREATE TABLE `order` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `order_uuid` BEFORE INSERT ON `order` FOR EACH ROW SET NEW.uuid=REPLACE(UUID(),'-','') */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `order_uuid` BEFORE INSERT ON `order` FOR EACH ROW SET NEW.uuid=REPLACE(UUID(),'-','') */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1520,7 +1520,7 @@ CREATE TABLE `user` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`%`*/ /*!50003 TRIGGER `user_uuid` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.uuid =  REPLACE(UUID(),'-','') */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `user_uuid` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.uuid =  REPLACE(UUID(),'-','') */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
