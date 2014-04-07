@@ -1,15 +1,36 @@
-language: php
+language:
+  - php
 
 php:
   - 5.4
 
 env:
   - TRAVIS=1
+  
+# install:
 
 before_script:
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
   - mysql -uroot crunchbutton_travis < db/dump.sql;
+  - sudo apt-get install apache2
+  - sudo a2enmod actions
+  - sudo a2enmod rewrite
+  - echo "export PATH=/home/travis.crunchbutton/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
+  - echo travis/apache.conf | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
+  - echo travis/sites.conf | sed -e "s,PATH,`pwd`/web,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
+  - sudo service apache2 restart
+#  - "export DISPLAY=:99.0"
+#  - "sh -e /etc/init.d/xvfb start"
+#  - sleep 3
+#  - sudo rackup
+#  - sleep 3
 
-# omitting "script:" will default to phpunit
-# use the $DB env variable to determine the phpunit.xml to use
-script: phpunit --configuration travis/phpunit.xml --coverage-text
+
+script:
+  - phantomjs travis/phantom.js
+  - phpunit --configuration travis/phpunit.xml --coverage-text
+
+#addons:
+#  sauce_connect:
+#  username: "Your Sauce Labs username"
+#  access_key: "Your Sauce Labs access key"
