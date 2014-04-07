@@ -395,6 +395,8 @@ class Crunchbutton_Order extends Cana_Table {
 				// Desactive others payments
 				$user_payment_type->desactiveOlderPaymentsType( $user->id_user, $user_payment_type->id_user_payment_type );
 			}
+			$payment_type = $user->payment_type();
+			$this->id_user_payment_type = $payment_type->id_user_payment_type;
 		}
 
 		// If the user typed a password it will create a new user auth
@@ -1658,6 +1660,13 @@ class Crunchbutton_Order extends Cana_Table {
 			$timezone = new DateTimeZone($this->restaurant()->timezone);
 		}
 
+		$paymentType = $this->paymentType();
+		if( $paymentType->id_user_payment_type ){
+			$out['card_ending'] = substr( $paymentType->card, -4, 4 );
+		} else {
+			$out['card_ending'] = false;
+		}
+
 
 		$date = new DateTime($this->date);
 		$date->setTimeZone($timezone);
@@ -1668,6 +1677,13 @@ class Crunchbutton_Order extends Cana_Table {
 		$out['summary'] = $this->orderMessage('summary');
 
 		return $out;
+	}
+
+	public function paymentType(){
+		if( $this->id_user_payment_type ){
+			return Crunchbutton_User_Payment_Type::o( $this->id_user_payment_type );	
+		}
+		
 	}
 
 	public function refundGiftFromOrder(){
