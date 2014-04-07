@@ -1,0 +1,1 @@
+INSERT INTO `config` (`id_site`, `key`, `value`) VALUES ( NULL, 'ui2-mobile-force', '1');
