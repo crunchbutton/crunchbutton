@@ -624,7 +624,7 @@ CREATE TABLE `log` (
   `type` varchar(40) DEFAULT NULL,
   `level` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`id_log`)
-) ENGINE=InnoDB AUTO_INCREMENT=534775 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=534786 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -799,7 +799,7 @@ CREATE TABLE `order` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`devin`@`%`*/ /*!50003 TRIGGER `order_uuid` BEFORE INSERT ON `order` FOR EACH ROW SET NEW.uuid=REPLACE(UUID(),'-','') */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `order_uuid` BEFORE INSERT ON `order` FOR EACH ROW SET NEW.uuid=REPLACE(UUID(),'-','') */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1097,7 +1097,7 @@ CREATE TABLE `restaurant` (
   UNIQUE KEY `permalink` (`permalink`),
   KEY `id_restaurant_pay_another_restaurant` (`id_restaurant_pay_another_restaurant`),
   CONSTRAINT `fk_id_restaurant_pay_another_restaurant` FOREIGN KEY (`id_restaurant_pay_another_restaurant`) REFERENCES `restaurant` (`id_restaurant`)
-) ENGINE=InnoDB AUTO_INCREMENT=427 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=466 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1509,7 +1509,7 @@ CREATE TABLE `user` (
   `saving_from` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=10920 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10940 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1520,7 +1520,7 @@ CREATE TABLE `user` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`devin`@`%`*/ /*!50003 TRIGGER `user_uuid` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.uuid =  REPLACE(UUID(),'-','') */;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `user_uuid` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.uuid =  REPLACE(UUID(),'-','') */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -1583,7 +1583,7 @@ CREATE TABLE `user_payment_type` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-04-07 11:27:11
+-- Dump completed on 2014-04-07 13:53:24
 -- MySQL dump 10.13  Distrib 5.5.33, for osx10.6 (i386)
 --
 -- Host: localhost    Database: crunchbutton
@@ -1640,4 +1640,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-04-07 11:27:12
+-- Dump completed on 2014-04-07 13:53:24
