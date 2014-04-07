@@ -32,7 +32,7 @@
 		<travis>
 			<user>root</user>
 			<pass></pass>
-			<db>crunchbutton</db>
+			<db>crunchbutton_travis</db>
 			<host>localhost</host>
 			<prefix></prefix>	
 		</travis>

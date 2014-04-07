@@ -319,7 +319,8 @@ class Crunchbutton_App extends Cana_App {
 	public function buildView($params = array()) {
 		// domain level setup
 
-		if ($this->isMobile() && $this->config()->site->theme == 'crunchbutton') {
+		// UI2
+		if ($this->config()->site->config('ui2-mobile-force')->value && $this->isMobile() && $this->config()->site->theme == 'crunchbutton') {
 			$this->config()->site->theme =  'seven';
 		}
 		
