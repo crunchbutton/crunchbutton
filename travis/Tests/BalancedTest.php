@@ -21,9 +21,7 @@ class BalancedTest extends PHPUnit_Framework_TestCase {
 
 	public function testCharge() {
 
-		$charge = new Charge_Balanced([
-			'balanced_id' => null
-		]);
+		$charge = new Charge_Balanced;
 
 		$card = c::balanced()->createCard(
 			null, null, null, null, null,
