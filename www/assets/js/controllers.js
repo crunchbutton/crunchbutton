@@ -806,31 +806,59 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	});
 
 	$scope.checkGiftCard = function(){
-		giftcard.notes_field.content = $scope.order.form.notes;
-		giftcard.notes_field.start();
+		if( validateGiftCard ){
+			giftcard.notes_field.content = $scope.order.form.notes;
+			giftcard.notes_field.start();
+		}
 	}
 
 	var credit = CreditService;
 	$scope.credit = { hasValue : false };
+
 	// Event will be called when the credit changes
-	$scope.$on( 'creditChanged', function(e, data) {
-		$scope.credit.value = credit.value;
-		$scope.credit.number = parseFloat( credit.value );
-		$scope.credit.redeemed = credit.redeemed;
-		$scope.order.updateTotal();
-		if( parseFloat( $scope.credit.value ) > 0 ){
-			$scope.credit.hasValue = true;
-		} else {
-			$scope.credit.hasValue = false;
-		}
+	$rootScope.$on( 'creditChanged', function(e, data) {
+		$scope.$safeApply( function($scope) {
+			$scope.credit.value = credit.value;
+			$scope.credit.number = parseFloat( credit.value );
+			$scope.credit.redeemed = credit.redeemed;
+			$scope.order.updateTotal();
+			if( parseFloat( $scope.credit.value ) > 0 ){
+				$scope.credit.hasValue = true;
+			} else {
+				$scope.credit.hasValue = false;
+			}	
+		} );
 	});
 
+	// Credit card info was changed
 	$scope.$on( 'creditCardInfoChanged', function(e, data) {
 		$scope.order.creditCardChanged();
-	});
+	} );
+
+	var validateGiftCard = false;
+
+	// see #2799
+	$rootScope.$on( 'UserRestaurantInfoLoaded', function( e, data ) {
+		validateGiftCard = true;
+		// process credit
+		credit.processCredit( parseFloat( data.credit ) );	
+		// process gift card
+		giftcard.notes_field.processJson( data.giftcard );
+		// process the preset stuff
+		var id_preset = data.id_preset;
+		// Method that checks if the preset must to be reloaded #1988
+		OrderService.account.checkPresetUpdate( id_preset, $scope.restaurant.id_restaurant, 
+			// will be called if the preset was reloaded
+			function(){
+				// reset cart
+				order.resetCart();
+				// call process again
+				process();
+			}
+		);
+	} );
 
 	var restaurantService = RestaurantService;
-
 
 	// Event will be called after the restaurant load
 	$scope.$on( 'restaurantLoaded', function(e, data) {
@@ -849,9 +877,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
 		
-
-
-
 		setTimeout( function(){
 			// add that its been loaded so we can show the overpull peeking guy
 			$('body').addClass('page-restaurant-loaded');
@@ -864,11 +889,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 				giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
 				giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
 				
-				// Load the credit info
-				if( OrderService.account.user && OrderService.account.user.id_user ){
-					credit.getCredit( $scope.restaurant.id_restaurant );	
-				}
-
 				var position = PositionsService;
 				var address = position.pos();
 
@@ -897,16 +917,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 			// Call anyway
 			process();
 
-			// Method that checks if the preset must to be reloaded #1988
-			OrderService.account.checkPresetUpdate( data.restaurant.id_restaurant, 
-				// will be called if the preset was reloaded
-				function(){
-					// reset cart
-					order.resetCart();
-					// call process again
-					process();
-				}
-			);
+			// see #2799
+			order.loadUserRestaurantInfo( function( json ){ $rootScope.$broadcast( 'UserRestaurantInfoLoaded', json ); } );
 
 		} );
 

@@ -166,6 +166,21 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		service.code = false;
 	}
 
+	service.notes_field.processJson = function( json ){
+		if( json && json.success ){
+			service.notes_field.hasGiftCards = true;
+			var giftcard = json.success;
+			if( giftcard.id_restaurant && giftcard.id_restaurant != service.notes_field.id_restaurant ){
+				giftcard.error = 'other restaurant';
+			}
+			service.notes_field.giftcards.success.push( json.success );	
+		} else {
+			service.notes_field.giftcards.success = [];
+		}
+		service.notes_field.compareValues();
+		$rootScope.$broadcast( 'giftCardUpdate' );
+	}
+
 	service.notes_field.start = function(){
 
 		service.notes_field.hasGiftCards = false;
@@ -230,7 +245,6 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 		if( service.notes_field.value > values ){
 			service.notes_field.removed = true;
 		}
-
 		if( service.notes_field.restaurant_accepts ){
 			service.notes_field.value = App.ceil( values ).toFixed( 2 );
 			credit.setValue( App.ceil( credit.redeemed + values ).toFixed( 2 ) );
@@ -249,6 +263,16 @@ NGApp.factory( 'CreditService', function( $http, $rootScope ){
 	service.setValue = function( value ){
 		service.value = value;
 		$rootScope.$broadcast( 'creditChanged',  { value : service.value } );
+	}
+
+	service.processCredit = function( value ){
+		if( value && value > 0 ){
+			service.setValue( App.ceil( value ).toFixed( 2 ) );
+			service.redeemed = value;
+		} else {
+			service.setValue( App.ceil( 0 ).toFixed( 2 ) );
+			service.redeemed = 0;
+		}
 	}
 
 	service.getCredit = function( restaurant_id ){

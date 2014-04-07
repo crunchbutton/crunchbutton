@@ -202,27 +202,19 @@ NGApp.factory( 'AccountService', function( $http, $rootScope, PositionsService )
 			}	);
 	}
 
-	service.checkPresetUpdate = function( id_restaurant, callbackReload ){
-		if( service.user.id_user ){
-			var url = App.service + 'user/preset/' + id_restaurant;
-			$http( {
-				method: 'GET',
-				url: url
-				} ).success( function( data ) {
-					var reload = false;
-					if( data.id_preset && data.id_preset > 0 ){
-						if( service.user.presets && service.user.presets[ id_restaurant ] ){
-							if( service.user.presets[ id_restaurant ].id_preset != data.id_preset ){
-								reload = true;
-							}
-						} else {
-							reload = true;
-						}
-					}
-					if( reload ){
-						service.updateInfo( null, callbackReload );
-					}
-				}	);
+	service.checkPresetUpdate = function( id_preset, id_restaurant, callbackReload ){
+		var reload = false;
+		if( id_preset && id_preset > 0 ){
+			if( service.user.presets && service.user.presets[ id_restaurant ] ){
+				if( service.user.presets[ id_restaurant ].id_preset != id_preset ){
+					reload = true;
+				}
+			} else {
+				reload = true;
+			}
+		}
+		if( reload ){
+			service.updateInfo( null, callbackReload );
 		}
 	}
 
