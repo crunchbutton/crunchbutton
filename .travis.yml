@@ -17,10 +17,10 @@ before_script:
   - sudo apt-get install apache2
   - sudo a2enmod actions
   - sudo a2enmod rewrite
-  - echo pwd
+  - pwd
   - echo "export PATH=/home/travis/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
-  - echo travis/apache.conf | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
-  - echo travis/sites.conf | sed -e "s,PATH,`pwd`/web,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
+  - cat travis/apache.conf | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
+  - cat travis/sites.conf | sed -e "s,PATH,`pwd`/web,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
   - sudo service apache2 restart
   
 #  - "export DISPLAY=:99.0"
