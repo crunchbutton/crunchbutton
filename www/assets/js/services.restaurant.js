@@ -90,13 +90,6 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 					name: '_open',
 					reverse: true
 				}, {
-					name: 'delivery',
-					reverse: true
-				}, {
-					name: '_weight',
-					primer: parseFloat,
-					reverse: true
-				}, {
 					name: '_opensIn',
 					primer: function( n ){
 						if( !isNaN( parseInt( n ) ) ){
@@ -107,6 +100,13 @@ NGApp.factory('RestaurantsService', function ($http, $rootScope, PositionsServic
 						}
 					},
 					reverse: false
+				}, {
+					name: 'delivery',
+					reverse: true
+				}, {
+					name: '_weight',
+					primer: parseFloat,
+					reverse: true
 				}, {
 					name: 'distance',
 					primer: parseFloat,
