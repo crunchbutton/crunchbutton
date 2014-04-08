@@ -12,6 +12,7 @@ env:
 before_script:
   - mysql -e "create database IF NOT EXISTS crunchbutton_travis;" -uroot;
   - mysql -uroot crunchbutton_travis < db/dump.sql;
+  - phpenv config-add travis/php.ini
   - sudo apt-get clean
   - sudo apt-get update
   - sudo apt-get install apache2
