@@ -3,8 +3,6 @@ allow from all
 RewriteEngine on
 Options +Followsymlinks -Indexes
 
-
-
 ReWriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
 ReWriteRule .* - [F] 
 
@@ -16,7 +14,7 @@ RewriteRule ^(.+)$                    index.php?__url=$1 [L,QSA]
 <IfDefine !TRAVIS>
 
 	<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css)$">
-	Header set Cache-Control "max-age=290304000, public"
+		Header set Cache-Control "max-age=290304000, public"
 	</FilesMatch>
 	
 	AddType font/ttf .ttf
