@@ -15,6 +15,17 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 	service.menu = App.toggleMenu;
 	service.modal = AccountModalService;
 
+	service.getFood = function( cartItems ){
+		if( service.page == 'restaurant' &&
+				cartItems &&
+				service.restaurant && service.restaurant && service.restaurant._open &&
+				!App.rootScope.notificationBarStatus ){
+			angular.element( '.button-bottom-wrapper' ).addClass( 'button-bottom-show' );	
+		} else {
+			angular.element( '.button-bottom-wrapper' ).removeClass( 'button-bottom-show' );
+		}
+	}
+
 	service.home = function() {
 		if (App.isPhoneGap && cordova) {
 			$('html, body, .snap-content-inner').animate({scrollTop: 0}, 200, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);

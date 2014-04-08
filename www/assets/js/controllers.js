@@ -674,6 +674,10 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	MainNavigationService.order = $scope.order;
 
+	$scope.getFoodButton = function(){
+		MainNavigationService.getFood( order.cart.hasItems() );
+	}
+
 	// Alias to OrderService 'public' methods
 	$scope.order.updateTotal = function(){
 		return order.updateTotal();
@@ -767,11 +771,15 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	// Alias to CartService 'public' methods
 	$scope.order.cart = {};
-	$scope.order.cart.add = function( item ){
-		return order.cart.add( item );
+	$scope.order.cart.add = function( item ){		
+		order.cart.add( item );
+		$scope.getFoodButton();
+		return;
 	}
 	$scope.order.cart.remove = function( item ){
-		return order.cart.remove( item );
+		order.cart.remove( item );
+		$scope.getFoodButton();
+		return;
 	}
 	$scope.order.cart.customizeItem = function(option, item){
 		return order.cart.customizeItem( option, item );
@@ -889,6 +897,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 			// Place cash order even if the user has gift card see #1485
 			$scope.ignoreGiftCardWithCashOrder = false;
+
+			$scope.getFoodButton();
+
 		}	
 
 		setTimeout( function(){
@@ -1171,11 +1182,13 @@ NGApp.controller( 'GiftCardCtrl', function ( $scope, $http, $rootScope, GiftCard
 	});
 });
 
-NGApp.controller( 'MainHeaderCtrl', function ( $scope, MainNavigationService, OrderService ) {
+NGApp.controller( 'MainHeaderCtrl', function ( $scope, $rootScope, MainNavigationService, OrderService ) {
 	$scope.navigation = MainNavigationService;
 	$scope.order = OrderService;
+
 	$scope.$watch('navigation.page', function( newValue, oldValue, scope ) {
 		$scope.navigation.control();
+		$scope.navigation.getFood( false );
 	});
 });
 
