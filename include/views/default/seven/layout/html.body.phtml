@@ -144,8 +144,7 @@
 			</div>
 		</div>
 
-
-		<div ng-class="{'button-bottom-show': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && !notificationBarStatus ), 'button-bottom-show-notification-bar-on': (navigation.page == 'restaurant' && navigation.restaurant._open && navigation.order.cart.hasItems() && notificationBarStatus )}" class="button-bottom-wrapper fixed">
+		<div class="button-bottom-wrapper fixed">
 			<div class="button-pushable" ng-show="navigation.order.form.name || navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.submit();"><div>Get Food</div></button></div>
 			<div class="button-pushable" ng-show="!navigation.order.form.name && !navigation.order.form.phone"><button class="button orange get-food ani-all" ng-click="navigation.order.checkout();"><div>Checkout</div></button></div>
 		</div>
