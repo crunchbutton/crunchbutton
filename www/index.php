@@ -25,5 +25,11 @@ if (preg_match('/^www\..*$/',$_SERVER['HTTP_HOST'])) {
 	exit;
 }
 
+if (preg_match('/envoy-now.com|devin.la/i',$_SERVER['HTTP_REFERER']) {
+	die('test');
+	header('Location: http://_DOMAIN_');
+	exit;
+}
+
 require_once '../include/crunchbutton.php';
 Cana::app()->displayPage();
