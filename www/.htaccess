@@ -13,6 +13,33 @@ RewriteCond %{REQUEST_FILENAME}        !-d
 RewriteRule ^(.+)$                    index.php?__url=$1 [L,QSA]
 
 
+<IfDefine !TRAVIS>
 
-	AddDefaultCharset UTF-8
+	<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css)$">
+	Header set Cache-Control "max-age=290304000, public"
+	</FilesMatch>
+	
+	AddType font/ttf .ttf
+	AddType font/eot .eot
+	AddType font/otf .otf
+	AddType font/woff .woff
+	AddType image/svg+xml .svg .svgz
+	
+	php_value max_input_vars 100000
+	php_value upload_max_filesize 32M
+	php_value post_max_size 32M
+	
+	AddOutputFilterByType DEFLATE text/plain
+	AddOutputFilterByType DEFLATE text/html
+	AddOutputFilterByType DEFLATE text/xml
+	AddOutputFilterByType DEFLATE text/css
+	AddOutputFilterByType DEFLATE application/xml
+	AddOutputFilterByType DEFLATE application/xhtml+xml
+	AddOutputFilterByType DEFLATE application/rss+xml
+	AddOutputFilterByType DEFLATE application/javascript
+	AddOutputFilterByType DEFLATE application/x-javascript
+
+</IfDefine>
+
+AddDefaultCharset UTF-8
 
