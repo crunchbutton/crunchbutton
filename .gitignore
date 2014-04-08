@@ -32,3 +32,4 @@ workflow*
 # include db migrations
 !db/migrate/*.sql
 !db/dump.sql
+!.htaccess
