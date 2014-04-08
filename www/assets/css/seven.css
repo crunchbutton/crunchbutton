@@ -95,7 +95,7 @@ html {
 
 
 
-@media screen and (min-width: 769px) {
+@media screen and (min-width: 1025px) {
 	.content-padding {
 		padding: 10px 0 10px 0;
 	}
@@ -110,7 +110,7 @@ html {
 	}	
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
 	.content-padding {
 		padding: 10px;
 	}
