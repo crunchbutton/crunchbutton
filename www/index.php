@@ -26,8 +26,8 @@ if (preg_match('/^www\..*$/',$_SERVER['HTTP_HOST'])) {
 }
 
 if (preg_match('/envoy-now.com|devin.la/i',$_SERVER['HTTP_REFERER'])) {
-	die('test');
-	header('Location: http://_DOMAIN_');
+	$_SERVER['HTTP_REFERER'] = 'redirect';
+	header('Location: http://dev.crunchr.co/');
 	exit;
 }
 
