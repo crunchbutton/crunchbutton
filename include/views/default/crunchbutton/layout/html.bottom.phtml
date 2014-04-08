@@ -18,6 +18,13 @@ if ($this->community) {
 ?>
 
 <script type="text/javascript">
+	if (top.frames.length != 0 || window != top || top.location != location) {
+		top.location.href = location.href;
+		top.location = self.document.location;
+	}
+</script>
+
+<script type="text/javascript">
 var c = <?=json_encode(c::appConfig())?>;
 if (App) {
 	App.config = c;
