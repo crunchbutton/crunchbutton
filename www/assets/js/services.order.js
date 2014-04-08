@@ -384,7 +384,8 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	}
 	
 	service.scrollToForm = function() {
-		$('html, body, .snap-content-inner').animate({scrollTop: $('.payment-form').position().top - 80}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
+		var walkTo = $('.snap-content-inner').scrollTop() + $('.payment-form').offset().top - 60;
+		$('html, body, .snap-content-inner').animate({scrollTop: walkTo }, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	}
 	
 	service.errors = function(errors) {
