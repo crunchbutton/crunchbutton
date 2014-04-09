@@ -129,6 +129,12 @@ var Restaurant = function(id) {
 		if( self.closed_message == '' ){
 			self._tag = 'force_close';	
 		}
+		// if it has not tag, check if it is takeout only
+		if( self._tag == '' ){
+			if( self.takeout == '1' && self.delivery != '1' ){
+				self._tag = 'takeout';
+			}
+		}
 	}
 
 	self.getNow = function( now ){
