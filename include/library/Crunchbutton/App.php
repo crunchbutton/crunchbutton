@@ -182,6 +182,11 @@ class Crunchbutton_App extends Cana_App {
 		$config = $this->config();
 		$config->site = Crunchbutton_Site::byDomain();
 
+		if ($config->site->name == 'redirect' && $config->site->theme) {
+			header('Location: '.$config->site->theme.$_SERVER['REQUEST_URI']);
+			exit;
+		}
+
 		$config->host_callback = $host_callback;
 
 		switch ($_SERVER['SERVER_NAME']) {
@@ -245,6 +250,7 @@ class Crunchbutton_App extends Cana_App {
 				break;
 
 		}
+		
 
 	}
 	
