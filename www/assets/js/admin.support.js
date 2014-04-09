@@ -248,6 +248,12 @@ startChat.send = function(){
 		return;
 	}
 
+	if( !App.phone.validate( phone ) ){
+		alert( 'Please type a valid phone!' );
+		$( '#form-start-chat-phone' ).focus();
+		return;	
+	}
+
 	var message = $( '#form-start-chat-message' ).val();
 	if( $.trim( message ) == '' ){
 		alert( 'Please type a message!' );
