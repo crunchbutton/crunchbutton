@@ -15,11 +15,15 @@ class Controller_api_support extends Crunchbutton_Controller_RestAccount {
 				$params[ 'Created_By' ] = c::admin()->name;
 				$params[ 'Body' ] = $this->request()[ 'Body' ];;
 				$params[ 'From' ] = $this->request()[ 'From' ];
-				$support = Crunchbutton_Support::createNewChat( $params );
-				if( $support->id_support ){
-						echo json_encode( [ 'success' => $support->id_support ] );
+				if( trim( $params[ 'Name' ] ) != '' && trim( $params[ 'Body' ] ) != '' && trim( $params[ 'From' ] ) != '' ){
+					$support = Crunchbutton_Support::createNewChat( $params );
+					if( $support->id_support ){
+							echo json_encode( [ 'success' => $support->id_support ] );
+					} else {
+						echo json_encode( [ 'error' => 'error creating new chat' ] );
+					}	
 				} else {
-					echo json_encode( [ 'error' => 'error creating new chat' ] );
+					echo json_encode( [ 'error' => 'invalid request' ] );
 				}
 				break;
 		}
