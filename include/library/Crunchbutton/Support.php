@@ -256,7 +256,8 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function byPhone( $phone ){
-		return Crunchbutton_Support::q( "SELECT * FROM support s WHERE REPLACE( REPLACE( s.phone, ' ', '' ), '-', '' ) = '{$phone}' ORDER BY id_support ASC " );
+		$clean_phone = str_replace( '-', '', $clean_phone );
+		return Crunchbutton_Support::q( "SELECT * FROM support s WHERE s.phone = '{$phone}' OR s.phone = '{$clear_phone}' ORDER BY id_support ASC " );
 	}
 
 	public function addAdminMessage( $params = [] ){
