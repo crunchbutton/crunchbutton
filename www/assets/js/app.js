@@ -6,6 +6,14 @@
  * @date: 		2012-06-20
  *
  */
+ 
+ 
+if (top.frames.length != 0 || window != top || top.location != location) {
+	top.location.href = location.href;
+	top.location = self.document.location;
+	var REDIRECT = true;
+}
+ 
 var App = {
 	tagline: '',
 	service: '/api/',
@@ -662,7 +670,7 @@ App.processConfig = function(json, user) {
  */
 App.init = function(config) {
 	// ensure this function cant be called twice. can crash the browser if it does.
-	if (App._init) {
+	if (App._init || REDIRECT) {
 		return;
 	}
 	
