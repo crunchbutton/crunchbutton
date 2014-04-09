@@ -35,6 +35,10 @@
 					</div>
 				</div>
 				<div class="span2">
+					<br/>
+					<button class="send-sms-button btn btn-green"><i class="icon-mobile-phone"></i>&nbsp;Send SMS</button>
+				</div>
+				<div class="span2">
 				<br/>
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Auto refresh: <?php echo $this->autoRefresh; ?> <span class="caret"></span></button>
@@ -47,10 +51,6 @@
 				<div class="span2">
 					<br/>
 					<button onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
-				</div>
-				<div class="span2">
-					<br/>
-					<button class="send-sms-button btn btn-green"><i class="icon-mobile-phone"></i>&nbsp;Send SMS</button>
 				</div>
 				<div class="span2" style="text-align:right;">
 					<br/>
