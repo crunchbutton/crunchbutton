@@ -2006,3 +2006,53 @@ admin_config.save = function( key, value, success, error ){
 		}
 	});
 }
+
+App.phone = {
+
+	/**
+	 * Add dashes to the phone number, unifying how phone number looks
+	 */
+	format: function(num) {
+		if( num != null ){
+			num = num.replace(/^0|^1/,'');
+			num = num.replace(/[^\d]*/gi,'');
+			num = num.substr(0,10);
+
+			if (num.length >= 7) {
+				num = num.replace(/(\d{3})(\d{3})(.*)/, "$1-$2-$3");
+			} else if (num.length >= 4) {
+				num = num.replace(/(\d{3})(.*)/, "$1-$2");
+			}
+		}
+		return num;
+	},
+	validate: function(num) {
+
+		if( !num ){
+			return false;
+		}
+
+		num = num.replace(new RegExp( '-', 'g'), '');
+
+		if (!num || num.length != 10) {
+			return false;
+		}
+
+		var
+			nums = num.split(''),
+			prev;
+
+		for (x in nums) {
+			if (!prev) {
+				prev = nums[x];
+				continue;
+			}
+
+			if (nums[x] != prev) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+};
