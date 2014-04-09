@@ -11,7 +11,7 @@
 
 		<div class="table-header">
 			<div class="row-fluid">
-				<div class="span2">
+
 				<br/>
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Status: <?php echo $this->status; ?> <span class="caret"></span></button>
@@ -21,9 +21,8 @@
 							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=closed')">Closed</a></li>
 						</ul>
 					</div>
-				</div>
-				<div class="span2">
-				<br/>
+					&nbsp;&nbsp;&nbsp;
+
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Type: <?php echo $this->type; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
@@ -33,13 +32,8 @@
 							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=warning')">Warning</a></li>
 						</ul>
 					</div>
-				</div>
-				<div class="span2">
-					<br/>
-					<button class="send-sms-button btn btn-green"><i class="icon-mobile-phone"></i>&nbsp;Send SMS</button>
-				</div>
-				<div class="span2">
-				<br/>
+
+					&nbsp;&nbsp;&nbsp;
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Auto refresh: <?php echo $this->autoRefresh; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
@@ -47,18 +41,20 @@
 							<li><a href="#" onclick="load('/support/content?type=<?php echo $this->type; ?>&autoRefresh=off&status=open')">Off</a></li>
 						</ul>
 					</div>
-				</div>
-				<div class="span2">
-					<br/>
+
+					&nbsp;&nbsp;&nbsp;
 					<button onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
-				</div>
-				<div class="span2" style="text-align:right;">
-					<br/>
-					<div style="height:25px">
-						<span id="warning-loaded" style="display:none;" class="label label-blue"><i class="icon-ok-sign"></i> Loaded</span>
-					</div>
+				
+					&nbsp;&nbsp;&nbsp;
+					<button class="send-sms-button btn btn-blue"><i class="icon-comment-alt"></i>&nbsp;Send SMS</button>
+
+					&nbsp;&nbsp;&nbsp;
+					<button class="make-call-button btn btn-green"><i class="icon-phone"></i>&nbsp;Make a call</button>
+
+					&nbsp;&nbsp;&nbsp;
 					<span id="auto-refresh-timer" style="display:none;" ><i class="icon-clock"></i> Refresh in <span id="auto-refresh-timer-counter"></span></span>
-				</div>
+					&nbsp;&nbsp;&nbsp;
+					<span id="warning-loaded" style="display:none;" class="label label-blue"><i class="icon-ok-sign"></i> Loaded</span>
 			</div>
 		</div>
 		<?php 
@@ -229,6 +225,16 @@ $( document ).ready( function(){
 		e.preventDefault();
 		var url = '/support/new-chat';
 		$.get( url, function( data ) {
+			$( '#modal-sms-title' ).html( 'Send SMS' );
+			$( '#modal-sms' ).modal();
+			$( '#modal-sms-body' ).html( data );
+		} );
+	} );
+	$( '.make-call-button' ).click( function(e) {
+		e.preventDefault();
+		var url = '/support/make-call';
+		$.get( url, function( data ) {
+			$( '#modal-sms-title' ).html( 'Make a call' );
 			$( '#modal-sms' ).modal();
 			$( '#modal-sms-body' ).html( data );
 		} );
