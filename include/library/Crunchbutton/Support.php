@@ -124,7 +124,8 @@ class Crunchbutton_Support extends Cana_Table {
 		if( $createNewTicket ) {
 			// Create a new sms ticket
 			$support = Crunchbutton_Support::createNewSMSTicket(  [ 'phone' => $params[ 'From' ], 
-																															'body' => 'Ticket created at cockpit', 
+																															'name' => $params[ 'Name' ], 
+																															'body' => '(Ticket created at cockpit)', 
 																															'id_session_twilio' => $twilio_session->id_session_twilio ] );
 		} else {
 			if( $support->status == Crunchbutton_Support::STATUS_CLOSED ){
@@ -153,6 +154,9 @@ class Crunchbutton_Support extends Cana_Table {
 			$support->id_restaurant = $order->id_restaurant;
 			$support->id_user = $order->id_user;
 			$messageParams[ 'name' ] = $order->name;
+		}
+		if( trim( $messageParams[ 'name' ] ) == '' && trim( $params[ 'name' ] ) != '' ){
+			$messageParams[ 'name' ] = $params[ 'name' ];
 		}
 		$support->save();
 		// Params to create the new Support message
