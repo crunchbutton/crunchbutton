@@ -44,9 +44,13 @@
 						</ul>
 					</div>
 				</div>
-				<div class="span4">
+				<div class="span2">
 					<br/>
 					<button onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
+				</div>
+				<div class="span2">
+					<br/>
+					<button class="send-sms-button btn btn-green"><i class="icon-mobile-phone"></i>&nbsp;Send SMS</button>
 				</div>
 				<div class="span2" style="text-align:right;">
 					<br/>
@@ -219,6 +223,18 @@
 		}?>
 	</div>
 </div>
+<script type="text/javascript">
+$( document ).ready( function(){
+	$( '.send-sms-button' ).click( function(e) {
+		e.preventDefault();
+		var url = '/support/new-chat';
+		$.get( url, function( data ) {
+			$( '#modal-sms' ).modal();
+			$( '#modal-sms-body' ).html( data );
+		} );
+	} );
+} );
+</script>
 <script type="text/javascript">
 	setTimeout( function(){
 		$( '#warning-loaded' ).fadeIn();

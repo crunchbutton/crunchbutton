@@ -231,3 +231,46 @@ var SupportChats = {
 		}
 	}
 };
+
+var startChat = {};
+startChat.send = function(){
+	var name = $( '#form-start-chat-name' ).val();
+	if( $.trim( name ) == '' ){
+		alert( 'Please type a name!' );
+		$( '#form-start-chat-name' ).focus();
+		return;
+	}
+
+	var phone = $( '#form-start-chat-phone' ).val();
+	if( $.trim( phone ) == '' ){
+		alert( 'Please type a phone!' );
+		$( '#form-start-chat-phone' ).focus();
+		return;
+	}
+
+	var message = $( '#form-start-chat-message' ).val();
+	if( $.trim( message ) == '' ){
+		alert( 'Please type a message!' );
+		$( '#form-start-chat-message' ).focus();
+		return;
+	}
+
+	$( '.form-start-chat-spin' ).show();
+	$( '.form-start-chat-button' ).hide();
+
+	$.ajax( {
+		url: '/api/support/new-chat',
+		method: 'POST',
+		data: { 'Name' : name, 'From' : phone, 'Body' : message },
+		dataType: 'json',
+	} ).done( function( data ) {
+		if( data.success ){
+			$( '#modal-sms' ).modal( 'hide' );
+			SupportChats.createChat( data.success );
+		} else {
+			$( '#modal-sms' ).modal( 'hide' );
+			alert( 'Oops, error! ' + data.error );
+		}
+	} );		
+
+}
