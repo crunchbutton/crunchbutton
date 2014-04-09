@@ -80,6 +80,64 @@ class Crunchbutton_Support extends Cana_Table {
 		return $message->body;	
 	}
 
+	public function createNewChat( $params ){
+		// try to get an existing session
+		$twilio_session = Session_Twilio::sessionByPhone( $params[ 'From' ] );
+		
+		if( !$twilio_session->id_session_twilio ){
+
+			// Create new session
+			$session = new Crunchbutton_Session_Adapter();
+			$fakeSessionId = substr( str_replace( '.' , '', uniqid( rand(), true ) ), 0, 32 );
+			$session->write( $fakeSessionId );
+			$session->save();
+
+			// Create a new session twilio
+			$twilio_session = new Crunchbutton_Session_Twilio;
+			$twilio_session->id_session = $session->id_session;
+			$twilio_session->data = json_encode( $params );
+			$twilio_session->phone = $params[ 'From' ];
+			$twilio_session->save();
+		}
+
+		// Get the current support ticket
+		$support = Support::getByTwilioSessionId( $twilio_session->id_session_twilio );
+		$createNewTicket = false;
+		// if a user send a new message a day later, make sure it creates a new issue - #2453
+		if( $support->id_support ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$support_date = $support->date()->get(0);
+			if( $support_date ){
+				$interval = $now->diff( $support_date );
+				$seconds = ( $interval->s ) + ( $interval->i * 60 ) + ( $interval->h * 60 * 60 ) + ( $interval->d * 60 * 60 * 24 ) + ( $interval->m * 60 * 60 * 24 * 30 ) + ( $interval->y * 60 * 60 * 24 * 365 );
+				// This ticket is too old - create a new one
+				if( $seconds >= 86400 ){
+					$createNewTicket = true;
+				}
+			} else {
+				$createNewTicket = true;
+			}
+		} else {
+			$createNewTicket = true;
+		}
+
+		if( $createNewTicket ) {
+			// Create a new sms ticket
+			$support = Crunchbutton_Support::createNewSMSTicket(  [ 'phone' => $params[ 'From' ], 
+																															'body' => 'Ticket created at cockpit', 
+																															'id_session_twilio' => $twilio_session->id_session_twilio ] );
+		} else {
+			if( $support->status == Crunchbutton_Support::STATUS_CLOSED ){
+				$support->status = Crunchbutton_Support::STATUS_OPEN;
+				$support->addSystemMessage( 'Ticket reopened at cockpit' );
+			} else {
+				$support->addSystemMessage( 'Chat started by fake sms' );
+			}
+		}
+		$support->addAdminReply( $params[ 'Body' ] );
+		return $support;
+	}
+
 	public function createNewSMSTicket( $params = [] ){
 		$messageParams = [];
 		$support = new Crunchbutton_Support();
@@ -186,7 +244,7 @@ class Crunchbutton_Support extends Cana_Table {
 	public function addAdminReply( $body ){
 		if( trim( $body ) != '' ){
 			$admin = Crunchbutton_Admin::o( c::admin()->id_admin );
-			$message = $this->addAdminMessage( [ 'body' => $body, 'phone' => $admin->phone ] );
+			$message = $this->addAdminMessage( [ 'body' => $body, 'phone' => $admin->phone, 'id_admin' => c::admin()->id_admin ] );
 			if( $message->id_support_message ){
 				$message->notify();
 			}
@@ -194,7 +252,16 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function addAdminMessage( $params = [] ){
-		$admin = Crunchbutton_Admin::getByPhone( $params[ 'phone' ] );
+		$hasAdmin = false;
+		if( $params[ 'id_admin' ] ){
+			$admin = Crunchbutton_Admin::o( $params[ 'id_admin' ] );
+			if( $admin->id_admin ){
+				$hasAdmin = true;
+			}
+		} 
+		if( !$hasAdmin ){
+			$admin = Crunchbutton_Admin::getByPhone( $params[ 'phone' ] );
+		}
 		if( $admin->id_admin ){
 			$messageParams[ 'id_admin' ] = $admin->id_admin;
 			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_SMS;

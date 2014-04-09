@@ -28,6 +28,18 @@ class Crunchbutton_Session_Twilio extends Cana_Table {
 		return $sess;
 	}
 
+	public function sessionByPhone( $phone ){
+		$phone = str_replace( '+1','', $phone );
+		$sess = Crunchbutton_Session_Twilio::q( "SELECT st.* FROM session_twilio st
+												INNER JOIN support s ON st.id_session_twilio = s.id_session_twilio 
+												WHERE st.phone = '{$phone}' AND DATEDIFF( NOW(), s.datetime ) <= 10
+												ORDER BY st.id_session_twilio DESC LIMIT 1" );
+		if ( $sess->id_session_twilio ) {
+			return $sess;	
+		}
+		return false;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this

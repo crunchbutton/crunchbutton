@@ -78,5 +78,7 @@ foreach( $messages as $message ){
 ?>
 </ul>
 <script type="text/javascript">
+if( SupportChats.chats && SupportChats.chats[ <?php echo $this->support->id_support ?> ] ){
 	SupportChats.chats[ <?php echo $this->support->id_support ?> ].setLastIdSupportMessage( '<?php echo $last_id_support_message; ?>0' );
+}
 </script>

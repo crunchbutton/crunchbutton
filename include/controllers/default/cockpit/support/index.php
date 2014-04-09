@@ -14,6 +14,11 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 
 		switch ($action) {
 
+			case 'new-chat':
+				c::view()->layout('layout/ajax');
+				c::view()->display('support/new-chat');
+				break;
+
 			case 'new':
 
 				if ( !Crunchbutton_Support::adminHasCreatePermission() ) {
@@ -158,7 +163,7 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 							}
 							// show the support's form
 							c::view()->support = $support;
-							c::view()->display('support/support');	
+							c::view()->display('support/support');
 						} else {
 							c::view()->display('support/index');
 						}

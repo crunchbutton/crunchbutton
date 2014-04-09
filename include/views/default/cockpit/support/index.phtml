@@ -42,6 +42,18 @@
 
 <div id="container-chats"></div>
 
+<div class="modal hide fade" id="modal-sms" style="display: none;">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" type="button">×</button>
+		<h6>Send SMS</h6>
+	</div>
+	<div class="modal-body" id="modal-sms-body"></div>
+	<div class="modal-footer">
+		<button class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+</div>
+
+
 <script type="text/javascript">
 
 var status = 'open';
@@ -76,7 +88,6 @@ $(function() {
 					self.removeAttr('disabled');
 				}
 			});
-
 		});
 	});
 </script>
