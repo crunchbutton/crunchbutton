@@ -7,11 +7,12 @@
  *
  */
  
- 
+var REDIRECT = false;
+
 if (top.frames.length != 0 || window != top || top.location != location) {
 	top.location.href = location.href;
 	top.location = self.document.location;
-	var REDIRECT = true;
+	REDIRECT = true;
 }
  
 var App = {
