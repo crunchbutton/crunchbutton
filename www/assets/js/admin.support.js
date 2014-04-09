@@ -277,6 +277,42 @@ startChat.send = function(){
 			$( '#modal-sms' ).modal( 'hide' );
 			alert( 'Oops, error! ' + data.error );
 		}
-	} );		
+	} );
+}
+var makeCall = {};
 
+makeCall.start = function(){
+	
+	var phone = $( '#form-make-call-phone' ).val();
+	if( $.trim( phone ) == '' ){
+		alert( 'Please type a phone!' );
+		$( '#form-make-call-phone' ).focus();
+		return;
+	}
+
+	if( !App.phone.validate( phone ) ){
+		alert( 'Please type a valid phone!' );
+		$( '#form-make-call-phone' ).focus();
+		return;	
+	}
+
+	var callto = $( '#form-make-call-to' ).val();
+
+	$( '.form-make-call-spin' ).show();
+	$( '.form-make-call-button' ).hide();
+
+	$.ajax( {
+		url: '/support/phone/connect/' + callto + '?phone=' + phone
+	} ).done( function( data ) {
+		alert( data );
+		$( '#modal-sms' ).modal( 'hide' );
+	} );
+}
+
+makeCall.direct = function( callto, phone ){
+	$.ajax( {
+		url: '/support/phone/connect/' + callto + '?phone=' + phone
+	} ).done( function( data ) {
+		alert( data );
+	} );
 }

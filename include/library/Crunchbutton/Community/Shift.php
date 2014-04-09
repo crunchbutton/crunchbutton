@@ -431,7 +431,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
-		if( count( $communitiesWithoutShift ) > 0 ){
+		// removed this sms for while
+
+		if( false && count( $communitiesWithoutShift ) > 0 ){
 
 			$message = "The following communities doesn't have shifts for the current week: " . join( ', ', $communitiesWithoutShift );
 			

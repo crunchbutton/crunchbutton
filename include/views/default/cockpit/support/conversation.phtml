@@ -10,6 +10,9 @@
 		<textarea name="text-conversation-reply" id="text-conversation-reply" placeholder="Reply to customer" class="span12"></textarea>
 		<br/>
 		<button class="btn btn-blue btn-conversation-reply"><i class="icon-mobile-phone"></i> Reply to Customer</button>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		
+		<button onclick="makeCall.direct( 'customer', '<?php echo $this->support->phone; ?>' );" target="_blank" class="btn btn-green"><i class="icon-phone"></i> Call Customer <?php echo Crunchbutton_Util::format_phone( $this->support->phone ); ?></button>
 	</div>
 	<?php } ?>
 </div>
