@@ -14,11 +14,30 @@ class Controller_home extends Crunchbutton_Controller_Account {
 				c::view()->display('order/index');
 				exit();
 			} else {
-				$this->showList();
+				$this->miniRouter();
 			}
 		} else {
-			$this->showList();
+			$this->miniRouter();
 		}
+	}
+
+	public function miniRouter(){
+		c::view()->menu = true;
+		switch ( c::getPagePiece( 0 ) ) {
+			case 'shifts':
+				c::view()->actual = 'list-shift';
+				$this->showShifts();
+				break;
+			
+			default:
+				$this->showList();
+				break;
+		}
+	}
+
+	public function showShifts(){
+		c::view()->shifts = Crunchbutton_Community_Shift::nextShiftsByAdmin( c::admin()->id_admin );
+		c::view()->display( 'shifts/index' );
 	}
 
 	public function showList(){
@@ -50,6 +69,13 @@ class Controller_home extends Crunchbutton_Controller_Account {
 			}
 			return ( $a->lastStatus[ 'order' ] > $b->lastStatus[ 'order' ] );
 		} );
+
+
+		if( $justMineOrders ){
+			c::view()->actual = 'list-mine';
+		} else {
+			c::view()->actual = 'list-all';
+		}
 
 		c::view()->justMineOrders = $justMineOrders;
 		c::view()->hours = $hours;

@@ -1,0 +1,31 @@
+<?php 
+$shifts = $this->shifts;
+?>
+<div class="content">
+	<div class="wrap">
+		<?php 
+		if( $shifts->count() > 0 ){
+			foreach( $shifts as $shift ) { ?>
+				<div class="shifts-list-item">
+					<div class="shifts-list-item-community">
+						<?php echo $shift->community()->name; ?>
+					</div>
+					<div class="shifts-list-item-date">
+						<div class="shifts-list-item-day">
+							<?php echo $shift->dateStart()->format( 'M jS Y' ); ?>
+						</div>
+						<div class="shifts-list-item-hour">
+							<?php echo $shift->startEndToString(); ?> (<?php echo $shift->timezoneAbbr(); ?>)
+						</div>
+					</div>
+					<div class="divider"></div>
+				</div>
+			<?php 
+			} 
+		} else { ?>
+			<div class="no-orders">
+				No shifts
+			</div>
+		<?php } ?>
+	</div>
+</div>
