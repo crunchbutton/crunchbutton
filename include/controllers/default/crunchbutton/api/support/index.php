@@ -10,14 +10,56 @@ class Controller_api_Support extends Crunchbutton_Controller_Rest {
 				switch ( c::getPagePiece(2) ) {
 					case 'sms':
 						// Create a twilio session
-						$tsess = new Session_Twilio;
-						$tsess->phone = $this->request()['phone'];
-						$tsess->data = json_encode( $_REQUEST );
-						$tsess->save();
-						$support = Crunchbutton_Support::createNewBoxTicket(  [ 'phone' => $this->request()['phone'], 
-																																		'name' => $this->request()['name'], 
-																																		'body' => $this->request()['message'], 
-																																		'id_session_twilio' => $tsess->id_session_twilio ] );
+						$phone = str_replace( '-', '', $this->request()['phone']);;
+						$phone = str_replace( ' ', '', $phone);
+						$phone = str_replace( '.', '', $phone);
+
+						$twilio_session = Session_Twilio::sessionByPhone( $phone );
+
+						if( !$twilio_session->id_session_twilio ){
+							$twilio_session = new Session_Twilio;
+						}
+						$twilio_session->phone = $phone;
+						$twilio_session->data = json_encode( $_REQUEST );
+						$twilio_session->save();
+
+						$support = Support::getByTwilioSessionId( $twilio_session->id_session_twilio );
+						$createNewTicket = false;
+						// if a user send a new message a day later, make sure it creates a new issue - #2453
+						if( $support->id_support ){
+							$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+							$support_date = $support->date()->get(0);
+							if( $support_date ){
+								$interval = $now->diff( $support_date );
+								$seconds = ( $interval->s ) + ( $interval->i * 60 ) + ( $interval->h * 60 * 60 ) + ( $interval->d * 60 * 60 * 24 ) + ( $interval->m * 60 * 60 * 24 * 30 ) + ( $interval->y * 60 * 60 * 24 * 365 );
+								// This ticket is too old - create a new one
+								if( $seconds >= 86400 ){
+									$createNewTicket = true;
+								}
+							} else {
+								$createNewTicket = true;
+							}
+						} else {
+							$createNewTicket = true;
+						}
+
+						if( $createNewTicket ) {
+							// Create a new sms ticket
+							$support = Crunchbutton_Support::createNewBoxTicket(  [ 'phone' => $phone, 
+																																			'name' => $this->request()['name'], 
+																																			'body' => $this->request()['message'], 
+																																			'id_session_twilio' => $twilio_session->id_session_twilio ] );
+						} else {
+							if( $support->status == Crunchbutton_Support::STATUS_CLOSED ){
+								$support->status = Crunchbutton_Support::STATUS_OPEN;
+								$support->addSystemMessage( 'Ticket reopened by customer' );
+							}
+							$support->addCustomerMessage( [ 'name' => $this->request()['name'], 
+																							'phone' => $phone, 
+																							'body' => $this->request()['message'] ] );
+							$support->save();
+						}
+
 						echo $support->json();
 						$support->notify();
 					break;
