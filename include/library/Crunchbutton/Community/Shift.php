@@ -29,6 +29,38 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 											WHERE o.id_order = ' . $id_order . ' AND cs.date_start <= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.date_end >= "' . $now->format( 'Y-m-d H:i:s' ) . '" AND cs.active = 1 ');
 	}
 
+	public function export(){
+		$out = [];
+		
+		$out[ 'community' ] = array( 'id_community' => $this->id_community, 'name' => $this->community()->name );
+
+		$out[ 'period' ] = array( 'toString' => $this->startEndToString(), 
+															'day_start' => $this->dateStart()->format( 'M jS Y' ),
+															'day_end' => $this->dateEnd()->format( 'M jS Y' ),
+															'date_start' => $this->dateStart()->format( 'Y-m-d H:i:s' ),
+															'date_end' => $this->dateEnd()->format( 'Y-m-d H:i:s' ),
+															'timezone' => $this->timezone(),
+															'timezone_abbr' => $this->timezoneAbbr() );
+
+		$out[ 'period_pst' ] = array( 'toString' => $this->startEndToString( c::config()->timezone ), 
+																	'day_start' => $this->dateStart( c::config()->timezone )->format( 'M jS Y' ),
+																	'day_end' => $this->dateEnd( c::config()->timezone )->format( 'M jS Y' ),
+																	'date_start' => $this->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' ),
+																	'date_end' => $this->dateEnd( c::config()->timezone )->format( 'Y-m-d H:i:s' ),
+																	'timezone' => c::config()->timezone,
+																	'timezone_abbr' => 'PST' );
+		return $out;
+	}
+
+	public function nextShiftsByAdmin( $id_admin ){
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		$query = 'SELECT cs.* FROM admin_shift_assign ass
+								INNER JOIN community_shift cs ON cs.id_community_shift = ass.id_community_shift
+								WHERE ass.id_admin = "' . $id_admin . '" AND 
+											DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now->format( 'Y-m-d' )  . '" ORDER BY cs.date_start ASC  LIMIT 20';
+		return Crunchbutton_Community_Shift::q( $query );
+	}
+
 	public function shiftsByDay( $date ){
 		Crunchbutton_Community_Shift::createRecurringEvent( $date );
 		return Crunchbutton_Community_Shift::q( 'SELECT cs.* FROM community_shift cs INNER JOIN community c ON c.id_community = cs.id_community WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $date . '" ORDER BY c.name, cs.date_start ASC' );

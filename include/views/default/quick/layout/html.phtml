@@ -445,7 +445,7 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 		font-size: 1.8em;
 		padding: 1em;
 	}
-	.order-list-item{
+	.order-list-item, .shifts-list-item{
 		color: #FFF;
 		font-size: 1.1em;
 		padding:0.5em;
@@ -528,16 +528,54 @@ input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner, 
 		.menu-bar{
 			font-size: 1.8em;
 		}
-
+	.shifts-list-item{
+		background: #6d6d6d;
+	}
+	.shifts-list-item-date{
+		font-size: 1.7em;
+	}
+		.shifts-list-item-day{
+			opacity: 0.7;
+		}
+	.shifts-list-item-hour{
+		font-size: 1.2em;	
+	}
+	.shifts-list-item-community{
+		font-size: 1.7em;
+		opacity: 0.5;
+		float: right;
+		text-align: right;
+	}
+	.menu-bar a.actual{
+		color: #000;
+		text-decoration: none;
+	}
 </style>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/assets/js/fastclick.js"></script>
-
 </head>
 <body>
 	<div class="loader-wrap">
 		<div class="loader-frame"><div class="loader">&nbsp;</div></div>
 	</div>
+	<?php if( $this->menu ) { 
+			$orders = $this->orders; 
+			$showAll = !$this->justMineOrders;
+			$hours = $this->hours;
+		?>
+	<div class="control">
+		<div class="wrap order-status-init menu-bar">
+			<b>Show: </b>
+			<a class="<?php if( $this->actual == 'list-all' ){ echo 'actual'; } ?>" href="/list/<?php echo $hours; ?>">all</a>
+			&nbsp;|&nbsp;
+			<a class="<?php if( $this->actual == 'list-mine' ){ echo 'actual'; } ?>" href="/mine/<?php echo $hours; ?>">mine</a>
+			&nbsp;|&nbsp;
+			<a class="<?php if( $this->actual == 'list-shift' ){ echo 'actual'; } ?>" href="/shifts/">my next shifts</a>
+			<div class="divider"></div>
+		</div>
+	</div>
+	<?php } ?>
+
 	<?php echo $this->content; ?>
 </body>
 <script>

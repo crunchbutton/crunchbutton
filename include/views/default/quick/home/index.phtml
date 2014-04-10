@@ -3,19 +3,6 @@ $orders = $this->orders;
 $showAll = !$this->justMineOrders;
 $hours = $this->hours;
 ?>
-<div class="control">
-	<div class="wrap order-status-init menu-bar">
-		<b>Show: </b>
-		<?php if( $showAll ) { ?>
-			<strong>all</strong> | <a href="/mine/<?php echo $hours; ?>">mine</a>
-		 <?php } else { ?>
-		 	<a href="/list/<?php echo $hours; ?>">all</a> | <strong>mine</strong>
-		 <?php } ?>
-		
-		<div class="divider"></div>
-	</div>
-</div>
-
 <div class="content">
 	<div class="wrap">
 		<div class="warning">
