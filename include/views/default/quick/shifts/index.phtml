@@ -12,7 +12,7 @@ $shifts = $this->shifts;
 					</div>
 					<div class="shifts-list-item-date">
 						<div class="shifts-list-item-day">
-							<?php echo $shift->dateStart()->format( 'M jS Y' ); ?>
+							<?php echo $shift->dateStart()->format( 'D, M jS' ); ?>
 						</div>
 						<div class="shifts-list-item-hour">
 							<?php echo $shift->startEndToString(); ?> (<?php echo $shift->timezoneAbbr(); ?>)
