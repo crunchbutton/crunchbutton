@@ -27,6 +27,10 @@ class Controller_Support_Phone_Connect extends Crunchbutton_Controller_Account {
 			'+1'.$num,
 			'http://'.$host.'/api/twilio/outgoing/'.c::getPagePiece(3).'?PhoneNumber='.$_REQUEST['phone']
 		);
+
+
+		Log::debug( [ 'from' => $num, 'to' => $_REQUEST['phone'], 'caller' => c::getPagePiece(3), 'callerId' => $callerId,  'type' => 'connect-call' ] );
+
 		die('pick up your phone...');
 		exit;
 	}
