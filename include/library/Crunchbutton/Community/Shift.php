@@ -57,8 +57,19 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$query = 'SELECT cs.* FROM admin_shift_assign ass
 								INNER JOIN community_shift cs ON cs.id_community_shift = ass.id_community_shift
 								WHERE ass.id_admin = "' . $id_admin . '" AND 
-											DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now->format( 'Y-m-d' )  . '" ORDER BY cs.date_start ASC  LIMIT 20';
+									DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now->format( 'Y-m-d' )  . '" ORDER BY cs.date_start ASC  LIMIT 20';
 		return Crunchbutton_Community_Shift::q( $query );
+	}
+
+	public function nextShiftsByCommunities( $communities ){
+		if( count( $communities ) > 0 ){
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+			$query = 'SELECT cs.* FROM community_shift cs 
+									WHERE cs.id_community IN( ' . join( ',', $communities ) . ' ) AND
+										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now->format( 'Y-m-d' )  . '" ORDER BY cs.date_start ASC  LIMIT 20';
+			return Crunchbutton_Community_Shift::q( $query );	
+		}
+		return false;
 	}
 
 	public function shiftsByDay( $date ){

@@ -1,9 +1,8 @@
 <?php
 
 class Controller_home extends Crunchbutton_Controller_Account {
-	
-	public function init() {
 
+	public function init() {
 		c::view()->layout( 'layout/html' );
 		
 		if( c::db()->escape( c::getPagePiece( 0 ) ) ){
@@ -24,29 +23,65 @@ class Controller_home extends Crunchbutton_Controller_Account {
 	public function miniRouter(){
 		c::view()->menu = true;
 		switch ( c::getPagePiece( 0 ) ) {
-			case 'shifts':
-				c::view()->actual = 'list-shift';
-				$this->showShifts();
+			case 'shifts-list':
+				switch ( c::getPagePiece( 1 ) ) {
+					case 'all':
+						$this->showAllShifts();
+						break;
+					case 'mine':
+					default:
+						$this->showMineShifts();
+						break;
+				}
 				break;
-			
+			case 'orders-list':
 			default:
-				$this->showList();
+				switch ( c::getPagePiece( 1 ) ) {
+					case 'all':
+						$this->showAllOrders();
+						break;
+					case 'mine':
+					default:
+						$this->showMineOrders();
+						break;
+				}
 				break;
 		}
 	}
 
-	public function showShifts(){
-		c::view()->shifts = Crunchbutton_Community_Shift::nextShiftsByAdmin( c::admin()->id_admin );
-		c::view()->display( 'shifts/index' );
+	public function showAllShifts(){
+		c::view()->actual = 'shifts-all';
+		$communities = c::admin()->communitiesHeDeliveriesFor();
+		$list = [];
+		foreach( $communities as $community ){
+			$list[] = $community->id_community;
+		}
+		c::view()->shifts = Crunchbutton_Community_Shift::nextShiftsByCommunities( $list );
+		c::view()->display( 'shifts/all' );
 	}
 
-	public function showList(){
+	public function showMineShifts(){
+		c::view()->actual = 'shifts-mine';
+		c::view()->shifts = Crunchbutton_Community_Shift::nextShiftsByAdmin( c::admin()->id_admin );
+		c::view()->display( 'shifts/mine' );
+	}
 
-		$justMineOrders = ( c::db()->escape( c::getPagePiece( 0 ) ) == 'mine' );
+	public function showAllOrders(){
+		c::view()->actual = 'orders-all';
+		c::view()->orders = $this->getOrdersList( true );
+		c::view()->display( 'orders/index' );
+	}
 
-		$hours = c::getPagePiece( 1 ) ? c::getPagePiece( 1 ) : 12;
+	public function showMineOrders(){
+		c::view()->actual = 'orders-mine';
+		c::view()->orders = $this->getOrdersList();
+		c::view()->display( 'orders/index' );
+	}
+	
+	public function getOrdersList( $all = false ){
 
-		$orders = Order::deliveryOrders( $hours, ( c::db()->escape( c::getPagePiece( 0 ) ) == 'all' ) );
+		$hours = 120;
+		$orders = Order::deliveryOrders( $hours, $all );
 
 		$list = [];
 		foreach ( $orders as $order ) {
@@ -70,17 +105,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 			return ( $a->lastStatus[ 'order' ] > $b->lastStatus[ 'order' ] );
 		} );
 
-
-		if( $justMineOrders ){
-			c::view()->actual = 'list-mine';
-		} else {
-			c::view()->actual = 'list-all';
-		}
-
-		c::view()->justMineOrders = $justMineOrders;
-		c::view()->hours = $hours;
-		c::view()->orders = $list;
-		c::view()->display( 'home/index' );
+		return $list;
 	}
 
 }
