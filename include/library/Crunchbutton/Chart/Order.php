@@ -162,7 +162,6 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 								WHERE 
 									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
 									{$this->queryExcludeUsers}
-									AND c.id_community = {$community}
 								GROUP BY YEARWEEK(date)
 								ORDER BY YEARWEEK(date) ASC";
 
