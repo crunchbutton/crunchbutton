@@ -80,8 +80,10 @@ class Controller_home extends Crunchbutton_Controller_Account {
 	
 	public function getOrdersList( $all = false ){
 
-		$hours = 120;
-		$orders = Order::deliveryOrders( $hours, $all );
+		$hours = 12;
+		$orders = Order::deliveryOrders( $hours );
+
+		$justMineOrders = !$all;
 
 		$list = [];
 		foreach ( $orders as $order ) {
