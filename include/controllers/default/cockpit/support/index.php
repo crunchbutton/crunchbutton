@@ -15,11 +15,13 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 		switch ($action) {
 
 			case 'new-chat':
+				c::view()->admins = Crunchbutton_Admin::q( 'SELECT DISTINCT(a.id_admin) AS id, a.*, c.name AS community FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin INNER JOIN `group` g ON g.id_group = ag.id_group INNER JOIN community c ON c.driver_group = g.name WHERE a.phone != "" AND c.active = 1 ORDER BY a.name' );
 				c::view()->layout('layout/ajax');
 				c::view()->display('support/new-chat');
 				break;
 
 			case 'make-call':
+				c::view()->admins = Crunchbutton_Admin::q( 'SELECT DISTINCT(a.id_admin) AS id, a.*, c.name AS community FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin INNER JOIN `group` g ON g.id_group = ag.id_group INNER JOIN community c ON c.driver_group = g.name WHERE a.phone != "" AND c.active = 1 ORDER BY a.name' );
 				c::view()->layout('layout/ajax');
 				c::view()->display('support/make-call');
 				break;
