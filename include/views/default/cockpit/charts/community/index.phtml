@@ -52,9 +52,10 @@
 		<div class="container-<?php echo $community->id_community; ?>" style="display:none;">
 				<center><h3><?php echo $community->name; ?> ( <?php echo $restaurants; ?> restaurants )</h3></center>
 				<div class="row-fluid">
-					<div type="new-users" class="span4 new-users <?php echo $community->id_community; ?>" id="new-users-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
-					<div type="repeated-orders" class="span4 repeated-orders <?php echo $community->id_community; ?>" id="repeated-orders-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
-					<div type="gross-revenue" class="span4 group-revenue-by <?php echo $community->id_community; ?>" id="group-revenue-by-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+					<div type="orders" class="span3 orders- <?php echo $community->id_community; ?>" id="orders-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+					<div type="new-users" class="span3 new-users <?php echo $community->id_community; ?>" id="new-users-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+					<div type="repeated-orders" class="span3 repeated-orders <?php echo $community->id_community; ?>" id="repeated-orders-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
+					<div type="gross-revenue" class="span3 group-revenue-by <?php echo $community->id_community; ?>" id="group-revenue-by-<?php echo $community->id_community; ?>" community="<?php echo $community->id_community; ?>"></div>
 				</div>
 				<hr/>
 		</div>
@@ -74,6 +75,9 @@ function loadChartsOfCommunity( community ){
 		var type = area.attr( 'type' );
 		var partial = '';
 		switch( type){
+			case 'orders':
+				partial = 'orders-per-week-by-community/group-orders-community';
+				break;
 			case 'new-users':
 				partial = 'users-new-per-week-by-community/group-new-users-community';
 				break;

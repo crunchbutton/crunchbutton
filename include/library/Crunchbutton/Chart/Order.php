@@ -39,6 +39,15 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 																'orders-per-day-per-community' => array( 'title' => 'Last 14 Days', 'interval' => 'day', 'type' => 'column', 'method' => 'byDayPerCommunitySelective' ),
 															)
 												),
+												'group-orders-community' => array(
+														'title' => 'Orders',
+														'tags' => array( 'reps' ),
+														'charts' => array(  
+																'orders-per-day-by-community' => array( 'title' => 'Day', 'interval' => 'day', 'type' => 'column-community', 'method' => 'ordersByDayByCommunity' ),
+																'orders-per-week-by-community' => array( 'title' => 'Week', 'interval' => 'week', 'type' => 'column-community', 'method' => 'ordersByWeekByCommunity', 'default' => true ),
+																'orders-per-month-by-community' => array( 'title' => 'Month', 'interval' => 'month', 'type' => 'column-community', 'method' => 'ordersByMonthByCommunity' ),
+															)
+												),
 												/*
 												'group-orders-repeat' => array(
 														'title' => 'Repeat Orders',
@@ -123,6 +132,26 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		return $parsedData;
 	}
 
+	public function ordersByMonthByCommunity( $render = false ){
+
+		$community = ( $community ? $community : $_REQUEST[ 'community' ] );
+
+		$query = "SELECT DATE_FORMAT( o.date ,'%Y-%m') AS Month,
+											COUNT(*) AS Total
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+								WHERE 
+									o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
+									{$this->queryExcludeUsers}
+								GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
+		}
+		return $parsedData;
+	}
+
 	public function byWeek( $render = false ){
 
 		$query = "SELECT YEARWEEK(date) AS Week,
@@ -133,6 +162,30 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 								WHERE 
 									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
 									{$this->queryExcludeUsers}
+									AND c.id_community = {$community}
+								GROUP BY YEARWEEK(date)
+								ORDER BY YEARWEEK(date) ASC";
+
+		$parsedData = $this->parseDataWeeksSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit );
+		}
+		return $parsedData;
+	}
+
+	public function ordersByWeekByCommunity( $render = false ){
+
+		$community = ( $community ? $community : $_REQUEST[ 'community' ] );
+
+		$query = "SELECT YEARWEEK(date) AS Week,
+											 COUNT(*) AS Total
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+								WHERE 
+									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
+									{$this->queryExcludeUsers}
+									AND c.id_community = {$community}
 								GROUP BY YEARWEEK(date)
 								ORDER BY YEARWEEK(date) ASC";
 
@@ -161,6 +214,29 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 		}
 		return $parsedData;
 	}
+
+	public function ordersByDayByCommunity( $render = false ){
+
+		$community = ( $community ? $community : $_REQUEST[ 'community' ] );
+
+		$query = "SELECT DATE_FORMAT(o.date ,'%Y-%m-%d') AS Day,
+											 COUNT(*) AS Total
+								FROM `order` o
+								INNER JOIN user u ON u.id_user = o.id_user
+								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+								WHERE 
+									1 = 1
+									{$this->queryExcludeUsers}
+								AND c.id_community = '{$community}'
+								GROUP BY DATE_FORMAT(o.date ,'%Y-%m-%d') HAVING Day BETWEEN '{$this->dayFrom}' AND '{$this->dayTo}'";
+
+		$parsedData = $this->parseDataDaysSimple( $query, $this->description );
+		if( $render ){
+			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
+		}
+		return $parsedData;
+	}
+
 
 	public function byWeekPerRestaurant( $render = false ){
 
