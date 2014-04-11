@@ -144,6 +144,7 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 								WHERE 
 									o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 									{$this->queryExcludeUsers}
+									AND c.id_community = {$community}
 								GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
