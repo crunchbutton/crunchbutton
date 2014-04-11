@@ -1,16 +1,14 @@
 <?php 
-$supports = Crunchbutton_Support::byPhone( $this->support->phone );
+// $supports = Crunchbutton_Support::byPhone( $this->support->phone );
+$messages = Crunchbutton_Support_Message::byPhone( $this->support->phone );
 $first = true;
 ?>
 <div class="chat-scroll" style="height: 600px;overflow: auto;">
 <ul class="chat-box">
 	<?php	
-	foreach ( $supports as $support ) {
-		$messages = $support->messages();
+	// foreach ( $supports as $support ) {
+		// $messages = $support->messages();
 		?>
-			<li style="text-align:center;font-size:12px;margin-top:10px;<?php if( !$first ){ ?>border-top:1px solid #CCC;padding:15px;<?php } ?>" id="support-<?php echo $support->id_support;?>">
-				<strong><a href="/support/<?php echo $support->id_support; ?>" style="color:#666;">Ticket <?php echo $support->id_support ?> - <?php echo $support->date()->format( 'M jS Y - g:i:s A T' ); ?></a></strong>
-			</li>
 		<?php
 		foreach( $messages as $message ){
 			$first = false;
@@ -24,7 +22,9 @@ $first = true;
 								<span class="name"><strong>
 									<?php if( $message->name ) { echo $message->name; } else { echo '<i>No name</i>'; } ?>
 								</strong> <span class="badge badge-blue">user</span></span>
-								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?></span>
+								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true )?><br/>
+								<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
+								</span>
 							</div>
 						<?php echo nl2br( $message->body ); ?>
 						</li>
@@ -41,9 +41,11 @@ $first = true;
 										<strong>
 											<?php echo $message->admin()->name; ?>
 										</strong> 
-										<span class="badge badge-green">SMS</span> <?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?> 
+										<span class="badge badge-green">SMS</span> <?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?>
 									</span>
-									<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
+									<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?><br/>
+								<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
+								</span>
 								</div>
 								<?php echo nl2br( $message->body ); ?>
 							</li>
@@ -60,7 +62,9 @@ $first = true;
 										</strong> 
 										<span class="badge badge-green">NOTE</span>
 									</span>
-									<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
+									<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?><br/>
+								<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
+								</span>
 								</div>
 								<?php echo nl2br( $message->body ); ?>
 							</li>
@@ -80,7 +84,10 @@ $first = true;
 									<span class="badge badge-gray">Log</span>
 									<?php if( $message->visibility == 'external' ){ echo '<i class="icon-mobile-phone" title="sms"></i>'; } ?> 
 								</span>
-								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?></span>
+								<span class="time" title="<?=$date->format('M jS Y - g:i:s A');?>"><?php echo $message->relativeTime( true ); ?>
+								<br/>
+								<a title="Ticket #<?php echo $message->id_support; ?>" class="Ticket"# href="/support/<?php echo $message->id_support; ?>">Ticket #<?php echo $message->id_support; ?></a>
+								</span>
 							</div>
 							<?php echo nl2br( $message->body ); ?>
 						</li>
@@ -88,7 +95,7 @@ $first = true;
 					break;
 			}
 		}
-	}
+	// }
 	?>
 </ul>
 </div>

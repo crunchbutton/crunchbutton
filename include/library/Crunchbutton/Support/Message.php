@@ -22,6 +22,14 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		self::notify_by_sms();
 	}
 
+ 	public function byPhone( $phone ){
+ 		$phone = str_replace( '-', '', $phone );
+ 		return Crunchbutton_Support_Message::q( "SELECT sm.* FROM support_message sm
+																							INNER JOIN support s ON s.id_support = sm.id_support
+																								WHERE REPLACE( REPLACE( s.phone, ' ', '' ), '-', '' ) = '" . $phone . "'
+																								ORDER BY sm.id_support_message ASC" );
+	}
+
 	public function notify_by_sms() {
 		$env = c::getEnv();
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
