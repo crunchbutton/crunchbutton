@@ -95,15 +95,20 @@ class Crunchbutton_Support extends Cana_Table {
 		return $message->body;	
 	}
 
+	public function clearPhone( $phone ){
+		$phone = str_replace( ' ' , '', $phone );
+		$phone = str_replace( '-' , '', $phone );
+		$phone = str_replace( '(' , '', $phone );
+		$phone = str_replace( ')' , '', $phone );
+		return $phone;
+	}
+
 	public function createNewChat( $params ){
 		// try to get an existing session
 		$twilio_session = Session_Twilio::sessionByPhone( $params[ 'From' ] );
 		
-		$phone = str_replace( ' ' , '', $params[ 'From' ] );
-		$phone = str_replace( '-' , '', $phone );
-		$phone = str_replace( '(' , '', $phone );
-		$phone = str_replace( ')' , '', $phone );
-
+		$phone = Crunchbutton_Support::clearPhone( $params[ 'From' ] );
+		
 		if( !$twilio_session->id_session_twilio ){
 
 			// Create new session
@@ -143,7 +148,7 @@ class Crunchbutton_Support extends Cana_Table {
 
 		if( $createNewTicket ) {
 			// Create a new sms ticket
-			$support = Crunchbutton_Support::createNewSMSTicket(  [ 'phone' => $params[ 'From' ], 
+			$support = Crunchbutton_Support::createNewSMSTicket(  [ 'phone' => $phone, 
 																															'name' => $params[ 'Name' ], 
 																															'body' => '(Ticket created at cockpit)', 
 																															'id_session_twilio' => $twilio_session->id_session_twilio ] );
