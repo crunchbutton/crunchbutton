@@ -279,6 +279,8 @@ startChat.send = function(){
 		}
 	} );
 }
+
+
 var makeCall = {};
 
 makeCall.start = function(){

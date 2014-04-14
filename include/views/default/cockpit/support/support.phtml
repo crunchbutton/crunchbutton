@@ -50,6 +50,35 @@ function updateConversationHistory(){
 	} );
 }
 
+function showNameForm(){
+	$( '#add-name-fields' ).show();
+	$( '#add-name-input' ).focus();
+}
+
+function saveName(){
+	var name = $( '#add-name-input' ).val();
+	if( $.trim( name ) == '' ){
+		alert( 'Please type the customer name' );
+		$( '#add-name-input' ).focus();
+		return;
+	}
+	var url = '/api/support/add-name/';
+	$.ajax( {
+		type : 'POST',
+		dataType: 'json',
+		data : { 'id_support' : '<?php echo $support->id_support; ?>', 'name' :  name },
+		url: url,
+		complete: function( json ) {
+			if( json.success ){
+				window.location.reload();
+			} else{
+				alert( 'Oops, error!' );
+			}
+			
+		}
+	} );
+};
+
 $(function() {
 
 	/* Control the conversation's filter */

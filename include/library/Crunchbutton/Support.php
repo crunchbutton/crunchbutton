@@ -63,6 +63,21 @@ class Crunchbutton_Support extends Cana_Table {
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . '" ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
 	}
 
+	public function addCustomerNameByPhone( $phone, $name ){
+		if( trim( $name ) != '' ){
+			$id_support = false;
+			$messages = Crunchbutton_Support_Message::byPhone( $phone );
+			foreach( $messages as $message ){
+				$message->name = $name;
+				$message->save();
+				$id_support = $message->id_support;
+			}
+		}
+		$support = Crunchbutton_Support::o( $id_support ); 
+		$support->addSystemMessage( c::admin()->name . ' changed the customer name to ' . $name );
+		return true;
+	}
+
 	public function name(){
 		$user = User::o( $this->id_user );
 		if( $user->name ){
