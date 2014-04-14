@@ -1,0 +1,1 @@
+ALTER TABLE  `admin_shift_assign` ADD  `warned` TINYINT( 1 ) NOT NULL DEFAULT '0';
