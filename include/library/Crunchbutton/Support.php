@@ -99,6 +99,11 @@ class Crunchbutton_Support extends Cana_Table {
 		// try to get an existing session
 		$twilio_session = Session_Twilio::sessionByPhone( $params[ 'From' ] );
 		
+		$phone = str_replace( ' ' , '', $params[ 'From' ] );
+		$phone = str_replace( '-' , '', $phone );
+		$phone = str_replace( '(' , '', $phone );
+		$phone = str_replace( ')' , '', $phone );
+
 		if( !$twilio_session->id_session_twilio ){
 
 			// Create new session
@@ -111,7 +116,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$twilio_session = new Crunchbutton_Session_Twilio;
 			$twilio_session->id_session = $session->id_session;
 			$twilio_session->data = json_encode( $params );
-			$twilio_session->phone = $params[ 'From' ];
+			$twilio_session->phone = $phone;
 			$twilio_session->save();
 		}
 
