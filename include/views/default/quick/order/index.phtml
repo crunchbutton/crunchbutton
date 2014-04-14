@@ -318,11 +318,7 @@
 						<td>$<?=$order->tip()?></td>
 						<? if( $isDriverCockpit ) { ?>
 						<td style="font-size:12px;color:#666;">
-							<? if( intval( $delivery_service_markup ) > 0 ) { ?>
-							$<? echo number_format( 0, 2 ); ?>
-							<? } else { ?>
-							$<?=$order->tip()?>
-							<? } ?>
+						
 						</td>
 						<? } ?>
 					</tr>
