@@ -10,6 +10,7 @@ class Crunchbutton_Session_Twilio extends Cana_Table {
 		// the support souldnt be more than 10 days old
 		if (!$sess->id_session_twilio && $data && $data[ 'From' ] && $data[ 'From' ] != '' ) {
 			$phone = str_replace( '+1','', $data['From'] );
+			$phone = str_replace( '-','', $phone );
 			$sess = self::q( "SELECT st.* FROM session_twilio st
 												INNER JOIN support s ON st.id_session_twilio = s.id_session_twilio 
 												WHERE st.phone = '{$phone}' AND DATEDIFF( NOW(), s.datetime ) <= 10
