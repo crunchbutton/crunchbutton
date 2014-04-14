@@ -1,6 +1,7 @@
 <ul class="chat-box">
 <?php 
-$messages = $this->support->messages();
+// $messages = $this->support->messages();
+$messages = Crunchbutton_Support_Message::byPhone( $this->support->phone );
 $last_id_support_message = 0;
 foreach( $messages as $message ){
 	$date = $message->date();
