@@ -570,6 +570,63 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				}
 			}
 		}
+
+		Crunchbutton_Community_Shift::remindDriversAboutTheirShiftTomorrow();
+
+	}
+
+	// remind drivers about their shift the day before their shift #2816
+	function remindDriversAboutTheirShiftTomorrow(){
+
+		echo "\n";
+		$log = 'Starting the remind of tomorrow\'s shift';
+		Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
+		echo $log."\n";
+		echo "\n";
+
+		$env = c::getEnv();
+
+		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		$now->modify( '+ 1 day' );
+		$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT asa.* FROM admin_shift_assign asa INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift  WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $now->format( 'Y-m-d' ) . '"' );
+		foreach ( $assigments as $assignment ) {
+	
+			$shift = $assignment->shift();
+			$admin = $assignment->admin();
+
+			if( $shift && $admin ){
+				$message = "Remember: you're scheduled to drive for Crunchbutton tomorrow, " . $now->format( 'M jS Y' ) . ", from " . $shift->startEndToString();
+				$txt = $admin->txt;
+				$phone = $admin->phone;
+
+				$num = ( $txt != '' ) ? $txt : $phone; 
+
+				$message = str_split( $message, 160 );
+
+				if( $num != '' ){
+					foreach ( $message as $msg ) {
+						try {
+							// Log
+							Log::debug( [ 'action' => 'sending remind sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
+							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
+							$log = 'Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg .'; shift_id: ' . $shift->id_community_shift;
+							Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
+							echo $log."\n";
+						} catch (Exception $e) {
+							// Log
+							Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
+							$log = 'Error Sending sms to: ' . $admin->name . ' - ' . $num . ': ' . $msg .'; shift_id: ' . $shift->id_community_shift;
+							Log::debug( [ 'action' => $log, 'type' => 'driver-remind' ] );
+							echo $log."\n";
+						}
+					}
+				} else {
+					Log::debug( [ 'action' => 'ERROR: sending sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
+				}				
+			}
+		}
 	}
 }
 
