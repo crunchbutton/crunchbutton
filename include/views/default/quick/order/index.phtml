@@ -104,6 +104,17 @@
 				<div class="divider"></div>
 
 				<div class="divider dots"></div>
+
+				<?php if( $this->order->restaurant()->hasNotification( 'stealth' ) ){ ?>
+				<div class="order-item-block-big">
+					Tell restaurant: <i>"I'm here to pick up a faxed order for <?php echo $this->order->id_order ?></i>".
+				</div>
+				<div class="divider"></div>
+
+				<div class="divider dots"></div>
+				<?php } ?>
+
+
 				<br><br>
 				
 				<div class="order-icon"><i class="icon-user"></i></div>

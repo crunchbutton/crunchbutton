@@ -753,6 +753,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return $this->_notifications;
 	}
 
+	public function hasNotification( $verify ){
+		$types = $this->notification_types();
+		foreach( $types as $type ){
+			if( $type == $verify ){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public function notification_types(){
 		$types = array();
 		$notifications = $this->notifications();
