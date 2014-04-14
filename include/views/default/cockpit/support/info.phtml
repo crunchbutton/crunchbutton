@@ -18,11 +18,27 @@
 					<div class="btn-group">
 						<button class="btn btn-mini btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></button>
 						<ul class="dropdown-menu">
-							<li><a href="/giftcards/new?&id_user=<?=$this->support->id_user?>&id_restaurant=<?=$this->support->restaurant()->id_restaurant?>&id_order_reference=<?=$this->support->id_order?>">Issue a gift card</a></li>							
+							<li><a href="/giftcards/new?&id_user=<?=$this->support->id_user?>&id_restaurant=<?=$this->support->restaurant()->id_restaurant?>&id_order_reference=<?=$this->support->id_order?>">Issue a gift card</a></li>
+							<?php if( !$support->id_user ) { ?>
+							<li><a href="javascript:showNameForm()">Add/change name</a></li>
+							<?php } ?>
 						</ul>
 					</div>
 				</td>
 			</tr>
+			
+			<tr style="display:none;" id="add-name-fields">
+				<td>
+					<strong>Type the name</strong>
+				</td>
+				<td>
+					<input type="text" id="add-name-input" />
+				</td>
+				<td>
+					<button class="btn btn-green" onclick="saveName();"><i class="icon-save"></i></button>
+				</td>
+			</tr>
+
 			<tr>
 				<td>Rep</td>
 				<td>

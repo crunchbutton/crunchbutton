@@ -11,9 +11,9 @@ class Controller_api_support extends Crunchbutton_Controller_RestAccount {
 			case 'new-chat':
 				$params = [];
 				$params[ 'Action' ] = 'FakeSMS';
-				$params[ 'Name' ] = $this->request()[ 'Name' ];;
+				$params[ 'Name' ] = $this->request()[ 'Name' ];
 				$params[ 'Created_By' ] = c::admin()->name;
-				$params[ 'Body' ] = $this->request()[ 'Body' ];;
+				$params[ 'Body' ] = $this->request()[ 'Body' ];
 				$params[ 'From' ] = $this->request()[ 'From' ];
 				if( trim( $params[ 'Name' ] ) != '' && trim( $params[ 'Body' ] ) != '' && trim( $params[ 'From' ] ) != '' ){
 					$support = Crunchbutton_Support::createNewChat( $params );
@@ -24,6 +24,20 @@ class Controller_api_support extends Crunchbutton_Controller_RestAccount {
 					}	
 				} else {
 					echo json_encode( [ 'error' => 'invalid request' ] );
+				}
+				break;
+			case 'add-name':
+				$id_support = $this->request()[ 'id_support' ];
+				$name = $this->request()[ 'name' ];
+				$support = Crunchbutton_Support::o( $id_support );
+				if( $support->id_support && trim( $name ) != '' ){
+					if( Crunchbutton_Support::addCustomerNameByPhone( $support->phone, $name ) ){
+						echo json_encode( [ 'success' => true ] );	
+					} else {
+						echo json_encode( [ 'error' => true ] );	
+					}
+				} else {
+					echo json_encode( [ 'error' => 'invalid object' ] );
 				}
 				break;
 		}
