@@ -401,15 +401,17 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				break;
 			case 'Wednesday':
 				$driversMessage = 'Remember: update your Crunchbutton schedule for next week at cockpit._DOMAIN_/schedule. Don\'t leave us hanging :(';
-					$warningDrivers = true;
-					$warningCS = false;
+				$warningDrivers = true;
+				$warningCS = false;
 				break;
 			case 'Thursday':
-					$warningCS = true;
-					$driversMessage = false;
-					break;
-			default:
+				$warningCS = true;
 				$driversMessage = false;
+				break;
+			default:
+				// Send the driver schedule remember notification every day morning #2924
+				$driversMessage = 'Remember: update your Crunchbutton schedule for next week at cockpit._DOMAIN_/schedule. Don\'t leave us hanging :(';
+				$warningDrivers = true;
 				$warningCS = false;
 				break;
 		}
