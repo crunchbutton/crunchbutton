@@ -33,7 +33,8 @@
 			<?=$order->name?>
 		</td>
 		<td class="stealthfax-top-content">
-			<?=$order->phone()?>
+			<?php /* instead of sending customer's phone number in stealth faxes, make the phone number 646-783-1444 #2819 */ ?>
+			646-783-1444
 		</td>
 		<td class="stealthfax-top-content stealthfax-top-content-last">
 			<?=$order->expectedByStealthFax()->format('h:i a')?>
