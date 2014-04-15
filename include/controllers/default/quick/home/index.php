@@ -37,12 +37,12 @@ class Controller_home extends Crunchbutton_Controller_Account {
 			case 'orders-list':
 			default:
 				switch ( c::getPagePiece( 1 ) ) {
-					case 'all':
-						$this->showAllOrders();
-						break;
 					case 'mine':
-					default:
 						$this->showMineOrders();
+						break;
+					case 'all':
+					default:
+						$this->showAllOrders();
 						break;
 				}
 				break;
