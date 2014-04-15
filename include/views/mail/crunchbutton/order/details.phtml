@@ -178,30 +178,40 @@ if( $version == 'customer' ){
 		</td>
 		<?php } ?>
 	</tr>
-	<? if ( $order->pay_type == 'card' && $order->tip ) : ?>
-		<tr>
-			<td></td>
-			<td style="text-align:right">Tip <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $order->tip . '%'; } ?></td>
-			<td>$<?=$order->tip()?></td>
-			<?php if( $isDriverCockpit ) { ?>
-			<td style="font-size:12px;color:#666;">
-				$<?php echo number_format( 0, 2 ); ?>
-			</td>
-			<?php } ?>
-		</tr>
-	<? endif ; ?>
-	<? if ( $order->restaurant()->delivery_fee ) : ?>
-		<tr>
-			<td></td>
-			<td style="text-align:right">Delivery Fee</td>
-			<td>$<?=$order->deliveryFee()?></td>
-			<?php if( $isDriverCockpit ) { ?>
-			<td style="font-size:12px;color:#666;">
-				&mdash;
-			</td>
-			<?php } ?>
-		</tr>
-	<? endif ; ?>
+	<?php
+	// change fax for 3rd party restaurants #2962
+	$showTipAndDeliveryFee = !( $viewer == 'restaurant' && $order->restaurant()->delivery_service );
+	
+	if( $showTipAndDeliveryFee ){
+		if ( $order->pay_type == 'card' && $order->tip ) : ?>
+			<tr>
+				<td></td>
+				<td style="text-align:right">Tip <?php if( $order->tip_type != Crunchbutton_Order::TIP_NUMBER ) { echo $order->tip . '%'; } ?></td>
+				<td>$<?=$order->tip()?></td>
+				<?php if( $isDriverCockpit ) { ?>
+				<td style="font-size:12px;color:#666;">
+					$<?php echo number_format( 0, 2 ); ?>
+				</td>
+				<?php } ?>
+			</tr>
+		<? endif ; 
+	}
+	
+	if( $showTipAndDeliveryFee ){
+		 if ( $order->restaurant()->delivery_fee ) : ?>
+			<tr>
+				<td></td>
+				<td style="text-align:right">Delivery Fee</td>
+				<td>$<?=$order->deliveryFee()?></td>
+				<?php if( $isDriverCockpit ) { ?>
+				<td style="font-size:12px;color:#666;">
+					&mdash;
+				</td>
+				<?php } ?>
+			</tr>
+		<? endif ; 
+	}
+	?>
 
 	<? if ( $order->restaurant()->fee_customer ) : ?>
 		<tr>

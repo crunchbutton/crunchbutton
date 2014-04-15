@@ -128,7 +128,25 @@ if( $this->cockpit_url ){
 <div class="xhatch separator-small"></div>
 
 <?php
-echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user, 'isDriverCockpit' => $isDriverCockpit, 'version' => $version ]]);	
+$icon = '';
+if( $isDriverCockpit ){
+	if( $version == 'restaurant' ){
+		$icon = 'restaurant';
+	} else if( $version == 'customer' ){
+		$icon = 'customer';
+	} else {
+		$icon = 'driver';	
+	}
+} else {
+	if( $user ){
+		$icon = 'customer';
+	} else {
+		$icon = 'restaurant';
+	}
+}
+?>
+
+<?php echo $this->render('order/details',['set' => ['order' => $order, 'user' => $user, 'isDriverCockpit' => $isDriverCockpit, 'version' => $version, 'viewer' => $icon ]]);	
 
 ;?>
 <br /><br />
@@ -152,24 +170,6 @@ if( $this->cockpit_url ) { ?>
 	</table>
 <?php } ?>
 
-<?php
-$icon = '';
-if( $isDriverCockpit ){
-	if( $version == 'restaurant' ){
-		$icon = 'restaurant';
-	} else if( $version == 'customer' ){
-		$icon = 'customer';
-	} else {
-		$icon = 'driver';	
-	}
-} else {
-	if( $user ){
-		$icon = 'customer';
-	} else {
-		$icon = 'restaurant';
-	}
-}
-?>
 <div class="xhatch separator-big" style="text-align:right!important;">
 <?php if( $icon != '' ) { ?>
 	<img style="margin:4px 4px 0 0" src="<?=$this->helper('ImageBase64')->output(c::config()->dirs->www.'/assets/images/mprinter/ico-'. $icon . '.png')?>">
