@@ -400,10 +400,6 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 						echo '</Gather>';
 						$order->confirmed = 1;
 						$order->save();
-						if ($order->restaurant()->confirmation) {
-							// The confirmation was already sent #1049
-							// $order->receipt();
-						}
 						break;
 
 					case '2':
@@ -471,8 +467,8 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							'host' => c::config()->host_callback,
 							'type' => 'notification'
 						]);
+						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. We will call you . . . </Say>';
 						$order->warningStealthNotConfirmed();
-						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. We will call you..</Say>';
 						break;
 					case '0':
 					case '3':

@@ -1058,8 +1058,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$env = c::getEnv();
 
-		$num = ($env == 'live' ? $this->restaurant()->phone : '***REMOVED***');
-		// $num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
+		$num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
 
 		// Added new confirmation type: stealth. More 'Stealth confirmation call' #2848
 		if( $this->restaurant()->confirmation_type == 'stealth' ){
@@ -1269,8 +1268,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
  
 		// keep this ugly true for tests only
-		if( true ){
-		// if( $env == 'live' ){
+		if( $env == 'live' ){
 			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 				foreach ( $message as $msg ) {
 					Log::debug( [ 'order' => $order->id_order, 'action' => 'warningStealthNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
