@@ -91,7 +91,11 @@
 				<td>
 					<?php if( $this->support->order()->driver()->name ) { ?>
 							<a href="/permissions/users/<?php echo $this->support->order()->driver()->id_admin ?>">
-								<strong>Driver: &nbsp;<?php echo $this->support->order()->driver()->name; ?></strong>
+								<strong>Driver: &nbsp;<?php echo $this->support->order()->driver()->name; ?> - <?php echo $this->support->order()->driver()->phone(); ?></strong>
+							</a>
+							<br/>
+							<a href="/restaurant/<?php echo $this->support->order()->restaurant()->id_restaurant ?>">
+								<strong>Restaurant: &nbsp;<?php echo $this->support->order()->restaurant()->name; ?> - <?php echo $this->support->order()->restaurant()->phone(); ?></strong>
 							</a>
 							<br/>
 					<?php } ?>
