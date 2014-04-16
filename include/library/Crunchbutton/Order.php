@@ -1061,13 +1061,6 @@ class Crunchbutton_Order extends Cana_Table {
 		$num = ($env == 'live' ? $this->restaurant()->phone : '***REMOVED***');
 		// $num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
 
-		$log = new Notification_Log;
-		$log->type = 'confirm';
-		$log->id_order = $this->id_order;
-		$log->date = date('Y-m-d H:i:s');
-		$log->status = 'created';
-		$log->save();
-
 		// Added new confirmation type: stealth. More 'Stealth confirmation call' #2848
 		if( $order->restaurant()->confirmation_type == 'stealth' ){
 			$confirmURL = 'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirmstealth';
@@ -1076,7 +1069,14 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		// Log
-		Log::debug([ 'order' => $this->id_order, 'confirmURL' => $confirmURL, 'action' => 'dial confirm call', 'count' => $nl->count(), 'num' => $num, 'host' => c::config()->host_callback, 'callback' => $callback, 'type' => 'notification']);
+		Log::debug([ 'order' => $this->id_order, 'num' => $num, 'confirmURL' => $confirmURL, 'action' => 'dial confirm call', 'count' => $nl->count(), 'num' => $num, 'host' => c::config()->host_callback, 'callback' => $callback, 'type' => 'notification']);
+		$log = new Notification_Log;
+		$log->type = 'confirm';
+		$log->id_order = $this->id_order;
+		$log->date = date('Y-m-d H:i:s');
+		$log->status = 'created';
+		$log->save();
+
 
 		$twilio = new Services_Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
