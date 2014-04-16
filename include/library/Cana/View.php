@@ -124,7 +124,7 @@ class Cana_View extends Cana_Model {
 	public function display($view,$params=null) {
 		if (!headers_sent()) {
 			foreach ($this->headers->http as $key => $value) {
-				header(isset($value['name']) ? $value['name'].': ' : '' . $value['value'],isset($value['replace']) ? $value['replace'] : true);
+				header($key.': '.$value, true);
 			}
 		}
 		if (is_null($params)) {
