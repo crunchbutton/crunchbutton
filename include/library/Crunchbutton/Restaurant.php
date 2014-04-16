@@ -1276,7 +1276,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function hasFaxNotification(){
-		$fax = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = 1 and type = "' . Crunchbutton_Notification::TYPE_FAX . '"' );
+		$fax = Notification::q( 'SELECT * FROM notification WHERE id_restaurant = ' . $this->id_restaurant . ' AND active = 1 and ( type = "' . Crunchbutton_Notification::TYPE_FAX . '" OR type = "' . Crunchbutton_Notification::TYPE_STEALTH . '" )' );
 		if( $fax->id_notification ){
 			return true;
 		} else {
