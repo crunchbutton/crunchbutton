@@ -2,11 +2,26 @@
 
 class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBundle {
 	public function init() {
-		$cacheid = 'crunchr-bundle-node-css'.$_REQUEST['v'];
+		// $v = $_REQUEST['v'];
+		$git = Cana_Util::gitVersion();
+		$v = $git ? $git : $_REQUEST['v'];
+
+		$cacheid = 'crunchr-bundle-node-css'.$v;
 		
-		if (c::app()->cache()->cached($cacheid) && !$_REQUEST['nocache']) {
+		if (c::app()->cache()->cached($cacheid)) {
+			$mtime = c::cache()->mtime($cacheid);$mtime = c::cache()->mtime($cacheid);
+			
+			$headers = apache_request_headers();
+			if (isset($headers['If-Modified-Since']) && !$_REQUEST['nocache']) {
+				header('Last-Modified: '.gmdate('D, d M Y H:i:s',$mtime).' GMT', true, 304);
+				exit;
+			}
+			
+			$cached = true;
+		}
+		
+		if ($cached && !$_REQUEST['nocache']) {
 			$data = c::app()->cache()->read($cacheid);
-			$mtime = c::cache()->mtime($cacheid);
 
 		} else {
 
@@ -66,14 +81,8 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 			$mtime = time();
 			c::app()->cache()->write($cacheid, $data);
 		}
-		
-		/*
-		$headers = apache_request_headers();
-		if (isset($headers['If-Modified-Since'])) {
-			//header('Last-Modified: '.gmdate('D, d M Y H:i:s',$mtime).' GMT', true, 304);
-			//exit;
-		}
 
+		/*
 		foreach ($data['headers'] as $key => $header) {
 			header($key.': '.$header);
 		}
