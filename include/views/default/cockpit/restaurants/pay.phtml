@@ -3,7 +3,7 @@
 	$this->titleicon = 'food';
 	$this->titleLink = '/restaurants/'.$this->restaurnt->id_restaurant;
 
-	$this->title2 = 'Pay';
+	$this->title2 = 'Pay ' . $this->restaurant->name ;
 	$this->title2icon = 'money';
 ?>
 <div class="container-fluid padded">
@@ -79,7 +79,7 @@
 										<div class="box-header"><span class="title">Merchant Configuration</span></div>
 										<div class="box-content padded">
 											<? if ($this->payment->balanced_id == c::config()->balanced->sharedMerchant) : ?>
-											<b><?=$this->payment->name?> is using a fake merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
+											<b><?=$this->restaurant->name?> is using a global merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
 											<? elseif ($this->payment->balanced_id) : ?>
 											<b><?=$this->payment->name?> already has a merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>		
 											<? else : ?>
