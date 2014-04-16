@@ -55,7 +55,7 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 		$tickets = Support::q( $query );
 
 		// count the results
-		$total = c::db()->get( "SELECT COUNT(*) AS Total FROM support WHERE 1=1 {$where}" );
+		$total = c::db()->get( "SELECT COUNT(*) AS Total FROM support s WHERE 1=1 {$where}" );
 		$total = $total->get(0)->Total;
 
 		$startingAt = ( $tickets->count() > 0 ) ? ( ( $page - 1 ) * $resultsPerPage ) + 1 : 0;
