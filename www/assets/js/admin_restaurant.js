@@ -998,14 +998,13 @@ var WIDGET = {
 				self.notification_widgets[i].remove();
 			}
 			notifications = restaurant._notifications || {};
-			console.log('notifications',notifications);
 			notifications['confirmation'] = {
 					active: restaurant.confirmation,
 					id: null,
 					id_notification: null,
 					id_restaurant: restaurant.id, 
 					type: 'confirmation',
-					value: 'restaurant phone #', // TODO update this when backend supports it
+					value: restaurant.confirmation_type
 			};
 			self.notification_widgets = [];
 			for(i in notifications) {
@@ -1018,11 +1017,13 @@ var WIDGET = {
 		this.flush = function(restaurant) {
 			restaurant._notifications = [];
 			restaurant.confirmation = null;
+			restaurant.confirmation_type = 'regular';
 			for(i in self.notification_widgets) {
 				w = self.notification_widgets[i];
 				data = w.flush();
 				if(data.type === 'confirmation') {
 					restaurant.confirmation = data.active;
+					restaurant.confirmation_type = data.confirmation_type;
 					continue;
 				}
 				if( ( !data.value || data.value==='' ) && data.type != 'admin' ) continue;
@@ -1052,12 +1053,17 @@ var WIDGET = {
 		} );
 
 		this.typeChanged = function(){
+
 			var type = $(self.dom).find('select[name=type]').val();
+			$(self.dom).find('select[name=id_admin]').hide();
+			$(self.dom).find('input[name=val]').hide();
+			$(self.dom).find('select[name=confirmation_type]').hide();
+
 			if( type == 'admin' ){
 				$(self.dom).find('select[name=id_admin]').show();
-				$(self.dom).find('input[name=val]').hide();
+			} else if( type == 'confirmation' ) {
+				$(self.dom).find('select[name=confirmation_type]').show();
 			} else {
-				$(self.dom).find('select[name=id_admin]').hide();
 				$(self.dom).find('input[name=val]').show();
 			}
 		}
@@ -1065,6 +1071,7 @@ var WIDGET = {
 		this.val = function(arg) {
 			return null;
 		}
+
 		this.apply = function(data) {
 			self.w_active.val(data.active);
 			self.id_notification = data.id_notification;
@@ -1072,10 +1079,12 @@ var WIDGET = {
 			$(self.dom).find('select[name=id_admin]').val(data.id_admin);
 			$(self.dom).find('input[name=val]').val(data.value);
 			if(data.type === 'confirmation') {
+				$(self.dom).find('select[name=confirmation_type]').val(data.value);
 				$(self.dom).find('input[name=val]').prop('disabled', true);
 			};
 			self.typeChanged();
 		},
+
 		this.flush = function() {
 			data = {
 				active : self.w_active.val(),
@@ -1084,6 +1093,7 @@ var WIDGET = {
 				type : $(self.dom).find('select[name=type]').val(),
 				id_admin : $(self.dom).find('select[name=id_admin]').val(),
 				value : $(self.dom).find('input[name=val]').val(),
+				confirmation_type : $(self.dom).find('select[name=confirmation_type]').val()
 			};
 			return data;
 		},
@@ -1263,7 +1273,6 @@ var ADMIN = {
 			return;
 		}
 		DOM_MAP.flush();
-		console.log(ADMIN.restaurant);
 		if(!ADMIN.save_is_safe) {
 			UTIL.show_msg('There are errors somewhere.');
 			return;
@@ -1581,14 +1590,12 @@ var ASYNC = {
 		},
 	},
 	req : function(req, callback) {
-		console.log(req);
 		$.ajax({
 			url: this.cfg[req.type].url(req),
 			method: this.cfg[req.type].method,
 			data: req.data ? req.data : '',
 			dataType: 'json',
 		}).done(function(rsp) {
-			console.log(rsp);
 			if(rsp.result && rsp.result != 'OK') {
 				UTIL.show_msg('Error: ' + rsp.error);
 			}
