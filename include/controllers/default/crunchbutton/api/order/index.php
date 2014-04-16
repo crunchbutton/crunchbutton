@@ -441,6 +441,58 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 
 				exit;
 				break;
+
+			case 'doconfirmstealth':
+				header('Content-type: text/xml');
+				echo '<?xml version="1.0" encoding="UTF-8"?>'."\n"
+					.'<Response>';
+
+				switch ($this->request()['Digits']) {
+					case '1':
+						Log::debug([
+							'order' => $order->id_order,
+							'action' => '/doconfirm stealth: 1: CONFIRMED',
+							'host' => c::config()->host_callback,
+							'type' => 'notification'
+						]);
+						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
+						echo '<Say voice="'.c::config()->twilio->voice.'">Order confirmed. Thank you.</Say>';
+						echo '<Pause length="1" />';
+						echo '</Gather>';
+						$order->confirmed = 1;
+						$order->save();
+						break;
+
+					case '2':
+						Log::debug([
+							'order' => $order->id_order,
+							'action' => 'Call',
+							'host' => c::config()->host_callback,
+							'type' => 'notification'
+						]);
+						$order->warningStealthNotConfirmed();
+						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. We will call you..</Say>';
+						break;
+					case '0':
+					case '3':
+					case '4':
+					case '5':
+					case '6':
+					case '7':
+					case '8':
+					case '9':
+					case '#':
+					case '*':
+					default:
+						echo '<Gather action="/api/order/'.$order->id_order.'/doconfirm" numDigits="1" timeout="10" finishOnKey="#" method="get">'
+							.'<Say voice="'.c::config()->twilio->voice.'" loop="3">You have received a takeout order from a student through the fax machine. Please check the fax machine and press 1 to confirm that you received the order. Or press 2 and we will give you a call.. . . .</Say>'
+							.'</Gather>';
+						break;
+				}
+				echo '</Response>';
+
+				exit;
+				break;
 		}
 
 		switch ($this->method()) {
