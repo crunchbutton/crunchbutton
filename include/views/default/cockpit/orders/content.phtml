@@ -119,6 +119,9 @@ $permissionSupportView = c::admin()->permission()->check(['global','support-all'
 					<br/>
 					<?=$order->restaurant()->communityNames();?>
 					<hr/>
+					<?php if( $order->restaurant()->delivery_service && ( $order->restaurant()->formal_relationship || $order->restaurant()->order_notifications_sent ) ) { ?>
+						<strong>Notification Sent to Restaurant</strong><br/><br/>
+					<?php } ?>
 					<?php if( $order->restaurant()->confirmation || $order->restaurant()->hasPhoneNotification() ){
 						if( $order->confirmed ) { 
 							echo '<i class="icon-thumbs-up"></i> Confirmed!';

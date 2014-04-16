@@ -94,7 +94,7 @@
 								<strong>Driver: &nbsp;<?php echo $this->support->order()->driver()->name; ?> - <?php echo $this->support->order()->driver()->phone(); ?></strong>
 							</a>
 							<br/>
-							<a href="/restaurant/<?php echo $this->support->order()->restaurant()->id_restaurant ?>">
+							<a href="/restaurants/<?php echo $this->support->order()->restaurant()->id_restaurant ?>">
 								<strong>Restaurant: &nbsp;<?php echo $this->support->order()->restaurant()->name; ?> - <?php echo $this->support->order()->restaurant()->phone(); ?></strong>
 							</a>
 							<br/>
@@ -114,6 +114,11 @@
 						}
 					?>
 					<? } ?>
+					<? if ($this->support->id_order) : ?>
+						<?php if( $this->support->order()->restaurant()->delivery_service && ( $this->support->order()->restaurant()->formal_relationship || $this->support->order()->restaurant()->order_notifications_sent ) ) { ?>
+						<br/><br/><strong>Notification Sent to Restaurant</strong>
+						<?php } ?>
+					<? endif ; ?>
 				</td>
 				<td>
 					<div class="btn-group">
