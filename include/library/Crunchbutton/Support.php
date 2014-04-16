@@ -6,6 +6,7 @@ class Crunchbutton_Support extends Cana_Table {
 	const TYPE_BOX_NEED_HELP = 'BOX_NEED_HELP';
 	const TYPE_WARNING = 'WARNING';
 	const TYPE_TICKET = 'TICKET';
+	const TYPE_COCKPIT_CHAT = 'COCKPIT_CHAT';
 
 	const STATUS_OPEN = 'open';
 	const STATUS_CLOSED = 'closed';
@@ -25,8 +26,36 @@ class Crunchbutton_Support extends Cana_Table {
 	  }
 	}
 	
-	public function getUsers(){
+	public function tellCustomerService( $message ){
+		$message = str_split( $message, 160 );
+		
+		$env = c::getEnv();
 
+		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+
+		$sendSMSTo = array();
+		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
+			$sendSMSTo[ $supportName ] = $supportPhone;
+		}
+
+		foreach ( $sendSMSTo as $supportName => $supportPhone ) {
+			$num = $supportPhone;
+			foreach ( $message as $msg ) {
+				if( $supportName != $admin->name ){
+					try {
+						// Log
+						Log::debug( [ 'action' => 'warningOtherReps: replying sms: ' . $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+						$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+					} catch (Exception $e) {
+						// Log
+						Log::debug( [ 'action' => 'ERROR: replying sms', 'num' => $num, 'msg' => $msg, 'type' => 'support' ] );
+					}
+				}
+			}
+		}
+	}
+
+	public function getUsers(){
 		$support = array();
 		$group = Crunchbutton_Group::byName( Config::getVal( Crunchbutton_Support::CUSTOM_SERVICE_GROUP_NAME_KEY ) );
 		if( $group->id_group ){
@@ -106,7 +135,7 @@ class Crunchbutton_Support extends Cana_Table {
 	public function createNewChat( $params ){
 		// try to get an existing session
 		$twilio_session = Session_Twilio::sessionByPhone( $params[ 'From' ] );
-		
+
 		$phone = Crunchbutton_Support::clearPhone( $params[ 'From' ] );
 		
 		if( !$twilio_session->id_session_twilio ){

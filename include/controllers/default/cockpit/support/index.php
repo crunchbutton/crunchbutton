@@ -131,8 +131,11 @@ class Controller_Support extends Crunchbutton_Controller_Account {
 						if ( $support->permissionToEdit() ) {
 							if( $_POST['text'] ){
 								$support->addAdminReply( $_POST['text'] );	
+								if( ( $support->type == TYPE_SMS || $support->type == TYPE_BOX_NEED_HELP ) && $support->id_session_twilio ){
+									$message = c::admin()->name . ' replied @' . $support->id_session_twilio . ' : ' . $_POST['text']; 
+									Crunchbutton_Support::tellCustomerService( $message );
+								}
 							}
-							
 							exit;
 						}
 						break;

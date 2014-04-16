@@ -41,6 +41,8 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 				$where .= ' AND ( s.type = "' . Crunchbutton_Support::TYPE_BOX_NEED_HELP . '" OR s.type = "' . Crunchbutton_Support::TYPE_SMS . '" ) ';	
 			} else if (  $type == 'ticket' ){
 				$where = ' AND s.type = "' . Crunchbutton_Support::TYPE_TICKET . '"';	
+			} else if (  $type == 'chat' ){
+				$where = ' AND s.type = "' . Crunchbutton_Support::TYPE_COCKPIT_CHAT . '"';	
 			}
 			$paginationLink .= '&type=' . $type;
 		}
@@ -75,8 +77,5 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 		c::view()->paginationLink = $paginationLink;
 		c::view()->layout('layout/ajax');
 		c::view()->display('support/content');
-
 	}
-
-
 }
