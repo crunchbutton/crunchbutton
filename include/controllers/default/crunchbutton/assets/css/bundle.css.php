@@ -4,7 +4,7 @@ class Controller_assets_css_bundle_css extends Crunchbutton_Controller_AssetBund
 	public function init() {
 		$cacheid = 'crunchr-bundle-node-css'.$_REQUEST['v'];
 		
-		if (1==2 && c::app()->cache()->cached($cacheid) && !$_REQUEST['nocache']) {
+		if (c::app()->cache()->cached($cacheid) && !$_REQUEST['nocache']) {
 			$data = c::app()->cache()->read($cacheid);
 			$mtime = c::cache()->mtime($cacheid);
 
