@@ -1932,11 +1932,24 @@ hour_override.save = function(){
 		return;
 	}
 	
+	 if( !/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test( date_start_hour ) ){
+	 		alert( 'Please type a valid start hour! \nFormat hh:mm!' );
+			$( '#hour_override_date_start_hour' ).focus();
+			return;	
+	 }
+
 	if( $.trim( date_end ) == '' ){
 		alert( 'Please type the end date.' );
 		$( '#hour_override_date_end' ).focus();
 		return;
 	}
+
+ if( !/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test( date_end_hour ) ){
+	 		alert( 'Please type a valid end hour! \nFormat hh:mm!' );
+			$( '#hour_override_date_end_hour' ).focus();
+			return;	
+	 }
+
 
 	if( $.trim( notes ) == '' ){
 		alert( 'Please type the notes.' );
