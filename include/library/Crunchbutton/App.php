@@ -251,6 +251,7 @@ class Crunchbutton_App extends Cana_App {
 
 		}
 		
+		header('X-Powered-By: '.$this->config()->powered);
 
 	}
 	
