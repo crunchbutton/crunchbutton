@@ -70,6 +70,14 @@ class Controller_api_notification extends Crunchbutton_Controller_Rest {
 
 								$data = json_decode($_REQUEST['fax']);
 
+								Log::debug([
+									'id_notification_log' => $notification->id_notification_log,
+									'id_order' => $notification->id_order,
+									'action' => 'fax callback',
+									'data' => $data,
+									'type' => 'notification'
+								]);
+
 								// Log
 								Log::debug( [ 'id_notification_log' => $notification->id_notification_log, 'status' => $data->status, 'action' => 'fax confirmed', 'data' => $data, 'request' => $_REQUEST, 'type' => 'notification' ] );
 

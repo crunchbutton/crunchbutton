@@ -33,17 +33,42 @@ class Crunchbutton_Notification extends Cana_Table
 
 				$temp = tempnam('/tmp','fax');
 				file_put_contents($temp, $mail->message());
+				//chmod($temp, 0777);
 				rename($temp, $temp.'.html');
 
-				// Log
-				Log::debug( [ 'order' => $order->id_order, 'action' => 'send stealth fax', 'fax' => $fax, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
+				$log = new Notification_Log;
+				$log->id_notification = $this->id_notification;
+				$log->status = 'pending';
+				$log->type = 'phaxio';
+				$log->date = date('Y-m-d H:i:s');
+				$log->id_order = $order->id_order;
+				$log->save();
 
-				$fax = new Phaxio( [ 'to' => $fax, 'file' => $temp.'.html' ] );
+				// Log
+				Log::debug( [ 'order' => $order->id_order, 'action' => 'send fax stealth', 'fax stealth' => $fax, 'host' => c::config()->host_callback, 'type' => 'notification' ]);
+
+				$fax = new Phaxio([
+					'to' => $fax,
+					'file' => $temp.'.html',
+					'id_notification_log' => $log->id_notification_log
+				]);
 
 				unlink($temp.'.html');
 
-				if ( !$fax->success ) {
+				if ($fax->success) {
+					$log->remote = $fax->faxId;
+					$log->status = 'queued';
+					$log->save();
+				} else {
+					$log->status = 'error';
+					$log->save();
+					// Send a sms informing the error
 					$this->smsFaxError( $order );
+				}
+
+				if ($order->restaurant()->confirmation && !$order->_confirm_trigger) {
+					$order->_confirm_trigger = true;
+					$order->queConfirmFaxWasReceived();
 				}
 
 				break;

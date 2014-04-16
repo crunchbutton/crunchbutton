@@ -1154,17 +1154,17 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		// Start the timer to check if the order was confirmed. #1049
-		if ($this->restaurant()->confirmation) {
-			$timer = c::config()->twilio->warningOrderNotConfirmedTime;
+		// if ($this->restaurant()->confirmation) {
+			// $timer = c::config()->twilio->warningOrderNotConfirmedTime;
 
 			// Log
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed started', 'time' => $timer, 'type' => 'notification' ]);
+			// Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed started', 'time' => $timer, 'type' => 'notification' ]);
 			/* Removed for while by @pererinha asked by @DavidKlumpp at 11/07/2013
 			c::timeout(function() use($order, $timer) {
 				$order->warningOrderNotConfirmed();
 			}, $timer );
 			*/
-		}
+		// }
 	}
 
 	// After 5 minutes the fax was sent we have to send this confirmation to make sure that the fax as delivered. If the order was already confirmed this confirmation will be ignored.
