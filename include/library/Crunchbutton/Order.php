@@ -1080,6 +1080,7 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+	
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingRestaurant,
 			'+1'.$num, 
@@ -1088,6 +1089,8 @@ class Crunchbutton_Order extends Cana_Table {
 				'StatusCallback' => $callback
 			]
 		);
+
+		Log::debug([ 'order' => $this->id_order, 'action' => 'dial confirm call sent', 'confirmURL' => $confirmURL, 'count' => $nl->count(), 'num' => $num, 'host' => c::config()->host_callback, 'callback' => $callback, 'type' => 'notification']);
 
 		$log->remote = $call->sid;
 		$log->status = $call->status;
