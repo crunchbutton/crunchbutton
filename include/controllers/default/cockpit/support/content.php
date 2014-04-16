@@ -26,7 +26,7 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 		if( !c::admin()->permission()->check(['global', 'support-all', 'support-crud' ] ) ){
 			$restaurants = c::admin()->getRestaurantsUserHasPermissionToSeeTheirTickets();
 			$restaurants[] = -1;
-			$where .= ' AND id_restaurant IN( ' . join( $restaurants, ',' ) . ')';
+			$where .= ' AND s.id_restaurant IN( ' . join( $restaurants, ',' ) . ')';
 		}
 
 		if( $status != 'all' && $status != '' ){
@@ -36,16 +36,20 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 
 		if( $type != 'all' && $type != '' ){
 			if( $type == 'warning' ){
-				$where = ' AND type = "' . Crunchbutton_Support::TYPE_WARNING . '"';	
+				$where = ' AND s.type = "' . Crunchbutton_Support::TYPE_WARNING . '"';	
 			} else if(  $type == 'support' ){
-				$where .= ' AND ( type = "' . Crunchbutton_Support::TYPE_BOX_NEED_HELP . '" OR type = "' . Crunchbutton_Support::TYPE_SMS . '" ) ';	
+				$where .= ' AND ( s.type = "' . Crunchbutton_Support::TYPE_BOX_NEED_HELP . '" OR s.type = "' . Crunchbutton_Support::TYPE_SMS . '" ) ';	
 			} else if (  $type == 'ticket' ){
-				$where = ' AND type = "' . Crunchbutton_Support::TYPE_TICKET . '"';	
+				$where = ' AND s.type = "' . Crunchbutton_Support::TYPE_TICKET . '"';	
 			}
 			$paginationLink .= '&type=' . $type;
 		}
 
-		$query = "SELECT * FROM support WHERE 1=1 {$where} ORDER BY id_support DESC LIMIT {$limit}";
+		$query = "SELECT DISTINCT( s.id_support ) AS id, s.* FROM support s 
+									INNER JOIN support_message sm ON sm.id_support = s.id_support
+									WHERE 1=1 {$where}
+									ORDER BY sm.id_support_message DESC LIMIT {$limit}";
+
 		$tickets = Support::q( $query );
 
 		// count the results
