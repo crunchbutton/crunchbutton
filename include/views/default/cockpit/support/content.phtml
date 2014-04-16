@@ -30,6 +30,7 @@
 							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=support')">Support</a></li>
 							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=ticket')">Ticket from orders page</a></li>
 							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=warning')">Warning</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=chat')">Cockpit chat</a></li>
 						</ul>
 					</div>
 
@@ -98,7 +99,22 @@
 						case Crunchbutton_Support::TYPE_SMS:
 						case Crunchbutton_Support::TYPE_BOX_NEED_HELP:
 						case Crunchbutton_Support::TYPE_TICKET:
-							$type = 'Support';
+						case Crunchbutton_Support::TYPE_COCKPIT_CHAT:
+						switch ( $support->type ) {
+							case Crunchbutton_Support::TYPE_SMS:
+								$subtype = '[sms]';
+								break;
+							case Crunchbutton_Support::TYPE_BOX_NEED_HELP:
+								$subtype = '[help]';
+								break;
+							case Crunchbutton_Support::TYPE_TICKET:
+								$subtype = '[ticket]';
+								break;
+							case Crunchbutton_Support::TYPE_COCKPIT_CHAT:
+								$subtype = '[chat]';
+								break;
+							}
+							$type = 'Support ' . $subtype;
 							$name = $support->name();
 							$driver = $support->order()->driver()->name;
 							$message = $support->lastCustomerMessage()->body;
