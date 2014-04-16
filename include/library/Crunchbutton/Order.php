@@ -1243,6 +1243,51 @@ class Crunchbutton_Order extends Cana_Table {
 		return false;
 	}
 
+	public function warningStealthNotConfirmed(){
+		
+		$order = $this;
+ 
+		$isConfirmed = Order::isConfirmed( $this->id_order );
+ 
+		Log::debug( [ 'order' => $this->id_order, 'action' => 'warningStealthNotConfirmed', 'object' => $order->json(), 'type' => 'notification' ]);
+ 
+		if ( $isConfirmed ) {
+			Log::debug( [ 'order' => $this->id_order, 'action' => 'que warningStealthNotConfirmed ignored', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
+			return;
+		}
+ 
+		$date = $order->date();
+		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
+ 
+		$env = c::getEnv();
+ 
+		$message = "Please call {$order->restaurant()->name} in {$order->restaurant()->community()->name} ({$order->restaurant()->phone()}). They pressed 2 to say they didn't receive the fax for Order #{$order->id_order}";
+		$message = str_split( $message,160 );
+ 
+		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningStealthNotConfirmed sending sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
+ 
+		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+ 
+		// keep this ugly true for tests only
+		if( true ){
+		// if( $env == 'live' ){
+			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
+				foreach ( $message as $msg ) {
+					Log::debug( [ 'order' => $order->id_order, 'action' => 'warningStealthNotConfirmed', 'message' => $message, 'supportName' => $supportName, 'supportPhone' => $supportPhone,  'type' => 'notification' ]);
+					try {
+						$twilio->account->sms_messages->create(
+							c::config()->twilio->{$env}->outgoingTextCustomer,
+							'+1'.$supportPhone,
+							$msg
+						);
+					} catch (Exception $e) {}
+				}
+			}
+		} else {
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningStealthNotConfirmed DEV dont send sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
+		}
+	
+	}
 	public function warningOrderNotConfirmed(){
 		return;
 		$order = $this;
