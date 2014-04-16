@@ -4,6 +4,7 @@
 $messages = Crunchbutton_Support_Message::byPhone( $this->support->phone );
 $last_id_support_message = 0;
 foreach( $messages as $message ){
+	$last_id_support_message = $message->id_support_message;
 	$date = $message->date();
 	switch ( $message->from ) {
 		case Crunchbutton_Support_Message::TYPE_FROM_CLIENT:
@@ -18,7 +19,6 @@ foreach( $messages as $message ){
 				<?php echo nl2br( $message->body ); ?>
 				</li>
 			<?php
-			$last_id_support_message = $message->id_support_message;
 			break;
 		case Crunchbutton_Support_Message::TYPE_FROM_REP:
 			switch ( $message->type ) {
