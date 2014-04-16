@@ -1062,7 +1062,7 @@ class Crunchbutton_Order extends Cana_Table {
 		// $num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
 
 		// Added new confirmation type: stealth. More 'Stealth confirmation call' #2848
-		if( $order->restaurant()->confirmation_type == 'stealth' ){
+		if( $this->restaurant()->confirmation_type == 'stealth' ){
 			$confirmURL = 'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirmstealth';
 		} else {
 			$confirmURL = 'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirm'; 
