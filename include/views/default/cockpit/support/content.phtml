@@ -62,9 +62,9 @@
 		<table cellpadding="0" cellspacing="0" border="0" class="table table-normal">
 			<thead>
 				<tr>
-					<td style="width: 60px;"><div>#</div></td>
-					<td style="width: 140px;"><div>Date</div></td>
-					<td style="width: 60px;"><div>Type</div></td>
+					<td style="width: 50px;"><div>#</div></td>
+					<td style="width: 80px;"><div>Date</div></td>
+					<td style="width: 50px;"><div>Type</div></td>
 					<td style="width: 100px;"><div>Name</div></td>
 					<td><div>Message</div></td>
 					<td style="width: 60px;"><div>Status</div></td>
@@ -128,9 +128,11 @@
 						</td>
 						<td nowrap><?php 
 							$date = $support->date();
-							echo $date->format( 'M/d H:iA T' ); 
+							echo $date->format( 'M/d' ); 
+							echo '<br/>';
+							echo $date->format( 'H:iA T' ); 
 						?></td>
-						<td nowrap><?php echo $type; ?></td>
+						<td><?php echo $type; ?></td>
 						<td nowrap><?php echo $name; ?></td>
 						<td><?php echo $message; ?></td>
 						<td id="status-support-<?php echo $support->id_support; ?>"><?php echo $support->status; ?></td>
