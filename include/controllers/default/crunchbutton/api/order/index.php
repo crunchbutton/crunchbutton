@@ -455,6 +455,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							'host' => c::config()->host_callback,
 							'type' => 'notification'
 						]);
+
 						echo '<Gather action="/api/order/'.$order->id_order.'/sayorderonly?id_notification='.$_REQUEST['id_notification'].'" numDigits="1" timeout="10" finishOnKey="#" method="get">';
 						echo '<Say voice="'.c::config()->twilio->voice.'">Order confirmed. Thank you.</Say>';
 						echo '<Pause length="1" />';
