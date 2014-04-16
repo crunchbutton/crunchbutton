@@ -915,7 +915,7 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 	}
 
-	public function notify() {
+	public function notify(){
 		$order = $this;
 		foreach ( $order->restaurant()->notifications() as $n ) {
 			// Admin notification type means it needs a driver
@@ -1057,7 +1057,8 @@ class Crunchbutton_Order extends Cana_Table {
 		} 
 
 		$env = c::getEnv();
-		$num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
+		$num = ($env == 'live' ? $this->restaurant()->phone : '***REMOVED***');
+		// $num = ($env == 'live' ? $this->restaurant()->phone : c::config()->twilio->testnumber);
 
 		$log = new Notification_Log;
 		$log->type = 'confirm';
