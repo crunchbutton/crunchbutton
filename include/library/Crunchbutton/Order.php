@@ -2051,6 +2051,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function deliveryReply($admin) {
 		$act = false;
+
 		foreach ($this->_actions as $action) {
 			if ($action->id_admin && $admin->id_admin) {
 				switch ($action->type) {
@@ -2070,7 +2071,10 @@ class Crunchbutton_Order extends Cana_Table {
 						break;
 						
 					case 'delivery-rejected':
-						$act = 'rejected';
+
+						if ( $action->id_admin == $admin->id_admin ) {
+							$act = 'rejected';
+						}
 						continue;
 						break;
 				}
