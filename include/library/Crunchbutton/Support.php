@@ -131,6 +131,12 @@ class Crunchbutton_Support extends Cana_Table {
 		$phone = str_replace( ')' , '', $phone );
 		return $phone;
 	}
+		public function phone(){
+		$phone = $this->phone;
+		$phone = preg_replace('/[^\d]*/i','',$phone);
+		$phone = preg_replace('/(\d{3})(\d{3})(.*)/', '\\1-\\2-\\3', $phone);
+		return $phone;
+	}
 
 	public function createNewChat( $params ){
 		// try to get an existing session
