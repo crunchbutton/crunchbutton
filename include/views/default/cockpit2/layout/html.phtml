@@ -1,0 +1,20 @@
+<?=$this->display('layout/html.top')?>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.5/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.5/angular-route.min.js"></script>
+
+
+<!-- Payment stuff -->
+<script type="text/javascript" src="//js.stripe.com/v2/"></script>
+<script src="//js.balancedpayments.com/v1/balanced.js"></script>
+
+<? if (c::config()->bundle) : ?>
+	<script src="/assets/js/bundle.js?v=<?=Cana_Util::gitVersion()?>&s=app"></script>
+<? else : ?>
+	<?=$this->display('bundle/js', ['set' => ['scripts' => ['cockpit']]])?>
+<? endif ; ?>
+
+<?=$this->display('layout/html.bottom')?>
+
+<script src="//maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
