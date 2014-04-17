@@ -12,6 +12,7 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 
 		$resultsPerPage = 15;
 
+		$search = ( $_REQUEST[ 'search' ] ) ? $_REQUEST[ 'search' ] : '';
 		$page = ( $_REQUEST[ 'page' ] ) ? $_REQUEST[ 'page' ] : 1;
 		$status = ( $_REQUEST[ 'status' ] ) ? $_REQUEST[ 'status' ] : 'all';
 		$type = ( $_REQUEST[ 'type' ] ) ? $_REQUEST[ 'type' ] : 'all';
@@ -47,6 +48,14 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 			$paginationLink .= '&type=' . $type;
 		}
 
+		if( $search != '' ){
+			$where .= ' AND ( '; 
+			$where .= ' sm.name LIKE "%' . $search . '%"';
+			$where .= ' OR '; 
+			$where .= ' sm.phone LIKE "%' . Crunchbutton_Support::clearPhone( $search ) . '%"';
+			$where .= ' ) ';
+		}
+
 		$query = "SELECT DISTINCT( s.id_support ) AS id, s.* FROM support s 
 									INNER JOIN support_message sm ON sm.id_support = s.id_support
 									WHERE 1=1 {$where}
@@ -55,7 +64,7 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 		$tickets = Support::q( $query );
 
 		// count the results
-		$total = c::db()->get( "SELECT COUNT(*) AS Total FROM support s WHERE 1=1 {$where}" );
+		$total = c::db()->get( "SELECT COUNT(*) AS Total FROM support s INNER JOIN support_message sm ON s.id_support = sm.id_support WHERE 1=1 {$where}" );
 		$total = $total->get(0)->Total;
 
 		$startingAt = ( $tickets->count() > 0 ) ? ( ( $page - 1 ) * $resultsPerPage ) + 1 : 0;
@@ -67,6 +76,7 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 		c::view()->tickets = $tickets;
 		c::view()->waiting = $waiting;
 		c::view()->total = $total;
+		c::view()->search = $search;
 		c::view()->type = $type;
 		c::view()->page = $page;
 		c::view()->autoRefresh = $autoRefresh;

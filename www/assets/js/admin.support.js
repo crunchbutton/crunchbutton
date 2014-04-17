@@ -202,7 +202,6 @@ var SupportChats = {
 		for( x in SupportChats.chats ){
 			if( SupportChats.chats[ x ] ){
 				var container = SupportChats.chats[ x ].container();
-				console.log('container',container);
 				var positionRight = 10 + parseInt( ( chats ) * 260 );
 				container.css( 'right', positionRight );
 				chats++;	
