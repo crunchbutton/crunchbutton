@@ -1048,6 +1048,11 @@ class Crunchbutton_Order extends Cana_Table {
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
 		}
+		// the restaurant asked crunchbutton to call it, stop sending confirmations call - See #2848  
+		if( $this->asked_to_call ){
+			Log::debug([ 'order' => $this->id_order, 'action' => 'asked_to_call() - dial confirm call', '$this->asked_to_call' => $this->asked_to_call, '$this->restaurant()->confirmation' =>$this->restaurant()->confirmation, 'type' => 'notification']);
+			return;
+		}
 
 		$nl = Notification_Log::q('SELECT * FROM notification_log WHERE id_order="'.$this->id_order.'" AND type = "confirm" AND ( status = "created" OR status = "queued" OR status ="success" ) ');
 		if( $nl->count() > 0 ){
