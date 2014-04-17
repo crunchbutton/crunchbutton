@@ -13,12 +13,15 @@
 			<div class="row-fluid">
 
 				<br/>
+					<span>
+						<input type="text" name="search" id="search" value="<?php echo $this->search; ?>" style="margin:4px !important;" placeholder="Search" />	
+					</span>
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Status: <?php echo $this->status; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=all')">All</a></li>
-							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=open')">Open</a></li>
-							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=closed')">Closed</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=all&search=<?php echo $this->search; ?>')">All</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=open&search=<?php echo $this->search; ?>')">Open</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type; ?>&status=closed&search=<?php echo $this->search; ?>')">Closed</a></li>
 						</ul>
 					</div>
 					&nbsp;&nbsp;&nbsp;
@@ -26,25 +29,24 @@
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Type: <?php echo $this->type; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=all')">All</a></li>
-							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=support')">Support</a></li>
-							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=ticket')">Ticket from orders page</a></li>
-							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=warning')">Warning</a></li>
-							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=chat')">Cockpit chat</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=all&search=<?php echo $this->search; ?>')">All</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=support&search=<?php echo $this->search; ?>')">Support</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=ticket&search=<?php echo $this->search; ?>')">Ticket from orders page</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=warning'&search=<?php echo $this->search; ?>)">Warning</a></li>
+							<li><a href="#" onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&status=<?php echo $this->status; ?>&type=chat&search=<?php echo $this->search; ?>')">Cockpit chat</a></li>
 						</ul>
 					</div>
-
 					&nbsp;&nbsp;&nbsp;
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown">Auto refresh: <?php echo $this->autoRefresh; ?> <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" onclick="load('/support/content?type=<?php echo $this->type; ?>&autoRefresh=on&status=all')">On</a></li>
-							<li><a href="#" onclick="load('/support/content?type=<?php echo $this->type; ?>&autoRefresh=off&status=open')">Off</a></li>
+							<li><a href="#" onclick="load('/support/content?type=<?php echo $this->type; ?>&autoRefresh=on&status=all&search=<?php echo $this->search; ?>')">On</a></li>
+							<li><a href="#" onclick="load('/support/content?type=<?php echo $this->type; ?>&autoRefresh=off&status=open&search=<?php echo $this->search; ?>')">Off</a></li>
 						</ul>
 					</div>
 
 					&nbsp;&nbsp;&nbsp;
-					<button onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
+					<button onclick="load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>&search=<?php echo $this->search; ?>')" class="btn btn-default"><i class="icon-refresh"></i> Refresh</button>
 				
 					&nbsp;&nbsp;&nbsp;
 					<button class="send-sms-button btn btn-blue"><i class="icon-comment-alt"></i>&nbsp;Send SMS</button>
@@ -239,6 +241,12 @@
 </div>
 <script type="text/javascript">
 $( document ).ready( function(){
+	$( '#search' ).keypress(function( e, el ) {
+		if( e.keyCode == 13 ){
+			var search = $( e.target ).val();
+			load( '/support/content?type=<?php echo $this->type; ?>&autoRefresh=on&status=<?php echo $this->status; ?>&search=' + search )
+		}
+	} );
 	$( '.send-sms-button' ).click( function(e) {
 		e.preventDefault();
 		var url = '/support/new-chat';
@@ -280,7 +288,7 @@ $( document ).ready( function(){
 			}, 1000 );
 			if( autoRefreshTimerCount == 0 ){
 				if( autoRefresh == 'on' ){
-					load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>');
+					load('/support/content?autoRefresh=<?php echo $this->autoRefresh; ?>&type=<?php echo $this->type ?>&status=<?php echo $this->status ?>&page=<?php echo $this->page; ?>&search=<?php echo $this->search; ?>');
 				}
 			}
 		};
