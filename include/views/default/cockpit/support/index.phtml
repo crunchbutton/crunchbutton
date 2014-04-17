@@ -68,28 +68,26 @@ function load( url ){
 	} );
 };
 
-$(function() {
+$( function() {
 	load( '/support/content?status=' + status + '&type=' + type );
-} );
 
-	$(function() {
-		$('.button-save-settings').click(function() {
-			var self = $(this);
-			$(this).attr('disabled','disabled');
+	$('.button-save-settings').click(function() {
+		var self = $(this);
+		$(this).attr('disabled','disabled');
 
-			$.ajax({
-				type: 'POST',
-				url: '/api/siteconfig',
-				data: {
-					key: 'support-phone-afterhours',
-					value: $('[name="support-phone-afterhours"]').val()
-				},
-				complete: function(data) {
-					self.removeAttr('disabled');
-				}
-			});
+		$.ajax({
+			type: 'POST',
+			url: '/api/siteconfig',
+			data: {
+				key: 'support-phone-afterhours',
+				value: $('[name="support-phone-afterhours"]').val()
+			},
+			complete: function(data) {
+				self.removeAttr('disabled');
+			}
 		});
 	});
+});
 </script>
 <style type="text/css">
 	.chat-title{
