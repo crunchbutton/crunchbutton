@@ -884,6 +884,94 @@ App.orders = {
 		var params = App.orders.params();
 		params.export = 'csv';
 		location.href = '/orders/content?' + jQuery.param(params);
+	},
+	createEvents: function(){
+		$(document).on('click', '.refund', function() {
+			var el = $(this);
+			var question = 'Are you sure you want to refund this?';
+			if( parseFloat( el.attr( 'data-gift' ) ) > 0 ){
+				question += "\n";
+				question += 'A gift card was used at this order the refund value will be $' + el.attr( 'data-charged' ) + ' + $' + el.attr( 'data-gift' ) + ' as gift card.' ;
+			}
+			if (!confirm( question )) {
+				return;
+			}
+			el.html(' REFUNDING <i class="icon-spinner icon-spin"></i>');
+			$.getJSON('/api/order/' + el.attr('data-uuid') + '/refund',function(json) {
+				$( '.refunded-' + el.attr('data-uuid') ).show();
+				el.html('REFUNDED');
+			});				
+		});
+
+		$(document).on( 'click', '.pay_if_refunded', function() {
+			var el = $( this );
+			var uuid = el.attr( 'data-uuid' );
+			var value = ( el.attr( 'data-value' ) == 1 ? 0 : 1 );
+			el.attr( 'data-value', value );
+			var url = '/api/order/' + el.attr('data-uuid') + '/pay_if_refunded/' + value;
+			$.getJSON( url ,function( json ) {
+				if( value ){
+					el.find( 'span' ).html( '<i class="icon-check"></i>' );
+				} else {
+					el.find( 'span' ).html( '<i class="icon-check-empty"></i>' );
+				}
+			});				
+		});
+
+		$(document).on( 'click', '.do_not_reimburse_driver', function() {
+			var el = $( this );
+			var uuid = el.attr( 'data-uuid' );
+			var value = ( el.attr( 'data-value' ) == 1 ? 0 : 1 );
+			el.attr( 'data-value', value );
+			var url = '/api/order/' + el.attr('data-uuid') + '/do_not_reimburse_driver/' + value;
+			$.getJSON( url ,function( json ) {
+				if( value ){
+					el.find( 'span' ).html( '<i class="icon-check"></i>' );
+				} else {
+					el.find( 'span' ).html( '<i class="icon-check-empty"></i>' );
+				}
+			});				
+		});
+
+
+		$(document).on('click', '.resend_notification', function() {
+			var el = $(this);
+			var question = 'Are you sure you want to resend the notification?';
+			if( parseFloat( el.attr( 'data-confirmed' ) ) > 0 ){
+				question += "\n";
+				question += 'This order was already confirmed!' ;
+			}
+			if (!confirm( question )) {
+				return;
+			}
+			$.getJSON('/api/order/' + el.attr('data-uuid') + '/resend_notification',function( json ) {
+				if( json.status == 'success' ){
+					alert('Notification resent!');
+				} else {
+					alert('Oops, error! Please try it again.');
+				}
+			});				
+		});
+
+
+		$(document).on('click', '.resend_notification_drivers', function() {
+			var el = $(this);
+			var question = 'Are you sure you want to resend the notification?';
+			if( parseFloat( el.attr( 'data-confirmed' ) ) > 0 ){
+				question += "\n";
+				question += 'This order was already confirmed!' ;
+			}
+			if (!confirm( question )) {
+				return;
+			}
+			$.getJSON('/api/order/' + el.attr('data-uuid') + '/resend_notification_drivers',function( json ) {
+				if( json.status == 'success' ){
+					alert('Notification resent!');
+				} else {
+					alert('Oops, error! Please try it again.');
+				}
+			});				
+		});
 	}
 };
 
