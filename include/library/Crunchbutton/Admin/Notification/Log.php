@@ -48,11 +48,12 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 		}
 
 		if( $attempts == 1 ){
-			$description .= ' First phone call';
+			// Change 1st driver phone call to a text message #2812
+			$description .= ' Second txt message';
 		}
 
 		if( $attempts == 2 ){
-			$description .= ' Second phone call';
+			$description .= ' Phone call';
 		}
 
 		if( $attempts == 3 ){

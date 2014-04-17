@@ -56,6 +56,19 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $phone;
 	}
 
+	public function getTxtNumber(){
+		if( $this->txt ){
+			return $this->txt;
+		} 
+		$notifications = Crunchbutton_Admin_Notification::q( "SELECT * FROM admin_notification WHERE id_admin = {$this->id_admin} AND active = 1" );
+		foreach( $notifications as $notification ){
+			if( $notification->type == Crunchbutton_Admin_Notification::TYPE_SMS ){
+				return $notification->value;		
+			}
+		}
+		return false;
+	}
+
 	public function getPhoneNumber(){
 		if( $this->phone ){
 			return $this->phone;
