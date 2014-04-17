@@ -1,0 +1,1 @@
+ALTER TABLE  `order` ADD  `asked_to_call`  TINYINT( 1 ) NOT NULL DEFAULT '0';
