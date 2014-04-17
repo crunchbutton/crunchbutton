@@ -1,0 +1,105 @@
+
+<div class="snap-drawers static-nav-viewport loggedout-hideable" ng-controller="SideMenuCtrl">
+	<div class="snap-drawer snap-drawer-left side-menu" id="side-menu">
+		<ul>
+			<li ng-click="navigation.link('/splash')" ng-class="{'nav-active': (navigation.page == 'splash')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-cockpit"></i></td>
+						<td class="side-menu-label">Dashboard</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.link('/food-delivery')" ng-class="{'nav-active': (navigation.page == 'restaurants')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
+						<td class="side-menu-label">Orders</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.link('/orders')" ng-class="{'nav-active': (navigation.page == 'orders')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
+						<td class="side-menu-label">Restaurants</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.link('/location')" ng-class="{'nav-active': (navigation.page == 'location')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-map-marker"></i></td>
+						<td class="side-menu-label">Communities</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-heart"></i></td>
+						<td class="side-menu-label">Customers</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="navigation.signin()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-sign-in"></i></td>
+						<td class="side-menu-label">Drivers</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="signout.signout()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
+						<td class="side-menu-label">Reports</a></td>
+					</tr>
+				</table>
+			</li>
+			<li ng-click="signout.signout()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-sign-out"></i></td>
+						<td class="side-menu-label">Tools</a></td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+
+	</div>
+	<div class="snap-drawer snap-drawer-right side-menu"></div>
+</div>
+
+<div class="wrapper static-nav-viewport loggedout-hideable">
+	
+	<div id="snap-content" class="snap-content">
+		<div class="navs fixed" data-position="fixed" ng-controller="MainHeaderCtrl">
+			<div class="nav nav-top">
+				<div class="content">
+
+					<div title="Menu" class="menu side" ng-click="navigation.menu()"></div>
+					<div title="Back" class="nav-back hide-before-init" ng-click="back()"></div>
+
+					<div title="Crunchbutton" class="logo animated-resize" ng-click="navigation.home()"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="snap-content-inner bg" ng-scroll-position>
+			<div class="content" ng-scroll-spy>
+				<div ng-view id="ng-view" ng-class="animationClass"><?=$this->content?></div>
+			</div>
+
+			<div class="divider"></div>
+		</div>
+
+	</div>
+
+	<div class="divider"></div>
+</div>
+
+
+<div id="fb-root"></div>
+

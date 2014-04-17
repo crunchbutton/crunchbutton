@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title><?=$this->title ? $this->title : 'Crunchbutton'?></title>
+<meta name="fragment" content="!" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta name="format-detection" content="telephone=no">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<link rel="apple-touch-icon-precomposed" href="/assets/images/micro/appicon.png">
+<?=$this->display('layout/html.servertime')?>
+
+<? if (c::config()->bundle) : ?>
+	<link rel="stylesheet" type="text/css" href="/assets/css/bundle.css?v=<?=Cana_Util::gitVersion()?>">
+<? else : ?>
+	<?=$this->display('bundle/css')?>
+<? endif ; ?>
+<link rel="shortcut icon" href="/assets/images/micro/appicon.png">
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.2/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<?=$this->display('layout/html.templates')?>
