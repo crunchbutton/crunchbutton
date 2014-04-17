@@ -44,7 +44,7 @@ class Crunchbutton_Admin_Notification_Log extends Cana_Table {
 		$description = 'Notification #' . ( $attempts + 1 );
 
 		if( $attempts == 0 ){
-			$description .= ' regular notification';
+			$description .= ' First txt message';
 		}
 
 		if( $attempts == 1 ){

@@ -194,13 +194,7 @@
 							</a>
 						</li>
 					<? } ?>
-					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
-						<li class="">
-							<a href="/drivers/hours">
-								<i class="icon-time"></i> Working hours
-							</a>
-						</li>
-					<? } ?>
+<!--
 					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
 						<li class="">
 							<a href="/drivers/schedule">
@@ -208,7 +202,7 @@
 							</a>
 						</li>
 					<? } ?>
-	
+-->
 					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
 					<li class="">
 						<a href="/drivers/shift/community">
@@ -223,11 +217,6 @@
 							<i class="icon-file-alt"></i> Summary
 						</a>
 					</li>
-					<li class="">
-						<a href="/drivers/shift/status/shift">
-							<i class="icon-file-alt"></i> Status
-						</a>
-					</li>
 					<? } ?>
 				
 					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) || c::admin()->isDriver() ) { ?>
@@ -238,6 +227,22 @@
 					</li>
 					<? } ?>
 
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) || c::admin()->isDriver() ) { ?>
+					<li class="">
+						<a href="/drivers/shift/status/shift">
+							<i class="icon-file-alt"></i> Status
+						</a>
+					</li>
+					<? } ?>
+
+
+					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) ) { ?>
+						<li class="">
+							<a href="/drivers/hours">
+								<i class="icon-time"></i> Working hours <i style="font-size:11px;">deprecated</i>
+							</a>
+						</li>
+					<? } ?>
 				</ul>
 			</li>
 		<? endif ; ?>
