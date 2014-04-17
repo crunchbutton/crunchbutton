@@ -40,12 +40,15 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 				break;
 
 			case 'status':
-				switch ( c::getPagePiece( 3 ) ) {
-					case 'shift':
-						$this->statusShift();
-					break;
-					default:
-					break;
+
+				if ( c::admin()->permission()->check( [ 'global' ] ) ){
+					switch ( c::getPagePiece( 3 ) ) {
+						case 'shift':
+							$this->statusShift();
+						break;
+						default:
+						break;
+					}
 				}
 				break;
 

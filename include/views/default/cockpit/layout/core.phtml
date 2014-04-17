@@ -227,7 +227,7 @@
 					</li>
 					<? } ?>
 
-					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) || c::admin()->isDriver() ) { ?>
+					<? if ( c::admin()->permission()->check( [ 'global'] )  ) { ?>
 					<li class="">
 						<a href="/drivers/shift/status/shift">
 							<i class="icon-file-alt"></i> Status
