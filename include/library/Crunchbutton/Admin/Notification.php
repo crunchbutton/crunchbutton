@@ -94,24 +94,35 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 						}
 
 						$driverAlreadyNotified = [];
-
+						$driversAlreadyReminded = [];
 						$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
 						if( $drivers ){
 							foreach( $drivers as $driver ){
 								$driverAlreadyNotified[] = $driver->id_admin;
 								foreach( $driver->activeNotifications() as $adminNotification ){
-									$adminNotification->send( $order );
-									$hasDriversWorking = true;
-									$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' # ' . $adminNotification->value;
-									Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-									echo $message."\n";
+									// first notification
+									if( $attempts == 0 ){
+										$adminNotification->send( $order );	
+										$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' # ' . $adminNotification->value . ' attempt: ' .  $attempts;
+										Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
+										echo $message."\n";
+									} else {
+										// next notifications
+										if( !$driversAlreadyReminded[ $driver->id_admin ] ){
+											$adminNotification->send( $order );	
+											$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' - attempt: ' .  $attempts;
+											Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
+											echo $message."\n";
+										}
+									}
+									$driversAlreadyReminded[ $driver->id_admin ] = true;
+									$hasDriversWorking = true;									
 								}	
 							}
 						}
 
-
+						// Send notification to drivers - Working Hours legacy
 						$driversAlreadyReminded = [];
-						// Send notification to drivers - legacy
 						if( count( $driversToNotify ) > 0 ){
 							foreach( $driversToNotify as $driver ){
 								if( $driver->isWorking() ){
