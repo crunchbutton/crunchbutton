@@ -467,7 +467,7 @@ class Controller_api_order extends Crunchbutton_Controller_Rest {
 							'host' => c::config()->host_callback,
 							'type' => 'notification'
 						]);
-						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. We will call you . . . </Say>';
+						echo '<Say voice="'.c::config()->twilio->voice.'">Thank you. They will call you . . . </Say>';
 						$order->warningStealthNotConfirmed();
 						break;
 					case '0':
