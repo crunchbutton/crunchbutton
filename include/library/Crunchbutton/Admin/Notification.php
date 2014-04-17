@@ -109,6 +109,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 							}
 						}
 
+
+						$driversAlreadyReminded = [];
 						// Send notification to drivers - legacy
 						if( count( $driversToNotify ) > 0 ){
 							foreach( $driversToNotify as $driver ){
@@ -120,11 +122,23 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 										continue;
 									}
 									foreach( $driver->activeNotifications() as $adminNotification ){
-										$adminNotification->send( $order );
+										// first notification
+										if( $attempts == 0 ){
+											$adminNotification->send( $order );	
+											$message = '#'.$order->id_order.' sending notification to ' . $driver->name . ' # ' . $adminNotification->value . '  attempt: ' .  $attempts;
+											Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
+											echo $message."\n";
+										} else {
+											// next notifications
+											if( !$driversAlreadyReminded[ $driver->id_admin ] ){
+												$adminNotification->send( $order );	
+												$message = '#'.$order->id_order.' sending warning notification to ' . $driver->name . ' attempt: ' .  $attempts;
+												Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
+												echo $message."\n";
+											}
+										}
+										$driversAlreadyReminded[ $driver->id_admin ] = true;
 										$hasDriversWorking = true;
-										$message = '#'.$order->id_order.' sending notification to ' . $driver->name . ' # ' . $adminNotification->value;
-										Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-										echo $message."\n";
 									}	
 								}
 							}
@@ -214,8 +228,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 		$env = c::getEnv();
 
+		$attempts = Crunchbutton_Admin_Notification_Log::attempts( $order->id_order );
+
 		if( $env != 'live' ){
-			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'delivery-driver' ]);
+			Log::debug( [ 'order' => $order->id_order, 'action' => 'notification to admin at DEV - not sent', 'notification_type' => $this->type, 'value'=> $this->value, 'attempt' => $attempts, 'type' => 'delivery-driver' ]);
 			return;
 		}
 
@@ -231,12 +247,8 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			return;
 		}
 
-		$attempts = Crunchbutton_Admin_Notification_Log::attempts( $order->id_order );
-
 		Log::debug( [ 'order' => $order->id_order, 'attempts' => $attempts, 'action' => 'notification to admin starting', 'notification_type' => $this->type, 'value'=> $this->value, 'type' => 'delivery-driver' ]);
 
-		// Send the regular notification just at the first time
-		// More info: https://github.com/crunchbutton/crunchbutton/issues/2352#issuecomment-34780213
 		if( $attempts == 0 ){
 			switch ( $this->type ) {
 				case Crunchbutton_Admin_Notification::TYPE_FAX :
@@ -260,31 +272,49 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 					break;
 			}
 		} else if( $attempts >= 1 ){
-			// Send the phone call
 			$admin = $this->admin();
-			$phoneNumber = $admin->getPhoneNumber();
-			if( $phoneNumber ){
-				$call = '';
-				switch ( $attempts ) {
-					case 1:
-						$call = 'driver-first-call-warning';
-						break;
-					case 2:
+			switch ( $attempts ) {
+				case 1:
+					// Change 1st driver phone call to a text message #2812
+					$txtNumber = $admin->getTxtNumber();
+					if( $txtNumber ){
+						$env = c::getEnv();
+
+						$sms = $txtNumber;
+
+						$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
+
+						$message = "Remember: ACCEPT this order cbtn.io/" . $order->id_order . ". Next reminder is a phone call in 3 minutes. Then we'll reach out manually, which is annoying for us ;)";
+						$message = str_split( $message , 160 );
+
+						Log::debug( [ 'order' => $order->id_order, 'action' => 'send second sms to admin', 'num' => $sms, 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
+
+						foreach ($message as $msg) {
+							$twilio->account->sms_messages->create(
+								c::config()->twilio->{$env}->outgoingTextDriver,
+								'+1'.$sms,
+								$msg
+							);
+							continue;
+						}
+					}
+					break;
+				case 2:
+					$phoneNumber = $admin->getPhoneNumber();
+					if( $phoneNumber ){
 						$call = 'driver-second-call-warning';
-						break;
-				}
-				if( $call != '' ){
-					$env = c::getEnv();
-					$num = $phoneNumber;
-					$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/'.$call;
-					Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => $this->host_callback(), 'env' => $env, 'url' => $url, 'type' => 'admin_notification' ]);
-					$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-					$call = $twilio->account->calls->create(
-						c::config()->twilio->{$env}->outgoingDriver,
-						'+1'.$num,
-						$url
-					);
-				}
+						$env = c::getEnv();
+						$num = $phoneNumber;
+						$url = 'http://'.$this->host_callback().'/api/order/'.$order->id_order.'/'.$call;
+						Log::debug( [ 'order' => $order->id_order, 'action' => 'send call to admin', 'num' => $num, 'host' => $this->host_callback(), 'env' => $env, 'url' => $url, 'type' => 'admin_notification' ]);
+						$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
+						$call = $twilio->account->calls->create(
+							c::config()->twilio->{$env}->outgoingDriver,
+							'+1'.$num,
+							$url
+						);
+					}
+					break;
 			}
 		}
 	}
