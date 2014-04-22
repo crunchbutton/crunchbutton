@@ -1414,37 +1414,96 @@ class Crunchbutton_Order extends Cana_Table {
 				$options = i::o($options);
 			}
 
-			if ($options->count()) {
-				$foodItem .= ' '.$with.' ';
+			// driver dumbphone tweaks #2673
+			if( $type == 'sms-driver' ){
+					$withOptions = '';
+					$selectOptions = '';
 
-				foreach ($dish->options() as $option) {
-					if ($option->option()->type == 'select') {
-						continue;
+					if ($options->count()) {					
+
+						foreach ($dish->options() as $option) {
+							if ($option->option()->type == 'select') {
+								continue;
+							}
+
+							if($option->option()->id_option_parent) {
+								$optionGroup = Crunchbutton_Option::o($option->option()->id_option_parent);
+								$selectOptions .= trim( $optionGroup->name ) . ': ';
+								$selectOptions .= trim( $option->option()->name ) . ', ';
+							} else {
+								if( $withOptions == '' ){
+									$withOptions .= 'With: ';
+								}
+								$withOptions .= trim( $option->option()->name ) . ', ';
+							}
+						}
+						$withOptions = substr( $withOptions, 0, -2 );
+						$selectOptions = substr( $selectOptions, 0, -2 );
 					}
-					$foodItem .= preg_replace($pFind, $pReplace, $option->option()->name).$space.' ';
-				}
-				$foodItem = substr($foodItem, 0, -2);
-			} 
+					$withoutDefaultOptions = '';
+					if( $dish->id_order_dish && $dish->id_dish ){ 
+						$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+						$commas = ' ';
+						if( $optionsNotChoosen->count() ){
+							foreach( $optionsNotChoosen as $dish_option ){
+								$withoutDefaultOptions .= $commas . 'No ' . trim( $dish_option->option()->name );
+								$commas = ', ';
+							}
+						}
+					}
 
-			$withoutDefaultOptions = '';
+					if ( $withOptions != '' || $withoutDefaultOptions != '' || $selectOptions != '' ) {
+						$foodItem .= ': ';
+					}
 
-			if( $dish->id_order_dish && $dish->id_dish ){
-				$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
-				$commas = ' ';
-				if( $optionsNotChoosen->count() ){
-					foreach( $optionsNotChoosen as $dish_option ){
-						$withoutDefaultOptions .= $commas . 'No ' . $dish_option->option()->name;
-						$commas = $space . ' ';
+					if( $withOptions != '' ){
+						$withOptions .= '. ';
+					}
+
+					if( $withoutDefaultOptions != '' ){
+						$withoutDefaultOptions .= '. ';
+					}
+
+					if( $selectOptions != '' ){
+						$selectOptions .= '. ';
+					}
+
+					$foodItem .= $withoutDefaultOptions;
+					$foodItem .= $withOptions;
+					$foodItem .= $selectOptions;
+			} else {
+				if ($options->count()) {
+					$foodItem .= ' '.$with.' ';
+
+					foreach ($dish->options() as $option) {
+						if ($option->option()->type == 'select') {
+							continue;
+						}
+						$foodItem .= preg_replace($pFind, $pReplace, $option->option()->name).$space.' ';
+					}
+					$foodItem = substr($foodItem, 0, -2);
+				} 
+
+				$withoutDefaultOptions = '';
+
+				if( $dish->id_order_dish && $dish->id_dish ){
+					$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
+					$commas = ' ';
+					if( $optionsNotChoosen->count() ){
+						foreach( $optionsNotChoosen as $dish_option ){
+							$withoutDefaultOptions .= $commas . 'No ' . $dish_option->option()->name;
+							$commas = $space . ' ';
+						}
 					}
 				}
-			}
 
-			if ( $options->count() && $withoutDefaultOptions != '' ) {
-				$foodItem .= $space;
-			}
+				if ( $options->count() && $withoutDefaultOptions != '' ) {
+					$foodItem .= $space;
+				}
 
-			$withoutDefaultOptions .= '.';
-			$foodItem .= $withoutDefaultOptions;
+				$withoutDefaultOptions .= '.';
+				$foodItem .= $withoutDefaultOptions;
+			}
 
 			if ($type == 'phone') {
 				$foodItem .= ']]></Say><Pause length="2" /><Say voice="'.c::config()->twilio->voice.'"><![CDATA[';
