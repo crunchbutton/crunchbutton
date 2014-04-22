@@ -196,22 +196,55 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 			$env = c::getEnv();
 			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 			$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' http://cbtn.io/' . $order->id_order;
-			
+
+			// Get drivers name
+			$drivers = Crunchbutton_Community_Shift::driversCouldDeliveryOrder( $order->id_order );
+			if( $drivers ){
+				foreach( $drivers as $driver ){
+					foreach( $driver->activeNotifications() as $adminNotification ){
+						$driversToNotify[ $driver->id_admin ] = $driver->name . ': ' . $driver->phone();
+					}	
+				}
+			}
+			$drivers_list = "";
+			$commas = "";
+			foreach( $driversToNotify as $key => $val ){
+				$drivers_list .= $commas . $val;
+				$commas = "; ";
+			}
+
+			$sms_message = '#'.$order->id_order.' sms: reps failed to pickup order';
+			$sms_message .= "\n";
+			$sms_message .= "R: " . $order->restaurant()->name;
+			if( $order->restaurant()->community && $order->restaurant()->community != '' ){
+				$sms_message .= ' (' . $order->restaurant()->community . ')';
+			} 
+			$sms_message .= "\n";
+			$sms_message .= "C: " . $order->name;
+
+			if( $drivers_list != '' ){
+				$sms_message .= "\nD: " . $drivers_list;
+			}
+
 			// Reps failed to pickup order texts changes #2802
-			Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
+			Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $sms_message ] );
 
 			foreach ( $ags as $a ) {
-				// notify each person
-				$message = '#'.$order->id_order.' sms: reps failed to pickup order';
-				$message .= "\n";
-				$message .= $order->restaurant()->name;
-				if( $order->restaurant()->community && $order->restaurant()->community != '' ){
-					$message .= ' (' . $order->restaurant()->community . ')';
-				} 
-				echo $message."\n";
-				Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $a->txt, 'message' => $message, 'type' => 'delivery-driver' ]);
-				$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextDriver, '+1'.$a->txt, $message );
+				echo $sms_message."\n";
+				Log::debug( [ 'order' => $order->id_order, 'action' => $sms_message, 'num' => $a->txt, 'message' => $sms_message, 'type' => 'delivery-driver' ]);
 
+				$message = str_split( $sms_message , 160 );
+				foreach ($message as $msg) {
+					$twilio->account->sms_messages->create(
+						c::config()->twilio->{$env}->outgoingTextCustomer,
+						'+1'.$a->txt,
+						$msg
+					);
+					continue;
+				}
+
+				/* 
+				Removed the phone call for while - asked by David 2/23/2014
 				$num = $a->getPhoneNumber();
 				if( $num ){
 
@@ -225,15 +258,14 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 					echo $message."\n";
 					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'num' => $num, 'type' => 'delivery-driver' ]);
-					/* 
-					Removed the phone call for while - asked by David 2/23/2014
 					$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 					$call = $twilio->account->calls->create(
 						c::config()->twilio->{$env}->outgoingDriver,
 						'+1'.$num,
 						$url
-					);	*/
+					);
 				}
+				*/
 			}
 		}
 	}
