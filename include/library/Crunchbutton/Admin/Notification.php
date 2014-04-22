@@ -178,7 +178,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 		}
 	}
 
-	public function alertDispatch(Crunchbutton_Order $order) {
+	public function alertDispatch( Crunchbutton_Order $order ) {
 
 		$env = c::getEnv();
 
@@ -195,7 +195,10 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 			$env = c::getEnv();
 			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
-			$message = 'Reps failed to pickup order http://cbtn.io/' . $order->id_order;
+			$message = 'Reps failed to pickup order #' . $order->id_order . '. Restaurant ' . $order->restaurant()->name . ' / Customer ' . $order->name . ' http://cbtn.io/' . $order->id_order;
+			
+			// Reps failed to pickup order texts changes #2802
+			Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
 
 			foreach ( $ags as $a ) {
 				// notify each person
