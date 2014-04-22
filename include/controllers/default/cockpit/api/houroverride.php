@@ -48,7 +48,7 @@ class Controller_api_houroverride extends Crunchbutton_Controller_RestAccount {
 						$date_start_hr = $date_start_hour[ 0 ];
 						$date_start_mn = $date_start_hour[ 1 ];
 						$hour_override_date_start_ampm = $this->request()[ 'hour_override_date_start_ampm' ];
-						if( $hour_override_date_start_ampm == 'PM' ){
+						if( $hour_override_date_start_ampm == 'PM' && $date_start_hr < 12 ){
 							$date_start_hr = $date_start_hr + 12;
 						}
 
@@ -61,7 +61,7 @@ class Controller_api_houroverride extends Crunchbutton_Controller_RestAccount {
 						$date_end_hr = $date_end_hour[ 0 ];
 						$date_end_mn = $date_end_hour[ 1 ];
 						$hour_override_date_end_ampm = $this->request()[ 'hour_override_date_end_ampm' ];
-						if( $hour_override_date_end_ampm == 'PM' ){
+						if( $hour_override_date_end_ampm == 'PM' && $date_end_hr < 12 ){
 							$date_end_hr = $date_end_hr + 12;
 						}
 
