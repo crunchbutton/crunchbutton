@@ -138,6 +138,10 @@ class Crunchbutton_Community extends Cana_Table {
 		return $group;
 	}
 
+	public function communityByDriverGroup( $group ){
+		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE driver_group = "' . $group . '"' );
+	}
+
 	public function getDriversOfCommunity(){
 		$group = $this->driverGroup();
 		$query = 'SELECT a.* FROM admin a 
