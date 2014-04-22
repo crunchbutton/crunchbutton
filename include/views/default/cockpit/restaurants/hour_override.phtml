@@ -7,6 +7,12 @@ $isOpen = $restaurant->open();
 $timezone = new DateTimeZone( $restaurant->timezone );
 
 $date_start = new DateTime( 'now ', $timezone );
+$multipleOf = 5;
+$time = new DateTime( 'now', $timezone );
+$minutes = round( ( ( $time->format( 'i' ) + 10 ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
+$minutes -= $time->format( 'i' );
+$minutes -= 20;
+$date_start->modify( $minutes . ' minutes' );
 $hour_override_date_start = $date_start->format( 'm/d/Y' );
 $hour_override_date_start_hour = $date_start->format( 'h:i' );
 $hour_override_date_start_ampm = $date_start->format( 'A' );
