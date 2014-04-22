@@ -73,7 +73,7 @@
 					<td style="width: 60px;"><div>Status</div></td>
 					<td style="width: 60px;"><div>Driver</div></td>
 					<td style="width: 110px;"><div>Last update user</div></td>
-					<td style="width: 110px;"><div>Last update admin</div></td>
+					<td nowrap="nowrap" style="width: 130px;"><div>Last update sys/admin</div></td>
 					<td style="width: 120px;"></td>
 				</tr>
 			</thead>
@@ -121,7 +121,7 @@
 							$driver = $support->order()->driver()->name;
 							$message = $support->lastCustomerMessage()->body;
 							$customer_time = $support->lastCustomerMessage()->relativeTime();
-							$admin_time = $support->lastAdminMessage()->relativeTime();
+							$admin_time = $support->lastAdminSysMessage()->relativeTime();
 							$chat = true;
 							break;
 						case Crunchbutton_Support::TYPE_WARNING:

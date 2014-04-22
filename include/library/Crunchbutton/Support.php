@@ -84,6 +84,10 @@ class Crunchbutton_Support extends Cana_Table {
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
 	}
 
+	public function lastAdminSysMessage(){
+		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND ( `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_REP . '" OR `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_SYSTEM . '"  ) ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
+	}
+
 	public function lastAdminMessage(){
 		return Crunchbutton_Support_Message::q( 'SELECT * FROM support_message WHERE id_support = ' . $this->id_support . ' AND `from` = "' . Crunchbutton_Support_Message::TYPE_FROM_REP . '" ORDER BY date DESC, id_support_message DESC LIMIT 1 ' );
 	}
