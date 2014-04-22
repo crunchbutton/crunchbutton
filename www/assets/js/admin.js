@@ -2108,6 +2108,7 @@ admin_config.save = function( key, value, success, error ){
 	});
 }
 
+
 App.phone = {
 
 	/**
@@ -2133,7 +2134,7 @@ App.phone = {
 			return false;
 		}
 
-		num = num.replace(new RegExp( '[- \(\)]', 'g'), '');
+		num = num.replace( /[^0-9]/g, '' );
 
 		if (!num || num.length != 10) {
 			return false;
