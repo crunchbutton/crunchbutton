@@ -56,9 +56,10 @@ class Controller_Support_Content extends Crunchbutton_Controller_Account {
 			$where .= ' ) ';
 		}
 
-		$query = "SELECT DISTINCT( s.id_support ) AS id, s.* FROM support s 
-									INNER JOIN support_message sm ON sm.id_support = s.id_support
+		$query = "SELECT DISTINCT( s.id_support ) AS id, MAX(sm.id_support_message) id_support_message, s.* FROM support s 
+									INNER JOIN support_message sm ON sm.id_support = s.id_support AND ( sm.from = '" . Crunchbutton_Support_Message::TYPE_FROM_CLIENT . "' OR sm.from = '" . Crunchbutton_Support_Message::TYPE_FROM_REP . "' )
 									WHERE 1=1 {$where}
+									GROUP BY s.id_support
 									ORDER BY sm.id_support_message DESC LIMIT {$limit}";
 
 		$tickets = Support::q( $query );
