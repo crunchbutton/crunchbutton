@@ -263,6 +263,8 @@ startChat.send = function(){
 	$( '.form-start-chat-spin' ).show();
 	$( '.form-start-chat-button' ).hide();
 
+	phone = phone.replace( /[^0-9]/g, '' );
+
 	$.ajax( {
 		url: '/api/support/new-chat',
 		method: 'POST',
@@ -301,6 +303,8 @@ makeCall.start = function(){
 
 	$( '.form-make-call-spin' ).show();
 	$( '.form-make-call-button' ).hide();
+
+	phone = phone.replace( /[^0-9]/g, '' );
 
 	$.ajax( {
 		url: '/support/phone/connect/' + callto + '?phone=' + phone
