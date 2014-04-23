@@ -280,18 +280,26 @@ class Crunchbutton_Support extends Cana_Table {
 	}
 
 	public function createNewWarning( $params = [] ){
-		$support = new Crunchbutton_Support();
-		$support->type = Crunchbutton_Support::TYPE_WARNING;
-		$support->status = Crunchbutton_Support::STATUS_OPEN;
-		$support->ip = $_SERVER[ 'REMOTE_ADDR' ];
-		$support->id_session_twilio = null;
-		$support->date = date( 'Y-m-d H:i:s' );
-		if( $params[ 'id_order' ] ) {
-			$order = Order::o( $params[ 'id_order' ] );
-			$support->id_order = $order->id_order;
-			$support->id_restaurant = $order->id_restaurant;
-			$support->id_user = $order->id_user;
-			$support->phone = $order->phone;
+		$support = false;
+		if( $params[ 'id_order' ] ){
+			$support = Crunchbutton_Support::q( 'SELECT * FROM support WHERE id_order = ' . $params[ 'id_order' ] . ' AND type = "' . Crunchbutton_Support::TYPE_WARNING . '" ORDER BY id_support DESC LIMIT 1' );
+		}
+		if( $support && $support->id_support ){
+			$support->status = Crunchbutton_Support::STATUS_OPEN;
+		} else {
+			$support = new Crunchbutton_Support();
+			$support->type = Crunchbutton_Support::TYPE_WARNING;
+			$support->status = Crunchbutton_Support::STATUS_OPEN;
+			$support->ip = $_SERVER[ 'REMOTE_ADDR' ];
+			$support->id_session_twilio = null;
+			$support->date = date( 'Y-m-d H:i:s' );
+			if( $params[ 'id_order' ] ) {
+				$order = Order::o( $params[ 'id_order' ] );
+				$support->id_order = $order->id_order;
+				$support->id_restaurant = $order->id_restaurant;
+				$support->id_user = $order->id_user;
+				$support->phone = $order->phone;
+			}
 		}
 		$support->save();
 		$support->addSystemMessage( $params[ 'body' ] );

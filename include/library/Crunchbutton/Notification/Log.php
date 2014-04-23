@@ -71,6 +71,15 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 				$sendSMSTo[ $user->name ] = $user->txt;
 			}
 
+			$community = $this->order()->restaurant()->communityNames();
+			if( $community != '' ){
+				$community = '(' . $community . ')';
+			}
+
+			// Make these notifications pop up on support on cockpit #3008
+			$body = '#'.$this->id_order.' MAX CALLBACK for '.$this->order()->restaurant()->name. $community. "\nR# ".$this->order()->restaurant()->phone().$notifications."\nC# ".$this->order()->phone();
+			Crunchbutton_Support::createNewWarning( [ 'id_order' => $this->id_order, 'body' => $body ] );
+
 			// Send SMS to Reps - Issue #2027
 			if( count( $sendSMSTo ) > 0 ){
 
@@ -164,10 +173,18 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 
 			$sendSMSTo = array();
 			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
-				$sendSMSTo[ $supportName ] = $supportPhone;
-			
+				$sendSMSTo[ $supportName ] = $supportPhone;			
 			}
 			
+			$community = $this->order()->restaurant()->communityNames();
+			if( $community != '' ){
+				$community = '(' . $community . ')';
+			}
+
+			// Make these notifications pop up on support on cockpit #3008
+			$body = '#'.$this->id_order.' MAX CONFIRMATION CALL for '.$this->order()->restaurant()->name. $community. "\nR# ".$this->order()->restaurant()->phone().$notifications."\nC# ".$this->order()->phone();
+			Crunchbutton_Support::createNewWarning( [ 'id_order' => $this->id_order, 'body' => $body ] );
+
 			// Send SMS to Reps - Issue #2027
 			$usersToReceiveSMS = $this->order()->restaurant()->adminReceiveSupportSMS();
 
@@ -275,7 +292,7 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 		$url = 'http://'.c::config()->host_callback.'/api/order/' . $this->id_order . '/maxcalling?id_notification=' . $log->id_notification;
 		
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'MAX CB - starting', 'url' => $url, 'callto'=> $support, 'type' => 'notification' ]);
-		
+
 		$users = $this->repsWillReceiveMaxCallWarning();
 		foreach( $users as $user ){
 			if( !$user->phone ){
@@ -286,7 +303,6 @@ class Crunchbutton_Notification_Log extends Cana_Table {
 			Log::debug( [ 'order' => $this->id_order, 'action' => 'MAX CB - calling', 'user' => $user->name, 'id_user' => $user->id_admin, 'phone' => $user->phone, 'url' => $url, 'type' => 'notification' ]);
 			$call = $twilio->account->calls->create( c::config()->twilio->{$env}->outgoingRestaurant, '+1'.$phone, $url );
 		}
-
 
 		$timeToWait = $this->maxCallMinutesToWaitBeforeRecall();
 
