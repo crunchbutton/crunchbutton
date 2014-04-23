@@ -1,0 +1,28 @@
+<?php
+$count = 0;
+$weekdays = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'All' ];
+foreach( $weekdays as $day ){
+	if( $count == 0 ){
+		echo '<div class="row-fluid">';
+	}
+	$count++;
+	?>
+	<div class="span3">
+		<!-- <h5><?php echo $day; ?></h5> -->
+		<div id="chart-<?php echo $day; ?>"></div>
+	</div>
+	<?php
+	if( $count == 4 ){
+		echo '</div>';
+		$count = 0;
+	}
+}
+?>
+<script type="text/javascript">
+$( document ).ready( function(){ 
+	<?php foreach( $weekdays as $day ){ ?>
+		var url = '/home/charts/delivered-orders-per-day-per-community/?day=<?php echo $day; ?>&=1&id_community=<?php echo $_GET[ 'id_community' ] ?>';
+		$.ajax( { url: url, } ).done( function( data ) { $( '#chart-<?php echo $day; ?>' ).html( data ); } );
+	<?php } ?>
+} );
+</script>

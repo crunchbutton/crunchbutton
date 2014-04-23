@@ -114,11 +114,14 @@ if( $isPopup ){
 		];
 	}
 ?>
+<?php if( $interval == 'hour' && $_GET[ 'day' ] ){
+	$chartId .= $_GET[ 'day' ];
+} ?>
 <div class="row-fluid">
 	<div class="row-fluid">
 		<div class="span12">
 			<h4 style="text-align:center;">
-				<?php echo $title; ?>
+				<?php echo $title; ?> <?php if( $interval == 'hour' && $_GET[ 'day' ] ){ echo $_GET[ 'day' ]; } ?>
 				<?php if( !$isPopup ){
 					$url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]&popup=1";
 					echo '&nbsp;&nbsp;<a href="' . $url . '" target="_blank" title="Zoom this chart"><i class="icon-zoom-in"></i></a>';
@@ -134,7 +137,7 @@ if( $isPopup ){
 	<?php } ?>
 	<?php echo $description; ?>
 </center>
-	<div id="options-<?=$divId?>" style="height:110px;background:#F5F5F5;overflow-x:auto;width:99%;overflow-y:hidden;<?php if( $isPopup ){ echo 'display:none'; } ?>">
+	<div id="options-<?=$divId?>" style="height:110px;background:#F5F5F5;overflow-x:auto;width:99%;overflow-y:hidden;<?php if( $isPopup || $interval == 'hour' ){ echo 'display:none'; } ?>">
 		<table>
 			<tr>
 			<?php 
@@ -280,7 +283,6 @@ if( $isPopup ){
 </div>
 
 <?php if( $hasResults ){ ?>
-
 <script type="text/javascript">
 $(function () {
 	var data = <?=json_encode($jsData, JSON_NUMERIC_CHECK)?>;
@@ -301,6 +303,7 @@ $(function () {
 			labels : {
 				rotation: -45,
 				align: 'right'
+				<?php if( $interval == 'hour' ){ ?>,step:1<?php } ?>
 				<?php if( $interval == 'day' ){ ?>,step:10<?php } ?>
 				<?php if( $interval == 'week' ){ ?>,step:2<?php } ?>
 			}
