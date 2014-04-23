@@ -71,7 +71,7 @@ class Controller_community extends Crunchbutton_Controller_Account {
 			}
 
 		} else {
-			$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
+			$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
 			c::view()->communities = $communities;			
 			c::view()->display( 'community/index' );
 		}
@@ -117,7 +117,7 @@ class Controller_community extends Crunchbutton_Controller_Account {
 
 	public function report(){
 		$interval = 14;
-		$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
+		$communities = Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
 		$orders = [];
 		$days = [];
 		foreach ( $communities as $community ) {
