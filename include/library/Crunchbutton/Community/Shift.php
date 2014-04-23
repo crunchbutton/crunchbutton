@@ -18,7 +18,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		if( $order->restaurant()->timezone ){
 			$now = new DateTime( 'now', new DateTimeZone( $order->restaurant()->timezone ) );	
 		} else {
-			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		}
 	
 		return Admin::q( 'SELECT a.* FROM admin a 

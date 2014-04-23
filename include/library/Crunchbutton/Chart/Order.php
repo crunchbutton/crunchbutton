@@ -39,6 +39,13 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 																'orders-per-day-per-community' => array( 'title' => 'Last 14 Days', 'interval' => 'day', 'type' => 'column', 'method' => 'byDayPerCommunitySelective' ),
 															)
 												),
+												'group-delivered-orders-by-community' => array(
+														'title' => 'Delivered',
+														'tags' => array( 'especial' ),
+														'charts' => array(  
+																'delivered-orders-per-day-per-community' => array( 'title' => 'Orders', 'interval' => 'hour', 'type' => 'column', 'method' => 'deliveredByDayPerCommunity' ),
+															)
+												),
 												'group-orders-community' => array(
 														'title' => 'Orders',
 														'tags' => array( 'reps' ),
@@ -529,6 +536,51 @@ public function byDayPerRestaurant( $render = false ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'day' );
 		}
 		return $parsedData;
+	}
+
+	public function deliveredByDayPerCommunity(){
+
+			$id_community = $_REQUEST[ 'id_community' ];
+			$day = $_REQUEST[ 'day' ];
+			
+			$where_day = ( $day != 'All' ) ? "AND DATE_FORMAT( o.date, '%W' ) = '{$day}' " : "";
+
+			$query = "SELECT COUNT(*) AS Total,
+									DATE_FORMAT( o.date, '%H' ) AS Hour
+									FROM `order` o 
+									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
+									INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = {$id_community}
+									WHERE o.delivery_service = 1 {$where_day}
+									GROUP BY Hour";
+
+			$data = c::db()->get( $query );
+
+			$_hours = [];
+
+			for( $i = 0; $i <= 12; $i++ ){
+				$hour = $i . ( $i == 12 ? ' pm' : ' am' ); 
+				$_hours[ $hour ] = 0;
+			}
+			for( $i = 1; $i <= 12; $i++ ){
+				$hour = $i . ' pm'; 
+				$_hours[ $hour ] = 0;
+			}
+
+			$community = Crunchbutton_Community::o( $id_community );
+
+			foreach ( $data as $item ) {
+				$date = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+				$date->setTime( $item->Hour, 00 );
+				$date->setTimezone( new DateTimeZone( $community->timezone ) );
+				$_hours[ $date->format( 'g a' ) ] = $item->Total;
+			}
+
+			$data = [];
+
+			foreach( $_hours as $hour => $value ){
+				$data[] = ( object ) array( 'Label' => $hour, 'Total' => $value, 'Type' => 'Hour'  ); 
+			}
+			return array( 'data' => $data, 'unit' => $this->unit, 'interval' => 'hour' );
 	}
 
 	public function byDayPerCommunitySelective(){

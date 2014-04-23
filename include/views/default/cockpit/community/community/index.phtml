@@ -83,7 +83,8 @@
 					<li <?php echo $active; ?>><a href="#drivers" data-toggle="tab"><i class="icon-road"></i> <span>Drivers</span></a></li>
 				<?php } ?>
 				<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) { ?>
-				<li><a href="#shifts" data-toggle="tab"><i class="icon-truck"></i> <span>Shifts (Beta)</span></a></li>
+				<li><a href="#shifts" data-toggle="tab"><i class="icon-truck"></i> <span>Shifts</span></a></li>
+				<li><a href="#charts" data-toggle="tab"><i class="icon-bar-chart"></i> <span>Delivery Report</span></a></li>
 				<?php } ?>
 				<li><a href="#more" data-toggle="tab"><i class="icon-cog"></i> <span>More actions</span></a></li>
 			</ul>
@@ -120,7 +121,13 @@
 				<div class="row-fluid">
 					<div id="shifts-content"></div>
 				</div>
-				
+			</div>
+			<div class="tab-pane" id="charts">
+				<div class="row-fluid">
+					<div id="charts-content">
+						<button class="btn btn-default" onclick="community.deliveryChats();">Load charts</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -154,7 +161,6 @@ $( document ).ready( function(){
 	} );
 
 	community.restaurants();
-
 	community.drivers();
 	<?php 
 	if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) {
@@ -168,6 +174,16 @@ $( document ).ready( function(){
 	<?php } ?>
 
 } );
+
+community.deliveryChats = function(){
+	var url = '/charts/community/delivered-orders?id_community=' + community.id_community;
+	$.ajax( {
+		url: url,
+		complete: function(content) {
+			$('#charts-content').html( content.responseText );
+		}
+	} );
+};
 
 community.shifts = function( url ){
 	$.ajax( {
