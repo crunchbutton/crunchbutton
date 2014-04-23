@@ -15,7 +15,21 @@ class Crunchbutton_Log extends Cana_Table {
 		
 		if ($log->level == 'critical') {
 			// send notifications
-			
+
+			$info = json_decode( $log->data );
+			$body = 'Critical error! Type: ' . $log->type . "\n";
+			if( $info->id_order ){
+				$id_order = $info->id_order;
+			} 
+			if( $info->action ){
+				$body .= $info->action;
+			} else {
+				$body = $log->data;
+			}
+
+			// Make these notifications pop up on support on cockpit #3008
+			Crunchbutton_Support::createNewWarning( [ 'id_order' => $id_order, 'body' => $body ] );
+
 			$env = c::getEnv();
 			$twilio = new Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 			

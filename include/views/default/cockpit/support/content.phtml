@@ -152,7 +152,7 @@
 						?></td>
 						<td ><?php echo $type; ?></td>
 						<td><?php echo $name; ?></td>
-						<td><?php echo $message; ?></td>
+						<td><?php echo nl2br( $message ); ?></td>
 						<td id="status-support-<?php echo $support->id_support; ?>"><?php echo $support->status; ?></td>
 						<td nowrap=""><?php if( $driver ) { ?>
 							<a href="/permissions/users/<?php echo $support->order()->driver()->id_admin ?>">
