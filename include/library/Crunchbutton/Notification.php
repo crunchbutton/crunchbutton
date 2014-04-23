@@ -223,6 +223,9 @@ class Crunchbutton_Notification extends Cana_Table
 		$message .= "\n";
 		$message .= 'E# ' . $env;
 
+		// Make these notifications pop up on support on cockpit #3008
+		Crunchbutton_Support::createNewWarning( [ 'id_order' => $order->id_order, 'body' => $message ] );
+
 		$message = str_split( $message,160 );
 
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'que smsFaxError sending sms', 'type' => 'notification' ]);
