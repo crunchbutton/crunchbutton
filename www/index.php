@@ -10,7 +10,7 @@
  *
  */
 
-error_reporting(E_ALL ^ (E_NOTICE | E_STRICT));
+error_reporting(E_ALL ^ ( E_NOTICE | E_STRICT | E_DEPRECATED ) );
 ini_set('display_errors',true);
 set_time_limit(10);
 ini_set('zlib.output_compression','On');
