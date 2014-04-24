@@ -68,25 +68,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.debug = function() {
 		return ( App.config && App.config.user && App.config.user.debug );
 	};
-	
-	$rootScope.test = App.test;
-	
-	$rootScope.cartScroll = function(permalink) {
-		//$('.snap-content-inner').scrollTop() + $('.cart-items').offset().top
-		var top = 130 - $('.navs').height() - 10;
-		
 
-		var scroll = function() {
-			$('html, body, .snap-content-inner').animate({scrollTop: top}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
-		};
-		if ($rootScope.navigation.page != 'restaurant') {
-			$rootScope.scrollTop = top;
-			App.go('/food-delivery/' + permalink);
-		} else {
-			scroll();
-		}
-	};
-	
 	$rootScope.$on('userAuth', function(e, data) {
 		$rootScope.$safeApply(function($scope) {
 			// @todo: remove double data
@@ -226,23 +208,6 @@ App.toggleMenu = function() {
 };
 
 
-/*
-App.setTop = function() {
-	$('html, body, .snap-content-inner').scrollTop(0);
-	setTimeout(function() {
-		$('html, body, .snap-content-inner').scrollTop(0);
-	},13);
-
-
-	$('#ng-view').css('-webkit-transform','translate3d(0,0,0)');
-	setTimeout(function() {
-		$('#ng-view').css('-webkit-transform','');
-	},1000);
-
-
-};
-*/
-
 
 /**
  * scroll to the top of the page
@@ -313,49 +278,6 @@ App.busy = {
 		App.busy._busy = false;
 		$('.order-sky-loader').removeClass('play');
 		App.busy.stage().stop();
-	}
-};
-
-/**
- * stuff for testing
- */
-App.test = {
-	card: function() {
-		angular.element( 'html' ).injector().get( 'OrderService' )._test();
-	},
-	logout: function() {
-		$.getJSON(App.service + 'logout',function(){ location.reload()});
-	},
-	cart: function() {
-		App.alert(JSON.stringify(App.cart.items));
-	},
-	clearloc: function() {
-		$.totalStorage('community',null);
-		$.totalStorage('location_lat',null);
-		$.totalStorage('location_lon',null);
-		location.href = '/';
-	},
-	reload: function() {
-		location.reload();
-	},
-	location: function(){
-		var position = angular.element( 'html' ).injector().get( 'PositionsService' );
-		var locs = position.locs;
-		for( x in locs ){
-			var values = [];
-			$.each( locs[ x ]._properties, function( key, value ) {
-				values.push( key );
-				values.push( ': ' );
-				values.push( ( value || '-' ) );
-				values.push( ' | ' );
-				if( key == 'results' ){
-					$.each( value, function( position, result ) {
-						console.log('result: ' + position,result);
-					});
-				}
-			});
-			console.log('Position: ' + x, values.join( '' ) );
-		}
 	}
 };
 
