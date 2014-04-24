@@ -43,6 +43,7 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 			$this->date_create = date('Y-m-d H:i:s');
 			$this->active = 1;
 			$this->id_user = $this->get('id_user');
+			$this->idadmin = $this->get('id_admin');
 			$this->ip = $_SERVER['REMOTE_ADDR'];
 			$this->id_session = $id;
 		}
@@ -69,8 +70,8 @@ class Crunchbutton_Session_Adapter extends Cana_Table {
 	}
 	
 	public function generateAndSaveToken() {
-		if ($this->id_user && !$this->token) {
-			$fields = '-=d4sh0fs4|t?&4ndM4YB350m35ymb0||0v3!!!!!!=-'.$this->id_session.$this->id_user.uniqid();
+		if (($this->id_user || $this->id_admin) && !$this->token) {
+			$fields = '-=d4sh0fs4|t?&4ndM4YB350m35ymb0||0v3!!!!!!=-'.$this->id_session.$this->id_user.$this->id_admin.uniqid();
 			$this->token = strtoupper(hash('sha512', $fields));
 			$this->save();
 		}

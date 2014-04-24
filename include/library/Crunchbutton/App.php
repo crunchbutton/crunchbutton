@@ -181,10 +181,16 @@ class Crunchbutton_App extends Cana_App {
 		
 		$config = $this->config();
 		$config->site = Crunchbutton_Site::byDomain();
+		
+		
 
 		if ($config->site->name == 'redirect' && $config->site->theme) {
 			header('Location: '.$config->site->theme.$_SERVER['REQUEST_URI']);
 			exit;
+		}
+		
+		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2') {
+			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
 
 		$config->host_callback = $host_callback;
@@ -399,7 +405,7 @@ class Crunchbutton_App extends Cana_App {
 	}
 
 	public function buildAuth($db = null) {
-		$this->auth(new Crunchbutton_Auth($db));
+		$this->auth(new Auth($db));
 		return $this;
 	}
 	public function buildAcl($db = null) {

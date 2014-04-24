@@ -1,66 +1,16 @@
 <?php
 
-class Crunchbutton_Auth {
-	private $_user;
-	private $_session;
+class Crunchbutton_Auth extends Crunchbutton_Auth_Base {
 
-	public function __construct() {
-		$this->_session = new Crunchbutton_Session;
-		session_start();
-		
-		//check for admin
-		if ($_SERVER['HTTP_AUTHORIZATION']) {
-			list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
-		}
-		
-		if ($_SERVER['PHP_AUTH_USER']) {
-		
-			$admin = Admin::login($_SERVER['PHP_AUTH_USER']);
+	public function init() {
 
-			if ($admin->id_admin && sha1(c::crypt()->encrypt($_SERVER['PHP_AUTH_PW'])) == $admin->pass) {
-				// we have a valid login
-				c::admin($admin);
-				$_SESSION['admin'] = true;
-			}
-		}
-
-		// here we need to check for a token
-		// if we dont have a valid token, we need to check for a facebook cookie
-		// then if none of thats good just return a blank user object
-		if ($_COOKIE['token'] && !$this->session()->id_user) {
-			$sess = Session::token($_COOKIE['token']);
-			if ($sess->id_user) {
-				$token = $_COOKIE['token'];
-				$data = $sess->data;
-				$id_user = $sess->id_user;
-				// Issue #973 - if the new id_session is different of the new one it means it is another session
-				// the old session must to be deleted
-				$id_session = $sess->id_session;
-				if( $this->session()->id_session != $sess->id_session ){
-					$this->session()->data = $data;
-					Session::deleteToken( $token );
-				}
-				$this->session()->id_session = $id_session;
-				$this->session()->id_user = $id_user;
-				$this->session()->token   = $token;
-			} else { // if no id_user in session, delete cookie and session in DB as it's not used, see #624
-				Session::deleteToken($_COOKIE['token']);
-				setcookie('token','',0,'/');
-			}
-		}
-
-		// we have a successful user
-		if ($this->session()->id_user) {
-			// if ($this->session()->ip == $_SERVER['REMOTE_ADDR']) {
-			$this->_user = new Crunchbutton_User($this->session()->id_user);
-			$this->session()->date_active = date('Y-m-d H:i:s');
-			$this->session()->save();
-		}
-
+	}
+	
+	public function postInit() {
 		// if we dont have a user lets check for a facebook user.
 		// not sure if theres any way to avoid this, but if a fb user is found, we have to make a fb request
 		// which take a little bit of time
-		if (!$this->_user) {
+		if (!$this->user()->id) {
 			// check for a facebook cookie
 			foreach ($_COOKIE as $key => $value) {
 				if (preg_match('/^fbsr_.*$/', $key)) {
@@ -71,19 +21,6 @@ class Crunchbutton_Auth {
 				}
 			}
 		}
-
-		// we still dont have a user, so just set a blan object
-		if (!$this->_user) {
-			$this->_user = new Crunchbutton_User;
-		}
-
-	}
-	
-	public function facebook($fb = null) {
-		if (isset($fb)) {
-			$this->_facebook = $fb;
-		}
-		return $this->_facebook;
 	}
 	
 	public function fbauth() {
@@ -142,32 +79,6 @@ class Crunchbutton_Auth {
 		return $this->_user;
 	}
 
-
-	public function get($var) {
-		return $_SESSION[$var];
-	}
-
-	public function set($var,$value) {
-		$_SESSION[$var] = $value;
-	}
-
-	public function id() {
-		return $this->_session;
-	}
-
-	public function ip() {
-		return $this->_ip;
-	}
-
-	public function destroy() {
-		$this->_session = session_id();
-		Caffeine::db()->query('UPDATE session SET active=0 WHERE session="'.$this->id().'"');
-		session_regenerate_id();
-		$this->_session = session_id();
-		$this->_user = new Crunchbutton_User;
-	}
-
-
 	public static function load($user, $profile) {
 		$user->permalink = $profile->username ? $profile->username : $profile->id;
 		$user->fbid = $profile->id;
@@ -181,8 +92,12 @@ class Crunchbutton_Auth {
 		$user->saving_from = $user->saving_from.'Auth::load - ';
 		$user->save();
 	}
-
-	public function session() {
-		return $this->_session;
+	
+	public function userObject($params = null) {
+		if ($params) {
+			return new Crunchbutton_User($params);
+		} else {
+			return new Crunchbutton_User;
+		}
 	}
 }
