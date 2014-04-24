@@ -1,5 +1,8 @@
 $navColor: #202228;
 $sideBg: #2f323a;
+$navLinkColor: #aeb2b7;
+$green: #4ecdc4;
+$background: #f1f2f7;
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -31,7 +34,7 @@ body, input, textarea, button {
 	font-family: "Open Sans", "Droid Sans", "Helvetica", "Arial", sans-serif;
 }
 body, .bg {
-	background: #fffef8;
+	background: $background;
 }
 
 ol, ul {
@@ -94,10 +97,7 @@ html {
 	.content-padding {
 		padding: 10px 0 10px 0;
 	}
-	.restaurants-items,
 	.nav .content,
-	.page-restaurant .content,
-	.page-cafe .content,
 	.content-padding {
 		/*max-width: 767px;*/
 		max-width: 1024px;
@@ -123,16 +123,39 @@ html {
 
 
 .logo {
-	background: url(../../images/micro/crunchbutton-logo.svg) no-repeat;
-	width: 254px;
-	height: 50px;
+	color: #fff;
+	text-align: center;
 	background-size: 100%;
 	margin: 0 auto;
 	cursor: pointer;
+	font-family: Ruda, Helvetica, Arial, sans-serif;
+	font-size: 2em;
+	padding-top: .47em;
+	font-weight: bold;
+}
+
+@media screen and (min-width: 769px) {
+	.logo {
+		text-align: left;
+	}
+}
+@media screen and (min-width: 1025px) {
+	.nav-back {
+		display: none;
+	}
+}
+
+
+.logo .dot {
+	color: #3b4847;
+}
+
+.logo .green {
+	color: $green;
 }
 
 .menu {
-	background: url(../../images/micro/menu.svg) center center no-repeat;
+	background: url(../../images/micro/menu-location.svg) center center no-repeat;
 	background-size: 100%;
 	width: 44px;
 	height: 28px;
@@ -150,7 +173,7 @@ html {
 	z-index : 0;
 	cursor: pointer;
 	margin: 8px 0 0 6px;
-	background: url(../../images/micro/back.svg) center center no-repeat;
+	background: url(../../images/micro/back-location.svg) center center no-repeat;
 	background-size: 100%;
 	width: 50px;
 	height: 28px;
@@ -185,140 +208,13 @@ p {
 	line-height: 1.6em;
 }
 
-/* BUTTONS */
-.button {
-	border: 0;
-	padding: .5em 0 .5em 0;
-	border-radius: 5px;
-	cursor: pointer;
-	color: #fff;
-	text-transform: uppercase;
-	font-size: 1.3em;
-	width: 100%;
-
-	-webkit-transition: background linear 0.08s;
-	   -moz-transition: background linear 0.08s;
-	    -ms-transition: background linear 0.08s;
-	     -o-transition: background linear 0.08s;
-	        transition: background linear 0.08s;
-}
-.button.ani-all {
-	-webkit-transform: translate3d(0,0,0);
-	   -moz-transform: translate3d(0,0,0);
-	    -ms-transform: translate3d(0,0,0);
-	     -o-transform: translate3d(0,0,0);
-	        transform: translate3d(0,0,0);
-
-	-webkit-transition: all linear 0.08s;
-	   -moz-transition: all linear 0.08s;
-	    -ms-transition: all linear 0.08s;
-	     -o-transition: all linear 0.08s;
-	        transition: all linear 0.08s;
-}
-
-/* colors */
-.button.orange {
-	background: #df4a32;
-}
-.button.lightorange {
-	background: #fe9872;
-	font-weight: bold;
-}
-.button.facebook {
-	background: #385ca2;
-	font-weight: bold;
-}
-.button.green {
-	background: #00bea0;
-	font-weight: bold;
-}
-.button.find-restaurants {
-	font-size: 1.9em;
-	max-width: 30em;
-	padding: .9em 0 .9em 0;
-	border-radius: 6px;
-	letter-spacing: 0;
-}
-.button.get-food {
-	display: block;
-	font-size: 18px;
-	font-weight: 800;
-	width: 300px;
-	margin: 0 auto;
-	padding: .39em 0 .39em 0;
-	letter-spacing:1px;
-	margin-top: 7px;
-	background: #e24538;
-	box-shadow: 0 3px 0 #980c08;
-}
-
-/* active colors */
-.button.orange:active {
-	background: #ce412a;
-}
-.button.download:active {
-	background: #d13b39;
-}
-.button.lightorange:active {
-	background: #e78d62;
-}
-.button.green:active {
-	background: #00b195;
-}
-.button.facebook:active {
-	background: #2f4f8d;
-}
-
-/* pushable border colors */
-.button-pushable .button.orange {
-	box-shadow: 0 3px 0 #961500;
-}
-.button-pushable .button.lightorange {
-	box-shadow: 0 2px 0 #de7e5b;
-}
-.button-pushable .button.green {
-	box-shadow: 0 2px 0 #00927b;
-}
-.button-pushable .button.facebook {
-	box-shadow: 0 2px 0 #203d74;
-}
-
-/* pushable states */
-.button-pushable {
-	margin-top: 0;
-/*	margin-bottom: 3px; @test*/
-	height: 3.5em;
-}
-.button-pushable .button:active {
-	box-shadow: none;
-	margin-top: 4px;
-}
-
-/* pushable margins */
-.button-pushable .button.get-food:active{
-	margin-top: 10px;
-}
-.button-pushable .button.find-restaurants:active {
-	margin-top: 5px;
-}
-.button-pushable.find-restaurants {
-	height: 6em;
-}
-.button-pushable .button.download:active {
-	margin-top: 4px;
-}
-
-
 
 
 
 /* GLOBAL */
 @media(min-width:769px) {
-	.menu.drop {
-		display: block;
-	}
 	.menu.side {
-		display: none;
+		zdisplay: none;
 	}
 	.menu{
 		-webkit-transition: opacity 0.1s;
@@ -329,9 +225,6 @@ p {
 	}
 }
 @media(max-width: 768px) {
-	.menu.drop {
-		display: none;
-	}
 	.menu.side {
 		display: block;
 	}
@@ -342,12 +235,6 @@ p {
 	}
 	.top-pad {
 		height: 90px;
-	}
-	.restaurant-pad {
-
-	}
-	.restaurant-pic {
-		height: 10em;
 	}
 }
 @media(max-width:499px) {
@@ -366,12 +253,6 @@ p {
 	}
 	.top-pad {
 		height: 71px;
-	}
-	.restaurant-pad {
-
-	}
-	.restaurant-pic {
-		height: 12em;
 	}
 }
 .divider {
@@ -396,9 +277,6 @@ p {
 }
 
 @media(max-width:768px) {
-	.dropdown {
-		display: none !important;
-	}
 	body {
 		position: fixed;
 		top: 0;
@@ -499,8 +377,9 @@ p {
 		border-bottom:1px solid rgba(0,0,0,0.1);
 		padding:8px 0 2px 0;
 		text-decoration:none;
-		color:#fff;
+		color:$navLinkColor;
 		text-indent:20px;
+		cursor: pointer;
 	}
 	.snap-drawer li.nav-active:before {
 		display: block;
@@ -549,7 +428,6 @@ p {
 	position: fixed;
 }
 
-
 .navs {
 	width:auto;
 	top:0;
@@ -559,42 +437,17 @@ p {
 }
 
 
-
-
 .divider.line {
 	background: #c7c7c7;
 	height: 1px;
 }
 
-
 .side-menu-icon {
 	width: 70px;
 }
 
-.side-menu a {
-	color: #fff;
-}
-
-.side-menu li {
-	cursor: pointer;
-}
-
-.restaurant-info-address {
-	margin-top: .2em;
-	font-size: 1.1em;
-	line-height: 1.4em;
-}
-
 .no-init .hide-before-init {
 	display: none !important;
-}
-
-
-select {
-	border: 2px solid #555;
-	padding: .3em;
-	border-radius: 5px;
-	font-size: 1.2em;
 }
 
 .nav-top {
@@ -602,4 +455,5 @@ select {
 	background: rgba($navColor, .97);
 	padding-top: 15px;
 	border-bottom: 1px solid rgba(darken($navColor, 50%), .97);
+	height: 4em;
 }
