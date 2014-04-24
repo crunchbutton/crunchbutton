@@ -468,6 +468,20 @@ class Crunchbutton_Admin extends Cana_Table {
 		$config->value = $value;
 		$config->save();
 	}
+	
+	public function exports() {
+		$ex = [
+			'id_admin' => $this->id_admin,
+			'login' => $this->login,
+			'name' => $this->name,
+			'phone' => $this->phone,
+			'txt' => $this->txt,
+			'email' => $this->email,
+			'timezone' => $this->timezone,
+			'testphone' => $this->testphone
+		];
+		return $ex;
+	}
 
 	public function __construct($id = null) {
 		parent::__construct();
