@@ -107,8 +107,24 @@
 
 					<div title="Menu" class="menu side" ng-click="navigation.menu()"></div>
 					<div title="Back" class="nav-back hide-before-init" ng-click="back()"></div>
+					
+					<div class="notifications">
+						<div class="notification notification-orders" ng-click="navigation.link('/drivers/orders')">
+							<i class="fa fa-truck"></i>
+						</div>
+						<div class="notification notification-support" ng-click="navigation.menu('right')">
+							<i class="fa fa-comment"></i>
+						</div>
+						<? /*
+						<div class="notification notification-alerts" ng-click="navigation.link('/alerts')">
+							<i class="fa fa-bell"></i>
+						</div>
+						*/ ?>
+					</div>
 
 					<div class="logo">cockpit<span class="dot">.</span><span class="green">la</span></div>
+					
+
 				</div>
 			</div>
 		</div>

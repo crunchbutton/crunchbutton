@@ -201,11 +201,12 @@ App.go = function( url, transition ){
 	}
 };
 
-App.toggleMenu = function() {
-	if (App.snap.state().state == 'left') {
+App.toggleMenu = function(side) {
+	side = side || 'left';
+	if (App.snap.state().state == side) {
 		App.snap.close();
 	} else {
-		App.snap.open('left');
+		App.snap.open(side);
 	}
 };
 
@@ -325,7 +326,7 @@ App.init = function(config) {
 			element: document.getElementById('snap-content'),
 			menu: document.getElementById('side-menu'),
 			menuDragDistance: 95,
-			disable: 'right'
+			disable: ''
 		});
 
 		var snapperCheck = function() {
