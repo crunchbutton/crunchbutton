@@ -470,6 +470,33 @@ class Crunchbutton_Admin extends Cana_Table {
 	}
 	
 	public function exports() {
+		$permissions = [];
+		$groups = [];
+		
+		foreach ($this->groups() as $group) {
+			$groups[$group->id_group] = $group->name;
+		}
+
+		if ($this->permission()->_permissions) {
+			foreach ($this->permission()->_permissions as $group => $perms) {
+				foreach ($perms as $key => $value) {
+					if ($value) {
+						$permissions[$key] = true;
+					}
+				}
+			}
+		}
+
+		if ($this->permission()->_userPermission) {
+			foreach ($this->permission()->_userPermission as $key => $value) {
+				if ($value) {
+					$permissions[$key] = true;
+				} elseif ($permissions[$key]) {
+					unset($permissions[$key]);
+				}
+			}
+		}
+
 		$ex = [
 			'id_admin' => $this->id_admin,
 			'login' => $this->login,
@@ -478,7 +505,9 @@ class Crunchbutton_Admin extends Cana_Table {
 			'txt' => $this->txt,
 			'email' => $this->email,
 			'timezone' => $this->timezone,
-			'testphone' => $this->testphone
+			'testphone' => $this->testphone,
+			'permissions' => $permissions,
+			'groups' => $groups
 		];
 		return $ex;
 	}
