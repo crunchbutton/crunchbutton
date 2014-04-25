@@ -1,5 +1,8 @@
 NGApp.factory('AccountService', function($http, $rootScope) {
-	var service = {};
+	var service = {
+		permissions: {},
+		user: null
+	};
 	
 	service.checkUser = function() {
 		service.user = App.config.user;
@@ -29,6 +32,14 @@ NGApp.factory('AccountService', function($http, $rootScope) {
 			$rootScope.$broadcast('userAuth');
 		})
 	};
+	
+	$rootScope.$on('userAuth', function(e, data) {
+		if (service.user.id_admin) {
+			
+		} else {
+			
+		}
+	});
 
 	return service;
 });

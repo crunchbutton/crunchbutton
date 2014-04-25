@@ -41,6 +41,16 @@ NGApp.config(function($compileProvider){
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider, RestaurantsService) {
 	$routeProvider
+		.when('/drivers/orders', {
+			action: 'drivers-orders',
+			controller: 'DriversOrdersCtrl',
+			templateUrl: 'assets/view/drivers-orders.html'
+		})
+		.when('/drivers/shifts', {
+			action: 'drivers-shifts',
+			controller: 'DriversShiftsCtrl',
+			templateUrl: 'assets/view/drivers-shifts.html'
+		})
 		.otherwise({
 			action: 'home',
 			controller: 'DefaultCtrl',
@@ -69,7 +79,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.$on('userAuth', function(e, data) {
 		$rootScope.$safeApply(function($scope) {
 			App.snap.close();
-			$rootScope.reload();	
+			$rootScope.reload();
 		});
 	});
 
@@ -117,6 +127,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
+		console.log($route.current.action);
 		App.rootScope.current = MainNavigationService.page;
 		App.track('page', $route.current.action);
 
