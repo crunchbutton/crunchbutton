@@ -613,3 +613,20 @@ input {
 	box-shadow: none;
 	margin-top: 4px;
 }
+
+.dialog-message {
+	color: #fff;
+	margin-bottom: 1em;
+	border-radius: 4px;
+	font-size: 1.2em;
+	line-height: 1.4em;
+	padding: .7em .9em .5em .9em;
+}
+
+.dialog-message-error {
+	background: #e1574c;
+}
+
+.dialog-message-success {
+	background: #77c675;
+}
