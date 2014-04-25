@@ -551,6 +551,7 @@ public function byDayPerRestaurant( $render = false ){
 									INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 									INNER JOIN restaurant_community rc ON rc.id_restaurant = r.id_restaurant AND rc.id_community = {$id_community}
 									WHERE o.delivery_service = 1 {$where_day}
+									AND o.date BETWEEN NOW() - INTERVAL 14 DAY AND NOW()
 									GROUP BY Hour";
 
 			$data = c::db()->get( $query );
