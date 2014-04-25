@@ -351,24 +351,9 @@ App.init = function(config) {
 		CB.config = null;
 	}
 
-
 	// process the config, and startup angular
 	App.processConfig(config || App.config);
 	App.NGinit();
-
-	// Init the processor
-	var processor = ( App.config.processor && App.config.processor.type ) ? App.config.processor.type : false;
-	switch( processor ){
-		case 'stripe':
-			Stripe.setPublishableKey( App.config.processor.stripe );
-			break;
-		case 'balanced':
-			balanced.init( App.config.processor.balanced );
-		break;
-		default:
-			console.log( 'Processor error::', App.config.processor );
-		break;
-	}
 
 	window.addEventListener( 'pageshow', function(){ 
 		// the first pageshow should be ignored
