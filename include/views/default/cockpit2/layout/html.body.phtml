@@ -82,7 +82,7 @@
 					<div title="Menu" class="menu side" ng-click="navigation.menu()"></div>
 					<div title="Back" class="nav-back hide-before-init" ng-click="back()"></div>
 
-					<div class="logo">cbtn<span class="dot">.</span><span class="green">io</span></div>
+					<div class="logo">cockpit<span class="dot">.</span><span class="green">la</span></div>
 				</div>
 			</div>
 		</div>
@@ -98,6 +98,35 @@
 	</div>
 
 	<div class="divider"></div>
+</div>
+
+
+<div class="login-wrap" ng-controller="LoginCtrl" ng-class="{'logged-in': account.loggedin}">
+	<div class="login-content">
+		<div class="logo">cockpit<span class="dot">.</span><span class="green">la</span></div>
+		
+		
+			<div class="input-wrap">
+				<span class="label">Username:</span>
+				<span class="field"><input type="text" name="username" ng-model="user.username" autofocus="autofocus"></span>
+			</div>
+			
+			<div class="input-wrap">
+				<span class="label">Password:</span>
+				<span class="field"><input type="password" name="password" ng-model="user.password"></span>
+			</div>
+			
+			<div class="button-pushable find-restaurants">
+				<button class="button orange" ng-click="user.login()">
+					Sign In
+				</button>
+			</div>
+			
+			<div class="info">
+				Cockpit is Crunchbutton's tool of awesomeness. Looking for delivery food? Head over to <a href="http://crunchbutton.com">crunchbutton.com</a>
+			</div>
+
+	</div>
 </div>
 
 

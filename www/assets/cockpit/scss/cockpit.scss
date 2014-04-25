@@ -3,6 +3,7 @@ $sideBg: #2f323a;
 $navLinkColor: #aeb2b7;
 $green: #4ecdc4;
 $background: #f1f2f7;
+$textColor: #312f38;
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -27,7 +28,7 @@ time, mark, audio, video {
 body {
 	line-height: 1;
 	font-size: 10px;
-	color: #312f38;
+	color: $textColor;
 	letter-spacing: .03em;
 }
 body, input, textarea, button {
@@ -456,4 +457,159 @@ p {
 	padding-top: 15px;
 	border-bottom: 1px solid rgba(darken($navColor, 50%), .97);
 	height: 4em;
+}
+
+.login-wrap {
+	background: $navColor;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 99999999;
+}
+
+input {
+	border: 0;
+}
+
+.login-content input {
+	border-radius: 4px;
+	font-size: 1em;
+	width: 14.6em;
+}
+
+.login-content {
+	width: 27em;
+	margin: 0 auto;
+	text-align: center;
+	margin-top: 5em;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+.login-content .logo {
+	text-align: center;
+	margin-bottom: 1.5em;
+	font-size: 3em;
+}
+
+.input-wrap {
+	background: #fff;
+	border-radius: 4px;
+	margin-bottom: .5em;
+	padding: .4em .8em .4em .8em;
+	width: 100%;
+	text-align: left;
+	font-size: 1.2em;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.input-wrap .label {
+	color: lighten($textColor,20%);
+	width: 6em;
+	display: inline-block;
+}
+
+.login-content .info {
+	margin-top: 10em;
+	color: #83858a;
+	font-size: .8em;
+	line-height: 1.4em;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+
+
+
+
+/* BUTTONS */
+.button {
+	border: 0;
+	padding: .5em 0 .5em 0;
+	border-radius: 5px;
+	cursor: pointer;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 1.3em;
+	width: 100%;
+
+	-webkit-transition: background linear 0.08s;
+	   -moz-transition: background linear 0.08s;
+	    -ms-transition: background linear 0.08s;
+	     -o-transition: background linear 0.08s;
+	        transition: background linear 0.08s;
+}
+.button.ani-all {
+	-webkit-transform: translate3d(0,0,0);
+	   -moz-transform: translate3d(0,0,0);
+	    -ms-transform: translate3d(0,0,0);
+	     -o-transform: translate3d(0,0,0);
+	        transform: translate3d(0,0,0);
+
+	-webkit-transition: all linear 0.08s;
+	   -moz-transition: all linear 0.08s;
+	    -ms-transition: all linear 0.08s;
+	     -o-transition: all linear 0.08s;
+	        transition: all linear 0.08s;
+}
+
+/* colors */
+.button.orange {
+	background: #df4a32;
+}
+.button.lightorange {
+	background: #fe9872;
+	font-weight: bold;
+}
+.button.green {
+	background: #00bea0;
+	font-weight: bold;
+}
+.button.find-restaurants {
+	font-size: 1.9em;
+	max-width: 30em;
+	padding: .9em 0 .9em 0;
+	border-radius: 6px;
+	letter-spacing: 0;
+}
+
+/* active colors */
+.button.orange:active {
+	background: #ce412a;
+}
+.button.download:active {
+	background: #d13b39;
+}
+.button.lightorange:active {
+	background: #e78d62;
+}
+.button.green:active {
+	background: #00b195;
+}
+
+/* pushable border colors */
+.button-pushable .button.orange {
+	box-shadow: 0 3px 0 #961500;
+}
+.button-pushable .button.lightorange {
+	box-shadow: 0 2px 0 #de7e5b;
+}
+.button-pushable .button.green {
+	box-shadow: 0 2px 0 #00927b;
+}
+
+/* pushable states */
+.button-pushable {
+	margin-top: 0;
+	height: 3.5em;
+}
+.button-pushable .button:active {
+	box-shadow: none;
+	margin-top: 4px;
 }

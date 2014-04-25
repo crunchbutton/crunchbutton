@@ -3,7 +3,19 @@
 class Crunchbutton_Util extends Cana_Model {
 	public function frontendTemplates($export = false) {
 		$files = [];
-		foreach (new DirectoryIterator(c::config()->dirs->view.'default/crunchbutton/frontend') as $fileInfo) {
+		
+		$themes = c::view()->theme();
+		$themes = array_reverse($themes);
+		
+		
+		foreach ($themes as $theme) {
+			if (file_exists(c::config()->dirs->view.$theme.'/frontend')) {
+				$frontendDir = $theme;
+				break;
+			}
+		}
+		
+		foreach (new DirectoryIterator(c::config()->dirs->view.$frontendDir.'/frontend') as $fileInfo) {
 			if (!$fileInfo->isDot() && $fileInfo->getBasename() != '.DS_Store' ) {
 				$files[] = $fileInfo->getBasename('.phtml');
 			}
