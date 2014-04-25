@@ -11,5 +11,11 @@ NGApp.controller( 'SideMenuCtrl', function () {
 });
 
 NGApp.controller('LoginCtrl', function($scope, AccountService) {
-	$scope.account = AccountService;
+	$scope.login = function() {
+		AccountService.login($scope.username, $scope.password, function(status) {
+//			$scope.$apply(function() {
+				$scope.error = !status;
+//			})
+		});
+	}
 });
