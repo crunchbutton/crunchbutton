@@ -1,13 +1,15 @@
-NGApp.controller('DefaultCtrl', function ($scope, $http, $location) {
+NGApp.controller('DefaultCtrl', function ($scope, $http, $location, MainNavigationService) {
+	MainNavigationService.link('/drivers/orders');
+});
+
+NGApp.controller('MainHeaderCtrl', function ( $scope, $rootScope) {
 
 });
 
-NGApp.controller( 'MainHeaderCtrl', function ( $scope, $rootScope) {
-
-});
-
-NGApp.controller( 'SideMenuCtrl', function () {
-
+NGApp.controller('SideMenuCtrl', function ($scope) {
+	$scope.setupPermissions = function() {
+		
+	}
 });
 
 NGApp.controller('LoginCtrl', function($scope, AccountService) {
@@ -18,4 +20,13 @@ NGApp.controller('LoginCtrl', function($scope, AccountService) {
 //			})
 		});
 	}
+});
+
+
+NGApp.controller('DriversOrdersCtrl', function ($scope, $rootScope) {
+
+});
+
+NGApp.controller('DriversShiftsCtrl', function ($scope, $rootScope) {
+
 });
