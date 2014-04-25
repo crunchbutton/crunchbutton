@@ -64,19 +64,10 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.navigation = MainNavigationService;
 	$rootScope.isPhoneGap = App.isPhoneGap;
 	$rootScope.server = App.server;
-
-	$rootScope.debug = function() {
-		return ( App.config && App.config.user && App.config.user.debug );
-	};
+	$rootScope.account = AccountService;
 
 	$rootScope.$on('userAuth', function(e, data) {
 		$rootScope.$safeApply(function($scope) {
-			// @todo: remove double data
-			if (data) {
-				$rootScope.account.user = data;
-				App.config.user = data;
-			}
-
 			App.snap.close();
 			$rootScope.reload();	
 		});
