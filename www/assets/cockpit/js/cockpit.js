@@ -324,7 +324,7 @@ App.init = function(config) {
 
 		App.snap = new Snap({
 			element: document.getElementById('snap-content'),
-			menu: document.getElementById('side-menu'),
+			menu: $('#side-menu, #side-menu-right'),
 			menuDragDistance: 95,
 			disable: ''
 		});

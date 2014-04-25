@@ -353,8 +353,12 @@ p {
 		height:auto;
 		overflow:hidden;
 	}
-	.snap-drawer-left, .snap-drawer-right {
+	.snap-drawer-left {
 		left:0;
+		z-index:1;
+	}
+	.snap-drawer-right {
+		right: 0;
 		z-index:1;
 	}
 	.snapjs-left .snap-drawer-right,
