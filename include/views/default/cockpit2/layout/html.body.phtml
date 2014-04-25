@@ -66,6 +66,14 @@
 					</tr>
 				</table>
 			</li>
+			<li ng-click="account.logout()">
+				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+					<tr>
+						<td class="side-menu-icon"><i class="fa fa-wrench"></i></td>
+						<td class="side-menu-label">Sign Out</a></td>
+					</tr>
+				</table>
+			</li>
 		</ul>
 
 	</div>
@@ -101,26 +109,30 @@
 </div>
 
 
-<div class="login-wrap" ng-controller="LoginCtrl" ng-class="{'logged-in': account.loggedin}">
-	<div class="login-content">
+<div class="login-wrap" ng-controller="LoginCtrl" ng-class="{'logged-in': account.loggedin}" ng-hide="account.user.id_admin">
+	<div class="login-content hide-before-init">
 		<div class="logo">cockpit<span class="dot">.</span><span class="green">la</span></div>
+			<div class="dialog-message dialog-message-error" ng-show="error">
+				Invalid username or password
+			</div>
 		
-		
-			<div class="input-wrap">
-				<span class="label">Username:</span>
-				<span class="field"><input type="text" name="username" ng-model="user.username" autofocus="autofocus"></span>
-			</div>
-			
-			<div class="input-wrap">
-				<span class="label">Password:</span>
-				<span class="field"><input type="password" name="password" ng-model="user.password"></span>
-			</div>
-			
-			<div class="button-pushable find-restaurants">
-				<button class="button orange" ng-click="user.login()">
-					Sign In
-				</button>
-			</div>
+			<form ng-submit="login()">
+				<div class="input-wrap">
+					<span class="label">Username:</span>
+					<span class="field"><input type="text" name="username" ng-model="username" autofocus="autofocus"></span>
+				</div>
+				
+				<div class="input-wrap">
+					<span class="label">Password:</span>
+					<span class="field"><input type="password" name="password" ng-model="password"></span>
+				</div>
+				
+				<div class="button-pushable find-restaurants">
+					<button class="button orange">
+						Sign In
+					</button>
+				</div>
+			</form>
 			
 			<div class="info">
 				Cockpit is Crunchbutton's tool of awesomeness. Looking for delivery food? Head over to <a href="http://crunchbutton.com">crunchbutton.com</a>
