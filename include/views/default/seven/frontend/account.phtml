@@ -35,11 +35,11 @@
 
 				<form name="accountForm">
 					<div class="support-form-group form-group">
-						<input type="email" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="form-input form-field" ng-enter="account.enter()">
+						<input type="email" ng-focus="softKeyboardModal($event)" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="form-input form-field" ng-enter="account.enter()">
 					</div>
 					
 					<div class="support-form-group form-group">
-						<input type="password" class="form-input form-field" maxlength="250" ng-model="account.form.password" name="password" tabindex="11" placeholder="password" ng-enter="account.enter()">
+						<input type="password" ng-focus="softKeyboardModal($event)" class="form-input form-field" maxlength="250" ng-model="account.form.password" name="password" tabindex="11" placeholder="password" ng-enter="account.enter()">
 					</div>
 				</form>
 			
@@ -68,7 +68,7 @@
 
 					<form name="accountReset" class="form">
 						<div class="support-form-group form-group">
-							<input type="email" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="form-input form-field" ng-enter="help.sendForm()">
+							<input type="email"  ng-focus="softKeyboardModal($event)" maxlength="250" ng-model="account.form.email" name="email" tabindex="10" placeholder="email address" class="form-input form-field" ng-enter="help.sendForm()">
 						</div>
 					</form>
 				</div>

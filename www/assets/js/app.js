@@ -277,6 +277,26 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	App.http = $http;
 
 
+	// hack to fix the phonegap bug at android with soft keyboard #2908
+	$rootScope.softKeyboard = function( e ){
+		if( App.isPhoneGap && App.isAndroid() ){
+			var el = $( e.currentTarget );
+			var walkTo = ( $('.snap-content-inner').scrollTop() + el.offset().top - ( $( window ).height() / 2 ) + ( el.height() + 10 ) );
+			$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
+		}
+	}
+
+	// hack to fix the phonegap bug at android with soft keyboard #2908 - input at modals
+	$rootScope.softKeyboardModal = function( e ){
+		if( App.isPhoneGap && App.isAndroid() ){
+			var el = $( '.mfp-content' );
+			if( el.css( 'marginTop' ) == '0px' ){
+				var walkTo = el.offset().top + 20;
+				el.animate( { marginTop: -walkTo }, '500');
+			}
+		}
+	}
+
 	// define global services
 	$rootScope.account = AccountService;
 	$rootScope.navigation = MainNavigationService;
@@ -928,6 +948,7 @@ App.dialog = {
 		return $.magnificPopup && $.magnificPopup.instance && $.magnificPopup.instance.isOpen;
 	}
 };
+
 
 /**
  * play crunch audio sound
