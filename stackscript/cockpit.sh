@@ -15,10 +15,10 @@ function install_cockpit {
 
 	setup_github
 	
-	rm -Rf /home/$1
+	rm -Rf /home/${1}
 	chown deploy:dev /home
-	sudo -u deploy git clone git@github.com:crunchbutton/crunchbutton.git /home/$1
-	mkdir /home/$1/logs
+	sudo -u deploy git clone git@github.com:crunchbutton/crunchbutton.git /home/${1}
+	mkdir /home/${1}/logs
 
 }
 
