@@ -66,15 +66,15 @@ function apache_virtualhost {
 
 	mkdir -p /home/$1/www /home/$1/logs
 
-	echo "<VirtualHost *:80>" > /etc/httpd/conf.d/sites-available/${1}.conf
-	echo "	ServerName $1" >> /etc/httpd/conf.d/sites-available/${1}.conf
-	echo "	DocumentRoot /home/$1/www/" >> /etc/httpd/conf.d/sites-available/${1}.conf
-	echo "	<Directory /home/$1/www/>" >> /etc/httpd/conf.d/sites-available/${1}.conf
-	echo "		AllowOverride All" >> /etc/httpd/conf.d/sites-available/${1}.conf
-	echo "	</Directory>" >> /etc/httpd/conf.d/sites-available/${1}.conf
-	echo "	ErrorLog /home/$1/logs/error.log" >> /etc/httpd/conf.d/sites-available/${1}.conf
-	echo "	CustomLog /home/$1/logs/access.log combined" >> /etc/httpd/conf.d/sites-available/${1}.conf
-	echo "</VirtualHost>" >> /etc/httpd/conf.d/sites-available/${1}.conf
+	echo "<VirtualHost *:80>" > /etc/httpd/sites-available/${1}.conf
+	echo "	ServerName $1" >> /etc/httpd/sites-available/${1}.conf
+	echo "	DocumentRoot /home/$1/www/" >> /etc/httpd/sites-available/${1}.conf
+	echo "	<Directory /home/$1/www/>" >> /etc/httpd/sites-available/${1}.conf
+	echo "		AllowOverride All" >> /etc/httpd/sites-available/${1}.conf
+	echo "	</Directory>" >> /etc/httpd/sites-available/${1}.conf
+	echo "	ErrorLog /home/$1/logs/error.log" >> /etc/httpd/sites-available/${1}.conf
+	echo "	CustomLog /home/$1/logs/access.log combined" >> /etc/httpd/sites-available/${1}.conf
+	echo "</VirtualHost>" >> /etc/httpd/sites-available/${1}.conf
 
 	ln -s /etc/httpd/sites-available/${1}.conf /etc/httpd/sites-enabled/${1}.conf
 
