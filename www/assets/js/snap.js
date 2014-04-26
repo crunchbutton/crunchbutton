@@ -277,7 +277,9 @@
 		                        var theSideTranslate = 'translate3d(' + nn + 'px, 0,0)';
 		                        return theSideTranslate;
 							};
-							settings.menu.get(0).style[cache.vendor+'Transform'] = getTranslate('left');
+							if (settings.menu.get(0)) {
+								settings.menu.get(0).style[cache.vendor+'Transform'] = getTranslate('left');
+							}
 							if (settings.menu.get(1)) {
 								settings.menu.get(1).style[cache.vendor+'Transform'] = getTranslate('right');
 							}
