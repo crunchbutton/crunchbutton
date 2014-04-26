@@ -18,7 +18,9 @@ function install_cockpit {
 	rm -Rf /home/${1}
 	chown deploy:dev /home
 	sudo -u deploy git clone git@github.com:crunchbutton/crunchbutton.git /home/${1}
-	mkdir /home/${1}/logs
+	mkdir /home/${1}/logs /home/${1}/cache
+	mkdir /home/${1}/cache/min /home/${1}/cache/thumb /home/${1}/data
+	chmod -R 0777 /home/${1}/cache
 
 }
 
