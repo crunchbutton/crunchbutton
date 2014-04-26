@@ -112,7 +112,7 @@ class Crunchbutton_App extends Cana_App {
 								break;
 							case '/Users/arzynik/Sites/crunchbutton/include/library/Crunchbutton':
 								$params['env'] = 'local';
-								$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'crunchbutton.localhost';
+								$_SERVER['SERVER_NAME'] = 'crunchbutton.localhost';
 								$host_callback = 'crunchbutton.localhost';
 								break;
 							default:
