@@ -67,6 +67,8 @@ class Crunchbutton_App extends Cana_App {
 			case '_DOMAIN_':
 			case 'staging._DOMAIN_':
 			case 'spicywithdelivery.com':
+			case 'cockpit.la':
+			case 'dispatch.la':
 				$isStaging = true;
 				$params['env'] = 'live';
 				break;
