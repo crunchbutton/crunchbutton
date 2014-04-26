@@ -183,7 +183,7 @@ function mysql_grant_user {
 function php_install {
 	# yum -y remove php-common
 	rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
-	yum -y install php55w php55w-opcache php55w-xml php55w-mysql php55w-mbstring php55w-mcrypt
+	yum -y install php55w php55w-opcache php55w-xml php55w-mysql php55w-mbstring php55w-mcrypt php55w-pear
 }
 
 
