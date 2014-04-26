@@ -5,20 +5,19 @@
 source <ssinclude StackScriptID="8646">
 source <ssinclude StackScriptID="8649">
 
-DEPLOYNAME=deployer
-
 
 function install_cockpit {
 	apache_virtualhost $1
 	
 	groupadd dev
-	useradd -m -s /bin/bash -G dev $2
+	useradd -m -s /bin/bash -G dev deploy
+	# echo "sup3rb4c0n" | passwd --stdin deploy
 
-	setup_github $2
+	setup_github
 	
 	rm -Rf /home/$1
-	chown $2:dev /home
-	sudo -u $2 git clone git@github.com:crunchbutton/crunchbutton.git /home/$1
+	chown deploy:dev /home
+	sudo -u deploy git clone git@github.com:crunchbutton/crunchbutton.git /home/$1
 	mkdir /home/$1/logs
 
 }
@@ -31,10 +30,10 @@ set_timezone
 system_update
 apache_install
 apache_virtualhost $MACHINENAME
-mysql_install $MYSQLROOTPW
+# mysql_install $MYSQLROOTPW
 php_install
 install_basics
-install_cockpit $MACHINENAME $DEPLOYNAME
+install_cockpit $MACHINENAME
 
 # restart it
 restart_services
