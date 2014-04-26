@@ -110,6 +110,11 @@ class Crunchbutton_App extends Cana_App {
 								$_SERVER['SERVER_NAME'] = '_DOMAIN_';
 								$host_callback = 'staging.crunchr.co';
 								break;
+							case '/Users/arzynik/Sites/crunchbutton/include/library/Crunchbutton':
+								$params['env'] = 'local';
+								$_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'] = 'crunchbutton.localhost';
+								$host_callback = 'crunchbutton.localhost';
+								break;
 							default:
 								if (getenv('TRAVIS')) {
 									$params['env'] = 'travis';
@@ -182,13 +187,11 @@ class Crunchbutton_App extends Cana_App {
 		$config = $this->config();
 		$config->site = Crunchbutton_Site::byDomain();
 		
-		
-
 		if ($config->site->name == 'redirect' && $config->site->theme) {
 			header('Location: '.$config->site->theme.$_SERVER['REQUEST_URI']);
 			exit;
 		}
-		
+
 		if ($config->site->name == 'Cockpit' || $config->site->name == 'Cockpit2') {
 			array_unshift($GLOBALS['config']['libraries'], 'Cockpit');
 		}
