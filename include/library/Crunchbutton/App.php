@@ -35,6 +35,8 @@ class Crunchbutton_App extends Cana_App {
 			case 'cockpit.crunchr.co':
 			case 'cockpit._DOMAIN_':
 			case 'cbtn.io':
+			case 'cockpit.la':
+			case 'dispatch.la':
 				$env = 'live';
 				break;
 			case 'wenzel.beta.crunchr.co':
