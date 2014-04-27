@@ -184,6 +184,8 @@ function php_install {
 	# yum -y remove php-common
 	rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
 	yum -y install php55w php55w-opcache php55w-xml php55w-mysql php55w-mbstring php55w-mcrypt php55w-pear
+	
+	sed -i -e 's/^short_open_tag = Off$/short_open_tag = On/' /etc/php.ini
 }
 
 
@@ -200,4 +202,10 @@ function restart_services {
 # installs my shit
 function install_basics {
 	yum -yq install git wget
+}
+
+
+# changes sshs port
+function ssh_port {
+	sed -i -e 's/^#Port 22$/Port $1/' /etc/ssh/sshd_config
 }
