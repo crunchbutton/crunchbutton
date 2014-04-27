@@ -1,6 +1,7 @@
 #!/bin/bash
 # <udf name="machinename" label="Hostname" example="somedomain.com"/>
 # <udf name="mysqlrootpw" label="MySQL root password" example="password"/>
+# <udf name="sshport" label="Port for SSH" example="22" default="22"/>
 
 source <ssinclude StackScriptID="8646">
 source <ssinclude StackScriptID="8649">
@@ -30,6 +31,9 @@ set_timezone
 
 # update and install shit
 system_update
+
+ssh_port $SSHPORT
+
 apache_install
 apache_virtualhost $MACHINENAME
 # mysql_install $MYSQLROOTPW
