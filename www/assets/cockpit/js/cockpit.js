@@ -332,7 +332,7 @@ App.init = function(config) {
 		});
 
 		var snapperCheck = function() {
-			if ($(window).width() <= 768) {
+			if ($(window).width() <= 1024) {
 				App.snap.enable();
 			} else {
 				App.snap.close();

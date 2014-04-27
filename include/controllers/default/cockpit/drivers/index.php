@@ -24,6 +24,8 @@ class Controller_drivers extends Crunchbutton_Controller_Account {
 				if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-page' ] ) ) {
 					c::view()->page = 'drivers';
 					c::view()->display( 'drivers/index' );
+				} else {
+					c::view()->display( 'home/index' );
 				}
 				break;
 		}
