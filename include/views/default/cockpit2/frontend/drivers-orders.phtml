@@ -5,4 +5,55 @@
 		<u>In order to receive payment</u> for orders that you deliver, you <b>MUST</b> confirm all orders that you've delivered. 
 		Make sure your orders are confirmed and delivered!
 	</div>
+	
+	<div class="last-updated">Last Updated: <span class="last-updated-time">just now</span></div>	
+	
+	<div class="drivers-order-list">
+		<div ng-if="orders">
+			<div class="drivers-order-list-order" ng-repeat="order in orders" ng-class="order.lastStatus.status">
+			
+			<span class="text" ng-switch="order.lastStatus.status">
+				<span ng-switch-when="delivered">Delivered by {{order.lastStatus.name}}</span>
+				<span ng-switch-when="pickedup">Picked up by {{order.lastStatus.name}}</span>
+				<span ng-switch-when="accepted">Accepted by {{order.lastStatus.name}}</span>
+				<span ng-switch-default></span>
+			</span>
+
+			<div class="order-list-item">
+			
+				<span class="text" ng-switch="order.lastStatus.status">
+					<span ng-switch-when="delivered">Delivered by {{order.lastStatus.name}}</span>
+					<span ng-switch-when="pickedup">Picked up by {{order.lastStatus.name}}</span>
+					<span ng-switch-when="accepted">Accepted by {{order.lastStatus.name}}</span>
+					<span ng-switch-default></span>
+				</span>
+
+				<div class="order-list-action">
+					<button class="button button-list-accept" ng-click="accept(order.id_order)"> Accept? </button>
+					<button class="button button-list-pickedup" ng-click="pickup(order.id_order)"> Picked up? </button>
+					<button class="button button-list-delivered" ng-click="delivered(order.id_order)"> Delivered? </button>
+				</div>
+
+				<div class="order-list-date">
+					<div class="day">{{order.date | date:'M/d'}}</div>
+					<div class="hour">{{order.date | date:'h/m'}}</div>
+					<div class="ampm">{{order.date | date:'a'}}</div>
+				</div>
+				<div class="order-list-customer-info">
+					<div class="restaurant" ng-click="viewOrder">
+						{{order.restaurant.name}}
+					</div>
+					<div class="customer" ng-click="viewOrder">
+						{{order.name}}
+					</div>
+				</div>
+				<div class="divider"></div>
+			</div>
+		</div>
+		
+		<div ng-if="!orders">
+			You currently have no orders to deliver.
+		</div>
+	</div>	
+
 </div>
