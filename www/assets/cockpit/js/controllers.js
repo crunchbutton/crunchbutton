@@ -1,5 +1,7 @@
-NGApp.controller('DefaultCtrl', function ($scope, $http, $location, MainNavigationService) {
-	MainNavigationService.link('/drivers/orders');
+NGApp.controller('DefaultCtrl', function ($scope, $http, $location, MainNavigationService, AccountService) {
+	if (AccountService.user.id_admin) {
+		MainNavigationService.link('/drivers/orders');
+	}
 });
 
 NGApp.controller('MainHeaderCtrl', function ( $scope, $rootScope) {
@@ -22,11 +24,49 @@ NGApp.controller('LoginCtrl', function($scope, AccountService) {
 	}
 });
 
-
-NGApp.controller('DriversOrdersCtrl', function ($scope, $rootScope) {
+NGApp.controller('DriversOrderCtrl', function ($http, $scope, $rootScope) {
 
 });
 
-NGApp.controller('DriversShiftsCtrl', function ($scope, $rootScope) {
+
+NGApp.controller('DriversOrdersCtrl', function ($http, $scope, $rootScope) {
+
+	$scope.loadOrders = function() {
+		$http.get(App.service + 'orders').success(function(orders) {
+			$scope.orders = orders;
+		});
+	};
+
+	$scope.loadOrders();
+
+	$scope.accept = function(id_order) {
+		$rootScope.makebusy();
+		$http.post(App.service + 'order/' + id_order + '/delivery-accept').success(function(json) { 
+			if (json.status) {
+				$scope.loadOrders();
+			} else {
+	 			var name = json['delivery-status'].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
+	 			App.alert('Ops, error!\n It seems this order was already accepted' + name + '!'  );
+	 			$scope.loadOrders();
+	 		}
+	 	}); 
+	};
+
+	$scope.pickedup = function(id_order) {
+		$rootScope.makebusy();
+			$http.post(App.service + 'order/' + id_order + '/delivery-pickedup').success(function() {
+			$scope.loadOrders();
+		});
+	};
+	
+	$scope.delivered = function(id_order) {
+		$rootScope.makebusy();
+		$http.post(App.service + 'order/' + id_order + '/delivery-delivered').success(function() {
+			$scope.loadOrders();
+		});
+	};
+});
+
+NGApp.controller('DriversShiftsCtrl', function ($http, $scope, $rootScope) {
 
 });
