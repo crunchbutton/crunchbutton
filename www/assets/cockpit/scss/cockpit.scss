@@ -439,7 +439,7 @@ p {
 	}
 	.nav-top {
 		background: #22242a;
-		border-botom: 0;
+		border-bottom: none;
 	}
 	.side-menu-wrap {
 		width: 208px;
@@ -678,4 +678,20 @@ input {
 
 .notifications .notification:last-child {
 	margin-right: 1px;
+}
+
+.notification .badge {
+	background: #fe4e7f;
+	border-radius: 14px;
+	height: 16px;
+	width: 16px;
+	font-size: 10px;
+	position: absolute;
+	margin-top: -6px;
+	margin-left: 17px;
+	color: #fff;
+	line-height: 17px;
+	font-family: Ruda, Helvetica, Arial, sans-serif;
+	font-weight: 900;
+	overflow: hidden;
 }

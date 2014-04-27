@@ -29,15 +29,9 @@ NGApp.controller('DriversOrderCtrl', function ($http, $scope, $rootScope) {
 });
 
 
-NGApp.controller('DriversOrdersCtrl', function ($http, $scope, $rootScope) {
+NGApp.controller('DriversOrdersCtrl', function ($http, $scope, $rootScope, DriverOrdersService) {
 
-	$scope.loadOrders = function() {
-		$http.get(App.service + 'orders').success(function(orders) {
-			$scope.orders = orders;
-		});
-	};
-
-	$scope.loadOrders();
+	DriverOrdersService.loadOrders();
 
 	$scope.accept = function(id_order) {
 		$rootScope.makebusy();
