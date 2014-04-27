@@ -20,7 +20,7 @@
 			<user>***REMOVED***</user>
 			<pass>***REMOVED***</pass>
 			<db>crunchbutton_dev</db>
-			<host>localhost</host>
+			<host>_DOMAIN_</host>
 			<prefix></prefix>
 		</beta>
 		<local>
