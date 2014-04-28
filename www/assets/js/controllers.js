@@ -18,7 +18,11 @@ NGApp.controller('DownloadCtrl', function ($scope, $http) {
 NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
 	$scope.facebook = AccountFacebookService;
 	if (App.parallax.setupBackgroundImage) {
-		App.parallax.setupBackgroundImage($('.home-top').get(0));
+		App.parallax.setupBackgroundImage( $( '.home-top' ).get( 0 ) );
+		if( App.isPhoneGap && App.isAndroid() ){
+			// Android App: Tough to Get to Enter Address #2905
+			angular.element( '.fixed-599' ).css( 'position', 'static' ).css( 'marginTop', 10 );
+		}
 	}
 });
 
