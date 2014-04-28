@@ -12,8 +12,12 @@ NGApp.factory('DriverOrdersService', function($http, $rootScope) {
 					newDriverOrders++;
 				}
 			}
-			console.log(newDriverOrders);
-			$rootScope.newDriverOrders = newDriverOrders;
+
+			$rootScope.newDriverOrders = {
+				count: newDriverOrders,
+				time: new Date
+			};
+			console.log($rootScope.newDriverOrders);
 		});
 	};
 	
