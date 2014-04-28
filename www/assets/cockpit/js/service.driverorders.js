@@ -1,7 +1,20 @@
-NGApp.factory('AccountService', function($http, $rootScope) {
+NGApp.factory('DriverOrdersService', function($http, $rootScope) {
 	var service = {
-		permissions: {},
-		user: null
+
+	};
+	
+	service.loadOrders = function() {
+		$http.get(App.service + 'driverorders').success(function(orders) {
+			$rootScope.driverorders = orders;
+			var newDriverOrders = 0;
+			for (var x in orders) {
+				if (orders[x].lastStatus.status = 'new') {
+					newDriverOrders++;
+				}
+			}
+			console.log(newDriverOrders);
+			$rootScope.newDriverOrders = newDriverOrders;
+		});
 	};
 	
 	service.checkUser = function() {

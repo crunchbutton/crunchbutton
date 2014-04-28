@@ -186,7 +186,9 @@
                     settings.element.style[cache.vendor+'Transition'] = '';
 					// paralax menu
 					if (settings.menu) {
-						settings.menu.style[cache.vendor+'Transition'] = '';
+						settings.menu.each(function() {
+							this.style[cache.vendor+'Transition'] = '';
+						});
 					}
 
                     cache.translation = action.translate.get.matrix(4);
@@ -214,7 +216,9 @@
                         
 						// paralax menu
 						if (settings.menu) {
-							settings.menu.style[cache.vendor+'Transition'] = 'all ' + settings.transitionSpeed + 's ' + settings.easing;
+							settings.menu.each(function() {
+								this.style[cache.vendor+'Transition'] = 'all ' + settings.transitionSpeed + 's ' + settings.easing;
+							});
 						}
 
                         cache.animatingInterval = setInterval(function() {
@@ -262,10 +266,24 @@
 
 						// paralax menu
 						if (settings.menu) {
-							var hideDistance = settings.menuDragDistance;
-							var nn = ((n / settings.maxPosition) * hideDistance) - hideDistance;
-	                        var theSideTranslate = 'translate3d(' + nn + 'px, 0,0)';
-	                        settings.menu.style[cache.vendor+'Transform'] = theSideTranslate;
+							var getTranslate = function(dir) {
+								var hideDistance = settings.menuDragDistance;
+								if (dir == 'left') {
+									var dirDistance = -hideDistance;
+								} else {
+									var dirDistance = hideDistance;
+								}
+								var nn = ((n / settings.maxPosition) * hideDistance) + dirDistance;
+		                        var theSideTranslate = 'translate3d(' + nn + 'px, 0,0)';
+		                        return theSideTranslate;
+							};
+							if (settings.menu.get(0)) {
+								settings.menu.get(0).style[cache.vendor+'Transform'] = getTranslate('left');
+							}
+							if (settings.menu.get(1)) {
+								settings.menu.get(1).style[cache.vendor+'Transform'] = getTranslate('right');
+							}
+
 						}
 
                     } else {
@@ -321,7 +339,9 @@
                     utils.dispatchEvent('start');
                     settings.element.style[cache.vendor+'Transition'] = '';
 					if (settings.menu) {
-						settings.menu.style[cache.vendor+'Transition'] = '';
+						settings.menu.each(function() {
+							this.style[cache.vendor+'Transition'] = '';
+						});
 					}
                     cache.isDragging = true;
                     cache.hasIntent = null;
