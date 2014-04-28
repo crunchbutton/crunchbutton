@@ -41,6 +41,16 @@ NGApp.config(function($compileProvider){
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider, RestaurantsService) {
 	$routeProvider
+		.when('/drivers/orders', {
+			action: 'drivers-orders',
+			controller: 'DriversOrdersCtrl',
+			templateUrl: 'assets/view/drivers-orders.html'
+		})
+		.when('/drivers/shifts', {
+			action: 'drivers-shifts',
+			controller: 'DriversShiftsCtrl',
+			templateUrl: 'assets/view/drivers-shifts.html'
+		})
 		.otherwise({
 			action: 'home',
 			controller: 'DefaultCtrl',
@@ -69,7 +79,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.$on('userAuth', function(e, data) {
 		$rootScope.$safeApply(function($scope) {
 			App.snap.close();
-			$rootScope.reload();	
+			$rootScope.reload();
 		});
 	});
 
@@ -113,10 +123,13 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			this.$apply(fn);
 		}
 	};
+	
+	$rootScope.hasBack = false;
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
+		console.log($route.current.action);
 		App.rootScope.current = MainNavigationService.page;
 		App.track('page', $route.current.action);
 
@@ -190,11 +203,12 @@ App.go = function( url, transition ){
 	}
 };
 
-App.toggleMenu = function() {
-	if (App.snap.state().state == 'left') {
+App.toggleMenu = function(side) {
+	side = side || 'left';
+	if (App.snap.state().state == side) {
 		App.snap.close();
 	} else {
-		App.snap.open('left');
+		App.snap.open(side);
 	}
 };
 
@@ -312,13 +326,13 @@ App.init = function(config) {
 
 		App.snap = new Snap({
 			element: document.getElementById('snap-content'),
-			menu: document.getElementById('side-menu'),
+			menu: $('#side-menu, #side-menu-right'),
 			menuDragDistance: 95,
-			disable: 'right'
+			disable: ''
 		});
 
 		var snapperCheck = function() {
-			if ($(window).width() <= 768) {
+			if ($(window).width() <= 1024) {
 				App.snap.enable();
 			} else {
 				App.snap.close();
