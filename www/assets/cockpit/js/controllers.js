@@ -4,14 +4,10 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, MainNavigati
 	}
 });
 
-NGApp.controller('MainHeaderCtrl', function ( $scope, $rootScope) {
-
-});
+NGApp.controller('MainHeaderCtrl', function ( $scope, $rootScope) {} );
 
 NGApp.controller('SideMenuCtrl', function ($scope) {
-	$scope.setupPermissions = function() {
-		
-	}
+	$scope.setupPermissions = function() {}
 });
 
 NGApp.controller('LoginCtrl', function($scope, AccountService) {
@@ -24,12 +20,10 @@ NGApp.controller('LoginCtrl', function($scope, AccountService) {
 	}
 });
 
-NGApp.controller('DriversOrderCtrl', function ($http, $scope, $rootScope, DriverOrders) {
-
-});
+NGApp.controller('DriversOrderCtrl', function ( $http, $scope, $rootScope, DriverOrders ) {} );
 
 
-NGApp.controller('DriversOrdersCtrl', function ($http, $scope, $rootScope, DriverOrdersService, AccountService ) {
+NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, AccountService ) {
 
 	// The scope just need the account's user object 
 	$scope.account = { user : AccountService.user } ;
@@ -87,6 +81,28 @@ NGApp.controller('DriversOrdersCtrl', function ($http, $scope, $rootScope, Drive
 
 } );
 
-NGApp.controller('DriversShiftsCtrl', function ($http, $scope, $rootScope) {
+NGApp.controller( 'DriversShiftsCtrl', function ( $scope, $rootScope, DriverShiftsService ) {
 
-});
+	$scope.show = { all : true };
+
+	$scope.filterShifts = function( shift ){
+		if( $scope.show.all ){
+			return true;	
+		} else {
+			if( shift.mine ){
+				return true;
+			}
+		}
+		return false;
+	}
+	// List
+	$scope.list = function(){
+		DriverShiftsService.list( function( data ){
+			$scope.drivershifts = data;
+		} );
+	}
+
+	// Load the shifts
+	$scope.list();
+
+} );

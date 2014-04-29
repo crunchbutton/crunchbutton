@@ -67,7 +67,5 @@ class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
 
 			echo json_encode($exports);
 		}
-
-//		if( !$justMineOrders || ( $justMineOrders && $order->lastStatus[ 'id_admin' ] == c::admin()->id_admin ) ){
 	}
 }

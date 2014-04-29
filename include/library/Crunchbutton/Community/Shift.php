@@ -64,9 +64,14 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	public function nextShiftsByCommunities( $communities ){
 		if( count( $communities ) > 0 ){
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+			$now_formated = $now->format( 'Y-m-d' );
+			$now->modify( '+ 7 days' );
+			$next_days_formated = $now->format( 'Y-m-d' );
 			$query = 'SELECT cs.* FROM community_shift cs 
 									WHERE cs.id_community IN( ' . join( ',', $communities ) . ' ) AND
-										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now->format( 'Y-m-d' )  . '" ORDER BY cs.date_start ASC  LIMIT 20';
+										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now_formated  . '" AND 
+										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $next_days_formated  . '"
+									 ORDER BY cs.date_start ASC';
 			return Crunchbutton_Community_Shift::q( $query );	
 		}
 		return false;
