@@ -755,3 +755,15 @@ input {
 	.drivers-order-list .item .info .customer{
 		font-size:1em;
 	}
+.drivers-order-list-filter{
+	margin: 0 0 1em 0;
+}
+	.drivers-order-list-filter .button{
+		display: table;
+		float: left;
+		width: 100px;
+		margin-right: 1em;
+	}
+	.drivers-order-list-filter .button.inactive{
+		opacity: 0.5;
+	}

@@ -34,6 +34,19 @@ NGApp.controller('DriversOrdersCtrl', function ($http, $scope, $rootScope, Drive
 	// The scope just need the account's user object 
 	$scope.account = { user : AccountService.user } ;
 
+	$scope.show = { all : true };
+
+	$scope.filterOrders = function( order ){
+		if( $scope.show.all ){
+			return true;	
+		} else {
+			if( order.lastStatus.id_admin == $scope.account.user.id_admin ){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// List
 	$scope.list = function(){
 		DriverOrdersService.list( function( data ){
