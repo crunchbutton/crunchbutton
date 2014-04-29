@@ -693,11 +693,10 @@ input {
 	overflow: hidden;
 }
 
-.box-with-shadown{
+.list-box{
 	background: #FFF;
 	padding: 15px;
 	margin-bottom: 15px;
-	box-shadow: 0px 3px 2px #AAB2BD;
 }
 
 /* drivers order list page */
@@ -755,15 +754,16 @@ input {
 	.drivers-order-list .item .info .customer{
 		font-size:1em;
 	}
-.drivers-order-list-filter{
+
+.list-filter{
 	margin: 0 0 1em 0;
 }
-	.drivers-order-list-filter .button{
+	.list-filter .button{
 		display: table;
 		float: left;
 		width: 100px;
 		margin-right: 1em;
 	}
-	.drivers-order-list-filter .button.inactive{
+	.list-filter .button.inactive{
 		opacity: 0.5;
 	}

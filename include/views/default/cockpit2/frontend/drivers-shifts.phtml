@@ -1,4 +1,45 @@
 <div class="top-pad"></div>
 
+<div class="content-padding">
+	
+	<div class="list-filter">
+		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
+		<button class="button orange" ng-class="{ 'inactive' : show.all }" ng-click="show.all = false">Mine</button>
+		<div class="divider"></div>
+	</div>
 
-shifts
+	<div class="drivers-shifts-list">
+		
+		<div ng-if="drivershifts">
+		
+			<div class="list-box item" ng-repeat="shift in drivershifts | filter:filterShifts">
+
+				<div class="day">{{shift.date.day}}</div>
+				<div class="start_end">{{shift.date.start_end}}</div>
+				<div class="timezone">{{shift.date.timezone}}</div>
+				<div class="community">{{shift.community}}</div>
+				
+				<div nf-if="shift.drivers">
+					<div class="drivers">
+						<div class="driver" ng-repeat="driver in shift.drivers">
+							<div class="name">{{driver.name}}</div>
+							<div class="phone">{{driver.phone}}</div>
+						</div>
+						
+					</div>
+				</div>
+				<div ng-if="!shift.drivers">
+					No drivers
+				</div>
+
+				<div class="divider"></div>
+			</div>
+		</div>
+		
+		<div ng-if="!drivershifts">
+			You currently have no orders to deliver.
+		</div>
+
+	</div>	
+
+</div>

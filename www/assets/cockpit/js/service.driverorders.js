@@ -1,4 +1,3 @@
-// DriverOrdersService service
 NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource ) {
 	
 	var service = {};
