@@ -9,11 +9,17 @@
 	<? /* @todo: make this a diff date. write date diff in js */ ?>
 	<div class="last-updated">Last Updated: <span class="last-updated-time">{{newDriverOrders.time.getTime() | date: 'hh:mm a'}}</span></div>	
 
+	<div class="drivers-order-list-filter">
+		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
+		<button class="button orange" ng-class="{ 'inactive' : show.all }" ng-click="show.all = false">Mine</button>
+		<div class="divider"></div>
+	</div>
+
 	<div class="drivers-order-list">
 		
 		<div ng-if="driverorders">
 		
-			<div class="box-with-shadown item" ng-repeat="order in driverorders" ng-class="order.lastStatus.status">
+			<div class="box-with-shadown item" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.lastStatus.status">
 
 				<!-- action -->
 				<div class="action">

@@ -1,13 +1,16 @@
 <?php
 
 class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
+	
 	public function init() {
-		// return a list of orders based on params. show none with no params
 
-		if( c::getPagePiece(2) ){
-			$order = Order::o(c::getPagePiece(2));
+		// return a list of orders based on params. show none with no params
+		if( c::getPagePiece( 2 ) ){
+
+			$order = Order::o(c::getPagePiece( 2 ) );
 		
-			if (1==1 || $this->method() == 'post') {
+			if ( $this->method() == 'post' ) {
+
 				$res = [];
 
 				switch (c::getPagePiece(3)) {
@@ -30,11 +33,12 @@ class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
 				}
 			}
 
-			if ($order->deliveryStatus())
-			$ret = $order->deliveryExports();
-			$ret['status'] = $res['status'];
+			if ( $order->deliveryStatus() ){
+				$ret = $order->deliveryExports();	
+			}
+			$ret[ 'status' ] = $res[ 'status' ];
 
-			echo json_encode($ret);
+			echo json_encode( $ret );
 			exit;
 
 		} else {
@@ -43,8 +47,8 @@ class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
 
 			$orders = Order::deliveryOrders( 12 ); // last 12 hours
 			
-			foreach ($orders as $order) {
-				$exports[] = Model::toModel([
+			foreach ( $orders as $order ) {
+				$exports[] = Model::toModel( [
 					'id_order' => $order->id_order,
 					'lastStatus' => $order->deliveryLastStatus(),
 					'name' => $order->name,
@@ -53,19 +57,17 @@ class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
 					'restaurant' => $order->restaurant()->name,
 				] );
 			}
+
+			usort( $exports, function( $a, $b ){
+				if( $a->lastStatus->status == $b->lastStatus->status ){
+					return $a->id_order < $b->id_order;
+				}
+				return ( $a->lastStatus->order > $b->lastStatus->order );
+			} );
+
 			echo json_encode($exports);
 		}
 
 //		if( !$justMineOrders || ( $justMineOrders && $order->lastStatus[ 'id_admin' ] == c::admin()->id_admin ) ){
-/*
-		usort($exports, function($a, $b) {
-			if ($a->lastStatus['status'] == $b->lastStatus['status']) {
-				return $a->id_order < $b->id_order;
-			}
-			return ($a->lastStatus['order'] > $b->lastStatus['order']);
-		});
-	*/	
-		
-
 	}
 }
