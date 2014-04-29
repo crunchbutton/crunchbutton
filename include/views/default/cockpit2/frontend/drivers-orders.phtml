@@ -7,30 +7,40 @@
 	</div>
 
 	<? /* @todo: make this a diff date. write date diff in js */ ?>
-	<div class="last-updated">Last Updated: <span class="last-updated-time">{{newDriverOrders.time.getTime() | date: 'h:mm'}}</span></div>	
+	<div class="last-updated">Last Updated: <span class="last-updated-time">{{newDriverOrders.time.getTime() | date: 'hh:mm a'}}</span></div>	
 
 	<div class="drivers-order-list">
-		<div ng-if="orders">
-			<div class="drivers-order-list-item" ng-repeat="order in driverorders" ng-class="order.lastStatus.status">
-				<span class="text" ng-switch="order.lastStatus.status">
-					<span ng-switch-when="delivered">Delivered by {{order.lastStatus.name}}</span>
-					<span ng-switch-when="pickedup">Picked up by {{order.lastStatus.name}}</span>
-					<span ng-switch-when="accepted">Accepted by {{order.lastStatus.name}}</span>
-					<span ng-switch-default></span>
-				</span>
+		
+		<div ng-if="driverorders">
+		
+			<div class="box-with-shadown item" ng-repeat="order in driverorders" ng-class="order.lastStatus.status">
 
-				<div class="order-list-action">
-					<button class="button button-list-accept" ng-click="accept(order.id_order)" ng-show="order.lastStatus.status='new' || !order.lastStatus.status"> Accept </button>
-					<button class="button button-list-pickedup" ng-click="pickup(order.id_order)" ng-show="order.status.id_admin==account.user.id_admin && order.lastStatus.status=='accepted'"> Picked up </button>
-					<button class="button button-list-delivered" ng-click="delivered(order.id_order)" ng-show="order.status.id_admin==account.user.id_admin && order.lastStatus.status=='pickedup'"> Delivered </button>
+				<!-- action -->
+				<div class="action">
+					<button class="button green button-pushable" ng-click="accept(order.id_order)" ng-if="order.lastStatus.status == 'new' || !order.lastStatus.status" > Accept </button>
+					<button class="button orange button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'accepted'"> Picked up </button>
+					<button class="button lightorange button-pushable" ng-click="delivered(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'pickedup' "> Delivered </button>
 				</div>
 
-				<div class="order-list-date">
-					<div class="day">{{order.date.date | date:'M/d'}}</div>
-					<div class="hour">{{order.date.date | date:'h:m'}}</div>
-					<div class="ampm">{{order.date.date | date:'a'}}</div>
+				<!-- date -->
+				<div class="date">
+					<div class="day">{{order._date | date:'MM/dd'}}</div>
+					<div class="hour">{{order._date | date:'hh:mm'}}</div>
+					<div class="ampm">{{order._date | date:'a'}}</div>
 				</div>
-				<div class="order-list-customer-info">
+
+				<!-- info -->
+				<div class="info">
+
+					<span class="status" ng-if="order.lastStatus.name">
+						<span ng-switch="order.lastStatus.status">
+							<span ng-switch-when="delivered">Delivered</span>
+							<span ng-switch-when="pickedup">Picked up</span>
+							<span ng-switch-when="accepted">Accepted</span>
+							<span> by {{order.lastStatus.name}}</span>
+						</span>
+					</span>
+
 					<div class="restaurant" ng-click="viewOrder">
 						{{order.restaurant}}
 					</div>
@@ -38,13 +48,15 @@
 						{{order.name}}
 					</div>
 				</div>
+
 				<div class="divider"></div>
 			</div>
 		</div>
 		
-		<div ng-if="!orders">
+		<div ng-if="!driverorders">
 			You currently have no orders to deliver.
 		</div>
+
 	</div>	
 
 </div>
