@@ -33,7 +33,7 @@ App.NGinit = function() {
 	}
 };
 
-var NGApp = angular.module('NGApp', [ 'ngRoute'] );
+var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource'] );
 
 NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
@@ -45,6 +45,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			action: 'drivers-orders',
 			controller: 'DriversOrdersCtrl',
 			templateUrl: 'assets/view/drivers-orders.html'
+		})
+		.when('/drivers/order/:id', {
+			action: 'drivers-order',
+			controller: 'DriversOrderCtrl',
+			templateUrl: 'assets/view/drivers-order.html'
 		})
 		.when('/drivers/shifts', {
 			action: 'drivers-shifts',

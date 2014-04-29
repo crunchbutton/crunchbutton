@@ -1,62 +1,50 @@
-NGApp.factory('DriverOrdersService', function($http, $rootScope) {
-	var service = {
-
-	};
+// DriverOrdersService service
+NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource ) {
 	
-	service.loadOrders = function() {
-		$http.get(App.service + 'driverorders').success(function(orders) {
-			$rootScope.driverorders = orders;
+	var service = {};
+
+	// Create a private resource 'orders'
+	var orders = $resource( App.service + 'driverorders/:id_order/:action', { id_order: '@id_order', action: '@action' }, {
+				// actions
+				'accept' : { 'method': 'POST', params : { 'action' : 'delivery-accept' } },
+				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
+				'delivered' : { 'method': 'POST', params : { 'action' : 'delivery-delivered' } }
+			}	
+		);
+
+	service.list = function( callback ){
+		orders.query( {}, function( data ){ 
+			var orders = [];
 			var newDriverOrders = 0;
-			for (var x in orders) {
-				if (orders[x].lastStatus.status = 'new') {
-					newDriverOrders++;
+			for( var x in data ){
+				var order = data[ x ];
+				if( order && order.date && order.date.date ){
+					order._date = new Date( order.date.date );	
+					orders.push( order );
+					if( order.lastStatus.status == 'new' ) {
+						newDriverOrders++;
+					}
 				}
 			}
-
 			$rootScope.newDriverOrders = {
 				count: newDriverOrders,
 				time: new Date
 			};
-			console.log($rootScope.newDriverOrders);
-		});
-	};
-	
-	service.checkUser = function() {
-		service.user = App.config.user;
-		App.config.user = null;
-	};
-	
-	service.login = function(user, pass, callback) {
-		$http({
-			method: 'POST',
-			url: App.service + 'login',
-			data: $.param({'username': user, 'password': pass}),
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		}).success(function(data) {
-			if (data && data.id_admin) {
-				service.user = data;
-				$rootScope.$broadcast('userAuth', service.user);
-				callback(true);
-			} else {
-				callback(false);
-			}
-		});
-	};
-	
-	service.logout = function() {
-		$http.get(App.service + 'logout').success(function() {
-			service.user = {};
-			$rootScope.$broadcast('userAuth');
-		})
-	};
-	
-	$rootScope.$on('userAuth', function(e, data) {
-		if (service.user.id_admin) {
-			
-		} else {
-			
-		}
-	});
+			callback( orders ); 
+		} );
+	}
+
+	service.accept = function( id_order, callback ){
+		orders.accept( { 'id_order': id_order }, function( json ){ callback( json ); } );
+	}
+
+	service.pickedup = function( id_order, callback ){
+		orders.pickedup( { 'id_order': id_order }, function( json ){ callback( json ); } );
+	}
+
+	service.delivered = function( id_order, callback ){
+		orders.delivered( { 'id_order': id_order }, function( json ){ callback( json ); } );
+	}
 
 	return service;
-});
+} );

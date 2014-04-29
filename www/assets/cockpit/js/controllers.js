@@ -24,42 +24,55 @@ NGApp.controller('LoginCtrl', function($scope, AccountService) {
 	}
 });
 
-NGApp.controller('DriversOrderCtrl', function ($http, $scope, $rootScope) {
+NGApp.controller('DriversOrderCtrl', function ($http, $scope, $rootScope, DriverOrders) {
 
 });
 
 
-NGApp.controller('DriversOrdersCtrl', function ($http, $scope, $rootScope, DriverOrdersService) {
+NGApp.controller('DriversOrdersCtrl', function ($http, $scope, $rootScope, DriverOrdersService, AccountService ) {
 
-	DriverOrdersService.loadOrders();
+	// The scope just need the account's user object 
+	$scope.account = { user : AccountService.user } ;
 
-	$scope.accept = function(id_order) {
-		$rootScope.makebusy();
-		$http.post(App.service + 'order/' + id_order + '/delivery-accept').success(function(json) { 
-			if (json.status) {
-				$scope.loadOrders();
-			} else {
-	 			var name = json['delivery-status'].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
-	 			App.alert('Ops, error!\n It seems this order was already accepted' + name + '!'  );
-	 			$scope.loadOrders();
-	 		}
-	 	}); 
+	// List
+	$scope.list = function(){
+		DriverOrdersService.list( function( data ){
+			$scope.driverorders = data;
+		} );
+	}
+
+	// Accept
+	$scope.accept = function( id_order ) {
+		// $rootScope.makebusy();
+		DriverOrdersService.accept( id_order, 
+			function( json ){
+				if( json.status ) {
+					$scope.list();
+				} else {
+					var name = json['delivery-status'].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
+					App.alert('Ops, error!\n It seems this order was already accepted' + name + '!'  );
+					$scope.list();
+				}
+			}
+		);
 	};
 
-	$scope.pickedup = function(id_order) {
-		$rootScope.makebusy();
-			$http.post(App.service + 'order/' + id_order + '/delivery-pickedup').success(function() {
-			$scope.loadOrders();
-		});
+	// Picked up
+	$scope.pickedup = function( id_order ) {
+		// $rootScope.makebusy();
+		DriverOrdersService.pickedup( id_order, function(){ $scope.list(); } );
 	};
 	
-	$scope.delivered = function(id_order) {
-		$rootScope.makebusy();
-		$http.post(App.service + 'order/' + id_order + '/delivery-delivered').success(function() {
-			$scope.loadOrders();
-		});
+	// Delivered
+	$scope.delivered = function( id_order ) {
+		// $rootScope.makebusy();
+		DriverOrdersService.delivered( id_order, function(){ $scope.list();	} );
 	};
-});
+
+	// Load the orders
+	$scope.list();
+
+} );
 
 NGApp.controller('DriversShiftsCtrl', function ($http, $scope, $rootScope) {
 

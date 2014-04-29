@@ -1,4 +1,5 @@
-NGApp.factory('AccountService', function($http, $rootScope) {
+NGApp.factory( 'AccountService', function($http, $rootScope) {
+	
 	var service = {
 		permissions: {},
 		user: null
