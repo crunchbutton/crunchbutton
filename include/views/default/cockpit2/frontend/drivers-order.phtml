@@ -1,5 +1,67 @@
 <div class="top-pad"></div>
-<div class="content-padding drivers-order">
+
+<!-- actions -->
+<div class="control">
+
+	<div class="box-item" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && !order.lastStatus[ 'delivery-status' ].delivered ">
+	
+		<div ng-if="!order.lastStatus[ 'delivery-status' ].accepted">
+	
+			<div class="message">
+				Accept this order?
+				<div class="message-small">
+					You MUST mark orders accepted, picked up, and delivered to get paid correctly ;)
+				</div>
+			</div>
+			<div class="buttons">
+				<button ng-click="accept()" class="button button-yes">Yes</button>
+				<button ng-click="reject()" class="button button-no">No</button>
+			</div>
+			<div class="divider"></div>	
+		</div>
+		
+		<div ng-if="order.lastStatus['self-reply'] == 'rejected'">
+			<div class="message">You rejected. </div>
+			<div class="buttons">
+				<button ng-click="accept()" class="button button-yes">Accept</button>
+			</div>
+			<div class="divider"></div>	
+		</div>
+
+		<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup">
+			<div class="message">You accepted.</div>
+			<div class="buttons">
+				<button ng-click="pickedup()" class="button button-yes">Picked up</button>
+				<button ng-click="reject()" class="button button-no">Cancel</button>
+			</div>
+			<div class="divider"></div>	
+		</div>
+		
+		<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered">
+			<div class="message">You picked up.</div>
+			<div class="buttons" ng-click="delivered()">
+				<button class="button button-yes">Delivered</button>
+			</div>
+			<div class="divider"></div>	
+		</div>
+	</div>
+	<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.name && order.lastStatus[ 'delivery-status' ].accepted.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup" class="dialog-message dialog-message-error">
+		DO NOT DELIVER. THIS ORDER HAS ALREADY BEEN ACCEPTED BY <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].accepted.name}}</span>.
+	</div>
+
+	<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.name && order.lastStatus[ 'delivery-status' ].pickedup.id_admin != account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered" class="dialog-message dialog-message-error">
+		This order has been picked up by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].pickedup.name}}</span>.
+	</div>
+	
+	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered.name" class="dialog-message dialog-message-error">
+		This order has been delivered by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].delivered.name}}</span>.
+	</div>
+
+	<div class="divider"></div>
+</div>
+<!-- /actions -->
+
+<div class="content-padding drivers-order box-item">
 	<div class="content">
 		<div class="wrap">
 			<div class="status"></div>

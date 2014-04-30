@@ -33,9 +33,49 @@ NGApp.controller('LoginCtrl', function($scope, AccountService) {
 
 
 NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
-	DriverOrdersService.get( function( json ){
-		$scope.order = json;
-	} )
+	
+	var load = function(){
+		DriverOrdersService.get( function( json ){
+			$scope.order = json;
+			$scope.unBusy();
+		} );
+	}
+
+
+
+	$scope.accept = function() {
+		$scope.makeBusy();
+		DriverOrdersService.accept( $scope.order.id_order, 
+			function( json ){
+				if( json.status ) {
+					load();
+				} else {
+					load();
+					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
+					App.alert( 'Ops, error!\n It seems this order was already accepted ' + name + '!'  );
+					$scope.list();
+				}
+			}
+		);
+	};
+
+	$scope.pickedup = function() {
+		$scope.makeBusy();
+		DriverOrdersService.pickedup( $scope.order.id_order, function(){ load(); } );
+	};
+
+	$scope.delivered = function() {
+		$scope.makeBusy();
+		DriverOrdersService.delivered( $scope.order.id_order, function(){ load();	} );
+	};
+
+	$scope.reject = function() {
+		$scope.makeBusy();
+		DriverOrdersService.reject( $scope.order.id_order, function(){ load();	} );
+	};
+
+	load();
+
 });
 
 NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, MainNavigationService ) {
