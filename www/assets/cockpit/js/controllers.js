@@ -23,10 +23,7 @@ NGApp.controller('LoginCtrl', function($scope, AccountService) {
 NGApp.controller('DriversOrderCtrl', function ( $http, $scope, $rootScope, DriverOrders ) {} );
 
 
-NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService, AccountService ) {
-
-	// The scope just need the account's user object 
-	$scope.account = { user : AccountService.user } ;
+NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService ) {
 
 	$scope.show = { all : true };
 

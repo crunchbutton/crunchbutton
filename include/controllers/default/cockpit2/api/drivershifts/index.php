@@ -3,14 +3,16 @@
 class Controller_api_drivershifts extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
+
 		$communities = c::admin()->communitiesHeDeliveriesFor();
 		$_communities = [];
 		foreach( $communities as $community ){
 			$_communities[] = $community->id_community;
 		}
-		// get the shifts for the next 7 days
+		// this method returns the shifts for the next 7 days
  		$shifts = Crunchbutton_Community_Shift::nextShiftsByCommunities( $_communities );
 		$export = [];
+		
 		foreach ( $shifts as $shift ) {
 			$drivers = $shift->getDrivers();
 			$mine = 0;
