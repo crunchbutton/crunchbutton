@@ -7,6 +7,7 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 				// actions
 				'get' : { 'method': 'GET', params : { 'action' : 'order', 'id' : 0 } },
 				'accept' : { 'method': 'POST', params : { 'action' : 'delivery-accept' } },
+				'reject' : { 'method': 'POST', params : { 'action' : 'delivery-reject' } },
 				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
 				'delivered' : { 'method': 'POST', params : { 'action' : 'delivery-delivered' } }
 			}	
@@ -44,6 +45,10 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 
 	service.delivered = function( id_order, callback ){
 		orders.delivered( { 'id_order': id_order }, function( json ){ callback( json ); } );
+	}
+
+	service.reject = function( id_order, callback ){
+		orders.reject( { 'id_order': id_order }, function( json ){ callback( json ); } );
 	}
 
 	service.get = function( callback ){

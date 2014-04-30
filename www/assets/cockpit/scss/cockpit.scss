@@ -693,7 +693,7 @@ input {
 	overflow: hidden;
 }
 
-.list-box{
+.list-box, .box-item{
 	background: #FFF;
 	padding: 15px;
 	margin-bottom: 15px;
@@ -714,7 +714,7 @@ input {
 .drivers-order-list .item .action{
 	float: right;
 	display: table;
-	width: 100px;
+	width: 150px;
 }
 .drivers-order-list .item .date{
 	display: table;
@@ -843,7 +843,10 @@ input {
 	}	
 
 /* todo:organize it --- order start  */
-.divider.dots {
+	.drivers-order{
+		max-width: 740px;
+	}
+	.divider.dots {
 		border-top: 1px solid #eeede7;
 	}
 	
@@ -1054,6 +1057,11 @@ input {
 		vertical-align: middle;
 		text-shadow:1px 1px 0px #fff;
 		white-space:nowrap;
+		float: left;
+	}
+	.control .message-small{
+		font-size: 0.8em;
+		margin-top: 2em;
 	}
 
 	.button {
@@ -1081,36 +1089,7 @@ input {
 		background: #dc534b;
 		border-radius: 4px;
 	}
-	
-	.order-status-delivered .status-control:not(.control-delivered) {
-		display: none !important;
-	}
-	
-	.order-status-pickedup .status-control:not(.control-pickedup) {
-		display: none !important;
-	}
-	
-	.order-status-rejected .status-control:not(.control-rejected) {
-		display: none !important;
-	}
-	
-	.order-status-accepted .status-control:not(.control-accepted) {
-		display: none !important;
-	}
-	
-	.order-status-accepted-other .status-control:not(.control-accepted-other) {
-		display: none !important;
-	}
-	
-	.order-status-none .status-control:not(.control-accept-reject) {
-		display: none !important;
-	}
-	
-	.order-status-init .status-control {
-		display: none !important;
-	}
 
-	
 	.loader-wrap {
 		position: fixed;
 		bottom: -10px;
@@ -1149,5 +1128,21 @@ input {
 		    -ms-transition: all .1s;
 		     -o-transition: all .1s;
 		        transition: all .1s;
+	}
+	.wrap {
+		padding: .5em;
+		max-width: 740px;
+		margin: 0 auto;
+	}
+	.control .buttons {
+		display: table-cell;
+		vertical-align: middle;
+		text-align: right;
+		float: right;
+		width: 150px;
+	}
+
+	.delivery-name{
+		text-transform: uppercase;
 	}
 /* --- order end */
