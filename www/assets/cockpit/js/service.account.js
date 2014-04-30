@@ -1,5 +1,13 @@
-NGApp.factory( 'AccountService', function($http, $rootScope) {
-	
+NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
+
+	// Private resource 'user'
+	var user = $resource( App.service + '/:action', { action: '@action' }, {
+				// actions
+				'login' : { 'method': 'POST', params : { 'action' : 'login' } },
+				'logout' : { 'method': 'GET', params : { 'action' : 'logout' } },
+			}	
+		);
+
 	var service = {
 		permissions: {},
 		user: null
@@ -10,32 +18,35 @@ NGApp.factory( 'AccountService', function($http, $rootScope) {
 		App.config.user = null;
 	};
 	
-	service.login = function(user, pass, callback) {
-		$http({
-			method: 'POST',
-			url: App.service + 'login',
-			data: $.param({'username': user, 'password': pass}),
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		}).success(function(data) {
-			if (data && data.id_admin) {
-				service.user = data;
-				$rootScope.$broadcast('userAuth', service.user);
-				callback(true);
+	service.login = function( username, password, callback ) {
+		if( !username ){
+			App.alert( 'Please type your username' );
+			return;
+		}
+		if( !password ){
+			App.alert( 'Please type your password' );
+			return;
+		}
+		user.login( { 'username': username, 'password': password }, function( json ){
+			if( json && json.id_admin ){
+				service.user = json;
+				$rootScope.$broadcast( 'userAuth', service.user );
+				callback( true );
 			} else {
-				callback(false);
+				callback( false );
 			}
-		});
+		} );
 	};
 	
 	service.logout = function() {
-		$http.get(App.service + 'logout').success(function() {
+		user.logout( {}, function(){
 			service.user = {};
 			$rootScope.$broadcast('userAuth');
-		})
+		} );
 	};
 	
-	$rootScope.$on('userAuth', function(e, data) {
-		if (service.user.id_admin) {
+	$rootScope.$on( 'userAuth', function( e, data ) {
+		if ( service.user.id_admin ) {
 			
 		} else {
 			

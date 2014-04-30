@@ -171,7 +171,7 @@ App.alert = function( txt, title, useNativeAlert ) {
 		} else if ( useNativeAlert ) {
 			alert( txt );
 		} else {
-			App.rootScope.$broadcast('notificationAlert', title || 'Woops!', txt);
+			App.rootScope.$broadcast( 'notificationAlert', title || 'Woops!', txt );
 		}
 	});
 };
