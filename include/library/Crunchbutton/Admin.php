@@ -346,10 +346,13 @@ class Crunchbutton_Admin extends Cana_Table {
 	}
 
 	public function groups(){
-		if( !$this->_groups ){
-			$this->_groups = Crunchbutton_Group::q( "SELECT g.* FROM `group` g INNER JOIN admin_group ag ON ag.id_group = g.id_group AND ag.id_admin = {$this->id_admin} ORDER BY name ASC" );
+		if( $this->id_admin ){
+			if( !$this->_groups ){
+				$this->_groups = Crunchbutton_Group::q( "SELECT g.* FROM `group` g INNER JOIN admin_group ag ON ag.id_group = g.id_group AND ag.id_admin = {$this->id_admin} ORDER BY name ASC" );
+			}
+			return $this->_groups;			
 		}
-		return $this->_groups;
+		return false;
 	}
 
 	public function removeGroups(){
@@ -472,11 +475,12 @@ class Crunchbutton_Admin extends Cana_Table {
 	public function exports() {
 		$permissions = [];
 		$groups = [];
-		
-		foreach ($this->groups() as $group) {
-			$groups[$group->id_group] = $group->name;
+		if( $this->groups() ){
+			foreach ($this->groups() as $group) {
+				$groups[$group->id_group] = $group->name;
+			}	
 		}
-
+		
 		if ($this->permission()->_permissions) {
 			foreach ($this->permission()->_permissions as $group => $perms) {
 				foreach ($perms as $key => $value) {

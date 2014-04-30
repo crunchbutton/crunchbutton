@@ -4,7 +4,6 @@ class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 
-		// return a list of orders based on params. show none with no params
 		if( c::getPagePiece( 2 ) ){
 
 			$order = Order::o(c::getPagePiece( 2 ) );
@@ -13,7 +12,7 @@ class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
 
 				$res = [];
 
-				switch (c::getPagePiece(3)) {
+				switch ( c::getPagePiece(3) ) {
 					case 'delivery-pickedup':
 						$res['status'] = $order->deliveryPickedup(c::admin());
 						break;
@@ -31,15 +30,23 @@ class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
 						$res['status'] = true;
 						break;
 				}
-			}
+				
+				if ( $order->deliveryStatus() ){
+					$ret = $order->deliveryExports();	
+				}
+				$ret[ 'status' ] = $res[ 'status' ];
 
-			if ( $order->deliveryStatus() ){
-				$ret = $order->deliveryExports();	
-			}
-			$ret[ 'status' ] = $res[ 'status' ];
+				echo json_encode( $ret );
+				exit;
+			} else {
 
-			echo json_encode( $ret );
-			exit;
+				$order = Order::o( c::getPagePiece( 2 ) );
+				if( $order->id_order ) {
+					echo $order->json();
+				} else {
+					echo json_encode(['error' => 'invalid object']);
+				}
+			}
 
 		} else {
 

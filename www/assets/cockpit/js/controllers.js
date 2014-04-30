@@ -1,10 +1,11 @@
 NGApp.controller('DefaultCtrl', function ($scope, $http, $location, MainNavigationService, AccountService) {
-	if (AccountService.user.id_admin) {
+	if ( AccountService.user && AccountService.user.id_admin ) {
 		MainNavigationService.link('/drivers/orders');
 	}
+
 });
 
-NGApp.controller('MainHeaderCtrl', function ( $scope, $rootScope) {} );
+NGApp.controller('MainHeaderCtrl', function ( $scope) {} );
 
 NGApp.controller('SideMenuCtrl', function ($scope) {
 	$scope.setupPermissions = function() {}
@@ -12,6 +13,16 @@ NGApp.controller('SideMenuCtrl', function ($scope) {
 
 NGApp.controller('LoginCtrl', function($scope, AccountService) {
 	$scope.login = function() {
+		if( !$scope.username ){
+			App.alert( 'Please type your username' );
+			$scope.focus( '[name="username"]' );
+			return;
+		}
+		if( !$scope.password ){
+			App.alert( 'Please type your password' );
+			$scope.focus( '[name="password"]' );
+			return;
+		}
 		AccountService.login($scope.username, $scope.password, function(status) {
 //			$scope.$apply(function() {
 				$scope.error = !status;
@@ -20,10 +31,14 @@ NGApp.controller('LoginCtrl', function($scope, AccountService) {
 	}
 });
 
-NGApp.controller('DriversOrderCtrl', function ( $http, $scope, $rootScope, DriverOrders ) {} );
 
+NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
+	DriverOrdersService.get( function( json ){
+		$scope.order = json;
+	} )
+});
 
-NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrdersService ) {
+NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, MainNavigationService ) {
 
 	$scope.show = { all : true };
 
@@ -38,47 +53,48 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, $rootScope, DriverOrder
 		return false;
 	}
 
-	// List
 	$scope.list = function(){
+		$scope.unBusy();
 		DriverOrdersService.list( function( data ){
 			$scope.driverorders = data;
 		} );
 	}
 
-	// Accept
 	$scope.accept = function( id_order ) {
-		// $rootScope.makebusy();
+		$scope.makeBusy();
 		DriverOrdersService.accept( id_order, 
 			function( json ){
 				if( json.status ) {
 					$scope.list();
 				} else {
-					var name = json['delivery-status'].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
-					App.alert('Ops, error!\n It seems this order was already accepted' + name + '!'  );
+					$scope.unBusy();
+					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
+					App.alert( 'Ops, error!\n It seems this order was already accepted ' + name + '!'  );
 					$scope.list();
 				}
 			}
 		);
 	};
 
-	// Picked up
 	$scope.pickedup = function( id_order ) {
-		// $rootScope.makebusy();
+		$scope.makeBusy();
 		DriverOrdersService.pickedup( id_order, function(){ $scope.list(); } );
 	};
 	
-	// Delivered
 	$scope.delivered = function( id_order ) {
-		// $rootScope.makebusy();
+		$scope.makeBusy();
 		DriverOrdersService.delivered( id_order, function(){ $scope.list();	} );
 	};
 
-	// Load the orders
+	$scope.showOrder = function( id_order ){
+		MainNavigationService.link( '/drivers/order/' + id_order );
+	}
+
 	$scope.list();
 
 } );
 
-NGApp.controller( 'DriversShiftsCtrl', function ( $scope, $rootScope, DriverShiftsService ) {
+NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) {
 
 	$scope.show = { all : true };
 
@@ -92,14 +108,31 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, $rootScope, DriverShif
 		}
 		return false;
 	}
-	// List
+
 	$scope.list = function(){
 		DriverShiftsService.list( function( data ){
 			$scope.drivershifts = data;
 		} );
 	}
 
-	// Load the shifts
 	$scope.list();
-
 } );
+
+NGApp.controller( 'NotificationAlertCtrl', function ( $scope, $rootScope  ) {
+	$rootScope.$on('notificationAlert', function(e, title, message) {
+		alert( message );
+		// todo: make it work with modals and stuff
+		return;
+		if ($scope.$$phase) {
+			$scope.title = title;
+			$scope.message = message;
+			App.dialog.show('.notification-alert-container');
+		} else {
+			$rootScope.$apply(function(scope) {
+				scope.title = title;
+				scope.message = message;
+				App.dialog.show('.notification-alert-container');
+			}); 
+		}			
+	});
+});

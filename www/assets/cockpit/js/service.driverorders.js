@@ -1,10 +1,11 @@
-NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource ) {
+NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routeParams ) {
 	
 	var service = {};
 
 	// Create a private resource 'orders'
 	var orders = $resource( App.service + 'driverorders/:id_order/:action', { id_order: '@id_order', action: '@action' }, {
 				// actions
+				'get' : { 'method': 'GET', params : { 'action' : 'order', 'id' : 0 } },
 				'accept' : { 'method': 'POST', params : { 'action' : 'delivery-accept' } },
 				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
 				'delivered' : { 'method': 'POST', params : { 'action' : 'delivery-delivered' } }
@@ -43,6 +44,14 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource ) {
 
 	service.delivered = function( id_order, callback ){
 		orders.delivered( { 'id_order': id_order }, function( json ){ callback( json ); } );
+	}
+
+	service.get = function( callback ){
+		var id_order = $routeParams.id;
+		orders.get( { 'id_order': id_order }, function( order ){ 
+			order._date = new Date( order.date );
+			callback( order ); 
+		} );
 	}
 
 	return service;

@@ -96,8 +96,7 @@
 	</div>
 	<div class="snap-drawer snap-drawer-right side-menu" id="side-menu-right">
 		<div class="content-padding">
-			<p>We will soon have a chat feature that goes to support here. Until then, text us at: <br><br><a href="tel:16467831444">(646) 783-1444</a>
-</p>
+			<p>We will soon have a chat feature that goes to support here. Until then, text us at: <br><br><a href="tel:16467831444">(646) 783-1444</a></p>
 		</div>
 		
 	</div>
@@ -182,6 +181,11 @@
 	</div>
 </div>
 
-
 <div id="fb-root"></div>
 
+<!-- Notification -->
+<div class="notification-alert-container zoom-anim-dialog small-container mfp-hide modal" ng-controller="NotificationAlertCtrl">
+	<h1 ng-bind="title" ng-show="title"></h1>
+	<p ng-bind-html-unsafe="message" class="small-message"></p>
+	<button ng-click="closePopup();" class="ok-button">OK</button>
+</div>

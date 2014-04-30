@@ -36,6 +36,15 @@ NGApp.filter( 'nl2br', function() {
 	};
 });
 
+NGApp.filter( 'clearAddress', function(){
+	return function( input ) {
+		if( input != null ){
+			return input.replace(/#/g, '');	
+		}
+		return input;
+	};
+} );
+
 // text format filter
 NGApp.filter( 'nl2cm', function() {
 	return function( input ) {
