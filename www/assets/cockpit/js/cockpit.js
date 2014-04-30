@@ -33,13 +33,50 @@ App.NGinit = function() {
 	}
 };
 
-var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource'] );
+var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource'], function( $httpProvider ) {
+	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+	var param = function(obj) {
+		var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
+			
+		for(name in obj) {
+			value = obj[name];
+				
+			if(value instanceof Array) {
+				for(i=0; i<value.length; ++i) {
+					subValue = value[i];
+					fullSubName = name + '[' + i + ']';
+					innerObj = {};
+					innerObj[fullSubName] = subValue;
+					query += param(innerObj) + '&';
+				}
+			}
+			else if(value instanceof Object) {
+				for(subName in value) {
+					subValue = value[subName];
+					fullSubName = name + '[' + subName + ']';
+					innerObj = {};
+					innerObj[fullSubName] = subValue;
+					query += param(innerObj) + '&';
+				}
+			}
+			else if(value !== undefined && value !== null)
+				query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+		}
+			
+		return query.length ? query.substr(0, query.length - 1) : query;
+	};
+ 
+	// Override $http service's default transformRequest
+	$httpProvider.defaults.transformRequest = [function(data) {
+		return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
+	}];
+});;
 
 NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
 
-NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider, RestaurantsService) {
+NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
 	$routeProvider
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
@@ -88,16 +125,33 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		});
 	});
 
+	/* todo: turn makeBusy and unBusy in to directives */
+	$rootScope.makeBusy = function(){
+		if( !$rootScope.isBusy ){
+			angular.element( 'body' ).addClass( 'loading' );
+			$rootScope.isBusy = true;
+		}
+	}
+
+	$rootScope.unBusy = function(){
+		if( $rootScope.isBusy ){
+			setTimeout( function(){
+				angular.element( 'body' ).removeClass( 'loading' );
+			}, 100 );
+			$rootScope.isBusy = false;
+		}
+	}
+
 	$rootScope.focus = function( selector ){
-		setTimeout(function(){
+		setTimeout( function(){
 			angular.element( selector ).focus();
-		}, 100);
+		}, 100 );
 	}
 
 	$rootScope.blur = function( selector ){
-		setTimeout(function(){
+		setTimeout( function(){
 			angular.element( selector ).blur();
-		}, 100);
+		}, 100 );
 	}
 
 	$rootScope.reload = function() {
@@ -252,44 +306,6 @@ App.track = function() {
 	}
 };
 
-
-/**
- * controls the busy state of the app
- * @sky-loader
- */
-App.busy = {
-	_busy: false,
-	_timer: null,
-	_maxExec: 25000,
-	stage: function() {
-		$('#Stage').height('100%').width('100%');
-		return AdobeEdge.getComposition('EDGE-977700350').getStage();
-	},
-	isBusy: function() {
-		return $('.app-busy').length ? true : false;
-		return App.busy._busy;
-	},
-	makeBusy: function() {
-		if (App.busy._timer) {
-			clearTimeout(App.busy._timer);
-		}
-		App.busy._timer = setTimeout(function() {
-			App.alert('The app timed out processing your order. We can not determine if the order was placed or not. Please check your previous orders. Sorry!');
-			App.busy.unBusy();
-		}, App.busy._maxExec);
-		return $('body').append($('<div class="app-busy"></div>').append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>')));
-		App.busy._busy = true;
-		$('.order-sky-loader').addClass('play');
-		App.busy.stage().play(0);
-	},
-	unBusy: function() {
-		clearTimeout(App.busy._timer);
-		return $('.app-busy').remove();
-		App.busy._busy = false;
-		$('.order-sky-loader').removeClass('play');
-		App.busy.stage().stop();
-	}
-};
 
 App.processConfig = function(json, user) {
 	if (user && !json) {

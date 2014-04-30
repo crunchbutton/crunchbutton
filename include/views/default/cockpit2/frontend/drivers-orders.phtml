@@ -47,11 +47,16 @@
 						</span>
 					</span>
 
-					<div class="restaurant" ng-click="viewOrder">
+					<div class="restaurant" ng-click="showOrder( order.id_order )">
 						{{order.restaurant}}
 					</div>
-					<div class="customer" ng-click="viewOrder">
-						{{order.name}}
+					<div class="customer" ng-click="showOrder( order.id_order )">
+						<div class="customer-name">
+							{{order.name}}
+						</div>
+						<div class="customer-phone">
+							{{order.phone}}
+						</div>
 					</div>
 				</div>
 
