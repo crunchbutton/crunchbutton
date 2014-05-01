@@ -35,10 +35,6 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		}
 	}
 
-	service.goToRestaurants = function(){
-		return service.link( RestaurantsService.permalink );
-	}
-
 	/* the transitions type could be push, fade, pop or none */
 	service.link = function( path, transition ){
 		if( App.isNarrowScreen() || App.transitionForDesktop ){
@@ -46,10 +42,6 @@ NGApp.factory( 'MainNavigationService', function( $http, $location, $rootScope, 
 		}
 		$location.path( path || '/' );
 		App.snap.close();
-	}
-
-	service.signin = function(){
-		service.modal.signinOpen();
 	}
 
 	return service;

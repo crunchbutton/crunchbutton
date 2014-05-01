@@ -5,6 +5,7 @@ $green: #4ecdc4;
 $background: #f1f2f7;
 $textColor: #312f38;
 
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -1146,3 +1147,5 @@ input {
 		text-transform: uppercase;
 	}
 /* --- order end */
+.hide{ display: none; }
+.show{ display: block !important; }

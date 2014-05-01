@@ -93,12 +93,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversShiftsCtrl',
 			templateUrl: 'assets/view/drivers-shifts.html'
 		})
+		.when('/login', {
+			action: 'login',
+			controller: 'LoginCtrl',
+			templateUrl: 'assets/view/login.html'
+		})
 		.otherwise({
 			action: 'home',
 			controller: 'DefaultCtrl',
 			templateUrl: 'assets/view/home.html'
-		})
-	;
+		});
 	// only use html5 enabled location stuff if its not in a phonegap container
 	$locationProvider.html5Mode(!App.isPhoneGap);
 }]);
@@ -110,7 +114,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	App.rootScope = $rootScope;
 	App.location = $location;
 	App.http = $http;
-
 
 	// define global services
 	$rootScope.navigation = MainNavigationService;
@@ -215,7 +218,18 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$rootScope.$apply( 'windowHeight' );
 	});
 
-	AccountService.checkUser();
+	// Litle hack to don't show the templates till angularjs finish running
+	$scope.angularLoaded = true;
+});
+
+// Check user's auth
+/* todo: check user's permission too */
+NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
+	$rootScope.$on( '$routeChangeStart', function ( event, next, current ) {
+		if ( $location.url() != '/login' && !$rootScope.account.isLoggedIn() ) {
+			MainNavigationService.link( '/login' );
+		}
+	});
 });
 
 App.alert = function( txt, title, useNativeAlert ) {

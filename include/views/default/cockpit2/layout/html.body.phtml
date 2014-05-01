@@ -1,191 +1,158 @@
-<div class="snap-drawers static-nav-viewport loggedout-hideable" ng-controller="SideMenuCtrl">
-	<div class="snap-drawer snap-drawer-left side-menu" id="side-menu">
-		<ul>
-			<li ng-click="navigation.link('/drivers/orders')" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
-						<td class="side-menu-label">Orders</a></td>
-					</tr>
-				</table>
-			</li>
-			<li ng-click="navigation.link('/drivers/shifts')" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
-						<td class="side-menu-label">Shifts</a></td>
-					</tr>
-				</table>
-			</li>
-			<? /*
-			<li ng-click="navigation.link('/splash')" ng-class="{'nav-active': (navigation.page == 'home')}">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-dashboard"></i></td>
-						<td class="side-menu-label">Dashboard</a></td>
-					</tr>
-				</table>
-			</li>
-			<li ng-click="navigation.link('/food-delivery')" ng-class="{'nav-active': (navigation.page == 'restaurants')}">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
-						<td class="side-menu-label">Orders</a></td>
-					</tr>
-				</table>
-			</li>
-			<li ng-click="navigation.link('/orders')" ng-class="{'nav-active': (navigation.page == 'orders')}">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
-						<td class="side-menu-label">Restaurants</a></td>
-					</tr>
-				</table>
-			</li>
-			<li ng-click="navigation.link('/location')" ng-class="{'nav-active': (navigation.page == 'location')}">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-group"></i></td>
-						<td class="side-menu-label">Communities</a></td>
-					</tr>
-				</table>
-			</li>
-			<li ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-smile-o"></i></td>
-						<td class="side-menu-label">Customers</a></td>
-					</tr>
-				</table>
-			</li>
-			<li ng-click="navigation.signin()">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-road"></i></td>
-						<td class="side-menu-label">Drivers</a></td>
-					</tr>
-				</table>
-			</li>
-			<li ng-click="signout.signout()">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-bar-chart-o"></i></td>
-						<td class="side-menu-label">Reports</a></td>
-					</tr>
-				</table>
-			</li>
-			<li ng-click="signout.signout()">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-wrench"></i></td>
-						<td class="side-menu-label">Tools</a></td>
-					</tr>
-				</table>
-			</li>
-			*/ ?>
-			<li ng-click="account.logout()">
-				<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
-					<tr>
-						<td class="side-menu-icon"><i class="fa fa-frown-o"></i></td>
-						<td class="side-menu-label">Sign Out</a></td>
-					</tr>
-				</table>
-			</li>
-		</ul>
+<div class="hide" ng-class="{ show: angularLoaded }">
+	<div class="snap-drawers static-nav-viewport loggedout-hideable" ng-controller="SideMenuCtrl">
+		<div class="snap-drawer snap-drawer-left side-menu" id="side-menu">
+			<ul>
+				<li ng-click="navigation.link('/drivers/orders')" ng-class="{'nav-active': (navigation.page == 'drivers-orders')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
+							<td class="side-menu-label">Orders</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-click="navigation.link('/drivers/shifts')" ng-class="{'nav-active': (navigation.page == 'drivers-shifts')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-calendar"></i></td>
+							<td class="side-menu-label">Shifts</a></td>
+						</tr>
+					</table>
+				</li>
+				<? /*
+				<li ng-click="navigation.link('/splash')" ng-class="{'nav-active': (navigation.page == 'home')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-dashboard"></i></td>
+							<td class="side-menu-label">Dashboard</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-click="navigation.link('/food-delivery')" ng-class="{'nav-active': (navigation.page == 'restaurants')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-truck"></i></td>
+							<td class="side-menu-label">Orders</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-click="navigation.link('/orders')" ng-class="{'nav-active': (navigation.page == 'orders')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-cutlery"></i></td>
+							<td class="side-menu-label">Restaurants</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-click="navigation.link('/location')" ng-class="{'nav-active': (navigation.page == 'location')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-group"></i></td>
+							<td class="side-menu-label">Communities</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-click="navigation.link('/help')" ng-class="{'nav-active': (navigation.page == 'help')}">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-smile-o"></i></td>
+							<td class="side-menu-label">Customers</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-click="navigation.signin()">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-road"></i></td>
+							<td class="side-menu-label">Drivers</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-click="signout.signout()">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-bar-chart-o"></i></td>
+							<td class="side-menu-label">Reports</a></td>
+						</tr>
+					</table>
+				</li>
+				<li ng-click="signout.signout()">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-wrench"></i></td>
+							<td class="side-menu-label">Tools</a></td>
+						</tr>
+					</table>
+				</li>
+				*/ ?>
+				<li ng-click="account.logout()">
+					<table cellpadding="0" cellspacing="0" class="side-menu-wrap">
+						<tr>
+							<td class="side-menu-icon"><i class="fa fa-frown-o"></i></td>
+							<td class="side-menu-label">Sign Out</a></td>
+						</tr>
+					</table>
+				</li>
+			</ul>
 
-	</div>
-	<div class="snap-drawer snap-drawer-right side-menu" id="side-menu-right">
-		<div class="content-padding">
-			<p>We will soon have a chat feature that goes to support here. Until then, text us at: <br><br><a href="tel:16467831444">(646) 783-1444</a></p>
 		</div>
-		
+		<div class="snap-drawer snap-drawer-right side-menu" id="side-menu-right">
+			<div class="content-padding">
+				<p>We will soon have a chat feature that goes to support here. Until then, text us at: <br><br><a href="tel:16467831444">(646) 783-1444</a></p>
+			</div>
+			
+		</div>
 	</div>
-</div>
 
-<div class="wrapper static-nav-viewport loggedout-hideable">
-	
-	<div id="snap-content" class="snap-content">
-		<div class="navs fixed" data-position="fixed" ng-controller="MainHeaderCtrl">
-			<div class="nav nav-top">
-				<div class="content">
+	<div class="wrapper static-nav-viewport loggedout-hideable">
+		
+		<div id="snap-content" class="snap-content">
+			<div class="navs fixed" data-position="fixed" ng-controller="MainHeaderCtrl">
+				<div class="nav nav-top">
+					<div class="content">
 
-					<div title="Menu" class="menu side hide-before-init" ng-click="navigation.menu()" ng-hide="hasBack"></div>
-					<div title="Back" class="nav-back hide-before-init" ng-click="back()" ng-show="hasBack"></div>
-					
-					<div class="notifications">
-						<div class="notification notification-orders" ng-click="navigation.link('/drivers/orders')">
-							<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
-							<i class="fa fa-truck"></i>
+						<div title="Menu" class="menu side hide-before-init" ng-click="navigation.menu()" ng-hide="hasBack"></div>
+						<div title="Back" class="nav-back hide-before-init" ng-click="back()" ng-show="hasBack"></div>
+						
+						<div class="notifications">
+							<div class="notification notification-orders" ng-click="navigation.link('/drivers/orders')">
+								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
+								<i class="fa fa-truck"></i>
+							</div>
+							<div class="notification notification-support" ng-click="navigation.menu('right')">
+								<i class="fa fa-comment"></i>
+							</div>
+							<? /*
+							<div class="notification notification-alerts" ng-click="navigation.link('/alerts')">
+								<i class="fa fa-bell"></i>
+							</div>
+							*/ ?>
 						</div>
-						<div class="notification notification-support" ng-click="navigation.menu('right')">
-							<i class="fa fa-comment"></i>
-						</div>
-						<? /*
-						<div class="notification notification-alerts" ng-click="navigation.link('/alerts')">
-							<i class="fa fa-bell"></i>
-						</div>
-						*/ ?>
+
+						<div class="logo">cockpit<span class="dot">.</span><span class="green">la</span></div>
+
 					</div>
-
-					<div class="logo">cockpit<span class="dot">.</span><span class="green">la</span></div>
-					
-
 				</div>
 			</div>
-		</div>
 
-		<div class="snap-content-inner bg" ng-scroll-position>
-			<div class="content" ng-scroll-spy>
-				<div ng-view id="ng-view" ng-class="animationClass"><?=$this->content?></div>
+			<div class="snap-content-inner bg" ng-scroll-position>
+				<div class="content" ng-scroll-spy>
+					<div ng-view id="ng-view" ng-class="animationClass"><?=$this->content?></div>
+				</div>
+
+				<div class="divider"></div>
 			</div>
 
-			<div class="divider"></div>
 		</div>
 
+		<div class="divider"></div>
 	</div>
 
-	<div class="divider"></div>
-</div>
+	<div id="fb-root"></div>
 
-
-<div class="login-wrap" ng-controller="LoginCtrl" ng-class="{'logged-in': account.loggedin}" ng-hide="account.user.id_admin">
-	<div class="login-content hide-before-init">
-		<div class="logo">cockpit<span class="dot">.</span><span class="green">la</span></div>
-
-		<div class="dialog-message dialog-message-error" ng-show="error">
-			Invalid username or password
-		</div>
-	
-		<form ng-submit="login()">
-			<div class="input-wrap">
-				<span class="label">Username:</span>
-				<span class="field"><input type="text" name="username" ng-model="username" autofocus="autofocus"></span>
-			</div>
-			
-			<div class="input-wrap">
-				<span class="label">Password:</span>
-				<span class="field"><input type="password" name="password" ng-model="password"></span>
-			</div>
-			
-			<div class="button-pushable find-restaurants">
-				<button class="button orange">
-					Sign In
-				</button>
-			</div>
-		</form>
-		
-		<div class="info">
-			Cockpit is Crunchbutton's tool of awesomeness. Looking for delivery food? Head over to <a href="http://crunchbutton.com">crunchbutton.com</a>
-		</div>
-
+	<!-- Notification -->
+	<div class="notification-alert-container zoom-anim-dialog small-container mfp-hide modal" ng-controller="NotificationAlertCtrl">
+		<h1 ng-bind="title" ng-show="title"></h1>
+		<p ng-bind-html-unsafe="message" class="small-message"></p>
+		<button ng-click="closePopup();" class="ok-button">OK</button>
 	</div>
-</div>
-
-<div id="fb-root"></div>
-
-<!-- Notification -->
-<div class="notification-alert-container zoom-anim-dialog small-container mfp-hide modal" ng-controller="NotificationAlertCtrl">
-	<h1 ng-bind="title" ng-show="title"></h1>
-	<p ng-bind-html-unsafe="message" class="small-message"></p>
-	<button ng-click="closePopup();" class="ok-button">OK</button>
 </div>

@@ -13,6 +13,10 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 		user: null
 	};
 	
+	service.isLoggedIn = function(){
+		return ( service.user && service.user.id_admin ) ? true : false;
+	}
+
 	service.checkUser = function() {
 		service.user = App.config.user;
 		App.config.user = null;
