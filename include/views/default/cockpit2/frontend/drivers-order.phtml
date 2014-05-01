@@ -5,8 +5,7 @@
 
 	<div class="box-item" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && !order.lastStatus[ 'delivery-status' ].delivered ">
 	
-		<div ng-if="!order.lastStatus[ 'delivery-status' ].accepted">
-	
+		<div ng-if="!order.lastStatus[ 'delivery-status' ].accepted && order.lastStatus['self-reply'] != 'rejected'">
 			<div class="message">
 				Accept this order?
 				<div class="message-small">
