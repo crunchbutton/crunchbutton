@@ -73,7 +73,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 	};
 
 	// Just run if the user is loggedin 
-	if( account.isLoggedIn() ){
+	if( $scope.account.isLoggedIn() ){
 		load();
 	}
 
@@ -87,7 +87,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 		if( $scope.show.all ){
 			return true;	
 		} else {
-			if( order.lastStatus.id_admin == $scope.account.user.id_admin ){
+			if( order.lastStatus.id_admin == $scope.$scope.account.user.id_admin ){
 				return true;
 			}
 		}
@@ -132,7 +132,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 	}
 
 	// Just run if the user is loggedin 
-	if( account.isLoggedIn() ){
+	if( $scope.account.isLoggedIn() ){
 		$scope.list();	
 	}
 } );
@@ -159,7 +159,7 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 	}
 
 	// Just run if the user is loggedin 
-	if( account.isLoggedIn() ){
+	if( $scope.account.isLoggedIn() ){
 		$scope.list();	
 	}
 

@@ -65,7 +65,7 @@ var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource'], function( $httpP
 			
 		return query.length ? query.substr(0, query.length - 1) : query;
 	};
- 
+
 	// Override $http service's default transformRequest
 	$httpProvider.defaults.transformRequest = [function(data) {
 		return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
@@ -191,7 +191,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
 		// Store the actual page
 		MainNavigationService.page = $route.current.action;
-		console.log($route.current.action);
 		App.rootScope.current = MainNavigationService.page;
 		App.track('page', $route.current.action);
 
@@ -220,6 +219,9 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	// Litle hack to don't show the templates till angularjs finish running
 	$scope.angularLoaded = true;
+
+	$rootScope.account.checkUser();
+
 });
 
 // Check user's auth
@@ -228,6 +230,9 @@ NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
 	$rootScope.$on( '$routeChangeStart', function ( event, next, current ) {
 		if ( $location.url() != '/login' && !$rootScope.account.isLoggedIn() ) {
 			MainNavigationService.link( '/login' );
+		}
+		if ( $location.url() == '/login' && $rootScope.account.isLoggedIn() ) {
+			MainNavigationService.link( '/' );	
 		}
 	});
 });
@@ -251,7 +256,6 @@ App.confirm = function(txt, title, fn, buttons) {
 		return confirm(txt);
 	}
 };
-
 
 App.connectionError = function() {
 	App.rootScope.$broadcast( 'connectionError' );
@@ -403,9 +407,7 @@ App.init = function(config) {
 		App._firstPageShowHasHappened = true;
 	}, false );
 
-	// window.addEventListener( 'pagehide', function(){}, false );
-
-	$(window).trigger('nginit');
+	$( window ).trigger( 'nginit' );
 	
 	/*
 	if (!App.isPhoneGap) {
