@@ -87,7 +87,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 		if( $scope.show.all ){
 			return true;	
 		} else {
-			if( order.lastStatus.id_admin == $scope.$scope.account.user.id_admin ){
+			if( order.lastStatus.id_admin == $scope.account.user.id_admin ){
 				return true;
 			}
 		}
