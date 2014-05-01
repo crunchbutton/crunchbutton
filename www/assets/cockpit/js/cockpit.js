@@ -108,7 +108,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, MainNavigationService, AccountService) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService ) {
 
 	// define external pointers
 	App.rootScope = $rootScope;
@@ -202,7 +202,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 		App.scrollTop($rootScope.scrollTop);
 		$rootScope.scrollTop = 0;
-		
 	});
 
 	// Make the window's size available to all scope
@@ -222,7 +221,27 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 
 	$rootScope.account.checkUser();
 
-});
+	var badges = function(){
+		// Just run if the user is loggedin 
+		if( $rootScope.account.isLoggedIn() ){
+
+			DriverOrdersService.newOrdersBadge();
+
+			// run over and over again every 30 secs
+			$timeout( function() { badges() }, 30 * 1000 );
+		}	
+		
+	}
+	// Update the badges
+	badges();
+
+
+	// Event called when the app resumes
+	$rootScope.$on( 'appResume', function(e, data) {
+		badges();
+	} );
+
+} );
 
 // Check user's auth
 /* todo: check user's permission too */

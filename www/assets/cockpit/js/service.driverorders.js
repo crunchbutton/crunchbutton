@@ -6,6 +6,7 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 	var orders = $resource( App.service + 'driverorders/:id_order/:action', { id_order: '@id_order', action: '@action' }, {
 				// actions
 				'get' : { 'method': 'GET', params : { 'action' : 'order', 'id' : 0 } },
+				'count' : { 'method': 'GET', params : { 'action' : 'count' } },
 				'accept' : { 'method': 'POST', params : { 'action' : 'delivery-accept' } },
 				'reject' : { 'method': 'POST', params : { 'action' : 'delivery-reject' } },
 				'pickedup' : { 'method': 'POST', params : { 'action' : 'delivery-pickedup' } },
@@ -16,23 +17,20 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 	service.list = function( callback ){
 		orders.query( {}, function( data ){ 
 			var orders = [];
-			var newDriverOrders = 0;
 			for( var x in data ){
 				var order = data[ x ];
 				if( order && order.date && order.date.date ){
 					order._date = new Date( order.date.date );	
 					orders.push( order );
-					if( order.lastStatus.status == 'new' ) {
-						newDriverOrders++;
-					}
 				}
 			}
-			$rootScope.newDriverOrders = {
-				count: newDriverOrders,
-				time: new Date
-			};
+			service.newOrdersBadge();
 			callback( orders ); 
 		} );
+	}
+
+	service.newOrdersBadge = function( callback ){
+		orders.count( {}, function( json ){ $rootScope.newDriverOrders = { count: json.total, time: new Date }; } );
 	}
 
 	service.accept = function( id_order, callback ){
