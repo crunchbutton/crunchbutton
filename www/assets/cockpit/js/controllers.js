@@ -1,8 +1,5 @@
 NGApp.controller('DefaultCtrl', function ($scope, $http, $location, MainNavigationService, AccountService) {
-	if ( AccountService.user && AccountService.user.id_admin ) {
-		MainNavigationService.link('/drivers/orders');
-	}
-
+	MainNavigationService.link('/drivers/orders');
 });
 
 NGApp.controller('MainHeaderCtrl', function ( $scope) {} );
@@ -11,7 +8,7 @@ NGApp.controller('SideMenuCtrl', function ($scope) {
 	$scope.setupPermissions = function() {}
 });
 
-NGApp.controller('LoginCtrl', function($scope, AccountService) {
+NGApp.controller('LoginCtrl', function($scope, AccountService, MainNavigationService) {
 	$scope.login = function() {
 		if( !$scope.username ){
 			App.alert( 'Please type your username' );
@@ -23,25 +20,26 @@ NGApp.controller('LoginCtrl', function($scope, AccountService) {
 			$scope.focus( '[name="password"]' );
 			return;
 		}
-		AccountService.login($scope.username, $scope.password, function(status) {
-//			$scope.$apply(function() {
-				$scope.error = !status;
-//			})
-		});
+		AccountService.login( $scope.username, $scope.password, function( status ) {
+			if( status ){
+				MainNavigationService.link( '/' );
+			} else {
+				$scope.error = true;
+			}
+		} );
 	}
 });
 
 
 NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
-	
+
+	// private method
 	var load = function(){
 		DriverOrdersService.get( function( json ){
 			$scope.order = json;
 			$scope.unBusy();
 		} );
 	}
-
-
 
 	$scope.accept = function() {
 		$scope.makeBusy();
@@ -74,7 +72,10 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 		DriverOrdersService.reject( $scope.order.id_order, function(){ load();	} );
 	};
 
-	load();
+	// Just run if the user is loggedin 
+	if( account.isLoggedIn() ){
+		load();
+	}
 
 });
 
@@ -130,8 +131,10 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 		MainNavigationService.link( '/drivers/order/' + id_order );
 	}
 
-	$scope.list();
-
+	// Just run if the user is loggedin 
+	if( account.isLoggedIn() ){
+		$scope.list();	
+	}
 } );
 
 NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) {
@@ -155,7 +158,11 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 		} );
 	}
 
-	$scope.list();
+	// Just run if the user is loggedin 
+	if( account.isLoggedIn() ){
+		$scope.list();	
+	}
+
 } );
 
 NGApp.controller( 'NotificationAlertCtrl', function ( $scope, $rootScope  ) {
