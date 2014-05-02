@@ -33,10 +33,13 @@ NGApp.controller('LoginCtrl', function($scope, AccountService, MainNavigationSer
 
 NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 
+	$scope.ready = false;
+
 	// private method
 	var load = function(){
 		DriverOrdersService.get( function( json ){
 			$scope.order = json;
+			$scope.ready = true;
 			$scope.unBusy();
 		} );
 	}
@@ -51,7 +54,6 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 					load();
 					var name = json[ 'delivery-status' ].accepted.name ? ' by ' + json[ 'delivery-status' ].accepted.name : '';
 					App.alert( 'Ops, error!\n It seems this order was already accepted ' + name + '!'  );
-					$scope.list();
 				}
 			}
 		);
@@ -82,6 +84,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, MainNavigationService ) {
 
 	$scope.show = { all : true };
+	$scope.ready = false;
 
 	$scope.filterOrders = function( order ){
 		if( $scope.show.all ){
@@ -98,6 +101,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 		$scope.unBusy();
 		DriverOrdersService.list( function( data ){
 			$scope.driverorders = data;
+			$scope.ready = true;
 		} );
 	}
 
@@ -140,6 +144,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) {
 
 	$scope.show = { all : true };
+	$scope.ready = false;
 
 	$scope.filterShifts = function( shift ){
 		if( $scope.show.all ){
@@ -155,6 +160,7 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 	$scope.list = function(){
 		DriverShiftsService.list( function( data ){
 			$scope.drivershifts = data;
+			$scope.ready = true;
 		} );
 	}
 
@@ -167,9 +173,6 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 
 NGApp.controller( 'NotificationAlertCtrl', function ( $scope, $rootScope  ) {
 	$rootScope.$on('notificationAlert', function(e, title, message) {
-		alert( message );
-		// todo: make it work with modals and stuff
-		return;
 		if ($scope.$$phase) {
 			$scope.title = title;
 			$scope.message = message;

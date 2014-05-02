@@ -1,6 +1,6 @@
 <div class="top-pad"></div>
 
-<div class="content-padding">
+<div class="content-padding" ng-show="ready">
 
 	<div class="box-filter">
 		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
@@ -10,7 +10,7 @@
 
 	<div class="drivers-shifts-list">
 		
-		<div ng-if="drivershifts">
+		<div ng-if="drivershifts.length">
 		
 			<div class="box-content item" ng-repeat="shift in drivershifts | filter:filterShifts">
 
@@ -37,8 +37,8 @@
 
 		</div>
 		
-		<div ng-if="!drivershifts">
-			You currently have no orders to deliver.
+		<div ng-if="!drivershifts.length">
+			<h3>You currently have no shifts.</h3>
 		</div>
 
 	</div>	

@@ -1099,3 +1099,21 @@ strong{ font-weight: bold; }
 
 .hide{ display: none; }
 .show{ display: block !important; }
+
+.dialog {
+	background:#FFF;
+	width: 29em;
+	margin: 4em auto;
+	position:relative;
+	padding: 2em;
+	line-height:2em;
+}
+.dialog p{
+	margin: 2em 0;
+}
+.mfp-bg {
+	background-color: #1c0f0e !important;
+}
+.mfp-close {
+	display: none !important;
+}

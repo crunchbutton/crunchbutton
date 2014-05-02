@@ -437,6 +437,7 @@ App.init = function(config) {
 		});
 	}
 	*/
+
 };
 
 /**
@@ -492,7 +493,6 @@ App.dialog = {
 				},
 				close: function() {
 					$('.wrapper').removeClass('dialog-open-effect-a dialog-open-effect-b dialog-open-effect-c dialog-open-effect-d');
-					App.applyIOSPositionFix();
 					App.rootScope.$broadcast( 'modalClosed' );
 				}
 			}
