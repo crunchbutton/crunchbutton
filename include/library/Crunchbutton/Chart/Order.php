@@ -129,7 +129,9 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 								INNER JOIN user u ON u.id_user = o.id_user
 								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
 								WHERE 
-									o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
+									o.date >= '{$this->monthFrom}-01' 
+									AND 
+									DATE_FORMAT( o.date ,'%Y-%m') <= '{$this->monthTo}'
 									{$this->queryExcludeUsers}
 								GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
