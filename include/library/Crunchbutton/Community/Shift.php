@@ -500,7 +500,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						try {
 							// Log
 							Log::debug( [ 'action' => 'community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							// $twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
 						} catch (Exception $e) {
 							// Log
 							Log::debug( [ 'action' => 'ERROR: community without shift warning', 'admin' => $supportName, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
@@ -529,7 +529,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 							$log = 'Sending sms to: ' . $supportName . ' - ' . $supportPhone . ': ' . $msg;
 							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 							echo $log."\n";
-							// $twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
+							$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'.$num, $msg );
 						} catch (Exception $e) {
 							// Log
 							$log = 'Error Sending sms to: ' . $supportName . ' - ' . $supportPhone . ': ' . $msg;
@@ -562,7 +562,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						try {
 							// Log
 							Log::debug( [ 'action' => 'sending sms', 'id_admin' => $id_admin, 'name' => $name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-schedule' ] );
-							// $twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
+							$twilio->account->sms_messages->create( c::config()->twilio->{ $env }->outgoingTextCustomer, '+1'.$num, $msg );
 							$log = 'Sending sms to: ' . $name . ' - ' . $num . ': ' . $msg;
 							Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 							echo $log."\n";
