@@ -1,6 +1,6 @@
 <div class="top-pad"></div>
 
-<div class="content-padding">
+<div class="content-padding" ng-show="ready">
 
 	<div class="dialog-message dialog-message-error">
 		<u>In order to receive payment</u> for orders that you deliver, you <b>MUST</b> confirm all orders that you've delivered. 
@@ -18,7 +18,7 @@
 
 	<div class="drivers-order-list">
 		
-		<div ng-if="driverorders">
+		<div ng-if="driverorders.length">
 		
 			<div class="box-content item" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.lastStatus.status">
 
@@ -65,7 +65,7 @@
 
 		</div>
 		
-		<div ng-if="!driverorders">
+		<div ng-if="!driverorders.length">
 			<h3>You currently have no orders to deliver.</h3>
 		</div>
 

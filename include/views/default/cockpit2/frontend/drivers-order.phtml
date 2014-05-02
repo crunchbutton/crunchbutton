@@ -1,7 +1,7 @@
 <div class="top-pad"></div>
 
 <!-- actions -->
-<div class="control">
+<div class="control" ng-show="ready">
 
 	<div class="box-content" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && !order.lastStatus[ 'delivery-status' ].delivered ">
 	
