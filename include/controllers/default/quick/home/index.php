@@ -79,7 +79,7 @@ class Controller_home extends Crunchbutton_Controller_Account {
 	}
 	
 	public function getOrdersList( $all = false ){
-		$hours = 12;
+		$hours = ( $_GET[ 'hours' ] ) ? $_GET[ 'hours' ] : 12;
 		$orders = Order::deliveryOrders( $hours );
 
 		$justMineOrders = !$all;
