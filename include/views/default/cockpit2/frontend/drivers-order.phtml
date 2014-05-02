@@ -3,7 +3,7 @@
 <!-- actions -->
 <div class="control">
 
-	<div class="box-item" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && !order.lastStatus[ 'delivery-status' ].delivered ">
+	<div class="box-content" ng-if="( !order.lastStatus[ 'delivery-status' ].accepted || order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin ) && !order.lastStatus[ 'delivery-status' ].delivered ">
 	
 		<div ng-if="!order.lastStatus[ 'delivery-status' ].accepted && order.lastStatus['self-reply'] != 'rejected'">
 			<div class="message">
@@ -13,8 +13,8 @@
 				</div>
 			</div>
 			<div class="buttons">
-				<button ng-click="accept()" class="button button-yes">Yes</button>
-				<button ng-click="reject()" class="button button-no">No</button>
+				<button ng-click="accept()" class="button green">Yes</button>
+				<button ng-click="reject()" class="button orange">No</button>
 			</div>
 			<div class="divider"></div>	
 		</div>
@@ -22,7 +22,7 @@
 		<div ng-if="order.lastStatus['self-reply'] == 'rejected'">
 			<div class="message">You rejected. </div>
 			<div class="buttons">
-				<button ng-click="accept()" class="button button-yes">Accept</button>
+				<button ng-click="accept()" class="button green">Accept</button>
 			</div>
 			<div class="divider"></div>	
 		</div>
@@ -30,8 +30,8 @@
 		<div ng-if="order.lastStatus[ 'delivery-status' ].accepted.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].pickedup">
 			<div class="message">You accepted.</div>
 			<div class="buttons">
-				<button ng-click="pickedup()" class="button button-yes">Picked up</button>
-				<button ng-click="reject()" class="button button-no">Cancel</button>
+				<button ng-click="pickedup()" class="button green">Picked up</button>
+				<button ng-click="reject()" class="button orange">Cancel</button>
 			</div>
 			<div class="divider"></div>	
 		</div>
@@ -39,7 +39,7 @@
 		<div ng-if="order.lastStatus[ 'delivery-status' ].pickedup.id_admin == account.user.id_admin && !order.lastStatus[ 'delivery-status' ].delivered">
 			<div class="message">You picked up.</div>
 			<div class="buttons" ng-click="delivered()">
-				<button class="button button-yes">Delivered</button>
+				<button class="button green">Delivered</button>
 			</div>
 			<div class="divider"></div>	
 		</div>
@@ -60,7 +60,7 @@
 </div>
 <!-- /actions -->
 
-<div class="content-padding drivers-order box-item">
+<div class="content-padding box-content">
 	<div class="content">
 		<div class="wrap">
 			<div class="status"></div>
