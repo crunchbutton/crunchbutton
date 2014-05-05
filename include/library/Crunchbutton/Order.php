@@ -36,6 +36,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->phone    = $params['phone'];
 		$this->name     = $params['name'];
 		$this->notes    = $params['notes'];
+		$this->local_gid    = $params['local_gid'];
 
 		// Log the order - process started
 		Log::debug([
@@ -594,6 +595,11 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public static function uuid($uuid) {
 		return self::q('select * from `order` where uuid="'.$uuid.'"');
+	}
+
+	// return an order based on its local_gid - see #3086
+	public static function gid( $gid ) {
+		return self::q( 'SELECT * FROM `order` WHERE local_gid="'.$gid.'"' );
 	}
 
 	/**

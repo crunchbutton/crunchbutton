@@ -981,6 +981,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
  */
 NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, $filter, AccountService, AccountModalService, OrderViewService, ReferralService ) {
 
+	// Force unbusy
+	App.busy.unBusy();
+
 	if( !AccountService.isLogged() ){
 		$location.path( '/' );
 		return;
