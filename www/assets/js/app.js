@@ -611,14 +611,24 @@ App.busy = {
 		return $('.app-busy').length ? true : false;
 		return App.busy._busy;
 	},
-	makeBusy: function() {
+	makeBusy: function( gid ) {
 		if (App.busy._timer) {
 			clearTimeout(App.busy._timer);
 		}
 		App.busy._timer = setTimeout(function() {
-			App.alert('The app timed out processing your order. We can not determine if the order was placed or not. Please check your previous orders. Sorry!');
-			App.busy.unBusy();
-		}, App.busy._maxExec);
+			var errorMessage = function(){
+				App.alert('The app timed out processing your order. We can not determine if the order was placed or not. Please check your previous orders. Sorry!');
+				App.busy.unBusy();
+			};
+			if( gid ){
+				App.request( App.service + 'order/gid/' + gid, 
+					function( json ){
+						if( json.error ){
+							errorMessage();
+						}
+					}, function(){ errorMessage(); } );
+			}
+		}, App.busy._maxExec );
 		return $('body').append($('<div class="app-busy"></div>').append($('<div class="app-busy-loader"><div class="app-busy-loader-icon"></div></div>')));
 		App.busy._busy = true;
 		$('.order-sky-loader').addClass('play');

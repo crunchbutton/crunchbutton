@@ -1,0 +1,1 @@
+ALTER TABLE  `order` ADD  `local_gid` VARCHAR( 30 ) DEFAULT NULL;

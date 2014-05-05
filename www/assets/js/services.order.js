@@ -408,7 +408,10 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			return;
 		}
 
-		App.busy.makeBusy();
+		// see #3086
+		service.local_gid = App.guid();
+
+		App.busy.makeBusy( service.local_gid );
 
 		if( service.form.address && service.form.address != '' ){
 			service.form.address = service.location.ordinalReplace( service.form.address );	
@@ -425,7 +428,8 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 			make_default: service.form.make_default,
 			notes: service.form.notes,
 			lat: service.location.position.pos().lat(),
-			lon: service.location.position.pos().lon()
+			lon: service.location.position.pos().lon(),
+			local_gid : service.local_gid
 		};
 
 		if (order.pay_type == 'card') {
@@ -651,13 +655,13 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 			// Clean the phone string
 			order.phone = order.phone.replace(/-/g, '');
-	
+
 			var url = App.service + 'order';
 	
 			$http( {
 				method: 'POST',
 				url: url,
-				data: $.param( order),
+				data: $.param( order ),
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 				} ).success( function( json ) {
 					try {
@@ -770,7 +774,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 		
 	} // end service.processOrder
-
 
 	service.tipChanged = function () {
 		service._tipHasChanged = true;

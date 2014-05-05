@@ -21,6 +21,14 @@ if (!typeof(App) == 'undefined') {
 	App = {};
 }
 
+
+App.guid = function(){
+	function s4() {
+		return Math.floor( ( 1 + Math.random() ) * 0x10000 ).toString( 16 ).substring( 1 );
+	}
+	return ( new Date() ).getTime() + s4() + s4();
+}
+
 App.capitalize = function(word) {
 	return word.charAt(0).toUpperCase() + word.slice(1);
 };
