@@ -260,6 +260,23 @@ App.cleanInput = function(text) {
 	return text
 };
 
+App.isVersionCompatible = function( required, installed ) {
+	required = required.toString().split( '.' )
+	installed = installed.toString().split( '.' );
+	var length = Math.max( required.length, installed.length );
+	var comparator = 0;
+	for( var i = 0; i < length && !comparator; i++ ) {
+		var part1 = parseInt( required[ i ], 10 ) || 0;
+		var part2 = parseInt( installed[ i ], 10 ) || 0;
+		if( part1 < part2 ){
+			comparator = 1;
+		}
+		if(part1 > part2){
+			comparator = -1;
+		}
+	}
+	return ( comparator >= 0 );
+}
 
 App.cleanBad = function(s) {
 	s = s.replace(/\u2018|\u2019|\u201A|\uFFFD/g, "'");
