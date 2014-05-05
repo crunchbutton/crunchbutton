@@ -4,6 +4,7 @@ $navLinkColor: #aeb2b7;
 $green: #4ecdc4;
 $background: #f1f2f7;
 $textColor: #312f38;
+$orange: #df4a32;
 
 
 html, body, div, span, applet, object, iframe,
@@ -763,13 +764,16 @@ input {
 	margin: 0 0 1em 0;
 }
 	.list-filter .button{
-		display: table;
 		float: left;
-		width: 100px;
+		width: 10em;
 		margin-right: 1em;
+		border: 2px solid transparent;
+		font-size: 1.2em;
 	}
-	.list-filter .button.inactive{
-		opacity: 0.5;
+	.button.orange.inactive{
+		color: $orange;
+		border: 2px solid $orange;
+		background: transparent;
 	}
 	.loader-wrap {
 		position: fixed;
@@ -1065,30 +1069,14 @@ input {
 		margin-top: 2em;
 	}
 
-	.button {
-		padding: .3em 1em .3em 1em;
-		margin: .2em 0 .2em .6em;
-		color: #fff;
-		cursor: pointer;
-		font-size: 1.4em;
-		font-weight: bold;
-		border: 1px solid rgba(0,0,0,.2);
-		box-shadow: 0px 0px 3px rgba(0,0,0,.3);
-		text-shadow: 1px 1px 0 rgba(0,0,0,.4);
-	}
-	
-	.button:active {
-		box-shadow: 0px 0px 1px rgba(0,0,0,.3);
-	}
+
 	
 	.button-yes {
 		background: #7bca72;
-		border-radius: 4px;
 	}
 	
 	.button-no {
 		background: #dc534b;
-		border-radius: 4px;
 	}
 
 	.loader-wrap {
