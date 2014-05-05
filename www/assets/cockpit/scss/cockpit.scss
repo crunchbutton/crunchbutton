@@ -756,7 +756,9 @@ input {
 		font-size: 1.2em;
 	}
 	.box-filter .button.inactive{
-		opacity: 0.4;
+		border: 2px solid $orange;
+		color: $orange;
+		background: transparent;
 	}
 
 /* todo:organize it --- order start  */
