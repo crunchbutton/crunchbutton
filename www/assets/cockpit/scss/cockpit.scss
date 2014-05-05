@@ -4,6 +4,7 @@ $navLinkColor: #aeb2b7;
 $green: #4ecdc4;
 $background: #f1f2f7;
 $textColor: #312f38;
+$orange: #df4a32;
 
 
 html, body, div, span, applet, object, iframe,
@@ -751,9 +752,13 @@ input {
 		float: left;
 		width: 8em;
 		margin-right: 1em;
+		border: 2px solid transparent;
+		font-size: 1.2em;
 	}
 	.box-filter .button.inactive{
-		opacity: 0.4;
+		border: 2px solid $orange;
+		color: $orange;
+		background: transparent;
 	}
 
 /* todo:organize it --- order start  */
