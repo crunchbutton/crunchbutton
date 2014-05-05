@@ -1,6 +1,7 @@
 <div class="top-pad"></div>
 
-<div class="content-padding">
+<div class="content-padding" ng-show="ready">
+
 	<div class="dialog-message dialog-message-error">
 		<u>In order to receive payment</u> for orders that you deliver, you <b>MUST</b> confirm all orders that you've delivered. 
 		Make sure your orders are confirmed and delivered!
@@ -9,7 +10,7 @@
 	<? /* @todo: make this a diff date. write date diff in js */ ?>
 	<div class="last-updated">Last Updated: <span class="last-updated-time">{{newDriverOrders.time.getTime() | date: 'hh:mm a'}}</span></div>	
 
-	<div class="list-filter">
+	<div class="box-filter">
 		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
 		<button class="button orange" ng-class="{ 'inactive' : show.all }" ng-click="show.all = false">Mine</button>
 		<div class="divider"></div>
@@ -17,55 +18,55 @@
 
 	<div class="drivers-order-list">
 		
-		<div ng-if="driverorders">
+		<div ng-if="driverorders.length">
 		
-			<div class="list-box item" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.lastStatus.status">
+			<div class="box-content item" ng-repeat="order in driverorders | filter:filterOrders" ng-class="order.lastStatus.status">
 
 				<!-- action -->
-				<div class="action">
+				<div class="column-action">
 					<button class="button green button-pushable" ng-click="accept(order.id_order)" ng-if="order.lastStatus.status == 'new' || !order.lastStatus.status" > Accept </button>
 					<button class="button orange button-pushable" ng-click="pickedup(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'accepted'"> Picked up </button>
 					<button class="button lightorange button-pushable" ng-click="delivered(order.id_order)" ng-if="order.lastStatus.id_admin == account.user.id_admin && order.lastStatus.status == 'pickedup' "> Delivered </button>
 				</div>
 
 				<!-- date -->
-				<div class="date">
-					<div class="day">{{order._date | date:'MM/dd'}}</div>
-					<div class="hour">{{order._date | date:'hh:mm'}}</div>
-					<div class="ampm">{{order._date | date:'a'}}</div>
+				<div class="column-date">
+					<h3 class="day">{{order._date | date:'MM/dd'}}</h3>
+					<h1 class="hour">{{order._date | date:'hh:mm'}}</h1>
+					<h6 class="ampm">{{order._date | date:'a'}}</h6>
 				</div>
 
 				<!-- info -->
-				<div class="info">
+				<div class="column-info">
 
-					<span class="status" ng-if="order.lastStatus.name">
+					<h6 ng-if="order.lastStatus.name">
 						<span ng-switch="order.lastStatus.status">
 							<span ng-switch-when="delivered">Delivered</span>
 							<span ng-switch-when="pickedup">Picked up</span>
 							<span ng-switch-when="accepted">Accepted</span>
 							<span> by {{order.lastStatus.name}}</span>
 						</span>
-					</span>
+					</h6>
 
-					<div class="restaurant" ng-click="showOrder( order.id_order )">
-						{{order.restaurant}}
-					</div>
-					<div class="customer" ng-click="showOrder( order.id_order )">
-						<div class="customer-name">
-							{{order.name}}
-						</div>
-						<div class="customer-phone">
-							{{order.phone}}
-						</div>
-					</div>
+					<h2 class="restaurant pointer" ng-click="showOrder( order.id_order )">
+						<i class="fa fa-cutlery"></i> {{order.restaurant}}
+					</h2>
+
+					<h4 class="customer pointer" ng-click="showOrder( order.id_order )">
+						<i class="fa fa-user"></i>
+						<strong> {{order.name}} </strong> {{order.phone | formatPhone}}
+					</h4>
+
 				</div>
 
 				<div class="divider"></div>
+
 			</div>
+
 		</div>
 		
-		<div ng-if="!driverorders">
-			You currently have no orders to deliver.
+		<div ng-if="!driverorders.length">
+			<h3>You currently have no orders to deliver.</h3>
 		</div>
 
 	</div>	

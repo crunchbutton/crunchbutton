@@ -1,8 +1,8 @@
 <div class="top-pad"></div>
 
-<div class="content-padding">
-	
-	<div class="list-filter">
+<div class="content-padding" ng-show="ready">
+
+	<div class="box-filter">
 		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
 		<button class="button orange" ng-class="{ 'inactive' : show.all }" ng-click="show.all = false">Mine</button>
 		<div class="divider"></div>
@@ -10,34 +10,35 @@
 
 	<div class="drivers-shifts-list">
 		
-		<div ng-if="drivershifts">
+		<div ng-if="drivershifts.length">
 		
-			<div class="list-box item" ng-repeat="shift in drivershifts | filter:filterShifts">
+			<div class="box-content item" ng-repeat="shift in drivershifts | filter:filterShifts">
 
-				<div class="day">{{shift.date.day}}</div>
-				<div class="start_end">{{shift.date.start_end}}</div>
-				<div class="timezone">{{shift.date.timezone}}</div>
-				<div class="community">{{shift.community}}</div>
+				<h4 class="community">{{shift.community}}</h4>
+				<h2 class="day">{{shift.date.day}}</h2>
+				<h1 class="start_end">{{shift.date.start_end}}</h1>
+				<h4 class="timezone">{{shift.date.timezone}}</h4>
 				
 				<div nf-if="shift.drivers">
-					<div class="drivers">
-						<div class="driver" ng-repeat="driver in shift.drivers">
-							<div class="name">{{driver.name}}</div>
-							<div class="phone">{{driver.phone}}</div>
-						</div>
-						
-					</div>
+					<ul class="drivers">
+						<li class="driver" ng-repeat="driver in shift.drivers">
+							<strong>{{driver.name}}</strong> <span class="phone">{{driver.phone | formatPhone}}</span>
+						</li>
+					</ul>
 				</div>
+
 				<div ng-if="!shift.drivers">
-					No drivers
+					<h3>No drivers</h3>
 				</div>
 
 				<div class="divider"></div>
+
 			</div>
+
 		</div>
 		
-		<div ng-if="!drivershifts">
-			You currently have no orders to deliver.
+		<div ng-if="!drivershifts.length">
+			<h3>You currently have no shifts.</h3>
 		</div>
 
 	</div>	
