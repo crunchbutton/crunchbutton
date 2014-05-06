@@ -3579,17 +3579,6 @@ select {
 }
 
 /* community-usc image */
-.community-usc .community-image {
-	background-image:url('http://dev.crunchr.co/assets/images/community/usc.svg' );
-	background-size: 100%;
-	display: block;
-	background-repeat:no-repeat;
-	background-position: center top;
-	height: 8.1em;
-	width: 30em;
-}
-
-/* community-usc image */
 .community-unc .community-image{
 	background-image:url('http://dev.crunchr.co/assets/images/community/unc.svg' );
 	background-size: 100%;
