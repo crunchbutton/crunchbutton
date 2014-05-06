@@ -13,7 +13,7 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			exit;
 
 		} else {
-			if (get_class($order) != 'Crunchbutton_Order') {
+			if (get_class($order) != 'Cockpit_Order') {
 				$order = $order->get(0);
 			}
 		}
