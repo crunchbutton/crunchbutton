@@ -589,7 +589,8 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function debitFromUserCredit( $id_user ){
 		if( $this->pay_type == 'card' ){
-			Crunchbutton_Credit::debitFromUserCredit( $this->final_price, $id_user, $this->id_restaurant, $this->id_order );
+			$final_price = $this->final_price_plus_delivery_markup;
+			Crunchbutton_Credit::debitFromUserCredit( $final_price, $id_user, $this->id_restaurant, $this->id_order );
 		}
 	}
 
