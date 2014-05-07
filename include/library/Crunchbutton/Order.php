@@ -930,7 +930,9 @@ class Crunchbutton_Order extends Cana_Table {
 				$n->send( $order );
 			}
 		}
-		$this->notifyDrivers();
+		if( intval( $order->restaurant()->delivery_service ) == 1 ){
+			$this->notifyDrivers();	
+		}
 	}
 
 	public function notifyDrivers(){
