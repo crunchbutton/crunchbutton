@@ -127,7 +127,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								WHERE 
 									o.date >= '{$this->monthFrom}-01' 
 									AND 
@@ -149,12 +150,14 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								WHERE 
 									o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 									{$this->queryExcludeUsers}
 									AND c.id_community = {$community}
 								GROUP BY DATE_FORMAT(o.date ,'%Y-%m') HAVING Month BETWEEN '{$this->monthFrom}' AND '{$this->monthTo}'";
+
 		$parsedData = $this->parseDataMonthSimple( $query, $this->description );
 		if( $render ){
 			return array( 'data' => $parsedData, 'unit' => $this->unit, 'interval' => 'month' );
@@ -168,7 +171,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											 COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								WHERE 
 									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
 									{$this->queryExcludeUsers}
@@ -190,7 +194,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											 COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								WHERE 
 									YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
 									{$this->queryExcludeUsers}
@@ -211,7 +216,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											 COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								WHERE 
 									1 = 1
 									{$this->queryExcludeUsers}
@@ -232,7 +238,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 											 COUNT(*) AS Total
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								WHERE 
 									1 = 1
 									{$this->queryExcludeUsers}
@@ -325,7 +332,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										WHERE 
 											1 = 1
 											{$cohort->toQuery()}
@@ -339,7 +347,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										WHERE 
 											1 = 1
 											{$this->queryExcludeUsers}
@@ -361,7 +370,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										WHERE 
 											1 = 1
 											{$this->queryExcludeUsers}
@@ -394,7 +404,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										WHERE 
 											o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 											{$this->queryExcludeUsers}
@@ -408,7 +419,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										WHERE 
 											o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 											{$this->queryExcludeUsers}
@@ -429,7 +441,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										WHERE 
 											o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 											{$this->queryExcludeUsers}
@@ -459,7 +472,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										WHERE 
 											YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
 											{$this->queryExcludeUsers}
@@ -474,7 +488,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										WHERE 
 											YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
 											{$this->queryExcludeUsers}
@@ -496,7 +511,8 @@ class Crunchbutton_Chart_Order extends Crunchbutton_Chart {
 													 COUNT(*) AS Total
 										FROM `order` o
 										INNER JOIN user u ON u.id_user = o.id_user
-										LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+										LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+										LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 										WHERE 
 											YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
 											{$this->queryExcludeUsers}
@@ -802,7 +818,8 @@ public function byDayPerRestaurant( $render = false ){
 										 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+							LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE o.date >= '{$this->dayFrom}' AND o.date <= '{$this->dayTo}'
 								{$this->queryExcludeUsers}
 							GROUP BY Day
@@ -840,7 +857,8 @@ public function byDayPerRestaurant( $render = false ){
 										 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total
 							FROM `order` o
 							INNER JOIN user u ON u.id_user = o.id_user
-							LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+							LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+							LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 							WHERE o.date >= '{$this->monthFrom}-01' AND o.date <= LAST_DAY( STR_TO_DATE( '{$this->monthTo}', '%Y-%m' ) )
 								{$this->queryExcludeUsers}
 							GROUP BY Month
@@ -878,7 +896,8 @@ public function byDayPerRestaurant( $render = false ){
 								 CAST(COUNT(*) / COUNT(DISTINCT((u.phone))) AS DECIMAL(14, 2)) Total
 					FROM `order` o
 					INNER JOIN user u ON u.id_user = o.id_user
-					LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+					LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+					LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 					WHERE YEARWEEK(o.date) >= {$this->weekFrom} AND YEARWEEK(o.date) <= {$this->weekTo} 
 						{$this->queryExcludeUsers}
 					GROUP BY YEARWEEK(date)
@@ -1905,7 +1924,8 @@ public function byDayPerRestaurant( $render = false ){
 										 u.phone AS 'Phone'
 								FROM `order` o
 								INNER JOIN user u ON u.id_user = o.id_user
-								LEFT JOIN community c ON o.id_community = c.id_community {$this->queryExcludeCommunties}
+								LEFT JOIN restaurant_community rc ON o.id_restaurant = rc.id_restaurant 
+								LEFT JOIN community c ON rc.id_community = c.id_community {$this->queryExcludeCommunties}
 								WHERE YEARWEEK(o.date) = {$week} 
 									{$this->queryExcludeUsers}";
 			$union = ' UNION ';
