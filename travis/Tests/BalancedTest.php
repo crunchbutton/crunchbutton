@@ -68,7 +68,7 @@ class BalancedTest extends PHPUnit_Framework_TestCase {
 	public function testChargeOldCard() {
 		$paymentType = $this->user->payment_type();
 		$charge = new Charge_Balanced([
-			'customer_id' => $this->user->balanced_id
+			'customer_id' => $this->user->balanced_id,
 			'card_id' => $paymentType->balanced_id
 		]);
 		
