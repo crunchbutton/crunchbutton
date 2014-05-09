@@ -20,8 +20,8 @@ class BalancedTest extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function setUp() {
-		$this->restaurant = Restaurant::q('select * from restaurant where name="UNIT TEST RESTAURANT" limit 1')->get(0);
-		$this->user = User::q('select * from restaurant where name="UNIT TEST" limit 1')->get(0);
+		$this->restaurant = Restaurant::q('select * from restaurant where name="UNIT TEST RESTAURANT" order by id_restaurant desc limit 1')->get(0);
+		$this->user = User::q('select * from `user` where name="UNIT TEST" order by id_user desc limit 1')->get(0);
 	}
 
 	public function testChargeNewCard() {
@@ -54,16 +54,26 @@ class BalancedTest extends PHPUnit_Framework_TestCase {
 			'user' => $this->user,
 			'restaurant' => $this->restaurant
 		]);
-		
+
 		if ($r['status']) {
-			$this->paymentType = (new User_Payment_Type([
+			(new User_Payment_Type([
 				'id_user' => $this->user->id_user,
-				'balanced_id' => $card->id,
+				'balanced_id' => $card['id'],
 				'card' => '************1111',
-				'card_type' => $card->brand,
-				'card_exp_year' => $card->expiration_month,
-				'card_exp_month' => $card->expiration_year,
-				'date' => date('Y-m-d H:i:s')
+				'card_type' => $card['card_type'],
+				'card_exp_year' => $card['year'],
+				'card_exp_month' => $card['month'],
+				'date' => date('Y-m-d H:i:s'),
+				'active' => 1
+			]))->save();
+			
+			(new Order([
+				'name' => $this->user->name,
+				'address' => '123 UNIT TEST',
+				'phone' => '234-567-8901',
+				'txn' => $r['txn'],
+				'id_user' => $this->user->id_user,
+				'restaurant' => $this->restaurant->id_restaurant
 			]))->save();
 		}
 		
@@ -97,7 +107,15 @@ class BalancedTest extends PHPUnit_Framework_TestCase {
 	
 	
 	public function testRefund() {
+		$order = Order::q('select * from `order` where id_user="'.$this->user->id_user.'" order by date desc limit 1')->get(0);
+
+		if (!$order->id_order) {
+			$this->assertTrue('testChargeNewCard is required and has failed most likly.');
+			return;
+		}
 		
+		$res = $order->refund();
+		$this->assertTrue($res);
 	}
 	
 	public function testDeposit() {

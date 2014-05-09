@@ -1893,7 +1893,14 @@ class Crunchbutton_Order extends Cana_Table {
 								
 								// cancel the hold
 								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
-								$hold->void();
+								$res = $hold->void();
+								if (!$res) {
+									Log::debug([
+										'order' => $this->id_order,
+										'action' => 'refund',
+										'status' => 'failed to void hold'
+									]);
+								}
 								
 							} catch (Exception $e) {
 								print_r($e);
@@ -1913,6 +1920,7 @@ class Crunchbutton_Order extends Cana_Table {
 			$this->save();
 			return true;
 		}
+		return false;
 	}
 
 	public function getSupport() {
