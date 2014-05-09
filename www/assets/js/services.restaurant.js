@@ -288,14 +288,19 @@ NGApp.factory( 'CommunityService', function( $http ){
 //RestaurantService Service
 NGApp.factory( 'RestaurantService', function ($http, $routeParams, $rootScope, CommunityService ) {
 	
-	var service = { basicInfo : null, loadedList: {} };
+	var service = { basicInfo : null, loadedList: {}, initied : {} };
 
 	service.alreadyLoaded = function(){
 		return ( service.loadedList[ $routeParams.id ] ? true : false );
 	}
 
 	service.init = function(){
+		if( service.initied[ $routeParams.id ] ){
+			return;
+		}
+		service.initied[ $routeParams.id ] = true;
 		App.cache( 'Restaurant', $routeParams.id, function () {
+			service.initied[ $routeParams.id ] = false;
 			var restaurant = this;
 			service.loadedList[ $routeParams.id ] = true;
 			var community = CommunityService.getById( restaurant.id_community );

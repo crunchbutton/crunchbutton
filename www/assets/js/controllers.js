@@ -222,7 +222,10 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		checkDateTime();
 	});
 
+	$scope.activeCssStyle = App.activeButtonsEnable;
+
 	$scope.display = function($event){
+
 		if ( $scope.loadingRestaurant ) {
 			return;
 		}
@@ -771,6 +774,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		}, true);
 		GiftCardService.notes_field.lastValidation = false;
 		$scope.checkGiftCard();
+		$rootScope.$safeApply();
 	});
 
 	// Alias to CartService 'public' methods
@@ -778,6 +782,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.order.cart.add = function( item ){		
 		order.cart.add( item );
 		$scope.getFoodButton();
+		$rootScope.$broadcast( 'itemAdded', true );
 		return;
 	}
 	$scope.order.cart.remove = function( item ){
@@ -815,6 +820,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		$scope.giftcard.hasGiftCards = giftcard.notes_field.hasGiftCards;
 		$scope.giftcard.justOneGiftCardError = giftcard.notes_field.justOneGiftCardError;
 		$scope.giftcard.hasValue = ( parseFloat( giftcard.notes_field.value ) > 0 );
+		$scope.$safeApply();
 	});
 
 	$scope.checkGiftCard = function(){
@@ -871,7 +877,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		
 
 		var process = function(){
-
 			order.init();
 
 			// Update some gift cards variables
@@ -915,6 +920,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 			// see #2799
 			$scope.$on( 'UserRestaurantInfoLoaded', function( e, data ) {
+				UserRestaurantInfoLoaded = true;
 				validateGiftCard = true;
 				// process credit
 				credit.processCredit( parseFloat( data.credit ) );	
@@ -926,7 +932,6 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 				OrderService.account.checkPresetUpdate( id_preset, $scope.restaurant.id_restaurant, 
 					// will be called if the preset was reloaded
 					function(){
-						console.debug( 'reloaded' );
 						// reset cart
 						order.resetCart();
 						// Process again
@@ -934,6 +939,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 					}
 				);
 			} );
+
+			var UserRestaurantInfoLoaded = false;
 
 			// see #2799
 			order.loadUserRestaurantInfo( function( json ){ $rootScope.$broadcast( 'UserRestaurantInfoLoaded', json ); } );
@@ -1193,14 +1200,23 @@ NGApp.controller( 'GiftCardCtrl', function ( $scope, $http, $rootScope, GiftCard
 	});
 });
 
-NGApp.controller( 'MainHeaderCtrl', function ( $scope, $rootScope, MainNavigationService, OrderService ) {
+NGApp.controller( 'MainHeaderCtrl', function ( $scope, $rootScope, $timeout, MainNavigationService, OrderService ) {
 	$scope.navigation = MainNavigationService;
 	$scope.order = OrderService;
+	$scope.cart = { blink : false };
 
 	$scope.$watch('navigation.page', function( newValue, oldValue, scope ) {
 		$scope.navigation.control();
 		$scope.navigation.getFood( false );
 	});
+
+	$scope.$on( 'itemAdded', function(e, data) {
+		$scope.cart.blink = true;
+		$timeout( function(){
+			$scope.cart.blink = false;
+		}, 1000 );
+	});
+
 });
 
 NGApp.controller( 'BottomCtrl', function ( $scope, MainNavigationService, OrderService ) {
