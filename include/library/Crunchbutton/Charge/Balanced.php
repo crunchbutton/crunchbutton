@@ -55,7 +55,6 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 				));
 
 			} catch (Exception $e) {
-				print_r($e);
 				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card error' ]);
 				$errors[] = 'Your card was declined. Please try again!';
 				// $e->description
