@@ -223,20 +223,20 @@
 				<div class="personal-info field-container">
 					<div class="divider"></div>
 					<label>Name</label>
-					<div class="input-item"><input type="text" name="pay-name" tabindex="2" ng-model="order.form.name"></div><div class="divider"></div>
+					<div class="input-item"><input class="needsclick" type="text" name="pay-name" tabindex="2" ng-model="order.form.name"></div><div class="divider"></div>
 		
 					<label>Phone #</label>
 					<div class="input-item">
-					<input type="tel" name="pay-phone" tabindex="3" ng-format-phone ng-model="order.form.phone"></div><div class="divider"></div>
+					<input type="tel" class="needsclick" name="pay-phone" tabindex="3" ng-format-phone ng-model="order.form.phone"></div><div class="divider"></div>
 		
 					<label ng-show="order.form.delivery_type=='delivery'">Delivery Address</label>
 					<div ng-show="order.form.delivery_type=='delivery'" class="input-item">
-					<textarea ng-model="order.form.address" name="pay-address" id="pay-address" tabindex="5"></textarea></div>
+					<textarea ng-model="order.form.address" class="needsclick" name="pay-address" id="pay-address" tabindex="5"></textarea></div>
 					<div class="divider"></div>
 	
 					<div ng-show="(restaurant.id != 74)">
 						<label>Notes</label>
-						<div class="input-item"><textarea name="notes" ng-blur="checkGiftCard()" ng-model="order.form.notes" tabindex="6"></textarea></div><div class="divider"></div>
+						<div class="input-item"><textarea class="needsclick" name="notes" ng-blur="checkGiftCard()" ng-model="order.form.notes" tabindex="6"></textarea></div><div class="divider"></div>
 						<div class="divider"></div>
 
 						<!-- Gift card messages -->
@@ -310,14 +310,14 @@
 
 						<label ng-show="order.form.pay_type=='card'">Credit card #</label>
 
-						<div ng-show="order.form.pay_type=='card'" class="input-item"><input type="tel" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber"></div><div class="divider"></div>
+						<div ng-show="order.form.pay_type=='card'" class="input-item"><input type="tel" class="needsclick" name="pay-card-number" tabindex="6" ng-change="order.creditCardChanged();" ng-model="order.form.cardNumber"></div><div class="divider"></div>
 		
 						<label ng-show="order.form.pay_type=='card'">Expiration</label>
 						<div ng-show="order.form.pay_type=='card'" class="input-item">
 
-							<select  ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7">{{order.form.card.month}}</select> 
+							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardMonth" ng-options="month.value as month.label for month in order._months()" tabindex="7">{{order.form.card.month}}</select> 
 
-							<select  ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8"></select> 
+							<select class="needsclick" ng-change="order.cardInfoChanged()" ng-model="order.form.cardYear" ng-options="year.value as year.label for year in order._years()" tabindex="8"></select> 
 
 							<div class="divider"></div>
 						</div>
