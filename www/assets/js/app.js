@@ -853,11 +853,10 @@ App.init = function(config) {
 			Stripe.setPublishableKey( App.config.processor.stripe );
 			break;
 		case 'balanced':
-			balanced.init( App.config.processor.balanced );
-		break;
+			break;
 		default:
 			console.log( 'Processor error::', App.config.processor );
-		break;
+			break;
 	}
 
 	window.addEventListener( 'pageshow', function(){ 

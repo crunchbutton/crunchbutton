@@ -5,12 +5,16 @@ namespace Balanced;
 use Balanced\Resource;
 use \RESTful\URISpec;
 
-/*
- * A Callback is a publicly accessible location that can receive POSTed JSON
- * data whenever an Event is generated.
+/**
+ * A Callback is a publicly accessible location that can receive JSON
+ * payloads whenever an Event occurs.
  *
- * You create these using Balanced\Marketplace->createCallback.
- *
+ * <code>
+ * $callback = new Balanced\Callback(array(
+ *   "url" => "http://www.example.com/callback"
+ * ));
+ * $callback->save();
+ * </code>
  */
 class Callback extends Resource
 {
@@ -18,7 +22,7 @@ class Callback extends Resource
 
     public static function init()
     {
-        self::$_uri_spec = new URISpec('callbacks', 'id');
+        self::$_uri_spec = new URISpec('callbacks', 'id', '/');
         self::$_registry->add(get_called_class());
     }
 }

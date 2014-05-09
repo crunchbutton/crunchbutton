@@ -28,10 +28,11 @@ class Collection extends Itemization
         }
     }
 
-    public function create($payload)
+    public function create($payload = array())
     {
         $class = $this->resource;
         $client = $class::getClient();
+
         $response = $client->post($this->uri, $payload);
 
         return new $this->resource($response->body);
@@ -45,5 +46,10 @@ class Collection extends Itemization
     public function paginate()
     {
         return new Pagination($this->resource, $this->uri);
+    }
+
+    public function first()
+    {
+        return $this->query()->first();
     }
 }
