@@ -50,7 +50,8 @@ var App = {
 	transitionAnimationEnabled : true,
 	transitionForDesktop : false,
 	cachedObjectsExpiresIn : 86400, // 86400 seconds is 24 hours
-	enableSplash: true
+	enableSplash: true,
+	useTransform : true
 };
 
 // enable localstorage on phonegap
@@ -757,10 +758,11 @@ App.init = function(config) {
 	
 	// add the side swipe menu for mobile view
 	if (typeof Snap !== 'undefined') {
-
+		console.log('App.snap: ' + App.useTransform);
 		App.snap = new Snap({
 			element: document.getElementById('snap-content'),
 			menu: $('#side-menu'),
+			useTransform : App.useTransform,
 			menuDragDistance: 95,
 			disable: 'right'
 		});
