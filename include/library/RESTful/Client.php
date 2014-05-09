@@ -16,12 +16,14 @@ class Client
 
     public function get($uri)
     {
+        $encoded_uri = implode('/', array_map('rawurlencode', explode('/', $uri)));
+        $uri = $encoded_uri;
         $settings_class = $this->settings_class;
         $url = $settings_class::$url_root . $uri;
         $request_class = $this->request_class;
         $request = $request_class::get($url);
-
         return $this->_op($request);
+
     }
 
     public function post($uri, $payload)
@@ -59,6 +61,7 @@ class Client
         $settings_class = $this->settings_class;
         $user_agent = $settings_class::$agent . '/' . $settings_class::$version;
         $request->headers['User-Agent'] = $user_agent;
+        $request->headers['Accept'] = $settings_class::$accept;
         if ($settings_class::$api_key != null) {
             $request = $request->authenticateWith($settings_class::$api_key, '');
         }

@@ -144,6 +144,7 @@ class Query extends Itemization
         $this->_size = 2;
         $page = new Page($this->resource, $this->_buildUri());
         $this->_size = $prev_size;
+
         if (count($page->items) == 1) {
             return $page->items[0];
         }

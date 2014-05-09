@@ -19,7 +19,7 @@ use \RESTful\URISpec;
  *     ->filter(Account::f->email_address->eq('buyer@example.com'))
  *     ->one();
  *
- * $debit = $account->debit(
+ * $credit = $account->credit(
  *     100,
  *     'how it appears on the statement',
  *     'a description',
@@ -28,7 +28,7 @@ use \RESTful\URISpec;
  *         )
  *     );
  *
- * $debit->refund(
+ * $credit->reverse(
  *     99,
  *     'some description',
  *     array(
@@ -37,13 +37,13 @@ use \RESTful\URISpec;
  *     );
  * </code>
  */
-class Refund extends Resource
+class Reversal extends Resource
 {
     protected static $_uri_spec = null;
 
     public static function init()
     {
-        self::$_uri_spec = new URISpec('refunds', 'id', '/');
+        self::$_uri_spec = new URISpec('reversals', 'id', '/');
         self::$_registry->add(get_called_class());
     }
 }

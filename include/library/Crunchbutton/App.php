@@ -430,7 +430,7 @@ class Crunchbutton_App extends Cana_App {
 	
 	public function appConfig($output = ['base']) {
 		$config = [];
-		
+
 		if (in_array('base', $output)) {
 			$config['user'] = c::user()->exports();
 			$config['env'] = $this->env();
@@ -439,7 +439,7 @@ class Crunchbutton_App extends Cana_App {
 			// export the processor info
 			$config[ 'processor' ][ 'type' ] = Crunchbutton_User_Payment_Type::processor();
 			$config[ 'processor' ][ 'stripe' ] = c::config()->stripe->{c::getEnv()}->{'public'};
-			$config[ 'processor' ][ 'balanced' ] = c::balanced()->uri;
+			$config[ 'processor' ][ 'balanced' ] = c::balanced()->href;
 
 			if (!$this->auth()->get('loc_lat')) {
 				$geo = new Crunchbutton_Geo([

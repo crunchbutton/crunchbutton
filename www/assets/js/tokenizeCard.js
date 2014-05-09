@@ -1,8 +1,20 @@
 App.tokenizeCard = function( card, complete ) {
 	var processor = ( App.config.processor && App.config.processor.type ) ? App.config.processor.type : false;
-	switch( processor ){
+
+	var legacy_card = {
+		card_number: card.number,
+		expiration_month: card.expiration_month,
+		expiration_year: card.expiration_year,
+		security_code: null
+	};
+	
+	if (App.isPhoneGap) {
+		card = legacy_card;
+	}
+
+	switch(processor) {
 		case 'stripe':
-			App.tokenizeCard_stripe( card, complete );
+			App.tokenizeCard_stripe( legacy_card, complete );
 			break;
 		case 'balanced':
 			App.tokenizeCard_balanced( card, complete );	
@@ -65,20 +77,37 @@ App.tokenizeCard_stripe = function( card, complete ) {
 	} );
 };
 
-App.tokenizeCard_balanced = function(card, complete) {
+App.tokenizeCard_balanced = function(card, completed) {
 
-	balanced.card.create(card, function(response) {
+	var handleResponse = function(response) {
+
 		var res = {
 			status: false
-		}; 
+		};
+		
+		// 1.1 to 1.0 migration
+		if (response.status_code) {
+			var version = '1.1';
+			response.status = response.status_code;
+		} else {
+			var version = '1';
+		}
 
 		switch (response.status) {
 			case 201:
 				res.status = true;
-				res.id = response.data.id;
-				res.uri = response.data.uri;
-				res.card_type = response.data.card_type;
-				res.lastfour = response.data.last_four;
+				if (version == '1.1') {
+					res.id = response.cards[0].id;
+					res.uri = response.cards[0].href;
+					res.card_type = '';
+					res.lastfour = card.number.substr(-4);
+				} else {
+					res.id = response.data.id;
+					res.uri = response.data.uri;
+					res.card_type = response.data.card_type;
+					res.lastfour = response.data.last_four;
+				}
+
 				res.month = card.expiration_month;
 				res.year = card.expiration_year;
 				break;
@@ -118,6 +147,9 @@ App.tokenizeCard_balanced = function(card, complete) {
 				res.error = 'Unable to validate your card at this time';
 				break;
 		}
-		complete(res);
-	} );
+
+		completed(res);
+	};
+
+	balanced.card.create(card, handleResponse);
 };

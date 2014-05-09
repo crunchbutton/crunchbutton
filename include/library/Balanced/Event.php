@@ -17,7 +17,7 @@ class Event extends Resource
 
     public static function init()
     {
-        self::$_uri_spec = new URISpec('events', 'id', '/v1');
+        self::$_uri_spec = new URISpec('events', 'id', '/');
         self::$_registry->add(get_called_class());
     }
 }
