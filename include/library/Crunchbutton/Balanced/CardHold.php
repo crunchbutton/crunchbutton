@@ -6,6 +6,8 @@ class Crunchbutton_Balanced_CardHold extends Cana_Model {
 		return $account;
 	}
 	public static function byOrder($order) {
+		$hold = null;
+
 		if ($order->txn_hold) {
 			$hold = Crunchbutton_Balanced_CardHold::byId($this->txn_hold);
 		} else {
@@ -15,15 +17,21 @@ class Crunchbutton_Balanced_CardHold extends Cana_Model {
 
 			foreach ($holds as $hold) {
 				if ($hold->links->debit == $order->txn) {
-					try {
-						$hold->void();
-					} catch(Exception $e) {
-
-					}
+					return $hold;
 				}
 			}
 		}
 
 		return $hold;
+	}
+	
+	public function void() {
+		try {
+			$res = $this->void();
+		} catch(Exception $e) {
+			return false;
+		}
+
+		return $res;
 	}
 }
