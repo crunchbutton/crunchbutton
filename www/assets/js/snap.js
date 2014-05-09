@@ -30,7 +30,8 @@
             tapToClose: true,
             touchToDrag: true,
             slideIntent: 40, // degrees
-            minDragDistance: 5
+            minDragDistance: 5,
+            useTransform : true
         },
         cache = {
             simpleStates: {
@@ -96,7 +97,7 @@
                 return (cache.vendor==='Moz' || cache.vendor==='ms') ? 'transitionend' : cache.vendor+'TransitionEnd';
             },
             canTransform: function(){
-                return typeof settings.element.style[cache.vendor+'Transform'] !== 'undefined';
+                return settings.useTransform && typeof settings.element.style[cache.vendor+'Transform'] !== 'undefined';
             },
             deepExtend: function(destination, source) {
                 var property;
