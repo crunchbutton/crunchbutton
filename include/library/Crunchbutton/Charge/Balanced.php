@@ -48,11 +48,11 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 				}
 
 				$this->_card = Crunchbutton_Balanced_Card::byId($params['card']['id']);
-				$c = $this->_card->debits->create(array(
+				$c = $this->_card->debits->create([
 					'amount' => $params['amount'] * 100,
 					'appears_on_statement_as' => 'Crunchbutton',
 					'description' => $params['restaurant']->name
-				));
+				]);
 
 			} catch (Exception $e) {
 				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card error' ]);
@@ -76,11 +76,11 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 
 			$reason = true;
 			try {
-				$c = $this->card()->debits->create(array(
+				$c = $this->card()->debits->create([
 					'amount' => $params['amount'] * 100,
 					'appears_on_statement_as' => 'Crunchbutton',
 					'description' => $params['restaurant']->name
-				));
+				]);
 
 			} catch (Exception $e) {
 				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card error' ]);

@@ -680,7 +680,6 @@ class Crunchbutton_Order extends Cana_Table {
 							$charge = new Charge_Balanced([
 								'customer_id' => $user->balanced_id
 							]);
-							break;
 						case 'stripe':
 							$charge = new Charge_Stripe([
 								'stripe_id' => $user->stripe_id
