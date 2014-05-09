@@ -2,8 +2,8 @@
 
 class Crunchbutton_Charge_Balanced extends Cana_Model {
 	public function __construct($params = []) {
-		if ($params['balanced_id']) {
-			$account = Crunchbutton_Balanced_Account::byId($params['balanced_id']);
+		if ($params['customer_id']) {
+			$account = Crunchbutton_Balanced_Account::byId($params['customer_id']);
 		}
 		if (!$account->id) {
 			$account = Crunchbutton_Balanced_Account::bySession();
@@ -11,6 +11,10 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 		
 		if ($account->id) {
 			$this->_customer = $account;
+		}
+		
+		if ($params['card_id']) {
+			$this->_card = Crunchbutton_Balanced_Card::byId($params['card_id']);
 		}
 	}
 	
@@ -24,6 +28,7 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 			$reason = true;
 			try {
 				// building the uri is faster than building the object since we dont have to go to the server again
+
 				$card = c::balanced()->cards->uri.'/'.$params['card']['id'];
 
 				if (!$this->customer()) {
@@ -42,7 +47,12 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 					$this->customer()->addCard($card);
 				}
 
-				$c = $this->customer()->debit($params['amount'] * 100, 'Crunchbutton', $params['restaurant']->name);
+				$this->_card = Crunchbutton_Balanced_Card::byId($params['card']['id']);
+				$c = $this->_card->debits->create([
+					'amount' => $params['amount'] * 100,
+					'appears_on_statement_as' => 'Crunchbutton',
+					'description' => $params['restaurant']->name
+				]);
 
 			} catch (Exception $e) {
 				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card error' ]);
@@ -62,11 +72,15 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 		}
 		
 		// if there was no number, and there was a user with a stored card, use the users stored card
-		if (!$params['card'] && $params['user'] && $this->customer()->id) {
+		if (!$params['card'] && $params['user'] && $this->card()->id) {
 
 			$reason = true;
 			try {
-				$c = $this->customer()->debit($params['amount'] * 100, 'Crunchbutton', $params['restaurant']->name);
+				$c = $this->card()->debits->create([
+					'amount' => $params['amount'] * 100,
+					'appears_on_statement_as' => 'Crunchbutton',
+					'description' => $params['restaurant']->name
+				]);
 
 			} catch (Exception $e) {
 				Log::debug( [ 'card error' => 'balanced', 'Exception' => $e->description, 'type' => 'card error' ]);
@@ -89,11 +103,21 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 			$errors[] = 'Not enough card information.';
 		}
 
-		return ['status' => $success, 'txn' => $txn, 'errors' => $errors, 'customer' => $this->customer()];
+		return [
+			'status' => $success,
+			'txn' => $txn,
+			'errors' => $errors,
+			'customer' => $this->customer(),
+			'card' => $this->card()
+		];
 
 	}
 	
 	public function customer() {
 		return $this->_customer;
+	}
+	
+	public function card() {
+		return $this->_card;
 	}
 }

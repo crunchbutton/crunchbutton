@@ -761,7 +761,8 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		if (service._cardInfoHasChanged && order.pay_type == 'card') {
 			// need to generate a new tokenized card
 			App.tokenizeCard({
-				card_number: service.form.cardNumber,
+				name: service.form.name,
+				number: service.form.cardNumber,
 				expiration_month: service.form.cardMonth,
 				expiration_year: service.form.cardYear,
 				security_code: null

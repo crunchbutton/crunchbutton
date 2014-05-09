@@ -191,7 +191,7 @@ class Crunchbutton_App extends Cana_App {
 		$config = $this->config();
 		$config->site = Crunchbutton_Site::byDomain();
 		
-		if ($config->site->name == 'redirect' && $config->site->theme) {
+		if ($config->site->name == 'redirect' && $config->site->theme && php_sapi_name() !== 'cli') {
 			header('Location: '.$config->site->theme.$_SERVER['REQUEST_URI']);
 			exit;
 		}
@@ -430,7 +430,7 @@ class Crunchbutton_App extends Cana_App {
 	
 	public function appConfig($output = ['base']) {
 		$config = [];
-		
+
 		if (in_array('base', $output)) {
 			$config['user'] = c::user()->exports();
 			$config['env'] = $this->env();
@@ -439,7 +439,7 @@ class Crunchbutton_App extends Cana_App {
 			// export the processor info
 			$config[ 'processor' ][ 'type' ] = Crunchbutton_User_Payment_Type::processor();
 			$config[ 'processor' ][ 'stripe' ] = c::config()->stripe->{c::getEnv()}->{'public'};
-			$config[ 'processor' ][ 'balanced' ] = c::balanced()->uri;
+			$config[ 'processor' ][ 'balanced' ] = c::balanced()->href;
 
 			if (!$this->auth()->get('loc_lat')) {
 				$geo = new Crunchbutton_Geo([

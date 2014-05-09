@@ -5,7 +5,8 @@ namespace RESTful;
 abstract class Resource
 {
     protected $_collection_uris,
-        $_member_uris;
+        $_member_uris,
+        $_unmatched_uris;
 
     public static function getClient()
     {
@@ -28,12 +29,12 @@ abstract class Resource
         return $class::$_uri_spec;
     }
 
-    public function __construct($fields = null)
+    public function __construct($fields = null, $links = null)
     {
         if ($fields == null) {
             $fields = array();
         }
-        $this->_objectify($fields);
+        $this->_objectify($fields, $links);
     }
 
     public function __get($name)
@@ -45,13 +46,30 @@ abstract class Resource
 
             return $this->$name;
         } // member uri
-        else if (array_key_exists($name, $this->_member_uris)) {
-            $result = $this->$_collection_uris[$name];
-            $response = self::getClient() . get($result['uri']);
+        elseif (array_key_exists($name, $this->_member_uris)) {
+            $result = $this->_member_uris[$name];
+            $response = self::getClient()->get($result['uri']);
             $class = $result['class'];
             $this->$name = new $class($response->body);
 
             return $this->$name;
+        } elseif (array_key_exists($name, $this->_unmatched_uris)) {
+            $result = $this->_unmatched_uris[$name];
+            $response = self::getClient()->get($result['uri']);
+            $resource_href = null;
+            foreach($response->body as $key => $val) {
+                if(is_array($val) && isset($val[0]->href)) {
+                    $resource_href = $val[0]->href;
+                    break;
+                }
+            }
+            $result = self::getRegistry()->match($resource_href);
+            if($result != null) {
+                $class = $result['class'];
+                $this->$name = new $class($response->body);
+                return $this->$name;
+            }
+
         }
 
         // unknown
@@ -66,69 +84,82 @@ abstract class Resource
 
     public function __isset($name)
     {
-        if (array_key_exists($name, $this->_collection_uris) || array_key_exists($name, $this->_member_uris)) {
+        if (array_key_exists($name, $this->_collection_uris) ||
+            array_key_exists($name, $this->_member_uris) ||
+            array_key_exists($name, $this->_unmatched_uris)) {
             return true;
         }
 
         return false;
     }
 
-    protected function _objectify($fields)
+    protected function _objectify($request, $links = null)
     {
         // initialize uris
         $this->_collection_uris = array();
         $this->_member_uris = array();
+        $this->_unmatched_uris = array();
 
-        foreach ($fields as $key => $val) {
-            // nested uri
-            if ((strlen($key) - 3) == strrpos($key, 'uri', 0) && $key != 'uri') {
-                $result = self::getRegistry()->match($val);
-                if ($result != null) {
-                    $name = substr($key, 0, -4);
+        $class = get_called_class();
+
+        if ($this->getURISpec()->override != null) {
+            $resource_name = $this->getURISpec()->override;
+        } else {
+            $resource_name = $this->getURISpec()->name;
+        }
+
+        if(isset($request->$resource_name) && $links == null) {
+            $fields = $request->$resource_name;
+            $fields = $fields[0];
+            $links = $request->links;
+        } else {
+            $fields = $request;
+        }
+
+        if($fields) {
+            foreach ($fields as $key => $val) {
+                $this->$key = $val;
+            }
+        }
+        if($links) {
+            foreach($links as $key => $val) {
+                // the links might include links for other resources as well
+                $parts = explode('.', $key);
+                if($parts[0] != $resource_name) continue;
+                $name = $parts[1];
+
+                $url = preg_replace_callback(
+                    '/\{(\w+)\.(\w+)\}/',
+                    function($match) use ($fields) {
+                        $name = $match[2];
+                        if(isset($fields->$name))
+                            return $fields->$name;
+                        elseif(isset($fields->links->$name))
+                            return $fields->links->$name;
+                    },
+                    $val);
+                // we have a url for a specific item, so check if it was side loaded
+                // otherwise stub it out
+                $result = self::getRegistry()->match($url);
+                if($result != null) {
                     $class = $result['class'];
-                    if ($result['collection']) {
+                    if($result['collection']) {
                         $this->_collection_uris[$name] = array(
                             'class' => $class,
-                            'uri'   => $val,
+                            'uri'   => $url,
                         );
                     } else {
                         $this->_member_uris[$name] = array(
                             'class' => $class,
-                            'uri'   => $val,
+                            'uri'   => $url,
                         );
                     }
-
-                    continue;
-                }
-            } elseif (is_object($val) && property_exists($val, 'uri')) {
-                // nested
-                $result = self::getRegistry()->match($val->uri);
-                if ($result != null) {
-                    $class = $result['class'];
-                    if ($result['collection']) {
-                        $this->$key = new Collection($class, $val['uri'], $val);
-                    } else {
-                        $this->$key = new $class($val);
-                    }
-
-                    continue;
-                }
-            } elseif (is_array($val) && array_key_exists('uri', $val)) {
-                $result = self::getRegistry()->match($val['uri']);
-                if ($result != null) {
-                    $class = $result['class'];
-                    if ($result['collection']) {
-                        $this->$key = new Collection($class, $val['uri'], $val);
-                    } else {
-                        $this->$key = new $class($val);
-                    }
-
-                    continue;
+                } else {
+                    $this->_unmatched_uris[$name] = array(
+                        'uri' => $url
+                    );
                 }
             }
-
-            // default
-            $this->$key = $val;
         }
     }
 
@@ -145,6 +176,8 @@ abstract class Resource
 
     public static function get($uri)
     {
+        $class = get_called_class();
+
         # id
         if (strncmp($uri, '/', 1)) {
             $uri_spec = self::getURISpec();
@@ -156,7 +189,6 @@ abstract class Resource
         }
 
         $response = self::getClient()->get($uri);
-        $class = get_called_class();
 
         return new $class($response->body);
     }
@@ -166,17 +198,13 @@ abstract class Resource
         // payload
         $payload = array();
         foreach ($this as $key => $val) {
-            if ($key[0] == '_' || is_object($val)) {
-                continue;
-            }
+            if($key[0] == '_') continue;
             $payload[$key] = $val;
         }
 
         // update
-        if (array_key_exists('uri', $payload)) {
-            $uri = $payload['uri'];
-            unset($payload['uri']);
-            $response = self::getClient()->put($uri, $payload);
+        if (array_key_exists('href', $payload)) {
+            $response = self::getClient()->put($payload['href'], $payload);
         } else {
             // create
             $class = get_class($this);
@@ -187,10 +215,6 @@ abstract class Resource
             $response = self::getClient()->post($class::$_uri_spec->collection_uri, $payload);
         }
 
-        // re-objectify
-        foreach ($this as $key => $val) {
-            unset($this->$key);
-        }
         $this->_objectify($response->body);
 
         return $this;
@@ -198,8 +222,24 @@ abstract class Resource
 
     public function delete()
     {
-        self::getClient()->delete($this->uri);
+        $resp = self::getClient()->delete($this->href);
 
+        if($resp->code == 200) {
+            $this->_objectify($resp->body);
+        }
+
+        return $this;
+    }
+
+    public function unstore()
+    {
+        return $this->delete();
+    }
+
+    public function refresh()
+    {
+        $resp = self::getClient()->get($this->href);
+        $this->_objectify($resp->body);
         return $this;
     }
 }

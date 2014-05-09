@@ -10,21 +10,24 @@ class Crunchbutton_Balanced_Account extends Cana_Model {
 	}
 
 	public static function byEmail($email) {
-		$account = false;
-
 		try {
-			$account = c::balanced()->accounts->query()
-				->filter(Balanced\Account::$f->email_address->eq($email))
+			$account = c::balanced()->customers->query()
+				->filter(Balanced\Customer::$f->email_address->eq($email))
 				->one();
 		
 		} catch (Exception $e) {
-
+			$account = null;
 		}
 		return $account;
 	}
 	
 	public static function byId($id) {
-		$account = Balanced\Account::get(c::balanced()->accounts->uri.'/'.$id);
+		try {
+			$account = Balanced\Customer::get(c::balanced()->customers->uri.'/'.$id);
+		} catch (Exception $e) {
+			// invalid account. most likly due to mismatched dev and live keys
+			$account = null;
+		}
 		return $account;
 	}
 }
