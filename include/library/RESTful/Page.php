@@ -22,18 +22,24 @@ class Page
             $client = $resource::getClient();
             $data = $client->get($uri)->body;
         }
-        $this->total = $data->total;
-        $this->items = array_map(
-            function ($x) use ($resource) {
-                return new $resource($x);
-            },
-            $data->items);
-        $this->offset = $data->offset;
-        $this->limit = $data->limit;
-        $this->_first_uri = property_exists($data, 'first_uri') ? $data->first_uri : null;
-        $this->_previous_uri = property_exists($data, 'previous_uri') ? $data->previous_uri : null;
-        $this->_next_uri = property_exists($data, 'next_uri') ? $data->next_uri : null;
-        $this->_last_uri = property_exists($data, 'last_uri') ? $data->last_uri : null;
+        $resource_name = $resource::getURISpec()->name;
+        if(isset($data->$resource_name))
+            $this->items = array_map(
+                function ($x) use ($resource, $data) {
+                    return new $resource($x, $data->links);
+                },
+                $data->$resource_name);
+        else
+            $this->items = array();
+
+        $this->total = $data->meta->total;
+        $this->offset = $data->meta->offset;
+        $this->limit = $data->meta->limit;
+        $this->_first_uri = $data->meta->first;
+        $this->_previous_uri = $data->meta->previous;
+        $this->_next_uri = $data->meta->next;
+        $this->_last_uri = $data->meta->last;
+
     }
 
     public function first()

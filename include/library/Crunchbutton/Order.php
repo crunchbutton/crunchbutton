@@ -1871,8 +1871,14 @@ class Crunchbutton_Order extends Cana_Table {
 
 						case 'balanced':
 							try {
+								// refund the debit
 								$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
 								$ch->refund();
+								
+								// cancel the hold
+								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
+								$hold->void();
+								
 							} catch (Exception $e) {
 								print_r($e);
 								return false;

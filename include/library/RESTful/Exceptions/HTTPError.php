@@ -21,6 +21,7 @@ class HTTPError extends Base
 
     protected function _objectify($fields)
     {
+        $fields = $fields->errors[0];
         foreach ($fields as $key => $val) {
             $this->$key = $val;
         }

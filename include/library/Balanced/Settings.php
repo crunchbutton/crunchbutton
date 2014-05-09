@@ -8,7 +8,7 @@ namespace Balanced;
  *  You can either set these settings individually:
  *
  *  <code>
- *  \Balanced\Settngs::api_key = 'my-api-key-secret';
+ *  \Balanced\Settings::$api_key = 'my-api-key-secret';
  *  </code>
  *
  *  or all at once:
@@ -22,12 +22,13 @@ namespace Balanced;
  */
 class Settings
 {
-    const VERSION = '0.7.1';
+    const VERSION = '1.1.2';
 
     public static $url_root = 'https://api.balancedpayments.com',
                   $api_key = null,
                   $agent = 'balanced-php',
-                  $version = Settings::VERSION;
+                  $version = Settings::VERSION,
+                  $accept = 'application/vnd.balancedpayments+json; version=1.1, application/vnd.api+json';
 
     /**
      * Configure all settings.

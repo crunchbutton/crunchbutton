@@ -38,7 +38,7 @@ class Marketplace extends Resource
 
     public static function init()
     {
-        self::$_uri_spec = new URISpec('marketplaces', 'id', '/v1');
+        self::$_uri_spec = new URISpec('marketplaces', 'id', '/');
         self::$_registry->add(get_called_class());
     }
 
@@ -60,6 +60,7 @@ class Marketplace extends Resource
      *
      * @param string street_address Street address. Use null if there is no address for the card.
      * @param string city City. Use null if there is no address for the card.
+     * @param string state State.  Use null if there is no address for the card.
      * @param string postal_code Postal code. Use null if there is no address for the card.
      * @param string name Name as it appears on the card.
      * @param string card_number Card number.
@@ -72,7 +73,7 @@ class Marketplace extends Resource
     public function createCard(
         $street_address,
         $city,
-        $region,
+        $state,
         $postal_code,
         $name,
         $card_number,
@@ -80,18 +81,16 @@ class Marketplace extends Resource
         $expiration_month,
         $expiration_year)
     {
-        if ($region != null && strlen($region) > 0) {
-            trigger_error("The region parameter will be deprecated in the next minor version of balanced-php", E_USER_NOTICE);
-        }
-
         return $this->cards->create(array(
-            'street_address' => $street_address,
-            'city' => $city,
-            'region' => $region,
-            'postal_code' => $postal_code,
+            'address' => array(
+                'street_address' => $street_address,
+                'city' => $city,
+                'state' => $state,
+                'postal_code' => $postal_code,
+            ),
             'name' => $name,
-            'card_number' => $card_number,
-            'security_code' => $security_code,
+            'number' => $card_number,
+            'cvv' => $security_code,
             'expiration_month' => $expiration_month,
             'expiration_year' => $expiration_year
             ));
@@ -136,11 +135,12 @@ class Marketplace extends Resource
      *
      * @return \Balanced\Account
      */
-    public function createAccount($email_address = null, $meta = null)
+    public function createCustomer($email_address = null, $meta = null, $name = null)
     {
-        return $this->accounts->create(array(
-            'email_address' => $email_address,
+        return $this->customers->create(array(
+            'email' => $email_address,
             'meta' => $meta,
+            'name' => $name
             ));
     }
 
@@ -153,38 +153,42 @@ class Marketplace extends Resource
      *
      * @return \Balanced\Account
      */
-    function findOrCreateAccountByEmailAddress($email_address)
+    function findOrCreateCustomerByEmailAddress($email_address)
     {
     	$marketplace = Marketplace::mine();
-    	try {
-    		$account = $this->accounts->create(array(
-    		        'email_address' => $email_address
-    		        ));
-    	}
-    	catch (Errors\DuplicateAccountEmailAddress $e) {
-    		$account = Account::get($e->extras->account_uri);
-    	}
-    	return $account;
+        $customer = $marketplace->customers->query()
+                               ->filter(Customer::$f->email->eq($email_address))
+                               ->first();
+        if($customer) {
+            return $customer;
+        }
+        return $this->createCustomer($email_address);
     }
 
     /**
      * Create a buyer account.
      *
      * @param string email_address Optional email address. There can only be one account with this email address.
-     * @param string card_uri URI referencing a card to associate with the account.
+     * @param string card_href Href referencing a card to associate with the account.
      * @param array[string]string meta Optional metadata to associate with the account.
      * @param string name Optional name of the account.
      *
-     * @return \Balanced\Account
+     * @return \Balanced\Customer
      */
-    public function createBuyer($email_address, $card_uri, $meta = null, $name = null)
+    public function createBuyer(
+        $email_address,
+        $card_href,
+        $meta = null,
+        $name = null)
     {
-        return $this->accounts->create(array(
-            'email_address' => $email_address,
-            'card_uri' => $card_uri,
+        $customer = $this->customers->create(array(
+            'email' => $email_address,
             'meta' => $meta,
             'name' => $name
             ));
+        $card = Card::get($card_href);
+        $card->associateToCustomer($customer);
+        return $customer;
     }
 
     /**
@@ -294,19 +298,24 @@ class Marketplace extends Resource
     public function createMerchant(
         $email_address = null,
         $merchant = null,
-        $bank_account_uri = null,
-        $merchant_uri = null,
+        $bank_account_href = null,
         $name = null,
         $meta = null)
     {
-        return $this->accounts->create(array(
+        $params = array(
             'email_address' => $email_address,
-            'merchant' => $merchant,
-            'merchant_uri' => $merchant_uri,
-            'bank_account_uri' => $bank_account_uri,
             'name' => $name,
             'meta' => $meta,
-            ));
+        );
+        if($merchant) {
+            $params = array_merge($params, $merchant);
+        }
+        $customer = $this->customers->create();
+        if($bank_account_href) {
+            $bank_account = BankAccount::get($bank_account_href);
+            $bank_account->associateToCustomer($customer);
+        }
+        return $customer;
     }
 
     /*
