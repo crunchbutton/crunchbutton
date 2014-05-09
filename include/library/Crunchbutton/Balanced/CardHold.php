@@ -9,10 +9,19 @@ class Crunchbutton_Balanced_CardHold extends Cana_Model {
 		if ($order->txn_hold) {
 			$hold = Crunchbutton_Balanced_CardHold::byId($this->txn_hold);
 		} else {
-			$hold = c::balanced()->card_holds->query()
-	//			->filter(Balanced\CardHold::$f->created_at->eq($order->txn))
-				->filter(Balanced\CardHold::$f->amount->eq($order->final_price))
-				->one();
+			$holds = c::balanced()->card_holds->query()
+				->filter(Balanced\CardHold::$f->amount->eq($order->final_price * 100))
+				->all();
+
+			foreach ($holds as $hold) {
+				if ($hold->links->debit == $order->txn) {
+					try {
+						$hold->void();
+					} catch(Exception $e) {
+
+					}
+				}
+			}
 		}
 
 		return $hold;
