@@ -56,7 +56,6 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 	}
 
 	service.init = function () {
-
 		if (App.config.ab && App.config.ab.dollarSign == 'show') {
 			service.info.dollarSign = '$';
 		}
@@ -123,8 +122,8 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 		service.form.cardNumber = service.account.user.card;
 		service.form.cardMonth = ( service.account.user.card_exp_month ) ? service.account.user.card_exp_month : '';
 		service.form.cardYear = ( service.account.user.card_exp_year ) ? service.account.user.card_exp_year : '';
-		service.updateTotal();
 
+		service.updateTotal();
 		if( !service.account.user.id_user ){
 			var userEntered = $.totalStorage( 'userEntered' );
 			if( userEntered ){

@@ -47,6 +47,7 @@ var App = {
 		desktop: 9,
 		mobile: 6
 	},
+	transitionAnimationEnabled : true,
 	transitionForDesktop : false,
 	cachedObjectsExpiresIn : 86400, // 86400 seconds is 24 hours
 	enableSplash: true
@@ -84,6 +85,10 @@ NGApp.config(function($compileProvider){
 	$compileProvider.aHrefSanitizationWhitelist(/.*/);
 });
 
+NGApp.run(function() {
+	FastClick.attach(document.body);
+} );
+
 
 // This config will intercept all the ajax requests and take care of the errors
 NGApp.config( function( $provide, $httpProvider ) {
@@ -94,7 +99,9 @@ NGApp.config( function( $provide, $httpProvider ) {
 			if( !window.navigator.onLine || status == 0 ){
 				var showError = false;
 				var url = rejection.config.url;
+
 				if ( url ) {
+					console.log('AJAX ERROR: ', rejection );
 					// Check if the url was an api url
 					if( url.indexOf( App.service ) >= 0 ){
 						var api = url.split( App.service );
@@ -129,6 +136,11 @@ NGApp.config( function( $provide, $httpProvider ) {
 			},
 			// response ok
  			response: function( response ) {
+
+ 				if( typeof response.data == 'object' ){
+ 					var headers = response.headers();
+ 				}
+ 				
 				return response || $q.when( response );
 			},
 			// request no ok
@@ -519,6 +531,12 @@ App.connectionError = function() {
 App.go = function( url, transition ){
 	// Remove the animation from rootScope #2827 before start the new one
 	App.rootScope.animationClass = '';
+	if( !App.transitionAnimationEnabled ){
+		App.location.path( url || '/' );
+		App.rootScope.$safeApply();
+		return;
+	}
+
 	if( App.isNarrowScreen() || App.transitionForDesktop ){
 		setTimeout( function(){
 			App.rootScope.animationClass = transition ? 'animation-' + transition : '';
@@ -527,7 +545,7 @@ App.go = function( url, transition ){
 			// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
 			App.location.path( url || '/' );
 			App.rootScope.$safeApply();		
-		}, 10 );		
+		}, 1 );		
 	} else {
 		App.location.path( url || '/' );
 		App.rootScope.$safeApply();		
@@ -715,10 +733,6 @@ App.init = function(config) {
 		e.preventDefault();
 		e.stopPropagation();
 	});
-
-
-	// replace normal click events for mobile browsers
-	FastClick.attach(document.body);
 
 	$(document).on({
 		'DOMNodeInserted': function() {
