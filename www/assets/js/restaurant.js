@@ -86,9 +86,8 @@ var Restaurant = function(id) {
 		if (App.isPhoneGap) {
 			if( self.image ){
 				var img = self.image.replace(/^.*\/|\.[^.]*$/g, '');
-				// restaurant page image
-				self.img = App.imgServer + '630x280/' + img +  '.jpg?crop=1';
-				// restaurants page thumbnail
+				// load same image for both #3092
+				self.img = App.imgServer + '596x596/' + img +  '.jpg';
 				self.img64 = App.imgServer + '596x596/' + img +  '.jpg';
 			}
 		}
