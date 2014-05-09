@@ -191,7 +191,7 @@ class Crunchbutton_App extends Cana_App {
 		$config = $this->config();
 		$config->site = Crunchbutton_Site::byDomain();
 		
-		if ($config->site->name == 'redirect' && $config->site->theme) {
+		if ($config->site->name == 'redirect' && $config->site->theme && php_sapi_name() !== 'cli') {
 			header('Location: '.$config->site->theme.$_SERVER['REQUEST_URI']);
 			exit;
 		}
