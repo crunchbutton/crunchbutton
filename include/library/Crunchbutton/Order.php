@@ -388,7 +388,7 @@ class Crunchbutton_Order extends Cana_Table {
 							$user_payment_type->stripe_id = $this->_customer->id;
 							break;
 						case 'balanced':
-							$user_payment_type->balanced_id = $this->_customer->id;
+							$user_payment_type->balanced_id = $this->_paymentType->id;
 							break;
 					}
 				}
@@ -656,42 +656,46 @@ class Crunchbutton_Order extends Cana_Table {
 
 			case 'card':
 				$user = c::user()->id_user ? c::user() : null;
-				switch (Crunchbutton_User_Payment_Type::processor()) {
-					case 'stripe':
-					default:
-						if( $user && $user->payment_type() ){
-							$stripe_id = $user->payment_type()->stripe_id;
-							// if we dont have the stripe_id at the user_payment_type table, try to use the one from user table
-							// it will be copy to the user_payment_type in a few miliseconds
-							if( !$stripe_id ){
-								$stripe_id = $user->stripe_id;
-							}
-						}
-						$charge = new Charge_Stripe([
-							'stripe_id' => $stripe_id
-						]);
-						break;
+				$paymentType = $user->payment_type();
+				
+				if (!$this->_card && $paymentType->id_user_payment_type) {
+					// we have need to use a stored users card and the apporiate payment type
 
-					case 'balanced':
-						if( $user && $user->payment_type() ){
-							$balanced_id = $user->payment_type()->balanced_id;
-						}
-							// if we dont have the balanced_id at the user_payment_type table, try to use the one from user table
-							// it will be copy to the user_payment_type in a few miliseconds
-							if( !$balanced_id ){
-								$balanced_id = $user->balanced_id;
-							}
+					if ($paymentType->balanced_id) {
 						$charge = new Charge_Balanced([
-							'balanced_id' => $balanced_id
+							'customer_id' => $user->balanced_id,
+							'card_id' => $paymentType->balanced_id
 						]);
-						break;
+
+					} elseif ($paymentType->stripe_id) {
+						$charge = new Charge_Stripe([
+							'stripe_id' => $paymentType->stripe_id
+						]);
+					}
+				}
+				
+				if (!$charge) {
+					switch (Crunchbutton_User_Payment_Type::processor()) {
+						case 'balanced':
+							$charge = new Charge_Balanced([
+								'customer_id' => $user->balanced_id
+							]);
+							break;
+						case 'stripe':
+							$charge = new Charge_Stripe([
+								'stripe_id' => $user->stripe_id
+							]);
+							break;
+					}
 				}
 
+				// If the amount is 0 it means that the user used his credit.
 				$amount = $this->calcFinalPriceMinusUsersCredit();
 				Log::debug([ 'issue' => '#1551', 'method' => 'verifyPayment', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, 'amount' => $amount ]);
-				// If the amount is 0 it means that the user used his credit.
 
-				if( $amount > 0 ){
+
+				// issue #3145
+				if ($amount > .5) {
 						$r = $charge->charge( [
 						'amount' => $amount,
 						'card' => $this->_card,
@@ -705,10 +709,23 @@ class Crunchbutton_Order extends Cana_Table {
 						$this->_txn = $r['txn'];
 						$this->_user = $user;
 						$this->_customer = $r['customer'];
+						$this->_paymentType = $r['card'];
 						$status = true;
 					} else {
 						$status = $r;
-					}	
+					}
+
+				} elseif ($amount > 0) {
+					// we just gave them 50c or something
+					Log::debug([
+						'issue' => '#3145',
+						'method' => 'verifyPayment',
+						'$this->final_price' => $this->final_price,
+						'giftcardValue'=> $this->giftcardValue,
+						'amount' => $amount
+					]);
+					$status = true;
+
 				} else {
 					$status = true;
 				}
