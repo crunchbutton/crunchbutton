@@ -18,6 +18,20 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccou
 
 				switch ( $action ) {
 
+					case 'inactive':
+						$admin = Crunchbutton_Admin::o( $id_admin );
+						$admin->active = 0;
+						$admin->save();
+						echo json_encode( ['success' => $admin->id_admin ] );
+						break;
+
+					case 'active':
+						$admin = Crunchbutton_Admin::o( $id_admin );
+						$admin->active = 1;
+						$admin->save();
+						echo json_encode( ['success' => $admin->id_admin ] );
+						break;
+
 					case 'permissions':
 						$admin = Crunchbutton_Admin::o( $id_admin );
 						$admin->removePermissions();

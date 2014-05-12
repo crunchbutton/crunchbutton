@@ -6,7 +6,7 @@ class Crunchbutton_Admin extends Cana_Table {
 
 
 	public static function login($login) {
-		return Crunchbutton_Admin::q('select * from admin where login="'.c::db()->escape($login).'" limit 1')->get(0);
+		return Crunchbutton_Admin::q('select * from admin where login="'.c::db()->escape($login).'" and active = 1 limit 1')->get(0);
 	}
 	
 	public function publicExports() {
@@ -447,7 +447,7 @@ class Crunchbutton_Admin extends Cana_Table {
 			$query .= " AND name LIKE '%{$search[ 'name' ]}%' ";
 		}
 
-		$query .= " ORDER BY name DESC";
+		$query .= " ORDER BY name ASC";
 
 		$admins = self::q($query);
 		return $admins;
