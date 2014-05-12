@@ -15,7 +15,7 @@ $admins = $this->admins;
 			<td></td>
 		</thead>
 		<?php foreach ( $admins as $admin ) { ?>
-			<tr>
+			<tr class="<?php echo ( $admin->active ) ? '' : 'inactive'; ?>">
 				<td><?php echo $admin->name;?> </td>
 				<td><?php echo $admin->login;?> </td>
 				<td><?php echo $admin->groups2str(); ?></td>
@@ -24,10 +24,14 @@ $admins = $this->admins;
 				<td><?php echo $admin->email; ?></td>
 				<td style="width:280px;">
 					<a href="/permissions/users/permissions/<?php echo $admin->id_admin; ?>" class="btn btn-blue"><i class="icon-unlock"></i> Permissions</a>
-					&nbsp;
-					<a href="/permissions/users/<?php echo $admin->id_admin; ?>" class="btn btn-green"><i class="icon-edit"></i> Edit</a>
-					&nbsp;
-					<button data-id="<?php echo $admin->id_admin; ?>" class="btn admin-user-remove btn-red"><i class="icon-trash"></i> Remove</button>
+					
+					<a style="margin:0 5px;" href="/permissions/users/<?php echo $admin->id_admin; ?>" class="btn btn-green"><i class="icon-edit"></i> Edit</a>
+					
+					<?php if( $admin->active ) { ?>
+						<button data-id="<?php echo $admin->id_admin; ?>" class="btn admin-user-inactive btn-red"><i class="icon-trash"></i> Inactive</button>
+					<?php } else { ?>
+						<button data-id="<?php echo $admin->id_admin; ?>" class="btn admin-user-active btn-default"><i class="icon-trash"></i> Active</button>
+					<?php } ?>
 				</td>
 			</tr>
 		<?php } ?>

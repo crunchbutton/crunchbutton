@@ -41,6 +41,13 @@
 			</div>
 	 </div>
 </div>
+<style type="text/css">
+	.inactive{
+		color: #CCC;
+		text-decoration: line-through;
+		font-style: italic;
+	}
+</style>
 <script>
 	$(function() {		
 
@@ -56,12 +63,18 @@
 
 		App.permissions.admin.load();
 
-		$(document).on('click', '.admin-user-remove', function() {
+		$(document).on('click', '.admin-user-inactive', function() {
 			var button = $( this );
-			if( confirm( 'Confirm? This action will remove the user!' ) ){
+			if( confirm( 'Confirm? This action will inactive the user!' ) ){
 				var id_admin = button.attr( 'data-id' );
-				App.permissions.admin.remove( id_admin );
+				App.permissions.admin.inactive( id_admin );
 			} 
+		} );
+
+		$(document).on('click', '.admin-user-active', function() {
+			var button = $( this );
+			var id_admin = button.attr( 'data-id' );
+			App.permissions.admin.active( id_admin );
 		} );
 
 	});

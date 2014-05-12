@@ -1918,8 +1918,23 @@ App.permissions.admin = {
 		});
 	},
 	remove: function( id_admin ){
+		return;
+	},
+	inactive: function( id_admin ){
+		var url = App.service + 'permissions/users/' + id_admin + '/inactive';
 		$.ajax({
-			url: '/permissions/users/remove',
+			url: url,
+			type: 'POST',
+			data: { 'id_admin': id_admin } ,
+			complete: function() {
+				App.permissions.admin.load();
+			}
+		});
+	},
+	active: function( id_admin ){
+		var url = App.service + 'permissions/users/' + id_admin + '/active';
+		$.ajax({
+			url: url,
 			type: 'POST',
 			data: { 'id_admin': id_admin } ,
 			complete: function() {
