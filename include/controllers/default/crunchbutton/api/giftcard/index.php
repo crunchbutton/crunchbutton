@@ -2,12 +2,14 @@
 
 class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 	public function init() {
-
+echo '<pre>';var_dump( c::admin() );exit();
 		switch ( $this->method() ) {
 			
 			case 'post':
 				
 				if ( c::admin()->id_admin || $_SESSION['admin'] ) {
+
+
 
 					// Verify the permissions
 					switch ( c::getPagePiece( 2 ) ) {
