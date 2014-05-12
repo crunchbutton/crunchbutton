@@ -1,0 +1,56 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<ul class="tab-options">
+		<li ng-click="tab.change(1);" ng-class="{ 'tab-active' : tab.step == 1 }">
+			step 1
+		</li>
+		<li ng-click="tab.change(2);" ng-class="{ 'tab-active' : tab.step == 2 }">
+			step 2
+		</li>
+		<li ng-click="tab.change(3);" ng-class="{ 'tab-active' : tab.step == 3 }">
+			step 3
+		</li>
+	</ul>
+
+	<ul class="tab-content">
+		<li ng-show="tab.step == 1">
+			<ul>
+				<li> 
+					<label for="driver-name">
+						<div class="label">Name:</div>
+						<div class="input"><input type="text" name="driver-name" ng-model="driver.name" placeholder="Name"></div>
+					</label>
+				</li>
+				<li> 
+					<label for="driver-phone">
+						<div class="label">Phone:</div>
+						<div class="input"><input type="tel" phone="driver-phone" ng-model="driver.phone" placeholder="Phone"></div>
+					</label>
+				</li>
+				<li>
+					<label for="driver-community">
+						<div class="label">Community:</div>
+						<select ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>
+					</label>
+				</li>
+				<li>
+					<label for="driver-email">
+						<div class="label">email:</div>
+						<div class="input"><input type="email" email="driver-email" ng-model="driver.email" placeholder="Email"></div>
+					</label>
+				</li>
+			</ul>		
+		</li>
+		<li ng-show="tab.step == 2">
+			step 2
+		</li>
+		<li ng-show="tab.step == 3">
+			step 3
+		</li>
+	</ul>
+
+	
+
+</div>

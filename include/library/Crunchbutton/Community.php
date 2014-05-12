@@ -142,6 +142,10 @@ class Crunchbutton_Community extends Cana_Table {
 		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE driver_group = "' . $group . '"' );
 	}
 
+	public function active(){
+		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );	
+	}
+
 	public function getDriversOfCommunity(){
 		$group = $this->driverGroup();
 		$query = 'SELECT a.* FROM admin a 
