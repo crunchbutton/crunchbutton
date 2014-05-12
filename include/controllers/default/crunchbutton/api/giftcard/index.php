@@ -7,7 +7,7 @@ class Controller_api_Giftcard extends Crunchbutton_Controller_Rest {
 			
 			case 'post':
 				
-				if ( c::admin()->id_admin ) {
+				if ( c::admin()->id_admin || $_SESSION['admin'] ) {
 
 					// Verify the permissions
 					switch ( c::getPagePiece( 2 ) ) {
