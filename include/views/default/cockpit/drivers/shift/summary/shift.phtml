@@ -90,8 +90,12 @@
 									<?php
 									$firstDayOfWeek = $shift->firstDayOfWeek()->format( 'Y-m-d' );
 									$lastDayOfWeek = $shift->lastDayOfWeek()->format( 'Y-m-d' );
+
 									foreach( $preferences as $preference ){ 
 										$admin = $preference->admin();
+
+										$highestRanking = $preference->highestRankingByPeriod( $admin->id_admin, $firstDayOfWeek, $lastDayOfWeek );
+
 										$alreadyShown[] = $admin->id_admin;
 										if( $preference->ranking == 0 ){
 											continue;
@@ -107,7 +111,7 @@
 												<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $admin->id_admin; ?>" name="form-id_admin" id="form-id_admin-<?php echo $admin->id_admin; ?>">
 											</td>
 											<td><?php echo $admin->name; ?> <br/><?php echo $admin->phone(); ?></td>
-											<td><?php echo $preference->ranking; ?></td>
+											<td style="background:#009c48;color:#FFF;text-align:center;"><strong><?php echo $preference->ranking; ?></strong> of <?php echo $highestRanking; ?></td>
 											<td><?php echo $status->shifts; ?></td>
 											<td><?php echo $totalShifts; ?></td>
 											<td>
