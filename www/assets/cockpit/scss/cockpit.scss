@@ -790,7 +790,7 @@ input {
 		vertical-align: middle;
 		line-height: 1.4em;
 	}
-	.order-item-block, .order-item-block-big {
+	.order-item-block, .order-item-block-big, .order-item-block-bigger {
 		display: table;
 		float: left;
 		width: 15em;
@@ -799,10 +799,12 @@ input {
 	.order-item-block-big{
 		width: 30em;
 	}
+	.order-item-block-bigger{
+		width: 60em;
+	}
 	.order-map-block {
 		width: 100%;
 		margin-top: 0;
-		
 	}
 	
 	.order-map {
