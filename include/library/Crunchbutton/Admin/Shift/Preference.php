@@ -37,6 +37,18 @@ class Crunchbutton_Admin_Shift_Preference extends Cana_Table {
 																							ORDER BY asp.ranking ASC' );
 	}
 
+	public function highestRankingByPeriod( $id_admin, $from, $to ){
+			$shift = Crunchbutton_Community_Shift::q( 'SELECT cs.*, asp.ranking FROM community_shift cs 
+																							INNER JOIN admin_shift_preference asp ON asp.id_community_shift = cs.id_community_shift
+																							WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $to . '" 
+																							AND asp.id_admin = ' . $id_admin . ' 
+																							ORDER BY asp.ranking DESC LIMIT 1' );	
+			if( $shift->id_community_shift ){
+				return $shift->ranking;
+			}
+			return 0;
+	}
+
 	public function adminHasShift( $id_admin, $id_community_shift ){
 		$shift = Crunchbutton_Admin_Shift_Preference::q( "SELECT * FROM admin_shift_preference WHERE id_admin = " . $id_admin . " AND id_community_shift = " . $id_community_shift . " LIMIT 1" );
 		if( $shift->id_admin_shift_preference ){
