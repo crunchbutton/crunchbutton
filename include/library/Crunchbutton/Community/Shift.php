@@ -606,7 +606,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$admin = $assignment->admin();
 
 			if( $shift && $admin ){
-				$message = "Remember: you're scheduled to drive for Crunchbutton tomorrow, " . $now->format( 'M jS Y' ) . ", from " . $shift->startEndToString();
+				$message = "Remember: you're scheduled to drive for Crunchbutton tomorrow, " . $now->format( 'M jS Y' ) . ", from " . $shift->startEndToString() . "\nRemember to charge your phone!";
 				$txt = $admin->txt;
 				$phone = $admin->phone;
 
