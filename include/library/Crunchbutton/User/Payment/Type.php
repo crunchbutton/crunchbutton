@@ -2,7 +2,7 @@
 
 class Crunchbutton_User_Payment_Type extends Cana_Table {
 
-	public function processor(){
+	public function processor() {
 		return c::config()->processor;
 	}	
 
@@ -18,12 +18,16 @@ class Crunchbutton_User_Payment_Type extends Cana_Table {
 		return false;
 	}
 
-	public function desactiveOlderPaymentsType( $id_user, $id_user_payment_type ){
-		$where = ' AND ' . Crunchbutton_User_Payment_Type::processor() . '_id IS NOT NULL';
-		$query = 'UPDATE user_payment_type SET active = 0 WHERE id_user = ' . $id_user . ' AND id_user_payment_type != ' . $id_user_payment_type . $where;
-		c::db()->query( $query );
+	public function desactiveOlderPaymentsType() {
+		if (!$this->id_user || !$this->id_user_payment_type) {
+			return false;
+		}
+		self::q('select * from user_payment_type where id_user="'.$this->id_user.'" and id_user_payment_type!= "'.$this->id_user_payment_type.'"')->each(function() {
+			$this->deactivate();
+		});
 	}
 
+	// @todo: shouldnt be used anymore
 	public function copyPaymentFromUserTable( $id_user = null ){
 		$id_user = ( $id_user ) ? $id_user : c::user()->id_user;
 		if( $id_user ){
@@ -44,6 +48,11 @@ class Crunchbutton_User_Payment_Type extends Cana_Table {
 			}
 		}
 		return false;
+	}
+	
+	public function deactivate() {
+		$this->active = 0;
+		$this->save();
 	}
 
 	public function __construct($id = null) {
