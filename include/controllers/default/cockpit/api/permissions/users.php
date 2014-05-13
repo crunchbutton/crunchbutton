@@ -107,6 +107,7 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccou
 							$admin = Crunchbutton_Admin::o( $id_admin );
 						} else {
 							$admin = new Crunchbutton_Admin();
+							$admin->active = 1;
 						}
 						$admin->name = $name;
 						$admin->phone = $phone;
@@ -118,6 +119,7 @@ class Controller_api_Permissions_Users extends Crunchbutton_Controller_RestAccou
 						if( $password != '' ){
 							$admin->pass = $admin->makePass( $password );
 						}
+
 						$admin->save();
 						$admin->removeGroups();
 						$ids_group = explode( ',' , $ids_group );
