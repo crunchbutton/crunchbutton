@@ -371,6 +371,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		return Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = ' . $this->id_community_shift . ' ORDER BY ranking  DESC' );
 	}
 
+	public function getAdminPreferencesByDriver( $id_admin ){
+		return Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = ' . $this->id_community_shift . ' AND id_admin = ' . $id_admin . ' ORDER BY ranking  DESC' );
+	}
+
 	public function getDrivers(){
 		return Crunchbutton_Admin::q( 'SELECT a.* FROM admin a INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin AND asa.id_community_shift = ' . $this->id_community_shift );
 	}
