@@ -114,6 +114,11 @@
 						<div title="Back" class="nav-back hide-before-init" ng-click="back()" ng-show="hasBack"></div>
 						
 						<div class="notifications">
+
+							<div class="flash-message {{flash.getLevel()}}" ng-show="flash.hasMessage()">
+								<p>{{flash.getMessage()}}</p>
+							</div>
+
 							<div class="notification notification-orders" ng-click="navigation.link('/drivers/orders')">
 								<div class="badge" ng-show="newDriverOrders.count">{{newDriverOrders.count}}</div>
 								<i class="fa fa-truck"></i>

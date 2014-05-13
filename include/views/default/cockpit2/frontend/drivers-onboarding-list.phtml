@@ -1,0 +1,21 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+	<table>
+		<thead>
+			<tr>
+				<td>Name</td>
+				<td></td>
+			</tr>
+		</thead>		
+		<tbody>
+			<tr ng-repeat="driver in drivers">
+				<td>{{driver.name}}</td>
+				<td>
+					<button ng-click="edit(driver.id_admin)">edit</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>

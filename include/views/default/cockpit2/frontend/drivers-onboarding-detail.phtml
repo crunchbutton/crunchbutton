@@ -1,56 +1,56 @@
 <div class="top-pad"></div>
 
 <div class="content-padding" ng-show="ready">
+	<div class="content">
 
-	<ul class="tab-options">
-		<li ng-click="tab.change(1);" ng-class="{ 'tab-active' : tab.step == 1 }">
-			step 1
-		</li>
-		<li ng-click="tab.change(2);" ng-class="{ 'tab-active' : tab.step == 2 }">
-			step 2
-		</li>
-		<li ng-click="tab.change(3);" ng-class="{ 'tab-active' : tab.step == 3 }">
-			step 3
-		</li>
-	</ul>
-
-	<ul class="tab-content">
-		<li ng-show="tab.step == 1">
-			<ul>
+		<h1 ng-if="!driver.id_admin">New driver</h1>
+		<h1 ng-if="driver.id_admin">Edit driver</h1>
+		<form name="form" novalidate>
+			<ul class="form" ng-class="{'submitted' : submitted}">
 				<li> 
 					<label for="driver-name">
 						<div class="label">Name:</div>
-						<div class="input"><input type="text" name="driver-name" ng-model="driver.name" placeholder="Name"></div>
+						<div class="input"><input type="text" name="driverName" ng-model="driver.name" required placeholder="Name" ng-minlength="5" ng-maxlength="40" ></div>
 					</label>
+					<div class="error" ng-show="submitted && form.driverName.$invalid">
+						<small class="error" ng-show="form.driverName.$error.required">Required.</small>
+						<small class="error" ng-show="form.driverName.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
+						<small class="error" ng-show="form.driverName.$error.maxlength">Name cannot be longer than 40 characters.</small>
+					</div>
 				</li>
 				<li> 
 					<label for="driver-phone">
 						<div class="label">Phone:</div>
-						<div class="input"><input type="tel" phone="driver-phone" ng-model="driver.phone" placeholder="Phone"></div>
+						<div class="input"><input type="text" name="driverPhone" ng-model="driver.phone" required phone-validate placeholder="Phone"></div>
 					</label>
+					<div class="error" ng-show="submitted && form.driverPhone.$invalid">
+						<small class="error" ng-show="form.driverPhone.$error.required">Required.</small>
+						<small class="error" ng-show="form.driverPhone.$error.phoneValidate">Enter a valid phone.</small>
+					</div>
 				</li>
 				<li>
 					<label for="driver-community">
 						<div class="label">Community:</div>
-						<select ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>
+						<select name="driverIdCommunity" required ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>
 					</label>
+					<div class="error" ng-show="submitted && form.driverIdCommunity.$invalid">
+						<small class="error" ng-show="form.driverIdCommunity.$error.required">Required.</small>
+					</div>
 				</li>
 				<li>
 					<label for="driver-email">
 						<div class="label">email:</div>
-						<div class="input"><input type="email" email="driver-email" ng-model="driver.email" placeholder="Email"></div>
+						<div class="input"><input type="email" name="driverEmail" ng-model="driver.email" placeholder="Email"></div>
 					</label>
+					<div class="error" ng-show="submitted && form.driverEmail.$invalid">
+						<small class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
+  				</div>
 				</li>
-			</ul>		
-		</li>
-		<li ng-show="tab.step == 2">
-			step 2
-		</li>
-		<li ng-show="tab.step == 3">
-			step 3
-		</li>
-	</ul>
-
-	
-
+				<li class="buttons">
+					<button ng-click="save();">Save</button>
+					<button ng-click="cancel()">Cancel</button>
+				</li>
+			</ul>
+		</form>
+	</div>
 </div>

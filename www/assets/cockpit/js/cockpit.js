@@ -33,7 +33,7 @@ App.NGinit = function() {
 	}
 };
 
-var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource'], function( $httpProvider ) {
+var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource' ], function( $httpProvider ) {
 	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 	var param = function(obj) {
 		var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
@@ -102,11 +102,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		.when('/drivers/onboarding/', {
 			action: 'drivers-onboarding',
 			controller: 'DriversOnboardingCtrl',
-			templateUrl: 'assets/view/drivers-onboarding.html'
+			templateUrl: 'assets/view/drivers-onboarding-list.html'
 		})
 		.when('/drivers/onboarding/new', {
 			action: 'drivers-onboarding',
-			controller: 'DriversOnboardingNewCtrl',
+			controller: 'DriversOnboardingDetailsCtrl',
+			templateUrl: 'assets/view/drivers-onboarding-detail.html'
+		})
+		.when('/drivers/onboarding/:id', {
+			action: 'drivers-onboarding',
+			controller: 'DriversOnboardingDetailsCtrl',
 			templateUrl: 'assets/view/drivers-onboarding-detail.html'
 		})
 		.otherwise({
@@ -119,7 +124,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService ) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, flash ) {
 
 	// define external pointers
 	App.rootScope = $rootScope;
@@ -127,6 +132,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	App.http = $http;
 
 	// define global services
+	$rootScope.flash = flash;
 	$rootScope.navigation = MainNavigationService;
 	$rootScope.isPhoneGap = App.isPhoneGap;
 	$rootScope.server = App.server;
@@ -514,3 +520,43 @@ App.dialog = {
 		return $.magnificPopup && $.magnificPopup.instance && $.magnificPopup.instance.isOpen;
 	}
 };
+
+// Service to show a flash message
+NGApp.factory( 'flash', function( $timeout ) {
+
+	var message = [];
+	
+	// $rootScope.$on('$routeChangeSuccess', function() {
+	// 	clearMessage();
+	// } );
+
+	var clearMessage = function(){
+		message = false;
+	}
+
+	service = {};
+	service.setMessage = function( text, level ){
+		var level = ( level ) ? level : 'success';
+		message = { level : level, text : text };
+		$timeout( function() { clearMessage() }, 5 * 1000 );
+	}
+
+	service.hasMessage = function(){
+		return message != false;
+	}
+
+	service.getLevel = function(){
+		if( service.hasMessage() ){
+			return message.level;	
+		}
+	}
+
+	service.getMessage = function(){
+		if( service.hasMessage() ){
+			return message.text;	
+		}
+	}
+
+	return service;
+
+} );
