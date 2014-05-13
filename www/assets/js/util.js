@@ -172,3 +172,29 @@ $.pluck = function(ar, len) {
 	}
 	return ar.slice(0, len || len.length);
 };
+
+
+
+
+function getCardType(number) {
+	var re = new RegExp("^4");
+	if (number.match(re) != null) {
+		return "visa";
+	}
+	 
+	re = new RegExp("^(34|37)");
+	if (number.match(re) != null) {
+		return "amex";
+	}
+	 
+	re = new RegExp("^5[1-5]");
+	if (number.match(re) != null) {
+		return "mastercard";
+	} 
+	
+	re = new RegExp("^6011");
+	if (number.match(re) != null) {
+		return "discover";
+	}
+	return "";
+}
