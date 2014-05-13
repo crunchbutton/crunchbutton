@@ -30,19 +30,19 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 						switch ( c::getPagePiece(4) ) {
 							case 'delivery-pickedup':
-								$res['status'] = $order->deliveryPickedup(c::admin());
+								$res['status'] = $order->deliveryPickedup(c::user());
 								break;
 
 							case 'delivery-delivered':
-								$res['status'] = $order->deliveryDelivered(c::admin());
+								$res['status'] = $order->deliveryDelivered(c::user());
 								break;
 
 							case 'delivery-accept':
-								$res['status'] = $order->deliveryAccept(c::admin());
+								$res['status'] = $order->deliveryAccept(c::user());
 								break;
 
 							case 'delivery-reject':
-								$order->deliveryReject(c::admin());
+								$order->deliveryReject(c::user());
 								$res['status'] = true;
 								break;
 						}
