@@ -138,7 +138,7 @@ class BalancedTest extends PHPUnit_Framework_TestCase {
 	public function testCredit() {
 		$account = c::balanced()->createBankAccount('UNIT TEST RESTAURANT', '9900000002', '021000021', 'checking');
 		$res = $account->credits->create([
-			'amount' => $amount * 100
+			'amount' => 5555
 		]);
 		$this->assertTrue($res->id ? true : false);
 	}
