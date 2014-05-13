@@ -2,17 +2,6 @@
 
 class Crunchbutton_Charge_Balanced extends Cana_Model {
 	public function __construct($params = []) {
-		if ($params['customer_id']) {
-			$account = Crunchbutton_Balanced_Account::byId($params['customer_id']);
-		}
-		if (!$account->id) {
-			$account = Crunchbutton_Balanced_Account::bySession();
-		}
-		
-		if ($account->id) {
-			$this->_customer = $account;
-		}
-		
 		if ($params['card_id']) {
 			$this->_card = Crunchbutton_Balanced_Card::byId($params['card_id']);
 		}
@@ -27,26 +16,6 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 		if ($params['card']) {
 			$reason = true;
 			try {
-				// building the uri is faster than building the object since we dont have to go to the server again
-
-				$card = c::balanced()->cards->uri.'/'.$params['card']['id'];
-
-				if (!$this->customer()) {
-					$customer = c::balanced()->createBuyer(
-						'session-'.c::auth()->session()->id_session.'@_DOMAIN_',
-						$card,
-						[
-							'name' => $params['name'],
-							'phone' => $params['phone'],
-							'address' => $params['address']
-						]
-					);
-					$this->_customer = $customer;
-
-				} else {
-					$this->customer()->addCard($card);
-				}
-
 				$this->_card = Crunchbutton_Balanced_Card::byId($params['card']['id']);
 				$c = $this->_card->debits->create([
 					'amount' => $params['amount'] * 100,
@@ -66,11 +35,6 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 			}
 		}
 
-		if ($success) {
-			// if the transaction was a success, create the token
-			//$params['card'] = substr($params['number'], -4);
-		}
-		
 		// if there was no number, and there was a user with a stored card, use the users stored card
 		if (!$params['card'] && $params['user'] && $this->card()->id) {
 
@@ -107,14 +71,8 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 			'status' => $success,
 			'txn' => $txn,
 			'errors' => $errors,
-			'customer' => $this->customer(),
 			'card' => $this->card()
 		];
-
-	}
-	
-	public function customer() {
-		return $this->_customer;
 	}
 	
 	public function card() {

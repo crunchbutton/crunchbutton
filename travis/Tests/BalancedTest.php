@@ -118,8 +118,18 @@ class BalancedTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($res);
 	}
 	
-	public function testDeposit() {
+	
+	public function testCreateMerchant() {
 		
 	}
+	
+	public function testCreatebankAccount() {
+		
+	}
+	
+	public function testDebit() {
+		
+	}
+
 
 }

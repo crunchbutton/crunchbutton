@@ -305,30 +305,40 @@ class Crunchbutton_Order extends Cana_Table {
 			$_notes = $giftcards[ 'notes' ];	
 		}
 
-		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$_notes' => $_notes, '$this->notes' => $this->notes ]);
+		Log::debug([
+			'issue' => '#1551',
+			'method' => 'process',
+			'$this->final_price' => $this->final_price,
+			'giftcardValue'=> $this->giftcardValue,
+			'$_notes' => $_notes,
+			'$this->notes' => $this->notes
+		]);
 
+		// process the payment
 		$res = $this->verifyPayment();
 
-		if ( $res !== true ) {
-		// Log the order - credit card error
-		Log::debug([
-							'action' 				=> 'credit card error',
-							'address' 			=> $params['address'],
-							'phone' 				=> $params['phone'],
-							'pay_type' 			=> $params['pay_type'],
-							'tip' 					=> $params['tip'],
-							'autotip'				=> $params['autotip'],
-							'autotip_value'	=> $params['autotip_value'],
-							'name' 					=> $params['name'],
-							'user_id' 			=> c::user()->id_user,
-							'delivery_type' => $params['delivery_type'],
-							'restaurant' 		=> $params['restaurant'],
-							'notes' 				=> $params['notes'],
-							'errors' 				=> $res['errors'],
-							'cart' 					=> $params['cart'],
-							'type' 					=> 'order-log'
-						]);
+		// failed to process the card
+		if ($res !== true) {
+			Log::debug([
+				'action' 				=> 'credit card error',
+				'address' 				=> $params['address'],
+				'phone' 				=> $params['phone'],
+				'pay_type' 				=> $params['pay_type'],
+				'tip' 					=> $params['tip'],
+				'autotip'				=> $params['autotip'],
+				'autotip_value'			=> $params['autotip_value'],
+				'name' 					=> $params['name'],
+				'user_id' 				=> c::user()->id_user,
+				'delivery_type' 		=> $params['delivery_type'],
+				'restaurant' 			=> $params['restaurant'],
+				'notes' 				=> $params['notes'],
+				'errors' 				=> $res['errors'],
+				'cart' 					=> $params['cart'],
+				'type' 					=> 'order-log'
+			]);
 			return $res['errors'];
+		
+		// successfully processed the card
 		} else {
 			$this->txn = $this->transaction();
 		}
@@ -360,48 +370,38 @@ class Crunchbutton_Order extends Cana_Table {
 		if ($this->pay_type == 'card' ) {
 			// Verify if the user already has a payment type
 			$payment_type = $user->payment_type();
-			if( !$payment_type ){
-				// Copy the last user's payment
-				$payment_type = Crunchbutton_User_Payment_Type::copyPaymentFromUserTable( $user->id_user );	
-			}
-			$saveThisPayment = false;
-			// The user hasnt any payment type, so lets create one
-			if( $payment_type ){
-				// Compare this payment with the last one
-				if( $params['card']['id'] && $params['card']['year'] && $params['card']['lastfour'] && $params['card']['month'] && ( 
-						$user_payment_type->card != '************'.$params['card']['lastfour'] ||
-						$user_payment_type->card_exp_year != $params['card']['year'] || 
-						$user_payment_type->card_exp_month != $params['card']['month'] ) ){
-					$saveThisPayment = true;
+
+			// if the user gave us a new card, store it because thats the one we used
+			if (!$payment_type || $this->_card['id']) {
+
+				// create a new payment type
+				$payment_type = new User_Payment_Type([
+					'id_user' => $user->id_user,
+					'active' => 1,
+					'card' => $this->_card['lastfour'] ? ('************'.$this->_card['lastfour']) : '',
+					'card_type' => $this->_card['card_type'],
+					'card_exp_year' => $this->_card['year'],
+					'card_exp_month' => $this->_card['month'],
+					'date' => date('Y-m-d H:i:s')
+				]);
+				
+				switch (Crunchbutton_User_Payment_Type::processor()) {
+					case 'stripe':
+						$payment_type->stripe_id = $this->_customer->id;
+						break;
+
+					case 'balanced':
+					default:
+						$payment_type->balanced_id = $this->_paymentType->id;
+						break;
 				}
-			} else {
-				$saveThisPayment = true;
-			}
-			if( $saveThisPayment ){
-				$user_payment_type = new Crunchbutton_User_Payment_Type();
-				$user_payment_type->id_user = $user->id_user;
-				$user_payment_type->active = 1;
-				if ($this->_customer->id) {
-					switch (Crunchbutton_User_Payment_Type::processor()) {
-						case 'stripe':
-						default:
-							$user_payment_type->stripe_id = $this->_customer->id;
-							break;
-						case 'balanced':
-							$user_payment_type->balanced_id = $this->_paymentType->id;
-							break;
-					}
-				}
-				$user_payment_type->card = '************'.$params['card']['lastfour'];
-				$user_payment_type->card_type = $params['card']['card_type'];
-				$user_payment_type->card_exp_year = $params['card']['year'];
-				$user_payment_type->card_exp_month = $params['card']['month'];
-				$user_payment_type->date = date('Y-m-d H:i:s');
-				$user_payment_type->save();
+				
+				$payment_type->save();
+
 				// Desactive others payments
-				$user_payment_type->desactiveOlderPaymentsType( $user->id_user, $user_payment_type->id_user_payment_type );
+				$payment_type->desactiveOlderPaymentsType();
 			}
-			$payment_type = $user->payment_type();
+
 			$this->id_user_payment_type = $payment_type->id_user_payment_type;
 		}
 
@@ -658,12 +658,46 @@ class Crunchbutton_Order extends Cana_Table {
 				$user = c::user()->id_user ? c::user() : null;
 				$paymentType = $user->payment_type();
 				
-				if (!$this->_card && $paymentType->id_user_payment_type) {
-					// we have need to use a stored users card and the apporiate payment type
+				if (!$this->_card['id'] && !$paymentType->id_user_payment_type && $user->balanced_id) {
+					// user only has a balanced customer id, not a payment. copy payment type over
+					$paymentType = (new User_Payment_Type([
+						'id_user' => $user->id_user,
+						'active' => 1,
+//						'stripe_id' => $user->stripe_id,
+						'balanced_id' => $user->balanced_id,
+						'card' => $user->card,
+						'card_exp_month' => $user->card_exp_month,
+						'card_exp_year' => $user->card_exp_year,
+						'date' => date('Y-m-d H:i:s')
+					]))->save();
+				}
+				
+				if (!$this->_card['id'] && $paymentType->id_user_payment_type) {
+					// use a stored users card and the apporiate payment type
 
 					if ($paymentType->balanced_id) {
+					
+						if (substr($paymentType->balanced_id,0,2) != 'CC') {
+							// we have stored the customer and not the payment type. need to fix that
+							$cards = Crunchbutton_Balanced_Account::byId($paymentType->balanced_id)->cards;
+							if (get_class($cards) == 'RESTful\Collection') {
+								foreach ($cards as $card) {
+									$c = $card;
+								}
+	
+								$paymentType = (new User_Payment_Type([
+									'id_user' => $user->id_user,
+									'active' => 1,
+									'balanced_id' => $c->id,
+									'card' => str_replace('x','*',$c->number),
+									'card_exp_month' => $c->expiration_year,
+									'card_exp_year' => $c->expiration_month,
+									'date' => date('Y-m-d H:i:s')
+								]))->save();
+							}
+						}
+					
 						$charge = new Charge_Balanced([
-							'customer_id' => $user->balanced_id,
 							'card_id' => $paymentType->balanced_id
 						]);
 
@@ -673,13 +707,12 @@ class Crunchbutton_Order extends Cana_Table {
 						]);
 					}
 				}
-				
+
 				if (!$charge) {
 					switch (Crunchbutton_User_Payment_Type::processor()) {
 						case 'balanced':
-							$charge = new Charge_Balanced([
-								'customer_id' => $user->balanced_id
-							]);
+							$charge = new Charge_Balanced();
+							break;
 						case 'stripe':
 							$charge = new Charge_Stripe([
 								'stripe_id' => $user->stripe_id
@@ -695,7 +728,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 				// issue #3145
 				if ($amount > .5) {
-						$r = $charge->charge( [
+					$r = $charge->charge([
 						'amount' => $amount,
 						'card' => $this->_card,
 						'name' => $this->name,
@@ -1891,20 +1924,26 @@ class Crunchbutton_Order extends Cana_Table {
 								$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
 								$ch->refund();
 								
-								// cancel the hold
-								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
-								$res = $hold->void();
-								if (!$res) {
-									Log::debug([
-										'order' => $this->id_order,
-										'action' => 'refund',
-										'status' => 'failed to void hold'
-									]);
-								}
-								
 							} catch (Exception $e) {
 								print_r($e);
 								return false;
+							}
+							
+							$res = false;
+							try {
+								// cancel the hold
+								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
+								$res = $hold->void();
+
+							} catch (Exception $e) {
+	
+							}
+							if (!$res) {
+								Log::debug([
+									'order' => $this->id_order,
+									'action' => 'refund',
+									'status' => 'failed to void hold'
+								]);
 							}
 							break;
 					}
