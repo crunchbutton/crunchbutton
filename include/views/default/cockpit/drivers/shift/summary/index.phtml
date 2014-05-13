@@ -65,11 +65,20 @@
 										foreach( $segments as $segment ) { 
 											$segment = Crunchbutton_Community_Shift::o( $segment->id_community_shift );
 											$_drivers = $segment->getDrivers();
+											$firstDayOfWeek = $segment->firstDayOfWeek()->format( 'Y-m-d' );
+											$lastDayOfWeek = $segment->lastDayOfWeek()->format( 'Y-m-d' );
 											$hasDriver = false;
 											$drivers = [];
 											foreach( $_drivers as $driver ){
 												$hasDriver = true;
-												$drivers[] = $driver->name;
+												$ranking = 0;
+												$highestRanking = 0;
+												$preference = $segment->getAdminPreferencesByDriver( $driver->id_admin );
+												$highestRanking = Crunchbutton_Admin_Shift_Preference::highestRankingByPeriod( $driver->id_admin, $firstDayOfWeek, $lastDayOfWeek );
+												if( $preference->id_admin_shift_preference ){
+													$ranking = $preference->ranking;
+												}
+												$drivers[] = $driver->name . " ({$ranking} of {$highestRanking})";
 											}
 											if( $hasDriver ){
 												$drivers = join( ', ', $drivers ); 	
