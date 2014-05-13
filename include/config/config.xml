@@ -130,8 +130,8 @@
 			<uri>/1.1/marketplaces/***REMOVED***</uri>
 		</live>
 		<dev>
-			<secret>***REMOVED***</secret>
-			<uri>/1.1/marketplaces/***REMOVED***</uri>
+			<secret>ak-test-78Lbl2ZDE9ll0zEkHMQBsDZBhCSOjdJV</secret>
+			<uri>/1.1/marketplaces/TEST-MP6kDcB0F9VsdCGOwYMicIzL</uri>
 		</dev>
 		<sharedMerchant>_KEY_</sharedMerchant>
 	</balanced>
