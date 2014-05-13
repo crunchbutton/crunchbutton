@@ -1,6 +1,6 @@
 <?php
 
-class Controller_api_drivershifts extends Crunchbutton_Controller_RestAccount {
+class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 

@@ -3,11 +3,16 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	var service = {};
 
 	// Create a private resource 'drivers'
-	var drivers = $resource( App.service + 'driveronboarding/:action/:id_admin', { id_admin: '@id_admin', action: '@action' }, {
-				// actions
+	var drivers = $resource( App.service + 'driver/:action/:id_admin', { id_admin: '@id_admin', action: '@action' }, {
 				'get' : { 'method': 'GET', params : { 'action' : 'driver' } },
 				'list' : { 'method': 'GET', params : { action: 'list', id_admin: null } },
 				'save' : { 'method': 'POST', params : { action: 'save' } }
+			}	
+		);
+
+	// documents resource
+	var documents = $resource( App.service + 'driver/documents/:id_admin', { id_admin: '@id_admin' }, {
+				'status' : { 'method': 'GET', params : {}, isArray: true },
 			}	
 		);
 
@@ -23,9 +28,19 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		} );
 	}
 
+	// returns the driver's docs
+	service.docs = function( callback ){
+		var id_admin = $routeParams.id;
+		if( id_admin ){
+			documents.status( { 'id_admin': id_admin }, function( docs ){ 
+				callback( docs ); 
+			} );	
+		} 
+	}
+
 	service.get = function( callback ){
 		var id_admin = $routeParams.id;
-		if( id_admin && id_admin != 'new' ){
+		if( id_admin ){
 			drivers.get( { 'id_admin': id_admin }, function( driver ){ 
 				if( driver.communities ){
 					angular.forEach( driver.communities, function( name, id_community ){
@@ -34,8 +49,9 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 				}
 				callback( driver ); 
 			} );	
+		} else {
+			callback( {} ); 
 		}
-		
 	}
 
 	return service;

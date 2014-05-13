@@ -1,6 +1,7 @@
 <div class="top-pad"></div>
 
 <div class="content-padding" ng-show="ready">
+	<button ng-click="add()">new driver</button>
 	<table>
 		<thead>
 			<tr>
@@ -17,5 +18,6 @@
 			</tr>
 		</tbody>
 	</table>
-
 </div>
+
+<div ng-show="!ready" class="loading">Loading</div>

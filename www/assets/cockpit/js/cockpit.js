@@ -106,13 +106,13 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 		})
 		.when('/drivers/onboarding/new', {
 			action: 'drivers-onboarding',
-			controller: 'DriversOnboardingDetailsCtrl',
-			templateUrl: 'assets/view/drivers-onboarding-detail.html'
+			controller: 'DriversOnboardingFormCtrl',
+			templateUrl: 'assets/view/drivers-onboarding-form.html'
 		})
 		.when('/drivers/onboarding/:id', {
 			action: 'drivers-onboarding',
-			controller: 'DriversOnboardingDetailsCtrl',
-			templateUrl: 'assets/view/drivers-onboarding-detail.html'
+			controller: 'DriversOnboardingFormCtrl',
+			templateUrl: 'assets/view/drivers-onboarding-form.html'
 		})
 		.otherwise({
 			action: 'home',

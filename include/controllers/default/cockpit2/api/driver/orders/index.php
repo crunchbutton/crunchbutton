@@ -1,14 +1,14 @@
 <?php
 
-class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
+class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 
 		$lastHours = 12; // last 12 hours
 
-		if( c::getPagePiece( 2 ) ){
+		if( c::getPagePiece( 3 ) ){
 
-			switch ( c::getPagePiece( 2 ) ) {
+			switch ( c::getPagePiece( 3 ) ) {
 				case 'count':
 					$count = 0;
 					$orders = Order::deliveryOrders( $lastHours ); 
@@ -22,13 +22,13 @@ class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
 					break;
 				
 				default:
-					$order = Order::o(c::getPagePiece( 2 ) );
+					$order = Order::o(c::getPagePiece( 3 ) );
 
 					if ( $this->method() == 'post' ) {
 
 						$res = [];
 
-						switch ( c::getPagePiece(3) ) {
+						switch ( c::getPagePiece(4) ) {
 							case 'delivery-pickedup':
 								$res['status'] = $order->deliveryPickedup(c::admin());
 								break;

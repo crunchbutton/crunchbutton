@@ -8,7 +8,7 @@
 		<form name="form" novalidate>
 			<ul class="form" ng-class="{'submitted' : submitted}">
 				<li> 
-					<label for="driver-name">
+					<label for="driverName">
 						<div class="label">Name:</div>
 						<div class="input"><input type="text" name="driverName" ng-model="driver.name" required placeholder="Name" ng-minlength="5" ng-maxlength="40" ></div>
 					</label>
@@ -19,7 +19,7 @@
 					</div>
 				</li>
 				<li> 
-					<label for="driver-phone">
+					<label for="driverPhone">
 						<div class="label">Phone:</div>
 						<div class="input"><input type="text" name="driverPhone" ng-model="driver.phone" required phone-validate placeholder="Phone"></div>
 					</label>
@@ -29,7 +29,7 @@
 					</div>
 				</li>
 				<li>
-					<label for="driver-community">
+					<label for="driverCommunity">
 						<div class="label">Community:</div>
 						<select name="driverIdCommunity" required ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>
 					</label>
@@ -38,13 +38,27 @@
 					</div>
 				</li>
 				<li>
-					<label for="driver-email">
+					<label for="driverEmail">
 						<div class="label">email:</div>
 						<div class="input"><input type="email" name="driverEmail" ng-model="driver.email" placeholder="Email"></div>
 					</label>
 					<div class="error" ng-show="submitted && form.driverEmail.$invalid">
 						<small class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
   				</div>
+				</li>
+				
+				<li>
+					<h2>Documents</h2>
+					<ul>
+						<li ng-repeat="doc in documents">
+							<label for="doc{{doc.id_driver_document}}">
+								<div class="label">{{doc.name}}</div>
+								<div ng-show="doc.status">
+									Download: <a href="{{doc.status.url}}" target="_blank">{{doc.status.url}}</a>									
+								</div>
+							</label>
+						</li>
+					</ul>
 				</li>
 				<li class="buttons">
 					<button ng-click="save();">Save</button>

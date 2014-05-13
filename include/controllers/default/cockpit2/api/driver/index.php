@@ -1,10 +1,12 @@
 <?php
 
-class Controller_api_driveronboarding extends Crunchbutton_Controller_RestAccount {
+class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 		$action = c::getPagePiece( 2 );
+
 		switch ( $action ) {
+
 			case 'save':
 				$this->_save();
 				break;
