@@ -137,8 +137,10 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 	}
 
 	public function init() {
+
 		switch ($this->method()) {
 			case 'post':
+
 				// @todo: real logins
 				if ($_SESSION['admin']) {
 					// save the restaurant
