@@ -80,7 +80,6 @@ App.tokenizeCard_stripe = function( card, complete ) {
 App.tokenizeCard_balanced = function(card, completed) {
 
 	var handleResponse = function(response) {
-
 		var res = {
 			status: false
 		};
@@ -99,7 +98,7 @@ App.tokenizeCard_balanced = function(card, completed) {
 				if (version == '1.1') {
 					res.id = response.cards[0].id;
 					res.uri = response.cards[0].href;
-					res.card_type = '';
+					res.card_type = getCardType(card.number);
 					res.lastfour = card.number.substr(-4);
 				} else {
 					res.id = response.data.id;
