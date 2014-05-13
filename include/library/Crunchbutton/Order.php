@@ -1924,20 +1924,26 @@ class Crunchbutton_Order extends Cana_Table {
 								$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
 								$ch->refund();
 								
-								// cancel the hold
-								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
-								$res = $hold->void();
-								if (!$res) {
-									Log::debug([
-										'order' => $this->id_order,
-										'action' => 'refund',
-										'status' => 'failed to void hold'
-									]);
-								}
-								
 							} catch (Exception $e) {
 								print_r($e);
 								return false;
+							}
+							
+							$res = false;
+							try {
+								// cancel the hold
+								$hold = Crunchbutton_Balanced_CardHold::byOrder($this);
+								$res = $hold->void();
+
+							} catch (Exception $e) {
+	
+							}
+							if (!$res) {
+								Log::debug([
+									'order' => $this->id_order,
+									'action' => 'refund',
+									'status' => 'failed to void hold'
+								]);
 							}
 							break;
 					}
