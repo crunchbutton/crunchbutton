@@ -443,7 +443,7 @@ NGApp.directive( 'modalReset', function( $rootScope ) {
 NGApp.directive( 'geoComplete', function() {
 	return {
 		restrict: 'A',
-    scope: { ngModel : '=', geoCompleteEnter : '&' },
+		scope: { ngModel : '=', geoCompleteEnter : '&' },
 		link: function( scope, element, attrs ) {
 			var el = document.getElementById( attrs.id );
 			if( typeof google == 'object' && google.maps && google.maps.places && google.maps.places.Autocomplete ){
@@ -461,5 +461,45 @@ NGApp.directive( 'geoComplete', function() {
 				} );
 			}
 		}
+	};
+});
+
+NGApp.directive( 'phoneValidate', function () {
+	return {
+			restrict: 'A',
+			require: 'ngModel',
+
+			link: function ( scope, elm, attrs, ctrl ) {
+
+				ctrl.$parsers.unshift( function ( val ) {
+
+					var isValid = false;
+					var phoneVal = val.replace( /[^0-9]/g, '' );
+
+					if ( phoneVal || phoneVal.length == 10) {
+
+						var phoneVal = phoneVal.split(''), prev;
+
+						for (x in phoneVal) {
+							if (!prev) {
+								prev = phoneVal[x];
+								continue;
+							}
+							if (phoneVal[x] != prev) {
+								isValid = true;
+							}
+						}
+					}
+
+					if( !isValid ){
+						ctrl.$setValidity( 'phoneValidate', false );
+						return undefined;
+					} else {
+						ctrl.$setValidity( 'phoneValidate', true );
+						return val;
+					}
+
+				} );
+			}
 	};
 });

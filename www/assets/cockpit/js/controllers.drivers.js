@@ -140,22 +140,50 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 
 NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, DriverOnboardingService ) {
 	$scope.ready = false;
-});
 
-NGApp.controller( 'DriversOnboardingNewCtrl', function ( $scope, DriverOnboardingService, CommunityService ) {
-	
-	$scope.tab = { step : 1 };
-	$scope.tab.change = function( step ){
-		$scope.tab.step = step;
+	DriverOnboardingService.list( function( data ){
+		$scope.drivers = data;
+		$scope.ready = true;
+	} );
+
+	$scope.edit = function( id_admin ){
+		$scope.navigation.link( '/drivers/onboarding/' + id_admin );
+	}
+} );
+
+NGApp.controller( 'DriversOnboardingDetailsCtrl', function ( $scope, DriverOnboardingService, CommunityService ) {
+
+	$scope.ready = false;
+
+	$scope.submitted = false;
+
+	DriverOnboardingService.get( function( driver ){
+
+		$scope.driver = driver;
+
+		// Load the communities and put them at scope
+		$scope.communities = [];
+		CommunityService.listSimple( function( data ){
+			$scope.communities = data;
+			$scope.ready = true;
+		} );
+
+	} );
+
+	// method save that saves the driver
+	$scope.save = function(){
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+		DriverOnboardingService.save( $scope.driver, function(){
+			$scope.navigation.link( '/drivers/onboarding/' );
+			$scope.flash.setMessage( 'Driver saved!' );
+		} );
 	}
 
-	$scope.ready = true;
-
-	$scope.communities = [];
-
-	// Load the communities and put them at scope
-	CommunityService.listSimple( function( data ){
-		$scope.communities = data;
-	} );
+	$scope.cancel = function(){
+		$scope.navigation.link( '/drivers/onboarding/' );
+	}
 
 } );
