@@ -4,7 +4,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 
-		$communities = c::admin()->communitiesHeDeliveriesFor();
+		$communities = c::user()->communitiesHeDeliveriesFor();
 		$_communities = [];
 		foreach( $communities as $community ){
 			$_communities[] = $community->id_community;
@@ -18,7 +18,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			$mine = 0;
 			$_drivers = [];
 			foreach ( $drivers as $driver ) { 
-				if( $driver->id_admin == c::admin()->id_admin ){
+				if( $driver->id_admin == c::user()->id_admin ){
 					$mine = 1;
 				}
 				$_drivers[] = [ 'name' => $driver->name, 'phone' => $driver->phone() ];

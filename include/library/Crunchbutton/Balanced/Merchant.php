@@ -14,7 +14,7 @@ class Crunchbutton_Balanced_Merchant extends Cana_Model {
 
 		try {
 			$account = c::balanced()->accounts->query()
-				->filter(Balanced\Account::$f->email_address->eq($email))
+				->filter(Balanced\Customer::$f->email_address->eq($email))
 				->one();
 		
 		} catch (Exception $e) {
@@ -24,7 +24,7 @@ class Crunchbutton_Balanced_Merchant extends Cana_Model {
 	}
 
 	public static function byId($id) {
-		$account = Balanced\Account::get(c::balanced()->accounts->uri.'/'.$id);
+		$account = Balanced\Customer::get(c::balanced()->customers->uri.'/'.$id);
 		return $account;
 	}
 }

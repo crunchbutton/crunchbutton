@@ -120,15 +120,27 @@ class BalancedTest extends PHPUnit_Framework_TestCase {
 	
 	
 	public function testCreateMerchant() {
-		
+		$merchant = c::balanced()->createMerchant(
+			'restaurant-'.$this->id_restaurant.'@_DOMAIN_',
+			$p,
+			null,
+			null,
+			$this->name
+		);
+		$this->assertTrue($merchant->id ? true : false);
 	}
 	
 	public function testCreatebankAccount() {
-		
+		$bank = c::balanced()->createBankAccount('UNIT TEST RESTAURANT', '9900000002', '021000021', 'checking');
+		$this->assertTrue($bank->id ? true : false);
 	}
 	
-	public function testDebit() {
-		
+	public function testCredit() {
+		$account = c::balanced()->createBankAccount('UNIT TEST RESTAURANT', '9900000002', '021000021', 'checking');
+		$res = $account->credits->create([
+			'amount' => 5555
+		]);
+		$this->assertTrue($res->id ? true : false);
 	}
 
 

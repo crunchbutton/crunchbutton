@@ -608,8 +608,8 @@
 				data: { amount: amount, note : note },
 				complete: function( data ){
 					if( data.success ){
-						alert( 'Paid!' );
-						location.href = location.href;
+						alert( 'Paid! Refresh the page.' );
+
 					} else {
 						alert( 'Error, please see the console.' );
 						console.log(data);
@@ -624,13 +624,19 @@
 				type: 'POST',
 				url: '/api/restaurant/<?=$this->payment->id_restaurant?>/credit',
 				data: { amount: form.find('[name="amount"]').val(), note: form.find('[name="note"]').val() },
-				complete: function( data ){
-					if( data.success ){
-						alert( 'Paid!' );
-						location.href = location.href;
+				complete: function(data){
+					try {
+						var json = JSON.parse(data.responseText);
+					} catch (e) {
+						var json = data.responseText;
+					}
+
+					if (json.success) {
+						alert( 'Paid! Refresh the page.' );
+
 					} else {
 						alert( 'Error, please see the console.' );
-						console.log(data);
+						console.log(json);
 					}
 				}
 			})
