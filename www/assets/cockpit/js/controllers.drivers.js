@@ -139,6 +139,7 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 } );
 
 NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, DriverOnboardingService ) {
+
 	$scope.ready = false;
 
 	DriverOnboardingService.list( function( data ){
@@ -146,28 +147,33 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, DriverOnboardingSe
 		$scope.ready = true;
 	} );
 
+	$scope.add = function( id_admin ){
+		$scope.navigation.link( '/drivers/onboarding/new' );
+	}
+
 	$scope.edit = function( id_admin ){
 		$scope.navigation.link( '/drivers/onboarding/' + id_admin );
 	}
 } );
 
-NGApp.controller( 'DriversOnboardingDetailsCtrl', function ( $scope, DriverOnboardingService, CommunityService ) {
+NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, DriverOnboardingService, CommunityService ) {
 
 	$scope.ready = false;
 
 	$scope.submitted = false;
 
 	DriverOnboardingService.get( function( driver ){
-
 		$scope.driver = driver;
 
-		// Load the communities and put them at scope
-		$scope.communities = [];
+		// Load the docs
+		DriverOnboardingService.docs( function( data ){
+			$scope.documents = data;
+		} );
+
 		CommunityService.listSimple( function( data ){
 			$scope.communities = data;
 			$scope.ready = true;
 		} );
-
 	} );
 
 	// method save that saves the driver
