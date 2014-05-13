@@ -11,7 +11,8 @@ class Crunchbutton_Payment extends Cana_Table {
 			// Balanced payment
 			$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, $payment->amount, $payment->note);
 			$payment->balanced_id = $credit->id;
-		} else if( $payment->type == 'stripe' ){
+
+		} elseif( $payment->type == 'stripe' ){
 
 			// Stripe payment
 			Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);

@@ -6,18 +6,12 @@ class Crunchbutton_Balanced_Credit extends Cana_Model {
 			if ($payment_type->balanced_bank) {
 				$account = Crunchbutton_Balanced_BankAccount::byId($payment_type->balanced_bank);
 				if ($account->id) {
-					$bankAccount = $account->uri;
+					$res = $account->credits->create([
+						'amount' => $amount * 100
+					]);
+
 				}
 			}
-
-			$restaurant = Restaurant::o( $payment_type->id_restaurant );
-
-			$res = $restaurant->merchant()->credit(
-				$amount * 100,
-				$note,
-				null,
-				$bankAccount ? $bankAccount : null
-			);
 
 		} catch (Exception $e) {
 			print_r($e);
