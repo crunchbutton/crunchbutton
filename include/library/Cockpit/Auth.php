@@ -26,6 +26,19 @@ class Cockpit_Auth extends Crunchbutton_Auth_Base {
 		if ($this->user()->id_admin) {
 			c::admin($this->user());
 		}
+		$ghost = $_GET['_ghost'];
+		if (!$ghost) {
+			$ghost = $_COOKIE['_ghost'];			
+		}
+		if ($ghost && $ghost != 'ME') {
+			$u = new Admin($ghost);
+			if ($u->id_admin) {
+				$this->user($u);
+				setcookie('_ghost', $u->id_admin, (new DateTime('3000-01-01'))->getTimestamp(), '/');
+			}
+		} elseif ($ghost == 'ME') {
+			setcookie('_ghost', '', (new DateTime('1999-01-01'))->getTimestamp(), '/');
+		}
 	}
 
 	public function setUser($user) {
