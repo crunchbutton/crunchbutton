@@ -55,7 +55,7 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 					timestamp: pos.timestamp,
 				};
 				
-				$rootScope.broadcast('location', location);
+				$rootScope.$broadcast('location', location);
 
 				if (!extendedTrack) {
 					setTimeout(trackStop, 5000);
