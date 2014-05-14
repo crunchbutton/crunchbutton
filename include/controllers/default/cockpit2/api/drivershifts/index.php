@@ -21,7 +21,7 @@ class Controller_api_drivershifts extends Crunchbutton_Controller_RestAccount {
 				if( $driver->id_admin == c::user()->id_admin ){
 					$mine = 1;
 				}
-				$_drivers[] = [ 'name' => $driver->name, 'phone' => $driver->phone() ];
+				$_drivers[] = [ 'name' => $driver->name, 'phone' => $driver->phone(), 'id' => $driver->id_admin];
 			}
 			$export[] = Model::toModel( [
 					'id_community_shift' => $shift->id_community_shift,
