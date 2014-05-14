@@ -3,9 +3,9 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	var service = {};
 
 	// Create a private resource 'drivers'
-	var drivers = $resource( App.service + 'driver/:action/:id_admin', { id_admin: '@id_admin', action: '@action' }, {
+	var drivers = $resource( App.service + 'driver/:action/:id_admin/:page/:search', { id_admin: '@id_admin', action: '@action' }, {
 				'get' : { 'method': 'GET', params : { action : 'driver' } },
-				'list' : { 'method': 'GET', params : { action: 'list', id_admin: null } },
+				'list' : { 'method': 'GET', params : { action: 'page', id_admin: null } },
 				'save' : { 'method': 'POST', params : { action: 'save' } }
 			}	
 		);
@@ -23,9 +23,9 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		} );
 	}
 
-	service.list = function( callback ){
-		drivers.query( {}, function( drivers ){ 
-			callback( drivers ); 
+	service.list = function( page, search, callback ){
+		drivers.list( { page : page, search : search }, function( data ){ 
+			callback( data ); 
 		} );
 	}
 

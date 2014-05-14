@@ -138,14 +138,47 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 
 } );
 
-NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, DriverOnboardingService ) {
+NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOnboardingService ) {
 
 	$scope.ready = false;
+	$scope.search = '';
 
-	DriverOnboardingService.list( function( data ){
-		$scope.drivers = data;
-		$scope.ready = true;
+	var list = function(){
+		DriverOnboardingService.list( $scope.page, $scope.search, function( data ){
+			$scope.pages = data.pages;
+			$scope.next = data.next;
+			$scope.prev = data.prev;
+			$scope.drivers = data.results;
+			$scope.ready = true;
+			$scope.focus( '#search' );
+		} );	
+	}
+
+	var waiting = false;
+
+	$scope.$watch( 'search', function( newValue, oldValue, scope ) {
+		if( newValue == oldValue || waiting ){
+			return;
+		}
+		waiting = true;
+		$timeout( function() { 
+			list();
+			$scope.ready = false;
+			waiting = false;
+		}, 1 * 1000 );
 	} );
+
+	$scope.page = 1;
+
+	$scope.nextPage = function(){
+		$scope.page = $scope.next;
+		list();
+	}
+
+	$scope.prevPage = function(){
+		$scope.page = $scope.prev;
+		list();
+	}
 
 	$scope.add = function( id_admin ){
 		$scope.navigation.link( '/drivers/onboarding/new' );
@@ -154,6 +187,9 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, DriverOnboardingSe
 	$scope.edit = function( id_admin ){
 		$scope.navigation.link( '/drivers/onboarding/' + id_admin );
 	}
+
+	list();
+
 } );
 
 NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader, DriverOnboardingService, CommunityService ) {

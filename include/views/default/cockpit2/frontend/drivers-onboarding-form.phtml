@@ -49,9 +49,7 @@
 				<h2>Documents</h2>
 				<ul>
 					<li ng-repeat="doc in documents">
-						<div class="label">{{doc.name}}</div>
-						<div ng-show="doc.status">
-							Download: <a href="{{doc.status.url}}" target="_blank">{{doc.status.file}}</a>
+						<div>{{doc.name}} <span ng-show="doc.status"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
 						</div>
 					</li>
 				</ul>
