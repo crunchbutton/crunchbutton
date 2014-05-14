@@ -638,7 +638,6 @@ input {
 .dialog-message {
 	color: #fff;
 	margin-bottom: 1em;
-	border-radius: 4px;
 	font-size: 1.2em;
 	line-height: 1.45em;
 	padding: .7em .9em .5em .9em;
@@ -826,25 +825,47 @@ h1.title .fa {
 
 
 
-.box-filter{
+
+
+
+/* filters for drivers */
+.box-filter {
 	margin: 0 0 1em 0;
 }
-	.box-filter .button{
-		display: table;
-		float: left;
-		width: 7em;
-		margin-right: 1em;
-		border: 2px solid transparent;
-		font-size: 1.1em;
-	}
-	.box-filter .button.inactive{
-		border: 2px solid $orange;
-		color: $orange;
-		background: transparent;
-	}
-	.box-filter .button:last-child {
-		margin-right: 0;
-	}
+.box-filter .button {
+	float: left;
+	width: 7em;
+	border: 2px solid transparent;
+	font-size: 1.1em;
+	border-radius: 0;
+}
+.box-filter .button.inactive{
+	border: 2px solid $orange;
+	color: $orange;
+	background: transparent;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* todo:organize it --- order start  */
 	.drivers-order{
