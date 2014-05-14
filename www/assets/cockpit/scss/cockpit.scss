@@ -707,6 +707,102 @@ input {
 }
 
 
+<<<<<<< HEAD
+=======
+
+
+
+/* Driver shift page */
+
+.drivers-shift .day {
+	font-weight: bold;
+}
+
+.drivers-shift .box-content {
+	margin-top: .7em;
+	margin-bottom: 1em;
+	padding: .3em;
+}
+.drivers-shift .driver {
+	line-height: 1.2em;
+	font-size: 1.2em;
+}
+.drivers-shift .driver-phone {
+
+}
+.drivers-shift .drivers {
+	width: 100%;
+}
+.drivers-shift .driver td {
+	padding: .3em .4em .3em .4em;
+}
+.drivers-shift .driver {
+	border-bottom: 1px solid #eee;
+}
+.drivers-shift .driver:last-child{
+	border-bottom: none;
+}
+.drivers-shift .start-end {
+	white-space: nowrap;
+}
+.drivers-shift .start-end-brace {
+	width: 8em;
+}
+.drivers-shift .driver td.driver-spacer {
+	padding: .2px;
+	width: 1px;
+	overflow: hidden;
+}
+.drivers-shift .driver-spacer {
+	background: #f68275;
+}
+.drivers-shift .me .driver-spacer {
+	background: #4ecdc4;
+}
+.drivers-shift td.driver-details {
+	width: 100%;
+	padding-left: .7em;
+}
+.drivers-shift .me .driver-name {
+	font-weight: bold;
+}
+
+.drivers-shift .me .driver-phone {
+	color: #4ecdc4;
+}
+
+
+
+/* new stuff */
+.box-content.box-content-red {
+	background: #ff6b6b;
+	color: #fff;
+}
+
+h1.title {
+	font-family: Source Sans Pro;
+	font-weight: 300;
+	font-size: 2.5em;
+	color: #5d5f63;
+	margin-bottom: 1.2em;
+	margin-top: .2em;
+}
+h1.title .fa {
+	font-size: .8em;
+	padding-right: .5em;
+	padding-top: .1em;
+	vertical-align: top;
+}
+.right {
+	float: right;
+}
+.left {
+	float: left;
+}
+
+
+
+>>>>>>> refs/heads/master
 /* drivers order list page */
 .last-updated{
 	font-size: 1em;
@@ -744,19 +840,7 @@ input {
 		margin-bottom: 0.4em;
 	}
 
-.drivers-shifts-list .community{
-	float: right;
-}
-	.drivers-shifts-list .timezone{
-		font-weight: normal;
-		text-align: right;
-	}
-	.drivers-shifts-list .drivers{
-		margin: 1em 0 0 0;
-	}
-		.drivers-shifts-list .drivers li{
-			line-height: 1.5em;
-		}
+
 
 .box-filter{
 	margin: 0 0 1em 0;
@@ -764,15 +848,18 @@ input {
 	.box-filter .button{
 		display: table;
 		float: left;
-		width: 8em;
+		width: 7em;
 		margin-right: 1em;
 		border: 2px solid transparent;
-		font-size: 1.2em;
+		font-size: 1.1em;
 	}
 	.box-filter .button.inactive{
 		border: 2px solid $orange;
 		color: $orange;
 		background: transparent;
+	}
+	.box-filter .button:last-child {
+		margin-right: 0;
 	}
 
 /* todo:organize it --- order start  */
@@ -1097,25 +1184,21 @@ body.loading .loader-wrap {
 }	
 
 
-/* generics */
-h1{ font-size: 2em;}
-h2{ font-size: 1.5em;}
-h3{ font-size: 1.17em;}
-h4{ font-size: 1.17em;}
-h5{ font-size: .83em;}
-h6{ font-size: .75em;}
-h1, h2, h3, h4, h5, h6 { font-weight: bolder }
-p{ font-size: 1em; }
-strong{ font-weight: bold; }
+
+
+b, strong{ font-weight: bold; }
 
 .pointer{
 	cursor: pointer;
 }
-.box-content{
-	background: #FFF;
-	padding: 15px;
+.box-content {
+	background: #fff;
+	padding: 10px;
 	margin-bottom: 15px;
-	box-shadow: 0px 3px 2px #AAB2BD;
+}
+
+.box-content.green {
+	background: #43b1a9;
 }
 
 .hide{ display: none; }
@@ -1138,6 +1221,7 @@ strong{ font-weight: bold; }
 .mfp-close {
 	display: none !important;
 }
+
 
 .flash-message {
 	position: fixed;
