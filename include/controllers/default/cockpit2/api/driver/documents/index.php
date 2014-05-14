@@ -62,7 +62,6 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				$docs = Crunchbutton_Driver_Document::all();
 				foreach( $docs as $doc ){
 					$out = $doc->exports();;
-					// echo '<pre>';var_dump( $out );exit();
 					if( $id_admin ){
 						$docStatus = Crunchbutton_Driver_Document_Status::document( $id_admin, $doc->id_driver_document );	
 						if( $docStatus->id_driver_document_status ){
