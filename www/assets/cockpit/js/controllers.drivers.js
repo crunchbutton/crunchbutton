@@ -156,25 +156,28 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, DriverOnboardingSe
 	}
 } );
 
-NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, DriverOnboardingService, CommunityService ) {
+NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader, DriverOnboardingService, CommunityService ) {
 
 	$scope.ready = false;
 
 	$scope.submitted = false;
 
-	DriverOnboardingService.get( function( driver ){
-		$scope.driver = driver;
-
+	var docs = function(){
 		// Load the docs
-		DriverOnboardingService.docs( function( data ){
+		DriverOnboardingService.docs.list( function( data ){
 			$scope.documents = data;
 		} );
+	}
 
+	DriverOnboardingService.get( function( driver ){
+		$scope.driver = driver;
+		docs();
 		CommunityService.listSimple( function( data ){
 			$scope.communities = data;
 			$scope.ready = true;
 		} );
 	} );
+
 
 	// method save that saves the driver
 	$scope.save = function(){
@@ -191,5 +194,34 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, DriverOnboardi
 	$scope.cancel = function(){
 		$scope.navigation.link( '/drivers/onboarding/' );
 	}
+
+	// Upload control stuff
+	$scope.doc_uploaded = 0;
+
+
+	var uploader = $scope.uploader = $fileUploader.create({
+									scope: $scope,
+									url: '/api/driver/documents/upload/',
+									filters: [ function( item ) { return true; } ]
+								} );
+
+	uploader.bind( 'success', function( event, xhr, item, response ) {
+		if( response.success ){
+			var doc = { id_admin : $scope.driver.id_admin, id_driver_document : $scope.doc_uploaded, file : response.success };
+			DriverOnboardingService.docs.save( doc, function(){
+				docs();
+				$scope.flash.setMessage( 'File saved!' );
+			} );
+			$scope.doc_uploaded = 0;
+			uploader.clearQueue();
+		} else {
+			console.log('response',response.error);
+			App.alert( 'Upload error: ' + response.error );	
+		}
+	});
+
+	uploader.bind('error', function (event, xhr, item, response) {
+		App.alert( 'Upload error, please try again or send us a message.' );
+	});
 
 } );

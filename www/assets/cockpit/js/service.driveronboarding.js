@@ -4,15 +4,16 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 
 	// Create a private resource 'drivers'
 	var drivers = $resource( App.service + 'driver/:action/:id_admin', { id_admin: '@id_admin', action: '@action' }, {
-				'get' : { 'method': 'GET', params : { 'action' : 'driver' } },
+				'get' : { 'method': 'GET', params : { action : 'driver' } },
 				'list' : { 'method': 'GET', params : { action: 'list', id_admin: null } },
 				'save' : { 'method': 'POST', params : { action: 'save' } }
 			}	
 		);
 
 	// documents resource
-	var documents = $resource( App.service + 'driver/documents/:id_admin', { id_admin: '@id_admin' }, {
-				'status' : { 'method': 'GET', params : {}, isArray: true },
+	var documents = $resource( App.service + 'driver/documents/:action/:id_admin/:id_driver_document', { id_admin: '@id_admin', id_driver_document: '@id_driver_document' }, {
+				'status' : { 'method': 'GET', params : { action : null }, isArray: true },
+				'save' : { 'method': 'POST', params : { action : 'save' } },
 			}	
 		);
 
@@ -29,13 +30,21 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	}
 
 	// returns the driver's docs
-	service.docs = function( callback ){
+	service.docs = {};
+
+	service.docs.list = function( callback ){
 		var id_admin = $routeParams.id;
 		if( id_admin ){
 			documents.status( { 'id_admin': id_admin }, function( docs ){ 
 				callback( docs ); 
 			} );	
 		} 
+	}
+
+	service.docs.save = function( doc, callback ){
+		documents.save( doc, function( doc ){
+			callback( doc );
+		} ); 
 	}
 
 	service.get = function( callback ){
