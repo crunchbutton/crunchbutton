@@ -46,23 +46,38 @@
 						<small class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
   				</div>
 				</li>
-				
-				<li>
-					<h2>Documents</h2>
-					<ul>
-						<li ng-repeat="doc in documents">
-							<label for="doc{{doc.id_driver_document}}">
-								<div class="label">{{doc.name}}</div>
-								<div ng-show="doc.status">
-									Download: <a href="{{doc.status.url}}" target="_blank">{{doc.status.url}}</a>									
-								</div>
-							</label>
-						</li>
-					</ul>
-				</li>
+				<h2>Documents</h2>
+				<ul>
+					<li ng-repeat="doc in documents">
+						<div class="label">{{doc.name}}</div>
+						<div ng-show="doc.status">
+							Download: <a href="{{doc.status.url}}" target="_blank">{{doc.status.file}}</a>
+						</div>
+					</li>
+				</ul>
 				<li class="buttons">
 					<button ng-click="save();">Save</button>
 					<button ng-click="cancel()">Cancel</button>
+				</li>
+			</ul>
+		</form>
+		<form name="documents">
+			<h2>Upload zone</h2>
+			<ul>
+				<li>
+					<label for="doc_uploaded">
+						<div class="label">Select the file type:</div>
+						<select name="driverDocument" ng-model="doc_uploaded" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
+					</label>		
+				</li>
+				<li ng-show="uploader.progress">
+					Progress {{uploader.progress}}%
+				</li>
+				<li ng-show="doc_uploaded">
+					<input ng-file-select name="file" type="file" />
+				</li>
+				<li ng-show="doc_uploaded">
+					<button ng-click="uploader.uploadAll()"> Upload </button>
 				</li>
 			</ul>
 		</form>

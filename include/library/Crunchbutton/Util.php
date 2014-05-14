@@ -29,16 +29,16 @@ class Crunchbutton_Util extends Cana_Model {
 	public static function stringToColorCode( $str ) {
 		$code = dechex( crc32( $str ) );
 		$code = substr( $code, 0, 6 );
-  	return $code;
+		return $code;
 	}
 
 	public static function intervalToSeconds( $interval ){
 		return ( $interval->s )
-         + ( $interval->i * 60 )
-         + ( $interval->h * 60 * 60 )
-         + ( $interval->d * 60 * 60 * 24 )
-         + ( $interval->m * 60 * 60 * 24 * 30 )
-         + ( $interval->y * 60 * 60 * 24 * 365 );
+				 + ( $interval->i * 60 )
+				 + ( $interval->h * 60 * 60 )
+				 + ( $interval->d * 60 * 60 * 24 )
+				 + ( $interval->m * 60 * 60 * 24 * 30 )
+				 + ( $interval->y * 60 * 60 * 24 * 365 );
 	}
 
 	public static function inverseColor( $color ){
@@ -85,6 +85,42 @@ class Crunchbutton_Util extends Cana_Model {
 		return strtolower(urlencode(trim(self::truncateByWord($title,50,''))));
 	}
 	
+	static function uploadWWW(){
+		return '/upload/';
+	}
+
+	static function uploadPath(){
+		$file_path = realpath( dirname( __FILE__ ) );
+		$www_path = realpath( $file_path . '/../../../www/' );
+		$upload_path = $www_path . '/upload';
+		if ( !file_exists( $upload_path ) ) {
+    	@mkdir( $upload_path, 0777, true );
+		}
+		return realpath( $upload_path );
+	}
+
+	static public function allowedExtensionUpload( $ext ){
+		$allowed = array( 'gif','png' ,'jpg', 'doc', 'docx', 'pdf', 'jpeg' );	
+		return in_array( $ext, $allowed );
+	}
+
+	static public function slugify( $txt ){ 
+		
+		$table = array(
+						'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
+						'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
+						'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
+						'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
+						'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
+						'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
+						'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b',
+						'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r', '/' => '-', ' ' => '-', '.' => ''
+		);
+
+		$stripped = preg_replace( array( '/\s{2,}/', '/[\t\n]/' ), ' ', $txt );
+		return strtolower( strtr( $txt, $table ) );
+}
+
 	public static function formatSize($size) {
 		$sizes = array(' Bytes', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB');
 		if ($size == 0) {
@@ -94,11 +130,11 @@ class Crunchbutton_Util extends Cana_Model {
 		}
 	}
 
-    public static function revision() {
+		public static function revision() {
 		$file = file(Cana::config()->dirs->root.'.hg/branchheads.cache');
 		$file = explode(' ',$file[0]);
 		return trim($file[1]);
-    }
+		}
 	
 	public static function relativeTime($timestamp, $timezoneTO = null, $timezoneFROM = null) {
 		if (!$timezoneFROM) {
