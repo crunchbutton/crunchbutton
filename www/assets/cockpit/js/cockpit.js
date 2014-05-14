@@ -108,7 +108,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 }]);
 
 // global route change items
-NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService ) {
+NGApp.controller('AppController', function ($scope, $route, $http, $routeParams, $rootScope, $location, $window, $timeout, MainNavigationService, AccountService, DriverOrdersService, LocationService) {
 
 	// define external pointers
 	App.rootScope = $rootScope;
@@ -120,6 +120,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.isPhoneGap = App.isPhoneGap;
 	$rootScope.server = App.server;
 	$rootScope.account = AccountService;
+	$rootScope.location = LocationService;
 
 	$rootScope.$on('userAuth', function(e, data) {
 		$rootScope.$safeApply(function($scope) {
