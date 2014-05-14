@@ -27,7 +27,7 @@ logs/*
 www/cache/*
 
 #upload files
-#www/upload/drivers-doc/*
+www/upload/drivers-doc/*
 
 # huh?
 workflow*
