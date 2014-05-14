@@ -1,7 +1,7 @@
 
 // we have to be nice to the battery with both geolocation, and ajax requests
 
-NGApp.factory('LocationService', function($http, $resource) {
+NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 
 	var service = {
 		location: function() {
@@ -9,6 +9,19 @@ NGApp.factory('LocationService', function($http, $resource) {
 		},
 		updated: function() {
 			return updated;
+		},
+		track: function() {
+			// only set extended tracking for a max of 15 minites
+			if (!extendedTrack) {
+				setTimeout(function() {
+					service.untrack();
+				}, 15000);
+				
+				extendedTrack = true;
+			}
+		},
+		untrack: function() {
+			extendedTrack = false;
 		}
 	};
 	
@@ -20,6 +33,8 @@ NGApp.factory('LocationService', function($http, $resource) {
 	};
 	
 	var watcher, last, updated = null;
+	
+	var extendedTrack = false;
 
 	var locationService = $resource( App.service + 'driver/:action', { action: '@action' }, {
 			'track' : { 'method': 'POST', params : { 'action' : 'location' } }
@@ -39,9 +54,17 @@ NGApp.factory('LocationService', function($http, $resource) {
 					accuracy: pos.coords.accuracy,
 					timestamp: pos.timestamp,
 				};
-				setTimeout(trackStop, 5000);
+				
+				$rootScope.broadcast('location', location);
+
+				if (!extendedTrack) {
+					setTimeout(trackStop, 5000);
+				}
+				
+				track();
+
 			}, function() {
-				console.debug('Could not locate driver');
+				alert('Your location services are off, or you declined location permissions. Please enable this.');
 			}, { enableHighAccuracy: true });
 		}
 	};
@@ -52,7 +75,6 @@ NGApp.factory('LocationService', function($http, $resource) {
 		}
 		navigator.geolocation.clearWatch(watcher);
 		watcher = null;
-		track();
 		// reactivate tracking every 2 minites 
 		setTimeout(watch, 60000 * 2);
 	};
