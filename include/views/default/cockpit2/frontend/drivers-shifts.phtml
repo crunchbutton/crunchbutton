@@ -1,37 +1,44 @@
 <div class="top-pad"></div>
 
 <div class="content-padding" ng-show="ready">
+	<h1 class="title left"><i class="fa fa-calendar"></i><span>Shifts</span></h1>
 
-	<div class="box-filter">
+	<div class="box-filter right">
 		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
 		<button class="button orange" ng-class="{ 'inactive' : show.all }" ng-click="show.all = false">Mine</button>
 		<div class="divider"></div>
 	</div>
+	
+	<div class="divider"></div>
 
 	<div class="drivers-shifts-list">
 		
 		<div ng-if="drivershifts.length">
 		
-			<div class="box-content item" ng-repeat="shift in drivershifts | filter:filterShifts">
+			<div class="drivers-shift" ng-repeat="shift in drivershifts | filter:filterShifts">
 
-				<h4 class="community">{{shift.community}}</h4>
-				<h2 class="day">{{shift.date.day}}</h2>
-				<h1 class="start_end">{{shift.date.start_end}}</h1>
-				<h4 class="timezone">{{shift.date.timezone}}</h4>
-				
-				<div nf-if="shift.drivers">
-					<ul class="drivers">
-						<li class="driver" ng-repeat="driver in shift.drivers">
-							<strong>{{driver.name}}</strong> <span class="phone">{{driver.phone | formatPhone}}</span>
-						</li>
-					</ul>
+				<span class="day">{{shift.date.day}}</span>
+
+					
+				<div ng-if="shift.drivers" class="box-content">
+					<table class="drivers">
+						<tr class="driver" ng-repeat="driver in shift.drivers" ng-class="{me: (driver.id == account.user.id_admin)}">
+							<td class="start-end"><div class="start-end-brace">{{shift.date.start_end}}</div></td>
+							<td class="driver-spacer"></td>
+							<td class="driver-details">
+								<span class="driver-name">{{driver.name}}</span><br>
+								<a href="tel:{{driver.phone | formatPhone}}" class="driver-phone">{{driver.phone | formatPhone}}</a>
+							</td>
+						</tr>
+					</table>
 				</div>
 
-				<div ng-if="!shift.drivers">
-					<h3>No drivers</h3>
+				<div ng-if="!shift.drivers" class="box-content box-content-red">
+					<table class="drivers">
+						<tr><td>No drivers</td></tr>
+					</table>
 				</div>
 
-				<div class="divider"></div>
 
 			</div>
 
