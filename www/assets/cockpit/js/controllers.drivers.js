@@ -256,7 +256,6 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 	// Upload control stuff
 	$scope.doc_uploaded = 0;
 
-
 	var uploader = $scope.uploader = $fileUploader.create({
 									scope: $scope,
 									url: '/api/driver/documents/upload/',
@@ -264,16 +263,20 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 								} );
 
 	uploader.bind( 'success', function( event, xhr, item, response ) {
+		$scope.$apply();
 		if( response.success ){
 			var doc = { id_admin : $scope.driver.id_admin, id_driver_document : $scope.doc_uploaded, file : response.success };
-			DriverOnboardingService.docs.save( doc, function(){
-				docs();
-				$scope.flash.setMessage( 'File saved!' );
+			DriverOnboardingService.docs.save( doc, function( json ){
+				if( json.success ){
+					docs();
+					$scope.flash.setMessage( 'File saved!' );
+				} else {
+					$scope.flash.setMessage( 'File not saved: ' + json.error );
+				}
 			} );
-			$scope.doc_uploaded = 0;
 			uploader.clearQueue();
 		} else {
-			App.alert( 'Upload error: ' + response.error );	
+			$scope.flash.setMessage( 'File not saved: ' + json.error );
 		}
 	});
 
@@ -282,3 +285,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 	});
 
 } );
+
+NGApp.controller('DriversOnboardingSetupCtrl', function($scope) {
+	console.log('setup');
+});

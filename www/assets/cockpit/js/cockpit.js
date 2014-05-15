@@ -114,6 +114,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversOnboardingFormCtrl',
 			templateUrl: 'assets/view/drivers-onboarding-form.html'
 		})
+		.when('/setup/:phone', {
+			action: 'drivers-setup',
+			controller: 'DriversOnboardingSetupCtrl',
+			templateUrl: 'assets/view/drivers-onboarding-setup.html'
+		})
 		.otherwise({
 			action: 'home',
 			controller: 'DefaultCtrl',
@@ -265,10 +270,18 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 /* todo: check user's permission too */
 NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
 	$rootScope.$on( '$routeChangeStart', function ( event, next, current ) {
-		if ( $location.url() != '/login' && !$rootScope.account.isLoggedIn() ) {
-			MainNavigationService.link( '/login' );
+		if( !$rootScope.account.isLoggedIn() ){
+			var isAllowed = false;
+			angular.forEach( [ '/login', '/setup' ], function( allowed ){
+			 if( $location.url().indexOf( allowed ) >= 0 ){
+				isAllowed = true;
+			 }
+			} );
+			if( !isAllowed  ) {
+				MainNavigationService.link( '/login' );
+			}
 		}
-		if ( $location.url() == '/login' && $rootScope.account.isLoggedIn() ) {
+		if( $location.url() == '/login' && $rootScope.account.isLoggedIn() ) {
 			MainNavigationService.link( '/' );	
 		}
 	});

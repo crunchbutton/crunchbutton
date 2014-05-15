@@ -81,7 +81,7 @@
 				<li>
 					<label for="driverDocument">
 						<div class="label">Select the file type:</div>
-						<select name="driverDocument" ng-model="doc_uploaded" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
+						<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
 					</label>		
 				</li>
 				<li ng-show="uploader.progress">
