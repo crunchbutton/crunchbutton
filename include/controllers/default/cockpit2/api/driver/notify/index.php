@@ -29,9 +29,13 @@ class Controller_api_driver_notify extends Crunchbutton_Controller_RestAccount {
 		// Pre defined messages
 		switch ( $message ) {
 			case 'setup':
-				$message ="Access cbtn.io/setup/{$phone}";
+				$message = "Access cockpit.la/setup/{$phone}";
 				break;
 			
+			case 'welcome':
+				$message = 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/16844. Play around with it and make sure you understand how everything works';
+				break;
+
 			default:
 				break;
 		}
@@ -41,6 +45,8 @@ class Controller_api_driver_notify extends Crunchbutton_Controller_RestAccount {
 		}
 		
 		$env = c::getEnv();
+
+		// todo: put this notifications at timeout
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 

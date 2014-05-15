@@ -16,8 +16,31 @@ class Crunchbutton_Admin extends Cana_Table {
 		];
 	}
 
+	public function validateLogin( $login, $increment = 0 ){
+		$test = $login . ( $increment > 0 ? $increment : '' );
+		$admin = Crunchbutton_Admin::login( $test );
+		if( $admin->id_admin ){
+			$increment++;
+			return Crunchbutton_Admin::validateLogin( $login, $increment );
+		}
+		return $test;
+	}
+
+	public function createLogin(){
+		if( $this->login ){
+			return $this->login;
+		}
+		$login = str_replace( '-' , '', Util::slugify( $this->name ) );
+		$login = Crunchbutton_Admin::validateLogin( $login );
+		return $login;
+	}
+
 	public function getByPhone( $phone ){
 		return Crunchbutton_Admin::q( "SELECT * FROM admin a WHERE REPLACE( REPLACE( a.txt, ' ', '' ), '-', '' ) = '{$phone}' OR REPLACE( REPLACE( a.phone, ' ', '' ), '-', '' ) = '{$phone}' ORDER BY id_admin DESC LIMIT 1 " );
+	}
+
+	public function getByPhoneSetup( $phone ){
+		return Crunchbutton_Admin::q( "SELECT * FROM admin a WHERE a.phone = '{$phone}' AND ( a.login IS NULL OR a.login = '' ) ORDER BY id_admin DESC LIMIT 1 " );
 	}
 
 	public function getCSAdminByPhone( $phone ){

@@ -1,7 +1,59 @@
-<div class="top-pad"></div>
+<div class="login-wrap">
+	
+	<div class="login-content hide-before-init">
+	
+		<div class="logo">cockpit<span class="dot">.</span><span class="green">la</span></div>
 
-<div class="content-padding" ng-show="ready">
-	<div class="content">
+		<div ng-show="finished">
+			<div class="dialog-message dialog-message-success">
+				Your login is {{driver.login}}
+			</div>
+			<div class="button-pushable find-restaurants">
+				<button class="button orange" ng-click="access()">Access cockpit</button>
+			</div>
+		</div>
+
+		<div class="dialog-message dialog-message-error" ng-show="error">
+			{{error}}
+		</div>
+
+
+		<?php /* Form validation stuff */?>
+		<div class="dialog-message dialog-message-error" ng-show="( submitted && form.$invalid ) && !finished">
+			<div class="error">
+				<div class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</div>
+				<div class="error" ng-show="form.driverPassword.$error.required">Enter a password.</div>
+				<div class="error" ng-show="form.driverPassword.$error.minlength">Your password is too short.</div>
+				<div class="error" ng-show="form.driverConfirm.$error.required">Enter a password confirmation.</div>
+				<div class="error" ng-show="form.driverConfirm.$error.equals">The confirm password doesn't match.</div>
+			</div>
+		</div>
+
+		<form name="form" ng-show="ready && !finished" novalidate>
+
+			<div class="input-wrap" ng-show="!driver.hasEmail">
+				<span class="label">Email:</span>
+				<span class="field"><input type="email" name="driverEmail" ng-model="driver.email" autofocus="autofocus"></span>
+			</div>
+
+			<div class="input-wrap">
+				<span class="label">Password:</span>
+				<span class="field"><input type="password" name="driverPassword" required ng-minlength="5" ng-model="driver.password"></span>
+			</div>
+
+			<div class="input-wrap">
+				<span class="label">Confirm:</span>
+				<span class="field"><input type="password" equals="{{driver.password}}" name="driverConfirm" required ng-model="driver.confirm"></span>
+			</div>
+			
+			<div class="button-pushable find-restaurants">
+				<button class="button orange" ng-click="send()">Save</button>
+			</div>
+		</form>
+		
+		<div class="info">
+			Cockpit is Crunchbutton's tool of awesomeness. Looking for delivery food? Head over to <a href="http://crunchbutton.com">crunchbutton.com</a>
+		</div>
 
 	</div>
 </div>

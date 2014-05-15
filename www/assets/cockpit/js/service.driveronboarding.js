@@ -3,11 +3,13 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	var service = {};
 
 	// Create a private resource 'drivers'
-	var drivers = $resource( App.service + 'driver/:action/:id_admin/:page/:search', { id_admin: '@id_admin', action: '@action' }, {
+	var drivers = $resource( App.service + 'driver/:action/:id_admin/:page/:search/:phone', { id_admin: '@id_admin', action: '@action' }, {
 				'get' : { 'method': 'GET', params : { action : null } },
 				'notify' : { 'method': 'POST', params : { action: 'notify' } },
 				'list' : { 'method': 'GET', params : { action: 'list', id_admin: null } },
-				'save' : { 'method': 'POST', params : { action: 'save' } }
+				'save' : { 'method': 'POST', params : { action: 'save' } },
+				'setupValidate' : { 'method': 'GET', params : { action: 'setup' } },
+				'setupSave' : { 'method': 'POST', params : { action: 'setup' } },
 			}	
 		);
 
@@ -18,6 +20,20 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			}	
 		);
 
+	service.setupSave = function( driver, callback ){
+		drivers.setupSave( driver, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.setupValidate = function( callback ){
+		var phone = $routeParams.phone;
+		drivers.setupValidate( { 'phone' : phone }, function( json ){
+			callback( json );
+		} );
+	}
+
+	// send setup notification
 	service.notifySetup = function( id_admin, callback ){
 		var message = 'setup';
 		if( id_admin ){
@@ -25,6 +41,15 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		}
 	}
 
+	// send setup notification
+	service.notifyWelcome = function( id_admin, callback ){
+		var message = 'welcome';
+		if( id_admin ){
+			service.notify( id_admin, message, callback );	
+		}
+	}
+
+	// send notification
 	service.notify = function( id_admin, message, callback ){
 		var params = { id_admin : id_admin, message : message  };
 		drivers.notify( params, function( data ){
@@ -32,6 +57,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		} );
 	}	
 
+	// save driver info
 	service.save = function( driver, callback ){
 		var notify = driver.notify;
 		drivers.save( driver, function( json ){
@@ -48,6 +74,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		} );
 	}
 
+	// get driver's list
 	service.list = function( page, search, callback ){
 		drivers.list( { page : page, search : search }, function( data ){ 
 			callback( data ); 
@@ -57,6 +84,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	// returns the driver's docs
 	service.docs = {};
 
+	// get docs list
 	service.docs.list = function( callback ){
 		var id_admin = $routeParams.id;
 		if( id_admin ){
@@ -66,12 +94,14 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		} 
 	}
 
+	// save driver's doc
 	service.docs.save = function( doc, callback ){
 		documents.save( doc, function( doc ){
 			callback( doc );
 		} ); 
 	}
 
+	// get admin
 	service.get = function( callback ){
 		var id_admin = $routeParams.id;
 		if( id_admin ){
