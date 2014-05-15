@@ -847,9 +847,32 @@ h1.title .fa {
 
 
 
+.user-initials {
+	border-radius: 80px;
+	background: #616367;
+	font-size: 35px;
+	font-weight: 100;
+	margin: 0 auto;
+	width: 100px;
+	height: 100px;
+	margin-bottom: 1em;
+	margin-top: 1em;
+	color: #2f323a;
+	overflow: hidden;
+	clear: both;
+}
+.user-initials span {
+	margin-top: 33px;
+	display: block;
+	text-align: center;
+}
 
 
-
+@media screen and (min-width: 1024px) {
+	.user-initials {
+		margin-top: 2.8em;
+	}
+}
 
 
 
