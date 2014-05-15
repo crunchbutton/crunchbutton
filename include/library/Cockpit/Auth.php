@@ -25,28 +25,31 @@ class Cockpit_Auth extends Crunchbutton_Auth_Base {
 	public function postInit() {
 		if ($this->user()->id_admin) {
 			c::admin($this->user());
-		}
 
-		$ghost = $_GET['_ghost'];
-
-		if (!$ghost) {
-			$ghost = $_COOKIE['_ghost'];			
-		}
-		if ($this->user()->permission()->check(['global','ghost'])) {
-			if ($ghost && $ghost != 'ME') {
-				$u = new Admin($ghost);
-				if ($u->id_admin) {
-					$this->user($u);
-					setcookie('_ghost', $u->id_admin, (new DateTime('3000-01-01'))->getTimestamp(), '/');
+			$ghost = $_GET['_ghost'];
+			if (!$ghost) {
+				$ghost = $this->session()->get('_ghost');
+			}
+	
+			if ($this->user()->permission()->check(['global','ghost'])) {
+	
+				if ($ghost && $ghost != 'ME') {
+					$u = new Admin($ghost);
+					if ($u->id_admin) {
+						$this->user($u);
+						$this->session()->set('_ghost',$u->id_admin);
+					}
+				} elseif ($ghost == 'ME') {
+					$this->session()->set('_ghost',null);
 				}
-			} elseif ($ghost == 'ME') {
-				setcookie('_ghost', '', (new DateTime('1999-01-01'))->getTimestamp(), '/');
+	
+			} else {
+				if ($ghost) {
+					$this->session()->set('_ghost',null);
+				}
 			}
-
 		} else {
-			if ($ghost) {
-				setcookie('_ghost', '', (new DateTime('1999-01-01'))->getTimestamp(), '/');
-			}
+			$this->user(new Admin);
 		}
 
 	}
