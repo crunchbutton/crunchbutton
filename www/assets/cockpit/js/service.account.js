@@ -46,7 +46,10 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 		if (service.user && service.user.id_admin) {
 			App.snap.enable();
 			var name = service.user.name.split(' ');
-			service.user.initials = name[0].charAt(0) + name[name.length-1].charAt(0);
+			service.user.initials = '';
+			for (var x in name) {
+				service.user.initials += name[x].charAt(0);
+			}
 
 		} else {
 			App.snap.disable();
