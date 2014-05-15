@@ -7,6 +7,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 		switch ( c::getPagePiece( 3 ) ) {
 
 			case 'upload':
+
 				if( $_FILES ){
 					$ext = pathinfo( $_FILES['file']['name'], PATHINFO_EXTENSION );
 					if( Util::allowedExtensionUpload( $ext ) ){
@@ -40,6 +41,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				break;
 			
 			case 'save':
+
 				$id_admin = $this->request()[ 'id_admin' ];
 				$id_driver_document = $this->request()[ 'id_driver_document' ];
 				if( $id_admin && $id_driver_document ){
@@ -52,13 +54,23 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					$docStatus->datetime = date('Y-m-d H:i:s');
 					$docStatus->file = $this->request()[ 'file' ];
 					$docStatus->save();
-					echo '<pre>';var_dump( $docStatus->exports() );exit();
+					
+					// save driver's log
+					$log = new Crunchbutton_Driver_Log();
+					$log->id_admin = $driver->id_admin;
+					$log->action = 'document';
+					$log->info = $docStatus->id_driver_document . ': ' . $docStatus->file;
+					$log->datetime = date('Y-m-d H:i:s');
+					$log->save();
+
 					echo json_encode( ['success' => 'success'] );	
 				} else {
 					$this->_error();
 				}
 				break;
+
 			default:
+
 				$id_admin = false;
 				if( c::getPagePiece( 3 ) ){
 					$admin = Crunchbutton_Admin::o( c::getPagePiece( 3 ) );

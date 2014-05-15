@@ -1262,6 +1262,11 @@ b, strong{ font-weight: bold; }
 	margin-left: -100px;
 	border-radius: 5px;
 }
+	.flash-message.error{
+		background: #f2dede;
+		color: #a94442;
+		border: 1px solid #ebccd1;
+	}
 	.flash-message.success{
 		background:#dff0d8;
 		color: #64763d;

@@ -46,13 +46,15 @@
 						<small class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
   				</div>
 				</li>
-				<h2>Documents</h2>
-				<ul>
-					<li ng-repeat="doc in documents">
-						<div>{{doc.name}} <span ng-show="doc.status"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
-						</div>
-					</li>
-				</ul>
+				<li ng-if="driver.id_admin">
+					<h2>Documents</h2>
+					<ul>
+						<li ng-repeat="doc in documents">
+							<div>{{doc.name}} <span ng-show="doc.status"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
+							</div>
+						</li>
+					</ul>
+				</li>
 				<li class="buttons">
 					<button ng-click="save();">Save</button>
 					<button ng-click="cancel()">Cancel</button>
@@ -60,11 +62,11 @@
 			</ul>
 		</form>
 		<hr/>
-		<form name="documents">
+		<form name="docs" ng-if="driver.id_admin">
 			<h2>Upload zone</h2>
 			<ul>
 				<li>
-					<label for="doc_uploaded">
+					<label for="driverDocument">
 						<div class="label">Select the file type:</div>
 						<select name="driverDocument" ng-model="doc_uploaded" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
 					</label>		
@@ -80,5 +82,9 @@
 				</li>
 			</ul>
 		</form>
+		<hr/>
+		<div class="notifications" ng-if="driver.id_admin">
+			
+		</div>
 	</div>
 </div>

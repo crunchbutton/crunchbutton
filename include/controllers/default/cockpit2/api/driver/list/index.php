@@ -3,10 +3,6 @@
 class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {	
-		$this->_list();
-	}
-
-	private function _list(){
 
 		$resultsPerPage = 20;
 
