@@ -18,17 +18,14 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 	}
 
 	service.checkUser = function() {
-		service.user = App.config.user;
-		var name = service.user.name.split(' ');
-		service.user.initials = name[0].charAt(0) + name[name.length-1].charAt(0);
+		$rootScope.$broadcast('userAuth', App.config.user);
 		App.config.user = null;
 	};
 
 	service.login = function( username, password, callback ) {
 		user.login( { 'username': username, 'password': password }, function( json ){
 			if( json && json.id_admin ){
-				service.user = json;
-				$rootScope.$broadcast( 'userAuth', service.user );
+				$rootScope.$broadcast( 'userAuth', json );
 				callback( true );
 			} else {
 				callback( false );
@@ -43,12 +40,23 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 		} );
 	};
 	
-	$rootScope.$on( 'userAuth', function( e, data ) {
-		if ( service.user && service.user.id_admin ) {
-			
+	$rootScope.$on('userAuth', function(e, data) {
+		service.user = data;
+
+		if (service.user && service.user.id_admin) {
+			App.snap.enable();
+			var name = service.user.name.split(' ');
+			service.user.initials = '';
+			for (var x in name) {
+				service.user.initials += name[x].charAt(0);
+			}
+
 		} else {
-			
+			App.snap.disable();
 		}
+
+		App.snap.close();
+		$rootScope.reload();
 	});
 
 	return service;

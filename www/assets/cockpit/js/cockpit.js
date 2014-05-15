@@ -144,13 +144,6 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.account = AccountService;
 	$rootScope.location = LocationService;
 
-	$rootScope.$on('userAuth', function(e, data) {
-		$rootScope.$safeApply(function($scope) {
-			App.snap.close();
-			$rootScope.reload();
-		});
-	});
-
 	/* todo: turn makeBusy and unBusy in to directives */
 	$rootScope.makeBusy = function(){
 		if( !$rootScope.isBusy ){
@@ -435,6 +428,8 @@ App.init = function(config) {
 		});
 
 	}
+	
+	App.snap.disable();
 
 	// init the storage type. cookie, or localstorage if phonegap
 	$.totalStorage.ls(App.localStorage);
