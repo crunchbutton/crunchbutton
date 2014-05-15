@@ -1,126 +1,42 @@
 <?php
 
-class Controller_api_driver extends Crunchbutton_Controller_RestAccount {
+class Controller_api_driver extends Crunchbutton_Controller_Rest {
 	
 	public function init() {
-		$action = c::getPagePiece( 2 );
-
-		switch ( $action ) {
-
-			case 'save':
-				$this->_save();
+		if (preg_replace('/[^0-9]/','',c::getPagePiece(2)) == c::getPagePiece(2) && c::getPagePiece(2)) {
+			$driver = Admin::o(c::getPagePiece(2));
+			$action = c::getPagePiece(3);
+		} else {
+			$driver = c::user();
+			$action = c::getPagePiece(2);
+		}
+	
+		switch ($action) {
+			case 'location':
+				if ($this->method() == 'post') {
+					(new Admin_Location([
+						'id_admin' => $driver->id_admin,
+						'date' => date('Y-m-d H:i:s'),
+						'lat' => $this->request()['lat'],
+						'lon' => $this->request()['lon'],
+						'accuracy' => $this->request()['accuracy']
+					]))->save();
+				}
+				if ($driver->location()->id_admin_location) {
+					echo $driver->location()->json();
+				} else {
+					echo json_encode(null);
+				}
 				break;
-			
-			case 'driver':
-				$this->_driver();
-				break;
-
+				
 			default:
-				$this->_list();
+				if ($this->method() == 'post') {
+					// save a setting	
+				}
+				echo $driver->json();
 				break;
 		}
+
+
 	}
-
-	private function _driver(){
-		$id_admin = c::getPagePiece( 3 );
-		$driver = new Crunchbutton_Admin( $id_admin );
-		if( $driver->id_admin ){
-			echo json_encode( $driver->exports() );
-		} else {
-			$this->_error( 'invalid object' );
-		}
-	}
-
-	private function _list(){
-
-		$resultsPerPage = 20;
-
-		if ( c::getPagePiece( 2 ) == 'page' && c::getPagePiece( 3 ) ) {
-			$page = c::getPagePiece( 3 );
-		} else {
-			$page = 1;
-		}
-
-		$drivers = Crunchbutton_Admin::driversList( c::getPagePiece( 4 ) );
-
-		$start = ( ( $page - 1 ) * $resultsPerPage ) + 1;
-		$end = $start + $resultsPerPage;
-		$count = 1;
-
-		$list = [];
-		foreach( $drivers as $driver ){
-			if( $count >= $start && $count < $end ){
-				$list[] = $driver->exports( [ 'permissions', 'groups' ] );
-			}
-			$count++;
-		}
-
-		$pages = ceil( $drivers->count() / $resultsPerPage );
-
-		$data = [];
-		$data[ 'count' ] = $drivers->count();
-		$data[ 'pages' ] = $pages;
-		$data[ 'prev' ] = ( $page > 1 ) ? $page - 1 : null;
-		$data[ 'page' ] = intval( $page );
-		$data[ 'next' ] = ( $page < $pages ) ? $page + 1 : null;
-		$data[ 'results' ] = $list;
-
-		echo json_encode( $data );
-	}
-
-
-	private function _save(){
-
-		if( $this->method() != 'post' ){
-			$this->_error();
-		}
-
-		$id_admin = c::getPagePiece( 3 );
-		// saves a new driver
-		if( !$id_admin ){
-			$driver = new Crunchbutton_Admin();
-			// create the new driver as inactive
-			$driver->active = 0;
-		} else {
-			$driver = Crunchbutton_Admin::o( $id_admin );
-		}
-			
-		$driver->name = $this->request()[ 'name' ];
-		$driver->phone = $this->request()[ 'phone' ];
-		$driver->email = $this->request()[ 'email' ];
-		
-		$driver->save();
-
-		// add the community
-		$id_community = $this->request()[ 'id_community' ];
-
-		// first remove the driver from the delivery groups
-		$_communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );;
-		foreach( $_communities as $community ){
-			$group = $community->groupOfDrivers();
-			if( $group->id_group ){
-				$driver->removeGroup( $group->id_group );
-			}
-		}
-
-		if( $id_community ){
-			$community = Crunchbutton_Community::o( $id_community );
-			if( $community->id_community ){
-				$group = $community->groupOfDrivers();
-				$adminGroup = new Crunchbutton_Admin_Group();
-				$adminGroup->id_admin = $driver->id_admin;
-				$adminGroup->id_group = $group->id_group;
-				$adminGroup->save();
-			}	
-		}
-
-		echo json_encode( [ 'success' => $driver->exports() ] );
-		return;
-	}
-
-	private function _error( $error = 'invalid request' ){
-		echo json_encode( [ 'error' => $error ] );
-		exit();
-	}
-
 }

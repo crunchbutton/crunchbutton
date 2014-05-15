@@ -2,11 +2,11 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 
 	// Private resource 'user'
 	var user = $resource( App.service + ':action', { action: '@action' }, {
-				// actions
-				'login' : { 'method': 'POST', params : { 'action' : 'login' } },
-				'logout' : { 'method': 'GET', params : { 'action' : 'logout' } },
-			}	
-		);
+			// actions
+			'login' : { 'method': 'POST', params : { 'action' : 'login' } },
+			'logout' : { 'method': 'GET', params : { 'action' : 'logout' } },
+		}	
+	);
 
 	var service = {
 		permissions: {},
@@ -19,6 +19,8 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 
 	service.checkUser = function() {
 		service.user = App.config.user;
+		var name = service.user.name.split(' ');
+		service.user.initials = name[0].charAt(0) + name[name.length-1].charAt(0);
 		App.config.user = null;
 	};
 
