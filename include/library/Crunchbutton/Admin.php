@@ -480,6 +480,9 @@ class Crunchbutton_Admin extends Cana_Table {
 	}
 	
 	public function exports( $remove = [] ) {
+		if (!$this->id_admin) {
+			return ['name' => '', 'id_admin' => ''];
+		}
 		$permissions = [];
 		$groups = [];
 		$communities = [];
