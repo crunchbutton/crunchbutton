@@ -23,12 +23,11 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 						}
 
 						if( !file_exists( Crunchbutton_Driver_Document_Status::path() ) ){
-							$this->_error( '"www/upload//drivers-doc/" folder doens`t exist!' );
+							$this->_error( '"www/upload/drivers-doc/" folder doens`t exist!' );
 						}
 
 						if ( copy( $_FILES[ 'file' ][ 'tmp_name' ], $file ) ) {
 							chmod( $file, 0777 );
-							$this->_error( 'ops, an error!' );	
 						}
 						echo json_encode( ['success' => $name ] );
 						exit;

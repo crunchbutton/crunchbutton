@@ -20,7 +20,9 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 
 	service.notifySetup = function( id_admin, callback ){
 		var message = 'setup';
-		service.notify( id_admin, message, callback );
+		if( id_admin ){
+			service.notify( id_admin, message, callback );	
+		}
 	}
 
 	service.notify = function( id_admin, message, callback ){
@@ -31,8 +33,18 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	}	
 
 	service.save = function( driver, callback ){
-		drivers.save( driver, function( driver ){
-			callback( driver );
+		var notify = driver.notify;
+		drivers.save( driver, function( json ){
+			callback( json );
+			if( json.success && notify ){
+				service.notifySetup( json.success.id_admin, function( json ){
+					if( json.success ){
+						$rootScope.flash.setMessage( 'Notification sent!' );
+					} else {
+						$rootScope.flash.setMessage( 'Notification not sent: ' + json.error , 'error' );	
+					}
+				} );
+			}
 		} );
 	}
 
