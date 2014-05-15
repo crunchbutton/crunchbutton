@@ -468,18 +468,12 @@ NGApp.directive( 'phoneValidate', function () {
 	return {
 			restrict: 'A',
 			require: 'ngModel',
-
 			link: function ( scope, elm, attrs, ctrl ) {
-
 				ctrl.$parsers.unshift( function ( val ) {
-
 					var isValid = false;
 					var phoneVal = val.replace( /[^0-9]/g, '' );
-
 					if ( phoneVal || phoneVal.length == 10) {
-
 						var phoneVal = phoneVal.split(''), prev;
-
 						for (x in phoneVal) {
 							if (!prev) {
 								prev = phoneVal[x];
@@ -490,7 +484,6 @@ NGApp.directive( 'phoneValidate', function () {
 							}
 						}
 					}
-
 					if( !isValid ){
 						ctrl.$setValidity( 'phoneValidate', false );
 						return undefined;
@@ -502,4 +495,36 @@ NGApp.directive( 'phoneValidate', function () {
 				} );
 			}
 	};
+});
+
+
+NGApp.directive('equals', function() {
+	return {
+		restrict: 'A', // only activate on element attribute
+		require: '?ngModel', // get a hold of NgModelController
+		link: function(scope, elem, attrs, ngModel) {
+			if(!ngModel) return; // do nothing if no ng-model
+
+			// watch own value and re-validate on change
+			scope.$watch(attrs.ngModel, function() {
+				validate();
+			});
+
+			// observe the other value and re-validate on change
+			attrs.$observe('equals', function (val) {
+				validate();
+			});
+
+			var validate = function() {
+
+				var val1 = ngModel.$viewValue;
+				var val2 = attrs.equals;
+				if( val1 && val2 ){
+					ngModel.$setValidity('equals', val1 === val2);	
+				} else {
+					ngModel.$setValidity('equals', true );	
+				}
+			};
+		}
+	}
 });

@@ -286,6 +286,41 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 
 } );
 
-NGApp.controller('DriversOnboardingSetupCtrl', function($scope) {
-	console.log('setup');
-});
+NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardingService ) {
+	
+	$scope.ready = false;
+	$scope.finished = false;
+
+	$scope.driver = { password: '', email : '', confirm: '' };
+
+	$scope.access = function(){
+		$scope.navigation.link( '/login' );
+	}
+
+	$scope.send = function(){
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+		DriverOnboardingService.setupSave( $scope.driver, function( json ){
+			if( json.success ){
+				$scope.driver	= json.success;
+				DriverOnboardingService.notifyWelcome( $scope.driver.id_admin );
+				$scope.finished = true;
+			} else {
+				$scope.error = json.error;
+			}
+		} );
+	}
+
+	DriverOnboardingService.setupValidate( function( json ){
+		if( json.success ){
+			$scope.driver.id_admin = json.success.id_admin;
+			$scope.driver.hasEmail = json.success.hasEmail;
+			$scope.ready = true;	
+		} else {
+			$scope.error = json.error;
+		}
+	} );
+
+} );
