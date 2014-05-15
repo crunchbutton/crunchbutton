@@ -608,10 +608,11 @@
 				data: { amount: amount, note : note },
 				complete: function( data ){
 					if( data.success ){
-						alert( 'Paid! Refresh the page.' );
+						alert( 'Paid!' );
+						location.href=location.href;
 
 					} else {
-						alert( 'Error, please see the console.' );
+						alert( "ERROR ERROR ERROR ERROR ERROR\n\n please see the console.");
 						console.log(data);
 					}
 				}
@@ -632,10 +633,11 @@
 					}
 
 					if (json.success) {
-						alert( 'Paid! Refresh the page.' );
+						alert( 'Paid!' );
+						location.href=location.href;
 
 					} else {
-						alert( 'Error, please see the console.' );
+						alert( "ERROR ERROR ERROR ERROR ERROR\n\n please see the console.");
 						console.log(json);
 					}
 				}
