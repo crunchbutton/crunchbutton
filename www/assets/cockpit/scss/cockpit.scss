@@ -638,7 +638,6 @@ input {
 .dialog-message {
 	color: #fff;
 	margin-bottom: 1em;
-	border-radius: 4px;
 	font-size: 1.2em;
 	line-height: 1.45em;
 	padding: .7em .9em .5em .9em;
@@ -826,25 +825,70 @@ h1.title .fa {
 
 
 
-.box-filter{
+
+
+
+/* filters for drivers */
+.box-filter {
 	margin: 0 0 1em 0;
 }
-	.box-filter .button{
-		display: table;
-		float: left;
-		width: 7em;
-		margin-right: 1em;
-		border: 2px solid transparent;
-		font-size: 1.1em;
+.box-filter .button {
+	float: left;
+	width: 7em;
+	border: 2px solid transparent;
+	font-size: 1.1em;
+	border-radius: 0;
+}
+.box-filter .button.inactive{
+	border: 2px solid $orange;
+	color: $orange;
+	background: transparent;
+}
+
+
+
+.user-initials {
+	border-radius: 80px;
+	background: #616367;
+	font-size: 35px;
+	font-weight: 100;
+	margin: 0 auto;
+	width: 100px;
+	height: 100px;
+	margin-bottom: 1em;
+	margin-top: 1em;
+	color: #2f323a;
+	overflow: hidden;
+	clear: both;
+}
+.user-initials span {
+	margin-top: 33px;
+	display: block;
+	text-align: center;
+}
+
+
+@media screen and (min-width: 1024px) {
+	.user-initials {
+		margin-top: 2.8em;
 	}
-	.box-filter .button.inactive{
-		border: 2px solid $orange;
-		color: $orange;
-		background: transparent;
-	}
-	.box-filter .button:last-child {
-		margin-right: 0;
-	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* todo:organize it --- order start  */
 	.drivers-order{
