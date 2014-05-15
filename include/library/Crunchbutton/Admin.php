@@ -163,11 +163,14 @@ class Crunchbutton_Admin extends Cana_Table {
 	}
 
 	public function communitiesHeDeliveriesFor(){
+
 		$deliveryFor = [];
-		$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
-		foreach( $communities as $community ){
-			if( $community->driverDeliveryHere( $this->id_admin ) ){
-				$deliveryFor[] = $community;
+		if( $this->id_admin ){
+			$communities = Crunchbutton_Community::q( 'SELECT * FROM community ORDER BY name ASC' );
+			foreach( $communities as $community ){
+				if( $community->driverDeliveryHere( $this->id_admin ) ){
+					$deliveryFor[] = $community;
+				}
 			}
 		}
 		return $deliveryFor;

@@ -48,6 +48,11 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					if( !$docStatus->id_driver_document_status ){
 						$docStatus->id_admin = $id_admin;
 						$docStatus->id_driver_document = $id_driver_document;
+					} else {
+						$oldFile = Crunchbutton_Driver_Document_Status::path() . $docStatus->file;
+						if( file_exists( $oldFile ) ){
+							@unlink( $oldFile );
+						}
 					}
 					// todo: delete old doc
 					$docStatus->datetime = date('Y-m-d H:i:s');
