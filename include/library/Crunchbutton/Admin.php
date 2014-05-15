@@ -103,7 +103,7 @@ class Crunchbutton_Admin extends Cana_Table {
 
 		$where = ( $search && trim( $search ) != '' ) ? ' AND a.name LIKE "%' . $search . '%"' : '';
 
-		return Admin::q( 'SELECT DISTINCT(a.id_admin) id, a.* FROM admin a WHERE 1=1 ' . $where . ' ORDER BY a.name ASC' );
+		return Admin::q( 'SELECT DISTINCT(a.id_admin) id, a.* FROM admin a INNER JOIN driver_log dl ON dl.id_admin = a.id_admin WHERE 1=1 ' . $where . ' ORDER BY a.name ASC' );
 	}
 
 	public function drivers(){
