@@ -201,13 +201,15 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 	var docs = function(){
 		// Load the docs
 		DriverOnboardingService.docs.list( function( data ){
-			console.log('data',data);
 			$scope.documents = data;
 		} );
 	}
 
 	DriverOnboardingService.get( function( driver ){
 		$scope.driver = driver;
+		if( !$scope.driver.id_admin ){
+			$scope.driver.notify = true;
+		}
 		docs();
 		CommunityService.listSimple( function( data ){
 			$scope.communities = data;
@@ -215,13 +217,28 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 		} );
 	} );
 
+	$scope.notify = function(){
+		DriverOnboardingService.notifySetup( $scope.driver.id_admin, function( json ){
+			if( json.success ){
+				$scope.flash.setMessage( 'Notification sent!' );
+			} else {
+				$scope.flash.setMessage( 'Notification not sent: ' + json.error , 'error' );	
+			}
+		} );
+	}
+
+	$scope.setDocument = function( id_driver_document ){
+		$scope.doc_uploaded = id_driver_document
+	}
 
 	// method save that saves the driver
 	$scope.save = function(){
+		
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;
 			return;
 		}
+
 		DriverOnboardingService.save( $scope.driver, function( json ){
 			if( json.success ){
 				$scope.navigation.link( '/drivers/onboarding/' + json.success.id_admin );
@@ -256,7 +273,6 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 			$scope.doc_uploaded = 0;
 			uploader.clearQueue();
 		} else {
-			console.log('response',response.error);
 			App.alert( 'Upload error: ' + response.error );	
 		}
 	});

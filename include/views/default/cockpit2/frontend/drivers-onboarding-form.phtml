@@ -39,18 +39,31 @@
 				</li>
 				<li>
 					<label for="driverEmail">
-						<div class="label">email:</div>
+						<div class="label">Email:</div>
 						<div class="input"><input type="email" name="driverEmail" ng-model="driver.email" placeholder="Email"></div>
 					</label>
 					<div class="error" ng-show="submitted && form.driverEmail.$invalid">
 						<small class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
   				</div>
 				</li>
+				<li ng-if="!driver.id_admin">
+					<label for="driverNotification">
+						<div class="label">Send setup notification?:</div>
+						<div class="input"><input type="checkbox" name="driverNotification" ng-model="driver.notify"></div>
+					</label>
+					<div class="error" ng-show="submitted && form.driverEmail.$invalid">
+						<small class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
+  				</div>
+				</li>
 				<li ng-if="driver.id_admin">
+					<hr/>
 					<h2>Documents</h2>
 					<ul>
 						<li ng-repeat="doc in documents">
-							<div>{{doc.name}} <span ng-show="doc.status"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
+							<div>
+								{{doc.name}} 
+									<span ng-show="doc.status"> <a href="{{doc.status.url}}" target="_blank">Download</a></span>
+									<span ng-show="!doc.status"> <span ng-click="setDocument(doc.id_driver_document)" target="_blank">Send</span></span>
 							</div>
 						</li>
 					</ul>
@@ -61,8 +74,8 @@
 				</li>
 			</ul>
 		</form>
-		<hr/>
 		<form name="docs" ng-if="driver.id_admin">
+			<hr/>
 			<h2>Upload zone</h2>
 			<ul>
 				<li>
@@ -82,9 +95,10 @@
 				</li>
 			</ul>
 		</form>
-		<hr/>
-		<div class="notifications" ng-if="driver.id_admin">
-			
+		<div class="notify" ng-if="driver.id_admin">
+			<hr/>
+			<h2>Notify</h2>
+			<button ng-click="notify()"> Notify about setup </button>
 		</div>
 	</div>
 </div>

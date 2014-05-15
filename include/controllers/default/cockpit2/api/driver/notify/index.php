@@ -5,7 +5,7 @@ class Controller_api_driver_notify extends Crunchbutton_Controller_RestAccount {
 	public function init() {
 
 		if( $this->method() != 'post' ){
-			// $this->_error();
+			$this->_error();
 		}
 
 		$id_admin = c::getPagePiece( 3 );
@@ -61,6 +61,13 @@ class Controller_api_driver_notify extends Crunchbutton_Controller_RestAccount {
 		}
 
 		if( $isOk ){
+			// log
+			$log = new Crunchbutton_Driver_Log();
+			$log->id_admin = $driver->id_admin;
+			$log->action = 'notified';
+			$log->info = $phone . ': ' . join( $message );
+			$log->datetime = date('Y-m-d H:i:s');
+			$log->save();
 			echo json_encode( [ 'success' => $driver->exports() ] );
 		} else {
 			$this->_error( 'notification not sent' );
