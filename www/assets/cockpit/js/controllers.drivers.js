@@ -201,6 +201,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 	var docs = function(){
 		// Load the docs
 		DriverOnboardingService.docs.list( function( data ){
+			console.log('data',data);
 			$scope.documents = data;
 		} );
 	}
@@ -221,9 +222,13 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 			$scope.submitted = true;
 			return;
 		}
-		DriverOnboardingService.save( $scope.driver, function(){
-			$scope.navigation.link( '/drivers/onboarding/' );
-			$scope.flash.setMessage( 'Driver saved!' );
+		DriverOnboardingService.save( $scope.driver, function( json ){
+			if( json.success ){
+				$scope.navigation.link( '/drivers/onboarding/' + json.success.id_admin );
+				$scope.flash.setMessage( 'Driver saved!' );	
+			} else {
+				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );	
+			}
 		} );
 	}
 
