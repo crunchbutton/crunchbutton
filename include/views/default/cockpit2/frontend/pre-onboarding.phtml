@@ -1,0 +1,69 @@
+<div class="login-wrap">
+	
+	<div class="login-content hide-before-init">
+	
+		<div class="logo">cockpit<span class="dot">.</span><span class="green">la</span></div>
+
+		<div ng-show="finished">
+			<div class="dialog-message dialog-message-success">
+				Thank you we will contact you soon.
+			</div>
+		</div>
+
+		<div class="dialog-message dialog-message-error" ng-show="error && !finished">
+			{{error}}
+		</div>
+
+
+		<?php /* Form validation stuff */?>
+		<div class="dialog-message dialog-message-error" ng-show="( submitted && form.$invalid ) && !finished">
+			<div class="error">
+
+				<div class="error" ng-show="form.driverName.$error.required">Enter your name.</div>
+				<div class="error" ng-show="form.driverName.$error.minlength">Name is too short.</div>
+				<div class="error" ng-show="form.driverName.$error.maxlength">Name cannot be longer than 40 characters.</div>
+
+				<div class="error" ng-show="form.driverPhone.$error.required">Enter your phone.</div>
+				<div class="error" ng-show="form.driverPhone.$error.phoneValidate">Enter a valid phone.</div>
+				<div class="error" ng-show="form.driverPhone.$error.isUnique">This phone is already registred!</div>
+
+				<div class="error" ng-show="form.driverEmail.$invalid && !form.driverEmail.$error.isUnique">Enter a valid email.</div>
+				<div class="error" ng-show="form.driverEmail.$error.isUnique">This email is already registred!</div>
+
+			</div>
+
+		</div>
+
+		<form name="form" ng-show="ready && !finished" novalidate>
+
+			<div class="input-wrap">
+				<span class="label">Name:</span>
+				<span class="field"><input type="text" name="driverName" ng-model="driver.name" required ng-minlength="5" ng-maxlength="40" autofocus="autofocus"></span>
+			</div>
+
+			<div class="input-wrap">
+				<span class="label">Phone:</span>
+				<span class="field"><input type="phone" name="driverPhone" required is-unique="phone" phone-validate ng-model="driver.phone"></span>
+			</div>
+
+			<div class="input-wrap">
+				<span class="label">Email:</span>
+				<span class="field"><input type="email" name="driverEmail" is-unique="email" ng-model="driver.email"></span>
+			</div>
+
+			<div class="input-wrap">
+				<span class="label">Community:</span>
+				<span class="field"><select name="driverIdCommunity" ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select></span>
+			</div>
+			
+			<div class="button-pushable find-restaurants">
+				<button class="button orange" ng-click="save()">Save</button>
+			</div>
+		</form>
+		
+		<div class="info">
+			Cockpit is Crunchbutton's tool of awesomeness. Looking for delivery food? Head over to <a href="http://crunchbutton.com">crunchbutton.com</a>
+		</div>
+
+	</div>
+</div>

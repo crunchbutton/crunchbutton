@@ -119,6 +119,16 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversOnboardingSetupCtrl',
 			templateUrl: 'assets/view/drivers-onboarding-setup.html'
 		})
+		.when('/onboarding/', {
+			action: 'onboarding',
+			controller: 'PreOnboardingCtrl',
+			templateUrl: 'assets/view/pre-onboarding.html'
+		})
+		.when('/onboarding/:id', {
+			action: 'onboarding',
+			controller: 'PreOnboardingCtrl',
+			templateUrl: 'assets/view/pre-onboarding.html'
+		})
 		.otherwise({
 			action: 'home',
 			controller: 'DefaultCtrl',
@@ -265,7 +275,7 @@ NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
 	$rootScope.$on( '$routeChangeStart', function ( event, next, current ) {
 		if( !$rootScope.account.isLoggedIn() ){
 			var isAllowed = false;
-			angular.forEach( [ '/login', '/setup' ], function( allowed ){
+			angular.forEach( [ '/login', '/setup', '/onboarding' ], function( allowed ){
 			 if( $location.url().indexOf( allowed ) >= 0 ){
 				isAllowed = true;
 			 }

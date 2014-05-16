@@ -324,3 +324,30 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 	} );
 
 } );
+
+
+NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, CommunityService ) {
+	
+	$scope.ready = false;
+	$scope.submitted = false;
+
+	CommunityService.listSimple( function( data ){
+		$scope.communities = data;
+		$scope.ready = true;
+	} );
+
+	$scope.save = function(){		
+		if( $scope.form.$invalid ){
+			$scope.submitted = true;
+			return;
+		}
+		PreOnboardingService.save( $scope.driver, function( json ){
+			if( json.success ){
+				$scope.finished = true;
+			} else {
+				$scope.error = json.error;
+			}
+		} );	
+	}
+} );
+

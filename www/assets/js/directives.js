@@ -468,30 +468,29 @@ NGApp.directive( 'phoneValidate', function () {
 	return {
 			restrict: 'A',
 			require: 'ngModel',
-			link: function ( scope, elm, attrs, ctrl ) {
-				ctrl.$parsers.unshift( function ( val ) {
-					var isValid = false;
-					var phoneVal = val.replace( /[^0-9]/g, '' );
-					if ( phoneVal || phoneVal.length == 10) {
-						var phoneVal = phoneVal.split(''), prev;
-						for (x in phoneVal) {
-							if (!prev) {
-								prev = phoneVal[x];
-								continue;
-							}
-							if (phoneVal[x] != prev) {
-								isValid = true;
+			link: function ( scope, elem, attrs, ctrl ) {
+				elem.on( 'blur', function ( evt ) {
+					scope.$apply( function () {
+						var val = elem.val();
+						var isValid = false;
+						var phoneVal = val.replace( /[^0-9]/g, '' );
+						if ( phoneVal && phoneVal.length == 10) {
+							var phoneVal = phoneVal.split(''), prev;
+							for (x in phoneVal) {
+								if (!prev) {
+									prev = phoneVal[x];
+									continue;
+								}
+								if (phoneVal[x] != prev) {
+									isValid = true;
+								}
 							}
 						}
-					}
-					if( !isValid ){
-						ctrl.$setValidity( 'phoneValidate', false );
-						return undefined;
-					} else {
-						ctrl.$setValidity( 'phoneValidate', true );
-						return val;
-					}
-
+						if( isValid ){
+							elem.val( elem.val().replace( /[^0-9]/g, '' ) );
+						}
+						ctrl.$setValidity( 'phoneValidate', isValid );			
+					} );
 				} );
 			}
 	};
@@ -516,15 +515,55 @@ NGApp.directive('equals', function() {
 			});
 
 			var validate = function() {
-
 				var val1 = ngModel.$viewValue;
 				var val2 = attrs.equals;
 				if( val1 && val2 ){
 					ngModel.$setValidity('equals', val1 === val2);	
 				} else {
-					ngModel.$setValidity('equals', true );	
+					ngModel.$setValidity('equals', true );
 				}
 			};
 		}
 	}
+});
+
+
+NGApp.directive( 'isUnique', function( $resource, $timeout ) {
+	return {
+			restrict: 'A',
+			require: 'ngModel',
+			link: function ( scope, elem, attrs, ctrl ) {
+				elem.on( 'blur', function ( evt ) {
+					scope.$apply( function () {
+						var val = elem.val();
+
+						var verify = false;
+						switch( attrs.isUnique ){
+							case 'email':
+							case 'phone':
+								verify = true;
+								break;
+						}
+
+						if( !verify ){
+							ctrl.$setValidity('isUnique', false );
+							return;
+						}
+
+						if( val == '' ){
+							return;
+						}
+
+						var unique = $resource( App.service + 'unique/:property/:value', { property: '@property', value: '@value' }, { 'check' : { 'method': 'POST', params : {} } } );
+							unique.check( { property: attrs.isUnique, value: val }, function( json ){
+								if( json && json.canIUse ){
+									ctrl.$setValidity( 'isUnique', true );
+								} else {
+									ctrl.$setValidity( 'isUnique', false );
+								}
+							} );
+					} );
+				} );
+			}
+	};
 });
