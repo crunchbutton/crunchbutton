@@ -1,6 +1,6 @@
 <?php
 
-class Controller_api_community_list extends Crunchbutton_Controller_RestAccount {
+class Controller_api_community_list extends Crunchbutton_Controller_Rest {
 	public function init() {
 
 		switch ( $this->method() ) {

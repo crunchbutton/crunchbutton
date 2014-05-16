@@ -80,6 +80,11 @@ NGApp.factory('LocationService', function($http, $resource, $rootScope) {
 	};
 	
 	var track = function() {
+		// I added this line - it was asking the user to login when he was filling the onboarding/setup form @pererinha
+		if( !$rootScope.account.user.id_admin ){
+			return;
+		}
+
 		// if we dont have a location
 		if (!location.lat) {
 			return;
