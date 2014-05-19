@@ -17,13 +17,12 @@
 		
 			<div class="drivers-shift" ng-repeat="shift in drivershifts | filter:filterShifts">
 
-				<span class="day">{{shift.date.day}}</span>
+				<span class="day">{{shift.day}}</span>
 
-					
-				<div ng-if="shift.drivers" class="box-content">
+				<div ng-if="shift.drivers.length > 0" class="box-content">
 					<table class="drivers">
 						<tr class="driver" ng-repeat="driver in shift.drivers" ng-class="{me: (driver.id == account.user.id_admin)}">
-							<td class="start-end"><div class="start-end-brace">{{shift.date.start_end}}</div></td>
+							<td class="start-end"><div class="start-end-brace">{{driver.hour}}</div></td>
 							<td class="driver-spacer"></td>
 							<td class="driver-details">
 								<span class="driver-name">{{driver.name}}</span><br>
@@ -33,12 +32,11 @@
 					</table>
 				</div>
 
-				<div ng-if="!shift.drivers" class="box-content box-content-red">
+				<div ng-if="shift.drivers.length == 0" class="box-content box-content-red">
 					<table class="drivers">
 						<tr><td>No drivers</td></tr>
 					</table>
 				</div>
-
 
 			</div>
 
