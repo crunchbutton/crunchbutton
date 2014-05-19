@@ -51,13 +51,11 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 			}	
 		}
 
-		if( $newDriver ){
-			$log = new Crunchbutton_Driver_Log();
-			$log->id_admin = $driver->id_admin;
-			$log->action = 'created';
-			$log->datetime = date('Y-m-d H:i:s');
-			$log->save();
-		} 
+		$log = new Crunchbutton_Driver_Log();
+		$log->id_admin = $driver->id_admin;
+		$log->action = ( $newDriver ) ? Crunchbutton_Driver_Log::ACTION_CREATED_COCKIPT : Crunchbutton_Driver_Log::ACTION_UPDATED_COCKIPT;
+		$log->datetime = date('Y-m-d H:i:s');
+		$log->save();
 
 		echo json_encode( [ 'success' => $driver->exports() ] );
 		return;

@@ -62,7 +62,7 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 					// save driver's log
 					$log = new Crunchbutton_Driver_Log();
 					$log->id_admin = $id_admin;
-					$log->action = 'document';
+					$log->action = Crunchbutton_Driver_Log::ACTION_DOCUMENT_SENT;
 					$log->info = $docStatus->id_driver_document . ': ' . $docStatus->file;
 					$log->datetime = date('Y-m-d H:i:s');
 					$log->save();

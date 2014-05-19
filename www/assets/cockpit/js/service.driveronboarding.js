@@ -20,6 +20,21 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			}	
 		);
 
+	// logs resource
+	var log = $resource( App.service + 'driver/log/:id_admin', { id_admin: '@id_admin' }, {
+				'get' : { 'method': 'GET', params : {}, isArray: true },
+			}	
+		);
+
+	service.logs = function( callback ){
+		var id_admin = $routeParams.id;
+		if( id_admin ){
+			log.get( { 'id_admin' : id_admin }, function( json ){
+				callback( json );
+			} );
+		}
+	}
+
 	service.setupSave = function( driver, callback ){
 		drivers.setupSave( driver, function( json ){
 			callback( json );

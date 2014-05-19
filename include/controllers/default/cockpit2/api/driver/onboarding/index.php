@@ -54,7 +54,7 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 		// register the log
 		$log = new Crunchbutton_Driver_Log();
 		$log->id_admin = $driver->id_admin;
-		$log->action = 'pre';
+		$log->action = Crunchbutton_Driver_Log::ACTION_CREATED_DRIVER;
 		$log->datetime = date('Y-m-d H:i:s');
 		$log->save();
 
