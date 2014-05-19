@@ -1,0 +1,81 @@
+<div class="top-pad"></div>
+<div class="content-padding" ng-show="ready">
+	<div class="content">
+		<hr/>
+		<h2>Documents</h2>
+		<div>
+			Here are the docs to fill out and sign. <a target="_blank" href="http://www.hellosign.com/gmail/">Download hellosign for gmail</a>, which will make it really easy to fill out and sign the docs.
+		</div>
+		<div>
+		<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>
+			
+		</div>
+
+		<table>
+			<thead>
+				<tr>
+					<td>Document</td>
+					<td>Template</td>
+					<td>Status</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="doc in documents">
+					<td>{{doc.name}}</td>
+					<td>
+						<span ng-if="doc.url">
+							<a href="{{doc.url}}" target="_blank">Template</a>
+						</span>
+					</td>
+					<td>
+						<span ng-if="doc.status && doc.status.date_formated && doc.status.url">
+							<a href="{{doc.status.url}}" target="_blank">
+								Sent at {{doc.status.date_formated}}
+							</a>
+						</span>
+						<span class="not-sent" ng-if="!doc.status">
+							<i>Not sent</i>
+						</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<form name="docs">
+			<hr/>
+			<h2>Upload zone</h2>
+			<ul>
+				<li>
+					<label for="driverDocument">
+						<div class="label">Select the file type:</div>
+						<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
+					</label>		
+				</li>
+				<li ng-show="uploader.progress">
+					Progress {{uploader.progress}}%
+				</li>
+				<li ng-show="doc_uploaded">
+					<input ng-file-select name="file" type="file" />
+				</li>
+				<li ng-show="doc_uploaded">
+					<button ng-click="uploader.uploadAll()"> Upload </button>
+				</li>
+			</ul>
+		</form>
+		<div class="notify" ng-if="driver.id_admin">
+			<hr/>
+			<h2>Notify</h2>
+			<button ng-click="notify()"> Notify about setup </button>
+		</div>
+		<div class="log" ng-if="driver.id_admin">
+			<hr/>
+			<h2>Log</h2>
+			<ul class="logs">
+				<li ng-repeat="log in logs" class="log.action">
+					<div class="desc">{{log.desc}}</div>
+					<div class="date">{{log.date}}</div>
+				</li>
+				</ul>
+			</ul>
+		</div>
+	</div>
+</div>

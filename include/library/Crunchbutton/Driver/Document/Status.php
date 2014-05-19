@@ -26,8 +26,17 @@ class Crunchbutton_Driver_Document_Status extends Cana_Table {
 		return new Crunchbutton_Driver_Document_Status();
 	}
 
+	public function date(){
+		if( !$this->_date ){
+			$this->_date = new DateTime($this->datetime, new DateTimeZone(c::config()->timezone));
+		}
+		return $this->_date;
+	}
+
 	public function exports(){
 		$out = $this->properties();
+		$date = $this->date();
+		$out[ 'date_formated' ] = $date->format('M jS Y g:i:s A T');
 		$out[ 'url' ] = Crunchbutton_Driver_Document_Status::www() . $out[ 'file' ];
 		return $out;
 	}

@@ -26,8 +26,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			}	
 		);
 
-	service.logs = function( callback ){
-		var id_admin = $routeParams.id;
+	service.logs = function( id_admin, callback ){
 		if( id_admin ){
 			log.get( { 'id_admin' : id_admin }, function( json ){
 				callback( json );
@@ -100,8 +99,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	service.docs = {};
 
 	// get docs list
-	service.docs.list = function( callback ){
-		var id_admin = $routeParams.id;
+	service.docs.list = function( id_admin, callback ){
 		if( id_admin ){
 			documents.status( { 'id_admin': id_admin }, function( docs ){ 
 				callback( docs ); 
@@ -117,8 +115,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	}
 
 	// get admin
-	service.get = function( callback ){
-		var id_admin = $routeParams.id;
+	service.get = function( id_admin, callback ){
 		if( id_admin ){
 			drivers.get( { 'id_admin': id_admin }, function( driver ){ 
 				if( driver.communities ){
