@@ -21,7 +21,9 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 		$list = [];
 		foreach( $drivers as $driver ){
 			if( $count >= $start && $count < $end ){
-				$list[] = $driver->exports( [ 'permissions', 'groups' ] );
+				$data = $driver->exports( [ 'permissions', 'groups' ] );
+				$data[ 'actions' ] = Crunchbutton_Driver_Log::byDriver( $driver->id_admin );
+				$list[] = $data;
 			}
 			$count++;
 		}
