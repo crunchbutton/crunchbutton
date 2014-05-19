@@ -100,6 +100,7 @@ class Crunchbutton_Util extends Cana_Model {
 	}
 
 	static public function allowedExtensionUpload( $ext ){
+		$ext = strtolower( $ext );
 		$allowed = array( 'gif','png' ,'jpg', 'doc', 'docx', 'pdf', 'jpeg' );	
 		return in_array( $ext, $allowed );
 	}
