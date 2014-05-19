@@ -3,6 +3,7 @@
 class Controller_api_driver_setup extends Crunchbutton_Controller_Rest {
 	
 	public function init() {
+
 		if( $this->method() == 'post' ) {
 			$id_admin = $this->request()[ 'id_admin' ];
 			$admin = Crunchbutton_Admin::o( $id_admin );
