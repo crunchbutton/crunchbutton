@@ -112,7 +112,7 @@
 											</td>
 											<td><?php echo $admin->name; ?> <br/><?php echo $admin->phone(); ?></td>
 											<td style="background:#009c48;color:#FFF;text-align:center;"><strong><?php echo $preference->ranking; ?></strong> of <?php echo $highestRanking; ?></td>
-											<td><?php echo $status->shifts; ?></td>
+											<td><?php if( intval( $status->shifts ) > 0 ){ echo $status->shifts; } else { echo '-'; } ; ?></td>
 											<td><?php echo $totalShifts; ?></td>
 											<td>
 												<?php if( $shift->isRecurring() ) { ?>
