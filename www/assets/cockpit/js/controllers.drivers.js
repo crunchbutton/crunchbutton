@@ -126,8 +126,10 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 
 	$scope.list = function(){
 		DriverShiftsService.list( function( data ){
-			$scope.drivershifts = data;
-			$scope.ready = true;
+			DriverShiftsService.groupByDay( data, function( data ){
+				$scope.drivershifts = data;
+				$scope.ready = true;
+			} );
 		} );
 	}
 
