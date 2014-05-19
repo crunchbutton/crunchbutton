@@ -157,7 +157,7 @@
 											</td>
 											<td><?php echo $admin->name; ?> <br/><?php echo $admin->phone(); ?></td>
 											<td>-</td>
-											<td><?php echo $status->shifts; ?></td>
+											<td><?php if( intval( $status->shifts ) > 0 ){ echo $status->shifts; } else { echo '-'; } ; ?></td>
 											<td><?php echo $totalShifts; ?></td>
 											<td>
 												<?php if( $shift->isRecurring() ) { ?>
@@ -189,7 +189,7 @@
 												</td>
 												<td><?php echo $admin->name; ?> <br/><?php echo $admin->phone(); ?></td>
 												<td>-</td>
-												<td><?php echo $status->shifts; ?></td>
+												<td><?php if( intval( $status->shifts ) > 0 ){ echo $status->shifts; } else { echo '-'; } ; ?></td>
 												<td><?php echo $totalShifts; ?></td>
 												<td>
 													<?php if( $shift->isRecurring() ) { ?>
