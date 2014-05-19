@@ -1,4 +1,5 @@
 <?php
+
 class Crunchbutton_Order_Action extends Cana_Table {
 
 	const DELIVERY_PICKEDUP   = 'delivery-pickedup';
@@ -18,7 +19,8 @@ class Crunchbutton_Order_Action extends Cana_Table {
 	}
 
 	public function byOrder( $id_order ){
-		return Crunchbutton_Order_Action::q( "SELECT oa.*, a.name FROM order_action oa INNER JOIN admin a ON oa.id_admin = a.id_admin WHERE oa.id_order = {$this->id_order} ORDER BY oa.id_order_action DESC" );
+		$_id_order = ( $this->id_order ? $this->id_order : $id_order );
+		return Crunchbutton_Order_Action::q( "SELECT oa.*, a.name FROM order_action oa INNER JOIN admin a ON oa.id_admin = a.id_admin WHERE oa.id_order = {$_id_order} ORDER BY oa.id_order_action DESC" );
 	}
 
 	public function restaurant(){

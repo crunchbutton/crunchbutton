@@ -5,7 +5,7 @@ NGApp.factory( 'DriverOrdersService', function( $rootScope, $resource, $routePar
 	// Create a private resource 'orders'
 	var orders = $resource( App.service + 'driver/orders/:id_order/:action', { id_order: '@id_order', action: '@action' }, {
 				// actions
-				'get' : { 'method': 'GET', params : { 'action' : 'order', 'id' : 0 } },
+				'get' : { 'method': 'GET', params : { 'action' : 'order' } },
 				'count' : { 'method': 'GET', params : { 'action' : 'count' } },
 				'accept' : { 'method': 'POST', params : { 'action' : 'delivery-accept' } },
 				'reject' : { 'method': 'POST', params : { 'action' : 'delivery-reject' } },

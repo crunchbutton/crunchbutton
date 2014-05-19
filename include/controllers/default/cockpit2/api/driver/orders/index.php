@@ -1,6 +1,6 @@
 <?php
 
-class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
+class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 
@@ -22,7 +22,17 @@ class Controller_api_driverorders extends Crunchbutton_Controller_RestAccount {
 					break;
 				
 				default:
+
 					$order = Order::o(c::getPagePiece( 3 ) );
+					// Test order #2969 - step 3
+					if( $order->id_order == 16844 ){
+						$last = Crunchbutton_Order_Action::byOrder( $order->id_order );
+						// delete last actions so the driver could play with
+						if( $last->id_order_action && c::user()->id_admin != $last->id_admin && $last->type != Crunchbutton_Order_Action::DELIVERY_REJECTED ){
+							c::db()->query( 'DELETE FROM order_action WHERE id_order = "' . $order->id_order . '"' );
+						}
+					}
+					
 
 					if ( $this->method() == 'post' ) {
 
