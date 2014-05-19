@@ -54,25 +54,25 @@
 						<small class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
   				</div>
 				</li>
-				<li ng-if="driver.id_admin">
-					<hr/>
-					<h2>Documents</h2>
-					<ul class="documents">
-						<li ng-repeat="doc in documents">
-							<div>
-								{{doc.name}} 
-									<span ng-show="doc.status"> <a href="{{doc.status.url}}" target="_blank">Download</a></span>
-									<span ng-show="!doc.status"> <span ng-click="setDocument(doc.id_driver_document)" target="_blank">Send</span></span>
-							</div>
-						</li>
-					</ul>
-				</li>
 				<li class="buttons">
 					<button ng-click="save();">Save</button>
 					<button ng-click="cancel()">Cancel</button>
 				</li>
 			</ul>
 		</form>
+		<div ng-if="driver.id_admin">
+			<hr/>
+			<h2>Documents</h2>
+			<ul class="documents">
+				<li ng-repeat="doc in documents">
+					<div>
+						{{doc.name}} 
+							<span ng-show="doc.status"> <a href="{{doc.status.url}}" target="_blank">Download</a></span>
+							<span ng-show="!doc.status"> <span ng-click="setDocument(doc.id_driver_document)" target="_blank">Send</span></span>
+					</div>
+				</li>
+			</ul>
+		</div>
 		<form name="docs" ng-if="driver.id_admin">
 			<hr/>
 			<h2>Upload zone</h2>

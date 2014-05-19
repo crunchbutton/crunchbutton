@@ -228,6 +228,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 		DriverOnboardingService.notifySetup( $scope.driver.id_admin, function( json ){
 			if( json.success ){
 				$scope.flash.setMessage( 'Notification sent!' );
+				logs();
 			} else {
 				$scope.flash.setMessage( 'Notification not sent: ' + json.error , 'error' );	
 			}
@@ -276,6 +277,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 			DriverOnboardingService.docs.save( doc, function( json ){
 				if( json.success ){
 					docs();
+					logs();
 					$scope.flash.setMessage( 'File saved!' );
 				} else {
 					$scope.flash.setMessage( 'File not saved: ' + json.error );

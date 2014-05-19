@@ -20,6 +20,9 @@ class Controller_api_driver_setup extends Crunchbutton_Controller_Rest {
 				$log->datetime = date('Y-m-d H:i:s');
 				$log->save();
 				
+				// Notify
+				Crunchbutton_Driver_Notify::send( $admin->id_admin, Crunchbutton_Driver_Notify::TYPE_WELCOME );
+				
 				echo json_encode( [ 'success' => $admin->exports() ] );
 			} else {
 				$this->_error();

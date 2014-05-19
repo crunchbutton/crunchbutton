@@ -18,65 +18,11 @@ class Controller_api_driver_notify extends Crunchbutton_Controller_RestAccount {
 
 		$message = $this->request()[ 'message' ];
 
-		$phone = $driver->phone();
-
-		$phone = str_replace( '-' , '', $phone );
-
-		if( trim( $phone ) == '' ){
-			$this->_error( 'we need a phone number!' );
-		}
-
-		// Pre defined messages
-		switch ( $message ) {
-			case 'setup':
-				$message = "Access cockpit.la/setup/{$phone}";
-				break;
-			
-			case 'welcome':
-				$message = 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/16844. Play around with it and make sure you understand how everything works';
-				break;
-
-			default:
-				break;
-		}
-
-		if( trim( $message ) == '' ){
-			$this->_error();	
-		}
-		
-		$env = c::getEnv();
-
-		// todo: put this notifications at timeout
-
-		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-
-		$message = str_split( $message, 160 );
-
-		$isOk = true;
-
-		foreach ( $message as $msg ) {
-			try {
-				// Log
-				Log::debug( [ 'action' => 'notify admin: ' . $id_admin, 'phone' => $phone, 'msg' => $msg, 'type' => 'admin-notification' ] );
-				$twilio->account->sms_messages->create( c::config()->twilio->{$env}->outgoingTextCustomer, '+1'. $phone, $msg );
-			} catch ( Exception $e ) {
-				$isOk = false;
-				// Log
-				Log::debug( [ 'action' => 'ERROR notify admin: ' . $id_admin, 'error' => $e->getInfo(), 'phone' => $phone, 'msg' => $msg, 'type' => 'admin-notification' ] );
-			}
-		}
-
-		if( $isOk ){
-			// log
-			$log = new Crunchbutton_Driver_Log();
-			$log->id_admin = $driver->id_admin;
-			$log->action = Crunchbutton_Driver_Log::ACTION_NOTIFIED_SETUP;
-			$log->info = $phone . ': ' . join( $message );
-			$log->datetime = date('Y-m-d H:i:s');
-			$log->save();
-			echo json_encode( [ 'success' => $driver->exports() ] );
+		$notify = Crunchbutton_Driver_Notify::send( $driver->id_admin, $message );
+		if( $notify && $notify[ 'success' ] ){
+			echo json_encode( $notify );
 		} else {
-			$this->_error( 'notification not sent' );
+			$this->_error( $notify[ 'error' ] );
 		}
 	}
 
