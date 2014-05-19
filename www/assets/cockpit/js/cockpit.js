@@ -114,6 +114,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversOnboardingFormCtrl',
 			templateUrl: 'assets/view/drivers-onboarding-form.html'
 		})
+		.when('/drivers/docs', {
+			action: 'drivers-docs',
+			controller: 'DriversDocsFormCtrl',
+			templateUrl: 'assets/view/drivers-docs-form.html'
+		})
 		.when('/setup/:phone', {
 			action: 'drivers-setup',
 			controller: 'DriversOnboardingSetupCtrl',

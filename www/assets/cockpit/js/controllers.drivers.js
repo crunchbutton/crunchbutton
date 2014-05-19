@@ -195,25 +195,25 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOn
 
 } );
 
-NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader, DriverOnboardingService, CommunityService ) {
+NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, $fileUploader, DriverOnboardingService, CommunityService ) {
 
 	$scope.ready = false;
 	$scope.submitted = false;
 
 	var docs = function(){
 		// Load the docs
-		DriverOnboardingService.docs.list( function( data ){
+		DriverOnboardingService.docs.list( $routeParams.id, function( data ){
 			$scope.documents = data;
 		} );
 	}
 
 	var logs = function(){
-		DriverOnboardingService.logs( function( data ){
+		DriverOnboardingService.logs( $routeParams.id, function( data ){
 			$scope.logs = data;
 		} );
 	}
 
-	DriverOnboardingService.get( function( driver ){
+	DriverOnboardingService.get( $routeParams.id, function( driver ){
 		$scope.driver = driver;
 		if( !$scope.driver.id_admin ){
 			$scope.driver.notify = true;
@@ -336,6 +336,56 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 
 } );
 
+NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, DriverOnboardingService ) {
+	
+	$scope.ready = false;
+
+	var docs = function(){
+		// Load the docs
+		DriverOnboardingService.docs.list( $scope.account.user.id_admin, function( data ){
+			$scope.documents = data;
+			$scope.ready = true;
+		} );
+	}
+
+	docs();
+
+	$scope.setDocument = function( id_driver_document ){
+		$scope.doc_uploaded = id_driver_document
+	}
+
+	// Upload control stuff
+	$scope.doc_uploaded = 0;
+
+	var uploader = $scope.uploader = $fileUploader.create({
+									scope: $scope,
+									url: '/api/driver/documents/upload/',
+									filters: [ function( item ) { return true; } ]
+								} );
+
+	uploader.bind( 'success', function( event, xhr, item, response ) {
+		$scope.$apply();
+		if( response.success ){
+			var doc = { id_admin : $scope.account.user.id_admin, id_driver_document : $scope.doc_uploaded, file : response.success };
+			DriverOnboardingService.docs.save( doc, function( json ){
+				if( json.success ){
+					docs();
+					$scope.flash.setMessage( 'File saved!' );
+				} else {
+					$scope.flash.setMessage( 'File not saved: ' + json.error );
+				}
+			} );
+			uploader.clearQueue();
+		} else {
+			$scope.flash.setMessage( 'File not saved: ' + json.error );
+		}
+	});
+
+	uploader.bind('error', function (event, xhr, item, response) {
+		App.alert( 'Upload error, please try again or send us a message.' );
+	});
+	
+} );
 
 NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, CommunityService ) {
 	
