@@ -1,5 +1,10 @@
-NGApp.controller('DefaultCtrl', function ($scope, $http, $location, MainNavigationService, AccountService) {
-	MainNavigationService.link('/drivers/orders');
+NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams, MainNavigationService, AccountService) {
+	var id_order = $location.path().replace( '/', '' );
+	if( !isNaN( parseInt( id_order ) ) ){
+		MainNavigationService.link('/drivers/order/' + id_order);
+	} else {
+		MainNavigationService.link('/drivers/orders');
+	}
 });
 
 NGApp.controller('MainHeaderCtrl', function ( $scope) {} );
