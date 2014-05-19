@@ -70,7 +70,7 @@ class Controller_api_driver_notify extends Crunchbutton_Controller_RestAccount {
 			// log
 			$log = new Crunchbutton_Driver_Log();
 			$log->id_admin = $driver->id_admin;
-			$log->action = 'notified';
+			$log->action = Crunchbutton_Driver_Log::ACTION_NOTIFIED_SETUP;
 			$log->info = $phone . ': ' . join( $message );
 			$log->datetime = date('Y-m-d H:i:s');
 			$log->save();

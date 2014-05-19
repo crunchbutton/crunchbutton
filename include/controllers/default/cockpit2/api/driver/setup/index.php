@@ -15,7 +15,7 @@ class Controller_api_driver_setup extends Crunchbutton_Controller_Rest {
 
 				$log = new Crunchbutton_Driver_Log();
 				$log->id_admin = $admin->id_admin;
-				$log->action = 'login';
+				$log->action = Crunchbutton_Driver_Log::ACTION_ACCOUNT_SETUP;
 				$log->info = $admin->login;
 				$log->datetime = date('Y-m-d H:i:s');
 				$log->save();

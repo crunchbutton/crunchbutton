@@ -57,7 +57,7 @@
 				<li ng-if="driver.id_admin">
 					<hr/>
 					<h2>Documents</h2>
-					<ul>
+					<ul class="documents">
 						<li ng-repeat="doc in documents">
 							<div>
 								{{doc.name}} 
@@ -98,6 +98,17 @@
 			<hr/>
 			<h2>Notify</h2>
 			<button ng-click="notify()"> Notify about setup </button>
+		</div>
+		<div class="log" ng-if="driver.id_admin">
+			<hr/>
+			<h2>Log</h2>
+			<ul class="logs">
+				<li ng-repeat="log in logs" class="log.action">
+					<div class="desc">{{log.desc}}</div>
+					<div class="date">{{log.date}}</div>
+				</li>
+				</ul>
+			</ul>
 		</div>
 	</div>
 </div>

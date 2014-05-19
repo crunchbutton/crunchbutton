@@ -149,6 +149,7 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOn
 			$scope.next = data.next;
 			$scope.prev = data.prev;
 			$scope.drivers = data.results;
+			$scope.count = data.count;
 			$scope.ready = true;
 			$scope.focus( '#search' );
 		} );	
@@ -195,7 +196,6 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOn
 NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader, DriverOnboardingService, CommunityService ) {
 
 	$scope.ready = false;
-
 	$scope.submitted = false;
 
 	var docs = function(){
@@ -205,11 +205,18 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $fileUploader,
 		} );
 	}
 
+	var logs = function(){
+		DriverOnboardingService.logs( function( data ){
+			$scope.logs = data;
+		} );
+	}
+
 	DriverOnboardingService.get( function( driver ){
 		$scope.driver = driver;
 		if( !$scope.driver.id_admin ){
 			$scope.driver.notify = true;
 		}
+		logs();
 		docs();
 		CommunityService.listSimple( function( data ){
 			$scope.communities = data;

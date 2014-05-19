@@ -6,31 +6,45 @@
 
 	<button ng-click="add()">new driver</button>
 
-	<table>
-		<thead>
-			<tr>
-				<td>Name</td>
-				<td>Login</td>
-				<td>Communities</td>
-			</tr>
-		</thead>		
-		<tbody>
-			<tr ng-repeat="driver in drivers">
-				<td>{{driver.name}}</td>
-				<td>{{driver.login}}</td>
-				<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
-				<td>
-					<button ng-click="edit(driver.id_admin)">edit</button>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+	<div ng-if="count">
+		<table>
+			<thead>
+				<tr>
+					<td>#</td>
+					<td>Name</td>
+					<td>Login</td>
+					<td>Communities</td>
+					<td>Last Action</td>
+					<td>Next Action</td>
+					<td></td>
+				</tr>
+			</thead>		
+			<tbody>
+				<tr ng-repeat="driver in drivers">
+					<td>{{driver.id_admin}}</td>
+					<td>{{driver.name}}</td>
+					<td>{{driver.login}}</td>
+					<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
+					<td>{{driver.actions.last.desc}}<br/>{{driver.actions.last.date}}</td>
+					<td>{{driver.actions.next}}</td>
+					<td>
+						<button ng-click="edit(driver.id_admin)">edit</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 
-	<ul class="pagination">
-		<li><button ng-show="prev" ng-click="prevPage()">prev</button></li>
-		<li>{{page}} of {{pages}}</li>
-		<li><button ng-show="next" ng-click="nextPage()">next</button></li>
-	</ul>
+		<ul class="pagination">
+			<li><button ng-show="prev" ng-click="prevPage()">prev</button></li>
+			<li>{{page}} of {{pages}}</li>
+			<li><button ng-show="next" ng-click="nextPage()">next</button></li>
+		</ul>
+
+	</div>
+
+	<div ng-if="!count">
+		No drivers.
+	</div>
 
 </div>
 
