@@ -4,13 +4,13 @@ CREATE TABLE `driver_document` (
   `name` varchar(40) DEFAULT NULL,
   `order` int(4) unsigned DEFAULT NULL,
   `url` text DEFAULT NULL,
-  PRIMARY KEY (`id_drivers_document`)
+  PRIMARY KEY (`id_driver_document`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `driver_document` (`id_driver_document`, `name`, `url` `order`)
+INSERT INTO `driver_document` (`id_driver_document`, `name`, `url`, `order`)
 VALUES
-	(1, 'Independant Contractor Agreement', 'https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/6ngjeViT77TalSm/INDEPENDENT%20CONTRACTOR%20AGREEMENT_FINAL_2.4.14.doc' 1),
+	(1, 'Independant Contractor Agreement', 'https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/6ngjeViT77TalSm/INDEPENDENT%20CONTRACTOR%20AGREEMENT_FINAL_2.4.14.doc', 1),
 	(2, 'W9', 'https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/R816dLDLvXfD5cM/W9.pdf', 2),
 	(3, 'Direct Deposit', 'https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/CYoVFxyk8OtNydv/Direct%20Deposit%207.10.pdf', 3),
 	(4, 'Drivers License', '', 4),
