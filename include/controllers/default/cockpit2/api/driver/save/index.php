@@ -4,11 +4,17 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 
+		$id_admin = c::getPagePiece( 3 );
+		$user = c::user();
+		$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) );
+		if( !$hasPermission ){
+			$this->_error();
+			exit;
+		}
+
 		if( $this->method() != 'post' ){
 			$this->_error();
 		}
-
-		$id_admin = c::getPagePiece( 3 );
 
 		$newDriver = false;
 
@@ -26,6 +32,11 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$driver->phone = preg_replace( '/[^0-9]/i', '', $this->request()[ 'phone' ] );
 		$driver->email = $this->request()[ 'email' ];
 		
+		$pass = $this->request()[ 'pass' ];
+		if( $pass && trim( $pass ) != '' ){
+			$driver->pass = $driver->makePass( $pass );
+		}
+
 		$driver->save();
 
 		// add the community
@@ -42,6 +53,8 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		if( $id_community ){
 			$community = Crunchbutton_Community::o( $id_community );
+			$driver->timezone = $community->timezone;
+			$driver->save();
 			if( $community->id_community ){
 				$group = $community->groupOfDrivers();
 				$adminGroup = new Crunchbutton_Admin_Group();
@@ -59,9 +72,11 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$log->datetime = date('Y-m-d H:i:s');
 		$log->save();
 
-		// Notify
-		Cockpit_Driver_Notify::send( $admin->id_admin, Cockpit_Driver_Notify::TYPE_WELCOME );
-
+		if ( $this->request()[ 'notify' ] ) {
+			// Notify
+			Cockpit_Driver_Notify::send( $driver->id_admin, Cockpit_Driver_Notify::TYPE_WELCOME );
+		}
+		
 		echo json_encode( [ 'success' => $driver->exports() ] );
 		return;
 	}

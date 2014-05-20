@@ -4,6 +4,12 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {	
 
+		$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) );
+		if( !$hasPermission ){
+			$this->_error();
+			exit;
+		}
+
 		$resultsPerPage = 20;
 
 		if ( c::getPagePiece( 3 ) ) {
@@ -44,5 +50,10 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 		$data[ 'results' ] = $list;
 
 		echo json_encode( $data );
+	}
+
+	private function _error( $error = 'invalid request' ){
+		echo json_encode( [ 'error' => $error ] );
+		exit();
 	}
 }

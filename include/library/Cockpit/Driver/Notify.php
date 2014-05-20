@@ -10,7 +10,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		$driver = Crunchbutton_Admin::o( $id_admin );
 
 		if( !$driver->id_admin ){
-			$this->_error();
+			return [ 'error' => 'invalid user' ];
 		}
 
 		$phone = $driver->phone();
