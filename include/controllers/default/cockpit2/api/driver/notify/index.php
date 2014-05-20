@@ -18,7 +18,11 @@ class Controller_api_driver_notify extends Crunchbutton_Controller_RestAccount {
 
 		$message = $this->request()[ 'message' ];
 
-		$notify = Crunchbutton_Driver_Notify::send( $driver->id_admin, $message );
+		Log::debug( [ 'action' => 'notification started', 'id_admin' => $id_admin, 'message' => $message, 'type' => 'drivers-onboarding'] );
+
+		$notify = Cockpit_Driver_Notify::send( $driver->id_admin, $message );
+
+
 		if( $notify && $notify[ 'success' ] ){
 			echo json_encode( $notify );
 		} else {

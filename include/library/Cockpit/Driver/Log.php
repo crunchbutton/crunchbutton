@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Driver_Log extends Cana_Table {
+class Cockpit_Driver_Log extends Cana_Table {
 
 	const ACTION_CREATED_DRIVER = 'created-driver'; // driver pre registered
 	const ACTION_CREATED_COCKIPT = 'created-cockpit'; // created by admin
@@ -10,18 +10,18 @@ class Crunchbutton_Driver_Log extends Cana_Table {
 	const ACTION_ACCOUNT_SETUP = 'account-setup'; // login created
 	
 	public function nextAction( $id_admin ){
-		$log = Crunchbutton_Driver_Log::lastAction( $id_admin );
+		$log = Cockpit_Driver_Log::lastAction( $id_admin );
 		if( $log ){
 			switch ( $log[ 'action' ] ) {
-				case Crunchbutton_Driver_Log::ACTION_CREATED_DRIVER:
-				case Crunchbutton_Driver_Log::ACTION_CREATED_COCKIPT:
-				case Crunchbutton_Driver_Log::ACTION_UPDATED_COCKIPT:
+				case Cockpit_Driver_Log::ACTION_CREATED_DRIVER:
+				case Cockpit_Driver_Log::ACTION_CREATED_COCKIPT:
+				case Cockpit_Driver_Log::ACTION_UPDATED_COCKIPT:
 					return 'Notify / Upload documents';
 					break;
-				case Crunchbutton_Driver_Log::ACTION_NOTIFIED_SETUP:
+				case Cockpit_Driver_Log::ACTION_NOTIFIED_SETUP:
 					return 'Notify again / Upload documents';
 					break;
-				case Crunchbutton_Driver_Log::ACTION_ACCOUNT_SETUP:
+				case Cockpit_Driver_Log::ACTION_ACCOUNT_SETUP:
 					return 'Nothing';
 					break;
 			}
@@ -30,7 +30,7 @@ class Crunchbutton_Driver_Log extends Cana_Table {
 	}
 
 	public function lastAction( $id_admin ){
-		$actions = Crunchbutton_Driver_Log::byDriver( $id_admin );
+		$actions = Cockpit_Driver_Log::byDriver( $id_admin );
 		if( count( $actions ) > 0 ){
 			return $actions[ 0 ];
 		}
@@ -48,7 +48,7 @@ class Crunchbutton_Driver_Log extends Cana_Table {
 	public function AllByDriver( $id_admin ){
 		$logs = [];
 		if( $id_admin ){
-			$_logs = Crunchbutton_Driver_Log::q( 'SELECT * FROM driver_log dl WHERE dl.id_admin = "' . $id_admin . '" ORDER BY dl.id_driver_log ASC' );
+			$_logs = Cockpit_Driver_Log::q( 'SELECT * FROM driver_log dl WHERE dl.id_admin = "' . $id_admin . '" ORDER BY dl.id_driver_log ASC' );
 			foreach( $_logs as $log ){
 				$logs[] = $log->exports();
 			}
@@ -59,7 +59,7 @@ class Crunchbutton_Driver_Log extends Cana_Table {
 	public function byDriver( $id_admin ){
 		$logs = [];
 		if( $id_admin ){
-			$_logs = Crunchbutton_Driver_Log::q( 'SELECT * FROM driver_log dl
+			$_logs = Cockpit_Driver_Log::q( 'SELECT * FROM driver_log dl
 																						INNER JOIN ( SELECT MAX(id_driver_log) AS id_driver_log FROM driver_log WHERE id_admin = "' . $id_admin . '" GROUP BY action ) filter ON filter.id_driver_log = dl.id_driver_log
 																						ORDER BY dl.id_driver_log DESC' );
 			foreach( $_logs as $log ){
@@ -72,22 +72,22 @@ class Crunchbutton_Driver_Log extends Cana_Table {
 
 	public function description( $action ){
 		switch ( $action ) {
-			case Crunchbutton_Driver_Log::ACTION_CREATED_DRIVER:
+			case Cockpit_Driver_Log::ACTION_CREATED_DRIVER:
 				return 'driver registered';
 				break;
-			case Crunchbutton_Driver_Log::ACTION_CREATED_COCKIPT:
+			case Cockpit_Driver_Log::ACTION_CREATED_COCKIPT:
 			return 'driver created at cockpit';
 				break;
-			case Crunchbutton_Driver_Log::ACTION_UPDATED_COCKIPT:
+			case Cockpit_Driver_Log::ACTION_UPDATED_COCKIPT:
 				return 'driver info updated';
 				break;
-			case Crunchbutton_Driver_Log::ACTION_NOTIFIED_SETUP:
+			case Cockpit_Driver_Log::ACTION_NOTIFIED_SETUP:
 				return 'driver notified';
 				break;
-			case Crunchbutton_Driver_Log::ACTION_DOCUMENT_SENT:
+			case Cockpit_Driver_Log::ACTION_DOCUMENT_SENT:
 				return 'document sent';
 				break;
-			case Crunchbutton_Driver_Log::ACTION_ACCOUNT_SETUP:
+			case Cockpit_Driver_Log::ACTION_ACCOUNT_SETUP:
 				return 'setup finished';
 				break;
 		}

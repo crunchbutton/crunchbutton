@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Driver_Document extends Cana_Table {
+class Cockpit_Driver_Document extends Cana_Table {
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -11,7 +11,7 @@ class Crunchbutton_Driver_Document extends Cana_Table {
 	}
 
 	public function all(){
-		return Crunchbutton_Driver_Document::q( 'SELECT * FROM driver_document ORDER BY `order` ASC' );	
+		return Cockpit_Driver_Document::q( 'SELECT * FROM driver_document ORDER BY `order` ASC' );	
 	}
 
 	public function exports(){
