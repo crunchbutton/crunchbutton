@@ -1,49 +1,59 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-show="ready">
+<h1 class="title left"><i class="fa fa-automobile"></i><span>Driver Onboarding</span></h1>
+
+<div class="content-padding">
 	
-	<input type="text" id="search" ng-model="search" placeholder="search" />
-
-	<button ng-click="add()">new driver</button>
-
-	<div ng-if="count">
-		<table>
-			<thead>
-				<tr>
-					<td>#</td>
-					<td>Name</td>
-					<td>Login</td>
-					<td>Communities</td>
-					<td>Last Action</td>
-					<td>Next Action</td>
-					<td></td>
-				</tr>
-			</thead>		
-			<tbody>
-				<tr ng-repeat="driver in drivers">
-					<td>{{driver.id_admin}}</td>
-					<td>{{driver.name}}</td>
-					<td>{{driver.login}}</td>
-					<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
-					<td>{{driver.actions.last.desc}}<br/>{{driver.actions.last.date}}</td>
-					<td>{{driver.actions.next}}</td>
-					<td>
-						<button ng-click="edit(driver.id_admin)">edit</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<ul class="pagination">
-			<li><button ng-show="prev" ng-click="prevPage()">prev</button></li>
-			<li>{{page}} of {{pages}}</li>
-			<li><button ng-show="next" ng-click="nextPage()">next</button></li>
-		</ul>
-
+	<div class="box-filter right">
+		<input type="text" class="search" id="search" ng-model="search" placeholder="search" />
+		<button class="button orange" ng-click="add()">New Driver</button>
+		<div class="divider"></div>
 	</div>
+	
+	<div class="divider"></div>
 
-	<div ng-if="!count">
-		No drivers.
+	<div class="table-grid" ng-show="ready">
+
+		<div ng-if="count">
+			<table>
+				<thead>
+					<tr>
+						<td>Name</td>
+						<td>Login</td>
+						<td>Communities</td>
+						<td>Last Action</td>
+						<td>Next Action</td>
+						<td></td>
+					</tr>
+				</thead>		
+				<tbody>
+					<tr ng-repeat="driver in drivers">
+						<td>{{driver.name}}</td>
+						<td>{{driver.login}}</td>
+						<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
+						<td>{{driver.actions.last.desc}}<br/>{{driver.actions.last.date}}</td>
+						<td>{{driver.actions.next}}</td>
+						<td class="td-buttons">
+							<button class="button orange" ng-click="edit(driver.id_admin)">edit</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<ul class="pagination">
+				<li><button ng-show="prev" ng-click="prevPage()">prev</button></li>
+				<li>{{page}} of {{pages}}</li>
+				<li><button ng-show="next" ng-click="nextPage()">next</button></li>
+			</ul>
+
+		</div>
+
+		<div ng-if="!count" class="box-content box-content-red">
+			<table class="drivers">
+				<tr><td>No drivers</td></tr>
+			</table>
+		</div>
+
 	</div>
 
 </div>
