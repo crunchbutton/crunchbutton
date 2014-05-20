@@ -54,11 +54,35 @@
 						<small class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
   				</div>
 				</li>
-				<li class="buttons">
-					<button ng-click="save();">Save</button>
-					<button ng-click="cancel()">Cancel</button>
-				</li>
 			</ul>
+			<div ng-if="driver.login">  
+				<hr/>
+				<h2>Access</h2>
+				<ul>
+					<li>
+						<label for="driverLogin">
+							<div class="label">Login:</div>
+							<div class="input">
+								<div class="input"><input type="text" name="driverLogin" readonly="readonly" disabled="disabled" ng-model="driver.login"></div>
+							</div>
+						</label>
+					</li>
+					<li>
+						<label for="driverPass">
+							<div class="label">Password:</div>
+							<div class="input"><input type="password" name="driverPass" ng-model="driver.pass"></div>
+							<div>Leave it blank if you don't wanna change it.</div>
+						</label>
+					</li>
+				</ul>
+				<hr/>
+				<ul class="buttons">
+					<li>
+						<button ng-click="save();">Save</button>
+						<button ng-click="cancel()">Cancel</button>
+					</li>
+				</ul>
+			</div>
 		</form>
 		<div ng-if="driver.id_admin">
 			<hr/>

@@ -6,6 +6,16 @@ class Controller_api_driver_log extends Crunchbutton_Controller_RestAccount {
 		if( c::getPagePiece( 3 ) ){
 			$admin = Crunchbutton_Admin::o( c::getPagePiece( 3 ) );
 			if( $admin->id_admin ){
+
+				// Check the permission
+				$user = c::user();
+				$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $admin->id_admin == $user->id_admin ) );
+				if( !$hasPermission ){
+					$this->_error();
+					exit;
+				}
+
+
 				$logs = Cockpit_Driver_Log::AllByDriver( $admin->id_admin );
 				$list = [];
 				foreach( $logs as $log ){

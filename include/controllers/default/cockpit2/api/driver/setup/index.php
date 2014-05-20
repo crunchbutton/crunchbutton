@@ -10,7 +10,10 @@ class Controller_api_driver_setup extends Crunchbutton_Controller_Rest {
 			$admin = Crunchbutton_Admin::o( $id_admin );
 			
 			if( $admin->id_admin ){
-				$admin->email = $this->request()[ 'email' ];;
+				$email = $this->request()[ 'email' ];
+				if( $email && trim( $email ) != '' ){
+					$admin->email = $email;	
+				}
 				$admin->login = $admin->createLogin();
 				$admin->active = 1;
 				$admin->pass = $admin->makePass( $this->request()[ 'password' ] );

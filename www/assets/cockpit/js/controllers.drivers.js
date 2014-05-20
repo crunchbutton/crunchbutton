@@ -253,6 +253,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 			if( json.success ){
 				$scope.navigation.link( '/drivers/onboarding/' + json.success.id_admin );
 				$scope.flash.setMessage( 'Driver saved!' );	
+				$scope.driver.pass = '';
 			} else {
 				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );	
 			}

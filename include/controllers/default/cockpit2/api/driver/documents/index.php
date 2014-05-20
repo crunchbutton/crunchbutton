@@ -48,7 +48,15 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 			
 			case 'save':
 
+				// check the permission
 				$id_admin = $this->request()[ 'id_admin' ];
+				$user = c::user();
+				$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) );
+				if( !$hasPermission ){
+					$this->_error();
+					exit;
+				}
+
 				$id_driver_document = $this->request()[ 'id_driver_document' ];
 				if( $id_admin && $id_driver_document ){
 					$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $id_driver_document );
@@ -90,13 +98,17 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 						$id_admin = $admin->id_admin;
 					}
 				}
-
+				
+				// Check if the logged user has permission to see the admin's docs
+				$user = c::user();
+				$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $id_admin == $user->id_admin ) );
+				
 				// shows the regular list
 				$list = [];
 				$docs = Cockpit_Driver_Document::all();
 				foreach( $docs as $doc ){
 					$out = $doc->exports();;
-					if( $id_admin ){
+					if( $id_admin && $hasPermission ){
 						$docStatus = Cockpit_Driver_Document_Status::document( $id_admin, $doc->id_driver_document );	
 						if( $docStatus->id_driver_document_status ){
 							$out[ 'status' ] = $docStatus->exports();

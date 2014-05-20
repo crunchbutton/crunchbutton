@@ -4,6 +4,12 @@ class Controller_api_driver_notify extends Crunchbutton_Controller_RestAccount {
 	
 	public function init() {
 
+		$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) );
+		if( !$hasPermission ){
+			$this->_error();
+			exit;
+		}
+
 		if( $this->method() != 'post' ){
 			$this->_error();
 		}

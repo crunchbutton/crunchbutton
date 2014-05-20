@@ -35,7 +35,9 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 		$driver->active = 0;
 		$driver->name = $name;
 		$driver->phone = $phone;
-		$driver->email = $email;
+		if( $email && trim( $email ) != '' ){
+			$driver->email = $email;
+		}
 		$driver->save();
 
 		Log::debug( [ 'action' => 'new driver created', 'driver' => $driver->id_admin, 'name' => $name, 'phone' => $phone, 'email' => $email, 'type' => 'drivers-onboarding'] );
@@ -44,6 +46,10 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 		$id_community = $this->request()[ 'id_community' ];
 		if( $id_community ){
 			$community = Crunchbutton_Community::o( $id_community );
+
+			$driver->timezone = $community->timezone;
+			$driver->save();
+
 			if( $community->id_community ){
 				$group = $community->groupOfDrivers();
 				$adminGroup = new Crunchbutton_Admin_Group();
