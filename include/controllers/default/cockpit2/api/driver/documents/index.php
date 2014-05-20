@@ -89,6 +89,31 @@ class Controller_api_driver_documents extends Crunchbutton_Controller_RestAccoun
 				}
 				break;
 
+			case 'pendency':
+					$admin = Crunchbutton_Admin::o( c::getPagePiece( 4 ) );
+					if( !$admin->id_admin ){
+						echo $this->_error();
+					}
+
+					$user = c::user();
+					$hasPermission = ( c::admin()->permission()->check( ['global', 'drivers-all'] ) || ( $admin->id_admin == $user->id_admin ) );	
+					if( !$hasPermission ){
+						echo $this->_error();
+					}
+
+					$needToSendDocs = false;
+					$docs = Cockpit_Driver_Document::all();
+					foreach( $docs as $doc ){
+						if( $doc->required ){
+							$docStatus = Cockpit_Driver_Document_Status::document( $admin->id_admin, $doc->id_driver_document );	
+							if( $docStatus->id_driver_document_status ){
+								$needToSendDocs = true;
+							}	
+						}
+					}
+					echo json_encode( [ 'needToSendDocs' => $needToSendDocs ] );
+				break;
+
 			default:
 
 				$id_admin = false;
