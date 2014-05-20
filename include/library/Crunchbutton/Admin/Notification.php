@@ -330,7 +330,7 @@ class Crunchbutton_Admin_Notification extends Cana_Table {
 
 						$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
-						$message = "Remember: ACCEPT this order cbtn.io/" . $order->id_order . ". Next reminder is a phone call in 3 minutes. Then we'll reach out manually, which is annoying for us ;)";
+						$message = "Remember: ACCEPT this order http://cbtn.io/" . $order->id_order . ". Next reminder is a phone call in 3 minutes. Then we'll reach out manually, which is annoying for us ;)";
 						$message = str_split( $message , 160 );
 
 						Log::debug( [ 'order' => $order->id_order, 'action' => 'send second sms to admin', 'num' => $sms, 'message' => join( ' ', $message ), 'type' => 'admin_notification' ]);
