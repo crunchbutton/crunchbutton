@@ -205,6 +205,13 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		DriverOnboardingService.docs.list( $routeParams.id, function( data ){
 			$scope.documents = data;
 		} );
+		docsPendency();
+	}
+
+	var docsPendency = function(){
+		DriverOnboardingService.docs.pendency( $routeParams.id, function( data ){
+			console.log('data',data);
+		} );
 	}
 
 	var logs = function(){

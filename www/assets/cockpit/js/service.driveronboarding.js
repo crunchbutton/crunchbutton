@@ -17,6 +17,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 	var documents = $resource( App.service + 'driver/documents/:action/:id_admin/:id_driver_document', { id_admin: '@id_admin', id_driver_document: '@id_driver_document' }, {
 				'status' : { 'method': 'GET', params : { action : null }, isArray: true },
 				'save' : { 'method': 'POST', params : { action : 'save' } },
+				'pendency' : { 'method': 'GET', params : { action : 'pendency' } },
 			}	
 		);
 
@@ -105,7 +106,7 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 				callback( docs ); 
 			} );	
 		} 
-	}
+	}	
 
 	// save driver's doc
 	service.docs.save = function( doc, callback ){

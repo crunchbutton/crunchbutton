@@ -1,0 +1,1 @@
+ALTER TABLE `driver_document` ADD  `required` TINYINT( 1 ) NOT NULL DEFAULT '1';
