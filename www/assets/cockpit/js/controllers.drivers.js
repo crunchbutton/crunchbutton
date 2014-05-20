@@ -412,3 +412,8 @@ NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, C
 	}
 } );
 
+
+
+NGApp.controller('DriversHelpCtrl', function() {
+
+});
