@@ -3,14 +3,9 @@
 	<div class="content">
 		<hr/>
 		<h2>Documents</h2>
-		<div>
+		<p>
 			Here are important docs to fill out and sign. Please download the docs, fill them out and then upload them back to this page. We recommend signing them with Hellosign
-		</div>
-		<div>
-		<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>
-			
-		</div>
-
+		</p>
 		<table>
 			<thead>
 				<tr>
@@ -20,11 +15,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="doc in documents">
+				<tr ng-repeat="doc in documents" ng-if="doc.url">
 					<td>{{doc.name}}</td>
 					<td>
 						<span ng-if="doc.url">
-							<a href="{{doc.url}}" target="_blank">Template</a>
+							<a href="{{doc.url}}" target="_blank">Download the template</a>
 						</span>
 					</td>
 					<td>
@@ -40,6 +35,36 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		<hr/>
+
+		<p>
+			Upload a clear picture of your Drivers License and Insurance Card here. You can take a clear, close up picture with a smartphone, and then upload in the appropriate spots below
+		</p>
+		<table>
+			<thead>
+				<tr>
+					<td>Document</td>
+					<td>Status</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="doc in documents" ng-if="!doc.url">
+					<td>{{doc.name}}</td>
+					<td>
+						<span ng-if="doc.status && doc.status.date_formated && doc.status.url">
+							<a href="{{doc.status.url}}" target="_blank">
+								Sent at {{doc.status.date_formated}}
+							</a>
+						</span>
+						<span class="not-sent" ng-if="!doc.status">
+							<i>Not sent</i>
+						</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
 		<form name="docs">
 			<hr/>
 			<h2>Upload zone</h2>
@@ -61,21 +86,9 @@
 				</li>
 			</ul>
 		</form>
-		<div class="notify" ng-if="driver.id_admin">
-			<hr/>
-			<h2>Notify</h2>
-			<button ng-click="notify()"> Notify about setup </button>
-		</div>
-		<div class="log" ng-if="driver.id_admin">
-			<hr/>
-			<h2>Log</h2>
-			<ul class="logs">
-				<li ng-repeat="log in logs" class="log.action">
-					<div class="desc">{{log.desc}}</div>
-					<div class="date">{{log.date}}</div>
-				</li>
-				</ul>
-			</ul>
-		</div>
+		<hr/>
+		<p>
+			<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>		
+		</p>
 	</div>
 </div>
