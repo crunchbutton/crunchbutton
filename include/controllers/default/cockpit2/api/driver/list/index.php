@@ -22,9 +22,9 @@ class Controller_api_driver_list extends Crunchbutton_Controller_RestAccount {
 		foreach( $drivers as $driver ){
 			if( $count >= $start && $count < $end ){
 				$data = $driver->exports( [ 'permissions', 'groups' ] );
-				$actions = Crunchbutton_Driver_Log::lastAction( $driver->id_admin );
+				$actions = Cockpit_Driver_Log::lastAction( $driver->id_admin );
 				if( $actions ){
-					$data[ 'actions' ] = [ 'last' => $actions, 'next' => Crunchbutton_Driver_Log::nextAction( $driver->id_admin ) ];
+					$data[ 'actions' ] = [ 'last' => $actions, 'next' => Cockpit_Driver_Log::nextAction( $driver->id_admin ) ];
 				} else {
 					$data[ 'actions' ] = null;
 				}

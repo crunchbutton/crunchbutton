@@ -6,7 +6,7 @@ class Controller_api_driver_log extends Crunchbutton_Controller_RestAccount {
 		if( c::getPagePiece( 3 ) ){
 			$admin = Crunchbutton_Admin::o( c::getPagePiece( 3 ) );
 			if( $admin->id_admin ){
-				$logs = Crunchbutton_Driver_Log::AllByDriver( $admin->id_admin );
+				$logs = Cockpit_Driver_Log::AllByDriver( $admin->id_admin );
 				$list = [];
 				foreach( $logs as $log ){
 					// lets save bandwidth

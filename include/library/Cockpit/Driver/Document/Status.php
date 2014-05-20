@@ -1,6 +1,6 @@
 <?php
 
-class Crunchbutton_Driver_Document_Status extends Cana_Table {
+class Cockpit_Driver_Document_Status extends Cana_Table {
 
 	public function __construct($id = null) {
 		parent::__construct();
@@ -19,11 +19,11 @@ class Crunchbutton_Driver_Document_Status extends Cana_Table {
 	}
 
 	public function document( $id_admin, $id_driver_document ){
-		$document = Crunchbutton_Driver_Document_Status::q( 'SELECT * FROM driver_document_status WHERE id_admin = ' . $id_admin . ' AND id_driver_document =' . $id_driver_document )->get( 0 );	
+		$document = Cockpit_Driver_Document_Status::q( 'SELECT * FROM driver_document_status WHERE id_admin = ' . $id_admin . ' AND id_driver_document =' . $id_driver_document )->get( 0 );	
 		if( $document->id_driver_document ){
 			return $document;
 		}
-		return new Crunchbutton_Driver_Document_Status();
+		return new Cockpit_Driver_Document_Status();
 	}
 
 	public function date(){
@@ -37,7 +37,7 @@ class Crunchbutton_Driver_Document_Status extends Cana_Table {
 		$out = $this->properties();
 		$date = $this->date();
 		$out[ 'date_formated' ] = $date->format('M jS Y g:i:s A T');
-		$out[ 'url' ] = Crunchbutton_Driver_Document_Status::www() . $out[ 'file' ];
+		$out[ 'url' ] = Cockpit_Driver_Document_Status::www() . $out[ 'file' ];
 		return $out;
 	}
 

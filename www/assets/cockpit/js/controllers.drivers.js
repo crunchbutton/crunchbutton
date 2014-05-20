@@ -316,7 +316,6 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 		DriverOnboardingService.setupSave( $scope.driver, function( json ){
 			if( json.success ){
 				$scope.driver	= json.success;
-				DriverOnboardingService.notifyWelcome( $scope.driver.id_admin );
 				$scope.finished = true;
 			} else {
 				$scope.error = json.error;

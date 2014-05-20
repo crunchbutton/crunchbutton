@@ -38,6 +38,8 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 		$driver->email = $email;
 		$driver->save();
 
+		Log::debug( [ 'action' => 'new driver created', 'driver' => $driver->id_admin, 'name' => $name, 'phone' => $phone, 'email' => $email, 'type' => 'drivers-onboarding'] );
+
 		// add the community
 		$id_community = $this->request()[ 'id_community' ];
 		if( $id_community ){
@@ -52,11 +54,13 @@ class Controller_api_driver_onboarding extends Crunchbutton_Controller_Rest {
 		}
 
 		// register the log
-		$log = new Crunchbutton_Driver_Log();
+		$log = new Cockpit_Driver_Log();
 		$log->id_admin = $driver->id_admin;
-		$log->action = Crunchbutton_Driver_Log::ACTION_CREATED_DRIVER;
+		$log->action = Cockpit_Driver_Log::ACTION_CREATED_DRIVER;
 		$log->datetime = date('Y-m-d H:i:s');
 		$log->save();
+
+		Cockpit_Driver_Notify::send( $driver->id_admin, Cockpit_Driver_Notify::TYPE_WELCOME );
 
 		echo json_encode( [ 'success' => $driver->exports() ] );
 		return;
