@@ -98,6 +98,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'LoginCtrl',
 			templateUrl: 'assets/view/login.html'
 		})
+		.when('/drivers/help', {
+			action: 'drivers-help',
+			controller: 'DriversHelpCtrl',
+			templateUrl: 'assets/view/drivers-help.html'
+		})
 		/* Driver onBoarding Routes */
 		.when('/drivers/onboarding/', {
 			action: 'drivers-onboarding',
