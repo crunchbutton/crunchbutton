@@ -111,7 +111,7 @@
 
 				<?php if( $this->order->restaurant()->hasNotification( 'stealth' ) ){ ?>
 				<div class="order-item-block-bigger">
-					Skip the line. Tell restaurant: <i>"I'm here to pick up a faxed order for <?php echo $this->order->name ?></i>".
+					Skip the line. Tell restaurant: <i>"I'm here to pick up a faxed order for <?php echo $this->order->name ?>, #<?php echo $this->order->id_order; ?></i>".
 				</div>
 				<div class="divider"></div>
 
