@@ -1,100 +1,100 @@
 <div class="top-pad"></div>
+
+<h1 class="title left"><i class="fa fa-briefcase"></i><span>Documents</span></h1>
+
+<div class="divider"></div>
+
 <div class="content-padding" ng-show="ready">
-	<div class="content">
-		<hr/>
-		<h2>Documents</h2>
-		<p>
-			Here are important docs to fill out and sign. Please download the docs, fill them out and then upload them back to this page. We recommend signing them with Hellosign
-		</p>
-		<table>
-			<thead>
-				<tr>
-					<td>Document</td>
-					<td>Template</td>
-					<td>Status</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="doc in documents" ng-if="doc.url">
-					<td>{{doc.name}}</td>
-					<td>
-						<span ng-if="doc.url">
-							<a href="{{doc.url}}" target="_blank">Download the template</a>
-						</span>
-					</td>
-					<td>
-						<span ng-if="doc.status && doc.status.date_formated && doc.status.url">
-							<a href="{{doc.status.url}}" target="_blank">
-								Sent at {{doc.status.date_formated}}
-							</a>
-						</span>
-						<span class="not-sent" ng-if="!doc.status">
-							<i>Not sent</i>
-						</span>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+
+	<h2 class="title">
+		<span>Documents</span>
+	</h2>
+
+	<h3 class="title">
+		Here are important docs to fill out and sign. Please download the docs, fill them out and then upload them back to this page. We recommend signing them with <a href="https://www.hellosign.com/" target="_blank">Hellosign</a>.
+	</h3>
+
+	<table class="tb-grid">
+		<tbody>
+			<tr ng-repeat="doc in documents" ng-if="doc.url">
+				<td ng-click="edit(driver.id_admin)">
+					{{doc.name}}
+				</td>
+				<td>
+					<a href="{{doc.url}}" target="_blank">Template</a>
+				</td>
+				<td>
+					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
+					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
+						Document missing
+					</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3 class="title">
+		Upload a clear picture of your Drivers License and Insurance Card here. You can take a clear, close up picture with a smartphone, and then upload in the appropriate spots below.
+	</h3>
 		
-		<hr/>
+	<table class="tb-grid">
+		<tbody>
+			<tr ng-repeat="doc in documents" ng-if="!doc.url">
+				<td ng-click="edit(driver.id_admin)">
+					{{doc.name}}
+				</td>
+				<td>
+					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
+					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
+						Document missing
+					</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
-		<p>
-			Upload a clear picture of your Drivers License and Insurance Card here. You can take a clear, close up picture with a smartphone, and then upload in the appropriate spots below
-		</p>
-		<table>
-			<thead>
-				<tr>
-					<td>Document</td>
-					<td>Status</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="doc in documents" ng-if="!doc.url">
-					<td>{{doc.name}}</td>
-					<td>
-						<span ng-if="doc.status && doc.status.date_formated && doc.status.url">
-							<a href="{{doc.status.url}}" target="_blank">
-								Sent at {{doc.status.date_formated}}
-							</a>
-						</span>
-						<span class="not-sent" ng-if="!doc.status">
-							<i>Not sent</i>
-						</span>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+	<form name="docs">
 
-		<form name="docs">
-			<hr/>
-			<h2>Upload zone</h2>
-			<ul>
-				<li>
-					<label for="driverDocument">
-						<div class="label">Select the file type:</div>
-						<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
-					</label>		
-				</li>
-				<li ng-show="uploader.progress">
+		<h3 class="title">Upload zone</h3>	
+		
+		<ul class="ul-inputs box-content">
+			<li class="li-input"> 
+				<div class="label">Select the file type:</div>
+				<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
+			</li>
+			<li ng-show="doc_uploaded">
+				<input ng-file-select name="file" type="file" />
+			</li>
+			<li ng-show="uploader.progress"  class="li-input">
+				<span class="sp-label sp-label-info">
 					Progress {{uploader.progress}}%
-				</li>
-				<li ng-show="doc_uploaded">
-					<input ng-file-select name="file" type="file" />
-				</li>
-				<li ng-show="doc_uploaded">
-					<button ng-click="uploader.uploadAll()"> Upload </button>
-				</li>
-			</ul>
-		</form>
-		<hr/>
-		<p>
-			<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>		
-		</p>
-		<hr/>
+				</span>
+			</li>
+			<li ng-show="doc_uploaded"  class="li-input">
+				<button class="button" ng-click="uploader.uploadAll();">Upload</button>
+			</li>
+		</ul>
+
+	</form>
+
+	<h2 class="title">
+		<span>Some info</span>
+	</h2>
+
+	<div class="box-content">
 		<p>
 			If you are interested in getting extra cash back during your shifts, here are links to apply for the cards we'd recommend: they're specifically for college students and many have extra cash back for food purchases. 
 			<br/>
 			<a href="https://docs.google.com/document/d/17wEjFDcjlm6_9Znq_-5amc6bxwrfxUhx8k_U2ZfpGU8/edit?usp=sharing" target="_blank">Credit Cards for Crunchbutton Student Deliverers</a>
 		</p>
+	</div>	
+
+	<div class="box-content">
+		<p>
+			<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>	
+		</p>
 	</div>
 </div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

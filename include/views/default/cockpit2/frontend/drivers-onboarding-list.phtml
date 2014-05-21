@@ -1,51 +1,67 @@
 <div class="top-pad"></div>
 
-<div class="content-padding" ng-show="ready">
-	
-	<input type="text" id="search" ng-model="search" placeholder="search" />
+<h1 class="title left"><i class="fa fa-automobile"></i><span>Driver Onboarding</span></h1>
 
-	<button ng-click="add()">new driver</button>
+<div class="content-padding" ng-show="ready">
+
+	<div class="box-filter right">
+		<input type="text" class="search" id="search" ng-model="search" placeholder="search" />
+		<button class="button orange" ng-click="add()">New Driver</button>
+		<div class="divider"></div>
+	</div>
+	
+	<div class="divider"></div>
 
 	<div ng-if="count">
-		<table>
+		<table class="tb-grid">
 			<thead>
 				<tr>
-					<td>#</td>
-					<td>Name</td>
-					<td>Login</td>
-					<td>Communities</td>
-					<td>Last Action</td>
-					<td>Next Action</td>
+					<td class="td-medium">Name</td>
+					<td class="td-medium">Login</td>
+					<td>Community</td>
 					<td></td>
 				</tr>
 			</thead>		
 			<tbody>
 				<tr ng-repeat="driver in drivers">
-					<td>{{driver.id_admin}}</td>
-					<td>{{driver.name}}</td>
-					<td>{{driver.login}}</td>
-					<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
-					<td>{{driver.actions.last.desc}}<br/>{{driver.actions.last.date}}</td>
-					<td>{{driver.actions.next}}</td>
+					<td class="link" ng-click="edit(driver.id_admin)">
+						{{driver.name}}
+					</td>
 					<td>
-						<button ng-click="edit(driver.id_admin)">edit</button>
+						<span ng-if="driver.login">{{driver.login}}</span>
+						<span ng-if="!driver.login" class="sp-label sp-label-warning">
+							Setup not completed
+						</span>
+					</td>
+					<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
+					<td>
+						<span ng-if="driver.sent_all_docs" class="sp-label sp-label-success">
+							All documents sent
+						</span>
+						<span ng-if="!driver.sent_all_docs" class="sp-label sp-label-warning">
+							Documents missing
+						</span>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 
-		<ul class="pagination">
-			<li><button ng-show="prev" ng-click="prevPage()">prev</button></li>
-			<li>{{page}} of {{pages}}</li>
-			<li><button ng-show="next" ng-click="nextPage()">next</button></li>
-		</ul>
-
+		<table class="tb-pagination" ng-if="pages > 1">
+			<tbody>
+				<tr>
+					<td class="td-prev"><button class="button orange" ng-show="prev" ng-click="prevPage()">prev</button></td>
+					<td class="td-info">Page {{page}} of {{pages}}</td>
+					<td class="td-next"><button class="button orange" ng-show="next" ng-click="nextPage()">next</button></td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
-	<div ng-if="!count">
+	<div ng-if="!count" class="box-content">
 		No drivers.
 	</div>
 
 </div>
 
-<div ng-show="!ready" class="loading">Loading</div>
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

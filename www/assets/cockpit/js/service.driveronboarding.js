@@ -77,15 +77,6 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		var notify = driver.notify;
 		drivers.save( driver, function( json ){
 			callback( json );
-			if( json.success && notify ){
-				service.notifySetup( json.success.id_admin, function( json ){
-					if( json.success ){
-						$rootScope.flash.setMessage( 'Notification sent!' );
-					} else {
-						$rootScope.flash.setMessage( 'Notification not sent: ' + json.error , 'error' );	
-					}
-				} );
-			}
 		} );
 	}
 
@@ -107,6 +98,14 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 			} );	
 		} 
 	}	
+
+	service.docs.pendency = function( id_admin, callback ){
+		if( id_admin ){
+			documents.pendency( { 'id_admin': id_admin }, function( data ){ 
+				callback( data ); 
+			} );	
+		} 
+	}
 
 	// save driver's doc
 	service.docs.save = function( doc, callback ){
