@@ -108,6 +108,14 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		} 
 	}	
 
+	service.docs.pendency = function( id_admin, callback ){
+		if( id_admin ){
+			documents.pendency( { 'id_admin': id_admin }, function( data ){ 
+				callback( data ); 
+			} );	
+		} 
+	}
+
 	// save driver's doc
 	service.docs.save = function( doc, callback ){
 		documents.save( doc, function( doc ){
