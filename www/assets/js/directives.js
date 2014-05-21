@@ -102,7 +102,7 @@ NGApp.directive('spinnerLoading', function() {
 		return {
 				restrict: 'AE',
 				replace: true,
-				template: '<div ng-show="!ready"><span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span></div>'
+				template: '<div class="divider"><div ng-show="!ready"><span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span></div></div>'
 		}
 });
 
@@ -111,7 +111,7 @@ NGApp.directive('hackExpandContent', function() {
 		return {
 				restrict: 'AE',
 				replace: true,
-				template: '<table class="tb-hack"><tr><td class="td-large"></td><td></td></tr></table>'
+				template: '<div class="divider"><table class="tb-hack"><tr><td class="td-large"></td><td></td></tr></table></div>'
 		}
 });
 

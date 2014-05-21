@@ -18,17 +18,13 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			$mine = 0;
 			$_drivers = [];
 			foreach ( $drivers as $driver ) { 
-				if( $driver->id_admin == c::user()->id_admin ){
-					$mine = 1;
-				}
 				$_drivers[] = [ 'name' => $driver->name, 'phone' => $driver->phone(), 'id' => $driver->id_admin];
 			}
 			$export[] = Model::toModel( [
 					'id_community_shift' => $shift->id_community_shift,
 					'community' => $shift->community()->name,
 					'date' => [ 'day' => $shift->dateStart()->format( 'D, M jS' ), 'start_end' => $shift->startEndToString(), 'timezone' => $shift->timezoneAbbr() ],
-					'drivers' => $_drivers,
-					'mine' => $mine
+					'drivers' => $_drivers
 				] );
 		}
 		echo json_encode( $export );
