@@ -97,6 +97,23 @@ NGApp.directive('addToCart', function(OrderService) {
 	};
 });
 
+// Loading with spinner
+NGApp.directive('spinnerLoading', function() {
+		return {
+				restrict: 'AE',
+				replace: true,
+				template: '<div ng-show="!ready"><span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span></div>'
+		}
+});
+
+// Hack to keep the content width 100% at cockpit2
+NGApp.directive('hackExpandContent', function() {
+		return {
+				restrict: 'AE',
+				replace: true,
+				template: '<table class="tb-hack"><tr><td class="td-large"></td><td></td></tr></table>'
+		}
+});
 
 // Facebook button compoment
 NGApp.directive( 'facebookSigninButton', function ( AccountFacebookService ) {

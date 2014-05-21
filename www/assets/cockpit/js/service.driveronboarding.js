@@ -77,15 +77,6 @@ NGApp.factory( 'DriverOnboardingService', function( $rootScope, $resource, $rout
 		var notify = driver.notify;
 		drivers.save( driver, function( json ){
 			callback( json );
-			if( json.success && notify ){
-				service.notifySetup( json.success.id_admin, function( json ){
-					if( json.success ){
-						$rootScope.flash.setMessage( 'Notification sent!' );
-					} else {
-						$rootScope.flash.setMessage( 'Notification not sent: ' + json.error , 'error' );	
-					}
-				} );
-			}
 		} );
 	}
 

@@ -73,7 +73,6 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 		$log->save();
 
 		if ( $this->request()[ 'notify' ] ) {
-			// Notify
 			Cockpit_Driver_Notify::send( $driver->id_admin, Cockpit_Driver_Notify::TYPE_WELCOME );
 		}
 		

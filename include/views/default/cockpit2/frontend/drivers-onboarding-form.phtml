@@ -1,125 +1,135 @@
 <div class="top-pad"></div>
 
-<span ng-show="ready">
-	<h1 ng-if="driver.id_admin" class="title left"><i class="fa fa-automobile"></i><span>Add driver</span></h1>
-	<h1 ng-if="!driver.id_admin" class="title left"><i class="fa fa-automobile"></i><span>Edit driver</span></h1>
-</span>
+<h1 class="title left"><i class="fa fa-automobile"></i><span>Driver Onboarding</span></h1>
 
 <div class="divider"></div>
 
 <div class="content-padding" ng-show="ready">
-	<div class="content">
-		<form class="fr-intern" name="form" novalidate>
-			<ul ng-class="{'submitted' : submitted}">
+
+	<h2 class="title">
+		<span ng-if="!driver.id_admin">Add driver</span>
+		<span ng-if="driver.id_admin">Edit driver</span>
+	</h2>
+
+	<form name="form" novalidate>
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content">
+
+			<li class="li-input" ng-class="{'error':form.driverName.$invalid}"> 
+				<div class="label">Name:</div>
+				<div class="input"><input type="text" name="driverName" ng-model="driver.name" required placeholder="Name" ng-minlength="5" ng-maxlength="40" ></div>
+				<div class="box-error">
+					<small ng-show="form.driverName.$error.required">Required.</small>
+					<small ng-show="form.driverName.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
+					<small ng-show="form.driverName.$error.maxlength">Name cannot be longer than 40 characters.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverPhone.$invalid}"> 
+				<div class="label">Phone:</div>
+				<div class="input"><input type="text" name="driverPhone" ng-model="driver.phone" required phone-validate placeholder="Phone"></div>
+				<div class="box-error">
+					<small ng-show="form.driverPhone.$error.required">Required.</small>
+					<small ng-show="form.driverPhone.$error.phoneValidate">Enter a valid phone.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverIdCommunity.$invalid}"> 
+				<div class="label">Community:</div>
+				<select name="driverIdCommunity" required ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>
+				<div class="box-error">
+					<small ng-show="form.driverIdCommunity.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.driverEmail.$invalid}"> 
+				<div class="label">Email:</div>
+				<div class="input"><input type="email" name="driverEmail" ng-model="driver.email" placeholder="Email"></div>
+				<div class="box-error">
+					<small ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
+				</div>
+			</li>
+
+		</ul>
+
+		<div ng-if="driver.login">  
+
+			<h3 class="title">Access info</h3>
+
+			<ul class="ul-inputs box-content">
+
 				<li class="li-input"> 
-					<div class="label">Name:</div>
-					<div class="input"><input type="text" name="driverName" ng-model="driver.name" required placeholder="Name" ng-minlength="5" ng-maxlength="40" ></div>
-					<div class="error" ng-show="submitted && form.driverName.$invalid">
-						<small class="error" ng-show="form.driverName.$error.required">Required.</small>
-						<small class="error" ng-show="form.driverName.$error.minlength">Name is too short. Name is required to be at least 5 characters.</small>
-						<small class="error" ng-show="form.driverName.$error.maxlength">Name cannot be longer than 40 characters.</small>
-					</div>
+					<div class="label">Login:</div>
+					<div class="input"><input type="text" name="driverLogin" readonly="readonly" disabled="disabled" ng-model="driver.login"></div>
 				</li>
+
 				<li class="li-input"> 
-					<div class="label">Phone:</div>
-					<div class="input"><input type="text" name="driverPhone" ng-model="driver.phone" required phone-validate placeholder="Phone"></div>
-					<div class="error" ng-show="submitted && form.driverPhone.$invalid">
-						<small class="error" ng-show="form.driverPhone.$error.required">Required.</small>
-						<small class="error" ng-show="form.driverPhone.$error.phoneValidate">Enter a valid phone.</small>
-					</div>
+					<div class="label">Password:</div>
+					<div class="input"><input type="password" name="driverPass" ng-model="driver.pass"></div>
+					<small class="tip">Leave it blank if you don't wanna change it.</small>
 				</li>
-				<li class="li-input"> 
-					<div class="label">Community:</div>
-					<select name="driverIdCommunity" required ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>
-					<div class="error" ng-show="submitted && form.driverIdCommunity.$invalid">
-						<small class="error" ng-show="form.driverIdCommunity.$error.required">Required.</small>
-					</div>
-				</li>
-				<li class="li-input"> 
-					<div class="label">Email:</div>
-					<div class="input"><input type="email" name="driverEmail" ng-model="driver.email" placeholder="Email"></div>
-					<div class="error" ng-show="submitted && form.driverEmail.$invalid">
-						<small class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
-  				</div>
-				</li>
-				<li ng-if="!driver.id_admin">
-					<div class="label">Send setup notification?:</div>
-					<div class="input"><input type="checkbox" name="driverNotification" ng-model="driver.notify"></div>
-					<div class="error" ng-show="submitted && form.driverEmail.$invalid">
-						<small class="error" ng-show="form.driverEmail.$invalid">Enter a valid email.</small>
-  				</div>
-				</li>
+
 			</ul>
-			<div ng-if="driver.login">  
-				<h2>Access</h2>
-				<ul>
-					<li class="li-input"> 
-						<div class="label">Login:</div>
-						<div class="input"><input type="text" name="driverLogin" readonly="readonly" disabled="disabled" ng-model="driver.login"></div>
-						</div>
-					</li>
-					<li class="li-input"> 
-						<div class="label">Password:</div>
-						<div class="input"><input type="password" name="driverPass" ng-model="driver.pass"></div>
-						<div>Leave it blank if you don't wanna change it.</div>
-					</li>
-				</ul>
-				<hr/>
-				<ul class="buttons">
-					<li class="li-input"> 
-						<button ng-click="save();">Save</button>
-						<button ng-click="cancel()">Cancel</button>
-					</li>
-				</ul>
-			</div>
-		</form>
-		<div ng-if="driver.id_admin">
-			<hr/>
-			<h2>Documents</h2>
-			<ul class="documents">
-				<li ng-repeat="doc in documents">
-					<div>
-						{{doc.name}} 
-							<span ng-show="doc.status"> <a href="{{doc.status.url}}" target="_blank">Download</a></span>
-							<span ng-show="!doc.status"> <span ng-click="setDocument(doc.id_driver_document)" target="_blank">Send</span></span>
-					</div>
-				</li>
-			</ul>
+
 		</div>
-		<form name="docs" ng-if="driver.id_admin">
-			<hr/>
-			<h2>Upload zone</h2>
-			<ul>
-				<li class="li-input"> 
-					<div class="label">Select the file type:</div>
-					<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
-				</li>
-				<li ng-show="uploader.progress">
-					Progress {{uploader.progress}}%
-				</li>
-				<li ng-show="doc_uploaded">
-					<input ng-file-select name="file" type="file" />
-				</li>
-				<li ng-show="doc_uploaded">
-					<button ng-click="uploader.uploadAll()"> Upload </button>
-				</li>
-			</ul>
-		</form>
-		<div class="notify" ng-if="driver.id_admin">
-			<hr/>
-			<h2>Notify</h2>
-			<button ng-click="notify()"> Notify about setup </button>
-		</div>
-		<div class="log" ng-if="driver.id_admin">
-			<hr/>
-			<h2>Log</h2>
-			<ul class="logs">
-				<li ng-repeat="log in logs" class="log.action">
-					<div class="desc">{{log.desc}}</div>
-					<div class="date">{{log.date}}</div>
-				</li>
-				</ul>
-			</ul>
-		</div>
+
+	</form>
+
+	<div ng-if="driver.id_admin">
+		<h3 class="title">Documents</h3>
+		<table class="tb-grid">
+			<tbody>
+				<tr ng-repeat="doc in documents">
+					<td ng-click="edit(driver.id_admin)">
+						{{doc.name}}
+					</td>
+					<td>
+						<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
+						<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
+							Document missing
+						</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>	
 	</div>
+
+	<form name="docs" ng-if="driver.id_admin">
+
+		<h3 class="title">Upload zone</h3>	
+		
+		<ul class="ul-inputs box-content">
+			<li class="li-input"> 
+				<div class="label">Select the file type:</div>
+				<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
+			</li>
+			<li ng-show="doc_uploaded">
+				<input ng-file-select name="file" type="file" />
+			</li>
+			<li ng-show="uploader.progress"  class="li-input">
+				<span class="sp-label sp-label-info">
+					Progress {{uploader.progress}}%
+				</span>
+			</li>
+			<li ng-show="doc_uploaded"  class="li-input">
+				<button class="button" ng-click="uploader.uploadAll();">Upload</button>
+			</li>
+		</ul>
+
+	</form>
+
+	<ul class="ul-inputs">
+		<li>
+			<div class="label"><input type="checkbox" name="driverNotification" ng-model="driver.notify"> Send setup notification?</div>
+		</li>
+
+		<li class="li-input"> 
+			<button class="button save" ng-click="save();">Save</button>
+			<button class="button cancel" ng-click="cancel()">Cancel</button>
+		</li>
+	</ul>
+
 </div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
