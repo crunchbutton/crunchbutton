@@ -692,6 +692,25 @@ input {
 	overflow: hidden;
 }
 
+.fr-intern{
+	background: #fff;
+}
+.fr-intern .label{
+	font-weight: bold;
+	font-size: 1em;
+	line-height: 1.3em;
+}
+	.li-input{
+		padding: .6em .4em .6em .4em;
+	}
+	.li-input input, .li-input select{
+		border: 2px solid $orange;
+		color: $orange;
+		padding:.48em;
+		font-size: 1.1em;
+		border-radius: 0;
+	}
+
 
 .table-grid{
 	width: 100% !important;

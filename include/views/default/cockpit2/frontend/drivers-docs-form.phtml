@@ -69,10 +69,8 @@
 			<h2>Upload zone</h2>
 			<ul>
 				<li>
-					<label for="driverDocument">
-						<div class="label">Select the file type:</div>
-						<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
-					</label>		
+					<div class="label">Select the file type:</div>
+					<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
 				</li>
 				<li ng-show="uploader.progress">
 					Progress {{uploader.progress}}%
@@ -87,7 +85,7 @@
 		</form>
 		<hr/>
 		<p>
-			<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>		
+			<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>	
 		</p>
 		<hr/>
 		<p>
