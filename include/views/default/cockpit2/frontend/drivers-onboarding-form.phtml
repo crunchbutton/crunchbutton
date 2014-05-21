@@ -1,7 +1,9 @@
 <div class="top-pad"></div>
 
-<h1 ng-if="driver.id_admin" class="title left"><i class="fa fa-automobile"></i><span>Add driver</span></h1>
-<h1 ng-if="!driver.id_admin" class="title left"><i class="fa fa-automobile"></i><span>Edit driver</span></h1>
+<span ng-show="ready">
+	<h1 ng-if="driver.id_admin" class="title left"><i class="fa fa-automobile"></i><span>Add driver</span></h1>
+	<h1 ng-if="!driver.id_admin" class="title left"><i class="fa fa-automobile"></i><span>Edit driver</span></h1>
+</span>
 
 <div class="content-padding" ng-show="ready">
 	<div class="content">
