@@ -133,7 +133,6 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 		} );
 	}
 
-	// Just run if the user is loggedin 
 	if( $scope.account.isLoggedIn() ){
 		$scope.list();	
 	}
