@@ -139,6 +139,37 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 
 } );
 
+NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftsService ) {
+
+	$scope.show = { all : true };
+	$scope.ready = false;
+
+	$scope.filterShifts = function( shift ){
+		if( $scope.show.all ){
+			return true;	
+		} else {
+			if( shift.mine ){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	$scope.list = function(){
+		DriverShiftsService.list( function( data ){
+			DriverShiftsService.groupByDay( data, function( data ){
+				$scope.drivershifts = data;
+				$scope.ready = true;
+			} );
+		} );
+	}
+
+	if( $scope.account.isLoggedIn() ){
+		$scope.list();	
+	}
+
+} );
+
 NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOnboardingService ) {
 
 	$scope.ready = false;
