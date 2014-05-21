@@ -754,7 +754,7 @@ input {
 	}
 
 /* Labels */
-.label {
+.sp-label {
 	display: inline;
 	padding: .2em .6em .3em;
 	font-size: 75%;
@@ -765,25 +765,25 @@ input {
 	white-space: nowrap;
 	vertical-align: baseline;
 }
-.label:empty {
+.sp-label:empty {
 	display: none;
 }
-.label-default {
+.sp-label-default {
 	background-color: #999;
 }
-.label-primary {
+.sp-label-primary {
 	background-color: #428bca;
 }
-.label-success {
+.sp-label-success {
 	background-color: #5cb85c;
 }
-.label-info {
+.sp-label-info {
 	background-color: #5bc0de;
 }
-.label-warning {
+.sp-label-warning {
 	background-color: #f0ad4e;
 }
-.label-danger {
+.sp-label-danger {
 	background-color: #d9534f;
 }
 

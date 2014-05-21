@@ -33,16 +33,16 @@
 						</td>
 						<td>
 							<span ng-if="driver.login">{{driver.login}}</span>
-							<span ng-if="!driver.login" class="label label-warning">
+							<span ng-if="!driver.login" class="sp-label sp-label-warning">
 								Setup not completed
 							</span>
 						</td>
 						<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
 						<td>
-							<span ng-if="driver.sent_all_docs" class="label label-success">
+							<span ng-if="driver.sent_all_docs" class="sp-label sp-label-success">
 								All documents sent
 							</span>
-							<span ng-if="!driver.sent_all_docs" class="label label-warning">
+							<span ng-if="!driver.sent_all_docs" class="sp-label sp-label-warning">
 								Missing documents
 							</span>
 						</td>
