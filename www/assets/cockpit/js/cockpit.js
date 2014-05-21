@@ -93,6 +93,12 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversShiftsCtrl',
 			templateUrl: 'assets/view/drivers-shifts.html'
 		})
+		/* temp */
+		.when('/drivers/shifts/schedule', {
+			action: 'drivers-shifts',
+			controller: 'DriversShiftsScheduleCtrl',
+			templateUrl: 'assets/view/drivers-shifts-schedule.html'
+		})
 		.when('/login', {
 			action: 'login',
 			controller: 'LoginCtrl',

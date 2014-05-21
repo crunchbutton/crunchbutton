@@ -1,0 +1,56 @@
+<div class="top-pad"></div>
+
+<h1 class="title left"><i class="fa fa-calendar"></i><span>Shifts</span></h1>
+
+<div class="content-padding" ng-show="ready">
+
+	<div class="divider"></div>
+
+	<div class="drivers-shifts-list">
+		
+		<div ng-if="drivershifts.length">
+		
+			<div class="drivers-shift" ng-repeat="shift in drivershifts | filter:filterShifts">
+
+				<span class="day">{{shift.day}}</span>
+
+				<div ng-if="shift.drivers.length > 0" class="box-content">
+					
+					<table class="drivers">
+						<tr class="driver" ng-repeat="driver in shift.drivers" ng-class="{me: (driver.id == account.user.id_admin)}">
+							
+							<td class="start-end"><div class="start-end-brace">{{driver.hour}}</div></td>
+							
+							<td class="driver-spacer"></td>
+
+							<td class="driver-details">
+								
+								<span ng-if="!driver.name" class="no-drivers">
+									No drivers
+								</span>
+
+								<span ng-if="driver.name">
+									<span class="driver-name">{{driver.name}}</span><br>
+									<a href="tel:{{driver.phone | formatPhone}}" class="driver-phone">{{driver.phone | formatPhone}}</a>	
+								</span>
+								
+							</td>
+
+						</tr>
+					</table>
+				</div>
+
+			</div>
+
+		</div>
+		
+		<div ng-if="!drivershifts.length" class="box-content">
+			You currently have no shifts.
+		</div>
+
+	</div>	
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
