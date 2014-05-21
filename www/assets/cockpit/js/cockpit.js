@@ -120,7 +120,7 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			templateUrl: 'assets/view/drivers-onboarding-form.html'
 		})
 		.when('/drivers/docs', {
-			action: 'drivers-docs',
+			action: 'drivers-documents',
 			controller: 'DriversDocsFormCtrl',
 			templateUrl: 'assets/view/drivers-docs-form.html'
 		})

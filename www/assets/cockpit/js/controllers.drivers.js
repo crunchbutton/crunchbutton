@@ -225,7 +225,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		if( !$scope.driver.id_admin ){
 			$scope.driver.notify = true;
 		}
-		logs();
+		// logs();
 		docs();
 		CommunityService.listSimple( function( data ){
 			$scope.communities = data;
@@ -237,7 +237,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		DriverOnboardingService.notifySetup( $scope.driver.id_admin, function( json ){
 			if( json.success ){
 				$scope.flash.setMessage( 'Notification sent!' );
-				logs();
+				// logs();
 			} else {
 				$scope.flash.setMessage( 'Notification not sent: ' + json.error , 'error' );	
 			}
