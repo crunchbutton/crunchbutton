@@ -50,6 +50,7 @@ class Controller_api_user extends Crunchbutton_Controller_Rest {
 						} else {
 							echo json_encode(['error' => 'invalid user']);
 						}
+						exit;
 						break;
 					default:
 						echo json_encode(['error' => 'invalid request']);
