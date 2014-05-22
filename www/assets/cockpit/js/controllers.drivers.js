@@ -139,33 +139,65 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 
 } );
 
-NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftsService ) {
+NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftScheduleService ) {
 
-	$scope.show = { all : true };
-	$scope.ready = false;
+	$scope.ready = false;	
 
-	$scope.filterShifts = function( shift ){
-		if( $scope.show.all ){
-			return true;	
-		} else {
-			if( shift.mine ){
-				return true;
-			}
-		}
-		return false;
+	var list = function(){
+		DriverShiftScheduleService.list( function( data ){
+			$scope.shifts = data;
+			countRanking();
+			$scope.ready = true;
+		} );
 	}
 
-	$scope.list = function(){
-		DriverShiftsService.list( function( data ){
-			DriverShiftsService.groupByDay( data, function( data ){
-				$scope.drivershifts = data;
-				$scope.ready = true;
-			} );
+	var countRanking = function(){
+		var list = [];
+		var ranking = 1;
+		if( $scope.shifts && $scope.shifts.length ){
+			for( var i = 0; i < $scope.shifts.length; i++ ){
+				var shift = $scope.shifts[ i ];
+				if( shift.ranking > 0 ){
+					ranking++;
+				}
+			}
+		}
+		$scope.unBusy();
+		$scope.nextRanking = ranking;	
+	}
+
+	$scope.rankingChange = function( id_community_shift, id_community_shift_change ){
+		$scope.makeBusy();
+		DriverShiftScheduleService.rankingChange( id_community_shift, id_community_shift_change, function( data ){
+			if( !data.error ){
+				$scope.shifts = data;	
+				countRanking();
+			}
+		} );
+	}
+
+	$scope.dontWantToWork = function( id_community_shift ){
+		$scope.makeBusy();
+		DriverShiftScheduleService.dontWantToWork( id_community_shift, function( data ){
+			if( !data.error ){
+				$scope.shifts = data;	
+				countRanking();
+			}
+		} );
+	}
+
+	$scope.wantToWork = function( id_community_shift ){
+		$scope.makeBusy();
+		DriverShiftScheduleService.wantToWork( id_community_shift, $scope.nextRanking, function( data ){
+			if( !data.error ){
+				$scope.shifts = data;	
+				countRanking();
+			}
 		} );
 	}
 
 	if( $scope.account.isLoggedIn() ){
-		$scope.list();	
+		list();
 	}
 
 } );
