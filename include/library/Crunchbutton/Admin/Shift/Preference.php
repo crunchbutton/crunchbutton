@@ -34,7 +34,7 @@ class Crunchbutton_Admin_Shift_Preference extends Cana_Table {
 																							INNER JOIN admin_shift_preference asp ON asp.id_community_shift = cs.id_community_shift
 																							WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $from . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $to . '" 
 																							AND asp.id_admin = ' . $id_admin . ' ' . $where . '
-																							ORDER BY asp.ranking ASC' );
+																							ORDER BY asp.ranking ASC, cs.date_start ASC' );
 	}
 
 	public function highestRankingByPeriod( $id_admin, $from, $to ){

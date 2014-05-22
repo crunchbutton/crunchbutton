@@ -789,6 +789,33 @@ input {
 		text-decoration: underline;
 	}
 
+.tb-grid .schedule-buttons{
+	text-align: right;
+}
+
+.tb-grid .schedule-buttons .button{
+	width:3em;
+	border-radius: 0;
+	margin-left: .2em;
+}
+
+.schedule-action-lock{
+	background: #b8babc;
+	cursor: no-drop;
+}
+.schedule-action-up{
+	background: #4db1a7;
+}
+.schedule-action-down{
+	background: #56c4bb;
+}
+.schedule-action-not{
+	background: #b84a45;
+}
+.schedule-action-yes{
+	background: #444c57;
+}
+
 .tb-pagination{
 	margin-top: 1em;
 }

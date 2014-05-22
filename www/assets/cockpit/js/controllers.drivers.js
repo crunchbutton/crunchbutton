@@ -146,12 +146,15 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	var list = function(){
 		DriverShiftScheduleService.list( function( data ){
 			$scope.shifts = data;
-			countRanking();
+			$scope.available = 0;
+			$scope.yes = 0;
+			$scope.not = 0;
+			count();
 			$scope.ready = true;
 		} );
 	}
 
-	var countRanking = function(){
+	var count = function(){
 		var list = [];
 		var ranking = 1;
 		if( $scope.shifts && $scope.shifts.length ){
@@ -159,6 +162,15 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 				var shift = $scope.shifts[ i ];
 				if( shift.ranking > 0 ){
 					ranking++;
+				}
+				if( !shift.ranking && shift.ranking != 0 ){
+					$scope.available++;
+				}
+				if( shift.ranking > 0 ){
+					$scope.yes++;
+				}
+				if( shift.ranking == 0 ){
+					$scope.not++;
 				}
 			}
 		}
@@ -171,7 +183,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		DriverShiftScheduleService.rankingChange( id_community_shift, id_community_shift_change, function( data ){
 			if( !data.error ){
 				$scope.shifts = data;	
-				countRanking();
+				count();
 			}
 		} );
 	}
@@ -181,7 +193,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		DriverShiftScheduleService.dontWantToWork( id_community_shift, function( data ){
 			if( !data.error ){
 				$scope.shifts = data;	
-				countRanking();
+				count();
 			}
 		} );
 	}
@@ -191,7 +203,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		DriverShiftScheduleService.wantToWork( id_community_shift, $scope.nextRanking, function( data ){
 			if( !data.error ){
 				$scope.shifts = data;	
-				countRanking();
+				count();
 			}
 		} );
 	}
