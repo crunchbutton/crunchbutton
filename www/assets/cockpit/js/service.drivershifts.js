@@ -5,10 +5,6 @@ NGApp.factory( 'DriverShiftsService', function( $rootScope, $resource ) {
 	// Create a private resource 'shifts'
 	var shifts = $resource( App.service + 'driver/shifts', {}, {}	);
 
-	var schedules = $resource( App.service + 'driver/shifts/', { }, {
-			}	
-		);
-
 	service.list = function( callback ){
 		shifts.query( {}, function( data ){ 
 			callback( data ); } );
@@ -42,6 +38,43 @@ NGApp.factory( 'DriverShiftsService', function( $rootScope, $resource ) {
 		} );
 		callback( sorted );
 	}
+
+	return service;
+} );
+
+
+NGApp.factory( 'DriverShiftScheduleService', function( $rootScope, $resource ) {
+	
+	var service = {};
+
+	var schedules = $resource( App.service + 'driver/shifts/schedule', {}, {
+		'dontWantToWork' : { 'method': 'POST', params : {}, isArray: true },
+		'wantToWork' : { 'method': 'POST', params : {}, isArray: true },
+		'rankingChange' : { 'method': 'POST', params : {}, isArray: true },
+	}	);
+
+	service.list = function( callback ){
+		schedules.query( {}, function( data ){ 
+			callback( data ); } );
+	};
+
+	service.rankingChange = function( id_community_shift, id_community_shift_change, callback ){
+		schedules.rankingChange( { 'id_community_shift' : id_community_shift, 'id_community_shift_change' : id_community_shift_change, action: 'rankingChange' }, function( json ){
+				callback( json );
+			} );
+	};
+
+	service.dontWantToWork = function( id_community_shift, callback ){
+		schedules.dontWantToWork( { 'id_community_shift' : id_community_shift, action: 'dontWantToWork' }, function( json ){
+				callback( json );
+			} );
+	};
+
+	service.wantToWork = function( id_community_shift, ranking, callback ){
+		schedules.wantToWork( { 'id_community_shift' : id_community_shift, 'ranking' : ranking,  action: 'wantToWork' }, function( json ){
+				callback( json );
+			} );
+	};
 
 	return service;
 } );
