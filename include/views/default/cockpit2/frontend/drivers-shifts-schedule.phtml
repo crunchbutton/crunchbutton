@@ -10,34 +10,99 @@
 		
 		<div ng-if="shifts.length">
 			
-<!-- shifts I want to work -->
-			<h3>want to work</h3>
-			<div class="drivers-shift" ng-repeat="shift in shifts">
-				<div ng-if="!shift.ranking && shift.ranking != 0">
-					{{shift.day}} {{shift.period}}
-					<button ng-click="wantToWork( shift.id_community_shift )">yes</button>
-					<button ng-click="dontWantToWork( shift.id_community_shift )">no</button>
+
+			<div class="drivers-shift">
+
+			<div ng-if="available > 0">
+
+				<h2 class="title">Available shifts</h2>
+
+				<div class="box-content">
+					
+					<table class="tb-grid">
+						<tr ng-repeat="shift in shifts" ng-if="!shift.ranking && shift.ranking != 0">
+							<td>
+								<div class="start-end-brace">{{shift.day}}</div>
+							</td>
+							<td >
+								<div class="start-end-brace">{{shift.period}}</div>
+							</td>
+							<td class="td-large schedule-buttons">
+								<button class="button schedule-action-yes" ng-if="!shift.assigned" ng-click="wantToWork( shift.id_community_shift )">
+									<i class="fa fa-thumbs-o-up"></i>
+								</button>
+								<button class="button schedule-action-not" ng-if="!shift.assigned" ng-click="dontWantToWork( shift.id_community_shift )">
+									<i class="fa fa-thumbs-o-down"></i>
+								</button>
+							</td>
+						</tr>
+					</table>
+
+				</div>
+
+			</div>
+
+			<div ng-if="yes > 0">
+
+				<h2 class="title">Shifts you want to work</h2>
+				<h3 class="title">Ranked from most to least preferred</h3>
+
+				<div class="box-content">
+					
+					<table class="tb-grid">
+						<tr ng-repeat="shift in shifts" ng-if="shift.ranking > 0">
+							<td>
+								<div class="start-end-brace">{{shift.day}}</div>
+							</td>
+							<td >
+								<div class="start-end-brace">{{shift.period}}</div>
+							</td>
+							<td class="td-large schedule-buttons">
+								<button class="button schedule-action-down" ng-if="shift.ranking_next" ng-click="rankingChange( shift.id_community_shift,  shift.ranking_next )">
+									<i class="fa fa-sort-desc"></i>
+								</button>
+								<button class="button schedule-action-up" ng-if="shift.ranking_prev" ng-click="rankingChange( shift.id_community_shift, shift.ranking_prev )">
+									<i class="fa fa-sort-asc"></i>
+								</button>
+								<button class="button schedule-action-not" ng-if="!shift.assigned" ng-click="dontWantToWork( shift.id_community_shift )">
+									<i class="fa fa-thumbs-o-down"></i>
+								</button>
+								<button class="button schedule-action-lock" ng-if="shift.assigned">
+									<i class="fa fa-lock"></i>
+								</button>
+							</td>
+						</tr>
+					</table>
+
+				</div>
+
+			</div>
+
+			<div ng-if="not > 0">
+
+				<h2 class="title">Shifts you CANNOT work</h2>
+
+				<div class="box-content">
+					
+					<table class="tb-grid">
+						<tr ng-repeat="shift in shifts" ng-if="shift.ranking == 0">
+							<td>
+								<div class="start-end-brace">{{shift.day}}</div>
+							</td>
+							<td >
+								<div class="start-end-brace">{{shift.period}}</div>
+							</td>
+							<td class="td-large schedule-buttons">
+								<button class="button schedule-action-yes" ng-click="wantToWork( shift.id_community_shift )">
+									<i class="fa fa-thumbs-o-up"></i>
+								</button>
+							</td>
+						</tr>
+					</table>
+
 				</div>
 			</div>
 
-			<!-- shifts I want to work -->
-			<h3>want to work</h3>
-			<div class="drivers-shift" ng-repeat="shift in shifts">
-				<div ng-if="shift.ranking > 0">
-					{{shift.day}} {{shift.period}}
-					<button ng-if="shift.ranking_prev" ng-click="rankingChange( shift.id_community_shift, shift.ranking_prev )">up</button>
-					<button ng-if="shift.ranking_next" ng-click="rankingChange( shift.id_community_shift,  shift.ranking_next )">down</button>
-					<button ng-if="!shift.assigned" ng-click="dontWantToWork( shift.id_community_shift )">no</button>
-				</div>
-			</div>
-
-			<!-- shifts I don't want to work -->
-			<h3>don't want to work</h3>
-			<div class="drivers-shift" ng-repeat="shift in shifts">
-				<div ng-if="shift.ranking == 0">
-					{{shift.day}} {{shift.period}}
-					<button ng-click="wantToWork( shift.id_community_shift )">yes</button>
-				</div>
 			</div>
 
 		</div>
