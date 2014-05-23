@@ -784,36 +784,37 @@ input {
 	.tb-grid .td-medium{
 		width: 50%;
 	}
-	.tb-grid .link{
-		cursor: pointer;
-		text-decoration: underline;
-	}
 
 .tb-grid .schedule-buttons{
 	text-align: right;
 }
-
-.tb-grid .schedule-buttons .button{
-	width:3em;
-	border-radius: 0;
-	margin-left: .2em;
-}
-
-.schedule-action-lock{
-	background: #b8babc;
-	cursor: no-drop;
-}
-.schedule-action-up{
-	background: #4db1a7;
-}
-.schedule-action-down{
-	background: #56c4bb;
-}
-.schedule-action-not{
-	background: #b84a45;
-}
-.schedule-action-yes{
-	background: #444c57;
+	.tb-grid .schedule-buttons .button{
+		width:3em;
+		border-radius: 0;
+		margin-left: .2em;
+	}
+		.schedule-action-lock{
+			background: #b8babc;
+			cursor: no-drop;
+		}
+		.schedule-action-up{
+			background: #353b43;
+		}
+		.schedule-action-down{
+			background: #444c57;
+		}
+		.schedule-action-not{
+			background: #dd5954;
+		}
+		.schedule-action-yes{
+			background: #4db1a7;
+		}
+.link{
+		cursor: pointer;
+		text-decoration: underline;
+	}
+.tb-grid .schedule-period{
+	font-weight:bold;
 }
 
 .tb-pagination{
@@ -963,6 +964,14 @@ h1.title .fa {
 	padding-top: .1em;
 	vertical-align: top;
 }
+	h1.subltitle{
+		font-family: Source Sans Pro;
+		font-weight: 300;
+		font-size: 2em;
+		color: #5d5f63;
+		margin-bottom: 1.2em;
+		margin-top: .2em;		
+	}
 h2.title{
 	font-family: Source Sans Pro;
 	font-weight: 300;

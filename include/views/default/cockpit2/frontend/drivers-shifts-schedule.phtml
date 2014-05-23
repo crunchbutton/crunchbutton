@@ -2,7 +2,11 @@
 
 <h1 class="title left"><i class="fa fa-calendar"></i><span>Shifts</span></h1>
 
+<div class="divider"></div>
+
 <div class="content-padding" ng-show="ready">
+
+	<h1 class="subltitle">{{period}}</h1>
 
 	<div class="divider"></div>
 
@@ -11,9 +15,9 @@
 		<div ng-if="shifts.length">
 			
 
-			<div class="drivers-shift">
+			<div class="drivers-shift drivers-schedule">
 
-			<div ng-if="available > 0">
+			<div ng-if="available > 0" class="shifts-available">
 
 				<h2 class="title">Available shifts</h2>
 
@@ -22,10 +26,10 @@
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="!shift.ranking && shift.ranking != 0">
 							<td>
-								<div class="start-end-brace">{{shift.day}}</div>
-							</td>
-							<td >
-								<div class="start-end-brace">{{shift.period}}</div>
+								<div class="schedule-day">{{shift.day}}</div>
+								<div class="schedule-period">
+									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
+								</div>
 							</td>
 							<td class="td-large schedule-buttons">
 								<button class="button schedule-action-yes" ng-if="!shift.assigned" ng-click="wantToWork( shift.id_community_shift )">
@@ -42,7 +46,7 @@
 
 			</div>
 
-			<div ng-if="yes > 0">
+			<div ng-if="yes > 0" class="shifts-yes">
 
 				<h2 class="title">Shifts you want to work</h2>
 				<h3 class="title">Ranked from most to least preferred</h3>
@@ -52,10 +56,10 @@
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="shift.ranking > 0">
 							<td>
-								<div class="start-end-brace">{{shift.day}}</div>
-							</td>
-							<td >
-								<div class="start-end-brace">{{shift.period}}</div>
+								<div class="schedule-day">{{shift.day}}</div>
+								<div class="schedule-period">
+									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
+								</div>
 							</td>
 							<td class="td-large schedule-buttons">
 								<button class="button schedule-action-down" ng-if="shift.ranking_next" ng-click="rankingChange( shift.id_community_shift,  shift.ranking_next )">
@@ -78,7 +82,7 @@
 
 			</div>
 
-			<div ng-if="not > 0">
+			<div ng-if="not > 0" class="shifts-not">
 
 				<h2 class="title">Shifts you CANNOT work</h2>
 
@@ -87,10 +91,10 @@
 					<table class="tb-grid">
 						<tr ng-repeat="shift in shifts" ng-if="shift.ranking == 0">
 							<td>
-								<div class="start-end-brace">{{shift.day}}</div>
-							</td>
-							<td >
-								<div class="start-end-brace">{{shift.period}}</div>
+								<div class="schedule-day">{{shift.day}}</div>
+								<div class="schedule-period">
+									{{shift.period}} <span class="schedule-tz">{{shift.tz}}</span>
+								</div>
 							</td>
 							<td class="td-large schedule-buttons">
 								<button class="button schedule-action-yes" ng-click="wantToWork( shift.id_community_shift )">
