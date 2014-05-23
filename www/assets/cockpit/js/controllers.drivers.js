@@ -133,6 +133,10 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 		} );
 	}
 
+	$scope.schedules = function(){
+		$scope.navigation.link( '/drivers/shifts/schedule' );
+	}
+
 	if( $scope.account.isLoggedIn() ){
 		$scope.list();	
 	}
@@ -145,13 +149,18 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 
 	var list = function(){
 		DriverShiftScheduleService.list( function( data ){
-			$scope.shifts = data;
-			$scope.available = 0;
-			$scope.yes = 0;
-			$scope.not = 0;
-			count();
+			process( data );
 			$scope.ready = true;
 		} );
+	}
+
+	var process = function( data ){
+		$scope.available = 0;
+		$scope.yes = 0;
+		$scope.not = 0;
+		$scope.period = data.info.period;	
+		$scope.shifts = data.results;	
+		count();
 	}
 
 	var count = function(){
@@ -182,8 +191,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		$scope.makeBusy();
 		DriverShiftScheduleService.rankingChange( id_community_shift, id_community_shift_change, function( data ){
 			if( !data.error ){
-				$scope.shifts = data;	
-				count();
+				process( data );
 			}
 		} );
 	}
@@ -192,8 +200,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		$scope.makeBusy();
 		DriverShiftScheduleService.dontWantToWork( id_community_shift, function( data ){
 			if( !data.error ){
-				$scope.shifts = data;	
-				count();
+				process( data );
 			}
 		} );
 	}
@@ -202,8 +209,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		$scope.makeBusy();
 		DriverShiftScheduleService.wantToWork( id_community_shift, $scope.nextRanking, function( data ){
 			if( !data.error ){
-				$scope.shifts = data;	
-				count();
+				process( data );
 			}
 		} );
 	}

@@ -100,7 +100,14 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 		$year = date( 'Y', strtotime( '- 1 day' ) );
 		$week = date( 'W', strtotime( '- 1 day' ) );
+
 		$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
+		$shifts_period = 'From ' . $firstDay->format( 'M jS Y' );
+		$firstDay->modify( '+ 1 week' );
+		$shifts_period .= ' to ' . $firstDay->format( 'M jS Y' );
+
+		$firstDay->modify( '- 1 week' );
+
 		if( date( 'l' ) == 'Monday' ){
 			$firstDay->modify( '+ 2 week' );	
 		} else {
@@ -148,7 +155,6 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 				foreach ( $segments as $segment ) {
 					$export = $segment->export();
 					$data = array( 'id_community_shift' => $segment->id_community_shift, 'day' => $export[ 'period' ][ 'day_start' ], 'period' => $export[ 'period' ][ 'toString' ], 'tz' => $export[ 'period' ][ 'timezone_abbr' ] );
-					$data[ 'community' ] = $export[ 'community' ][ 'name' ];
 					if( $wantToWork[ $segment->id_community_shift ] ){
 						$data[ 'assigned' ] = Crunchbutton_Admin_Shift_Assign::adminHasShift( $id_admin, $segment->id_community_shift );
 						$data[ 'ranking' ] = $wantToWork[ $segment->id_community_shift ];
@@ -163,6 +169,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 		} 
 
 		$res_array = array();
+
 		foreach( $_shifts as $shift ){
 			if( $shift[ 'ranking' ] && $shift[ 'ranking' ] > 0 ){
 				$index = $shift[ 'ranking' ];
@@ -172,13 +179,15 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			}
 			$res_array[ $index ] = $shift;
 		}
+
 		ksort( $res_array );
 
 		$shifts = [];
 		foreach( $res_array as $shift ){
 			$shifts[] = $shift;
 		}
-		echo json_encode( $shifts);
+
+		echo json_encode( [ 'info' => [ 'period' => $shifts_period ], 'results' => $shifts ] );
 	}
 
 	private function _list(){

@@ -48,13 +48,14 @@ NGApp.factory( 'DriverShiftScheduleService', function( $rootScope, $resource ) {
 	var service = {};
 
 	var schedules = $resource( App.service + 'driver/shifts/schedule', {}, {
-		'dontWantToWork' : { 'method': 'POST', params : {}, isArray: true },
-		'wantToWork' : { 'method': 'POST', params : {}, isArray: true },
-		'rankingChange' : { 'method': 'POST', params : {}, isArray: true },
+		'list' : { 'method': 'GET', params : {} },
+		'dontWantToWork' : { 'method': 'POST', params : {} },
+		'wantToWork' : { 'method': 'POST', params : {} },
+		'rankingChange' : { 'method': 'POST', params : {} },
 	}	);
 
 	service.list = function( callback ){
-		schedules.query( {}, function( data ){ 
+		schedules.list( {}, function( data ){ 
 			callback( data ); } );
 	};
 
