@@ -114,9 +114,6 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			$firstDay->modify( '+ 1 week' );
 		}
 
-		// todo: remove it -> get the current week
-		$firstDay->modify( '- 1 week' );
-		
 		$week = $firstDay->format( 'W' );
 		$year = $firstDay->format( 'Y' );
 
@@ -168,23 +165,25 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			}
 		} 
 
-		$res_array = array();
-
-		foreach( $_shifts as $shift ){
-			if( $shift[ 'ranking' ] && $shift[ 'ranking' ] > 0 ){
-				$index = $shift[ 'ranking' ];
-			} else {
-				$index = $ranking;
-				$ranking++;
-			}
-			$res_array[ $index ] = $shift;
-		}
-
-		ksort( $res_array );
-
 		$shifts = [];
-		foreach( $res_array as $shift ){
-			$shifts[] = $shift;
+
+		if( $_shifts && count( $_shifts ) > 0 ){
+			$res_array = [];
+			foreach( $_shifts as $shift ){
+				if( $shift[ 'ranking' ] && $shift[ 'ranking' ] > 0 ){
+					$index = $shift[ 'ranking' ];
+				} else {
+					$index = $ranking;
+					$ranking++;
+				}
+				$res_array[ $index ] = $shift;
+			}
+
+			ksort( $res_array );
+
+			foreach( $res_array as $shift ){
+				$shifts[] = $shift;
+			}
 		}
 
 		echo json_encode( [ 'info' => [ 'period' => $shifts_period ], 'results' => $shifts ] );
