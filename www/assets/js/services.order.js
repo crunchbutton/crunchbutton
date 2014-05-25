@@ -715,14 +715,18 @@ NGApp.factory( 'OrderService', function ($http, $location, $rootScope, $filter, 
 
 								orderCached = true;
 								App.track('Ordered', {
+									'id': json.uuid,
 									'total': this.final_price,
 									'subtotal': this.price,
 									'tip': this.tip,
+									'tax': service.info.taxes,
 									'restaurant': service.restaurant.name,
+									'id_restaurant': service.restaurant.id_restaurant,
 									'paytype': this.pay_type,
 									'ordertype': this.order_type,
 									'user': this.user,
-									'items': service.cart.totalItems()
+									'items': service.cart.totalItems(),
+									'cart': service.cart.getItems()
 								});
 
 								// Clean the cart
