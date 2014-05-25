@@ -604,11 +604,40 @@ App.track = function() {
 	}
 
 	if (arguments[0] == 'Ordered') {
+		if (typeof( ga ) == 'function') {
+			var trans = {
+				id: arguments[1].id,
+				affiliation: 'Crunchbutton',
+				revenue: arguments[1].total,
+				subtotal: arguments[1].subtotal,
+				tax: arguments[1].tax,
+				tip: arguments[1].tip
+			};
+			ga('ecommerce:addTransaction', trans);
+			
+			
+			for (var x in arguments[1].cart) {
+				var ii = {
+					id: arguments[1].id,
+					name: arguments[1].cart[x].details.name,
+					sku: arguments[1].cart[x].id,
+					category: arguments[1].restaurant,
+					restaurant: arguments[1].id_restaurant,
+					price: App.cached['Dish'][arguments[1].cart[x].id].price,
+					quantity: '1'
+				};
+				ga('ecommerce:addItem', ii);
+			}
+	
+			ga('ecommerce:send');
+		}
+	
+	
 		$('img.conversion').remove();
 		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + location.href + '">').appendTo($('body'));
 	}
 
-	if ( typeof( ga ) == 'function' ) {
+	if (typeof( ga ) == 'function') {
 		ga('send', 'event', 'app', arguments[0], arguments[1]);
 	}
 };
