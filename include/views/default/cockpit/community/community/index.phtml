@@ -164,11 +164,16 @@ $( document ).ready( function(){
 	community.drivers();
 	<?php 
 	if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours' ] ) ) {
-	$year = date( 'Y', strtotime( '- 1 day' ) );
-	$week = date( 'W', strtotime( '- 1 day' ) );
-	$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
-	$day->modify( '+ 1 week' );
-	$week = $day->format( 'W' );
+	
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		if( $now->format( 'l' ) == 'Friday' ){
+			$friday = $now;	
+		} else {
+			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
+		}
+		$year = $friday->format( 'Y' );
+		$week = $friday->format( 'W' );
+	
 	?>
 	community.shifts( '/drivers/shift/community/<?php echo $community[ 'community' ]->id_community; ?>/<?php echo $year; ?>/<?php echo $week; ?>?ajax=1' );
 	<?php } ?>
