@@ -3,14 +3,14 @@ CREATE TABLE `cron_log` (
   `description` varchar(50) DEFAULT NULL,
   `class` varchar(200) DEFAULT NULL,
   `start_date` datetime DEFAULT NULL,
-  `interval` enum('minute','hour','day','week') DEFAULT 'day',
+  `interval` enum('minute','hour','day','week') DEFAULT 'day' NOT NULL,
   `interval_unity` tinyint(2) NOT NULL DEFAULT '1',
-  `current_status` enum('idle','running') DEFAULT 'idle',
+  `current_status` enum('idle','running') DEFAULT 'idle' NOT NULL,
   `next_time` datetime DEFAULT NULL,
   `finished` datetime DEFAULT NULL,
-  `interactions` int(11) DEFAULT '0',
+  `interactions` int(11) DEFAULT '0' NOT NULL,
   PRIMARY KEY (`id_cron_log`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 INSERT INTO `cron_log` (`id_cron_log`, `description`, `class`, `start_date`, `interval`, `interval_unity`, `current_status`, `next_time`, `finished`, `interactions`)
 VALUES
