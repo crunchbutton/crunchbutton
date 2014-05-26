@@ -167,6 +167,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 	}
 
 	service.notes_field.processJson = function( json ){
+		service.notes_field.giftcards.success = [];
 		if( json && json.success ){
 			service.notes_field.hasGiftCards = true;
 			var giftcard = json.success;
@@ -259,7 +260,7 @@ NGApp.factory( 'GiftCardService', function( $http, $location, $rootScope, Accoun
 NGApp.factory( 'CreditService', function( $http, $rootScope ){
 
 	var service = { value : '0.00', tooltip : false, redeemed : 0 };
-	
+
 	service.setValue = function( value ){
 		service.value = value;
 		$rootScope.$broadcast( 'creditChanged',  { value : service.value } );
