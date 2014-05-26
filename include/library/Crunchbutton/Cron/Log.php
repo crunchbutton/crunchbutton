@@ -19,7 +19,6 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		$this->table('cron_log')->idVar('id_cron_log')->load($id);
 	}
 
-	// start all the crons
 	public static function start(){
 		$crons = Crunchbutton_Cron_Log::q( "SELECT * FROM cron_log WHERE `interval` != '' AND interval_unity > 0" );
 		if( $crons->count() ){
@@ -118,7 +117,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		
 		// Create a support ticket
 		$last_time_it_started = $this->next_time();
-		$message = 'The cron task "' . $this->description . '" started running at ' . $last_time_it_started->format('M jS Y g:i:s A') . ' and didn`t finish yet.' . "\n" . 'Please check it, it seems an error has occurred.';
+		$message = 'The cron task "' . $this->description . '" started running at ' . $last_time_it_started->format('M jS Y g:i:s A') . ' and didn\'t finish yet.' . "\n" . 'Please check it, it seems an error has occurred.';
 		Crunchbutton_Support::createNewWarning( [ 'body' => $message ] );
 
 		$this->log( 'error_warning', 'message:' . $message );
