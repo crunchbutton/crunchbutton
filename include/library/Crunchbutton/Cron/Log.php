@@ -44,6 +44,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 			
 			$job = $this;
 
+			// Timeout to run it async
 			Cana::timeout( function() use( $job ) {
 				$job->go();	
 			} );
@@ -89,21 +90,27 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 		$watch_dog = 1;
 
-		$next_time = $date->modify( '+ ' .  ( $this->interval_unity ) . ' ' . ( $this->interval ) );
-		while ( $now > $next_time ) {
+		if( $date < $now ){
 			$next_time = $date->modify( '+ ' .  ( $this->interval_unity ) . ' ' . ( $this->interval ) );
-			$watch_dog++;
-			if( $watch_dog >= 10000 ){
-				$message = 'The cron task "' . $this->description . '" have a problem updating the next_time and didn\'t run. If you get this message tell it to the devs. Thank you.';
-				Crunchbutton_Support::createNewWarning( [ 'body' => $message ] );
-				$this->log( 'update_next_time', 'watch_dog:' . $watch_dog . ' next_time: ' . $next_time->format( 'Y-m-d H:i:s' ) );
-				return false;
+			while ( $now > $next_time ) {
+				$next_time = $date->modify( '+ ' .  ( $this->interval_unity ) . ' ' . ( $this->interval ) );
+				$watch_dog++;
+				if( $watch_dog >= 10000 ){
+					$message = 'The cron task "' . $this->description . '" have a problem updating the next_time and didn\'t run. If you get this message tell it to the devs. Thank you.';
+					Crunchbutton_Support::createNewWarning( [ 'body' => $message ] );
+					$this->log( 'update_next_time', 'watch_dog:' . $watch_dog . ' next_time: ' . $next_time->format( 'Y-m-d H:i:s' ) );
+					return false;
+				}
 			}
+		} else {
+			$next_time = $date;
 		}
+
 		$this->log( 'update_next_time', 'watch_dog:' . $watch_dog . ' next_time: ' . $next_time->format( 'Y-m-d H:i:s' ) );
 
 		$this->next_time = $next_time->format( 'Y-m-d H:i:s' );
 		$this->save();
+
 		return true;
 	}
 
@@ -144,12 +151,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	public function finished(){
 
 		$job = Crunchbutton_Cron_Log::o( $this->id_cron_log );
-
-		$started_at = $job->next_time();
-		$started_at->modify( '- ' .  ( $job->interval_unity ) . ' ' . ( $job->interval ) );
-		$finished_at = $now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$time_running = Crunchbutton_Util::intervalToSeconds( $started_at->diff( $finished_at ) );
-		$job->log( 'finished', 'the interaction ' . $job->interactions . ' took ' . $time_running . ' seconds to finish' );
+		$job->log( 'finished', 'the interaction ' . $job->interactions );
 
 		$job->finished = date('Y-m-d H:i:s');
 		$job->interactions = ( !$job->interactions ? 1 : $job->interactions + 1 );
