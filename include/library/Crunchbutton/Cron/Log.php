@@ -96,7 +96,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 				$watch_dog++;
 				if( $watch_dog >= 10000 ){
 					$message = 'The cron task "' . $this->description . '" have a problem updating the next_time and didn\'t run. If you get this message tell it to the devs. Thank you.';
-					Crunchbutton_Support::createNewWarning( [ 'body' => $message ] );
+					// Crunchbutton_Support::createNewWarning( [ 'body' => $message ] );
 					$this->log( 'update_next_time', 'watch_dog:' . $watch_dog . ' next_time: ' . $next_time->format( 'Y-m-d H:i:s' ) );
 					return false;
 				}
@@ -118,7 +118,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		// Create a support ticket
 		$last_time_it_started = $this->next_time();
 		$message = 'The cron task "' . $this->description . '" started running at ' . $last_time_it_started->format('M jS Y g:i:s A') . ' and didn\'t finish yet.' . "\n" . 'Please check it, it seems an error has occurred.';
-		Crunchbutton_Support::createNewWarning( [ 'body' => $message ] );
+		// Crunchbutton_Support::createNewWarning( [ 'body' => $message ] );
 
 		$this->log( 'error_warning', 'message:' . $message );
 
