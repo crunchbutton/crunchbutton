@@ -41,37 +41,43 @@
 			<?php if( !$ajax ) { ?>
 			<div class="box">
 				<div class="box-header">
-				<div class="row-fluid">
-
-						<div class="span12 padded" style="text-align:center;">
-							<strong>Shifts for week <?php echo $this->week; ?> / <?php echo $this->year; ?></strong>
+						<div class="row-fluid">
+								<div class="span2 padded">
+									<br/>
+									<a class="shift-previous" href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->link_prev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a>
+								</div>
+									<div class="span8 padded" style="text-align:center;">
+										<h5>
+											From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
+										</h5>
+									</div>
+								<div class="span2 padded" style="text-align:right;">
+									<br/>
+									<a class="shift-next" href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->link_next; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a>
+								</div>
 						</div>
-					
-				</div>
 			</div>
 			<?php } ?>
 				<div class="box-content">
 						<div>
-							<div class="row-fluid">
-								<div class="span2 padded">
-									<br/>
-									<a class="shift-previous" href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->weekPrev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a>
-								</div>
-									<div class="span8 padded" style="text-align:center;">
-										<h4>
-											From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
-										</h4>
-									</div>
-								<div class="span2 padded" style="text-align:right;">
-									<br/>
-									<a class="shift-next" href="/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->weekNext; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a>
-								</div>
+
+			<?php if( $ajax ) { ?>
+			<div class="box">
+				<div class="box-header">
+						<div class="row-fluid">								
+							<div style="text-align:center;">
+								<h5>
+									From <?php echo $this->from->format('M jS Y') ?> to <?php echo $this->to->format('M jS Y'); ?>
+								</h5>
+							</div>
 						</div>
-						<hr/>
+				</div>
+			<?php } ?>
+
 						<table width="100%">
 						<tr>
 							<?php foreach( $this->days as $day ) { 
-								$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+								$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
 							?>
 								<th width="14%" style="background:<?php echo $dark; ?>">
 									<div class="row-fluid padded">
@@ -85,9 +91,10 @@
 								</th>
 							<?php } ?>
 						</tr>
+						<?php $dark = ''; ?>
 						<tr>
 							<?php foreach( $this->days as $day ) { 
-								$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+								$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
 								$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $id_community, $day->format( 'Y-m-d' ) );
 							?>
 								<td width="14%" style="background:<?php echo $dark; ?>" valign="top">
@@ -157,8 +164,7 @@
 <script type="text/javascript" src="/assets/js/admin.shift.js"></script>
 <script type="text/javascript">
 $( document ).ready( function(){
-	shift.community.year = '<?php echo $this->year; ?>';
-	shift.community.week = '<?php echo $this->week; ?>';
+	shift.community.start_date = '<?php echo $this->start_date; ?>';
 	<?php if( $ajax ) { ?>
 		shift.community.ajax = true;
 		shift.community.url = '/drivers/shift/community/<?php echo $id_community ?>/<?php echo $this->year; ?>/<?php echo $this->week; ?>?ajax=1';

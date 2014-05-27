@@ -308,11 +308,11 @@ function _newNotificationFields() {
  *
  */
 function loadSavedData() {
-  /* special logic for the order notification methods cuz they were weird when i found them */
+	/* special logic for the order notification methods cuz they were weird when i found them */
 	var types = ['sms', 'email', 'phone', 'url', 'fax'];
 	for(var i in types) { $('div.check-content.'+types[i]).html(''); }
 
-  delete App.cached.Restaurant[App.restaurant];
+	delete App.cached.Restaurant[App.restaurant];
 	App.loadRestaurant();
 }
 
@@ -1849,21 +1849,21 @@ function create_support_from_order(id_order) {
 
 function full_post(url, data){
 
-    $('body').append($('<form/>', {
-      id: 'jQueryPostItForm',
-      method: 'POST',
-      action: url
-    }));
+		$('body').append($('<form/>', {
+			id: 'jQueryPostItForm',
+			method: 'POST',
+			action: url
+		}));
 
-    for(var i in data){
-      $('#jQueryPostItForm').append($('<input/>', {
-        type: 'hidden',
-        name: i,
-        value: data[i]
-      }));
-    }
+		for(var i in data){
+			$('#jQueryPostItForm').append($('<input/>', {
+				type: 'hidden',
+				name: i,
+				value: data[i]
+			}));
+		}
 
-    $('#jQueryPostItForm').submit();
+		$('#jQueryPostItForm').submit();
 }
 
 App.giftcardsGroup = {
@@ -2036,7 +2036,7 @@ hour_override.save = function(){
 	}
 	
 	 if( !/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test( date_start_hour ) ){
-	 		alert( 'Please type a valid start hour! \nFormat hh:mm!' );
+			alert( 'Please type a valid start hour! \nFormat hh:mm!' );
 			$( '#hour_override_date_start_hour' ).focus();
 			return;	
 	 }
@@ -2048,7 +2048,7 @@ hour_override.save = function(){
 	}
 
  if( !/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test( date_end_hour ) ){
-	 		alert( 'Please type a valid end hour! \nFormat hh:mm!' );
+			alert( 'Please type a valid end hour! \nFormat hh:mm!' );
 			$( '#hour_override_date_end_hour' ).focus();
 			return;	
 	 }
@@ -2172,4 +2172,15 @@ App.phone = {
 
 		return false;
 	}
+};
+
+
+
+function compareArrays(a, b) {
+		var i = a.length;
+		if (i != b.length) return false;
+		while (i--) {
+				if (a[i] !== b[i]) return false;
+		}
+		return true;
 };

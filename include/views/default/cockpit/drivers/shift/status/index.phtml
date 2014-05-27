@@ -14,7 +14,6 @@
 	$hasDrivers = [];
 
 ?>
-
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="box">
@@ -22,8 +21,8 @@
 				<span class="title">Shift status: <?php echo 'from ' .  $from->format( 'M jS Y ' ) . ' to ' . $to->format( 'M jS Y ' ); ?></span>
 
 				<ul class="box-toolbar">
-					<li><a class="shift-previous" href="/drivers/shift/status/shift/<?php echo $this->weekPrev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a></li>
-					<li><a class="shift-next" href="/drivers/shift/status/shift/<?php echo $this->weekNext; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a></li>
+					<li><a class="shift-previous" href="/drivers/shift/status/shift/<?php echo $this->link_prev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a></li>
+					<li><a class="shift-next" href="/drivers/shift/status/shift/<?php echo $this->link_next; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a></li>
 				</ul>
 
 			</div>			<div class="box-content">

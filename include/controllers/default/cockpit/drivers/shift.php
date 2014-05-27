@@ -77,23 +77,22 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		$admin = Admin::o( c::admin()->id_admin );
 
 		// Start week on Friday #3084
-		if( c::getPagePiece( 4 ) && c::getPagePiece( 5 ) ){
-			$year = c::getPagePiece( 4 );
-			$week = c::getPagePiece( 5 );
-			$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 5 ) ), new DateTimeZone( c::config()->timezone  ) );
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		if( $now->format( 'l' ) == 'Friday' ){
+			$friday = $now;	
 		} else {
-
-			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-			if( $now->format( 'l' ) == 'Friday' ){
-				$friday = $now;	
-			} else {
-				$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
-			}
-
-			$year = $friday->format( 'Y' );
-			$week = $friday->format( 'W' );
-			$firstDay = $friday;
+			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
 		}
+
+		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $friday->format( 'Y' ) );
+		$month = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $friday->format( 'm' ) );
+		$day = ( c::getPagePiece( 6 ) != '' ? c::getPagePiece( 6 ) : $friday->format( 'd' ) );
+
+		// Start week on friday
+		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
+
+		$first_day_year = $firstDay->format( 'Y' );
+		$first_day_week = $firstDay->format( 'W' );
 
 		$days = [];
 		for( $i = 0; $i <= 6; $i++ ){
@@ -101,25 +100,21 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			$firstDay->modify( '+ 1 day' );
 		}
 
-		if( $week <= 1 ){
-			$weekPrev = ( $year - 1 ) . '/52';
-		} else {
-			$weekPrev = ( $year ) . '/' . ( $week - 1 );
-		}
-		if( $week >= 52 ){
-			$weekNext = ( $year + 1 ) . '/01';
-		} else {
-			$weekNext = ( $year ) . '/' . ( $week + 1 );
-		}
+		// prev/next links
+		$firstDay->modify( '- 2 week' );
+		$link_prev_day = $firstDay->format( 'Y/m/d' );
+		$firstDay->modify( '+ 2 week' );
+		$link_next_day = $firstDay->format( 'Y/m/d' );
 
-		c::view()->weekPrev = $weekPrev;
-		c::view()->weekNext = $weekNext;
-		c::view()->week = $week;
-		c::view()->year = $year;
-		c::view()->status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $admin->id_admin, $week, $year );
+		c::view()->week = $first_day_week;
+		c::view()->year = $first_day_year;
+
+		c::view()->link_prev = $link_prev_day;
+		c::view()->link_next = $link_next_day;
+		c::view()->status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $admin->id_admin, $first_day_week, $first_day_year );
 		c::view()->days = $days;
-		c::view()->from = new DateTime( $days[ 0 ]->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
-		c::view()->to = new DateTime( $days[ 6 ]->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		c::view()->from = $days[ 0 ];
+		c::view()->to = $days[ 6 ];
 		c::view()->communities = $admin->communitiesHeDeliveriesFor();
 		c::view()->display( 'drivers/shift/schedule/driver' );
 	}
@@ -171,10 +166,12 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
 		}
 
-		$year = ( c::getPagePiece( 3 ) ) ? c::getPagePiece( 3 ) : $friday->format( 'Y' );
-		$week = ( c::getPagePiece( 4 ) ) ? c::getPagePiece( 4 ) : $friday->format( 'W' );
-		
-		$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 5 ) ), new DateTimeZone( c::config()->timezone  ) );
+		$year = ( c::getPagePiece( 3 ) != '' ? c::getPagePiece( 3 ) : $friday->format( 'Y' ) );
+		$month = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $friday->format( 'm' ) );
+		$day = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $friday->format( 'd' ) );
+
+		// Start week on friday
+		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
 		
 		$days = [];
 		for( $i = 0; $i <= 6; $i++ ){
@@ -182,23 +179,19 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			$firstDay->modify( '+ 1 day' );
 		}
 
+		// prev/next links
+		$firstDay->modify( '- 2 week' );
+		$link_prev_day = $firstDay->format( 'Y/m/d' );
+		$firstDay->modify( '+ 2 week' );
+		$link_next_day = $firstDay->format( 'Y/m/d' );
+
 		$firstDay->modify( '-1 day' );
 		c::view()->to = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 		$firstDay->modify( '-6 day' );
 		c::view()->from = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
-		if( $week <= 1 ){
-			$weekPrev = ( $year - 1 ) . '/52';
-		} else {
-			$weekPrev = ( $year ) . '/' . ( $week - 1 );
-		}
-		if( $week >= 52 ){
-			$weekNext = ( $year + 1 ) . '/01';
-		} else {
-			$weekNext = ( $year ) . '/' . ( $week + 1 );
-		}
-
-		c::view()->weekPrev = $weekPrev;
-		c::view()->weekNext = $weekNext;
+	
+		c::view()->link_prev = $link_prev_day;
+		c::view()->link_next = $link_next_day;
 		c::view()->days = $days;
 		c::view()->week = $week;
 		c::view()->year = $year;
@@ -220,15 +213,22 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		
 		$id_community = c::getPagePiece( 3 );
 		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : false );
-		$week = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : false );
+		$month = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : false );
+		$day = ( c::getPagePiece( 6 ) != '' ? c::getPagePiece( 6 ) : false );
 
-		if( $id_community && $year && $week ){
-			if( intval( $week ) < 10 ){
-				$week = '0' . intval( $week );
-			}
+		if( $id_community && $year && $month && $day ){
 
 			// Start week on friday
-			$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 5 ) ), new DateTimeZone( c::config()->timezone  ) );
+			$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
+
+			// prev/next links
+			$link_start_day = $firstDay->format( 'Y/m/d' );
+			$firstDay->modify( '- 1 week' );
+			$link_prev_day = $firstDay->format( 'Y/m/d' );
+			$firstDay->modify( '+ 2 week' );
+			$link_next_day = $firstDay->format( 'Y/m/d' );
+			$firstDay->modify( '- 1 week' );
+
 
 			$days = [];
 			for( $i = 0; $i <= 6; $i++ ){
@@ -236,24 +236,16 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 				$firstDay->modify( '+ 1 day' );
 			}
 
-			if( $week <= 1 ){
-				$weekPrev = ( $year - 1 ) . '/52';
-			} else {
-				$weekPrev = ( $year ) . '/' . ( $week - 1 );
-			}
-			if( $week >= 52 ){
-				$weekNext = ( $year + 1 ) . '/01';
-			} else {
-				$weekNext = ( $year ) . '/' . ( $week + 1 );
-			}
-
-			c::view()->weekPrev = $weekPrev;
-			c::view()->weekNext = $weekNext;
+			c::view()->start_date = $start_date;
+			c::view()->link_prev = $link_prev_day;
+			c::view()->link_next = $link_next_day;
 			c::view()->days = $days;
+
 			$firstDay->modify( '-1 day' );
 			c::view()->to = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 			$firstDay->modify( '-6 day' );
 			c::view()->from = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+
 			c::view()->id_community = $id_community;
 		} else {
 
@@ -264,14 +256,12 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			} else {
 				$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
 			}
-
-			$year = $friday->format( 'Y' );
-			$week = $friday->format( 'W' );
+			$start_date = $friday->format( 'Y/m/d' );
 			$day = $friday;
 		}
 
-		c::view()->week = $week;
-		c::view()->year = $year;
+		c::view()->start_date = $start_date;
+
 		if( $_REQUEST[ 'ajax' ] ){
 			c::view()->ajax = true;
 			c::view()->layout( 'layout/ajax' );	
@@ -284,39 +274,37 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 		// Start week on Friday #3084
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-
 		if( $now->format( 'l' ) == 'Friday' ){
-			$day = $now;	
+			$friday = $now;	
 		} else {
-			$day = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
+			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
 		}
 
-		$year = ( c::getPagePiece( 4 ) ) ? c::getPagePiece( 4 ) : $day->format( 'Y' );
-		$week = ( c::getPagePiece( 5 ) ) ? c::getPagePiece( 5 ) : $day->format( 'W' );
+		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $friday->format( 'Y' ) );
+		$month = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $friday->format( 'm' ) );
+		$day = ( c::getPagePiece( 6 ) != '' ? c::getPagePiece( 6 ) : $friday->format( 'd' ) );
 
-		$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 5 ) ), new DateTimeZone( c::config()->timezone  ) );
-
-		$from = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
-		$day->modify( '+6 day' );
-		$to = new DateTime( $day->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		// Start week on friday
+		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
 		
+		c::view()->week = $firstDay->format( 'W' );
+		c::view()->year = $firstDay->format( 'Y' );
+
+		$from = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		$firstDay->modify( '+6 day' );
+		$to = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		$firstDay->modify( '- 6 days' );
+
 		$communities = Crunchbutton_Community_Shift::communitiesWithDeliveryService();
 		
-		if( $week <= 1 ){
-			$weekPrev = ( $year - 1 ) . '/52';
-		} else {
-			$weekPrev = ( $year ) . '/' . ( $week - 1 );
-		}
-		if( $week >= 52 ){
-			$weekNext = ( $year + 1 ) . '/01';
-		} else {
-			$weekNext = ( $year ) . '/' . ( $week + 1 );
-		}
+		// prev/next links
+		$firstDay->modify( '- 1 week' );
+		$link_prev_day = $firstDay->format( 'Y/m/d' );
+		$firstDay->modify( '+ 2 week' );
+		$link_next_day = $firstDay->format( 'Y/m/d' );
 
-		c::view()->weekPrev = $weekPrev;
-		c::view()->weekNext = $weekNext;
-		c::view()->year = $year;
-		c::view()->week = $week;
+		c::view()->link_prev = $link_prev_day;
+		c::view()->link_next = $link_next_day;
 		c::view()->to = $to;
 		c::view()->from = $from;
 		c::view()->communities = $communities;

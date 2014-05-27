@@ -8,7 +8,7 @@ shift.community.init = function(){
 
 	$( '#community-id' ).change( function( event ) {
 		if( $.trim( $( '#community-id' ).val() ) != '' ){
-			document.location.href = '/drivers/shift/community/' + $( '#community-id' ).val() + '/' + shift.community.year + '/' + shift.community.week;	
+			document.location.href = '/drivers/shift/community/' + $( '#community-id' ).val() + '/' + shift.community.start_date;	
 		}		
 	} );
 
@@ -51,7 +51,6 @@ shift.community.toggleTimezone = function(){
 };
 
 shift.community.reload = function(){
-	console.log('shift.community.ajax',shift.community.ajax);
 	if( shift.community.ajax ){
 		$( '#modal-hours' ).modal( 'hide' );
 		community.shifts( shift.community.url );
@@ -221,7 +220,7 @@ shift.drivers.init = function(){
 	$( '.complete-shift-driver' ).click( function() {
 		shift.drivers.update( true );
 	} );
-	
+
 	$( '.available, .wantwork, .dontwantwork' ).sortable( { 
 		'connectWith': '.connected', 
 		'forcePlaceholderSize': true,
@@ -233,6 +232,41 @@ shift.drivers.init = function(){
 					shift.drivers.update();
 				}, 500 );
 			} );
+	
+	// sometimes the sortupdate event is not fired!
+	shift.drivers.last_list = { wantWorkItems: [], dontWantWorkItems: [] };
+
+	$('ul.wantwork li').each( function() {
+		shift.drivers.last_list.wantWorkItems.push( $( this ).attr( 'id' ) );
+	} );
+
+	$('ul.dontwantwork li').each( function() {
+		shift.drivers.last_list.dontWantWorkItems.push( $( this ).attr( 'id' ) );
+	} );
+
+	shift.drivers.watchChanges();
+}
+
+shift.drivers.watchChanges = function(){
+
+	var wantWorkItems = [];
+	var dontWantWorkItems = []
+
+	$('ul.wantwork li').each( function() {
+		wantWorkItems.push( $( this ).attr( 'id' ) );
+	} );
+
+	$('ul.dontwantwork li').each( function() {
+		dontWantWorkItems.push( $( this ).attr( 'id' ) );
+	} );
+
+	if( !compareArrays( wantWorkItems, shift.drivers.last_list.wantWorkItems ) || !compareArrays( dontWantWorkItems, shift.drivers.last_list.dontWantWorkItems ) ){
+		shift.drivers.update();
+	}
+
+	setTimeout( function(){
+		shift.drivers.watchChanges()
+	}, 1000 );
 }
 
 shift.drivers.order = function(){
@@ -284,6 +318,9 @@ shift.drivers.update = function( completed ){
 		dontWantWorkItems.push( $( this ).attr( 'id' ) );
 		allItems.push( $( this ).attr( 'id' ) );
 	} );
+
+
+	shift.drivers.last_list = { 'wantWorkItems' : wantWorkItems, 'dontWantWorkItems' : dontWantWorkItems };
 
 	var year = shift.drivers.year;
 	var week = shift.drivers.week;
@@ -387,7 +424,6 @@ shift.status.init = function(){
 				$( '#saved-' + id_admin ).fadeTo( 'fast' , 1, function() {
 					$( '#saved-' + id_admin ).fadeTo( 'fast', 0 );
 				} );
-				console.log( 'saved!' );
 			} else {
 				alert( 'Oops, error! ' + data.error );
 			}
