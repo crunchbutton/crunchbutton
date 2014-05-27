@@ -22,7 +22,7 @@ CREATE TABLE `driver_document_status` (
   `id_driver_document` int(11) unsigned DEFAULT NULL,
   `id_admin` int(11) unsigned DEFAULT NULL,
   `datetime` DATETIME NULL,
-  `file` varchar(40) DEFAULT NULL,
+  `file` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_driver_document_status`),
   KEY `driver_document_status_ibfk_1` (`id_driver_document`),
   KEY `driver_document_status_ibfk_2` (`id_admin`),
