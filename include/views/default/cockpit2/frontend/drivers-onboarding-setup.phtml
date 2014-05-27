@@ -6,7 +6,7 @@
 
 		<div ng-show="finished">
 			<div class="dialog-message dialog-message-success">
-				Your login is {{driver.login}}
+				Your login is {{driver.login}}.
 			</div>
 			<div class="button-pushable find-restaurants">
 				<button class="button orange" ng-click="access()">Access cockpit</button>
@@ -46,9 +46,14 @@
 				<span class="field"><input type="password" equals="{{driver.password}}" name="driverConfirm" required ng-model="driver.confirm"></span>
 			</div>
 			
-			<div class="button-pushable find-restaurants">
+			<div class="button-pushable find-restaurants" ng-show="!sending">
 				<button class="button orange" ng-click="send()">Save</button>
 			</div>
+
+			<div class="button-pushable find-restaurants" ng-show="sending">
+				<button class="button"><span><i class="fa fa-spinner fa-spin"></i> Please wait</span></button>
+			</div>
+
 		</form>
 		
 		<div class="info">

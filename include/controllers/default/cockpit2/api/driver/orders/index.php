@@ -25,7 +25,7 @@ class Controller_api_driver_orders extends Crunchbutton_Controller_RestAccount {
 
 					$order = Order::o(c::getPagePiece( 3 ) );
 					// Test order #2969 - step 3
-					if( $order->id_order == 16844 ){
+					if( $order->id_order == Cockpit_Driver_Notify::ORDER_TEST ){
 						$last = Crunchbutton_Order_Action::byOrder( $order->id_order );
 						// delete last actions so the driver could play with
 						if( $last->id_order_action && c::user()->id_admin != $last->id_admin && $last->type != Crunchbutton_Order_Action::DELIVERY_REJECTED ){

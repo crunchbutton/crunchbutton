@@ -4,6 +4,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 
 	const TYPE_SETUP = 'setup';
 	const TYPE_WELCOME = 'welcome';
+	const ORDER_TEST = '22890'; // id_order sent to drivers play with - Issue #2969 - step 3
 	
 	public function send( $id_admin, $message ){
 
@@ -23,14 +24,16 @@ class Cockpit_Driver_Notify extends Cana_Table {
 
 		Log::debug( [ 'action' => 'notification starting', 'driver' => $id_admin, 'phone' => $phone, 'message' => $message, 'type' => 'drivers-onboarding'] );
 
+		$username = $driver->login;
+
 		// Pre defined messages
 		switch ( $message ) {
 			case Cockpit_Driver_Notify::TYPE_WELCOME:
-				$message = "Access cockpit.la/setup/{$phone}";
+				$message = "You username is {$username}. Access cockpit.la/setup/{$phone}";
 				break;
 			
 			case Cockpit_Driver_Notify::TYPE_SETUP:
-				$message = 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/16844. Play around with it and make sure you understand how everything works';
+				$message = 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/' . Cockpit_Driver_Notify::ORDER_TEST . '. Play around with it and make sure you understand how everything works';
 				$message .="\n" . 'If you have any questions, just text us directly at _PHONE_.';
 				break;
 		}
