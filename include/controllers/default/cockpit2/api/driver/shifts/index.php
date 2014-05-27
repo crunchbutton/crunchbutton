@@ -98,24 +98,25 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 	private function _scheduleList(){
 
-		$year = date( 'Y', strtotime( '- 1 day' ) );
-		$week = date( 'W', strtotime( '- 1 day' ) );
-
-		$firstDay = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
-		$shifts_period = 'From ' . $firstDay->format( 'M jS Y' );
-		$firstDay->modify( '+ 1 week' );
-		$shifts_period .= ' to ' . $firstDay->format( 'M jS Y' );
-
-		$firstDay->modify( '- 1 week' );
-
-		if( date( 'l' ) == 'Monday' ){
-			$firstDay->modify( '+ 2 week' );	
+		// Start week on Friday #3084
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		if( $now->format( 'l' ) == 'Friday' ){
+			$friday = $now;	
 		} else {
-			$firstDay->modify( '+ 1 week' );
+			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
 		}
 
-		$week = $firstDay->format( 'W' );
-		$year = $firstDay->format( 'Y' );
+		$friday->modify( '+ 1 week' );
+
+		$year = $friday->format( 'Y' );
+		$week = $friday->format( 'W' );
+
+		$firstDay = $friday;
+		$shifts_period = 'From ' . $firstDay->format( 'M jS Y' );
+		$firstDay->modify( '+ 6 days' );
+		$shifts_period .= ' to ' . $firstDay->format( 'M jS Y' );
+
+		$firstDay->modify( '- 6 days' );
 
 		$days = [];
 		for( $i = 0; $i <= 6; $i++ ){
@@ -128,8 +129,8 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 		$id_admin = c::user()->id_admin;
 
-		$from = new DateTime( $days[ 0 ]->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
-		$to = new DateTime( $days[ 6 ]->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
+		$from = $days[ 0 ];
+		$to = $days[ 6 ];
 
 		$preferences = Crunchbutton_Admin_Shift_Preference::shiftsByPeriod( $id_admin, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
 		$ranking = 1;
