@@ -221,6 +221,8 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			// Start week on friday
 			$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
 
+			$start_date = $firstDay->format( 'Y/m/d' );
+
 			// prev/next links
 			$link_start_day = $firstDay->format( 'Y/m/d' );
 			$firstDay->modify( '- 1 week' );
@@ -228,7 +230,6 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			$firstDay->modify( '+ 2 week' );
 			$link_next_day = $firstDay->format( 'Y/m/d' );
 			$firstDay->modify( '- 1 week' );
-
 
 			$days = [];
 			for( $i = 0; $i <= 6; $i++ ){

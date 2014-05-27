@@ -389,10 +389,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function sendWarningToDrivers(){
 
-		$year = date( 'Y', strtotime( '- 1 day' ) );
-		$week = date( 'W', strtotime( '- 1 day' ) );
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		if( $now->format( 'l' ) == 'Friday' ){
+			$day = $now;	
+		} else {
+			$day = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
+		}
 
-		$day = new DateTime( date( 'Y-m-d', strtotime( $year . 'W' . $week . 1 ) ), new DateTimeZone( c::config()->timezone  ) );
 		$day->modify( '+ 1 week' );
 
 		$_week = $day->format( 'W' );
@@ -406,25 +409,30 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 		echo $log."\n";
 
+		$warningDrivers = false;
+
 		switch ( date( 'l' ) ) {
 			case 'Monday':
-				$driversMessage = 'Hey [name]! Please fill out your schedule for next week at cockpit._DOMAIN_/schedule. If you have any questions, just text us back.';
+				$driversMessage = 'Remember: update your Crunchbutton shift preferences for the driver week of ' . $from->format( 'm/d' ) . '-' . $to->format( 'm/d' ) . ' at cockpit._DOMAIN_/schedule. Due tonight at 5 PM PDT';
 				$warningDrivers = true;
 				$warningCS = false;
 				break;
-			case 'Wednesday':
-				$driversMessage = 'Remember: update your Crunchbutton schedule for next week at cockpit._DOMAIN_/schedule. Don\'t leave us hanging :(';
+			case 'Friday':
+			case 'Saturday':
+			case 'Sunday':
+				$driversMessage = 'Remember: update your Crunchbutton shift preferences for the driver week of ' . $from->format( 'm/d' ) . '-' . $to->format( 'm/d' ) . ' at cockpit._DOMAIN_/schedule. Don\'t leave us hanging :(';
 				$warningDrivers = true;
 				$warningCS = false;
 				break;
 			case 'Thursday':
+				$driversMessage = 'Hey [name]! Please fill out your shift preferences for the driver week of ' . $from->format( 'm/d' ) . '-' . $to->format( 'm/d' ) . ' at cockpit._DOMAIN_/schedule. If you have any questions, just text us back.';
 				$warningCS = true;
 				$driversMessage = false;
 				break;
 			default:
 				// Send the driver schedule remember notification every day morning #2924
 				$driversMessage = 'Remember: update your Crunchbutton schedule for next week at cockpit._DOMAIN_/schedule. Don\'t leave us hanging :(';
-				$warningDrivers = true;
+				$warningDrivers = false;
 				$warningCS = false;
 				break;
 		}
