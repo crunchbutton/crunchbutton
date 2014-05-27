@@ -45,10 +45,9 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		$notification->email = $driver->email;
 		$notification->message = $message;
 
-
-		Cana::timeout( function() use( $notification ) {
+		// Cana::timeout( function() use( $notification ) {
 			$notification->notify();
-		} );
+		// } );
 
 		// log
 		$log = new Cockpit_Driver_Log();
