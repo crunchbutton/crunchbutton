@@ -23,7 +23,7 @@
 				<select id="community-id" class="chosen-select" style="width:480px;">
 					<option value="" selected></option>
 					<?php  
-					$communities = Crunchbutton_Community_Shift::communitiesWithDeliveryService();;
+					$communities = Crunchbutton_Community_Shift::communitiesWithDeliveryService();
 					foreach ( $communities as $community ) {
 						$selected = ( $id_community == $community->id_community ) ? 'selected="selected"' : '';
 						?><option <?php echo $selected; ?> value="<?php echo $community->id_community; ?>"><?php echo $community->name; ?></option><?php 
