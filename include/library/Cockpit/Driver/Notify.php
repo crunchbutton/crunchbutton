@@ -29,10 +29,12 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		// Pre defined messages
 		switch ( $message ) {
 			case Cockpit_Driver_Notify::TYPE_WELCOME:
+				$message_type = Cockpit_Driver_Notify::TYPE_WELCOME;
 				$message = "You username is {$username}. Access cockpit.la/setup/{$phone}";
 				break;
 			
 			case Cockpit_Driver_Notify::TYPE_SETUP:
+				$message_type = Cockpit_Driver_Notify::TYPE_SETUP;
 				$message = 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/' . Cockpit_Driver_Notify::ORDER_TEST . '. Play around with it and make sure you understand how everything works';
 				$message .="\n" . 'If you have any questions, just text us directly at _PHONE_.';
 				break;
@@ -45,6 +47,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		$notification = new Cockpit_Driver_Notify;
 		$notification->id_admin = $driver->id_admin;
 		$notification->phone = $phone;
+		$notification->message_type = $message_type;
 		$notification->email = $driver->email;
 		$notification->message = $message;
 
@@ -72,6 +75,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		$id_admin = $notification->id_admin;
 		$phone = $notification->phone;
 		$email = $notification->email;
+		$message_type = $notification->message_type;
 
 		$env = c::getEnv();
 
@@ -95,7 +99,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 
 		// Send email
 		if( $email ){
-			switch ( $message ) {
+			switch ( $message_type ) {
 				case Cockpit_Driver_Notify::TYPE_WELCOME:
 					$mail = new Cockpit_Email_Driver_Welcome( [ 'id_admin' => $id_admin ] );
 					$mail->send();

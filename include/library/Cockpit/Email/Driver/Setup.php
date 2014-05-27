@@ -21,7 +21,7 @@ class Cockpit_Email_Driver_Setup extends Crunchbutton_Email {
 			$this->view()->subject = $params['subject'];
 			$this->view()->email	 = $params['email'];
 			$this->view()->name	 	 = $admin->name;
-			$this->view()->login	 	 = $admin->login;
+			$this->view()->login	 = $admin->login;
 
 			$params['messageHtml']		= $this->view()->render('driver/notification/setup',['display' => true, 'set' => [
 				'name'  => $admin->name,
