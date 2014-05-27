@@ -8,8 +8,10 @@
 	$id_admin = c::admin()->id_admin;
 
 	$totalShifts = 0;
-	$current = date( 'YW', strtotime( '- 1 day' ) );
-	$editable = ( intval( $this->year . $this->week ) >= $current );
+	$current = date( 'Ymd' );
+	$first_day = $this->days[0]->format( 'Ymd' );
+	$last_day = $this->days[6]->format( 'Ymd' );
+	$editable = ( $last_day >= $current );
 ?>
 <div class="container-fluid padded">
 	<div class="row-fluid">
@@ -21,8 +23,8 @@
 					<div class="row-fluid">
 						<div class="span2 padded">
 							<br/><br/>
-							<?php if( intval( str_replace( '/' , '', $this->weekPrev ) ) >= $current  ) { ?>
-							<a class="shift-previous" href="/drivers/shift/schedule/driver/<?php echo $this->weekPrev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a>
+							<?php if( $first_day > $current ) { ?>
+							<a class="shift-previous" href="/drivers/shift/schedule/driver/<?php echo $this->link_prev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a>
 							<?php } ?>
 						</div>
 							<div class="span8 padded" style="text-align:center;">
@@ -32,7 +34,7 @@
 							</div>
 						<div class="span2 padded" style="text-align:right;">
 							<br/><br/>
-							<a class="shift-next" href="/drivers/shift/schedule/driver/<?php echo $this->weekNext; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a>
+							<a class="shift-next" href="/drivers/shift/schedule/driver/<?php echo $this->link_next; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a>
 						</div>
 					</div>
 
@@ -182,7 +184,7 @@
 				</div>
 			<?php } ?>
 			<div class="row-fluid padded">
-				<a href="http://cbtn.io/shifts-list/mine"><i class="icon icon-angle-right">View your next shifts at <b>http://cbtn.io/</b></i></a>
+				<a href="http://cbtn.io/shifts-list/mine"><i class="icon icon-angle-right"> View your next shifts at <b>http://cbtn.io/</b></i></a>
 			</div>
 			<div class="divider"></div>
 			</div>

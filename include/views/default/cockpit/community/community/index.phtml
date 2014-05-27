@@ -171,11 +171,10 @@ $( document ).ready( function(){
 		} else {
 			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
 		}
-		$year = $friday->format( 'Y' );
-		$week = $friday->format( 'W' );
+		$start_date = $friday->format( 'Y/m/d' );
 	
 	?>
-	community.shifts( '/drivers/shift/community/<?php echo $community[ 'community' ]->id_community; ?>/<?php echo $year; ?>/<?php echo $week; ?>?ajax=1' );
+	community.shifts( '/drivers/shift/community/<?php echo $community[ 'community' ]->id_community; ?>/<?php echo $start_date; ?>?ajax=1' );
 	<?php } ?>
 
 } );

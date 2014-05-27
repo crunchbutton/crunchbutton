@@ -5,7 +5,6 @@
 	$this->title2 = 'Summary';
 	$this->title2icon = 'time';
 	$this->titleLink = '/drivers/shift/summary/';
-
 ?>
 <div class="container-fluid padded">
 	<div class="row-fluid">
@@ -15,7 +14,7 @@
 					<div class="row-fluid">
 						<div class="span2 padded">
 							<br/>
-							<a class="shift-previous" href="/drivers/shift/summary/<?php echo $this->weekPrev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a>
+							<a class="shift-previous" href="/drivers/shift/summary/<?php echo $this->link_prev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a>
 						</div>
 							<div class="span8 padded" style="text-align:center;">
 								<h5>
@@ -24,7 +23,7 @@
 							</div>
 						<div class="span2 padded" style="text-align:right;">
 							<br/>
-							<a class="shift-next" href="/drivers/shift/summary/<?php echo $this->weekNext; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a>
+							<a class="shift-next" href="/drivers/shift/summary/<?php echo $this->link_next; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a>
 						</div>
 				</div>
 				</div>
@@ -34,7 +33,7 @@
 					<table width="100%">
 						<tr>
 							<?php foreach( $this->days as $day ) { 
-								$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+								$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
 							?>
 								<th width="14%" style="background:<?php echo $dark; ?>">
 									<div class="row-fluid padded">
@@ -48,9 +47,10 @@
 								</th>
 							<?php } ?>
 						</tr>
+						<?php $dark = ''; ?>
 						<tr>
 							<?php foreach( $this->days as $day ) { 
-								$dark = ( $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
+								$dark = ( $dark == '#F5F5F5' ) ? '' : '#F5F5F5';
 								$segments = Crunchbutton_Community_Shift::shiftsByDay( $day->format( 'Y-m-d' ) );
 							?>
 								<td width="14%" style="background:<?php echo $dark; ?>" valign="top">
