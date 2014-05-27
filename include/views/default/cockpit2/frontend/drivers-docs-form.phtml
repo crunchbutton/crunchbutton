@@ -1,10 +1,12 @@
 <div class="top-pad"></div>
 
-<h1 class="title left"><i class="fa fa-briefcase"></i><span>Documents</span></h1>
-
-<div class="divider"></div>
-
 <div class="content-padding" ng-show="ready">
+
+
+	<h1 class="title left"><i class="fa fa-briefcase"></i><span>Documents</span></h1>
+
+	<div class="divider"></div>
+
 
 	<h2 class="title">
 		<span>Documents</span>
@@ -26,7 +28,7 @@
 				<td>
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
 					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
-						Document missing
+						Doc missing
 					</span>
 				</td>
 			</tr>
@@ -46,7 +48,7 @@
 				<td>
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
 					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
-						Document missing
+						Doc missing
 					</span>
 				</td>
 			</tr>

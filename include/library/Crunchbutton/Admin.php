@@ -5,10 +5,11 @@ class Crunchbutton_Admin extends Cana_Table {
 	const CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING = 'schedule-sms';
 
 
-	public static function login($login) {
-		return Crunchbutton_Admin::q('select * from admin where login="'.c::db()->escape($login).'" and active = 1 limit 1')->get(0);
-	}
-	
+	public static function login($login, $inactive = false) {
+		$status = ( $inactive ? '' : 'and active = 1' );
+		return Crunchbutton_Admin::q('select * from admin where login="'.c::db()->escape($login).'"' . $status . ' limit 1')->get(0);
+	}	
+
 	public function publicExports() {
 		return [
 			'name' => $this->name,
@@ -18,7 +19,7 @@ class Crunchbutton_Admin extends Cana_Table {
 
 	public function validateLogin( $login, $increment = 0 ){
 		$test = $login . ( $increment > 0 ? $increment : '' );
-		$admin = Crunchbutton_Admin::login( $test );
+		$admin = Crunchbutton_Admin::login( $test, true );
 		if( $admin->id_admin ){
 			$increment++;
 			return Crunchbutton_Admin::validateLogin( $login, $increment );
@@ -40,7 +41,7 @@ class Crunchbutton_Admin extends Cana_Table {
 	}
 
 	public function getByPhoneSetup( $phone ){
-		return Crunchbutton_Admin::q( "SELECT * FROM admin a WHERE a.phone = '{$phone}' AND ( a.login IS NULL OR a.login = '' ) ORDER BY id_admin DESC LIMIT 1 " );
+		return Crunchbutton_Admin::q( "SELECT * FROM admin a WHERE a.phone = '{$phone}' AND ( a.pass IS NULL OR a.pass = '' ) ORDER BY id_admin DESC LIMIT 1 " );
 	}
 
 	public function getCSAdminByPhone( $phone ){

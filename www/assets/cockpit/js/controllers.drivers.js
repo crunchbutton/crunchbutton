@@ -389,6 +389,7 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 	
 	$scope.ready = false;
 	$scope.finished = false;
+	$scope.sending = false;
 
 	$scope.driver = { password: '', email : '', confirm: '' };
 
@@ -401,11 +402,14 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 			$scope.submitted = true;
 			return;
 		}
+		$scope.sending = true;
 		DriverOnboardingService.setupSave( $scope.driver, function( json ){
 			if( json.success ){
 				$scope.driver	= json.success;
+				$scope.sending = false;
 				$scope.finished = true;
 			} else {
+				$scope.sending = false;
 				$scope.error = json.error;
 			}
 		} );
@@ -484,22 +488,25 @@ NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, C
 		$scope.ready = true;
 	} );
 
+	$scope.sending = false;
+
 	$scope.save = function(){		
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;
 			return;
 		}
+		$scope.sending = true;
 		PreOnboardingService.save( $scope.driver, function( json ){
 			if( json.success ){
+				$scope.login = json.success.login;
 				$scope.finished = true;
 			} else {
+				$scope.sending = false;
 				$scope.error = json.error;
 			}
 		} );	
 	}
 } );
-
-
 
 NGApp.controller('DriversHelpCtrl', function() {
 
