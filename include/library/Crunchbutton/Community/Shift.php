@@ -388,7 +388,55 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function sendWarningToDrivers(){
-echo '<pre>';var_dump( 1 );exit();
+
+		$warningDrivers = false;
+		$warningCS = false;
+
+		$weekday = date( 'l' );
+		$time = date( 'Hi' );
+
+		// Messages defined here: 
+		// https://github.com/crunchbutton/crunchbutton/issues/3084#issuecomment-44353387
+		switch ( $weekday ) {
+			case 'Sunday':
+				// Sent on Sun at 1 PM PDT
+				if( $time >= 1300 && $time <= 1359 ){
+					$driversMessage = 'Hey [name]! Remember to fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule.|Due tomorrow at 5 PM PT. If you have any questions, just text back.';
+					$warningDrivers = true;
+				} 
+				// Sent on Sun at 6 PM PDT
+				else if ( $time >= 1800 && $time <= 1859 ){
+					$driversMessage = 'Don’t forget: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. Got a question? Text us back.';
+					$warningDrivers = true;
+				}
+				break;			
+			case 'Monday':
+				// Sent on Mon at 10 AM PDT
+				if( $time >= 1000 && $time <= 1559 ){
+					$driversMessage = 'Remember: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. Due tonight at 5 PM PT';
+					$warningDrivers = true;
+				} 
+				// Sent on Mon at 4 PM PDT
+				else if( $time >= 1600 && $time <= 1654 ){
+					$driversMessage = 'Due in 1 hour: Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. If you have any questions, just text back.';
+					$warningDrivers = true;
+				}
+				// Sent on Mon at 4:55 PM PDT
+				else if( $time >= 1655 && $time <= 1659 ){
+					$driversMessage = 'Reminder: your shift preferences are due in 5 min!! cockpit._DOMAIN_/schedule. Got a question? Text us back.';
+					$warningDrivers = true;
+				}
+				// Sent on Mon at 5 PM PDT - alert CS
+				else if ( $time >= 1700 && $time <= 1800 ){
+					$warningCS = true;
+				}
+				break;
+		}
+
+		if( !$warningCS && !$driversMessage ){
+			return;
+		}
+
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		if( $now->format( 'l' ) == 'Friday' ){
 			$day = $now;	
@@ -409,34 +457,6 @@ echo '<pre>';var_dump( 1 );exit();
 		Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
 		echo $log."\n";
 
-		$warningDrivers = false;
-
-		switch ( date( 'l' ) ) {
-			case 'Monday':
-				$driversMessage = 'Remember: update your Crunchbutton shift preferences for the driver week of ' . $from->format( 'm/d' ) . '-' . $to->format( 'm/d' ) . ' at cockpit._DOMAIN_/schedule. Due tonight at 5 PM PDT';
-				$warningDrivers = true;
-				$warningCS = false;
-				break;
-			case 'Friday':
-			case 'Saturday':
-			case 'Sunday':
-				$driversMessage = 'Remember: update your Crunchbutton shift preferences for the driver week of ' . $from->format( 'm/d' ) . '-' . $to->format( 'm/d' ) . ' at cockpit._DOMAIN_/schedule. Don\'t leave us hanging :(';
-				$warningDrivers = true;
-				$warningCS = false;
-				break;
-			case 'Thursday':
-				$driversMessage = 'Hey [name]! Please fill out your shift preferences for the driver week of ' . $from->format( 'm/d' ) . '-' . $to->format( 'm/d' ) . ' at cockpit._DOMAIN_/schedule. If you have any questions, just text us back.';
-				$warningCS = true;
-				$driversMessage = false;
-				break;
-			default:
-				// Send the driver schedule remember notification every day morning #2924
-				$driversMessage = 'Remember: update your Crunchbutton schedule for next week at cockpit._DOMAIN_/schedule. Don\'t leave us hanging :(';
-				$warningDrivers = false;
-				$warningCS = false;
-				break;
-		}
-
 		$communitiesWithShift = [];
 		$communitiesWithoutShift = [];
 
@@ -451,11 +471,11 @@ echo '<pre>';var_dump( 1 );exit();
 		
 			$drivers = $community->getDriversOfCommunity();
 			
-			echo "\n";
+			// echo "\n";
 			$log = $community->name . ' has ' .  $drivers->count() . ' drivers';
 			Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-			echo $log."\n";
-			echo "\n";
+			// echo $log."\n";
+			// echo "\n";
 
 			foreach( $drivers as $driver ){
 
@@ -470,14 +490,14 @@ echo '<pre>';var_dump( 1 );exit();
 				if( $receiveSMS ){
 					$log = 'driver set up to RECEIVE sms: ' . $driver->name . ' - ' . $community->name;
 					Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-					echo $log."\n";
+					// echo $log."\n";
 					if( $preferences->completed == 0 ){
 						$driversWillReceiveTheNotification[] = array(  'id_admin' => $driver->id_admin, 'name' => $driver->name, 'txt' => $driver->txt, 'phone' => $driver->phone );
 					}
 				} else {
 					$log = 'driver set up to NOT receive sms: ' . $driver->name;
 					Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
-					echo $log."\n";
+					// echo $log."\n";
 				}
 			}
 			if( $shifts->count() == 0 ){
@@ -566,10 +586,14 @@ echo '<pre>';var_dump( 1 );exit();
 				
 				$message = str_replace( '[name]' , $name, $driversMessage );
 
+				if( strpos( $message, '|') > 0 ){
+					$message = explode( '|', $message );
+				} else {
+					$message = str_split( $message, 160 );	
+				}
+
 				$num = ( $txt != '' ) ? $txt : $phone; 
 
-				$message = str_split( $message, 160 );
-				
 				if( $num != '' ){
 					foreach ( $message as $msg ) {
 						try {
