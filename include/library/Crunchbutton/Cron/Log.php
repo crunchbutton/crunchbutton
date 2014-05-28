@@ -42,12 +42,25 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 			$this->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_RUNNING;
 			$this->save();
 
-			$job = $this;
-
-			// Timeout to run it async
-			// Cana::timeout( function() use( $job ) {
-				$job->go();
-			// } );
+			if( class_exists( $this->class ) ){
+				$job = new $this->class;
+				$job->id_cron_log = $this->id_cron_log;
+				if( is_a( $job, 'Crunchbutton_Cron_Log' ) ){
+					if( method_exists( $job, 'run' ) ){
+						// async 
+						Cana::timeout( function() use( $job ) {
+							$job->run();
+						} );	
+						$this->log( 'go', $this->class . ' called run' );
+					} else {
+						$this->log( 'run', 'error: ' . $this->class . ' doesnt have the method run' );
+					}
+				} else {
+					$this->log( 'run', 'error: ' . $this->class . ' isnt instance of Crunchbutton_Cron_Log' );
+				}
+			} else {
+				$this->log( 'run', 'error: ' . $this->class . ' doesnt exist' );
+			}
 		}
 	}
 
@@ -77,7 +90,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 				return true;
 			}
 		}
-		$this->log( 'should_start', 'not this time: ' . $this->next_time( true )->format( 'Y-m-d H:i:s' ) );
+		$this->log( ' should_start', 'not this time. will start at: ' . $this->next_time( true )->format( 'Y-m-d H:i:s' ) );
 		return false;
 	}
 
@@ -128,32 +141,11 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 		$this->save();
 	}
 
-	public function go(){
-		$this->log( 'go', $this->class );
-		if( class_exists( $this->class ) ){
-			$job = new $this->class;
-			if( is_a( $job, 'Crunchbutton_Cron_Log' ) ){
-				if( method_exists( $job, 'run' ) ){
-					$job->id_cron_log = $this->id_cron_log;
-					$job->run();
-					$this->log( 'go', $this->class . ' called run' );
-				} else {
-					$this->log( 'run', 'error: ' . $this->class . ' doesnt have the method run' );
-				}
-			} else {
-				$this->log( 'run', 'error: ' . $this->class . ' isnt instance of Crunchbutton_Cron_Log' );
-			}
-		} else {
-			$this->log( 'run', 'error: ' . $this->class . ' doesnt exist' );
-		}
-	}
-
 	// called when the cron finish running
 	public function finished(){
 
 		$job = Crunchbutton_Cron_Log::o( $this->id_cron_log );
 		$job->log( 'finished', 'the interaction ' . $job->interactions );
-
 		$job->finished = date('Y-m-d H:i:s');
 		$job->interactions = ( !$job->interactions ? 1 : $job->interactions + 1 );
 		$job->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_IDLE;
@@ -184,6 +176,6 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	public function log( $method, $message ){
 		$data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
 		Log::debug( $data );
-		echo date('Y-m-d H:i:s') . ' > ' . $method . ':' . $message . "\n";
+		echo date('Y-m-d H:i:s') . ' - ' . $this->class . '::' . $method . ' > ' . $message . "\n";
 	}
 }
