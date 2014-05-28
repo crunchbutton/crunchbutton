@@ -77,7 +77,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 				return true;
 			}
 		}
-		$this->log( 'should_start', 'not this time: ' . $this->next_time( true )->format( 'Y-m-d H:i:s' ) );
+		$this->log( $this->class . ' should_start', 'not this time: ' . $this->next_time( true )->format( 'Y-m-d H:i:s' ) );
 		return false;
 	}
 
