@@ -45,9 +45,9 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 			$job = $this;
 
 			// Timeout to run it async
-			Cana::timeout( function() use( $job ) {
+			// Cana::timeout( function() use( $job ) {
 				$job->go();
-			} );
+			// } );
 		}
 	}
 
