@@ -184,6 +184,6 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	public function log( $method, $message ){
 		$data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
 		Log::debug( $data );
-		echo date('Y-m-d H:i:s') . $this->class . '::' . $method . ' > ' . $message . "\n";
+		echo date('Y-m-d H:i:s') . ' - ' . $this->class . '::' . $method . ' > ' . $message . "\n";
 	}
 }
