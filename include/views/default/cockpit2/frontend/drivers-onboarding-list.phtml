@@ -1,8 +1,10 @@
 <div class="top-pad"></div>
 
-<h1 class="title left"><i class="fa fa-automobile"></i><span>Driver Onboarding</span></h1>
-
 <div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-automobile"></i><span>Driver Onboarding</span></h1>
+
+	<div class="divider"></div>
 
 	<div class="box-filter right">
 		<input type="text" class="search" id="search" ng-model="search" placeholder="search" />
@@ -29,17 +31,14 @@
 					</td>
 					<td>
 						<span ng-if="driver.login">{{driver.login}}</span>
-						<span ng-if="!driver.login" class="sp-label sp-label-warning">
-							Setup not completed
-						</span>
 					</td>
 					<td><span ng-repeat="community in driver.communities">{{community}}</span></td>
 					<td>
 						<span ng-if="driver.sent_all_docs" class="sp-label sp-label-success">
-							All documents sent
+							Docs ok
 						</span>
 						<span ng-if="!driver.sent_all_docs" class="sp-label sp-label-warning">
-							Documents missing
+							Docs missing
 						</span>
 					</td>
 				</tr>

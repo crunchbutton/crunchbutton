@@ -4,6 +4,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 
 	const TYPE_SETUP = 'setup';
 	const TYPE_WELCOME = 'welcome';
+	const ORDER_TEST = '22890'; // id_order sent to drivers play with - Issue #2969 - step 3
 	
 	public function send( $id_admin, $message ){
 
@@ -23,14 +24,18 @@ class Cockpit_Driver_Notify extends Cana_Table {
 
 		Log::debug( [ 'action' => 'notification starting', 'driver' => $id_admin, 'phone' => $phone, 'message' => $message, 'type' => 'drivers-onboarding'] );
 
+		$username = $driver->login;
+
 		// Pre defined messages
 		switch ( $message ) {
 			case Cockpit_Driver_Notify::TYPE_WELCOME:
-				$message = "Access cockpit.la/setup/{$phone}";
+				$message_type = Cockpit_Driver_Notify::TYPE_WELCOME;
+				$message = "You username is {$username}. Access cockpit.la/setup/{$phone}";
 				break;
 			
 			case Cockpit_Driver_Notify::TYPE_SETUP:
-				$message = 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/16844. Play around with it and make sure you understand how everything works';
+				$message_type = Cockpit_Driver_Notify::TYPE_SETUP;
+				$message = 'Test this URL out on your phone (exactly as it appears, no www.) cockpit.la/' . Cockpit_Driver_Notify::ORDER_TEST . '. Play around with it and make sure you understand how everything works';
 				$message .="\n" . 'If you have any questions, just text us directly at _PHONE_.';
 				break;
 		}
@@ -42,13 +47,13 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		$notification = new Cockpit_Driver_Notify;
 		$notification->id_admin = $driver->id_admin;
 		$notification->phone = $phone;
+		$notification->message_type = $message_type;
 		$notification->email = $driver->email;
 		$notification->message = $message;
 
-
-		Cana::timeout( function() use( $notification ) {
+		// Cana::timeout( function() use( $notification ) {
 			$notification->notify();
-		} );
+		// } );
 
 		// log
 		$log = new Cockpit_Driver_Log();
@@ -70,6 +75,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 		$id_admin = $notification->id_admin;
 		$phone = $notification->phone;
 		$email = $notification->email;
+		$message_type = $notification->message_type;
 
 		$env = c::getEnv();
 
@@ -93,7 +99,7 @@ class Cockpit_Driver_Notify extends Cana_Table {
 
 		// Send email
 		if( $email ){
-			switch ( $message ) {
+			switch ( $message_type ) {
 				case Cockpit_Driver_Notify::TYPE_WELCOME:
 					$mail = new Cockpit_Email_Driver_Welcome( [ 'id_admin' => $id_admin ] );
 					$mail->send();

@@ -7,6 +7,8 @@
 		<div ng-show="finished">
 			<div class="dialog-message dialog-message-success">
 				Thank you we will contact you soon.
+				<br/>
+				Your login is {{login}}.
 			</div>
 		</div>
 
@@ -56,8 +58,12 @@
 				<span class="field"><select name="driverIdCommunity" ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select></span>
 			</div>
 			
-			<div class="button-pushable find-restaurants">
+			<div class="button-pushable find-restaurants" ng-show="!sending">
 				<button class="button orange" ng-click="save()">Save</button>
+			</div>
+
+			<div class="button-pushable find-restaurants" ng-show="sending">
+				<button class="button"><span><i class="fa fa-spinner fa-spin"></i> Please wait</span></button>
 			</div>
 		</form>
 		
