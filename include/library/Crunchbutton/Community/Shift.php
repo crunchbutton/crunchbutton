@@ -592,9 +592,6 @@ echo '<pre>';var_dump( 1 );exit();
 				}
 			}
 		}
-
-		Crunchbutton_Community_Shift::remindDriversAboutTheirShiftTomorrow();
-
 	}
 
 	// remind drivers about their shift the day before their shift #2816
@@ -662,17 +659,18 @@ echo '<pre>';var_dump( 1 );exit();
 	}
 
 	public function warningDriversBeforeTheirShift(){
-			
+
 		$env = c::getEnv();
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
 
 		$minutes = 15;
 		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 ORDER BY c.name' );
-		
+
 		foreach( $communities as $community ){
 			
 			if( $community->timezone ){
+
 				$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
 				$now->modify( '- 5 minutes' );
 				$_now = $now->format( 'Y-m-d H:i' );
@@ -681,7 +679,8 @@ echo '<pre>';var_dump( 1 );exit();
 				$nextShifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa 
 																													INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 																													WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $_now . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_interval . '" AND cs.id_community = "' . $community->id_community . '"' );
-				if( $nextShifts->count() > 1 ){
+				if( $nextShifts->count() > 0 ){
+
 					foreach( $nextShifts as $shift ){
 						$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT * FROM admin_shift_assign asa WHERE id_community_shift = ' . $shift->id_community_shift . ' AND warned = 0' );
 						foreach( $assigments as $assignment ){
