@@ -16,6 +16,9 @@ class Controller_assets_js_bundle_js extends Crunchbutton_Controller_AssetBundle
 					case 'admin':
 						$scripts = ['datepicker/eye','datepicker/layout','datepicker/utils','datepicker/datepicker','admin'];
 						break;
+					case 'cockpit':
+						$scripts = [];
+						break;
 					default:
 						$scripts = [];
 						break;
