@@ -76,19 +76,19 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 		$admin = Admin::o( c::admin()->id_admin );
 
-		// Start week on Friday #3084
+		// Start week on Thursday #3084
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-		if( $now->format( 'l' ) == 'Friday' ){
-			$friday = $now;	
+		if( $now->format( 'l' ) == 'Thursday' ){
+			$thursday = $now;	
 		} else {
-			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
+			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
 		}
 
-		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $friday->format( 'Y' ) );
-		$month = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $friday->format( 'm' ) );
-		$day = ( c::getPagePiece( 6 ) != '' ? c::getPagePiece( 6 ) : $friday->format( 'd' ) );
+		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $thursday->format( 'Y' ) );
+		$month = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $thursday->format( 'm' ) );
+		$day = ( c::getPagePiece( 6 ) != '' ? c::getPagePiece( 6 ) : $thursday->format( 'd' ) );
 
-		// Start week on friday
+		// Start week on thursday
 		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
 
 		$first_day_year = $firstDay->format( 'Y' );
@@ -99,7 +99,6 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			$days[] = new DateTime( $firstDay->format( 'Y-m-d' ), new DateTimeZone( c::config()->timezone  ) );
 			$firstDay->modify( '+ 1 day' );
 		}
-
 		// prev/next links
 		$firstDay->modify( '- 2 week' );
 		$link_prev_day = $firstDay->format( 'Y/m/d' );
@@ -108,7 +107,6 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 		c::view()->week = $first_day_week;
 		c::view()->year = $first_day_year;
-
 		c::view()->link_prev = $link_prev_day;
 		c::view()->link_next = $link_next_day;
 		c::view()->status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $admin->id_admin, $first_day_week, $first_day_year );
@@ -158,19 +156,19 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 	public function summary(){
 
-		// Start week on Friday #3084
+		// Start week on Thursday #3084
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-		if( $now->format( 'l' ) == 'Friday' ){
-			$friday = $now;	
+		if( $now->format( 'l' ) == 'Thursday' ){
+			$thursday = $now;	
 		} else {
-			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
+			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
 		}
 
-		$year = ( c::getPagePiece( 3 ) != '' ? c::getPagePiece( 3 ) : $friday->format( 'Y' ) );
-		$month = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $friday->format( 'm' ) );
-		$day = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $friday->format( 'd' ) );
+		$year = ( c::getPagePiece( 3 ) != '' ? c::getPagePiece( 3 ) : $thursday->format( 'Y' ) );
+		$month = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $thursday->format( 'm' ) );
+		$day = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $thursday->format( 'd' ) );
 
-		// Start week on friday
+		// Start week on thursday
 		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
 		
 		$days = [];
@@ -218,7 +216,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 		if( $id_community && $year && $month && $day ){
 
-			// Start week on friday
+			// Start week on thursday
 			$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
 
 			$start_date = $firstDay->format( 'Y/m/d' );
@@ -250,15 +248,15 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			c::view()->id_community = $id_community;
 		} else {
 
-			// Start week on Friday #3084
+			// Start week on Thursday #3084
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-			if( $now->format( 'l' ) == 'Friday' ){
-				$friday = $now;	
+			if( $now->format( 'l' ) == 'Thursday' ){
+				$thursday = $now;	
 			} else {
-				$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
+				$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
 			}
-			$start_date = $friday->format( 'Y/m/d' );
-			$day = $friday;
+			$start_date = $thursday->format( 'Y/m/d' );
+			$day = $thursday;
 		}
 
 		c::view()->start_date = $start_date;
@@ -273,19 +271,19 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 
 	public function statusShift(){
 
-		// Start week on Friday #3084
+		// Start week on Thursday #3084
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-		if( $now->format( 'l' ) == 'Friday' ){
-			$friday = $now;	
+		if( $now->format( 'l' ) == 'Thursday' ){
+			$thursday = $now;	
 		} else {
-			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
+			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
 		}
 
-		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $friday->format( 'Y' ) );
-		$month = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $friday->format( 'm' ) );
-		$day = ( c::getPagePiece( 6 ) != '' ? c::getPagePiece( 6 ) : $friday->format( 'd' ) );
+		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $thursday->format( 'Y' ) );
+		$month = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $thursday->format( 'm' ) );
+		$day = ( c::getPagePiece( 6 ) != '' ? c::getPagePiece( 6 ) : $thursday->format( 'd' ) );
 
-		// Start week on friday
+		// Start week on thursday
 		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
 		
 		c::view()->week = $firstDay->format( 'W' );

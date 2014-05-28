@@ -388,7 +388,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function sendWarningToDrivers(){
-
+echo '<pre>';var_dump( 1 );exit();
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		if( $now->format( 'l' ) == 'Friday' ){
 			$day = $now;	
