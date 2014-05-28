@@ -17,7 +17,7 @@ class Crunchbutton_Controller_AssetBundle extends Cana_Controller {
 	public function __construct() {
 		define('MINIFY_MIN_DIR', c::config()->dirs->library . 'Minify/old/lib');
 		set_include_path(MINIFY_MIN_DIR . PATH_SEPARATOR . get_include_path());
-		require 'Minify.php';
+		require_once 'Minify.php';
 	}
 	
 
