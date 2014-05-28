@@ -77,7 +77,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 				return true;
 			}
 		}
-		$this->log( $this->class . ' should_start', 'not this time: ' . $this->next_time( true )->format( 'Y-m-d H:i:s' ) );
+		$this->log( ' should_start', 'not this time. will start at: ' . $this->next_time( true )->format( 'Y-m-d H:i:s' ) );
 		return false;
 	}
 
@@ -184,6 +184,6 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	public function log( $method, $message ){
 		$data = [ 'type' => 'cron-jobs', 'method' => $method, 'message' => $message, 'desc' => $this->description, 'id_cron_log' => $this->id_cron_log ];
 		Log::debug( $data );
-		echo date('Y-m-d H:i:s') . ' > ' . $method . ':' . $message . "\n";
+		echo date('Y-m-d H:i:s') . $this->class . '::' . $method . ' > ' . $message . "\n";
 	}
 }
