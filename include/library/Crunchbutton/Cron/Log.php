@@ -129,7 +129,7 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 	}
 
 	public function go(){
-		$this->log( 'go', $this->class );
+		$this->log( 'go', 'starting running' );
 		if( class_exists( $this->class ) ){
 			$job = new $this->class;
 			if( is_a( $job, 'Crunchbutton_Cron_Log' ) ){
@@ -153,7 +153,6 @@ class Crunchbutton_Cron_Log extends Cana_Table {
 
 		$job = Crunchbutton_Cron_Log::o( $this->id_cron_log );
 		$job->log( 'finished', 'the interaction ' . $job->interactions );
-
 		$job->finished = date('Y-m-d H:i:s');
 		$job->interactions = ( !$job->interactions ? 1 : $job->interactions + 1 );
 		$job->current_status = Crunchbutton_Cron_Log::CURRENT_STATUS_IDLE;
