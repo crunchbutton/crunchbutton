@@ -18,6 +18,7 @@ class Cana_Db_MySQL_Result extends Cana_Db_Result {
 		if (!is_object($this->res())) {
 			// honestly i dont know how u would get here but it hapens in my old code (lots...)
 			c::config()->db = null;
+			debug_print_backtrace();
 			exit;
 		}
 
