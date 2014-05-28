@@ -39,6 +39,12 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 
 		$driver->save();
 
+		if( !$driver->login ){
+			// create an username
+			$driver->login = $driver->createLogin();
+			$driver->save();
+		}
+
 		// add the community
 		$id_community = $this->request()[ 'id_community' ];
 
@@ -62,6 +68,28 @@ class Controller_api_driver_save extends Crunchbutton_Controller_RestAccount {
 				$adminGroup->id_group = $group->id_group;
 				$adminGroup->save();
 			}	
+		}
+
+		if( $newDriver ){
+			// Create phone notification
+			if( $driver->phone ){
+				$notification = new Crunchbutton_Admin_Notification();
+				$notification->value = $driver->phone;
+				$notification->type = Crunchbutton_Admin_Notification::TYPE_SMS;
+				$notification->active = 1;
+				$notification->id_admin = $driver->id_admin;
+				$notification->save();
+			}
+
+			// Create email notification
+			if( $driver->email ){
+				$notification = new Crunchbutton_Admin_Notification();
+				$notification->value = $driver->email;
+				$notification->type = Crunchbutton_Admin_Notification::TYPE_EMAIL;
+				$notification->active = 1;
+				$notification->id_admin = $driver->id_admin;
+				$notification->save();
+			}
 		}
 
 		Log::debug( [ 'action' => 'driver saved', 'driver' => $driver->id_admin, 'type' => 'drivers-onboarding'] );

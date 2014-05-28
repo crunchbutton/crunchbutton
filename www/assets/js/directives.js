@@ -102,7 +102,7 @@ NGApp.directive('spinnerLoading', function() {
 		return {
 				restrict: 'AE',
 				replace: true,
-				template: '<div class="divider"><div ng-show="!ready"><span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span></div></div>'
+				template: '<div class="content-padding"><div class="divider"><div ng-show="!ready"><span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span></div></div></div>'
 		}
 });
 

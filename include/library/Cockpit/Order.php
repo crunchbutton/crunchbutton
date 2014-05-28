@@ -119,8 +119,12 @@ class Cockpit_Order extends Crunchbutton_Order {
 					}
 					$regular_price = number_format( $regular_price, 2 );
 				}
-				$withOptions = substr($withOptions, 0, -2);
-				$selectOptions = substr($selectOptions, 0, -2);
+				if( $withOptions != '' ){
+					$withOptions = substr($withOptions, 0, -2);	
+				}
+				if( $selectOptions != '' ){
+					$selectOptions = substr($selectOptions, 0, -2);	
+				}
 			}
 
 			$withoutDefaultOptions = '';
@@ -150,7 +154,6 @@ class Cockpit_Order extends Crunchbutton_Order {
 			}
 
 			if( $selectOptions != '' ){
-				
 				$selectOptions .= '.';
 			}
 
