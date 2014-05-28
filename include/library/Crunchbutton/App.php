@@ -280,7 +280,7 @@ class Crunchbutton_App extends Cana_App {
 			mail('_EMAIL','CRUNCHBUTTON CRITICAL ERROR',$e->getMessage());
 			exit;
 		} else {
-			$this->config->db = null;
+			$this->config()->db = null;
 			echo "\n<br />".$e->getMessage()."\n<br /><pre>";
 			foreach($e->getTrace() as $k=>$v){ 
 				if ($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){ 
