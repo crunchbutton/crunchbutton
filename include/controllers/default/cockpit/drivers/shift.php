@@ -80,8 +80,9 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		if( $now->format( 'l' ) == 'Thursday' ){
 			$thursday = $now;	
+			$thursday->modify( '+ 1 week' );
 		} else {
-			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
+			$thursday = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
 		}
 
 		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $thursday->format( 'Y' ) );
@@ -162,7 +163,9 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			$thursday = $now;	
 		} else {
 			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
+			$thursday->modify( '+ 1 week' );
 		}
+
 
 		$year = ( c::getPagePiece( 3 ) != '' ? c::getPagePiece( 3 ) : $thursday->format( 'Y' ) );
 		$month = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $thursday->format( 'm' ) );
@@ -254,6 +257,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 				$thursday = $now;	
 			} else {
 				$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
+				$thursday->modify( '+ 1 week' );
 			}
 			$start_date = $thursday->format( 'Y/m/d' );
 			$day = $thursday;
