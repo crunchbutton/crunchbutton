@@ -11,16 +11,119 @@
 	$year = $this->year;
 	$week = $this->week;
 
-	$hasDrivers = [];
-
 ?>
 <div class="container-fluid padded">
 	<div class="row-fluid">
 		<div class="box">
+			<div class="box-header"><span class="title">Filters</span></div>
+
+			<div class="box-content padded">
+				<table>
+					<tr>
+						<td style="padding:5px;"><input type="checkbox" class="icheck" checked="checked" name="show-completed" id="show-completed"></td>
+						<td style="padding:5px;">
+							<label for="show-completed">
+								Show drivers that completed schedule
+							</label>
+						</td>
+						<td style="padding:5px;">&nbsp;</td>
+						<td style="padding:5px;"><input type="checkbox" class="icheck" checked="checked" name="show-not-completed" id="show-not-completed"></td>
+						<td style="padding:5px;">
+							<label for="show-not-completed">
+								Show drivers that <strong>didn't</strong> complete schedule
+							</label>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<div class="box">
+			<div class="box-header">
+				<span class="title">Drivers status: <?php echo 'from ' .  $from->format( 'M jS Y ' ) . ' to ' . $to->format( 'M jS Y ' ); ?>
+					<?php if( $this->current ) { ?>
+						<span style="color:green;">&nbsp;&nbsp;Current week</span>
+					<?php } ?>
+				</span>
+
+				<ul class="box-toolbar">
+					<li><a class="shift-previous" href="/drivers/shift/status/shift/<?php echo $this->link_prev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a></li>
+					<li><a class="shift-next" href="/drivers/shift/status/shift/<?php echo $this->link_next; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a></li>
+				</ul>
+			</div>
+			<div class="box-content">
+				<table width="100%" class="table table-normal">
+					<thead>
+						<tr>
+							<td>Driver</td>
+							<td>Community</td>
+							<td>Completed</td>
+							<td>Shifts wants to work</td>
+							<td>Total assigned shifts</td>
+							<td>Send sms about schedule?</td>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+				<?php 
+					foreach( $communities as $community ) { 
+						$drivers = $community->getDriversOfCommunity();
+						foreach( $drivers as $driver ){ 
+							$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
+							$adminShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
+							$totalShifts = $adminShifts->count();
+							$receiveSMS = $driver->getConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING );
+							if( $receiveSMS->id_admin_config ){
+								$receiveSMS = $receiveSMS->value;
+							} else {
+								$receiveSMS = false;
+							}
+							$checked = ( $receiveSMS && $receiveSMS > 0 ) ? 'checked="checked"' : '';
+							?>
+							<tr class="<?php if( $status->completed == 1 ){ echo 'schedule-completed'; } else { echo 'schedule-not-completed'; }?>" style="background:#fbfbfb;">
+								<td>
+									<a href="/permissions/users/<?php echo $driver->id_admin; ?>"> <?php echo $driver->name; ?> </a> ( <?php echo $driver->phone(); ?> )
+								</td>
+								<td>
+									<?php echo $community->name ?>
+								</td>
+								<td>
+									<?php if( $status->completed == 1 ){ ?>
+										<strong style="color:green;">Yes</strong>
+									<?php } else { ?>
+										<strong style="color:red;">No</strong>
+									<?php } ?>
+								</td>
+								<td>
+									<?php echo $status->shifts; ?>
+								</td>
+								<td>
+									<?php echo $totalShifts; ?>
+								</td>
+								<td>
+									<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $driver->id_admin; ?>" name="form-receive-sms" id="form-receive-sms-<?php echo $driver->id_admin; ?>">
+									<i class="icon-thumbs-up" style="opacity:0;;color:green;margin:0 0 0 10px;" id="saved-<?php echo $driver->id_admin; ?>"></i>
+								</td>
+								<td>
+									<button id_admin="<?php echo $driver->id_admin; ?>" class="send-sms-button btn btn-blue"><i class="icon-comment-alt"></i>&nbsp;Send SMS</button>
+									&nbsp;&nbsp;&nbsp;
+									<button id_admin="<?php echo $driver->id_admin; ?>" class="make-call-button btn btn-green"><i class="icon-phone"></i>&nbsp;Make a call</button>
+								</td>
+							</tr>
+				<?php 
+						}
+					}
+				?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="box">
 			<div class="box-header">
 				<span class="title">Shift status: <?php echo 'from ' .  $from->format( 'M jS Y ' ) . ' to ' . $to->format( 'M jS Y ' ); ?>
 					<?php if( $this->current ) { ?>
-						<span style="color:green;"> Current week</span>
+						<span style="color:green;">&nbsp;&nbsp;Current week</span>
 					<?php } ?>
 				</span>
 
@@ -29,7 +132,8 @@
 					<li><a class="shift-next" href="/drivers/shift/status/shift/<?php echo $this->link_next; ?>"><strong>next <i class="icon icon-angle-right"></i></strong></a></li>
 				</ul>
 
-			</div>			<div class="box-content">
+			</div>
+			<div class="box-content">
 				<table width="100%" class="table table-normal">
 					<thead>
 						<tr>
@@ -60,9 +164,6 @@
 							if( $status->completed == '1' ){
 								$totalDriversCompleted++;
 							}
-						}
-						if( $totalDrivers > 0 ){
-							$hasDrivers[ $community->id_community ] = true;
 						}
 						?>
 					<tr>
@@ -102,85 +203,42 @@
 			</div>
 		</div>
 
-
-		<div class="box">
-			<div class="box-header"><span class="title">Drivers status: <?php echo 'from ' .  $from->format( 'M jS Y ' ) . ' to ' . $to->format( 'M jS Y ' ); ?></span></div>
-			<div class="box-content">
-				<table width="100%" class="table table-normal">
-					<thead>
-						<tr>
-							<td>Driver</td>
-							<td>Completed</td>
-							<td>Shifts wants to work</td>
-							<td>Total assigned shifts</td>
-							<td>Send sms about schedule?</td>
-						</tr>
-					</thead>
-					<tbody>
-				<?php 
-					foreach( $communities as $community ) { 
-						if( !$hasDrivers[ $community->id_community ] ){
-							continue;
-						}
-						?>
-						<tr>
-							<td colspan="5">
-								<strong>
-									<center style="font-size:14px;">
-										<?php echo $community->name ?>
-									</center>
-								</strong>
-							</td>
-						</tr>
-						<?php
-						$drivers = $community->getDriversOfCommunity();
-						foreach( $drivers as $driver ){ 
-							$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $driver->id_admin, $week, $year );
-							$adminShifts = Crunchbutton_Admin_Shift_Assign::shiftsByAdminPeriod( $driver->id_admin, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
-							$totalShifts = $adminShifts->count();
-							$receiveSMS = $driver->getConfig( Crunchbutton_Admin::CONFIG_RECEIVE_DRIVER_SCHEDULE_SMS_WARNING );
-							if( $receiveSMS->id_admin_config ){
-								$receiveSMS = $receiveSMS->value;
-							} else {
-								$receiveSMS = false;
-							}
-							$checked = ( $receiveSMS && $receiveSMS > 0 ) ? 'checked="checked"' : '';
-							?>
-							<tr>
-								<td>
-									<a href="/permissions/users/<?php echo $driver->id_admin; ?>"> <?php echo $driver->name; ?> </a> ( <?php echo $driver->phone(); ?> )
-								</td>
-								<td>
-									<?php if( $status->completed == 1 ){ ?>
-										<strong style="color:green;">Yes</strong>
-									<?php } else { ?>
-										<strong style="color:red;">No</strong>
-									<?php } ?>
-								</td>
-								<td>
-									<?php echo $status->shifts; ?>
-								</td>
-								<td>
-									<?php echo $totalShifts; ?>
-								</td>
-								<td>
-									<input type="checkbox" class="icheck" <?php echo $checked; ?> value="<?php echo $driver->id_admin; ?>" name="form-receive-sms" id="form-receive-sms-<?php echo $driver->id_admin; ?>">
-									<i class="icon-thumbs-up" style="opacity:0;;color:green;margin:0 0 0 10px;" id="saved-<?php echo $driver->id_admin; ?>"></i>
-								</td>
-							</tr>
-				<?php 
-						}
-					}
-				?>
-					</tbody>
-				</table>
-			</div>
-		</div>
+	</div>
+</div>
+<div class="modal hide fade" id="modal-sms" style="display: none;">
+	<div class="modal-header">
+		<button class="close" data-dismiss="modal" type="button">×</button>
+		<h6 id="modal-sms-title"></h6>
+	</div>
+	<div class="modal-body" id="modal-sms-body"></div>
+	<div class="modal-footer">
+		<button class="btn btn-default" data-dismiss="modal">Close</button>
 	</div>
 </div>
 <script type="text/javascript" src="/assets/js/admin.shift.js"></script>
 <script type="text/javascript">
 $( document ).ready( function(){
 	shift.status.init();
+	$( '.send-sms-button' ).click( function(e) {
+		e.preventDefault();
+		var id_admin = $( this ).attr( 'id_admin' );
+		var url = '/support/new-chat/' + id_admin;
+		$.get( url, function( data ) {
+			$( '#modal-sms-title' ).html( 'Send SMS' );
+			$( '#modal-sms' ).modal();
+			$( '#modal-sms-body' ).html( data );
+		} );
+	} );
+	$( '.make-call-button' ).click( function(e) {
+		e.preventDefault();
+		var id_admin = $( this ).attr( 'id_admin' );
+		var url = '/support/make-call/' + id_admin;
+		$.get( url, function( data ) {
+			$( '#modal-sms-title' ).html( 'Make a call' );
+			$( '#modal-sms' ).modal();
+			$( '#modal-sms-body' ).html( data );
+		} );
+	} );
 } );
 </script>
+<script type="text/javascript" src="/assets/js/admin.support.js?v=<?php echo Cana_Util::gitVersion()?>"></script>
