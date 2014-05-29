@@ -18,7 +18,11 @@
 	<div class="row-fluid">
 		<div class="box">
 			<div class="box-header">
-				<span class="title">Shift status: <?php echo 'from ' .  $from->format( 'M jS Y ' ) . ' to ' . $to->format( 'M jS Y ' ); ?></span>
+				<span class="title">Shift status: <?php echo 'from ' .  $from->format( 'M jS Y ' ) . ' to ' . $to->format( 'M jS Y ' ); ?>
+					<?php if( $this->current ) { ?>
+						<span style="color:green;"> Current week</span>
+					<?php } ?>
+				</span>
 
 				<ul class="box-toolbar">
 					<li><a class="shift-previous" href="/drivers/shift/status/shift/<?php echo $this->link_prev; ?>"><strong><i class="icon icon-angle-left"></i> previous</strong></a></li>

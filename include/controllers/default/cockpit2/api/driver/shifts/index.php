@@ -98,20 +98,19 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 	private function _scheduleList(){
 
-		// Start week on Friday #3084
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-		if( $now->format( 'l' ) == 'Friday' ){
-			$friday = $now;	
+		// Start week on Thursday #3084
+		$now = new DateTime( 'last monday', new DateTimeZone( c::config()->timezone  ) );
+		if( $now->format( 'l' ) == 'Thursday' ){
+			$thursday = $now;	
+			$thursday->modify( '+ 1 week' );
 		} else {
-			$friday = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
+			$thursday = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
 		}
 
-		$friday->modify( '+ 1 week' );
+		$year = $thursday->format( 'Y' );
+		$week = $thursday->format( 'W' );
 
-		$year = $friday->format( 'Y' );
-		$week = $friday->format( 'W' );
-
-		$firstDay = $friday;
+		$firstDay = $thursday;
 		$shifts_period = 'From ' . $firstDay->format( 'M jS Y' );
 		$firstDay->modify( '+ 6 days' );
 		$shifts_period .= ' to ' . $firstDay->format( 'M jS Y' );

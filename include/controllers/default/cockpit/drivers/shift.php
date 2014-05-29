@@ -166,10 +166,15 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			$thursday->modify( '+ 1 week' );
 		}
 
-
 		$year = ( c::getPagePiece( 3 ) != '' ? c::getPagePiece( 3 ) : $thursday->format( 'Y' ) );
 		$month = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : $thursday->format( 'm' ) );
 		$day = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $thursday->format( 'd' ) );
+
+		if( $year == $thursday->format( 'Y' ) && $month == $thursday->format( 'm' ) && $day == $thursday->format( 'd' ) ){
+			$current = true;
+		} else {
+			$current = false;
+		}
 
 		// Start week on thursday
 		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
@@ -196,6 +201,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		c::view()->days = $days;
 		c::view()->week = $week;
 		c::view()->year = $year;
+		c::view()->current = $current;
 		c::view()->display( 'drivers/shift/summary/index' );
 
 	}
@@ -216,6 +222,19 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		$year = ( c::getPagePiece( 4 ) != '' ? c::getPagePiece( 4 ) : false );
 		$month = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : false );
 		$day = ( c::getPagePiece( 6 ) != '' ? c::getPagePiece( 6 ) : false );
+
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+		if( $now->format( 'l' ) == 'Thursday' ){
+			$thursday = $now;	
+		} else {
+			$thursday = new DateTime( 'last thursday', new DateTimeZone( c::config()->timezone  ) );
+			$thursday->modify( '+ 1 week' );
+		}
+		if( $year == $thursday->format( 'Y' ) && $month == $thursday->format( 'm' ) && $day == $thursday->format( 'd' ) ){
+			$current = true;
+		} else {
+			$current = false;
+		}
 
 		if( $id_community && $year && $month && $day ){
 
@@ -241,6 +260,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 			c::view()->start_date = $start_date;
 			c::view()->link_prev = $link_prev_day;
 			c::view()->link_next = $link_next_day;
+			c::view()->current = $current;
 			c::view()->days = $days;
 
 			$firstDay->modify( '-1 day' );
@@ -287,6 +307,12 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		$month = ( c::getPagePiece( 5 ) != '' ? c::getPagePiece( 5 ) : $thursday->format( 'm' ) );
 		$day = ( c::getPagePiece( 6 ) != '' ? c::getPagePiece( 6 ) : $thursday->format( 'd' ) );
 
+		if( $year == $thursday->format( 'Y' ) && $month == $thursday->format( 'm' ) && $day == $thursday->format( 'd' ) ){
+			$current = true;
+		} else {
+			$current = false;
+		}
+
 		// Start week on thursday
 		$firstDay = new DateTime( $year . '-' . $month . '-' . $day, new DateTimeZone( c::config()->timezone  ) );
 		
@@ -310,6 +336,7 @@ class Controller_drivers_shift extends Crunchbutton_Controller_Account {
 		c::view()->link_next = $link_next_day;
 		c::view()->to = $to;
 		c::view()->from = $from;
+		c::view()->current = $current;
 		c::view()->communities = $communities;
 		c::view()->display( 'drivers/shift/status/index' );
 	}
