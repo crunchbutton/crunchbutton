@@ -437,14 +437,14 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			return;
 		}
 
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
-		if( $now->format( 'l' ) == 'Friday' ){
+		// Start week on Thursday #3084	
+		$now = new DateTime( 'next sunday', new DateTimeZone( c::config()->timezone  ) );
+		if( $now->format( 'l' ) == 'Thursday' ){
+			$now->modify( '+ 1 week' );
 			$day = $now;	
 		} else {
-			$day = new DateTime( 'last friday', new DateTimeZone( c::config()->timezone  ) );
+			$day = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
 		}
-
-		$day->modify( '+ 1 week' );
 
 		$_week = $day->format( 'W' );
 		$_year = $day->format( 'Y' );
