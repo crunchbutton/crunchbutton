@@ -428,7 +428,22 @@ shift.status.init = function(){
 				alert( 'Oops, error! ' + data.error );
 			}
 		} );
-
-
 	} );	
+	$( '#show-completed' ).on( 'ifChanged', function( event, obj ){
+		var checkbox = $( this );
+		if( checkbox.is( ':checked' ) ){
+			$( '.schedule-completed' ).show();	
+		} else {
+			$( '.schedule-completed' ).hide();
+		}
+	} );
+
+	$( '#show-not-completed' ).on( 'ifChanged', function( event, obj ){
+		var checkbox = $( this );
+		if( checkbox.is( ':checked' ) ){
+			$( '.schedule-not-completed' ).show();	
+		} else {
+			$( '.schedule-not-completed' ).hide();
+		}
+	} );
 }
