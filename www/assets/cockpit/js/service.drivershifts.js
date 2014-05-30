@@ -52,11 +52,18 @@ NGApp.factory( 'DriverShiftScheduleService', function( $rootScope, $resource ) {
 		'dontWantToWork' : { 'method': 'POST', params : {} },
 		'wantToWork' : { 'method': 'POST', params : {} },
 		'rankingChange' : { 'method': 'POST', params : {} },
+		'shiftsAvailableToWork' : { 'method': 'POST', params : {} },
 	}	);
 
 	service.list = function( callback ){
 		schedules.list( {}, function( data ){ 
 			callback( data ); } );
+	};
+
+	service.shiftsAvailableToWork = function( shifts, callback ){
+		schedules.rankingChange( { 'shifts' : shifts, action: 'shiftsAvailableToWork' }, function( json ){
+				callback( json );
+			} );
 	};
 
 	service.rankingChange = function( id_community_shift, id_community_shift_change, callback ){
