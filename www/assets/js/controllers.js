@@ -963,8 +963,8 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 			setTimeout( function(){ restaurantService.init(); updateStatus(); }, 200 );
 		} );
 	} else {
-		// restaurantService.init();
-		// updateStatus();
+		restaurantService.init();
+		updateStatus();
 	}
 
 	// force reload case it crashed
