@@ -617,8 +617,10 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.restaurant = false;
 
 	if( RestaurantService.basicInfo ){
-		$scope.restaurant = RestaurantService.basicInfo;
-		$scope.open = $scope.restaurant._open;
+		$timeout( function() {
+			$scope.restaurant = RestaurantService.basicInfo;
+			$scope.open = $scope.restaurant._open;
+		}, 50 );
 	}
 
 	// we dont need to put all the Service methods and variables at the $scope - it is expensive
@@ -866,7 +868,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		var community = data.community;
 
 		$scope.restaurant = data.restaurant;
-		
+
 		order.restaurant = $scope.restaurant;
 
 		MainNavigationService.restaurant = $scope.restaurant;
@@ -958,11 +960,11 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	if( RestaurantService.basicInfo ){
 		// If we have the basic info of the restaurant we just wait till the transition animation ends before load the restaurant data
 		$scope.$on( '$routeChangeSuccess', function ( event ) {
-			setTimeout( function(){ restaurantService.init(); updateStatus(); }, 10 );
+			setTimeout( function(){ restaurantService.init(); updateStatus(); }, 200 );
 		} );
 	} else {
-		restaurantService.init();
-		updateStatus();
+		// restaurantService.init();
+		// updateStatus();
 	}
 
 	// force reload case it crashed
@@ -978,6 +980,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 			}
 		} , 1000 * 10 );
 	};
+
 	forceReload();
 
 });
