@@ -40,6 +40,29 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 		switch ( $action ) {
 
+			case 'shiftsAvailableToWork':
+				$shifts = $this->request()[ 'shifts' ];
+				// Start week on Thursday #3084
+				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
+				if( $now->format( 'l' ) == 'Thursday' ){
+					$thursday = $now;	
+					$thursday->modify( '+ 1 week' );
+				} else {
+					$thursday = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
+				}
+
+				$year = $thursday->format( 'Y' );
+				$week = $thursday->format( 'W' );
+
+				$id_admin = c::user()->id_admin;
+				$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $id_admin, $week, $year );
+				$status->shifts = $shifts;
+				$status->date = date( 'Y-m-d H:i:s' );
+				$status->save();
+				$this->_scheduleList();
+				exit;
+				break;
+
 			case 'rankingChange':
 				$id_community_shift = $this->request()[ 'id_community_shift' ];
 				$id_community_shift_change = $this->request()[ 'id_community_shift_change' ];
@@ -99,7 +122,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 	private function _scheduleList(){
 
 		// Start week on Thursday #3084
-		$now = new DateTime( 'last monday', new DateTimeZone( c::config()->timezone  ) );
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		if( $now->format( 'l' ) == 'Thursday' ){
 			$thursday = $now;	
 			$thursday->modify( '+ 1 week' );
@@ -166,13 +189,14 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 		} 
 
 		$shifts = [];
-
+		$_availableShifts = 0;
 		if( $_shifts && count( $_shifts ) > 0 ){
 			$res_array = [];
 			foreach( $_shifts as $shift ){
 				if( $shift[ 'ranking' ] && $shift[ 'ranking' ] > 0 ){
 					$index = $shift[ 'ranking' ];
 				} else {
+					$_availableShifts++;
 					$index = $ranking;
 					$ranking++;
 				}
@@ -186,7 +210,15 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 
-		echo json_encode( [ 'info' => [ 'period' => $shifts_period ], 'results' => $shifts ] );
+		$status = Crunchbutton_Admin_Shift_Status::getByAdminWeekYear( $id_admin, $week, $year );
+		if( $_availableShifts == 0 && $status->shifts > 0 ){
+			$status->completed = 1;
+		} else {
+			$status->completed = 0;
+		}
+		$status->save();
+
+		echo json_encode( [ 'info' => [ 'period' => $shifts_period ], 'completed' => $status->completed, 'shifts' => $status->shifts, 'results' => $shifts ] );
 	}
 
 	private function _list(){

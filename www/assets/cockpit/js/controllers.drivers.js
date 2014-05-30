@@ -154,11 +154,15 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		} );
 	}
 
+	$scope.shiftsAvailableToWork = 0;
+	$scope.availableToWork = [12,11,10,9,8,7,6,5,4,3,2,1];
+
 	var process = function( data ){
 		$scope.available = 0;
 		$scope.yes = 0;
 		$scope.not = 0;
 		$scope.period = data.info.period;	
+		$scope.shiftsAvailableToWork = parseInt( data.shifts );	
 		$scope.shifts = data.results;	
 		count();
 	}
@@ -185,6 +189,14 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		}
 		$scope.unBusy();
 		$scope.nextRanking = ranking;	
+	}
+
+	$scope.updateShiftsAvailable = function( shifts ){
+		// $scope.makeBusy();
+		$scope.shiftsAvailableToWork = shifts;
+		DriverShiftScheduleService.shiftsAvailableToWork( shifts, function( data ){
+			process( data );
+		} );
 	}
 
 	$scope.rankingChange = function( id_community_shift, id_community_shift_change ){
