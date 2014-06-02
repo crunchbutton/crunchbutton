@@ -7,7 +7,7 @@ App.tokenizeCard = function( card, complete ) {
 		expiration_year: card.expiration_year,
 		security_code: null
 	};
-	
+
 	if (App.isPhoneGap) {
 		card = legacy_card;
 	}
@@ -17,12 +17,12 @@ App.tokenizeCard = function( card, complete ) {
 			App.tokenizeCard_stripe( legacy_card, complete );
 			break;
 		case 'balanced':
-			App.tokenizeCard_balanced( card, complete );	
+			App.tokenizeCard_balanced( card, complete );
 		break;
 		default:
 			console.log( 'Processor error::', App.config.processor );
 		break;
-	}	
+	}
 };
 
 App.tokenizeCard_stripe = function( card, complete ) {
@@ -83,7 +83,7 @@ App.tokenizeCard_balanced = function(card, completed) {
 		var res = {
 			status: false
 		};
-		
+
 		// 1.1 to 1.0 migration
 		if (response.status_code) {
 			var version = '1.1';
@@ -98,8 +98,16 @@ App.tokenizeCard_balanced = function(card, completed) {
 				if (version == '1.1') {
 					res.id = response.cards[0].id;
 					res.uri = response.cards[0].href;
-					res.card_type = getCardType(card.number);
-					res.lastfour = card.number.substr(-4);
+					if( response.card_type ){
+						res.card_type = response.card_type;
+					} else {
+						res.card_type = getCardType(card.number);
+					}
+					if( response.last_four ){
+						res.lastfour = response.last_four;
+					} else {
+						res.lastfour = card.number.substr(-4);
+					}
 				} else {
 					res.id = response.data.id;
 					res.uri = response.data.uri;
@@ -122,7 +130,7 @@ App.tokenizeCard_balanced = function(card, completed) {
 			case 404:
 				res.error = 'Unexpected error';
 				break;
-				
+
 			case 409:
 				res.error = 'Unable to validate';
 				break;
@@ -130,12 +138,12 @@ App.tokenizeCard_balanced = function(card, completed) {
 			case 500:
 				res.error = 'Error processing payment';
 				break;
-				
+
 			// a lack of any response from the ios sdk
 			case 999:
 				res.error = 'Unable to reach payment server';
 				break;
-			
+
 			// a response from the ios sdk that was both ilformated and didnt not validate
 			case 666:
 				res.error = 'Unable to validate your card';
@@ -146,7 +154,6 @@ App.tokenizeCard_balanced = function(card, completed) {
 				res.error = 'Unable to validate your card at this time';
 				break;
 		}
-
 		completed(res);
 	};
 

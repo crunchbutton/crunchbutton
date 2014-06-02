@@ -84,7 +84,7 @@ class Crunchbutton_Order extends Cana_Table {
 				Crunchbutton_Log::error([
 					'type'         => 'wrong delivery type',
 					'order_params' => $params,
-				]);				
+				]);
 			}
 		}
 		if( $this->delivery_type == self::SHIPPING_TAKEOUT ){
@@ -95,7 +95,7 @@ class Crunchbutton_Order extends Cana_Table {
 				Crunchbutton_Log::error([
 					'type'         => 'wrong delivery type',
 					'order_params' => $params,
-				]);				
+				]);
 			}
 		}
 
@@ -136,7 +136,7 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 			$this->_dishes[] = $dish;
 		}
-		
+
 		// to make sure the value will be 2 decimals
 		$this->delivery_service_markup_value = number_format( $subtotal_plus_delivery_service_markup - $subtotal, 2 );
 
@@ -153,7 +153,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->service_fee = $this->restaurant()->fee_customer;
 		$serviceFee = ($this->price + $this->delivery_fee) * Util::ceil(($this->service_fee/100),2);
 		$serviceFee = Util::ceil( $serviceFee, 2);
-		$totalWithFees = $this->price + $this->delivery_fee + $serviceFee;	
+		$totalWithFees = $this->price + $this->delivery_fee + $serviceFee;
 		$totalWithFees = Util::ceil( $totalWithFees, 2);
 
 		// Start to store the fee_restaurant because it could change and we need to know the
@@ -171,8 +171,8 @@ class Crunchbutton_Order extends Cana_Table {
 		else {
 			// tip - percent
 			/* 	- to calculate the tip it must use as reference the price with mark up
-						because the marked up price was the one shown the the user 
-					- see talk between pererinha and david at hipchat 02/17/2014 
+						because the marked up price was the one shown the the user
+					- see talk between pererinha and david at hipchat 02/17/2014
 						https://github.com/crunchbutton/crunchbutton/issues/2248#issuecomment-35381055 */
 			$tip = ( $this->price_plus_delivery_markup * ( $this->tip / 100 ) );
 			$tip = Util::ceil( $tip, 2 );
@@ -180,9 +180,9 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 
 		// tax
-		/* 	- taxes should be calculated using the price without markup  
+		/* 	- taxes should be calculated using the price without markup
 				- if restaurant uses 3rd party delivery service remove the delivery_fee
-				- see #2236 and #2248 
+				- see #2236 and #2248
 				-> Removed the Util::ceil - see #2613
 				*/
 		if( intval( $this->restaurant()->delivery_service ) == 1 ){
@@ -195,14 +195,14 @@ class Crunchbutton_Order extends Cana_Table {
 		$tax = $baseToCalcTax * ( $this->tax / 100 );
 		$tax = number_format( round( $tax, 2 ), 2 );
 
-		if( intval( $this->restaurant()->delivery_service ) == 1 ){ 
+		if( intval( $this->restaurant()->delivery_service ) == 1 ){
 			$this->final_price = Util::ceil( $totalWithFees  + $tax, 2 ); // price
-			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value + $tip, 2 );	
+			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value + $tip, 2 );
 		} else {
 			$this->final_price = Util::ceil( $totalWithFees + $tip + $tax, 2 ); // price
-			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value, 2 );	
+			$this->final_price_plus_delivery_markup = Util::ceil( $this->final_price + $this->delivery_service_markup_value, 2 );
 		}
-		
+
 
 		$this->order = json_encode($params['cart']);
 
@@ -281,7 +281,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		// Save the user just to add to him the gift cards
 		$user->saving_from = $user->saving_from.'Order->process 1 - ';
-		
+
 		$user->save();
 
 		// Reload the user from db #1737
@@ -302,7 +302,7 @@ class Crunchbutton_Order extends Cana_Table {
 					}
 				}
 			}
-			$_notes = $giftcards[ 'notes' ];	
+			$_notes = $giftcards[ 'notes' ];
 		}
 
 		Log::debug([
@@ -337,7 +337,7 @@ class Crunchbutton_Order extends Cana_Table {
 				'type' 					=> 'order-log'
 			]);
 			return $res['errors'];
-		
+
 		// successfully processed the card
 		} else {
 			$this->txn = $this->transaction();
@@ -366,7 +366,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$user = new User( $user->id_user );
 		$this->_user = $user;
 
-		// If the pay_type is card 
+		// If the pay_type is card
 		if ($this->pay_type == 'card' ) {
 			// Verify if the user already has a payment type
 			$payment_type = $user->payment_type();
@@ -384,7 +384,7 @@ class Crunchbutton_Order extends Cana_Table {
 					'card_exp_month' => $this->_card['month'],
 					'date' => date('Y-m-d H:i:s')
 				]);
-				
+
 				switch (Crunchbutton_User_Payment_Type::processor()) {
 					case 'stripe':
 						$payment_type->stripe_id = $this->_customer->id;
@@ -395,7 +395,7 @@ class Crunchbutton_Order extends Cana_Table {
 						$payment_type->balanced_id = $this->_paymentType->id;
 						break;
 				}
-				
+
 				$payment_type->save();
 
 				// Desactive others payments
@@ -446,7 +446,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->id_agent = $agent->id_agent;
 
 		if( c::auth()->session()->id_session != '' ){
-			$this->id_session = c::auth()->session()->id_session;	
+			$this->id_session = c::auth()->session()->id_session;
 		}
 
 		$this->id_user = $this->_user->id_user;
@@ -467,7 +467,7 @@ class Crunchbutton_Order extends Cana_Table {
 					$giftCardAdded = true;
 				}
 			}
-			$this->notes = $giftcards[ 'notes' ];	
+			$this->notes = $giftcards[ 'notes' ];
 		}
 
 		Log::debug([ 'issue' => '#1551', 'method' => 'process', '$this->final_price' => $this->final_price,  'giftcardValue'=> $this->giftcardValue, '$this->notes' => $this->notes ]);
@@ -489,13 +489,13 @@ class Crunchbutton_Order extends Cana_Table {
 				# 1 - When an option is removed, it should NEVER appear in the order or on the fax.
 				if( $_Dish->dish_has_option( $option->id_option ) ){
 					$option->id_order_dish = $dish->id_order_dish;
-					$option->save();	
+					$option->save();
 				}
 			}
 		}
 
 		$this->que();
-		
+
 		$order = $this;
 
 		if ( $params['make_default'] == 'true' ) {
@@ -503,7 +503,7 @@ class Crunchbutton_Order extends Cana_Table {
 				Preset::cloneFromOrder($order);
 			// });
 		}
-		
+
 		Cana::timeout(function() use($order) {
 			Crunchbutton_Hipchat_Notification::OrderPlaced($order);
 		});
@@ -515,7 +515,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 
 		if( Crunchbutton_Referral::isReferralEnable() ){
-			// If the user was invited we'll give credit to the inviter user 
+			// If the user was invited we'll give credit to the inviter user
 			$inviter_code = Crunchbutton_Referral::checkCookie();
 			if( $inviter_code ){
 				// If the code is valid it will return the inviter user
@@ -656,8 +656,11 @@ class Crunchbutton_Order extends Cana_Table {
 
 			case 'card':
 				$user = c::user()->id_user ? c::user() : null;
-				$paymentType = $user->payment_type();
-				
+
+				if( $user ){
+					$paymentType = $user->payment_type();
+				}
+
 				if (!$this->_card['id'] && !$paymentType->id_user_payment_type && $user->balanced_id) {
 					// user only has a balanced customer id, not a payment. copy payment type over
 					$paymentType = (new User_Payment_Type([
@@ -671,12 +674,12 @@ class Crunchbutton_Order extends Cana_Table {
 						'date' => date('Y-m-d H:i:s')
 					]))->save();
 				}
-				
+
 				if (!$this->_card['id'] && $paymentType->id_user_payment_type) {
 					// use a stored users card and the apporiate payment type
 
 					if ($paymentType->balanced_id) {
-					
+
 						if (substr($paymentType->balanced_id,0,2) != 'CC') {
 							// we have stored the customer and not the payment type. need to fix that
 							$cards = Crunchbutton_Balanced_Account::byId($paymentType->balanced_id)->cards;
@@ -684,7 +687,7 @@ class Crunchbutton_Order extends Cana_Table {
 								foreach ($cards as $card) {
 									$c = $card;
 								}
-	
+
 								$paymentType = (new User_Payment_Type([
 									'id_user' => $user->id_user,
 									'active' => 1,
@@ -696,7 +699,7 @@ class Crunchbutton_Order extends Cana_Table {
 								]))->save();
 							}
 						}
-					
+
 						$charge = new Charge_Balanced([
 							'card_id' => $paymentType->balanced_id
 						]);
@@ -780,7 +783,7 @@ class Crunchbutton_Order extends Cana_Table {
 			if( count( $deliveryFor ) == 0 ){
 				$deliveryFor[] = 0;
 			}
-			$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';			
+			$where = 'WHERE o.id_restaurant IN( ' . join( ',', $deliveryFor ) . ' )';
 		} else {
 			$where = 'WHERE 1=1 ';
 		}
@@ -788,7 +791,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$where .= ' AND o.delivery_service = 1 ';
 		$where .= ' AND date > DATE_SUB( NOW(), INTERVAL ' . $interval . ' )';
 		$query = 'SELECT DISTINCT( o.id_order ) id, o.* FROM `order` o ' . $where . ' ORDER BY o.id_order';
-		return Order::q( $query );		
+		return Order::q( $query );
 	}
 
 	public static function deliveredByCBDrivers( $search ){
@@ -817,7 +820,7 @@ class Crunchbutton_Order extends Cana_Table {
 		if( $search[ 'limit' ] ){
 			$limit = 'LIMIT '. $search[ 'limit' ];
 		} else {
-			$limit = 'LIMIT 25'; 
+			$limit = 'LIMIT 25';
 		}
 
 		$query = 'SELECT DISTINCT(o.id_order) id, o.* FROM `order` o
@@ -850,7 +853,7 @@ class Crunchbutton_Order extends Cana_Table {
 			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';
 		}
 
-		$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'orders-all' ] );	
+		$hasPermissionToAllRestaurants = c::admin()->permission()->check( [ 'global', 'orders-all' ] );
 
 		if ($search['restaurant']) {
 			if( $hasPermissionToAllRestaurants || c::admin()->permission()->check( [ "orders-list-restaurant-{$search['restaurant']}" ] ) ){
@@ -921,11 +924,11 @@ class Crunchbutton_Order extends Cana_Table {
 			return number_format( $this->tip, 2 );
 		} else {
 			/* 	- to calculate the tip it must use as reference the price with mark up
-						because the marked up price was the one shown the the user 
-					- see talk between pererinha and david at hipchat 02/17/2014 
+						because the marked up price was the one shown the the user
+					- see talk between pererinha and david at hipchat 02/17/2014
 						https://github.com/crunchbutton/crunchbutton/issues/2248#issuecomment-35381055 */
 			if( $this->price_plus_delivery_markup && $this->price_plus_delivery_markup > 0 ){
-				$tip = ( $this->price_plus_delivery_markup * ( $this->tip / 100 ) );	
+				$tip = ( $this->price_plus_delivery_markup * ( $this->tip / 100 ) );
 			} else {
 				$tip = ( $this->price * ( $this->tip / 100 ) );
 			}
@@ -934,9 +937,9 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function tax() {
-		/* 	- taxes should be calculated using the price without markup  
+		/* 	- taxes should be calculated using the price without markup
 				- if restaurant uses 3rd party delivery service remove the delivery_fee
-				- see #2236 and #2248 
+				- see #2236 and #2248
 				-> Removed the Util::ceil - see #2613
 				*/
 		if( intval( $this->delivery_service ) == 1 ){
@@ -981,7 +984,7 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 		if( intval( $order->restaurant()->delivery_service ) == 1 ){
-			$this->notifyDrivers();	
+			$this->notifyDrivers();
 		}
 	}
 
@@ -1026,7 +1029,7 @@ class Crunchbutton_Order extends Cana_Table {
 			if( $community ){
 				$group = Crunchbutton_Group::getDeliveryGroupByCommunity( Crunchbutton_Group::driverGroupOfCommunity( $community ) );
 				if( $group->id_group ){
-					$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );	
+					$drivers = Crunchbutton_Admin::q( "SELECT a.* FROM admin a INNER JOIN admin_group ag ON ag.id_admin = a.id_admin AND ag.id_group = {$group->id_group}" );
 					foreach( $drivers as $driver ){
 						$driversToNotify[ $driver->id_admin ] = $driver;
 					}
@@ -1045,7 +1048,7 @@ class Crunchbutton_Order extends Cana_Table {
 					$hasDriversWorking = true;
 					$message = '#'.$order->id_order.' sending ** NEW ** notification to ' . $driver->name . ' # ' . $adminNotification->value;
 					Log::debug( [ 'order' => $order->id_order, 'action' => $message, 'type' => 'delivery-driver' ] );
-				}	
+				}
 			}
 		}
 
@@ -1063,10 +1066,10 @@ class Crunchbutton_Order extends Cana_Table {
 						$hasDriversWorking = true;
 						$adminNotification->send( $order );
 						Log::debug([ 'order' => $order->id_order, 'action' => 'sending notification', 'type' => 'admin', 'type' => 'notification']);
-					}	
+					}
 				}
 			}
-			Crunchbutton_Admin_Notification_Log::register( $this->id_order );	
+			Crunchbutton_Admin_Notification_Log::register( $this->id_order );
 		}
 
 		if( $needDrivers && !$hasDriversWorking ){
@@ -1076,7 +1079,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function driver(){
-		if( !$this->_driver && $this->id_order ){			
+		if( !$this->_driver && $this->id_order ){
 			$this->_driver = Admin::q( "SELECT a.* FROM order_action oa INNER JOIN admin a ON a.id_admin = oa.id_admin WHERE oa.id_order = {$this->id_order} AND type != 'delivery-rejected' ORDER BY id_order_action DESC LIMIT 1" );
 		}
 		return $this->_driver;
@@ -1106,7 +1109,7 @@ class Crunchbutton_Order extends Cana_Table {
 		if ($this->confirmed || !$this->restaurant()->confirmation) {
 			return;
 		}
-		// the restaurant asked crunchbutton to call it, stop sending confirmations call - See #2848  
+		// the restaurant asked crunchbutton to call it, stop sending confirmations call - See #2848
 		if( $this->asked_to_call ){
 			Log::debug([ 'order' => $this->id_order, 'action' => 'asked_to_call() - dial confirm call', '$this->asked_to_call' => $this->asked_to_call, '$this->restaurant()->confirmation' =>$this->restaurant()->confirmation, 'type' => 'notification']);
 			return;
@@ -1117,7 +1120,7 @@ class Crunchbutton_Order extends Cana_Table {
 			// Log
 			Log::debug([ 'order' => $this->id_order, 'count' => $nl->count(), 'action' => 'confirmation call already in process', 'host' => c::config()->host_callback, 'type' => 'notification']);
 			return;
-		} 
+		}
 
 		$env = c::getEnv();
 
@@ -1127,7 +1130,7 @@ class Crunchbutton_Order extends Cana_Table {
 		if( $this->restaurant()->confirmation_type == 'stealth' ){
 			$confirmURL = 'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirmstealth';
 		} else {
-			$confirmURL = 'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirm'; 
+			$confirmURL = 'http://'.c::config()->host_callback.'/api/order/'.$this->id_order.'/doconfirm';
 		}
 
 		// Log
@@ -1144,7 +1147,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$call = $twilio->account->calls->create(
 			c::config()->twilio->{$env}->outgoingRestaurant,
-			'+1'.$num, 
+			'+1'.$num,
 			$confirmURL,
 			[
 				'StatusCallback' => 'http://'.c::config()->host_callback.'/api/notification/'.$log->id_notification_log.'/confirm'
@@ -1231,7 +1234,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 	// After 5 minutes the fax was sent we have to send this confirmation to make sure that the fax as delivered. If the order was already confirmed this confirmation will be ignored.
 	public function queConfirmFaxWasReceived(){
-		
+
 		// Issue #1239
 		return false;
 
@@ -1254,7 +1257,7 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function queConfirm() {
-		
+
 		$order = $this;
 
 		if ($order->confirmed || !$order->restaurant()->confirmation) {
@@ -1271,15 +1274,15 @@ class Crunchbutton_Order extends Cana_Table {
 
 		if( $nl->count() > 0 ){ // if it is the 2nd, 3rd, 4th... call the confirmation time should be 2 min even to hasFaxNotification - #974
 			$confirmationTime = c::config()->twilio->confirmTimeCallback;
-			
+
 		} else { // if it is the first confirmation call
 
 			if( $order->restaurant()->hasFaxNotification() ){ // If restaurant has fax notification
 				$confirmationTime = c::config()->twilio->confirmFaxTime;
 			} else {
-				$confirmationTime = c::config()->twilio->confirmTime;			
+				$confirmationTime = c::config()->twilio->confirmTime;
 			}
-		}			
+		}
 
 		// Log
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'queConfirm - confirm', 'hasFaxNotification' => $order->restaurant()->hasFaxNotification(), 'confirmationTime' => $confirmationTime, 'confirmation number' => $nl->count(), 'confirmed' => $this->confirmed, 'type' => 'notification' ] );
@@ -1290,7 +1293,7 @@ class Crunchbutton_Order extends Cana_Table {
 			/* @var $order Crunchbutton_Order */
 			$order->confirm();
 		}, $confirmationTime );
-	
+
 	}
 
 	// At the method warningOrderNotConfirmed() i've tried to use $this->confirmed
@@ -1306,30 +1309,30 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function warningStealthNotConfirmed(){
-		
+
 		$order = $this;
- 
+
 		$isConfirmed = Order::isConfirmed( $this->id_order );
- 
+
 		Log::debug( [ 'order' => $this->id_order, 'action' => 'warningStealthNotConfirmed', 'object' => $order->json(), 'type' => 'notification' ]);
- 
+
 		if ( $isConfirmed ) {
 			Log::debug( [ 'order' => $this->id_order, 'action' => 'que warningStealthNotConfirmed ignored', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 			return;
 		}
- 
+
 		$date = $order->date();
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
- 
+
 		$env = c::getEnv();
- 
+
 		$message = "Please call {$order->restaurant()->name} in {$order->restaurant()->community()->name} ({$order->restaurant()->phone()}). They pressed 2 to say they didn't receive the fax for Order #{$order->id_order}";
 		$message = str_split( $message,160 );
- 
+
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningStealthNotConfirmed sending sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
- 
+
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
- 
+
 		// keep this ugly true for tests only
 		if( $env == 'live' ){
 			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
@@ -1347,7 +1350,7 @@ class Crunchbutton_Order extends Cana_Table {
 		} else {
 			Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningStealthNotConfirmed DEV dont send sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 		}
-	
+
 	}
 	public function warningOrderNotConfirmed(){
 		return;
@@ -1366,7 +1369,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$date = $date->format( 'M jS Y' ) . ' - ' . $date->format( 'g:i:s A' );
 
 		$env = c::getEnv();
-		
+
 		$message = 'O# ' . $order->id_order . ' for ' . $order->restaurant()->name . ' (' . $date . ') not confirmed.';
 		$message .= "\n";
 		$message .= 'R# ' . $order->restaurant()->phone();
@@ -1380,7 +1383,7 @@ class Crunchbutton_Order extends Cana_Table {
 		Log::debug( [ 'order' => $order->id_order, 'action' => 'que warningOrderNotConfirmed sending sms', 'confirmed' => $isConfirmed, 'type' => 'notification' ]);
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
-		
+
 		if( $env == 'live' ){
 			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 				foreach ( $message as $msg ) {
@@ -1403,7 +1406,7 @@ class Crunchbutton_Order extends Cana_Table {
 	public function orderMessage($type) {
 
 		// @TODO: need to combine all this stuff into one streamlined thing
-	
+
 		if ($type == 'summary' || $type == 'facebook') {
 			// does not show duplicate items, configuration, or item count. returns human readable
 			$dishes = [];
@@ -1419,7 +1422,7 @@ class Crunchbutton_Order extends Cana_Table {
 			return $food;
 		}
 
-		
+
 		// everything else
 		switch ($type) {
 			case 'sms':
@@ -1477,7 +1480,7 @@ class Crunchbutton_Order extends Cana_Table {
 					$withOptions = '';
 					$selectOptions = '';
 
-					if ($options->count()) {					
+					if ($options->count()) {
 
 						foreach ($dish->options() as $option) {
 							if ($option->option()->type == 'select') {
@@ -1499,7 +1502,7 @@ class Crunchbutton_Order extends Cana_Table {
 						$selectOptions = substr( $selectOptions, 0, -2 );
 					}
 					$withoutDefaultOptions = '';
-					if( $dish->id_order_dish && $dish->id_dish ){ 
+					if( $dish->id_order_dish && $dish->id_dish ){
 						$optionsNotChoosen = $dish->optionsDefaultNotChoosen();
 						$commas = ' ';
 						if( $optionsNotChoosen->count() ){
@@ -1540,7 +1543,7 @@ class Crunchbutton_Order extends Cana_Table {
 						$foodItem .= preg_replace($pFind, $pReplace, $option->option()->name).$space.' ';
 					}
 					$foodItem = substr($foodItem, 0, -2);
-				} 
+				}
 
 				$withoutDefaultOptions = '';
 
@@ -1636,7 +1639,7 @@ class Crunchbutton_Order extends Cana_Table {
 				// Start Telling Customers Estimated Delivery Time #2476
 				if ( $this->delivery_type == 'delivery' && $this->restaurant()->delivery_estimated_time ) {
 					$msg .= "Your order will arrive around ";
-					$msg .= $this->restaurant()->calc_delivery_estimated_time();	
+					$msg .= $this->restaurant()->calc_delivery_estimated_time();
 					$msg .= "!\n\n";
 				}
 				$msg .= "To contact Crunchbutton, text us back.\n\n";
@@ -1646,13 +1649,13 @@ class Crunchbutton_Order extends Cana_Table {
 				break;
 
 			case 'support':
-				
+
 				$date = $this->date();
 
 				if( $timezone ){
-					$date->setTimeZone( new DateTimeZone( $timezone ) );	
+					$date->setTimeZone( new DateTimeZone( $timezone ) );
 				}
-				
+
 				$when = $date->format('M j, g:i a T');
 
 				$confirmed = $this->confirmed? 'yes' : 'no';
@@ -1752,7 +1755,7 @@ class Crunchbutton_Order extends Cana_Table {
 				break;
 			case 'sms-admin':
 				$spacer = ' / ';
-				$payment = 
+				$payment =
 				$msg = $this->name . $spacer . strtoupper( $this->pay_type ) . $spacer . strtoupper( $this->delivery_type ) . $spacer . preg_replace( '/[^\d.]/', '', $this->phone ) . $spacer;
 
 				if( $this->delivery_type == Crunchbutton_Order::SHIPPING_DELIVERY ){
@@ -1773,7 +1776,7 @@ class Crunchbutton_Order extends Cana_Table {
 				$msg .= $spacer . $this->driverInstructionsFoodStatus() . $spacer . $this->driverInstructionsPaymentStatus();
 
 				break;
-			
+
 		}
 
 		return $msg;
@@ -1797,16 +1800,16 @@ class Crunchbutton_Order extends Cana_Table {
 		$out['id'] = $this->uuid;
 
 		if( $out[ 'price_plus_delivery_markup' ] && floatval( $out[ 'price_plus_delivery_markup' ] ) > 0 ){
-			$out[ 'price' ] = $out[ 'price_plus_delivery_markup' ];	
+			$out[ 'price' ] = $out[ 'price_plus_delivery_markup' ];
 		}
 
 		if( $out[ 'final_price_plus_delivery_markup' ] && floatval( $out[ 'final_price_plus_delivery_markup' ] ) > 0 ){
-			$out[ 'final_price' ] = $out[ 'final_price_plus_delivery_markup' ];	
+			$out[ 'final_price' ] = $out[ 'final_price_plus_delivery_markup' ];
 		}
 
 		unset( $out[ 'price_plus_delivery_markup' ] );
 		unset( $out[ 'final_price_plus_delivery_markup' ] );
-		
+
 		if( isset( $out[ 'type' ] ) && $out[ 'type' ] == 'compressed' ){
 			$out['_restaurant_name'] = $out['restaurant_name'];
 			$out['_restaurant_permalink'] = $out['restaurant_permalink'];
@@ -1850,10 +1853,10 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$date = new DateTime($this->date);
 		$date->setTimeZone($timezone);
-		
+
 		$out['_date_tz'] = $date->format('Y-m-d H:i:s');
 		$out['_tz'] = $date->format('T');
-		
+
 		$out['summary'] = $this->orderMessage('summary');
 
 		return $out;
@@ -1861,9 +1864,9 @@ class Crunchbutton_Order extends Cana_Table {
 
 	public function paymentType(){
 		if( $this->id_user_payment_type ){
-			return Crunchbutton_User_Payment_Type::o( $this->id_user_payment_type );	
+			return Crunchbutton_User_Payment_Type::o( $this->id_user_payment_type );
 		}
-		
+
 	}
 
 	public function refundGiftFromOrder(){
@@ -1923,12 +1926,12 @@ class Crunchbutton_Order extends Cana_Table {
 								// refund the debit
 								$ch = Crunchbutton_Balanced_Debit::byId($this->txn);
 								$ch->refund();
-								
+
 							} catch (Exception $e) {
 								print_r($e);
 								return false;
 							}
-							
+
 							$res = false;
 							try {
 								// cancel the hold
@@ -1936,7 +1939,7 @@ class Crunchbutton_Order extends Cana_Table {
 								$res = $hold->void();
 
 							} catch (Exception $e) {
-	
+
 							}
 							if (!$res) {
 								Log::debug([
@@ -1977,7 +1980,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 	// Gets the last order tipped by the user
 	public function lastTippedOrder( $id_user = null ) {
-		$id_user = ( $id_user ) ? $id_user : $this->id_user;		
+		$id_user = ( $id_user ) ? $id_user : $this->id_user;
 		return self::q('select * from `order` where id_user="'.$id_user.'" and tip is not null and tip > 0 order by id_order desc limit 0,1');
 	}
 
@@ -1987,7 +1990,7 @@ class Crunchbutton_Order extends Cana_Table {
 			$order = self::q('select * from `order` where id_user="'.$id_user.'" and delivery_type = "' . $delivery . '" and tip is not null order by id_order desc limit 0,1');
 			if( $order->tip ){
 				return $order->tip;
-			}	
+			}
 		}
 		return null;
 	}
@@ -2046,7 +2049,7 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return 0;
 	}
-	
+
 	public function expectedByStealthFax() {
 		$date = clone $this->date();
 		$date->modify('+ 20 minute');
@@ -2098,7 +2101,7 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return array_unique( $restaurants_ids );
 	}
-	
+
 	/*
 		get the delivery status of the order based on reps or restaurants actions agaisnt it
 		@todo: add restaurant actions
@@ -2114,7 +2117,7 @@ class Crunchbutton_Order extends Cana_Table {
 					case 'delivery-delivered':
 						$this->_deliveryStatus['delivered'] = Admin::o($action->id_admin);
 						break;
-						
+
 					case 'delivery-pickedup':
 						$this->_deliveryStatus['pickedup'] = Admin::o($action->id_admin);
 						break;
@@ -2122,7 +2125,7 @@ class Crunchbutton_Order extends Cana_Table {
 					case 'delivery-accepted':
 						$acpt[$action->id_admin] = true;
 						break;
-						
+
 					case 'delivery-rejected':
 						$acpt[$action->id_admin] = false;
 						break;
@@ -2137,7 +2140,7 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return $type === null ? $this->_deliveryStatus : $this->_deliveryStatus[$type];
 	}
-	
+
 	public function deliveryAccept($admin) {
 		if ($this->deliveryStatus('accepted')) {
 			return false;
@@ -2176,7 +2179,7 @@ class Crunchbutton_Order extends Cana_Table {
 		$this->_actions = null;
 		return true;
 	}
-	
+
 	public function deliveryDelivered($admin) {
 		if (!$this->deliveryStatus('accepted') || $this->deliveryStatus('accepted')->id_admin != $admin->id_admin) {
 			return false;
@@ -2201,7 +2204,7 @@ class Crunchbutton_Order extends Cana_Table {
 						$act = 'delivered';
 						continue;
 						break;
-						
+
 					case 'delivery-pickedup':
 						$act = 'pickedup';
 						continue;
@@ -2211,7 +2214,7 @@ class Crunchbutton_Order extends Cana_Table {
 						$act = 'accepted';
 						continue;
 						break;
-						
+
 					case 'delivery-rejected':
 
 						if ( $action->id_admin == $admin->id_admin ) {
@@ -2224,29 +2227,29 @@ class Crunchbutton_Order extends Cana_Table {
 		}
 		return $act;
 	}
-	
+
 
 	public function deliveryLastStatus(){
 		$statuses = $this->deliveryStatus();
 		if( $statuses[ 'delivered' ] ){
 			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3 );
-		} 
+		}
 		if( $statuses[ 'pickedup' ] ){
 			return array( 'status' => 'pickedup', 'name' => $statuses[ 'pickedup' ]->name, 'id_admin' => $statuses[ 'pickedup' ]->id_admin,  'order' => 2 );
-		} 
+		}
 		if( $statuses[ 'accepted' ] ){
 			return array( 'status' => 'accepted', 'name' => $statuses[ 'accepted' ]->name, 'id_admin' => $statuses[ 'accepted' ]->id_admin,  'order' => 1 );
-		} 
+		}
 		return array ( 'status' => 'new', 'order' => 0 );
 	}
 
 	public function wasAcceptedByRep(){
-		$query = "SELECT * FROM 
-								order_action ac 
-							WHERE 
-								ac.id_order = {$this->id_order} 
-							AND ( ac.type = '" . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . "' 
-										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . "' 
+		$query = "SELECT * FROM
+								order_action ac
+							WHERE
+								ac.id_order = {$this->id_order}
+							AND ( ac.type = '" . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . "'
+										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . "'
 										OR ac.type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "' )";
 		$action = Crunchbutton_Order_Action::q( $query );
 		if( $action->count() > 0 ){
@@ -2274,9 +2277,9 @@ class Crunchbutton_Order extends Cana_Table {
 	public function getDeliveryDriver(){
 		$action = Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} AND ( type = '" . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . "' OR type = '" . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . "' OR type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "') LIMIT 1" );
 		if( $action->id_admin ){
-			return $action->admin();	
+			return $action->admin();
 		}
-		
+
 	}
 
 
@@ -2314,7 +2317,7 @@ class Crunchbutton_Order extends Cana_Table {
 			return 'Place the order yourself';
 		}
 	}
-	
+
 	// decodes 9 digit order #s
 	public static function getByNinjaId($id) {
 		$v = $id[0];
@@ -2328,7 +2331,7 @@ class Crunchbutton_Order extends Cana_Table {
 
 		return $id;
 	}
-	
+
 	// generates 9 digit order #s
 	public function ninjaId($version = 1) {
 		$id = $this->id;
@@ -2344,7 +2347,7 @@ class Crunchbutton_Order extends Cana_Table {
 			.$first
 			.str_pad(strrev($rest),$pad,'0')
 			.strlen($rest);
-			
+
 		return $ret;
 	}
 
