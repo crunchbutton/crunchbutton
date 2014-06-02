@@ -237,7 +237,7 @@ class Crunchbutton_App extends Cana_App {
 
 		$this->buildAuth($this->db());
 		
-		if ($params['env'] != 'local' && $_SERVER['SERVER_NAME'] != 'dev.crunchr.co'  && $_SERVER['SERVER_NAME'] != 'cockpit.la') {
+		if ($params['env'] != 'local' && $_SERVER['SERVER_NAME'] != 'dev.crunchr.co' && !preg_match('/cockpit.la|cockpit.kenneth/',$_SERVER['SERVER_NAME'])) {
 			$config->bundle = true;
 		}
 
