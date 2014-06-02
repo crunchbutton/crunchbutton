@@ -6,7 +6,7 @@
  * @date: 		2012-06-20
  *
  */
- 
+
 var REDIRECT = false;
 
 if (top.frames.length != 0 || window != top || top.location != location) {
@@ -14,7 +14,7 @@ if (top.frames.length != 0 || window != top || top.location != location) {
 	top.location = self.document.location;
 	REDIRECT = true;
 }
- 
+
 var App = {
 	tagline: '',
 	service: '/api/',
@@ -117,7 +117,7 @@ NGApp.config( function( $provide, $httpProvider ) {
 								}
 							}
 						}
-					}					
+					}
 				} else {
 					showError = true;
 				}
@@ -141,7 +141,7 @@ NGApp.config( function( $provide, $httpProvider ) {
  				if( typeof response.data == 'object' ){
  					var headers = response.headers();
  				}
- 				
+
 				return response || $q.when( response );
 			},
 			// request no ok
@@ -294,7 +294,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.softKeyboard = function( e ){
 		if( App.isPhoneGap && App.isAndroid() ){
 			var el = $( e.currentTarget );
-			var walkTo = ( $('.snap-content-inner').scrollTop() + el.offset().top - ( $( window ).height() / 2 ) + ( el.height() + 10 ) );
+			var walkTo = ( $('.snap-content-inner').scrollTop() + el.offset().top - ( $( window ).height() / 2 ) + ( el.height() + 55 ) );
 			$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
 		}
 	}
@@ -316,19 +316,19 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.signout = AccountSignOut;
 	$rootScope.isPhoneGap = App.isPhoneGap;
 	$rootScope.server = App.server;
-	
+
 	$rootScope.animationClass = '';
 
 	$rootScope.debug = function() {
 		return ( App.config && App.config.user && App.config.user.debug );
 	};
-	
+
 	$rootScope.test = App.test;
-	
+
 	$rootScope.cartScroll = function(permalink) {
 		//$('.snap-content-inner').scrollTop() + $('.cart-items').offset().top
 		var top = 130 - $('.navs').height() - 10;
-		
+
 
 		var scroll = function() {
 			$('html, body, .snap-content-inner').animate({scrollTop: top}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
@@ -340,18 +340,18 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			scroll();
 		}
 	};
-	
+
 	$rootScope.scrollHalf = function(permalink) {
 		$('html, body, .snap-content-inner').animate({
 			scrollTop: 530 - $('.navs').height() - 10
 		}, 100, $.easing.easeInOutQuart ? 'easeInOutQuart' : null);
 	};
-	
+
 	$rootScope.cancelDownload = function() {
 		$.cookie('_viewmobile2', true, { expires: 1 });
 		App.go('/location');
 	};
-	
+
 	$rootScope.$on('userAuth', function(e, data) {
 		$rootScope.$safeApply(function($scope) {
 			// @todo: remove double data
@@ -369,12 +369,12 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			if (App.config.user.id_user && App.config.user.location_lat && ($rootScope.navigation.page == 'location' || $rootScope.navigation.page == 'splash')) {
 				$location.path('/food-delivery');
 			}
-			
+
 			App.snap.close();
 
 			// reload the actual controller
 			if( !AccountService.forceDontReloadAfterAuth ){
-				$rootScope.reload();	
+				$rootScope.reload();
 			}
 			AccountService.forceDontReloadAfterAuth = false;
 		});
@@ -397,11 +397,11 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		// indicates that the user object has changed
 	}, true);
 	*/
-	
+
 	$rootScope.reload = function() {
 		$route.reload();
 	};
-	
+
 	$rootScope.link = function(link) {
 		App.go.apply(arguments);
 	};
@@ -443,13 +443,13 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			this.$apply(fn);
 		}
 	};
-	
+
 	// @todo: we might need this in the future for when we update to angular 1.2 with animations
 	/*
 	// determine if we are going backwards
 	$rootScope.$on('$locationChangeSuccess', function() {
 		$rootScope.actualLocation = $location.path();
-	});        
+	});
 
 	$rootScope.$watch(function() {
 		return $location.path();
@@ -469,14 +469,14 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
 		}).addClass('page-' + MainNavigationService.page);
-		
+
 		$('.nav-top').addClass('at-top');
-		
+
 		App.parallax.bg = null;
 
 		App.scrollTop($rootScope.scrollTop);
 		$rootScope.scrollTop = 0;
-		
+
 	});
 
 	// Make the window's size available to all scope
@@ -496,7 +496,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	}
 
 	AccountService.checkUser();
-	
+
 	LocationService.init();
 
 	ReferralService.check();
@@ -545,11 +545,11 @@ App.go = function( url, transition ){
 			// @todo: do some tests to figure out if we need this or not
 			// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
 			App.location.path( url || '/' );
-			App.rootScope.$safeApply();		
-		}, 1 );		
+			App.rootScope.$safeApply();
+		}, 1 );
 	} else {
 		App.location.path( url || '/' );
-		App.rootScope.$safeApply();		
+		App.rootScope.$safeApply();
 	}
 };
 
@@ -614,8 +614,8 @@ App.track = function() {
 				tip: arguments[1].tip
 			};
 			ga('ecommerce:addTransaction', trans);
-			
-			
+
+
 			for (var x in arguments[1].cart) {
 				var ii = {
 					id: arguments[1].id,
@@ -628,11 +628,11 @@ App.track = function() {
 				};
 				ga('ecommerce:addItem', ii);
 			}
-	
+
 			ga('ecommerce:send');
 		}
-	
-	
+
+
 		$('img.conversion').remove();
 		var i = $('<img class="conversion" src="https://www.googleadservices.com/pagead/conversion/996753959/?value=' + Math.floor(arguments[1].total) + '&amp;label=-oawCPHy2gMQp4Sl2wM&amp;guid=ON&amp;script=0&url=' + location.href + '">').appendTo($('body'));
 	}
@@ -669,7 +669,7 @@ App.busy = {
 				App.busy.unBusy();
 			};
 			if( gid ){
-				App.request( App.service + 'order/gid/' + gid, 
+				App.request( App.service + 'order/gid/' + gid,
 					function( json ){
 						if( json.error ){
 							errorMessage();
@@ -752,7 +752,7 @@ App.init = function(config) {
 	if (App._init || REDIRECT) {
 		return;
 	}
-	
+
 	App._init = true;
 
 	// Check if the device is online or offline
@@ -769,7 +769,7 @@ App.init = function(config) {
 			$('.pac-item, .pac-item span', this).addClass('needsclick');
 		}
 	}, '.pac-container');
-	
+
 	$(document).on('mousedown', '.pac-item', function() {
 		$('body').scrollTop(0);
 		$('html').css('height','3000px');
@@ -777,14 +777,14 @@ App.init = function(config) {
 			$('html').css('height','');
 		});
 	});
-	
+
 	// add ios7 styles for nav bar and page height
 	if (App.isPhoneGap && !App.iOS7()) {
 		$('body').removeClass('ios7');
 	}
-	
+
 	$('body').removeClass('no-init');
-	
+
 	// add the side swipe menu for mobile view
 	if (typeof Snap !== 'undefined') {
 		App.snap = new Snap({
@@ -798,7 +798,7 @@ App.init = function(config) {
 		App.snap.on( 'end', function(){
 			App.applyIOSPositionFix();
 		});
-	
+
 		App.snap.on( 'start', function(){
 			App.applyIOSPositionFix();
 		});
@@ -812,7 +812,7 @@ App.init = function(config) {
 			}
 		};
 		snapperCheck();
-	
+
 		$(window).resize(function() {
 			snapperCheck();
 		});
@@ -821,7 +821,7 @@ App.init = function(config) {
 
 	// init the storage type. cookie, or localstorage if phonegap
 	$.totalStorage.ls(App.localStorage);
-	
+
 	// phonegap
 	if (typeof CB !== 'undefined' && CB.config) {
 		App.config = CB.config;
@@ -887,10 +887,10 @@ App.init = function(config) {
 			break;
 	}
 
-	window.addEventListener( 'pageshow', function(){ 
+	window.addEventListener( 'pageshow', function(){
 		// the first pageshow should be ignored
 		if( App._firstPageShowHasHappened ){
-			dateTime.reload(); 
+			dateTime.reload();
 		}
 		App._firstPageShowHasHappened = true;
 	}, false );
@@ -898,7 +898,7 @@ App.init = function(config) {
 	// window.addEventListener( 'pagehide', function(){}, false );
 
 	$(window).trigger('nginit');
-	
+
 	/*
 	if (!App.isPhoneGap) {
 		$(document).mousemove(function(e) {
@@ -951,7 +951,7 @@ App.dialog = {
 		} else if ($(arguments[0]).length) {
 			// its a dom selector
 			var src = $(arguments[0]);
-			
+
 			// fix to prevent 2 dialogs from ever appearing. only show the second. #2919
 			if (src.length > 1) {
 				for (var x = 0; x < src.length - 1; x++) {
