@@ -37,15 +37,18 @@ class Crunchbutton_App extends Cana_App {
 			case 'cbtn.io':
 			case 'cockpit.la':
 			case 'dispatch.la':
+			case 'staging.kenneth.crunchr.co':
 				$env = 'live';
 				break;
 			case 'wenzel.beta.crunchr.co':
 			case 'beta.crunchr.co':
 			case 'beta.cockpit.crunchr.co':
 			case 'beta.cockpit._DOMAIN_':
+			case 'beta.kenneth.crunchr.co':
 				$env = 'beta';
 				break;
 			case 'dev.crunchr.co':
+			case 'dev.kenneth.crunchr.co':
 				$env = 'dev';
 				break;
 			case 'cockpit.localhost':
@@ -69,6 +72,7 @@ class Crunchbutton_App extends Cana_App {
 			case 'spicywithdelivery.com':
 			case 'cockpit.la':
 			case 'dispatch.la':
+			case 'cockpit.kenneth.crunchr.co':
 				$isStaging = true;
 				$params['env'] = 'live';
 				break;
