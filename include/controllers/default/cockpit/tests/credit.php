@@ -3,6 +3,9 @@
 class Controller_tests_credit extends Crunchbutton_Controller_Account {
 
 	public function init() {
+
+		die('nope');
+
 		$creditsToRemove = [];
 		// David
 		$creditsToRemove[] = [ 'id_user' => 5045, 'value' => 15 ];
