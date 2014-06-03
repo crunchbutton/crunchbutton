@@ -48,7 +48,7 @@ $headers = [
 	'3rd Party Delivery',
 	'Fee on Subtotal',
 	'Charge Credit Fees',
-	'Pay for Promotions',
+	'Max Promotion Paying',
 	'Payment Method',
 	'Promotion Maximum',
 	'Paid with CB Card',
@@ -88,7 +88,7 @@ echo implode(',', $headers)."\n";
 		$credit_other_restaurant = '';
 	}
 	$charged = number_format($order->charged(),2);
-	
+
 	ob_start();
 ?>
 		"<?=$order->id_order			              // Order ID?>",
@@ -132,7 +132,7 @@ echo implode(',', $headers)."\n";
 		"<?=$order->delivery_service == 1	? 'yes' : ''				// 3rd Party Delivery?>",
 		"<?=$order->restaurant()->fee_on_subtotal == 1	? 'yes' : ''					// Fee on Subtotal?>",
 		"<?=$order->restaurant()->charge_credit_fee == 1	? 'yes' : ''				// Charge Credit Fees?>",
-		"<?=$order->restaurant()->payment_type()->pay_promotions == 1	? 'yes' : ''					// Pay for Promotions?>",
+		"<?=number_format( $order->restaurant()->payment_type()->max_pay_promotion, 2 )					// Max Promotion Paying?>",
 		"<?=$order->restaurant()->payment_type()->payment_method														// Payment Method?>",
 		"<?=$order->restaurant()->payment_type()->promotion_maximum													// Promotion Maximum?>",
 		"<?=$order->paid_with_cb_card == 1 ? 'yes' : ''											// Paid with CB Card?>",
@@ -144,7 +144,7 @@ echo implode(',', $headers)."\n";
 		"<?=$order->restaurant()->payment_type()->max_apology_credit												// Max Apology Credit?>",
 		"<?=$order->getDeliveryDriver()->id_admin														// Delivery Driver ID?>",
 		"<?=$order->getDeliveryDriver()->name																// Delivery Driver Name?>"
-		
+
 <?
 
 	$output = ob_get_clean();

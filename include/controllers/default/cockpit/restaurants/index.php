@@ -94,7 +94,7 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			$restaurant->takeout = 1;
 			$restaurant->confirmation = 1;
 			$restaurant->charge_credit_fee = 1;
-			$restaurant->pay_promotions = 1;
+			$restaurant->max_pay_promotion = 2;
 			$restaurant->pay_apology_credits = 1;
 			$restaurant->promotion_maximum = 2;
 			$restaurant->max_apology_credit = 5;
@@ -102,9 +102,9 @@ class Controller_restaurants extends Crunchbutton_Controller_Account {
 			$restaurant->save();
 
 			// Give the user the permission to edit the created restaurant
-			$permission = array(	
+			$permission = array(
 														"restaurant-{$restaurant->id_restaurant}-edit" => 1,
-														"orders-list-restaurant-{$restaurant->id_restaurant}" => 1 
+														"orders-list-restaurant-{$restaurant->id_restaurant}" => 1
 													);
 			c::admin()->addPermissions( $permission );
 

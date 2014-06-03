@@ -66,7 +66,7 @@
 													<tr>
 														<td colspan="2">
 															<br />
-															<button type="submit" class="btn btn-blue restaurant-bank-info-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+															<button type="submit" class="btn btn-blue restaurant-bank-info-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button>
 															&nbsp;&nbsp;&nbsp;<i class="restaurant-bank-info-button-loading icon-spinner icon-spin" style="display:none;"></i>
 														</td>
 													</tr>
@@ -81,7 +81,7 @@
 											<? if ($this->payment->balanced_id == c::config()->balanced->sharedMerchant) : ?>
 											<b><?=$this->restaurant->name?> is using a global merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
 											<? elseif ($this->payment->balanced_id) : ?>
-											<b><?=$this->payment->name?> already has a merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>		
+											<b><?=$this->payment->name?> already has a merchant configuration. <a href="javascript:;" class="restaurant-merchant-button-fakeremove">Remove</a></b>
 											<? else : ?>
 											<h4 class="restaurant-item-title">Create a Merchant Account</h4>
 											<form id="restaurant-merchant" onsubmit="return false;">
@@ -136,7 +136,7 @@
 													<tr>
 														<td colspan="2">
 															<br />
-															<button type="submit" class="btn btn-blue restaurant-merchant-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+															<button type="submit" class="btn btn-blue restaurant-merchant-button"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button>
 															<button type="submit" class="btn btn-blue restaurant-merchant-button-fake"><i class="icon-globe"></i>&nbsp;&nbsp;&nbsp; Use global merchant </button>
 														</td>
 													</tr>
@@ -180,13 +180,13 @@
 
 										<div class="box-header"><span class="title">Recipient</span></div>
 										<div class="box-content padded">
-											
-											<?php if( $this->payment->stripe_id ) { 
+
+											<?php if( $this->payment->stripe_id ) {
 
 												$recipient = $this->payment->getRecipientInfo();
 												?>
-											<b>This restaurant already has a recipient (Stripe). 
-												<br/><br/><a href="https://manage.stripe.com/recipients/<?php echo $this->payment->stripe_id; ?>" target="_blank"><i class="icon-external-link"></i> Recipient info</a></b> 
+											<b>This restaurant already has a recipient (Stripe).
+												<br/><br/><a href="https://manage.stripe.com/recipients/<?php echo $this->payment->stripe_id; ?>" target="_blank"><i class="icon-external-link"></i> Recipient info</a></b>
 												| <a href="javascript:$('.stripe-recipient-form').show();" ><i class="icon-edit"></i> Update</a></b>
 												| <a href="javascript:;" class="restaurant-stripe-recipient-remove"><i class="icon-remove"></i> Remove</a></b>
 											<?php } ?>
@@ -225,7 +225,7 @@
 													<tr>
 														<td colspan="2">
 															<br />
-															<button type="button" class="btn btn-blue stripe-recipient-info"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button> 
+															<button type="button" class="btn btn-blue stripe-recipient-info"><i class="icon-save"></i>&nbsp;&nbsp;&nbsp; Save </button>
 															&nbsp;&nbsp;&nbsp;<i class="stripe-recipient-info-loading icon-spinner icon-spin" style="display:none;"></i>
 														</td>
 													</tr>
@@ -306,7 +306,7 @@
 						</div>
 					</div>
 
-					
+
 				</div>
 				<div class="span6">
 					<div class="box">
@@ -331,19 +331,19 @@
 									<li>
 										<span>Pay For Apology Credits?</span>
 										<span class="pull-right">
-											<input type="checkbox" name="pay_promotions" id="pay_promotions" class="iButton-icons" <?=$this->payment->pay_promotions ? 'checked' : ''?>>
+											<input type="checkbox" name="pay_apology_credits" id="pay_apology_credits" class="iButton-icons" <?=$this->payment->pay_apology_credits ? 'checked' : ''?>>
 										</span>
 									</li>
 									<li class="input">
 										<span>Max Apology Credit</span>
-										<span class="pull-right span9">
+										<span class="pull-right">
 											<input type="number" class="fill-up" name="max_apology_credit" maxlength="5" id="max_apology_credit" value="<?php echo $this->payment->max_apology_credit;?>" />
 										</span>
 									</li>
 									<li>
-										<span>Pay For Promotions?</span>
-										<span class="pull-right">
-											<input type="checkbox" name="pay_apology_credits" id="pay_apology_credits" class="iButton-icons" <?=$this->payment->pay_apology_credits ? 'checked' : ''?>>
+										<span>Max Promotion Paying</span>
+											<span class="pull-right">
+											<input type="number" class="fill-up" name="max_pay_promotion" maxlength="5" id="max_pay_promotion" value="<?php echo $this->payment->max_pay_promotion;?>" />
 										</span>
 									</li>
 									<li class="input">
@@ -379,19 +379,19 @@
 									<li class="input">
 										<span>Summary Method</span>
 										<span class="pull-right span9">
-											<?php 
+											<?php
 												$options = array( 'fax', 'email' );
 												?>
 											<select name="summary_method" id="summary_method" class="uniform">
 												<option value="">None</option>
-												<? foreach ($options as $option) { 
+												<? foreach ($options as $option) {
 													$selected = ( $option == $this->payment->summary_method ) ? 'selected="selected"' : ''; ?>
 												<option <?=$selected?> value="<?=$option?>"><?=$option?></option>
 												<? } ?>
 											</select>
 										</span>
 									</li>
-									
+
 									<li class="input">
 										<span>Legal Name for Payment</span>
 										<span class="pull-right span9">
@@ -408,11 +408,11 @@
 									<li class="input">
 										<span>Payment Method</span>
 										<span class="pull-right">
-											<?php 
+											<?php
 												$options = array( 'check', 'deposit' );
 												?>
 											<select name="payment_method" id="payment_method" class="uniform">
-												<? foreach ($options as $option) { 
+												<? foreach ($options as $option) {
 													$selected = ( $option == $this->payment->payment_method ) ? 'selected="selected"' : ''; ?>
 												<option <?=$selected?> value="<?=$option?>"><?=$option?></option>
 												<? } ?>
@@ -465,7 +465,7 @@
 						<td>$<?=$payment->amount?></td>
 						<td><?=$payment->note?></td>
 						<td><?=$payment->type()?></td>
-						<td><?php 
+						<td><?php
 						if( $payment->type() == 'stripe' ) {
 							echo '<a style="text-decoration:underline;" target="_blank" href="https://manage.stripe.com/transfers/' . $payment->stripe_id . '">' . $payment->stripe_id . '</a>';
 						} else {
@@ -482,7 +482,7 @@
 
 <script>
 	$(function() {
-		
+
 		$('.restaurant-merchant-button').click(function() {
 			var form = $(this).closest('form');
 			$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/merchant', {
@@ -500,11 +500,11 @@
 
 
 		/* Form payment info */
-		$( document ).on( 'click', '.payment-info-button', function(){ 
+		$( document ).on( 'click', '.payment-info-button', function(){
 
 			var parent = $( this ).parent();
 			var button = parent.html();
-		
+
 			parent.html( '<i class="icon-spinner icon-spin"></i> Processing' );
 
 			$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/paymentinfo', {
@@ -521,7 +521,7 @@
 				tax_id : ( $( '#tax_id' ).val() ),
 				charge_credit_fee : ( $( '#charge_credit_fee' ).is( ':checked' ) ? '1' : 0 ),
 				waive_fee_first_month : ( $( '#waive_fee_first_month' ).is( ':checked' ) ? '1' : 0 ),
-				pay_promotions : ( $( '#pay_promotions' ).is( ':checked' ) ? '1' : 0 ),
+				max_pay_promotion : ( $( '#max_pay_promotion' ).val() ),
 				pay_apology_credits : ( $( '#pay_apology_credits' ).is( ':checked' ) ? '1' : 0 )
 			}, function( ) {
 				$( '.alert-payment-info' ).show();
@@ -541,7 +541,7 @@
 				location.href = location.href;
 			});
 		});
-		
+
 		$('.restaurant-stripe-recipient-remove').click(function() {
 			if( confirm( 'Confirm remove recipient?' ) ){
 				$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/remove-stripe-recipient', function() {
@@ -555,12 +555,12 @@
 				location.href = location.href;
 			});
 		});
-		
+
 		$('.restaurant-merchant-button-accountremove').click(function() {
 			$.post('/api/restaurant/<?=$this->payment->id_restaurant?>/remove-bankinfo', function() {
 				location.href = location.href;
 			});
-		});		
+		});
 
 		$('.restaurant-bank-info-button').click(function() {
 			var form = $(this).closest('form');
@@ -580,7 +580,7 @@
 				} else {
 					$( '.restaurant-bank-info-button-loading' ).hide();
 					alert( 'Error: see the console!'  );
-					console.log('Err:', data );	
+					console.log('Err:', data );
 				}
 			}).fail(function(jqXHR, textStatus) {
 				$( '.restaurant-bank-info-button-loading' ).hide();
@@ -650,7 +650,7 @@
 			var name = $('[name=stripe-name]').val();
 			var type = $('[name=stripe-type]').val();
 			var tax_id = $('[name=stripe-tax-id]').val();
-			
+
 			if( $.trim( name ) == '' ){
 				alert( 'Please type the Name!' );
 				$('[name=stripe-name]').focus();
@@ -673,7 +673,7 @@
 				} else {
 					$( '.restaurant-bank-info-button-loading' ).hide();
 					alert( 'Error: see the console!'  );
-					console.log('Err:', data );	
+					console.log('Err:', data );
 				}
 			})
 
@@ -724,7 +724,7 @@
 				} else {
 					$( '.restaurant-bank-info-button-loading' ).hide();
 					alert( 'Error: see the console!'  );
-					console.log('Err:', data );	
+					console.log('Err:', data );
 				}
 			}).fail(function(jqXHR, textStatus) {
 				$( '.restaurant-bank-info-button-loading' ).hide();
