@@ -4,16 +4,16 @@ NGApp.directive( 'ngResizeText', [ function() {
 		link: function(scope, element, attrs) {
 
 			elements = $(element);
-			
+
 			var resize = function() {
 				var el, _len;
 
 				if (elements.length < 0) {
 					return;
 				}
-				
+
 				elements.css('font-size','').removeClass('resized');
-				
+
 				var _results = [];
 				for (var _i = 0, _len = elements.length; _i < _len; _i++) {
 					el = elements[_i];
@@ -30,7 +30,7 @@ NGApp.directive( 'ngResizeText', [ function() {
 						return _results1;
 					})(el));
 				}
-				
+
 				elements.addClass('resized');
 				return _results;
 			};
@@ -83,10 +83,10 @@ NGApp.directive('addToCart', function(OrderService) {
 								width: 44,
 								height: 28,
 								opacity: .3
-							});	
+							});
 					},0);
 				}
-				
+
 				setTimeout(function() {
 					scope.order.cart.add(attrs.idDish);
 					scope.$apply();
@@ -236,7 +236,7 @@ NGApp.directive( 'customCheckbox', function () {
 					elem.addClass('fa-square');
 					elem.removeClass('fa-check-square');
 				}
-			};			
+			};
 		}
 	}
 });
@@ -304,9 +304,9 @@ NGApp.directive('ngScrollSpy', function () {
 			$(elem).scrollspy(sp);
 			sp.container = $('.snap-content-inner');
 			$(elem).scrollspy(sp);
-			
 
-			
+
+
 			if (App.isPhoneGap) {
 
 				var sp = {
@@ -435,7 +435,7 @@ NGApp.directive('ngToggle', function() {
 						});
 					});
 				},0);
-	
+
 				scope.$apply(function() {
 					scope[attr.ngToggle] = true;
 				});
@@ -447,10 +447,10 @@ NGApp.directive('ngToggle', function() {
 NGApp.directive( 'modalReset', function( $rootScope ) {
 	return {
 		restrict: 'A',
-		link: function( scope, element, attrs ){	
+		link: function( scope, element, attrs ){
 			scope.$on( 'modalClosed', function( e, data ) {
 				if( attrs.modalReset ){
-					scope.$eval( attrs.modalReset );	
+					scope.$eval( attrs.modalReset );
 				}
 			} );
 		}
@@ -506,7 +506,7 @@ NGApp.directive( 'phoneValidate', function () {
 						if( isValid ){
 							elem.val( elem.val().replace( /[^0-9]/g, '' ) );
 						}
-						ctrl.$setValidity( 'phoneValidate', isValid );			
+						ctrl.$setValidity( 'phoneValidate', isValid );
 					} );
 				} );
 			}
@@ -535,7 +535,7 @@ NGApp.directive('equals', function() {
 				var val1 = ngModel.$viewValue;
 				var val2 = attrs.equals;
 				if( val1 && val2 ){
-					ngModel.$setValidity('equals', val1 === val2);	
+					ngModel.$setValidity('equals', val1 === val2);
 				} else {
 					ngModel.$setValidity('equals', true );
 				}
@@ -583,4 +583,44 @@ NGApp.directive( 'isUnique', function( $resource, $timeout ) {
 				} );
 			}
 	};
+});
+
+
+
+NGApp.directive( 'driverDocsUpload', function ( $fileUploader, $rootScope ) {
+	return {
+		restrict: 'AE',
+		replace: true,
+		template: '<ul>' +
+								'<li ng-show="uploader.progress"  class="li-input">' +
+									'<span class="sp-label sp-label-info">' +
+										'Progress {{uploader.progress}}%' +
+									'</span>' +
+								'</li>' +
+								'<li class="li-input">' +
+									'<input ng-file-select name="file" type="file" />' +
+								'</li>'
+								+'<li class="li-input">' +
+									'<button class="button" ng-click="uploader.uploadAll();">Upload</button>' +
+								'</li>' +
+							'</ul>',
+				link: function (scope, elem, attrs, ctrl) {
+										var id_driver_document = attrs.driverDocsUpload;
+										var uploader = scope.uploader = $fileUploader.create({
+																		scope: scope,
+																		url: '/api/driver/documents/upload/',
+																		filters: [ function( item ) { return true; } ]
+																	} );
+										// broadcast success :)
+										uploader.bind( 'success', function( event, xhr, item, response ) {
+											$rootScope.$broadcast( 'driverDocsUploaded', { id_driver_document: id_driver_document, response: response } );
+											uploader.clearQueue();
+										});
+										// broadcast error :(
+										uploader.bind('error', function (event, xhr, item, response) {
+											$rootScope.$broadcast( 'driverDocsUploadedError', {} );
+											uploader.clearQueue();
+										});
+		}
+	}
 });
