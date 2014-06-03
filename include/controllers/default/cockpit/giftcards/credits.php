@@ -34,6 +34,10 @@ class Controller_giftcards_credits extends Crunchbutton_Controller_Account {
 
 	private function byuser(){
 		$id_user = c::getPagePiece(3);
+		c::view()->totalCreditsByPhone = Crunchbutton_Credit::totalCreditsByIdUser( $id_user );
+		c::view()->totalRefundedCreditsByPhone = Crunchbutton_Credit::totalRefundedCreditsByIdUser( $id_user );
+		c::view()->totalDebitsByPhone = Crunchbutton_Credit::totalDebitsByIdUser( $id_user );
+
 		c::view()->credits = Crunchbutton_Credit::creditsByIdUser( $id_user );
 		c::view()->user = Crunchbutton_User::o( $id_user );
 		c::view()->giftcards = Crunchbutton_Promo::byIdUser( $id_user );
