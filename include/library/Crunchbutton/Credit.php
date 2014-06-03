@@ -397,6 +397,16 @@ class Crunchbutton_Credit extends Cana_Table
 		return $results->get(0);
 	}
 
+	public function totalCreditsByPhone( $phone ){
+		$query = "SELECT SUM(value) AS credit
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE TYPE = 'CREDIT'
+									 AND u.phone = '{$phone}' AND c.id_promo IS NOT NULL";
+		$results = c::db()->get( $query );
+		return $results->get(0);
+	}
+
 	public function totalRefundedCreditsByPhone( $phone ){
 		$query = "SELECT SUM(value) AS credit
 								 FROM credit c
