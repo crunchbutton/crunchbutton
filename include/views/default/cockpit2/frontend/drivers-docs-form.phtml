@@ -6,36 +6,41 @@
 	<h1 class="title left"><i class="fa fa-briefcase"></i><span>Documents</span></h1>
 
 	<div class="divider"></div>
+	
+	<div class="dialog-message dialog-message-error">
+			<b>In order to get paid</b></br> you must fill out and submit all documents!
+		
+	</div>
 
 
 	<h2 class="title">
-		<span>Documents</span>
-	</h2>
-
-	<h3 class="title">
-		Here are important docs to fill out and sign. Please download the docs, fill them out and then upload them back to this page. We recommend signing them with <a href="https://www.hellosign.com/" target="_blank">Hellosign</a>.
+		Please download the docs, fill them out and then upload them back to this page. We recommend signing them with <a href="https://www.hellosign.com/" target="_blank">Hellosign</a>.
 	</h3>
 
 	<table class="tb-grid">
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="doc.url">
 				<td ng-click="edit(driver.id_admin)">
-					{{doc.name}}
+					<ul class="ul-inputs box-content">
+						<li><h2 class="title"><b>{{doc.name}}</b></h2></li>
+						<li><a href="{{doc.url}}" target="_blank">Download</a></li>
+					</ul>
 				</td>
 				<td>
-					<a href="{{doc.url}}" target="_blank">Template</a>
-				</td>
-				<td>
+					<span ng-show="!doc_uploaded">
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
 					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
-						Doc missing
+						UPLOAD
 					</span>
+					</span>
+					<span ng-show="doc_uploaded"><input ng-file-select name="file" type="file" /></span>
+					</br>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 
-	<h3 class="title">
+	<h2 class="title">
 		Upload a clear picture of your Drivers License and Insurance Card here. You can take a clear, close up picture with a smartphone, and then upload in the appropriate spots below.
 	</h3>
 		

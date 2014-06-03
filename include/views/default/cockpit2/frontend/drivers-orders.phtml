@@ -3,14 +3,18 @@
 <div class="content-padding" ng-show="ready">
 
 	<div class="dialog-message dialog-message-error">
-		<u>In order to receive payment</u> for orders that you deliver, you <b>MUST</b> confirm all orders that you've delivered. 
-		Make sure your orders are confirmed and delivered!
+		<b>In order to get paid</b></br> you MUST mark your orders as accepted & delivered!
+		
 	</div>
-
+	
 	<? /* @todo: make this a diff date. write date diff in js */ ?>
-	<div class="last-updated">Last Updated: <span class="last-updated-time">{{newDriverOrders.time.getTime() | date: 'hh:mm a'}}</span></div>	
-
+	
+	<?/*
+		*/ ?>
+	
+	
 	<div class="box-filter">
+		<h1 class="title left"><i class ="fa fa-truck"></i><span>Orders &nbsp&nbsp</span></h1>
 		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
 		<button class="button orange" ng-class="{ 'inactive' : show.all }" ng-click="show.all = false">Mine</button>
 		<div class="divider"></div>
@@ -68,6 +72,8 @@
 		<div ng-if="!driverorders.length">
 			<h3>You currently have no orders to deliver.</h3>
 		</div>
+		
+		<div class="last-updated">Last Updated: <span class="last-updated-time">{{newDriverOrders.time.getTime() | date: 'hh:mm a'}}</span></div>
 
 	</div>	
 
