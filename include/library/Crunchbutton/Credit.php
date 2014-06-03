@@ -41,7 +41,7 @@ class Crunchbutton_Credit extends Cana_Table
 		$anyRestaurantCredits = Crunchbutton_Credit::creditByUserValidToAnyRestaurant( $id_user );
 		return floatval( $credits + $anyRestaurantCredits );
 	}
-	
+
 	public function creditByUserValidToAnyRestaurant( $id_user ){
 		if (!$id_user) {
 			return 0;
@@ -70,16 +70,16 @@ class Crunchbutton_Credit extends Cana_Table
 	public static function find($search = []) {
 
 		$query = 'SELECT `credit`.* FROM `credit` LEFT JOIN restaurant USING(id_restaurant) WHERE id_credit IS NOT NULL ';
-		
+
 		if ($search['type']) {
 			$query .= ' and type="'.$search['type'].'" ';
 		}
-		
+
 		if ($search['start']) {
 			$s = new DateTime($search['start']);
 			$query .= ' and DATE(`date`)>="'.$s->format('Y-m-d').'" ';
 		}
-		
+
 		if ($search['end']) {
 			$s = new DateTime($search['end']);
 			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';
@@ -165,7 +165,7 @@ class Crunchbutton_Credit extends Cana_Table
 					} else {
 						$chargeOfThisCredit = $charge_divided;
 					}
-					
+
 					// returns how much left of this credit
 					$left = $credit->creditLeft();
 
@@ -205,7 +205,7 @@ class Crunchbutton_Credit extends Cana_Table
 					$charge = $credits_charge[ $key ][ 'charge' ];
 					// At the first time I need just the calc, so do not charge for while
 					if( !$justCalc ){
-						$credit->charge( $charge, $id_order );	
+						$credit->charge( $charge, $id_order );
 					}
 					$totalCharged = $totalCharged + $charge;
 				}
@@ -359,6 +359,36 @@ class Crunchbutton_Credit extends Cana_Table
 		return $results->get(0);
 	}
 
+	public function totalDebitsByPhone( $phone ){
+		$query = "SELECT SUM(value) AS debit
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE TYPE = 'DEBIT'
+									 AND u.phone = '{$phone}'";
+		$results = c::db()->get( $query );
+		return $results->get(0);
+	}
+
+	public function totalCreditsByPhone( $phone ){
+		$query = "SELECT SUM(value) AS credit
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE TYPE = 'CREDIT'
+									 AND u.phone = '{$phone}' AND id_promo IS NOT NULL";
+		$results = c::db()->get( $query );
+		return $results->get(0);
+	}
+
+	public function totalRefundedCreditsByPhone( $phone ){
+		$query = "SELECT SUM(value) AS credit
+								 FROM credit c
+								 INNER JOIN user u ON u.id_user = c.id_user
+								 WHERE TYPE = 'CREDIT'
+									 AND u.phone = '{$phone}' AND id_promo IS NULL";
+		$results = c::db()->get( $query );
+		return $results->get(0);
+	}
+
 	public function creditsByPhone( $phone ){
 		$query = "SELECT credits.credit,
 										 debits.debit,
@@ -391,7 +421,7 @@ class Crunchbutton_Credit extends Cana_Table
 	}
 
 	public function order_reference(){
-		return Order::o($this->id_order_reference);	
+		return Order::o($this->id_order_reference);
 	}
 
 	public function promo() {
@@ -404,5 +434,5 @@ class Crunchbutton_Credit extends Cana_Table
 
 	public function restaurant_paid_by() {
 		return Restaurant::o($this->id_restaurant_paid_by);
-	}	
+	}
 }

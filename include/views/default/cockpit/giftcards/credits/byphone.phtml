@@ -2,7 +2,7 @@
 	$this->title = 'Credits';
 	$this->titleicon = 'money';
 	$this->titleLink = '/giftcards/credits';
-	
+
 	$this->title2 = $this->user->name;
 	$this->title2icon = '';
 
@@ -32,15 +32,21 @@
 							</span>
 						</li>
 						<li>
-							<span>Total credit</span>
+							<span>Total credits (gift cards)</span>
 							<span class="pull-right">
-								$<?php echo $credits->credit ?>
+								$ <?php echo $this->totalCreditsByPhone->credit; ?>
+							</span>
+						</li>
+						<li>
+							<span>Total credits (refunded orders)</span>
+							<span class="pull-right">
+								$ <?php echo $this->totalRefundedCreditsByPhone->credit; ?>
 							</span>
 						</li>
 						<li>
 							<span>Total debit</span>
 							<span class="pull-right">
-								$<?php echo $credits->debit ?>
+								$ <?php echo $this->totalDebitsByPhone->debit; ?>
 							</span>
 						</li>
 						<li>
@@ -48,7 +54,7 @@
 								<strong>Credit Left</strong>
 							</span>
 							<span class="pull-right">
-								<strong>$<?php echo $credits->credit_left ?></strong>
+								<strong>$ <?php echo ( $this->totalCreditsByPhone->credit + $this->totalRefundedCreditsByPhone->credit ) - $this->totalDebitsByPhone->debit ?></strong>
 							</span>
 						</li>
 					</ul>
