@@ -29,9 +29,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			return true;
 		}
 		if( $order->final_price_plus_delivery_markup && $order->price_plus_delivery_markup ){
-			$price = $this->delivery_min_amt == 'subtotal' ? $order->price_plus_delivery_markup : $order->final_price_plus_delivery_markup;	
+			$price = $this->delivery_min_amt == 'subtotal' ? $order->price_plus_delivery_markup : $order->final_price_plus_delivery_markup;
 		} else {
-			$price = $this->delivery_min_amt == 'subtotal' ? $order->price : $order->final_price;	
+			$price = $this->delivery_min_amt == 'subtotal' ? $order->price : $order->final_price;
 		}
 		return $price < $this->delivery_min ? false : true;
 	}
@@ -181,7 +181,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function merchant() {
 
-		$payment_type = $this->payment_type(); 
+		$payment_type = $this->payment_type();
 
 		if ($payment_type->balanced_id) {
 			$a = Crunchbutton_Balanced_Merchant::byId($payment_type->balanced_id);
@@ -212,7 +212,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function saveStripeBankAccount( $bank_account ){
-		$payment_type = $this->payment_type(); 
+		$payment_type = $this->payment_type();
 		try{
 			Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);
 			if( $payment_type->stripe_id ){
@@ -220,9 +220,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$recipient->bank_account = $bank_account;
 				$recipient->save();
 				$payment_type->stripe_account_id = $bank_account;
-				$payment_type->save();	
+				$payment_type->save();
 				return true;
-			} 
+			}
 		} catch (Exception $e) {
 			print_r($e);
 			exit;
@@ -231,11 +231,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	}
 
 	public function saveStripeRecipient( $name, $type, $tax_id ){
-		
-		$payment_type = $this->payment_type(); 
+
+		$payment_type = $this->payment_type();
 
 		try{
-		
+
 			$tax_id = ( $tax_id == '' ) ? NULL : $tax_id;
 
 			Stripe::setApiKey(c::config()->stripe->{c::getEnv()}->secret);
@@ -258,11 +258,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				if( !$recipient->id ){
 					return false;
 				}
-				$payment_type = $this->payment_type(); 
+				$payment_type = $this->payment_type();
 				$payment_type->stripe_id = $recipient->id;
-				$payment_type->save();	
+				$payment_type->save();
 			}
-			
+
 			return true;
 		} catch (Exception $e) {
 			print_r($e);
@@ -275,7 +275,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		try {
 			$bank = c::balanced()->createBankAccount($name, $account, $routing, $type);
 			$bank->associateToCustomer('/customers/'.$this->merchant()->id);
-			$payment_type = $this->payment_type(); 
+			$payment_type = $this->payment_type();
 			$payment_type->id_restaurant = $this->id_restaurant;
 			$payment_type->balanced_bank = $bank->id;
 			$payment_type->save();
@@ -341,12 +341,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// fetch all (active and inactive dishes) before any changes
 		$originalDishes = $this->dishes(['active' => null]);
-	
+
 			Log::debug([
 				'newDishes' => $newDishes,
 				'type' => 'dishes'
 			]);
-	
+
 		// maintain a mapping of client-side-generated ids so that we can faithfully
 		// generate server-side-ids. if they were the same client-side object, they
 		// should be the same server-side
@@ -450,7 +450,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 								}
 
 								$newOptions[$option->id_option] = $option->id_option;
-								$opt['default'] = 
+								$opt['default'] =
 										(in_array($opt['default'], ['true','1',1]) ? 1 : 0);
 								// I added this new column date in order to make this issue work #1437
 								if (!$doid = $this->_hasOption($option, $options)) {
@@ -650,7 +650,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 		return false;
 	}
-	
+
 
 	public function removeCommunity(){
 		c::db()->query( 'DELETE FROM restaurant_community WHERE id_restaurant="'.$this->id_restaurant.'"' );
@@ -695,7 +695,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	public function saveCommunity( $id_community ){
 		c::db()->query( 'DELETE FROM restaurant_community WHERE id_restaurant = "' . $this->id_restaurant . '"');
-		$restaurantCommunity = new Crunchbutton_Restaurant_Community();	
+		$restaurantCommunity = new Crunchbutton_Restaurant_Community();
 		$restaurantCommunity->id_restaurant = $this->id_restaurant;
 		$restaurantCommunity->id_community = $id_community;
 		$restaurantCommunity->save();
@@ -939,10 +939,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @return array
 	 */
 	public function exports($ignore = [], $where = []) {
-		$out = $this->properties();		
+		$out = $this->properties();
 		// method ByRand doesnt need all the properties
 		if( $out['type'] && $out['type'] == 'byrange' ){
-			$_ignore = [ 'type', 'credit','address','max_items','tax','active','phone','fee_restaurant','fee_customer','delivery_min','delivery_min_amt','notes_todo','pickup_estimated_time','delivery_fee','delivery_estimated_time','notes_owner','confirmation','zip','customer_receipt','cash','giftcard','email','notes','balanced_id','balanced_bank','fee_on_subtotal','payment_method','id_restaurant_pay_another_restaurant','charge_credit_fee','waive_fee_first_month','pay_promotions','pay_apology_credits','check_address','contact_name','summary_fax','summary_email','summary_frequency','legal_name_payment','tax_id','community','_preset','id_community', '_hoursFormat', 'loc_long', 'lat_lat', 'id_community' ];
+			$_ignore = [ 'type', 'credit','address','max_items','tax','active','phone','fee_restaurant','fee_customer','delivery_min','delivery_min_amt','notes_todo','pickup_estimated_time','delivery_fee','delivery_estimated_time','notes_owner','confirmation','zip','customer_receipt','cash','giftcard','email','notes','balanced_id','balanced_bank','fee_on_subtotal','payment_method','id_restaurant_pay_another_restaurant','charge_credit_fee','waive_fee_first_month','max_pay_promotion','pay_apology_credits','check_address','contact_name','summary_fax','summary_email','summary_frequency','legal_name_payment','tax_id','community','_preset','id_community', '_hoursFormat', 'loc_long', 'lat_lat', 'id_community' ];
 			foreach ( $_ignore as $property ) {
 				$ignore[ $property ] = true;
 			}
@@ -950,11 +950,11 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$out['_weight'] = $this->weight();
 		$community = $this->community();
 		if( $community->id_community ){
-			$out['id_community'] = $community->id_community;	
+			$out['id_community'] = $community->id_community;
 		} else {
 			$out['id_community'] = null;
 		}
-		
+
 
 		$timezone = new DateTimeZone( $this->timezone );
 		$date = new DateTime( 'now ', $timezone ) ;
@@ -977,7 +977,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			// To make sure it will be ignored at cockpit
 			$isCockpit = ( $_REQUEST[ 'cockpit' ] || ( strpos( $_SERVER['HTTP_HOST'], 'cockpit' ) !== false )  ) ? true : false;
 			if( $isCockpit ){
-				$ignore[ 'delivery_service_markup_prices' ] = true;	
+				$ignore[ 'delivery_service_markup_prices' ] = true;
 			}
 			if ( !$ignore[ 'delivery_service_markup_prices' ] ) {
 				// Recalculate the price using the delivery_service_markup variable #2032
@@ -992,8 +992,8 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 							if( $price > 0 ){
 								$price = $price + ( $price * $delivery_service_markup / 100 );
 								$price = number_format( $price, 2 );
-								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'price' ] = $price;	
-								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'markup' ] = number_format( $price - $price_original, 2 );	
+								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'price' ] = $price;
+								$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ 'markup' ] = number_format( $price - $price_original, 2 );
 							}
 							// Options
 							for( $k=0; $k<( count( $out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ] ) ); $k++ ){
@@ -1005,7 +1005,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 									$price = $price + ( $price * $delivery_service_markup / 100 );
 									$price = number_format( $price, 2 );
 									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'price' ] = $price;
-									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'markup' ] = number_format( $price - $price_original, 2 );	
+									$out[ '_categories' ][ $i ][ '_dishes' ][ $j ][ '_options' ][ $k ][ 'markup' ] = number_format( $price - $price_original, 2 );
 								// }
 							}
 						}
@@ -1024,7 +1024,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			$out[ 'balanced_bank' ] = NULL;
 			$out[ 'notes' ] = NULL;
 			$out[ 'email' ] = NULL;
-		}		
+		}
 
 		if (!$ignore['notifications']) {
 			$where = [];
@@ -1040,7 +1040,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( $isCockpit ){
 			foreach ($this->hours() as $hours) {
 				$out['_hours'][$hours->day][] = [$hours->time_open, $hours->time_close];
-			}			
+			}
 		} else {
 			$out[ 'hours' ] = $this->hours_next_24_hours( true );
 			$next_open_time = $this->next_open_time( true );
@@ -1050,7 +1050,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 				$out[ 'next_open_time' ] = ( $next_open_time ) ? $next_open_time->format( 'Y-m-d H:i' ) : false;
 				$out[ 'next_open_time_message' ] = $this->next_open_time_message();
 			}
-			
+
 		}
 
 
@@ -1068,9 +1068,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		foreach ( $ignore as $property => $val ) {
 			unset( $out[ $property ] );
 		}
-		
+
 		$comment = $this->comment();
-		
+
 		if ($comment->id_restaurant_comment) {
 			$auths = $comment->user()->auths()->get(0);
 
@@ -1089,9 +1089,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 		// get the legacy data
 		if( !$isCockpit ){
-			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );	
+			$out = array_merge( $out, $this->hours_legacy(  $isCockpit ) );
 		}
-		
+
 
 		return $out;
 	}
@@ -1100,7 +1100,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		// At first check the delivery_service
 		if( $this->delivery_service ){
 			return 1;
-		} 
+		}
 		/*
 		// Second, check if it has an admin active notification
 		$type_admin = Crunchbutton_Notification::TYPE_ADMIN;
@@ -1132,7 +1132,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 			// legacy for while
 			$community = Crunchbutton_Community::o( $restaurant[ 'id_community' ] );
 			if( $community->id_community ){
-				$this->community = $community->name;	
+				$this->community = $community->name;
 			}
 		}
 
@@ -1374,7 +1374,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 						WHERE txt IS NOT NULL";
 		return Admin::q( $query );
 	}
-	
+
 	public function comment() {
 		if (!isset($this->_comment)) {
 			$this->_comment = Restaurant_Comment::q('select * from restaurant_comment where top=1 && id_restaurant='.$this->id_restaurant.'');
@@ -1400,7 +1400,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		$time = new DateTime( ( $datetime ? $datetime : 'now' ), new DateTimeZone( $this->timezone ) );
 		$minutes = round( ( ( $time->format( 'i' ) + $estimated ) + $multipleOf / 2 ) / $multipleOf ) * $multipleOf;
 		$minutes -= $time->format( 'i' );
-		return date( 'g:i a', strtotime( $time->format( 'Y-m-d H:i' ) . ' + ' . $minutes . ' minute' ) ); 
+		return date( 'g:i a', strtotime( $time->format( 'Y-m-d H:i' ) . ' + ' . $minutes . ' minute' ) );
 		*/
 	}
 
@@ -1468,12 +1468,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 					$data[ '_open' ] = false;
 					$data[ '_closesIn' ] = false;
 			} else {
-				$data[ '_closesIn_formated' ] = Cana_Util::formatMinutes( $closesIn )[ 'formatted' ];	
+				$data[ '_closesIn_formated' ] = Cana_Util::formatMinutes( $closesIn )[ 'formatted' ];
 			}
 		} else {
 			$data[ '_closesIn' ] = false;
 		}
-		
+
 		// if it is closed shows opensIn
 		if( !$data[ '_open' ] ){
 			$opensIn = $this->opensIn();
@@ -1486,12 +1486,12 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		// Min minutes to show the hurry message
-		$data[ '_minimumTime' ] = 15;  
+		$data[ '_minimumTime' ] = 15;
 
 		// tags
 		if( $data['_open'] ){
 			if( $this->delivery != 1 ){
-				$data['_tag']  = 'takeout';        
+				$data['_tag']  = 'takeout';
 			} else {
 			if( $data['_closesIn'] <= $data['_minimumTime'] && $data['_closesIn'] !== false){
 		      $data['_tag']  = 'closing';
@@ -1529,7 +1529,7 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		}
 
 		$data[ '_hours_converted_utc' ] = $hours_converted_utc;
-		
+
 		return $data;
 	}
 
@@ -1566,16 +1566,16 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 
 	// return the closed message
 	public function closed_message(){
-		return Hour::restaurantClosedMessage( $this );	
+		return Hour::restaurantClosedMessage( $this );
 	}
 
 	public function next_open_time_message( $utc = false ){
 		if( $this->open_for_business ){
 			// if the restaurant is open return false
 			if ( $this->closed() ) {
-				return Hour::restaurantNextOpenTimeMessage( $this, $utc );	
+				return Hour::restaurantNextOpenTimeMessage( $this, $utc );
 			}
-		} 
+		}
 		return false;
 	}
 
@@ -1584,9 +1584,9 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		if( $this->open_for_business ){
 			// if the restaurant is open return false
 			if ( $this->closed() ) {
-				return Hour::restaurantNextOpenTime( $this, $utc );	
+				return Hour::restaurantNextOpenTime( $this, $utc );
 			}
-		} 
+		}
 		return false;
 	}
 
@@ -1605,14 +1605,14 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	public function hours_week( $gmt = true ){
 		if( $this->open_for_business ){
 			return Hour::getByRestaurantWeek( $this, $gmt );
-		} 
+		}
 		return false;
 	}
 
 	// Export the restaurant statuses: open/close for the next 24 hours
 	public function hours_next_24_hours( $gmt = false ){
 		if( $this->open_for_business ){
-			return Hour::getByRestaurantNext24Hours( $this, $gmt );	
+			return Hour::getByRestaurantNext24Hours( $this, $gmt );
 		}
 		return false;
 	}

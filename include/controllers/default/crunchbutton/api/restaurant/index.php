@@ -174,14 +174,14 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							case 'categories':
 							case 'notifications':
 							case 'hours':
-							case 'delete-category': 
-							case 'delete-dish': 
+							case 'delete-category':
+							case 'delete-dish':
 							case 'save-dish':
 							case 'dishes':
 							default:
 								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-edit" ]);
 								break;
-						}	
+						}
 					}
 
 					if( !$hasPermission ){
@@ -207,11 +207,11 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							if ($r->id_restaurant) {
 								$bank_account = $this->request()['bank_account'];
 								if( $r->saveStripeBankAccount( $bank_account ) ){
-									echo json_encode( [ 'success' => 'success' ] );	
+									echo json_encode( [ 'success' => 'success' ] );
 								} else {
-									echo json_encode( [ 'error' => 'error' ] );	
+									echo json_encode( [ 'error' => 'error' ] );
 								}
-								
+
 							}
 							break;
 
@@ -251,11 +251,11 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								$type = $this->request()['type'];
 								$tax_id = $this->request()['tax_id'];
 								if( $r->saveStripeRecipient( $name, $type, $tax_id ) ){
-									echo json_encode( [ 'success' => 'success' ] );	
+									echo json_encode( [ 'success' => 'success' ] );
 								} else {
-									echo json_encode( [ 'error' => 'error' ] );	
+									echo json_encode( [ 'error' => 'error' ] );
 								}
-								
+
 							}
 							break;
 
@@ -276,7 +276,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								$payment->tax_id = $this->request()['tax_id'];
 								$payment->charge_credit_fee = $this->request()['charge_credit_fee'];
 								$payment->waive_fee_first_month = $this->request()['waive_fee_first_month'];
-								$payment->pay_promotions = $this->request()['pay_promotions'];
+								$payment->max_pay_promotion = $this->request()['max_pay_promotion'];
 								$payment->pay_apology_credits = $this->request()['pay_apology_credits'];
 								$payment->max_apology_credit = $this->request()['max_apology_credit'];
 								$payment->save();
@@ -343,7 +343,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							}
 							break;
 
-						case 'delete-category': 
+						case 'delete-category':
 								if( $r->deleteCategory( $this->request()[ 'id_category' ] ) ){
 									echo json_encode( [ 'success' => 'category deleted' ] );
 								} else {
@@ -352,7 +352,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							break;
 
 
-						case 'delete-dish': 
+						case 'delete-dish':
 								if( $r->deleteDish( $this->request()[ 'id_dish' ] ) ){
 									echo json_encode( [ 'success' => 'dish deleted' ] );
 								} else {
@@ -360,7 +360,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								}
 							break;
 
-					case 'save-dish': 
+					case 'save-dish':
 								if( $r->saveDish( $this->request()[ 'dish' ] ) ){
 									echo json_encode( [ 'success' => 'dish saved' ] );
 								} else {
@@ -371,7 +371,7 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 						case 'dishes':
 							$this->_saveDishes($r);
 							break;
-						
+
 						case  'weight-adj':
 							$weight_adj = $this->request()['weight_adj'];
 							$r->weight_adj = $weight_adj;
