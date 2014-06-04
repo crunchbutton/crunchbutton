@@ -4,16 +4,16 @@ NGApp.directive( 'ngResizeText', [ function() {
 		link: function(scope, element, attrs) {
 
 			elements = $(element);
-			
+
 			var resize = function() {
 				var el, _len;
 
 				if (elements.length < 0) {
 					return;
 				}
-				
+
 				elements.css('font-size','').removeClass('resized');
-				
+
 				var _results = [];
 				for (var _i = 0, _len = elements.length; _i < _len; _i++) {
 					el = elements[_i];
@@ -30,7 +30,7 @@ NGApp.directive( 'ngResizeText', [ function() {
 						return _results1;
 					})(el));
 				}
-				
+
 				elements.addClass('resized');
 				return _results;
 			};
@@ -83,10 +83,10 @@ NGApp.directive('addToCart', function(OrderService) {
 								width: 44,
 								height: 28,
 								opacity: .3
-							});	
+							});
 					},0);
 				}
-				
+
 				setTimeout(function() {
 					scope.order.cart.add(attrs.idDish);
 					scope.$apply();
@@ -236,7 +236,7 @@ NGApp.directive( 'customCheckbox', function () {
 					elem.addClass('fa-square');
 					elem.removeClass('fa-check-square');
 				}
-			};			
+			};
 		}
 	}
 });
@@ -304,9 +304,9 @@ NGApp.directive('ngScrollSpy', function () {
 			$(elem).scrollspy(sp);
 			sp.container = $('.snap-content-inner');
 			$(elem).scrollspy(sp);
-			
 
-			
+
+
 			if (App.isPhoneGap) {
 
 				var sp = {
@@ -435,7 +435,7 @@ NGApp.directive('ngToggle', function() {
 						});
 					});
 				},0);
-	
+
 				scope.$apply(function() {
 					scope[attr.ngToggle] = true;
 				});
@@ -447,10 +447,10 @@ NGApp.directive('ngToggle', function() {
 NGApp.directive( 'modalReset', function( $rootScope ) {
 	return {
 		restrict: 'A',
-		link: function( scope, element, attrs ){	
+		link: function( scope, element, attrs ){
 			scope.$on( 'modalClosed', function( e, data ) {
 				if( attrs.modalReset ){
-					scope.$eval( attrs.modalReset );	
+					scope.$eval( attrs.modalReset );
 				}
 			} );
 		}
@@ -506,7 +506,7 @@ NGApp.directive( 'phoneValidate', function () {
 						if( isValid ){
 							elem.val( elem.val().replace( /[^0-9]/g, '' ) );
 						}
-						ctrl.$setValidity( 'phoneValidate', isValid );			
+						ctrl.$setValidity( 'phoneValidate', isValid );
 					} );
 				} );
 			}
@@ -535,7 +535,7 @@ NGApp.directive('equals', function() {
 				var val1 = ngModel.$viewValue;
 				var val2 = attrs.equals;
 				if( val1 && val2 ){
-					ngModel.$setValidity('equals', val1 === val2);	
+					ngModel.$setValidity('equals', val1 === val2);
 				} else {
 					ngModel.$setValidity('equals', true );
 				}
@@ -583,4 +583,97 @@ NGApp.directive( 'isUnique', function( $resource, $timeout ) {
 				} );
 			}
 	};
+});
+
+NGApp.directive('splashPositionFix', function() {
+	return {
+
+		restrict: 'A',
+		link: function( $scope, elem, attrs, ctrl ) {
+
+			$scope.$watch( 'windowHeight', function( newValue, oldValue, scope ) {
+				if( newValue != oldValue ){
+					setTimeout( function(){
+						App.rootScope.reload();
+					}, 100 );
+				}
+			});
+
+			var bottomText = false;
+			var greenOrange = false;
+
+			var fixPosition = function(){
+
+				var element = function( selector ){
+					var element = angular.element( selector );
+					return {
+						top: function(){
+							var marginTop = parseInt( element.css( 'marginTop' ) );
+							return parseInt( element.offset().top + marginTop );
+						},
+						reset : function(){
+							element.css( { 'marginTop' : 0 } );
+							element.css( { 'top' : element.offset().top } );
+						},
+						height: function(){
+							if ( !element.attr( 'fixed-height' ) ){
+								element.attr( 'fixed-height', element.height() );
+								element._height = element.height();
+							}
+							return parseInt( element.attr( 'fixed-height' ) );
+						},
+						bottom: function(){
+							return parseInt( this.top() ) + parseInt( this.height() );
+						},
+						setTop: function( top ){
+							element.css( { 'marginTop' : top } );
+						}
+					}
+				};
+
+				// initialize objects
+				if( !bottomText && !greenOrange ){
+					bottomText = element( '.splash-bottom' );
+					greenOrange = element( '.about-green-orange-scene' );
+				}
+				bottomText.reset();
+				greenOrange.reset();
+
+				var distance = bottomText.top() - greenOrange.bottom();
+				var maxDistance = 70;
+				var minDistance = 15;
+				var step = 5;
+
+				var windowHeight = $scope.windowHeight - maxDistance;
+
+				var calcPosition = function(){
+					var ok = false;
+					var top = maxDistance;
+					var watchDog = 100;
+					while( !ok ){
+						var test_top = bottomText.bottom() + top + minDistance;
+						if( test_top <= windowHeight ){
+							bottomText.setTop( top );
+							ok = true;
+						}
+						top -= step;
+						watchDog--;
+						if( watchDog <= 0 ){ ok = true; continue; }
+					}
+				}
+				var distance = bottomText.top() - greenOrange.bottom();
+				if( distance < maxDistance ){
+					calcPosition();
+				}
+				// get the distance again
+				var distance = bottomText.top() - greenOrange.bottom();
+				if( distance < minDistance ){
+					greenOrange.setTop( -minDistance );
+				}
+				return;
+			}
+
+			setTimeout( function(){ fixPosition();}, 10 );
+		}
+	}
 });
