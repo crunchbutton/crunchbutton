@@ -6,7 +6,7 @@ NGApp.controller('DownloadCtrl', function ($scope, $http) {
 		number: '',
 		sent: false,
 		send: function() {
-			$http.post(App.service + 'download?num=' + $scope.text.number.replace(/-/g,''));				
+			$http.post(App.service + 'download?num=' + $scope.text.number.replace(/-/g,''));
 			$scope.text.sent = true;
 		}
 	};
@@ -16,7 +16,9 @@ NGApp.controller('DownloadCtrl', function ($scope, $http) {
  * splash page
  */
 NGApp.controller('SplashCtrl', function ($scope, AccountFacebookService) {
+
 	$scope.facebook = AccountFacebookService;
+
 	if (App.parallax.setupBackgroundImage) {
 		App.parallax.setupBackgroundImage( $( '.home-top' ).get( 0 ) );
 		if( App.isPhoneGap && App.isAndroid() ){
@@ -124,7 +126,7 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, CommunityAli
 NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $location, $timeout, RestaurantsService, LocationService, RestaurantService, CommunityAliasService ) {
 
 	$scope.restaurants = false;
-	
+
 	$scope.loadingRestaurant = false;
 
 	var showMoreStage = 1; // stage 1: show top 6 maximized, stage 2: show all maximized, stage 3: show all - #2456
@@ -153,14 +155,14 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		$location.path( '/' );
 		return;
 	}
-	
+
 	var motivationText = ['You are awesome','You are loved','You are beautiful','You\'re at the top of your game','You are rad'];
 	$scope.motivationText = motivationText[Math.floor(Math.random() * motivationText.length)];
 
 	var restaurants = RestaurantsService;
 
 	$scope.mealItemClass = App.isAndroid() ? 'meal-food-android' : '';
-	
+
 	var checkOpen = function() {
 		var allClosed = true;
 		for (var x in $scope.restaurants) {
@@ -170,7 +172,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			}
 		}
 		$scope.allClosed = allClosed;
-					
+
 	};
 
 	var updateRestaurantsStatus = null;
@@ -234,16 +236,16 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 
 		var checkHours = function(){
 			if ( restaurant.openRestaurantPage( dateTime.getNow() ) ) {
-				// Store the load info of the clicked restaurant to optmize the restaurant page load			
+				// Store the load info of the clicked restaurant to optmize the restaurant page load
 				RestaurantService.basicInfo = restaurant;
-				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );	
+				App.go( '/' + restaurants.permalink + '/' + restaurant.permalink, 'push' );
 			} else {
 				$rootScope.$broadcast( 'restaurantClosedClick', restaurant );
 				$scope.restaurants = restaurants.getStatus();
 			}
 		}
 		// See #2799
-		restaurant.isActive( 
+		restaurant.isActive(
 			function( active ){
 				if( active ){
 					$scope.loadingRestaurant = false;
@@ -274,7 +276,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 		CommunityAliasService.removeCommunityStyle();
 	}
 
-	restaurants.list( 
+	restaurants.list(
 		// Success
 		function(){
 
@@ -324,7 +326,7 @@ NGApp.controller( 'RestaurantsCtrl', function ( $scope, $rootScope, $http, $loca
 			}
 			$('.content').removeClass('smaller-width');
 
-		}, 
+		},
 		// Error
 		function(){
 			App.go( '/location' );
@@ -372,7 +374,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 	if (!App.isPhoneGap) {
 		$scope.location.init();
 	}
-	
+
 	document.title = 'Food Delivery | Crunchbutton';
 
 	$scope.yourArea = $scope.location.position.pos().city() || 'your area';
@@ -407,9 +409,9 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		// If the entered address does not have zip code show the enter zip code message #1763
 		var entered = $scope.location.position.pos().entered();
 		var isStreet = $scope.location.position.pos().valid( 'order' );
-		
+
 		if (isStreet && entered && !App.isUI2() && !entered.match(new RegExp(/\d{5}(?:[-\s]\d{4})?/))) {
-			$('.location-address').val('').attr('placeholder','Please include a zip code');	
+			$('.location-address').val('').attr('placeholder','Please include a zip code');
 			$scope.$broadcast( 'locationNotServed',  true );
 		} else {
 			$scope.locationError = true;
@@ -429,12 +431,12 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 			var entered = $scope.location.position.pos().entered();
 			var isStreet = $scope.location.position.pos().valid( 'order' );
 			if( isStreet && !entered.match(new RegExp( /\d{5}(?:[-\s]\d{4})?/ )) ){
-				$('.location-address').val('').attr('placeholder','Please include a zip code');	
+				$('.location-address').val('').attr('placeholder','Please include a zip code');
 			} else {
-				$('.location-address').val('').attr('placeholder','Please include a zip code or city name');	
+				$('.location-address').val('').attr('placeholder','Please include a zip code or city name');
 			}
 		} else {
-			$('.location-address').val('').attr('placeholder','Please enter an address or zip');	
+			$('.location-address').val('').attr('placeholder','Please enter an address or zip');
 		}
 
 		// if we detect his location and it is not served #2311
@@ -474,7 +476,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		$scope.warningPlaceholder = false;
 		$scope.isProcessing = false;
 		if (!$scope.$$phase){
-			$scope.$apply();	
+			$scope.$apply();
 		}
 	};
 
@@ -484,7 +486,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 		$scope.blur( '.location-address' );
 
 		$scope.location.form.address = $.trim( $scope.location.form.address );
-		
+
 		if ( $scope.location.form.address == '' ) {
 			var locSpin = $( '.location-detect' ).data( 'spinner' );
 			locSpin.start();
@@ -497,7 +499,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 				// Add the position at the locations
 				$scope.location.position.addLocation( loc );
 				// Verify if user address is served
-				restaurants.list( 
+				restaurants.list(
 					// Yay the user's location is served
 					proceed,
 					// Error not served
@@ -508,7 +510,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 						}
 					}
 				);
-			}, 
+			},
 			// Error, user doesn't shared his location
 			function(){
 				locSpin.stop();
@@ -532,11 +534,11 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 
 			$scope.isProcessing = true;
 
-			$scope.location.addVerify( $scope.location.form.address, 
+			$scope.location.addVerify( $scope.location.form.address,
 				// Address ok
 				function() {
 					// Verify if the address has restaurant
-					restaurants.list( 
+					restaurants.list(
 						// Success
 						proceed,
 						// Error
@@ -544,7 +546,7 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 							$scope.$broadcast( 'locationError' );
 							$scope.isProcessing = false;
 						} );
-				}, 
+				},
 				// Address not ok
 				function() {
 					spin.stop();
@@ -554,13 +556,13 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 					$scope.focus( '.location-address' );
 					$scope.isProcessing = false;
 					if (!$scope.$$phase){
-						$scope.$apply();	
+						$scope.$apply();
 					}
 				}
 			);
 		}
 	}
-	
+
 	$scope.locEat = function() {
 		var locSpin = $( '.location-detect' ).data( 'spinner' );
 		var error = function(){
@@ -575,11 +577,11 @@ NGApp.controller( 'LocationCtrl', function ($scope, $http, $location, $rootScope
 			// Add the position at the locations
 			$scope.location.position.addLocation(loc);
 			// Verify if user address is served
-			restaurants.list( 
+			restaurants.list(
 				// Success
 				proceed,
 				// Error
-				error 
+				error
 			);
 		}, error );
 	};
@@ -627,7 +629,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	order.startStoreEntederInfo = false;
 	$scope.order.form = order.form;
 	$scope.order.info = order.info;
-	
+
 	$scope.Math = window.Math;
 
 	$scope.nothingInTheCartDesktop = App.AB.pluck('nothingInTheCartDesktop', App.config.ab.nothingInTheCartDesktop).line;
@@ -636,9 +638,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.order.creditCardChanged = function() {
 		order._cardInfoHasChanged = true;
 	};
-	
+
 	var creditCard = CreditCardService;
-	
+
 	// update if the restaurant is closed or open every 35 seconds
 	var updateStatus = function(){
 		updateRestaurantStatus = $timeout( function(){
@@ -649,7 +651,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 				$scope.open = open;
 			}
 			if (!$scope.$$phase){
-				$scope.$apply();	
+				$scope.$apply();
 			}
 			updateStatus();
 		}, 1000 * 35 );
@@ -678,7 +680,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		checkDateTime();
 	});
 
-	// Set the id_restaurant 
+	// Set the id_restaurant
 	order.cart.setRestaurant( $routeParams.id );
 
 	MainNavigationService.order = $scope.order;
@@ -743,7 +745,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		// Give time to close the modal.
 		setTimeout( function(){ order.submit( true );;	}, 300 );
 	}
-	
+
 	$scope.giftCardCreditPayment = function(){
 		$rootScope.closePopup();
 		$scope.order.tooglePayment( 'card' );
@@ -781,7 +783,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 	// Alias to CartService 'public' methods
 	$scope.order.cart = {};
-	$scope.order.cart.add = function( item ){		
+	$scope.order.cart.add = function( item ){
 		order.cart.add( item );
 		$scope.getFoodButton();
 		$rootScope.$broadcast( 'itemAdded', true );
@@ -846,7 +848,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 				$scope.credit.hasValue = true;
 			} else {
 				$scope.credit.hasValue = false;
-			}	
+			}
 		} );
 	});
 
@@ -864,7 +866,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 	$scope.$on( 'restaurantLoaded', function(e, data) {
 
 		$scope.restaurantLoaded = RestaurantService.alreadyLoaded();
-		
+
 		var community = data.community;
 
 		$scope.restaurant = data.restaurant;
@@ -872,11 +874,11 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		order.restaurant = $scope.restaurant;
 
 		MainNavigationService.restaurant = $scope.restaurant;
-		
+
 		$scope.open = $scope.restaurant.open();
 
 		document.title = $scope.restaurant.name + ' | Food Delivery | Order from ' + ( community.name  ? community.name  : 'Local') + ' Restaurants | Crunchbutton';
-		
+
 
 		var process = function(){
 			order.init();
@@ -884,11 +886,11 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 			// Update some gift cards variables
 			giftcard.notes_field.id_restaurant = $scope.restaurant.id_restaurant;
 			giftcard.notes_field.restaurant_accepts = ( $scope.restaurant.giftcard > 0 );
-			
+
 			var position = PositionsService;
 			var address = position.pos();
 
-			// If the typed address is valid (order) and the user address is empty use the typed one #1152 and #1989 
+			// If the typed address is valid (order) and the user address is empty use the typed one #1152 and #1989
 			if( !order.account.user || order.account.user.address == '' ){
 				if( address.type() == 'user' && address.valid( 'order' ) ){
 					if( order._useCompleteAddress ){
@@ -898,9 +900,9 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 					}
 				}
 			}
-			
+
 			$scope.order.cart.items = order.cart.getItems();
-			
+
 			$rootScope.$safeApply( function($scope) {} );
 
 			// @todo: do we still neded this??
@@ -911,27 +913,27 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 
 			$scope.getFoodButton();
 
-		}	
+		}
 
 		setTimeout( function(){
 			// add that its been loaded so we can show the overpull peeking guy
 			$('body').addClass('page-restaurant-loaded');
 
 			// Call anyway
-			process();	
+			process();
 
 			// see #2799
 			$scope.$on( 'UserRestaurantInfoLoaded', function( e, data ) {
 				UserRestaurantInfoLoaded = true;
 				validateGiftCard = true;
 				// process credit
-				credit.processCredit( parseFloat( data.credit ) );	
+				credit.processCredit( parseFloat( data.credit ) );
 				// process gift card
 				giftcard.notes_field.processJson( data.giftcard );
 				// process the preset stuff
 				var id_preset = data.id_preset;
 				// Method that checks if the preset must to be reloaded #1988
-				OrderService.account.checkPresetUpdate( id_preset, $scope.restaurant.id_restaurant, 
+				OrderService.account.checkPresetUpdate( id_preset, $scope.restaurant.id_restaurant,
 					// will be called if the preset was reloaded
 					function(){
 						// reset cart
@@ -1003,7 +1005,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	$scope.order = {};
 	$scope.restaurant = {};
 	$scope.width = $(window).width();
-	
+
 	OrderViewService.load();
 
 	$scope.isMobile = App.isMobile();
@@ -1016,7 +1018,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 		invite_url : ReferralService.invite_url,
 		value : ReferralService.value,
 		enabled : ReferralService.enabled
-	}	
+	}
 
 	// Load the invite_url
 	if( !ReferralService.invite_url ){
@@ -1031,14 +1033,14 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
 	});
 
 	$scope.$on( 'OrderViewLoadedOrder', function(e, order) {
-		$scope.order = order;	
+		$scope.order = order;
 		$scope.$safeApply();
 	});
 
 	$scope.referral.cleaned_url = function(){
 		return ReferralService.cleaned_url();
 	}
-	
+
 	$scope.print = function() {
 		window.open('http://google.com', '_blank');
 		$('.order-print').get(0).contentWindow.document.body.innerHTML = $('.order-print-content').html();
@@ -1058,7 +1060,7 @@ NGApp.controller('OrderCtrl', function ($scope, $http, $location, $routeParams, 
  * Orders page. only avaiable after a user has placed an order or signed up.
  * @todo: change to account page
  */
- 
+
 NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountService, AccountSignOut, OrdersService, AccountModalService, ReferralService, FacebookService ) {
 
 	if( !AccountService.isLogged() ){
@@ -1086,7 +1088,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	}
 
 	$scope.$on( 'OrdersLoaded', function(e, data) {
-		$scope.orders.list = OrdersService.list;	
+		$scope.orders.list = OrdersService.list;
 	});
 
 	$scope.referral = {
@@ -1095,7 +1097,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 		limit : ReferralService.limit,
 		invites : ReferralService.invites,
 		enabled : ReferralService.enabled
-	}	
+	}
 
 	$scope.referral.cleaned_url = function(){
 		return ReferralService.cleaned_url();
@@ -1117,7 +1119,7 @@ NGApp.controller('OrdersCtrl', function ($scope, $http, $location, AccountServic
 	$scope.referral.facebook = function(){
 		FacebookService.postInvite( $scope.referral.invite_url );
 	}
-	
+
 	$scope.referral.twitter = function(){
 		window.open('https://twitter.com/intent/tweet?url=' + $scope.referral.invite_url + '&text=#nom','_system');
 	}
@@ -1154,8 +1156,8 @@ NGApp.controller( 'AccountSevenCtrl', function ( $scope, $http, AccountModalServ
 	}
 	$scope.$on( 'facebookIdAlreadyUsed', function(e, data) {
 		$scope.facebook.facebook.wait = false;
-		$scope.account.errors.push( 'Sorry, It seems the facebook user is already related with other user.' );		
-	} );	
+		$scope.account.errors.push( 'Sorry, It seems the facebook user is already related with other user.' );
+	} );
 });
 
 
@@ -1186,7 +1188,7 @@ NGApp.controller( 'AccountResetCtrl', function ( $scope, $http, $location, Accou
 	if( $location.path().indexOf( 'reset' ) >= 0 ){
 		$scope.reset = AccountResetService;
 		AccountModalService.resetOpen();
-		$location.path( '/' );	
+		$location.path( '/' );
 	}
 });
 
@@ -1255,8 +1257,8 @@ NGApp.controller( 'RestaurantClosedCtrl', function ( $scope, $rootScope ) {
 				$scope.active = ( r.inactive ? false : true );
 				$scope.acceptingOrders = ( parseInt( r.open_for_business ) > 0 );
 				App.dialog.show('.restaurant-closed-container');
-			}); 
-		}			
+			});
+		}
 	});
 });
 
@@ -1283,8 +1285,8 @@ NGApp.controller( 'NotificationAlertCtrl', function ( $scope, $rootScope  ) {
 				scope.title = title;
 				scope.message = message;
 				App.dialog.show('.notification-alert-container');
-			}); 
-		}			
+			});
+		}
 	});
 });
 
