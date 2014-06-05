@@ -662,34 +662,43 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @param array $elements
 	 */
 	public function saveNotifications($elements) {
-		c::db()->query('DELETE FROM notification WHERE id_restaurant="'.$this->id_restaurant.'"');
-		if(!$elements)
-			return;
-		foreach ($elements as $data) {
+
+		foreach( $elements as $element ){
 			$shouldSave = false;
-			if( $data['type'] == 'admin' && $data['id_admin'] ){
-				$id_admin = $data['id_admin'];
+			if( $element[ 'type' ] == 'admin' && trim( $element[ 'id_admin' ] ) != '' ){
+				$id_admin = $element[ 'id_admin' ];
 				$value = '';
 				$shouldSave = true;
-			} if( $data['type'] != 'admin' && $data['value'] ){
-				$value = $data['value'];
+			}
+			if( $element[ 'type' ] != 'admin' && trim( $element[ 'value' ] ) != '' ){
+				$value = $element[ 'value' ];
 				$id_admin = NULL;
 				$shouldSave = true;
 			}
-			if (!$shouldSave) { continue; }
-			$element                = new Crunchbutton_Notification($data['id_notification']);
-			$element->id_restaurant = $this->id_restaurant;
-			$element->active        = ($data['active'] == 'true' || $data['active'] == '1') ? "1" : "0";
-			$element->type          = $data['type'];
-			$element->id_admin      = $id_admin;
-			$element->value         = $value;
-			$element->save();
+			// echo '<pre>';var_dump( $shouldSave, $element );exit();
+			if( $shouldSave ){
+				if( $element[ 'id_notification' ] ){
+					$notification = Crunchbutton_Notification::o( $element[ 'id_notification' ] );
+				} else {
+					$notification = new Crunchbutton_Notification;
+				}
+				$notification->id_restaurant = $this->id_restaurant;
+				$notification->active = ( $element[ 'active' ] == 'true' || $element[ 'active' ] == '1' ) ? 1 : 0;
+				$notification->type = $element[ 'type' ];
+				$notification->id_admin = $id_admin;
+				$notification->value = $value;
+				$notification->save();
+			} else {
+				// remove
+				if( $element[ 'id_notification' ] ){
+					c::db()->query( 'DELETE FROM notification WHERE id_notification = "' . $element[ 'id_notification' ] . '"' );
+				}
+			}
 		}
-
 		$this->_notifications = null;
-		$where           = [];
-		$where['active'] = NULL;
-		$elements = $this->notifications($where);
+		$where = [];
+		$where[ 'active' ] = NULL;
+		$elements = $this->notifications( $where );
 		return $elements;
 	}
 
