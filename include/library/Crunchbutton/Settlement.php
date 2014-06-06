@@ -34,24 +34,22 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	// get restaurants that we need to pay
 	public static function restaurants($filters = []) {
-		$q = '
-			select
-				restaurant.*, max(p.date) as last_pay, p.id_restaurant as p_id_rest
-			from restaurant
-			left outer join (select id_restaurant, `date` from `payment`) as p using(id_restaurant)
-			inner join restaurant_payment_type rpt on rpt.id_restaurant = restaurant.id_restaurant
-			where active=1
-		';
+		$q = 'SELECT restaurant.*,
+					       MAX(p.date) AS last_pay,
+					       p.id_restaurant AS p_id_rest
+					FROM restaurant
+					LEFT OUTER JOIN
+					  (SELECT id_restaurant,
+					          `date`
+					   FROM `payment`) AS p using(id_restaurant)
+					INNER JOIN restaurant_payment_type rpt ON rpt.id_restaurant = restaurant.id_restaurant
+					WHERE active=1';
 		if ($filters['payment_method']) {
-			 $q .= ' and `rpt.payment_method`="'.$filters['payment_method'].'" ';
+			 $q .= ' AND `rpt.payment_method`="'.$filters['payment_method'].'" ';
 		}
-		$q .= '
-			group by id_restaurant
-			order by
-				(case when p_id_rest is null then 1 else 0 end) asc,
-				last_pay asc
-		';
-
+		$q .= ' AND restaurant.id_restaurant = 210
+						GROUP BY id_restaurant
+						ORDER BY (CASE WHEN p_id_rest IS NULL THEN 1 ELSE 0 END) ASC, last_pay ASC';
 		return Restaurant::q($q);
 	}
 
@@ -59,17 +57,37 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// this method receives the restaurant orders and run the math
 	public function payableOrders( $orders ){
 
+		foreach ( $orders as $order ) {
+
+			$order = $this->processOrder( $order );
+
+		}
+		return $orders;
+	}
+
+
+	public function processOrder( $order ){
+		$subtotal = $order->subtotal();
+		echo '<pre>';var_dump( $subtotal );exit();
+	}
+
+}
+
+
+
+
+/*******************************************
+
+	// this method receives the restaurant orders and run the math
+	public function payableOrders( $orders ){
+
 		foreach ($orders as $order) {
 
-			/***
-			 * BEGIN PER ORDER FEE CALCULATION
-			 */
 
 			// @note: i dont know what this is at all or why its a fixed 85% -devin
-			if (Crunchbutton_Credit::creditByOrderPaidBy($order->id_order, Crunchbutton_Credit::PAID_BY_PROMOTIONAL)) {
+			if ( Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_PROMOTIONAL ) ) {
 				$order->_display_price *= 0.85;
 				$order->_display_final_price *= 0.85;
-
 			} else {
 				$order->_display_price = $order->price;
 				$order->_display_final_price = $order->final_price;
@@ -88,21 +106,14 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$order->restaurant()->_settlement_cash += $order->_display_final_price;
 			}
 
-			/***
-			 * BEGIN PER RESTAURANT FEE CALCULATION
-			 */
-
 			$order->restaurant()->_settlement_cc_fees += $order->_cc_fee;
 			$order->restaurant()->_settlement_cb_fees += $order->_cb_fee;
 
 			// @todo: determine if a driver picked this up and add them to a payment list
 
-			/*
-			 * END PER ORDER FEE CALCULATION
-			 ***/
 
 		}
 		return $orders;
 	}
 
-}
+********************************************/

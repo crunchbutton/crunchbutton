@@ -2351,6 +2351,11 @@ class Crunchbutton_Order extends Cana_Table {
 		return $ret;
 	}
 
+	// aliases
+	public function subtotal(){
+		return $this->price;
+	}
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this

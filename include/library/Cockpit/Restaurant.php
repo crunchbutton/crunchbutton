@@ -31,6 +31,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 				and name not like "%test%"
 				order by `pay_type` asc, `date` asc
 			';
+			$q = 'select * from `order` where id_order = 22772';
 			$orders = Order::q($q);
 			$this->_payableOrders = $orders;
 		}
