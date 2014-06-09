@@ -9,6 +9,7 @@
  *
  * @property notes The comments the user set for the order
  */
+
 class Crunchbutton_Order extends Cana_Table {
 
 	const PAY_TYPE_CASH        = 'cash';
@@ -959,18 +960,22 @@ class Crunchbutton_Order extends Cana_Table {
 	}
 
 	public function cbFee() {
-		return ($this->restaurant()->fee_restaurant) * ($this->price) / 100;
+		return ($this->restaurant_fee_percent()) * ($this->price) / 100;
 	}
 
 	public function customer_fee(){
 		return ($this->restaurant()->fee_customer) * ($this->price) / 100;
 	}
 
+	public function restaurant_fee_percent(){
+		return ( !is_null( $this->fee_restaurant ) ) ? $this->fee_restaurant : $this->restaurant()->fee_restaurant;
+	}
+
 	public function fee(){
 		if( $this->restaurant()->fee_on_subtotal ){
 			return $this->cbFee();
 		} else {
-			return ($this->restaurant()->fee_restaurant) * ($this->final_price) / 100;
+			return $this->restaurant_fee_percent() * ($this->final_price) / 100;
 		}
 	}
 

@@ -19,6 +19,9 @@
 	</div>
 
 	<? foreach($this->settlement->restaurants as $restaurant) : ?>
+		<? if (!$restaurant->payableOrders()->count()) :
+			continue;
+		endif ; ?>
 
 		<div class='box RST_container RST<?=$restaurant->id?>_container'
 			data_restaurant_id=<?=$restaurant->id?>
@@ -46,18 +49,53 @@
 
 			<div style='padding:5px; border-bottom:1px solid #ccc;'>
 				<table class=''><tbody>
-					<? foreach ( $restaurant->payableOrders() as $order) : ?>
+					<? foreach ($restaurant->payableOrders() as $order) : ?>
 						<tr>
 							<td style='min-width:100px;padding-right:10px;'>
+								<div
+									id='ORD<?=$order->id_order?>'
+									style='display:none;'
+									class='ord_row'
+									data_pay_type='<?=$order->pay_type?>'
+									data_cc_fee_cents='<?=round($order->_cc_fee*100)?>'
+									data_cb_fee_cents='<?=round($order->_cb_fee*100)?>'
+									data_final_price_cents='<?=$order->_display_final_price*100?>'
+									data_subtotal_cents='<?=$order->_display_price*100?>'
+									data_id_order='<?=$order->id_order?>'
+								/>
+								<!--a href='#' onclick="javascript:delete_row(this);return false;">
+									<span class='remove_row icon-remove-sign' />
+								</a-->
+								&nbsp;&nbsp;
 								<a href='https://crunchbutton.com/order/<?=$order->uuid?>' target='_blank'>
 									#<?=$order->id_order?>
 								</a>
 							</td>
 							<td style='min-width:200px;'>
-								<?=$order->name?>
+								<? if ($order->refunded) : ?>
+									<span class='name' style='display:none;'><?=$order->name?></span>
+									<span class='choice' style='color:red;'>
+										Refunded! Choose:
+										<a href='#' onclick='javascript:$(this).closest("td").find(".name").show();$(this).closest(".choice").hide();return false;' <?= ($order->pay_if_refunded ? 'style="font-weight:bold;"' : '') ?> >Keep</a> or
+										<a href='#' onclick="javascript:delete_row(this);return false;" <?= (!$order->pay_if_refunded ? 'style="font-weight:bold;"' : '') ?> >
+											Remove
+										</a>
+									</span>
+								<? elseif(Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_RESTAURANT )) : ?>
+									<span class='name' style='display:none;'><?=$order->name?></span>
+									<span class='choice' style='color:red;'>
+										Restaurant Credit! Choose:
+										<a href='#' onclick='javascript:$(this).closest("td").find(".name").show();$(this).closest(".choice").hide();return false;' <?= ($order->pay_if_refunded ? 'style="font-weight:bold;"' : '') ?> >Keep</a> or
+										<a href='#' onclick="javascript:delete_row(this);return false;" <?= (!$order->pay_if_refunded ? 'style="font-weight:bold;"' : '') ?> >
+											Remove
+										</a>
+									</span>
+								<? else : ?>
+									<?=$order->name?>
+								<? endif ; ?>
 							</td>
 							<td style='min-width:80px; text-align:right; padding-right:10px;'>
-								<?=Util::format_price($order->final_price)?>
+								<?=Util::format_price($order->_display_final_price)?>
 							</td>
 							<td style='min-width:80px;'>
 								<?=$order->pay_type?>
@@ -76,25 +114,24 @@
 						<td></td>
 						<td></td>
 					</tr>
-					<?php echo '<pre>';var_dump( $restaurant->payment_data );exit(); ?>
 					<tr>
 						<td></td>
 						<td>Cash Subtotal</td>
-						<td class="settlement-subtotal settlement-subtotal-grey">$<?=$restaurant->payment_data[ 'cash_subtotal' ]; ?></td>
+						<td class="settlement-subtotal settlement-subtotal-grey">$<?=$restaurant->_settlement_cash?></td>
 						<td></td>
 						<td></td>
 					</tr>
 					<tr>
 						<td></td>
 						<td>Card Subtotal</td>
-						<td class="settlement-subtotal settlement-subtotal-grey">$<?=$restaurant->payment_data[ 'credit_subtotal' ]; ?></td>
+						<td class="settlement-subtotal settlement-subtotal-grey">$<?=$restaurant->_settlement_card?></td>
 						<td></td>
 						<td></td>
 					</tr>
 					<tr>
 						<td></td>
 						<td>Visa/Mastercard/Amex Charges</td>
-						<td class="settlement-subtotal settlement-subtotal-red">$<?=$restaurant->payment_data[ 'credit_charge' ]; ?></td>
+						<td class="settlement-subtotal settlement-subtotal-red">$<?=$restaurant->_settlement_cc_fees?></td>
 						<td></td>
 						<td></td>
 					</tr>
