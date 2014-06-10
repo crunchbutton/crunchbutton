@@ -29,8 +29,7 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 				and DATE(`date`) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
 				and DATE(`date`) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
 				and name not like "%test%"
-				order by `pay_type` asc, `date` asc
-			';
+				order by `pay_type` asc, `date` asc ';
 			$orders = Order::q($q);
 			$this->_payableOrders = $orders;
 		}

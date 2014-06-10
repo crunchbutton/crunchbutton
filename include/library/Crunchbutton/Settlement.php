@@ -10,13 +10,23 @@
 class Crunchbutton_Settlement extends Cana_Model {
 
 	public function __construct( $filters = [] ) {
+		$this->filters = $filters;
+	}
 
-		$this->restaurants = self::restaurants($filters);
+	public function start(){
 
-		foreach ($this->restaurants as $restaurant) {
-			$restaurant->_payableOrders = $restaurant->payableOrders( $filters );
-			$restaurant->payment_data = $this->processOrders( $restaurant->_payableOrders );
+		$this->restaurants = self::restaurants( $this->filters );
+
+		foreach ( $this->restaurants as $restaurant ) {
+			$restaurant->_payableOrders = $restaurant->payableOrders( $this->filters );
+			$payableOrders = $restaurant->_payableOrders;
+			$orders = [];
+			foreach( $payableOrders as $order ){
+				$orders[] = $this->orderExtractVariables( $order );
+			}
+			$restaurant->payment_data = $this->processOrders( $orders );
 		}
+		return $this->restaurants;
 	}
 
 	// get restaurants that we need to pay
@@ -31,9 +41,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 		$q .= ' AND restaurant.id_restaurant
 						GROUP BY id_restaurant
-						 ORDER BY id_restaurant ASC';
-						 // ORDER BY (CASE WHEN p_id_rest IS NULL THEN 1 ELSE 0 END) ASC,
-		return Restaurant::q($q);
+						 ORDER BY (CASE WHEN p_id_rest IS NULL THEN 1 ELSE 0 END) ASC';
+		return Restaurant::q( $q );
 	}
 
 
@@ -42,25 +51,29 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		// start all with 0
 		$pay = [ 'card_subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'promo_gift_card' => 0, 'apology_gift_card' => 0, 'order_payment' => 0, 'cash_subtotal' => 0 ];
-
-		foreach ( $orders as $order ) {
-			$arr = $this->orderExtractVariables( $order );
-			$pay[ 'card_subtotal' ] += $this->orderCardSubtotalPayment( $arr );
-			$pay[ 'tax' ] += $this->orderTaxPayment( $arr );
-			$pay[ 'delivery_fee' ] += $this->orderDeliveryFeePayment( $arr );
-			$pay[ 'tip' ] += $this->orderTipPayment( $arr );
-			$pay[ 'customer_fee' ] += $this->orderCustomerFeePayment( $arr );
-			$pay[ 'markup' ] += $this->orderMarkupPayment( $arr );
-			$pay[ 'credit_charge' ] += $this->orderCreditChargePayment( $arr );
-			$pay[ 'restaurant_fee' ] += $this->orderRestaurantFeePayment( $arr );
-			$pay[ 'promo_gift_card' ] += $this->orderPromoGiftCardPayment( $arr );
-			$pay[ 'apology_gift_card' ] += $this->orderApologyGiftCardPayment( $arr );
-			$pay[ 'order_payment' ] += $this->orderRestaurantOrderPayment( $arr );
-			$pay[ 'cash_subtotal' ] += $this->orderCashSubtotalPayment( $arr );
-			$formal_relationship = $arr[ 'formal_relationship' ];
+		foreach ( $orders as $order ) {;
+			if( $order ){
+				$pay[ 'card_subtotal' ] += $this->orderCardSubtotalPayment( $order );
+				$pay[ 'tax' ] += $this->orderTaxPayment( $order );
+				$pay[ 'delivery_fee' ] += $this->orderDeliveryFeePayment( $order );
+				$pay[ 'tip' ] += $this->orderTipPayment( $order );
+				$pay[ 'customer_fee' ] += $this->orderCustomerFeePayment( $order );
+				$pay[ 'markup' ] += $this->orderMarkupPayment( $order );
+				$pay[ 'credit_charge' ] += $this->orderCreditChargePayment( $order );
+				$pay[ 'restaurant_fee' ] += $this->orderRestaurantFeePayment( $order );
+				$pay[ 'promo_gift_card' ] += $this->orderPromoGiftCardPayment( $order );
+				$pay[ 'apology_gift_card' ] += $this->orderApologyGiftCardPayment( $order );
+				$pay[ 'order_payment' ] += $this->orderRestaurantOrderPayment( $order );
+				$pay[ 'cash_subtotal' ] += $this->orderCashSubtotalPayment( $order );
+				$pay[ 'formal_relationship' ] = $order[ 'formal_relationship' ];
+			}
 		}
-
 		// sum
+		$pay[ 'total_due' ] = $this->orderCalculateTotalDue( $pay );
+		return $pay;
+	}
+
+	public function orderCalculateTotalDue( $pay ){
 		$total_due = 	$pay[ 'card_subtotal' ] +
 									$pay[ 'tax' ] +
 									$pay[ 'delivery_fee' ] +
@@ -71,8 +84,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 									$pay[ 'restaurant_fee' ] +
 									$pay[ 'promo_gift_card' ] +
 									$pay[ 'apology_gift_card' ];
-		$pay[ 'total_due' ] = ( max( $total_due, 0 ) ) * $formal_relationship;
-		return $pay;
+		return ( max( $total_due, 0 ) ) * $pay[ 'formal_relationship' ];
 	}
 
 	// This method calculates the "base" charge for credit orders using the formula
@@ -252,6 +264,13 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'delivery_service' ] = ( $order->delivery_service > 0 ) ? 1: 0;
 		$values[ 'formal_relationship' ] = ( $order->restaurant()->formal_relationship > 0 ) ? 1: 0;
 		$values[ 'paid_with_cb_card' ] = ( $order->paid_with_cb_card > 0 ) ? 1: 0;
+		$values[ 'refunded' ] = ( $order->refunded > 0 ) ? 1: 0;
+		$values[ 'pay_if_refunded' ] = ( $order->pay_if_refunded > 0 ) ? 1: 0;
+
+		// Pay if Refunded
+		if( $values[ 'refunded' ] == 1 && $values[ 'pay_if_refunded' ] == 0 ){
+			return false;
+		}
 
 		// convert all to float -> mysql returns some values as string
 		foreach( $values as $key => $val ){
@@ -260,48 +279,3 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return $values;
 	}
 }
-
-
-
-
-/*******************************************
-
-	// this method receives the restaurant orders and run the math
-	public function payableOrders( $orders ){
-
-		foreach ($orders as $order) {
-
-
-			// @note: i dont know what this is at all or why its a fixed 85% -devin
-			if ( Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_PROMOTIONAL ) ) {
-				$order->_display_price *= 0.85;
-				$order->_display_final_price *= 0.85;
-			} else {
-				$order->_display_price = $order->price;
-				$order->_display_final_price = $order->final_price;
-			}
-
-			if ($restaurant->charge_credit_fee == '0') {
-				$order->_cc_fee = 0;
-			} else {
-				$order->_cc_fee = $order->pay_type == 'card' ? .3 + .029 * $order->_display_final_price : 0;
-			}
-			$order->_cb_fee = $order->cbFee(); // return ($this->restaurant()->fee_restaurant) * ($this->price) / 100;
-
-			if ($order->pay_type == 'card') {
-				$order->restaurant()->_settlement_card += $order->_display_final_price;
-			} else {
-				$order->restaurant()->_settlement_cash += $order->_display_final_price;
-			}
-
-			$order->restaurant()->_settlement_cc_fees += $order->_cc_fee;
-			$order->restaurant()->_settlement_cb_fees += $order->_cb_fee;
-
-			// @todo: determine if a driver picked this up and add them to a payment list
-
-
-		}
-		return $orders;
-	}
-
-********************************************/
