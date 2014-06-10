@@ -2,6 +2,11 @@
 
 class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 
+	public function __construct($id = null) {
+		$this->_changeSetName = 'Crunchbutton_Restaurant';
+		parent::__construct($id);
+	}
+
 	// Settlement stuff
 
 	// get the last payment
