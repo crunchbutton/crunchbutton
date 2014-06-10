@@ -31,7 +31,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 		$q .= ' AND restaurant.id_restaurant
 						GROUP BY id_restaurant
-						ORDER BY (CASE WHEN p_id_rest IS NULL THEN 1 ELSE 0 END) ASC, last_pay ASC';
+						 ORDER BY id_restaurant ASC';
+						 // ORDER BY (CASE WHEN p_id_rest IS NULL THEN 1 ELSE 0 END) ASC,
 		return Restaurant::q($q);
 	}
 
@@ -58,6 +59,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$pay[ 'cash_subtotal' ] += $this->orderCashSubtotalPayment( $arr );
 			$formal_relationship = $arr[ 'formal_relationship' ];
 		}
+
+		// sum
 		$total_due = 	$pay[ 'card_subtotal' ] +
 									$pay[ 'tax' ] +
 									$pay[ 'delivery_fee' ] +
@@ -68,13 +71,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 									$pay[ 'restaurant_fee' ] +
 									$pay[ 'promo_gift_card' ] +
 									$pay[ 'apology_gift_card' ];
-
 		$pay[ 'total_due' ] = ( max( $total_due, 0 ) ) * $formal_relationship;
-echo '<pre>';var_dump( $pay );exit();
 		return $pay;
 	}
 
-	// This cell calculates the "base" charge for credit orders using the formula
+	// This method calculates the "base" charge for credit orders using the formula
 	// that Balanced and Stripe use.
 	public function orderBaseCreditCharge( $arr ){
 		return ( 0.3 + 0.029 * $arr[ 'total_charged' ] ) * $arr[ 'credit' ];
@@ -210,8 +211,7 @@ echo '<pre>';var_dump( $pay );exit();
 		return 	( $arr[ 'subtotal' ] +
 							$arr[ 'tax' ] +
 							( $arr[ 'tip' ] + $arr[ 'delivery_fee' ] ) *
-							( 1 - $arr[ 'delivery_service' ] )
-						) * $arr[ 'cash' ];
+							( 1 - $arr[ 'delivery_service' ] ) ) * $arr[ 'cash' ];
 	}
 
 	public function orderTotalFee( $arr ){
@@ -231,6 +231,7 @@ echo '<pre>';var_dump( $pay );exit();
 		$values[ 'restaurant_fee_percent' ] = $order->restaurant_fee_percent();
 		$values[ 'delivery_service_markup' ] = $order->delivery_service_markup;
 		$values[ 'delivery_service_markup_value' ] = $order->delivery_service_markup_value;
+		$values[ 'id_admin' ] = $order->getDeliveryDriver()->id_admin; // driver
 
 		$values[ 'gift_card_total' ] = $order->chargedByCredit();
 		$values[ 'gift_card_paid_by_crunchbutton' ] = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_CRUNCHBUTTON );
@@ -258,7 +259,6 @@ echo '<pre>';var_dump( $pay );exit();
 		}
 		return $values;
 	}
-
 }
 
 
