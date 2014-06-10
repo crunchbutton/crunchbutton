@@ -27,7 +27,7 @@
 				<div class="box-content">
 					<table width="100%">
 						<tr>
-							<?php foreach( $this->days as $day ) { 
+							<?php foreach( $this->days as $day ) {
 								$dark = ( $day->format( 'N' ) == 7 || $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
 							?>
 								<th width="14%" style="background:<?php echo $dark; ?>">
@@ -43,7 +43,7 @@
 							<?php } ?>
 						</tr>
 						<tr>
-							<?php foreach( $this->days as $day ) { 
+							<?php foreach( $this->days as $day ) {
 								$dark = ( $day->format( 'N' ) == 7 || $day->format( 'N' ) % 2 == 0 ) ? '#F5F5F5' : '';
 							?>
 								<td width="14%" style="background:<?php echo $dark; ?>" valign="top">
@@ -65,15 +65,15 @@
 												foreach ( $groups as $group ) {
 													$pos = strrpos( $group->name, Crunchbutton_Group::DRIVER_GROUPS_PREFIX );
 													if( $pos !== false ){
-														$adminCommunities[ $group->name ] = Group::getRestaurantCommunityName( $group->name );	
+														$adminCommunities[ $group->name ] = Group::getRestaurantCommunityName( $group->name );
 													}
 												}
 												if( count( $adminCommunities ) > 0 && $adminCommunities != '' ){
 													$join = '';
-													foreach( $adminCommunities as $communitie ) { 
+													foreach( $adminCommunities as $communitie ) {
 														$communities .= $join . $communitie;
 														$join = ', ';
-													} 
+													}
 												} else {
 													$communities = 'None';
 												}
@@ -103,7 +103,7 @@
 											<?php
 										}
 									}
-									?>	
+									?>
 									<?php if( $hasEditPermission ) { ?>
 									<div>
 										<button class="btn btn-default modal-hours-open" href="/drivers/hours/add/<?php echo $day->format( 'Y/m/d' ); ?>/<?php echo $this->week; ?>" style="width:80%;" title="Add hours to <?php echo $day->format( 'M' ); ?> <?php echo $day->format( 'd' ); ?> (<?php echo $day->format( 'D' ); ?>)">
@@ -116,7 +116,7 @@
 							<?php } ?>
 						</tr>
 					</table>
-					
+
 					<br/>
 					<div class="padded" style="font-size:16px;">
 						<?php if( $hasEditPermission ) { ?>
@@ -177,12 +177,12 @@ workingHours.toggleTimezone = function(){
 
 
 <?php foreach( $this->reps as $rep ) { ?>
-	<?php $now = new DateTime( 'now', new DateTimeZone( $rep->timezone ) ); ?> 
+	<?php $now = new DateTime( 'now', new DateTimeZone( $rep->timezone ) ); ?>
 	workingHours.admin_tzs[ '<?php echo $rep->id_admin ?>' ] = '<?php echo $rep->timezone ?> (<?php echo $now->format( 'T' ); ?>)';
 <?php } ?>
 workingHours.admin_tz = '';
 workingHours.setTimezone = function( id_admin ){
-	workingHours.admin_tz = ( workingHours.admin_tzs[ id_admin ] ) ? workingHours.admin_tzs[ id_admin ] : 'America/Los_Angeles'; 
+	workingHours.admin_tz = ( workingHours.admin_tzs[ id_admin ] ) ? workingHours.admin_tzs[ id_admin ] : 'America/Los_Angeles';
 	$( '#form-timezone' ).html( '<strong>' + workingHours.admin_tz + '</strong>' );
 };
 
@@ -199,7 +199,7 @@ workingHours.copyAll = function(){
 			} else {
 				alert( 'Ops, error! ' + data.error );
 			}
-		} );		
+		} );
 	}
 };
 
@@ -223,14 +223,14 @@ workingHours.add = function(){
 	if( !workingHours.validateHours( hours ) ){
 		alert( 'Unable to figure out what this time means!' );
 		$( '#form-hours' ).focus();
-		return;	
+		return;
 	}
 
 	var weekdays = [];
 	$( '[name="form-weekdays"]' ).each( function(){
 		var checkbox = $( this );
 		if( checkbox.is( ':checked' ) ){
-			weekdays.push( checkbox.val() );	
+			weekdays.push( checkbox.val() );
 		}
 	} );
 
@@ -248,8 +248,8 @@ workingHours.add = function(){
 	} );
 };
 
-workingHours.edit = function(){	
-	
+workingHours.edit = function(){
+
 	var hours = $.trim( $( '#form-hours' ).val() );
 
 	if( hours == '' ){
@@ -261,7 +261,7 @@ workingHours.edit = function(){
 	if( !workingHours.validateHours( hours ) ){
 		alert( 'Unable to figure out what this time means!' );
 		$( '#form-hours' ).focus();
-		return;	
+		return;
 	}
 
 	$.ajax( {
@@ -291,7 +291,7 @@ workingHours.copy = function(){
 			} else {
 				alert( 'Ops, error! ' + data.error );
 			}
-		} );		
+		} );
 	}
 };
 

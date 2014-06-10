@@ -1,4 +1,4 @@
-<? if (!count($this->settlement->restaurants)) : ?>
+<? if (!count($this->restaurants)) : ?>
 	No restaurants with orders found
 <? else : ?>
 	<div class='box'>
@@ -8,7 +8,7 @@
 		<div style='padding:5px; border-bottom:1px solid #ccc;' >
 			<span style='display:inline-block;min-width:100px;'>Num Restaurants</span>&nbsp;&nbsp;
 			<span id='num_restaurants'>
-			<strong><?=count($this->settlement->restaurants) ?></strong>
+			<strong><?=count($this->restaurants) ?></strong>
 			</span>
 		</div>
 		<div style='padding:5px; border-bottom:1px solid #ccc;' >
@@ -17,7 +17,7 @@
 		</div>
 	</div>
 
-	<? foreach($this->settlement->restaurants as $restaurant) : ?>
+	<? foreach($this->restaurants as $restaurant) : ?>
 		<? if (!$restaurant->payableOrders()->count()) :
 			continue;
 		endif ; ?>
