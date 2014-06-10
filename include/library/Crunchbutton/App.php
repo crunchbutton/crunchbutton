@@ -40,6 +40,9 @@ class Crunchbutton_App extends Cana_App {
 			case 'staging.kenneth.crunchr.co':
 			case 'cockpit.kenneth.crunchr.co':
 			case 'cockpit3.kenneth.crunchr.co':
+			case 'staging.manish.crunchr.co':
+			case 'cockpit.manish.crunchr.co':
+			case 'cockpit3.manish.crunchr.co':
 				$env = 'live';
 				break;
 			case 'wenzel.beta.crunchr.co':
@@ -49,11 +52,17 @@ class Crunchbutton_App extends Cana_App {
 			case 'beta.kenneth.crunchr.co':
 			case 'beta.cockpit.kenneth.crunchr.co':
 			case 'beta.cockpit3.kenneth.crunchr.co':
+			case 'beta.manish.crunchr.co':
+			case 'beta.cockpit.manish.crunchr.co':
+			case 'beta.cockpit3.manish.crunchr.co':
+
 				$env = 'beta';
 				break;
 			case 'dev.crunchr.co':
 			case 'dev.kenneth.crunchr.co':
 			case 'kenneth.crunchr.co':
+			case 'dev.manish.crunchr.co':
+			case 'manish.crunchr.co':
 				$env = 'dev';
 				break;
 			case 'cockpit.localhost':
@@ -80,6 +89,9 @@ class Crunchbutton_App extends Cana_App {
 			case 'cockpit.kenneth.crunchr.co':
 			case 'cockpit3.kenneth.crunchr.co':
 			case 'staging.kenneth.crunchr.co':
+			case 'cockpit.manish.crunchr.co':
+			case 'cockpit3.manish.crunchr.co':
+			case 'staging.manish.crunchr.co':
 				$isStaging = true;
 				$params['env'] = 'live';
 				break;
@@ -101,6 +113,9 @@ class Crunchbutton_App extends Cana_App {
 			case 'beta.kenneth.crunchr.co':
 			case 'dev.kenneth.crunchr.co':
 			case 'kenneth.crunchr.co':
+			case 'beta.manish.crunchr.co':
+			case 'dev.manish.crunchr.co':
+			case 'manish.crunchr.co':
 				$params['env'] = 'beta';
 				break;
 
@@ -241,7 +256,7 @@ class Crunchbutton_App extends Cana_App {
 
 		$this->buildAuth($this->db());
 		
-		if ($params['env'] != 'local' && $_SERVER['SERVER_NAME'] != 'dev.crunchr.co' && !preg_match('/cockpit.la|cockpit.kenneth|cockpit3/',$_SERVER['SERVER_NAME'])) {
+		if ($params['env'] != 'local' && $_SERVER['SERVER_NAME'] != 'dev.crunchr.co' && !preg_match('/cockpit.la|cockpit.kenneth|cockpit.manish|cockpit3/',$_SERVER['SERVER_NAME'])) {
 			$config->bundle = true;
 		}
 
