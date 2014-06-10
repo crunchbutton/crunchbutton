@@ -1,7 +1,6 @@
 <? if (!count($this->settlement->restaurants)) : ?>
 	No restaurants with orders found
 <? else : ?>
-
 	<div class='box'>
 		<div class='box-header'>
 			<span class='title'>Summary</span>
@@ -19,12 +18,13 @@
 	</div>
 
 	<? foreach($this->settlement->restaurants as $restaurant) : ?>
-
+		<? if (!$restaurant->payableOrders()->count()) :
+			continue;
+		endif ; ?>
 		<div class='box RST_container RST<?=$restaurant->id?>_container'
 			data_restaurant_id=<?=$restaurant->id?>
 			data_fax_number="<?=$restaurant->fax()?>"
-			data_name="<?=$restaurant->name?>"
-		>
+			data_name="<?=$restaurant->name?>" >
 		<div class='box-header'>
 			<span class="title"><?=$restaurant->name ?></span>
 		</div>
@@ -44,138 +44,124 @@
 			</div>
 		</div>
 
-			<div style='padding:5px; border-bottom:1px solid #ccc;'>
-				<table class=''><tbody>
+			<div>
+				<table>
+					<tbody>
 					<? foreach ( $restaurant->payableOrders() as $order) : ?>
 						<tr>
-							<td style='min-width:100px;padding-right:10px;'>
+							<td>
 								<a href='https://crunchbutton.com/order/<?=$order->uuid?>' target='_blank'>
 									#<?=$order->id_order?>
 								</a>
 							</td>
-							<td style='min-width:200px;'>
+							<td>
 								<?=$order->name?>
 							</td>
-							<td style='min-width:80px; text-align:right; padding-right:10px;'>
+							<td>
 								<?=Util::format_price($order->final_price)?>
 							</td>
-							<td style='min-width:80px;'>
+							<td>
 								<?=$order->pay_type?>
 							</td>
-							<td style='min-width:80px;'>
+							<td>
 								<?=date_format($order->date(),'M d, Y')?>
 							</td>
 						</tr>
 					<?
 						endforeach;
 					?>
-					<tr style="height:10px;">
+					<tr>
 						<td></td>
 						<td></td>
 						<td></td>
 						<td></td>
 						<td></td>
 					</tr>
-					<?php echo '<pre>';var_dump( $restaurant->payment_data );exit(); ?>
 					<tr>
 						<td></td>
-						<td>Cash Subtotal</td>
-						<td class="settlement-subtotal settlement-subtotal-grey">$<?=$restaurant->payment_data[ 'cash_subtotal' ]; ?></td>
+						<td>Cash Orders</td>
+						<td>$<?=$restaurant->payment_data[ 'order_payment' ]; ?></td>
 						<td></td>
 						<td></td>
 					</tr>
 					<tr>
 						<td></td>
 						<td>Card Subtotal</td>
-						<td class="settlement-subtotal settlement-subtotal-grey">$<?=$restaurant->payment_data[ 'credit_subtotal' ]; ?></td>
+						<td>$<?=$restaurant->payment_data[ 'card_subtotal' ]; ?></td>
 						<td></td>
 						<td></td>
 					</tr>
 					<tr>
 						<td></td>
-						<td>Visa/Mastercard/Amex Charges</td>
-						<td class="settlement-subtotal settlement-subtotal-red">$<?=$restaurant->payment_data[ 'credit_charge' ]; ?></td>
+						<td>Tax</td>
+						<td>$<?=$restaurant->payment_data[ 'tax' ]; ?></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>Delivery Fee</td>
+						<td>$<?=$restaurant->payment_data[ 'delivery_fee' ]; ?></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>Tip</td>
+						<td>$<?=$restaurant->payment_data[ 'tip' ]; ?></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>Customer fee</td>
+						<td>$<?=$restaurant->payment_data[ 'customer_fee' ]; ?></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>Markup</td>
+						<td>$<?=$restaurant->payment_data[ 'markup' ]; ?></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>Credit Card Charges</td>
+						<td>$<?=$restaurant->payment_data[ 'credit_charge' ]; ?></td>
 						<td></td>
 						<td></td>
 					</tr>
 					<tr>
 						<td></td>
 						<td>Crunchbutton Fees (<?=$restaurant->fee_restaurant?>%)</td>
-						<td class="settlement-subtotal settlement-subtotal-red">$<?=$restaurant->_settlement_cb_fees?></td>
+						<td>$<?=$restaurant->payment_data[ 'restaurant_fee' ]; ?></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>Gift Card</td>
+						<td>$<?=$restaurant->payment_data[ 'promo_gift_card' ]; ?></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>Apology Gift Card</td>
+						<td>$<?=$restaurant->payment_data[ 'apology_gift_card' ]; ?></td>
+						<td></td>
 						<td></td>
 					</tr>
 					<tr>
 						<td></td>
 						<td>Total Payment</td>
-						<td class="settlement-subtotal settlement-subtotal-green">$<?=$restaurant->_settlement_total?></td>
+						<td>$<?=$restaurant->payment_data[ 'total_due' ]; ?></td>
 						<td></td>
 						<td></td>
 					</tr>
 				</tbody></table>
 			</div>
-
-			<div style='padding:5px; border-bottom:1px solid #ccc;' class='summary_row'>
-				<div>
-					<a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->payment_type()->summary_email?>"); return false;'>
-						<span class="remove_row icon-user"></span>
-					</a>&nbsp;&nbsp;
-					<span>Email: </span>
-					<span class='RST<?=$restaurant->id?>_summary_email'>
-						<?
-							if($restaurant->payment_type()->summary_email) {
-								echo "<strong>$restaurant->payment_type()->summary_email</strong> ";
-							}
-							else {
-								echo '<strong>None</strong>';
-							}
-						?>
-					</span>
-				</div>
-			</div>
-
-			<div style='padding:5px; border-bottom:1px solid #ccc;' class='summary_row'>
-				<div>
-					<!--
-					<a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->payment_type()->summary_fax?>"); return false;'>
-						<span class="remove_row icon-user"></span>
-					</a> -->
-					&nbsp;
-					<span>Summary Fax: </span>
-					<span class='RST<?=$restaurant->id?>_summary_fax'>
-						<?
-							if($restaurant->summary_fax) {
-								echo "<strong>$restaurant->payment_type()->summary_fax</strong> ";
-							}
-							else {
-								echo '<strong>None</strong>';
-							}
-						?>
-					</span>
-				</div>
-			</div>
-
-			<div style='padding:5px; border-bottom:1px solid #ccc;' class='summary_row'>
-				<div>
-					<!--
-					<a href='#' onclick='javascript: send_summary_email(<?=$restaurant->id?>, "<?=$restaurant->payment_type()->summary_email?>"); return false;'>
-						<span class="remove_row icon-user"></span>
-					</a> -->
-					&nbsp;
-					<span>Payment Method: </span>
-					<span class='RST<?=$restaurant->id?>_payment_method'>
-						<strong><?= $restaurant->payment_type()->payment_method ?></strong>
-					</span>
-				</div>
-			</div>
-
-			<div style='padding:5px' class='button_row'>
-				<button type="submit" class="btn btn-blue admin-order-search" onclick="javascript:(function(){start_payment_popup(<?=$restaurant->id?>);})()"> Start Payment </button>
-				&nbsp;
-				<button type="submit" class="btn btn-red admin-order-search" onclick="javascript:(function(){start_fax_popup(<?=$restaurant->id?>, '<?=$restaurant->payment_method?>');})()"> Acknowledge no payment for this term </button>
-			</div>
-
-
-
 
 		</div>
 	<? endforeach; ?>
