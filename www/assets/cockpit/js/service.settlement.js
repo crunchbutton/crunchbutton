@@ -8,7 +8,7 @@ NGApp.factory( 'SettlementService', function( $rootScope, $resource ) {
 	}	);
 
 	service.begin = function( params, callback ){
-		drivers.begin( params, function( json ){
+		settlement.begin( params, function( json ){
 			callback( json );
 		} );
 	}
