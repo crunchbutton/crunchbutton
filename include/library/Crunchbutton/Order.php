@@ -2121,14 +2121,17 @@ class Crunchbutton_Order extends Cana_Table {
 				switch ($action->type) {
 					case 'delivery-delivered':
 						$this->_deliveryStatus['delivered'] = Admin::o($action->id_admin);
+						$this->_deliveryStatus['delivered_date'] = $action->date()->format( 'Y-m-d H:i:s' );
 						break;
 
 					case 'delivery-pickedup':
 						$this->_deliveryStatus['pickedup'] = Admin::o($action->id_admin);
+						$this->_deliveryStatus['pickedup_date'] = $action->date()->format( 'Y-m-d H:i:s' );
 						break;
 
 					case 'delivery-accepted':
 						$acpt[$action->id_admin] = true;
+						$this->_deliveryStatus['accepted_date'] = $action->date()->format( 'Y-m-d H:i:s' );
 						break;
 
 					case 'delivery-rejected':
@@ -2237,13 +2240,13 @@ class Crunchbutton_Order extends Cana_Table {
 	public function deliveryLastStatus(){
 		$statuses = $this->deliveryStatus();
 		if( $statuses[ 'delivered' ] ){
-			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3 );
+			return array( 'status' => 'delivered', 'name' => $statuses[ 'delivered' ]->name, 'id_admin' => $statuses[ 'delivered' ]->id_admin, 'order' => 3, 'date' => $statuses[ 'delivered_date' ], 'timezone' => $this->restaurant()->timezone );
 		}
 		if( $statuses[ 'pickedup' ] ){
-			return array( 'status' => 'pickedup', 'name' => $statuses[ 'pickedup' ]->name, 'id_admin' => $statuses[ 'pickedup' ]->id_admin,  'order' => 2 );
+			return array( 'status' => 'pickedup', 'name' => $statuses[ 'pickedup' ]->name, 'id_admin' => $statuses[ 'pickedup' ]->id_admin,  'order' => 2, 'date' => $statuses[ 'pickedup_date' ], 'timezone' => $this->restaurant()->timezone );
 		}
 		if( $statuses[ 'accepted' ] ){
-			return array( 'status' => 'accepted', 'name' => $statuses[ 'accepted' ]->name, 'id_admin' => $statuses[ 'accepted' ]->id_admin,  'order' => 1 );
+			return array( 'status' => 'accepted', 'name' => $statuses[ 'accepted' ]->name, 'id_admin' => $statuses[ 'accepted' ]->id_admin,  'order' => 1, 'date' => $statuses[ 'accepted_date' ], 'timezone' => $this->restaurant()->timezone );
 		}
 		return array ( 'status' => 'new', 'order' => 0 );
 	}
