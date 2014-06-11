@@ -96,7 +96,7 @@ if (window.jQuery) {
 	(function($){
 		$.fn.checkToggle = function(params) {
 			var checks = $(this).filter('input[type="checkbox"]');
-			$(this).filter('input[type="checkbox"]').each(function() {		
+			$(this).filter('input[type="checkbox"]').each(function() {
 				$(this).prop('checked', !$(this).is(':checked'));
 			});
 			return this;
@@ -123,6 +123,9 @@ Date.locale = {
 	}
 };
 
+Date.prototype.formatted = function() {
+	return ( this.getMonth() + 1 ) + '/' + this.getDate() + '/' + this.getFullYear();
+};
 
 Number.prototype.pad = String.prototype.pad = function(width, z) {
 	var z = z || '0';
@@ -146,18 +149,18 @@ function formatTime( seconds, message ){
 		if( hours > 0 ){
 			// #2662
 			if( hours <= 24 ){
-				return 'in ' + ( hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) );	
+				return 'in ' + ( hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) );
 			}
 			if( hours > 24 ){
 				if( message ){
-					return ( message.tomorrow ? message.tomorrow : message.day ) + ' at ' + message.hour + ( parseInt( message.min ) > 0 ? ':' + message.min : '' ) + ' ' + message.ampm;	
+					return ( message.tomorrow ? message.tomorrow : message.day ) + ' at ' + message.hour + ( parseInt( message.min ) > 0 ? ':' + message.min : '' ) + ' ' + message.ampm;
 				} else {
-					return 'in ' + ( hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) );	
+					return 'in ' + ( hours + ( ( hours > 1 ) ? ' hours' : ' hour' ) );
 				}
 			}
 		} else {
 			return 'in ' + ( ( minutes > 1 ) ? minutes + ' minutes' : minutes + ' minute' );
-		}			
+		}
 	}
 	return '';
 }
@@ -181,17 +184,17 @@ function getCardType(number) {
 	if (number.match(re) != null) {
 		return "visa";
 	}
-	 
+
 	re = new RegExp("^(34|37)");
 	if (number.match(re) != null) {
 		return "amex";
 	}
-	 
+
 	re = new RegExp("^5[1-5]");
 	if (number.match(re) != null) {
 		return "mastercard";
-	} 
-	
+	}
+
 	re = new RegExp("^6011");
 	if (number.match(re) != null) {
 		return "discover";

@@ -1,0 +1,81 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Settlement</span></h1>
+
+	<!-- <div class="box-filter right">
+		<button class="button orange" ng-class="{ 'inactive' : !show.all }" ng-click="show.all = true">All</button>
+		<button class="button orange" ng-class="{ 'inactive' : show.all }" ng-click="show.all = false">Mine</button>
+		<div class="divider"></div>
+	</div> -->
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate ng-show="showForm">
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content">
+
+			<li class="li-input" ng-class="{'error':form.rangeStart.$invalid}">
+				<div class="label">Date start:</div>
+				<div class="input"><input type="date" name="rangeStart" ng-model="range.start" required placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="form.rangeStart.$error.required">Required.</small>
+					<small ng-show="form.rangeStart.$error.date">Enter a valid start date!</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.rangeEnd.$invalid}">
+				<div class="label">Date end:</div>
+				<div class="input"><input type="date" name="rangeEnd" ng-model="range.end" required placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="form.rangeend.$error.required">Required.</small>
+					<small ng-show="form.rangeend.$error.date">Enter a valid end date!</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.paymentType.$invalid}">
+				<div class="label">Payment type:</div>
+				<select name="paymentType" required ng-model="pay_type" ng-options="opt.value as opt.name for opt in pay_type_options" class="cart-customize-select"></select>
+				<div class="box-error">
+					<small ng-show="form.paymentType.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.sort.$invalid}">
+				<div class="label">Sort by:</div>
+				<select name="sort" required ng-model="sort" ng-options="opt.value as opt.name for opt in sort_options" class="cart-customize-select"></select>
+				<div class="box-error">
+					<small ng-show="form.sort.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-show="!isSearching">
+				<button class="button save" ng-click="begin();">Begin</button>
+			</li>
+
+			<li class="li-input" ng-show="isSearching">
+				<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
+			</li>
+
+		</ul>
+
+	</form>
+
+	<div class="box-content" ng-show="!showForm">
+		<p>
+			Listing orders from <strong>{{range.start | date:'MM/dd/yyyy'}}</strong> to <strong>{{range.end | date:'MM/dd/yyyy'}}</strong>, payment type is <strong>{{pay_type_label}}</strong> and sorting by <strong>{{sort_label}}</strong>.
+			<br>
+			<span class="link" ng-click="showForm = true">Show form</span>
+		</p>
+	</div>
+
+
+	<div>
+
+	</div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

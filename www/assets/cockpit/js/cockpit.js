@@ -6,7 +6,7 @@
  * @date: 		2012-06-20
  *
  */
- 
+
 var App = {
 	service: '/api/',
 	logService: 'http://log.crunchbutton.com/api/',
@@ -37,10 +37,10 @@ var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource', 'angularFileUploa
 	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 	var param = function(obj) {
 		var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
-			
+
 		for(name in obj) {
 			value = obj[name];
-				
+
 			if(value instanceof Array) {
 				for(i=0; i<value.length; ++i) {
 					subValue = value[i];
@@ -62,7 +62,7 @@ var NGApp = angular.module('NGApp', [ 'ngRoute', 'ngResource', 'angularFileUploa
 			else if(value !== undefined && value !== null)
 				query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
 		}
-			
+
 		return query.length ? query.substr(0, query.length - 1) : query;
 	};
 
@@ -78,6 +78,12 @@ NGApp.config(function($compileProvider){
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
 	$routeProvider
+		/* Settlemtn */
+		.when('/settlement', {
+			action: 'settlement',
+			controller: 'SettlementCtrl',
+			templateUrl: 'assets/view/settlement.html'
+		})
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
 			controller: 'DriversOrdersCtrl',
@@ -93,7 +99,6 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'DriversShiftsCtrl',
 			templateUrl: 'assets/view/drivers-shifts.html'
 		})
-		/* temp */
 		.when('/drivers/shifts/schedule', {
 			action: 'drivers-shifts',
 			controller: 'DriversShiftsScheduleCtrl',
@@ -202,7 +207,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.reload = function() {
 		$route.reload();
 	};
-	
+
 	$rootScope.link = function(link) {
 		App.go.apply(arguments);
 	};
@@ -227,7 +232,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 			this.$apply(fn);
 		}
 	};
-	
+
 	$rootScope.hasBack = false;
 
 	$scope.$on('$routeChangeSuccess', function ($currentRoute, $previousRoute) {
@@ -239,7 +244,7 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		$('body').removeClass(function (index, css) {
 			return (css.match (/\bpage-\S+/g) || []).join(' ');
 		}).addClass('page-' + MainNavigationService.page);
-		
+
 		$('.nav-top').addClass('at-top');
 
 		App.scrollTop($rootScope.scrollTop);
@@ -264,15 +269,15 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 	$rootScope.account.checkUser();
 
 	var badges = function(){
-		// Just run if the user is loggedin 
+		// Just run if the user is loggedin
 		if( $rootScope.account.isLoggedIn() ){
 
 			DriverOrdersService.newOrdersBadge();
 
 			// run over and over again every 30 secs
 			$timeout( function() { badges() }, 30 * 1000 );
-		}	
-		
+		}
+
 	}
 	// Update the badges
 	badges();
@@ -301,7 +306,7 @@ NGApp.run( function ( $rootScope, $location, MainNavigationService ) {
 			}
 		}
 		if( $location.url() == '/login' && $rootScope.account.isLoggedIn() ) {
-			MainNavigationService.link( '/' );	
+			MainNavigationService.link( '/' );
 		}
 	});
 });
@@ -341,11 +346,11 @@ App.go = function( url, transition ){
 			// @todo: do some tests to figure out if we need this or not
 			// App.location.path(!App.isPhoneGap ? url : 'index.html#' + url);
 			App.location.path( url || '/' );
-			App.rootScope.$safeApply();		
-		}, 10 );		
+			App.rootScope.$safeApply();
+		}, 10 );
 	} else {
 		App.location.path( url || '/' );
-		App.rootScope.$safeApply();		
+		App.rootScope.$safeApply();
 	}
 };
 
@@ -411,7 +416,7 @@ App.init = function(config) {
 	if (App._init) {
 		return;
 	}
-	
+
 	App._init = true;
 
 	$(document).on('touchmove', ($('.is-ui2').get(0) ? '.mfp-wrap' : '.snap-drawers, .mfp-wrap, .support-container'), function(e) {
@@ -421,14 +426,14 @@ App.init = function(config) {
 
 	// replace normal click events for mobile browsers
 	FastClick.attach(document.body);
-	
+
 	// add ios7 styles for nav bar and page height
 	if (App.isPhoneGap && !App.iOS7()) {
 		$('body').removeClass('ios7');
 	}
-	
+
 	$('body').removeClass('no-init');
-	
+
 	// add the side swipe menu for mobile view
 	if (typeof Snap !== 'undefined') {
 
@@ -448,18 +453,18 @@ App.init = function(config) {
 			}
 		};
 		snapperCheck();
-	
+
 		$(window).resize(function() {
 			snapperCheck();
 		});
 
 	}
-	
+
 	App.snap.disable();
 
 	// init the storage type. cookie, or localstorage if phonegap
 	$.totalStorage.ls(App.localStorage);
-	
+
 	// phonegap
 	if (typeof CB !== 'undefined' && CB.config) {
 		App.config = CB.config;
@@ -470,16 +475,16 @@ App.init = function(config) {
 	App.processConfig(config || App.config);
 	App.NGinit();
 
-	window.addEventListener( 'pageshow', function(){ 
+	window.addEventListener( 'pageshow', function(){
 		// the first pageshow should be ignored
 		if( App._firstPageShowHasHappened ){
-			dateTime.reload(); 
+			dateTime.reload();
 		}
 		App._firstPageShowHasHappened = true;
 	}, false );
 
 	$( window ).trigger( 'nginit' );
-	
+
 	/*
 	if (!App.isPhoneGap) {
 		$(document).mousemove(function(e) {
@@ -506,7 +511,7 @@ App.dialog = {
 		} else if ($(arguments[0]).length) {
 			// its a dom selector
 			var src = $(arguments[0]);
-			
+
 			// fix to prevent 2 dialogs from ever appearing. only show the second. #2919
 			if (src.length > 1) {
 				for (var x = 0; x < src.length - 1; x++) {
@@ -560,7 +565,7 @@ App.dialog = {
 NGApp.factory( 'flash', function( $timeout ) {
 
 	var message = [];
-	
+
 	// $rootScope.$on('$routeChangeSuccess', function() {
 	// 	clearMessage();
 	// } );
@@ -582,16 +587,17 @@ NGApp.factory( 'flash', function( $timeout ) {
 
 	service.getLevel = function(){
 		if( service.hasMessage() ){
-			return message.level;	
+			return message.level;
 		}
 	}
 
 	service.getMessage = function(){
 		if( service.hasMessage() ){
-			return message.text;	
+			return message.text;
 		}
 	}
 
 	return service;
 
 } );
+

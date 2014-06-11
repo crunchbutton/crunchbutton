@@ -16,7 +16,7 @@
 
 		<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content">
 
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}"> 
+			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
 				<div class="label">Name:</div>
 				<div class="input"><input type="text" name="driverName" ng-model="driver.name" required placeholder="Name" ng-minlength="5" ng-maxlength="40" ></div>
 				<div class="box-error">
@@ -26,7 +26,7 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-class="{'error':form.driverPhone.$invalid}"> 
+			<li class="li-input" ng-class="{'error':form.driverPhone.$invalid}">
 				<div class="label">Phone:</div>
 				<div class="input"><input type="text" name="driverPhone" ng-model="driver.phone" required phone-validate placeholder="Phone"></div>
 				<div class="box-error">
@@ -35,7 +35,7 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-class="{'error':form.driverIdCommunity.$invalid}"> 
+			<li class="li-input" ng-class="{'error':form.driverIdCommunity.$invalid}">
 				<div class="label">Community:</div>
 				<select name="driverIdCommunity" required ng-model="driver.id_community" ng-options="opt.id_community as opt.name for opt in communities" class="cart-customize-select"></select>
 				<div class="box-error">
@@ -43,7 +43,7 @@
 				</div>
 			</li>
 
-			<li class="li-input" ng-class="{'error':form.driverEmail.$invalid}"> 
+			<li class="li-input" ng-class="{'error':form.driverEmail.$invalid}">
 				<div class="label">Email:</div>
 				<div class="input"><input type="email" name="driverEmail" ng-model="driver.email" placeholder="Email"></div>
 				<div class="box-error">
@@ -53,18 +53,18 @@
 
 		</ul>
 
-		<div ng-if="driver.login">  
+		<div ng-if="driver.login">
 
 			<h3 class="title">Access info</h3>
 
 			<ul class="ul-inputs box-content">
 
-				<li class="li-input"> 
+				<li class="li-input">
 					<div class="label">Login:</div>
 					<div class="input"><input type="text" name="driverLogin" readonly="readonly" disabled="disabled" ng-model="driver.login"></div>
 				</li>
 
-				<li class="li-input"> 
+				<li class="li-input">
 					<div class="label">Password:</div>
 					<div class="input"><input type="password" name="driverPass" ng-model="driver.pass"></div>
 					<small class="tip">Leave it blank if you don't wanna change it.</small>
@@ -92,15 +92,15 @@
 					</td>
 				</tr>
 			</tbody>
-		</table>	
+		</table>
 	</div>
 
 	<form name="docs" ng-if="driver.id_admin">
 
-		<h3 class="title">Upload zone</h3>	
-		
+		<h3 class="title">Upload zone</h3>
+
 		<ul class="ul-inputs box-content">
-			<li class="li-input"> 
+			<li class="li-input">
 				<div class="label">Select the file type:</div>
 				<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
 			</li>
@@ -124,7 +124,7 @@
 			<div class="label"><input type="checkbox" name="driverNotification" ng-model="driver.notify"> Send setup notification?</div>
 		</li>
 
-		<li class="li-input"> 
+		<li class="li-input">
 			<button class="button save" ng-click="save();">Save</button>
 			<button class="button cancel" ng-click="cancel()">Cancel</button>
 		</li>
