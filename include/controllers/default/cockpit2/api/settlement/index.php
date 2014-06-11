@@ -44,11 +44,24 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 
 		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
 		$restaurants = $settlement->start();
-		$out = [];
+		$out = [ 'restaurants' => [] ];
+		$total_restaurants = 0;
+		$total_payments = 0;
+		$total_orders = 0;
 		foreach ( $restaurants as $_restaurant ) {
-			$restaurant = [];
+			$restaurant = $_restaurant->payment_data;
+			$lastPayment = $_restaurant->getLastPayment();
+			if( $lastPayment->id_payment ){
+				$_lastPayment = [];
+				$_lastPayment[ 'amount' ] = $lastPayment->amount;
+				$_lastPayment[ 'date' ] = $lastPayment->date()->format( 'M jS Y g:i:s A' );
+				$_lastPayment[ 'id_payment' ] = $lastPayment->id_payment;
+				$restaurant[ 'last_payment' ] = $_lastPayment;
+			}
+
 			$restaurant[ 'name' ] = $_restaurant->name;
-			$restaurant[ 'pay_info' ] = $_restaurant->payment_data;
+			$restaurant[ 'id_restaurant' ] = $_restaurant->id_restaurant;
+
 			$orders = [];
 			foreach ( $_restaurant->_payableOrders as $_order ) {
 				$order = [];
@@ -56,13 +69,21 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 				$order[ 'name' ] = $_order->name;
 				$order[ 'total' ] = $_order->final_price_plus_delivery_markup;
 				$date = $_order->date();
-				$order[ 'date' ] = $date->format( 'm/d/Y' );
+				$order[ 'date' ] = $date->format( 'M jS Y g:i:s A' );
 				$orders[] = $order;
 			}
 			$restaurant[ 'orders' ] = $orders;
 			$restaurant[ 'orders_count' ] = count( $orders );
-			$out[] = $restaurant;
+			if( floatval( $restaurant[ 'total_due' ] ) > 0 ){
+				$out[ 'restaurants' ][] = $restaurant;
+				$total_restaurants++;
+				$total_orders += count( $orders );
+				$total_payments += $restaurant[ 'total_due' ];
+			}
 		}
+		$out[ 'total_restaurants' ] = $total_restaurants;
+		$out[ 'total_payments' ] = $total_payments;
+		$out[ 'total_orders' ] = $total_orders;
 		echo json_encode( $out );
 	}
 

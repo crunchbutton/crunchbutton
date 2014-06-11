@@ -1,4 +1,4 @@
-NGApp.controller('SettlementCtrl', function ( $scope, SettlementService ) {
+NGApp.controller('SettlementCtrl', function ( $scope, $filter, SettlementService ) {
 
 	$scope.ready = false;
 	$scope.pay_type = 'all';
@@ -21,11 +21,12 @@ NGApp.controller('SettlementCtrl', function ( $scope, SettlementService ) {
 
 	$scope.begin = function(){
 
+		$scope.results = false;
+
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;
 			return;
 		}
-
 
 		for( x in $scope.pay_type_options ){
 			if( $scope.pay_type_options[ x ].value == $scope.pay_type ){
@@ -42,10 +43,16 @@ NGApp.controller('SettlementCtrl', function ( $scope, SettlementService ) {
 		}
 
 		$scope.isSearching = true;
-		$scope.showForm = false;
-// $filter('date')(date, format)
-		$scope.start = $scope.range.start.formatted();
-		$scope.end = $scope.range.end.formatted();
+
+		var params = { 'start': $filter( 'date' )( $scope.range.start, 'MM/dd/yyyy'),
+										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy'),
+										'pay_type': $scope.pay_type };
+
+		SettlementService.begin( params, function( json ){
+			$scope.result = json;
+			console.log('$scope.result',$scope.result);
+			$scope.showForm = false;
+		} );
 
 		$scope.isSearching = false;
 

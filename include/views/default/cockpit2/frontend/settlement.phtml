@@ -70,8 +70,126 @@
 		</p>
 	</div>
 
+	<div ng-if="result">
+		<div ng-repeat="restaurant in result.restaurants">
+			<h2 class="title">
+				<span>{{restaurant.name}}</span>
+			</h2>
+			<h3 class="title" ng-if="restaurant.last_payment">
+				Last payment #{{restaurant.last_payment.id_payment}}: <strong>$ {{restaurant.last_payment.amount | formatPrice}}</strong> on <strong>{{restaurant.last_payment.date}}</strong>
+			</h3>
+			<table class="tb-grid">
+				<tbody>
+					<tr>
+						<td>
+							<strong>Tax</strong>
+						</td>
+						<td>
+							<span>$ {{restaurant.tax | formatPrice}}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>Delivery Fee</strong>
+						</td>
+						<td>
+							<span>$ {{restaurant.delivery_fee | formatPrice}}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>Tip</strong>
+						</td>
+						<td>
+							<span>$ {{restaurant.tip | formatPrice}}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>Promo Gift Card</strong>
+						</td>
+						<td>
+							<span>$ {{restaurant.promo_gift_card | formatPrice}}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>Apology Gift Card</strong>
+						</td>
+						<td>
+							<span>$ {{restaurant.apology_gift_card | formatPrice}}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>Credit Card Subtotal</strong>
+						</td>
+						<td>
+							<span>$ {{restaurant.card_subtotal | formatPrice}}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>Cash Subtotal</strong>
+						</td>
+						<td>
+							<span>$ {{restaurant.cash_subtotal | formatPrice}}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>Credit Card Charge</strong>
+						</td>
+						<td>
+							<span>$ {{restaurant.credit_charge | formatPrice}}</span>
+						</td>
+					</tr>
+					<tr>
+						<td class="td-medium">
+							<strong>Total due</strong>
+						</td>
+						<td class="td-medium">
+							<span>$ {{restaurant.total_due | formatPrice}}</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 
-	<div>
+			<h3 class="title link" ng-if="!restaurant.show_orders" ng-click="restaurant.show_orders = true">Show orders (total {{restaurant.orders_count}} orders )</h3>
+			<h3 class="title link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders (total {{restaurant.orders_count}} orders )</h3>
+
+			<table class="tb-grid" ng-if="restaurant.show_orders">
+				<thead>
+					<tr>
+						<td>#</td>
+						<td class="td-medium">Name</td>
+						<td class="td-medium">Total</td>
+						<td class="td-medium">Date</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="order in restaurant.orders">
+						<td>
+							{{order.id_order}}
+						</td>
+						<td>
+							{{order.name}}
+						</td>
+						<td>
+							$ {{order.total | formatPrice}}
+						</td>
+						<td>
+							{{order.date}}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+
+
+			<hr/>
+		</div>
 
 	</div>
 

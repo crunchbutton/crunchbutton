@@ -44,7 +44,7 @@ class Crunchbutton_Payment extends Cana_Table {
 		}
 
 	}
-	
+
 	public function infoLink(){
 		if( $this->type() == 'stripe' ){
 			return '<a href="https://manage.stripe.com/transfers/' . $this->stripe_id . '">' . $this->stripe_id . '</a>';
@@ -56,6 +56,13 @@ class Crunchbutton_Payment extends Cana_Table {
 
 	public function restaurant() {
 		return Restaurant::o($this->id_restaurant);
+	}
+
+	public function date() {
+		if (!isset($this->_date)) {
+			$this->_date = new DateTime( $this->date, new DateTimeZone( c::config()->timezone ) );
+		}
+		return $this->_date;
 	}
 
 	public function type(){
