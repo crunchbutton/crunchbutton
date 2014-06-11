@@ -19,9 +19,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		foreach ( $this->restaurants as $restaurant ) {
 			$restaurant->_payableOrders = $restaurant->payableOrders( $this->filters );
-			$payableOrders = $restaurant->_payableOrders;
 			$orders = [];
-			foreach( $payableOrders as $order ){
+			foreach( $restaurant->_payableOrders as $order ){
 				$orders[] = $this->orderExtractVariables( $order );
 			}
 			$restaurant->payment_data = $this->processOrders( $orders );
