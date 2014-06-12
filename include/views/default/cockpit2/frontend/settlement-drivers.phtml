@@ -2,7 +2,7 @@
 
 <div class="content-padding" ng-show="ready">
 
-	<h1 class="title left"><i class="fa fa-bank"></i><span>Settlement:: Restaurants</span></h1>
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Settlement:: Drivers</span></h1>
 
 	<div class="divider"></div>
 
@@ -74,8 +74,8 @@
 			<table class="tb-grid tb-zebra summary">
 				<tbody>
 					<tr>
-						<td>Total Restaurants</td>
-						<td>{{result.total_restaurants}}</td>
+						<td>Total Drivers</td>
+						<td>{{result.total_drivers}}</td>
 					</tr>
 					<tr>
 						<td>Total Orders</td>
@@ -89,64 +89,61 @@
 			</table>
 		</div>
 
-		<div ng-repeat="restaurant in result.restaurants">
+		<div ng-repeat="driver in result.drivers">
 
 			<br/><br/><br/>
 
 			<h2 class="title">
-				<span>{{restaurant.name}}</span>
+				<span>{{driver.name}}</span>
 			</h2>
-			<h3 class="title" ng-if="restaurant.last_payment">
-				Last payment #{{restaurant.last_payment.id_payment}}: <strong positive-or-negative-color="{{restaurant.last_payment.amount}}">$ {{restaurant.last_payment.amount | formatPrice}}</strong> on <strong>{{restaurant.last_payment.date}}</strong>
+			<h3 class="title" ng-if="driver.last_payment">
+				Last payment #{{driver.last_payment.id_payment}}: <strong positive-or-negative-color="{{driver.last_payment.amount}}">$ {{driver.last_payment.amount | formatPrice}}</strong> on <strong>{{driver.last_payment.date}}</strong>
 			</h3>
 			<table class="tb-grid tb-zebra">
 				<tbody>
-					<tr positive-or-negative-color="{{restaurant.tax}}">
+					<tr positive-or-negative-color="{{driver.subtotal}}">
+						<td>Subtotal</td>
+						<td>$ {{driver.subtotal | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{driver.tax}}">
 						<td>Tax</td>
-						<td>$ {{restaurant.tax | formatPrice}}</td>
+						<td>$ {{driver.tax | formatPrice}}</td>
 					</tr>
-					<tr positive-or-negative-color="{{restaurant.delivery_fee}}">
+					<tr positive-or-negative-color="{{driver.delivery_fee}}">
 						<td>Delivery Fee</td>
-						<td>$ {{restaurant.delivery_fee | formatPrice}}</td>
+						<td>$ {{driver.delivery_fee | formatPrice}}</td>
 					</tr>
-					<tr positive-or-negative-color="{{restaurant.tip}}">
+					<tr positive-or-negative-color="{{driver.tip}}">
 						<td>Tip</td>
-						<td>$ {{restaurant.tip | formatPrice}}</td>
+						<td>$ {{driver.tip | formatPrice}}</td>
 					</tr>
-					<tr positive-or-negative-color="{{restaurant.promo_gift_card}}">
-						<td>Promo Gift Card</td>
-						<td>$ {{restaurant.promo_gift_card | formatPrice}}</td>
+					<tr positive-or-negative-color="{{driver.gift_card}}">
+						<td>Gift Card</td>
+						<td>$ {{driver.gift_card | formatPrice}}</td>
 					</tr>
-					<tr positive-or-negative-color="{{restaurant.apology_gift_card}}">
-						<td>Apology Gift Card</td>
-						<td>$ {{restaurant.apology_gift_card | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.card_subtotal}}">
-						<td>Credit Card Subtotal</td>
-						<td>$ {{restaurant.card_subtotal | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.cash_subtotal}}">
-						<td>Cash Subtotal</td>
-						<td>$ {{restaurant.cash_subtotal | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.credit_charge}}">
+					<tr positive-or-negative-color="{{driver.credit_charge}}">
 						<td>Credit Card Charge</td>
-						<td>$ {{restaurant.credit_charge | formatPrice}}</td>
+						<td>$ {{driver.credit_charge | formatPrice}}</td>
 					</tr>
-					<tr class="total-due" positive-or-negative-color="{{restaurant.total_due}}">
+					<tr positive-or-negative-color="{{driver.restaurant_fee}}">
+						<td>Restaurant Fee</td>
+						<td>$ {{driver.restaurant_fee | formatPrice}}</td>
+					</tr>
+					<tr class="total-due" positive-or-negative-color="{{driver.total_due}}">
 						<td class="td-medium">Total due</td>
-						<td class="td-medium">$ {{restaurant.total_due | formatPrice}}</td>
+						<td class="td-medium">$ {{driver.total_due | formatPrice}}</td>
 					</tr>
 				</tbody>
 			</table>
 
-			<h3 class="title link" ng-if="!restaurant.show_orders" ng-click="restaurant.show_orders = true">Show orders (total {{restaurant.orders_count}} orders )</h3>
-			<h3 class="title link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders (total {{restaurant.orders_count}} orders )</h3>
+			<h3 class="title link" ng-if="!driver.show_orders" ng-click="driver.show_orders = true">Show orders (total {{driver.orders_count}} orders )</h3>
+			<h3 class="title link" ng-if="driver.show_orders" ng-click="driver.show_orders = false">Hide orders (total {{driver.orders_count}} orders )</h3>
 
-			<table class="tb-grid tb-zebra" ng-if="restaurant.show_orders">
+			<table class="tb-grid tb-zebra" ng-if="driver.show_orders">
 				<thead>
 					<tr>
 						<td>#</td>
+						<td class="td-medium">Restaurant</td>
 						<td class="td-medium">Name</td>
 						<td>Amount</td>
 						<td>Payment</td>
@@ -155,7 +152,8 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="order in restaurant.orders">
+					<tr ng-repeat="order in driver.orders">
+						<td>{{order.restaurant}}</td>
 						<td>{{order.id_order}}</td>
 						<td>{{order.name}}</td>
 						<td>$ {{order.total | formatPrice}}</td>
