@@ -50,8 +50,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 
 	public function testDriversMath() {
 		$calc = $this->settlement->driversProcessOrders( $this->driver_orders );
-		$id_admin = 209;
-		$calc = $calc[ $id_admin ];
+		$calc = $calc[ 0 ];
 		$this->assertEquals( $calc[ 'subtotal' ], 29.91 );
 		$this->assertEquals( $calc[ 'tax' ], 2.25 );
 		$this->assertEquals( $calc[ 'delivery_fee' ], 20 );
