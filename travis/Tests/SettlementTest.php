@@ -4,30 +4,69 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 
-		$this->orders_formal_relationship = [];
-		$this->orders_no_formal_relationship = [];
+		$this->restaurant_orders_formal_relationship = [];
+		$this->restaurant_orders_no_formal_relationship = [];
+		$this->driver_orders = [];
 
 		// values of id_order: 24515
-		$this->orders_formal_relationship[] = ['subtotal' => 12.48, 'tax' => 0.79, 'tip' => 2.25, 'delivery_fee' => 0, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 10, 'delivery_service_markup' => 0, 'delivery_service_markup_value' => 0, 'id_admin' => 0, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 15.52, 'promotion_maximum' => 2, 'max_apology_credit' => 5, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 0, 'formal_relationship' => 1, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
+		$this->restaurant_orders_formal_relationship[] = ['subtotal' => 12.48, 'tax' => 0.79, 'tip' => 2.25, 'delivery_fee' => 0, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 10, 'delivery_service_markup' => 0, 'delivery_service_markup_value' => 0, 'id_admin' => 0, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 15.52, 'promotion_maximum' => 2, 'max_apology_credit' => 5, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 0, 'formal_relationship' => 1, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
 		// values of id_order: 24505
-		$this->orders_formal_relationship[] = ['subtotal' => 9.34, 'tax' => 0.59, 'tip' => 2, 'delivery_fee' => 0, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 10, 'delivery_service_markup' => 0, 'delivery_service_markup_value' => 0, 'id_admin' => 0, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 11.93, 'promotion_maximum' => 2, 'max_apology_credit' => 5, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 0, 'formal_relationship' => 1, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
+		$this->restaurant_orders_formal_relationship[] = ['subtotal' => 9.34, 'tax' => 0.59, 'tip' => 2, 'delivery_fee' => 0, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 10, 'delivery_service_markup' => 0, 'delivery_service_markup_value' => 0, 'id_admin' => 0, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 11.93, 'promotion_maximum' => 2, 'max_apology_credit' => 5, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 0, 'formal_relationship' => 1, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
 		// values of id_order: 24497
-		$this->orders_formal_relationship[] = ['subtotal' => 8.99, 'tax' => 0.57, 'tip' => 0, 'delivery_fee' => 0, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 10, 'delivery_service_markup' => 0, 'delivery_service_markup_value' => 0, 'id_admin' => 0, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 9.56, 'promotion_maximum' => 2, 'max_apology_credit' => 5, 'credit' => 0, 'cash' => 1, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 0, 'formal_relationship' => 1, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
+		$this->restaurant_orders_formal_relationship[] = ['subtotal' => 8.99, 'tax' => 0.57, 'tip' => 0, 'delivery_fee' => 0, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 10, 'delivery_service_markup' => 0, 'delivery_service_markup_value' => 0, 'id_admin' => 0, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 9.56, 'promotion_maximum' => 2, 'max_apology_credit' => 5, 'credit' => 0, 'cash' => 1, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 0, 'formal_relationship' => 1, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
 		// values of id_order: 24420
-		$this->orders_formal_relationship[] = ['subtotal' => 10.98, 'tax' => 0.7, 'tip' => 1.1, 'delivery_fee' => 0, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 10, 'delivery_service_markup' => 0, 'delivery_service_markup_value' => 0, 'id_admin' => 0, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 12.78, 'promotion_maximum' => 2, 'max_apology_credit' => 5, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 0, 'formal_relationship' => 1, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
+		$this->restaurant_orders_formal_relationship[] = ['subtotal' => 10.98, 'tax' => 0.7, 'tip' => 1.1, 'delivery_fee' => 0, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 10, 'delivery_service_markup' => 0, 'delivery_service_markup_value' => 0, 'id_admin' => 0, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 12.78, 'promotion_maximum' => 2, 'max_apology_credit' => 5, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 0, 'formal_relationship' => 1, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
 		// values of id_order: 24407
-		$this->orders_formal_relationship[] = ['subtotal' => 8.99, 'tax' => 0.57, 'tip' => 1.35, 'delivery_fee' => 0, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 10, 'delivery_service_markup' => 0, 'delivery_service_markup_value' => 0, 'id_admin' => 0, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 10.91, 'promotion_maximum' => 2, 'max_apology_credit' => 5, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 0, 'formal_relationship' => 1, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
+		$this->restaurant_orders_formal_relationship[] = ['subtotal' => 8.99, 'tax' => 0.57, 'tip' => 1.35, 'delivery_fee' => 0, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 10, 'delivery_service_markup' => 0, 'delivery_service_markup_value' => 0, 'id_admin' => 0, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 10.91, 'promotion_maximum' => 2, 'max_apology_credit' => 5, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 0, 'formal_relationship' => 1, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
 
 		// values of id_order: 24482
-		$this->orders_no_formal_relationship[] = ['subtotal' => 2.59, 'tax' => 0.23, 'tip' => 1.25, 'delivery_fee' => 3, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 0, 'delivery_service_markup' => 20, 'delivery_service_markup_value' => 0.52, 'id_admin' => 205, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 7.59, 'promotion_maximum' => 2, 'max_apology_credit' => 0, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 1, 'formal_relationship' => 0, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
+		$this->restaurant_orders_no_formal_relationship[] = ['subtotal' => 2.59, 'tax' => 0.23, 'tip' => 1.25, 'delivery_fee' => 3, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 0, 'delivery_service_markup' => 20, 'delivery_service_markup_value' => 0.52, 'id_admin' => 205, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 7.59, 'promotion_maximum' => 2, 'max_apology_credit' => 0, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 1, 'formal_relationship' => 0, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
 		// values of id_order: 24459
-		$this->orders_no_formal_relationship[] = ['subtotal' => 11.46, 'tax' => 1.03, 'tip' => 2.5, 'delivery_fee' => 3, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 0, 'delivery_service_markup' => 20, 'delivery_service_markup_value' => 2.3, 'id_admin' => 72, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 20.29, 'promotion_maximum' => 2, 'max_apology_credit' => 0, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 1, 'formal_relationship' => 0, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
+		$this->restaurant_orders_no_formal_relationship[] = ['subtotal' => 11.46, 'tax' => 1.03, 'tip' => 2.5, 'delivery_fee' => 3, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 0, 'delivery_service_markup' => 20, 'delivery_service_markup_value' => 2.3, 'id_admin' => 72, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 20.29, 'promotion_maximum' => 2, 'max_apology_credit' => 0, 'credit' => 1, 'cash' => 0, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 1, 'formal_relationship' => 0, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
+
+		// id_order: 24474
+		$this->driver_orders[] = ["subtotal" => "9.96","tax" => "0.75","tip" => "2.25","delivery_fee" => "2","service_fee" => "0","customer_fee" => "0","customer_fee_percent" => "0","restaurant_fee_percent" => "0","delivery_service_markup" => "20","delivery_service_markup_value" => "1.99","id_admin" => "209","id_order" => "24474","gift_card_total" => "0","gift_card_paid_by_crunchbutton" => "0","gift_card_paid_by_restaurant" => "0","gift_card_paid_by_promotional" => "0","gift_card_paid_by_other_restaurant" => "0","total_charged" => "16.96","promotion_maximum" => "2","max_apology_credit" => "0","credit" => "1","cash" => "0","charge_credit_fee" => "1","pay_credit_charge" => "1","pay_promotion" => "1","just_fee_on_subtotal" => "0","delivery_service" => "1","formal_relationship" => "0","paid_with_cb_card" => "0","refunded" => "0","pay_if_refunded" => "0","driver" => "Steven Frasica"];
+		// id_order: 24473
+		$this->driver_orders[] = ["subtotal" => "6.65","tax" => "0.5","tip" => "1.2","delivery_fee" => "2","service_fee" => "0","customer_fee" => "0","customer_fee_percent" => "0","restaurant_fee_percent" => "0","delivery_service_markup" => "20","delivery_service_markup_value" => "1.33","id_admin" => "209","id_order" => "24473","gift_card_total" => "0","gift_card_paid_by_crunchbutton" => "0","gift_card_paid_by_restaurant" => "0","gift_card_paid_by_promotional" => "0","gift_card_paid_by_other_restaurant" => "0","total_charged" => "11.68","promotion_maximum" => "2","max_apology_credit" => "0","credit" => "1","cash" => "0","charge_credit_fee" => "1","pay_credit_charge" => "1","pay_promotion" => "1","just_fee_on_subtotal" => "0","delivery_service" => "1","formal_relationship" => "0","paid_with_cb_card" => "0","refunded" => "0","pay_if_refunded" => "0","driver" => "Steven Frasica"];
+		// id_order: 24472
+		$this->driver_orders[] = ["subtotal" => "6.65","tax" => "0.5","tip" => "1.75","delivery_fee" => "2","service_fee" => "0","customer_fee" => "0","customer_fee_percent" => "0","restaurant_fee_percent" => "0","delivery_service_markup" => "20","delivery_service_markup_value" => "1.33","id_admin" => "209","id_order" => "24472","gift_card_total" => "0","gift_card_paid_by_crunchbutton" => "0","gift_card_paid_by_restaurant" => "0","gift_card_paid_by_promotional" => "0","gift_card_paid_by_other_restaurant" => "0","total_charged" => "12.23","promotion_maximum" => "2","max_apology_credit" => "0","credit" => "1","cash" => "0","charge_credit_fee" => "1","pay_credit_charge" => "1","pay_promotion" => "1","just_fee_on_subtotal" => "0","delivery_service" => "1","formal_relationship" => "0","paid_with_cb_card" => "0","refunded" => "0","pay_if_refunded" => "0","driver" => "Steven Frasica"];
+		// id_order: 24419
+		$this->driver_orders[] = ["subtotal" => "11.1","tax" => "0.83","tip" => "0","delivery_fee" => "2","service_fee" => "0","customer_fee" => "0","customer_fee_percent" => "0","restaurant_fee_percent" => "0","delivery_service_markup" => "20","delivery_service_markup_value" => "2.22","id_admin" => "209","id_order" => "24419","gift_card_total" => "0","gift_card_paid_by_crunchbutton" => "0","gift_card_paid_by_restaurant" => "0","gift_card_paid_by_promotional" => "0","gift_card_paid_by_other_restaurant" => "0","total_charged" => "16.15","promotion_maximum" => "2","max_apology_credit" => "0","credit" => "0","cash" => "1","charge_credit_fee" => "1","pay_credit_charge" => "1","pay_promotion" => "1","just_fee_on_subtotal" => "0","delivery_service" => "1","formal_relationship" => "0","paid_with_cb_card" => "0","refunded" => "0","pay_if_refunded" => "0","driver" => "Steven Frasica"];
+		// id_order: 24415
+		$this->driver_orders[] = ["subtotal" => "6.65","tax" => "0.5","tip" => "0.8","delivery_fee" => "2","service_fee" => "0","customer_fee" => "0","customer_fee_percent" => "0","restaurant_fee_percent" => "0","delivery_service_markup" => "20","delivery_service_markup_value" => "1.33","id_admin" => "209","id_order" => "24415","gift_card_total" => "0","gift_card_paid_by_crunchbutton" => "0","gift_card_paid_by_restaurant" => "0","gift_card_paid_by_promotional" => "0","gift_card_paid_by_other_restaurant" => "0","total_charged" => "11.28","promotion_maximum" => "2","max_apology_credit" => "0","credit" => "1","cash" => "0","charge_credit_fee" => "1","pay_credit_charge" => "1","pay_promotion" => "1","just_fee_on_subtotal" => "0","delivery_service" => "1","formal_relationship" => "0","paid_with_cb_card" => "0","refunded" => "0","pay_if_refunded" => "0","driver" => "Steven Frasica"];
+		// id_order: 24471
+		$this->driver_orders[] = ["subtotal" => "12.5","tax" => "0.97","tip" => "2.25","delivery_fee" => "2","service_fee" => "0","customer_fee" => "0","customer_fee_percent" => "0","restaurant_fee_percent" => "15","delivery_service_markup" => "0","delivery_service_markup_value" => "0","id_admin" => "209","id_order" => "24471","gift_card_total" => "0","gift_card_paid_by_crunchbutton" => "0","gift_card_paid_by_restaurant" => "0","gift_card_paid_by_promotional" => "0","gift_card_paid_by_other_restaurant" => "0","total_charged" => "17.72","promotion_maximum" => "2","max_apology_credit" => "0","credit" => "1","cash" => "0","charge_credit_fee" => "1","pay_credit_charge" => "1","pay_promotion" => "1","just_fee_on_subtotal" => "0","delivery_service" => "1","formal_relationship" => "1","paid_with_cb_card" => "0","refunded" => "0","pay_if_refunded" => "0","driver" => "Steven Frasica"];
+		// id_order: 24416
+		$this->driver_orders[] = ["subtotal" => "9.45","tax" => "0.71","tip" => "1.7","delivery_fee" => "2","service_fee" => "0","customer_fee" => "0","customer_fee_percent" => "0","restaurant_fee_percent" => "15","delivery_service_markup" => "0","delivery_service_markup_value" => "0","id_admin" => "209","id_order" => "24416","gift_card_total" => "0","gift_card_paid_by_crunchbutton" => "0","gift_card_paid_by_restaurant" => "0","gift_card_paid_by_promotional" => "0","gift_card_paid_by_other_restaurant" => "0","total_charged" => "13.87","promotion_maximum" => "2","max_apology_credit" => "0","credit" => "1","cash" => "0","charge_credit_fee" => "1","pay_credit_charge" => "1","pay_promotion" => "1","just_fee_on_subtotal" => "0","delivery_service" => "1","formal_relationship" => "1","paid_with_cb_card" => "0","refunded" => "0","pay_if_refunded" => "0","driver" => "Steven Frasica"];
+		// id_order: 24414
+		$this->driver_orders[] = ["subtotal" => "6.69","tax" => "0.52","tip" => "1.34","delivery_fee" => "3","service_fee" => "0","customer_fee" => "0","customer_fee_percent" => "0","restaurant_fee_percent" => "10","delivery_service_markup" => "0","delivery_service_markup_value" => "0","id_admin" => "209","id_order" => "24414","gift_card_total" => "0","gift_card_paid_by_crunchbutton" => "0","gift_card_paid_by_restaurant" => "0","gift_card_paid_by_promotional" => "0","gift_card_paid_by_other_restaurant" => "0","total_charged" => "11.56","promotion_maximum" => "2","max_apology_credit" => "0","credit" => "1","cash" => "0","charge_credit_fee" => "1","pay_credit_charge" => "1","pay_promotion" => "1","just_fee_on_subtotal" => "0","delivery_service" => "1","formal_relationship" => "1","paid_with_cb_card" => "0","refunded" => "0","pay_if_refunded" => "0","driver" => "Steven Frasica"];
+		// id_order: 24413
+		$this->driver_orders[] = ["subtotal" => "14.53","tax" => "1.13","tip" => "2.5","delivery_fee" => "3","service_fee" => "0","customer_fee" => "0","customer_fee_percent" => "0","restaurant_fee_percent" => "10","delivery_service_markup" => "0","delivery_service_markup_value" => "0","id_admin" => "209","id_order" => "24413","gift_card_total" => "0","gift_card_paid_by_crunchbutton" => "0","gift_card_paid_by_restaurant" => "0","gift_card_paid_by_promotional" => "0","gift_card_paid_by_other_restaurant" => "0","total_charged" => "21.16","promotion_maximum" => "2","max_apology_credit" => "0","credit" => "1","cash" => "0","charge_credit_fee" => "1","pay_credit_charge" => "1","pay_promotion" => "1","just_fee_on_subtotal" => "0","delivery_service" => "1","formal_relationship" => "1","paid_with_cb_card" => "0","refunded" => "0","pay_if_refunded" => "0","driver" => "Steven Frasica"];
+		// id_order: 24412
+		$this->driver_orders[] = ["subtotal" => "9.75","tax" => "0.76","tip" => "1.07","delivery_fee" => "2","service_fee" => "0","customer_fee" => "0","customer_fee_percent" => "0","restaurant_fee_percent" => "10","delivery_service_markup" => "10","delivery_service_markup_value" => "0.98","id_admin" => "209","id_order" => "24412","gift_card_total" => "0","gift_card_paid_by_crunchbutton" => "0","gift_card_paid_by_restaurant" => "0","gift_card_paid_by_promotional" => "0","gift_card_paid_by_other_restaurant" => "0","total_charged" => "14.57","promotion_maximum" => "2","max_apology_credit" => "0","credit" => "1","cash" => "0","charge_credit_fee" => "1","pay_credit_charge" => "1","pay_promotion" => "1","just_fee_on_subtotal" => "0","delivery_service" => "1","formal_relationship" => "1","paid_with_cb_card" => "0","refunded" => "0","pay_if_refunded" => "0","driver" => "Steven Frasica"];
 
 		$this->settlement = new Crunchbutton_Settlement;
 	}
 
-	public function testIndividualMathsCashOrderFormalRelationship() {
-		$order = $this->orders_formal_relationship[ 2 ];
+	public function testDriversMath() {
+		$calc = $this->settlement->driversProcessOrders( $this->driver_orders );
+		$id_admin = 209;
+		$calc = $calc[ $id_admin ];
+		$this->assertEquals( $calc[ 'subtotal' ], 29.91 );
+		$this->assertEquals( $calc[ 'tax' ], 2.25 );
+		$this->assertEquals( $calc[ 'delivery_fee' ], 20 );
+		$this->assertEquals( $calc[ 'tip' ], 14.86 );
+		$this->assertEquals( $calc[ 'customer_fee' ], 0 );
+		$this->assertEquals( $calc[ 'markup' ], -2.22 );
+		$this->assertEquals( $calc[ 'credit_charge' ], 0 );
+		$this->assertEquals( $calc[ 'restaurant_fee' ], 0 );
+		$this->assertEquals( $calc[ 'gift_card' ], 0 );
+		$this->assertEquals( count( $calc[ 'orders' ] ), 10 );
+		$this->assertEquals( $calc[ 'total_due' ], 64.8 );
+	}
+
+	public function testRestaurantIndividualMathsCashOrderFormalRelationship() {
+		$order = $this->restaurant_orders_formal_relationship[ 2 ];
 		$this->assertEquals( $this->settlement->orderCardSubtotalPayment( $order ), 0 );
 		$this->assertEquals( $this->settlement->orderTaxPayment( $order ), 0 );
 		$this->assertEquals( $this->settlement->orderDeliveryFeePayment( $order ), 0 );
@@ -42,8 +81,8 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->settlement->orderCashSubtotalPayment( $order ), 9.56 );
 	}
 
-	public function testIndividualMathsCreditOrderFormalRelationship() {
-		$order = $this->orders_formal_relationship[ 0 ];
+	public function testRestaurantIndividualMathsCreditOrderFormalRelationship() {
+		$order = $this->restaurant_orders_formal_relationship[ 0 ];
 		$this->assertEquals( $this->settlement->orderCardSubtotalPayment( $order ), 12.48 );
 		$this->assertEquals( $this->settlement->orderTaxPayment( $order ), 0.79 );
 		$this->assertEquals( $this->settlement->orderDeliveryFeePayment( $order ), 0 );
@@ -58,8 +97,8 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->settlement->orderCashSubtotalPayment( $order ), 0 );
 	}
 
-	public function testDueToPayFormalRelationship(){
-		$pay = $this->settlement->restaurantsProcessOrders( $this->orders_formal_relationship );
+	public function testRestaurantDueToPayFormalRelationship(){
+		$pay = $this->settlement->restaurantsProcessOrders( $this->restaurant_orders_formal_relationship );
 		$this->assertEquals( $pay[ 'card_subtotal' ], 41.79 );
 		$this->assertEquals( $pay[ 'tax' ], 2.65 );
 		$this->assertEquals( $pay[ 'delivery_fee' ], 0 );
@@ -76,7 +115,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $pay[ 'total_due' ], 42.70894 );
 	}
 
-	public function testIndividualMathsCashOrderNoFormalRelationship() {
+	public function testRestaurantIndividualMathsCashOrderNoFormalRelationship() {
 		// values of id_order: 24419
 		$order = ['subtotal' => 11.1, 'tax' => 0.83, 'tip' => 0, 'delivery_fee' => 2, 'service_fee' => 0, 'customer_fee' => 0, 'customer_fee_percent' => 0, 'restaurant_fee_percent' => 0, 'delivery_service_markup' => 20, 'delivery_service_markup_value' => 2.22, 'id_admin' => 209, 'gift_card_total' => 0, 'gift_card_paid_by_crunchbutton' => 0, 'gift_card_paid_by_restaurant' => 0, 'gift_card_paid_by_promotional' => 0, 'gift_card_paid_by_other_restaurant' => 0, 'total_charged' => 16.15, 'promotion_maximum' => 2, 'max_apology_credit' => 0, 'credit' => 0, 'cash' => 1, 'charge_credit_fee' => 1, 'pay_credit_charge' => 1, 'pay_promotion' => 1, 'just_fee_on_subtotal' => 0, 'delivery_service' => 1, 'formal_relationship' => 0, 'paid_with_cb_card' => 0, 'refunded' => 0, 'pay_if_refunded' => 0];
 		$this->assertEquals( $this->settlement->orderCardSubtotalPayment( $order ), 0 );
@@ -93,8 +132,8 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->settlement->orderCashSubtotalPayment( $order ), 11.93 );
 	}
 
-	public function testIndividualMathsCreditOrderNoFormalRelationship() {
-		$order = $this->orders_no_formal_relationship[ 0 ];
+	public function testRestaurantIndividualMathsCreditOrderNoFormalRelationship() {
+		$order = $this->restaurant_orders_no_formal_relationship[ 0 ];
 		$this->assertEquals( $this->settlement->orderCardSubtotalPayment( $order ), 2.59 );
 		$this->assertEquals( $this->settlement->orderTaxPayment( $order ), 0.23 );
 		$this->assertEquals( $this->settlement->orderDeliveryFeePayment( $order ), 0 );
@@ -109,8 +148,8 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $this->settlement->orderCashSubtotalPayment( $order ), 0 );
 	}
 
-	public function testDueToPayNoFormalRelationship(){
-		$pay = $this->settlement->restaurantsProcessOrders( $this->orders_no_formal_relationship );
+	public function testRestaurantDueToPayNoFormalRelationship(){
+		$pay = $this->settlement->restaurantsProcessOrders( $this->restaurant_orders_no_formal_relationship );
 		$this->assertEquals( $pay[ 'card_subtotal' ], 14.05 );
 		$this->assertEquals( $pay[ 'tax' ], 1.26 );
 		$this->assertEquals( $pay[ 'delivery_fee' ], 0 );
