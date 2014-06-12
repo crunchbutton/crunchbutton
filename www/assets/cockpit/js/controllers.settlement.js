@@ -52,10 +52,8 @@ NGApp.controller('SettlementCtrl', function ( $scope, $filter, SettlementService
 			$scope.result = json;
 			console.log('$scope.result',$scope.result);
 			$scope.showForm = false;
+			$scope.isSearching = false;
 		} );
-
-		$scope.isSearching = false;
-
 	}
 
 	// Just run if the user is loggedin

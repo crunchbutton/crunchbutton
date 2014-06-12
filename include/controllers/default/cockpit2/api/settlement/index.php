@@ -67,6 +67,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 				$order = [];
 				$order[ 'id_order' ] = $_order->id_order;
 				$order[ 'name' ] = $_order->name;
+				$order[ 'pay_type' ] = $_order->pay_type;
 				$order[ 'total' ] = $_order->final_price_plus_delivery_markup;
 				$date = $_order->date();
 				$order[ 'date' ] = $date->format( 'M jS Y g:i:s A' );
