@@ -662,36 +662,37 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 	 * @param array $elements
 	 */
 	public function saveNotifications($elements) {
-
-		foreach( $elements as $element ){
-			$shouldSave = false;
-			if( $element[ 'type' ] == 'admin' && trim( $element[ 'id_admin' ] ) != '' ){
-				$id_admin = $element[ 'id_admin' ];
-				$value = '';
-				$shouldSave = true;
-			}
-			if( $element[ 'type' ] != 'admin' && trim( $element[ 'value' ] ) != '' ){
-				$value = $element[ 'value' ];
-				$id_admin = NULL;
-				$shouldSave = true;
-			}
-			// echo '<pre>';var_dump( $shouldSave, $element );exit();
-			if( $shouldSave ){
-				if( $element[ 'id_notification' ] ){
-					$notification = Crunchbutton_Notification::o( $element[ 'id_notification' ] );
-				} else {
-					$notification = new Crunchbutton_Notification;
+		if( $elements ){
+			foreach( $elements as $element ){
+				$shouldSave = false;
+				if( $element[ 'type' ] == 'admin' && trim( $element[ 'id_admin' ] ) != '' ){
+					$id_admin = $element[ 'id_admin' ];
+					$value = '';
+					$shouldSave = true;
 				}
-				$notification->id_restaurant = $this->id_restaurant;
-				$notification->active = ( $element[ 'active' ] == 'true' || $element[ 'active' ] == '1' ) ? 1 : 0;
-				$notification->type = $element[ 'type' ];
-				$notification->id_admin = $id_admin;
-				$notification->value = $value;
-				$notification->save();
-			} else {
-				// remove
-				if( $element[ 'id_notification' ] ){
-					c::db()->query( 'DELETE FROM notification WHERE id_notification = "' . $element[ 'id_notification' ] . '"' );
+				if( $element[ 'type' ] != 'admin' && trim( $element[ 'value' ] ) != '' ){
+					$value = $element[ 'value' ];
+					$id_admin = NULL;
+					$shouldSave = true;
+				}
+				// echo '<pre>';var_dump( $shouldSave, $element );exit();
+				if( $shouldSave ){
+					if( $element[ 'id_notification' ] ){
+						$notification = Crunchbutton_Notification::o( $element[ 'id_notification' ] );
+					} else {
+						$notification = new Crunchbutton_Notification;
+					}
+					$notification->id_restaurant = $this->id_restaurant;
+					$notification->active = ( $element[ 'active' ] == 'true' || $element[ 'active' ] == '1' ) ? 1 : 0;
+					$notification->type = $element[ 'type' ];
+					$notification->id_admin = $id_admin;
+					$notification->value = $value;
+					$notification->save();
+				} else {
+					// remove
+					if( $element[ 'id_notification' ] ){
+						c::db()->query( 'DELETE FROM notification WHERE id_notification = "' . $element[ 'id_notification' ] . '"' );
+					}
 				}
 			}
 		}
