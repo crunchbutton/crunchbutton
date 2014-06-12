@@ -677,3 +677,24 @@ NGApp.directive('splashPositionFix', function() {
 		}
 	}
 });
+
+NGApp.directive( 'positiveOrNegativeColor', function( $rootScope ) {
+	return {
+		restrict: 'A',
+		link: function( scope, element, attrs ){
+			var css = element.attr( 'class' ) ? element.attr( 'class' ) + ' ' : '';
+			console.log('attrs.positiveOrNegativeColor',attrs.positiveOrNegativeColor);
+			var value = parseInt( attrs.positiveOrNegativeColor );
+			console.log('value',value);
+			if( value > 0 ){
+				css += 'positive';
+			} else if( value < 0 ){
+				css += 'negative';
+			} else {
+				css += 'neutral';
+			}
+			console.log('css',css);
+			element.attr('class', css );
+		}
+	}
+} );
