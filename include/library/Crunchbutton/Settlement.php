@@ -23,7 +23,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			foreach( $restaurant->_payableOrders as $order ){
 				$orders[] = $this->orderExtractVariables( $order );
 			}
-			$restaurant->payment_data = $this->processOrders( $orders );
+			$restaurant->payment_datarestaurantsProcessOrders( $orders );
 		}
 		return $this->restaurants;
 	}
@@ -46,8 +46,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 
 	// this method receives the restaurant orders and run the math
-	public function processOrders( $orders ){
-
+	public function restaurantsProcessOrders( $orders ){
 		// start all with 0
 		$pay = [ 'card_subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'promo_gift_card' => 0, 'apology_gift_card' => 0, 'order_payment' => 0, 'cash_subtotal' => 0 ];
 		foreach ( $orders as $order ) {;
@@ -70,6 +69,48 @@ class Crunchbutton_Settlement extends Cana_Model {
 		// sum
 		$pay[ 'total_due' ] = $this->orderCalculateTotalDue( $pay );
 		return $pay;
+	}
+
+	// this method receives the restaurant orders and run the math
+	public function driversProcessOrders( $orders ){
+		$pay = [];
+		foreach ( $orders as $order ) {;
+			if( $order && $order[ 'id_admin' ] ){
+				$driver = $order[ 'id_admin' ];
+				if( !$pay[ $driver ] ){
+					$pay[ $driver ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'orders' => [] ];
+				}
+				$pay[ $driver ][ 'orders' ][] = $order[ 'id_order' ];
+				$pay[ $driver ][ 'subtotal' ] += $this->orderSubtotalDriveryPay( $order );
+				$pay[ $driver ][ 'tax' ] += $this->orderTaxDriverPay( $order );
+				$pay[ $driver ][ 'delivery_fee' ] += $this->orderDeliveryFeeDriverPay( $order );
+				$pay[ $driver ][ 'tip' ] += $this->orderTipDriverPay( $order );
+				$pay[ $driver ][ 'customer_fee' ] += $this->orderCustomerFeeDriverPay( $order );
+				$pay[ $driver ][ 'markup' ] += $this->orderMarkupDriverPay( $order );
+				$pay[ $driver ][ 'credit_charge' ] += $this->orderCreditChargeDriverPay( $order );
+				$pay[ $driver ][ 'restaurant_fee' ] += $this->orderRestaurantFeeDriverPay( $order );
+				$pay[ $driver ][ 'gift_card' ] += $this->orderGiftCardDriverPay( $order );
+			}
+		}
+
+		foreach( $pay as $key => $val ){
+			$pay[ $key ][ 'total_due' ] = $this->orderCalculateTotalDueDriver( $pay[ $key ] );
+		}
+
+		return $pay;
+	}
+
+	public function orderCalculateTotalDueDriver( $pay ){
+		$total_due = 	$pay[ 'subtotal' ] +
+									$pay[ 'tax' ] +
+									$pay[ 'delivery_fee' ] +
+									$pay[ 'tip' ] +
+									$pay[ 'customer_fee' ] +
+									$pay[ 'markup' ] +
+									$pay[ 'credit_charge' ] +
+									$pay[ 'restaurant_fee' ] +
+									$pay[ 'gift_card' ];
+		return $total_due;
 	}
 
 	public function orderCalculateTotalDue( $pay ){
@@ -243,6 +284,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'delivery_service_markup' ] = $order->delivery_service_markup;
 		$values[ 'delivery_service_markup_value' ] = $order->delivery_service_markup_value;
 		$values[ 'id_admin' ] = $order->getDeliveryDriver()->id_admin; // driver
+		$values[ 'id_order' ] = $order->id_order; // driver
 
 		$values[ 'gift_card_total' ] = $order->chargedByCredit();
 		$values[ 'gift_card_paid_by_crunchbutton' ] = Crunchbutton_Credit::creditByOrderPaidBy( $order->id_order, Crunchbutton_Credit::PAID_BY_CRUNCHBUTTON );
@@ -275,6 +317,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 		foreach( $values as $key => $val ){
 			$values[ $key ] = floatval( $val );
 		}
+
+		if( $values[ 'id_admin' ] ){
+			$admin = Admin::o( $values[ 'id_admin' ] );
+			$values[ 'driver' ] = $admin->name;
+		} else {
+			$values[ 'driver' ] = '';
+		}
+
+
+
 		return $values;
 	}
 }

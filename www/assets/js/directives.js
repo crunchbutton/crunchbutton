@@ -672,8 +672,25 @@ NGApp.directive('splashPositionFix', function() {
 				}
 				return;
 			}
-
 			setTimeout( function(){ fixPosition();}, 10 );
 		}
 	}
 });
+
+NGApp.directive( 'positiveOrNegativeColor', function( $rootScope ) {
+	return {
+		restrict: 'A',
+		link: function( scope, element, attrs ){
+			var css = element.attr( 'class' ) ? element.attr( 'class' ) + ' ' : '';
+			var value = parseFloat( attrs.positiveOrNegativeColor );
+			if( value > 0 ){
+				css += 'positive';
+			} else if( value < 0 ){
+				css += 'negative';
+			} else {
+				css += 'neutral';
+			}
+			element.attr('class', css );
+		}
+	}
+} );

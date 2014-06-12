@@ -59,7 +59,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testDueToPayFormalRelationship(){
-		$pay = $this->settlement->processOrders( $this->orders_formal_relationship );
+		$pay = $this->settlement->restaurantsProcessOrders( $this->orders_formal_relationship );
 		$this->assertEquals( $pay[ 'card_subtotal' ], 41.79 );
 		$this->assertEquals( $pay[ 'tax' ], 2.65 );
 		$this->assertEquals( $pay[ 'delivery_fee' ], 0 );
@@ -110,7 +110,7 @@ class SettlementTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testDueToPayNoFormalRelationship(){
-		$pay = $this->settlement->processOrders( $this->orders_no_formal_relationship );
+		$pay = $this->settlement->restaurantsProcessOrders( $this->orders_no_formal_relationship );
 		$this->assertEquals( $pay[ 'card_subtotal' ], 14.05 );
 		$this->assertEquals( $pay[ 'tax' ], 1.26 );
 		$this->assertEquals( $pay[ 'delivery_fee' ], 0 );

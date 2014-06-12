@@ -11,8 +11,15 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		switch ($this->method()) {
 			case 'get':
 				switch ( c::getPagePiece( 2 ) ) {
-					case 'range':
-						$this->_range();
+					case 'restaurants':
+						switch ( c::getPagePiece( 3 ) ) {
+							case 'range':
+								$this->_restaurantRange();
+								break;
+							default:
+								$this->_error();
+								break;
+						}
 						break;
 					default:
 						$this->_error();
@@ -21,8 +28,15 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 				break;
 			case 'post':
 				switch ( c::getPagePiece( 2 ) ) {
-					case 'begin':
-						$this->_begin();
+					case 'restaurants':
+						switch ( c::getPagePiece( 3 ) ) {
+							case 'begin':
+								$this->_restaurantBegin();
+								break;
+							default:
+								$this->_error();
+								break;
+						}
 						break;
 					default:
 						$this->_error();
@@ -32,7 +46,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
-	private function _begin(){
+	private function _restaurantBegin(){
 
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
@@ -67,6 +81,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 				$order = [];
 				$order[ 'id_order' ] = $_order->id_order;
 				$order[ 'name' ] = $_order->name;
+				$order[ 'pay_type' ] = $_order->pay_type;
 				$order[ 'total' ] = $_order->final_price_plus_delivery_markup;
 				$date = $_order->date();
 				$order[ 'date' ] = $date->format( 'M jS Y g:i:s A' );
@@ -87,7 +102,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		echo json_encode( $out );
 	}
 
-	private function _range(){
+	private function _restaurantRange(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$range = [ 'end' => $now->format( 'Y/m/d' ) ];
 		$now->modify( '-1 week' );

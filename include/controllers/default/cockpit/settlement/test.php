@@ -7,7 +7,7 @@ class Controller_settlement_test extends Crunchbutton_Controller_Account {
 			return;
 		}
 
-		$id_orders = c::getPagePiece( 2 );
+		$id_orders = c::getPagePiece( 3 );
 		if( $id_orders ){
 			$settlement = new Settlement;
 			$id_orders = explode( ',', $id_orders );
@@ -32,12 +32,19 @@ class Controller_settlement_test extends Crunchbutton_Controller_Account {
 															'tip' => $settlement->orderTipPayment( $values ),
 															'tip' => $settlement->orderTipPayment( $values ),
 															'card_charge' => $settlement->orderCreditChargePayment( $values ),
-															'restaurant_fee' => $settlement->orderRestaurantFeePayment( $values )
+															'restaurant_fee' => $settlement->orderRestaurantFeePayment( $values ),
+															'driver' => $values[ 'driver' ]
 														];
 				}
-				c::view()->pay = $settlement->processOrders( $orders_values );
+
+				$type = c::getPagePiece( 2 );
+				if( $type == 'restaurants' ){
+					c::view()->pay_restaurants = $settlement->restaurantsProcessOrders( $orders_values );
+				} else if( $type == 'drivers' ){
+					c::view()->pay_drivers = $settlement->driversProcessOrders( $orders_values );;
+				}
 				c::view()->orders = $orders;
-				// echo '<pre>';var_dump( c::view()->pay );exit();
+				c::view()->order_ids = c::getPagePiece( 3 );
 			}
 		}
 		c::view()->display('settlement/test');

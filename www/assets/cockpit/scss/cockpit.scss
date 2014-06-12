@@ -16,8 +16,8 @@ b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
 	margin: 0;
@@ -102,7 +102,7 @@ html {
 	.content-padding {
 		/*max-width: 767px;*/
 		margin: 0 auto;
-	}	
+	}
 }
 
 @media screen and (max-width: 1024px) {
@@ -325,7 +325,7 @@ p {
 				-ms-transition: width 0.3s ease;
 				 -o-transition: width 0.3s ease;
 						transition: width 0.3s ease;
-	
+
 	}
 	.snap-drawers {
 		position:absolute;
@@ -735,7 +735,7 @@ input {
 	.li-input .button{
 		border-radius: 0;
 		width: 6em;
-		margin-right: .8em;	
+		margin-right: .8em;
 	}
 
 	.li-input .button.save{
@@ -756,6 +756,9 @@ input {
 	width: 100% !important;
 	margin-bottom:1.5em;
 }
+	.tb-zebra tr:nth-child(2n){
+		background: #F5F5F5;
+	}
 .tb-hack tbody {
 	width: 100% !important;
 }
@@ -764,7 +767,7 @@ input {
 }
 .tb-grid tbody {
 	background: #fff;
-}	
+}
 	.tb-grid tbody td{
 		padding: .6em .4em .6em .4em;
 		line-height: 1.2em;
@@ -777,7 +780,7 @@ input {
 		}
 		.tb-grid tbody td:last-child{
 			border-right: none;
-		} 
+		}
 	.tb-grid .td-large, .tb-hack .td-large{
 		width: 100% !important;
 	}
@@ -809,6 +812,28 @@ input {
 		.schedule-action-yes{
 			background: #4db1a7;
 		}
+
+.tb-grid .total-due{
+	background: #E8E8E8;
+	font-weight: bold;
+}
+.positive{
+	color: #64763d;
+}
+.negative{
+	color: #ad4442;
+}
+.neutral{
+	color: #CCC;
+	text-decoration: line-through;
+}
+	.summary{
+		font-weight: bold;
+	}
+	.tb-grid .total-due.neutral{
+		color: #FFF;
+	}
+
 .link{
 		cursor: pointer;
 		text-decoration: underline;
@@ -970,7 +995,7 @@ h1.title .fa {
 		font-size: 2em;
 		color: #5d5f63;
 		margin-bottom: 1.2em;
-		margin-top: .2em;		
+		margin-top: .2em;
 	}
 h2.title{
 	font-family: Source Sans Pro;
@@ -978,7 +1003,7 @@ h2.title{
 	font-size: 1.5em;
 	color: #5d5f63;
 	margin-bottom: 1.2em;
-	margin-top: .2em;	
+	margin-top: .2em;
 }
 h3.title{
 	font-family: Source Sans Pro;
@@ -986,7 +1011,7 @@ h3.title{
 	font-size: 1.1em;
 	color: #5d5f63;
 	margin-bottom: 1.2em;
-	margin-top: .2em;	
+	margin-top: .2em;
 }
 .right {
 	float: right;
@@ -1116,7 +1141,7 @@ h3.title{
 	.divider.dots {
 		border-top: 1px solid #eeede7;
 	}
-	
+
 	.restaurant-name {
 		float: left;
 	}
@@ -1124,7 +1149,7 @@ h3.title{
 	.order-id {
 		float: right;
 	}
-	
+
 	.order-icon {
 		font-size: 1.2em;
 		display: table-cell;
@@ -1155,17 +1180,17 @@ h3.title{
 		width: 100%;
 		margin-top: 0;
 	}
-	
+
 	.order-map {
 		width: 100%;
 		height: 15em;
 		background-size:cover !important;
 	}
-	
+
 	[class*='icon-'] {
 		display: inline-block;
 	}
-	
+
 	.order-comment-arrow {
 		width: 0;
 		height: 0;
@@ -1174,7 +1199,7 @@ h3.title{
 		border-bottom: 7px solid #00957f;
 		margin-left: 1.2em;
 	}
-	
+
 	.order-comment {
 		background: #00957f;
 		color: #fff;
@@ -1190,7 +1215,7 @@ h3.title{
 		height: 2.8em;
 		background-size: 100%;
 	}
-	
+
 	.icon-chef {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-chef.svg) no-repeat;
 		background-position: top center;
@@ -1198,7 +1223,7 @@ h3.title{
 		height: 2.6em;
 		background-size: 100%;
 	}
-	
+
 	.icon-user {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-user.svg) no-repeat;
 		background-position: top center;
@@ -1206,7 +1231,7 @@ h3.title{
 		height: 2.4em;
 		background-size: 100%;
 	}
-	
+
 	.icon-delivery {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-delivery.svg) no-repeat;
 		background-position: top center;
@@ -1214,7 +1239,7 @@ h3.title{
 		height: 1.6em;
 		background-size: 100%;
 	}
-	
+
 	.icon-card {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-card.svg) no-repeat;
 		background-position: top center;
@@ -1222,7 +1247,7 @@ h3.title{
 		height: 1.6em;
 		background-size: 100%;
 	}
-	
+
 	.icon-clock {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-clock.svg) no-repeat;
 		background-position: top center;
@@ -1230,7 +1255,7 @@ h3.title{
 		height: 2em;
 		background-size: 100%;
 	}
-	
+
 	.icon-timer {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-timer.svg) no-repeat;
 		background-position: top center;
@@ -1238,7 +1263,7 @@ h3.title{
 		height: 2.3em;
 		background-size: 100%;
 	}
-	
+
 	.icon-map-home {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-map-home.svg) no-repeat;
 		background-position: top center;
@@ -1246,7 +1271,7 @@ h3.title{
 		height: 2.41em;
 		background-size: 100%;
 	}
-	
+
 	.icon-map-restaurant {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-map-restaurant.svg) no-repeat;
 		background-position: top center;
@@ -1254,7 +1279,7 @@ h3.title{
 		height: 2.41em;
 		background-size: 100%;
 	}
-	
+
 	.icon-cash {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-cash.svg) no-repeat;
 		background-position: top center;
@@ -1262,7 +1287,7 @@ h3.title{
 		height: 1.6em;
 		background-size: 100%;
 	}
-	
+
 	.icon-takeout {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-takeout.svg) no-repeat;
 		background-position: top center;
@@ -1270,7 +1295,7 @@ h3.title{
 		height: 2.0em;
 		background-size: 100%;
 	}
-	
+
 	.icon-phone {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-phone.svg) no-repeat;
 		background-position: top center;
@@ -1279,7 +1304,7 @@ h3.title{
 		background-size: 100%;
 		margin-top: .2em;
 	}
-	
+
 	.icon-notes {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-notes.svg) no-repeat;
 		background-position: top center;
@@ -1287,7 +1312,7 @@ h3.title{
 		height: 1.6em;
 		background-size: 100%;
 	}
-	
+
 	.icon-credit {
 		background: url(http://dev.crunchr.co/assets/images/micro/icon-credit.svg) no-repeat;
 		background-position: top center;
@@ -1304,17 +1329,17 @@ h3.title{
 	.fooditem {
 		border-bottom: 1px solid #999;
 	}
-	
+
 	.topitem {
 		border-bottom: 2px solid #999;
 	}
-	
+
 	.control .wrap {
 		width: 100%;
 		box-sizing: border-box;
 		display: table;
 	}
-	
+
 	.control .message {
 		font-size: 1.3em;
 		display: table-cell;
@@ -1342,7 +1367,7 @@ h3.title{
 				 -o-transition: background .2s;
 						transition: background .2s;
 	}
-	
+
 	.wrap {
 		padding: .5em;
 		max-width: 740px;
@@ -1386,7 +1411,7 @@ h3.title{
 	margin: 0 auto;
 	margin-top: 16em;
 	opacity: .2;
-	
+
 	-webkit-transform:translate3d(0,0,0);
 
 	-webkit-transform: scale(3);
@@ -1394,7 +1419,7 @@ h3.title{
 			-ms-transform: scale(3);
 			 -o-transform: scale(3);
 					transform: scale(3);
-	
+
 	-webkit-transition: all .1s;
 		 -moz-transition: all .1s;
 			-ms-transition: all .1s;
@@ -1407,10 +1432,10 @@ h3.title{
 	height: 8em;
 	width: 8em;
 	background-size: cover;
-}	
+}
 body.loading {
 	overflow: hidden;
-	
+
 }
 body.loading .loader-frame {
 	-webkit-transform: scale(1);
@@ -1429,7 +1454,7 @@ body.loading .loader-wrap {
 	width: 100%;
 	height: 100%;
 	background: rgba(0,0,0,.5);
-}	
+}
 
 
 

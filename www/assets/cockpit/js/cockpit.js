@@ -78,11 +78,16 @@ NGApp.config(function($compileProvider){
 
 NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider ) {
 	$routeProvider
-		/* Settlemtn */
+		/* Settlement */
 		.when('/settlement', {
 			action: 'settlement',
 			controller: 'SettlementCtrl',
 			templateUrl: 'assets/view/settlement.html'
+		})
+		.when('/settlement/restaurants', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantCtrl',
+			templateUrl: 'assets/view/settlement-restaurants.html'
 		})
 		.when('/drivers/orders', {
 			action: 'drivers-orders',
