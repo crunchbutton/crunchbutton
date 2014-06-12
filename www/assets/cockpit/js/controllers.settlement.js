@@ -1,4 +1,18 @@
-NGApp.controller('SettlementCtrl', function ( $scope, $filter, SettlementService ) {
+NGApp.controller('SettlementCtrl', function ( $scope ) {
+
+	$scope.ready = true;
+
+	$scope.restaurants = function(){
+		$scope.navigation.link( '/settlement/restaurants' );
+	}
+
+	$scope.drivers = function(){
+		$scope.navigation.link( '/settlement/drivers' );
+	}
+
+} );
+
+NGApp.controller('SettlementRestaurantCtrl', function ( $scope, $filter, SettlementService ) {
 
 	$scope.ready = false;
 	$scope.pay_type = 'all';
@@ -11,7 +25,7 @@ NGApp.controller('SettlementCtrl', function ( $scope, $filter, SettlementService
 	$scope.sort_options = [ { 'name': 'Last Payment', 'value' : 'last_payment' }, { 'name': 'Alphabetical', 'value' : 'alphabetical' } ];
 
 	function range(){
-		SettlementService.range( function( json ){
+		SettlementService.restaurants.range( function( json ){
 			if( json.start && json.end ){
 				$scope.range = { 'start' : new Date( json.start ), 'end' : new Date( json.end ) };
 				$scope.ready = true;
@@ -48,14 +62,12 @@ NGApp.controller('SettlementCtrl', function ( $scope, $filter, SettlementService
 										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy'),
 										'pay_type': $scope.pay_type };
 
-		SettlementService.begin( params, function( json ){
+		SettlementService.restaurants.begin( params, function( json ){
 			$scope.result = json;
 			console.log('$scope.result',$scope.result);
 			$scope.showForm = false;
+			$scope.isSearching = false;
 		} );
-
-		$scope.isSearching = false;
-
 	}
 
 	// Just run if the user is loggedin

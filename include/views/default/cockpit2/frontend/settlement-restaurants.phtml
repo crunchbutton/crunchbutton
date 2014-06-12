@@ -1,0 +1,175 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Settlement:: Restaurants</span></h1>
+
+	<div class="divider"></div>
+
+	<form name="form" novalidate ng-show="showForm">
+
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content">
+
+			<li class="li-input" ng-class="{'error':form.rangeStart.$invalid}">
+				<div class="label">Date start:</div>
+				<div class="input"><input type="date" name="rangeStart" ng-model="range.start" required placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="form.rangeStart.$error.required">Required.</small>
+					<small ng-show="form.rangeStart.$error.date">Enter a valid start date!</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.rangeEnd.$invalid}">
+				<div class="label">Date end:</div>
+				<div class="input"><input type="date" name="rangeEnd" ng-model="range.end" required placeholder=""></div>
+				<div class="box-error">
+					<small ng-show="form.rangeend.$error.required">Required.</small>
+					<small ng-show="form.rangeend.$error.date">Enter a valid end date!</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.paymentType.$invalid}">
+				<div class="label">Payment type:</div>
+				<select name="paymentType" required ng-model="pay_type" ng-options="opt.value as opt.name for opt in pay_type_options" class="cart-customize-select"></select>
+				<div class="box-error">
+					<small ng-show="form.paymentType.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-class="{'error':form.sort.$invalid}">
+				<div class="label">Sort by:</div>
+				<select name="sort" required ng-model="sort" ng-options="opt.value as opt.name for opt in sort_options" class="cart-customize-select"></select>
+				<div class="box-error">
+					<small ng-show="form.sort.$error.required">Required.</small>
+				</div>
+			</li>
+
+			<li class="li-input" ng-show="!isSearching">
+				<button class="button save" ng-click="begin();">Begin</button>
+			</li>
+
+			<li class="li-input" ng-show="isSearching">
+				<span><i class="fa fa-circle-o-notch fa-spin"></i> Loading</span>
+			</li>
+
+		</ul>
+
+	</form>
+
+	<div class="box-content" ng-show="!showForm">
+		<p>
+			Listing orders from <strong>{{range.start | date:'MM/dd/yyyy'}}</strong> to <strong>{{range.end | date:'MM/dd/yyyy'}}</strong>, payment type is <strong>{{pay_type_label}}</strong> and sorting by <strong>{{sort_label}}</strong>.
+			<br>
+			<span class="link" ng-click="showForm = true">Show form</span>
+		</p>
+	</div>
+
+	<div ng-if="result">
+
+		<h2 class="title">
+			<span>Summary</span>
+		</h2>
+
+		<div>
+			<table class="tb-grid tb-zebra summary">
+				<tbody>
+					<tr>
+						<td>Total Restaurants</td>
+						<td>{{result.total_restaurants}}</td>
+					</tr>
+					<tr>
+						<td>Total Orders</td>
+						<td>{{result.total_orders}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{result.total_payments}}">
+						<td>Total Payments</td>
+						<td>$ {{result.total_payments | formatPrice}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div ng-repeat="restaurant in result.restaurants">
+
+			<br/><br/><br/>
+
+			<h2 class="title">
+				<span>{{restaurant.name}}</span>
+			</h2>
+			<h3 class="title" ng-if="restaurant.last_payment">
+				Last payment #{{restaurant.last_payment.id_payment}}: <strong positive-or-negative-color="{{restaurant.last_payment.amount}}">$ {{restaurant.last_payment.amount | formatPrice}}</strong> on <strong>{{restaurant.last_payment.date}}</strong>
+			</h3>
+			<table class="tb-grid tb-zebra">
+				<tbody>
+					<tr positive-or-negative-color="{{restaurant.tax}}">
+						<td>Tax</td>
+						<td>$ {{restaurant.tax | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{restaurant.delivery_fee}}">
+						<td>Delivery Fee</td>
+						<td>$ {{restaurant.delivery_fee | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{restaurant.tip}}">
+						<td>Tip</td>
+						<td>$ {{restaurant.tip | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{restaurant.promo_gift_card}}">
+						<td>Promo Gift Card</td>
+						<td>$ {{restaurant.promo_gift_card | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{restaurant.apology_gift_card}}">
+						<td>Apology Gift Card</td>
+						<td>$ {{restaurant.apology_gift_card | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{restaurant.card_subtotal}}">
+						<td>Credit Card Subtotal</td>
+						<td>$ {{restaurant.card_subtotal | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{restaurant.cash_subtotal}}">
+						<td>Cash Subtotal</td>
+						<td>$ {{restaurant.cash_subtotal | formatPrice}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{restaurant.credit_charge}}">
+						<td>Credit Card Charge</td>
+						<td>$ {{restaurant.credit_charge | formatPrice}}</td>
+					</tr>
+					<tr class="total-due" positive-or-negative-color="{{restaurant.total_due}}">
+						<td class="td-medium">Total due</td>
+						<td class="td-medium">$ {{restaurant.total_due | formatPrice}}</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h3 class="title link" ng-if="!restaurant.show_orders" ng-click="restaurant.show_orders = true">Show orders (total {{restaurant.orders_count}} orders )</h3>
+			<h3 class="title link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders (total {{restaurant.orders_count}} orders )</h3>
+
+			<table class="tb-grid tb-zebra" ng-if="restaurant.show_orders">
+				<thead>
+					<tr>
+						<td>#</td>
+						<td class="td-medium">Name</td>
+						<td>Amount</td>
+						<td>Payment</td>
+						<td class="td-medium">Date</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="order in restaurant.orders">
+						<td>{{order.id_order}}</td>
+						<td>{{order.name}}</td>
+						<td>$ {{order.total | formatPrice}}</td>
+						<td>{{order.pay_type}}</td>
+						<td>{{order.date}}</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+
+	</div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>
