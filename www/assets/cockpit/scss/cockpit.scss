@@ -202,7 +202,15 @@ p {
 	font-size: 1.2em;
 	line-height: 1.6em;
 }
-
+.orange{
+	color: $orange;
+}
+.green{
+	color: $green;
+}
+.excluded{
+	text-decoration: line-through;
+}
 
 
 
@@ -760,17 +768,14 @@ input {
 		background: #F5F5F5;
 	}
 
-	.tb-zebra .not-included {
+	.tb-zebra .excluded {
 		color: #CCC;
 		font-style: italic;
 	}
-		.excluded{
-			text-decoration: line-through;
-		}
 	.tb-zebra .refunded{
 		color:$orange;
 		font-style: normal;
-		text-decoration: none !important;
+		text-decoration: underline !important;
 	}
 
 .tb-hack tbody {
@@ -849,15 +854,15 @@ input {
 	}
 
 .link{
-		cursor: pointer;
-		text-decoration: underline;
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-	}
+	cursor: pointer;
+	text-decoration: underline;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
 .tb-grid .schedule-period{
 	font-weight:bold;
 }
@@ -1476,13 +1481,16 @@ body.loading .loader-wrap {
 	background: rgba(0,0,0,.5);
 }
 
-
-
-
 b, strong{ font-weight: bold; }
 
 .pointer{
 	cursor: pointer;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 .box-content {
 	background: #fff;
@@ -1537,6 +1545,3 @@ b, strong{ font-weight: bold; }
 		color: #64763d;
 		border:1px solid #d6e9c6;
 	}
-.orange{
-	color: $orange;
-}

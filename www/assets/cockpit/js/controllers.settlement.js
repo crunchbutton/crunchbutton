@@ -90,13 +90,32 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 						break;
 					}
 				}
-				$scope.unBusy();
 			} else {
 				$scope.result = json;
 			}
 			$scope.showForm = false;
 			$scope.isSearching = false;
 			$scope.summary();
+			$scope.unBusy();
+		} );
+	}
+
+	$scope.schedule = function(){
+		$scope.makeBusy();
+		var id_restaurants = new Array();
+		for( x in $scope.result.restaurants ){
+			if( $scope.result.restaurants[ x ].pay ){
+				id_restaurants.push( $scope.result.restaurants[ x ].id_restaurant );
+			}
+		}
+		id_restaurants = id_restaurants.join( ',' );
+
+		var params = { 'start': $filter( 'date' )( $scope.range.start, 'yyyy-MM-dd' ),
+										'end': $filter( 'date' )( $scope.range.end, 'yyyy-MM-dd' ),
+										'pay_type': $scope.pay_type, 'id_restaurants' : id_restaurants };
+
+		SettlementService.restaurants.schedule( params, function( json ){
+			$scope.begin();
 		} );
 	}
 

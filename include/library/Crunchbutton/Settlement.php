@@ -67,7 +67,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		foreach ( $orders as $order ) {;
 			if( $order ){
 				// Pay if Refunded
-				if( $order[ 'refunded' ] == 1 && $order[ 'pay_if_refunded' ] == 0 ){
+				if( ( $order[ 'refunded' ] == 1 && $order[ 'pay_if_refunded' ] == 0 ) || $order[ 'restaurant_paid' ] ){
 					continue;
 				}
 				$pay[ 'card_subtotal' ] += $this->orderCardSubtotalPayment( $order );
@@ -335,6 +335,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'pay_if_refunded' ] = ( $order->pay_if_refunded > 0 ) ? 1: 0;
 		$values[ 'reimburse_cash_order' ] = ( $order->reimburse_cash_order > 0 ) ? 1: 0;
 
+		$values[ 'restaurant_paid' ] = Cockpit_Payment_Schedule_Order::checkOrderWasPaidRestaurant( $order->id_order );
+
 		// convert all to float -> mysql returns some values as string
 		foreach( $values as $key => $val ){
 			$values[ $key ] = floatval( $val );
@@ -354,4 +356,49 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		return $values;
 	}
+
+	public function schedule_payment( $id_restaurants ){
+		$restaurants = $this->startRestaurant();
+		foreach ( $restaurants as $_restaurant ) {
+			// todo: build a better way to filter - this way is very ugly
+			if( !$id_restaurants[ $_restaurant->id_restaurant ] ){
+				continue;
+			}
+			$id_restaurant = $_restaurant->id_restaurant;
+			$payment_data = $_restaurant->payment_data;
+
+			// check if it has any order to be paid
+			$shouldSchedule = ( $payment_data[ 'total_due' ] > 0 ) ? true : false;
+
+			foreach ( $_restaurant->_payableOrders as $order ) {
+				$alreadyPaid = Cockpit_Payment_Schedule_Order::checkOrderWasPaidRestaurant( $order->id_order );
+				if( !$alreadyPaid ){
+					$shouldSchedule = true;
+				}
+			}
+			if( $shouldSchedule ){
+				// schedule it
+				$schedule = new Cockpit_Payment_Schedule;
+				$schedule->id_restaurant = $_restaurant->id_restaurant;
+				$schedule->date = date( 'Y-m-d H:i:s' );
+				$schedule->amount = min( $payment_data[ 'total_due' ], 0 );
+				$schedule->payment_method = $_restaurant->payment_type()->payment_method;
+				$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
+				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+				$schedule->status_date = date( 'Y-m-d H:i:s' );
+				$schedule->id_admin = c::user()->id_admin;
+				$schedule->save();
+				$id_payment_schedule = $schedule->id_payment_schedule;
+				// save the orders
+				foreach ( $_restaurant->_payableOrders as $order ) {
+					$schedule_order = new Cockpit_Payment_Schedule_Order;
+					$schedule_order->id_payment_schedule = $id_payment_schedule;
+					$schedule_order->id_order = $order->id_order;
+					$schedule_order->save();
+				}
+			}
+
+		}
+	}
+
 }

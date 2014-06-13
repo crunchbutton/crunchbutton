@@ -49,6 +49,9 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 							case 'pay-if-refunded':
 								$this->_restaurantPayIfRefunded();
 								break;
+							case 'schedule':
+								$this->_restaurantSchedule();
+								break;
 							default:
 								$this->_error();
 								break;
@@ -70,6 +73,20 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 				}
 				break;
 		}
+	}
+
+	private function _restaurantSchedule(){
+		$start = $this->request()['start'];
+		$end = $this->request()['end'];
+		$_id_restaurants = explode( ',', $this->request()['id_restaurants'] );
+		$id_restaurants = [];
+		foreach ( $_id_restaurants as $key => $val ) {
+			$id_restaurants[ trim( $val ) ] = true;
+		}
+		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
+		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
+		$settlement->schedule_payment( $id_restaurants );
+		echo json_encode( [ 'success' => true ] );
 	}
 
 	private function _restaurantPayIfRefunded(){
