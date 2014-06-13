@@ -21,6 +21,8 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 	$scope.isSearching = false;
 	$scope.showForm = true;
 
+	var id_restaurant = false;
+
 	$scope.pay_type_options = SettlementService.pay_type_options;
 	$scope.sort_options = SettlementService.sort_options;
 
@@ -29,6 +31,24 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 			if( json.start && json.end ){
 				$scope.range = { 'start' : new Date( json.start ), 'end' : new Date( json.end ) };
 				$scope.ready = true;
+				// remove this before commit!!!
+				setTimeout(function() {
+					$scope.begin();
+				}, 100 );
+			}
+		} );
+	}
+
+	$scope.pay_if_refunded = function( id_order, pay_if_refunded ){
+		$scope.makeBusy();
+		var params = { 'id_order': id_order, 'pay_if_refunded' : pay_if_refunded };
+		SettlementService.restaurants.pay_if_refunded( params, function( json ){
+			id_restaurant = json.id_restaurant;
+			if( id_restaurant ){
+				$scope.begin();
+			} else {
+				App.alert( 'Oops, something bad happened!' )
+				$scope.unBusy();
 			}
 		} );
 	}
@@ -58,15 +78,49 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 
 		$scope.isSearching = true;
 
-		var params = { 'start': $filter( 'date' )( $scope.range.start, 'MM/dd/yyyy'),
-										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy'),
+		var params = { 'start': $filter( 'date' )( $scope.range.start, 'yyyy-MM-dd' ),
+										'end': $filter( 'date' )( $scope.range.end, 'yyyy-MM-dd' ),
 										'pay_type': $scope.pay_type };
 
+		if( id_restaurant ){
+			params.id_restaurant = id_restaurant;
+		}
+
 		SettlementService.restaurants.begin( params, function( json ){
-			$scope.result = json;
+			if( id_restaurant ){
+				for( x in $scope.result.restaurants ){
+					if( $scope.result.restaurants[ x ].id_restaurant == id_restaurant ){
+						$scope.result.restaurants[ x ] = json.restaurants[ 0 ];
+						break;
+					}
+				}
+				$scope.unBusy();
+			} else {
+				$scope.result = json;
+			}
 			$scope.showForm = false;
 			$scope.isSearching = false;
+			$scope.summary();
 		} );
+	}
+
+	$scope.summary = function(){
+		var total_restaurants = 0;
+		var total_payments = 0;
+		var total_orders = 0;
+		var total_not_included = 0;
+		for( x in $scope.result.restaurants ){
+			if( $scope.result.restaurants[ x ].pay ){
+				total_restaurants++;
+				total_payments += $scope.result.restaurants[ x ].total_due;
+				total_orders += $scope.result.restaurants[ x ].orders_count;
+				total_not_included += $scope.result.restaurants[ x ].not_included;
+			}
+		}
+		$scope.total_restaurants = total_restaurants;
+		$scope.total_payments = total_payments;
+		$scope.total_orders = total_orders;
+		$scope.total_not_included = total_not_included;
 	}
 
 	// Just run if the user is loggedin

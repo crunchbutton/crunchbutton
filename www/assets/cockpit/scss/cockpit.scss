@@ -759,6 +759,20 @@ input {
 	.tb-zebra tr:nth-child(2n){
 		background: #F5F5F5;
 	}
+
+	.tb-zebra .not-included {
+		color: #CCC;
+		font-style: italic;
+	}
+		.excluded{
+			text-decoration: line-through;
+		}
+	.tb-zebra .refunded{
+		color:$orange;
+		font-style: normal;
+		text-decoration: none !important;
+	}
+
 .tb-hack tbody {
 	width: 100% !important;
 }
@@ -837,6 +851,12 @@ input {
 .link{
 		cursor: pointer;
 		text-decoration: underline;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 	}
 .tb-grid .schedule-period{
 	font-weight:bold;
@@ -1517,3 +1537,6 @@ b, strong{ font-weight: bold; }
 		color: #64763d;
 		border:1px solid #d6e9c6;
 	}
+.orange{
+	color: $orange;
+}

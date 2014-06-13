@@ -27,14 +27,14 @@ class Cockpit_Restaurant extends Crunchbutton_Restaurant {
 
 	// get orders that are payable; not test, within our date range, it just return the order, the calc are made at settlement class
 	public function payableOrders($filters = []) {
+
 		if (!isset($this->_payableOrders)) {
-			$q = '
-				select * from `order`
-				where id_restaurant="'.$this->id_restaurant.'"
-				and DATE(`date`) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
-				and DATE(`date`) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
-				and name not like "%test%"
-				order by `pay_type` asc, `date` asc ';
+			$q = 'SELECT * FROM `order`
+							WHERE id_restaurant="'.$this->id_restaurant.'"
+								AND DATE(`date`) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
+								AND DATE(`date`) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
+								AND NAME NOT LIKE "%test%"
+							ORDER BY `pay_type` ASC, `date` ASC ';
 			$orders = Order::q($q);
 			$this->_payableOrders = $orders;
 		}

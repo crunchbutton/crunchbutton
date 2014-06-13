@@ -46,12 +46,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 					FROM restaurant
 						LEFT OUTER JOIN ( SELECT id_restaurant, `date` FROM `payment` ) AS p using(id_restaurant)
 						INNER JOIN restaurant_payment_type rpt ON rpt.id_restaurant = restaurant.id_restaurant
-					WHERE active=1';
+					WHERE active=1 ';
 		if ($filters['payment_method']) {
-			 $q .= ' AND `rpt.payment_method`="'.$filters['payment_method'].'" ';
+			 $q .= ' AND rpt.payment_method = "'.$filters['payment_method']. '" ';
+		}
+		if( $filters[ 'id_restaurant' ] ){
+			$q .= ' AND restaurant.id_restaurant = "' . $filters[ 'id_restaurant' ] . '"';
 		}
 		$q .= ' AND restaurant.id_restaurant
-						GROUP BY id_restaurant
+						GROUP BY restaurant.id_restaurant
 						 ORDER BY (CASE WHEN p_id_rest IS NULL THEN 1 ELSE 0 END) ASC';
 		return Restaurant::q( $q );
 	}
@@ -63,6 +66,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$pay = [ 'card_subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'promo_gift_card' => 0, 'apology_gift_card' => 0, 'order_payment' => 0, 'cash_subtotal' => 0 ];
 		foreach ( $orders as $order ) {;
 			if( $order ){
+				// Pay if Refunded
+				if( $order[ 'refunded' ] == 1 && $order[ 'pay_if_refunded' ] == 0 ){
+					continue;
+				}
 				$pay[ 'card_subtotal' ] += $this->orderCardSubtotalPayment( $order );
 				$pay[ 'tax' ] += $this->orderTaxPayment( $order );
 				$pay[ 'delivery_fee' ] += $this->orderDeliveryFeePayment( $order );
@@ -326,11 +333,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'paid_with_cb_card' ] = ( $order->paid_with_cb_card > 0 ) ? 1: 0;
 		$values[ 'refunded' ] = ( $order->refunded > 0 ) ? 1: 0;
 		$values[ 'pay_if_refunded' ] = ( $order->pay_if_refunded > 0 ) ? 1: 0;
-
-		// Pay if Refunded
-		if( $values[ 'refunded' ] == 1 && $values[ 'pay_if_refunded' ] == 0 ){
-			return false;
-		}
+		$values[ 'reimburse_cash_order' ] = ( $order->reimburse_cash_order > 0 ) ? 1: 0;
 
 		// convert all to float -> mysql returns some values as string
 		foreach( $values as $key => $val ){

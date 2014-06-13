@@ -23,11 +23,11 @@
 				<div class="label">Date end:</div>
 				<div class="input"><input type="date" name="rangeEnd" ng-model="range.end" required placeholder=""></div>
 				<div class="box-error">
-					<small ng-show="form.rangeend.$error.required">Required.</small>
-					<small ng-show="form.rangeend.$error.date">Enter a valid end date!</small>
+					<small ng-show="form.rangeEnd.$error.required">Required.</small>
+					<small ng-show="form.rangeEnd.$error.date">Enter a valid end date!</small>
 				</div>
 			</li>
-<?php /*
+
 			<li class="li-input" ng-class="{'error':form.paymentType.$invalid}">
 				<div class="label">Payment type:</div>
 				<select name="paymentType" required ng-model="pay_type" ng-options="opt.value as opt.name for opt in pay_type_options" class="cart-customize-select"></select>
@@ -35,7 +35,7 @@
 					<small ng-show="form.paymentType.$error.required">Required.</small>
 				</div>
 			</li>
-
+<?php /*
 			<li class="li-input" ng-class="{'error':form.sort.$invalid}">
 				<div class="label">Sort by:</div>
 				<select name="sort" required ng-model="sort" ng-options="opt.value as opt.name for opt in sort_options" class="cart-customize-select"></select>
@@ -58,7 +58,7 @@
 
 	<div class="box-content" ng-show="!showForm">
 		<p>
-			Listing orders from <strong>{{range.start | date:'MM/dd/yyyy'}}</strong> to <strong>{{range.end | date:'MM/dd/yyyy'}}</strong>.
+			Listing orders from <strong>{{range.start | date:'MM/dd/yyyy'}}</strong> to <strong>{{range.end | date:'MM/dd/yyyy'}}</strong> and payment method <strong>{{pay_type_label}}</strong>.
 			<br>
 			<span class="link" ng-click="showForm = true">Show form</span>
 		</p>
@@ -75,15 +75,19 @@
 				<tbody>
 					<tr>
 						<td>Total Restaurants</td>
-						<td>{{result.total_restaurants}}</td>
+						<td>{{total_restaurants}}</td>
 					</tr>
 					<tr>
 						<td>Total Orders</td>
-						<td>{{result.total_orders}}</td>
+						<td>{{total_orders}}</td>
 					</tr>
-					<tr positive-or-negative-color="{{result.total_payments}}">
+					<tr>
+						<td>Total Orders Refunded (and not included)</td>
+						<td>{{total_not_included}}</td>
+					</tr>
+					<tr positive-or-negative-color="{{total_payments}}">
 						<td>Total Payments</td>
-						<td>$ {{result.total_payments | formatPrice}}</td>
+						<td>$ {{total_payments | formatPrice}}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -93,7 +97,7 @@
 
 			<br/><br/><br/>
 
-			<h2 class="title">
+			<h2 class="title" ng-class="{ 'excluded': !restaurant.pay }">
 				<span>{{restaurant.name}}</span>
 			</h2>
 			<h3 class="title" ng-if="restaurant.last_payment">
@@ -137,29 +141,55 @@
 						<td class="td-medium">Total due</td>
 						<td class="td-medium">$ {{restaurant.total_due | formatPrice}}</td>
 					</tr>
+					<td>
+						<span ng-click="restaurant.pay = !restaurant.pay;summary();">
+							<span ng-show="restaurant.pay">
+								<i class="fa fa-check-square-o"></i> <span class="link"><strong>Remove this restaurant from the payment? </strong></span>
+							</span>
+							<span ng-show="!restaurant.pay">
+								<i class="fa fa-square-o"></i> <span class="link"><strong>Include this restaurant at the payment? </strong></span>
+							</span>
+						</span>
+					</td>
+					<td></td>
 				</tbody>
 			</table>
 
-			<h3 class="title link" ng-if="!restaurant.show_orders" ng-click="restaurant.show_orders = true">Show orders (total {{restaurant.orders_count}} orders )</h3>
-			<h3 class="title link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders (total {{restaurant.orders_count}} orders )</h3>
+			<h3 class="title">
+				<span class="link" ng-if="!restaurant.show_orders" ng-click="restaurant.show_orders = true">Show orders</span>
+				<span class="link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders</span> (total {{restaurant.orders_count}} orders <span class="orange" ng-if="restaurant.refunded_count > 0"><strong> + {{restaurant.refunded_count}} </strong> refunded and not included order(s)</span> )
+			</h3>
 
 			<table class="tb-grid tb-zebra" ng-if="restaurant.show_orders">
 				<thead>
 					<tr>
+						<td></td>
 						<td>#</td>
 						<td class="td-medium">Name</td>
 						<td>Amount</td>
 						<td>Payment</td>
+						<td>Refunded</td>
+						<td></td>
 						<td class="td-medium">Date</td>
 						<td></td>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="order in restaurant.orders">
+					<tr ng-repeat="order in restaurant.orders" ng-class="{ 'excluded': !order.included }">
+						<td></td>
 						<td>{{order.id_order}}</td>
 						<td>{{order.name}}</td>
 						<td>$ {{order.total | formatPrice}}</td>
 						<td>{{order.pay_type}}</td>
+						<td ng-class="{ 'refunded': order.refunded }">
+							<span ng-if="order.refunded">Refunded</span>
+						</td>
+						<td>
+							<span ng-if="order.refunded" ng-class="{ 'pay-if-refunded': order.pay_if_refunded }" class="pointer">
+								<i ng-click="pay_if_refunded( order.id_order, 0 )" ng-if="order.pay_if_refunded" class="fa fa-check-square-o"></i>
+								<i ng-click="pay_if_refunded( order.id_order, 1 )" ng-if="!order.pay_if_refunded" class="fa fa-square-o"></i>
+							</span>
+						</td>
 						<td>{{order.date}}</td>
 					</tr>
 				</tbody>
