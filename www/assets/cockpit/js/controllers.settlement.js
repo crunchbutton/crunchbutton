@@ -31,10 +31,6 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 			if( json.start && json.end ){
 				$scope.range = { 'start' : new Date( json.start ), 'end' : new Date( json.end ) };
 				$scope.ready = true;
-				// remove this before commit!!!
-				setTimeout(function() {
-					$scope.begin();
-				}, 100 );
 			}
 		} );
 	}
