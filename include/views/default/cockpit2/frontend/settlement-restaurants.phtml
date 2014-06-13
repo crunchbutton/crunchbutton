@@ -91,6 +91,9 @@
 					</tr>
 				</tbody>
 			</table>
+
+			<button class="button save" ng-click="schedule();">Begin</button>
+
 		</div>
 
 		<div ng-repeat="restaurant in result.restaurants">
@@ -157,7 +160,7 @@
 
 			<h3 class="title">
 				<span class="link" ng-if="!restaurant.show_orders" ng-click="restaurant.show_orders = true">Show orders</span>
-				<span class="link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders</span> (total {{restaurant.orders_count}} orders <span class="orange" ng-if="restaurant.refunded_count > 0"><strong> + {{restaurant.refunded_count}} </strong> refunded and not included order(s)</span> )
+				<span class="link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders</span> (total {{restaurant.orders_count}} orders <span class="orange" ng-if="restaurant.not_included > 0"><strong> + {{restaurant.not_included}} </strong> refunded and not included order(s)</span> )
 			</h3>
 
 			<table class="tb-grid tb-zebra" ng-if="restaurant.show_orders">
@@ -168,29 +171,32 @@
 						<td class="td-medium">Name</td>
 						<td>Amount</td>
 						<td>Payment</td>
-						<td>Refunded</td>
-						<td></td>
 						<td class="td-medium">Date</td>
+						<td></td>
+						<td></td>
 						<td></td>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="order in restaurant.orders" ng-class="{ 'excluded': !order.included }">
+					<tr ng-repeat="order in restaurant.orders">
 						<td></td>
-						<td>{{order.id_order}}</td>
-						<td>{{order.name}}</td>
-						<td>$ {{order.total | formatPrice}}</td>
-						<td>{{order.pay_type}}</td>
-						<td ng-class="{ 'refunded': order.refunded }">
-							<span ng-if="order.refunded">Refunded</span>
-						</td>
+						<td ng-class="{ 'excluded': !order.included }">{{order.id_order}}</td>
+						<td ng-class="{ 'excluded': !order.included }">{{order.name}}</td>
+						<td ng-class="{ 'excluded': !order.included }">$ {{order.total | formatPrice}}</td>
+						<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
+						<td ng-class="{ 'excluded': !order.included }">{{order.date}}</td>
 						<td>
-							<span ng-if="order.refunded" ng-class="{ 'pay-if-refunded': order.pay_if_refunded }" class="pointer">
-								<i ng-click="pay_if_refunded( order.id_order, 0 )" ng-if="order.pay_if_refunded" class="fa fa-check-square-o"></i>
-								<i ng-click="pay_if_refunded( order.id_order, 1 )" ng-if="!order.pay_if_refunded" class="fa fa-square-o"></i>
+							<span ng-if="order.refunded">
+								<span class="pointer orange" ng-click="pay_if_refunded( order.id_order, 1 )" ng-if="!order.pay_if_refunded">
+									<i class="fa fa-square-o"></i> Refunded. Include?
+								</span>
+								<span class="pointer" ng-click="pay_if_refunded( order.id_order, 0 )" ng-if="order.pay_if_refunded">
+									<i class="fa fa-check-square-o"></i> Refunded. Included!
+								</span>
 							</span>
 						</td>
-						<td>{{order.date}}</td>
+						<td>
+						</td>
 					</tr>
 				</tbody>
 			</table>
