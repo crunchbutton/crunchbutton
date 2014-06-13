@@ -55,7 +55,7 @@ class Crunchbutton_App extends Cana_App {
 			case 'beta.manish.crunchr.co':
 			case 'beta.cockpit.manish.crunchr.co':
 			case 'beta.cockpit3.manish.crunchr.co':
-
+			case 'beta.cockpit.la':
 				$env = 'beta';
 				break;
 			case 'dev.crunchr.co':
@@ -63,6 +63,7 @@ class Crunchbutton_App extends Cana_App {
 			case 'kenneth.crunchr.co':
 			case 'dev.manish.crunchr.co':
 			case 'manish.crunchr.co':
+			case 'dev.cockpit.la':
 				$env = 'dev';
 				break;
 			case 'cockpit.localhost':
@@ -116,6 +117,8 @@ class Crunchbutton_App extends Cana_App {
 			case 'beta.manish.crunchr.co':
 			case 'dev.manish.crunchr.co':
 			case 'manish.crunchr.co':
+			case 'beta.cockpit.la':
+			case 'dev.cockpit.la':
 				$params['env'] = 'beta';
 				break;
 
