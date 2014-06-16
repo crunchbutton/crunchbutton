@@ -65,13 +65,16 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 
 	// this method receives the restaurant orders and run the math
-	public function restaurantsProcessOrders( $orders ){
+	public function restaurantsProcessOrders( $orders, $recalculatePaidOrders = false ){
 		// start all with 0
 		$pay = [ 'card_subtotal' => 0, 'cash_reimburse' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'promo_gift_card' => 0, 'apology_gift_card' => 0, 'order_payment' => 0, 'cash_subtotal' => 0 ];
 		foreach ( $orders as $order ) {
 			if( $order ){
 				// Pay if Refunded
-				if( ( $order[ 'refunded' ] == 1 && $order[ 'pay_if_refunded' ] == 0 ) || $order[ 'restaurant_paid' ] ){
+				if( ( $order[ 'refunded' ] == 1 && $order[ 'pay_if_refunded' ] == 0 ) ){
+					continue;
+				}
+				if( $order[ 'restaurant_paid' ] && !$recalculatePaidOrders ){
 					continue;
 				}
 				$pay[ 'card_subtotal' ] += $this->orderCardSubtotalPayment( $order );
@@ -89,6 +92,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ 'cash_reimburse' ] += $this->orderReimburseCashOrder( $order );
 				$pay[ 'formal_relationship' ] = $order[ 'formal_relationship' ];
 			}
+		}
+		foreach ( $pay as $key => $val ) {
+			// $pay[ $key ] = Util::round_up( number_format( $val, 3 ), 2 );
 		}
 		// sum
 		$pay[ 'total_due' ] = $this->orderCalculateTotalDue( $pay );
@@ -367,6 +373,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'pay_type' ] = $order->pay_type;
 		$values[ 'restaurant' ] = $order->restaurant()->name;
 		$values[ 'date' ] = $order->date()->format( 'M jS Y g:i:s A' );
+		$values[ 'short_date' ] = $order->date()->format( 'M jS Y' );
 
 		return $values;
 	}
@@ -431,7 +438,48 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 	}
 
-	function payRestaurant( $id_payment_schedule ){
+	public function restaurantSummary( $id_payment_schedule ){
+		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		if( $schedule->id_payment_schedule && $schedule->type == Cockpit_Payment_Schedule::TYPE_RESTAURANT ){
+			$settlement = new Settlement;
+			$summary = $schedule->exports();
+			$summary[ 'restaurant' ] = $schedule->restaurant()->name;
+			$payment = $schedule->payment();
+			if( $payment->id_payment ){
+				$summary[ 'balanced_id' ] = $payment->balanced_id;
+				$summary[ 'stripe_id' ] = $payment->stripe_id;
+				$summary[ 'payment_date' ] = $payment->date()->format( 'M jS Y g:i:s A T' );
+			}
+			$orders = $schedule->orders();
+			$_orders = [];
+			$summary[ 'orders_cash' ] = 0;
+			$summary[ 'orders_card' ] = 0;
+			$summary[ 'orders' ] = [ 'card' => [], 'cash' => [] ];
+			foreach( $orders as $order ){
+				$_order = $order->order();
+				if( $_order->id_order ){
+					$variables = $settlement->orderExtractVariables( $_order );
+					$type = $variables[ 'cash' ] ? 'cash' : 'card';
+					if( $type == 'cash' || ( $type == 'card' && $order->amount > 0 ) ){
+						if( $type == 'card' ){
+							$summary[ 'orders_card' ]++;
+						} else {
+							$summary[ 'orders_cash' ]++;
+						}
+						$summary[ 'orders' ][ $type ][] = [ 'id_order' => $variables[ 'id_order' ], 'name' => $variables[ 'name' ], 'total' => $variables[ 'final_price_plus_delivery_markup' ], 'date' => $variables[ 'short_date' ], 'tip' => $variables[ 'tip' ] ];
+						$_orders[] = $variables;
+					}
+				}
+			}
+			$summary[ 'calcs' ] = $settlement->restaurantsProcessOrders( $_orders, true );
+			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
+			return $summary;
+		} else {
+			return false;
+		}
+	}
+
+	public function payRestaurant( $id_payment_schedule ){
 		$env = c::getEnv();
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 

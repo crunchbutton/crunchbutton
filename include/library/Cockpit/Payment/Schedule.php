@@ -31,6 +31,15 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return $out;
 	}
 
+	public function payment(){
+		if( $this->id_payment ){
+			return Crunchbutton_Payment::o( $this->id_payment );
+		}
+	}
+
+	public function admin() {
+		return Admin::o( $this->id_admin );
+	}
 
 	public function restaurant() {
 		return Restaurant::o( $this->id_restaurant );
@@ -44,7 +53,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	}
 
 	public function orders(){
-		return Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order WHERE id_payment_schedule = "' . $this->id_payment_schedule . '"' );
+		return Cockpit_Payment_Schedule_Order::q( 'SELECT * FROM payment_schedule_order WHERE id_payment_schedule = "' . $this->id_payment_schedule . '" ORDER BY id_order DESC' );
 	}
 
 }

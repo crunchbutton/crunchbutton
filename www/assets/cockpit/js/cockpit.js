@@ -94,6 +94,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementRestaurantsStatusCtrl',
 			templateUrl: 'assets/view/settlement-restaurants-status.html'
 		})
+		.when('/settlement/restaurants/payment/:id', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsPaymentCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+		})
 		.when('/settlement/drivers', {
 			action: 'settlement',
 			controller: 'SettlementDriversCtrl',

@@ -781,6 +781,21 @@ input {
 		font-style: normal;
 		text-decoration: underline !important;
 	}
+	.tb-zebra .title{
+		background: #CCC;
+		font-weight: bold;
+	}
+	.tb-zebra tr.transparent{
+		background: #f1f2f7 !important;
+	}
+
+	.tb-zebra .highlight-1{
+		background: #5cd3c7;
+	}
+	.tb-zebra .highlight-2{
+		background: #4db1a7;
+		font-weight: bold;
+	}
 
 .tb-hack tbody {
 	width: 100% !important;

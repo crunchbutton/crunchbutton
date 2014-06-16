@@ -55,6 +55,9 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 							case 'schedule':
 								$this->_restaurantSchedule();
 								break;
+							case 'payment':
+								$this->_restaurantPayment();
+								break;
 							case 'status':
 								$this->_restaurantStatus();
 								break;
@@ -78,6 +81,17 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 						break;
 				}
 				break;
+		}
+	}
+
+	private function _restaurantPayment(){
+		$id_payment_schedule = c::getPagePiece( 4 );
+		$settlement = new Settlement;
+		$summary = $settlement->restaurantSummary( $id_payment_schedule );
+		if( $summary ){
+			echo json_encode( $summary );
+		} else {
+			$this->_error();
 		}
 	}
 

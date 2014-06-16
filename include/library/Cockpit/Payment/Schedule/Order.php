@@ -21,6 +21,6 @@ class Cockpit_Payment_Schedule_Order extends Cana_Table {
 	}
 
 	public function order() {
-		return Cockpit_Order::o($this->order);
+		return Cockpit_Order::o( $this->id_order );
 	}
 }
