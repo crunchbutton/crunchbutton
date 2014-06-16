@@ -163,6 +163,49 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 
 });
 
+NGApp.controller('SettlementCtrl', function ( $scope ) {
+
+	$scope.ready = true;
+
+	$scope.restaurants = function(){
+		$scope.navigation.link( '/settlement/restaurants' );
+	}
+
+	$scope.drivers = function(){
+		$scope.navigation.link( '/settlement/drivers' );
+	}
+
+} );
+
+NGApp.controller('SettlementRestaurantsStatusCtrl', function ( $scope, $timeout, SettlementService ) {
+
+	$scope.ready = false;
+
+	var scheduled_payments = function(){
+		SettlementService.restaurants.status( function( json ){
+			$scope.result = json;
+			$scope.ready = true;
+			var timer = $timeout( function() {
+				scheduled_payments();
+			}, 5000 );
+		} );
+	}
+
+	$scope.$on( '$destroy', function(){
+		// Kills the timer when the controller is changed
+		if( typeof( timer ) !== 'undefined' && timer ){
+			try{ $timeout.cancel( timer ); } catch(e){}
+		}
+	} );
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		scheduled_payments();
+	}
+
+});
+
+
 NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, SettlementService ) {
 
 	$scope.ready = false;

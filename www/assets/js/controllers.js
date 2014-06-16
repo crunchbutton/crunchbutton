@@ -665,7 +665,7 @@ NGApp.controller( 'RestaurantCtrl', function ($scope, $http, $routeParams, $root
 		if( typeof( forceReloadTimer ) !== 'undefined' && forceReloadTimer ){
 			try{ $timeout.cancel( forceReloadTimer ); } catch(e){}
 		}
-	});
+	} );
 
 	$rootScope.$on( 'appResume', function(e, data) {
 		var checkDateTime = function(){

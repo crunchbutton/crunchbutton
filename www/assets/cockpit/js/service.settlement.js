@@ -12,7 +12,8 @@ NGApp.factory( 'SettlementService', function( $resource ) {
 		'restaurant' : { 'method': 'POST', params : { action: 'restaurant' } },
 		'pay_if_refunded' : { 'method': 'POST', params : { action: 'pay-if-refunded' } },
 		'reimburse_cash_order' : { 'method': 'POST', params : { action: 'reimburse-cash-order' } },
-		'schedule' : { 'method': 'POST', params : { action: 'schedule' } }
+		'schedule' : { 'method': 'POST', params : { action: 'schedule' } },
+		'status' : { 'method': 'POST', params : { action: 'status' } }
 	}	);
 
 	settlement.drivers = $resource( App.service + 'settlement/drivers/:action/', { action: '@action' }, {
@@ -28,6 +29,12 @@ NGApp.factory( 'SettlementService', function( $resource ) {
 
 	service.restaurants.schedule = function( params, callback ){
 		settlement.restaurants.schedule( params, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.restaurants.status = function( params, callback ){
+		settlement.restaurants.status( params, function( json ){
 			callback( json );
 		} );
 	}
