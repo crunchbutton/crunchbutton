@@ -18,7 +18,7 @@
 			<span>Summary</span>
 		</h2>
 		<h3 class="title">
-			Updated at {{result.updated_at}}
+			Summary updated at {{result.updated_at}} <span class="orange link" ng-click="update()">Update now</span>
 		</h3>
 
 		<table class="tb-grid tb-zebra summary">
@@ -53,7 +53,6 @@
 		<table class="tb-grid tb-zebra">
 			<thead>
 				<tr>
-					<td>#</td>
 					<td class="td-medium">Restaurant</td>
 					<td>Amount</td>
 					<td>Status</td>
@@ -61,8 +60,9 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="restaurant in result.restaurants">
-					<td>{{restaurant.id_payment_schedule}}</td>
-					<td>{{restaurant.restaurant}}</td>
+					<td>
+						<span class="orange link" ng-click="payment(restaurant.id_payment_schedule)">{{restaurant.restaurant}}</span>
+					</td>
 					<td>$ {{restaurant.amount | formatPrice}}</td>
 					<td>
 						{{restaurant.status}}
