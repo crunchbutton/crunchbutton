@@ -31,6 +31,9 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 			if( json.start && json.end ){
 				$scope.range = { 'start' : new Date( json.start ), 'end' : new Date( json.end ) };
 				$scope.ready = true;
+				setTimeout(function() {
+					$scope.begin();
+				}, 100);
 			}
 		} );
 	}
@@ -116,17 +119,21 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 
 	$scope.schedule = function(){
 		$scope.makeBusy();
-		var id_restaurants = new Array();
-		for( x in $scope.result.restaurants ){
-			if( $scope.result.restaurants[ x ].pay ){
-				id_restaurants.push( $scope.result.restaurants[ x ].id_restaurant );
-			}
-		}
-		id_restaurants = id_restaurants.join( ',' );
 
 		var params = { 'start': $filter( 'date' )( $scope.range.start, 'yyyy-MM-dd' ),
 										'end': $filter( 'date' )( $scope.range.end, 'yyyy-MM-dd' ),
-										'pay_type': $scope.pay_type, 'id_restaurants' : id_restaurants };
+										'pay_type': $scope.pay_type }
+
+		var id_restaurants = new Array();
+		var notes = new Array();
+		for( x in $scope.result.restaurants ){
+			if( $scope.result.restaurants[ x ].pay ){
+				id_restaurants.push( $scope.result.restaurants[ x ].id_restaurant );
+				params[ 'notes_' + $scope.result.restaurants[ x ].id_restaurant ] = $scope.result.restaurants[ x ].notes;
+			}
+		}
+		id_restaurants = id_restaurants.join( ',' );
+		params[ 'id_restaurants' ] = id_restaurants;
 
 		SettlementService.restaurants.schedule( params, function( json ){
 			$scope.unBusy();
@@ -147,6 +154,9 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 				total_orders += $scope.result.restaurants[ x ].orders_count;
 				total_not_included += $scope.result.restaurants[ x ].not_included;
 				total_reimburse_cash_orders += $scope.result.restaurants[ x ].reimburse_cash_orders;
+			}
+			if( !$scope.result.restaurants[ x ].notes ){
+				$scope.result.restaurants[ x ].notes = $scope.result.notes;
 			}
 		}
 		$scope.total_restaurants = total_restaurants;

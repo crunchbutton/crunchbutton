@@ -112,7 +112,7 @@
 						<td>
 						<span ng-click="restaurant.pay = !restaurant.pay;summary();">
 							<span ng-show="restaurant.pay">
-								<i class="fa fa-check-square-o"></i> <span class="link"><strong>Remove this restaurant from the payment? </strong></span>
+								<i class="fa fa-check-square-o"></i> <span class="link"><strong>Include this restaurant at the payment? </strong></span>
 							</span>
 							<span ng-show="!restaurant.pay">
 								<i class="fa fa-square-o"></i> <span class="link"><strong>Include this restaurant at the payment? </strong></span>
@@ -120,6 +120,16 @@
 						</span>
 						</td>
 						<td></td>
+					</tr>
+					<tr ng-show="restaurant.pay">
+						<td colspan="2">
+							<ul class="ul-inputs">
+								<li class="li-input">
+									<div class="label">Payment notes:</div>
+									<div class="input"><input ng-model="restaurant.notes" maxlength="255" placeholder=""></div>
+								</li>
+							</ul>
+						</td>
 					</tr>
 					<tr positive-or-negative-color="{{restaurant.tax}}">
 						<td>Tax</td>

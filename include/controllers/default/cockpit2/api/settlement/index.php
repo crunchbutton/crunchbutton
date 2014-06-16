@@ -87,7 +87,9 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		$_id_restaurants = explode( ',', $this->request()['id_restaurants'] );
 		$id_restaurants = [];
 		foreach ( $_id_restaurants as $key => $val ) {
-			$id_restaurants[ trim( $val ) ] = true;
+			$id_restaurant = trim( $val );
+			$notes = $this->request()[ 'notes_' . $id_restaurant ];
+			$id_restaurants[ $id_restaurant ] = ( $notes ) ? $notes : Crunchbutton_Settlement::DEFAULT_NOTES;
 		}
 		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
 		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
@@ -142,6 +144,8 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end, 'id_restaurant' => $id_restaurant ] );
 		$restaurants = $settlement->startRestaurant();
 		$out = [ 'restaurants' => [] ];
+		// default notes
+		$out = [ 'notes' => Crunchbutton_Settlement::DEFAULT_NOTES ];
 		foreach ( $restaurants as $_restaurant ) {
 			$restaurant = $_restaurant->payment_data;
 			$lastPayment = $_restaurant->getLastPayment();
@@ -244,7 +248,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$range = [ 'end' => $now->format( 'Y,m,d' ) ];
 		$now->modify( '-1 week' );
-		$range[ 'start' ] = $now->format( 'Y,m,d' );
+		$range[ 'start' ] = '2014,05,01';//$now->format( 'Y,m,d' );
 		echo json_encode( $range );
 	}
 
