@@ -1,0 +1,77 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Settlement:: Restaurants:: Status</span></h1>
+
+	<div class="divider"></div>
+
+	<div ng-if="result">
+
+		<div class="box-content" ng-show="!showForm">
+			<p>
+				Listing payments of <strong>{{result.last_date}}</strong>.
+			</p>
+		</div>
+
+		<h2 class="title">
+			<span>Summary</span>
+		</h2>
+		<h3 class="title">
+			Updated at {{result.updated_at}}
+		</h3>
+
+		<table class="tb-grid tb-zebra summary">
+			<tbody>
+				<tr>
+					<td>Total of Payments</td>
+					<td>{{result.total}}</td>
+				</tr>
+				<tr>
+					<td>Scheduled</td>
+					<td>{{result.scheduled}}</td>
+				</tr>
+				<tr>
+					<td>Processing</td>
+					<td>{{result.processing}}</td>
+				</tr>
+				<tr ng-class="{'green' : result.done > 0 }">
+					<td>Finished</td>
+					<td>{{result.done}}</td>
+				</tr>
+				<tr ng-class="{'orange' : result.error > 0 }">
+					<td>Error</td>
+					<td>{{result.error}}</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h2 class="title">
+			<span>Payments</span>
+		</h2>
+
+		<table class="tb-grid tb-zebra">
+			<thead>
+				<tr>
+					<td class="td-medium">Restaurant</td>
+					<td>Amount</td>
+					<td>Status</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="restaurant in result.restaurants">
+					<td>{{restaurant.restaurant}}</td>
+					<td>$ {{restaurant.amount | formatPrice}}</td>
+					<td>
+						{{restaurant.status}}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

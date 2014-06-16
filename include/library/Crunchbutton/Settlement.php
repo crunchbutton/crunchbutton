@@ -66,7 +66,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public function restaurantsProcessOrders( $orders ){
 		// start all with 0
 		$pay = [ 'card_subtotal' => 0, 'cash_reimburse' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'promo_gift_card' => 0, 'apology_gift_card' => 0, 'order_payment' => 0, 'cash_subtotal' => 0 ];
-		foreach ( $orders as $order ) {;
+		foreach ( $orders as $order ) {
 			if( $order ){
 				// Pay if Refunded
 				if( ( $order[ 'refunded' ] == 1 && $order[ 'pay_if_refunded' ] == 0 ) || $order[ 'restaurant_paid' ] ){
@@ -345,6 +345,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'reimburse_cash_order' ] = ( $order->reimburse_cash_order > 0 ) ? 1: 0;
 
 		$values[ 'restaurant_paid' ] = Cockpit_Payment_Schedule_Order::checkOrderWasPaidRestaurant( $order->id_order );
+		if( !$values[ 'restaurant_paid' ] ){
+			$values[ 'restaurant_paid' ] = Crunchbutton_Order_Transaction::checkOrderWasPaidRestaurant( $order->id_order );
+		}
 
 		// convert all to float -> mysql returns some values as string
 		foreach( $values as $key => $val ){
@@ -366,7 +369,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return $values;
 	}
 
-	public function schedulePayment( $id_restaurants ){
+	public function scheduleRestaurantPayment( $id_restaurants ){
 		$restaurants = $this->startRestaurant();
 		foreach ( $restaurants as $_restaurant ) {
 			// todo: build a better way to filter - this way is very ugly
@@ -394,32 +397,106 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule->payment_method = $_restaurant->payment_type()->payment_method;
 				$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
-				$schedule->status_date = date( 'Y-m-d H:i:s' );
 				$schedule->id_admin = c::user()->id_admin;
 				$schedule->save();
 				$id_payment_schedule = $schedule->id_payment_schedule;
 				// save the orders
 				foreach ( $_restaurant->_payableOrders as $order ) {
+					$total_due = $this->restaurantsProcessOrders( [ $this->orderExtractVariables( $order ) ] );
 					$schedule_order = new Cockpit_Payment_Schedule_Order;
 					$schedule_order->id_payment_schedule = $id_payment_schedule;
 					$schedule_order->id_order = $order->id_order;
+					$schedule_order->amount = max( $total_due[ 'total_due' ], 0 );
 					$schedule_order->save();
 				}
 			}
+		}
+		$this->doRestaurantPayments();
+	}
 
+	public function doRestaurantPayments( $id_payment_schedule = false ){
+		if( $id_payment_schedule ){
+			$this->payRestaurant( $_schedule->id_payment_schedule );
+		} else {
+			$schedule = new Cockpit_Payment_Schedule;
+			$lastDate = $schedule->lastRestaurantStatusDate();
+			$schedules = $schedule->restaurantSchedulesFromDate( $lastDate );
+			foreach( $schedules as $_schedule ){
+				$this->payRestaurant( $_schedule->id_payment_schedule );
+			}
 		}
 	}
 
-	public function doPayments(){
+	function payRestaurant( $id_payment_schedule ){
+		$env = c::getEnv();
+		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 
+		if( $schedule->id_payment_schedule ){
 
+			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_SCHEDULED ||
+					$schedule->status == Cockpit_Payment_Schedule::STATUS_ERROR ){
 
-// $p = Payment::credit([
-// 	'id_restaurant' => $r->id_restaurant,
-// 	'amount' => $this->request()['amount'],
-// 	'note' => $this->request()['note'],
-// 	'type' => 'balanced'
-// ]);
+				// Save the processing date
+				$schedule->status = Cockpit_Payment_Schedule::STATUS_PROCESSING;
+				$schedule->status_date = date( 'Y-m-d H:i:s' );
+				$schedule->save();
+
+				// @todo:: payment api stuff here!
+				// $p = Payment::credit([
+				// 	'id_restaurant' => $r->id_restaurant,
+				// 	'amount' => $this->request()['amount'],
+				// 	'note' => $this->request()['note'],
+				// 	'type' => 'balanced'
+				// ]);
+				// If some problem happened
+				if( false ){
+
+					$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
+					$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
+					$message .= "\n". 'amount: ' . $schedule->amount;
+					$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+					$schedule->status_date = date( 'Y-m-d H:i:s' );
+					$schedule->save();
+					Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+
+				} else {
+
+					$payment = new Crunchbutton_Payment;
+					$payment->id_restaurant = $schedule->id_restaurant;
+					$payment->date = date( 'Y-m-d H:i:s' );
+					$payment->amount = $schedule->amount;
+					$payment->balanced_id = $schedule->balanced_id;
+					$payment->stripe_id = $schedule->stripe_id;
+					$payment->env = $env;
+					$payment->id_admin = $schedule->id_admin;
+					$payment->save();
+
+					$schedule->id_payment = $payment->id_payment;
+					$schedule->status = Cockpit_Payment_Schedule::STATUS_DONE;
+					$schedule->status_date = date( 'Y-m-d H:i:s' );
+					$schedule->save();
+
+					$orders = $schedule->orders();
+
+					foreach (  $orders as $order ) {
+
+						$order_transaction = new Crunchbutton_Order_Transaction;
+						$order_transaction->id_order = $order->id_order;
+						$order_transaction->amt = $order->amount;
+						$order_transaction->date = date( 'Y-m-d H:i:s' );
+						$order_transaction->type = Crunchbutton_Order_Transaction::TYPE_PAID_TO_RESTAURANT;
+						$order_transaction->source = Crunchbutton_Order_Transaction::SOURCE_CRUNCHBUTTON;
+						$order_transaction->id_admin = $payment->id_admin;
+						$order_transaction->save();
+
+						$payment_order_transaction = new Cockpit_Payment_Order_Transaction;
+						$payment_order_transaction->id_payment = $payment->id_payment;
+						$payment_order_transaction->id_order_transaction = $order_transaction->id_order_transaction;
+						$payment_order_transaction->save();
+					}
+				}
+			}
+		}
 	}
 
 

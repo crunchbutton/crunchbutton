@@ -55,6 +55,9 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 							case 'schedule':
 								$this->_restaurantSchedule();
 								break;
+							case 'status':
+								$this->_restaurantStatus();
+								break;
 							default:
 								$this->_error();
 								break;
@@ -88,8 +91,23 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		}
 		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
 		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
-		$settlement->schedulePayment( $id_restaurants );
+		$settlement->scheduleRestaurantPayment( $id_restaurants );
 		echo json_encode( [ 'success' => true ] );
+	}
+
+	private function _restaurantStatus(){
+		$schedule = new Cockpit_Payment_Schedule;
+		$lastDate = $schedule->lastRestaurantStatusDate();
+		$schedules = $schedule->restaurantSchedulesFromDate( $lastDate );
+		$out = [ 'last_date' => $lastDate, 'restaurants' => '', 'scheduled' => 0, 'processing' => 0, 'done' => 0, 'error' => 0, 'total' => 0 ];
+		foreach( $schedules as $_schedule ){
+			$out[ 'restaurants' ][] = $_schedule->exports();
+			$out[ $_schedule->status ]++;
+			$out[ 'total' ]++;
+		}
+		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
+		echo json_encode( $out );
 	}
 
 	private function _restaurantPayIfRefunded(){
