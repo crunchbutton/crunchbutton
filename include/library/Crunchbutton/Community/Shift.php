@@ -17,13 +17,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 		$order = Order::o( $id_order );
 		if( $order->restaurant()->timezone ){
-			$now = new DateTime( 'now', new DateTimeZone( $order->restaurant()->timezone ) );	
+			$now = new DateTime( 'now', new DateTimeZone( $order->restaurant()->timezone ) );
 		} else {
 			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		}
-	
-		return Admin::q( 'SELECT a.* FROM admin a 
-												INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin 
+
+		return Admin::q( 'SELECT a.* FROM admin a
+												INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin
 												INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 												INNER JOIN restaurant_community rc ON rc.id_community = cs.id_community
 												INNER JOIN `order` o ON o.id_restaurant = rc.id_restaurant
@@ -32,10 +32,10 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function export(){
 		$out = [];
-		
+
 		$out[ 'community' ] = array( 'id_community' => $this->id_community, 'name' => $this->community()->name );
 
-		$out[ 'period' ] = array( 'toString' => $this->startEndToString(), 
+		$out[ 'period' ] = array( 'toString' => $this->startEndToString(),
 															'day_start' => $this->dateStart()->format( 'M jS Y' ),
 															'day_end' => $this->dateEnd()->format( 'M jS Y' ),
 															'date_start' => $this->dateStart()->format( 'Y-m-d H:i:s' ),
@@ -43,7 +43,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 															'timezone' => $this->timezone(),
 															'timezone_abbr' => $this->timezoneAbbr() );
 
-		$out[ 'period_pst' ] = array( 'toString' => $this->startEndToString( c::config()->timezone ), 
+		$out[ 'period_pst' ] = array( 'toString' => $this->startEndToString( c::config()->timezone ),
 																	'day_start' => $this->dateStart( c::config()->timezone )->format( 'M jS Y' ),
 																	'day_end' => $this->dateEnd( c::config()->timezone )->format( 'M jS Y' ),
 																	'date_start' => $this->dateStart( c::config()->timezone )->format( 'Y-m-d H:i:s' ),
@@ -57,7 +57,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		$query = 'SELECT cs.* FROM admin_shift_assign ass
 								INNER JOIN community_shift cs ON cs.id_community_shift = ass.id_community_shift
-								WHERE ass.id_admin = "' . $id_admin . '" AND 
+								WHERE ass.id_admin = "' . $id_admin . '" AND
 									DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now->format( 'Y-m-d' )  . '" ORDER BY cs.date_start ASC  LIMIT 20';
 		return Crunchbutton_Community_Shift::q( $query );
 	}
@@ -68,12 +68,12 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$now_formated = $now->format( 'Y-m-d' );
 			$now->modify( '+ 7 days' );
 			$next_days_formated = $now->format( 'Y-m-d' );
-			$query = 'SELECT cs.* FROM community_shift cs 
+			$query = 'SELECT cs.* FROM community_shift cs
 									WHERE cs.id_community IN( ' . join( ',', $communities ) . ' ) AND
-										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now_formated  . '" AND 
+										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) >= "' . $now_formated  . '" AND
 										DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) <= "' . $next_days_formated  . '"
 									 ORDER BY cs.date_start ASC';
-			return Crunchbutton_Community_Shift::q( $query );	
+			return Crunchbutton_Community_Shift::q( $query );
 		}
 		return false;
 	}
@@ -89,13 +89,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 	public function week(){
 		// Start week at monday #2666
-		$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->dateStart()->format( 'Y-m-d H:i:s' ), new DateTimeZone( $this->timezone() ) );	
+		$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->dateStart()->format( 'Y-m-d H:i:s' ), new DateTimeZone( $this->timezone() ) );
 		return $date->format( 'W' );
 	}
 
 	public function year(){
 		// Start week at monday #2666
-		$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->dateStart()->format( 'Y-m-d H:i:s' ), new DateTimeZone( $this->timezone() ) );	
+		$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->dateStart()->format( 'Y-m-d H:i:s' ), new DateTimeZone( $this->timezone() ) );
 		return $date->format( 'Y' );
 	}
 
@@ -158,7 +158,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 						$newShift->active = 1;
 						$newShift->id_community_shift_father = $shift->id_community_shift;
 						if( $newShift->date_start && $newShift->date_end ){
-							$newShift->save();	
+							$newShift->save();
 						}
 
 						// Create the permanent assigments
@@ -170,7 +170,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 								$assignment->id_community_shift = $newShift->id_community_shift;
 								$assignment->date = date('Y-m-d H:i:s');
 								$assignment->save();
-							}	
+							}
 						}
 					} else {
 
@@ -184,9 +184,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 										$assignment->id_admin = $permanently->id_admin;
 										$assignment->id_community_shift = $checkShift->id_community_shift;
 										$assignment->date = date('Y-m-d H:i:s');
-										$assignment->save();	
+										$assignment->save();
 									}
-								}	
+								}
 							}
 						}
 					}
@@ -198,7 +198,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	public function shiftByCommunity( $id_community ){
 		$weekdays = [ 'mon' =>  false, 'tue' =>  false, 'wed' =>  false, 'thu' =>  false, 'fri' =>  false, 'sat' =>  false, 'sun'  =>  false ];
 		foreach( $weekdays as $day => $val ){
-			$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community = "' . $id_community . '" AND day = "' . $day . '" ORDER BY id_community_shift ASC' );	
+			$shifts = Crunchbutton_Community_Shift::q( 'SELECT * FROM community_shift WHERE id_community = "' . $id_community . '" AND day = "' . $day . '" ORDER BY id_community_shift ASC' );
 			$segment = [];
 			foreach ( $shifts as $shift ) {
 				$segment[] = Crunchbutton_Community_Shift::startEndToSegment( $shift->start, $shift->end );
@@ -226,9 +226,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	public function removeRecurring( $id_community_shift ){
 		$shift = Crunchbutton_Community_Shift::o( $id_community_shift );
 		if( $shift->id_community_shift_father ){
-			c::db()->query( "UPDATE community_shift SET recurring = 0 WHERE id_community_shift = " . $shift->id_community_shift_father );	
+			c::db()->query( "UPDATE community_shift SET recurring = 0 WHERE id_community_shift = " . $shift->id_community_shift_father );
 			Crunchbutton_Community_Shift::removeRecurringChildren( $shift->id_community_shift_father );
-		}		
+		}
 	}
 
 	public function removeRecurringChildren( $id_community_shift_father ){
@@ -247,7 +247,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			c::db()->query( "UPDATE community_shift SET active = 0 WHERE id_community_shift = " . $id_community_shift );
 		} else {
 			c::db()->query( "DELETE FROM community_shift WHERE id_community_shift = " . $id_community_shift );
-		}		
+		}
 	}
 
 	public function removeHoursFromDay( $id_community, $date ){
@@ -257,15 +257,15 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	public function copyHoursFromTo( $id_community, $dayFrom, $dayTo ){
 		$shifts = Crunchbutton_Community_Shift::shiftByCommunityDay( $id_community, $dayFrom );
 		foreach( $shifts as $shift ){
-			$date_start = DateTime::createFromFormat( 'Y-m-d H:i:s', $dayTo . ' ' . $shift->dateStart()->format( 'H:i:s' ), new DateTimeZone( $shift->timezone() ) );	
-			$date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $dayTo . ' ' . $shift->dateEnd()->format( 'H:i:s' ), new DateTimeZone( $shift->timezone() ) );	
+			$date_start = DateTime::createFromFormat( 'Y-m-d H:i:s', $dayTo . ' ' . $shift->dateStart()->format( 'H:i:s' ), new DateTimeZone( $shift->timezone() ) );
+			$date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $dayTo . ' ' . $shift->dateEnd()->format( 'H:i:s' ), new DateTimeZone( $shift->timezone() ) );
 			$newShift = new Crunchbutton_Community_Shift();
 			$newShift->id_community = $id_community;
 			$newShift->date_start = $date_start->format( 'Y-m-d H:i:s' );
 			$newShift->date_end = $date_end->format( 'Y-m-d H:i:s' );
 			$newShift->active = 1;
 			if( $newShift->date_start && $newShift->date_end ){
-				$newShift->save();	
+				$newShift->save();
 			}
 		}
 	}
@@ -278,9 +278,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function timezoneAbbr(){
-		$dateTime = new DateTime(); 
-		$dateTime->setTimeZone( new DateTimeZone( $this->timezone() ) ); 
-		return $dateTime->format( 'T' ); 
+		$dateTime = new DateTime();
+		$dateTime->setTimeZone( new DateTimeZone( $this->timezone() ) );
+		return $dateTime->format( 'T' );
 	}
 
 	public function dateStart( $timezone = false ){
@@ -292,13 +292,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		}
 
 		if( !$this->_date_start ){
-			$this->_date_start = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_start, new DateTimeZone( $this->timezone() ) );	
+			$this->_date_start = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_start, new DateTimeZone( $this->timezone() ) );
 		}
 		return $this->_date_start;
 	}
 
 	public function dateEnd( $timezone = false ){
-		
+
 		if( $timezone ){
 			$date = $this->dateEnd();
 			$date->setTimezone( new DateTimeZone( $timezone ) );
@@ -306,7 +306,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		}
 
 		if( !$this->_date_end ){
-			$this->_date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end, new DateTimeZone( $this->timezone() ) );	
+			$this->_date_end = DateTime::createFromFormat( 'Y-m-d H:i:s', $this->date_end, new DateTimeZone( $this->timezone() ) );
 		}
 		return $this->_date_end;
 	}
@@ -347,7 +347,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function fullDate( $timezone = false ){
-		return 'From ' . $this->dateStartFriendly( $timezone ) . ' to ' . $this->dateEndFriendly( $timezone ); 
+		return 'From ' . $this->dateStartFriendly( $timezone ) . ' to ' . $this->dateEndFriendly( $timezone );
 	}
 
 	public function parseHour( $hour, $min, $ampm ){
@@ -363,13 +363,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			$min = '00';
 		}
 		if( trim( $hour ) != '' ){
-			return $hour . ':' . $min;	
+			return $hour . ':' . $min;
 		}
 		return false;
 	}
 
 	public function getAdminPreferences(){
-		return Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = ' . $this->id_community_shift . ' ORDER BY ranking  DESC' );
+		return Crunchbutton_Admin_Shift_Preference::q( 'SELECT asp.* FROM admin_shift_preference asp INNER JOIN admin a ON a.id_admin = asp.id_admin AND a.active = 1  WHERE id_community_shift = ' . $this->id_community_shift . ' ORDER BY ranking  DESC' );
 	}
 
 	public function getAdminPreferencesByDriver( $id_admin ){
@@ -377,13 +377,13 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 	}
 
 	public function getDrivers(){
-		return Crunchbutton_Admin::q( 'SELECT a.* FROM admin a INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin AND asa.id_community_shift = ' . $this->id_community_shift );
+		return Crunchbutton_Admin::q( 'SELECT a.* FROM admin a INNER JOIN admin_shift_assign asa ON asa.id_admin = a.id_admin AND asa.id_community_shift = ' . $this->id_community_shift . ' WHERE a.active = 1' );
 	}
 
 	public function communitiesWithDeliveryService(){
 		return Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c
 																				INNER JOIN restaurant_community rc ON c.id_community = rc.id_community
-																				INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant AND r.delivery_service = 1 
+																				INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant AND r.delivery_service = 1
 																			ORDER BY c.name ASC' );
 	}
 
@@ -395,7 +395,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$weekday = date( 'l' );
 		$time = date( 'Hi' );
 
-		// Messages defined here: 
+		// Messages defined here:
 		// https://github.com/crunchbutton/crunchbutton/issues/3084#issuecomment-44353387
 		switch ( $weekday ) {
 			case 'Sunday':
@@ -403,19 +403,19 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				if( $time >= 1300 && $time <= 1359 ){
 					$driversMessage = 'Hey [name]! Remember to fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule.|Due tomorrow at 5 PM PT. If you have any questions, just text back.';
 					$warningDrivers = true;
-				} 
+				}
 				// Sent on Sun at 6 PM PDT
 				else if ( $time >= 1800 && $time <= 1859 ){
 					$driversMessage = 'Don’t forget: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. Got a question? Text us back.';
 					$warningDrivers = true;
 				}
-				break;			
+				break;
 			case 'Monday':
 				// Sent on Mon at 10 AM PDT
 				if( $time >= 1000 && $time <= 1559 ){
 					$driversMessage = 'Remember: fill out your Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. Due tonight at 5 PM PT';
 					$warningDrivers = true;
-				} 
+				}
 				// Sent on Mon at 4 PM PDT
 				else if( $time >= 1600 && $time <= 1654 ){
 					$driversMessage = 'Due in 1 hour: Crunchbutton shift preferences for this Thurs—>next Wed at cockpit._DOMAIN_/schedule. If you have any questions, just text back.';
@@ -437,11 +437,11 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 			return;
 		}
 
-		// Start week on Thursday #3084	
+		// Start week on Thursday #3084
 		$now = new DateTime( 'next sunday', new DateTimeZone( c::config()->timezone  ) );
 		if( $now->format( 'l' ) == 'Thursday' ){
 			$now->modify( '+ 1 week' );
-			$day = $now;	
+			$day = $now;
 		} else {
 			$day = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
 		}
@@ -468,9 +468,9 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 
 			// Check if the community has shift for current week
 			$shifts = Crunchbutton_Community_Shift::shiftsByCommunityPeriod( $community->id_community, $from->format( 'Y-m-d' ), $to->format( 'Y-m-d' ) );
-		
+
 			$drivers = $community->getDriversOfCommunity();
-			
+
 			// echo "\n";
 			$log = $community->name . ' has ' .  $drivers->count() . ' drivers';
 			Log::debug( [ 'action' => $log, 'type' => 'driver-schedule' ] );
@@ -523,7 +523,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		if( false && count( $communitiesWithoutShift ) > 0 ){
 
 			$message = "The following communities doesn't have shifts for the current week: " . join( ', ', $communitiesWithoutShift );
-			
+
 			$message = str_split( $message, 160 );
 
 			foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
@@ -583,16 +583,16 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$name = $driver[ 'name' ];
 				$txt = $driver[ 'txt' ];
 				$phone = $driver[ 'phone' ];
-				
+
 				$message = str_replace( '[name]' , $name, $driversMessage );
 
 				if( strpos( $message, '|') > 0 ){
 					$message = explode( '|', $message );
 				} else {
-					$message = str_split( $message, 160 );	
+					$message = str_split( $message, 160 );
 				}
 
-				$num = ( $txt != '' ) ? $txt : $phone; 
+				$num = ( $txt != '' ) ? $txt : $phone;
 
 				if( $num != '' ){
 					foreach ( $message as $msg ) {
@@ -635,7 +635,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$now->modify( '+ 1 day' );
 		$assigments = Crunchbutton_Admin_Shift_Assign::q( 'SELECT asa.* FROM admin_shift_assign asa INNER JOIN community_shift cs ON asa.id_community_shift = cs.id_community_shift  WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d" ) = "' . $now->format( 'Y-m-d' ) . '"' );
 		foreach ( $assigments as $assignment ) {
-	
+
 			$shift = $assignment->shift();
 			$admin = $assignment->admin();
 
@@ -644,7 +644,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$txt = $admin->txt;
 				$phone = $admin->phone;
 
-				$num = ( $txt != '' ) ? $txt : $phone; 
+				$num = ( $txt != '' ) ? $txt : $phone;
 
 				$message = str_split( $message, 160 );
 
@@ -667,7 +667,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 					}
 				} else {
 					Log::debug( [ 'action' => 'ERROR: sending remind sms', 'id_admin' => $admin->id_admin, 'name' => $admin->name, 'num' => $num, 'msg' => $msg, 'type' => 'driver-remind' ] );
-				}				
+				}
 			}
 		}
 	}
@@ -692,7 +692,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 		$communities = Crunchbutton_Community::q( 'SELECT DISTINCT( c.id_community ) AS id, c.* FROM community c INNER JOIN restaurant_community rc ON rc.id_community = c.id_community INNER JOIN restaurant r ON r.id_restaurant = rc.id_restaurant WHERE r.active = 1 AND r.delivery_service = 1 ORDER BY c.name' );
 
 		foreach( $communities as $community ){
-			
+
 			if( $community->timezone ){
 
 				$now = new DateTime( 'now', new DateTimeZone( $community->timezone ) );
@@ -700,7 +700,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 				$_now = $now->format( 'Y-m-d H:i' );
 				$now->modify( '+ ' . ( $minutes + 5 ) . ' minutes' );
 				$_interval = $now->format( 'Y-m-d H:i' );
-				$nextShifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa 
+				$nextShifts = Crunchbutton_Community_Shift::q( 'SELECT DISTINCT( cs.id_community_shift ) AS id, cs.* FROM admin_shift_assign asa
 																													INNER JOIN community_shift cs ON cs.id_community_shift = asa.id_community_shift
 																													WHERE DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) >= "' . $_now . '" AND DATE_FORMAT( cs.date_start, "%Y-%m-%d %H:%i" ) <= "' . $_interval . '" AND cs.id_community = "' . $community->id_community . '"' );
 				if( $nextShifts->count() > 0 ){
@@ -719,7 +719,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 								$txt = $admin->txt;
 								$phone = $admin->phone;
 
-								$num = ( $txt != '' ) ? $txt : $phone; 
+								$num = ( $txt != '' ) ? $txt : $phone;
 
 								$message = str_split( $message, 160 );
 
@@ -747,7 +747,7 @@ class Crunchbutton_Community_Shift extends Cana_Table {
 								}
 							}
 						}
-					}					
+					}
 				}
 			}
 		}
