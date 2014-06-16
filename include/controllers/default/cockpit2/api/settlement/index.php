@@ -248,7 +248,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$range = [ 'end' => $now->format( 'Y,m,d' ) ];
 		$now->modify( '-1 week' );
-		$range[ 'start' ] = '2014,05,01';//$now->format( 'Y,m,d' );
+		$range[ 'start' ] = $now->format( 'Y,m,d' );
 		echo json_encode( $range );
 	}
 
