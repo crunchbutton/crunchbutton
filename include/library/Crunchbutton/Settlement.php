@@ -9,6 +9,8 @@
 
 class Crunchbutton_Settlement extends Cana_Model {
 
+	const DEFAULT_NOTES = 'Crunchbutton Orders';
+
 	public function __construct( $filters = [] ) {
 		$this->filters = $filters;
 	}
@@ -376,6 +378,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 			if( !$id_restaurants[ $_restaurant->id_restaurant ] ){
 				continue;
 			}
+			$notes = $id_restaurants[ $_restaurant->id_restaurant ];
 			$id_restaurant = $_restaurant->id_restaurant;
 			$payment_data = $_restaurant->payment_data;
 
@@ -397,6 +400,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule->payment_method = $_restaurant->payment_type()->payment_method;
 				$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
+				$schedule->notes = $notes;
 				$schedule->id_admin = c::user()->id_admin;
 				$schedule->save();
 				$id_payment_schedule = $schedule->id_payment_schedule;
@@ -467,6 +471,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$payment->amount = $schedule->amount;
 					$payment->balanced_id = $schedule->balanced_id;
 					$payment->stripe_id = $schedule->stripe_id;
+					$payment->note = $schedule->notes;
 					$payment->env = $env;
 					$payment->id_admin = $schedule->id_admin;
 					$payment->save();

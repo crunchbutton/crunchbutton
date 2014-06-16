@@ -53,6 +53,7 @@
 		<table class="tb-grid tb-zebra">
 			<thead>
 				<tr>
+					<td>#</td>
 					<td class="td-medium">Restaurant</td>
 					<td>Amount</td>
 					<td>Status</td>
@@ -60,6 +61,7 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="restaurant in result.restaurants">
+					<td>{{restaurant.id_payment_schedule}}</td>
 					<td>{{restaurant.restaurant}}</td>
 					<td>$ {{restaurant.amount | formatPrice}}</td>
 					<td>
