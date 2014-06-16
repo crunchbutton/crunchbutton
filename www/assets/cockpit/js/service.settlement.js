@@ -11,6 +11,7 @@ NGApp.factory( 'SettlementService', function( $resource ) {
 		'begin' : { 'method': 'POST', params : { action: 'begin' } },
 		'restaurant' : { 'method': 'POST', params : { action: 'restaurant' } },
 		'pay_if_refunded' : { 'method': 'POST', params : { action: 'pay-if-refunded' } },
+		'reimburse_cash_order' : { 'method': 'POST', params : { action: 'reimburse-cash-order' } },
 		'schedule' : { 'method': 'POST', params : { action: 'schedule' } }
 	}	);
 
@@ -33,6 +34,12 @@ NGApp.factory( 'SettlementService', function( $resource ) {
 
 	service.restaurants.pay_if_refunded = function( params, callback ){
 		settlement.restaurants.pay_if_refunded( params, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.restaurants.reimburse_cash_order = function( params, callback ){
+		settlement.restaurants.reimburse_cash_order( params, function( json ){
 			callback( json );
 		} );
 	}

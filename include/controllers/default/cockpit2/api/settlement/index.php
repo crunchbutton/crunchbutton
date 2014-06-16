@@ -49,6 +49,9 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 							case 'pay-if-refunded':
 								$this->_restaurantPayIfRefunded();
 								break;
+							case 'reimburse-cash-order':
+								$this->_restaurantReimburseCashOrder();
+								break;
 							case 'schedule':
 								$this->_restaurantSchedule();
 								break;
@@ -85,7 +88,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		}
 		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
 		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
-		$settlement->schedule_payment( $id_restaurants );
+		$settlement->schedulePayment( $id_restaurants );
 		echo json_encode( [ 'success' => true ] );
 	}
 
@@ -94,6 +97,15 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		$pay_if_refunded = $this->request()['pay_if_refunded'];
 		$order = Order::o( $id_order );
 		$order->pay_if_refunded = ( intval( $pay_if_refunded ) > 0 ) ? 1 : 0;
+		$order->save();
+		echo json_encode( [ 'id_order' => $order->id_order, 'id_restaurant' => $order->id_restaurant ] );
+	}
+
+	private function _restaurantReimburseCashOrder(){
+		$id_order = $this->request()['id_order'];
+		$reimburse_cash_order = $this->request()['reimburse_cash_order'];
+		$order = Order::o( $id_order );
+		$order->reimburse_cash_order = ( intval( $reimburse_cash_order ) > 0 ) ? 1 : 0;
 		$order->save();
 		echo json_encode( [ 'id_order' => $order->id_order, 'id_restaurant' => $order->id_restaurant ] );
 	}
@@ -126,6 +138,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 			$restaurant[ 'id_restaurant' ] = $_restaurant->id_restaurant;
 			$restaurant[ 'not_included' ] = 0;
 			$restaurant[ 'orders_count' ] = 0;
+			$restaurant[ 'reimburse_cash_orders' ] = 0;
 
 			if( $id_restaurant && $id_restaurant == $restaurant[ 'id_restaurant' ] ){
 				$restaurant[ 'show_orders' ] = true;
@@ -137,10 +150,14 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 				$order[ 'name' ] = $_order->name;
 				$order[ 'refunded' ] = ( $_order->refunded ) ? true : false;
 				$order[ 'pay_if_refunded' ] = ( $_order->pay_if_refunded ) ? true : false;
+				$order[ 'reimburse_cash_order' ] = ( $_order->reimburse_cash_order ) ? true : false;
 				$order[ 'pay_type' ] = ucfirst( $_order->pay_type );
 				$order[ 'included' ] = ( !$_order->refunded ) ? true : ( $_order->refunded && $_order->pay_if_refunded ) ? true : false;
 				if( !$order[ 'included' ] ){
 					$restaurant[ 'not_included' ]++;
+				}
+				if( $order[ 'reimburse_cash_order' ] ){
+					$restaurant[ 'reimburse_cash_orders' ]++;
 				}
 				$order[ 'total' ] = $_order->final_price_plus_delivery_markup;
 				$date = $_order->date();

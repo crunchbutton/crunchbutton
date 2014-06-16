@@ -35,6 +35,20 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 		} );
 	}
 
+	$scope.reimburse_cash_order = function( id_order, reimburse_cash_order ){
+		$scope.makeBusy();
+		var params = { 'id_order': id_order, 'reimburse_cash_order' : reimburse_cash_order };
+		SettlementService.restaurants.reimburse_cash_order( params, function( json ){
+			id_restaurant = json.id_restaurant;
+			if( id_restaurant ){
+				$scope.begin();
+			} else {
+				App.alert( 'Oops, something bad happened!' )
+				$scope.unBusy();
+			}
+		} );
+	}
+
 	$scope.pay_if_refunded = function( id_order, pay_if_refunded ){
 		$scope.makeBusy();
 		var params = { 'id_order': id_order, 'pay_if_refunded' : pay_if_refunded };
@@ -115,7 +129,8 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 										'pay_type': $scope.pay_type, 'id_restaurants' : id_restaurants };
 
 		SettlementService.restaurants.schedule( params, function( json ){
-			$scope.begin();
+			$scope.unBusy();
+			$scope.navigation.link( '/settlement/restaurants/status' );
 		} );
 	}
 
@@ -124,18 +139,21 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 		var total_payments = 0;
 		var total_orders = 0;
 		var total_not_included = 0;
+		var total_reimburse_cash_orders = 0;
 		for( x in $scope.result.restaurants ){
 			if( $scope.result.restaurants[ x ].pay ){
 				total_restaurants++;
 				total_payments += $scope.result.restaurants[ x ].total_due;
 				total_orders += $scope.result.restaurants[ x ].orders_count;
 				total_not_included += $scope.result.restaurants[ x ].not_included;
+				total_reimburse_cash_orders += $scope.result.restaurants[ x ].reimburse_cash_orders;
 			}
 		}
 		$scope.total_restaurants = total_restaurants;
 		$scope.total_payments = total_payments;
 		$scope.total_orders = total_orders;
 		$scope.total_not_included = total_not_included;
+		$scope.total_reimburse_cash_orders = total_reimburse_cash_orders;
 	}
 
 	// Just run if the user is loggedin

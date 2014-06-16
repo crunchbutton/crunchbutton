@@ -740,15 +740,19 @@ input {
 			font-weight: normal;
 		}
 
-	.li-input .button{
+	.li-input .button, .li-input .button-big{
 		border-radius: 0;
 		width: 6em;
 		margin-right: .8em;
 	}
+		.li-input .button-big{
+			width: 12em;
+		}
 
 	.li-input .button.save{
 		background: #48b1a7;
 	}
+
 	.li-input .button.cancel{
 		background: #d6d9dc;
 	}

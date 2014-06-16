@@ -49,6 +49,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 					WHERE active=1 ';
 		if ($filters['payment_method']) {
 			 $q .= ' AND rpt.payment_method = "'.$filters['payment_method']. '" ';
+		} else {
+			$q .= ' AND ( rpt.payment_method = "check" OR rpt.payment_method = "deposit" ) ';
 		}
 		if( $filters[ 'id_restaurant' ] ){
 			$q .= ' AND restaurant.id_restaurant = "' . $filters[ 'id_restaurant' ] . '"';
@@ -63,7 +65,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// this method receives the restaurant orders and run the math
 	public function restaurantsProcessOrders( $orders ){
 		// start all with 0
-		$pay = [ 'card_subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'promo_gift_card' => 0, 'apology_gift_card' => 0, 'order_payment' => 0, 'cash_subtotal' => 0 ];
+		$pay = [ 'card_subtotal' => 0, 'cash_reimburse' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'promo_gift_card' => 0, 'apology_gift_card' => 0, 'order_payment' => 0, 'cash_subtotal' => 0 ];
 		foreach ( $orders as $order ) {;
 			if( $order ){
 				// Pay if Refunded
@@ -82,6 +84,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$pay[ 'apology_gift_card' ] += $this->orderApologyGiftCardPayment( $order );
 				$pay[ 'order_payment' ] += $this->orderRestaurantOrderPayment( $order );
 				$pay[ 'cash_subtotal' ] += $this->orderCashSubtotalPayment( $order );
+				$pay[ 'cash_reimburse' ] += $this->orderReimburseCashOrder( $order );
 				$pay[ 'formal_relationship' ] = $order[ 'formal_relationship' ];
 			}
 		}
@@ -148,7 +151,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 									$pay[ 'credit_charge' ] +
 									$pay[ 'restaurant_fee' ] +
 									$pay[ 'promo_gift_card' ] +
-									$pay[ 'apology_gift_card' ];
+									$pay[ 'apology_gift_card' ] +
+									$pay[ 'cash_reimburse' ];
 		return ( max( $total_due, 0 ) ) * $pay[ 'formal_relationship' ];
 	}
 
@@ -164,6 +168,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// or unless the restaurant has 3rd-party delivery.
 	public function orderBaseRestaurantFee( $arr ){
 		return ( $arr[ 'restaurant_fee_percent' ] * ( $arr[ 'subtotal' ] + ( 1 - $arr[ 'delivery_service' ] ) * ( 1 - $arr[ 'just_fee_on_subtotal' ] ) * ( $arr[ 'tip' ] + $arr[ 'delivery_fee' ] ) ) ) / 100;
+	}
+
+	// For cash orders: reimburse just the cost of the food, so Subtotal + Tax
+	public function orderReimburseCashOrder( $arr ){
+		return ( $arr[ 'subtotal' ] + $arr[ 'tax' ] ) * $arr[ 'cash' ] * $arr[ 'reimburse_cash_order' ];
 	}
 
 	// For the subtotal, we pay this to the restaurant for credit orders.
@@ -357,7 +366,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		return $values;
 	}
 
-	public function schedule_payment( $id_restaurants ){
+	public function schedulePayment( $id_restaurants ){
 		$restaurants = $this->startRestaurant();
 		foreach ( $restaurants as $_restaurant ) {
 			// todo: build a better way to filter - this way is very ugly
@@ -381,7 +390,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule = new Cockpit_Payment_Schedule;
 				$schedule->id_restaurant = $_restaurant->id_restaurant;
 				$schedule->date = date( 'Y-m-d H:i:s' );
-				$schedule->amount = min( $payment_data[ 'total_due' ], 0 );
+				$schedule->amount = max( $payment_data[ 'total_due' ], 0 );
 				$schedule->payment_method = $_restaurant->payment_type()->payment_method;
 				$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
@@ -400,5 +409,18 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		}
 	}
+
+	public function doPayments(){
+
+
+
+// $p = Payment::credit([
+// 	'id_restaurant' => $r->id_restaurant,
+// 	'amount' => $this->request()['amount'],
+// 	'note' => $this->request()['note'],
+// 	'type' => 'balanced'
+// ]);
+	}
+
 
 }
