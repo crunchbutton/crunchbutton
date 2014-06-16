@@ -25,7 +25,7 @@ class Crunchbutton_Community extends Cana_Table {
 
 		return self::q($q);
 	}
-	
+
 	public function restaurantByLoc() {
 		if (!isset($this->_restaurantsByLoc)) {
 			$this->_restaurantsByLoc = Restaurant::byRange([
@@ -143,28 +143,28 @@ class Crunchbutton_Community extends Cana_Table {
 	}
 
 	public function active(){
-		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );	
+		return Crunchbutton_Community::q( 'SELECT * FROM community WHERE active = 1 ORDER BY name ASC' );
 	}
 
 	public function getDriversOfCommunity(){
 		$group = $this->driverGroup();
-		$query = 'SELECT a.* FROM admin a 
+		$query = 'SELECT a.* FROM admin a
 												INNER JOIN (
 													SELECT DISTINCT(id_admin) FROM (
 													SELECT DISTINCT(a.id_admin)
 														FROM admin a
 														INNER JOIN notification n ON n.id_admin = a.id_admin AND n.active = 1
 														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
-														INNER JOIN restaurant r ON r.id_restaurant = n.id_restaurant 
+														INNER JOIN restaurant r ON r.id_restaurant = n.id_restaurant
 														INNER JOIN restaurant_community c ON c.id_restaurant = r.id_restaurant AND c.id_community = ' . $this->id_community . '
 													UNION
-													SELECT DISTINCT(a.id_admin) FROM admin a 
-														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin 
-														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = "' . $group . '" 
+													SELECT DISTINCT(a.id_admin) FROM admin a
+														INNER JOIN admin_group ag ON ag.id_admin = a.id_admin
+														INNER JOIN `group` g ON g.id_group = ag.id_group AND g.name = "' . $group . '"
 														INNER JOIN admin_notification an ON a.id_admin = an.id_admin AND an.active = 1
 														) drivers
-													) 
-											drivers ON drivers.id_admin = a.id_admin ORDER BY name ASC';
+													)
+											drivers ON drivers.id_admin = a.id_admin AND a.active = 1 ORDER BY name ASC';
 		return Admin::q( $query );
 	}
 
@@ -176,7 +176,7 @@ class Crunchbutton_Community extends Cana_Table {
 		$chart = new Crunchbutton_Chart_User();
 		$total = $chart->totalUsersByCommunity( $this->id_community );
 		$all = $chart->totalUsersAll();
-		
+
 		$percent = intval( $total * 100 / $all );
 
 		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
@@ -186,14 +186,14 @@ class Crunchbutton_Community extends Cana_Table {
 		$chart = new Crunchbutton_Chart_Order();
 		$total = $chart->totalOrdersByCommunity( $this->id_community );
 		$all = $chart->totalOrdersAll();
-		
+
 		$percent = intval( $total * 100 / $all );
 
 		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
 	}
 
 	public function newUsersLastWeek(){
-		
+
 		$chart = new Crunchbutton_Chart_User();
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
@@ -205,7 +205,7 @@ class Crunchbutton_Community extends Cana_Table {
 		$orders = $chart->newByDayByCommunity( false, $this->slug() );
 
 		$now->modify( '+6 day' );
-		
+
 		$_orders = [];
 
 		// fill empty spaces
@@ -226,14 +226,14 @@ class Crunchbutton_Community extends Cana_Table {
 
 	public function getOrdersFromLastDaysByCommunity( $days = 14 ){
 		$query = "SELECT SUM(1) orders, DATE_FORMAT( o.date, '%m/%d/%Y' ) day FROM `order` o
-					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant 
+					INNER JOIN restaurant r ON r.id_restaurant = o.id_restaurant
 					INNER JOIN restaurant_community rc ON r.id_restaurant = rc.id_restaurant AND rc.id_community = '{$this->id_community}'
 					WHERE o.date > DATE_SUB(CURDATE(), INTERVAL $days DAY) AND o.name NOT LIKE '%test%' GROUP BY day ORDER BY o.date ASC";
 		return c::db()->get( $query );
 	}
 
 	public function ordersLastWeek(){
-		
+
 		$chart = new Crunchbutton_Chart_Order();
 
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
@@ -245,7 +245,7 @@ class Crunchbutton_Community extends Cana_Table {
 		$orders = $chart->byDayPerCommunity( false, $this->slug() );
 
 		$now->modify( '+6 day' );
-		
+
 		$_orders = [];
 
 		// fill empty spaces
@@ -253,7 +253,7 @@ class Crunchbutton_Community extends Cana_Table {
 			$_orders[ $now->format( 'Y-m-d' ) ] = ( $orders[ $now->format( 'Y-m-d' ) ] ? $orders[ $now->format( 'Y-m-d' ) ] : '0' );
 			$now->modify( '-1 day' );
 		}
-		
+
 		$total = 0;
 		$week = [];
 
@@ -310,7 +310,7 @@ class Crunchbutton_Community extends Cana_Table {
 
 		$percent = intval( $total * 100 / $all );
 
-		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];		
+		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
 	}
 
 	public function hasShiftByPeriod( $from = false, $to = false ){
@@ -326,11 +326,11 @@ class Crunchbutton_Community extends Cana_Table {
 
 		$query = "SELECT COUNT(*) AS Total FROM restaurant WHERE active = 1 AND name NOT LIKE '%test%'";
 		$result = c::db()->get( $query );
-		$all = $result->_items[0]->Total; 	
+		$all = $result->_items[0]->Total;
 
 		$percent = intval( $total * 100 / $all );
 
-		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];		
+		return [ 'community' => $total, 'all' => $all, 'percent' => $percent ];
 	}
 
 }
