@@ -584,3 +584,43 @@ NGApp.directive( 'isUnique', function( $resource, $timeout ) {
 			}
 	};
 });
+
+
+NGApp.directive( 'driverDocsUpload', function ( $fileUploader, $rootScope ) {
+return {
+restrict: 'AE',
+replace: true,
+template: 	'<ul>' +
+							'<li ng-show="uploader.progress"  class="li-input">' +
+								'<span class="sp-label sp-label-info">' +
+									'Progress {{uploader.progress}}%' +
+								'</span>' +
+							'</li>' +
+							'<li class="li-input">' +
+								'<input ng-file-select name="file" type="file" />' +
+							'</li>'
+							+'<li class="li-input">' +
+								'<button class="button" ng-click="uploader.uploadAll();">Upload</button>' +
+							'</li>' +
+						'</ul>',link: function (scope, elem, attrs, ctrl) {
+var id_driver_document = attrs.driverDocsUpload;
+var uploader = scope.uploader = $fileUploader.create({
+scope: scope,
+url: '/api/driver/documents/upload/',
+filters: [ function( item ) { return true; } ]
+} );
+// broadcast success :)
+uploader.bind( 'success', function( event, xhr, item, response ) {
+$rootScope.$broadcast( 'driverDocsUploaded', { id_driver_document: id_driver_document, response: response } );
+uploader.clearQueue();
+});
+// broadcast error :(
+uploader.bind('error', function (event, xhr, item, response) {
+$rootScope.$broadcast( 'driverDocsUploadedError', {} );
+uploader.clearQueue();
+});
+}
+}
+});
+
+

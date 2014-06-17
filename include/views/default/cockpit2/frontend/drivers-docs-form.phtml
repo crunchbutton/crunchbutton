@@ -21,19 +21,21 @@
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="doc.url">
 				<td ng-click="edit(driver.id_admin)">
-					<ul class="ul-inputs box-content">
+					<ul class="ul-inputs">
 						<li><h2 class="title"><b>{{doc.name}}</b></h2></li>
-						<li><a href="{{doc.url}}" target="_blank">Download</a></li>
+						<li>
+							<a href="{{doc.url}}" target="_blank">Download</a>
+						</li>
 					</ul>
 				</td>
 				<td>
-					<span ng-show="!doc_uploaded">
-					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
-					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
-						UPLOAD
-					</span>
-					</span>
-					<span ng-show="doc_uploaded"><input ng-file-select name="file" type="file" /></span>
+					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download doc</a></span>
+					<div driver-docs-upload="{{doc.id_driver_document}}"></div>
+					
+					<?//Ladda document upload here ?>
+					<?//<button type="submit" class="driverUpload" data-style="expand-right"><span class="ladda-label">Upload</span></button> ?>
+					<?//**************************?>
+					
 					</br>
 				</td>
 			</tr>
@@ -41,30 +43,29 @@
 	</table>
 
 	<h2 class="title">
-		Upload a clear picture of your Drivers License and Insurance Card here. You can take a clear, close up picture with a smartphone, and then upload in the appropriate spots below.
+		Please upload a clear picture of your Drivers License and Insurance Card here. You can take a clear, close up picture with a smartphone, and then upload in the appropriate spots below.
 	</h3>
 		
 	<table class="tb-grid">
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="!doc.url">
 				<td ng-click="edit(driver.id_admin)">
-					{{doc.name}}
+					<h2 class="title"><b>{{doc.name}}</b></h2>
 				</td>
 				<td>
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
-					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
-						Doc missing
-					</span>
+					<div driver-docs-upload="{{doc.id_driver_document}}"></div></br>
 				</td>
 			</tr>
 		</tbody>
 	</table>
-
+	
+	<? /*	REMOVE UPLOAD ZONE, UPLOADING DOCS OCCURS ON TABLE GRID
 	<form name="docs">
 
 		<h3 class="title">Upload zone</h3>	
 		
-		<ul class="ul-inputs box-content">
+		<ul class="ul-inputs">
 			<li class="li-input"> 
 				<div class="label">Select the file type:</div>
 				<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
@@ -83,12 +84,14 @@
 		</ul>
 
 	</form>
-
+	*/ ?>
+	
+	<? /*	REMOVE REDUNDANT INFORMATION
 	<h2 class="title">
 		<span>Some info</span>
 	</h2>
 
-	<div class="box-content">
+	<div class="">
 		<p>
 			If you are interested in getting extra cash back during your shifts, here are links to apply for the cards we'd recommend: they're specifically for college students and many have extra cash back for food purchases. 
 			<br/>
@@ -96,12 +99,14 @@
 		</p>
 	</div>	
 
-	<div class="box-content">
+	<div class="">
 		<p>
 			<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>	
 		</p>
 	</div>
+	*/ ?>
 </div>
+
 
 <spinner-loading></spinner-loading>
 <hack-expand-content></hack-expand-content>
