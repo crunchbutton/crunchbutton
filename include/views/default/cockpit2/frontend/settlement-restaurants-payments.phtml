@@ -1,0 +1,75 @@
+<div class="top-pad"></div>
+
+<div class="content-padding" ng-show="ready">
+
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Payments - Restaurants</span></h1>
+
+	<div class="divider"></div>
+
+	<h2 class="title">
+		<span>Payments</span>
+	</h2>
+
+	<ul class="ul-inputs box-content">
+		<li class="li-input">
+			<div class="label">Restaurant:</div>
+			<select ng-model="id_restaurant" ng-options="opt.id_restaurant as opt.name for opt in restaurants" class="cart-customize-select"></select>
+		</li>
+	</ul>
+
+	<div ng-if="count">
+
+		<div class="box-content" ng-show="!showForm">
+			<p>
+				Total of <strong>{{count}}</strong> payments found.
+			</p>
+		</div>
+
+		<table class="tb-grid tb-zebra">
+			<thead>
+				<tr>
+					<td>#</td>
+					<td class="td-medium">Restaurant</td>
+					<td>Amount</td>
+					<td>Date</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="payment in payments">
+					<td>
+						<span ng-show="payment.id_payment_schedule" class="orange link" ng-click="open(payment.id_payment_schedule)">
+							{{payment.id_payment}}
+						</span>
+						<span ng-show="!payment.id_payment_schedule">
+							{{payment.id_payment}}
+						</span>
+					</td>
+					<td>
+						{{payment.restaurant}}
+					</td>
+					<td>$ {{payment.amount | formatPrice}}</td>
+					<td>
+						{{payment.date}}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="tb-pagination" ng-show="pages > 1">
+			<tbody>
+				<tr>
+					<td class="td-prev"><button class="button orange" ng-show="prev" ng-click="prevPage()">prev</button></td>
+					<td class="td-info">Page {{page}} of {{pages}}</td>
+					<td class="td-next"><button class="button orange" ng-show="next" ng-click="nextPage()">next</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div ng-if="!count">
+		No payments
+	</div>
+
+</div>
+
+<spinner-loading></spinner-loading>
+<hack-expand-content></hack-expand-content>

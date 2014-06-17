@@ -6,12 +6,13 @@ NGApp.factory( 'SettlementService', function( $resource, $routeParams ) {
 	service.pay_type_options = [ { 'name': 'All', 'value' : 'all' }, { 'name': 'Check', 'value' : 'check' }, { 'name': 'Deposit', 'value' : 'deposit' } ];
 	service.sort_options = [ { 'name': 'Last Payment', 'value' : 'last_payment' }, { 'name': 'Alphabetical', 'value' : 'alphabetical' } ];
 
-	settlement.restaurants = $resource( App.service + 'settlement/restaurants/:action/:id_payment_schedule', { action: '@action', id_payment_schedule: '@id_payment_schedule' }, {
+	settlement.restaurants = $resource( App.service + 'settlement/restaurants/:action/:id_payment_schedule/:page/', { action: '@action', id_payment_schedule: '@id_payment_schedule' }, {
 		'range' : { 'method': 'GET', params : { action: 'range' } },
 		'begin' : { 'method': 'POST', params : { action: 'begin' } },
 		'restaurant' : { 'method': 'POST', params : { action: 'restaurant' } },
 		'pay_if_refunded' : { 'method': 'POST', params : { action: 'pay-if-refunded' } },
 		'payment' : { 'method': 'POST', params : { action: 'payment' } },
+		'payments' : { 'method': 'POST', params : { action: 'payments' } },
 		'reimburse_cash_order' : { 'method': 'POST', params : { action: 'reimburse-cash-order' } },
 		'schedule' : { 'method': 'POST', params : { action: 'schedule' } },
 		'status' : { 'method': 'POST', params : { action: 'status' } }
@@ -28,6 +29,13 @@ NGApp.factory( 'SettlementService', function( $resource, $routeParams ) {
 		} );
 	}
 
+	service.restaurants.paid_list = function( callback ){
+		settlement.restaurants.paid_list( function( json ){
+			callback( json );
+		} );
+	}
+
+
 	service.restaurants.schedule = function( params, callback ){
 		settlement.restaurants.schedule( params, function( json ){
 			callback( json );
@@ -42,6 +50,12 @@ NGApp.factory( 'SettlementService', function( $resource, $routeParams ) {
 
 	service.restaurants.payment = function( callback ){
 		settlement.restaurants.payment( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.restaurants.payments = function( params, callback ){
+		settlement.restaurants.payments( { 'page' : params.page, 'id_restaurant' : params.id_restaurant }, function( json ){
 			callback( json );
 		} );
 	}
