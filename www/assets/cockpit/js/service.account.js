@@ -15,7 +15,8 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 		isRestaurant: false,
 		isDriver: false,
 		isSupport: false,
-		isAdmin: false
+		isAdmin: false,
+		restaurants: []
 	};
 	
 	service.isLoggedIn = function(){
@@ -51,25 +52,31 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 
 		
 		service.isRestaurant = service.isDriver = service.isSupport = service.isAdmin = false;
+		service.restaurants = [];
 		
 		if (service.user.permissions.GLOBAL) {
 			service.isAdmin = true;
 		}
 		if (service.user.permissions.RESTAURANT) {
 			service.isRestaurant = true;
+
+			for (var x in service.user.permissions) {
+				if (x.indexOf('RESTAURANT-') == 0) {
+					service.restaurants.push(x.replace(/[^0-9]/g,''));
+				}
+			}
+			
+			// only one restaurant for now
+			service.restaurant = service.restaurants[0];
 		}
+
 		for (var x in service.user.groups) {
 			if (service.user.groups[x].indexOf('drivers-') == 0) {
 				service.isDriver = true;
 				break;
 			}
 		}
-		for (var x in service.user.groups) {
-			if (service.user.groups[x].indexOf('restaurants-') == 0) {
-				service.isRestaurant = true;
-				break;
-			}
-		}
+
 
 		if (service.user && service.user.id_admin) {
 			App.snap.enable();
