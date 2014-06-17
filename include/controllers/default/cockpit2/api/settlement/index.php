@@ -61,6 +61,12 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 							case 'payment':
 								$this->_restaurantPayment();
 								break;
+							case 'send-summary':
+								$this->_restaurantSendSummary();
+								break;
+							case 'view-summary':
+								$this->_restaurantViewSummary();
+								break;
 							case 'status':
 								$this->_restaurantStatus();
 								break;
@@ -227,10 +233,30 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		echo json_encode( $data );
 	}
 
-	private function _restaurantPayment(){
+	private function _restaurantSendSummary(){
 		$id_payment_schedule = c::getPagePiece( 4 );
 		$settlement = new Settlement;
-		$summary = $settlement->restaurantSummary( $id_payment_schedule );
+		if( $settlement->sendRestaurantPaymentNotification( $id_payment_schedule ) ){
+			echo json_encode( [ 'success' => true ] );
+		} else {
+			echo json_encode( [ 'error' => true ] );
+		}
+	}
+
+	private function _restaurantPayment(){
+		$settlement = new Settlement;
+		$summary = false;
+		switch ( c::getPagePiece( 4 ) ) {
+			case 'schedule':
+				$id_payment_schedule = c::getPagePiece( 4 );
+				$summary = $settlement->restaurantSummary( $id_payment_schedule );
+				break;
+
+			default:
+				$id_payment = c::getPagePiece( 4 );
+				$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
+				break;
+		}
 		if( $summary ){
 			echo json_encode( $summary );
 		} else {
@@ -251,6 +277,14 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
 		$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
 		echo json_encode( $out );
+	}
+
+	public function _restaurantViewSummary(){
+		$id_payment = 1381;
+		$settlement = new Crunchbutton_Settlement;
+		$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
+		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+		echo $mail->message();
 	}
 
 	private function _driverBegin(){

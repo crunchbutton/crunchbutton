@@ -47,12 +47,13 @@
 		</table>
 
 		<h2 class="title">
-			<span>Payments</span>
+			<span>Scheduled Payments</span>
 		</h2>
 
 		<table class="tb-grid tb-zebra">
 			<thead>
 				<tr>
+					<td>#</td>
 					<td class="td-medium">Restaurant</td>
 					<td>Amount</td>
 					<td>Status</td>
@@ -61,11 +62,15 @@
 			<tbody>
 				<tr ng-repeat="restaurant in result.restaurants">
 					<td>
-						<span class="orange link" ng-click="payment(restaurant.id_payment_schedule)">{{restaurant.restaurant}}</span>
+					{{restaurant.id_payment_schedule}}
+					</td>
+					<td>
+						{{restaurant.restaurant}}
 					</td>
 					<td>$ {{restaurant.amount | formatPrice}}</td>
 					<td>
-						{{restaurant.status}}
+						<span class="link orange" ng-click="payment( restaurant.id_payment )" ng-show="restaurant.id_payment">{{restaurant.status}}</span>
+						<span ng-show="!restaurant.id_payment">{{restaurant.status}}</span>
 					</td>
 				</tr>
 			</tbody>

@@ -48,7 +48,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	public function restaurantSchedulesFromDate( $date ){
 		$query = 'SELECT ps.*, r.name AS restaurant FROM payment_schedule ps
 								INNER JOIN restaurant r ON r.id_restaurant = ps.id_restaurant
-								WHERE DATE_FORMAT( ps.date, \'%m/%d/%Y\' ) = "' . $date . '" ORDER BY r.name, ps.id_payment_schedule DESC';
+								WHERE DATE_FORMAT( ps.date, \'%m/%d/%Y\' ) = "' . $date . '" ORDER BY ps.id_payment_schedule DESC';
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 
