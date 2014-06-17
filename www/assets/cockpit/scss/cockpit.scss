@@ -742,8 +742,10 @@ input {
 
 	.li-input .button, .li-input .button-big{
 		border-radius: 0;
-		width: 6em;
+		width: auto;
 		margin-right: .8em;
+		padding-right: 1em;
+		padding-left: 1em;
 	}
 		.li-input .button-big{
 			width: 12em;
