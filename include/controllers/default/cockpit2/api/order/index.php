@@ -12,11 +12,6 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		
 
 		$_POST = [
-			'name' => 'MR TEST DEVIN',
-			'subtotal' => '11.50',
-			'tip' => '2.00',
-			'phone' => '_PHONE_',
-			'address' => '123 main santa monica',
 			'card' => [
 				'id' => 'CC1yW7tINe5OHE77eplt5hPs',
 				'uri' => '/cards/CC1yW7tINe5OHE77eplt5hPs',
@@ -27,9 +22,10 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 			],
 			'pay_type' => 'card',
 			'delivery_type' => 'delivery',
-			'restaurant' => '26',
-			'notes' => 'test'
 		];
+		
+		// @todo check to see if the restaurant has the permissions for that restaurant id
+		// $_POST['restaurant']
 
 
 		switch ($this->method()) {
@@ -54,11 +50,10 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 				$charge = $order->process($_POST, 'restaurant');
 				if ($charge === true) {
 					echo json_encode([
-						'id_user' => c::auth()->session()->id_user,
-						'txn' => $order->txn,
+						'id_order' => $order->id_order,
+						'id_user' => $order->user()->id_user,
 						'final_price' => $order->final_price,
-						'uuid' => (new Order($order->id_order))->uuid,
-						'token' => c::auth()->session()->token
+						'uuid' => (new Order($order->id_order))->uuid
 					]);
 				} else {
 					echo json_encode(['status' => 'false', 'errors' => $charge]);
