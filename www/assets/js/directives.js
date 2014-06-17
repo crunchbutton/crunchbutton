@@ -599,8 +599,8 @@ NGApp.directive( 'driverDocsUpload', function ( $fileUploader, $rootScope ) {
 								'</li>' +
 								'<li class="li-input">' +
 									'<input ng-file-select name="file" type="file" />' +
-								'</li>'
-								+'<li class="li-input">' +
+								'</li>'	+
+								'<li class="li-input">' +
 									'<button class="button" ng-click="uploader.uploadAll();">Upload</button>' +
 								'</li>' +
 							'</ul>',
