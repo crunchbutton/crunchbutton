@@ -84,6 +84,11 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'RestaurantOrderNew',
 			templateUrl: 'assets/view/restaurant-order-new.html'
 		})
+		.when('/restaurant/order/:id', {
+			action: 'restaurant-order',
+			controller: 'RestaurantOrderView',
+			templateUrl: 'assets/view/restaurant-order-view.html'
+		})
 		/* Settlement */
 		.when('/settlement', {
 			action: 'settlement',
