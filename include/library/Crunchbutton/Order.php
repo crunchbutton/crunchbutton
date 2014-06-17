@@ -30,7 +30,7 @@ class Crunchbutton_Order extends Cana_Table {
 	 * @todo Add more security here
 	 * @todo It looks like if there are orders not set as delivery nor takeout, we need to log them.
 	 */
-	public function process($params)
+	public function process($params, $processType = 'web')
 	{
 		$this->pay_type = ($params['pay_type'] == 'cash') ? 'cash' : 'card';
 		$this->address  = $params['address'];
@@ -107,36 +107,49 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$delivery_service_markup = ( $this->restaurant()->delivery_service_markup ) ? $this->restaurant()->delivery_service_markup : 0;
 		$this->delivery_service_markup = $delivery_service_markup;
+		
+		if ($processType == 'restaurant') {
+			$subtotal = $params['subtotal'];
+			$delivery_service_markup = $this->restaurant()->delivery_service_markup ? $this->restaurant()->delivery_service_markup : 0;
+			$price_delivery_markup = number_format($subtotal * $delivery_service_markup / 100, 2);
+			$subtotal_plus_delivery_service_markup = $subtotal + $price_delivery_markup;
+			$this->type = 'restaurant';
+			
+		} else {
 
-		foreach ($params['cart'] as $d) {
-			$dish = new Order_Dish;
-			$dish->id_dish = $d['id'];
-			$price = $dish->dish()->price;
-			$price_delivery_markup = $price;
-			if( $delivery_service_markup ){
-				$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
-				$price_delivery_markup = number_format( $price_delivery_markup, 2 );
-			}
-			$subtotal += $price;
-			$subtotal_plus_delivery_service_markup += $price_delivery_markup;
-			if ($d['options']) {
-				foreach ($d['options'] as $o) {
-					$option = new Order_Dish_Option;
-					$option->id_option = $o;
-					$price = $option->option()->price;
-					$price_delivery_markup = $price;
-					if( $delivery_service_markup ){
-						$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
-						$price_delivery_markup = number_format( $price_delivery_markup, 2 );
-					}
-					$subtotal_plus_delivery_service_markup += $price_delivery_markup;
-					$subtotal += $price;
-//                    $subtotal += $option->option()->optionPrice($d['options']);
-					$dish->_options[] = $option;
+			foreach ($params['cart'] as $d) {
+				$dish = new Order_Dish;
+				$dish->id_dish = $d['id'];
+				$price = $dish->dish()->price;
+				$price_delivery_markup = $price;
+				if( $delivery_service_markup ){
+					$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
+					$price_delivery_markup = number_format( $price_delivery_markup, 2 );
 				}
+				$subtotal += $price;
+				$subtotal_plus_delivery_service_markup += $price_delivery_markup;
+				if ($d['options']) {
+					foreach ($d['options'] as $o) {
+						$option = new Order_Dish_Option;
+						$option->id_option = $o;
+						$price = $option->option()->price;
+						$price_delivery_markup = $price;
+						if( $delivery_service_markup ){
+							$price_delivery_markup = $price_delivery_markup + ( $price_delivery_markup * $delivery_service_markup / 100 );
+							$price_delivery_markup = number_format( $price_delivery_markup, 2 );
+						}
+						$subtotal_plus_delivery_service_markup += $price_delivery_markup;
+						$subtotal += $price;
+	//                    $subtotal += $option->option()->optionPrice($d['options']);
+						$dish->_options[] = $option;
+					}
+				}
+				$this->_dishes[] = $dish;
 			}
-			$this->_dishes[] = $dish;
+			$this->type = 'web';
 		}
+		
+
 
 		// to make sure the value will be 2 decimals
 		$this->delivery_service_markup_value = number_format( $subtotal_plus_delivery_service_markup - $subtotal, 2 );
@@ -440,13 +453,15 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
-		c::auth()->session()->id_user = $user->id_user;
-		c::auth()->session()->generateAndSaveToken();
+		if ($processType != 'restaurant') {
+			c::auth()->session()->id_user = $user->id_user;
+			c::auth()->session()->generateAndSaveToken();
+		}
 
 		$agent = Crunchbutton_Agent::getAgent();
 		$this->id_agent = $agent->id_agent;
 
-		if( c::auth()->session()->id_session != '' ){
+		if (c::auth()->session()->id_session != '') {
 			$this->id_session = c::auth()->session()->id_session;
 		}
 
@@ -481,16 +496,18 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 		}
 
-		foreach ($this->_dishes as $dish) {
-			$dish->id_order = $this->id_order;
-			$dish->save();
-			$_Dish = Dish::o( $dish->id_dish );
-			foreach ($dish->options() as $option) {
-				# Issue 1437 - https://github.com/crunchbutton/crunchbutton/issues/1437#issuecomment-20561023
-				# 1 - When an option is removed, it should NEVER appear in the order or on the fax.
-				if( $_Dish->dish_has_option( $option->id_option ) ){
-					$option->id_order_dish = $dish->id_order_dish;
-					$option->save();
+		if ($this->_dishes) {
+			foreach ($this->_dishes as $dish) {
+				$dish->id_order = $this->id_order;
+				$dish->save();
+				$_Dish = Dish::o( $dish->id_dish );
+				foreach ($dish->options() as $option) {
+					# Issue 1437 - https://github.com/crunchbutton/crunchbutton/issues/1437#issuecomment-20561023
+					# 1 - When an option is removed, it should NEVER appear in the order or on the fax.
+					if( $_Dish->dish_has_option( $option->id_option ) ){
+						$option->id_order_dish = $dish->id_order_dish;
+						$option->save();
+					}
 				}
 			}
 		}

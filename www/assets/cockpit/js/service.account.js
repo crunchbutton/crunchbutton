@@ -10,7 +10,12 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 
 	var service = {
 		permissions: {},
-		user: null
+		user: null,
+		// used to change how to display the menu
+		isRestaurant: false,
+		isDriver: false,
+		isSupport: false,
+		isAdmin: false
 	};
 	
 	service.isLoggedIn = function(){
@@ -41,7 +46,30 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 	};
 	
 	$rootScope.$on('userAuth', function(e, data) {
+
 		service.user = data;
+
+		
+		service.isRestaurant = service.isDriver = service.isSupport = service.isAdmin = false;
+		
+		if (service.user.permissions.GLOBAL) {
+			service.isAdmin = true;
+		}
+		if (service.user.permissions.RESTAURANT) {
+			service.isRestaurant = true;
+		}
+		for (var x in service.user.groups) {
+			if (service.user.groups[x].indexOf('drivers-') == 0) {
+				service.isDriver = true;
+				break;
+			}
+		}
+		for (var x in service.user.groups) {
+			if (service.user.groups[x].indexOf('restaurants-') == 0) {
+				service.isRestaurant = true;
+				break;
+			}
+		}
 
 		if (service.user && service.user.id_admin) {
 			App.snap.enable();
