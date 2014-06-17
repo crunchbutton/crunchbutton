@@ -280,7 +280,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 	}
 
 	public function _restaurantViewSummary(){
-		$id_payment = 1381;
+		$id_payment =  c::getPagePiece( 4 );
 		$settlement = new Crunchbutton_Settlement;
 		$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
