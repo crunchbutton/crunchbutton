@@ -14,7 +14,7 @@
 
 	<form name="form" novalidate>
 
-		<ul ng-class="{'submitted':submitted}" class="ul-inputs box-content">
+		<ul ng-class="{'submitted':submitted}" class="ul-inputs">
 
 			<li class="li-input" ng-class="{'error':form.driverName.$invalid}"> 
 				<div class="label">Name:</div>
@@ -57,7 +57,7 @@
 
 			<h3 class="title">Access info</h3>
 
-			<ul class="ul-inputs box-content">
+			<ul class="ul-inputs">
 
 				<li class="li-input"> 
 					<div class="label">Login:</div>
@@ -99,7 +99,7 @@
 
 		<h3 class="title">Upload zone</h3>	
 		
-		<ul class="ul-inputs box-content">
+		<ul class="ul-inputs">
 			<li class="li-input"> 
 				<div class="label">Select the file type:</div>
 				<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
