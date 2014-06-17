@@ -438,6 +438,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 		}
 	}
 
+	public function restaurantSummaryByIdPayment( $id_payment ){
+		$schedule = Cockpit_Payment_Schedule::q( 'SELECT * FROM payment_schedule WHERE id_payment = "' . $id_payment . '"' );
+		if( $schedule->id_payment_schedule ){
+			return $this->restaurantSummary( $schedule->id_payment_schedule );
+		} else {
+			return false;
+		}
+	}
+
 	public function restaurantSummary( $id_payment_schedule ){
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 		if( $schedule->id_payment_schedule && $schedule->type == Cockpit_Payment_Schedule::TYPE_RESTAURANT ){
