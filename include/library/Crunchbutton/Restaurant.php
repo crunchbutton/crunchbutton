@@ -24,6 +24,10 @@ class Crunchbutton_Restaurant extends Cana_Table_Trackchange {
 		return self::q('select * from restaurant where permalink="'.$permalink.'"')->get(0);
 	}
 
+	public function active(){
+		return Crunchbutton_Restaurant::q('SELECT id_restaurant, name FROM restaurant WHERE active = 1 ORDER BY name ASC');
+	}
+
 	public function meetDeliveryMin($order) {
 		if (!$this->delivery_min) {
 			return true;

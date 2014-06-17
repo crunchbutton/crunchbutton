@@ -58,6 +58,20 @@ class Crunchbutton_Payment extends Cana_Table {
 		return Restaurant::o($this->id_restaurant);
 	}
 
+	public function listPayments( $search = [] ){
+		$where = ' WHERE 1=1 ';
+		if( $search[ 'id_restaurant' ] ){
+			$where .= ' AND p.id_restaurant = ' . $search[ 'id_restaurant' ];
+		}
+		$limit = ( $search[ 'limit' ] ) ? ' LIMIT ' . $search[ 'limit' ] : '';
+		$query = 'SELECT p.*, r.name AS restaurant, ps.id_payment_schedule FROM payment p
+								LEFT OUTER JOIN payment_schedule ps ON ps.id_payment = p.id_payment
+								INNER JOIN restaurant r ON r.id_restaurant = p.id_restaurant
+								' . $where . '
+								ORDER BY p.id_payment DESC ' . $limit;
+		return Crunchbutton_Payment::q( $query );
+	}
+
 	public function date() {
 		if (!isset($this->_date)) {
 			$this->_date = new DateTime( $this->date, new DateTimeZone( c::config()->timezone ) );

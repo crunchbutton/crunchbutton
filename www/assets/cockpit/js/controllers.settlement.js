@@ -5,6 +5,9 @@ NGApp.controller('SettlementCtrl', function ( $scope ) {
 	$scope.restaurants = function(){
 		$scope.navigation.link( '/settlement/restaurants' );
 	}
+	$scope.restaurants_payments = function(){
+		$scope.navigation.link( '/settlement/restaurants/payments' );
+	}
 
 	$scope.drivers = function(){
 		$scope.navigation.link( '/settlement/drivers' );
@@ -31,9 +34,6 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 			if( json.start && json.end ){
 				$scope.range = { 'start' : new Date( json.start ), 'end' : new Date( json.end ) };
 				$scope.ready = true;
-				setTimeout(function() {
-					$scope.begin();
-				}, 100);
 			}
 		} );
 	}
@@ -173,20 +173,6 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 
 });
 
-NGApp.controller('SettlementCtrl', function ( $scope ) {
-
-	$scope.ready = true;
-
-	$scope.restaurants = function(){
-		$scope.navigation.link( '/settlement/restaurants' );
-	}
-
-	$scope.drivers = function(){
-		$scope.navigation.link( '/settlement/drivers' );
-	}
-
-} );
-
 NGApp.controller('SettlementRestaurantsStatusCtrl', function ( $scope, $timeout, SettlementService ) {
 
 	$scope.ready = false;
@@ -209,6 +195,56 @@ NGApp.controller('SettlementRestaurantsStatusCtrl', function ( $scope, $timeout,
 
 });
 
+NGApp.controller('SettlementRestaurantsPaymentsCtrl', function ( $scope, $rootScope, SettlementService, RestaurantService ) {
+
+	$scope.ready = false;
+	$scope.id_restaurant = 0;
+	$scope.page = 1;
+
+	var list = function(){
+		SettlementService.restaurants.payments( { 'page': $scope.page, 'id_restaurant': $scope.id_restaurant }, function( data ){
+			$scope.pages = data.pages;
+			$scope.next = data.next;
+			$scope.prev = data.prev;
+			$scope.payments = data.results;
+			$scope.count = data.count;
+			$scope.ready = true;
+		} );
+	}
+
+	var restaurants = function(){
+		RestaurantService.paid_list( function( data ){
+			$scope.restaurants = data;
+		} );
+	}
+
+	$scope.open = function( id_payment_schedule ){
+		$scope.navigation.link( '/settlement/restaurants/payment/' + id_payment_schedule );
+	}
+
+	$scope.$watch( 'id_restaurant', function( newValue, oldValue, scope ) {
+		$scope.page = 1;
+		list();
+	} );
+
+	$scope.nextPage = function(){
+		$scope.page = $scope.next;
+		list();
+	}
+
+	$scope.prevPage = function(){
+		$scope.page = $scope.prev;
+		list();
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		restaurants();
+		list();
+	}
+
+});
+
 NGApp.controller('SettlementRestaurantsPaymentCtrl', function ( $scope, $timeout, SettlementService ) {
 
 	$scope.ready = false;
@@ -227,7 +263,6 @@ NGApp.controller('SettlementRestaurantsPaymentCtrl', function ( $scope, $timeout
 	}
 
 });
-
 
 NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, SettlementService ) {
 
