@@ -3,7 +3,15 @@ NGApp.controller('DefaultCtrl', function ($scope, $http, $location, $routeParams
 	if( !isNaN( parseInt( id_order ) ) ){
 		MainNavigationService.link('/drivers/order/' + id_order);
 	} else {
-		MainNavigationService.link('/drivers/orders');
+		
+			
+		if (AccountService.isRestaurant) {
+			MainNavigationService.link('/restaurant/order/new');
+		} else if (AccountService.isDriver) {
+			MainNavigationService.link('/drivers/orders');
+		} else {
+			MainNavigationService.link('/drivers/help');
+		}
 	}
 });
 
