@@ -1,4 +1,4 @@
-NGApp.factory( 'SettlementService', function( $resource, $routeParams ) {
+NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 
 	var service = { restaurants : {}, drivers : {} };
 	var settlement = { restaurants : {}, drivers : {} };
@@ -12,6 +12,7 @@ NGApp.factory( 'SettlementService', function( $resource, $routeParams ) {
 		'restaurant' : { 'method': 'POST', params : { action: 'restaurant' } },
 		'pay_if_refunded' : { 'method': 'POST', params : { action: 'pay-if-refunded' } },
 		'payment' : { 'method': 'POST', params : { action: 'payment' } },
+		'send_summary' : { 'method': 'POST', params : { action: 'send-summary' } },
 		'payments' : { 'method': 'POST', params : { action: 'payments' } },
 		'reimburse_cash_order' : { 'method': 'POST', params : { action: 'reimburse-cash-order' } },
 		'schedule' : { 'method': 'POST', params : { action: 'schedule' } },
@@ -35,7 +36,6 @@ NGApp.factory( 'SettlementService', function( $resource, $routeParams ) {
 		} );
 	}
 
-
 	service.restaurants.schedule = function( params, callback ){
 		settlement.restaurants.schedule( params, function( json ){
 			callback( json );
@@ -52,6 +52,23 @@ NGApp.factory( 'SettlementService', function( $resource, $routeParams ) {
 		settlement.restaurants.payment( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
 			callback( json );
 		} );
+	}
+
+	service.restaurants.send_summary = function( callback ){
+		settlement.restaurants.send_summary( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.restaurants.view_summary = function( callback ){
+		var url = App.service + 'settlement/restaurants/view-summary/' + $routeParams.id;
+		$http( { method: 'POST', url: url } ).
+    success( function( data, status, headers, config ) {
+    	callback( data );
+    }).
+    error( function(data, status, headers, config ) {
+    	callback( false );
+    } );
 	}
 
 	service.restaurants.payments = function( params, callback ){

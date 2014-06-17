@@ -422,7 +422,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 			}
 		}
-		$this->doRestaurantPayments();
+		$settlement = new Crunchbutton_Settlement;
+		Cana::timeout(function() use( $settlement ) {
+			$settlement->doRestaurantPayments();
+		} );
 	}
 
 	public function doRestaurantPayments( $id_payment_schedule = false ){
@@ -453,10 +456,15 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$settlement = new Settlement;
 			$summary = $schedule->exports();
 			$summary[ 'restaurant' ] = $schedule->restaurant()->name;
+			$summary[ 'summary_method' ] = $schedule->restaurant()->payment_type()->summary_method;
+			$summary[ 'summary_email' ] = $schedule->restaurant()->payment_type()->summary_email;
+			$summary[ 'summary_fax' ] = $schedule->restaurant()->payment_type()->summary_fax;
+			$summary[ 'restaurant' ] = $schedule->restaurant()->name;
 			$payment = $schedule->payment();
 			if( $payment->id_payment ){
 				$summary[ 'balanced_id' ] = $payment->balanced_id;
 				$summary[ 'stripe_id' ] = $payment->stripe_id;
+				$summary[ 'summary_sent_date' ] = $payment->summary_sent_date()->format( 'M jS Y g:i:s A T' );
 				$summary[ 'payment_date' ] = $payment->date()->format( 'M jS Y g:i:s A T' );
 			}
 			$orders = $schedule->orders();
@@ -489,7 +497,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function payRestaurant( $id_payment_schedule ){
+
 		$env = c::getEnv();
+
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
 
 		if( $schedule->id_payment_schedule ){
@@ -556,10 +566,62 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$payment_order_transaction->id_order_transaction = $order_transaction->id_order_transaction;
 						$payment_order_transaction->save();
 					}
+
+					$this->sendRestaurantPaymentNotification( $payment->id_payment );
 				}
 			}
 		}
 	}
 
+ 	public function sendRestaurantPaymentNotification( $id_payment ){
 
+		$summary = $this->restaurantSummaryByIdPayment( $id_payment );
+		if( !$summary ){
+			return false;
+		}
+
+		$env = c::getEnv();
+
+		$mail = ( $env == 'live' ? $summary[ 'summary_email' ] : '_EMAIL' );
+		$fax = ( $env == 'live' ? $summary[ 'summary_fax' ] : '_PHONE_' );
+
+		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+
+		switch ( $summary[ 'summary_method' ] ) {
+			case 'email':
+
+				if ( $mail->send() ) {
+					$payment = Crunchbutton_Payment::o( $id_payment );
+					$payment->summary_sent_date = date('Y-m-d H:i:s');
+					$payment->save();
+					return true;
+				}
+				return false;
+
+				break;
+
+			case 'fax':
+
+				$temp = tempnam( '/tmp','fax' );
+				file_put_contents( $temp, $mail->message() );
+				rename($temp, $temp.'.html');
+
+				$fax = new Phaxio( [ 'to' => $fax, 'file' => $temp.'.html' ] );
+
+				unlink( $temp.'.html' );
+
+				if ( $fax->success ) {
+					$payment = Crunchbutton_Payment::o( $id_payment );
+					$payment->summary_sent_date = date('Y-m-d H:i:s');
+					$payment->save();
+					return true;
+				}
+				return false;
+
+				break;
+		}
+
+		// echo $mail->message();
+		return false;
+	}
 }

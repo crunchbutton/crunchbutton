@@ -79,6 +79,13 @@ class Crunchbutton_Payment extends Cana_Table {
 		return $this->_date;
 	}
 
+	public function summary_sent_date() {
+		if (!isset($this->_summary_sent_date)) {
+			$this->_summary_sent_date = new DateTime( $this->summary_sent_date, new DateTimeZone( c::config()->timezone ) );
+		}
+		return $this->_summary_sent_date;
+	}
+
 	public function type(){
 		if( $this->stripe_id ){
 			return 'stripe';

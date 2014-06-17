@@ -22,6 +22,19 @@
 					<td><strong>Payment Date</strong></td>
 					<td>{{result.payment_date}}</td>
 				</tr>
+				<tr ng-show="result.payment_date">
+					<td>
+						<strong>Summary sent date</strong>
+					</td>
+					<td>
+						<span ng-show="result.summary_sent_date">{{result.summary_sent_date}}</span>
+						<span ng-show="!result.summary_sent_date"><i>Summary not sent</i></span>
+					</td>
+				</tr>
+				<tr ng-show="result.payment_date">
+					<td><span class="link orange" ng-click="view_summary()">View Summary</span></td>
+					<td><span class="link orange" ng-click="send_summary()">Send Summary</span></td>
+				</tr>
 				<tr class="transparent"><td></td><td></td></tr>
 				<tr ng-show="result.balanced_id">
 					<td>Balanced</td>
@@ -106,20 +119,20 @@
 			<tbody>
 				<tr class="transparent">
 					<td></td>
-					<td class="highlight-1">Subtotal</td>
-					<td class="highlight-1">$ {{result.calcs.order_payment | formatPrice}}</td>
+					<td>Subtotal</td>
+					<td>$ {{result.calcs.order_payment | formatPrice}}</td>
 					<td></td>
 				</tr>
 				<tr class="transparent">
 					<td></td>
-					<td class="highlight-1">Tips by Card</td>
-					<td class="highlight-1">$ {{result.calcs.tip | formatPrice}}</td>
+					<td>Tips by Card</td>
+					<td>$ {{result.calcs.tip | formatPrice}}</td>
 					<td></td>
 				</tr>
 				<tr class="transparent">
 					<td></td>
-					<td class="highlight-1">Visa/Mastercard/Amex Charges</td>
-					<td class="highlight-1">$ {{result.calcs.credit_charge | formatPrice}}</td>
+					<td>Visa/Mastercard/Amex Charges</td>
+					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
 					<td></td>
 				</tr>
 				<tr class="transparent"><td></td><td></td><td></td><td></td></tr>
@@ -149,25 +162,24 @@
 			<tbody>
 				<tr class="transparent">
 					<td></td>
-					<td class="highlight-1">Subtotal</td>
-					<td class="highlight-1">$ {{result.calcs.cash_subtotal | formatPrice}}</td>
+					<td>Subtotal</td>
+					<td>$ {{result.calcs.cash_subtotal | formatPrice}}</td>
 					<td></td>
 				</tr>
 				<tr class="transparent">
 					<td></td>
-					<td class="highlight-1">Fees</td>
-					<td class="highlight-1">$ {{result.calcs.restaurant_fee | formatPrice}}</td>
+					<td>Fees</td>
+					<td>$ {{result.calcs.restaurant_fee | formatPrice}}</td>
 					<td></td>
 				</tr>
 				<tr class="transparent">
 					<td></td>
-					<td class="highlight-2">Total Payment (minus fees)</td>
-					<td class="highlight-2">$ {{result.calcs.total_due | formatPrice}}</td>
+					<td>Total Payment (minus fees)</td>
+					<td>$ {{result.calcs.total_due | formatPrice}}</td>
 					<td></td>
 				</tr>
 				<tr class="transparent"><td></td><td></td><td></td><td></td></tr>
 			</tbody>
-
 		</table>
 </div>
 
