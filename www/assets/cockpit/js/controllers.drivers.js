@@ -477,7 +477,7 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 				}
 			} );
 		} else {
-			$scope.flash.setMessage( 'File not saved: ' + json.error );
+			$scope.flash.setMessage( 'File not saved! ');
 		}
 	});
 
