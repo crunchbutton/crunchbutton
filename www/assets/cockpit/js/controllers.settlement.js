@@ -274,6 +274,7 @@ NGApp.controller('SettlementRestaurantsPaymentsCtrl', function ( $scope, $rootSc
 NGApp.controller('SettlementRestaurantsScheduledViewCtrl', function ( $scope, $routeParams, SettlementService ) {
 
 	$scope.ready = false;
+	$scope.schedule = true;
 
 	load = function(){
 		SettlementService.restaurants.scheduled_payment( function( json ){
@@ -295,6 +296,10 @@ NGApp.controller('SettlementRestaurantsScheduledViewCtrl', function ( $scope, $r
 		} );
 	}
 
+	$scope.view_payment = function( id_payment ){
+		$scope.navigation.link( '/settlement/restaurants/payment/' + id_payment );
+	}
+
 	// Just run if the user is loggedin
 	if( $scope.account.isLoggedIn() ){
 		load();
@@ -305,6 +310,8 @@ NGApp.controller('SettlementRestaurantsScheduledViewCtrl', function ( $scope, $r
 NGApp.controller('SettlementRestaurantsPaymentCtrl', function ( $scope, $routeParams, SettlementService ) {
 
 	$scope.ready = false;
+
+	$scope.payment = true;
 
 	load = function(){
 		SettlementService.restaurants.payment( function( json ){

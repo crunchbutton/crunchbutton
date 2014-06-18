@@ -58,7 +58,6 @@
 					<td>$ {{restaurant.amount | formatPrice}}</td>
 					<td>
 						<span class="link orange" ng-click="payment( restaurant.id_payment_schedule )">{{restaurant.status}}</span>
-						<span ng-show="!restaurant.id_payment">{{restaurant.status}}</span>
 					</td>
 				</tr>
 			</tbody>
