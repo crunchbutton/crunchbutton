@@ -10,7 +10,7 @@
 				<div class="message">
 					Accept this order?
 					<div class="message-small">
-						You MUST mark orders accepted, </br>picked up, and delivered to </br>get paid correctly ;)
+						You MUST mark orders accepted, </br>picked up, and delivered </br> to get paid correctly ;)
 					</div>
 				</div>
 				<div class="buttons">
@@ -46,7 +46,7 @@
 			<div class="box-content-pickedup"><? //***************BOX CONTENT DESIGN***************** ?>
 				<div class="message">You picked up this order.</div>
 				<div class="buttons" ng-click="delivered()">
-					<button class="button green">Delivered</button>
+					<button class="button green2">Delivered</button>
 				</div>
 				<div class="divider"></div>	
 			</div>
@@ -61,7 +61,7 @@
 	</div>
 	
 	<div ng-if="order.lastStatus[ 'delivery-status' ].delivered.name" class="dialog-message box-content-delivered">
-		This order has been delivered by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].delivered.name}}</span> @ {{order.lastStatus.date | date:'shortTime'}}.
+		This order has been delivered by <span class="delivery-name">{{order.lastStatus[ 'delivery-status' ].delivered.name}}</span>
 	</div>
 
 	<div class="divider"></div>
