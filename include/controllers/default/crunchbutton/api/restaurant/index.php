@@ -169,8 +169,9 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 							case 'stripe-credit':
 								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', "restaurant-{$r->id_restaurant}-pay" ]);
 								break;
-
 							case 'weight-adj':
+								$hasPermission = c::admin()->permission()->check(['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page' ]);
+								break;
 							case 'categories':
 							case 'notifications':
 							case 'hours':
