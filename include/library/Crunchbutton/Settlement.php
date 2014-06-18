@@ -567,7 +567,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$payment_order_transaction->save();
 					}
 
-					// $this->sendRestaurantPaymentNotification( $payment->id_payment );
+					$this->sendRestaurantPaymentNotification( $payment->id_payment );
 					return true;
 				}
 			} else {
@@ -587,7 +587,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$env = c::getEnv();
 
-		$mail = ( $env == 'live' ? $summary[ 'summary_email' ] : '_EMAIL' );
+		$mail = ( $env == 'live' ? $summary[ 'summary_email' ] : 'daniel@_DOMAIN_' );
 		$fax = ( $env == 'live' ? $summary[ 'summary_fax' ] : '_PHONE_' );
 
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
@@ -626,7 +626,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 				break;
 		}
 
-		// echo $mail->message();
 		return false;
 	}
 }
