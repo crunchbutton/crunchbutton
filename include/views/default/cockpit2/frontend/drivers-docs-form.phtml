@@ -20,26 +20,18 @@
 	<table class="tb-grid">
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="doc.url">
-				<td ng-click="edit(driver.id_admin)">
-					<ul class="ul-inputs">
-						<li><h2 class="title"><b>{{doc.name}}</b></h2></li>
-						<li>
-							<a href="{{doc.url}}" target="_blank">Download</a>
-						</li>
-					</ul>
+				<td ng-click="edit(driver.id_admin)" class="td-medium">
+					<h2 class="title"><b>{{doc.name}}</b></h2>
+					<br/>
+					<a href="{{doc.url}}" target="_blank">Download</a>
 				</td>
-				<td>
-
+				<td class="td-medium">
 					<!-- if he already have this doc, show the download link -->
-					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download doc</a></span>
+					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}">
+						<a href="{{doc.status.url}}" target="_blank">Download doc</a>
+					</span>
 					<!-- upload directive -->
 					<div driver-docs-upload="{{doc.id_driver_document}}"></div>
-					
-					<?//Ladda document upload here ?>
-					<?//<button type="submit" class="driverUpload" data-style="expand-right"><span class="ladda-label">Upload</span></button> ?>
-					<?//**************************?>
-					
-					</br>
 				</td>
 			</tr>
 		</tbody>
