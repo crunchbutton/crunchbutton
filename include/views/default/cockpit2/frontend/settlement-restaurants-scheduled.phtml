@@ -2,17 +2,11 @@
 
 <div class="content-padding" ng-show="ready">
 
-	<h1 class="title left"><i class="fa fa-bank"></i><span>Payments - Status</span></h1>
+	<h1 class="title left"><i class="fa fa-bank"></i><span>Payments - Scheduled</span></h1>
 
 	<div class="divider"></div>
 
 	<div ng-if="result">
-
-		<div class="box-content" ng-show="!showForm">
-			<p>
-				Listing payments of <strong>{{result.last_date}}</strong>.
-			</p>
-		</div>
 
 		<h2 class="title">
 			<span>Summary</span>
@@ -35,10 +29,6 @@
 					<td>Processing</td>
 					<td>{{result.processing}}</td>
 				</tr>
-				<tr ng-class="{'green' : result.done > 0 }">
-					<td>Finished</td>
-					<td>{{result.done}}</td>
-				</tr>
 				<tr ng-class="{'orange' : result.error > 0 }">
 					<td>Error</td>
 					<td>{{result.error}}</td>
@@ -55,29 +45,25 @@
 				<tr>
 					<td>#</td>
 					<td class="td-medium">Restaurant</td>
+					<td>Scheduled at</td>
 					<td>Amount</td>
 					<td>Status</td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="restaurant in result.restaurants">
-					<td>
-					{{restaurant.id_payment_schedule}}
-					</td>
-					<td>
-						{{restaurant.restaurant}}
-					</td>
+					<td>{{restaurant.id_payment_schedule}}</td>
+					<td>{{restaurant.restaurant}}</td>
+					<td>{{restaurant.date}}</td>
 					<td>$ {{restaurant.amount | formatPrice}}</td>
 					<td>
-						<span class="link orange" ng-click="payment( restaurant.id_payment )" ng-show="restaurant.id_payment">{{restaurant.status}}</span>
+						<span class="link orange" ng-click="payment( restaurant.id_payment_schedule )">{{restaurant.status}}</span>
 						<span ng-show="!restaurant.id_payment">{{restaurant.status}}</span>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-
 	</div>
-
 </div>
 
 <spinner-loading></spinner-loading>

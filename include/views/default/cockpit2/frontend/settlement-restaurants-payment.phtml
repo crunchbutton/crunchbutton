@@ -16,7 +16,13 @@
 				</tr>
 				<tr>
 					<td><strong>Payment Status</strong></td>
-					<td>{{result.status}}</td>
+					<td ng-class="{ 'orange': result.status != 'done', 'green': result.status == 'done' }">
+						{{result.status}}
+						<span ng-show="result.status != 'done'" >
+							<br/>
+							<strong ng-click="do_payment()" class="orange link">Try send payment</strong>
+						</span>
+					</td>
 				</tr>
 				<tr ng-show="result.payment_date">
 					<td><strong>Payment Date</strong></td>

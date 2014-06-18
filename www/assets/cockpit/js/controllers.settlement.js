@@ -8,6 +8,10 @@ NGApp.controller('SettlementCtrl', function ( $scope ) {
 	$scope.restaurants_payments = function(){
 		$scope.navigation.link( '/settlement/restaurants/payments' );
 	}
+	$scope.restaurants_scheduled_payments = function(){
+		$scope.navigation.link( '/settlement/restaurants/scheduled' );
+	}
+
 
 	$scope.drivers = function(){
 		$scope.navigation.link( '/settlement/drivers' );
@@ -137,7 +141,7 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 
 		SettlementService.restaurants.schedule( params, function( json ){
 			$scope.unBusy();
-			$scope.navigation.link( '/settlement/restaurants/status' );
+			$scope.navigation.link( '/settlement/restaurants/scheduled' );
 		} );
 	}
 
@@ -173,19 +177,19 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 
 });
 
-NGApp.controller('SettlementRestaurantsStatusCtrl', function ( $scope, $timeout, SettlementService ) {
+NGApp.controller('SettlementRestaurantsScheduledCtrl', function ( $scope, SettlementService ) {
 
 	$scope.ready = false;
 
 	$scope.update = function(){
-		SettlementService.restaurants.status( function( json ){
+		SettlementService.restaurants.scheduled( function( json ){
 			$scope.result = json;
 			$scope.ready = true;
 		} );
 	}
 
 	$scope.payment = function( id_payment ){
-		$scope.navigation.link( '/settlement/restaurants/payment/' + id_payment );
+		$scope.navigation.link( '/settlement/restaurants/scheduled/' + id_payment );
 	}
 
 	// Just run if the user is loggedin
@@ -263,6 +267,38 @@ NGApp.controller('SettlementRestaurantsPaymentsCtrl', function ( $scope, $rootSc
 	if( $scope.account.isLoggedIn() ){
 		restaurants();
 		list();
+	}
+
+});
+
+NGApp.controller('SettlementRestaurantsScheduledViewCtrl', function ( $scope, $routeParams, SettlementService ) {
+
+	$scope.ready = false;
+
+	load = function(){
+		SettlementService.restaurants.scheduled_payment( function( json ){
+			$scope.result = json;
+			$scope.ready = true;
+			$scope.unBusy();
+		} );
+	}
+
+	$scope.do_payment = function(){
+		alert(1);
+		$scope.makeBusy();
+		SettlementService.restaurants.do_payment( $routeParams.id, function( json ){
+			if( json.error ){
+				App.alert( 'Oops, something bad happened: ' + json.error );
+				$scope.unBusy();
+			} else {
+				load();
+			}
+		} );
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		load();
 	}
 
 });
