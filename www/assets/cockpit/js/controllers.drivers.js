@@ -14,7 +14,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 
 	$scope.accept = function() {
 		$scope.makeBusy();
-		DriverOrdersService.accept( $scope.order.id_order, 
+		DriverOrdersService.accept( $scope.order.id_order,
 			function( json ){
 				if( json.status ) {
 					load();
@@ -42,7 +42,7 @@ NGApp.controller('DriversOrderCtrl', function ( $scope, DriverOrdersService ) {
 		DriverOrdersService.reject( $scope.order.id_order, function(){ load();	} );
 	};
 
-	// Just run if the user is loggedin 
+	// Just run if the user is loggedin
 	if( $scope.account.isLoggedIn() ){
 		load();
 	}
@@ -56,7 +56,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 
 	$scope.filterOrders = function( order ){
 		if( $scope.show.all ){
-			return true;	
+			return true;
 		} else {
 			if( order.lastStatus.id_admin == $scope.account.user.id_admin ){
 				return true;
@@ -75,7 +75,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 
 	$scope.accept = function( id_order ) {
 		$scope.makeBusy();
-		DriverOrdersService.accept( id_order, 
+		DriverOrdersService.accept( id_order,
 			function( json ){
 				if( json.status ) {
 					$scope.list();
@@ -93,7 +93,7 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 		$scope.makeBusy();
 		DriverOrdersService.pickedup( id_order, function(){ $scope.list(); } );
 	};
-	
+
 	$scope.delivered = function( id_order ) {
 		$scope.makeBusy();
 		DriverOrdersService.delivered( id_order, function(){ $scope.list();	} );
@@ -103,9 +103,9 @@ NGApp.controller('DriversOrdersCtrl', function ( $scope, DriverOrdersService, Ma
 		MainNavigationService.link( '/drivers/order/' + id_order );
 	}
 
-	// Just run if the user is loggedin 
+	// Just run if the user is loggedin
 	if( $scope.account.isLoggedIn() ){
-		$scope.list();	
+		$scope.list();
 	}
 } );
 
@@ -116,7 +116,7 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 
 	$scope.filterShifts = function( shift ){
 		if( $scope.show.all ){
-			return true;	
+			return true;
 		} else {
 			if( shift.mine ){
 				return true;
@@ -139,14 +139,14 @@ NGApp.controller( 'DriversShiftsCtrl', function ( $scope, DriverShiftsService ) 
 	}
 
 	if( $scope.account.isLoggedIn() ){
-		$scope.list();	
+		$scope.list();
 	}
 
 } );
 
 NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftScheduleService ) {
 
-	$scope.ready = false;	
+	$scope.ready = false;
 
 	var list = function(){
 		DriverShiftScheduleService.list( function( data ){
@@ -162,9 +162,9 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 		$scope.available = 0;
 		$scope.yes = 0;
 		$scope.not = 0;
-		$scope.period = data.info.period;	
-		$scope.shiftsAvailableToWork = parseInt( data.shifts );	
-		$scope.shifts = data.results;	
+		$scope.period = data.info.period;
+		$scope.shiftsAvailableToWork = parseInt( data.shifts );
+		$scope.shifts = data.results;
 		count();
 	}
 
@@ -189,7 +189,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 			}
 		}
 		$scope.unBusy();
-		$scope.nextRanking = ranking;	
+		$scope.nextRanking = ranking;
 	}
 
 	$scope.updateShiftsAvailable = function( shifts ){
@@ -247,7 +247,7 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOn
 			$scope.count = data.count;
 			$scope.ready = true;
 			$scope.focus( '#search' );
-		} );	
+		} );
 	}
 
 	var waiting = false;
@@ -257,7 +257,7 @@ NGApp.controller( 'DriversOnboardingCtrl', function ( $scope, $timeout, DriverOn
 			return;
 		}
 		waiting = true;
-		$timeout( function() { 
+		$timeout( function() {
 			list();
 			$scope.ready = false;
 			waiting = false;
@@ -332,7 +332,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 				$scope.flash.setMessage( 'Notification sent!' );
 				// logs();
 			} else {
-				$scope.flash.setMessage( 'Notification not sent: ' + json.error , 'error' );	
+				$scope.flash.setMessage( 'Notification not sent: ' + json.error , 'error' );
 			}
 		} );
 	}
@@ -343,7 +343,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 
 	// method save that saves the driver
 	$scope.save = function(){
-		
+
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;
 			return;
@@ -352,10 +352,10 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 		DriverOnboardingService.save( $scope.driver, function( json ){
 			if( json.success ){
 				$scope.navigation.link( '/drivers/onboarding/' + json.success.id_admin );
-				$scope.flash.setMessage( 'Driver saved!' );	
+				$scope.flash.setMessage( 'Driver saved!' );
 				$scope.driver.pass = '';
 			} else {
-				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );	
+				$scope.flash.setMessage( 'Driver not saved: ' + json.error , 'error' );
 			}
 		} );
 	}
@@ -399,7 +399,7 @@ NGApp.controller( 'DriversOnboardingFormCtrl', function ( $scope, $routeParams, 
 } );
 
 NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardingService ) {
-	
+
 	$scope.ready = false;
 	$scope.finished = false;
 	$scope.sending = false;
@@ -432,7 +432,7 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 		if( json.success ){
 			$scope.driver.id_admin = json.success.id_admin;
 			$scope.driver.hasEmail = json.success.hasEmail;
-			$scope.ready = true;	
+			$scope.ready = true;
 		} else {
 			$scope.error = json.error;
 		}
@@ -441,7 +441,7 @@ NGApp.controller( 'DriversOnboardingSetupCtrl', function( $scope, DriverOnboardi
 } );
 
 NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, DriverOnboardingService ) {
-	
+
 	$scope.ready = false;
 
 	var docs = function(){
@@ -488,11 +488,11 @@ NGApp.controller( 'DriversDocsFormCtrl', function( $scope, $fileUploader, Driver
 	uploader.bind('error', function (event, xhr, item, response) {
 		App.alert( 'Upload error, please try again or send us a message.' );
 	});
-	
+
 } );
 
 NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, CommunityService ) {
-	
+
 	$scope.ready = false;
 	$scope.submitted = false;
 
@@ -503,7 +503,7 @@ NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, C
 
 	$scope.sending = false;
 
-	$scope.save = function(){		
+	$scope.save = function(){
 		if( $scope.form.$invalid ){
 			$scope.submitted = true;
 			return;
@@ -517,7 +517,7 @@ NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, C
 				$scope.sending = false;
 				$scope.error = json.error;
 			}
-		} );	
+		} );
 	}
 } );
 

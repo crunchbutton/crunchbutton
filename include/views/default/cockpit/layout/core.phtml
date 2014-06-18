@@ -6,21 +6,25 @@
 	<meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
 	<title><?=$this->title ? $this->title : 'Cockpit'?></title>
 	<link href="/assets/css/core/core.css" media="screen" rel="stylesheet" type="text/css" />
-	
+
 	<link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
 
 	<link rel="stylesheet" type="text/css" href="/assets/css/sprites.css">
 	<link rel="stylesheet" type="text/css" href="/assets/css/introjs.css">
 	<link rel="stylesheet" type="text/css" href="/assets/css/datepicker.css">
 	<link rel="stylesheet" type="text/css" href="/assets/css/chosen.css">
-	
+
 
 	<script src="/assets/js/core/core.js" type="text/javascript"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 	<script src="/assets/js/admin.js" type="text/javascript"></script>
 	<script src="/assets/js/chosen.jquery.js" type="text/javascript"></script>
 	<script src="/assets/js/highcharts.src.js" type="text/javascript"></script>
-	<link rel="shortcut icon" href="/favicon-admin.ico">
+	<? if( c::env() == 'local' ): ?>
+		<link rel="shortcut icon" href="/assets/images/favicon-admin-dev.png">
+	<? else : ?>
+		<link rel="shortcut icon" href="/assets/images/favicon-admin.png">
+	<? endif ; ?>
 </head>
 
 <body>
@@ -99,12 +103,12 @@
 				<span>Dashboard</span>
 			</a>
 		</li>
-		
+
 
 		<? if ( c::admin()->permission()->check( [ 'global','orders','orders-all','orders-list-page','orders-new-users'] ) ) : ?>
 			<li class="dark-nav <?=$this->page == 'orders' ? 'active' : ''?>">
 				<span class="glow"></span>
-	
+
 				<a class="accordion-toggle" href="/orders">
 					<i class="icon-truck icon-2x"></i>
 					<span>Orders</span>
@@ -132,9 +136,9 @@
 				</a>
 			</li>
 		<? endif ; ?>
-		
-		
-	
+
+
+
 		<? if (c::admin()->permission()->check(['global', 'suggestions-all', 'suggestions-list-page', 'gift-card-all', 'gift-card-list-page', 'gift-card-list-all' ,'support-all', 'support-view', 'support-crud', 'support-settings' ])) : ?>
 
 			<li class="dark-nav">
@@ -174,7 +178,7 @@
 		<? if ( c::admin()->permission()->check( [ 'global','drivers-page'] ) || c::admin()->isDriver() ) : ?>
 			<li class="dark-nav">
 				<span class="glow"></span>
-	
+
 				<a class="accordion-toggle collapsed" href="#admin-nav-drivers" data-toggle="collapse" >
 					<i class="icon-road icon-2x"></i>
 					<span>Drivers <i class="icon-caret-down"></i></span>
@@ -218,7 +222,7 @@
 						</a>
 					</li>
 					<? } ?>
-				
+
 					<? if ( c::admin()->permission()->check( [ 'global','drivers-all', 'drivers-working-hours', 'drivers-working-hours-view' ] ) || c::admin()->isDriver() ) { ?>
 					<li class="">
 						<a href="/drivers/shift/schedule/driver">
@@ -248,7 +252,7 @@
 		<? endif ; ?>
 
 	<? if ( c::admin()->permission()->check( [ 'global', 'metrics-all', 'metrics-main', 'metrics-investors', 'metrics-detailed-analytics', 'metrics-no-grouped-charts', 'metrics-communities', 'metrics-communities-page', 'locations' ] ) ) { ?>
-			
+
 		<li class="dark-nav">
 			<span class="glow"></span>
 
@@ -294,7 +298,7 @@
 				<? } ?>
 			</ul>
 		</li>
-		
+
 		<? } ?>
 
 		<? if ( c::admin()->permission()->check( ['global', 'restaurants-all', 'restaurants-crud', 'restaurants-weight-adj-page', 'logs', 'rules', 'invite-promo', 'permissions-all','permissions-users','permissions-groups','drivers-working-hours','drivers-working-hours-view', 'settlement'] ) ) { ?>
@@ -432,7 +436,7 @@
 				<div class="breadcrumb-button blue">
 					<span class="breadcrumb-label"><i class="icon-home"></i> Home</span>
 					<span class="breadcrumb-arrow"><span></span></span>
-				</div>  
+				</div>
 
 				<? if ($this->title) : ?>
 	        		<div class="breadcrumb-button">
@@ -444,7 +448,7 @@
 						<span class="breadcrumb-arrow"><span></span></span>
 					</div>
 				<? endif ; ?>
-				
+
 				<? if ($this->title2) : ?>
 	        		<div class="breadcrumb-button">
 	        		<? if ($this->title2Link) : ?><a href="<?=$this->title2Link?>"><? endif ; ?>
@@ -460,7 +464,7 @@
 	</div>
 	<!-- // breadcrumbs -->
 
-		
+
 	<?=$this->content?>
 
 	</div>
