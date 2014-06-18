@@ -284,7 +284,6 @@ NGApp.controller('SettlementRestaurantsScheduledViewCtrl', function ( $scope, $r
 	}
 
 	$scope.do_payment = function(){
-		alert(1);
 		$scope.makeBusy();
 		SettlementService.restaurants.do_payment( $routeParams.id, function( json ){
 			if( json.error ){
