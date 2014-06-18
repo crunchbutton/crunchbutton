@@ -74,7 +74,7 @@
 				<div class="input">
 	
 					<select ng-model="card.month" ng-options="month.value as month.label for month in card._months()" class=""></select>
-					<select ng-model="order.year" ng-options="year.value as year.label for year in card._years()" class=""></select>
+					<select ng-model="card.year" ng-options="year.value as year.label for year in card._years()" class=""></select>
 				</div>
 			</li>
 			<li class="li-input" ng-show="!isSubmitting"><button class="button orange" ng-click="submit();">Submit New Order</button></li>
