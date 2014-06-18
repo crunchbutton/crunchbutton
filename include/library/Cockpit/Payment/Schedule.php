@@ -45,10 +45,25 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return Restaurant::o( $this->id_restaurant );
 	}
 
+	public function date() {
+		if (!isset($this->_date)) {
+			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
+			$this->_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+		}
+		return $this->_date;
+	}
+
 	public function restaurantSchedulesFromDate( $date ){
 		$query = 'SELECT ps.*, r.name AS restaurant FROM payment_schedule ps
 								INNER JOIN restaurant r ON r.id_restaurant = ps.id_restaurant
 								WHERE DATE_FORMAT( ps.date, \'%m/%d/%Y\' ) = "' . $date . '" ORDER BY ps.id_payment_schedule DESC';
+		return Cockpit_Payment_Schedule::q( $query );
+	}
+
+	public function restaurantNotCompletedSchedules(){
+		$query = 'SELECT ps.*, r.name AS restaurant FROM payment_schedule ps
+								INNER JOIN restaurant r ON r.id_restaurant = ps.id_restaurant
+								WHERE ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '" ORDER BY ps.id_payment_schedule ASC';
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 

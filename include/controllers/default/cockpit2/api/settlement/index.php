@@ -4,6 +4,15 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+// $p = Payment::credit([
+// 									'id_restaurant' => 107,
+// 									'amount' => 0.10,
+// 									'note' => 'daniel - testing',
+// 									'type' => 'balanced'
+// 								]);
+// echo '<pre>';var_dump( $p );exit();
+// exit;
+
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
@@ -58,6 +67,9 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 							case 'payments':
 								$this->_restaurantPayments();
 								break;
+							case 'do-payment':
+								$this->_restaurantDoPayment();
+								break;
 							case 'payment':
 								$this->_restaurantPayment();
 								break;
@@ -67,8 +79,8 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 							case 'view-summary':
 								$this->_restaurantViewSummary();
 								break;
-							case 'status':
-								$this->_restaurantStatus();
+							case 'scheduled':
+								$this->_restaurantScheduled();
 								break;
 							default:
 								$this->_error();
@@ -90,6 +102,29 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 						break;
 				}
 				break;
+		}
+	}
+
+	private function _restaurantDoPayment(){
+		$id_payment_schedule = c::getPagePiece( 4 );
+		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		if( $schedule->id_payment_schedule ){
+			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_DONE ){
+				echo json_encode( [ 'error' => 'Payment already done!' ] );
+				exit;
+			}
+			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_PROCESSING ){
+				echo json_encode( [ 'error' => 'Payment already in process!' ] );
+				exit;
+			}
+			$settlement = new Settlement;
+			if( $settlement->doRestaurantPayments( $id_payment_schedule ) ){
+				echo json_encode( [ 'success' => true ] );
+			} else {
+				echo json_encode( [ 'error' => 'Problem finishing the payment!' ] );
+			}
+		} else {
+			echo json_encode( [ 'error' => 'Payment schedule not found!' ] );
 		}
 	}
 
@@ -245,18 +280,8 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 
 	private function _restaurantPayment(){
 		$settlement = new Settlement;
-		$summary = false;
-		switch ( c::getPagePiece( 4 ) ) {
-			case 'schedule':
-				$id_payment_schedule = c::getPagePiece( 4 );
-				$summary = $settlement->restaurantSummary( $id_payment_schedule );
-				break;
-
-			default:
-				$id_payment = c::getPagePiece( 4 );
-				$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
-				break;
-		}
+		$id_payment = c::getPagePiece( 4 );
+		$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
 		if( $summary ){
 			echo json_encode( $summary );
 		} else {
@@ -264,19 +289,31 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
-	private function _restaurantStatus(){
-		$schedule = new Cockpit_Payment_Schedule;
-		$lastDate = $schedule->lastRestaurantStatusDate();
-		$schedules = $schedule->restaurantSchedulesFromDate( $lastDate );
-		$out = [ 'last_date' => $lastDate, 'restaurants' => '', 'scheduled' => 0, 'processing' => 0, 'done' => 0, 'error' => 0, 'total' => 0 ];
-		foreach( $schedules as $_schedule ){
-			$out[ 'restaurants' ][] = $_schedule->exports();
-			$out[ $_schedule->status ]++;
-			$out[ 'total' ]++;
+	private function _restaurantScheduled(){
+		if( c::getPagePiece( 4 ) ){
+			$settlement = new Settlement;
+			$id_payment_schedule = c::getPagePiece( 4 );
+			$summary = $settlement->restaurantSummary( $id_payment_schedule );
+			if( $summary ){
+				echo json_encode( $summary );
+			} else {
+				$this->_error();
+			}
+		} else {
+			$schedule = new Cockpit_Payment_Schedule;
+			$schedules = $schedule->restaurantNotCompletedSchedules();
+			$out = [ 'last_date' => $lastDate, 'restaurants' => '', 'scheduled' => 0, 'processing' => 0, 'done' => 0, 'error' => 0, 'total' => 0 ];
+			foreach( $schedules as $_schedule ){
+				$data = $_schedule->exports();
+				$data[ 'date' ] = $_schedule->date()->format( 'M jS Y g:i:s A' );
+				$out[ 'restaurants' ][] = $data;
+				$out[ $_schedule->status ]++;
+				$out[ 'total' ]++;
+			}
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
+			echo json_encode( $out );
 		}
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
-		echo json_encode( $out );
 	}
 
 	public function _restaurantViewSummary(){

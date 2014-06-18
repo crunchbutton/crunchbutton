@@ -12,11 +12,13 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		'restaurant' : { 'method': 'POST', params : { action: 'restaurant' } },
 		'pay_if_refunded' : { 'method': 'POST', params : { action: 'pay-if-refunded' } },
 		'payment' : { 'method': 'POST', params : { action: 'payment' } },
+		'do_payment' : { 'method': 'POST', params : { action: 'do-payment' } },
+		'scheduled_payment' : { 'method': 'POST', params : { action: 'scheduled' } },
 		'send_summary' : { 'method': 'POST', params : { action: 'send-summary' } },
 		'payments' : { 'method': 'POST', params : { action: 'payments' } },
 		'reimburse_cash_order' : { 'method': 'POST', params : { action: 'reimburse-cash-order' } },
 		'schedule' : { 'method': 'POST', params : { action: 'schedule' } },
-		'status' : { 'method': 'POST', params : { action: 'status' } }
+		'scheduled' : { 'method': 'POST', params : { action: 'scheduled' } }
 	}	);
 
 	settlement.drivers = $resource( App.service + 'settlement/drivers/:action/', { action: '@action' }, {
@@ -42,14 +44,26 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 		} );
 	}
 
-	service.restaurants.status = function( params, callback ){
-		settlement.restaurants.status( params, function( json ){
+	service.restaurants.scheduled = function( params, callback ){
+		settlement.restaurants.scheduled( params, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.restaurants.scheduled_payment = function( callback ){
+		settlement.restaurants.scheduled_payment( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
 			callback( json );
 		} );
 	}
 
 	service.restaurants.payment = function( callback ){
 		settlement.restaurants.payment( { 'id_payment_schedule' : $routeParams.id  }, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.restaurants.do_payment = function( id_payment_schedule, callback ){
+		settlement.restaurants.do_payment( { 'id_payment_schedule' : id_payment_schedule  }, function( json ){
 			callback( json );
 		} );
 	}
