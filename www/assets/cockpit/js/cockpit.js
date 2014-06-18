@@ -100,10 +100,30 @@ NGApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $l
 			controller: 'SettlementRestaurantsCtrl',
 			templateUrl: 'assets/view/settlement-restaurants.html'
 		})
-		.when('/settlement/restaurants/status', {
+		.when('/settlement/restaurants/scheduled', {
 			action: 'settlement',
-			controller: 'SettlementRestaurantsStatusCtrl',
-			templateUrl: 'assets/view/settlement-restaurants-status.html'
+			controller: 'SettlementRestaurantsScheduledCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-scheduled.html'
+		})
+		.when('/settlement/restaurants/scheduled/:id', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsScheduledViewCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+		})
+		.when('/settlement/restaurants/payment/:id', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsPaymentCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-payment.html'
+		})
+		.when('/settlement/restaurants/summary/:id', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsSummaryCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-summary.html'
+		})
+		.when('/settlement/restaurants/payments', {
+			action: 'settlement',
+			controller: 'SettlementRestaurantsPaymentsCtrl',
+			templateUrl: 'assets/view/settlement-restaurants-payments.html'
 		})
 		.when('/settlement/drivers', {
 			action: 'settlement',

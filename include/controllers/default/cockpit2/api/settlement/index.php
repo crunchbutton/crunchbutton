@@ -4,6 +4,15 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
+// $p = Payment::credit([
+// 									'id_restaurant' => 107,
+// 									'amount' => 0.10,
+// 									'note' => 'daniel - testing',
+// 									'type' => 'balanced'
+// 								]);
+// echo '<pre>';var_dump( $p );exit();
+// exit;
+
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
@@ -55,8 +64,23 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 							case 'schedule':
 								$this->_restaurantSchedule();
 								break;
-							case 'status':
-								$this->_restaurantStatus();
+							case 'payments':
+								$this->_restaurantPayments();
+								break;
+							case 'do-payment':
+								$this->_restaurantDoPayment();
+								break;
+							case 'payment':
+								$this->_restaurantPayment();
+								break;
+							case 'send-summary':
+								$this->_restaurantSendSummary();
+								break;
+							case 'view-summary':
+								$this->_restaurantViewSummary();
+								break;
+							case 'scheduled':
+								$this->_restaurantScheduled();
 								break;
 							default:
 								$this->_error();
@@ -81,53 +105,27 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		}
 	}
 
-	private function _restaurantSchedule(){
-		$start = $this->request()['start'];
-		$end = $this->request()['end'];
-		$_id_restaurants = explode( ',', $this->request()['id_restaurants'] );
-		$id_restaurants = [];
-		foreach ( $_id_restaurants as $key => $val ) {
-			$id_restaurant = trim( $val );
-			$notes = $this->request()[ 'notes_' . $id_restaurant ];
-			$id_restaurants[ $id_restaurant ] = ( $notes ) ? $notes : Crunchbutton_Settlement::DEFAULT_NOTES;
+	private function _restaurantDoPayment(){
+		$id_payment_schedule = c::getPagePiece( 4 );
+		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
+		if( $schedule->id_payment_schedule ){
+			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_DONE ){
+				echo json_encode( [ 'error' => 'Payment already done!' ] );
+				exit;
+			}
+			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_PROCESSING ){
+				echo json_encode( [ 'error' => 'Payment already in process!' ] );
+				exit;
+			}
+			$settlement = new Settlement;
+			if( $settlement->doRestaurantPayments( $id_payment_schedule ) ){
+				echo json_encode( [ 'success' => true ] );
+			} else {
+				echo json_encode( [ 'error' => 'Problem finishing the payment!' ] );
+			}
+		} else {
+			echo json_encode( [ 'error' => 'Payment schedule not found!' ] );
 		}
-		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
-		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
-		$settlement->scheduleRestaurantPayment( $id_restaurants );
-		echo json_encode( [ 'success' => true ] );
-	}
-
-	private function _restaurantStatus(){
-		$schedule = new Cockpit_Payment_Schedule;
-		$lastDate = $schedule->lastRestaurantStatusDate();
-		$schedules = $schedule->restaurantSchedulesFromDate( $lastDate );
-		$out = [ 'last_date' => $lastDate, 'restaurants' => '', 'scheduled' => 0, 'processing' => 0, 'done' => 0, 'error' => 0, 'total' => 0 ];
-		foreach( $schedules as $_schedule ){
-			$out[ 'restaurants' ][] = $_schedule->exports();
-			$out[ $_schedule->status ]++;
-			$out[ 'total' ]++;
-		}
-		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
-		$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
-		echo json_encode( $out );
-	}
-
-	private function _restaurantPayIfRefunded(){
-		$id_order = $this->request()['id_order'];
-		$pay_if_refunded = $this->request()['pay_if_refunded'];
-		$order = Order::o( $id_order );
-		$order->pay_if_refunded = ( intval( $pay_if_refunded ) > 0 ) ? 1 : 0;
-		$order->save();
-		echo json_encode( [ 'id_order' => $order->id_order, 'id_restaurant' => $order->id_restaurant ] );
-	}
-
-	private function _restaurantReimburseCashOrder(){
-		$id_order = $this->request()['id_order'];
-		$reimburse_cash_order = $this->request()['reimburse_cash_order'];
-		$order = Order::o( $id_order );
-		$order->reimburse_cash_order = ( intval( $reimburse_cash_order ) > 0 ) ? 1 : 0;
-		$order->save();
-		echo json_encode( [ 'id_order' => $order->id_order, 'id_restaurant' => $order->id_restaurant ] );
 	}
 
 	private function _restaurantBegin(){
@@ -197,6 +195,133 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 			}
 		}
 		echo json_encode( $out );
+	}
+
+	private function _restaurantPayIfRefunded(){
+		$id_order = $this->request()['id_order'];
+		$pay_if_refunded = $this->request()['pay_if_refunded'];
+		$order = Order::o( $id_order );
+		$order->pay_if_refunded = ( intval( $pay_if_refunded ) > 0 ) ? 1 : 0;
+		$order->save();
+		echo json_encode( [ 'id_order' => $order->id_order, 'id_restaurant' => $order->id_restaurant ] );
+	}
+
+	private function _restaurantReimburseCashOrder(){
+		$id_order = $this->request()['id_order'];
+		$reimburse_cash_order = $this->request()['reimburse_cash_order'];
+		$order = Order::o( $id_order );
+		$order->reimburse_cash_order = ( intval( $reimburse_cash_order ) > 0 ) ? 1 : 0;
+		$order->save();
+		echo json_encode( [ 'id_order' => $order->id_order, 'id_restaurant' => $order->id_restaurant ] );
+	}
+
+	private function _restaurantSchedule(){
+		$start = $this->request()['start'];
+		$end = $this->request()['end'];
+		$_id_restaurants = explode( ',', $this->request()['id_restaurants'] );
+		$id_restaurants = [];
+		foreach ( $_id_restaurants as $key => $val ) {
+			$id_restaurant = trim( $val );
+			$notes = $this->request()[ 'notes_' . $id_restaurant ];
+			$id_restaurants[ $id_restaurant ] = ( $notes ) ? $notes : Crunchbutton_Settlement::DEFAULT_NOTES;
+		}
+		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
+		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
+		$settlement->scheduleRestaurantPayment( $id_restaurants );
+		echo json_encode( [ 'success' => true ] );
+	}
+
+	private function _restaurantPayments(){
+
+		$resultsPerPage = 20;
+
+		$page = max( $this->request()['page'], 1 );
+		$id_restaurant = max( $this->request()['id_restaurant'], 0 );
+		$start = ( ( $page - 1 ) * $resultsPerPage );
+
+		$payments = Crunchbutton_Payment::listPayments( [ 'limit' => $start . ',' . $resultsPerPage, 'id_restaurant' => $id_restaurant ] );
+		$payments_total = Crunchbutton_Payment::listPayments( [ 'id_restaurant' => $id_restaurant ] );
+		$payments_total = $payments_total->count();
+
+		$list = [];
+		foreach( $payments as $payment ){
+			$data = $payment->exports();
+			$data[ 'date' ] = $payment->date()->format( 'M jS Y g:i:s A' );
+			unset( $data[ 'id_driver' ] );
+			unset( $data[ 'note' ] );
+			unset( $data[ 'notes' ] );
+			unset( $data[ 'type' ] );
+			unset( $data[ 'id' ] );
+			$list[] = $data;
+		}
+
+		$pages = ceil( $payments_total / $resultsPerPage );
+
+		$data = [];
+		$data[ 'count' ] = $payments_total;
+		$data[ 'pages' ] = $pages;
+		$data[ 'prev' ] = ( $page > 1 ) ? $page - 1 : null;
+		$data[ 'page' ] = intval( $page );
+		$data[ 'next' ] = ( $page < $pages ) ? $page + 1 : null;
+		$data[ 'results' ] = $list;
+
+		echo json_encode( $data );
+	}
+
+	private function _restaurantSendSummary(){
+		$id_payment_schedule = c::getPagePiece( 4 );
+		$settlement = new Settlement;
+		if( $settlement->sendRestaurantPaymentNotification( $id_payment_schedule ) ){
+			echo json_encode( [ 'success' => true ] );
+		} else {
+			echo json_encode( [ 'error' => true ] );
+		}
+	}
+
+	private function _restaurantPayment(){
+		$settlement = new Settlement;
+		$id_payment = c::getPagePiece( 4 );
+		$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
+		if( $summary ){
+			echo json_encode( $summary );
+		} else {
+			$this->_error();
+		}
+	}
+
+	private function _restaurantScheduled(){
+		if( c::getPagePiece( 4 ) ){
+			$settlement = new Settlement;
+			$id_payment_schedule = c::getPagePiece( 4 );
+			$summary = $settlement->restaurantSummary( $id_payment_schedule );
+			if( $summary ){
+				echo json_encode( $summary );
+			} else {
+				$this->_error();
+			}
+		} else {
+			$schedule = new Cockpit_Payment_Schedule;
+			$schedules = $schedule->restaurantNotCompletedSchedules();
+			$out = [ 'last_date' => $lastDate, 'restaurants' => '', 'scheduled' => 0, 'processing' => 0, 'done' => 0, 'error' => 0, 'total' => 0 ];
+			foreach( $schedules as $_schedule ){
+				$data = $_schedule->exports();
+				$data[ 'date' ] = $_schedule->date()->format( 'M jS Y g:i:s A' );
+				$out[ 'restaurants' ][] = $data;
+				$out[ $_schedule->status ]++;
+				$out[ 'total' ]++;
+			}
+			$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+			$out[ 'updated_at' ] = $now->format( 'M jS Y g:i:s A' );
+			echo json_encode( $out );
+		}
+	}
+
+	public function _restaurantViewSummary(){
+		$id_payment =  c::getPagePiece( 4 );
+		$settlement = new Crunchbutton_Settlement;
+		$summary = $settlement->restaurantSummaryByIdPayment( $id_payment );
+		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
+		echo $mail->message();
 	}
 
 	private function _driverBegin(){

@@ -5,6 +5,13 @@ NGApp.controller('SettlementCtrl', function ( $scope ) {
 	$scope.restaurants = function(){
 		$scope.navigation.link( '/settlement/restaurants' );
 	}
+	$scope.restaurants_payments = function(){
+		$scope.navigation.link( '/settlement/restaurants/payments' );
+	}
+	$scope.restaurants_scheduled_payments = function(){
+		$scope.navigation.link( '/settlement/restaurants/scheduled' );
+	}
+
 
 	$scope.drivers = function(){
 		$scope.navigation.link( '/settlement/drivers' );
@@ -31,9 +38,6 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 			if( json.start && json.end ){
 				$scope.range = { 'start' : new Date( json.start ), 'end' : new Date( json.end ) };
 				$scope.ready = true;
-				setTimeout(function() {
-					$scope.begin();
-				}, 100);
 			}
 		} );
 	}
@@ -137,7 +141,7 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 
 		SettlementService.restaurants.schedule( params, function( json ){
 			$scope.unBusy();
-			$scope.navigation.link( '/settlement/restaurants/status' );
+			$scope.navigation.link( '/settlement/restaurants/scheduled' );
 		} );
 	}
 
@@ -173,48 +177,172 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 
 });
 
-NGApp.controller('SettlementCtrl', function ( $scope ) {
-
-	$scope.ready = true;
-
-	$scope.restaurants = function(){
-		$scope.navigation.link( '/settlement/restaurants' );
-	}
-
-	$scope.drivers = function(){
-		$scope.navigation.link( '/settlement/drivers' );
-	}
-
-} );
-
-NGApp.controller('SettlementRestaurantsStatusCtrl', function ( $scope, $timeout, SettlementService ) {
+NGApp.controller('SettlementRestaurantsScheduledCtrl', function ( $scope, SettlementService ) {
 
 	$scope.ready = false;
 
-	var scheduled_payments = function(){
-		SettlementService.restaurants.status( function( json ){
+	$scope.update = function(){
+		SettlementService.restaurants.scheduled( function( json ){
 			$scope.result = json;
 			$scope.ready = true;
-			var timer = $timeout( function() {
-				scheduled_payments();
-			}, 5000 );
 		} );
 	}
 
-	$scope.$on( '$destroy', function(){
-		// Kills the timer when the controller is changed
-		if( typeof( timer ) !== 'undefined' && timer ){
-			try{ $timeout.cancel( timer ); } catch(e){}
-		}
-	} );
+	$scope.payment = function( id_payment ){
+		$scope.navigation.link( '/settlement/restaurants/scheduled/' + id_payment );
+	}
 
 	// Just run if the user is loggedin
 	if( $scope.account.isLoggedIn() ){
-		scheduled_payments();
+		$scope.update();
 	}
 
 });
 
+NGApp.controller('SettlementRestaurantsSummaryCtrl', function ( $scope, $routeParams, SettlementService ) {
+
+	$scope.ready = false;
+
+	var load = function(){
+		SettlementService.restaurants.view_summary( function( data ){
+			$scope.summary = data;
+			$scope.ready = true;
+		} );
+	}
+
+	$scope.payment = function(){
+		$scope.navigation.link( '/settlement/restaurants/payment/' + $routeParams.id );
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		load();
+	}
+
+});
+
+NGApp.controller('SettlementRestaurantsPaymentsCtrl', function ( $scope, $rootScope, SettlementService, RestaurantService ) {
+
+	$scope.ready = false;
+	$scope.id_restaurant = 0;
+	$scope.page = 1;
+
+	var list = function(){
+		SettlementService.restaurants.payments( { 'page': $scope.page, 'id_restaurant': $scope.id_restaurant }, function( data ){
+			$scope.pages = data.pages;
+			$scope.next = data.next;
+			$scope.prev = data.prev;
+			$scope.payments = data.results;
+			$scope.count = data.count;
+			$scope.ready = true;
+		} );
+	}
+
+	var restaurants = function(){
+		RestaurantService.paid_list( function( data ){
+			$scope.restaurants = data;
+		} );
+	}
+
+	$scope.open = function( id_payment ){
+		$scope.navigation.link( '/settlement/restaurants/payment/' + id_payment );
+	}
+
+	$scope.$watch( 'id_restaurant', function( newValue, oldValue, scope ) {
+		$scope.page = 1;
+		list();
+	} );
+
+	$scope.nextPage = function(){
+		$scope.page = $scope.next;
+		list();
+	}
+
+	$scope.prevPage = function(){
+		$scope.page = $scope.prev;
+		list();
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		restaurants();
+		list();
+	}
+
+});
+
+NGApp.controller('SettlementRestaurantsScheduledViewCtrl', function ( $scope, $routeParams, SettlementService ) {
+
+	$scope.ready = false;
+	$scope.schedule = true;
+
+	load = function(){
+		SettlementService.restaurants.scheduled_payment( function( json ){
+			$scope.result = json;
+			$scope.ready = true;
+			$scope.unBusy();
+		} );
+	}
+
+	$scope.do_payment = function(){
+		$scope.makeBusy();
+		SettlementService.restaurants.do_payment( $routeParams.id, function( json ){
+			if( json.error ){
+				App.alert( 'Oops, something bad happened: ' + json.error );
+				$scope.unBusy();
+			} else {
+				load();
+			}
+		} );
+	}
+
+	$scope.view_payment = function( id_payment ){
+		$scope.navigation.link( '/settlement/restaurants/payment/' + id_payment );
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		load();
+	}
+
+});
+
+NGApp.controller('SettlementRestaurantsPaymentCtrl', function ( $scope, $routeParams, SettlementService ) {
+
+	$scope.ready = false;
+
+	$scope.payment = true;
+
+	load = function(){
+		SettlementService.restaurants.payment( function( json ){
+			$scope.result = json;
+			$scope.ready = true;
+			$scope.unBusy();
+		} );
+	}
+
+	$scope.view_summary = function(){
+		$scope.navigation.link( '/settlement/restaurants/summary/' + $routeParams.id );
+	}
+
+	$scope.send_summary = function(){
+		$scope.makeBusy();
+		SettlementService.restaurants.send_summary( function( json ){
+			if( json.success ){
+				load();
+			} else {
+				$scope.unBusy();
+				App.alert( 'Oops, something bad happened!' );
+			}
+		} )
+	}
+
+	// Just run if the user is loggedin
+	if( $scope.account.isLoggedIn() ){
+		load();
+	}
+
+});
 
 NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, SettlementService ) {
 

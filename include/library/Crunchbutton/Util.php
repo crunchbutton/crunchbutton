@@ -3,18 +3,18 @@
 class Crunchbutton_Util extends Cana_Model {
 	public function frontendTemplates($export = false) {
 		$files = [];
-		
+
 		$themes = c::view()->theme();
 		$themes = array_reverse($themes);
-		
-		
+
+
 		foreach ($themes as $theme) {
 			if (file_exists(c::config()->dirs->view.$theme.'/frontend')) {
 				$frontendDir = $theme;
 				break;
 			}
 		}
-		
+
 		foreach (new DirectoryIterator(c::config()->dirs->view.$frontendDir.'/frontend') as $fileInfo) {
 			if (!$fileInfo->isDot() && $fileInfo->getBasename() != '.DS_Store' ) {
 				$files[] = $fileInfo->getBasename('.phtml');
@@ -60,9 +60,15 @@ class Crunchbutton_Util extends Cana_Model {
 	}
 
 	public static function ceil($value, $precision) {
-		$pow = pow ( 10, $precision ); 
+		$pow = pow ( 10, $precision );
 		return ( ceil ( $pow * $value ) + ceil ( $pow * $value - ceil ( $pow * $value ) ) ) / $pow;
 	}
+
+	public static function round_up ($value, $places=0) {
+		if ($places < 0) { $places = 0; }
+		$mult = pow(10, $places);
+		return ceil($value * $mult) / $mult;
+ 	}
 
 	public static function encodeTitle($title) {
 
@@ -84,7 +90,7 @@ class Crunchbutton_Util extends Cana_Model {
 
 		return strtolower(urlencode(trim(self::truncateByWord($title,50,''))));
 	}
-	
+
 	static function uploadWWW(){
 		return '/upload/';
 	}
@@ -101,12 +107,12 @@ class Crunchbutton_Util extends Cana_Model {
 
 	static public function allowedExtensionUpload( $ext ){
 		$ext = strtolower( $ext );
-		$allowed = array( 'gif','png' ,'jpg', 'doc', 'docx', 'pdf', 'jpeg' );	
+		$allowed = array( 'gif','png' ,'jpg', 'doc', 'docx', 'pdf', 'jpeg' );
 		return in_array( $ext, $allowed );
 	}
 
-	static public function slugify( $txt ){ 
-		
+	static public function slugify( $txt ){
+
 		$table = array(
 						'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
 						'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
@@ -136,7 +142,7 @@ class Crunchbutton_Util extends Cana_Model {
 		$file = explode(' ',$file[0]);
 		return trim($file[1]);
 		}
-	
+
 	public static function relativeTime($timestamp, $timezoneTO = null, $timezoneFROM = null) {
 		if (!$timezoneFROM) {
 //			$timezoneFROM = new DateTimeZone('utc');
@@ -159,9 +165,9 @@ class Crunchbutton_Util extends Cana_Model {
 		$difference = $interval->format('%y %m %d %h %i %s');
 		return $difference;
 		*/
-		
+
 		$difference = $t->getTimestamp() - $d->getTimestamp();
-	
+
 		$periods = ['sec', 'min', 'hour', 'day', 'week', 'month', 'year', 'decade'];
 		$lengths = ['60','60','24','7','4.35','12','10'];
 
@@ -170,7 +176,7 @@ class Crunchbutton_Util extends Cana_Model {
 		} else { // this was in the future
 			$difference = -$difference;
 			$ending = 'to go';
-		}		
+		}
 		for($j = 0; $difference >= $lengths[$j]; $j++) {
 			$difference /= $lengths[$j];
 		}
@@ -193,7 +199,7 @@ class Crunchbutton_Util extends Cana_Model {
 		}
 		return implode("\n",$retVals);
 	}
-	
+
 	public static function truncateByWord($string, $length = 100, $suffix = '&hellip;') {
 		if (strlen($string) > $length) {
 			$string = explode(' ', $string);
@@ -208,13 +214,13 @@ class Crunchbutton_Util extends Cana_Model {
 			$string = trim($newString).$suffix;
 		}
 		return $string;
-		
+
 	}
 
 	public function relativeTimeTz($ts, $tz) {
-		
+
 	}
-	
+
 	public function dateTimeRep($datetime, $timezome, $format = 'M j, g:i a') {
 		$d = new DateTime($datetime_str, new DateTimeZone('utc'));
 		$d->setTimezone($rep_timezone);
