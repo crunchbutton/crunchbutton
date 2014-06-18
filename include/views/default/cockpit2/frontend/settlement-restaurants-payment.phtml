@@ -2,7 +2,10 @@
 
 <div class="content-padding" ng-if="ready">
 
-	<h1 class="title left"><i class="fa fa-bank"></i><span>Payment #{{result.id_payment}} - {{result.restaurant}}</span></h1>
+	<h1 class="title left"><i class="fa fa-bank"></i>
+		<span ng-show="payment">Payment #{{result.id_payment}} - {{result.restaurant}}</span>
+		<span ng-show="schedule">Payment Schedule #{{result.id_payment_schedule}} - {{result.restaurant}}</span>
+	</h1>
 
 	<div class="divider"></div>
 
@@ -12,7 +15,16 @@
 			<tbody>
 				<tr ng-show="result.id_payment">
 					<td><strong>Payment ID</strong></td>
-					<td># {{result.id_payment}}</td>
+					<td>
+						<span ng-show="payment"># {{result.id_payment}}</span>
+						<span ng-show="schedule" class="link orange" ng-click="view_payment( result.id_payment )"># {{result.id_payment}}</span>
+					</td>
+				</tr>
+				<tr ng-show="result.id_payment_schedule">
+					<td><strong>Payment Schecule ID</strong></td>
+					<td>
+						# {{result.id_payment_schedule}}
+					</td>
 				</tr>
 				<tr>
 					<td><strong>Payment Status</strong></td>
@@ -37,7 +49,7 @@
 						<span ng-show="!result.summary_sent_date"><i>Summary not sent</i></span>
 					</td>
 				</tr>
-				<tr ng-show="result.payment_date">
+				<tr ng-show="result.payment_date && payment">
 					<td><span class="link orange" ng-click="view_summary()">View Summary</span></td>
 					<td><span class="link orange" ng-click="send_summary()">Send Summary</span></td>
 				</tr>
