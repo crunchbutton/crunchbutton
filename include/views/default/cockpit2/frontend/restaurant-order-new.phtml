@@ -59,8 +59,19 @@
 			</li>
 	
 	
-	
 			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
+				<div class="label">Payment Type</div>
+				<div class="input">
+	
+					<select ng-model="order.pay_type">
+						<option value="card">Card</option>
+						<option value="cash">Cash</option>
+					</select>
+				</div>
+			</li>
+	
+	
+			<li class="li-input" ng-class="{'error':form.driverName.$invalid}" ng-show="order.pay_type=='card'">
 				<div class="label">Card Number</div>
 				<div class="input">
 					<input type="text" name="name" ng-model="card.number" required="" placeholder="0000-0000-0000-0000" ng-minlength="5" ng-maxlength="80" class="ng-pristine ng-valid-maxlength ng-valid-minlength ng-valid ng-valid-required">
@@ -69,7 +80,7 @@
 			
 	
 	
-			<li class="li-input" ng-class="{'error':form.driverName.$invalid}">
+			<li class="li-input" ng-class="{'error':form.driverName.$invalid}" ng-show="order.pay_type=='card'">
 				<div class="label">Card Expiration</div>
 				<div class="input">
 	

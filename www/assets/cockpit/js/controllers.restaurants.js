@@ -17,7 +17,7 @@ NGApp.controller('RestaurantOrderNew', function ($scope, $http, MainNavigationSe
 		month: '1',
 		year: '2015'
 	};
-	
+
 	App.config.processor = {
 		type: 'balanced'
 	};
