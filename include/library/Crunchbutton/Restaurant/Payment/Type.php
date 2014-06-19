@@ -2,6 +2,9 @@
 
 class Crunchbutton_Restaurant_Payment_Type extends Cana_Table {
 
+	const PAYMENT_METHOD_CHECK = 'check';
+	const PAYMENT_METHOD_DEPOSIT = 'deposit';
+
 	public function __construct($id = null) {
 		parent::__construct();
 		$this
