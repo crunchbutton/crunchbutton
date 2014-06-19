@@ -70,9 +70,13 @@
 					<td>Balanced</td>
 					<td>{{result.balanced_id}}</td>
 				</tr>
-				<tr ng-show="result.balanced_id">
+				<tr ng-show="result.stripe_id">
 					<td>Stripe</td>
 					<td>{{result.stripe_id}}</td>
+				</tr>
+				<tr ng-show="result.check_id">
+					<td>Lob (Check)</td>
+					<td>{{result.check_id}}</td>
 				</tr>
 				<tr positive-or-negative-color="{{result.calcs.tax}}">
 					<td>Tax</td>

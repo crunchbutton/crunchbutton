@@ -268,6 +268,10 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								$payment->payment_method = $this->request()['payment_method'];
 								$payment->id_restaurant_pay_another_restaurant = $this->request()['id_restaurant_pay_another_restaurant'];
 								$payment->check_address = $this->request()['check_address'];
+								$payment->check_address_city = $this->request()['check_address_city'];
+								$payment->check_address_state = $this->request()['check_address_state'];
+								$payment->check_address_zip = $this->request()['check_address_zip'];
+								$payment->check_address_country = $this->request()['check_address_country'];
 								$payment->contact_name = $this->request()['contact_name'];
 								$payment->summary_fax = $this->request()['summary_fax'];
 								$payment->summary_email = $this->request()['summary_email'];
