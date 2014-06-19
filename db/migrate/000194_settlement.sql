@@ -78,5 +78,6 @@ ALTER TABLE  `payment` ADD  `summary_sent_date` datetime DEFAULT NULL;
 
 ALTER TABLE `payment_schedule` DROP `balanced_id`;
 ALTER TABLE `payment_schedule` DROP `stripe_id`;
+ALTER TABLE `payment_schedule` DROP `payment_method`;
 
 ALTER TABLE  `payment_schedule` ADD  `log` varchar(255) DEFAULT NULL;
