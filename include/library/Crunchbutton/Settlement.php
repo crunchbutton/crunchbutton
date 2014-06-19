@@ -532,51 +532,50 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
+						return false;
 					}
-					finally{
 
-						if( $p ){
+					if( $p ){
 
-							$payment = Crunchbutton_Payment::o( $p );
+						$payment = Crunchbutton_Payment::o( $p );
 
-							$schedule->id_payment = $payment->id_payment;
-							$schedule->status = Cockpit_Payment_Schedule::STATUS_DONE;
-							$schedule->log = 'Payment finished';
-							$schedule->status_date = date( 'Y-m-d H:i:s' );
-							$schedule->save();
+						$schedule->id_payment = $payment->id_payment;
+						$schedule->status = Cockpit_Payment_Schedule::STATUS_DONE;
+						$schedule->log = 'Payment finished';
+						$schedule->status_date = date( 'Y-m-d H:i:s' );
+						$schedule->save();
 
-							$orders = $schedule->orders();
+						$orders = $schedule->orders();
 
-							foreach (  $orders as $order ) {
+						foreach (  $orders as $order ) {
 
-								$order_transaction = new Crunchbutton_Order_Transaction;
-								$order_transaction->id_order = $order->id_order;
-								$order_transaction->amt = $order->amount;
-								$order_transaction->date = date( 'Y-m-d H:i:s' );
-								$order_transaction->type = Crunchbutton_Order_Transaction::TYPE_PAID_TO_RESTAURANT;
-								$order_transaction->source = Crunchbutton_Order_Transaction::SOURCE_CRUNCHBUTTON;
-								$order_transaction->id_admin = $payment->id_admin;
-								$order_transaction->save();
+							$order_transaction = new Crunchbutton_Order_Transaction;
+							$order_transaction->id_order = $order->id_order;
+							$order_transaction->amt = $order->amount;
+							$order_transaction->date = date( 'Y-m-d H:i:s' );
+							$order_transaction->type = Crunchbutton_Order_Transaction::TYPE_PAID_TO_RESTAURANT;
+							$order_transaction->source = Crunchbutton_Order_Transaction::SOURCE_CRUNCHBUTTON;
+							$order_transaction->id_admin = $payment->id_admin;
+							$order_transaction->save();
 
-								$payment_order_transaction = new Cockpit_Payment_Order_Transaction;
-								$payment_order_transaction->id_payment = $payment->id_payment;
-								$payment_order_transaction->id_order_transaction = $order_transaction->id_order_transaction;
-								$payment_order_transaction->save();
-							}
-
-							$this->sendRestaurantPaymentNotification( $payment->id_payment );
-							return true;
-						} else {
-							$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
-							$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
-							$message .= "\n". 'amount: ' . $schedule->amount;
-							$message .= "\n". $schedule->log;
-							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
-							$schedule->status_date = date( 'Y-m-d H:i:s' );
-							$schedule->save();
-							Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
-							return false;
+							$payment_order_transaction = new Cockpit_Payment_Order_Transaction;
+							$payment_order_transaction->id_payment = $payment->id_payment;
+							$payment_order_transaction->id_order_transaction = $order_transaction->id_order_transaction;
+							$payment_order_transaction->save();
 						}
+
+						$this->sendRestaurantPaymentNotification( $payment->id_payment );
+						return true;
+					} else {
+						$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
+						$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
+						$message .= "\n". 'amount: ' . $schedule->amount;
+						$message .= "\n". $schedule->log;
+						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+						$schedule->status_date = date( 'Y-m-d H:i:s' );
+						$schedule->save();
+						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+						return false;
 					}
 				}
 				// Check payment method
@@ -631,59 +630,59 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
 							$schedule->status_date = date( 'Y-m-d H:i:s' );
 							$schedule->save();
+							return false;
 						}
-						finally{
-							if( $c && $c->id ){
 
-								$payment = new Crunchbutton_Payment;
-								$payment->check_id = $c->id;
-								$payment->date = date( 'Y-m-d H:i:s' );
-								$payment->id_restaurant = $schedule->id_restaurant;
-								$payment->note = $schedule->notes;
-								$payment->env = c::getEnv();
-								$payment->id_admin = $schedule->id_admin;
-								$payment->amount = $schedule->amount;
-								$payment->save();
+						if( $c && $c->id ){
 
-								$schedule->id_payment = $payment->id_payment;
-								$schedule->status = Cockpit_Payment_Schedule::STATUS_DONE;
-								$schedule->log = 'Payment finished';
-								$schedule->status_date = date( 'Y-m-d H:i:s' );
-								$schedule->save();
+							$payment = new Crunchbutton_Payment;
+							$payment->check_id = $c->id;
+							$payment->date = date( 'Y-m-d H:i:s' );
+							$payment->id_restaurant = $schedule->id_restaurant;
+							$payment->note = $schedule->notes;
+							$payment->env = c::getEnv();
+							$payment->id_admin = $schedule->id_admin;
+							$payment->amount = $schedule->amount;
+							$payment->save();
 
-								$orders = $schedule->orders();
+							$schedule->id_payment = $payment->id_payment;
+							$schedule->status = Cockpit_Payment_Schedule::STATUS_DONE;
+							$schedule->log = 'Payment finished';
+							$schedule->status_date = date( 'Y-m-d H:i:s' );
+							$schedule->save();
 
-								foreach (  $orders as $order ) {
+							$orders = $schedule->orders();
 
-									$order_transaction = new Crunchbutton_Order_Transaction;
-									$order_transaction->id_order = $order->id_order;
-									$order_transaction->amt = $order->amount;
-									$order_transaction->date = date( 'Y-m-d H:i:s' );
-									$order_transaction->type = Crunchbutton_Order_Transaction::TYPE_PAID_TO_RESTAURANT;
-									$order_transaction->source = Crunchbutton_Order_Transaction::SOURCE_CRUNCHBUTTON;
-									$order_transaction->id_admin = $payment->id_admin;
-									$order_transaction->save();
+							foreach (  $orders as $order ) {
 
-									$payment_order_transaction = new Cockpit_Payment_Order_Transaction;
-									$payment_order_transaction->id_payment = $payment->id_payment;
-									$payment_order_transaction->id_order_transaction = $order_transaction->id_order_transaction;
-									$payment_order_transaction->save();
-								}
+								$order_transaction = new Crunchbutton_Order_Transaction;
+								$order_transaction->id_order = $order->id_order;
+								$order_transaction->amt = $order->amount;
+								$order_transaction->date = date( 'Y-m-d H:i:s' );
+								$order_transaction->type = Crunchbutton_Order_Transaction::TYPE_PAID_TO_RESTAURANT;
+								$order_transaction->source = Crunchbutton_Order_Transaction::SOURCE_CRUNCHBUTTON;
+								$order_transaction->id_admin = $payment->id_admin;
+								$order_transaction->save();
 
-								$this->sendRestaurantPaymentNotification( $payment->id_payment );
-								return true;
-
-							} else {
-								$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
-								$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
-								$message .= "\n". 'amount: ' . $schedule->amount;
-								$message .= "\n". $schedule->log;
-								$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
-								$schedule->status_date = date( 'Y-m-d H:i:s' );
-								$schedule->save();
-								Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
-								return false;
+								$payment_order_transaction = new Cockpit_Payment_Order_Transaction;
+								$payment_order_transaction->id_payment = $payment->id_payment;
+								$payment_order_transaction->id_order_transaction = $order_transaction->id_order_transaction;
+								$payment_order_transaction->save();
 							}
+
+							$this->sendRestaurantPaymentNotification( $payment->id_payment );
+							return true;
+
+						} else {
+							$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;
+							$message .= "\n". 'id_payment_schedule: ' . $schedule->id_payment_schedule;
+							$message .= "\n". 'amount: ' . $schedule->amount;
+							$message .= "\n". $schedule->log;
+							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
+							$schedule->status_date = date( 'Y-m-d H:i:s' );
+							$schedule->save();
+							Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
+							return false;
 						}
 					}
 
