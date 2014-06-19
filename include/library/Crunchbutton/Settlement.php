@@ -624,6 +624,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 																														'address_country' => $check_address_country ],
 																									'bank_account' => c::lob()->defaultAccount(),
 																									'amount' => $amount,
+																									'memo' => $schedule->notes,
 																									'message' => $schedule->notes ] );
 						} catch( Exception $e ) {
 							$schedule->log = $e->getMessage();
