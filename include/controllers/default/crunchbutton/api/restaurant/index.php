@@ -315,7 +315,8 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 								} catch ( Exception $e ) {
 										print( $e->getMessage() );
 										exit;
-								} finally {
+								}
+								finally {
 									if( $p ){
 											echo json_encode( [ 'success' => 'success' ] );
 										} else {
