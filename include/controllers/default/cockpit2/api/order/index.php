@@ -11,19 +11,6 @@ class Controller_api_order extends Crunchbutton_Controller_RestAccount {
 		}
 		
 
-		$_POST = [
-			'card' => [
-				'id' => 'CC1yW7tINe5OHE77eplt5hPs',
-				'uri' => '/cards/CC1yW7tINe5OHE77eplt5hPs',
-				'lastfour' => '4242',
-				'card_type' => 'visa',
-				'month' => '2',
-				'year' => '2016'
-			],
-			'pay_type' => 'card',
-			'delivery_type' => 'delivery',
-		];
-		
 		// @todo check to see if the restaurant has the permissions for that restaurant id
 		// $_POST['restaurant']
 
