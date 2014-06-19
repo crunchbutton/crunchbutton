@@ -1,0 +1,1 @@
+ALTER TABLE  `payment` ADD  `check_id` varchar(255) DEFAULT '';
