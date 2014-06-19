@@ -36,6 +36,14 @@
 						</span>
 					</td>
 				</tr>
+				<tr ng-show="result.status == 'error' && result.log">
+					<td><strong>Error log</strong></td>
+					<td class="orange">{{result.log}}</td>
+				</tr>
+				<tr ng-show="result.status == 'error' && result.status_date">
+					<td><strong>Last try</strong></td>
+					<td class="orange">{{result.status_date}}</td>
+				</tr>
 				<tr ng-show="result.payment_date">
 					<td><strong>Payment Date</strong></td>
 					<td>{{result.payment_date}}</td>

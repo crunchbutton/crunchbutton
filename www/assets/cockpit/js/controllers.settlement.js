@@ -289,6 +289,7 @@ NGApp.controller('SettlementRestaurantsScheduledViewCtrl', function ( $scope, $r
 		SettlementService.restaurants.do_payment( $routeParams.id, function( json ){
 			if( json.error ){
 				App.alert( 'Oops, something bad happened: ' + json.error );
+				load();
 				$scope.unBusy();
 			} else {
 				load();

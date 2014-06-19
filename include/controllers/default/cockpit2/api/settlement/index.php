@@ -4,15 +4,6 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
-// $p = Payment::credit([
-// 									'id_restaurant' => 107,
-// 									'amount' => 0.10,
-// 									'note' => 'daniel - testing',
-// 									'type' => 'balanced'
-// 								]);
-// echo '<pre>';var_dump( $p );exit();
-// exit;
-
 		if( !c::admin()->permission()->check( ['global', 'settlement' ] ) ){
 			$this->_error();
 		}
