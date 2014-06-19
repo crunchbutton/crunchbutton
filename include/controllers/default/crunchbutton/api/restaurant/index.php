@@ -316,13 +316,11 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 										print( $e->getMessage() );
 										exit;
 								}
-								finally {
-									if( $p ){
-											echo json_encode( [ 'success' => 'success' ] );
-										} else {
-											echo json_encode( [ 'error' => 'error' ] );
-										}
-								}
+								if( $p ){
+										echo json_encode( [ 'success' => 'success' ] );
+									} else {
+										echo json_encode( [ 'error' => 'error' ] );
+									}
 							}
 							break;
 
