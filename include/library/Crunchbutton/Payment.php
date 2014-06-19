@@ -8,9 +8,15 @@ class Crunchbutton_Payment extends Cana_Table {
 		$payment_type = Crunchbutton_Restaurant_Payment_Type::byRestaurant( $payment->id_restaurant );
 
 		if( $payment->type == 'balanced' ){
-			// Balanced payment
-			$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, $payment->amount, $payment->note);
-			$payment->balanced_id = $credit->id;
+		try {
+				$credit = Crunchbutton_Balanced_Credit::credit( $payment_type, $payment->amount, $payment->note);
+			} catch ( Exception $e ) {
+					throw new Exception( $e->getMessage() );
+					exit;
+			}
+			if( $credit && $credit->id ){
+				$payment->balanced_id = $credit->id;
+			}
 
 		} elseif( $payment->type == 'stripe' ){
 
@@ -38,7 +44,7 @@ class Crunchbutton_Payment extends Cana_Table {
 		$payment->save();
 
 		if( $payment->balanced_id || $payment->stripe_id ){
-			return true;
+			return $payment->id_payment;
 		} else {
 			return false;
 		}

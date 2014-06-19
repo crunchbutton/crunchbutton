@@ -53,6 +53,14 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 		return $this->_date;
 	}
 
+	public function status_date() {
+		if (!isset($this->_status_date)) {
+			$this->_status_date = new DateTime($this->status_date, new DateTimeZone(c::config()->timezone));
+			$this->_status_date->setTimezone(new DateTimeZone($this->restaurant()->timezone));
+		}
+		return $this->_status_date;
+	}
+
 	public function restaurantSchedulesFromDate( $date ){
 		$query = 'SELECT ps.*, r.name AS restaurant FROM payment_schedule ps
 								INNER JOIN restaurant r ON r.id_restaurant = ps.id_restaurant

@@ -6,12 +6,12 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 			$this->_card = Crunchbutton_Balanced_Card::byId($params['card_id']);
 		}
 	}
-	
+
 	public function charge($params = []) {
 
 		$success = false;
 		$reason = false;
-		
+
 		// if there is any card information provided, charge with it
 		if ($params['card']) {
 			$reason = true;
@@ -55,14 +55,14 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 				$success = true;
 				$txn = $c->id;
 			}
-			
+
 		}
-		
+
 		if (!$reason && $params['user'] && $params['user']->stripe_id) {
 			$reason = true;
 			$errors[] = 'Please update your credit card information.';
 		}
-		
+
 		if (!$reason) {
 			$errors[] = 'Not enough card information.';
 		}
@@ -74,7 +74,7 @@ class Crunchbutton_Charge_Balanced extends Cana_Model {
 			'card' => $this->card()
 		];
 	}
-	
+
 	public function card() {
 		return $this->_card;
 	}

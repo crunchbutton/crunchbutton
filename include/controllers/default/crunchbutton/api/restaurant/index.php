@@ -301,16 +301,22 @@ class Controller_api_restaurant extends Crunchbutton_Controller_Rest {
 
 						case 'stripe-credit':
 							if ($r->id_restaurant) {
-								$p = Payment::credit([
-									'id_restaurant' => $r->id_restaurant,
-									'amount' => $this->request()['amount'],
-									'note' => $this->request()['note'],
-									'type' => 'stripe'
-								]);
-								if( $p ){
-									echo json_encode( [ 'success' => 'success' ] );
-								} else {
-									echo json_encode( [ 'error' => 'error' ] );
+								try {
+									$p = Payment::credit([
+										'id_restaurant' => $r->id_restaurant,
+										'amount' => $this->request()['amount'],
+										'note' => $this->request()['note'],
+										'type' => 'stripe'
+									]);
+								} catch ( Exception $e ) {
+										print( $e->getMessage() );
+										exit;
+								} finally {
+									if( $p ){
+											echo json_encode( [ 'success' => 'success' ] );
+										} else {
+											echo json_encode( [ 'error' => 'error' ] );
+										}
 								}
 							}
 							break;
