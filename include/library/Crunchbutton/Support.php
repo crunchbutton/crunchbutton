@@ -25,10 +25,10 @@ class Crunchbutton_Support extends Cana_Table {
 			$this->status = 'open';
 	  }
 	}
-	
+
 	public function tellCustomerService( $message ){
 		$message = str_split( $message, 160 );
-		
+
 		$env = c::getEnv();
 
 		$twilio = new Twilio( c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token );
@@ -63,7 +63,7 @@ class Crunchbutton_Support extends Cana_Table {
 			if ( $users->count() > 0 ) {
 				foreach ( $users as $user ) {
 					if( $user->name && $user->txt ){
-						$support[ $user->name ] = $user->txt;	
+						$support[ $user->name ] = $user->txt;
 					}
 				}
 			}
@@ -106,7 +106,7 @@ class Crunchbutton_Support extends Cana_Table {
 				$id_support = $message->id_support;
 			}
 		}
-		$support = Crunchbutton_Support::o( $id_support ); 
+		$support = Crunchbutton_Support::o( $id_support );
 		$support->addSystemMessage( c::admin()->name . ' changed the customer name to ' . $name );
 		return true;
 	}
@@ -125,7 +125,7 @@ class Crunchbutton_Support extends Cana_Table {
 
 	public function message(){
 		$message = $this->firstMessage();
-		return $message->body;	
+		return $message->body;
 	}
 
 	public function clearPhone( $phone ){
@@ -147,7 +147,7 @@ class Crunchbutton_Support extends Cana_Table {
 		$twilio_session = Session_Twilio::sessionByPhone( $params[ 'From' ] );
 
 		$phone = Crunchbutton_Support::clearPhone( $params[ 'From' ] );
-		
+
 		if( !$twilio_session->id_session_twilio ){
 
 			// Create new session
@@ -187,9 +187,9 @@ class Crunchbutton_Support extends Cana_Table {
 
 		if( $createNewTicket ) {
 			// Create a new sms ticket
-			$support = Crunchbutton_Support::createNewSMSTicket(  [ 'phone' => $phone, 
-																															'name' => $params[ 'Name' ], 
-																															'body' => '(Ticket created at cockpit)', 
+			$support = Crunchbutton_Support::createNewSMSTicket(  [ 'phone' => $phone,
+																															'name' => $params[ 'Name' ],
+																															'body' => '(Ticket created at cockpit)',
 																															'id_session_twilio' => $twilio_session->id_session_twilio ] );
 		} else {
 			if( $support->status == Crunchbutton_Support::STATUS_CLOSED ){
@@ -240,7 +240,7 @@ class Crunchbutton_Support extends Cana_Table {
 		$support->id_session_twilio = $params[ 'id_session_twilio' ];
 		$support->date = date( 'Y-m-d H:i:s' );
 		if( c::user()->id_user ){
-			$support->id_user = c::user()->id_user;	
+			$support->id_user = c::user()->id_user;
 		}
 		$support->save();
 		// Params to create the new Support message
@@ -274,7 +274,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$messageParams[ 'body' ] = $params[ 'body' ];
 			$support->addCustomerMessage( $messageParams );
 		}
-		
+
 		$support->addSystemMessage( $params[ 'body' ] );
 		return Crunchbutton_Support::o( $support->id_support );
 	}
@@ -339,7 +339,7 @@ class Crunchbutton_Support extends Cana_Table {
 			if( $admin->id_admin ){
 				$hasAdmin = true;
 			}
-		} 
+		}
 		if( !$hasAdmin ){
 			$admin = Crunchbutton_Admin::getByPhone( $params[ 'phone' ] );
 		}
@@ -348,7 +348,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_SMS;
 			$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_REP;
 			$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_EXTERNAL;
-			$messageParams[ 'name' ] = $admin->name;
+			$messageParams[ 'name' ] = $admin->firstName();
 			$messageParams[ 'phone' ] = $params[ 'phone' ];
 			$messageParams[ 'body' ] = $params[ 'body' ];
 			return $this->addMessage( $messageParams );
@@ -376,7 +376,7 @@ class Crunchbutton_Support extends Cana_Table {
 					$seconds = ( $interval->s ) + ( $interval->i * 60 ) + ( $interval->h * 60 * 60 ) + ( $interval->d * 60 * 60 * 24 ) + ( $interval->m * 60 * 60 * 24 * 30 ) + ( $interval->y * 60 * 60 * 24 * 365 );
 					if( $seconds >= 86400 ){
 						$close = true;
-					}	
+					}
 				} else {
 					$close = true;
 				}
@@ -387,7 +387,7 @@ class Crunchbutton_Support extends Cana_Table {
 					$seconds = ( $interval->s ) + ( $interval->i * 60 ) + ( $interval->h * 60 * 60 ) + ( $interval->d * 60 * 60 * 24 ) + ( $interval->m * 60 * 60 * 24 * 30 ) + ( $interval->y * 60 * 60 * 24 * 365 );
 					if( $seconds >= 86400 ){
 						$close = true;
-					}	
+					}
 				} else {
 					$close = true;
 				}
@@ -416,7 +416,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$messageParams[ 'type' ] = Crunchbutton_Support_Message::TYPE_NOTE;
 			$messageParams[ 'from' ] = Crunchbutton_Support_Message::TYPE_FROM_REP;
 			$messageParams[ 'visibility' ] = Crunchbutton_Support_Message::TYPE_VISIBILITY_INTERNAL;
-			$messageParams[ 'name' ] = $admin->name;
+			$messageParams[ 'name' ] = $admin->firstName();
 			$messageParams[ 'phone' ] = $params[ 'phone' ];
 			$messageParams[ 'body' ] = $body;
 			$message = $this->addMessage( $messageParams );
@@ -450,7 +450,7 @@ class Crunchbutton_Support extends Cana_Table {
 		$support = $this;
 		c::timeout(function() use($support) {
 			$support->notify();
-		}); 
+		});
 	}
 
 	public function messages(){
@@ -497,7 +497,6 @@ class Crunchbutton_Support extends Cana_Table {
 
 		$message = '@'.$this->id_session_twilio.' : ' . $message;
 		$message = str_split( $message, 160 );
-
 		// Send this message to the customer service
 		foreach ( Crunchbutton_Support::getUsers() as $supportName => $supportPhone ) {
 			$num = $supportPhone;
@@ -520,23 +519,23 @@ class Crunchbutton_Support extends Cana_Table {
 		$this->makeACall();
 
 	}
-	
+
 	public static function find($search = []) {
 		$query = 'SELECT `support`.* FROM `support` WHERE id_support IS NOT NULL ';
-		
+
 		if ($search['type']) {
 			$query .= ' and type="'.$search['type'].'" ';
 		}
-		
+
 		if ($search['status']) {
 			$query .= ' and status="'.$search['status'].'" ';
 		}
-		
+
 		if ($search['start']) {
 			$s = new DateTime($search['start']);
 			$query .= ' and DATE(`date`)>="'.$s->format('Y-m-d').'" ';
 		}
-		
+
 		if ($search['end']) {
 			$s = new DateTime($search['end']);
 			$query .= ' and DATE(`date`)<="'.$s->format('Y-m-d').'" ';
@@ -581,7 +580,7 @@ class Crunchbutton_Support extends Cana_Table {
 		}
 		return $this->_date;
 	}
-	
+
 	public function relativeTime() {
 		return Crunchbutton_Util::relativeTime($this->datetime);
 	}
@@ -608,9 +607,9 @@ class Crunchbutton_Support extends Cana_Table {
 
 		// Issue #1100 - Call David if CB receives a support after 1AM
 		if( $hour >= 1 && $hour <= 7 ){
-		
+
 			$env = c::getEnv();
-			
+
 			$twilio = new Services_Twilio(c::config()->twilio->{$env}->sid, c::config()->twilio->{$env}->token);
 
 			$id_support = $this->id_support;
@@ -618,7 +617,7 @@ class Crunchbutton_Support extends Cana_Table {
 			$url = 'http://' . c::config()->host_callback . '/api/support/say/' . $id_support;
 
 			Log::debug( [ 'action' => 'Need to call', 'id_support' => $id_support, 'url' => $url, 'hour' => $hour, 'type' => 'sms' ] );
-			
+
 			$nums = c::config()->site->config('support-phone-afterhours')->val();
 			if (!is_array($nums)) {
 				$nums = [$nums];
@@ -653,7 +652,7 @@ class Crunchbutton_Support extends Cana_Table {
 		$s = self::q('SELECT * FROM `support` WHERE `id_order`="'.$id_order.'" ORDER BY `id_support` DESC LIMIT 1');
 		return $s->id ? $s : false;
 	}
-	
+
 	public function repTime() {
 		$date = $this->date();
 		$date->setTimezone(c::admin()->timezone());
@@ -681,10 +680,10 @@ class Crunchbutton_Support extends Cana_Table {
 				$restaurants = c::admin()->getRestaurantsUserHasPermissionToSeeTheirTickets();
 				foreach ( $restaurants as $id_restaurant ) {
 					if( $id_restaurant == $this->id_restaurant ){
-						$userHasPermission = true;	
+						$userHasPermission = true;
 					}
 				}
-			}	
+			}
 		} else {
 			$userHasPermission = c::admin()->permission()->check( ['global', 'support-all', 'support-crud', 'support-create' ] );
 		}
