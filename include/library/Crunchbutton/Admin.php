@@ -27,6 +27,14 @@ class Crunchbutton_Admin extends Cana_Table {
 		return $test;
 	}
 
+	public function firstName(){
+		$name = explode( ' ', $this->name );
+		if( trim( $name[ 0 ] ) != '' ){
+			return $name[ 0 ];
+		}
+		return $this->name;
+	}
+
 	public function createLogin(){
 		if( $this->login ){
 			return $this->login;

@@ -36,7 +36,11 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		$support = $this->support();
 		$phone = $support->phone;
 		if (!$phone) return;
-		$rep_name = $this->admin()->name;
+		if( $this->admin()->id_admin ){
+			$rep_name = $this->admin()->firstName();
+		} else {
+			$rep_name = '';
+		}
 		$msg = '' . ( $rep_name ? $rep_name.': ' : '' ) . $this->body;
 		$msgs = str_split( $msg, 160 );
 		foreach($msgs as $msg) {
@@ -60,14 +64,14 @@ class Crunchbutton_Support_Message extends Cana_Table {
 		}
 		return Crunchbutton_Util::relativeTime( $date->format( 'Y-m-d H:i:s' ), 'utc', 'utc' );
 	}
-	
+
 	public function date() {
 		if (!isset($this->_date)) {
 			$this->_date = new DateTime($this->date, new DateTimeZone(c::config()->timezone));
 		}
 		return $this->_date;
 	}
-	
+
 	public function repTime() {
 		$date = $this->date();
 		$date->setTimezone(c::admin()->timezone());
