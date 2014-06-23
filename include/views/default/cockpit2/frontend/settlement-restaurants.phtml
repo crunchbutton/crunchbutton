@@ -88,25 +88,102 @@
 				</tbody>
 			</table>
 
-			<ul class="ul-inputs box-content" ng-if="total_payments">
-				<li class="li-input">
-					<button class="button button-big save" ng-click="schedule();">Pay Restaurants</button>
-				</li>
-			</ul>
-
 		</div>
+
+		<table class="tb-grid tb-zebra">
+			<thead>
+				<tr>
+					<td class="td-medium">Restaurant</td>
+					<td class="td-medium">Total Due</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="restaurant in result.restaurants">
+					<td>{{restaurant.name}}</td>
+					<td>$ {{restaurant.total_due | formatPrice}}</td>
+					<td><span class="link details orange" ng-click="show_details(restaurant.id_restaurant)">Details</span></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<ul class="ul-inputs box-content" ng-if="total_payments">
+			<li class="li-input">
+				<button class="button button-big save" ng-click="schedule();">Pay Restaurants</button>
+			</li>
+		</ul>
+
+		<br/><br/>
+
+		<h2 class="title" id="refunded-orders">
+			<span>Refunded Orders</span>
+		</h2>
+
+		<div>
+			<table class="tb-grid tb-zebra">
+					<thead>
+						<tr>
+							<td></td>
+							<td>#</td>
+							<td class="td-medium">Restaurant</td>
+							<td class="td-medium">Name</td>
+							<td>Amount</td>
+							<td>Payment</td>
+							<td class="td-medium">Date</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody ng-repeat="restaurant in result.restaurants">
+						<tr ng-repeat="order in restaurant.orders" ng-if="order.refunded">
+							<td></td>
+							<td ng-class="{ 'excluded': !order.included }">{{order.id_order}}</td>
+							<td ng-class="{ 'excluded': !order.included }">{{restaurant.name}}</td>
+							<td ng-class="{ 'excluded': !order.included }">{{order.name}}</td>
+							<td ng-class="{ 'excluded': !order.included }">$ {{order.total | formatPrice}}</td>
+							<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
+							<td ng-class="{ 'excluded': !order.included }">{{order.date}}</td>
+							<td>
+								<span ng-if="order.pay_type == 'Cash'">
+									<span class="pointer orange" ng-click="reimburse_cash_order( order.id_order, 1 )" ng-if="!order.reimburse_cash_order">
+										<i class="fa fa-square-o"></i> Reimburse cash order?
+									</span>
+									<span class="pointer" ng-click="reimburse_cash_order( order.id_order, 0 )" ng-if="order.reimburse_cash_order">
+										<i class="fa fa-check-square-o"></i> Reimbursed!
+									</span>
+								</span>
+								<span ng-if="order.refunded && order.pay_type == 'Card'">
+									<span class="pointer orange" ng-click="pay_if_refunded( order.id_order, 1 )" ng-if="!order.pay_if_refunded">
+										<i class="fa fa-square-o"></i> Refunded. Include?
+									</span>
+									<span class="pointer" ng-click="pay_if_refunded( order.id_order, 0 )" ng-if="order.pay_if_refunded">
+										<i class="fa fa-check-square-o"></i> Refunded. Included!
+									</span>
+								</span>
+							</td>
+							<td>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+
+		<br/><br/>
+
+		<h2 class="title">
+			<span>Restaurants Details</span>
+		</h2>
 
 		<div class="box-content" ng-repeat="restaurant in result.restaurants">
 
-			<span class="link details orange" ng-click="restaurant.show_details=!restaurant.show_details">Details</span>
-
-			<h2 class="title" ng-class="{ 'excluded': !restaurant.pay }">
-				<span>{{restaurant.name}}</span> <strong>$ {{restaurant.total_due | formatPrice}}</strong>
+			<h2 id="restaurant-{{restaurant.id_restaurant}}" class="title" ng-class="{ 'excluded': !restaurant.pay }">
+				<span>{{restaurant.name}}</span></strong>
 			</h2>
 
 			<div class="divider"></div>
 
-			<div ng-show="restaurant.show_details">
+			<div>
 
 				<h3 class="title" ng-if="restaurant.last_payment">
 					Last payment #{{restaurant.last_payment.id_payment}}: <strong positive-or-negative-color="{{restaurant.last_payment.amount}}">$ {{restaurant.last_payment.amount | formatPrice}}</strong> on <strong>{{restaurant.last_payment.date}}</strong>

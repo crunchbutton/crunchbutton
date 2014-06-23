@@ -170,6 +170,12 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 		$scope.total_reimburse_cash_orders = total_reimburse_cash_orders;
 	}
 
+	$scope.show_details = function( id_restaurant ){
+		var el = angular.element( '#restaurant-' + id_restaurant );
+		var walkTo = ( $('.snap-content-inner').scrollTop() + el.offset().top ) - 80;
+		$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
+	}
+
 	// Just run if the user is loggedin
 	if( $scope.account.isLoggedIn() ){
 		range();
