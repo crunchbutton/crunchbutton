@@ -107,6 +107,59 @@
 			</tbody>
 		</table>
 
+		<br/><br/>
+
+		<h2 class="title">
+			<span>Total Amounts</span>
+		</h2>
+
+		<table class="tb-grid tb-zebra">
+			<tr positive-or-negative-color="{{sum.card_subtotal}}">
+				<td>Credit Card Subtotal</td>
+				<td>$ {{sum.card_subtotal | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.tax}}">
+				<td>Tax</td>
+				<td>$ {{sum.tax | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.delivery_fee}}">
+				<td>Delivery Fee</td>
+				<td>$ {{sum.delivery_fee | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.tip}}">
+				<td>Tip</td>
+				<td>$ {{sum.tip | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.promo_gift_card}}">
+				<td>Promo Gift Card</td>
+				<td>$ {{sum.promo_gift_card | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.apology_gift_card}}">
+				<td>Apology Gift Card</td>
+				<td>$ {{sum.apology_gift_card | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.cash_reimburse}}">
+				<td>Cash Reimburse</td>
+				<td>$ {{sum.cash_reimburse | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.cash_subtotal}}">
+				<td>Cash Subtotal</td>
+				<td>$ {{sum.cash_subtotal | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.credit_charge}}">
+				<td>Credit Card Charge</td>
+				<td>$ {{sum.credit_charge | formatPrice}}</td>
+			</tr>
+			<tr positive-or-negative-color="{{sum.restaurant_fee}}">
+				<td>Crunchbutton Fees</td>
+				<td>$ {{sum.restaurant_fee | formatPrice}}</td>
+			</tr>
+			<tr class="total-due" positive-or-negative-color="{{sum.total_due}}">
+				<td class="td-medium">Total due</td>
+				<td class="td-medium">$ {{sum.total_due | formatPrice}}</td>
+			</tr>
+		</table>
+
 		<ul class="ul-inputs box-content">
 			<li class="li-input">
 				<button class="button button-big save" ng-click="schedule();">Pay Restaurants</button>
@@ -171,7 +224,7 @@
 
 		<br/><br/>
 
-		<h2 class="title">
+		<h2 class="title" ng-show="result.restaurants">
 			<span>Restaurants Details</span>
 		</h2>
 
