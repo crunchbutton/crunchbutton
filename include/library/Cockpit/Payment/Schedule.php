@@ -71,7 +71,7 @@ class Cockpit_Payment_Schedule extends Cana_Table {
 	public function restaurantNotCompletedSchedules(){
 		$query = 'SELECT ps.*, r.name AS restaurant FROM payment_schedule ps
 								INNER JOIN restaurant r ON r.id_restaurant = ps.id_restaurant
-								WHERE ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '" ORDER BY ps.id_payment_schedule ASC';
+								WHERE ps.status != "' . Cockpit_Payment_Schedule::STATUS_DONE . '" ORDER BY ps.id_payment_schedule DESC';
 		return Cockpit_Payment_Schedule::q( $query );
 	}
 

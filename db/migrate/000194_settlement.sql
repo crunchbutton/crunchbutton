@@ -68,6 +68,7 @@ CREATE TABLE `payment_order_transaction` (
 
 -- order table
 ALTER TABLE  `order` ADD  `reimburse_cash_order` tinyint(11) unsigned DEFAULT 0;
+ALTER TABLE  `order` ADD  `do_not_pay_restaurant` tinyint(11) unsigned DEFAULT 0;
 
 -- payment table
 ALTER TABLE  `payment` ADD  `id_admin` int(11) unsigned DEFAULT NULL;
