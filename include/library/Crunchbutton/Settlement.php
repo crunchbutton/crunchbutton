@@ -67,6 +67,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	// this method receives the restaurant orders and run the math
 	public function restaurantsProcessOrders( $orders, $recalculatePaidOrders = false ){
 		// start all with 0
+		$restaurant = [];
 		$pay = [ 'card_subtotal' => 0, 'cash_reimburse' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'promo_gift_card' => 0, 'apology_gift_card' => 0, 'order_payment' => 0, 'cash_subtotal' => 0 ];
 		foreach ( $orders as $order ) {
 			if( $order ){
@@ -77,6 +78,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				if( $order[ 'restaurant_paid' ] && !$recalculatePaidOrders ){
 					continue;
 				}
+				$restaurant['restaurant'] = $order[ 'restaurant' ];
 				$pay[ 'card_subtotal' ] += $this->orderCardSubtotalPayment( $order );
 				$pay[ 'tax' ] += $this->orderTaxPayment( $order );
 				$pay[ 'delivery_fee' ] += $this->orderDeliveryFeePayment( $order );
@@ -94,10 +96,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 			}
 		}
 		foreach ( $pay as $key => $val ) {
-			// $pay[ $key ] = Util::round_up( number_format( $val, 3 ), 2 );
+			$pay[ $key ] = Util::round_up( number_format( $val, 3 ), 2 );
 		}
 		// sum
 		$pay[ 'total_due' ] = $this->orderCalculateTotalDue( $pay );
+
+		$this->log( 'restaurantsProcessOrders', array_merge( $restaurant, $pay ) );
 		return $pay;
 	}
 
@@ -379,6 +383,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function scheduleRestaurantPayment( $id_restaurants ){
+		$this->log( 'scheduleRestaurantPayment', $id_restaurants );
 		$restaurants = $this->startRestaurant();
 		foreach ( $restaurants as $_restaurant ) {
 			// todo: build a better way to filter - this way is very ugly
@@ -419,6 +424,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$schedule_order->amount = max( $total_due[ 'total_due' ], 0 );
 					$schedule_order->save();
 				}
+				$this->log( 'scheduleRestaurantPayment', $schedule->properties() );
 			}
 		}
 		$settlement = new Crunchbutton_Settlement;
@@ -505,7 +511,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$env = c::getEnv();
 
 		$schedule = Cockpit_Payment_Schedule::o( $id_payment_schedule );
-
+		$this->log( 'payRestaurant', $schedule->properties() );
 		if( $schedule->id_payment_schedule ){
 
 			if( $schedule->status == Cockpit_Payment_Schedule::STATUS_SCHEDULED ||
@@ -532,6 +538,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
+						$this->log( 'payRestaurant: Error', $schedule->properties() );
 						return false;
 					}
 
@@ -544,7 +551,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->log = 'Payment finished';
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
-
+						$this->log( 'payRestaurant: Success', $schedule->properties() );
 						$orders = $schedule->orders();
 
 						foreach (  $orders as $order ) {
@@ -609,6 +616,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 						$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
 						$schedule->status_date = date( 'Y-m-d H:i:s' );
 						$schedule->save();
+						$this->log( 'payRestaurant: Error', $schedule->properties() );
 						Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 					} else {
 
@@ -652,6 +660,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$schedule->status_date = date( 'Y-m-d H:i:s' );
 							$schedule->save();
 
+							$this->log( 'payRestaurant: Success', $schedule->properties() );
+
 							$orders = $schedule->orders();
 
 							foreach (  $orders as $order ) {
@@ -682,6 +692,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
 							$schedule->status_date = date( 'Y-m-d H:i:s' );
 							$schedule->save();
+							$this->log( 'payRestaurant: Error', $schedule->properties() );
 							Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 							return false;
 						}
@@ -696,6 +707,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
 					$schedule->status_date = date( 'Y-m-d H:i:s' );
 					$schedule->save();
+					$this->log( 'payRestaurant: Error', $schedule->properties() );
 					Crunchbutton_Support::createNewWarning(  [ 'body' => $message ] );
 				}
 
@@ -713,6 +725,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 		if( !$summary ){
 			return false;
 		}
+
+		$this->log( 'sendRestaurantPaymentNotification', $summary );
 
 		$env = c::getEnv();
 
@@ -757,4 +771,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		return false;
 	}
+
+	private function log( $method, $message ){
+		Log::debug( [ 'method' => $method, 'id_admin' => c::user()->id_admin, 'message' => $message, 'env' => c::getEnv(), 'type' => 'settlement' ] );
+	}
+
 }
