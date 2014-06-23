@@ -130,19 +130,30 @@
 		<table class="tb-grid tb-zebra">
 			<thead>
 				<tr>
-					<td colspan="4" class="title">Card Orders</td>
+					<td colspan="5" class="title">Card Orders</td>
 				</tr>
 			</thead>
-			<thead>
+			<thead ng-if="!result.orders_card">
+				<td>
+					<td>-</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</td>
+			</thead>
+			<thead ng-if="result.orders_card">
 				<tr>
+					<td>#</td>
 					<td class="td-medium">Curstomer name</td>
 					<td>Date</td>
 					<td>Total</td>
 					<td>Tip</td>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody ng-if="result.orders_card">
 				<tr ng-repeat="order in result.orders.card">
+					<td>{{order.id_order}}</td>
 					<td>{{order.name}}</td>
 					<td>{{order.date}}</td>
 					<td>$ {{order.total | formatPrice}}</td>
@@ -171,21 +182,33 @@
 				</tr>
 				<tr class="transparent"><td></td><td></td><td></td><td></td></tr>
 			</tbody>
+
 			<thead>
 				<tr>
-					<td colspan="4" class="title">Cash Orders</td>
+					<td colspan="5" class="title">Card Orders</td>
 				</tr>
 			</thead>
-			<thead>
+			<thead ng-if="!result.orders_cash">
+				<td>
+					<td>-</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</td>
+			</thead>
+			<thead ng-if="result.orders_cash">
 				<tr>
+					<td>#</td>
 					<td class="td-medium">Curstomer name</td>
 					<td>Date</td>
 					<td>Total</td>
 					<td></td>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody ng-if="result.orders_cash">
 				<tr ng-repeat="order in result.orders.cash">
+					<td>{{order.id_order}}</td>
 					<td>{{order.name}}</td>
 					<td>{{order.date}}</td>
 					<td>$ {{order.total | formatPrice}}</td>
@@ -214,6 +237,32 @@
 				</tr>
 				<tr class="transparent"><td></td><td></td><td></td><td></td></tr>
 			</tbody>
+
+			<thead ng-if="result.orders_not_included">
+				<tr>
+					<td colspan="5" class="title">Not Paid Orders</td>
+				</tr>
+			</thead>
+			<thead ng-if="result.orders_not_included">
+				<tr>
+					<td>#</td>
+					<td class="td-medium">Curstomer name</td>
+					<td>Date</td>
+					<td>Total</td>
+					<td>Tip</td>
+				</tr>
+			</thead>
+			<tbody ng-if="result.orders_not_included">
+				<tr ng-repeat="order in result.orders.not_included">
+					<td>{{order.id_order}}</td>
+					<td>{{order.name}}</td>
+					<td>{{order.date}}</td>
+					<td>$ {{order.total | formatPrice}}</td>
+					<td>$ {{order.tip | formatPrice}}</td>
+				</tr>
+			</tbody>
+
+
 		</table>
 </div>
 

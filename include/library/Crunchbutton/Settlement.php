@@ -57,9 +57,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 		if( $filters[ 'id_restaurant' ] ){
 			$q .= ' AND restaurant.id_restaurant = "' . $filters[ 'id_restaurant' ] . '"';
 		}
-		$q .= ' AND restaurant.id_restaurant
+		$q .= ' AND restaurant.id_restaurant AND restaurant.name NOT LIKE "%test%"
 						GROUP BY restaurant.id_restaurant
-						 ORDER BY (CASE WHEN p_id_rest IS NULL THEN 1 ELSE 0 END) ASC';
+						 ORDER BY (CASE WHEN p_id_rest IS NULL THEN 1 ELSE 0 END) ASC, restaurant.name ASC';
 		return Restaurant::q( $q );
 	}
 
@@ -73,6 +73,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 			if( $order ){
 				// Pay if Refunded
 				if( ( $order[ 'refunded' ] == 1 && $order[ 'pay_if_refunded' ] == 0 ) ){
+					continue;
+				}
+				if( $order[ 'do_not_pay_restaurant' ] == 1 ){
 					continue;
 				}
 				if( $order[ 'restaurant_paid' ] && !$recalculatePaidOrders ){
@@ -353,6 +356,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'formal_relationship' ] = ( $order->restaurant()->formal_relationship > 0 ) ? 1: 0;
 		$values[ 'paid_with_cb_card' ] = ( $order->paid_with_cb_card > 0 ) ? 1: 0;
 		$values[ 'refunded' ] = ( $order->refunded > 0 ) ? 1: 0;
+		$values[ 'do_not_pay_restaurant' ] = ( $order->do_not_pay_restaurant > 0 ) ? 1: 0;
 		$values[ 'pay_if_refunded' ] = ( $order->pay_if_refunded > 0 ) ? 1: 0;
 		$values[ 'reimburse_cash_order' ] = ( $order->reimburse_cash_order > 0 ) ? 1: 0;
 
@@ -399,6 +403,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 			foreach ( $_restaurant->_payableOrders as $order ) {
 				$alreadyPaid = Cockpit_Payment_Schedule_Order::checkOrderWasPaidRestaurant( $order->id_order );
+				if( !$alreadyPaid ){
+					$alreadyPaid = Crunchbutton_Order_Transaction::checkOrderWasPaidRestaurant( $order->id_order );
+				}
 				if( !$alreadyPaid ){
 					$shouldSchedule = true;
 				}
@@ -481,7 +488,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 			$_orders = [];
 			$summary[ 'orders_cash' ] = 0;
 			$summary[ 'orders_card' ] = 0;
-			$summary[ 'orders' ] = [ 'card' => [], 'cash' => [] ];
+			$summary[ 'orders_not_included' ] = 0;
+			$summary[ 'orders' ] = [ 'card' => [], 'cash' => [], 'not_included' => [] ];
 			foreach( $orders as $order ){
 				$_order = $order->order();
 				if( $_order->id_order ){
@@ -495,6 +503,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 						}
 						$summary[ 'orders' ][ $type ][] = [ 'id_order' => $variables[ 'id_order' ], 'name' => $variables[ 'name' ], 'total' => $variables[ 'final_price_plus_delivery_markup' ], 'date' => $variables[ 'short_date' ], 'tip' => $variables[ 'tip' ] ];
 						$_orders[] = $variables;
+					} else if ( !$order->amount ){
+						$summary[ 'orders_not_included' ]++;
+						$summary[ 'orders' ][ 'not_included' ][] = [ 'id_order' => $variables[ 'id_order' ], 'name' => $variables[ 'name' ], 'total' => $variables[ 'final_price_plus_delivery_markup' ], 'date' => $variables[ 'short_date' ], 'tip' => $variables[ 'tip' ] ];
 					}
 				}
 			}
@@ -697,7 +708,6 @@ class Crunchbutton_Settlement extends Cana_Model {
 							return false;
 						}
 					}
-
 				} else {
 					$schedule->log = 'Restaurant doesn\'t have a payment method.';
 					$message = 'Restaurant Payment error! Restaurant: ' . $schedule->restaurant()->name;

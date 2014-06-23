@@ -5,13 +5,14 @@ NGApp.controller('SettlementCtrl', function ( $scope ) {
 	$scope.restaurants = function(){
 		$scope.navigation.link( '/settlement/restaurants' );
 	}
+
 	$scope.restaurants_payments = function(){
 		$scope.navigation.link( '/settlement/restaurants/payments' );
 	}
+
 	$scope.restaurants_scheduled_payments = function(){
 		$scope.navigation.link( '/settlement/restaurants/scheduled' );
 	}
-
 
 	$scope.drivers = function(){
 		$scope.navigation.link( '/settlement/drivers' );
@@ -46,6 +47,20 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 		$scope.makeBusy();
 		var params = { 'id_order': id_order, 'reimburse_cash_order' : reimburse_cash_order };
 		SettlementService.restaurants.reimburse_cash_order( params, function( json ){
+			id_restaurant = json.id_restaurant;
+			if( id_restaurant ){
+				$scope.begin();
+			} else {
+				App.alert( 'Oops, something bad happened!' )
+				$scope.unBusy();
+			}
+		} );
+	}
+
+	$scope.do_not_pay_restaurant = function( id_order, do_not_pay_restaurant ){
+		$scope.makeBusy();
+		var params = { 'id_order': id_order, 'do_not_pay_restaurant' : do_not_pay_restaurant };
+		SettlementService.restaurants.do_not_pay_restaurant( params, function( json ){
 			id_restaurant = json.id_restaurant;
 			if( id_restaurant ){
 				$scope.begin();
@@ -151,6 +166,7 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 		var total_orders = 0;
 		var total_not_included = 0;
 		var total_reimburse_cash_orders = 0;
+		var total_refunded = 0;
 		for( x in $scope.result.restaurants ){
 			if( $scope.result.restaurants[ x ].pay ){
 				total_restaurants++;
@@ -159,6 +175,7 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 				total_not_included += $scope.result.restaurants[ x ].not_included;
 				total_reimburse_cash_orders += $scope.result.restaurants[ x ].reimburse_cash_orders;
 			}
+			total_refunded += $scope.result.restaurants[ x ].refunded_count;
 			if( !$scope.result.restaurants[ x ].notes ){
 				$scope.result.restaurants[ x ].notes = $scope.result.notes;
 			}
@@ -168,6 +185,7 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 		$scope.total_orders = total_orders;
 		$scope.total_not_included = total_not_included;
 		$scope.total_reimburse_cash_orders = total_reimburse_cash_orders;
+		$scope.total_refunded = total_refunded;
 	}
 
 	$scope.show_details = function( id_restaurant ){

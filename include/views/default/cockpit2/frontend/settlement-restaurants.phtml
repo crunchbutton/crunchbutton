@@ -74,7 +74,7 @@
 						<td>{{total_orders}}</td>
 					</tr>
 					<tr>
-						<td>Total of Orders Refunded (and not included)</td>
+						<td>Total of Not Included Orders</td>
 						<td>{{total_not_included}}</td>
 					</tr>
 					<tr>
@@ -107,7 +107,7 @@
 			</tbody>
 		</table>
 
-		<ul class="ul-inputs box-content" ng-if="total_payments">
+		<ul class="ul-inputs box-content">
 			<li class="li-input">
 				<button class="button button-big save" ng-click="schedule();">Pay Restaurants</button>
 			</li>
@@ -115,11 +115,11 @@
 
 		<br/><br/>
 
-		<h2 class="title" id="refunded-orders">
+		<h2 class="title" id="refunded-orders" ng-show="total_refunded">
 			<span>Refunded Orders</span>
 		</h2>
 
-		<div>
+		<div ng-show="total_refunded">
 			<table class="tb-grid tb-zebra">
 					<thead>
 						<tr>
@@ -262,7 +262,7 @@
 
 				<h3 class="title">
 					<span class="link" ng-if="!restaurant.show_orders" ng-click="restaurant.show_orders = true">Show orders</span>
-					<span class="link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders</span> (total {{restaurant.orders_count}} orders <span class="orange" ng-if="restaurant.not_included > 0"><strong> + {{restaurant.not_included}} </strong> refunded and not included order(s)</span> )
+					<span class="link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders</span> (total {{restaurant.orders_count}} orders <span class="orange" ng-if="restaurant.not_included > 0"><strong> + {{restaurant.not_included}} </strong>  not included order(s)</span> )
 				</h3>
 
 				<table class="tb-grid tb-zebra" ng-if="restaurant.show_orders">
@@ -302,6 +302,14 @@
 									</span>
 									<span class="pointer" ng-click="pay_if_refunded( order.id_order, 0 )" ng-if="order.pay_if_refunded">
 										<i class="fa fa-check-square-o"></i> Refunded. Included!
+									</span>
+								</span>
+								<span ng-if="!order.refunded && order.pay_type == 'Card'">
+									<span class="pointer orange" ng-click="do_not_pay_restaurant( order.id_order, 1 )" ng-if="!order.do_not_pay_restaurant">
+										<i class="fa fa-square-o"></i> Do not pay for it.
+									</span>
+									<span class="pointer" ng-click="do_not_pay_restaurant( order.id_order, 0 )" ng-if="order.do_not_pay_restaurant">
+										<i class="fa fa-check-square-o"></i> Will not be paid!
 									</span>
 								</span>
 							</td>

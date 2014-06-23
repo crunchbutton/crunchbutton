@@ -52,6 +52,9 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 							case 'reimburse-cash-order':
 								$this->_restaurantReimburseCashOrder();
 								break;
+							case 'do-not-pay-restaurant':
+								$this->_restaurantDoNotPayForOrder();
+								break;
 							case 'schedule':
 								$this->_restaurantSchedule();
 								break;
@@ -149,6 +152,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 			$restaurant[ 'id_restaurant' ] = $_restaurant->id_restaurant;
 			$restaurant[ 'not_included' ] = 0;
 			$restaurant[ 'orders_count' ] = 0;
+			$restaurant[ 'refunded_count' ] = 0;
 			$restaurant[ 'reimburse_cash_orders' ] = 0;
 
 			if( $id_restaurant && $id_restaurant == $restaurant[ 'id_restaurant' ] ){
@@ -156,29 +160,46 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 			}
 			$orders = [];
 			foreach ( $_restaurant->_payableOrders as $_order ) {
-				$order = [];
-				$order[ 'id_order' ] = $_order->id_order;
-				$order[ 'name' ] = $_order->name;
-				$order[ 'refunded' ] = ( $_order->refunded ) ? true : false;
-				$order[ 'pay_if_refunded' ] = ( $_order->pay_if_refunded ) ? true : false;
-				$order[ 'reimburse_cash_order' ] = ( $_order->reimburse_cash_order ) ? true : false;
-				$order[ 'pay_type' ] = ucfirst( $_order->pay_type );
-				$order[ 'included' ] = ( !$_order->refunded ) ? true : ( $_order->refunded && $_order->pay_if_refunded ) ? true : false;
-				if( !$order[ 'included' ] ){
-					$restaurant[ 'not_included' ]++;
+
+				$alreadyPaid = Cockpit_Payment_Schedule_Order::checkOrderWasPaidRestaurant( $_order->id_order );
+				if( !$alreadyPaid ){
+					$alreadyPaid = Crunchbutton_Order_Transaction::checkOrderWasPaidRestaurant( $_order->id_order );
 				}
-				if( $order[ 'reimburse_cash_order' ] ){
-					$restaurant[ 'reimburse_cash_orders' ]++;
+
+				if( !$alreadyPaid ){
+					$order = [];
+					$order[ 'id_order' ] = $_order->id_order;
+					$order[ 'name' ] = $_order->name;
+					$order[ 'refunded' ] = ( $_order->refunded ) ? true : false;
+					$order[ 'do_not_pay_restaurant' ] = ( $_order->do_not_pay_restaurant ) ? true : false;
+					$order[ 'pay_if_refunded' ] = ( $_order->pay_if_refunded ) ? true : false;
+					$order[ 'reimburse_cash_order' ] = ( $_order->reimburse_cash_order ) ? true : false;
+					$order[ 'pay_type' ] = ucfirst( $_order->pay_type );
+					if( $_order->do_not_pay_restaurant ){
+						$order[ 'included' ] = false;
+					} else {
+						$order[ 'included' ] = ( !$_order->refunded ) ? true : ( $_order->refunded && $_order->pay_if_refunded ) ? true : false;
+					}
+					if( $_order->refunded ){
+						$restaurant[ 'refunded_count' ]++;
+					}
+
+					if( !$order[ 'included' ] ){
+						$restaurant[ 'not_included' ]++;
+					}
+					if( $order[ 'reimburse_cash_order' ] ){
+						$restaurant[ 'reimburse_cash_orders' ]++;
+					}
+					$order[ 'total' ] = $_order->final_price_plus_delivery_markup;
+					$date = $_order->date();
+					$order[ 'date' ] = $date->format( 'M jS Y g:i:s A' );
+					$orders[] = $order;
+					$restaurant[ 'orders_count' ]++;
 				}
-				$order[ 'total' ] = $_order->final_price_plus_delivery_markup;
-				$date = $_order->date();
-				$order[ 'date' ] = $date->format( 'M jS Y g:i:s A' );
-				$orders[] = $order;
-				$restaurant[ 'orders_count' ]++;
 			}
 			$restaurant[ 'pay' ] = true;
 			$restaurant[ 'orders' ] = $orders;
-			if( floatval( $restaurant[ 'total_due' ] ) > 0 ){
+			if( floatval( $restaurant[ 'orders_count' ] ) > 0 ){
 				$out[ 'restaurants' ][] = $restaurant;
 				$total_restaurants++;
 				$total_orders += count( $orders );
@@ -193,6 +214,9 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		$pay_if_refunded = $this->request()['pay_if_refunded'];
 		$order = Order::o( $id_order );
 		$order->pay_if_refunded = ( intval( $pay_if_refunded ) > 0 ) ? 1 : 0;
+		if( $order->pay_if_refunded ){
+			$order->do_not_pay_restaurant = 0;
+		}
 		$order->save();
 		echo json_encode( [ 'id_order' => $order->id_order, 'id_restaurant' => $order->id_restaurant ] );
 	}
@@ -202,6 +226,15 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		$reimburse_cash_order = $this->request()['reimburse_cash_order'];
 		$order = Order::o( $id_order );
 		$order->reimburse_cash_order = ( intval( $reimburse_cash_order ) > 0 ) ? 1 : 0;
+		$order->save();
+		echo json_encode( [ 'id_order' => $order->id_order, 'id_restaurant' => $order->id_restaurant ] );
+	}
+
+	private function _restaurantDoNotPayForOrder(){
+		$id_order = $this->request()['id_order'];
+		$do_not_pay_restaurant = $this->request()['do_not_pay_restaurant'];
+		$order = Order::o( $id_order );
+		$order->do_not_pay_restaurant = ( intval( $do_not_pay_restaurant ) > 0 ) ? 1 : 0;
 		$order->save();
 		echo json_encode( [ 'id_order' => $order->id_order, 'id_restaurant' => $order->id_restaurant ] );
 	}
@@ -293,9 +326,12 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 		} else {
 			$schedule = new Cockpit_Payment_Schedule;
 			$schedules = $schedule->restaurantNotCompletedSchedules();
-			$out = [ 'last_date' => $lastDate, 'restaurants' => '', 'scheduled' => 0, 'processing' => 0, 'done' => 0, 'error' => 0, 'total' => 0 ];
+			$out = [ 'restaurants' => '', 'scheduled' => 0, 'processing' => 0, 'done' => 0, 'error' => 0, 'total' => 0 ];
 			foreach( $schedules as $_schedule ){
 				$data = $_schedule->exports();
+				if( !$data[ 'amount' ] ){
+					$data[ 'amount' ] = 0;
+				}
 				$data[ 'date' ] = $_schedule->date()->format( 'M jS Y g:i:s A' );
 				$out[ 'restaurants' ][] = $data;
 				$out[ $_schedule->status ]++;
@@ -362,8 +398,10 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 
 	private function _range(){
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone ) );
+		// $range = [ 'end' => '2014-05-23' ];
 		$range = [ 'end' => $now->format( 'Y,m,d' ) ];
 		$now->modify( '-1 week' );
+		// $range[ 'start' ] = '2014-05-16';
 		$range[ 'start' ] = $now->format( 'Y,m,d' );
 		echo json_encode( $range );
 	}
