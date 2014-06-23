@@ -96,134 +96,144 @@
 
 		</div>
 
-		<div ng-repeat="restaurant in result.restaurants">
+		<div class="box-content" ng-repeat="restaurant in result.restaurants">
 
-			<br/><br/><br/>
+			<span class="link details orange" ng-click="restaurant.show_details=!restaurant.show_details">Details</span>
 
 			<h2 class="title" ng-class="{ 'excluded': !restaurant.pay }">
-				<span>{{restaurant.name}}</span>
+				<span>{{restaurant.name}}</span> <strong>$ {{restaurant.total_due | formatPrice}}</strong>
 			</h2>
-			<h3 class="title" ng-if="restaurant.last_payment">
-				Last payment #{{restaurant.last_payment.id_payment}}: <strong positive-or-negative-color="{{restaurant.last_payment.amount}}">$ {{restaurant.last_payment.amount | formatPrice}}</strong> on <strong>{{restaurant.last_payment.date}}</strong>
-			</h3>
-			<table class="tb-grid tb-zebra">
-				<tbody>
-					<tr>
-						<td>
-						<span ng-click="restaurant.pay = !restaurant.pay;summary();">
-							<span ng-show="restaurant.pay">
-								<i class="fa fa-check-square-o"></i> <span class="link"><strong>Include this restaurant at the payment? </strong></span>
-							</span>
-							<span ng-show="!restaurant.pay">
-								<i class="fa fa-square-o"></i> <span class="link"><strong>Include this restaurant at the payment? </strong></span>
-							</span>
-						</span>
-						</td>
-						<td></td>
-					</tr>
-					<tr ng-show="restaurant.pay">
-						<td colspan="2">
-							<ul class="ul-inputs">
-								<li class="li-input">
-									<div class="label">Payment notes:</div>
-									<div class="input"><input ng-model="restaurant.notes" maxlength="255" placeholder=""></div>
-								</li>
-							</ul>
-						</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.tax}}">
-						<td>Tax</td>
-						<td>$ {{restaurant.tax | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.delivery_fee}}">
-						<td>Delivery Fee</td>
-						<td>$ {{restaurant.delivery_fee | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.tip}}">
-						<td>Tip</td>
-						<td>$ {{restaurant.tip | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.promo_gift_card}}">
-						<td>Promo Gift Card</td>
-						<td>$ {{restaurant.promo_gift_card | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.apology_gift_card}}">
-						<td>Apology Gift Card</td>
-						<td>$ {{restaurant.apology_gift_card | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.card_subtotal}}">
-						<td>Credit Card Subtotal</td>
-						<td>$ {{restaurant.card_subtotal | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.cash_reimburse}}">
-						<td>Cash Reimburse</td>
-						<td>$ {{restaurant.cash_reimburse | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.cash_subtotal}}">
-						<td>Cash Subtotal</td>
-						<td>$ {{restaurant.cash_subtotal | formatPrice}}</td>
-					</tr>
-					<tr positive-or-negative-color="{{restaurant.credit_charge}}">
-						<td>Credit Card Charge</td>
-						<td>$ {{restaurant.credit_charge | formatPrice}}</td>
-					</tr>
-					<tr class="total-due" positive-or-negative-color="{{restaurant.total_due}}">
-						<td class="td-medium">Total due</td>
-						<td class="td-medium">$ {{restaurant.total_due | formatPrice}}</td>
-					</tr>
-				</tbody>
-			</table>
 
-			<h3 class="title">
-				<span class="link" ng-if="!restaurant.show_orders" ng-click="restaurant.show_orders = true">Show orders</span>
-				<span class="link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders</span> (total {{restaurant.orders_count}} orders <span class="orange" ng-if="restaurant.not_included > 0"><strong> + {{restaurant.not_included}} </strong> refunded and not included order(s)</span> )
-			</h3>
+			<div class="divider"></div>
 
-			<table class="tb-grid tb-zebra" ng-if="restaurant.show_orders">
-				<thead>
-					<tr>
-						<td></td>
-						<td>#</td>
-						<td class="td-medium">Name</td>
-						<td>Amount</td>
-						<td>Payment</td>
-						<td class="td-medium">Date</td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="order in restaurant.orders">
-						<td></td>
-						<td ng-class="{ 'excluded': !order.included }">{{order.id_order}}</td>
-						<td ng-class="{ 'excluded': !order.included }">{{order.name}}</td>
-						<td ng-class="{ 'excluded': !order.included }">$ {{order.total | formatPrice}}</td>
-						<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
-						<td ng-class="{ 'excluded': !order.included }">{{order.date}}</td>
-						<td>
-							<span ng-if="order.pay_type == 'Cash'">
-								<span class="pointer orange" ng-click="reimburse_cash_order( order.id_order, 1 )" ng-if="!order.reimburse_cash_order">
-									<i class="fa fa-square-o"></i> Reimburse cash order?
+			<div ng-show="restaurant.show_details">
+
+				<h3 class="title" ng-if="restaurant.last_payment">
+					Last payment #{{restaurant.last_payment.id_payment}}: <strong positive-or-negative-color="{{restaurant.last_payment.amount}}">$ {{restaurant.last_payment.amount | formatPrice}}</strong> on <strong>{{restaurant.last_payment.date}}</strong>
+				</h3>
+				<table class="tb-grid tb-zebra">
+					<tbody>
+						<tr>
+							<td>
+							<span ng-click="restaurant.pay = !restaurant.pay;summary();">
+								<span ng-show="restaurant.pay">
+									<i class="fa fa-check-square-o"></i> <span class="link"><strong>Include this restaurant at the payment? </strong></span>
 								</span>
-								<span class="pointer" ng-click="reimburse_cash_order( order.id_order, 0 )" ng-if="order.reimburse_cash_order">
-									<i class="fa fa-check-square-o"></i> Reimbursed!
+								<span ng-show="!restaurant.pay">
+									<i class="fa fa-square-o"></i> <span class="link"><strong>Include this restaurant at the payment? </strong></span>
 								</span>
 							</span>
-							<span ng-if="order.refunded && order.pay_type == 'Card'">
-								<span class="pointer orange" ng-click="pay_if_refunded( order.id_order, 1 )" ng-if="!order.pay_if_refunded">
-									<i class="fa fa-square-o"></i> Refunded. Include?
+							</td>
+							<td></td>
+						</tr>
+						<tr ng-show="restaurant.pay">
+							<td colspan="2">
+								<ul class="ul-inputs">
+									<li class="li-input">
+										<div class="label">Payment notes:</div>
+										<div class="input"><input ng-model="restaurant.notes" maxlength="255" placeholder=""></div>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.card_subtotal}}">
+							<td>Credit Card Subtotal</td>
+							<td>$ {{restaurant.card_subtotal | formatPrice}}</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.tax}}">
+							<td>Tax</td>
+							<td>$ {{restaurant.tax | formatPrice}}</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.delivery_fee}}">
+							<td>Delivery Fee</td>
+							<td>$ {{restaurant.delivery_fee | formatPrice}}</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.tip}}">
+							<td>Tip</td>
+							<td>$ {{restaurant.tip | formatPrice}}</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.promo_gift_card}}">
+							<td>Promo Gift Card</td>
+							<td>$ {{restaurant.promo_gift_card | formatPrice}}</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.apology_gift_card}}">
+							<td>Apology Gift Card</td>
+							<td>$ {{restaurant.apology_gift_card | formatPrice}}</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.cash_reimburse}}">
+							<td>Cash Reimburse</td>
+							<td>$ {{restaurant.cash_reimburse | formatPrice}}</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.cash_subtotal}}">
+							<td>Cash Subtotal</td>
+							<td>$ {{restaurant.cash_subtotal | formatPrice}}</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.credit_charge}}">
+							<td>Credit Card Charge</td>
+							<td>$ {{restaurant.credit_charge | formatPrice}}</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.restaurant_fee}}">
+							<td>Crunchbutton Fees</td>
+							<td>$ {{restaurant.restaurant_fee | formatPrice}}</td>
+						</tr>
+						<tr class="total-due" positive-or-negative-color="{{restaurant.total_due}}">
+							<td class="td-medium">Total due</td>
+							<td class="td-medium">$ {{restaurant.total_due | formatPrice}}</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h3 class="title">
+					<span class="link" ng-if="!restaurant.show_orders" ng-click="restaurant.show_orders = true">Show orders</span>
+					<span class="link" ng-if="restaurant.show_orders" ng-click="restaurant.show_orders = false">Hide orders</span> (total {{restaurant.orders_count}} orders <span class="orange" ng-if="restaurant.not_included > 0"><strong> + {{restaurant.not_included}} </strong> refunded and not included order(s)</span> )
+				</h3>
+
+				<table class="tb-grid tb-zebra" ng-if="restaurant.show_orders">
+					<thead>
+						<tr>
+							<td></td>
+							<td>#</td>
+							<td class="td-medium">Name</td>
+							<td>Amount</td>
+							<td>Payment</td>
+							<td class="td-medium">Date</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="order in restaurant.orders">
+							<td></td>
+							<td ng-class="{ 'excluded': !order.included }">{{order.id_order}}</td>
+							<td ng-class="{ 'excluded': !order.included }">{{order.name}}</td>
+							<td ng-class="{ 'excluded': !order.included }">$ {{order.total | formatPrice}}</td>
+							<td ng-class="{ 'excluded': !order.included }">{{order.pay_type}}</td>
+							<td ng-class="{ 'excluded': !order.included }">{{order.date}}</td>
+							<td>
+								<span ng-if="order.pay_type == 'Cash'">
+									<span class="pointer orange" ng-click="reimburse_cash_order( order.id_order, 1 )" ng-if="!order.reimburse_cash_order">
+										<i class="fa fa-square-o"></i> Reimburse cash order?
+									</span>
+									<span class="pointer" ng-click="reimburse_cash_order( order.id_order, 0 )" ng-if="order.reimburse_cash_order">
+										<i class="fa fa-check-square-o"></i> Reimbursed!
+									</span>
 								</span>
-								<span class="pointer" ng-click="pay_if_refunded( order.id_order, 0 )" ng-if="order.pay_if_refunded">
-									<i class="fa fa-check-square-o"></i> Refunded. Included!
+								<span ng-if="order.refunded && order.pay_type == 'Card'">
+									<span class="pointer orange" ng-click="pay_if_refunded( order.id_order, 1 )" ng-if="!order.pay_if_refunded">
+										<i class="fa fa-square-o"></i> Refunded. Include?
+									</span>
+									<span class="pointer" ng-click="pay_if_refunded( order.id_order, 0 )" ng-if="order.pay_if_refunded">
+										<i class="fa fa-check-square-o"></i> Refunded. Included!
+									</span>
 								</span>
-							</span>
-						</td>
-						<td>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+							</td>
+							<td>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
 		</div>
 
