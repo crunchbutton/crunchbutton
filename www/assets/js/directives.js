@@ -681,16 +681,17 @@ NGApp.directive( 'positiveOrNegativeColor', function( $rootScope ) {
 	return {
 		restrict: 'A',
 		link: function( scope, element, attrs ){
-			var css = element.attr( 'class' ) ? element.attr( 'class' ) + ' ' : '';
-			var value = parseFloat( attrs.positiveOrNegativeColor );
-			if( value > 0 ){
-				css += 'positive';
-			} else if( value < 0 ){
-				css += 'negative';
-			} else {
-				css += 'neutral';
-			}
-			element.attr('class', css );
+			attrs.$observe( 'positiveOrNegativeColor', function( value ) {
+				element.removeClass( 'positive negative neutral' );
+				var value = parseFloat( attrs.positiveOrNegativeColor );
+				if( value > 0 ){
+					element.addClass( 'positive' );
+				} else if( value < 0 ){
+					element.addClass( 'negative' );
+				} else {
+					element.addClass( 'neutral' );
+				}
+			} );
 		}
 	}
 } );
