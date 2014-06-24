@@ -76,9 +76,11 @@ ALTER TABLE  `payment` ADD KEY `payment_ibfk_2` (`id_admin`);
 ALTER TABLE  `payment` ADD CONSTRAINT `payment_ibfk_2` FOREIGN KEY (`id_admin`) REFERENCES `admin` (`id_admin`) ON DELETE SET NULL ON UPDATE SET NULL;
 
 ALTER TABLE  `payment` ADD  `summary_sent_date` datetime DEFAULT NULL;
+ALTER TABLE  `payment` ADD  `adjustment` float DEFAULT NULL;
 
 ALTER TABLE `payment_schedule` DROP `balanced_id`;
 ALTER TABLE `payment_schedule` DROP `stripe_id`;
 ALTER TABLE `payment_schedule` DROP `payment_method`;
 
 ALTER TABLE  `payment_schedule` ADD  `log` varchar(255) DEFAULT NULL;
+ALTER TABLE  `payment_schedule` ADD  `adjustment` float DEFAULT NULL;

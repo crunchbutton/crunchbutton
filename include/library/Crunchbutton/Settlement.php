@@ -394,9 +394,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 			if( !$id_restaurants[ $_restaurant->id_restaurant ] ){
 				continue;
 			}
-			$notes = $id_restaurants[ $_restaurant->id_restaurant ];
+			$notes = $id_restaurants[ $_restaurant->id_restaurant ][ 'notes' ];
+			$adjustment = $id_restaurants[ $_restaurant->id_restaurant ][ 'adjustment' ];
 			$id_restaurant = $_restaurant->id_restaurant;
 			$payment_data = $_restaurant->payment_data;
+			// the total dues should include the adjustment
+			$payment_data[ 'total_due' ] = $payment_data[ 'total_due' ] + $adjustment;
 
 			// check if it has any order to be paid
 			$shouldSchedule = ( $payment_data[ 'total_due' ] > 0 ) ? true : false;
@@ -416,9 +419,10 @@ class Crunchbutton_Settlement extends Cana_Model {
 				$schedule->id_restaurant = $_restaurant->id_restaurant;
 				$schedule->date = date( 'Y-m-d H:i:s' );
 				$schedule->amount = max( $payment_data[ 'total_due' ], 0 );
+				$schedule->adjustment = $adjustment;
 				$schedule->type = Cockpit_Payment_Schedule::TYPE_RESTAURANT;
 				$schedule->status = Cockpit_Payment_Schedule::STATUS_SCHEDULED;
-				$schedule->notes = $notes;
+				$schedule->note = $notes;
 				$schedule->id_admin = c::user()->id_admin;
 				$schedule->save();
 				$id_payment_schedule = $schedule->id_payment_schedule;
@@ -510,6 +514,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 				}
 			}
 			$summary[ 'calcs' ] = $settlement->restaurantsProcessOrders( $_orders, true );
+			$summary[ 'calcs' ][ 'total_due' ] = $summary[ 'calcs' ][ 'total_due' ] + $summary[ 'adjustment' ];
 			$summary[ 'admin' ] = [ 'id_admin' => $schedule->id_admin, 'name' => $schedule->admin()->name ];
 			return $summary;
 		} else {
@@ -542,7 +547,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 					try {
 						$p = Payment::credit( [ 'id_restaurant' => $schedule->id_restaurant,
 																		'amount' => $amount,
-																		'note' => $schedule->notes,
+																		'note' => $schedule->note,
 																		'type' => 'balanced' ] );
 					} catch ( Exception $e ) {
 						$schedule->log = $e->getMessage();
@@ -556,6 +561,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 					if( $p ){
 
 						$payment = Crunchbutton_Payment::o( $p );
+						// save the adjustment
+						if( floatval( $schedule->adjustment ) != 0  ){
+							$payment->adjustment = $schedule->adjustment;
+							$payment->save();
+						}
 
 						$schedule->id_payment = $payment->id_payment;
 						$schedule->status = Cockpit_Payment_Schedule::STATUS_DONE;
@@ -643,8 +653,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 																														'address_country' => $check_address_country ],
 																									'bank_account' => c::lob()->defaultAccount(),
 																									'amount' => $amount,
-																									'memo' => $schedule->notes,
-																									'message' => $schedule->notes ] );
+																									'memo' => $schedule->note,
+																									'message' => $schedule->note ] );
 						} catch( Exception $e ) {
 							$schedule->log = $e->getMessage();
 							$schedule->status = Cockpit_Payment_Schedule::STATUS_ERROR;
@@ -659,10 +669,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 							$payment->check_id = $c->id;
 							$payment->date = date( 'Y-m-d H:i:s' );
 							$payment->id_restaurant = $schedule->id_restaurant;
-							$payment->note = $schedule->notes;
+							$payment->note = $schedule->note;
 							$payment->env = c::getEnv();
 							$payment->id_admin = $schedule->id_admin;
 							$payment->amount = $schedule->amount;
+							$payment->adjustment = $schedule->adjustment;
 							$payment->save();
 
 							$schedule->id_payment = $payment->id_payment;
