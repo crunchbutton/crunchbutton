@@ -1,14 +1,14 @@
 <?php
 
 class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
-	
+
 	public function init() {
 
 		switch ( c::getPagePiece( 3 ) ) {
 			case 'schedule':
 				$this->_schedule();
 				break;
-			
+
 			default:
 				$this->_list();
 				break;
@@ -33,7 +33,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _scheduleAction(){
-		
+
 		$id_admin = c::user()->id_admin;
 
 		$action = trim( $this->request()[ 'action' ] );
@@ -45,7 +45,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 				// Start week on Thursday #3084
 				$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 				if( $now->format( 'l' ) == 'Thursday' ){
-					$thursday = $now;	
+					$thursday = $now;
 					$thursday->modify( '+ 1 week' );
 				} else {
 					$thursday = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
@@ -68,7 +68,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 				$id_community_shift_change = $this->request()[ 'id_community_shift_change' ];
 				$preference = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = "' . $id_community_shift . '" AND id_admin = "' . $id_admin . '"' );
 				if( $preference->id_community_shift ){
-					$change = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = "' . $id_community_shift_change . '" AND id_admin = "' . $id_admin . '"' );	
+					$change = Crunchbutton_Admin_Shift_Preference::q( 'SELECT * FROM admin_shift_preference WHERE id_community_shift = "' . $id_community_shift_change . '" AND id_admin = "' . $id_admin . '"' );
 					if( $change->id_community_shift ){
 						$change_ranking = $change->ranking;
 						$change->ranking = $preference->ranking;
@@ -77,7 +77,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 						$preference->ranking = $change_ranking;
 						$preference->save();
 					}
-					
+
 				}
 				$this->_scheduleList();
 				exit;
@@ -111,7 +111,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 				$this->_scheduleList();
 				exit;
 				break;
-			
+
 			default:
 				$this->_scheduleList();
 				break;
@@ -124,7 +124,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 		// Start week on Thursday #3084
 		$now = new DateTime( 'now', new DateTimeZone( c::config()->timezone  ) );
 		if( $now->format( 'l' ) == 'Thursday' ){
-			$thursday = $now;	
+			$thursday = $now;
 			$thursday->modify( '+ 1 week' );
 		} else {
 			$thursday = new DateTime( 'next thursday', new DateTimeZone( c::config()->timezone  ) );
@@ -170,7 +170,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 
 		$communities = $this->_communities();
 		foreach( $communities as $community ) {
-			foreach( $days as $day ){ 
+			foreach( $days as $day ){
 				$segments = Crunchbutton_Community_Shift::shiftByCommunityDay( $community, $day->format( 'Y-m-d' ) );
 				foreach ( $segments as $segment ) {
 					$export = $segment->export();
@@ -182,11 +182,11 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 						$data[ 'ranking_next' ] = ( $rankings[ $data[ 'ranking' ]  + 1 ] ? $rankings[ $data[ 'ranking' ]  + 1 ] : 0 );
 					} else if( $donWantToWork[ $segment->id_community_shift ] ){
 						$data[ 'ranking' ] = 0;
-					} 
+					}
 					$_shifts[] = $data;
 				}
 			}
-		} 
+		}
 
 		$shifts = [];
 		$_availableShifts = 0;
@@ -196,7 +196,9 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 				if( $shift[ 'ranking' ] && $shift[ 'ranking' ] > 0 ){
 					$index = $shift[ 'ranking' ];
 				} else {
-					$_availableShifts++;
+					if( !isset( $shift[ 'ranking' ] ) ){
+						$_availableShifts++;
+					}
 					$index = $ranking;
 					$ranking++;
 				}
@@ -222,7 +224,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 	}
 
 	private function _list(){
-		
+
 		// this method returns the shifts for the next 7 days
 		$shifts = Crunchbutton_Community_Shift::nextShiftsByCommunities( $this->_communities() );
 		$export = [];
@@ -231,7 +233,7 @@ class Controller_api_driver_shifts extends Crunchbutton_Controller_RestAccount {
 			$drivers = $shift->getDrivers();
 			$mine = 0;
 			$_drivers = [];
-			foreach ( $drivers as $driver ) { 
+			foreach ( $drivers as $driver ) {
 				$_drivers[] = [ 'name' => $driver->name, 'phone' => $driver->phone(), 'id' => $driver->id_admin];
 			}
 			$export[] = Model::toModel( [
