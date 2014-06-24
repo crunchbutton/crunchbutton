@@ -197,7 +197,7 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 					$restaurant[ 'orders_count' ]++;
 				}
 			}
-			$restaurant[ 'pay' ] = false;
+			$restaurant[ 'pay' ] = true;
 			$restaurant[ 'adjustment' ] = 0;
 			$restaurant[ 'orders' ] = $orders;
 			$restaurant[ 'total_due_without_adjustment' ] = $restaurant[ 'total_due' ];
