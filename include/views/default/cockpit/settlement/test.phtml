@@ -191,26 +191,22 @@
 					</thead>
 					<tbody>
 					<?php
-					foreach( $pay as $key => $val ){
-						$driver = Admin::o( $key );
-						if( $driver->id_admin ){
-							?>
-							<tr>
-								<td><?php echo $driver->name; ?></td>
-								<td><?php echo Util::format_price( $pay[ $key ][ 'subtotal' ] ); ?></td>
-								<td><?php echo Util::format_price( $pay[ $key ][ 'tax' ] ); ?></td>
-								<td><?php echo Util::format_price( $pay[ $key ][ 'delivery_fee' ] ); ?></td>
-								<td><?php echo Util::format_price( $pay[ $key ][ 'tip' ] ); ?></td>
-								<td><?php echo Util::format_price( $pay[ $key ][ 'customer_fee' ] ); ?></td>
-								<td><?php echo Util::format_price( $pay[ $key ][ 'markup' ] ); ?></td>
-								<td><?php echo Util::format_price( $pay[ $key ][ 'credit_charge' ] ); ?></td>
-								<td><?php echo Util::format_price( $pay[ $key ][ 'restaurant_fee' ] ); ?></td>
-								<td><?php echo Util::format_price( $pay[ $key ][ 'gift_card' ] ); ?></td>
-								<td><?php echo count( $pay[ $key ][ 'orders' ] ); ?></td>
-								<td><strong><?php echo Util::format_price( $pay[ $key ][ 'total_due' ] ); ?></strong></td>
-							</tr>
-							<?php
-						}
+					foreach( $pay as $key => $val ){ ?>
+						<tr>
+							<td><?php echo $val[ 'name' ]; ?></td>
+							<td><?php echo Util::format_price( $pay[ $key ][ 'subtotal' ] ); ?></td>
+							<td><?php echo Util::format_price( $pay[ $key ][ 'tax' ] ); ?></td>
+							<td><?php echo Util::format_price( $pay[ $key ][ 'delivery_fee' ] ); ?></td>
+							<td><?php echo Util::format_price( $pay[ $key ][ 'tip' ] ); ?></td>
+							<td><?php echo Util::format_price( $pay[ $key ][ 'customer_fee' ] ); ?></td>
+							<td><?php echo Util::format_price( $pay[ $key ][ 'markup' ] ); ?></td>
+							<td><?php echo Util::format_price( $pay[ $key ][ 'credit_charge' ] ); ?></td>
+							<td><?php echo Util::format_price( $pay[ $key ][ 'restaurant_fee' ] ); ?></td>
+							<td><?php echo Util::format_price( $pay[ $key ][ 'gift_card' ] ); ?></td>
+							<td><?php echo count( $pay[ $key ][ 'orders' ] ); ?></td>
+							<td><strong><?php echo Util::format_price( $pay[ $key ][ 'total_due' ] ); ?></strong></td>
+						</tr>
+						<?php
 					}
 					?>
 					</tbody>
