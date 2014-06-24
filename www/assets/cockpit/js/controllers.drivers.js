@@ -193,7 +193,7 @@ NGApp.controller( 'DriversShiftsScheduleCtrl', function ( $scope, DriverShiftSch
 	}
 
 	$scope.updateShiftsAvailable = function( shifts ){
-		// $scope.makeBusy();
+		$scope.makeBusy();
 		$scope.shiftsAvailableToWork = shifts;
 		DriverShiftScheduleService.shiftsAvailableToWork( shifts, function( data ){
 			process( data );
