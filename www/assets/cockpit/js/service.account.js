@@ -5,7 +5,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 			// actions
 			'login' : { 'method': 'POST', params : { 'action' : 'login' } },
 			'logout' : { 'method': 'GET', params : { 'action' : 'logout' } },
-		}	
+		}
 	);
 
 	var service = {
@@ -18,7 +18,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 		isAdmin: false,
 		restaurants: []
 	};
-	
+
 	service.isLoggedIn = function(){
 		return ( service.user && service.user.id_admin ) ? true : false;
 	}
@@ -38,26 +38,26 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 			}
 		} );
 	};
-	
+
 	service.logout = function() {
 		user.logout( {}, function(){
 			service.user = {};
 			$rootScope.$broadcast('userAuth');
 		} );
 	};
-	
+
 	$rootScope.$on('userAuth', function(e, data) {
 
 		service.user = data;
 
-		
+
 		service.isRestaurant = service.isDriver = service.isSupport = service.isAdmin = false;
 		service.restaurants = [];
-		
-		if (service.user.permissions.GLOBAL) {
+
+		if (service.user && service.user.permissions && service.user.permissions.GLOBAL) {
 			service.isAdmin = true;
 		}
-		if (service.user.permissions.RESTAURANT) {
+		if (service.user && service.user.permissions && service.user.permissions.RESTAURANT) {
 			service.isRestaurant = true;
 
 			for (var x in service.user.permissions) {
@@ -65,7 +65,7 @@ NGApp.factory( 'AccountService', function($http, $rootScope, $resource) {
 					service.restaurants.push(x.replace(/[^0-9]/g,''));
 				}
 			}
-			
+
 			// only one restaurant for now
 			service.restaurant = service.restaurants[0];
 		}
