@@ -144,11 +144,11 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 										'pay_type': $scope.pay_type }
 
 		var id_restaurants = new Array();
-		var notes = new Array();
 		for( x in $scope.result.restaurants ){
 			if( $scope.result.restaurants[ x ].pay ){
 				id_restaurants.push( $scope.result.restaurants[ x ].id_restaurant );
 				params[ 'notes_' + $scope.result.restaurants[ x ].id_restaurant ] = $scope.result.restaurants[ x ].notes;
+				params[ 'adjustments_' + $scope.result.restaurants[ x ].id_restaurant ] = $scope.result.restaurants[ x ].adjustment;
 			}
 		}
 		id_restaurants = id_restaurants.join( ',' );
@@ -162,17 +162,20 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 
 	$scope.summary = function(){
 
-		var sum = { 'card_subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'restaurant_fee': 0, 'promo_gift_card': 0, 'apology_gift_card': 0, 'order_payment': 0, 'cash_reimburse': 0, 'cash_subtotal': 0, 'total_due': 0 };
+		var sum = { 'card_subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'restaurant_fee': 0, 'promo_gift_card': 0, 'apology_gift_card': 0, 'order_payment': 0, 'cash_reimburse': 0, 'cash_subtotal': 0, 'total_due': 0, 'adjustment' : 0 };
 
 		var total_restaurants = 0;
 		var total_payments = 0;
 		var total_orders = 0;
 		var total_not_included = 0;
 		var total_reimburse_cash_orders = 0;
+		var total_adjustments = 0;
 		var total_refunded = 0;
 		for( x in $scope.result.restaurants ){
+			$scope.result.restaurants[ x ].total_due = ( $scope.result.restaurants[ x ].total_due_without_adjustment + $scope.result.restaurants[ x ].adjustment );
 			if( $scope.result.restaurants[ x ].pay ){
 				total_restaurants++;
+				// include the adjustment at total_due
 				total_payments += $scope.result.restaurants[ x ].total_due;
 				total_orders += $scope.result.restaurants[ x ].orders_count;
 				total_not_included += $scope.result.restaurants[ x ].not_included;

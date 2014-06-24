@@ -109,6 +109,13 @@
 		<td>$ <?php echo number_format( $summary[ 'calcs' ][ 'restaurant_fee' ], 2 ); ?></td>
 		<td></td>
 	</tr>
+	<?php if( floatval( $summary[ 'adjustment' ] ) != 0 ) { ?>
+		<tr class="class">
+			<td colspan="2" style="text-align:right">Adjustment</td>
+			<td>$ <?php echo number_format( $summary[ 'adjustment' ], 2 ); ?></td>
+			<td></td>
+		</tr>
+	<?php } ?>
 	<tr>
 		<td></td>
 		<td></td>

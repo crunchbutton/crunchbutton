@@ -78,6 +78,10 @@
 					<td>Lob (Check)</td>
 					<td>{{result.check_id}}</td>
 				</tr>
+				<tr positive-or-negative-color="{{result.calcs.credit_charge}}">
+					<td>Credit Card Charge</td>
+					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
+				</tr>
 				<tr positive-or-negative-color="{{result.calcs.tax}}">
 					<td>Tax</td>
 					<td>$ {{result.calcs.tax | formatPrice}}</td>
@@ -110,9 +114,9 @@
 					<td>Cash Subtotal</td>
 					<td>$ {{result.calcs.cash_subtotal | formatPrice}}</td>
 				</tr>
-				<tr positive-or-negative-color="{{result.calcs.credit_charge}}">
-					<td>Credit Card Charge</td>
-					<td>$ {{result.calcs.credit_charge | formatPrice}}</td>
+				<tr positive-or-negative-color="{{result.adjustment}}">
+					<td>Adjustment</td>
+					<td>$ {{result.adjustment | formatPrice}}</td>
 				</tr>
 				<tr class="total-due" positive-or-negative-color="{{result.calcs.total_due}}">
 					<td class="td-medium">Total due</td>
@@ -120,7 +124,7 @@
 				</tr>
 				<tr>
 					<td>Payment Notes</td>
-					<td>{{result.calcs.notes}}</td>
+					<td>{{result.note}}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -185,7 +189,7 @@
 
 			<thead>
 				<tr>
-					<td colspan="5" class="title">Card Orders</td>
+					<td colspan="5" class="title">Cash Orders</td>
 				</tr>
 			</thead>
 			<thead ng-if="!result.orders_cash">
@@ -229,10 +233,16 @@
 					<td>$ {{result.calcs.restaurant_fee | formatPrice}}</td>
 					<td></td>
 				</tr>
+				<tr class="transparent" ng-show="result.adjustment">
+					<td></td>
+					<td>Adjustment</td>
+					<td>$ {{result.adjustment | formatPrice}}</td>
+					<td></td>
+				</tr>
 				<tr class="transparent">
 					<td></td>
-					<td>Total Payment (minus fees)</td>
-					<td>$ {{result.calcs.total_due | formatPrice}}</td>
+					<td><strong>Total Payment (minus fees)</strong></td>
+					<td><strong>$ {{result.calcs.total_due | formatPrice}}</strong></td>
 					<td></td>
 				</tr>
 				<tr class="transparent"><td></td><td></td><td></td><td></td></tr>

@@ -154,6 +154,10 @@
 				<td>Crunchbutton Fees</td>
 				<td>$ {{sum.restaurant_fee | formatPrice}}</td>
 			</tr>
+			<tr positive-or-negative-color="{{sum.adjustment}}">
+				<td>Adjustments</td>
+				<td>$ {{sum.adjustment | formatPrice}}</td>
+			</tr>
 			<tr class="total-due" positive-or-negative-color="{{sum.total_due}}">
 				<td class="td-medium">Total due</td>
 				<td class="td-medium">$ {{sum.total_due | formatPrice}}</td>
@@ -261,7 +265,17 @@
 								<ul class="ul-inputs">
 									<li class="li-input">
 										<div class="label">Payment notes:</div>
-										<div class="input"><input ng-model="restaurant.notes" maxlength="255" placeholder=""></div>
+										<div class="input"><input type="text" ng-model="restaurant.notes" maxlength="255" placeholder=""></div>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<ul class="ul-inputs">
+									<li class="li-input">
+										<div class="label">Adjustments:</div>
+										<div class="input"><input type="number" ng-model="restaurant.adjustment" ng-change="summary();" placeholder=""></div>
 									</li>
 								</ul>
 							</td>
@@ -305,6 +319,10 @@
 						<tr positive-or-negative-color="{{restaurant.restaurant_fee}}">
 							<td>Crunchbutton Fees</td>
 							<td>$ {{restaurant.restaurant_fee | formatPrice}}</td>
+						</tr>
+						<tr positive-or-negative-color="{{restaurant.adjustment}}">
+							<td>Adjustment</td>
+							<td>$ {{restaurant.adjustment | formatPrice}}</td>
 						</tr>
 						<tr class="total-due" positive-or-negative-color="{{restaurant.total_due}}">
 							<td class="td-medium">Total due</td>
