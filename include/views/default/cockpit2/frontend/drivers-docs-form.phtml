@@ -23,12 +23,12 @@
 					{{doc.name}}
 				</td>
 				<td>
-					<a href="{{doc.url}}" target="_blank">Template</a>
+					<a href="{{doc.url}}" target="_blank">Download Template</a>
 				</td>
 				<td>
 					<span ng-show="doc.status" title="Sent at {{doc.status.date_formated}}"><a href="{{doc.status.url}}" target="_blank">Download</a></span>
 					<span ng-if="!doc.status" ng-click="setDocument(doc.id_driver_document)" class="sp-label sp-label-warning link">
-						Doc missing
+						Upload missing doc
 					</span>
 				</td>
 			</tr>
@@ -38,7 +38,7 @@
 	<h3 class="title">
 		Upload a clear picture of your Drivers License and Insurance Card here. You can take a clear, close up picture with a smartphone, and then upload in the appropriate spots below.
 	</h3>
-		
+
 	<table class="tb-grid">
 		<tbody>
 			<tr ng-repeat="doc in documents" ng-if="!doc.url">
@@ -57,10 +57,10 @@
 
 	<form name="docs">
 
-		<h3 class="title">Upload zone</h3>	
-		
+		<h3 class="title">Upload zone</h3>
+
 		<ul class="ul-inputs box-content">
-			<li class="li-input"> 
+			<li class="li-input">
 				<div class="label">Select the file type:</div>
 				<select name="driverDocument" ng-model="doc_uploaded" ng-change="setDocument( this.doc_uploaded )" ng-options="opt.id_driver_document as opt.name for opt in documents"></select>
 			</li>
@@ -85,15 +85,7 @@
 
 	<div class="box-content">
 		<p>
-			If you are interested in getting extra cash back during your shifts, here are links to apply for the cards we'd recommend: they're specifically for college students and many have extra cash back for food purchases. 
-			<br/>
-			<a href="https://docs.google.com/document/d/17wEjFDcjlm6_9Znq_-5amc6bxwrfxUhx8k_U2ZfpGU8/edit?usp=sharing" target="_blank">Credit Cards for Crunchbutton Student Deliverers</a>
-		</p>
-	</div>	
-
-	<div class="box-content">
-		<p>
-			<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>	
+			<a target="_blank" href="https://s3.amazonaws.com/uploads.hipchat.com/41812/283752/nmB3Y2yH2HkjWLM/DeliveryDriverGuidelines.pdf">Download the Delivery Driver Guidelines</a>
 		</p>
 	</div>
 </div>
