@@ -521,6 +521,5 @@ NGApp.controller( 'PreOnboardingCtrl', function( $scope, PreOnboardingService, C
 	}
 } );
 
-NGApp.controller('DriversHelpCtrl', function() {
-
-});
+NGApp.controller('DriversHelpCtrl', function() {});
+NGApp.controller('DriversHelpCreditCardCtrl', function() {});
