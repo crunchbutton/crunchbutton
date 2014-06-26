@@ -393,7 +393,7 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 			if( json.start && json.end ){
 				$scope.range = { 'start' : new Date( json.start ), 'end' : new Date( json.end ) };
 				$scope.ready = true;
-				setTimeout( function() { $scope.begin() }, 100 );
+				// setTimeout( function() { $scope.begin() }, 100 );
 			}
 		} );
 	}
