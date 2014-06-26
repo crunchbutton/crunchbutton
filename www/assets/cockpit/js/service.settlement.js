@@ -24,6 +24,7 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 
 	settlement.drivers = $resource( App.service + 'settlement/drivers/:action/', { action: '@action' }, {
 		'range' : { 'method': 'GET', params : { action: 'range' } },
+		'do_not_pay_driver' : { 'method': 'POST', params : { action: 'do-not-pay-driver' } },
 		'begin' : { 'method': 'POST', params : { action: 'begin' } }
 	}	);
 
@@ -118,6 +119,12 @@ NGApp.factory( 'SettlementService', function( $resource, $http, $routeParams ) {
 
 	service.drivers.begin = function( params, callback ){
 		settlement.drivers.begin( params, function( json ){
+			callback( json );
+		} );
+	}
+
+	service.drivers.do_not_pay_driver = function( params, callback ){
+		settlement.drivers.do_not_pay_driver( params, function( json ){
 			callback( json );
 		} );
 	}

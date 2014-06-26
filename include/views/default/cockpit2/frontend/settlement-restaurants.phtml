@@ -99,7 +99,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="restaurant in result.restaurants">
+				<tr ng-repeat="restaurant in result.restaurants" ng-class="{ 'excluded': !restaurant.pay }">
 					<td>{{restaurant.name}}</td>
 					<td>$ {{restaurant.total_due | formatPrice}}</td>
 					<td><span class="link details orange" ng-click="show_details(restaurant.id_restaurant)">Details</span></td>
@@ -260,7 +260,9 @@
 							</td>
 							<td></td>
 						</tr>
-						<tr ng-show="restaurant.pay">
+					</tbody>
+					<tbody ng-show="restaurant.pay">
+						<tr>
 							<td colspan="2">
 								<ul class="ul-inputs">
 									<li class="li-input">

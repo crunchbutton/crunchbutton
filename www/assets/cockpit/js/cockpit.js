@@ -234,6 +234,15 @@ NGApp.controller('AppController', function ($scope, $route, $http, $routeParams,
 		}
 	}
 
+	$rootScope.walkTo = function( selector, adjust ){
+		adjust = adjust ? adjust : 0;
+		var el = angular.element( selector );
+		if( el.length ){
+			var walkTo = ( $('.snap-content-inner').scrollTop() + el.offset().top ) + adjust;
+			$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
+		}
+	}
+
 	$rootScope.unBusy = function(){
 		if( $rootScope.isBusy ){
 			setTimeout( function(){

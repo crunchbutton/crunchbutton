@@ -180,16 +180,15 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 				total_orders += $scope.result.restaurants[ x ].orders_count;
 				total_not_included += $scope.result.restaurants[ x ].not_included;
 				total_reimburse_cash_orders += $scope.result.restaurants[ x ].reimburse_cash_orders;
+
+				angular.forEach( sum, function( value, key ) {
+					sum[ key ] += $scope.result.restaurants[ x ][ key ];
+				} );
+				total_refunded += $scope.result.restaurants[ x ].refunded_count;
 			}
-			total_refunded += $scope.result.restaurants[ x ].refunded_count;
 			if( !$scope.result.restaurants[ x ].notes ){
 				$scope.result.restaurants[ x ].notes = $scope.result.notes;
 			}
-
-			angular.forEach( sum, function( value, key ) {
-				sum[ key ] += $scope.result.restaurants[ x ][ key ];
-     	} );
-
 		}
 		$scope.total_restaurants = total_restaurants;
 		$scope.total_payments = total_payments;
@@ -198,12 +197,11 @@ NGApp.controller('SettlementRestaurantsCtrl', function ( $scope, $filter, Settle
 		$scope.total_reimburse_cash_orders = total_reimburse_cash_orders;
 		$scope.total_refunded = total_refunded;
 		$scope.sum = sum;
+		console.log('$scope.sum',$scope.sum);
 	}
 
 	$scope.show_details = function( id_restaurant ){
-		var el = angular.element( '#restaurant-' + id_restaurant );
-		var walkTo = ( $('.snap-content-inner').scrollTop() + el.offset().top ) - 80;
-		$( 'html, body, .snap-content-inner' ).animate( { scrollTop: walkTo }, '500');
+		$scope.walkTo( '#restaurant-' + id_restaurant, -80 );
 	}
 
 	// Just run if the user is loggedin
@@ -384,20 +382,18 @@ NGApp.controller('SettlementRestaurantsPaymentCtrl', function ( $scope, $routePa
 NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, SettlementService ) {
 
 	$scope.ready = false;
-	$scope.pay_type = 'all';
-	$scope.sort = 'last_payment';
+
+	$scope.id_driver = false;
 
 	$scope.isSearching = false;
 	$scope.showForm = true;
-
-	$scope.pay_type_options = SettlementService.pay_type_options;
-	$scope.sort_options = SettlementService.sort_options;
 
 	function range(){
 		SettlementService.drivers.range( function( json ){
 			if( json.start && json.end ){
 				$scope.range = { 'start' : new Date( json.start ), 'end' : new Date( json.end ) };
 				$scope.ready = true;
+				setTimeout( function() { $scope.begin() }, 100 );
 			}
 		} );
 	}
@@ -428,14 +424,81 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 		$scope.isSearching = true;
 
 		var params = { 'start': $filter( 'date' )( $scope.range.start, 'MM/dd/yyyy'),
-										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy'),
-										'pay_type': $scope.pay_type };
+										'end': $filter( 'date' )( $scope.range.end, 'MM/dd/yyyy') };
+		if( $scope.id_driver ){
+			params.id_driver = $scope.id_driver;
+		}
 
 		SettlementService.drivers.begin( params, function( json ){
-			$scope.result = json;
+			if( $scope.id_driver ){
+				for( x in $scope.result.drivers ){
+					if( $scope.result.drivers[ x ].id_admin == $scope.id_driver ){
+						$scope.result.drivers[ x ] = json.drivers[ 0 ];
+						break;
+					}
+				}
+			} else {
+				$scope.result = json;
+			}
 			$scope.showForm = false;
 			$scope.isSearching = false;
+			$scope.summary();
+			$scope.unBusy();
 		} );
+	}
+
+	$scope.summary = function(){
+
+		var sum = { 'subtotal': 0, 'tax': 0, 'delivery_fee': 0, 'tip': 0, 'customer_fee': 0, 'markup': 0, 'credit_charge': 0, 'gift_card': 0, 'restaurant_fee': 0, 'total_due': 0, 'adjustment' : 0 };
+
+		var total_drivers = 0;
+		var total_payments = 0;
+		var total_orders = 0;
+		var total_not_included = 0;
+		var total_adjustments = 0;
+		var total_refunded = 0;
+		for( x in $scope.result.drivers ){
+			$scope.result.drivers[ x ].total_due = ( $scope.result.drivers[ x ].total_due_without_adjustment + $scope.result.drivers[ x ].adjustment );
+			if( $scope.result.drivers[ x ].pay ){
+				total_drivers++;
+				// include the adjustment at total_due
+				total_payments += $scope.result.drivers[ x ].total_due;
+				total_orders += $scope.result.drivers[ x ].orders_count;
+				total_not_included += $scope.result.drivers[ x ].not_included;
+
+				angular.forEach( sum, function( value, key ) {
+					sum[ key ] += $scope.result.drivers[ x ][ key ];
+				} );
+
+			}
+			if( !$scope.result.drivers[ x ].notes ){
+				$scope.result.drivers[ x ].notes = $scope.result.notes;
+			}
+		}
+		$scope.total_drivers = total_drivers;
+		$scope.total_payments = total_payments;
+		$scope.total_orders = total_orders;
+		$scope.total_not_included = total_not_included;
+		$scope.total_refunded = total_refunded;
+		$scope.sum = sum;
+	}
+
+	$scope.do_not_pay_driver = function( id_order, id_driver, do_not_pay_driver ){
+		$scope.makeBusy();
+		var params = { 'id_order': id_order, 'id_driver': id_driver, 'do_not_pay_driver' : do_not_pay_driver };
+		SettlementService.drivers.do_not_pay_driver( params, function( json ){
+			$scope.id_driver = json.id_driver;
+			if( $scope.id_driver ){
+				$scope.begin();
+			} else {
+				App.alert( 'Oops, something bad happened!' )
+				$scope.unBusy();
+			}
+		} );
+	}
+
+	$scope.show_details = function( id_driver ){
+		$scope.walkTo( '#driver-' + id_driver, -80 );
 	}
 
 	// Just run if the user is loggedin

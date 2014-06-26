@@ -1,6 +1,6 @@
 <?php
 
-class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
+class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 
 	public function init() {
 
@@ -85,6 +85,9 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 						switch ( c::getPagePiece( 3 ) ) {
 							case 'begin':
 								$this->_driverBegin();
+								break;
+							case 'do-not-pay-driver':
+								$this->_driverDoNotPayForOrder();
 								break;
 							default:
 								$this->_error();
@@ -360,26 +363,27 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 
 		$start = $this->request()['start'];
 		$end = $this->request()['end'];
-		$pay_type = ( $this->request()['pay_type'] == 'all' ) ? '' : $this->request()['pay_type'];
+		$id_driver = $this->request()['id_driver'];
 
 		if( !$start || !$end ){
 			$this->_error();
 		}
 
-		$settlement = new Settlement( [ 'payment_method' => $pay_type, 'start' => $start, 'end' => $end ] );
+		$settlement = new Settlement( [ 'start' => $start, 'end' => $end ] );
 		$orders = $settlement->startDriver();
 		$out = [ 'drivers' => [] ];
-		$total_drivers = 0;
-		$total_payments = 0;
-		$total_orders = 0;
+		$out = [ 'notes' => Crunchbutton_Settlement::DEFAULT_NOTES ];
 		foreach ( $orders as $key => $val ) {
 			if( !$orders[ $key ][ 'name' ] ){
 				continue;
 			}
 			$driver = $orders[ $key ];
+			if( $id_driver && $id_driver == $driver[ 'id_admin' ] ){
+				$driver[ 'show_orders' ] = true;
+			}
 			$total_drivers++;
-			unset( $driver[ 'orders' ] );
 			$driver[ 'orders' ] = [];
+			$driver[ 'not_included' ] = 0;
 			foreach( $orders[ $key ][ 'orders' ] as $order ){
 				$_order = [];
 				$_order[ 'id_order' ] = $order[ 'id_order' ];
@@ -388,17 +392,37 @@ class Controller_api_settlement extends Crunchbutton_Controller_RestAccount {
 				$_order[ 'pay_type' ] = ucfirst( $order[ 'pay_type' ] );
 				$_order[ 'total' ] = $order[ 'final_price_plus_delivery_markup' ];
 				$_order[ 'date' ] = $order[ 'date' ];
+				$_order[ 'included' ] = !$order[ 'do_not_pay_driver' ];
+				if( !$_order[ 'included' ] ){
+					$driver[ 'not_included' ]++;
+				}
 				$driver[ 'orders' ][] = $_order;
 				$total_orders++;
 			}
+			$driver[ 'total_due_without_adjustment' ] = $driver[ 'total_due' ];
+			$driver[ 'adjustment' ] = 0;
+			$driver[ 'pay' ] = true;
 			$driver[ 'orders_count' ] = count( $driver[ 'orders' ] );
-			$out[ 'drivers' ][] = $driver;
+			if( $id_driver ){
+				if( $id_driver == $driver[ 'id_admin' ] ){
+					$out[ 'drivers' ][] = $driver;
+				}
+			} else {
+				$out[ 'drivers' ][] = $driver;
+			}
 			$total_payments += $driver[ 'total_due' ];
 		}
-		$out[ 'total_drivers' ] = $total_drivers;
-		$out[ 'total_payments' ] = $total_payments;
-		$out[ 'total_orders' ] = $total_orders;
 		echo json_encode( $out );
+	}
+
+	private function _driverDoNotPayForOrder(){
+		$id_order = $this->request()['id_order'];
+		$id_driver = $this->request()['id_driver'];
+		$do_not_pay_driver = $this->request()['do_not_pay_driver'];
+		$order = Order::o( $id_order );
+		$order->do_not_pay_driver = ( intval( $do_not_pay_driver ) > 0 ) ? 1 : 0;
+		$order->save();
+		echo json_encode( [ 'id_order' => $order->id_order, 'id_driver' => $id_driver ] );
 	}
 
 	private function _range(){
