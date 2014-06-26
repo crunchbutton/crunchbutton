@@ -6,6 +6,7 @@ class Crunchbutton_Order_Action extends Cana_Table {
 	const DELIVERY_ACCEPTED   = 'delivery-accepted';
 	const DELIVERY_REJECTED   = 'delivery-rejected';
 	const DELIVERY_DELIVERED  = 'delivery-delivered';
+	const DELIVERY_TRANSFERED  = 'delivery-transfered';
 	const RESTAURANT_ACCEPTED = 'restaurant-accepted';
 	const RESTAURANT_REJECTED = 'restaurant-rejected';
 	const RESTAURANT_READY		= 'restaurant-ready';
@@ -25,6 +26,18 @@ class Crunchbutton_Order_Action extends Cana_Table {
 
 	public function restaurant(){
 		return Crunchbutton_Restaurant::q( "SELECT r.* FROM restaurant r INNER JOIN `order` o ON o.id_restaurant = r.id_restaurant  WHERE id_order = {$this->id_order}" );
+	}
+
+	public function changeTransferDeliveryDriver( $id_order, $id_admin ){
+		// for payment - #3232
+		$action = new Order_Action;
+		$action->id_order = $id_order;
+		$action->id_admin = $id_admin;
+		$action->timestamp = date('Y-m-d H:i:s');
+		$action->type = Crunchbutton_Order_Action::DELIVERY_TRANSFERED;
+		$action->note = 'Transfer made by ' . c::admin()->name . ' #' . c::admin()->id_admin;
+		$action->save();
+		return $action->id_order_action;
 	}
 
 	public function date() {

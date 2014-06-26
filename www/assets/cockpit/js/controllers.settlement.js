@@ -379,7 +379,7 @@ NGApp.controller('SettlementRestaurantsPaymentCtrl', function ( $scope, $routePa
 
 });
 
-NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, SettlementService ) {
+NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, SettlementService, DriverService ) {
 
 	$scope.ready = false;
 
@@ -497,6 +497,29 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 		} );
 	}
 
+	$scope.transfer_driver_modal = function( id_order, id_driver ){
+		$scope.transfer_id_order = id_order;
+		$scope.transfer_id_driver = id_driver;
+		App.dialog.show( '.transfer-driver' );
+	}
+
+	$scope.transfer_driver = function(){
+		$scope.closePopup();
+		if( $scope.transfer_id_driver && $scope.transfer_id_order ){
+			$scope.makeBusy();
+			var params = { 'id_order': $scope.transfer_id_order, 'id_driver': $scope.transfer_id_driver };
+			SettlementService.drivers.transfer_driver( params, function( json ){
+				$scope.id_driver = false;
+				// reload all
+				$scope.begin();
+				$scope.unBusy();
+				$scope.transfer_id_driver = false;
+			} );
+		} else {
+			App.alert( 'Oops, something bad happened!' )
+		}
+	}
+
 	$scope.show_details = function( id_driver ){
 		$scope.walkTo( '#driver-' + id_driver, -80 );
 	}
@@ -504,6 +527,8 @@ NGApp.controller('SettlementDriversCtrl', function ( $scope, $filter, Settlement
 	// Just run if the user is loggedin
 	if( $scope.account.isLoggedIn() ){
 		range();
+		// Load the drivers list
+		DriverService.listSimple( function( json ){ $scope.drivers = json; } )
 	}
 
 });

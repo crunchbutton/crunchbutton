@@ -85,3 +85,5 @@ ALTER TABLE `payment_schedule` DROP `payment_method`;
 
 ALTER TABLE  `payment_schedule` ADD  `log` varchar(255) DEFAULT NULL;
 ALTER TABLE  `payment_schedule` ADD  `adjustment` float DEFAULT NULL;
+
+ALTER TABLE  `order_action` CHANGE `type` `type` enum('delivery-pickedup','delivery-accepted','delivery-rejected','delivery-delivered', 'delivery-transfered', 'restaurant-accepted','restaurant-rejected','restaurant-ready') DEFAULT NULL;

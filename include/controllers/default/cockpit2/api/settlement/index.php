@@ -89,6 +89,9 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 							case 'do-not-pay-driver':
 								$this->_driverDoNotPayForOrder();
 								break;
+							case 'transfer-driver':
+								$this->_driverTransferDeliveryDriver();
+								break;
 							default:
 								$this->_error();
 								break;
@@ -423,6 +426,13 @@ class Controller_Api_Settlement extends Crunchbutton_Controller_RestAccount {
 		$order->do_not_pay_driver = ( intval( $do_not_pay_driver ) > 0 ) ? 1 : 0;
 		$order->save();
 		echo json_encode( [ 'id_order' => $order->id_order, 'id_driver' => $id_driver ] );
+	}
+
+	private function _driverTransferDeliveryDriver(){
+		$id_order = $this->request()['id_order'];
+		$id_driver = $this->request()['id_driver'];
+		Crunchbutton_Order_Action::changeTransferDeliveryDriver( $id_order, $id_driver );
+		echo json_encode( [ 'success' => true ] );
 	}
 
 	private function _range(){
