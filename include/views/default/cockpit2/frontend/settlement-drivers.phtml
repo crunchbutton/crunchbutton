@@ -27,23 +27,7 @@
 					<small ng-show="form.rangeEnd.$error.date">Enter a valid end date!</small>
 				</div>
 			</li>
-<?php /*
-			<li class="li-input" ng-class="{'error':form.paymentType.$invalid}">
-				<div class="label">Payment type:</div>
-				<select name="paymentType" required ng-model="pay_type" ng-options="opt.value as opt.name for opt in pay_type_options" class="cart-customize-select"></select>
-				<div class="box-error">
-					<small ng-show="form.paymentType.$error.required">Required.</small>
-				</div>
-			</li>
 
-			<li class="li-input" ng-class="{'error':form.sort.$invalid}">
-				<div class="label">Sort by:</div>
-				<select name="sort" required ng-model="sort" ng-options="opt.value as opt.name for opt in sort_options" class="cart-customize-select"></select>
-				<div class="box-error">
-					<small ng-show="form.sort.$error.required">Required.</small>
-				</div>
-			</li>
-*/ ?>
 			<li class="li-input" ng-show="!isSearching">
 				<button class="button save" ng-click="begin();">Begin</button>
 			</li>
@@ -55,6 +39,19 @@
 		</ul>
 
 	</form>
+
+	<div class="transfer-driver zoom-anim-dialog mfp-hide dialog">
+		<h1>Transfer the order #{{transfer_id_order}}</h1>
+		<ul class="ul-inputs box-content">
+			<li class="li-input">
+				<div class="label">Transfer to:</div>
+				<select name="driver" required ng-model="transfer_id_driver" ng-options="opt.id_admin as opt.name for opt in drivers" class="cart-customize-select"></select>
+			</li>
+			<li class="li-input" ng-show="!isSearching">
+				<button class="button save" ng-click="transfer_driver();">Ok</button>
+			</li>
+		</ul>
+	</div>
 
 	<div class="box-content" ng-show="!showForm">
 		<p>
@@ -292,6 +289,7 @@
 							<td></td>
 							<td></td>
 							<td></td>
+							<td></td>
 						</tr>
 					</thead>
 					<tbody>
@@ -312,6 +310,7 @@
 								</span>
 							</td>
 							<td>
+								<span title="Transfer this order to another driver" class="link" ng-click="transfer_driver_modal( order.id_order, driver.id_admin );"><i class="fa fa-retweet"></i></span>
 							</td>
 						</tr>
 					</tbody>

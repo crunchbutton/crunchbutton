@@ -11,6 +11,9 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 	const DEFAULT_NOTES = 'Crunchbutton Orders';
 
+	const TEST_SUMMARY_FAX = '_PHONE_';
+	const TEST_SUMMARY_EMAIL = 'daniel@_DOMAIN_';
+
 	public function __construct( $filters = [] ) {
 		$this->filters = $filters;
 	}
@@ -47,7 +50,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 										AND NAME NOT LIKE "%test%"
 									ORDER BY `date` ASC ';
 		// todo: do not commit with this line
-		// $query = 'SELECT * FROM `order` WHERE id_order IN( 24515,24505,24497,24420,24407,24484,24495,24457,24438,24429,24493,24460,24450,24427,24418,24455,24406,24409,24513,24476,24435,24501,24494,24456,24421,24423,24403,24408,24424,24449,24504,24436,24434,24417,24516,24485,24488,24437,24451,24512,24507,24500,24466,24422,24496,24432,24425,24487,24498,24433,24405,24411,24483,24474,24473,24472,24419,24415,24471,24443,24416,24503,24499,24492,24490,24448,24446,24414,24413,24491,24447,24412,24509,24506,24479,24478,24462,24461,24428,24508,24475,24463,24440,24489,24486,24514,24464,24431,24458,24430,24511,24404,24470,24482,24459,24467,24502,24480,24426 ) order by id_order desc';
+		$query = 'SELECT * FROM `order` WHERE id_order IN( 24515,24505,24497,24420,24407,24484,24495,24457,24438,24429,24493,24460,24450,24427,24418,24455,24406,24409,24513,24476,24435,24501,24494,24456,24421,24423,24403,24408,24424,24449,24504,24436,24434,24417,24516,24485,24488,24437,24451,24512,24507,24500,24466,24422,24496,24432,24425,24487,24498,24433,24405,24411,24483,24474,24473,24472,24419,24415,24471,24443,24416,24503,24499,24492,24490,24448,24446,24414,24413,24491,24447,24412,24509,24506,24479,24478,24462,24461,24428,24508,24475,24463,24440,24489,24486,24514,24464,24431,24458,24430,24511,24404,24470,24482,24459,24467,24502,24480,24426 ) order by id_order desc';
 		return Order::q( $query );
 	}
 
@@ -124,6 +127,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 		foreach ( $orders as $order ) {
 
 			if( $order && $order[ 'id_admin' ] ){
+				// Refunded orders are not paid
+ 				if( $order[ 'refunded' ] == 1 ){
+					continue;
+				}
+
 				$driver = $order[ 'id_admin' ];
 				if( !$pay[ $driver ] ){
 					$pay[ $driver ] = [ 'subtotal' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'gift_card' => 0, 'orders' => [] ];
@@ -768,8 +776,8 @@ class Crunchbutton_Settlement extends Cana_Model {
 
 		$env = c::getEnv();
 
-		$mail = ( $env == 'live' ? $summary[ 'summary_email' ] : 'daniel@_DOMAIN_' );
-		$fax = ( $env == 'live' ? $summary[ 'summary_fax' ] : '_PHONE_' );
+		$mail = ( $env == 'live' ? $summary[ 'summary_email' ] : Crunchbutton_Settlement::TEST_SUMMARY_EMAIL );
+		$fax = ( $env == 'live' ? $summary[ 'summary_fax' ] : Crunchbutton_Settlement::TEST_SUMMARY_FAX );
 
 		$mail = new Crunchbutton_Email_Payment_Summary( [ 'summary' => $summary ] );
 
@@ -803,15 +811,12 @@ class Crunchbutton_Settlement extends Cana_Model {
 					return true;
 				}
 				return false;
-
 				break;
 		}
-
 		return false;
 	}
 
 	private function log( $method, $message ){
 		Log::debug( [ 'method' => $method, 'id_admin' => c::user()->id_admin, 'message' => $message, 'env' => c::getEnv(), 'type' => 'settlement' ] );
 	}
-
 }

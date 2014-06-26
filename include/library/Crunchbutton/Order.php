@@ -107,14 +107,14 @@ class Crunchbutton_Order extends Cana_Table {
 
 		$delivery_service_markup = ( $this->restaurant()->delivery_service_markup ) ? $this->restaurant()->delivery_service_markup : 0;
 		$this->delivery_service_markup = $delivery_service_markup;
-		
+
 		if ($processType == 'restaurant') {
 			$subtotal = $params['subtotal'];
 			$delivery_service_markup = $this->restaurant()->delivery_service_markup ? $this->restaurant()->delivery_service_markup : 0;
 			$price_delivery_markup = number_format($subtotal * $delivery_service_markup / 100, 2);
 			$subtotal_plus_delivery_service_markup = $subtotal + $price_delivery_markup;
 			$this->type = 'restaurant';
-			
+
 		} else {
 
 			foreach ($params['cart'] as $d) {
@@ -148,7 +148,7 @@ class Crunchbutton_Order extends Cana_Table {
 			}
 			$this->type = 'web';
 		}
-		
+
 
 
 		// to make sure the value will be 2 decimals
@@ -2298,15 +2298,18 @@ class Crunchbutton_Order extends Cana_Table {
 
 	}
 
-
 	public function getDeliveryDriver(){
-		$action = Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} AND ( type = '" . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . "' OR type = '" . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . "' OR type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "') LIMIT 1" );
+		// for payment reasons the driver could be changed at payment time #3232
+		$action = Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} AND type = '" . Crunchbutton_Order_Action::DELIVERY_TRANSFERED . "' ORDER BY id_order_action DESC LIMIT 1 " );
 		if( $action->id_admin ){
 			return $action->admin();
+		} else {
+			$action = Crunchbutton_Order_Action::q( "SELECT * FROM order_action WHERE id_order = {$this->id_order} AND ( type = '" . Crunchbutton_Order_Action::DELIVERY_PICKEDUP . "' OR type = '" . Crunchbutton_Order_Action::DELIVERY_ACCEPTED . "' OR type = '" . Crunchbutton_Order_Action::DELIVERY_DELIVERED . "') LIMIT 1" );
+			if( $action->id_admin ){
+				return $action->admin();
+			}
 		}
-
 	}
-
 
 	public function deliveryExports() {
 		return [
