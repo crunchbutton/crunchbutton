@@ -31,15 +31,24 @@ class Crunchbutton_Settlement extends Cana_Model {
 	}
 
 	public function startDriver(){
-		$this->restaurants = self::restaurants( $this->filters );
+		$_orders = self::orders( $this->filters );
 		$orders = [];
-		foreach ( $this->restaurants as $restaurant ) {
-			$restaurant->_payableOrders = $restaurant->payableOrders( $this->filters );
-			foreach( $restaurant->_payableOrders as $order ){
-				$orders[] = $this->orderExtractVariables( $order );
-			}
+		foreach ( $_orders as $order ) {
+			$orders[] = $this->orderExtractVariables( $order );
 		}
 		return $this->driversProcessOrders( $orders );
+	}
+
+	// get orders we have to pay
+	public static function orders( $filters ){
+		$query = 'SELECT * FROM `order`
+									WHERE DATE(`date`) >= "' . (new DateTime($filters['start']))->format('Y-m-d') . '"
+										AND DATE(`date`) <= "' . (new DateTime($filters['end']))->format('Y-m-d') . '"
+										AND NAME NOT LIKE "%test%"
+									ORDER BY `date` ASC ';
+		// todo: do not commit with this line
+		$query = 'SELECT * FROM `order` WHERE id_order IN( 24515,24505,24497,24420,24407,24484,24495,24457,24438,24429,24493,24460,24450,24427,24418,24455,24406,24409,24513,24476,24435,24501,24494,24456,24421,24423,24403,24408,24424,24449,24504,24436,24434,24417,24516,24485,24488,24437,24451,24512,24507,24500,24466,24422,24496,24432,24425,24487,24498,24433,24405,24411,24483,24474,24473,24472,24419,24415,24471,24443,24416,24503,24499,24492,24490,24448,24446,24414,24413,24491,24447,24412,24509,24506,24479,24478,24462,24461,24428,24508,24475,24463,24440,24489,24486,24514,24464,24431,24458,24430,24511,24404,24470,24482,24459,24467,24502,24480,24426 ) order by id_order desc';
+		return Order::q( $query );
 	}
 
 	// get restaurants that we need to pay
@@ -71,6 +80,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$pay = [ 'card_subtotal' => 0, 'cash_reimburse' => 0, 'tax' => 0, 'delivery_fee' => 0, 'tip' => 0, 'customer_fee' => 0, 'markup' => 0, 'credit_charge' => 0, 'restaurant_fee' => 0, 'promo_gift_card' => 0, 'apology_gift_card' => 0, 'order_payment' => 0, 'cash_subtotal' => 0 ];
 		foreach ( $orders as $order ) {
 			if( $order ){
+
 				// Pay if Refunded
 				if( ( $order[ 'refunded' ] == 1 && $order[ 'pay_if_refunded' ] == 0 ) ){
 					continue;
@@ -112,6 +122,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 	public function driversProcessOrders( $orders ){
 		$pay = [];
 		foreach ( $orders as $order ) {
+
 			if( $order && $order[ 'id_admin' ] ){
 				$driver = $order[ 'id_admin' ];
 				if( !$pay[ $driver ] ){
@@ -120,6 +131,11 @@ class Crunchbutton_Settlement extends Cana_Model {
 					$pay[ $driver ][ 'name' ] = $order[ 'driver' ];
 				}
 				$pay[ $driver ][ 'orders' ][] = $order;
+
+				if( $order[ 'do_not_pay_driver' ] == 1 ){
+					continue;
+				}
+
 				$pay[ $driver ][ 'subtotal' ] += $this->orderSubtotalDriveryPay( $order );
 				$pay[ $driver ][ 'tax' ] += $this->orderTaxDriverPay( $order );
 				$pay[ $driver ][ 'delivery_fee' ] += $this->orderDeliveryFeeDriverPay( $order );
@@ -357,6 +373,7 @@ class Crunchbutton_Settlement extends Cana_Model {
 		$values[ 'paid_with_cb_card' ] = ( $order->paid_with_cb_card > 0 ) ? 1: 0;
 		$values[ 'refunded' ] = ( $order->refunded > 0 ) ? 1: 0;
 		$values[ 'do_not_pay_restaurant' ] = ( $order->do_not_pay_restaurant > 0 ) ? 1: 0;
+		$values[ 'do_not_pay_driver' ] = ( $order->do_not_pay_driver > 0 ) ? 1: 0;
 		$values[ 'pay_if_refunded' ] = ( $order->pay_if_refunded > 0 ) ? 1: 0;
 		$values[ 'reimburse_cash_order' ] = ( $order->reimburse_cash_order > 0 ) ? 1: 0;
 
