@@ -1568,3 +1568,28 @@ b, strong{ font-weight: bold; }
 		color: #64763d;
 		border:1px solid #d6e9c6;
 	}
+.delivery-out-of-range, .delivery-range{
+	background: #df5850;
+	color: #FFF;
+	font-size: 1em;
+	line-height: 1.4em;
+	margin-top: 1em;
+	width: 92%;
+}
+.delivery-out-of-range span, .delivery-range span{
+	padding: .6em;
+	display: block;
+}
+	.delivery-out-of-range span strong{
+		font-size: 1.2em;
+		line-height: 1.6em;
+	}
+	.delivery-range {
+		background: $green;
+	}
+	.map-image{
+		margin-top: 1em;
+		margin-bottom: 1em;
+		width: 90%;
+		text-align: center;
+	}
