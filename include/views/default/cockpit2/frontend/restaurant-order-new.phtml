@@ -82,6 +82,19 @@
 					</div>
 				</li>
 
+				<li class="li-input" ng-class="{'error':form.orderTipType.$invalid}">
+					<div class="label">Tip Type</div>
+					<div class="input">
+						<select ng-model="order.tip_type" name="orderTipType" required>
+							<option value="dollar">Dollar</option>
+							<option value="percent">Percent</option>
+						</select>
+					</div>
+					<div class="box-error">
+						<small ng-show="form.orderTipType.$error.required">Required.</small>
+					</div>
+				</li>
+
 				<li class="li-input" ng-class="{'error':form.orderTip.$invalid}">
 					<div class="label">Tip:</div>
 					<div class="input"><input type="number" name="orderTip" ng-model="order.tip" required placeholder="0.00"></div>
@@ -121,6 +134,10 @@
 						<small ng-show="form.cardMonth.$error.required">Card month is required.</small>
 						<small ng-show="form.cardYear.$error.required">Card year is required.</small>
 					</div>
+				</li>
+
+				<li>
+					$scope.finalAmount::{{finalAmount}}
 				</li>
 
 				<li class="li-input" ng-show="!isProcessing">

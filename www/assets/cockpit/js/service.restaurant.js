@@ -40,31 +40,62 @@ NGApp.factory( 'RestaurantOrderService', function( $rootScope, $resource, $route
 				'process' : { 'method': 'POST', params : { 'action' : '' } } }
 		);
 
-	service.calc = function(){
-		var elements = {};
-		var total = this.subtotal();
-		var totalWithoutMarkup = this.subtotalWithoutMarkup();
-		var feeTotal = total;
-		elements['subtotal'] = this.subtotal();
-		elements['subtotalWithoutMarkup'] = this.subtotalWithoutMarkup();
-		elements['delivery'] = this._breackDownDelivery();
-		feeTotal += elements['delivery'];
-		elements['fee'] = this._breackDownFee( feeTotal );
-		feeTotal += elements['fee'];
-		/* 	- taxes should be calculated using the price without markup
-				- if restaurant uses 3rd party delivery service remove the delivery_fee
-				- see #2236 and #2248 */
+	service.calcTotal = function( order, restaurant ){
 
-		// Check if the restaurant uses 3rd party delivery if it not, add the delivery fee
-		if( parseInt( service.restaurant.delivery_service ) ==  0 ){
-			totalWithoutMarkup += elements[ 'delivery' ];
-		}
-		// Caculate the tax using the total without the marked up prices
-		elements['taxes'] = this._breackDownTaxes( totalWithoutMarkup );
-		// The tip will use as base the total price (with the markup)
-		elements['tip'] = this._breakdownTip(total);
+			var fee = function( total ){
+				if ( restaurant.fee_customer ) {
+					return App.ceil( total * ( parseFloat( restaurant.fee_customer ) / 100 ) );
+				}
+				return 0;
+			}
 
-		return elements;
+			var tax = function( total ){
+				return ( total * ( restaurant.tax / 100 ) );
+			}
+
+			var markup = function( total ){
+				if( restaurant.delivery_service_markup ){
+					return App.ceil( ( total * ( restaurant.delivery_service_markup / 100 ) ) );
+				}
+				return 0;
+			}
+
+			var delivery = function(){
+				return App.ceil( parseFloat( restaurant.delivery_fee ) );
+			}
+
+			var tip = function( total ){
+				// calc tip % of total or real value
+				return order.tip;
+			}
+
+			var breakdown = {};
+			var total = order.subtotal + markup();
+			var totalWithoutMarkup = order.subtotal;
+			var feeTotal = total;
+			breakdown['subtotal'] = order.subtotal;
+			breakdown['subtotalWithoutMarkup'] = totalWithoutMarkup;
+			breakdown['delivery'] = delivery();
+			feeTotal += breakdown['delivery'];
+			breakdown['fee'] = fee( feeTotal );
+			feeTotal += breakdown['fee'];
+
+			if( parseInt( restaurant.delivery_service ) ==  0 ){
+				totalWithoutMarkup += breakdown[ 'delivery' ];
+			}
+
+			breakdown['taxes'] = tax( totalWithoutMarkup );
+
+			breakdown['tip'] = tip( total );
+
+			total = breakdown.subtotal;
+			feeTotal = total;
+			feeTotal += breakdown.delivery;
+			feeTotal += breakdown.fee;
+			finalAmount = feeTotal + breakdown.taxes;
+			finalAmount += tip( total );
+
+			return App.ceil( finalAmount ).toFixed( 2 );
 	}
 
 
