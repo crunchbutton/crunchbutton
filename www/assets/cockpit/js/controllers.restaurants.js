@@ -26,70 +26,18 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 		} );
 	}
 
+	$scope.$watchCollection('[order.subtotal, order.tip]', function(newValues, oldValues){
+		calcTotal();
+	} );
 
-	$scope.calc = function(){
-
-
-
-		var fee = function( total ){
-			if ( $scope.restaurant.fee_customer ) {
-				return App.ceil( total * ( parseFloat( $scope.restaurant.fee_customer ) / 100 ) );
-			}
-			return 0;
+	var calcTotal = function(){
+		$scope.finalAmount = 0;
+		console.log('$scope.restaurant',$scope.restaurant);
+		if( $scope.order && $scope.restaurant ){
+			console.log('calcule essa bosta!');
+			$scope.finalAmount = RestaurantOrderService.calcTotal( $scope.order, $scope.restaurant );
+			console.log('$scope.finalAmount',$scope.finalAmount);
 		}
-
-		var tax = function( total ){
-			return ( total * ( $scope.restaurant.tax / 100 ) );
-		}
-
-		var markup = function( total ){
-			if( $scope.restaurant.delivery_service_markup ){
-				return App.ceil( ( total * ( $scope.restaurant.delivery_service_markup / 100 ) ) );
-			}
-			return 0;
-		}
-
-		var delivery = function(){
-			return App.ceil( parseFloat( $scope.restaurant.delivery_fee ) );
-		}
-
-		var tip = function( total ){
-			// calc tip % of total or real value
-			return $scope.order.tip;
-		}
-
-		var breakdown = {};
-		var total = $scope.order.subtotal + markup();
-		var totalWithoutMarkup = $scope.order.subtotal;
-		var feeTotal = total;
-		breakdown['subtotal'] = $scope.order.subtotal;
-		breakdown['subtotalWithoutMarkup'] = totalWithoutMarkup;
-		breakdown['delivery'] = delivery();
-		feeTotal += breakdown['delivery'];
-		breakdown['fee'] = fee( feeTotal );
-		feeTotal += breakdown['fee'];
-
-		if( parseInt( $scope.restaurant.delivery_service ) ==  0 ){
-			totalWithoutMarkup += breakdown[ 'delivery' ];
-		}
-
-		breakdown['taxes'] = tax( totalWithoutMarkup );
-
-		breakdown['tip'] = tip( total );
-
-		total = breakdown.subtotal;
-		feeTotal = total;
-		feeTotal += breakdown.delivery;
-		feeTotal += breakdown.fee;
-		finalAmount = feeTotal + breakdown.taxes;
-		finalAmount += tip( total );
-		console.log('total',App.ceil(finalAmount).toFixed(2));
-		return App.ceil(finalAmount).toFixed(2);
-
-
-
-
-
 	}
 
 	$scope.checkAddress = function(){
@@ -131,8 +79,15 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 			return;
 		}
 		$scope.isProcessing = true;
-		$scope.order.restaurant = $scope.restaurant.id_restaurant;
-		RestaurantOrderService.process( $scope.order, $scope.card, function( data ){
+		var order = angular.copy( $scope.order );
+		if( $scope.order.tip_type == 'dollar' ){
+			order.autotip_value = $scope.order.tip;
+			order.tip = 'autotip';
+		} else {
+			order.tip = $scope.order.tip;
+		}
+		order.restaurant = $scope.restaurant.id_restaurant;
+		RestaurantOrderService.process( order, $scope.card, function( data ){
 			if( data.error ){
 				App.alert( data.error);
 				$scope.isProcessing = false;
@@ -153,9 +108,9 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 		$scope.card.number = '4111111111111111';
 		$scope.card.year = '2015';
 		$scope.card.month = '2';
-		$scope.order = { name: 'MR TEST', phone: '646-783-1444', pay_type: 'card', delivery_type: 'delivery', address: '1120 Princeton Drive, Marina del Rey CA 90292', notes: 'Second floor', subtotal:10, tip:1.50 };
+		$scope.order = { name: 'MR TEST', phone: '646-783-1444', pay_type: 'card', delivery_type: 'delivery', address: '1120 Princeton Drive, Marina del Rey CA 90292', notes: 'Second floor', subtotal:10, tip:1.50, tip_type:'dollar' };
 		// setTimeout( function(){ $scope.processOrder(); }, 1000 );
-		setTimeout( function(){ $scope.calc(); }, 1000 );
+		setTimeout( function(){ calcTotal() }, 1000 );
 	}
 
 	if( $scope.account.isLoggedIn() ){
