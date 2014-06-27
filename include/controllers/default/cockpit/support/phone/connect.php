@@ -3,7 +3,7 @@
 class Controller_Support_Phone_Connect extends Crunchbutton_Controller_Account {
 
 	public function init() {
-	
+
 		switch (c::getPagePiece(3)) {
 			case 'restaurant':
 				$callerId = c::config()->twilio->live->outgoingRestaurant;
@@ -16,9 +16,9 @@ class Controller_Support_Phone_Connect extends Crunchbutton_Controller_Account {
 				$callerId = c::config()->twilio->live->outgoingCustomer;
 				break;
 		}
-		
+
 		$num = c::admin()->phone;
-		$host = 'dev.crunchr.co';
+		$host = 'beta._DOMAIN_';
 		//c::config()->host_callback
 
 		$twilio = new Services_Twilio(c::config()->twilio->live->sid, c::config()->twilio->live->token);
