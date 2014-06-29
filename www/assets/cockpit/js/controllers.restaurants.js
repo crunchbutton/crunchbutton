@@ -118,14 +118,13 @@ NGApp.controller( 'RestaurantOrderNew', function ( $scope, RestaurantService, Re
 		}
 		order.restaurant = $scope.restaurant.id_restaurant;
 		RestaurantOrderService.process( order, $scope.card, function( data ){
+			$scope.isProcessing = false;
 			if( data.error ){
 				App.alert( data.error);
-				$scope.isProcessing = false;
 				return;
 			} else {
 				if( data.id_order ) {
 					$scope.navigation.link( '/restaurant/order/' + data.id_order );
-					$scope.isProcessing = false;
 				} else {
 					var errors = '';
 					var error = '';
